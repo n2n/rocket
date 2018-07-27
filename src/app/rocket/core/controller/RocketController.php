@@ -84,7 +84,7 @@ class RocketController extends ControllerAdapter {
 		$deleteLoginModel = new DeleteLoginModel(); 
 		$this->dispatch($deleteLoginModel, 'delete');
 		$this->send(JhtmlResponse::view($this->createView('..\view\start.html', 
-		    array('deleteLoginModel' => $deleteLoginModel))));
+		    	array('deleteLoginModel' => $deleteLoginModel))));
 	}
 	
 	public function doUsers(array $delegateParams = array(), RocketUserController $delegateController) {

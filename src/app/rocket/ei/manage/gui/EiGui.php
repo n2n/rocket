@@ -13,11 +13,25 @@ use n2n\util\ex\IllegalStateException;
 use rocket\ei\component\GuiFactory;
 
 class EiGui {
+	/**
+	 * @var EiFrame
+	 */
 	private $eiFrame;
+	/**
+	 * @var int
+	 */
 	private $viewMode;
+	/**
+	 * @var EiGuiViewFactory
+	 */
 	private $eiGuiViewFactory;
+	/**
+	 * @var EiGuiListener[]
+	 */
 	private $eiGuiListeners = array();
-	
+	/**
+	 * @var EiEntryGui[]
+	 */
 	private $eiEntryGuis = array();
 	
 	/**
@@ -38,6 +52,13 @@ class EiGui {
 	}
 	
 	/**
+	 * @return int
+	 */
+	public function getViewMode() {
+		return $this->viewMode;
+	}
+	
+	/**
 	 * @param EiGuiViewFactory $eiGuiViewFactory
 	 */
 	public function init(EiGuiViewFactory $eiGuiViewFactory) {
@@ -47,22 +68,6 @@ class EiGui {
 		
 		$this->eiGuiViewFactory = $eiGuiViewFactory;
 	}
-
-	/**
-	 * @return \rocket\ei\manage\gui\EiGuiViewFactory
-	 */
-	public function getEiGuiViewFactory() {
-		$this->ensureInit();
-		
-		return $this->eiGuiViewFactory;
-	}
-	
-	/**
-	 * @return int
-	 */
-	public function getViewMode() {
-		return $this->viewMode;
-	}
 	
 	/**
 	 * @return boolean
@@ -71,10 +76,23 @@ class EiGui {
 		return $this->eiGuiViewFactory !== null;
 	}
 	
+	/**
+	 * @throws IllegalStateException
+	 */
 	private function ensureInit() {
 		if ($this->eiGuiViewFactory !== null) return;
 		
 		throw new IllegalStateException('EiGui not yet initialized.');
+	}
+	
+	/**
+	 * @return \rocket\ei\manage\gui\EiGuiViewFactory
+	 * @throws IllegalStateException If EiGui {@see self::init()} hasn't been called yet.
+	 */
+	public function getEiGuiViewFactory() {
+		$this->ensureInit();
+		
+		return $this->eiGuiViewFactory;
 	}
 	
 	/**
@@ -116,10 +134,14 @@ class EiGui {
 		return $this->eiEntryGuis;
 	}
 	
-	public function createView(HtmlView $contextView = null) {
+	/**
+	 * @param HtmlView|null $contextView
+	 * @return \n2n\web\ui\UiComponent
+	 */
+	public function createUiComponent(?HtmlView $contextView, EiGuiConfig $eiGuiConfig) {
 		$this->ensureInit();
 		
-		$view = $this->eiGuiViewFactory->createView($this->eiEntryGuis, $contextView);
+		$view = $this->eiGuiViewFactory->createUiComponent($this->eiEntryGuis, $contextView, $eiGuiConfig);
 		
 		foreach ($this->eiGuiListeners as $eiGuiListener) {
 			$eiGuiListener->onNewView($view);

@@ -36,18 +36,42 @@ use rocket\ei\mask\model\ControlOrder;
 use rocket\ei\manage\control\Control;
 
 class EiEntryGui {
+	/**
+	 * @var EiGui
+	 */
 	private $eiGui;
+	/**
+	 * @var EiEntry
+	 */
 	private $eiEntry;
+	/**
+	 * @var int|null
+	 */
 	private $treeLevel;
+	/**
+	 * @var GuiFieldAssembly[]
+	 */
 	private $guiFieldAssemblies = array();
+	/**
+	 * @var GuiFieldForkAssembly[]
+	 */
 	private $guiFieldForkAssemblies = array();
+	/**
+	 * @var EiEntryGuiListener[]
+	 */
 	private $eiEntryGuiListeners = array();
+	/**
+	 * @var bool
+	 */
 	private $initialized = false;
-	
+	/**
+	 * @var Dispatchable|null
+	 */
 	private $dispatchable;
+	/**
+	 * @var PropertyPath|null
+	 */
 	private $contextPropertyPath = null;
-	private $forkMagPropertyPaths = array();
-	private $savables = array();
 	
 	/**
 	 * @param EiMask $eiMask
@@ -79,13 +103,6 @@ class EiEntryGui {
 	 */
 	public function getTreeLevel() {
 		return $this->treeLevel;
-	}
-	
-	/**
-	 * @return boolean
-	 */
-	public function isInitialized() {
-		return $this->initialized;
 	}
 		
 	/**
@@ -125,7 +142,6 @@ class EiEntryGui {
 		$this->guiFieldAssemblies[$key] = $guiFieldAssembly;
 	}
 	
-	
 	/**
 	 * @param GuiIdPath $guiIdPath
 	 * @return bool
@@ -160,6 +176,9 @@ class EiEntryGui {
 		return $this->guiFieldAssemblies[$guiIdPathStr];
 	}
 	
+	/**
+	 * @return \rocket\ei\manage\gui\GuiFieldAssembly[]
+	 */
 	public function getGuiFieldAssemblies() {
 		return $this->guiFieldAssemblies;
 	}
@@ -306,6 +325,14 @@ class EiEntryGui {
 		foreach ($this->eiEntryGuiListeners as $eiEntryGuiListener) {
 			$eiEntryGuiListener->saved($this);
 		}
+	}
+	
+	
+	/**
+	 * @return boolean
+	 */
+	public function isInitialized() {
+		return $this->initialized;
 	}
 	
 	private function ensureInitialized() {

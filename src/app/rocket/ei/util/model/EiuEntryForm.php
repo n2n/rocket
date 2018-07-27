@@ -194,17 +194,20 @@ class EiuEntryForm implements Dispatchable {
 		return $this->eiuEntryTypeForms[$this->chosenId];
 	}
 	
-	public function createView(HtmlView $contextView = null, bool $groupRequired = false) {
+	public function createView(HtmlView $contextView = null, bool $groupRequired = false, string $displayContainerType = null,
+			string $displayContainerLabel = null, array $displayContainerAttrs = null) {
 		if ($contextView !== null) {
 			return $contextView->getImport('\rocket\ei\util\view\eiuEntryForm.html',
-					array('eiuEntryFormViewModel' => new EiuEntryFormViewModel($this, $groupRequired)));
+					array('eiuEntryFormViewModel' => new EiuEntryFormViewModel($this, $groupRequired,
+							$displayContainerType, $displayContainerLabel, $displayContainerAttrs)));
 		}
 		
 		$viewFactory = $this->eiuFrame->getN2nContext()->lookup(ViewFactory::class);
 		CastUtils::assertTrue($viewFactory instanceof ViewFactory);
 		
 		return $viewFactory->create('rocket\ei\util\view\eiuEntryForm.html',
-				array('eiuEntryFormViewModel' => new EiuEntryFormViewModel($this, $groupRequired)));
+				array('eiuEntryFormViewModel' => new EiuEntryFormViewModel($this, $groupRequired,
+						$displayContainerType, $displayContainerLabel, $displayContainerAttrs)));
 	}
 }
 

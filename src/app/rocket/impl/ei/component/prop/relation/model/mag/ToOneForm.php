@@ -60,7 +60,7 @@ class ToOneForm implements Dispatchable {
 		$this->label = $label;
 		$this->mandatory = $mandatory;
 		$this->utils = $utils;
-		$this->eiuEntryFormFactory = new ToOneDynMappingFormFactory($utils);
+		$this->eiuEntryFormFactory = new ToOneDynMappingFormFactory($utils, $label);
 		$this->entryLabeler = new EntryLabeler($utils);
 	}
 	

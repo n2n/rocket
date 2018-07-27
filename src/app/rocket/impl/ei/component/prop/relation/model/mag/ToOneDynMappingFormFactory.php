@@ -25,7 +25,8 @@ use rocket\ei\util\model\EiuFrame;
 use rocket\ei\manage\mapping\EiEntry;
 
 class ToOneDynMappingFormFactory {
-	private $eiFrameUtils;
+	private $eiFrame;
+	private $genericLabel;
 	private $inaccessibleCurrentEiObject;
 	private $currentEiEntry;
 	private $currentMappingForm;
@@ -33,8 +34,9 @@ class ToOneDynMappingFormFactory {
 	private $newMappingForm;
 	private $draftMode = false;
 	
-	public function __construct(EiuFrame $eiFrameUtils) {
-		$this->eiFrameUtils = $eiFrameUtils;
+	public function __construct(EiuFrame $eiFrameUtils, $genericLabel) {
+		$this->eiFrame = $eiFrameUtils;
+		$this->genericLabel = $genericLabel;
 	}
 	
 	public function setEiEntry(EiEntry $eiEntry = null) {
@@ -47,22 +49,22 @@ class ToOneDynMappingFormFactory {
 		
 		if (!$eiEntry->isAccessible()) {
 			$this->currentMappingForm = new MappingForm(
-					$this->eiFrameUtils->createIdentityString($eiEntry->getEiObject()),
+					$this->eiFrame->createIdentityString($eiEntry->getEiObject()),
 					$eiEntry);
 			return;
 		}
 		
 		if ($eiEntry->getEiObject()->isNew()) {
 			$this->newMappingForm = new MappingForm(
-					$this->eiFrameUtils->getGenericLabel(), $this->eiFrameUtils->getGenericIconType(), null,
-					$this->eiFrameUtils->newEiuEntryForm($eiEntry->getEiObject()->isDraft(), null, null, null, [$eiEntry]));
+					$this->eiFrame->getGenericLabel(), $this->eiFrame->getGenericIconType(), null,
+					$this->eiFrame->newEiuEntryForm($eiEntry->getEiObject()->isDraft(), null, null, null, [$eiEntry]));
 			return;
 		}
 		
 		$this->currentMappingForm = new MappingForm(
-				$this->eiFrameUtils->getGenericLabel($eiEntry), 
-				$this->eiFrameUtils->getGenericIconType($eiEntry), null,
-				$this->eiFrameUtils->eiuEntryForm($eiEntry));
+				$this->eiFrame->getGenericLabel($eiEntry), 
+				$this->eiFrame->getGenericIconType($eiEntry), null,
+				$this->eiFrame->eiuEntryForm($eiEntry));
 	}
 
 	public function getCurrentMappingForm() {
@@ -93,9 +95,9 @@ class ToOneDynMappingFormFactory {
 		if (!$this->newMappingFormAvailable) return null;
 			
 		if ($this->newMappingForm === null) {
-			$this->newMappingForm = new MappingForm($this->eiFrameUtils->getGenericLabel(), 
-					$this->eiFrameUtils->getGenericIconType(), null,
-					$this->eiFrameUtils->newEiuEntryForm($this->draftMode));
+			$this->newMappingForm = new MappingForm($this->eiFrame->getGenericLabel(), 
+					$this->eiFrame->getGenericIconType(), null,
+					$this->eiFrame->newEiuEntryForm($this->draftMode));
 		}
 		
 		return $this->newMappingForm;

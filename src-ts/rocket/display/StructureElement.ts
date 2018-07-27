@@ -78,7 +78,7 @@ namespace Rocket.Display {
 		}
 		
 		public isItem(): boolean {
-			return this.jqElem.hasClass("rocket-field");
+			return this.jqElem.hasClass("rocket-item");
 		}
 		
 		public getToolbar(): Toolbar {
@@ -227,7 +227,7 @@ namespace Rocket.Display {
 		}
 		
 		public static of(jqElem: JQuery): StructureElement {
-			jqElem = jqElem.closest(".rocket-structure-element, .rocket-group, .rocket-field");
+			jqElem = jqElem.closest(".rocket-structure-element, .rocket-group, .rocket-item, .rocket-panel");
 			
 			if (jqElem.length == 0) return null;
 			
@@ -238,6 +238,21 @@ namespace Rocket.Display {
 			
 			structureElement = StructureElement.from(jqElem, true);
 			jqElem.data("rocketStructureElement", structureElement);
+			return structureElement;
+		}
+		
+		public static findFirst(containerJq: JQuery): StructureElement {
+			let elemsJq = containerJq.find(".rocket-structure-element, .rocket-group, .rocket-item, .rocket-panel").first();
+			
+			if (elemsJq.length == 0) return null;
+			
+			var structureElement = elemsJq.data("rocketStructureElement");
+			if (structureElement instanceof StructureElement) {
+				return structureElement;
+			}
+			
+			structureElement = StructureElement.from(elemsJq, true);
+			elemsJq.data("rocketStructureElement", structureElement);
 			return structureElement;
 		}
 	}

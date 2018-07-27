@@ -89,7 +89,9 @@ class EmbeddedOneToOneGuiField implements GuiField {
 		$targetUtils = new EiuFrame($this->targetEiFrame);
 		
 		if (!$this->reduced) {
-			return $targetUtils->entry($targetRelationEntry->toEiEntry($targetUtils))->newEntryGui()->allowControls()
+			$eiuEntry = $targetUtils->entry($targetRelationEntry->toEiEntry($targetUtils));
+			return $eiuEntry->newEntryGui()->allowControls()
+					->addDisplayContainer(DisplayItem::TYPE_LIGHT_GROUP, $eiuEntry->getGenericLabel())
 					->createView($view);
 		}
 

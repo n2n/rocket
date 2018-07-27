@@ -23,6 +23,7 @@
 	use rocket\ei\util\model\EiuEntryFormViewModel;
 	use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\map\PropertyPath;
+use rocket\ei\manage\EiHtmlBuilder;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -30,6 +31,8 @@ use n2n\web\dispatch\map\PropertyPath;
 
 	$eiuEntryFormViewModel = $view->getParam('eiuEntryFormViewModel');
 	$view->assert($eiuEntryFormViewModel instanceof EiuEntryFormViewModel);
+	
+	$eiHtml = new EiHtmlBuilder($view);
 	
 // 	$eiuEntryFormViewModel->initFromView($view);
 	
@@ -51,7 +54,13 @@ use n2n\web\dispatch\map\PropertyPath;
 		<?php $view->import($eiuEntryFormViewModel->createEditView($view)) ?>
 	</div>
 <?php else: ?>
-	<div class="rocket-entry-form rocket-multi-ei-type<?php $html->out($eiuEntryFormViewModel->isGroupRequired() ? ' rocket-group rocket-simple-group' : '') ?>">
+	<?php if ($eiuEntryFormViewModel->hasDisplayContainer()): ?>
+		<?php $eiHtml->displayItemOpen('div', $eiuEntryFormViewModel->getDisplayContainerType(), $eiuEntryFormViewModel->getDisplayContainerAttrs()) ?>
+			<label><?php $html->out($eiuEntryFormViewModel->getDisplayContainerLabel()) ?></label>
+			<div class="rocket-control">
+	<?php endif ?>
+
+	<div class="rocket-entry-form rocket-multi-ei-type">
 		<div class="rocket-ei-type-selector">
 			<?php $formHtml->label($selectedTypeIdPropertyPath) ?>
 			<div>
@@ -66,4 +75,8 @@ use n2n\web\dispatch\map\PropertyPath;
 			</div>
 		<?php endforeach ?>
 	</div>
+	<?php if ($eiuEntryFormViewModel->hasDisplayContainer()): ?>
+			</div>
+		<?php $eiHtml->displayItemClose() ?>
+	<?php endif ?>
 <?php endif ?>

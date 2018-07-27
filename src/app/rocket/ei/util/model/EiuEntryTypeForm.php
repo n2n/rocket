@@ -38,6 +38,9 @@ class EiuEntryTypeForm implements Dispatchable {
 		$this->dispatchable = $eiuEntryGui->getEiEntryGui()->getDispatchable();
 	}
 
+	/**
+	 * @return \rocket\ei\util\model\EiuEntryGui
+	 */
 	public function getEiuEntryGui() {
 		return $this->eiuEntryGui;
 	}

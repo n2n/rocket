@@ -24,6 +24,7 @@ use rocket\ei\manage\gui\ui\DisplayItem;
 				array('item' => $mappingForm->getEntryLabel())) ?>"
 		data-rocket-impl-changed-text="<?php $html->text('ei_impl_entry_changed_txt') ?>">
 	<?php $formHtml->optionalObjectEnabledHidden() ?>
+	
 	<?php if (!$mappingForm->isAccessible()): ?>
 		<?php if ($summaryRequired): ?>
 			<div class="rocket-impl-summary">
@@ -36,7 +37,7 @@ use rocket\ei\manage\gui\ui\DisplayItem;
 			</div>
 		<?php endif ?>
 		
-		<div class="rocket-impl-body rocket-group">
+		<div class="rocket-impl-body rocket-group rocket-light-group">
 			<label><?php $html->out($mappingForm->getEntryLabel()) ?></label>
 			<div class="rocket-control">
 				<?php $html->text('ei_impl_not_accessible') ?>
@@ -83,12 +84,10 @@ use rocket\ei\manage\gui\ui\DisplayItem;
 					->setContextPropertyPath($formHtml->meta()->propPath('eiuEntryForm'))
 					->createView($view, false)) ?>
 		<?php else: ?>
-			<div class="rocket-impl-body rocket-group rocket-light-group">
-				<label><?php $html->out($mappingForm->getEntryLabel()) ?></label>
-				<div class="rocket-control">
-					<?php $view->out($mappingForm->getEiuEntryForm()
-							->setContextPropertyPath($formHtml->meta()->propPath('eiuEntryForm'))->createView($view, false)) ?>
-				</div>
+			<div class="rocket-impl-body">
+				<?php $view->out($mappingForm->getEiuEntryForm()
+						->setContextPropertyPath($formHtml->meta()->propPath('eiuEntryForm'))
+						->createView($view, false, DisplayItem::TYPE_LIGHT_GROUP, $mappingForm->getEntryLabel(), array('rocket-impl-boy'))) ?>
 			</div>
 		<?php endif ?>
 	<?php endif ?>

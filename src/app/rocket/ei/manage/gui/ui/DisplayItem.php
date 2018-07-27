@@ -16,6 +16,7 @@ class DisplayItem {
 	protected $label;
 	protected $type;
 	protected $guiIdPath;
+	protected $attrs;
 	protected $displayStructure;
 
 	private function __construct() {
@@ -67,13 +68,14 @@ class DisplayItem {
 	 * @param string|null $label
 	 * @return DisplayItem
 	 */
-	public function copy(string $type = null, string $label = null) {
+	public function copy(string $type = null, string $label = null, array $attrs = null) {
 		$displayItem = new DisplayItem();
 		$displayItem->displayStructure = $this->displayStructure;
 		$displayItem->guiIdPath = $this->guiIdPath;
 		ArgUtils::valEnum($type, self::getTypes(), null, true);
 		$displayItem->type = $type ?? $this->type;
 		$displayItem->label = $label ?? $this->label;
+		$displayItem->attrs = $attrs ?? $this->attrs;
 		return $displayItem;
 	}
 	
@@ -89,6 +91,13 @@ class DisplayItem {
 	 */
 	public function getType() {
 		return $this->type;
+	}
+	
+	/**
+	 * @return array|null
+	 */
+	public function getAttrs() {
+		return $this->attrs;
 	}
 
 	/**

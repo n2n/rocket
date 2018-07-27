@@ -24,22 +24,68 @@ namespace rocket\ei\util\model;
 use n2n\util\ex\IllegalStateException;
 use n2n\web\dispatch\map\PropertyPathPart;
 use n2n\impl\web\ui\view\html\HtmlView;
+use rocket\ei\manage\gui\ui\DisplayItem;
 
 class EiuEntryFormViewModel {
 	private $eiuEntryForm;
 	private $eiuEntryFormPropertyPath;
-	private $groupRequired = false;
+	private $displayContainerType = null;
+	private $displayContainerLabel = null;
+	private $displayContainerAttrs = null;
+	private $grouped = false;
 	
-	public function __construct(EiuEntryForm $eiuEntryForm, bool $groupRequired = false) {
+	public function __construct(EiuEntryForm $eiuEntryForm, bool $grouped, string $type = null, string $label = null) {
 		$this->eiuEntryForm = $eiuEntryForm;
-		$this->groupRequired = $groupRequired;
+		$this->setGrouped($grouped);
+		if ($type !== null && $label !== null) {
+			$this->addDisplayContainer($label, $type);
+		}
 	}
 	
 	/**
 	 * @return boolean
 	 */
-	public function isGroupRequired() {
-		return $this->groupRequired;
+	public function hasDisplayContainer() {
+		return $this->displayContainerType !== null;
+	}
+	
+	/**
+	 * @param string $label
+	 * @param string $type
+	 * @return \rocket\ei\util\model\EiuEntryFormViewModel
+	 */
+	public function addDisplayContainer(string $label, string $type = DisplayItem::TYPE_SIMPLE_GROUP, array $attrs = null) {
+		$this->displayContainerType = $type;
+		$this->displayContainerLabel = $label;
+		$this->displayContainerAttrs = $attrs;
+		return $this;
+	}
+	
+	public function removeDisplayContainer() {
+		$this->displayContainerType = null;
+		$this->displayContainerLabel = null;
+		$this->displayContainerAttrs = null;
+		return $this;
+	}
+	
+	public function getDisplayContainerType() {
+		return $this->displayContainerType;
+	}
+	
+	public function getDisplayContainerLabel() {
+		return $this->displayContainerLabel;
+	}
+	
+	public function getDisplayContainerAttrs() {
+		return $this->displayContainerAttrs;
+	}
+	
+	public function isGrouped() {
+		return $this->grouped;
+	}
+	
+	public function setGrouped(bool $grouped) {
+		$this->grouped = $grouped;
 	}
 	
 // 	public function initFromView(HtmlView $view) {
@@ -94,8 +140,10 @@ class EiuEntryFormViewModel {
 					->ext(new PropertyPathPart('eiuEntryTypeForms', true, $eiTypeId))->ext('dispatchable'));
 		}
 		
-		if ($this->groupRequired) {
-			$eiuEntryTypeForm->getEiuEntryGui()->getEiuGui()->forceRootGroups();
+		if ($this->displayContainerType !== null) {
+			$eiuEntryTypeForm->getEiuEntryGui()->addDisplayContainer($this->displayContainerType, $this->displayContainerLabel, $this->displayContainerAttrs);
+		} else if ($this->grouped) {
+			$eiuEntryTypeForm->getEiuEntryGui()->forceRootGroups();
 		}
 				
 		return $eiuEntryTypeForm->getEiuEntryGui()->createView($contextView);
