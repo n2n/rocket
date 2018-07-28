@@ -8,14 +8,12 @@
  * - .rocket-field
  */
 
-.rocket-content > .rocket-item,
-.rocket-content > .rocket-form {
-    margin-top: 0.5rem;
-}
-
-.rocket-control > .rocket-item {
+.rocket-item {
     padding: 0.5rem 1rem;
     margin: 0 -1rem;
+    > label {
+        margin: 0;
+    }
 }
 
 @include media-breakpoint-up(md) {
