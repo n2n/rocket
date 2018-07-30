@@ -55,7 +55,7 @@ use rocket\ei\manage\gui\ui\DisplayItem;
 					</div>
 					<div class="rocket-impl-content">
 						<?php foreach ($eiuEntryGui->getGuiIdPaths() as $guiIdPath): ?>
-							<?php $eiHtml->fieldOpen('div', DisplayItem::create($guiIdPath, DisplayItem::TYPE_ITEM)) ?>
+							<?php $eiHtml->fieldOpen('div', DisplayItem::create($guiIdPath, DisplayItem::TYPE_ITEM), null, false, false) ?>
 								<?php $eiHtml->fieldContent() ?>
 							<?php $eiHtml->fieldClose() ?>
 						<?php endforeach ?>

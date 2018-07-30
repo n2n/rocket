@@ -46,7 +46,7 @@
 				</div>
 				<div class="rocket-impl-content">
 					<?php foreach ($eiuEntryGui->getGuiIdPaths() as $guiIdPath): ?>
-						<?php $eiHtml->fieldOpen('div', $guiIdPath) ?>
+						<?php $eiHtml->fieldOpen('div', $guiIdPath, null, false, false) ?>
 							<?php $eiHtml->fieldContent() ?>
 						<?php $eiHtml->fieldClose() ?>
 					<?php endforeach ?>
