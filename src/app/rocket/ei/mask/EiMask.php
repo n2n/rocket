@@ -49,6 +49,7 @@ use n2n\l10n\Lstr;
 use rocket\ei\manage\control\IconType;
 use rocket\ei\EiTypeExtension;
 use rocket\ei\manage\critmod\filter\FilterCriteriaConstraint;
+use n2n\util\ex\NotYetImplementedException;
 
 class EiMask {
 	private $eiMaskDef;
@@ -72,6 +73,9 @@ class EiMask {
 	private $guiDefinition;
 	private $draftDefinition;
 	
+	/**
+	 * @param EiType $eiType
+	 */
 	public function __construct(EiType $eiType) {
 		$this->eiType = $eiType;
 		
@@ -82,6 +86,9 @@ class EiMask {
 		$this->eiModificatorCollection = new EiModificatorCollection($this);
 	}
 	
+	/**
+	 * @param EiTypeExtension $eiTypeExtension
+	 */
 	public function extends(EiTypeExtension $eiTypeExtension) {
 		IllegalStateException::assertTrue($this->eiTypeExtension === null);
 		$this->eiTypeExtension = $eiTypeExtension;
@@ -139,6 +146,9 @@ class EiMask {
 		return $this->eiMaskDef;
 	}
 	
+	/**
+	 * @return string
+	 */
 	public function getModuleNamespace() {
 		return $this->eiTypeExtension !== null
 				? $this->eiTypeExtension->getModuleNamespace()
@@ -146,17 +156,36 @@ class EiMask {
 	}
 	
 	/**
+	 * @return \rocket\ei\mask\EiMask|NULL
+	 */
+	private function getExtendedEiMask() {
+		if ($this->eiTypeExtension !== null) {
+			return $this->eiTypeExtension->getExtendedEiMask();
+		}
+		
+		throw new NotYetImplementedException('Should not happen.');
+	}
+	
+	/**
 	 * @return \n2n\l10n\Lstr
 	 */
 	public function getLabelLstr() {
-		return new Lstr((string) $this->eiMaskDef->getLabel(), $this->getModuleNamespace());
+		if (null !== ($label = $this->eiMaskDef->getLabel())) {
+			return new Lstr($label, $this->getModuleNamespace());
+		}
+		
+		return $this->getExtendedEiMask()->getLabelLstr();
 	}
 	
 	/**
 	 * @return \n2n\l10n\Lstr
 	 */
 	public function getPluralLabelLstr() {
-		return new Lstr((string) $this->eiMaskDef->getPluralLabel(), $this->getModuleNamespace());
+		if (null !== ($pluralLabel = $this->eiMaskDef->getPluralLabel())) {
+			return new Lstr($pluralLabel, $this->getModuleNamespace());
+		}
+		
+		return $this->getExtendedEiMask()->getPluralLabelLstr();
 	}
 	
 	/**
@@ -321,8 +350,10 @@ class EiMask {
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\mask\EiMask::sortOverallControls()
+	 * @param array $controls
+	 * @param EiGui $eiGui
+	 * @param HtmlView $view
+	 * @return array
 	 */
 	public function sortOverallControls(array $controls, EiGui $eiGui, HtmlView $view): array {
 // 		$eiu = new Eiu($eiGui);
@@ -348,8 +379,12 @@ class EiMask {
 		return $controls;
 	}
 	
-	/* (non-PHPdoc)
-	 * @see \rocket\ei\mask\EiMask::createEntryControls()
+
+	/**
+	 * @param array $controls
+	 * @param EiEntryGui $eiEntryGui
+	 * @param HtmlView $view
+	 * @return array
 	 */
 	public function sortEntryControls(array $controls, EiEntryGui $eiEntryGui, HtmlView $view): array {
 // 		$eiu = new Eiu($eiEntryGui);
@@ -437,6 +472,9 @@ class EiMask {
 		return new CommonEiGuiViewFactory($eiGui, $this->eiEngine->getGuiDefinition(), $displayStructure);
 	}
 	
+	/**
+	 * @return \rocket\ei\mask\EiMask
+	 */
 	public function getSupremeEiMask() {
 		if (!$this->eiType->hasSuperEiType()) {
 			return $this;
@@ -481,7 +519,12 @@ class EiMask {
 // // 		throw new \InvalidArgumentException();
 // 	}
 	
-	public function getSubEiMaskByEiTypeId($eiTypeId): EiMask {
+	/**
+	 * @param string $eiTypeId
+	 * @throws \InvalidArgumentException
+	 * @return EiMask
+	 */
+	public function getSubEiMaskByEiTypeId(string $eiTypeId): EiMask {
 		$subMaskIds = $this->getSubEiMaskIds();
 		
 		foreach ($this->eiType->getSubEiTypes() as $subEiType) {
@@ -498,10 +541,21 @@ class EiMask {
 				. $this->eiType->getId());
 	}
 	
+	/**
+	 * @return bool
+	 */
 	public function isPreviewSupported(): bool {
 		return null !== $this->eiMaskDef->getPreviewControllerLookupId();
 	}
 	
+	/**
+	 * @param EiFrame $eiFrame
+	 * @param PreviewModel $previewModel
+	 * @throws UnavailablePreviewException
+	 * @throws InvalidConfigurationException
+	 * @throws UnavailableControlException
+	 * @return PreviewController
+	 */
 	public function lookupPreviewController(EiFrame $eiFrame, PreviewModel $previewModel = null): PreviewController {
 		$lookupId = $this->eiMaskDef->getPreviewControllerLookupId();
 		if (null === $lookupId) {
