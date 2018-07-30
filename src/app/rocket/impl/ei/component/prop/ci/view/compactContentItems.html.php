@@ -40,13 +40,11 @@
 				<?php $html->text('common_empty_label') ?>
 			</div>
 		<?php else: ?>
-			<div>
-				<ul class="list list-inline rocket-content-item">
-					<?php foreach ($groupedUiComponents[$panelConfig->getName()] as $uiComponent): ?>
-						<?php $view->out($uiComponent) ?>
-					<?php endforeach ?>
-				</ul>
-			</div>
+			<ul class="list-inline rocket-content-item">
+				<?php foreach ($groupedUiComponents[$panelConfig->getName()] as $uiComponent): ?>
+					<?php $view->out($uiComponent) ?>
+				<?php endforeach ?>
+			</ul>
 		<?php endif ?>
 	<?php endforeach ?>
 </div>

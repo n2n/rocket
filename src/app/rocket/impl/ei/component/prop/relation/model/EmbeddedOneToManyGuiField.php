@@ -131,10 +131,10 @@ class EmbeddedOneToManyGuiField implements GuiField {
 		
 		foreach ($targetRelationEntries as $targetRelationEntry) {
 			$iconType = $targetEiuFrame->getGenericIconType($targetRelationEntry->getEiObject());
-			$label = $targetEiuFrame->getGenericLabel($targetRelationEntry->getEiObject());
-			$htmlElem->appendLn(new HtmlElement('li', null, array(
-					new HtmlElement('i', array('class' => 'fa fa-' . $iconType), ''),
-					new HtmlElement('span', null, $label))));
+			$label = $targetEiuFrame->createIdentityString($targetRelationEntry->getEiObject());
+			$htmlElem->appendLn(new HtmlElement('li', 
+					array('class' => 'list-inline-item rocket-impl-content-type', 'title' => $label),
+					array(new HtmlElement('i', array('class' => 'fa fa-' . $iconType), ''))));
 		}
 		
 		return $htmlElem;
