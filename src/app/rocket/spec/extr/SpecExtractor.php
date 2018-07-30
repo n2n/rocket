@@ -317,8 +317,8 @@ class SpecExtractor {
 			try {
 				$typePath = TypePath::create($typePathStr);
 				
-				$eiModificatorsAttributes = new Attributes($attributes->getArray($typePath->getTypeId(), false));
-				$eiModificatorGroups[$typePath->getTypeId()] = $this->createEiModificatorExtractions($eiModificatorsAttributes, $typePath);
+				$eiModificatorsAttributes = new Attributes($attributes->getArray($typePathStr, false));
+				$eiModificatorGroups[$typePathStr] = $this->createEiModificatorExtractions($eiModificatorsAttributes, $typePath);
 			} catch (AttributesException $e) {
 				throw $this->createEiModificatorsException($typePath, $e);
 			} catch (InvalidConfigurationException $e) {
