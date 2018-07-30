@@ -76,12 +76,16 @@ class DisplayStructure {
 		return $guiIdPaths;
 	}
 		
+	/**
+	 * @return \rocket\ei\manage\gui\ui\DisplayStructure
+	 */
 	public function groupedItems() {
 		$displayStructure = new DisplayStructure();
 		
 		$curDisplayStructure = null;
 		foreach ($this->displayItems as $displayItem) {
-			if ($displayItem->getType() == DisplayItem::TYPE_PANEL) {
+			if ($displayItem->getType() == DisplayItem::TYPE_PANEL 
+					&& $this->containsNonGrouped($displayItem)) {
 				$displayStructure->addDisplayItem($displayItem->copy(DisplayItem::TYPE_SIMPLE_GROUP));
 				$curDisplayStructure = null;
 				continue;
@@ -102,6 +106,27 @@ class DisplayStructure {
 		}
 			
 		return $displayStructure;
+	}
+	
+	/**
+	 * @param DisplayItem $displayItem
+	 * @return boolean
+	 */
+	private function containsNonGrouped(DisplayItem $displayItem) {
+		if (!$displayItem->hasDisplayStructure()) return false;
+		
+		foreach ($displayItem->getDisplayStructure()->getDisplayItems() as $displayItem) {
+			if ($displayItem->isGroup()) continue;
+			
+			if ($displayItem->getType() == DisplayItem::TYPE_PANEL
+					&& !$this->containsNonGrouped($displayItem)) {
+				continue;
+			}
+			
+			return true;
+		}
+		
+		return false;
 	}
 	
 	public function whitoutAutonomics() {
@@ -138,11 +163,31 @@ class DisplayStructure {
 			}
 		}
 	}
+	
+	public function withContainer(string $type, string $label, array $attrs = null) {
+		if (count($this->displayItems) != 1 
+				|| $this->displayItems[0]->getType() != $type) {
+			$ds = new DisplayStructure();
+			$ds->addDisplayStructure($this, $type, $label, $attrs);
+			return $ds;
+		}
+		
+		if ($this->displayItems[0]->getLabel() == $label 
+				&& $this->displayItems[0]->getAttrs() === $attrs) {
+			return $this;
+		}
+		
+		$ds = new DisplayStructure();
+		$ds->addDisplayItem($this->displayItems[0]->copy($type, $label, $attrs));
+		return $ds;
+		
+		
+	}
 
-	public function withoutGroups() {
+	public function withoutSubStructures() {
 		$displayStructure = new DisplayStructure();
 	
-		$this->stripGroups($displayStructure, $this->displayItems);
+		$this->stripSubStructures($displayStructure, $this->displayItems);
 	
 		return $displayStructure;
 	}
@@ -151,20 +196,14 @@ class DisplayStructure {
 	 * @param DisplayStructure $displayStructure
 	 * @param DisplayItem[] $displayItems
 	 */
-	private function stripGroups(DisplayStructure $displayStructure, array $displayItems) {
+	private function stripSubStructures(DisplayStructure $displayStructure, array $displayItems) {
 		foreach ($displayItems as $displayItem) {
-			if (!$displayItem->isGroup()) {
+			if (!$displayItem->hasDisplayStructure()) {
 				$displayStructure->displayItems[] = $displayItem;
 				continue;
 			}
 				
-			if ($displayItem->hasDisplayStructure()) {
-				$this->stripGroups($displayStructure, $displayItem->getDisplayStructure()->getDisplayItems());
-				continue;
-			}
-			
-			$displayStructure->addGuiIdPath($displayItem->getGuiIdPath(), DisplayItem::TYPE_ITEM, 
-					$displayItem->getLabel());
+			$this->stripSubStructures($displayStructure, $displayItem->getDisplayStructure()->getDisplayItems());			
 		}
 	}
 }

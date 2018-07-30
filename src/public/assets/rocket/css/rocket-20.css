@@ -4406,7 +4406,7 @@ body {
  * Content
  */
 .rocket-content {
-  padding-top: 1rem;
+  margin-top: 1rem;
 }
 
 #rocket-content-container {
@@ -5172,13 +5172,6 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
 }
 
 /*
- * Content items
- */
-ul.rocket-content-item > li > span {
-  display: none;
-}
-
-/*
  * tree
  */
 .rocket-tree-level-0 {
@@ -5258,14 +5251,13 @@ ul.rocket-content-item > li > span {
  * - .rocket-entry
  * - .rocket-field
  */
-.rocket-content > .rocket-item,
-.rocket-content > .rocket-form {
-  margin-top: 0.5rem;
-}
-
-.rocket-control > .rocket-item {
+.rocket-item {
   padding: 0.5rem 1rem;
   margin: 0 -1rem;
+}
+
+.rocket-item > label {
+  margin: 0;
 }
 
 @media (min-width: 768px) {
@@ -5334,7 +5326,7 @@ ul.rocket-content-item > li > span {
   display: grid;
 }
 
-.rocket-control .rocket-impl-entry > .rocket-impl-summary {
+.rocket-impl-entry > .rocket-impl-summary {
   display: -ms-grid;
   display: grid;
   -ms-grid-columns: 3rem 10rem 1fr auto;
@@ -5344,38 +5336,57 @@ ul.rocket-content-item > li > span {
   background: #fff;
 }
 
-.rocket-control .rocket-impl-entry > .rocket-impl-summary > .rocket-impl-handle {
+.rocket-impl-entry > .rocket-impl-summary > .rocket-impl-handle {
   padding: 1rem;
   background: #FBFAFA;
   border-right: 1px solid #C2BDB6;
 }
 
-.rocket-control .rocket-impl-entry > .rocket-impl-summary .rocket-impl-content-type {
+.rocket-impl-entry > .rocket-impl-summary .rocket-impl-content-type {
+  min-width: 10rem;
   padding: 1rem 0 1rem 0.5rem;
   border-right: 1px solid #C2BDB6;
 }
 
-.rocket-control .rocket-impl-entry > .rocket-impl-summary .rocket-impl-content {
-  padding: 0.5rem 0;
+.rocket-impl-entry > .rocket-impl-summary .rocket-impl-content {
+  padding: 1rem 0.5rem;
 }
 
-.rocket-control .rocket-impl-entry > .rocket-impl-summary > .rocket-simple-commands {
+.rocket-impl-entry > .rocket-impl-summary .rocket-impl-content > div {
+  display: inline-block;
+}
+
+.rocket-impl-entry > .rocket-impl-summary > .rocket-simple-commands {
   padding: 0.5rem 0.75rem 0.5rem 0;
   text-align: right;
 }
 
-.rocket-control .rocket-impl-entry > .rocket-impl-summary .rocket-impl-status {
+.rocket-impl-entry > .rocket-impl-summary .rocket-impl-status {
   color: #b90f00;
   padding: 0.5rem 1rem;
 }
 
-.rocket-impl-summary > .rocket-impl-content div {
-  display: inline-block;
+.rocket-impl-content-type > .fa {
+  position: relative;
+  padding: 0 0.75rem;
 }
 
-.rocket-impl-content-type {
-  min-width: 10rem;
-  padding-right: 1rem;
+.rocket-impl-content-type > .fa::before {
+  position: relative;
+  z-index: 10;
+  color: white;
+}
+
+.rocket-impl-content-type > .fa::after {
+  content: " ";
+  position: absolute;
+  background: #837E78;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  z-index: 1;
+  top: -10px;
+  left: 0px;
 }
 
 .rocket-impl-add-entry {
@@ -5724,6 +5735,10 @@ td .rocket-simple-commands > .btn > i {
   color: white;
   background: #F6A723;
   border-radius: 50%;
+}
+
+.rocket-messages {
+  margin: 1rem 0;
 }
 
 .rocket-highlighted {

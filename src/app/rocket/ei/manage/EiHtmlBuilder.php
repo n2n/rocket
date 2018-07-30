@@ -288,7 +288,8 @@ class EiHtmlBuilder {
 			
 			$guiIdPath = $displayItem->getGuiIdPath();
 			if ($addDisplayCl) {
-				$attrs = $this->applyDisplayItemAttr($displayItem->getType(), (array) $attrs);
+				$attrs = $this->applyDisplayItemAttr($displayItem->getType(), 
+						HtmlUtils::mergeAttrs((array) $displayItem->getAttrs(), (array) $attrs));
 			}
 		} else {
 			$guiIdPath = GuiIdPath::create($displayItem);
@@ -462,9 +463,10 @@ class EiHtmlBuilder {
 	 */
 	public function getDisplayItemOpen(string $tagName, $displayItem, array $attrs = null) {
 		if ($displayItem instanceof DisplayItem) {
-			$attrs = $this->applyDisplayItemAttr($displayItem->getType(), (array) $attrs);
-		} else {
-			ArgUtils::valType($displayItem, [DisplayItem::class, 'string'], 'displayItem');
+			$attrs = $this->applyDisplayItemAttr($displayItem->getType(), 
+					HtmlUtils::mergeAttrs((array) $displayItem->getAttrs(), (array) $attrs));
+		} else if ($displayItem !== null) {
+			ArgUtils::valType($displayItem, [DisplayItem::class, 'string'], true, 'displayItem');
 			$attrs = $this->applyDisplayItemAttr($displayItem, (array) $attrs);
 		}
 		

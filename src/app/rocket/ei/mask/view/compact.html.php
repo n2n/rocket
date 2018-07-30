@@ -60,7 +60,7 @@
 				<?php foreach ($displayStructure->getDisplayItems() as $displayItem): ?>
 					<?php $eiHtml->fieldOpen('td', $displayItem, null, false, false) ?>
 						<?php $eiHtml->fieldContent() ?>
-					<?php $eiHtml->fieldClose(); ?>
+					<?php $eiHtml->fieldClose() ?>
 				<?php endforeach ?>
 				<?php if ($controlsAllowed): ?>
 					<?php $view->out('<td class="rocket-table-commands">') ?>

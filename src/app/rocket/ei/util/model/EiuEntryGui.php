@@ -261,8 +261,16 @@ class EiuEntryGui {
 	/**
 	 * @return \rocket\ei\util\model\EiuEntryGui
 	 */
+	public function addDisplayContainer(string $type, string $label, array $attrs = null) {
+		$this->getEiuGui()->addDisplayContainer($type, $label, $attrs);
+		return $this;
+	}
+		
+	/**
+	 * @return \rocket\ei\util\model\EiuEntryGui
+	 */
 	public function removeGroups() {
-		$this->getEiuGui()->removeGroups();
+		$this->getEiuGui()->removeSubStructures();
 		return $this;
 	}
 	
@@ -290,7 +298,7 @@ class EiuEntryGui {
 	 * @return \n2n\impl\web\ui\view\html\HtmlView
 	 */
 	public function createView(HtmlView $contextView = null) {
-		return $this->eiEntryGui->getEiGui()->createView($contextView);
+		return $this->getEiuGui()->createView($contextView);
 	}
 	
 	/**

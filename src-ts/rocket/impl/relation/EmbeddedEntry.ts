@@ -7,6 +7,7 @@ namespace Rocket.Impl.Relation {
 		
 		private jqPageCommands: JQuery;
 		private bodyGroup: Rocket.Display.StructureElement;
+		private toolbar: Rocket.Display.Toolbar;
 		private _entryForm: Rocket.Display.EntryForm;
 		
 		private jqExpMoveUpButton: JQuery;
@@ -34,7 +35,15 @@ namespace Rocket.Impl.Relation {
 			this.jqPageCommands = this.bodyGroup.jQuery.children(".rocket-zone-commands");
 
 			let rcl = new Rocket.Display.CommandList(this.jqSummary.children(".rocket-simple-commands"), true);
-			let ecl = this.bodyGroup.getToolbar().getCommandList();
+			let tbse = null;
+			if (!this.bodyGroup.isGroup() && null !== (tbse = Display.StructureElement.findFirst(groupJq))) {
+				this.toolbar = tbse.getToolbar();
+			} else {
+				this.toolbar = this.bodyGroup.getToolbar();
+				
+			}
+			
+			let ecl = this.toolbar.getCommandList();
 			
 			if (copyable) {
 				let config = { 
@@ -161,7 +170,7 @@ namespace Rocket.Impl.Relation {
 		}
 		
 		public getExpandedCommandList(): Rocket.Display.CommandList {
-			return this.bodyGroup.getToolbar().getCommandList();
+			return this.toolbar.getCommandList();
 		}
 		
 		public expand(asPartOfList: boolean = true) {

@@ -6,12 +6,6 @@ use n2n\web\ui\UiComponent;
 use n2n\impl\web\ui\view\html\HtmlView;
 
 interface EiGuiViewFactory {
-	const MODE_NO_GROUPS = 1;
-	const MODE_ROOT_GROUPED = 2;
-	const MODE_CONTROLS_ALLOWED = 4;
-	
-	public function applyMode(int $rule);
-	
 	/**
 	 * @return GuiDefinition
 	 */
@@ -23,12 +17,45 @@ interface EiGuiViewFactory {
 	public function getGuiIdPaths(): array;
 	
 	/**
-	 * @return DisplayStructure|null
+	 * @return DisplayStructure
 	 */
-	public function getDisplayStructure(): ?DisplayStructure;
+	public function getDisplayStructure(): DisplayStructure;
+	
+	/**
+	 * @param DisplayStructure $displayStructure
+	 */
+	public function setDisplayStructure(DisplayStructure $displayStructure);
 	
 	/**
 	 * @return UiComponent
 	 */
-	public function createView(array $eiEntryGuis, HtmlView $contextView = null): UiComponent;
+	public function createUiComponent(array $eiEntryGuis, ?HtmlView $contextView, 
+			EiGuiConfig $eiGuiConfig): UiComponent;
+}
+
+class EiGuiConfig {
+	private $controlsAllowed = true;
+	
+	/**
+	 * @param int $mode
+	 */
+	function __construct(bool $controlsAllowed) {
+		$this->controlsAllowed = $controlsAllowed;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	function areControlsAllowed() {
+		return $this->controlsAllowed;
+	}
+	
+	/**
+	 * @param bool $controlsAllowed
+	 * @return \rocket\ei\manage\gui\EiGuiConfig
+	 */
+	function setControlsAllowed(bool $controlsAllowed) {
+		$this->controlsAllowed = $controlsAllowed;
+		return $this;
+	}
 }

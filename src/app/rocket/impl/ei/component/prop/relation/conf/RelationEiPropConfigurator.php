@@ -248,7 +248,7 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 				if ($targetEiTypeExtensionId === null) continue;
 						
 				if ($target->getId() == $targetEiTypeId) {
-					$targetEiMask = $target->getEiTypeExtensionCollection()->getById($eiMaskId)->getEiMask();
+					$targetEiMask = $target->getEiTypeExtensionCollection()->getById($targetEiTypeExtensionId)->getEiMask();
 					continue;
 				} 
 				

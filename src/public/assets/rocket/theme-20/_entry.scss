@@ -8,14 +8,12 @@
  * - .rocket-field
  */
 
-.rocket-content > .rocket-item,
-.rocket-content > .rocket-form {
-    margin-top: 0.5rem;
-}
-
-.rocket-control > .rocket-item {
+.rocket-item {
     padding: 0.5rem 1rem;
     margin: 0 -1rem;
+    > label {
+        margin: 0;
+    }
 }
 
 @include media-breakpoint-up(md) {
@@ -76,49 +74,75 @@
  * embeded
  */
 
-// embeded objects in edit view
+// embeded compact objects in edit view
 
 .rocket-impl-entry {
     display: grid;
 }
 
-.rocket-control .rocket-impl-entry {
+.rocket-impl-entry {
     > .rocket-impl-summary {
         display: grid;
         grid-template-columns: 3rem 10rem 1fr auto;
         border: 1px solid $gray-500;
         margin: 0.5rem 0;
         background: $white;
+
         > .rocket-impl-handle {
             padding: 1rem;
             background: $gray-100;
             border-right: 1px solid $gray-500;
         }
+
         .rocket-impl-content-type {
+            min-width: 10rem;
             padding: 1rem 0 1rem 0.5rem;
             border-right: 1px solid $gray-500;
         }
+
         .rocket-impl-content {
-            padding: 0.5rem 0;
+            padding: 1rem 0.5rem;
+            > div {
+                display: inline-block;
+            }
         }
+
         > .rocket-simple-commands {
             padding: 0.5rem 0.75rem 0.5rem 0;
             text-align: right;
         }
+
         .rocket-impl-status {
             color: $danger;
             padding: 0.5rem 1rem;
         }
+
     }
 }
 
-.rocket-impl-summary > .rocket-impl-content div {
-    display: inline-block;
-}
 
+// round icon
 .rocket-impl-content-type {
-    min-width: 10rem;
-    padding-right: 1rem;
+    > .fa {
+        position: relative;
+        padding: 0 0.75rem;
+        &::before {
+            position: relative;
+            z-index: 10;
+            color: white;
+        }
+        &::after {
+            content: " ";
+            position: absolute;
+            background: $gray-600;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            z-index: 1;
+            top: -10px;
+            left: 0px;
+        }
+    }
 }
 
 .rocket-impl-add-entry {

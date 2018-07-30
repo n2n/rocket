@@ -1276,8 +1276,8 @@ var Rocket;
             set type(type) {
                 this.jqElem.removeClass("rocket-item");
                 this.jqElem.removeClass("rocket-group");
+                this.jqElem.removeClass("rocket-simple-group");
                 this.jqElem.removeClass("rocket-light-group");
-    			this.jqElem.removeClass("rocket-simple-group");
                 this.jqElem.removeClass("rocket-main-group");
                 this.jqElem.removeClass("rocket-panel");
                 switch (type) {
@@ -1309,7 +1309,7 @@ var Rocket;
                 return this.jqElem.hasClass("rocket-panel");
             }
             isItem() {
-                return this.jqElem.hasClass("rocket-field");
+                return this.jqElem.hasClass("rocket-item");
             }
             getToolbar() {
                 if (this.toolbar !== null) {
@@ -1417,7 +1417,7 @@ var Rocket;
                 return structureElement;
             }
             static of(jqElem) {
-                jqElem = jqElem.closest(".rocket-structure-element, .rocket-group, .rocket-field");
+                jqElem = jqElem.closest(".rocket-structure-element, .rocket-group, .rocket-item, .rocket-panel");
                 if (jqElem.length == 0)
                     return null;
                 var structureElement = jqElem.data("rocketStructureElement");
@@ -1426,6 +1426,18 @@ var Rocket;
                 }
                 structureElement = StructureElement.from(jqElem, true);
                 jqElem.data("rocketStructureElement", structureElement);
+                return structureElement;
+            }
+            static findFirst(containerJq) {
+                let elemsJq = containerJq.find(".rocket-structure-element, .rocket-group, .rocket-item, .rocket-panel").first();
+                if (elemsJq.length == 0)
+                    return null;
+                var structureElement = elemsJq.data("rocketStructureElement");
+                if (structureElement instanceof StructureElement) {
+                    return structureElement;
+                }
+                structureElement = StructureElement.from(elemsJq, true);
+                elemsJq.data("rocketStructureElement", structureElement);
                 return structureElement;
             }
         }
@@ -2425,9 +2437,12 @@ var Rocket;
                     return;
                 let jqSelector = this.jqElem.children(".rocket-ei-type-selector");
                 let se = Display.StructureElement.of(jqSelector);
-                if (se.isGroup()) {
+                if (se && se.isGroup()) {
                     se.getToolbar().getJqControls().show();
                     se.getToolbar().getJqControls().append(jqSelector);
+                }
+                else {
+                    jqSelector.addClass("rocket-toolbar");
                 }
                 this.jqEiTypeSelect = jqSelector.find("select");
                 this.updateDisplay();
@@ -5849,7 +5864,14 @@ var Rocket;
                     this.jqSummary = jqEntry.children(".rocket-impl-summary");
                     this.jqPageCommands = this.bodyGroup.jQuery.children(".rocket-zone-commands");
                     let rcl = new Rocket.Display.CommandList(this.jqSummary.children(".rocket-simple-commands"), true);
-                    let ecl = this.bodyGroup.getToolbar().getCommandList();
+                    let tbse = null;
+                    if (!this.bodyGroup.isGroup() && null !== (tbse = Rocket.Display.StructureElement.findFirst(groupJq))) {
+                        this.toolbar = tbse.getToolbar();
+                    }
+                    else {
+                        this.toolbar = this.bodyGroup.getToolbar();
+                    }
+                    let ecl = this.toolbar.getCommandList();
                     if (copyable) {
                         let config = {
                             iconType: "fa fa-copy", label: "Copy",
@@ -5953,7 +5975,7 @@ var Rocket;
                     return this.entryGroup.jQuery;
                 }
                 getExpandedCommandList() {
-                    return this.bodyGroup.getToolbar().getCommandList();
+                    return this.toolbar.getCommandList();
                 }
                 expand(asPartOfList = true) {
                     this.entryGroup.show();

@@ -11,6 +11,7 @@ use rocket\ei\util\model\Eiu;
 use n2n\web\ui\UiComponent;
 use rocket\ei\manage\gui\EiGui;
 use rocket\ei\manage\gui\ViewMode;
+use rocket\ei\manage\gui\EiGuiConfig;
 
 class CommonEiGuiViewFactory implements EiGuiViewFactory {
 	private $eiGui;
@@ -40,27 +41,23 @@ class CommonEiGuiViewFactory implements EiGuiViewFactory {
 		return $this->displayStructure->getAllGuiIdPaths();
 	}
 	
-	public function applyMode(int $rule) {
-		switch ($rule) {
-			case self::MODE_NO_GROUPS:
-				$this->displayStructure = $this->displayStructure->withoutGroups();
-				break;
-			case self::MODE_ROOT_GROUPED:
-				$this->displayStructure = $this->displayStructure->groupedItems();
-				break;
-			case self::MODE_CONTROLS_ALLOWED: 
-				$this->controlsAllowed = true;
-				break;
-		}
-	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\EiGuiViewFactory::getDisplayStructure()
 	 */
-	public function getDisplayStructure(): ?DisplayStructure {
+	public function getDisplayStructure(): DisplayStructure {
 		return $this->displayStructure;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\gui\EiGuiViewFactory::setDisplayStructure()
+	 */
+	public function setDisplayStructure(DisplayStructure $displayStructure) {
+		$this->displayStructure = $displayStructure;
+	}
+	
 	
 // 	private function determineDisplayStructure($viewMode): DisplayStructure {
 // 		$displayStructure = null;
@@ -106,7 +103,11 @@ class CommonEiGuiViewFactory implements EiGuiViewFactory {
 	}
 	
 	
-	public function createView(array $eiEntryGuis, HtmlView $contextView = null): UiComponent {
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\gui\EiGuiViewFactory::createUiComponent()
+	 */
+	public function createUiComponent(array $eiEntryGuis, ?HtmlView $contextView, EiGuiConfig $eiGuiConfig): UiComponent {
 		$viewFactory = $this->eiGui->getEiFrame()->getN2nContext()->lookup(ViewFactory::class);
 		CastUtils::assertTrue($viewFactory instanceof ViewFactory);
 		
@@ -117,11 +118,11 @@ class CommonEiGuiViewFactory implements EiGuiViewFactory {
 			$viewName = 'rocket\ei\mask\view\bulky.html';
 		} else {
 			$viewName = 'rocket\ei\mask\view\compact.html';
-			$displayStructure = $displayStructure->withoutGroups();
+			$displayStructure = $displayStructure->withoutSubStructures();
 		}
 		
 		$params = array('displayStructure' => $displayStructure, 'eiu' => new Eiu($this->eiGui),
-				'controlsAllowed' => $this->controlsAllowed);
+				'controlsAllowed' => $eiGuiConfig->areControlsAllowed());
 		
 		if ($contextView !== null) {
 			return $contextView->getImport('\\' .$viewName, $params);
@@ -129,5 +130,4 @@ class CommonEiGuiViewFactory implements EiGuiViewFactory {
 		
 		return $viewFactory->create($viewName, $params);
 	}
-
 }

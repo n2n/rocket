@@ -12,16 +12,24 @@ use n2n\impl\web\ui\view\html\HtmlSnippet;
 use rocket\ei\manage\gui\ui\DisplayStructure;
 use rocket\ei\manage\gui\GuiException;
 use rocket\ei\manage\gui\EiGui;
+use rocket\ei\manage\gui\EiGuiConfig;
 
 class EiuGui {
 	private $eiGui;
 	private $eiuFrame;
 	private $eiuFactory;
+	private $eiGuiConfig;
 	
+	/**
+	 * @param EiGui $eiGui
+	 * @param EiuFrame $eiuFrame
+	 * @param EiuFactory $eiuFactory
+	 */
 	public function __construct(EiGui $eiGui, EiuFrame $eiuFrame = null, EiuFactory $eiuFactory = null) {
 		$this->eiGui = $eiGui;
 		$this->eiuFrame = $eiuFrame;
 		$this->eiuFactory = $eiuFactory;
+		$this->eiGuiConfig = new EiGuiConfig(false);
 	}
 	
 	/**
@@ -50,6 +58,9 @@ class EiuGui {
 		return $this->eiGui;
 	}
 	
+	/**
+	 * @return number
+	 */
 	public function getViewMode() {
 		return $this->eiGui->getViewMode();
 	}
@@ -198,11 +209,18 @@ class EiuGui {
 		return new EiuEntryGui($this->eiGui->createEiEntryGui($eiEntry, $treeLevel, true), $this, $this->eiuFactory);
 	}
 	
+	public function addDisplayContainer(string $type, string $label, array $attrs = null) {
+		$egvf = $this->eiGui->getEiGuiViewFactory();
+		$egvf->setDisplayStructure($egvf->getDisplayStructure()->withContainer($type, $label, $attrs));
+		return $this;
+	}
+	
 	/**
 	 * @return \rocket\ei\util\model\EiuGui
 	 */
-	public function removeGroups() {
-		$this->eiGui->getEiGuiViewFactory()->applyMode(EiGuiViewFactory::MODE_NO_GROUPS);
+	public function removeSubStructures() {
+		$egvf = $this->eiGui->getEiGuiViewFactory();
+		$egvf->setDisplayStructure($egvf->getDisplayStructure()->withoutSubStructures());
 		return $this;
 	}
 	
@@ -210,39 +228,38 @@ class EiuGui {
 	 * @return \rocket\ei\util\model\EiuGui
 	 */
 	public function forceRootGroups() {
-		$this->eiGui->getEiGuiViewFactory()->applyMode(EiGuiViewFactory::MODE_ROOT_GROUPED);
+		$egvf = $this->eiGui->getEiGuiViewFactory();
+		$egvf->setDisplayStructure($egvf->getDisplayStructure()->groupedItems());
 		return $this;
 	}
 	/**
 	 * @return \rocket\ei\util\model\EiuGui
 	 */
 	public function allowControls() {
-		$this->eiGui->getEiGuiViewFactory()->applyMode(EiGuiViewFactory::MODE_CONTROLS_ALLOWED);
+		$this->eiGuiConfig->setControlsAllowed(true);
 		return $this;
 	}
 	
 	/**
-	 * 
+	 * @return HtmlView|null $contextView
 	 * @return \n2n\impl\web\ui\view\html\HtmlView
 	 */
 	public function createView(HtmlView $contextView = null) {
-		return $this->eiGui->createView($contextView);
+		return $this->eiGui->createUiComponent($contextView, $this->eiGuiConfig);
 	}
 }
-
 
 class CustomGuiViewFactory implements EiGuiViewFactory {
 	private $guiDefinition;
 	private $guiIdPaths;
 	private $factory;
+	private $displayStructure;
 	
 	public function __construct(GuiDefinition $guiDefinition, array $guiIdPaths, \Closure $factory) {
 		$this->guiIdPaths = $guiIdPaths;
 		$this->guiDefinition = $guiDefinition;
 		$this->factory = $factory;
-	}
-	
-	public function applyMode(int $rule) {
+		$this->displayStructure = new DisplayStructure();
 	}
 	
 	public function getGuiDefinition(): GuiDefinition {
@@ -253,11 +270,15 @@ class CustomGuiViewFactory implements EiGuiViewFactory {
 		return $this->guiIdPaths;
 	}
 	
-	public function getDisplayStructure(): ?DisplayStructure {
-		return null;
+	public function getDisplayStructure(): DisplayStructure {
+		return $this->displayStructure;
 	}
 	
-	public function createView(array $eiEntryGuis, HtmlView $contextView = null): UiComponent {
+	public function setDisplayStructure(DisplayStructure $displayStructure) {
+		$this->displayStructure = $displayStructure;
+	}
+	
+	public function createUiComponent(array $eiEntryGuis, ?HtmlView $contextView, EiGuiConfig $eiGuiConfig): UiComponent {
 		$uiComponent = $this->factory->call(null, $eiEntryGuis, $contextView);
 		ArgUtils::valTypeReturn($uiComponent, [UiComponent::class, 'scalar'], null, $this->factory);
 		
@@ -267,5 +288,6 @@ class CustomGuiViewFactory implements EiGuiViewFactory {
 		
 		return $uiComponent;
 	}
+
 
 }
