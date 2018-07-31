@@ -5363,7 +5363,6 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
 
 .rocket-impl-entry > .rocket-impl-summary .rocket-impl-status {
   color: #b90f00;
-  padding: 0.5rem 1rem;
 }
 
 .rocket-impl-content-type > .fa {

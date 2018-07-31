@@ -6050,7 +6050,7 @@ var Rocket;
                     this.jQuery.remove();
                 }
                 changed() {
-                    let divJq = this.jqSummary.children(".rocket-impl-content").children("div:last");
+                    let divJq = this.jqSummary.children(".rocket-impl-content");
                     divJq.empty();
                     divJq.append($("<div />", { "class": "rocket-impl-status", "text": this.jQuery.data("rocket-impl-changed-text") }));
                 }
