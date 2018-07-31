@@ -1,4 +1,7 @@
 <?php
+	use n2n\impl\web\ui\view\html\HtmlView;
+	use n2n\web\ui\view\View;
+
 	/*
 	 * Copyright (c) 2012-2016, Hofmänner New Media.
 	 * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -19,6 +22,8 @@
 	 * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
 	 * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
 	 */
+	$view = HtmlView::view($this);
+	$html = HtmlView::html($view);
 
 	$view->useTemplate('~\core\view\template.html',
 			array('title' => $view->getL10nText('about_title')));
