@@ -24,13 +24,17 @@
 	use rocket\user\model\LoginContext;
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use n2n\core\N2N;
+use rocket\user\model\RocketUserDao;
 	
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
 	$formHtml = HtmlView::formHtml($this);
 	
-	$loginContext = $view->getParam('loginContext'); 
+	$loginContext = $view->getParam('loginContext');
 	$view->assert($loginContext instanceof LoginContext);
+	
+	$userDao = $view->lookup(RocketUserDao::class);
+	$view->assert($userDao instanceof RocketUserDao);
 	
 	$html->meta()->addMeta(array('name' => 'viewport', 'content' => 'width=device-width, initial-scale=1.0'));
 	$html->meta()->addMeta(array('name' => 'robots', 'content' => 'noindex'));
@@ -73,6 +77,13 @@
 					</div>
 				<?php $formHtml->close() ?>
 			</div>
+			
+			<?php if (N2N::isDevelopmentModeOn()): ?>
+				<h2>Dev Login</h2>
+				<?php foreach ($userDao->getUsers() as $user): ?>
+					<div><?php $html->linkToController(['devlogin', $user->getId()], $user->getNick())?></div>
+				<?php endforeach ?>
+			<?php endif ?>
 		</div>
 	<?php $html->bodyEnd()?>
 </html>
