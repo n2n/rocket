@@ -41,6 +41,8 @@ use n2n\web\http\controller\impl\ScrRegistry;
 use n2n\web\http\controller\impl\ScrBaseController;
 use n2n\l10n\MessageContainer;
 use n2n\impl\web\ui\view\jhtml\JhtmlResponse;
+use n2n\core\N2N;
+use n2n\web\http\NoHttpRefererGivenException;
 
 class RocketController extends ControllerAdapter {
 	const NAME = 'rocket';
@@ -56,6 +58,20 @@ class RocketController extends ControllerAdapter {
 		$this->getControllerContext()->setName(self::NAME);
 		$scrRegistry->setBaseUrl($this->getHttpContext()->getControllerContextPath($this->getControllerContext())
 				->ext('scr')->toUrl());
+	}
+	
+	public function doDevLogin($userId) {
+		if (!N2N::isDevelopmentModeOn()) {
+			throw new ForbiddenException();
+		}
+		
+		$this->loginContext->loginByUserId($userId);
+		
+		try {
+			$this->redirectToReferer();
+		} catch (NoHttpRefererGivenException $e) {
+			$this->redirectToController();
+		}
 	}
 	
 	private function verifyUser() {

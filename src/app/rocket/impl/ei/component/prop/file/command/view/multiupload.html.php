@@ -43,7 +43,7 @@
 	$html->meta()->addJs('impl/js/multiupload/multiupload.js');
 	$html->meta()->addCss('impl/css/multiupload/multiupload.css');
 ?>
-<div class="rocket-panel">
+<div class="rocket-content">
 	<h3><?php $html->text('ei_impl_multi_upload_label', array('plural_label' => 
 					$eiuFrame->getGenericPluralLabel())) ?></h3>
 	<form id="rocket-multi-upload-form" method="post" 
@@ -60,11 +60,13 @@
 	</form>
 </div>
 <div class="rocket-zone-commands">
-	<a id="rocket-multi-upload-submit" href="#" class="btn btn-primary">
-		<i class="<?php $view->out(IconType::ICON_UPLOAD)?>"></i>
-		<span><?php $html->text('ei_impl_multi_upload_start_label')?></span>
-	</a>
-	<?php $html->link($eiuFrame->getEiFrame()->getOverviewUrl($httpContext),
-			new n2n\web\ui\Raw('<i class="fa fa-times-circle"></i><span>' . $html->getText('common_cancel_label') . '</span>'),
-					array('class' => 'btn btn-secondary')) ?>
+	<div>
+		<a id="rocket-multi-upload-submit" href="#" class="btn btn-primary">
+			<i class="<?php $view->out(IconType::ICON_UPLOAD)?>"></i>
+			<span><?php $html->text('ei_impl_multi_upload_start_label')?></span>
+		</a>
+		<?php $html->link($eiuFrame->getEiFrame()->getOverviewUrl($httpContext),
+				new n2n\web\ui\Raw('<i class="fa fa-times-circle"></i><span>' . $html->getText('common_cancel_label') . '</span>'),
+						array('class' => 'btn btn-secondary')) ?>
+	</div>
 </div>

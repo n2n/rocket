@@ -76,6 +76,21 @@ class LoginContext implements RequestScoped, Dispatchable {
 		
 	}
 	
+	/**
+	 * @param int $userId
+	 * @return boolean
+	 */
+	public function loginByUserId($userId) {
+		$user = $this->userDao->getUserById($userId);
+		
+		if ($user === null) {
+			return false;
+		}
+		
+		$this->currentUserId = $user->getId();
+		return true;
+	}
+	
 	public function login(MessageContainer $messageContainer) {
 		if ($this->userDao->getCountOfLatestFailedLoginsForCurrentIp() >= self::MAX_LOGIN_ATTEMPTIONS) {
 			$messageContainer->addErrorCode('user_max_attemptions_reached_err');
