@@ -1,4 +1,4 @@
-/*
+	/*
  * Copyright (c) 2012-2016, Hofmänner New Media.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
@@ -28,10 +28,28 @@ jQuery(document).ready(function($){
 			this.jqElemFileList = null;
 			this.jqElemDropZone =  null;
 			this.jqElemAUpload = null;
-			this.fileData = new Object();
+			this.fileData = new Array();
 			this.i = 0;
+			this.order = jqElemForm.data("order");
 			
 			(function(_obj) {
+				this.orderData = function() {
+					if (_obj.order === "file-name-asc") {
+	        			_obj.fileData.sort(function(a, b) {
+	        				return (a.files[0].name < b.files[0].name) ? -1 : 1;
+	        			});
+	        		} else if (_obj.order === "file-name-desc") {
+	        			_obj.fileData.sort(function(a, b) {
+	        				return (a.files[0].name < b.files[0].name) ? 1 : -1;
+	        			});
+	        		}
+					
+				}
+				this.uploadNext = function() {
+					if (_obj.fileData.length === 0) return;
+					
+					_obj.fileData.shift().submit()
+				};
 				this.jqElemFileList = jqElemForm.children("ul:first");
 				this.jqElemDropZone =  jqElemForm.children("#rocket-multi-upload-drop");
 				this.jqElemAUpload = this.jqElemDropZone.children("a").click(function() {
@@ -42,11 +60,17 @@ jQuery(document).ready(function($){
 				jqElemForm.fileupload({
 			        // This element will accept file drag/drop uploading
 			        dropZone: _obj.jqElemDropZone,
-			        drop: function(e, data) {
-			        	data.files.sort(function(a, b) {
-			        		return (a.name < b.name) ? -1 : 1;
-			        	});
-			        },
+//			        drop: function(e, data) {
+//		        		if (_obj.order === "file-name-asc") {
+//		        			data.files.sort(function(a, b) {
+//		        				return (a.name < b.name) ? -1 : 1;
+//		        			});
+//		        		} else if (_obj.order === "file-name-desc") {
+//		        			data.files.sort(function(a, b) {
+//		        				return (a.name < b.name) ? 1 : -1;
+//		        			});
+//		        		}
+//			        },
 			        // This function is called when a file is added to the queue;
 			        // either via the browse button, or via drag/drop:
 			        add: function (e, data) {
@@ -64,19 +88,45 @@ jQuery(document).ready(function($){
 			        			jqElemLi = $("<li/>", {"class": "working"})
 				        			.append(jqElemInput).append(jqElemText).append(jqElemAction);
 			                	file = data.files[0];
-			            data.context = jqElemLi.appendTo(_obj.jqElemFileList);
-			            jqElemText.text(file.name);
-			            if (file.type.split("/").shift() !== "image") {
-			            	data.context.addClass("error");
-			            	jqElemText.append($("<i/>", {"text": "Es sind nur Bilder für den Upload erlaubt"}))
-			            	setTimeout(function() {
-			            		jqElemAction.click();
-			            	}, 1000);
-			            } else {
-			            	jqElemText.append($("<i/>", {"text": _obj.formatFileSize(file.size)}))
-			            	  _obj.fileData[++_obj.i] = data;
-			            	jqElemLi.data('key', _obj.i)
+			                	appended = false;
+			            data.context = jqElemLi;
+			            
+			            _obj.jqElemFileList.children("li").each(function() {
+			            	if (appended) return;
+			            	
+			            	var jqElemTmp = $(this);
+			            	if (_obj.order === "file-name-desc") {
+			            		if (file.name > jqElemTmp.data("name")) {
+			            			jqElemLi.insertBefore(jqElemTmp)
+				            		appended = true;
+			            		}
+			            		return;
+			            	}
+			            	
+			            	if (file.name < jqElemTmp.data("name")) {
+		            			jqElemLi.insertBefore(jqElemTmp)
+			            		appended = true;
+		            		}
+			            });
+			            
+			            if (!appended) {
+			            	 _obj.jqElemFileList.append(jqElemLi);
 			            }
+			            
+			            
+			            jqElemText.text(file.name);
+//			            if (file.type.split("/").shift() !== "image") {
+//			            	data.context.addClass("error");
+//			            	jqElemText.append($("<i/>", {"text": "Es sind nur Bilder für den Upload erlaubt"}))
+//			            	setTimeout(function() {
+//			            		jqElemAction.click();
+//			            	}, 1000);
+//			            } else {
+			            	jqElemText.append($("<i/>", {"text": _obj.formatFileSize(file.size)}))
+			            	_obj.fileData.push(data);
+//			            	jqElemLi.data('key', _obj.i)
+			            	jqElemLi.data('name', file.name)
+//			            }
 			            // Initialize the knob plugin
 			            jqElemInput.knob();
 			            // Listen for clicks on the cancel icon
@@ -98,25 +148,40 @@ jQuery(document).ready(function($){
 
 			            if (progress == 100){
 			                data.context.removeClass('working');
-			                delete _obj.fileData[data.context.data('key')];
+			                //delete _obj.fileData[data.context.data('key')];
 			                setTimeout(function() {
 			                	_obj.removeElem(data.context);
 			                }, 2000);
+			                
+			                
+				            if (_obj.order) {
+				            	_obj.uploadNext();
+				            }
 			            }
 			        },
 			        fail: function(e, data){
 			            // Something has gone wrong!
 			            data.context.addClass('error');
-			            delete _obj.fileData[data.context.data('key')];
+			            //delete _obj.fileData[data.context.data('key')];
 			            setTimeout(function() {
 			        		_obj.removeElem(data.context);
 			        	}, 2000);
+			            
+			            if (_obj.order) {
+			            	_obj.uploadNext();
+			            }
 			        }
 			    });
 				jqElemASubmit.click(function(e) {
 					e.preventDefault();
-					for (var i in _obj.fileData) {
-						_obj.fileData[i].submit();
+					_obj.orderData();
+					
+					if (_obj.order) {
+						_obj.uploadNext();
+					} else {
+						_obj.fileData.forEach(function(fileDataItem) {
+							fileDataItem.submit();
+						});
 					}
 				});
 			}).call(this, this);
@@ -139,7 +204,7 @@ jQuery(document).ready(function($){
 	    }
 		
 		MultiUpload.prototype.removeElem = function(jqElem) {
-			jqElem.fadeOut(function(){
+			jqElem.fadeOut('fast', function(){
 				jqElem.remove();
             });
 		};

@@ -26,12 +26,18 @@ use n2n\l10n\DynamicTextCollection;
 use rocket\core\model\Breadcrumb;
 use rocket\impl\ei\component\prop\file\FileEiProp;
 use rocket\ei\util\model\EiuCtrl;
-use rocket\ei\EiPropPath;
 use n2n\io\managed\impl\FileFactory;
 use n2n\web\http\BadRequestException;
+use n2n\reflection\ArgUtils;
 
 class MultiUploadEiController extends ControllerAdapter {
+	
+	const ORDER_NONE = null;
+	const ORDER_FILE_NAME_ASC = 'file-name-asc';
+	const ORDER_FILE_NAME_DESC = 'file-name-desc';
+	
 	private $fileEiProp;
+	private $order;
 	
 	/**
 	 * @var \rocket\impl\ei\component\prop\file\MultiUploadFileEiProp
@@ -40,11 +46,15 @@ class MultiUploadEiController extends ControllerAdapter {
 		$this->fileEiProp = $fileEiProp;
 	}
 	
+	public function setOrder(string $order = null) {
+		ArgUtils::valEnum($order, self::getOrders());
+		$this->order = $order;
+	}
 	
 	public function index(EiuCtrl $eiuCtrl, DynamicTextCollection $dtc) {
 		$eiuCtrl->applyCommonBreadcrumbs(null, $dtc->translate('ei_impl_multi_upload_label'));
 	
-		$this->forward('..\view\multiupload.html', array('eiuFrame' => $eiuCtrl->frame()));
+		$this->forward('..\view\multiupload.html', array('eiuFrame' => $eiuCtrl->frame(), 'order' => $this->order));
 	}
 	
 	public function doUpload(EiuCtrl $eiuCtrl) {
@@ -82,4 +92,10 @@ class MultiUploadEiController extends ControllerAdapter {
 		$this->rocketState->addBreadcrumb(new Breadcrumb($this->getRequest()->getCurrentControllerContextPath(), 
 				$dtc->translate('ei_impl_multi_upload_label')));
 	}
+	
+	public static function getOrders() {
+		return [self::ORDER_NONE, self::ORDER_FILE_NAME_ASC, self::ORDER_FILE_NAME_DESC];
+	}
 }
+
+
