@@ -45,6 +45,7 @@ use rocket\ei\manage\gui\ui\DisplayItem;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\GuiPropFork;
 use rocket\ei\manage\critmod\filter\FilterProp;
+use rocket\ei\manage\security\filter\SecurityFilterProp;
 
 abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter implements GuiProp, DraftableEiProp, 
 		DraftProperty, FilterableEiProp {
@@ -165,7 +166,7 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 	}
 	
 
-	public function buildSecurityFilterProp(N2nContext $n2nContext) {
+	public function buildSecurityFilterProp(Eiu $eiu): ?SecurityFilterProp {
 		return null;
 	}
 	

@@ -22,7 +22,6 @@
 namespace rocket\impl\ei\component\prop\relation;
 
 use rocket\impl\ei\component\prop\relation\model\relation\SelectEiPropRelation;
-use rocket\ei\manage\frame\EiFrame;
 use rocket\impl\ei\component\prop\relation\model\ManyToOneGuiField;
 use rocket\ei\manage\draft\stmt\FetchDraftStmtBuilder;
 use rocket\ei\manage\draft\stmt\PersistDraftStmtBuilder;

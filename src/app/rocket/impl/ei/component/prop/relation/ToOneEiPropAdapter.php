@@ -26,7 +26,6 @@ use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\component\prop\DraftableEiProp;
 use rocket\ei\manage\draft\DraftProperty;
 use rocket\ei\manage\EiObject;
-use n2n\core\container\N2nContext;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\ArgUtils;
@@ -34,6 +33,7 @@ use rocket\impl\ei\component\prop\adapter\DisplaySettings;
 use rocket\ei\util\model\Eiu;
 use rocket\impl\ei\component\prop\relation\model\ToOneEiField;
 use rocket\ei\manage\gui\GuiPropFork;
+use rocket\ei\manage\security\filter\SecurityFilterProp;
 
 abstract class ToOneEiPropAdapter extends SimpleRelationEiPropAdapter implements GuiProp, DraftableEiProp, 
 		DraftProperty {
@@ -96,7 +96,7 @@ abstract class ToOneEiPropAdapter extends SimpleRelationEiPropAdapter implements
 		return true;
 	}
 	
-	public function buildSecurityFilterProp(N2nContext $n2nContext) {		
+	public function buildSecurityFilterProp(Eiu $eiu): ?SecurityFilterProp {		
 		return null;
 // 		$targetEiMask = $this->eiPropRelation->getTargetEiMask();
 		
