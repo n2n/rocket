@@ -76,6 +76,25 @@ class SecurityFactory {
 		return $privilegeDefinition;
 	}
 	
+	
+	public function createSecurityFilterDefinition(N2nContext $n2nContext): SecurityFilterDefinition {
+		$securityFilterDefinition = new SecurityFilterDefinition();
+		
+		foreach ($this->eiPropCollection as $id => $eiProp) {
+			if (!($eiProp instanceof SecurityEiProp)) continue;
+			
+			$eiEntryFilterProp = $eiProp->buildSecurityFilterProp($n2nContext);
+			ArgUtils::valTypeReturn($eiEntryFilterProp, SecurityFilterProp::class, $eiProp,
+					'buildSecurityFilterProp', true);
+			
+			if ($eiEntryFilterProp !== null) {
+				$securityFilterDefinition->putSecurityFilterProp(EiPropPath::from($eiProp), $eiEntryFilterProp);
+			}
+		}
+		
+		return $securityFilterDefinition;
+	}
+	
 // 	public static function createSortModel(EiType $eiType, N2nContext $n2nContext) {
 // 		return self::createSortModelInstance($eiType, $n2nContext);
 // 	}

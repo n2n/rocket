@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model\relation;
 
-use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\EiObject;
 use rocket\ei\EiType;
 use rocket\ei\mask\EiMask;

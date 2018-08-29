@@ -34,6 +34,8 @@ use rocket\ei\mask\EiMask;
 use rocket\ei\manage\draft\DraftManager;
 use rocket\ei\security\EiPermissionManager;
 use rocket\ei\manage\veto\EiLifecycleMonitor;
+use rocket\ei\manage\frame\EiFrameFactory;
+use rocket\ei\manage\frame\EiFrame;
 
 class ManageState implements RequestScoped {
 	private $n2nContext;
@@ -150,7 +152,7 @@ class ManageState implements RequestScoped {
 	 * 
 	 * @param EiType $eiType
 	 * @throws ManageException
-	 * @return \rocket\ei\manage\EiFrame
+	 * @return \rocket\ei\manage\frame\EiFrame
 	 */
 	public function peakEiFrame(EiType $eiType = null): EiFrame {
 		if (!sizeof($this->eiFrames)) {

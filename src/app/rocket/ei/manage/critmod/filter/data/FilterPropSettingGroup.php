@@ -25,30 +25,30 @@ use n2n\util\col\GenericArrayObject;
 use n2n\util\config\Attributes;
 use n2n\reflection\property\TypeConstraint;
 
-class FilterGroupData extends FilterDataElement {
+class FilterPropSettingGroup {
 	const ATTR_USE_AND_KEY = 'useAnd';
 	const ATTR_FILTER_ITEMS_KEY = 'items';
 	const ATTR_FILTER_GROUPS_KEY = 'groups';
 
-	private $filterItemDatas = array();
-	private $filterGroupDatas = array();
+	private $filterPropSettings = array();
+	private $filterPropSettingGroups = array();
 	private $andUsed = true;
 
 	public function __construct() {
-		$this->filterItemDatas = new GenericArrayObject(null, FilterItemData::class);
-		$this->filterGroupDatas = new GenericArrayObject(null, FilterGroupData::class);
+		$this->filterPropSettings = new GenericArrayObject(null, FilterPropSetting::class);
+		$this->filterPropSettingGroups = new GenericArrayObject(null, FilterPropSettingGroup::class);
 	}
 	
-	public function getFilterItemDatas(): \ArrayObject {
-		return $this->filterItemDatas;
+	public function getFilterPropSettings(): \ArrayObject {
+		return $this->filterPropSettings;
 	}
 	
-	public function getFilterGroupDatas(): \ArrayObject {
-		return $this->filterGroupDatas;
+	public function getFilterPropSettingGroups(): \ArrayObject {
+		return $this->filterPropSettingGroups;
 	}
 
 	public function isEmpty() {
-		return empty($this->filterItemDatas) && empty($this->filterGroupDatas);
+		return empty($this->filterPropSettings) && empty($this->filterPropSettingGroups);
 	}
 	
 	public function isAndUsed(): bool {
@@ -61,12 +61,12 @@ class FilterGroupData extends FilterDataElement {
 	
 	public function toAttrs(): array {
 		$filterItemsAttrs = array();
-		foreach ($this->filterItemDatas as $filterItemData) {
+		foreach ($this->filterPropSettings as $filterItemData) {
 			$filterItemsAttrs[] = $filterItemData->toAttrs();
 		}
 		
 		$filterGroupsAttrs = array();
-		foreach ($this->filterGroupDatas as $filterGroupData) {
+		foreach ($this->filterPropSettingGroups as $filterGroupData) {
 			$filterGroupsAttrs[] = $filterGroupData->toAttrs();
 		}
 
@@ -76,21 +76,21 @@ class FilterGroupData extends FilterDataElement {
 				self::ATTR_FILTER_GROUPS_KEY => $filterGroupsAttrs);
 	}
 
-	public static function create(Attributes $attributes): FilterGroupData {
-		$fgd = new FilterGroupData();
+	public static function create(Attributes $attributes): FilterPropSettingGroup {
+		$fgd = new FilterPropSettingGroup();
 		$fgd->setAndUsed($attributes->getBool(self::ATTR_USE_AND_KEY, false, true));
 
 		
 		$filterItemDatas = $fgd->getFilterItemDatas();
 		foreach ($attributes->getArray(self::ATTR_FILTER_ITEMS_KEY, false, array(), 
 				TypeConstraint::createArrayLike('array')) as $filterItemAttrs) {
-			$filterItemDatas->append(FilterItemData::create(new Attributes($filterItemAttrs)));
+			$filterItemDatas->append(FilterPropSetting::create(new Attributes($filterItemAttrs)));
 		}
 		
 		$filterGroupDatas = $fgd->getFilterItemDatas();
 		foreach ($attributes->getArray(self::ATTR_FILTER_GROUPS_KEY, false, array(), 
 				TypeConstraint::createArrayLike('array')) as $filterGroupAttrs) {
-			$filterItemDatas->append(FilterGroupData::create(new Attributes($filterGroupAttrs)));
+			$filterItemDatas->append(FilterPropSettingGroup::create(new Attributes($filterGroupAttrs)));
 		}
 
 		return $fgd;

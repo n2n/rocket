@@ -24,7 +24,7 @@ namespace rocket\impl\ei\component\command\common;
 use n2n\core\N2N;
 use n2n\l10n\DynamicTextCollection;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\frame\EiFrame;
 use n2n\l10n\N2nLocale;
 use rocket\ei\component\command\control\PartialControlComponent;
 use rocket\ei\manage\control\EntryControlComponent;

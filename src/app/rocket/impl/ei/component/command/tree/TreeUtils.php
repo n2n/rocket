@@ -27,7 +27,7 @@
 // use rocket\ei\component\command\EiCommand;
 // use rocket\spec\core\IncompatibleSpecException;
 // use rocket\ei\EiType;
-// use rocket\ei\manage\EiFrame;
+// use rocket\ei\manage\frame\EiFrame;
 
 // class TreeUtils {
 // 	public static function findTreeField(EiType $eiType, &$treeLeftEiProp = null, 

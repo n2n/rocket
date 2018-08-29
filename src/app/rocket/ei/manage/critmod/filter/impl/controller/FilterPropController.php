@@ -26,18 +26,18 @@ use n2n\web\http\controller\ParamQuery;
 use n2n\web\http\PageNotFoundException;
 use n2n\web\dispatch\map\InvalidPropertyExpressionException;
 use n2n\web\dispatch\map\PropertyPath;
-use rocket\ei\manage\critmod\filter\impl\form\FilterFieldItemForm;
-use rocket\ei\manage\critmod\filter\data\FilterItemData;
+use rocket\ei\manage\critmod\filter\impl\form\FilterPropItemForm;
+use rocket\ei\manage\critmod\filter\data\FilterPropSetting;
 use n2n\util\config\Attributes;
 use rocket\ei\manage\critmod\filter\impl\form\FilterGroupForm;
-use rocket\ei\manage\critmod\filter\data\FilterGroupData;
+use rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup;
 use n2n\util\uri\Url;
 use rocket\ei\manage\critmod\filter\FilterDefinition;
 use rocket\ei\manage\ManageState;
-use rocket\ei\manage\critmod\filter\UnknownFilterFieldException;
+use rocket\ei\manage\critmod\filter\UnknownFilterPropException;
 use n2n\impl\web\ui\view\jhtml\JhtmlResponse;
 
-class FilterFieldController extends ControllerAdapter  {
+class FilterPropController extends ControllerAdapter  {
 	private $eiFrame;
 	
 	public function prepare(ManageState $manageState) {
@@ -57,29 +57,29 @@ class FilterFieldController extends ControllerAdapter  {
 		}
 	}
 	
-	public function doSimple(ParamQuery $filterFieldId, ParamQuery $propertyPath) {
+	public function doSimple(ParamQuery $filterPropId, ParamQuery $propertyPath) {
 		$propertyPath = $this->buildPropertyPath((string) $propertyPath);
-		$filterFieldId = (string) $filterFieldId;
+		$filterPropId = (string) $filterPropId;
 		
 		$eiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
-		$filterDefinition = $eiMask->getEiEngine()->createManagedFilterDefinition($this->eiFrame);
+		$filterDefinition = $eiMask->getEiEngine()->createFilterDefinition($this->eiFrame);
 	
-		$filterFieldItemForm = null;
+		$filterPropItemForm = null;
 		try {
-			$filterFieldItemForm = new FilterFieldItemForm(new FilterItemData($filterFieldId, new Attributes()),
+			$filterPropItemForm = new FilterPropItemForm(new FilterPropSetting($filterPropId, new Attributes()),
 					$filterDefinition);
-		} catch (UnknownFilterFieldException $e) {
+		} catch (UnknownFilterPropException $e) {
 			throw new PageNotFoundException(null, 0, $e);
 		}
 	
-		$this->send(JhtmlResponse::view($this->createView('..\view\pseudoFilterFieldItemForm.html', array(
-				'filterFieldItemForm' => $filterFieldItemForm, 'propertyPath' => $propertyPath))));
+		$this->send(JhtmlResponse::view($this->createView('..\view\pseudoFilterPropItemForm.html', array(
+				'filterPropItemForm' => $filterPropItemForm, 'propertyPath' => $propertyPath))));
 	}
 	
 	public function doGroup(ParamQuery $propertyPath) {
 		$propertyPath = $this->buildPropertyPath((string) $propertyPath);
 	
-		$filterGroupForm = new FilterGroupForm(new FilterGroupData(), new FilterDefinition());
+		$filterGroupForm = new FilterGroupForm(new FilterPropSettingGroup(), new FilterDefinition());
 	
 		$this->send(JhtmlResponse::view($this->createView(
 				'..\view\pseudoFilterGroupForm.html', 

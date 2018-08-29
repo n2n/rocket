@@ -37,7 +37,7 @@ use rocket\ei\manage\critmod\sort\SortData;
 use n2n\persistence\orm\util\NestedSetStrategy;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\util\config\InvalidAttributeException;
-use rocket\ei\manage\critmod\filter\data\FilterGroupData;
+use rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup;
 use rocket\ei\manage\gui\ui\DisplayItem;
 use n2n\util\StringUtils;
 use rocket\spec\TypePath;
@@ -181,7 +181,7 @@ class SpecExtractor {
 				RawDef::EI_DEF_ENTRY_ADD_COMMAND_ID_KEY, false));	
 		
 		if (null !== ($filterData = $eiMaskAttributes->getArray(RawDef::EI_DEF_FILTER_DATA_KEY, false, null))) {
-			$eiMaskExtraction->setFilterGroupData(FilterGroupData::create(new Attributes($filterData)));
+			$eiMaskExtraction->setFilterPropSettingGroup(FilterPropSettingGroup::create(new Attributes($filterData)));
 		}
 		
 		if (null !== ($defaultSortData = $eiMaskAttributes->getScalarArray(RawDef::EI_DEF_DEFAULT_SORT_KEY, false, null))) {

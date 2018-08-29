@@ -22,7 +22,7 @@
 
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use n2n\web\dispatch\map\PropertyPath;
-	use rocket\ei\manage\critmod\filter\impl\form\FilterFieldItemForm;
+	use rocket\ei\manage\critmod\filter\impl\form\FilterPropItemForm;
 	
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -31,15 +31,15 @@
 	$propertyPath = $view->getParam('propertyPath');
 	$view->assert($propertyPath instanceof PropertyPath);
 	
-	$filterFieldItemForm = $view->getParam('filterFieldItemForm');
-	$view->assert($filterFieldItemForm instanceof FilterFieldItemForm);
+	$filterPropItemForm = $view->getParam('filterPropItemForm');
+	$view->assert($filterPropItemForm instanceof FilterPropItemForm);
 ?>
 
-<?php $formHtml->openPseudo($filterFieldItemForm, $propertyPath) ?>
+<?php $formHtml->openPseudo($filterPropItemForm, $propertyPath) ?>
 	<li class="rocket-filter-field-item">
 		<?php $formHtml->optionalObjectEnabledHidden(null) ?>
 		<div class="rocket-filter-field-id">
-			<?php $formHtml->input('filterFieldId') ?>
+			<?php $formHtml->input('filterPropId') ?>
 		</div>
 		<?php $formHtml->meta()->objectProps('magForm', function () use ($view, $formHtml) { ?>
 			<?php $formHtml->magOpen('div')?>

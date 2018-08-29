@@ -137,7 +137,7 @@ class SpecRawer {
 			$rawData[RawDef::EI_DEF_PREVIEW_CONTROLLER_LOOKUP_ID_KEY] = $previewControllerLookupId;
 		}
 		
-		if (null !== ($filterData = $extraction->getFilterGroupData())) {
+		if (null !== ($filterData = $extraction->getFilterPropSettingGroup())) {
 			$rawData[RawDef::EI_DEF_FILTER_DATA_KEY] = $filterData->toAttrs();
 		}
 		

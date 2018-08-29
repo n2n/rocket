@@ -31,7 +31,7 @@ use rocket\ei\manage\mapping\impl\Writable;
 use rocket\ei\manage\EiObject;
 use rocket\impl\ei\component\prop\relation\conf\RelationEiPropConfigurator;
 use n2n\core\container\N2nContext;
-use rocket\ei\manage\critmod\filter\EiEntryFilterField;
+use rocket\ei\manage\security\filter\SecurityFilterProp;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\impl\ei\component\prop\adapter\ObjectPropertyEiPropAdapter;
 use rocket\ei\manage\mapping\impl\Copyable;
@@ -84,7 +84,7 @@ abstract class RelationEiPropAdapter extends ObjectPropertyEiPropAdapter impleme
 		return false;
 	}
 	
-	public function createEiEntryFilterField(N2nContext $n2nContext): EiEntryFilterField {
+	public function createSecurityFilterProp(N2nContext $n2nContext): SecurityFilterProp {
 		throw new IllegalStateException();	
 	}
 	

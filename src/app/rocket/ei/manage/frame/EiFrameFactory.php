@@ -19,9 +19,34 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\critmod\filter\data;
+namespace rocket\ei\manage\frame;
 
-abstract class FilterDataElement {
+use rocket\ei\manage\ManageState;
+use rocket\ei\mask\EiMask;
+use n2n\web\http\controller\ControllerContext;
 
-	public abstract function toAttrs(): array;
+class EiFrameFactory {
+	private $contextEiMask;
+	
+	public function __construct(EiMask $contextEiMask) {
+		$this->contextEiMask = $contextEiMask;		
+	}
+	
+	public function create(ControllerContext $controllerContext, ManageState $manageState,  
+			EiFrame $parentEiFrame = null) {
+		$eiFrame = new EiFrame($this->contextEiMask->getEiEngine(), $manageState);
+		$eiFrame->setControllerContext($controllerContext);
+		$eiFrame->setParent($parentEiFrame);
+		
+		$this->contextEiMask->setupEiFrame($eiFrame);
+
+// 		if ($pseudo) {
+// 			$childEiFrame->setOverviewPathExt(Path::create($this->getOverviewPathExt()));
+// 			$childEiFrame->setDetailPathExt(Path::create($this->getDetailPathExt()));
+// 		}
+		
+		return $eiFrame;
+	}
+	
+	
 }

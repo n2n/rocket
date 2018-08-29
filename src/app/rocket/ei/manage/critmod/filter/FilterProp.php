@@ -22,34 +22,30 @@
 namespace rocket\ei\manage\critmod\filter;
 
 use n2n\util\config\Attributes;
-use n2n\l10n\N2nLocale;
 use n2n\web\dispatch\mag\MagDispatchable;
 
-interface FilterField {
+interface FilterProp {
+	
 	/**
 	 * @return string
 	 */
-	public function getLabel(N2nLocale $n2nLocale): string;
+	function getLabel(): string;
 	
 	/**
-	 * No Exception should be thrown if Attributes are invalid. Use of {@link \n2n\util\config\LenientAttributeReader}
-	 * recommended.
-	 * @return \n2n\web\dispatch\mag\MagCollection 
+	 * @param Attributes $attributes
+	 * @return ComparatorConstraint
 	 */
-	public function createMagDispatchable(Attributes $attributes): MagDispatchable;
-
+	function createComparatorConstraint(Attributes $attributes): ComparatorConstraint;
+	
+	/**
+	 * @param Attributes $attributes
+	 * @return MagDispatchable
+	 */
+	function createMagDispatchable(Attributes $attributes): MagDispatchable;
+	
 	/**
 	 * @param MagDispatchable $magDispatchable
 	 * @return Attributes
 	 */
-	public function buildAttributes(MagDispatchable $magDispatchable): Attributes;
-	
-	/**
-	 * No Exception should be thrown if Attributes are invalid. Use of {@link \n2n\util\config\LenientAttributeReader}
-	 * recommended.
-	 * @param Attributes $attributes
-	 * @return ComparatorConstraint
-	 * @throws \n2n\util\config\InvalidAttributeException
-	 */
-	public function createComparatorConstraint(Attributes $attributes): ComparatorConstraint;
+	function buildAttributes(MagDispatchable $magDispatchable): Attributes;
 }

@@ -38,7 +38,7 @@ use rocket\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
 use n2n\reflection\CastUtils;
 use rocket\impl\ei\component\prop\relation\model\relation\SelectEiPropRelation;
 use rocket\ei\manage\gui\ui\DisplayItem;
-use rocket\ei\manage\critmod\CriteriaConstraint;
+use rocket\ei\manage\frame\CriteriaConstraint;
 use rocket\ei\manage\gui\GuiField;
 
 abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {

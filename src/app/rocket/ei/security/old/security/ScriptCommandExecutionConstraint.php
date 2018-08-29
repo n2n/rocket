@@ -79,7 +79,7 @@
 // 	}
 
 // 	/* (non-PHPdoc)
-// 	 * @see \rocket\ei\manage\critmod\CriteriaConstraint::applyToCriteria()
+// 	 * @see \rocket\ei\manage\frame\CriteriaConstraint::applyToCriteria()
 // 	 */
 // 	public function applyToCriteria(Criteria $criteria, CriteriaProperty $alias) {
 // 		$comparatorConstraints = array();

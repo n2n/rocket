@@ -19,12 +19,33 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\critmod\filter;
+namespace rocket\ei\manage\frame;
 
-use rocket\ei\manage\mapping\EiFieldConstraint;
-use n2n\util\config\Attributes;
+use n2n\util\ex\IllegalStateException;
+use rocket\ei\manage\EiObject;
 
-interface EiEntryFilterField extends FilterField {
-
-	public function createEiFieldConstraint(Attributes $attributes): EiFieldConstraint; 
+class EiRelation {
+	private $eiFrame;
+	private $eiObject;
+	
+	public function __construct(EiFrame $eiFrame, EiObject $eiObject = null) {
+		$this->eiFrame = $eiFrame;
+		$this->eiObject = $eiObject;
+	}
+	
+	public function getEiFrame() {
+		return $this->eiFrame;
+	}
+	
+	public function hasEiObject(): bool {
+		return $this->eiObject !== null;
+	}
+	
+	public function getEiObject() {
+		if ($this->eiObject !== null) {
+			return $this->eiObject;
+		}
+		
+		throw new IllegalStateException();
+	}
 }

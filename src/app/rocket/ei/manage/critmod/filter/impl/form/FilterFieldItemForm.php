@@ -23,7 +23,7 @@ namespace rocket\ei\manage\critmod\filter\impl\form;
 
 use n2n\web\dispatch\Dispatchable;
 use n2n\web\dispatch\map\bind\MappingDefinition;
-use rocket\ei\manage\critmod\filter\data\FilterItemData;
+use rocket\ei\manage\critmod\filter\data\FilterPropSetting;
 use rocket\ei\manage\critmod\filter\FilterDefinition;
 use n2n\web\dispatch\map\bind\BindingErrors;
 use n2n\web\dispatch\mag\MagDispatchable;
@@ -32,19 +32,19 @@ use n2n\web\dispatch\DispatchContext;
 use n2n\util\ex\IllegalStateException;
 use n2n\core\container\N2nContext;
 
-class FilterFieldItemForm implements Dispatchable {
+class FilterPropItemForm implements Dispatchable {
 	private $filterItemData;
 	private $filterModel;
 	
-	protected $filterFieldId;
+	protected $filterPropId;
 	protected $magForm;
 	
-	public function __construct(FilterItemData $filterItemData, FilterDefinition $filterDefinition) {
+	public function __construct(FilterPropSetting $filterItemData, FilterDefinition $filterDefinition) {
 		$this->filterItemData = $filterItemData;
 		$this->filterModel = $filterDefinition;
 		
-		$this->filterFieldId = $filterItemData->getFilterFieldId();
-		if ($this->filterFieldId !== null && null !== ($filterItem = $filterDefinition->getFilterFieldById($this->filterFieldId))) {
+		$this->filterPropId = $filterItemData->getFilterPropId();
+		if ($this->filterPropId !== null && null !== ($filterItem = $filterDefinition->getFilterPropById($this->filterPropId))) {
 			$this->magForm = $filterItem->createMagDispatchable($filterItemData->getAttributes());
 		}
 	}
@@ -53,29 +53,29 @@ class FilterFieldItemForm implements Dispatchable {
 			N2nContext $n2nContext) {
 		if (!$md->isDispatched()) return;
 		
-		$filterField = null;
-		if (null !== ($fieldFieldId = $md->getDispatchedValue('filterFieldId'))) {
-			$filterField = $this->filterModel->getFilterFieldById($fieldFieldId);
+		$filterProp = null;
+		if (null !== ($fieldFieldId = $md->getDispatchedValue('filterPropId'))) {
+			$filterProp = $this->filterModel->getFilterPropById($fieldFieldId);
 		}
 		
-		if ($filterField === null) {
-			$be->addError('filterFieldId', 'Invalid filter item.');
+		if ($filterProp === null) {
+			$be->addError('filterPropId', 'Invalid filter item.');
 			return;
 		}
 		
-		$this->magForm = $filterField->createMagDispatchable($this->filterItemData->getAttributes());
+		$this->magForm = $filterProp->createMagDispatchable($this->filterItemData->getAttributes());
 // 		$mr->magForm = $dc->getOrCreateMappingResult($magForm, $n2nContext);
 	}
 	
 	private function _validation() {
 	}
 	
-	public function setFilterFieldId(string $filterFieldId) {
-		$this->filterFieldId = $filterFieldId;
+	public function setFilterPropId(string $filterPropId) {
+		$this->filterPropId = $filterPropId;
 	}
 	
-	public function getFilterFieldId() {
-		return $this->filterFieldId;
+	public function getFilterPropId() {
+		return $this->filterPropId;
 	}
 	
 	public function setMagForm(MagDispatchable $magForm) {
@@ -86,13 +86,13 @@ class FilterFieldItemForm implements Dispatchable {
 		return $this->magForm;
 	}
 	
-	public function buildFilterItemData(): FilterItemData {
-		$filterItem = $this->filterModel->getFilterFieldById($this->filterFieldId);
+	public function buildFilterPropSetting(): FilterPropSetting {
+		$filterItem = $this->filterModel->getFilterPropById($this->filterPropId);
 		if ($filterItem === null) {
 			throw new IllegalStateException();
 		}
 		
-		$this->filterItemData->setFilterFieldId($this->filterFieldId);
+		$this->filterItemData->setFilterPropId($this->filterPropId);
 		$this->filterItemData->setAttributes($filterItem->buildAttributes($this->magForm));
 	
 		return $this->filterItemData;

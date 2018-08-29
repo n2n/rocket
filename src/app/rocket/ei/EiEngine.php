@@ -27,7 +27,7 @@ use rocket\ei\component\SecurityFactory;
 use rocket\ei\manage\draft\stmt\DraftMetaInfo;
 use rocket\ei\component\GuiFactory;
 use rocket\ei\component\EiEntryFactory;
-use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\EiObject;
 use rocket\ei\manage\critmod\filter\FilterDefinition;
 use rocket\ei\manage\critmod\sort\SortDefinition;
@@ -104,12 +104,12 @@ class EiEngine {
 		return $this->critmodFactory;
 	}
 	
-	public function createManagedFilterDefinition(EiFrame $eiFrame): FilterDefinition {
-		return $this->getCritmodFactory()->createManagedFilterDefinition($eiFrame);
+	public function createFilterDefinition(EiFrame $eiFrame): FilterDefinition {
+		return $this->getCritmodFactory()->createFilterDefinition($eiFrame);
 	}
 	
-	public function createFilterDefinition(N2nContext $n2nContext): FilterDefinition {
-		return $this->getCritmodFactory()->createFilterDefinition($n2nContext);
+	public function createGeneralFilterDefinition(N2nContext $n2nContext): FilterDefinition {
+		return $this->getCritmodFactory()->createGeneralFilterDefinition($n2nContext);
 	}
 	
 	public function createEiEntryFilterDefinition(N2nContext $n2nContext) {

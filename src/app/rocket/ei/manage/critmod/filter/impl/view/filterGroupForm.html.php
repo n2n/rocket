@@ -36,12 +36,12 @@
 			array('class' => 'rocket-filter-and-indicator'))?>
 	<ul	class="rocket-filter-field-items" 
 			data-new-form-array-property-path="<?php $html->out($formHtml->meta()
-					->realPropPath($propertyPath->ext('filterFieldItemForms'))) ?>">
-		<?php $formHtml->meta()->arrayProps($propertyPath->ext('filterFieldItemForms'), function () use ($formHtml, $view) { ?>
+					->realPropPath($propertyPath->ext('filterPropItemForms'))) ?>">
+		<?php $formHtml->meta()->arrayProps($propertyPath->ext('filterPropItemForms'), function () use ($formHtml, $view) { ?>
 			<li class="rocket-filter-field-item">
 				<?php $formHtml->optionalObjectEnabledHidden(null) ?>
 				<div class="rocket-filter-field-id">
-					<?php $formHtml->input('filterFieldId') ?>
+					<?php $formHtml->input('filterPropId') ?>
 				</div>
 				<?php $formHtml->meta()->objectProps('magForm', function () use ($formHtml, $view) { ?>
 					<?php $formHtml->magOpen('div')?>

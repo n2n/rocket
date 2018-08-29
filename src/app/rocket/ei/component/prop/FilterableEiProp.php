@@ -21,28 +21,15 @@
  */
 namespace rocket\ei\component\prop;
 
-use rocket\ei\manage\EiFrame;
-use n2n\core\container\N2nContext;
-use rocket\ei\manage\critmod\filter\FilterField;
+use rocket\ei\manage\critmod\filter\FilterProp;
+use rocket\ei\util\model\Eiu;
 
 interface FilterableEiProp extends EiProp {
 	
 	/**
-	 * @param EiFrame $eiFrame
-	 * @return \rocket\ei\manage\critmod\filter\FilterField|null
+	 * @param Eiu $eiu EiFrame {@see Eiu::frame()} is not available if the FilteProp is created for a filter to restrict
+	 * {@see EiTypeExtension}s. 
+	 * @return \rocket\ei\manage\critmod\filter\FilterProp|null
 	 */
-	public function buildManagedFilterField(EiFrame $eiFrame): ?FilterField;
-	
-	/**
-	 * @param N2nContext $n2nContext
-	 * @return \rocket\ei\manage\critmod\filter\FilterField|null
-	 */
-	public function buildFilterField(N2nContext $n2nContext): ?FilterField;
-	
-	/**
-	 * @param N2nContext $n2nContext
-	 * @return \rocket\ei\manage\critmod\filter\EiEntryFilterField|null
-	 */
-	public function buildEiEntryFilterField(N2nContext $n2nContext);
-	
+	public function buildFilterProp(Eiu $eiu): ?FilterProp;	
 }

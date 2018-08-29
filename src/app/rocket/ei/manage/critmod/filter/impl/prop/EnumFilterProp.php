@@ -19,27 +19,21 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\critmod;
+namespace rocket\ei\manage\critmod\filter\impl\prop;
 
-use n2n\persistence\orm\criteria\Criteria;
+use n2n\impl\web\dispatch\mag\model\EnumMag;
+use n2n\web\dispatch\mag\Mag;
 use n2n\persistence\orm\criteria\item\CriteriaProperty;
 
-interface CriteriaConstraint {
-	const TYPE_MANAGE = 1;
-	const TYPE_TMP_FILTER = 2;
-	const TYPE_TMP_SORT = 4;
-	const TYPE_SECURITY = 8;
-	const TYPE_HARD_FILTER = 16;
-	const TYPE_HARD_SORT = 32;
+class EnumFilterProp extends FilterPropAdapter {
+	private $options;
 	
-	const TMP_TYPES = 6;
-	const HARD_TYPES = 48;
-	const ALL_TYPES = 63;
-	const NON_SECURITY_TYPES = 55;
+	public function __construct(CriteriaProperty $criteriaProperty, $label, array $options) {
+		parent::__construct($criteriaProperty, $label, $options);
+		$this->options = $options;
+	}
 	
-	/**
-	 * @param Criteria $criteria
-	 * @param CriteriaProperty $alias
-	 */
-	public function applyToCriteria(Criteria $criteria, CriteriaProperty $alias);
+	public function createValueMag($value): Mag {
+		return new EnumMag('Value', $this->options, $value);
+	}
 }

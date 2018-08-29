@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\relation\model;
 
 use n2n\util\ex\IllegalStateException;
-use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\gui\GuiFieldEditable;
 use rocket\impl\ei\component\prop\relation\model\mag\ToManyMag;
 use n2n\web\dispatch\mag\Mag;

@@ -24,6 +24,13 @@ namespace rocket\ei\manage\critmod\filter;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use n2n\persistence\orm\criteria\item\CriteriaProperty;
 
+/**
+ * Similar to {@see \rocket\ei\manage\frame\CriteriaConstraint}
+ */
 interface ComparatorConstraint {
+	/**
+	 * @param CriteriaComparator $criteriaComparator
+	 * @param CriteriaProperty $alias
+	 */
 	public function applyToCriteriaComparator(CriteriaComparator $criteriaComparator, CriteriaProperty $alias);
 }

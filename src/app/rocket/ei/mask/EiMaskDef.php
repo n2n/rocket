@@ -23,7 +23,7 @@ namespace rocket\ei\mask;
 
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\persistence\orm\criteria\item\CrIt;
-use rocket\ei\manage\critmod\filter\data\FilterGroupData;
+use rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup;
 use rocket\ei\manage\critmod\sort\SortData;
 
 class EiMaskDef {
@@ -38,7 +38,7 @@ class EiMaskDef {
 	private $draftHistorySize;
 	private $identityStringPattern;
 	private $previewControllerLookupId;
-	private $filterGroupData;
+	private $filterPropSettingGroup;
 	private $defaultSortData;
 	
 	/**
@@ -153,17 +153,17 @@ class EiMaskDef {
 // 	}
 
 	/**
-	 * @return \rocket\ei\manage\critmod\filter\data\FilterGroupData
+	 * @return \rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup
 	 */
-	public function getFilterGroupData() {
-		return $this->filterGroupData;
+	public function getFilterPropSettingGroup() {
+		return $this->filterPropSettingGroup;
 	}
 	
 	/**
-	 * @param FilterGroupData $filterGroupData
+	 * @param FilterPropSettingGroup $filterPropSettingGroup
 	 */
-	public function setFilterGroupData(FilterGroupData $filterGroupData = null) {
-		$this->filterGroupData = $filterGroupData;
+	public function setFilterPropSettingGroup(FilterPropSettingGroup $filterPropSettingGroup = null) {
+		$this->filterPropSettingGroup = $filterPropSettingGroup;
 	}
 	
 	/**

@@ -24,7 +24,7 @@ namespace rocket\impl\ei\component\prop\ci\model;
 use rocket\ei\manage\gui\GuiField;
 use rocket\ei\manage\gui\GuiFieldEditable;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
-use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\frame\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\util\model\EiuFrame;
 use n2n\impl\web\ui\view\html\HtmlElement;

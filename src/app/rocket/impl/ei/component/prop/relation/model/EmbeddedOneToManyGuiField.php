@@ -23,7 +23,7 @@ namespace rocket\impl\ei\component\prop\relation\model;
 
 use rocket\ei\manage\gui\GuiField;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\gui\GuiFieldEditable;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\util\model\EiuFrame;

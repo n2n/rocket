@@ -24,21 +24,20 @@ namespace rocket\ei\component;
 use rocket\ei\component\prop\SortableEiProp;
 use rocket\ei\component\prop\EiPropCollection;
 use rocket\ei\component\modificator\EiModificatorCollection;
-use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\critmod\filter\FilterDefinition;
 use rocket\ei\component\prop\FilterableEiProp;
 use n2n\core\container\N2nContext;
 use rocket\ei\EiPropPath;
-use rocket\ei\manage\critmod\filter\EiEntryFilterDefinition;
 use rocket\ei\manage\critmod\sort\SortDefinition;
 use n2n\reflection\ArgUtils;
 use rocket\ei\manage\critmod\sort\SortField;
 use rocket\ei\component\prop\SortableEiPropFork;
 use rocket\ei\manage\critmod\sort\SortFieldFork;
-use rocket\ei\manage\critmod\filter\EiEntryFilterField;
-use rocket\ei\manage\critmod\filter\FilterField;
+use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\component\prop\QuickSearchableEiProp;
 use rocket\ei\manage\critmod\quick\QuickSearchDefinition;
+use rocket\ei\util\model\Eiu;
 
 class CritmodFactory {
 	private $eiPropCollection;
@@ -58,52 +57,38 @@ class CritmodFactory {
 // 				$eiFrame->getN2nContext(), $eiFrame);
 // 	}
 	
-	public function createManagedFilterDefinition(EiFrame $eiFrame): FilterDefinition {
+	public function createFilterDefinition(EiFrame $eiFrame): FilterDefinition {
+		$eiu = new Eiu($eiFrame);
+		
 		$filterDefinition = new FilterDefinition();
 		foreach ($this->eiPropCollection as $id => $eiProp) {
 			if (!($eiProp instanceof FilterableEiProp)) continue;
 			
-			$filterField = $eiProp->buildManagedFilterField($eiFrame);
-			ArgUtils::valTypeReturn($filterField, FilterField::class, $eiProp, 'buildManagedFilterField', true);
+			$filterProp = $eiProp->buildFilterProp($eiu);
+			ArgUtils::valTypeReturn($filterProp, FilterProp::class, $eiProp, 'buildManagedFilterProp', true);
 			
-			if ($filterField !== null) {
-				$filterDefinition->putFilterField($eiProp->getId(), $filterField);
+			if ($filterProp !== null) {
+				$filterDefinition->putFilterProp($eiProp->getId(), $filterProp);
 			}
 		}		
 		return $filterDefinition;
 	}
 	
-	public function createFilterDefinition(N2nContext $n2nContext): FilterDefinition {
+	public function createGeneralFilterDefinition(N2nContext $n2nContext): FilterDefinition {
+		$eiu = new Eiu($n2nContext);
+		
 		$filterDefinition = new FilterDefinition();
 		foreach ($this->eiPropCollection as $id => $eiProp) {
 			if (!($eiProp instanceof FilterableEiProp)) continue;
 			
-			$filterField = $eiProp->buildFilterField($n2nContext);
-			ArgUtils::valTypeReturn($filterField, FilterField::class, $eiProp, 'buildFilterField', true);
+			$filterProp = $eiProp->buildFilterProp($eiu);
+			ArgUtils::valTypeReturn($filterProp, FilterProp::class, $eiProp, 'buildFilterProp', true);
 			
-			if ($filterField !== null) {
-				$filterDefinition->putFilterField($eiProp->getId(), $filterField);
+			if ($filterProp !== null) {
+				$filterDefinition->putFilterProp($eiProp->getId(), $filterProp);
 			}
 		}
 		return $filterDefinition;
-	}
-	
-	public function createEiEntryFilterDefinition(N2nContext $n2nContext): EiEntryFilterDefinition {
-		$eiFieldFilterDefinition = new EiEntryFilterDefinition();
-		
-		foreach ($this->eiPropCollection as $id => $eiProp) {
-			if (!($eiProp instanceof FilterableEiProp)) continue;
-			
-			$eiEntryFilterField = $eiProp->buildEiEntryFilterField($n2nContext);
-			ArgUtils::valTypeReturn($eiEntryFilterField, EiEntryFilterField::class, $eiProp, 
-					'buildEiEntryFilterField', true);
-
-			if ($eiEntryFilterField !== null) {
-				$eiFieldFilterDefinition->putEiEntryFilterField(EiPropPath::from($eiProp), $eiEntryFilterField);
-			}
-		}
-		
-		return $eiFieldFilterDefinition;
 	}
 	
 	public function createManagedSortDefinition(EiFrame $eiFrame): SortDefinition {

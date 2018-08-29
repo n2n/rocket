@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\command\common\model;
 
 use n2n\web\dispatch\Dispatchable;
-use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\util\model\EiuFrame;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\manage\DraftEiObject;

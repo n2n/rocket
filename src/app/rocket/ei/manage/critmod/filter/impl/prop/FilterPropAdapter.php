@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (c) 2012-2016, Hofmänner New Media.
+ * Copyright (c) 2012-2016, HofmÃ¤nner New Media.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This file is part of the n2n module ROCKET.
@@ -16,17 +16,17 @@
  * The following people participated in this project:
  *
  * Andreas von Burg...........:	Architect, Lead Developer, Concept
- * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
- * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
+ * Bert HofmÃ¤nner.............: Idea, Frontend UI, Design, Marketing, Concept
+ * Thomas GÃ¼nther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\critmod\filter\impl\field;
+namespace rocket\ei\manage\critmod\filter\impl\prop;
 
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\util\config\Attributes;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use n2n\l10n\N2nLocale;
-use rocket\ei\manage\critmod\filter\FilterField;
+use rocket\ei\manage\critmod\filter\FilterProp;
 use n2n\l10n\Lstr;
 use rocket\ei\manage\critmod\filter\ComparatorConstraint;
 use n2n\web\dispatch\mag\MagDispatchable;
@@ -36,7 +36,7 @@ use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\ei\manage\critmod\filter\impl\model\PropertyValueComparatorConstraint;
 
-abstract class FilterFieldAdapter implements FilterField {
+abstract class FilterPropAdapter implements FilterProp {
 	const ATTR_OPERATOR_KEY = 'operator';
 	const ATTR_VALUE_KEY = 'value';
 	
@@ -48,8 +48,8 @@ abstract class FilterFieldAdapter implements FilterField {
 		$this->labelLstr = Lstr::create($labelLstr);
 	}
 	
-	public function getLabel(N2nLocale $n2nLocale): string {
-		return $this->labelLstr->t($n2nLocale);
+	public function getLabel(): string {
+		return (string) $this->labelLstr;
 	}
 	
 	public function createMagDispatchable(Attributes $attributes): MagDispatchable {
@@ -64,13 +64,14 @@ abstract class FilterFieldAdapter implements FilterField {
 		$magCollection = $magDispatchable->getMagCollection();
 		$operator = $magCollection->getMagByPropertyName(self::ATTR_OPERATOR_KEY)->getValue();
 
-		return new Attributes(array(self::ATTR_OPERATOR_KEY => $operator,
+		return new Attributes(array(
+				self::ATTR_OPERATOR_KEY => $operator,
 				self::ATTR_VALUE_KEY => $this->buildValue($operator, 
 						$magCollection->getMagByPropertyName(self::ATTR_VALUE_KEY))));
 	}
 	
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\manage\critmod\filter\impl\field\FilterField::createComparatorConstraint()
+	 * @see \rocket\ei\manage\critmod\filter\impl\prop\FilterProp::createComparatorConstraint()
 	 */
 	public function createComparatorConstraint(Attributes $attributes): ComparatorConstraint {
 		return new PropertyValueComparatorConstraint($this->criteriaProperty,

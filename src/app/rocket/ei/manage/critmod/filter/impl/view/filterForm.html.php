@@ -39,9 +39,9 @@
 	
 	$html->meta()->addJs('js/filters.js', 'rocket');
 	
-	$filterFieldAttrs = array();
-	foreach ($filterDefinition->getFilterFields() as $id => $filterItem) {
-		$filterFieldAttrs[$id] = $filterItem->getLabel($view->getN2nLocale());
+	$filterPropAttrs = array();
+	foreach ($filterDefinition->getFilterProps() as $id => $filterItem) {
+		$filterPropAttrs[$id] = $filterItem->getLabel($view->getN2nLocale());
 	}
 ?>
 <div class="rocket-filter" 
@@ -56,7 +56,7 @@
 		data-text-and="<?php $html->text('common_and_label') ?>"
 		data-filter-field-item-form-url="<?php $html->out($filterAjahHook->getFieldItemFormUrl()) ?>"
 		data-filter-group-form-url="<?php $html->out($filterAjahHook->getGroupFormUrl()) ?>"
-		data-filter-fields="<?php $html->out(json_encode($filterFieldAttrs)) ?>">
+		data-filter-fields="<?php $html->out(json_encode($filterPropAttrs)) ?>">
 	
 	<?php $view->import('\rocket\ei\manage\critmod\filter\impl\view\filterGroupForm.html', 
 			array('propertyPath' => $propertyPath)) ?>

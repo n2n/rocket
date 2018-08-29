@@ -30,7 +30,7 @@ use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\web\dispatch\map\bind\BindingErrors;
 use rocket\core\model\Rocket;
 use rocket\ei\manage\mapping\EiEntry;
-use rocket\ei\manage\critmod\CriteriaConstraint;
+use rocket\ei\manage\frame\CriteriaConstraint;
 
 class ToOneForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {

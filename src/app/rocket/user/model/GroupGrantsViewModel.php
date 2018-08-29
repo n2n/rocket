@@ -58,7 +58,7 @@ class GroupGrantsViewModel {
 		}
 		
 		foreach ($this->userGroup->getEiGrants() as $eiGrant) {
-			if ($eiTypeId === $eiGrant->getEiTypeId() && $eiMaskId === $eiGrant->getEiMaskId()) {
+			if ($eiTypeId === $eiGrant->getEiTypePath() && $eiMaskId === $eiGrant->getEiMaskId()) {
 				return $eiGrant;
 			}
 		}

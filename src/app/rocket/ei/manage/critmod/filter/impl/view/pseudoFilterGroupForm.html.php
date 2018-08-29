@@ -42,7 +42,7 @@
 			<?php $formHtml->inputCheckbox('useAnd', true, 
 					array('class' => 'rocket-filter-and-indicator'))?>
 			<ul	class="rocket-filter-field-items"
-					data-new-form-array-property-path="<?php $html->out('filterFieldItemForms') ?>">
+					data-new-form-array-property-path="<?php $html->out('filterPropItemForms') ?>">
 			</ul>
 			<ul class="rocket-filter-groups" 
 					data-new-form-array-property-path="<?php $html->out('filterGroupForms') ?>">

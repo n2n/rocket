@@ -39,7 +39,7 @@ use rocket\ei\UnknownEiTypeExtensionException;
 use rocket\user\bo\EiGrant;
 use rocket\user\model\EiGrantForm;
 use n2n\web\http\controller\impl\ScrRegistry;
-use rocket\ei\manage\critmod\filter\impl\controller\GlobalFilterFieldController;
+use rocket\ei\manage\critmod\filter\impl\controller\GlobalFilterPropController;
 use rocket\ei\EiEngine;
 
 class RocketUserGroupController extends ControllerAdapter {
@@ -274,7 +274,7 @@ class RocketUserGroupController extends ControllerAdapter {
 		$this->commit();
 		
 		
-		$filterAjahHook = GlobalFilterFieldController::buildEiEntryFilterAjahHook($scrRegistry, $eiTypeId, $eiMaskId);
+		$filterAjahHook = GlobalFilterPropController::buildEiEntryFilterAjahHook($scrRegistry, $eiTypeId, $eiMaskId);
 		
 		$this->forward('..\view\grantEdit.html', array('eiGrantForm' => $eiGrantForm,
 				'filterAjahHook' => $filterAjahHook));

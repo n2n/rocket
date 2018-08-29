@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\critmod\filter\impl\field;
+namespace rocket\ei\manage\critmod\filter\impl\prop;
 
 // use n2n\util\ex\IllegalStateException;
 // use n2n\l10n\Message;
@@ -27,7 +27,7 @@ namespace rocket\ei\manage\critmod\filter\impl\field;
 // use n2n\util\config\Attributes;
 // use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 
-// class EnumSelectorItem extends EnumFilterField implements SelectorItem {
+// class EnumSelectorItem extends EnumFilterProp implements SelectorItem {
 	
 // 	public function createSelectorConstraint(Attributes $attributes) {
 // 		return new StringSelectorConstraint($attributes->get(self::OPERATOR_OPTION), 

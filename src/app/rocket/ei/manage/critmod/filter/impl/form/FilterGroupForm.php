@@ -22,9 +22,9 @@
 namespace rocket\ei\manage\critmod\filter\impl\form;
 
 use n2n\web\dispatch\Dispatchable;
-use rocket\ei\manage\critmod\filter\data\FilterItemData;
+use rocket\ei\manage\critmod\filter\data\FilterPropSetting;
 use rocket\ei\manage\critmod\filter\FilterDefinition;
-use rocket\ei\manage\critmod\filter\data\FilterGroupData;
+use rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup;
 use n2n\reflection\annotation\AnnoInit;
 use n2n\web\dispatch\annotation\AnnoDispObjectArray;
 use n2n\util\config\Attributes;
@@ -32,35 +32,35 @@ use n2n\web\dispatch\map\bind\BindingDefinition;
 
 class FilterGroupForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {
-		$ai->p('filterFieldItemForms', new AnnoDispObjectArray(function (FilterGroupForm $filterGroupForm) {
-			return new FilterFieldItemForm(new FilterItemData(null, new Attributes()), $filterGroupForm->filterDefinition);
+		$ai->p('filterPropItemForms', new AnnoDispObjectArray(function (FilterGroupForm $filterGroupForm) {
+			return new FilterPropItemForm(new FilterPropSetting(null, new Attributes()), $filterGroupForm->filterDefinition);
 		}));
 		$ai->p('filterGroupForms', new AnnoDispObjectArray(function (FilterGroupForm $filterGroupForm) {
-			return new FilterGroupForm(new FilterGroupData(), $filterGroupForm->filterDefinition);
+			return new FilterGroupForm(new FilterPropSettingGroup(), $filterGroupForm->filterDefinition);
 		}));
 	}
 	
-	private $filterGroupData;
+	private $filterPropSettingGroup;
 	private $filterDefinition;
 	
 	protected $useAnd;
-	protected $filterFieldItemForms;
+	protected $filterPropItemForms;
 	protected $filterGroupForms;
 	
-	public function __construct(FilterGroupData $filterGroupData, FilterDefinition $filterDefinition) {
-		$this->filterGroupData = $filterGroupData;
+	public function __construct(FilterPropSettingGroup $filterPropSettingGroup, FilterDefinition $filterDefinition) {
+		$this->filterPropSettingGroup = $filterPropSettingGroup;
 		$this->filterDefinition = $filterDefinition;
 		
-		$this->useAnd = $filterGroupData->isAndUsed();
+		$this->useAnd = $filterPropSettingGroup->isAndUsed();
 		
-		$this->filterFieldItemForms = array();
-		foreach ($filterGroupData->getFilterItemDatas() as $filterItemData) {
-			$this->filterFieldItemForms[] = new FilterFieldItemForm($filterItemData, $filterDefinition);
+		$this->filterPropItemForms = array();
+		foreach ($filterPropSettingGroup->getFilterPropSettings() as $filterItemData) {
+			$this->filterPropItemForms[] = new FilterPropItemForm($filterItemData, $filterDefinition);
 		}
 		
 		$this->filterGroupForms = array();
-		foreach ($filterGroupData->getFilterGroupDatas() as $filterGroupData) {
-			$this->filterGroupForms[] = new FilterGroupForm($filterGroupData, $filterDefinition);
+		foreach ($filterPropSettingGroup->getFilterPropSettingGroups() as $filterPropSettingGroup) {
+			$this->filterGroupForms[] = new FilterGroupForm($filterPropSettingGroup, $filterDefinition);
 		}
 	}
 	
@@ -76,12 +76,12 @@ class FilterGroupForm implements Dispatchable {
 		return $this->useAnd;
 	}
 	
-	public function setFilterFieldItemForms(array $filterFieldItemForms) {
-		$this->filterFieldItemForms = $filterFieldItemForms;
+	public function setFilterPropItemForms(array $filterPropItemForms) {
+		$this->filterPropItemForms = $filterPropItemForms;
 	}
 	
-	public function getFilterFieldItemForms(): array {
-		return $this->filterFieldItemForms;
+	public function getFilterPropItemForms(): array {
+		return $this->filterPropItemForms;
 	}
 	
 	public function setFilterGroupForms(array $filterGroupForms) {
@@ -93,7 +93,7 @@ class FilterGroupForm implements Dispatchable {
 	}
 	
 	public function clear() {
-		$this->filterFieldItemForms = array();
+		$this->filterPropItemForms = array();
 		$this->filterGroupForms = array();
 	}
 	
@@ -103,7 +103,7 @@ class FilterGroupForm implements Dispatchable {
 // 		$fieldItemId = $md->getDispatchedValue('fieldItemId');
 // 		$filterItem = null;
 // 		if (is_scalar($fieldItemId)) {
-// 			$filterItem = $this->filterDefinition->getFilterFieldById($fieldItemId);
+// 			$filterItem = $this->filterDefinition->getFilterPropById($fieldItemId);
 // 		}
 		
 // 		if ($filterItem === null) {
@@ -111,7 +111,7 @@ class FilterGroupForm implements Dispatchable {
 // 			return;
 // 		}
 		
-// 		$magForm = new MagDispatchable($filterItem->createMagCollection($this->filterGroupData->getAttributes()));
+// 		$magForm = new MagDispatchable($filterItem->createMagCollection($this->filterPropSettingGroup->getAttributes()));
 // 		$mr->magForm = new MappingResult($magForm, $dc->getDispatchModelManager()->getDispatchModel($magForm));
 // 	}
 	
@@ -119,21 +119,21 @@ class FilterGroupForm implements Dispatchable {
 		
 	}
 	
-	public function buildFilterGroupData(): FilterGroupData {
-		$this->filterGroupData->setAndUsed($this->useAnd);
+	public function buildFilterPropSettingGroup(): FilterPropSettingGroup {
+		$this->filterPropSettingGroup->setAndUsed($this->useAnd);
 		
-		$filterItemDatas = $this->filterGroupData->getFilterItemDatas();
+		$filterItemDatas = $this->filterPropSettingGroup->getFilterPropSettings();
 		$filterItemDatas->clear();
-		foreach ($this->filterFieldItemForms as $filterFieldItemForm) {
-			$filterItemDatas->append($filterFieldItemForm->buildFilterItemData());
+		foreach ($this->filterPropItemForms as $filterPropItemForm) {
+			$filterItemDatas->append($filterPropItemForm->buildFilterPropSetting());
 		}
 		
-		$filterGroupDatas = $this->filterGroupData->getFilterGroupDatas();
-		$filterGroupDatas->clear();
+		$filterPropSettingGroups = $this->filterPropSettingGroup->getFilterPropSettingGroups();
+		$filterPropSettingGroups->clear();
 		foreach ($this->filterGroupForms as $filterGroupForm) {
-			$filterGroupDatas->append($filterGroupForm->buildFilterGroupData());
+			$filterPropSettingGroups->append($filterGroupForm->buildFilterPropSettingGroup());
 		}
 		
-		return $this->filterGroupData;
+		return $this->filterPropSettingGroup;
 	}
 }

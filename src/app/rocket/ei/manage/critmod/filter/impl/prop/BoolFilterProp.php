@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\critmod\filter\impl\field;
+namespace rocket\ei\manage\critmod\filter\impl\prop;
 
 use rocket\core\model\Rocket;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
@@ -31,9 +31,7 @@ use n2n\web\dispatch\mag\MagCollection;
 use n2n\util\config\LenientAttributeReader;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\web\dispatch\mag\MagDispatchable;
-use rocket\ei\manage\critmod\filter\impl\model\SimpleComparatorConstraint;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
-use rocket\ei\manage\critmod\filter\EiEntryFilterField;
 use rocket\ei\manage\mapping\EiFieldConstraint;
 use rocket\ei\manage\mapping\EiField;
 use rocket\ei\manage\mapping\FieldErrorInfo;
@@ -41,8 +39,9 @@ use n2n\l10n\MessageCode;
 use rocket\ei\manage\critmod\filter\ComparatorConstraint;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\ei\manage\critmod\filter\impl\model\PropertyValueComparatorConstraint;
+use rocket\ei\manage\security\filter\SecurityFilterProp;
 
-class BoolFilterField implements EiEntryFilterField {
+class BoolFilterProp implements SecurityFilterProp {
 	const ATTR_VALUE_KEY = 'value';
 	const ATTR_VALUE_DEFAULT = false;
 	
@@ -54,8 +53,8 @@ class BoolFilterField implements EiEntryFilterField {
 		$this->labelLstr = Lstr::create($labelLstr);
 	}
 	
-	public function getLabel(N2nLocale $n2nLocale): string {
-		return $this->labelLstr->t($n2nLocale);
+	public function getLabel(): string {
+		return (string) $this->labelLstr;
 	}
 	
 	private function readValue(Attributes $attributes): bool {
@@ -73,7 +72,7 @@ class BoolFilterField implements EiEntryFilterField {
 	}
 	
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\manage\critmod\filter\impl\field\FilterField::createComparatorConstraint()
+	 * @see \rocket\ei\manage\critmod\filter\impl\prop\FilterProp::createComparatorConstraint()
 	 */
 	public function createComparatorConstraint(Attributes $attributes): ComparatorConstraint {
 		return new PropertyValueComparatorConstraint($this->criteriaProperty, CriteriaComparator::OPERATOR_EQUAL,

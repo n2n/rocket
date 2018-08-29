@@ -40,7 +40,7 @@ class EiPrivilegeGrantForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {
 		$ai->c(new AnnoDispProperties('eiCommandPathStrs', 'eiPropPrivilegeMagForm'));
 		$ai->p('restrictionFilterGroupForm', new AnnoDispObject(function (EiPrivilegeGrantForm $that) {
-			return new FilterGroupForm($that->eiPrivilegesGrant->readRestrictionFilterGroupData(), 
+			return new FilterGroupForm($that->eiPrivilegesGrant->readRestrictionFilterPropSettingGroup(), 
 					$that->restrictionFilterDefinition);
 		}));
 	}
@@ -66,7 +66,7 @@ class EiPrivilegeGrantForm implements Dispatchable {
 		$this->restrictionFilterDefinition = $restrictionFilterDefinition;
 		if ($eiPrivilegeGrant->isRestricted()) {
 			$this->restrictionFilterGroupForm = new FilterGroupForm(
-					$eiPrivilegeGrant->readRestrictionFilterGroupData(), $this->restrictionFilterDefinition);
+					$eiPrivilegeGrant->readRestrictionFilterPropSettingGroup(), $this->restrictionFilterDefinition);
 		}
 	}
 	
@@ -124,7 +124,7 @@ class EiPrivilegeGrantForm implements Dispatchable {
 			$this->eiPrivilegesGrant->setRestricted(false);
 		} else {
 			$this->eiPrivilegesGrant->setRestricted(true);
-			$this->eiPrivilegesGrant->writeRestrictionFilterData($restrictionFilterGroupForm->buildFilterGroupData());
+			$this->eiPrivilegesGrant->writeRestrictionFilterData($restrictionFilterGroupForm->buildFilterPropSettingGroup());
 		}
 	}
 	

@@ -3,7 +3,7 @@ namespace rocket\impl\ei\component\modificator\constraint;
 
 use rocket\ei\util\model\Eiu;
 use rocket\ei\component\EiConfigurator;
-use rocket\ei\manage\critmod\CriteriaConstraint;
+use rocket\ei\manage\frame\CriteriaConstraint;
 use n2n\l10n\MessageCode;
 use n2n\persistence\orm\criteria\Criteria;
 use rocket\ei\util\model\EiuEngine;

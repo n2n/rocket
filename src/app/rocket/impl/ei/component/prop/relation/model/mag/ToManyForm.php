@@ -30,7 +30,7 @@ use n2n\web\dispatch\map\bind\BindingErrors;
 use rocket\core\model\Rocket;
 use rocket\ei\manage\mapping\EiEntry;
 use n2n\web\dispatch\annotation\AnnoDispObjectArray;
-use rocket\ei\manage\critmod\CriteriaConstraint;
+use rocket\ei\manage\frame\CriteriaConstraint;
 use rocket\ei\util\model\UnknownEntryException;
 
 class ToManyForm implements Dispatchable {

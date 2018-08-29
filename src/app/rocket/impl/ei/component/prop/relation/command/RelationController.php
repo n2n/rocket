@@ -28,7 +28,7 @@ use rocket\ei\manage\EiObject;
 use n2n\web\http\controller\ControllerAdapter;
 use rocket\impl\ei\component\prop\relation\model\relation\EiPropRelation;
 use rocket\ei\EiTypeController;
-use rocket\ei\manage\EiRelation;
+use rocket\ei\manage\frame\EiRelation;
 use rocket\ei\util\model\EiuCtrl;
 use rocket\ei\util\model\Eiu;
 

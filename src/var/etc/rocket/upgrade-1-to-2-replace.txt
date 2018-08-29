@@ -24,3 +24,9 @@ eiMasks
 
 rocket\spec\ei\manage\preview\model\PreviewModel
 rocket\ei\manage\preview\model\PreviewModel
+
+ALTER TABLE `rocket_ei_grant`
+	ALTER `ei_spec_id` DROP DEFAULT;
+ALTER TABLE `rocket_ei_grant`
+	CHANGE COLUMN `ei_spec_id` `ei_type_path` VARCHAR(255) NOT NULL AFTER `id`,
+	DROP COLUMN `ei_mask_id`;

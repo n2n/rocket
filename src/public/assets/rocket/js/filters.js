@@ -135,21 +135,21 @@ jQuery(document).ready(function($) {
 			this.textOr = jqElem.data("text-or");
 			this.textAnd = jqElem.data("text-and");
 			this.textRemove = jqElem.data("text-delete");
-			this.filterFieldItemFormUrl = jqElem.data("filter-field-item-form-url");
+			this.filterPropItemFormUrl = jqElem.data("filter-field-item-form-url");
 			this.filterGroupFormUrl = jqElem.data("filter-group-form-url");
 			this.fields = jqElem.data("filter-fields");
 			
 			new FilterGroup(jqElem.children(":first"), this, null);
 		};
 		
-		Filter.prototype.requestFilterFieldItem = function(filterGroup, fieldId, propertyPath, callback) {
-			$.getJSON(this.filterFieldItemFormUrl, {
-				filterFieldId: fieldId,
+		Filter.prototype.requestFilterPropItem = function(filterGroup, fieldId, propertyPath, callback) {
+			$.getJSON(this.filterPropItemFormUrl, {
+				filterPropId: fieldId,
 				propertyPath: propertyPath
-			}, function(filterFieldData) {
-				var jqElemFilterFieldItem = $($.parseHTML(n2n.dispatch.analyze(filterFieldData))),
-					filterFieldItem = new FilterFieldItem(jqElemFilterFieldItem, filterGroup);
-				callback(filterFieldItem);
+			}, function(filterPropData) {
+				var jqElemFilterPropItem = $($.parseHTML(n2n.dispatch.analyze(filterPropData))),
+					filterPropItem = new FilterPropItem(jqElemFilterPropItem, filterGroup);
+				callback(filterPropItem);
 			});
 		};
 		
@@ -157,8 +157,8 @@ jQuery(document).ready(function($) {
 			var that = this;
 			$.getJSON(this.filterGroupFormUrl, {
 				propertyPath: propertyPath
-			}, function(filterGroupData) {
-				var jqElemFilterGroup = $($.parseHTML(n2n.dispatch.analyze(filterGroupData))),
+			}, function(filterPropSettingGroup) {
+				var jqElemFilterGroup = $($.parseHTML(n2n.dispatch.analyze(filterPropSettingGroup))),
 					filterGroup = new FilterGroup(jqElemFilterGroup, that, parentFilterGroup);
 				callback(filterGroup);
 			});
@@ -234,7 +234,7 @@ jQuery(document).ready(function($) {
 				});
 				
 				this.jqElemFieldItems.children("li").each(function() {
-					new FilterFieldItem($(this), that);
+					new FilterPropItem($(this), that);
 				});
 				
 				this.jqElemGroups.children("li").each(function() {
@@ -315,7 +315,7 @@ jQuery(document).ready(function($) {
 						"class": "rocket-loading"
 					})).appendTo(that.jqElemFieldItems);
 					
-					that.filter.requestFilterFieldItem(that, $(this).data("field-id"), that.buildNextFieldItemPropertyPath(), 
+					that.filter.requestFilterPropItem(that, $(this).data("field-id"), that.buildNextFieldItemPropertyPath(), 
 							function(fieldItem) {
 						jqElemLoading.remove();
 						that.jqElemFieldItems.append(fieldItem.jqElem);
@@ -354,7 +354,7 @@ jQuery(document).ready(function($) {
 			return this.baseGroupPropertyPath + '[' + this.nextGroupIndex++ + ']';
 		};
 		
-		var FilterFieldItem = function(jqElem, filterGroup) {
+		var FilterPropItem = function(jqElem, filterGroup) {
 			this.jqElem = jqElem;
 			this.filterGroup = filterGroup;
 			this.jqElemSpanTextAndOr = $("<span />", {

@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\numeric;
 
 use rocket\ei\component\prop\QuickSearchableEiProp;
-use rocket\ei\manage\critmod\filter\impl\field\StringFilterField;
+use rocket\ei\manage\critmod\filter\impl\prop\StringFilterProp;
 use rocket\ei\component\prop\SortableEiProp;
 use rocket\ei\component\prop\FilterableEiProp;
 use n2n\l10n\N2nLocale;
@@ -37,7 +37,7 @@ use n2n\reflection\ArgUtils;
 use n2n\reflection\property\AccessProxy;
 use n2n\reflection\property\TypeConstraint;
 use rocket\ei\manage\EiObject;
-use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\frame\EiFrame;
 use n2n\core\container\N2nContext;
 use rocket\ei\EiPropPath;
 use n2n\persistence\orm\criteria\item\CrIt;
@@ -45,7 +45,7 @@ use rocket\ei\manage\critmod\sort\SortField;
 use rocket\ei\util\model\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\critmod\quick\impl\model\LikeQuickSearchField;
-use rocket\ei\manage\critmod\filter\FilterField;
+use rocket\ei\manage\critmod\filter\FilterProp;
 
 abstract class NumericEiPropAdapter extends DraftableEiPropAdapter 
 		implements FilterableEiProp, SortableEiProp, QuickSearchableEiProp {
@@ -94,19 +94,11 @@ abstract class NumericEiPropAdapter extends DraftableEiPropAdapter
 // 		return $view->getHtmlBuilder()->getEsc($value);
 // 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\FilterableEiProp::buildManagedFilterField($eiFrame)
-	 */
-	public function buildManagedFilterField(EiFrame $eiFrame): ?FilterField  {
-		return $this->buildFilterField($eiFrame->getN2nContext());
+	public function buildFilterProp(Eiu $eiu): ?FilterProp {
+		return new StringFilterProp(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
 	}
 	
-	public function buildFilterField(N2nContext $n2nContext): ?FilterField {
-		return new StringFilterField(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
-	}
-	
-	public function buildEiEntryFilterField(N2nContext $n2nContext) {
+	public function buildSecurityFilterProp(N2nContext $n2nContext) {
 		return null;
 	}
 	

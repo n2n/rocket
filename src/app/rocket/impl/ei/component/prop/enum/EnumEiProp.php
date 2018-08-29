@@ -28,10 +28,10 @@ use rocket\ei\component\prop\SortableEiProp;
 use rocket\ei\component\prop\QuickSearchableEiProp;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
-use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\frame\EiFrame;
 use n2n\l10n\N2nLocale;
 use n2n\core\container\N2nContext;
-use rocket\ei\manage\critmod\filter\impl\field\EnumFilterField;
+use rocket\ei\manage\critmod\filter\impl\prop\EnumFilterProp;
 use rocket\ei\manage\critmod\sort\impl\SimpleSortField;
 
 use n2n\reflection\ArgUtils;
@@ -48,7 +48,7 @@ use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\critmod\quick\impl\model\LikeQuickSearchField;
 use rocket\ei\manage\gui\GuiIdPath;
 use n2n\impl\web\dispatch\mag\model\group\EnumTogglerMag;
-use rocket\ei\manage\critmod\filter\FilterField;
+use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\sort\SortField;
 
 class EnumEiProp extends DraftableEiPropAdapter implements FilterableEiProp, SortableEiProp, 
@@ -160,19 +160,19 @@ class EnumEiProp extends DraftableEiPropAdapter implements FilterableEiProp, Sor
 		return $html->getEsc($value);
 	}
 	
-	public function buildManagedFilterField(EiFrame $eiFrame): ?FilterField  {
-		return $this->buildFilterField($eiFrame->getN2nContext());
+	public function buildManagedFilterProp(EiFrame $eiFrame): ?FilterProp  {
+		return $this->buildFilterProp($eiFrame->getN2nContext());
 	}
 	
-	public function buildFilterField(N2nContext $n2nContext): ?FilterField {
+	public function buildFilterProp(Eiu $eiu): ?FilterProp {
 		if (null !== ($entityProperty = $this->getEntityProperty())) {
-			return new EnumFilterField(CrIt::p($entityProperty), $this->getLabelLstr(), $this->getOptions());
+			return new EnumFilterProp(CrIt::p($entityProperty), $this->getLabelLstr(), $this->getOptions());
 		}
 		
 		return null;
 	}
 
-	public function buildEiEntryFilterField(N2nContext $n2nContext) {
+	public function buildSecurityFilterProp(N2nContext $n2nContext) {
 		return null;
 	}
 	

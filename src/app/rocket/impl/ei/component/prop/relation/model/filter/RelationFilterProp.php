@@ -25,7 +25,6 @@ use n2n\util\config\Attributes;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use rocket\ei\util\model\EiuFrame;
-use n2n\l10n\N2nLocale;
 use n2n\l10n\Lstr;
 use n2n\persistence\orm\property\EntityProperty;
 use rocket\ei\manage\critmod\filter\ComparatorConstraint;
@@ -33,21 +32,20 @@ use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use n2n\reflection\ArgUtils;
 use rocket\ei\util\model\UnknownEntryException;
-use rocket\ei\manage\critmod\filter\data\FilterGroupData;
 use n2n\reflection\property\TypeConstraint;
 use n2n\util\config\AttributesException;
-use rocket\ei\manage\critmod\filter\FilterField;
+use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\filter\FilterDefinition;
 use rocket\ei\manage\critmod\filter\impl\controller\FilterAjahHook;
 use rocket\impl\ei\component\prop\relation\TargetFilterDef;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\ei\manage\critmod\filter\ComparatorConstraintGroup;
-use rocket\ei\manage\critmod\CriteriaConstraint;
+use rocket\ei\manage\frame\CriteriaConstraint;
 use rocket\ei\manage\critmod\filter\impl\model\SimpleComparatorConstraint;
 use rocket\ei\manage\mapping\EiFieldConstraint;
 
-class RelationFilterField implements FilterField {
+class RelationFilterProp implements FilterProp {
 	protected $labelLstr;
 	protected $entityProperty;
 	protected $targetEiuFrame;
@@ -66,8 +64,8 @@ class RelationFilterField implements FilterField {
 		$this->targetSelectUrlCallback = $targetSelectUrlCallback;
 	}
 	
-	public function getLabel(N2nLocale $n2nLocale): string {
-		return $this->labelLstr->t($n2nLocale);
+	public function getLabel(): string {
+		return (string) $this->labelLstr;
 	}
 	
 	public function createComparatorConstraint(Attributes $attributes): ComparatorConstraint {
@@ -94,7 +92,7 @@ class RelationFilterField implements FilterField {
 			case CriteriaComparator::OPERATOR_EXISTS:
 			case CriteriaComparator::OPERATOR_NOT_EXISTS:
 				$targetComparatorContraint = $this->targetFilterDef->getFilterDefinition()->createComparatorConstraint(
-						$relationFilterConf->getTargetFilterGroupData());
+						$relationFilterConf->getTargetFilterPropSettingGroup());
 				
 				return new TestComparatorConstraint($this->entityProperty, $targetComparatorContraint);
 		}
@@ -131,7 +129,7 @@ class RelationFilterField implements FilterField {
 			$form->getSelectorMag()->setTargetLiveEntries($targetLiveEntries);
 		}
 		
-		$form->getFilterGroupMag()->setValue($relationFilterConf->getTargetFilterGroupData());
+		$form->getFilterGroupMag()->setValue($relationFilterConf->getTargetFilterPropSettingGroup());
 		
 		return $form;
 	}
@@ -181,7 +179,7 @@ class RelationFilterField implements FilterField {
 			case CriteriaComparator::OPERATOR_EXISTS:
 			case CriteriaComparator::OPERATOR_NOT_EXISTS:
 				$targetComparatorContraint = $this->targetFilterDef->getFilterDefinition()->createComparatorConstraint(
-				$relationFilterConf->getTargetFilterGroupData());
+				$relationFilterConf->getTargetFilterPropSettingGroup());
 		
 				return new TestComparatorConstraint($this->entityProperty, $targetComparatorContraint);
 		}
@@ -215,17 +213,17 @@ class RelationFilterConf {
 		$this->attributes->set(self::TARGET_ID_REPS, $targetPids);
 	}
 	
-	public function getTargetFilterGroupData(): FilterGroupData {
+	public function getTargetFilterPropSettingGroup(): FilterPropSettingGroup {
 		try {
-			return FilterGroupData::create(new Attributes($this->attributes
+			return FilterPropSettingGroup::create(new Attributes($this->attributes
 					->getArray(self::TARGET_FILTER_GROUP_ATTRS, false)));
 		} catch (AttributesException $e) {
-			return new FilterGroupData();
+			return new FilterPropSettingGroup();
 		}
 	}
 	
-	public function setTargetFilterGroupData(FilterGroupData $targetFilterGroupData) {
-		$this->attributes->set(self::TARGET_FILTER_GROUP_ATTRS, $targetFilterGroupData->toAttrs());
+	public function setTargetFilterPropSettingGroup(FilterPropSettingGroup $targetFilterPropSettingGroup) {
+		$this->attributes->set(self::TARGET_FILTER_GROUP_ATTRS, $targetFilterPropSettingGroup->toAttrs());
 	}
 }
 

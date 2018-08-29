@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model\filter;
 
-use rocket\ei\manage\critmod\filter\EiEntryFilterField;
+use rocket\ei\manage\security\filter\SecurityFilterProp;
 use rocket\ei\manage\critmod\filter\EiEntryFilterDefinition;
 use rocket\ei\manage\mapping\EiFieldConstraint;
 use n2n\util\ex\IllegalStateException;
@@ -36,7 +36,7 @@ use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\ei\manage\mapping\EiEntryConstraint;
 use rocket\ei\EiPropPath;
 
-class RelationEiEntryFilterField extends RelationFilterField implements EiEntryFilterField {
+class RelationSecurityFilterProp extends RelationFilterProp implements SecurityFilterProp {
 	
 	private function getEiEntryFilterDefinition(): EiEntryFilterDefinition {
 		$eiEntryFilterDefinition = $this->targetFilterDef->getFilterDefinition();
@@ -61,11 +61,11 @@ class RelationEiEntryFilterField extends RelationFilterField implements EiEntryF
 						CrIt::c($this->lookupTargetEntityObjs($relationFilterConf->getTargetPids())));
 				
 			case CriteriaComparator::OPERATOR_EXISTS:
-				$targetEiEntryConstraint = $this->getEiEntryFilterDefinition()->createEimappingConstraint($filterGroupData);
+				$targetEiEntryConstraint = $this->getEiEntryFilterDefinition()->createEimappingConstraint($filterPropSettingGroup);
 				return new TestEiFieldConstraint($this->eiPropPath, false, $targetEiEntryConstraint);
 				
 			case CriteriaComparator::OPERATOR_NOT_EXISTS:
-				$targetEiEntryConstraint = $this->getEiEntryFilterDefinition()->createEimappingConstraint($filterGroupData);
+				$targetEiEntryConstraint = $this->getEiEntryFilterDefinition()->createEimappingConstraint($filterPropSettingGroup);
 				return new TestEiFieldConstraint($this->eiPropPath, false, $targetEiEntryConstraint);
 		}
 	}

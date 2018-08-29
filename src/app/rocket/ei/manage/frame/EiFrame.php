@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage;
+namespace rocket\ei\manage\frame;
 
 use n2n\util\ex\IllegalStateException;
 use rocket\core\model\Breadcrumb;
@@ -30,13 +30,15 @@ use n2n\core\container\N2nContext;
 use rocket\ei\manage\mapping\EiEntry;
 use rocket\ei\manage\control\EntryNavPoint;
 use rocket\ei\security\EiExecution;
-use rocket\ei\manage\critmod\CriteriaConstraint;
+use rocket\ei\manage\frame\CriteriaConstraint;
 use n2n\web\http\HttpContext;
 use n2n\util\uri\Url;
 use n2n\reflection\ArgUtils;
 use rocket\ei\EiEngine;
 use rocket\ei\EiTypeExtension;
 use rocket\ei\EiType;
+use rocket\ei\manage\ManageState;
+use rocket\ei\manage\EiObject;
 
 class EiFrame {
 	private $contextEiEngine;
@@ -245,7 +247,7 @@ class EiFrame {
 			$criteriaConstraint->applyToCriteria($criteria, $entityAliasCriteriaProperty);
 		}
 		
-// 		if ($applyMaskConstraints && null !== ($filterData = $this->getContextEiMask()->getFilterGroupData())) {
+// 		if ($applyMaskConstraints && null !== ($filterData = $this->getContextEiMask()->getFilterPropSettingGroup())) {
 // 			$this->getOrCreateFilterModel()->createCriteriaConstraint($filterData)
 // 			->applyToCriteria($criteria, CrIt::p(array($entityAlias)));
 // 		}

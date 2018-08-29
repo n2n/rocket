@@ -40,7 +40,7 @@ use rocket\ei\manage\EiObject;
 use rocket\impl\ei\component\prop\relation\model\relation\EiPropRelation;
 use n2n\core\container\N2nContext;
 use n2n\util\ex\IllegalStateException;
-use rocket\ei\manage\critmod\filter\EiEntryFilterField;
+use rocket\ei\manage\security\filter\SecurityFilterProp;
 use rocket\ei\EiPropPath;
 use n2n\l10n\N2nLocale;
 use rocket\impl\ei\component\prop\relation\model\RelationEntry;
@@ -48,7 +48,7 @@ use rocket\impl\ei\component\prop\relation\EmbeddedOneToManyEiProp;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\util\col\ArrayUtils;
 use rocket\ei\component\prop\SortableEiPropFork;
-use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\critmod\sort\SortFieldFork;
 use n2n\persistence\orm\criteria\item\CriteriaProperty;
 use n2n\persistence\orm\criteria\Criteria;
@@ -147,7 +147,7 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 		return false;
 	}
 	
-	public function createEiEntryFilterField(N2nContext $n2nContext): EiEntryFilterField {
+	public function createSecurityFilterProp(N2nContext $n2nContext): SecurityFilterProp {
 		throw new IllegalStateException();
 	}
 

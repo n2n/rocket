@@ -23,9 +23,9 @@ namespace rocket\ei\manage\critmod\quick\impl\form;
 
 use n2n\web\dispatch\Dispatchable;
 use rocket\ei\manage\critmod\quick\QuickSearchDefinition;
-use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\critmod\impl\model\CritmodSaveDao;
-use rocket\ei\manage\critmod\CriteriaConstraint;
+use rocket\ei\manage\frame\CriteriaConstraint;
 
 class QuickSearchForm implements Dispatchable {
 	private $quickSearchDefinition;

@@ -96,11 +96,11 @@ abstract class ToOneEiPropAdapter extends SimpleRelationEiPropAdapter implements
 		return true;
 	}
 	
-	public function buildEiEntryFilterField(N2nContext $n2nContext) {		
+	public function buildSecurityFilterProp(N2nContext $n2nContext) {		
 		return null;
 // 		$targetEiMask = $this->eiPropRelation->getTargetEiMask();
 		
-// 		return new ToOneEiEntryFilterField($this->getLabelLstr(), $this->getEntityProperty(),
+// 		return new ToOneSecurityFilterProp($this->getLabelLstr(), $this->getEntityProperty(),
 // 				new GlobalEiuFrame($this->getEiPropRelation()->getTargetEiMask(), $n2nContext),
 // 				$this->createAdvTargetFilterDef($n2nContext));
 	}

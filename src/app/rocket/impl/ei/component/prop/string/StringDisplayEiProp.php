@@ -37,7 +37,7 @@ use rocket\impl\ei\component\prop\adapter\StatelessDisplayable;
 use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\util\model\Eiu;
 use rocket\impl\ei\component\prop\adapter\StatelessDisplayElement;
-use rocket\ei\manage\critmod\filter\EiEntryFilterField;
+use rocket\ei\manage\security\filter\SecurityFilterProp;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\impl\ei\component\prop\adapter\ObjectPropertyConfigurable;
 use n2n\reflection\ArgUtils;
@@ -136,9 +136,9 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ObjectProp
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\FieldEiProp::createEiEntryFilterField($n2nContext)
+	 * @see \rocket\ei\component\prop\FieldEiProp::createSecurityFilterProp($n2nContext)
 	 */
-	public function createEiEntryFilterField(\n2n\core\container\N2nContext $n2nContext): EiEntryFilterField {
+	public function createSecurityFilterProp(\n2n\core\container\N2nContext $n2nContext): SecurityFilterProp {
 		return null;
 	}
 

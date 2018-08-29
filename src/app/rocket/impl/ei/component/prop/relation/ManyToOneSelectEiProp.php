@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\relation;
 
 use rocket\impl\ei\component\prop\relation\model\relation\SelectEiPropRelation;
-use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\frame\EiFrame;
 use rocket\impl\ei\component\prop\relation\model\ManyToOneGuiField;
 use rocket\ei\manage\draft\stmt\FetchDraftStmtBuilder;
 use rocket\ei\manage\draft\stmt\PersistDraftStmtBuilder;
@@ -38,12 +38,11 @@ use n2n\reflection\CastUtils;
 use rocket\ei\manage\EiObject;
 use rocket\ei\manage\draft\RemoveDraftAction;
 use rocket\ei\manage\draft\PersistDraftAction;
-use rocket\impl\ei\component\prop\relation\model\filter\ToOneEiEntryFilterField;
+use rocket\impl\ei\component\prop\relation\model\filter\ToOneSecurityFilterProp;
 use n2n\web\http\controller\impl\ScrRegistry;
-use rocket\ei\manage\critmod\filter\EiEntryFilterField;
 use rocket\ei\EiPropPath;
 use rocket\impl\ei\component\command\common\controller\GlobalOverviewJhtmlController;
-use rocket\impl\ei\component\prop\relation\model\filter\RelationFilterField;
+use rocket\impl\ei\component\prop\relation\model\filter\RelationFilterProp;
 use rocket\ei\manage\LiveEiObject;
 use rocket\ei\util\model\Eiu;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
@@ -53,7 +52,8 @@ use n2n\web\http\HttpContext;
 use rocket\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
 use rocket\ei\manage\gui\ui\DisplayItem;
 use rocket\ei\manage\gui\GuiField;
-use rocket\ei\manage\critmod\filter\FilterField;
+use rocket\ei\manage\critmod\filter\FilterProp;
+use rocket\ei\manage\security\filter\SecurityFilterProp;
 
 class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 
@@ -196,48 +196,55 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 		$this->getObjectPropertyAccessProxy()->setValue($object, $value);
 	}
 	
-	public function buildManagedFilterField(EiFrame $eiFrame): ?FilterField  {
-		$filterField = parent::buildManagedFilterField($eiFrame);
-		CastUtils::assertTrue($filterField instanceof RelationFilterField);
+	public function buildFilterProp(Eiu $eiu): ?FilterProp  {
+		$filterProp = parent::buildManagedFilterProp($eiu->frame()->getEiFrame());
+		CastUtils::assertTrue($filterProp instanceof RelationFilterProp);
+		$eiFrame = $eiu->frame()->getEiFrame();
 		
 		$that = $this;
-		$filterField->setTargetSelectUrlCallback(function (HttpContext $httpContext) use($that, $eiFrame) {
+		$filterProp->setTargetSelectUrlCallback(function (HttpContext $httpContext) use ($that, $eiFrame) {
 			return $that->eiPropRelation->buildTargetOverviewToolsUrl($eiFrame, $httpContext);
 		});
 				
-		return $filterField;
+		return $filterProp;
 	}
 	
-	public function buildFilterField(N2nContext $n2nContext): ?FilterField {
-		$filterField = parent::buildFilterField($n2nContext);
-		CastUtils::assertTrue($filterField instanceof RelationFilterField);
+// 	/**
+// 	 * {@inheritDoc}
+// 	 * @see \rocket\impl\ei\component\prop\relation\SimpleRelationEiPropAdapter::buildFilterProp()
+// 	 */
+// 	public function buildFilterProp(Eiu $eiu): ?FilterProp {
+// 		$filterProp = parent::buildFilterProp($eiu);
+// 		CastUtils::assertTrue($filterProp instanceof RelationFilterProp);
 		
-		$targetSelectToolsUrl = GlobalOverviewJhtmlController::buildToolsAjahUrl(
-				$n2nContext->lookup(ScrRegistry::class), $this->eiPropRelation->getTargetEiType(),
-				$this->eiPropRelation->getTargetEiMask());
+// 		$n2nContext = $eiu->getN2nContext();
 		
-		$that = $this;
-		$filterField->setTargetSelectUrlCallback(function () use ($n2nContext, $that) {
-			return GlobalOverviewJhtmlController::buildToolsAjahUrl(
-					$n2nContext->lookup(ScrRegistry::class), $that->eiPropRelation->getTargetEiType(),
-					$that->eiPropRelation->getTargetEiMask());
-		});
+// 		$targetSelectToolsUrl = GlobalOverviewJhtmlController::buildToolsAjahUrl(
+// 				$n2nContext->lookup(ScrRegistry::class), $this->eiPropRelation->getTargetEiType(),
+// 				$this->eiPropRelation->getTargetEiMask());
+		
+// 		$that = $this;
+// 		$filterProp->setTargetSelectUrlCallback(function () use ($n2nContext, $that) {
+// 			return GlobalOverviewJhtmlController::buildToolsAjahUrl(
+// 					$n2nContext->lookup(ScrRegistry::class), $that->eiPropRelation->getTargetEiType(),
+// 					$that->eiPropRelation->getTargetEiMask());
+// 		});
 			
-		return $filterField;
-	}
+// 		return $filterProp;
+// 	}
 	
-	public function createEiEntryFilterField(N2nContext $n2nContext): EiEntryFilterField {
-		$eiEntryFilterField = parent::createEiEntryFilterField($n2nContext);
-		CastUtils::assertTrue($eiEntryFilterField instanceof ToOneEiEntryFilterField);
+	public function buildSecurityFilterProp(Eiu $eiu): ?SecurityFilterProp {
+		$eiEntryFilterProp = parent::createSecurityFilterProp($n2nContext);
+		CastUtils::assertTrue($eiEntryFilterProp instanceof ToOneSecurityFilterProp);
 				
 		$that = $this;
-		$eiEntryFilterField->setTargetSelectToolsUrlCallback(function () use ($n2nContext, $that) {
+		$eiEntryFilterProp->setTargetSelectToolsUrlCallback(function () use ($n2nContext, $that) {
 			return GlobalOverviewJhtmlController::buildToolsAjahUrl(
 					$n2nContext->lookup(ScrRegistry::class), $this->eiPropRelation->getTargetEiType(),
 					$this->eiPropRelation->getTargetEiMask());
 		});
 				
-		return $eiEntryFilterField;
+		return $eiEntryFilterProp;
 	}
 }
 

@@ -28,7 +28,7 @@ use rocket\ei\manage\critmod\impl\model\CritmodSaveDao;
 use rocket\ei\manage\critmod\impl\model\CritmodForm;
 use rocket\ei\manage\critmod\quick\impl\form\QuickSearchForm;
 use n2n\web\http\controller\impl\ScrRegistry;
-use rocket\ei\manage\critmod\filter\impl\controller\FilterFieldController;
+use rocket\ei\manage\critmod\filter\impl\controller\FilterPropController;
 use n2n\web\http\controller\ParamQuery;
 use n2n\l10n\DynamicTextCollection;
 use rocket\impl\ei\component\command\common\model\DraftListModel;
@@ -77,7 +77,7 @@ class OverviewController extends ControllerAdapter {
 		
 		$overviewAjahHook = OverviewJhtmlController::buildAjahHook($this->getHttpContext()
 				->getControllerContextPath($this->getControllerContext())->ext('ajah')->toUrl(), $stateKey);
-		$filterAjahHook = FilterFieldController::buildFilterAjahHook($this->getHttpContext()
+		$filterAjahHook = FilterPropController::buildFilterAjahHook($this->getHttpContext()
 				->getControllerContextPath($this->getControllerContext())->ext('filter')->toUrl());
 		
 		$this->eiuCtrl->applyCommonBreadcrumbs();
@@ -106,8 +106,8 @@ class OverviewController extends ControllerAdapter {
 		$this->delegate($ajahOverviewController);
 	}
 	
-	public function doFilter(array $delegateCmds = array(), FilterFieldController $filterFieldController) {
-		$this->delegate($filterFieldController);
+	public function doFilter(array $delegateCmds = array(), FilterPropController $filterPropController) {
+		$this->delegate($filterPropController);
 	}
 	
 	public function doDrafts($pageNo = null, DynamicTextCollection $dtc) {

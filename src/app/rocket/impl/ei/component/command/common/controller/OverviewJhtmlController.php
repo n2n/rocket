@@ -26,7 +26,7 @@ use rocket\ei\manage\ManageState;
 use rocket\ei\manage\critmod\impl\model\CritmodSaveDao;
 use n2n\web\http\controller\impl\ScrRegistry;
 use n2n\web\http\PageNotFoundException;
-use rocket\ei\manage\critmod\filter\impl\controller\GlobalFilterFieldController;
+use rocket\ei\manage\critmod\filter\impl\controller\GlobalFilterPropController;
 use n2n\web\http\controller\ParamQuery;
 use rocket\ei\manage\critmod\impl\model\CritmodForm;
 use rocket\ei\manage\critmod\quick\impl\form\QuickSearchForm;
@@ -64,7 +64,7 @@ class OverviewJhtmlController extends ControllerAdapter {
 		
 		$overviewAjahHook = OverviewJhtmlController::buildAjahHook($this->getHttpContext()->getControllerContextPath(
 				$this->getControllerContext())->toUrl(), $stateKey);
-		$filterAjahHook = GlobalFilterFieldController::buildFilterAjahHook($scrRegistry, $eiFrame->getContextEiEngine()->getEiMask());
+		$filterAjahHook = GlobalFilterPropController::buildFilterAjahHook($scrRegistry, $eiFrame->getContextEiEngine()->getEiMask());
 		$listModel = new OverviewModel($this->eiuCtrl->frame(), $this->listSize, $critmodForm, $quickSearchForm);
 		
 		if (!$listModel->initialize(1)) {
@@ -97,7 +97,7 @@ class OverviewJhtmlController extends ControllerAdapter {
 		}
 		
 		$eiMask = $eiFrame->getContextEiEngine()->getEiMask();
-		$filterAjahHook = GlobalFilterFieldController::buildFilterAjahHook($scrRegistry, $eiMask);
+		$filterAjahHook = GlobalFilterPropController::buildFilterAjahHook($scrRegistry, $eiMask);
 		
 // 		$this->forward('ei\manage\critmod\impl\view\critmodForm.html',
 // 				array('critmodForm' => $critmodForm, 'critmodFormUrl' => $this->getRequest()->getUrl(),
@@ -117,10 +117,10 @@ class OverviewJhtmlController extends ControllerAdapter {
 // 	public function doCritmodForm(ParamGet $selectedSaveId = null, ScrRegistry $scrRegistry) {
 // 		$eiFrame = $this->manageState->peakEiFrame();
 
-// 		$filterGroupData = null;
+// 		$filterPropSettingGroup = null;
 // 		$sortData = null;
 // 		if ($selectedSaveId === null) {
-// 			$filterGroupData = new FilterGroupData();
+// 			$filterPropSettingGroup = new FilterPropSettingGroup();
 // 			$sortData = new SortData();
 // 		} else {
 // 			$critmodSave = $this->critmodSaveDao->getCritmodSaveById((string) $selectedSaveId);
@@ -128,13 +128,13 @@ class OverviewJhtmlController extends ControllerAdapter {
 // 				throw new PageNotFoundException();
 // 			}
 				
-// 			$filterGroupData = $critmodSave->readFilterGroupData();
+// 			$filterPropSettingGroup = $critmodSave->readFilterPropSettingGroup();
 // 			$sortData = $critmodSave->readSortData();
 // 		}
 
 // 		$eiMask = $eiFrame->getContextEiEngine()->getEiMask();
-// 		$filterGroupForm = new FilterGroupForm($filterGroupData, $eiMask->createManagedFilterDefinition($eiFrame));
-// 		$filterAjahHook = GlobalFilterFieldController::buildFilterAjahHook($scrRegistry, $eiMask);
+// 		$filterGroupForm = new FilterGroupForm($filterPropSettingGroup, $eiMask->createFilterDefinition($eiFrame));
+// 		$filterAjahHook = GlobalFilterPropController::buildFilterAjahHook($scrRegistry, $eiMask);
 // 		$sortForm = new SortForm($sortData, $eiMask->createManagedSortDefinition($eiFrame));
 
 // 		$this->send(new AjahResponse($this->createView(

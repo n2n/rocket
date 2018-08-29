@@ -27,6 +27,7 @@ use n2n\persistence\orm\CascadeType;
 use n2n\persistence\orm\annotation\AnnoTable;
 use n2n\persistence\orm\annotation\AnnoManyToOne;
 use n2n\persistence\orm\annotation\AnnoOneToMany;
+use rocket\spec\TypePath;
 
 class EiGrant extends ObjectAdapter implements Grant {
 	private static function _annos(AnnoInit $ai) {
@@ -36,8 +37,7 @@ class EiGrant extends ObjectAdapter implements Grant {
 	}
 
 	private $id;
-	private $eiTypeId;
-	private $eiMaskId;
+	private $eiTypePath;
 	private $rocketUserGroup;
 	private $full = false;
 	private $eiPrivilegeGrants;
@@ -54,20 +54,12 @@ class EiGrant extends ObjectAdapter implements Grant {
 		$this->id = $id;
 	}
 	
-	public function getEiTypeId() {
-		return $this->eiTypeId;
+	public function getEiTypePath() {
+		return TypePath::create($this->eiTypePath);
 	}
 	
-	public function setEiTypeId(string $eiTypeId) {
-		$this->eiTypeId = $eiTypeId;
-	}
-	
-	public function getEiMaskId() {
-		return $this->eiMaskId;
-	}
-	
-	public function setEiMaskId(string $eiMaskId = null) {
-		$this->eiMaskId = $eiMaskId;
+	public function setEiTypePath(TypePath $eiTypePath) {
+		$this->eiTypePath = $eiTypePath;
 	}
 		
 	public function getRocketUserGroup() {

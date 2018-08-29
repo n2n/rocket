@@ -19,21 +19,17 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\critmod\filter\impl\field;
+namespace rocket\ei\manage\critmod\filter\impl\prop;
 
-use n2n\impl\web\dispatch\mag\model\EnumMag;
-use n2n\web\dispatch\mag\Mag;
-use n2n\persistence\orm\criteria\item\CriteriaProperty;
+use rocket\ei\manage\security\filter\SecurityFilterProp;
 
-class EnumFilterField extends FilterFieldAdapter {
-	private $options;
-	
-	public function __construct(CriteriaProperty $criteriaProperty, $label, array $options) {
-		parent::__construct($criteriaProperty, $label, $options);
-		$this->options = $options;
+class BoolSecurityFilterProp extends BoolFilterProp implements SecurityFilterProp {
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\security\filter\SecurityFilterProp::createEiFieldConstraint()
+	 */
+	public function createEiFieldConstraint() {
+		return new BoolEiFieldConstraint($this->buildValue($operator, $mag));
 	}
 	
-	public function createValueMag($value): Mag {
-		return new EnumMag('Value', $this->options, $value);
-	}
 }

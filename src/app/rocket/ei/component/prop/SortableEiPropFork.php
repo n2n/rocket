@@ -21,7 +21,7 @@
  */
 namespace rocket\ei\component\prop;
 
-use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\frame\EiFrame;
 use n2n\core\container\N2nContext;
 
 interface SortableEiPropFork extends EiProp {

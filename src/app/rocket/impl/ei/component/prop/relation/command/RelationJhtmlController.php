@@ -31,7 +31,7 @@ use n2n\web\http\BadRequestException;
 use n2n\util\uri\Url;
 use rocket\ei\util\model\EiuCtrl;
 use n2n\impl\web\ui\view\jhtml\JhtmlResponse;
-use rocket\ei\manage\critmod\CriteriaConstraint;
+use rocket\ei\manage\frame\CriteriaConstraint;
 
 class RelationJhtmlController extends ControllerAdapter {
 	private $eiuCtrl;	

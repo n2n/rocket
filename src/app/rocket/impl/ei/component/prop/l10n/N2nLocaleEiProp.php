@@ -37,7 +37,7 @@ use rocket\impl\ei\component\prop\adapter\DraftableEiPropAdapter;
 use n2n\reflection\property\TypeConstraint;
 use n2n\reflection\property\AccessProxy;
 use rocket\ei\manage\EiObject;
-use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\frame\EiFrame;
 use n2n\core\container\N2nContext;
 use n2n\web\dispatch\mag\Mag;
 use rocket\ei\util\model\Eiu;
@@ -46,7 +46,7 @@ use rocket\ei\manage\critmod\sort\impl\SimpleSortField;
 use rocket\ei\component\prop\GenericEiProp;
 use rocket\ei\manage\generic\CommonGenericEiProperty;
 use n2n\core\config\WebConfig;
-use rocket\ei\manage\critmod\filter\FilterField;
+use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\sort\SortField;
 use rocket\ei\manage\generic\GenericEiProperty;
 
@@ -149,16 +149,16 @@ class N2nLocaleEiProp extends DraftableEiPropAdapter implements FilterableEiProp
 // 		return count($this->n2nLocales) > 1;
 // 	}
 
-	public function buildManagedFilterField(EiFrame $eiFrame): ?FilterField  {
-		return $this->buildFilterField($eiFrame->getN2nContext());
+	public function buildManagedFilterProp(EiFrame $eiFrame): ?FilterProp  {
+		return $this->buildFilterProp($eiFrame->getN2nContext());
 	}
 	
-	public function buildFilterField(N2nContext $n2nContext): ?FilterField {
-		return new N2nLocaleFilterField(CrIt::p($this->entityProperty), $this->getLabelLstr(), 
+	public function buildFilterProp(Eiu $eiu): ?FilterProp {
+		return new N2nLocaleFilterProp(CrIt::p($this->entityProperty), $this->getLabelLstr(), 
 				$this->buildN2nLocaleOptions($n2nContext->lookup(WebConfig::class), $n2nContext->getN2nLocale()));
 	}
 	
-	public function buildEiEntryFilterField(N2nContext $n2nContext) {
+	public function buildSecurityFilterProp(N2nContext $n2nContext) {
 		return null;
 	}
 	

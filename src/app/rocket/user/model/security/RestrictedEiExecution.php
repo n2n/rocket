@@ -147,7 +147,7 @@ class RestrictedEiExecution implements EiExecution {
 			}
 				
 			$this->comparatorConstraintGroup->addComparatorConstraint($this->eiEntryFilterDefinition
-					->createComparatorConstraint($eiPrivilegeGrant->readRestrictionFilterGroupData()));
+					->createComparatorConstraint($eiPrivilegeGrant->readRestrictionFilterPropSettingGroup()));
 		}
 	}
 	
@@ -183,7 +183,7 @@ class RestrictedEiExecution implements EiExecution {
 		}
 		
 		return $this->cachedEiEntryConstraints[$objHash] = $this->eiEntryFilterDefinition
-					->createEiEntryConstraint($eiPrivilegeGrant->readRestrictionFilterGroupData());
+					->createEiEntryConstraint($eiPrivilegeGrant->readRestrictionFilterPropSettingGroup());
 	}
 	
 	/**

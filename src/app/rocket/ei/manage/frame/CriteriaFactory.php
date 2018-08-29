@@ -19,33 +19,10 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage;
+namespace rocket\ei\manage\frame;
 
-use rocket\ei\mask\EiMask;
-use n2n\web\http\controller\ControllerContext;
+use n2n\persistence\orm\EntityManager;
 
-class EiFrameFactory {
-	private $contextEiMask;
-	
-	public function __construct(EiMask $contextEiMask) {
-		$this->contextEiMask = $contextEiMask;		
-	}
-	
-	public function create(ControllerContext $controllerContext, ManageState $manageState,  
-			EiFrame $parentEiFrame = null) {
-		$eiFrame = new EiFrame($this->contextEiMask->getEiEngine(), $manageState);
-		$eiFrame->setControllerContext($controllerContext);
-		$eiFrame->setParent($parentEiFrame);
-		
-		$this->contextEiMask->setupEiFrame($eiFrame);
-
-// 		if ($pseudo) {
-// 			$childEiFrame->setOverviewPathExt(Path::create($this->getOverviewPathExt()));
-// 			$childEiFrame->setDetailPathExt(Path::create($this->getDetailPathExt()));
-// 		}
-		
-		return $eiFrame;
-	}
-	
-	
+interface CriteriaFactory {
+	public function create(EntityManager $em, $entityAlias);
 }

@@ -25,7 +25,7 @@ use rocket\ei\manage\mapping\EiEntry;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\persistence\orm\store\EntityInfo;
-use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\EiObject;
 use rocket\ei\EiType;
 use rocket\ei\manage\EiEntityObj;
@@ -65,7 +65,7 @@ class EiuFrame {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\EiFrame
+	 * @return \rocket\ei\manage\frame\EiFrame
 	 */
 	public function getEiFrame() {
 		return $this->eiFrame;

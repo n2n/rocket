@@ -38,7 +38,7 @@ use rocket\ei\manage\preview\model\UnavailablePreviewException;
 use n2n\web\http\payload\impl\Redirect;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ajah\RocketJhtmlResponse;
-use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\frame\EiFrame;
 use n2n\impl\web\ui\view\jhtml\JhtmlExec;
 use n2n\l10n\MessageContainer;
 

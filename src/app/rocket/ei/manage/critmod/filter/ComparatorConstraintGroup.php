@@ -24,7 +24,7 @@ namespace rocket\ei\manage\critmod\filter;
 use n2n\reflection\ArgUtils;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use n2n\persistence\orm\criteria\item\CriteriaProperty;
-use rocket\ei\manage\critmod\CriteriaConstraint;
+use rocket\ei\manage\frame\CriteriaConstraint;
 use n2n\persistence\orm\criteria\Criteria;
 
 class ComparatorConstraintGroup implements ComparatorConstraint, CriteriaConstraint {
@@ -72,7 +72,7 @@ class ComparatorConstraintGroup implements ComparatorConstraint, CriteriaConstra
 	}
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\critmod\CriteriaConstraint::applyToCriteria()
+	 * @see \rocket\ei\manage\frame\CriteriaConstraint::applyToCriteria()
 	 */
 	public function applyToCriteria(Criteria $criteria, CriteriaProperty $alias) {
 		$this->applyToCriteriaComparator($criteria->where()->andGroup(), $alias);

@@ -55,7 +55,7 @@ interface EiExecution {
 	public function getEiEntryConstraint();
 	
 	/**
-	 * @return \rocket\ei\manage\critmod\CriteriaConstraint
+	 * @return \rocket\ei\manage\frame\CriteriaConstraint
 	 * @throws InaccessibleControlException
 	 */
 	public function getCriteriaConstraint();

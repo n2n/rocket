@@ -24,7 +24,7 @@ namespace rocket\ei\component;
 use rocket\ei\component\prop\EiPropCollection;
 use n2n\reflection\ArgUtils;
 use rocket\ei\manage\EiObject;
-use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\component\modificator\EiModificatorCollection;
 use rocket\ei\security\InaccessibleEntryException;
 use rocket\ei\manage\mapping\EiEntry;

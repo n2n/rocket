@@ -21,7 +21,7 @@
  */
 namespace rocket\ei\util\model;
 
-use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\frame\EiFrame;
 use n2n\core\container\N2nContext;
 use rocket\ei\manage\ManageException;
 use n2n\reflection\ArgUtils;

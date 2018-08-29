@@ -22,7 +22,7 @@
 namespace rocket\ei\component\prop;
 
 use n2n\core\container\N2nContext;
-use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\critmod\sort\SortField;
 
 interface SortableEiProp extends EiProp {

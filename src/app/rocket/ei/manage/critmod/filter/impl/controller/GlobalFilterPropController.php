@@ -32,18 +32,18 @@ use rocket\ei\UnknownEiTypeExtensionException;
 use n2n\web\dispatch\map\InvalidPropertyExpressionException;
 use n2n\web\dispatch\map\PropertyPath;
 use rocket\ei\component\CritmodFactory;
-use rocket\ei\manage\critmod\filter\impl\form\FilterFieldItemForm;
-use rocket\ei\manage\critmod\filter\data\FilterItemData;
+use rocket\ei\manage\critmod\filter\impl\form\FilterPropItemForm;
+use rocket\ei\manage\critmod\filter\data\FilterPropSetting;
 use n2n\util\config\Attributes;
 use rocket\ei\manage\critmod\filter\impl\form\FilterGroupForm;
-use rocket\ei\manage\critmod\filter\data\FilterGroupData;
+use rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup;
 use n2n\web\http\controller\impl\ScrRegistry;
 use rocket\ei\manage\critmod\filter\FilterDefinition;
 use rocket\ei\mask\EiMask;
-use rocket\ei\manage\critmod\filter\UnknownFilterFieldException;
+use rocket\ei\manage\critmod\filter\UnknownFilterPropException;
 use n2n\impl\web\ui\view\jhtml\JhtmlResponse;
 
-class GlobalFilterFieldController extends ControllerAdapter implements ScrController {
+class GlobalFilterPropController extends ControllerAdapter implements ScrController {
 	private $spec;
 	private $loginContext;
 	
@@ -83,49 +83,49 @@ class GlobalFilterFieldController extends ControllerAdapter implements ScrContro
 		}
 	}
 	
-	public function doSimple(string $eiTypeId, string $eiMaskId = null, ParamQuery $filterFieldId, ParamQuery $propertyPath) {
+	public function doSimple(string $eiTypeId, string $eiMaskId = null, ParamQuery $filterPropId, ParamQuery $propertyPath) {
 		$eiThing = $this->lookupEiThing($eiTypeId, $eiMaskId);
 		$propertyPath = $this->buildPropertyPath((string) $propertyPath);
-		$filterFieldId = (string) $filterFieldId;
+		$filterPropId = (string) $filterPropId;
 		$filterDefinition = (new CritmodFactory($eiThing->getEiEngine()->getEiMask()->getEiPropCollection(), 
 						$eiThing->getEiEngine()->getEiModificatorCollection()))
-				->createFilterDefinition($this->getN2nContext());
+				->createGeneralFilterDefinition($this->getN2nContext());
 	
-		$filterFieldItemForm = null;
+		$filterPropItemForm = null;
 		try {
-			$filterFieldItemForm = new FilterFieldItemForm(new FilterItemData($filterFieldId, new Attributes()),
+			$filterPropItemForm = new FilterPropItemForm(new FilterPropSetting($filterPropId, new Attributes()),
 					$filterDefinition);
-		} catch (UnknownFilterFieldException $e) {
+		} catch (UnknownFilterPropException $e) {
 			throw new PageNotFoundException(null, 0, $e);
 		}
 	
-		$this->send(JhtmlResponse::view($this->createView('..\view\pseudoFilterFieldItemForm.html', array(
-				'filterFieldItemForm' => $filterFieldItemForm, 'propertyPath' => $propertyPath))));
+		$this->send(JhtmlResponse::view($this->createView('..\view\pseudoFilterPropItemForm.html', array(
+				'filterPropItemForm' => $filterPropItemForm, 'propertyPath' => $propertyPath))));
 	}
 	
-	public function doAdv(string $eiTypeId, string $eiMaskId = null, ParamQuery $filterFieldId, ParamQuery $propertyPath) {
+	public function doAdv(string $eiTypeId, string $eiMaskId = null, ParamQuery $filterPropId, ParamQuery $propertyPath) {
 		$eiThing = $this->lookupEiThing($eiTypeId, $eiMaskId);
 		$propertyPath = $this->buildPropertyPath((string) $propertyPath);
-		$filterFieldId = (string) $filterFieldId;
+		$filterPropId = (string) $filterPropId;
 		$eiEntryFilterDefinition = (new CritmodFactory($eiThing->getEiEngine()->getEiMask()->getEiPropCollection(), $eiThing->getEiEngine()->getEiModificatorCollection()))
 				->createEiEntryFilterDefinition($this->getN2nContext());
-		$filterFieldItemForm = null;
+		$filterPropItemForm = null;
 		try {
-			$filterFieldItemForm = new FilterFieldItemForm(new FilterItemData($filterFieldId, new Attributes()), 
+			$filterPropItemForm = new FilterPropItemForm(new FilterPropSetting($filterPropId, new Attributes()), 
 					$eiEntryFilterDefinition);
-		} catch (UnknownFilterFieldException $e) {
+		} catch (UnknownFilterPropException $e) {
 			throw new PageNotFoundException(null, 0, $e);
 		}
 		
-		$this->send(JhtmlResponse::view($this->createView('..\view\pseudoFilterFieldItemForm.html', array(
-				'filterFieldItemForm' => $filterFieldItemForm, 'propertyPath' => $propertyPath))));
+		$this->send(JhtmlResponse::view($this->createView('..\view\pseudoFilterPropItemForm.html', array(
+				'filterPropItemForm' => $filterPropItemForm, 'propertyPath' => $propertyPath))));
 	}
 	
 	public function doGroup(string $eiTypeId, string $eiMaskId = null, ParamQuery $propertyPath) {
 		$eiThing = $this->lookupEiThing($eiTypeId, $eiMaskId);
 		$propertyPath = $this->buildPropertyPath((string) $propertyPath);
 		
-		$filterGroupForm = new FilterGroupForm(new FilterGroupData(), new FilterDefinition());
+		$filterGroupForm = new FilterGroupForm(new FilterPropSettingGroup(), new FilterDefinition());
 		
 		$this->send(JhtmlResponse::view($this->createView(
 				'..\view\pseudoFilterGroupForm.html', 
@@ -133,7 +133,7 @@ class GlobalFilterFieldController extends ControllerAdapter implements ScrContro
 	}
 	
 	public static function buildFilterAjahHook(ScrRegistry $scrRegistry, EiMask $eiMask): FilterAjahHook {
-		$baseUrl = $scrRegistry->registerSessionScrController(GlobalFilterFieldController::class);
+		$baseUrl = $scrRegistry->registerSessionScrController(GlobalFilterPropController::class);
 		$eiTypeId = $eiMask->getEiEngine()->getEiMask()->getEiType()->getId();
 		$eiMaskId = ($eiMask->isExtension() ? $eiMask->getExtension()->getId() : null);
 		
@@ -143,7 +143,7 @@ class GlobalFilterFieldController extends ControllerAdapter implements ScrContro
 	}
 	
 	public static function buildEiEntryFilterAjahHook(ScrRegistry $scrRegistry, string $eiTypeId, string $eiMaskId = null): FilterAjahHook {
-		$baseUrl = $scrRegistry->registerSessionScrController(GlobalFilterFieldController::class);
+		$baseUrl = $scrRegistry->registerSessionScrController(GlobalFilterPropController::class);
 		
 		return new FilterAjahHook(
 				$baseUrl->extR(array('adv', $eiTypeId, $eiMaskId)),

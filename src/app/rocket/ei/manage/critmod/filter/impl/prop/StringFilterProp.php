@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\critmod\filter\impl\field;
+namespace rocket\ei\manage\critmod\filter\impl\prop;
 
 use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\web\dispatch\mag\Mag;
@@ -27,7 +27,7 @@ use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use n2n\l10n\Lstr;
 use rocket\core\model\Rocket;
 
-class StringFilterField extends FilterFieldAdapter {
+class StringFilterProp extends FilterPropAdapter {
 	
 	public function createValueMag($value): Mag {
 		return new StringMag('Value', $value);

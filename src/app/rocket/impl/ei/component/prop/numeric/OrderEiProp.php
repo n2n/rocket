@@ -58,8 +58,8 @@ class OrderEiProp extends IntegerEiProp {
 				null, null, 0, null, array('placeholder' => $this->getLabelLstr()));
 	}
 
-	public function getFilterField() {
-// 		return new StringFilterField($this->getEntityProperty()->getName(), $this->getLabel(),
-// 				FilterFieldAdapter::createOperatorOptions($n2nContext->getN2nLocale()));
+	public function getFilterProp() {
+// 		return new StringFilterProp($this->getEntityProperty()->getName(), $this->getLabel(),
+// 				FilterPropAdapter::createOperatorOptions($n2nContext->getN2nLocale()));
 	}
 }

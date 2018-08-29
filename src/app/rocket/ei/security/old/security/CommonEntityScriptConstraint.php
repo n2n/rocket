@@ -94,7 +94,7 @@
 	
 // 	public function getOrCreateFilterModel() {
 // 		if ($this->filterModel === null) {
-// 			$this->filterModel = FilterDefinition::createFromFilterFields($this->getSelectorItems());
+// 			$this->filterModel = FilterDefinition::createFromFilterProps($this->getSelectorItems());
 // 		}
 		
 // 		return $this->filterModel;

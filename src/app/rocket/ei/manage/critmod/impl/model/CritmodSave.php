@@ -25,7 +25,7 @@ use n2n\util\StringUtils;
 use n2n\reflection\ObjectAdapter;
 use n2n\reflection\annotation\AnnoInit;
 use n2n\persistence\orm\annotation\AnnoTable;
-use rocket\ei\manage\critmod\filter\data\FilterGroupData;
+use rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup;
 use n2n\util\JsonDecodeFailedException;
 use n2n\util\config\Attributes;
 use rocket\ei\manage\critmod\sort\SortData;
@@ -72,16 +72,16 @@ class CritmodSave extends ObjectAdapter {
 		$this->eiMaskId = $eiMaskId;
 	}
 
-	public function readFilterGroupData(): FilterGroupData {
+	public function readFilterPropSettingGroup(): FilterPropSettingGroup {
 		$data = array();
 		try {
 			$data = StringUtils::jsonDecode($this->filterDataJson, true);
 		} catch (JsonDecodeFailedException $e) {}
-		return FilterGroupData::create(new Attributes($data));
+		return FilterPropSettingGroup::create(new Attributes($data));
 	}
 	
-	public function writeFilterData(FilterGroupData $filterGroupData) {
-		$this->filterDataJson = StringUtils::jsonEncode($filterGroupData->toAttrs());		
+	public function writeFilterData(FilterPropSettingGroup $filterPropSettingGroup) {
+		$this->filterDataJson = StringUtils::jsonEncode($filterPropSettingGroup->toAttrs());		
 	}
 	
 	public function readSortData(): SortData {

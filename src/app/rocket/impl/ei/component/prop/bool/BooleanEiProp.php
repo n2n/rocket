@@ -27,7 +27,7 @@ use rocket\ei\component\prop\SortableEiProp;
 use rocket\ei\component\prop\FilterableEiProp;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
-use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\frame\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use n2n\core\container\N2nContext;
 use rocket\ei\manage\critmod\sort\impl\SimpleSortField;
@@ -39,11 +39,11 @@ use n2n\reflection\property\TypeConstraint;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\web\dispatch\mag\Mag;
 use rocket\ei\util\model\Eiu;
-use rocket\ei\manage\critmod\filter\impl\field\BoolFilterField;
+use rocket\ei\manage\critmod\filter\impl\prop\BoolFilterProp;
 use rocket\ei\manage\EiObject;
 use rocket\impl\ei\component\prop\bool\conf\BooleanEiPropConfigurator;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
-use rocket\ei\manage\critmod\filter\FilterField;
+use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\sort\SortField;
 use rocket\ei\manage\gui\GuiIdPath;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
@@ -220,26 +220,18 @@ class BooleanEiProp extends DraftableEiPropAdapter implements FilterableEiProp, 
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\FilterableEiProp::buildManagedFilterField()
+	 * @see \rocket\ei\component\prop\FilterableEiProp::buildManagedFilterProp()
 	 */
-	public function buildManagedFilterField(EiFrame $eiFrame): ?FilterField  {
-		return $this->buildFilterField($eiFrame->getN2nContext());
+	public function buildManagedFilterProp(EiFrame $eiFrame): ?FilterProp  {
+		return $this->buildFilterProp($eiFrame->getN2nContext());
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\FilterableEiProp::buildFilterField()
+	 * @see \rocket\ei\component\prop\FilterableEiProp::buildFilterProp()
 	 */
-	public function buildFilterField(N2nContext $n2nContext): ?FilterField {
-		return $this->buildEiEntryFilterField($n2nContext);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\FilterableEiProp::buildEiEntryFilterField()
-	 */
-	public function buildEiEntryFilterField(N2nContext $n2nContext) {
-		return new BoolFilterField(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
+	public function buildFilterProp(Eiu $eiu): ?FilterProp {
+		return new BoolFilterProp(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
 	}
 	
 	/**

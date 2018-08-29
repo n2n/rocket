@@ -21,7 +21,7 @@
  */
 namespace rocket\ei\manage\security;
 
-use rocket\ei\manage\critmod\CriteriaConstraint;
+use rocket\ei\manage\frame\CriteriaConstraint;
 use rocket\ei\manage\mapping\EiEntryConstraint;
 
 interface CommandExecutionConstraint extends CriteriaConstraint, EiEntryConstraint {

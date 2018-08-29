@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\string\modificator;
 
 use rocket\impl\ei\component\modificator\adapter\EiModificatorAdapter;
-use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\mapping\EiEntry;
 use rocket\impl\ei\component\prop\string\PathPartEiProp;
 use n2n\util\col\ArrayUtils;

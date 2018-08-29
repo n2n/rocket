@@ -21,14 +21,14 @@
  */
 namespace rocket\ei\mask;
 
-use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\frame\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\EiType;
 use n2n\l10n\N2nLocale;
 use rocket\ei\manage\preview\model\PreviewModel;
 use rocket\ei\manage\EiObject;
 use rocket\ei\mask\model\DisplayScheme;
-use rocket\ei\manage\critmod\CriteriaConstraint;
+use rocket\ei\manage\frame\CriteriaConstraint;
 use rocket\ei\EiEngine;
 use rocket\ei\manage\preview\controller\PreviewController;
 use n2n\util\config\InvalidConfigurationException;
@@ -594,9 +594,9 @@ class EiMask {
 	 * @param EiFrame $eiFrame
 	 */
 	public function setupEiFrame(EiFrame $eiFrame) {
-		if (null !== ($filterGroupData = $this->eiMaskDef->getFilterGroupData())) {
-			$comparatorConstraint = $this->getEiEngine()->createManagedFilterDefinition($eiFrame)
-					->createComparatorConstraint($filterGroupData);
+		if (null !== ($filterPropSettingGroup = $this->eiMaskDef->getFilterPropSettingGroup())) {
+			$comparatorConstraint = $this->getEiEngine()->createFilterDefinition($eiFrame)
+					->createComparatorConstraint($filterPropSettingGroup);
 			if ($comparatorConstraint !== null) {
 				$eiFrame->getCriteriaConstraintCollection()->add(CriteriaConstraint::TYPE_HARD_FILTER, 
 						new FilterCriteriaConstraint($comparatorConstraint));

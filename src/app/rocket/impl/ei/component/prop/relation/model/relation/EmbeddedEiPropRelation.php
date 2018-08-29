@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\relation\model\relation;
 
 use rocket\ei\manage\EiObject;
-use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\frame\EiFrame;
 use rocket\impl\ei\component\prop\adapter\DraftableEiPropAdapter;
 use rocket\ei\manage\mapping\EiEntry;
 use rocket\ei\EiType;

@@ -94,8 +94,8 @@ abstract class PropertyDisplayableEiPropAdapter extends ObjectPropertyEiPropAdap
 // 		return false;
 // 	}
 	
-// 	public function createEiEntryFilterField(N2nContext $n2nContext): EiEntryFilterField {
-// 		throw new IllegalStateException('EiProp cannot provide an EiEntryFilterField: ' . $this);
+// 	public function createSecurityFilterProp(N2nContext $n2nContext): SecurityFilterProp {
+// 		throw new IllegalStateException('EiProp cannot provide an SecurityFilterProp: ' . $this);
 // 	}
 	
 // 	public function getTypeConstraint() {

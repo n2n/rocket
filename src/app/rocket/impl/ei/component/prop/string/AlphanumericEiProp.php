@@ -22,13 +22,13 @@
 namespace rocket\impl\ei\component\prop\string;
 
 use rocket\ei\component\prop\QuickSearchableEiProp;
-use rocket\ei\manage\critmod\filter\impl\field\StringFilterField;
+use rocket\ei\manage\critmod\filter\impl\prop\StringFilterProp;
 use rocket\ei\component\prop\SortableEiProp;
 use rocket\ei\component\prop\FilterableEiProp;
 use rocket\ei\manage\critmod\sort\impl\SimpleSortField;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\impl\ei\component\prop\adapter\DraftableEiPropAdapter;
-use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\frame\EiFrame;
 use n2n\core\container\N2nContext;
 use rocket\ei\EiPropPath;
 use n2n\persistence\orm\criteria\item\CrIt;
@@ -40,7 +40,7 @@ use rocket\ei\component\prop\GenericEiProp;
 use rocket\ei\manage\generic\CommonGenericEiProperty;
 use rocket\ei\manage\generic\CommonScalarEiProperty;
 use rocket\ei\manage\critmod\quick\impl\model\LikeQuickSearchField;
-use rocket\ei\manage\critmod\filter\FilterField;
+use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\sort\SortField;
 use rocket\ei\manage\generic\GenericEiProperty;
 
@@ -71,24 +71,28 @@ abstract class AlphanumericEiProp extends DraftableEiPropAdapter implements Filt
 		parent::setEntityProperty($entityProperty);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\adapter\StatelessDisplayable::createOutputUiComponent()
+	 */
 	public function createOutputUiComponent(HtmlView $view, Eiu $eiu)  {
 		return $view->getHtmlBuilder()->getEsc($eiu->entry()->getEiEntry()->getValue(
 				EiPropPath::from($this)));
 	}
 
-	public function buildManagedFilterField(EiFrame $eiFrame): ?FilterField  {
-		return $this->buildFilterField($eiFrame->getN2nContext());
+	public function buildManagedFilterProp(EiFrame $eiFrame): ?FilterProp  {
+		return $this->buildFilterProp($eiFrame->getN2nContext());
 	}
 
-	public function buildFilterField(N2nContext $n2nContext): ?FilterField {
+	public function buildFilterProp(Eiu $eiu): ?FilterProp {
 		if (null !== ($entityProperty = $this->getEntityProperty(false))) {
-			return new StringFilterField(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
+			return new StringFilterProp(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
 		}
 
 		return null;
 	}
 	
-	public function buildEiEntryFilterField(N2nContext $n2nContext) {
+	public function buildSecurityFilterProp(N2nContext $n2nContext) {
 		return null;
 	}
 	

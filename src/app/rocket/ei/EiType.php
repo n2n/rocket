@@ -304,7 +304,7 @@ class EiType extends Type {
 			
 // 			$restrictionSelectorItem = $eiProp->createRestrictionSelectorItem($n2nContext);
 			
-// 			ArgUtils::valTypeReturn($restrictionSelectorItem, 'rocket\ei\manage\critmod\filter\impl\field\SelectorItem', 
+// 			ArgUtils::valTypeReturn($restrictionSelectorItem, 'rocket\ei\manage\critmod\filter\impl\prop\SelectorItem', 
 // 					$eiProp, 'createRestrictionSelectorItem');
 			
 // 			$restrictionSelectorItems[$eiProp->getId()] = $restrictionSelectorItem;

@@ -22,6 +22,13 @@ class Eiu implements Lookupable {
 	}
 	
 	/**
+	 * @return \n2n\core\container\N2nContext
+	 */
+	public function getN2nContext() {
+		return $this->eiuFactory->getN2nContext(true);
+	}
+	
+	/**
 	 * @return EiuContext|null
 	 */
 	public function context(bool $required = true) {
