@@ -31,7 +31,7 @@ use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use rocket\ei\manage\frame\EiFrame;
 use n2n\l10n\N2nLocale;
 use n2n\core\container\N2nContext;
-use rocket\ei\manage\critmod\filter\impl\prop\EnumFilterProp;
+use rocket\ei\util\filter\prop\EnumFilterProp;
 use rocket\ei\manage\critmod\sort\impl\SimpleSortField;
 
 use n2n\reflection\ArgUtils;

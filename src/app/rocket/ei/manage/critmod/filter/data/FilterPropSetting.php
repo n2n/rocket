@@ -27,20 +27,30 @@ class FilterPropSetting {
 	const ATTR_ITEM_ID_KEY = 'itemId';
 	const ATTR_ATTRS_KEY = 'attrs';
 
-	private $filterFieldId;
+	private $filterPropId;
 	private $attributes;
 
-	public function __construct(string $filterFieldId = null, Attributes $attributes) {
-		$this->filterFieldId = $filterFieldId;
+	/**
+	 * @param string $filterPropId
+	 * @param Attributes $attributes
+	 */
+	public function __construct(string $filterPropId, Attributes $attributes) {
+		$this->filterPropId = $filterPropId;
 		$this->attributes = $attributes;
 	}
 
-	public function setFilterFieldId(string $filterFieldId) {
-		$this->filterFieldId = $filterFieldId;
+	/**
+	 * @param string $filterPropId
+	 */
+	public function setFilterPropId(string $filterPropId) {
+		$this->filterPropId = $filterPropId;
 	}
 
-	public function getFilterFieldId() {
-		return $this->filterFieldId;
+	/**
+	 * @return string
+	 */
+	public function getFilterPropId() {
+		return $this->filterPropId;
 	}
 
 	public function setAttributes(Attributes $attributes) {
@@ -53,7 +63,7 @@ class FilterPropSetting {
 
 	public function toAttrs(): array {
 		return array(
-				self::ATTR_ITEM_ID_KEY => $this->filterFieldId,
+				self::ATTR_ITEM_ID_KEY => $this->filterPropId,
 				self::ATTR_ATTRS_KEY => $this->attributes->toArray());
 	}
 

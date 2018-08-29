@@ -23,7 +23,7 @@ namespace rocket\ei\manage\critmod\quick\impl\model;
 
 use rocket\ei\manage\critmod\quick\QuickSearchField;
 use n2n\persistence\orm\criteria\item\CriteriaItem;
-use rocket\ei\manage\critmod\filter\impl\model\SimpleComparatorConstraint;
+use rocket\ei\util\filter\model\SimpleComparatorConstraint;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 

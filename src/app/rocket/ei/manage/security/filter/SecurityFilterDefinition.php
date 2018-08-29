@@ -25,6 +25,7 @@ use n2n\util\config\AttributesException;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup;
 use rocket\ei\manage\critmod\filter\ComparatorConstraint;
+use rocket\ei\manage\critmod\filter\FilterDefinition;
 
 class SecurityFilterDefinition {
 	/**
@@ -38,6 +39,15 @@ class SecurityFilterDefinition {
 	 */
 	public function putProp(EiPropPath $eiPropPath, SecurityFilterProp $securityFilterProp) {
 		$this->props[(string) $eiPropPath] = $securityFilterProp;
+		$this->filterDefinition = null;
+	}
+	
+	/**
+	 * @param EiPropPath $eiPropPath
+	 */
+	public function removeProp(EiPropPath $eiPropPath) {
+		unset($this->props[(string) $eiPropPath]);
+		$this->filterDefinition = null;
 	}
 	
 	/**
@@ -73,6 +83,23 @@ class SecurityFilterDefinition {
 	 */
 	public function isEmpty() {
 		return empty($this->props);
+	}
+	
+	private $filterDefinition;
+	
+	/**
+	 * @return \rocket\ei\manage\critmod\filter\FilterDefinition
+	 */
+	function toFilterDefinition() {
+		if ($this->filterDefinition !== null) {
+			return $this->filterDefinition;
+		}
+		
+		$fd =  new FilterDefinition();
+		foreach ($this->props as $eiPropPath => $prop) {
+			$fd->putFilterProp($eiPropPath, $prop);
+		}
+		return $fd;
 	}
 	
 	public function createComparatorConstraint(FilterPropSettingGroup $filterPropSettingGroup): ComparatorConstraint {

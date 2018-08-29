@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\critmod\filter\impl\form;
+namespace rocket\ei\util\filter\form;
 
 use n2n\web\dispatch\Dispatchable;
 use rocket\ei\manage\critmod\filter\data\FilterPropSetting;
@@ -29,6 +29,7 @@ use n2n\reflection\annotation\AnnoInit;
 use n2n\web\dispatch\annotation\AnnoDispObjectArray;
 use n2n\util\config\Attributes;
 use n2n\web\dispatch\map\bind\BindingDefinition;
+use rocket\ei\manage\critmod\filter\UnknownFilterPropException;
 
 class FilterGroupForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {
@@ -55,13 +56,22 @@ class FilterGroupForm implements Dispatchable {
 		
 		$this->filterPropItemForms = array();
 		foreach ($filterPropSettingGroup->getFilterPropSettings() as $filterPropSetting) {
-			$this->filterPropItemForms[] = new FilterPropItemForm($filterPropSetting, $filterDefinition);
+			try {
+				$this->filterPropItemForms[] = new FilterPropItemForm($filterPropSetting, $filterDefinition);
+			} catch (UnknownFilterPropException $e) {}
 		}
 		
 		$this->filterGroupForms = array();
 		foreach ($filterPropSettingGroup->getFilterPropSettingGroups() as $filterPropSettingGroup) {
 			$this->filterGroupForms[] = new FilterGroupForm($filterPropSettingGroup, $filterDefinition);
 		}
+	}
+	
+	/**
+	 * @return \rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup
+	 */
+	public function getFilterPropSettingGroup() {
+		return $this->filterPropSettingGroup;
 	}
 	
 	public function getFilterDefinition(): FilterDefinition {
@@ -122,10 +132,10 @@ class FilterGroupForm implements Dispatchable {
 	public function buildFilterPropSettingGroup(): FilterPropSettingGroup {
 		$this->filterPropSettingGroup->setAndUsed($this->useAnd);
 		
-		$filterItemDatas = $this->filterPropSettingGroup->getFilterPropSettings();
-		$filterItemDatas->clear();
+		$filterItemSettings = $this->filterPropSettingGroup->getFilterPropSettings();
+		$filterItemSettings->clear();
 		foreach ($this->filterPropItemForms as $filterPropItemForm) {
-			$filterItemDatas->append($filterPropItemForm->buildFilterPropSetting());
+			$filterItemSettings->append($filterPropItemForm->buildFilterPropSetting());
 		}
 		
 		$filterPropSettingGroups = $this->filterPropSettingGroup->getFilterPropSettingGroups();

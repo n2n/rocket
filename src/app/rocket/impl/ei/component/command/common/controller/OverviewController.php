@@ -28,7 +28,7 @@ use rocket\ei\manage\critmod\impl\model\CritmodSaveDao;
 use rocket\ei\manage\critmod\impl\model\CritmodForm;
 use rocket\ei\manage\critmod\quick\impl\form\QuickSearchForm;
 use n2n\web\http\controller\impl\ScrRegistry;
-use rocket\ei\manage\critmod\filter\impl\controller\FilterPropController;
+use rocket\ei\util\filter\controller\FramedFilterPropController;
 use n2n\web\http\controller\ParamQuery;
 use n2n\l10n\DynamicTextCollection;
 use rocket\impl\ei\component\command\common\model\DraftListModel;
@@ -77,7 +77,7 @@ class OverviewController extends ControllerAdapter {
 		
 		$overviewAjahHook = OverviewJhtmlController::buildAjahHook($this->getHttpContext()
 				->getControllerContextPath($this->getControllerContext())->ext('ajah')->toUrl(), $stateKey);
-		$filterAjahHook = FilterPropController::buildFilterAjahHook($this->getHttpContext()
+		$filterJhtmlHook = FramedFilterPropController::buildFilterJhtmlHook($this->getHttpContext()
 				->getControllerContextPath($this->getControllerContext())->ext('filter')->toUrl());
 		
 		$this->eiuCtrl->applyCommonBreadcrumbs();
@@ -86,12 +86,12 @@ class OverviewController extends ControllerAdapter {
 				$this->createView('..\view\overview.html', array('listModel' => $listModel, 
 						'critmodForm' => $critmodForm,
 						'quickSearchForm' => $quickSearchForm, 'overviewAjahHook' => $overviewAjahHook, 
-						'filterAjahHook' => $filterAjahHook)));
+						'filterJhtmlHook' => $filterJhtmlHook)));
 				
 // 		$this->forward('..\view\overview.html', 
 // 				array('listModel' => $listModel, 'critmodForm' => $critmodForm,
 // 						'quickSearchForm' => $quickSearchForm, 'overviewAjahHook' => $overviewAjahHook, 
-// 						'filterAjahHook' => $filterAjahHook, 'listView' => $listView));
+// 						'filterJhtmlHook' => $filterJhtmlHook, 'listView' => $listView));
 	}
 	
 	public function doAjah(array $delegateCmds = array(), OverviewJhtmlController $ajahOverviewController, 
@@ -106,7 +106,7 @@ class OverviewController extends ControllerAdapter {
 		$this->delegate($ajahOverviewController);
 	}
 	
-	public function doFilter(array $delegateCmds = array(), FilterPropController $filterPropController) {
+	public function doFilter(array $delegateCmds = array(), FramedFilterPropController $filterPropController) {
 		$this->delegate($filterPropController);
 	}
 	

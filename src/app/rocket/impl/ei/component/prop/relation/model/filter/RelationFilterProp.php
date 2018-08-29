@@ -36,13 +36,13 @@ use n2n\reflection\property\TypeConstraint;
 use n2n\util\config\AttributesException;
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\filter\FilterDefinition;
-use rocket\ei\manage\critmod\filter\impl\controller\FilterAjahHook;
+use rocket\ei\util\filter\controller\FilterJhtmlHook;
 use rocket\impl\ei\component\prop\relation\TargetFilterDef;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\ei\manage\critmod\filter\ComparatorConstraintGroup;
 use rocket\ei\manage\frame\CriteriaConstraint;
-use rocket\ei\manage\critmod\filter\impl\model\SimpleComparatorConstraint;
+use rocket\ei\util\filter\model\SimpleComparatorConstraint;
 use rocket\ei\manage\mapping\EiFieldConstraint;
 
 class RelationFilterProp implements FilterProp {
@@ -111,7 +111,7 @@ class RelationFilterProp implements FilterProp {
 
 	public function createMagDispatchable(Attributes $attributes): MagDispatchable {
 		$form = new RelationFilterMagForm($this->entityProperty->isToMany(), $this->targetEiuFrame, 
-				$this->targetFilterDef->getFilterDefinition(), $this->targetFilterDef->getFilterAjahHook(), 
+				$this->targetFilterDef->getFilterDefinition(), $this->targetFilterDef->getFilterJhtmlHook(), 
 				$this->targetSelectUrlCallback);
 		$relationFilterConf = new RelationFilterConf($attributes);
 		
@@ -235,14 +235,14 @@ class RelationFilterMagForm extends MagForm {
 	private $filterGroupMag;
 	
 	public function __construct(bool $toMany, EiuFrame $targetEiuFrame, FilterDefinition $targetFilterDefinition, 
-			FilterAjahHook $filterAjahHook, \Closure $targetSelectUrlCallback = null) {
+			FilterJhtmlHook $filterJhtmlHook, \Closure $targetSelectUrlCallback = null) {
 		$this->toMany = $toMany;
 				
 		if ($targetSelectUrlCallback !== null) {
 			$this->selectorMag = new RelationSelectorMag('selector', $targetEiuFrame, 
 					$targetSelectUrlCallback);
 		}
-		$this->filterGroupMag = new RelationFilterGroupMag($targetFilterDefinition, $filterAjahHook);
+		$this->filterGroupMag = new RelationFilterGroupMag($targetFilterDefinition, $filterJhtmlHook);
 		$this->operatorMag = new EnumMag('Operator', $this->buildOperatorOptions(), null, true);
 		
 		$magCollection = new MagCollection();

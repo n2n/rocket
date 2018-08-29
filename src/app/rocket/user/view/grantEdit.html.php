@@ -24,7 +24,7 @@
 	use rocket\user\model\EiGrantForm;
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use rocket\user\view\EiGrantHtmlBuilder;
-	use rocket\ei\manage\critmod\filter\impl\controller\FilterAjahHook;
+	use rocket\ei\util\filter\controller\FilterJhtmlHook;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -37,8 +37,8 @@
 	
 	$eiGrantHtml = new EiGrantHtmlBuilder($view);
 	
-	$filterAjahHook = $view->getParam('filterAjahHook');
-	$view->assert($filterAjahHook instanceof FilterAjahHook);
+	$filterJhtmlHook = $view->getParam('filterJhtmlHook');
+	$view->assert($filterJhtmlHook instanceof FilterJhtmlHook);
 ?>
 
 <?php $formHtml->open($eiGrantForm)?>
@@ -55,7 +55,7 @@
 				<div class="rocket-control">
 					<div class="rocket-option-array">
 						<?php $formHtml->meta()->arrayProps('eiGrantPrivilegeForms', function () 
-								use ($view, $html, $formHtml, $eiGrantHtml, $eiGrantForm, $filterAjahHook) { ?>
+								use ($view, $html, $formHtml, $eiGrantHtml, $eiGrantForm, $filterJhtmlHook) { ?>
 							<div>
 								<div class="rocket-properties">	
 									<div class="rocket-editable">
@@ -100,7 +100,7 @@
 											<div class="rocket-control">
 												<?php $view->import('~\ei\manage\critmod\filter\impl\view\filterForm.html', 
 														array('propertyPath' => $formHtml->meta()->createPropertyPath('restrictionFilterGroupForm'),
-																'filterAjahHook' => $filterAjahHook)) ?>
+																'filterJhtmlHook' => $filterJhtmlHook)) ?>
 											</div>
 										</div>
 									<?php endif ?>

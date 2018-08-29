@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\critmod\filter\impl\prop;
+namespace rocket\ei\util\filter\prop;
 
 use rocket\core\model\Rocket;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
@@ -38,7 +38,7 @@ use rocket\ei\manage\mapping\FieldErrorInfo;
 use n2n\l10n\MessageCode;
 use rocket\ei\manage\critmod\filter\ComparatorConstraint;
 use n2n\persistence\orm\criteria\item\CrIt;
-use rocket\ei\manage\critmod\filter\impl\model\PropertyValueComparatorConstraint;
+use rocket\ei\util\filter\model\PropertyValueComparatorConstraint;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
 
 class BoolFilterProp implements SecurityFilterProp {
@@ -72,7 +72,7 @@ class BoolFilterProp implements SecurityFilterProp {
 	}
 	
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\manage\critmod\filter\impl\prop\FilterProp::createComparatorConstraint()
+	 * @see \rocket\ei\util\filter\prop\FilterProp::createComparatorConstraint()
 	 */
 	public function createComparatorConstraint(Attributes $attributes): ComparatorConstraint {
 		return new PropertyValueComparatorConstraint($this->criteriaProperty, CriteriaComparator::OPERATOR_EQUAL,

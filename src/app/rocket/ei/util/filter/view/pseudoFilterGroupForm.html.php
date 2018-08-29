@@ -22,7 +22,7 @@
 
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use n2n\web\dispatch\map\PropertyPath;
-	use rocket\ei\manage\critmod\filter\impl\form\FilterPropItemForm;
+	use rocket\ei\util\filter\form\FilterGroupForm;
 	
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -31,23 +31,22 @@
 	$propertyPath = $view->getParam('propertyPath');
 	$view->assert($propertyPath instanceof PropertyPath);
 	
-	$filterPropItemForm = $view->getParam('filterPropItemForm');
-	$view->assert($filterPropItemForm instanceof FilterPropItemForm);
+	$filterGroupForm = $view->getParam('filterGroupForm');
+	$view->assert($filterGroupForm instanceof FilterGroupForm);
 ?>
 
-<?php $formHtml->openPseudo($filterPropItemForm, $propertyPath) ?>
-	<li class="rocket-filter-field-item">
+<?php $formHtml->openPseudo($filterGroupForm, $propertyPath) ?>
+	<li class="rocket-filter-group">
 		<?php $formHtml->optionalObjectEnabledHidden(null) ?>
-		<div class="rocket-filter-field-id">
-			<?php $formHtml->input('filterPropId') ?>
+		<div class="rocket-filter-items">
+			<?php $formHtml->inputCheckbox('useAnd', true, 
+					array('class' => 'rocket-filter-and-indicator'))?>
+			<ul	class="rocket-filter-field-items"
+					data-new-form-array-property-path="<?php $html->out('filterPropItemForms') ?>">
+			</ul>
+			<ul class="rocket-filter-groups" 
+					data-new-form-array-property-path="<?php $html->out('filterGroupForms') ?>">
+			</ul>
 		</div>
-		<?php $formHtml->meta()->objectProps('magForm', function () use ($view, $formHtml) { ?>
-			<?php $formHtml->magOpen('div')?>
-				<?php $formHtml->magLabel() ?>
-				<?php $view->out('<div class="rocket-control">') ?>
-					<?php $formHtml->magField() ?>
-				<?php $view->out('</div>') ?>
-			<?php $formHtml->magClose() ?>
-		<?php }) ?>
 	</li>
 <?php $formHtml->closePseudo() ?>

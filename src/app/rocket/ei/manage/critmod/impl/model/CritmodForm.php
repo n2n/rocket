@@ -22,7 +22,7 @@
 namespace rocket\ei\manage\critmod\impl\model;
 
 use rocket\ei\manage\frame\EiFrame;
-use rocket\ei\manage\critmod\filter\impl\form\FilterGroupForm;
+use rocket\ei\util\filter\form\FilterGroupForm;
 use rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup;
 use rocket\ei\manage\critmod\sort\SortData;
 use rocket\ei\manage\critmod\filter\FilterDefinition;
@@ -135,7 +135,7 @@ class CritmodForm implements Dispatchable {
 	}
 
 	/**
-	 * @param \rocket\ei\manage\critmod\filter\impl\form\FilterGroupForm $filterGroupForm
+	 * @param \rocket\ei\util\filter\form\FilterGroupForm $filterGroupForm
 	 */
 	public function setFilterGroupForm(FilterGroupForm $filterGroupForm) {
 		$this->filterGroupForm = $filterGroupForm;

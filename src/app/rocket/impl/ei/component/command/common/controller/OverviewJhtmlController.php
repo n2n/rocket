@@ -26,7 +26,7 @@ use rocket\ei\manage\ManageState;
 use rocket\ei\manage\critmod\impl\model\CritmodSaveDao;
 use n2n\web\http\controller\impl\ScrRegistry;
 use n2n\web\http\PageNotFoundException;
-use rocket\ei\manage\critmod\filter\impl\controller\GlobalFilterPropController;
+use rocket\ei\util\filter\controller\ScrFilterPropController;
 use n2n\web\http\controller\ParamQuery;
 use rocket\ei\manage\critmod\impl\model\CritmodForm;
 use rocket\ei\manage\critmod\quick\impl\form\QuickSearchForm;
@@ -64,7 +64,7 @@ class OverviewJhtmlController extends ControllerAdapter {
 		
 		$overviewAjahHook = OverviewJhtmlController::buildAjahHook($this->getHttpContext()->getControllerContextPath(
 				$this->getControllerContext())->toUrl(), $stateKey);
-		$filterAjahHook = GlobalFilterPropController::buildFilterAjahHook($scrRegistry, $eiFrame->getContextEiEngine()->getEiMask());
+		$filterJhtmlHook = ScrFilterPropController::buildFilterJhtmlHook($scrRegistry, $eiFrame->getContextEiEngine()->getEiMask());
 		$listModel = new OverviewModel($this->eiuCtrl->frame(), $this->listSize, $critmodForm, $quickSearchForm);
 		
 		if (!$listModel->initialize(1)) {
@@ -76,7 +76,7 @@ class OverviewJhtmlController extends ControllerAdapter {
 		$this->eiuCtrl->forwardView($this->createView(
 				'..\view\ajahOverview.html',
 				array('critmodForm' => $critmodForm, 'quickSearchForm' => $quickSearchForm, 
-						'overviewAjahHook' => $overviewAjahHook, 'filterAjahHook' => $filterAjahHook,
+						'overviewAjahHook' => $overviewAjahHook, 'filterJhtmlHook' => $filterJhtmlHook,
 						'label' => $eiUtils->getGenericLabel(), 'pluralLabel' => $eiUtils->getGenericPluralLabel(), 
 						'listModel' => $listModel)));
 	}
@@ -97,11 +97,11 @@ class OverviewJhtmlController extends ControllerAdapter {
 		}
 		
 		$eiMask = $eiFrame->getContextEiEngine()->getEiMask();
-		$filterAjahHook = GlobalFilterPropController::buildFilterAjahHook($scrRegistry, $eiMask);
+		$filterJhtmlHook = ScrFilterPropController::buildFilterJhtmlHook($scrRegistry, $eiMask);
 		
 // 		$this->forward('ei\manage\critmod\impl\view\critmodForm.html',
 // 				array('critmodForm' => $critmodForm, 'critmodFormUrl' => $this->getRequest()->getUrl(),
-// 						'filterAjahHook' => $filterAjahHook));
+// 						'filterJhtmlHook' => $filterJhtmlHook));
 		$unbelivableHack = array();
 		foreach ($critmodForm->getSelectedCritmodSaveIdOptions() as $id => $name) {
 			$unbelivableHack[' ' . $id . ' '] = $name;
@@ -109,7 +109,7 @@ class OverviewJhtmlController extends ControllerAdapter {
 		
 		$this->send(JhtmlResponse::view($this->createView('~\ei\manage\critmod\impl\view\critmodForm.html',
 				array('critmodForm' => $critmodForm, 'critmodFormUrl' => $this->getRequest()->getUrl(),
-						'filterAjahHook' => $filterAjahHook)),
+						'filterJhtmlHook' => $filterJhtmlHook)),
 				array('critmodSaveIdOptions' => $unbelivableHack)));
 				
 	}
@@ -134,12 +134,12 @@ class OverviewJhtmlController extends ControllerAdapter {
 
 // 		$eiMask = $eiFrame->getContextEiEngine()->getEiMask();
 // 		$filterGroupForm = new FilterGroupForm($filterPropSettingGroup, $eiMask->createFramedFilterDefinition($eiFrame));
-// 		$filterAjahHook = GlobalFilterPropController::buildFilterAjahHook($scrRegistry, $eiMask);
+// 		$filterJhtmlHook = ScrFilterPropController::buildFilterJhtmlHook($scrRegistry, $eiMask);
 // 		$sortForm = new SortForm($sortData, $eiMask->createManagedSortDefinition($eiFrame));
 
 // 		$this->send(new AjahResponse($this->createView(
 // 				'ei\component\command\impl\common\view\pseudoCritmodForm.html',
-// 				array('filterGroupForm' => $filterGroupForm, 'filterAjahHook' => $filterAjahHook,
+// 				array('filterGroupForm' => $filterGroupForm, 'filterJhtmlHook' => $filterJhtmlHook,
 // 						'sortForm' => $sortForm))));
 // 	}
 

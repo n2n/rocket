@@ -19,24 +19,21 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\critmod\filter\impl\controller;
+namespace rocket\ei\util\filter\prop;
 
-use n2n\util\uri\Url;
+use n2n\impl\web\dispatch\mag\model\EnumMag;
+use n2n\web\dispatch\mag\Mag;
+use n2n\persistence\orm\criteria\item\CriteriaProperty;
 
-class FilterAjahHook {
-	private $fieldItemFormUrl;
-	private $groupFormUrl;
-
-	public function __construct(Url $fieldItemFormUrl, Url $groupFormUrl) {
-		$this->fieldItemFormUrl = $fieldItemFormUrl;
-		$this->groupFormUrl = $groupFormUrl;
+class EnumFilterProp extends FilterPropAdapter {
+	private $options;
+	
+	public function __construct(CriteriaProperty $criteriaProperty, $label, array $options) {
+		parent::__construct($criteriaProperty, $label, $options);
+		$this->options = $options;
 	}
-
-	public function getFieldItemFormUrl(): Url {
-		return $this->fieldItemFormUrl;
-	}
-
-	public function getGroupFormUrl(): Url {
-		return $this->groupFormUrl;
+	
+	public function createValueMag($value): Mag {
+		return new EnumMag('Value', $this->options, $value);
 	}
 }

@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\numeric;
 
 use rocket\ei\component\prop\QuickSearchableEiProp;
-use rocket\ei\manage\critmod\filter\impl\prop\StringFilterProp;
+use rocket\ei\util\filter\prop\StringFilterProp;
 use rocket\ei\component\prop\SortableEiProp;
 use rocket\ei\component\prop\FilterableEiProp;
 use n2n\l10n\N2nLocale;

@@ -39,7 +39,7 @@ use n2n\reflection\property\TypeConstraint;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\web\dispatch\mag\Mag;
 use rocket\ei\util\model\Eiu;
-use rocket\ei\manage\critmod\filter\impl\prop\BoolFilterProp;
+use rocket\ei\util\filter\prop\BoolFilterProp;
 use rocket\ei\manage\EiObject;
 use rocket\impl\ei\component\prop\bool\conf\BooleanEiPropConfigurator;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;

@@ -19,28 +19,27 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\critmod\filter\impl\model;
+namespace rocket\ei\util\filter\model;
 
 use rocket\ei\manage\critmod\filter\ComparatorConstraint;
 use n2n\persistence\orm\criteria\item\CriteriaProperty;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use n2n\persistence\orm\criteria\item\CriteriaItem;
-use n2n\persistence\orm\criteria\item\CrIt;
 
-class PropertyValueComparatorConstraint implements ComparatorConstraint {
-	private $cp;
+class SimpleComparatorConstraint implements ComparatorConstraint {
+	private $ci1;
 	private $operator;
-	private $ci;
+	private $ci2;
 	
 	/**
 	 * @param CriteriaItem $ci1
 	 * @param string $operator
 	 * @param CriteriaItem $ci2
 	 */
-	public function __construct(CriteriaItem $cp1, string $operator, CriteriaItem $ci) {
-		$this->cp = $cp1;
+	public function __construct(CriteriaItem $ci1, string $operator, CriteriaItem $ci2) {
+		$this->ci1 = $ci1;
 		$this->operator = $operator;
-		$this->ci = $ci;
+		$this->ci2 = $ci2;
 	}
 	
 	/**
@@ -48,6 +47,6 @@ class PropertyValueComparatorConstraint implements ComparatorConstraint {
 	 * @see \rocket\ei\manage\critmod\filter\ComparatorConstraint::applyToCriteriaComparator()
 	 */
 	public function applyToCriteriaComparator(CriteriaComparator $criteriaComparator, CriteriaProperty $alias) {
-		$criteriaComparator->match(CrIt::p($alias, $this->cp), $this->operator, $this->ci);
+		$criteriaComparator->match($this->ci1, $this->operator, $this->ci2);
 	}
 }

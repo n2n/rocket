@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\critmod\filter\impl\form;
+namespace rocket\ei\util\filter\form;
 
 use n2n\web\dispatch\Dispatchable;
 use n2n\web\dispatch\map\bind\MappingDefinition;
@@ -33,19 +33,19 @@ use n2n\util\ex\IllegalStateException;
 use n2n\core\container\N2nContext;
 
 class FilterPropItemForm implements Dispatchable {
-	private $filterItemData;
+	private $filterItemSetting;
 	private $filterModel;
 	
 	protected $filterPropId;
 	protected $magForm;
 	
-	public function __construct(FilterPropSetting $filterItemData, FilterDefinition $filterDefinition) {
-		$this->filterItemData = $filterItemData;
+	public function __construct(FilterPropSetting $filterItemSetting, FilterDefinition $filterDefinition) {
+		$this->filterItemSetting = $filterItemSetting;
 		$this->filterModel = $filterDefinition;
 		
-		$this->filterPropId = $filterItemData->getFilterPropId();
+		$this->filterPropId = $filterItemSetting->getFilterPropId();
 		if ($this->filterPropId !== null && null !== ($filterItem = $filterDefinition->getFilterPropById($this->filterPropId))) {
-			$this->magForm = $filterItem->createMagDispatchable($filterItemData->getAttributes());
+			$this->magForm = $filterItem->createMagDispatchable($filterItemSetting->getAttributes());
 		}
 	}
 	
@@ -63,7 +63,7 @@ class FilterPropItemForm implements Dispatchable {
 			return;
 		}
 		
-		$this->magForm = $filterProp->createMagDispatchable($this->filterItemData->getAttributes());
+		$this->magForm = $filterProp->createMagDispatchable($this->filterItemSetting->getAttributes());
 // 		$mr->magForm = $dc->getOrCreateMappingResult($magForm, $n2nContext);
 	}
 	
@@ -92,9 +92,9 @@ class FilterPropItemForm implements Dispatchable {
 			throw new IllegalStateException();
 		}
 		
-		$this->filterItemData->setFilterPropId($this->filterPropId);
-		$this->filterItemData->setAttributes($filterItem->buildAttributes($this->magForm));
+		$this->filterItemSetting->setFilterPropId($this->filterPropId);
+		$this->filterItemSetting->setAttributes($filterItem->buildAttributes($this->magForm));
 	
-		return $this->filterItemData;
+		return $this->filterItemSetting;
 	}
 }

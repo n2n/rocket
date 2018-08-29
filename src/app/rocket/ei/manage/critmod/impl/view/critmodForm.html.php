@@ -22,7 +22,7 @@
 
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use rocket\ei\manage\critmod\impl\model\CritmodForm;
-	use rocket\ei\manage\critmod\filter\impl\controller\FilterAjahHook;
+	use rocket\ei\util\filter\controller\FilterJhtmlHook;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -31,8 +31,8 @@
 	$critmodForm = $view->getParam('critmodForm'); 
 	$view->assert($critmodForm instanceof CritmodForm);
 	
-	$filterAjahHook = $view->getParam('filterAjahHook');
-	$view->assert($filterAjahHook instanceof FilterAjahHook);
+	$filterJhtmlHook = $view->getParam('filterJhtmlHook');
+	$view->assert($filterJhtmlHook instanceof FilterJhtmlHook);
 ?>
 
 <?php $formHtml->open($critmodForm, null, null, array(
@@ -47,7 +47,7 @@
 			<h3><?php $html->l10nText('ei_impl_filter_title') ?></h3>
 			<?php $view->import('~\ei\manage\critmod\filter\impl\view\filterForm.html', 
 					array('propertyPath' => $formHtml->meta()->createPropertyPath('filterGroupForm'),
-							'filterAjahHook' => $filterAjahHook)) ?>
+							'filterJhtmlHook' => $filterJhtmlHook)) ?>
 		</div>
 		<div class="col-sm-4">
 			<h3><?php $html->l10nText('ei_impl_sort_title') ?></h3>

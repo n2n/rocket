@@ -38,7 +38,7 @@ use rocket\ei\UnknownEiTypeExtensionException;
 use rocket\user\bo\EiGrant;
 use rocket\user\model\EiGrantForm;
 use n2n\web\http\controller\impl\ScrRegistry;
-use rocket\ei\manage\critmod\filter\impl\controller\GlobalFilterPropController;
+use rocket\ei\util\filter\controller\ScrFilterPropController;
 use rocket\ei\EiEngine;
 use rocket\spec\TypePath;
 
@@ -258,8 +258,6 @@ class RocketUserGroupController extends ControllerAdapter {
 			throw new PageNotFoundException();
 		}
 		
-		
-		
 		$eiGrant = $rocketUserGroup->getEiGrantByEiTypePath($eiTypePath);
 		if ($eiGrant === null) {
 			$eiGrant = new EiGrant();
@@ -270,7 +268,8 @@ class RocketUserGroupController extends ControllerAdapter {
 		$privilegeDefinition = $eiEngine->createPrivilegeDefinition($this->getN2nContext());
 		$securityFilterDefinition = $eiEngine->createSecurityFilterDefinition($this->getN2nContext());
 		
-		$eiGrantForm = new EiGrantForm($eiGrant, $privilegeDefinition, $securityFilterDefinition);
+		$eiGrantForm = new EiGrantForm($eiGrant, $privilegeDefinition, 
+				$securityFilterDefinition->toFilterDefinition());
 		
 		if ($this->dispatch($eiGrantForm, 'save')) {
 			if ($eiGrantForm->isNew()) {
@@ -285,10 +284,10 @@ class RocketUserGroupController extends ControllerAdapter {
 		$this->commit();
 		
 		
-		$filterAjahHook = GlobalFilterPropController::buildEiEntryFilterAjahHook($scrRegistry, $eiTypeId, $eiMaskId);
+		$filterJhtmlHook = ScrFilterPropController::buildSecurityFilterJhtmlHook($scrRegistry, $eiTypePath);
 		
 		$this->forward('..\view\grantEdit.html', array('eiGrantForm' => $eiGrantForm,
-				'filterAjahHook' => $filterAjahHook));
+				'filterJhtmlHook' => $filterJhtmlHook));
 	}	
 	
 	private function applyBreadcrumbs(RocketUserGroupForm $userGroupForm = null) {

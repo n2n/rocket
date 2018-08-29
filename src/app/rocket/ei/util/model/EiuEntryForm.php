@@ -63,7 +63,7 @@ class EiuEntryForm implements Dispatchable {
 	}
 	
 	/**
-	 * 
+	 *
 	 * @param PropertyPath $propertyPath
 	 * @return \rocket\ei\util\model\EiuEntryForm
 	 */

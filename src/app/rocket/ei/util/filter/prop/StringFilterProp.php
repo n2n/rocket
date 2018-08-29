@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\critmod\filter\impl\prop;
+namespace rocket\ei\util\filter\prop;
 
 use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\web\dispatch\mag\Mag;

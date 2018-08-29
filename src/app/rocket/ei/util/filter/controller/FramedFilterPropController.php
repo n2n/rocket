@@ -19,17 +19,17 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\critmod\filter\impl\controller;
+namespace rocket\ei\util\filter\controller;
 
 use n2n\web\http\controller\ControllerAdapter;
 use n2n\web\http\controller\ParamQuery;
 use n2n\web\http\PageNotFoundException;
 use n2n\web\dispatch\map\InvalidPropertyExpressionException;
 use n2n\web\dispatch\map\PropertyPath;
-use rocket\ei\manage\critmod\filter\impl\form\FilterPropItemForm;
+use rocket\ei\util\filter\form\FilterPropItemForm;
 use rocket\ei\manage\critmod\filter\data\FilterPropSetting;
 use n2n\util\config\Attributes;
-use rocket\ei\manage\critmod\filter\impl\form\FilterGroupForm;
+use rocket\ei\util\filter\form\FilterGroupForm;
 use rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup;
 use n2n\util\uri\Url;
 use rocket\ei\manage\critmod\filter\FilterDefinition;
@@ -37,7 +37,7 @@ use rocket\ei\manage\ManageState;
 use rocket\ei\manage\critmod\filter\UnknownFilterPropException;
 use n2n\impl\web\ui\view\jhtml\JhtmlResponse;
 
-class FilterPropController extends ControllerAdapter  {
+class FramedFilterPropController extends ControllerAdapter  {
 	private $eiFrame;
 	
 	public function prepare(ManageState $manageState) {
@@ -86,7 +86,7 @@ class FilterPropController extends ControllerAdapter  {
 				array('filterGroupForm' => $filterGroupForm, 'propertyPath' => $propertyPath))));
 	}
 	
-	public static function buildFilterAjahHook(Url $baseUrl): FilterAjahHook {
-		return new FilterAjahHook($baseUrl->extR(array('simple')), $baseUrl->extR(array('group')));
+	public static function buildFilterJhtmlHook(Url $baseUrl): FilterJhtmlHook {
+		return new FilterJhtmlHook($baseUrl->extR(array('simple')), $baseUrl->extR(array('group')));
 	}
 }

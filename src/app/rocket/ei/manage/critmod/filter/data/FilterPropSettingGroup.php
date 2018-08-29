@@ -61,8 +61,8 @@ class FilterPropSettingGroup {
 	
 	public function toAttrs(): array {
 		$filterItemsAttrs = array();
-		foreach ($this->filterPropSettings as $filterItemData) {
-			$filterItemsAttrs[] = $filterItemData->toAttrs();
+		foreach ($this->filterPropSettings as $filterItemSetting) {
+			$filterItemsAttrs[] = $filterItemSetting->toAttrs();
 		}
 		
 		$filterGroupsAttrs = array();

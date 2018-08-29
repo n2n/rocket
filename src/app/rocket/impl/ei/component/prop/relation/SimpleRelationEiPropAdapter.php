@@ -30,14 +30,14 @@ use rocket\impl\ei\component\prop\adapter\StandardEditDefinition;
 use rocket\ei\component\prop\FilterableEiProp;
 use rocket\ei\manage\frame\EiFrame;
 use n2n\core\container\N2nContext;
-use rocket\ei\manage\critmod\filter\impl\controller\GlobalFilterPropController;
+use rocket\ei\util\filter\controller\ScrFilterPropController;
 use rocket\ei\component\CritmodFactory;
 use rocket\impl\ei\component\prop\relation\model\filter\RelationFilterProp;
 use n2n\web\http\controller\impl\ScrRegistry;
 use rocket\ei\util\model\EiuFrame;
 use rocket\ei\mask\EiMask;
 use rocket\ei\manage\critmod\filter\FilterDefinition;
-use rocket\ei\manage\critmod\filter\impl\controller\FilterAjahHook;
+use rocket\ei\util\filter\controller\FilterJhtmlHook;
 use rocket\ei\util\model\EiuMask;
 use rocket\ei\util\model\Eiu;
 use rocket\ei\manage\gui\DisplayDefinition;
@@ -125,10 +125,10 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 								->createFramedFilterDefinition($this->targetEiFrame);
 					}
 	
-					public function getFilterAjahHook(): FilterAjahHook {
+					public function getFilterJhtmlHook(): FilterJhtmlHook {
 						$targetEiMask = $this->targetEiFrame->getContextEiEngine()->getEiMask();
 						
-						return GlobalFilterPropController::buildFilterAjahHook(
+						return ScrFilterPropController::buildFilterJhtmlHook(
 								$this->targetEiFrame->getN2nContext()->lookup(ScrRegistry::class),
 								$targetEiMask);
 					}
@@ -158,8 +158,8 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 						return $this->targetEiMask->getEiEngine()->createFilterDefinition($this->n2nContext);
 					}
 	
-					public function getFilterAjahHook(): FilterAjahHook {
-						return GlobalFilterPropController::buildFilterAjahHook(
+					public function getFilterJhtmlHook(): FilterJhtmlHook {
+						return ScrFilterPropController::buildFilterJhtmlHook(
 								$this->n2nContext->lookup(ScrRegistry::class), $this->targetEiMask);
 					}
 				});
@@ -187,10 +187,10 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 						->createSecurityFilterDefinition($this->n2nContext);
 			}
 
-			public function getFilterAjahHook(): FilterAjahHook {
+			public function getFilterJhtmlHook(): FilterJhtmlHook {
 				$targetEiMask = $this->targeteiFrame->getTargetEiMask();
 
-				return GlobalFilterPropController::buildEiEntryFilterAjahHook(
+				return ScrFilterPropController::buildEiEntryFilterJhtmlHook(
 						$this->n2nContext->lookup(ScrRegistry::class),
 						$this->targetEiMask->getEiEngine()->getEiMask()->getEiType()->getId(), $this->targetEiMask->getExtension()->getId());
 			}
@@ -203,5 +203,5 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 interface TargetFilterDef {
 	public function getFilterDefinition(): FilterDefinition;
 	
-	public function getFilterAjahHook(): FilterAjahHook;
+	public function getFilterJhtmlHook(): FilterJhtmlHook;
 }

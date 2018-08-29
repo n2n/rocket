@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\critmod\filter\impl\prop;
+namespace rocket\ei\util\filter\prop;
 
 // use n2n\util\ex\IllegalStateException;
 // use n2n\l10n\Message;

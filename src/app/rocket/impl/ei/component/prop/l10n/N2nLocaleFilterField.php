@@ -21,8 +21,8 @@
  */
 namespace rocket\impl\ei\component\prop\l10n;
 
-use rocket\ei\manage\critmod\filter\impl\prop\EnumFilterProp;
-use rocket\ei\manage\critmod\filter\impl\model\SimpleComparatorConstraint;
+use rocket\ei\util\filter\prop\EnumFilterProp;
+use rocket\ei\util\filter\model\SimpleComparatorConstraint;
 use n2n\l10n\N2nLocale;
 use n2n\util\config\Attributes;
 use rocket\ei\manage\critmod\filter\ComparatorConstraint;
@@ -30,7 +30,7 @@ use rocket\ei\manage\critmod\filter\ComparatorConstraint;
 class N2nLocaleFilterProp extends EnumFilterProp {
 
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\manage\critmod\filter\impl\prop\FilterProp::createComparatorConstraint()
+	 * @see \rocket\ei\util\filter\prop\FilterProp::createComparatorConstraint()
 	 */
 	public function createComparatorConstraint(Attributes $attributes): ComparatorConstraint {
 		return new SimpleComparatorConstraint($this->criteriaProperty,

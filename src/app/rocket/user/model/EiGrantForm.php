@@ -28,9 +28,9 @@ use rocket\user\bo\EiGrantPrivilege;
 use rocket\user\bo\EiGrant;
 use rocket\spec\security\PrivilegeDefinition;
 use n2n\web\dispatch\annotation\AnnoDispProperties;
-use rocket\ei\manage\security\filter\SecurityFilterDefinition;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\web\dispatch\annotation\AnnoDispObjectArray;
+use rocket\ei\manage\critmod\filter\FilterDefinition;
 
 class EiGrantForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {
@@ -38,26 +38,26 @@ class EiGrantForm implements Dispatchable {
 		$ai->p('eiGrantPrivilegeForms', new AnnoDispObjectArray( 
 				function (EiGrantForm $that) {
 					return new EiGrantPrivilegeForm(new EiGrantPrivilege(), $that->privilegeDefinition,
-							$that->securityFilterDefinition);
+							$that->filterDefinition);
 				}));
 	}
 	
 	private $eiGrant;
 	private $privilegeDefinition;
-	private $securityFilterDefinition;
+	private $filterDefinition;
 	
 	private $accessDenyMagForm;
 	private $eiGrantPrivilegeForms = array();
 	
 	public function __construct(EiGrant $eiGrant, PrivilegeDefinition $privilegeDefinition, 
-			SecurityFilterDefinition $securityFilterDefinition) {
+			FilterDefinition $filterDefinition) {
 		$this->eiGrant = $eiGrant;
 		$this->privilegeDefinition = $privilegeDefinition;
-		$this->securityFilterDefinition = $securityFilterDefinition;
+		$this->filterDefinition = $filterDefinition;
 		
 		foreach ($eiGrant->getEiGrantPrivileges() as $eiGrantPrivilege) {
-			$this->eiGrantPrivilegeForms[] = new EiGrantPrivilegeForm($eiGrantPrivilege, $this->privilegeDefinition, 
-					$securityFilterDefinition);
+			$this->eiGrantPrivilegeForms[] = new EiGrantPrivilegeForm($eiGrantPrivilege, $privilegeDefinition, 
+					$filterDefinition);
 		}
 	}
 	
@@ -70,7 +70,7 @@ class EiGrantForm implements Dispatchable {
 	}
 
 	public function areRestrictionsAvailable(): bool {
-		return !$this->securityFilterDefinition->isEmpty();
+		return !$this->filterDefinition->isEmpty();
 	}
 	
 	public function isNew() {

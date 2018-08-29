@@ -19,7 +19,7 @@
  * Bert HofmÃ¤nner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas GÃ¼nther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\critmod\filter\impl\prop;
+namespace rocket\ei\util\filter\prop;
 
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\util\config\Attributes;
@@ -34,7 +34,7 @@ use n2n\persistence\orm\criteria\item\CriteriaProperty;
 use n2n\web\dispatch\mag\Mag;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\persistence\orm\criteria\item\CrIt;
-use rocket\ei\manage\critmod\filter\impl\model\PropertyValueComparatorConstraint;
+use rocket\ei\util\filter\model\PropertyValueComparatorConstraint;
 
 abstract class FilterPropAdapter implements FilterProp {
 	const ATTR_OPERATOR_KEY = 'operator';
@@ -71,7 +71,7 @@ abstract class FilterPropAdapter implements FilterProp {
 	}
 	
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\manage\critmod\filter\impl\prop\FilterProp::createComparatorConstraint()
+	 * @see \rocket\ei\util\filter\prop\FilterProp::createComparatorConstraint()
 	 */
 	public function createComparatorConstraint(Attributes $attributes): ComparatorConstraint {
 		return new PropertyValueComparatorConstraint($this->criteriaProperty,

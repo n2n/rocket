@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\critmod\filter\impl\controller;
+namespace rocket\ei\util\filter\controller;
 
 use n2n\web\http\controller\ControllerAdapter;
 use n2n\web\http\controller\impl\ScrController;
@@ -32,18 +32,19 @@ use rocket\ei\UnknownEiTypeExtensionException;
 use n2n\web\dispatch\map\InvalidPropertyExpressionException;
 use n2n\web\dispatch\map\PropertyPath;
 use rocket\ei\component\CritmodFactory;
-use rocket\ei\manage\critmod\filter\impl\form\FilterPropItemForm;
+use rocket\ei\util\filter\form\FilterPropItemForm;
 use rocket\ei\manage\critmod\filter\data\FilterPropSetting;
 use n2n\util\config\Attributes;
-use rocket\ei\manage\critmod\filter\impl\form\FilterGroupForm;
+use rocket\ei\util\filter\form\FilterGroupForm;
 use rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup;
 use n2n\web\http\controller\impl\ScrRegistry;
 use rocket\ei\manage\critmod\filter\FilterDefinition;
 use rocket\ei\mask\EiMask;
 use rocket\ei\manage\critmod\filter\UnknownFilterPropException;
 use n2n\impl\web\ui\view\jhtml\JhtmlResponse;
+use rocket\spec\TypePath;
 
-class GlobalFilterPropController extends ControllerAdapter implements ScrController {
+class ScrFilterPropController extends ControllerAdapter implements ScrController {
 	private $spec;
 	private $loginContext;
 	
@@ -103,7 +104,7 @@ class GlobalFilterPropController extends ControllerAdapter implements ScrControl
 				'filterPropItemForm' => $filterPropItemForm, 'propertyPath' => $propertyPath))));
 	}
 	
-	public function doAdv(string $eiTypeId, string $eiMaskId = null, ParamQuery $filterPropId, ParamQuery $propertyPath) {
+	public function doSecurity(string $eiTypeId, string $eiMaskId = null, ParamQuery $filterPropId, ParamQuery $propertyPath) {
 		$eiThing = $this->lookupEiThing($eiTypeId, $eiMaskId);
 		$propertyPath = $this->buildPropertyPath((string) $propertyPath);
 		$filterPropId = (string) $filterPropId;
@@ -132,21 +133,27 @@ class GlobalFilterPropController extends ControllerAdapter implements ScrControl
 				array('filterGroupForm' => $filterGroupForm, 'propertyPath' => $propertyPath))));
 	}
 	
-	public static function buildFilterAjahHook(ScrRegistry $scrRegistry, EiMask $eiMask): FilterAjahHook {
-		$baseUrl = $scrRegistry->registerSessionScrController(GlobalFilterPropController::class);
-		$eiTypeId = $eiMask->getEiEngine()->getEiMask()->getEiType()->getId();
-		$eiMaskId = ($eiMask->isExtension() ? $eiMask->getExtension()->getId() : null);
+// 	public static function buildFilterJhtmlHook(ScrRegistry $scrRegistry, EiMask $eiMask): FilterJhtmlHook {
+// 		$baseUrl = $scrRegistry->registerSessionScrController(ScrFilterPropController::class);
+// 		$eiTypeId = $eiMask->getEiEngine()->getEiMask()->getEiType()->getId();
+// 		$eiMaskId = ($eiMask->isExtension() ? $eiMask->getExtension()->getId() : null);
 		
-		return new FilterAjahHook(
-				$baseUrl->extR(array('simple', $eiTypeId, $eiMaskId)),
-				$baseUrl->extR(array('group', $eiTypeId, $eiMaskId)));
-	}
+// 		return new FilterJhtmlHook(
+// 				$baseUrl->extR(array('simple', $eiTypeId, $eiMaskId)),
+// 				$baseUrl->extR(array('group', $eiTypeId, $eiMaskId)));
+// 	}
 	
-	public static function buildEiEntryFilterAjahHook(ScrRegistry $scrRegistry, string $eiTypeId, string $eiMaskId = null): FilterAjahHook {
-		$baseUrl = $scrRegistry->registerSessionScrController(GlobalFilterPropController::class);
+	/**
+	 * @param ScrRegistry $scrRegistry
+	 * @param EiMask $eiMask
+	 * @return FilterJhtmlHook
+	 */
+	public static function buildSecurityFilterJhtmlHook(ScrRegistry $scrRegistry, TypePath $eiTypePath): FilterJhtmlHook {
+		$baseUrl = $scrRegistry->registerSessionScrController(ScrFilterPropController::class);
+		$eiTypePathStr = (string) $eiTypePath;
 		
-		return new FilterAjahHook(
-				$baseUrl->extR(array('adv', $eiTypeId, $eiMaskId)),
-				$baseUrl->extR(array('group', $eiTypeId, $eiMaskId)));
+		return new FilterJhtmlHook(
+				$baseUrl->extR(array('security', $eiTypePathStr)),
+				$baseUrl->extR(array('group', $eiTypePathStr)));
 	}
 }

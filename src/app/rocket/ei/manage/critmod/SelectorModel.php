@@ -21,7 +21,7 @@
  */
 // namespace rocket\ei\manage\critmod;
 
-// use rocket\ei\manage\critmod\filter\impl\prop\SelectorItem;
+// use rocket\ei\util\filter\prop\SelectorItem;
 // use rocket\ei\manage\critmod\filter\data\FilterData;
 // use rocket\ei\manage\critmod\filter\data\FilterDataElement;
 // use rocket\ei\manage\critmod\filter\data\FilterDataUsage;
@@ -48,7 +48,7 @@
 // 	}
 	
 // 	public function setSelectorItems(array $selectorItems) {
-// 		ArgUtils::valArray($selectorItems, 'rocket\ei\manage\critmod\filter\impl\prop\SelectorItem');
+// 		ArgUtils::valArray($selectorItems, 'rocket\ei\util\filter\prop\SelectorItem');
 // 		$this->selectorItems = $selectorItems;
 // 	}
 	

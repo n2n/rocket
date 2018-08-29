@@ -29,12 +29,13 @@ use rocket\spec\security\PrivilegeDefinition;
 use n2n\web\dispatch\annotation\AnnoDispProperties;
 use n2n\web\dispatch\annotation\AnnoDispObject;
 use rocket\ei\manage\security\filter\SecurityFilterDefinition;
-use rocket\ei\manage\critmod\filter\impl\form\FilterGroupForm;
+use rocket\ei\util\filter\form\FilterGroupForm;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use rocket\ei\EiCommandPath;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\util\config\Attributes;
+use rocket\ei\manage\critmod\filter\FilterDefinition;
 
 class EiGrantPrivilegeForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {
@@ -45,18 +46,29 @@ class EiGrantPrivilegeForm implements Dispatchable {
 		}));
 	}
 	
+// 	private $eiuEngine;
+	/**
+	 * @var EiGrantPrivilege
+	 */
 	private $eiPrivilegesGrant;
+	/**
+	 * @var PrivilegeDefinition
+	 */
 	private $privilegeDefinition;
+	/**
+	 * @var SecurityFilterDefinition
+	 */
 	private $restrictionFilterDefinition;
 	
 	private $eiPropPrivilegeMagForm;
 	private $restrictionFilterGroupForm; 
 	
 	public function __construct(EiGrantPrivilege $eiGrantPrivilege, PrivilegeDefinition $privilegeDefinition,
-			SecurityFilterDefinition $restrictionFilterDefinition) {
+			FilterDefinition $restrictionFilterDefinition) {
+// 		$this->eiuEngine = $eiuEngine;
 		$this->eiPrivilegesGrant = $eiGrantPrivilege;
 		$this->privilegeDefinition = $privilegeDefinition;
-
+		
 		$magCollection = $privilegeDefinition->createEiPropPrivilegeMagCollection(
 				$eiGrantPrivilege->readEiPropPrivilegeAttributes());
 		if (!$magCollection->isEmpty()) {
@@ -66,7 +78,8 @@ class EiGrantPrivilegeForm implements Dispatchable {
 		$this->restrictionFilterDefinition = $restrictionFilterDefinition;
 		if ($eiGrantPrivilege->isRestricted()) {
 			$this->restrictionFilterGroupForm = new FilterGroupForm(
-					$eiGrantPrivilege->readRestrictionFilterPropSettingGroup(), $this->restrictionFilterDefinition);
+					$eiGrantPrivilege->readRestrictionFilterPropSettingGroup(), 
+					$this->restrictionFilterDefinition);
 		}
 	}
 	

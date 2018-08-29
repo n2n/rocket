@@ -23,7 +23,7 @@
 	use n2n\web\dispatch\map\PropertyPath;
 	use rocket\ei\manage\control\IconType;
 	use n2n\impl\web\ui\view\html\HtmlView;
-	use rocket\ei\manage\critmod\filter\impl\controller\FilterAjahHook;
+	use rocket\ei\util\filter\controller\FilterJhtmlHook;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -34,8 +34,8 @@
 	
 	$filterDefinition = $formHtml->meta()->getMapValue($propertyPath)->getObject()->getFilterDefinition();
 
-	$filterAjahHook = $view->getParam('filterAjahHook');
-	$view->assert($filterAjahHook instanceof FilterAjahHook);
+	$filterJhtmlHook = $view->getParam('filterJhtmlHook');
+	$view->assert($filterJhtmlHook instanceof FilterJhtmlHook);
 	
 	$html->meta()->addJs('js/filters.js', 'rocket');
 	
@@ -54,10 +54,10 @@
 		data-text-remove="<?php $html->text('common_delete_label') ?>"
 		data-text-or="<?php $html->text('common_or_label') ?>"
 		data-text-and="<?php $html->text('common_and_label') ?>"
-		data-filter-field-item-form-url="<?php $html->out($filterAjahHook->getFieldItemFormUrl()) ?>"
-		data-filter-group-form-url="<?php $html->out($filterAjahHook->getGroupFormUrl()) ?>"
+		data-filter-field-item-form-url="<?php $html->out($filterJhtmlHook->getFieldItemFormUrl()) ?>"
+		data-filter-group-form-url="<?php $html->out($filterJhtmlHook->getGroupFormUrl()) ?>"
 		data-filter-fields="<?php $html->out(json_encode($filterPropAttrs)) ?>">
 	
-	<?php $view->import('\rocket\ei\manage\critmod\filter\impl\view\filterGroupForm.html', 
+	<?php $view->import('\rocket\ei\util\filter\view\filterGroupForm.html', 
 			array('propertyPath' => $propertyPath)) ?>
 </div>

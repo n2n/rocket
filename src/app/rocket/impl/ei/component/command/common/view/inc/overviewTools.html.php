@@ -21,7 +21,7 @@
 	 */
 
 	use n2n\impl\web\ui\view\html\HtmlView;
-	use rocket\ei\manage\critmod\filter\impl\controller\FilterAjahHook;
+	use rocket\ei\util\filter\controller\FilterJhtmlHook;
 	use rocket\impl\ei\component\command\common\controller\OverviewAjahHook;
 	use rocket\ei\manage\critmod\quick\impl\form\QuickSearchForm;
 	use rocket\ei\manage\critmod\impl\model\CritmodForm;
@@ -33,8 +33,8 @@
 	$overviewAjahHook = $view->getParam('overviewAjahHook');
 	$view->assert($overviewAjahHook instanceof OverviewAjahHook);
 	
-	$filterAjahHook = $view->getParam('filterAjahHook');
-	$view->assert($filterAjahHook instanceof FilterAjahHook);
+	$filterJhtmlHook = $view->getParam('filterJhtmlHook');
+	$view->assert($filterJhtmlHook instanceof FilterJhtmlHook);
 
 	$critmodForm = $view->getParam('critmodForm');
 	$view->assert($critmodForm instanceof CritmodForm);
@@ -71,6 +71,6 @@
 	<div class="rocket-impl-critmod-form-container">
 		<?php $view->import('~\ei\manage\critmod\impl\view\critmodForm.html', 
 				array('critmodForm' => $critmodForm, 'critmodFormUrl' => $overviewAjahHook->getCritmodFormUrl(),
-						'filterAjahHook' => $filterAjahHook)) ?>
+						'filterJhtmlHook' => $filterJhtmlHook)) ?>
 	</div>
 </div>

@@ -33,7 +33,7 @@ use n2n\reflection\property\AccessProxy;
 use n2n\web\ui\UiComponent;
 use n2n\web\dispatch\property\ManagedProperty;
 use n2n\util\uri\Url;
-use rocket\ei\manage\critmod\filter\impl\controller\GlobalFilterPropController;
+use rocket\ei\util\filter\controller\ScrFilterPropController;
 use n2n\web\http\controller\impl\ScrRegistry;
 use rocket\impl\ei\component\prop\relation\model\RelationEntry;
 use rocket\ei\manage\frame\CriteriaConstraint;
@@ -193,7 +193,7 @@ class ToOneMag extends MagAdapter {
 		$targetControllerContext = $eiFrame->getControllerContext();
 		$request = $view->getRequest();
 		
-		$filterAjahHook = GlobalFilterPropController::buildFilterAjahHook($view->lookup(ScrRegistry::class), 
+		$filterJhtmlHook = ScrFilterPropController::buildFilterJhtmlHook($view->lookup(ScrRegistry::class), 
 				$eiFrame->getContextEiEngine()->getEiMask());
 		
 		$newMappingFormUrl = null;

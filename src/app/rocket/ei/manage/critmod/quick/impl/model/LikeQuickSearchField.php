@@ -25,7 +25,7 @@ use rocket\ei\manage\critmod\quick\QuickSearchField;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use rocket\ei\manage\critmod\filter\ComparatorConstraint;
-use rocket\ei\manage\critmod\filter\impl\model\PropertyValueComparatorConstraint;
+use rocket\ei\util\filter\model\PropertyValueComparatorConstraint;
 use n2n\persistence\orm\criteria\item\CriteriaProperty;
 
 class LikeQuickSearchField implements QuickSearchField {
