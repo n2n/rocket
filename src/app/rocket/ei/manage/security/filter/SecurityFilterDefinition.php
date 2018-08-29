@@ -23,6 +23,8 @@ namespace rocket\ei\manage\security\filter;
 
 use n2n\util\config\AttributesException;
 use rocket\ei\EiPropPath;
+use rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup;
+use rocket\ei\manage\critmod\filter\ComparatorConstraint;
 
 class SecurityFilterDefinition {
 	/**
