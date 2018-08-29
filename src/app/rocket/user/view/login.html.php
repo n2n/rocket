@@ -76,14 +76,18 @@ use rocket\user\model\RocketUserDao;
 						      array('class' => 'btn btn-secondary btn-lg btn-block')) ?>
 					</div>
 				<?php $formHtml->close() ?>
+				<?php if (N2N::isDevelopmentModeOn()): ?>
+					<div class="rocket-dev-login-container">
+						<h2 class="mt-3">Development Login:</h2>
+							<ul class="list-unstyled mb-0">
+								<?php foreach ($userDao->getUsers() as $user): ?>
+									<li><?php $html->linkToController(['devlogin', $user->getId()], $user->getNick())?></li>
+								<?php endforeach ?>
+							</ul>
+					</div>
+				<?php endif ?>
 			</div>
 			
-			<?php if (N2N::isDevelopmentModeOn()): ?>
-				<h2>Dev Login</h2>
-				<?php foreach ($userDao->getUsers() as $user): ?>
-					<div><?php $html->linkToController(['devlogin', $user->getId()], $user->getNick())?></div>
-				<?php endforeach ?>
-			<?php endif ?>
 		</div>
 	<?php $html->bodyEnd()?>
 </html>
