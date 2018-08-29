@@ -54,8 +54,8 @@ class FilterGroupForm implements Dispatchable {
 		$this->useAnd = $filterPropSettingGroup->isAndUsed();
 		
 		$this->filterPropItemForms = array();
-		foreach ($filterPropSettingGroup->getFilterPropSettings() as $filterItemData) {
-			$this->filterPropItemForms[] = new FilterPropItemForm($filterItemData, $filterDefinition);
+		foreach ($filterPropSettingGroup->getFilterPropSettings() as $filterPropSetting) {
+			$this->filterPropItemForms[] = new FilterPropItemForm($filterPropSetting, $filterDefinition);
 		}
 		
 		$this->filterGroupForms = array();
