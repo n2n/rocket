@@ -24,40 +24,40 @@ namespace rocket\user\model;
 use n2n\reflection\annotation\AnnoInit;
 use n2n\web\dispatch\Dispatchable;
 use n2n\l10n\N2nLocale;
-use rocket\user\bo\EiPrivilegeGrant;
+use rocket\user\bo\EiGrantPrivilege;
 use rocket\user\bo\EiGrant;
 use rocket\spec\security\PrivilegeDefinition;
 use n2n\web\dispatch\annotation\AnnoDispProperties;
-use rocket\ei\manage\critmod\filter\EiEntryFilterDefinition;
+use rocket\ei\manage\security\filter\SecurityFilterDefinition;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\web\dispatch\annotation\AnnoDispObjectArray;
 
 class EiGrantForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {
 		$ai->c(new AnnoDispProperties('fullAccess'));
-		$ai->p('eiPrivilegeGrantForms', new AnnoDispObjectArray( 
+		$ai->p('eiGrantPrivilegeForms', new AnnoDispObjectArray( 
 				function (EiGrantForm $that) {
-					return new EiPrivilegeGrantForm(new EiPrivilegeGrant(), $that->privilegeDefinition,
-							$that->eiEntryFilterDefinition);
+					return new EiGrantPrivilegeForm(new EiGrantPrivilege(), $that->privilegeDefinition,
+							$that->securityFilterDefinition);
 				}));
 	}
 	
 	private $eiGrant;
 	private $privilegeDefinition;
-	private $eiEntryFilterDefinition;
+	private $securityFilterDefinition;
 	
 	private $accessDenyMagForm;
-	private $eiPrivilegeGrantForms = array();
+	private $eiGrantPrivilegeForms = array();
 	
 	public function __construct(EiGrant $eiGrant, PrivilegeDefinition $privilegeDefinition, 
-			EiEntryFilterDefinition $eiEntryFilterDefinition) {
+			SecurityFilterDefinition $securityFilterDefinition) {
 		$this->eiGrant = $eiGrant;
 		$this->privilegeDefinition = $privilegeDefinition;
-		$this->eiEntryFilterDefinition = $eiEntryFilterDefinition;
+		$this->securityFilterDefinition = $securityFilterDefinition;
 		
-		foreach ($eiGrant->getEiPrivilegeGrants() as $eiPrivilegeGrant) {
-			$this->eiPrivilegeGrantForms[] = new EiPrivilegeGrantForm($eiPrivilegeGrant, $this->privilegeDefinition, 
-					$eiEntryFilterDefinition);
+		foreach ($eiGrant->getEiGrantPrivileges() as $eiGrantPrivilege) {
+			$this->eiGrantPrivilegeForms[] = new EiGrantPrivilegeForm($eiGrantPrivilege, $this->privilegeDefinition, 
+					$securityFilterDefinition);
 		}
 	}
 	
@@ -70,7 +70,7 @@ class EiGrantForm implements Dispatchable {
 	}
 
 	public function areRestrictionsAvailable(): bool {
-		return !$this->eiEntryFilterDefinition->isEmpty();
+		return !$this->securityFilterDefinition->isEmpty();
 	}
 	
 	public function isNew() {
@@ -93,12 +93,12 @@ class EiGrantForm implements Dispatchable {
 		$this->eiGrant->setFull((boolean) $fullAccess);
 	}
 	
-	public function getEiPrivilegeGrantForms() {
-		return $this->eiPrivilegeGrantForms;
+	public function getEiGrantPrivilegeForms() {
+		return $this->eiGrantPrivilegeForms;
 	}
 	
-	public function setEiPrivilegeGrantForms(array $userPrivilegeGrantForms) {
-		$this->eiPrivilegeGrantForms = $userPrivilegeGrantForms;
+	public function setEiGrantPrivilegeForms(array $userPrivilegeGrantForms) {
+		$this->eiGrantPrivilegeForms = $userPrivilegeGrantForms;
 	}
 	
 	private function _validation(BindingDefinition $bd, N2nLocale $n2nLocale) {
@@ -111,11 +111,11 @@ class EiGrantForm implements Dispatchable {
 		$this->eiGrant->setFull(false);
 		
 		$privilegesGrants = new \ArrayObject();
-		foreach ($this->eiPrivilegeGrantForms as $grantForm) {
-			$grant = $grantForm->getEiPrivilegeGrant();
+		foreach ($this->eiGrantPrivilegeForms as $grantForm) {
+			$grant = $grantForm->getEiGrantPrivilege();
 			$grant->setEiGrant($this->eiGrant);
 			$privilegesGrants[] = $grant;
 		}
-		$this->eiGrant->setEiPrivilegeGrants($privilegesGrants);
+		$this->eiGrant->setEiGrantPrivileges($privilegesGrants);
 	}
 }

@@ -32,9 +32,9 @@ use n2n\util\config\AttributesException;
 use n2n\reflection\ArgUtils;
 use rocket\ei\EiCommandPath;
 
-class EiPrivilegeGrant extends ObjectAdapter {
+class EiGrantPrivilege extends ObjectAdapter {
 	private static function _annos(AnnoInit $ai) {
-		$ai->c(new AnnoTable('rocket_user_privileges_grant'));
+		$ai->c(new AnnoTable('rocket_ei_grant_privileges'));
 		$ai->p('eiGrant', new AnnoManyToOne(EiGrant::getClass()));
 	}
 	

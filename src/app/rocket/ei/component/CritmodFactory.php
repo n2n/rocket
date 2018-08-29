@@ -57,7 +57,7 @@ class CritmodFactory {
 // 				$eiFrame->getN2nContext(), $eiFrame);
 // 	}
 	
-	public function createFilterDefinition(EiFrame $eiFrame): FilterDefinition {
+	public function createFramedFilterDefinition(EiFrame $eiFrame): FilterDefinition {
 		$eiu = new Eiu($eiFrame);
 		
 		$filterDefinition = new FilterDefinition();
@@ -74,7 +74,7 @@ class CritmodFactory {
 		return $filterDefinition;
 	}
 	
-	public function createGeneralFilterDefinition(N2nContext $n2nContext): FilterDefinition {
+	public function createFilterDefinition(N2nContext $n2nContext): FilterDefinition {
 		$eiu = new Eiu($n2nContext);
 		
 		$filterDefinition = new FilterDefinition();

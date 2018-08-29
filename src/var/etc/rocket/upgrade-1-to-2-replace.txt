@@ -30,3 +30,9 @@ ALTER TABLE `rocket_ei_grant`
 ALTER TABLE `rocket_ei_grant`
 	CHANGE COLUMN `ei_spec_id` `ei_type_path` VARCHAR(255) NOT NULL AFTER `id`,
 	DROP COLUMN `ei_mask_id`;
+	
+RENAME TABLE `rocket_user_privileges_grant` TO `rocket_ei_grant_privileges`;
+
+ALTER TABLE `rocket_ei_grant_privileges`
+	CHANGE COLUMN `ei_field_privilege_json` `ei_prop_privilege_json` TEXT NULL AFTER `ei_command_privilege_json`;
+

@@ -89,7 +89,7 @@ class GlobalFilterPropController extends ControllerAdapter implements ScrControl
 		$filterPropId = (string) $filterPropId;
 		$filterDefinition = (new CritmodFactory($eiThing->getEiEngine()->getEiMask()->getEiPropCollection(), 
 						$eiThing->getEiEngine()->getEiModificatorCollection()))
-				->createGeneralFilterDefinition($this->getN2nContext());
+				->createFilterDefinition($this->getN2nContext());
 	
 		$filterPropItemForm = null;
 		try {
@@ -107,12 +107,12 @@ class GlobalFilterPropController extends ControllerAdapter implements ScrControl
 		$eiThing = $this->lookupEiThing($eiTypeId, $eiMaskId);
 		$propertyPath = $this->buildPropertyPath((string) $propertyPath);
 		$filterPropId = (string) $filterPropId;
-		$eiEntryFilterDefinition = (new CritmodFactory($eiThing->getEiEngine()->getEiMask()->getEiPropCollection(), $eiThing->getEiEngine()->getEiModificatorCollection()))
-				->createEiEntryFilterDefinition($this->getN2nContext());
+		$securityFilterDefinition = (new CritmodFactory($eiThing->getEiEngine()->getEiMask()->getEiPropCollection(), $eiThing->getEiEngine()->getEiModificatorCollection()))
+				->createSecurityFilterDefinition($this->getN2nContext());
 		$filterPropItemForm = null;
 		try {
 			$filterPropItemForm = new FilterPropItemForm(new FilterPropSetting($filterPropId, new Attributes()), 
-					$eiEntryFilterDefinition);
+					$securityFilterDefinition);
 		} catch (UnknownFilterPropException $e) {
 			throw new PageNotFoundException(null, 0, $e);
 		}

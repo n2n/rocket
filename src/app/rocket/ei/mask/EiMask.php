@@ -50,6 +50,7 @@ use rocket\ei\manage\control\IconType;
 use rocket\ei\EiTypeExtension;
 use rocket\ei\manage\critmod\filter\FilterCriteriaConstraint;
 use n2n\util\ex\NotYetImplementedException;
+use rocket\spec\TypePath;
 
 class EiMask {
 	private $eiMaskDef;
@@ -98,6 +99,14 @@ class EiMask {
 		$this->eiPropCollection->setInheritedCollection($inheritEiMask->getEiPropCollection());
 		$this->eiCommandCollection->setInheritedCollection($inheritEiMask->getEiCommandCollection());
 		$this->eiModificatorCollection->setInheritedCollection($inheritEiMask->getEiModificatorCollection());
+	}
+	
+	/**
+	 * @return \rocket\spec\TypePath
+	 */
+	public function getEiTypePath() {
+		return new TypePath($this->eiType->getId(), 
+				($this->eiTypeExtension !== null ? $this->eiTypeExtension->getId() : null));
 	}
 	
 	/**
@@ -595,7 +604,7 @@ class EiMask {
 	 */
 	public function setupEiFrame(EiFrame $eiFrame) {
 		if (null !== ($filterPropSettingGroup = $this->eiMaskDef->getFilterPropSettingGroup())) {
-			$comparatorConstraint = $this->getEiEngine()->createFilterDefinition($eiFrame)
+			$comparatorConstraint = $this->getEiEngine()->createFramedFilterDefinition($eiFrame)
 					->createComparatorConstraint($filterPropSettingGroup);
 			if ($comparatorConstraint !== null) {
 				$eiFrame->getCriteriaConstraintCollection()->add(CriteriaConstraint::TYPE_HARD_FILTER, 

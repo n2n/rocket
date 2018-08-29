@@ -104,19 +104,15 @@ class EiEngine {
 		return $this->critmodFactory;
 	}
 	
-	public function createFilterDefinition(EiFrame $eiFrame): FilterDefinition {
-		return $this->getCritmodFactory()->createFilterDefinition($eiFrame);
+	public function createFramedFilterDefinition(EiFrame $eiFrame): FilterDefinition {
+		return $this->getCritmodFactory()->createFramedFilterDefinition($eiFrame);
 	}
 	
-	public function createGeneralFilterDefinition(N2nContext $n2nContext): FilterDefinition {
-		return $this->getCritmodFactory()->createGeneralFilterDefinition($n2nContext);
+	public function createFilterDefinition(N2nContext $n2nContext): FilterDefinition {
+		return $this->getCritmodFactory()->createFilterDefinition($n2nContext);
 	}
 	
-	public function createEiEntryFilterDefinition(N2nContext $n2nContext) {
-		return $this->getCritmodFactory()->createEiEntryFilterDefinition($n2nContext);
-	}
-	
-	public function createManagedSortDefinition(EiFrame $eiFrame): SortDefinition {
+	public function createFramedSortDefinition(EiFrame $eiFrame): SortDefinition {
 		return $this->getCritmodFactory()->createManagedSortDefinition($eiFrame);
 	}
 	
@@ -132,9 +128,24 @@ class EiEngine {
 		return $this->getCritmodFactory()->createQuickSearchDefinition($eiFrame);
 	}
 	
+	private $securityFactory;
+	
+	private function getSecurityFactory() {
+		if ($this->securityFactory === null) {
+			$this->securityFactory = new SecurityFactory($this->eiMask->getEiPropCollection(),
+					$this->eiMask->getEiCommandCollection(), $this->eiMask->getEiModificatorCollection());
+		}
+		
+		return $this->securityFactory;
+	}
+	
+	public function createSecurityFilterDefinition(N2nContext $n2nContext) {
+		return $this->getSecurityFactory()->createSecurityFilterDefinition($n2nContext);
+	}
+	
 	public function createPrivilegeDefinition(N2nContext $n2nContext) {
 		$securityFactory = new SecurityFactory($this->eiMask->getEiPropCollection(), 
-				$this->getEiCommandCollection(), $this->eiMask->getEiModificatorCollection());
+				$this->eiMask->getEiCommandCollection(), $this->eiMask->getEiModificatorCollection());
 		return $securityFactory->createPrivilegedDefinition($n2nContext);
 	}
 	

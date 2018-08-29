@@ -55,12 +55,22 @@ class PrivilegeDefinition {
 		return $this->eiCommandPrivileges;
 	}
 	
+	/**
+	 * @var EiPropPrivilege[]
+	 */
 	private $eiPropPrivileges = array();
 	
-	public function getEiPropPrivileges(): array {
+	/**
+	 * @return \rocket\spec\security\EiPropPrivilege[]
+	 */
+	public function getEiPropPrivileges() {
 		return $this->eiPropPrivileges;
 	}
 	
+	/**
+	 * @param EiPropPath $eiPropPath
+	 * @param EiPropPrivilege $eiPropPrivilege
+	 */
 	public function putEiPropPrivilege(EiPropPath $eiPropPath, EiPropPrivilege $eiPropPrivilege) {
 		$this->eiPropPrivileges[(string) $eiPropPath] = $eiPropPrivilege;
 	}
@@ -84,7 +94,7 @@ class PrivilegeDefinition {
 				$itemAttributes = new Attributes();
 			}
 				
-			$magCollection->addMag($eiPropPrivilege->createMag($eiPropPathStr, $itemAttributes));
+			$magCollection->addMag($eiPropPathStr, $eiPropPrivilege->createMag($itemAttributes));
 		}
 		return $magCollection;
 	}

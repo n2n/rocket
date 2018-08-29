@@ -22,13 +22,13 @@
 namespace rocket\user\model;
 
 use n2n\web\dispatch\Dispatchable;
-use rocket\user\bo\EiPrivilegeGrant;
+use rocket\user\bo\EiGrantPrivilege;
 use n2n\reflection\annotation\AnnoInit;
 use n2n\impl\web\dispatch\map\val\ValEnum;
 use rocket\spec\security\PrivilegeDefinition;
 use n2n\web\dispatch\annotation\AnnoDispProperties;
 use n2n\web\dispatch\annotation\AnnoDispObject;
-use rocket\ei\manage\critmod\filter\EiEntryFilterDefinition;
+use rocket\ei\manage\security\filter\SecurityFilterDefinition;
 use rocket\ei\manage\critmod\filter\impl\form\FilterGroupForm;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use rocket\ei\EiCommandPath;
@@ -36,10 +36,10 @@ use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\util\config\Attributes;
 
-class EiPrivilegeGrantForm implements Dispatchable {
+class EiGrantPrivilegeForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {
 		$ai->c(new AnnoDispProperties('eiCommandPathStrs', 'eiPropPrivilegeMagForm'));
-		$ai->p('restrictionFilterGroupForm', new AnnoDispObject(function (EiPrivilegeGrantForm $that) {
+		$ai->p('restrictionFilterGroupForm', new AnnoDispObject(function (EiGrantPrivilegeForm $that) {
 			return new FilterGroupForm($that->eiPrivilegesGrant->readRestrictionFilterPropSettingGroup(), 
 					$that->restrictionFilterDefinition);
 		}));
@@ -52,25 +52,25 @@ class EiPrivilegeGrantForm implements Dispatchable {
 	private $eiPropPrivilegeMagForm;
 	private $restrictionFilterGroupForm; 
 	
-	public function __construct(EiPrivilegeGrant $eiPrivilegeGrant, PrivilegeDefinition $privilegeDefinition,
-			EiEntryFilterDefinition $restrictionFilterDefinition) {
-		$this->eiPrivilegesGrant = $eiPrivilegeGrant;
+	public function __construct(EiGrantPrivilege $eiGrantPrivilege, PrivilegeDefinition $privilegeDefinition,
+			SecurityFilterDefinition $restrictionFilterDefinition) {
+		$this->eiPrivilegesGrant = $eiGrantPrivilege;
 		$this->privilegeDefinition = $privilegeDefinition;
 
 		$magCollection = $privilegeDefinition->createEiPropPrivilegeMagCollection(
-				$eiPrivilegeGrant->readEiPropPrivilegeAttributes());
+				$eiGrantPrivilege->readEiPropPrivilegeAttributes());
 		if (!$magCollection->isEmpty()) {
 			$this->eiPropPrivilegeMagForm = new MagForm($magCollection);
 		}
 		
 		$this->restrictionFilterDefinition = $restrictionFilterDefinition;
-		if ($eiPrivilegeGrant->isRestricted()) {
+		if ($eiGrantPrivilege->isRestricted()) {
 			$this->restrictionFilterGroupForm = new FilterGroupForm(
-					$eiPrivilegeGrant->readRestrictionFilterPropSettingGroup(), $this->restrictionFilterDefinition);
+					$eiGrantPrivilege->readRestrictionFilterPropSettingGroup(), $this->restrictionFilterDefinition);
 		}
 	}
 	
-	public function getEiPrivilegeGrant() {
+	public function getEiGrantPrivilege() {
 		return $this->eiPrivilegesGrant;
 	}
 	

@@ -62,7 +62,7 @@ class FilterPropController extends ControllerAdapter  {
 		$filterPropId = (string) $filterPropId;
 		
 		$eiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
-		$filterDefinition = $eiMask->getEiEngine()->createFilterDefinition($this->eiFrame);
+		$filterDefinition = $eiMask->getEiEngine()->createFramedFilterDefinition($this->eiFrame);
 	
 		$filterPropItemForm = null;
 		try {

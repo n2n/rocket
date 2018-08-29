@@ -32,13 +32,16 @@ use rocket\ei\component\command\PrivilegedEiCommand;
 use rocket\ei\EiCommandPath;
 use n2n\reflection\ArgUtils;
 use rocket\spec\security\EiPropPrivilege;
+use rocket\ei\manage\security\filter\SecurityFilterDefinition;
+use rocket\ei\component\prop\SecurityFilterEiProp;
+use rocket\ei\manage\security\filter\SecurityFilterProp;
 
 class SecurityFactory {
 	private $eiPropCollection;
 	private $eiCommandCollection;
 	private $eiModificatorCollection;
 	
-	public function __construct(EiPropCollection $eiPropCollection, EiCommandCollection $eiCommandCollection ,
+	public function __construct(EiPropCollection $eiPropCollection, EiCommandCollection $eiCommandCollection,
 			EiModificatorCollection $eiModificatorCollection) {
 		$this->eiPropCollection = $eiPropCollection;
 		$this->eiCommandCollection = $eiCommandCollection;
@@ -81,7 +84,7 @@ class SecurityFactory {
 		$securityFilterDefinition = new SecurityFilterDefinition();
 		
 		foreach ($this->eiPropCollection as $id => $eiProp) {
-			if (!($eiProp instanceof SecurityEiProp)) continue;
+			if (!($eiProp instanceof SecurityFilterEiProp)) continue;
 			
 			$eiEntryFilterProp = $eiProp->buildSecurityFilterProp($n2nContext);
 			ArgUtils::valTypeReturn($eiEntryFilterProp, SecurityFilterProp::class, $eiProp,

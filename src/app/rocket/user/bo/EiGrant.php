@@ -33,17 +33,19 @@ class EiGrant extends ObjectAdapter implements Grant {
 	private static function _annos(AnnoInit $ai) {
 		$ai->c(new AnnoTable('rocket_ei_grant'));
 		$ai->p('rocketUserGroup', new AnnoManyToOne(RocketUserGroup::getClass()));
-		$ai->p('eiPrivilegeGrants', new AnnoOneToMany(EiPrivilegeGrant::getClass(), 'eiGrant', CascadeType::ALL));
+		$ai->p('eiGrantPrivileges', new AnnoOneToMany(EiGrantPrivilege::getClass(), 'eiGrant', CascadeType::ALL));
 	}
 
 	private $id;
 	private $eiTypePath;
 	private $rocketUserGroup;
 	private $full = false;
-	private $eiPrivilegeGrants;
+	private $eiGrantPrivileges;
+	
+	private $accessJson = '{}';
 	
 	public function __construct() {
-		$this->eiPrivilegeGrants = new \ArrayObject();
+		$this->eiGrantPrivileges = new \ArrayObject();
 	}
 	
 	public function getId() {
@@ -59,7 +61,7 @@ class EiGrant extends ObjectAdapter implements Grant {
 	}
 	
 	public function setEiTypePath(TypePath $eiTypePath) {
-		$this->eiTypePath = $eiTypePath;
+		$this->eiTypePath = (string) $eiTypePath;
 	}
 		
 	public function getRocketUserGroup() {
@@ -82,11 +84,11 @@ class EiGrant extends ObjectAdapter implements Grant {
 		return $this->readAccessAttributes();
 	}
 	
-	public function getEiPrivilegeGrants() {
-		return $this->eiPrivilegeGrants;
+	public function getEiGrantPrivileges() {
+		return $this->eiGrantPrivileges;
 	}
 	
-	public function setEiPrivilegeGrants(\ArrayObject $privilegeGrants) {
-		$this->eiPrivilegeGrants = $privilegeGrants;
+	public function setEiGrantPrivileges(\ArrayObject $privilegeGrants) {
+		$this->eiGrantPrivileges = $privilegeGrants;
 	}
 }

@@ -4,7 +4,7 @@ namespace rocket\ei\component\prop;
 use rocket\ei\util\model\Eiu;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
 
-interface FilterableEiProp extends EiProp {
+interface SecurityFilterEiProp extends EiProp {
 	
 	/**
 	 * @param Eiu $eiu

@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\relation\model\filter;
 
 use rocket\ei\manage\security\filter\SecurityFilterProp;
-use rocket\ei\manage\critmod\filter\EiEntryFilterDefinition;
+use rocket\ei\manage\security\filter\SecurityFilterDefinition;
 use rocket\ei\manage\mapping\EiFieldConstraint;
 use n2n\util\ex\IllegalStateException;
 use n2n\util\config\Attributes;
@@ -38,10 +38,10 @@ use rocket\ei\EiPropPath;
 
 class RelationSecurityFilterProp extends RelationFilterProp implements SecurityFilterProp {
 	
-	private function getEiEntryFilterDefinition(): EiEntryFilterDefinition {
-		$eiEntryFilterDefinition = $this->targetFilterDef->getFilterDefinition();
-		IllegalStateException::assertTrue($eiEntryFilterDefinition instanceof EiEntryFilterDefinition);
-		return $eiEntryFilterDefinition;
+	private function getSecurityFilterDefinition(): SecurityFilterDefinition {
+		$securityFilterDefinition = $this->targetFilterDef->getFilterDefinition();
+		IllegalStateException::assertTrue($securityFilterDefinition instanceof SecurityFilterDefinition);
+		return $securityFilterDefinition;
 	}
 	
 	public function createEiFieldConstraint(Attributes $attributes): EiFieldConstraint {
@@ -61,11 +61,11 @@ class RelationSecurityFilterProp extends RelationFilterProp implements SecurityF
 						CrIt::c($this->lookupTargetEntityObjs($relationFilterConf->getTargetPids())));
 				
 			case CriteriaComparator::OPERATOR_EXISTS:
-				$targetEiEntryConstraint = $this->getEiEntryFilterDefinition()->createEimappingConstraint($filterPropSettingGroup);
+				$targetEiEntryConstraint = $this->getSecurityFilterDefinition()->createEimappingConstraint($filterPropSettingGroup);
 				return new TestEiFieldConstraint($this->eiPropPath, false, $targetEiEntryConstraint);
 				
 			case CriteriaComparator::OPERATOR_NOT_EXISTS:
-				$targetEiEntryConstraint = $this->getEiEntryFilterDefinition()->createEimappingConstraint($filterPropSettingGroup);
+				$targetEiEntryConstraint = $this->getSecurityFilterDefinition()->createEimappingConstraint($filterPropSettingGroup);
 				return new TestEiFieldConstraint($this->eiPropPath, false, $targetEiEntryConstraint);
 		}
 	}

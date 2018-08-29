@@ -192,7 +192,7 @@ class WritableEiPropPrivilege implements EiPropPrivilege {
 	const ACCESS_WRITING_ALLOWED_KEY = 'writingAllowed';
 	const ACCESS_WRITING_ALLOWED_DEFAULT = true;
 	
-	public function createMag(string $propertyName, Attributes $attributes): Mag {
+	public function createMag(Attributes $attributes): Mag {
 		return new BoolMag(new Lstr('ei_impl_field_writable_label', Rocket::NS),
 				$attributes->getBool(self::ACCESS_WRITING_ALLOWED_KEY, false, self::ACCESS_WRITING_ALLOWED_DEFAULT));
 	}

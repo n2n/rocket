@@ -80,17 +80,16 @@ class FilterPropSettingGroup {
 		$fgd = new FilterPropSettingGroup();
 		$fgd->setAndUsed($attributes->getBool(self::ATTR_USE_AND_KEY, false, true));
 
-		
-		$filterItemDatas = $fgd->getFilterItemDatas();
+		$settings = $fgd->getFilterPropSettings();
 		foreach ($attributes->getArray(self::ATTR_FILTER_ITEMS_KEY, false, array(), 
 				TypeConstraint::createArrayLike('array')) as $filterItemAttrs) {
-			$filterItemDatas->append(FilterPropSetting::create(new Attributes($filterItemAttrs)));
+			$settings->append(FilterPropSetting::create(new Attributes($filterItemAttrs)));
 		}
 		
-		$filterGroupDatas = $fgd->getFilterItemDatas();
+		$settingGroups = $fgd->getFilterPropSettingGroups();
 		foreach ($attributes->getArray(self::ATTR_FILTER_GROUPS_KEY, false, array(), 
 				TypeConstraint::createArrayLike('array')) as $filterGroupAttrs) {
-			$filterItemDatas->append(FilterPropSettingGroup::create(new Attributes($filterGroupAttrs)));
+			$settingGroups->append(FilterPropSettingGroup::create(new Attributes($filterGroupAttrs)));
 		}
 
 		return $fgd;

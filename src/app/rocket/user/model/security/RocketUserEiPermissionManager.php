@@ -97,8 +97,8 @@ class RocketUserEiPermissionManager implements EiPermissionManager {
 		}
 		
 		return new RestrictedEiExecution($eiCommand, $eiCommandPath, 
-				$eiGrant->getEiPrivilegeGrants()->getArrayCopy(),
+				$eiGrant->getEiGrantPrivileges()->getArrayCopy(),
 				$eiMask->createPrivilegeDefinition($n2nContext),
-				$eiMask->createEiEntryFilterDefinition($n2nContext));
+				$eiMask->createSecurityFilterDefinition($n2nContext));
 	}
 }

@@ -27,11 +27,10 @@ use n2n\web\dispatch\mag\Mag;
 interface EiPropPrivilege {
 	
 	/**
-	 * @param string $propertyName
 	 * @param Attributes $attributes
 	 * @return \n2n\web\dispatch\mag\Mag
 	 */
-	public function createMag(string $propertyName, Attributes $attributes): Mag;
+	public function createMag(Attributes $attributes): Mag;
 	
 	/**
 	 * @param Mag $mag

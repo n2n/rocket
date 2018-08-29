@@ -54,7 +54,7 @@
 				
 				<div class="rocket-control">
 					<div class="rocket-option-array">
-						<?php $formHtml->meta()->arrayProps('eiPrivilegeGrantForms', function () 
+						<?php $formHtml->meta()->arrayProps('eiGrantPrivilegeForms', function () 
 								use ($view, $html, $formHtml, $eiGrantHtml, $eiGrantForm, $filterAjahHook) { ?>
 							<div>
 								<div class="rocket-properties">	
@@ -106,7 +106,7 @@
 									<?php endif ?>
 								</div>
 							</div>
-						<?php }, count($formHtml->meta()->getMapValue('eiPrivilegeGrantForms')) + 5) ?>
+						<?php }, count($formHtml->meta()->getMapValue('eiGrantPrivilegeForms')) + 5) ?>
 					</div>		
 				</div>
 			</div>

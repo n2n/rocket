@@ -122,7 +122,7 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 					
 					public function getFilterDefinition(): FilterDefinition {
 						return $this->targetEiFrame->getContextEiEngine()
-								->createFilterDefinition($this->targetEiFrame);
+								->createFramedFilterDefinition($this->targetEiFrame);
 					}
 	
 					public function getFilterAjahHook(): FilterAjahHook {
@@ -155,7 +155,7 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 					}
 					
 					public function getFilterDefinition(): FilterDefinition {
-						return $this->targetEiMask->getEiEngine()->createGeneralFilterDefinition($this->n2nContext);
+						return $this->targetEiMask->getEiEngine()->createFilterDefinition($this->n2nContext);
 					}
 	
 					public function getFilterAjahHook(): FilterAjahHook {
@@ -184,7 +184,7 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 			public function getFilterDefinition(): FilterDefinition {
 				return (new CritmodFactory($this->targetEiMask->getEiEngine()->getEiMask()->getEiPropCollection(),
 								$this->targetEiMask->getEiEngine()->getEiModificatorCollection()))
-						->createEiEntryFilterDefinition($this->n2nContext);
+						->createSecurityFilterDefinition($this->n2nContext);
 			}
 
 			public function getFilterAjahHook(): FilterAjahHook {

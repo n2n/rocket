@@ -42,8 +42,18 @@ class TypePath {
 	}
 	
 	/**
+	 * @param mixed $obj
+	 * @return boolean
+	 */
+	function equals($obj) {
+		return $obj instanceof TypePath && $this->getTypeId() === $obj->getTypeId()
+				&& $this->getEiTypeExtensionId() === $obj->getEiTypeExtensionId();
+	}
+	
+	/**
 	 * @param string|TypePath $expression
 	 * @return TypePath
+	 * @throws \InvalidArgumentException
 	 */
 	static function create($expression) {
 		if ($expression instanceof TypePath) {

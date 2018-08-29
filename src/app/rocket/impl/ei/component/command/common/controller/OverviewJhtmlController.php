@@ -133,7 +133,7 @@ class OverviewJhtmlController extends ControllerAdapter {
 // 		}
 
 // 		$eiMask = $eiFrame->getContextEiEngine()->getEiMask();
-// 		$filterGroupForm = new FilterGroupForm($filterPropSettingGroup, $eiMask->createFilterDefinition($eiFrame));
+// 		$filterGroupForm = new FilterGroupForm($filterPropSettingGroup, $eiMask->createFramedFilterDefinition($eiFrame));
 // 		$filterAjahHook = GlobalFilterPropController::buildFilterAjahHook($scrRegistry, $eiMask);
 // 		$sortForm = new SortForm($sortData, $eiMask->createManagedSortDefinition($eiFrame));
 
