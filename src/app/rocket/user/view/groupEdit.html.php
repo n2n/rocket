@@ -35,27 +35,25 @@
 	$html->meta()->addJs('js/user-group.js');
 ?>
 
-<?php $formHtml->open($userGroupForm, null, 'post', array('class' => 'rocket-edit-form'))?>
-	<div class="rocket-panel">
-		<h3><?php $html->l10nText('common_properties_title') ?></h3>
-		
-		<?php $formHtml->messageList() ?>
-		
-		<div class="rocket-properties">
-			<div>
+<?php $formHtml->open($userGroupForm, null, 'post', array('class' => 'rocket-form'))?>
+	<?php $formHtml->messageList() ?>
+	
+	<div class="rocket-group rocket-simple-group">
+		<div class="rocket-control">
+			<div class="rocket-item">
 				<?php $formHtml->label('name', $html->getL10nText('common_name_label')) ?>
 				<div class="rocket-control">
 					<?php $formHtml->input('name', array('maxlength' => 64)) ?>
 					<?php $formHtml->message('name', 'div', array('class' => 'rocket-message-error')) ?>
 				</div>
 			</div>
-			<div>
+			<div class="rocket-item">
 				<label><?php $html->text('user_accessible_menu_items_label') ?></label>
 				<div class="rocket-control rocket-user-group-menu-items"
-					data-accessible-items-title="<?php $html->text('user_accessible_menu_items_label') ?>"
-					data-unaccessible-items-title="<?php $html->text('user_unaccessible_menu_items_title') ?>"
-					data-assign-title="<?php $html->text('common_assign_label') ?>"
-					data-unassign-title="<?php $html->text('common_unassign_label') ?>">
+						data-accessible-items-title="<?php $html->text('user_accessible_menu_items_label') ?>"
+						data-unaccessible-items-title="<?php $html->text('user_unaccessible_menu_items_title') ?>"
+						data-assign-title="<?php $html->text('common_assign_label') ?>"
+						data-unassign-title="<?php $html->text('common_unassign_label') ?>">
 					<?php $formHtml->inputCheckbox('launchPadRestrictionEnabled', true, null, 'LaunchPadRestrictionEnabled') ?>
 					<ul>
 						<?php foreach ($userGroupForm->getaccessibleLaunchPadIdOptions() as $id => $label): ?>
