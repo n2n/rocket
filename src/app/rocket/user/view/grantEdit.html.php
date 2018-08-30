@@ -31,59 +31,58 @@
 	$eiGrantForm = $view->getParam('eiGrantForm'); 
 	$view->assert($eiGrantForm instanceof EiGrantForm);
  
-	$view->useTemplate('~\core\view\template.html', array('title' => $view->getL10nText('user_grant_title')));
+	$view->useTemplate('~\core\view\template.html', array('title' => $view->getL10nText('user_group_privileges_for_mask_title')));
 ?>
 
 <?php $formHtml->open($eiGrantForm)?>
 	<?php $formHtml->messageList() ?>
 	
-	<div class="rocket-panel">
-		<h3><?php $html->l10nText('common_properties_title') ?></h3>
+	
+	<div class="rocket-group rocket-simple-group">
+		<label>Inherited Privileges</label>
+		<div class="rocket-control">
+		</div>
+	</div>
+	
+	<div class="rocket-group rocket-simple-group">
+		<label>Privileges</label>
 		
-		<div class="rocket-properties">
+		<div class="rocket-control">
 			
-			<div class="rocket-control-group">
-				<label>Privileges Grants</label>
-				
-				<div class="rocket-control">
-					<div class="rocket-option-array">
-						<?php $formHtml->meta()->arrayProps('eiGrantPrivilegeForms', function () 
-								use ($view, $html, $formHtml, $eiGrantForm) { ?>
-							<div>
-								<div class="rocket-properties">	
-									<div class="rocket-editable">
-										<div class="rocket-control">
-											<?php $formHtml->optionalObjectCheckbox()  ?>
-										</div>
-									</div>
-									
-									<?php if (null !== ($mappingResult = $formHtml->meta()->getMapValue('eiuPrivilegeForm'))): ?>
-										<?php $html->out($mappingResult->getObject()
-												->setContextPropertyPath($formHtml->meta()->propPath('eiuPrivilegeForm'))) ?>
-									<?php endif ?>
-									
-									<?php if ($eiGrantForm->areRestrictionsAvailable()): ?>
-										<div class="rocket-editable">
-											<div class="rocket-control">
-												<?php $formHtml->optionalObjectCheckbox('restrictionEiuFilterForm', null, 
-														$html->getL10nText('user_access_restricted_label')) ?>
-											</div>
-										</div>
-									
-										<div>	
-											<label><?php $html->l10nText('user_group_access_restrictions_label')?></label>
-											<div class="rocket-control">
-												<?php $html->out($formHtml->meta()->getMapValue('restrictionEiuFilterForm')->getObject()
-														->setContextPropertyPath($formHtml->meta()->propPath('restrictionEiuFilterForm')))?>
-											</div>
-										</div>
-									<?php endif ?>
+			<?php $formHtml->meta()->arrayProps('eiGrantPrivilegeForms', function () 
+					use ($view, $html, $formHtml, $eiGrantForm) { ?>
+				<div class="rocket-group rocket-simple-group">
+					<div class="rocket-control">	
+						<div class="rocket-editable">
+							<div class="rocket-control">
+								<?php $formHtml->optionalObjectCheckbox()  ?>
+							</div>
+						</div>
+						
+						<?php if (null !== ($mappingResult = $formHtml->meta()->getMapValue('eiuPrivilegeForm'))): ?>
+							<?php $html->out($mappingResult->getObject()
+									->setContextPropertyPath($formHtml->meta()->propPath('eiuPrivilegeForm'))) ?>
+						<?php endif ?>
+						
+						<?php if ($eiGrantForm->areRestrictionsAvailable()): ?>
+							<div class="rocket-editable">
+								<div class="rocket-control">
+									<?php $formHtml->optionalObjectCheckbox('restrictionEiuFilterForm', null, 
+											$html->getL10nText('user_access_restricted_label')) ?>
 								</div>
 							</div>
-						<?php }, count($formHtml->meta()->getMapValue('eiGrantPrivilegeForms')) + 5) ?>
-					</div>		
+						
+							<div>	
+								<label><?php $html->l10nText('user_group_access_restrictions_label')?></label>
+								<div class="rocket-control">
+									<?php $html->out($formHtml->meta()->getMapValue('restrictionEiuFilterForm')->getObject()
+											->setContextPropertyPath($formHtml->meta()->propPath('restrictionEiuFilterForm')))?>
+								</div>
+							</div>
+						<?php endif ?>
+					</div>
 				</div>
-			</div>
+			<?php }, count($formHtml->meta()->getMapValue('eiGrantPrivilegeForms')) + 5) ?>
 		</div>
 	</div>
 	<div class="rocket-zone-commands">	

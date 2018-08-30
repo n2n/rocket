@@ -26,7 +26,6 @@ use rocket\user\bo\EiGrantPrivilege;
 use n2n\reflection\annotation\AnnoInit;
 use n2n\impl\web\dispatch\map\val\ValEnum;
 use n2n\web\dispatch\annotation\AnnoDispObject;
-use rocket\ei\util\filter\form\FilterGroupForm;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use rocket\ei\EiCommandPath;
 use n2n\util\config\Attributes;
@@ -51,7 +50,6 @@ class EiGrantPrivilegeForm implements Dispatchable {
 	 * @var EiuEngine
 	 */
 	private $eiuEngine;
-	
 	
 	private $eiuPrivilegeForm;
 	private $restrictionEiuFilterForm; 
