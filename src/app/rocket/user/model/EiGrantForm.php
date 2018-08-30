@@ -26,38 +26,36 @@ use n2n\web\dispatch\Dispatchable;
 use n2n\l10n\N2nLocale;
 use rocket\user\bo\EiGrantPrivilege;
 use rocket\user\bo\EiGrant;
-use rocket\spec\security\PrivilegeDefinition;
 use n2n\web\dispatch\annotation\AnnoDispProperties;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\web\dispatch\annotation\AnnoDispObjectArray;
-use rocket\ei\manage\critmod\filter\FilterDefinition;
+use rocket\ei\util\model\EiuEngine;
 
 class EiGrantForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {
 		$ai->c(new AnnoDispProperties('fullAccess'));
 		$ai->p('eiGrantPrivilegeForms', new AnnoDispObjectArray( 
 				function (EiGrantForm $that) {
-					return new EiGrantPrivilegeForm(new EiGrantPrivilege(), $that->privilegeDefinition,
-							$that->filterDefinition);
+					return new EiGrantPrivilegeForm(new EiGrantPrivilege(), $that->eiuEngine);
 				}));
 	}
 	
 	private $eiGrant;
-	private $privilegeDefinition;
-	private $filterDefinition;
+	private $eiuEngine;
+// 	private $privilegeDefinition;
+// 	private $filterDefinition;
 	
 	private $accessDenyMagForm;
 	private $eiGrantPrivilegeForms = array();
 	
-	public function __construct(EiGrant $eiGrant, PrivilegeDefinition $privilegeDefinition, 
-			FilterDefinition $filterDefinition) {
+	public function __construct(EiGrant $eiGrant, EiuEngine $eiuEngine) {
 		$this->eiGrant = $eiGrant;
-		$this->privilegeDefinition = $privilegeDefinition;
-		$this->filterDefinition = $filterDefinition;
+		$this->eiuEngine = $eiuEngine;
+// 		$this->privilegeDefinition = $privilegeDefinition;
+// 		$this->filterDefinition = $filterDefinition;
 		
 		foreach ($eiGrant->getEiGrantPrivileges() as $eiGrantPrivilege) {
-			$this->eiGrantPrivilegeForms[] = new EiGrantPrivilegeForm($eiGrantPrivilege, $privilegeDefinition, 
-					$filterDefinition);
+			$this->eiGrantPrivilegeForms[] = new EiGrantPrivilegeForm($eiGrantPrivilege, $eiuEngine);
 		}
 	}
 	
@@ -65,12 +63,8 @@ class EiGrantForm implements Dispatchable {
 		return $this->eiGrant; 
 	}
 	
-	public function getPrivilegeDefinition(): PrivilegeDefinition {
-		return $this->privilegeDefinition;
-	}
-
 	public function areRestrictionsAvailable(): bool {
-		return !$this->filterDefinition->isEmpty();
+		return !$this->eiuEngine->hasSecurityFilterProps();
 	}
 	
 	public function isNew() {

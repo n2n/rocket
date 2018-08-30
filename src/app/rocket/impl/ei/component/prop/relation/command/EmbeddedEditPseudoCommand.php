@@ -27,7 +27,7 @@ use n2n\web\http\controller\ControllerAdapter;
 use n2n\core\container\N2nContext;
 use rocket\spec\security\impl\CommonEiCommandPrivilege;
 use n2n\l10n\Lstr;
-use rocket\spec\security\EiCommandPrivilege;
+use rocket\ei\manage\security\privilege\EiCommandPrivilege;
 use n2n\web\http\controller\Controller;
 use rocket\ei\util\model\Eiu;
 

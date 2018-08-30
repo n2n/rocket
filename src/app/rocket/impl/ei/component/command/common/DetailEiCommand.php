@@ -36,7 +36,7 @@ use n2n\util\uri\Path;
 use n2n\core\container\N2nContext;
 use rocket\spec\security\impl\CommonEiCommandPrivilege;
 use rocket\core\model\Rocket;
-use rocket\spec\security\EiCommandPrivilege;
+use rocket\ei\manage\security\privilege\EiCommandPrivilege;
 use n2n\l10n\Lstr;
 use rocket\ei\component\command\GenericDetailEiCommand;
 use rocket\ei\util\model\Eiu;

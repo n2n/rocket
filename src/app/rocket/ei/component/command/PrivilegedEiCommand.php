@@ -21,7 +21,7 @@
  */
 namespace rocket\ei\component\command;
 
-use rocket\spec\security\EiCommandPrivilege;
+use rocket\ei\manage\security\privilege\EiCommandPrivilege;
 use n2n\core\container\N2nContext;
 
 interface PrivilegedEiCommand {

@@ -32,7 +32,7 @@ use rocket\ei\manage\mapping\EiField;
 use rocket\ei\manage\mapping\impl\SimpleEiField;
 use rocket\ei\manage\EiObject;
 use rocket\ei\component\prop\PrivilegedEiProp;
-use rocket\spec\security\EiPropPrivilege;
+use rocket\ei\manage\security\privilege\EiPropPrivilege;
 use n2n\reflection\ArgUtils;
 use n2n\l10n\Lstr;
 use rocket\core\model\Rocket;
@@ -169,7 +169,7 @@ abstract class PropertyEditableEiPropAdapter extends PropertyDisplayableEiPropAd
 		 return $this->standardEditDefinition->isMandatory();
 	}
 
-	public function createEiPropPrivilege(N2nContext $n2nContext): EiPropPrivilege {
+	public function createEiPropPrivilege(Eiu $eiu): EiPropPrivilege {
 		return new WritableEiPropPrivilege();
 	}
 	

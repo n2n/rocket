@@ -1,7 +1,5 @@
 <?php
-
 namespace rocket\ei\manage\security\filter;
-
 
 use rocket\ei\manage\critmod\filter\FilterProp;
 use n2n\util\config\Attributes;

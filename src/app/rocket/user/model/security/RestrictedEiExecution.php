@@ -28,7 +28,7 @@ use rocket\ei\EiCommandPath;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\manage\critmod\filter\EiEntryConstraintGroup;
 use rocket\ei\EiPropPath;
-use rocket\spec\security\PrivilegeDefinition;
+use rocket\ei\manage\security\privilege\PrivilegeDefinition;
 use rocket\ei\security\EiPropAccess;
 use rocket\ei\security\InaccessibleControlException;
 use rocket\ei\manage\critmod\filter\ComparatorConstraintGroup;

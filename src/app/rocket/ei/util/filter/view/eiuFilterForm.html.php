@@ -20,22 +20,21 @@
 	 * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
 	 */
 
-	use n2n\web\dispatch\map\PropertyPath;
 	use rocket\ei\manage\control\IconType;
 	use n2n\impl\web\ui\view\html\HtmlView;
-	use rocket\ei\util\filter\controller\FilterJhtmlHook;
+	use rocket\ei\util\filter\EiuFilterForm;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
 	$formHtml = HtmlView::formHtml($this);
 	
-	$propertyPath = $view->getParam('propertyPath');
-	$view->assert($propertyPath instanceof PropertyPath);
+	$eiuFilterForm = $view->getParam('eiuFilterForm');
+	$view->assert($eiuFilterForm instanceof EiuFilterForm);
 	
-	$filterDefinition = $formHtml->meta()->getMapValue($propertyPath)->getObject()->getFilterDefinition();
+	$propertyPath = $eiuFilterForm->getContextPropertyPath();
+	$filterDefinition = $eiuFilterForm->getFilterDefinition();
+	$filterJhtmlHook = $eiuFilterForm->getFilterJhtmlHook();
 
-	$filterJhtmlHook = $view->getParam('filterJhtmlHook');
-	$view->assert($filterJhtmlHook instanceof FilterJhtmlHook);
 	
 	$html->meta()->addJs('js/filters.js', 'rocket');
 	
@@ -59,5 +58,5 @@
 		data-filter-fields="<?php $html->out(json_encode($filterPropAttrs)) ?>">
 	
 	<?php $view->import('\rocket\ei\util\filter\view\filterGroupForm.html', 
-			array('propertyPath' => $propertyPath)) ?>
+			array('propertyPath' => $propertyPath->ext('filterGroupForm'))) ?>
 </div>

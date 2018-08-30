@@ -35,4 +35,11 @@ RENAME TABLE `rocket_user_privileges_grant` TO `rocket_ei_grant_privileges`;
 
 ALTER TABLE `rocket_ei_grant_privileges`
 	CHANGE COLUMN `ei_field_privilege_json` `ei_prop_privilege_json` TEXT NULL AFTER `ei_command_privilege_json`;
+	
+ALTER TABLE `rocket_ei_grant_privileges`
+	ADD COLUMN `ei_privilege_json` TEXT NOT NULL AFTER `ei_grant_id`,
+	DROP COLUMN `ei_command_privilege_json`,
+	DROP COLUMN `ei_prop_privilege_json`;
+	
+UPDATE `n2n_rocket_playground`.`rocket_ei_grant_privileges` SET `ei_privilege_json`='{}';
 

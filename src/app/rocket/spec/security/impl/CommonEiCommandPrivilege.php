@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\security\impl;
 
-use rocket\spec\security\EiCommandPrivilege;
+use rocket\ei\manage\security\privilege\EiCommandPrivilege;
 use n2n\l10n\N2nLocale;
 use n2n\l10n\Lstr;
 
@@ -35,7 +35,7 @@ class CommonEiCommandPrivilege implements EiCommandPrivilege {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\security\EiCommandPrivilege::getLabel($n2nLocale)
+	 * @see \rocket\ei\manage\security\privilege\EiCommandPrivilege::getLabel($n2nLocale)
 	 */
 	public function getLabel(N2nLocale $n2nLocale): string {
 		return $this->labelLstr->t($n2nLocale);
@@ -47,7 +47,7 @@ class CommonEiCommandPrivilege implements EiCommandPrivilege {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\spec\security\EiCommandPrivilege::getSubEiCommandPrivileges()
+	 * @see \rocket\ei\manage\security\privilege\EiCommandPrivilege::getSubEiCommandPrivileges()
 	 */
 	public function getSubEiCommandPrivileges(): array {
 		return $this->subEiCommandPrivileges;

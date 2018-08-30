@@ -28,7 +28,7 @@ use rocket\ei\EiPropPath;
 use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\util\model\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
-use rocket\spec\security\EiPropPrivilege;
+use rocket\ei\manage\security\privilege\EiPropPrivilege;
 use rocket\ei\manage\gui\GuiField;
 use rocket\ei\manage\gui\GuiPropFork;
 
@@ -86,7 +86,7 @@ abstract class EditableEiPropAdapter extends DisplayableEiPropAdapter implements
 		return $this->standardEditDefinition->isMandatory();
 	}
 
-	public function createEiPropPrivilege(N2nContext $n2nContext): EiPropPrivilege {
+	public function createEiPropPrivilege(Eiu $eiu): EiPropPrivilege {
 		return new WritableEiPropPrivilege();
 	}
 }

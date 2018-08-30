@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\security;
+namespace rocket\ei\manage\security\privilege;
 
 use n2n\util\config\Attributes;
 use n2n\web\dispatch\mag\Mag;

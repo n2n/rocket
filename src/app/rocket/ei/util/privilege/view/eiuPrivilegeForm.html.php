@@ -20,43 +20,40 @@
 	 * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
 	 */
 
-	use rocket\ei\util\model\EiuEntryFormViewModel;
 	use n2n\impl\web\ui\view\html\HtmlView;
-use n2n\web\dispatch\map\PropertyPath;
-use rocket\ei\manage\EiHtmlBuilder;
+	use n2n\web\dispatch\map\PropertyPath;
+	use rocket\ei\util\privilege\EiuPrivilegeForm;
+	use rocket\ei\util\privilege\view\EiuPrivilegeHtmlBuilder;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
 	$formHtml = HtmlView::formHtml($this);
 
-	$eiuEntryFormViewModel = $view->getParam('eiuEntryFormViewModel');
-	$view->assert($eiuEntryFormViewModel instanceof EiuEntryFormViewModel);
+	$eiuPrivilegeForm = $view->getParam('eiuPrivilegeForm');
+	$view->assert($eiuPrivilegeForm instanceof EiuPrivilegeForm);
 	
-	$eiHtml = new EiHtmlBuilder($view);
+	$eiuPrivilegeHtml = new EiuPrivilegeHtmlBuilder($view);
 	
 // 	$eiuEntryFormViewModel->initFromView($view);
 	
-	$efPropertyPath = $eiuEntryFormViewModel->getEiuEntryForm()->getContextPropertyPath();
-	if ($efPropertyPath === null) {
-		$efPropertyPath = new PropertyPath(array());
+	$basePropertyPath = $eiuPrivilegeForm->getContextPropertyPath();
+	if ($basePropertyPath === null) {
+		$basePropertyPath = new PropertyPath(array());
 	}
-	$selectedTypeIdPropertyPath = $efPropertyPath->ext('chosenId');
-	
-	$typeChoicesMap = $eiuEntryFormViewModel->getTypeChoicesMap();
-	$iconTypesMap = $eiuEntryFormViewModel->getIconTypeMap();
 ?>
 <div class="rocket-editable">
 	<label><?php $html->l10nText('user_group_privileges_label')?></label>
 	
 	<ul class="rocket-control">
-		<?php $eiGrantHtml->privilegeCheckboxes('eiCommandPathStrs[]', $eiGrantForm->getPrivilegeDefinition()) ?>
+		<?php $eiuPrivilegeHtml->privilegeCheckboxes($basePropertyPath->ext('eiCommandPathStrs[]'), 
+				$eiuPrivilegeForm->getPrivilegeDefinition()) ?>
 	</ul>
 </div>
 
 <div>
 	<label><?php $html->l10nText('user_group_access_config_label')?></label>
 	<?php $view->out('<ul class="rocket-control">') ?>
-		<?php $formHtml->meta()->objectProps('eiPropPrivilegeMagForm', function() use ($formHtml) { ?>
+		<?php $formHtml->meta()->objectProps($basePropertyPath->ext('eiPropMagForm'), function() use ($formHtml) { ?>
 			<?php $formHtml->magOpen('li', null, array('class' => 'rocket-editable')) ?>
 				<?php $formHtml->magLabel() ?>
 				<div class="rocket-control">

@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\security;
+namespace rocket\ei\manage\security\privilege;
 
 use rocket\ei\EiCommandPath;
 use rocket\ei\EiPropPath;
@@ -31,7 +31,7 @@ class PrivilegeDefinition {
 	private $eiCommandPrivileges = array();
 	
 	public function isEmpty(): bool {
-		return $this->eiCommandPrivileges;
+		return empty($this->eiCommandPrivileges);
 	}
 	
 	public function checkEiCommandPathForPrivileges(EiCommandPath $eiCommandPath) {
@@ -61,7 +61,7 @@ class PrivilegeDefinition {
 	private $eiPropPrivileges = array();
 	
 	/**
-	 * @return \rocket\spec\security\EiPropPrivilege[]
+	 * @return \rocket\ei\manage\security\privilege\EiPropPrivilege[]
 	 */
 	public function getEiPropPrivileges() {
 		return $this->eiPropPrivileges;

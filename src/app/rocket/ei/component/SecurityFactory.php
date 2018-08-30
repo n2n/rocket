@@ -27,14 +27,15 @@ use n2n\core\container\N2nContext;
 use rocket\ei\EiPropPath;
 use rocket\ei\component\command\EiCommandCollection;
 use rocket\ei\component\prop\PrivilegedEiProp;
-use rocket\spec\security\PrivilegeDefinition;
+use rocket\ei\manage\security\privilege\PrivilegeDefinition;
 use rocket\ei\component\command\PrivilegedEiCommand;
 use rocket\ei\EiCommandPath;
 use n2n\reflection\ArgUtils;
-use rocket\spec\security\EiPropPrivilege;
+use rocket\ei\manage\security\privilege\EiPropPrivilege;
 use rocket\ei\manage\security\filter\SecurityFilterDefinition;
 use rocket\ei\component\prop\SecurityFilterEiProp;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
+use rocket\ei\util\model\Eiu;
 
 class SecurityFactory {
 	private $eiPropCollection;
@@ -58,6 +59,8 @@ class SecurityFactory {
 // 	}
 		
 	public function createPrivilegedDefinition(N2nContext $n2nContext): PrivilegeDefinition {
+		$eiu = new Eiu($n2nContext, $this->eiPropCollection->getEiMask());
+		
 		$privilegeDefinition = new PrivilegeDefinition();
 		foreach ($this->eiCommandCollection->toArray(false) as $eiCommand) {
 			if (!($eiCommand instanceof PrivilegedEiCommand)) continue;
@@ -68,7 +71,7 @@ class SecurityFactory {
 		foreach ($this->eiPropCollection->toArray(false) as $eiProp) {
 			if (!($eiProp instanceof PrivilegedEiProp)) continue;
 				
-			$eiPropPrivilege = $eiProp->createEiPropPrivilege($n2nContext);
+			$eiPropPrivilege = $eiProp->createEiPropPrivilege($eiu);
 			ArgUtils::valTypeReturn($eiPropPrivilege, EiPropPrivilege::class, $eiProp, 'buildEiPropPrivilege');
 			
 			if ($eiPropPrivilege !== null) {
@@ -81,12 +84,14 @@ class SecurityFactory {
 	
 	
 	public function createSecurityFilterDefinition(N2nContext $n2nContext): SecurityFilterDefinition {
+		$eiu = new Eiu($n2nContext, $this->eiPropCollection->getEiMask());
+		
 		$securityFilterDefinition = new SecurityFilterDefinition();
 		
 		foreach ($this->eiPropCollection as $id => $eiProp) {
 			if (!($eiProp instanceof SecurityFilterEiProp)) continue;
 			
-			$eiEntryFilterProp = $eiProp->buildSecurityFilterProp($n2nContext);
+			$eiEntryFilterProp = $eiProp->buildSecurityFilterProp($eiu);
 			ArgUtils::valTypeReturn($eiEntryFilterProp, SecurityFilterProp::class, $eiProp,
 					'buildSecurityFilterProp', true);
 			

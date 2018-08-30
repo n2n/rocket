@@ -57,6 +57,7 @@ class EiuContext {
 	 * @param bool $required
 	 * @return EiuMask
 	 * @throws UnknownTypeException required is false and the EiEngine was not be found.
+	 * @throws \InvalidArgumentException
 	 */
 	function mask($eiTypeArg, bool $required = true) {
 		ArgUtils::valType($eiTypeArg, ['string', 'object', TypePath::class, \ReflectionClass::class, EiType::class, EiComponent::class]);
@@ -75,6 +76,11 @@ class EiuContext {
 		
 		$eiEngine = null;
 		try {
+			if ($eiTypeArg instanceof TypePath) {
+				return new EiuMask($this->getEiMaskByEiTypePath($eiTypeArg), null,
+						$this->eiuFactory);
+			}
+			
 			if ($eiTypeArg instanceof \ReflectionClass) {
 				return new EiuMask($this->spec->getEiTypeByClass($eiTypeArg)->getEiMask(), null,
 						$this->eiuFactory);
@@ -86,15 +92,29 @@ class EiuContext {
 			}
 			
 			if (class_exists($eiTypeArg, false)) {
-				return new EiuEngine($this->spec->getEiTypeByClassName($eiTypeArg)->getEiMask(), null,
+				return new EiuMask($this->spec->getEiTypeByClassName($eiTypeArg)->getEiMask(), null,
 						$this->eiuFactory);
 			}
-			
-			return $this->spec->getEiTypeById($eiTypeArg)->getEiMask();
+						
+			return new EiuMask($this->spec->getEiTypeById($eiTypeArg)->getEiMask(), null,
+					$this->eiuFactory);
 		} catch (UnknownTypeException $e) {
 			if (!$required) return null;
 			
 			throw $e;
+		}
+	}
+	
+	/**
+	 * @param TypePath $eiTypePath
+	 * @return \rocket\ei\mask\EiMask
+	 */
+	private function getEiMaskByEiTypePath(TypePath $eiTypePath) {
+		$eiType = $this->spec->getEiTypeById($eiTypePath->getTypeId());
+		if (null !== ($extIt = $eiTypePath->getEiTypeExtensionId())) {
+			return $eiType->getEiTypeExtensionCollection()->getById($extIt)->getEiMask();
+		} else {
+			return $eiType->getEiMask();
 		}
 	}
 	

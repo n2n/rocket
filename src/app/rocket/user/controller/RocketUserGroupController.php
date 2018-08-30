@@ -41,6 +41,7 @@ use n2n\web\http\controller\impl\ScrRegistry;
 use rocket\ei\util\filter\controller\ScrFilterPropController;
 use rocket\ei\EiEngine;
 use rocket\spec\TypePath;
+use rocket\ei\util\model\Eiu;
 
 class RocketUserGroupController extends ControllerAdapter {
 	private $rocketState;
@@ -241,7 +242,7 @@ class RocketUserGroupController extends ControllerAdapter {
 	 * @param ScrRegistry $scrRegistry
 	 * @throws PageNotFoundException
 	 */
-	public function doRestrictEiGrant($rocketUserGroupId, string $eiTypePathStr, ScrRegistry $scrRegistry) {
+	public function doRestrictEiGrant($rocketUserGroupId, string $eiTypePathStr, Eiu $eiu) {
 		$eiTypePath = null;
 		try {
 			$eiTypePath = TypePath::create($eiTypePathStr);
@@ -249,8 +250,13 @@ class RocketUserGroupController extends ControllerAdapter {
 			throw new PageNotFoundException(null, null, $e);
 		}
 		
-		$eiEngine = $this->lookupEiEngine($eiTypePath);
-
+		$eiuEngine = null;
+		try {
+			$eiuEngine = $eiu->context()->engine($eiTypePath);
+		} catch (UnknownTypeException $e) {
+			throw new PageNotFoundException(null, null, $e);
+		}
+		
 		$this->beginTransaction();
 		
 		$rocketUserGroup = $this->userDao->getRocketUserGroupById($rocketUserGroupId);
@@ -265,11 +271,10 @@ class RocketUserGroupController extends ControllerAdapter {
 			$eiGrant->setEiTypePath($eiTypePath);
 		}
 		
-		$privilegeDefinition = $eiEngine->createPrivilegeDefinition($this->getN2nContext());
-		$securityFilterDefinition = $eiEngine->createSecurityFilterDefinition($this->getN2nContext());
+// 		$privilegeDefinition = $eiEngine->createPrivilegeDefinition($this->getN2nContext());
+// 		$securityFilterDefinition = $eiEngine->createSecurityFilterDefinition($this->getN2nContext());
 		
-		$eiGrantForm = new EiGrantForm($eiGrant, $privilegeDefinition, 
-				$securityFilterDefinition->toFilterDefinition());
+		$eiGrantForm = new EiGrantForm($eiGrant, $eiuEngine);
 		
 		if ($this->dispatch($eiGrantForm, 'save')) {
 			if ($eiGrantForm->isNew()) {
@@ -283,11 +288,7 @@ class RocketUserGroupController extends ControllerAdapter {
 		
 		$this->commit();
 		
-		
-		$filterJhtmlHook = ScrFilterPropController::buildSecurityFilterJhtmlHook($scrRegistry, $eiTypePath);
-		
-		$this->forward('..\view\grantEdit.html', array('eiGrantForm' => $eiGrantForm,
-				'filterJhtmlHook' => $filterJhtmlHook));
+		$this->forward('..\view\grantEdit.html', array('eiGrantForm' => $eiGrantForm));
 	}	
 	
 	private function applyBreadcrumbs(RocketUserGroupForm $userGroupForm = null) {

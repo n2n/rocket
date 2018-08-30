@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\security;
+namespace rocket\ei\manage\security\privilege;
 
 use n2n\l10n\N2nLocale;
 

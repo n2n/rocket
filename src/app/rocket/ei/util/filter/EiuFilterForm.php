@@ -14,21 +14,51 @@ use n2n\reflection\CastUtils;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\web\ui\UiComponent;
 use rocket\ei\util\model\EiuFactory;
+use rocket\ei\util\filter\controller\FilterJhtmlHook;
 
 class EiuFilterForm implements Dispatchable, UiComponent {
 	private static function _annos(AnnoInit $ai) {
 		$ai->p('filterGroupForm', new AnnoDispObject());
 	}
 	
+	/**
+	 * @var FilterDefinition
+	 */
 	private $filterDefinition;
+	/**
+	 * @var FilterJhtmlHook
+	 */
+	private $filterJhtmlHook;
+	/**
+	 * @var EiuFactory
+	 */
 	private $eiuFactory;
+	/**
+	 * @var FilterGroupForm
+	 */
 	private $filterGroupForm;
 	
-	function __construct(FilterDefinition $filterDefinition, EiuFactory $eiuFactory) {
+	function __construct(FilterDefinition $filterDefinition, FilterJhtmlHook $filterJhtmlHook, 
+			?FilterPropSettingGroup $rootGroup, EiuFactory $eiuFactory) {
 		$this->filterDefinition = $filterDefinition;
+		$this->filterJhtmlHook = $filterJhtmlHook;
 		$this->eiuFactory = $eiuFactory;
 		
-		$this->filterGroupForm = new FilterGroupForm(new FilterPropSettingGroup(), $filterDefinition);
+		$this->setSettings($rootGroup ?? new FilterPropSettingGroup(), $filterDefinition);
+	}
+	
+	/**
+	 * @return \rocket\ei\manage\critmod\filter\FilterDefinition
+	 */
+	function getFilterDefinition() {
+		return $this->filterDefinition;
+	}
+	
+	/**
+	 * @return \rocket\ei\util\filter\controller\FilterJhtmlHook
+	 */
+	function getFilterJhtmlHook() {
+		return $this->filterJhtmlHook;
 	}
 	
 	/**
@@ -47,6 +77,14 @@ class EiuFilterForm implements Dispatchable, UiComponent {
 		return $this->filterGroupForm->getFilterPropSettingGroup();
 	}
 	
+	function getFilterGroupForm() {
+		return $this->filterGroupForm;
+	}
+	
+	function setFilterGroupForm(FilterGroupForm $filterGroupForm) {
+		$this->filterGroupForm = $filterGroupForm;
+	}
+	
 	/**
 	 * @return EiuFilterForm
 	 */
@@ -56,7 +94,6 @@ class EiuFilterForm implements Dispatchable, UiComponent {
 	}
 	
 	/**
-	 *
 	 * @param PropertyPath|null $propertyPath
 	 * @return EiuFilterForm
 	 */
@@ -85,7 +122,7 @@ class EiuFilterForm implements Dispatchable, UiComponent {
 		$viewFactory = $this->eiuFactory->getN2nContext(true)->lookup(ViewFactory::class);
 		CastUtils::assertTrue($viewFactory instanceof ViewFactory);
 		
-		return $viewFactory->create('rocket\ei\util\view\eiuEntryForm.html', array('eiuFilterForm' => $this));
+		return $viewFactory->create('rocket\ei\util\filter\view\eiuFilterForm.html', array('eiuFilterForm' => $this));
 	}
 	
 	public function build(BuildContext $buildContext): string {

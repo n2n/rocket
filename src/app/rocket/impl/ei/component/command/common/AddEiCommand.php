@@ -36,7 +36,7 @@ use rocket\core\model\Rocket;
 use n2n\l10n\Lstr;
 use rocket\ei\manage\control\EntryControlComponent;
 use rocket\ei\util\model\Eiu;
-use rocket\spec\security\EiCommandPrivilege;
+use rocket\ei\manage\security\privilege\EiCommandPrivilege;
 use n2n\web\http\controller\Controller;
 
 class AddEiCommand extends IndependentEiCommandAdapter implements OverallControlComponent, EntryControlComponent,

@@ -4,6 +4,7 @@ namespace rocket\ei\util\model;
 use n2n\context\Lookupable;
 use n2n\l10n\DynamicTextCollection;
 use rocket\core\model\Rocket;
+use n2n\core\container\N2nContext;
 
 class Eiu implements Lookupable {
 	private $eiuFactory;
@@ -19,6 +20,10 @@ class Eiu implements Lookupable {
 	public function __construct(...$eiArgs) {
 		$this->eiuFactory = new EiuFactory();
 		$this->eiuFactory->applyEiArgs(...$eiArgs);
+	}
+	
+	private function _init(N2nContext $n2nContext) {
+		$this->eiuFactory->applyEiArgs($n2nContext);
 	}
 	
 	/**

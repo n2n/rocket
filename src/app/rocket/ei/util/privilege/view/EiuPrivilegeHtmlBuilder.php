@@ -19,17 +19,17 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\user\view;
+namespace rocket\ei\util\privilege\view;
 
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\spec\security\PrivilegeDefinition;
+use rocket\ei\manage\security\privilege\PrivilegeDefinition;
 use n2n\web\ui\UiComponent;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use n2n\web\ui\Raw;
 use n2n\web\dispatch\map\PropertyPath;
 use rocket\ei\EiCommandPath;
 
-class EiGrantHtmlBuilder {
+class EiuPrivilegeHtmlBuilder {
 	private $view;
 	
 	public function __construct(HtmlView $view) {

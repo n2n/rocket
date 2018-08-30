@@ -21,14 +21,14 @@
  */
 namespace rocket\ei\component\prop;
 
-use rocket\spec\security\EiPropPrivilege;
-use n2n\core\container\N2nContext;
+use rocket\ei\manage\security\privilege\EiPropPrivilege;
+use rocket\ei\util\model\Eiu;
 
 interface PrivilegedEiProp extends EiProp {
 	
 	/**
-	 * @param N2nContext $n2nContext
+	 * @param Eiu $eiu
 	 * @return EiPropPrivilege
 	 */
-	public function createEiPropPrivilege(N2nContext $n2nContext): EiPropPrivilege;
+	public function createEiPropPrivilege(Eiu $eiu): EiPropPrivilege;
 }

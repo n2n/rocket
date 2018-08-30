@@ -31,6 +31,7 @@ use n2n\util\config\Attributes;
 use n2n\util\config\AttributesException;
 use n2n\reflection\ArgUtils;
 use rocket\ei\EiCommandPath;
+use rocket\ei\manage\security\privilege\data\PrivilegeSetting;
 
 class EiGrantPrivilege extends ObjectAdapter {
 	private static function _annos(AnnoInit $ai) {
@@ -40,8 +41,7 @@ class EiGrantPrivilege extends ObjectAdapter {
 	
 	private $id;
 	private $eiGrant;
-	private $eiCommandPrivilegeJson = '[]';
-	private $eiPropPrivilegeJson = '[]';
+	private $eiPrivilegeJson = '{}';
 	private $restricted = false;
 	private $restrictionGroupJson = '[]';
 	
@@ -81,12 +81,15 @@ class EiGrantPrivilege extends ObjectAdapter {
 		return false;
 	}
 
-	public function readEiPropPrivilegeAttributes(): Attributes {
-		return new Attributes(StringUtils::jsonDecode($this->eiPropPrivilegeJson, true));
+	/**
+	 * @return PrivilegeSetting
+	 */
+	public function readPrivilegeSetting(): PrivilegeSetting {
+		return PrivilegeSetting::create(new Attributes(StringUtils::jsonDecode($this->eiPrivilegeJson, true)));
 	}
 	
-	public function writeEiPropPrivilegeAttributes(Attributes $accessAttributes) {
-		$this->eiPropPrivilegeJson = StringUtils::jsonEncode($accessAttributes->toArray());
+	public function writePrivilegeSetting(PrivilegeSetting $privilegeSetting) {
+		$this->eiPrivilegeJson = StringUtils::jsonEncode($privilegeSetting->toAttrs());
 	}
 	
 	public function isRestricted(): bool {

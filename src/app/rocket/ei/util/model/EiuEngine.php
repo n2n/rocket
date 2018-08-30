@@ -9,6 +9,15 @@ use rocket\ei\manage\generic\GenericEiProperty;
 use rocket\ei\manage\generic\UnknownScalarEiPropertyException;
 use rocket\ei\manage\generic\ScalarEiProperty;
 use rocket\ei\EiEngine;
+use rocket\ei\util\filter\EiuFilterForm;
+use rocket\ei\util\filter\controller\ScrFilterPropController;
+use rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup;
+use rocket\ei\manage\critmod\filter\FilterDefinition;
+use rocket\ei\util\filter\controller\FilterJhtmlHook;
+use n2n\web\http\controller\impl\ScrRegistry;
+use n2n\util\config\Attributes;
+use rocket\ei\util\privilege\EiuPrivilegeForm;
+use rocket\ei\manage\security\privilege\data\PrivilegeSetting;
 
 class EiuEngine {
 	private $eiEngine;
@@ -143,5 +152,122 @@ class EiuEngine {
 		}
 		
 		return new EiuProp($eiPropPath, $this);
+	}
+	
+	/**
+	 * @var \rocket\ei\manage\critmod\filter\FilterDefinition
+	 */
+	private $filterDefinition;
+	/**
+	 * @var \rocket\ei\manage\security\filter\SecurityFilterDefinition
+	 */
+	private $securityFilterDefinition;
+	/**
+	 * @var \rocket\ei\manage\security\privilege\PrivilegeDefinition
+	 */
+	private $privilegeDefinition;
+	
+	/**
+	 * @return \rocket\ei\manage\critmod\filter\FilterDefinition
+	 */
+	public function getFilterDefinition() {
+		if ($this->filterDefinition !== null) {
+			return $this->filterDefinition;	
+		}
+		
+		return $this->filterDefinition = $this->eiEngine->createFilterDefinition(
+				$this->eiuFactory->getN2nContext(true));
+	}
+	
+	/**
+	 * @return \rocket\ei\manage\security\filter\SecurityFilterDefinition
+	 */
+	public function getSecurityFilterDefinition() {
+		if ($this->securityFilterDefinition !== null) {
+			return $this->securityFilterDefinition;
+		}
+		
+		return $this->securityFilterDefinition = $this->eiEngine->createSecurityFilterDefinition(
+				$this->eiuFactory->getN2nContext(true));
+	}
+	
+	/**
+	 * @return \rocket\ei\manage\security\privilege\PrivilegeDefinition
+	 */
+	public function getPrivilegeDefinition() {
+		if ($this->privilegeDefinition !== null) {
+			return $this->privilegeDefinition;
+		}
+		
+		return $this->privilegeDefinition = $this->eiEngine->createPrivilegeDefinition(
+				$this->eiuFactory->getN2nContext(true));
+	}
+		
+	/**
+	 * @return boolean
+	 */
+	public function hasFilterProps() {
+		return !$this->getFilterDefinition()->isEmpty();
+	}
+	
+	/**
+	 * @param FilterPropSettingGroup|null $rootGroup
+	 * @return \rocket\ei\util\filter\EiuFilterForm
+	 */
+	public function newFilterForm(FilterPropSettingGroup $rootGroup = null) {
+		return $this->createEiuFilterForm(
+				$this->getFilterDefinition(),
+				ScrFilterPropController::buildFilterJhtmlHook(
+						$this->eiuFactory->getN2nContext(true)->lookup(ScrRegistry::class), 
+						$this->eiEngine->getEiMask()->getEiTypePath()),
+				$rootGroup);
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function hasSecurityFilterProps() {
+		return !$this->getSecurityFilterDefinition()->isEmpty();
+	}
+	
+	/**
+	 * @param FilterPropSettingGroup|null $rootGroup
+	 * @return \rocket\ei\util\filter\EiuFilterForm
+	 */
+	public function newSecurityFilterForm(FilterPropSettingGroup $rootGroup = null) {
+		return $this->createEiuFilterForm(
+				$this->getSecurityFilterDefinition()->toFilterDefinition(),
+				ScrFilterPropController::buildSecurityFilterJhtmlHook(
+						$this->eiuFactory->getN2nContext(true)->lookup(ScrRegistry::class),
+						$this->eiEngine->getEiMask()->getEiTypePath()),
+				$rootGroup);
+				
+	}
+	
+	/**
+	 * @param FilterDefinition $fd
+	 * @param FilterJhtmlHook $fjh
+	 * @param FilterPropSettingGroup|null $rg
+	 * @return EiuFilterForm
+	 */
+	private function createEiuFilterForm(FilterDefinition $fd, FilterJhtmlHook $fjh, 
+			FilterPropSettingGroup $rg = null) {
+		return new EiuFilterForm($fd, $fjh, $rg, $this->eiuFactory);
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function hasPrivileges() {
+		return !$this->getPrivilegeDefinition()->isEmpty();
+	}
+	
+	/**
+	 * @param PrivilegeSetting|null $privilegeSetting
+	 * @return \rocket\ei\util\privilege\EiuPrivilegeForm
+	 */
+	public function newPrivilegeForm(PrivilegeSetting $privilegeSetting = null) {
+		return new EiuPrivilegeForm($this->getPrivilegeDefinition(), $privilegeSetting, $this->eiuFactory);
+		
 	}
 }
