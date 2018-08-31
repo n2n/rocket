@@ -27,7 +27,7 @@ interface QuickSearchableEiProp extends EiProp {
 	
 	/**
 	 * @param EiFrame $eiFrame
-	 * @return \rocket\ei\manage\critmod\quick\QuickSearchField
+	 * @return \rocket\ei\manage\critmod\quick\QuickSearchProp
 	 */
-	public function buildQuickSearchField(EiFrame $eiFrame);
+	public function buildQuickSearchProp(Eiu $eiu);
 }

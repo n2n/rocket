@@ -19,27 +19,29 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\critmod\quick\impl\model;
+namespace rocket\ei\manage\critmod\sort\impl;
 
-use rocket\ei\manage\critmod\quick\QuickSearchField;
-use n2n\persistence\orm\criteria\item\CriteriaItem;
-use rocket\ei\util\filter\model\SimpleComparatorConstraint;
-use n2n\persistence\orm\criteria\item\CrIt;
-use n2n\persistence\orm\criteria\compare\CriteriaComparator;
+use rocket\ei\manage\critmod\sort\SortProp;
+use n2n\persistence\orm\criteria\item\CriteriaProperty;
+use n2n\l10n\Lstr;
+use n2n\l10n\N2nLocale;
+use rocket\ei\manage\critmod\sort\SimpleSortConstraint;
+use rocket\ei\manage\critmod\sort\SortConstraint;
 
-class SimpleQuickSearchField implements QuickSearchField {
-	private $criteriaItem;
-	private $operator;
+class SimpleSortProp implements SortProp {
+	protected $criteriaProperty;
+	protected $labelLstr;
 	
-	public function __construct(CriteriaItem $criteriaItem, string $operator = CriteriaComparator::OPERATOR_LIKE) {
-		$this->criteriaItem = $criteriaItem;
-		$this->operator = $operator;
+	public function __construct(CriteriaProperty $criteriaProperty, $labelLstr) {
+		$this->criteriaProperty = $criteriaProperty;
+		$this->labelLstr = Lstr::create($labelLstr);
 	}
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\critmod\quick\QuickSearchField::createComparatorConstraint($queryStr)
-	 */
-	public function createComparatorConstraint(string $queryStr) {
-		return new SimpleComparatorConstraint($this->criteriaItem, $this->operator, CrIt::c($queryStr));
+	
+	public function getLabel(N2nLocale $n2nLocale): string {
+		return $this->labelLstr->t($n2nLocale);
+	}
+	
+	public function createSortConstraint(string $direction): SortConstraint {
+		return new SimpleSortConstraint($this->criteriaProperty, $direction);
 	}
 }

@@ -63,7 +63,7 @@ use rocket\ei\manage\mapping\EiEntry;
 use rocket\ei\manage\gui\GuiIdPath;
 use rocket\impl\ei\component\prop\translation\model\TranslationEiField;
 use rocket\ei\component\prop\QuickSearchableEiProp;
-use rocket\impl\ei\component\prop\translation\model\TranslationQuickSearchField;
+use rocket\impl\ei\component\prop\translation\model\TranslationQuickSearchProp;
 use rocket\ei\manage\mapping\impl\EiFieldWrapperWrapper;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\impl\ei\component\prop\translation\command\TranslationCopyCommand;
@@ -277,12 +277,12 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 	}
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\QuickSearchableEiProp::buildQuickSearchField()
+	 * @see \rocket\ei\component\prop\QuickSearchableEiProp::buildQuickSearchProp()
 	 */
-	public function buildQuickSearchField(EiFrame $eiFrame) {
+	public function buildQuickSearchProp(Eiu $eiu) {
 		$targetEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame);
 		
-		return new TranslationQuickSearchField(
+		return new TranslationQuickSearchProp(
 				$this->eiPropRelation->getRelationEntityProperty(),
 				$this->eiPropRelation->getTargetEiType()->getEntityModel()->getClass(), 
 				$targetEiFrame->getContextEiEngine()->createQuickSearchDefinition($targetEiFrame));

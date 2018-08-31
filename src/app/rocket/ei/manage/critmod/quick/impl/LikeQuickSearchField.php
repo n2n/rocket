@@ -19,14 +19,28 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\critmod\quick;
+namespace rocket\ei\manage\critmod\quick\impl\model;
 
+use rocket\ei\manage\critmod\quick\QuickSearchProp;
+use n2n\persistence\orm\criteria\item\CrIt;
+use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use rocket\ei\manage\critmod\filter\ComparatorConstraint;
+use rocket\ei\util\filter\model\PropertyValueComparatorConstraint;
+use n2n\persistence\orm\criteria\item\CriteriaProperty;
 
-interface QuickSearchProp {
+class LikeQuickSearchProp implements QuickSearchProp {
+	private $criteriaItem;
+	
+	public function __construct(CriteriaProperty $criteriaProperty) {
+		$this->criteriaItem = $criteriaProperty;
+	}
+	
 	/**
-	 * @param string $queryStr
-	 * @return ComparatorConstraint
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\critmod\quick\QuickSearchProp::createComparatorConstraint($queryStr)
 	 */
-	public function createComparatorConstraint(string $queryStr): ComparatorConstraint;
+	public function createComparatorConstraint(string $queryStr): ComparatorConstraint {
+		return new PropertyValueComparatorConstraint($this->criteriaItem, CriteriaComparator::OPERATOR_LIKE, 
+				CrIt::c('%' . $queryStr . '%'));
+	}
 }

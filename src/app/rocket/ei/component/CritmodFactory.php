@@ -143,8 +143,8 @@ class CritmodFactory {
 		foreach ($this->eiPropCollection as $id => $eiProp) {
 			if (!($eiProp instanceof QuickSearchableEiProp)) continue;
 				
-			if (null !== ($quickSearchField = $eiProp->buildQuickSearchField($eiFrame))) {
-				$quickSearchDefinition->putQuickSearchField(EiPropPath::from($eiProp), $quickSearchField);
+			if (null !== ($quickSearchField = $eiProp->buildQuickSearchProp($eiFrame))) {
+				$quickSearchDefinition->putQuickSearchProp(EiPropPath::from($eiProp), $quickSearchField);
 			}
 		}
 	

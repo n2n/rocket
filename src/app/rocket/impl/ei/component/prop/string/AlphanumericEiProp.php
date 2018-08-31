@@ -39,7 +39,7 @@ use rocket\ei\component\prop\ScalarEiProp;
 use rocket\ei\component\prop\GenericEiProp;
 use rocket\ei\manage\generic\CommonGenericEiProperty;
 use rocket\ei\manage\generic\CommonScalarEiProperty;
-use rocket\ei\manage\critmod\quick\impl\model\LikeQuickSearchField;
+use rocket\ei\manage\critmod\quick\impl\model\LikeQuickSearchProp;
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\sort\SortProp;
 use rocket\ei\manage\generic\GenericEiProperty;
@@ -108,9 +108,9 @@ abstract class AlphanumericEiProp extends DraftableEiPropAdapter implements Filt
 		return null;
 	}
 	
-	public function buildQuickSearchField(EiFrame $eiFrame) {
+	public function buildQuickSearchProp(Eiu $eiu) {
 		if (null !== ($entityProperty = $this->getEntityProperty(false))) {
-			return new LikeQuickSearchField(CrIt::p($entityProperty));
+			return new LikeQuickSearchProp(CrIt::p($entityProperty));
 		}
 		
 		return null;

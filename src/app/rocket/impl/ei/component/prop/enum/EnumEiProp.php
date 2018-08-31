@@ -45,7 +45,7 @@ use rocket\ei\util\model\Eiu;
 use rocket\ei\EiPropPath;
 use rocket\impl\ei\component\prop\enum\conf\EnumEiPropConfigurator;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
-use rocket\ei\manage\critmod\quick\impl\model\LikeQuickSearchField;
+use rocket\ei\manage\critmod\quick\impl\model\LikeQuickSearchProp;
 use rocket\ei\manage\gui\GuiIdPath;
 use n2n\impl\web\dispatch\mag\model\group\EnumTogglerMag;
 use rocket\ei\manage\critmod\filter\FilterProp;
@@ -188,9 +188,9 @@ class EnumEiProp extends DraftableEiPropAdapter implements FilterableEiProp, Sor
 		return null;
 	}
 	
-	public function buildQuickSearchField(EiFrame $eiFrame) {
+	public function buildQuickSearchProp(Eiu $eiu) {
 		if (null !== ($entityProperty = $this->getEntityProperty())) {
-			return new LikeQuickSearchField(CrIt::p($this->getEntityProperty()));
+			return new LikeQuickSearchProp(CrIt::p($this->getEntityProperty()));
 		}
 		
 		return null;

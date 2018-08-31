@@ -29,27 +29,24 @@ use n2n\l10n\N2nLocale;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
-use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
-
 use rocket\impl\ei\component\prop\adapter\DraftableEiPropAdapter;
 use rocket\impl\ei\component\prop\numeric\conf\NumericEiPropConfigurator;
 use n2n\reflection\ArgUtils;
 use n2n\reflection\property\AccessProxy;
 use n2n\reflection\property\TypeConstraint;
 use rocket\ei\manage\EiObject;
-use rocket\ei\manage\frame\EiFrame;
 use n2n\core\container\N2nContext;
 use rocket\ei\EiPropPath;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\ei\manage\critmod\sort\SortProp;
 use rocket\ei\util\model\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
-use rocket\ei\manage\critmod\quick\impl\model\LikeQuickSearchField;
+use rocket\ei\manage\critmod\quick\impl\model\LikeQuickSearchProp;
 use rocket\ei\manage\critmod\filter\FilterProp;
+use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
 
 abstract class NumericEiPropAdapter extends DraftableEiPropAdapter 
 		implements FilterableEiProp, SortableEiProp, QuickSearchableEiProp {
-	
 	protected $minValue = null;
 	protected $maxValue = null;
 	
@@ -111,8 +108,12 @@ abstract class NumericEiPropAdapter extends DraftableEiPropAdapter
 		return new SimpleSortProp(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
 	}
 	
-	public function buildQuickSearchField(EiFrame $eiFrame) {
-		return new LikeQuickSearchField(CrIt::p($this->getEntityProperty()));
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\prop\QuickSearchableEiProp::buildQuickSearchProp()
+	 */
+	public function buildQuickSearchProp(Eiu $eiu) {
+		return new LikeQuickSearchProp(CrIt::p($this->getEntityProperty()));
 	}
 
 // 	public function createEditablePreviewUiComponent(PreviewModel $previewModel, PropertyPath $propertyPath,
