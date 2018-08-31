@@ -197,6 +197,15 @@ namespace Rocket {
 				$.get(url);
 			}, 300000);
 		})();
+		
+		(function() {
+			Jhtml.ready((elements) => {
+				var elementsJq = $(elements);
+				elementsJq.find(".rocket-privilege-form").each(function() {
+					(new Core.PrivilegeForm($(this))).setup();
+				});
+			});
+		})();
 	});
 
 	export function scan(context: Rocket.Cmd.Zone = null) {
