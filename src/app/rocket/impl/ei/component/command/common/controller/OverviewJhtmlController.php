@@ -144,11 +144,11 @@ class OverviewJhtmlController extends ControllerAdapter {
 // 	}
 
 	public function doSelect(string $stateKey, ParamQuery $pageNo = null, ParamQuery $pids = null) {
-		$eiFrame = $this->manageState->peakEiFrame();
+		$eiuFrame = $this->eiuCtrl->frame();
 
-		$critmodForm = CritmodForm::create($eiFrame, $this->critmodSaveDao, $stateKey);
-		$quickSearchForm = QuickSearchForm::create($eiFrame, $this->critmodSaveDao, $stateKey);
-		$listModel = new OverviewModel($this->eiuCtrl->frame(), $this->listSize, $critmodForm, $quickSearchForm);
+		$critmodForm = CritmodForm::create($eiuFrame, $this->critmodSaveDao, $stateKey);
+		$quickSearchForm = QuickSearchForm::create($eiuFrame, $this->critmodSaveDao, $stateKey);
+		$listModel = new OverviewModel($eiuFrame, $this->listSize, $critmodForm, $quickSearchForm);
 		
 		$this->dispatch($critmodForm, 'select') || $this->dispatch($quickSearchForm, 'search') 
 				|| $this->dispatch($quickSearchForm, 'clear');
