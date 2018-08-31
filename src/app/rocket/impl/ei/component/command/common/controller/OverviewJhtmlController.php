@@ -121,7 +121,7 @@ class OverviewJhtmlController extends ControllerAdapter {
 // 		$sortData = null;
 // 		if ($selectedSaveId === null) {
 // 			$filterPropSettingGroup = new FilterPropSettingGroup();
-// 			$sortData = new SortData();
+// 			$sortData = new SortSetting();
 // 		} else {
 // 			$critmodSave = $this->critmodSaveDao->getCritmodSaveById((string) $selectedSaveId);
 // 			if (null === $critmodSave) {
@@ -129,7 +129,7 @@ class OverviewJhtmlController extends ControllerAdapter {
 // 			}
 				
 // 			$filterPropSettingGroup = $critmodSave->readFilterPropSettingGroup();
-// 			$sortData = $critmodSave->readSortData();
+// 			$sortData = $critmodSave->readSortSetting();
 // 		}
 
 // 		$eiMask = $eiFrame->getContextEiEngine()->getEiMask();

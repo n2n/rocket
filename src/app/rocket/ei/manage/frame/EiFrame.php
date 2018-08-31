@@ -253,7 +253,7 @@ class EiFrame {
 // 		}
 		
 // 		if ($applyDefaultSort) {
-// 			$defaultSortDirections = $this->getContextEiMask()->getDefaultSortData();
+// 			$defaultSortDirections = $this->getContextEiMask()->getDefaultSortSetting();
 // 			if (!empty($defaultSortDirections)
 // 					&& null !== ($constraint = $this->getOrCreateSortModel()
 // 							->createCriteriaConstraint($defaultSortDirections))) {

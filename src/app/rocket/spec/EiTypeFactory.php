@@ -144,7 +144,7 @@ class EiTypeFactory {
 		}
 		
 		$eiDef->setFilterPropSettingGroup($eiMaskExtraction->getFilterPropSettingGroup());
-		$eiDef->setDefaultSortData($eiMaskExtraction->getDefaultSortData());
+		$eiDef->setDefaultSortSetting($eiMaskExtraction->getDefaultSortSetting());
 		
 		$eiModificatorCollection = $eiMask->getEiModificatorCollection();
 		foreach ($eiModificatorExtractions as $eiModificatorExtraction) {

@@ -612,9 +612,9 @@ class EiMask {
 			}
 		}
 
-		if (null !== ($defaultSortData = $this->eiMaskDef->getDefaultSortData())) {
+		if (null !== ($defaultSortSetting = $this->eiMaskDef->getDefaultSortSetting())) {
 			$comparatorConstraint = $this->eiEngine->createFramedSortDefinition($eiFrame)
-					->builCriteriaConstraint($defaultSortData, false);
+					->builCriteriaConstraint($defaultSortSetting, false);
 			if ($comparatorConstraint !== null) {
 				$eiFrame->getCriteriaConstraintCollection()->add(CriteriaConstraint::TYPE_HARD_SORT, $comparatorConstraint);
 			}

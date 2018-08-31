@@ -72,7 +72,7 @@ class SortDefinition {
 		return $sortFields;
 	}
 	
-	public function builCriteriaConstraint(SortData $sortData, bool $tmp) {
+	public function builCriteriaConstraint(SortSetting $sortData, bool $tmp) {
 		$sortConstraints = array();
 					
 		foreach ($sortData->getSortItemDatas() as $sortItemData) {

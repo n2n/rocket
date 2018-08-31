@@ -33,7 +33,7 @@ use rocket\spec\InvalidEiMaskConfigurationException;
 use rocket\ei\mask\model\ControlOrder;
 use n2n\reflection\property\TypeConstraint;
 use rocket\spec\InvalidLaunchPadConfigurationException;
-use rocket\ei\manage\critmod\sort\SortData;
+use rocket\ei\manage\critmod\sort\SortSetting;
 use n2n\persistence\orm\util\NestedSetStrategy;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\util\config\InvalidAttributeException;
@@ -184,8 +184,8 @@ class SpecExtractor {
 			$eiMaskExtraction->setFilterPropSettingGroup(FilterPropSettingGroup::create(new Attributes($filterData)));
 		}
 		
-		if (null !== ($defaultSortData = $eiMaskAttributes->getScalarArray(RawDef::EI_DEF_DEFAULT_SORT_KEY, false, null))) {
-			$eiMaskExtraction->setDefaultSortData(SortData::create(new Attributes($defaultSortData)));
+		if (null !== ($defaultSortSetting = $eiMaskAttributes->getScalarArray(RawDef::EI_DEF_DEFAULT_SORT_KEY, false, null))) {
+			$eiMaskExtraction->setDefaultSortSetting(SortSetting::create(new Attributes($defaultSortSetting)));
 		}
 		
 		$eiMaskExtraction->setDisplayScheme($this->createDisplayScheme($eiMaskAttributes));	

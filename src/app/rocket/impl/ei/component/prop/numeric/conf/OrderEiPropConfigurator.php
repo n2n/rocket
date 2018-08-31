@@ -78,8 +78,8 @@ class OrderEiPropConfigurator extends NumericEiPropConfigurator {
 		$eiuMask->addEiCommand($orderEiCommand);
 		$eiuMask->addEiModificator(new OrderEiModificator($this->eiComponent));
 		
-// 		if (count($eiDef->getDefaultSortData()) === 0) {
-// 		    $eiDef->setDefaultSortData(array($this->eiComponent->getEntityProperty()->getName() => Criteria::ORDER_DIRECTION_ASC));
+// 		if (count($eiDef->getDefaultSortSetting()) === 0) {
+// 		    $eiDef->setDefaultSortSetting(array($this->eiComponent->getEntityProperty()->getName() => Criteria::ORDER_DIRECTION_ASC));
 // 		}
 	}
 	

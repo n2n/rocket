@@ -141,7 +141,7 @@ class SpecRawer {
 			$rawData[RawDef::EI_DEF_FILTER_DATA_KEY] = $filterData->toAttrs();
 		}
 		
-		if (null !== ($defaultSortDirection = $extraction->getDefaultSortData())) {
+		if (null !== ($defaultSortDirection = $extraction->getDefaultSortSetting())) {
 			$rawData[RawDef::EI_DEF_DEFAULT_SORT_KEY] = $defaultSortDirection->toAttrs();
 		}
 		

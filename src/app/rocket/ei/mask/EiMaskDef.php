@@ -24,7 +24,7 @@ namespace rocket\ei\mask;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup;
-use rocket\ei\manage\critmod\sort\SortData;
+use rocket\ei\manage\critmod\sort\SortSetting;
 
 class EiMaskDef {
 // 	const TYPE_CHANGE_MODE_DISABLED = 'disabled';
@@ -39,7 +39,7 @@ class EiMaskDef {
 	private $identityStringPattern;
 	private $previewControllerLookupId;
 	private $filterPropSettingGroup;
-	private $defaultSortData;
+	private $defaultSortSetting;
 	
 	/**
 	 * @return string
@@ -167,17 +167,17 @@ class EiMaskDef {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\critmod\sort\SortData
+	 * @return \rocket\ei\manage\critmod\sort\SortSetting
 	 */
-	public function getDefaultSortData() {
-		return $this->defaultSortData;
+	public function getDefaultSortSetting() {
+		return $this->defaultSortSetting;
 	}
 	
 	/**
-	 * @param SortData $defaultSortData
+	 * @param SortSetting $defaultSortSetting
 	 */
-	public function setDefaultSortData(SortData $defaultSortData = null) {
-		$this->defaultSortData = $defaultSortData;
+	public function setDefaultSortSetting(SortSetting $defaultSortSetting = null) {
+		$this->defaultSortSetting = $defaultSortSetting;
 	}
 	
 	public static function buildEntityPropertyName(EntityProperty $entityProperty) {

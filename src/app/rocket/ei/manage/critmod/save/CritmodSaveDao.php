@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\critmod\impl\model;
+namespace rocket\ei\manage\critmod\save;
 
 use n2n\context\RequestScoped;
 use n2n\persistence\orm\EntityManager;
@@ -27,7 +27,7 @@ use n2n\reflection\annotation\AnnoInit;
 use n2n\context\annotation\AnnoSessionScoped;
 use rocket\user\model\LoginContext;
 use rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup;
-use rocket\ei\manage\critmod\sort\SortData;
+use rocket\ei\manage\critmod\sort\SortSetting;
 use n2n\util\ex\IllegalStateException;
 
 class CritmodSaveDao implements RequestScoped {
@@ -146,7 +146,7 @@ class CritmodSaveDao implements RequestScoped {
 	}
 
 	public function createCritmodSave(string $eiTypeId, string $eiMaskId = null, string $name, 
-			FilterPropSettingGroup $filterPropSettingGroup, SortData $sortData) {
+			FilterPropSettingGroup $filterPropSettingGroup, SortSetting $sortData) {
 		if (!$this->isModAccessable()) {
 			throw new IllegalStateException();
 		}
@@ -156,7 +156,7 @@ class CritmodSaveDao implements RequestScoped {
 		$critmodSave->setEiMaskId($eiMaskId);
 		$critmodSave->setName($name);
 		$critmodSave->writeFilterData($filterPropSettingGroup);
-		$critmodSave->writeSortData($sortData);
+		$critmodSave->writeSortSetting($sortData);
 		$this->em->persist($critmodSave);
 		$this->em->flush();
 		return $critmodSave;

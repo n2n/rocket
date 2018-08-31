@@ -22,7 +22,7 @@
 namespace rocket\spec\extr;
 
 use n2n\reflection\ArgUtils;
-use rocket\ei\manage\critmod\sort\SortData;
+use rocket\ei\manage\critmod\sort\SortSetting;
 use rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup;
 use rocket\ei\mask\model\DisplayScheme;
 
@@ -35,7 +35,7 @@ class EiMaskExtraction {
 	private $previewControllerLookupId;
 	
 	private $filterData;
-	private $defaultSortData;
+	private $defaultSortSetting;
 	
 	private $eiPropExtractions = array();
 	private $eiCommandExtractions = array();
@@ -146,17 +146,17 @@ class EiMaskExtraction {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\critmod\sort\SortData|null
+	 * @return \rocket\ei\manage\critmod\sort\SortSetting|null
 	 */
-	public function getDefaultSortData() {
-		return $this->defaultSortData;
+	public function getDefaultSortSetting() {
+		return $this->defaultSortSetting;
 	}
 
 	/**
-	 * @param SortData|null $defaultSortData
+	 * @param SortSetting|null $defaultSortSetting
 	 */
-	public function setDefaultSortData(?SortData $defaultSortData) {
-		$this->defaultSortData = $defaultSortData;
+	public function setDefaultSortSetting(?SortSetting $defaultSortSetting) {
+		$this->defaultSortSetting = $defaultSortSetting;
 	}
 
 	/**

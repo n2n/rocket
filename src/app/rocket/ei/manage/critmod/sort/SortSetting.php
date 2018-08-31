@@ -26,7 +26,7 @@ use n2n\reflection\ArgUtils;
 use n2n\persistence\orm\criteria\Criteria;
 use n2n\util\col\GenericArrayObject;
 
-class SortData {
+class SortSetting {
 	private $sortItemDatas;
 
 	public function __construct() {
@@ -50,8 +50,8 @@ class SortData {
 		return $attrs;
 	}
 
-	public static function create(Attributes $attributes): SortData {
-		$sortData = new SortData();
+	public static function create(Attributes $attributes): SortSetting {
+		$sortData = new SortSetting();
 		$sortItemDatas = $sortData->getSortItemDatas();
 		foreach ($attributes->toArray() as $sortFieldId => $direction) {
 			if (!is_string($direction)) continue;

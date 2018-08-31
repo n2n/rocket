@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\critmod\impl\model;
+namespace rocket\ei\manage\critmod\save;
 
 use n2n\util\StringUtils;
 use n2n\reflection\ObjectAdapter;
@@ -28,7 +28,7 @@ use n2n\persistence\orm\annotation\AnnoTable;
 use rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup;
 use n2n\util\JsonDecodeFailedException;
 use n2n\util\config\Attributes;
-use rocket\ei\manage\critmod\sort\SortData;
+use rocket\ei\manage\critmod\sort\SortSetting;
 use n2n\persistence\orm\annotation\AnnoColumn;
 
 class CritmodSave extends ObjectAdapter {
@@ -38,7 +38,7 @@ class CritmodSave extends ObjectAdapter {
 	}
 	
 	private $id;
-	private $eiTypeId;
+	private $eiTypePath;
 	private $eiMaskId;
 	private $name;
 	private $filterDataJson = '[]';
@@ -56,22 +56,14 @@ class CritmodSave extends ObjectAdapter {
 		$this->name = $name;
 	}
 	
-	public function getEiTypeId() {
-		return $this->eiTypeId;
+	public function getEiTypePath() {
+		return $this->eiTypePath;
 	}
 	
-	public function setEiTypeId(string $eiTypeId) {
-		$this->eiTypeId = $eiTypeId;
+	public function setEiTypePath(string $eiTypePath) {
+		$this->eiTypePath = $eiTypePath;
 	}
 	
-	public function getEiMaskId() {
-		return $this->eiTypeId;
-	}
-	
-	public function setEiMaskId(string $eiMaskId = null) {
-		$this->eiMaskId = $eiMaskId;
-	}
-
 	public function readFilterPropSettingGroup(): FilterPropSettingGroup {
 		$data = array();
 		try {
@@ -84,15 +76,15 @@ class CritmodSave extends ObjectAdapter {
 		$this->filterDataJson = StringUtils::jsonEncode($filterPropSettingGroup->toAttrs());		
 	}
 	
-	public function readSortData(): SortData {
+	public function readSortSetting(): SortSetting {
 		$data = array();
 		try {
 			$data = StringUtils::jsonDecode($this->sortDataJson, true);
 		} catch (JsonDecodeFailedException $e) {}
-		return SortData::create(new Attributes($data));
+		return SortSetting::create(new Attributes($data));
 	}
 	
-	public function writeSortData(SortData $sortData) {
+	public function writeSortSetting(SortSetting $sortData) {
 		$this->sortDataJson = StringUtils::jsonEncode($sortData->toAttrs());
 	}
 }
