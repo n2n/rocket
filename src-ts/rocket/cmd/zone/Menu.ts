@@ -22,7 +22,7 @@ namespace Rocket.Cmd {
 			
 			let jqToolbar = this.context.jQuery.find(".rocket-zone-toolbar:first");
 			if (jqToolbar.length == 0) {
-				jqToolbar = $("<div />", { "class": "rocket-zone-toolbar"}).prependTo(this.context.jQuery);
+				jqToolbar = $("<div />", { "class": "rocket-zone-toolbar"}).prependTo(<JQuery<HTMLElement>> this.context.jQuery);
 			}
 			
 			return this._toolbar = new Display.Toolbar(jqToolbar);
@@ -40,7 +40,7 @@ namespace Rocket.Cmd {
 			return commandsJq;
 		}
 		
-		get zoneCommandsJq(): JQuery {
+		get zoneCommandsJq(): JQuery<Element> {
 			return this.getCommandsJq();
 		}
 		
@@ -52,7 +52,7 @@ namespace Rocket.Cmd {
 			let mainCommandJq = this.mainCommandList.jQuery;
 			var partialCommandsJq = mainCommandJq.children(".rocket-partial-commands:first");
 			if (partialCommandsJq.length == 0) {
-				partialCommandsJq = $("<div />", {"class": "rocket-partial-commands" }).prependTo(mainCommandJq);
+				partialCommandsJq = $("<div />", {"class": "rocket-partial-commands" }).prependTo(<JQuery<HTMLElement>> mainCommandJq);
 			}
 			
 			return this._partialCommandList = new Display.CommandList(partialCommandsJq);
@@ -73,7 +73,7 @@ namespace Rocket.Cmd {
 			
 			if (mainCommandsJq.length == 0) {
 				let contentsJq = commandsJq.children(":not(.rocket-aside-commands)");
-				mainCommandsJq = $("<div></div>", { class: "rocket-main-commands" }).appendTo(commandsJq);
+				mainCommandsJq = $("<div></div>", { class: "rocket-main-commands" }).appendTo(<JQuery<HTMLElement>> commandsJq);
 				mainCommandsJq.append(contentsJq);
 			}
 			
@@ -89,7 +89,7 @@ namespace Rocket.Cmd {
 			let commandsJq = this.getCommandsJq();
 			let asideCommandsJq = commandsJq.children(".rocket-aside-commands:first");
 			if (asideCommandsJq.length == 0) {
-				asideCommandsJq = $("<div />", {"class": "rocket-aside-commands" }).appendTo(commandsJq);
+				asideCommandsJq = $("<div />", {"class": "rocket-aside-commands" }).appendTo(<JQuery<HTMLElement>> commandsJq);
 			}
 			
 			return this._asideCommandList = new Display.CommandList(asideCommandsJq);

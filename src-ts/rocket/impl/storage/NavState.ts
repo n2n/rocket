@@ -9,7 +9,7 @@ namespace Rocket.Impl {
 			this._navGroupOpenedIds = navGroupOpenedIds;
 		}
 
-		public onChanged(elemJq: JQuery, listener: StateListener) {
+		public onChanged(elemJq: JQuery<Element>, listener: StateListener) {
 			this.navStateListeners.push(listener);
 			elemJq.on("remove", () => { this.offChanged(listener) });
 		}

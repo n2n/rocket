@@ -5,10 +5,10 @@ namespace Rocket.Display {
 		
 		private _selected: boolean = false;
 		
-		constructor(private jqElem: JQuery, private _entry: Entry) {
+		constructor(private jqElem: JQuery<Element>, private _entry: Entry) {
 		}
 		
-		get jQuery(): JQuery {
+		get jQuery(): JQuery<Element> {
 			return this.jqElem;
 		}
 		
@@ -45,7 +45,7 @@ namespace Rocket.Display {
 			});
 		}
 		
-//		static findAll(jqElem: JQuery): Array<EntrySelector> {
+//		static findAll(jqElem: JQuery<Element>): Array<EntrySelector> {
 //			var entrySelectors = new Array<EntrySelector>();
 //			
 //			jqElem.find(".rocket-entry-selector").each(function () {
@@ -55,7 +55,7 @@ namespace Rocket.Display {
 //			return entrySelectors;
 //		}
 //		
-//		static findFrom(jqElem: JQuery): EntrySelector {
+//		static findFrom(jqElem: JQuery<Element>): EntrySelector {
 //			var jqElem = jqElem.closest(".rocket-entry-selector");
 //			
 //			if (jqElem.length == 0) return null;
@@ -63,7 +63,7 @@ namespace Rocket.Display {
 //			return EntrySelector.findFrom(jqElem);
 //		}
 //		
-//		private static from(jqElem: JQuery): EntrySelector {
+//		private static from(jqElem: JQuery<Element>): EntrySelector {
 //			var entrySelector = jqElem.data("rocketEntrySelector");
 //			if (entrySelector instanceof EntrySelector) {
 //				return entrySelector;

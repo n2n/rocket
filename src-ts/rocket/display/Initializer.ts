@@ -57,7 +57,7 @@ namespace Rocket.Display {
 			});
 		}
 		
-		private static scanGroupNav(jqContainer: JQuery) {
+		private static scanGroupNav(jqContainer: JQuery<Element>) {
 			let curGroupNav: GroupNav = null;
 			
 			jqContainer.children().each(function () {
@@ -82,10 +82,10 @@ namespace Rocket.Display {
     }
     
     class GroupNav {
-    	private jqGroupNav: JQuery;
+    	private jqGroupNav: JQuery<Element>;
 		private groups: Array<StructureElement>;
     
-    	public constructor(jqGroupNav: JQuery) {
+    	public constructor(jqGroupNav: JQuery<Element>) {
     		this.jqGroupNav = jqGroupNav;
 			this.groups = new Array<StructureElement>();
 			
@@ -139,7 +139,7 @@ namespace Rocket.Display {
 			}
 		}
 		
-		public static fromMain(jqElem: JQuery) {
+		public static fromMain(jqElem: JQuery<Element>) {
 			var jqPrev = jqElem.prev(".rocket-main-group-nav");
 			if (jqPrev.length > 0) {
 				let groupNav = jqPrev.data("rocketGroupNav");
@@ -156,7 +156,7 @@ namespace Rocket.Display {
     
 	
 	class ErrorIndex {
-		private jqIndex: JQuery;
+		private jqIndex: JQuery<Element>;
 		private tab: AdditionalTab;
 		private displayErrorLabel: string;
 		

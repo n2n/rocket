@@ -13,7 +13,7 @@ namespace Rocket.Display {
             });
         }
         
-        get jQuery(): JQuery {
+        get jQuery(): JQuery<Element> {
         	return $(this.jLink.element);
         }
         
@@ -66,7 +66,7 @@ namespace Rocket.Display {
                 
                 if (!revt.swapControlHtml) return;
                 let jqNewElem = $(revt.swapControlHtml);
-                jqElem.replaceWith(jqNewElem);
+                jqElem.replaceWith(<JQuery<HTMLElement>> jqNewElem);
                 this.jLink.dispose();
                 this.jLink = Jhtml.Ui.Link.from(<HTMLAnchorElement> jqNewElem.get(0));
                 this._observing = false;

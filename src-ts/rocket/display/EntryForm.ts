@@ -1,10 +1,10 @@
 namespace Rocket.Display {
 	export class EntryForm {
-		private jqElem: JQuery;
-		private jqEiTypeSelect: JQuery = null;
+		private jqElem: JQuery<Element>;
+		private jqEiTypeSelect: JQuery<Element> = null;
 		private inited: boolean = false;
 		
-		constructor (jqElem: JQuery) {
+		constructor (jqElem: JQuery<Element>) {
 			this.jqElem = jqElem;
 		}
 		
@@ -40,7 +40,7 @@ namespace Rocket.Display {
 			this.jqElem.children(".rocket-ei-type-" + this.jqEiTypeSelect.val()).show();
 		}
 		
-		get jQuery(): JQuery {
+		get jQuery(): JQuery<Element> {
 			return this.jqElem;
 		}
 		
@@ -93,7 +93,7 @@ namespace Rocket.Display {
 			return typeMap;
 		}
 		
-		public static from(jqElem: JQuery, create: boolean = true): EntryForm {
+		public static from(jqElem: JQuery<Element>, create: boolean = true): EntryForm {
 			var entryForm = jqElem.data("rocketEntryForm");
 			if (entryForm instanceof EntryForm) return entryForm;
 		
@@ -105,7 +105,7 @@ namespace Rocket.Display {
 			return entryForm;
 		}
 		
-		public static firstOf(jqElem: JQuery): EntryForm {
+		public static firstOf(jqElem: JQuery<Element>): EntryForm {
 			if (jqElem.hasClass("rocket-entry-form")) {
 				return EntryForm.from(jqElem);
 			}
@@ -116,7 +116,7 @@ namespace Rocket.Display {
 			return EntryForm.from(jqEntryForm);
 		}
 		
-		public static find(jqElem: JQuery, mulitTypeOnly: boolean = false): Array<EntryForm> {
+		public static find(jqElem: JQuery<Element>, mulitTypeOnly: boolean = false): Array<EntryForm> {
 			let entryForms: Array<EntryForm> = [];
 			jqElem.find(".rocket-entry-form" + (mulitTypeOnly ? ".rocket-multi-ei-type": "")).each(function() {
 				entryForms.push(EntryForm.from($(this)));	

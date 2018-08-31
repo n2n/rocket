@@ -6,7 +6,7 @@ namespace Rocket.Cmd {
 	import util = Rocket.Util;
 	
 	export class Zone {
-		private jqZone: JQuery;
+		private jqZone: JQuery<Element>;
 		private _activeUrl: Jhtml.Url;
 		private urls: Array<Jhtml.Url> = [];
 		private _layer: Layer;
@@ -20,7 +20,7 @@ namespace Rocket.Cmd {
 	
 		private _lastModDefs: LastModDef[] = [];
 	
-		constructor(jqZone: JQuery, url: Jhtml.Url, layer: Layer) {
+		constructor(jqZone: JQuery<Element>, url: Jhtml.Url, layer: Layer) {
 			this.jqZone = jqZone;
 			this.urls.push(this._activeUrl = url);
 			this._layer = layer;
@@ -36,7 +36,7 @@ namespace Rocket.Cmd {
 			return this._layer;
 		}
 		
-		get jQuery(): JQuery {
+		get jQuery(): JQuery<Element> {
 			return this.jqZone;
 		}
 		
@@ -229,7 +229,7 @@ namespace Rocket.Cmd {
 			this.jqZone.removeClass("rocket-loading");
 		}
 		
-		public applyContent(jqContent: JQuery) {
+		public applyContent(jqContent: JQuery<Element>) {
 			this.endLoading();
 			this.jqZone.append(jqContent);
 			
@@ -326,7 +326,7 @@ namespace Rocket.Cmd {
 			return lock;
 		}
 		
-		public static of(jqElem: JQuery): Zone {
+		public static of(jqElem: JQuery<Element>): Zone {
 			if (!jqElem.hasClass(".rocket-zone")) {
 				jqElem = jqElem.parents(".rocket-zone");
 			}

@@ -2,12 +2,12 @@ namespace Rocket.Impl.Translation {
 
 	export class TranslationManager {
 		private min: number = 0;
-		private menuJq: JQuery;
+		private menuJq: JQuery<Element>;
 		translatables: Array<Translatable> = [];
 		private menuItems: Array<MenuItem> = [];
-		private buttonJq: JQuery = null;
+		private buttonJq: JQuery<Element> = null;
 
-		constructor(private jqElem: JQuery) {
+		constructor(private jqElem: JQuery<Element>) {
 			this.min = parseInt(jqElem.data("rocket-impl-min"));
 			Display.Toggler.simple(this.initControl(), this.initMenu());
 		}
@@ -134,7 +134,7 @@ namespace Rocket.Impl.Translation {
 		}
 
 
-		private initControl(): JQuery {
+		private initControl(): JQuery<Element> {
 			let jqLabel = this.jqElem.children("label:first");
 			let cmdList = Rocket.Display.CommandList.create(true);
 			let buttonJq = cmdList.createJqCommandButton({
@@ -143,12 +143,12 @@ namespace Rocket.Impl.Translation {
 				tooltip: this.jqElem.find("rocket-impl-tooltip").text()
 			});
 
-			jqLabel.replaceWith(cmdList.jQuery);
+			jqLabel.replaceWith(<JQuery<HTMLElement>> cmdList.jQuery);
 
 			return buttonJq;
 		}
 
-		private initMenu(): JQuery {
+		private initMenu(): JQuery<Element> {
 			let menuJq = this.jqElem.find(".rocket-impl-translation-menu");
 			menuJq.hide();
 
@@ -165,7 +165,7 @@ namespace Rocket.Impl.Translation {
 		}
 
 
-		static from(jqElem: JQuery): TranslationManager {
+		static from(jqElem: JQuery<Element>): TranslationManager {
 			let tm = jqElem.data("rocketImplTranslationManager");
 			if (tm instanceof TranslationManager) {
 				return tm;
@@ -181,11 +181,11 @@ namespace Rocket.Impl.Translation {
 	class MenuItem {
 		private _localeId: string;
 		private _mandatory: boolean;
-		private jqCheck: JQuery;
-		private jqI: JQuery;
+		private jqCheck: JQuery<Element>;
+		private jqI: JQuery<Element>;
 		private _disabled: boolean = false;
 
-		constructor(private jqElem: JQuery) {
+		constructor(private jqElem: JQuery<Element>) {
 			this._localeId = this.jqElem.data("rocket-impl-locale-id");
 			this._mandatory = this.jqElem.data("rocket-impl-mandatory") ? true : false;
 

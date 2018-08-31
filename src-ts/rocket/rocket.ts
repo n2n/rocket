@@ -84,7 +84,7 @@ namespace Rocket {
 		})();
 
 		(function () {
-			Jhtml.ready((elements) => {
+			Jhtml.ready((elements: HTMLElement[]) => {
 				$(elements).find("a.rocket-jhtml").each(function () {
 					new Rocket.Display.Command(Jhtml.Ui.Link.from(<HTMLAnchorElement> this)).observe();
 				});
@@ -92,7 +92,7 @@ namespace Rocket {
 		})();
 		
 		(function() {
-			Jhtml.ready((elements) => {
+			Jhtml.ready((elements: HTMLElement[]) => {
 				$(elements).find(".rocket-image-resizer-container").each(function () {
 					new Rocket.Impl.File.RocketResizer($(this));
 				});
@@ -102,7 +102,7 @@ namespace Rocket {
 		(function () {
 			let moveState = new Impl.Order.MoveState();
 
-			Jhtml.ready((elements) => {
+			Jhtml.ready((elements: HTMLElement[]) => {
 				$(elements).find(".rocket-impl-insert-before").each(function () {
 					let elemJq = $(this);
 					new Impl.Order.Control(elemJq, Impl.Order.InsertMode.BEFORE, moveState,
@@ -132,9 +132,8 @@ namespace Rocket {
 					nav.elemJq = rgn;
 					let navGroupJq = rgn.find(".rocket-nav-group");
 
-					navGroupJq.each((key: number, navGroupNode: Node) => {
+					navGroupJq.each((key: number, navGroupNode: HTMLElement) => {
 						navGroups.push(Rocket.Display.NavGroup.build($(navGroupNode), userStore));
-
 					})
 
 					rgn.on("scroll",() => {
@@ -147,13 +146,13 @@ namespace Rocket {
 
 						mutations.forEach((mutation) => {
 							navGroups.forEach((navGroup: NavGroup) => {
-								if ($(Array.from(mutation.removedNodes)).get(0) === navGroup.elemJq.get(0)) {
+								if ($(Array.from(mutation.removedNodes)[0]).get(0) === navGroup.elemJq.get(0)) {
 									userStore.navState.offChanged(navGroup);
 								}
 							});
 
 							navGroups.forEach((navGroup: NavGroup) => {
-								if ($(Array.from(mutation.addedNodes)).get(0) === navGroup.elemJq.get(0)) {
+								if ($(Array.from(mutation.addedNodes)[0]).get(0) === navGroup.elemJq.get(0)) {
 									if (userStore.navState.isGroupOpen(navGroup.id)) {
 										navGroup.open(0);
 									} else {
@@ -169,7 +168,7 @@ namespace Rocket {
 					observer.observe(rgn.get(0), {childList: true});
 				}
 
-				elementsJq.each((key: number, node: Node) => {
+				elementsJq.each((key: number, node: HTMLElement) => {
 					let nodeJq = $(node);
 					if (nodeJq.hasClass("rocket-nav-group") && nodeJq.parent().get(0) === nav.elemJq.get(0)) {
 						navGroups.push(Rocket.Display.NavGroup.build(nodeJq, userStore));
@@ -183,10 +182,10 @@ namespace Rocket {
 		(function() {
 			Jhtml.ready((elements) => {
 				var elementsJq = $(elements);
-				elementsJq.find(".dropdown").each((i: number, elem: Element) => {
+				elementsJq.find(".dropdown").each((i: number, elem: HTMLElement) => {
 					var elemJq = $(elem);
 					Display.Toggler.simple(elemJq.find(".dropdown-toggle"), elemJq.find(".dropdown-menu"));
-				})
+				});
 			});
 		})();
 		

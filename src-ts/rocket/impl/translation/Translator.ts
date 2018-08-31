@@ -5,7 +5,7 @@ namespace Rocket.Impl.Translation {
 
 		scan() {
 			for (let context of this.container.getAllZones()) {
-				let elems: Array<HTMLElement> = context.jQuery.find(".rocket-impl-translation-manager").toArray();
+				let elems = context.jQuery.find(".rocket-impl-translation-manager").toArray();
 				let elem;
 
 				while (elem = elems.pop()) {
@@ -43,7 +43,7 @@ namespace Rocket.Impl.Translation {
 			}
 		}
 
-		private initTm(jqElem: JQuery, context: Rocket.Cmd.Zone) {
+		private initTm(jqElem: JQuery<Element>, context: Rocket.Cmd.Zone) {
 			let tm = TranslationManager.from(jqElem);
 			tm.val(this.userStore.langState.activeLocaleIds);
 			let se = Rocket.Display.StructureElement.of(jqElem);

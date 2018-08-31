@@ -1,9 +1,9 @@
 namespace Rocket.Display {
 	export class Nav {
-		private _elemJq: JQuery;
+		private _elemJq: JQuery<Element>;
 		private _state: Impl.NavState;
 
-		public init(elemJq: JQuery) {
+		public init(elemJq: JQuery<Element>) {
 			this.elemJq = elemJq;
 		}
 
@@ -21,11 +21,11 @@ namespace Rocket.Display {
 			this._state = value;
 		}
 
-		get elemJq(): JQuery {
+		get elemJq(): JQuery<Element> {
 			return this._elemJq;
 		}
 
-		set elemJq(value: JQuery) {
+		set elemJq(value: JQuery<Element>) {
 			this._elemJq = value;
 		}
 	}

@@ -1,10 +1,10 @@
 namespace Rocket.Display { 
 	export class StressWindow {
-		private elemBackgroundJq: JQuery;
-		private elemDialogJq: JQuery;
-		private elemControlsJq: JQuery;
-		private elemMessageJq: JQuery;
-		private elemConfirmJq: JQuery;
+		private elemBackgroundJq: JQuery<Element>;
+		private elemDialogJq: JQuery<Element>;
+		private elemControlsJq: JQuery<Element>;
+		private elemMessageJq: JQuery<Element>;
+		private elemConfirmJq: JQuery<Element>;
 		
 		public constructor() {
 			this.elemBackgroundJq = $("<div />", {
@@ -26,11 +26,11 @@ namespace Rocket.Display {
 			
 			this.elemMessageJq = $("<p />", {
 				"class": "rocket-dialog-message"	
-			}).appendTo(this.elemDialogJq);
+			}).appendTo(<JQuery<HTMLElement>> this.elemDialogJq);
 			
 			this.elemControlsJq = $("<div/>", {
 				"class": "rocket-dialog-controls"
-			}).appendTo(this.elemDialogJq);
+			}).appendTo(<JQuery<HTMLElement>> this.elemDialogJq);
 			
 		}
 		

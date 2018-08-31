@@ -1,14 +1,14 @@
 namespace Rocket.Impl.File {
 	class SelectableDimension implements SizeSelectorListener {
-		private elemLowRes: JQuery;
-		private elemRadio: JQuery;
-		private elemThumb: JQuery;
+		private elemLowRes: JQuery<Element>;
+		private elemRadio: JQuery<Element>;
+		private elemThumb: JQuery<Element>;
 		private dimensionStr: string;
 		private ratioStr: string;
 		private ratio: boolean;
 		private resizingDimension: ResizingDimension;
 	
-		public constructor(private resizer: Resizer, private elemLi: JQuery) {
+		public constructor(private resizer: Resizer, private elemLi: JQuery<Element>) {
 			this.resizer.getSizeSelector().registerChangeListener(this);
 			this.elemLowRes = elemLi.find(".rocket-image-low-res").hide();
 			this.elemRadio = elemLi.find("input[type=radio]:first");
@@ -47,7 +47,7 @@ namespace Rocket.Impl.File {
 					var elemToggleClose = $("<i />", {
 						"class": "fa fa-chevron-up"
 					});
-					let elemsToToggle: JQuery = that.elemLi.siblings("[data-ratio-str=" + that.ratioStr + "]"),
+					let elemsToToggle: JQuery<Element> = that.elemLi.siblings("[data-ratio-str=" + that.ratioStr + "]"),
 						elemA = $("<a />", {
 					        "href": "#",
 					        "class": "open btn btn-secondary"
@@ -69,7 +69,7 @@ namespace Rocket.Impl.File {
 					        }
 					    }).append(elemToggleOpen).append(elemToggleClose).appendTo($("<div />", {
 					    	"class": "rocket-simple-commands"
-					    }).appendTo(this.elemLi));
+					    }).appendTo(<JQuery<HTMLElement>> this.elemLi));
 			
 					if (!that.checkOpen() && elemsToToggle.find("input[type=radio]:checked").length === 0) {
 						elemA.click();
@@ -237,8 +237,8 @@ namespace Rocket.Impl.File {
 	class SizeSelector {
 		private fixedRatio: boolean = false;
 		private currentResizingDimension: ResizingDimension = null;
-		private elemDiv: JQuery = null;
-		private elemSpan: JQuery = null;
+		private elemDiv: JQuery<Element> = null;
+		private elemSpan: JQuery<Element> = null;
 		private imageLoaded: boolean = false;
 		private dragStart: DragStart = null;
 		private resizeStart: ResizeStart = null;
@@ -246,7 +246,7 @@ namespace Rocket.Impl.File {
 		private min: Dimension = null;
 		private changeListeners: Array<SizeSelectorListener> = [];
 
-		public constructor(private imageResizer: Resizer, private elemImg: JQuery) {
+		public constructor(private imageResizer: Resizer, private elemImg: JQuery<Element>) {
 			this.initialize();
 		}
 		
@@ -596,12 +596,12 @@ namespace Rocket.Impl.File {
 	}
 	
 	class Resizer implements SizeSelectorListener {
-		private elemContent: JQuery = null;
-		private elemLowResolutionContainer: JQuery = null;
-		private elemFixedRatioContainer: JQuery = null;
+		private elemContent: JQuery<Element> = null;
+		private elemLowResolutionContainer: JQuery<Element> = null;
+		private elemFixedRatioContainer: JQuery<Element> = null;
 		private textFixedRatio: string;
-		private elemCbxFixedRatio: JQuery = null;
-		private elemSpanZoom: JQuery = $("<span />");
+		private elemCbxFixedRatio: JQuery<Element> = null;
+		private elemSpanZoom: JQuery<Element> = $("<span />");
 		private textLowResolution: string;
 		public textZoom: string;
 		private dimensions: Array<ResizingDimension> = [];
@@ -612,8 +612,8 @@ namespace Rocket.Impl.File {
 		private originalImageHeight: number = null;
 		private selectedDimension: SelectableDimension;
 	
-		public constructor(private elem: JQuery, private elemDimensionContainer: JQuery, 
-				private elemImg: JQuery = null, private maxHeightCheckClosure: () => number = null) {
+		public constructor(private elem: JQuery<Element>, private elemDimensionContainer: JQuery<Element>, 
+				private elemImg: JQuery<Element> = null, private maxHeightCheckClosure: () => number = null) {
 			if (null === this.elemImg) {
 				this.elemImg = $("<img/>").attr("src", elem.attr("data-img-src"));
 			}
@@ -678,7 +678,7 @@ namespace Rocket.Impl.File {
 	            .addClass("rocket-image-resizer-content")
 	            .append($("<div/>").addClass("rocket-image-resizer-content-overlay"));
 
-	        this.elemContent.append(this.elemImg).appendTo(this.elem);
+	        this.elemContent.append(this.elemImg).appendTo(<JQuery<HTMLElement>> this.elem);
 	        this.initFixedRatioContainer();
 	        //now it s in tho Document DOM
 	        var _obj = this;
@@ -779,7 +779,7 @@ namespace Rocket.Impl.File {
 		}
 		
 		private initFixedRatioContainer() {
-			this.elemFixedRatioContainer = $("<div/>").addClass("rocket-fixed-ratio-container").appendTo(this.elem);
+			this.elemFixedRatioContainer = $("<div/>").addClass("rocket-fixed-ratio-container").appendTo(<JQuery<HTMLElement>> this.elem);
 			var randomId = "rocket-image-resizer-fixed-ratio-" + Math.floor((Math.random() * 10000)),
 				that = this;
 
@@ -793,7 +793,7 @@ namespace Rocket.Impl.File {
 					that.sizeSelector.setFixedRatio($(this).prop("checked"));
 					that.sizeSelector.initializeMin();
 					that.sizeSelector.initializeMax();
-				}).appendTo(this.elemFixedRatioContainer);
+				}).appendTo(<JQuery<HTMLElement>> this.elemFixedRatioContainer);
 		}
 		
 		private checkFixedRatio(resizingDimension: ResizingDimension) {
@@ -808,12 +808,12 @@ namespace Rocket.Impl.File {
 		
 		private initLowResolutionContainer() {
 			this.elemLowResolutionContainer = $("<div/>")
-				.addClass("rocket-low-resolution-container").appendTo(this.elem).hide();
+				.addClass("rocket-low-resolution-container").appendTo(<JQuery<HTMLElement>> this.elem).hide();
 			
 			$("<span />", {
 				"class": "rocket-image-resizer-warning",
 				"text": this.textLowResolution
-			}).appendTo(this.elemLowResolutionContainer);
+			}).appendTo(<JQuery<HTMLElement>> this.elemLowResolutionContainer);
 		}
 		
 		public showLowResolutionWarning() {
@@ -912,7 +912,7 @@ namespace Rocket.Impl.File {
 	
 	export class RocketResizer {
 		private resizer: Resizer;
-		public constructor(private elem: JQuery) {
+		public constructor(private elem: JQuery<Element>) {
 			let elemResizer = elem.find("#rocket-image-resizer"),
 				elemPageControls = elem.find(".rocket-zone-commands:first"),
 				elemRocketheader = $("#rocket-header"),

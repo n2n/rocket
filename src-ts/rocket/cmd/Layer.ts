@@ -8,7 +8,7 @@ namespace Rocket.Cmd {
 		private callbackRegistery: Rocket.Util.CallbackRegistry<LayerCallback> = new Rocket.Util.CallbackRegistry<LayerCallback>();
 		private _visible: boolean = true;
 		
-		constructor(private jqLayer: JQuery, private _level: number, private _container: Container, 
+		constructor(private jqLayer: JQuery<Element>, private _level: number, private _container: Container, 
 				private _monitor: Jhtml.Monitor) {
 			this.onNewZoneCallbacks = new Array<ZoneCallback>();
 			this.onNewHistoryEntryCallbacks = new Array<HistoryCallback>();
@@ -28,7 +28,7 @@ namespace Rocket.Cmd {
 			this.historyChanged();
 		}
 		
-		get jQuery(): JQuery {
+		get jQuery(): JQuery<Element> {
 			return this.jqLayer;
 		}
 		
@@ -340,7 +340,7 @@ namespace Rocket.Cmd {
 //			this.onNewHistoryEntryCallbacks.push(onNewHistoryEntryCallback);
 //		}
 
-		public static create(jqLayer: JQuery, _level: number, _container: Container, history: Jhtml.History) {
+		public static create(jqLayer: JQuery<Element>, _level: number, _container: Container, history: Jhtml.History) {
 			if (Layer.test(jqLayer)) {
 				throw new Error("Layer already bound to this element.");
 			}
@@ -349,7 +349,7 @@ namespace Rocket.Cmd {
 			jqLayer.data("rocketLayer", this);
 		}
 		
-		private static test(jqLayer: JQuery): Layer {
+		private static test(jqLayer: JQuery<Element>): Layer {
 			var layer = jqLayer.data("rocketLayer");
 			if (layer instanceof Layer) {
 				return layer;
@@ -358,7 +358,7 @@ namespace Rocket.Cmd {
 			return null;
 		}
 		
-		public static of(jqElem: JQuery): Layer {
+		public static of(jqElem: JQuery<Element>): Layer {
 			if (!jqElem.hasClass(".rocket-layer")) {
 				jqElem = jqElem.closest(".rocket-layer");
 			}

@@ -5,7 +5,7 @@ namespace Rocket.Impl.Overview {
 	var $ = jQuery;
 
 	export class Header {
-		private jqElem: JQuery;
+		private jqElem: JQuery<Element>;
 		private state: State;
 		private quicksearchForm: QuicksearchForm;
 		private critmodSelect: CritmodSelect;
@@ -14,7 +14,7 @@ namespace Rocket.Impl.Overview {
 		constructor(private overviewContent: OverviewContent) {
 		}
 		
-		init(jqElem: JQuery) {
+		init(jqElem: JQuery<Element>) {
 			this.jqElem = jqElem;
 			
 			this.state = new State(this.overviewContent);
@@ -34,24 +34,24 @@ namespace Rocket.Impl.Overview {
 	}
 	
 	class State {
-		private jqElem: JQuery;
-		private jqAllButton: JQuery;
-		private jqSelectedButton: JQuery;
+		private jqElem: JQuery<Element>;
+		private jqAllButton: JQuery<Element>;
+		private jqSelectedButton: JQuery<Element>;
 		
 		constructor(private overviewContent: OverviewContent) {
 		}
 		
-		public draw(jqElem: JQuery) {
+		public draw(jqElem: JQuery<Element>) {
 			this.jqElem = jqElem;
 			var that = this;
 			
-			this.jqAllButton = $("<button />", { "type": "button", "class": "btn btn-secondary" }).appendTo(jqElem);
+			this.jqAllButton = $("<button />", { "type": "button", "class": "btn btn-secondary" }).appendTo(<JQuery<HTMLElement>> jqElem);
 			this.jqAllButton.click(function () {
 				that.overviewContent.showAll();
 				that.reDraw();
 			});
 			
-			this.jqSelectedButton = $("<button />", { "type": "button", "class": "btn btn-secondary" }).appendTo(jqElem);
+			this.jqSelectedButton = $("<button />", { "type": "button", "class": "btn btn-secondary" }).appendTo(<JQuery<HTMLElement>> jqElem);
 			this.jqSelectedButton.click(function () {
 				that.overviewContent.showSelected();
 				that.reDraw();
@@ -103,15 +103,15 @@ namespace Rocket.Impl.Overview {
 	}
 	
 	class QuicksearchForm {
-		private jqSearchButton: JQuery;
-		private jqSearchInput: JQuery;
+		private jqSearchButton: JQuery<Element>;
+		private jqSearchInput: JQuery<Element>;
 		private form: Jhtml.Ui.Form;
-		private jqForm: JQuery;
+		private jqForm: JQuery<Element>;
 		
 		constructor(private overviewContent: OverviewContent) {
 		}
 		
-		public init(jqForm: JQuery) {
+		public init(jqForm: JQuery<Element>) {
 			if (this.form) {
 				throw new Error("Quicksearch already initialized.");
 			}
@@ -208,18 +208,18 @@ namespace Rocket.Impl.Overview {
 		private form: Jhtml.Ui.Form;
 		private critmodForm: CritmodForm;
 		
-		private jqForm: JQuery;
-		private jqSelect: JQuery;
-		private jqButton: JQuery;
+		private jqForm: JQuery<Element>;
+		private jqSelect: JQuery<Element>;
+		private jqButton: JQuery<Element>;
 		
 		constructor(private overviewContent: OverviewContent) {
 		}
 		
-		get jQuery(): JQuery {
+		get jQuery(): JQuery<Element> {
 			return this.jqForm;
 		}
 		
-		public init(jqForm: JQuery, critmodForm: CritmodForm) {
+		public init(jqForm: JQuery<Element>, critmodForm: CritmodForm) {
 			if (this.form) {
 				throw new Error("CritmodSelect already initialized.");
 			}
@@ -310,20 +310,20 @@ namespace Rocket.Impl.Overview {
 	}
 	
 	class CritmodForm {
-		private jqForm: JQuery;
+		private jqForm: JQuery<Element>;
 		private form: Jhtml.Ui.Form;
 		
-		private jqApplyButton: JQuery;
-		private jqClearButton: JQuery;
-		private jqNameInput: JQuery;
-		private jqSaveButton: JQuery;
-		private jqSaveAsButton: JQuery;
-		private jqDeleteButton: JQuery;
+		private jqApplyButton: JQuery<Element>;
+		private jqClearButton: JQuery<Element>;
+		private jqNameInput: JQuery<Element>;
+		private jqSaveButton: JQuery<Element>;
+		private jqSaveAsButton: JQuery<Element>;
+		private jqDeleteButton: JQuery<Element>;
 		
-		private jqControlContainer: JQuery;
-		private jqOpenButton: JQuery;
-		private jqEditButton: JQuery;
-		private jqCloseButton: JQuery;
+		private jqControlContainer: JQuery<Element>;
+		private jqOpenButton: JQuery<Element>;
+		private jqEditButton: JQuery<Element>;
+		private jqCloseButton: JQuery<Element>;
 		
 		private changeCallbacks: Array<() => any> = [];
 		private changedCallbacks: Array<(idOptions: {[key: string]: string}) => any> = [];
@@ -333,7 +333,7 @@ namespace Rocket.Impl.Overview {
 		constructor(private overviewContent: OverviewContent) {
 		}
 		
-		public drawControl(jqControlContainer: JQuery) {
+		public drawControl(jqControlContainer: JQuery<Element>) {
 			this.jqControlContainer = jqControlContainer;
 			
 			this.jqOpenButton = $("<button />", { 
@@ -342,7 +342,7 @@ namespace Rocket.Impl.Overview {
 					})
 					.append($("<i />", { "class": "fa fa-filter"}))
 					.click(() => { this.open = true })
-					.appendTo(jqControlContainer);
+					.appendTo(<JQuery<HTMLElement>> jqControlContainer);
 			
 			this.jqEditButton = $("<button />", { 
 						"class": "btn btn-secondary", 
@@ -350,7 +350,7 @@ namespace Rocket.Impl.Overview {
 					})
 					.append($("<i />", { "class": "fa fa-filter"}))
 					.click(() => { this.open = true })
-					.appendTo(jqControlContainer);
+					.appendTo(<JQuery<HTMLElement>> jqControlContainer);
 			
 			this.jqCloseButton = $("<button />", { 
 						"class": "btn btn-secondary", 
@@ -358,7 +358,7 @@ namespace Rocket.Impl.Overview {
 					})
 					.append($("<i />", { "class": "fa fa-times"}))
 					.click(() => { this.open = false })
-					.appendTo(jqControlContainer);
+					.appendTo(<JQuery<HTMLElement>> jqControlContainer);
 			
 			this.open = false;
 		}
@@ -403,7 +403,7 @@ namespace Rocket.Impl.Overview {
 			this.updateControl();
 		}
 		
-		public init(jqForm: JQuery) {
+		public init(jqForm: JQuery<Element>) {
 			if (this.form) {
 				throw new Error("CritmodForm already initialized.");
 			}
@@ -488,7 +488,7 @@ namespace Rocket.Impl.Overview {
 			}
 		}
 		
-		private jqBlocker: JQuery;
+		private jqBlocker: JQuery<Element>;
 		
 		public freeze() {
 			this.form.abortSubmit();
@@ -501,7 +501,7 @@ namespace Rocket.Impl.Overview {
 			if (this.jqBlocker) return;
 			
 			this.jqBlocker = $("<div />", { "class": "rocket-impl-critmod-blocker" })
-					.appendTo(this.jqForm);
+					.appendTo(<JQuery<HTMLElement>> this.jqForm);
 		}
 		
 		public reload() {
@@ -548,7 +548,7 @@ namespace Rocket.Impl.Overview {
 			}
 			
 			var jqForm = $(snippet.elements);
-			this.jqForm.replaceWith(jqForm);
+			this.jqForm.replaceWith(<JQuery<HTMLElement>> jqForm);
 			this.form = null;
 			snippet.markAttached();
 			this.init(jqForm);

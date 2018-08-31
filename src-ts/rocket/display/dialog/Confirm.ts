@@ -34,13 +34,13 @@ namespace Rocket.Display {
 			this.stressWindow = null;
 		}
 		
-		static test(elemJq: JQuery, successCallback?: () => any): Confirm|null {
+		static test(elemJq: JQuery<Element>, successCallback?: () => any): Confirm|null {
 			if (!elemJq.data("rocket-confirm-msg")) return null;
 			
 			return Confirm.fromElem(elemJq, successCallback);
 		}
 		
-		static fromElem(elemJq: JQuery, successCallback?: () => any): Confirm {
+		static fromElem(elemJq: JQuery<Element>, successCallback?: () => any): Confirm {
 			let confirm = new Confirm(
 					elemJq.data("rocket-confirm-msg") || "Are you sure?",
 					elemJq.data("rocket-confirm-ok-label") || "Yes",

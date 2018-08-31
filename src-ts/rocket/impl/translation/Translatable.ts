@@ -6,7 +6,7 @@ namespace Rocket.Impl.Translation {
 		private copyUrlDefs: { [localeId: string]: UrlDef } = {};
 		private _contents: { [localeId: string]: TranslatedContent } = {}
 
-		constructor(private jqElem: JQuery) {
+		constructor(private jqElem: JQuery<Element>) {
 			let srcLoadConfig = jqElem.data("rocket-impl-src-load-config");
 			
 			if (!srcLoadConfig) return;
@@ -26,7 +26,7 @@ namespace Rocket.Impl.Translation {
 			}
 		}
 
-		get jQuery(): JQuery {
+		get jQuery(): JQuery<Element> {
 			return this.jqElem;
 		}
 
@@ -96,7 +96,7 @@ namespace Rocket.Impl.Translation {
 
 		public scan() {
 			this.jqElem.children().each((i, elem) => {
-				let jqElem: JQuery = $(elem);
+				let jqElem: JQuery<Element> = $(elem);
 				let localeId = jqElem.data("rocket-impl-locale-id");
 				if (!localeId || this._contents[localeId]) return;
 
@@ -105,7 +105,7 @@ namespace Rocket.Impl.Translation {
 			});
 		}
 
-		static test(elemJq: JQuery): Translatable {
+		static test(elemJq: JQuery<Element>): Translatable {
 			let translatable = elemJq.data("rocketImplTranslatable");
 			if (translatable instanceof Translatable) {
 				return translatable;
@@ -114,7 +114,7 @@ namespace Rocket.Impl.Translation {
 			return null;
 		}
 
-		static from(jqElem: JQuery): Translatable {
+		static from(jqElem: JQuery<Element>): Translatable {
 			let translatable = Translatable.test(jqElem);
 			if (translatable instanceof Translatable) {
 				return translatable;
@@ -139,16 +139,16 @@ namespace Rocket.Impl.Translation {
 	}
 
 	export class TranslatedContent {
-//		private jqTranslation: JQuery;
+//		private jqTranslation: JQuery<Element>;
 		private _propertyPath: string;
 		private _pid: string;
-		private _fieldJq: JQuery;
-		private jqEnabler: JQuery = null;
-		private copyControlJq: JQuery = null;
+		private _fieldJq: JQuery<Element>;
+		private jqEnabler: JQuery<Element> = null;
+		private copyControlJq: JQuery<Element> = null;
 		private changedCallbacks: Array<() => any> = [];
 		private _visible: boolean = true;
 
-		constructor(private _localeId: string, private elemJq: JQuery) {
+		constructor(private _localeId: string, private elemJq: JQuery<Element>) {
 			Display.StructureElement.from(elemJq, true);
 //			this.jqTranslation = jqElem.children(".rocket-impl-translation");
 			this._propertyPath = elemJq.data("rocket-impl-property-path");
@@ -164,16 +164,16 @@ namespace Rocket.Impl.Translation {
 					.children("input[type=hidden].rocket-impl-unloaded").length == 0;
 		}
 
-		get jQuery(): JQuery {
+		get jQuery(): JQuery<Element> {
 			return this.elemJq;
 		}
 
-		get fieldJq(): JQuery {
+		get fieldJq(): JQuery<Element> {
 			return this._fieldJq;
 		}
 
-		replaceField(newFieldJq: JQuery) {
-			this._fieldJq.replaceWith(newFieldJq);
+		replaceField(newFieldJq: JQuery<Element>) {
+			this._fieldJq.replaceWith(<JQuery<HTMLElement>> newFieldJq);
 			this._fieldJq = newFieldJq;
 		}
 
@@ -246,7 +246,7 @@ namespace Rocket.Impl.Translation {
 					"type": "button",
 					"text": " " + this.elemJq.data("rocket-impl-activate-label"),
 					"click": () => { this.active = true}
-				}).prepend($("<i />", { "class": "fa fa-language", "text": "" })).appendTo(this.elemJq);
+				}).prepend($("<i />", { "class": "fa fa-language", "text": "" })).appendTo(<JQuery<HTMLElement>> this.elemJq);
 
 				this.triggerChanged();
 			}
@@ -273,7 +273,7 @@ namespace Rocket.Impl.Translation {
 			}
 		}
 		
-		private loaderJq: JQuery;
+		private loaderJq: JQuery<Element>;
 		
 		get loading(): boolean {
 			return !!this.loaderJq;
@@ -292,7 +292,7 @@ namespace Rocket.Impl.Translation {
 			
 			this.loaderJq = $("<div />", {
 				class: "rocket-load-blocker"
-			}).append($("<div></div>", { class: "rocket-loading" })).appendTo(this.elemJq);
+			}).append($("<div></div>", { class: "rocket-loading" })).appendTo(<JQuery<HTMLElement>> this.elemJq);
 		}
 
 		private triggerChanged() {
@@ -308,8 +308,8 @@ namespace Rocket.Impl.Translation {
 
 	class CopyControl {
 
-		private elemJq: JQuery;
-		private menuUlJq: JQuery;
+		private elemJq: JQuery<Element>;
+		private menuUlJq: JQuery<Element>;
 		private toggler: Display.Toggler;
 
 		constructor(private translatedContent: TranslatedContent, private guiIdPath: string) {
