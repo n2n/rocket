@@ -39,7 +39,7 @@ use rocket\ei\component\prop\ScalarEiProp;
 use rocket\ei\component\prop\GenericEiProp;
 use rocket\ei\manage\generic\CommonGenericEiProperty;
 use rocket\ei\manage\generic\CommonScalarEiProperty;
-use rocket\ei\manage\critmod\quick\impl\model\LikeQuickSearchProp;
+use rocket\ei\manage\critmod\quick\impl\LikeQuickSearchProp;
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\sort\SortProp;
 use rocket\ei\manage\generic\GenericEiProperty;

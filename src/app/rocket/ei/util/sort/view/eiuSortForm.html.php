@@ -36,9 +36,9 @@ use n2n\web\dispatch\map\PropertyPath;
 	
 	$propertyPath = $eiuSortForm->getContextPropertyPath()->ext('sortForm') ?? new PropertyPath(['sortForm']);
 	
-	$sortFieldIdOptions = array();
-	foreach ($eiuSortForm->getSortDefinition()->getSortProps() as $id => $sortField) {
-		$sortFieldIdOptions[$id] = $sortField->getLabel($view->getN2nLocale());
+	$sortPropIdOptions = array();
+	foreach ($eiuSortForm->getSortDefinition()->getSortProps() as $id => $sortProp) {
+		$sortPropIdOptions[$id] = $sortProp->getLabel($view->getN2nLocale());
 	}
 	
 	$directionsOptions = array(
@@ -55,12 +55,12 @@ use n2n\web\dispatch\map\PropertyPath;
 	<div class="rocket-sort-contraints">
 		<?php foreach ($formHtml->meta()->getMapValue($propertyPath->ext('directions')) as $key => $direction): ?>
 			<div class="nav-item rocket-sort-constraint">
-				<?php $formHtml->select($propertyPath->ext('sortFieldIds')->fieldExt($key), $sortFieldIdOptions, array('class' => 'form-control')) ?>
+				<?php $formHtml->select($propertyPath->ext('sortPropIds')->fieldExt($key), $sortPropIdOptions, array('class' => 'form-control')) ?>
 				<?php $formHtml->select($propertyPath->ext('directions')->fieldExt($key), $directionsOptions, array('class' => 'form-control')) ?>
 			</div>
 		<?php endforeach ?>
 		<div class="nav-item rocket-sort-constraint rocket-empty-sort-constraint">
-			<?php $formHtml->select($propertyPath->ext('sortFieldIds[]'), $sortFieldIdOptions, array('class' => 'form-control rocket-sort-prop')) ?>
+			<?php $formHtml->select($propertyPath->ext('sortPropIds[]'), $sortPropIdOptions, array('class' => 'form-control rocket-sort-prop')) ?>
 			<?php $formHtml->select($propertyPath->ext('directions[]'), $directionsOptions, array('class' => 'form-control')) ?>
 		</div>
 	</div>

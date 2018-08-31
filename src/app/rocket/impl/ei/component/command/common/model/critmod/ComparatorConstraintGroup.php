@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\critmod\impl\model;
+namespace rocket\impl\ei\component\command\common\model\critmod;
 
 use rocket\ei\manage\frame\CriteriaConstraint;
 use n2n\reflection\ArgUtils;

@@ -45,7 +45,7 @@ use rocket\ei\util\model\Eiu;
 use rocket\ei\EiPropPath;
 use rocket\impl\ei\component\prop\enum\conf\EnumEiPropConfigurator;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
-use rocket\ei\manage\critmod\quick\impl\model\LikeQuickSearchProp;
+use rocket\ei\manage\critmod\quick\impl\LikeQuickSearchProp;
 use rocket\ei\manage\gui\GuiIdPath;
 use n2n\impl\web\dispatch\mag\model\group\EnumTogglerMag;
 use rocket\ei\manage\critmod\filter\FilterProp;

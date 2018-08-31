@@ -54,6 +54,11 @@ use rocket\ei\manage\gui\GuiIdPath;
 use rocket\ei\mask\EiMask;
 use n2n\util\ex\IllegalStateException;
 use n2n\persistence\orm\util\NestedSetUtils;
+use rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup;
+use rocket\ei\util\filter\EiuFilterForm;
+use rocket\ei\util\filter\controller\FilterJhtmlHook;
+use rocket\ei\manage\critmod\sort\SortSetting;
+use rocket\ei\util\sort\EiuSortForm;
 
 class EiuFrame {
 	private $eiFrame;
@@ -112,6 +117,13 @@ class EiuFrame {
 		}
 		
 		return $this->eiuEngine = new EiuEngine($this->eiFrame->getContextEiEngine(), null, $this->eiuFactory);
+	}
+	
+	/**
+	 * @return \rocket\spec\TypePath
+	 */
+	public function getContextEiTypePath() {
+		return $this->eiFrame->getContextEiEngine()->getEiMask()->getEiTypePath();
 	}
 	
 	/**
@@ -902,6 +914,91 @@ class EiuFrame {
 			$eiEntityObj->refreshId();
 			$eiEntityObj->setPersistent(true);
 		}
+	}
+	
+	/**
+	 * @var \rocket\ei\manage\critmod\filter\FilterDefinition
+	 */
+	private $filterDefinition;
+	/**
+	 * @var \rocket\ei\manage\critmod\sort\SortDefinition
+	 */
+	private $sortDefinition;
+	/**
+	 * @var \rocket\ei\manage\critmod\quick\QuickSearchDefinition
+	 */
+	private $quickSearchDefinition;
+	
+	/**
+	 * @return \rocket\ei\manage\critmod\filter\FilterDefinition
+	 */
+	public function getFilterDefinition() {
+		if ($this->filterDefinition !== null) {
+			return $this->filterDefinition;
+		}
+		
+		return $this->filterDefinition = $this->eiFrame->getContextEiEngine()->createFramedFilterDefinition($this->eiFrame);
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function hasFilterProps() {
+		return !$this->getFilterDefinition()->isEmpty();
+	}
+	
+	/**
+	 * @return \rocket\ei\manage\critmod\sort\SortDefinition
+	 */
+	public function getSortDefinition() {
+		if ($this->sortDefinition !== null) {
+			return $this->sortDefinition;
+		}
+		
+		return $this->sortDefinition = $this->eiFrame->getContextEiEngine()->createFramedSortDefinition($this->eiFrame);
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function hasSortProps() {
+		return !$this->getSortDefinition()->isEmpty();
+	}
+	
+	
+	/**
+	 * @return \rocket\ei\manage\critmod\quick\QuickSearchDefinition
+	 */
+	public function getQuickSearchDefinition() {
+		if ($this->quickSearchDefinition !== null) {
+			return $this->quickSearchDefinition;
+		}
+		
+		return $this->quickSearchDefinition = $this->eiFrame->getContextEiEngine()->createFramedQuickSearchDefinition($this->eiFrame);
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function hasQuickSearchProps() {
+		return !$this->getQuickSearchDefinition()->isEmpty();
+	}
+	
+	/**
+	 * @param FilterJhtmlHook $filterJhtmlHook
+	 * @param FilterPropSettingGroup|null $rootGroup
+	 * @return \rocket\ei\util\filter\EiuFilterForm
+	 */
+	public function newFilterForm(FilterJhtmlHook $filterJhtmlHook, FilterPropSettingGroup $rootGroup = null) {
+		return new EiuFilterForm($this->getFilterDefinition(), $filterJhtmlHook, $rootGroup, $this->eiuFactory);
+	}
+	
+	/**
+	 * @param SortSetting|null $sortSetting
+	 * @return \rocket\ei\util\sort\EiuSortForm
+	 */
+	public function newSortForm(SortSetting $sortSetting = null) {
+		return new EiuSortForm($this->getSortDefinition(), $sortSetting, $this->eiuFactory);
 	}
 }
 

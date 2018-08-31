@@ -25,8 +25,8 @@ use n2n\web\http\PageNotFoundException;
 use rocket\impl\ei\component\command\common\model\OverviewModel;
 use n2n\web\http\controller\ControllerAdapter;
 use rocket\ei\manage\critmod\save\CritmodSaveDao;
-use rocket\ei\manage\critmod\impl\model\CritmodForm;
-use rocket\ei\manage\critmod\quick\impl\form\QuickSearchForm;
+use rocket\impl\ei\component\command\common\model\critmod\CritmodForm;
+use rocket\impl\ei\component\command\common\model\critmod\QuickSearchForm;
 use n2n\web\http\controller\impl\ScrRegistry;
 use rocket\ei\util\filter\controller\FramedFilterPropController;
 use n2n\web\http\controller\ParamQuery;
@@ -61,8 +61,11 @@ class OverviewController extends ControllerAdapter {
 		} else {
             $stateKey = OverviewJhtmlController::genStateKey();
 		}
-		$critmodForm = CritmodForm::create($eiFrame, $critmodSaveDao, $stateKey);
-		$quickSearchForm = QuickSearchForm::create($eiFrame, $critmodSaveDao, $stateKey);
+		
+		$filterJhtmlHook = FramedFilterPropController::buildFilterJhtmlHook($this->getHttpContext()
+				->getControllerContextPath($this->getControllerContext())->ext('filter')->toUrl());
+		$critmodForm = CritmodForm::create($eiuFrame, $filterJhtmlHook, $critmodSaveDao, $stateKey);
+		$quickSearchForm = QuickSearchForm::create($eiuFrame, $critmodSaveDao, $stateKey);
 		$listModel = new OverviewModel($eiuFrame, $this->listSize, $critmodForm, $quickSearchForm);
 		
 		if ($pageNo === null) {
@@ -77,8 +80,6 @@ class OverviewController extends ControllerAdapter {
 		
 		$overviewAjahHook = OverviewJhtmlController::buildAjahHook($this->getHttpContext()
 				->getControllerContextPath($this->getControllerContext())->ext('ajah')->toUrl(), $stateKey);
-		$filterJhtmlHook = FramedFilterPropController::buildFilterJhtmlHook($this->getHttpContext()
-				->getControllerContextPath($this->getControllerContext())->ext('filter')->toUrl());
 		
 		$this->eiuCtrl->applyCommonBreadcrumbs();
 		

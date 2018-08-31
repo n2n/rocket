@@ -13,7 +13,7 @@ use n2n\web\ui\UiComponent;
 use rocket\ei\util\model\EiuFactory;
 use rocket\ei\manage\critmod\sort\SortDefinition;
 use rocket\ei\manage\critmod\sort\SortSetting;
-use rocket\ei\manage\critmod\sort\impl\form\SortForm;
+use rocket\ei\util\sort\form\SortForm;
 
 class EiuSortForm implements Dispatchable, UiComponent {
 	private static function _annos(AnnoInit $ai) {

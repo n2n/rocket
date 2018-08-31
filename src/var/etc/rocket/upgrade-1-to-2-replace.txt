@@ -43,3 +43,9 @@ ALTER TABLE `rocket_ei_grant_privileges`
 	
 UPDATE `n2n_rocket_playground`.`rocket_ei_grant_privileges` SET `ei_privilege_json`='{}';
 
+ALTER TABLE `rocket_critmod_save`
+	ALTER `ei_spec_id` DROP DEFAULT;
+ALTER TABLE `rocket_critmod_save`
+	CHANGE COLUMN `ei_spec_id` `ei_type_path` VARCHAR(255) NOT NULL AFTER `id`,
+	DROP COLUMN `ei_mask_id`;
+

@@ -15,9 +15,10 @@ use rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup;
 use rocket\ei\manage\critmod\filter\FilterDefinition;
 use rocket\ei\util\filter\controller\FilterJhtmlHook;
 use n2n\web\http\controller\impl\ScrRegistry;
-use n2n\util\config\Attributes;
 use rocket\ei\util\privilege\EiuPrivilegeForm;
 use rocket\ei\manage\security\privilege\data\PrivilegeSetting;
+use rocket\ei\util\sort\EiuSortForm;
+use rocket\ei\manage\critmod\sort\SortSetting;
 
 class EiuEngine {
 	private $eiEngine;
@@ -180,6 +181,13 @@ class EiuEngine {
 	}
 	
 	/**
+	 * @return boolean
+	 */
+	public function hasFilterProps() {
+		return !$this->getFilterDefinition()->isEmpty();
+	}
+	
+	/**
 	 * @return \rocket\ei\manage\security\filter\SecurityFilterDefinition
 	 */
 	public function getSecurityFilterDefinition() {
@@ -192,6 +200,33 @@ class EiuEngine {
 	}
 	
 	/**
+	 * @return boolean
+	 */
+	public function hasSecurityFilterProps() {
+		return !$this->getSecurityFilterDefinition()->isEmpty();
+	}
+	
+	
+	/**
+	 * @return \rocket\ei\manage\critmod\sort\SortDefinition
+	 */
+	public function getSortDefinition() {
+		if ($this->sortDefinition !== null) {
+			return $this->sortDefinition;
+		}
+		
+		return $this->sortDefinition = $this->eiEngine->createFilterDefinition(
+				$this->eiuFactory->getN2nContext(true));
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function hasSortProps() {
+		return !$this->getSortDefinition()->isEmpty();
+	}
+	
+	/**
 	 * @return \rocket\ei\manage\security\privilege\PrivilegeDefinition
 	 */
 	public function getPrivilegeDefinition() {
@@ -201,13 +236,6 @@ class EiuEngine {
 		
 		return $this->privilegeDefinition = $this->eiEngine->createPrivilegeDefinition(
 				$this->eiuFactory->getN2nContext(true));
-	}
-		
-	/**
-	 * @return boolean
-	 */
-	public function hasFilterProps() {
-		return !$this->getFilterDefinition()->isEmpty();
 	}
 	
 	/**
@@ -223,12 +251,6 @@ class EiuEngine {
 				$rootGroup);
 	}
 	
-	/**
-	 * @return boolean
-	 */
-	public function hasSecurityFilterProps() {
-		return !$this->getSecurityFilterDefinition()->isEmpty();
-	}
 	
 	/**
 	 * @param FilterPropSettingGroup|null $rootGroup
@@ -253,6 +275,15 @@ class EiuEngine {
 	private function createEiuFilterForm(FilterDefinition $fd, FilterJhtmlHook $fjh, 
 			FilterPropSettingGroup $rg = null) {
 		return new EiuFilterForm($fd, $fjh, $rg, $this->eiuFactory);
+	}
+	
+	
+	/**
+	 * @param SortSetting|null $sortSetting
+	 * @return \rocket\ei\util\sort\EiuSortForm
+	 */
+	public function newSortForm(SortSetting $sortSetting = null) {
+		return new EiuSortForm($this->getSortDefinition(), $sortSetting, $this->eiuFactory);
 	}
 	
 	/**

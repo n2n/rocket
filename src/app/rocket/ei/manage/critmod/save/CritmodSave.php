@@ -29,17 +29,14 @@ use rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup;
 use n2n\util\JsonDecodeFailedException;
 use n2n\util\config\Attributes;
 use rocket\ei\manage\critmod\sort\SortSetting;
-use n2n\persistence\orm\annotation\AnnoColumn;
 
 class CritmodSave extends ObjectAdapter {
 	private static function _annos(AnnoInit $ai) {
 		$ai->c(new AnnoTable('rocket_critmod_save'));
-		$ai->p('eiTypeId', new AnnoColumn('ei_spec_id'));
 	}
 	
 	private $id;
 	private $eiTypePath;
-	private $eiMaskId;
 	private $name;
 	private $filterDataJson = '[]';
 	private $sortDataJson  = '[]';

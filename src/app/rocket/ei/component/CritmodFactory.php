@@ -97,16 +97,16 @@ class CritmodFactory {
 		
 		foreach ($this->eiPropCollection as $id => $eiProp) {
 			if ($eiProp instanceof SortableEiProp) {
-				if (null !== ($sortField = $eiProp->buildSortProp($eiu))) {
-					ArgUtils::valTypeReturn($sortField, SortProp::class, $eiProp, 'buildSortProp', true);
-					$sortDefinition->putSortProp($id, $sortField);
+				if (null !== ($sortProp = $eiProp->buildSortProp($eiu))) {
+					ArgUtils::valTypeReturn($sortProp, SortProp::class, $eiProp, 'buildSortProp', true);
+					$sortDefinition->putSortProp($id, $sortProp);
 				}
 			}
 			
 			if ($eiProp instanceof SortableEiPropFork) {
-				if (null !== ($sortFieldFork = $eiProp->buildSortPropFork($eiu))) {
-					ArgUtils::valTypeReturn($sortFieldFork, SortPropFork::class, $eiProp, 'buildSortPropFork', true);
-					$sortDefinition->putSortPropFork($id, $sortFieldFork);
+				if (null !== ($sortPropFork = $eiProp->buildSortPropFork($eiu))) {
+					ArgUtils::valTypeReturn($sortPropFork, SortPropFork::class, $eiProp, 'buildSortPropFork', true);
+					$sortDefinition->putSortPropFork($id, $sortPropFork);
 				}
 			}
 		}
@@ -120,16 +120,16 @@ class CritmodFactory {
 		
 		foreach ($this->eiPropCollection as $id => $eiProp) {
 			if ($eiProp instanceof SortableEiProp) {
-				if (null !== ($sortField = $eiProp->buildSortProp($eiu))) {
-					ArgUtils::valTypeReturn($sortField, SortProp::class, $eiProp, 'buildSortProp', true);
-					$sortDefinition->putSortProp($id, $sortField);
+				if (null !== ($sortProp = $eiProp->buildSortProp($eiu))) {
+					ArgUtils::valTypeReturn($sortProp, SortProp::class, $eiProp, 'buildSortProp', true);
+					$sortDefinition->putSortProp($id, $sortProp);
 				}
 			}
 			
 			if ($eiProp instanceof SortableEiPropFork) {
-				if (null !== ($sortFieldFork = $eiProp->buildSortPropFork($eiu))) {
-					ArgUtils::valTypeReturn($sortFieldFork, SortPropFork::class, $eiProp, 'buildSortPropFork', true);
-					$sortDefinition->putSortPropFork($id, $sortFieldFork);
+				if (null !== ($sortPropFork = $eiProp->buildSortPropFork($eiu))) {
+					ArgUtils::valTypeReturn($sortPropFork, SortPropFork::class, $eiProp, 'buildSortPropFork', true);
+					$sortDefinition->putSortPropFork($id, $sortPropFork);
 				}
 			}
 		}
@@ -137,13 +137,14 @@ class CritmodFactory {
 		return $sortDefinition;
 	}
 	
-	public function createQuickSearchDefinition(EiFrame $eiFrame) {
+	public function createFramedQuickSearchDefinition(EiFrame $eiFrame) {
+		$eiu = new Eiu($eiFrame);
 		$quickSearchDefinition = new QuickSearchDefinition();
 	
 		foreach ($this->eiPropCollection as $id => $eiProp) {
 			if (!($eiProp instanceof QuickSearchableEiProp)) continue;
 				
-			if (null !== ($quickSearchField = $eiProp->buildQuickSearchProp($eiFrame))) {
+			if (null !== ($quickSearchField = $eiProp->buildQuickSearchProp($eiu))) {
 				$quickSearchDefinition->putQuickSearchProp(EiPropPath::from($eiProp), $quickSearchField);
 			}
 		}

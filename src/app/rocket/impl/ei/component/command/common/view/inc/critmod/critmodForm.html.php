@@ -21,8 +21,7 @@
 	 */
 
 	use n2n\impl\web\ui\view\html\HtmlView;
-	use rocket\ei\manage\critmod\impl\model\CritmodForm;
-	use rocket\ei\util\filter\controller\FilterJhtmlHook;
+	use rocket\impl\ei\component\command\common\model\critmod\CritmodForm;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -30,9 +29,6 @@
 		
 	$critmodForm = $view->getParam('critmodForm'); 
 	$view->assert($critmodForm instanceof CritmodForm);
-	
-	$filterJhtmlHook = $view->getParam('filterJhtmlHook');
-	$view->assert($filterJhtmlHook instanceof FilterJhtmlHook);
 ?>
 
 <?php $formHtml->open($critmodForm, null, null, array(
@@ -45,14 +41,13 @@
 	<div class="row">
 		<div class="col-sm-8">
 			<h3><?php $html->l10nText('ei_impl_filter_title') ?></h3>
-			<?php $view->import('~\ei\manage\critmod\filter\impl\view\filterForm.html', 
-					array('propertyPath' => $formHtml->meta()->createPropertyPath('filterGroupForm'),
-							'filterJhtmlHook' => $filterJhtmlHook)) ?>
+			<?php $html->out($critmodForm->getEiuFilterForm()
+					->setContextPropertyPath($formHtml->meta()->propPath('eiuFilterForm'))) ?>
 		</div>
 		<div class="col-sm-4">
 			<h3><?php $html->l10nText('ei_impl_sort_title') ?></h3>
-			<?php $view->import('~\ei\manage\critmod\sort\impl\view\sortForm.html', 
-					array('propertyPath' => $formHtml->meta()->createPropertyPath('sortForm'))) ?>
+			<?php $html->out($critmodForm->getEiuSortForm()
+					->setContextPropertyPath($formHtml->meta()->propPath('eiuSortForm'))) ?>
 		</div>
 		<div class="col-sm-12 rocket-critmod-command-container">
 			<div class="rocket-impl-critmod-commands">

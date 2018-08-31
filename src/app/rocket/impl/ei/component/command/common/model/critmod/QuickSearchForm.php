@@ -19,13 +19,15 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\critmod\quick\impl\form;
+namespace rocket\impl\ei\component\command\common\model\critmod;
 
 use n2n\web\dispatch\Dispatchable;
 use rocket\ei\manage\critmod\quick\QuickSearchDefinition;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\critmod\save\CritmodSaveDao;
 use rocket\ei\manage\frame\CriteriaConstraint;
+use rocket\ei\util\model\EiuFrame;
+use rocket\spec\TypePath;
 
 class QuickSearchForm implements Dispatchable {
 	private $quickSearchDefinition;
@@ -35,10 +37,10 @@ class QuickSearchForm implements Dispatchable {
 	protected $searchStr;
 	
 	public function __construct(QuickSearchDefinition $quickSearchDefinition,
-			CritmodSaveDao $critmodSaveDao, string $stateKey, string $eiTypeId, string $eiMaskId = null) {
+			CritmodSaveDao $critmodSaveDao, string $stateKey, TypePath $eiTypePath) {
 		$this->quickSearchDefinition = $quickSearchDefinition;
 		$this->critmodSaveDao = $critmodSaveDao;
-		$this->categoryKey = CritmodSaveDao::buildCategoryKey($stateKey, $eiTypeId, $eiMaskId);
+		$this->categoryKey = CritmodSaveDao::buildCategoryKey($stateKey, $eiTypePath);
 		
 		$this->searchStr = $this->critmodSaveDao->getQuickSearchString($this->categoryKey);
 	}
@@ -78,17 +80,12 @@ class QuickSearchForm implements Dispatchable {
 		}
 	}
 	
-	public static function create(EiFrame $eiFrame, CritmodSaveDao $critmodSaveDao, string $stateKey = null) {
-		$eiEngine = $eiFrame->getContextEiEngine();
-		$eiMask = $eiEngine->getEiMask();
-		
+	public static function create(EiuFrame $eiuFrame, CritmodSaveDao $critmodSaveDao, string $stateKey = null) {
 		if ($stateKey === null) {
 			$stateKey = uniqid();
 		}
 		
-		return new QuickSearchForm($eiMask->getEiEngine()->createQuickSearchDefinition($eiFrame), $critmodSaveDao, 
-				$stateKey, CritmodSaveDao::buildCategoryKey($stateKey, 
-						$eiMask->getEiType()->getId(), 
-						$eiMask->isExtension() ? $eiMask->getExtension()->getId() : null));
+		return new QuickSearchForm($eiuFrame->getQuickSearchDefinition(), $critmodSaveDao, 
+				$stateKey, $eiuFrame->getContextEiTypePath());
 	}
 }

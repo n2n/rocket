@@ -24,7 +24,7 @@
 	use n2n\web\dispatch\map\PropertyPath;
 	use rocket\ei\util\filter\form\FilterGroupForm;
 	use rocket\ei\util\filter\controller\FilterJhtmlHook;
-	use rocket\ei\manage\critmod\sort\impl\form\SortForm;
+	use rocket\ei\util\sort\form\SortForm;
 	
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);

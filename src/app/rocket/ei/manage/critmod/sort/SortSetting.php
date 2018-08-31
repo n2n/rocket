@@ -53,10 +53,10 @@ class SortSetting {
 	public static function create(Attributes $attributes): SortSetting {
 		$sortData = new SortSetting();
 		$sortItemDatas = $sortData->getSortItemDatas();
-		foreach ($attributes->toArray() as $sortFieldId => $direction) {
+		foreach ($attributes->toArray() as $sortPropId => $direction) {
 			if (!is_string($direction)) continue;
 			try {
-				$sortItemDatas[] = new SortItemData($sortFieldId, $direction);
+				$sortItemDatas[] = new SortItemData($sortPropId, $direction);
 			} catch (\InvalidArgumentException $e) {}
 		}
 		
@@ -65,20 +65,20 @@ class SortSetting {
 }
 
 class SortItemData {
-	private $sortFieldId;
+	private $sortPropId;
 	private $direction;
 	
-	public function __construct(string $sortFieldId, string $direction) {
-		$this->sortFieldId = $sortFieldId;
+	public function __construct(string $sortPropId, string $direction) {
+		$this->sortPropId = $sortPropId;
 		$this->setDirection($direction);
 	}
 	
 	public function getSortPropId(): string {
-		return $this->sortFieldId;
+		return $this->sortPropId;
 	}
 	
-	public function setSortPropId(string $sortFieldId) {
-		$this->sortFieldId = $sortFieldId;
+	public function setSortPropId(string $sortPropId) {
+		$this->sortPropId = $sortPropId;
 	}
 	
 	public function getDirection(): string {

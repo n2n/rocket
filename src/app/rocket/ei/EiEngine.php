@@ -124,8 +124,8 @@ class EiEngine {
 		return $this->getCritmodFactory()->createSortDefinition($n2nContext);
 	}
 	
-	public function createQuickSearchDefinition(EiFrame $eiFrame): QuickSearchDefinition {
-		return $this->getCritmodFactory()->createQuickSearchDefinition($eiFrame);
+	public function createFramedQuickSearchDefinition(EiFrame $eiFrame): QuickSearchDefinition {
+		return $this->getCritmodFactory()->createFramedQuickSearchDefinition($eiFrame);
 	}
 	
 	private $securityFactory;

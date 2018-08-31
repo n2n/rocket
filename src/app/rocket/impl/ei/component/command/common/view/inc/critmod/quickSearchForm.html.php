@@ -21,7 +21,7 @@
 	 */
 
 	use n2n\impl\web\ui\view\html\HtmlView;
-	use rocket\ei\manage\critmod\quick\impl\form\QuickSearchForm;
+	use rocket\impl\ei\component\command\common\model\critmod\QuickSearchForm;
 	use n2n\web\ui\Raw;
 	
 	$view = HtmlView::view($this);

@@ -19,28 +19,27 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\critmod\quick\impl\model;
+namespace rocket\ei\manage\critmod\quick\impl;
 
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
+use n2n\persistence\orm\criteria\item\CriteriaItem;
+use rocket\ei\util\filter\model\SimpleComparatorConstraint;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
-use rocket\ei\manage\critmod\filter\ComparatorConstraint;
-use rocket\ei\util\filter\model\PropertyValueComparatorConstraint;
-use n2n\persistence\orm\criteria\item\CriteriaProperty;
 
-class LikeQuickSearchProp implements QuickSearchProp {
+class SimpleQuickSearchProp implements QuickSearchProp {
 	private $criteriaItem;
+	private $operator;
 	
-	public function __construct(CriteriaProperty $criteriaProperty) {
-		$this->criteriaItem = $criteriaProperty;
+	public function __construct(CriteriaItem $criteriaItem, string $operator = CriteriaComparator::OPERATOR_LIKE) {
+		$this->criteriaItem = $criteriaItem;
+		$this->operator = $operator;
 	}
-	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\critmod\quick\QuickSearchProp::createComparatorConstraint($queryStr)
 	 */
-	public function createComparatorConstraint(string $queryStr): ComparatorConstraint {
-		return new PropertyValueComparatorConstraint($this->criteriaItem, CriteriaComparator::OPERATOR_LIKE, 
-				CrIt::c('%' . $queryStr . '%'));
+	public function createComparatorConstraint(string $queryStr) {
+		return new SimpleComparatorConstraint($this->criteriaItem, $this->operator, CrIt::c($queryStr));
 	}
 }

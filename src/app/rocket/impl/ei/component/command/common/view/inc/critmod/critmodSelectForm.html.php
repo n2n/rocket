@@ -21,7 +21,7 @@
 	 */
 
 	use n2n\impl\web\ui\view\html\HtmlView;
-	use rocket\ei\manage\critmod\impl\model\CritmodForm;
+	use rocket\impl\ei\component\command\common\model\critmod\CritmodForm;
 	use rocket\ei\util\filter\controller\FilterJhtmlHook;
 
 	$view = HtmlView::view($this);

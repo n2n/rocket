@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\critmod\sort\impl\form;
+namespace rocket\ei\util\sort\form;
 
 use n2n\web\dispatch\Dispatchable;
 use rocket\ei\manage\critmod\sort\SortSetting;
@@ -31,7 +31,7 @@ class SortForm implements Dispatchable {
 	private $sortData;
 	private $sortDefinition;
 	
-	protected $sortFieldIds;
+	protected $sortPropIds;
 	protected $directions;
 	
 	public function __construct(SortSetting $sortData, SortDefinition $sortDefinition) {
@@ -40,7 +40,7 @@ class SortForm implements Dispatchable {
 		
 		$this->clear();
 		foreach ($sortData->getSortItemDatas() as $key => $sortItemData) {
-			$this->sortFieldIds[$key] = $sortItemData->getSortPropId(); 
+			$this->sortPropIds[$key] = $sortItemData->getSortPropId(); 
 			$this->directions[$key] = $sortItemData->getDirection();
 		}
 	}
@@ -50,11 +50,11 @@ class SortForm implements Dispatchable {
 	}
 	
 	public function getSortPropIds(): array {
-		return $this->sortFieldIds;
+		return $this->sortPropIds;
 	}
 	
-	public function setSortPropIds(array $sortFieldIds) {
-		$this->sortFieldIds = $sortFieldIds;
+	public function setSortPropIds(array $sortPropIds) {
+		$this->sortPropIds = $sortPropIds;
 	}
 	
 	public function getDirections(): array {
@@ -66,7 +66,7 @@ class SortForm implements Dispatchable {
 	}
 
 	public function clear() {
-		$this->sortFieldIds = array();
+		$this->sortPropIds = array();
 		$this->directions = array();
 	}
 	
@@ -77,14 +77,14 @@ class SortForm implements Dispatchable {
 		$sortData = new SortSetting();
 		
 		$sortItemDatas = $sortData->getSortItemDatas();
-		foreach ($this->sortFieldIds as $key => $sortFieldId) {
-			if (!$this->sortDefinition->containsSortPropId($sortFieldId)) continue;
+		foreach ($this->sortPropIds as $key => $sortPropId) {
+			if (!$this->sortDefinition->containsSortPropId($sortPropId)) continue;
 			
 			$direction = Criteria::ORDER_DIRECTION_ASC;
 			if (isset($this->directions[$key]) && $this->directions[$key] === Criteria::ORDER_DIRECTION_DESC) {
 				$direction = Criteria::ORDER_DIRECTION_DESC;
 			}
-			$sortItemDatas[] = new SortItemData($sortFieldId, $direction);
+			$sortItemDatas[] = new SortItemData($sortPropId, $direction);
 		}
 		
 		return $sortData;
