@@ -53,7 +53,7 @@ class DecimalEiProp extends NumericEiPropAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\numeric\NumericEiPropAdapter::setEntityProperty()
 	 */
-	public function setEntityProperty(EntityProperty $entityProperty = null) {
+	public function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty instanceof ScalarEntityProperty);
 		$this->entityProperty = $entityProperty;
 	}

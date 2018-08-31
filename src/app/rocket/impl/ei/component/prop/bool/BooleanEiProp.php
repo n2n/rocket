@@ -65,7 +65,7 @@ class BooleanEiProp extends DraftableEiPropAdapter implements FilterableEiProp, 
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\EntityPropertyEiPropAdapter::setEntityProperty()
 	 */
-	public function setEntityProperty(EntityProperty $entityProperty = null) {
+	public function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty instanceof BoolEntityProperty 
 				|| $entityProperty instanceof ScalarEntityProperty || $entityProperty === null);
 		

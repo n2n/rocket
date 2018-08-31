@@ -36,5 +36,5 @@ interface EntityPropertyConfigurable {
 	 * @param EntityProperty $entityProperty
 	 * @throws \InvalidArgumentException
 	 */
-	public function setEntityProperty(EntityProperty $entityProperty = null);
+	public function setEntityProperty(?EntityProperty $entityProperty);
 }

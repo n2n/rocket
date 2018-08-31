@@ -44,6 +44,7 @@ use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\critmod\quick\impl\model\LikeQuickSearchProp;
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
+use rocket\ei\manage\critmod\quick\QuickSearchProp;
 
 abstract class NumericEiPropAdapter extends DraftableEiPropAdapter 
 		implements FilterableEiProp, SortableEiProp, QuickSearchableEiProp {
@@ -66,7 +67,7 @@ abstract class NumericEiPropAdapter extends DraftableEiPropAdapter
 		$this->maxValue = $maxValue;
 	}
 
-	public function setEntityProperty(EntityProperty $entityProperty = null) {
+	public function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty instanceof ScalarEntityProperty);
 		$this->entityProperty = $entityProperty;
 	}
@@ -112,7 +113,7 @@ abstract class NumericEiPropAdapter extends DraftableEiPropAdapter
 	 * {@inheritDoc}
 	 * @see \rocket\ei\component\prop\QuickSearchableEiProp::buildQuickSearchProp()
 	 */
-	public function buildQuickSearchProp(Eiu $eiu) {
+	public function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp {
 		return new LikeQuickSearchProp(CrIt::p($this->getEntityProperty()));
 	}
 

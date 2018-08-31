@@ -44,6 +44,7 @@ use rocket\ei\manage\critmod\filter\ComparatorConstraintGroup;
 use rocket\ei\manage\frame\CriteriaConstraint;
 use rocket\ei\util\filter\model\SimpleComparatorConstraint;
 use rocket\ei\manage\mapping\EiFieldConstraint;
+use rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup;
 
 class RelationFilterProp implements FilterProp {
 	protected $labelLstr;

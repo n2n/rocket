@@ -65,7 +65,7 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 		$this->initialize(new EmbeddedEiPropRelation($this, false, false));
 	}
 	
-	public function setEntityProperty(EntityProperty $entityProperty = null) {
+	public function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty instanceof ToOneEntityProperty
 				&& $entityProperty->getType() === RelationEntityProperty::TYPE_ONE_TO_ONE);
 	

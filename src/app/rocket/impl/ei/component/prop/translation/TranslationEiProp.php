@@ -48,7 +48,6 @@ use rocket\impl\ei\component\prop\relation\EmbeddedOneToManyEiProp;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\util\col\ArrayUtils;
 use rocket\ei\component\prop\SortableEiPropFork;
-use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\critmod\sort\SortPropFork;
 use n2n\persistence\orm\criteria\item\CriteriaProperty;
 use n2n\persistence\orm\criteria\Criteria;
@@ -69,6 +68,7 @@ use rocket\ei\manage\gui\ViewMode;
 use rocket\impl\ei\component\prop\translation\command\TranslationCopyCommand;
 use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\manage\gui\GuiDefinition;
+use rocket\ei\manage\critmod\quick\QuickSearchProp;
 
 class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, FieldEiProp, RelationEiProp, 
 		Readable, Writable, GuiPropFork, SortableEiPropFork, QuickSearchableEiProp {
@@ -80,7 +80,7 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 		return new TranslationEiConfigurator($this);
 	}
 	
-	public function setEntityProperty(EntityProperty $entityProperty = null) {
+	public function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty instanceof ToManyEntityProperty
 				&& $entityProperty->getType() == RelationEntityProperty::TYPE_ONE_TO_MANY);
 	
@@ -279,7 +279,7 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 	 * {@inheritDoc}
 	 * @see \rocket\ei\component\prop\QuickSearchableEiProp::buildQuickSearchProp()
 	 */
-	public function buildQuickSearchProp(Eiu $eiu) {
+	public function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp {
 		$targetEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame);
 		
 		return new TranslationQuickSearchProp(

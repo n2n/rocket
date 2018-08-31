@@ -47,7 +47,7 @@ class MultiSelectEiProp extends DraftableEiPropAdapter {
 	const ATTR_MIN_KEY = 'min';
 	const ATTR_MAX_KEY = 'max';
 
-	public function setEntityProperty(EntityProperty $entityProperty = null) {
+	public function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty instanceof ScalarEntityProperty);
 		$this->entityProperty = $entityProperty;
 	}

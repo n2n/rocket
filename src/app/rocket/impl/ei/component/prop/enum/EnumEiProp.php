@@ -50,6 +50,7 @@ use rocket\ei\manage\gui\GuiIdPath;
 use n2n\impl\web\dispatch\mag\model\group\EnumTogglerMag;
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\sort\SortProp;
+use rocket\ei\manage\critmod\quick\QuickSearchProp;
 
 class EnumEiProp extends DraftableEiPropAdapter implements FilterableEiProp, SortableEiProp, 
 		QuickSearchableEiProp {
@@ -57,7 +58,7 @@ class EnumEiProp extends DraftableEiPropAdapter implements FilterableEiProp, Sor
 	private $options = array();
 	private $associatedGuiIdPathMap = array();
 	
-	public function setEntityProperty(EntityProperty $entityProperty = null) {
+	public function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty === null || $entityProperty instanceof ScalarEntityProperty);
 		$this->entityProperty = $entityProperty;
 	}
@@ -188,7 +189,7 @@ class EnumEiProp extends DraftableEiPropAdapter implements FilterableEiProp, Sor
 		return null;
 	}
 	
-	public function buildQuickSearchProp(Eiu $eiu) {
+	public function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp {
 		if (null !== ($entityProperty = $this->getEntityProperty())) {
 			return new LikeQuickSearchProp(CrIt::p($this->getEntityProperty()));
 		}

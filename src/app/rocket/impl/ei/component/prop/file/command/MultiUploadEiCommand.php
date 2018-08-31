@@ -38,7 +38,7 @@ use rocket\ei\EiPropPath;
 class MultiUploadEiCommand extends EiCommandAdapter implements OverallControlComponent {
 	const MULTI_UPLOAD_KEY = 'multi-upload';
 	/**
-	 * @var \rocket\impl\ei\component\prop\file\MultiUploadFileEiProp
+	 * @var \rocket\impl\ei\component\prop\file\FileEiProp
 	 */
 	private $fileEiProp;
 	private $namingEiPropPath;

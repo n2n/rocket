@@ -66,7 +66,7 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 		return DisplayItem::TYPE_ITEM;
 	}
 	
-	public function setEntityProperty(EntityProperty $entityProperty = null) {
+	public function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty instanceof ToOneEntityProperty
 				&& $entityProperty->getType() === RelationEntityProperty::TYPE_MANY_TO_ONE);
 	

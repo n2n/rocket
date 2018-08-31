@@ -43,6 +43,7 @@ use rocket\ei\manage\critmod\quick\impl\model\LikeQuickSearchProp;
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\sort\SortProp;
 use rocket\ei\manage\generic\GenericEiProperty;
+use rocket\ei\manage\critmod\quick\QuickSearchProp;
 
 abstract class AlphanumericEiProp extends DraftableEiPropAdapter implements FilterableEiProp, 
 		SortableEiProp, QuickSearchableEiProp, ScalarEiProp, GenericEiProp {
@@ -59,11 +60,11 @@ abstract class AlphanumericEiProp extends DraftableEiPropAdapter implements Filt
 		return $this->maxlength;
 	}
 
-	public function setMaxlength(int $maxlength = null) {
+	public function setMaxlength(?int $maxlength) {
 		$this->maxlength = $maxlength;
 	}
 	
-	public function setEntityProperty(EntityProperty $entityProperty = null) {
+	public function setEntityProperty(?EntityProperty $entityProperty) {
 		if ($entityProperty !== null && !($entityProperty instanceof ScalarEntityProperty)) {
 			throw new \InvalidArgumentException();
 		}
@@ -108,7 +109,7 @@ abstract class AlphanumericEiProp extends DraftableEiPropAdapter implements Filt
 		return null;
 	}
 	
-	public function buildQuickSearchProp(Eiu $eiu) {
+	public function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp {
 		if (null !== ($entityProperty = $this->getEntityProperty(false))) {
 			return new LikeQuickSearchProp(CrIt::p($entityProperty));
 		}

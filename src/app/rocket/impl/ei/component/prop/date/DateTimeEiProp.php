@@ -62,7 +62,7 @@ class DateTimeEiProp extends DraftableEiPropAdapter implements SortableEiProp {
 		return new DateTimeEiPropConfigurator($this);
 	}
 	
-	public function setEntityProperty(EntityProperty $entityProperty = null) {
+	public function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty instanceof DateTimeEntityProperty);
 		$this->entityProperty = $entityProperty;
 	}

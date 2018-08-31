@@ -37,7 +37,7 @@ abstract class EntityPropertyEiPropAdapter extends IndependentEiPropAdapter impl
 	 * @param EntityProperty $entityProperty
 	 * @throws \InvalidArgumentException
 	 */
-	public function setEntityProperty(EntityProperty $entityProperty = null) {
+	public function setEntityProperty(?EntityProperty $entityProperty) {
 		if ($entityProperty === null && $this->entityPropertyRequired) {
 			throw new \InvalidArgumentException($this . ' requires an EntityProperty.');
 		}

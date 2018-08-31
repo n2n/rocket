@@ -118,7 +118,7 @@ class PathPartEiProp extends AlphanumericEiProp  {
 // 		$this->urlEiCommand = $urlEiCommand;
 // 	}
 
-	public function setEntityProperty(EntityProperty $entityProperty = null) {
+	public function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty instanceof ScalarEntityProperty);
 		
 		parent::setEntityProperty($entityProperty);

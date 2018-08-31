@@ -55,7 +55,7 @@ class ContentItemsEiProp extends EmbeddedOneToManyEiProp {
 		return DisplayItem::TYPE_LIGHT_GROUP;
 	}
 	
-	public function setEntityProperty(EntityProperty $entityProperty = null) {
+	public function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty instanceof ToManyEntityProperty
 				&& $entityProperty->getRelation()->getTargetEntityModel()->getClass()->getName() === ContentItem::class);
 		parent::setEntityProperty($entityProperty);

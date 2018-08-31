@@ -38,7 +38,7 @@ use rocket\ei\manage\security\filter\SecurityFilterProp;
 abstract class ToOneEiPropAdapter extends SimpleRelationEiPropAdapter implements GuiProp, DraftableEiProp, 
 		DraftProperty {
 
-	public function setEntityProperty(EntityProperty $entityProperty = null) {
+	public function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty instanceof ToOneEntityProperty);
 		parent::setEntityProperty($entityProperty);
 	}

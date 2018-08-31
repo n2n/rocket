@@ -54,7 +54,7 @@ class N2nLocaleEiProp extends DraftableEiPropAdapter implements FilterableEiProp
 		ScalarEiProp {
 	private $definedN2nLocales;
 	
-	public function setEntityProperty(EntityProperty $entityProperty = null) {
+	public function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty instanceof N2nLocaleEntityProperty);
 		$this->entityProperty = $entityProperty;
 	}

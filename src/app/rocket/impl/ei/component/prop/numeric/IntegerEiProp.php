@@ -56,7 +56,7 @@ class IntegerEiProp extends NumericEiPropAdapter implements ScalarEiProp {
 		});
 	}
 	
-	public function setEntityProperty(EntityProperty $entityProperty = null) {
+	public function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty instanceof ScalarEntityProperty);
 		$this->entityProperty = $entityProperty;
 	}

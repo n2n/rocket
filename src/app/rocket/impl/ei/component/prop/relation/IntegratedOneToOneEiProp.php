@@ -110,7 +110,7 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropF
 		return RelationEntry::fromM($targetEiuFrame->createEiEntryCopy($value->toEiEntry($targetEiuFrame)));
 	}
 	
-	public function setEntityProperty(EntityProperty $entityProperty = null) {
+	public function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty instanceof ToOneEntityProperty
 				&& $entityProperty->getType() === RelationEntityProperty::TYPE_ONE_TO_ONE);
 	
