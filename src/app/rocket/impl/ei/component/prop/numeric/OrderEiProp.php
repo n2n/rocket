@@ -24,7 +24,7 @@ namespace rocket\impl\ei\component\prop\numeric;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
-use rocket\ei\manage\critmod\sort\impl\SimpleSortField;
+use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
 use n2n\impl\web\dispatch\mag\model\NumericMag;
 use rocket\impl\ei\component\prop\numeric\conf\OrderEiPropConfigurator;
 use n2n\web\dispatch\mag\Mag;
@@ -50,7 +50,7 @@ class OrderEiProp extends IntegerEiProp {
 	}
 
 	public function getSortItem() {
-		return new SimpleSortField($this->getEntityProperty()->getName(), $this->getLabelLstr());
+		return new SimpleSortProp($this->getEntityProperty()->getName(), $this->getLabelLstr());
 	}
 
 	public function createMag(Eiu $eiu): Mag {

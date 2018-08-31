@@ -24,14 +24,11 @@ namespace rocket\user\model;
 use n2n\web\dispatch\Dispatchable;
 use rocket\user\bo\EiGrantPrivilege;
 use n2n\reflection\annotation\AnnoInit;
-use n2n\impl\web\dispatch\map\val\ValEnum;
 use n2n\web\dispatch\annotation\AnnoDispObject;
-use n2n\web\dispatch\map\bind\BindingDefinition;
-use rocket\ei\EiCommandPath;
-use n2n\util\config\Attributes;
 use rocket\ei\util\model\EiuEngine;
 use rocket\ei\util\privilege\EiuPrivilegeForm;
 use rocket\ei\util\filter\EiuFilterForm;
+use rocket\ei\manage\security\privilege\data\PrivilegeSetting;
 
 class EiGrantPrivilegeForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {
@@ -87,13 +84,11 @@ class EiGrantPrivilegeForm implements Dispatchable {
 		$this->eiuPrivilegeForm = $eiuPrivilegeForm;
 	
 		if ($eiuPrivilegeForm === null) {
-			$this->eiPrivilegesGrant->writeEiPrivilegeAttributes(new Attributes());
+			$this->eiPrivilegesGrant->writeEiPrivilegeAttributes(new PrivilegeSetting());
 			return;
 		}
 		
-		$this->eiPrivilegesGrant->writeEiPropPrivilegeAttributes(
-				$this->privilegeDefinition->buildEiPropPrivilegeAttributes(
-						$eiPropPrivilegeMagForm->getMagCollection()));
+		$this->eiPrivilegesGrant->writePrivilegeSetting($eiuPrivilegeForm->getSetting());
 		
 	}
 	
@@ -116,24 +111,10 @@ class EiGrantPrivilegeForm implements Dispatchable {
 			$this->eiPrivilegesGrant->setRestricted(false);
 		} else {
 			$this->eiPrivilegesGrant->setRestricted(true);
-			$this->eiPrivilegesGrant->writeRestrictionFilterData($restrictionEiuFilterForm->buildFilterPropSettingGroup());
+			$this->eiPrivilegesGrant->writeRestrictionFilterData($restrictionEiuFilterForm->getSettings());
 		}
 	}
 	
-	private function buildPrivileges(array &$privileges, array $eiCommandPrivileges, EiCommandPath $baseEiCommandPath)  {
-		foreach ($eiCommandPrivileges as $commandPathStr => $eiCommandPrivilege) {
-			$commandPath = $baseEiCommandPath->ext($commandPathStr);
-			
-			$privileges[] = (string) $commandPath;
-				
-			$this->buildPrivileges($privileges, $eiCommandPrivilege->getSubEiCommandPrivileges(), $commandPath);
-		}
-	}
-	
-	private function _validation(BindingDefinition $bd) {
-		$commandPathStrs = array();
-		$this->buildPrivileges($commandPathStrs, $this->privilegeDefinition->getEiCommandPrivileges(), 
-				new EiCommandPath(array()));
-		$bd->val('eiCommandPathStrs', new ValEnum($commandPathStrs));
+	private function _validation() {
 	}
 }

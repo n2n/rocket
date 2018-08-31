@@ -25,7 +25,7 @@ use rocket\ei\component\prop\QuickSearchableEiProp;
 use rocket\ei\util\filter\prop\StringFilterProp;
 use rocket\ei\component\prop\SortableEiProp;
 use rocket\ei\component\prop\FilterableEiProp;
-use rocket\ei\manage\critmod\sort\impl\SimpleSortField;
+use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\impl\ei\component\prop\adapter\DraftableEiPropAdapter;
 use rocket\ei\manage\frame\EiFrame;
@@ -41,7 +41,7 @@ use rocket\ei\manage\generic\CommonGenericEiProperty;
 use rocket\ei\manage\generic\CommonScalarEiProperty;
 use rocket\ei\manage\critmod\quick\impl\model\LikeQuickSearchField;
 use rocket\ei\manage\critmod\filter\FilterProp;
-use rocket\ei\manage\critmod\sort\SortField;
+use rocket\ei\manage\critmod\sort\SortProp;
 use rocket\ei\manage\generic\GenericEiProperty;
 
 abstract class AlphanumericEiProp extends DraftableEiPropAdapter implements FilterableEiProp, 
@@ -96,13 +96,9 @@ abstract class AlphanumericEiProp extends DraftableEiPropAdapter implements Filt
 		return null;
 	}
 	
-	public function buildManagedSortField(EiFrame $eiFrame): ?SortField {
-		return $this->buildSortField($eiFrame->getN2nContext());
-	}
-	
-	public function buildSortField(N2nContext $n2nContext): ?SortField {
+	public function buildSortProp(Eiu $eiu): ?SortProp {
 		if (null !== ($entityProperty = $this->getEntityProperty(false))) {
-			return new SimpleSortField(CrIt::p($entityProperty), $this->getLabelLstr());
+			return new SimpleSortProp(CrIt::p($entityProperty), $this->getLabelLstr());
 		}
 
 		return null;

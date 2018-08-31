@@ -31,9 +31,9 @@ use n2n\core\container\N2nContext;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\critmod\sort\SortDefinition;
 use n2n\reflection\ArgUtils;
-use rocket\ei\manage\critmod\sort\SortField;
+use rocket\ei\manage\critmod\sort\SortProp;
 use rocket\ei\component\prop\SortableEiPropFork;
-use rocket\ei\manage\critmod\sort\SortFieldFork;
+use rocket\ei\manage\critmod\sort\SortPropFork;
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\component\prop\QuickSearchableEiProp;
 use rocket\ei\manage\critmod\quick\QuickSearchDefinition;
@@ -92,20 +92,21 @@ class CritmodFactory {
 	}
 	
 	public function createFramedSortDefinition(EiFrame $eiFrame): SortDefinition {
+		$eiu = new Eiu($eiFrame);
 		$sortDefinition = new SortDefinition();
 		
 		foreach ($this->eiPropCollection as $id => $eiProp) {
 			if ($eiProp instanceof SortableEiProp) {
-				if (null !== ($sortField = $eiProp->buildManagedSortField($eiFrame))) {
-					ArgUtils::valTypeReturn($sortField, SortField::class, $eiProp, 'buildManagedSortField', true);
-					$sortDefinition->putSortField($id, $sortField);
+				if (null !== ($sortField = $eiProp->buildSortProp($eiu))) {
+					ArgUtils::valTypeReturn($sortField, SortProp::class, $eiProp, 'buildSortProp', true);
+					$sortDefinition->putSortProp($id, $sortField);
 				}
 			}
 			
 			if ($eiProp instanceof SortableEiPropFork) {
-				if (null !== ($sortFieldFork = $eiProp->buildManagedSortFieldFork($eiFrame))) {
-					ArgUtils::valTypeReturn($sortFieldFork, SortFieldFork::class, $eiProp, 'buildManagedSortFieldFork', true);
-					$sortDefinition->putSortFieldFork($id, $sortFieldFork);
+				if (null !== ($sortFieldFork = $eiProp->buildSortPropFork($eiu))) {
+					ArgUtils::valTypeReturn($sortFieldFork, SortPropFork::class, $eiProp, 'buildSortPropFork', true);
+					$sortDefinition->putSortPropFork($id, $sortFieldFork);
 				}
 			}
 		}
@@ -114,12 +115,23 @@ class CritmodFactory {
 	}
 	
 	public function createSortDefinition(N2nContext $n2nContext): SortDefinition {
+		$eiu = new Eiu($n2nContext);
 		$sortDefinition = new SortDefinition();
 		
 		foreach ($this->eiPropCollection as $id => $eiProp) {
-			if (!($eiProp instanceof SortableEiProp)) continue;
+			if ($eiProp instanceof SortableEiProp) {
+				if (null !== ($sortField = $eiProp->buildSortProp($eiu))) {
+					ArgUtils::valTypeReturn($sortField, SortProp::class, $eiProp, 'buildSortProp', true);
+					$sortDefinition->putSortProp($id, $sortField);
+				}
+			}
 			
-			$sortDefinition->putSortField(EiPropPath::from($eiProp), $eiProp->buildSortField($n2nContext));
+			if ($eiProp instanceof SortableEiPropFork) {
+				if (null !== ($sortFieldFork = $eiProp->buildSortPropFork($eiu))) {
+					ArgUtils::valTypeReturn($sortFieldFork, SortPropFork::class, $eiProp, 'buildSortPropFork', true);
+					$sortDefinition->putSortPropFork($id, $sortFieldFork);
+				}
+			}
 		}
 		
 		return $sortDefinition;

@@ -32,7 +32,7 @@ use rocket\ei\manage\frame\EiFrame;
 use n2n\l10n\N2nLocale;
 use n2n\core\container\N2nContext;
 use rocket\ei\util\filter\prop\EnumFilterProp;
-use rocket\ei\manage\critmod\sort\impl\SimpleSortField;
+use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
 
 use n2n\reflection\ArgUtils;
 use n2n\reflection\property\TypeConstraint;
@@ -49,7 +49,7 @@ use rocket\ei\manage\critmod\quick\impl\model\LikeQuickSearchField;
 use rocket\ei\manage\gui\GuiIdPath;
 use n2n\impl\web\dispatch\mag\model\group\EnumTogglerMag;
 use rocket\ei\manage\critmod\filter\FilterProp;
-use rocket\ei\manage\critmod\sort\SortField;
+use rocket\ei\manage\critmod\sort\SortProp;
 
 class EnumEiProp extends DraftableEiPropAdapter implements FilterableEiProp, SortableEiProp, 
 		QuickSearchableEiProp {
@@ -175,14 +175,14 @@ class EnumEiProp extends DraftableEiPropAdapter implements FilterableEiProp, Sor
 	public function buildSecurityFilterProp(N2nContext $n2nContext) {
 		return null;
 	}
-	
-	public function buildManagedSortField(EiFrame $eiFrame): ?SortField {
-		return $this->buildSortField($eiFrame->getN2nContext());
-	}
-	
-	public function buildSortField(N2nContext $n2nContext): ?SortField {
+		
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\prop\SortableEiProp::buildSortProp()
+	 */
+	public function buildSortProp(Eiu $eiu): ?SortProp {
 		if (null !== ($entityProperty = $this->getEntityProperty())) {
-			return new SimpleSortField(CrIt::p($entityProperty), $this->getLabelLstr());
+			return new SimpleSortProp(CrIt::p($entityProperty), $this->getLabelLstr());
 		}
 		
 		return null;

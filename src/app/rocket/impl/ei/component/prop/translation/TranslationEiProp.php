@@ -49,7 +49,7 @@ use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\util\col\ArrayUtils;
 use rocket\ei\component\prop\SortableEiPropFork;
 use rocket\ei\manage\frame\EiFrame;
-use rocket\ei\manage\critmod\sort\SortFieldFork;
+use rocket\ei\manage\critmod\sort\SortPropFork;
 use n2n\persistence\orm\criteria\item\CriteriaProperty;
 use n2n\persistence\orm\criteria\Criteria;
 use n2n\persistence\orm\criteria\item\CrIt;
@@ -254,17 +254,17 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 		return new EiFieldWrapperWrapper($eiFieldWrappers);
 	}
 	
-	
-	public function buildManagedSortFieldFork(EiFrame $eiFrame) {
-		return new TranslationSortFieldFork($this, 
-				$this->getEiPropRelation()->getTargetEiMask()->getEiEngine()->createFramedSortDefinition($eiFrame),
-				$this->getSortN2nLocale());
-	}
-	
-	public function buildGlobalSortFieldFork(N2nContext $n2nContext) {
-		return new TranslationSortFieldFork($this,
-				$this->getEiPropRelation()->getTargetEiMask()->createSortDefinition($n2nContext),
-				$this->getSortN2nLocale());
+	public function buildSortPropFork(Eiu $eiu): ?SortPropFork {
+		$targetSortDefinition = null;
+		if (null !== ($eiuFrame = $eiu->frame(false))) {
+			$targetSortDefinition = $this->getEiPropRelation()->getTargetEiMask()->getEiEngine()
+					->createFramedSortDefinition($eiuFrame->getEiFrame());
+		} else {
+			$targetSortDefinition = $this->getEiPropRelation()->getTargetEiMask()->getEiEngine()
+					->createSortDefinition($eiu->getN2nContext());
+		}
+		
+		return new TranslationSortPropFork($this, $targetSortDefinition, $this->getSortN2nLocale());
 	}
 	
 	private function getSortN2nLocale() {
@@ -287,10 +287,9 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 				$this->eiPropRelation->getTargetEiType()->getEntityModel()->getClass(), 
 				$targetEiFrame->getContextEiEngine()->createQuickSearchDefinition($targetEiFrame));
 	}
-
 }
 
-class TranslationSortFieldFork implements SortFieldFork {
+class TranslationSortPropFork implements SortPropFork {
 	private $translationEiProp;
 	private $targetSortDefinition;
 	private $sortN2nLocale;
@@ -329,7 +328,7 @@ class TranslationSortConstraint implements SortConstraint {
 	private $forkedSortConstraint;
 	private $fork;
 	
-	public function __construct(SortConstraint $forkedSortConstraint, TranslationSortFieldFork $fork) {
+	public function __construct(SortConstraint $forkedSortConstraint, TranslationSortPropFork $fork) {
 		$this->forkedSortConstraint = $forkedSortConstraint;
 		$this->fork = $fork;
 	}

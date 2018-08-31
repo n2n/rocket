@@ -29,16 +29,16 @@ class SortDefinition {
 	private $sortFields = array();
 	private $sortFieldForks = array();
 	
-	public function putSortField(string $id, SortField $sortField) {
+	public function putSortProp(string $id, SortProp $sortField) {
 		ArgUtils::assertTrue(!EiPropPath::constainsSpecialIdChars($id), 'Invalid id.');
 		$this->sortFields[$id] = $sortField;	
 	}
 	
-	public function containsSortFieldId(string $id): bool {
+	public function containsSortPropId(string $id): bool {
 		return isset($this->sortFields[$id]);
 	}
 	
-	public function getSortFields(): array {
+	public function getSortProps(): array {
 		return $this->sortFields;
 	}
 	
@@ -46,25 +46,25 @@ class SortDefinition {
 // 		$this->sortFields = $sortFields;
 // 	}
 
-	public function containsSortFieldFork(string $id): bool {
+	public function containsSortPropFork(string $id): bool {
 		return isset($this->sortFieldForks[$id]);
 	}
 
-	public function putSortFieldFork(string $id, SortFieldFork $sortFieldFork) {
+	public function putSortPropFork(string $id, SortPropFork $sortFieldFork) {
 		ArgUtils::assertTrue(!EiPropPath::constainsSpecialIdChars($id), 'Invalid id.');
 		$this->sortFieldForks[$id] = $sortFieldFork;
 	}
 	
-	public function getSortFieldForks(): array {
+	public function getSortPropForks(): array {
 		return $this->sortFieldForks;
 	}
 	
-	public function getAllSortFields(): array {
+	public function getAllSortProps(): array {
 		$sortFields = $this->sortFields;
 		
 		foreach ($this->sortFieldForks as $forkId => $sortFieldFork) {
 			$forkEiPropPath = EiPropPath::create($forkId);
-			foreach ($sortFieldFork->getForkedSortDefinition()->getAllSortFields() as $id => $sortField) {
+			foreach ($sortFieldFork->getForkedSortDefinition()->getAllSortProps() as $id => $sortField) {
 				$forkEiPropPath->ext(EiPropPath::create($id));
 			}
 		}
@@ -77,7 +77,7 @@ class SortDefinition {
 					
 		foreach ($sortData->getSortItemDatas() as $sortItemData) {
 			$sortConstraint = $this->buildSortCriteriaConstraint( 
-					EiPropPath::create($sortItemData->getSortFieldId())->toArray(), $sortItemData->getDirection());
+					EiPropPath::create($sortItemData->getSortPropId())->toArray(), $sortItemData->getDirection());
 			if ($sortConstraint !== null) {
 				$sortConstraints[] = $sortConstraint;
 			}

@@ -64,7 +64,7 @@ class EiGrantForm implements Dispatchable {
 	}
 	
 	public function areRestrictionsAvailable(): bool {
-		return !$this->eiuEngine->hasSecurityFilterProps();
+		return $this->eiuEngine->hasSecurityFilterProps();
 	}
 	
 	public function isNew() {

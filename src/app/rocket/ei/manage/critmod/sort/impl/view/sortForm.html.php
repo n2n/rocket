@@ -38,7 +38,7 @@ use rocket\ei\manage\control\IconType;
 	$view->assert($sortForm instanceof SortForm);
 	
 	$sortFieldIdOptions = array();
-	foreach ($sortForm->getSortDefinition()->getSortFields() as $id => $sortField) {
+	foreach ($sortForm->getSortDefinition()->getSortProps() as $id => $sortField) {
 		$sortFieldIdOptions[$id] = $sortField->getLabel($view->getN2nLocale());
 	}
 	

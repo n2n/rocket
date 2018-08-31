@@ -44,7 +44,7 @@ class SortData {
 		$attrs = array();
 		
 		foreach ($this->sortItemDatas as $sortItemData) {
-			$attrs[$sortItemData->getSortFieldId()] = $sortItemData->getDirection();
+			$attrs[$sortItemData->getSortPropId()] = $sortItemData->getDirection();
 		}
 		
 		return $attrs;
@@ -73,11 +73,11 @@ class SortItemData {
 		$this->setDirection($direction);
 	}
 	
-	public function getSortFieldId(): string {
+	public function getSortPropId(): string {
 		return $this->sortFieldId;
 	}
 	
-	public function setSortFieldId(string $sortFieldId) {
+	public function setSortPropId(string $sortFieldId) {
 		$this->sortFieldId = $sortFieldId;
 	}
 	

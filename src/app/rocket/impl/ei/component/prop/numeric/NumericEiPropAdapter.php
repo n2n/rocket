@@ -29,7 +29,7 @@ use n2n\l10n\N2nLocale;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
-use rocket\ei\manage\critmod\sort\impl\SimpleSortField;
+use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
 
 use rocket\impl\ei\component\prop\adapter\DraftableEiPropAdapter;
 use rocket\impl\ei\component\prop\numeric\conf\NumericEiPropConfigurator;
@@ -41,7 +41,7 @@ use rocket\ei\manage\frame\EiFrame;
 use n2n\core\container\N2nContext;
 use rocket\ei\EiPropPath;
 use n2n\persistence\orm\criteria\item\CrIt;
-use rocket\ei\manage\critmod\sort\SortField;
+use rocket\ei\manage\critmod\sort\SortProp;
 use rocket\ei\util\model\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\critmod\quick\impl\model\LikeQuickSearchField;
@@ -102,17 +102,13 @@ abstract class NumericEiPropAdapter extends DraftableEiPropAdapter
 		return null;
 	}
 	
-	public function buildManagedSortField(EiFrame $eiFrame): ?SortField {
-		return $this->buildSortField($eiFrame->getN2nContext());
-	}
-	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\SortableEiProp::createGlobalSortField()
-	 * @return SortField
+	 * @see \rocket\ei\component\prop\SortableEiProp::createGlobalSortProp()
+	 * @return SortProp
 	 */
-	public function buildSortField(N2nContext $n2nContext): ?SortField {
-		return new SimpleSortField(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
+	public function buildSortProp(Eiu $eiu): ?SortProp {
+		return new SimpleSortProp(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
 	}
 	
 	public function buildQuickSearchField(EiFrame $eiFrame) {

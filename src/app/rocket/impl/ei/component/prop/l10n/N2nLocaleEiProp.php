@@ -42,12 +42,12 @@ use n2n\core\container\N2nContext;
 use n2n\web\dispatch\mag\Mag;
 use rocket\ei\util\model\Eiu;
 use n2n\persistence\orm\criteria\item\CrIt;
-use rocket\ei\manage\critmod\sort\impl\SimpleSortField;
+use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
 use rocket\ei\component\prop\GenericEiProp;
 use rocket\ei\manage\generic\CommonGenericEiProperty;
 use n2n\core\config\WebConfig;
 use rocket\ei\manage\critmod\filter\FilterProp;
-use rocket\ei\manage\critmod\sort\SortField;
+use rocket\ei\manage\critmod\sort\SortProp;
 use rocket\ei\manage\generic\GenericEiProperty;
 
 class N2nLocaleEiProp extends DraftableEiPropAdapter implements FilterableEiProp, SortableEiProp, GenericEiProp,
@@ -162,12 +162,12 @@ class N2nLocaleEiProp extends DraftableEiPropAdapter implements FilterableEiProp
 		return null;
 	}
 	
-	public function buildManagedSortField(EiFrame $eiFrame): ?SortField {
-		return $this->buildSortField($eiFrame->getN2nContext());
+	public function buildSortProp(EiFrame $eiFrame): ?SortProp {
+		return $this->buildSortProp($eiFrame->getN2nContext());
 	}
 	
-	public function buildSortField(N2nContext $n2nContext): ?SortField {
-		return new SimpleSortField(CrIt::p($this->entityProperty), $this->getLabelLstr());
+	public function buildSortProp(Eiu $eiu): ?SortProp {
+		return new SimpleSortProp(CrIt::p($this->entityProperty), $this->getLabelLstr());
 	}
 	
 	public function getGenericEiProperty(): ?GenericEiProperty {

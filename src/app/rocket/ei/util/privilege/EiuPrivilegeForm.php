@@ -15,6 +15,9 @@ use n2n\web\ui\ViewFactory;
 use n2n\reflection\CastUtils;
 use n2n\web\ui\BuildContext;
 use n2n\web\dispatch\map\PropertyPath;
+use rocket\ei\EiCommandPath;
+use n2n\web\dispatch\map\bind\BindingDefinition;
+use n2n\impl\web\dispatch\map\val\ValEnum;
 
 class EiuPrivilegeForm implements Dispatchable, UiComponent {
 	private static function _annos(AnnoInit $ai) {
@@ -93,19 +96,47 @@ class EiuPrivilegeForm implements Dispatchable, UiComponent {
 	 * @param string[] $eiCommandPathStrs
 	 */
 	function setEiCommandPathStrs(array $eiCommandPathStrs) {
-		$this->eiPrivilegesGrant->setEiCommandPathStrs(array_values($eiCommandPathStrs));
+		$eiCommandPaths = array();
+		foreach ($eiCommandPathStrs as $eiCommandPathStr) {
+			$eiCommandPaths[] = EiCommandPath::create($eiCommandPathStr);	
+		}
+		
+		$this->privilegeSetting->setEiCommandPaths($eiCommandPaths);
 	}
 	
+	/**
+	 * @return \n2n\impl\web\dispatch\mag\model\MagForm
+	 */
 	function getEiPropMagForm() {
 		return $this->eiPropMagForm;
 	}
 	
+	/**
+	 * @param MagForm $magForm
+	 */
 	function setEiPropMagForm(MagForm $magForm) {
 		$this->eiPropMagForm = $magForm;
 		
 		$this->privilegeSetting->setEiPropAttributes(
 				$this->privilegeDefinition->buildEiPropPrivilegeAttributes(
 						$magForm->getMagCollection()));
+	}
+	
+	private function buildPrivileges(array &$privileges, array $eiCommandPrivileges, EiCommandPath $baseEiCommandPath)  {
+		foreach ($eiCommandPrivileges as $commandPathStr => $eiCommandPrivilege) {
+			$commandPath = $baseEiCommandPath->ext($commandPathStr);
+			
+			$privileges[] = (string) $commandPath;
+			
+			$this->buildPrivileges($privileges, $eiCommandPrivilege->getSubEiCommandPrivileges(), $commandPath);
+		}
+	}
+	
+	private function _validation(BindingDefinition $bd) {
+		$commandPathStrs = array();
+		$this->buildPrivileges($commandPathStrs, $this->privilegeDefinition->getEiCommandPrivileges(),
+				new EiCommandPath(array()));
+		$bd->val('eiCommandPathStrs', new ValEnum($commandPathStrs));
 	}
 	
 	/**

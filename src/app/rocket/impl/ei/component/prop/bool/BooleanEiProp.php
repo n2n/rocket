@@ -30,7 +30,7 @@ use n2n\impl\web\dispatch\mag\model\BoolMag;
 use rocket\ei\manage\frame\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use n2n\core\container\N2nContext;
-use rocket\ei\manage\critmod\sort\impl\SimpleSortField;
+use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
 
 use rocket\impl\ei\component\prop\adapter\DraftableEiPropAdapter;
 use n2n\reflection\ArgUtils;
@@ -44,12 +44,14 @@ use rocket\ei\manage\EiObject;
 use rocket\impl\ei\component\prop\bool\conf\BooleanEiPropConfigurator;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\critmod\filter\FilterProp;
-use rocket\ei\manage\critmod\sort\SortField;
+use rocket\ei\manage\critmod\sort\SortProp;
 use rocket\ei\manage\gui\GuiIdPath;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
 use n2n\impl\persistence\orm\property\BoolEntityProperty;
+use rocket\ei\component\prop\SecurityFilterEiProp;
+use rocket\ei\manage\security\filter\SecurityFilterProp;
 
-class BooleanEiProp extends DraftableEiPropAdapter implements FilterableEiProp, SortableEiProp {
+class BooleanEiProp extends DraftableEiPropAdapter implements FilterableEiProp, SortableEiProp, SecurityFilterEiProp {
 
 	/**
 	 * {@inheritDoc}
@@ -217,38 +219,30 @@ class BooleanEiProp extends DraftableEiPropAdapter implements FilterableEiProp, 
 			
 		return parent::buildEiField($eiu);
 	}
-
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\FilterableEiProp::buildManagedFilterProp()
-	 */
-	public function buildManagedFilterProp(EiFrame $eiFrame): ?FilterProp  {
-		return $this->buildFilterProp($eiFrame->getN2nContext());
-	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\component\prop\FilterableEiProp::buildFilterProp()
 	 */
 	public function buildFilterProp(Eiu $eiu): ?FilterProp {
+		return $this->buildSecurityFilterProp($eiu);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\prop\FilterableEiProp::buildFilterProp()
+	 */
+	public function buildSecurityFilterProp(Eiu $eiu): ?SecurityFilterProp {
 		return new BoolFilterProp(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\SortableEiProp::buildManagedSortField()
+	 * @see \rocket\ei\component\prop\SortableEiProp::buildSortProp()
 	 */
-	public function buildManagedSortField(EiFrame $eiFrame): ?SortField {
-		return $this->buildSortField($eiFrame->getN2nContext());
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\SortableEiProp::buildSortField()
-	 */
-	public function buildSortField(N2nContext $n2nContext): ?SortField {
+	public function buildSortProp(Eiu $eiu): ?SortProp {
 		if (null !== ($entityProperty = $this->getEntityProperty())) {
-			return new SimpleSortField(CrIt::p($entityProperty), $this->getLabelLstr());
+			return new SimpleSortProp(CrIt::p($entityProperty), $this->getLabelLstr());
 		}
 		
 		return null;

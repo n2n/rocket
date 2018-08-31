@@ -31,10 +31,10 @@ class FilterPropSetting {
 	private $attributes;
 
 	/**
-	 * @param string $filterPropId
+	 * @param string|null $filterPropId
 	 * @param Attributes $attributes
 	 */
-	public function __construct(string $filterPropId, Attributes $attributes) {
+	public function __construct(?string $filterPropId, Attributes $attributes) {
 		$this->filterPropId = $filterPropId;
 		$this->attributes = $attributes;
 	}

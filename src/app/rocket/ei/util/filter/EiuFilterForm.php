@@ -74,7 +74,7 @@ class EiuFilterForm implements Dispatchable, UiComponent {
 	 * @return \rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup
 	 */
 	function getSettings() {
-		return $this->filterGroupForm->getFilterPropSettingGroup();
+		return $this->filterGroupForm->buildFilterPropSettingGroup();
 	}
 	
 	function getFilterGroupForm() {
@@ -83,6 +83,9 @@ class EiuFilterForm implements Dispatchable, UiComponent {
 	
 	function setFilterGroupForm(FilterGroupForm $filterGroupForm) {
 		$this->filterGroupForm = $filterGroupForm;
+	}
+	
+	private function _validation() {
 	}
 	
 	/**

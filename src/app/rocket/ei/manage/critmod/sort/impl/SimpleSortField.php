@@ -21,14 +21,14 @@
  */
 namespace rocket\ei\manage\critmod\sort\impl;
 
-use rocket\ei\manage\critmod\sort\SortField;
+use rocket\ei\manage\critmod\sort\SortProp;
 use n2n\persistence\orm\criteria\item\CriteriaProperty;
 use n2n\l10n\Lstr;
 use n2n\l10n\N2nLocale;
 use rocket\ei\manage\critmod\sort\SimpleSortConstraint;
 use rocket\ei\manage\critmod\sort\SortConstraint;
 
-class SimpleSortField implements SortField {
+class SimpleSortProp implements SortProp {
 	protected $criteriaProperty;
 	protected $labelLstr;
 	

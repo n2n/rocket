@@ -95,7 +95,7 @@ class SecurityFilterDefinition {
 			return $this->filterDefinition;
 		}
 		
-		$fd =  new FilterDefinition();
+		$this->filterDefinition = $fd =  new FilterDefinition();
 		foreach ($this->props as $eiPropPath => $prop) {
 			$fd->putFilterProp($eiPropPath, $prop);
 		}

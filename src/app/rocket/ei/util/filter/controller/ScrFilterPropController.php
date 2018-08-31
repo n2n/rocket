@@ -43,6 +43,7 @@ use rocket\ei\mask\EiMask;
 use rocket\ei\manage\critmod\filter\UnknownFilterPropException;
 use n2n\impl\web\ui\view\jhtml\JhtmlResponse;
 use rocket\spec\TypePath;
+use rocket\ei\util\model\Eiu;
 
 class ScrFilterPropController extends ControllerAdapter implements ScrController {
 	private $spec;
@@ -104,16 +105,22 @@ class ScrFilterPropController extends ControllerAdapter implements ScrController
 				'filterPropItemForm' => $filterPropItemForm, 'propertyPath' => $propertyPath))));
 	}
 	
-	public function doSecurity(string $eiTypeId, string $eiMaskId = null, ParamQuery $filterPropId, ParamQuery $propertyPath) {
-		$eiThing = $this->lookupEiThing($eiTypeId, $eiMaskId);
+	public function doSecurity(string $eiTypePath, ParamQuery $filterPropId, ParamQuery $propertyPath, Eiu $eiu) {
+		$eiuEngine = null;
+		
+		try {
+			$eiuEngine = $eiu->context()->engine($eiTypePath);
+		} catch (UnknownTypeException $e) {
+			throw new PageNotFoundException(null, 0, $e);
+		}
+		
 		$propertyPath = $this->buildPropertyPath((string) $propertyPath);
 		$filterPropId = (string) $filterPropId;
-		$securityFilterDefinition = (new CritmodFactory($eiThing->getEiEngine()->getEiMask()->getEiPropCollection(), $eiThing->getEiEngine()->getEiModificatorCollection()))
-				->createSecurityFilterDefinition($this->getN2nContext());
+		$securityFilterDefinition = $eiuEngine->getSecurityFilterDefinition();
 		$filterPropItemForm = null;
 		try {
 			$filterPropItemForm = new FilterPropItemForm(new FilterPropSetting($filterPropId, new Attributes()), 
-					$securityFilterDefinition);
+					$securityFilterDefinition->toFilterDefinition());
 		} catch (UnknownFilterPropException $e) {
 			throw new PageNotFoundException(null, 0, $e);
 		}

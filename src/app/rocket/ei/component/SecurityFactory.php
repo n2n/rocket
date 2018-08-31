@@ -90,13 +90,13 @@ class SecurityFactory {
 		
 		foreach ($this->eiPropCollection as $id => $eiProp) {
 			if (!($eiProp instanceof SecurityFilterEiProp)) continue;
-			
+		
 			$eiEntryFilterProp = $eiProp->buildSecurityFilterProp($eiu);
 			ArgUtils::valTypeReturn($eiEntryFilterProp, SecurityFilterProp::class, $eiProp,
 					'buildSecurityFilterProp', true);
 			
 			if ($eiEntryFilterProp !== null) {
-				$securityFilterDefinition->putSecurityFilterProp(EiPropPath::from($eiProp), $eiEntryFilterProp);
+				$securityFilterDefinition->putProp(EiPropPath::from($eiProp), $eiEntryFilterProp);
 			}
 		}
 		

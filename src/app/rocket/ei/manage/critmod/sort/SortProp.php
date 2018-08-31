@@ -23,7 +23,7 @@ namespace rocket\ei\manage\critmod\sort;
 
 use n2n\l10n\N2nLocale;
 
-interface SortField {
+interface SortProp {
 	/**
 	 * @return string
 	 */

@@ -21,20 +21,14 @@
  */
 namespace rocket\ei\component\prop;
 
-use rocket\ei\manage\frame\EiFrame;
-use n2n\core\container\N2nContext;
+use rocket\ei\util\model\Eiu;
+use rocket\ei\manage\critmod\sort\SortPropFork;
 
 interface SortableEiPropFork extends EiProp {
-	
 	/**
-	 * @param EiFrame $eiFrame
-	 * @return \rocket\ei\manage\critmod\sort\SortFieldFork
+	 * @param Eiu $eiu EiFrame {@see Eiu::frame()} is not available if the FilteProp is created for a filter to restrict
+	 * {@see EiTypeExtension}s. 
+	 * @return \rocket\ei\manage\critmod\sort\SortPropFork
 	 */
-	public function buildManagedSortFieldFork(EiFrame $eiFrame);
-	
-	/**
-	 * @param N2nContext $n2nContext
-	 * @return \rocket\ei\manage\critmod\sort\SortFieldFork
-	 */
-	public function buildGlobalSortFieldFork(N2nContext $n2nContext);
+	public function buildSortPropFork(Eiu $eiu): ?SortPropFork;
 }

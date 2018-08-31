@@ -40,7 +40,7 @@ class SortForm implements Dispatchable {
 		
 		$this->clear();
 		foreach ($sortData->getSortItemDatas() as $key => $sortItemData) {
-			$this->sortFieldIds[$key] = $sortItemData->getSortFieldId(); 
+			$this->sortFieldIds[$key] = $sortItemData->getSortPropId(); 
 			$this->directions[$key] = $sortItemData->getDirection();
 		}
 	}
@@ -49,11 +49,11 @@ class SortForm implements Dispatchable {
 		return $this->sortDefinition;
 	}
 	
-	public function getSortFieldIds(): array {
+	public function getSortPropIds(): array {
 		return $this->sortFieldIds;
 	}
 	
-	public function setSortFieldIds(array $sortFieldIds) {
+	public function setSortPropIds(array $sortFieldIds) {
 		$this->sortFieldIds = $sortFieldIds;
 	}
 	
@@ -78,7 +78,7 @@ class SortForm implements Dispatchable {
 		
 		$sortItemDatas = $sortData->getSortItemDatas();
 		foreach ($this->sortFieldIds as $key => $sortFieldId) {
-			if (!$this->sortDefinition->containsSortFieldId($sortFieldId)) continue;
+			if (!$this->sortDefinition->containsSortPropId($sortFieldId)) continue;
 			
 			$direction = Criteria::ORDER_DIRECTION_ASC;
 			if (isset($this->directions[$key]) && $this->directions[$key] === Criteria::ORDER_DIRECTION_DESC) {

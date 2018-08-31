@@ -21,7 +21,7 @@
  */
 namespace rocket\ei\manage\critmod\sort;
 
-interface SortFieldFork {
+interface SortPropFork {
 	
 	public function getForkedSortDefinition(): SortDefinition;
 	
