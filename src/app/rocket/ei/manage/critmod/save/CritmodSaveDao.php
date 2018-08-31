@@ -29,6 +29,7 @@ use rocket\user\model\LoginContext;
 use rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup;
 use rocket\ei\manage\critmod\sort\SortSetting;
 use n2n\util\ex\IllegalStateException;
+use rocket\spec\TypePath;
 
 class CritmodSaveDao implements RequestScoped {
 	private static function _annos(AnnoInit $ai) {
@@ -48,8 +49,8 @@ class CritmodSaveDao implements RequestScoped {
 		$this->loginContext = $loginContext;
 	}
 	
-	public static function buildCategoryKey(string $stateKey, string $eiTypeId, string $eiMaskId = null): string {
-		return $stateKey . '?' . $eiTypeId . '?' . $eiMaskId;
+	public static function buildCategoryKey(string $stateKey, TypePath $eiTypePath): string {
+		return $stateKey . '?' . $eiTypePath;
 	}
 
 	public function setQuickSearchString(string $categoryKey, string $quickSearchString = null) {

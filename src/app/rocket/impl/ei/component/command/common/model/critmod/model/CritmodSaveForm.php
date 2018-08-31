@@ -24,7 +24,7 @@ namespace rocket\ei\manage\critmod\impl\model;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\util\filter\form\FilterGroupForm;
 use rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup;
-use rocket\ei\manage\critmod\sort\SortData;
+use rocket\ei\manage\critmod\sort\SortSetting;
 use rocket\ei\manage\critmod\filter\FilterDefinition;
 use rocket\ei\manage\critmod\sort\SortDefinition;
 use rocket\ei\manage\critmod\sort\impl\form\SortForm;
@@ -34,8 +34,11 @@ use rocket\ei\manage\frame\CriteriaConstraint;
 use rocket\ei\manage\critmod\filter\ComparatorConstraintGroup;
 use n2n\web\dispatch\map\bind\MappingDefinition;
 use n2n\l10n\DynamicTextCollection;
+use rocket\ei\manage\critmod\save\CritmodSaveDao;
+use rocket\spec\TypePath;
+use rocket\ei\manage\critmod\save\CritmodSave;
 
-class CritmodForm implements Dispatchable {	
+class CritmodSaveForm implements Dispatchable {	
 	private $critmodSaveDao;
 // 	private $stateKey;
 	private $categoryKey;
@@ -49,10 +52,10 @@ class CritmodForm implements Dispatchable {
 	protected $sortForm;
 	
 	public function __construct(FilterDefinition $filterDefinition, SortDefinition $sortDefinition, 
-			CritmodSaveDao $critmodSaveDao, string $stateKey, string $eiTypeId, string $eiMaskId = null) {
+			CritmodSaveDao $critmodSaveDao, string $stateKey, TypePath $eiTypePath) {
 		$this->critmodSaveDao = $critmodSaveDao;
 // 		$this->stateKey = $stateKey;
-		$this->categoryKey = CritmodSaveDao::buildCategoryKey($stateKey, $eiTypeId, $eiMaskId);
+		$this->categoryKey = CritmodSaveDao::buildCategoryKey($stateKey, $eiTypePath);
 		$this->eiTypeId = $eiTypeId;
 		$this->eiMaskId = $eiMaskId;
 				
@@ -62,7 +65,7 @@ class CritmodForm implements Dispatchable {
 		if (null !== ($tmpCritmodSave = $this->critmodSaveDao->getTmpCritmodSave($this->categoryKey))) {
 			$this->name = $tmpCritmodSave->getName();
 			$filterPropSettingGroup = $tmpCritmodSave->readFilterPropSettingGroup();
-			$sortData = $tmpCritmodSave->readSortData();
+			$sortData = $tmpCritmodSave->readSortSetting();
 			$this->active = true;
 			if (null !== $selectedCritmodSave = $critmodSaveDao->getSelectedCritmodSave($this->categoryKey)) {
 				$this->selectedCritmodSaveId = $selectedCritmodSave->getId();
@@ -71,11 +74,11 @@ class CritmodForm implements Dispatchable {
 			$this->selectedCritmodSaveId = $selectedCritmodSave->getId();
 			$this->name = $selectedCritmodSave->getName();
 			$filterPropSettingGroup = $selectedCritmodSave->readFilterPropSettingGroup();
-			$sortData = $selectedCritmodSave->readSortData();
+			$sortData = $selectedCritmodSave->readSortSetting();
 			$this->active = true;
 		} else {
 			$filterPropSettingGroup = new FilterPropSettingGroup();
-			$sortData = new SortData();
+			$sortData = new SortSetting();
 			$this->active = false;
 		}
 		
@@ -179,7 +182,7 @@ class CritmodForm implements Dispatchable {
 				new ComparatorConstraintGroup(true, array($comparatorConstraint)));
 		
 		$sortCriteriaConstraint = $this->getSortForm()->getSortDefinition()
-				->builCriteriaConstraint($critmodSave->readSortData(), $tmp);
+				->builCriteriaConstraint($critmodSave->readSortSetting(), $tmp);
 		if ($sortCriteriaConstraint !== null) {
 			$eiFrame->getCriteriaConstraintCollection()->add(
 					($tmp ? CriteriaConstraint::TYPE_TMP_SORT : CriteriaConstraint::TYPE_HARD_SORT),
@@ -207,7 +210,7 @@ class CritmodForm implements Dispatchable {
 		$critmodSave->setEiTypeId($this->eiTypeId);
 		$critmodSave->setEiMaskId($this->eiMaskId);
 		$critmodSave->writeFilterData($this->filterGroupForm->buildFilterPropSettingGroup());
-		$critmodSave->writeSortData($this->sortForm->buildSortData());
+		$critmodSave->writeSortSetting($this->sortForm->buildSortSetting());
 		$this->critmodSaveDao->setTmpCritmodSave($this->categoryKey, $critmodSave);
 		
 		$this->active = true;
@@ -229,7 +232,7 @@ class CritmodForm implements Dispatchable {
 		
 		$critmodSave->setName($this->name);
 		$critmodSave->writeFilterData($this->filterGroupForm->buildFilterPropSettingGroup());
-		$critmodSave->writeSortData($this->sortForm->buildSortData());
+		$critmodSave->writeSortSetting($this->sortForm->buildSortSetting());
 		
 		$this->name = $critmodSave->getName();
 	}
@@ -243,7 +246,7 @@ class CritmodForm implements Dispatchable {
 		
 		$critmodSave = $this->critmodSaveDao->createCritmodSave($this->eiTypeId, $this->eiMaskId, $this->name, 
 				$this->filterGroupForm->buildFilterPropSettingGroup(), 
-				$this->sortForm->buildSortData());
+				$this->sortForm->buildSortSetting());
 		
 		$this->critmodSaveDao->setSelectedCritmodSave($this->categoryKey, $critmodSave);
 		$this->active = true;
@@ -271,7 +274,7 @@ class CritmodForm implements Dispatchable {
 		$eiEngine = $eiFrame->getContextEiEngine();
 		$eiMask = $eiEngine->getEiMask();
 		
-		return new CritmodForm($eiEngine->createFramedFilterDefinition($eiFrame), 
+		return new CritmodSaveForm($eiEngine->createFramedFilterDefinition($eiFrame), 
 				$eiEngine->createFramedSortDefinition($eiFrame), 
 				$critmodSaveDao, $stateKey, $eiEngine->getEiMask()->getEiType()->getId(), 
 				($eiMask->isExtension() ? $eiMask->getExtension()->getId() : null));

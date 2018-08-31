@@ -14,16 +14,17 @@ use rocket\ei\util\model\EiuFactory;
 use rocket\ei\manage\critmod\sort\SortDefinition;
 use rocket\ei\manage\critmod\sort\SortSetting;
 use rocket\ei\manage\critmod\sort\impl\form\SortForm;
+use rocket\ei\manage\critmod\filter\FilterDefinition;
 
-class EiuSortForm implements Dispatchable, UiComponent {
+class EiuCritmodSaveForm implements Dispatchable, UiComponent {
 	private static function _annos(AnnoInit $ai) {
-		$ai->p('sortForm', new AnnoDispObject());
+		$ai->p('critmodSaveForm', new AnnoDispObject());
 	}
 	
 	/**
 	 * @var SortDefinition
 	 */
-	private $sortDefinition;
+	private $quickSearchDefinition;
 	/**
 	 * @var EiuFactory
 	 */
@@ -31,9 +32,9 @@ class EiuSortForm implements Dispatchable, UiComponent {
 	/**
 	 * @var SortForm
 	 */
-	private $sortForm;
+	private $critmodSaveForm;
 	
-	function __construct(SortDefinition $sortDefinition, ?SortSetting $sortSetting, EiuFactory $eiuFactory) {
+	function __construct(FilterDefinition $filterDefinition, FilterJhtmlHook $filterJhtmlHook, SortDefinition $sortDefinition, ?SortSetting $sortSetting, EiuFactory $eiuFactory) {
 		$this->sortDefinition = $sortDefinition;
 		$this->eiuFactory = $eiuFactory;
 		
@@ -49,10 +50,10 @@ class EiuSortForm implements Dispatchable, UiComponent {
 	
 	/**
 	 * @param SortSetting $sortSetting
-	 * @return EiuSortForm
+	 * @return EiuCritmodSaveForm
 	 */
 	function writeSetting(SortSetting $sortSetting) {
-		$this->sortForm = new SortForm($sortSetting, $this->sortDefinition);
+		$this->critmodSaveForm = new SortForm($sortSetting, $this->sortDefinition);
 		return $this;
 	}
 	
@@ -60,31 +61,31 @@ class EiuSortForm implements Dispatchable, UiComponent {
 	 * @return \rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup
 	 */
 	function readSetting() {
-		return $this->sortForm->buildSortSetting();
+		return $this->critmodSaveForm->buildSortSetting();
 	}
 	
 	function getSortForm() {
-		return $this->sortForm;
+		return $this->critmodSaveForm;
 	}
 	
-	function setSortForm(SortForm $sortForm) {
-		$this->sortForm = $sortForm;
+	function setSortForm(SortForm $critmodSaveForm) {
+		$this->critmodSaveForm = $critmodSaveForm;
 	}
 	
 	private function _validation() {
 	}
 	
 	/**
-	 * @return EiuSortForm
+	 * @return EiuCritmodSaveForm
 	 */
 	function clear() {
-		$this->sortForm->clear();
+		$this->critmodSaveForm->clear();
 		return $this;
 	}
 	
 	/**
 	 * @param PropertyPath|null $propertyPath
-	 * @return EiuSortForm
+	 * @return EiuCritmodSaveForm
 	 */
 	public function setContextPropertyPath(?PropertyPath $propertyPath) {
 		$this->contextPropertyPath = $propertyPath;
@@ -105,13 +106,13 @@ class EiuSortForm implements Dispatchable, UiComponent {
 	function createView(HtmlView $contextView = null) {
 		if ($contextView !== null) {
 			return $contextView->getImport('\rocket\ei\util\sort\view\eiuSortForm.html',
-					array('eiuSortForm' => $this));
+					array('eiuFilterForm' => $this));
 		}
 		
 		$viewFactory = $this->eiuFactory->getN2nContext(true)->lookup(ViewFactory::class);
 		CastUtils::assertTrue($viewFactory instanceof ViewFactory);
 		
-		return $viewFactory->create('rocket\ei\util\sort\view\eiuSortForm.html', array('eiuSortForm' => $this));
+		return $viewFactory->create('rocket\ei\util\sort\view\eiuSortForm.html', array('eiuFilterForm' => $this));
 	}
 	
 	public function build(BuildContext $buildContext): string {
