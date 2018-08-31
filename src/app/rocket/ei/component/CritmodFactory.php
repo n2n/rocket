@@ -91,7 +91,7 @@ class CritmodFactory {
 		return $filterDefinition;
 	}
 	
-	public function createManagedSortDefinition(EiFrame $eiFrame): SortDefinition {
+	public function createFramedSortDefinition(EiFrame $eiFrame): SortDefinition {
 		$sortDefinition = new SortDefinition();
 		
 		foreach ($this->eiPropCollection as $id => $eiProp) {

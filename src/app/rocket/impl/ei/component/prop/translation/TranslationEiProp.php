@@ -257,7 +257,7 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 	
 	public function buildManagedSortFieldFork(EiFrame $eiFrame) {
 		return new TranslationSortFieldFork($this, 
-				$this->getEiPropRelation()->getTargetEiMask()->getEiEngine()->createManagedSortDefinition($eiFrame),
+				$this->getEiPropRelation()->getTargetEiMask()->getEiEngine()->createFramedSortDefinition($eiFrame),
 				$this->getSortN2nLocale());
 	}
 	

@@ -113,7 +113,7 @@ class EiEngine {
 	}
 	
 	public function createFramedSortDefinition(EiFrame $eiFrame): SortDefinition {
-		return $this->getCritmodFactory()->createManagedSortDefinition($eiFrame);
+		return $this->getCritmodFactory()->createFramedSortDefinition($eiFrame);
 	}
 	
 	/**

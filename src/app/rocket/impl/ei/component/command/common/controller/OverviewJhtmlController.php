@@ -135,7 +135,7 @@ class OverviewJhtmlController extends ControllerAdapter {
 // 		$eiMask = $eiFrame->getContextEiEngine()->getEiMask();
 // 		$filterGroupForm = new FilterGroupForm($filterPropSettingGroup, $eiMask->createFramedFilterDefinition($eiFrame));
 // 		$filterJhtmlHook = ScrFilterPropController::buildFilterJhtmlHook($scrRegistry, $eiMask);
-// 		$sortForm = new SortForm($sortData, $eiMask->createManagedSortDefinition($eiFrame));
+// 		$sortForm = new SortForm($sortData, $eiMask->createFramedSortDefinition($eiFrame));
 
 // 		$this->send(new AjahResponse($this->createView(
 // 				'ei\component\command\impl\common\view\pseudoCritmodForm.html',
