@@ -117,6 +117,7 @@ class CkeEiProp extends AlphanumericEiProp {
 
 	public function createOutputUiComponent(HtmlView $view, Eiu $eiu) {
 	    $value = $eiu->field()->getValue(EiPropPath::from($this));
+	    if ($value === null) return null;
 	    
 		if ($eiu->gui()->isCompact()) {
 			return StringUtils::reduce(html_entity_decode(strip_tags($value), null, N2N::CHARSET), 50, '...');
