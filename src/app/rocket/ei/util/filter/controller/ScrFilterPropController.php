@@ -140,15 +140,14 @@ class ScrFilterPropController extends ControllerAdapter implements ScrController
 				array('filterGroupForm' => $filterGroupForm, 'propertyPath' => $propertyPath))));
 	}
 	
-// 	public static function buildFilterJhtmlHook(ScrRegistry $scrRegistry, EiMask $eiMask): FilterJhtmlHook {
-// 		$baseUrl = $scrRegistry->registerSessionScrController(ScrFilterPropController::class);
-// 		$eiTypeId = $eiMask->getEiEngine()->getEiMask()->getEiType()->getId();
-// 		$eiMaskId = ($eiMask->isExtension() ? $eiMask->getExtension()->getId() : null);
+	public static function buildFilterJhtmlHook(ScrRegistry $scrRegistry, TypePath $eiTypePath): FilterJhtmlHook {
+		$baseUrl = $scrRegistry->registerSessionScrController(ScrFilterPropController::class);
+		$eiTypePathStr = (string) $eiTypePath;
 		
-// 		return new FilterJhtmlHook(
-// 				$baseUrl->extR(array('simple', $eiTypeId, $eiMaskId)),
-// 				$baseUrl->extR(array('group', $eiTypeId, $eiMaskId)));
-// 	}
+		return new FilterJhtmlHook(
+				$baseUrl->extR(array('simple', $eiTypePathStr)),
+				$baseUrl->extR(array('group', $eiTypePathStr)));
+	}
 	
 	/**
 	 * @param ScrRegistry $scrRegistry

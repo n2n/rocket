@@ -162,10 +162,6 @@ class N2nLocaleEiProp extends DraftableEiPropAdapter implements FilterableEiProp
 		return null;
 	}
 	
-	public function buildSortProp(EiFrame $eiFrame): ?SortProp {
-		return $this->buildSortProp($eiFrame->getN2nContext());
-	}
-	
 	public function buildSortProp(Eiu $eiu): ?SortProp {
 		return new SimpleSortProp(CrIt::p($this->entityProperty), $this->getLabelLstr());
 	}

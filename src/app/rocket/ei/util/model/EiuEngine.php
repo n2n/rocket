@@ -160,6 +160,10 @@ class EiuEngine {
 	 */
 	private $filterDefinition;
 	/**
+	 * @var \rocket\ei\manage\critmod\sort\SortDefinition
+	 */
+	private $sortDefinition;
+	/**
 	 * @var \rocket\ei\manage\security\filter\SecurityFilterDefinition
 	 */
 	private $securityFilterDefinition;
@@ -215,7 +219,7 @@ class EiuEngine {
 			return $this->sortDefinition;
 		}
 		
-		return $this->sortDefinition = $this->eiEngine->createFilterDefinition(
+		return $this->sortDefinition = $this->eiEngine->createSortDefinition(
 				$this->eiuFactory->getN2nContext(true));
 	}
 	
