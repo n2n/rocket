@@ -22,7 +22,6 @@
 
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use rocket\impl\ei\component\command\common\model\critmod\CritmodForm;
-	use rocket\ei\util\filter\controller\FilterJhtmlHook;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -30,9 +29,6 @@
 		
 	$critmodForm = $view->getParam('critmodForm'); 
 	$view->assert($critmodForm instanceof CritmodForm);
-	
-	$filterJhtmlHook = $view->getParam('filterJhtmlHook');
-	$view->assert($filterJhtmlHook instanceof FilterJhtmlHook);
 ?>
 <?php $formHtml->open($critmodForm, null, null, array('class' => 'rocket-impl-critmod-select form-inline'),
 		$view->getParam('critmodFormUrl')) ?>

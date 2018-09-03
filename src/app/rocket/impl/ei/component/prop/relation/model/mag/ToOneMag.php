@@ -193,8 +193,8 @@ class ToOneMag extends MagAdapter {
 		$targetControllerContext = $eiFrame->getControllerContext();
 		$request = $view->getRequest();
 		
-		$filterJhtmlHook = ScrFilterPropController::buildFilterJhtmlHook($view->lookup(ScrRegistry::class), 
-				$eiFrame->getContextEiEngine()->getEiMask());
+// 		$filterJhtmlHook = ScrFilterPropController::buildFilterJhtmlHook($view->lookup(ScrRegistry::class), 
+// 				$eiFrame->getContextEiEngine()->getEiMask());
 		
 		$newMappingFormUrl = null;
 		if ($this->targetEiuFrame->getContextEiType()->hasSubEiTypes()

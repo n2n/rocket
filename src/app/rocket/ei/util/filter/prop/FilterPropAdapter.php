@@ -34,7 +34,7 @@ use n2n\persistence\orm\criteria\item\CriteriaProperty;
 use n2n\web\dispatch\mag\Mag;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\persistence\orm\criteria\item\CrIt;
-use rocket\ei\util\filter\model\PropertyValueComparatorConstraint;
+use rocket\ei\manage\critmod\filter\impl\PropertyValueComparatorConstraint;
 
 abstract class FilterPropAdapter implements FilterProp {
 	const ATTR_OPERATOR_KEY = 'operator';

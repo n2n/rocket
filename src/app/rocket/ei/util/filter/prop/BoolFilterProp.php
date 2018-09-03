@@ -37,7 +37,7 @@ use rocket\ei\manage\mapping\FieldErrorInfo;
 use n2n\l10n\MessageCode;
 use rocket\ei\manage\critmod\filter\ComparatorConstraint;
 use n2n\persistence\orm\criteria\item\CrIt;
-use rocket\ei\util\filter\model\PropertyValueComparatorConstraint;
+use rocket\ei\manage\critmod\filter\impl\PropertyValueComparatorConstraint;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
 
 class BoolFilterProp implements SecurityFilterProp {

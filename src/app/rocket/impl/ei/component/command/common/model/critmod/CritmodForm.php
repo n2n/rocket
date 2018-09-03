@@ -166,7 +166,7 @@ class CritmodForm implements Dispatchable {
 			if ($critmodSave === null) return;
 		}
 
-		$comparatorConstraint = $this->getFilterGroupForm()->getFilterDefinition()
+		$comparatorConstraint = $this->getEiuFilterForm()->getFilterDefinition()
 						->createComparatorConstraint($critmodSave->readFilterPropSettingGroup());
 		$eiFrame->getCriteriaConstraintCollection()->add(
 				($tmp ? CriteriaConstraint::TYPE_TMP_FILTER : CriteriaConstraint::TYPE_HARD_FILTER),
@@ -198,10 +198,9 @@ class CritmodForm implements Dispatchable {
 	
 	public function apply() {
 		$critmodSave = new CritmodSave();
-		$critmodSave->setEiTypeId($this->eiTypeId);
-		$critmodSave->setEiMaskId($this->eiMaskId);
-		$critmodSave->writeFilterData($this->eiuFilterForm->buildFilterPropSettingGroup());
-		$critmodSave->writeSortSetting($this->eiuSortForm->buildSortSetting());
+		$critmodSave->setEiTypePath($this->eiTypePath);
+		$critmodSave->writeFilterData($this->eiuFilterForm->getSettings());
+		$critmodSave->writeSortSetting($this->eiuSortForm->readSetting());
 		$this->critmodSaveDao->setTmpCritmodSave($this->categoryKey, $critmodSave);
 		
 		$this->active = true;

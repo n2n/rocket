@@ -62,9 +62,10 @@ class OverviewController extends ControllerAdapter {
             $stateKey = OverviewJhtmlController::genStateKey();
 		}
 		
-		$filterJhtmlHook = FramedFilterPropController::buildFilterJhtmlHook($this->getHttpContext()
-				->getControllerContextPath($this->getControllerContext())->ext('filter')->toUrl());
-		$critmodForm = CritmodForm::create($eiuFrame, $filterJhtmlHook, $critmodSaveDao, $stateKey);
+		$overviewAjahHook = OverviewJhtmlController::buildAjahHook(
+				$this->getControllerPath()->ext(['ajah'])->toUrl(), $stateKey);
+		
+		$critmodForm = CritmodForm::create($eiuFrame, $overviewAjahHook->getFilterJhtmlHook(), $critmodSaveDao, $stateKey);
 		$quickSearchForm = QuickSearchForm::create($eiuFrame, $critmodSaveDao, $stateKey);
 		$listModel = new OverviewModel($eiuFrame, $this->listSize, $critmodForm, $quickSearchForm);
 		
@@ -78,16 +79,14 @@ class OverviewController extends ControllerAdapter {
 			throw new PageNotFoundException();
 		}
 		
-		$overviewAjahHook = OverviewJhtmlController::buildAjahHook($this->getHttpContext()
-				->getControllerContextPath($this->getControllerContext())->ext('ajah')->toUrl(), $stateKey);
 		
 		$this->eiuCtrl->applyCommonBreadcrumbs();
 		
 		$this->eiuCtrl->forwardView(
 				$this->createView('..\view\overview.html', array('listModel' => $listModel, 
 						'critmodForm' => $critmodForm,
-						'quickSearchForm' => $quickSearchForm, 'overviewAjahHook' => $overviewAjahHook, 
-						'filterJhtmlHook' => $filterJhtmlHook)));
+						'quickSearchForm' => $quickSearchForm, 'overviewAjahHook' => $overviewAjahHook/*, 
+						'filterJhtmlHook' => $filterJhtmlHook*/)));
 				
 // 		$this->forward('..\view\overview.html', 
 // 				array('listModel' => $listModel, 'critmodForm' => $critmodForm,

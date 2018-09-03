@@ -42,7 +42,7 @@ use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\ei\manage\critmod\filter\ComparatorConstraintGroup;
 use rocket\ei\manage\frame\CriteriaConstraint;
-use rocket\ei\util\filter\model\SimpleComparatorConstraint;
+use rocket\ei\manage\critmod\filter\impl\SimpleComparatorConstraint;
 use rocket\ei\manage\mapping\EiFieldConstraint;
 use rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup;
 

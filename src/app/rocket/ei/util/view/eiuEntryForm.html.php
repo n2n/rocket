@@ -22,8 +22,8 @@
 
 	use rocket\ei\util\model\EiuEntryFormViewModel;
 	use n2n\impl\web\ui\view\html\HtmlView;
-use n2n\web\dispatch\map\PropertyPath;
-use rocket\ei\manage\EiHtmlBuilder;
+	use n2n\web\dispatch\map\PropertyPath;
+	use rocket\ei\manage\EiHtmlBuilder;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -45,24 +45,38 @@ use rocket\ei\manage\EiHtmlBuilder;
 	$typeChoicesMap = $eiuEntryFormViewModel->getTypeChoicesMap();
 	$iconTypesMap = $eiuEntryFormViewModel->getIconTypeMap();
 ?>
-<div class="rocket-editable">
-	<label><?php $html->l10nText('user_group_privileges_label')?></label>
 	
-	<ul class="rocket-control">
-		<?php $eiGrantHtml->privilegeCheckboxes('eiCommandPathStrs[]', $eiGrantForm->getPrivilegeDefinition()) ?>
-	</ul>
-</div>
+<?php if (!$eiuEntryFormViewModel->isTypeChangable()): ?>
+	<div class="rocket-entry-form" 
+			data-rocket-ei-type-id="<?php $html->out(key($typeChoicesMap)) ?>"
+			data-rocket-generic-label="<?php $html->out(current($typeChoicesMap)) ?>"
+			data-rocket-generic-icon-type="<?php $html->out(current($iconTypesMap)) ?>">
+		<?php $view->import($eiuEntryFormViewModel->createEditView($view)) ?>
+	</div>
+<?php else: ?>
+	<?php if ($eiuEntryFormViewModel->hasDisplayContainer()): ?>
+		<?php $eiHtml->displayItemOpen('div', $eiuEntryFormViewModel->getDisplayContainerType(), $eiuEntryFormViewModel->getDisplayContainerAttrs()) ?>
+			<label><?php $html->out($eiuEntryFormViewModel->getDisplayContainerLabel()) ?></label>
+			<div class="rocket-control">
+	<?php endif ?>
 
-<div>
-	<label><?php $html->l10nText('user_group_access_config_label')?></label>
-	<?php $view->out('<ul class="rocket-control">') ?>
-		<?php $formHtml->meta()->objectProps('eiPropPrivilegeMagForm', function() use ($formHtml) { ?>
-			<?php $formHtml->magOpen('li', null, array('class' => 'rocket-editable')) ?>
-				<?php $formHtml->magLabel() ?>
-				<div class="rocket-control">
-					<?php $formHtml->magField() ?>
-				</div>
-			<?php $formHtml->magClose() ?>
-		<?php }) ?>
-	<?php $view->out('</ul>') ?>
-</div>
+	<div class="rocket-entry-form rocket-multi-ei-type">
+		<div class="rocket-ei-type-selector">
+			<?php $formHtml->label($selectedTypeIdPropertyPath) ?>
+			<div>
+				<?php $formHtml->select($selectedTypeIdPropertyPath, $eiuEntryFormViewModel->getTypeChoicesMap(),
+						array('class' => 'form-control', 'data-rocket-generic-icon-types' => json_encode($iconTypesMap))) ?>
+			</div>
+		</div>
+	
+		<?php foreach ($eiuEntryFormViewModel->createEditViews($view) as $id => $editView): ?>
+			<div class="rocket-ei-type-entry-form rocket-ei-type-<?php $html->out($id) ?> rocket-structure-element">
+				<?php $view->import($editView) ?>
+			</div>
+		<?php endforeach ?>
+	</div>
+	<?php if ($eiuEntryFormViewModel->hasDisplayContainer()): ?>
+			</div>
+		<?php $eiHtml->displayItemClose() ?>
+	<?php endif ?>
+<?php endif ?>

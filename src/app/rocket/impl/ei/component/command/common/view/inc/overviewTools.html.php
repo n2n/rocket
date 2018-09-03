@@ -21,7 +21,6 @@
 	 */
 
 	use n2n\impl\web\ui\view\html\HtmlView;
-	use rocket\ei\util\filter\controller\FilterJhtmlHook;
 	use rocket\impl\ei\component\command\common\controller\OverviewAjahHook;
 	use rocket\impl\ei\component\command\common\model\critmod\QuickSearchForm;
 	use rocket\impl\ei\component\command\common\model\critmod\CritmodForm;
@@ -33,9 +32,6 @@
 	$overviewAjahHook = $view->getParam('overviewAjahHook');
 	$view->assert($overviewAjahHook instanceof OverviewAjahHook);
 	
-	$filterJhtmlHook = $view->getParam('filterJhtmlHook');
-	$view->assert($filterJhtmlHook instanceof FilterJhtmlHook);
-
 	$critmodForm = $view->getParam('critmodForm');
 	$view->assert($critmodForm instanceof CritmodForm);
 	
