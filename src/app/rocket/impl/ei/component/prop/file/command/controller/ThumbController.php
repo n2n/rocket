@@ -154,4 +154,15 @@ class ThumbController extends ControllerAdapter {
 						$eiObject->toEntryNavPoint()));
 			$this->eiuCtrl->applyBreadcrumbs(new Breadcrumb($breadcrumbPath, $this->fileEiProp->getLabelLstr()));
 	}
+	
+	public function doPreview($pid) {
+		$eiuEntry = $this->eiuCtrl->lookupEntry($pid);
+		
+		$file = $eiuEntry->getValue($this->fileEiProp);
+		if ($file === null) {
+			throw new PageNotFoundException();
+		}
+		
+		$this->sendFile($file);
+	}
 }
