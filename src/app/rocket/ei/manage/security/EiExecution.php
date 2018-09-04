@@ -25,6 +25,8 @@ use rocket\ei\component\command\EiCommand;
 use rocket\ei\EiCommandPath;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\mapping\EiEntry;
+use rocket\ei\security\EiCommandAccessRestrictor;
+use rocket\ei\security\EiPropAccess;
 
 interface EiExecution {
 	

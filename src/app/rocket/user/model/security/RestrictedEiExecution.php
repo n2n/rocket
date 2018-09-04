@@ -33,6 +33,8 @@ use rocket\ei\manage\critmod\filter\ComparatorConstraintGroup;
 use rocket\ei\manage\mapping\EiEntry;
 use rocket\user\bo\EiGrantPrivilege;
 use rocket\ei\manage\mapping\WhitelistEiCommandAccessRestrictor;
+use rocket\ei\manage\security\InaccessibleControlException;
+use rocket\ei\security\EiCommandAccessRestrictor;
 
 class RestrictedEiExecution implements EiExecution {
 	private $eiCommand;
@@ -192,7 +194,11 @@ class RestrictedEiExecution implements EiExecution {
 		$this->init($this->eiCommandPath->ext($ext));
 	}
 	
-	public function buildEiCommandAccessRestrictor(EiEntry $eiEntry) {
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\security\EiExecution::buildEiCommandAccessRestrictor()
+	 */
+	public function buildEiCommandAccessRestrictor(EiEntry $eiEntry): ?EiCommandAccessRestrictor  {
 		$restrictor = new WhitelistEiCommandAccessRestrictor();
 		
 		foreach ($this->eiGrantPrivileges as $eiGrantPrivilege) {

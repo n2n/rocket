@@ -100,5 +100,4 @@ class FullyGrantedEiExecution implements EiExecution {
 	public function buildEiCommandAccessRestrictor(EiEntry $eiEntry): ?EiCommandAccessRestrictor {
 		return null;
 	}
-
 }

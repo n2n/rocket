@@ -316,7 +316,7 @@ abstract class EiPropRelation {
 		}
 		
 		$targetControllerContext = new ControllerContext(new Path(array()), $targetCmdContextPath);
-		$targetEiFrameFactory = new EiFrameFactory($this->getTargetEiMask());
+		$targetEiFrameFactory = new EiFrameFactory($this->getTargetEiMask()->getEiEngine());
 		$targetEiFrame = $targetEiFrameFactory->create($targetControllerContext, $eiFrame->getManageState(), $eiFrame);
 		$targetEiFrame->setSubEiTypeExtensions($this->targetSubEiTypeExtensions);
 		
