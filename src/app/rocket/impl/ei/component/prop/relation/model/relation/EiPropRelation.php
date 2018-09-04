@@ -39,7 +39,7 @@ use rocket\ei\component\EiFrameFactory;
 use rocket\impl\ei\component\prop\relation\command\RelationAjahEiCommand;
 use rocket\impl\ei\component\prop\relation\command\RelationJhtmlController;
 use rocket\ei\EiCommandPath;
-use rocket\ei\security\InaccessibleControlException;
+use rocket\ei\manage\security\InaccessibleControlException;
 use rocket\impl\ei\component\prop\relation\command\EmbeddedEditPseudoCommand;
 use n2n\util\uri\Url;
 use rocket\ei\EiPropPath;

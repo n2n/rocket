@@ -34,7 +34,7 @@ use rocket\ei\EiType;
 use rocket\core\model\Rocket;
 use n2n\core\N2N;
 use n2n\util\uri\Url;
-use rocket\ei\security\InaccessibleControlException;
+use rocket\ei\manage\security\InaccessibleControlException;
 use rocket\spec\UnknownTypeException;
 use rocket\ei\UnknownEiTypeExtensionException;
 

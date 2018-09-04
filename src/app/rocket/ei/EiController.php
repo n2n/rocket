@@ -26,10 +26,10 @@ use n2n\web\http\controller\ControllerAdapter;
 use n2n\web\http\ForbiddenException;
 use rocket\ei\manage\ManageState;
 use rocket\ei\component\UnknownEiComponentException;
-use rocket\ei\security\InaccessibleControlException;
+use rocket\ei\manage\security\InaccessibleControlException;
 use rocket\ei\util\model\Eiu;
 
-class EiTypeController extends ControllerAdapter {
+class EiController extends ControllerAdapter {
 		
 	public function index(ManageState $manageState, $eiCommandId, array $delegateCmds = null) {		
 		$eiFrame = $manageState->peakEiFrame();

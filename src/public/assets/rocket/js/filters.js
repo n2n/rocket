@@ -157,8 +157,8 @@ jQuery(document).ready(function($) {
 			var that = this;
 			$.getJSON(this.filterGroupFormUrl, {
 				propertyPath: propertyPath
-			}, function(filterPropSettingGroup) {
-				var jqElemFilterGroup = $($.parseHTML(n2n.dispatch.analyze(filterPropSettingGroup))),
+			}, function(filterSettingGroup) {
+				var jqElemFilterGroup = $($.parseHTML(n2n.dispatch.analyze(filterSettingGroup))),
 					filterGroup = new FilterGroup(jqElemFilterGroup, that, parentFilterGroup);
 				callback(filterGroup);
 			});

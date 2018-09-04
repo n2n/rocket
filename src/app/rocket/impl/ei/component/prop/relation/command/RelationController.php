@@ -27,7 +27,7 @@ use n2n\web\http\PageNotFoundException;
 use rocket\ei\manage\EiObject;
 use n2n\web\http\controller\ControllerAdapter;
 use rocket\impl\ei\component\prop\relation\model\relation\EiPropRelation;
-use rocket\ei\EiTypeController;
+use rocket\ei\EiController;
 use rocket\ei\manage\frame\EiRelation;
 use rocket\ei\util\model\EiuCtrl;
 use rocket\ei\util\model\Eiu;
@@ -50,7 +50,7 @@ class RelationController extends ControllerAdapter {
 		$this->rocketState = $rocketState;
 	}
 		
-	public function doRelEntry($pid, array $delegateCmds, EiTypeController $eiTypeController) {
+	public function doRelEntry($pid, array $delegateCmds, EiController $eiTypeController) {
 		$eiObject = $this->eiuCtrl->lookupEiObject($pid);
 		
 		// because RelationCommand gets added always on a supreme EiEngine
@@ -69,7 +69,7 @@ class RelationController extends ControllerAdapter {
 		$this->delegate($eiTypeController);
 	}
 	
-// 	public function doRelUnknownEntry(array $delegateCmds, EiTypeController $eiTypeController) {
+// 	public function doRelUnknownEntry(array $delegateCmds, EiController $eiTypeController) {
 // 		$targetControllerContext = $this->createDelegateContext($eiTypeController);
 			
 // 		$targetEiFrame = $this->eiPropRelation->createTargetEiFrame($this->manageState, $this->eiFrame,
@@ -84,7 +84,7 @@ class RelationController extends ControllerAdapter {
 // 		$this->delegate($eiTypeController);
 // 	}
 
-	public function doRelNewEntry(string $eiTypeId, array $delegateCmds, EiTypeController $eiTypeController) {
+	public function doRelNewEntry(string $eiTypeId, array $delegateCmds, EiController $eiTypeController) {
 		$targetControllerContext = $this->createDelegateContext($eiTypeController);
 		
 		$eiu = new Eiu($this->eiFrame);
@@ -107,7 +107,7 @@ class RelationController extends ControllerAdapter {
 		
 		$this->delegate($eiTypeController);
 	}
-	public function doRel(array $delegateCmds, EiTypeController $eiTypeController) {
+	public function doRel(array $delegateCmds, EiController $eiTypeController) {
 		$targetControllerContext = $this->createDelegateContext($eiTypeController);
 	
 		$targetEiFrame = $this->eiPropRelation->createTargetEiFrame($this->manageState, $this->eiFrame, null, 
