@@ -19,28 +19,33 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-// namespace rocket\ei\security;
+namespace rocket\ei\manage\security;
 
-// use rocket\ei\component\command\EiCommand;
-// use rocket\spec\security\ScriptConstraint;
+use rocket\ei\component\command\EiCommand;
+use rocket\ei\EiCommandPath;
+use rocket\ei\mask\EiMask;
+use n2n\core\container\N2nContext;
 
-// interface Constraint extends ScriptConstraint {
-// 	/**
-// 	 * Checks if this SecurityManager allowes the use of passed command.
-// 	 * 
-// 	 * @param EiCommand $command
-// 	 * @return boolean Returns true if there could be entities which are accessible by passed command.
-// 	 */
-// 	public function isEiCommandAvailable(EiCommand $command);
-// 	/**
-// 	 * @param \ArrayAccess $values
-// 	 * @return \rocket\ei\manage\mapping\EiCommandAccessRestrictor
-// 	 */
-// 	public function createEiCommandAccessRestrictor(\ArrayAccess $values);
-// 	/**
-// 	 * @param EiCommand $command
-// 	 * @param string $privilegeExt
-// 	 * @return \rocket\ei\manage\security\CommandExecutionConstraint
-// 	 */
-// 	public function createCommandExecutionConstraint(EiCommand $command, $privilegeExt = null);
-// }
+interface EiPermissionManager {
+
+	/**
+	 * @param EiCommand $eiCommand
+	 * @return bool
+	 */
+	public function isEiCommandAccessible(EiCommand $eiCommand): bool;
+	
+	/**
+	 * @param EiCommand $eiCommand
+	 * @throws InaccessibleControlException
+	 * @return \rocket\ei\manage\security\EiExecution
+	 */
+	public function createEiExecution(EiCommand $eiCommand, N2nContext $n2nContext): EiExecution;
+	
+	/**
+	 * @param EiMask $eiMask
+	 * @param EiCommandPath $commandPath
+	 * @return \rocket\ei\manage\security\EiExecution
+	 */
+	public function createUnboundEiExceution(EiMask $eiMask, EiCommandPath $commandPath, 
+			N2nContext $n2nContext): EiExecution;
+}

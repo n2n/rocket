@@ -75,7 +75,7 @@ class QuickSearchForm implements Dispatchable {
 		
 		if (null !== ($cc = $this->quickSearchDefinition->buildCriteriaConstraint($this->searchStr))) {
 			$eiFrame->getCriteriaConstraintCollection()->add(
-					($tmp ? CriteriaConstraint::TYPE_TMP_FILTER : CriteriaConstraint::TYPE_HARD_FILTER),
+					($tmp ? CriteriaConstraint::TYPE_TMP_FILTER : CriteriaConstraint::TYPE_),
 					$cc);
 		}
 	}

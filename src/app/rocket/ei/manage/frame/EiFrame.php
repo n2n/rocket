@@ -29,8 +29,7 @@ use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\core\container\N2nContext;
 use rocket\ei\manage\mapping\EiEntry;
 use rocket\ei\manage\control\EntryNavPoint;
-use rocket\ei\security\EiExecution;
-use rocket\ei\manage\frame\CriteriaConstraint;
+use rocket\ei\manage\security\EiExecution;
 use n2n\web\http\HttpContext;
 use n2n\util\uri\Url;
 use n2n\reflection\ArgUtils;
@@ -247,13 +246,13 @@ class EiFrame {
 			$criteriaConstraint->applyToCriteria($criteria, $entityAliasCriteriaProperty);
 		}
 		
-// 		if ($applyMaskConstraints && null !== ($filterData = $this->getContextEiMask()->getFilterPropSettingGroup())) {
+// 		if ($applyMaskConstraints && null !== ($filterData = $this->getContextEiMask()->getFilterSettingGroup())) {
 // 			$this->getOrCreateFilterModel()->createCriteriaConstraint($filterData)
 // 			->applyToCriteria($criteria, CrIt::p(array($entityAlias)));
 // 		}
 		
 // 		if ($applyDefaultSort) {
-// 			$defaultSortDirections = $this->getContextEiMask()->getDefaultSortSetting();
+// 			$defaultSortDirections = $this->getContextEiMask()->getDefaultSortSettingGroup();
 // 			if (!empty($defaultSortDirections)
 // 					&& null !== ($constraint = $this->getOrCreateSortModel()
 // 							->createCriteriaConstraint($defaultSortDirections))) {

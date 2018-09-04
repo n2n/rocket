@@ -137,11 +137,11 @@ class SpecRawer {
 			$rawData[RawDef::EI_DEF_PREVIEW_CONTROLLER_LOOKUP_ID_KEY] = $previewControllerLookupId;
 		}
 		
-		if (null !== ($filterData = $extraction->getFilterPropSettingGroup())) {
+		if (null !== ($filterData = $extraction->getFilterSettingGroup())) {
 			$rawData[RawDef::EI_DEF_FILTER_DATA_KEY] = $filterData->toAttrs();
 		}
 		
-		if (null !== ($defaultSortDirection = $extraction->getDefaultSortSetting())) {
+		if (null !== ($defaultSortDirection = $extraction->getDefaultSortSettingGroup())) {
 			$rawData[RawDef::EI_DEF_DEFAULT_SORT_KEY] = $defaultSortDirection->toAttrs();
 		}
 		

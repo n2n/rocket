@@ -130,6 +130,10 @@ class RocketController extends ControllerAdapter {
 			throw new PageNotFoundException('navitem not found', 0, $e);
 		}
 		
+		if (!$this->loginContext->getSecurityManager()->isLaunchPadAccessible($launchPad)) {
+			throw new ForbiddenException();
+		}
+		
 		$rocketState->setActiveLaunchPad($launchPad);
 		
 		$this->beginTransaction();

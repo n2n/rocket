@@ -58,7 +58,7 @@ class EiJhtmlEventInfo extends JhtmlEventInfo {
 	 */
 	public function eiTypeChanged(...$eiTypeArgs) {
 		foreach ($eiTypeArgs as $eiTypeArg) {
-			$this->groupChanged(self::buildTypeId(EiuFactory::buildEiTypeFromEiArg($eiTypeArg)));
+			$this->groupChanged(self::buildTypeId(EiuAnalyst::buildEiTypeFromEiArg($eiTypeArg)));
 		}
 		return $this;
 	}
@@ -97,7 +97,7 @@ class EiJhtmlEventInfo extends JhtmlEventInfo {
 	}
 	
 	private function eiObjectMod($eiObjectArg, string $modType) {
-		$eiObject = EiuFactory::buildEiObjectFromEiArg($eiObjectArg, 'eiObjectArg', null, true);
+		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectArg, 'eiObjectArg', null, true);
 		
 		$eiTypeId = self::buildTypeId($eiObject->getEiEntityObj()->getEiType());
 		

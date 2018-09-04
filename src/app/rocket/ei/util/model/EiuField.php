@@ -27,13 +27,13 @@ use rocket\ei\EiPropPath;
 class EiuField {
 	private $eiPropPath;
 	private $eiuEntry;
-	private $eiuFactory;
+	private $eiuAnalyst;
 	private $eiuProp;
 	
-	public function __construct(EiPropPath $eiPropPath, EiuEntry $eiuEntry, EiuFactory $eiuFactory = null) {
+	public function __construct(EiPropPath $eiPropPath, EiuEntry $eiuEntry, EiuAnalyst $eiuAnalyst = null) {
 		$this->eiPropPath = $eiPropPath;
 		$this->eiuEntry = $eiuEntry;
-		$this->eiuFactory = $eiuFactory;
+		$this->eiuAnalyst = $eiuAnalyst;
 	}
 	
 	/**

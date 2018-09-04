@@ -44,7 +44,7 @@ use rocket\ei\manage\critmod\filter\ComparatorConstraintGroup;
 use rocket\ei\manage\frame\CriteriaConstraint;
 use rocket\ei\manage\critmod\filter\impl\SimpleComparatorConstraint;
 use rocket\ei\manage\mapping\EiFieldConstraint;
-use rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup;
+use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
 
 class RelationFilterProp implements FilterProp {
 	protected $labelLstr;
@@ -93,7 +93,7 @@ class RelationFilterProp implements FilterProp {
 			case CriteriaComparator::OPERATOR_EXISTS:
 			case CriteriaComparator::OPERATOR_NOT_EXISTS:
 				$targetComparatorContraint = $this->targetFilterDef->getFilterDefinition()->createComparatorConstraint(
-						$relationFilterConf->getTargetFilterPropSettingGroup());
+						$relationFilterConf->getTargetFilterSettingGroup());
 				
 				return new TestComparatorConstraint($this->entityProperty, $targetComparatorContraint);
 		}
@@ -130,7 +130,7 @@ class RelationFilterProp implements FilterProp {
 			$form->getSelectorMag()->setTargetLiveEntries($targetLiveEntries);
 		}
 		
-		$form->getFilterGroupMag()->setValue($relationFilterConf->getTargetFilterPropSettingGroup());
+		$form->getFilterGroupMag()->setValue($relationFilterConf->getTargetFilterSettingGroup());
 		
 		return $form;
 	}
@@ -180,7 +180,7 @@ class RelationFilterProp implements FilterProp {
 			case CriteriaComparator::OPERATOR_EXISTS:
 			case CriteriaComparator::OPERATOR_NOT_EXISTS:
 				$targetComparatorContraint = $this->targetFilterDef->getFilterDefinition()->createComparatorConstraint(
-				$relationFilterConf->getTargetFilterPropSettingGroup());
+				$relationFilterConf->getTargetFilterSettingGroup());
 		
 				return new TestComparatorConstraint($this->entityProperty, $targetComparatorContraint);
 		}
@@ -214,17 +214,17 @@ class RelationFilterConf {
 		$this->attributes->set(self::TARGET_ID_REPS, $targetPids);
 	}
 	
-	public function getTargetFilterPropSettingGroup(): FilterPropSettingGroup {
+	public function getTargetFilterSettingGroup(): FilterSettingGroup {
 		try {
-			return FilterPropSettingGroup::create(new Attributes($this->attributes
+			return FilterSettingGroup::create(new Attributes($this->attributes
 					->getArray(self::TARGET_FILTER_GROUP_ATTRS, false)));
 		} catch (AttributesException $e) {
-			return new FilterPropSettingGroup();
+			return new FilterSettingGroup();
 		}
 	}
 	
-	public function setTargetFilterPropSettingGroup(FilterPropSettingGroup $targetFilterPropSettingGroup) {
-		$this->attributes->set(self::TARGET_FILTER_GROUP_ATTRS, $targetFilterPropSettingGroup->toAttrs());
+	public function setTargetFilterSettingGroup(FilterSettingGroup $targetFilterSettingGroup) {
+		$this->attributes->set(self::TARGET_FILTER_GROUP_ATTRS, $targetFilterSettingGroup->toAttrs());
 	}
 }
 

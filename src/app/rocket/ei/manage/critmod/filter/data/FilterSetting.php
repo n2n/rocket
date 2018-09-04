@@ -23,8 +23,8 @@ namespace rocket\ei\manage\critmod\filter\data;
 
 use n2n\util\config\Attributes;
 
-class FilterPropSetting {
-	const ATTR_ITEM_ID_KEY = 'itemId';
+class FilterSetting {
+	const ATTR_ITEM_ID_KEY = 'prop';
 	const ATTR_ATTRS_KEY = 'attrs';
 
 	private $filterPropId;
@@ -67,8 +67,8 @@ class FilterPropSetting {
 				self::ATTR_ATTRS_KEY => $this->attributes->toArray());
 	}
 
-	public static function create(Attributes $attributes): FilterPropSetting {
-		return new FilterPropSetting($attributes->getString(self::ATTR_ITEM_ID_KEY),
+	public static function create(Attributes $attributes): FilterSetting {
+		return new FilterSetting($attributes->getString(self::ATTR_ITEM_ID_KEY),
 				new Attributes($attributes->getArray(self::ATTR_ATTRS_KEY, false, array())));
 	}
 }

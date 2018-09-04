@@ -26,7 +26,7 @@ use n2n\reflection\annotation\AnnoInit;
 use n2n\util\StringUtils;
 use n2n\persistence\orm\annotation\AnnoTable;
 use n2n\persistence\orm\annotation\AnnoManyToOne;
-use rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup;
+use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
 use n2n\util\config\Attributes;
 use n2n\util\config\AttributesException;
 use n2n\reflection\ArgUtils;
@@ -100,15 +100,15 @@ class EiGrantPrivilege extends ObjectAdapter {
 		$this->restricted = $restricted;
 	}
 	
-	public function readRestrictionFilterPropSettingGroup(): FilterPropSettingGroup {
+	public function readRestrictionFilterSettingGroup(): FilterSettingGroup {
 		try {
-			return FilterPropSettingGroup::create(new Attributes(StringUtils::jsonDecode($this->restrictionGroupJson, true)));
+			return FilterSettingGroup::create(new Attributes(StringUtils::jsonDecode($this->restrictionGroupJson, true)));
 		} catch (AttributesException $e) {
-			return new FilterPropSettingGroup();
+			return new FilterSettingGroup();
 		}
 	}
 	
-	public function writeRestrictionFilterData(FilterPropSettingGroup $restrictionFilterPropSettingGroup) {
-		$this->restrictionGroupJson = StringUtils::jsonEncode($restrictionFilterPropSettingGroup->toAttrs());
+	public function writeRestrictionFilterData(FilterSettingGroup $restrictionFilterSettingGroup) {
+		$this->restrictionGroupJson = StringUtils::jsonEncode($restrictionFilterSettingGroup->toAttrs());
 	}
 }

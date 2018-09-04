@@ -6,14 +6,14 @@ use n2n\web\dispatch\Dispatchable;
 use n2n\reflection\annotation\AnnoInit;
 use n2n\web\dispatch\annotation\AnnoDispObject;
 use rocket\ei\util\filter\form\FilterGroupForm;
-use rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup;
+use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\ui\BuildContext;
 use n2n\web\ui\ViewFactory;
 use n2n\reflection\CastUtils;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\web\ui\UiComponent;
-use rocket\ei\util\model\EiuFactory;
+use rocket\ei\util\model\EiuAnalyst;
 use rocket\ei\util\filter\controller\FilterJhtmlHook;
 
 class EiuFilterForm implements Dispatchable, UiComponent {
@@ -30,21 +30,21 @@ class EiuFilterForm implements Dispatchable, UiComponent {
 	 */
 	private $filterJhtmlHook;
 	/**
-	 * @var EiuFactory
+	 * @var EiuAnalyst
 	 */
-	private $eiuFactory;
+	private $eiuAnalyst;
 	/**
 	 * @var FilterGroupForm
 	 */
 	private $filterGroupForm;
 	
 	function __construct(FilterDefinition $filterDefinition, FilterJhtmlHook $filterJhtmlHook, 
-			?FilterPropSettingGroup $rootGroup, EiuFactory $eiuFactory) {
+			?FilterSettingGroup $rootGroup, EiuAnalyst $eiuAnalyst) {
 		$this->filterDefinition = $filterDefinition;
 		$this->filterJhtmlHook = $filterJhtmlHook;
-		$this->eiuFactory = $eiuFactory;
+		$this->eiuAnalyst = $eiuAnalyst;
 		
-		$this->setSettings($rootGroup ?? new FilterPropSettingGroup(), $filterDefinition);
+		$this->setSettings($rootGroup ?? new FilterSettingGroup(), $filterDefinition);
 	}
 	
 	/**
@@ -62,19 +62,19 @@ class EiuFilterForm implements Dispatchable, UiComponent {
 	}
 	
 	/**
-	 * @param FilterPropSettingGroup $rootGroup
+	 * @param FilterSettingGroup $rootGroup
 	 * @return EiuFilterForm
 	 */
-	function setSettings(FilterPropSettingGroup $rootGroup) {
+	function setSettings(FilterSettingGroup $rootGroup) {
 		$this->filterGroupForm = new FilterGroupForm($rootGroup, $this->filterDefinition);
 		return $this;
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup
+	 * @return \rocket\ei\manage\critmod\filter\data\FilterSettingGroup
 	 */
 	function getSettings() {
-		return $this->filterGroupForm->buildFilterPropSettingGroup();
+		return $this->filterGroupForm->buildFilterSettingGroup();
 	}
 	
 	function getFilterGroupForm() {
@@ -122,7 +122,7 @@ class EiuFilterForm implements Dispatchable, UiComponent {
 					array('eiuFilterForm' => $this));
 		}
 		
-		$viewFactory = $this->eiuFactory->getN2nContext(true)->lookup(ViewFactory::class);
+		$viewFactory = $this->eiuAnalyst->getN2nContext(true)->lookup(ViewFactory::class);
 		CastUtils::assertTrue($viewFactory instanceof ViewFactory);
 		
 		return $viewFactory->create('rocket\ei\util\filter\view\eiuFilterForm.html', array('eiuFilterForm' => $this));

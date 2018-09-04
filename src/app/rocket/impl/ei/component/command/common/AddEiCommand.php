@@ -31,9 +31,7 @@ use rocket\ei\manage\control\IconType;
 use rocket\impl\ei\component\command\IndependentEiCommandAdapter;
 use rocket\ei\component\command\PrivilegedEiCommand;
 use n2n\core\container\N2nContext;
-use rocket\spec\security\impl\CommonEiCommandPrivilege;
 use rocket\core\model\Rocket;
-use n2n\l10n\Lstr;
 use rocket\ei\manage\control\EntryControlComponent;
 use rocket\ei\util\model\Eiu;
 use rocket\ei\manage\security\privilege\EiCommandPrivilege;
@@ -71,13 +69,25 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 		return $dtc->translate('common_new_entry_label');
 	}
 
-	public function createEiCommandPrivilege(N2nContext $n2nContext): EiCommandPrivilege {
-		$pi = new CommonEiCommandPrivilege(new Lstr('common_new_entry_label', Rocket::NS));
-		$pi->putSubEiCommandPrivilege(self::PRIVILEGE_LIVE_ENTRY_KEY,
-				new CommonEiCommandPrivilege(new Lstr('ei_impl_add_live_entry_label', Rocket::NS)));
-		$pi->putSubEiCommandPrivilege(self::PRIVILEGE_DRAFT_KEY,
-				new CommonEiCommandPrivilege(new Lstr('ei_impl_add_draft_label', Rocket::NS)));
-		return $pi;
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\command\PrivilegedEiCommand::createEiCommandPrivilege()
+	 */
+	public function createEiCommandPrivilege(Eiu $eiu): EiCommandPrivilege {
+		$dtc = $eiu->dtc(Rocket::NS);
+		$eiuCommandPrivilege = $eiu->factory()->newCommandPrivilege($dtc->t('common_new_entry_label'));
+		
+		$eiuCommandPrivilege->newSub(self::PRIVILEGE_LIVE_ENTRY_KEY, $dtc->t('ei_impl_add_live_entry_label'));
+		$eiuCommandPrivilege->newSub(self::PRIVILEGE_DRAFT_KEY, $dtc->t('ei_impl_add_draft_label'));
+		
+		return $eiuCommandPrivilege;
+		
+// 		$pi = new CommonEiCommandPrivilege(new Lstr('common_new_entry_label', Rocket::NS));
+// 		$pi->putSubEiCommandPrivilege(self::PRIVILEGE_LIVE_ENTRY_KEY,
+// 				new CommonEiCommandPrivilege(new Lstr('ei_impl_add_live_entry_label', Rocket::NS)));
+// 		$pi->putSubEiCommandPrivilege(self::PRIVILEGE_DRAFT_KEY,
+// 				new CommonEiCommandPrivilege(new Lstr('ei_impl_add_draft_label', Rocket::NS)));
+// 		return $pi;
 	}
 
 	public function lookupController(Eiu $eiu): Controller {
@@ -102,7 +112,7 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 
 	public function createOverallControls(Eiu $eiu, HtmlView $view): array {
 		$eiuControlFactory = $eiu->frame()->controlFactory($this);
-		$dtc = $eiu->dtc('rocket');
+		$dtc = $eiu->dtc(Rocket::NS);
 		
 		$nestedSet = null !== $this->eiMask->getEiType()->getNestedSetStrategy();
 		
@@ -135,7 +145,7 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 		
 		$eiuControlFactory = $eiu->frame()->controlFactory($this);
 		$eiuEntry = $eiu->entry();
-		$dtc = $eiu->dtc('rocket');
+		$dtc = $eiu->dtc(Rocket::NS);
 		
 		if ($eiu->frame()->getNestedSetStrategy() === null) {
 			if (!$this->dublicatingAllowed) return array();

@@ -43,16 +43,16 @@ class EiuEntry {
 	private $eiObject;
 	private $eiEntry;
 	private $eiuFrame;
-	private $eiuFactory;
+	private $eiuAnalyst;
 	private $eiuEngine;
 	private $eiuMask;
 	
 	public function __construct(EiObject $eiObject, EiEntry $eiEntry = null, EiuFrame $eiuFrame = null, 
-			EiuFactory $eiuFactory = null) {
+			EiuAnalyst $eiuAnalyst = null) {
 		$this->eiObject = $eiObject;
 		$this->eiEntry = $eiEntry;
 		$this->eiuFrame = $eiuFrame;
-		$this->eiuFactory = $eiuFactory;
+		$this->eiuAnalyst = $eiuAnalyst;
 	}
 	
 	/**
@@ -64,8 +64,8 @@ class EiuEntry {
 			return $this->eiuFrame;
 		}
 		
-		if ($this->eiuFactory !== null) {
-			return $this->eiuFrame = $this->eiuFactory->getEiuFrame($required);
+		if ($this->eiuAnalyst !== null) {
+			return $this->eiuFrame = $this->eiuAnalyst->getEiuFrame($required);
 		}
 		
 		if ($required) {
@@ -492,7 +492,7 @@ class EiuEntry {
 	 * @return boolean
 	 */
 	public function isTypeOf($eiTypeArg) {
-		$eiType = EiuFactory::buildEiTypeFromEiArg($eiTypeArg, 'eiTypeArg');
+		$eiType = EiuAnalyst::buildEiTypeFromEiArg($eiTypeArg, 'eiTypeArg');
 		
 		return $this->getEiType()->equals($eiType);
 	}

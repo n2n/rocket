@@ -7,7 +7,7 @@ use rocket\core\model\Rocket;
 use n2n\core\container\N2nContext;
 
 class Eiu implements Lookupable {
-	private $eiuFactory;
+	private $eiuAnalyst;
 	private $eiuContext;
 	private $eiuEngine;
 	private $eiuMask;
@@ -16,21 +16,22 @@ class Eiu implements Lookupable {
 	private $eiuGui;
 	private $eiuEntryGui;
 	private $eiuField;
+	private $eiuFactory;
 	
 	public function __construct(...$eiArgs) {
-		$this->eiuFactory = new EiuFactory();
-		$this->eiuFactory->applyEiArgs(...$eiArgs);
+		$this->eiuAnalyst = new EiuAnalyst();
+		$this->eiuAnalyst->applyEiArgs(...$eiArgs);
 	}
 	
 	private function _init(N2nContext $n2nContext) {
-		$this->eiuFactory->applyEiArgs($n2nContext);
+		$this->eiuAnalyst->applyEiArgs($n2nContext);
 	}
 	
 	/**
 	 * @return \n2n\core\container\N2nContext
 	 */
 	public function getN2nContext() {
-		return $this->eiuFactory->getN2nContext(true);
+		return $this->eiuAnalyst->getN2nContext(true);
 	}
 	
 	/**
@@ -41,7 +42,7 @@ class Eiu implements Lookupable {
 			return $this->eiuContext;
 		}
 		
-		return $this->eiuContext = $this->eiuFactory->getEiuContext($required);
+		return $this->eiuContext = $this->eiuAnalyst->getEiuContext($required);
 		
 	}
 	
@@ -54,7 +55,7 @@ class Eiu implements Lookupable {
 			return $this->eiuEngine;
 		}
 		
-		return $this->eiuEngine = $this->eiuFactory->getEiuEngine($required);
+		return $this->eiuEngine = $this->eiuAnalyst->getEiuEngine($required);
 	}
 	
 	/**
@@ -66,7 +67,7 @@ class Eiu implements Lookupable {
 			return $this->eiuMask;
 		}
 		
-		return $this->eiuMask = $this->eiuFactory->getEiuMask($required);
+		return $this->eiuMask = $this->eiuAnalyst->getEiuMask($required);
 	}
 	
 	/**
@@ -77,7 +78,7 @@ class Eiu implements Lookupable {
 			return $this->eiuFrame;
 		}
 		
-		return $this->eiuFrame = $this->eiuFactory->getEiuFrame($required);
+		return $this->eiuFrame = $this->eiuAnalyst->getEiuFrame($required);
 	}
 	
 	/**
@@ -90,7 +91,7 @@ class Eiu implements Lookupable {
 			return $this->eiuEntry;
 		}
 		
-		return $this->eiuEntry = $this->eiuFactory->getEiuEntry($required);
+		return $this->eiuEntry = $this->eiuAnalyst->getEiuEntry($required);
 	}
 	
 	/**
@@ -104,7 +105,7 @@ class Eiu implements Lookupable {
 			return $this->eiuGui;
 		}
 		
-		return $this->eiuGui = $this->eiuFactory->getEiuGui($required);
+		return $this->eiuGui = $this->eiuAnalyst->getEiuGui($required);
 	}
 	
 	
@@ -118,7 +119,7 @@ class Eiu implements Lookupable {
 			return $this->eiuEntryGui;
 		}
 		
-		return $this->eiuEntryGui = $this->eiuFactory->getEiuEntryGui($required);
+		return $this->eiuEntryGui = $this->eiuAnalyst->getEiuEntryGui($required);
 	}
 	
 	/**
@@ -131,7 +132,18 @@ class Eiu implements Lookupable {
 			return $this->eiuField;
 		}
 		
-		return $this->eiuField = $this->eiuFactory->getEiuField($required);
+		return $this->eiuField = $this->eiuAnalyst->getEiuField($required);
+	}
+	
+	/**
+	 * @return \rocket\ei\util\model\EiuFactory
+	 */
+	public function factory() {
+		if ($this->eiuFactory === null) {
+			$this->eiuFactory = new EiuFactory();
+		}
+		
+		return $this->eiuFactory;
 	}
 	
 	/**
@@ -139,7 +151,7 @@ class Eiu implements Lookupable {
 	 * @return mixed
 	 */
 	public function lookup($lookupId, bool $required = true) {
-		return $this->eiuFactory->getN2nContext(true)->lookup($lookupId, $required);
+		return $this->eiuAnalyst->getN2nContext(true)->lookup($lookupId, $required);
 	}
 	
 	/**
@@ -147,13 +159,13 @@ class Eiu implements Lookupable {
 	 * @return \n2n\l10n\DynamicTextCollection
 	 */
 	public function dtc(string ...$moduleNamespaces) {
-		return new DynamicTextCollection($moduleNamespaces, $this->eiuFactory->getN2nContext(true)->getN2nLocale());
+		return new DynamicTextCollection($moduleNamespaces, $this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
 	}
 	
 	/**
-	 * @return \rocket\ei\util\model\EiuFactory
+	 * @return \rocket\ei\util\model\EiuAnalyst
 	 */
-	public function getEiuFactory() {
-		return $this->eiuFactory;
+	public function getEiuAnalyst() {
+		return $this->eiuAnalyst;
 	}
 }

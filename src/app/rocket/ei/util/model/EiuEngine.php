@@ -11,24 +11,24 @@ use rocket\ei\manage\generic\ScalarEiProperty;
 use rocket\ei\EiEngine;
 use rocket\ei\util\filter\EiuFilterForm;
 use rocket\ei\util\filter\controller\ScrFilterPropController;
-use rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup;
+use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
 use rocket\ei\manage\critmod\filter\FilterDefinition;
 use rocket\ei\util\filter\controller\FilterJhtmlHook;
 use n2n\web\http\controller\impl\ScrRegistry;
 use rocket\ei\util\privilege\EiuPrivilegeForm;
 use rocket\ei\manage\security\privilege\data\PrivilegeSetting;
 use rocket\ei\util\sort\EiuSortForm;
-use rocket\ei\manage\critmod\sort\SortSetting;
+use rocket\ei\manage\critmod\sort\SortSettingGroup;
 
 class EiuEngine {
 	private $eiEngine;
 	private $eiuMask;
-	private $eiuFactory;
+	private $eiuAnalyst;
 	
-	public function __construct(EiEngine $eiEngine, EiuMask $eiuMask = null, EiuFactory $eiuFactory = null) {
+	public function __construct(EiEngine $eiEngine, EiuMask $eiuMask = null, EiuAnalyst $eiuAnalyst = null) {
 		$this->eiEngine = $eiEngine;
 		$this->eiuMask = $eiuMask;
-		$this->eiuFactory = $eiuFactory;
+		$this->eiuAnalyst = $eiuAnalyst;
 	}
 	
 	/**
@@ -46,7 +46,7 @@ class EiuEngine {
 			return $this->eiuMask;
 		}
 		
-		return $this->eiuMask = new EiuMask($this->eiEngine->getEiMask(), $this, $this->eiuFactory);
+		return $this->eiuMask = new EiuMask($this->eiEngine->getEiMask(), $this, $this->eiuAnalyst);
 	}
 	
 	/**
@@ -181,7 +181,7 @@ class EiuEngine {
 		}
 		
 		return $this->filterDefinition = $this->eiEngine->createFilterDefinition(
-				$this->eiuFactory->getN2nContext(true));
+				$this->eiuAnalyst->getN2nContext(true));
 	}
 	
 	/**
@@ -200,7 +200,7 @@ class EiuEngine {
 		}
 		
 		return $this->securityFilterDefinition = $this->eiEngine->createSecurityFilterDefinition(
-				$this->eiuFactory->getN2nContext(true));
+				$this->eiuAnalyst->getN2nContext(true));
 	}
 	
 	/**
@@ -220,7 +220,7 @@ class EiuEngine {
 		}
 		
 		return $this->sortDefinition = $this->eiEngine->createSortDefinition(
-				$this->eiuFactory->getN2nContext(true));
+				$this->eiuAnalyst->getN2nContext(true));
 	}
 	
 	/**
@@ -239,32 +239,32 @@ class EiuEngine {
 		}
 		
 		return $this->privilegeDefinition = $this->eiEngine->createPrivilegeDefinition(
-				$this->eiuFactory->getN2nContext(true));
+				$this->eiuAnalyst->getN2nContext(true));
 	}
 	
 	/**
-	 * @param FilterPropSettingGroup|null $rootGroup
+	 * @param FilterSettingGroup|null $rootGroup
 	 * @return \rocket\ei\util\filter\EiuFilterForm
 	 */
-	public function newFilterForm(FilterPropSettingGroup $rootGroup = null) {
+	public function newFilterForm(FilterSettingGroup $rootGroup = null) {
 		return $this->createEiuFilterForm(
 				$this->getFilterDefinition(),
 				ScrFilterPropController::buildFilterJhtmlHook(
-						$this->eiuFactory->getN2nContext(true)->lookup(ScrRegistry::class), 
+						$this->eiuAnalyst->getN2nContext(true)->lookup(ScrRegistry::class), 
 						$this->eiEngine->getEiMask()->getEiTypePath()),
 				$rootGroup);
 	}
 	
 	
 	/**
-	 * @param FilterPropSettingGroup|null $rootGroup
+	 * @param FilterSettingGroup|null $rootGroup
 	 * @return \rocket\ei\util\filter\EiuFilterForm
 	 */
-	public function newSecurityFilterForm(FilterPropSettingGroup $rootGroup = null) {
+	public function newSecurityFilterForm(FilterSettingGroup $rootGroup = null) {
 		return $this->createEiuFilterForm(
 				$this->getSecurityFilterDefinition()->toFilterDefinition(),
 				ScrFilterPropController::buildSecurityFilterJhtmlHook(
-						$this->eiuFactory->getN2nContext(true)->lookup(ScrRegistry::class),
+						$this->eiuAnalyst->getN2nContext(true)->lookup(ScrRegistry::class),
 						$this->eiEngine->getEiMask()->getEiTypePath()),
 				$rootGroup);
 				
@@ -273,21 +273,21 @@ class EiuEngine {
 	/**
 	 * @param FilterDefinition $fd
 	 * @param FilterJhtmlHook $fjh
-	 * @param FilterPropSettingGroup|null $rg
+	 * @param FilterSettingGroup|null $rg
 	 * @return EiuFilterForm
 	 */
 	private function createEiuFilterForm(FilterDefinition $fd, FilterJhtmlHook $fjh, 
-			FilterPropSettingGroup $rg = null) {
-		return new EiuFilterForm($fd, $fjh, $rg, $this->eiuFactory);
+			FilterSettingGroup $rg = null) {
+		return new EiuFilterForm($fd, $fjh, $rg, $this->eiuAnalyst);
 	}
 	
 	
 	/**
-	 * @param SortSetting|null $sortSetting
+	 * @param SortSettingGroup|null $sortSetting
 	 * @return \rocket\ei\util\sort\EiuSortForm
 	 */
-	public function newSortForm(SortSetting $sortSetting = null) {
-		return new EiuSortForm($this->getSortDefinition(), $sortSetting, $this->eiuFactory);
+	public function newSortForm(SortSettingGroup $sortSetting = null) {
+		return new EiuSortForm($this->getSortDefinition(), $sortSetting, $this->eiuAnalyst);
 	}
 	
 	/**
@@ -302,7 +302,7 @@ class EiuEngine {
 	 * @return \rocket\ei\util\privilege\EiuPrivilegeForm
 	 */
 	public function newPrivilegeForm(PrivilegeSetting $privilegeSetting = null) {
-		return new EiuPrivilegeForm($this->getPrivilegeDefinition(), $privilegeSetting, $this->eiuFactory);
+		return new EiuPrivilegeForm($this->getPrivilegeDefinition(), $privilegeSetting, $this->eiuAnalyst);
 		
 	}
 }

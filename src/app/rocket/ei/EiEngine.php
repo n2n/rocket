@@ -45,6 +45,9 @@ use rocket\ei\manage\generic\GenericEiProperty;
 use rocket\ei\manage\generic\GenericEiDefinition;
 use rocket\ei\manage\critmod\quick\QuickSearchDefinition;
 use rocket\ei\manage\gui\ui\DisplayStructure;
+use rocket\ei\manage\ManageState;
+use rocket\ei\component\EiFrameFactory;
+use n2n\web\http\controller\ControllerContext;
 
 class EiEngine {
 	private $eiMask;
@@ -91,6 +94,29 @@ class EiEngine {
 	
 	public function getSupremeEiEngine() {
 		return $this->getSupremeEiMask()->getEiEngine();
+	}
+	
+	private $eiFrameFactory;
+	
+	/**
+	 * @return \rocket\ei\component\EiFrameFactory
+	 */
+	public function getEiFrameFactory() {
+		if ($this->eiFrameFactory === null) {
+			$this->eiFrameFactory = new EiFrameFactory($this);
+		}
+		
+		return $this->eiFrameFactory;
+	}
+	
+	/**
+	 * @param ControllerContext $controllerContext
+	 * @param ManageState $manageState
+	 * @param EiFrame $parent
+	 * @return \rocket\ei\manage\frame\EiFrame
+	 */
+	public function createEiFrame(ControllerContext $controllerContext, ManageState $manageState, ?EiFrame $parent) {
+		return $this->getEiFrameFactory()->create($controllerContext, $manageState, $parent);
 	}
 
 	private $critmodFactory;

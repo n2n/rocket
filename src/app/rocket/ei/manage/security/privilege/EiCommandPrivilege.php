@@ -21,15 +21,12 @@
  */
 namespace rocket\ei\manage\security\privilege;
 
-use n2n\l10n\N2nLocale;
-
 interface EiCommandPrivilege {
 			
 	/**
-	 * @param N2nLocale $n2nLocale
 	 * @return string
 	 */
-	public function getLabel(N2nLocale $n2nLocale): string;
+	public function getLabel(): string;
 	
 	/**
 	 * @return EiCommandPrivilege[] (key must be privlege key..) 

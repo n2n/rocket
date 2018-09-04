@@ -23,7 +23,7 @@ namespace rocket\ei\util\filter\form;
 
 use n2n\web\dispatch\Dispatchable;
 use n2n\web\dispatch\map\bind\MappingDefinition;
-use rocket\ei\manage\critmod\filter\data\FilterPropSetting;
+use rocket\ei\manage\critmod\filter\data\FilterSetting;
 use rocket\ei\manage\critmod\filter\FilterDefinition;
 use n2n\web\dispatch\map\bind\BindingErrors;
 use n2n\web\dispatch\mag\MagDispatchable;
@@ -39,7 +39,7 @@ class FilterPropItemForm implements Dispatchable {
 	protected $filterPropId;
 	protected $magForm;
 	
-	public function __construct(FilterPropSetting $filterItemSetting, FilterDefinition $filterDefinition) {
+	public function __construct(FilterSetting $filterItemSetting, FilterDefinition $filterDefinition) {
 		$this->filterItemSetting = $filterItemSetting;
 		$this->filterModel = $filterDefinition;
 		
@@ -86,7 +86,7 @@ class FilterPropItemForm implements Dispatchable {
 		return $this->magForm;
 	}
 	
-	public function buildFilterPropSetting(): FilterPropSetting {
+	public function buildFilterSetting(): FilterSetting {
 		$filterItem = $this->filterModel->getFilterPropById($this->filterPropId);
 		if ($filterItem === null) {
 			throw new IllegalStateException();

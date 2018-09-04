@@ -19,28 +19,42 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec\security\impl;
+namespace rocket\ei\util\privilege;
 
 use rocket\ei\manage\security\privilege\EiCommandPrivilege;
-use n2n\l10n\N2nLocale;
-use n2n\l10n\Lstr;
 
-class CommonEiCommandPrivilege implements EiCommandPrivilege {
-	private $labelLstr;
+class EiuCommandPrivilege implements EiCommandPrivilege {
+	private $label;
 	private $subEiCommandPrivileges = array();
 	
-	public function __construct(Lstr $labelLstr) {
-		$this->labelLstr = $labelLstr;
+	/**
+	 * @param string $label
+	 */
+	public function __construct(string $label) {
+		$this->label = $label;
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\security\privilege\EiCommandPrivilege::getLabel($n2nLocale)
 	 */
-	public function getLabel(N2nLocale $n2nLocale): string {
-		return $this->labelLstr->t($n2nLocale);
+	public function getLabel(): string {
+		return $this->label;
+	}
+	
+	/**
+	 * @param string $key
+	 * @param string $label
+	 * @return \rocket\ei\util\privilege\EiuCommandPrivilege
+	 */
+	public function newSub(string $key, string $label) {
+		return $this->subEiCommandPrivileges[$key] = new EiuCommandPrivilege($label);
 	}
 
+	/**
+	 * @param string $key
+	 * @param EiCommandPrivilege $eiCommandPrivilege
+	 */
 	public function putSubEiCommandPrivilege(string $key, EiCommandPrivilege $eiCommandPrivilege) {
 		$this->subEiCommandPrivileges[$key] = $eiCommandPrivilege;
 	}

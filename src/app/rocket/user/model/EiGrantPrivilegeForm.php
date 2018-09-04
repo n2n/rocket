@@ -35,7 +35,7 @@ class EiGrantPrivilegeForm implements Dispatchable {
 		$ai->p('eiuPrivilegeForm', new AnnoDispObject());
 		$ai->p('restrictionEiuFilterForm', new AnnoDispObject(function (EiGrantPrivilegeForm $that) {
 			return $that->eiuEngine->newSecurityFilterForm(
-					$that->eiPrivilegesGrant->readRestrictionFilterPropSettingGroup());
+					$that->eiPrivilegesGrant->readRestrictionFilterSettingGroup());
 		}));
 	}
 	
@@ -64,7 +64,7 @@ class EiGrantPrivilegeForm implements Dispatchable {
 		
 		if ($eiGrantPrivilege->isRestricted()) {
 			$this->restrictionEiuFilterForm = $eiuEngine->newSecurityFilterForm(
-					$eiGrantPrivilege->readRestrictionFilterPropSettingGroup());
+					$eiGrantPrivilege->readRestrictionFilterSettingGroup());
 		}
 	}
 	

@@ -231,7 +231,7 @@ class EiuCtrl implements Lookupable {
 	}
 
 	public function buildRedirectUrl($eiEntryArg = null) { 
-		$eiObject = $eiEntryArg === null ? null : EiuFactory::buildEiObjectFromEiArg($eiEntryArg);
+		$eiObject = $eiEntryArg === null ? null : EiuAnalyst::buildEiObjectFromEiArg($eiEntryArg);
 		$eiFrame = $this->eiuFrame->getEiFrame(); 
 		
 		if ($eiObject !== null && !$eiObject->isNew()) {
@@ -275,7 +275,7 @@ class EiuCtrl implements Lookupable {
 		}
 			
 		if ($eiObjectObj !== null && !$eiFrame->isDetailDisabled()) {
-			$eiObject = EiuFactory::buildEiObjectFromEiArg($eiObjectObj, 'eiObjectObj', $this->eiuFrame->getContextEiType());
+			$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectObj, 'eiObjectObj', $this->eiuFrame->getContextEiType());
 			$rocketState->addBreadcrumb($eiFrame->createDetailBreadcrumb($this->httpContext, $eiObject));
 		}
 		

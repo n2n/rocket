@@ -72,10 +72,10 @@ class SortDefinition {
 		return $sortProps;
 	}
 	
-	public function builCriteriaConstraint(SortSetting $sortData, bool $tmp) {
+	public function createCriteriaConstraint(SortSettingGroup $sortData) {
 		$sortConstraints = array();
 					
-		foreach ($sortData->getSortItemDatas() as $sortItemData) {
+		foreach ($sortData->getSortSettings() as $sortItemData) {
 			$sortConstraint = $this->buildSortCriteriaConstraint( 
 					EiPropPath::create($sortItemData->getSortPropId())->toArray(), $sortItemData->getDirection());
 			if ($sortConstraint !== null) {
@@ -83,9 +83,7 @@ class SortDefinition {
 			}
 		}
 		
-		if (empty($sortConstraints)) return null;
-		
-		return new SortCriteriaConstraintGroup($sortConstraints, $tmp);
+		return new SortCriteriaConstraintGroup($sortConstraints);
 	}
 	
 	protected function buildSortCriteriaConstraint(array $nextIds, string $direction) {

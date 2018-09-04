@@ -25,30 +25,30 @@ use n2n\util\col\GenericArrayObject;
 use n2n\util\config\Attributes;
 use n2n\reflection\property\TypeConstraint;
 
-class FilterPropSettingGroup {
+class FilterSettingGroup {
 	const ATTR_USE_AND_KEY = 'useAnd';
 	const ATTR_FILTER_ITEMS_KEY = 'items';
 	const ATTR_FILTER_GROUPS_KEY = 'groups';
 
 	private $filterPropSettings = array();
-	private $filterPropSettingGroups = array();
+	private $filterSettingGroups = array();
 	private $andUsed = true;
 
 	public function __construct() {
-		$this->filterPropSettings = new GenericArrayObject(null, FilterPropSetting::class);
-		$this->filterPropSettingGroups = new GenericArrayObject(null, FilterPropSettingGroup::class);
+		$this->filterPropSettings = new GenericArrayObject(null, FilterSetting::class);
+		$this->filterSettingGroups = new GenericArrayObject(null, FilterSettingGroup::class);
 	}
 	
-	public function getFilterPropSettings(): \ArrayObject {
+	public function getFilterSettings(): \ArrayObject {
 		return $this->filterPropSettings;
 	}
 	
-	public function getFilterPropSettingGroups(): \ArrayObject {
-		return $this->filterPropSettingGroups;
+	public function getFilterSettingGroups(): \ArrayObject {
+		return $this->filterSettingGroups;
 	}
 
 	public function isEmpty() {
-		return empty($this->filterPropSettings) && empty($this->filterPropSettingGroups);
+		return empty($this->filterPropSettings) && empty($this->filterSettingGroups);
 	}
 	
 	public function isAndUsed(): bool {
@@ -66,7 +66,7 @@ class FilterPropSettingGroup {
 		}
 		
 		$filterGroupsAttrs = array();
-		foreach ($this->filterPropSettingGroups as $filterGroupData) {
+		foreach ($this->filterSettingGroups as $filterGroupData) {
 			$filterGroupsAttrs[] = $filterGroupData->toAttrs();
 		}
 
@@ -76,20 +76,20 @@ class FilterPropSettingGroup {
 				self::ATTR_FILTER_GROUPS_KEY => $filterGroupsAttrs);
 	}
 
-	public static function create(Attributes $attributes): FilterPropSettingGroup {
-		$fgd = new FilterPropSettingGroup();
+	public static function create(Attributes $attributes): FilterSettingGroup {
+		$fgd = new FilterSettingGroup();
 		$fgd->setAndUsed($attributes->getBool(self::ATTR_USE_AND_KEY, false, true));
 
-		$settings = $fgd->getFilterPropSettings();
+		$settings = $fgd->getFilterSettings();
 		foreach ($attributes->getArray(self::ATTR_FILTER_ITEMS_KEY, false, array(), 
 				TypeConstraint::createArrayLike('array')) as $filterItemAttrs) {
-			$settings->append(FilterPropSetting::create(new Attributes($filterItemAttrs)));
+			$settings->append(FilterSetting::create(new Attributes($filterItemAttrs)));
 		}
 		
-		$settingGroups = $fgd->getFilterPropSettingGroups();
+		$settingGroups = $fgd->getFilterSettingGroups();
 		foreach ($attributes->getArray(self::ATTR_FILTER_GROUPS_KEY, false, array(), 
 				TypeConstraint::createArrayLike('array')) as $filterGroupAttrs) {
-			$settingGroups->append(FilterPropSettingGroup::create(new Attributes($filterGroupAttrs)));
+			$settingGroups->append(FilterSettingGroup::create(new Attributes($filterGroupAttrs)));
 		}
 
 		return $fgd;

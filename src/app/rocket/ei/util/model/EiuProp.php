@@ -42,12 +42,12 @@ class EiuProp {
 	}
 	
 	/**
-	 * @param mixed $eiEntryArg See {@see EiuFactory::buildEiEntryFromEiArg()}
+	 * @param mixed $eiEntryArg See {@see EiuAnalyst::buildEiEntryFromEiArg()}
 	 * @param bool $ignoreAccessRestriction
 	 * @return mixed
 	 */
 	public function createGenericEntityValue($eiEntryArg, bool $ignoreAccessRestriction = false) {
-		$eiEntry = EiuFactory::buildEiEntryFromEiArg($eiEntryArg);
+		$eiEntry = EiuAnalyst::buildEiEntryFromEiArg($eiEntryArg);
 		
 		return $this->eiuEngine->getGenericEiProperty($this->eiPropPath)
 				->eiFieldValueToEntityValue($eiEntry->getValue($this->eiPropPath, $ignoreAccessRestriction));

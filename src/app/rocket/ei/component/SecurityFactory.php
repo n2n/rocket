@@ -65,7 +65,8 @@ class SecurityFactory {
 		foreach ($this->eiCommandCollection->toArray(false) as $eiCommand) {
 			if (!($eiCommand instanceof PrivilegedEiCommand)) continue;
 			
-			$privilegeDefinition->putEiCommandPrivilege(EiCommandPath::from($eiCommand), $eiCommand->createEiCommandPrivilege($n2nContext));
+			$privilegeDefinition->putEiCommandPrivilege(EiCommandPath::from($eiCommand), 
+					$eiCommand->createEiCommandPrivilege($eiu));
 		}	
 		
 		foreach ($this->eiPropCollection->toArray(false) as $eiProp) {

@@ -19,7 +19,9 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\security;
+namespace rocket\ei\manage\security;
 
-class SecurityException extends \RuntimeException {
+use rocket\ei\manage\ManageException;
+
+class SecurityException extends ManageException {
 }

@@ -54,19 +54,19 @@ use rocket\ei\manage\gui\GuiIdPath;
 use rocket\ei\mask\EiMask;
 use n2n\util\ex\IllegalStateException;
 use n2n\persistence\orm\util\NestedSetUtils;
-use rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup;
+use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
 use rocket\ei\util\filter\EiuFilterForm;
 use rocket\ei\util\filter\controller\FilterJhtmlHook;
-use rocket\ei\manage\critmod\sort\SortSetting;
+use rocket\ei\manage\critmod\sort\SortSettingGroup;
 use rocket\ei\util\sort\EiuSortForm;
 
 class EiuFrame {
 	private $eiFrame;
-	private $eiuFactory;
+	private $eiuAnalyst;
 	
-	public function __construct(EiFrame $eiFrame, EiuFactory $eiuFactory = null) {
+	public function __construct(EiFrame $eiFrame, EiuAnalyst $eiuAnalyst = null) {
 		$this->eiFrame = $eiFrame;
-		$this->eiuFactory = $eiuFactory;
+		$this->eiuAnalyst = $eiuAnalyst;
 	}
 	
 	/**
@@ -116,7 +116,7 @@ class EiuFrame {
 			return $this->eiuEngine;		
 		}
 		
-		return $this->eiuEngine = new EiuEngine($this->eiFrame->getContextEiEngine(), null, $this->eiuFactory);
+		return $this->eiuEngine = new EiuEngine($this->eiFrame->getContextEiEngine(), null, $this->eiuAnalyst);
 	}
 	
 	/**
@@ -127,7 +127,7 @@ class EiuFrame {
 	}
 	
 	/**
-	 * @param mixed $eiObjectObj {@see EiuFactory::buildEiObjectFromEiArg()}
+	 * @param mixed $eiObjectObj {@see EiuAnalyst::buildEiObjectFromEiArg()}
 	 * @return \rocket\ei\util\model\EiuEngine
 	 */
 	public function mask($eiObjectObj = null) {
@@ -136,7 +136,7 @@ class EiuFrame {
 		}
 		
 		$contextEiType = $this->getContextEiType();
-		$eiObject = EiuFactory::buildEiObjectFromEiArg($eiObjectObj, 'eiObjectArg', $contextEiType);
+		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectObj, 'eiObjectArg', $contextEiType);
 		$eiType = $eiObject->getEiEntityObj()->getEiType();
 		
 		if ($contextEiType->equals($eiType)) {
@@ -144,12 +144,12 @@ class EiuFrame {
 		}
 		
 		
-		return new EiuMask($this->eiFrame->determineEiMask($eiType), null, $this->eiuFactory);
+		return new EiuMask($this->eiFrame->determineEiMask($eiType), null, $this->eiuAnalyst);
 	}
 	
 	
 	/**
-	 * @param mixed $eiObjectObj {@see EiuFactory::buildEiObjectFromEiArg()}
+	 * @param mixed $eiObjectObj {@see EiuAnalyst::buildEiObjectFromEiArg()}
 	 * @return \rocket\ei\util\model\EiuEngine
 	 */
 	public function engine($eiObjectObj = null) {
@@ -158,7 +158,7 @@ class EiuFrame {
 		}
 		
 		$contextEiType = $this->getContextEiType();
-		$eiObject = EiuFactory::buildEiObjectFromEiArg($eiObjectObj, 'eiObjectArg', $contextEiType);
+		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectObj, 'eiObjectArg', $contextEiType);
 		$eiType = $eiObject->getEiEntityObj()->getEiType();
 		
 		if ($contextEiType->equals($eiType)) {
@@ -166,7 +166,7 @@ class EiuFrame {
 		}
 		
 		
-		return new EiuEngine($this->eiFrame->determineEiMask($eiType)->getEiEngine(), null, $this->eiuFactory);
+		return new EiuEngine($this->eiFrame->determineEiMask($eiType)->getEiEngine(), null, $this->eiuAnalyst);
 	}
 	
 	
@@ -181,8 +181,8 @@ class EiuFrame {
 	 */
 	public function entry($eiObjectObj) {
 		$eiEntry = null;
-		$eiObject = EiuFactory::determineEiObject($eiObjectObj, $eiEntry);
-		return new EiuEntry($eiObject, $eiEntry, $this, $this->eiuFactory);
+		$eiObject = EiuAnalyst::determineEiObject($eiObjectObj, $eiEntry);
+		return new EiuEntry($eiObject, $eiEntry, $this, $this->eiuAnalyst);
 	}
 	
 	/**
@@ -192,7 +192,7 @@ class EiuFrame {
 	 */
 	public function newEntry(bool $draft = false, $eiTypeArg = null) {
 		return new EiuEntry($this->createNewEiObject($draft, 
-				EiuFactory::buildEiTypeFromEiArg($eiTypeArg, 'eiTypeArg', false)), null, $this);
+				EiuAnalyst::buildEiTypeFromEiArg($eiTypeArg, 'eiTypeArg', false)), null, $this);
 	}
 	
 	public function containsId($id, int $ignoreConstraintTypes = 0): bool {
@@ -272,26 +272,26 @@ class EiuFrame {
 	 * @return EiuEntry
 	 */
 	public function copyEntryTo($fromEiObjectArg, $toEiObjectArg = null) {
-		return $this->createEiEntryCopy($fromEiObjectArg, EiuFactory::buildEiObjectFromEiArg($toEiObjectArg, 'toEiObjectArg'));
+		return $this->createEiEntryCopy($fromEiObjectArg, EiuAnalyst::buildEiObjectFromEiArg($toEiObjectArg, 'toEiObjectArg'));
 	}
 	
 	public function copyEntry($fromEiObjectArg, bool $draft = null, $eiTypeArg = null) {
-		$fromEiuEntry = EiuFactory::buildEiuEntryFromEiArg($fromEiObjectArg, $this, 'fromEiObjectArg');
+		$fromEiuEntry = EiuAnalyst::buildEiuEntryFromEiArg($fromEiObjectArg, $this, 'fromEiObjectArg');
 		$draft = $draft ?? $fromEiuEntry->isDraft();
 		
 		if ($eiTypeArg !== null) {
-			$eiType = EiuFactory::buildEiTypeFromEiArg($eiTypeArg, 'eiTypeArg', false);
+			$eiType = EiuAnalyst::buildEiTypeFromEiArg($eiTypeArg, 'eiTypeArg', false);
 		} else {
 			$eiType = $fromEiuEntry->getEiType();
 		}
 		
 		$eiObject = $this->createNewEiObject($draft, $eiType);
-		return new EiuEntry($eiObject, $this->createEiEntryCopy($fromEiuEntry, $eiObject), $this, $this->eiuFactory);
+		return new EiuEntry($eiObject, $this->createEiEntryCopy($fromEiuEntry, $eiObject), $this, $this->eiuAnalyst);
 	}
 	
 	public function copyEntryValuesTo($fromEiEntryArg, $toEiEntryArg, array $eiPropPaths = null) {
-		$fromEiuEntry = EiuFactory::buildEiuEntryFromEiArg($fromEiEntryArg, $this, 'fromEiEntryArg');
-		$toEiuEntry = EiuFactory::buildEiuEntryFromEiArg($toEiEntryArg, $this, 'toEiEntryArg');
+		$fromEiuEntry = EiuAnalyst::buildEiuEntryFromEiArg($fromEiEntryArg, $this, 'fromEiEntryArg');
+		$toEiuEntry = EiuAnalyst::buildEiuEntryFromEiArg($toEiEntryArg, $this, 'toEiEntryArg');
 		
 		$this->determineEiMask($toEiEntryArg)->getEiEngine()
 				->copyValues($this->eiFrame, $fromEiuEntry->getEiEntry(), $toEiuEntry->getEiEntry(), $eiPropPaths);
@@ -303,7 +303,7 @@ class EiuFrame {
 	 * @return \rocket\ei\manage\mapping\EiEntry
 	 */
 	private function createEiEntryCopy($fromEiObjectObj, EiObject $to = null, array $eiPropPaths = null) {
-		$fromEiuEntry = EiuFactory::buildEiuEntryFromEiArg($fromEiObjectObj, $this, 'fromEiObjectObj');
+		$fromEiuEntry = EiuAnalyst::buildEiuEntryFromEiArg($fromEiObjectObj, $this, 'fromEiObjectObj');
 		
 		if ($to === null) {
 			$to = $this->createNewEiObject($fromEiuEntry->isDraft(), $fromEiuEntry->getEiType());
@@ -399,7 +399,7 @@ class EiuFrame {
 	 * @return \rocket\ei\util\model\EiuEntryForm
 	 */
 	public function eiuEntryForm($eiEntryArg, PropertyPath $contextPropertyPath = null) {
-		$eiEntry = EiuFactory::buildEiEntryFromEiArg($eiEntryArg);
+		$eiEntry = EiuAnalyst::buildEiEntryFromEiArg($eiEntryArg);
 		$contextEiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
 		$eiuEntryForm = new EiuEntryForm($this);
 		$eiType = $eiEntry->getEiType();
@@ -452,7 +452,7 @@ class EiuFrame {
 	}
 
 	public function lookupPreviewController(string $previewType, $eiObjectArg) {
-		$eiObject = EiuFactory::buildEiObjectFromEiArg($eiObjectArg, 'eiObjectArg');
+		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectArg, 'eiObjectArg');
 		
 		$entityObj = null;
 		if (!$eiObject->isDraft()) {
@@ -868,7 +868,7 @@ class EiuFrame {
 			return;
 		}
 
-		$eiObject = EiuFactory::buildEiObjectFromEiArg($eiObjectObj, 'eiObjectObj', $this->getContextEiType());
+		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectObj, 'eiObjectObj', $this->getContextEiType());
 
 		if ($eiObject->isDraft()) {
 			$this->persistDraft($eiObject->getDraft(), $flush);
@@ -986,19 +986,19 @@ class EiuFrame {
 	
 	/**
 	 * @param FilterJhtmlHook $filterJhtmlHook
-	 * @param FilterPropSettingGroup|null $rootGroup
+	 * @param FilterSettingGroup|null $rootGroup
 	 * @return \rocket\ei\util\filter\EiuFilterForm
 	 */
-	public function newFilterForm(FilterJhtmlHook $filterJhtmlHook, FilterPropSettingGroup $rootGroup = null) {
-		return new EiuFilterForm($this->getFilterDefinition(), $filterJhtmlHook, $rootGroup, $this->eiuFactory);
+	public function newFilterForm(FilterJhtmlHook $filterJhtmlHook, FilterSettingGroup $rootGroup = null) {
+		return new EiuFilterForm($this->getFilterDefinition(), $filterJhtmlHook, $rootGroup, $this->eiuAnalyst);
 	}
 	
 	/**
-	 * @param SortSetting|null $sortSetting
+	 * @param SortSettingGroup|null $sortSetting
 	 * @return \rocket\ei\util\sort\EiuSortForm
 	 */
-	public function newSortForm(SortSetting $sortSetting = null) {
-		return new EiuSortForm($this->getSortDefinition(), $sortSetting, $this->eiuFactory);
+	public function newSortForm(SortSettingGroup $sortSetting = null) {
+		return new EiuSortForm($this->getSortDefinition(), $sortSetting, $this->eiuAnalyst);
 	}
 }
 

@@ -61,11 +61,11 @@ class RelationSecurityFilterProp extends RelationFilterProp implements SecurityF
 						CrIt::c($this->lookupTargetEntityObjs($relationFilterConf->getTargetPids())));
 				
 			case CriteriaComparator::OPERATOR_EXISTS:
-				$targetEiEntryConstraint = $this->getSecurityFilterDefinition()->createEimappingConstraint($filterPropSettingGroup);
+				$targetEiEntryConstraint = $this->getSecurityFilterDefinition()->createEimappingConstraint($filterSettingGroup);
 				return new TestEiFieldConstraint($this->eiPropPath, false, $targetEiEntryConstraint);
 				
 			case CriteriaComparator::OPERATOR_NOT_EXISTS:
-				$targetEiEntryConstraint = $this->getSecurityFilterDefinition()->createEimappingConstraint($filterPropSettingGroup);
+				$targetEiEntryConstraint = $this->getSecurityFilterDefinition()->createEimappingConstraint($filterSettingGroup);
 				return new TestEiFieldConstraint($this->eiPropPath, false, $targetEiEntryConstraint);
 		}
 	}

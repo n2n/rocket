@@ -19,33 +19,62 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\security;
+namespace rocket\ei\manage\security;
 
 use rocket\ei\component\command\EiCommand;
 use rocket\ei\EiCommandPath;
-use rocket\ei\mask\EiMask;
-use n2n\core\container\N2nContext;
+use rocket\ei\EiPropPath;
+use rocket\ei\manage\mapping\EiEntry;
 
-interface EiPermissionManager {
-
+interface EiExecution {
+	
 	/**
-	 * @param EiCommand $eiCommand
 	 * @return bool
 	 */
-	public function isEiCommandAccessible(EiCommand $eiCommand): bool;
+	public function isGranted(): bool;
 	
 	/**
-	 * @param EiCommand $eiCommand
+	 * @return \rocket\ei\EiCommandPath
+	 */
+	public function getEiCommandPath(): EiCommandPath;
+	
+	/**
+	 * @return bool 
+	 */
+	public function hasEiCommand(): bool;
+	
+	/**
+	 * @return \rocket\ei\component\command\EiCommand
+	 */
+	public function getEiCommand(): EiCommand;
+	
+	/**
+	 * @return \rocket\ei\manage\mapping\EiEntryConstraint
+	 * @throws InaccessibleControlException 
+	 */
+	public function getEiEntryConstraint();
+	
+	/**
+	 * @return \rocket\ei\manage\frame\CriteriaConstraint
 	 * @throws InaccessibleControlException
-	 * @return \rocket\ei\security\EiExecution
 	 */
-	public function createEiExecution(EiCommand $eiCommand, N2nContext $n2nContext): EiExecution;
+	public function getCriteriaConstraint();
 	
 	/**
-	 * @param EiMask $eiMask
-	 * @param EiCommandPath $commandPath
-	 * @return \rocket\ei\security\EiExecution
+	 * @param EiEntry $eiEntry
+	 * @return EiCommandAccessRestrictor|null
 	 */
-	public function createUnboundEiExceution(EiMask $eiMask, EiCommandPath $commandPath, 
-			N2nContext $n2nContext): EiExecution;
+	public function buildEiCommandAccessRestrictor(EiEntry $eiEntry): ?EiCommandAccessRestrictor;
+	
+	/**
+	 * @param EiPropPath $eiPropPath
+	 * @return \rocket\ei\security\EiPropAccess
+	 */
+	public function createEiPropAccess(EiPropPath $eiPropPath): EiPropAccess;
+	
+	/**
+	 * @param string $ext
+	 * @throws InaccessibleControlException
+	 */
+	public function extEiCommandPath(string $ext);
 }

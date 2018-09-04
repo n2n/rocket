@@ -26,17 +26,17 @@ use n2n\reflection\ArgUtils;
 use n2n\persistence\orm\criteria\Criteria;
 use n2n\util\col\GenericArrayObject;
 
-class SortSetting {
+class SortSettingGroup {
 	private $sortItemDatas;
 
 	public function __construct() {
-		$this->sortItemDatas = new GenericArrayObject(null, SortItemData::class);
+		$this->sortItemDatas = new GenericArrayObject(null, SortSetting::class);
 	}
 	
 	/**
-	 * @return SortItemData[]
+	 * @return SortSetting[]
 	 */
-	public function getSortItemDatas(): \ArrayObject {
+	public function getSortSettings(): \ArrayObject {
 		return $this->sortItemDatas;
 	}
 	
@@ -50,13 +50,13 @@ class SortSetting {
 		return $attrs;
 	}
 
-	public static function create(Attributes $attributes): SortSetting {
-		$sortData = new SortSetting();
-		$sortItemDatas = $sortData->getSortItemDatas();
+	public static function create(Attributes $attributes): SortSettingGroup {
+		$sortData = new SortSettingGroup();
+		$sortItemDatas = $sortData->getSortSettings();
 		foreach ($attributes->toArray() as $sortPropId => $direction) {
 			if (!is_string($direction)) continue;
 			try {
-				$sortItemDatas[] = new SortItemData($sortPropId, $direction);
+				$sortItemDatas[] = new SortSetting($sortPropId, $direction);
 			} catch (\InvalidArgumentException $e) {}
 		}
 		
@@ -64,7 +64,7 @@ class SortSetting {
 	}
 }
 
-class SortItemData {
+class SortSetting {
 	private $sortPropId;
 	private $direction;
 	

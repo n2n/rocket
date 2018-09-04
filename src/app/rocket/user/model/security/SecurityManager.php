@@ -19,34 +19,21 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\frame;
+namespace rocket\user\model\security;
 
-use rocket\ei\manage\ManageState;
-use rocket\ei\mask\EiMask;
-use n2n\web\http\controller\ControllerContext;
+use rocket\core\model\launch\LaunchPad;
+use rocket\ei\manage\security\EiPermissionManager;
 
-class EiFrameFactory {
-	private $contextEiMask;
+interface SecurityManager {
 	
-	public function __construct(EiMask $contextEiMask) {
-		$this->contextEiMask = $contextEiMask;		
-	}
+	/**
+	 * @return EiPermissionManager
+	 */
+	public function getEiPermissionManager(): EiPermissionManager;
 	
-	public function create(ControllerContext $controllerContext, ManageState $manageState,  
-			EiFrame $parentEiFrame = null) {
-		$eiFrame = new EiFrame($this->contextEiMask->getEiEngine(), $manageState);
-		$eiFrame->setControllerContext($controllerContext);
-		$eiFrame->setParent($parentEiFrame);
-		
-		$this->contextEiMask->setupEiFrame($eiFrame);
-
-// 		if ($pseudo) {
-// 			$childEiFrame->setOverviewPathExt(Path::create($this->getOverviewPathExt()));
-// 			$childEiFrame->setDetailPathExt(Path::create($this->getDetailPathExt()));
-// 		}
-		
-		return $eiFrame;
-	}
-	
-	
+	/**
+	 * @param LaunchPad $launchPad
+	 * @return boolean
+	 */
+	public function isLaunchPadAccessible(LaunchPad $launchPad): bool;
 }

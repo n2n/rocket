@@ -10,9 +10,9 @@ use n2n\web\ui\ViewFactory;
 use n2n\reflection\CastUtils;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\web\ui\UiComponent;
-use rocket\ei\util\model\EiuFactory;
+use rocket\ei\util\model\EiuAnalyst;
 use rocket\ei\manage\critmod\sort\SortDefinition;
-use rocket\ei\manage\critmod\sort\SortSetting;
+use rocket\ei\manage\critmod\sort\SortSettingGroup;
 use rocket\ei\util\sort\form\SortForm;
 
 class EiuSortForm implements Dispatchable, UiComponent {
@@ -25,19 +25,19 @@ class EiuSortForm implements Dispatchable, UiComponent {
 	 */
 	private $sortDefinition;
 	/**
-	 * @var EiuFactory
+	 * @var EiuAnalyst
 	 */
-	private $eiuFactory;
+	private $eiuAnalyst;
 	/**
 	 * @var SortForm
 	 */
 	private $sortForm;
 	
-	function __construct(SortDefinition $sortDefinition, ?SortSetting $sortSetting, EiuFactory $eiuFactory) {
+	function __construct(SortDefinition $sortDefinition, ?SortSettingGroup $sortSetting, EiuAnalyst $eiuAnalyst) {
 		$this->sortDefinition = $sortDefinition;
-		$this->eiuFactory = $eiuFactory;
+		$this->eiuAnalyst = $eiuAnalyst;
 		
-		$this->writeSetting($rootGroup ?? new SortSetting(), $sortDefinition);
+		$this->writeSetting($rootGroup ?? new SortSettingGroup(), $sortDefinition);
 	}
 	
 	/**
@@ -48,19 +48,19 @@ class EiuSortForm implements Dispatchable, UiComponent {
 	}
 	
 	/**
-	 * @param SortSetting $sortSetting
+	 * @param SortSettingGroup $sortSetting
 	 * @return EiuSortForm
 	 */
-	function writeSetting(SortSetting $sortSetting) {
+	function writeSetting(SortSettingGroup $sortSetting) {
 		$this->sortForm = new SortForm($sortSetting, $this->sortDefinition);
 		return $this;
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup
+	 * @return \rocket\ei\manage\critmod\filter\data\FilterSettingGroup
 	 */
 	function readSetting() {
-		return $this->sortForm->buildSortSetting();
+		return $this->sortForm->buildSortSettingGroup();
 	}
 	
 	function getSortForm() {
@@ -108,7 +108,7 @@ class EiuSortForm implements Dispatchable, UiComponent {
 					array('eiuSortForm' => $this));
 		}
 		
-		$viewFactory = $this->eiuFactory->getN2nContext(true)->lookup(ViewFactory::class);
+		$viewFactory = $this->eiuAnalyst->getN2nContext(true)->lookup(ViewFactory::class);
 		CastUtils::assertTrue($viewFactory instanceof ViewFactory);
 		
 		return $viewFactory->create('rocket\ei\util\sort\view\eiuSortForm.html', array('eiuSortForm' => $this));

@@ -34,10 +34,8 @@ use rocket\impl\ei\component\command\IndependentEiCommandAdapter;
 use rocket\ei\component\command\PrivilegedEiCommand;
 use n2n\util\uri\Path;
 use n2n\core\container\N2nContext;
-use rocket\spec\security\impl\CommonEiCommandPrivilege;
 use rocket\core\model\Rocket;
 use rocket\ei\manage\security\privilege\EiCommandPrivilege;
-use n2n\l10n\Lstr;
 use rocket\ei\component\command\GenericDetailEiCommand;
 use rocket\ei\util\model\Eiu;
 use n2n\web\http\controller\Controller;
@@ -91,7 +89,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 			return array();
 		}
 		
-		$dtc = $eiu->dtc('rocket');
+		$dtc = $eiu->dtc(Rocket::NS);
 		$eiuControlFactory = $eiu->frame()->controlFactory($this);
 		
 		$controlButton = new ControlButton(
@@ -137,8 +135,9 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 		return PathUtils::createPathExtFromEntryNavPoint($this, $entryNavPoint)->toUrl();
 	}
 	
-	public function createEiCommandPrivilege(N2nContext $n2nContext): EiCommandPrivilege {
-		return new CommonEiCommandPrivilege(new Lstr('ei_impl_detail_label', Rocket::NS));
+	public function createEiCommandPrivilege(Eiu $eiu): EiCommandPrivilege {
+		$dtc = $eiu->dtc(Rocket::NS);
+		return $eiu->factory()->newCommandPrivilege($dtc->t('ei_impl_detail_label'));
 	}
 	
 	/**

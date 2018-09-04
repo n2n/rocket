@@ -26,8 +26,8 @@ use n2n\persistence\orm\EntityManager;
 use n2n\reflection\annotation\AnnoInit;
 use n2n\context\annotation\AnnoSessionScoped;
 use rocket\user\model\LoginContext;
-use rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup;
-use rocket\ei\manage\critmod\sort\SortSetting;
+use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
+use rocket\ei\manage\critmod\sort\SortSettingGroup;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\TypePath;
 
@@ -148,7 +148,7 @@ class CritmodSaveDao implements RequestScoped {
 	}
 
 	public function createCritmodSave(TypePath $eiTypePath, string $name, 
-			FilterPropSettingGroup $filterPropSettingGroup, SortSetting $sortData) {
+			FilterSettingGroup $filterSettingGroup, SortSettingGroup $sortData) {
 		if (!$this->isModAccessable()) {
 			throw new IllegalStateException();
 		}
@@ -156,8 +156,8 @@ class CritmodSaveDao implements RequestScoped {
 		$critmodSave = new CritmodSave();
 		$critmodSave->setEiTypePath((string) $eiTypePath);
 		$critmodSave->setName($name);
-		$critmodSave->writeFilterData($filterPropSettingGroup);
-		$critmodSave->writeSortSetting($sortData);
+		$critmodSave->writeFilterData($filterSettingGroup);
+		$critmodSave->writeSortSettingGroup($sortData);
 		$this->em->persist($critmodSave);
 		$this->em->flush();
 		return $critmodSave;

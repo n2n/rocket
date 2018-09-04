@@ -34,7 +34,7 @@ use rocket\ei\manage\mapping\FieldErrorInfo;
 use n2n\web\ui\Raw;
 use n2n\web\ui\CouldNotRenderUiComponentException;
 use rocket\ei\util\model\EiuEntryGui;
-use rocket\ei\util\model\EiuFactory;
+use rocket\ei\util\model\EiuAnalyst;
 
 class EntryEiHtmlBuilder {
 	private $view;
@@ -53,11 +53,11 @@ class EntryEiHtmlBuilder {
 		$this->formHtml = $view->getFormHtmlBuilder();
 		$this->fieldEiHtml = new FieldEiHtmlBuilder($view);
 		
-		$eiuFactory = new EiuFactory();
-		$eiuFactory->applyEiArgs($eiuFrame, $view->getN2nContext());
+		$eiuAnalyst = new EiuAnalyst();
+		$eiuAnalyst->applyEiArgs($eiuFrame, $view->getN2nContext());
 		
-		$this->eiuFrame = $eiuFactory->getEiuFrame(true);
-		if (empty($eiuEntryGuis) && null !== ($eiuEntryGui = $eiuFactory->getEiuEntryGui(false))) {
+		$this->eiuFrame = $eiuAnalyst->getEiuFrame(true);
+		if (empty($eiuEntryGuis) && null !== ($eiuEntryGui = $eiuAnalyst->getEiuEntryGui(false))) {
 			$eiuEntryGuis = array($eiuEntryGui);
 		}
 		

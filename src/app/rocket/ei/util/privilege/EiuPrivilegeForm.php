@@ -6,7 +6,7 @@ use rocket\ei\manage\security\privilege\PrivilegeDefinition;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\web\dispatch\annotation\AnnoDispObject;
 use n2n\reflection\annotation\AnnoInit;
-use rocket\ei\util\model\EiuFactory;
+use rocket\ei\util\model\EiuAnalyst;
 use n2n\web\dispatch\annotation\AnnoDispProperties;
 use rocket\ei\manage\security\privilege\data\PrivilegeSetting;
 use n2n\web\ui\UiComponent;
@@ -30,9 +30,9 @@ class EiuPrivilegeForm implements Dispatchable, UiComponent {
 	 */
 	private $privilegeDefinition;
 	/**
-	 * @var EiuFactory
+	 * @var EiuAnalyst
 	 */
-	private $eiuFactory;
+	private $eiuAnalyst;
 	/**
 	 * @var PrivilegeSetting
 	 */
@@ -49,11 +49,11 @@ class EiuPrivilegeForm implements Dispatchable, UiComponent {
 	
 	/**
 	 * @param PrivilegeDefinition $privilegeDefinition
-	 * @param EiuFactory $eiuFactory
+	 * @param EiuAnalyst $eiuAnalyst
 	 */
-	function __construct(PrivilegeDefinition $privilegeDefinition, ?PrivilegeSetting $privilegeSetting, EiuFactory $eiuFactory) {
+	function __construct(PrivilegeDefinition $privilegeDefinition, ?PrivilegeSetting $privilegeSetting, EiuAnalyst $eiuAnalyst) {
 		$this->privilegeDefinition = $privilegeDefinition;
-		$this->eiuFactory = $eiuFactory;
+		$this->eiuAnalyst = $eiuAnalyst;
 		
 		$this->setSetting($privilegeSetting ?? new PrivilegeSetting());
 	}
@@ -165,7 +165,7 @@ class EiuPrivilegeForm implements Dispatchable, UiComponent {
 					array('eiuPrivilegeForm' => $this));
 		}
 		
-		$viewFactory = $this->eiuFactory->getN2nContext(true)->lookup(ViewFactory::class);
+		$viewFactory = $this->eiuAnalyst->getN2nContext(true)->lookup(ViewFactory::class);
 		CastUtils::assertTrue($viewFactory instanceof ViewFactory);
 		
 		return $viewFactory->create('rocket\ei\util\privilege\view\eiuPrivilegeForm.html', 

@@ -35,7 +35,7 @@ use n2n\web\http\controller\ControllerContext;
 use n2n\persistence\orm\CascadeType;
 use rocket\ei\EiType;
 use n2n\util\uri\Path;
-use rocket\ei\manage\frame\EiFrameFactory;
+use rocket\ei\component\EiFrameFactory;
 use rocket\impl\ei\component\prop\relation\command\RelationAjahEiCommand;
 use rocket\impl\ei\component\prop\relation\command\RelationJhtmlController;
 use rocket\ei\EiCommandPath;

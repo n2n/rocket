@@ -48,7 +48,6 @@ use n2n\util\ex\IllegalStateException;
 use n2n\l10n\Lstr;
 use rocket\ei\manage\control\IconType;
 use rocket\ei\EiTypeExtension;
-use rocket\ei\manage\critmod\filter\FilterCriteriaConstraint;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\spec\TypePath;
 
@@ -153,6 +152,20 @@ class EiMask {
 	 */
 	public function getDef() {
 		return $this->eiMaskDef;
+	}
+	
+	/**
+	 * @return \rocket\ei\manage\critmod\filter\data\FilterSettingGroup|null
+	 */
+	public function getFilterSettingGroup() {
+		return $this->eiMaskDef->getFilterSettingGroup();
+	}
+	
+	/**
+	 * @return \rocket\ei\manage\critmod\sort\SortSettingGroup|null
+	 */
+	public function getSortSettingGroup() {
+		return $this->eiMaskDef->getDefaultSortSettingGroup();
 	}
 	
 	/**
@@ -597,33 +610,4 @@ class EiMask {
 	public function __toString(): string {
 		return 'EiMask of ' . ($this->isExtension() ? $this->eiTypeExtension : $this->eiType);
 	}
-	
-	/**
-	 * @todo move to EiEngine!!
-	 * @param EiFrame $eiFrame
-	 */
-	public function setupEiFrame(EiFrame $eiFrame) {
-		if (null !== ($filterPropSettingGroup = $this->eiMaskDef->getFilterPropSettingGroup())) {
-			$comparatorConstraint = $this->getEiEngine()->createFramedFilterDefinition($eiFrame)
-					->createComparatorConstraint($filterPropSettingGroup);
-			if ($comparatorConstraint !== null) {
-				$eiFrame->getCriteriaConstraintCollection()->add(CriteriaConstraint::TYPE_HARD_FILTER, 
-						new FilterCriteriaConstraint($comparatorConstraint));
-			}
-		}
-
-		if (null !== ($defaultSortSetting = $this->eiMaskDef->getDefaultSortSetting())) {
-			$comparatorConstraint = $this->eiEngine->createFramedSortDefinition($eiFrame)
-					->builCriteriaConstraint($defaultSortSetting, false);
-			if ($comparatorConstraint !== null) {
-				$eiFrame->getCriteriaConstraintCollection()->add(CriteriaConstraint::TYPE_HARD_SORT, $comparatorConstraint);
-			}
-		}
-
-		$eiu = new Eiu($eiFrame);
-		foreach ($this->eiModificatorCollection->toArray() as $modificator) {
-			$modificator->setupEiFrame($eiu);
-		}
-	}
-
 }

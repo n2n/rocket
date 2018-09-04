@@ -33,11 +33,11 @@ use rocket\spec\InvalidEiMaskConfigurationException;
 use rocket\ei\mask\model\ControlOrder;
 use n2n\reflection\property\TypeConstraint;
 use rocket\spec\InvalidLaunchPadConfigurationException;
-use rocket\ei\manage\critmod\sort\SortSetting;
+use rocket\ei\manage\critmod\sort\SortSettingGroup;
 use n2n\persistence\orm\util\NestedSetStrategy;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\util\config\InvalidAttributeException;
-use rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup;
+use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
 use rocket\ei\manage\gui\ui\DisplayItem;
 use n2n\util\StringUtils;
 use rocket\spec\TypePath;
@@ -181,11 +181,11 @@ class SpecExtractor {
 				RawDef::EI_DEF_ENTRY_ADD_COMMAND_ID_KEY, false));	
 		
 		if (null !== ($filterData = $eiMaskAttributes->getArray(RawDef::EI_DEF_FILTER_DATA_KEY, false, null))) {
-			$eiMaskExtraction->setFilterPropSettingGroup(FilterPropSettingGroup::create(new Attributes($filterData)));
+			$eiMaskExtraction->setFilterSettingGroup(FilterSettingGroup::create(new Attributes($filterData)));
 		}
 		
-		if (null !== ($defaultSortSetting = $eiMaskAttributes->getScalarArray(RawDef::EI_DEF_DEFAULT_SORT_KEY, false, null))) {
-			$eiMaskExtraction->setDefaultSortSetting(SortSetting::create(new Attributes($defaultSortSetting)));
+		if (null !== ($defaultSortSettingGroup = $eiMaskAttributes->getScalarArray(RawDef::EI_DEF_DEFAULT_SORT_KEY, false, null))) {
+			$eiMaskExtraction->setDefaultSortSettingGroup(SortSettingGroup::create(new Attributes($defaultSortSettingGroup)));
 		}
 		
 		$eiMaskExtraction->setDisplayScheme($this->createDisplayScheme($eiMaskAttributes));	

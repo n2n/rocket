@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model\filter;
 
-use rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup;
+use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
 use n2n\reflection\ArgUtils;
 use n2n\impl\web\dispatch\mag\model\MagAdapter;
 use rocket\ei\manage\critmod\filter\FilterDefinition;
@@ -39,7 +39,7 @@ use n2n\web\dispatch\mag\UiOutfitter;
 class RelationFilterGroupMag extends MagAdapter {
 	private $targetFilterDefinition;
 	
-	private $targetFilterPropSettingGroup;
+	private $targetFilterSettingGroup;
 	private $filterJhtmlHook;
 	
 	public function __construct(FilterDefinition $targetFilterDefinition, 
@@ -51,23 +51,23 @@ class RelationFilterGroupMag extends MagAdapter {
 	}
 	
 	public function setValue($value) {
-		ArgUtils::assertTrue($value instanceof FilterPropSettingGroup);
+		ArgUtils::assertTrue($value instanceof FilterSettingGroup);
 		
-		$this->targetFilterPropSettingGroup = $value;
+		$this->targetFilterSettingGroup = $value;
 	}
 	
 	public function getValue() {
-		return $this->targetFilterPropSettingGroup;
+		return $this->targetFilterSettingGroup;
 	}
 	
 	public function getFormValue() {
-		return new FilterGroupForm($this->targetFilterPropSettingGroup, $this->targetFilterDefinition);
+		return new FilterGroupForm($this->targetFilterSettingGroup, $this->targetFilterDefinition);
 	}
 	
 	public function setFormValue($formValue) {
 		ArgUtils::assertTrue($formValue instanceof FilterGroupForm);
 		
-		$this->targetFilterPropSettingGroup = $formValue->buildFilterPropSettingGroup();
+		$this->targetFilterSettingGroup = $formValue->buildFilterSettingGroup();
 	}
 	/**
 	 * {@inheritDoc}

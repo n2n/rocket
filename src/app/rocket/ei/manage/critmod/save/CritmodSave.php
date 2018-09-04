@@ -25,10 +25,10 @@ use n2n\util\StringUtils;
 use n2n\reflection\ObjectAdapter;
 use n2n\reflection\annotation\AnnoInit;
 use n2n\persistence\orm\annotation\AnnoTable;
-use rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup;
+use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
 use n2n\util\JsonDecodeFailedException;
 use n2n\util\config\Attributes;
-use rocket\ei\manage\critmod\sort\SortSetting;
+use rocket\ei\manage\critmod\sort\SortSettingGroup;
 
 class CritmodSave extends ObjectAdapter {
 	private static function _annos(AnnoInit $ai) {
@@ -61,27 +61,27 @@ class CritmodSave extends ObjectAdapter {
 		$this->eiTypePath = $eiTypePath;
 	}
 	
-	public function readFilterPropSettingGroup(): FilterPropSettingGroup {
+	public function readFilterSettingGroup(): FilterSettingGroup {
 		$data = array();
 		try {
 			$data = StringUtils::jsonDecode($this->filterDataJson, true);
 		} catch (JsonDecodeFailedException $e) {}
-		return FilterPropSettingGroup::create(new Attributes($data));
+		return FilterSettingGroup::create(new Attributes($data));
 	}
 	
-	public function writeFilterData(FilterPropSettingGroup $filterPropSettingGroup) {
-		$this->filterDataJson = StringUtils::jsonEncode($filterPropSettingGroup->toAttrs());		
+	public function writeFilterData(FilterSettingGroup $filterSettingGroup) {
+		$this->filterDataJson = StringUtils::jsonEncode($filterSettingGroup->toAttrs());		
 	}
 	
-	public function readSortSetting(): SortSetting {
+	public function readSortSettingGroup(): SortSettingGroup {
 		$data = array();
 		try {
 			$data = StringUtils::jsonDecode($this->sortDataJson, true);
 		} catch (JsonDecodeFailedException $e) {}
-		return SortSetting::create(new Attributes($data));
+		return SortSettingGroup::create(new Attributes($data));
 	}
 	
-	public function writeSortSetting(SortSetting $sortData) {
+	public function writeSortSettingGroup(SortSettingGroup $sortData) {
 		$this->sortDataJson = StringUtils::jsonEncode($sortData->toAttrs());
 	}
 }

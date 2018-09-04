@@ -27,10 +27,10 @@ use n2n\web\http\PageNotFoundException;
 use n2n\web\dispatch\map\InvalidPropertyExpressionException;
 use n2n\web\dispatch\map\PropertyPath;
 use rocket\ei\util\filter\form\FilterPropItemForm;
-use rocket\ei\manage\critmod\filter\data\FilterPropSetting;
+use rocket\ei\manage\critmod\filter\data\FilterSetting;
 use n2n\util\config\Attributes;
 use rocket\ei\util\filter\form\FilterGroupForm;
-use rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup;
+use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
 use n2n\util\uri\Url;
 use rocket\ei\manage\critmod\filter\FilterDefinition;
 use rocket\ei\manage\ManageState;
@@ -66,7 +66,7 @@ class FramedFilterPropController extends ControllerAdapter  {
 	
 		$filterPropItemForm = null;
 		try {
-			$filterPropItemForm = new FilterPropItemForm(new FilterPropSetting($filterPropId, new Attributes()),
+			$filterPropItemForm = new FilterPropItemForm(new FilterSetting($filterPropId, new Attributes()),
 					$filterDefinition);
 		} catch (UnknownFilterPropException $e) {
 			throw new PageNotFoundException(null, 0, $e);
@@ -79,7 +79,7 @@ class FramedFilterPropController extends ControllerAdapter  {
 	public function doGroup(ParamQuery $propertyPath) {
 		$propertyPath = $this->buildPropertyPath((string) $propertyPath);
 	
-		$filterGroupForm = new FilterGroupForm(new FilterPropSettingGroup(), new FilterDefinition());
+		$filterGroupForm = new FilterGroupForm(new FilterSettingGroup(), new FilterDefinition());
 	
 		$this->send(JhtmlResponse::view($this->createView(
 				'..\view\pseudoFilterGroupForm.html', 

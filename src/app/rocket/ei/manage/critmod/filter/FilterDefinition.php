@@ -21,7 +21,7 @@
  */
 namespace rocket\ei\manage\critmod\filter;
 
-use rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup;
+use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
 use n2n\util\config\AttributesException;
 
 class FilterDefinition {
@@ -51,26 +51,26 @@ class FilterDefinition {
 		return empty($this->filterProps);
 	}
 	
-	public function createComparatorConstraint(FilterPropSettingGroup $filterPropSettingGroup): ComparatorConstraint {
+	public function createComparatorConstraint(FilterSettingGroup $filterSettingGroup): ComparatorConstraint {
 		$criteriaComparators = array();
 		
-		foreach ($filterPropSettingGroup->getFilterPropSettings() as $subFilterPropSetting) {
-			$id = $subFilterPropSetting->getFilterPropId();
+		foreach ($filterSettingGroup->getFilterSettings() as $subFilterSetting) {
+			$id = $subFilterSetting->getFilterPropId();
 			if (!isset($this->filterProps[$id])) {
 				continue;
 			}
 			
 			try {
 				$criteriaComparators[] = $this->filterProps[$id]->createComparatorConstraint(
-						$subFilterPropSetting->getAttributes());
+						$subFilterSetting->getAttributes());
 			} catch (AttributesException $e) {}
 		}
 		
-		foreach ($filterPropSettingGroup->getFilterPropSettingGroups() as $subFilterPropSettingGroup) {
-			$criteriaComparators[] = $this->createComparatorConstraint($subFilterPropSettingGroup);
+		foreach ($filterSettingGroup->getFilterSettingGroups() as $subFilterSettingGroup) {
+			$criteriaComparators[] = $this->createComparatorConstraint($subFilterSettingGroup);
 		}
 		
-		return new ComparatorConstraintGroup($filterPropSettingGroup->isAndUsed(), $criteriaComparators);
+		return new ComparatorConstraintGroup($filterSettingGroup->isAndUsed(), $criteriaComparators);
 	}
 	
 // 	private function createElementComparatorConstraint(FilterDataElement $element) {

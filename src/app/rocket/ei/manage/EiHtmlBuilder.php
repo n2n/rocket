@@ -22,7 +22,7 @@
 namespace rocket\ei\manage;
 
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\ei\util\model\EiuFactory;
+use rocket\ei\util\model\EiuAnalyst;
 use n2n\util\col\ArrayUtils;
 use n2n\web\ui\Raw;
 use n2n\impl\web\ui\view\html\HtmlElement;
@@ -83,12 +83,12 @@ class EiHtmlBuilder {
 	
 	/**
 	 * 
-	 * @param mixed $eiGuiArg See {@see EiuFactory::buildEiGuiFromEiArg()} for allowed argument types.
+	 * @param mixed $eiGuiArg See {@see EiuAnalyst::buildEiGuiFromEiArg()} for allowed argument types.
 	 * @param GuiIdPath|string|DisplayItem $guiIdPath
 	 * @return \n2n\web\ui\UiComponent|\n2n\web\ui\Raw|string
 	 */
 	public function getLabel($eiGuiArg, $guiIdPath) {
-		$eiGui = EiuFactory::buildEiGuiFromEiArg($eiGuiArg);
+		$eiGui = EiuAnalyst::buildEiGuiFromEiArg($eiGuiArg);
 		if ($guiIdPath instanceof DisplayItem) {
 			if (null !== ($label = $guiIdPath->getLabel()) || $guiIdPath->hasDisplayStructure()) {
 				return $this->html->getOut($label);
@@ -114,7 +114,7 @@ class EiHtmlBuilder {
 		}
 		
 		$this->collectionTagName = $tagName;
-		$eiType = EiuFactory::buildEiTypeFromEiArg($eiTypeArg);
+		$eiType = EiuAnalyst::buildEiTypeFromEiArg($eiTypeArg);
 		$supremeEiType = $eiType->getSupremeEiType();
 		
 		$colAttrs = array(
@@ -145,7 +145,7 @@ class EiHtmlBuilder {
 	}
 	
 	public function getEntryOpen(string $tagName, $eiEntryGuiArg, array $attrs = null) {
-		$eiEntryGui = EiuFactory::buildEiEntryGuiFromEiArg($eiEntryGuiArg, 'eiEntryGuiArg');
+		$eiEntryGui = EiuAnalyst::buildEiEntryGuiFromEiArg($eiEntryGuiArg, 'eiEntryGuiArg');
 		$eiObject = $eiEntryGui->getEiEntry()->getEiObject();
 		$pid = null;
 		if ($eiObject->getEiEntityObj()->isPersistent()) {
@@ -515,7 +515,7 @@ class EiHtmlBuilder {
 	}
 	
 	public function getFrameCommands($eiGuiArg, bool $iconOnly = false) {
-		$eiGui = EiuFactory::buildEiGuiFromEiArg($eiGuiArg, 'eiGuiArg');
+		$eiGui = EiuAnalyst::buildEiGuiFromEiArg($eiGuiArg, 'eiGuiArg');
 	
 		$divHtmlElement = new HtmlElement('div', array('class' => ($iconOnly ? 'rocket-simple-commands' : null)));
 	
@@ -546,7 +546,7 @@ class EiHtmlBuilderMeta {
 		if (!$this->state->containsEntry()) {
 			return false;
 		}
-		$eiEntryGui = EiuFactory::buildEiEntryGuiFromEiArg($eiEntryGui);
+		$eiEntryGui = EiuAnalyst::buildEiEntryGuiFromEiArg($eiEntryGui);
 		return $eiEntryGui === null || $eiEntryGui === $this->state->peakEntry()['eiEntryGui'];
 	}
 	
@@ -603,7 +603,7 @@ class EiHtmlBuilderMeta {
 		if ($eiEntryGui === null) {
 			$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
 		} else {
-			$eiEntryGui = EiuFactory::buildEiEntryGuiFromEiArg($eiEntryGui);
+			$eiEntryGui = EiuAnalyst::buildEiEntryGuiFromEiArg($eiEntryGui);
 		}
 		
 		$controls = $eiEntryGui->createControls($this->view);

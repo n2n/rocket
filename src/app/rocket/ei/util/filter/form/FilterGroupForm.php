@@ -22,9 +22,9 @@
 namespace rocket\ei\util\filter\form;
 
 use n2n\web\dispatch\Dispatchable;
-use rocket\ei\manage\critmod\filter\data\FilterPropSetting;
+use rocket\ei\manage\critmod\filter\data\FilterSetting;
 use rocket\ei\manage\critmod\filter\FilterDefinition;
-use rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup;
+use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
 use n2n\reflection\annotation\AnnoInit;
 use n2n\web\dispatch\annotation\AnnoDispObjectArray;
 use n2n\util\config\Attributes;
@@ -34,44 +34,44 @@ use rocket\ei\manage\critmod\filter\UnknownFilterPropException;
 class FilterGroupForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {
 		$ai->p('filterPropItemForms', new AnnoDispObjectArray(function (FilterGroupForm $filterGroupForm) {
-			return new FilterPropItemForm(new FilterPropSetting(null, new Attributes()), $filterGroupForm->filterDefinition);
+			return new FilterPropItemForm(new FilterSetting(null, new Attributes()), $filterGroupForm->filterDefinition);
 		}));
 		$ai->p('filterGroupForms', new AnnoDispObjectArray(function (FilterGroupForm $filterGroupForm) {
-			return new FilterGroupForm(new FilterPropSettingGroup(), $filterGroupForm->filterDefinition);
+			return new FilterGroupForm(new FilterSettingGroup(), $filterGroupForm->filterDefinition);
 		}));
 	}
 	
-	private $filterPropSettingGroup;
+	private $filterSettingGroup;
 	private $filterDefinition;
 	
 	protected $useAnd;
 	protected $filterPropItemForms;
 	protected $filterGroupForms;
 	
-	public function __construct(FilterPropSettingGroup $filterPropSettingGroup, FilterDefinition $filterDefinition) {
-		$this->filterPropSettingGroup = $filterPropSettingGroup;
+	public function __construct(FilterSettingGroup $filterSettingGroup, FilterDefinition $filterDefinition) {
+		$this->filterSettingGroup = $filterSettingGroup;
 		$this->filterDefinition = $filterDefinition;
 		
-		$this->useAnd = $filterPropSettingGroup->isAndUsed();
+		$this->useAnd = $filterSettingGroup->isAndUsed();
 		
 		$this->filterPropItemForms = array();
-		foreach ($filterPropSettingGroup->getFilterPropSettings() as $filterPropSetting) {
+		foreach ($filterSettingGroup->getFilterSettings() as $filterPropSetting) {
 			try {
 				$this->filterPropItemForms[] = new FilterPropItemForm($filterPropSetting, $filterDefinition);
 			} catch (UnknownFilterPropException $e) {}
 		}
 		
 		$this->filterGroupForms = array();
-		foreach ($filterPropSettingGroup->getFilterPropSettingGroups() as $filterPropSettingGroup) {
-			$this->filterGroupForms[] = new FilterGroupForm($filterPropSettingGroup, $filterDefinition);
+		foreach ($filterSettingGroup->getFilterSettingGroups() as $filterSettingGroup) {
+			$this->filterGroupForms[] = new FilterGroupForm($filterSettingGroup, $filterDefinition);
 		}
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\critmod\filter\data\FilterPropSettingGroup
+	 * @return \rocket\ei\manage\critmod\filter\data\FilterSettingGroup
 	 */
-	public function getFilterPropSettingGroup() {
-		return $this->filterPropSettingGroup;
+	public function getFilterSettingGroup() {
+		return $this->filterSettingGroup;
 	}
 	
 	public function getFilterDefinition(): FilterDefinition {
@@ -121,7 +121,7 @@ class FilterGroupForm implements Dispatchable {
 // 			return;
 // 		}
 		
-// 		$magForm = new MagDispatchable($filterItem->createMagCollection($this->filterPropSettingGroup->getAttributes()));
+// 		$magForm = new MagDispatchable($filterItem->createMagCollection($this->filterSettingGroup->getAttributes()));
 // 		$mr->magForm = new MappingResult($magForm, $dc->getDispatchModelManager()->getDispatchModel($magForm));
 // 	}
 	
@@ -129,21 +129,21 @@ class FilterGroupForm implements Dispatchable {
 		
 	}
 	
-	public function buildFilterPropSettingGroup(): FilterPropSettingGroup {
-		$this->filterPropSettingGroup->setAndUsed($this->useAnd);
+	public function buildFilterSettingGroup(): FilterSettingGroup {
+		$this->filterSettingGroup->setAndUsed($this->useAnd);
 		
-		$filterItemSettings = $this->filterPropSettingGroup->getFilterPropSettings();
+		$filterItemSettings = $this->filterSettingGroup->getFilterSettings();
 		$filterItemSettings->clear();
 		foreach ($this->filterPropItemForms as $filterPropItemForm) {
-			$filterItemSettings->append($filterPropItemForm->buildFilterPropSetting());
+			$filterItemSettings->append($filterPropItemForm->buildFilterSetting());
 		}
 		
-		$filterPropSettingGroups = $this->filterPropSettingGroup->getFilterPropSettingGroups();
-		$filterPropSettingGroups->clear();
+		$filterSettingGroups = $this->filterSettingGroup->getFilterSettingGroups();
+		$filterSettingGroups->clear();
 		foreach ($this->filterGroupForms as $filterGroupForm) {
-			$filterPropSettingGroups->append($filterGroupForm->buildFilterPropSettingGroup());
+			$filterSettingGroups->append($filterGroupForm->buildFilterSettingGroup());
 		}
 		
-		return $this->filterPropSettingGroup;
+		return $this->filterSettingGroup;
 	}
 }

@@ -36,12 +36,12 @@ class EiuEntryGui {
 	private $eiEntryGui;
 	private $eiuGui;
 	private $eiuEntry;
-	private $eiuFactory;
+	private $eiuAnalyst;
 	
-	public function __construct(EiEntryGui $eiEntryGui, EiuGui $eiuGui = null, EiuFactory $eiuFactory = null) {
+	public function __construct(EiEntryGui $eiEntryGui, EiuGui $eiuGui = null, EiuAnalyst $eiuAnalyst = null) {
 		$this->eiEntryGui = $eiEntryGui;
 		$this->eiuGui = $eiuGui;
-		$this->eiuFactory = $eiuFactory;
+		$this->eiuAnalyst = $eiuAnalyst;
 	}
 	
 	/**
@@ -52,7 +52,7 @@ class EiuEntryGui {
 			return $this->eiuGui;
 		}
 		
-		return new EiuGui($this->eiEntryGui->getEiGui(), null, $this->eiuFactory);
+		return new EiuGui($this->eiEntryGui->getEiGui(), null, $this->eiuAnalyst);
 	}
 	
 	/**

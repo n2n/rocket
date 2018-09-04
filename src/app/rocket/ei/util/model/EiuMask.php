@@ -31,12 +31,12 @@ use n2n\util\ex\IllegalStateException;
 class EiuMask  {
 	private $eiMask;
 	private $eiuEngine;
-	private $eiuFactory;
+	private $eiuAnalyst;
 	
-	public function __construct(EiMask $eiMask, EiuEngine $eiuEngine = null, EiuFactory $eiuFactory = null) {
+	public function __construct(EiMask $eiMask, EiuEngine $eiuEngine = null, EiuAnalyst $eiuAnalyst = null) {
 		$this->eiMask = $eiMask;
 		$this->eiuEngine = $eiuEngine;
-		$this->eiuFactory = $eiuFactory;
+		$this->eiuAnalyst = $eiuAnalyst;
 	}
 	
 	/**
@@ -76,7 +76,7 @@ class EiuMask  {
 		}
 		
 		return new EiuMask($this->eiMask->getEiType()->getSupremeEiType()->getEiMask(),
-				null, $this->eiuFactory);
+				null, $this->eiuAnalyst);
 	}
 	
 // 	public function extensionMasks() {
@@ -130,7 +130,7 @@ class EiuMask  {
 			return null;
 		}
 		
-		return $this->eiuEngine = new EiuEngine($this->eiMask->getEiEngine(), $this, $this->eiuFactory);
+		return $this->eiuEngine = new EiuEngine($this->eiMask->getEiEngine(), $this, $this->eiuAnalyst);
 	}
 	
 	/**

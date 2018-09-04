@@ -22,10 +22,10 @@
 namespace rocket\ei\util\sort\form;
 
 use n2n\web\dispatch\Dispatchable;
-use rocket\ei\manage\critmod\sort\SortSetting;
+use rocket\ei\manage\critmod\sort\SortSettingGroup;
 use rocket\ei\manage\critmod\sort\SortDefinition;
 use n2n\persistence\orm\criteria\Criteria;
-use rocket\ei\manage\critmod\sort\SortItemData;
+use rocket\ei\manage\critmod\sort\SortSetting;
 
 class SortForm implements Dispatchable {
 	private $sortData;
@@ -34,12 +34,12 @@ class SortForm implements Dispatchable {
 	protected $sortPropIds;
 	protected $directions;
 	
-	public function __construct(SortSetting $sortData, SortDefinition $sortDefinition) {
+	public function __construct(SortSettingGroup $sortData, SortDefinition $sortDefinition) {
 		$this->sortData = $sortData;
 		$this->sortDefinition = $sortDefinition;
 		
 		$this->clear();
-		foreach ($sortData->getSortItemDatas() as $key => $sortItemData) {
+		foreach ($sortData->getSortSettings() as $key => $sortItemData) {
 			$this->sortPropIds[$key] = $sortItemData->getSortPropId(); 
 			$this->directions[$key] = $sortItemData->getDirection();
 		}
@@ -73,10 +73,10 @@ class SortForm implements Dispatchable {
 	private function _validation() {
 	}
 	
-	public function buildSortSetting(): SortSetting {
-		$sortData = new SortSetting();
+	public function buildSortSettingGroup(): SortSettingGroup {
+		$sortData = new SortSettingGroup();
 		
-		$sortItemDatas = $sortData->getSortItemDatas();
+		$sortItemDatas = $sortData->getSortSettings();
 		foreach ($this->sortPropIds as $key => $sortPropId) {
 			if (!$this->sortDefinition->containsSortPropId($sortPropId)) continue;
 			
@@ -84,7 +84,7 @@ class SortForm implements Dispatchable {
 			if (isset($this->directions[$key]) && $this->directions[$key] === Criteria::ORDER_DIRECTION_DESC) {
 				$direction = Criteria::ORDER_DIRECTION_DESC;
 			}
-			$sortItemDatas[] = new SortItemData($sortPropId, $direction);
+			$sortItemDatas[] = new SortSetting($sortPropId, $direction);
 		}
 		
 		return $sortData;

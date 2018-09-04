@@ -326,7 +326,7 @@
 // 			return;
 // 		}
 		
-// 		$eiObject = EiuFactory::buildEiObjectFromEiArg($eiObjectObj, 'eiObjectObj', $this->getEiType());
+// 		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectObj, 'eiObjectObj', $this->getEiType());
 		
 // 		if ($eiObject->isDraft()) {
 // 			$this->persistDraft($eiObject->getDraft(), $flush);

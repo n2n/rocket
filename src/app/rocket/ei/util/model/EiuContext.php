@@ -12,16 +12,16 @@ use rocket\ei\EiTypeExtension;
 
 class EiuContext {
 	private $spec;
-	private $eiuFactory;
+	private $eiuAnalyst;
 	private $n2nContext;
 	
 	/**
 	 * @param Spec $spec
 	 * @param N2nContext $n2nContext
 	 */
-	function __construct(Spec $spec, EiuFactory $eiuFactory = null) {
+	function __construct(Spec $spec, EiuAnalyst $eiuAnalyst = null) {
 		$this->spec = $spec;
-		$this->eiuFactory = $eiuFactory;
+		$this->eiuAnalyst = $eiuAnalyst;
 	}
 	
 	/**
@@ -41,8 +41,8 @@ class EiuContext {
 			return $this->n2nContext;
 		}
 		
-		if ($this->eiuFactory !== null) {
-			return $this->n2nContext = $this->eiuFactory->getN2nContext($required);
+		if ($this->eiuAnalyst !== null) {
+			return $this->n2nContext = $this->eiuAnalyst->getN2nContext($required);
 		}
 		
 		if ($required) {
@@ -63,41 +63,41 @@ class EiuContext {
 		ArgUtils::valType($eiTypeArg, ['string', 'object', TypePath::class, \ReflectionClass::class, EiType::class, EiComponent::class]);
 		
 		if ($eiTypeArg instanceof EiType) {
-			return new EiuMask($eiTypeArg->getEiMask(), null, $this->eiuFactory);
+			return new EiuMask($eiTypeArg->getEiMask(), null, $this->eiuAnalyst);
 		}
 		
 		if ($eiTypeArg instanceof EiComponent) {
-			return new EiuMask($eiTypeArg->getEiMask(), null, $this->eiuFactory);
+			return new EiuMask($eiTypeArg->getEiMask(), null, $this->eiuAnalyst);
 		}
 		
 		if ($eiTypeArg instanceof EiTypeExtension) {
-			return new EiuMask($eiTypeArg->getEiMask(), null, $this->eiuFactory);
+			return new EiuMask($eiTypeArg->getEiMask(), null, $this->eiuAnalyst);
 		}
 		
 		$eiEngine = null;
 		try {
 			if ($eiTypeArg instanceof TypePath) {
 				return new EiuMask($this->getEiMaskByEiTypePath($eiTypeArg), null,
-						$this->eiuFactory);
+						$this->eiuAnalyst);
 			}
 			
 			if ($eiTypeArg instanceof \ReflectionClass) {
 				return new EiuMask($this->spec->getEiTypeByClass($eiTypeArg)->getEiMask(), null,
-						$this->eiuFactory);
+						$this->eiuAnalyst);
 			}
 			
 			if (is_object($eiTypeArg)) {
 				return new EiuMask($this->spec->getEiTypeOfObject($eiTypeArg)->getEiMask(), 
-						null, $this->eiuFactory);
+						null, $this->eiuAnalyst);
 			}
 			
 			if (class_exists($eiTypeArg, false)) {
 				return new EiuMask($this->spec->getEiTypeByClassName($eiTypeArg)->getEiMask(), null,
-						$this->eiuFactory);
+						$this->eiuAnalyst);
 			}
 						
 			return new EiuMask($this->spec->getEiTypeById($eiTypeArg)->getEiMask(), null,
-					$this->eiuFactory);
+					$this->eiuAnalyst);
 		} catch (UnknownTypeException $e) {
 			if (!$required) return null;
 			
