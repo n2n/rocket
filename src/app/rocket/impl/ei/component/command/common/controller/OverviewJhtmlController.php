@@ -62,7 +62,7 @@ class OverviewJhtmlController extends ControllerAdapter {
 		
 		$filterJhtmlHook = $this->buildFilterJhtmlHook();
 		$critmodForm = CritmodForm::create($eiuFrame, $filterJhtmlHook, $this->critmodSaveDao, $stateKey);
-		$quickSearchForm = QuickSearchForm::create($eiFrame, $this->critmodSaveDao, $stateKey);
+		$quickSearchForm = QuickSearchForm::create($eiuFrame, $this->critmodSaveDao, $stateKey);
 		
 		$overviewAjahHook = OverviewJhtmlController::buildAjahHook($this->getHttpContext()->getControllerContextPath(
 				$this->getControllerContext())->toUrl(), $stateKey);
