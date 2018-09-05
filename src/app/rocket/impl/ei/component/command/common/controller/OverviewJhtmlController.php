@@ -72,13 +72,11 @@ class OverviewJhtmlController extends ControllerAdapter {
 			throw new PageNotFoundException();
 		}
 		
-		$eiUtils = new EiuFrame($eiFrame);
-		
 		$this->eiuCtrl->forwardView($this->createView(
 				'..\view\ajahOverview.html',
 				array('critmodForm' => $critmodForm, 'quickSearchForm' => $quickSearchForm, 
 						'overviewAjahHook' => $overviewAjahHook,
-						'label' => $eiUtils->getGenericLabel(), 'pluralLabel' => $eiUtils->getGenericPluralLabel(), 
+						'label' => $eiuFrame->getGenericLabel(), 'pluralLabel' => $eiuFrame->getGenericPluralLabel(), 
 						'listModel' => $listModel)));
 	}
 	
