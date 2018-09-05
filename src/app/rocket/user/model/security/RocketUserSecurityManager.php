@@ -35,6 +35,8 @@ class RocketUserSecurityManager implements SecurityManager {
 	}
 	
 	public function isLaunchPadAccessible(LaunchPad $launchPad): bool {
+		if ($this->rocketUser->isAdmin()) return true;
+		
 		foreach ($this->rocketUser->getRocketUserGroups() as $rocketUserGroup) {
 			if (!$rocketUserGroup->isLaunchPadAccessRestricted() || 
 					$rocketUserGroup->containsAccessibleLaunchPadId($launchPad->getId())) {

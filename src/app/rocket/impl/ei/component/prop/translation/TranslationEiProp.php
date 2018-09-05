@@ -280,12 +280,12 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 	 * @see \rocket\ei\component\prop\QuickSearchableEiProp::buildQuickSearchProp()
 	 */
 	public function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp {
-		$targetEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame);
+		$targetEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiu->frame()->getEiFrame());
 		
 		return new TranslationQuickSearchProp(
 				$this->eiPropRelation->getRelationEntityProperty(),
 				$this->eiPropRelation->getTargetEiType()->getEntityModel()->getClass(), 
-				$targetEiFrame->getContextEiEngine()->createQuickSearchDefinition($targetEiFrame));
+				$targetEiFrame->getContextEiEngine()->createFramedQuickSearchDefinition($targetEiFrame));
 	}
 }
 
