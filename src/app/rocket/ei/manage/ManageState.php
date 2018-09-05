@@ -154,10 +154,11 @@ class ManageState implements RequestScoped {
 	 * @throws ManageException
 	 * @return \rocket\ei\manage\frame\EiFrame
 	 */
-	public function peakEiFrame(/*EiType $eiType = null*/) {
-		if (!sizeof($this->eiFrames)) {
-			return null;
-		}
+	public function peakEiFrame(bool $required = true) {
+		if (empty($this->eiFrames)) {
+			if (!$required) return null;
+			throw new ManageException('No active EiFrames found.');
+		} 
 		
 		end($this->eiFrames);
 		$eiFrame = current($this->eiFrames);

@@ -28,13 +28,6 @@ class Eiu implements Lookupable {
 	}
 	
 	/**
-	 * @return \n2n\core\container\N2nContext
-	 */
-	public function getN2nContext() {
-		return $this->eiuAnalyst->getN2nContext(true);
-	}
-	
-	/**
 	 * @return EiuContext|null
 	 */
 	public function context(bool $required = true) {
@@ -160,6 +153,20 @@ class Eiu implements Lookupable {
 	 */
 	public function dtc(string ...$moduleNamespaces) {
 		return new DynamicTextCollection($moduleNamespaces, $this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
+	}
+	
+	/**
+	 * @return \n2n\core\container\N2nContext
+	 */
+	public function getN2nContext() {
+		return $this->eiuAnalyst->getN2nContext(true);
+	}
+	
+	/**
+	 * @return \n2n\l10n\N2nLocale
+	 */
+	public function getN2nLocale() {
+		return $this->getN2nContext()->getN2nLocale();
 	}
 	
 	/**

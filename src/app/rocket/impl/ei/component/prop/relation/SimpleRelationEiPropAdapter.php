@@ -143,8 +143,10 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 		$targetEiMask = $this->eiPropRelation->getTargetEiMask();
 		$n2nContext = $eiu->getN2nContext();
 
-		return new RelationFilterProp($this->getLabelLstr(), $this->getEntityProperty(),
-				$eiu->frame(),
+		$eiuFrame = $eiu->frame(false);
+		if (null === $eiuFrame) return null;
+		
+		return new RelationFilterProp($this->getLabelLstr(), $this->getEntityProperty(), $eiuFrame,
 				new class($targetEiMask, $n2nContext) implements TargetFilterDef {
 					private $targetEiMask;
 					private $n2nContext;

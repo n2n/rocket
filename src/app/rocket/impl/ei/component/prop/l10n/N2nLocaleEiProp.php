@@ -148,14 +148,10 @@ class N2nLocaleEiProp extends DraftableEiPropAdapter implements FilterableEiProp
 // 	public function isMultiLingual() {
 // 		return count($this->n2nLocales) > 1;
 // 	}
-
-	public function buildManagedFilterProp(EiFrame $eiFrame): ?FilterProp  {
-		return $this->buildFilterProp($eiFrame->getN2nContext());
-	}
 	
 	public function buildFilterProp(Eiu $eiu): ?FilterProp {
 		return new N2nLocaleFilterProp(CrIt::p($this->entityProperty), $this->getLabelLstr(), 
-				$this->buildN2nLocaleOptions($n2nContext->lookup(WebConfig::class), $n2nContext->getN2nLocale()));
+				$this->buildN2nLocaleOptions($eiu->lookup(WebConfig::class), $eiu->getN2nLocale()));
 	}
 	
 	public function buildSecurityFilterProp(N2nContext $n2nContext) {
