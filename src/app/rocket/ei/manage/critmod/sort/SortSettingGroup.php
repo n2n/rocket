@@ -40,6 +40,11 @@ class SortSettingGroup {
 		return $this->sortItemDatas;
 	}
 	
+	
+	public function isEmpty() {
+		return empty($this->sortItemDatas);
+	}
+	
 	public function toAttrs(): array {
 		$attrs = array();
 		

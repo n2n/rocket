@@ -57,7 +57,7 @@ class EiuSortForm implements Dispatchable, UiComponent {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\critmod\filter\data\FilterSettingGroup
+	 * @return \rocket\ei\manage\critmod\sort\SortSettingGroup
 	 */
 	function readSetting() {
 		return $this->sortForm->buildSortSettingGroup();
