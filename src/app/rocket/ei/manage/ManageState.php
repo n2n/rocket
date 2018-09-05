@@ -133,7 +133,7 @@ class ManageState implements RequestScoped {
 	}
 	
 	public function createEiFrame(EiEngine $contextEiEngine, ControllerContext $controllerContext) {
-		$eiFrame = $contextEiEngine->createEiFrame($controllerContext, $this, $this->peakEiFrame());
+		$eiFrame = $contextEiEngine->createEiFrame($controllerContext, $this, $this->peakEiFrame(false));
 		
 		$this->pushEiFrame($eiFrame);
 		
