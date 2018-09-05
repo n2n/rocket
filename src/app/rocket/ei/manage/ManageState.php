@@ -54,6 +54,9 @@ class ManageState implements RequestScoped {
 		}
 	}
 		
+	/**
+	 * @return \n2n\core\container\N2nContext
+	 */
 	public function getN2nContext() {
 		return $this->n2nContext;
 	}
