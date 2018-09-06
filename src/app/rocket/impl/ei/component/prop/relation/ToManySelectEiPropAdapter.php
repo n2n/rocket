@@ -40,6 +40,7 @@ use rocket\impl\ei\component\prop\relation\model\relation\SelectEiPropRelation;
 use rocket\ei\manage\gui\ui\DisplayItem;
 use rocket\ei\manage\frame\CriteriaConstraint;
 use rocket\ei\manage\gui\GuiField;
+use rocket\ei\manage\gui\DisplayDefinition;
 
 abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 	
@@ -98,6 +99,30 @@ abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 		return $value;
 	}
 	
+	
+	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
+		$eiPropRelation = $this->eiPropRelation;
+		CastUtils::assertTrue($eiPropRelation instanceof SelectEiPropRelation);
+		
+		if (!$eiPropRelation->isHiddenIfTargetEmpty()) {
+			return parent::buildDisplayDefinition($eiu);
+		}
+		
+		$eiFrame = $eiu->frame()->getEiFrame();
+		$targetReadEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame);
+		
+		$targetEiu = new Eiu($targetReadEiFrame);
+		$eiPropRelation = $this->eiPropRelation;
+		CastUtils::assertTrue($eiPropRelation instanceof SelectEiPropRelation);
+		
+		if ($eiPropRelation->isHiddenIfTargetEmpty()
+				&& 0 == $targetEiu->frame()->countEntries(CriteriaConstraint::NON_SECURITY_TYPES)) {
+			return null;
+		}
+		
+		return parent::buildDisplayDefinition($eiu);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiProp::buildGuiField()
@@ -107,15 +132,9 @@ abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 		$eiFrame = $eiu->frame()->getEiFrame();
 		$targetReadEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame, $mapping);
 		
-		$targetEiu = new Eiu($targetReadEiFrame);
 		$eiPropRelation = $this->eiPropRelation;
 		CastUtils::assertTrue($eiPropRelation instanceof SelectEiPropRelation);
 		
-		if ($eiPropRelation->isHiddenIfTargetEmpty() 
-				&& 0 == $targetEiu->frame()->countEntries(CriteriaConstraint::NON_SECURITY_TYPES)) {
-			return null;
-		}
-	
 		$toManyEditable = null;
 		if (!$this->eiPropRelation->isReadOnly($mapping, $eiFrame)) {
 			$targetEditEiFrame = $this->eiPropRelation->createTargetEditPseudoEiFrame($eiFrame, $mapping);

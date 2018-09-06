@@ -53,6 +53,8 @@ use rocket\ei\manage\gui\ui\DisplayItem;
 use rocket\ei\manage\gui\GuiField;
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
+use rocket\ei\manage\frame\CriteriaConstraint;
+use rocket\ei\manage\gui\DisplayDefinition;
 
 class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 
@@ -113,6 +115,29 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 		return $value;
 	}
 	
+	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
+		$eiPropRelation = $this->eiPropRelation;
+		CastUtils::assertTrue($eiPropRelation instanceof SelectEiPropRelation);
+		
+		if (!$eiPropRelation->isHiddenIfTargetEmpty()) {
+			return parent::buildDisplayDefinition($eiu);
+		}
+
+		$eiFrame = $eiu->frame()->getEiFrame();
+		$targetReadEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame);
+		
+		$targetEiu = new Eiu($targetReadEiFrame);
+		$eiPropRelation = $this->eiPropRelation;
+		CastUtils::assertTrue($eiPropRelation instanceof SelectEiPropRelation);
+		
+		if ($eiPropRelation->isHiddenIfTargetEmpty()
+				&& 0 == $targetEiu->frame()->countEntries(CriteriaConstraint::NON_SECURITY_TYPES)) {
+			return null;
+		}
+		
+		return parent::buildDisplayDefinition($eiu);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiProp::buildGuiField()
@@ -122,6 +147,9 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 		$eiFrame = $eiu->frame()->getEiFrame();
 		$relationEiField = $mapping->getEiField(EiPropPath::from($this));
 		$targetReadEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame, $mapping);
+		
+		$eiPropRelation = $this->eiPropRelation;
+		CastUtils::assertTrue($eiPropRelation instanceof SelectEiPropRelation);
 		
 		$toOneEditable = null;
 		if (!$this->eiPropRelation->isReadOnly($mapping, $eiFrame)) {
