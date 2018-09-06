@@ -196,9 +196,12 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 	}
 	
 	public function buildFilterProp(Eiu $eiu): ?FilterProp  {
-		$filterProp = parent::buildManagedFilterProp($eiu->frame()->getEiFrame());
+		$eiuFrame = $eiu->frame(false);
+		if (null === $eiuFrame) return null;
+		
+		$eiFrame = $eiuFrame->getEiFrame();
+		$filterProp = parent::buildManagedFilterProp($eiFrame);
 		CastUtils::assertTrue($filterProp instanceof RelationFilterProp);
-		$eiFrame = $eiu->frame()->getEiFrame();
 		
 		$that = $this;
 		$filterProp->setTargetSelectUrlCallback(function (HttpContext $httpContext) use ($that, $eiFrame) {
