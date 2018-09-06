@@ -105,7 +105,9 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 	}
 	
 	public function createEiPropConfigurator(): EiPropConfigurator {
-		return new RelationEiPropConfigurator($this);
+		$relationEiPropConfigurator =  new RelationEiPropConfigurator($this);
+		$relationEiPropConfigurator->setDisplayInOverviewDefault(false);
+		return $relationEiPropConfigurator;
 	}
 	
 	/**
