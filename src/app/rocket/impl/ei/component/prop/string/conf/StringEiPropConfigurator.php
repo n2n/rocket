@@ -22,7 +22,6 @@
 namespace rocket\impl\ei\component\prop\string\conf;
 
 use rocket\ei\component\EiSetup;
-use n2n\util\ex\IllegalStateException;
 use n2n\core\container\N2nContext;
 use rocket\impl\ei\component\prop\string\StringEiProp;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
@@ -31,6 +30,7 @@ use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\persistence\meta\structure\Column;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
+use n2n\reflection\CastUtils;
 
 class StringEiPropConfigurator extends AlphanumericEiPropConfigurator {
 	const OPTION_MULTILINE_KEY = 'multiline';
@@ -38,10 +38,11 @@ class StringEiPropConfigurator extends AlphanumericEiPropConfigurator {
 	public function setup(EiSetup $setupProcess) {
 		parent::setup($setupProcess);
 	
-		IllegalStateException::assertTrue($this->eiComponent instanceof StringEiProp);
+		$eiComponent = $this->eiComponent;
+		CastUtils::assertTrue($eiComponent instanceof StringEiProp);
 		
 		if ($this->attributes->contains(self::OPTION_MULTILINE_KEY)) {
-			$this->eiComponent->setMultiline($this->attributes->getBool(self::OPTION_MULTILINE_KEY));
+			$eiComponent->setMultiline($this->attributes->getBool(self::OPTION_MULTILINE_KEY));
 		}
 	}
 	
@@ -52,6 +53,7 @@ class StringEiPropConfigurator extends AlphanumericEiPropConfigurator {
 		
 		if (StringUtils::contains(self::$multilineNeedles, $this->requirePropertyName(), false)) {
 			$this->attributes->set(self::OPTION_MULTILINE_KEY, true);
+			$this->attributes->set(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, false);
 		}
 	}
 	
@@ -65,7 +67,6 @@ class StringEiPropConfigurator extends AlphanumericEiPropConfigurator {
 		return parent::testCompatibility($propertyAssignation);
 	}
 	
-	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\string\conf\AlphanumericEiPropConfigurator::createMagDispatchable($n2nContext)
@@ -74,8 +75,11 @@ class StringEiPropConfigurator extends AlphanumericEiPropConfigurator {
 	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
 		$magDispatchable = parent::createMagDispatchable($n2nContext);
 		
+		$eiComponent = $this->eiComponent;
+		CastUtils::assertTrue($eiComponent instanceof StringEiProp);
+		
 		$magDispatchable->getMagCollection()->addMag(self::OPTION_MULTILINE_KEY, new BoolMag('Multiline',
-				$this->attributes->getBool(self::OPTION_MULTILINE_KEY, false, $this->eiComponent->isMultiline())));
+				$this->attributes->getBool(self::OPTION_MULTILINE_KEY, false, $eiComponent->isMultiline())));
 		
 		return $magDispatchable;
 	}
