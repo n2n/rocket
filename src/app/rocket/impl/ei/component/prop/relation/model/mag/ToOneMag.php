@@ -38,6 +38,7 @@ use n2n\web\http\controller\impl\ScrRegistry;
 use rocket\impl\ei\component\prop\relation\model\RelationEntry;
 use rocket\ei\manage\frame\CriteriaConstraint;
 use n2n\web\dispatch\mag\UiOutfitter;
+use rocket\ei\util\model\Eiu;
 
 class ToOneMag extends MagAdapter {
 	private $mandatory;
@@ -57,8 +58,8 @@ class ToOneMag extends MagAdapter {
 		parent::__construct($label);
 	
 		$this->mandatory = $mandatory;
-		$this->targetReadUtils = new EiuFrame($targetReadEiFrame);
-		$this->targetEiuFrame = new EiuFrame($targetEditEiFrame);
+		$this->targetReadUtils = (new Eiu($targetReadEiFrame))->frame();
+		$this->targetEiuFrame = (new Eiu($targetEditEiFrame))->frame();
 	
 // 		$this->updateContainerAttrs(true);
 	}

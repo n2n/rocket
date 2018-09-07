@@ -866,7 +866,7 @@ class EiuAnalyst {
 		}
 		
 		if ($this->eiEntryGui !== null) {
-			return $this->eiuEntryGui = new EiuEntryGui($this->eiEntryGui, $this->getEiuGui(true));
+			return $this->eiuEntryGui = new EiuEntryGui($this->eiEntryGui, $this->getEiuGui(true), $this);
 		}
 		
 		if (!$required) return null;
@@ -887,7 +887,7 @@ class EiuAnalyst {
 		}
 	
 		if ($this->eiGui !== null) {
-			return $this->eiuGui = new EiuGui($this->eiGui, $this->getEiuFrame(true));
+			return $this->eiuGui = new EiuGui($this->eiGui, $this->getEiuFrame(true), $this);
 		}
 	
 		if (!$required) return null;
@@ -930,12 +930,12 @@ class EiuAnalyst {
 		}
 		
 		if ($eiArg instanceof EiFrame) {
-			return new EiuFrame($eiArg);
+			return new EiuFrame($eiArg, $this);
 		}
 		
 		if ($eiArg instanceof N2nContext) {
 			try {
-				return new EiuFrame($eiArg->lookup(ManageState::class)->preakEiFrame());
+				return new EiuFrame($eiArg->lookup(ManageState::class)->preakEiFrame(), $this);
 			} catch (ManageException $e) {
 				throw new EiuPerimeterException('Can not create EiuFrame in invalid context.', 0, $e);
 			}

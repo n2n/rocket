@@ -70,12 +70,8 @@ abstract class ToManyEiPropAdapter extends SimpleRelationEiPropAdapter implement
 		return $this->getLabelLstr();
 	}
 
-	public function getGuiProp(): ?GuiProp {
+	public function buildGuiProp(Eiu $eiu): ?GuiProp {
 		return $this;
-	}
-	
-	public function getGuiPropFork(): ?GuiPropFork {
-		return null;
 	}
 	
 	/**

@@ -27,6 +27,10 @@ use rocket\ei\component\command\control\OverallControlComponent;
 use rocket\ei\component\command\control\EntryControlComponent;
 use rocket\ei\manage\gui\ui\DisplayStructure;
 use rocket\ei\mask\EiMask;
+use rocket\ei\manage\gui\EiGui;
+use rocket\ei\manage\gui\EiGuiViewFactory;
+use rocket\ei\manage\gui\GuiDefinition;
+use rocket\ei\manage\gui\ViewMode;
 
 class DisplayScheme {
 	private $overviewDisplayStructure;
@@ -154,6 +158,40 @@ class DisplayScheme {
 	 */
 	public function setEntryControlOrder(ControlOrder $entryControlOrder = null) {
 		$this->entryControlOrder = $entryControlOrder;
+	}
+	
+	/**
+	 * @param EiGui $eiGui
+	 * @return EiGuiViewFactory
+	 */
+	public function createEiGuiViewFactory(EiGui $eiGui, GuiDefinition $guiDefinition): EiGuiViewFactory {
+		$displayStructure = null;
+		switch ($eiGui->getViewMode()) {
+			case ViewMode::BULKY_READ:
+				$displayStructure = $this->getDetailDisplayStructure() ?? $this->getBulkyDisplayStructure();
+				break;
+			case ViewMode::BULKY_EDIT:
+				$displayStructure = $this->getEditDisplayStructure() ?? $this->getBulkyDisplayStructure();
+				break;
+			case ViewMode::BULKY_ADD:
+				$displayStructure = $this->getAddDisplayStructure() ?? $this->getBulkyDisplayStructure();
+				break;
+			case ViewMode::COMPACT_READ:
+			case ViewMode::COMPACT_EDIT:
+			case ViewMode::COMPACT_ADD:
+				$displayStructure = $this->getOverviewDisplayStructure();
+				break;
+		}
+		
+		if ($displayStructure === null) {
+			$displayStructure = $guiDefinition->createDefaultDisplayStructure($eiGui);
+		} else {
+			$displayStructure = $guiDefinition->purifyDisplayStructure($displayStructure, $eiGui);
+		}
+		
+		$displayStructure = $displayStructure->whitoutAutonomics();
+		
+		return new CommonEiGuiViewFactory($eiGui, $guiDefinition, $displayStructure);
 	}
 	
 	/**

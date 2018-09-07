@@ -33,6 +33,7 @@ use n2n\persistence\orm\util\NestedSetUtils;
 use n2n\persistence\orm\util\NestedSetStrategy;
 use n2n\util\ex\IllegalStateException;
 use rocket\core\model\Rocket;
+use rocket\ei\util\model\Eiu;
 
 class AddModel implements Dispatchable  {
 	private static function _annos(AnnoInit $ai) {
@@ -125,7 +126,7 @@ class AddModel implements Dispatchable  {
 			$eiEntityObj->refreshId();
 			$eiEntityObj->setPersistent(true);
 			
-			$identityString = (new EiuFrame($this->eiFrame))->createIdentityString($eiObject);
+			$identityString = (new Eiu($this->eiFrame))->frame()->createIdentityString($eiObject);
 			$messageContainer->addInfoCode('ei_impl_added_info', array('entry' => $identityString));
 			
 			return $eiObject;
@@ -140,7 +141,7 @@ class AddModel implements Dispatchable  {
 		$draftManager->persist($draft, $draftDefinition);
 		$draftManager->flush();
 		
-		$identityString = (new EiuFrame($this->eiFrame))->createIdentityString($eiObject);
+		$identityString = (new Eiu($this->eiFrame))->frame()->createIdentityString($eiObject);
 		$messageContainer->addInfoCode('ei_impl_added_draft_info', array('entry' => $identityString));
 		
 		return $eiObject;

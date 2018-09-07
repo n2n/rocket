@@ -31,6 +31,7 @@ use n2n\impl\web\ui\view\html\HtmlElement;
 use rocket\impl\ei\component\prop\ci\ContentItemsEiProp;
 use rocket\ei\manage\gui\ui\DisplayItem;
 use n2n\util\ex\IllegalStateException;
+use rocket\ei\util\model\Eiu;
 
 class ContentItemGuiField implements GuiField {
 	private $label;
@@ -109,7 +110,7 @@ class ContentItemGuiField implements GuiField {
 			return $this->createCompactOutputUiComponent($view);
 		}
 		
-		$targetUtils = new EiuFrame($this->targetEiFrame);
+		$targetUtils = (new Eiu($this->targetEiFrame))->frame();
 		$panelEiPropPath = ContentItemsEiProp::getPanelEiPropPath();
 		
 		$groupedEiuEntries = array();
@@ -136,7 +137,7 @@ class ContentItemGuiField implements GuiField {
 	public function createCompactOutputUiComponent(HtmlView $view) {
 	
 		
-		$targetUtils = new EiuFrame($this->targetEiFrame);
+		$targetUtils = (new Eiu($this->targetEiFrame))->frame();
 		$panelEiPropPath = ContentItemsEiProp::getPanelEiPropPath();
 		
 		$groupedUiComponents = array();

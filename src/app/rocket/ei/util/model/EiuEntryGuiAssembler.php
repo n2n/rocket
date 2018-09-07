@@ -29,8 +29,8 @@ class EiuEntryGuiAssembler {
 	private $eiuEntryGui;
 	private $eiuAnalyst;
 	
-	public function __construct(EiEntryGuiAssembler $eiEntryGuiAssembler, EiuEntryGui $eiuEntryGui = null,
-			EiuAnalyst $eiuAnalyst = null) {
+	public function __construct(EiEntryGuiAssembler $eiEntryGuiAssembler, ?EiuEntryGui $eiuEntryGui,
+			EiuAnalyst $eiuAnalyst) {
 		$this->eiEntryGuiAssembler = $eiEntryGuiAssembler;
 		$this->eiuEntryGui = $eiuEntryGui;
 		$this->eiuAnalyst = $eiuAnalyst;

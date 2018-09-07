@@ -27,6 +27,7 @@ use rocket\ei\manage\frame\CriteriaConstraint;
 use rocket\ei\manage\mapping\EiEntryConstraint;
 use n2n\reflection\ArgUtils;
 use rocket\user\bo\EiGrant;
+use rocket\ei\manage\security\privilege\PrivilegeDefinition;
 
 class ConstraintCache {
 	/**
@@ -43,7 +44,7 @@ class ConstraintCache {
 	 */
 	private $eiEntryConstraints = array();
 	
-	function __construct(EiGrant $eiGrant, PrivilegeDefinition $privilegeDefinition, SecurityFilterDefinition $securityFilterDefinition) { {
+	function __construct(EiGrant $eiGrant, PrivilegeDefinition $privilegeDefinition, SecurityFilterDefinition $securityFilterDefinition) {
 		$this->securityFilterDefinition = $securityFilterDefinition;
 	}
 	
@@ -91,7 +92,7 @@ class ConstraintCache {
 	
 	/**
 	 * @param EiGrantPrivilege $eiGrantPrivilege
-	 * @return \rocket\ei\manage\security\privilege\data\EiEntryConstraint
+	 * @return \rocket\ei\manage\security\privilege\data\PrivilegeSetting
 	 */
 	function getPrivilegeSetting(EiGrantPrivilege $eiGrantPrivilege) {
 		$objHash = spl_object_hash($eiGrantPrivilege);

@@ -93,12 +93,8 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 		return DisplayItem::TYPE_SIMPLE_GROUP;
 	}
 	
-	public function getGuiProp(): ?GuiProp {
+	public function buildGuiProp(Eiu $eiu): ?GuiProp {
 		return $this;
-	}
-	
-	public function getGuiPropFork(): ?GuiPropFork {
-		return null;
 	}
 	
 	/**
@@ -112,7 +108,7 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 		$targetEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame);
 		
 		return new RelationFilterProp($this->getLabelLstr(), $this->getEntityProperty(),
-				new EiuFrame($targetEiFrame), 
+				(new Eiu($targetEiFrame))->frame(), 
 				new class($targetEiFrame) implements TargetFilterDef {
 					private $targetEiFrame;
 					

@@ -84,7 +84,7 @@ class RocketUserEiPermissionManager implements EiPermissionManager {
 			return;
 		}
 		
-		$eiGrant = $this->findEiGrant($eiMask);
+		$eiGrant = $this->findEiGrant($eiMask->getEiTypePath());
 		if ($eiGrant === null) {
 			throw new InaccessibleEiCommandPathException();
 		}

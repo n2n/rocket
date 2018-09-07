@@ -64,7 +64,7 @@ class EiuFrame {
 	private $eiFrame;
 	private $eiuAnalyst;
 	
-	public function __construct(EiFrame $eiFrame, EiuAnalyst $eiuAnalyst = null) {
+	public function __construct(EiFrame $eiFrame, EiuAnalyst $eiuAnalyst) {
 		$this->eiFrame = $eiFrame;
 		$this->eiuAnalyst = $eiuAnalyst;
 	}
@@ -415,7 +415,8 @@ class EiuFrame {
 	private function createEiuEntryTypeForm(EiType $eiType, EiEntry $eiEntry, PropertyPath $contextPropertyPath = null) {
 		$eiMask = $this->getEiFrame()->determineEiMask($eiType);
 		$eiGui = new EiGui($this->eiFrame, $eiEntry->isNew() ? ViewMode::BULKY_ADD : ViewMode::BULKY_EDIT);
-		$eiGui->init($eiMask->createEiGuiViewFactory($eiGui));
+		$eiGui->init($eiMask->getDisplayScheme()->createEiGuiViewFactory($eiGui,
+				$this->eiFrame->getManageState()->getDef()->getGuiDefinition($eiMask)));
 		$eiEntryGui = $eiGui->createEiEntryGui($eiEntry);
 		
 		if ($contextPropertyPath === null) {
@@ -425,7 +426,7 @@ class EiuFrame {
 		$eiEntryGui->setContextPropertyPath($contextPropertyPath->ext(
 				new PropertyPathPart('eiuEntryTypeForms', true, $eiType->getId()))->ext('dispatchable'));
 		
-		return new EiuEntryTypeForm(new EiuEntryGui($eiEntryGui));
+		return new EiuEntryTypeForm(new EiuEntryGui($eiEntryGui, null, $this->eiuAnalyst));
 	}
 	
 	public function remove(EiObject $eiObject) {
@@ -509,6 +510,14 @@ class EiuFrame {
 	}
 	
 	/**
+	 * @param string|EiCommand|EiCommandPath $eiCommandPath
+	 * @return boolean
+	 */
+	public function isExecutableBy($eiCommandPath) {
+		return $this->eiFrame->getEiExecution()->isExecutableBy(EiCommandPath::create($eiCommandPath));
+	}
+	
+	/**
 	 * 
 	 * @return \rocket\ei\manage\generic\ScalarEiProperty[]
 	 */
@@ -552,9 +561,11 @@ class EiuFrame {
 	public function newGui(int $viewMode) {
 		$eiGui = new EiGui($this->eiFrame, $viewMode);
 		
-		$eiGui->init($this->eiFrame->getContextEiEngine()->getEiMask()->createEiGuiViewFactory($eiGui));
+		$eiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
+		$eiGui->init($eiMask->getDisplayScheme()->createEiGuiViewFactory($eiGui, 
+				$this->eiFrame->getManageState()->getDef()->getGuiDefinition($eiMask)));
 		
-		return new EiuGui($eiGui, $this);
+		return new EiuGui($eiGui, $this, $this->eiuAnalyst);
 	}
 	
 	/**
@@ -658,7 +669,8 @@ class EiuFrame {
 			$eiMask = $this->getContextEiMask();
 		}
 
-		return $eiMask->createIdentityString($eiObject, $n2nLocale ?? $this->getN2nLocale());
+		return $this->eiFrame->getManageState()->getDef()->getGuiDefinition($eiMask)
+				->createIdentityString($eiObject, $n2nLocale ?? $this->getN2nLocale());
 	}
 
 	/**

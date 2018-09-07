@@ -81,7 +81,7 @@ class ToManySelectGuiField implements GuiField {
 		$criteria->select('COUNT(e)');
 		$num = $criteria->toQuery()->fetchSingle();
 
-		$targetEiuFrame = new EiuFrame($this->targetEiFrame);
+		$targetEiuFrame = (new Eiu($this->targetEiFrame))->frame();
 		if ($num == 1) {
 			$label = $num . ' ' . $targetEiuFrame->getGenericLabel();
 		} else {

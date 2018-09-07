@@ -78,6 +78,14 @@ class FullyGrantedEiExecution implements EiExecution {
 	
 	/**
 	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\security\EiExecution::isExecutableBy()
+	 */
+	public function isExecutableBy(EiCommandPath $eiCommandPath): bool {
+		return true;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\security\EiExecution::createEiEntryAccess()
 	 */
 	public function createEiEntryAccess(EiEntry $eiEntry): EiEntryAccess {

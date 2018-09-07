@@ -127,16 +127,8 @@ abstract class PropertyEditableEiPropAdapter extends PropertyDisplayableEiPropAd
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\PropertyDisplayableEiPropAdapter::getGuiProp()
 	 */
-	public function getGuiProp(): ?GuiProp {
+	public function buildGuiProp(Eiu $eiu): ?GuiProp {
 		return $this;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\PropertyDisplayableEiPropAdapter::getGuiPropFork()
-	 */
-	public function getGuiPropFork(): ?GuiPropFork {
-		return null;
 	}
 	
 	/**

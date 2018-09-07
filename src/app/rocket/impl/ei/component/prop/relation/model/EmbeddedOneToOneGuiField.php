@@ -29,6 +29,7 @@ use rocket\ei\util\model\EiuFrame;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\manage\gui\ui\DisplayItem;
 use n2n\impl\web\ui\view\html\HtmlElement;
+use rocket\ei\util\model\Eiu;
 
 class EmbeddedOneToOneGuiField implements GuiField {
 	private $label;
@@ -86,7 +87,7 @@ class EmbeddedOneToOneGuiField implements GuiField {
 		$targetRelationEntry = $this->toOneEiField->getValue();
 		if ($targetRelationEntry === null) return null;
 		
-		$targetUtils = new EiuFrame($this->targetEiFrame);
+		$targetUtils = (new Eiu($this->targetEiFrame))->frame();
 		
 		if (!$this->reduced) {
 			$eiuEntry = $targetUtils->entry($targetRelationEntry->toEiEntry($targetUtils));

@@ -50,6 +50,7 @@ use rocket\ei\component\EiFrameFactory;
 use n2n\web\http\controller\ControllerContext;
 use rocket\ei\manage\gui\EiEntryGui;
 use n2n\impl\web\ui\view\html\HtmlView;
+use rocket\ei\manage\gui\EiGui;
 
 class EiEngine {
 	private $eiMask;
@@ -197,13 +198,9 @@ class EiEngine {
 		$mappingFactory->copyValues($eiFrame, $from, $to, $eiPropPaths);
 	}
 	
-	public function getGuiDefinition(): GuiDefinition {
-		if ($this->guiDefinition === null) {
-			$guiFactory = new GuiFactory($this->eiMask);
-			$this->guiDefinition = $guiFactory->createGuiDefinition();
-		}
-	
-		return $this->guiDefinition;
+	public function createGuiDefinition(N2nContext $n2nContext) {
+		$guiFactory = new GuiFactory($this->eiMask);
+		return $guiFactory->createGuiDefinition($n2nContext);
 	}
 	
 	public function createEiGui(int $viewMode, DisplayStructure $displayStructure) {
@@ -212,7 +209,7 @@ class EiEngine {
 			$eiMask = $this->eiType->getEiTypeExtensionCollection()->getOrCreateDefault();
 		}
 		
-		$guiFactory = new GuiFactory($this->getEiPropCollection(), $this->getEiModificatorCollection());
+		$guiFactory = new GuiFactory($this->eiMask);
 		return $guiFactory->createEiEntryGui($eiMask, $eiuEntry, $viewMode, $guiIdPaths);
 	}
 	
@@ -273,11 +270,21 @@ class EiEngine {
 	}
 	
 	/**
+	 * @param EiGui $eiGui
+	 * @param HtmlView $view
+	 * @return \rocket\ei\manage\control\Control[]
+	 */
+	public function createEiGuiOverallControls(EiGui $eiGui, HtmlView $view) {
+		return (new GuiFactory($this->eiMask))->createOverallControls($eiGui, $view);
+	}
+	
+	/**
 	 * @param EiEntryGui $eiEntryGui
 	 * @param HtmlView $view
 	 * @return \rocket\ei\manage\control\Control[]
 	 */
 	public function createEiEntryGuiControls(EiEntryGui $eiEntryGui, HtmlView $view) {
-		return (new GuiFactory($this->eiMask))->createEiEntryGuiControls($eiEntryGui, $view);
+		return (new GuiFactory($this->eiMask))->createEntryControls($eiEntryGui, $view);
 	}
+	
 }

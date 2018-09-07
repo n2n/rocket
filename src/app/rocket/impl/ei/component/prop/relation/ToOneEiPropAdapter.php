@@ -66,12 +66,8 @@ abstract class ToOneEiPropAdapter extends SimpleRelationEiPropAdapter implements
 		return $this->displaySettings;
 	}
 	
-	public function getGuiProp(): ?GuiProp {
+	public function buildGuiProp(Eiu $eiu): ?GuiProp {
 		return $this;
-	}
-	
-	public function getGuiPropFork(): ?GuiPropFork {
-		return null;
 	}
 	
 	/**

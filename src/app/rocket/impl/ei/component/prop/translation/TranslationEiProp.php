@@ -69,8 +69,9 @@ use rocket\impl\ei\component\prop\translation\command\TranslationCopyCommand;
 use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
+use rocket\ei\component\prop\GuiEiPropFork;
 
-class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, FieldEiProp, RelationEiProp, 
+class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiPropFork, FieldEiProp, RelationEiProp, 
 		Readable, Writable, GuiPropFork, SortableEiPropFork, QuickSearchableEiProp {
 	private $n2nLocaleDefs = array();
 	private $minNumTranslations = 0;
@@ -151,22 +152,18 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 		throw new IllegalStateException();
 	}
 
-	/* (non-PHPdoc)
-	 * @see \rocket\ei\component\prop\EiProp::getGuiProp()
-	 */
-	public function getGuiProp(): ?GuiProp {
-		return null;
-	}
-
+	private $forkedGuiDefinition;
+	
 	/* (non-PHPdoc)
 	 * @see \rocket\ei\component\prop\EiProp::getGuiPropFork()
 	 */
-	public function getGuiPropFork(): ?GuiPropFork {
+	public function buildGuiPropFork(Eiu $eiu): ?GuiPropFork {
+		$this->forkedGuiDefinition = $eiu->context()->engine($this->eiPropRelation->getTargetEiMask())->getGuiDefinition();
 		return $this;
 	}
 
 	public function getForkedGuiDefinition(): GuiDefinition {
-		return $this->eiPropRelation->getTargetEiMask()->getEiEngine()->getGuiDefinition();
+		return $this->forkedGuiDefinition;
 	}
 	
 	public function createGuiFieldFork(Eiu $eiu): GuiFieldFork {
@@ -179,7 +176,7 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 		} else {
 			$targetEiFrame = $this->eiPropRelation->createTargetEditPseudoEiFrame($eiFrame, $eiEntry);
 		}
-		$targetEiuFrame = new EiuFrame($targetEiFrame);
+		$targetEiuFrame = (new Eiu($targetEiFrame))->frame();
 		
 		$toManyEiField = $eiEntry->getEiField(EiPropPath::from($this));
 		
@@ -195,7 +192,7 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 			$targetRelationEntries[(string) $n2nLocale] = $targetRelationEntry;
 		}
 		
-		$targetGuiDefinition = $targetEiuFrame->getEiFrame()->getContextEiEngine()->getGuiDefinition();
+		$targetGuiDefinition = $targetEiuFrame->getContextEiuEngine()->getGuiDefinition();
 		$translationGuiField = new TranslationGuiFieldFork($toManyEiField, $targetGuiDefinition, 
 				$this->labelLstr->t($eiFrame->getN2nContext()->getN2nLocale()), $this->minNumTranslations);
 		if ($this->copyCommand !== null) {

@@ -397,7 +397,8 @@ class EiFrame {
 	
 		$this->ensureDetailEnabled();
 		
-		return $this->getContextEiEngine()->getEiMask()->createIdentityString($eiObject, $this->getN2nContext()->getN2nLocale());
+		return $this->manageState->getDef()->getGuiDefinition($this->contextEiEngine->getEiMask())
+				->createIdentityString($eiObject, $this->getN2nContext()->getN2nLocale());
 	}
 	
 	public function setDetailUrlExt(Url $detailUrlExt) {

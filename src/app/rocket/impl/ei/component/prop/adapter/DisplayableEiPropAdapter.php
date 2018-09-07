@@ -55,14 +55,10 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 	}
 	
 	
-	public function getGuiProp(): ?GuiProp {
+	public function buildGuiProp(Eiu $eiu): ?GuiProp {
 		return $this;
 	}
 	
-	public function getGuiPropFork(): ?GuiPropFork {
-		return null;
-	}
-
 	public function getDisplayLabel(): string {
 		return $this->getLabelLstr();
 	}

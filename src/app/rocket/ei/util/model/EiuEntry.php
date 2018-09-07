@@ -289,15 +289,17 @@ class EiuEntry {
 	 * @return \rocket\ei\util\model\EiuEntryGuiAssembler
 	 */
 	public function newEntryGuiAssembler(int $viewMode, bool $determineEiMask = true) {
+		$eiFrame = $this->getEiuFrame()->getEiFrame();
 		$eiMask = null;
 		if ($determineEiMask) {
-			$eiMask = $this->determineEiMask();
+			$eiMask = $eiFrame->determineEiMask($this->eiObject->getEiEntityObj()->getEiType());
 		} else {
-			$eiMask = $this->getEiFrame()->getContextEiEngine()->getEiMask();
+			$eiMask = $eiFrame->getContextEiEngine()->getEiMask();
 		}
 		
-		$eiGui = new EiGui($this->getEiuFrame()->getEiFrame(), $viewMode);
-		$eiGui->init($eiMask->createEiGuiViewFactory($eiGui));
+		$eiGui = new EiGui($eiFrame, $viewMode);
+		$eiGui->init($eiMask->getDisplayScheme()->createEiGuiViewFactory($eiGui, 
+				$eiFrame->getManageState()->getDef()->getGuiDefinition($eiMask)));
 		$eiEntryGuiAssembler = new EiEntryGuiAssembler(new EiEntryGui($eiGui, $this->eiEntry));
 		
 // 		if ($parentEiEntryGui->isInitialized()) {
@@ -306,7 +308,7 @@ class EiuEntry {
 		
 // 		$parentEiEntryGui->registerEiEntryGuiListener(new InitListener($eiEntryGuiAssembler));
 		
-		return new EiuEntryGuiAssembler($eiEntryGuiAssembler);
+		return new EiuEntryGuiAssembler($eiEntryGuiAssembler, null, $this->eiuAnalyst);
 	}
 	
 	/**

@@ -19,6 +19,7 @@ use rocket\ei\util\privilege\EiuPrivilegeForm;
 use rocket\ei\manage\security\privilege\data\PrivilegeSetting;
 use rocket\ei\util\sort\EiuSortForm;
 use rocket\ei\manage\critmod\sort\SortSettingGroup;
+use rocket\ei\manage\ManageState;
 
 class EiuEngine {
 	private $eiEngine;
@@ -156,32 +157,17 @@ class EiuEngine {
 	}
 	
 	/**
-	 * @var \rocket\ei\manage\critmod\filter\FilterDefinition
+	 * @return ManageState
 	 */
-	private $filterDefinition;
-	/**
-	 * @var \rocket\ei\manage\critmod\sort\SortDefinition
-	 */
-	private $sortDefinition;
-	/**
-	 * @var \rocket\ei\manage\security\filter\SecurityFilterDefinition
-	 */
-	private $securityFilterDefinition;
-	/**
-	 * @var \rocket\ei\manage\security\privilege\PrivilegeDefinition
-	 */
-	private $privilegeDefinition;
+	private function getManageState() {
+		return $this->eiuAnalyst->getN2nContext(true)->lookup(ManageState::class);
+	}
 	
 	/**
 	 * @return \rocket\ei\manage\critmod\filter\FilterDefinition
 	 */
 	public function getFilterDefinition() {
-		if ($this->filterDefinition !== null) {
-			return $this->filterDefinition;	
-		}
-		
-		return $this->filterDefinition = $this->eiEngine->createFilterDefinition(
-				$this->eiuAnalyst->getN2nContext(true));
+		return $this->getManageState()->getDef()->getFilterDefinition($this->eiEngine->getEiMask());
 	}
 	
 	/**
@@ -195,12 +181,7 @@ class EiuEngine {
 	 * @return \rocket\ei\manage\security\filter\SecurityFilterDefinition
 	 */
 	public function getSecurityFilterDefinition() {
-		if ($this->securityFilterDefinition !== null) {
-			return $this->securityFilterDefinition;
-		}
-		
-		return $this->securityFilterDefinition = $this->eiEngine->createSecurityFilterDefinition(
-				$this->eiuAnalyst->getN2nContext(true));
+		return $this->getManageState()->getDef()->getSecurityFilterDefinition($this->eiEngine->getEiMask());
 	}
 	
 	/**
@@ -215,12 +196,7 @@ class EiuEngine {
 	 * @return \rocket\ei\manage\critmod\sort\SortDefinition
 	 */
 	public function getSortDefinition() {
-		if ($this->sortDefinition !== null) {
-			return $this->sortDefinition;
-		}
-		
-		return $this->sortDefinition = $this->eiEngine->createSortDefinition(
-				$this->eiuAnalyst->getN2nContext(true));
+		return $this->getManageState()->getDef()->getSortDefinition($this->eiEngine->getEiMask());
 	}
 	
 	/**
@@ -234,12 +210,14 @@ class EiuEngine {
 	 * @return \rocket\ei\manage\security\privilege\PrivilegeDefinition
 	 */
 	public function getPrivilegeDefinition() {
-		if ($this->privilegeDefinition !== null) {
-			return $this->privilegeDefinition;
-		}
-		
-		return $this->privilegeDefinition = $this->eiEngine->createPrivilegeDefinition(
-				$this->eiuAnalyst->getN2nContext(true));
+		return $this->getManageState()->getDef()->getPrivilegeDefinition($this->eiEngine->getEiMask());
+	}
+	
+	/**
+	 * @return \rocket\ei\manage\gui\GuiDefinition
+	 */
+	public function getGuiDefinition() {
+		return $this->getManageState()->getDef()->getGuiDefinition($this->eiEngine->getEiMask());
 	}
 	
 	/**

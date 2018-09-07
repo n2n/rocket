@@ -39,6 +39,7 @@ use rocket\ei\EiCommandPath;
 
 class ManageState implements RequestScoped {
 	private $n2nContext;
+	private $def;
 	private $selectedLaunchPad;
 	private $user;
 	private $eiPermissionManager;
@@ -46,6 +47,10 @@ class ManageState implements RequestScoped {
 	private $entityManager;
 	private $draftManager;
 	private $eiLifecycleMonitor;
+	
+	function __construct() {
+		$this->def = new ManagedDef($this);
+	}
 	
 	private function _init(N2nContext $n2nContext, LoginContext $loginContext, Rocket $rocket) {
 		$this->n2nContext = $n2nContext;
@@ -60,6 +65,13 @@ class ManageState implements RequestScoped {
 	 */
 	public function getN2nContext() {
 		return $this->n2nContext;
+	}
+	
+	/**
+	 * @return \rocket\ei\manage\ManagedDef
+	 */
+	public function getDef() {
+		return $this->def;
 	}
 	
 	/**

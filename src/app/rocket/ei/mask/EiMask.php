@@ -49,6 +49,8 @@ use rocket\ei\manage\control\IconType;
 use rocket\ei\EiTypeExtension;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\spec\TypePath;
+use rocket\ei\manage\ManageState;
+use rocket\ei\manage\gui\GuiDefinition;
 
 class EiMask {
 	private $eiMaskDef;
@@ -151,6 +153,13 @@ class EiMask {
 	 */
 	public function getDef() {
 		return $this->eiMaskDef;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getIdentityStringPattern() {
+		return $this->eiMaskDef->getIdentityStringPattern();
 	}
 	
 	/**
@@ -323,82 +332,37 @@ class EiMask {
 // 		return !$this->eiEngine->getDraftDefinition()->isEmpty();
 	}
 	
-	/**
-	 * @param EiObject $eiObject
-	 * @param N2nLocale $n2nLocale
-	 * @return string
-	 */
-	private function createDefaultIdentityString(EiObject $eiObject, N2nLocale $n2nLocale) {
-		$idPatternPart = null;
-		$namePatternPart = null;
-		
-		foreach ($this->eiEngine->getGuiDefinition()->getStringRepresentableGuiProps() as $guiIdPathStr => $guiProp) {
-			if ($guiIdPathStr == $this->eiEngine->getEiMask()->getEiType()->getEntityModel()->getIdDef()->getPropertyName()) {
-				$idPatternPart = SummarizedStringBuilder::createPlaceholder($guiIdPathStr);
-			} else {
-				$namePatternPart = SummarizedStringBuilder::createPlaceholder($guiIdPathStr);
-			}
-			
-			if ($namePatternPart !== null) break;
-		}
-		
-		if ($idPatternPart === null) {
-			$idPatternPart = $eiObject->getEiEntityObj()->hasId() ? 
-					$this->eiType->idToPid($eiObject->getEiEntityObj()->getId()) : 'new';
-		}
-		
-		if ($namePatternPart === null) {
-			$namePatternPart = $this->getLabelLstr()->t($n2nLocale);
-		}
-		
-		return $this->eiEngine->getGuiDefinition()->createIdentityString($namePatternPart . ' #' . $idPatternPart, $eiObject, $n2nLocale);
-	}
 	
-	/**
-	 * @param EiObject $eiObject
-	 * @param N2nLocale $n2nLocale
-	 * @return string
-	 */
-	public function createIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): string {
-		$identityStringPattern = $this->eiMaskDef->getIdentityStringPattern();
-		
-		if ($identityStringPattern === null) {
-			return $this->createDefaultIdentityString($eiObject, $n2nLocale);
-		}
-		
-		return $this->eiEngine->getGuiDefinition()
-				->createIdentityString($identityStringPattern, $eiObject, $n2nLocale);
-	}
 	
-	/**
-	 * @param array $controls
-	 * @param EiGui $eiGui
-	 * @param HtmlView $view
-	 * @return array
-	 */
-	public function sortOverallControls(array $controls, EiGui $eiGui, HtmlView $view): array {
-// 		$eiu = new Eiu($eiGui);
-// 		$eiPermissionManager = $eiu->frame()->getEiFrame()->getManageState()->getEiPermissionManager();
+// 	/**
+// 	 * @param array $controls
+// 	 * @param EiGui $eiGui
+// 	 * @param HtmlView $view
+// 	 * @return array
+// 	 */
+// 	public function sortOverallControls(array $controls, EiGui $eiGui, HtmlView $view): array {
+// // 		$eiu = new Eiu($eiGui);
+// // 		$eiPermissionManager = $eiu->frame()->getEiFrame()->getManageState()->getEiPermissionManager();
 		
-// 		$controls = array();
+// // 		$controls = array();
 		
-// 		foreach ($this->eiEngine->getEiCommandCollection() as $eiCommandId => $eiCommand) {
-// 			if (!($eiCommand instanceof OverallControlComponent)
-// 					|| !$eiPermissionManager->isEiCommandAccessible($eiCommand)) continue;
+// // 		foreach ($this->eiEngine->getEiCommandCollection() as $eiCommandId => $eiCommand) {
+// // 			if (!($eiCommand instanceof OverallControlComponent)
+// // 					|| !$eiPermissionManager->isEiCommandAccessible($eiCommand)) continue;
 				
-// 			$controls = $eiCommand->createOverallControls($eiu, $view);
-// 			ArgUtils::valArrayReturn($controls, $eiCommand, 'createOverallControls', Control::class);
-// 			foreach ($controls as $controlId => $control) {
-// 				$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;
-// 			}
-// 		}
+// // 			$controls = $eiCommand->createOverallControls($eiu, $view);
+// // 			ArgUtils::valArrayReturn($controls, $eiCommand, 'createOverallControls', Control::class);
+// // 			foreach ($controls as $controlId => $control) {
+// // 				$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;
+// // 			}
+// // 		}
 		
-		if (null !== ($overallControlOrder = $this->displayScheme->getOverallControlOrder())) {
-			return $overallControlOrder->sort($controls);
-		}
+// 		if (null !== ($overallControlOrder = $this->displayScheme->getOverallControlOrder())) {
+// 			return $overallControlOrder->sort($controls);
+// 		}
 	
-		return $controls;
-	}
+// 		return $controls;
+// 	}
 	
 
 	
@@ -427,42 +391,7 @@ class EiMask {
 // 		return $controls;
 // 	}
 	
-	/**
-	 * @param EiGui $eiGui
-	 * @return EiGuiViewFactory
-	 */
-	public function createEiGuiViewFactory(EiGui $eiGui): EiGuiViewFactory {
-		$displayStructure = null;
-		switch ($eiGui->getViewMode()) {
-			case ViewMode::BULKY_READ:
-				$displayStructure = $this->getDisplayScheme()->getDetailDisplayStructure()
-						?? $this->displayScheme->getBulkyDisplayStructure();
-				break;
-			case ViewMode::BULKY_EDIT:
-				$displayStructure = $this->getDisplayScheme()->getEditDisplayStructure()
-						?? $this->displayScheme->getBulkyDisplayStructure();
-				break;
-			case ViewMode::BULKY_ADD:
-				$displayStructure = $this->getDisplayScheme()->getAddDisplayStructure()
-						?? $this->displayScheme->getBulkyDisplayStructure();
-				break;
-			case ViewMode::COMPACT_READ:
-			case ViewMode::COMPACT_EDIT:
-			case ViewMode::COMPACT_ADD:
-				$displayStructure = $this->getDisplayScheme()->getOverviewDisplayStructure();
-				break;
-		}
-		
-		if ($displayStructure === null) {
-			$displayStructure = $this->eiEngine->getGuiDefinition()->createDefaultDisplayStructure($eiGui);
-		} else {
-			$displayStructure = $this->eiEngine->getGuiDefinition()->purifyDisplayStructure($displayStructure, $eiGui);
-		}
-		
-		$displayStructure = $displayStructure->whitoutAutonomics();
-		
-		return new CommonEiGuiViewFactory($eiGui, $this->eiEngine->getGuiDefinition(), $displayStructure);
-	}
+	
 	
 	/**
 	 * @return \rocket\ei\mask\EiMask

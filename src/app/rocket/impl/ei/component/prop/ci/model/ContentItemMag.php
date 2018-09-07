@@ -39,6 +39,7 @@ use rocket\impl\ei\component\prop\relation\model\mag\ToManyMag;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use rocket\impl\ei\component\prop\ci\ContentItemsEiProp;
 use n2n\web\dispatch\mag\UiOutfitter;
+use rocket\ei\util\model\Eiu;
 
 class ContentItemMag extends MagAdapter {
 	private $panelConfigs = array();
@@ -86,7 +87,7 @@ class ContentItemMag extends MagAdapter {
 	}
 	
 	private function groupRelationEntries(array $targetRelationEntries) {
-		$targetEiuFrame = new EiuFrame($this->targetEditEiFrame);
+		$targetEiuFrame = (new Eiu($this->targetEditEiFrame))->frame();
 		$panelEiPropPath = ContentItemsEiProp::getPanelEiPropPath();
 		$filtered = array();
 		foreach ($targetRelationEntries as $targetRelationEntry) {

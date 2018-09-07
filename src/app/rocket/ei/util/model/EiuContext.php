@@ -9,6 +9,7 @@ use rocket\ei\EiType;
 use rocket\ei\component\EiComponent;
 use rocket\spec\TypePath;
 use rocket\ei\EiTypeExtension;
+use rocket\ei\mask\EiMask;
 
 class EiuContext {
 	private $spec;
@@ -61,6 +62,10 @@ class EiuContext {
 	 */
 	function mask($eiTypeArg, bool $required = true) {
 		ArgUtils::valType($eiTypeArg, ['string', 'object', TypePath::class, \ReflectionClass::class, EiType::class, EiComponent::class]);
+		
+		if ($eiTypeArg instanceof EiMask) {
+			return new EiuMask($eiTypeArg, null, $this->eiuAnalyst);
+		}
 		
 		if ($eiTypeArg instanceof EiType) {
 			return new EiuMask($eiTypeArg->getEiMask(), null, $this->eiuAnalyst);

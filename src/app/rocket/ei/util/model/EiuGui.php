@@ -25,7 +25,7 @@ class EiuGui {
 	 * @param EiuFrame $eiuFrame
 	 * @param EiuAnalyst $eiuAnalyst
 	 */
-	public function __construct(EiGui $eiGui, EiuFrame $eiuFrame = null, EiuAnalyst $eiuAnalyst = null) {
+	public function __construct(EiGui $eiGui, ?EiuFrame $eiuFrame = null, EiuAnalyst $eiuAnalyst) {
 		$this->eiGui = $eiGui;
 		$this->eiuFrame = $eiuFrame;
 		$this->eiuAnalyst = $eiuAnalyst;

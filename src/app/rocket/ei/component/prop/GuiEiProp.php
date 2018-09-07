@@ -22,16 +22,11 @@
 namespace rocket\ei\component\prop;
 
 use rocket\ei\manage\gui\GuiProp;
-use rocket\ei\manage\gui\GuiPropFork;
+use rocket\ei\util\model\Eiu;
 
 interface GuiEiProp extends EiProp {
 	/**
 	 * @return \rocket\ei\manage\gui\GuiProp|null null if not displayable
 	 */
-	public function getGuiProp(): ?GuiProp;
-	
-	/**
-	 * @return \rocket\ei\manage\gui\GuiPropFork|null null if not displayable
-	 */
-	public function getGuiPropFork(): ?GuiPropFork;
+	public function buildGuiProp(Eiu $eiu): ?GuiProp;
 }

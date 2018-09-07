@@ -91,17 +91,10 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ObjectProp
 	 * {@inheritDoc}
 	 * @see \rocket\ei\component\prop\GuiEiProp::getGuiProp()
 	 */
-	public function getGuiProp(): ?GuiProp {
+	public function buildGuiProp(Eiu $eiu): ?GuiProp {
 		return $this;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\GuiEiProp::getGuiPropFork()
-	 */
-	public function getGuiPropFork(): ?GuiPropFork {
-		return null;
-	}
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\component\prop\FieldEiProp::isEiField()

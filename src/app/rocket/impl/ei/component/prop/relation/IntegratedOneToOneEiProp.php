@@ -54,8 +54,9 @@ use n2n\web\dispatch\mag\Mag;
 use rocket\ei\manage\gui\GuiFieldForkEditable;
 use rocket\ei\util\model\EiuEntryGuiAssembler;
 use rocket\ei\manage\gui\GuiDefinition;
+use rocket\ei\component\prop\GuiEiPropFork;
 
-class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropFork {
+class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiEiPropFork, GuiPropFork {
 	
 	public function __construct() {
 		parent::__construct();
@@ -117,12 +118,17 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropF
 		parent::setEntityProperty($entityProperty);
 	}
 	
-	public function getGuiPropFork(): ?GuiPropFork {
+	private $forkedGuiDefinition;
+	
+	public function buildGuiPropFork(Eiu $eiu): ?GuiPropFork {
+		$this->forkedGuiDefinition = $eiu->context()->engine($this->eiPropRelation->getTargetEiMask())
+				->getGuiDefinition();
+		
 		return $this;
 	}
 	
 	public function getForkedGuiDefinition(): GuiDefinition {
-		return $this->eiPropRelation->getTargetEiMask()->getEiEngine()->getGuiDefinition();
+		return $this->forkedGuiDefinition;
 	}
 	
 	public function buildEiField(Eiu $eiu) {
@@ -146,7 +152,7 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropF
 			$targetEiFrame = $this->eiPropRelation->createTargetEditPseudoEiFrame($eiFrame, $eiEntry);
 		}
 		
-		$targetEiuFrame = new EiuFrame($targetEiFrame);
+		$targetEiuFrame = (new Eiu($targetEiFrame))->frame();
 		
 		$eiuField = $eiu->field();
 		$targetRelationEntry = $eiuField->getValue();
@@ -194,7 +200,7 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropF
 	 * {@inheritDoc}
 	 * @see \rocket\ei\component\prop\GuiEiProp::getGuiProp()
 	 */
-	public function getGuiProp(): ?GuiProp {
+	public function buildGuiProp(Eiu $eiu): ?GuiProp {
 		return null;	
 	}
 
@@ -205,7 +211,6 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropF
 	public function getDraftProperty() {
 		throw new NotYetImplementedException();
 	}
-
 }
 
 class OneToOneGuiFieldFork implements GuiFieldFork {

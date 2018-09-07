@@ -61,8 +61,8 @@ class ToManyMag extends MagAdapter {
 			EiFrame $targetEditEiFrame, int $min, int $max = null) {
 		parent::__construct($label);
 	
-		$this->targetReadUtils = new EiuFrame($targetReadEiFrame);
-		$this->targetEditEiuFrame = new EiuFrame($targetEditEiFrame);
+		$this->targetReadUtils = (new Eiu($targetReadEiFrame))->frame();
+		$this->targetEditEiuFrame = (new Eiu($targetEditEiFrame))->frame();
 		$this->min = $min;
 		$this->max = $max;
 		

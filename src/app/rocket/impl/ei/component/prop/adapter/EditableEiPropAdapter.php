@@ -52,12 +52,8 @@ abstract class EditableEiPropAdapter extends DisplayableEiPropAdapter implements
 		return $eiPropConfigurator;
 	}
 
-	public function getGuiProp(): ?GuiProp {
+	public function buildGuiProp(Eiu $eiu): ?GuiProp {
 		return $this;
-	}
-
-	public function getGuiPropFork(): ?GuiPropFork {
-		return null;
 	}
 
 	public function buildGuiField(Eiu $eiu): ?GuiField {

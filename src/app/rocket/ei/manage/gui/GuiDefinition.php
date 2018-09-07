@@ -31,10 +31,25 @@ use rocket\ei\util\model\Eiu;
 use rocket\ei\manage\gui\ui\DisplayStructure;
 
 class GuiDefinition {	
+	private $identityStringPattern;
 	private $levelGuiProps = array();
 	private $levelEiPropPaths = array();
 	private $levelGuiPropForks = array();
 	private $levelIds = array();
+	
+	/**
+	 * @param string|null $identityStringPattern
+	 */
+	public function setIdentityStringPattern(?string $identityStringPattern) {
+		$this->identityStringPattern = $identityStringPattern;
+	}
+	
+	/**
+	 * @return string|null
+	 */
+	public function getIdentityStringPattern() {
+		return $this->identityStringPattern;
+	}
 	
 	/**
 	 * @param string $id
@@ -330,11 +345,57 @@ class GuiDefinition {
 	}
 	
 	/**
+	 * @param EiObject $eiObject
+	 * @param N2nLocale $n2nLocale
+	 * @return string
+	 */
+	private function createDefaultIdentityString(EiObject $eiObject, N2nLocale $n2nLocale) {
+		$eiType = $eiObject->getEiEntityObj()->getEiType();
+		
+		$idPatternPart = null;
+		$namePatternPart = null;
+		
+		foreach ($this->getStringRepresentableGuiProps() as $guiIdPathStr => $guiProp) {
+			if ($guiIdPathStr == $eiType->getEntityModel()->getIdDef()->getPropertyName()) {
+				$idPatternPart = SummarizedStringBuilder::createPlaceholder($guiIdPathStr);
+			} else {
+				$namePatternPart = SummarizedStringBuilder::createPlaceholder($guiIdPathStr);
+			}
+			
+			if ($namePatternPart !== null) break;
+		}
+		
+		if ($idPatternPart === null) {
+			$idPatternPart = $eiObject->getEiEntityObj()->hasId() ?
+			$eiType->idToPid($eiObject->getEiEntityObj()->getId()) : 'new';
+		}
+		
+		if ($namePatternPart === null) {
+			$namePatternPart = $this->getLabelLstr()->t($n2nLocale);
+		}
+		
+		return $this->createIdentityStringFromPattern($namePatternPart . ' #' . $idPatternPart, $eiObject, $n2nLocale);
+	}
+	
+	/**
+	 * @param EiObject $eiObject
+	 * @param N2nLocale $n2nLocale
+	 * @return string
+	 */
+	public function createIdentityString(EiObject $eiObject, N2nLocale $n2nLocale) {
+		if ($this->identityStringPattern === null) {
+			return $this->createDefaultIdentityString($eiObject, $n2nLocale);
+		}
+		
+		return $this->createIdentityStringFromPattern($this->identityStringPattern, $eiObject, $n2nLocale);
+	}
+	
+	/**
 	 * @param $entity
 	 * @param N2nLocale $n2nLocale
 	 * @return string
 	 */
-	public function createIdentityString(string $identityStringPattern, EiObject $eiObject, N2nLocale $n2nLocale): string {
+	public function createIdentityStringFromPattern(string $identityStringPattern, EiObject $eiObject, N2nLocale $n2nLocale): string {
 		$builder = new SummarizedStringBuilder($identityStringPattern, $n2nLocale);
 		$builder->replaceFields(array(), $this, $eiObject);
 		return $builder->__toString();

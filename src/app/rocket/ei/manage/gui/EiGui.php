@@ -5,10 +5,6 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\mapping\EiEntry;
 use n2n\reflection\ArgUtils;
-use rocket\ei\component\command\control\OverallControlComponent;
-use rocket\ei\util\model\Eiu;
-use rocket\ei\mask\model\ControlOrder;
-use rocket\ei\manage\control\Control;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\component\GuiFactory;
 
@@ -150,37 +146,25 @@ class EiGui {
 		return $view;
 	}
 	
+	/**
+	 * @param EiGuiListener $eiGuiListener
+	 */
 	public function registerEiGuiListener(EiGuiListener $eiGuiListener) {
 		$this->eiGuiListeners[spl_object_hash($eiGuiListener)] = $eiGuiListener;
 	}
 	
+	/**
+	 * @param EiGuiListener $eiGuiListener
+	 */
 	public function unregisterEiGuiListener(EiGuiListener $eiGuiListener) {
 		unset($this->eiGuiListeners[spl_object_hash($eiGuiListener)]);
 	}
 	
+	/**
+	 * @param HtmlView $view
+	 * @return \rocket\ei\manage\control\Control[]
+	 */
 	public function createOverallControls(HtmlView $view) {
-		$eiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
-		
-		$eiu = new Eiu($this);
-		
-		$controls = array();
-		
-		foreach ($eiMask->getEiCommandCollection() as $eiCommandId => $eiCommand) {
-			if (!($eiCommand instanceof OverallControlComponent)
-					|| !$this->eiFrame->getManageState()->getEiPermissionManager()->isEiCommandAccessible($eiCommand)) {
-				continue;
-			}
-
-			$entryControls = $eiCommand->createOverallControls($eiu, $view);
-			ArgUtils::valArrayReturn($entryControls, $eiCommand, 'createEntryControls', Control::class);
-			foreach ($entryControls as $controlId => $control) {
-				$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;
-			}
-		}
-		
-		$controls = $eiMask->sortOverallControls($controls, $this, $view);
-		ArgUtils::valArrayReturn($controls, $eiMask, 'sortControls', Control::class);
-		
-		return $controls;
+		return $this->eiFrame->getContextEiEngine()->getEiMask()->getEiEngine()->createEiGuiOverallControls($this, $view);
 	}
 }
