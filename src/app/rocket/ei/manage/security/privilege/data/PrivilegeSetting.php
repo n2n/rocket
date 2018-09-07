@@ -5,6 +5,7 @@ use n2n\reflection\ArgUtils;
 use rocket\ei\EiCommandPath;
 use n2n\util\config\Attributes;
 use n2n\reflection\property\TypeConstraint;
+use rocket\ei\EiPropPath;
 
 class PrivilegeSetting {
 	const ATTR_EI_COMMAND_PATHS = 'eiCommandPaths';
@@ -38,6 +39,17 @@ class PrivilegeSetting {
 	}
 	
 	/**
+	 * @param EiCommandPath $eiCommandPath
+	 * @return boolean
+	 */
+	public function acceptsEiCommandPath(EiCommandPath $eiCommandPath) {
+		foreach ($this->getEiCommandPaths() as $privilegeCommandPath) {
+			if ($privilegeCommandPath->startsWith($eiCommandPath)) return true;
+		}
+		return false;
+	}
+	
+	/**
 	 * @return \n2n\util\config\Attributes
 	 */
 	function getEiPropAttributes() {
@@ -49,6 +61,10 @@ class PrivilegeSetting {
 	 */
 	function setEiPropAttributes(Attributes $attributes) {
 		$this->eiPropAttributes = $attributes;
+	}
+	
+	function getAttributesByEiPropPath(EiPropPath $eiPropPath) {
+		return $this->eiPropAttributes->getArray((string) $eiPropPath, false, null);
 	}
 	
 	/**

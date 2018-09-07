@@ -25,18 +25,19 @@ use rocket\ei\manage\security\EiExecution;
 use rocket\ei\EiCommandPath;
 use rocket\ei\component\command\EiCommand;
 use n2n\util\ex\IllegalStateException;
-use rocket\ei\EiPropPath;
-use rocket\ei\security\EiPropAccess;
 use rocket\ei\manage\mapping\EiEntry;
-use rocket\ei\security\EiCommandAccessRestrictor;
+use rocket\ei\manage\security\EiEntryAccess;
 
 class FullyGrantedEiExecution implements EiExecution {
 	private $commandPath;
 	private $eiCommand;
+	private $eiEntryAccessFactory;
 
-	public function __construct(EiCommandPath $commandPath, EiCommand $eiCommand = null) {
+	public function __construct(EiCommandPath $commandPath, ?EiCommand $eiCommand, 
+			?EiEntryAccessFactory $eiEntryAccessFactory) {
 		$this->commandPath = $commandPath;
 		$this->eiCommand = $eiCommand;
+		$this->eiEntryAccessFactory = $eiEntryAccessFactory;
 	}
 
 	public function isGranted(): bool {
@@ -66,22 +67,7 @@ class FullyGrantedEiExecution implements EiExecution {
 
 		throw new IllegalStateException();
 	}
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\security\EiExecution::getEiEntryConstraint()
-	 */
-	public function getEiEntryConstraint() {
-		return null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\security\EiExecution::getCriteriaConstraint()
-	 */
-	public function getCriteriaConstraint() {
-		return null;
-	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\security\EiExecution::extEiCommandPath($ext)
@@ -89,15 +75,17 @@ class FullyGrantedEiExecution implements EiExecution {
 	public function extEiCommandPath(string $ext) {
 		$this->commandPath = $this->commandPath->ext($ext);
 	}
+	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\security\EiExecution::createEiPropAccess($eiPropPath)
+	 * @see \rocket\ei\manage\security\EiExecution::createEiEntryAccess()
 	 */
-	public function createEiPropAccess(EiPropPath $eiPropPath): EiPropAccess {
-		return new FullEiPropAccess();
+	public function createEiEntryAccess(EiEntry $eiEntry): EiEntryAccess {
+		if ($this->eiEntryAccessFactory === null) {
+			return new StaticEiEntryAccess(true);
+		}
+		
+		return $this->eiEntryAccessFactory->createEiEntryAccess($eiEntry);
 	}
 	
-	public function buildEiCommandAccessRestrictor(EiEntry $eiEntry): ?EiCommandAccessRestrictor {
-		return null;
-	}
 }

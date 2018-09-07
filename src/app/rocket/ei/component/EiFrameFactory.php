@@ -25,9 +25,10 @@ use rocket\ei\manage\ManageState;
 use n2n\web\http\controller\ControllerContext;
 use rocket\ei\EiEngine;
 use rocket\ei\manage\frame\EiFrame;
-use rocket\ei\manage\frame\CriteriaConstraint;
 use rocket\ei\manage\critmod\filter\FilterCriteriaConstraint;
 use rocket\ei\util\model\Eiu;
+use rocket\ei\manage\frame\Boundry;
+use rocket\ei\EiCommandPath;
 
 class EiFrameFactory {
 	private $eiEngine;
@@ -37,10 +38,11 @@ class EiFrameFactory {
 	}
 	
 	public function create(ControllerContext $controllerContext, ManageState $manageState,  
-			EiFrame $parentEiFrame = null) {
+			?EiFrame $parentEiFrame, EiCommandPath $eiCommandPath) {
 		$eiFrame = new EiFrame($this->eiEngine, $manageState);
 		$eiFrame->setControllerContext($controllerContext);
 		$eiFrame->setParent($parentEiFrame);
+		
 		
 		$eiMask = $this->eiEngine->getEiMask();
 		
@@ -48,7 +50,7 @@ class EiFrameFactory {
 			$filterDefinition = $this->eiEngine->createFramedFilterDefinition($eiFrame);
 			
 			if ($filterDefinition !== null) {
-				$eiFrame->getCriteriaConstraintCollection()->add(CriteriaConstraint::TYPE_HARD_FILTER,
+				$eiFrame->getBoundry()->addCriteriaConstraint(Boundry::TYPE_HARD_FILTER,
 						new FilterCriteriaConstraint($filterDefinition->createComparatorConstraint($filterSettingGroup)));
 			}
 		}
@@ -56,10 +58,12 @@ class EiFrameFactory {
 		if (null !== ($sortSettingGroup = $eiMask->getSortSettingGroup())) {
 			$sortDefinition = $this->eiEngine->createFramedSortDefinition($eiFrame);
 			if ($sortDefinition !== null) {
-				$eiFrame->getCriteriaConstraintCollection()->add(CriteriaConstraint::TYPE_HARD_SORT, 
+				$eiFrame->getBoundry()->addCriteriaConstraint(Boundry::TYPE_HARD_SORT, 
 						$sortDefinition->createCriteriaConstraint($sortSettingGroup));
 			}
 		}
+		
+		$manageState->getEiPermissionManager()->applyEiExecution($eiFrame, $eiCommandPath);
 		
 		$eiu = new Eiu($eiFrame);
 		foreach ($eiMask->getEiModificatorCollection()->toArray() as $eiModificator) {

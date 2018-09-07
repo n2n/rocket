@@ -34,6 +34,15 @@ class PrivilegeDefinition {
 		return empty($this->eiCommandPrivileges);
 	}
 	
+	/**
+	 * @param EiCommandPath $eiCommandPath
+	 * @return boolean
+	 * @todo add non privileged command paths
+	 */
+	public function isEiCommandPathUnprivileged(EiCommandPath $eiCommandPath) {
+		return !$this->checkEiCommandPathForPrivileges($eiCommandPath);
+	}
+	
 	public function checkEiCommandPathForPrivileges(EiCommandPath $eiCommandPath) {
 		foreach ($this->eiCommandPrivileges as $privilegeEiCommandPathStr => $eiCommandPrivilege) {
 			$privilegeEiCommandPath = EiCommandPath::create($privilegeEiCommandPathStr);

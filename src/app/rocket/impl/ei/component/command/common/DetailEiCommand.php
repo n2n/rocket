@@ -25,7 +25,7 @@ use rocket\ei\manage\control\EntryNavPoint;
 use n2n\l10n\DynamicTextCollection;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\N2nLocale;
-use rocket\ei\manage\control\EntryControlComponent;
+use rocket\ei\component\command\control\EntryControlComponent;
 use rocket\impl\ei\component\command\common\controller\DetailController;
 use rocket\ei\manage\control\ControlButton;
 use rocket\impl\ei\component\command\common\controller\PathUtils;
@@ -59,7 +59,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 	}
 	
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\manage\control\EntryControlComponent::getEntryControlOptions()
+	 * @see \rocket\ei\component\command\control\EntryControlComponent::getEntryControlOptions()
 	 */
 	public function getEntryControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {
 		$dtc = new DynamicTextCollection('rocket', $n2nLocale);
@@ -67,7 +67,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 				self::CONTROL_PREVIEW_KEY => $dtc->translate('ei_impl_preview_label'));
 	}
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\manage\control\EntryControlComponent::createEntryControls()
+	 * @see \rocket\ei\component\command\control\EntryControlComponent::createEntryControls()
 	 */
 	public function createEntryControls(Eiu $eiu, HtmlView $view): array {
 		$eiuFrame = $eiu->frame();

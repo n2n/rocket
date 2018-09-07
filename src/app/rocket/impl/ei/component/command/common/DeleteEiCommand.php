@@ -27,7 +27,7 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\frame\EiFrame;
 use n2n\l10n\N2nLocale;
 use rocket\ei\component\command\control\PartialControlComponent;
-use rocket\ei\manage\control\EntryControlComponent;
+use rocket\ei\component\command\control\EntryControlComponent;
 use rocket\impl\ei\component\command\common\controller\DeleteController;
 use rocket\ei\manage\control\ControlButton;
 use rocket\ei\manage\control\IconType;

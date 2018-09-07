@@ -19,18 +19,21 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\security;
+namespace rocket\ei\manage\security;
 
-interface EiPropAccess {
+use rocket\ei\EiPropPath;
+use rocket\ei\EiCommandPath;
+
+interface EiEntryAccess {
 	
 	/**
+	 * @param EiCommandPath $eiCommandPath
 	 * @return bool
 	 */
-	public function isFullyGranted(): bool;
+	function isExecutableBy(EiCommandPath $eiCommandPath): bool;
 	
 	/**
-	 * @return \n2n\util\config\Attributes[]
-	 * @throws \n2n\util\ex\IllegalStateException
+	 * @return EiFieldAccess
 	 */
-	public function getAttributes(): array;
+	function getEiFieldAccess(EiPropPath $eiPropPath): EiFieldAccess;
 }

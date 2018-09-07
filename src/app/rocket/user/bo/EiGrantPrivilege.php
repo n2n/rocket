@@ -53,34 +53,6 @@ class EiGrantPrivilege extends ObjectAdapter {
 		$this->eiGrant = $eiGrant;
 	}
 
-	public function getEiCommandPathStrs() {
-		return StringUtils::jsonDecode($this->eiCommandPrivilegeJson, true);
-	}
-	
-	public function setEiCommandPathStrs(array $commnadPathStrs) {
-		ArgUtils::valArray($commnadPathStrs, 'string');
-		$this->eiCommandPrivilegeJson = StringUtils::jsonEncode($commnadPathStrs);
-	}
-	
-	public function getEiCommandPaths() {
-		$eiCommandPaths = array();
-		foreach ($this->getEiCommandPathStrs() as $eiCommandPathStr) {
-			$eiCommandPaths[$eiCommandPathStr] = EiCommandPath::create($eiCommandPathStr);
-		}
-		return $eiCommandPaths;
-	}
-	
-	/**
-	 * @param EiCommandPath $eiCommandPath
-	 * @return boolean
-	 */
-	public function acceptsEiCommandPath(EiCommandPath $eiCommandPath) {
-		foreach ($this->getEiCommandPaths() as $privilegeCommandPath) {
-			if ($privilegeCommandPath->startsWith($eiCommandPath)) return true;
-		}
-		return false;
-	}
-
 	/**
 	 * @return PrivilegeSetting
 	 */

@@ -24,7 +24,7 @@ namespace rocket\ei\mask\model;
 use rocket\ei\component\command\control\PartialControlComponent;
 use n2n\l10n\N2nLocale;
 use rocket\ei\component\command\control\OverallControlComponent;
-use rocket\ei\manage\control\EntryControlComponent;
+use rocket\ei\component\command\control\EntryControlComponent;
 use rocket\ei\manage\gui\ui\DisplayStructure;
 use rocket\ei\mask\EiMask;
 
@@ -194,23 +194,23 @@ class DisplayScheme {
 		
 		return $this->overallControlOrder->sort($labels);
 	}
-	/**
-	 * @param N2nLocale $n2nLocale
-	 * @return array
-	 */
-	public static function buildEntryControlMap(EiMask $eiDef, N2nLocale $n2nLocale) {
-		$labels = array();
+// 	/**
+// 	 * @param N2nLocale $n2nLocale
+// 	 * @return array
+// 	 */
+// 	public static function buildEntryControlMap(EiMask $eiDef, N2nLocale $n2nLocale) {
+// 		$labels = array();
 	
-		foreach ($this->eiType->getEiCommandCollection() as $eiCommandId => $eiCommand) {
-			if (!($eiCommand instanceof EntryControlComponent)) continue;
+// 		foreach ($this->eiType->getEiCommandCollection() as $eiCommandId => $eiCommand) {
+// 			if (!($eiCommand instanceof EntryControlComponent)) continue;
 				
-			foreach ($eiCommand->getEntryControlOptions($n2nLocale) as $controlId => $label) {
-				$labels[ControlOrder::buildControlId($eiCommandId, $controlId)] = $label;
-			}
-		}
+// 			foreach ($eiCommand->getEntryControlOptions($n2nLocale) as $controlId => $label) {
+// 				$labels[ControlOrder::buildControlId($eiCommandId, $controlId)] = $label;
+// 			}
+// 		}
 		
-		if ($this->entryControlOrder === null) return $labels;
+// 		if ($this->entryControlOrder === null) return $labels;
 	
-		return $this->entryControlOrder->sort($labels);
-	}
+// 		return $this->entryControlOrder->sort($labels);
+// 	}
 }

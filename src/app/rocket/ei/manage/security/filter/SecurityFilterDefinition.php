@@ -21,10 +21,7 @@
  */
 namespace rocket\ei\manage\security\filter;
 
-use n2n\util\config\AttributesException;
 use rocket\ei\EiPropPath;
-use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
-use rocket\ei\manage\critmod\filter\ComparatorConstraint;
 use rocket\ei\manage\critmod\filter\FilterDefinition;
 
 class SecurityFilterDefinition {
@@ -102,27 +99,27 @@ class SecurityFilterDefinition {
 		return $fd;
 	}
 	
-	public function createComparatorConstraint(FilterSettingGroup $filterSettingGroup): ComparatorConstraint {
-		$criteriaComparators = array();
+// 	public function createComparatorConstraint(FilterSettingGroup $filterSettingGroup): ComparatorConstraint {
+// 		$criteriaComparators = array();
 		
-		foreach ($filterSettingGroup->getFilterSettings() as $subFilterSetting) {
-			$id = $subFilterSetting->getFilterPropId();
-			if (!isset($this->props[$id])) {
-				continue;
-			}
+// 		foreach ($filterSettingGroup->getFilterSettings() as $subFilterSetting) {
+// 			$id = $subFilterSetting->getFilterPropId();
+// 			if (!isset($this->props[$id])) {
+// 				continue;
+// 			}
 			
-			try {
-				$criteriaComparators[] = $this->props[$id]->createComparatorConstraint(
-						$subFilterSetting->getAttributes());
-			} catch (AttributesException $e) {}
-		}
+// 			try {
+// 				$criteriaComparators[] = $this->props[$id]->createComparatorConstraint(
+// 						$subFilterSetting->getAttributes());
+// 			} catch (AttributesException $e) {}
+// 		}
 		
-		foreach ($filterSettingGroup->getFilterSettingGroups() as $subFilterSettingGroup) {
-			$criteriaComparators[] = $this->createComparatorConstraint($subFilterSettingGroup);
-		}
+// 		foreach ($filterSettingGroup->getFilterSettingGroups() as $subFilterSettingGroup) {
+// 			$criteriaComparators[] = $this->createComparatorConstraint($subFilterSettingGroup);
+// 		}
 		
-		return new ComparatorConstraintGroup($filterSettingGroup->isAndUsed(), $criteriaComparators);
-	}
+// 		return new ComparatorConstraintGroup($filterSettingGroup->isAndUsed(), $criteriaComparators);
+// 	}
 	
 	// 	private function createElementComparatorConstraint(FilterDataElement $element) {
 	// 		if ($element instanceof FilterDataUsage) {

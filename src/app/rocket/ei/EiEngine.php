@@ -48,6 +48,8 @@ use rocket\ei\manage\gui\ui\DisplayStructure;
 use rocket\ei\manage\ManageState;
 use rocket\ei\component\EiFrameFactory;
 use n2n\web\http\controller\ControllerContext;
+use rocket\ei\manage\gui\EiEntryGui;
+use n2n\impl\web\ui\view\html\HtmlView;
 
 class EiEngine {
 	private $eiMask;
@@ -115,8 +117,9 @@ class EiEngine {
 	 * @param EiFrame $parent
 	 * @return \rocket\ei\manage\frame\EiFrame
 	 */
-	public function createEiFrame(ControllerContext $controllerContext, ManageState $manageState, ?EiFrame $parent) {
-		return $this->getEiFrameFactory()->create($controllerContext, $manageState, $parent);
+	public function createEiFrame(ControllerContext $controllerContext, ManageState $manageState, ?EiFrame $parent, 
+			EiCommandPath $eiCommandPath) {
+		return $this->getEiFrameFactory()->create($controllerContext, $manageState, $parent, $eiCommandPath);
 	}
 
 	private $critmodFactory;
@@ -178,18 +181,13 @@ class EiEngine {
 	/**
 	 * @param EiFrame $eiFrame
 	 * @param EiObject $eiObject
+	 * @param EiEntry $copyFrom
 	 * @return EiEntry
 	 */
-	public function createEiEntry(EiFrame $eiFrame, EiObject $eiObject): EiEntry {
-		$mappingFactory = new EiEntryFactory($this->eiMask->getEiPropCollection(), 
+	public function createFramedEiEntry(EiFrame $eiFrame, EiObject $eiObject, ?EiEntry $copyFrom, array $eiEntryConstraints): EiEntry {
+		$mappingFactory = new EiEntryFactory($this->eiMask, $this->eiMask->getEiPropCollection(), 
 				$this->eiMask->getEiModificatorCollection());
-		return $mappingFactory->createEiEntry($eiFrame, $eiObject);
-	}
-	
-	public function createEiEntryCopy(EiFrame $eiFrame, EiObject $eiObject, EiEntry $from) {
-		$mappingFactory = new EiEntryFactory($this->eiMask->getEiPropCollection(), 
-				$this->eiMask->getEiModificatorCollection());
-		return $mappingFactory->createEiEntry($eiFrame, $eiObject, $from);
+		return $mappingFactory->createEiEntry($eiFrame, $eiObject, $copyFrom, $eiEntryConstraints);
 	}
 	
 	public function copyValues(EiFrame $eiFrame, EiEntry $from, EiEntry $to, array $eiPropPaths = null) {
@@ -201,8 +199,7 @@ class EiEngine {
 	
 	public function getGuiDefinition(): GuiDefinition {
 		if ($this->guiDefinition === null) {
-			$guiFactory = new GuiFactory($this->eiMask->getEiPropCollection(), 
-					$this->eiMask->getEiModificatorCollection());
+			$guiFactory = new GuiFactory($this->eiMask);
 			$this->guiDefinition = $guiFactory->createGuiDefinition();
 		}
 	
@@ -273,5 +270,14 @@ class EiEngine {
 			}
 		}
 		return $this->scalarEiDefinition;
+	}
+	
+	/**
+	 * @param EiEntryGui $eiEntryGui
+	 * @param HtmlView $view
+	 * @return \rocket\ei\manage\control\Control[]
+	 */
+	public function createEiEntryGuiControls(EiEntryGui $eiEntryGui, HtmlView $view) {
+		return (new GuiFactory($this->eiMask))->createEiEntryGuiControls($eiEntryGui, $view);
 	}
 }

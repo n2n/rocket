@@ -97,7 +97,16 @@ class EiuEntry {
 		return $this->eiuMask;
 	}
 	
+	private $eiuEntryAccess;
 	
+	public function access() {
+		if ($this->eiuEntryAccess === null) {
+			$this->eiuEntryAccess = new EiuEntryAccess($this->getEiuFrame()->getEiFrame()->getEiExecution()
+					->createEiEntryAccess($this->getEiEntry()), $this);
+		}
+		
+		return $this->eiuEntryAccess;
+	}
 	
 	/**
 	 * @return \rocket\ei\manage\EiObject
@@ -117,8 +126,7 @@ class EiuEntry {
 		
 		if ($createIfNotAvaialble) {
 			$eiFrame = $this->getEiuFrame(true)->getEiFrame();
-			$this->eiEntry =  $eiFrame->determineEiMask($this->eiObject->getEiEntityObj()->getEiType())
-					->getEiEngine()->createEiEntry($eiFrame, $this->eiObject);
+			$this->eiEntry =  $eiFrame->createEiEntry($this->eiObject);
 			return $this->eiEntry; 
 		}
 		
@@ -509,9 +517,9 @@ class EiuEntry {
 		return $this->eiuFrame->getPreviewTypeOptions($this->eiObject);
 	}
 	
-	public function isExecutableBy($eiCommandPath) {
-		return $this->getEiEntry()->isExecutableBy(EiCommandPath::create($eiCommandPath));
-	}
+// 	public function isExecutableBy($eiCommandPath) {
+// 		return $this->getEiEntry()->isExecutableBy(EiCommandPath::create($eiCommandPath));
+// 	}
 	
 	public function onValidate(\Closure $closure) {
 		$this->getEiEntry()->registerListener(new OnValidateMappingListener($closure));

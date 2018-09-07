@@ -19,15 +19,18 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\security;
+namespace rocket\ei\manage\security;
 
-use rocket\ei\EiCommandPath;
-
-interface EiCommandAccessRestrictor {
+interface EiFieldAccess {
 	
 	/**
-	 * @param EiCommandPath $eiCommandPath
 	 * @return bool
 	 */
-	public function isAccessibleBy(EiCommandPath $eiCommandPath): bool;
+	public function isFullyGranted(): bool;
+	
+	/**
+	 * @return \n2n\util\config\Attributes[]
+	 * @throws \n2n\util\ex\IllegalStateException if {@see self::isFullyGranted()}
+	 */
+	public function getAttributes(): array;
 }

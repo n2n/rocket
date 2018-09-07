@@ -35,6 +35,7 @@ use rocket\ei\manage\security\EiPermissionManager;
 use rocket\ei\manage\veto\EiLifecycleMonitor;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\EiEngine;
+use rocket\ei\EiCommandPath;
 
 class ManageState implements RequestScoped {
 	private $n2nContext;
@@ -135,8 +136,8 @@ class ManageState implements RequestScoped {
 		$this->eiLifecycleMonitor = $eiLifecycleMonitor;
 	}
 	
-	public function createEiFrame(EiEngine $contextEiEngine, ControllerContext $controllerContext) {
-		$eiFrame = $contextEiEngine->createEiFrame($controllerContext, $this, $this->peakEiFrame(false));
+	public function createEiFrame(EiEngine $contextEiEngine, ControllerContext $controllerContext, EiCommandPath $eiCommandPath) {
+		$eiFrame = $contextEiEngine->createEiFrame($controllerContext, $this, $this->peakEiFrame(false), $eiCommandPath);
 		
 		$this->pushEiFrame($eiFrame);
 		

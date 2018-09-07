@@ -30,7 +30,6 @@ use rocket\ei\mask\EiMask;
 use rocket\ei\manage\mapping\EiEntry;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\util\model\Eiu;
-use rocket\ei\manage\control\EntryControlComponent;
 use rocket\ei\EiCommandPath;
 use rocket\ei\mask\model\ControlOrder;
 use rocket\ei\manage\control\Control;
@@ -365,31 +364,12 @@ class EiEntryGui {
 		unset($this->eiEntryGuiListeners[spl_object_hash($eiEntryGuiListener)]);
 	}
 	
+	/**
+	 * @param HtmlView $view
+	 * @return Control[]
+	 */
 	public function createControls(HtmlView $view) {
-		$eiFrame = $this->eiGui->getEiFrame();
-		$eiMask = $eiFrame->determineEiMask($this->eiEntry->getEiType());
-	
-		$eiu = new Eiu($this);
-	
-		$controls = array();
-	
-		foreach ($eiMask->getEiCommandCollection() as $eiCommandId => $eiCommand) {
-			if (!($eiCommand instanceof EntryControlComponent)
-					|| !$this->eiEntry->isExecutableBy(EiCommandPath::from($eiCommand))) {
-				continue;
-			}
-
-			$entryControls = $eiCommand->createEntryControls($eiu, $view);
-			ArgUtils::valArrayReturn($entryControls, $eiCommand, 'createEntryControls', Control::class);
-			foreach ($entryControls as $controlId => $control) {
-				$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;
-			}
-		}
-	
-		$controls = $eiMask->sortEntryControls($controls, $this, $view);
-		ArgUtils::valArrayReturn($controls, $eiMask, 'sortControls', Control::class);
-			
-		return $controls;
+		return $this->eiEntry->getEiMask()->getEiEngine()->createEiEntryGuiControls($this, $view);
 	}
 	
 	public function __toString() {

@@ -168,15 +168,15 @@ class CritmodForm implements Dispatchable {
 
 		$comparatorConstraint = $this->getEiuFilterForm()->getFilterDefinition()
 						->createComparatorConstraint($critmodSave->readFilterSettingGroup());
-		$eiFrame->getCriteriaConstraintCollection()->add(
-				($tmp ? CriteriaConstraint::TYPE_TMP_FILTER : CriteriaConstraint::TYPE_),
+		$eiFrame->getBoundry()->add(
+				($tmp ? Boundry::TYPE_TMP_FILTER : Boundry::TYPE_),
 				new ComparatorConstraintGroup(true, array($comparatorConstraint)));
 		
 		$sortCriteriaConstraint = $this->getEiuSortForm()->getSortDefinition()
 				->builCriteriaConstraint($critmodSave->readSortSettingGroup(), $tmp);
 		if ($sortCriteriaConstraint !== null) {
-			$eiFrame->getCriteriaConstraintCollection()->add(
-					($tmp ? CriteriaConstraint::TYPE_TMP_SORT : CriteriaConstraint::TYPE_HARD_SORT),
+			$eiFrame->getBoundry()->add(
+					($tmp ? Boundry::TYPE_TMP_SORT : Boundry::TYPE_HARD_SORT),
 					$sortCriteriaConstraint);
 		}
 	}

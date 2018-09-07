@@ -21,7 +21,6 @@
  */
 namespace rocket\impl\ei\component\prop\adapter;
 
-use n2n\core\container\N2nContext;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\component\prop\PrivilegedEiProp;
 use rocket\ei\EiPropPath;
@@ -70,7 +69,7 @@ abstract class EditableEiPropAdapter extends DisplayableEiPropAdapter implements
 	 */
 	public function isReadOnly(Eiu $eiu): bool {
 		if (!WritableEiPropPrivilege::checkForWriteAccess($eiu->frame()->getEiFrame()->getEiExecution()
-				->createEiPropAccess(EiPropPath::from($this)))) {
+				->createEiFieldAccess(EiPropPath::from($this)))) {
 			return true;
 		}
 

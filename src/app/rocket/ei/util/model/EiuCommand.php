@@ -4,7 +4,6 @@ namespace rocket\ei\util\model;
 use rocket\ei\EiPropPath;
 use rocket\ei\EiCommandPath;
 use rocket\ei\component\command\IndependentEiCommand;
-use rocket\impl\ei\component\command\EiCommandAdapter;
 use rocket\impl\ei\component\EiConfiguratorAdapter;
 
 class EiuCommand {

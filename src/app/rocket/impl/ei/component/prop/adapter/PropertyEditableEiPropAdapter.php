@@ -24,7 +24,6 @@ namespace rocket\impl\ei\component\prop\adapter;
 use n2n\reflection\property\TypeConstraint;
 use n2n\util\config\Attributes;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
-use n2n\core\container\N2nContext;
 use rocket\ei\manage\mapping\impl\Writable;
 use n2n\util\ex\IllegalStateException;
 use n2n\web\dispatch\mag\Mag;
@@ -36,7 +35,7 @@ use rocket\ei\manage\security\privilege\EiPropPrivilege;
 use n2n\reflection\ArgUtils;
 use n2n\l10n\Lstr;
 use rocket\core\model\Rocket;
-use rocket\ei\security\EiPropAccess;
+use rocket\ei\manage\security\EiFieldAccess;
 use n2n\util\config\AttributesException;
 use rocket\ei\util\model\Eiu;
 use rocket\ei\manage\mapping\FieldErrorInfo;
@@ -152,8 +151,7 @@ abstract class PropertyEditableEiPropAdapter extends PropertyDisplayableEiPropAd
 	 * @return bool
 	 */
 	public function isReadOnly(Eiu $eiu): bool {
-		if (!WritableEiPropPrivilege::checkForWriteAccess($eiu->frame()->getEiFrame()->getEiExecution()
-				->createEiPropAccess(EiPropPath::from($this)))) {
+		if (!WritableEiPropPrivilege::checkForWriteAccess($eiu->entry()->access()->getEiFieldAccess($this))) {
 			return true;
 		}
 		
@@ -203,13 +201,13 @@ class WritableEiPropPrivilege implements EiPropPrivilege {
 		return new Attributes(array(self::ACCESS_WRITING_ALLOWED_KEY => $mag->getValue()));
 	}
 	
-	public static function checkForWriteAccess(EiPropAccess $eiAccess) {
-		if ($eiAccess->isFullyGranted()) {
+	public static function checkForWriteAccess(EiFieldAccess $eiFieldAccess) {
+		if ($eiFieldAccess->isFullyGranted()) {
 			return true;
 		}
 		
 		try {
-			foreach ($eiAccess->getAttributes() as $attributes) {
+			foreach ($eiFieldAccess->getAttributes() as $attributes) {
 				if ($attributes->getBool(self::ACCESS_WRITING_ALLOWED_KEY, false, 
 						self::ACCESS_WRITING_ALLOWED_DEFAULT)) {
 					return true;

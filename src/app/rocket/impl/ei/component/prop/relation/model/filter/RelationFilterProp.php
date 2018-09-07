@@ -92,10 +92,10 @@ class RelationFilterProp implements FilterProp {
 				return $group;
 			case CriteriaComparator::OPERATOR_EXISTS:
 			case CriteriaComparator::OPERATOR_NOT_EXISTS:
-				$targetComparatorContraint = $this->targetFilterDef->getFilterDefinition()->createComparatorConstraint(
+				$targetComparatorConstraint = $this->targetFilterDef->getFilterDefinition()->createComparatorConstraint(
 						$relationFilterConf->getTargetFilterSettingGroup());
 				
-				return new TestComparatorConstraint($this->entityProperty, $targetComparatorContraint);
+				return new TestComparatorConstraint($this->entityProperty, $targetComparatorConstraint);
 		}
 	}
 	
@@ -179,10 +179,10 @@ class RelationFilterProp implements FilterProp {
 				return $group;
 			case CriteriaComparator::OPERATOR_EXISTS:
 			case CriteriaComparator::OPERATOR_NOT_EXISTS:
-				$targetComparatorContraint = $this->targetFilterDef->getFilterDefinition()->createComparatorConstraint(
+				$targetComparatorConstraint = $this->targetFilterDef->getFilterDefinition()->createComparatorConstraint(
 				$relationFilterConf->getTargetFilterSettingGroup());
 		
-				return new TestComparatorConstraint($this->entityProperty, $targetComparatorContraint);
+				return new TestComparatorConstraint($this->entityProperty, $targetComparatorConstraint);
 		}
 	}
 }

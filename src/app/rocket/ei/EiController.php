@@ -26,25 +26,29 @@ use n2n\web\http\controller\ControllerAdapter;
 use n2n\web\http\ForbiddenException;
 use rocket\ei\manage\ManageState;
 use rocket\ei\component\UnknownEiComponentException;
-use rocket\ei\manage\security\InaccessibleControlException;
+use rocket\ei\manage\security\InaccessibleEiCommandPathException;
 use rocket\ei\util\model\Eiu;
+use rocket\ei\mask\EiMask;
 
 class EiController extends ControllerAdapter {
-		
+	private $eiMask;	
+	
+	public function __construct(EiMask $eiMask) {
+		$this->eiMask = $eiMask;
+	}
+	
 	public function index(ManageState $manageState, $eiCommandId, array $delegateCmds = null) {		
-		$eiFrame = $manageState->peakEiFrame();
-		
 		$eiCommand = null;
 		try {
-			$eiCommand = $eiFrame->getContextEiEngine()->getEiMask()->getEiCommandCollection()->getById($eiCommandId);
+			$eiCommand = $this->eiMask->getEiCommandCollection()->getById($eiCommandId);
 		} catch (UnknownEiComponentException $e) {
 			throw new PageNotFoundException(null, 0, $e);
 		}
 		
+		$eiFrame = null;
 		try {
-			$eiFrame->setEiExecution($manageState->getEiPermissionManager()
-					->createEiExecution($eiCommand, $this->getN2nContext()));
-		} catch (InaccessibleControlException $e) {
+			$eiFrame = $manageState->createEiFrame($this->eiMask->getEiEngine(), $this->getControllerContext(), EiCommandPath::from($eiCommand));
+		} catch (InaccessibleEiCommandPathException $e) {
 			throw new ForbiddenException(null, 0, $e);
 		}
 		

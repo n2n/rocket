@@ -34,7 +34,7 @@ use rocket\ei\EiType;
 use rocket\core\model\Rocket;
 use n2n\core\N2N;
 use n2n\util\uri\Url;
-use rocket\ei\manage\security\InaccessibleControlException;
+use rocket\ei\manage\security\InaccessibleEiCommandPathException;
 use rocket\spec\UnknownTypeException;
 use rocket\ei\UnknownEiTypeExtensionException;
 
@@ -98,7 +98,7 @@ class GlobalOverviewJhtmlController extends ControllerAdapter implements ScrCont
 		try {
 			$eiFrame->setEiExecution($this->manageState->getEiPermissionManager()
 					->createUnboundEiExceution($eiMask, new EiCommandPath(array())));
-		} catch (InaccessibleControlException $e) {
+		} catch (InaccessibleEiCommandPathException $e) {
 			throw new ForbiddenException(null, 0, $e);
 		}
 

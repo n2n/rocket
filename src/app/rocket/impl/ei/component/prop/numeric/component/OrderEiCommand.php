@@ -24,7 +24,7 @@ namespace rocket\impl\ei\component\prop\numeric\component;
 use n2n\l10n\DynamicTextCollection;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\impl\ei\component\prop\numeric\OrderEiProp;
-use rocket\ei\manage\control\EntryControlComponent;
+use rocket\ei\component\command\control\EntryControlComponent;
 use rocket\ei\manage\control\ControlButton;
 use rocket\ei\manage\control\IconType;
 use rocket\impl\ei\component\command\EiCommandAdapter;
@@ -68,7 +68,7 @@ class OrderEiCommand extends EiCommandAdapter implements EntryControlComponent {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\control\EntryControlComponent::createEntryControls()
+	 * @see \rocket\ei\component\command\control\EntryControlComponent::createEntryControls()
 	 */
 	public function createEntryControls(Eiu $eiu, HtmlView $view): array {
 		$httpContext = $view->getHttpContext();
@@ -98,7 +98,7 @@ class OrderEiCommand extends EiCommandAdapter implements EntryControlComponent {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\control\EntryControlComponent::getEntryControlOptions()
+	 * @see \rocket\ei\component\command\control\EntryControlComponent::getEntryControlOptions()
 	 */
 	public function getEntryControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {
 		$dtc = new DynamicTextCollection('rocket', $n2nLocale);

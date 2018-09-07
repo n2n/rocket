@@ -32,13 +32,15 @@ use rocket\ei\EiPropPath;
 use rocket\ei\component\prop\FieldEiProp;
 use rocket\ei\manage\mapping\EiField;
 use rocket\ei\util\model\Eiu;
+use rocket\ei\mask\EiMask;
 
 class EiEntryFactory {
-	private $eiType;
+	private $eiMask;
 	private $eiPropCollection;
 	private $eiModificatorCollection;
 	
-	public function __construct(EiPropCollection $fieldCollection, EiModificatorCollection $eiModificatorCollection) {
+	public function __construct(EiMask $eiMask, EiPropCollection $fieldCollection, EiModificatorCollection $eiModificatorCollection) {
+		$this->eiMask = $eiMask;
 		$this->eiPropCollection = $fieldCollection;
 		$this->eiModificatorCollection = $eiModificatorCollection;
 	}
@@ -71,12 +73,13 @@ class EiEntryFactory {
 	 * @throws InaccessibleEntryException
 	 * @return \rocket\ei\manage\mapping\EiEntry
 	 */
-	public function createEiEntry(EiFrame $eiFrame, EiObject $eiObject, EiEntry $copyFrom = null) {
-		$eiEntry = new EiEntry($eiObject);
+	public function createEiEntry(EiFrame $eiFrame, EiObject $eiObject, ?EiEntry $copyFrom, array $eiEntryConstraints) {
+		$eiEntry = new EiEntry($eiObject, $this->eiMask);
+		$eiEntry->getConstraintSet()->addAll($eiEntryConstraints);
+		
 		$eiu = new Eiu($eiFrame, $eiEntry);
 		
 		$this->assembleMappingProfile($eiu, $eiEntry, $copyFrom);
-		$eiFrame->restrictEiEntry($eiEntry);
 	
 		foreach ($this->eiModificatorCollection as $constraint) {
 			$constraint->setupEiEntry($eiu);

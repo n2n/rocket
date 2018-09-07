@@ -28,24 +28,23 @@ use rocket\ei\security\InaccessibleEntryException;
 use n2n\util\ex\IllegalStateException;
 use n2n\util\col\HashSet;
 use rocket\ei\manage\mapping\impl\EiFieldWrapperImpl;
-use rocket\ei\EiCommandPath;
-use rocket\ei\security\EiCommandAccessRestrictor;
+use rocket\ei\mask\EiMask;
 
 class EiEntry {
-	private $mappingErrorInfo;
 	private $eiObject;
+	private $eiMask;
+	private $mappingErrorInfo;
 	private $accessible = true;
 	private $eiFieldWrappers = array();
 	private $eiFieldForks = array();
 	private $listeners = array();
-	private $constraints;
-	private $eiCommandAccessRestrictors;
+	private $constraintSet;
 	
-	public function __construct(EiObject $eiObject) {
-		$this->mappingErrorInfo = new MappingErrorInfo();
+	public function __construct(EiObject $eiObject, EiMask $eiMask) {
 		$this->eiObject = $eiObject;
-		$this->constraints = new HashSet(EiEntryConstraint::class);
-		$this->eiCommandAccessRestrictors = new HashSet(EiCommandAccessRestrictor::class);
+		$this->eiMask = $eiMask;
+		$this->mappingErrorInfo = new MappingErrorInfo();
+		$this->constraintSet = new HashSet(EiEntryConstraint::class);
 	}
 	
 	/**
@@ -55,7 +54,7 @@ class EiEntry {
 		$eiEntityObj = $this->eiObject->getEiEntityObj();
 		if (!$eiEntityObj->isPersistent()) return null;
 		
-		return $this->getEiType()->idToPid($eiEntityObj->getId());
+		return $this->getEiMask()->getEiType()->idToPid($eiEntityObj->getId());
 	}
 	
 	/**
@@ -76,20 +75,37 @@ class EiEntry {
 	}
 	
 	/**
+	 * @return EiMask
+	 */
+	public function getEiMask() {
+		return $this->eiMask;
+	}
+	
+	/**
 	 * @return \rocket\ei\EiType
 	 */
 	public function getEiType() {
-		return $this->eiObject->getEiEntityObj()->getEiType();
+		return $this->eiMask->getEiType();
 	}
 	
+	/**
+	 * @param bool $accessible
+	 */
 	public function setAccessible(bool $accessible) {
 		$this->accessible = $accessible;
 	}
 	
+	/**
+	 * @return bool
+	 */
 	public function isAccessible(): bool {
 		return $this->accessible;
 	}
 	
+	/**
+	 * @param bool $ignoreAccessRestriction
+	 * @throws InaccessibleEntryException
+	 */
 	private function ensureAccessible($ignoreAccessRestriction) {
 		if ($this->accessible || $ignoreAccessRestriction) {
 			return;
@@ -98,23 +114,23 @@ class EiEntry {
 		throw new InaccessibleEntryException();
 	}
 	
-	public function getEiEntryConstraints() {
-		return $this->constraints;
+	public function getConstraintSet() {
+		return $this->constraintSet;
 	}
 	
-	public function getEiCommandAccessRestrictors()  {
-		return $this->eiCommandAccessRestrictors;
-	}
+// 	public function getEiCommandAccessRestrictors()  {
+// 		return $this->eiCommandAccessRestrictors;
+// 	}
 	
-	public function isExecutableBy(EiCommandPath $eiCommandPath) {
-		foreach ($this->eiCommandAccessRestrictors as $eiExecutionRestrictor) {
-			if (!$eiExecutionRestrictor->isAccessibleBy($eiCommandPath)) {
-				return false;
-			}
-		}
+// 	public function isExecutableBy(EiCommandPath $eiCommandPath) {
+// 		foreach ($this->eiCommandAccessRestrictors as $eiExecutionRestrictor) {
+// 			if (!$eiExecutionRestrictor->isAccessibleBy($eiCommandPath)) {
+// 				return false;
+// 			}
+// 		}
 	
-		return true;
-	}
+// 		return true;
+// 	}
 	
 	public function contains(EiPropPath $eiPropPath): bool {
 		$eiPropPathStr = (string) $eiPropPath;
@@ -267,7 +283,7 @@ class EiEntry {
 	 * @return boolean
 	 */
 	public function acceptsValue(EiPropPath $eiPropPath, $value) {
-		foreach ($this->constraints as $constraint) {
+		foreach ($this->constraintSet as $constraint) {
 			if (!$constraint->acceptsValue($eiPropPath, $value)) return false;
 		}
 		return true;
@@ -327,7 +343,7 @@ class EiEntry {
 			$eiFieldWrapper->getEiField()->validate($mappingErrorInfo->getFieldErrorInfo(EiPropPath::create($eiPropPathStr)));
 		}
 		
-		foreach ($this->constraints as $constraint) {
+		foreach ($this->constraintSet as $constraint) {
 			$constraint->validate($this);
 		}
 		

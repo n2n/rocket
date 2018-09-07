@@ -28,7 +28,6 @@ use n2n\l10n\N2nLocale;
 use rocket\ei\manage\preview\model\PreviewModel;
 use rocket\ei\manage\EiObject;
 use rocket\ei\mask\model\DisplayScheme;
-use rocket\ei\manage\frame\CriteriaConstraint;
 use rocket\ei\EiEngine;
 use rocket\ei\manage\preview\controller\PreviewController;
 use n2n\util\config\InvalidConfigurationException;
@@ -402,35 +401,6 @@ class EiMask {
 	}
 	
 
-	/**
-	 * @param array $controls
-	 * @param EiEntryGui $eiEntryGui
-	 * @param HtmlView $view
-	 * @return array
-	 */
-	public function sortEntryControls(array $controls, EiEntryGui $eiEntryGui, HtmlView $view): array {
-// 		$eiu = new Eiu($eiEntryGui);
-		
-// 		$controls = array();
-// 		foreach ($this->eiEngine->getEiCommandCollection() as $eiCommandId => $eiCommand) {
-// 			if (!($eiCommand instanceof EntryControlComponent)
-// 					|| !$eiEntryGui->getEiEntry()->isExecutableBy(EiCommandPath::from($eiCommand))) {
-// 				continue;
-// 			}
-			
-// 			$entryControls = $eiCommand->createEntryControls($eiu, $view);
-// 			ArgUtils::valArrayReturn($entryControls, $eiCommand, 'createEntryControls', Control::class);
-// 			foreach ($entryControls as $controlId => $control) {
-// 				$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;
-// 			}
-// 		}
-	
-// 		if (null !== ($entryControlOrder = $this->guiOrder->getEntryControlOrder())) {
-// 			return $entryControlOrder->sort($controls);
-// 		}		
-		
-		return $controls;
-	}
 	
 // 	public function createPartialControls(EiFrame $eiFrame, HtmlView $view): array {
 // 		$controls = array();

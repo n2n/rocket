@@ -25,15 +25,8 @@ use rocket\ei\component\command\EiCommand;
 use rocket\ei\EiCommandPath;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\mapping\EiEntry;
-use rocket\ei\security\EiCommandAccessRestrictor;
-use rocket\ei\security\EiPropAccess;
 
 interface EiExecution {
-	
-	/**
-	 * @return bool
-	 */
-	public function isGranted(): bool;
 	
 	/**
 	 * @return \rocket\ei\EiCommandPath
@@ -51,28 +44,10 @@ interface EiExecution {
 	public function getEiCommand(): EiCommand;
 	
 	/**
-	 * @return \rocket\ei\manage\mapping\EiEntryConstraint
-	 * @throws InaccessibleControlException 
-	 */
-	public function getEiEntryConstraint();
-	
-	/**
-	 * @return \rocket\ei\manage\frame\CriteriaConstraint
-	 * @throws InaccessibleControlException
-	 */
-	public function getCriteriaConstraint();
-	
-	/**
-	 * @param EiEntry $eiEntry
-	 * @return EiCommandAccessRestrictor|null
-	 */
-	public function buildEiCommandAccessRestrictor(EiEntry $eiEntry): ?EiCommandAccessRestrictor;
-	
-	/**
 	 * @param EiPropPath $eiPropPath
-	 * @return \rocket\ei\security\EiPropAccess
+	 * @return \rocket\ei\manage\security\EiEntryAccess
 	 */
-	public function createEiPropAccess(EiPropPath $eiPropPath): EiPropAccess;
+	public function createEiEntryAccess(EiEntry $eiEntry): EiEntryAccess;
 	
 	/**
 	 * @param string $ext

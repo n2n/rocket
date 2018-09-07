@@ -21,11 +21,11 @@
  */
 namespace rocket\user\model\security;
 
-use rocket\ei\security\EiPropAccess;
+use rocket\ei\manage\security\EiFieldAccess;
 use n2n\util\config\Attributes;
 use n2n\reflection\ArgUtils;
 
-class RestrictedEiPropAccess implements EiPropAccess {
+class RestrictedEiFieldAccess implements EiFieldAccess {
 	private $attributes;
 	
 	public function __construct(array $attributes) {
@@ -34,7 +34,7 @@ class RestrictedEiPropAccess implements EiPropAccess {
 	}
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\security\EiPropAccess::isFullyGranted()
+	 * @see \rocket\ei\manage\security\EiFieldAccess::isFullyGranted()
 	 */
 	public function isFullyGranted(): bool {
 		return false;
@@ -42,7 +42,7 @@ class RestrictedEiPropAccess implements EiPropAccess {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\security\EiPropAccess::getAttributes()
+	 * @see \rocket\ei\manage\security\EiFieldAccess::getAttributes()
 	 */
 	public function getAttributes(): array {
 		return $this->attributes;

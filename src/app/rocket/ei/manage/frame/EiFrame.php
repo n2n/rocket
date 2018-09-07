@@ -42,7 +42,7 @@ use rocket\ei\manage\EiObject;
 class EiFrame {
 	private $contextEiEngine;
 	private $manageState;
-	private $criteriaConstraintCollection;
+	private $boundry;
 	private $parent;
 	private $controllerContext;
 	private $subEiTypeExtensions = array();
@@ -52,13 +52,10 @@ class EiFrame {
 // 	private $previewType;
 	private $scriptRelations = array();
 
-	private $criteriaFactory = null;
-	private $criteriaConstraints = array();
 	private $filterModel;
 	private $sortModel;
 	
 	private $eiTypeConstraint;
-	private $commandExecutionConstraint;
 	
 	private $overviewDisabled = false;
 	private $overviewBreadcrumbLabelOverride;
@@ -76,7 +73,7 @@ class EiFrame {
 	public function __construct(EiEngine $contextEiEngine, ManageState $manageState) {
 		$this->contextEiEngine = $contextEiEngine;
 		$this->manageState = $manageState;
-		$this->criteriaConstraintCollection = new CriteriaConstraintCollection();
+		$this->boundry = new Boundry();
 
 // 		$this->eiTypeConstraint = $manageState->getSecurityManager()->getConstraintBy($contextEiMask);
 	}
@@ -196,19 +193,12 @@ class EiFrame {
 		
 		return null;
 	}
-
-	/**
-	 * @param CriteriaFactory $criteriaFactory
-	 */
-	public function setCriteriaFactory(CriteriaFactory $criteriaFactory) {
-		$this->criteriaFactory = $criteriaFactory;
-	}
 	
 	/**
-	 * @return CriteriaConstraintCollection
+	 * @return Boundry
 	 */
-	public function getCriteriaConstraintCollection() {
-		return $this->criteriaConstraintCollection;
+	public function getBoundry() {
+		return $this->boundry;
 	}
 	
 // 	public function getOrCreateFilterModel() {
@@ -231,53 +221,61 @@ class EiFrame {
 	 * @param string $entityAlias
 	 * @return \n2n\persistence\orm\criteria\Criteria
 	 */
-	public function createCriteria($entityAlias, $ignoreConstraintTypes = 0) {
+	public function createCriteria(string $entityAlias, int $ignoreConstraintTypes = 0) {
 		$em = $this->manageState->getEntityManager();
 		$criteria = null;
-		if ($this->criteriaFactory !== null && !($ignoreConstraintTypes & CriteriaConstraint::TYPE_MANAGE)) {
-			$criteria = $this->criteriaFactory->create($em, $entityAlias);
+		$criteriaFactory = $this->boundry->getCriteriaFactory();		
+		if ($criteriaFactory !== null && !($ignoreConstraintTypes & Boundry::TYPE_MANAGE)) {
+			$criteria = $criteriaFactory->create($em, $entityAlias);
 		} else {
-			$criteria = $em->createCriteria()->from($this->getContextEiEngine()->getEiMask()->getEiType()->getEntityModel()->getClass(), $entityAlias);
+			$criteria = $em->createCriteria()->from(
+					$this->getContextEiEngine()->getEiMask()->getEiType()->getEntityModel()->getClass(), 
+					$entityAlias);
 		}
 
 		$entityAliasCriteriaProperty = CrIt::p(array($entityAlias));
 		
-		foreach ($this->criteriaConstraintCollection->findAll($ignoreConstraintTypes) as $criteriaConstraint) {
+		foreach ($this->boundry->filterCriteriaConstraints($ignoreConstraintTypes) as $criteriaConstraint) {
 			$criteriaConstraint->applyToCriteria($criteria, $entityAliasCriteriaProperty);
 		}
-		
-// 		if ($applyMaskConstraints && null !== ($filterData = $this->getContextEiMask()->getFilterSettingGroup())) {
-// 			$this->getOrCreateFilterModel()->createCriteriaConstraint($filterData)
-// 			->applyToCriteria($criteria, CrIt::p(array($entityAlias)));
-// 		}
-		
-// 		if ($applyDefaultSort) {
-// 			$defaultSortDirections = $this->getContextEiMask()->getDefaultSortSettingGroup();
-// 			if (!empty($defaultSortDirections)
-// 					&& null !== ($constraint = $this->getOrCreateSortModel()
-// 							->createCriteriaConstraint($defaultSortDirections))) {
-// 								$constraint->applyToCriteria($criteria, CrIt::p(array($entityAlias)));
-// 							}
-// 		}
-		
-// 		if ($applySecurityConstraints && null !== ($commandExecutionConstraint = $this->getCommandExecutionConstraint())) {
-// 			$commandExecutionConstraint->applyToCriteria($criteria, CrIt::p(array($entityAlias)));
-// 		}
 
-		if (!($ignoreConstraintTypes & CriteriaConstraint::TYPE_SECURITY)
-				&& null !== ($criteriaConstraint = $this->getEiExecution()->getCriteriaConstraint())) {
-			$criteriaConstraint->applyToCriteria($criteria, $entityAliasCriteriaProperty);
-		}
+// 		if (!($ignoreConstraintTypes & Boundry::TYPE_SECURITY)
+// 				&& null !== ($criteriaConstraint = $this->getEiExecution()->getCriteriaConstraint())) {
+// 			$criteriaConstraint->applyToCriteria($criteria, $entityAliasCriteriaProperty);
+// 		}
 		
 		return $criteria;
 	}
 	
+	/**
+	 * @param EiObject $eiObject
+	 * @param int $ignoreConstraintTypes
+	 * @return EiEntry
+	 */
+	public function createEiEntry(EiObject $eiObject, int $ignoreConstraintTypes = 0) {
+		$eiEntry = $this->determineEiMask($eiObject->getEiEntityObj()->getEiType())->getEiEngine()
+				->createFramedEiEntry($this, $eiObject, null, $this->boundry->filterEiEntryConstraints($ignoreConstraintTypes));
+		
+		foreach ($this->listeners as $listener) {
+			$listener->onNewEiEntry($eiEntry);
+		}
+		
+		return $eiEntry;
+	}
+	
+	/**
+	 * @param EiExecution $eiExecution
+	 */
 	public function setEiExecution(EiExecution $eiExecution) {
 		$this->eiExecution = $eiExecution;
 	}
 	
 
-	public function getEiExecution(): EiExecution {
+	/**
+	 * @throws IllegalStateException
+	 * @return EiExecution
+	 */
+	public function getEiExecution() {
 		if (null === $this->eiExecution) {
 			throw new IllegalStateException('EiFrame contains no EiExecution.');
 		}
@@ -285,27 +283,11 @@ class EiFrame {
 		return $this->eiExecution;
 	}
 	
-	public function hasEiExecution(): bool {
-		return $this->eiExecution !== null;
-	}
-	
 	/**
-	 * @return EiEntry
+	 * @return bool
 	 */
-	public function restrictEiEntry(EiEntry $eiEntry) {
-		if (null !== ($mappingConstraint = $this->getEiExecution()->getEiEntryConstraint())) {
-			$eiEntry->getEiEntryConstraintSet()->add($mappingConstraint);
-		}
-		
-		if (null !== ($restrictor = $this->getEiExecution()->buildEiCommandAccessRestrictor($eiEntry))) {
-			$eiEntry->getEiCommandAccessRestrictorSet()->add($restrictor);
-		}
-		
-		foreach ($this->listeners as $listener) {
-			$listener->onNewEiEntry($eiEntry);
-		}
-		
-		return $eiEntry;
+	public function hasEiExecution() {
+		return $this->eiExecution !== null;
 	}
 	
 	public function setOverviewDisabled(bool $overviewDisabled) {
@@ -474,43 +456,6 @@ class EiFrame {
 	
 	public function unregisterListener(EiFrameListener $listener) {
 		unset($this->listeners[spl_object_hash($listener)]);		
-	}
-}
-
-class CriteriaConstraintCollection implements \IteratorAggregate, \Countable {
-	private $types = array();
-	private $criteriaConstraints = array();
-	
-	public function add(int $type, CriteriaConstraint $criteriaConstraint) {
-		$objHash = spl_object_hash($criteriaConstraint);
-		$this->types[$objHash] = $type;
-		$this->criteriaConstraints[$objHash] = $criteriaConstraint;
-	}
-	
-	/**
-	 * @param int $types
-	 * @return CriteriaConstraint[]
-	 */
-	public function findAll(int $ignoredTypes) {
-		$criteriaConstraints = array();
-		foreach ($this->types as $objHash => $type) {
-			if ($ignoredTypes == 0 || !($ignoredTypes & $type)) {
-				$criteriaConstraints[] = $this->criteriaConstraints[$objHash];
-			}
-		}
-		return $criteriaConstraints;
-	}
-	
-	public function count() {
-		return count($this->criteriaConstraints);
-	}
-	
-	public function getIterator() {
-		return new \ArrayIterator($this->toArray());
-	}
-	
-	public function toArray() {
-		return $this->criteriaConstraints;
 	}
 }
 

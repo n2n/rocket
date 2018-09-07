@@ -21,7 +21,6 @@
  */
 namespace rocket\ei\component;
 
-use rocket\ei\component\prop\EiPropCollection;
 use rocket\ei\component\modificator\EiModificatorCollection;
 use n2n\reflection\ArgUtils;
 use rocket\ei\manage\gui\GuiDefinition;
@@ -38,20 +37,22 @@ use rocket\ei\manage\gui\EiGui;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\gui\EiGuiListener;
 use rocket\ei\manage\mapping\EiEntry;
+use rocket\ei\util\model\Eiu;
+use rocket\ei\component\command\control\EntryControlComponent;
+use rocket\ei\mask\model\ControlOrder;
+use rocket\ei\manage\control\Control;
 
 class GuiFactory {
-	private $eiPropCollection;
-	private $eiModificatorCollection;
+	private $eiMask;
 	
-	public function __construct(EiPropCollection $eiPropCollection, EiModificatorCollection $eiModificatorCollection) {
-		$this->eiPropCollection = $eiPropCollection;
-		$this->eiModificatorCollection = $eiModificatorCollection;
+	public function __construct(EiMask $eiMask) {
+		$this->eiMask = $eiMask;
 	}
 	
 	public function createGuiDefinition() {
 		$guiDefinition = new GuiDefinition();
 		
-		foreach ($this->eiPropCollection as $id => $eiProp) {
+		foreach ($this->eiMask->getEiPropCollection() as $id => $eiProp) {
 			if (!($eiProp instanceof GuiEiProp)) continue;
 			
 			if (null !== ($guiProp = $eiProp->getGuiProp())){
@@ -67,19 +68,39 @@ class GuiFactory {
 			}
 		}
 		
-		foreach ($this->eiModificatorCollection as $eiModificator) {
+		foreach ($this->eiMask->getEiModificatorCollection() as $eiModificator) {
 			$eiModificator->setupGuiDefinition($guiDefinition);
 		}
 		
 		return $guiDefinition;
 	}
+
 	
-// 	public function createEiGui(EiFrame $eiFrame, GuiDefinition $guiDefinition, int $viewMode, 
-// 			EiGuiViewFactory $eiGuiViewFactory) {
-// 		$eiGui = new EiGui($eiFrame, $guiDefinition, $viewMode, $eiGuiViewFactory);
-// 		$eiGui->registerListner(new ModEiGuiListener($this->eiModificatorCollection));
-// 		return $eiGui;
-// 	}
+	/**
+	 * @param EiEntryGui $eiEntryGui
+	 * @param HtmlView $view
+	 * @return Control[]
+	 */
+	public function createEiEntryGuiControls(EiEntryGui $eiEntryGui, HtmlView $view) {
+		$eiu = new Eiu($eiEntryGui);
+		
+		$controls = array();
+		
+		foreach ($this->eiMask->getEiCommandCollection() as $eiCommandId => $eiCommand) {
+			if (!($eiCommand instanceof EntryControlComponent)
+					|| !$eiu->entry()->access()->isExecutableBy($eiCommand)) {
+				continue;
+			}
+			
+			$entryControls = $eiCommand->createEntryControls($eiu, $view);
+			ArgUtils::valArrayReturn($entryControls, $eiCommand, 'createEntryControls', Control::class);
+			foreach ($entryControls as $controlId => $control) {
+				$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;
+			}
+		}
+		
+		return $this->eiMask->getDisplayScheme()->getEntryControlOrder()->sort($controls);
+	}
 	
 	/**
 	 * @param EiMask $eiMask

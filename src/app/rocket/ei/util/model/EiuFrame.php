@@ -264,7 +264,7 @@ class EiuFrame {
 	 * @throws \rocket\ei\security\InaccessibleEntryException
 	 */
 	private function createEiEntry(EiObject $eiObject) {
-		return $this->determineEiMask($eiObject)->getEiEngine()->createEiEntry($this->eiFrame, $eiObject);
+		return $this->determineEiMask($eiObject)->getEiEngine()->createFramedEiEntry($this->eiFrame, $eiObject);
 	}
 	
 	/**
