@@ -39,7 +39,7 @@ use n2n\util\ex\IllegalStateException;
 use n2n\util\config\Attributes;
 use rocket\ei\manage\security\privilege\PrivilegeDefinition;
 use rocket\ei\manage\security\privilege\data\PrivilegeSetting;
-use rocket\ei\manage\security\EiExecution;
+use rocket\ei\manage\security\EiEntryAccessFactory;
 
 class RocketUserEiPermissionManager implements EiPermissionManager {
 	private $rocketUser;
@@ -71,7 +71,7 @@ class RocketUserEiPermissionManager implements EiPermissionManager {
 		return null !== $this->findEiGrant($eiCommand->getEiMask()->getEiTypePath());
 	}
 
-	function applyEiExecution(EiFrame $eiFrame, EiCommandPath $eiCommandPath) {
+	function applyToEiFrame(EiFrame $eiFrame, EiCommandPath $eiCommandPath) {
 		$eiMask = $eiFrame->getContextEiEngine()->getEiMask();
 		$eiCommand = null;
 		
@@ -80,7 +80,8 @@ class RocketUserEiPermissionManager implements EiPermissionManager {
 		}
 				
 		if ($this->rocketUser->isAdmin()) {
-			$eiFrame->setEiExecution(new FullyGrantedEiExecution($eiCommandPath, $eiCommand, null));
+			$eiFrame->setEiExecution(new FullyGrantedEiExecution($eiCommandPath, $eiCommand));
+			$eiFrame->setEiEntryAccessFactory(new FullEiEntryAccessFactory());
 			return;
 		}
 		
@@ -89,21 +90,25 @@ class RocketUserEiPermissionManager implements EiPermissionManager {
 			throw new InaccessibleEiCommandPathException();
 		}
 		
+		$managedDef = $eiFrame->getManageState()->getDef();
+		
 		$constraintCache = new ConstraintCache($eiGrant,
-				$eiMask->getEiEngine()->createPrivilegeDefinition($n2nContext),
-				$eiMask->getEiEngine()->createSecurityFilterDefinition($n2nContext));
-		$eiEntryAccessFactory = new EiEntryAccessFactory();
-		foreach ($eiMask->getEiType()->getAllSubEiTypes() as $subEiType) {
-			$subEiMask = $eiFrame->determineEiMask($subEiType);
-			if (null !== ($eiGrant = $this->findEiGrant($subEiMask->getEiTypePath()))) {
-				$eiEntryAccessFactory->addSubEiGrant(new \ConstraintCache($eiGrant,
-						$subEiMask->getEiEngine()->createPrivilegeDefinition($n2nContext),
-						$subEiMask->getEiEngine()->createSecurityFilterDefinition($n2nContext)));
-			}
-		}
+				$managedDef->getPrivilegeDefinition($eiMask),
+				$managedDef->getSecurityFilterDefinition($eiMask));
+		$eiEntryAccessFactory = new RestrictedEiEntryAccessFactory($constraintCache);
+// 		foreach ($eiMask->getEiType()->getAllSubEiTypes() as $subEiType) {
+// 			$subEiMask = $eiFrame->determineEiMask($subEiType);
+// 			if (null !== ($eiGrant = $this->findEiGrant($subEiMask->getEiTypePath()))) {
+// 				$eiEntryAccessFactory->addSubEiGrant(new ConstraintCache($eiGrant,
+// 						$managedDef->getPrivilegeDefinition($subEiMask),
+// 						$managedDef->getSecurityFilterDefinition($subEiMask)));
+// 			}
+// 		}
+		
+		$eiFrame->setEiEntryAccessFactory($eiEntryAccessFactory);
 		
 		if ($eiGrant->isFull()) {
-			$eiFrame->setEiExecution(new FullyGrantedEiExecution($eiCommandPath, $eiCommand, $eiEntryAccessFactory));
+			$eiFrame->setEiExecution(new FullyGrantedEiExecution($eiCommandPath, $eiCommand));
 			return;
 		}
 		
@@ -127,45 +132,24 @@ class RocketUserEiPermissionManager implements EiPermissionManager {
 // 	}
 }
 
+class FullEiEntryAccessFactory implements EiEntryAccessFactory {
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\security\EiEntryAccessFactory::createEiEntryAccess()
+	 */
+	function createEiEntryAccess(EiEntry $eiEntry): EiEntryAccess {
+		return new StaticEiEntryAccess(true);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\security\EiEntryAccessFactory::isExecutableBy()
+	 */
+	function isExecutableBy(EiCommandPath $eiCommandPath): bool {
+		return true;
+	}
 
-class EiEntryAccessFactory {
-	/**
-	 * @var EiGrant[] $eiGrants
-	 */
-	private $constraintCaches = array();
-	
-	function __construct(EiExecution $eiExcecution) {
-	}
-	
-	/**
-	 * @param ConstraintCache $constraintCache
-	 */
-	function addSubEiGrant(ConstraintCache $constraintCache) {
-		$this->constraintCaches[(string) $constraintCache->getEiGrant->getEiTypePath()] = $eiGrant;
-	}
-	
-	function createEiEntryAccess(EiEntry $eiEntry) {
-		$eiTypePathStr = (string) $eiEntry->getEiMask()->getEiTypePath();
-		
-		if (!isset($this->constraintCaches[$eiTypePathStr])) {
-			return new StaticEiEntryAccess(false);
-		}
-		
-		$constraintCache = $this->constraintCaches[$eiTypePathStr];
-		if ($constraintCache->getEiGrant()->isFull()) {
-			return new StaticEiEntryAccess(true);
-		}
-		
-		$privilegeSettings = array();
-		foreach ($constraintCache->getEiGrant()->getEiGrantPrivileges() as $eiGrantPrivilege) {
-			$privilegeSettings[] = $constraintCache->getPrivilegeSetting($eiGrantPrivilege);
-		}
-		
-		return new RestrictedEiEntryAccess($constraintCache->getPrivilegeDefinition(), $privilegeSettings);
-		
-	}
 }
-
 
 
 // class RestrictedEiEntryAccess implements EiEntryAccess {

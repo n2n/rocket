@@ -63,7 +63,7 @@ class EiFrameFactory {
 			}
 		}
 		
-		$manageState->getEiPermissionManager()->applyEiExecution($eiFrame, $eiCommandPath);
+		$manageState->getEiPermissionManager()->applyToEiFrame($eiFrame, $eiCommandPath);
 		
 		$eiu = new Eiu($eiFrame);
 		foreach ($eiMask->getEiModificatorCollection()->toArray() as $eiModificator) {

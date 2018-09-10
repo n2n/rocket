@@ -175,7 +175,9 @@ class EiuGui {
 	
 	public function initWithUiCallback(\Closure $viewFactory, array $guiIdPaths) {
 		$guiIdPaths = GuiIdPath::createArray($guiIdPaths);
-		$guiDefinition = $this->eiGui->getEiFrame()->getContextEiEngine()->getGuiDefinition();
+		$eiFrame = $this->eiGui->getEiFrame();
+		$guiDefinition = $this->eiGui->getEiFrame()->getManageState()->getDef()->getGuiDefinition(
+				$eiFrame->getContextEiEngine()->getEiMask());
 		
 		$this->eiGui->init(new CustomGuiViewFactory($guiDefinition, $guiIdPaths, $viewFactory));
 	}

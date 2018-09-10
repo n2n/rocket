@@ -59,15 +59,16 @@ class RelationController extends ControllerAdapter {
 			throw new PageNotFoundException();
 		}
 			
-		$targetControllerContext = $this->createDelegateContext($eiTypeController);
+		$targetControllerContext = $this->createDelegateContext();
 		
 		$targetEiFrame = $this->eiPropRelation->createTargetEiFrame($this->manageState, $this->eiFrame, 
 				$eiObject, $targetControllerContext);
 		
 		$this->applyBreadcrumb($eiObject);
 
-		$this->delegate(new EiController($targetEiFrame->getContextEiEngine()->getEiMask(), $targetEiFrame));
+		$targetControllerContext->setController(new EiController($targetEiFrame->getContextEiEngine()->getEiMask(), $targetEiFrame));
 		
+		$this->delegateToControllerContext($targetControllerContext);
 	}
 	
 // 	public function doRelUnknownEntry(array $delegateCmds, EiController $eiTypeController) {

@@ -23,7 +23,6 @@
 namespace rocket\ei\util\model;
 
 use n2n\l10n\N2nLocale;
-use rocket\ei\EiCommandPath;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\mapping\OnWriteMappingListener;
 use rocket\ei\manage\mapping\WrittenMappingListener;
@@ -101,7 +100,7 @@ class EiuEntry {
 	
 	public function access() {
 		if ($this->eiuEntryAccess === null) {
-			$this->eiuEntryAccess = new EiuEntryAccess($this->getEiuFrame()->getEiFrame()->getEiExecution()
+			$this->eiuEntryAccess = new EiuEntryAccess($this->getEiuFrame()->getEiFrame()
 					->createEiEntryAccess($this->getEiEntry()), $this);
 		}
 		
@@ -262,11 +261,13 @@ class EiuEntry {
 		}
 		
 		$viewMode = $this->deterViewMode($bulky, $editable);
+		$eiFrame = $this->getEiuFrame()->getEiFrame();
 		
-		$eiGui = new EiGui($this->getEiuFrame()->getEiFrame(), $viewMode);
-		$eiGui->init($eiMask->createEiGuiViewFactory($eiGui));
+		$eiGui = new EiGui($eiFrame, $viewMode);
+		$eiGui->init($eiMask->getDisplayScheme()->createEiGuiViewFactory($eiGui,
+				$eiFrame->getManageState()->getDef()->getGuiDefinition($eiMask)));
 		
-		return new EiuEntryGui($eiGui->createEiEntryGui($this->getEiEntry(), $treeLevel));
+		return new EiuEntryGui($eiGui->createEiEntryGui($this->getEiEntry(), $treeLevel), null, $this->eiuAnalyst);
 	}
 	
 	public function newCustomEntryGui(\Closure $uiFactory, array $guiIdPaths, bool $bulky = true, 
@@ -421,21 +422,21 @@ class EiuEntry {
 		return $this->eiuFrame->determineEiEngine($this);
 	}
 	
-	/**
-	 * @param mixed $guiIdPath
-	 * @return boolean
-	 */
-	public function containsGuiProp($guiIdPath) {
-		return $this->eiuFrame->containsGuiProp($guiIdPath);
-	}
+// 	/**
+// 	 * @param mixed $guiIdPath
+// 	 * @return boolean
+// 	 */
+// 	public function containsGuiProp($guiIdPath) {
+// 		return $this->eiuFrame->containsGuiProp($guiIdPath);
+// 	}
 	
-	/**
-	 * @param GuiIdPath|string $guiIdPath
-	 * @return \rocket\ei\EiPropPath|null
-	 */
-	public function guiIdPathToEiPropPath($guiIdPath) {
-		return $this->eiuFrame->guiIdPathToEiPropPath($guiIdPath, $this);
-	}
+// 	/**
+// 	 * @param GuiIdPath|string $guiIdPath
+// 	 * @return \rocket\ei\EiPropPath|null
+// 	 */
+// 	public function guiIdPathToEiPropPath($guiIdPath) {
+// 		return $this->eiuFrame->guiIdPathToEiPropPath($guiIdPath, $this);
+// 	}
 	
 	/**
 	 * @param bool $determineEiMask

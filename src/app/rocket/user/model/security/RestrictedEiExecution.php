@@ -26,16 +26,10 @@ use rocket\ei\component\command\EiCommand;
 use rocket\ei\manage\security\filter\SecurityFilterDefinition;
 use rocket\ei\EiCommandPath;
 use n2n\util\ex\IllegalStateException;
-use rocket\ei\EiPropPath;
 use rocket\ei\manage\security\privilege\PrivilegeDefinition;
 use rocket\ei\manage\critmod\filter\ComparatorConstraintGroup;
-use rocket\ei\manage\mapping\EiEntry;
 use rocket\user\bo\EiGrantPrivilege;
-use rocket\ei\manage\mapping\WhitelistEiCommandAccessRestrictor;
-use rocket\ei\manage\security\EiFieldAccess;
 use rocket\ei\manage\security\InaccessibleEiCommandPathException;
-use rocket\ei\manage\security\EiEntryAccess;
-use rocket\ei\manage\critmod\filter\FilterDefinition;
 
 class RestrictedEiExecution implements EiExecution {
 	private $eiCommand;
@@ -52,7 +46,7 @@ class RestrictedEiExecution implements EiExecution {
 	 * @param PrivilegeDefinition $privilegeDefinition
 	 * @param SecurityFilterDefinition $securityFilterDefinition
 	 */
-	public function __construct(?EiCommand $eiCommand, EiCommandPath $eiCommandPath, ConstarintCache $constraintCache) {
+	public function __construct(?EiCommand $eiCommand, EiCommandPath $eiCommandPath, ConstraintCache $constraintCache) {
 		$this->eiCommand = $eiCommand;
 		$this->constraintCache = $constraintCache;
 		
@@ -98,21 +92,21 @@ class RestrictedEiExecution implements EiExecution {
 		return $this->comparatorConstraintGroup;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\security\EiExecution::createEiFieldAccess()
-	 */
-	public function createEiFieldAccess(EiPropPath $eiPropPath) {
-		$attributes = array();
-		foreach ($this->eiGrantPrivileges as $eiGrantPrivilege) {
-			$eiPropAttributes = PrivilegeDefinition::extractAttributesOfEiPropPrivilege($eiPropPath, 
-					$eiGrantPrivilege->readEiPropPrivilegeAttributes());
-			if ($eiPropAttributes !== null) {
-				$attributes[] = $eiPropAttributes;
-			}
-		}
-		return new RestrictedEiFieldAccess($attributes);
-	}
+// 	/**
+// 	 * {@inheritDoc}
+// 	 * @see \rocket\ei\manage\security\EiExecution::createEiFieldAccess()
+// 	 */
+// 	public function createEiFieldAccess(EiPropPath $eiPropPath) {
+// 		$attributes = array();
+// 		foreach ($this->eiGrantPrivileges as $eiGrantPrivilege) {
+// 			$eiPropAttributes = PrivilegeDefinition::extractAttributesOfEiPropPrivilege($eiPropPath, 
+// 					$eiGrantPrivilege->readEiPropPrivilegeAttributes());
+// 			if ($eiPropAttributes !== null) {
+// 				$attributes[] = $eiPropAttributes;
+// 			}
+// 		}
+// 		return new RestrictedEiFieldAccess($attributes);
+// 	}
 
 	private function filter(EiCommandPath $eiCommandPath) {
 		if (!$this->privilegeDefinition->checkEiCommandPathForPrivileges($eiCommandPath)) {
@@ -194,26 +188,26 @@ class RestrictedEiExecution implements EiExecution {
 		$this->filter($this->eiCommandPath->ext($ext));
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\security\EiExecution::buildEiCommandAccessRestrictor()
-	 */
-	public function buildEiCommandAccessRestrictor(EiEntry $eiEntry): ?EiCommandAccessRestrictor  {
-		$restrictor = new WhitelistEiCommandAccessRestrictor();
+// 	/**
+// 	 * {@inheritDoc}
+// 	 * @see \rocket\ei\manage\security\EiExecution::buildEiCommandAccessRestrictor()
+// 	 */
+// 	public function buildEiCommandAccessRestrictor(EiEntry $eiEntry): ?EiCommandAccessRestrictor  {
+// 		$restrictor = new WhitelistEiCommandAccessRestrictor();
 		
-		foreach ($this->eiGrantPrivileges as $eiGrantPrivilege) {
-			if ($eiGrantPrivilege->isRestricted()
-					&& !$this->constraintCache->getrEiEntryConstraint($eiGrantPrivilege)->check($eiEntry)) {
-				continue;
-			}
+// 		foreach ($this->eiGrantPrivileges as $eiGrantPrivilege) {
+// 			if ($eiGrantPrivilege->isRestricted()
+// 					&& !$this->constraintCache->getrEiEntryConstraint($eiGrantPrivilege)->check($eiEntry)) {
+// 				continue;
+// 			}
 			
-			$restrictor->getEiCommandPaths()->addAll($eiGrantPrivilege->getEiCommandPaths());
-		}
+// 			$restrictor->getEiCommandPaths()->addAll($eiGrantPrivilege->getEiCommandPaths());
+// 		}
 		
-		if ($restrictor->getEiCommandPaths()->isEmpty()) return null;
+// 		if ($restrictor->getEiCommandPaths()->isEmpty()) return null;
 		
-		return $restrictor;
-	}
+// 		return $restrictor;
+// 	}
 }
 
 

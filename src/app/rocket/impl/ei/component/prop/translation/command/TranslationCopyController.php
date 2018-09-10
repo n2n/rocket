@@ -35,7 +35,7 @@ class TranslationCopyController extends ControllerAdapter {
 		}
 		
 		foreach ($guiIdPaths as $guiIdPath) {
-			if ($eiuEntry->containsGuiProp($guiIdPath)) continue;
+			if ($eiuEntry->getEiuEngine()->containsGuiProp($guiIdPath)) continue;
 			
 			throw new BadRequestException('Unknown guiIdPath: ' . $guiIdPath);
 		}
@@ -83,11 +83,11 @@ class TranslationCopyController extends ControllerAdapter {
 			$toEiuEntry->getEntityObj()->setN2nLocale($toN2nLocale);
 		}
 		
-		if (!$fromEiuEntry->containsGuiProp($guiIdPath)) {
+		if (!$fromEiuEntry->getEiuEngine()->containsGuiProp($guiIdPath)) {
 			throw new BadRequestException('Unknown guiIdPath: ' . $guiIdPath);
 		}
 		
-		$eiPropPath = $fromEiuEntry->guiIdPathToEiPropPath($guiIdPath);
+		$eiPropPath = $fromEiuEntry->getEiuEngine()->guiIdPathToEiPropPath($guiIdPath);
 		$fromEiuEntry->copyValuesTo($toEiuEntry, [$eiPropPath]);
 		
 		$eiuEntryGui = $toEiuEntry->newCustomEntryGui(function () {

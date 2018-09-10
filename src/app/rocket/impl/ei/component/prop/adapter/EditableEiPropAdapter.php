@@ -64,8 +64,7 @@ abstract class EditableEiPropAdapter extends DisplayableEiPropAdapter implements
 	 * @return bool
 	 */
 	public function isReadOnly(Eiu $eiu): bool {
-		if (!WritableEiPropPrivilege::checkForWriteAccess($eiu->frame()->getEiFrame()->getEiExecution()
-				->createEiFieldAccess(EiPropPath::from($this)))) {
+		if (!WritableEiPropPrivilege::checkForWriteAccess($eiu->entry()->access()->getEiFieldAccess($this))) {
 			return true;
 		}
 

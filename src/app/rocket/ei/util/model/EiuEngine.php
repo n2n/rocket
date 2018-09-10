@@ -20,6 +20,8 @@ use rocket\ei\manage\security\privilege\data\PrivilegeSetting;
 use rocket\ei\util\sort\EiuSortForm;
 use rocket\ei\manage\critmod\sort\SortSettingGroup;
 use rocket\ei\manage\ManageState;
+use rocket\ei\manage\gui\GuiIdPath;
+use rocket\ei\manage\gui\GuiException;
 
 class EiuEngine {
 	private $eiEngine;
@@ -219,6 +221,26 @@ class EiuEngine {
 	public function getGuiDefinition() {
 		return $this->getManageState()->getDef()->getGuiDefinition($this->eiEngine->getEiMask());
 	}
+	
+	/**
+	 * @param mixed $guiIdPath
+	 * @throws \InvalidArgumentException
+	 * @return boolean
+	 */
+	public function containsGuiProp($guiIdPath) {
+		return $this->getGuiDefinition()->containsGuiProp(GuiIdPath::create($guiIdPath));
+	}
+
+	/**
+	 * @param mixed $guiIdPath
+	 * @throws \InvalidArgumentException
+	 * @throws GuiException
+	 * @return EiPropPath
+	 */
+	public function guiIdPathToEiPropPath($guiIdPath) {
+		return $this->getGuiDefinition()->guiIdPathToEiPropPath(GuiIdPath::create($guiIdPath));
+	}
+	
 	
 	/**
 	 * @param FilterSettingGroup|null $rootGroup

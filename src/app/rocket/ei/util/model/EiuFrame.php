@@ -264,7 +264,7 @@ class EiuFrame {
 	 * @throws \rocket\ei\security\InaccessibleEntryException
 	 */
 	private function createEiEntry(EiObject $eiObject, int $ignoreConstraintTypes = 0) {
-		return $this->eiFrame->createEiEntry($eiObject, $ignoreConstraintTypes);
+		return $this->eiFrame->createEiEntry($eiObject, null, $ignoreConstraintTypes);
 	}
 	
 	/**
@@ -309,8 +309,7 @@ class EiuFrame {
 			$to = $this->createNewEiObject($fromEiuEntry->isDraft(), $fromEiuEntry->getEiType());
 		}
 		
-		return $this->determineEiMask($to)->getEiEngine()
-				->createEiEntryCopy($this->eiFrame, $to, $fromEiuEntry->getEiEntry());
+		return $this->eiFrame->createEiEntry($to, $fromEiuEntry->getEiEntry());
 	}
 	
 	/**
@@ -577,7 +576,7 @@ class EiuFrame {
 	 */
 	public function newCustomGui(int $viewMode, \Closure $uiFactory, array $guiIdPaths) {
 		$eiGui = new EiGui($this->eiFrame, $viewMode);
-		$eiuGui = new EiuGui($eiGui, $this);
+		$eiuGui = new EiuGui($eiGui, $this, $this->eiuAnalyst);
 		$eiuGui->initWithUiCallback($uiFactory, $guiIdPaths);
 		return $eiuGui;
 	}
@@ -726,26 +725,6 @@ class EiuFrame {
 	 */
 	private function determineEiEngine($eiObjectObj) {
 		return $this->determineEiMask($eiObjectObj)->getEiEngine();
-	}
-
-	/**
-	 * @param mixed $guiIdPath
-	 * @param mixed $eiTypeObj
-	 * @throws \InvalidArgumentException
-	 * @return boolean
-	 */
-	public function containsGuiProp($guiIdPath, $eiTypeObj = null) {
-		return $this->determineEiEngine($eiTypeObj)->getGuiDefinition()->containsGuiProp(
-				GuiIdPath::create($guiIdPath));
-	}
-
-	public function guiIdPathToEiPropPath($guiIdPath, $eiTypeObj = null) {
-		try {
-			return $this->determineEiEngine($eiTypeObj)->getGuiDefinition()->guiIdPathToEiPropPath(
-					GuiIdPath::create($guiIdPath));
-		} catch (\rocket\ei\manage\gui\GuiException $e) {
-			return null;
-		}
 	}
 
 	/**

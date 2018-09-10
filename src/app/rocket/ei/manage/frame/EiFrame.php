@@ -33,11 +33,14 @@ use rocket\ei\manage\security\EiExecution;
 use n2n\web\http\HttpContext;
 use n2n\util\uri\Url;
 use n2n\reflection\ArgUtils;
+use rocket\ei\EiCommandPath;
 use rocket\ei\EiEngine;
 use rocket\ei\EiTypeExtension;
 use rocket\ei\EiType;
 use rocket\ei\manage\ManageState;
 use rocket\ei\manage\EiObject;
+use rocket\ei\manage\security\EiEntryAccessFactory;
+use rocket\ei\manage\security\EiEntryAccess;
 
 class EiFrame {
 	private $contextEiEngine;
@@ -48,6 +51,7 @@ class EiFrame {
 	private $subEiTypeExtensions = array();
 	
 	private $eiExecution;
+	private $eiEntryAccessFactory;
 // 	private $eiObject;
 // 	private $previewType;
 	private $scriptRelations = array();
@@ -252,9 +256,9 @@ class EiFrame {
 	 * @param int $ignoreConstraintTypes
 	 * @return EiEntry
 	 */
-	public function createEiEntry(EiObject $eiObject, int $ignoreConstraintTypes = 0) {
+	public function createEiEntry(EiObject $eiObject, EiEntry $copyFrom = null, int $ignoreConstraintTypes = 0) {
 		$eiEntry = $this->determineEiMask($eiObject->getEiEntityObj()->getEiType())->getEiEngine()
-				->createFramedEiEntry($this, $eiObject, null, $this->boundry->filterEiEntryConstraints($ignoreConstraintTypes));
+				->createFramedEiEntry($this, $eiObject, $copyFrom, $this->boundry->filterEiEntryConstraints($ignoreConstraintTypes));
 		
 		foreach ($this->listeners as $listener) {
 			$listener->onNewEiEntry($eiEntry);
@@ -270,7 +274,6 @@ class EiFrame {
 		$this->eiExecution = $eiExecution;
 	}
 	
-
 	/**
 	 * @throws IllegalStateException
 	 * @return EiExecution
@@ -288,6 +291,48 @@ class EiFrame {
 	 */
 	public function hasEiExecution() {
 		return $this->eiExecution !== null;
+	}
+	
+	/**
+	 * @param EiEntryAccessFactory $eiEntryAccessFactory
+	 */
+	public function setEiEntryAccessFactory(EiEntryAccessFactory $eiEntryAccessFactory) {
+		$this->eiEntryAccessFactory = $eiEntryAccessFactory;
+	}
+	
+	/**
+	 * @throws IllegalStateException
+	 * @return EiEntryAccessFactory
+	 */
+	public function getEiEntryAccessFactory() {
+		if (null === $this->eiEntryAccessFactory) {
+			throw new IllegalStateException('EiFrame contains no EiEntryAccessFactory.');
+		}
+		
+		return $this->eiEntryAccessFactory;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	public function hasEiEntryAccessFactory() {
+		return $this->eiExecution !== null;
+	}
+	
+	/**
+	 * @param EiCommandPath $eiCommandPath
+	 * @return bool
+	 */
+	public function isExecutableBy(EiCommandPath $eiCommandPath): bool {
+		return $this->getEiEntryAccessFactory()->isExecutableBy($eiCommandPath);
+	}
+	
+	/**
+	 * @param EiEntry $eiEntry
+	 * @return EiEntryAccess
+	 */
+	public function createEiEntryAccess(EiEntry $eiEntry): EiEntryAccess {
+		return $this->getEiEntryAccessFactory()->createEiEntryAccess($eiEntry);
 	}
 	
 	public function setOverviewDisabled(bool $overviewDisabled) {

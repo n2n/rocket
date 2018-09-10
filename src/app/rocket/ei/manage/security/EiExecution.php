@@ -23,8 +23,6 @@ namespace rocket\ei\manage\security;
 
 use rocket\ei\component\command\EiCommand;
 use rocket\ei\EiCommandPath;
-use rocket\ei\EiPropPath;
-use rocket\ei\manage\mapping\EiEntry;
 
 interface EiExecution {
 	
@@ -44,20 +42,8 @@ interface EiExecution {
 	public function getEiCommand(): EiCommand;
 	
 	/**
-	 * @param EiCommandPath $eiCommandPath
-	 * @return bool
-	 */
-	public function isExecutableBy(EiCommandPath $eiCommandPath): bool;
-	
-	/**
-	 * @param EiPropPath $eiPropPath
-	 * @return \rocket\ei\manage\security\EiEntryAccess
-	 */
-	public function createEiEntryAccess(EiEntry $eiEntry): EiEntryAccess;
-	
-	/**
 	 * @param string $ext
-	 * @throws InaccessibleControlException
+	 * @throws InaccessibleEiCommandPathException
 	 */
 	public function extEiCommandPath(string $ext);
 }

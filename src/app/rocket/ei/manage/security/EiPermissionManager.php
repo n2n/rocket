@@ -47,5 +47,5 @@ interface EiPermissionManager {
 	 * @throws InaccessibleEiCommandPathException
 	 * @return \rocket\ei\manage\security\EiExecution
 	 */
-	public function applyEiExecution(EiFrame $eiFrame, EiCommandPath $commandPath);
+	public function applyToEiFrame(EiFrame $eiFrame, EiCommandPath $commandPath);
 }

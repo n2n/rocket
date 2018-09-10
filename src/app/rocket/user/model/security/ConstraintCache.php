@@ -30,6 +30,11 @@ use rocket\user\bo\EiGrant;
 use rocket\ei\manage\security\privilege\PrivilegeDefinition;
 
 class ConstraintCache {
+	private $eiGrant;
+	/**
+	 * @var PrivilegeDefinition
+	 */
+	private $privilegeDefinition;
 	/**
 	 * @var SecurityFilterDefinition
 	 */
@@ -45,6 +50,8 @@ class ConstraintCache {
 	private $eiEntryConstraints = array();
 	
 	function __construct(EiGrant $eiGrant, PrivilegeDefinition $privilegeDefinition, SecurityFilterDefinition $securityFilterDefinition) {
+		$this->eiGrant = $eiGrant;
+		$this->privilegeDefinition = $privilegeDefinition;
 		$this->securityFilterDefinition = $securityFilterDefinition;
 	}
 	
@@ -53,6 +60,20 @@ class ConstraintCache {
 	 */
 	function getEiGrant() {
 		return $this->eiGrant;
+	}
+	
+	/**
+	 * @return \rocket\ei\manage\security\privilege\PrivilegeDefinition
+	 */
+	function getPrivilegeDefinition() {
+		return $this->privilegeDefinition;
+	}
+	
+	/**
+	 * @return \rocket\ei\manage\security\filter\SecurityFilterDefinition
+	 */
+	function getSecurityFilterDefinition() {
+		return $this->securityFilterDefinition;
 	}
 
 	/**
