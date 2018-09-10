@@ -31,6 +31,7 @@ use n2n\web\dispatch\map\bind\BindingErrors;
 use rocket\core\model\Rocket;
 use rocket\ei\manage\mapping\EiEntry;
 use rocket\ei\manage\frame\CriteriaConstraint;
+use rocket\ei\manage\frame\Boundry;
 
 class ToOneForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {
@@ -143,7 +144,7 @@ class ToOneForm implements Dispatchable {
 				}
 						
 				if (null !== ($eiObject = $that->utils->lookupEiObjectById(
-						$that->utils->pidToId($selectedEntryPid), CriteriaConstraint::NON_SECURITY_TYPES))) {
+						$that->utils->pidToId($selectedEntryPid), Boundry::NON_SECURITY_TYPES))) {
 					$that->entryLabeler->setSelectedIdentityString($selectedEntryPid, 
 							$that->utils->createIdentityString($eiObject));				
 					return;

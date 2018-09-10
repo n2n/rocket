@@ -32,7 +32,6 @@ use rocket\ei\manage\EiObject;
 use rocket\ei\manage\critmod\filter\FilterDefinition;
 use rocket\ei\manage\critmod\sort\SortDefinition;
 use rocket\ei\manage\mapping\EiEntry;
-use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\component\DraftDefinitionFactory;
 use rocket\ei\manage\draft\DraftDefinition;
 use rocket\ei\mask\EiMask;
@@ -198,9 +197,9 @@ class EiEngine {
 		$mappingFactory->copyValues($eiFrame, $from, $to, $eiPropPaths);
 	}
 	
-	public function createGuiDefinition(N2nContext $n2nContext) {
+	public function createGuiDefinition(N2nContext $n2nContext, &$guiDefinition) {
 		$guiFactory = new GuiFactory($this->eiMask);
-		return $guiFactory->createGuiDefinition($n2nContext);
+		return $guiFactory->createGuiDefinition($n2nContext, $guiDefinition);
 	}
 	
 	public function createEiGui(int $viewMode, DisplayStructure $displayStructure) {

@@ -263,8 +263,8 @@ class EiuFrame {
 	 * @return \rocket\ei\manage\mapping\EiEntry
 	 * @throws \rocket\ei\security\InaccessibleEntryException
 	 */
-	private function createEiEntry(EiObject $eiObject) {
-		return $this->determineEiMask($eiObject)->getEiEngine()->createFramedEiEntry($this->eiFrame, $eiObject);
+	private function createEiEntry(EiObject $eiObject, int $ignoreConstraintTypes = 0) {
+		return $this->eiFrame->createEiEntry($eiObject, $ignoreConstraintTypes);
 	}
 	
 	/**
@@ -332,7 +332,8 @@ class EiuFrame {
 		$contextEiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
 		
 		$eiGui = new EiGui($this->eiFrame, ViewMode::BULKY_ADD);
-		$eiGui->init($contextEiMask->createEiGuiViewFactory($eiGui));
+		$eiGui->init($contextEiMask->getDisplayScheme()->createEiGuiViewFactory($eiGui, 
+				$this->eiFrame->getManageState()->getDef()->getGuiDefinition($contextEiMask)));
 		
 		ArgUtils::valArray($eiEntries, EiEntry::class);
 		foreach ($eiEntries as $eiEntry) {

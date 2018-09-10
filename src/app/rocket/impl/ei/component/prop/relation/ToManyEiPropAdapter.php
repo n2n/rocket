@@ -28,7 +28,6 @@ use rocket\ei\manage\draft\DraftProperty;
 use rocket\ei\manage\EiObject;
 use rocket\ei\util\model\Eiu;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
-use rocket\ei\manage\gui\GuiPropFork;
 
 abstract class ToManyEiPropAdapter extends SimpleRelationEiPropAdapter implements GuiProp, DraftableEiProp, 
 		DraftProperty {
@@ -68,10 +67,6 @@ abstract class ToManyEiPropAdapter extends SimpleRelationEiPropAdapter implement
 	 */
 	public function getDisplayLabel(): string {
 		return $this->getLabelLstr();
-	}
-
-	public function buildGuiProp(Eiu $eiu): ?GuiProp {
-		return $this;
 	}
 	
 	/**

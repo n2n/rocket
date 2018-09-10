@@ -32,7 +32,6 @@ use n2n\reflection\ArgUtils;
 use rocket\impl\ei\component\prop\adapter\DisplaySettings;
 use rocket\ei\util\model\Eiu;
 use rocket\impl\ei\component\prop\relation\model\ToOneEiField;
-use rocket\ei\manage\gui\GuiPropFork;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
 
 abstract class ToOneEiPropAdapter extends SimpleRelationEiPropAdapter implements GuiProp, DraftableEiProp, 
@@ -66,10 +65,6 @@ abstract class ToOneEiPropAdapter extends SimpleRelationEiPropAdapter implements
 		return $this->displaySettings;
 	}
 	
-	public function buildGuiProp(Eiu $eiu): ?GuiProp {
-		return $this;
-	}
-	
 	/**
 	 * @return boolean
 	 */
@@ -84,14 +79,22 @@ abstract class ToOneEiPropAdapter extends SimpleRelationEiPropAdapter implements
 	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): string {
 		$targetEiObject = $this->read($eiObject);
 		if ($targetEiObject === null) return '';
-		
-		return $this->eiPropRelation->getTargetEiMask()->createIdentityString($targetEiObject, $n2nLocale);
+
+		return $this->targetGuiDefinition->createIdentityString($targetEiObject, $n2nLocale);
 	}
 			
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\relation\RelationEiPropAdapter::isEiEntryFilterable()
+	 */
 	public function isEiEntryFilterable(): bool {
 		return true;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\relation\SimpleRelationEiPropAdapter::buildSecurityFilterProp()
+	 */
 	public function buildSecurityFilterProp(Eiu $eiu): ?SecurityFilterProp {		
 		return null;
 // 		$targetEiMask = $this->eiPropRelation->getTargetEiMask();

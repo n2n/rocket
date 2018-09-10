@@ -38,9 +38,9 @@ use rocket\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
 use n2n\reflection\CastUtils;
 use rocket\impl\ei\component\prop\relation\model\relation\SelectEiPropRelation;
 use rocket\ei\manage\gui\ui\DisplayItem;
-use rocket\ei\manage\frame\CriteriaConstraint;
 use rocket\ei\manage\gui\GuiField;
 use rocket\ei\manage\gui\DisplayDefinition;
+use rocket\ei\manage\frame\Boundry;
 
 abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 	
@@ -116,7 +116,7 @@ abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 		CastUtils::assertTrue($eiPropRelation instanceof SelectEiPropRelation);
 		
 		if ($eiPropRelation->isHiddenIfTargetEmpty()
-				&& 0 == $targetEiu->frame()->countEntries(CriteriaConstraint::NON_SECURITY_TYPES)) {
+				&& 0 == $targetEiu->frame()->countEntries(Boundry::NON_SECURITY_TYPES)) {
 			return null;
 		}
 		

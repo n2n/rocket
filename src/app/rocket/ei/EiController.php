@@ -29,12 +29,15 @@ use rocket\ei\component\UnknownEiComponentException;
 use rocket\ei\manage\security\InaccessibleEiCommandPathException;
 use rocket\ei\util\model\Eiu;
 use rocket\ei\mask\EiMask;
+use rocket\ei\manage\frame\EiFrame;
 
 class EiController extends ControllerAdapter {
 	private $eiMask;	
+	private $eiFrame;
 	
-	public function __construct(EiMask $eiMask) {
+	public function __construct(EiMask $eiMask, EiFrame $eiFrame = null) {
 		$this->eiMask = $eiMask;
+		$this->eiFrame = $eiFrame;
 	}
 	
 	public function index(ManageState $manageState, $eiCommandId, array $delegateCmds = null) {		
@@ -45,11 +48,15 @@ class EiController extends ControllerAdapter {
 			throw new PageNotFoundException(null, 0, $e);
 		}
 		
-		$eiFrame = null;
-		try {
-			$eiFrame = $manageState->createEiFrame($this->eiMask->getEiEngine(), $this->getControllerContext(), EiCommandPath::from($eiCommand));
-		} catch (InaccessibleEiCommandPathException $e) {
-			throw new ForbiddenException(null, 0, $e);
+		$eiFrame = $this->eiFrame;
+		if ($eiFrame === null) {
+			try {
+				$eiFrame = $manageState->createEiFrame($this->eiMask->getEiEngine(), $this->getControllerContext(), EiCommandPath::from($eiCommand));
+			} catch (InaccessibleEiCommandPathException $e) {
+				throw new ForbiddenException(null, 0, $e);
+			}
+		} else {
+			$eiFrame->getEiExecution()->extEiCommandPath(EiCommandPath::from($eiCommand));
 		}
 		
 		$this->delegate($eiCommand->lookupController(new Eiu($eiFrame)));

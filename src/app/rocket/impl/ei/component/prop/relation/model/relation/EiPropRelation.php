@@ -271,7 +271,7 @@ abstract class EiPropRelation {
 		
 	public function createTargetEiFrame(ManageState $manageState, EiFrame $eiFrame, EiObject $eiObject = null, 
 			ControllerContext $targetControllerContext): EiFrame {
-		$targetEiFrame = $manageState->createEiFrame($this->getTargetEiMask()->getEiEngine(), $targetControllerContext);
+		$targetEiFrame = $manageState->createEiFrame($this->getTargetEiMask()->getEiEngine(), $targetControllerContext, new EiCommandPath([]));
 		$targetEiFrame->setSubEiTypeExtensions($this->targetSubEiTypeExtensions);
 		$this->configureTargetEiFrame($targetEiFrame, $eiFrame, $eiObject);
 		

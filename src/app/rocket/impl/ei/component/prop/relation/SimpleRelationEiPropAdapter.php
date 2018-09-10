@@ -34,18 +34,16 @@ use rocket\ei\util\filter\controller\ScrFilterPropController;
 use rocket\ei\component\CritmodFactory;
 use rocket\impl\ei\component\prop\relation\model\filter\RelationFilterProp;
 use n2n\web\http\controller\impl\ScrRegistry;
-use rocket\ei\util\model\EiuFrame;
 use rocket\ei\mask\EiMask;
 use rocket\ei\manage\critmod\filter\FilterDefinition;
 use rocket\ei\util\filter\controller\FilterJhtmlHook;
-use rocket\ei\util\model\EiuMask;
 use rocket\ei\util\model\Eiu;
 use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\ei\manage\gui\ui\DisplayItem;
 use rocket\ei\manage\gui\ViewMode;
-use rocket\ei\manage\gui\GuiPropFork;
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
+use rocket\ei\manage\gui\GuiDefinition;
 
 abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter implements GuiProp, DraftableEiProp, 
 		DraftProperty, FilterableEiProp {
@@ -93,7 +91,17 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 		return DisplayItem::TYPE_SIMPLE_GROUP;
 	}
 	
+	/**
+	 * @var GuiDefinition
+	 */
+	protected $targetGuiDefinition;
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\prop\GuiEiProp::buildGuiProp()
+	 */
 	public function buildGuiProp(Eiu $eiu): ?GuiProp {
+		$this->targetGuiDefinition = $eiu->context()->engine($this->eiPropRelation->getTargetEiMask())->getGuiDefinition();
 		return $this;
 	}
 	

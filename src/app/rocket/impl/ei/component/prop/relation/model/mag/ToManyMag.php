@@ -39,6 +39,7 @@ use rocket\ei\manage\frame\CriteriaConstraint;
 use rocket\ei\manage\draft\Draft;
 use rocket\ei\util\model\Eiu;
 use n2n\web\dispatch\mag\UiOutfitter;
+use rocket\ei\manage\frame\Boundry;
 
 class ToManyMag extends MagAdapter {
 	private $min;
@@ -192,7 +193,7 @@ class ToManyMag extends MagAdapter {
 				}
 		
 				$this->targetRelationEntries[$pid] = RelationEntry::from($this->targetReadUtils->lookupEiObjectById(
-						$this->targetReadUtils->pidToId($pid), CriteriaConstraint::NON_SECURITY_TYPES));
+						$this->targetReadUtils->pidToId($pid), Boundry::NON_SECURITY_TYPES));
 			}
 		}
 		

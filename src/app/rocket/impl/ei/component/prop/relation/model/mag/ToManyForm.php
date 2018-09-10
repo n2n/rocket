@@ -32,6 +32,7 @@ use rocket\ei\manage\mapping\EiEntry;
 use n2n\web\dispatch\annotation\AnnoDispObjectArray;
 use rocket\ei\manage\frame\CriteriaConstraint;
 use rocket\ei\util\model\UnknownEntryException;
+use rocket\ei\manage\frame\Boundry;
 
 class ToManyForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {
@@ -167,7 +168,7 @@ class ToManyForm implements Dispatchable {
 					$eiObject = null;
 					try {
 						$eiObject = $that->readUtils->lookupEiObjectById($that->readUtils->pidToId($selectedEntryPid),
-								CriteriaConstraint::NON_SECURITY_TYPES);
+								Boundry::NON_SECURITY_TYPES);
 						$that->entryLabeler->setSelectedIdentityString($selectedEntryPid,
 								$that->readUtils->createIdentityString($eiObject));
 					} catch (UnknownEntryException $e) {

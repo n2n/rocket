@@ -132,8 +132,8 @@ class ManagedDef {
 		$eiTypePathStr = (string) $eiMask->getEiTypePath();
 		
 		if (!isset($this->guiDefinitions[$eiTypePathStr])) {
-			$this->guiDefinitions[$eiTypePathStr] = $eiMask->getEiEngine()
-			->createGuiDefinition($this->manageState->getN2nContext());
+			$eiMask->getEiEngine()
+					->createGuiDefinition($this->manageState->getN2nContext(), $this->guiDefinitions[$eiTypePathStr]);
 		}
 		
 		return $this->guiDefinitions[$eiTypePathStr];

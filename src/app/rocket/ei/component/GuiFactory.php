@@ -55,7 +55,7 @@ class GuiFactory {
 		$this->eiMask = $eiMask;
 	}
 	
-	public function createGuiDefinition(N2nContext $n2nContext) {
+	public function createGuiDefinition(N2nContext $n2nContext, &$guiDefinition = null) {
 		$eiu = new Eiu($n2nContext);
 		
 		$guiDefinition = new GuiDefinition();

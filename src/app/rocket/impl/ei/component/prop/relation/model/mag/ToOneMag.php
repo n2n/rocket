@@ -39,6 +39,7 @@ use rocket\impl\ei\component\prop\relation\model\RelationEntry;
 use rocket\ei\manage\frame\CriteriaConstraint;
 use n2n\web\dispatch\mag\UiOutfitter;
 use rocket\ei\util\model\Eiu;
+use rocket\ei\manage\frame\Boundry;
 
 class ToOneMag extends MagAdapter {
 	private $mandatory;
@@ -127,7 +128,7 @@ class ToOneMag extends MagAdapter {
 			}
 				
 			$this->targetRelationEntry = RelationEntry::from($this->targetReadUtils->lookupEiObjectById(
-					$this->targetReadUtils->pidToId($entryPid), CriteriaConstraint::NON_SECURITY_TYPES));
+					$this->targetReadUtils->pidToId($entryPid), Boundry::NON_SECURITY_TYPES));
 			return;
 		}
 		
