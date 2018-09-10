@@ -31,7 +31,6 @@ use rocket\ei\EiController;
 use rocket\ei\manage\frame\EiRelation;
 use rocket\ei\util\model\EiuCtrl;
 use rocket\ei\util\model\Eiu;
-use hangar\rocket\controller\EiTypeController;
 
 class RelationController extends ControllerAdapter {
 	private $eiFrame;
