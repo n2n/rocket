@@ -96,14 +96,14 @@ class RocketUserEiPermissionManager implements EiPermissionManager {
 				$managedDef->getPrivilegeDefinition($eiMask),
 				$managedDef->getSecurityFilterDefinition($eiMask));
 		$eiEntryAccessFactory = new RestrictedEiEntryAccessFactory($constraintCache);
-// 		foreach ($eiMask->getEiType()->getAllSubEiTypes() as $subEiType) {
-// 			$subEiMask = $eiFrame->determineEiMask($subEiType);
-// 			if (null !== ($eiGrant = $this->findEiGrant($subEiMask->getEiTypePath()))) {
-// 				$eiEntryAccessFactory->addSubEiGrant(new ConstraintCache($eiGrant,
-// 						$managedDef->getPrivilegeDefinition($subEiMask),
-// 						$managedDef->getSecurityFilterDefinition($subEiMask)));
-// 			}
-// 		}
+		foreach ($eiMask->getEiType()->getAllSubEiTypes() as $subEiType) {
+			$subEiMask = $eiFrame->determineEiMask($subEiType);
+			if (null !== ($eiGrant = $this->findEiGrant($subEiMask->getEiTypePath()))) {
+				$eiEntryAccessFactory->addSubEiGrant(new ConstraintCache($eiGrant,
+						$managedDef->getPrivilegeDefinition($subEiMask),
+						$managedDef->getSecurityFilterDefinition($subEiMask)));
+			}
+		}
 		
 		$eiFrame->setEiEntryAccessFactory($eiEntryAccessFactory);
 		
@@ -207,12 +207,12 @@ class RestrictedEiEntryAccess implements EiEntryAccess {
 	}
 	
 	function isExecutableBy(EiCommandPath $eiCommandPath): bool {
-		if ($this->constraintCache->getPrivilegeDefinition()->isEiCommandPathUnprivileged($eiCommandPath)) {
+		if ($this->privilegeDefinition->isEiCommandPathUnprivileged($eiCommandPath)) {
 			return true;
 		}
 		
 		foreach ($this->privilegeSettings as $privilegeSetting) {
-			if ($eiGrantPrivilege->acceptsEiCommandPath($eiCommandPath)) {
+			if ($privilegeSetting->acceptsEiCommandPath($eiCommandPath)) {
 				return true;
 			}
 		}

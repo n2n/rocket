@@ -1,11 +1,10 @@
 <?php
-namespace rocket\ei\manage\security;
+namespace rocket\user\model\security;
 
-use rocket\user\model\security\ConstraintCache;
-use rocket\user\model\security\StaticEiEntryAccess;
-use rocket\user\model\security\RestrictedEiEntryAccess;
 use rocket\ei\EiCommandPath;
 use rocket\ei\manage\mapping\EiEntry;
+use rocket\ei\manage\security\EiEntryAccessFactory;
+use rocket\ei\manage\security\EiEntryAccess;
 
 class RestrictedEiEntryAccessFactory implements EiEntryAccessFactory {
 	/**
@@ -24,6 +23,10 @@ class RestrictedEiEntryAccessFactory implements EiEntryAccessFactory {
 		$this->constraintCaches[(string) $constraintCache->getEiGrant()->getEiTypePath()] = $constraintCache;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\security\EiEntryAccessFactory::createEiEntryAccess()
+	 */
 	function createEiEntryAccess(EiEntry $eiEntry): EiEntryAccess {
 		$eiTypePathStr = (string) $eiEntry->getEiMask()->getEiTypePath();
 		
@@ -45,6 +48,10 @@ class RestrictedEiEntryAccessFactory implements EiEntryAccessFactory {
 		
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\security\EiEntryAccessFactory::isExecutableBy()
+	 */
 	public function isExecutableBy(EiCommandPath $eiCommandPath): bool {
 		foreach ($this->constraintCaches as $constraintCache) {
 			if ($constraintCache->getEiGrant()->isFull()
@@ -61,7 +68,6 @@ class RestrictedEiEntryAccessFactory implements EiEntryAccessFactory {
 		
 		return false;
 	}
-	
 }
 
 

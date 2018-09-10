@@ -41,6 +41,7 @@ use rocket\ei\manage\gui\ui\DisplayItem;
 use rocket\ei\manage\gui\GuiField;
 use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\ei\manage\frame\Boundry;
+use rocket\ei\manage\security\InaccessibleEiCommandPathException;
 
 abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 	
@@ -130,7 +131,13 @@ abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 	public function buildGuiField(Eiu $eiu): ?GuiField {
 		$mapping = $eiu->entry()->getEiEntry();
 		$eiFrame = $eiu->frame()->getEiFrame();
-		$targetReadEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame, $mapping);
+		$targetReadEiFrame = null;
+		
+		try {
+			$targetReadEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame, $mapping);
+		} catch (InaccessibleEiCommandPathException $e) {
+			return null;
+		}
 		
 		$eiPropRelation = $this->eiPropRelation;
 		CastUtils::assertTrue($eiPropRelation instanceof SelectEiPropRelation);

@@ -5,6 +5,7 @@ use rocket\ei\EiPropPath;
 use rocket\ei\EiCommandPath;
 use rocket\ei\component\command\IndependentEiCommand;
 use rocket\impl\ei\component\EiConfiguratorAdapter;
+use rocket\ei\util\privilege\EiuCommandPrivilege;
 
 class EiuCommand {
 	private $eiCommandPath;
@@ -48,7 +49,7 @@ class EiuCommand {
 	
 	/**
 	 * @param string $label
-	 * @return EiuPrivilgeCommand
+	 * @return EiuCommandPrivilege
 	 */
 	function newPrivilegeCommand(string $label = null) {
 		return (new EiuFactory())->newCommandPrivilege($label ?? $this->getTypeName());

@@ -50,7 +50,6 @@ use rocket\user\model\LoginContext;
 use rocket\ei\manage\draft\DraftValueMap;
 use n2n\reflection\ReflectionUtils;
 use rocket\ei\manage\draft\Draft;
-use rocket\ei\manage\gui\GuiIdPath;
 use rocket\ei\mask\EiMask;
 use n2n\util\ex\IllegalStateException;
 use n2n\persistence\orm\util\NestedSetUtils;
@@ -514,7 +513,7 @@ class EiuFrame {
 	 * @return boolean
 	 */
 	public function isExecutableBy($eiCommandPath) {
-		return $this->eiFrame->getEiExecution()->isExecutableBy(EiCommandPath::create($eiCommandPath));
+		return $this->eiFrame->isExecutableBy(EiCommandPath::create($eiCommandPath));
 	}
 	
 	/**

@@ -56,6 +56,8 @@ use rocket\ei\manage\security\filter\SecurityFilterProp;
 use rocket\ei\manage\frame\CriteriaConstraint;
 use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\ei\manage\frame\Boundry;
+use phpDocumentor\Reflection\Types\Null_;
+use rocket\ei\manage\security\InaccessibleEiCommandPathException;
 
 class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 
@@ -147,7 +149,13 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 		$mapping = $eiu->entry()->getEiEntry();
 		$eiFrame = $eiu->frame()->getEiFrame();
 		$relationEiField = $mapping->getEiField(EiPropPath::from($this));
-		$targetReadEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame, $mapping);
+		$targetReadEiFrame = null;
+		
+		try {
+			$targetReadEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame, $mapping);
+		} catch (InaccessibleEiCommandPathException $e) {
+			return null;
+		}
 		
 		$eiPropRelation = $this->eiPropRelation;
 		CastUtils::assertTrue($eiPropRelation instanceof SelectEiPropRelation);
@@ -230,6 +238,7 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 		
 		$eiFrame = $eiuFrame->getEiFrame();
 		$filterProp = parent::buildManagedFilterProp($eiFrame);
+		if ($filterProp === null) return null;
 		CastUtils::assertTrue($filterProp instanceof RelationFilterProp);
 		
 		$that = $this;

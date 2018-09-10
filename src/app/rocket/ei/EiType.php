@@ -249,45 +249,45 @@ class EiType extends Type {
 // 		}
 // 	}
 	
-	public function hasSecurityOptions() {
-		return $this->superEiType === null;
-	}
+// 	public function hasSecurityOptions() {
+// 		return $this->superEiType === null;
+// 	}
 	
-	public function getPrivilegeOptions(N2nContext $n2nContext) {
-		if ($this->superEiType !== null) return null;
+// 	public function getPrivilegeOptions(N2nContext $n2nContext) {
+// 		if ($this->superEiType !== null) return null;
 		
-		return $this->buildPrivilegeOptions($this, $n2nContext, array());
-	}
+// 		return $this->buildPrivilegeOptions($this, $n2nContext, array());
+// 	}
 	
-	private function buildPrivilegeOptions(EiType $eiType, N2nContext $n2nContext, array $options) {
-		$n2nLocale = $n2nContext->getN2nLocale();
-		foreach ($eiType->getEiCommandCollection()->filterLevel() as $eiCommand) {
-			if ($eiCommand instanceof PrivilegedEiCommand) {
-				$options[PrivilegeBuilder::buildPrivilege($eiCommand)]
-						= $eiCommand->getPrivilegeLabel($n2nLocale);
-			}
-				
-// 			if ($eiCommand instanceof PrivilegeExtendableEiCommand) {
-// 				$privilegeOptions = $eiCommand->getPrivilegeExtOptions($n2nLocale);
-					
-// 				ArgUtils::valArrayReturnType($privilegeOptions, 'scalar', $eiCommand, 'getPrivilegeOptions');
-					
-// 				foreach ($privilegeOptions as $privilegeExt => $label) {
-// 					if ($eiType->hasSuperEiType()) {
-// 						$label . ' (' . $eiType->getLabel() . ')';
-// 					}
-					
-// 					$options[PrivilegeBuilder::buildPrivilege($eiCommand, $privilegeExt)] = $label;
-// 				}
+// 	private function buildPrivilegeOptions(EiType $eiType, N2nContext $n2nContext, array $options) {
+// 		$n2nLocale = $n2nContext->getN2nLocale();
+// 		foreach ($eiType->getEiCommandCollection()->filterLevel() as $eiCommand) {
+// 			if ($eiCommand instanceof PrivilegedEiCommand) {
+// 				$options[PrivilegeBuilder::buildPrivilege($eiCommand)]
+// 						= $eiCommand->getPrivilegeLabel($n2nLocale);
 // 			}
-		}
+				
+// // 			if ($eiCommand instanceof PrivilegeExtendableEiCommand) {
+// // 				$privilegeOptions = $eiCommand->getPrivilegeExtOptions($n2nLocale);
+					
+// // 				ArgUtils::valArrayReturnType($privilegeOptions, 'scalar', $eiCommand, 'getPrivilegeOptions');
+					
+// // 				foreach ($privilegeOptions as $privilegeExt => $label) {
+// // 					if ($eiType->hasSuperEiType()) {
+// // 						$label . ' (' . $eiType->getLabel() . ')';
+// // 					}
+					
+// // 					$options[PrivilegeBuilder::buildPrivilege($eiCommand, $privilegeExt)] = $label;
+// // 				}
+// // 			}
+// 		}
 		
-		foreach ($eiType->getSubEiTypes() as $subEiType) {
-			$options = $this->buildPrivilegeOptions($subEiType, $n2nContext, $options);
-		}
+// 		foreach ($eiType->getSubEiTypes() as $subEiType) {
+// 			$options = $this->buildPrivilegeOptions($subEiType, $n2nContext, $options);
+// 		}
 		
-		return $options;
-	}
+// 		return $options;
+// 	}
 	
 	private function ensureIsTop() {
 		if ($this->superEiType !== null) {

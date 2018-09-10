@@ -25,11 +25,14 @@ use rocket\ei\manage\security\EiExecution;
 use rocket\ei\component\command\EiCommand;
 use rocket\ei\manage\security\filter\SecurityFilterDefinition;
 use rocket\ei\EiCommandPath;
+use rocket\ei\EiPropPath;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\manage\security\privilege\PrivilegeDefinition;
 use rocket\ei\manage\critmod\filter\ComparatorConstraintGroup;
 use rocket\user\bo\EiGrantPrivilege;
 use rocket\ei\manage\security\InaccessibleEiCommandPathException;
+use rocket\ei\manage\mapping\EiEntry;
+use rocket\ei\manage\mapping\EiEntryConstraint;
 
 class RestrictedEiExecution implements EiExecution {
 	private $eiCommand;
@@ -109,14 +112,15 @@ class RestrictedEiExecution implements EiExecution {
 // 	}
 
 	private function filter(EiCommandPath $eiCommandPath) {
-		if (!$this->privilegeDefinition->checkEiCommandPathForPrivileges($eiCommandPath)) {
-			if (empty($this->eiGrantPrivileges)) {
+		if ($this->constraintCache->getPrivilegeDefinition()->isEiCommandPathUnprivileged($eiCommandPath)) {
+			$eiGrantPrivileges = $this->constraintCache->getEiGrant()->getEiGrantPrivileges()->getArrayCopy();
+			if (empty($eiGrantPrivileges)) {
 				throw new InaccessibleEiCommandPathException('EiCommandPath not accessible for current user: ' . $eiCommandPath);
 			}	
 			
 			$this->eiCommandPath = $eiCommandPath;
-			$this->refitCriteriaConstraint($this->eiGrantPrivileges);
-			$this->refitEiEntryConstraint($this->eiGrantPrivileges);
+			$this->refitCriteriaConstraint($eiGrantPrivileges);
+			$this->refitEiEntryConstraint($eiGrantPrivileges);
 			return;
 		}
 		
@@ -134,7 +138,7 @@ class RestrictedEiExecution implements EiExecution {
 	
 	private function getMatchingEiGrantPrivileges(EiCommandPath $eiCommandPath) {
 		$newEiGrantPrivileges = array();
-		foreach ($this->eiGrantPrivileges as $eiGrantPrivilege) {
+		foreach ($this->constraintCache->getEiGrant()->getEiGrantPrivileges() as $eiGrantPrivilege) {
 			if ($eiGrantPrivilege->acceptsEiCommandPath($eiCommandPath)) {
 				$newEiGrantPrivileges[] = $eiGrantPrivilege;
 			}
@@ -148,7 +152,7 @@ class RestrictedEiExecution implements EiExecution {
 	private function refitCriteriaConstraint(array $filteredEiGrantPrivileges) {
 		$comparatorConstraints = array();
 		
-		$filterDefinition = $this->securityFilterDefinition->toFilterDefinition();
+		$filterDefinition = $this->constraintCache->getSecurityFilterDefinition()->toFilterDefinition();
 		foreach ($filteredEiGrantPrivileges as $eiGrantPrivilege) {
 			if (!$eiGrantPrivilege->isRestricted()) {
 				$this->comparatorConstraintGroup->setComparatorConstraints([]);
@@ -174,7 +178,7 @@ class RestrictedEiExecution implements EiExecution {
 				return;
 			}
 			
-			$eiEntryConstraints[] = $this->cache->getOrBuild($eiGrantPrivilege);
+			$eiEntryConstraints[] = $this->constraintCache->getEiEntryConstraint($eiGrantPrivilege);
 		}
 		
 		$this->eiEntryConstraintGroup->setEiEntryConstraints($eiEntryConstraints);
@@ -208,6 +212,77 @@ class RestrictedEiExecution implements EiExecution {
 		
 // 		return $restrictor;
 // 	}
+}
+
+class EiEntryConstraintGroup implements EiEntryConstraint {
+	private $useAnd;
+	/**
+	 * @var EiEntryConstraint[]
+	 */
+	private $eiEntryConstraints;
+	
+	/**
+	 * @param bool $useAnd
+	 */
+	function __construct(bool $useAnd) {
+		$this->useAnd = $useAnd;
+	}
+	
+	/**
+	 * @param EiEntryConstraint[] $eiEntryConstraints
+	 */
+	function setEiEntryConstraints(array $eiEntryConstraints) {
+		$this->eiEntryConstraints = $eiEntryConstraints;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\mapping\EiEntryConstraint::acceptsValue()
+	 */
+	public function acceptsValue(EiPropPath $eiPropPath, $value): bool {
+		if (empty($this->eiEntryConstraints)) return true;
+		
+		foreach ($this->eiEntryConstraints as $eiEntryConstraint) {
+			if ($eiEntryConstraint->acceptsValue($eiPropPath, $value)) {
+				if (!$this->useAnd) return true;
+			} else {
+				if ($this->useAnd) return false;
+			}
+		}
+		
+		return $this->useAnd;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\mapping\EiEntryConstraint::check()
+	 */
+	public function check(EiEntry $eiEntry): bool {
+		if (empty($this->eiEntryConstraints)) return true;
+		
+		foreach ($this->eiEntryConstraints as $eiEntryConstraint) {
+			if ($eiEntryConstraint->check($eiEntry)) {
+				if (!$this->useAnd) return true;
+			} else {
+				if ($this->useAnd) return false;
+			}
+		}
+		
+		return $this->useAnd;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\mapping\EiEntryConstraint::validate()
+	 */
+	public function validate(EiEntry $eiEntry) {
+		foreach ($this->eiEntryConstraints as $eiEntryConstraint) {
+			$eiEntryConstraint->validate($eiEntry);
+		}
+	}
+
+	
+	
 }
 
 

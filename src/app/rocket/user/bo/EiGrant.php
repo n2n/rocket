@@ -84,6 +84,9 @@ class EiGrant extends ObjectAdapter implements Grant {
 		return $this->readAccessAttributes();
 	}
 	
+	/**
+	 * @return \ArrayObject
+	 */
 	public function getEiGrantPrivileges() {
 		return $this->eiGrantPrivileges;
 	}

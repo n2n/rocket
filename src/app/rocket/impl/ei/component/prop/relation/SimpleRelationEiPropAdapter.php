@@ -44,6 +44,7 @@ use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
 use rocket\ei\manage\gui\GuiDefinition;
+use rocket\ei\manage\security\InaccessibleEiCommandPathException;
 
 abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter implements GuiProp, DraftableEiProp, 
 		DraftProperty, FilterableEiProp {
@@ -113,7 +114,12 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 	}
 	
 	public function buildManagedFilterProp(EiFrame $eiFrame): ?FilterProp  {
-		$targetEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame);
+		$targetEiFrame;
+		try {
+			$targetEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame);
+		} catch (InaccessibleEiCommandPathException $e) {
+			return null;
+		}
 		
 		return new RelationFilterProp($this->getLabelLstr(), $this->getEntityProperty(),
 				(new Eiu($targetEiFrame))->frame(), 

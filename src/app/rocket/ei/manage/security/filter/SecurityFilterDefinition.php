@@ -23,6 +23,11 @@ namespace rocket\ei\manage\security\filter;
 
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\critmod\filter\FilterDefinition;
+use rocket\ei\manage\mapping\EiEntry;
+use rocket\ei\manage\mapping\EiEntryConstraint;
+use rocket\ei\manage\mapping\EiFieldConstraint;
+use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
+use n2n\util\config\AttributesException;
 
 class SecurityFilterDefinition {
 	/**
@@ -99,6 +104,30 @@ class SecurityFilterDefinition {
 		return $fd;
 	}
 	
+	public function createEiEntryConstraint(FilterSettingGroup $filterSettingGroup): EiEntryConstraint {
+		$group = new EiFieldConstraintGroup($filterSettingGroup->isAndUsed());
+		
+		$criteriaComparators = array();
+		
+		foreach ($filterSettingGroup->getFilterSettings() as $subFilterSetting) {
+			$id = $subFilterSetting->getFilterPropId();
+			if (!isset($this->props[$id])) {
+				continue;
+			}
+			
+			try {
+				$group->addEiFieldConstraint(EiPropPath::create($id), 
+						$this->props[$id]->createEiFieldConstraint($subFilterSetting->getAttributes()));
+			} catch (AttributesException $e) {}
+		}
+		
+		foreach ($filterSettingGroup->getFilterSettingGroups() as $subFilterSettingGroup) {
+			$group->addEiEntryConstraint($this->createEiEntryConstraint($subFilterSettingGroup));
+		}
+		
+		return $group;
+	}
+	
 // 	public function createComparatorConstraint(FilterSettingGroup $filterSettingGroup): ComparatorConstraint {
 // 		$criteriaComparators = array();
 		
@@ -150,6 +179,79 @@ class SecurityFilterDefinition {
 	// 		}
 	// 		return $filterModel;
 	// 	}
+}
+
+class EiFieldConstraintGroup implements EiEntryConstraint {
+	private $useAnd;
+	/**
+	 * @var EiFieldConstraint[][]
+	 */
+	private $eiFieldConstraints;
+	/**
+	 * @var EiEntryConstraint[]
+	 */
+	private $eiEntryConstraints;
+	
+	function __construct(bool $useAnd = true) {
+		$this->useAnd= $useAnd;
+	}
+	
+	public function addEiFieldConstraint(EiPropPath $eiPropPath, EiFieldConstraint $eiFieldConstraint) {
+		$eiPropPathStr = (string) $eiPropPath;
+		if (!isset($this->eiFieldConstraints[$eiPropPathStr])) {
+			$this->eiFieldConstraints[$eiPropPathStr] = array();
+		}
+		
+		$this->eiFieldConstraints[$eiPropPathStr][] = $eiFieldConstraint;
+	}
+	
+	
+	
+	public function acceptsValue(EiPropPath $eiPropPath, $value): bool {
+		$eiPropPathStr = (string) $eiPropPath;
+		
+		if (!isset($this->eiFieldConstraints[$eiPropPathStr])) return true;
+		
+		$eiField = $eiEntry->getEiField($eiPropPath);
+		foreach ($this->eiFieldConstraints[$eiPropPathStr] as $eiFieldConstraint) {
+			if ($eiFieldConstraint->acceptsValue($value)) {
+				if (!$this->useAnd) return true;
+			} else {
+				if ($this->useAnd) return false;
+			}
+		}
+		
+		return $this->useAnd;
+	}
+
+	public function check(EiEntry $eiEntry): bool {
+		if (empty($this->eiFieldConstraints)) return true;
+		
+		foreach ($this->eiFieldConstraints as $eiPropPath => $eiFieldConstraints) {
+			$eiField = $eiEntry->getEiField($eiPropPath);
+			foreach ($eiFieldConstraints as $eiFieldConstraint) {
+				if ($eiFieldConstraint->check($eiEntry)) {
+					if (!$this->useAnd) return true;
+				} else {
+					if ($this->useAnd) return false;
+				}
+			}
+		}
+		
+		return $this->useAnd;
+	}
+
+	public function validate(EiEntry $eiEntry) {
+		if ($this->check($eiEntry)) return;
+		
+		foreach ($this->eiFieldConstraints as $eiPropPath => $eiFieldConstraints) {
+			$eiField = $eiEntry->getEiField($eiPropPath);
+			$eiFieldWrapper = $eiEntry->getEiFieldWrapper($eiPropPath);
+			foreach ($eiFieldConstraints as $eiFieldConstraint) {
+				$eiFieldConstraint->validate($eiField, $eiFieldWrapper);
+			}
+		}
+	}
 }
 
 class UnknownSecurityFilterPropException extends \RuntimeException {
