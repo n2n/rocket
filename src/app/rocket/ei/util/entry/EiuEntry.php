@@ -485,7 +485,6 @@ class EiuEntry {
 	}
 	
 	/**
-	 *
 	 * @param GuiIdPath $guiIdPath
 	 * @param bool $required
 	 * @throws MappingOperationFailedException
