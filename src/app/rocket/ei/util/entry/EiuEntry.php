@@ -492,7 +492,7 @@ class EiuEntry {
 	 * @return \rocket\ei\manage\mapping\EiFieldWrapper|null
 	 */
 	public function getEiFieldWrapperByGuiIdPath($guiIdPath, bool $required = false) {
-		$guiDefinition = $this->getEiuFrame()->getEiFrame()->getContextEiEngine()->getGuiDefinition();
+		$guiDefinition = $this->getEiuFrame()->getContextEiuEngine()->getGuiDefinition();
 		try {
 			return $guiDefinition->determineEiFieldWrapper($this->getEiEntry(), GuiIdPath::create($guiIdPath));
 		} catch (MappingOperationFailedException $e) {
