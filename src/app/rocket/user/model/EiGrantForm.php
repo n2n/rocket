@@ -29,7 +29,7 @@ use rocket\user\bo\EiGrant;
 use n2n\web\dispatch\annotation\AnnoDispProperties;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\web\dispatch\annotation\AnnoDispObjectArray;
-use rocket\ei\util\model\EiuEngine;
+use rocket\ei\util\spec\EiuEngine;
 
 class EiGrantForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {

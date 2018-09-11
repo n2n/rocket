@@ -29,7 +29,7 @@ use rocket\impl\ei\component\prop\string\conf\StringEiPropConfigurator;
 use rocket\ei\manage\EiObject;
 use rocket\ei\EiPropPath;
 use n2n\web\dispatch\mag\Mag;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 
 class StringEiProp extends AlphanumericEiProp {

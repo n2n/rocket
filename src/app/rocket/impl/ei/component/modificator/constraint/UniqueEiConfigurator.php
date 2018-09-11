@@ -12,7 +12,7 @@ use n2n\util\config\Attributes;
 use rocket\ei\component\EiSetup;
 use n2n\reflection\CastUtils;
 use rocket\ei\EiPropPath;
-use rocket\ei\util\model\EiuEngine;
+use rocket\ei\util\spec\EiuEngine;
 
 class UniqueEiConfigurator extends EiConfiguratorAdapter {
 	const ATTR_UNIQUE_PROPS_KEY = 'uniqueProps';

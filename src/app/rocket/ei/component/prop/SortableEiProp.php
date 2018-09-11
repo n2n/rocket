@@ -22,7 +22,7 @@
 namespace rocket\ei\component\prop;
 
 use rocket\ei\manage\critmod\sort\SortProp;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 
 interface SortableEiProp extends EiProp {
 	

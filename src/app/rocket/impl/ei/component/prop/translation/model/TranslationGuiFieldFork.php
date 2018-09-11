@@ -38,7 +38,7 @@ use rocket\ei\manage\gui\GuiFieldForkEditable;
 use rocket\ei\manage\gui\MagAssembly;
 use rocket\ei\manage\gui\GuiFieldFork;
 use n2n\impl\web\ui\view\html\HtmlUtils;
-use rocket\ei\util\model\EiuEntryGuiAssembler;
+use rocket\ei\util\gui\EiuEntryGuiAssembler;
 
 class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 	private $toManyEiField;

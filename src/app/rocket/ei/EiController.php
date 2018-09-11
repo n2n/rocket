@@ -27,7 +27,7 @@ use n2n\web\http\ForbiddenException;
 use rocket\ei\manage\ManageState;
 use rocket\ei\component\UnknownEiComponentException;
 use rocket\ei\manage\security\InaccessibleEiCommandPathException;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use rocket\ei\mask\EiMask;
 use rocket\ei\manage\frame\EiFrame;
 

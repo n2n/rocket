@@ -25,11 +25,10 @@ use rocket\ei\manage\gui\GuiField;
 use rocket\ei\manage\gui\GuiFieldEditable;
 use rocket\ei\manage\frame\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\ei\util\model\EiuFrame;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\manage\gui\ui\DisplayItem;
 use n2n\impl\web\ui\view\html\HtmlElement;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 
 class EmbeddedOneToOneGuiField implements GuiField {
 	private $label;

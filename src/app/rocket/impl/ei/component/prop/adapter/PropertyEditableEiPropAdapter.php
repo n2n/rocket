@@ -37,7 +37,7 @@ use n2n\l10n\Lstr;
 use rocket\core\model\Rocket;
 use rocket\ei\manage\security\EiFieldAccess;
 use n2n\util\config\AttributesException;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use rocket\ei\manage\mapping\FieldErrorInfo;
 use n2n\l10n\MessageCode;
 use rocket\ei\manage\mapping\impl\Validatable;

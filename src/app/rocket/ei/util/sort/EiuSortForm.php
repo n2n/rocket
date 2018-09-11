@@ -10,7 +10,7 @@ use n2n\web\ui\ViewFactory;
 use n2n\reflection\CastUtils;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\web\ui\UiComponent;
-use rocket\ei\util\model\EiuAnalyst;
+use rocket\ei\util\EiuAnalyst;
 use rocket\ei\manage\critmod\sort\SortDefinition;
 use rocket\ei\manage\critmod\sort\SortSettingGroup;
 use rocket\ei\util\sort\form\SortForm;

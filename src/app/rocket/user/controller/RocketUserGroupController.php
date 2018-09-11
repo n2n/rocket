@@ -38,10 +38,9 @@ use rocket\ei\UnknownEiTypeExtensionException;
 use rocket\user\bo\EiGrant;
 use rocket\user\model\EiGrantForm;
 use n2n\web\http\controller\impl\ScrRegistry;
-use rocket\ei\util\filter\controller\ScrFilterPropController;
 use rocket\ei\EiEngine;
 use rocket\spec\TypePath;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 
 class RocketUserGroupController extends ControllerAdapter {
 	private $rocketState;

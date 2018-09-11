@@ -35,7 +35,7 @@ use rocket\ei\manage\security\privilege\EiPropPrivilege;
 use rocket\ei\manage\security\filter\SecurityFilterDefinition;
 use rocket\ei\component\prop\SecurityFilterEiProp;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 
 class SecurityFactory {
 	private $eiPropCollection;

@@ -26,7 +26,7 @@ use rocket\impl\ei\component\prop\string\AlphanumericEiProp;
 use n2n\reflection\ArgUtils;
 use rocket\ei\EiPropPath;
 use n2n\web\dispatch\mag\Mag;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\util\col\GenericArrayObject;
 use rocket\impl\ei\component\prop\string\cke\model\CkeCssConfig;

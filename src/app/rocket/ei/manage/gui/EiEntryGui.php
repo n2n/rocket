@@ -29,7 +29,7 @@ use n2n\util\ex\IllegalStateException;
 use rocket\ei\mask\EiMask;
 use rocket\ei\manage\mapping\EiEntry;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use rocket\ei\EiCommandPath;
 use rocket\ei\mask\model\ControlOrder;
 use rocket\ei\manage\control\Control;

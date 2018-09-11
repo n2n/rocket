@@ -33,8 +33,8 @@ use n2n\web\ui\UiComponent;
 use rocket\ei\manage\mapping\FieldErrorInfo;
 use n2n\web\ui\Raw;
 use n2n\web\ui\CouldNotRenderUiComponentException;
-use rocket\ei\util\model\EiuEntryGui;
-use rocket\ei\util\model\EiuAnalyst;
+use rocket\ei\util\gui\EiuEntryGui;
+use rocket\ei\util\EiuAnalyst;
 
 class EntryEiHtmlBuilder {
 	private $view;

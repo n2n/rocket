@@ -28,7 +28,7 @@ use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\map\PropertyPath;
 use rocket\ei\manage\frame\EiFrame;
-use rocket\ei\util\model\EiuFrame;
+use rocket\ei\util\frame\EiuFrame;
 use n2n\reflection\property\AccessProxy;
 use n2n\web\ui\UiComponent;
 use n2n\web\dispatch\property\ManagedProperty;
@@ -38,7 +38,7 @@ use n2n\web\http\controller\impl\ScrRegistry;
 use rocket\impl\ei\component\prop\relation\model\RelationEntry;
 use rocket\ei\manage\frame\CriteriaConstraint;
 use n2n\web\dispatch\mag\UiOutfitter;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use rocket\ei\manage\frame\Boundry;
 
 class ToOneMag extends MagAdapter {

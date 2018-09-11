@@ -29,7 +29,7 @@ use rocket\ei\component\InvalidEiComponentConfigurationException;
 use rocket\impl\ei\component\prop\relation\command\RelationJhtmlController;
 use n2n\util\uri\Url;
 use n2n\web\http\HttpContext;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 
 class SelectEiPropRelation extends EiPropRelation {
 	private $embeddedAddEnabled = false;

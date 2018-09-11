@@ -25,7 +25,7 @@ use n2n\web\dispatch\Dispatchable;
 use n2n\reflection\annotation\AnnoInit;
 use n2n\web\dispatch\annotation\AnnoDispObject;
 use n2n\web\dispatch\annotation\AnnoDispProperties;
-use rocket\ei\util\model\EiuFrame;
+use rocket\ei\util\frame\EiuFrame;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\web\dispatch\map\bind\BindingErrors;
 use rocket\core\model\Rocket;

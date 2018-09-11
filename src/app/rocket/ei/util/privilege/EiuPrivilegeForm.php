@@ -6,7 +6,7 @@ use rocket\ei\manage\security\privilege\PrivilegeDefinition;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\web\dispatch\annotation\AnnoDispObject;
 use n2n\reflection\annotation\AnnoInit;
-use rocket\ei\util\model\EiuAnalyst;
+use rocket\ei\util\EiuAnalyst;
 use n2n\web\dispatch\annotation\AnnoDispProperties;
 use rocket\ei\manage\security\privilege\data\PrivilegeSetting;
 use n2n\web\ui\UiComponent;

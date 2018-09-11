@@ -186,11 +186,11 @@ class EiFieldConstraintGroup implements EiEntryConstraint {
 	/**
 	 * @var EiFieldConstraint[][]
 	 */
-	private $eiFieldConstraints;
+	private $eiFieldConstraints = array();
 	/**
 	 * @var EiEntryConstraint[]
 	 */
-	private $eiEntryConstraints;
+	private $eiEntryConstraints = array();
 	
 	function __construct(bool $useAnd = true) {
 		$this->useAnd= $useAnd;
@@ -221,20 +221,36 @@ class EiFieldConstraintGroup implements EiEntryConstraint {
 			}
 		}
 		
+		foreach ($this->eiEntryConstraints as $eiEntryConstraint) {
+			if ($eiEntryConstraint->acceptsValue($eiPropPath, $value)) {
+				if (!$this->useAnd) return true;
+			} else {
+				if ($this->useAnd) return false;
+			}
+		}
+		
 		return $this->useAnd;
 	}
 
 	public function check(EiEntry $eiEntry): bool {
 		if (empty($this->eiFieldConstraints)) return true;
 		
-		foreach ($this->eiFieldConstraints as $eiPropPath => $eiFieldConstraints) {
-			$eiField = $eiEntry->getEiField($eiPropPath);
+		foreach ($this->eiFieldConstraints as $eiPropPathStr => $eiFieldConstraints) {
+			$eiField = $eiEntry->getEiField(EiPropPath::create($eiPropPathStr));
 			foreach ($eiFieldConstraints as $eiFieldConstraint) {
-				if ($eiFieldConstraint->check($eiEntry)) {
+				if ($eiFieldConstraint->check($eiField)) {
 					if (!$this->useAnd) return true;
 				} else {
 					if ($this->useAnd) return false;
 				}
+			}
+		}
+		
+		foreach ($this->eiEntryConstraints as $eiEntryConstraint) {
+			if ($eiEntryConstraint->check($eiEntry)) {
+				if (!$this->useAnd) return true;
+			} else {
+				if ($this->useAnd) return false;
 			}
 		}
 		
@@ -244,12 +260,17 @@ class EiFieldConstraintGroup implements EiEntryConstraint {
 	public function validate(EiEntry $eiEntry) {
 		if ($this->check($eiEntry)) return;
 		
-		foreach ($this->eiFieldConstraints as $eiPropPath => $eiFieldConstraints) {
+		foreach ($this->eiFieldConstraints as $eiPropPathStr => $eiFieldConstraints) {
+			$eiPropPath = EiPropPath::create($eiPropPathStr);
 			$eiField = $eiEntry->getEiField($eiPropPath);
-			$eiFieldWrapper = $eiEntry->getEiFieldWrapper($eiPropPath);
+			$fieldErrorInfo = $eiEntry->getMappingErrorInfo()->getFieldErrorInfo($eiPropPath);
 			foreach ($eiFieldConstraints as $eiFieldConstraint) {
-				$eiFieldConstraint->validate($eiField, $eiFieldWrapper);
+				$eiFieldConstraint->validate($eiField, $fieldErrorInfo);
 			}
+		}
+		
+		foreach ($this->eiEntryConstraints as $eiEntryConstraint) {
+			$eiEntryConstraint->validate($eiEntry);
 		}
 	}
 }

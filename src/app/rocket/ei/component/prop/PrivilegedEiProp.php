@@ -22,7 +22,7 @@
 namespace rocket\ei\component\prop;
 
 use rocket\ei\manage\security\privilege\EiPropPrivilege;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 
 interface PrivilegedEiProp extends EiProp {
 	

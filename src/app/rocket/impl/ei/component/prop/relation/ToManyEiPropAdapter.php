@@ -26,7 +26,7 @@ use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\component\prop\DraftableEiProp;
 use rocket\ei\manage\draft\DraftProperty;
 use rocket\ei\manage\EiObject;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
 
 abstract class ToManyEiPropAdapter extends SimpleRelationEiPropAdapter implements GuiProp, DraftableEiProp, 

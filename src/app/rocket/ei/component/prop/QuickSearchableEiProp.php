@@ -22,7 +22,7 @@
 namespace rocket\ei\component\prop;
 
 use rocket\ei\manage\frame\EiFrame;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
 
 interface QuickSearchableEiProp extends EiProp {

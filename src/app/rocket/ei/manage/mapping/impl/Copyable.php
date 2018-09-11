@@ -21,7 +21,7 @@
  */
 namespace rocket\ei\manage\mapping\impl;
 
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use rocket\ei\manage\EiObject;
 
 interface Copyable {

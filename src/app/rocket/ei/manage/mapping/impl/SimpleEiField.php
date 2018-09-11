@@ -25,7 +25,7 @@ use n2n\reflection\property\TypeConstraint;
 use rocket\ei\manage\EiObject;
 use n2n\reflection\property\ValueIncompatibleWithConstraintsException;
 use n2n\reflection\ReflectionUtils;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 
 class SimpleEiField extends RwEiField {
 	private $typeConstraint;

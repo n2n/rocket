@@ -24,14 +24,14 @@ namespace rocket\impl\ei\component\prop\relation\model\filter;
 use n2n\util\config\Attributes;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
-use rocket\ei\util\model\EiuFrame;
+use rocket\ei\util\frame\EiuFrame;
 use n2n\l10n\Lstr;
 use n2n\persistence\orm\property\EntityProperty;
 use rocket\ei\manage\critmod\filter\ComparatorConstraint;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use n2n\reflection\ArgUtils;
-use rocket\ei\util\model\UnknownEntryException;
+use rocket\ei\manage\mapping\UnknownEiObjectException;
 use n2n\reflection\property\TypeConstraint;
 use n2n\util\config\AttributesException;
 use rocket\ei\manage\critmod\filter\FilterProp;
@@ -105,7 +105,7 @@ class RelationFilterProp implements FilterProp {
 			try {
 				$targetEntityObjs[] = $this->targetEiuFrame->lookupEntry($targetPid, CriteriaConstraint::ALL_TYPES)
 						->getEiEntityObj();
-			} catch (UnknownEntryException $e) { }
+			} catch (UnknownEiObjectException $e) { }
 		}
 		return $targetEntityObjs;
 	}
@@ -125,7 +125,7 @@ class RelationFilterProp implements FilterProp {
 					$targetLiveEntries[$targetPid] = $this->targetEiuFrame
 							->lookupEntry($this->targetEiuFrame->pidToId($targetPid), CriteriaConstraint::ALL_TYPES)
 							->getEiEntityObj();
-				} catch (UnknownEntryException $e) {}
+				} catch (UnknownEiObjectException $e) {}
 			}
 			$form->getSelectorMag()->setTargetLiveEntries($targetLiveEntries);
 		}

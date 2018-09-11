@@ -34,8 +34,8 @@ use n2n\web\ui\UiComponent;
 use rocket\ei\manage\mapping\FieldErrorInfo;
 use n2n\web\dispatch\map\bind\BindingErrors;
 use n2n\web\dispatch\mag\UiOutfitter;
-use rocket\ei\util\model\EiuEntry;
 use n2n\web\dispatch\map\bind\MappingDefinition;
+use rocket\ei\util\entry\EiuEntry;
 
 class TranslationMag extends MagAdapter {
 	private $markClassKey;

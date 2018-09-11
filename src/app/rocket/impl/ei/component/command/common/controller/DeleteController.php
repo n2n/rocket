@@ -27,10 +27,10 @@ use n2n\l10n\DynamicTextCollection;
 use n2n\web\http\controller\ParamQuery;
 use n2n\l10n\MessageContainer;
 use n2n\web\http\StatusException;
-use rocket\ei\util\model\EiuCtrl;
+use rocket\ei\util\EiuCtrl;
 use rocket\ajah\JhtmlEvent;
 use n2n\l10n\MessageTranslator;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 
 class DeleteController extends ControllerAdapter {
 	private $dtc;

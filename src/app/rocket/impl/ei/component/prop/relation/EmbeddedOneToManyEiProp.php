@@ -39,7 +39,7 @@ use rocket\ei\EiPropPath;
 use rocket\ei\manage\DraftEiObject;
 use rocket\ei\manage\LiveEiObject;
 use n2n\reflection\CastUtils;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\ArgUtils;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
@@ -58,7 +58,7 @@ use n2n\util\ex\IllegalStateException;
 use rocket\ei\manage\draft\stmt\DraftStmtBuilder;
 use rocket\ei\manage\draft\ModDraftAction;
 use rocket\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
-use rocket\ei\util\model\EiuFrame;
+use rocket\ei\util\frame\EiuFrame;
 use rocket\impl\ei\component\prop\relation\model\RelationEntry;
 
 class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements DraftableEiProp, Draftable*/ {

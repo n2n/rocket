@@ -48,7 +48,7 @@ use rocket\ei\EiPropPath;
 use rocket\ei\manage\frame\EiFrame;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\web\dispatch\mag\Mag;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2nutil\jquery\datepicker\mag\DateTimePickerMag;
 use n2n\impl\web\ui\view\html\HtmlElement;

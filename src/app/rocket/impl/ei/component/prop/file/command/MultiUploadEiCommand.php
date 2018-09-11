@@ -29,7 +29,7 @@ use rocket\ei\manage\control\ControlButton;
 use rocket\ei\manage\control\IconType;
 use rocket\impl\ei\component\prop\file\command\controller\MultiUploadEiController;
 use rocket\ei\component\command\control\OverallControlComponent;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
 use rocket\ei\manage\control\HrefControl;
 use rocket\impl\ei\component\prop\file\FileEiProp;

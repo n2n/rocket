@@ -23,7 +23,7 @@ namespace rocket\impl\ei\component\prop\adapter;
 
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\ui\UiComponent;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 
 interface StatelessDisplayable {
 

@@ -1,7 +1,7 @@
 <?php
-	use n2n\impl\web\ui\view\html\HtmlView;
-	use rocket\ei\util\model\EiuEntry;
+	use rocket\ei\util\entry\EiuEntry;
 	use rocket\ei\manage\EiHtmlBuilder;
+	use n2n\impl\web\ui\view\html\HtmlView;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);

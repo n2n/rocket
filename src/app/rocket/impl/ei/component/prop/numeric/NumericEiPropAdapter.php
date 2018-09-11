@@ -39,7 +39,7 @@ use n2n\core\container\N2nContext;
 use rocket\ei\EiPropPath;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\ei\manage\critmod\sort\SortProp;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\critmod\quick\impl\LikeQuickSearchProp;
 use rocket\ei\manage\critmod\filter\FilterProp;

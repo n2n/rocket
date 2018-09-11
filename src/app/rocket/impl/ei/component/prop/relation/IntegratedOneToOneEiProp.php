@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\relation;
 
-use rocket\ei\util\model\EiuFrame;
+use rocket\ei\util\frame\EiuFrame;
 use rocket\ei\manage\gui\GuiPropFork;
 use rocket\ei\manage\gui\GuiFieldFork;
 use rocket\ei\manage\gui\GuiIdPath;
@@ -46,13 +46,13 @@ use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\ArgUtils;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use rocket\ei\manage\mapping\EiEntry;
 use n2n\web\dispatch\mag\UiOutfitter;
 use rocket\ei\manage\gui\GuiProp;
 use n2n\web\dispatch\mag\Mag;
 use rocket\ei\manage\gui\GuiFieldForkEditable;
-use rocket\ei\util\model\EiuEntryGuiAssembler;
+use rocket\ei\util\gui\EiuEntryGuiAssembler;
 use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\component\prop\GuiEiPropFork;
 

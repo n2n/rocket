@@ -22,7 +22,7 @@
 namespace rocket\ei\manage\mapping;
 
 use rocket\ei\manage\EiObject;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 
 interface EiField {
 	

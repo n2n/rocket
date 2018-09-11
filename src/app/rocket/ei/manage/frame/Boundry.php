@@ -2,7 +2,6 @@
 namespace rocket\ei\manage\frame;
 
 use rocket\ei\manage\mapping\EiEntryConstraint;
-use rocket\ei\security\EiCommandAccessRestrictor;
 
 class Boundry {
 	/**
@@ -52,10 +51,6 @@ class Boundry {
 	 * @var EiEntryConstraint[][]
 	 */
 	private $eiEntryConstraints = array();
-	/**
-	 * @var EiEntryAccessRestriction[][]
-	 */
-	private $eiCommandRestrictions = array();
 	
 	/**
 	 * @param CriteriaFactory|null $criteriaFactory

@@ -42,11 +42,10 @@ use n2n\impl\web\dispatch\mag\model\FileMag;
 use rocket\ei\manage\EiObject;
 use n2n\web\dispatch\mag\Mag;
 use n2n\web\http\Session;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\io\managed\impl\TmpFileManager;
 use rocket\ei\EiPropPath;
-use rocket\ei\util\model\EiuEntry;
 
 class FileEiProp extends DraftableEiPropAdapter {
 	const DIM_IMPORT_MODE_ALL = 'all';

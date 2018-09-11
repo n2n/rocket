@@ -28,7 +28,7 @@ use n2n\util\ex\IllegalStateException;
 use rocket\ei\manage\EiObject;
 use rocket\ei\manage\mapping\impl\Readable;
 use rocket\ei\manage\mapping\impl\Writable;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use rocket\ei\manage\mapping\impl\Copyable;
 
 class ToManyEiField extends RwEiField {

@@ -31,7 +31,7 @@ use rocket\ei\component\EiSetup;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use rocket\ei\component\EiComponent;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 
 abstract class EiConfiguratorAdapter implements EiConfigurator {
 	protected $eiComponent;
@@ -103,7 +103,7 @@ abstract class EiConfiguratorAdapter implements EiConfigurator {
 	
 	/**
 	 * @param N2nContext $n2nContext
-	 * @return \rocket\ei\util\model\Eiu
+	 * @return \rocket\ei\util\Eiu
 	 */
 	protected function eiu(N2nContext $n2nContext) {
 		return new Eiu($this->eiComponent->getEiMask()->getEiEngine(), $n2nContext);

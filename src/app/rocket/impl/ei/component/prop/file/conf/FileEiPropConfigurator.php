@@ -36,7 +36,7 @@ use n2n\util\config\LenientAttributeReader;
 use rocket\impl\ei\component\prop\file\command\MultiUploadEiCommand;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
 use rocket\ei\manage\generic\UnknownScalarEiPropertyException;
-use rocket\ei\util\model\EiuEngine;
+use rocket\ei\util\spec\EiuEngine;
 use rocket\ei\EiPropPath;
 use n2n\util\config\AttributesException;
 

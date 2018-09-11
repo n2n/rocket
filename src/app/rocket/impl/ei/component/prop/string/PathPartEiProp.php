@@ -32,7 +32,7 @@ use rocket\ei\manage\EiObject;
 use n2n\web\dispatch\mag\Mag;
 use n2n\reflection\ArgUtils;
 use rocket\ei\EiPropPath;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use rocket\ei\manage\generic\GenericEiProperty;
 use rocket\ei\manage\generic\ScalarEiProperty;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;

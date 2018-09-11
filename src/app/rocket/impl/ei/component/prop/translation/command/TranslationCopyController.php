@@ -2,7 +2,7 @@
 namespace rocket\impl\ei\component\prop\translation\command;
 
 use n2n\web\http\controller\ControllerAdapter;
-use rocket\ei\util\model\EiuCtrl;
+use rocket\ei\util\EiuCtrl;
 use n2n\web\http\controller\ParamQuery;
 use rocket\ei\manage\gui\GuiIdPath;
 use n2n\web\http\BadRequestException;

@@ -27,7 +27,7 @@ use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\gui\EiEntryGui;
 use rocket\ei\manage\draft\DraftDefinition;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 
 interface EiModificator extends EiComponent {
 	

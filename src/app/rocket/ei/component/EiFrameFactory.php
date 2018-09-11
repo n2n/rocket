@@ -26,7 +26,7 @@ use n2n\web\http\controller\ControllerContext;
 use rocket\ei\EiEngine;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\critmod\filter\FilterCriteriaConstraint;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use rocket\ei\manage\frame\Boundry;
 use rocket\ei\EiCommandPath;
 

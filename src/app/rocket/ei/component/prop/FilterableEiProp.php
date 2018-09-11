@@ -22,7 +22,7 @@
 namespace rocket\ei\component\prop;
 
 use rocket\ei\manage\critmod\filter\FilterProp;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 
 interface FilterableEiProp extends EiProp {
 	

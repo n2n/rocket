@@ -29,7 +29,7 @@ use rocket\ei\manage\control\ControlButton;
 use rocket\ei\manage\control\IconType;
 use rocket\impl\ei\component\command\EiCommandAdapter;
 use rocket\ei\manage\control\HrefControl;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
 use n2n\core\container\N2nContext;
 use n2n\l10n\N2nLocale;

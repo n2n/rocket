@@ -27,8 +27,7 @@ use rocket\impl\ei\component\prop\numeric\OrderEiProp;
 use rocket\ei\manage\critmod\sort\SortCriteriaConstraintGroup;
 use rocket\ei\manage\critmod\sort\SimpleSortConstraint;
 use n2n\persistence\orm\criteria\item\CrIt;
-use rocket\ei\manage\frame\CriteriaConstraint;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use rocket\ei\manage\frame\Boundry;
 
 class OrderEiModificator extends EiModificatorAdapter {

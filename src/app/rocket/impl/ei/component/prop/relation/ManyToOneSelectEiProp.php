@@ -43,7 +43,7 @@ use rocket\ei\EiPropPath;
 use rocket\impl\ei\component\command\common\controller\GlobalOverviewJhtmlController;
 use rocket\impl\ei\component\prop\relation\model\filter\RelationFilterProp;
 use rocket\ei\manage\LiveEiObject;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
@@ -53,10 +53,8 @@ use rocket\ei\manage\gui\ui\DisplayItem;
 use rocket\ei\manage\gui\GuiField;
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
-use rocket\ei\manage\frame\CriteriaConstraint;
 use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\ei\manage\frame\Boundry;
-use phpDocumentor\Reflection\Types\Null_;
 use rocket\ei\manage\security\InaccessibleEiCommandPathException;
 
 class ManyToOneSelectEiProp extends ToOneEiPropAdapter {

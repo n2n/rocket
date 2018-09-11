@@ -23,7 +23,7 @@ namespace rocket\impl\ei\component\prop\relation\command;
 
 use rocket\impl\ei\component\command\EiCommandAdapter;
 use rocket\impl\ei\component\prop\relation\model\relation\EiPropRelation;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
 
 class RelationEiCommand extends EiCommandAdapter {

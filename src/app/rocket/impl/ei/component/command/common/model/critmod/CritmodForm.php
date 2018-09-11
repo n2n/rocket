@@ -24,17 +24,17 @@ namespace rocket\impl\ei\component\command\common\model\critmod;
 use rocket\ei\manage\frame\EiFrame;
 use n2n\web\dispatch\Dispatchable;
 use n2n\web\dispatch\map\bind\BindingDefinition;
-use rocket\ei\manage\frame\CriteriaConstraint;
 use rocket\ei\manage\critmod\filter\ComparatorConstraintGroup;
 use n2n\web\dispatch\map\bind\MappingDefinition;
 use n2n\l10n\DynamicTextCollection;
 use rocket\ei\manage\critmod\save\CritmodSaveDao;
 use rocket\spec\TypePath;
 use rocket\ei\manage\critmod\save\CritmodSave;
-use rocket\ei\util\model\EiuFrame;
+use rocket\ei\util\frame\EiuFrame;
 use rocket\ei\util\filter\controller\FilterJhtmlHook;
 use rocket\ei\util\filter\EiuFilterForm;
 use rocket\ei\util\sort\EiuSortForm;
+use rocket\ei\manage\frame\Boundry;
 
 class CritmodForm implements Dispatchable {	
 	private $critmodSaveDao;
@@ -169,7 +169,7 @@ class CritmodForm implements Dispatchable {
 		$comparatorConstraint = $this->getEiuFilterForm()->getFilterDefinition()
 						->createComparatorConstraint($critmodSave->readFilterSettingGroup());
 		$eiFrame->getBoundry()->add(
-				($tmp ? Boundry::TYPE_TMP_FILTER : Boundry::TYPE_),
+				($tmp ? Boundry::TYPE_TMP_FILTER : Boundry::TYPE_HARD_FILTER),
 				new ComparatorConstraintGroup(true, array($comparatorConstraint)));
 		
 		$sortCriteriaConstraint = $this->getEiuSortForm()->getSortDefinition()

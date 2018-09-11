@@ -37,7 +37,7 @@ use rocket\ei\manage\critmod\sort\SortPropFork;
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\component\prop\QuickSearchableEiProp;
 use rocket\ei\manage\critmod\quick\QuickSearchDefinition;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 
 class CritmodFactory {
 	private $eiPropCollection;

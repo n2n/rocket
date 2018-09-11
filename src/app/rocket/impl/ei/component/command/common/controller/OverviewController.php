@@ -32,7 +32,7 @@ use rocket\ei\util\filter\controller\FramedFilterPropController;
 use n2n\web\http\controller\ParamQuery;
 use n2n\l10n\DynamicTextCollection;
 use rocket\impl\ei\component\command\common\model\DraftListModel;
-use rocket\ei\util\model\EiuCtrl;
+use rocket\ei\util\EiuCtrl;
 
 class OverviewController extends ControllerAdapter {
 	private $listSize;

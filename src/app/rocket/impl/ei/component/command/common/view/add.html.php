@@ -41,10 +41,16 @@
 ?>
 
 <?php $formHtml->open($addModel, Form::ENCTYPE_MULTIPART, 'post', array('class' => 'rocket-form')) ?>
+	
+	<ul class="rocket-messages alert alert-danger list-unstyled">
+		<li>online mues truu si.</li>
+	</ul>
+	
 	<?php $view->import($addModel->getEiuEntryForm()->createView($view, true)) ?>
 	
+	
 	<?php $formHtml->messageList() ?>
-		
+	
 	<div class="rocket-zone-commands">
 		<div>
 			<?php $formHtml->buttonSubmit('create', new Raw('<i class="fa fa-save"></i><span>' 

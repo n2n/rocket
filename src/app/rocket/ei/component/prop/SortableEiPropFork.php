@@ -21,7 +21,7 @@
  */
 namespace rocket\ei\component\prop;
 
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use rocket\ei\manage\critmod\sort\SortPropFork;
 
 interface SortableEiPropFork extends EiProp {

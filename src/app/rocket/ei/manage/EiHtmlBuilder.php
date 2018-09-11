@@ -22,7 +22,7 @@
 namespace rocket\ei\manage;
 
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\ei\util\model\EiuAnalyst;
+use rocket\ei\util\EiuAnalyst;
 use n2n\util\col\ArrayUtils;
 use n2n\web\ui\Raw;
 use n2n\impl\web\ui\view\html\HtmlElement;
@@ -42,7 +42,7 @@ use rocket\ei\manage\control\GroupControl;
 use rocket\ei\manage\control\ControlButton;
 use rocket\ei\manage\control\IconType;
 use rocket\ei\manage\gui\GuiFieldAssembly;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 
 class EiHtmlBuilder {
 	private $view;

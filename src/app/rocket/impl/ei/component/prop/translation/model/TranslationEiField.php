@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\translation\model;
 
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
 
 class TranslationEiField extends ToManyEiField {

@@ -29,8 +29,8 @@ use n2n\web\http\controller\ControllerAdapter;
 use rocket\impl\ei\component\prop\relation\model\relation\EiPropRelation;
 use rocket\ei\EiController;
 use rocket\ei\manage\frame\EiRelation;
-use rocket\ei\util\model\EiuCtrl;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\EiuCtrl;
+use rocket\ei\util\Eiu;
 
 class RelationController extends ControllerAdapter {
 	private $eiFrame;

@@ -43,7 +43,7 @@ use rocket\ei\mask\EiMask;
 use rocket\ei\manage\critmod\filter\UnknownFilterPropException;
 use n2n\impl\web\ui\view\jhtml\JhtmlResponse;
 use rocket\spec\TypePath;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 
 class ScrFilterPropController extends ControllerAdapter implements ScrController {
 	private $spec;

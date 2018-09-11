@@ -35,7 +35,7 @@ use rocket\ei\EiPropPath;
 use rocket\impl\ei\component\prop\adapter\DisplaySettings;
 use rocket\impl\ei\component\prop\adapter\StatelessDisplayable;
 use rocket\ei\manage\gui\GuiProp;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\adapter\StatelessDisplayElement;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
@@ -182,7 +182,7 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ObjectProp
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\StatelessDisplayable::getUiOutputLabel()
 	 */
-	public function getUiOutputLabel(\rocket\ei\util\model\Eiu $eiu) {
+	public function getUiOutputLabel(\rocket\ei\util\Eiu $eiu) {
 		return $this->getLabelLstr();
 	}
 
@@ -190,7 +190,7 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ObjectProp
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\StatelessDisplayable::getOutputHtmlContainerAttrs()
 	 */
-	public function getOutputHtmlContainerAttrs(\rocket\ei\util\model\Eiu $eiu) {
+	public function getOutputHtmlContainerAttrs(\rocket\ei\util\Eiu $eiu) {
 		return array();
 	}
 
@@ -198,7 +198,7 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ObjectProp
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\StatelessDisplayable::createOutputUiComponent()
 	 */
-	public function createOutputUiComponent(\n2n\impl\web\ui\view\html\HtmlView $view, \rocket\ei\util\model\Eiu $eiu) {
+	public function createOutputUiComponent(\n2n\impl\web\ui\view\html\HtmlView $view, \rocket\ei\util\Eiu $eiu) {
 		return $view->getHtmlBuilder()->getEsc($eiu->field()->getValue());
 	}
 	/**

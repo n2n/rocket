@@ -32,7 +32,7 @@ use n2n\reflection\property\ConstraintsConflictException;
 use n2n\reflection\ArgUtils;
 use n2n\reflection\property\AccessProxy;
 use rocket\impl\ei\component\prop\adapter\DraftableEiPropAdapter;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use n2n\impl\web\dispatch\mag\model\MagCollectionArrayMag;
 use n2n\impl\web\dispatch\mag\model\NumericMag;
 use n2n\web\dispatch\mag\Mag;

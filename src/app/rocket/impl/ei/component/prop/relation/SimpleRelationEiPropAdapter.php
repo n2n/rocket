@@ -37,7 +37,7 @@ use n2n\web\http\controller\impl\ScrRegistry;
 use rocket\ei\mask\EiMask;
 use rocket\ei\manage\critmod\filter\FilterDefinition;
 use rocket\ei\util\filter\controller\FilterJhtmlHook;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\ei\manage\gui\ui\DisplayItem;
 use rocket\ei\manage\gui\ViewMode;

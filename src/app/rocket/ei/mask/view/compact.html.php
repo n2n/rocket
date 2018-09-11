@@ -23,7 +23,7 @@
 	use rocket\ei\manage\EiHtmlBuilder;
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use rocket\ei\manage\gui\ui\DisplayStructure;
-	use rocket\ei\util\model\Eiu;
+	use rocket\ei\util\Eiu;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
