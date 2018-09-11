@@ -41,11 +41,7 @@
 ?>
 
 <?php $formHtml->open($addModel, Form::ENCTYPE_MULTIPART, 'post', array('class' => 'rocket-form')) ?>
-	
-	<ul class="rocket-messages alert alert-danger list-unstyled">
-		<li>online mues truu si.</li>
-	</ul>
-	
+		
 	<?php $view->import($addModel->getEiuEntryForm()->createView($view, true)) ?>
 	
 	
