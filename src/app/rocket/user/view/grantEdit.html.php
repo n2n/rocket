@@ -40,12 +40,6 @@
 		'data-rocket-save-first-info' => $html->getText('user_save_first_info')]) ?>
 	<?php $formHtml->messageList() ?>
 	
-	<div class="rocket-group rocket-simple-group">
-		<label>Inherited Privileges</label>
-		<div class="rocket-control">
-		</div>
-	</div>
-	
 	<?php $formHtml->meta()->arrayProps('eiGrantPrivilegeForms', function () 
 			use ($view, $html, $formHtml, $eiGrantForm) { ?>
 		<div class="rocket-group rocket-simple-group rocket-privilege">
