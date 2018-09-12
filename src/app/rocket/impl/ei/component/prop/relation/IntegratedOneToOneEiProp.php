@@ -66,7 +66,7 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiEiPro
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\entry\impl\Readable::read()
+	 * @see \rocket\ei\component\prop\field\Readable::read()
 	 */
 	public function read(EiObject $eiObject) {
 		if ($this->isDraftable() && $eiObject->isDraft()) {
@@ -84,7 +84,7 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiEiPro
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\entry\impl\Writable::write()
+	 * @see \rocket\ei\component\prop\field\Writable::write()
 	 */
 	public function write(EiObject $eiObject, $value) {
 		CastUtils::assertTrue($value === null || $value instanceof EiObject);

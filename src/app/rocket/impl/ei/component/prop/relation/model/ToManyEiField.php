@@ -21,15 +21,15 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model;
 
-use rocket\ei\manage\entry\impl\RwEiField;
+use rocket\ei\component\prop\field\RwEiField;
 use n2n\reflection\ArgUtils;
 use rocket\ei\manage\entry\FieldErrorInfo;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\manage\EiObject;
-use rocket\ei\manage\entry\impl\Readable;
-use rocket\ei\manage\entry\impl\Writable;
+use rocket\ei\component\prop\field\Readable;
+use rocket\ei\component\prop\field\Writable;
 use rocket\ei\util\Eiu;
-use rocket\ei\manage\entry\impl\Copyable;
+use rocket\ei\component\prop\field\Copyable;
 
 class ToManyEiField extends RwEiField {
 	private $copyable = null;

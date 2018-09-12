@@ -1,5 +1,5 @@
 <?php
-namespace rocket\ei\manage\entry\impl;
+namespace rocket\ei\component\prop\field;
 
 use rocket\ei\manage\entry\EiFieldWrapper;
 

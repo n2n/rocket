@@ -29,8 +29,8 @@ use rocket\ei\component\prop\GuiEiProp;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\component\prop\FieldEiProp;
 use rocket\ei\manage\EiObject;
-use rocket\ei\manage\entry\impl\SimpleEiField;
-use rocket\ei\manage\entry\impl\Readable;
+use rocket\ei\component\prop\field\SimpleEiField;
+use rocket\ei\component\prop\field\Readable;
 use rocket\ei\EiPropPath;
 use rocket\impl\ei\component\prop\adapter\DisplaySettings;
 use rocket\impl\ei\component\prop\adapter\StatelessDisplayable;
@@ -137,7 +137,7 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ObjectProp
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\entry\impl\Readable::read()
+	 * @see \rocket\ei\component\prop\field\Readable::read()
 	 */
 	public function read(EiObject $eiObject) {
 		if ($eiObject->isDraft()) {

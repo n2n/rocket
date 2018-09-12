@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\entry\impl;
+namespace rocket\ei\component\prop\field;
 
 use n2n\reflection\property\TypeConstraint;
 use rocket\ei\manage\EiObject;

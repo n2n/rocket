@@ -30,7 +30,7 @@ use n2n\l10n\N2nLocale;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
 use rocket\impl\ei\component\prop\relation\model\RelationEntry;
 use rocket\impl\ei\component\prop\translation\conf\N2nLocaleDef;
-use rocket\ei\manage\entry\impl\EiFieldWrapperWrapper;
+use rocket\ei\component\prop\field\EiFieldWrapperWrapper;
 use n2n\util\uri\Url;
 use n2n\web\dispatch\mag\Mag;
 use n2n\util\ex\IllegalStateException;

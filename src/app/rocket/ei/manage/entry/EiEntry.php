@@ -27,7 +27,7 @@ use rocket\ei\EiPropPath;
 use rocket\ei\security\InaccessibleEntryException;
 use n2n\util\ex\IllegalStateException;
 use n2n\util\col\HashSet;
-use rocket\ei\manage\entry\impl\EiFieldWrapperImpl;
+use rocket\ei\component\prop\field\EiFieldWrapperImpl;
 use rocket\ei\mask\EiMask;
 
 class EiEntry {
