@@ -25,6 +25,7 @@ use rocket\ei\component\command\EiCommand;
 use rocket\ei\EiCommandPath;
 use rocket\ei\mask\EiMask;
 use rocket\ei\manage\frame\EiFrame;
+use rocket\ei\manage\ManageState;
 
 interface EiPermissionManager {
 
@@ -32,7 +33,7 @@ interface EiPermissionManager {
 	 * @param EiCommand $eiCommand
 	 * @return bool
 	 */
-	public function isEiCommandAccessible(EiCommand $eiCommand): bool;
+	public function isEiCommandAccessible(EiCommand $eiCommand, ManageState $manageState): bool;
 	
 // 	/**
 // 	 * @param EiCommand $eiCommand

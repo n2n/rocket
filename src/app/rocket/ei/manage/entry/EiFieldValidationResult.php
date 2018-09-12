@@ -22,8 +22,10 @@
 namespace rocket\ei\manage\entry;
 
 use n2n\l10n\Message;
+use rocket\ei\EiPropPath;
 
 class EiFieldValidationResult {
+	private $eiPropPath;
 	private $errorMessages = array();
 	/**
 	 * @var EiFieldValidationResult[]
@@ -34,7 +36,15 @@ class EiFieldValidationResult {
 	 */
 	private $subEiEntryValidationResults = array();
 
-	public function __construct() {
+	public function __construct(EiPropPath $eiPropPath) {
+		$this->eiPropPath = $eiPropPath;
+	}
+	
+	/**
+	 * @return \rocket\ei\EiPropPath
+	 */
+	function getEiPropPath() {
+		return $this->eiPropPath;
 	}
 
 	/**
@@ -100,15 +110,17 @@ class EiFieldValidationResult {
 		$this->subEiEntryValidationResults[] = $subValidationResult;
 	}
 
-	public function getMessages() {
+	public function getMessages(bool $recursive = true) {
 		$messages = $this->errorMessages;
 		
-		foreach ($this->subEiEntryValidationResults as $subValidationResult) {
-			$messages = array_merge($messages, $subValidationResult->getMessages());
-		}
-		
-		foreach ($this->subEiFieldValidationResults as $subValidationResult) {
-			$messages = array_merge($messages, $subValidationResult->getMessages());
+		if ($recursive) {
+			foreach ($this->subEiEntryValidationResults as $subValidationResult) {
+				$messages = array_merge($messages, $subValidationResult->getMessages());
+			}
+			
+			foreach ($this->subEiFieldValidationResults as $subValidationResult) {
+				$messages = array_merge($messages, $subValidationResult->getMessages());
+			}
 		}
 
 		return $messages;

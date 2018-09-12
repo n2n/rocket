@@ -140,7 +140,7 @@ class RestrictedEiExecution implements EiExecution {
 	private function getMatchingEiGrantPrivileges(EiCommandPath $eiCommandPath) {
 		$newEiGrantPrivileges = array();
 		foreach ($this->constraintCache->getEiGrant()->getEiGrantPrivileges() as $eiGrantPrivilege) {
-			$privilegeSetting = $this->constraintCache->getPrivilegeSetting($eiGrantPrivilege);
+			$privilegeSetting = $eiGrantPrivilege->getPrivilegeSetting();
 			if ($privilegeSetting->acceptsEiCommandPath($eiCommandPath)) {
 				$newEiGrantPrivileges[] = $eiGrantPrivilege;
 			}
@@ -161,7 +161,7 @@ class RestrictedEiExecution implements EiExecution {
 				return;
 			}
 			
-			$comporatorConstraints[] = $filterDefinition
+			$comparatorConstraints[] = $filterDefinition
 					->createComparatorConstraint($eiGrantPrivilege->readRestrictionFilterSettingGroup());
 		}
 		

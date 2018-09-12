@@ -102,10 +102,6 @@ class GuiDefinition {
 		return $this->levelEiPropPaths[$id];
 	}
 	
-	public function eiPropPathToGuiIdPath() {
-		
-	}
-	
 	/**
 	 * @return GuiProp[]
 	 */
@@ -319,7 +315,7 @@ class GuiDefinition {
 	 * @throws NotYetImplementedException
 	 * @return \rocket\ei\manage\gui\GuiIdPath|NULL
 	 */
-	public function eiProPathToGuiIdPath(EiPropPath $eiPropPath) {
+	public function eiPropPathToGuiIdPath(EiPropPath $eiPropPath) {
 		if ($eiPropPath->hasMultipleIds()) {
 			throw new NotYetImplementedException();
 		}

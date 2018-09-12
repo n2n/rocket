@@ -52,25 +52,25 @@ class FilterDefinition {
 	}
 	
 	public function createComparatorConstraint(FilterSettingGroup $filterSettingGroup): ComparatorConstraint {
-		$criteriaComparators = array();
+		$comparatorConstraints = array();
 		
 		foreach ($filterSettingGroup->getFilterSettings() as $subFilterSetting) {
 			$id = $subFilterSetting->getFilterPropId();
+			
 			if (!isset($this->filterProps[$id])) {
 				continue;
 			}
-			
 			try {
-				$criteriaComparators[] = $this->filterProps[$id]->createComparatorConstraint(
+				$comparatorConstraints[] = $this->filterProps[$id]->createComparatorConstraint(
 						$subFilterSetting->getAttributes());
 			} catch (AttributesException $e) {}
 		}
 		
 		foreach ($filterSettingGroup->getFilterSettingGroups() as $subFilterSettingGroup) {
-			$criteriaComparators[] = $this->createComparatorConstraint($subFilterSettingGroup);
+			$comparatorConstraints[] = $this->createComparatorConstraint($subFilterSettingGroup);
 		}
 		
-		return new ComparatorConstraintGroup($filterSettingGroup->isAndUsed(), $criteriaComparators);
+		return new ComparatorConstraintGroup($filterSettingGroup->isAndUsed(), $comparatorConstraints);
 	}
 	
 // 	private function createElementComparatorConstraint(FilterDataElement $element) {

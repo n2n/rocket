@@ -110,18 +110,4 @@ class ConstraintCache {
 		return $this->eiEntryConstraints[$objHash] = $this->securityFilterDefinition
 				->createEiEntryConstraint($eiGrantPrivilege->readRestrictionFilterSettingGroup());
 	}
-	
-	/**
-	 * @param EiGrantPrivilege $eiGrantPrivilege
-	 * @return \rocket\ei\manage\security\privilege\data\PrivilegeSetting
-	 */
-	function getPrivilegeSetting(EiGrantPrivilege $eiGrantPrivilege) {
-		$objHash = spl_object_hash($eiGrantPrivilege);
-		
-		if (isset($this->privilegeSettings[$objHash])) {
-			return $this->privilegeSettings[$objHash];
-		}
-		
-		return $this->privilegeSettings[$objHash] = $eiGrantPrivilege->readPrivilegeSetting();
-	}
 }

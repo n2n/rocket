@@ -38,7 +38,7 @@ use n2n\reflection\CastUtils;
 use rocket\ei\manage\control\Control;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\RocketUiOutfitter;
-use n2n\impl\web\ui\view\html\MessageList;
+use n2n\impl\web\ui\view\html\HtmlSnippet;
 
 class EiuHtmlBuilder {
 	private $view;
@@ -182,16 +182,19 @@ class EiuHtmlBuilder {
 		return new Raw('</' . HtmlUtils::hsc($tagName) . '>');
 	}
 	
-	public function entryUnboundMessages(array $attrs = null) {
-		$this->view->out($this->getEntryUnboundMessages($attrs));
+	public function entryMessages(array $attrs = null) {
+		$this->view->out($this->getEntryMessages($attrs));
 	}
 	
-	public function getEntryUnboundMessages(array $attrs = null) {
+	public function getEntryMessages(array $attrs = null) {
 		$messages = $this->meta->getEntryUnboundMessages();
 		if (empty($messages)) return null;
 		
-		
-		return new MessageList($messages, $attrs);
+		$hs = new HtmlSnippet();
+		foreach ($messages as $message) {
+			$hs->appendLn(new HtmlElement('div', array('class' => 'rocket-message-error'), $message));
+		}
+		return $hs;
 	}
 	
 	public function entryForkControls(array $attrs = null) {

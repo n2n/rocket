@@ -41,7 +41,7 @@ class RestrictedEiEntryAccessFactory implements EiEntryAccessFactory {
 		
 		$privilegeSettings = array();
 		foreach ($constraintCache->getEiGrant()->getEiGrantPrivileges() as $eiGrantPrivilege) {
-			$privilegeSettings[] = $constraintCache->getPrivilegeSetting($eiGrantPrivilege);
+			$privilegeSettings[] = $eiGrantPrivilege->getPrivilegeSetting();
 		}
 		
 		return new RestrictedEiEntryAccess($constraintCache->getPrivilegeDefinition(), $privilegeSettings);
@@ -60,7 +60,7 @@ class RestrictedEiEntryAccessFactory implements EiEntryAccessFactory {
 			}
 			
 			foreach ($constraintCache->getEiGrant()->getEiGrantPrivileges() as $eiGrantPrivilege) {
-				if ($constraintCache->getPrivilegeSetting($eiGrantPrivilege)->acceptsEiCommandPath($eiCommandPath)) {
+				if ($eiGrantPrivilege->getPrivilegeSetting()->acceptsEiCommandPath($eiCommandPath)) {
 					return true;
 				}
 			}
@@ -103,7 +103,7 @@ class RestrictedEiEntryAccessFactory implements EiEntryAccessFactory {
 		
 // 		$privilegeSettings = array();
 // 		foreach ($constraintCache->getEiGrant()->getEiGrantPrivileges() as $eiGrantPrivilege) {
-// 			$privilegeSettings[] = $constraintCache->getPrivilegeSetting($eiGrantPrivilege);
+// 			$privilegeSettings[] = $eiGrantPrivilege->getPrivilegeSetting();
 // 		}
 		
 // 		return new RestrictedEiEntryAccess($constraintCache->getPrivilegeDefinition(), $privilegeSettings);
@@ -118,7 +118,7 @@ class RestrictedEiEntryAccessFactory implements EiEntryAccessFactory {
 // 					}
 					
 // 					foreach ($constraintCache->getEiGrant()->getEiGrantPrivileges() as $eiGrantPrivilege) {
-// 						if ($constraintCache->getPrivilegeSetting($eiGrantPrivilege)->acceptsEiCommandPath($eiCommandPath)) {
+// 						if ($eiGrantPrivilege->getPrivilegeSetting()->acceptsEiCommandPath($eiCommandPath)) {
 // 							return true;
 // 						}
 // 					}

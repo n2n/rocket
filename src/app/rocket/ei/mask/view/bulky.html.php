@@ -39,18 +39,21 @@
 	
 	$entryOpen = $eiuHtml->meta()->isEntryOpen($eiu->entryGui());
 	
-	$renderForkMags = $view->getParam('renderForkMags', false, null);
+	$showUbMsgs = $renderForkMags = $view->getParam('renderForkMags', false, null);
 	$renderInnerForks = false;
+	$showInnerUbMsgs = false;
 	$controlsAllowed = $view->getParam('controlsAllowed');
 	if ($renderForkMags === null) {
-		$renderInnerForks = 1 == count($displayStructure->getDisplayItems()) 
+		$showInnerUbMsgs = $renderInnerForks = 1 == count($displayStructure->getDisplayItems()) 
 				&& $displayStructure->getDisplayItems()[0]->isGroup();
 		$renderForkMags = !$renderInnerForks;
+		$showUbMsgs = !$showInnerUbMsgs;
 	}
 	
 	$controls = array();
 	if ($renderInnerForks) {
 		$renderForkMags = false;
+		$showUbMsgs = false;
 	} else if ($renderForkMags) {
 		if ($controlsAllowed) {
 			$controls = $eiuHtml->meta()->createEntryControls($eiu->entryGui(), 6);
@@ -70,7 +73,10 @@
 	</div>
 <?php endif ?>
 
-<?php $eiuHtml->entryUnboundMessages() ?>
+<?php if ($showUbMsgs): ?>
+	<?php $eiuHtml->entryMessages() ?>
+<?php endif ?>
+
 
 <?php foreach ($displayStructure->getDisplayItems() as $displayItem): ?>
 	<?php if ($displayItem->hasDisplayStructure()): ?>
@@ -87,6 +93,10 @@
 			<?php endif ?>		
 			
 			<div class="rocket-control">
+				<?php if ($showInnerUbMsgs): ?>
+					<?php $eiuHtml->entryMessages() ?>
+				<?php endif ?>
+			
 				<?php $view->import('bulky.html', $view->mergeParams(array(
 						'displayStructure' => $displayItem->getDisplayStructure(), 
 						'eiu' => $eiu, 'renderForkMags' => false))) ?>

@@ -40,6 +40,7 @@ use n2n\util\config\Attributes;
 use rocket\ei\manage\security\privilege\PrivilegeDefinition;
 use rocket\ei\manage\security\privilege\data\PrivilegeSetting;
 use rocket\ei\manage\security\EiEntryAccessFactory;
+use rocket\ei\manage\ManageState;
 
 class RocketUserEiPermissionManager implements EiPermissionManager {
 	private $rocketUser;
@@ -65,10 +66,15 @@ class RocketUserEiPermissionManager implements EiPermissionManager {
 	}
 
 
-	public function isEiCommandAccessible(EiCommand $eiCommand): bool {
+	public function isEiCommandAccessible(EiCommand $eiCommand, ManageState $manageState): bool {
 		if ($this->rocketUser->isAdmin()) return true;
-
-		return null !== $this->findEiGrant($eiCommand->getEiMask()->getEiTypePath());
+		
+		$eiMask = $eiCommand->getEiMask();
+		$eiGrant = $this->findEiGrant($eiMask->getEiTypePath());
+		$eiCommandPath = EiCommandPath::from($eiCommand);
+		return null !== $eiGrant && ($eiGrant->isFull()
+				|| $manageState->getDef()->getPrivilegeDefinition($eiMask)->isEiCommandPathUnprivileged($eiCommandPath)
+				|| $eiGrant->containsEiCommandPath($eiCommandPath));
 	}
 
 	function applyToEiFrame(EiFrame $eiFrame, EiCommandPath $eiCommandPath) {
