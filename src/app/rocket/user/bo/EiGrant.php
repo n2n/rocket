@@ -29,7 +29,6 @@ use n2n\persistence\orm\annotation\AnnoManyToOne;
 use n2n\persistence\orm\annotation\AnnoOneToMany;
 use rocket\spec\TypePath;
 use rocket\ei\EiCommandPath;
-use n2n\util\ex\IllegalStateException;
 
 class EiGrant extends ObjectAdapter implements Grant {
 	private static function _annos(AnnoInit $ai) {

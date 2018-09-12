@@ -13,7 +13,6 @@ use phpbob\representation\PhpFile;
 use n2n\impl\web\ui\view\html\HtmlView;
 use phpbob\Phpbob;
 use n2n\io\IoUtils;
-use hangar\Hangar;
 use n2n\io\fs\FsPath;
 use n2n\core\TypeLoader;
 use n2n\web\hangar\WebTemplateDef;

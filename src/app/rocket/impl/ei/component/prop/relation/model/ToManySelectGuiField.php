@@ -29,7 +29,6 @@ use rocket\ei\manage\gui\GuiField;
 use rocket\core\model\Rocket;
 use rocket\ei\component\prop\EiProp;
 use rocket\ei\util\Eiu;
-use rocket\ei\util\frame\EiuFrame;
 
 class ToManySelectGuiField implements GuiField {
 	private $eiProp;
