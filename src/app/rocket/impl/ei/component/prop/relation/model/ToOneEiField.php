@@ -71,7 +71,7 @@ class ToOneEiField extends RwEiField {
 			IllegalStateException::assertTrue($value instanceof RelationEntry);
 			if ($value->hasEiEntry()) {
 				$value->getEiEntry()->validate();
-				$fieldErrorInfo->addSubMappingErrorInfo($value->getEiEntry()->getMappingErrorInfo());
+				$fieldErrorInfo->addSubValidationResult($value->getEiEntry()->getValidationResult());
 			}
 		}
 	}

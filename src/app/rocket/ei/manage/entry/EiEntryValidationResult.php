@@ -21,6 +21,7 @@
  */
 namespace rocket\ei\manage\entry;
 
+use n2n\l10n\Message;
 use rocket\ei\EiPropPath;
 
 class EiEntryValidationResult {
@@ -39,6 +40,31 @@ class EiEntryValidationResult {
 	
 	/**
 	 * @param EiPropPath $eiPropPath
+	 * @param bool $checkRecurisve
+	 * @return boolean
+	 */
+	function isEiFieldValid(EiPropPath $eiPropPath, bool$checkRecurisve) {
+		$eiPropPathStr = (string) $eiPropPath;
+		return !isset($this->eiFieldValidationResults[$eiPropPathStr]) 
+				||  $this->eiFieldValidationResults[$eiPropPathStr]->isValid($checkRecurisve);
+	}
+	
+	/**
+	 * @param bool $checkRecurisve
+	 * @return \rocket\ei\manage\entry\EiFieldValidationResult[]
+	 */
+	function getInvalidEiFieldValidationResults(bool $checkRecurisve) {
+		$results = [];
+		foreach ($this->eiFieldValidationResults as $eiPropPathStr => $eiFieldValidationResult) {
+			if ($eiFieldValidationResult->isValid($checkRecurisve)) continue;
+			
+			$results[$eiPropPathStr] = $eiFieldValidationResult;
+		}
+		return $results;
+	}
+	
+	/**
+	 * @param EiPropPath $eiPropPath
 	 * @return \rocket\ei\manage\entry\EiFieldValidationResult
 	 */
 	public function getEiFieldValidationResult(EiPropPath $eiPropPath) {
@@ -53,6 +79,9 @@ class EiEntryValidationResult {
 		return $this->eiFieldValidationResults;
 	}
 
+	/**
+	 * @return Message[]
+	 */
 	public function getMessages() {
 		$messages = array();
 		foreach ($this->eiFieldValidationResults as $eiEiFieldValidationResult) {

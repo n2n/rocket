@@ -29,6 +29,7 @@ use n2n\reflection\ArgUtils;
 use rocket\ei\manage\entry\EiFieldWrapper;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\gui\ui\DisplayStructure;
+use n2n\util\ex\NotYetImplementedException;
 
 class GuiDefinition {	
 	private $identityStringPattern;
@@ -99,6 +100,10 @@ class GuiDefinition {
 		}
 		
 		return $this->levelEiPropPaths[$id];
+	}
+	
+	public function eiPropPathToGuiIdPath() {
+		
 	}
 	
 	/**
@@ -307,6 +312,24 @@ class GuiDefinition {
 		}
 		
 		return true;
+	}
+	
+	/**
+	 * @param EiPropPath $eiPropPath
+	 * @throws NotYetImplementedException
+	 * @return \rocket\ei\manage\gui\GuiIdPath|NULL
+	 */
+	public function eiProPathToGuiIdPath(EiPropPath $eiPropPath) {
+		if ($eiPropPath->hasMultipleIds()) {
+			throw new NotYetImplementedException();
+		}
+		
+		$id = $eiPropPath->getFirstId();
+		if (isset($this->levelGuiProps[$id])) {
+			return new GuiIdPath([$id]);
+		}
+		
+		return null;
 	}
 	
 	/**

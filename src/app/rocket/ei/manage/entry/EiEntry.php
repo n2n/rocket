@@ -24,7 +24,6 @@ namespace rocket\ei\manage\entry;
 use n2n\l10n\Message;
 use rocket\ei\manage\EiObject;
 use rocket\ei\EiPropPath;
-use rocket\ei\security\InaccessibleEntryException;
 use n2n\util\ex\IllegalStateException;
 use n2n\util\col\HashSet;
 use rocket\ei\mask\EiMask;
@@ -315,16 +314,16 @@ class EiEntry {
 		return $this->eiObject;
 	}
 	
-	public function getValue(EiPropPath $eiPropPath, bool $ignoreAccessRestriction = false) {
-		return $this->getEiField($eiPropPath, $ignoreAccessRestriction)->getValue();
+	public function getValue(EiPropPath $eiPropPath) {
+		return $this->getEiField($eiPropPath)->getValue();
 	}
 	
 	public function setValue(EiPropPath $eiPropPath, $value) {
-		$this->getEiField($eiPropPath, $ignoreAccessRestriction)->setValue($value);
+		$this->getEiField($eiPropPath)->setValue($value);
 	}
 
-	public function getOrgValue(EiPropPath $eiPropPath, bool $ignoreAccessRestriction = false) {
-		return $this->getMappingProfile($ignoreAccessRestriction)->getEiField($eiPropPath, $ignoreAccessRestriction)
+	public function getOrgValue(EiPropPath $eiPropPath) {
+		return $this->getMappingProfile($ignoreAccessRestriction)->getEiField($eiPropPath)
 				->getOrgValue();
 	}
 	
@@ -336,10 +335,6 @@ class EiEntry {
 	}
 	
 	public function validate(EiEntryValidationResult $validationResult = null): bool {
-		if (!$this->accessible) {
-			throw new InaccessibleEntryException();
-		}
-		
 		if ($validationResult === null) {
 			$validationResult = $this->validationResult = new EiEntryValidationResult();	
 		}
@@ -364,16 +359,25 @@ class EiEntry {
 		return $validationResult->isValid();
 	}
 	
+	/**
+	 * @return bool
+	 */
 	public function hasValidationResult(): bool {
-		return $this->validateionResult !== null;
+		return $this->validationResult !== null;
 	}
 	
-	public function getMappingErrorInfo() {
+	/**
+	 * @return \rocket\ei\manage\entry\EiEntryValidationResult
+	 */
+	public function getValidationResult() {
 		IllegalStateException::assertTrue($this->validationResult !== null);
 		
 		return $this->validationResult;
 	}
 	
+	/**
+	 * @param EiEntry $targetMapping
+	 */
 	public function copy(EiEntry $targetMapping) {
 		$targetMappingDefinition = $targetMapping->getMappingDefinition();
 		$targetType = $targetMapping->getEiObject()->getType();

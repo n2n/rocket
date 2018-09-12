@@ -148,7 +148,7 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 			if ($result === null) continue;
 			
 			$eiuEntry = $guiFieldAssembler->getEiuEntryGui()->getEiuEntry();
-			$fieldErrorInfo = $eiuEntry->getEiEntry()->getMappingErrorInfo()
+			$fieldErrorInfo = $eiuEntry->getEiEntry()->getValidationResult()
 					->getEiFieldValidationResult($eiPropPath);
 			if (null !== ($eiFieldWrapper = $result->getEiFieldWrapper())) {
 				$eiFieldWrappers[] = $eiFieldWrapper;

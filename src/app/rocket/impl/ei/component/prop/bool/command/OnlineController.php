@@ -61,7 +61,7 @@ class OnlineController extends ControllerAdapter {
 		
 		$jhtmlEvent = null; 
 		if (!$eiuEntry->getEiEntry()->save()) {
-			$this->mc->addAll($eiuEntry->getEiEntry()->getMappingErrorInfo()->getMessages());
+			$this->mc->addAll($eiuEntry->getEiEntry()->getValidationResult()->getMessages());
 		} else {
 			$jhtmlEvent = JhtmlEvent::ei()->noAutoEvents()->controlSwaped($this->onlineEiCommand->createEntryControl(new Eiu($eiuEntry)));
 		}

@@ -70,6 +70,8 @@
 	</div>
 <?php endif ?>
 
+<?php $eiuHtml->entryUnboundMessages() ?>
+
 <?php foreach ($displayStructure->getDisplayItems() as $displayItem): ?>
 	<?php if ($displayItem->hasDisplayStructure()): ?>
 		<?php $eiuHtml->displayItemOpen('div', $displayItem) ?>

@@ -50,13 +50,13 @@ class ToManyDynMappingFormFactory {
 	}
 	
 	public function addEiEntry(EiEntry $currentEiEntry) {
-		if (!$currentEiEntry->isAccessible()) {
-			$this->currentMappingForms[$this->getKey($currentEiEntry)] = new MappingForm(
-					$this->eiuFrame->createIdentityString($currentEiEntry->getEiObject()),
-					$this->eiuFrame->getGenericIconType($currentEiEntry),
-					null, $this->nextOrderIndex++);
-			return;
-		}
+// 		if (!$currentEiEntry->isAccessible()) {
+// 			$this->currentMappingForms[$this->getKey($currentEiEntry)] = new MappingForm(
+// 					$this->eiuFrame->createIdentityString($currentEiEntry->getEiObject()),
+// 					$this->eiuFrame->getGenericIconType($currentEiEntry),
+// 					null, $this->nextOrderIndex++);
+// 			return;
+// 		}
 		
 		if ($currentEiEntry->getEiObject()->isNew()) {
 			$this->newMappingForms[] = new MappingForm(

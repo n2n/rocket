@@ -246,10 +246,23 @@ class EiuEntry {
 	}
 	
 	/**
+	 * @var boolean
+	 */
+	private $accessible;
+	
+	/**
 	 * @return boolean
 	 */
 	public function isAccessible() {
-		return $this->getEiEntry()->isAccessible();
+		if (null !== $this->accessible) return $this->accessible;
+		
+		if ($this->eiEntry !== null) {
+			return $this->accessible = true;
+		}
+		
+		// @todo check exception and make $this->accessible = false if thrown.
+		$this->getEiEntry(true);
+		$this->accessible = true;
 	}
 	
 	/**

@@ -154,7 +154,7 @@ class EntryEiHtmlBuilder {
 		
 		$eiEntryGui = $eiuEntryGui->getEiEntryGui();
 		$displayable = $eiEntryGui->getDisplayableByGuiIdPath($guiIdPath);
-		$fieldErrorInfo = $eiuEntryGui->getEiuEntry()->getEiEntry()->getMappingErrorInfo()->getEiFieldValidationResult(
+		$fieldErrorInfo = $eiuEntryGui->getEiuEntry()->getEiEntry()->getValidationResult()->getEiFieldValidationResult(
 				$eiEntryGui->getGuiDefinition()->guiIdPathToEiPropPath($guiIdPath));
 		
 		if (!$eiEntryGui->containsMagAssemblyGuiIdPath($guiIdPath)) {
@@ -178,7 +178,7 @@ class EntryEiHtmlBuilder {
 		$eiuEntryGui = $this->meta->getCurrentEiuEntryGui();
 		$guiIdPath = GuiIdPath::create($guiIdPath);
 		$displayable = $eiuEntryGui->getEiEntryGui()->getDisplayableByGuiIdPath($guiIdPath);
-		$fieldErrorInfo = $eiuEntryGui->getEiuEntry()->getEiEntry()->getMappingErrorInfo()->getEiFieldValidationResult(
+		$fieldErrorInfo = $eiuEntryGui->getEiuEntry()->getEiEntry()->getValidationResult()->getEiFieldValidationResult(
 				$eiuEntryGui->getEiEntryGui()->getGuiDefinition()->guiIdPathToEiPropPath($guiIdPath));
 		
 		return $this->fieldEiHtml->getOpenOutputField($tagName, $displayable, $fieldErrorInfo, 

@@ -29,6 +29,9 @@ use rocket\ei\manage\control\GroupControl;
 use rocket\ei\manage\control\ControlButton;
 use rocket\ei\manage\control\IconType;
 use rocket\ei\manage\gui\ui\DisplayItem;
+use n2n\reflection\CastUtils;
+use rocket\ei\manage\gui\EiEntryGui;
+use n2n\l10n\Message;
 
 class EiuHtmlBuilderMeta {
 	private $state;
@@ -46,7 +49,7 @@ class EiuHtmlBuilderMeta {
 // 	function getExtraGuiMessages($eiEntryGuiArg) {
 // 		$eiEntryGui = EiuAnalyst::buildEiEntryGuiFromEiArg($eiEntryGui);
 		
-// 		$eiEntryGui->getEiEntry()->getMappingErrorInfo()->getEiFieldValidationResults()
+// 		$eiEntryGui->getEiEntry()->getValidationResult()->getEiFieldValidationResults()
 // // 		$this->
 // 	}
 	
@@ -152,4 +155,32 @@ class EiuHtmlBuilderMeta {
 		
 		return $vControls;
 	}
+	
+	/**
+	 * @return Message[] 
+	 */
+	function getEntryUnboundMessages(bool $recursive = false) {
+		$info = $this->state->peakEntry();
+		
+		$eiEntryGui = $info['eiEntryGui'];
+		CastUtils::assertTrue($eiEntryGui instanceof EiEntryGui);
+		
+		$eiEntry = $eiEntryGui->getEiEntry();
+		if (!$eiEntry->hasValidationResult()) {
+			return array();
+		}
+		
+		$messages = [];
+		
+		$guiDefinition = $eiEntryGui->getEiGui()->getEiGuiViewFactory()->getGuiDefinition();
+		foreach ($eiEntry->getValidationResult()->getInvalidEiFieldValidationResults(false) as $result) {
+			$guiIdPath = $guiDefinition->eiPropPathToGuiIdPath($result->getEiPropPath());
+			if ($eiEntryGui->containsGuiFieldGuiIdPath($guiIdPath)) continue;
+			
+			array_push($messages, ...$result->getMessages());
+		}
+		
+		return $messages;
+	}
+	
 }

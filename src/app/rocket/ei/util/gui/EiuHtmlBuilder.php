@@ -38,6 +38,7 @@ use n2n\reflection\CastUtils;
 use rocket\ei\manage\control\Control;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\RocketUiOutfitter;
+use n2n\impl\web\ui\view\html\MessageList;
 
 class EiuHtmlBuilder {
 	private $view;
@@ -181,6 +182,18 @@ class EiuHtmlBuilder {
 		return new Raw('</' . HtmlUtils::hsc($tagName) . '>');
 	}
 	
+	public function entryUnboundMessages(array $attrs = null) {
+		$this->view->out($this->getEntryUnboundMessages($attrs));
+	}
+	
+	public function getEntryUnboundMessages(array $attrs = null) {
+		$messages = $this->meta->getEntryUnboundMessages();
+		if (empty($messages)) return null;
+		
+		
+		return new MessageList($messages, $attrs);
+	}
+	
 	public function entryForkControls(array $attrs = null) {
 		$this->view->out($this->getEntryForkControls($attrs));
 	}
@@ -298,7 +311,7 @@ class EiuHtmlBuilder {
 			$displayItem = null;
 		}
 		
-		$fieldErrorInfo = $eiEntryGui->getEiEntry()->getMappingErrorInfo()->getEiFieldValidationResult(
+		$fieldErrorInfo = $eiEntryGui->getEiEntry()->getValidationResult()->getEiFieldValidationResult(
 				$eiEntryGui->getEiGui()->getEiGuiViewFactory()->getGuiDefinition()->guiIdPathToEiPropPath($guiIdPath));
 		if (!$eiEntryGui->containsGuiFieldGuiIdPath($guiIdPath)) {
 			$this->state->pushField($tagName, $guiIdPath, $fieldErrorInfo, null, null, $displayItem);

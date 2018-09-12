@@ -25,16 +25,38 @@ use n2n\l10n\Message;
 
 class EiFieldValidationResult {
 	private $errorMessages = array();
+	/**
+	 * @var EiFieldValidationResult[]
+	 */
 	private $subEiFieldValidationResults = array();
-	private $subMappingErrorInfos = array();
+	/**
+	 * @var EiEntryValidationResult[]
+	 */
+	private $subEiEntryValidationResults = array();
 
 	public function __construct() {
 	}
 
-	public function clear() {
+	/**
+	 * 
+	 */
+	public function clear(bool $clearRecursive = true) {
 		$this->errorMessages = array();
+		
+		if (!$clearRecursive) return;
+		
+		$this->clearSubOnly();
+	}
+	
+	public function clearSubOnly() {
+		$this->subEiEntryValidationResults = array();
+		$this->subEiFieldValidationResults = array();
 	}
 
+	/**
+	 * @param bool $checkRecursive
+	 * @return bool
+	 */
 	public function isValid(bool $checkRecursive = true): bool {
 		if (!empty($this->errorMessages)) return false;
 
@@ -44,8 +66,8 @@ class EiFieldValidationResult {
 			if (!$subEiFieldValidationResult->isValid(true)) return false;
 		}
 		
-		foreach ($this->subMappingErrorInfos as $subMappingErrorInfo) {
-			if (!$subMappingErrorInfo->isValid(true)) return false;
+		foreach ($this->subEiEntryValidationResults as $subEiEntryValidationResult) {
+			if (!$subEiEntryValidationResult->isValid(true)) return false;
 		}
 
 		return true;
@@ -70,19 +92,23 @@ class EiFieldValidationResult {
 		return null;
 	}
 	
-	public function addSubEiFieldValidationResult(EiFieldValidationResult $fieldErrorInfo) {
-		$this->subEiFieldValidationResults[] = $fieldErrorInfo;
+	public function addSubEiFieldValidationResult(EiFieldValidationResult $subValidationResult) {
+		$this->subEiFieldValidationResults[] = $subValidationResult;
 	}
 
-	public function addSubMappingErrorInfo(EiEntryValidationResult $subMappingErrorInfo) {
-		$this->subMappingErrorInfos[] = $subMappingErrorInfo;
+	public function addSubEiEntryValidationResult(EiEntryValidationResult $subValidationResult) {
+		$this->subEiEntryValidationResults[] = $subValidationResult;
 	}
 
 	public function getMessages() {
 		$messages = $this->errorMessages;
-
-		foreach ($this->subMappingErrorInfos as $subMappingErrorInfo) {
-			$messages = array_merge($messages, $subMappingErrorInfo->getMessages());
+		
+		foreach ($this->subEiEntryValidationResults as $subValidationResult) {
+			$messages = array_merge($messages, $subValidationResult->getMessages());
+		}
+		
+		foreach ($this->subEiFieldValidationResults as $subValidationResult) {
+			$messages = array_merge($messages, $subValidationResult->getMessages());
 		}
 
 		return $messages;
