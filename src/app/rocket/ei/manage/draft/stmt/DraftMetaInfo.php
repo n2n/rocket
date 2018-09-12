@@ -23,6 +23,7 @@ namespace rocket\ei\manage\draft\stmt;
 
 use rocket\ei\EiPropPath;
 use n2n\io\IoUtils;
+use rocket\ei\EiEngine;
 
 class DraftMetaInfo {
 	const TABLE_PREFIX = 'rocket_draft_';
@@ -36,7 +37,7 @@ class DraftMetaInfo {
 	const DRAFT_COLUMN_PREFIX = 'd_';
 	const DRAFT_COLUMN_PART_SEPARATOR = '_';
 	
-	public static function buildTableName(EiEngineModel $eiEngineModel, EiPropPath $eiPropPathExt = null) {
+	public static function buildTableName(EiEngine $eiEngineModel, EiPropPath $eiPropPathExt = null) {
 		$ids = array();
 		do {
 			$id = $eiEngineModel->getId();

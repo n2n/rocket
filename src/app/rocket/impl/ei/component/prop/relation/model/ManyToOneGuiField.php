@@ -26,7 +26,6 @@ use rocket\ei\manage\gui\GuiFieldEditable;
 use n2n\util\ex\IllegalStateException;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\gui\GuiField;
-use rocket\ei\util\frame\EiuFrame;
 use rocket\ei\util\Eiu;
 
 class ManyToOneGuiField implements GuiField {

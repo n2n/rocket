@@ -76,7 +76,7 @@ class ToManyEiField extends RwEiField {
 			IllegalStateException::assertTrue($targetRelationEntry instanceof RelationEntry);
 			if ($targetRelationEntry->hasEiEntry()) {
 				$targetRelationEntry->getEiEntry()->validate();
-				$fieldErrorInfo->addSubEiEntryValidationResult(($targetRelationEntry->getEiEntry()->getValidationResult());
+				$fieldErrorInfo->addSubEiEntryValidationResult($targetRelationEntry->getEiEntry()->getValidationResult());
 			}
 		}
 	}
