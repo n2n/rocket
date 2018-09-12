@@ -22,7 +22,7 @@
 namespace rocket\ei\component\prop\field;
 
 use rocket\ei\manage\entry\EiField;
-use rocket\ei\manage\entry\FieldErrorInfo;
+use rocket\ei\manage\entry\EiFieldValidationResult;
 use n2n\util\col\HashSet;
 use rocket\ei\manage\EiObject;
 use rocket\ei\manage\entry\EiFieldConstraint;
@@ -110,7 +110,7 @@ abstract class EiFieldAdapter implements EiField {
 		return true;
 	}
 
-	public function validate(FieldErrorInfo $fieldErrorInfo) {
+	public function validate(EiFieldValidationResult $fieldErrorInfo) {
 		foreach ($this->eiFieldConstraintSet as $eiFieldConstraint) {
 			$eiFieldConstraint->validate($this, $fieldErrorInfo);
 		}

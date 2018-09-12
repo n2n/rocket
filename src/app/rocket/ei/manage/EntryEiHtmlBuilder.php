@@ -30,7 +30,7 @@ use rocket\ei\manage\gui\GuiIdPath;
 use rocket\ei\manage\gui\Displayable;
 use n2n\reflection\ArgUtils;
 use n2n\web\ui\UiComponent;
-use rocket\ei\manage\entry\FieldErrorInfo;
+use rocket\ei\manage\entry\EiFieldValidationResult;
 use n2n\web\ui\Raw;
 use n2n\web\ui\CouldNotRenderUiComponentException;
 use rocket\ei\util\gui\EiuEntryGui;
@@ -68,7 +68,7 @@ class EntryEiHtmlBuilder {
 		return $this->meta;
 	}
 	
-	private function pushGuiPropInfo($tagName, Displayable $displayable, FieldErrorInfo $fieldErrorInfo, 
+	private function pushGuiPropInfo($tagName, Displayable $displayable, EiFieldValidationResult $fieldErrorInfo, 
 			PropertyPath $propertyPath = null) {
 		$this->eiPropInfoStack[] = array('tagName' => $tagName, 'displayable' => $displayable, 
 				'fieldErrorInfo' => $fieldErrorInfo, 'propertyPath' => $propertyPath);
@@ -154,7 +154,7 @@ class EntryEiHtmlBuilder {
 		
 		$eiEntryGui = $eiuEntryGui->getEiEntryGui();
 		$displayable = $eiEntryGui->getDisplayableByGuiIdPath($guiIdPath);
-		$fieldErrorInfo = $eiuEntryGui->getEiuEntry()->getEiEntry()->getMappingErrorInfo()->getFieldErrorInfo(
+		$fieldErrorInfo = $eiuEntryGui->getEiuEntry()->getEiEntry()->getMappingErrorInfo()->getEiFieldValidationResult(
 				$eiEntryGui->getGuiDefinition()->guiIdPathToEiPropPath($guiIdPath));
 		
 		if (!$eiEntryGui->containsMagAssemblyGuiIdPath($guiIdPath)) {
@@ -178,7 +178,7 @@ class EntryEiHtmlBuilder {
 		$eiuEntryGui = $this->meta->getCurrentEiuEntryGui();
 		$guiIdPath = GuiIdPath::create($guiIdPath);
 		$displayable = $eiuEntryGui->getEiEntryGui()->getDisplayableByGuiIdPath($guiIdPath);
-		$fieldErrorInfo = $eiuEntryGui->getEiuEntry()->getEiEntry()->getMappingErrorInfo()->getFieldErrorInfo(
+		$fieldErrorInfo = $eiuEntryGui->getEiuEntry()->getEiEntry()->getMappingErrorInfo()->getEiFieldValidationResult(
 				$eiuEntryGui->getEiEntryGui()->getGuiDefinition()->guiIdPathToEiPropPath($guiIdPath));
 		
 		return $this->fieldEiHtml->getOpenOutputField($tagName, $displayable, $fieldErrorInfo, 

@@ -9,7 +9,7 @@ use rocket\ei\manage\gui\EiEntryGui;
 use rocket\ei\manage\gui\GuiFieldAssembly;
 use rocket\ei\manage\gui\GuiIdPath;
 use rocket\ei\manage\gui\ui\DisplayItem;
-use rocket\ei\manage\entry\FieldErrorInfo;
+use rocket\ei\manage\entry\EiFieldValidationResult;
 
 class EiuHtmlBuilderState {
 	private $stack = array();
@@ -75,11 +75,11 @@ class EiuHtmlBuilderState {
 	
 	/**
 	 * @param string $tagName
-	 * @param FieldErrorInfo $fieldErrorInfo
+	 * @param EiFieldValidationResult $fieldErrorInfo
 	 * @param Displayable $guiFieldAssembly
 	 * @param PropertyPath $propertyPath
 	 */
-	public function pushField(string $tagName, GuiIdPath $guiIdPath, FieldErrorInfo $fieldErrorInfo, GuiFieldAssembly $guiFieldAssembly = null,
+	public function pushField(string $tagName, GuiIdPath $guiIdPath, EiFieldValidationResult $fieldErrorInfo, GuiFieldAssembly $guiFieldAssembly = null,
 			PropertyPath $propertyPath = null, DisplayItem $displayItem = null) {
 		$this->stack[] = array('type' => 'field', 'guiIdPath' => $guiIdPath, 'tagName' => $tagName, 'guiFieldAssembly' => $guiFieldAssembly,
 				'fieldErrorInfo' => $fieldErrorInfo, 'propertyPath' => $propertyPath, 'displayItem' => $displayItem);

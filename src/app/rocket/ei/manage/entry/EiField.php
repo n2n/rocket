@@ -69,9 +69,9 @@ interface EiField {
 	public function check(): bool;
 	
 	/**
-	 * @param FieldErrorInfo $eiFieldErrorInfo
+	 * @param EiFieldValidationResult $eiEiFieldValidationResult
 	 */
-	public function validate(FieldErrorInfo $eiFieldErrorInfo);
+	public function validate(EiFieldValidationResult $eiEiFieldValidationResult);
 	
 	/**
 	 * 

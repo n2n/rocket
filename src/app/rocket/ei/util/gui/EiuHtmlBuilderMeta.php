@@ -46,7 +46,7 @@ class EiuHtmlBuilderMeta {
 // 	function getExtraGuiMessages($eiEntryGuiArg) {
 // 		$eiEntryGui = EiuAnalyst::buildEiEntryGuiFromEiArg($eiEntryGui);
 		
-// 		$eiEntryGui->getEiEntry()->getMappingErrorInfo()->getFieldErrorInfos()
+// 		$eiEntryGui->getEiEntry()->getMappingErrorInfo()->getEiFieldValidationResults()
 // // 		$this->
 // 	}
 	

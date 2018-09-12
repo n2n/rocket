@@ -350,7 +350,7 @@ class EiEntry {
 		
 		foreach ($this->eiFieldWrappers as $eiPropPathStr => $eiFieldWrapper) {
 			if ($eiFieldWrapper->isIgnored()) continue;
-			$eiFieldWrapper->getEiField()->validate($validationResult->getFieldErrorInfo(EiPropPath::create($eiPropPathStr)));
+			$eiFieldWrapper->getEiField()->validate($validationResult->getEiFieldValidationResult(EiPropPath::create($eiPropPathStr)));
 		}
 		
 		foreach ($this->constraintSet as $constraint) {

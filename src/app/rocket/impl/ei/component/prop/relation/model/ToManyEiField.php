@@ -23,7 +23,7 @@ namespace rocket\impl\ei\component\prop\relation\model;
 
 use rocket\ei\component\prop\field\RwEiField;
 use n2n\reflection\ArgUtils;
-use rocket\ei\manage\entry\FieldErrorInfo;
+use rocket\ei\manage\entry\EiFieldValidationResult;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\manage\EiObject;
 use rocket\ei\component\prop\field\Readable;
@@ -68,7 +68,7 @@ class ToManyEiField extends RwEiField {
 	}
 	
 
-	public function validate(FieldErrorInfo $fieldErrorInfo) {
+	public function validate(EiFieldValidationResult $fieldErrorInfo) {
 		$value = $this->getValue();
 		if ($value === null) return;
 		

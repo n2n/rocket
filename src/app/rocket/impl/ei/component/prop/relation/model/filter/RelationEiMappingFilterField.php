@@ -30,7 +30,7 @@ use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use n2n\reflection\ArgUtils;
 use rocket\impl\ei\component\prop\relation\model\RelationEntry;
 use rocket\ei\manage\entry\EiField;
-use rocket\ei\manage\entry\FieldErrorInfo;
+use rocket\ei\manage\entry\EiFieldValidationResult;
 use n2n\l10n\MessageCode;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\ei\manage\entry\EiEntryConstraint;
@@ -130,7 +130,7 @@ class RelationEiFieldConstraint implements EiFieldConstraint {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\entry\EiFieldConstraint::validate($eiField, $fieldErrorInfo)
 	 */
-	public function validate(EiField $eiField, FieldErrorInfo $fieldErrorInfo) {
+	public function validate(EiField $eiField, EiFieldValidationResult $fieldErrorInfo) {
 		if ($this->check($eiField)) return;
 		
 		$messageKey = null;
@@ -218,7 +218,7 @@ class TestEiFieldConstraint implements EiFieldConstraint {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\entry\EiFieldConstraint::validate($eiField, $fieldErrorInfo)
 	 */
-	public function validate(EiField $eiField, FieldErrorInfo $fieldErrorInfo) {
+	public function validate(EiField $eiField, EiFieldValidationResult $fieldErrorInfo) {
 		if ($this->exists) {
 			$value = $eiField->getValue();
 			if (!$this->toMany) {

@@ -23,7 +23,7 @@ namespace rocket\impl\ei\component\prop\relation\model;
 
 use n2n\reflection\ArgUtils;
 use rocket\ei\component\prop\field\RwEiField;
-use rocket\ei\manage\entry\FieldErrorInfo;
+use rocket\ei\manage\entry\EiFieldValidationResult;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\manage\EiObject;
 use rocket\ei\util\Eiu;
@@ -66,7 +66,7 @@ class ToOneEiField extends RwEiField {
 		parent::writeValue($targetRelationEntry->getEiObject());
 	}
 	
-	public function validate(FieldErrorInfo $fieldErrorInfo) {
+	public function validate(EiFieldValidationResult $fieldErrorInfo) {
 		if (null !== ($value = $this->getValue())) {
 			IllegalStateException::assertTrue($value instanceof RelationEntry);
 			if ($value->hasEiEntry()) {

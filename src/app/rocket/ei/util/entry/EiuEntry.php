@@ -351,11 +351,11 @@ class EiuEntry {
 	
 	
 	public function getValue($eiPropPath) {
-		return $this->getEiEntry()->getValue($eiPropPath);
+		return $this->getEiEntry()->getValue(EiPropPath::create($eiPropPath));
 	}
 	
 	public function setValue($eiPropPath, $value) {
-		return $this->getEiEntry()->setValue($eiPropPath, $value);
+		return $this->getEiEntry()->setValue(EiPropPath::create($eiPropPath), $value);
 	}
 	
 	public function getValues() {

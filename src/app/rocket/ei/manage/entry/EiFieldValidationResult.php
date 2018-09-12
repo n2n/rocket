@@ -25,7 +25,7 @@ use n2n\l10n\Message;
 
 class EiFieldValidationResult {
 	private $errorMessages = array();
-	private $subFieldErrorInfos = array();
+	private $subEiFieldValidationResults = array();
 	private $subMappingErrorInfos = array();
 
 	public function __construct() {
@@ -40,8 +40,8 @@ class EiFieldValidationResult {
 
 		if (!$checkRecursive) return true;
 
-		foreach ($this->subFieldErrorInfos as $subFieldErrorInfo) {
-			if (!$subFieldErrorInfo->isValid(true)) return false;
+		foreach ($this->subEiFieldValidationResults as $subEiFieldValidationResult) {
+			if (!$subEiFieldValidationResult->isValid(true)) return false;
 		}
 		
 		foreach ($this->subMappingErrorInfos as $subMappingErrorInfo) {
@@ -70,11 +70,11 @@ class EiFieldValidationResult {
 		return null;
 	}
 	
-	public function addSubFieldErrorInfo(EiFieldValidationResult $fieldErrorInfo) {
-		$this->subFieldErrorInfos[] = $fieldErrorInfo;
+	public function addSubEiFieldValidationResult(EiFieldValidationResult $fieldErrorInfo) {
+		$this->subEiFieldValidationResults[] = $fieldErrorInfo;
 	}
 
-	public function addSubMappingErrorInfo(MappingErrorInfo $subMappingErrorInfo) {
+	public function addSubMappingErrorInfo(EiEntryValidationResult $subMappingErrorInfo) {
 		$this->subMappingErrorInfos[] = $subMappingErrorInfo;
 	}
 

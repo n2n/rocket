@@ -27,5 +27,5 @@ interface EiFieldConstraint {
 	
 	public function check(EiField $eiField): bool;
 	
-	public function validate(EiField $eiField, FieldErrorInfo $fieldErrorInfo);
+	public function validate(EiField $eiField, EiFieldValidationResult $fieldErrorInfo);
 }

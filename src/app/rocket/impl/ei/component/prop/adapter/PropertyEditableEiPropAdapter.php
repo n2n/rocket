@@ -38,7 +38,7 @@ use rocket\core\model\Rocket;
 use rocket\ei\manage\security\EiFieldAccess;
 use n2n\util\config\AttributesException;
 use rocket\ei\util\Eiu;
-use rocket\ei\manage\entry\FieldErrorInfo;
+use rocket\ei\manage\entry\EiFieldValidationResult;
 use n2n\l10n\MessageCode;
 use rocket\ei\component\prop\field\Validatable;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
@@ -116,7 +116,7 @@ abstract class PropertyEditableEiPropAdapter extends PropertyDisplayableEiPropAd
 		return $this->checkMandatory($eiObject, $eiFieldValue);
 	}
 	
-	public function validateEiFieldValue(EiObject $eiObject, $eiFieldValue, FieldErrorInfo $fieldErrorInfo) {
+	public function validateEiFieldValue(EiObject $eiObject, $eiFieldValue, EiFieldValidationResult $fieldErrorInfo) {
 		if (!$this->checkMandatory($eiObject, $eiFieldValue)) {
 			$fieldErrorInfo->addError(new MessageCode('ei_impl_mandatory_err', array('field' => $this->labelLstr), null, 
 					Rocket::NS));

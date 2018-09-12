@@ -25,7 +25,7 @@ use rocket\ei\manage\EiObject;
 use rocket\ei\manage\entry\EiFieldOperationFailedException;
 use rocket\ei\manage\entry\EiFieldConstraint;
 use rocket\ei\manage\entry\EiField;
-use rocket\ei\manage\entry\FieldErrorInfo;
+use rocket\ei\manage\entry\EiFieldValidationResult;
 
 abstract class RwEiField extends EiFieldAdapter {
 	protected $readable;
@@ -100,7 +100,7 @@ class ValidatableEiFieldConstraint implements EiFieldConstraint {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\entry\EiFieldConstraint::validate($eiField, $fieldErrorInfo)
 	 */
-	public function validate(EiField $eiField, FieldErrorInfo $fieldErrorInfo) {
+	public function validate(EiField $eiField, EiFieldValidationResult $fieldErrorInfo) {
 		return $this->validatable->validateEiFieldValue($this->eiObject, $eiField->getValue(), $fieldErrorInfo);
 	}	
 }

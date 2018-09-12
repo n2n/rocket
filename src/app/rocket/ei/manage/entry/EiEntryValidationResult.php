@@ -30,8 +30,8 @@ class EiEntryValidationResult {
 	private $eiFieldValidationResults = array();
 	
 	public function isValid(bool $checkRecurisve = true): bool {
-		 foreach ($this->eiFieldValidationResults as $eiFieldErrorInfo) {
-		 	if (!$eiFieldErrorInfo->isValid()) return false;
+		 foreach ($this->eiFieldValidationResults as $eiEiFieldValidationResult) {
+		 	if (!$eiEiFieldValidationResult->isValid()) return false;
 		 }
 		 
 		 return true;
@@ -41,7 +41,7 @@ class EiEntryValidationResult {
 	 * @param EiPropPath $eiPropPath
 	 * @return \rocket\ei\manage\entry\EiFieldValidationResult
 	 */
-	public function getFieldErrorInfo(EiPropPath $eiPropPath) {
+	public function getEiFieldValidationResult(EiPropPath $eiPropPath) {
 		$eiPropPathStr = (string) $eiPropPath;
 		if (!isset($this->eiFieldValidationResults[$eiPropPathStr])) {
 			$this->eiFieldValidationResults[$eiPropPathStr] = new EiFieldValidationResult();
@@ -49,14 +49,14 @@ class EiEntryValidationResult {
 		return $this->eiFieldValidationResults[$eiPropPathStr];
 	}
 
-	public function getFieldErrorInfos() {
+	public function getEiFieldValidationResults() {
 		return $this->eiFieldValidationResults;
 	}
 
 	public function getMessages() {
 		$messages = array();
-		foreach ($this->eiFieldValidationResults as $eiFieldErrorInfo) {
-			$messages = array_merge($messages, $eiFieldErrorInfo->getMessages());
+		foreach ($this->eiFieldValidationResults as $eiEiFieldValidationResult) {
+			$messages = array_merge($messages, $eiEiFieldValidationResult->getMessages());
 		}
 		return $messages;
 	}

@@ -22,11 +22,11 @@
 namespace rocket\ei\component\prop\field;
 
 use rocket\ei\manage\EiObject;
-use rocket\ei\manage\entry\FieldErrorInfo;
+use rocket\ei\manage\entry\EiFieldValidationResult;
 
 interface Validatable {
 	
 	public function testEiFieldValue(EiObject $eiObject, $eiFieldValue): bool;
 	
-	public function validateEiFieldValue(EiObject $eiObject, $eiFieldValue, FieldErrorInfo $fieldErrorInfo);
+	public function validateEiFieldValue(EiObject $eiObject, $eiFieldValue, EiFieldValidationResult $fieldErrorInfo);
 }

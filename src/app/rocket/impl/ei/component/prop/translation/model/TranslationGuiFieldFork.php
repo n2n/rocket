@@ -135,7 +135,7 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 		$label = $this->guiDefinition->getGuiPropByGuiIdPath($guiIdPath)->getDisplayLabel();
 		$eiPropPath = $this->guiDefinition->guiIdPathToEiPropPath($guiIdPath);
 
-// 		$fieldErrorInfo = new FieldErrorInfo();
+// 		$fieldErrorInfo = new EiFieldValidationResult();
 		
 		$translationDisplayable = new TranslationDisplayable($label, $this->n2nLocaleDefs);
 		
@@ -149,11 +149,11 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 			
 			$eiuEntry = $guiFieldAssembler->getEiuEntryGui()->getEiuEntry();
 			$fieldErrorInfo = $eiuEntry->getEiEntry()->getMappingErrorInfo()
-					->getFieldErrorInfo($eiPropPath);
+					->getEiFieldValidationResult($eiPropPath);
 			if (null !== ($eiFieldWrapper = $result->getEiFieldWrapper())) {
 				$eiFieldWrappers[] = $eiFieldWrapper;
 			}
-// 			$fieldErrorInfo->addSubFieldErrorInfo($result->getFieldErrorInfo());
+// 			$fieldErrorInfo->addSubEiFieldValidationResult($result->getEiFieldValidationResult());
 			
 			if ($this->targetRelationEntries[$n2nLocaleId]->getEiObject()->isNew()) {
 				$translationDisplayable->putDisplayable($n2nLocaleId, new EmptyDisplayable($result->getDisplayable()), 

@@ -88,7 +88,7 @@ class EiuField {
 	 * @return EiuField
 	 */
 	public function addError(Message $message) {
-		$this->getEiuEntry()->getEiEntry()->getMappingErrorInfo()->getFieldErrorInfo($this->eiPropPath)
+		$this->getEiuEntry()->getEiEntry()->getMappingErrorInfo()->getEiFieldValidationResult($this->eiPropPath)
 				->addError($message);
 		return $this;
 	}

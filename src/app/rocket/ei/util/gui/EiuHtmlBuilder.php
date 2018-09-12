@@ -31,7 +31,7 @@ use rocket\ei\manage\gui\ui\DisplayItem;
 use rocket\ei\manage\gui\EiEntryGui;
 use n2n\impl\web\ui\view\html\HtmlUtils;
 use rocket\ei\manage\gui\Displayable;
-use rocket\ei\manage\entry\FieldErrorInfo;
+use rocket\ei\manage\entry\EiFieldValidationResult;
 use n2n\l10n\MessageTranslator;
 use n2n\reflection\ArgUtils;
 use n2n\reflection\CastUtils;
@@ -298,7 +298,7 @@ class EiuHtmlBuilder {
 			$displayItem = null;
 		}
 		
-		$fieldErrorInfo = $eiEntryGui->getEiEntry()->getMappingErrorInfo()->getFieldErrorInfo(
+		$fieldErrorInfo = $eiEntryGui->getEiEntry()->getMappingErrorInfo()->getEiFieldValidationResult(
 				$eiEntryGui->getEiGui()->getEiGuiViewFactory()->getGuiDefinition()->guiIdPathToEiPropPath($guiIdPath));
 		if (!$eiEntryGui->containsGuiFieldGuiIdPath($guiIdPath)) {
 			$this->state->pushField($tagName, $guiIdPath, $fieldErrorInfo, null, null, $displayItem);
@@ -322,7 +322,7 @@ class EiuHtmlBuilder {
 				$this->buildAttrs($guiIdPath, (array) $attrs, $displayItem), $magAssembly->isMandatory());
 	}
 	
-	private function createInputFieldOpen(string $tagName, $magPropertyPath, FieldErrorInfo $fieldErrorInfo,
+	private function createInputFieldOpen(string $tagName, $magPropertyPath, EiFieldValidationResult $fieldErrorInfo,
 			array $attrs = null, bool $mandatory = false) {
 		$magPropertyPath = $this->formHtml->meta()->createPropertyPath($magPropertyPath);
 
@@ -336,7 +336,7 @@ class EiuHtmlBuilder {
 	}
 	
 	
-	private function createOutputFieldOpen($tagName, Displayable $displayable = null, FieldErrorInfo $fieldErrorInfo, array $attrs = null) {
+	private function createOutputFieldOpen($tagName, Displayable $displayable = null, EiFieldValidationResult $fieldErrorInfo, array $attrs = null) {
 		return new Raw('<' . HtmlUtils::hsc($tagName) . HtmlElement::buildAttrsHtml(
 				$this->buildContainerAttrs(HtmlUtils::mergeAttrs(($displayable !== null ? $displayable->getOutputHtmlContainerAttrs() : array()), $attrs))) . '>');
 	}
