@@ -20,7 +20,7 @@
 	 * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
 	 */
 
-	use rocket\ei\manage\EiHtmlBuilder;
+	use rocket\ei\util\gui\EiuHtmlBuilder;
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use rocket\ei\manage\gui\ui\DisplayStructure;
 	use rocket\ei\util\Eiu;
@@ -37,37 +37,37 @@
 	
 	$controlsAllowed = $view->getParam('controlsAllowed');
 	
-	$eiHtml = new EiHtmlBuilder($view);
+	$eiuHtml = new EiuHtmlBuilder($view);
 ?>
 
 <table class="table table-hover rocket-table">
 	<thead>
 		<tr>
-			<?php $eiHtml->generalEntrySelector('th') ?>
+			<?php $eiuHtml->generalEntrySelector('th') ?>
 			<?php foreach ($displayStructure->getDisplayItems() as $displayItem): ?>
-				<th><?php $eiHtml->label($eiu, $displayItem) ?></th>
+				<th><?php $eiuHtml->label($eiu, $displayItem) ?></th>
 			<?php endforeach ?>
 			<?php if ($controlsAllowed): ?>
 				<th><?php $html->l10nText('common_list_tools_label') ?></th>
 			<?php endif ?>
 		</tr>
 	</thead>
-	<?php $eiHtml->collectionOpen('tbody', $eiu, array('rocket-collection')) ?>
+	<?php $eiuHtml->collectionOpen('tbody', $eiu, array('rocket-collection')) ?>
 		<?php foreach ($eiu->gui()->entryGuis() as $eiuEntryGui): ?>
-			<?php $eiHtml->entryOpen('tr', $eiuEntryGui) ?>
-				<?php $eiHtml->entrySelector('td') ?>
+			<?php $eiuHtml->entryOpen('tr', $eiuEntryGui) ?>
+				<?php $eiuHtml->entrySelector('td') ?>
 				
 				<?php foreach ($displayStructure->getDisplayItems() as $displayItem): ?>
-					<?php $eiHtml->fieldOpen('td', $displayItem, null, false, false) ?>
-						<?php $eiHtml->fieldContent() ?>
-					<?php $eiHtml->fieldClose() ?>
+					<?php $eiuHtml->fieldOpen('td', $displayItem, null, false, false) ?>
+						<?php $eiuHtml->fieldContent() ?>
+					<?php $eiuHtml->fieldClose() ?>
 				<?php endforeach ?>
 				<?php if ($controlsAllowed): ?>
 					<?php $view->out('<td class="rocket-table-commands">') ?>
-						<?php $eiHtml->entryCommands(true, 6) ?>
+						<?php $eiuHtml->entryCommands(true, 6) ?>
 					<?php $view->out('</td>') ?>
 				<?php endif ?>
-			<?php $eiHtml->entryClose() ?>
+			<?php $eiuHtml->entryClose() ?>
 		<?php endforeach ?>
-	<?php $eiHtml->collectionClose() ?>
+	<?php $eiuHtml->collectionClose() ?>
 </table>

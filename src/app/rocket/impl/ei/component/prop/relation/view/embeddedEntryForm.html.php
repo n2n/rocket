@@ -1,13 +1,13 @@
 <?php
 	use rocket\impl\ei\component\prop\relation\model\mag\MappingForm;
 	use n2n\impl\web\ui\view\html\HtmlView;
-	use rocket\ei\manage\EiHtmlBuilder;
+	use rocket\ei\util\gui\EiuHtmlBuilder;
 use rocket\ei\manage\gui\ui\DisplayItem;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
 	$formHtml = HtmlView::formHtml($this);
-	$eiHtml = new EiHtmlBuilder($view);
+	$eiuHtml = new EiuHtmlBuilder($view);
 	
 	$mappingForm = $view->getParam('mappingForm');
 	$view->assert($mappingForm instanceof MappingForm);
@@ -47,7 +47,7 @@ use rocket\ei\manage\gui\ui\DisplayItem;
 		<?php if ($summaryRequired): ?>
 			<?php if (!$eiuEntry->isNew()): ?>
 				<?php $eiuEntryGui = $eiuEntry->newEntryGui(false) ?>
-				<?php $eiHtml->entryOpen('div', $eiuEntryGui, array('class' => 'rocket-impl-summary')) ?>
+				<?php $eiuHtml->entryOpen('div', $eiuEntryGui, array('class' => 'rocket-impl-summary')) ?>
 					<div class="rocket-impl-handle"><i class="fa fa-bars"></i></div>
 					<div class="rocket-impl-content-type">
 						<i class="<?php $html->out($eiuEntry->getGenericIconType()) ?>"></i>
@@ -55,13 +55,13 @@ use rocket\ei\manage\gui\ui\DisplayItem;
 					</div>
 					<div class="rocket-impl-content">
 						<?php foreach ($eiuEntryGui->getGuiIdPaths() as $guiIdPath): ?>
-							<?php $eiHtml->fieldOpen('div', DisplayItem::create($guiIdPath, DisplayItem::TYPE_ITEM), null, false, false) ?>
-								<?php $eiHtml->fieldContent() ?>
-							<?php $eiHtml->fieldClose() ?>
+							<?php $eiuHtml->fieldOpen('div', DisplayItem::create($guiIdPath, DisplayItem::TYPE_ITEM), null, false, false) ?>
+								<?php $eiuHtml->fieldContent() ?>
+							<?php $eiuHtml->fieldClose() ?>
 						<?php endforeach ?>
 					</div>
 					<div class="rocket-simple-commands"></div>
-				<?php $eiHtml->entryClose() ?>
+				<?php $eiuHtml->entryClose() ?>
 			<?php else: ?>
 				<div class="rocket-impl-summary">
 					<div class="rocket-impl-handle"><i class="fa fa-bars"></i></div>

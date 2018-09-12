@@ -28,7 +28,7 @@ use rocket\ei\util\gui\EiuEntryGui;
 use rocket\ei\util\EiuAnalyst;
 use n2n\impl\web\ui\view\html\HtmlSnippet;
 
-class ControlEiHtmlBuilder {
+class ControlEiuHtmlBuilder {
 	private $view;
 	private $eiuFrame;
 

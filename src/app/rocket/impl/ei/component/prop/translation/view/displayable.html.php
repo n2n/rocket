@@ -22,7 +22,7 @@
 
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use n2n\l10n\N2nLocale;
-	use rocket\ei\manage\FieldEiHtmlBuilder;
+	use rocket\ei\manage\FieldEiuHtmlBuilder;
 	use rocket\ei\manage\mapping\FieldErrorInfo;
 	
 	$view = HtmlView::view($this);
@@ -33,7 +33,7 @@
 	$label = $view->getParam('label');
 	$localeDefs = $view->getParam('localeDefs');
 	
-	$fieldEiHtml = new FieldEiHtmlBuilder($view);
+	$fieldEiHtml = new FieldEiuHtmlBuilder($view);
 ?>
 
 <div class="rocket-impl-translatable" 

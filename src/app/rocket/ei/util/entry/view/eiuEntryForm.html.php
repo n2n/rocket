@@ -23,7 +23,7 @@
 	use rocket\ei\util\entry\view\EiuEntryFormViewModel;
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use n2n\web\dispatch\map\PropertyPath;
-	use rocket\ei\manage\EiHtmlBuilder;
+	use rocket\ei\util\gui\EiuHtmlBuilder;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -32,7 +32,7 @@
 	$eiuEntryFormViewModel = $view->getParam('eiuEntryFormViewModel');
 	$view->assert($eiuEntryFormViewModel instanceof EiuEntryFormViewModel);
 	
-	$eiHtml = new EiHtmlBuilder($view);
+	$eiuHtml = new EiuHtmlBuilder($view);
 	
 // 	$eiuEntryFormViewModel->initFromView($view);
 	
@@ -55,7 +55,7 @@
 	</div>
 <?php else: ?>
 	<?php if ($eiuEntryFormViewModel->hasDisplayContainer()): ?>
-		<?php $eiHtml->displayItemOpen('div', $eiuEntryFormViewModel->getDisplayContainerType(), $eiuEntryFormViewModel->getDisplayContainerAttrs()) ?>
+		<?php $eiuHtml->displayItemOpen('div', $eiuEntryFormViewModel->getDisplayContainerType(), $eiuEntryFormViewModel->getDisplayContainerAttrs()) ?>
 			<label><?php $html->out($eiuEntryFormViewModel->getDisplayContainerLabel()) ?></label>
 			<div class="rocket-control">
 	<?php endif ?>
@@ -77,6 +77,6 @@
 	</div>
 	<?php if ($eiuEntryFormViewModel->hasDisplayContainer()): ?>
 			</div>
-		<?php $eiHtml->displayItemClose() ?>
+		<?php $eiuHtml->displayItemClose() ?>
 	<?php endif ?>
 <?php endif ?>

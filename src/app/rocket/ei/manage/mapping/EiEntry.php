@@ -191,7 +191,7 @@ class EiEntry {
 	}
 	
 	public function putEiFieldFork(EiPropPath $eiPropPath, EiFieldFork $eiFieldFork) {
-		$this->eiFieldFork[(string) $eiPropPath] = $eiFieldFork;
+		$this->eiFieldForks[(string) $eiPropPath] = $eiFieldFork;
 	}
 	
 	public function removeEiFieldFork(EiPropPath $eiPropPath) {

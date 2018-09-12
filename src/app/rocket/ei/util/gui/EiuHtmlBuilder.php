@@ -19,11 +19,10 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage;
+namespace rocket\ei\util\gui;
 
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\util\EiuAnalyst;
-use n2n\util\col\ArrayUtils;
 use n2n\web\ui\Raw;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use n2n\util\ex\IllegalStateException;
@@ -33,18 +32,14 @@ use rocket\ei\manage\gui\EiEntryGui;
 use n2n\impl\web\ui\view\html\HtmlUtils;
 use rocket\ei\manage\gui\Displayable;
 use rocket\ei\manage\mapping\FieldErrorInfo;
-use n2n\web\dispatch\map\PropertyPath;
 use n2n\l10n\MessageTranslator;
 use n2n\reflection\ArgUtils;
 use n2n\reflection\CastUtils;
 use rocket\ei\manage\control\Control;
-use rocket\ei\manage\control\GroupControl;
-use rocket\ei\manage\control\ControlButton;
-use rocket\ei\manage\control\IconType;
-use rocket\ei\manage\gui\GuiFieldAssembly;
 use rocket\ei\util\Eiu;
+use rocket\ei\manage\RocketUiOutfitter;
 
-class EiHtmlBuilder {
+class EiuHtmlBuilder {
 	private $view;
 	private $html;
 	private $formHtml;
@@ -59,20 +54,24 @@ class EiHtmlBuilder {
 		$this->formHtml = $view->getFormHtmlBuilder();
 		
 		$this->state = $view->getStateObj(self::class);
-		if (!($this->state instanceof EiHtmlBuilderState)) {
-			$view->setStateObj(self::class, $this->state = new EiHtmlBuilderState());
+		if (!($this->state instanceof EiuHtmlBuilderState)) {
+			$view->setStateObj(self::class, $this->state = new EiuHtmlBuilderState());
 		}
 		
-		$this->meta = new EiHtmlBuilderMeta($this->state, $this->view);
+		$this->meta = new EiuHtmlBuilderMeta($this->state, $this->view);
 		$this->uiOutfitter = new RocketUiOutfitter();
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\EiHtmlBuilderMeta
+	 * @return \rocket\ei\util\gui\EiuHtmlBuilderMeta
 	 */
 	public function meta() {
 		return $this->meta;
 	}
+	
+// 	public function getMessageList($eiEntryArg) {
+// 		$this->meta->getUnboundMessages($eiGuiArg->)
+// 	}
 	
 	/**
 	 * @see self::getLabel();
@@ -524,244 +523,5 @@ class EiHtmlBuilder {
 		}
 	
 		return $divHtmlElement;
-	}
-}
-
-class EiHtmlBuilderMeta {
-	private $state;
-	private $view;
-	
-	/**
-	 * @param EiHtmlBuilderState $state
-	 */
-	public function __construct(EiHtmlBuilderState $state, HtmlView $view) {
-		$this->state = $state;
-		$this->view = $view;
-	}
-	
-	/**
-	 * @return boolean
-	 */
-	public function isEntryOpen($eiEntryGui = null) {
-		if (!$this->state->containsEntry()) {
-			return false;
-		}
-		$eiEntryGui = EiuAnalyst::buildEiEntryGuiFromEiArg($eiEntryGui);
-		return $eiEntryGui === null || $eiEntryGui === $this->state->peakEntry()['eiEntryGui'];
-	}
-	
-	/**
-	 * @return boolean
-	 */
-	public function isFieldGroup() {
-		$guiFieldAssembly = $this->getGuiFieldAssembly();
-		if ($guiFieldAssembly === null) return false;
-		
-		return in_array($this->getFieldDisplayType(), DisplayItem::getGroupTypes());
-	}
-	
-	/**
-	 * @return boolean
-	 */
-	public function isFieldPanel() {
-		$guiFieldAssembly = $this->getGuiFieldAssembly();
-		if ($guiFieldAssembly === null) return false;
-		
-		return $this->getFieldDisplayType() == DisplayItem::TYPE_PANEL;
-	}
-	
-	public function getFieldDisplayType() {
-		$fieldInfo = $this->state->peakField(false);
-		if ($fieldInfo === null) return null;
-		
-		if (isset($fieldInfo['displayItem'])) {
-			return $fieldInfo['displayItem']->getType();
-		}
-		
-		if (isset($fieldInfo['guiFieldAssembly'])) {
-			return $fieldInfo['guiFieldAssembly']->getDisplayable()->getDisplayItemType();
-		}
-		
-		return null;
-	}
-		
-	/**
-	 * @return GuiFieldAssembly|null
-	 */
-	public function getGuiFieldAssembly() {
-		$fieldInfo = $this->state->peakField(false);
-		if ($fieldInfo === null) return null;
-		
-		return $fieldInfo['guiFieldAssembly'] ?? null;
-	}
-	
-	/**
-	 * @param mixed $eiEntryGui
-	 * @return Control[]
-	 */
-	public function createEntryControls($eiEntryGui = null, int $max = null) {
-		if ($eiEntryGui === null) {
-			$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
-		} else {
-			$eiEntryGui = EiuAnalyst::buildEiEntryGuiFromEiArg($eiEntryGui);
-		}
-		
-		$controls = $eiEntryGui->createControls($this->view);
-		if ($max === null || count($controls) <= $max) return $controls;
-		
-		$numStatics = 0;
-		$vControls = array();
-		$groupedControls = array();
-		foreach ($controls as $control) {
-			if (!$control->isStatic()) {
-				$vControls[] = $control;
-				continue;
-			}
-			
-			$numStatics++;
-			if ($numStatics < $max) {
-				$vControls[] = $control;
-				continue;
-			}
-			
-			$groupedControls[] = $control; 
-		}
-		
-		if (empty($groupedControls)) {
-			return $vControls;
-		}
-		
-		if (count($groupedControls) == 1) {
-			$vControls[] = array_pop($groupedControls);
-			return $vControls;
-		}
-		
-		$vControls[] = $groupControl = new GroupControl((new ControlButton('more'))->setIconType(IconType::ICON_ELLIPSIS_V));
-		$groupControl->add(...$groupedControls);
-		
-		return $vControls;
-	}
-}
-
-class EiHtmlBuilderState {
-	private $stack = array();
-	
-	/**
-	 * @return boolean
-	 */
-	public function containsEntry() {
-		foreach ($this->stack as $info) {
-			if ($info['type'] == 'entry') return true;
-		}
-		
-		return false;
-	}
-	
-	/**
-	 * @param string $tagName
-	 * @param EiEntryGui $eiEntryGui
-	 */
-	public function pushEntry(string $tagName, EiEntryGui $eiEntryGui) {
-		$this->stack[] = array(
-				'type' => 'entry',
-				'eiEntryGui' => $eiEntryGui,
-				'tagName' => $tagName);
-	}
-	
-	/**
-	 *
-	 * @param string $tagName
-	 * @throws IllegalStateException
-	 * @return array
-	 */
-	public function peakEntry() {
-		for ($i = count($this->stack) - 1; $i >= 0; $i--) {
-			if ($this->stack[$i]['type'] == 'entry') {
-				return $this->stack[$i];
-			}
-		}
-	
-		throw new IllegalStateException('No entry open.');
-	}
-	
-	/**
-	 *
-	 * @throws IllegalStateException
-	 * @return array
-	 */
-	public function popEntry() {
-		$info = ArrayUtils::end($this->stack);
-	
-		if ($info === null) {
-			throw new IllegalStateException('No entry open.');
-		}
-	
-		if ($info['type'] != 'entry') {
-			throw new IllegalStateException('Field open.');
-		}
-		
-		array_pop($this->stack);
-	
-		return $info;
-	}
-	
-	/**
-	 * @param string $tagName
-	 * @param FieldErrorInfo $fieldErrorInfo
-	 * @param Displayable $guiFieldAssembly
-	 * @param PropertyPath $propertyPath
-	 */
-	public function pushField(string $tagName, GuiIdPath $guiIdPath, FieldErrorInfo $fieldErrorInfo, GuiFieldAssembly $guiFieldAssembly = null,
-			PropertyPath $propertyPath = null, DisplayItem $displayItem = null) {
-		$this->stack[] = array('type' => 'field', 'guiIdPath' => $guiIdPath, 'tagName' => $tagName, 'guiFieldAssembly' => $guiFieldAssembly,
-				'fieldErrorInfo' => $fieldErrorInfo, 'propertyPath' => $propertyPath, 'displayItem' => $displayItem);
-	}
-	
-	/**
-	 *
-	 * @param bool $pop
-	 * @throws IllegalStateException
-	 * @return array
-	 */
-	public function peakField(bool $pop) {
-		$info = ArrayUtils::end($this->stack) ;
-	
-		if ($info === null || $info['type'] != 'field') {
-			throw new IllegalStateException('No field open.');
-		}
-	
-		if ($pop) {
-			return array_pop($this->stack);
-		} else {
-			return end($this->stack);
-		}
-	}
-	
-
-	/**
-	 * @param string $tagName
-	 */
-	public function pushGroup(string $tagName) {
-		$this->stack[] = array('type' => 'group', 'tagName' => $tagName);
-	}
-	
-	/**
-	 *
-	 * @param bool $pop
-	 * @throws IllegalStateException
-	 * @return array
-	 */
-	public function peakGroup(bool $pop) {
-		$info = ArrayUtils::end($this->stack);
-		
-		if ($info === null || $info['type'] != 'group') {
-			throw new IllegalStateException('No group open.');
-		}
-	
-		if ($pop) {
-			return array_pop($this->stack);
-		} else {
-			return end($this->stack);
-		}
 	}
 }

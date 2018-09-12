@@ -22,7 +22,7 @@
 
 	use rocket\impl\ei\component\command\common\model\OverviewModel;
 	use n2n\impl\web\ui\view\html\HtmlView;
-	use rocket\ei\manage\EiHtmlBuilder;
+	use rocket\ei\util\gui\EiuHtmlBuilder;
 		
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -37,7 +37,7 @@
 	
 	$eiMask = $overviewModel->getEiuFrame()->getEiFrame()->getContextEiEngine()->getEiMask();
 	
-	$eiHtml = new EiHtmlBuilder($view);
+	$eiuHtml = new EiuHtmlBuilder($view);
 ?>	
 
 <div class="rocket-impl-overview" 
@@ -68,7 +68,7 @@
 		<?php $view->out($overviewModel->getEiuGui()->createView($view))?>
 		
 		<div class="rocket-zone-commands">
-			<?php $eiHtml->frameCommands($overviewModel->getEiuGui()) ?>
+			<?php $eiuHtml->frameCommands($overviewModel->getEiuGui()) ?>
 		</div>
 	<?php $formHtml->close() ?>
 </div>

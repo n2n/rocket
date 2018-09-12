@@ -25,7 +25,7 @@
 	use n2n\util\uri\Url;
 	use rocket\impl\ei\component\prop\relation\model\mag\ToOneForm;
 	use rocket\impl\ei\component\prop\relation\model\mag\MappingForm;
-use rocket\ei\manage\EiHtmlBuilder;
+use rocket\ei\util\gui\EiuHtmlBuilder;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -44,8 +44,8 @@ use rocket\ei\manage\EiHtmlBuilder;
 	
 	$newMappingFormPropertyPath = $propertyPath->ext('newMappingForm');
 	
-	$eiHtml = new EiHtmlBuilder($view);
-	$grouped = true; // $toOneForm->isReduced() || $toOneForm->isSelectionModeEnabled() || $eiHtml->meta()->isFieldPanel();
+	$eiuHtml = new EiuHtmlBuilder($view);
+	$grouped = true; // $toOneForm->isReduced() || $toOneForm->isSelectionModeEnabled() || $eiuHtml->meta()->isFieldPanel();
 ?>
 <div class="rocket-impl-to-one" 
 		data-mandatory="<?php $html->out($toOneForm->isMandatory()) ?>"
@@ -58,7 +58,7 @@ use rocket\ei\manage\EiHtmlBuilder;
 		data-reduced="<?php $html->out($toOneForm->isReduced()) ?>"
 		data-close-label="<?php $html->text('common_apply_label') ?>"
 		data-grouped="<?php $html->out($grouped) ?>"
-		data-display-item-label="<?php $html->out($eiHtml->meta()->getGuiFieldAssembly()->getDisplayable()->getUiOutputLabel())?>">
+		data-display-item-label="<?php $html->out($eiuHtml->meta()->getGuiFieldAssembly()->getDisplayable()->getUiOutputLabel())?>">
 		
 	<?php if ($toOneForm->isSelectionModeEnabled()): ?>
 		<div class="rocket-impl-selector" 

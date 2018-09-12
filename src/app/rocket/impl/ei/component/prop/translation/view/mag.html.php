@@ -22,7 +22,7 @@
 
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use n2n\l10n\N2nLocale;
-	use rocket\ei\manage\FieldEiHtmlBuilder;
+	use rocket\ei\manage\FieldEiuHtmlBuilder;
 	use n2n\web\dispatch\map\PropertyPath;
 
 	$view = HtmlView::view($this);
@@ -42,7 +42,7 @@
 	$eiuEntries = $view->getParam('eiuEntries');
 	$view->assert(is_array($eiuEntries));
 	
-	$fieldEiHtml = new FieldEiHtmlBuilder($view);
+	$fieldEiHtml = new FieldEiuHtmlBuilder($view);
 ?>
 
 <div class="rocket-impl-translatable rocket-impl-translatable-<?php $html->out($view->getParam('markClassKey')) ?>"

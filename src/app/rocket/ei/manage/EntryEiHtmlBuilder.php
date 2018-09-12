@@ -36,7 +36,7 @@ use n2n\web\ui\CouldNotRenderUiComponentException;
 use rocket\ei\util\gui\EiuEntryGui;
 use rocket\ei\util\EiuAnalyst;
 
-class EntryEiHtmlBuilder {
+class EntryEiuHtmlBuilder {
 	private $view;
 	private $html;
 	private $formHtml;
@@ -51,7 +51,7 @@ class EntryEiHtmlBuilder {
 		$this->view = $view;
 		$this->html = $view->getHtmlBuilder();
 		$this->formHtml = $view->getFormHtmlBuilder();
-		$this->fieldEiHtml = new FieldEiHtmlBuilder($view);
+		$this->fieldEiHtml = new FieldEiuHtmlBuilder($view);
 		
 		$eiuAnalyst = new EiuAnalyst();
 		$eiuAnalyst->applyEiArgs($eiuFrame, $view->getN2nContext());
@@ -61,7 +61,7 @@ class EntryEiHtmlBuilder {
 			$eiuEntryGuis = array($eiuEntryGui);
 		}
 		
-		$this->meta = new EntryEiHtmlBuilderMeta((array) $eiuEntryGuis);
+		$this->meta = new EntryEiuHtmlBuilderMeta((array) $eiuEntryGuis);
 	}
 	
 	public function meta() {
@@ -231,7 +231,7 @@ class EntryEiHtmlBuilder {
 	}
 }
 
-class EntryEiHtmlBuilderMeta {
+class EntryEiuHtmlBuilderMeta {
 	private $currentEiuEntryGui;
 	private $eiuEntryGuis;
 	private $entryPropertyPaths;

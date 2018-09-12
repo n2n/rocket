@@ -32,7 +32,7 @@ use n2n\impl\web\ui\view\html\HtmlElement;
 use n2n\web\ui\UiComponent;
 use n2n\l10n\MessageTranslator;
 
-class FieldEiHtmlBuilder {
+class FieldEiuHtmlBuilder {
 	private $view;
 	private $html;
 	private $formHtml;

@@ -22,7 +22,7 @@
 
 	use rocket\impl\ei\component\command\common\model\EntryCommandViewModel;
 	use n2n\impl\web\ui\view\html\HtmlView;
-	use rocket\ei\manage\EiHtmlBuilder;
+	use rocket\ei\util\gui\EiuHtmlBuilder;
 	use rocket\ei\util\gui\EiuEntryGui;
 
 	$view = HtmlView::view($this);
@@ -34,17 +34,17 @@
 	$eiuEntryGui = $view->getParam('eiuEntryGui');
 	$view->assert($eiuEntryGui instanceof EiuEntryGui);
  
-	$eiHtml = new EiHtmlBuilder($view);
+	$eiuHtml = new EiuHtmlBuilder($view);
 	
 	$view->useTemplate('~\core\view\template.html', 
 			array('title' => $entryCommandViewModel->getTitle()));
 ?>
  
-<?php $eiHtml->entryOpen('div', $eiuEntryGui)?>
+<?php $eiuHtml->entryOpen('div', $eiuEntryGui)?>
 	<?php $view->out($eiuEntryGui->createView($view)) ?>
 
 	<div class="rocket-zone-commands">
-		<?php $eiHtml->entryCommands() ?>
+		<?php $eiuHtml->entryCommands() ?>
 	
 		<div class="rocket-aside-commands">
 			<?php if ($entryCommandViewModel->isPreviewAvailable()): ?>
@@ -52,7 +52,7 @@
 			<?php endif ?>
 		</div>
 	</div>
-<?php $eiHtml->entryClose() ?>
+<?php $eiuHtml->entryClose() ?>
  
 
 <?php if ($entryCommandViewModel->hasDraftHistory()): ?>
