@@ -28,6 +28,8 @@ use n2n\persistence\orm\annotation\AnnoTable;
 use n2n\persistence\orm\annotation\AnnoManyToOne;
 use n2n\persistence\orm\annotation\AnnoOneToMany;
 use rocket\spec\TypePath;
+use rocket\ei\EiCommandPath;
+use n2n\util\ex\IllegalStateException;
 
 class EiGrant extends ObjectAdapter implements Grant {
 	private static function _annos(AnnoInit $ai) {
@@ -93,5 +95,15 @@ class EiGrant extends ObjectAdapter implements Grant {
 	
 	public function setEiGrantPrivileges(\ArrayObject $privilegeGrants) {
 		$this->eiGrantPrivileges = $privilegeGrants;
+	}
+	
+	public function containsEiCommandPath(EiCommandPath $eiCommandPath) {
+		foreach ($this->eiGrantPrivileges as $eiGrantPrivilege) {
+			if ($eiGrantPrivilege->getPrivilegeSetting()->acceptsEiCommandPath($eiCommandPath)) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 }

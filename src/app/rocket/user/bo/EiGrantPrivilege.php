@@ -29,14 +29,14 @@ use n2n\persistence\orm\annotation\AnnoManyToOne;
 use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
 use n2n\util\config\Attributes;
 use n2n\util\config\AttributesException;
-use n2n\reflection\ArgUtils;
-use rocket\ei\EiCommandPath;
 use rocket\ei\manage\security\privilege\data\PrivilegeSetting;
+use n2n\persistence\orm\annotation\AnnoTransient;
 
 class EiGrantPrivilege extends ObjectAdapter {
 	private static function _annos(AnnoInit $ai) {
 		$ai->c(new AnnoTable('rocket_ei_grant_privileges'));
 		$ai->p('eiGrant', new AnnoManyToOne(EiGrant::getClass()));
+		$ai->p('privilegeSetting', new AnnoTransient());
 	}
 	
 	private $id;
@@ -52,22 +52,42 @@ class EiGrantPrivilege extends ObjectAdapter {
 	public function setEiGrant(EiGrant $eiGrant) {
 		$this->eiGrant = $eiGrant;
 	}
+	
+	/**
+	 * @var PrivilegeSetting|null
+	 */
+	private $privilegeSetting;
 
 	/**
 	 * @return PrivilegeSetting
 	 */
-	public function readPrivilegeSetting(): PrivilegeSetting {
-		return PrivilegeSetting::create(new Attributes(StringUtils::jsonDecode($this->eiPrivilegeJson, true)));
+	public function getPrivilegeSetting() {
+		if ($this->privilegeSetting === null) {
+			$this->privilegeSetting = PrivilegeSetting::create(new Attributes(
+					StringUtils::jsonDecode($this->eiPrivilegeJson, true)));
+		}
+		
+		return $this->privilegeSetting;
 	}
 	
-	public function writePrivilegeSetting(PrivilegeSetting $privilegeSetting) {
+	/**
+	 * @param PrivilegeSetting $privilegeSetting
+	 */
+	public function setPrivilegeSetting(PrivilegeSetting $privilegeSetting) {
+		$this->privilegeSetting = $privilegeSetting;
 		$this->eiPrivilegeJson = StringUtils::jsonEncode($privilegeSetting->toAttrs());
 	}
 	
+	/**
+	 * @return bool
+	 */
 	public function isRestricted(): bool {
 		return (bool) $this->restricted;
 	}
 	
+	/**
+	 * @param bool $restricted
+	 */
 	public function setRestricted(bool $restricted) {
 		$this->restricted = $restricted;
 	}

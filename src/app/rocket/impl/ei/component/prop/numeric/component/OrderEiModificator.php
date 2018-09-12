@@ -29,6 +29,7 @@ use rocket\ei\manage\critmod\sort\SimpleSortConstraint;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\frame\Boundry;
+use rocket\ei\EiPropPath;
 
 class OrderEiModificator extends EiModificatorAdapter {
 	private $eiProp;
@@ -59,7 +60,7 @@ class OrderEiModificator extends EiModificatorAdapter {
 		$eiFrame = $eiu->frame()->getEiFrame();
 		$eiProp = $this->eiProp;
 		$ssm->registerListener(new OnWriteMappingListener(function() use ($eiFrame, $ssm, $eiProp) {
-			$orderIndex = $ssm->getValue($eiProp);
+			$orderIndex = $ssm->getValue(EiPropPath::from($eiProp));
 			
 			if (mb_strlen($orderIndex)) return;
 			

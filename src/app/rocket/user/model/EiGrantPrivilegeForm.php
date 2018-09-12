@@ -58,7 +58,7 @@ class EiGrantPrivilegeForm implements Dispatchable {
 		
 		if ($eiuEngine->hasPrivileges()) {
 			$this->eiuPrivilegeForm = $eiuEngine->newPrivilegeForm(
-					$eiGrantPrivilege->readPrivilegeSetting());
+					$eiGrantPrivilege->getPrivilegeSetting());
 		}
 		
 		
@@ -88,7 +88,7 @@ class EiGrantPrivilegeForm implements Dispatchable {
 			return;
 		}
 		
-		$this->eiPrivilegesGrant->writePrivilegeSetting($eiuPrivilegeForm->getSetting());
+		$this->eiPrivilegesGrant->setPrivilegeSetting($eiuPrivilegeForm->getSetting());
 		
 	}
 	

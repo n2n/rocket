@@ -32,6 +32,7 @@ use rocket\ei\manage\gui\ui\DisplayItem;
 use n2n\reflection\CastUtils;
 use rocket\ei\manage\gui\EiEntryGui;
 use n2n\l10n\Message;
+use n2n\l10n\MessageTranslator;
 
 class EiuHtmlBuilderMeta {
 	private $state;
@@ -159,7 +160,7 @@ class EiuHtmlBuilderMeta {
 	/**
 	 * @return Message[] 
 	 */
-	function getEntryUnboundMessages(bool $recursive = false) {
+	function getEntryMessages(bool $recursive = false) {
 		$info = $this->state->peakEntry();
 		
 		$eiEntryGui = $info['eiEntryGui'];
@@ -175,10 +176,18 @@ class EiuHtmlBuilderMeta {
 		$guiDefinition = $eiEntryGui->getEiGui()->getEiGuiViewFactory()->getGuiDefinition();
 		foreach ($eiEntry->getValidationResult()->getInvalidEiFieldValidationResults(false) as $result) {
 			$guiIdPath = $guiDefinition->eiPropPathToGuiIdPath($result->getEiPropPath());
-			if ($guiIdPath === null || $eiEntryGui->containsGuiFieldGuiIdPath($guiIdPath)) continue;
+			if ($guiIdPath !== null && $eiEntryGui->containsGuiFieldGuiIdPath($guiIdPath)) continue;
 			
-			array_push($messages, ...$result->getMessages());
+			foreach ($result->getMessages() as $message) {
+				if ($message->isProcessed()) continue;
+				$message->setProcessed(true);
+				$messages[] = $message;
+			}
 		}
+		
+		
+		$mt = new MessageTranslator($this->view->getModuleNamespace(), $this->view->getN2nLocale());
+		$messages = $mt->translateAll($messages);
 		
 		return $messages;
 	}

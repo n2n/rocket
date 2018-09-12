@@ -70,7 +70,7 @@ class EiEntryValidationResult {
 	public function getEiFieldValidationResult(EiPropPath $eiPropPath) {
 		$eiPropPathStr = (string) $eiPropPath;
 		if (!isset($this->eiFieldValidationResults[$eiPropPathStr])) {
-			$this->eiFieldValidationResults[$eiPropPathStr] = new EiFieldValidationResult();
+			$this->eiFieldValidationResults[$eiPropPathStr] = new EiFieldValidationResult($eiPropPath);
 		}
 		return $this->eiFieldValidationResults[$eiPropPathStr];
 	}

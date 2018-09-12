@@ -31,28 +31,47 @@ class ComparatorConstraintGroup implements ComparatorConstraint, CriteriaConstra
 	private $andUsed;
 	private $comparatorConstraints;
 	
-	public function __construct($useAnd, array $comparatorConstraints = array()) {
+	/**
+	 * @param bool $useAnd
+	 * @param ComparatorConstraint[] $comparatorConstraints
+	 */
+	public function __construct(bool $useAnd, array $comparatorConstraints = array()) {
 		$this->setAndUsed($useAnd);
 		$this->setComparatorConstraints($comparatorConstraints);
 	}
 	
+	/**
+	 * @return bool
+	 */
 	public function isAndUsed() {
 		return $this->andUsed;
 	}
 	
+	/**
+	 * @param bool $andUsed
+	 */
 	public function setAndUsed(bool $andUsed) {
 		$this->andUsed = $andUsed;
 	}
 		
+	/**
+	 * @return ComparatorConstraint[]
+	 */
 	public function getComparatorConstraints() {
 		return $this->comparatorConstraints;
 	}
 
+	/**
+	 * @param ComparatorConstraint[] $comparatorConstraints
+	 */
 	public function setComparatorConstraints(array $comparatorConstraints) {
 		ArgUtils::valArray($comparatorConstraints, ComparatorConstraint::class);
-		$this->comparatorConstraints = $comparatorConstraints;
+		$this->comparatorConstraints = $comparatorConstraints;		
 	}
 	
+	/**
+	 * @param ComparatorConstraint $comparatorConstraint
+	 */
 	public function addComparatorConstraint(ComparatorConstraint $comparatorConstraint) {
 		$this->comparatorConstraints[] = $comparatorConstraint;
 	}
@@ -70,13 +89,9 @@ class ComparatorConstraintGroup implements ComparatorConstraint, CriteriaConstra
 			$comparatorConstraint->applyToCriteriaComparator($criteriaComparator->group($this->andUsed), $alias);
 		}
 	}
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\frame\CriteriaConstraint::applyToCriteria()
-	 */
+	
 	public function applyToCriteria(Criteria $criteria, CriteriaProperty $alias) {
 		$this->applyToCriteriaComparator($criteria->where()->andGroup(), $alias);
 	}
-
 
 }
