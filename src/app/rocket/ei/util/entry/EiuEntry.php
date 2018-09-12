@@ -28,7 +28,7 @@ use rocket\ei\manage\entry\OnWriteMappingListener;
 use rocket\ei\manage\entry\WrittenMappingListener;
 use rocket\ei\manage\entry\OnValidateMappingListener;
 use rocket\ei\manage\entry\ValidatedMappingListener;
-use rocket\ei\manage\entry\MappingOperationFailedException;
+use rocket\ei\manage\entry\EiFieldOperationFailedException;
 use rocket\ei\manage\gui\GuiIdPath;
 use rocket\ei\manage\gui\GuiException;
 use rocket\ei\manage\gui\ViewMode;
@@ -471,13 +471,13 @@ class EiuEntry {
 	 * 
 	 * @param mixed $eiPropPath
 	 * @param bool $required
-	 * @throws MappingOperationFailedException
+	 * @throws EiFieldOperationFailedException
 	 * @return \rocket\ei\manage\entry\EiFieldWrapper|null
 	 */
 	public function getEiFieldWrapper($eiPropPath, bool $required = false) {
 		try {
 			return $this->getEiEntry()->getEiFieldWrapper(EiPropPath::create($eiPropPath));
-		} catch (MappingOperationFailedException $e) {
+		} catch (EiFieldOperationFailedException $e) {
 			if ($required) throw $e;
 		}
 		
@@ -487,7 +487,7 @@ class EiuEntry {
 	/**
 	 * @param GuiIdPath $guiIdPath
 	 * @param bool $required
-	 * @throws MappingOperationFailedException
+	 * @throws EiFieldOperationFailedException
 	 * @throws GuiException
 	 * @return \rocket\ei\manage\entry\EiFieldWrapper|null
 	 */
@@ -495,7 +495,7 @@ class EiuEntry {
 		$guiDefinition = $this->getEiuFrame()->getContextEiuEngine()->getGuiDefinition();
 		try {
 			return $guiDefinition->determineEiFieldWrapper($this->getEiEntry(), GuiIdPath::create($guiIdPath));
-		} catch (MappingOperationFailedException $e) {
+		} catch (EiFieldOperationFailedException $e) {
 			if ($required) throw $e;
 		} catch (GuiException $e) {
 			if ($required) throw $e;

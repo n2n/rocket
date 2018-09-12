@@ -23,7 +23,7 @@ namespace rocket\ei\manage\entry;
 
 use n2n\l10n\Message;
 
-class FieldErrorInfo {
+class EiFieldValidationResult {
 	private $errorMessages = array();
 	private $subFieldErrorInfos = array();
 	private $subMappingErrorInfos = array();
@@ -70,7 +70,7 @@ class FieldErrorInfo {
 		return null;
 	}
 	
-	public function addSubFieldErrorInfo(FieldErrorInfo $fieldErrorInfo) {
+	public function addSubFieldErrorInfo(EiFieldValidationResult $fieldErrorInfo) {
 		$this->subFieldErrorInfos[] = $fieldErrorInfo;
 	}
 

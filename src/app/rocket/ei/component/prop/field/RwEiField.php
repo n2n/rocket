@@ -22,7 +22,7 @@
 namespace rocket\ei\component\prop\field;
 
 use rocket\ei\manage\EiObject;
-use rocket\ei\manage\entry\MappingOperationFailedException;
+use rocket\ei\manage\entry\EiFieldOperationFailedException;
 use rocket\ei\manage\entry\EiFieldConstraint;
 use rocket\ei\manage\entry\EiField;
 use rocket\ei\manage\entry\FieldErrorInfo;
@@ -55,7 +55,7 @@ abstract class RwEiField extends EiFieldAdapter {
 			return $value;
 		}
 
-		throw new MappingOperationFailedException('EiField is not readable.');
+		throw new EiFieldOperationFailedException('EiField is not readable.');
 	}
 
 	public function isWritable(): bool {
@@ -68,7 +68,7 @@ abstract class RwEiField extends EiFieldAdapter {
 			return;
 		}
 
-		throw new MappingOperationFailedException('EiField is not writable.');
+		throw new EiFieldOperationFailedException('EiField is not writable.');
 	}
 }
 

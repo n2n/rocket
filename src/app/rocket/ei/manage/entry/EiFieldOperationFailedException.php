@@ -21,5 +21,7 @@
  */
 namespace rocket\ei\manage\entry;
 
-class MappingOperationFailedException extends \RuntimeException {
+use rocket\ei\manage\ManageException;
+
+class EiFieldOperationFailedException extends ManageException {
 }

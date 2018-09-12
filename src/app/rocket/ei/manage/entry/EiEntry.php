@@ -27,13 +27,12 @@ use rocket\ei\EiPropPath;
 use rocket\ei\security\InaccessibleEntryException;
 use n2n\util\ex\IllegalStateException;
 use n2n\util\col\HashSet;
-use rocket\ei\component\prop\field\EiFieldWrapperImpl;
 use rocket\ei\mask\EiMask;
 
 class EiEntry {
 	private $eiObject;
 	private $eiMask;
-	private $mappingErrorInfo;
+	private $validationResult;
 // 	private $accessible = true;
 	private $eiFieldWrappers = array();
 	private $eiFieldForks = array();
@@ -43,7 +42,7 @@ class EiEntry {
 	public function __construct(EiObject $eiObject, EiMask $eiMask) {
 		$this->eiObject = $eiObject;
 		$this->eiMask = $eiMask;
-		$this->mappingErrorInfo = new MappingErrorInfo();
+		$this->validationResult = new EiEntryValidationResult();
 		$this->constraintSet = new HashSet(EiEntryConstraint::class);
 	}
 	
@@ -114,6 +113,9 @@ class EiEntry {
 // 		throw new InaccessibleEntryException();
 // 	}
 	
+	/**
+	 * @return \n2n\util\col\Set EiEntryConstraint
+	 */
 	public function getConstraintSet() {
 		return $this->constraintSet;
 	}
@@ -132,33 +134,52 @@ class EiEntry {
 // 		return true;
 // 	}
 	
+	/**
+	 * @param EiPropPath $eiPropPath
+	 * @return bool
+	 */
 	public function contains(EiPropPath $eiPropPath): bool {
 		$eiPropPathStr = (string) $eiPropPath;
 		return isset($this->eiFieldWrappers[$eiPropPathStr]) && isset($this->eiFieldForks[$eiPropPathStr]);
 	}
 	
+	/**
+	 * @param EiPropPath $eiPropPath
+	 */
 	public function remove(EiPropPath $eiPropPath) {
 		$eiPropPathStr = (string) $eiPropPath;
 		unset($this->eiFieldWrappers[$eiPropPathStr]);
 		unset($this->eiFieldForks[$eiPropPathStr]);
 	}
 	
+	/**
+	 * @param EiPropPath $eiPropPath
+	 * @param EiField $eiField
+	 * @return \rocket\ei\manage\entry\EiFieldWrapperImpl
+	 */
 	public function putEiField(EiPropPath $eiPropPath, EiField $eiField) {
 		$eiPropPathStr = (string) $eiPropPath;
 		return $this->eiFieldWrappers[$eiPropPathStr] = new EiFieldWrapperImpl($eiField);
 	}
 	
+	/**
+	 * @param EiPropPath $eiPropPath
+	 */
 	public function removeEiField(EiPropPath $eiPropPath) {
 		unset($this->eiFieldWrappers[(string) $eiPropPath]);
 	}
 	
+	/**
+	 * @param EiPropPath $eiPropPath
+	 * @return bool
+	 */
 	public function containsEiField(EiPropPath $eiPropPath): bool {
 		return isset($this->eiFieldWrappers[(string) $eiPropPath]);
 	}
 	
 	/**
 	 * @param EiPropPath $eiPropPath
-	 * @throws MappingOperationFailedException
+	 * @throws EiFieldOperationFailedException
 	 * @return EiField
 	 */
 	public function getEiField(EiPropPath $eiPropPath) {
@@ -167,13 +188,13 @@ class EiEntry {
 	
 	/**
 	 * @param EiPropPath $eiPropPath
-	 * @throws MappingOperationFailedException
+	 * @throws EiFieldOperationFailedException
 	 * @return EiFieldWrapper
 	 */
 	public function getEiFieldWrapper(EiPropPath $eiPropPath) {
 		$eiPropPathStr = (string) $eiPropPath;
 		if (!isset($this->eiFieldWrappers[$eiPropPathStr])) {
-			throw new MappingOperationFailedException('No EiField defined for EiPropPath \'' . $eiPropPathStr
+			throw new EiFieldOperationFailedException('No EiField defined for EiPropPath \'' . $eiPropPathStr
 					. '\'.');
 		}
 	
@@ -199,7 +220,7 @@ class EiEntry {
 	public function getEiFieldFork(EiPropPath $eiPropPath): EiFieldFork {
 		$eiPropPathStr = (string) $eiPropPath;
 		if (!isset($this->eiFieldForks[$eiPropPathStr])) {
-			throw new MappingOperationFailedException('No EiFieldFork defined for EiPropPath \''
+			throw new EiFieldOperationFailedException('No EiFieldFork defined for EiPropPath \''
 					. $eiPropPathStr . '\'.');
 		}
 	
@@ -314,13 +335,13 @@ class EiEntry {
 		return true;
 	}
 	
-	public function validate(MappingErrorInfo $mappingErrorInfo = null): bool {
+	public function validate(EiEntryValidationResult $validationResult = null): bool {
 		if (!$this->accessible) {
 			throw new InaccessibleEntryException();
 		}
 		
-		if ($mappingErrorInfo === null) {
-			$mappingErrorInfo = $this->mappingErrorInfo = new MappingErrorInfo();	
+		if ($validationResult === null) {
+			$validationResult = $this->validationResult = new EiEntryValidationResult();	
 		}
 		
 		foreach ($this->listeners as $listener) {
@@ -329,7 +350,7 @@ class EiEntry {
 		
 		foreach ($this->eiFieldWrappers as $eiPropPathStr => $eiFieldWrapper) {
 			if ($eiFieldWrapper->isIgnored()) continue;
-			$eiFieldWrapper->getEiField()->validate($mappingErrorInfo->getFieldErrorInfo(EiPropPath::create($eiPropPathStr)));
+			$eiFieldWrapper->getEiField()->validate($validationResult->getFieldErrorInfo(EiPropPath::create($eiPropPathStr)));
 		}
 		
 		foreach ($this->constraintSet as $constraint) {
@@ -340,17 +361,17 @@ class EiEntry {
 			$listener->validated($this);
 		}
 		
-		return $mappingErrorInfo->isValid();
+		return $validationResult->isValid();
 	}
 	
 	public function hasValidationResult(): bool {
 		return $this->validateionResult !== null;
 	}
 	
-	public function getMappingErrorInfo(): MappingErrorInfo {
-		IllegalStateException::assertTrue($this->mappingErrorInfo !== null);
+	public function getMappingErrorInfo() {
+		IllegalStateException::assertTrue($this->validationResult !== null);
 		
-		return $this->mappingErrorInfo;
+		return $this->validationResult;
 	}
 	
 	public function copy(EiEntry $targetMapping) {
@@ -567,5 +588,37 @@ class MappingValidationResult {
 	
 	public function getMessages() {
 		return $this->messages;
+	}
+}
+
+
+
+class EiFieldWrapperImpl implements EiFieldWrapper {
+	private $eiField;
+	private $ignored = false;
+	
+	public function __construct(EiField $eiField) {
+		$this->eiField = $eiField;
+	}
+	
+	/**
+	 * @param bool $ignored
+	 */
+	public function setIgnored(bool $ignored) {
+		$this->ignored = $ignored;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	public function isIgnored(): bool {
+		return $this->ignored;
+	}
+	
+	/**
+	 * @return \rocket\ei\manage\entry\EiField
+	 */
+	public function getEiField() {
+		return $this->eiField;
 	}
 }
