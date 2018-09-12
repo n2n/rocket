@@ -102,9 +102,9 @@ class EiFieldValidationResult {
 		return null;
 	}
 	
-	public function addSubEiFieldValidationResult(EiFieldValidationResult $subValidationResult) {
-		$this->subEiFieldValidationResults[] = $subValidationResult;
-	}
+// 	public function addSubEiFieldValidationResult(EiFieldValidationResult $subValidationResult) {
+// 		$this->subEiFieldValidationResults[] = $subValidationResult;
+// 	}
 
 	public function addSubEiEntryValidationResult(EiEntryValidationResult $subValidationResult) {
 		$this->subEiEntryValidationResults[] = $subValidationResult;

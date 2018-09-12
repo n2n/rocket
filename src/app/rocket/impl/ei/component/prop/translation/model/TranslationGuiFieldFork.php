@@ -153,7 +153,6 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 			if (null !== ($eiFieldWrapper = $result->getEiFieldWrapper())) {
 				$eiFieldWrappers[] = $eiFieldWrapper;
 			}
-// 			$fieldErrorInfo->addSubEiFieldValidationResult($result->getEiFieldValidationResult());
 			
 			if ($this->targetRelationEntries[$n2nLocaleId]->getEiObject()->isNew()) {
 				$translationDisplayable->putDisplayable($n2nLocaleId, new EmptyDisplayable($result->getDisplayable()), 
