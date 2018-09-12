@@ -26,7 +26,7 @@ namespace Rocket.Cmd {
 			}
 		}
 		
-		private getMessagesUlJqBySeverity(severity: Severity): JQuery {
+		private getMessagesUlJqBySeverity(severity: Severity): JQuery<Element> {
 			let zoneJq = this.zone.jQuery;
 			let className = this.severityToClassName(severity);
 			

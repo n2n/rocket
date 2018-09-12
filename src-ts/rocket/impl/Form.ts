@@ -23,11 +23,11 @@ namespace Rocket.Impl {
 	var $ = jQuery;
 	
 	export class Form {
-		private jqForm: JQuery;
+		private jqForm: JQuery<Element>;
 		private _jForm: Jhtml.Ui.Form;
 		private _config: Form.Config = new Form.Config();
 		
-		constructor(jqForm: JQuery) {
+		constructor(jqForm: JQuery<Element>) {
 			this.jqForm = jqForm;
 			this._jForm = Jhtml.Ui.Form.from(<HTMLFormElement> jqForm.get(0));
 			
@@ -40,7 +40,7 @@ namespace Rocket.Impl {
 			});
 		}
 		
-		get jQuery(): JQuery {
+		get jQuery(): JQuery<Element> {
 			return this.jqForm;
 		}
 		
@@ -69,7 +69,7 @@ namespace Rocket.Impl {
 			}
 		}
 		
-		public static from(jqForm: JQuery): Form {
+		public static from(jqForm: JQuery<Element>): Form {
 			var form = jqForm.data("rocketImplForm");
 			if (form instanceof Form) return form;
 			

@@ -39,7 +39,7 @@ use rocket\ei\EiPropPath;
 use rocket\ei\manage\DraftEiObject;
 use rocket\ei\manage\LiveEiObject;
 use n2n\reflection\CastUtils;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\ArgUtils;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
@@ -58,7 +58,7 @@ use n2n\util\ex\IllegalStateException;
 use rocket\ei\manage\draft\stmt\DraftStmtBuilder;
 use rocket\ei\manage\draft\ModDraftAction;
 use rocket\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
-use rocket\ei\util\model\EiuFrame;
+use rocket\ei\util\frame\EiuFrame;
 use rocket\impl\ei\component\prop\relation\model\RelationEntry;
 
 class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements DraftableEiProp, Draftable*/ {
@@ -80,7 +80,7 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 		$this->orphansAllowed = $orphansAllowed;
 	}
 	
-	public function setEntityProperty(EntityProperty $entityProperty = null) {
+	public function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty instanceof ToManyEntityProperty
 				&& $entityProperty->getType() === RelationEntityProperty::TYPE_ONE_TO_MANY);
 	
@@ -131,7 +131,7 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\mapping\impl\Readable::read()
+	 * @see \rocket\ei\component\prop\field\Readable::read()
 	 */
 	public function read(EiObject $eiObject) {
 		$targetEiObjects = array();
@@ -157,7 +157,7 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\mapping\impl\Writable::write()
+	 * @see \rocket\ei\component\prop\field\Writable::write()
 	 */
 	public function write(EiObject $eiObject, $value) {
 		CastUtils::assertTrue(is_array($value));

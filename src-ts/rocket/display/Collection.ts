@@ -8,7 +8,7 @@ namespace Rocket.Display {
 		private insertCbr = new Jhtml.Util.CallbackRegistry<InsertCallback>();
 		private insertedCbr = new Jhtml.Util.CallbackRegistry<InsertedCallback>();
 		
-		constructor(private elemJq: JQuery) {
+		constructor(private elemJq: JQuery<Element>) {
 		}
 		
 		scan() {
@@ -94,7 +94,7 @@ namespace Rocket.Display {
 			return this.selectorObservers.length > 0;
 		}
 		
-		get jQuery(): JQuery {
+		get jQuery(): JQuery<Element> {
 			return this.elemJq;
 		}
 		
@@ -351,7 +351,7 @@ namespace Rocket.Display {
 		static readonly CSS_CLASS = "rocket-collection";
 		static readonly SUPREME_EI_TYPE_ID_ATTR = "data-rocket-supreme-ei-type-id";
 		
-		static test(jqElem: JQuery) {
+		static test(jqElem: JQuery<Element>) {
 			if (jqElem.hasClass(Collection.CSS_CLASS)) {
 				return Collection.from(jqElem);
 			}
@@ -359,7 +359,7 @@ namespace Rocket.Display {
 			return null;
 		}
 		
-		static from(jqElem: JQuery): Collection {
+		static from(jqElem: JQuery<Element>): Collection {
 			var collection = jqElem.data("rocketCollection");
 			if (collection instanceof Collection) return collection;
 		
@@ -377,7 +377,7 @@ namespace Rocket.Display {
 		}
 
 		
-		private static fromArr(entriesJq: JQuery): Array<Collection> {
+		private static fromArr(entriesJq: JQuery<Element>): Array<Collection> {
 			let collections = new Array<Collection>();
 			entriesJq.each(function () {
 				collections.push(Collection.from($(this)));
@@ -389,11 +389,11 @@ namespace Rocket.Display {
 			return "." + Collection.CSS_CLASS + "[" + Collection.SUPREME_EI_TYPE_ID_ATTR + "=" + supremeEiTypeId + "]";
 		}
 		
-		static findBySupremeEiTypeId(jqContainer: JQuery, supremeEiTypeId: string): Collection[] {
+		static findBySupremeEiTypeId(jqContainer: JQuery<Element>, supremeEiTypeId: string): Collection[] {
 			return Collection.fromArr(jqContainer.find(Collection.buildSupremeEiTypeISelector(supremeEiTypeId)));
 		}
 
-		static hasSupremeEiTypeId(jqContainer: JQuery, supremeEiTypeId: string): boolean {
+		static hasSupremeEiTypeId(jqContainer: JQuery<Element>, supremeEiTypeId: string): boolean {
 			return 0 < jqContainer.has(Collection.buildSupremeEiTypeISelector(supremeEiTypeId)).length;
 		}
 	}

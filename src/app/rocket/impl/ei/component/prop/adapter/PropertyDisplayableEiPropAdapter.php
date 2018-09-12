@@ -21,17 +21,17 @@
  */
 namespace rocket\impl\ei\component\prop\adapter;
 
-use rocket\ei\manage\mapping\impl\Readable;
+use rocket\ei\component\prop\field\Readable;
 use n2n\util\ex\IllegalStateException;
-use rocket\ei\manage\mapping\EiField;
+use rocket\ei\manage\entry\EiField;
 use rocket\ei\manage\gui\GuiProp;
-use rocket\ei\manage\mapping\impl\SimpleEiField;
+use rocket\ei\component\prop\field\SimpleEiField;
 use n2n\l10n\N2nLocale;
 use n2n\util\ex\UnsupportedOperationException;
 use rocket\ei\component\prop\GuiEiProp;
 use rocket\ei\component\prop\FieldEiProp;
 use rocket\ei\manage\EiObject;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\gui\DisplayDefinition;
 use n2n\reflection\ArgUtils;
@@ -94,8 +94,8 @@ abstract class PropertyDisplayableEiPropAdapter extends ObjectPropertyEiPropAdap
 // 		return false;
 // 	}
 	
-// 	public function createEiEntryFilterField(N2nContext $n2nContext): EiEntryFilterField {
-// 		throw new IllegalStateException('EiProp cannot provide an EiEntryFilterField: ' . $this);
+// 	public function createSecurityFilterProp(N2nContext $n2nContext): SecurityFilterProp {
+// 		throw new IllegalStateException('EiProp cannot provide an SecurityFilterProp: ' . $this);
 // 	}
 	
 // 	public function getTypeConstraint() {
@@ -117,14 +117,10 @@ abstract class PropertyDisplayableEiPropAdapter extends ObjectPropertyEiPropAdap
 		return $objectPropertyAccessProxy->getValue($eiObject->getEiEntityObj()->getEntityObj());
 	}
 	
-	public function getGuiProp(): ?GuiProp {
+	public function buildGuiProp(Eiu $eiu): ?GuiProp {
 		return $this;
 	}
 	
-	public function getGuiPropFork(): ?GuiPropFork {
-		return null;
-	}
-
 	public function getDisplayLabel(): string {
 		return $this->getLabelLstr();
 	}

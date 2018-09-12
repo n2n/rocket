@@ -42,13 +42,13 @@ use rocket\impl\ei\component\prop\relation\conf\RelationEiPropConfigurator;
 use rocket\ei\manage\draft\DraftValueSelection;
 use rocket\ei\manage\draft\PersistDraftAction;
 use rocket\ei\EiPropPath;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
-use rocket\ei\util\model\EiuFrame;
+use rocket\ei\util\frame\EiuFrame;
 use rocket\impl\ei\component\prop\relation\model\RelationEntry;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\GuiField;
@@ -65,7 +65,7 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 		$this->initialize(new EmbeddedEiPropRelation($this, false, false));
 	}
 	
-	public function setEntityProperty(EntityProperty $entityProperty = null) {
+	public function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty instanceof ToOneEntityProperty
 				&& $entityProperty->getType() === RelationEntityProperty::TYPE_ONE_TO_ONE);
 	
@@ -105,12 +105,14 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 	}
 	
 	public function createEiPropConfigurator(): EiPropConfigurator {
-		return new RelationEiPropConfigurator($this);
+		$relationEiPropConfigurator =  new RelationEiPropConfigurator($this);
+		$relationEiPropConfigurator->setDisplayInOverviewDefault(false);
+		return $relationEiPropConfigurator;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\mapping\impl\Readable::read()
+	 * @see \rocket\ei\component\prop\field\Readable::read()
 	 */
 	public function read(EiObject $eiObject) {
 		if ($this->isDraftable() && $eiObject->isDraft()) {
@@ -128,7 +130,7 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\mapping\impl\Writable::write()
+	 * @see \rocket\ei\component\prop\field\Writable::write()
 	 */
 	public function write(EiObject $eiObject, $value) {
 		CastUtils::assertTrue($value === null || $value instanceof EiObject);

@@ -24,12 +24,12 @@ namespace rocket\impl\ei\component\prop\bool\command;
 use rocket\impl\ei\component\prop\bool\OnlineEiProp;
 use n2n\l10n\DynamicTextCollection;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\ei\manage\control\EntryControlComponent;
+use rocket\ei\component\command\control\EntryControlComponent;
 use n2n\l10n\N2nLocale;
 use rocket\ei\manage\control\IconType;
 use rocket\ei\manage\control\ControlButton;
 use rocket\impl\ei\component\command\EiCommandAdapter;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
 use n2n\util\uri\Path;
 use n2n\core\container\N2nContext;
@@ -93,7 +93,7 @@ class OnlineEiCommand extends EiCommandAdapter implements EntryControlComponent 
 		return array(self::CONTROL_KEY => $this->createEntryControl($eiu));
 	}
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\manage\control\EntryControlComponent::getEntryControlOptions()
+	 * @see \rocket\ei\component\command\control\EntryControlComponent::getEntryControlOptions()
 	 */
 	public function getEntryControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {
 		$dtc = new DynamicTextCollection('rocket', $n2nLocale);

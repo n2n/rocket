@@ -24,17 +24,17 @@ namespace rocket\ei\manage;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use n2n\web\ui\UiComponent;
-use rocket\ei\util\model\EiuEntryGui;
-use rocket\ei\util\model\EiuFactory;
+use rocket\ei\util\gui\EiuEntryGui;
+use rocket\ei\util\EiuAnalyst;
 use n2n\impl\web\ui\view\html\HtmlSnippet;
 
-class ControlEiHtmlBuilder {
+class ControlEiuHtmlBuilder {
 	private $view;
 	private $eiuFrame;
 
 	public function __construct(HtmlView $view, $eiuFrame) {
 		$this->view = $view;
-		$this->eiuFrame = EiuFactory::buildEiuFrameFormEiArg($eiuFrame);
+		$this->eiuFrame = EiuAnalyst::buildEiuFrameFormEiArg($eiuFrame);
 	}
 	
 	public function overallControlList() {

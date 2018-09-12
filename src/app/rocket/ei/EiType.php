@@ -25,10 +25,8 @@ use n2n\core\container\PdoPool;
 use n2n\persistence\orm\model\EntityModel;
 use n2n\core\module\Module;
 use n2n\core\container\N2nContext;
-use rocket\ei\component\command\PrivilegedEiCommand;
 use n2n\reflection\ReflectionUtils;
 use n2n\util\ex\UnsupportedOperationException;
-use rocket\ei\manage\security\PrivilegeBuilder;
 use n2n\util\ex\IllegalStateException;
 use n2n\persistence\orm\EntityManager;
 use n2n\persistence\orm\util\NestedSetStrategy;
@@ -249,45 +247,45 @@ class EiType extends Type {
 // 		}
 // 	}
 	
-	public function hasSecurityOptions() {
-		return $this->superEiType === null;
-	}
+// 	public function hasSecurityOptions() {
+// 		return $this->superEiType === null;
+// 	}
 	
-	public function getPrivilegeOptions(N2nContext $n2nContext) {
-		if ($this->superEiType !== null) return null;
+// 	public function getPrivilegeOptions(N2nContext $n2nContext) {
+// 		if ($this->superEiType !== null) return null;
 		
-		return $this->buildPrivilegeOptions($this, $n2nContext, array());
-	}
+// 		return $this->buildPrivilegeOptions($this, $n2nContext, array());
+// 	}
 	
-	private function buildPrivilegeOptions(EiType $eiType, N2nContext $n2nContext, array $options) {
-		$n2nLocale = $n2nContext->getN2nLocale();
-		foreach ($eiType->getEiCommandCollection()->filterLevel() as $eiCommand) {
-			if ($eiCommand instanceof PrivilegedEiCommand) {
-				$options[PrivilegeBuilder::buildPrivilege($eiCommand)]
-						= $eiCommand->getPrivilegeLabel($n2nLocale);
-			}
-				
-// 			if ($eiCommand instanceof PrivilegeExtendableEiCommand) {
-// 				$privilegeOptions = $eiCommand->getPrivilegeExtOptions($n2nLocale);
-					
-// 				ArgUtils::valArrayReturnType($privilegeOptions, 'scalar', $eiCommand, 'getPrivilegeOptions');
-					
-// 				foreach ($privilegeOptions as $privilegeExt => $label) {
-// 					if ($eiType->hasSuperEiType()) {
-// 						$label . ' (' . $eiType->getLabel() . ')';
-// 					}
-					
-// 					$options[PrivilegeBuilder::buildPrivilege($eiCommand, $privilegeExt)] = $label;
-// 				}
+// 	private function buildPrivilegeOptions(EiType $eiType, N2nContext $n2nContext, array $options) {
+// 		$n2nLocale = $n2nContext->getN2nLocale();
+// 		foreach ($eiType->getEiCommandCollection()->filterLevel() as $eiCommand) {
+// 			if ($eiCommand instanceof PrivilegedEiCommand) {
+// 				$options[PrivilegeBuilder::buildPrivilege($eiCommand)]
+// 						= $eiCommand->getPrivilegeLabel($n2nLocale);
 // 			}
-		}
+				
+// // 			if ($eiCommand instanceof PrivilegeExtendableEiCommand) {
+// // 				$privilegeOptions = $eiCommand->getPrivilegeExtOptions($n2nLocale);
+					
+// // 				ArgUtils::valArrayReturnType($privilegeOptions, 'scalar', $eiCommand, 'getPrivilegeOptions');
+					
+// // 				foreach ($privilegeOptions as $privilegeExt => $label) {
+// // 					if ($eiType->hasSuperEiType()) {
+// // 						$label . ' (' . $eiType->getLabel() . ')';
+// // 					}
+					
+// // 					$options[PrivilegeBuilder::buildPrivilege($eiCommand, $privilegeExt)] = $label;
+// // 				}
+// // 			}
+// 		}
 		
-		foreach ($eiType->getSubEiTypes() as $subEiType) {
-			$options = $this->buildPrivilegeOptions($subEiType, $n2nContext, $options);
-		}
+// 		foreach ($eiType->getSubEiTypes() as $subEiType) {
+// 			$options = $this->buildPrivilegeOptions($subEiType, $n2nContext, $options);
+// 		}
 		
-		return $options;
-	}
+// 		return $options;
+// 	}
 	
 	private function ensureIsTop() {
 		if ($this->superEiType !== null) {
@@ -304,7 +302,7 @@ class EiType extends Type {
 			
 // 			$restrictionSelectorItem = $eiProp->createRestrictionSelectorItem($n2nContext);
 			
-// 			ArgUtils::valTypeReturn($restrictionSelectorItem, 'rocket\ei\manage\critmod\filter\impl\field\SelectorItem', 
+// 			ArgUtils::valTypeReturn($restrictionSelectorItem, 'rocket\ei\util\filter\prop\SelectorItem', 
 // 					$eiProp, 'createRestrictionSelectorItem');
 			
 // 			$restrictionSelectorItems[$eiProp->getId()] = $restrictionSelectorItem;

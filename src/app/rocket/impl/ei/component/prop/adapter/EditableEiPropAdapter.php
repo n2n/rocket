@@ -21,14 +21,13 @@
  */
 namespace rocket\impl\ei\component\prop\adapter;
 
-use n2n\core\container\N2nContext;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\component\prop\PrivilegedEiProp;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\gui\GuiProp;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
-use rocket\spec\security\EiPropPrivilege;
+use rocket\ei\manage\security\privilege\EiPropPrivilege;
 use rocket\ei\manage\gui\GuiField;
 use rocket\ei\manage\gui\GuiPropFork;
 
@@ -53,12 +52,8 @@ abstract class EditableEiPropAdapter extends DisplayableEiPropAdapter implements
 		return $eiPropConfigurator;
 	}
 
-	public function getGuiProp(): ?GuiProp {
+	public function buildGuiProp(Eiu $eiu): ?GuiProp {
 		return $this;
-	}
-
-	public function getGuiPropFork(): ?GuiPropFork {
-		return null;
 	}
 
 	public function buildGuiField(Eiu $eiu): ?GuiField {
@@ -69,8 +64,7 @@ abstract class EditableEiPropAdapter extends DisplayableEiPropAdapter implements
 	 * @return bool
 	 */
 	public function isReadOnly(Eiu $eiu): bool {
-		if (!WritableEiPropPrivilege::checkForWriteAccess($eiu->frame()->getEiFrame()->getEiExecution()
-				->createEiPropAccess(EiPropPath::from($this)))) {
+		if (!WritableEiPropPrivilege::checkForWriteAccess($eiu->entry()->access()->getEiFieldAccess($this))) {
 			return true;
 		}
 
@@ -86,7 +80,7 @@ abstract class EditableEiPropAdapter extends DisplayableEiPropAdapter implements
 		return $this->standardEditDefinition->isMandatory();
 	}
 
-	public function createEiPropPrivilege(N2nContext $n2nContext): EiPropPrivilege {
+	public function createEiPropPrivilege(Eiu $eiu): EiPropPrivilege {
 		return new WritableEiPropPrivilege();
 	}
 }

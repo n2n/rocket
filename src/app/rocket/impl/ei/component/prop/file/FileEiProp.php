@@ -42,7 +42,7 @@ use n2n\impl\web\dispatch\mag\model\FileMag;
 use rocket\ei\manage\EiObject;
 use n2n\web\dispatch\mag\Mag;
 use n2n\web\http\Session;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\io\managed\impl\TmpFileManager;
 use rocket\ei\EiPropPath;
@@ -170,11 +170,20 @@ class FileEiProp extends DraftableEiPropAdapter {
 			return $this->createImageUiComponent($view, $eiu, $file);
 		} 
 		
+		$url = $this->createFileUrl($file, $eiu);
+// 		if ($file->getFileSource()->isHttpaccessible()) {
+			return new Link($url, $html->getEsc($file->getOriginalName()), array('target' => '_blank'));
+// 		}
+		
+// 		return $html->getEsc($file->getOriginalName());
+	}
+	
+	private function createFileUrl(File $file, Eiu $eiu) {
 		if ($file->getFileSource()->isHttpaccessible()) {
-			return new Link($file->getFileSource()->getUrl(), $html->getEsc($file->getOriginalName()), array('target' => '_blank'));
+			return $file->getFileSource()->getUrl();
 		}
 		
-		return $html->getEsc($file->getOriginalName());
+		return $eiu->frame()->getUrlToCommand($this->thumbEiCommand)->extR(['preview', $eiu->entry()->getLivePid()]);
 	}
 	
 	private function createImageUiComponent(HtmlView $view, Eiu $eiu, File $file) {
@@ -187,16 +196,14 @@ class FileEiProp extends DraftableEiPropAdapter {
 		
 		$uiComponent = new HtmlElement('div', 
 				array('class' => 'rocket-simple-commands'), 
-				new Link($file->getFileSource()->getUrl(), 
+				new Link($this->createFileUrl($file, $eiu), 
 						$html->getImage($file, ThSt::crop(40, 30, true), array('title' => $file->getOriginalName())), 
 						array('class' => 'rocket-image-previewable')));
 		
 		if ($this->isThumbCreationEnabled($file) && !$eiu->entry()->isNew()) {
 			$httpContext = $view->getHttpContext();
-			$uiComponent->appendContent($html->getLink(
-					$httpContext->getControllerContextPath($eiu->frame()->getEiFrame()->getControllerContext())
-							->ext($this->thumbEiCommand->getId(), $eiu->entry()->getLivePid())
-							->toUrl(array('refPath' => (string) $eiu->frame()->getEiFrame()->getCurrentUrl($httpContext))),
+			$uiComponent->appendContent($html->getLink($eiu->frame()->getUrlToCommand($this->thumbEiCommand)
+					->extR($eiu->entry()->getLivePid(), array('refPath' => (string) $eiu->frame()->getEiFrame()->getCurrentUrl($httpContext))),
 					new HtmlElement('i', array('class' => IconType::ICON_CROP), ''),
 					array('title' => $view->getL10nText('ei_impl_resize_image'),
 							'class' => 'btn btn-secondary', 'data-jhtml' => 'true')));

@@ -24,7 +24,7 @@ namespace rocket\impl\ei\component\prop\file\command;
 use rocket\impl\ei\component\prop\file\FileEiProp;
 use rocket\impl\ei\component\command\EiCommandAdapter;
 use rocket\impl\ei\component\prop\file\command\controller\ThumbController;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
 
 class ThumbEiCommand extends EiCommandAdapter {

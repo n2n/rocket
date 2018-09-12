@@ -34,8 +34,8 @@ use rocket\ei\manage\EiObject;
 use rocket\ei\manage\draft\PersistDraftAction;
 use rocket\ei\manage\draft\RemoveDraftAction;
 use rocket\ei\EiPropPath;
-use rocket\ei\util\model\Eiu;
-use rocket\ei\manage\mapping\impl\SimpleEiField;
+use rocket\ei\util\Eiu;
+use rocket\ei\component\prop\field\SimpleEiField;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
 

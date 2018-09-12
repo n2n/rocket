@@ -32,15 +32,15 @@ use rocket\user\model\RocketUserDao;
 use n2n\l10n\MessageContainer;
 use n2n\web\http\PageNotFoundException;
 use rocket\user\bo\RocketUserGroup;
-use n2n\core\N2N;
 use rocket\user\model\GroupGrantsViewModel;
 use rocket\spec\UnknownTypeException;
 use rocket\ei\UnknownEiTypeExtensionException;
 use rocket\user\bo\EiGrant;
 use rocket\user\model\EiGrantForm;
 use n2n\web\http\controller\impl\ScrRegistry;
-use rocket\ei\manage\critmod\filter\impl\controller\GlobalFilterFieldController;
 use rocket\ei\EiEngine;
+use rocket\spec\TypePath;
+use rocket\ei\util\Eiu;
 
 class RocketUserGroupController extends ControllerAdapter {
 	private $rocketState;
@@ -136,15 +136,23 @@ class RocketUserGroupController extends ControllerAdapter {
 		$this->forward('..\view\groupGrants.html', array('groupGrantsViewModel' => $groupGrantViewModel));
 	}
 	
-	public function doFullyEiGrant($userGroupId, $eiTypeId, $eiMaskId = null, Rocket $rocket) {
+	public function doFullyEiGrant($userGroupId, $eiTypePathStr, Rocket $rocket) {
+		$eiTypePath = null;
+		try {
+			$eiTypePath = TypePath::create($eiTypePathStr);
+		} catch (\InvalidArgumentException $e) {
+			throw new PageNotFoundException(null, null, $e);
+		}
+		
 		$eiType = null;
 		try {
-			$eiType = $rocket->getSpec()->getEiTypeById($eiTypeId);
+			$eiType = $rocket->getSpec()->getEiTypeById($eiTypePath->getTypeId());
 		} catch (UnknownTypeException $e) {
 			throw new PageNotFoundException(null, null, $e);
 		}
 		
-		if ($eiMaskId !== null && !$eiType->getEiTypeExtensionCollection()->containsId($eiMaskId)) {
+		$eiTypeExtensionId = $eiTypePath->getEiTypeExtensionId();
+		if ($eiTypeExtensionId !== null && !$eiType->getEiTypeExtensionCollection()->containsId($eiTypeExtensionId)) {
 			throw new PageNotFoundException();
 		}
 		
@@ -158,71 +166,72 @@ class RocketUserGroupController extends ControllerAdapter {
 		
 		$this->redirectToController(array('grants', $userGroupId));
 		
-		$eiGrants = $userGroup->getEiGrants();
-		foreach ($eiGrants as $eiGrant) {
-			if ($eiGrant->getEiTypeId() === $eiTypeId
-					&& $eiGrant->getEiMaskId() === $eiMaskId) {
-				$eiGrant->setFull(true);
-				$this->commit();
-				return;
-			}
+		if (null !== ($eiGrant = $userGroup->getEiGrantByEiTypePath($eiTypePath))) {
+			$eiGrant->setFull(true);
+			$this->commit();
+			return;
 		}
 		
 		$eiGrant = new EiGrant();
-		$eiGrant->setEiTypeId($eiTypeId);
-		$eiGrant->setEiMaskId($eiMaskId);
+		$eiGrant->setEiTypePath($eiTypePath);
 		$eiGrant->setFull(true);
 		$eiGrant->setRocketUserGroup($userGroup);
-		$eiGrants->append($eiGrant);
+		$userGroup->getEiGrants()->append($eiGrant);
+		
 		$this->commit();
 	}
 	
-	public function doRemoveGrant($userGroupId, $scriptId) {
-		$tx = N2N::createTransaction();
+	public function doRemoveEiGrant($userGroupId, $eiTypePathStr) {
+		$this->beginTransaction();
 	
 		$userGroup = $this->userDao->getRocketUserGroupById($userGroupId);
 		if ($userGroup === null) {
-			$tx->commit();
 			throw new PageNotFoundException();
 		}
+		
+		$eiTypePath = null;
+		try {
+			$eiTypePath = TypePath::create($eiTypePathStr);
+		} catch (\InvalidArgumentException $e) {
+			throw new PageNotFoundException(null, null, $e);
+		}
 	
-		$this->redirectToController(array('grants', $userGroupId));
-	
-		$userScriptGrants = $userGroup->getUserSpecGrants();
-		foreach ($userScriptGrants as $key => $userScriptGrant) {
-			if ($userScriptGrant->getScriptId() === $scriptId) {
-				$userScriptGrants->offsetUnset($key);
-				$this->userDao->removeUserSpecGrant($userScriptGrant);
+		$eiGrants = $userGroup->getEiGrants();
+		foreach ($eiGrants as $key => $eiGrant) {
+			if ($eiGrant->getEiTypePath()->equals($eiTypePath)) {
+				$eiGrants->offsetUnset($key);
 				break;
 			}
 		}
 	
-		$tx->commit();
+		$this->commit();
+		$this->redirectToController(array('grants', $userGroupId));
 	}
 	
 	/**
-	 * @param string $eiTypeId
-	 * @param string $eiMaskId
+	 * @param string $eiTypePath
 	 * @throws PageNotFoundException
 	 * @return EiEngine
 	 */
-	private function lookupEiEngine(string $eiTypeId, string $eiMaskId = null): EiEngine {
+	private function lookupEiEngine(TypePath $eiTypePath) {
 		$eiType = null;
 		try {
-			$eiType = $this->rocket->getSpec()->getEiTypeById($eiTypeId);
+			$eiType = $this->rocket->getSpec()->getEiTypeById($eiTypePath->getTypeId());
 		} catch (UnknownTypeException $e) {
 			throw new PageNotFoundException(null, 0, $e);
 		}
 		
-		if ($eiMaskId !== null) {
-			try {
-				return $eiType->getEiTypeExtensionCollection()->getById($eiMaskId)->getEiEngine();
-			} catch (UnknownEiTypeExtensionException $e) {
-				throw new PageNotFoundException(null, 0, $e);
-			}
+		$eiTypeExtensionId = $eiTypePath->getEiTypeExtensionId();
+		
+		if ($eiTypeExtensionId === null) {
+			return $eiType->getEiMask()->getEiEngine();
 		}
 		
-		return $eiType->getEiMask()->getEiEngine();
+		try {
+			return $eiType->getEiTypeExtensionCollection()->getById($eiTypeExtensionId)->getEiMask()->getEiEngine();
+		} catch (UnknownEiTypeExtensionException $e) {
+			throw new PageNotFoundException(null, 0, $e);
+		}
 	}
 	
 	/**
@@ -232,9 +241,21 @@ class RocketUserGroupController extends ControllerAdapter {
 	 * @param ScrRegistry $scrRegistry
 	 * @throws PageNotFoundException
 	 */
-	public function doRestrictEiGrant($rocketUserGroupId, string $eiTypeId, string $eiMaskId = null, ScrRegistry $scrRegistry) {
-		$eiEngine = $this->lookupEiEngine($eiTypeId, $eiMaskId);
-
+	public function doRestrictEiGrant($rocketUserGroupId, string $eiTypePathStr, Eiu $eiu) {
+		$eiTypePath = null;
+		try {
+			$eiTypePath = TypePath::create($eiTypePathStr);
+		} catch (\InvalidArgumentException $e) {
+			throw new PageNotFoundException(null, null, $e);
+		}
+		
+		$eiuEngine = null;
+		try {
+			$eiuEngine = $eiu->context()->engine($eiTypePath);
+		} catch (UnknownTypeException $e) {
+			throw new PageNotFoundException(null, null, $e);
+		}
+		
 		$this->beginTransaction();
 		
 		$rocketUserGroup = $this->userDao->getRocketUserGroupById($rocketUserGroupId);
@@ -242,24 +263,17 @@ class RocketUserGroupController extends ControllerAdapter {
 			throw new PageNotFoundException();
 		}
 		
-		$eiGrant = null;
-		foreach ($rocketUserGroup->getEiGrants() as $assignedEiGrant) {
-			if ($assignedEiGrant->getEiTypeId() === $eiTypeId && $assignedEiGrant->getEiMaskId() === $eiMaskId) {
-				$eiGrant = $assignedEiGrant;
-			}			
-		}
-		
+		$eiGrant = $rocketUserGroup->getEiGrantByEiTypePath($eiTypePath);
 		if ($eiGrant === null) {
 			$eiGrant = new EiGrant();
 			$eiGrant->setRocketUserGroup($rocketUserGroup);
-			$eiGrant->setEiTypeId($eiTypeId);
-			$eiGrant->setEiMaskId($eiMaskId);
+			$eiGrant->setEiTypePath($eiTypePath);
 		}
 		
-		$privilegeDefinition = $eiEngine->createPrivilegeDefinition($this->getN2nContext());
-		$eiEntryFilterDefinition = $eiEngine->createEiEntryFilterDefinition($this->getN2nContext());
+// 		$privilegeDefinition = $eiEngine->createPrivilegeDefinition($this->getN2nContext());
+// 		$securityFilterDefinition = $eiEngine->createSecurityFilterDefinition($this->getN2nContext());
 		
-		$eiGrantForm = new EiGrantForm($eiGrant, $privilegeDefinition, $eiEntryFilterDefinition);
+		$eiGrantForm = new EiGrantForm($eiGrant, $eiuEngine);
 		
 		if ($this->dispatch($eiGrantForm, 'save')) {
 			if ($eiGrantForm->isNew()) {
@@ -273,11 +287,7 @@ class RocketUserGroupController extends ControllerAdapter {
 		
 		$this->commit();
 		
-		
-		$filterAjahHook = GlobalFilterFieldController::buildEiEntryFilterAjahHook($scrRegistry, $eiTypeId, $eiMaskId);
-		
-		$this->forward('..\view\grantEdit.html', array('eiGrantForm' => $eiGrantForm,
-				'filterAjahHook' => $filterAjahHook));
+		$this->forward('..\view\grantEdit.html', array('eiGrantForm' => $eiGrantForm));
 	}	
 	
 	private function applyBreadcrumbs(RocketUserGroupForm $userGroupForm = null) {

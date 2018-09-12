@@ -22,13 +22,13 @@
 namespace rocket\impl\ei\component\prop\numeric\component;
 
 use rocket\impl\ei\component\modificator\adapter\EiModificatorAdapter;
-use rocket\ei\manage\mapping\OnWriteMappingListener;
+use rocket\ei\manage\entry\OnWriteMappingListener;
 use rocket\impl\ei\component\prop\numeric\OrderEiProp;
 use rocket\ei\manage\critmod\sort\SortCriteriaConstraintGroup;
 use rocket\ei\manage\critmod\sort\SimpleSortConstraint;
 use n2n\persistence\orm\criteria\item\CrIt;
-use rocket\ei\manage\critmod\CriteriaConstraint;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
+use rocket\ei\manage\frame\Boundry;
 
 class OrderEiModificator extends EiModificatorAdapter {
 	private $eiProp;
@@ -45,7 +45,7 @@ class OrderEiModificator extends EiModificatorAdapter {
 	 * @see \rocket\impl\ei\component\modificator\adapter\EiModificatorAdapter::setupEiFrame()
 	 */
 	public function setupEiFrame(Eiu $eiu) {
-		$eiu->frame()->getEiFrame()->getCriteriaConstraintCollection()->add(CriteriaConstraint::TYPE_HARD_SORT,
+		$eiu->frame()->getEiFrame()->getBoundry()->addCriteriaConstraint(Boundry::TYPE_HARD_SORT,
 				new SortCriteriaConstraintGroup(array(
 						new SimpleSortConstraint(CrIt::p($this->eiProp->getEntityProperty()), 'ASC'))));
 	}

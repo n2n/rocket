@@ -24,7 +24,7 @@
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use rocket\impl\ei\component\command\common\model\EntryCommandViewModel;
 	use rocket\user\model\RocketUserDao;
-	use rocket\ei\manage\ControlEiHtmlBuilder;
+	use rocket\ei\manage\ControlEiuHtmlBuilder;
 	use rocket\ei\manage\gui\ViewMode;
 
 	$view = HtmlView::view($this);
@@ -39,7 +39,7 @@
 	
 	$selectedDraft = $entryCommandViewModel->getSelectedDraft();
 	
-	$controlEiHtml = new ControlEiHtmlBuilder($view, $entryCommandViewModel->getEiFrame());
+	$controlEiHtml = new ControlEiuHtmlBuilder($view, $entryCommandViewModel->getEiFrame());
 ?>
 <h2><?php $html->l10nText('ei_impl_draft_nav_title') ?></h2>
 <div class="rocket-panel rocket-collapsable rocket-history">

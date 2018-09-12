@@ -21,13 +21,13 @@
  */
 namespace rocket\ei\component\command;
 
-use rocket\spec\security\EiCommandPrivilege;
-use n2n\core\container\N2nContext;
+use rocket\ei\manage\security\privilege\EiCommandPrivilege;
+use rocket\ei\util\Eiu;
 
 interface PrivilegedEiCommand {
 	
 	/**
 	 * @return EiCommandPrivilege
 	 */
-	public function createEiCommandPrivilege(N2nContext $n2nContext): EiCommandPrivilege;
+	public function createEiCommandPrivilege(Eiu $eiu): EiCommandPrivilege;
 }

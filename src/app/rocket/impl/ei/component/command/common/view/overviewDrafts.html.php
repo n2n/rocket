@@ -21,7 +21,7 @@
 	 */
 
 	use n2n\impl\web\ui\view\html\HtmlView;
-	use rocket\ei\manage\ControlEiHtmlBuilder;
+	use rocket\ei\manage\ControlEiuHtmlBuilder;
 	use rocket\impl\ei\component\command\common\model\DraftListModel;
 	
 	$view = HtmlView::view($this);
@@ -40,7 +40,7 @@
 	
 	$eiMask = $listModel->getEiFrame()->getContextEiEngine()->getEiMask();
 	
-	$controlEiHtml = new ControlEiHtmlBuilder($view, $listModel->getEiFrame());
+	$controlEiHtml = new ControlEiuHtmlBuilder($view, $listModel->getEiFrame());
 ?>	
 
 <div class="rocket-panel">

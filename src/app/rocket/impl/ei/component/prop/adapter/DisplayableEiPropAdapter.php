@@ -27,7 +27,7 @@ use n2n\l10n\N2nLocale;
 use n2n\util\ex\UnsupportedOperationException;
 use rocket\ei\component\prop\GuiEiProp;
 use rocket\ei\manage\EiObject;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\gui\DisplayDefinition;
 use n2n\reflection\ArgUtils;
@@ -55,14 +55,10 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 	}
 	
 	
-	public function getGuiProp(): ?GuiProp {
+	public function buildGuiProp(Eiu $eiu): ?GuiProp {
 		return $this;
 	}
 	
-	public function getGuiPropFork(): ?GuiPropFork {
-		return null;
-	}
-
 	public function getDisplayLabel(): string {
 		return $this->getLabelLstr();
 	}

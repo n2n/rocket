@@ -32,7 +32,7 @@ use rocket\impl\ei\component\command\common\controller\OverviewController;
 use rocket\ei\component\EiConfigurator;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\web\dispatch\mag\MagDispatchable;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
 use rocket\ei\component\EiSetup;
 use n2n\reflection\CastUtils;

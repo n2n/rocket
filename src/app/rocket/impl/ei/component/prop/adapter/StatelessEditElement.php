@@ -25,7 +25,7 @@ use n2n\reflection\ArgUtils;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\manage\gui\GuiFieldEditable;
 use n2n\web\dispatch\mag\Mag;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 
 class StatelessEditElement extends StatelessDisplayElement implements GuiFieldEditable {
 	private $statelessEditable;

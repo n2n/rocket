@@ -24,17 +24,33 @@ namespace rocket\ei\manage\gui;
 use n2n\l10n\N2nLocale;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\EiObject;
-use rocket\ei\manage\mapping\EiEntry;
+use rocket\ei\manage\entry\EiEntry;
 use n2n\reflection\ArgUtils;
-use rocket\ei\manage\mapping\EiFieldWrapper;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\manage\entry\EiFieldWrapper;
+use rocket\ei\util\Eiu;
 use rocket\ei\manage\gui\ui\DisplayStructure;
+use n2n\util\ex\NotYetImplementedException;
 
 class GuiDefinition {	
+	private $identityStringPattern;
 	private $levelGuiProps = array();
 	private $levelEiPropPaths = array();
 	private $levelGuiPropForks = array();
 	private $levelIds = array();
+	
+	/**
+	 * @param string|null $identityStringPattern
+	 */
+	public function setIdentityStringPattern(?string $identityStringPattern) {
+		$this->identityStringPattern = $identityStringPattern;
+	}
+	
+	/**
+	 * @return string|null
+	 */
+	public function getIdentityStringPattern() {
+		return $this->identityStringPattern;
+	}
 	
 	/**
 	 * @param string $id
@@ -84,6 +100,10 @@ class GuiDefinition {
 		}
 		
 		return $this->levelEiPropPaths[$id];
+	}
+	
+	public function eiPropPathToGuiIdPath() {
+		
 	}
 	
 	/**
@@ -295,6 +315,24 @@ class GuiDefinition {
 	}
 	
 	/**
+	 * @param EiPropPath $eiPropPath
+	 * @throws NotYetImplementedException
+	 * @return \rocket\ei\manage\gui\GuiIdPath|NULL
+	 */
+	public function eiProPathToGuiIdPath(EiPropPath $eiPropPath) {
+		if ($eiPropPath->hasMultipleIds()) {
+			throw new NotYetImplementedException();
+		}
+		
+		$id = $eiPropPath->getFirstId();
+		if (isset($this->levelGuiProps[$id])) {
+			return new GuiIdPath([$id]);
+		}
+		
+		return null;
+	}
+	
+	/**
 	 * @param GuiIdPath $guiIdPath
 	 * @return \rocket\ei\EiPropPath|NULL
 	 */
@@ -330,11 +368,57 @@ class GuiDefinition {
 	}
 	
 	/**
+	 * @param EiObject $eiObject
+	 * @param N2nLocale $n2nLocale
+	 * @return string
+	 */
+	private function createDefaultIdentityString(EiObject $eiObject, N2nLocale $n2nLocale) {
+		$eiType = $eiObject->getEiEntityObj()->getEiType();
+		
+		$idPatternPart = null;
+		$namePatternPart = null;
+		
+		foreach ($this->getStringRepresentableGuiProps() as $guiIdPathStr => $guiProp) {
+			if ($guiIdPathStr == $eiType->getEntityModel()->getIdDef()->getPropertyName()) {
+				$idPatternPart = SummarizedStringBuilder::createPlaceholder($guiIdPathStr);
+			} else {
+				$namePatternPart = SummarizedStringBuilder::createPlaceholder($guiIdPathStr);
+			}
+			
+			if ($namePatternPart !== null) break;
+		}
+		
+		if ($idPatternPart === null) {
+			$idPatternPart = $eiObject->getEiEntityObj()->hasId() ?
+			$eiType->idToPid($eiObject->getEiEntityObj()->getId()) : 'new';
+		}
+		
+		if ($namePatternPart === null) {
+			$namePatternPart = $this->getLabelLstr()->t($n2nLocale);
+		}
+		
+		return $this->createIdentityStringFromPattern($namePatternPart . ' #' . $idPatternPart, $eiObject, $n2nLocale);
+	}
+	
+	/**
+	 * @param EiObject $eiObject
+	 * @param N2nLocale $n2nLocale
+	 * @return string
+	 */
+	public function createIdentityString(EiObject $eiObject, N2nLocale $n2nLocale) {
+		if ($this->identityStringPattern === null) {
+			return $this->createDefaultIdentityString($eiObject, $n2nLocale);
+		}
+		
+		return $this->createIdentityStringFromPattern($this->identityStringPattern, $eiObject, $n2nLocale);
+	}
+	
+	/**
 	 * @param $entity
 	 * @param N2nLocale $n2nLocale
 	 * @return string
 	 */
-	public function createIdentityString(string $identityStringPattern, EiObject $eiObject, N2nLocale $n2nLocale): string {
+	public function createIdentityStringFromPattern(string $identityStringPattern, EiObject $eiObject, N2nLocale $n2nLocale): string {
 		$builder = new SummarizedStringBuilder($identityStringPattern, $n2nLocale);
 		$builder->replaceFields(array(), $this, $eiObject);
 		return $builder->__toString();

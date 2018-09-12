@@ -27,8 +27,8 @@ use n2n\reflection\ArgUtils;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\map\PropertyPath;
-use rocket\ei\manage\EiFrame;
-use rocket\ei\util\model\EiuFrame;
+use rocket\ei\manage\frame\EiFrame;
+use rocket\ei\util\frame\EiuFrame;
 use n2n\reflection\property\AccessProxy;
 use n2n\web\ui\UiComponent;
 use n2n\web\dispatch\property\ManagedProperty;
@@ -39,6 +39,7 @@ use rocket\impl\ei\component\prop\relation\model\mag\ToManyMag;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use rocket\impl\ei\component\prop\ci\ContentItemsEiProp;
 use n2n\web\dispatch\mag\UiOutfitter;
+use rocket\ei\util\Eiu;
 
 class ContentItemMag extends MagAdapter {
 	private $panelConfigs = array();
@@ -86,7 +87,7 @@ class ContentItemMag extends MagAdapter {
 	}
 	
 	private function groupRelationEntries(array $targetRelationEntries) {
-		$targetEiuFrame = new EiuFrame($this->targetEditEiFrame);
+		$targetEiuFrame = (new Eiu($this->targetEditEiFrame))->frame();
 		$panelEiPropPath = ContentItemsEiProp::getPanelEiPropPath();
 		$filtered = array();
 		foreach ($targetRelationEntries as $targetRelationEntry) {

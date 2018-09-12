@@ -21,10 +21,9 @@
 	 */
 
 	use n2n\impl\web\ui\view\html\HtmlView;
-	use rocket\ei\manage\critmod\filter\impl\controller\FilterAjahHook;
 	use rocket\impl\ei\component\command\common\controller\OverviewAjahHook;
-	use rocket\ei\manage\critmod\quick\impl\form\QuickSearchForm;
-	use rocket\ei\manage\critmod\impl\model\CritmodForm;
+	use rocket\impl\ei\component\command\common\model\critmod\QuickSearchForm;
+	use rocket\impl\ei\component\command\common\model\critmod\CritmodForm;
 	
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -33,9 +32,6 @@
 	$overviewAjahHook = $view->getParam('overviewAjahHook');
 	$view->assert($overviewAjahHook instanceof OverviewAjahHook);
 	
-	$filterAjahHook = $view->getParam('filterAjahHook');
-	$view->assert($filterAjahHook instanceof FilterAjahHook);
-
 	$critmodForm = $view->getParam('critmodForm');
 	$view->assert($critmodForm instanceof CritmodForm);
 	
@@ -54,7 +50,7 @@
 				data-entries-plural-label="<?php $html->out($view->getParam('pluralLabel')) ?>">
 		</div>
 		<div class="rocket-impl-search">
-			<?php $view->import('~\ei\manage\critmod\quick\impl\view\quickSearchForm.html', 
+			<?php $view->import('critmod\quickSearchForm.html', 
 					array('quickSearchForm' => $quickSearchForm, 'postUrl' => $overviewAjahHook->getSelectUrl())) ?>
 		</div>
 		<div class="rocket-impl-filter">
@@ -62,15 +58,14 @@
 					data-rocket-impl-open-filter-label="<?php $html->text('ei_impl_open_filter_label') ?>"
 					data-rocket-impl-edit-filter-label="<?php $html->text('ei_impl_edit_filter_label') ?>"
 					data-rocket-impl-close-filter-label="<?php $html->text('ei_impl_close_filter_label') ?>">
-				<?php $view->import('~\ei\manage\critmod\impl\view\critmodSelectForm.html', 
+				<?php $view->import('critmod\critmodSelectForm.html', 
 						$view->mergeParams(array('critmodForm' => $critmodForm, 'critmodFormUrl' => $overviewAjahHook->getSelectUrl()))) ?>
 			</div>
 		</div>
 		
 	</div>
 	<div class="rocket-impl-critmod-form-container">
-		<?php $view->import('~\ei\manage\critmod\impl\view\critmodForm.html', 
-				array('critmodForm' => $critmodForm, 'critmodFormUrl' => $overviewAjahHook->getCritmodFormUrl(),
-						'filterAjahHook' => $filterAjahHook)) ?>
+		<?php $view->import('critmod\critmodForm.html', 
+				array('critmodForm' => $critmodForm, 'critmodFormUrl' => $overviewAjahHook->getCritmodFormUrl())) ?>
 	</div>
 </div>

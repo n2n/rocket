@@ -22,15 +22,15 @@
 namespace rocket\impl\ei\component\prop\relation\model\relation;
 
 use rocket\ei\manage\EiObject;
-use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\frame\EiFrame;
 use rocket\impl\ei\component\prop\adapter\DraftableEiPropAdapter;
-use rocket\ei\manage\mapping\EiEntry;
+use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\EiType;
 use rocket\ei\mask\EiMask;
 use rocket\ei\component\InvalidEiComponentConfigurationException;
 use n2n\reflection\ReflectionUtils;
 use rocket\impl\ei\component\prop\relation\conf\RelationEiPropConfigurator;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 
 class EmbeddedEiPropRelation extends EiPropRelation {
 	private $embeddedPseudoCommand;

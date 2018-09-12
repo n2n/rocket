@@ -22,7 +22,7 @@
 namespace rocket\ei\component\command\control;
 
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\frame\EiFrame;
 use n2n\l10n\N2nLocale;
 
 interface PartialControlComponent {

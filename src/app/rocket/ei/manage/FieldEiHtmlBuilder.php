@@ -23,7 +23,7 @@ namespace rocket\ei\manage;
 
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\map\PropertyPath;
-use rocket\ei\manage\mapping\FieldErrorInfo;
+use rocket\ei\manage\entry\EiFieldValidationResult;
 use n2n\impl\web\ui\view\html\HtmlUtils;
 use rocket\ei\manage\gui\Displayable;
 use n2n\util\ex\IllegalStateException;
@@ -62,7 +62,7 @@ class FieldEiHtmlBuilder {
 		return $attrs;
 	}
 	
-	private function pushGuiPropInfo($tagName, FieldErrorInfo $fieldErrorInfo, Displayable $displayable = null, 
+	private function pushGuiPropInfo($tagName, EiFieldValidationResult $fieldErrorInfo, Displayable $displayable = null, 
 			PropertyPath $propertyPath = null) {
 		$this->eiPropInfoStack[] = array('tagName' => $tagName, 'displayable' => $displayable,
 				'fieldErrorInfo' => $fieldErrorInfo, 'propertyPath' => $propertyPath);
@@ -80,12 +80,12 @@ class FieldEiHtmlBuilder {
 		}
 	}
 	
-	public function openInputField(string $tagName, $magPropertyPath, FieldErrorInfo $fieldErrorInfo, 
+	public function openInputField(string $tagName, $magPropertyPath, EiFieldValidationResult $fieldErrorInfo, 
 			array $attrs = null, bool $mandatory = false) {
 		$this->view->out($this->getOpenInputField($tagName, $magPropertyPath, $fieldErrorInfo, $attrs, $mandatory));
 	}
 	
-	public function getOpenInputField(string $tagName, $magPropertyPath, FieldErrorInfo $fieldErrorInfo, 
+	public function getOpenInputField(string $tagName, $magPropertyPath, EiFieldValidationResult $fieldErrorInfo, 
 			array $attrs = null, bool $mandatory = false) {
 		$magPropertyPath = $this->formHtml->meta()->createPropertyPath($magPropertyPath);
 		
@@ -98,11 +98,11 @@ class FieldEiHtmlBuilder {
 				$this->buildContainerAttrs((array) $attrs, false, $mandatory), $this->uiOutfitter);
 	}
 	
-	public function openOutputField($tagName, Displayable $displayable, FieldErrorInfo $fieldErrorInfo, array $attrs = null) {
+	public function openOutputField($tagName, Displayable $displayable, EiFieldValidationResult $fieldErrorInfo, array $attrs = null) {
 		$this->view->out($this->getOpenOutputField($tagName, $displayable, $fieldErrorInfo, $attrs));
 	}
 	
-	public function getOpenOutputField($tagName, Displayable $displayable, FieldErrorInfo $fieldErrorInfo, array $attrs = null) {
+	public function getOpenOutputField($tagName, Displayable $displayable, EiFieldValidationResult $fieldErrorInfo, array $attrs = null) {
 		$this->pushGuiPropInfo($tagName, $fieldErrorInfo, $displayable);
 		
 		return new Raw('<' . HtmlUtils::hsc($tagName) . HtmlElement::buildAttrsHtml(

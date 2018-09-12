@@ -21,5 +21,7 @@
  */
 namespace rocket\ei\manage;
 
-class ManageException extends \RuntimeException {
+use rocket\ei\EiException;
+
+class ManageException extends EiException {
 }

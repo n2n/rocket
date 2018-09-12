@@ -1,7 +1,7 @@
 <?php
+	use rocket\ei\util\entry\EiuEntry;
+	use rocket\ei\util\gui\EiuHtmlBuilder;
 	use n2n\impl\web\ui\view\html\HtmlView;
-	use rocket\ei\util\model\EiuEntry;
-	use rocket\ei\manage\EiHtmlBuilder;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -9,7 +9,7 @@
 	$eiuEntry = $view->getParam('eiuEntry');
 	$view->assert($eiuEntry instanceof EiuEntry);
 	
-	$eiHtml = new EiHtmlBuilder($view);
+	$eiuHtml = new EiuHtmlBuilder($view);
 	
 	$summaryRequired = $view->getParam('summaryRequired');
 ?>
@@ -38,7 +38,7 @@
 	<?php else: ?>
 		<?php if ($summaryRequired): ?>
 			<?php $eiuEntryGui = $eiuEntry->newEntryGui(false) ?>
-			<?php $eiHtml->entryOpen('div', $eiuEntryGui, array('class' => 'rocket-impl-summary')) ?>
+			<?php $eiuHtml->entryOpen('div', $eiuEntryGui, array('class' => 'rocket-impl-summary')) ?>
 				<div class="rocket-impl-handle"></div>
 				<div class="rocket-impl-content-type">
 					<i class="<?php $html->out($eiuEntry->getGenericIconType()) ?>"></i>
@@ -46,25 +46,25 @@
 				</div>
 				<div class="rocket-impl-content">
 					<?php foreach ($eiuEntryGui->getGuiIdPaths() as $guiIdPath): ?>
-						<?php $eiHtml->fieldOpen('div', $guiIdPath, null, false, false) ?>
-							<?php $eiHtml->fieldContent() ?>
-						<?php $eiHtml->fieldClose() ?>
+						<?php $eiuHtml->fieldOpen('div', $guiIdPath, null, false, false) ?>
+							<?php $eiuHtml->fieldContent() ?>
+						<?php $eiuHtml->fieldClose() ?>
 					<?php endforeach ?>
 				</div>
 				<div class="rocket-simple-commands"></div>
-			<?php $eiHtml->entryClose() ?>
+			<?php $eiuHtml->entryClose() ?>
 		<?php endif ?>
 	
 		<?php $eiuEntryGui = $eiuEntry->newEntryGui(true)->allowControls() ?>
-		<?php $eiHtml->entryOpen('div', $eiuEntryGui, array('class' => 'rocket-impl-body rocket-group rocket-light-group')) ?>
+		<?php $eiuHtml->entryOpen('div', $eiuEntryGui, array('class' => 'rocket-impl-body rocket-group rocket-light-group')) ?>
 			<label><?php $html->out($eiuEntry->createIdentityString()) ?></label>
 			<div class="rocket-control">
 				<?php $view->import($eiuEntryGui->createView($view)) ?>
 			</div>
 			
 			<div class="rocket-zone-commands">
-				<?php $eiHtml->entryCommands(false) ?>
+				<?php $eiuHtml->entryCommands(false) ?>
 			</div>
-		<?php $eiHtml->entryClose() ?>
+		<?php $eiuHtml->entryClose() ?>
 	<?php endif ?>
 </div>

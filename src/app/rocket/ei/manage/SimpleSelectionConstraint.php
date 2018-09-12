@@ -43,7 +43,7 @@
 
 // use n2n\persistence\orm\property\EntityProperty;
 
-// use rocket\ei\manage\critmod\filter\impl\model\SimpleComparatorConstraint;
+// use rocket\ei\manage\critmod\filter\impl\SimpleComparatorConstraint;
 
 // class SimpleSelectorConstraint extends SimpleComparatorConstraint implements SelectorConstraint {
 // 	private $entityProperty;

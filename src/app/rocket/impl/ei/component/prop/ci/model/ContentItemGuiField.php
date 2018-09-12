@@ -24,13 +24,14 @@ namespace rocket\impl\ei\component\prop\ci\model;
 use rocket\ei\manage\gui\GuiField;
 use rocket\ei\manage\gui\GuiFieldEditable;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
-use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\frame\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\ei\util\model\EiuFrame;
+use rocket\ei\util\frame\EiuFrame;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use rocket\impl\ei\component\prop\ci\ContentItemsEiProp;
 use rocket\ei\manage\gui\ui\DisplayItem;
 use n2n\util\ex\IllegalStateException;
+use rocket\ei\util\Eiu;
 
 class ContentItemGuiField implements GuiField {
 	private $label;
@@ -109,7 +110,7 @@ class ContentItemGuiField implements GuiField {
 			return $this->createCompactOutputUiComponent($view);
 		}
 		
-		$targetUtils = new EiuFrame($this->targetEiFrame);
+		$targetUtils = (new Eiu($this->targetEiFrame))->frame();
 		$panelEiPropPath = ContentItemsEiProp::getPanelEiPropPath();
 		
 		$groupedEiuEntries = array();
@@ -136,7 +137,7 @@ class ContentItemGuiField implements GuiField {
 	public function createCompactOutputUiComponent(HtmlView $view) {
 	
 		
-		$targetUtils = new EiuFrame($this->targetEiFrame);
+		$targetUtils = (new Eiu($this->targetEiFrame))->frame();
 		$panelEiPropPath = ContentItemsEiProp::getPanelEiPropPath();
 		
 		$groupedUiComponents = array();
@@ -153,17 +154,17 @@ class ContentItemGuiField implements GuiField {
 				$groupedUiComponents[$panelName] = array();
 			}
 			
-			if ($targetEiEntry->isAccessible()) {
-				$iconType = $targetUtils->getGenericIconType($targetEiEntry);
-				// $label = $targetUtils->getGenericLabel($targetEiEntry);
-				$label = $targetUtils->createIdentityString($targetEiEntry->getEiObject());
-				$groupedUiComponents[$panelName][] = new HtmlElement('li', array('title' => $label,
-						'class' => 'list-inline-item rocket-impl-content-type'), 
-						array(new HtmlElement('i', array('class' => 'fa fa-' . $iconType), '')));
-			} else {
-				$groupedUiComponents[$panelName][] = new HtmlElement('li', array('rocket-inaccessible'),
-						$targetUtils->createIdentityString($targetEiEntry->getEiObject()));
-			}
+// 			if ($targetEiEntry->isAccessible()) {
+// 				$iconType = $targetUtils->getGenericIconType($targetEiEntry);
+// 				// $label = $targetUtils->getGenericLabel($targetEiEntry);
+// 				$label = $targetUtils->createIdentityString($targetEiEntry->getEiObject());
+// 				$groupedUiComponents[$panelName][] = new HtmlElement('li', array('title' => $label,
+// 						'class' => 'list-inline-item rocket-impl-content-type'), 
+// 						array(new HtmlElement('i', array('class' => 'fa fa-' . $iconType), '')));
+// 			} else {
+// 				$groupedUiComponents[$panelName][] = new HtmlElement('li', array('rocket-inaccessible'),
+// 						$targetUtils->createIdentityString($targetEiEntry->getEiObject()));
+// 			}
 		}
 		
 		return $view->getImport('\rocket\impl\ei\component\prop\ci\view\compactContentItems.html',

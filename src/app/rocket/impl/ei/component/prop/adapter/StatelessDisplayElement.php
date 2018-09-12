@@ -25,7 +25,7 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\manage\gui\GuiField;
 use rocket\ei\manage\gui\GuiFieldEditable;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 
 class StatelessDisplayElement implements GuiField {
 	private $statelessDisplayable;

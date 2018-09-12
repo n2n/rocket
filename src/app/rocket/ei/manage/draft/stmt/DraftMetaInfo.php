@@ -23,7 +23,6 @@ namespace rocket\ei\manage\draft\stmt;
 
 use rocket\ei\EiPropPath;
 use n2n\io\IoUtils;
-use rocket\ei\EiEngineModel;
 
 class DraftMetaInfo {
 	const TABLE_PREFIX = 'rocket_draft_';

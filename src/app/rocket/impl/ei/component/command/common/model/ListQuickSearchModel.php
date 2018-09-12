@@ -22,7 +22,7 @@
 // namespace rocket\impl\ei\component\command\common\model;
 
 // use n2n\web\dispatch\Dispatchable;
-// use rocket\ei\manage\EiFrame;
+// use rocket\ei\manage\frame\EiFrame;
 // use rocket\ei\CritmodFactory;
 
 // class ListQuickSearchModel implements Dispatchable {	

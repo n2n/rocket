@@ -21,8 +21,8 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model\mag;
 
-use rocket\ei\util\model\EiuFrame;
-use rocket\ei\manage\mapping\EiEntry;
+use rocket\ei\util\frame\EiuFrame;
+use rocket\ei\manage\entry\EiEntry;
 
 class ToManyDynMappingFormFactory {
 	private $eiuFrame;
@@ -50,13 +50,13 @@ class ToManyDynMappingFormFactory {
 	}
 	
 	public function addEiEntry(EiEntry $currentEiEntry) {
-		if (!$currentEiEntry->isAccessible()) {
-			$this->currentMappingForms[$this->getKey($currentEiEntry)] = new MappingForm(
-					$this->eiuFrame->createIdentityString($currentEiEntry->getEiObject()),
-					$this->eiuFrame->getGenericIconType($currentEiEntry),
-					null, $this->nextOrderIndex++);
-			return;
-		}
+// 		if (!$currentEiEntry->isAccessible()) {
+// 			$this->currentMappingForms[$this->getKey($currentEiEntry)] = new MappingForm(
+// 					$this->eiuFrame->createIdentityString($currentEiEntry->getEiObject()),
+// 					$this->eiuFrame->getGenericIconType($currentEiEntry),
+// 					null, $this->nextOrderIndex++);
+// 			return;
+// 		}
 		
 		if ($currentEiEntry->getEiObject()->isNew()) {
 			$this->newMappingForms[] = new MappingForm(

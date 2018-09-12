@@ -26,7 +26,7 @@ use rocket\impl\ei\component\prop\string\AlphanumericEiProp;
 use n2n\reflection\ArgUtils;
 use rocket\ei\EiPropPath;
 use n2n\web\dispatch\mag\Mag;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\util\col\GenericArrayObject;
 use rocket\impl\ei\component\prop\string\cke\model\CkeCssConfig;
@@ -35,6 +35,8 @@ use rocket\impl\ei\component\prop\string\cke\model\CkeMag;
 use rocket\impl\ei\component\prop\string\cke\model\CkeLinkProvider;
 use rocket\impl\ei\component\prop\string\cke\ui\CkeHtmlBuilder;
 use rocket\ei\manage\gui\ViewMode;
+use n2n\util\StringUtils;
+use n2n\core\N2N;
 
 class CkeEiProp extends AlphanumericEiProp {
 	const MODE_SIMPLE = 'simple';
@@ -115,7 +117,12 @@ class CkeEiProp extends AlphanumericEiProp {
 
 	public function createOutputUiComponent(HtmlView $view, Eiu $eiu) {
 	    $value = $eiu->field()->getValue(EiPropPath::from($this));
-
+	    if ($value === null) return null;
+	    
+		if ($eiu->gui()->isCompact()) {
+			return StringUtils::reduce(html_entity_decode(strip_tags($value), null, N2N::CHARSET), 50, '...');
+		}
+	    
 		$ckeCss = null;
 		if ($this->ckeCssConfigLookupId !== null) {
 			$ckeCss = $view->lookup($this->ckeCssConfigLookupId);

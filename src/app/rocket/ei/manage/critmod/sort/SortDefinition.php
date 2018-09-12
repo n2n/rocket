@@ -26,83 +26,81 @@ use rocket\ei\EiPropPath;
 use n2n\util\col\ArrayUtils;
 
 class SortDefinition {
-	private $sortFields = array();
-	private $sortFieldForks = array();
+	private $sortProps = array();
+	private $sortPropForks = array();
 	
-	public function putSortField(string $id, SortField $sortField) {
+	public function putSortProp(string $id, SortProp $sortProp) {
 		ArgUtils::assertTrue(!EiPropPath::constainsSpecialIdChars($id), 'Invalid id.');
-		$this->sortFields[$id] = $sortField;	
+		$this->sortProps[$id] = $sortProp;	
 	}
 	
-	public function containsSortFieldId(string $id): bool {
-		return isset($this->sortFields[$id]);
+	public function containsSortPropId(string $id): bool {
+		return isset($this->sortProps[$id]);
 	}
 	
-	public function getSortFields(): array {
-		return $this->sortFields;
+	public function getSortProps(): array {
+		return $this->sortProps;
 	}
 	
-// 	public function setSortItems(array $sortFields) {
-// 		$this->sortFields = $sortFields;
+// 	public function setSortItems(array $sortProps) {
+// 		$this->sortProps = $sortProps;
 // 	}
 
-	public function containsSortFieldFork(string $id): bool {
-		return isset($this->sortFieldForks[$id]);
+	public function containsSortPropFork(string $id): bool {
+		return isset($this->sortPropForks[$id]);
 	}
 
-	public function putSortFieldFork(string $id, SortFieldFork $sortFieldFork) {
+	public function putSortPropFork(string $id, SortPropFork $sortPropFork) {
 		ArgUtils::assertTrue(!EiPropPath::constainsSpecialIdChars($id), 'Invalid id.');
-		$this->sortFieldForks[$id] = $sortFieldFork;
+		$this->sortPropForks[$id] = $sortPropFork;
 	}
 	
-	public function getSortFieldForks(): array {
-		return $this->sortFieldForks;
+	public function getSortPropForks(): array {
+		return $this->sortPropForks;
 	}
 	
-	public function getAllSortFields(): array {
-		$sortFields = $this->sortFields;
+	public function getAllSortProps(): array {
+		$sortProps = $this->sortProps;
 		
-		foreach ($this->sortFieldForks as $forkId => $sortFieldFork) {
+		foreach ($this->sortPropForks as $forkId => $sortPropFork) {
 			$forkEiPropPath = EiPropPath::create($forkId);
-			foreach ($sortFieldFork->getForkedSortDefinition()->getAllSortFields() as $id => $sortField) {
+			foreach ($sortPropFork->getForkedSortDefinition()->getAllSortProps() as $id => $sortProp) {
 				$forkEiPropPath->ext(EiPropPath::create($id));
 			}
 		}
 		
-		return $sortFields;
+		return $sortProps;
 	}
 	
-	public function builCriteriaConstraint(SortData $sortData, bool $tmp) {
+	public function createCriteriaConstraint(SortSettingGroup $sortData) {
 		$sortConstraints = array();
 					
-		foreach ($sortData->getSortItemDatas() as $sortItemData) {
+		foreach ($sortData->getSortSettings() as $sortItemData) {
 			$sortConstraint = $this->buildSortCriteriaConstraint( 
-					EiPropPath::create($sortItemData->getSortFieldId())->toArray(), $sortItemData->getDirection());
+					EiPropPath::create($sortItemData->getSortPropId())->toArray(), $sortItemData->getDirection());
 			if ($sortConstraint !== null) {
 				$sortConstraints[] = $sortConstraint;
 			}
 		}
 		
-		if (empty($sortConstraints)) return null;
-		
-		return new SortCriteriaConstraintGroup($sortConstraints, $tmp);
+		return new SortCriteriaConstraintGroup($sortConstraints);
 	}
 	
 	protected function buildSortCriteriaConstraint(array $nextIds, string $direction) {
 		$id = ArrayUtils::shift($nextIds, true);
 		
 		if (empty($nextIds)) {
-			if (!isset($this->sortFields[$id])) return null;
+			if (!isset($this->sortProps[$id])) return null;
 			
-			return $this->sortFields[$id]->createSortConstraint($direction);
+			return $this->sortProps[$id]->createSortConstraint($direction);
 		}		
 
-		if (!isset($this->sortFieldForks[$id])) return null;
+		if (!isset($this->sortPropForks[$id])) return null;
 
-		$forkedSortConstraint = $this->sortFieldForks[$id]->getForkedSortDefinition()
+		$forkedSortConstraint = $this->sortPropForks[$id]->getForkedSortDefinition()
 				->buildSortCriteriaConstraint($nextIds, $direction);
 		if ($forkedSortConstraint !== null) {
-			return $this->sortFieldForks[$id]->createSortConstraint($forkedSortConstraint);
+			return $this->sortPropForks[$id]->createSortConstraint($forkedSortConstraint);
 		}
 		
 		return null;

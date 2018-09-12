@@ -1,8 +1,8 @@
 namespace Rocket.Cmd {
 	
 	export class Blocker {
-		private jqContainer: JQuery;
-		private jqBlocker: JQuery = null;
+		private jqContainer: JQuery<Element>;
+		private jqBlocker: JQuery<Element> = null;
 		
 		constructor(private container: Container) {
 			for (let layer of container.layers) {
@@ -41,7 +41,7 @@ namespace Rocket.Cmd {
 		}
 		
 		
-		init(jqContainer: JQuery) {
+		init(jqContainer: JQuery<Element>) {
 			if (this.jqContainer) {
 				throw new Error("Blocker already initialized.");
 			}
@@ -76,7 +76,7 @@ namespace Rocket.Cmd {
 						} 
 					})
 					.append($("<div />", { "class": "rocket-loading" }))
-					.appendTo(this.jqContainer);
+					.appendTo(<JQuery<HTMLElement>> this.jqContainer);
 		}
 	}
 	

@@ -22,34 +22,32 @@
 namespace rocket\impl\ei\component\prop\numeric;
 
 use rocket\ei\component\prop\QuickSearchableEiProp;
-use rocket\ei\manage\critmod\filter\impl\field\StringFilterField;
+use rocket\ei\util\filter\prop\StringFilterProp;
 use rocket\ei\component\prop\SortableEiProp;
 use rocket\ei\component\prop\FilterableEiProp;
 use n2n\l10n\N2nLocale;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
-use rocket\ei\manage\critmod\sort\impl\SimpleSortField;
-
 use rocket\impl\ei\component\prop\adapter\DraftableEiPropAdapter;
 use rocket\impl\ei\component\prop\numeric\conf\NumericEiPropConfigurator;
 use n2n\reflection\ArgUtils;
 use n2n\reflection\property\AccessProxy;
 use n2n\reflection\property\TypeConstraint;
 use rocket\ei\manage\EiObject;
-use rocket\ei\manage\EiFrame;
 use n2n\core\container\N2nContext;
 use rocket\ei\EiPropPath;
 use n2n\persistence\orm\criteria\item\CrIt;
-use rocket\ei\manage\critmod\sort\SortField;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\manage\critmod\sort\SortProp;
+use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
-use rocket\ei\manage\critmod\quick\impl\model\LikeQuickSearchField;
-use rocket\ei\manage\critmod\filter\FilterField;
+use rocket\ei\manage\critmod\quick\impl\LikeQuickSearchProp;
+use rocket\ei\manage\critmod\filter\FilterProp;
+use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
+use rocket\ei\manage\critmod\quick\QuickSearchProp;
 
 abstract class NumericEiPropAdapter extends DraftableEiPropAdapter 
 		implements FilterableEiProp, SortableEiProp, QuickSearchableEiProp {
-	
 	protected $minValue = null;
 	protected $maxValue = null;
 	
@@ -69,7 +67,7 @@ abstract class NumericEiPropAdapter extends DraftableEiPropAdapter
 		$this->maxValue = $maxValue;
 	}
 
-	public function setEntityProperty(EntityProperty $entityProperty = null) {
+	public function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty instanceof ScalarEntityProperty);
 		$this->entityProperty = $entityProperty;
 	}
@@ -94,37 +92,29 @@ abstract class NumericEiPropAdapter extends DraftableEiPropAdapter
 // 		return $view->getHtmlBuilder()->getEsc($value);
 // 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\FilterableEiProp::buildManagedFilterField($eiFrame)
-	 */
-	public function buildManagedFilterField(EiFrame $eiFrame): ?FilterField  {
-		return $this->buildFilterField($eiFrame->getN2nContext());
+	public function buildFilterProp(Eiu $eiu): ?FilterProp {
+		return new StringFilterProp(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
 	}
 	
-	public function buildFilterField(N2nContext $n2nContext): ?FilterField {
-		return new StringFilterField(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
-	}
-	
-	public function buildEiEntryFilterField(N2nContext $n2nContext) {
+	public function buildSecurityFilterProp(N2nContext $n2nContext) {
 		return null;
 	}
 	
-	public function buildManagedSortField(EiFrame $eiFrame): ?SortField {
-		return $this->buildSortField($eiFrame->getN2nContext());
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\prop\SortableEiProp::createGlobalSortProp()
+	 * @return SortProp
+	 */
+	public function buildSortProp(Eiu $eiu): ?SortProp {
+		return new SimpleSortProp(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\SortableEiProp::createGlobalSortField()
-	 * @return SortField
+	 * @see \rocket\ei\component\prop\QuickSearchableEiProp::buildQuickSearchProp()
 	 */
-	public function buildSortField(N2nContext $n2nContext): ?SortField {
-		return new SimpleSortField(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
-	}
-	
-	public function buildQuickSearchField(EiFrame $eiFrame) {
-		return new LikeQuickSearchField(CrIt::p($this->getEntityProperty()));
+	public function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp {
+		return new LikeQuickSearchProp(CrIt::p($this->getEntityProperty()));
 	}
 
 // 	public function createEditablePreviewUiComponent(PreviewModel $previewModel, PropertyPath $propertyPath,

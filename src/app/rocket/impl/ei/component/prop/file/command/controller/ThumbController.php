@@ -33,7 +33,7 @@ use n2n\web\http\controller\ParamQuery;
 use n2n\reflection\CastUtils;
 use n2n\io\managed\File;
 use rocket\ei\manage\EiObject;
-use rocket\ei\util\model\EiuCtrl;
+use rocket\ei\util\EiuCtrl;
 use n2n\reflection\ArgUtils;
 use n2n\io\managed\ThumbManager;
 
@@ -153,5 +153,16 @@ class ThumbController extends ControllerAdapter {
 				->ext(PathUtils::createPathExtFromEntryNavPoint($this->fileEiProp->getThumbEiCommand(), 
 						$eiObject->toEntryNavPoint()));
 			$this->eiuCtrl->applyBreadcrumbs(new Breadcrumb($breadcrumbPath, $this->fileEiProp->getLabelLstr()));
+	}
+	
+	public function doPreview($pid) {
+		$eiuEntry = $this->eiuCtrl->lookupEntry($pid);
+		
+		$file = $eiuEntry->getValue($this->fileEiProp);
+		if ($file === null) {
+			throw new PageNotFoundException();
+		}
+		
+		$this->sendFile($file);
 	}
 }

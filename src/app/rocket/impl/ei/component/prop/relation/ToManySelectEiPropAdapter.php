@@ -32,14 +32,16 @@ use rocket\ei\manage\draft\DraftValueSelection;
 use rocket\ei\EiPropPath;
 use rocket\impl\ei\component\prop\relation\model\ToManySelectGuiField;
 use rocket\ei\manage\LiveEiObject;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use rocket\ei\manage\draft\RemoveDraftAction;
 use rocket\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
 use n2n\reflection\CastUtils;
 use rocket\impl\ei\component\prop\relation\model\relation\SelectEiPropRelation;
 use rocket\ei\manage\gui\ui\DisplayItem;
-use rocket\ei\manage\critmod\CriteriaConstraint;
 use rocket\ei\manage\gui\GuiField;
+use rocket\ei\manage\gui\DisplayDefinition;
+use rocket\ei\manage\frame\Boundry;
+use rocket\ei\manage\security\InaccessibleEiCommandPathException;
 
 abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 	
@@ -49,7 +51,7 @@ abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\mapping\impl\Readable::read()
+	 * @see \rocket\ei\component\prop\field\Readable::read()
 	 */
 	public function read(EiObject $eiObject) {
 		$targetEntityObjs = null;
@@ -76,7 +78,7 @@ abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\mapping\impl\Writable::write()
+	 * @see \rocket\ei\component\prop\field\Writable::write()
 	 */
 	public function write(EiObject $eiObject, $value) {
 		ArgUtils::valArray($value, EiObject::class);
@@ -98,6 +100,30 @@ abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 		return $value;
 	}
 	
+	
+	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
+		$eiPropRelation = $this->eiPropRelation;
+		CastUtils::assertTrue($eiPropRelation instanceof SelectEiPropRelation);
+		
+		if (!$eiPropRelation->isHiddenIfTargetEmpty()) {
+			return parent::buildDisplayDefinition($eiu);
+		}
+		
+		$eiFrame = $eiu->frame()->getEiFrame();
+		$targetReadEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame);
+		
+		$targetEiu = new Eiu($targetReadEiFrame);
+		$eiPropRelation = $this->eiPropRelation;
+		CastUtils::assertTrue($eiPropRelation instanceof SelectEiPropRelation);
+		
+		if ($eiPropRelation->isHiddenIfTargetEmpty()
+				&& 0 == $targetEiu->frame()->countEntries(Boundry::NON_SECURITY_TYPES)) {
+			return null;
+		}
+		
+		return parent::buildDisplayDefinition($eiu);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiProp::buildGuiField()
@@ -105,17 +131,17 @@ abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 	public function buildGuiField(Eiu $eiu): ?GuiField {
 		$mapping = $eiu->entry()->getEiEntry();
 		$eiFrame = $eiu->frame()->getEiFrame();
-		$targetReadEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame, $mapping);
+		$targetReadEiFrame = null;
 		
-		$targetEiu = new Eiu($targetReadEiFrame);
+		try {
+			$targetReadEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame, $mapping);
+		} catch (InaccessibleEiCommandPathException $e) {
+			return null;
+		}
+		
 		$eiPropRelation = $this->eiPropRelation;
 		CastUtils::assertTrue($eiPropRelation instanceof SelectEiPropRelation);
 		
-		if ($eiPropRelation->isHiddenIfTargetEmpty() 
-				&& 0 == $targetEiu->frame()->countEntries(CriteriaConstraint::NON_SECURITY_TYPES)) {
-			return null;
-		}
-	
 		$toManyEditable = null;
 		if (!$this->eiPropRelation->isReadOnly($mapping, $eiFrame)) {
 			$targetEditEiFrame = $this->eiPropRelation->createTargetEditPseudoEiFrame($eiFrame, $mapping);

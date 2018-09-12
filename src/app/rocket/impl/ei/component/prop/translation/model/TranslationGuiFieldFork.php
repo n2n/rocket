@@ -30,7 +30,7 @@ use n2n\l10n\N2nLocale;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
 use rocket\impl\ei\component\prop\relation\model\RelationEntry;
 use rocket\impl\ei\component\prop\translation\conf\N2nLocaleDef;
-use rocket\ei\manage\mapping\impl\EiFieldWrapperWrapper;
+use rocket\ei\component\prop\field\EiFieldWrapperWrapper;
 use n2n\util\uri\Url;
 use n2n\web\dispatch\mag\Mag;
 use n2n\util\ex\IllegalStateException;
@@ -38,7 +38,7 @@ use rocket\ei\manage\gui\GuiFieldForkEditable;
 use rocket\ei\manage\gui\MagAssembly;
 use rocket\ei\manage\gui\GuiFieldFork;
 use n2n\impl\web\ui\view\html\HtmlUtils;
-use rocket\ei\util\model\EiuEntryGuiAssembler;
+use rocket\ei\util\gui\EiuEntryGuiAssembler;
 
 class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 	private $toManyEiField;
@@ -135,7 +135,7 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 		$label = $this->guiDefinition->getGuiPropByGuiIdPath($guiIdPath)->getDisplayLabel();
 		$eiPropPath = $this->guiDefinition->guiIdPathToEiPropPath($guiIdPath);
 
-// 		$fieldErrorInfo = new FieldErrorInfo();
+// 		$fieldErrorInfo = new EiFieldValidationResult();
 		
 		$translationDisplayable = new TranslationDisplayable($label, $this->n2nLocaleDefs);
 		
@@ -148,12 +148,12 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 			if ($result === null) continue;
 			
 			$eiuEntry = $guiFieldAssembler->getEiuEntryGui()->getEiuEntry();
-			$fieldErrorInfo = $eiuEntry->getEiEntry()->getMappingErrorInfo()
-					->getFieldErrorInfo($eiPropPath);
+			$fieldErrorInfo = $eiuEntry->getEiEntry()->getValidationResult()
+					->getEiFieldValidationResult($eiPropPath);
 			if (null !== ($eiFieldWrapper = $result->getEiFieldWrapper())) {
 				$eiFieldWrappers[] = $eiFieldWrapper;
 			}
-// 			$fieldErrorInfo->addSubFieldErrorInfo($result->getFieldErrorInfo());
+// 			$fieldErrorInfo->addSubEiFieldValidationResult($result->getEiFieldValidationResult());
 			
 			if ($this->targetRelationEntries[$n2nLocaleId]->getEiObject()->isNew()) {
 				$translationDisplayable->putDisplayable($n2nLocaleId, new EmptyDisplayable($result->getDisplayable()), 

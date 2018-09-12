@@ -28,6 +28,9 @@ use rocket\ei\mask\EiMask;
 use rocket\custom\CustomType;
 use rocket\user\bo\CustomGrant;
 use rocket\user\bo\Grant;
+use rocket\ei\EiTypeExtension;
+use rocket\spec\TypePath;
+use rocket\ei\EiTypeExtensionCollection;
 
 class GroupGrantsViewModel {
 	private $userGroup;
@@ -40,7 +43,7 @@ class GroupGrantsViewModel {
 		foreach ($eiTypes as $eiType) {
 			if ($eiType->hasSuperEiType()) continue; 
 			
-			$this->applyEiTypeItems($eiType, 0);
+			$this->applyEiTypeTree($eiType, 0);
 		}
 		
 		foreach ($customSpecs as $customSpec) {
@@ -49,16 +52,13 @@ class GroupGrantsViewModel {
 		}
 	}
 	
-	private function findEiGrant(EiType $eiType, EiMask $eiMask = null) {
-		$eiTypeId = $eiType->getId();
-		$eiMaskId = null;
-		
-		if ($eiMask !== null) {
-			$eiMaskId = $eiMask->getExtension()->getId();
-		}
-		
+	/**
+	 * @param TypePath $eiTypePath
+	 * @return \rocket\user\bo\EiGrant|NULL
+	 */
+	private function findEiGrant(TypePath $eiTypePath) {
 		foreach ($this->userGroup->getEiGrants() as $eiGrant) {
-			if ($eiTypeId === $eiGrant->getEiTypeId() && $eiMaskId === $eiGrant->getEiMaskId()) {
+			if ($eiTypePath->equals($eiGrant->getEiTypePath())) {
 				return $eiGrant;
 			}
 		}
@@ -78,16 +78,34 @@ class GroupGrantsViewModel {
 		return null;
 	}
 	
-	private function applyEiTypeItems(EiType $eiType, int $level) {
-		$this->eiTypeItems[$eiType->getId()] = $eiTypeItem = new EiTypeItem($level, $eiType, $this->findEiGrant($eiType));
+	private function applyEiTypeTree(EiType $eiType, int $level) {
+		$eiTypePath = $eiType->getEiMask()->getEiTypePath();
+		$this->eiTypeItems[(string) $eiTypePath] = new EiTypeItem($level, $eiTypePath, 
+				$eiType->getEiMask()->getLabelLstr(), $this->findEiGrant($eiTypePath));
 		
-		foreach ($eiType->getEiTypeExtensionCollection() as $eiMask) {
-			$eiTypeItem->addEiMaskItem(new EiMaskItem($eiMask, $this->findEiGrant($eiType, $eiMask)));
-		}
+		$this->applyEiTypeExtensions($eiType->getEiTypeExtensionCollection());
 		
 		$level++;
 		foreach ($eiType->getSubEiTypes() as $subEiType) {
-			$this->applyEiTypeItems($subEiType, $level);
+			$this->applyEiTypeTree($subEiType, $level);
+		}
+	}
+	
+	private function applyEiTypeExtensions(EiTypeExtensionCollection $collection) {
+		$eiTypeExtensions = $collection->toArray();
+		while (!empty($eiTypeExtensions)) {
+			foreach ($eiTypeExtensions as $key => $eiTypeExtension) {
+				$extendedEiTypePathStr = (string) $eiTypeExtension->getExtendedEiMask()->getEiTypePath();
+				if (!isset($this->eiTypeItems[$extendedEiTypePathStr])) {
+					continue;
+				}
+				
+				$level = $this->eiTypeItems[$extendedEiTypePathStr]->getLevel() + 1;
+				$eiTypePath = $eiTypeExtension->getEiMask()->getEiTypePath();
+				$this->eiTypeItems[(string) $eiTypePath] = new EiTypeItem($level, $eiTypePath,
+						$eiTypeExtension->getEiMask()->getLabelLstr());
+				unset($eiTypeExtensions[$key]);
+			}
 		}
 	}
 	
@@ -131,55 +149,52 @@ class Item {
 }
 
 class EiTypeItem extends Item {
+	/**
+	 * @var int
+	 */
 	private $level;
-	private $eiType;
-	private $eiMaskItems = array();
+	/**
+	 * @var TypePath
+	 */
+	private $eiTypePath;
+	/**
+	 * @var string
+	 */
+	private $label;
 	
-	public function __construct(int $level, EiType $eiType, EiGrant $eiGrant = null) {
+	public function __construct(int $level, TypePath $eiTypePath, string $label, EiGrant $eiGrant = null) {
 		parent::__construct($eiGrant);
 		$this->level = $level;
-		$this->eiType = $eiType;	
+		$this->eiTypePath = $eiTypePath;
+		$this->label = $label;
 	}
 	
+	/**
+	 * @return int
+	 */
 	public function getLevel(): int {
 		return $this->level;
 	}
 	
-	public function getEiTypeId(): string {
-		return $this->eiType->getId();
+	/**
+	 * @return boolean
+	 */
+	public function isExtension() {
+		return null !== $this->eiTypePath->getEiTypeExtensionId();
 	}
 	
+	/**
+	 * @return TypePath
+	 */
+	public function getEiTypePath(): TypePath {
+		return $this->eiTypePath;
+	}
+	
+	/**
+	 * @return string
+	 */
 	public function getLabel(): string {
-		if (null !== ($label = $this->eiType->getEiMask()->getLabel())) {
-			return $label;
-		}
-		
-		return $this->eiType->getEiTypeExtensionCollection()->getOrCreateDefault()->getLabel();
-	}
-	
-	public function getEiMaskItems(): array {
-		return $this->eiMaskItems;
-	}
-	
-	public function addEiMaskItem(EiMaskItem $eiMaskItem) {
-		$this->eiMaskItems[] = $eiMaskItem;
-	}
-}
-
-class EiMaskItem extends Item {
-	private $eiMask;
-	
-	public function __construct(EiMask $eiMask, EiGrant $eiGrant = null) {
-		parent::__construct($eiGrant);
-		$this->eiMask = $eiMask;
-	}
-	
-	public function getEiMaskId(): string {
-		return $this->eiMask->getExtension()->getId();
-	}
-	
-	public function getLabel(): string {
-		return $this->eiMask->getLabelLstr();
+		return $this->label;
 	}
 }
 

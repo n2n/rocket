@@ -29,9 +29,9 @@ use n2n\web\dispatch\map\InvalidPropertyExpressionException;
 use rocket\impl\ei\component\prop\relation\model\mag\MappingForm;
 use n2n\web\http\BadRequestException;
 use n2n\util\uri\Url;
-use rocket\ei\util\model\EiuCtrl;
+use rocket\ei\util\EiuCtrl;
 use n2n\impl\web\ui\view\jhtml\JhtmlResponse;
-use rocket\ei\manage\critmod\CriteriaConstraint;
+use rocket\ei\manage\frame\Boundry;
 
 class RelationJhtmlController extends ControllerAdapter {
 	private $eiuCtrl;	
@@ -84,7 +84,7 @@ class RelationJhtmlController extends ControllerAdapter {
 			throw new BadRequestException();
 		}
 		
-		$eiuEntry = $this->eiuCtrl->lookupEntry((string) $pid, CriteriaConstraint::NON_SECURITY_TYPES);
+		$eiuEntry = $this->eiuCtrl->lookupEntry((string) $pid, Boundry::NON_SECURITY_TYPES);
 		
 		$mappingForm = null;
 		try {

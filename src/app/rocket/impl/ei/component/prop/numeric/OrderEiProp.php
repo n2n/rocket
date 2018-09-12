@@ -24,11 +24,11 @@ namespace rocket\impl\ei\component\prop\numeric;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
-use rocket\ei\manage\critmod\sort\impl\SimpleSortField;
+use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
 use n2n\impl\web\dispatch\mag\model\NumericMag;
 use rocket\impl\ei\component\prop\numeric\conf\OrderEiPropConfigurator;
 use n2n\web\dispatch\mag\Mag;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use rocket\ei\EiPropPath;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 
@@ -50,7 +50,7 @@ class OrderEiProp extends IntegerEiProp {
 	}
 
 	public function getSortItem() {
-		return new SimpleSortField($this->getEntityProperty()->getName(), $this->getLabelLstr());
+		return new SimpleSortProp($this->getEntityProperty()->getName(), $this->getLabelLstr());
 	}
 
 	public function createMag(Eiu $eiu): Mag {
@@ -58,8 +58,8 @@ class OrderEiProp extends IntegerEiProp {
 				null, null, 0, null, array('placeholder' => $this->getLabelLstr()));
 	}
 
-	public function getFilterField() {
-// 		return new StringFilterField($this->getEntityProperty()->getName(), $this->getLabel(),
-// 				FilterFieldAdapter::createOperatorOptions($n2nContext->getN2nLocale()));
+	public function getFilterProp() {
+// 		return new StringFilterProp($this->getEntityProperty()->getName(), $this->getLabel(),
+// 				FilterPropAdapter::createOperatorOptions($n2nContext->getN2nLocale()));
 	}
 }

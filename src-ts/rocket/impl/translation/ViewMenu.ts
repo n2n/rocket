@@ -7,9 +7,9 @@ namespace Rocket.Impl.Translation {
 		private _items: { [localeId: string]: ViewMenuItem } = {};
 		private changing: boolean = false;
 		
-		constructor(private jqContainer: JQuery) {}
+		constructor(private jqContainer: JQuery<Element>) {}
 
-		get jQuery(): JQuery {
+		get jQuery(): JQuery<Element> {
 			return this.jqContainer;
 		}
 
@@ -21,13 +21,14 @@ namespace Rocket.Impl.Translation {
 			$("<div />", { "class": "rocket-impl-translation-status" })
 					.append($("<label />", { "text": visibleLabel }).prepend($("<i></i>", { "class": "fa fa-language" })))
 					.append(this.jqStatus = $("<span></span>"))
-					.prependTo(this.jqContainer);
+					.prependTo(<JQuery<HTMLElement>> this.jqContainer);
 			
-			let buttonJq = new Rocket.Display.CommandList(this.jqContainer).createJqCommandButton({
-				iconType: "fa fa-cog",
-				label: languagesLabel,
-				tooltip: tooltip
-			});
+			let buttonJq = new Rocket.Display.CommandList(this.jqContainer)
+				.createJqCommandButton({
+					iconType: "fa fa-cog",
+					label: languagesLabel,
+					tooltip: tooltip
+				});
 			
 			let menuJq = $("<div />", { "class": "rocket-impl-translation-status-menu" })
 					.append(this.menuUlJq = $("<ul></ul>"))
@@ -85,7 +86,7 @@ namespace Rocket.Impl.Translation {
 			for (let content of translatable.contents) {
 				if (!this._items[content.localeId]) {
 					let item = this._items[content.localeId] = new ViewMenuItem(content.localeId, content.localeName, content.prettyLocaleId);
-					item.draw($("<li />").appendTo(this.menuUlJq));
+					item.draw($("<li />").appendTo(<JQuery<HTMLElement>> this.menuUlJq));
 					
 					item.on = Object.keys(this._items).length == 1;
 					item.whenChanged(() => this.menuChanged());
@@ -139,7 +140,7 @@ namespace Rocket.Impl.Translation {
 			this.changing = false;
 		}
 
-		static from(jqElem: JQuery): ViewMenu {
+		static from(jqElem: JQuery<Element>): ViewMenu {
 			let vm = jqElem.data("rocketImplViewMenu");
 			if (vm instanceof ViewMenu) {
 				return vm;
@@ -166,7 +167,7 @@ namespace Rocket.Impl.Translation {
 			
 			this.jqA = $("<a />", { "href": "", "text": this.label + " ", "class": "btn" })
 					.append(this.jqI)
-					.appendTo(jqElem)
+					.appendTo(<JQuery<HTMLElement>> jqElem)
 					.on ("click",(evt: any) => {
 						if (this.disabled) return;
 						

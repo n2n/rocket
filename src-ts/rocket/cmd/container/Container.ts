@@ -2,11 +2,11 @@ namespace Rocket.Cmd {
 	import display = Rocket.Display;
 	
 	export class Container {
-		private jqContainer: JQuery;
+		private jqContainer: JQuery<Element>;
 		private _layers: Array<Layer>;
 		private layerCallbackRegistery: Rocket.Util.CallbackRegistry<LayerCallback> = new Rocket.Util.CallbackRegistry<LayerCallback>();
 		
-		constructor(jqContainer: JQuery) {
+		constructor(jqContainer: JQuery<Element>) {
 			this.jqContainer = jqContainer;
 			this._layers = new Array<Layer>();
 			

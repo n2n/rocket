@@ -23,7 +23,7 @@
 	use rocket\impl\ei\component\command\common\model\EntryCommandViewModel;
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use n2n\util\uri\Path;
-use rocket\ei\manage\EiHtmlBuilder;
+use rocket\ei\util\gui\EiuHtmlBuilder;
 use n2n\web\ui\Raw;
 
 	$view = HtmlView::view($this);
@@ -46,7 +46,7 @@ use n2n\web\ui\Raw;
 		$previewPath = new Path(array('livepreview', $eiuEntry->getLivePid()));
 	}
 	
-	$eiHtml = new EiHtmlBuilder($view);
+	$eiuHtml = new EiuHtmlBuilder($view);
 ?>
 
 <div class="rocket-zone-toolbar">

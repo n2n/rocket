@@ -24,27 +24,26 @@ namespace rocket\impl\ei\component\prop\adapter;
 use n2n\reflection\property\TypeConstraint;
 use n2n\util\config\Attributes;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
-use n2n\core\container\N2nContext;
-use rocket\ei\manage\mapping\impl\Writable;
+use rocket\ei\component\prop\field\Writable;
 use n2n\util\ex\IllegalStateException;
 use n2n\web\dispatch\mag\Mag;
-use rocket\ei\manage\mapping\EiField;
-use rocket\ei\manage\mapping\impl\SimpleEiField;
+use rocket\ei\manage\entry\EiField;
+use rocket\ei\component\prop\field\SimpleEiField;
 use rocket\ei\manage\EiObject;
 use rocket\ei\component\prop\PrivilegedEiProp;
-use rocket\spec\security\EiPropPrivilege;
+use rocket\ei\manage\security\privilege\EiPropPrivilege;
 use n2n\reflection\ArgUtils;
 use n2n\l10n\Lstr;
 use rocket\core\model\Rocket;
-use rocket\ei\security\EiPropAccess;
+use rocket\ei\manage\security\EiFieldAccess;
 use n2n\util\config\AttributesException;
-use rocket\ei\util\model\Eiu;
-use rocket\ei\manage\mapping\FieldErrorInfo;
+use rocket\ei\util\Eiu;
+use rocket\ei\manage\entry\EiFieldValidationResult;
 use n2n\l10n\MessageCode;
-use rocket\ei\manage\mapping\impl\Validatable;
+use rocket\ei\component\prop\field\Validatable;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\EiPropPath;
-use rocket\ei\manage\mapping\impl\Copyable;
+use rocket\ei\component\prop\field\Copyable;
 use rocket\ei\manage\gui\GuiField;
 use rocket\ei\manage\gui\GuiPropFork;
 use rocket\ei\manage\gui\GuiProp;
@@ -117,7 +116,7 @@ abstract class PropertyEditableEiPropAdapter extends PropertyDisplayableEiPropAd
 		return $this->checkMandatory($eiObject, $eiFieldValue);
 	}
 	
-	public function validateEiFieldValue(EiObject $eiObject, $eiFieldValue, FieldErrorInfo $fieldErrorInfo) {
+	public function validateEiFieldValue(EiObject $eiObject, $eiFieldValue, EiFieldValidationResult $fieldErrorInfo) {
 		if (!$this->checkMandatory($eiObject, $eiFieldValue)) {
 			$fieldErrorInfo->addError(new MessageCode('ei_impl_mandatory_err', array('field' => $this->labelLstr), null, 
 					Rocket::NS));
@@ -128,16 +127,8 @@ abstract class PropertyEditableEiPropAdapter extends PropertyDisplayableEiPropAd
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\PropertyDisplayableEiPropAdapter::getGuiProp()
 	 */
-	public function getGuiProp(): ?GuiProp {
+	public function buildGuiProp(Eiu $eiu): ?GuiProp {
 		return $this;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\PropertyDisplayableEiPropAdapter::getGuiPropFork()
-	 */
-	public function getGuiPropFork(): ?GuiPropFork {
-		return null;
 	}
 	
 	/**
@@ -152,8 +143,7 @@ abstract class PropertyEditableEiPropAdapter extends PropertyDisplayableEiPropAd
 	 * @return bool
 	 */
 	public function isReadOnly(Eiu $eiu): bool {
-		if (!WritableEiPropPrivilege::checkForWriteAccess($eiu->frame()->getEiFrame()->getEiExecution()
-				->createEiPropAccess(EiPropPath::from($this)))) {
+		if (!WritableEiPropPrivilege::checkForWriteAccess($eiu->entry()->access()->getEiFieldAccess($this))) {
 			return true;
 		}
 		
@@ -169,7 +159,7 @@ abstract class PropertyEditableEiPropAdapter extends PropertyDisplayableEiPropAd
 		 return $this->standardEditDefinition->isMandatory();
 	}
 
-	public function createEiPropPrivilege(N2nContext $n2nContext): EiPropPrivilege {
+	public function createEiPropPrivilege(Eiu $eiu): EiPropPrivilege {
 		return new WritableEiPropPrivilege();
 	}
 	
@@ -192,7 +182,7 @@ class WritableEiPropPrivilege implements EiPropPrivilege {
 	const ACCESS_WRITING_ALLOWED_KEY = 'writingAllowed';
 	const ACCESS_WRITING_ALLOWED_DEFAULT = true;
 	
-	public function createMag(string $propertyName, Attributes $attributes): Mag {
+	public function createMag(Attributes $attributes): Mag {
 		return new BoolMag(new Lstr('ei_impl_field_writable_label', Rocket::NS),
 				$attributes->getBool(self::ACCESS_WRITING_ALLOWED_KEY, false, self::ACCESS_WRITING_ALLOWED_DEFAULT));
 	}
@@ -203,13 +193,13 @@ class WritableEiPropPrivilege implements EiPropPrivilege {
 		return new Attributes(array(self::ACCESS_WRITING_ALLOWED_KEY => $mag->getValue()));
 	}
 	
-	public static function checkForWriteAccess(EiPropAccess $eiAccess) {
-		if ($eiAccess->isFullyGranted()) {
+	public static function checkForWriteAccess(EiFieldAccess $eiFieldAccess) {
+		if ($eiFieldAccess->isFullyGranted()) {
 			return true;
 		}
 		
 		try {
-			foreach ($eiAccess->getAttributes() as $attributes) {
+			foreach ($eiFieldAccess->getAttributes() as $attributes) {
 				if ($attributes->getBool(self::ACCESS_WRITING_ALLOWED_KEY, false, 
 						self::ACCESS_WRITING_ALLOWED_DEFAULT)) {
 					return true;

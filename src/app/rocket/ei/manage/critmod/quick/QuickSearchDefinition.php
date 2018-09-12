@@ -30,24 +30,24 @@ class QuickSearchDefinition {
 	
 	/**
 	 * @param EiPropPath $eiPropPath
-	 * @param QuickSearchField $quickSearchField
+	 * @param QuickSearchProp $quickSearchField
 	 */
-	public function putQuickSearchField(EiPropPath $eiPropPath, QuickSearchField $quickSearchField) {
+	public function putQuickSearchProp(EiPropPath $eiPropPath, QuickSearchProp $quickSearchField) {
 		$this->quickSearchFields[(string) $eiPropPath] = $quickSearchField;	
 	}
 	
 	/**
-	 * @return QuickSearchField[]
+	 * @return QuickSearchProp[]
 	 */
-	public function getQuickSearchFields(): array {
+	public function getQuickSearchProps(): array {
 		return $this->quickSearchFields;
 	}
 	
 	/**
 	 * @param EiPropPath[] $eiPropPaths
-	 * @return QuickSearchField[]
+	 * @return QuickSearchProp[]
 	 */
-	private function filterFields(array $eiPropPaths) {
+	private function filterProps(array $eiPropPaths) {
 		$quickSearchFields = array();
 		foreach ($eiPropPaths as $eiPropPath) {
 			$eiPropPathStr = (string) $eiPropPath;
@@ -70,7 +70,7 @@ class QuickSearchDefinition {
 			$quickSearchFields = $this->quickSearchFields;
 		} else {
 			ArgUtils::valArray($eiPropPaths, EiPropPath::class);
-			$quickSearchFields = $this->filterFields($eiPropPaths);
+			$quickSearchFields = $this->filterProps($eiPropPaths);
 		} 
 		
 		if (empty($quickSearchFields)) return null;

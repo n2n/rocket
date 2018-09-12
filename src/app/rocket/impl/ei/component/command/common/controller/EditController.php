@@ -32,9 +32,9 @@ use n2n\web\http\controller\ParamQuery;
 use n2n\l10n\DateTimeFormat;
 use rocket\ei\manage\draft\Draft;
 use n2n\util\col\ArrayUtils;
-use rocket\ei\util\model\EiuCtrl;
-use rocket\ei\util\model\Eiu;
-use rocket\ei\util\model\EiuEntryGui;
+use rocket\ei\util\EiuCtrl;
+use rocket\ei\util\Eiu;
+use rocket\ei\util\gui\EiuEntryGui;
 use rocket\ajah\JhtmlEvent;
 
 class EditController extends ControllerAdapter {

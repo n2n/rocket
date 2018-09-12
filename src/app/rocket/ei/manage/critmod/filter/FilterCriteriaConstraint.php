@@ -22,7 +22,7 @@
 namespace rocket\ei\manage\critmod\filter;
 
 use n2n\persistence\orm\criteria\Criteria;
-use rocket\ei\manage\critmod\CriteriaConstraint;
+use rocket\ei\manage\frame\CriteriaConstraint;
 use n2n\persistence\orm\criteria\item\CriteriaProperty;
 
 class FilterCriteriaConstraint implements CriteriaConstraint {

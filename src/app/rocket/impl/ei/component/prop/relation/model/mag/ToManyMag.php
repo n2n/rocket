@@ -27,18 +27,17 @@ use n2n\reflection\ArgUtils;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\map\PropertyPath;
-use rocket\ei\manage\EiFrame;
-use rocket\ei\util\model\EiuFrame;
+use rocket\ei\manage\frame\EiFrame;
 use n2n\reflection\property\AccessProxy;
 use n2n\web\ui\UiComponent;
 use n2n\web\dispatch\property\ManagedProperty;
 use n2n\util\uri\Url;
 use rocket\ei\EiPropPath;
 use rocket\impl\ei\component\prop\relation\model\RelationEntry;
-use rocket\ei\manage\critmod\CriteriaConstraint;
 use rocket\ei\manage\draft\Draft;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use n2n\web\dispatch\mag\UiOutfitter;
+use rocket\ei\manage\frame\Boundry;
 
 class ToManyMag extends MagAdapter {
 	private $min;
@@ -61,8 +60,8 @@ class ToManyMag extends MagAdapter {
 			EiFrame $targetEditEiFrame, int $min, int $max = null) {
 		parent::__construct($label);
 	
-		$this->targetReadUtils = new EiuFrame($targetReadEiFrame);
-		$this->targetEditEiuFrame = new EiuFrame($targetEditEiFrame);
+		$this->targetReadUtils = (new Eiu($targetReadEiFrame))->frame();
+		$this->targetEditEiuFrame = (new Eiu($targetEditEiFrame))->frame();
 		$this->min = $min;
 		$this->max = $max;
 		
@@ -192,7 +191,7 @@ class ToManyMag extends MagAdapter {
 				}
 		
 				$this->targetRelationEntries[$pid] = RelationEntry::from($this->targetReadUtils->lookupEiObjectById(
-						$this->targetReadUtils->pidToId($pid), CriteriaConstraint::NON_SECURITY_TYPES));
+						$this->targetReadUtils->pidToId($pid), Boundry::NON_SECURITY_TYPES));
 			}
 		}
 		

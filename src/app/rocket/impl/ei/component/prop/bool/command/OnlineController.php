@@ -23,9 +23,9 @@ namespace rocket\impl\ei\component\prop\bool\command;
 
 use rocket\impl\ei\component\prop\bool\OnlineEiProp;
 use n2n\web\http\controller\ControllerAdapter;
-use rocket\ei\util\model\EiuCtrl;
+use rocket\ei\util\EiuCtrl;
 use rocket\ajah\JhtmlEvent;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use n2n\l10n\MessageContainer;
 
 class OnlineController extends ControllerAdapter {
@@ -61,7 +61,7 @@ class OnlineController extends ControllerAdapter {
 		
 		$jhtmlEvent = null; 
 		if (!$eiuEntry->getEiEntry()->save()) {
-			$this->mc->addAll($eiuEntry->getEiEntry()->getMappingErrorInfo()->getMessages());
+			$this->mc->addAll($eiuEntry->getEiEntry()->getValidationResult()->getMessages());
 		} else {
 			$jhtmlEvent = JhtmlEvent::ei()->noAutoEvents()->controlSwaped($this->onlineEiCommand->createEntryControl(new Eiu($eiuEntry)));
 		}

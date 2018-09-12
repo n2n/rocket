@@ -23,16 +23,16 @@ namespace rocket\impl\ei\component\command\common\model;
 
 use n2n\web\dispatch\Dispatchable;
 use n2n\reflection\annotation\AnnoInit;
-use rocket\ei\util\model\EiuEntryForm;
+use rocket\ei\util\entry\form\EiuEntryForm;
 use n2n\l10n\MessageContainer;
 use n2n\web\dispatch\annotation\AnnoDispProperties;
 use n2n\web\dispatch\map\bind\BindingDefinition;
-use rocket\ei\manage\EiFrame;
-use rocket\ei\util\model\EiuFrame;
+use rocket\ei\manage\frame\EiFrame;
 use n2n\persistence\orm\util\NestedSetUtils;
 use n2n\persistence\orm\util\NestedSetStrategy;
 use n2n\util\ex\IllegalStateException;
 use rocket\core\model\Rocket;
+use rocket\ei\util\Eiu;
 
 class AddModel implements Dispatchable  {
 	private static function _annos(AnnoInit $ai) {
@@ -125,7 +125,7 @@ class AddModel implements Dispatchable  {
 			$eiEntityObj->refreshId();
 			$eiEntityObj->setPersistent(true);
 			
-			$identityString = (new EiuFrame($this->eiFrame))->createIdentityString($eiObject);
+			$identityString = (new Eiu($this->eiFrame))->frame()->createIdentityString($eiObject);
 			$messageContainer->addInfoCode('ei_impl_added_info', array('entry' => $identityString));
 			
 			return $eiObject;
@@ -140,7 +140,7 @@ class AddModel implements Dispatchable  {
 		$draftManager->persist($draft, $draftDefinition);
 		$draftManager->flush();
 		
-		$identityString = (new EiuFrame($this->eiFrame))->createIdentityString($eiObject);
+		$identityString = (new Eiu($this->eiFrame))->frame()->createIdentityString($eiObject);
 		$messageContainer->addInfoCode('ei_impl_added_draft_info', array('entry' => $identityString));
 		
 		return $eiObject;

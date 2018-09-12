@@ -25,7 +25,7 @@ use rocket\impl\ei\component\prop\numeric\OrderEiProp;
 use n2n\web\http\controller\ControllerAdapter;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\web\http\controller\ParamGet;
-use rocket\ei\util\model\EiuCtrl;
+use rocket\ei\util\EiuCtrl;
 use rocket\ajah\JhtmlEvent;
 
 class OrderController extends ControllerAdapter {	

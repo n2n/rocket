@@ -1,12 +1,12 @@
 namespace Rocket.Display {
 
 	export class StructureElement {
-		private jqElem: JQuery;
+		private jqElem: JQuery<Element>;
 		private onShowCallbacks: Array<(se: StructureElement) => any> = [];
 		private onHideCallbacks: Array<(se: StructureElement) => any> = [];
 		private toolbar: Toolbar = null;
 		
-		constructor(jqElem: JQuery) {
+		constructor(jqElem: JQuery<Element>) {
 			this.jqElem = jqElem;
 			
 //			jqElem.addClass("rocket-structure-element");
@@ -23,7 +23,7 @@ namespace Rocket.Display {
 			}
 		}
 		
-		get jQuery(): JQuery {
+		get jQuery(): JQuery<Element> {
 			return this.jqElem;
 		}
 		
@@ -34,7 +34,7 @@ namespace Rocket.Display {
 				return contentJq;
 			}
 			
-			return $("<div />", { "class": "rocket-control" }).appendTo(this.jqElem);
+			return $("<div />", { "class": "rocket-control" }).appendTo(<JQuery<HTMLElement>> this.jqElem);
 		}
 		
 		set type(type: StructureElement.Type) {
@@ -215,7 +215,7 @@ namespace Rocket.Display {
 			}
 		}
 
-		public static from(jqElem: JQuery, create: boolean = false): StructureElement {
+		public static from(jqElem: JQuery<Element>, create: boolean = false): StructureElement {
 			var structureElement = jqElem.data("rocketStructureElement");
 			if (structureElement instanceof StructureElement) return structureElement;
 		
@@ -226,7 +226,7 @@ namespace Rocket.Display {
 			return structureElement;
 		}
 		
-		public static of(jqElem: JQuery): StructureElement {
+		public static of(jqElem: JQuery<Element>): StructureElement {
 			jqElem = jqElem.closest(".rocket-structure-element, .rocket-group, .rocket-item, .rocket-panel");
 			
 			if (jqElem.length == 0) return null;
@@ -241,7 +241,7 @@ namespace Rocket.Display {
 			return structureElement;
 		}
 		
-		public static findFirst(containerJq: JQuery): StructureElement {
+		public static findFirst(containerJq: JQuery<Element>): StructureElement {
 			let elemsJq = containerJq.find(".rocket-structure-element, .rocket-group, .rocket-item, .rocket-panel").first();
 			
 			if (elemsJq.length == 0) return null;
@@ -270,11 +270,11 @@ namespace Rocket.Display {
 	}
 	
 	export class Toolbar {
-		private jqToolbar: JQuery;
-		private jqControls: JQuery;
+		private jqToolbar: JQuery<Element>;
+		private jqControls: JQuery<Element>;
 		private commandList: CommandList;
 		
-		public constructor(jqToolbar: JQuery) {
+		public constructor(jqToolbar: JQuery<Element>) {
 			this.jqToolbar = jqToolbar;
 			
 			this.jqControls = jqToolbar.children(".rocket-group-controls");
@@ -294,11 +294,11 @@ namespace Rocket.Display {
 			this.commandList = new CommandList(jqCommands, true);
 		}
 		
-		get jQuery(): JQuery {
+		get jQuery(): JQuery<Element> {
 			return this.jqToolbar;
 		}
 		
-		public getJqControls(): JQuery {
+		public getJqControls(): JQuery<Element> {
 			return this.jqControls;	
 		}
 		
@@ -308,9 +308,9 @@ namespace Rocket.Display {
 	}
 	
 	export class CommandList {
-		private jqCommandList: JQuery;
+		private jqCommandList: JQuery<Element>;
 		
-		public constructor(jqCommandList: JQuery, private simple: boolean = false) {
+		public constructor(jqCommandList: JQuery<Element>, private simple: boolean = false) {
 			this.jqCommandList = jqCommandList;
 			
 			if (simple) {
@@ -318,11 +318,11 @@ namespace Rocket.Display {
 			}
 		}
 		
-		get jQuery(): JQuery {
+		get jQuery(): JQuery<Element> {
 			return this.jqCommandList;
 		}
 		
-		public createJqCommandButton(buttonConfig: ButtonConfig/*, iconType: string, label: string, severity: Severity = Severity.SECONDARY, tooltip: string = null*/, prepend: boolean = false): JQuery {
+		public createJqCommandButton(buttonConfig: ButtonConfig/*, iconType: string, label: string, severity: Severity = Severity.SECONDARY, tooltip: string = null*/, prepend: boolean = false): JQuery<Element> {
 			this.jqCommandList.show();
 			
 			if (buttonConfig.iconType === undefined) {

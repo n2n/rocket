@@ -25,16 +25,16 @@ namespace Rocket.Impl.Overview {
 	var $ = jQuery;
 	
 	export class OverviewPage {
-		private jqPageControls: JQuery;
+		private jqPageControls: JQuery<Element>;
 		
-		constructor(private jqContainer: JQuery, private overviewContent: OverviewContent) {
+		constructor(private jqContainer: JQuery<Element>, private overviewContent: OverviewContent) {
 		}
 		
 		public initSelector(selectorObserver: Display.SelectorObserver) {
 			this.overviewContent.initSelector(selectorObserver);
 		}
 		
-		public static findAll(jqElem: JQuery): Array<OverviewPage> {
+		public static findAll(jqElem: JQuery<Element>): Array<OverviewPage> {
 			var oc: Array<OverviewPage> = new Array();
 			
 			jqElem.find(".rocket-impl-overview").each(function () {
@@ -44,7 +44,7 @@ namespace Rocket.Impl.Overview {
 			return oc;
 		}
 		
-		public static from(jqElem: JQuery): OverviewPage {
+		public static from(jqElem: JQuery<Element>): OverviewPage {
 			var overviewPage: OverviewPage = jqElem.data("rocketImplOverviewPage");
 			if (overviewPage instanceof OverviewPage) {
 				return overviewPage;
@@ -153,8 +153,8 @@ namespace Rocket.Impl.Overview {
 //	}
 	
 	class Pagination {
-		private jqPagination: JQuery;
-		private jqInput: JQuery;
+		private jqPagination: JQuery<Element>;
+		private jqInput: JQuery<Element>;
 		
 		constructor(private overviewContent: OverviewContent) {
 		}
@@ -172,7 +172,7 @@ namespace Rocket.Impl.Overview {
 			return;
 		}
 		
-		public draw(jqContainer: JQuery) {
+		public draw(jqContainer: JQuery<Element>) {
 			var that = this;
 			
 			this.jqPagination = $("<div />", { "class": "rocket-impl-overview-pagination" });
@@ -255,9 +255,9 @@ namespace Rocket.Impl.Overview {
 	class FixedHeader {
 		private numEntries: number;
 		
-		private jqHeader: JQuery;
-		private jqTable: JQuery;
-		private jqTableClone: JQuery;
+		private jqHeader: JQuery<Element>;
+		private jqTable: JQuery<Element>;
+		private jqTableClone: JQuery<Element>;
 		
 		public constructor(numEntries: number) {
 			this.numEntries = numEntries;	
@@ -267,7 +267,7 @@ namespace Rocket.Impl.Overview {
 			return this.numEntries;	
 		}
 		
-		public draw(jqHeader: JQuery, jqTable: JQuery) {
+		public draw(jqHeader: JQuery<Element>, jqTable: JQuery<Element>) {
 			this.jqHeader = jqHeader;
 			this.jqTable = jqTable;
 			

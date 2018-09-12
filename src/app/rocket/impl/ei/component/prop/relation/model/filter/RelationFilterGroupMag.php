@@ -21,11 +21,11 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model\filter;
 
-use rocket\ei\manage\critmod\filter\data\FilterGroupData;
+use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
 use n2n\reflection\ArgUtils;
 use n2n\impl\web\dispatch\mag\model\MagAdapter;
 use rocket\ei\manage\critmod\filter\FilterDefinition;
-use rocket\ei\manage\critmod\filter\impl\form\FilterGroupForm;
+use rocket\ei\util\filter\form\FilterGroupForm;
 use n2n\impl\web\dispatch\property\ObjectProperty;
 use n2n\reflection\property\AccessProxy;
 use n2n\web\dispatch\map\bind\BindingDefinition;
@@ -33,41 +33,41 @@ use n2n\web\dispatch\map\PropertyPath;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\property\ManagedProperty;
 use n2n\web\ui\UiComponent;
-use rocket\ei\manage\critmod\filter\impl\controller\FilterAjahHook;
+use rocket\ei\util\filter\controller\FilterJhtmlHook;
 use n2n\web\dispatch\mag\UiOutfitter;
 
 class RelationFilterGroupMag extends MagAdapter {
 	private $targetFilterDefinition;
 	
-	private $targetFilterGroupData;
-	private $filterAjahHook;
+	private $targetFilterSettingGroup;
+	private $filterJhtmlHook;
 	
 	public function __construct(FilterDefinition $targetFilterDefinition, 
-			FilterAjahHook $filterAjahHook) {
+			FilterJhtmlHook $filterJhtmlHook) {
 		parent::__construct('Target Filter');
 	
 		$this->targetFilterDefinition = $targetFilterDefinition;
-		$this->filterAjahHook = $filterAjahHook;
+		$this->filterJhtmlHook = $filterJhtmlHook;
 	}
 	
 	public function setValue($value) {
-		ArgUtils::assertTrue($value instanceof FilterGroupData);
+		ArgUtils::assertTrue($value instanceof FilterSettingGroup);
 		
-		$this->targetFilterGroupData = $value;
+		$this->targetFilterSettingGroup = $value;
 	}
 	
 	public function getValue() {
-		return $this->targetFilterGroupData;
+		return $this->targetFilterSettingGroup;
 	}
 	
 	public function getFormValue() {
-		return new FilterGroupForm($this->targetFilterGroupData, $this->targetFilterDefinition);
+		return new FilterGroupForm($this->targetFilterSettingGroup, $this->targetFilterDefinition);
 	}
 	
 	public function setFormValue($formValue) {
 		ArgUtils::assertTrue($formValue instanceof FilterGroupForm);
 		
-		$this->targetFilterGroupData = $formValue->buildFilterGroupData();
+		$this->targetFilterSettingGroup = $formValue->buildFilterSettingGroup();
 	}
 	/**
 	 * {@inheritDoc}
@@ -89,8 +89,8 @@ class RelationFilterGroupMag extends MagAdapter {
 	 * @see \n2n\web\dispatch\mag\Mag::createUiField($propertyPath, $view)
 	 */
 	public function createUiField(PropertyPath $propertyPath, HtmlView $view, UiOutfitter $uiOutfitter): UiComponent {
-		return $view->getImport('\rocket\ei\manage\critmod\filter\impl\view\filterForm.html', 
+		return $view->getImport('\rocket\ei\util\filter\view\filterForm.html', 
 				array('propertyPath' => $propertyPath,
-						'filterAjahHook' => $this->filterAjahHook));
+						'filterJhtmlHook' => $this->filterJhtmlHook));
 	}	
 }

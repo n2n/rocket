@@ -100,7 +100,7 @@ class EiTypeExtensionCollection implements \IteratorAggregate, \Countable {
 	/**
 	 * @return EiTypeExtension[]
 	 */
-	public function toArray(): array {
+	public function toArray() {
 		return $this->eiTypeExtensions;
 	}
 	/* (non-PHPdoc)

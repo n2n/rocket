@@ -5,7 +5,7 @@ namespace Rocket.Display {
 		private _state: Entry.State = Entry.State.PERSISTENT;
 		private callbackRegistery: Util.CallbackRegistry<EntryCallback> = new Util.CallbackRegistry<EntryCallback>();
 		
-		constructor(private elemJq: JQuery) {
+		constructor(private elemJq: JQuery<Element>) {
 			elemJq.on("remove", () => {
 				this.trigger(Entry.EventType.DISPOSED);
 				this.callbackRegistery.clear();
@@ -33,7 +33,7 @@ namespace Rocket.Display {
 			return Collection.test(this.elemJq.parent());
 		}
 		
-		private initSelector(jqSelector: JQuery) {
+		private initSelector(jqSelector: JQuery<Element>) {
 			this._selector = new EntrySelector(jqSelector, this);
 			
 			var that = this;
@@ -62,7 +62,7 @@ namespace Rocket.Display {
 			this.callbackRegistery.unregister(eventType.toString(), callback);
 		}
 		
-		get jQuery(): JQuery {
+		get jQuery(): JQuery<Element> {
 			return this.elemJq;
 		}
 		
@@ -171,7 +171,7 @@ namespace Rocket.Display {
 		static readonly ID_REP_ATTR = "data-rocket-ei-id";
 		static readonly DRAFT_ID_ATTR = "data-rocket-draft-id";
 		
-		private static from(elemJq: JQuery): Entry {
+		private static from(elemJq: JQuery<Element>): Entry {
 			var entry = elemJq.data("rocketEntry");
 			if (entry instanceof Entry) {
 				return entry;
@@ -184,7 +184,7 @@ namespace Rocket.Display {
 			return entry;
 		}
 		
-		static of(jqElem: JQuery): Entry {
+		static of(jqElem: JQuery<Element>): Entry {
 			var jqElem = jqElem.closest("." + Entry.CSS_CLASS);
 			
 			if (jqElem.length == 0) return null;
@@ -192,7 +192,7 @@ namespace Rocket.Display {
 			return Entry.from(jqElem);
 		}
 
-		static find(jqElem: JQuery, includeSelf: boolean = false): Entry|null {
+		static find(jqElem: JQuery<Element>, includeSelf: boolean = false): Entry|null {
 			let entries = Entry.findAll(jqElem, includeSelf);
 			if (entries.length > 0) {
 				return entries[0]
@@ -200,23 +200,23 @@ namespace Rocket.Display {
 			return null;
 		}
 		
-		static findAll(jqElem: JQuery, includeSelf: boolean = false): Array<Entry> {
+		static findAll(jqElem: JQuery<Element>, includeSelf: boolean = false): Array<Entry> {
 			let jqEntries = jqElem.find("." + Entry.CSS_CLASS);
 			
 			if (includeSelf) {
-				jqEntries = jqEntries.add(jqElem.filter("." + Entry.CSS_CLASS));
+				jqEntries = jqEntries.add(<JQuery<HTMLElement>> jqElem.filter("." + Entry.CSS_CLASS));
 			}
 			
 			return Entry.fromArr(jqEntries);
 		}
 
-		static findLastMod(jqElem: JQuery): Array<Entry> {
+		static findLastMod(jqElem: JQuery<Element>): Array<Entry> {
 			let entriesJq = jqElem.find("." + Entry.CSS_CLASS + "." + Entry.LAST_MOD_CSS_CLASS);
 			
 			return Entry.fromArr(entriesJq);
 		}
 		
-		private static fromArr(entriesJq: JQuery): Array<Entry> {
+		private static fromArr(entriesJq: JQuery<Element>): Array<Entry> {
 			let entries = new Array<Entry>();
 			entriesJq.each(function () {
 				entries.push(Entry.from($(this)));
@@ -224,11 +224,11 @@ namespace Rocket.Display {
 			return entries;
 		}
 		
-		static children(jqElem: JQuery): Array<Entry> {
+		static children(jqElem: JQuery<Element>): Array<Entry> {
 			return Entry.fromArr(jqElem.children("." + Entry.CSS_CLASS));
 		}
 		
-		static filter(jqElem: JQuery): Array<Entry> {
+		static filter(jqElem: JQuery<Element>): Array<Entry> {
 			return Entry.fromArr(jqElem.filter("." + Entry.CSS_CLASS));
 		}
 
@@ -236,11 +236,11 @@ namespace Rocket.Display {
 			return "." + Entry.CSS_CLASS + "[" + Entry.SUPREME_EI_TYPE_ID_ATTR + "=" + Rocket.Util.escSelector(supremeEiTypeId) + "]";
 		}
 		
-		static findBySupremeEiTypeId(jqContainer: JQuery, supremeEiTypeId: string): Entry[] {
+		static findBySupremeEiTypeId(jqContainer: JQuery<Element>, supremeEiTypeId: string): Entry[] {
 			return Entry.fromArr(jqContainer.find(Entry.buildSupremeEiTypeISelector(supremeEiTypeId)));
 		}
 		
-		static hasSupremeEiTypeId(jqContainer: JQuery, supremeEiTypeId: string): boolean {
+		static hasSupremeEiTypeId(jqContainer: JQuery<Element>, supremeEiTypeId: string): boolean {
 			return 0 < jqContainer.has(Entry.buildSupremeEiTypeISelector(supremeEiTypeId)).length;
 		}
 		
@@ -249,11 +249,11 @@ namespace Rocket.Display {
 					+ Entry.ID_REP_ATTR + "=" + Rocket.Util.escSelector(pid) + "]";
 		}
 		
-		static findByPid(jqElem: JQuery, supremeEiTypeId: string, pid: string): Entry[] {
+		static findByPid(jqElem: JQuery<Element>, supremeEiTypeId: string, pid: string): Entry[] {
 			return Entry.fromArr(jqElem.find(Entry.buildPidSelector(supremeEiTypeId, pid)));
 		}
 		
-		static hasPid(jqElem: JQuery, supremeEiTypeId: string, pid: string): boolean {
+		static hasPid(jqElem: JQuery<Element>, supremeEiTypeId: string, pid: string): boolean {
 			return 0 < jqElem.has(Entry.buildPidSelector(supremeEiTypeId, pid)).length;
 		}
 		
@@ -262,11 +262,11 @@ namespace Rocket.Display {
 					+ Entry.DRAFT_ID_ATTR + "=" + draftId + "]";
 		}
 		
-		static findByDraftId(jqElem: JQuery, supremeEiTypeId: string, draftId: number): Entry[] {
+		static findByDraftId(jqElem: JQuery<Element>, supremeEiTypeId: string, draftId: number): Entry[] {
 			return Entry.fromArr(jqElem.find(Entry.buildDraftIdSelector(supremeEiTypeId, draftId)));
 		}
 		
-		static hasDraftId(jqElem: JQuery, supremeEiTypeId: string, draftId: number): boolean {
+		static hasDraftId(jqElem: JQuery<Element>, supremeEiTypeId: string, draftId: number): boolean {
 			return 0 < jqElem.has(Entry.buildDraftIdSelector(supremeEiTypeId, draftId)).length;
 		}
 	}

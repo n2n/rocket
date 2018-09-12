@@ -24,10 +24,10 @@ namespace rocket\impl\ei\component\command\tree\controller;
 use rocket\ei\manage\ManageState;
 use n2n\web\http\controller\ControllerAdapter;
 use n2n\web\http\controller\ParamGet;
-use rocket\ei\util\model\UnknownEntryException;
 use n2n\persistence\orm\util\NestedSetUtils;
-use rocket\ei\util\model\EiuCtrl;
+use rocket\ei\util\EiuCtrl;
 use rocket\ajah\JhtmlEvent;
+use rocket\ei\manage\entry\UnknownEiObjectException;
 
 class TreeMoveController extends ControllerAdapter {
 	private $eiCtrl;
@@ -80,7 +80,7 @@ class TreeMoveController extends ControllerAdapter {
 		try {
 			$eiEntityObj = $eiUtils->lookupEntry($eiUtils->pidToId($pid))->getEiEntityObj();
 			$targetEiEntityObj = $eiUtils->lookupEntry($eiUtils->pidToId($targetPid))->getEiEntityObj();
-		} catch (UnknownEntryException $e) {
+		} catch (UnknownEiObjectException $e) {
 			return;
 		} catch (\InvalidArgumentException $e) {
 			return;

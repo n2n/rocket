@@ -22,7 +22,7 @@
 namespace rocket\ei\manage\control;
 
 use n2n\web\ui\UiComponent;
-use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\frame\EiFrame;
 use n2n\util\uri\Url;
 use rocket\ei\component\command\EiCommand;
 use n2n\impl\web\ui\view\html\HtmlUtils;

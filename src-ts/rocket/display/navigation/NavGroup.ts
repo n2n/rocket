@@ -5,11 +5,11 @@ namespace Rocket.Display {
 
 	export class NavGroup implements StateListener {
 		private _id: string;
-		private _elemJq: JQuery;
+		private _elemJq: JQuery<Element>;
 		private _userState: UserState;
 		private _opened: boolean;
 
-		public constructor(id: string, elemJq: JQuery, userState: UserState) {
+		public constructor(id: string, elemJq: JQuery<Element>, userState: UserState) {
 			this.id = id;
 			this.elemJq = elemJq;
 			this.userState = userState;
@@ -23,7 +23,7 @@ namespace Rocket.Display {
 			}
 		}
 
-		public static build(elemJq: JQuery, userStore: UserStore) {
+		public static build(elemJq: JQuery<Element>, userStore: UserStore) {
 			let id = elemJq.data("navGroupId");
 			let navGroup = new NavGroup(id, elemJq, userStore.navState);
 			userStore.navState.onChanged(elemJq, navGroup);
@@ -85,11 +85,11 @@ namespace Rocket.Display {
 			this._userState = value;
 		}
 
-		get elemJq(): JQuery {
+		get elemJq(): JQuery<Element> {
 			return this._elemJq;
 		}
 
-		set elemJq(value: JQuery) {
+		set elemJq(value: JQuery<Element>) {
 			this._elemJq = value;
 		}
 

@@ -15,7 +15,7 @@ namespace Rocket.Impl.Overview {
 		private allInfo: AllInfo = null;
 		private contentChangedCallbacks: Array<(overviewContent: OverviewContent) => any> = [];
 		
-		constructor(jqElem: JQuery, private loadUrl: Jhtml.Url, private stateKey: string) {
+		constructor(jqElem: JQuery<Element>, private loadUrl: Jhtml.Url, private stateKey: string) {
 			this.collection = Display.Collection.from(jqElem);
 			this.selectorState = new SelectorState(this.collection);
 		}	
@@ -355,7 +355,7 @@ namespace Rocket.Impl.Overview {
 				return;
 			}
 			
-			let aboveJq: JQuery;
+			let aboveJq: JQuery<Element>;
 			for (let entry of entries) {
 				if (!aboveJq) {
 					this.collection.jQuery.prepend(entry.jQuery);
@@ -460,7 +460,7 @@ namespace Rocket.Impl.Overview {
 		}	
 		
 		private loadingPageNos: Array<number> = new Array<number>();
-		private jqLoader: JQuery = null;
+		private jqLoader: JQuery<Element> = null;
 		
 		private markPageAsLoading(pageNo: number) {
 			if (-1 < this.loadingPageNos.indexOf(pageNo)) {
@@ -708,7 +708,7 @@ namespace Rocket.Impl.Overview {
 			return !!this.entries;
 		}
 		
-//		set jqContents(jqContents: JQuery) {
+//		set jqContents(jqContents: JQuery<Element>) {
 //			this._jqContents = jqContents;
 //			
 //			this.entries = Display.Entry.filter(this.jqContents);

@@ -27,12 +27,11 @@ use rocket\ei\component\SecurityFactory;
 use rocket\ei\manage\draft\stmt\DraftMetaInfo;
 use rocket\ei\component\GuiFactory;
 use rocket\ei\component\EiEntryFactory;
-use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\EiObject;
 use rocket\ei\manage\critmod\filter\FilterDefinition;
 use rocket\ei\manage\critmod\sort\SortDefinition;
-use rocket\ei\manage\mapping\EiEntry;
-use rocket\ei\manage\gui\GuiDefinition;
+use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\component\DraftDefinitionFactory;
 use rocket\ei\manage\draft\DraftDefinition;
 use rocket\ei\mask\EiMask;
@@ -45,6 +44,12 @@ use rocket\ei\manage\generic\GenericEiProperty;
 use rocket\ei\manage\generic\GenericEiDefinition;
 use rocket\ei\manage\critmod\quick\QuickSearchDefinition;
 use rocket\ei\manage\gui\ui\DisplayStructure;
+use rocket\ei\manage\ManageState;
+use rocket\ei\component\EiFrameFactory;
+use n2n\web\http\controller\ControllerContext;
+use rocket\ei\manage\gui\EiEntryGui;
+use n2n\impl\web\ui\view\html\HtmlView;
+use rocket\ei\manage\gui\EiGui;
 
 class EiEngine {
 	private $eiMask;
@@ -92,6 +97,30 @@ class EiEngine {
 	public function getSupremeEiEngine() {
 		return $this->getSupremeEiMask()->getEiEngine();
 	}
+	
+	private $eiFrameFactory;
+	
+	/**
+	 * @return \rocket\ei\component\EiFrameFactory
+	 */
+	public function getEiFrameFactory() {
+		if ($this->eiFrameFactory === null) {
+			$this->eiFrameFactory = new EiFrameFactory($this);
+		}
+		
+		return $this->eiFrameFactory;
+	}
+	
+	/**
+	 * @param ControllerContext $controllerContext
+	 * @param ManageState $manageState
+	 * @param EiFrame $parent
+	 * @return \rocket\ei\manage\frame\EiFrame
+	 */
+	public function createEiFrame(ControllerContext $controllerContext, ManageState $manageState, ?EiFrame $parent, 
+			EiCommandPath $eiCommandPath) {
+		return $this->getEiFrameFactory()->create($controllerContext, $manageState, $parent, $eiCommandPath);
+	}
 
 	private $critmodFactory;
 	
@@ -104,20 +133,16 @@ class EiEngine {
 		return $this->critmodFactory;
 	}
 	
-	public function createManagedFilterDefinition(EiFrame $eiFrame): FilterDefinition {
-		return $this->getCritmodFactory()->createManagedFilterDefinition($eiFrame);
+	public function createFramedFilterDefinition(EiFrame $eiFrame): FilterDefinition {
+		return $this->getCritmodFactory()->createFramedFilterDefinition($eiFrame);
 	}
 	
 	public function createFilterDefinition(N2nContext $n2nContext): FilterDefinition {
 		return $this->getCritmodFactory()->createFilterDefinition($n2nContext);
 	}
 	
-	public function createEiEntryFilterDefinition(N2nContext $n2nContext) {
-		return $this->getCritmodFactory()->createEiEntryFilterDefinition($n2nContext);
-	}
-	
-	public function createManagedSortDefinition(EiFrame $eiFrame): SortDefinition {
-		return $this->getCritmodFactory()->createManagedSortDefinition($eiFrame);
+	public function createFramedSortDefinition(EiFrame $eiFrame): SortDefinition {
+		return $this->getCritmodFactory()->createFramedSortDefinition($eiFrame);
 	}
 	
 	/**
@@ -128,48 +153,53 @@ class EiEngine {
 		return $this->getCritmodFactory()->createSortDefinition($n2nContext);
 	}
 	
-	public function createQuickSearchDefinition(EiFrame $eiFrame): QuickSearchDefinition {
-		return $this->getCritmodFactory()->createQuickSearchDefinition($eiFrame);
+	public function createFramedQuickSearchDefinition(EiFrame $eiFrame): QuickSearchDefinition {
+		return $this->getCritmodFactory()->createFramedQuickSearchDefinition($eiFrame);
+	}
+	
+	private $securityFactory;
+	
+	private function getSecurityFactory() {
+		if ($this->securityFactory === null) {
+			$this->securityFactory = new SecurityFactory($this->eiMask->getEiPropCollection(),
+					$this->eiMask->getEiCommandCollection(), $this->eiMask->getEiModificatorCollection());
+		}
+		
+		return $this->securityFactory;
+	}
+	
+	public function createSecurityFilterDefinition(N2nContext $n2nContext) {
+		return $this->getSecurityFactory()->createSecurityFilterDefinition($n2nContext);
 	}
 	
 	public function createPrivilegeDefinition(N2nContext $n2nContext) {
 		$securityFactory = new SecurityFactory($this->eiMask->getEiPropCollection(), 
-				$this->getEiCommandCollection(), $this->eiMask->getEiModificatorCollection());
+				$this->eiMask->getEiCommandCollection(), $this->eiMask->getEiModificatorCollection());
 		return $securityFactory->createPrivilegedDefinition($n2nContext);
 	}
 	
 	/**
 	 * @param EiFrame $eiFrame
 	 * @param EiObject $eiObject
+	 * @param EiEntry $copyFrom
 	 * @return EiEntry
 	 */
-	public function createEiEntry(EiFrame $eiFrame, EiObject $eiObject): EiEntry {
-		$mappingFactory = new EiEntryFactory($this->eiMask->getEiPropCollection(), 
+	public function createFramedEiEntry(EiFrame $eiFrame, EiObject $eiObject, ?EiEntry $copyFrom, array $eiEntryConstraints): EiEntry {
+		$mappingFactory = new EiEntryFactory($this->eiMask, $this->eiMask->getEiPropCollection(), 
 				$this->eiMask->getEiModificatorCollection());
-		return $mappingFactory->createEiEntry($eiFrame, $eiObject);
-	}
-	
-	public function createEiEntryCopy(EiFrame $eiFrame, EiObject $eiObject, EiEntry $from) {
-		$mappingFactory = new EiEntryFactory($this->eiMask->getEiPropCollection(), 
-				$this->eiMask->getEiModificatorCollection());
-		return $mappingFactory->createEiEntry($eiFrame, $eiObject, $from);
+		return $mappingFactory->createEiEntry($eiFrame, $eiObject, $copyFrom, $eiEntryConstraints);
 	}
 	
 	public function copyValues(EiFrame $eiFrame, EiEntry $from, EiEntry $to, array $eiPropPaths = null) {
 		ArgUtils::valArray($eiPropPaths, EiPropPath::class, true, 'eiPropPaths');
-		$mappingFactory = new EiEntryFactory($this->eiMask->getEiPropCollection(), 
+		$mappingFactory = new EiEntryFactory($this->eiMask, $this->eiMask->getEiPropCollection(), 
 				$this->eiMask->getEiModificatorCollection());
 		$mappingFactory->copyValues($eiFrame, $from, $to, $eiPropPaths);
 	}
 	
-	public function getGuiDefinition(): GuiDefinition {
-		if ($this->guiDefinition === null) {
-			$guiFactory = new GuiFactory($this->eiMask->getEiPropCollection(), 
-					$this->eiMask->getEiModificatorCollection());
-			$this->guiDefinition = $guiFactory->createGuiDefinition();
-		}
-	
-		return $this->guiDefinition;
+	public function createGuiDefinition(N2nContext $n2nContext, &$guiDefinition) {
+		$guiFactory = new GuiFactory($this->eiMask);
+		return $guiFactory->createGuiDefinition($n2nContext, $guiDefinition);
 	}
 	
 	public function createEiGui(int $viewMode, DisplayStructure $displayStructure) {
@@ -178,7 +208,7 @@ class EiEngine {
 			$eiMask = $this->eiType->getEiTypeExtensionCollection()->getOrCreateDefault();
 		}
 		
-		$guiFactory = new GuiFactory($this->getEiPropCollection(), $this->getEiModificatorCollection());
+		$guiFactory = new GuiFactory($this->eiMask);
 		return $guiFactory->createEiEntryGui($eiMask, $eiuEntry, $viewMode, $guiIdPaths);
 	}
 	
@@ -237,4 +267,23 @@ class EiEngine {
 		}
 		return $this->scalarEiDefinition;
 	}
+	
+	/**
+	 * @param EiGui $eiGui
+	 * @param HtmlView $view
+	 * @return \rocket\ei\manage\control\Control[]
+	 */
+	public function createEiGuiOverallControls(EiGui $eiGui, HtmlView $view) {
+		return (new GuiFactory($this->eiMask))->createOverallControls($eiGui, $view);
+	}
+	
+	/**
+	 * @param EiEntryGui $eiEntryGui
+	 * @param HtmlView $view
+	 * @return \rocket\ei\manage\control\Control[]
+	 */
+	public function createEiEntryGuiControls(EiEntryGui $eiEntryGui, HtmlView $view) {
+		return (new GuiFactory($this->eiMask))->createEntryControls($eiEntryGui, $view);
+	}
+	
 }

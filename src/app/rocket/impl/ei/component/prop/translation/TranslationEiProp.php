@@ -27,12 +27,12 @@ use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\impl\ei\component\prop\relation\RelationEiProp;
 use rocket\impl\ei\component\prop\translation\model\TranslationGuiFieldFork;
-use rocket\ei\util\model\EiuFrame;
+use rocket\ei\util\frame\EiuFrame;
 use rocket\ei\manage\gui\GuiPropFork;
 use rocket\impl\ei\component\prop\translation\conf\TranslationEiConfigurator;
-use rocket\ei\manage\mapping\impl\Readable;
-use rocket\ei\manage\mapping\impl\Writable;
-use rocket\ei\manage\mapping\EiField;
+use rocket\ei\component\prop\field\Readable;
+use rocket\ei\component\prop\field\Writable;
+use rocket\ei\manage\entry\EiField;
 use rocket\ei\component\prop\GuiEiProp;
 use rocket\ei\component\prop\FieldEiProp;
 use rocket\ei\manage\gui\GuiFieldFork;
@@ -40,7 +40,7 @@ use rocket\ei\manage\EiObject;
 use rocket\impl\ei\component\prop\relation\model\relation\EiPropRelation;
 use n2n\core\container\N2nContext;
 use n2n\util\ex\IllegalStateException;
-use rocket\ei\manage\critmod\filter\EiEntryFilterField;
+use rocket\ei\manage\security\filter\SecurityFilterProp;
 use rocket\ei\EiPropPath;
 use n2n\l10n\N2nLocale;
 use rocket\impl\ei\component\prop\relation\model\RelationEntry;
@@ -48,8 +48,7 @@ use rocket\impl\ei\component\prop\relation\EmbeddedOneToManyEiProp;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\util\col\ArrayUtils;
 use rocket\ei\component\prop\SortableEiPropFork;
-use rocket\ei\manage\EiFrame;
-use rocket\ei\manage\critmod\sort\SortFieldFork;
+use rocket\ei\manage\critmod\sort\SortPropFork;
 use n2n\persistence\orm\criteria\item\CriteriaProperty;
 use n2n\persistence\orm\criteria\Criteria;
 use n2n\persistence\orm\criteria\item\CrIt;
@@ -58,19 +57,21 @@ use n2n\persistence\orm\criteria\JoinType;
 use rocket\ei\manage\critmod\sort\SortConstraint;
 use rocket\ei\manage\critmod\sort\CriteriaAssemblyState;
 use rocket\impl\ei\component\prop\translation\conf\N2nLocaleDef;
-use rocket\ei\util\model\Eiu;
-use rocket\ei\manage\mapping\EiEntry;
+use rocket\ei\util\Eiu;
+use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\manage\gui\GuiIdPath;
 use rocket\impl\ei\component\prop\translation\model\TranslationEiField;
 use rocket\ei\component\prop\QuickSearchableEiProp;
-use rocket\impl\ei\component\prop\translation\model\TranslationQuickSearchField;
-use rocket\ei\manage\mapping\impl\EiFieldWrapperWrapper;
+use rocket\impl\ei\component\prop\translation\model\TranslationQuickSearchProp;
+use rocket\ei\component\prop\field\EiFieldWrapperWrapper;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\impl\ei\component\prop\translation\command\TranslationCopyCommand;
 use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\manage\gui\GuiDefinition;
+use rocket\ei\manage\critmod\quick\QuickSearchProp;
+use rocket\ei\component\prop\GuiEiPropFork;
 
-class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, FieldEiProp, RelationEiProp, 
+class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiPropFork, FieldEiProp, RelationEiProp, 
 		Readable, Writable, GuiPropFork, SortableEiPropFork, QuickSearchableEiProp {
 	private $n2nLocaleDefs = array();
 	private $minNumTranslations = 0;
@@ -80,7 +81,7 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 		return new TranslationEiConfigurator($this);
 	}
 	
-	public function setEntityProperty(EntityProperty $entityProperty = null) {
+	public function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty instanceof ToManyEntityProperty
 				&& $entityProperty->getType() == RelationEntityProperty::TYPE_ONE_TO_MANY);
 	
@@ -147,26 +148,22 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 		return false;
 	}
 	
-	public function createEiEntryFilterField(N2nContext $n2nContext): EiEntryFilterField {
+	public function createSecurityFilterProp(N2nContext $n2nContext): SecurityFilterProp {
 		throw new IllegalStateException();
 	}
 
-	/* (non-PHPdoc)
-	 * @see \rocket\ei\component\prop\EiProp::getGuiProp()
-	 */
-	public function getGuiProp(): ?GuiProp {
-		return null;
-	}
-
+	private $forkedGuiDefinition;
+	
 	/* (non-PHPdoc)
 	 * @see \rocket\ei\component\prop\EiProp::getGuiPropFork()
 	 */
-	public function getGuiPropFork(): ?GuiPropFork {
+	public function buildGuiPropFork(Eiu $eiu): ?GuiPropFork {
+		$this->forkedGuiDefinition = $eiu->context()->engine($this->eiPropRelation->getTargetEiMask())->getGuiDefinition();
 		return $this;
 	}
 
 	public function getForkedGuiDefinition(): GuiDefinition {
-		return $this->eiPropRelation->getTargetEiMask()->getEiEngine()->getGuiDefinition();
+		return $this->forkedGuiDefinition;
 	}
 	
 	public function createGuiFieldFork(Eiu $eiu): GuiFieldFork {
@@ -179,7 +176,7 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 		} else {
 			$targetEiFrame = $this->eiPropRelation->createTargetEditPseudoEiFrame($eiFrame, $eiEntry);
 		}
-		$targetEiuFrame = new EiuFrame($targetEiFrame);
+		$targetEiuFrame = (new Eiu($targetEiFrame))->frame();
 		
 		$toManyEiField = $eiEntry->getEiField(EiPropPath::from($this));
 		
@@ -195,7 +192,7 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 			$targetRelationEntries[(string) $n2nLocale] = $targetRelationEntry;
 		}
 		
-		$targetGuiDefinition = $targetEiuFrame->getEiFrame()->getContextEiEngine()->getGuiDefinition();
+		$targetGuiDefinition = $targetEiuFrame->getContextEiuEngine()->getGuiDefinition();
 		$translationGuiField = new TranslationGuiFieldFork($toManyEiField, $targetGuiDefinition, 
 				$this->labelLstr->t($eiFrame->getN2nContext()->getN2nLocale()), $this->minNumTranslations);
 		if ($this->copyCommand !== null) {
@@ -254,17 +251,17 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 		return new EiFieldWrapperWrapper($eiFieldWrappers);
 	}
 	
-	
-	public function buildManagedSortFieldFork(EiFrame $eiFrame) {
-		return new TranslationSortFieldFork($this, 
-				$this->getEiPropRelation()->getTargetEiMask()->getEiEngine()->createManagedSortDefinition($eiFrame),
-				$this->getSortN2nLocale());
-	}
-	
-	public function buildGlobalSortFieldFork(N2nContext $n2nContext) {
-		return new TranslationSortFieldFork($this,
-				$this->getEiPropRelation()->getTargetEiMask()->createSortDefinition($n2nContext),
-				$this->getSortN2nLocale());
+	public function buildSortPropFork(Eiu $eiu): ?SortPropFork {
+		$targetSortDefinition = null;
+		if (null !== ($eiuFrame = $eiu->frame(false))) {
+			$targetSortDefinition = $this->getEiPropRelation()->getTargetEiMask()->getEiEngine()
+					->createFramedSortDefinition($eiuFrame->getEiFrame());
+		} else {
+			$targetSortDefinition = $this->getEiPropRelation()->getTargetEiMask()->getEiEngine()
+					->createSortDefinition($eiu->getN2nContext());
+		}
+		
+		return new TranslationSortPropFork($this, $targetSortDefinition, $this->getSortN2nLocale());
 	}
 	
 	private function getSortN2nLocale() {
@@ -277,20 +274,19 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiProp, Fi
 	}
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\QuickSearchableEiProp::buildQuickSearchField()
+	 * @see \rocket\ei\component\prop\QuickSearchableEiProp::buildQuickSearchProp()
 	 */
-	public function buildQuickSearchField(EiFrame $eiFrame) {
-		$targetEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame);
+	public function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp {
+		$targetEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiu->frame()->getEiFrame());
 		
-		return new TranslationQuickSearchField(
+		return new TranslationQuickSearchProp(
 				$this->eiPropRelation->getRelationEntityProperty(),
 				$this->eiPropRelation->getTargetEiType()->getEntityModel()->getClass(), 
-				$targetEiFrame->getContextEiEngine()->createQuickSearchDefinition($targetEiFrame));
+				$targetEiFrame->getContextEiEngine()->createFramedQuickSearchDefinition($targetEiFrame));
 	}
-
 }
 
-class TranslationSortFieldFork implements SortFieldFork {
+class TranslationSortPropFork implements SortPropFork {
 	private $translationEiProp;
 	private $targetSortDefinition;
 	private $sortN2nLocale;
@@ -329,7 +325,7 @@ class TranslationSortConstraint implements SortConstraint {
 	private $forkedSortConstraint;
 	private $fork;
 	
-	public function __construct(SortConstraint $forkedSortConstraint, TranslationSortFieldFork $fork) {
+	public function __construct(SortConstraint $forkedSortConstraint, TranslationSortPropFork $fork) {
 		$this->forkedSortConstraint = $forkedSortConstraint;
 		$this->fork = $fork;
 	}

@@ -23,8 +23,8 @@ namespace rocket\ei\mask;
 
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\persistence\orm\criteria\item\CrIt;
-use rocket\ei\manage\critmod\filter\data\FilterGroupData;
-use rocket\ei\manage\critmod\sort\SortData;
+use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
+use rocket\ei\manage\critmod\sort\SortSettingGroup;
 
 class EiMaskDef {
 // 	const TYPE_CHANGE_MODE_DISABLED = 'disabled';
@@ -38,8 +38,8 @@ class EiMaskDef {
 	private $draftHistorySize;
 	private $identityStringPattern;
 	private $previewControllerLookupId;
-	private $filterGroupData;
-	private $defaultSortData;
+	private $filterSettingGroup;
+	private $defaultSortSettingGroup;
 	
 	/**
 	 * @return string
@@ -153,31 +153,31 @@ class EiMaskDef {
 // 	}
 
 	/**
-	 * @return \rocket\ei\manage\critmod\filter\data\FilterGroupData
+	 * @return \rocket\ei\manage\critmod\filter\data\FilterSettingGroup
 	 */
-	public function getFilterGroupData() {
-		return $this->filterGroupData;
+	public function getFilterSettingGroup() {
+		return $this->filterSettingGroup;
 	}
 	
 	/**
-	 * @param FilterGroupData $filterGroupData
+	 * @param FilterSettingGroup $filterSettingGroup
 	 */
-	public function setFilterGroupData(FilterGroupData $filterGroupData = null) {
-		$this->filterGroupData = $filterGroupData;
+	public function setFilterSettingGroup(FilterSettingGroup $filterSettingGroup = null) {
+		$this->filterSettingGroup = $filterSettingGroup;
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\critmod\sort\SortData
+	 * @return \rocket\ei\manage\critmod\sort\SortSettingGroup
 	 */
-	public function getDefaultSortData() {
-		return $this->defaultSortData;
+	public function getDefaultSortSettingGroup() {
+		return $this->defaultSortSettingGroup;
 	}
 	
 	/**
-	 * @param SortData $defaultSortData
+	 * @param SortSettingGroup $defaultSortSettingGroup
 	 */
-	public function setDefaultSortData(SortData $defaultSortData = null) {
-		$this->defaultSortData = $defaultSortData;
+	public function setDefaultSortSettingGroup(SortSettingGroup $defaultSortSettingGroup = null) {
+		$this->defaultSortSettingGroup = $defaultSortSettingGroup;
 	}
 	
 	public static function buildEntityPropertyName(EntityProperty $entityProperty) {

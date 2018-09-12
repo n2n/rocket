@@ -24,15 +24,15 @@ namespace rocket\impl\ei\component\command\common\controller;
 use n2n\web\http\PageNotFoundException;
 use rocket\impl\ei\component\command\common\model\OverviewModel;
 use n2n\web\http\controller\ControllerAdapter;
-use rocket\ei\manage\critmod\impl\model\CritmodSaveDao;
-use rocket\ei\manage\critmod\impl\model\CritmodForm;
-use rocket\ei\manage\critmod\quick\impl\form\QuickSearchForm;
+use rocket\ei\manage\critmod\save\CritmodSaveDao;
+use rocket\impl\ei\component\command\common\model\critmod\CritmodForm;
+use rocket\impl\ei\component\command\common\model\critmod\QuickSearchForm;
 use n2n\web\http\controller\impl\ScrRegistry;
-use rocket\ei\manage\critmod\filter\impl\controller\FilterFieldController;
+use rocket\ei\util\filter\controller\FramedFilterPropController;
 use n2n\web\http\controller\ParamQuery;
 use n2n\l10n\DynamicTextCollection;
 use rocket\impl\ei\component\command\common\model\DraftListModel;
-use rocket\ei\util\model\EiuCtrl;
+use rocket\ei\util\EiuCtrl;
 
 class OverviewController extends ControllerAdapter {
 	private $listSize;
@@ -61,8 +61,12 @@ class OverviewController extends ControllerAdapter {
 		} else {
             $stateKey = OverviewJhtmlController::genStateKey();
 		}
-		$critmodForm = CritmodForm::create($eiFrame, $critmodSaveDao, $stateKey);
-		$quickSearchForm = QuickSearchForm::create($eiFrame, $critmodSaveDao, $stateKey);
+		
+		$overviewAjahHook = OverviewJhtmlController::buildAjahHook(
+				$this->getControllerPath()->ext(['ajah'])->toUrl(), $stateKey);
+		
+		$critmodForm = CritmodForm::create($eiuFrame, $overviewAjahHook->getFilterJhtmlHook(), $critmodSaveDao, $stateKey);
+		$quickSearchForm = QuickSearchForm::create($eiuFrame, $critmodSaveDao, $stateKey);
 		$listModel = new OverviewModel($eiuFrame, $this->listSize, $critmodForm, $quickSearchForm);
 		
 		if ($pageNo === null) {
@@ -75,23 +79,19 @@ class OverviewController extends ControllerAdapter {
 			throw new PageNotFoundException();
 		}
 		
-		$overviewAjahHook = OverviewJhtmlController::buildAjahHook($this->getHttpContext()
-				->getControllerContextPath($this->getControllerContext())->ext('ajah')->toUrl(), $stateKey);
-		$filterAjahHook = FilterFieldController::buildFilterAjahHook($this->getHttpContext()
-				->getControllerContextPath($this->getControllerContext())->ext('filter')->toUrl());
 		
 		$this->eiuCtrl->applyCommonBreadcrumbs();
 		
 		$this->eiuCtrl->forwardView(
 				$this->createView('..\view\overview.html', array('listModel' => $listModel, 
 						'critmodForm' => $critmodForm,
-						'quickSearchForm' => $quickSearchForm, 'overviewAjahHook' => $overviewAjahHook, 
-						'filterAjahHook' => $filterAjahHook)));
+						'quickSearchForm' => $quickSearchForm, 'overviewAjahHook' => $overviewAjahHook/*, 
+						'filterJhtmlHook' => $filterJhtmlHook*/)));
 				
 // 		$this->forward('..\view\overview.html', 
 // 				array('listModel' => $listModel, 'critmodForm' => $critmodForm,
 // 						'quickSearchForm' => $quickSearchForm, 'overviewAjahHook' => $overviewAjahHook, 
-// 						'filterAjahHook' => $filterAjahHook, 'listView' => $listView));
+// 						'filterJhtmlHook' => $filterJhtmlHook, 'listView' => $listView));
 	}
 	
 	public function doAjah(array $delegateCmds = array(), OverviewJhtmlController $ajahOverviewController, 
@@ -106,8 +106,8 @@ class OverviewController extends ControllerAdapter {
 		$this->delegate($ajahOverviewController);
 	}
 	
-	public function doFilter(array $delegateCmds = array(), FilterFieldController $filterFieldController) {
-		$this->delegate($filterFieldController);
+	public function doFilter(array $delegateCmds = array(), FramedFilterPropController $filterPropController) {
+		$this->delegate($filterPropController);
 	}
 	
 	public function doDrafts($pageNo = null, DynamicTextCollection $dtc) {

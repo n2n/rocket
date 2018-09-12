@@ -55,9 +55,9 @@ class BooleanEiPropConfigurator extends AdaptableEiPropConfigurator {
 		
 		$guiProps = null;
 		try {
-			$guiProps = $eiComponent->getEiMask()->getEiEngine()->getGuiDefinition()->getGuiProps();
+			$guiProps = $this->eiComponent->getEiMask()->getEiEngine()->createGuiDefinition($n2nContext)->getGuiProps();
 		} catch (\Throwable $e) {
-			$guiProps = $eiComponent->getEiMask()->getEiEngine()->getGuiDefinition()->getLevelGuiProps();
+			$guiProps = $this->eiComponent->getEiMask()->getEiEngine()->createGuiDefinition($n2nContext)->getLevelGuiProps();
 		}
 		
 		$assoicatedGuiPropOptions = array();

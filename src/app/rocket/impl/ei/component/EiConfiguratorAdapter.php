@@ -31,7 +31,7 @@ use rocket\ei\component\EiSetup;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use rocket\ei\component\EiComponent;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 
 abstract class EiConfiguratorAdapter implements EiConfigurator {
 	protected $eiComponent;
@@ -72,7 +72,22 @@ abstract class EiConfiguratorAdapter implements EiConfigurator {
         return ReflectionUtils::prettyName((new \ReflectionClass($this->getEiComponent()))->getShortName());
 	}
 	
-	public static function shortenTypeName($typeName, array $suffixes) {
+	/**
+	 * @param EiComponent $eiComponent
+	 * @param array $suffixes
+	 * @return string
+	 */
+	public static function createAutoTypeName(EiComponent $eiComponent, array $suffixes) { 
+		return self::shortenTypeName(ReflectionUtils::prettyName((new \ReflectionClass($eiComponent))->getShortName()),
+				$suffices);
+	}
+	
+	/**
+	 * @param string $typeName
+	 * @param array $suffixes
+	 * @return string
+	 */
+	public static function shortenTypeName(string $typeName, array $suffixes) {
 		$nameParts = explode(' ', $typeName);
 		while (null !== ($suffix = array_pop($suffixes))) {
 			if (end($nameParts) != $suffix) break;
@@ -88,7 +103,7 @@ abstract class EiConfiguratorAdapter implements EiConfigurator {
 	
 	/**
 	 * @param N2nContext $n2nContext
-	 * @return \rocket\ei\util\model\Eiu
+	 * @return \rocket\ei\util\Eiu
 	 */
 	protected function eiu(N2nContext $n2nContext) {
 		return new Eiu($this->eiComponent->getEiMask()->getEiEngine(), $n2nContext);

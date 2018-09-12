@@ -21,12 +21,9 @@
  */
 namespace rocket\user\model\security;
 
-use rocket\custom\CustomType;
-use rocket\spec\security\SecurityManager;
-use rocket\ei\security\EiPermissionManager;
 use rocket\user\bo\RocketUser;
-use n2n\util\ex\NotYetImplementedException;
 use rocket\core\model\launch\LaunchPad;
+use rocket\ei\manage\security\EiPermissionManager;
 
 class RocketUserSecurityManager implements SecurityManager {
 	private $rocketUser;
@@ -37,16 +34,9 @@ class RocketUserSecurityManager implements SecurityManager {
 		$this->eiPermissionManager = new RocketUserEiPermissionManager($rocketUser);
 	}
 	
-	public function getCustomTypeAttributes(CustomType $customSpec) {
-		throw new NotYetImplementedException();
-// 		foreach ($this->rocketUser->getRocketUserGroups() as $rocketUserGroup) {
-// 			foreach ($rocketUserGroup->getCustomGrants() as $customGrant) {
-				
-// 			}
-// 		}
-	}
-	
 	public function isLaunchPadAccessible(LaunchPad $launchPad): bool {
+		if ($this->rocketUser->isAdmin()) return true;
+		
 		foreach ($this->rocketUser->getRocketUserGroups() as $rocketUserGroup) {
 			if (!$rocketUserGroup->isLaunchPadAccessRestricted() || 
 					$rocketUserGroup->containsAccessibleLaunchPadId($launchPad->getId())) {

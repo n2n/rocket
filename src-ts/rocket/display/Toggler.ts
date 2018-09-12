@@ -3,7 +3,7 @@ namespace Rocket.Display {
 	export class Toggler {
 		private closeCallback: (e?: any) => any;
 
-		constructor(private buttonJq: JQuery, private menuJq: JQuery, private mouseLeaveMs: number) {
+		constructor(private buttonJq: JQuery<Element>, private menuJq: JQuery<Element>, private mouseLeaveMs: number) {
 			menuJq.hide();
 		}
 
@@ -86,7 +86,7 @@ namespace Rocket.Display {
 		 * @param {number} mouseLeaveMs null for no close on mouseleave
 		 * @returns {Rocket.Display.Toggler}
 		 */
-		static simple(buttonJq: JQuery, menuJq: JQuery, mouseLeaveMs: number = 3000): Toggler {
+		static simple(buttonJq: JQuery<Element>, menuJq: JQuery<Element>, mouseLeaveMs: number = 3000): Toggler {
 			let toggler = new Toggler(buttonJq, menuJq, mouseLeaveMs);
 
 			buttonJq.on("click", (e: any) => {
@@ -127,7 +127,7 @@ namespace Rocket.Display {
 
 	export class TogglerEvent {
 
-		constructor(private elemJq: JQuery, private eventName: string, private callback: (e?: any) => any) {
+		constructor(private elemJq: JQuery<Element>, private eventName: string, private callback: (e?: any) => any) {
 		}
 
 		public on() {

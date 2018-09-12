@@ -27,17 +27,19 @@ use n2n\reflection\ArgUtils;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\map\PropertyPath;
-use rocket\ei\manage\EiFrame;
-use rocket\ei\util\model\EiuFrame;
+use rocket\ei\manage\frame\EiFrame;
+use rocket\ei\util\frame\EiuFrame;
 use n2n\reflection\property\AccessProxy;
 use n2n\web\ui\UiComponent;
 use n2n\web\dispatch\property\ManagedProperty;
 use n2n\util\uri\Url;
-use rocket\ei\manage\critmod\filter\impl\controller\GlobalFilterFieldController;
+use rocket\ei\util\filter\controller\ScrFilterPropController;
 use n2n\web\http\controller\impl\ScrRegistry;
 use rocket\impl\ei\component\prop\relation\model\RelationEntry;
-use rocket\ei\manage\critmod\CriteriaConstraint;
+use rocket\ei\manage\frame\CriteriaConstraint;
 use n2n\web\dispatch\mag\UiOutfitter;
+use rocket\ei\util\Eiu;
+use rocket\ei\manage\frame\Boundry;
 
 class ToOneMag extends MagAdapter {
 	private $mandatory;
@@ -57,8 +59,8 @@ class ToOneMag extends MagAdapter {
 		parent::__construct($label);
 	
 		$this->mandatory = $mandatory;
-		$this->targetReadUtils = new EiuFrame($targetReadEiFrame);
-		$this->targetEiuFrame = new EiuFrame($targetEditEiFrame);
+		$this->targetReadUtils = (new Eiu($targetReadEiFrame))->frame();
+		$this->targetEiuFrame = (new Eiu($targetEditEiFrame))->frame();
 	
 // 		$this->updateContainerAttrs(true);
 	}
@@ -126,7 +128,7 @@ class ToOneMag extends MagAdapter {
 			}
 				
 			$this->targetRelationEntry = RelationEntry::from($this->targetReadUtils->lookupEiObjectById(
-					$this->targetReadUtils->pidToId($entryPid), CriteriaConstraint::NON_SECURITY_TYPES));
+					$this->targetReadUtils->pidToId($entryPid), Boundry::NON_SECURITY_TYPES));
 			return;
 		}
 		
@@ -193,8 +195,8 @@ class ToOneMag extends MagAdapter {
 		$targetControllerContext = $eiFrame->getControllerContext();
 		$request = $view->getRequest();
 		
-		$filterAjahHook = GlobalFilterFieldController::buildFilterAjahHook($view->lookup(ScrRegistry::class), 
-				$eiFrame->getContextEiEngine()->getEiMask());
+// 		$filterJhtmlHook = ScrFilterPropController::buildFilterJhtmlHook($view->lookup(ScrRegistry::class), 
+// 				$eiFrame->getContextEiEngine()->getEiMask());
 		
 		$newMappingFormUrl = null;
 		if ($this->targetEiuFrame->getContextEiType()->hasSubEiTypes()

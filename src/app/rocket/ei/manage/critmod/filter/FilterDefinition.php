@@ -21,66 +21,66 @@
  */
 namespace rocket\ei\manage\critmod\filter;
 
-use rocket\ei\manage\critmod\filter\data\FilterGroupData;
+use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
 use n2n\util\config\AttributesException;
 
 class FilterDefinition {
-	private $filterFields = array();
+	private $filterProps = array();
 	
-	public function putFilterField(string $id, FilterField $filterItem) {
-		$this->filterFields[$id] = $filterItem;
+	public function putFilterProp(string $id, FilterProp $filterItem) {
+		$this->filterProps[$id] = $filterItem;
 	}
 	
-	public function getFilterFields(): array {
-		return $this->filterFields;
+	public function getFilterProps(): array {
+		return $this->filterProps;
 	}
 	
-	public function getFilterFieldById(string $id): FilterField {
-		if (isset($this->filterFields[$id])) {
-			return $this->filterFields[$id];
+	public function getFilterPropById(string $id): FilterProp {
+		if (isset($this->filterProps[$id])) {
+			return $this->filterProps[$id];
 		}
 		
-		throw new UnknownFilterFieldException();
+		throw new UnknownFilterPropException();
 	}
 	
-	public function containsFilterFieldId(string $id): bool {
-		return isset($this->filterFields[$id]);
+	public function containsFilterPropId(string $id): bool {
+		return isset($this->filterProps[$id]);
 	}
 	
 	public function isEmpty(): bool {
-		return empty($this->filterFields);
+		return empty($this->filterProps);
 	}
 	
-	public function createComparatorConstraint(FilterGroupData $filterGroupData): ComparatorConstraint {
+	public function createComparatorConstraint(FilterSettingGroup $filterSettingGroup): ComparatorConstraint {
 		$criteriaComparators = array();
 		
-		foreach ($filterGroupData->getFilterItemDatas() as $subFilterItemData) {
-			$id = $subFilterItemData->getFilterFieldId();
-			if (!isset($this->filterFields[$id])) {
+		foreach ($filterSettingGroup->getFilterSettings() as $subFilterSetting) {
+			$id = $subFilterSetting->getFilterPropId();
+			if (!isset($this->filterProps[$id])) {
 				continue;
 			}
 			
 			try {
-				$criteriaComparators[] = $this->filterFields[$id]->createComparatorConstraint(
-						$subFilterItemData->getAttributes());
+				$criteriaComparators[] = $this->filterProps[$id]->createComparatorConstraint(
+						$subFilterSetting->getAttributes());
 			} catch (AttributesException $e) {}
 		}
 		
-		foreach ($filterGroupData->getFilterGroupDatas() as $subFilterGroupData) {
-			$criteriaComparators[] = $this->createComparatorConstraint($subFilterGroupData);
+		foreach ($filterSettingGroup->getFilterSettingGroups() as $subFilterSettingGroup) {
+			$criteriaComparators[] = $this->createComparatorConstraint($subFilterSettingGroup);
 		}
 		
-		return new ComparatorConstraintGroup($filterGroupData->isAndUsed(), $criteriaComparators);
+		return new ComparatorConstraintGroup($filterSettingGroup->isAndUsed(), $criteriaComparators);
 	}
 	
 // 	private function createElementComparatorConstraint(FilterDataElement $element) {
 // 		if ($element instanceof FilterDataUsage) {
 // 			$itemId = $element->getItemId();
-// 			if (isset($this->filterFields[$itemId])) {
-// 				$comparatorConstraint = $this->filterFields[$itemId]->createComparatorConstraint($element->getAttributes());
+// 			if (isset($this->filterProps[$itemId])) {
+// 				$comparatorConstraint = $this->filterProps[$itemId]->createComparatorConstraint($element->getAttributes());
 // 				ArgUtils::valTypeReturn($comparatorConstraint, 
 // 						'rocket\ei\manage\critmod\ComparatorConstraint',
-// 						$this->filterFields[$itemId], 'createComparatorConstraint');
+// 						$this->filterProps[$itemId], 'createComparatorConstraint');
 // 				return $comparatorConstraint;
 // 			}
 // 		} else if ($element instanceof FilterDataGroup) {
@@ -95,15 +95,15 @@ class FilterDefinition {
 // 	}
 	
 	
-// 	public static function createFromFilterFields(FilterData $filterData, array $filterItems) {
+// 	public static function createFromFilterProps(FilterData $filterData, array $filterItems) {
 // 		$filterModel = new FilterModel($filterData);
 // 		foreach ($filterItems as $id => $filterItem) {
-// 			$filterModel->putFilterField($id, $filterItem);
+// 			$filterModel->putFilterProp($id, $filterItem);
 // 		}
 // 		return $filterModel;
 // 	}
 }
 
-class UnknownFilterFieldException extends \RuntimeException {
+class UnknownFilterPropException extends \RuntimeException {
 	
 }

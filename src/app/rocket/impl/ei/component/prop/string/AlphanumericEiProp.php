@@ -22,27 +22,28 @@
 namespace rocket\impl\ei\component\prop\string;
 
 use rocket\ei\component\prop\QuickSearchableEiProp;
-use rocket\ei\manage\critmod\filter\impl\field\StringFilterField;
+use rocket\ei\util\filter\prop\StringFilterProp;
 use rocket\ei\component\prop\SortableEiProp;
 use rocket\ei\component\prop\FilterableEiProp;
-use rocket\ei\manage\critmod\sort\impl\SimpleSortField;
+use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\impl\ei\component\prop\adapter\DraftableEiPropAdapter;
-use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\frame\EiFrame;
 use n2n\core\container\N2nContext;
 use rocket\ei\EiPropPath;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\ScalarEiProp;
 use rocket\ei\component\prop\GenericEiProp;
 use rocket\ei\manage\generic\CommonGenericEiProperty;
 use rocket\ei\manage\generic\CommonScalarEiProperty;
-use rocket\ei\manage\critmod\quick\impl\model\LikeQuickSearchField;
-use rocket\ei\manage\critmod\filter\FilterField;
-use rocket\ei\manage\critmod\sort\SortField;
+use rocket\ei\manage\critmod\quick\impl\LikeQuickSearchProp;
+use rocket\ei\manage\critmod\filter\FilterProp;
+use rocket\ei\manage\critmod\sort\SortProp;
 use rocket\ei\manage\generic\GenericEiProperty;
+use rocket\ei\manage\critmod\quick\QuickSearchProp;
 
 abstract class AlphanumericEiProp extends DraftableEiPropAdapter implements FilterableEiProp, 
 		SortableEiProp, QuickSearchableEiProp, ScalarEiProp, GenericEiProp {
@@ -59,11 +60,11 @@ abstract class AlphanumericEiProp extends DraftableEiPropAdapter implements Filt
 		return $this->maxlength;
 	}
 
-	public function setMaxlength(int $maxlength = null) {
+	public function setMaxlength(?int $maxlength) {
 		$this->maxlength = $maxlength;
 	}
 	
-	public function setEntityProperty(EntityProperty $entityProperty = null) {
+	public function setEntityProperty(?EntityProperty $entityProperty) {
 		if ($entityProperty !== null && !($entityProperty instanceof ScalarEntityProperty)) {
 			throw new \InvalidArgumentException();
 		}
@@ -71,34 +72,34 @@ abstract class AlphanumericEiProp extends DraftableEiPropAdapter implements Filt
 		parent::setEntityProperty($entityProperty);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\adapter\StatelessDisplayable::createOutputUiComponent()
+	 */
 	public function createOutputUiComponent(HtmlView $view, Eiu $eiu)  {
 		return $view->getHtmlBuilder()->getEsc($eiu->entry()->getEiEntry()->getValue(
 				EiPropPath::from($this)));
 	}
 
-	public function buildManagedFilterField(EiFrame $eiFrame): ?FilterField  {
-		return $this->buildFilterField($eiFrame->getN2nContext());
+	public function buildManagedFilterProp(EiFrame $eiFrame): ?FilterProp  {
+		return $this->buildFilterProp($eiFrame->getN2nContext());
 	}
 
-	public function buildFilterField(N2nContext $n2nContext): ?FilterField {
+	public function buildFilterProp(Eiu $eiu): ?FilterProp {
 		if (null !== ($entityProperty = $this->getEntityProperty(false))) {
-			return new StringFilterField(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
+			return new StringFilterProp(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
 		}
 
 		return null;
 	}
 	
-	public function buildEiEntryFilterField(N2nContext $n2nContext) {
+	public function buildSecurityFilterProp(N2nContext $n2nContext) {
 		return null;
 	}
 	
-	public function buildManagedSortField(EiFrame $eiFrame): ?SortField {
-		return $this->buildSortField($eiFrame->getN2nContext());
-	}
-	
-	public function buildSortField(N2nContext $n2nContext): ?SortField {
+	public function buildSortProp(Eiu $eiu): ?SortProp {
 		if (null !== ($entityProperty = $this->getEntityProperty(false))) {
-			return new SimpleSortField(CrIt::p($entityProperty), $this->getLabelLstr());
+			return new SimpleSortProp(CrIt::p($entityProperty), $this->getLabelLstr());
 		}
 
 		return null;
@@ -108,9 +109,9 @@ abstract class AlphanumericEiProp extends DraftableEiPropAdapter implements Filt
 		return null;
 	}
 	
-	public function buildQuickSearchField(EiFrame $eiFrame) {
+	public function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp {
 		if (null !== ($entityProperty = $this->getEntityProperty(false))) {
-			return new LikeQuickSearchField(CrIt::p($entityProperty));
+			return new LikeQuickSearchProp(CrIt::p($entityProperty));
 		}
 		
 		return null;

@@ -24,22 +24,22 @@ namespace rocket\impl\ei\component\prop\relation\model\relation;
 use rocket\impl\ei\component\prop\relation\RelationEiProp;
 use n2n\util\ex\IllegalStateException;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
-use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\EiObject;
 use rocket\impl\ei\component\prop\relation\command\RelationEiCommand;
-use rocket\ei\manage\mapping\EiEntry;
+use rocket\ei\manage\entry\EiEntry;
 use n2n\impl\persistence\orm\property\relation\MappedRelation;
 use rocket\ei\manage\ManageState;
-use rocket\ei\manage\EiRelation;
+use rocket\ei\manage\frame\EiRelation;
 use n2n\web\http\controller\ControllerContext;
 use n2n\persistence\orm\CascadeType;
 use rocket\ei\EiType;
 use n2n\util\uri\Path;
-use rocket\ei\manage\EiFrameFactory;
+use rocket\ei\component\EiFrameFactory;
 use rocket\impl\ei\component\prop\relation\command\RelationAjahEiCommand;
 use rocket\impl\ei\component\prop\relation\command\RelationJhtmlController;
 use rocket\ei\EiCommandPath;
-use rocket\ei\security\InaccessibleControlException;
+use rocket\ei\manage\security\InaccessibleEiCommandPathException;
 use rocket\impl\ei\component\prop\relation\command\EmbeddedEditPseudoCommand;
 use n2n\util\uri\Url;
 use rocket\ei\EiPropPath;
@@ -50,7 +50,7 @@ use n2n\web\http\HttpContext;
 use n2n\reflection\property\PropertiesAnalyzer;
 use n2n\reflection\ReflectionException;
 use rocket\ei\mask\EiMask;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 
 abstract class EiPropRelation {
 	protected $targetEiType;
@@ -200,7 +200,7 @@ abstract class EiPropRelation {
 						. ' - ' . $this->getTargetEiMask()->getLabelLstr(), 
 				$this->getRelationEiProp()->getId(), $this->getTargetEiType()->getId());
 		
-		$this->relationEiProp->getEiMask()->getEiCommandCollection()
+		$this->targetEiMask->getEiCommandCollection()
 				->add($this->embeddedEditEiCommand);
 	}
 	
@@ -271,7 +271,7 @@ abstract class EiPropRelation {
 		
 	public function createTargetEiFrame(ManageState $manageState, EiFrame $eiFrame, EiObject $eiObject = null, 
 			ControllerContext $targetControllerContext): EiFrame {
-		$targetEiFrame = $manageState->createEiFrame($this->getTargetEiMask(), $targetControllerContext);
+		$targetEiFrame = $manageState->createEiFrame($this->getTargetEiMask()->getEiEngine(), $targetControllerContext, new EiCommandPath([]));
 		$targetEiFrame->setSubEiTypeExtensions($this->targetSubEiTypeExtensions);
 		$this->configureTargetEiFrame($targetEiFrame, $eiFrame, $eiObject);
 		
@@ -279,26 +279,18 @@ abstract class EiPropRelation {
 	}
 	
 	public function createTargetReadPseudoEiFrame(EiFrame $eiFrame, EiEntry $eiEntry = null): EiFrame {
-		$targetEiFrame = $this->createTargetPseudoEiFrame($eiFrame, $eiEntry);
-		
-		$eiPermissionManager = $targetEiFrame->getManageState()->getEiPermissionManager();
-		$targetEiFrame->setEiExecution($eiPermissionManager->createUnboundEiExceution(
-				$this->getTargetEiMask(), new EiCommandPath(array()), $eiFrame->getN2nContext()));
+		$targetEiFrame = $this->createTargetPseudoEiFrame($eiFrame, $eiEntry, new EiCommandPath(array()));
 		
 		return $targetEiFrame;
 	}
 	
 	public function createTargetEditPseudoEiFrame(EiFrame $eiFrame, EiEntry $eiEntry): EiFrame {
-		$targetEiFrame = $this->createTargetPseudoEiFrame($eiFrame, $eiEntry);
-		
-		$eiPermissionManager = $targetEiFrame->getManageState()->getEiPermissionManager();
-		$targetEiFrame->setEiExecution($eiPermissionManager->createEiExecution(
-				$this->embeddedEditEiCommand, $eiFrame->getN2nContext()));
+		$targetEiFrame = $this->createTargetPseudoEiFrame($eiFrame, $eiEntry, EiCommandPath::from($this->embeddedEditEiCommand));
 		
 		return $targetEiFrame;
 	}
 	
-	private function createTargetPseudoEiFrame(EiFrame $eiFrame, EiEntry $eiEntry = null): EiFrame {
+	private function createTargetPseudoEiFrame(EiFrame $eiFrame, EiEntry $eiEntry = null, ?EiCommandPath $eiCommandPath): EiFrame {
 	    $eiObject = null;
 	    if ($eiEntry !== null) {
 	        $eiObject = $eiEntry->getEiObject();
@@ -316,8 +308,10 @@ abstract class EiPropRelation {
 		}
 		
 		$targetControllerContext = new ControllerContext(new Path(array()), $targetCmdContextPath);
-		$targetEiFrameFactory = new EiFrameFactory($this->getTargetEiMask());
-		$targetEiFrame = $targetEiFrameFactory->create($targetControllerContext, $eiFrame->getManageState(), $eiFrame);
+		$targetEiFrameFactory = new EiFrameFactory($this->getTargetEiMask()->getEiEngine());
+		$targetEiFrame = $targetEiFrameFactory->create($targetControllerContext, $eiFrame->getManageState(), $eiFrame,
+				$eiCommandPath);
+		
 		$targetEiFrame->setSubEiTypeExtensions($this->targetSubEiTypeExtensions);
 		
 		$this->configureTargetEiFrame($targetEiFrame, $eiFrame, $eiObject/*, $editCommandRequired*/);
@@ -333,7 +327,7 @@ abstract class EiPropRelation {
 				
 			}
 			return true;
-		} catch (InaccessibleControlException $e) {
+		} catch (InaccessibleEiCommandPathException $e) {
 			return false;
 		}
 	}
@@ -343,7 +337,7 @@ abstract class EiPropRelation {
 		if ($eiObject === null) return $targetEiFrame;
 				
 		if (null !== ($targetCriteriaFactory = $this->createTargetCriteriaFactory($eiObject))) {
-			$targetEiFrame->setCriteriaFactory($targetCriteriaFactory);
+			$targetEiFrame->getBoundry()->setCriteriaFactory($targetCriteriaFactory);
 		}
 		
 		$this->applyTargetModificators($targetEiFrame, $eiFrame, $eiObject);

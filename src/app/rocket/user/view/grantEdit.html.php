@@ -23,8 +23,6 @@
 	use n2n\web\ui\Raw;
 	use rocket\user\model\EiGrantForm;
 	use n2n\impl\web\ui\view\html\HtmlView;
-	use rocket\user\view\EiGrantHtmlBuilder;
-	use rocket\ei\manage\critmod\filter\impl\controller\FilterAjahHook;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -33,90 +31,56 @@
 	$eiGrantForm = $view->getParam('eiGrantForm'); 
 	$view->assert($eiGrantForm instanceof EiGrantForm);
  
-	$view->useTemplate('~\core\view\template.html', array('title' => $view->getL10nText('user_grant_title')));
-	
-	$eiGrantHtml = new EiGrantHtmlBuilder($view);
-	
-	$filterAjahHook = $view->getParam('filterAjahHook');
-	$view->assert($filterAjahHook instanceof FilterAjahHook);
+	$view->useTemplate('~\core\view\template.html', 
+			array('title' => $view->getL10nText('user_group_privileges_for_mask_title')));
 ?>
 
-<?php $formHtml->open($eiGrantForm)?>
+<?php $formHtml->open($eiGrantForm, null, null, ['class' => 'rocket-privilege-form', 
+		'data-rocket-add-privilege-label' => $html->getText('user_add_privilege_label'),
+		'data-rocket-save-first-info' => $html->getText('user_save_first_info')]) ?>
 	<?php $formHtml->messageList() ?>
 	
-	<div class="rocket-panel">
-		<h3><?php $html->l10nText('common_properties_title') ?></h3>
-		
-		<div class="rocket-properties">
-			
-			<div class="rocket-control-group">
-				<label>Privileges Grants</label>
+	<?php $formHtml->meta()->arrayProps('eiGrantPrivilegeForms', function () 
+			use ($view, $html, $formHtml, $eiGrantForm) { ?>
+		<div class="rocket-group rocket-simple-group rocket-privilege">
+			<label><?php $html->text('user_privilege_title') ?></label>
+			<div class="rocket-toolbar">
+				<?php $formHtml->optionalObjectCheckbox(null, ['class' => 'rocket-privilege-enabler'])  ?>
+			</div>
+			<div class="rocket-control">	
+				<?php if (null !== ($mappingResult = $formHtml->meta()->getMapValue('eiuPrivilegeForm'))): ?>
+					<?php $html->out($mappingResult->getObject()
+							->setContextPropertyPath($formHtml->meta()->propPath('eiuPrivilegeForm'))) ?>
+				<?php endif ?>
 				
-				<div class="rocket-control">
-					<div class="rocket-option-array">
-						<?php $formHtml->meta()->arrayProps('eiPrivilegeGrantForms', function () 
-								use ($view, $html, $formHtml, $eiGrantHtml, $eiGrantForm, $filterAjahHook) { ?>
-							<div>
-								<div class="rocket-properties">	
-									<div class="rocket-editable">
-										<div class="rocket-control">
-											<?php $formHtml->optionalObjectCheckbox()  ?>
-										</div>
-									</div>
-									
-									<div class="rocket-editable">
-										<label><?php $html->l10nText('user_group_privileges_label')?></label>
-										<ul class="rocket-control">
-											<?php $eiGrantHtml->privilegeCheckboxes('eiCommandPathStrs[]', $eiGrantForm->getPrivilegeDefinition()) ?>
-										</ul>
-									</div>
-									
-									<?php if ($formHtml->meta()->getMapValue()->getObject()->isEiPropPrivilegeMagFormAvailable()): ?>
-										<div>
-											<label><?php $html->l10nText('user_group_access_config_label')?></label>
-											<?php $view->out('<ul class="rocket-control">') ?>
-												<?php $formHtml->meta()->objectProps('eiPropPrivilegeMagForm', function() use ($formHtml) { ?>
-													<?php $formHtml->magOpen('li', null, array('class' => 'rocket-editable')) ?>
-														<?php $formHtml->magLabel() ?>
-														<div class="rocket-control">
-															<?php $formHtml->magField() ?>
-														</div>
-													<?php $formHtml->magClose() ?>
-												<?php }) ?>
-											<?php $view->out('</ul>') ?>
-										</div>
-									<?php endif ?>
-									
-									<?php if ($eiGrantForm->areRestrictionsAvailable()): ?>
-										<div class="rocket-editable">
-											<div class="rocket-control">
-												<?php $formHtml->optionalObjectCheckbox('restrictionFilterGroupForm', null, 
-														$html->getL10nText('user_access_restricted_label')) ?>
-											</div>
-										</div>
-									
-										<div>	
-											<label><?php $html->l10nText('user_group_access_restrictions_label')?></label>
-											<div class="rocket-control">
-												<?php $view->import('~\ei\manage\critmod\filter\impl\view\filterForm.html', 
-														array('propertyPath' => $formHtml->meta()->createPropertyPath('restrictionFilterGroupForm'),
-																'filterAjahHook' => $filterAjahHook)) ?>
-											</div>
-										</div>
-									<?php endif ?>
-								</div>
-							</div>
-						<?php }, count($formHtml->meta()->getMapValue('eiPrivilegeGrantForms')) + 5) ?>
-					</div>		
-				</div>
+				<?php if ($eiGrantForm->areRestrictionsAvailable()): ?>
+					<div class="rocket-panel">
+						<div class="rocket-control">
+							<?php $formHtml->optionalObjectCheckbox('restrictionEiuFilterForm', 
+									['class' => 'rocket-restrictions-enabler'], 
+									$html->getL10nText('user_access_restricted_label')) ?>
+						</div>
+					</div>
+				
+					<div class="rocket-group rocket-simple-group rocket-restrictions">	
+						<label><?php $html->l10nText('user_group_access_restrictions_label')?></label>
+						<div class="rocket-control">
+							<?php $html->out($formHtml->meta()->getMapValue('restrictionEiuFilterForm')->getObject()
+									->setContextPropertyPath($formHtml->meta()->propPath('restrictionEiuFilterForm')))?>
+						</div>
+					</div>
+				<?php endif ?>
 			</div>
 		</div>
-	</div>
+	<?php }, count($formHtml->meta()->getMapValue('eiGrantPrivilegeForms')) + 5) ?>
+	
 	<div class="rocket-zone-commands">	
 		<div>
 			<?php $formHtml->buttonSubmit('save', new Raw('<i class="fa fa-save"></i><span>' 
 							. $html->getL10nText('common_save_label') . '</span>'),
-					array('class' => 'btn btn-primary')) ?>
+					array('class' => 'btn btn-primary rocket-important')) ?>
+					
+			<?php $html->linkToPath(null, $html->getText('common_reset_label'), ['class' => 'btn btn-secondary']) ?>		
 		</div>
 	</div>
 <?php $formHtml->close() ?>

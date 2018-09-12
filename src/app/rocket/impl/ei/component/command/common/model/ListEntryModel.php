@@ -23,7 +23,7 @@
 
 // use rocket\ei\manage\model\EntryModel;
 // use rocket\ei\manage\gui\GuiDefinition;
-// use rocket\ei\manage\mapping\EiEntry;
+// use rocket\ei\manage\entry\EiEntry;
 // use rocket\ei\manage\gui\EiEntryGui;
 // use rocket\ei\mask\EiMask;
 

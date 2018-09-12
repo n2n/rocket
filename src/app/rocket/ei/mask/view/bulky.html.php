@@ -22,8 +22,8 @@
 
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use rocket\ei\manage\gui\ui\DisplayStructure;
-	use rocket\ei\util\model\Eiu;
-	use rocket\ei\manage\EiHtmlBuilder;
+	use rocket\ei\util\Eiu;
+	use rocket\ei\util\gui\EiuHtmlBuilder;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -35,9 +35,9 @@
 	$eiu = $view->getParam('eiu');
 	$view->assert($eiu instanceof Eiu);
 
-	$eiHtml = new EiHtmlBuilder($view);
+	$eiuHtml = new EiuHtmlBuilder($view);
 	
-	$entryOpen = $eiHtml->meta()->isEntryOpen($eiu->entryGui());
+	$entryOpen = $eiuHtml->meta()->isEntryOpen($eiu->entryGui());
 	
 	$renderForkMags = $view->getParam('renderForkMags', false, null);
 	$renderInnerForks = false;
@@ -53,34 +53,36 @@
 		$renderForkMags = false;
 	} else if ($renderForkMags) {
 		if ($controlsAllowed) {
-			$controls = $eiHtml->meta()->createEntryControls($eiu->entryGui(), 6);
+			$controls = $eiuHtml->meta()->createEntryControls($eiu->entryGui(), 6);
 		}
 		$renderForkMags = $eiu->entryGui()->hasForkMags() || !empty($controls);
 	}
 ?>
 
 <?php if (!$entryOpen): ?>
-	<?php $eiHtml->entryOpen('div', $eiu->entryGui()) ?>
+	<?php $eiuHtml->entryOpen('div', $eiu->entryGui()) ?>
 <?php endif ?>
 
 <?php if ($renderForkMags): ?>
 	<div class="rocket-toolbar">
-		<?php $eiHtml->entryForkControls() ?>
-		<?php $eiHtml->commands($controls, true) ?>
+		<?php $eiuHtml->entryForkControls() ?>
+		<?php $eiuHtml->commands($controls, true) ?>
 	</div>
 <?php endif ?>
 
+<?php $eiuHtml->entryUnboundMessages() ?>
+
 <?php foreach ($displayStructure->getDisplayItems() as $displayItem): ?>
 	<?php if ($displayItem->hasDisplayStructure()): ?>
-		<?php $eiHtml->displayItemOpen('div', $displayItem) ?>
+		<?php $eiuHtml->displayItemOpen('div', $displayItem) ?>
 			<?php if (null !== ($label = $displayItem->getLabel())): ?>
 				<label><?php $html->out($label) ?></label>
 			<?php endif ?>
 	
 			<?php if ($renderInnerForks): ?>
 				<div class="rocket-toolbar">
-					<?php $eiHtml->entryForkControls() ?>
-					<?php $eiHtml->commands($controls, true) ?>
+					<?php $eiuHtml->entryForkControls() ?>
+					<?php $eiuHtml->commands($controls, true) ?>
 				</div>
 			<?php endif ?>		
 			
@@ -89,26 +91,26 @@
 						'displayStructure' => $displayItem->getDisplayStructure(), 
 						'eiu' => $eiu, 'renderForkMags' => false))) ?>
 			</div>
-		<?php $eiHtml->displayItemClose() ?>
+		<?php $eiuHtml->displayItemClose() ?>
 	<?php else: ?>
-		<?php $eiHtml->fieldOpen('div', $displayItem) ?>
-			<?php $eiHtml->fieldLabel() ?>
+		<?php $eiuHtml->fieldOpen('div', $displayItem) ?>
+			<?php $eiuHtml->fieldLabel() ?>
 			
 			<?php if ($renderInnerForks): ?>
 				<div class="rocket-toolbar">
-					<?php $eiHtml->entryForkControls() ?>
-					<?php $eiHtml->commands($controls, true) ?>
+					<?php $eiuHtml->entryForkControls() ?>
+					<?php $eiuHtml->commands($controls, true) ?>
 				</div>
 			<?php endif ?>	
 			
 			<div class="rocket-control">
-				<?php $eiHtml->fieldContent() ?>
-				<?php $eiHtml->fieldMessage() ?>
+				<?php $eiuHtml->fieldContent() ?>
+				<?php $eiuHtml->fieldMessage() ?>
 			</div>
-		<?php $eiHtml->fieldClose() ?>
+		<?php $eiuHtml->fieldClose() ?>
 	<?php endif ?>
 <?php endforeach; ?>
 
 <?php if (!$entryOpen): ?>
-	<?php $eiHtml->entryClose()?>
+	<?php $eiuHtml->entryClose()?>
 <?php endif ?>

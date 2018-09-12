@@ -25,7 +25,7 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\EiObject;
 use n2n\web\dispatch\mag\Mag;
 use rocket\impl\ei\component\prop\string\conf\UrlEiPropConfigurator;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use n2n\impl\web\dispatch\mag\model\UrlMag;
 use n2n\util\uri\Url;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;

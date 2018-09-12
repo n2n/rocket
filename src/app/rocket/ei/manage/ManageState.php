@@ -30,13 +30,16 @@ use rocket\user\bo\RocketUser;
 use rocket\core\model\Rocket;
 use n2n\util\ex\IllegalStateException;
 use n2n\persistence\orm\EntityManager;
-use rocket\ei\mask\EiMask;
 use rocket\ei\manage\draft\DraftManager;
-use rocket\ei\security\EiPermissionManager;
+use rocket\ei\manage\security\EiPermissionManager;
 use rocket\ei\manage\veto\EiLifecycleMonitor;
+use rocket\ei\manage\frame\EiFrame;
+use rocket\ei\EiEngine;
+use rocket\ei\EiCommandPath;
 
 class ManageState implements RequestScoped {
 	private $n2nContext;
+	private $def;
 	private $selectedLaunchPad;
 	private $user;
 	private $eiPermissionManager;
@@ -44,6 +47,10 @@ class ManageState implements RequestScoped {
 	private $entityManager;
 	private $draftManager;
 	private $eiLifecycleMonitor;
+	
+	function __construct() {
+		$this->def = new ManagedDef($this);
+	}
 	
 	private function _init(N2nContext $n2nContext, LoginContext $loginContext, Rocket $rocket) {
 		$this->n2nContext = $n2nContext;
@@ -53,8 +60,18 @@ class ManageState implements RequestScoped {
 		}
 	}
 		
+	/**
+	 * @return \n2n\core\container\N2nContext
+	 */
 	public function getN2nContext() {
 		return $this->n2nContext;
+	}
+	
+	/**
+	 * @return \rocket\ei\manage\ManagedDef
+	 */
+	public function getDef() {
+		return $this->def;
 	}
 	
 	/**
@@ -131,15 +148,16 @@ class ManageState implements RequestScoped {
 		$this->eiLifecycleMonitor = $eiLifecycleMonitor;
 	}
 	
-	public function createEiFrame(EiMask $contextEiMask, ControllerContext $controllerContext) {
-		$eiFrameFactory = new EiFrameFactory($contextEiMask);
+	public function createEiFrame(EiEngine $contextEiEngine, ControllerContext $controllerContext, EiCommandPath $eiCommandPath) {
+		$eiFrame = $contextEiEngine->createEiFrame($controllerContext, $this, $this->peakEiFrame(false), $eiCommandPath);
 		
-		$parentEiFrame = null;
-		if (sizeof($this->eiFrames)) {
-			$parentEiFrame = end($this->eiFrames);
-		}
+		$this->pushEiFrame($eiFrame);
 		
-		return $this->eiFrames[] = $eiFrameFactory->create($controllerContext, $this, $parentEiFrame);
+		return $eiFrame;
+	}
+	
+	public function pushEiFrame(EiFrame $eiFrame) {
+		$this->eiFrames[] = $eiFrame;
 	}
 	
 	public function isActive(): bool {
@@ -150,12 +168,13 @@ class ManageState implements RequestScoped {
 	 * 
 	 * @param EiType $eiType
 	 * @throws ManageException
-	 * @return \rocket\ei\manage\EiFrame
+	 * @return \rocket\ei\manage\frame\EiFrame
 	 */
-	public function peakEiFrame(EiType $eiType = null): EiFrame {
-		if (!sizeof($this->eiFrames)) {
+	public function peakEiFrame(bool $required = true) {
+		if (empty($this->eiFrames)) {
+			if (!$required) return null;
 			throw new ManageException('No active EiFrames found.');
-		}  
+		} 
 		
 		end($this->eiFrames);
 		$eiFrame = current($this->eiFrames);

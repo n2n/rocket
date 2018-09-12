@@ -23,12 +23,12 @@ namespace rocket\impl\ei\component\prop\relation\model;
 
 use rocket\ei\manage\gui\GuiField;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\gui\GuiFieldEditable;
 use n2n\util\ex\IllegalStateException;
-use rocket\ei\util\model\EiuFrame;
 use rocket\ei\manage\gui\ui\DisplayItem;
 use n2n\impl\web\ui\view\html\HtmlElement;
+use rocket\ei\util\Eiu;
 
 class EmbeddedOneToManyGuiField implements GuiField {
 	private $label;
@@ -100,7 +100,7 @@ class EmbeddedOneToManyGuiField implements GuiField {
 		$targetRelationEntries = $this->toManyEiField->getValue();
 		if (empty($targetRelationEntries)) return null;
 		
-		$targetEiuFrame = new EiuFrame($this->targetEiFrame);
+		$targetEiuFrame = (new Eiu($this->targetEiFrame))->frame();
 		
 		$targetEiuEntries = array();
 		foreach ($targetRelationEntries as $targetRelationEntry) {
@@ -126,7 +126,7 @@ class EmbeddedOneToManyGuiField implements GuiField {
 		$targetRelationEntries = $this->toManyEiField->getValue();
 		if (empty($targetRelationEntries)) return null;
 		
-		$targetEiuFrame = new EiuFrame($this->targetEiFrame);
+		$targetEiuFrame = (new Eiu($this->targetEiFrame))->frame();
 		$htmlElem = new HtmlElement('ul', array('class' => 'list-unstyled'), '');
 		
 		foreach ($targetRelationEntries as $targetRelationEntry) {

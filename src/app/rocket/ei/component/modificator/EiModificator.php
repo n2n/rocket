@@ -21,13 +21,13 @@
  */
 namespace rocket\ei\component\modificator;
 
-use rocket\ei\manage\mapping\EiEntry;
+use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\component\EiComponent;
 use rocket\ei\manage\gui\GuiDefinition;
-use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\gui\EiEntryGui;
 use rocket\ei\manage\draft\DraftDefinition;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 
 interface EiModificator extends EiComponent {
 	

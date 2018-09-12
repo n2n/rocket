@@ -48,7 +48,7 @@ use rocket\spec\Spec;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\generic\ScalarEiProperty;
 use rocket\impl\ei\component\prop\relation\model\relation\EmbeddedEiPropRelation;
-use rocket\ei\util\model\EiuEngine;
+use rocket\ei\util\spec\EiuEngine;
 use rocket\ei\EiType;
 use rocket\ei\EiTypeExtension;
 use n2n\web\dispatch\mag\MagCollection;
@@ -93,6 +93,8 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 	
 	
 	public function initAutoEiPropAttributes(N2nContext $n2nContext, Column $column = null) {
+		parent::initAutoEiPropAttributes($n2nContext, $column);
+		
 		$this->attributes->set(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, $this->displayInOverViewDefault);
 	}
 	

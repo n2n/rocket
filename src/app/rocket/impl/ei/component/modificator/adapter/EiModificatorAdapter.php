@@ -26,7 +26,7 @@ use rocket\impl\ei\component\EiComponentAdapter;
 use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\manage\gui\EiEntryGui;
 use rocket\ei\manage\draft\DraftDefinition;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 
 abstract class EiModificatorAdapter extends EiComponentAdapter implements EiModificator {
 	

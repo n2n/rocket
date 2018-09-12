@@ -27,7 +27,7 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\reflection\property\AccessProxy;
 use n2n\web\dispatch\Dispatchable;
-use rocket\ei\util\model\EiuFrame;
+use rocket\ei\util\frame\EiuFrame;
 use n2n\web\dispatch\map\bind\BindingErrors;
 use rocket\core\model\Rocket;
 use n2n\impl\web\dispatch\property\ObjectProperty;
@@ -37,7 +37,7 @@ use n2n\web\ui\UiComponent;
 use n2n\web\dispatch\property\ManagedProperty;
 use rocket\impl\ei\component\prop\relation\model\mag\EntryLabeler;
 use n2n\web\dispatch\mag\UiOutfitter;
-use rocket\ei\util\model\UnknownEntryException;
+use rocket\ei\manage\entry\UnknownEiObjectException;
 
 class RelationSelectorMag extends MagAdapter  {
 	private $targetEiuFrame;
@@ -92,7 +92,7 @@ class RelationSelectorMag extends MagAdapter  {
 				$this->targetLiveEntries[$targetPid] = $this->targetEiuFrame
 						->lookupEntry($this->targetEiuFrame->pidToId($targetPid))
 						->getEiEntityObj();
-			} catch (UnknownEntryException $e) {
+			} catch (UnknownEiObjectException $e) {
 			}
 		}
 	}

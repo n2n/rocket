@@ -27,23 +27,25 @@ use n2n\persistence\orm\CascadeType;
 use n2n\persistence\orm\annotation\AnnoTable;
 use n2n\persistence\orm\annotation\AnnoManyToOne;
 use n2n\persistence\orm\annotation\AnnoOneToMany;
+use rocket\spec\TypePath;
 
 class EiGrant extends ObjectAdapter implements Grant {
 	private static function _annos(AnnoInit $ai) {
 		$ai->c(new AnnoTable('rocket_ei_grant'));
 		$ai->p('rocketUserGroup', new AnnoManyToOne(RocketUserGroup::getClass()));
-		$ai->p('eiPrivilegeGrants', new AnnoOneToMany(EiPrivilegeGrant::getClass(), 'eiGrant', CascadeType::ALL));
+		$ai->p('eiGrantPrivileges', new AnnoOneToMany(EiGrantPrivilege::getClass(), 'eiGrant', CascadeType::ALL));
 	}
 
 	private $id;
-	private $eiTypeId;
-	private $eiMaskId;
+	private $eiTypePath;
 	private $rocketUserGroup;
 	private $full = false;
-	private $eiPrivilegeGrants;
+	private $eiGrantPrivileges;
+	
+	private $accessJson = '{}';
 	
 	public function __construct() {
-		$this->eiPrivilegeGrants = new \ArrayObject();
+		$this->eiGrantPrivileges = new \ArrayObject();
 	}
 	
 	public function getId() {
@@ -54,20 +56,12 @@ class EiGrant extends ObjectAdapter implements Grant {
 		$this->id = $id;
 	}
 	
-	public function getEiTypeId() {
-		return $this->eiTypeId;
+	public function getEiTypePath() {
+		return TypePath::create($this->eiTypePath);
 	}
 	
-	public function setEiTypeId(string $eiTypeId) {
-		$this->eiTypeId = $eiTypeId;
-	}
-	
-	public function getEiMaskId() {
-		return $this->eiMaskId;
-	}
-	
-	public function setEiMaskId(string $eiMaskId = null) {
-		$this->eiMaskId = $eiMaskId;
+	public function setEiTypePath(TypePath $eiTypePath) {
+		$this->eiTypePath = (string) $eiTypePath;
 	}
 		
 	public function getRocketUserGroup() {
@@ -90,11 +84,14 @@ class EiGrant extends ObjectAdapter implements Grant {
 		return $this->readAccessAttributes();
 	}
 	
-	public function getEiPrivilegeGrants() {
-		return $this->eiPrivilegeGrants;
+	/**
+	 * @return \ArrayObject
+	 */
+	public function getEiGrantPrivileges() {
+		return $this->eiGrantPrivileges;
 	}
 	
-	public function setEiPrivilegeGrants(\ArrayObject $privilegeGrants) {
-		$this->eiPrivilegeGrants = $privilegeGrants;
+	public function setEiGrantPrivileges(\ArrayObject $privilegeGrants) {
+		$this->eiGrantPrivileges = $privilegeGrants;
 	}
 }

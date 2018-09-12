@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\relation;
 
-use rocket\ei\util\model\EiuFrame;
+use rocket\ei\util\frame\EiuFrame;
 use rocket\ei\manage\gui\GuiPropFork;
 use rocket\ei\manage\gui\GuiFieldFork;
 use rocket\ei\manage\gui\GuiIdPath;
@@ -46,16 +46,17 @@ use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\ArgUtils;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
-use rocket\ei\util\model\Eiu;
-use rocket\ei\manage\mapping\EiEntry;
+use rocket\ei\util\Eiu;
+use rocket\ei\manage\entry\EiEntry;
 use n2n\web\dispatch\mag\UiOutfitter;
 use rocket\ei\manage\gui\GuiProp;
 use n2n\web\dispatch\mag\Mag;
 use rocket\ei\manage\gui\GuiFieldForkEditable;
-use rocket\ei\util\model\EiuEntryGuiAssembler;
+use rocket\ei\util\gui\EiuEntryGuiAssembler;
 use rocket\ei\manage\gui\GuiDefinition;
+use rocket\ei\component\prop\GuiEiPropFork;
 
-class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropFork {
+class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiEiPropFork, GuiPropFork {
 	
 	public function __construct() {
 		parent::__construct();
@@ -65,7 +66,7 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropF
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\mapping\impl\Readable::read()
+	 * @see \rocket\ei\component\prop\field\Readable::read()
 	 */
 	public function read(EiObject $eiObject) {
 		if ($this->isDraftable() && $eiObject->isDraft()) {
@@ -83,7 +84,7 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropF
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\mapping\impl\Writable::write()
+	 * @see \rocket\ei\component\prop\field\Writable::write()
 	 */
 	public function write(EiObject $eiObject, $value) {
 		CastUtils::assertTrue($value === null || $value instanceof EiObject);
@@ -110,19 +111,24 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropF
 		return RelationEntry::fromM($targetEiuFrame->createEiEntryCopy($value->toEiEntry($targetEiuFrame)));
 	}
 	
-	public function setEntityProperty(EntityProperty $entityProperty = null) {
+	public function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty instanceof ToOneEntityProperty
 				&& $entityProperty->getType() === RelationEntityProperty::TYPE_ONE_TO_ONE);
 	
 		parent::setEntityProperty($entityProperty);
 	}
 	
-	public function getGuiPropFork(): ?GuiPropFork {
+	private $forkedGuiDefinition;
+	
+	public function buildGuiPropFork(Eiu $eiu): ?GuiPropFork {
+		$this->forkedGuiDefinition = $eiu->context()->engine($this->eiPropRelation->getTargetEiMask())
+				->getGuiDefinition();
+		
 		return $this;
 	}
 	
 	public function getForkedGuiDefinition(): GuiDefinition {
-		return $this->eiPropRelation->getTargetEiMask()->getEiEngine()->getGuiDefinition();
+		return $this->forkedGuiDefinition;
 	}
 	
 	public function buildEiField(Eiu $eiu) {
@@ -146,7 +152,7 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropF
 			$targetEiFrame = $this->eiPropRelation->createTargetEditPseudoEiFrame($eiFrame, $eiEntry);
 		}
 		
-		$targetEiuFrame = new EiuFrame($targetEiFrame);
+		$targetEiuFrame = (new Eiu($targetEiFrame))->frame();
 		
 		$eiuField = $eiu->field();
 		$targetRelationEntry = $eiuField->getValue();
@@ -194,7 +200,7 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropF
 	 * {@inheritDoc}
 	 * @see \rocket\ei\component\prop\GuiEiProp::getGuiProp()
 	 */
-	public function getGuiProp(): ?GuiProp {
+	public function buildGuiProp(Eiu $eiu): ?GuiProp {
 		return null;	
 	}
 
@@ -205,7 +211,6 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropF
 	public function getDraftProperty() {
 		throw new NotYetImplementedException();
 	}
-
 }
 
 class OneToOneGuiFieldFork implements GuiFieldFork {

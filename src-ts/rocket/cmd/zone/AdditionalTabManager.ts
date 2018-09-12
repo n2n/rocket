@@ -4,7 +4,7 @@ namespace Rocket.Cmd {
 		private context: Zone;
 		private tabs: Array<AdditionalTab>;
 		
-		private jqAdditional: JQuery = null;
+		private jqAdditional: JQuery<Element> = null;
 		
 		public constructor(context: Zone) {
 			this.context = context;
@@ -103,15 +103,15 @@ namespace Rocket.Cmd {
 	}
 	
 	export class AdditionalTab {
-		private jqNavItem: JQuery;
-		private jqContent: JQuery;
+		private jqNavItem: JQuery<Element>;
+		private jqContent: JQuery<Element>;
 		private active: boolean = false;
 		
 		private onShowCallbacks: Array<(tab: AdditionalTab) => any> = [];
 		private onHideCallbacks: Array<(tab: AdditionalTab) => any> = [];
 		private onDisposeCallbacks: Array<(tab: AdditionalTab) => any> = [];
 		
-		constructor(jqNavItem: JQuery, jqContent: JQuery) {
+		constructor(jqNavItem: JQuery<Element>, jqContent: JQuery<Element>) {
 			this.jqNavItem = jqNavItem;
 			this.jqContent = jqContent;
 			
@@ -119,11 +119,11 @@ namespace Rocket.Cmd {
 			this.jqContent.hide();
 		}
 		
-		public getJqNavItem(): JQuery {
+		public getJqNavItem(): JQuery<Element> {
 			return this.jqNavItem;
 		}
 		
-		public getJqContent(): JQuery {
+		public getJqContent(): JQuery<Element> {
 			return this.jqContent;
 		}
 		

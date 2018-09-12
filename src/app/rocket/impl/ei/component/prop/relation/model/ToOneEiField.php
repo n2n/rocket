@@ -22,14 +22,14 @@
 namespace rocket\impl\ei\component\prop\relation\model;
 
 use n2n\reflection\ArgUtils;
-use rocket\ei\manage\mapping\impl\RwEiField;
-use rocket\ei\manage\mapping\FieldErrorInfo;
+use rocket\ei\component\prop\field\RwEiField;
+use rocket\ei\manage\entry\EiFieldValidationResult;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\manage\EiObject;
-use rocket\ei\util\model\Eiu;
-use rocket\ei\manage\mapping\impl\Readable;
-use rocket\ei\manage\mapping\impl\Writable;
-use rocket\ei\manage\mapping\impl\Copyable;
+use rocket\ei\util\Eiu;
+use rocket\ei\component\prop\field\Readable;
+use rocket\ei\component\prop\field\Writable;
+use rocket\ei\component\prop\field\Copyable;
 
 class ToOneEiField extends RwEiField {
 	private $copyable;
@@ -66,12 +66,12 @@ class ToOneEiField extends RwEiField {
 		parent::writeValue($targetRelationEntry->getEiObject());
 	}
 	
-	public function validate(FieldErrorInfo $fieldErrorInfo) {
+	public function validate(EiFieldValidationResult $fieldErrorInfo) {
 		if (null !== ($value = $this->getValue())) {
 			IllegalStateException::assertTrue($value instanceof RelationEntry);
 			if ($value->hasEiEntry()) {
 				$value->getEiEntry()->validate();
-				$fieldErrorInfo->addSubMappingErrorInfo($value->getEiEntry()->getMappingErrorInfo());
+				$fieldErrorInfo->addSubValidationResult($value->getEiEntry()->getValidationResult());
 			}
 		}
 	}

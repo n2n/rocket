@@ -4,7 +4,7 @@ namespace rocket\ajah;
 use n2n\web\http\payload\BufferedPayload;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\impl\web\ui\view\jhtml\JhtmlExec;
-use rocket\ei\util\model\EiJhtmlEventInfo;
+use rocket\ei\util\EiJhtmlEventInfo;
 use n2n\impl\web\ui\view\jhtml\JhtmlRedirectPayload;
 use n2n\impl\web\ui\view\jhtml\JhtmlResponse;
 use n2n\impl\web\ui\view\jhtml\JhtmlJsonPayload;

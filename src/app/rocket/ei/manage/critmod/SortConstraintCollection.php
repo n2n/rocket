@@ -51,7 +51,7 @@ class SortModificatorCollection {
 			$this->sortConstraints = array();
 			foreach ($this->fields as $key => $field) {
 				$sortConstraint = $field->createSortCriteriaConstraint($this->directions[$key]);
-				ArgUtils::valTypeReturn($sortContraint, 'rocket\ei\manage\critmod\CriteriaConstraint',
+				ArgUtils::valTypeReturn($sortConstraint, 'rocket\ei\manage\frame\CriteriaConstraint',
 						$field, 'createSortCriteriaConstraint');
 				$this->sortConstraints[] = $sortConstraint;
 			}

@@ -21,7 +21,7 @@
 	 */
 
 	use rocket\ei\manage\control\IconType;
-	use rocket\ei\util\model\EiuFrame;
+	use rocket\ei\util\frame\EiuFrame;
 	use n2n\impl\web\ui\view\html\HtmlView;
 	
 	$view = HtmlView::view($this);
@@ -47,8 +47,7 @@
 	<h3><?php $html->text('ei_impl_multi_upload_label', array('plural_label' => 
 					$eiuFrame->getGenericPluralLabel())) ?></h3>
 	<form id="rocket-multi-upload-form" method="post" 
-			action="<?php $html->out($html->meta()->getControllerUrl(array('upload'))) ?>"
-			data-order="<?php $html->out($view->getParam('order', false)) ?>"
+			action="<?php $html->out($html->meta()->getControllerUrl(array('upload'))) ?>" 
 			enctype="multipart/form-data">
 		<div id="rocket-multi-upload-drop">
 			Drop Here

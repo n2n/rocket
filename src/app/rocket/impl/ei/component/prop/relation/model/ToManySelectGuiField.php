@@ -21,15 +21,15 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model;
 
-use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\gui\GuiFieldEditable;
 use n2n\util\ex\IllegalStateException;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\gui\GuiField;
 use rocket\core\model\Rocket;
 use rocket\ei\component\prop\EiProp;
-use rocket\ei\util\model\Eiu;
-use rocket\ei\util\model\EiuFrame;
+use rocket\ei\util\Eiu;
+use rocket\ei\util\frame\EiuFrame;
 
 class ToManySelectGuiField implements GuiField {
 	private $eiProp;
@@ -81,7 +81,7 @@ class ToManySelectGuiField implements GuiField {
 		$criteria->select('COUNT(e)');
 		$num = $criteria->toQuery()->fetchSingle();
 
-		$targetEiuFrame = new EiuFrame($this->targetEiFrame);
+		$targetEiuFrame = (new Eiu($this->targetEiFrame))->frame();
 		if ($num == 1) {
 			$label = $num . ' ' . $targetEiuFrame->getGenericLabel();
 		} else {

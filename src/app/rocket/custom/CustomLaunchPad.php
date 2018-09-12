@@ -47,7 +47,7 @@ class CustomLaunchPad implements LaunchPad {
 	
 	public function getLabel(): string {
 		if ($this->label === null) {
-			return $this->customSpec->getControllerClass();
+			return $this->customSpec->getLabel();
 		}
 		return $this->label;
 	}

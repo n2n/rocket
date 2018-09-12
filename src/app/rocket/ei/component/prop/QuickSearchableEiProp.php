@@ -21,13 +21,15 @@
  */
 namespace rocket\ei\component\prop;
 
-use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\frame\EiFrame;
+use rocket\ei\util\Eiu;
+use rocket\ei\manage\critmod\quick\QuickSearchProp;
 
 interface QuickSearchableEiProp extends EiProp {
 	
 	/**
 	 * @param EiFrame $eiFrame
-	 * @return \rocket\ei\manage\critmod\quick\QuickSearchField
+	 * @return \rocket\ei\manage\critmod\quick\QuickSearchProp
 	 */
-	public function buildQuickSearchField(EiFrame $eiFrame);
+	public function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp;
 }

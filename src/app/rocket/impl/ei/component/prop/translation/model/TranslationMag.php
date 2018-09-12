@@ -31,11 +31,11 @@ use n2n\web\dispatch\map\PropertyPathPart;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\web\dispatch\property\ManagedProperty;
 use n2n\web\ui\UiComponent;
-use rocket\ei\manage\mapping\FieldErrorInfo;
+use rocket\ei\manage\entry\EiFieldValidationResult;
 use n2n\web\dispatch\map\bind\BindingErrors;
 use n2n\web\dispatch\mag\UiOutfitter;
-use rocket\ei\util\model\EiuEntry;
 use n2n\web\dispatch\map\bind\MappingDefinition;
+use rocket\ei\util\entry\EiuEntry;
 
 class TranslationMag extends MagAdapter {
 	private $markClassKey;
@@ -58,12 +58,12 @@ class TranslationMag extends MagAdapter {
 		return new ScalarProperty($accessProxy, true);
 	}
 
-	public function putDisplayable($n2nLocaleId, Displayable $displayable, FieldErrorInfo $fieldErrorInfo) {
+	public function putDisplayable($n2nLocaleId, Displayable $displayable, EiFieldValidationResult $fieldErrorInfo) {
 		$this->displayables[$n2nLocaleId] = $displayable;
 		$this->fieldErrorInfos[$n2nLocaleId] = $fieldErrorInfo;
 	}
 
-	public function putMagPropertyPath($n2nLocaleId, PropertyPath $magPropertyPath, FieldErrorInfo $fieldErrorInfo, 
+	public function putMagPropertyPath($n2nLocaleId, PropertyPath $magPropertyPath, EiFieldValidationResult $fieldErrorInfo, 
 			EiuEntry $eiuEntry) {
 		$this->magPropertyPaths[$n2nLocaleId] = $magPropertyPath;
 		$this->fieldErrorInfos[$n2nLocaleId] = $fieldErrorInfo;

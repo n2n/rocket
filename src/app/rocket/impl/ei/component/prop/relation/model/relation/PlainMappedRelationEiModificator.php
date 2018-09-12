@@ -21,11 +21,11 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model\relation;
 
-use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\frame\EiFrame;
 use n2n\reflection\property\AccessProxy;
-use rocket\ei\manage\mapping\WrittenMappingListener;
-use rocket\ei\manage\EiFrameListener;
-use rocket\ei\manage\mapping\EiEntry;
+use rocket\ei\manage\entry\WrittenMappingListener;
+use rocket\ei\manage\frame\EiFrameListener;
+use rocket\ei\manage\entry\EiEntry;
 
 class PlainMappedRelationEiModificator implements EiFrameListener {
 	private $targetEiFrame;

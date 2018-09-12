@@ -24,19 +24,17 @@ namespace rocket\impl\ei\component\command\common;
 use n2n\l10n\DynamicTextCollection;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\N2nLocale;
-use rocket\ei\manage\control\EntryControlComponent;
+use rocket\ei\component\command\control\EntryControlComponent;
 use rocket\ei\manage\control\ControlButton;
 use rocket\ei\manage\control\IconType;
 use rocket\impl\ei\component\command\common\controller\EditController;
 use rocket\impl\ei\component\command\IndependentEiCommandAdapter;
 use rocket\ei\component\command\PrivilegedEiCommand;
 use n2n\core\container\N2nContext;
-use rocket\spec\security\EiCommandPrivilege;
-use rocket\spec\security\impl\CommonEiCommandPrivilege;
+use rocket\ei\manage\security\privilege\EiCommandPrivilege;
 use rocket\core\model\Rocket;
-use n2n\l10n\Lstr;
 use n2n\util\uri\Path;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
 
 class EditEiCommand extends IndependentEiCommandAdapter implements EntryControlComponent, PrivilegedEiCommand {
@@ -53,15 +51,27 @@ class EditEiCommand extends IndependentEiCommandAdapter implements EntryControlC
 		return 'Edit';
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\command\EiCommand::lookupController()
+	 */
 	public function lookupController(Eiu $eiu): Controller {
 		return $eiu->lookup(EditController::class);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\command\control\EntryControlComponent::getEntryControlOptions()
+	 */
 	public function getEntryControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {
 		$dtc = new DynamicTextCollection('rocket', $n2nLocale);
 		return array(self::CONTROL_KEY => $dtc->translate('common_edit_label'));
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\command\control\EntryControlComponent::createEntryControls()
+	 */
 	public function createEntryControls(Eiu $eiu, HtmlView $view): array {
 		if ($eiu->frame()->isExecutedBy($this)) {
 			return array();
@@ -109,21 +119,34 @@ class EditEiCommand extends IndependentEiCommandAdapter implements EntryControlC
 		return $controls;	
 	}
 	
-	public function createEiCommandPrivilege(N2nContext $n2nContext): EiCommandPrivilege {
-		$pi = new CommonEiCommandPrivilege(new Lstr('common_edit_label', Rocket::NS));
-		$pi->putSubEiCommandPrivilege(self::PRIVILEGE_LIVE_ENTRY_KEY,
-				new CommonEiCommandPrivilege(new Lstr('ei_impl_edit_live_entry_label', Rocket::NS)));
-		$pi->putSubEiCommandPrivilege(self::PRIVILEGE_DRAFT_KEY,
-				new CommonEiCommandPrivilege(new Lstr('ei_impl_edit_draft_label', Rocket::NS)));
-		return $pi;
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\command\PrivilegedEiCommand::createEiCommandPrivilege()
+	 */
+	public function createEiCommandPrivilege(Eiu $eiu): EiCommandPrivilege {
+		$dtc = $eiu->dtc(Rocket::NS);
+		
+		$ecp = $eiu->factory()->newCommandPrivilege($dtc->t('common_edit_label'));
+		$ecp->newSub(self::PRIVILEGE_LIVE_ENTRY_KEY, $dtc->t('ei_impl_edit_live_entry_label'));
+		$ecp->newSub(self::PRIVILEGE_DRAFT_KEY, $dtc->t('ei_impl_edit_draft_label'));
+		
+		return $ecp;
 	}
 	
 	
+	/**
+	 * @param N2nLocale $n2nLocale
+	 * @return string
+	 */
 	public function getPrivilegeLabel(N2nLocale $n2nLocale) {
 		$dtc = new DynamicTextCollection('rocket', $n2nLocale);
 		return $dtc->translate('common_edit_label'); 
 	}
 	
+	/**
+	 * @param N2nLocale $n2nLocale
+	 * @return array|string[]
+	 */
 	public function getPrivilegeExtOptions(N2nLocale $n2nLocale) {
 		if (!$this->getEiType()->isDraftable()) return array();
 		

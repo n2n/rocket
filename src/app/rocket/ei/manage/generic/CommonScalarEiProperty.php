@@ -24,7 +24,7 @@ namespace rocket\ei\manage\generic;
 
 use n2n\l10n\Lstr;
 use rocket\ei\component\prop\EiProp;
-use rocket\ei\manage\mapping\EiEntry;
+use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\EiPropPath;
 
 class CommonScalarEiProperty implements ScalarEiProperty {

@@ -31,7 +31,7 @@ use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use rocket\impl\ei\component\prop\ci\model\ContentItemGuiField;
 use rocket\impl\ei\component\prop\ci\model\ContentItemEditable;
 use rocket\ei\EiPropPath;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\gui\GuiField;
 use rocket\ei\manage\gui\ui\DisplayItem;
@@ -55,7 +55,7 @@ class ContentItemsEiProp extends EmbeddedOneToManyEiProp {
 		return DisplayItem::TYPE_LIGHT_GROUP;
 	}
 	
-	public function setEntityProperty(EntityProperty $entityProperty = null) {
+	public function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty instanceof ToManyEntityProperty
 				&& $entityProperty->getRelation()->getTargetEntityModel()->getClass()->getName() === ContentItem::class);
 		parent::setEntityProperty($entityProperty);

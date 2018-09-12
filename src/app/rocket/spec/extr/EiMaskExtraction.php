@@ -22,8 +22,8 @@
 namespace rocket\spec\extr;
 
 use n2n\reflection\ArgUtils;
-use rocket\ei\manage\critmod\sort\SortData;
-use rocket\ei\manage\critmod\filter\data\FilterGroupData;
+use rocket\ei\manage\critmod\sort\SortSettingGroup;
+use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
 use rocket\ei\mask\model\DisplayScheme;
 
 class EiMaskExtraction {
@@ -35,7 +35,7 @@ class EiMaskExtraction {
 	private $previewControllerLookupId;
 	
 	private $filterData;
-	private $defaultSortData;
+	private $defaultSortSettingGroup;
 	
 	private $eiPropExtractions = array();
 	private $eiCommandExtractions = array();
@@ -132,31 +132,31 @@ class EiMaskExtraction {
 	}
 
 	/**
-	 * @return \rocket\ei\manage\critmod\filter\data\FilterGroupData|null
+	 * @return \rocket\ei\manage\critmod\filter\data\FilterSettingGroup|null
 	 */
-	public function getFilterGroupData() {
+	public function getFilterSettingGroup() {
 		return $this->filterData;
 	}
 	
 	/**
-	 * @param FilterGroupData|null $filterData
+	 * @param FilterSettingGroup|null $filterData
 	 */
-	public function setFilterGroupData(?FilterGroupData $filterData) {
+	public function setFilterSettingGroup(?FilterSettingGroup $filterData) {
 		$this->filterData = $filterData;
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\critmod\sort\SortData|null
+	 * @return \rocket\ei\manage\critmod\sort\SortSettingGroup|null
 	 */
-	public function getDefaultSortData() {
-		return $this->defaultSortData;
+	public function getDefaultSortSettingGroup() {
+		return $this->defaultSortSettingGroup;
 	}
 
 	/**
-	 * @param SortData|null $defaultSortData
+	 * @param SortSettingGroup|null $defaultSortSettingGroup
 	 */
-	public function setDefaultSortData(?SortData $defaultSortData) {
-		$this->defaultSortData = $defaultSortData;
+	public function setDefaultSortSettingGroup(?SortSettingGroup $defaultSortSettingGroup) {
+		$this->defaultSortSettingGroup = $defaultSortSettingGroup;
 	}
 
 	/**

@@ -28,23 +28,23 @@ use rocket\impl\ei\component\prop\relation\model\relation\EiPropRelation;
 use rocket\impl\ei\component\prop\adapter\DisplaySettings;
 use rocket\impl\ei\component\prop\adapter\StandardEditDefinition;
 use rocket\ei\component\prop\FilterableEiProp;
-use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\frame\EiFrame;
 use n2n\core\container\N2nContext;
-use rocket\ei\manage\critmod\filter\impl\controller\GlobalFilterFieldController;
+use rocket\ei\util\filter\controller\ScrFilterPropController;
 use rocket\ei\component\CritmodFactory;
-use rocket\impl\ei\component\prop\relation\model\filter\RelationFilterField;
+use rocket\impl\ei\component\prop\relation\model\filter\RelationFilterProp;
 use n2n\web\http\controller\impl\ScrRegistry;
-use rocket\ei\util\model\EiuFrame;
 use rocket\ei\mask\EiMask;
 use rocket\ei\manage\critmod\filter\FilterDefinition;
-use rocket\ei\manage\critmod\filter\impl\controller\FilterAjahHook;
-use rocket\ei\util\model\EiuMask;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\filter\controller\FilterJhtmlHook;
+use rocket\ei\util\Eiu;
 use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\ei\manage\gui\ui\DisplayItem;
 use rocket\ei\manage\gui\ViewMode;
-use rocket\ei\manage\gui\GuiPropFork;
-use rocket\ei\manage\critmod\filter\FilterField;
+use rocket\ei\manage\critmod\filter\FilterProp;
+use rocket\ei\manage\security\filter\SecurityFilterProp;
+use rocket\ei\manage\gui\GuiDefinition;
+use rocket\ei\manage\security\InaccessibleEiCommandPathException;
 
 abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter implements GuiProp, DraftableEiProp, 
 		DraftProperty, FilterableEiProp {
@@ -92,12 +92,18 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 		return DisplayItem::TYPE_SIMPLE_GROUP;
 	}
 	
-	public function getGuiProp(): ?GuiProp {
-		return $this;
-	}
+	/**
+	 * @var GuiDefinition
+	 */
+	protected $targetGuiDefinition;
 	
-	public function getGuiPropFork(): ?GuiPropFork {
-		return null;
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\prop\GuiEiProp::buildGuiProp()
+	 */
+	public function buildGuiProp(Eiu $eiu): ?GuiProp {
+		$this->targetGuiDefinition = $eiu->context()->engine($this->eiPropRelation->getTargetEiMask())->getGuiDefinition();
+		return $this;
 	}
 	
 	/**
@@ -107,11 +113,16 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 		return true;
 	}
 	
-	public function buildManagedFilterField(EiFrame $eiFrame): ?FilterField  {
-		$targetEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame);
+	public function buildManagedFilterProp(EiFrame $eiFrame): ?FilterProp  {
+		$targetEiFrame;
+		try {
+			$targetEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame);
+		} catch (InaccessibleEiCommandPathException $e) {
+			return null;
+		}
 		
-		return new RelationFilterField($this->getLabelLstr(), $this->getEntityProperty(),
-				new EiuFrame($targetEiFrame), 
+		return new RelationFilterProp($this->getLabelLstr(), $this->getEntityProperty(),
+				(new Eiu($targetEiFrame))->frame(), 
 				new class($targetEiFrame) implements TargetFilterDef {
 					private $targetEiFrame;
 					
@@ -121,24 +132,31 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 					
 					public function getFilterDefinition(): FilterDefinition {
 						return $this->targetEiFrame->getContextEiEngine()
-								->createManagedFilterDefinition($this->targetEiFrame);
+								->createFramedFilterDefinition($this->targetEiFrame);
 					}
 	
-					public function getFilterAjahHook(): FilterAjahHook {
+					public function getFilterJhtmlHook(): FilterJhtmlHook {
 						$targetEiMask = $this->targetEiFrame->getContextEiEngine()->getEiMask();
 						
-						return GlobalFilterFieldController::buildFilterAjahHook(
+						return ScrFilterPropController::buildFilterJhtmlHook(
 								$this->targetEiFrame->getN2nContext()->lookup(ScrRegistry::class),
 								$targetEiMask);
 					}
 				});
 	}
 	
-	public function buildFilterField(N2nContext $n2nContext): ?FilterField {
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\prop\FilterableEiProp::buildFilterProp()
+	 */
+	public function buildFilterProp(Eiu $eiu): ?FilterProp {
 		$targetEiMask = $this->eiPropRelation->getTargetEiMask();
+		$n2nContext = $eiu->getN2nContext();
 
-		return new RelationFilterField($this->getLabelLstr(), $this->getEntityProperty(),
-				new EiuMask($targetEiMask, $n2nContext),
+		$eiuFrame = $eiu->frame(false);
+		if (null === $eiuFrame) return null;
+		
+		return new RelationFilterProp($this->getLabelLstr(), $this->getEntityProperty(), $eiuFrame,
 				new class($targetEiMask, $n2nContext) implements TargetFilterDef {
 					private $targetEiMask;
 					private $n2nContext;
@@ -152,15 +170,15 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 						return $this->targetEiMask->getEiEngine()->createFilterDefinition($this->n2nContext);
 					}
 	
-					public function getFilterAjahHook(): FilterAjahHook {
-						return GlobalFilterFieldController::buildFilterAjahHook(
+					public function getFilterJhtmlHook(): FilterJhtmlHook {
+						return ScrFilterPropController::buildFilterJhtmlHook(
 								$this->n2nContext->lookup(ScrRegistry::class), $this->targetEiMask);
 					}
 				});
 	}
 	
 
-	public function buildEiEntryFilterField(N2nContext $n2nContext) {
+	public function buildSecurityFilterProp(Eiu $eiu): ?SecurityFilterProp {
 		return null;
 	}
 	
@@ -178,13 +196,13 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 			public function getFilterDefinition(): FilterDefinition {
 				return (new CritmodFactory($this->targetEiMask->getEiEngine()->getEiMask()->getEiPropCollection(),
 								$this->targetEiMask->getEiEngine()->getEiModificatorCollection()))
-						->createEiEntryFilterDefinition($this->n2nContext);
+						->createSecurityFilterDefinition($this->n2nContext);
 			}
 
-			public function getFilterAjahHook(): FilterAjahHook {
+			public function getFilterJhtmlHook(): FilterJhtmlHook {
 				$targetEiMask = $this->targeteiFrame->getTargetEiMask();
 
-				return GlobalFilterFieldController::buildEiEntryFilterAjahHook(
+				return ScrFilterPropController::buildEiEntryFilterJhtmlHook(
 						$this->n2nContext->lookup(ScrRegistry::class),
 						$this->targetEiMask->getEiEngine()->getEiMask()->getEiType()->getId(), $this->targetEiMask->getExtension()->getId());
 			}
@@ -197,5 +215,5 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 interface TargetFilterDef {
 	public function getFilterDefinition(): FilterDefinition;
 	
-	public function getFilterAjahHook(): FilterAjahHook;
+	public function getFilterJhtmlHook(): FilterJhtmlHook;
 }

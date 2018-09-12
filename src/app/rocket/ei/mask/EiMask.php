@@ -21,20 +21,19 @@
  */
 namespace rocket\ei\mask;
 
-use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\frame\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\EiType;
 use n2n\l10n\N2nLocale;
 use rocket\ei\manage\preview\model\PreviewModel;
 use rocket\ei\manage\EiObject;
 use rocket\ei\mask\model\DisplayScheme;
-use rocket\ei\manage\critmod\CriteriaConstraint;
 use rocket\ei\EiEngine;
 use rocket\ei\manage\preview\controller\PreviewController;
 use n2n\util\config\InvalidConfigurationException;
 use rocket\ei\manage\preview\model\UnavailablePreviewException;
 use rocket\ei\manage\control\UnavailableControlException;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use rocket\ei\manage\gui\EiGui;
 use rocket\ei\manage\gui\EiEntryGui;
 use rocket\ei\manage\gui\SummarizedStringBuilder;
@@ -48,8 +47,10 @@ use n2n\util\ex\IllegalStateException;
 use n2n\l10n\Lstr;
 use rocket\ei\manage\control\IconType;
 use rocket\ei\EiTypeExtension;
-use rocket\ei\manage\critmod\filter\FilterCriteriaConstraint;
 use n2n\util\ex\NotYetImplementedException;
+use rocket\spec\TypePath;
+use rocket\ei\manage\ManageState;
+use rocket\ei\manage\gui\GuiDefinition;
 
 class EiMask {
 	private $eiMaskDef;
@@ -101,6 +102,14 @@ class EiMask {
 	}
 	
 	/**
+	 * @return \rocket\spec\TypePath
+	 */
+	public function getEiTypePath() {
+		return new TypePath($this->eiType->getId(), 
+				($this->eiTypeExtension !== null ? $this->eiTypeExtension->getId() : null));
+	}
+	
+	/**
 	 * @return boolean
 	 */
 	public function isExtension() {
@@ -144,6 +153,27 @@ class EiMask {
 	 */
 	public function getDef() {
 		return $this->eiMaskDef;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getIdentityStringPattern() {
+		return $this->eiMaskDef->getIdentityStringPattern();
+	}
+	
+	/**
+	 * @return \rocket\ei\manage\critmod\filter\data\FilterSettingGroup|null
+	 */
+	public function getFilterSettingGroup() {
+		return $this->eiMaskDef->getFilterSettingGroup();
+	}
+	
+	/**
+	 * @return \rocket\ei\manage\critmod\sort\SortSettingGroup|null
+	 */
+	public function getSortSettingGroup() {
+		return $this->eiMaskDef->getDefaultSortSettingGroup();
 	}
 	
 	/**
@@ -302,113 +332,39 @@ class EiMask {
 // 		return !$this->eiEngine->getDraftDefinition()->isEmpty();
 	}
 	
-	/**
-	 * @param EiObject $eiObject
-	 * @param N2nLocale $n2nLocale
-	 * @return string
-	 */
-	private function createDefaultIdentityString(EiObject $eiObject, N2nLocale $n2nLocale) {
-		$idPatternPart = null;
-		$namePatternPart = null;
-		
-		foreach ($this->eiEngine->getGuiDefinition()->getStringRepresentableGuiProps() as $guiIdPathStr => $guiProp) {
-			if ($guiIdPathStr == $this->eiEngine->getEiMask()->getEiType()->getEntityModel()->getIdDef()->getPropertyName()) {
-				$idPatternPart = SummarizedStringBuilder::createPlaceholder($guiIdPathStr);
-			} else {
-				$namePatternPart = SummarizedStringBuilder::createPlaceholder($guiIdPathStr);
-			}
-			
-			if ($namePatternPart !== null) break;
-		}
-		
-		if ($idPatternPart === null) {
-			$idPatternPart = $eiObject->getEiEntityObj()->hasId() ? 
-					$this->eiType->idToPid($eiObject->getEiEntityObj()->getId()) : 'new';
-		}
-		
-		if ($namePatternPart === null) {
-			$namePatternPart = $this->getLabelLstr()->t($n2nLocale);
-		}
-		
-		return $this->eiEngine->getGuiDefinition()->createIdentityString($namePatternPart . ' #' . $idPatternPart, $eiObject, $n2nLocale);
-	}
 	
-	/**
-	 * @param EiObject $eiObject
-	 * @param N2nLocale $n2nLocale
-	 * @return string
-	 */
-	public function createIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): string {
-		$identityStringPattern = $this->eiMaskDef->getIdentityStringPattern();
-		
-		if ($identityStringPattern === null) {
-			return $this->createDefaultIdentityString($eiObject, $n2nLocale);
-		}
-		
-		return $this->eiEngine->getGuiDefinition()
-				->createIdentityString($identityStringPattern, $eiObject, $n2nLocale);
-	}
 	
-	/**
-	 * @param array $controls
-	 * @param EiGui $eiGui
-	 * @param HtmlView $view
-	 * @return array
-	 */
-	public function sortOverallControls(array $controls, EiGui $eiGui, HtmlView $view): array {
-// 		$eiu = new Eiu($eiGui);
-// 		$eiPermissionManager = $eiu->frame()->getEiFrame()->getManageState()->getEiPermissionManager();
+// 	/**
+// 	 * @param array $controls
+// 	 * @param EiGui $eiGui
+// 	 * @param HtmlView $view
+// 	 * @return array
+// 	 */
+// 	public function sortOverallControls(array $controls, EiGui $eiGui, HtmlView $view): array {
+// // 		$eiu = new Eiu($eiGui);
+// // 		$eiPermissionManager = $eiu->frame()->getEiFrame()->getManageState()->getEiPermissionManager();
 		
-// 		$controls = array();
+// // 		$controls = array();
 		
-// 		foreach ($this->eiEngine->getEiCommandCollection() as $eiCommandId => $eiCommand) {
-// 			if (!($eiCommand instanceof OverallControlComponent)
-// 					|| !$eiPermissionManager->isEiCommandAccessible($eiCommand)) continue;
+// // 		foreach ($this->eiEngine->getEiCommandCollection() as $eiCommandId => $eiCommand) {
+// // 			if (!($eiCommand instanceof OverallControlComponent)
+// // 					|| !$eiPermissionManager->isEiCommandAccessible($eiCommand)) continue;
 				
-// 			$controls = $eiCommand->createOverallControls($eiu, $view);
-// 			ArgUtils::valArrayReturn($controls, $eiCommand, 'createOverallControls', Control::class);
-// 			foreach ($controls as $controlId => $control) {
-// 				$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;
-// 			}
-// 		}
+// // 			$controls = $eiCommand->createOverallControls($eiu, $view);
+// // 			ArgUtils::valArrayReturn($controls, $eiCommand, 'createOverallControls', Control::class);
+// // 			foreach ($controls as $controlId => $control) {
+// // 				$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;
+// // 			}
+// // 		}
 		
-		if (null !== ($overallControlOrder = $this->displayScheme->getOverallControlOrder())) {
-			return $overallControlOrder->sort($controls);
-		}
+// 		if (null !== ($overallControlOrder = $this->displayScheme->getOverallControlOrder())) {
+// 			return $overallControlOrder->sort($controls);
+// 		}
 	
-		return $controls;
-	}
+// 		return $controls;
+// 	}
 	
 
-	/**
-	 * @param array $controls
-	 * @param EiEntryGui $eiEntryGui
-	 * @param HtmlView $view
-	 * @return array
-	 */
-	public function sortEntryControls(array $controls, EiEntryGui $eiEntryGui, HtmlView $view): array {
-// 		$eiu = new Eiu($eiEntryGui);
-		
-// 		$controls = array();
-// 		foreach ($this->eiEngine->getEiCommandCollection() as $eiCommandId => $eiCommand) {
-// 			if (!($eiCommand instanceof EntryControlComponent)
-// 					|| !$eiEntryGui->getEiEntry()->isExecutableBy(EiCommandPath::from($eiCommand))) {
-// 				continue;
-// 			}
-			
-// 			$entryControls = $eiCommand->createEntryControls($eiu, $view);
-// 			ArgUtils::valArrayReturn($entryControls, $eiCommand, 'createEntryControls', Control::class);
-// 			foreach ($entryControls as $controlId => $control) {
-// 				$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;
-// 			}
-// 		}
-	
-// 		if (null !== ($entryControlOrder = $this->guiOrder->getEntryControlOrder())) {
-// 			return $entryControlOrder->sort($controls);
-// 		}		
-		
-		return $controls;
-	}
 	
 // 	public function createPartialControls(EiFrame $eiFrame, HtmlView $view): array {
 // 		$controls = array();
@@ -435,42 +391,7 @@ class EiMask {
 // 		return $controls;
 // 	}
 	
-	/**
-	 * @param EiGui $eiGui
-	 * @return EiGuiViewFactory
-	 */
-	public function createEiGuiViewFactory(EiGui $eiGui): EiGuiViewFactory {
-		$displayStructure = null;
-		switch ($eiGui->getViewMode()) {
-			case ViewMode::BULKY_READ:
-				$displayStructure = $this->getDisplayScheme()->getDetailDisplayStructure()
-						?? $this->displayScheme->getBulkyDisplayStructure();
-				break;
-			case ViewMode::BULKY_EDIT:
-				$displayStructure = $this->getDisplayScheme()->getEditDisplayStructure()
-						?? $this->displayScheme->getBulkyDisplayStructure();
-				break;
-			case ViewMode::BULKY_ADD:
-				$displayStructure = $this->getDisplayScheme()->getAddDisplayStructure()
-						?? $this->displayScheme->getBulkyDisplayStructure();
-				break;
-			case ViewMode::COMPACT_READ:
-			case ViewMode::COMPACT_EDIT:
-			case ViewMode::COMPACT_ADD:
-				$displayStructure = $this->getDisplayScheme()->getOverviewDisplayStructure();
-				break;
-		}
-		
-		if ($displayStructure === null) {
-			$displayStructure = $this->eiEngine->getGuiDefinition()->createDefaultDisplayStructure($eiGui);
-		} else {
-			$displayStructure = $this->eiEngine->getGuiDefinition()->purifyDisplayStructure($displayStructure, $eiGui);
-		}
-		
-		$displayStructure = $displayStructure->whitoutAutonomics();
-		
-		return new CommonEiGuiViewFactory($eiGui, $this->eiEngine->getGuiDefinition(), $displayStructure);
-	}
+	
 	
 	/**
 	 * @return \rocket\ei\mask\EiMask
@@ -588,33 +509,4 @@ class EiMask {
 	public function __toString(): string {
 		return 'EiMask of ' . ($this->isExtension() ? $this->eiTypeExtension : $this->eiType);
 	}
-	
-	/**
-	 * @todo move to EiEngine!!
-	 * @param EiFrame $eiFrame
-	 */
-	public function setupEiFrame(EiFrame $eiFrame) {
-		if (null !== ($filterGroupData = $this->eiMaskDef->getFilterGroupData())) {
-			$comparatorConstraint = $this->getEiEngine()->createManagedFilterDefinition($eiFrame)
-					->createComparatorConstraint($filterGroupData);
-			if ($comparatorConstraint !== null) {
-				$eiFrame->getCriteriaConstraintCollection()->add(CriteriaConstraint::TYPE_HARD_FILTER, 
-						new FilterCriteriaConstraint($comparatorConstraint));
-			}
-		}
-
-		if (null !== ($defaultSortData = $this->eiMaskDef->getDefaultSortData())) {
-			$comparatorConstraint = $this->eiEngine->createManagedSortDefinition($eiFrame)
-					->builCriteriaConstraint($defaultSortData, false);
-			if ($comparatorConstraint !== null) {
-				$eiFrame->getCriteriaConstraintCollection()->add(CriteriaConstraint::TYPE_HARD_SORT, $comparatorConstraint);
-			}
-		}
-
-		$eiu = new Eiu($eiFrame);
-		foreach ($this->eiModificatorCollection->toArray() as $modificator) {
-			$modificator->setupEiFrame($eiu);
-		}
-	}
-
 }

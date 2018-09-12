@@ -4,8 +4,8 @@ namespace Rocket.Impl.Order {
 		private entry: Display.Entry;
 		private collection: Display.Collection|null;
 		
-		constructor(private elemJq: JQuery, private insertMode: InsertMode, private moveState: MoveState,
-				private otherElemJq: JQuery) {
+		constructor(private elemJq: JQuery<Element>, private insertMode: InsertMode, private moveState: MoveState,
+				private otherElemJq: JQuery<Element>) {
 			this.entry = Display.Entry.of(elemJq);
 			this.collection = this.entry.collection;
 			if (!this.collection || !this.entry.selector) {
@@ -73,7 +73,7 @@ namespace Rocket.Impl.Order {
 			});
 		}
 		
-		get jQuery(): JQuery {
+		get jQuery(): JQuery<Element> {
 			return this.elemJq;
 		}
 		

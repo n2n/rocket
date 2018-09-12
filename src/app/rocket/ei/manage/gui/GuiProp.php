@@ -23,7 +23,7 @@ namespace rocket\ei\manage\gui;
 
 use n2n\l10n\N2nLocale;
 use rocket\ei\manage\EiObject;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 
 interface GuiProp {
 	/**
@@ -33,7 +33,7 @@ interface GuiProp {
 	
 	/**
 	 * <p>Tests if this GuiProp is compatible with the passed EiGui and returns an {@see DisplayDefinition}
-	 * if it does. Use <code>$eiu->gui()</code> to access the {@see \rocket\ei\util\model\EiuGui} 
+	 * if it does. Use <code>$eiu->gui()</code> to access the {@see \rocket\ei\util\gui\EiuGui} 
 	 * object.<p>
 	 * 
 	 * @return DisplayDefinition|null return null if this GuiProp is not compatible with passed EiGui.

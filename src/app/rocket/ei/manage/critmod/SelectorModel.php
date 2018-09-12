@@ -21,7 +21,7 @@
  */
 // namespace rocket\ei\manage\critmod;
 
-// use rocket\ei\manage\critmod\filter\impl\field\SelectorItem;
+// use rocket\ei\util\filter\prop\SelectorItem;
 // use rocket\ei\manage\critmod\filter\data\FilterData;
 // use rocket\ei\manage\critmod\filter\data\FilterDataElement;
 // use rocket\ei\manage\critmod\filter\data\FilterDataUsage;
@@ -48,7 +48,7 @@
 // 	}
 	
 // 	public function setSelectorItems(array $selectorItems) {
-// 		ArgUtils::valArray($selectorItems, 'rocket\ei\manage\critmod\filter\impl\field\SelectorItem');
+// 		ArgUtils::valArray($selectorItems, 'rocket\ei\util\filter\prop\SelectorItem');
 // 		$this->selectorItems = $selectorItems;
 // 	}
 	
@@ -122,12 +122,12 @@
 // 	private function andValidateValues(\ArrayAccess $values, SelectorValidationResult $validationResult) {
 // 		$matches = true;
 // 		foreach ($this->selectorConstraintGroups as $id => $selectorConstraintGroup) {
-// 			foreach ($selectorConstraintGroup as $selectorContraint) {
+// 			foreach ($selectorConstraintGroup as $selectorConstraint) {
 // 				if (!$values->offsetExists($id)) {
 // 					throw new IllegalArgumentException('No value for id ' . $id);
 // 				}
 		
-// 				$errorMessage = $selectorContraint->validate($values[$id]);
+// 				$errorMessage = $selectorConstraint->validate($values[$id]);
 // 				if (null !== $errorMessage) {
 // 					$validationResult->addError($id, $errorMessage);
 // 					$matches = false;
@@ -148,12 +148,12 @@
 // 		$matches = true;
 // 		$selectorValidationResult = new SelectorValidationResult();
 // 		foreach ($this->selectorConstraintGroups as $id => $selectorConstraintGroup) {
-// 			foreach ($selectorConstraintGroup as $selectorContraint) {
+// 			foreach ($selectorConstraintGroup as $selectorConstraint) {
 // 				if (!$values->offsetExists($id)) {
 // 					throw new IllegalArgumentException('No value for id ' . $id);
 // 				}
 		
-// 				$errorMessage = $selectorContraint->validate($values[$id]);
+// 				$errorMessage = $selectorConstraint->validate($values[$id]);
 // 				if (null === $errorMessage) return true;
 				
 // 				$selectorValidationResult->addError($id, $errorMessage);
@@ -183,12 +183,12 @@
 	
 // 	private function andAcceptsValues(\ArrayAccess $values) {
 // 		foreach ($this->selectorConstraintGroups as $id => $selectorConstraintGroup) {
-// 			foreach ($selectorConstraintGroup as $selectorContraint) {
+// 			foreach ($selectorConstraintGroup as $selectorConstraint) {
 // 				if (!$values->offsetExists($id)) {
 // 					throw new IllegalArgumentException('No value for id ' . $id);
 // 				}
 				
-// 				if (!$selectorContraint->matches($values[$id])) return false;
+// 				if (!$selectorConstraint->matches($values[$id])) return false;
 // 			}
 // 		}
 
@@ -204,12 +204,12 @@
 // 		if ($this->isEmpty()) return true;
 		
 // 		foreach ($this->selectorConstraintGroups as $id => $selectorConstraintGroup) {
-// 			foreach ($selectorConstraintGroup as $selectorContraint) {
+// 			foreach ($selectorConstraintGroup as $selectorConstraint) {
 // 				if (!$values->offsetExists($id)) {
 // 					throw new IllegalArgumentException('No value for id: ' . $id);
 // 				}
 		
-// 				if ($selectorContraint->matches($values[$id])) return true;
+// 				if ($selectorConstraint->matches($values[$id])) return true;
 // 			}
 // 		}
 		
@@ -230,8 +230,8 @@
 	
 // 	private function andAcceptsValue($id, $value) {
 // 		if (isset($this->selectorConstraintGroups[$id])) {
-// 			foreach ($this->selectorConstraintGroups[$id] as $selectorContraint) {
-// 				if (!$selectorContraint->matches($value)) return false;
+// 			foreach ($this->selectorConstraintGroups[$id] as $selectorConstraint) {
+// 				if (!$selectorConstraint->matches($value)) return false;
 // 			}
 // 		}
 		
@@ -250,8 +250,8 @@
 // 		}
 		
 // 		if (isset($this->selectorConstraintGroups[$id])) {
-// 			foreach ($this->selectorConstraintGroups[$id] as $selectorContraint) {
-// 				if ($selectorContraint->matches($value)) return true;
+// 			foreach ($this->selectorConstraintGroups[$id] as $selectorConstraint) {
+// 				if ($selectorConstraint->matches($value)) return true;
 // 			}
 			
 // 			if (1 == sizeof($this->selectorConstraintGroups)) {

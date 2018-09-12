@@ -29,7 +29,7 @@ use n2n\context\annotation\AnnoSessionScoped;
 use n2n\util\crypt\hash\HashUtils;
 use rocket\user\model\security\RocketUserSecurityManager;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\security\SecurityManager;
+use rocket\user\model\security\SecurityManager;
 
 class LoginContext implements RequestScoped, Dispatchable {
 	private static function _annos(AnnoInit $ai) {
@@ -43,6 +43,7 @@ class LoginContext implements RequestScoped, Dispatchable {
 	
 	private $currentUserId;
 	private $userDao;
+	private $securityManager;
 	
 	private function _init(RocketUserDao $userDao) {
 		$this->userDao = $userDao;
@@ -114,6 +115,7 @@ class LoginContext implements RequestScoped, Dispatchable {
 		$this->userDao->createLogin($this->getNick(), $this->getRawPassword(), $currentUser);
 		$this->rawPassword = null;
 		$this->currentUserId = $currentUser->getId();
+		$this->securityManager = null;
 		return true;
 	}
 	
@@ -130,11 +132,26 @@ class LoginContext implements RequestScoped, Dispatchable {
 		return $this->userDao->getUserById($this->currentUserId);
 	}
 	
+	/**
+	 * @param SecurityManager|null $securityManager
+	 */
+	public function setSecurityManager(?SecurityManager $securityManager) {
+		$this->securityManager = $securityManager;
+	}
+	
+	/**
+	 * @throws IllegalStateException
+	 * @return SecurityManager
+	 */
 	public function getSecurityManager(): SecurityManager {
-		if (null !== ($currentUser = $this->getCurrentUser())) {
-			return new RocketUserSecurityManager($currentUser);
+		if (!$this->hasCurrentUser()) {
+			throw new IllegalStateException('Not sign in');
 		}
 		
-		throw new IllegalStateException();
+		if ($this->securityManager !== null) {
+			return $this->securityManager;
+		}
+		
+		return $this->securityManager = new RocketUserSecurityManager($this->getCurrentUser());
 	}
 }

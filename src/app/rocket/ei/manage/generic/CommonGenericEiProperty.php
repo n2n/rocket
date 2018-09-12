@@ -25,7 +25,7 @@ use n2n\l10n\Lstr;
 use n2n\persistence\orm\criteria\item\CriteriaProperty;
 use n2n\persistence\orm\criteria\item\CriteriaItem;
 use n2n\persistence\orm\criteria\item\CrIt;
-use rocket\ei\manage\mapping\EiEntry;
+use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\component\prop\EiProp;
 use rocket\ei\EiPropPath;
 

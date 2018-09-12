@@ -24,12 +24,12 @@ namespace rocket\impl\ei\component\command\tree;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\DynamicTextCollection;
 use rocket\impl\ei\component\command\tree\controller\TreeMoveController;
-use rocket\ei\manage\control\EntryControlComponent;
+use rocket\ei\component\command\control\EntryControlComponent;
 use rocket\ei\manage\control\ControlButton;
 use rocket\ei\manage\control\IconType;
 use rocket\impl\ei\component\command\IndependentEiCommandAdapter;
 use rocket\ei\manage\control\HrefControl;
-use rocket\ei\util\model\Eiu;
+use rocket\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
 use n2n\core\container\N2nContext;
 use n2n\l10n\N2nLocale;
@@ -91,7 +91,7 @@ class TreeMoveEiCommand extends IndependentEiCommandAdapter implements EntryCont
 								true, ControlButton::TYPE_INFO, IconType::ICON_CARET_RIGHT, array('class' => 'rocket-impl-insert-as-child'), false, false)));
 	}
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\manage\control\EntryControlComponent::getEntryControlOptions()
+	 * @see \rocket\ei\component\command\control\EntryControlComponent::getEntryControlOptions()
 	 */
 	public function getEntryControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {
 		$dtc = new DynamicTextCollection('rocket', $n2nLocale);

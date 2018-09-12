@@ -21,12 +21,13 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model;
 
-use rocket\ei\manage\EiFrame;
+use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\gui\GuiFieldEditable;
 use n2n\util\ex\IllegalStateException;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\gui\GuiField;
-use rocket\ei\util\model\EiuFrame;
+use rocket\ei\util\frame\EiuFrame;
+use rocket\ei\util\Eiu;
 
 class ManyToOneGuiField implements GuiField {
 	private $label;
@@ -71,7 +72,7 @@ class ManyToOneGuiField implements GuiField {
 		
 		if ($targetRelationEntry === null || $targetRelationEntry->isNew()) return null;
 		
-		$targetEiuFrame = new EiuFrame($this->targetEiFrame);
+		$targetEiuFrame = (new Eiu($this->targetEiFrame))->frame();
 		$identityString = $targetEiuFrame->createIdentityString($targetRelationEntry->getEiObject());
 		if (!$this->targetEiFrame->isDetailUrlAvailable($targetRelationEntry->getEiObject()->toEntryNavPoint())) {
 			return $html->getEsc($identityString);
