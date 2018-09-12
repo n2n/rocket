@@ -114,6 +114,7 @@ class RestrictedEiExecution implements EiExecution {
 	private function filter(EiCommandPath $eiCommandPath) {
 		if ($this->constraintCache->getPrivilegeDefinition()->isEiCommandPathUnprivileged($eiCommandPath)) {
 			$eiGrantPrivileges = $this->constraintCache->getEiGrant()->getEiGrantPrivileges()->getArrayCopy();
+			
 			if (empty($eiGrantPrivileges)) {
 				throw new InaccessibleEiCommandPathException('EiCommandPath not accessible for current user: ' . $eiCommandPath);
 			}	
