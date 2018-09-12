@@ -24,9 +24,9 @@ namespace rocket\ei\manage\gui;
 use n2n\l10n\N2nLocale;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\EiObject;
-use rocket\ei\manage\mapping\EiEntry;
+use rocket\ei\manage\entry\EiEntry;
 use n2n\reflection\ArgUtils;
-use rocket\ei\manage\mapping\EiFieldWrapper;
+use rocket\ei\manage\entry\EiFieldWrapper;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\gui\ui\DisplayStructure;
 

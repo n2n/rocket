@@ -27,7 +27,7 @@ use n2n\web\dispatch\annotation\AnnoDispObject;
 use rocket\ei\util\entry\form\EiuEntryForm;
 use n2n\web\dispatch\annotation\AnnoDispScalar;
 use n2n\reflection\ArgUtils;
-use rocket\ei\manage\mapping\EiEntry;
+use rocket\ei\manage\entry\EiEntry;
 
 class MappingForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {

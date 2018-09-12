@@ -27,10 +27,10 @@ use rocket\ei\manage\EiObject;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\component\modificator\EiModificatorCollection;
 use rocket\ei\security\InaccessibleEntryException;
-use rocket\ei\manage\mapping\EiEntry;
+use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\EiPropPath;
 use rocket\ei\component\prop\FieldEiProp;
-use rocket\ei\manage\mapping\EiField;
+use rocket\ei\manage\entry\EiField;
 use rocket\ei\util\Eiu;
 use rocket\ei\mask\EiMask;
 
@@ -54,7 +54,7 @@ class EiEntryFactory {
 // 			$eiField = $field->getEiField();
 // 			if ($eiField === null) continue;
 			
-// 			ArgUtils::valTypeReturn($eiField, 'rocket\ei\manage\mapping\EiField',
+// 			ArgUtils::valTypeReturn($eiField, 'rocket\ei\manage\entry\EiField',
 // 					$field, 'createEiField');
 				
 // 			$mappingDefinition->putEiField($field->getId(), $eiField);
@@ -71,7 +71,7 @@ class EiEntryFactory {
 	 * @param EiFrame $eiFrame
 	 * @param EiObject $eiObject
 	 * @throws InaccessibleEntryException
-	 * @return \rocket\ei\manage\mapping\EiEntry
+	 * @return \rocket\ei\manage\entry\EiEntry
 	 */
 	public function createEiEntry(EiFrame $eiFrame, EiObject $eiObject, ?EiEntry $copyFrom, array $eiEntryConstraints) {
 		$eiEntry = new EiEntry($eiObject, $this->eiMask);
@@ -202,7 +202,7 @@ class EiEntryFactory {
 // 		$mappingProfile->putEiFieldFork($eiPropPath, $eiFieldFork);
 		
 // 		$eiFields = $eiFieldFork->getEiFields();
-// 		ArgUtils::valArrayReturnType($eiFields, 'rocket\ei\manage\mapping\EiField',
+// 		ArgUtils::valArrayReturnType($eiFields, 'rocket\ei\manage\entry\EiField',
 // 				$eiFieldFork, 'getEiFields');
 		
 // 		foreach ($eiFields as $id => $eiField) {
@@ -210,7 +210,7 @@ class EiEntryFactory {
 // 		}
 		
 // 		$eiFieldForks = $eiFieldFork->getEiFieldForks();
-// 		ArgUtils::valArrayReturnType($eiFields, 'rocket\ei\manage\mapping\EiFieldFork',
+// 		ArgUtils::valArrayReturnType($eiFields, 'rocket\ei\manage\entry\EiFieldFork',
 // 				$eiFieldFork, 'getEiFieldForks');
 		
 // 		foreach ($eiFieldForks as $id => $eiFieldFork) {

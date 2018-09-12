@@ -56,7 +56,7 @@ class EiuField {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\mapping\EiField
+	 * @return \rocket\ei\manage\entry\EiField
 	 */
 	public function getEiField() {
 		return $this->eiuEntry->getEiEntry()->getEiField($this->eiPropPath);

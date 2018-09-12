@@ -31,8 +31,8 @@ use rocket\ei\manage\security\privilege\PrivilegeDefinition;
 use rocket\ei\manage\critmod\filter\ComparatorConstraintGroup;
 use rocket\user\bo\EiGrantPrivilege;
 use rocket\ei\manage\security\InaccessibleEiCommandPathException;
-use rocket\ei\manage\mapping\EiEntry;
-use rocket\ei\manage\mapping\EiEntryConstraint;
+use rocket\ei\manage\entry\EiEntry;
+use rocket\ei\manage\entry\EiEntryConstraint;
 
 class RestrictedEiExecution implements EiExecution {
 	private $eiCommand;
@@ -238,7 +238,7 @@ class EiEntryConstraintGroup implements EiEntryConstraint {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\mapping\EiEntryConstraint::acceptsValue()
+	 * @see \rocket\ei\manage\entry\EiEntryConstraint::acceptsValue()
 	 */
 	public function acceptsValue(EiPropPath $eiPropPath, $value): bool {
 		if (empty($this->eiEntryConstraints)) return true;
@@ -256,7 +256,7 @@ class EiEntryConstraintGroup implements EiEntryConstraint {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\mapping\EiEntryConstraint::check()
+	 * @see \rocket\ei\manage\entry\EiEntryConstraint::check()
 	 */
 	public function check(EiEntry $eiEntry): bool {
 		if (empty($this->eiEntryConstraints)) return true;
@@ -274,7 +274,7 @@ class EiEntryConstraintGroup implements EiEntryConstraint {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\mapping\EiEntryConstraint::validate()
+	 * @see \rocket\ei\manage\entry\EiEntryConstraint::validate()
 	 */
 	public function validate(EiEntry $eiEntry) {
 		foreach ($this->eiEntryConstraints as $eiEntryConstraint) {

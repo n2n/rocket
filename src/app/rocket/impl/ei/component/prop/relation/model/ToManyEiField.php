@@ -21,15 +21,15 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model;
 
-use rocket\ei\manage\mapping\impl\RwEiField;
+use rocket\ei\manage\entry\impl\RwEiField;
 use n2n\reflection\ArgUtils;
-use rocket\ei\manage\mapping\FieldErrorInfo;
+use rocket\ei\manage\entry\FieldErrorInfo;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\manage\EiObject;
-use rocket\ei\manage\mapping\impl\Readable;
-use rocket\ei\manage\mapping\impl\Writable;
+use rocket\ei\manage\entry\impl\Readable;
+use rocket\ei\manage\entry\impl\Writable;
 use rocket\ei\util\Eiu;
-use rocket\ei\manage\mapping\impl\Copyable;
+use rocket\ei\manage\entry\impl\Copyable;
 
 class ToManyEiField extends RwEiField {
 	private $copyable = null;
@@ -83,7 +83,7 @@ class ToManyEiField extends RwEiField {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\mapping\EiField::copyEiField($eiObject)
+	 * @see \rocket\ei\manage\entry\EiField::copyEiField($eiObject)
 	 */
 	public function copyEiField(Eiu $copyEiu) {
 		if ($this->copyable === null) return null;

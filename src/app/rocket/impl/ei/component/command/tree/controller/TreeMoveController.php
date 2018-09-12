@@ -27,7 +27,7 @@ use n2n\web\http\controller\ParamGet;
 use n2n\persistence\orm\util\NestedSetUtils;
 use rocket\ei\util\EiuCtrl;
 use rocket\ajah\JhtmlEvent;
-use rocket\ei\manage\mapping\UnknownEiObjectException;
+use rocket\ei\manage\entry\UnknownEiObjectException;
 
 class TreeMoveController extends ControllerAdapter {
 	private $eiCtrl;

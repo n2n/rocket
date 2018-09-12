@@ -31,9 +31,9 @@ use n2n\util\config\LenientAttributeReader;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
-use rocket\ei\manage\mapping\EiFieldConstraint;
-use rocket\ei\manage\mapping\EiField;
-use rocket\ei\manage\mapping\FieldErrorInfo;
+use rocket\ei\manage\entry\EiFieldConstraint;
+use rocket\ei\manage\entry\EiField;
+use rocket\ei\manage\entry\FieldErrorInfo;
 use n2n\l10n\MessageCode;
 use rocket\ei\manage\critmod\filter\ComparatorConstraint;
 use n2n\persistence\orm\criteria\item\CrIt;
@@ -95,7 +95,7 @@ class BoolEiFieldConstraint implements EiFieldConstraint {
 	}
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\mapping\EiFieldConstraint::acceptsValue($value)
+	 * @see \rocket\ei\manage\entry\EiFieldConstraint::acceptsValue($value)
 	 */
 	public function acceptsValue($value): bool {
 		return $this->acceptedValue === $value;
@@ -103,7 +103,7 @@ class BoolEiFieldConstraint implements EiFieldConstraint {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\mapping\EiFieldConstraint::check($eiField)
+	 * @see \rocket\ei\manage\entry\EiFieldConstraint::check($eiField)
 	 */
 	public function check(EiField $eiField): bool {
 		return $this->acceptsValue($eiField->getValue()); 
@@ -111,7 +111,7 @@ class BoolEiFieldConstraint implements EiFieldConstraint {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\mapping\EiFieldConstraint::validate($eiField, $fieldErrorInfo)
+	 * @see \rocket\ei\manage\entry\EiFieldConstraint::validate($eiField, $fieldErrorInfo)
 	 */
 	public function validate(EiField $eiField, FieldErrorInfo $fieldErrorInfo) {
 		if ($this->check($eiField)) return;

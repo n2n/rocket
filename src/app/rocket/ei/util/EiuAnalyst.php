@@ -26,7 +26,7 @@ use n2n\core\container\N2nContext;
 use rocket\ei\manage\ManageException;
 use n2n\reflection\ArgUtils;
 use rocket\ei\manage\EiObject;
-use rocket\ei\manage\mapping\EiEntry;
+use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\manage\EiEntityObj;
 use rocket\ei\manage\LiveEiObject;
 use rocket\ei\manage\draft\Draft;
@@ -610,7 +610,7 @@ class EiuAnalyst {
 // 	}
 	
 	/**
-	 * @return NULL|\rocket\ei\manage\mapping\EiEntry
+	 * @return NULL|\rocket\ei\manage\entry\EiEntry
 	 */
 	public function getEiEntry() {
 		return $this->eiEntry;
@@ -1100,7 +1100,7 @@ class EiuAnalyst {
 	 * @param string $argName
 	 * @param bool $required
 	 * @throws EiuPerimeterException
-	 * @return \rocket\ei\manage\mapping\EiEntry
+	 * @return \rocket\ei\manage\entry\EiEntry
 	 */
 	public static function buildEiEntryFromEiArg($eiEntryArg, string $argName = null, bool $required = true) {
 		if ($eiEntryArg instanceof EiEntry) {

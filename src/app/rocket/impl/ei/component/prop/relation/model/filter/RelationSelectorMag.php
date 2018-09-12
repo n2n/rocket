@@ -37,7 +37,7 @@ use n2n\web\ui\UiComponent;
 use n2n\web\dispatch\property\ManagedProperty;
 use rocket\impl\ei\component\prop\relation\model\mag\EntryLabeler;
 use n2n\web\dispatch\mag\UiOutfitter;
-use rocket\ei\manage\mapping\UnknownEiObjectException;
+use rocket\ei\manage\entry\UnknownEiObjectException;
 
 class RelationSelectorMag extends MagAdapter  {
 	private $targetEiuFrame;

@@ -19,10 +19,10 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\mapping\impl;
+namespace rocket\ei\manage\entry\impl;
 
 use rocket\ei\manage\EiObject;
-use rocket\ei\manage\mapping\FieldErrorInfo;
+use rocket\ei\manage\entry\FieldErrorInfo;
 
 interface Validatable {
 	

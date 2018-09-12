@@ -41,7 +41,7 @@ use rocket\ajah\RocketJhtmlResponse;
 use rocket\ei\manage\frame\EiFrame;
 use n2n\impl\web\ui\view\jhtml\JhtmlExec;
 use n2n\l10n\MessageContainer;
-use rocket\ei\manage\mapping\UnknownEiObjectException;
+use rocket\ei\manage\entry\UnknownEiObjectException;
 use rocket\ei\util\entry\EiuEntry;
 
 class EiuCtrl implements Lookupable {
@@ -87,7 +87,7 @@ class EiuCtrl implements Lookupable {
 	
 // 	/**
 // 	 * @param string $livePid
-// 	 * @return \rocket\ei\manage\mapping\EiEntry
+// 	 * @return \rocket\ei\manage\entry\EiEntry
 // 	 * @deprecated use {@see self::lookupEntry()}
 // 	 */
 // 	public function lookupEiEntry(string $livePid) {
@@ -126,7 +126,7 @@ class EiuCtrl implements Lookupable {
 	
 	/**
 	 * @param int $draftId
-	 * @return \rocket\ei\manage\mapping\EiEntry
+	 * @return \rocket\ei\manage\entry\EiEntry
 	 * @deprecated
 	 */
 	private function lookupEiEntryByDraftId(int $draftId) {

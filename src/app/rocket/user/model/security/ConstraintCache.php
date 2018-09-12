@@ -24,7 +24,7 @@ namespace rocket\user\model\security;
 use rocket\ei\manage\security\filter\SecurityFilterDefinition;
 use rocket\user\bo\EiGrantPrivilege;
 use rocket\ei\manage\frame\CriteriaConstraint;
-use rocket\ei\manage\mapping\EiEntryConstraint;
+use rocket\ei\manage\entry\EiEntryConstraint;
 use n2n\reflection\ArgUtils;
 use rocket\user\bo\EiGrant;
 use rocket\ei\manage\security\privilege\PrivilegeDefinition;
@@ -96,7 +96,7 @@ class ConstraintCache {
 	
 	/**
 	 * @param EiGrantPrivilege $eiGrantPrivilege
-	 * @return \rocket\ei\manage\mapping\EiEntryConstraint
+	 * @return \rocket\ei\manage\entry\EiEntryConstraint
 	 */
 	function getEiEntryConstraint(EiGrantPrivilege $eiGrantPrivilege) {
 		ArgUtils::assertTrue($eiGrantPrivilege->isRestricted());

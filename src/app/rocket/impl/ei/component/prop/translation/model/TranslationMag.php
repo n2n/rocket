@@ -31,7 +31,7 @@ use n2n\web\dispatch\map\PropertyPathPart;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\web\dispatch\property\ManagedProperty;
 use n2n\web\ui\UiComponent;
-use rocket\ei\manage\mapping\FieldErrorInfo;
+use rocket\ei\manage\entry\FieldErrorInfo;
 use n2n\web\dispatch\map\bind\BindingErrors;
 use n2n\web\dispatch\mag\UiOutfitter;
 use n2n\web\dispatch\map\bind\MappingDefinition;

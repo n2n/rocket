@@ -30,7 +30,7 @@ use rocket\ei\manage\gui\GuiIdPath;
 use rocket\ei\manage\gui\Displayable;
 use n2n\reflection\ArgUtils;
 use n2n\web\ui\UiComponent;
-use rocket\ei\manage\mapping\FieldErrorInfo;
+use rocket\ei\manage\entry\FieldErrorInfo;
 use n2n\web\ui\Raw;
 use n2n\web\ui\CouldNotRenderUiComponentException;
 use rocket\ei\util\gui\EiuEntryGui;

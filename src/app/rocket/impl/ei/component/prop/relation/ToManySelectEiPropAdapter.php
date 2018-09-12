@@ -51,7 +51,7 @@ abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\mapping\impl\Readable::read()
+	 * @see \rocket\ei\manage\entry\impl\Readable::read()
 	 */
 	public function read(EiObject $eiObject) {
 		$targetEntityObjs = null;
@@ -78,7 +78,7 @@ abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\mapping\impl\Writable::write()
+	 * @see \rocket\ei\manage\entry\impl\Writable::write()
 	 */
 	public function write(EiObject $eiObject, $value) {
 		ArgUtils::valArray($value, EiObject::class);

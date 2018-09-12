@@ -21,7 +21,7 @@
  */
 namespace rocket\ei\component\prop;
 
-use rocket\ei\manage\mapping\EiField;
+use rocket\ei\manage\entry\EiField;
 use rocket\ei\manage\EiObject;
 use rocket\ei\util\Eiu;
 
@@ -33,7 +33,7 @@ interface FieldEiProp extends EiProp {
 	public function buildEiField(Eiu $eiu);
 	
 	/**
-	 * @return \rocket\ei\manage\mapping\EiFieldFork or null
+	 * @return \rocket\ei\manage\entry\EiFieldFork or null
 	 */
 	public function buildEiFieldFork(EiObject $eiObject, EiField $eiField = null);
 }

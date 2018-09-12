@@ -23,17 +23,17 @@ namespace rocket\impl\ei\component\prop\relation\model\filter;
 
 use rocket\ei\manage\security\filter\SecurityFilterProp;
 use rocket\ei\manage\security\filter\SecurityFilterDefinition;
-use rocket\ei\manage\mapping\EiFieldConstraint;
+use rocket\ei\manage\entry\EiFieldConstraint;
 use n2n\util\ex\IllegalStateException;
 use n2n\util\config\Attributes;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use n2n\reflection\ArgUtils;
 use rocket\impl\ei\component\prop\relation\model\RelationEntry;
-use rocket\ei\manage\mapping\EiField;
-use rocket\ei\manage\mapping\FieldErrorInfo;
+use rocket\ei\manage\entry\EiField;
+use rocket\ei\manage\entry\FieldErrorInfo;
 use n2n\l10n\MessageCode;
 use n2n\persistence\orm\criteria\item\CrIt;
-use rocket\ei\manage\mapping\EiEntryConstraint;
+use rocket\ei\manage\entry\EiEntryConstraint;
 use rocket\ei\EiPropPath;
 
 class RelationSecurityFilterProp extends RelationFilterProp implements SecurityFilterProp {
@@ -88,7 +88,7 @@ class RelationEiFieldConstraint implements EiFieldConstraint {
 	}
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\mapping\EiFieldConstraint::acceptsValue($value)
+	 * @see \rocket\ei\manage\entry\EiFieldConstraint::acceptsValue($value)
 	 */
 	public function acceptsValue($value): bool {
 		switch ($this->operator) {
@@ -120,7 +120,7 @@ class RelationEiFieldConstraint implements EiFieldConstraint {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\mapping\EiFieldConstraint::check($eiField)
+	 * @see \rocket\ei\manage\entry\EiFieldConstraint::check($eiField)
 	 */
 	public function check(EiField $eiField) {
 		return $this->acceptsValue($eiField->getValue());
@@ -128,7 +128,7 @@ class RelationEiFieldConstraint implements EiFieldConstraint {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\mapping\EiFieldConstraint::validate($eiField, $fieldErrorInfo)
+	 * @see \rocket\ei\manage\entry\EiFieldConstraint::validate($eiField, $fieldErrorInfo)
 	 */
 	public function validate(EiField $eiField, FieldErrorInfo $fieldErrorInfo) {
 		if ($this->check($eiField)) return;
@@ -168,7 +168,7 @@ class TestEiFieldConstraint implements EiFieldConstraint {
 	}
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\mapping\EiFieldConstraint::acceptsValue($value)
+	 * @see \rocket\ei\manage\entry\EiFieldConstraint::acceptsValue($value)
 	 */
 	public function acceptsValue($value) {
 		if (!$this->toMany) {
@@ -208,7 +208,7 @@ class TestEiFieldConstraint implements EiFieldConstraint {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\mapping\EiFieldConstraint::check($eiField)
+	 * @see \rocket\ei\manage\entry\EiFieldConstraint::check($eiField)
 	 */
 	public function check(EiField $eiField) {
 		return $this->acceptsValue($eiField->getValue());
@@ -216,7 +216,7 @@ class TestEiFieldConstraint implements EiFieldConstraint {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\mapping\EiFieldConstraint::validate($eiField, $fieldErrorInfo)
+	 * @see \rocket\ei\manage\entry\EiFieldConstraint::validate($eiField, $fieldErrorInfo)
 	 */
 	public function validate(EiField $eiField, FieldErrorInfo $fieldErrorInfo) {
 		if ($this->exists) {

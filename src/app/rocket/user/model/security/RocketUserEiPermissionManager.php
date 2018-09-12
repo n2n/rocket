@@ -32,7 +32,7 @@ use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\security\InaccessibleEiCommandPathException;
 use rocket\user\bo\EiGrant;
 use rocket\ei\manage\frame\Boundry;
-use rocket\ei\manage\mapping\EiEntry;
+use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\manage\security\EiEntryAccess;
 use n2n\reflection\ArgUtils;
 use n2n\util\ex\IllegalStateException;

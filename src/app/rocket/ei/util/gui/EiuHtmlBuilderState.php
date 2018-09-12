@@ -9,7 +9,7 @@ use rocket\ei\manage\gui\EiEntryGui;
 use rocket\ei\manage\gui\GuiFieldAssembly;
 use rocket\ei\manage\gui\GuiIdPath;
 use rocket\ei\manage\gui\ui\DisplayItem;
-use rocket\ei\manage\mapping\FieldErrorInfo;
+use rocket\ei\manage\entry\FieldErrorInfo;
 
 class EiuHtmlBuilderState {
 	private $stack = array();

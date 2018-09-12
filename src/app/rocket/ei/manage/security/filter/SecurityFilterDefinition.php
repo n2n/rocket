@@ -23,9 +23,9 @@ namespace rocket\ei\manage\security\filter;
 
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\critmod\filter\FilterDefinition;
-use rocket\ei\manage\mapping\EiEntry;
-use rocket\ei\manage\mapping\EiEntryConstraint;
-use rocket\ei\manage\mapping\EiFieldConstraint;
+use rocket\ei\manage\entry\EiEntry;
+use rocket\ei\manage\entry\EiEntryConstraint;
+use rocket\ei\manage\entry\EiFieldConstraint;
 use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
 use n2n\util\config\AttributesException;
 

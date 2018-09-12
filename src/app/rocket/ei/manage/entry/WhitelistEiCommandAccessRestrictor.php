@@ -19,7 +19,7 @@
 //  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
 //  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
 //  */
-// namespace rocket\ei\manage\mapping;
+// namespace rocket\ei\manage\entry;
 
 // use rocket\ei\EiCommandPath;
 // use n2n\util\col\HashSet;
@@ -40,7 +40,7 @@
 // 	}
 		
 // 	/* (non-PHPdoc)
-// 	 * @see \rocket\ei\manage\mapping\EiCommandAccessRestrictor::isaccessibleBy()
+// 	 * @see \rocket\ei\manage\entry\EiCommandAccessRestrictor::isaccessibleBy()
 // 	 */
 // 	public function isAccessibleBy(EiCommandPath $eiCommandPath): bool {
 // 		return $this->eiCommandPaths->contains($eiCommandPath);

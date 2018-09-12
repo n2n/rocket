@@ -1,7 +1,7 @@
 <?php
 namespace rocket\ei\manage\frame;
 
-use rocket\ei\manage\mapping\EiEntryConstraint;
+use rocket\ei\manage\entry\EiEntryConstraint;
 
 class Boundry {
 	/**

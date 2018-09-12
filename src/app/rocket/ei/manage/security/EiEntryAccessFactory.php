@@ -1,7 +1,7 @@
 <?php
 namespace rocket\ei\manage\security;
 
-use rocket\ei\manage\mapping\EiEntry;
+use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\EiCommandPath;
 
 interface EiEntryAccessFactory {

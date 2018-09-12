@@ -1,8 +1,8 @@
 <?php
-namespace rocket\ei\manage\mapping\impl;
+namespace rocket\ei\manage\entry\impl;
 
-use rocket\ei\manage\mapping\EiField;
-use rocket\ei\manage\mapping\EiFieldWrapper;
+use rocket\ei\manage\entry\EiField;
+use rocket\ei\manage\entry\EiFieldWrapper;
 
 class EiFieldWrapperImpl implements EiFieldWrapper {
 	private $eiField;
@@ -27,7 +27,7 @@ class EiFieldWrapperImpl implements EiFieldWrapper {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\mapping\EiField
+	 * @return \rocket\ei\manage\entry\EiField
 	 */
 	public function getEiField() {
 		return $this->eiField;

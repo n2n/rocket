@@ -20,7 +20,7 @@
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
 
-namespace rocket\ei\manage\mapping;
+namespace rocket\ei\manage\entry;
 
 interface EiFieldWrapper {
 	

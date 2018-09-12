@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\relation\model;
 
 use rocket\ei\manage\EiObject;
-use rocket\ei\manage\mapping\EiEntry;
+use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\util\frame\EiuFrame;
 
 class RelationEntry {

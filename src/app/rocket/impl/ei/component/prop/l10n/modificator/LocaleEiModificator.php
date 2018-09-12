@@ -23,8 +23,8 @@
 
 // use rocket\impl\ei\component\modificator\adapter\EiModificatorAdapter;
 // use rocket\ei\manage\frame\EiFrame;
-// use rocket\ei\manage\mapping\EiEntry;
-// use rocket\ei\manage\mapping\OnWriteMappingListener;
+// use rocket\ei\manage\entry\EiEntry;
+// use rocket\ei\manage\entry\OnWriteMappingListener;
 // use rocket\impl\ei\component\prop\l10n\N2nLocaleEiProp;
 // use n2n\l10n\N2nLocale;
 

@@ -19,13 +19,13 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\mapping\impl;
+namespace rocket\ei\manage\entry\impl;
 
-use rocket\ei\manage\mapping\EiField;
-use rocket\ei\manage\mapping\FieldErrorInfo;
+use rocket\ei\manage\entry\EiField;
+use rocket\ei\manage\entry\FieldErrorInfo;
 use n2n\util\col\HashSet;
 use rocket\ei\manage\EiObject;
-use rocket\ei\manage\mapping\EiFieldConstraint;
+use rocket\ei\manage\entry\EiFieldConstraint;
 use n2n\util\col\Set;
 
 abstract class EiFieldAdapter implements EiField {
@@ -68,7 +68,7 @@ abstract class EiFieldAdapter implements EiField {
 	}
 
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\manage\mapping\EiField::setValue()
+	 * @see \rocket\ei\manage\entry\EiField::setValue()
 	 */
 	public function setValue($value) {
 		$this->validateValue($value);

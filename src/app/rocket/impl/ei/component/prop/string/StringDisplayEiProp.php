@@ -29,8 +29,8 @@ use rocket\ei\component\prop\GuiEiProp;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\component\prop\FieldEiProp;
 use rocket\ei\manage\EiObject;
-use rocket\ei\manage\mapping\impl\SimpleEiField;
-use rocket\ei\manage\mapping\impl\Readable;
+use rocket\ei\manage\entry\impl\SimpleEiField;
+use rocket\ei\manage\entry\impl\Readable;
 use rocket\ei\EiPropPath;
 use rocket\impl\ei\component\prop\adapter\DisplaySettings;
 use rocket\impl\ei\component\prop\adapter\StatelessDisplayable;
@@ -115,7 +115,7 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ObjectProp
 	 * {@inheritDoc}
 	 * @see \rocket\ei\component\prop\FieldEiProp::buildEiFieldFork($eiObject, $eiField)
 	 */
-	public function buildEiFieldFork(\rocket\ei\manage\EiObject $eiObject, \rocket\ei\manage\mapping\EiField $eiField = null) {
+	public function buildEiFieldFork(\rocket\ei\manage\EiObject $eiObject, \rocket\ei\manage\entry\EiField $eiField = null) {
 		return null;
 	}
 
@@ -137,7 +137,7 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ObjectProp
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\mapping\impl\Readable::read()
+	 * @see \rocket\ei\manage\entry\impl\Readable::read()
 	 */
 	public function read(EiObject $eiObject) {
 		if ($eiObject->isDraft()) {

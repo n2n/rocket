@@ -22,8 +22,8 @@
 namespace rocket\impl\ei\component\prop\relation\model\relation;
 
 use rocket\impl\ei\component\modificator\adapter\EiModificatorAdapter;
-use rocket\ei\manage\mapping\EiEntry;
-use rocket\ei\manage\mapping\EiEntryListenerAdapter;
+use rocket\ei\manage\entry\EiEntry;
+use rocket\ei\manage\entry\EiEntryListenerAdapter;
 use rocket\ei\util\Eiu;
 
 class TargetMasterRelationEiModificator extends EiModificatorAdapter {

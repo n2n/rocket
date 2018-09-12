@@ -3,7 +3,7 @@ namespace rocket\ei\manage\gui;
 
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\frame\EiFrame;
-use rocket\ei\manage\mapping\EiEntry;
+use rocket\ei\manage\entry\EiEntry;
 use n2n\reflection\ArgUtils;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\component\GuiFactory;

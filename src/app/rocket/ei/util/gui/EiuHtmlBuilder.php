@@ -31,7 +31,7 @@ use rocket\ei\manage\gui\ui\DisplayItem;
 use rocket\ei\manage\gui\EiEntryGui;
 use n2n\impl\web\ui\view\html\HtmlUtils;
 use rocket\ei\manage\gui\Displayable;
-use rocket\ei\manage\mapping\FieldErrorInfo;
+use rocket\ei\manage\entry\FieldErrorInfo;
 use n2n\l10n\MessageTranslator;
 use n2n\reflection\ArgUtils;
 use n2n\reflection\CastUtils;

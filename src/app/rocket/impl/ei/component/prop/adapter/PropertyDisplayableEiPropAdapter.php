@@ -21,11 +21,11 @@
  */
 namespace rocket\impl\ei\component\prop\adapter;
 
-use rocket\ei\manage\mapping\impl\Readable;
+use rocket\ei\manage\entry\impl\Readable;
 use n2n\util\ex\IllegalStateException;
-use rocket\ei\manage\mapping\EiField;
+use rocket\ei\manage\entry\EiField;
 use rocket\ei\manage\gui\GuiProp;
-use rocket\ei\manage\mapping\impl\SimpleEiField;
+use rocket\ei\manage\entry\impl\SimpleEiField;
 use n2n\l10n\N2nLocale;
 use n2n\util\ex\UnsupportedOperationException;
 use rocket\ei\component\prop\GuiEiProp;

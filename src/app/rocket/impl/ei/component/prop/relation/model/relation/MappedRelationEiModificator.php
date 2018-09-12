@@ -25,7 +25,7 @@ use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\EiPropPath;
 use rocket\impl\ei\component\prop\relation\model\RelationEntry;
 use rocket\ei\manage\frame\EiFrameListener;
-use rocket\ei\manage\mapping\EiEntry;
+use rocket\ei\manage\entry\EiEntry;
 
 class MappedRelationEiModificator implements EiFrameListener {
 	private $targetEiFrame;

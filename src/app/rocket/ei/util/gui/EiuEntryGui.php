@@ -27,7 +27,7 @@ use rocket\ei\manage\gui\EiEntryGuiListener;
 use rocket\ei\manage\gui\GuiIdPath;
 use rocket\ei\manage\gui\GuiException;
 use n2n\web\dispatch\mag\MagWrapper;
-use rocket\ei\manage\mapping\EiFieldWrapper;
+use rocket\ei\manage\entry\EiFieldWrapper;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\gui\ViewMode;

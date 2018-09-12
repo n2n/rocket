@@ -28,9 +28,9 @@ use rocket\ei\util\frame\EiuFrame;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\web\dispatch\map\bind\BindingErrors;
 use rocket\core\model\Rocket;
-use rocket\ei\manage\mapping\EiEntry;
+use rocket\ei\manage\entry\EiEntry;
 use n2n\web\dispatch\annotation\AnnoDispObjectArray;
-use rocket\ei\manage\mapping\UnknownEiObjectException;
+use rocket\ei\manage\entry\UnknownEiObjectException;
 use rocket\ei\manage\frame\Boundry;
 
 class ToManyForm implements Dispatchable {

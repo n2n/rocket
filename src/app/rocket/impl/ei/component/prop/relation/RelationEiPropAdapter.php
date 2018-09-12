@@ -25,16 +25,16 @@ use rocket\impl\ei\component\prop\relation\model\relation\EiPropRelation;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\component\prop\GuiEiProp;
 use rocket\ei\component\prop\FieldEiProp;
-use rocket\ei\manage\mapping\EiField;
-use rocket\ei\manage\mapping\impl\Readable;
-use rocket\ei\manage\mapping\impl\Writable;
+use rocket\ei\manage\entry\EiField;
+use rocket\ei\manage\entry\impl\Readable;
+use rocket\ei\manage\entry\impl\Writable;
 use rocket\ei\manage\EiObject;
 use rocket\impl\ei\component\prop\relation\conf\RelationEiPropConfigurator;
 use n2n\core\container\N2nContext;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\impl\ei\component\prop\adapter\ObjectPropertyEiPropAdapter;
-use rocket\ei\manage\mapping\impl\Copyable;
+use rocket\ei\manage\entry\impl\Copyable;
 use rocket\impl\ei\component\prop\adapter\StandardEditDefinition;
 
 abstract class RelationEiPropAdapter extends ObjectPropertyEiPropAdapter implements RelationEiProp, GuiEiProp, 

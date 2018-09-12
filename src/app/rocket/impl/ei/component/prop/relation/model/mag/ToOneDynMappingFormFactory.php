@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\relation\model\mag;
 
 use rocket\ei\util\frame\EiuFrame;
-use rocket\ei\manage\mapping\EiEntry;
+use rocket\ei\manage\entry\EiEntry;
 
 class ToOneDynMappingFormFactory {
 	private $eiFrame;

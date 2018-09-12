@@ -31,7 +31,7 @@ use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\EiObject;
 use rocket\ei\manage\critmod\filter\FilterDefinition;
 use rocket\ei\manage\critmod\sort\SortDefinition;
-use rocket\ei\manage\mapping\EiEntry;
+use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\component\DraftDefinitionFactory;
 use rocket\ei\manage\draft\DraftDefinition;
 use rocket\ei\mask\EiMask;

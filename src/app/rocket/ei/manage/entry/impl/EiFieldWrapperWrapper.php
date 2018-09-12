@@ -1,7 +1,7 @@
 <?php
-namespace rocket\ei\manage\mapping\impl;
+namespace rocket\ei\manage\entry\impl;
 
-use rocket\ei\manage\mapping\EiFieldWrapper;
+use rocket\ei\manage\entry\EiFieldWrapper;
 
 class EiFieldWrapperWrapper implements EiFieldWrapper {
 	private $eiFieldWrappers = array();

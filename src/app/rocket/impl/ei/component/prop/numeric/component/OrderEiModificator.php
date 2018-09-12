@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\numeric\component;
 
 use rocket\impl\ei\component\modificator\adapter\EiModificatorAdapter;
-use rocket\ei\manage\mapping\OnWriteMappingListener;
+use rocket\ei\manage\entry\OnWriteMappingListener;
 use rocket\impl\ei\component\prop\numeric\OrderEiProp;
 use rocket\ei\manage\critmod\sort\SortCriteriaConstraintGroup;
 use rocket\ei\manage\critmod\sort\SimpleSortConstraint;

@@ -27,7 +27,7 @@ use n2n\web\dispatch\Dispatchable;
 use n2n\web\dispatch\mag\MagWrapper;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\mask\EiMask;
-use rocket\ei\manage\mapping\EiEntry;
+use rocket\ei\manage\entry\EiEntry;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\util\Eiu;
 use rocket\ei\EiCommandPath;
@@ -91,7 +91,7 @@ class EiEntryGui {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\mapping\EiEntry
+	 * @return \rocket\ei\manage\entry\EiEntry
 	 */
 	public function getEiEntry() {
 		return $this->eiEntry;

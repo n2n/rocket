@@ -31,7 +31,7 @@ use rocket\ei\manage\critmod\filter\ComparatorConstraint;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use n2n\reflection\ArgUtils;
-use rocket\ei\manage\mapping\UnknownEiObjectException;
+use rocket\ei\manage\entry\UnknownEiObjectException;
 use n2n\reflection\property\TypeConstraint;
 use n2n\util\config\AttributesException;
 use rocket\ei\manage\critmod\filter\FilterProp;
@@ -43,7 +43,7 @@ use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\ei\manage\critmod\filter\ComparatorConstraintGroup;
 use rocket\ei\manage\frame\CriteriaConstraint;
 use rocket\ei\manage\critmod\filter\impl\SimpleComparatorConstraint;
-use rocket\ei\manage\mapping\EiFieldConstraint;
+use rocket\ei\manage\entry\EiFieldConstraint;
 use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
 
 class RelationFilterProp implements FilterProp {

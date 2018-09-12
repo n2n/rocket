@@ -27,7 +27,7 @@ use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\EiObject;
 use rocket\impl\ei\component\prop\relation\command\RelationEiCommand;
-use rocket\ei\manage\mapping\EiEntry;
+use rocket\ei\manage\entry\EiEntry;
 use n2n\impl\persistence\orm\property\relation\MappedRelation;
 use rocket\ei\manage\ManageState;
 use rocket\ei\manage\frame\EiRelation;

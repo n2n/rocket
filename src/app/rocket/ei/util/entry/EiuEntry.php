@@ -24,11 +24,11 @@ namespace rocket\ei\util\entry;
 
 use n2n\l10n\N2nLocale;
 use rocket\ei\EiPropPath;
-use rocket\ei\manage\mapping\OnWriteMappingListener;
-use rocket\ei\manage\mapping\WrittenMappingListener;
-use rocket\ei\manage\mapping\OnValidateMappingListener;
-use rocket\ei\manage\mapping\ValidatedMappingListener;
-use rocket\ei\manage\mapping\MappingOperationFailedException;
+use rocket\ei\manage\entry\OnWriteMappingListener;
+use rocket\ei\manage\entry\WrittenMappingListener;
+use rocket\ei\manage\entry\OnValidateMappingListener;
+use rocket\ei\manage\entry\ValidatedMappingListener;
+use rocket\ei\manage\entry\MappingOperationFailedException;
 use rocket\ei\manage\gui\GuiIdPath;
 use rocket\ei\manage\gui\GuiException;
 use rocket\ei\manage\gui\ViewMode;
@@ -36,7 +36,7 @@ use rocket\ei\manage\gui\EiGui;
 use rocket\ei\manage\gui\EiEntryGui;
 use rocket\ei\manage\gui\EiEntryGuiAssembler;
 use rocket\ei\manage\EiObject;
-use rocket\ei\manage\mapping\EiEntry;
+use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\util\EiuAnalyst;
 use rocket\ei\util\EiuPerimeterException;
 use rocket\ei\util\spec\EiuEngine;
@@ -123,7 +123,7 @@ class EiuEntry {
 	
 	/**
 	 * @param bool $createIfNotAvaialble
-	 * @return \rocket\ei\manage\mapping\EiEntry|NULL
+	 * @return \rocket\ei\manage\entry\EiEntry|NULL
 	 */
 	public function getEiEntry(bool $createIfNotAvaialble = true) {
 		if ($this->eiEntry !== null) {
@@ -472,7 +472,7 @@ class EiuEntry {
 	 * @param mixed $eiPropPath
 	 * @param bool $required
 	 * @throws MappingOperationFailedException
-	 * @return \rocket\ei\manage\mapping\EiFieldWrapper|null
+	 * @return \rocket\ei\manage\entry\EiFieldWrapper|null
 	 */
 	public function getEiFieldWrapper($eiPropPath, bool $required = false) {
 		try {
@@ -489,7 +489,7 @@ class EiuEntry {
 	 * @param bool $required
 	 * @throws MappingOperationFailedException
 	 * @throws GuiException
-	 * @return \rocket\ei\manage\mapping\EiFieldWrapper|null
+	 * @return \rocket\ei\manage\entry\EiFieldWrapper|null
 	 */
 	public function getEiFieldWrapperByGuiIdPath($guiIdPath, bool $required = false) {
 		$guiDefinition = $this->getEiuFrame()->getContextEiuEngine()->getGuiDefinition();

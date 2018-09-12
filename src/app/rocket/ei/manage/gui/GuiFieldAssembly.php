@@ -1,7 +1,7 @@
 <?php
 namespace rocket\ei\manage\gui;
 
-use rocket\ei\manage\mapping\EiFieldWrapper;
+use rocket\ei\manage\entry\EiFieldWrapper;
 
 class GuiFieldAssembly {
 	private $displayable;

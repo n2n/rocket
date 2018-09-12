@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\mapping;
+namespace rocket\ei\manage\entry;
 
 use n2n\l10n\Message;
 use rocket\ei\manage\EiObject;
@@ -27,14 +27,14 @@ use rocket\ei\EiPropPath;
 use rocket\ei\security\InaccessibleEntryException;
 use n2n\util\ex\IllegalStateException;
 use n2n\util\col\HashSet;
-use rocket\ei\manage\mapping\impl\EiFieldWrapperImpl;
+use rocket\ei\manage\entry\impl\EiFieldWrapperImpl;
 use rocket\ei\mask\EiMask;
 
 class EiEntry {
 	private $eiObject;
 	private $eiMask;
 	private $mappingErrorInfo;
-	private $accessible = true;
+// 	private $accessible = true;
 	private $eiFieldWrappers = array();
 	private $eiFieldForks = array();
 	private $listeners = array();
@@ -88,31 +88,31 @@ class EiEntry {
 		return $this->eiMask->getEiType();
 	}
 	
-	/**
-	 * @param bool $accessible
-	 */
-	public function setAccessible(bool $accessible) {
-		$this->accessible = $accessible;
-	}
+// 	/**
+// 	 * @param bool $accessible
+// 	 */
+// 	public function setAccessible(bool $accessible) {
+// 		$this->accessible = $accessible;
+// 	}
 	
-	/**
-	 * @return bool
-	 */
-	public function isAccessible(): bool {
-		return $this->accessible;
-	}
+// 	/**
+// 	 * @return bool
+// 	 */
+// 	public function isAccessible(): bool {
+// 		return $this->accessible;
+// 	}
 	
-	/**
-	 * @param bool $ignoreAccessRestriction
-	 * @throws InaccessibleEntryException
-	 */
-	private function ensureAccessible($ignoreAccessRestriction) {
-		if ($this->accessible || $ignoreAccessRestriction) {
-			return;
-		}
+// 	/**
+// 	 * @param bool $ignoreAccessRestriction
+// 	 * @throws InaccessibleEntryException
+// 	 */
+// 	private function ensureAccessible($ignoreAccessRestriction) {
+// 		if ($this->accessible || $ignoreAccessRestriction) {
+// 			return;
+// 		}
 		
-		throw new InaccessibleEntryException();
-	}
+// 		throw new InaccessibleEntryException();
+// 	}
 	
 	public function getConstraintSet() {
 		return $this->constraintSet;
@@ -161,9 +161,8 @@ class EiEntry {
 	 * @throws MappingOperationFailedException
 	 * @return EiField
 	 */
-	public function getEiField(EiPropPath $eiPropPath, bool $ignoreAccessRestriction = false) {
-		$this->ensureAccessible($ignoreAccessRestriction);
-		return $this->getEiFieldWrapper($eiPropPath, $ignoreAccessRestriction)->getEiField();
+	public function getEiField(EiPropPath $eiPropPath) {
+		return $this->getEiFieldWrapper($eiPropPath)->getEiField();
 	}
 	
 	/**
@@ -171,8 +170,7 @@ class EiEntry {
 	 * @throws MappingOperationFailedException
 	 * @return EiFieldWrapper
 	 */
-	public function getEiFieldWrapper(EiPropPath $eiPropPath, bool $ignoreAccessRestriction = false) {
-		$this->ensureAccessible($ignoreAccessRestriction);
+	public function getEiFieldWrapper(EiPropPath $eiPropPath) {
 		$eiPropPathStr = (string) $eiPropPath;
 		if (!isset($this->eiFieldWrappers[$eiPropPathStr])) {
 			throw new MappingOperationFailedException('No EiField defined for EiPropPath \'' . $eiPropPathStr
@@ -296,24 +294,15 @@ class EiEntry {
 		return $this->eiObject;
 	}
 	
-	public function getValue($eiPropPath, bool $ignoreAccessRestriction = false) {
-		$this->ensureAccessible($ignoreAccessRestriction);
-		$eiPropPath = EiPropPath::create($eiPropPath);
-		
+	public function getValue(EiPropPath $eiPropPath, bool $ignoreAccessRestriction = false) {
 		return $this->getEiField($eiPropPath, $ignoreAccessRestriction)->getValue();
 	}
 	
-	public function setValue($eiPropPath, $value, bool $ignoreAccessRestriction = false) {
-		$this->ensureAccessible($ignoreAccessRestriction);
-		$eiPropPath = EiPropPath::create($eiPropPath);
-		
+	public function setValue(EiPropPath $eiPropPath, $value) {
 		$this->getEiField($eiPropPath, $ignoreAccessRestriction)->setValue($value);
 	}
 
-	public function getOrgValue($eiPropPath, bool $ignoreAccessRestriction = false) {
-		$this->ensureAccessible($ignoreAccessRestriction);
-		$eiPropPath = EiPropPath::create($eiPropPath);
-		
+	public function getOrgValue(EiPropPath $eiPropPath, bool $ignoreAccessRestriction = false) {
 		return $this->getMappingProfile($ignoreAccessRestriction)->getEiField($eiPropPath, $ignoreAccessRestriction)
 				->getOrgValue();
 	}
@@ -404,21 +393,21 @@ class OnWriteMappingListener implements EiEntryListener {
 		$this->closure = $closure;
 	}
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\manage\mapping\EiEntryListener::onValidate()
+	 * @see \rocket\ei\manage\entry\EiEntryListener::onValidate()
 	 */
 	public function onValidate(EiEntry $eiEntry) { }
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\manage\mapping\EiEntryListener::validated()
+	 * @see \rocket\ei\manage\entry\EiEntryListener::validated()
 	 */
 	public function validated(EiEntry $eiEntry) { }
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\manage\mapping\EiEntryListener::onWrite()
+	 * @see \rocket\ei\manage\entry\EiEntryListener::onWrite()
 	 */
 	public function onWrite(EiEntry $eiEntry) {
 		$this->closure->__invoke($eiEntry);
 	}
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\manage\mapping\EiEntryListener::written()
+	 * @see \rocket\ei\manage\entry\EiEntryListener::written()
 	 */
 	public function written(EiEntry $eiEntry) {}
 	
@@ -435,19 +424,19 @@ class WrittenMappingListener implements EiEntryListener {
 		$this->closure = $closure;
 	}
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\manage\mapping\EiEntryListener::onValidate()
+	 * @see \rocket\ei\manage\entry\EiEntryListener::onValidate()
 	 */
 	public function onValidate(EiEntry $eiEntry) { }
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\manage\mapping\EiEntryListener::validated()
+	 * @see \rocket\ei\manage\entry\EiEntryListener::validated()
 	 */
 	public function validated(EiEntry $eiEntry) { }
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\manage\mapping\EiEntryListener::onWrite()
+	 * @see \rocket\ei\manage\entry\EiEntryListener::onWrite()
 	 */
 	public function onWrite(EiEntry $eiEntry) {}
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\manage\mapping\EiEntryListener::written()
+	 * @see \rocket\ei\manage\entry\EiEntryListener::written()
 	 */
 	public function written(EiEntry $eiEntry) {
 		$this->closure->__invoke($eiEntry);
@@ -465,21 +454,21 @@ class OnValidateMappingListener implements EiEntryListener {
 		$this->closure = $closure;
 	}
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\manage\mapping\EiEntryListener::onValidate()
+	 * @see \rocket\ei\manage\entry\EiEntryListener::onValidate()
 	 */
 	public function onValidate(EiEntry $eiEntry) { 
 		$this->closure->__invoke($eiEntry);
 	}
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\manage\mapping\EiEntryListener::validated()
+	 * @see \rocket\ei\manage\entry\EiEntryListener::validated()
 	 */
 	public function validated(EiEntry $eiEntry) { }
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\manage\mapping\EiEntryListener::onWrite()
+	 * @see \rocket\ei\manage\entry\EiEntryListener::onWrite()
 	 */
 	public function onWrite(EiEntry $eiEntry) {}
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\manage\mapping\EiEntryListener::written()
+	 * @see \rocket\ei\manage\entry\EiEntryListener::written()
 	 */
 	public function written(EiEntry $eiEntry) {}
 	
@@ -495,21 +484,21 @@ class ValidatedMappingListener implements EiEntryListener {
 		$this->closure = $closure;
 	}
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\manage\mapping\EiEntryListener::onValidate()
+	 * @see \rocket\ei\manage\entry\EiEntryListener::onValidate()
 	 */
 	public function onValidate(EiEntry $eiEntry) {}
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\manage\mapping\EiEntryListener::validated()
+	 * @see \rocket\ei\manage\entry\EiEntryListener::validated()
 	 */
 	public function validated(EiEntry $eiEntry) { 
 		$this->closure->__invoke($eiEntry);
 	}
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\manage\mapping\EiEntryListener::onWrite()
+	 * @see \rocket\ei\manage\entry\EiEntryListener::onWrite()
 	 */
 	public function onWrite(EiEntry $eiEntry) {}
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\manage\mapping\EiEntryListener::written()
+	 * @see \rocket\ei\manage\entry\EiEntryListener::written()
 	 */
 	public function written(EiEntry $eiEntry) {}
 	
@@ -525,19 +514,19 @@ class FlushMappingListener implements EiEntryListener {
 		$this->closure = $closure;
 	}
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\manage\mapping\EiEntryListener::onValidate()
+	 * @see \rocket\ei\manage\entry\EiEntryListener::onValidate()
 	 */
 	public function onValidate(EiEntry $eiEntry) {}
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\manage\mapping\EiEntryListener::validated()
+	 * @see \rocket\ei\manage\entry\EiEntryListener::validated()
 	 */
 	public function validated(EiEntry $eiEntry) {}
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\manage\mapping\EiEntryListener::onWrite()
+	 * @see \rocket\ei\manage\entry\EiEntryListener::onWrite()
 	 */
 	public function onWrite(EiEntry $eiEntry) {}
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\manage\mapping\EiEntryListener::written()
+	 * @see \rocket\ei\manage\entry\EiEntryListener::written()
 	 */
 	public function written(EiEntry $eiEntry) {}
 	

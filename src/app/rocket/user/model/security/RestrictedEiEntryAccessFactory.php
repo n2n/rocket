@@ -2,7 +2,7 @@
 namespace rocket\user\model\security;
 
 use rocket\ei\EiCommandPath;
-use rocket\ei\manage\mapping\EiEntry;
+use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\manage\security\EiEntryAccessFactory;
 use rocket\ei\manage\security\EiEntryAccess;
 

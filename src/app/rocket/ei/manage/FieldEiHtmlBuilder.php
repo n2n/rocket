@@ -23,7 +23,7 @@ namespace rocket\ei\manage;
 
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\map\PropertyPath;
-use rocket\ei\manage\mapping\FieldErrorInfo;
+use rocket\ei\manage\entry\FieldErrorInfo;
 use n2n\impl\web\ui\view\html\HtmlUtils;
 use rocket\ei\manage\gui\Displayable;
 use n2n\util\ex\IllegalStateException;

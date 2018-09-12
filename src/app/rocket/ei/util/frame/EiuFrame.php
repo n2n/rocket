@@ -21,7 +21,7 @@
  */
 namespace rocket\ei\util\frame;
 
-use rocket\ei\manage\mapping\EiEntry;
+use rocket\ei\manage\entry\EiEntry;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\persistence\orm\store\EntityInfo;
@@ -63,8 +63,8 @@ use rocket\ei\util\spec\EiuEngine;
 use rocket\ei\util\spec\EiuMask;
 use rocket\ei\util\EiuPerimeterException;
 use rocket\ei\util\entry\EiuEntry;
-use rocket\ei\manage\mapping\UnknownEiObjectException;
-use rocket\ei\manage\mapping\EiEntryManageException;
+use rocket\ei\manage\entry\UnknownEiObjectException;
+use rocket\ei\manage\entry\EiEntryManageException;
 use rocket\ei\util\entry\form\EiuEntryForm;
 use rocket\ei\util\entry\form\EiuEntryTypeForm;
 use rocket\ei\util\gui\EiuEntryGui;
@@ -271,7 +271,7 @@ class EiuFrame {
 	
 	/**
 	 * @param EiObject $eiObject
-	 * @return \rocket\ei\manage\mapping\EiEntry
+	 * @return \rocket\ei\manage\entry\EiEntry
 	 * @throws \rocket\ei\security\InaccessibleEntryException
 	 */
 	private function createEiEntry(EiObject $eiObject, int $ignoreConstraintTypes = 0) {
@@ -311,7 +311,7 @@ class EiuFrame {
 	/**
 	 * @param mixed $fromEiObjectObj
 	 * @param EiObject $to
-	 * @return \rocket\ei\manage\mapping\EiEntry
+	 * @return \rocket\ei\manage\entry\EiEntry
 	 */
 	private function createEiEntryCopy($fromEiObjectObj, EiObject $to = null, array $eiPropPaths = null) {
 		$fromEiuEntry = EiuAnalyst::buildEiuEntryFromEiArg($fromEiObjectObj, $this, 'fromEiObjectObj');

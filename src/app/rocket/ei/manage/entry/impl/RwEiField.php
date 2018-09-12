@@ -19,13 +19,13 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\mapping\impl;
+namespace rocket\ei\manage\entry\impl;
 
 use rocket\ei\manage\EiObject;
-use rocket\ei\manage\mapping\MappingOperationFailedException;
-use rocket\ei\manage\mapping\EiFieldConstraint;
-use rocket\ei\manage\mapping\EiField;
-use rocket\ei\manage\mapping\FieldErrorInfo;
+use rocket\ei\manage\entry\MappingOperationFailedException;
+use rocket\ei\manage\entry\EiFieldConstraint;
+use rocket\ei\manage\entry\EiField;
+use rocket\ei\manage\entry\FieldErrorInfo;
 
 abstract class RwEiField extends EiFieldAdapter {
 	protected $readable;
@@ -82,7 +82,7 @@ class ValidatableEiFieldConstraint implements EiFieldConstraint {
 	}
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\mapping\EiFieldConstraint::acceptsValue($value)
+	 * @see \rocket\ei\manage\entry\EiFieldConstraint::acceptsValue($value)
 	 */
 	public function acceptsValue($value): bool {
 		$this->validatable->testEiFieldValue($this->eiObject, $value);
@@ -90,7 +90,7 @@ class ValidatableEiFieldConstraint implements EiFieldConstraint {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\mapping\EiFieldConstraint::check($eiField)
+	 * @see \rocket\ei\manage\entry\EiFieldConstraint::check($eiField)
 	 */
 	public function check(EiField $eiField): bool {
 		return $this->validatable->testEiFieldValue($this->eiObject, $eiField->getValue());	
@@ -98,7 +98,7 @@ class ValidatableEiFieldConstraint implements EiFieldConstraint {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\mapping\EiFieldConstraint::validate($eiField, $fieldErrorInfo)
+	 * @see \rocket\ei\manage\entry\EiFieldConstraint::validate($eiField, $fieldErrorInfo)
 	 */
 	public function validate(EiField $eiField, FieldErrorInfo $fieldErrorInfo) {
 		return $this->validatable->validateEiFieldValue($this->eiObject, $eiField->getValue(), $fieldErrorInfo);
