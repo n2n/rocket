@@ -31,7 +31,6 @@ use rocket\impl\ei\component\command\common\model\critmod\CritmodForm;
 use rocket\impl\ei\component\command\common\model\critmod\QuickSearchForm;
 use rocket\impl\ei\component\command\common\model\OverviewModel;
 use n2n\util\uri\Url;
-use rocket\ei\util\frame\EiuFrame;
 use rocket\ei\util\EiuCtrl;
 use n2n\impl\web\ui\view\jhtml\JhtmlResponse;
 use rocket\ei\util\filter\controller\FilterJhtmlHook;

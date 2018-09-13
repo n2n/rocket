@@ -1,6 +1,5 @@
 <?php
 	use n2n\impl\web\ui\view\html\HtmlView;
-	use n2n\web\ui\view\View;
 
 	/*
 	 * Copyright (c) 2012-2016, Hofmänner New Media.

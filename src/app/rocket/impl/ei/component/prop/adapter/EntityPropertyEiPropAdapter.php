@@ -45,7 +45,9 @@ abstract class EntityPropertyEiPropAdapter extends IndependentEiPropAdapter impl
 		$this->entityProperty = $entityProperty;
 	}
 	
-	/* (non-PHPdoc)
+	
+	/**
+	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\EntityPropertyConfigurable::getEntityProperty()
 	 */
 	public function getEntityProperty(bool $required = false) {

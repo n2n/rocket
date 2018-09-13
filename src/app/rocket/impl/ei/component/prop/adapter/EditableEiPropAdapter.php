@@ -23,13 +23,11 @@ namespace rocket\impl\ei\component\prop\adapter;
 
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\component\prop\PrivilegedEiProp;
-use rocket\ei\EiPropPath;
 use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\security\privilege\EiPropPrivilege;
 use rocket\ei\manage\gui\GuiField;
-use rocket\ei\manage\gui\GuiPropFork;
 
 abstract class EditableEiPropAdapter extends DisplayableEiPropAdapter implements StatelessEditable, PrivilegedEiProp {
 	protected $standardEditDefinition;

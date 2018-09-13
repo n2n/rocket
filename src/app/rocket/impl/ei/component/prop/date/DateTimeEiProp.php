@@ -45,7 +45,6 @@ use rocket\ei\manage\draft\DraftManager;
 use rocket\ei\manage\draft\DraftValueSelection;
 use rocket\ei\manage\draft\PersistDraftAction;
 use rocket\ei\EiPropPath;
-use rocket\ei\manage\frame\EiFrame;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\web\dispatch\mag\Mag;
 use rocket\ei\util\Eiu;

@@ -22,11 +22,8 @@
 namespace rocket\ei\mask;
 
 use rocket\ei\manage\frame\EiFrame;
-use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\EiType;
-use n2n\l10n\N2nLocale;
 use rocket\ei\manage\preview\model\PreviewModel;
-use rocket\ei\manage\EiObject;
 use rocket\ei\mask\model\DisplayScheme;
 use rocket\ei\EiEngine;
 use rocket\ei\manage\preview\controller\PreviewController;
@@ -34,12 +31,6 @@ use n2n\util\config\InvalidConfigurationException;
 use rocket\ei\manage\preview\model\UnavailablePreviewException;
 use rocket\ei\manage\control\UnavailableControlException;
 use rocket\ei\util\Eiu;
-use rocket\ei\manage\gui\EiGui;
-use rocket\ei\manage\gui\EiEntryGui;
-use rocket\ei\manage\gui\SummarizedStringBuilder;
-use rocket\ei\manage\gui\EiGuiViewFactory;
-use rocket\ei\manage\gui\ViewMode;
-use rocket\ei\mask\model\CommonEiGuiViewFactory;
 use rocket\ei\component\prop\EiPropCollection;
 use rocket\ei\component\command\EiCommandCollection;
 use rocket\ei\component\modificator\EiModificatorCollection;
@@ -49,8 +40,6 @@ use rocket\ei\manage\control\IconType;
 use rocket\ei\EiTypeExtension;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\spec\TypePath;
-use rocket\ei\manage\ManageState;
-use rocket\ei\manage\gui\GuiDefinition;
 
 class EiMask {
 	private $eiMaskDef;
