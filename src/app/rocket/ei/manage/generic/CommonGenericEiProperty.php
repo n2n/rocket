@@ -56,7 +56,7 @@ class CommonGenericEiProperty implements GenericEiProperty {
 	}
 	
 	public function buildEntityValue(EiEntry $eiEntry) {
-		return $this->eiFieldValueToEntityValue($eiEntry->getValue($this->eiProp));
+		return $this->eiFieldValueToEntityValue($eiEntry->getValue(EiPropPath::create($this->eiProp)));
 	}
 	
 	public function eiFieldValueToEntityValue($eiFieldValue) {
