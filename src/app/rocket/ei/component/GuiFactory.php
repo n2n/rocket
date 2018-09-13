@@ -58,7 +58,7 @@ class GuiFactory {
 	public function createGuiDefinition(N2nContext $n2nContext, &$guiDefinition = null) {
 		$eiu = new Eiu($n2nContext);
 		
-		$guiDefinition = new GuiDefinition();
+		$guiDefinition = new GuiDefinition($this->eiMask->getLabelLstr());
 		$guiDefinition->setIdentityStringPattern($this->eiMask->getIdentityStringPattern());
 		
 		foreach ($this->eiMask->getEiPropCollection() as $id => $eiProp) {

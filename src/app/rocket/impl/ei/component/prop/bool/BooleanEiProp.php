@@ -231,7 +231,7 @@ class BooleanEiProp extends DraftableEiPropAdapter implements FilterableEiProp, 
 	 */
 	public function buildSecurityFilterProp(Eiu $eiu): ?SecurityFilterProp {
 		if (null !== ($entityProperty = $this->getEntityProperty())) {
-			return new BoolFilterProp(CrIt::p(), $this->getLabelLstr());
+			return new BoolFilterProp(CrIt::p($entityProperty), $this->getLabelLstr());
 		}
 		
 		return null;
