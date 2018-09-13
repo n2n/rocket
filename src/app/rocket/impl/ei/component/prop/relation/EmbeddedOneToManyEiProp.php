@@ -60,6 +60,7 @@ use rocket\ei\manage\draft\ModDraftAction;
 use rocket\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
 use rocket\ei\util\frame\EiuFrame;
 use rocket\impl\ei\component\prop\relation\model\RelationEntry;
+use rocket\ei\manage\security\InaccessibleEiCommandPathException;
 
 class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements DraftableEiProp, Draftable*/ {
 	private $targetOrderEiPropPath;
@@ -190,7 +191,12 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 	
 		$eiFrame = $eiu->frame()->getEiFrame();
 		$relationEiField = $eiEntry->getEiField(EiPropPath::from($this));
-		$targetReadEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame, $eiEntry);
+		
+		try {
+			$targetReadEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame, $eiEntry);
+		} catch (InaccessibleEiCommandPathException $e) {
+			return new InaccessibleGuiField($this->getLabelLstr());
+		}
 		
 		$toManyEditable = null;
 		if (!$this->eiPropRelation->isReadOnly($eiEntry, $eiFrame)) {

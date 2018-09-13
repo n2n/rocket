@@ -136,7 +136,7 @@ abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 		try {
 			$targetReadEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame, $mapping);
 		} catch (InaccessibleEiCommandPathException $e) {
-			return null;
+			return new InaccessibleGuiField($this->getLabelLstr());
 		}
 		
 		$eiPropRelation = $this->eiPropRelation;
