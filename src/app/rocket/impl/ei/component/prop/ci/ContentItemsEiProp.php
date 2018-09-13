@@ -35,6 +35,7 @@ use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\gui\GuiField;
 use rocket\ei\manage\gui\ui\DisplayItem;
+use rocket\ei\manage\security\InaccessibleEiCommandPathException;
 
 class ContentItemsEiProp extends EmbeddedOneToManyEiProp {
 	private $panelConfigs = array();
@@ -116,7 +117,12 @@ class ContentItemsEiProp extends EmbeddedOneToManyEiProp {
 	
 		$eiFrame = $eiu->frame()->getEiFrame();
 		$relationEiField = $mapping->getEiField(EiPropPath::from($this));
-		$targetReadEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame, $mapping);
+		try {
+			$targetReadEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame, $mapping);
+		} catch (InaccessibleEiCommandPathException $e) {
+			return null;
+		}
+		
 		$panelConfigs = $this->determinePanelConfigs($eiu);
 	
 		$contentItemEditable = null;

@@ -104,8 +104,8 @@ class RocketUserEiPermissionManager implements EiPermissionManager {
 		$eiEntryAccessFactory = new RestrictedEiEntryAccessFactory($constraintCache);
 		foreach ($eiMask->getEiType()->getAllSubEiTypes() as $subEiType) {
 			$subEiMask = $eiFrame->determineEiMask($subEiType);
-			if (null !== ($eiGrant = $this->findEiGrant($subEiMask->getEiTypePath()))) {
-				$eiEntryAccessFactory->addSubEiGrant(new ConstraintCache($eiGrant,
+			if (null !== ($subEiGrant = $this->findEiGrant($subEiMask->getEiTypePath()))) {
+				$eiEntryAccessFactory->addSubEiGrant(new ConstraintCache($subEiGrant,
 						$managedDef->getPrivilegeDefinition($subEiMask),
 						$managedDef->getSecurityFilterDefinition($subEiMask)));
 			}
