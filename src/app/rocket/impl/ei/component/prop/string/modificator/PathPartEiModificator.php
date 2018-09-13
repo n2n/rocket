@@ -30,6 +30,7 @@ use n2n\io\IoUtils;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\persistence\orm\property\BasicEntityProperty;
 use rocket\ei\util\Eiu;
+use rocket\ei\EiPropPath;
 
 class PathPartEiModificator extends EiModificatorAdapter {
 	private $pathPartEiProp;
@@ -66,14 +67,14 @@ class PathPartPurifier {
 		$value = $this->eiEntry->getValue($this->pathPartEiProp);
 	
 		if ($value !== null) {
-			$this->eiEntry->setValue($this->pathPartEiProp, $this->uniquePathPart(IoUtils::stripSpecialChars($value)));
+			$this->eiEntry->setValue(EiPropPath::create($this->pathPartEiProp), $this->uniquePathPart(IoUtils::stripSpecialChars($value)));
 			return;
 		}
 	
 		if ($this->eiEntry->isNew() || !$this->pathPartEiProp->isNullAllowed()) {
-			$this->eiEntry->setValue($this->pathPartEiProp, $this->uniquePathPart($this->generatePathPart()));
+			$this->eiEntry->setValue(EiPropPath::create($this->pathPartEiProp), $this->uniquePathPart($this->generatePathPart()));
 		} else {
-			$this->eiEntry->setValue($this->pathPartEiProp, null);
+			$this->eiEntry->setValue(EiPropPath::create($this->pathPartEiProp), null);
 		}
 	}
 	
