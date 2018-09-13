@@ -30,13 +30,19 @@ use rocket\ei\manage\entry\EiFieldWrapper;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\gui\ui\DisplayStructure;
 use n2n\util\ex\NotYetImplementedException;
+use n2n\l10n\Lstr;
 
 class GuiDefinition {	
 	private $identityStringPattern;
+	private $labelLstr;
 	private $levelGuiProps = array();
 	private $levelEiPropPaths = array();
 	private $levelGuiPropForks = array();
 	private $levelIds = array();
+	
+	function __construct(Lstr $labelLstr) {
+		$this->labelLstr = $labelLstr;
+	}
 	
 	/**
 	 * @param string|null $identityStringPattern
@@ -390,7 +396,7 @@ class GuiDefinition {
 		}
 		
 		if ($namePatternPart === null) {
-			$namePatternPart = $this->getLabelLstr()->t($n2nLocale);
+			$namePatternPart = $this->labelLstr->t($n2nLocale);
 		}
 		
 		return $this->createIdentityStringFromPattern($namePatternPart . ' #' . $idPatternPart, $eiObject, $n2nLocale);

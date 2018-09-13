@@ -67,6 +67,7 @@ use rocket\impl\ei\component\prop\translation\command\TranslationCopyCommand;
 use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\ei\component\prop\GuiEiPropFork;
+use rocket\ei\manage\gui\GuiProp;
 
 class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiPropFork, FieldEiProp, RelationEiProp, 
 		Readable, Writable, GuiPropFork, SortableEiPropFork, QuickSearchableEiProp {
@@ -149,6 +150,10 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiPropFork
 		throw new IllegalStateException();
 	}
 
+	public function buildGuiProp(Eiu $eiu): ?GuiProp {
+		return null;
+	}
+	
 	private $forkedGuiDefinition;
 	
 	/* (non-PHPdoc)
@@ -174,7 +179,6 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiPropFork
 			$targetEiFrame = $this->eiPropRelation->createTargetEditPseudoEiFrame($eiFrame, $eiEntry);
 		}
 		$targetEiuFrame = (new Eiu($targetEiFrame))->frame();
-		
 		$toManyEiField = $eiEntry->getEiField(EiPropPath::from($this));
 		
 		$targetRelationEntries = array();

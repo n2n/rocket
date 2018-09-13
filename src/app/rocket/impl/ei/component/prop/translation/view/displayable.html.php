@@ -24,7 +24,6 @@
 	use n2n\l10n\N2nLocale;
 	use rocket\ei\manage\FieldEiHtmlBuilder;
 	use rocket\ei\manage\entry\EiFieldValidationResult;
-use rocket\ei\EiPropPath;
 	
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -44,7 +43,7 @@ use rocket\ei\EiPropPath;
 	<?php foreach ($displayables as $n2nLocaleId => $displayable): ?>
 		<?php $n2nLocale = N2nLocale::create($n2nLocaleId) ?>
 				
-		<?php $fieldEiHtml->openOutputField('div', $displayable, new EiFieldValidationResult(new EiPropPath([])),  array(
+		<?php $fieldEiHtml->openOutputField('div', $displayable, new EiFieldValidationResult(null),  array(
 				'class' => 'rocket-impl-translation', 
 				'data-rocket-impl-locale-id' => $n2nLocaleId,
 				'data-rocket-impl-activate-label' => $view->getL10nText('ei_impl_activate_translation', array(

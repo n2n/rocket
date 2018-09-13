@@ -23,6 +23,7 @@ namespace rocket\ei\manage\entry;
 
 use n2n\l10n\Message;
 use rocket\ei\EiPropPath;
+use n2n\util\ex\IllegalStateException;
 
 class EiFieldValidationResult {
 	private $eiPropPath;
@@ -36,7 +37,7 @@ class EiFieldValidationResult {
 	 */
 	private $subEiEntryValidationResults = array();
 
-	public function __construct(EiPropPath $eiPropPath) {
+	public function __construct(?EiPropPath $eiPropPath) {
 		$this->eiPropPath = $eiPropPath;
 	}
 	
@@ -44,6 +45,7 @@ class EiFieldValidationResult {
 	 * @return \rocket\ei\EiPropPath
 	 */
 	function getEiPropPath() {
+		IllegalStateException::assertTrue($this->eiPropPath !== null);
 		return $this->eiPropPath;
 	}
 
