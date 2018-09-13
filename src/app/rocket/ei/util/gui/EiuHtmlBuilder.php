@@ -187,12 +187,13 @@ class EiuHtmlBuilder {
 	}
 	
 	public function getEntryMessages(array $attrs = null) {
-		$messages = $this->meta->getEntryUnboundMessages();
+		$messages = $this->meta->getEntryMessages();
 		if (empty($messages)) return null;
 		
 		$hs = new HtmlSnippet();
 		foreach ($messages as $message) {
-			$hs->appendLn(new HtmlElement('div', array('class' => 'rocket-message-error'), $message));
+			$hs->appendLn(new HtmlElement('div', array('class' => 'rocket-message-error alert alert-danger'), 
+					$this->html->getL10nText('eiu_entry_gui_err', array('msg' => $message))));
 		}
 		return $hs;
 	}
