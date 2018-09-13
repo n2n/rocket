@@ -152,7 +152,7 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 		try {
 			$targetReadEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame, $mapping);
 		} catch (InaccessibleEiCommandPathException $e) {
-			return null;
+			return new InaccessibleGuiField($this->getLabelLstr());
 		}
 		
 		$eiPropRelation = $this->eiPropRelation;

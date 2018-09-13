@@ -53,6 +53,7 @@ use rocket\impl\ei\component\prop\relation\model\RelationEntry;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\GuiField;
 use rocket\ei\manage\gui\ui\DisplayItem;
+use rocket\ei\manage\security\InaccessibleEiCommandPathException;
 
 class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 	private $replaceable = true;
@@ -166,7 +167,12 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 		
 		$eiFrame = $eiu->frame()->getEiFrame();
 		$relationEiField = $mapping->getEiField(EiPropPath::from($this));
-		$targetReadEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame, $mapping);
+		$targetReadEiFrame = null;
+		try {
+			$targetReadEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame, $mapping);
+		} catch (InaccessibleEiCommandPathException $e) {
+			return new InaccessibleGuiField($this->getLabelLstr());
+		}
 		
 		$toOneEditable = null;
 		if (!$this->eiPropRelation->isReadOnly($mapping, $eiFrame)) {

@@ -64,7 +64,7 @@ class PathPartPurifier {
 	}
 	
 	public function purify() {
-		$value = $this->eiEntry->getValue($this->pathPartEiProp);
+		$value = $this->eiEntry->getValue(EiPropPath::create($this->pathPartEiProp));
 	
 		if ($value !== null) {
 			$this->eiEntry->setValue(EiPropPath::create($this->pathPartEiProp), $this->uniquePathPart(IoUtils::stripSpecialChars($value)));
