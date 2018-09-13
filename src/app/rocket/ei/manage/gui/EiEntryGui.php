@@ -21,7 +21,6 @@
  */
 namespace rocket\ei\manage\gui;
 
-use n2n\reflection\ArgUtils;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\web\dispatch\Dispatchable;
 use n2n\web\dispatch\mag\MagWrapper;
@@ -29,9 +28,6 @@ use n2n\util\ex\IllegalStateException;
 use rocket\ei\mask\EiMask;
 use rocket\ei\manage\entry\EiEntry;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\ei\util\Eiu;
-use rocket\ei\EiCommandPath;
-use rocket\ei\mask\model\ControlOrder;
 use rocket\ei\manage\control\Control;
 
 class EiEntryGui {

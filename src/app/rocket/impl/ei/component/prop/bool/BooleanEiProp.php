@@ -27,11 +27,8 @@ use rocket\ei\component\prop\SortableEiProp;
 use rocket\ei\component\prop\FilterableEiProp;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
-use rocket\ei\manage\frame\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlElement;
-use n2n\core\container\N2nContext;
 use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
-
 use rocket\impl\ei\component\prop\adapter\DraftableEiPropAdapter;
 use n2n\reflection\ArgUtils;
 use n2n\reflection\property\AccessProxy;
@@ -233,7 +230,11 @@ class BooleanEiProp extends DraftableEiPropAdapter implements FilterableEiProp, 
 	 * @see \rocket\ei\component\prop\FilterableEiProp::buildFilterProp()
 	 */
 	public function buildSecurityFilterProp(Eiu $eiu): ?SecurityFilterProp {
-		return new BoolFilterProp(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
+		if (null !== ($entityProperty = $this->getEntityProperty())) {
+			return new BoolFilterProp(CrIt::p(), $this->getLabelLstr());
+		}
+		
+		return null;
 	}
 	
 	/**

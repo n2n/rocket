@@ -24,7 +24,6 @@ namespace rocket\ei\mask\model;
 use rocket\ei\component\command\control\PartialControlComponent;
 use n2n\l10n\N2nLocale;
 use rocket\ei\component\command\control\OverallControlComponent;
-use rocket\ei\component\command\control\EntryControlComponent;
 use rocket\ei\manage\gui\ui\DisplayStructure;
 use rocket\ei\mask\EiMask;
 use rocket\ei\manage\gui\EiGui;

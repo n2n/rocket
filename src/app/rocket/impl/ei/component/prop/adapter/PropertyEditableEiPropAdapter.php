@@ -42,10 +42,8 @@ use rocket\ei\manage\entry\EiFieldValidationResult;
 use n2n\l10n\MessageCode;
 use rocket\ei\component\prop\field\Validatable;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
-use rocket\ei\EiPropPath;
 use rocket\ei\component\prop\field\Copyable;
 use rocket\ei\manage\gui\GuiField;
-use rocket\ei\manage\gui\GuiPropFork;
 use rocket\ei\manage\gui\GuiProp;
 
 abstract class PropertyEditableEiPropAdapter extends PropertyDisplayableEiPropAdapter implements StatelessEditable, Writable, 
