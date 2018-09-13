@@ -118,8 +118,7 @@ class RocketUserEiPermissionManager implements EiPermissionManager {
 			return;
 		}
 		
-		$ree = new RestrictedEiExecution($eiCommand, $eiCommandPath,
-				$constraintCache, $eiEntryAccessFactory);
+		$ree = new RestrictedEiExecution($eiCommand, $eiCommandPath, $constraintCache, $eiEntryAccessFactory);
 		$eiFrame->setEiExecution($ree);
 		$eiFrame->getBoundry()->addCriteriaConstraint(Boundry::TYPE_SECURITY, $ree->getCriteriaConstraint());
 		$eiFrame->getBoundry()->addEiEntryConstraint(Boundry::TYPE_SECURITY, $ree->getEiEntryConstraint());
