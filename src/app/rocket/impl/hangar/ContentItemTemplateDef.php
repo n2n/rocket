@@ -16,8 +16,8 @@ use n2n\io\IoUtils;
 use n2n\io\fs\FsPath;
 use n2n\core\TypeLoader;
 use n2n\web\hangar\WebTemplateDef;
-use hangar\util\Huo;
 use n2n\core\config\IoConfig;
+use hangar\api\Huo;
 
 class ContentItemTemplateDef implements HangarTemplateDef {
 	const PROP_NAME_CREATE_VIEW = 'createView';
