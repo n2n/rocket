@@ -12,7 +12,7 @@ use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\l10n\N2nLocale;
 use rocket\impl\ei\component\prop\translation\Translatable;
 use n2n\web\hangar\WebTemplateDef;
-use hangar\util\Huo;
+use hangar\api\Huo;
 
 class TranslatableTemplateDef implements HangarTemplateDef {
 	
