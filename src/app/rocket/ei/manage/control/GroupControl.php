@@ -29,7 +29,8 @@ class GroupControl implements Control {
 	public function createUiComponent(array $attrs = array()): UiComponent {
 // 		$id = HtmlUtils::buildUniqueId('rocket-control-group-');
 		
-		$dropdownElem = new HtmlElement('div', HtmlUtils::mergeAttrs(array('class' => 'dropdown' . ($this->controlButton->isStatic() ? ' rocket-static' : '')), $attrs));
+		$dropdownElem = new HtmlElement('div', HtmlUtils::mergeAttrs(
+				array('class' => 'dropdown' . ($this->controlButton->isStatic() ? ' rocket-static' : '')), $attrs));
 		$dropdownElem->appendLn();
 		$dropdownElem->appendLn($this->controlButton->toButton(
 				array('type' => 'button', 'class' => 'dropdown-toggle', /*'id' => $id,*/ 

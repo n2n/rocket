@@ -41,6 +41,7 @@ class ControlButton {
 	private $type;
 	private $attrs = array();
 	private $iconImportant = false;
+	private $labelImportant = false;
 	private $static = true;
 	
 	private $confirmMessage;
@@ -63,6 +64,11 @@ class ControlButton {
 		return $this->important;
 	}
 	
+	/**
+	 * Button will be colored according to the type color.
+	 * @param bool $important
+	 * @return \rocket\ei\manage\control\ControlButton
+	 */
 	public function setImportant(bool $important) {
 		$this->important = $important;
 		return $this;
@@ -72,6 +78,11 @@ class ControlButton {
 		return $this->name;
 	}
 	
+	/**
+	 * Button text.
+	 * @param string $name
+	 * @return \rocket\ei\manage\control\ControlButton
+	 */
 	public function setName(string $name = null) {
 		$this->name = $name;
 		return $this;
@@ -81,6 +92,10 @@ class ControlButton {
 		return $this->type;
 	}
 	
+	/**
+	 * @param string $type
+	 * @return \rocket\ei\manage\control\ControlButton
+	 */
 	public function setType(string $type = null) {
 		$this->type = $type;
 		return $this;
@@ -90,6 +105,10 @@ class ControlButton {
 		return $this->iconType;
 	}
 	
+	/**
+	 * @param string $iconType
+	 * @return \rocket\ei\manage\control\ControlButton
+	 */
 	public function setIconType(string $iconType = null) {
 		$this->iconType = $iconType;
 		return $this;
@@ -99,6 +118,10 @@ class ControlButton {
 		return $this->tooltip;
 	}
 	
+	/**
+	 * @param string $tooltip
+	 * @return \rocket\ei\manage\control\ControlButton
+	 */
 	public function setTooltip(string $tooltip = null) {
 		$this->tooltip = $tooltip;
 		return $this;
@@ -144,6 +167,7 @@ class ControlButton {
 	}
 	
 	/**
+	 * Icon will always be displayed.
 	 * @param bool $iconImportant
 	 * @return \rocket\ei\manage\control\ControlButton
 	 */
@@ -152,7 +176,24 @@ class ControlButton {
 		return $this;
 	}
 	
-	public function setConfirmMessage($confirmMessage) {
+	/**
+	 * @return boolean
+	 */
+	public function isLabelImportant() {
+		return $this->labelImportant;
+	}
+	
+	/**
+	 * Button text will always be displayed.
+	 * @param bool $labelImportant
+	 * @return \rocket\ei\manage\control\ControlButton
+	 */
+	public function setLabelImportant(bool $labelImportant) {
+		$this->labelImportant = $labelImportant;
+		return $this;
+	}
+	
+	public function setConfirmMessage(?string $confirmMessage) {
 		$this->confirmMessage = $confirmMessage;
 	}
 	
@@ -160,7 +201,7 @@ class ControlButton {
 		return $this->confirmMessage;
 	}
 	
-	public function setConfirmOkButtonLabel($confirmOkButtonLabel) {
+	public function setConfirmOkButtonLabel(?string $confirmOkButtonLabel) {
 		$this->confirmOkButtonLabel = $confirmOkButtonLabel;
 	}
 	
@@ -168,7 +209,7 @@ class ControlButton {
 		return $this->confirmOkButtonLabel;
 	}
 	
-	public function setConfirmCancelButtonLabel($confirmCancelButtonLabel) {
+	public function setConfirmCancelButtonLabel(?string $confirmCancelButtonLabel) {
 		$this->confirmCancelButtonLabel = $confirmCancelButtonLabel;
 	}
 	
@@ -176,6 +217,10 @@ class ControlButton {
 		return $this->confirmCancelButtonLabel;
 	}
 	
+	/**
+	 * @param array $attrs
+	 * @return array
+	 */
 	private function applyAttrs(array $attrs) {
 // 		$attrs['aria-hidden'] = 'true';
 		
@@ -205,6 +250,10 @@ class ControlButton {
 			$attrs['class'] .= ' rocket-icon-important';
 		}
 		
+		if ($this->labelImportant) {
+			$attrs['class'] .= ' rocket-label-important';
+		}
+		
 		if ($this->confirmMessage !== null) {
 			$attrs['data-rocket-confirm-msg'] = $this->confirmMessage;
 		}
@@ -220,6 +269,11 @@ class ControlButton {
 		return HtmlUtils::mergeAttrs($attrs, $this->attrs);
 	}
 	
+	/**
+	 * @param array $attrs
+	 * @param bool $useA
+	 * @return UiComponent
+	 */
 	public function toButton(array $attrs, bool $useA = true): UiComponent {
 		$iconType = $this->iconType;
 		if ($iconType === null) {

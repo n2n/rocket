@@ -22,15 +22,19 @@
 
 	use rocket\user\model\GroupGrantsViewModel;
 	use n2n\impl\web\ui\view\html\HtmlView;
+	use n2n\web\http\nav\Murl;
+	use n2n\impl\web\ui\view\html\HtmlElement;
 	
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
 	$formHtml = HtmlView::formHtml($this);
 	
-	$view->useTemplate('~\core\view\template.html', array('title' => $view->getL10nText('user_group_grants_title')));
 	
 	$groupGrantsViewModel = $view->getParam('groupGrantsViewModel');
 	$view->assert($groupGrantsViewModel instanceof GroupGrantsViewModel);
+	
+	$view->useTemplate('~\core\view\template.html', array('title' => $view->getL10nText('user_group_grants_of_txt', 
+			['user_group' => $groupGrantsViewModel->getRocketUserGroup()->getName()])));
 	
 	$groupId = $groupGrantsViewModel->getRocketUserGroup()->getId()
 ?>
@@ -60,18 +64,26 @@
 				<?php endif ?>
 				<td class="rocket-table-commands">
 					<div class="rocket-simple-commands">
-						<?php $html->linkToController(array('fullyeigrant', $groupId, $eiTypePath), 
-								new n2n\web\ui\Raw('<i class="fa fa-thumbs-up"></i><span>' . $html->getL10nText('user_grant_full_access_label') . '</span>'),
-								array('title' => $view->getL10nText('user_edit_tooltip'),
-										'class' => 'btn btn-success')) ?>
-						<?php $html->linkToController(array('restricteigrant', $groupId, $eiTypePath), 
-								new n2n\web\ui\Raw('<i class="fa fa-wrench"></i><span>' . $html->getL10nText('user_grant_restricted_access_label') . '</span>'),
-								array('title' => $view->getL10nText('user_edit_tooltip'),
-										'class' => 'btn btn-warning')) ?>
-						<?php $html->linkToController(array('removeeigrant', $groupId, $eiTypePath),
-								new n2n\web\ui\Raw('<i class="fa fa-thumbs-down"></i><span>' . $view->getL10nText('user_deny_access_label') . '</span>'),
-								array('title' => $view->getL10nText('user_edit_tooltip'),
-										'class' => 'btn btn-danger')) ?>
+						<?php if ($eiTypeItem->isFullyAccessible()): ?>
+							<?php $html->linkStart(Murl::controller()->pathExt(['removeeigrant', $groupId, $eiTypePath]),
+									['class' => 'btn btn-success rocket-important rocket-jhtml']) ?>
+								<i class="fa fa-thumbs-up"></i>
+							<?php $html->linkEnd() ?>
+						<?php elseif ($eiTypeItem->isAccessible()): ?>
+							<?php $html->linkToController(array('fullyeigrant', $groupId, $eiTypePath), 
+									new HtmlElement('i', ['class' => 'fa fa-thumbs-o-up fa-rotate-270'], ''),
+									array('class' => 'btn btn-secondary rocket-jhtml')) ?>
+						<?php else: ?>
+							<?php $html->linkToController(array('fullyeigrant', $groupId, $eiTypePath),
+									new HtmlElement('i', ['class' => 'fa fa-thumbs-down'], ''),
+									array('class' => 'btn btn-danger rocket-important rocket-jhtml')) ?>
+						<?php endif ?>
+						
+						<?php $html->linkStart(Murl::controller()->pathExt(['restricteigrant', $groupId, $eiTypePath]),
+								['class' => 'btn btn-secondary rocket-impotant rocket-jhtml', 
+										'title' => $view->getL10nText('user_type_access_label', ['type' => $eiTypeItem->getLabel()])]) ?>
+							<i class="fa fa-gear"></i>
+						<?php $html->linkEnd() ?>
 					</div>
 				</td>
 			</tr>

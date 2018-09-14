@@ -2,25 +2,25 @@ namespace Rocket.Impl.Relation {
 	
 	export class EmbeddedEntry {
 		private entryGroup: Rocket.Display.StructureElement;
-		private jqOrderIndex: JQuery;
-		private jqSummary: JQuery;
+		private jqOrderIndex: JQuery<Element>;
+		private jqSummary: JQuery<Element>;
 		
-		private jqPageCommands: JQuery;
+		private jqPageCommands: JQuery<Element>;
 		private bodyGroup: Rocket.Display.StructureElement;
 		private toolbar: Rocket.Display.Toolbar;
 		private _entryForm: Rocket.Display.EntryForm;
 		
-		private jqExpMoveUpButton: JQuery;
-		private jqExpMoveDownButton: JQuery;
-		private jqExpRemoveButton: JQuery;
-		private jqRedFocusButton: JQuery;
-		private jqRedRemoveButton: JQuery;
+		private jqExpMoveUpButton: JQuery<Element>;
+		private jqExpMoveDownButton: JQuery<Element>;
+		private jqExpRemoveButton: JQuery<Element>;
+		private jqRedFocusButton: JQuery<Element>;
+		private jqRedRemoveButton: JQuery<Element>;
 	
-		private jqRedCopyButton: JQuery;
-		private jqExpCopyButton: JQuery;
+		private jqRedCopyButton: JQuery<Element>;
+		private jqExpCopyButton: JQuery<Element>;
 		private copyCbr: Jhtml.Util.CallbackRegistry<() => any> = new Jhtml.Util.CallbackRegistry();
 		
-		constructor(jqEntry: JQuery, private readOnly: boolean, sortable: boolean, copyable: boolean = false) {
+		constructor(jqEntry: JQuery<Element>, private readOnly: boolean, sortable: boolean, copyable: boolean = false) {
 			this.entryGroup = Rocket.Display.StructureElement.from(jqEntry, true);
 			
 			let groupJq = jqEntry.children(".rocket-impl-body");
@@ -164,10 +164,10 @@ namespace Rocket.Impl.Relation {
 			
 			this.copyCbr.on(callback);
 		}
-		
-		get jQuery(): JQuery {
-			return this.entryGroup.jQuery;
-		}
+        
+        get jQuery(): JQuery<Element> {
+            return this.entryGroup.jQuery;
+        }
 		
 		public getExpandedCommandList(): Rocket.Display.CommandList {
 			return this.toolbar.getCommandList();

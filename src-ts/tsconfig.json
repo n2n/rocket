@@ -9,7 +9,7 @@
 		"target": "es6",
 		"experimentalDecorators": true
     },
-    "include": ["rocket/**/*", "../src/public/assets/n2n-impl-web-ui/js/jhtml.d.ts"],
+    "include": ["rocket/**/*", "../../n2n-impl-web-ui/src/public/assets/n2n-impl-web-ui/js/jhtml.d.ts"],
 	"exclude": ["node_modules"],
 	"compileOnSave": false
 }

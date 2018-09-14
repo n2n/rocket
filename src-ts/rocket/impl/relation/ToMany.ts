@@ -113,13 +113,13 @@ namespace Rocket.Impl.Relation {
 	}
 	
 	class ToManySelector {
-		private jqUl: JQuery
+		private jqUl: JQuery<Element>;
 		private entries: Array<SelectedEntry> = new Array<SelectedEntry>();
 		private originalPids: Array<string>;
 		private identityStrings: { [key: string]: string};
 		private browserLayer: cmd.Layer = null;
 		private browserSelectorObserver: Display.MultiEntrySelectorObserver = null;
-		private resetButtonJq: JQuery = null;
+		private resetButtonJq: JQuery<Element> = null;
 		
 		constructor(private jqElem: JQuery, private jqNewEntrySkeleton: JQuery) {
 			this.jqElem = jqElem;
@@ -162,7 +162,7 @@ namespace Rocket.Impl.Relation {
 		}
 		
 		public createSelectedEntry(pid: string, identityString: string = null): SelectedEntry {
-			var entry = new SelectedEntry(this.jqNewEntrySkeleton.clone().appendTo(this.jqUl));
+			var entry = new SelectedEntry(this.jqNewEntrySkeleton.clone().appendTo(<JQuery<HTMLElement>> this.jqUl));
 			entry.pid = pid;
 			if (identityString !== null) {
 				entry.label = identityString;
@@ -394,7 +394,7 @@ namespace Rocket.Impl.Relation {
 				structureElement.type = Display.StructureElement.Type.LIGHT_GROUP;
 				var toolbar = structureElement.getToolbar();
 				if (toolbar !== null) {
-					var jqButton: JQuery = null;
+					var jqButton: JQuery<Element> = null;
 					if (this.isReadOnly()) { 
 						jqButton = toolbar.getCommandList().createJqCommandButton({ 
 							iconType: "fa fa-file", 
