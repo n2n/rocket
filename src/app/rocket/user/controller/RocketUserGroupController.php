@@ -41,16 +41,19 @@ use n2n\web\http\controller\impl\ScrRegistry;
 use rocket\ei\EiEngine;
 use rocket\spec\TypePath;
 use rocket\ei\util\Eiu;
+use rocket\ajah\RocketJhtmlResponse;
 
 class RocketUserGroupController extends ControllerAdapter {
 	private $rocketState;
 	private $userDao;
 	private $rocket;
+	private $dtc;
 	
-	private function _init(RocketState $rocketState, RocketUserDao $userDao, Rocket $rocket) {
+	private function _init(RocketState $rocketState, RocketUserDao $userDao, Rocket $rocket, DynamicTextCollection $dtc) {
 		$this->rocketState = $rocketState;
 		$this->userDao = $userDao;
 		$this->rocket = $rocket;
+		$this->dtc = $dtc;
 	}
 	
 	public function index(Rocket $rocket) {
@@ -118,7 +121,7 @@ class RocketUserGroupController extends ControllerAdapter {
 		$this->redirectToController();
 	}
 	
-	public function doGrants($rocketUserGroupId, Rocket $rocket) {
+	public function doGrants($rocketUserGroupId) {
 		$this->beginTransaction();
 		
 		$userGroup = $this->userDao->getRocketUserGroupById($rocketUserGroupId);
@@ -127,13 +130,22 @@ class RocketUserGroupController extends ControllerAdapter {
 			throw new PageNotFoundException();
 		}
 		
-		$spec = $rocket->getSpec();
+		$spec = $this->rocket->getSpec();
 		$groupGrantViewModel = new GroupGrantsViewModel($userGroup, $spec->getEiTypes(), 
 				$spec->getCustomTypes());
 		
 		$this->commit();
 		
+		$this->applyBreadcrumbs();
+		$this->applyGrantsBc($userGroup);
+		
 		$this->forward('..\view\groupGrants.html', array('groupGrantsViewModel' => $groupGrantViewModel));
+	}
+	
+	private function applyGrantsBc(RocketUserGroup $userGroup) {
+		$this->rocketState->addBreadcrumb(new Breadcrumb(
+				$this->getControllerPath()->ext('grants', $userGroup->getId())->toUrl(),
+				$this->dtc->t('user_group_grants_of_txt', ['user_group' => $userGroup->getName()])));
 	}
 	
 	public function doFullyEiGrant($userGroupId, $eiTypePathStr, Rocket $rocket) {
@@ -164,7 +176,7 @@ class RocketUserGroupController extends ControllerAdapter {
 			throw new PageNotFoundException();
 		}
 		
-		$this->redirectToController(array('grants', $userGroupId));
+		$this->send(RocketJhtmlResponse::redirectToReferer($this->getControllerPath()->ext(array('grants', $userGroupId))));
 		
 		if (null !== ($eiGrant = $userGroup->getEiGrantByEiTypePath($eiTypePath))) {
 			$eiGrant->setFull(true);
@@ -205,7 +217,7 @@ class RocketUserGroupController extends ControllerAdapter {
 		}
 	
 		$this->commit();
-		$this->redirectToController(array('grants', $userGroupId));
+		$this->send(RocketJhtmlResponse::redirectToReferer($this->getControllerPath()->ext(array('grants', $userGroupId))));
 	}
 	
 	/**
@@ -287,29 +299,34 @@ class RocketUserGroupController extends ControllerAdapter {
 		
 		$this->commit();
 		
-		$this->forward('..\view\grantEdit.html', array('eiGrantForm' => $eiGrantForm));
+		$this->applyBreadcrumbs();
+		$this->applyGrantsBc($rocketUserGroup);
+		
+		$label = $this->dtc->t('user_type_access_label', ['type' => $eiuEngine->getEiuMask()->getLabel()]);
+		$this->rocketState->addBreadcrumb(new Breadcrumb($this->getUrlToPath(), $label));
+		
+		$this->forward('..\view\grantEdit.html', array('eiGrantForm' => $eiGrantForm, 'label' => $label));
 	}	
 	
 	private function applyBreadcrumbs(RocketUserGroupForm $userGroupForm = null) {
 		$httpContext = $this->getHttpContext();
-		$dtc = new DynamicTextCollection($this->getModuleNamespace(), $this->getN2nContext()->getN2nLocale());
 	
 		$this->rocketState->addBreadcrumb(new Breadcrumb(
 				$httpContext->getControllerContextPath($this->getControllerContext()), 
-				$dtc->translate('user_groups_title')));
+				$this->dtc->translate('user_groups_title')));
 		
 		if ($userGroupForm === null) return;
 		
 		if ($userGroupForm->isNew()) {
 			$this->rocketState->addBreadcrumb(new Breadcrumb(
 					$httpContext->getControllerContextPath($this->getControllerContext(), array('add')),
-					$dtc->translate('user_add_group_label')));
+					$this->dtc->translate('user_add_group_label')));
 		} else {
 			$userGroup = $userGroupForm->getRocketUserGroup();
 			$this->rocketState->addBreadcrumb(new Breadcrumb(
 					$httpContext->getControllerContextPath($this->getControllerContext(), 
 							array('edit', $userGroup->getId())),
-					$dtc->translate('user_edit_group_breadcrumb', array('user_group' => $userGroup->getName()))));
+					$this->dtc->translate('user_edit_group_breadcrumb', array('user_group' => $userGroup->getName()))));
 		}
 	}
 }

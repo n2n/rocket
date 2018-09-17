@@ -83,20 +83,21 @@
 					<td>
 						<div class="rocket-simple-commands">
 							<?php $html->linkToController(array('edit', $userGroup->getId()), 
-									new n2n\web\ui\Raw('<i class="fa fa-pencil"></i><span>' . $view->getL10nText('user_edit_group_label') . '</span>'),
-									array('title' => $view->getL10nText('user_edit_tooltip'),
-											'class' => 'btn btn-warning')) ?>
+									new Raw('<i class="fa fa-pencil"></i><span>' . $html->getL10nText('user_edit_group_label') . '</span>'),
+									array('title' => $html->getL10nText('user_edit_tooltip'),
+											'class' => 'btn btn-warning rocket-jhtml')) ?>
 							<?php $html->linkToController(array('grants', $userGroup->getId()), 
-									new n2n\web\ui\Raw('<i class="fa fa-key"></i><span>' . $view->getL10nText('user_modify_grants_label') . '</span>'),
-									array('title' => $view->getL10nText('user_modify_grants_tooltip'),
-											'class' => 'btn btn-secondary')) ?>
+									new Raw('<i class="fa fa-key"></i><span>' . $html->getL10nText('user_modify_grants_label') . '</span>'),
+									array('title' => $html->getL10nText('user_modify_grants_tooltip'),
+											'class' => 'btn btn-secondary rocket-jhtml')) ?>
 							<?php $html->linkToController(array('delete', $userGroup->getId()), 
-									new n2n\web\ui\Raw('<i class="fa fa-times"></i><span>' . $view->getL10nText('user_delete_group_label') . '</span>'),
-									array('title' => $view->getL10nText('user_delete_group_tooltip'), 
-											'data-rocket-confirm-msg' => $view->getL10nText('user_group_delete_confirm', array('group' => $userGroup->getName())),
-											'data-rocket-confirm-ok-label' => $view->getL10nText('common_yes_label'),
-											'data-rocket-confirm-cancel-label' => $view->getL10nText('common_no_label'),
-											'class' => 'btn btn-danger')) ?>
+									new Raw('<i class="fa fa-times"></i><span>' . $html->getL10nText('user_delete_group_label') . '</span>'),
+									array('title' => $html->getL10nText('user_delete_group_tooltip'), 
+											'data-rocket-confirm-msg' => $html->getL10nText('user_group_delete_confirm', 
+													array('group' => $userGroup->getName())),
+											'data-rocket-confirm-ok-label' => $html->getL10nText('common_yes_label'),
+											'data-rocket-confirm-cancel-label' => $html->getL10nText('common_no_label'),
+											'class' => 'btn btn-danger rocket-jhtml')) ?>
 						</div>
 					</td>
 				</tr>

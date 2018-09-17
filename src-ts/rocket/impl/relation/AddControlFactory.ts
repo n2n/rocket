@@ -19,20 +19,20 @@ namespace Rocket.Impl.Relation {
 	
 	export class AddControl {
 		private embeddedEntryRetriever: EmbeddedEntryRetriever;
-		private jqNew: JQuery;
-		private jqNewButton: JQuery;
+		private jqNew: JQuery<Element>;
+		private jqNewButton: JQuery<Element>;
 		private onNewEntryCallbacks: Array<(entry: EmbeddedEntry) => any> = [];
 		private jqNewMultiTypeUl: JQuery|null = null;
 		private newMultiTypeEmbeddedEntry: EmbeddedEntry; 
 		
-		private jqPaste: JQuery;
-		private jqPasteButton: JQuery;
+		private jqPaste: JQuery<Element>;
+		private jqPasteButton: JQuery<Element>;
 		private jqPasteUl: JQuery|null = null;
 		private pasteOnChanged: () => any;
 		
 		private disposed: boolean = false;
 		
-		constructor(private jqElem: JQuery, embeddedEntryRetriever: EmbeddedEntryRetriever,
+		constructor(private jqElem: JQuery<Element>, embeddedEntryRetriever: EmbeddedEntryRetriever,
 				private pasteStrategy: PasteStrategy = null) {
 			this.embeddedEntryRetriever = embeddedEntryRetriever;
 			
@@ -105,7 +105,7 @@ namespace Rocket.Impl.Relation {
 		
 		private addPasteOption(element: ClipboardElement) {
 			if (!this.jqPasteUl) {
-				this.jqPasteUl = $("<ul />", { "class": "rocket-impl-multi-type-menu"}).appendTo(this.jqPaste).hide();
+				this.jqPasteUl = $("<ul />", { "class": "rocket-impl-multi-type-menu"}).appendTo(<JQuery<HTMLElement>> this.jqPaste).hide();
 				this.jqPaste.show();
 			}
 			
@@ -143,7 +143,7 @@ namespace Rocket.Impl.Relation {
 			}
 		}
 		
-		get jQuery(): JQuery {
+		get jQuery(): JQuery<Element> {
 			return this.jqElem;
 		}
 		

@@ -98,13 +98,13 @@ namespace Rocket.Impl.Relation {
 	}
 	
 	class ToOneEmbedded {
-		private jqToOne: JQuery;
+		private jqToOne: JQuery<Element>;
 		public addControlFactory: AddControlFactory|null;
 		private reduceEnabled: boolean = true;
 		private _currentEntry: EmbeddedEntry;
 		private _newEntry: EmbeddedEntry;
-		private jqEmbedded: JQuery;
-		private jqEntries: JQuery;
+		private jqEmbedded: JQuery<Element>;
+		private jqEntries: JQuery<Element>;
 		private expandZone: cmd.Zone = null;
 		private closeLabel: string;
 		private changedCallbacks: Array<() => any> = new Array<() => any>();
@@ -274,7 +274,7 @@ namespace Rocket.Impl.Relation {
 				this._newEntry = null;
 				
 				if (this.currentEntry) {
-					this.currentEntry.jQuery.appendTo(this.jqEntries);
+					this.currentEntry.jQuery.appendTo(<JQuery<HTMLElement>> this.jqEntries);
 				}
 				
 				this.changed();
@@ -438,14 +438,14 @@ namespace Rocket.Impl.Relation {
 	
 	
 	class ToOneSelector {
-		private jqInput: JQuery;
+		private jqInput: JQuery<Element>;
 		private originalPid: string;
 		private identityStrings: { [key: string]: string};
-		private jqSelectedEntry: JQuery;
-		private jqEntryLabel: JQuery;
+		private jqSelectedEntry: JQuery<Element>;
+		private jqEntryLabel: JQuery<Element>;
 		private browserLayer: cmd.Layer = null;
 		private browserSelectorObserver: Display.SingleEntrySelectorObserver = null;
-		private resetButtonJq: JQuery;
+		private resetButtonJq: JQuery<Element>;
 		
 		constructor(private jqElem: JQuery) {
 			this.jqElem = jqElem;
@@ -472,7 +472,7 @@ namespace Rocket.Impl.Relation {
 		private init() {
 			this.jqSelectedEntry = $("<div />")
 			this.jqSelectedEntry.append(this.jqEntryLabel = $("<span />", { "text": this.identityStrings[this.originalPid] }));
-			new display.CommandList($("<div />").appendTo(this.jqSelectedEntry), true)
+			new display.CommandList($("<div />").appendTo(<JQuery<HTMLElement>> this.jqSelectedEntry), true)
 					.createJqCommandButton({ iconType: "fa fa-trash-o", label: this.jqElem.data("remove-entry-label") })
 					.click(() => {
 						this.clear();				

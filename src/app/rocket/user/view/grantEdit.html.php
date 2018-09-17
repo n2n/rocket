@@ -30,9 +30,8 @@
 	
 	$eiGrantForm = $view->getParam('eiGrantForm'); 
 	$view->assert($eiGrantForm instanceof EiGrantForm);
- 
-	$view->useTemplate('~\core\view\template.html', 
-			array('title' => $view->getL10nText('user_group_privileges_for_mask_title')));
+	
+	$view->useTemplate('~\core\view\template.html', array('title' => $view->getParam('label')));
 ?>
 
 <?php $formHtml->open($eiGrantForm, null, null, ['class' => 'rocket-privilege-form', 

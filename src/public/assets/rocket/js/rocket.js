@@ -115,12 +115,12 @@ var Rocket;
                         nav.scrollToPos(userStore.navState.scrollPos);
                         mutations.forEach((mutation) => {
                             navGroups.forEach((navGroup) => {
-                                if ($(Array.from(mutation.removedNodes)).get(0) === navGroup.elemJq.get(0)) {
+                                if ($(Array.from(mutation.removedNodes)[0]).get(0) === navGroup.elemJq.get(0)) {
                                     userStore.navState.offChanged(navGroup);
                                 }
                             });
                             navGroups.forEach((navGroup) => {
-                                if ($(Array.from(mutation.addedNodes)).get(0) === navGroup.elemJq.get(0)) {
+                                if ($(Array.from(mutation.addedNodes)[0]).get(0) === navGroup.elemJq.get(0)) {
                                     if (userStore.navState.isGroupOpen(navGroup.id)) {
                                         navGroup.open(0);
                                     }
@@ -159,6 +159,14 @@ var Rocket;
             setInterval(() => {
                 $.get(url);
             }, 300000);
+        })();
+        (function () {
+            Jhtml.ready((elements) => {
+                var elementsJq = $(elements);
+                elementsJq.find(".rocket-privilege-form").each(function () {
+                    (new Rocket.Core.PrivilegeForm($(this))).setup();
+                });
+            });
         })();
     });
     function scan(context = null) {
@@ -1777,6 +1785,95 @@ var Rocket;
             })(EventType = Zone.EventType || (Zone.EventType = {}));
         })(Zone = Cmd.Zone || (Cmd.Zone = {}));
     })(Cmd = Rocket.Cmd || (Rocket.Cmd = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Core;
+    (function (Core) {
+        class PrivilegeForm {
+            constructor(formJq) {
+                this.formJq = formJq;
+                this.unusedPrivileges = [];
+            }
+            setup() {
+                this.formJq.find(".rocket-privilege").each((i, elem) => {
+                    let p = new Privilege($(elem));
+                    p.setup();
+                    if (!p.used) {
+                        this.unusedPrivileges.push(p);
+                    }
+                });
+                this.addButtonJq = Rocket.Cmd.Zone.of(this.formJq).menu.mainCommandList
+                    .createJqCommandButton({
+                    label: this.formJq.data("rocket-add-privilege-label")
+                })
+                    .click(() => {
+                    this.incrPrivileges();
+                    this.updateButton();
+                });
+            }
+            incrPrivileges() {
+                if (this.unusedPrivileges.length == 0) {
+                    return;
+                }
+                let privilege = this.unusedPrivileges.shift();
+                privilege.used = true;
+            }
+            updateButton() {
+                if (this.unusedPrivileges.length == 0) {
+                    this.addButtonJq.find("span").text(this.formJq.data("rocket-save-first-info"));
+                    this.addButtonJq.prop("disabled", true);
+                }
+            }
+        }
+        Core.PrivilegeForm = PrivilegeForm;
+        class Privilege {
+            constructor(containerJq) {
+                this.structureElement = Rocket.Display.StructureElement.from(containerJq, true);
+                this.enablerJq = containerJq.find("input.rocket-privilege-enabler");
+                this.restrictionsJq = containerJq.find(".rocket-restrictions:first");
+                this.restrictionsEnablerJq = containerJq.find(".rocket-restrictions-enabler:first");
+                this.restrictionsEnablerJq.on("change", () => {
+                    this.checkVisibility();
+                });
+            }
+            get used() {
+                return this.enablerJq.is(":checked");
+            }
+            set used(used) {
+                this.enablerJq.prop("checked", used);
+                this.checkVisibility();
+            }
+            checkVisibility() {
+                if (this.used) {
+                    this.structureElement.show(false);
+                }
+                else {
+                    this.structureElement.hide();
+                }
+                if (this.restrictionsEnablerJq.is(":checked")) {
+                    this.restrictionsJq.show();
+                }
+                else {
+                    this.restrictionsJq.hide();
+                }
+            }
+            setup() {
+                this.enablerJq.hide();
+                this.checkVisibility();
+                this.structureElement.getToolbar().getCommandList()
+                    .createJqCommandButton({
+                    iconType: "fa fa-trash",
+                    label: "Remove"
+                })
+                    .click(() => {
+                    this.used = false;
+                    this.structureElement.contentJq.remove();
+                });
+            }
+        }
+        Core.Privilege = Privilege;
+    })(Core = Rocket.Core || (Rocket.Core = {}));
 })(Rocket || (Rocket = {}));
 var Rocket;
 (function (Rocket) {
@@ -8107,7 +8204,8 @@ var Rocket;
                         .append($("<label />", { "text": visibleLabel }).prepend($("<i></i>", { "class": "fa fa-language" })))
                         .append(this.jqStatus = $("<span></span>"))
                         .prependTo(this.jqContainer);
-                    let buttonJq = new Rocket.Display.CommandList(this.jqContainer).createJqCommandButton({
+                    let buttonJq = new Rocket.Display.CommandList(this.jqContainer)
+                        .createJqCommandButton({
                         iconType: "fa fa-cog",
                         label: languagesLabel,
                         tooltip: tooltip
