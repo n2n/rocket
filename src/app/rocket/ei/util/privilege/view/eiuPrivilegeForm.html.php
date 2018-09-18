@@ -24,6 +24,7 @@
 	use n2n\web\dispatch\map\PropertyPath;
 	use rocket\ei\util\privilege\EiuPrivilegeForm;
 	use rocket\ei\util\privilege\view\EiuPrivilegeHtmlBuilder;
+use rocket\ei\manage\RocketUiOutfitter;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -40,26 +41,29 @@
 	if ($basePropertyPath === null) {
 		$basePropertyPath = new PropertyPath(array());
 	}
-?>
-<div class="rocket-editable">
-	<label><?php $html->l10nText('user_group_privileges_label')?></label>
 	
-	<ul class="rocket-control">
+	$ruio = new RocketUiOutfitter();
+?>
+<div class="rocket-group rocket-simple-group">
+	<label><?php $html->l10nText('user_command_privileges_label')?></label>
+	
+		
+	<div class="rocket-control rocket-command-privileges">
 		<?php $eiuPrivilegeHtml->privilegeCheckboxes($basePropertyPath->ext('eiCommandPathStrs[]'), 
 				$eiuPrivilegeForm->getPrivilegeDefinition()) ?>
-	</ul>
+	</div>
 </div>
 
-<div>
-	<label><?php $html->l10nText('user_group_access_config_label')?></label>
-	<?php $view->out('<ul class="rocket-control">') ?>
-		<?php $formHtml->meta()->objectProps($basePropertyPath->ext('eiPropMagForm'), function() use ($formHtml) { ?>
-			<?php $formHtml->magOpen('li', null, array('class' => 'rocket-editable')) ?>
+<div class="rocket-group rocket-simple-group">
+	<label><?php $html->l10nText('user_prop_privileges_label')?></label>
+	<div class="rocket-control">
+		<?php $formHtml->meta()->objectProps($basePropertyPath->ext('eiPropMagForm'), function() use ($formHtml, $ruio) { ?>
+			<?php $formHtml->magOpen('div', null, array('class' => 'rocket-item'), $ruio) ?>
 				<?php $formHtml->magLabel() ?>
 				<div class="rocket-control">
 					<?php $formHtml->magField() ?>
 				</div>
 			<?php $formHtml->magClose() ?>
 		<?php }) ?>
-	<?php $view->out('</ul>') ?>
+	</div>
 </div>

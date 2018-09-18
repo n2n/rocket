@@ -23,6 +23,7 @@
 	use n2n\web\ui\Raw;
 	use rocket\user\model\EiGrantForm;
 	use n2n\impl\web\ui\view\html\HtmlView;
+use n2n\web\http\nav\Murl;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -31,10 +32,12 @@
 	$eiGrantForm = $view->getParam('eiGrantForm'); 
 	$view->assert($eiGrantForm instanceof EiGrantForm);
 	
+	$userGroup = $eiGrantForm->getEiGrant()->getRocketUserGroup();
+	
 	$view->useTemplate('~\core\view\template.html', array('title' => $view->getParam('label')));
 ?>
 
-<?php $formHtml->open($eiGrantForm, null, null, ['class' => 'rocket-privilege-form', 
+<?php $formHtml->open($eiGrantForm, null, null, ['class' => 'rocket-privilege-form rocket-form', 
 		'data-rocket-add-privilege-label' => $html->getText('user_add_privilege_label'),
 		'data-rocket-save-first-info' => $html->getText('user_save_first_info')]) ?>
 	<?php $formHtml->messageList() ?>
@@ -46,7 +49,7 @@
 			<div class="rocket-toolbar">
 				<?php $formHtml->optionalObjectCheckbox(null, ['class' => 'rocket-privilege-enabler'])  ?>
 			</div>
-			<div class="rocket-control">	
+			<div class="rocket-control">
 				<?php if (null !== ($mappingResult = $formHtml->meta()->getMapValue('eiuPrivilegeForm'))): ?>
 					<?php $html->out($mappingResult->getObject()
 							->setContextPropertyPath($formHtml->meta()->propPath('eiuPrivilegeForm'))) ?>
@@ -79,7 +82,10 @@
 							. $html->getL10nText('common_save_label') . '</span>'),
 					array('class' => 'btn btn-primary rocket-important')) ?>
 					
-			<?php $html->linkToPath(null, $html->getText('common_reset_label'), ['class' => 'btn btn-secondary']) ?>		
+			<?php $html->link(Murl::controller()->pathExt('grants', $userGroup->getId()), 
+					new Raw('<i class=" icon-remove-circle"></i><span>'
+							. $html->getL10nText('common_cancel_label') . '</span>'),
+					array('class' => 'btn btn-secondary rocket-jhtml', 'data-jhtml-use-page-scroll-pos' => 'true')) ?>	
 		</div>
 	</div>
 <?php $formHtml->close() ?>

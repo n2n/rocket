@@ -55,7 +55,9 @@ class EiuPrivilegeHtmlBuilder {
 		
 		if ($baseEiCommandPath->isEmpty()) {
 			$ulElement->appendLn(new HtmlElement('li', null, new Raw(
-					'<input type="checkbox" disabled="disabled" checked="checked" /><label>Read</label>')));
+					'<input type="checkbox" disabled="disabled" checked="checked" /> <label>' 
+							. $this->view->getHtmlBuilder()->getL10nText('user_privilege_read_label') 
+							. '</label>')));
 		}
 		
 		foreach ($eiCommandPrivileges as $commandPathStr => $eiCommandPrivilege) {
@@ -63,7 +65,7 @@ class EiuPrivilegeHtmlBuilder {
 			
 			$commandPath = $baseEiCommandPath->ext($commandPathStr);
 			
-			$raw->append($formHtml->getInputCheckbox($propertyPath, (string) $commandPath, 
+			$raw->appendLn($formHtml->getInputCheckbox($propertyPath, (string) $commandPath, 
 					array(), $eiCommandPrivilege->getLabel($n2nLocale)));
 			$raw->appendLn($this->buildPrivilegeUl($eiCommandPrivilege->getSubEiCommandPrivileges(), $commandPath, $propertyPath));
 			

@@ -26,6 +26,7 @@ use rocket\ei\EiPropPath;
 use n2n\util\config\Attributes;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\util\config\AttributesException;
+use n2n\impl\web\dispatch\mag\model\MagCollectionMag;
 
 class PrivilegeDefinition {
 	private $eiCommandPrivileges = array();
@@ -102,8 +103,9 @@ class PrivilegeDefinition {
 			} catch (AttributesException $e) {
 				$itemAttributes = new Attributes();
 			}
-				
-			$magCollection->addMag($eiPropPathStr, $eiPropPrivilege->createMag($itemAttributes));
+			
+			$magCollection->addMag($eiPropPathStr, new MagCollectionMag($eiPropPrivilege->getLabel(), 
+					$eiPropPrivilege->createMagCollection($itemAttributes)));
 		}
 		return $magCollection;
 	}
@@ -115,7 +117,7 @@ class PrivilegeDefinition {
 			if (!$magCollection->containsPropertyName($eiPropPathStr)) continue;
 			
 			$attributes->set($eiPropPathStr, $eiPropPrivilege->buildAttributes(
-					$magCollection->getMagByPropertyName($eiPropPathStr))->toArray());
+					$magCollection->getMagByPropertyName($eiPropPathStr)->getMagCollection())->toArray());
 		}
 
 		return $attributes;
