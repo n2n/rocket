@@ -1,8 +1,8 @@
 {
   "dependencies": {
-    "@types/jquery": "^3.3.1",
+    "@types/jquery": "^3.3.8",
     "@types/jqueryui": "^1.12.2",
-    "npm": "^6.0.0"
+    "npm": "^6.4.1"
   },
   "devDependencies": {
     "typescript": "^3.0.3"
