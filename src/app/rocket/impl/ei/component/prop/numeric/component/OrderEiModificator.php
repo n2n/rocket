@@ -71,7 +71,7 @@ class OrderEiModificator extends EiModificatorAdapter {
 					->select(CrIt::f('MAX', CrIt::p('eo', $entityProperty)))
 					->from($entityProperty->getEntityModel()->getClass(), 'eo');
 			
-			$ssm->setValue($eiProp, $criteria->toQuery()->fetchSingle() + OrderEiProp::ORDER_INCREMENT);
+			$ssm->setValue(EiPropPath::from($eiProp), $criteria->toQuery()->fetchSingle() + OrderEiProp::ORDER_INCREMENT);
 		}));
 	}
 }
