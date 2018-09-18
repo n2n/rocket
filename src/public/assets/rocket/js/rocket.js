@@ -166,6 +166,9 @@ var Rocket;
                 elementsJq.find(".rocket-privilege-form").each(function () {
                     (new Rocket.Core.PrivilegeForm($(this))).setup();
                 });
+                elementsJq.find(".rocket-command-privileges").each(function () {
+                    (new Rocket.Core.CommandPrivilegeList($(this))).listen();
+                });
             });
         })();
     });
@@ -1785,6 +1788,49 @@ var Rocket;
             })(EventType = Zone.EventType || (Zone.EventType = {}));
         })(Zone = Cmd.Zone || (Cmd.Zone = {}));
     })(Cmd = Rocket.Cmd || (Rocket.Cmd = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Core;
+    (function (Core) {
+        class CommandPrivilegeList {
+            constructor(containerJq) {
+                this.containerJq = containerJq;
+            }
+            listen() {
+                this.containerJq.find('li').each((i, elem) => {
+                    let cpl = new CpListener($(elem));
+                    cpl.check();
+                    cpl.listen();
+                });
+            }
+        }
+        Core.CommandPrivilegeList = CommandPrivilegeList;
+        class CpListener {
+            constructor(elemJq) {
+                this.elemJq = elemJq;
+                this.checkJq = this.elemJq.children("input[type=checkbox]");
+                this.decendentChecksJq = this.elemJq.find("li input[type=checkbox]");
+            }
+            listen() {
+                this.checkJq.change(() => {
+                    this.check();
+                });
+            }
+            check() {
+                if (this.elemJq.is(":disabled"))
+                    return;
+                if (this.checkJq.is(":checked")) {
+                    this.decendentChecksJq.prop("disabled", true);
+                    this.decendentChecksJq.prop("checked", true);
+                }
+                else {
+                    this.decendentChecksJq.prop("disabled", false);
+                    this.decendentChecksJq.prop("checked", false);
+                }
+            }
+        }
+    })(Core = Rocket.Core || (Rocket.Core = {}));
 })(Rocket || (Rocket = {}));
 var Rocket;
 (function (Rocket) {

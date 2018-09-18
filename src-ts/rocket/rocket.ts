@@ -201,9 +201,14 @@ namespace Rocket {
 		(function() {
 			Jhtml.ready((elements) => {
 				var elementsJq = $(elements);
-				elementsJq.find(".rocket-privilege-form").each(function() {
+				elementsJq.find(".rocket-privilege-form").each(function () {
 					(new Core.PrivilegeForm($(this))).setup();
 				});
+				
+				elementsJq.find(".rocket-command-privileges").each(function () {
+				    (new Core.CommandPrivilegeList($(this))).listen();
+				})
+				
 			});
 		})();
 	});

@@ -45,6 +45,7 @@ use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\component\prop\field\Copyable;
 use rocket\ei\manage\gui\GuiField;
 use rocket\ei\manage\gui\GuiProp;
+use n2n\web\dispatch\mag\MagCollection;
 
 abstract class PropertyEditableEiPropAdapter extends PropertyDisplayableEiPropAdapter implements StatelessEditable, Writable, 
 		PrivilegedEiProp, Validatable, Copyable {
@@ -158,7 +159,7 @@ abstract class PropertyEditableEiPropAdapter extends PropertyDisplayableEiPropAd
 	}
 
 	public function createEiPropPrivilege(Eiu $eiu): EiPropPrivilege {
-		return new WritableEiPropPrivilege();
+		return new WritableEiPropPrivilege($this->getLabelLstr());
 	}
 	
 
@@ -180,12 +181,25 @@ class WritableEiPropPrivilege implements EiPropPrivilege {
 	const ACCESS_WRITING_ALLOWED_KEY = 'writingAllowed';
 	const ACCESS_WRITING_ALLOWED_DEFAULT = true;
 	
-	public function createMag(Attributes $attributes): Mag {
-		return new BoolMag(new Lstr('ei_impl_field_writable_label', Rocket::NS),
-				$attributes->getBool(self::ACCESS_WRITING_ALLOWED_KEY, false, self::ACCESS_WRITING_ALLOWED_DEFAULT));
+	private $label;
+	
+	public function __construct(string $label) {
+		$this->label = $label;
 	}
 	
-	public function buildAttributes(Mag $mag): Attributes {
+	public function getLabel(): string {
+		return $this->label;
+	}
+	
+	public function createMagCollection(Attributes $attributes): MagCollection {
+		$mc = new MagCollection();
+		$mc->addMag(self::ACCESS_WRITING_ALLOWED_KEY, new BoolMag(new Lstr('ei_impl_field_writable_label', Rocket::NS),
+				$attributes->getBool(self::ACCESS_WRITING_ALLOWED_KEY, false, self::ACCESS_WRITING_ALLOWED_DEFAULT)));
+		return $mc;
+	}
+	
+	public function buildAttributes(MagCollection $magCollection): Attributes {
+		$mag = $magCollection->getMagByPropertyName(self::ACCESS_WRITING_ALLOWED_KEY);
 		ArgUtils::assertTrue($mag instanceof BoolMag);
 		
 		return new Attributes(array(self::ACCESS_WRITING_ALLOWED_KEY => $mag->getValue()));
@@ -207,4 +221,7 @@ class WritableEiPropPrivilege implements EiPropPrivilege {
 			return self::ACCESS_WRITING_ALLOWED_DEFAULT;
 		}
 	}
+	public function createMag(Attributes $attributes): Mag {
+	}
+
 }

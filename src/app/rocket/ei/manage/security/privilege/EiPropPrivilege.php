@@ -22,19 +22,24 @@
 namespace rocket\ei\manage\security\privilege;
 
 use n2n\util\config\Attributes;
-use n2n\web\dispatch\mag\Mag;
+use n2n\web\dispatch\mag\MagCollection;
 
 interface EiPropPrivilege {
 	
 	/**
-	 * @param Attributes $attributes
-	 * @return \n2n\web\dispatch\mag\Mag
+	 * @return string
 	 */
-	public function createMag(Attributes $attributes): Mag;
+	public function getLabel(): string;
 	
 	/**
-	 * @param Mag $mag
+	 * @param Attributes $attributes
+	 * @return MagCollection
+	 */
+	public function createMagCollection(Attributes $attributes): MagCollection;
+	
+	/**
+	 * @param MagCollection $magCollection
 	 * @return \n2n\util\config\Attributes
 	 */
-	public function buildAttributes(Mag $mag): Attributes;	
+	public function buildAttributes(MagCollection $magCollection): Attributes;	
 }
