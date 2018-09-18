@@ -86,6 +86,7 @@ class VetoCheck {
 	private $relationEiProp;
 	private $targetEiEntityObj;
 	private $vetoableRemoveAction;
+	private $n2nContext;
 	
 	public function __construct(RelationEiProp $relationEiProp, EiEntityObj $targetEiEntityObj, 
 			VetoableLifecycleAction $vetoableRemoveAction, N2nContext $n2nContext) {
@@ -210,8 +211,11 @@ class VetoCheck {
 // 				LiveEiObject::create($eiType, $entityObj), $this->n2nContext->getN2nLocale());
 
 		$eiMask = $this->relationEiProp->getEiMask();
-		return $eiMask->createIdentityString(LiveEiObject::create($eiMask->getEiType(), $entityObj), 
-				$this->n2nContext->getN2nLocale());
+		$manageState = $this->n2nContext->lookup(ManageState::class);
+		CastUtils::assertTrue($manageState instanceof ManageState);
+		return $manageState->getDef()->getGuiDefinition($eiMask)
+				->createIdentityString(LiveEiObject::create($eiMask->getEiType(), $entityObj),
+						$this->n2nContext->getN2nLocale());
 	}
 	
 	private function getTargetGenericLabel(): string {
@@ -220,7 +224,9 @@ class VetoCheck {
 	}
 	
 	private function createTargetIdentityString() {
-		return $this->relationEiProp->getEiPropRelation()->getTargetEiMask()
+		$manageState = $this->n2nContext->lookup(ManageState::class);
+		CastUtils::assertTrue($manageState instanceof ManageState);
+		return $manageState->getDef()->getGuiDefinition($this->relationEiProp->getEiPropRelation()->getTargetEiMask())
 				->createIdentityString(new LiveEiObject($this->targetEiEntityObj), $this->n2nContext->getN2nLocale());
 	}
 }
