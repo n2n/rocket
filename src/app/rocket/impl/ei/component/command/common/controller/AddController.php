@@ -72,7 +72,7 @@ class AddController extends ControllerAdapter {
 			$copyFrom = $this->eiuCtrl->lookupEntry($copyPid);
 		}
 		
-		$eiuEntryForm = $eiuFrame->newEiuEntryForm(false, $copyFrom, new PropertyPath(array('eiuEntryForm')));
+		$eiuEntryForm = $eiuFrame->newEntryForm(false, $copyFrom, new PropertyPath(array('eiuEntryForm')));
 		
 		$eiFrame = $this->eiuCtrl->frame()->getEiFrame();
 		$addModel = new AddModel($eiFrame, $eiuEntryForm, $eiuFrame->getNestedSetStrategy());
@@ -107,7 +107,7 @@ class AddController extends ControllerAdapter {
 	public function doDraft(ParamGet $refPath = null) {
 		$redirectUrl = $this->eiuCtrl->parseRefUrl($refPath);
 			
-		$eiuEntryForm = $this->eiuCtrl->frame()->newEiuEntryForm(true);
+		$eiuEntryForm = $this->eiuCtrl->frame()->newEntryForm(true);
 		
 		$eiFrame = $this->eiuCtrl->frame()->getEiFrame();
 		$addModel = new AddModel($eiFrame, $eiuEntryForm);

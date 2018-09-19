@@ -70,6 +70,9 @@ use rocket\ei\util\entry\form\EiuEntryTypeForm;
 use rocket\ei\util\gui\EiuEntryGui;
 use rocket\ei\util\Eiu;
 use rocket\ei\util\gui\EiuGui;
+use rocket\ei\manage\frame\CriteriaConstraint;
+use rocket\ei\manage\frame\Boundry;
+use rocket\ei\manage\entry\EiEntryConstraint;
 
 class EiuFrame {
 	private $eiFrame;
@@ -332,7 +335,7 @@ class EiuFrame {
 	 * @throws EiEntryManageException
 	 * @return EiuEntryForm
 	 */
-	public function newEiuEntryForm(bool $draft = false, $copyFromEiObjectObj = null, 
+	public function newEntryForm(bool $draft = false, $copyFromEiObjectObj = null, 
 			PropertyPath $contextPropertyPath = null, array $allowedEiTypeIds = null,
 			array $eiEntries = array()) {
 		$eiuEntryTypeForms = array();
@@ -592,11 +595,23 @@ class EiuFrame {
 		return $eiuGui;
 	}
 	
+	/**
+	 * @param CriteriaConstraint $criteriaConstraint
+	 * @param int $type {@see Boundry::getTypes()}
+	 * @see Boundry::addCriteriaConstraint()
+	 */
+	public function addCriteriaConstraint(CriteriaConstraint $criteriaConstraint, int $type = Boundry::TYPE_MANAGE) {
+		$this->eiFrame->getBoundry()->addCriteriaConstraint($type, $criteriaConstraint);
+	}
 	
-	
-	
-	
-	
+	/**
+	 * @param EiEntryConstraint $eiEntryConstraint
+	 * @param int $type {@see Boundry::getTypes()}
+	 * @see Boundry::addEiEntryConstraint()
+	 */
+	public function addEiEntryConstraint(EiEntryConstraint $eiEntryConstraint, int $type = Boundry::TYPE_MANAGE) {
+		$this->eiFrame->getBoundry()->addEiEntryConstraint($type, $eiEntryConstraint);
+	}
 	
 	
 	//////////////////////////
