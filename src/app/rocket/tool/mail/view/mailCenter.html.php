@@ -134,7 +134,7 @@
 				<dl class="rocket-mail__properties">
 					<dt class="rocket-mail__message-label sr-only"><?php $html->text('tool_mail_center_mail_message_label') ?></dt>
 					<dd class="rocket-mail__message">
-						<pre style="<?php $html->out('font-family: "Courier";') ?>"><?php $mailHtml->message($mailItem) ?></pre>
+						<pre><?php $mailHtml->message($mailItem) ?></pre>
 					</dd>
 				</dl>
 			</article>
