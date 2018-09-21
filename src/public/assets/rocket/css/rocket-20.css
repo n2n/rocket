@@ -6187,6 +6187,31 @@ td .rocket-simple-commands > .btn > i {
   font-size: 1.25rem;
 }
 
+.rocket-mail {
+  background: #DAD7D3;
+  padding: .5rem;
+  margin-bottom: 0.5rem;
+}
+
+.rocket-mail__header {
+  padding: 0.5rem 0;
+}
+
+.rocket-mail__properties {
+  margin-bottom: 0;
+}
+
+.rocket-mail__message {
+  background: #fff;
+  font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  padding: 1rem;
+  margin-bottom: 0;
+}
+
+.rocket-mail__message > pre {
+  margin-bottom: 0;
+}
+
 /**
  * File to correct bootstrap styles
  */

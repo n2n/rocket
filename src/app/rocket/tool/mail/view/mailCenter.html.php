@@ -45,7 +45,7 @@
 	
 	$fileNames = MailCenter::getMailFileNames();
 ?>
-<div id="rocket-tools-mail-center" class="rocket-panel">
+<div id="rocket-tools-mail-center" class="rocket-content">
 	<h3><?php $html->text('tool_mail_center_title') ?></h3>
 	<?php if (count($fileNames) > 1 || $numPages > 1): ?>
 		<div class="rocket-tool-panel">
@@ -99,28 +99,28 @@
 	<div>
 		<?php foreach ((array) $items as $itemIndex => $mailItem) : $mailItem instanceof MailItem ?>
 			<article class="rocket-mail">
-				<header class="rocket-mail-header clearfix">
-					<h4 class="rocket-mail-subject"><i class="fa fa-plus"></i> <?php $html->out($mailItem->getSubject())?></h4>
-					<div class="rocket-mail-senddate">
+				<header class="rocket-mail__header">
+					<span class="rocket-mail__senddate float-right">
 						<?php $html->l10nDateTime($mailItem->getDateTime())?> 
-					</div>
+					</span>
+					<h4 class="rocket-mail__subject"><i class="fa fa-plus"></i> <?php $html->out($mailItem->getSubject())?></h4>
 				</header>
-				<dl class="rocket-mail-properties">
-					<dt><?php $html->text('tool_mail_center_mail_to_label') ?></dt>
-					<dd><?php $html->out($mailItem->getTo()) ?></dd>
-					<dt><?php $html->text('tool_mail_center_mail_from_label') ?></dt>
-					<dd><?php $html->out($mailItem->getFrom()) ?></dd>
+				<dl class="rocket-mail__properties row">
+					<dt class="col-sm-2"><?php $html->text('tool_mail_center_mail_to_label') ?></dt>
+					<dd class="col-sm-10"><?php $html->out($mailItem->getTo()) ?></dd>
+					<dt class="col-sm-2"><?php $html->text('tool_mail_center_mail_from_label') ?></dt>
+					<dd class="col-sm-10"><?php $html->out($mailItem->getFrom()) ?></dd>
 					<?php if ($mailItem->hasReplyTo()): ?>
-						<dt><?php $html->text('tool_mail_center_mail_replyto_label') ?></dt>
-						<dd><?php $html->out($mailItem->getReplyTo()) ?></dd>
+						<dt class="col-sm-2"><?php $html->text('tool_mail_center_mail_replyto_label') ?></dt>
+						<dd class="col-sm-10"><?php $html->out($mailItem->getReplyTo()) ?></dd>
 					<?php endif ?>
 
 					<?php if ($mailItem->hasAttachments()) : ?>
-						<dt>
+						<dt class="col-sm-2">
 							<?php $html->text('tool_mail_center_attatchments_label') ?>
 						</dt>
-						<dd>
-							<ul>
+						<dd class="col-sm-10">
+							<ul class="list-unstyled list-inline">
 								<?php foreach($mailItem->getAttachments() as $attachmentIndex => $attachment) : ?>
 									<li>
 										<?php $html->linkToController(array(MailCenterController::ACTION_ATTACHMENT, $currentFileName, 
@@ -130,8 +130,10 @@
 							</ul>
 						</dd>
 					<?php endif ?>
-					<dt class="rocket-mail-message-label"><?php $html->text('tool_mail_center_mail_message_label') ?></dt>
-					<dd class="rocket-mail-message">
+				</dl>
+				<dl class="rocket-mail__properties">
+					<dt class="rocket-mail__message-label sr-only"><?php $html->text('tool_mail_center_mail_message_label') ?></dt>
+					<dd class="rocket-mail__message">
 						<pre style="<?php $html->out('font-family: "Courier";') ?>"><?php $mailHtml->message($mailItem) ?></pre>
 					</dd>
 				</dl>
