@@ -4144,6 +4144,119 @@ input[type="button"].btn-block {
   color: #837E78;
 }
 
+.badge {
+  display: inline-block;
+  padding: 0.25em 0.4em;
+  font-size: 75%;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+}
+
+.badge:empty {
+  display: none;
+}
+
+.btn .badge {
+  position: relative;
+  top: -1px;
+}
+
+.badge-pill {
+  padding-right: 0.6em;
+  padding-left: 0.6em;
+}
+
+.badge-primary {
+  color: #fff;
+  background-color: #ed8207;
+}
+
+.badge-primary[href]:hover, .badge-primary[href]:focus {
+  color: #fff;
+  text-decoration: none;
+  background-color: #bb6706;
+}
+
+.badge-secondary {
+  color: #373431;
+  background-color: #F7F5F5;
+}
+
+.badge-secondary[href]:hover, .badge-secondary[href]:focus {
+  color: #373431;
+  text-decoration: none;
+  background-color: #e0d9d9;
+}
+
+.badge-success {
+  color: #fff;
+  background-color: #2D7F00;
+}
+
+.badge-success[href]:hover, .badge-success[href]:focus {
+  color: #fff;
+  text-decoration: none;
+  background-color: #1b4c00;
+}
+
+.badge-info {
+  color: #fff;
+  background-color: #4c97cb;
+}
+
+.badge-info[href]:hover, .badge-info[href]:focus {
+  color: #fff;
+  text-decoration: none;
+  background-color: #337db1;
+}
+
+.badge-warning {
+  color: #373431;
+  background-color: #F6A723;
+}
+
+.badge-warning[href]:hover, .badge-warning[href]:focus {
+  color: #373431;
+  text-decoration: none;
+  background-color: #dd8e09;
+}
+
+.badge-danger {
+  color: #fff;
+  background-color: #b90f00;
+}
+
+.badge-danger[href]:hover, .badge-danger[href]:focus {
+  color: #fff;
+  text-decoration: none;
+  background-color: #860b00;
+}
+
+.badge-light {
+  color: #373431;
+  background-color: #FBFAFA;
+}
+
+.badge-light[href]:hover, .badge-light[href]:focus {
+  color: #373431;
+  text-decoration: none;
+  background-color: #e4dede;
+}
+
+.badge-dark {
+  color: #fff;
+  background-color: #4F4A46;
+}
+
+.badge-dark[href]:hover, .badge-dark[href]:focus {
+  color: #fff;
+  text-decoration: none;
+  background-color: #34312e;
+}
+
 .alert {
   position: relative;
   padding: 0.75rem 1.25rem;
