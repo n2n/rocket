@@ -85,7 +85,8 @@ class MailCenterController extends ControllerAdapter {
 			$this->redirectToReferer();
 			return;
 		} 
-		$this->getResponse()->send($attachment);
+		
+		$this->sendFile($attachment);
 	}
 	
 }
