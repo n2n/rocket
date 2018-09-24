@@ -47,7 +47,8 @@
 	<h3><?php $html->text('ei_impl_multi_upload_label', array('plural_label' => 
 					$eiuFrame->getGenericPluralLabel())) ?></h3>
 	<form id="rocket-multi-upload-form" method="post" 
-			action="<?php $html->out($html->meta()->getControllerUrl(array('upload'))) ?>" 
+			action="<?php $html->out($html->meta()->getControllerUrl(array('upload'))) ?>"
+			data-order="<?php $html->out($view->getParam('order', false)) ?>" 
 			enctype="multipart/form-data">
 		<div id="rocket-multi-upload-drop">
 			Drop Here
