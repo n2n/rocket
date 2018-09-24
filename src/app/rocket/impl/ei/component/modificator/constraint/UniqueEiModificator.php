@@ -10,6 +10,7 @@ use rocket\ei\util\spec\EiuEngine;
 use rocket\ei\EiPropPath;
 use n2n\reflection\ArgUtils;
 use rocket\impl\ei\component\modificator\adapter\IndependentEiModificatorAdapter;
+use rocket\ei\manage\frame\Boundry;
 
 class UniqueEiModificator extends IndependentEiModificatorAdapter {
 	private $uniqueEiPropPaths = array();
@@ -75,7 +76,7 @@ class UniqueEiModificator extends IndependentEiModificatorAdapter {
 		$eiuEntry = $eiu->entry();
 		$eiuEngine = $eiu->engine();
 		
-		$criteria = $eiu->frame()->createCountCriteria('e', CriteriaConstraint::ALL_TYPES);
+		$criteria = $eiu->frame()->createCountCriteria('e', Boundry::ALL_TYPES);
 		
 		$this->restrictCriteria($criteria, $eiuEngine, $this->uniqueEiPropPaths, $eiuEntry);
 		$this->restrictCriteria($criteria, $eiuEngine, $this->uniquePerEiPropPaths, $eiuEntry);
