@@ -114,6 +114,8 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 	}
 	
 	public function buildManagedFilterProp(EiFrame $eiFrame): ?FilterProp  {
+		return null;
+		
 		$targetEiFrame;
 		try {
 			$targetEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame);

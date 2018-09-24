@@ -137,7 +137,7 @@ class EiuEngine {
 	
 	
 	public function containsEiProp($eiPropPath) {
-		return $this->eiEngine->getEiPropCollection()->containsId(EiPropPath::create($eiPropPath));
+		return $this->eiEngine->getEiMask()->getEiPropCollection()->containsId(EiPropPath::create($eiPropPath));
 	}
 	
 	/**
@@ -149,7 +149,7 @@ class EiuEngine {
 	public function prop($eiPropArg, bool $required = true) {
 		$eiPropPath = EiPropPath::create($eiPropArg);
 		try {
-			$this->eiEngine->getEiPropCollection()->getById((string) $eiPropPath);
+			$this->eiEngine->getEiMask()->getEiPropCollection()->getById((string) $eiPropPath);
 		} catch (UnknownEiComponentException $e) {
 			if (!$required) return null;
 			
