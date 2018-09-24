@@ -33,12 +33,13 @@ use n2n\persistence\meta\structure\Column;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use n2n\io\managed\img\ImageDimension;
 use n2n\util\config\LenientAttributeReader;
-use rocket\impl\ei\component\prop\file\command\MultiUploadEiCommand;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
 use rocket\ei\manage\generic\UnknownScalarEiPropertyException;
 use rocket\ei\util\spec\EiuEngine;
 use rocket\ei\EiPropPath;
 use n2n\util\config\AttributesException;
+use rocket\impl\ei\component\prop\file\command\MultiUploadEiCommand;
+use rocket\impl\ei\component\prop\file\command\controller\MultiUploadEiController;
 
 class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 	const ATTR_CHECK_IMAGE_MEMORY_KEY = 'checkImageResourceMemory';
