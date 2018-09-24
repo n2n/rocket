@@ -46,11 +46,13 @@ class MultiUploadEiCommand extends EiCommandAdapter implements OverallControlCom
 	public function __construct(FileEiProp $fileEiProp, EiPropPath $namingEiPropPath = null) {
 		$this->fileEiProp = $fileEiProp;
 		$this->namingEiPropPath = $namingEiPropPath;
+		$this->order = $order;
 	}
 
 	public function lookupController(Eiu $eiu): Controller {
 		$controller = new MultiUploadEiController();
 		$controller->setFileEiProp($this->fileEiProp);
+		$controller->setOrder($this->order);
 		return $controller;
 	}
 	
