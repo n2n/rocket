@@ -7678,6 +7678,11 @@ var Rocket;
                     }
                     return localeIds;
                 }
+                set labelVisible(labelVisible) {
+                    for (let content of this.contents) {
+                        content.labelVisible = labelVisible;
+                    }
+                }
                 set activeLocaleIds(localeIds) {
                     for (let content of this.contents) {
                         content.active = -1 < localeIds.indexOf(content.localeId);
@@ -7746,6 +7751,7 @@ var Rocket;
                     this.copyControlJq = null;
                     this.changedCallbacks = [];
                     this._visible = true;
+                    this._labelVisible = true;
                     Rocket.Display.StructureElement.from(elemJq, true);
                     this._propertyPath = elemJq.data("rocket-impl-property-path");
                     this._pid = elemJq.data("rocket-impl-ei-id") || null;
@@ -7766,6 +7772,7 @@ var Rocket;
                 replaceField(newFieldJq) {
                     this._fieldJq.replaceWith(newFieldJq);
                     this._fieldJq = newFieldJq;
+                    this.updateLabelVisiblity();
                 }
                 get localeId() {
                     return this._localeId;
@@ -7776,11 +7783,14 @@ var Rocket;
                 get pid() {
                     return this._pid;
                 }
+                findLabelJq() {
+                    return this.elemJq.find("label:first");
+                }
                 get prettyLocaleId() {
-                    return this.elemJq.find("label:first").text();
+                    return this.findLabelJq().text();
                 }
                 get localeName() {
-                    return this.elemJq.find("label:first").attr("title");
+                    return this.findLabelJq().attr("title");
                 }
                 get visible() {
                     return this._visible;
@@ -7799,6 +7809,20 @@ var Rocket;
                     this._visible = false;
                     this.elemJq.hide();
                     this.triggerChanged();
+                }
+                set labelVisible(labelVisible) {
+                    if (this._labelVisible == labelVisible)
+                        return;
+                    this._labelVisible = labelVisible;
+                    this.updateLabelVisiblity();
+                }
+                updateLabelVisiblity() {
+                    if (this._labelVisible) {
+                        this.findLabelJq().show();
+                    }
+                    else {
+                        this.findLabelJq().hide();
+                    }
                 }
                 get active() {
                     return this.jqEnabler ? false : true;
@@ -8294,6 +8318,7 @@ var Rocket;
                     }
                     this.translatables.push(translatable);
                     translatable.jQuery.on("remove", () => this.unregisterTranslatable(translatable));
+                    let labelVisible = this.getNumOn() > 1;
                     for (let content of translatable.contents) {
                         if (!this._items[content.localeId]) {
                             let item = this._items[content.localeId] = new ViewMenuItem(content.localeId, content.localeName, content.prettyLocaleId);
@@ -8303,12 +8328,22 @@ var Rocket;
                             this.updateStatus();
                         }
                         content.visible = this._items[content.localeId].on;
+                        content.labelVisible = labelVisible;
                         content.whenChanged(() => {
                             if (this.changing || !content.active)
                                 return;
                             this._items[content.localeId].on = true;
                         });
                     }
+                }
+                getNumOn() {
+                    let num = 0;
+                    for (let localeId in this._items) {
+                        if (this._items[localeId].on) {
+                            num++;
+                        }
+                    }
+                    return num;
                 }
                 unregisterTranslatable(translatable) {
                     let i = this.translatables.indexOf(translatable);
@@ -8330,8 +8365,10 @@ var Rocket;
                             visiableLocaleIds.push(this._items[i].localeId);
                         }
                     }
+                    let labelVisible = visiableLocaleIds.length > 1;
                     for (let translatable of this.translatables) {
                         translatable.visibleLocaleIds = visiableLocaleIds;
+                        translatable.labelVisible = labelVisible;
                     }
                     this.updateStatus();
                     this.checkLoadJobs();
