@@ -56,6 +56,12 @@ namespace Rocket.Impl.Translation {
 
 			return localeIds;
 		}
+		
+		set labelVisible(labelVisible: boolean) {
+		    for (let content of this.contents) {
+		        content.labelVisible = labelVisible;
+            }
+		}
 
 		set activeLocaleIds(localeIds: Array<string>) {
 			for (let content of this.contents) {
@@ -148,8 +154,12 @@ namespace Rocket.Impl.Translation {
 		private changedCallbacks: Array<() => any> = [];
 		private _visible: boolean = true;
 
+        private _labelVisible: boolean = true;
+		
 		constructor(private _localeId: string, private elemJq: JQuery<Element>) {
 			Display.StructureElement.from(elemJq, true);
+			
+			
 //			this.jqTranslation = jqElem.children(".rocket-impl-translation");
 			this._propertyPath = elemJq.data("rocket-impl-property-path");
 			this._pid = elemJq.data("rocket-impl-ei-id") || null;
@@ -175,6 +185,7 @@ namespace Rocket.Impl.Translation {
 		replaceField(newFieldJq: JQuery<Element>) {
 			this._fieldJq.replaceWith(<JQuery<HTMLElement>> newFieldJq);
 			this._fieldJq = newFieldJq;
+			this.updateLabelVisiblity();
 		}
 
 		get localeId(): string {
@@ -189,14 +200,18 @@ namespace Rocket.Impl.Translation {
 			return this._pid;
 		}
 
+		private findLabelJq(): JQuery<Element> {
+		    return this.elemJq.find("label:first")
+		}
+		
 		get prettyLocaleId(): string {
 //			return this.elemJq.data("rocket-impl-pretty-locale");
-			return this.elemJq.find("label:first").text();
+			return this.findLabelJq().text();
 		}
 
 		get localeName(): string {
 //			return this.elemJq.data("rocket-impl-locale-name");
-			return this.elemJq.find("label:first").attr("title");
+			return this.findLabelJq().attr("title");
 		}
 
 		get visible(): boolean {
@@ -218,6 +233,21 @@ namespace Rocket.Impl.Translation {
 			this._visible = false;
 			this.elemJq.hide();
 			this.triggerChanged();
+		}
+		
+		set labelVisible(labelVisible: boolean) {
+		    if (this._labelVisible == labelVisible) return;
+		    
+		    this._labelVisible = labelVisible;
+		    this.updateLabelVisiblity();
+		}
+		
+		private updateLabelVisiblity() {
+		    if (this._labelVisible) {
+                this.findLabelJq().show();
+            } else {
+                this.findLabelJq().hide();
+            }
 		}
 
 		get active(): boolean {
@@ -313,7 +343,6 @@ namespace Rocket.Impl.Translation {
 		private toggler: Display.Toggler;
 
 		constructor(private translatedContent: TranslatedContent, private guiIdPath: string) {
-
 		}
 
 		draw(tooltip: string) {

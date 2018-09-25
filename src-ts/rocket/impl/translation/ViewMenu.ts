@@ -55,7 +55,7 @@ namespace Rocket.Impl.Translation {
 			
 			for (let localeId in this._items) {
 				this._items[localeId].disabled = onDisabled && this._items[localeId].on;
-			} 
+			}
 		}
 		
 		get visibleLocaleIds(): Array<string> {
@@ -83,6 +83,8 @@ namespace Rocket.Impl.Translation {
 			
 			translatable.jQuery.on("remove", () => this.unregisterTranslatable(translatable));
 
+			let labelVisible = this.getNumOn() > 1;
+			
 			for (let content of translatable.contents) {
 				if (!this._items[content.localeId]) {
 					let item = this._items[content.localeId] = new ViewMenuItem(content.localeId, content.localeName, content.prettyLocaleId);
@@ -95,6 +97,7 @@ namespace Rocket.Impl.Translation {
 				}
 				
 				content.visible = this._items[content.localeId].on;
+				content.labelVisible = labelVisible;
 				
 				content.whenChanged(() => {
 					if (this.changing || !content.active) return;
@@ -102,6 +105,16 @@ namespace Rocket.Impl.Translation {
 					this._items[content.localeId].on = true;
 				});
 			}
+		}
+		
+		private getNumOn(): number {
+		    let num = 0;
+		    for (let localeId in this._items) {
+		        if (this._items[localeId].on) {
+		            num++
+		        }
+		    }
+		    return num;
 		}
 		
 		unregisterTranslatable(translatable: Translatable) {
@@ -130,9 +143,11 @@ namespace Rocket.Impl.Translation {
 					visiableLocaleIds.push(this._items[i].localeId);
 				} 
 			}
+			let labelVisible = visiableLocaleIds.length > 1;
 			
 			for (let translatable of this.translatables) {
 				translatable.visibleLocaleIds = visiableLocaleIds;
+                translatable.labelVisible = labelVisible;
 			}
 			
 			this.updateStatus();
