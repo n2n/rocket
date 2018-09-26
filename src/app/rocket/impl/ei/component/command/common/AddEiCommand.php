@@ -82,11 +82,11 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 		
 		return $eiuCommandPrivilege;
 		
-// 		$pi = new CommonEiCommandPrivilege(new Lstr('common_new_entry_label', Rocket::NS));
+// 		$pi = new CommonEiCommandPrivilege(Rocket::createLstr('common_new_entry_label', Rocket::NS));
 // 		$pi->putSubEiCommandPrivilege(self::PRIVILEGE_LIVE_ENTRY_KEY,
-// 				new CommonEiCommandPrivilege(new Lstr('ei_impl_add_live_entry_label', Rocket::NS)));
+// 				new CommonEiCommandPrivilege(Rocket::createLstr('ei_impl_add_live_entry_label', Rocket::NS)));
 // 		$pi->putSubEiCommandPrivilege(self::PRIVILEGE_DRAFT_KEY,
-// 				new CommonEiCommandPrivilege(new Lstr('ei_impl_add_draft_label', Rocket::NS)));
+// 				new CommonEiCommandPrivilege(Rocket::createLstr('ei_impl_add_draft_label', Rocket::NS)));
 // 		return $pi;
 	}
 

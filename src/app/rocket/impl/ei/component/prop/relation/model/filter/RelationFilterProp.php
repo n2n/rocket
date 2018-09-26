@@ -45,6 +45,7 @@ use rocket\ei\manage\frame\CriteriaConstraint;
 use rocket\ei\manage\critmod\filter\impl\SimpleComparatorConstraint;
 use rocket\ei\manage\entry\EiFieldConstraint;
 use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
+use rocket\core\model\Rocket;
 
 class RelationFilterProp implements FilterProp {
 	protected $labelLstr;
@@ -275,16 +276,16 @@ class RelationFilterMagForm extends MagForm {
 
 		if ($this->selectorMag !== null) {
 			if ($this->toMany) {
-				$operatorOptions[CriteriaComparator::OPERATOR_CONTAINS] = new Lstr('common_operator_contains_label', 'rocket');
-				$operatorOptions[CriteriaComparator::OPERATOR_CONTAINS_NOT] = new Lstr('common_operator_contains_not_label', 'rocket');
+				$operatorOptions[CriteriaComparator::OPERATOR_CONTAINS] = Rocket::createLstr('common_operator_contains_label', 'rocket');
+				$operatorOptions[CriteriaComparator::OPERATOR_CONTAINS_NOT] = Rocket::createLstr('common_operator_contains_not_label', 'rocket');
 			} else {
-				$operatorOptions[CriteriaComparator::OPERATOR_IN] = new Lstr('common_operator_in_label', 'rocket');
-				$operatorOptions[CriteriaComparator::OPERATOR_NOT_IN] = new Lstr('common_operator_not_in_label', 'rocket');
+				$operatorOptions[CriteriaComparator::OPERATOR_IN] = Rocket::createLstr('common_operator_in_label', 'rocket');
+				$operatorOptions[CriteriaComparator::OPERATOR_NOT_IN] = Rocket::createLstr('common_operator_not_in_label', 'rocket');
 			}
 		}
 		
-		$operatorOptions[CriteriaComparator::OPERATOR_EXISTS] = new Lstr('common_operator_exists_label', 'rocket');
-		$operatorOptions[CriteriaComparator::OPERATOR_NOT_EXISTS] = new Lstr('common_operator_not_exists_label', 'rocket');
+		$operatorOptions[CriteriaComparator::OPERATOR_EXISTS] = Rocket::createLstr('common_operator_exists_label', 'rocket');
+		$operatorOptions[CriteriaComparator::OPERATOR_NOT_EXISTS] = Rocket::createLstr('common_operator_not_exists_label', 'rocket');
 		
 		return $operatorOptions;
 	}

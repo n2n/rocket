@@ -32,6 +32,8 @@ use rocket\ei\manage\draft\DraftManager;
 use rocket\spec\extr\SpecExtractionManager;
 use rocket\core\model\launch\LayoutExtractionManager;
 use rocket\core\model\launch\Layout;
+use n2n\l10n\Lstr;
+use n2n\l10n\DynamicTextCollection;
 
 class Rocket implements RequestScoped {
 	const VERSION = '2.0.0-alpha.2';
@@ -184,4 +186,9 @@ class Rocket implements RequestScoped {
 		
 // 		$em->getPersistenceContext()->registerEntityStateListener($this->rocketEntityStateListener);
 // 	}
+
+	static function createLstr($code, string $moduleNamespace) {
+		return Lstr::createCode($code, $moduleNamespace)->addLangNs($moduleNamespace 
+				. '\\' . DynamicTextCollection::LANG_NS_EXT . '\\' . Rocket::NS);
+	}
 }

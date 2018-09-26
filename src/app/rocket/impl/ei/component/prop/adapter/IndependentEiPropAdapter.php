@@ -28,6 +28,7 @@ use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\l10n\Lstr;
 use n2n\util\StringUtils;
 use rocket\ei\component\EiConfigurator;
+use rocket\core\model\Rocket;
 
 abstract class IndependentEiPropAdapter extends IndependentEiComponentAdapter implements IndependentEiProp {
 	protected $parentEiProp;
@@ -63,7 +64,7 @@ abstract class IndependentEiPropAdapter extends IndependentEiComponentAdapter im
 	
 	public function getLabelLstr(): Lstr {
 		if ($this->labelLstr === null) {
-			$this->labelLstr = new Lstr(StringUtils::pretty($this->getId()));
+			$this->labelLstr = Rocket::createLstr(StringUtils::pretty($this->getId()));
 		}
 		
 		return $this->labelLstr;

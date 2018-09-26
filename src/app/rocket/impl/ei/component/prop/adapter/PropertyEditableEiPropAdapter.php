@@ -33,7 +33,6 @@ use rocket\ei\manage\EiObject;
 use rocket\ei\component\prop\PrivilegedEiProp;
 use rocket\ei\manage\security\privilege\EiPropPrivilege;
 use n2n\reflection\ArgUtils;
-use n2n\l10n\Lstr;
 use rocket\core\model\Rocket;
 use rocket\ei\manage\security\EiFieldAccess;
 use n2n\util\config\AttributesException;
@@ -193,7 +192,7 @@ class WritableEiPropPrivilege implements EiPropPrivilege {
 	
 	public function createMagCollection(Attributes $attributes): MagCollection {
 		$mc = new MagCollection();
-		$mc->addMag(self::ACCESS_WRITING_ALLOWED_KEY, new BoolMag(new Lstr('ei_impl_field_writable_label', Rocket::NS),
+		$mc->addMag(self::ACCESS_WRITING_ALLOWED_KEY, new BoolMag(Rocket::createLstr('ei_impl_field_writable_label', Rocket::NS),
 				$attributes->getBool(self::ACCESS_WRITING_ALLOWED_KEY, false, self::ACCESS_WRITING_ALLOWED_DEFAULT)));
 		return $mc;
 	}
