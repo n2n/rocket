@@ -43,10 +43,10 @@ use rocket\spec\extr\EiMaskExtraction;
 use rocket\spec\extr\EiPropExtraction;
 use rocket\spec\extr\EiComponentExtraction;
 use rocket\spec\extr\EiTypeExtensionExtraction;
-use n2n\l10n\Lstr;
 use rocket\spec\extr\EiModificatorExtraction;
 use rocket\ei\EiTypeExtension;
 use n2n\util\StringUtils;
+use rocket\core\model\Rocket;
 
 class EiTypeFactory {
 	private $entityModelManager;
@@ -185,7 +185,7 @@ class EiTypeFactory {
 		} else {
 			$moduleNamespace = $eiMask->getEiType()->getModuleNamespace();
 		}
-		$eiProp->setLabelLstr(new Lstr($eiPropExtraction->getLabel() ?? StringUtils::pretty($id), $moduleNamespace));
+		$eiProp->setLabelLstr(Rocket::createLstr($eiPropExtraction->getLabel() ?? StringUtils::pretty($id), $moduleNamespace));
 		
 		$eiPropConfigurator = $eiProp->createEiPropConfigurator();
 		ArgUtils::valTypeReturn($eiPropConfigurator, EiPropConfigurator::class, $eiProp,

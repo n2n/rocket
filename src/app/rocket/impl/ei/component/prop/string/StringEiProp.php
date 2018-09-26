@@ -74,6 +74,7 @@ class StringEiProp extends AlphanumericEiProp {
 				array('placeholder' => $this->getLabelLstr()->t($eiu->frame()->getN2nLocale())));
 // 		$mag->setAttrs(array('class' => 'rocket-block'));
 		$mag->setInputAttrs(array('placeholder' => $this->getLabelLstr()));
+// 		$mag->setHelpTextLstr($this->getHelpTextLstr());
 		return $mag;
 	}
 	

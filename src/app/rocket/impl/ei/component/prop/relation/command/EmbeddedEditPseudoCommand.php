@@ -24,10 +24,10 @@ namespace rocket\impl\ei\component\prop\relation\command;
 use rocket\impl\ei\component\command\EiCommandAdapter;
 use rocket\ei\component\command\PrivilegedEiCommand;
 use n2n\web\http\controller\ControllerAdapter;
-use n2n\l10n\Lstr;
 use rocket\ei\manage\security\privilege\EiCommandPrivilege;
 use n2n\web\http\controller\Controller;
 use rocket\ei\util\Eiu;
+use rocket\core\model\Rocket;
 
 class EmbeddedEditPseudoCommand extends EiCommandAdapter implements PrivilegedEiCommand {
 	private $idBase;
@@ -43,7 +43,7 @@ class EmbeddedEditPseudoCommand extends EiCommandAdapter implements PrivilegedEi
 	}
 	
 	public function createEiCommandPrivilege(Eiu $eiu): EiCommandPrivilege {
-		return $eiu->factory()->newCommandPrivilege(new Lstr($this->privilegeLabel));
+		return $eiu->factory()->newCommandPrivilege(Rocket::createLstr($this->privilegeLabel));
 	}
 	
 	/* (non-PHPdoc)

@@ -24,7 +24,6 @@ namespace rocket\ei\util\filter\prop;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\web\dispatch\mag\Mag;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
-use n2n\l10n\Lstr;
 use rocket\core\model\Rocket;
 
 class StringFilterProp extends FilterPropAdapter {
@@ -43,10 +42,10 @@ class StringFilterProp extends FilterPropAdapter {
 		foreach ($operators as $operator) {
 			switch ($operator) {
 				case CriteriaComparator::OPERATOR_LIKE:
-					$operatorOptions[$operator] = new Lstr('ei_impl_filter_operator_like_label', Rocket::NS);
+					$operatorOptions[$operator] = Rocket::createLstr('ei_impl_filter_operator_like_label', Rocket::NS);
 					break;
 				case CriteriaComparator::OPERATOR_NOT_LIKE:
-					$operatorOptions[$operator] = new Lstr('ei_impl_filter_operator_not_like_label', Rocket::NS);
+					$operatorOptions[$operator] = Rocket::createLstr('ei_impl_filter_operator_not_like_label', Rocket::NS);
 					break;
 				default:
 					$operatorOptions[(string) $operator] = (string) $operator;

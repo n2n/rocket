@@ -35,11 +35,11 @@ use rocket\ei\component\prop\EiPropCollection;
 use rocket\ei\component\command\EiCommandCollection;
 use rocket\ei\component\modificator\EiModificatorCollection;
 use n2n\util\ex\IllegalStateException;
-use n2n\l10n\Lstr;
 use rocket\ei\manage\control\IconType;
 use rocket\ei\EiTypeExtension;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\spec\TypePath;
+use rocket\core\model\Rocket;
 
 class EiMask {
 	private $eiMaskDef;
@@ -190,7 +190,7 @@ class EiMask {
 	 */
 	public function getLabelLstr() {
 		if (null !== ($label = $this->eiMaskDef->getLabel())) {
-			return new Lstr($label, $this->getModuleNamespace());
+			return Rocket::createLstr($label, $this->getModuleNamespace());
 		}
 		
 		return $this->getExtendedEiMask()->getLabelLstr();
@@ -201,7 +201,7 @@ class EiMask {
 	 */
 	public function getPluralLabelLstr() {
 		if (null !== ($pluralLabel = $this->eiMaskDef->getPluralLabel())) {
-			return new Lstr($pluralLabel, $this->getModuleNamespace());
+			return Rocket::createLstr($pluralLabel, $this->getModuleNamespace());
 		}
 		
 		return $this->getExtendedEiMask()->getPluralLabelLstr();
