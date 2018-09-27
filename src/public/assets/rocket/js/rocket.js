@@ -8209,6 +8209,16 @@ var Rocket;
                         tm.registerTranslatable(Translation.Translatable.from(elemJq));
                     });
                 }
+                ensureSomethingOn(viewMenuItems) {
+                    for (let localeId in viewMenuItems) {
+                        if (viewMenuItems[localeId].on) {
+                            return;
+                        }
+                    }
+                    for (let localeId in viewMenuItems) {
+                        viewMenuItems[localeId].on = true;
+                    }
+                }
                 initViewMenu(viewMenu) {
                     let langState = this.userStore.langState;
                     let viewMenuItems = viewMenu.items;
@@ -8218,6 +8228,7 @@ var Rocket;
                             viewMenuItems[localeId].on = this.userStore.langState.languageActive(localeId);
                         }
                     }
+                    this.ensureSomethingOn(viewMenuItems);
                     for (let localeId in viewMenuItems) {
                         let viewMenuItem = viewMenuItems[localeId];
                         this.userStore.langState.toggleActiveLocaleId(localeId, viewMenuItem.on);
@@ -8269,6 +8280,9 @@ var Rocket;
                 get items() {
                     return this._items;
                 }
+                get numItems() {
+                    return Object.keys(this._items).length;
+                }
                 draw(languagesLabel, visibleLabel, tooltip) {
                     $("<div />", { "class": "rocket-impl-translation-status" })
                         .append($("<label />", { "text": visibleLabel }).prepend($("<i></i>", { "class": "fa fa-language" })))
@@ -8318,12 +8332,12 @@ var Rocket;
                     }
                     this.translatables.push(translatable);
                     translatable.jQuery.on("remove", () => this.unregisterTranslatable(translatable));
-                    let labelVisible = this.getNumOn() > 1;
+                    let labelVisible = this.numItems > 1;
                     for (let content of translatable.contents) {
                         if (!this._items[content.localeId]) {
                             let item = this._items[content.localeId] = new ViewMenuItem(content.localeId, content.localeName, content.prettyLocaleId);
                             item.draw($("<li />").appendTo(this.menuUlJq));
-                            item.on = Object.keys(this._items).length == 1;
+                            item.on = this.numItems == 1;
                             item.whenChanged(() => this.menuChanged());
                             this.updateStatus();
                         }
@@ -8365,7 +8379,7 @@ var Rocket;
                             visiableLocaleIds.push(this._items[i].localeId);
                         }
                     }
-                    let labelVisible = visiableLocaleIds.length > 1;
+                    let labelVisible = this.numItems > 1;
                     for (let translatable of this.translatables) {
                         translatable.visibleLocaleIds = visiableLocaleIds;
                         translatable.labelVisible = labelVisible;
@@ -8447,6 +8461,7 @@ var Rocket;
                     }
                 }
             }
+            Translation.ViewMenuItem = ViewMenuItem;
         })(Translation = Impl.Translation || (Impl.Translation = {}));
     })(Impl = Rocket.Impl || (Rocket.Impl = {}));
 })(Rocket || (Rocket = {}));
