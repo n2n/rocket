@@ -6,6 +6,7 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\gui\GuiField;
 use rocket\ei\manage\gui\GuiFieldEditable;
 use n2n\util\ex\UnsupportedOperationException;
+use n2n\l10n\N2nLocale;
 
 class InaccessibleGuiField implements GuiField {
 	private $label;
