@@ -48,7 +48,6 @@ use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
-use rocket\ei\util\frame\EiuFrame;
 use rocket\impl\ei\component\prop\relation\model\RelationEntry;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\GuiField;
@@ -153,8 +152,8 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 	public function copy(EiObject $eiObject, $value, Eiu $copyEiu) {
 		if ($value === null || ($eiObject->isDraft() && !$this->isDraftable())) return null;
 		
-		$targetEiuFrame = new EiuFrame($this->eiPropRelation->createTargetEditPseudoEiFrame(
-				$copyEiu->frame()->getEiFrame(), $copyEiu->entry()->getEiEntry()));
+		$targetEiuFrame = (new Eiu($this->eiPropRelation->createTargetEditPseudoEiFrame(
+				$copyEiu->frame()->getEiFrame(), $copyEiu->entry()->getEiEntry())))->frame();
 		return RelationEntry::fromM($targetEiuFrame->copyEntry($value->toEiEntry($targetEiuFrame), $eiObject->isDraft())->getEiEntry());
 	}
 	
