@@ -188,6 +188,7 @@ class Rocket implements RequestScoped {
 // 	}
 
 	static function createLstr($code, string $moduleNamespace) {
+// 		return Lstr::create($code);
 		return Lstr::createCode($code, $moduleNamespace)->addLangNs($moduleNamespace 
 				. '\\' . DynamicTextCollection::LANG_NS_EXT . '\\' . Rocket::NS);
 	}

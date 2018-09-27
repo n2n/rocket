@@ -180,8 +180,6 @@ class DisplayStructure {
 		$ds = new DisplayStructure();
 		$ds->addDisplayItem($this->displayItems[0]->copy($type, $label, $attrs));
 		return $ds;
-		
-		
 	}
 
 	public function withoutSubStructures() {

@@ -41,6 +41,7 @@ use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
 use rocket\ei\manage\gui\ui\DisplayItem;
 use n2n\util\StringUtils;
 use rocket\spec\TypePath;
+use rocket\core\model\Rocket;
 
 class SpecExtractor {
 	private $attributes;
