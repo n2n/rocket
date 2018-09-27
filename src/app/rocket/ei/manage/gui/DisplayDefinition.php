@@ -3,29 +3,30 @@ namespace rocket\ei\manage\gui;
 
 use rocket\ei\manage\gui\ui\DisplayItem;
 use n2n\reflection\ArgUtils;
+use n2n\l10n\Lstr;
 
 class DisplayDefinition {
-	private $label;
+	private $labelLstr;
 	private $displayItemType;
 	private $defaultDisplayed;
 	
 	/**
-	 * @param string $label
+	 * @param Lstr $labelLstr
 	 * @param string $displayItemType
 	 * @param bool $defaultDisplayed
 	 */
-	public function __construct(string $label, string $displayItemType, bool $defaultDisplayed, string $helpText = null) {
-		$this->label = $label;
+	public function __construct(Lstr $labelLstr, string $displayItemType, bool $defaultDisplayed, string $helpText = null) {
+		$this->labelLstr = $labelLstr;
 		ArgUtils::valEnum($displayItemType, DisplayItem::getTypes());
 		$this->displayItemType = $displayItemType;
 		$this->defaultDisplayed = $defaultDisplayed;
 	}
 	
 	/**
-	 * @return string
+	 * @return Lstr
 	 */
-	public function getLabel() {
-		return $this->label;
+	public function getLabelLstr() {
+		return $this->labelLstr;
 	}
 	
 	/**

@@ -187,9 +187,27 @@ class Rocket implements RequestScoped {
 // 		$em->getPersistenceContext()->registerEntityStateListener($this->rocketEntityStateListener);
 // 	}
 
-	static function createLstr($code, string $moduleNamespace) {
+	private static $cachedDtcs = [];
+	
+	/**
+	 * @param string $code
+	 * @param string $moduleNamespace
+	 * @return \n2n\l10n\Lstr
+	 */
+	static function createLstr(string $code, string $moduleNamespace) {
 // 		return Lstr::create($code);
-		return Lstr::createCode($code, $moduleNamespace)->addLangNs($moduleNamespace 
-				. '\\' . DynamicTextCollection::LANG_NS_EXT . '\\' . Rocket::NS);
+
+// 		return Lstr::createCode($code, $moduleNamespace)->addLangNs($moduleNamespace
+// 				. '\\' . DynamicTextCollection::LANG_NS_EXT . '\\' . Rocket::NS);
+		
+		$dtc = null;
+		if (isset(self::$cachedDtcs[$moduleNamespace])) {
+			$dtc = self::$cachedDtcs[$moduleNamespace];
+		} else {
+			$dtc = self::$cachedDtcs[$moduleNamespace] = (new DynamicTextCollection($moduleNamespace, null))
+					->addLangNamespace($moduleNamespace . '\\' . DynamicTextCollection::LANG_NS_EXT . '\\' . Rocket::NS);
+		}
+
+		return Lstr::createCodeDtc($code, $dtc);
 	}
 }

@@ -44,6 +44,7 @@ use n2n\reflection\ArgUtils;
 use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\GuiField;
+use n2n\l10n\Lstr;
 
 class StringDisplayEiProp extends IndependentEiPropAdapter implements ObjectPropertyConfigurable, GuiEiProp, GuiProp, 
 		FieldEiProp, Readable, StatelessDisplayable {
@@ -147,10 +148,10 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ObjectProp
 	}
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayLabel()
+	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayLabelLstr()
 	 */
-	public function getDisplayLabel(): string {
-		return (string) $this->labelLstr;
+	public function getDisplayLabelLstr(): Lstr {
+		return $this->labelLstr;
 	}
 
 	/**

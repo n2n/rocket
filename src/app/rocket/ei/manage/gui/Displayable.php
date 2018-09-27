@@ -22,12 +22,15 @@
 namespace rocket\ei\manage\gui;
 
 use n2n\impl\web\ui\view\html\HtmlView;
+use n2n\l10n\N2nLocale;
 
 interface Displayable {
+
 	/**
+	 * @param N2nLocale $n2nLocale
 	 * @return string
 	 */
-	public function getUiOutputLabel(): string;
+	public function getUiOutputLabel(N2nLocale $n2nLocale): string;
 	
 	/**
 	 * @return array

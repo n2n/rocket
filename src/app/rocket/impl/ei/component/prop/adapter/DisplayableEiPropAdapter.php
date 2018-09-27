@@ -34,6 +34,7 @@ use n2n\reflection\ArgUtils;
 use rocket\ei\manage\gui\ui\DisplayItem;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\GuiField;
+use n2n\l10n\Lstr;
 
 abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter implements StatelessDisplayable, GuiEiProp, GuiProp {
 	protected $displaySettings;
@@ -53,12 +54,11 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 		return $eiPropConfigurator;
 	}
 	
-	
 	public function buildGuiProp(Eiu $eiu): ?GuiProp {
 		return $this;
 	}
 	
-	public function getDisplayLabel(): string {
+	public function getDisplayLabelLstr(): Lstr {
 		return $this->getLabelLstr();
 	}
 	
@@ -71,7 +71,7 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 		$groupType = $this->getDisplayItemType($eiu);
 		ArgUtils::valEnumReturn($groupType, DisplayItem::getTypes(), $this, 'getGroupType');
 		
-		return new DisplayDefinition($this->getDisplayLabel(), $groupType, 
+		return new DisplayDefinition($this->getDisplayLabelLstr(), $groupType, 
 				$this->getDisplaySettings()->isViewModeDefaultDisplayed($viewMode));
 	}
 	
@@ -89,7 +89,8 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 	
 	public function getOutputHtmlContainerAttrs(Eiu $eiu) {
 		$eiMask = $this->eiMask;
-		return array('class' => 'rocket-ei-spec-' . $this->eiMask->getEiType()->getId()
+		return array(
+				'class' => 'rocket-ei-spec-' . $this->eiMask->getEiType()->getId()
 						. ($eiMask->isExtension() ? ' rocket-ei-mask-' . $eiMask->getExtension()->getId() : '') 
 						. ' rocket-ei-field-' . $this->getId(), 
 				'title' => $this->getDisplaySettings()->getHelpText());

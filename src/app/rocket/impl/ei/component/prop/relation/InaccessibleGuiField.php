@@ -30,7 +30,7 @@ class InaccessibleGuiField implements GuiField {
 		return $view->getL10nText('common_inaccessible_err', null, null, null, 'rocket');
 	}
 
-	public function getUiOutputLabel(): string {
+	public function getUiOutputLabel(N2nLocale $n2nLocale): string {
 		return $this->label; 
 	}
 

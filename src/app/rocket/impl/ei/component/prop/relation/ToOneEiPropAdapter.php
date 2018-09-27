@@ -33,6 +33,7 @@ use rocket\impl\ei\component\prop\adapter\DisplaySettings;
 use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\relation\model\ToOneEiField;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
+use n2n\l10n\Lstr;
 
 abstract class ToOneEiPropAdapter extends SimpleRelationEiPropAdapter implements GuiProp, DraftableEiProp, 
 		DraftProperty {
@@ -51,9 +52,9 @@ abstract class ToOneEiPropAdapter extends SimpleRelationEiPropAdapter implements
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayLabel()
+	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayLabelLstr()
 	 */
-	public function getDisplayLabel(): string {
+	public function getDisplayLabelLstr(): Lstr {
 		return $this->getLabelLstr();
 	}
 	

@@ -31,6 +31,7 @@ use rocket\ei\util\Eiu;
 use rocket\ei\manage\gui\ui\DisplayStructure;
 use n2n\util\ex\NotYetImplementedException;
 use n2n\l10n\Lstr;
+use rocket\core\model\Rocket;
 
 class GuiDefinition {	
 	private $identityStringPattern;
@@ -227,8 +228,7 @@ class GuiDefinition {
 				$currentIds = $baseIds;
 				$currentIds[] = $id;
 				$displayStructure->addGuiIdPath(new GuiIdPath($currentIds),
-						$displayDefinition->getDisplayItemType(),
-						$displayDefinition->getLabel());
+						$displayDefinition->getDisplayItemType());
 			}
 			
 			if (isset($this->levelGuiPropForks[$id])) {
@@ -270,7 +270,7 @@ class GuiDefinition {
 			
 			$purifiedDisplayStructure->addGuiIdPath($displayItem->getGuiIdPath(),
 					$displayItem->getType() ?? $displayDefinition->getDisplayItemType(),
-					$displayItem->getLabel() ?? $displayDefinition->getLabel());
+					$displayItem->getLabel(), $displayItem->getModuleNamespace());
 		}
 		
 		return $purifiedDisplayStructure;

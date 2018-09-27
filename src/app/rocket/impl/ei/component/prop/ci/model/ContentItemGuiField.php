@@ -30,9 +30,11 @@ use rocket\impl\ei\component\prop\ci\ContentItemsEiProp;
 use rocket\ei\manage\gui\ui\DisplayItem;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\util\Eiu;
+use n2n\l10n\Lstr;
+use n2n\l10n\N2nLocale;
 
 class ContentItemGuiField implements GuiField {
-	private $label;
+	private $labelLstr;
 	private $panelConfigs;
 	private $mandatory;
 	private $toManyEiField;
@@ -44,15 +46,15 @@ class ContentItemGuiField implements GuiField {
 	private $newMappingFormPathExt;
 
 	/**
-	 * @param string $label
+	 * @param string $labelLstr
 	 * @param array $panelConfigs
 	 * @param ToManyEiField $toManyEiField
 	 * @param EiFrame $targetEiFrame
 	 * @param GuiFieldEditable $editable
 	 */
-	public function __construct(string $label, array $panelConfigs, ToManyEiField $toManyEiField, EiFrame $targetEiFrame,
+	public function __construct(Lstr $labelLstr, array $panelConfigs, ToManyEiField $toManyEiField, EiFrame $targetEiFrame,
 			bool $compact, GuiFieldEditable $editable = null) {
-		$this->label = $label;
+		$this->labelLstr = $labelLstr;
 		$this->panelConfigs = $panelConfigs;
 		$this->toManyEiField = $toManyEiField;
 		$this->targetEiFrame = $targetEiFrame;
@@ -87,8 +89,8 @@ class ContentItemGuiField implements GuiField {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\Displayable::getUiOutputLabel()
 	 */
-	public function getUiOutputLabel(): string {
-		return $this->label;
+	public function getUiOutputLabel(N2nLocale $n2nLocale): string {
+		return $this->labelLstr->t($n2nLocale);
 	}
 
 	/**

@@ -24,12 +24,13 @@ namespace rocket\ei\manage\gui;
 use n2n\l10n\N2nLocale;
 use rocket\ei\manage\EiObject;
 use rocket\ei\util\Eiu;
+use n2n\l10n\Lstr;
 
 interface GuiProp {
 	/**
-	 * @return string 
+	 * @return Lstr 
 	 */
-	public function getDisplayLabel(): string;
+	public function getDisplayLabelLstr(): Lstr;
 	
 	/**
 	 * <p>Tests if this GuiProp is compatible with the passed EiGui and returns an {@see DisplayDefinition}
