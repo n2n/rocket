@@ -39,6 +39,7 @@ use rocket\ei\manage\gui\MagAssembly;
 use rocket\ei\manage\gui\GuiFieldFork;
 use n2n\impl\web\ui\view\html\HtmlUtils;
 use rocket\ei\util\gui\EiuEntryGuiAssembler;
+use n2n\impl\web\ui\view\html\HtmlElement;
 
 class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 	private $toManyEiField;
@@ -283,7 +284,8 @@ class EmptyDisplayable implements Displayable {
 	}
 	
 	public function createOutputUiComponent(HtmlView $view) {
-		return $view->getHtmlBuilder()->getText('ei_impl_locale_not_active_label');
+		return new HtmlElement('span', ['class' => 'rocket-inactive'], 
+				$view->getHtmlBuilder()->getText('ei_impl_locale_not_active_label'));
 	}
 } 
 

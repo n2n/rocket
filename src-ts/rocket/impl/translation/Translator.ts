@@ -63,6 +63,18 @@ namespace Rocket.Impl.Translation {
 				tm.registerTranslatable(Translatable.from(elemJq));
 			});
 		}
+		
+		private ensureSomethingOn(viewMenuItems: { [localeId: string]: ViewMenuItem }) {
+		    for (let localeId in viewMenuItems) {
+		        if (viewMenuItems[localeId].on) {
+		            return;
+		        }
+		    }
+		    
+		    for (let localeId in viewMenuItems) {
+                viewMenuItems[localeId].on = true
+		    }
+		}
 
 		private initViewMenu(viewMenu: ViewMenu) {
 			let langState = this.userStore.langState;
@@ -74,7 +86,9 @@ namespace Rocket.Impl.Translation {
 					viewMenuItems[localeId].on = this.userStore.langState.languageActive(localeId);
 				}
 			}
-
+			
+			this.ensureSomethingOn(viewMenuItems);
+			
 			for (let localeId in viewMenuItems) {
 				let viewMenuItem = viewMenuItems[localeId];
 

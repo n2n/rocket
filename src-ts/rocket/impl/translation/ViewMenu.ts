@@ -17,6 +17,10 @@ namespace Rocket.Impl.Translation {
 			return this._items;
 		}
 		
+		get numItems(): number {
+		    return Object.keys(this._items).length;
+		}
+		
 		private draw(languagesLabel: string, visibleLabel: string, tooltip: string) {
 			$("<div />", { "class": "rocket-impl-translation-status" })
 					.append($("<label />", { "text": visibleLabel }).prepend($("<i></i>", { "class": "fa fa-language" })))
@@ -37,7 +41,6 @@ namespace Rocket.Impl.Translation {
 			Display.Toggler.simple(buttonJq, menuJq);
 			
 			this.jqContainer.append(menuJq);
-
 		}	
 		
 		private updateStatus() {
@@ -83,14 +86,14 @@ namespace Rocket.Impl.Translation {
 			
 			translatable.jQuery.on("remove", () => this.unregisterTranslatable(translatable));
 
-			let labelVisible = this.getNumOn() > 1;
+			let labelVisible = this.numItems > 1;
 			
 			for (let content of translatable.contents) {
 				if (!this._items[content.localeId]) {
 					let item = this._items[content.localeId] = new ViewMenuItem(content.localeId, content.localeName, content.prettyLocaleId);
 					item.draw($("<li />").appendTo(<JQuery<HTMLElement>> this.menuUlJq));
 					
-					item.on = Object.keys(this._items).length == 1;
+					item.on = this.numItems == 1;
 					item.whenChanged(() => this.menuChanged());
 					
 					this.updateStatus();
@@ -143,7 +146,7 @@ namespace Rocket.Impl.Translation {
 					visiableLocaleIds.push(this._items[i].localeId);
 				} 
 			}
-			let labelVisible = visiableLocaleIds.length > 1;
+			let labelVisible = this.numItems > 1;
 			
 			for (let translatable of this.translatables) {
 				translatable.visibleLocaleIds = visiableLocaleIds;
@@ -168,7 +171,7 @@ namespace Rocket.Impl.Translation {
 		}
 	}
 	
-	class ViewMenuItem {
+	export class ViewMenuItem {
 		private _on: boolean = true;
 		private changedCallbacks: Array<() => any> = [];
 		private jqA: JQuery;
