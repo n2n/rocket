@@ -386,7 +386,7 @@ class EiuHtmlBuilder {
 		
 		return $attrs;
 	}
-		
+	
 	public function fieldClose() {
 		$this->view->out($this->getFieldClose());
 	}
@@ -411,8 +411,9 @@ class EiuHtmlBuilder {
 			return new HtmlElement('label', $attrs, $label);
 		}
 		
-		if (isset($fieldInfo['displayable'])) {
-			return new HtmlElement('label', $attrs, $fieldInfo['displayable']->getUiOutputLabel());
+		if (isset($fieldInfo['guiFieldAssembly'])) {
+			return new HtmlElement('label', $attrs, $fieldInfo['guiFieldAssembly']->getDisplayable()
+					->getUiOutputLabel($this->view->getN2nLocale()));
 		}
 		
 		$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
@@ -460,6 +461,33 @@ class EiuHtmlBuilder {
 		}
 
 		return null;
+	}
+	
+	
+	public function fieldControls() {
+		$this->view->out($this->getFieldControls());
+	}
+	
+	public function getFieldControls() {
+		$fieldInfo = $this->state->peakField(false);
+		
+		if (isset($fieldInfo['guiFieldAssembly'])) {
+			return new HtmlElement('label', $attrs, $fieldInfo['guiFieldAssembly']->getDisplayable()
+					->getUiHelpText($this->view->getN2nLocale()));
+		}
+		
+		$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
+		return new HtmlElement('label', $attrs, $eiEntryGui->getEiGui()->getEiGuiViewFactory()
+				->getGuiDefinition()->getGuiPropByGuiIdPath($fieldInfo['guiIdPath'])->getDisplayLabelLstr()
+				->t($this->view->getN2nLocale()));
+		
+		$helpText = $fieldInfo['displayItem']->getHelpText();
+		
+		$div = new HtmlElement('div', HtmlUtils::mergeAttrs(array('class' => 'rocket-group-controls'), $attrs));
+		
+		$div->append();
+		
+		return $div;
 	}
 	
 	/**
