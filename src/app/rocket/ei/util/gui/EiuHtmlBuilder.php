@@ -471,14 +471,17 @@ class EiuHtmlBuilder {
 	public function getFieldControls() {
 		$fieldInfo = $this->state->peakField(false);
 		
+		$helpText = null;
 		if (isset($fieldInfo['guiFieldAssembly'])) {
-			return new HtmlElement('label', $attrs, $fieldInfo['guiFieldAssembly']->getDisplayable()
-					->getUiHelpText($this->view->getN2nLocale()));
+			$helpText = $fieldInfo['guiFieldAssembly']->getDisplayable()
+					->getUiHelpText($this->view->getN2nLocale())
+			
+			
 		}
 		
 		$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
 		return new HtmlElement('label', $attrs, $eiEntryGui->getEiGui()->getEiGuiViewFactory()
-				->getGuiDefinition()->getGuiPropByGuiIdPath($fieldInfo['guiIdPath'])->getDisplayLabelLstr()
+				->getGuiDefinition()->getGuiPropByGuiIdPath($fieldInfo['guiIdPath'])->getHelpTextLstr()
 				->t($this->view->getN2nLocale()));
 		
 		$helpText = $fieldInfo['displayItem']->getHelpText();
