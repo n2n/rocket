@@ -62,7 +62,7 @@ class BooleanEiPropConfigurator extends AdaptableEiPropConfigurator {
 		
 		$assoicatedGuiPropOptions = array();
 		foreach ($guiProps as $guiIdPathStr => $guiProp) {
-			$assoicatedGuiPropOptions[$guiIdPathStr] = $guiProp->getDisplayLabel();
+			$assoicatedGuiPropOptions[$guiIdPathStr] = $guiProp->getDisplayLabelLstr()->t($n2nContext->getN2nLocale());
 		}
 		
 		$onGuiIdPathStrs = $lar->getScalarArray(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY);

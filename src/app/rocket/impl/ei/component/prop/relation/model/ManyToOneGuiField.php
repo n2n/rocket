@@ -27,6 +27,7 @@ use n2n\util\ex\IllegalStateException;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\gui\GuiField;
 use rocket\ei\util\Eiu;
+use n2n\l10n\N2nLocale;
 
 class ManyToOneGuiField implements GuiField {
 	private $label;
@@ -50,7 +51,7 @@ class ManyToOneGuiField implements GuiField {
 	/**
 	 * @return string
 	 */
-	public function getUiOutputLabel(): string {
+	public function getUiOutputLabel(N2nLocale $n2nLocale): string {
 		return $this->label;
 	}
 	

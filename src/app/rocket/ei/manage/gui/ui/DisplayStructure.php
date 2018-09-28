@@ -27,14 +27,32 @@ use n2n\reflection\ArgUtils;
 class DisplayStructure {
 	private $displayItems = array();
 	
-	public function addGuiIdPath(GuiIdPath $guiIdPath, string $type = null, string $label = null) {
-		$this->displayItems[] = DisplayItem::create($guiIdPath, $type, $label);
+	/**
+	 * @param GuiIdPath $guiIdPath
+	 * @param string $type
+	 * @param string $label
+	 * @param string $moduleNamespace
+	 */
+	public function addGuiIdPath(GuiIdPath $guiIdPath, string $type = null, string $label = null, 
+			string $moduleNamespace = null) {
+		$this->displayItems[] = DisplayItem::create($guiIdPath, $type, $label, $moduleNamespace);
 	}
 	
-	public function addDisplayStructure(DisplayStructure $displayStructure, string $type, string $label = null) {
-		$this->displayItems[] = DisplayItem::createFromDisplayStructure($displayStructure, $type, $label);
+	/**
+	 * @param DisplayStructure $displayStructure
+	 * @param string $type
+	 * @param string $label
+	 * @param string $moduleNamespace
+	 */
+	public function addDisplayStructure(DisplayStructure $displayStructure, string $type, string $label = null, 
+			string $moduleNamespace = null) {
+		$this->displayItems[] = DisplayItem::createFromDisplayStructure($displayStructure, $type, $label, 
+				$moduleNamespace);
 	}
 	
+	/**
+	 * @param DisplayItem $displayItem
+	 */
 	public function addDisplayItem(DisplayItem $displayItem) {
 		$this->displayItems[] = $displayItem;
 	}
@@ -143,11 +161,12 @@ class DisplayStructure {
 			
 			if (!$displayItem->hasDisplayStructure()) {
 				if ($groupType == DisplayItem::TYPE_AUTONOMIC_GROUP) {
-					$autonomicDs->addGuiIdPath($displayItem->getGuiIdPath(), DisplayItem::TYPE_SIMPLE_GROUP, $displayItem->getLabel());
+					$autonomicDs->addGuiIdPath($displayItem->getGuiIdPath(), DisplayItem::TYPE_SIMPLE_GROUP, $displayItem->getLabel(), 
+							$displayItem->getModuleNamespace());
 				} else if ($displayItem->getType() == $groupType) {
 					$ds->displayItems[] = $displayItem;
 				} else {
-					$ds->addGuiIdPath($displayItem->getGuiIdPath(), $groupType, $displayItem->getLabel());	
+					$ds->addGuiIdPath($displayItem->getGuiIdPath(), $groupType, $displayItem->getLabel(), $displayItem->getModuleNamespace());	
 				}
 				continue;
 			}
@@ -180,8 +199,6 @@ class DisplayStructure {
 		$ds = new DisplayStructure();
 		$ds->addDisplayItem($this->displayItems[0]->copy($type, $label, $attrs));
 		return $ds;
-		
-		
 	}
 
 	public function withoutSubStructures() {

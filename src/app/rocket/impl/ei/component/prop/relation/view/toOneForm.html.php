@@ -58,7 +58,7 @@ use rocket\ei\util\gui\EiuHtmlBuilder;
 		data-reduced="<?php $html->out($toOneForm->isReduced()) ?>"
 		data-close-label="<?php $html->text('common_apply_label') ?>"
 		data-grouped="<?php $html->out($grouped) ?>"
-		data-display-item-label="<?php $html->out($eiuHtml->meta()->getGuiFieldAssembly()->getDisplayable()->getUiOutputLabel())?>">
+		data-display-item-label="<?php $html->out($eiuHtml->meta()->getGuiFieldAssembly()->getDisplayable()->getUiOutputLabel($view->getN2nLocale())) ?>">
 		
 	<?php if ($toOneForm->isSelectionModeEnabled()): ?>
 		<div class="rocket-impl-selector" 

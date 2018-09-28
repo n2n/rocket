@@ -133,12 +133,12 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 	}
 	
 	public function assembleGuiField(GuiIdPath $guiIdPath): ?GuiFieldAssembly {
-		$label = $this->guiDefinition->getGuiPropByGuiIdPath($guiIdPath)->getDisplayLabel();
+		$labelLstr = $this->guiDefinition->getGuiPropByGuiIdPath($guiIdPath)->getDisplayLabelLstr();
 		$eiPropPath = $this->guiDefinition->guiIdPathToEiPropPath($guiIdPath);
 
 // 		$fieldErrorInfo = new EiFieldValidationResult();
 		
-		$translationDisplayable = new TranslationDisplayable($label, $this->n2nLocaleDefs);
+		$translationDisplayable = new TranslationDisplayable($labelLstr, $this->n2nLocaleDefs);
 		
 		$translationMag = null;
 		$eiFieldWrappers = array();
@@ -165,7 +165,7 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 			if ($guiFieldAssembler->getEiuEntryGui()->isReadOnly()) continue;
 			
 			if ($translationMag === null) {
-				$translationMag = new TranslationMag($label, $this->getMarkClassKey());
+				$translationMag = new TranslationMag($labelLstr, $this->getMarkClassKey());
 			}
 			
 			if (null !== ($magAssembly = $result->getMagAssembly())) {
@@ -275,7 +275,7 @@ class EmptyDisplayable implements Displayable {
 		return $this->displayable->isReadOnly();
 	}
 	
-	public function getUiOutputLabel(): string {
+	public function getUiOutputLabel(N2nLocale $n2nLocale): string {
 		return $this->displayable->getUiOutputLabel();
 	}
 	

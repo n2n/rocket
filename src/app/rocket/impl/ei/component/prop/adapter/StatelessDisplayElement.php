@@ -26,6 +26,7 @@ use n2n\util\ex\IllegalStateException;
 use rocket\ei\manage\gui\GuiField;
 use rocket\ei\manage\gui\GuiFieldEditable;
 use rocket\ei\util\Eiu;
+use n2n\l10n\N2nLocale;
 
 class StatelessDisplayElement implements GuiField {
 	private $statelessDisplayable;
@@ -44,7 +45,7 @@ class StatelessDisplayElement implements GuiField {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\Displayable::getUiOutputLabel()
 	 */
-	public function getUiOutputLabel(): string {
+	public function getUiOutputLabel(N2nLocale $n2nLocale): string {
 		return $this->statelessDisplayable->getUiOutputLabel($this->eiu);
 	}
 	

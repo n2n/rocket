@@ -41,6 +41,7 @@ use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
 use rocket\ei\manage\gui\ui\DisplayItem;
 use n2n\util\StringUtils;
 use rocket\spec\TypePath;
+use rocket\core\model\Rocket;
 
 class SpecExtractor {
 	private $attributes;
@@ -417,7 +418,7 @@ class SpecExtractor {
 			if (null !== $guiIdPath) {
 				$displayStructure->addGuiIdPath(GuiIdPath::create($guiIdPath), 
 						$displayStructureAttributes->getEnum(RawDef::DISPLAY_ITEM_GROUP_TYPE_KEY, DisplayItem::getTypes(),
-						false, null, true), $label);
+						false, null, true), $label, $this->moduleNamespace);
 				continue;
 			}
 			

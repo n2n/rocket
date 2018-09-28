@@ -17,6 +17,7 @@ use rocket\ei\util\frame\EiuFrame;
 use rocket\ei\util\EiuAnalyst;
 use rocket\ei\util\EiuPerimeterException;
 use rocket\ei\util\entry\EiuEntry;
+use n2n\l10n\N2nLocale;
 
 class EiuGui {
 	private $eiGui;
@@ -74,15 +75,15 @@ class EiuGui {
 	 * @param bool $required
 	 * @return string|null
 	 */
-	public function getPropLabel($guiIdPath, bool $required = false) {
+	public function getPropLabel($guiIdPath, N2nLocale $n2nLocale, bool $required = false) {
 		$guiIdPath = GuiIdPath::create($guiIdPath);
 		
 		if (null !== ($displayItem = $this->getDisplayItemByGuiIdPath($guiIdPath))) {
-			return $displayItem->getDisplayLabel();
+			return $displayItem->translateLabel($n2nLocale);
 		}
 		
 		if (null !== ($guiProp = $this->getGuiPropByGuiIdPath($guiIdPath, $required))) {
-			return $guiProp->getDisplayLabel();
+			return $guiProp->getDisplayLabelLstr()->t($n2nLocale);
 		}
 		
 		return null;

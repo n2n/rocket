@@ -4,6 +4,8 @@ namespace rocket\ei\manage\gui\ui;
 use rocket\ei\manage\gui\GuiIdPath;
 use n2n\util\ex\IllegalStateException;
 use n2n\reflection\ArgUtils;
+use n2n\l10n\N2nLocale;
+use rocket\core\model\Rocket;
 
 class DisplayItem {
 	const TYPE_SIMPLE_GROUP = 'simple-group';
@@ -14,6 +16,7 @@ class DisplayItem {
 	const TYPE_ITEM = 'item';
 
 	protected $label;
+	protected $moduleNamespace;
 	protected $type;
 	protected $guiIdPath;
 	protected $attrs;
@@ -26,9 +29,11 @@ class DisplayItem {
 	 * @param GuiIdPath $guiIdPath
 	 * @return DisplayItem
 	 */
-	public static function create(GuiIdPath $guiIdPath, string $type = null, string $label = null) {
+	public static function create(GuiIdPath $guiIdPath, string $type = null, string $label = null, 
+			string $moduleNamespace = null) {
 		$orderItem = new DisplayItem();
 		$orderItem->label = $label;
+		$orderItem->moduleNamespace = $moduleNamespace;
 		ArgUtils::valEnum($type, self::getTypes(), null, true);
 		$orderItem->type = $type;
 		$orderItem->guiIdPath = $guiIdPath;
@@ -54,12 +59,13 @@ class DisplayItem {
 	 * @return DisplayItem
 	 */
 	public static function createFromDisplayStructure(DisplayStructure $displayStructure, string $type, 
-			string $label = null) {
+			string $label = null, string $moduleNamespace = null) {
 		$displayItem = new DisplayItem();
 		$displayItem->displayStructure = $displayStructure;
 		ArgUtils::valEnum($type, self::getTypes());
 		$displayItem->type = $type;
 		$displayItem->label = $label;
+		$displayItem->moduleNamespace = $moduleNamespace;
 		return $displayItem;
 	}
 	
@@ -68,13 +74,14 @@ class DisplayItem {
 	 * @param string|null $label
 	 * @return DisplayItem
 	 */
-	public function copy(string $type = null, string $label = null, array $attrs = null) {
+	public function copy(string $type = null, string $label = null, string $moduleNamespace = null, array $attrs = null) {
 		$displayItem = new DisplayItem();
 		$displayItem->displayStructure = $this->displayStructure;
 		$displayItem->guiIdPath = $this->guiIdPath;
 		ArgUtils::valEnum($type, self::getTypes(), null, true);
 		$displayItem->type = $type ?? $this->type;
 		$displayItem->label = $label ?? $this->label;
+		$displayItem->moduleNamespace = $moduleNamespace ?? $this->moduleNamespace;
 		$displayItem->attrs = $attrs ?? $this->attrs;
 		return $displayItem;
 	}
@@ -84,6 +91,23 @@ class DisplayItem {
 	 */
 	public function getLabel() {
 		return $this->label;
+	}
+	
+	/**
+	 * @return string|null
+	 */
+	public function getModuleNamespace() {
+		return $this->moduleNamespace;
+	}
+	
+	public function translateLabel(N2nLocale $n2nLocale) {
+		if ($this->label === null) return null;
+		
+		if ($this->moduleNamespace === null) {
+			return $this->label;
+		}
+		
+		return Rocket::createLstr($this->label, $this->moduleNamespace)->t($n2nLocale);
 	}
 
 	/**

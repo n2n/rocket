@@ -29,6 +29,7 @@ use rocket\ei\manage\gui\GuiField;
 use rocket\core\model\Rocket;
 use rocket\ei\component\prop\EiProp;
 use rocket\ei\util\Eiu;
+use n2n\l10n\N2nLocale;
 
 class ToManySelectGuiField implements GuiField {
 	private $eiProp;
@@ -56,8 +57,8 @@ class ToManySelectGuiField implements GuiField {
 	/**
 	 * @return string
 	 */
-	public function getUiOutputLabel(): string {
-		return $this->eiProp->getLabelLstr();
+	public function getUiOutputLabel(N2nLocale $n2nLocale): string {
+		return $this->eiProp->getLabelLstr()->t($n2nLocale);
 	}
 	
 	/**

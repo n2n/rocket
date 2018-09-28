@@ -29,9 +29,11 @@ use n2n\util\ex\IllegalStateException;
 use rocket\ei\manage\gui\ui\DisplayItem;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use rocket\ei\util\Eiu;
+use n2n\l10n\N2nLocale;
+use n2n\l10n\Lstr;
 
 class EmbeddedOneToManyGuiField implements GuiField {
-	private $label;
+	private $labelLstr;
 	private $reduced;
 	private $readOnly;
 	private $mandatory;
@@ -43,9 +45,9 @@ class EmbeddedOneToManyGuiField implements GuiField {
 	private $selectPathExt;
 	private $newMappingFormPathExt;
 
-	public function __construct(string $label, bool $reduced, ToManyEiField $toManyEiField, EiFrame $targetEiFrame,
+	public function __construct(Lstr $labelLstr, bool $reduced, ToManyEiField $toManyEiField, EiFrame $targetEiFrame,
 			bool $compact, GuiFieldEditable $editable = null) {
-		$this->label = $label;
+		$this->labelLstr = $labelLstr;
 		$this->reduced = $reduced;
 		$this->toManyEiField = $toManyEiField;
 		$this->targetEiFrame = $targetEiFrame;
@@ -76,8 +78,8 @@ class EmbeddedOneToManyGuiField implements GuiField {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\Displayable::getUiOutputLabel()
 	 */
-	public function getUiOutputLabel(): string {
-		return $this->label;
+	public function getUiOutputLabel(N2nLocale $n2nLocale): string {
+		return $this->labelLstr->t($n2nLocale);
 	}
 
 	/**
