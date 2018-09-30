@@ -86,7 +86,7 @@ class EiuGui {
 		}
 		
 		if (null !== ($guiProp = $this->getGuiPropByGuiIdPath($guiIdPath, $required))) {
-			return $guiProp->getDisplayLabel($n2nLocale);
+			return $guiProp->getDisplayLabelLstr()->t($n2nLocale);
 		}
 		
 		return null;

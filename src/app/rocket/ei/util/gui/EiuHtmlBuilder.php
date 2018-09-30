@@ -100,7 +100,7 @@ class EiuHtmlBuilder {
 		}
 		
 		return $this->html->getOut($eiGui->getEiGuiViewFactory()->getGuiDefinition()->getGuiPropByGuiIdPath($guiIdPath)
-				->getDisplayLabel($this->view->getN2nLocale()));
+				->getDisplayLabelLstr()->t($this->view->getN2nLocale()));
 	}
 	
 	private $collectionTagName = null;
@@ -418,7 +418,7 @@ class EiuHtmlBuilder {
 		
 		$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
 		return new HtmlElement('label', $attrs, $eiEntryGui->getEiGui()->getEiGuiViewFactory()
-				->getGuiDefinition()->getGuiPropByGuiIdPath($fieldInfo['guiIdPath'])->getDisplayLabel($this->view->getN2nLocale()));
+				->getGuiDefinition()->getGuiPropByGuiIdPath($fieldInfo['guiIdPath'])->getDisplayLabelLstr()->t($this->view->getN2nLocale()));
 	}
 	
 	public function fieldContent() {
@@ -477,8 +477,11 @@ class EiuHtmlBuilder {
 		
 		if ($helpText === null) {
 			$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
-			$helpText = $eiEntryGui->getEiGui()->getEiGuiViewFactory()->getGuiDefinition()
-					->getGuiPropByGuiIdPath($fieldInfo['guiIdPath'])->getDisplayHelpText($this->view->getN2nLocale());
+			$helpTextLstr = $eiEntryGui->getEiGui()->getEiGuiViewFactory()->getGuiDefinition()
+					->getGuiPropByGuiIdPath($fieldInfo['guiIdPath'])->getDisplayHelpTextLstr();
+			if ($helpTextLstr !== null) {
+				$helpText = $helpTextLstr->t($this->view->getN2nLocale());
+			}
 		}
 		
 		if ($helpText === null) return null;

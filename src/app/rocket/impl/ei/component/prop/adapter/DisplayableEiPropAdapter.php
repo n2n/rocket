@@ -35,6 +35,7 @@ use rocket\ei\manage\gui\ui\DisplayItem;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\GuiField;
 use rocket\core\model\Rocket;
+use n2n\l10n\Lstr;
 
 abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter implements StatelessDisplayable, GuiEiProp, GuiProp {
 	protected $displaySettings;
@@ -71,17 +72,17 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayLabel()
+	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayLabelLstr()
 	 */
-	public function getDisplayLabel(N2nLocale $n2nLocale): string {
-		return $this->getLabelLstr()->t($n2nLocale);
+	public function getDisplayLabelLstr(): Lstr {
+		return $this->getLabelLstr();
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayHelpText()
+	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayHelpTextLstr()
 	 */
-	public function getDisplayHelpText(N2nLocale $n2nLocale): ?string {
+	public function getDisplayHelpTextLstr(): ?Lstr {
 		$helpText = $this->displaySettings->getHelpText();
 		if ($helpText === null) {
 			return null;

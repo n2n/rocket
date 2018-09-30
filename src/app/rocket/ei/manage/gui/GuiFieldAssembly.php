@@ -4,17 +4,26 @@ namespace rocket\ei\manage\gui;
 use rocket\ei\manage\entry\EiFieldWrapper;
 
 class GuiFieldAssembly {
+	private $guiProp;
 	private $displayable;
 	private $eiFieldWrapper;
 	private $magAssembly;
 	private $savable;
 	
-	public function __construct(Displayable $displayable, EiFieldWrapper $eiFieldWrapper = null,
+	public function __construct(GuiProp $guiProp, Displayable $displayable, EiFieldWrapper $eiFieldWrapper = null,
 			MagAssembly $magAssembly = null, Savable $savable = null) {
+		$this->guiProp = $guiProp;
 		$this->displayable = $displayable;
 		$this->eiFieldWrapper = $eiFieldWrapper;
 		$this->magAssembly = $magAssembly;
 		$this->savable = $savable;
+	}
+	
+	/**
+	 * @return GuiProp
+	 */
+	function getGuiProp() {
+		return $this->guiProp;
 	}
 	
 	/**
@@ -24,6 +33,9 @@ class GuiFieldAssembly {
 		return $this->displayable;
 	}
 	
+	/**
+	 * @return \rocket\ei\manage\entry\EiFieldWrapper|null
+	 */
 	public function getEiFieldWrapper() {
 		return $this->eiFieldWrapper;
 	}

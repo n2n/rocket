@@ -55,8 +55,13 @@ class GuiFactory {
 		$this->eiMask = $eiMask;
 	}
 	
+	/**
+	 * @param N2nContext $n2nContext
+	 * @param GuiDefinition|null $guiDefinition
+	 * @return \rocket\ei\manage\gui\GuiDefinition
+	 */
 	public function createGuiDefinition(N2nContext $n2nContext, &$guiDefinition = null) {
-		$eiu = new Eiu($n2nContext);
+		$eiu = new Eiu($n2nContext, $this->eiMask);
 		
 		$guiDefinition = new GuiDefinition($this->eiMask->getLabelLstr());
 		$guiDefinition->setIdentityStringPattern($this->eiMask->getIdentityStringPattern());
@@ -76,7 +81,7 @@ class GuiFactory {
 		}
 		
 		foreach ($this->eiMask->getEiModificatorCollection() as $eiModificator) {
-			$eiModificator->setupGuiDefinition($guiDefinition);
+			$eiModificator->setupGuiDefinition($eiu);
 		}
 		
 		return $guiDefinition;

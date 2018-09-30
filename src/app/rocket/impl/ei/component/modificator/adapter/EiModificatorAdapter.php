@@ -23,20 +23,39 @@ namespace rocket\impl\ei\component\modificator\adapter;
 
 use rocket\ei\component\modificator\EiModificator;
 use rocket\impl\ei\component\EiComponentAdapter;
-use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\manage\gui\EiEntryGui;
 use rocket\ei\manage\draft\DraftDefinition;
 use rocket\ei\util\Eiu;
 
 abstract class EiModificatorAdapter extends EiComponentAdapter implements EiModificator {
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\modificator\EiModificator::setupEiFrame()
+	 */
 	public function setupEiFrame(Eiu $eiu) {}
 		
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\modificator\EiModificator::setupEiEntry()
+	 */
 	public function setupEiEntry(Eiu $eiu) {}
 	
-	public function setupGuiDefinition(GuiDefinition $guiDefinition) {}
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\modificator\EiModificator::setupGuiDefinition()
+	 */
+	public function setupGuiDefinition(Eiu $eiu) { }
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\modificator\EiModificator::setupEiEntryGui()
+	 */
 	public function setupEiEntryGui(EiEntryGui $eiEntryGui) {}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\modificator\EiModificator::setupDraftDefinition()
+	 */
 	public function setupDraftDefinition(DraftDefinition $draftDefinition) {}
 }

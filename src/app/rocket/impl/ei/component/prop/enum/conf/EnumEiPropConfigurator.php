@@ -69,7 +69,7 @@ class EnumEiPropConfigurator extends AdaptableEiPropConfigurator {
 		
 		$assoicatedGuiPropOptions = array();
 		foreach ($guiProps as $guiIdPathStr => $guiProp) {
-			$assoicatedGuiPropOptions[$guiIdPathStr] = $guiProp->getDisplayLabel($n2nContext->getN2nLocale());
+			$assoicatedGuiPropOptions[$guiIdPathStr] = $guiProp->getDisplayLabelLstr()->t($n2nContext->getN2nLocale());
 		}
 		
 		$optionsMag = new MagCollectionArrayMag('Options',

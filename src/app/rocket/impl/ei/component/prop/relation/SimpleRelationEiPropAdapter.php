@@ -45,8 +45,8 @@ use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
 use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\manage\security\InaccessibleEiCommandPathException;
-use n2n\l10n\N2nLocale;
 use rocket\core\model\Rocket;
+use n2n\l10n\Lstr;
 
 abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter implements GuiProp, DraftableEiProp, 
 		DraftProperty, FilterableEiProp {
@@ -65,23 +65,23 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayLabel()
+	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayLabelLstr()
 	 */
-	public function getDisplayLabel(N2nLocale $n2nLocale): string {
-		return $this->getLabelLstr()->t($n2nLocale);
+	public function getDisplayLabelLstr(): Lstr {
+		return $this->getLabelLstr();
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayHelpText()
+	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayHelpTextLstr()
 	 */
-	public function getDisplayHelpText(N2nLocale $n2nLocale): ?string {
+	public function getDisplayHelpTextLstr(): ?Lstr {
 		$helpText = $this->displaySettings->getHelpText();
 		if ($helpText === null) {
 			return null;
 		}
 		
-		return Rocket::createLstr($helpText, $this->eiMask->getModuleNamespace())->t($n2nLocale);
+		return Rocket::createLstr($helpText, $this->eiMask->getModuleNamespace());
 	}
 	
 	/**

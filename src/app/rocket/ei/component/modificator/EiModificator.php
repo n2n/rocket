@@ -21,9 +21,7 @@
  */
 namespace rocket\ei\component\modificator;
 
-use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\component\EiComponent;
-use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\gui\EiEntryGui;
 use rocket\ei\manage\draft\DraftDefinition;
@@ -37,15 +35,14 @@ interface EiModificator extends EiComponent {
 	public function setupEiFrame(Eiu $eiu);
 	
 	/**
-	 * @param EiEntry $eiEntry
 	 * @param Eiu $eiu
 	 */
 	public function setupEiEntry(Eiu $eiu);
 	
 	/**
-	 * @param GuiDefinition $guiDefinition
+	 * @param Eiu $eiu
 	 */
-	public function setupGuiDefinition(GuiDefinition $guiDefinition);
+	public function setupGuiDefinition(Eiu $eiu);
 	
 	/**
 	 * @param EiEntryGui $eiEntryGui

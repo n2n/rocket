@@ -44,7 +44,6 @@ use n2n\reflection\ArgUtils;
 use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\GuiField;
-use n2n\l10n\N2nLocale;
 use rocket\core\model\Rocket;
 
 class StringDisplayEiProp extends IndependentEiPropAdapter implements ObjectPropertyConfigurable, GuiEiProp, GuiProp, 
@@ -91,17 +90,17 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ObjectProp
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayLabel()
+	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayLabelLstr()
 	 */
-	public function getDisplayLabel(N2nLocale $n2nLocale): string {
+	public function getDisplayLabelLstr(): Lstr {
 		return $this->getLabelLstr()->t($n2nLocale);
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayHelpText()
+	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayHelpTextLstr()
 	 */
-	public function getDisplayHelpText(N2nLocale $n2nLocale): ?string {
+	public function getDisplayHelpTextLstr(): ?Lstr {
 		$helpText = $this->displaySettings->getHelpText();
 		if ($helpText === null) {
 			return null;
