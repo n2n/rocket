@@ -26,11 +26,6 @@ use n2n\web\ui\UiComponent;
 use rocket\ei\util\Eiu;
 
 interface StatelessDisplayable {
-
-	/**
-	 * @param Eiu $eiu
-	 */
-	public function getUiOutputLabel(Eiu $eiu);
 	
 	/**
 	 * @param Eiu $eiu

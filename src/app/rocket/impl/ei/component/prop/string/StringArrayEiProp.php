@@ -36,7 +36,7 @@ class StringArrayEiProp extends DraftableEiPropAdapter {
 	}
 
 	public function createMag(Eiu $eiu): Mag {
-		return new MagArrayMag($this->getDisplayLabelLstr(), function () {
+		return new MagArrayMag($this->getLabelLstr(), function () {
 			return new StringMag('Huii');
 		});
 		//return new StringArrayMag($this->getDisplayLabel(), $eiu->field()->getValue());

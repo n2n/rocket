@@ -75,15 +75,18 @@ class EiuGui {
 	 * @param bool $required
 	 * @return string|null
 	 */
-	public function getPropLabel($guiIdPath, N2nLocale $n2nLocale, bool $required = false) {
+	public function getPropLabel($guiIdPath, N2nLocale $n2nLocale = null, bool $required = false) {
 		$guiIdPath = GuiIdPath::create($guiIdPath);
+		if ($n2nLocale === null) {
+			$n2nLocale = $this->eiGui->getEiFrame()->getN2nContext()->getN2nLocale();
+		}
 		
 		if (null !== ($displayItem = $this->getDisplayItemByGuiIdPath($guiIdPath))) {
 			return $displayItem->translateLabel($n2nLocale);
 		}
 		
 		if (null !== ($guiProp = $this->getGuiPropByGuiIdPath($guiIdPath, $required))) {
-			return $guiProp->getDisplayLabelLstr()->t($n2nLocale);
+			return $guiProp->getDisplayLabel($n2nLocale);
 		}
 		
 		return null;

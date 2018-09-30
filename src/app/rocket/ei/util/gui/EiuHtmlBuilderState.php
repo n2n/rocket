@@ -104,6 +104,15 @@ class EiuHtmlBuilderState {
 		}
 	}
 	
+	/**
+	 * @return boolean
+	 */
+	public function isFieldOpen() {
+		$info = ArrayUtils::end($this->stack) ;
+		
+		return $info === null || $info['type'] != 'field';
+	}
+	
 	
 	/**
 	 * @param string $tagName

@@ -38,7 +38,7 @@ use n2n\reflection\ArgUtils;
 use rocket\ei\manage\gui\ui\DisplayItem;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\GuiField;
-use n2n\l10n\Lstr;
+use rocket\core\model\Rocket;
 
 abstract class PropertyDisplayableEiPropAdapter extends ObjectPropertyEiPropAdapter implements StatelessDisplayable, 
 		FieldEiProp, GuiEiProp, GuiProp, Readable {
@@ -61,7 +61,7 @@ abstract class PropertyDisplayableEiPropAdapter extends ObjectPropertyEiPropAdap
 		$groupType = $this->getDisplayItemType($eiu);
 		ArgUtils::valEnumReturn($groupType, DisplayItem::getTypes(), $this, 'getGroupType');
 		
-		return new DisplayDefinition($this->getDisplayLabelLstr(), $groupType,
+		return new DisplayDefinition($groupType,
 				$this->getDisplaySettings()->isViewModeDefaultDisplayed($viewMode));
 	}
 	
@@ -121,8 +121,25 @@ abstract class PropertyDisplayableEiPropAdapter extends ObjectPropertyEiPropAdap
 		return $this;
 	}
 	
-	public function getDisplayLabelLstr(): Lstr {
-		return $this->getLabelLstr();
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayLabel()
+	 */
+	public function getDisplayLabel(N2nLocale $n2nLocale): string {
+		return $this->getLabelLstr()->t($n2nLocale);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayHelpText()
+	 */
+	public function getDisplayHelpText(N2nLocale $n2nLocale): ?string {
+		$helpText = $this->displaySettings->getHelpText();
+		if ($helpText === null) {
+			return null;
+		}
+		
+		return Rocket::createLstr($helpText, $this->eiMask->getModuleNamespace())->t($n2nLocale);
 	}
 	
 	public function buildGuiField(Eiu $eiu): ?GuiField {

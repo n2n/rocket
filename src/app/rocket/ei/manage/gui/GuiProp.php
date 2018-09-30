@@ -30,7 +30,9 @@ interface GuiProp {
 	/**
 	 * @return Lstr 
 	 */
-	public function getDisplayLabelLstr(): Lstr;
+	public function getDisplayLabel(N2nLocale $n2nLocale): ?string;
+	
+	public function getDisplayHelpText(N2nLocale $n2nLocale): ?string;
 	
 	/**
 	 * <p>Tests if this GuiProp is compatible with the passed EiGui and returns an {@see DisplayDefinition}

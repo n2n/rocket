@@ -100,7 +100,7 @@ class EiuHtmlBuilder {
 		}
 		
 		return $this->html->getOut($eiGui->getEiGuiViewFactory()->getGuiDefinition()->getGuiPropByGuiIdPath($guiIdPath)
-				->getDisplayLabelLstr()->t($this->view->getN2nLocale()));
+				->getDisplayLabel($this->view->getN2nLocale()));
 	}
 	
 	private $collectionTagName = null;
@@ -411,15 +411,14 @@ class EiuHtmlBuilder {
 			return new HtmlElement('label', $attrs, $label);
 		}
 		
-		if (isset($fieldInfo['guiFieldAssembly'])) {
-			return new HtmlElement('label', $attrs, $fieldInfo['guiFieldAssembly']->getDisplayable()
-					->getUiOutputLabel($this->view->getN2nLocale()));
+		if (isset($fieldInfo['displayItem']) && null !== ($label = $fieldInfo['displayItem']
+				->translateLabel($this->view->getN2nLocale()))) {
+			return new HtmlElement('label', $attrs, $label);
 		}
 		
 		$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
 		return new HtmlElement('label', $attrs, $eiEntryGui->getEiGui()->getEiGuiViewFactory()
-				->getGuiDefinition()->getGuiPropByGuiIdPath($fieldInfo['guiIdPath'])->getDisplayLabelLstr()
-				->t($this->view->getN2nLocale()));
+				->getGuiDefinition()->getGuiPropByGuiIdPath($fieldInfo['guiIdPath'])->getDisplayLabel($this->view->getN2nLocale()));
 	}
 	
 	public function fieldContent() {
@@ -464,31 +463,32 @@ class EiuHtmlBuilder {
 	}
 	
 	
-	public function fieldControls() {
+	public function fieldControls(array $attrs = null) {
 		$this->view->out($this->getFieldControls());
 	}
 	
-	public function getFieldControls() {
+	public function getFieldControls(array $attrs = null) {
 		$fieldInfo = $this->state->peakField(false);
 		
 		$helpText = null;
-		if (isset($fieldInfo['guiFieldAssembly'])) {
-			$helpText = $fieldInfo['guiFieldAssembly']->getDisplayable()
-					->getUiHelpText($this->view->getN2nLocale())
-			
-			
+		if (isset($fieldInfo['displayItem'])) {
+			$helpText = $fieldInfo['displayItem']->translateHelpText($this->view->getN2nLocale());
 		}
 		
-		$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
-		return new HtmlElement('label', $attrs, $eiEntryGui->getEiGui()->getEiGuiViewFactory()
-				->getGuiDefinition()->getGuiPropByGuiIdPath($fieldInfo['guiIdPath'])->getHelpTextLstr()
-				->t($this->view->getN2nLocale()));
+		if ($helpText === null) {
+			$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
+			$helpText = $eiEntryGui->getEiGui()->getEiGuiViewFactory()->getGuiDefinition()
+					->getGuiPropByGuiIdPath($fieldInfo['guiIdPath'])->getDisplayHelpText($this->view->getN2nLocale());
+		}
 		
-		$helpText = $fieldInfo['displayItem']->getHelpText();
+		if ($helpText === null) return null;
+		
 		
 		$div = new HtmlElement('div', HtmlUtils::mergeAttrs(array('class' => 'rocket-group-controls'), $attrs));
 		
-		$div->append();
+		$div->append(
+				new HtmlElement('button', ['type' => 'button', 'class' => 'btn btn-secondary', 'title' => $helpText], 
+						new HtmlElement('i', ['class' => 'fa fa-lightbulb-o'], '')));
 		
 		return $div;
 	}

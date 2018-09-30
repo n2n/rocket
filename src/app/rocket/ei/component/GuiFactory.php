@@ -109,7 +109,7 @@ class GuiFactory {
 		}
 		
 		if ($namePatternPart === null) {
-			$namePatternPart = $this->getLabelLstr()->t($n2nLocale);
+			$namePatternPart = $this->eiMask->getLabelLstr()->t($n2nLocale);
 		}
 		
 		return $guiDefinition->createIdentityString($namePatternPart . ' #' . $idPatternPart, $eiObject, $n2nLocale);

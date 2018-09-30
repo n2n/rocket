@@ -45,7 +45,8 @@ use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
 use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\manage\security\InaccessibleEiCommandPathException;
-use n2n\l10n\Lstr;
+use n2n\l10n\N2nLocale;
+use rocket\core\model\Rocket;
 
 abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter implements GuiProp, DraftableEiProp, 
 		DraftProperty, FilterableEiProp {
@@ -64,10 +65,23 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayLabelLstr()
+	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayLabel()
 	 */
-	public function getDisplayLabelLstr(): Lstr {
-		return $this->getLabelLstr();
+	public function getDisplayLabel(N2nLocale $n2nLocale): string {
+		return $this->getLabelLstr()->t($n2nLocale);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayHelpText()
+	 */
+	public function getDisplayHelpText(N2nLocale $n2nLocale): ?string {
+		$helpText = $this->displaySettings->getHelpText();
+		if ($helpText === null) {
+			return null;
+		}
+		
+		return Rocket::createLstr($helpText, $this->eiMask->getModuleNamespace())->t($n2nLocale);
 	}
 	
 	/**
@@ -85,7 +99,7 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 			return null;
 		}
 		
-		return new DisplayDefinition($this->getLabelLstr(), $this->getDisplayItemType(), 
+		return new DisplayDefinition($this->getDisplayItemType(), 
 				$this->displaySettings->isViewModeDefaultDisplayed($viewMode));
 	}
 	

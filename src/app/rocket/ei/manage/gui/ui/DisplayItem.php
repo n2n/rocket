@@ -19,6 +19,7 @@ class DisplayItem {
 	protected $moduleNamespace;
 	protected $type;
 	protected $guiIdPath;
+	protected $helpText;
 	protected $attrs;
 	protected $displayStructure;
 
@@ -74,7 +75,7 @@ class DisplayItem {
 	 * @param string|null $label
 	 * @return DisplayItem
 	 */
-	public function copy(string $type = null, string $label = null, string $moduleNamespace = null, array $attrs = null) {
+	public function copy(string $type = null, array $attrs = null, string $label = null, string $helpText = null, string $moduleNamespace = null) {
 		$displayItem = new DisplayItem();
 		$displayItem->displayStructure = $this->displayStructure;
 		$displayItem->guiIdPath = $this->guiIdPath;
@@ -82,6 +83,7 @@ class DisplayItem {
 		$displayItem->type = $type ?? $this->type;
 		$displayItem->label = $label ?? $this->label;
 		$displayItem->moduleNamespace = $moduleNamespace ?? $this->moduleNamespace;
+		$displayItem->helpText = $helpText ?? $this->helpText;
 		$displayItem->attrs = $attrs ?? $this->attrs;
 		return $displayItem;
 	}
@@ -92,6 +94,13 @@ class DisplayItem {
 	public function getLabel() {
 		return $this->label;
 	}
+
+	/**
+	 * @return string|null
+	 */
+	public function getHelpText() {
+		return $this->helpText;
+	}
 	
 	/**
 	 * @return string|null
@@ -100,6 +109,10 @@ class DisplayItem {
 		return $this->moduleNamespace;
 	}
 	
+	/**
+	 * @param N2nLocale $n2nLocale
+	 * @return string|null
+	 */
 	public function translateLabel(N2nLocale $n2nLocale) {
 		if ($this->label === null) return null;
 		
@@ -108,6 +121,20 @@ class DisplayItem {
 		}
 		
 		return Rocket::createLstr($this->label, $this->moduleNamespace)->t($n2nLocale);
+	}
+	
+	/**
+	 * @param N2nLocale $n2nLocale
+	 * @return string|null
+	 */
+	public function translateHelpText(N2nLocale $n2nLocale) {
+		if ($this->helpText === null) return null;
+		
+		if ($this->moduleNamespace === null) {
+			return $this->helpText;
+		}
+		
+		return Rocket::createLstr($this->helpText, $this->moduleNamespace)->t($n2nLocale);
 	}
 
 	/**

@@ -28,7 +28,6 @@ use rocket\ei\manage\draft\DraftProperty;
 use rocket\ei\manage\EiObject;
 use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
-use n2n\l10n\Lstr;
 
 abstract class ToManyEiPropAdapter extends SimpleRelationEiPropAdapter implements GuiProp, DraftableEiProp, 
 		DraftProperty {
@@ -60,14 +59,6 @@ abstract class ToManyEiPropAdapter extends SimpleRelationEiPropAdapter implement
 		if ($this->standardEditDefinition->isMandatory()) return 1;
 		
 		return 0;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayLabelLstr()
-	 */
-	public function getDisplayLabelLstr(): Lstr {
-		return $this->getLabelLstr();
 	}
 	
 	/**

@@ -34,6 +34,7 @@ use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\util\Eiu;
 use rocket\ei\util\EiuPerimeterException;
 use rocket\ei\util\EiuAnalyst;
+use n2n\l10n\N2nLocale;
 
 class EiuEntryGui {
 	private $eiEntryGui;
@@ -83,18 +84,12 @@ class EiuEntryGui {
 	
 	/**
 	 * @param GuiIdPath|string $guiIdPath
+	 * @param bool $required
 	 * @throws GuiException
 	 * @return string|null
 	 */
-	public function getFieldLabel($guiIdPath) {
-		$guiIdPath = GuiIdPath::create($guiIdPath);
-		
-		try {
-			return $this->eiEntryGui->getDisplayableByGuiIdPath($guiIdPath)->getUiOutputLabel();
-		} catch (GuiException $e) {
-			if (!$required) return null;
-			throw $e;
-		}
+	public function getFieldLabel($guiIdPath, N2nLocale $n2nLocale = null, bool $required = false) {
+		return $this->getEiuGui()->getPropLabel($guiIdPath, $n2nLocale, $required);
 	}
 	
 	/**
