@@ -45,6 +45,7 @@ use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\GuiField;
 use rocket\core\model\Rocket;
+use n2n\l10n\Lstr;
 
 class StringDisplayEiProp extends IndependentEiPropAdapter implements ObjectPropertyConfigurable, GuiEiProp, GuiProp, 
 		FieldEiProp, Readable, StatelessDisplayable {
