@@ -29,11 +29,9 @@ use rocket\ei\manage\EiObject;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\ArgUtils;
-use rocket\impl\ei\component\prop\adapter\DisplaySettings;
 use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\relation\model\ToOneEiField;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
-use n2n\l10n\Lstr;
 
 abstract class ToOneEiPropAdapter extends SimpleRelationEiPropAdapter implements GuiProp, DraftableEiProp, 
 		DraftProperty {
@@ -48,22 +46,6 @@ abstract class ToOneEiPropAdapter extends SimpleRelationEiPropAdapter implements
 	
 		return new ToOneEiField($eiu->entry()->getEiObject(), $this, $this,
 				($readOnly ? null : $this));
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayLabelLstr()
-	 */
-	public function getDisplayLabelLstr(): Lstr {
-		return $this->getLabelLstr();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiProp::getDisplaySettings()
-	 */
-	public function getDisplaySettings(): DisplaySettings {
-		return $this->displaySettings;
 	}
 	
 	/**

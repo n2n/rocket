@@ -71,6 +71,10 @@ class EiuEngine {
 		return new EiuEngine($this->eiEngine->getSupremeEiEngine(), $this->n2nContext);
 	}
 	
+	public function removeGuiProp($guiIdPath) {
+		$this->getGuiDefinition()->removeGuiProp(GuiIdPath::create($guiIdPath));
+	}
+	
 	/**
 	 * @param mixed $eiPropArg See {@see EiPropPath::create()}
 	 * @return bool

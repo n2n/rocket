@@ -386,7 +386,7 @@ class EiuHtmlBuilder {
 		
 		return $attrs;
 	}
-		
+	
 	public function fieldClose() {
 		$this->view->out($this->getFieldClose());
 	}
@@ -411,14 +411,14 @@ class EiuHtmlBuilder {
 			return new HtmlElement('label', $attrs, $label);
 		}
 		
-		if (isset($fieldInfo['displayable'])) {
-			return new HtmlElement('label', $attrs, $fieldInfo['displayable']->getUiOutputLabel());
+		if (isset($fieldInfo['displayItem']) && null !== ($label = $fieldInfo['displayItem']
+				->translateLabel($this->view->getN2nLocale()))) {
+			return new HtmlElement('label', $attrs, $label);
 		}
 		
 		$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
 		return new HtmlElement('label', $attrs, $eiEntryGui->getEiGui()->getEiGuiViewFactory()
-				->getGuiDefinition()->getGuiPropByGuiIdPath($fieldInfo['guiIdPath'])->getDisplayLabelLstr()
-				->t($this->view->getN2nLocale()));
+				->getGuiDefinition()->getGuiPropByGuiIdPath($fieldInfo['guiIdPath'])->getDisplayLabelLstr()->t($this->view->getN2nLocale()));
 	}
 	
 	public function fieldContent() {
@@ -460,6 +460,40 @@ class EiuHtmlBuilder {
 		}
 
 		return null;
+	}
+	
+	
+	public function fieldControls(array $attrs = null) {
+		$this->view->out($this->getFieldControls());
+	}
+	
+	public function getFieldControls(array $attrs = null) {
+		$fieldInfo = $this->state->peakField(false);
+		
+		$helpText = null;
+		if (isset($fieldInfo['displayItem'])) {
+			$helpText = $fieldInfo['displayItem']->translateHelpText($this->view->getN2nLocale());
+		}
+		
+		if ($helpText === null) {
+			$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
+			$helpTextLstr = $eiEntryGui->getEiGui()->getEiGuiViewFactory()->getGuiDefinition()
+					->getGuiPropByGuiIdPath($fieldInfo['guiIdPath'])->getDisplayHelpTextLstr();
+			if ($helpTextLstr !== null) {
+				$helpText = $helpTextLstr->t($this->view->getN2nLocale());
+			}
+		}
+		
+		if ($helpText === null) return null;
+		
+		
+		$div = new HtmlElement('div', HtmlUtils::mergeAttrs(array('class' => 'rocket-group-controls'), $attrs));
+		
+		$div->append(
+				new HtmlElement('button', ['type' => 'button', 'class' => 'btn btn-secondary', 'title' => $helpText], 
+						new HtmlElement('i', ['class' => 'fa fa-lightbulb-o'], '')));
+		
+		return $div;
 	}
 	
 	/**

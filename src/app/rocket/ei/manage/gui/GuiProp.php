@@ -33,6 +33,11 @@ interface GuiProp {
 	public function getDisplayLabelLstr(): Lstr;
 	
 	/**
+	 * @return Lstr|NULL
+	 */
+	public function getDisplayHelpTextLstr(): ?Lstr;
+	
+	/**
 	 * <p>Tests if this GuiProp is compatible with the passed EiGui and returns an {@see DisplayDefinition}
 	 * if it does. Use <code>$eiu->gui()</code> to access the {@see \rocket\ei\util\gui\EiuGui} 
 	 * object.<p>

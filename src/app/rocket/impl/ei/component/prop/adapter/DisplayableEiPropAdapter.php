@@ -34,11 +34,15 @@ use n2n\reflection\ArgUtils;
 use rocket\ei\manage\gui\ui\DisplayItem;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\GuiField;
+use rocket\core\model\Rocket;
 use n2n\l10n\Lstr;
 
 abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter implements StatelessDisplayable, GuiEiProp, GuiProp {
 	protected $displaySettings;
 
+	/**
+	 * @return DisplaySettings
+	 */
 	public function getDisplaySettings(): DisplaySettings {
 		if ($this->displaySettings === null) {
 			$this->displaySettings = new DisplaySettings(ViewMode::all());
@@ -47,6 +51,10 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 		return $this->displaySettings;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\adapter\IndependentEiPropAdapter::createEiPropConfigurator()
+	 */
 	public function createEiPropConfigurator(): EiPropConfigurator {
 		$eiPropConfigurator = parent::createEiPropConfigurator();
 		IllegalStateException::assertTrue($eiPropConfigurator instanceof AdaptableEiPropConfigurator);
@@ -54,14 +62,39 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 		return $eiPropConfigurator;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\prop\GuiEiProp::buildGuiProp()
+	 */
 	public function buildGuiProp(Eiu $eiu): ?GuiProp {
 		return $this;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayLabelLstr()
+	 */
 	public function getDisplayLabelLstr(): Lstr {
 		return $this->getLabelLstr();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayHelpTextLstr()
+	 */
+	public function getDisplayHelpTextLstr(): ?Lstr {
+		$helpText = $this->displaySettings->getHelpText();
+		if ($helpText === null) {
+			return null;
+		}
+		
+		return Rocket::createLstr($helpText, $this->getEiMask()->getModuleNamespace())->t($n2nLocale);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\gui\GuiProp::buildDisplayDefinition()
+	 */
 	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
 		$viewMode = $eiu->gui()->getViewMode();
 		if (!$this->getDisplaySettings()->isViewModeCompatible($viewMode)) {
@@ -71,7 +104,7 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 		$groupType = $this->getDisplayItemType($eiu);
 		ArgUtils::valEnumReturn($groupType, DisplayItem::getTypes(), $this, 'getGroupType');
 		
-		return new DisplayDefinition($this->getDisplayLabelLstr(), $groupType, 
+		return new DisplayDefinition($groupType, 
 				$this->getDisplaySettings()->isViewModeDefaultDisplayed($viewMode));
 	}
 	
@@ -83,9 +116,9 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 		return new StatelessDisplayElement($this, $eiu);
 	}
 	
-	public function getUiOutputLabel(Eiu $eiu) {
-		return $this->getLabelLstr();
-	}
+// 	public function getUiOutputLabel(Eiu $eiu) {
+// 		return $this->getLabelLstr()->t($eiu->getN2nLocale());
+// 	}
 	
 	public function getOutputHtmlContainerAttrs(Eiu $eiu) {
 		$eiMask = $this->eiMask;

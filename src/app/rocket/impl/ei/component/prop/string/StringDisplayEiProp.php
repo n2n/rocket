@@ -44,7 +44,7 @@ use n2n\reflection\ArgUtils;
 use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\GuiField;
-use n2n\l10n\Lstr;
+use rocket\core\model\Rocket;
 
 class StringDisplayEiProp extends IndependentEiPropAdapter implements ObjectPropertyConfigurable, GuiEiProp, GuiProp, 
 		FieldEiProp, Readable, StatelessDisplayable {
@@ -87,6 +87,28 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ObjectProp
 		$this->accessProxy = $objectPropertyAccessProxy;
 	}
 
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayLabelLstr()
+	 */
+	public function getDisplayLabelLstr(): Lstr {
+		return $this->getLabelLstr()->t($n2nLocale);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayHelpTextLstr()
+	 */
+	public function getDisplayHelpTextLstr(): ?Lstr {
+		$helpText = $this->displaySettings->getHelpText();
+		if ($helpText === null) {
+			return null;
+		}
+		
+		return Rocket::createLstr($helpText, $this->getEiMask()->getModuleNamespace())->t($n2nLocale);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\component\prop\GuiEiProp::getGuiProp()
@@ -145,13 +167,6 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ObjectProp
 		}
 		
 		return $this->accessProxy->getValue($eiObject->getLiveObject());
-	}
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayLabelLstr()
-	 */
-	public function getDisplayLabelLstr(): Lstr {
-		return $this->labelLstr;
 	}
 
 	/**

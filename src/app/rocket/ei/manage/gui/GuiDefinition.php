@@ -76,6 +76,32 @@ class GuiDefinition {
 	}
 	
 	/**
+	 * @param GuiIdPath $guiIdPath
+	 */
+	public function removeGuiProp(GuiIdPath $guiIdPath) {
+		$guiDefinition = $this;
+		$levelIds = $guiIdPath->toArray();
+		while (null !== ($levelId = array_pop($levelIds))) {
+			if (empty($levelIds)) {
+				$guiDefinition->removeLevelGuiProp($levelId);
+				return;
+			}
+			
+			try {
+				$guiDefinition = $guiDefinition->getLevelGuiPropForkById($levelId)->getForkedGuiDefinition();
+			} catch (\rocket\ei\manage\gui\GuiException $e) {
+				return;
+			}
+		}
+	}
+	
+	public function removeLevelGuiProp(string $id) {
+		unset($this->levelGuiProps[$id]);
+		unset($this->levelEiPropPaths[$id]);
+		unset($this->levelIds[$id]);
+	}
+	
+	/**
 	 * @param string $id
 	 * @return bool
 	 */

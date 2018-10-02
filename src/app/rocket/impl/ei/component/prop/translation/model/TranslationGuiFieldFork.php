@@ -133,12 +133,12 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 	}
 	
 	public function assembleGuiField(GuiIdPath $guiIdPath): ?GuiFieldAssembly {
-		$labelLstr = $this->guiDefinition->getGuiPropByGuiIdPath($guiIdPath)->getDisplayLabelLstr();
+		$guiProp = $this->guiDefinition->getGuiPropByGuiIdPath($guiIdPath);
 		$eiPropPath = $this->guiDefinition->guiIdPathToEiPropPath($guiIdPath);
 
 // 		$fieldErrorInfo = new EiFieldValidationResult();
 		
-		$translationDisplayable = new TranslationDisplayable($labelLstr, $this->n2nLocaleDefs);
+		$translationDisplayable = new TranslationDisplayable($guiProp, $this->n2nLocaleDefs);
 		
 		$translationMag = null;
 		$eiFieldWrappers = array();
@@ -165,7 +165,7 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 			if ($guiFieldAssembler->getEiuEntryGui()->isReadOnly()) continue;
 			
 			if ($translationMag === null) {
-				$translationMag = new TranslationMag($labelLstr, $this->getMarkClassKey());
+				$translationMag = new TranslationMag($result->getGuiProp()->getDisplayLabelLstr(), $this->getMarkClassKey());
 			}
 			
 			if (null !== ($magAssembly = $result->getMagAssembly())) {
@@ -183,7 +183,7 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 		$eiFieldWrapperWrapper = new EiFieldWrapperWrapper($eiFieldWrappers);
 		
 		if ($translationMag === null) {
-			return new GuiFieldAssembly($translationDisplayable, $eiFieldWrapperWrapper);
+			return new GuiFieldAssembly($guiProp, $translationDisplayable, $eiFieldWrapperWrapper);
 		}
 		
 		$translationMag->setSrcLoadConfig($this->buildSrcLoadConfig($guiIdPath));
@@ -191,7 +191,7 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 		$this->setupTranslationForm();
 				
 		$magInfo = $this->translationForm->registerMag($guiIdPath->__toString(), $translationMag);
-		return new GuiFieldAssembly($translationDisplayable, $eiFieldWrapperWrapper, 
+		return new GuiFieldAssembly($guiProp, $translationDisplayable, $eiFieldWrapperWrapper, 
 				new MagAssembly($mandatory, $magInfo['propertyPath'], $magInfo['magWrapper']));
 	}
 		

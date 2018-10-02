@@ -38,6 +38,7 @@ use n2n\reflection\ArgUtils;
 use rocket\ei\manage\gui\ui\DisplayItem;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\GuiField;
+use rocket\core\model\Rocket;
 use n2n\l10n\Lstr;
 
 abstract class PropertyDisplayableEiPropAdapter extends ObjectPropertyEiPropAdapter implements StatelessDisplayable, 
@@ -61,7 +62,7 @@ abstract class PropertyDisplayableEiPropAdapter extends ObjectPropertyEiPropAdap
 		$groupType = $this->getDisplayItemType($eiu);
 		ArgUtils::valEnumReturn($groupType, DisplayItem::getTypes(), $this, 'getGroupType');
 		
-		return new DisplayDefinition($this->getDisplayLabelLstr(), $groupType,
+		return new DisplayDefinition($groupType,
 				$this->getDisplaySettings()->isViewModeDefaultDisplayed($viewMode));
 	}
 	
@@ -121,8 +122,25 @@ abstract class PropertyDisplayableEiPropAdapter extends ObjectPropertyEiPropAdap
 		return $this;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayLabelLstr()
+	 */
 	public function getDisplayLabelLstr(): Lstr {
 		return $this->getLabelLstr();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayHelpTextLstr()
+	 */
+	public function getDisplayHelpTextLstr(): ?Lstr {
+		$helpText = $this->displaySettings->getHelpText();
+		if ($helpText === null) {
+			return null;
+		}
+		
+		return Rocket::createLstr($helpText, $this->eiMask->getModuleNamespace());
 	}
 	
 	public function buildGuiField(Eiu $eiu): ?GuiField {

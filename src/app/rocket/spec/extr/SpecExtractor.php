@@ -321,9 +321,9 @@ class SpecExtractor {
 				$eiModificatorsAttributes = new Attributes($attributes->getArray($typePathStr, false));
 				$eiModificatorGroups[$typePathStr] = $this->createEiModificatorExtractions($eiModificatorsAttributes, $typePath);
 			} catch (AttributesException $e) {
-				throw $this->createEiModificatorsException($typePath, $e);
+				throw $this->createSpecEiMaskException($typePath, $e);
 			} catch (InvalidConfigurationException $e) {
-				throw $this->createEiModificatorException($typePath, $e);
+				throw $this->createSpecEiMaskException($typePath, $e);
 			}
 		}
 		

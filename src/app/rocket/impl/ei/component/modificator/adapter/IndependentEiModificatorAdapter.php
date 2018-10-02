@@ -24,7 +24,6 @@ namespace rocket\impl\ei\component\modificator\adapter;
 use rocket\ei\component\modificator\EiModificator;
 use rocket\impl\ei\component\IndependentEiComponentAdapter;
 use rocket\ei\component\modificator\IndependentEiModificator;
-use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\component\EiConfigurator;
 use rocket\impl\ei\component\DefaultEiConfigurator;
 use rocket\ei\util\Eiu;
@@ -43,11 +42,23 @@ abstract class IndependentEiModificatorAdapter extends IndependentEiComponentAda
 		return $obj instanceof EiModificator && parent::equals($obj);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\modificator\EiModificator::setupEiFrame()
+	 */
 	public function setupEiFrame(Eiu $eiu) { }
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\modificator\EiModificator::setupEiEntry()
+	 */
 	public function setupEiEntry(Eiu $eiu) { }
 	
-	public function setupGuiDefinition(GuiDefinition $guiDefinition) { }
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\modificator\EiModificator::setupGuiDefinition()
+	 */
+	public function setupGuiDefinition(Eiu $eiu) { }
 	
 	/**
 	 * {@inheritDoc}

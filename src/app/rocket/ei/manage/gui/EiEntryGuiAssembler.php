@@ -93,7 +93,7 @@ class EiEntryGuiAssembler {
 		$eiFieldWrapper = $this->eiu->entry()->getEiFieldWrapper($eiPropPath);
 		
 		if ($this->eiu->gui()->isReadOnly() || $guiField->isReadOnly()) {
-			return new GuiFieldAssembly($guiField, $eiFieldWrapper);
+			return new GuiFieldAssembly($guiProp, $guiField, $eiFieldWrapper);
 		}
 		
 		$editable = $guiField->getEditable();
@@ -101,7 +101,7 @@ class EiEntryGuiAssembler {
 		$magWrapper = $this->getOrCreateDispatchable()->getMagCollection()->addMag($id, $editable->getMag($id));
 		
 		$magPropertyPath = new PropertyPath(array(new PropertyPathPart($id)));
-		return new GuiFieldAssembly($guiField, $eiFieldWrapper, new MagAssembly($editable->isMandatory(), $magPropertyPath, $magWrapper),
+		return new GuiFieldAssembly($guiProp, $guiField, $eiFieldWrapper, new MagAssembly($editable->isMandatory(), $magPropertyPath, $magWrapper),
 				$editable);
 	}
 	
@@ -128,12 +128,13 @@ class EiEntryGuiAssembler {
 			return null;
 		}
 		
+		$guiProp = $result->getGuiProp();
 		$displayable = $result->getDisplayable();
 		$eiFieldWrapper = $result->getEiFieldWrapper();
 		$magAssembly = $result->getMagAssembly();
 		
 		if ($this->eiu->gui()->isReadOnly() || $displayable->isReadOnly() || $magAssembly === null) {
-			return new GuiFieldAssembly($displayable, $eiFieldWrapper);
+			return new GuiFieldAssembly($guiProp, $displayable, $eiFieldWrapper);
 		}
 		
 		$magWrapper = null;
@@ -142,7 +143,7 @@ class EiEntryGuiAssembler {
 		}
 		
 		/* $this->forkMagWrappers[$id] */
-		return new GuiFieldAssembly($displayable, $eiFieldWrapper, 
+		return new GuiFieldAssembly($guiProp, $displayable, $eiFieldWrapper, 
 				new MagAssembly($magAssembly->isMandatory(), 
 						$this->forkedPropertyPaths[$id]->ext($magAssembly->getMagPropertyPath()), 
 						$magAssembly->getMagWrapper()),

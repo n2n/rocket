@@ -108,8 +108,13 @@
 			
 			<?php if ($renderInnerForks): ?>
 				<div class="rocket-toolbar">
+					<?php $eiuHtml->fieldControls() ?>
 					<?php $eiuHtml->entryForkControls() ?>
 					<?php $eiuHtml->commands($controls, true) ?>
+				</div>
+			<?php elseif (null !== ($ui = $eiuHtml->getFieldControls())): ?>
+				<div class="rocket-toolbar">
+					<?php $eiuHtml->fieldControls() ?>
 				</div>
 			<?php endif ?>	
 			

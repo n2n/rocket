@@ -277,7 +277,7 @@ namespace Rocket.Display {
 		public constructor(jqToolbar: JQuery<Element>) {
 			this.jqToolbar = jqToolbar;
 			
-			this.jqControls = jqToolbar.children(".rocket-group-controls");
+			this.jqControls = jqToolbar.children(".rocket-group-controls").first();
 			if (this.jqControls.length == 0) {
 				this.jqControls = $("<div />", { "class": "rocket-group-controls"});
 				this.jqToolbar.append(this.jqControls);

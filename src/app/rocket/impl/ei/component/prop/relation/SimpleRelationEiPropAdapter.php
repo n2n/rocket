@@ -45,6 +45,7 @@ use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
 use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\manage\security\InaccessibleEiCommandPathException;
+use rocket\core\model\Rocket;
 use n2n\l10n\Lstr;
 
 abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter implements GuiProp, DraftableEiProp, 
@@ -72,6 +73,19 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 	
 	/**
 	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayHelpTextLstr()
+	 */
+	public function getDisplayHelpTextLstr(): ?Lstr {
+		$helpText = $this->displaySettings->getHelpText();
+		if ($helpText === null) {
+			return null;
+		}
+		
+		return Rocket::createLstr($helpText, $this->eiMask->getModuleNamespace());
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiProp::getDisplaySettings()
 	 */
 	public function getDisplaySettings(): DisplaySettings {
@@ -85,7 +99,7 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 			return null;
 		}
 		
-		return new DisplayDefinition($this->getLabelLstr(), $this->getDisplayItemType(), 
+		return new DisplayDefinition($this->getDisplayItemType(), 
 				$this->displaySettings->isViewModeDefaultDisplayed($viewMode));
 	}
 	

@@ -6,7 +6,6 @@ use n2n\reflection\ArgUtils;
 use n2n\l10n\Lstr;
 
 class DisplayDefinition {
-	private $labelLstr;
 	private $displayItemType;
 	private $defaultDisplayed;
 	
@@ -15,19 +14,18 @@ class DisplayDefinition {
 	 * @param string $displayItemType
 	 * @param bool $defaultDisplayed
 	 */
-	public function __construct(Lstr $labelLstr, string $displayItemType, bool $defaultDisplayed, string $helpText = null) {
-		$this->labelLstr = $labelLstr;
+	public function __construct(string $displayItemType, bool $defaultDisplayed, string $helpText = null) {
 		ArgUtils::valEnum($displayItemType, DisplayItem::getTypes());
 		$this->displayItemType = $displayItemType;
 		$this->defaultDisplayed = $defaultDisplayed;
 	}
 	
-	/**
-	 * @return Lstr
-	 */
-	public function getLabelLstr() {
-		return $this->labelLstr;
-	}
+// 	/**
+// 	 * @return Lstr
+// 	 */
+// 	public function getLabelLstr() {
+// 		return $this->labelLstr;
+// 	}
 	
 	/**
 	 * @return string

@@ -26,21 +26,18 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\gui\GuiField;
 use rocket\ei\manage\gui\GuiFieldEditable;
 use n2n\util\ex\IllegalStateException;
-use n2n\l10n\N2nLocale;
+use rocket\ei\manage\gui\GuiProp;
 
 class TranslationDisplayable implements GuiField {
-	private $labelLstr;
+	private $guiProp;
 	private $localeDefs;
 	private $translatedDisplayables = array();
 	
-	public function __construct($labelLstr, array $localeDefs) {
-		$this->labelLstr = $labelLstr;
+	public function __construct(GuiProp $guiProp, array $localeDefs) {
+		$this->guiProp = $guiProp;
 		$this->localeDefs = $localeDefs;
 	}
 	
-	public function getUiOutputLabel(N2nLocale $n2nLocale): string {
-		return $this->labelLstr->t($n2nLocale);
-	}
 	
 	public function isEmpty() {
 		return empty($this->translatedDisplayables);
@@ -77,7 +74,7 @@ class TranslationDisplayable implements GuiField {
 // 		}
 		
 		return $view->getImport('\rocket\impl\ei\component\prop\translation\view\displayable.html',
-				array('displayables' => $this->translatedDisplayables, 'label' => $this->labelLstr->t($view->getN2nLocale()),
+				array('displayables' => $this->translatedDisplayables, 'label' => $this->guiProp->getDisplayLabelLstr()->t($view->getN2nLocale()),
 						'localeDefs' => $this->localeDefs));
 	}
 	/**

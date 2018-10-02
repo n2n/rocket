@@ -79,14 +79,13 @@ class EiuHtmlBuilderState {
 	 * @param Displayable $guiFieldAssembly
 	 * @param PropertyPath $propertyPath
 	 */
-	public function pushField(string $tagName, GuiIdPath $guiIdPath, EiFieldValidationResult $fieldErrorInfo, GuiFieldAssembly $guiFieldAssembly = null,
-			PropertyPath $propertyPath = null, DisplayItem $displayItem = null) {
+	public function pushField(string $tagName, GuiIdPath $guiIdPath, EiFieldValidationResult $fieldErrorInfo, 
+			GuiFieldAssembly $guiFieldAssembly = null, PropertyPath $propertyPath = null, DisplayItem $displayItem = null) {
 		$this->stack[] = array('type' => 'field', 'guiIdPath' => $guiIdPath, 'tagName' => $tagName, 'guiFieldAssembly' => $guiFieldAssembly,
 				'fieldErrorInfo' => $fieldErrorInfo, 'propertyPath' => $propertyPath, 'displayItem' => $displayItem);
 	}
 	
 	/**
-	 *
 	 * @param bool $pop
 	 * @throws IllegalStateException
 	 * @return array
@@ -103,6 +102,15 @@ class EiuHtmlBuilderState {
 		} else {
 			return end($this->stack);
 		}
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function isFieldOpen() {
+		$info = ArrayUtils::end($this->stack) ;
+		
+		return $info === null || $info['type'] != 'field';
 	}
 	
 	
