@@ -1322,8 +1322,8 @@ var Rocket;
             isItem() {
                 return this.jqElem.hasClass("rocket-item");
             }
-            getToolbar() {
-                if (this.toolbar !== null) {
+            getToolbar(createIfNotExists) {
+                if (!createIfNotExists || this.toolbar !== null) {
                     return this.toolbar;
                 }
                 let toolbarJq = this.jqElem.find(".rocket-toolbar:first")
@@ -1467,7 +1467,7 @@ var Rocket;
         class Toolbar {
             constructor(jqToolbar) {
                 this.jqToolbar = jqToolbar;
-                this.jqControls = jqToolbar.children(".rocket-group-controls");
+                this.jqControls = jqToolbar.children(".rocket-group-controls").first();
                 if (this.jqControls.length == 0) {
                     this.jqControls = $("<div />", { "class": "rocket-group-controls" });
                     this.jqToolbar.append(this.jqControls);
@@ -1492,6 +1492,17 @@ var Rocket;
             getCommandList() {
                 return this.commandList;
             }
+            isEmpty() {
+                return this.jqControls.is(":empty") && this.commandList.isEmpty();
+            }
+            show() {
+                this.jQuery.show();
+                return this;
+            }
+            hide() {
+                this.jQuery.hide();
+                return this;
+            }
         }
         Display.Toolbar = Toolbar;
         class CommandList {
@@ -1504,6 +1515,9 @@ var Rocket;
             }
             get jQuery() {
                 return this.jqCommandList;
+            }
+            isEmpty() {
+                return this.jqCommandList.is(":empty");
             }
             createJqCommandButton(buttonConfig, prepend = false) {
                 this.jqCommandList.show();
@@ -1907,7 +1921,7 @@ var Rocket;
             setup() {
                 this.enablerJq.hide();
                 this.checkVisibility();
-                this.structureElement.getToolbar().getCommandList()
+                this.structureElement.getToolbar(true).show().getCommandList()
                     .createJqCommandButton({
                     iconType: "fa fa-trash",
                     label: "Remove"
@@ -2581,8 +2595,7 @@ var Rocket;
                 let jqSelector = this.jqElem.children(".rocket-ei-type-selector");
                 let se = Display.StructureElement.of(jqSelector);
                 if (se && se.isGroup()) {
-                    se.getToolbar().getJqControls().show();
-                    se.getToolbar().getJqControls().append(jqSelector);
+                    se.getToolbar(true).show().getJqControls().show().append(jqSelector);
                 }
                 else {
                     jqSelector.addClass("rocket-toolbar");
@@ -6009,10 +6022,10 @@ var Rocket;
                     let rcl = new Rocket.Display.CommandList(this.jqSummary.children(".rocket-simple-commands"), true);
                     let tbse = null;
                     if (!this.bodyGroup.isGroup() && null !== (tbse = Rocket.Display.StructureElement.findFirst(groupJq))) {
-                        this.toolbar = tbse.getToolbar();
+                        this.toolbar = tbse.getToolbar(true);
                     }
                     else {
-                        this.toolbar = this.bodyGroup.getToolbar();
+                        this.toolbar = this.bodyGroup.getToolbar(true);
                     }
                     let ecl = this.toolbar.getCommandList();
                     if (copyable) {
@@ -6054,6 +6067,9 @@ var Rocket;
                     }
                     this.reduce();
                     jqEntry.data("rocketImplEmbeddedEntry", this);
+                    if (this.toolbar.isEmpty()) {
+                        this.toolbar.hide();
+                    }
                 }
                 get entryForm() {
                     return this._entryForm;
@@ -6598,31 +6614,29 @@ var Rocket;
                     if (this.reduceEnabled) {
                         var structureElement = Rocket.Display.StructureElement.of(this.jqEmbedded);
                         structureElement.type = Rocket.Display.StructureElement.Type.LIGHT_GROUP;
-                        var toolbar = structureElement.getToolbar();
-                        if (toolbar !== null) {
-                            var jqButton = null;
-                            if (this.isReadOnly()) {
-                                jqButton = toolbar.getCommandList().createJqCommandButton({
-                                    iconType: "fa fa-file",
-                                    label: jqToMany.data("show-all-label"),
-                                    important: true,
-                                    labelImportant: true
-                                });
-                            }
-                            else {
-                                jqButton = toolbar.getCommandList().createJqCommandButton({
-                                    iconType: "fa fa-pencil",
-                                    label: jqToMany.data("edit-all-label"),
-                                    severity: display.Severity.WARNING,
-                                    important: true,
-                                    labelImportant: true
-                                });
-                            }
-                            let that = this;
-                            jqButton.click(function () {
-                                that.expand();
+                        var toolbar = structureElement.getToolbar(true).show();
+                        var jqButton = null;
+                        if (this.isReadOnly()) {
+                            jqButton = toolbar.getCommandList().createJqCommandButton({
+                                iconType: "fa fa-file",
+                                label: jqToMany.data("show-all-label"),
+                                important: true,
+                                labelImportant: true
                             });
                         }
+                        else {
+                            jqButton = toolbar.getCommandList().createJqCommandButton({
+                                iconType: "fa fa-pencil",
+                                label: jqToMany.data("edit-all-label"),
+                                severity: display.Severity.WARNING,
+                                important: true,
+                                labelImportant: true
+                            });
+                        }
+                        let that = this;
+                        jqButton.click(function () {
+                            that.expand();
+                        });
                     }
                     if (this.sortable) {
                         this.initSortable();
@@ -7000,7 +7014,7 @@ var Rocket;
                                 };
                             }
                         }
-                        toOneEmbedded = new ToOneEmbedded(jqToOne, addControlFactory, clipboard, !toOneSelector);
+                        toOneEmbedded = new ToOneEmbedded(jqToOne, addControlFactory, clipboard);
                         jqCurrent.children(".rocket-impl-entry").each(function () {
                             toOneEmbedded.currentEntry = new Relation.EmbeddedEntry($(this), toOneEmbedded.isReadOnly(), false, !!clipboard);
                         });
@@ -7018,9 +7032,8 @@ var Rocket;
             }
             Relation.ToOne = ToOne;
             class ToOneEmbedded {
-                constructor(jqToOne, addControlFactory = null, clipboard = null, panelMode = false) {
+                constructor(jqToOne, addControlFactory = null, clipboard = null) {
                     this.clipboard = clipboard;
-                    this.panelMode = panelMode;
                     this.reduceEnabled = true;
                     this.expandZone = null;
                     this.changedCallbacks = new Array();
@@ -7065,13 +7078,6 @@ var Rocket;
                 createAddControl() {
                     var addControl = this.addControlFactory.createAdd();
                     let jqAdd = addControl.jQuery;
-                    if (this.panelMode) {
-                        this.addGroup = Rocket.Display.StructureElement.from($("<div />"), true);
-                        this.addGroup.title = this.jqToOne.data("display-item-label");
-                        this.addGroup.type = Rocket.Display.StructureElement.Type.LIGHT_GROUP;
-                        this.addGroup.contentJq.append(jqAdd);
-                        jqAdd = this.addGroup.jQuery;
-                    }
                     this.jqEmbedded.append(jqAdd);
                     addControl.onNewEmbeddedEntry((newEntry) => {
                         this.newEntry = newEntry;

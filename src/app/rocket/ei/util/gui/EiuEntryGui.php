@@ -56,7 +56,7 @@ class EiuEntryGui {
 			return $this->eiuGui;
 		}
 		
-		return new EiuGui($this->eiEntryGui->getEiGui(), null, $this->eiuAnalyst);
+		return $this->eiuGui = new EiuGui($this->eiEntryGui->getEiGui(), null, $this->eiuAnalyst);
 	}
 	
 	/**
@@ -279,14 +279,26 @@ class EiuEntryGui {
 		$this->getEiuGui()->forceRootGroups();
 		return $this;
 	}
+	
 	/**
 	 * @return \rocket\ei\util\gui\EiuEntryGui
 	 */
-	public function allowControls() {
-		$this->getEiuGui()->allowControls();
+	public function renderEntryControls(bool $renderEntryControls = true) {
+		$this->getEiuGui()->renderEntryControls($renderEntryControls);
 		return $this;
 	}
 	
+	/**
+	 * @return \rocket\ei\util\gui\EiuEntryGui
+	 */
+	public function renderForkControls(bool $renderForkControls = true) {
+		$this->getEiuGui()->renderForkControls($renderForkControls);
+		return $this;
+	}
+		
+	/**
+	 * @return \rocket\ei\manage\gui\MagAssembly[]
+	 */
 	public function getForkMagAssemblies() {
 		return $this->eiEntryGui->getForkMagAssemblies();
 	}
