@@ -101,6 +101,20 @@ class EiFieldValidationResult {
 			return $errorMessage;
 		}
 		
+		if (!$checkrecursive) return null;
+		
+		foreach ($this->subEiEntryValidationResults as $subValidationResult) {
+			if (null !== ($message = $subValidationResult->processMessage(true))) {
+				return $message;
+			}
+		}
+		
+		foreach ($this->subEiFieldValidationResults as $subValidationResult) {
+			if (null !== ($message = $subValidationResult->processMessage(true))) {
+				return $message;
+			}
+		}
+		
 		return null;
 	}
 	

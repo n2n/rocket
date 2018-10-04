@@ -544,7 +544,7 @@ class EiuEntry {
 // 	}
 	
 	public function onValidate(\Closure $closure) {
-		$this->getEiEntry()->registerListener(new OnValidateMappingListener($closure));
+		$this->getEiEntry()->registerListener(new OnValidateMappingListener($closure, $this->eiuAnalyst->getN2nContext(true)));
 	}
 	
 	public function whenValidated(\Closure $closure) {

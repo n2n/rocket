@@ -27,6 +27,9 @@ use rocket\ei\EiPropPath;
 use n2n\util\ex\IllegalStateException;
 use n2n\util\col\HashSet;
 use rocket\ei\mask\EiMask;
+use n2n\reflection\magic\MagicMethodInvoker;
+use rocket\ei\util\Eiu;
+use n2n\core\container\N2nContext;
 
 class EiEntry {
 	private $eiObject;
@@ -472,17 +475,21 @@ class WrittenMappingListener implements EiEntryListener {
 
 class OnValidateMappingListener implements EiEntryListener {
 	private $closure;
+	private $magicContext;
 	/**
 	 * @param \Closure $closure
 	 */
-	public function __construct(\Closure $closure) {
+	public function __construct(\Closure $closure, N2nContext $magicContext) {
 		$this->closure = $closure;
+		$this->magicContext = $magicContext;
 	}
 	/* (non-PHPdoc)
 	 * @see \rocket\ei\manage\entry\EiEntryListener::onValidate()
 	 */
 	public function onValidate(EiEntry $eiEntry) { 
-		$this->closure->__invoke($eiEntry);
+		$mmi = new MagicMethodInvoker($this->magicContext);
+		$mmi->setClassParamObject(Eiu::class, new Eiu($eiEntry, $this->magicContext));
+		$mmi->invoke(null, new \ReflectionFunction($this->closure));
 	}
 	/* (non-PHPdoc)
 	 * @see \rocket\ei\manage\entry\EiEntryListener::validated()

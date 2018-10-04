@@ -68,7 +68,7 @@
 	
 			<?php if ($renderInnerMeta): ?>
 				<?php $eiuHtml->toolbar(false, $view->getParam('renderForkControls'), $view->getParam('renderEntryControls')) ?>
-				asdfas
+				
 				<?php $eiuHtml->entryMessages() ?>
 			<?php endif ?>		
 			

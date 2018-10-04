@@ -297,6 +297,8 @@ class EiuHtmlBuilder {
 			bool $addDisplayCl = false) {
 		$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
 		CastUtils::assertTrue($eiEntryGui instanceof EiEntryGui);
+		
+		
 		$guiIdPath = null;
 		if ($displayItem instanceof DisplayItem) {
 			if ($displayItem->hasDisplayStructure()) {
@@ -316,8 +318,10 @@ class EiuHtmlBuilder {
 			$displayItem = null;
 		}
 		
+		// @todo fix
 		$fieldErrorInfo = $eiEntryGui->getEiEntry()->getValidationResult()->getEiFieldValidationResult(
 				$eiEntryGui->getEiGui()->getEiGuiViewFactory()->getGuiDefinition()->guiIdPathToEiPropPath($guiIdPath));
+		
 		if (!$eiEntryGui->containsGuiFieldGuiIdPath($guiIdPath)) {
 			$this->state->pushField($tagName, $guiIdPath, $fieldErrorInfo, null, null, $displayItem);
 			return $this->createOutputFieldOpen($tagName, null, $fieldErrorInfo,
@@ -437,10 +441,10 @@ class EiuHtmlBuilder {
 		
 		if (isset($fieldInfo['propertyPath'])
 				&& null !== ($message = $this->formHtml->getMessage($fieldInfo['propertyPath']))) {
-			return new HtmlElement('div', array('class' => 'rocket-message-error'), $message);
+			return new HtmlElement('div', array('class' => 'rocket-messae-error'), $message);
 		}
-
-		if (null !== ($message = $fieldInfo['fieldErrorInfo']->processMessage())) {
+		
+		if (null !== ($message = $fieldInfo['fieldErrorInfo']->processMessage(true))) {
 			$messageTranslator = new MessageTranslator($this->view->getModuleNamespace(),
 					$this->view->getN2nLocale());
 				
