@@ -43,7 +43,6 @@ use rocket\ei\manage\generic\ScalarEiProperty;
 use rocket\ei\manage\generic\GenericEiProperty;
 use rocket\ei\manage\generic\GenericEiDefinition;
 use rocket\ei\manage\critmod\quick\QuickSearchDefinition;
-use rocket\ei\manage\gui\ui\DisplayStructure;
 use rocket\ei\manage\ManageState;
 use rocket\ei\component\EiFrameFactory;
 use n2n\web\http\controller\ControllerContext;
@@ -103,7 +102,7 @@ class EiEngine {
 	/**
 	 * @return \rocket\ei\component\EiFrameFactory
 	 */
-	public function getEiFrameFactory() {
+	private function getEiFrameFactory() {
 		if ($this->eiFrameFactory === null) {
 			$this->eiFrameFactory = new EiFrameFactory($this);
 		}
@@ -190,6 +189,12 @@ class EiEngine {
 		return $mappingFactory->createEiEntry($eiFrame, $eiObject, $copyFrom, $eiEntryConstraints);
 	}
 	
+	/**
+	 * @param EiFrame $eiFrame
+	 * @param EiEntry $from
+	 * @param EiEntry $to
+	 * @param array $eiPropPaths
+	 */
 	public function copyValues(EiFrame $eiFrame, EiEntry $from, EiEntry $to, array $eiPropPaths = null) {
 		ArgUtils::valArray($eiPropPaths, EiPropPath::class, true, 'eiPropPaths');
 		$mappingFactory = new EiEntryFactory($this->eiMask, $this->eiMask->getEiPropCollection(), 
@@ -202,15 +207,15 @@ class EiEngine {
 		return $guiFactory->createGuiDefinition($n2nContext, $guiDefinition);
 	}
 	
-	public function createEiGui(int $viewMode, DisplayStructure $displayStructure) {
-		$eiMask = $this->eiMask;
-		if ($this->eiType === null) {
-			$eiMask = $this->eiType->getEiTypeExtensionCollection()->getOrCreateDefault();
-		}
+// 	public function createEiGui(int $viewMode, DisplayStructure $displayStructure) {
+// 		$eiMask = $this->eiMask;
+// 		if ($this->eiType === null) {
+// 			$eiMask = $this->eiType->getEiTypeExtensionCollection()->getOrCreateDefault();
+// 		}
 		
-		$guiFactory = new GuiFactory($this->eiMask);
-		return $guiFactory->createEiEntryGui($eiMask, $eiuEntry, $viewMode, $guiIdPaths);
-	}
+// 		$guiFactory = new GuiFactory($this->eiMask);
+// 		return $guiFactory->createEiEntryGui($eiMask, $eiuEntry, $viewMode, $guiIdPaths);
+// 	}
 	
 	public function getDraftDefinition(): DraftDefinition {
 		if ($this->draftDefinition !== null) {
