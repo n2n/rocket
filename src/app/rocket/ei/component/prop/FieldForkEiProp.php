@@ -23,12 +23,15 @@ namespace rocket\ei\component\prop;
 
 use rocket\ei\util\Eiu;
 
-interface FieldEiProp extends EiProp {
-			
+interface FieldForkEiProp extends EiProp {
+	
+	public function getForkedEiPropCollection(): EiPropCollection;
+	
 	/**
 	 * @param Eiu $eiu
+	 * @return \rocket\ei\manage\entry\EiFieldFork|null
 	 */
-	public function buildEiField(Eiu $eiu);
+	public function buildEiFieldFork(Eiu $eiu);
 }
 
 

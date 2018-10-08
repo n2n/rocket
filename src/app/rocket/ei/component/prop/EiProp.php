@@ -35,4 +35,9 @@ interface EiProp extends EiComponent {
 	 * @return EiProp|null 
 	 */
 	public function getParentEiProp();
+	
+	/**
+	 * @return EiPropCollection|NULL
+	 */
+	public function getForkedEiPropCollection(): ?EiPropCollection;
 }
