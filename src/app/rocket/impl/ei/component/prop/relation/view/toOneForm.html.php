@@ -45,8 +45,9 @@ use rocket\ei\util\gui\EiuHtmlBuilder;
 	$newMappingFormPropertyPath = $propertyPath->ext('newMappingForm');
 	
 	$eiuHtml = new EiuHtmlBuilder($view);
-	$grouped = true; // $toOneForm->isReduced() || $toOneForm->isSelectionModeEnabled() || $eiuHtml->meta()->isFieldPanel();
+	$grouped = $toOneForm->isReduced() || $toOneForm->isSelectionModeEnabled()/* || $eiuHtml->meta()->isFieldPanel()*/;
 ?>
+
 <div class="rocket-impl-to-one" 
 		data-mandatory="<?php $html->out($toOneForm->isMandatory()) ?>"
 		data-remove-item-label="<?php $html->text('ei_impl_relation_remove_item_label', 
@@ -109,9 +110,11 @@ use rocket\ei\util\gui\EiuHtmlBuilder;
 				<?php $view->assert($currentMappingForm instanceof MappingForm) ?>
 				
 				<?php $formHtml->meta()->pushBasePropertyPath($newMappingFormPropertyPath) ?>
+				
 				<?php $view->import('embeddedEntryForm.html', array('mappingForm' => $currentMappingForm,
 						'grouped' => $grouped,
 						'summaryRequired' => $toOneForm->isReduced())) ?>
+						
 				<?php $formHtml->meta()->popBasePropertyPath() ?>
 			<?php endif ?>
 		</div>

@@ -51,11 +51,12 @@
 			data-rocket-ei-type-id="<?php $html->out(key($typeChoicesMap)) ?>"
 			data-rocket-generic-label="<?php $html->out(current($typeChoicesMap)) ?>"
 			data-rocket-generic-icon-type="<?php $html->out(current($iconTypesMap)) ?>">
-		<?php $view->import($eiuEntryFormViewModel->createEditView($view)) ?>
+		<?php $html->out($eiuEntryFormViewModel->createEditView($view)) ?>
 	</div>
 <?php else: ?>
 	<?php if ($eiuEntryFormViewModel->hasDisplayContainer()): ?>
-		<?php $eiuHtml->displayItemOpen('div', $eiuEntryFormViewModel->getDisplayContainerType(), $eiuEntryFormViewModel->getDisplayContainerAttrs()) ?>
+		<?php $eiuHtml->displayItemOpen('div', $eiuEntryFormViewModel->getDisplayContainerType(), 
+				$eiuEntryFormViewModel->getDisplayContainerAttrs()) ?>
 			<label><?php $html->out($eiuEntryFormViewModel->getDisplayContainerLabel()) ?></label>
 			<div class="rocket-control">
 	<?php endif ?>
@@ -69,11 +70,7 @@
 			</div>
 		</div>
 	
-		<?php foreach ($eiuEntryFormViewModel->createEditViews($view) as $id => $editView): ?>
-			<div class="rocket-ei-type-entry-form rocket-ei-type-<?php $html->out($id) ?> rocket-structure-element">
-				<?php $view->import($editView) ?>
-			</div>
-		<?php endforeach ?>
+		<?php $html->out($eiuEntryFormViewModel->createEditViews($view)) ?>
 	</div>
 	<?php if ($eiuEntryFormViewModel->hasDisplayContainer()): ?>
 			</div>

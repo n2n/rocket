@@ -87,7 +87,7 @@ use rocket\ei\manage\gui\ui\DisplayItem;
 			<div class="rocket-impl-body">
 				<?php $view->out($mappingForm->getEiuEntryForm()
 						->setContextPropertyPath($formHtml->meta()->propPath('eiuEntryForm'))
-						->createView($view, false, DisplayItem::TYPE_LIGHT_GROUP, $mappingForm->getEntryLabel(), array('rocket-impl-boy'))) ?>
+						->createView($view, true, DisplayItem::TYPE_LIGHT_GROUP, $mappingForm->getEntryLabel())) ?>
 			</div>
 		<?php endif ?>
 	<?php endif ?>

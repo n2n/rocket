@@ -33,6 +33,7 @@ use n2n\reflection\CastUtils;
 use rocket\ei\manage\gui\EiEntryGui;
 use n2n\l10n\Message;
 use n2n\l10n\MessageTranslator;
+use n2n\impl\web\ui\view\html\HtmlUtils;
 
 class EiuHtmlBuilderMeta {
 	private $state;
@@ -176,6 +177,7 @@ class EiuHtmlBuilderMeta {
 		$guiDefinition = $eiEntryGui->getEiGui()->getEiGuiViewFactory()->getGuiDefinition();
 		foreach ($eiEntry->getValidationResult()->getInvalidEiFieldValidationResults(false) as $result) {
 			$guiIdPath = $guiDefinition->eiPropPathToGuiIdPath($result->getEiPropPath());
+			
 			if ($guiIdPath !== null && $eiEntryGui->containsGuiFieldGuiIdPath($guiIdPath)) continue;
 			
 			foreach ($result->getMessages() as $message) {
@@ -192,4 +194,20 @@ class EiuHtmlBuilderMeta {
 		return $messages;
 	}
 	
+	/**
+	 * @param string $displayItemType
+	 * @param array $attrs
+	 * @return array
+	 */
+	static function createDisplayItemAttrs(string $displayItemType = null, array $attrs) {
+		if ($displayItemType === null) {
+			return $attrs;
+		}
+		
+		if (in_array($displayItemType, DisplayItem::getGroupTypes())) {
+			return HtmlUtils::mergeAttrs(array('class' => 'rocket-group rocket-' . $displayItemType), $attrs);
+		}
+		
+		return HtmlUtils::mergeAttrs(array('class' => 'rocket-' . $displayItemType), $attrs);
+	}
 }

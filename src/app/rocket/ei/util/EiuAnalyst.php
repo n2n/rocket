@@ -818,7 +818,7 @@ class EiuAnalyst {
 		
 		if ($this->n2nContext !== null) {
 			try {
-				return new EiuFrame($this->n2nContext->lookup(ManageState::class)->peakEiFrame());
+				return $this->eiuFrame = new EiuFrame($this->n2nContext->lookup(ManageState::class)->peakEiFrame());
 			} catch (ManageException $e) {
 				if (!$required) return null;
 				

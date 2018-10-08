@@ -392,29 +392,28 @@ namespace Rocket.Impl.Relation {
 			if (this.reduceEnabled) {
 				var structureElement = Display.StructureElement.of(this.jqEmbedded);
 				structureElement.type = Display.StructureElement.Type.LIGHT_GROUP;
-				var toolbar = structureElement.getToolbar();
-				if (toolbar !== null) {
-					var jqButton: JQuery<Element> = null;
-					if (this.isReadOnly()) { 
-						jqButton = toolbar.getCommandList().createJqCommandButton({ 
-							iconType: "fa fa-file", 
-							label: jqToMany.data("show-all-label"),
-							important: true,
-							labelImportant: true});
-					} else {
-						jqButton = toolbar.getCommandList().createJqCommandButton({ 
-							iconType: "fa fa-pencil", 
-							label:  jqToMany.data("edit-all-label"),
-							severity: display.Severity.WARNING,
-							important: true,
-							labelImportant: true
-						});
-					}
-					let that = this;
-					jqButton.click(function () {
-						that.expand();
+				var toolbar = structureElement.getToolbar(true).show();
+				
+				var jqButton: JQuery<Element> = null;
+				if (this.isReadOnly()) { 
+					jqButton = toolbar.getCommandList().createJqCommandButton({ 
+						iconType: "fa fa-file", 
+						label: jqToMany.data("show-all-label"),
+						important: true,
+						labelImportant: true});
+				} else {
+					jqButton = toolbar.getCommandList().createJqCommandButton({ 
+						iconType: "fa fa-pencil", 
+						label:  jqToMany.data("edit-all-label"),
+						severity: display.Severity.WARNING,
+						important: true,
+						labelImportant: true
 					});
 				}
+				let that = this;
+				jqButton.click(function () {
+					that.expand();
+				});
 			}
 
 			if (this.sortable) {

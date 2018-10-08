@@ -37,6 +37,7 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\util\frame\EiuFrame;
 use rocket\ei\util\entry\EiuEntry;
 use rocket\ei\util\entry\view\EiuEntryFormViewModel;
+use n2n\l10n\DynamicTextCollection;
 
 class EiuEntryForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {
@@ -133,7 +134,9 @@ class EiuEntryForm implements Dispatchable {
 		return $this->eiTypeChoicesMap;
 	}
 	
-	private function _mapping(MappingDefinition $md) {
+	private function _mapping(MappingDefinition $md, DynamicTextCollection $dtc) {
+		$md->getMappingResult()->setLabels(['chosenId' => $dtc->t('type_txt')]);
+		
 		if (!$md->isDispatched()) return;
 		
 		if (!$this->isChoosable()) {

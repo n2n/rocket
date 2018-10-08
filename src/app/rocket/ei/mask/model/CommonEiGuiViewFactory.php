@@ -17,7 +17,6 @@ class CommonEiGuiViewFactory implements EiGuiViewFactory {
 	private $eiGui;
 	private $guiDefinition;
 	private $displayStructure;
-	private $controlsAllowed = false;
 	
 	public function __construct(EiGui $eiGui, GuiDefinition $guiDefinition, DisplayStructure $displayStructure) {
 		$this->eiGui = $eiGui;
@@ -122,7 +121,8 @@ class CommonEiGuiViewFactory implements EiGuiViewFactory {
 		}
 		
 		$params = array('displayStructure' => $displayStructure, 'eiu' => new Eiu($this->eiGui),
-				'controlsAllowed' => $eiGuiConfig->areControlsAllowed());
+				'renderEntryControls' => $eiGuiConfig->areEntryControlsRendered(),
+				'renderForkControls' => $eiGuiConfig->areForkControlsRendered());
 		
 		if ($contextView !== null) {
 			return $contextView->getImport('\\' .$viewName, $params);

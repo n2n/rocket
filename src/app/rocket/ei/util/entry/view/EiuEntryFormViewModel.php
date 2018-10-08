@@ -26,6 +26,14 @@ use n2n\web\dispatch\map\PropertyPathPart;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\gui\ui\DisplayItem;
 use rocket\ei\util\entry\form\EiuEntryForm;
+use rocket\ei\util\gui\EiuHtmlBuilder;
+use n2n\impl\web\ui\view\html\HtmlSnippet;
+use n2n\impl\web\ui\view\html\HtmlElement;
+use rocket\ei\util\entry\form\EiuEntryTypeForm;
+use n2n\web\ui\UiComponent;
+use n2n\web\ui\view\View;
+use n2n\impl\web\ui\view\html\HtmlUtils;
+use rocket\ei\util\gui\EiuHtmlBuilderMeta;
 
 class EiuEntryFormViewModel {
 	private $eiuEntryForm;
@@ -133,24 +141,61 @@ class EiuEntryFormViewModel {
 		return $iconTypeMap;
 	}
 	
+	/**
+	 * @return array
+	 */
+	private function createEntryAttrs(array $attrs = null) {
+		$cattrs = (array) $this->displayContainerAttrs;
+		
+		if ($attrs !== null) {
+			$cattrs = HtmlUtils::mergeAttrs($attrs, $cattrs);
+		}
+		
+		return EiuHtmlBuilderMeta::createDisplayItemAttrs(
+				$this->displayContainerType ?? DisplayItem::TYPE_SIMPLE_GROUP, 
+				$cattrs);
+	}
+	
+	/**
+	 * @param HtmlView $contextView
+	 * @return UiComponent
+	 */
 	public function createEditView(HtmlView $contextView) {
 		$eiuEntryForm = $this->getEiuEntryForm();
 		IllegalStateException::assertTrue(!$eiuEntryForm->isChoosable());
 		
 		$eiuEntryTypeForm = $eiuEntryForm->getChosenEiuEntryTypeForm();
 		
+		$eiTypeId = $eiuEntryForm->getChosenId();
+		
 		if (null !== ($contextPropertyPath = $this->eiuEntryForm->getContextPropertyPath())) {
-			$eiTypeId = $eiuEntryForm->getChosenId();
 			$eiuEntryTypeForm->getEiuEntryGui()->setContextPropertyPath($contextPropertyPath
 					->ext(new PropertyPathPart('eiuEntryTypeForms', true, $eiTypeId))->ext('dispatchable'));
 		}
 		
-		if ($this->displayContainerType !== null) {
-			$eiuEntryTypeForm->getEiuEntryGui()->addDisplayContainer($this->displayContainerType, $this->displayContainerLabel, $this->displayContainerAttrs);
-		} else if ($this->grouped) {
+		if ($eiuEntryForm->getEiuFrame()->getContextEiType()->hasSubEiTypes() || $this->displayContainerType !== null 
+				|| $this->displayContainerLabel !== null || $this->displayContainerAttrs !== null) {
+			$eiuEntryGui = $eiuEntryTypeForm->getEiuEntryGui();
+			$eiuHtml = new EiuHtmlBuilder($contextView);
+			
+			$htmlSnippet = new HtmlSnippet();
+			
+			$htmlSnippet->appendLn($eiuHtml->getEntryOpen('div', $eiuEntryGui, $this->createEntryAttrs()));
+			
+			$htmlSnippet->appendLn(new HtmlElement('label', null, 
+					$this->displayContainerLabel ?? $eiuEntryGui->getEiuEntry()->getGenericLabel()));
+			
+			$this->groupTypeForm($eiuEntryTypeForm, $htmlSnippet, $contextView);
+			
+			$htmlSnippet->appendLn($eiuHtml->getEntryClose());
+			
+			return $htmlSnippet;
+		} 
+			
+		if ($this->grouped) {
 			$eiuEntryTypeForm->getEiuEntryGui()->forceRootGroups();
 		}
-				
+		
 		return $eiuEntryTypeForm->getEiuEntryGui()->createView($contextView);
 	}
 	
@@ -158,9 +203,11 @@ class EiuEntryFormViewModel {
 		$eiuEntryForm = $this->getEiuEntryForm();
 		IllegalStateException::assertTrue($eiuEntryForm->isChoosable());
 	
-		$contextPropertyPath = $this->eiuEntryForm->getContextPropertyPath();
+		$eiuHtml = new EiuHtmlBuilder($contextView);
 		
-		$editViews = array();
+		$contextPropertyPath = $this->eiuEntryForm->getContextPropertyPath();
+		$htmlSnippet = new HtmlSnippet();
+		
 		foreach ($eiuEntryForm->getEiuEntryTypeForms() as $eiTypeId => $eiuEntryTypeForm) {
 			if ($contextPropertyPath !== null) {
 				$eiuEntryTypeForm->getEiuEntryGui()->setContextPropertyPath($contextPropertyPath->ext(
@@ -168,17 +215,44 @@ class EiuEntryFormViewModel {
 			}
 			
 			$eiuEntryGui = $eiuEntryTypeForm->getEiuEntryGui();
-			if ($eiuEntryGui->hasForkMags()) {
-				$eiuEntryGui->addDisplayContainer(DisplayItem::TYPE_SIMPLE_GROUP, $eiuEntryGui->getEiuEntry()->getGenericLabel());
-			} else if ($this->grouped && !$this->hasDisplayContainer()) {
-				$eiuEntryGui->forceRootGroups();
-			}
 			
-			$editViews[$eiTypeId] = $eiuEntryGui->createView($contextView);
+			$htmlSnippet->appendLn($eiuHtml->getEntryOpen('div', $eiuEntryGui,
+					$this->createEntryAttrs(['class' => 'rocket-ei-type-entry-form rocket-ei-type-' . $eiTypeId
+							. ' rocket-group rocket-simple-group'])));
+			
+			$htmlSnippet->appendLn(new HtmlElement('label', null, $eiuEntryGui->getEiuEntry()->getGenericLabel()));
+			
+			$this->groupTypeForm($eiuEntryTypeForm, $htmlSnippet, $contextView);
+			
+			$htmlSnippet->appendLn($eiuHtml->getEntryClose());
 		}
-		return $editViews;
+		
+		return $htmlSnippet;
 	}
 	
+	
+	/**
+	 * @param EiuEntryTypeForm $eiuEntryTypeForm
+	 * @param HtmlSnippet $htmlSnippet
+	 * @param View $contextView
+	 * @param string $eiTypeId
+	 */
+	private function groupTypeForm($eiuEntryTypeForm, $htmlSnippet, $contextView) {
+		$eiuHtml = new EiuHtmlBuilder($contextView);
+		$eiuEntryGui = $eiuEntryTypeForm->getEiuEntryGui();
+		
+		$eiuEntryGui->renderEntryControls(false)->renderForkControls(false);
+		
+		
+		if (null !== ($forkControlsUi = $eiuHtml->getEntryForkControls())) {
+			$htmlSnippet->appendLn(new HtmlElement('div', ['class' => 'rocket-toolbar'], $forkControlsUi));
+		}
+		
+		$htmlSnippet->appendLn($eiuHtml->getEntryMessages());
+		
+		$htmlSnippet->appendLn(new HtmlElement('div', ['class' => 'rocket-control'],
+				$eiuEntryGui->createView($contextView)));
+	}
 // 	private function buildTypeHtmlClasses(EiType $eiType, array $htmlClasses) {
 // 		$htmlClasses[] = 'rocket-script-type-' . $eiType->getId();
 // 		foreach ($eiType->getSubEiTypes() as $sub) {

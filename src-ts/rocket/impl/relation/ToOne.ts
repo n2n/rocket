@@ -77,7 +77,7 @@ namespace Rocket.Impl.Relation {
 					}
 				}
 				
-				toOneEmbedded = new ToOneEmbedded(jqToOne, addControlFactory, clipboard, !toOneSelector);
+				toOneEmbedded = new ToOneEmbedded(jqToOne, addControlFactory, clipboard/*, !toOneSelector*/);
 				
 				jqCurrent.children(".rocket-impl-entry").each(function () {
 					toOneEmbedded.currentEntry = new EmbeddedEntry($(this), toOneEmbedded.isReadOnly(), false, !!clipboard);
@@ -89,7 +89,7 @@ namespace Rocket.Impl.Relation {
 					toOneEmbedded.currentEntry = new EmbeddedEntry($(this), true, false, !!clipboard);
 				});
 			}
-			
+		
 			toOne = new ToOne(toOneSelector, toOneEmbedded);
 			jqToOne.data("rocketImplToOne", toOne);		
 			
@@ -109,8 +109,8 @@ namespace Rocket.Impl.Relation {
 		private closeLabel: string;
 		private changedCallbacks: Array<() => any> = new Array<() => any>();
 		
-		constructor(jqToOne: JQuery, addControlFactory: AddControlFactory = null, private clipboard: Clipboard = null, 
-				private panelMode: boolean = false) {
+		constructor(jqToOne: JQuery, addControlFactory: AddControlFactory = null, private clipboard: Clipboard = null/*, 
+				private panelMode: boolean = false*/) {
 			this.jqToOne = jqToOne;
 			this.addControlFactory = addControlFactory;
 			this.reduceEnabled = (true == jqToOne.data("reduced"));
@@ -125,7 +125,7 @@ namespace Rocket.Impl.Relation {
 			this.jqEmbedded.append(this.jqEntries);
 			
 			this.initClipboard();
-			
+
 			this.changed();
 		}
 		
@@ -198,14 +198,14 @@ namespace Rocket.Impl.Relation {
 
 			let jqAdd = addControl.jQuery;
 
-			if (this.panelMode) {
-				this.addGroup = Display.StructureElement.from($("<div />"), true);
-				this.addGroup.title = this.jqToOne.data("display-item-label");
-				this.addGroup.type = Display.StructureElement.Type.LIGHT_GROUP;
-				this.addGroup.contentJq.append(jqAdd);
-				
-				jqAdd = this.addGroup.jQuery;
-			}
+//			if (this.panelMode) {
+//				this.addGroup = Display.StructureElement.from($("<div />"), true);
+//				this.addGroup.title = this.jqToOne.data("display-item-label");
+//				this.addGroup.type = Display.StructureElement.Type.LIGHT_GROUP;
+//				this.addGroup.contentJq.append(jqAdd);
+//				
+//				jqAdd = this.addGroup.jQuery;
+//			}
 			
 			this.jqEmbedded.append(jqAdd);
 			addControl.onNewEmbeddedEntry((newEntry: EmbeddedEntry) => {

@@ -37,10 +37,9 @@ namespace Rocket.Impl.Relation {
 			let rcl = new Rocket.Display.CommandList(this.jqSummary.children(".rocket-simple-commands"), true);
 			let tbse = null;
 			if (!this.bodyGroup.isGroup() && null !== (tbse = Display.StructureElement.findFirst(groupJq))) {
-				this.toolbar = tbse.getToolbar();
+				this.toolbar = tbse.getToolbar(true);
 			} else {
-				this.toolbar = this.bodyGroup.getToolbar();
-				
+				this.toolbar = this.bodyGroup.getToolbar(true);
 			}
 			
 			let ecl = this.toolbar.getCommandList();
@@ -93,6 +92,10 @@ namespace Rocket.Impl.Relation {
 			this.reduce();
 			
 			jqEntry.data("rocketImplEmbeddedEntry", this);
+			
+			if (this.toolbar.isEmpty()) {
+			    this.toolbar.hide();
+			}
 		}
 		
 		get entryForm(): Rocket.Display.EntryForm|null {

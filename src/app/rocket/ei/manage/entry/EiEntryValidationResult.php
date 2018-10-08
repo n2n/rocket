@@ -32,7 +32,7 @@ class EiEntryValidationResult {
 	
 	public function isValid(bool $checkRecurisve = true): bool {
 		 foreach ($this->eiFieldValidationResults as $eiEiFieldValidationResult) {
-		 	if (!$eiEiFieldValidationResult->isValid()) return false;
+		 	if (!$eiEiFieldValidationResult->isValid($checkRecurisve)) return false;
 		 }
 		 
 		 return true;
@@ -88,6 +88,14 @@ class EiEntryValidationResult {
 			$messages = array_merge($messages, $eiEiFieldValidationResult->getMessages());
 		}
 		return $messages;
+	}
+	
+	public function processMessage(bool $recursive) {
+		foreach ($this->eiFieldValidationResults as $result) {
+			if (null !== ($message = $result->processMessage(true))) {
+				return $message;
+			}
+		}
 	}
 
 

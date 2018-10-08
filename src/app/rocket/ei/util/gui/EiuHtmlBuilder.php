@@ -284,7 +284,7 @@ class EiuHtmlBuilder {
 	
 	private function buildAttrs(GuiIdPath $guiIdPath, array $attrs, DisplayItem $displayItem = null) {
 		$attrs = HtmlUtils::mergeAttrs($attrs, array('class' => 'rocket-gui-field-' . implode('-', $guiIdPath->toArray())));
-// 		$attrs = $this->applyDisplayItemAttr($displayItem !== null ? $displayItem->getType() : DisplayItem::TYPE_ITEM, $attrs);
+// 		$attrs = EiuHtmlBuilderMeta::createDisplayItemAttrs($displayItem !== null ? $displayItem->getType() : DisplayItem::TYPE_ITEM, $attrs);
 		return $attrs;
 	}
 	
@@ -297,6 +297,8 @@ class EiuHtmlBuilder {
 			bool $addDisplayCl = false) {
 		$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
 		CastUtils::assertTrue($eiEntryGui instanceof EiEntryGui);
+		
+		
 		$guiIdPath = null;
 		if ($displayItem instanceof DisplayItem) {
 			if ($displayItem->hasDisplayStructure()) {
@@ -305,19 +307,21 @@ class EiuHtmlBuilder {
 			
 			$guiIdPath = $displayItem->getGuiIdPath();
 			if ($addDisplayCl) {
-				$attrs = $this->applyDisplayItemAttr($displayItem->getType(), 
+				$attrs = EiuHtmlBuilderMeta::createDisplayItemAttrs($displayItem->getType(), 
 						HtmlUtils::mergeAttrs((array) $displayItem->getAttrs(), (array) $attrs));
 			}
 		} else {
 			$guiIdPath = GuiIdPath::create($displayItem);
 			if ($addDisplayCl) {
-				$attrs = $this->applyDisplayItemAttr(DisplayItem::TYPE_ITEM, (array) $attrs);
+				$attrs = EiuHtmlBuilderMeta::createDisplayItemAttrs(DisplayItem::TYPE_ITEM, (array) $attrs);
 			}
 			$displayItem = null;
 		}
 		
+		// @todo fix
 		$fieldErrorInfo = $eiEntryGui->getEiEntry()->getValidationResult()->getEiFieldValidationResult(
 				$eiEntryGui->getEiGui()->getEiGuiViewFactory()->getGuiDefinition()->guiIdPathToEiPropPath($guiIdPath));
+		
 		if (!$eiEntryGui->containsGuiFieldGuiIdPath($guiIdPath)) {
 			$this->state->pushField($tagName, $guiIdPath, $fieldErrorInfo, null, null, $displayItem);
 			return $this->createOutputFieldOpen($tagName, null, $fieldErrorInfo,
@@ -359,17 +363,6 @@ class EiuHtmlBuilder {
 				$this->buildContainerAttrs(HtmlUtils::mergeAttrs(($displayable !== null ? $displayable->getOutputHtmlContainerAttrs() : array()), $attrs))) . '>');
 	}
 
-	private function applyDisplayItemAttr(string $displayItemType = null, array $attrs) {
-		if ($displayItemType === null) {
-			return $attrs;
-		}
-		
-		if (in_array($displayItemType, DisplayItem::getGroupTypes())) {
-			return HtmlUtils::mergeAttrs(array('class' => 'rocket-group rocket-' . $displayItemType), $attrs);
-		}
-		
-		return HtmlUtils::mergeAttrs(array('class' => 'rocket-' . $displayItemType), $attrs);
-	}
 	
 	private function buildContainerAttrs(array $attrs, bool $readOnly = true, bool $mandatory = false) {
 		$attrs = HtmlUtils::mergeAttrs(array('class' => 'rocket-field'), $attrs);
@@ -448,10 +441,10 @@ class EiuHtmlBuilder {
 		
 		if (isset($fieldInfo['propertyPath'])
 				&& null !== ($message = $this->formHtml->getMessage($fieldInfo['propertyPath']))) {
-			return new HtmlElement('div', array('class' => 'rocket-message-error'), $message);
+			return new HtmlElement('div', array('class' => 'rocket-messae-error'), $message);
 		}
-
-		if (null !== ($message = $fieldInfo['fieldErrorInfo']->processMessage())) {
+		
+		if (null !== ($message = $fieldInfo['fieldErrorInfo']->processMessage(true))) {
 			$messageTranslator = new MessageTranslator($this->view->getModuleNamespace(),
 					$this->view->getN2nLocale());
 				
@@ -497,6 +490,33 @@ class EiuHtmlBuilder {
 	}
 	
 	/**
+	 * @param bool $showFieldControls
+	 * @param bool $showForkControls
+	 * @param bool $showEntryControls
+	 * @param int $entryControlMax
+	 */
+	public function toolbar(bool $showFieldControls, bool $showForkControls, bool $showEntryControls, int $entryControlMax = 6) {
+		$this->view->out($this->getToolbar($showFieldControls, $showForkControls, $showEntryControls, $entryControlMax));
+	}
+	
+	/**
+	 * @param bool $showFieldControls
+	 * @param bool $showForkControls
+	 * @param bool $showEntryControls
+	 * @param int $entryControlMax
+	 * @return \n2n\impl\web\ui\view\html\HtmlElement
+	 */
+	public function getToolbar(bool $showFieldControls, bool $showForkControls, bool $showEntryControls, int $entryControlMax = 6) {
+		$fieldControlsUi = $showFieldControls ? $this->getFieldControls() : null;
+		$forkControlsUi = $showForkControls ? $this->getEntryForkControls() : null;
+		$entryControlsUi = $showEntryControls ? $this->getEntryCommands(true, $entryControlMax) : null;
+		
+		if ($fieldControlsUi !== null || $forkControlsUi !== null || $entryControlsUi !== null)
+		return new HtmlElement('div', ['class' => 'rocket-toolbar'], 
+				[$fieldControlsUi, $forkControlsUi, $entryControlsUi]);
+	}
+	
+	/**
 	 * 
 	 * @param string $tagName
 	 * @param DisplayItem|string $displayItem
@@ -515,11 +535,11 @@ class EiuHtmlBuilder {
 	 */
 	public function getDisplayItemOpen(string $tagName, $displayItem, array $attrs = null) {
 		if ($displayItem instanceof DisplayItem) {
-			$attrs = $this->applyDisplayItemAttr($displayItem->getType(), 
+			$attrs = EiuHtmlBuilderMeta::createDisplayItemAttrs($displayItem->getType(), 
 					HtmlUtils::mergeAttrs((array) $displayItem->getAttrs(), (array) $attrs));
 		} else if ($displayItem !== null) {
 			ArgUtils::valType($displayItem, [DisplayItem::class, 'string'], true, 'displayItem');
-			$attrs = $this->applyDisplayItemAttr($displayItem, (array) $attrs);
+			$attrs = EiuHtmlBuilderMeta::createDisplayItemAttrs($displayItem, (array) $attrs);
 		}
 		
 		$this->state->pushGroup($tagName);

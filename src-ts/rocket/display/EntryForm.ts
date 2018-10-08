@@ -19,8 +19,7 @@ namespace Rocket.Display {
 			let jqSelector = this.jqElem.children(".rocket-ei-type-selector");
 			let se = StructureElement.of(jqSelector);
 			if (se && se.isGroup()) {
-				se.getToolbar().getJqControls().show();
-				se.getToolbar().getJqControls().append(jqSelector);
+			    se.getToolbar(true).show().getJqControls().show().append(jqSelector);
 			} else {
 				jqSelector.addClass("rocket-toolbar");
 			}

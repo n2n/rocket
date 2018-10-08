@@ -35,7 +35,7 @@
 	$displayStructure = $view->getParam('displayStructure');
 	$view->assert($displayStructure instanceof DisplayStructure);
 	
-	$controlsAllowed = $view->getParam('controlsAllowed');
+	$entryControlsRendered = $view->getParam('renderEntryControls');
 	
 	$eiuHtml = new EiuHtmlBuilder($view);
 ?>
@@ -47,7 +47,7 @@
 			<?php foreach ($displayStructure->getDisplayItems() as $displayItem): ?>
 				<th><?php $eiuHtml->label($eiu, $displayItem) ?></th>
 			<?php endforeach ?>
-			<?php if ($controlsAllowed): ?>
+			<?php if ($entryControlsRendered): ?>
 				<th><?php $html->l10nText('common_list_tools_label') ?></th>
 			<?php endif ?>
 		</tr>
@@ -62,7 +62,7 @@
 						<?php $eiuHtml->fieldContent() ?>
 					<?php $eiuHtml->fieldClose() ?>
 				<?php endforeach ?>
-				<?php if ($controlsAllowed): ?>
+				<?php if ($entryControlsRendered): ?>
 					<?php $view->out('<td class="rocket-table-commands">') ?>
 						<?php $eiuHtml->entryCommands(true, 6) ?>
 					<?php $view->out('</td>') ?>

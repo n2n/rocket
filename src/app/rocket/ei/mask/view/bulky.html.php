@@ -39,26 +39,13 @@
 	
 	$entryOpen = $eiuHtml->meta()->isEntryOpen($eiu->entryGui());
 	
-	$showUbMsgs = $renderForkMags = $view->getParam('renderForkMags', false, null);
-	$renderInnerForks = false;
-	$showInnerUbMsgs = false;
-	$controlsAllowed = $view->getParam('controlsAllowed');
-	if ($renderForkMags === null) {
-		$showInnerUbMsgs = $renderInnerForks = 1 == count($displayStructure->getDisplayItems()) 
-				&& $displayStructure->getDisplayItems()[0]->isGroup();
-		$renderForkMags = !$renderInnerForks;
-		$showUbMsgs = !$showInnerUbMsgs;
-	}
+	$renderMeta = $view->getParam('renderMeta', false, null);
 	
-	$controls = array();
-	if ($renderInnerForks) {
-		$renderForkMags = false;
-		$showUbMsgs = false;
-	} else if ($renderForkMags) {
-		if ($controlsAllowed) {
-			$controls = $eiuHtml->meta()->createEntryControls($eiu->entryGui(), 6);
-		}
-		$renderForkMags = $eiu->entryGui()->hasForkMags() || !empty($controls);
+	$renderInnerMeta = false;
+	if ($renderMeta === null) {
+		$renderInnerMeta = 1 == count($displayStructure->getDisplayItems()) 
+				&& $displayStructure->getDisplayItems()[0]->isGroup();
+		$renderMeta = !$renderInnerMeta;
 	}
 ?>
 
@@ -66,17 +53,11 @@
 	<?php $eiuHtml->entryOpen('div', $eiu->entryGui()) ?>
 <?php endif ?>
 
-<?php if ($renderForkMags): ?>
-	<div class="rocket-toolbar">
-		<?php $eiuHtml->entryForkControls() ?>
-		<?php $eiuHtml->commands($controls, true) ?>
-	</div>
-<?php endif ?>
-
-<?php if ($showUbMsgs): ?>
+<?php if ($renderMeta): ?>
+	<?php $eiuHtml->toolbar(false, $view->getParam('renderForkControls'), $view->getParam('renderEntryControls')) ?>
+	
 	<?php $eiuHtml->entryMessages() ?>
 <?php endif ?>
-
 
 <?php foreach ($displayStructure->getDisplayItems() as $displayItem): ?>
 	<?php if ($displayItem->hasDisplayStructure()): ?>
@@ -85,37 +66,26 @@
 				<label><?php $html->out($label) ?></label>
 			<?php endif ?>
 	
-			<?php if ($renderInnerForks): ?>
-				<div class="rocket-toolbar">
-					<?php $eiuHtml->entryForkControls() ?>
-					<?php $eiuHtml->commands($controls, true) ?>
-				</div>
+			<?php if ($renderInnerMeta): ?>
+				<?php $eiuHtml->toolbar(false, $view->getParam('renderForkControls'), $view->getParam('renderEntryControls')) ?>
+				
+				<?php $eiuHtml->entryMessages() ?>
 			<?php endif ?>		
 			
 			<div class="rocket-control">
-				<?php if ($showInnerUbMsgs): ?>
-					<?php $eiuHtml->entryMessages() ?>
-				<?php endif ?>
-			
 				<?php $view->import('bulky.html', $view->mergeParams(array(
 						'displayStructure' => $displayItem->getDisplayStructure(), 
-						'eiu' => $eiu, 'renderForkMags' => false))) ?>
+						'eiu' => $eiu, 'renderMeta' => false))) ?>
 			</div>
 		<?php $eiuHtml->displayItemClose() ?>
 	<?php else: ?>
 		<?php $eiuHtml->fieldOpen('div', $displayItem) ?>
 			<?php $eiuHtml->fieldLabel() ?>
 			
-			<?php if ($renderInnerForks): ?>
-				<div class="rocket-toolbar">
-					<?php $eiuHtml->fieldControls() ?>
-					<?php $eiuHtml->entryForkControls() ?>
-					<?php $eiuHtml->commands($controls, true) ?>
-				</div>
-			<?php elseif (null !== ($ui = $eiuHtml->getFieldControls())): ?>
-				<div class="rocket-toolbar">
-					<?php $eiuHtml->fieldControls() ?>
-				</div>
+			<?php if ($renderInnerMeta): ?>
+				<?php $eiuHtml->toolbar(true, $view->getParam('renderForkControls'), $view->getParam('renderEntryControls')) ?>
+			<?php else: ?>
+				<?php $eiuHtml->toolbar(true, false, false) ?>
 			<?php endif ?>	
 			
 			<div class="rocket-control">

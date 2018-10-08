@@ -242,12 +242,28 @@ class EiuGui {
 		$egvf->setDisplayStructure($egvf->getDisplayStructure()->groupedItems());
 		return $this;
 	}
+	
 	/**
 	 * @return \rocket\ei\util\gui\EiuGui
 	 */
-	public function allowControls() {
-		$this->eiGuiConfig->setControlsAllowed(true);
+	public function renderEntryControls(bool $renderEntryControls = true) {
+		$this->eiGuiConfig->setEntryControlsRendered($renderEntryControls);
 		return $this;
+	}
+	
+	/**
+	 * @return \rocket\ei\util\gui\EiuGui
+	 */
+	public function renderForkControls(bool $renderForkControls = true) {
+		$this->eiGuiConfig->setForkControlsRendered($renderForkControls);
+		return $this;
+	}
+	
+	/**
+	 * @return \rocket\ei\manage\gui\EiGuiConfig
+	 */
+	function getEiGuiConfig() {
+		return $this->eiGuiConfig;
 	}
 	
 	/**

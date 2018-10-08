@@ -86,7 +86,7 @@ namespace Rocket.Core {
 	        
 	        this.checkVisibility();
 	        
-	        this.structureElement.getToolbar().getCommandList()
+	        this.structureElement.getToolbar(true).show().getCommandList()
 	                .createJqCommandButton({
 	                    iconType: "fa fa-trash",
 	                    label: "Remove"

@@ -81,8 +81,8 @@ namespace Rocket.Display {
 			return this.jqElem.hasClass("rocket-item");
 		}
 		
-		public getToolbar(): Toolbar {
-			if (this.toolbar !== null) {
+		public getToolbar(createIfNotExists: boolean): Toolbar|null {
+			if (!createIfNotExists || this.toolbar !== null) {
 				return this.toolbar;
 			}
 			
@@ -299,11 +299,25 @@ namespace Rocket.Display {
 		}
 		
 		public getJqControls(): JQuery<Element> {
-			return this.jqControls;	
+		    return this.jqControls;	
 		}
 		
 		public getCommandList(): CommandList {
-			return this.commandList;
+		    return this.commandList;
+		}
+		
+		isEmpty(): boolean {
+            return this.jqControls.is(":empty") && this.commandList.isEmpty();
+        }
+		
+		show(): Toolbar {
+		    this.jQuery.show();
+		    return this;
+		}
+		
+		hide(): Toolbar {
+		    this.jQuery.hide();
+		    return this;
 		}
 	}
 	
@@ -320,6 +334,10 @@ namespace Rocket.Display {
 		
 		get jQuery(): JQuery<Element> {
 			return this.jqCommandList;
+		}
+		
+		isEmpty(): boolean {
+		    return this.jqCommandList.is(":empty");
 		}
 		
 		public createJqCommandButton(buttonConfig: ButtonConfig/*, iconType: string, label: string, severity: Severity = Severity.SECONDARY, tooltip: string = null*/, prepend: boolean = false): JQuery<Element> {
