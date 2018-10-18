@@ -31,6 +31,8 @@ interface EiProp extends EiComponent {
 	 */
 	public function getLabelLstr(): Lstr;
 	
+	public function setParentEiProp(?EiProp $parentEiProp);
+	
 	/**
 	 * @return EiProp|null 
 	 */

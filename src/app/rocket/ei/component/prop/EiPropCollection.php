@@ -23,11 +23,14 @@ namespace rocket\ei\component\prop;
 
 use rocket\ei\component\EiComponentCollection;
 use rocket\ei\mask\EiMask;
+use rocket\ei\EiPropPath;
 
 class EiPropCollection extends EiComponentCollection {
 	
+	private $eiPropPaths = array();
+	
 	/**
-	 * 
+	 * @param EiMask $eiMask
 	 */
 	public function __construct(EiMask $eiMask) {
 		parent::__construct('EiProp', EiProp::class);
@@ -35,11 +38,11 @@ class EiPropCollection extends EiComponentCollection {
 	}
 
 	/**
-	 * @param string $id
-	 * @return \rocket\ei\component\EiComponent
+	 * @param EiPropPath $eiPropPath
+	 * @return EiProp
 	 */
-	public function getById(string $id): EiProp {
-		return $this->getEiComponentById($id);
+	public function getByPath(EiPropPath $eiPropPath) {
+		return $this->getEiComponentById($eiPropPath->__toString());
 	}
 	
 	/**
@@ -48,4 +51,6 @@ class EiPropCollection extends EiComponentCollection {
 	public function add(EiProp $eiProp) {
 		$this->addEiComponent($eiProp);
 	}
+	
+	
 }

@@ -38,7 +38,7 @@ interface EiComponent {
 	/**
 	 * @return string
 	 */
-	public function getIdBase();
+	public function getIdBase(): string;
 	
 	/**
 	 * @return \rocket\ei\mask\EiMask
