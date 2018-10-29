@@ -29,6 +29,10 @@ CREATE TABLE `rocket_user` (
   UNIQUE KEY `nick` (`nick`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+INSERT INTO `rocket_user` (`id`, `nick`, `firstname`, `lastname`, `email`, `power`, `password`) VALUES
+	(1, 'super', 'Testerich', 'von Testen', 'testerich@von-testen.com', 'superadmin', '$2a$07$holeradioundholeradioe5FD29ANtu4PChE8W4mZDg.D1eKkBnwq');
+
 CREATE TABLE IF NOT EXISTS `rocket_critmod_save` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `ei_type_path` varchar(255) NOT NULL,
