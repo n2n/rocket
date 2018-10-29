@@ -50,7 +50,7 @@ class EditModel implements Dispatchable {
 	}
 	
 	public function initialize(EiuEntry $eiuEntry) {
-		$this->eiuEntryForm = $this->eiuFrame->eiuEntryForm($eiuEntry, new PropertyPath(array('eiuEntryForm')));
+		$this->eiuEntryForm = $this->eiuFrame->entryForm($eiuEntry, new PropertyPath(array('eiuEntryForm')));
 		
 		IllegalStateException::assertTrue(!$this->eiuEntryForm->isChoosable());
 		$this->entryModel = $this->eiuEntryForm->getChosenEiuEntryTypeForm();

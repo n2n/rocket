@@ -69,7 +69,7 @@ class ToManyDynMappingFormFactory {
 		$this->currentMappingForms[$this->getKey($currentEiEntry)] = new MappingForm(
 				$this->eiuFrame->getGenericLabel($currentEiEntry), 
 				$this->eiuFrame->getGenericIconType($currentEiEntry), null, 
-				$this->eiuFrame->eiuEntryForm($currentEiEntry), $this->nextOrderIndex++);
+				$this->eiuFrame->entryForm($currentEiEntry), $this->nextOrderIndex++);
 	}
 
 	public function getCurrentMappingForm(string $pid) {
