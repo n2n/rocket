@@ -32,7 +32,7 @@ class ThumbEiCommand extends EiCommandAdapter {
 	
 	private $fileEiProp;
 	
-	public function getIdBase() {
+	public function getIdBase(): ?string {
 		return self::ID_BASE;
 	}
 	

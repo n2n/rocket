@@ -51,6 +51,4 @@ class EiPropCollection extends EiComponentCollection {
 	public function add(EiProp $eiProp) {
 		$this->addEiComponent($eiProp);
 	}
-	
-	
 }

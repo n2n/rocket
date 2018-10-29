@@ -31,8 +31,10 @@ use rocket\ei\manage\entry\EiField;
 use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\FieldEiProp;
+use rocket\ei\component\prop\FieldForkEiProp;
+use rocket\ei\manage\entry\EiFieldFork;
 
-class EmbeddedEiProp extends ObjectPropertyEiPropAdapter implements GuiEiProp, FieldEiProp {
+class EmbeddedEiProp extends ObjectPropertyEiPropAdapter implements GuiEiProp, FieldEiProp, FieldForkEiProp {
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty instanceof EmbeddedEntityProperty);
@@ -43,10 +45,25 @@ class EmbeddedEiProp extends ObjectPropertyEiPropAdapter implements GuiEiProp, F
 	public function buildGuiProp(Eiu $eiu): ?GuiProp {
 	}
 	
-	public function buildEiField(Eiu $eiu) {
+	public function buildEiField(Eiu $eiu): ?EiField {
+		
 	}
 
-	public function buildEiFieldFork(EiObject $eiObject, EiField $eiField = null) {
+	public function buildEiFieldFork(Eiu $eiu): ?EiFieldFork {
+		return new EmbeddedEiFieldFork($eiu->engine()->createEiFieldMap($eiu->mask()->forkedProps($this)));
+	
 	}
 
+}
+
+class EmbeddedEiFieldFork implements EiFieldFork {
+	private $eiFieldMap;
+	
+	public function __construct(EiFieldMap $forkedEiFieldMap) {
+		$this->eiFieldMap = $forkedEiFieldMap;
+	}
+	
+	function getForkedEiFieldMap(): EiFieldMap {
+		return $this->eiFieldMap;
+	}
 }

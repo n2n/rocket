@@ -80,7 +80,7 @@ interface EiField {
 	
 	/**
 	 * @param EiObject $eiObject
-	 * @return EiField
+	 * @return EiField|null
 	 */
 	public function copyEiField(Eiu $copyEiu);
 }

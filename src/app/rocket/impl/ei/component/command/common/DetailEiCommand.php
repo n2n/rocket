@@ -46,7 +46,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 	const CONTROL_DETAIL_KEY = 'detail'; 
 	const CONTROL_PREVIEW_KEY = 'preview';
 		
-	public function getIdBase() {
+	public function getIdBase(): ?string {
 		return self::ID_BASE;
 	}
 	

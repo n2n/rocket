@@ -26,6 +26,7 @@ use rocket\ei\manage\EiObject;
 use n2n\reflection\property\ValueIncompatibleWithConstraintsException;
 use n2n\reflection\ReflectionUtils;
 use rocket\ei\util\Eiu;
+use rocket\ei\manage\entry\EiField;
 
 class SimpleEiField extends RwEiField {
 	private $typeConstraint;
@@ -77,7 +78,7 @@ class SimpleEiField extends RwEiField {
 		}
 	}
 	
-	public function copyEiField(Eiu $copyEiu) {
+	public function copyEiField(Eiu $copyEiu): ?EiField {
 		if ($this->copyable === null) return null;
 		
 		$eiField = new SimpleEiField($copyEiu->entry()->getEiObject(), $this->typeConstraint, $this->readable, $this->writable,

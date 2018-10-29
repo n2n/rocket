@@ -560,6 +560,7 @@ class PropIn {
 	}
 	
 	public function invoke() {
+		
 		$accessProxy = null;
 		if (null !== $this->objectPropertyName) {
 			try{

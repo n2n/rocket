@@ -40,7 +40,7 @@ class TreeMoveEiCommand extends IndependentEiCommandAdapter implements EntryCont
 	const CONTROL_INSERT_AFTER_KEY = 'insertAfter';
 	const CONTROL_INSERT_CHILD_KEY = 'insertChild';
 	
-	public function getIdBase() {
+	public function getIdBase(): ?string {
 		return self::ID_BASE;
 	}
 	

@@ -45,7 +45,7 @@ class OrderEiCommand extends EiCommandAdapter implements EntryControlComponent {
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\EiComponentAdapter::getIdBase()
 	 */
-	public function getIdBase() {
+	public function getIdBase(): ?string {
 		return self::ID_BASE;
 	}
 	

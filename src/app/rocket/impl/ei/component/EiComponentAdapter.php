@@ -66,7 +66,7 @@ abstract class EiComponentAdapter implements EiComponent {
 		$this->id = $id;
 	}
 	
-	public function getIdBase() {
+	public function getIdBase(): ?string {
 		return ReflectionUtils::buildTypeAcronym(get_class($this));
 	}
 	

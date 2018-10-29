@@ -47,6 +47,9 @@ use rocket\spec\extr\EiModificatorExtraction;
 use rocket\ei\EiTypeExtension;
 use n2n\util\StringUtils;
 use rocket\core\model\Rocket;
+use rocket\ei\component\prop\EiPropCollection;
+use rocket\ei\EiPropPath;
+use phpDocumentor\Reflection\Types\Null_;
 
 class EiTypeFactory {
 	private $entityModelManager;
@@ -123,7 +126,8 @@ class EiTypeFactory {
 		$eiPropCollection = $eiMask->getEiPropCollection();
 		foreach ($eiMaskExtraction->getEiPropExtractions() as $eiPropExtraction) {
 			try {
-				$eiPropCollection->addIndependent($this->createEiProp($eiPropExtraction, $eiMask));
+				$eiPropWrapper = $eiPropCollection->addIndependent($this->createEiProp($eiPropExtraction, $eiMask));
+				$this->applyEiProps($ei)
 			} catch (TypeNotFoundException $e) {
 				throw $this->createEiPropException($eiPropExtraction, $e);
 			} catch (InvalidConfigurationException $e) {
@@ -156,6 +160,26 @@ class EiTypeFactory {
 		}
 		
 		$eiMask->setDisplayScheme($eiMaskExtraction->getDisplayScheme());
+	}
+	
+	/**
+	 * @param EiPropExtraction[] $eiPropExtractions
+	 */
+	private function applyEiProps(array $eiPropExtractions, EiPropCollection $eiPropCollection, EiPropPath $contextEiPropPath = null) {
+		foreach ($eiPropExtractions as $eiPropExtraction) {
+			$eiPropWrapper;
+			try {
+				$eiPropWrapper = $eiPropCollection->addIndependent(
+						$this->createEiProp($eiPropExtraction, $eiPropCollection->getEiMask()),
+						$contextEiPropPath);
+			} catch (TypeNotFoundException $e) {
+				throw $this->createEiPropException($eiPropExtraction, $e);
+			} catch (InvalidConfigurationException $e) {
+				throw $this->createEiPropException($eiPropExtraction, $e);
+			}
+			
+			$this->applyEiProps($eiPropExtraction->getSubEiPropExtractions(), $eiPropCollection, $eiPropWrapper->getEiPropPath());
+		}
 	}
 	
 	/**
@@ -196,7 +220,10 @@ class EiTypeFactory {
 		$objectPropertyName = $eiPropExtraction->getObjectPropertyName();
 		$entityPropertyName = $eiPropExtraction->getEntityPropertyName();
 		
+		
+		
 		$this->setupQueue->addPropIn(new PropIn($eiMask->getEiType(), $eiPropConfigurator, $objectPropertyName, $entityPropertyName));
+		
 		
 		// 		$this->setupQueue->addClosure(function () use ($eiType, $eiPropConfigurator, $objectPropertyName, $entityPropertyName) {
 		// 			$accessProxy = null;

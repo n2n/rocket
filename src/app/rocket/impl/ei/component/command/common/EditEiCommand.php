@@ -43,7 +43,7 @@ class EditEiCommand extends IndependentEiCommandAdapter implements EntryControlC
 	const PRIVILEGE_LIVE_ENTRY_KEY = 'eiEntityObj';
 	const PRIVILEGE_DRAFT_KEY = 'draft';
 	
-	public function getIdBase() {
+	public function getIdBase(): ?string {
 		return self::ID_BASE;
 	}
 	

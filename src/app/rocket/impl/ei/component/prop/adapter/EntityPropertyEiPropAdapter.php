@@ -29,7 +29,7 @@ abstract class EntityPropertyEiPropAdapter extends IndependentEiPropAdapter impl
 	protected $entityProperty;
 	protected $entityPropertyRequired = true;
 	
-	public function getIdBase() {
+	public function getIdBase(): ?string {
 		return $this->entityProperty->getName();
 	}
 	

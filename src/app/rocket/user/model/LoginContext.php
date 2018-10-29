@@ -36,7 +36,7 @@ class LoginContext implements RequestScoped, Dispatchable {
 		$ai->p('currentUserId', new AnnoSessionScoped());
 	}
 	
-	const MAX_LOGIN_ATTEMPTIONS = 5;
+	const MAX_LOGIN_ATTEMPTIONS = 10;
 	
 	protected $nick;
 	protected $rawPassword;

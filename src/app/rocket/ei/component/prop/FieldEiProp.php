@@ -22,18 +22,20 @@
 namespace rocket\ei\component\prop;
 
 use rocket\ei\util\Eiu;
+use rocket\ei\manage\entry\EiField;
+use rocket\ei\manage\generic\ScalarEiProperty;
 
 interface FieldEiProp extends EiProp {
 			
 	/**
-	 * @param Eiu $eiu
+	 * @param Eiu $eiu {Eiu::frame()} is available.
 	 */
-	public function buildEiField(Eiu $eiu);
+	public function buildEiField(Eiu $eiu): ?EiField;
 }
 
 
 
 interface ScalarEiProp extends FieldEiProp {
 	
-	public function getScalarEiProperty();
+	public function getScalarEiProperty(): ?ScalarEiProperty;
 }

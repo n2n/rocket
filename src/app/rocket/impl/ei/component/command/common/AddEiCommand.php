@@ -52,7 +52,7 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 
 	private $dublicatingAllowed = true;
 
-	public function getIdBase() {
+	public function getIdBase(): ?string {
 		return self::ID_BASE;
 	}
 

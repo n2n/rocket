@@ -40,7 +40,7 @@ class OnlineEiCommand extends EiCommandAdapter implements EntryControlComponent 
 	
 	private $onlineEiProp;
 	
-	public function getIdBase() {
+	public function getIdBase(): ?string {
 		return self::ID_BASE;
 	}
 	

@@ -35,7 +35,7 @@ class RelationEiCommand extends EiCommandAdapter {
 		$this->eiPropRelation = $eiPropRelation;
 	}
 	
-	public function getIdBase() {
+	public function getIdBase(): ?string {
 		return self::ID_BASE;
 	}
 	

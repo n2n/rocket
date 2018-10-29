@@ -25,6 +25,7 @@ class EiPropExtraction extends EiComponentExtraction {
 	private $label;
 	private $objectPropertyName;
 	private $entityPropertyName;
+	private $forkedEiPropExtractions = array();
 
 	/**
 	 * @return string|null
@@ -66,5 +67,19 @@ class EiPropExtraction extends EiComponentExtraction {
 	 */
 	public function setEntityPropertyName(?string $entityPropertyName) {
 		$this->entityPropertyName = $entityPropertyName;
+	}
+	
+	/**
+	 * @return EiPropExtraction[]
+	 */
+	public function getForkedEiPropExtractions() {
+		return $this->forkedEiPropExtractions;
+	}
+	
+	/**
+	 * @param EiPropExtraction[] $forkedEiPropExtractions
+	 */
+	public function setForkedEiPropExtractions(array $forkedEiPropExtractions) {
+		$this->forkedEiPropExtractions = $forkedEiPropExtractions;
 	}
 }
