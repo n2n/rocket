@@ -35,7 +35,7 @@ class ContentItemTemplateDef implements HangarTemplateDef {
 		
 		if ($magDispatchable->getPropertyValue(self::PROP_NAME_CREATE_VIEW)) {
 			if ($this->createView($huo, $phpClass)) {
-				$phpMethod->setMethodCode('return $view->getImport(\'\\' . $phpClass->getPhpNamespace()->getName() . Phpbob::NAMESPACE_SEPERATOR 
+				$phpMethod->setMethodCode("\t\t" . 'return $view->getImport(\'\\' . $phpClass->getPhpNamespace()->getName() . Phpbob::NAMESPACE_SEPERATOR 
 						. $this->buildViewName($phpClass->getClassName())  . '\', array(\'' 
 						. $this->lowerFirst($phpClass->getClassName()) . '\' => $this));');
 			}
