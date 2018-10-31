@@ -54,6 +54,20 @@ abstract class IdPath implements Hashable {
 		return reset($this->ids);
 	}
 	
+	public function getLastId() {
+		$this->ensureNotEmpty();
+		return end($this->ids);
+	}
+	
+	/**
+	 * @param int $offset
+	 * @param int $length
+	 * @return string[]
+	 */
+	public function sliceIds(int $offset, int $length = null) {
+		return array_slice($this->ids, $offset, $length);
+	}
+	
 	public function toArray() {
 		return $this->ids;
 	}
@@ -98,6 +112,14 @@ abstract class IdPath implements Hashable {
 	
 	public static function stripSpecialIdChars($str) {
 		return preg_replace('#[^a-zA-Z0-9\\-]#', '', $str);
+	}
+	
+	/**
+	 * @param string[] $ids
+	 * @return string
+	 */
+	public static function implodeIds(array $ids) {
+		return implode(self::ID_SEPARATOR, $this->ids);
 	}
 	
 	public function toDbColumnName() {

@@ -131,7 +131,7 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiPropFork
 	/* (non-PHPdoc)
 	 * @see \rocket\ei\component\prop\EiProp::getEiField()
 	 */
-	public function buildEiField(Eiu $eiu) {
+	public function buildEiField(Eiu $eiu): ?EiField {
 		$readOnly = $this->eiPropRelation->isReadOnly($eiu->entry()->getEiEntry(), $eiu->frame()->getEiFrame());
 		
 		return new TranslationEiField($eiu->entry()->getEiObject(), $this, $this,

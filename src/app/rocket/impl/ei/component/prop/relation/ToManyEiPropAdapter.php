@@ -28,6 +28,7 @@ use rocket\ei\manage\draft\DraftProperty;
 use rocket\ei\manage\EiObject;
 use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
+use rocket\ei\manage\entry\EiField;
 
 abstract class ToManyEiPropAdapter extends SimpleRelationEiPropAdapter implements GuiProp, DraftableEiProp, 
 		DraftProperty {
@@ -83,7 +84,7 @@ abstract class ToManyEiPropAdapter extends SimpleRelationEiPropAdapter implement
 		return $numTargetEiObjects . ' ' . $this->eiPropRelation->getTargetEiMask()->getPluralLabelLstr();
 	}
 
-	public function buildEiField(Eiu $eiu) {
+	public function buildEiField(Eiu $eiu): ?EiField {
 		$readOnly = $this->eiPropRelation->isReadOnly($eiu->entry()->getEiEntry(), $eiu->frame()->getEiFrame());
 	
 		return new ToManyEiField($eiu->entry()->getEiObject(), $this, $this,

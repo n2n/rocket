@@ -28,6 +28,7 @@ use n2n\util\uri\Path;
 use n2n\reflection\ArgUtils;
 use n2n\util\uri\Url;
 use rocket\ei\mask\EiMask;
+use rocket\ei\EiCommandPath;
 
 class EiCommandCollection extends EiComponentCollection {
 	
@@ -50,9 +51,26 @@ class EiCommandCollection extends EiComponentCollection {
 	/**
 	 * @param EiCommand $eiCommand
 	 * @param bool $prepend
+	 * @return EiCommandWrapper
 	 */
-	public function add(EiCommand $eiCommand, bool $prepend = false) {
-		$this->addEiComponent($eiCommand, $prepend);
+	public function add(EiCommand $eiCommand, string $id = null, bool $prepend = false) {
+		$eiCommandPath = new EiCommandPath([$this->makeId($id, $eiCommand)]);
+		$eiCommandWrapper = new EiCommandWrapper($eiCommandPath, $eiCommand, $this);
+		
+		$this->addElement($eiCommandPath, $eiCommand);
+		
+		return $eiCommandWrapper;
+	}
+	
+	/**
+	 * @param IndependentEiCommand $independentEiCommand
+	 * @param string $id
+	 * @return \rocket\ei\component\command\EiCommandWrapper
+	 */
+	public function addIndependent(string $id, IndependentEiCommand $independentEiCommand) {
+		$eiCommandWrapper = $this->add($independentEiCommand, $id);
+		$this->addIndependentElement($eiCommandWrapper->getEiCommandPath(), $independentEiCommand);
+		return $eiCommandWrapper;
 	}
 	
 	/**
@@ -67,7 +85,7 @@ class EiCommandCollection extends EiComponentCollection {
 	 * @return \rocket\ei\component\command\GenericOverviewEiCommand
 	 */
 	public function getGenericOverviewEiCommand(bool $required = false) {
-		foreach ($this->eiMask->getEiCommandCollection() as $eiCommand) {
+		foreach ($this as $eiCommand) {
 			if ($eiCommand instanceof GenericOverviewEiCommand  && $eiCommand->isOverviewAvaialble()) {
 				return $eiCommand;
 			}

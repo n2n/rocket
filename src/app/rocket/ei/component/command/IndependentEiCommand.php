@@ -21,10 +21,9 @@
  */
 namespace rocket\ei\component\command;
 
-use rocket\ei\component\IndependentEiComponent;
 use rocket\ei\component\EiConfigurator;
 
-interface IndependentEiCommand extends EiCommand, IndependentEiComponent {
+interface IndependentEiCommand extends EiCommand {
 	/**
 	 * @return \rocket\ei\component\EiConfigurator
 	 */

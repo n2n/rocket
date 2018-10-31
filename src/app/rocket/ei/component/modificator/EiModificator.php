@@ -26,8 +26,21 @@ use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\gui\EiEntryGui;
 use rocket\ei\manage\draft\DraftDefinition;
 use rocket\ei\util\Eiu;
+use n2n\util\ex\IllegalStateException;
 
 interface EiModificator extends EiComponent {
+	/**
+	 * Will be the first called method by rocket
+	 * @param EiModificatorWrapper $wrapper
+	 */
+	public function setWrapper(EiModificatorWrapper $wrapper);
+	
+	/**
+	 * @return EiModificatorWrapper
+	 * @throws IllegalStateException if {@self::setWrapper()} hasn't been called yet.
+	 */
+	public function getWrapper(): EiModificatorWrapper;
+	
 	
 	/**
 	 * @param EiFrame $eiFrame

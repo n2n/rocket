@@ -81,7 +81,7 @@ abstract class PropertyEditableEiPropAdapter extends PropertyDisplayableEiPropAd
 // // 		return false;
 // 	}
 	
-	public function buildEiField(Eiu $eiu) {
+	public function buildEiField(Eiu $eiu): ?EiField {
 		if ($eiu->entry()->isDraft()) {
 			return parent::buildEiField($eiu);
 		}

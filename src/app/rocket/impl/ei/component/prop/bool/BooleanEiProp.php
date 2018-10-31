@@ -47,6 +47,7 @@ use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
 use n2n\impl\persistence\orm\property\BoolEntityProperty;
 use rocket\ei\component\prop\SecurityFilterEiProp;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
+use rocket\ei\manage\entry\EiField;
 
 class BooleanEiProp extends DraftableEiPropAdapter implements FilterableEiProp, SortableEiProp, SecurityFilterEiProp {
 
@@ -187,7 +188,7 @@ class BooleanEiProp extends DraftableEiPropAdapter implements FilterableEiProp, 
 		return $enablerMag;
 	}
 	
-	public function buildEiField(Eiu $eiu) {
+	public function buildEiField(Eiu $eiu): ?EiField {
 		$that = $this;
 		$eiu->entry()->onValidate(function () use ($eiu, $that) {
 			$activeGuiIdPaths = array();

@@ -26,9 +26,43 @@ use rocket\impl\ei\component\EiComponentAdapter;
 use rocket\ei\manage\gui\EiEntryGui;
 use rocket\ei\manage\draft\DraftDefinition;
 use rocket\ei\util\Eiu;
+use rocket\ei\component\modificator\EiModificatorWrapper;
+use n2n\util\ex\IllegalStateException;
 
 abstract class EiModificatorAdapter extends EiComponentAdapter implements EiModificator {
+	private $wrapper;
 	
+	public function setWrapper(EiModificatorWrapper $wrapper) {
+		$this->wrapper = $wrapper;
+	}
+	
+	public function getWrapper(): EiModificatorWrapper {
+		if ($this->wrapper !== null) {
+			return $this->wrapper;
+		}
+		
+		throw new IllegalStateException(get_class($this) . ' is not assigned to a Wrapper.');
+	}
+	
+	public function getIdBase(): ?string {
+		return null;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\EiComponent::equals()
+	 */
+	public function equals($obj) {
+		return $obj instanceof EiModificator && $this->getWrapper()->getEiModificatorPath()->equals(
+				$obj->getWrapper()->getEiModificatorPath());
+		
+	}
+	
+	public function __toString(): string {
+		return (new \ReflectionClass($this))->getShortName() 
+				. ' (id: ' . ($this->wrapper ? $this->wrapper->getEiPropPath() : 'unknown') . ')';
+	}
+
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\component\modificator\EiModificator::setupEiFrame()

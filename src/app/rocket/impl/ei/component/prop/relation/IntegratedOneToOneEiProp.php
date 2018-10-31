@@ -55,6 +55,7 @@ use rocket\ei\manage\gui\GuiFieldForkEditable;
 use rocket\ei\util\gui\EiuEntryGuiAssembler;
 use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\component\prop\GuiEiPropFork;
+use rocket\ei\manage\entry\EiField;
 
 class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiEiPropFork, GuiPropFork {
 	
@@ -131,7 +132,7 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiEiPro
 		return $this->forkedGuiDefinition;
 	}
 	
-	public function buildEiField(Eiu $eiu) {
+	public function buildEiField(Eiu $eiu): ?EiField {
 		$readOnly = $this->eiPropRelation->isReadOnly($eiu->entry()->getEiEntry(), $eiu->frame()->getEiFrame());
 		
 		return new ToOneEiField($eiu->entry()->getEiObject(), $this, $this, ($readOnly ? null : $this));

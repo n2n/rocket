@@ -21,36 +21,13 @@
  */
 namespace rocket\ei\component;
 
-use rocket\ei\mask\EiMask;
-
 interface EiComponent {
-	
-	/**
-	 * @return string|null
-	 */
-	public function getId(): ?string;
-	
-	/**
-	 * @param string $id
-	 */
-	public function setId(string $id);
 	
 	/**
 	 * @return string|null
 	 */
 	public function getIdBase(): ?string;
 	
-	/**
-	 * @return \rocket\ei\mask\EiMask
-	 * @throws \n2n\util\ex\IllegalStateException
-	 */
-	public function getEiMask(): EiMask;
-	
-	/**
-	 * @param EiMask $eiMask
-	 */
-	public function setEiMask(EiMask $eiMask);
-		
 	/**
 	 * @param mixed $obj
 	 * @return boolean

@@ -51,6 +51,7 @@ use n2n\impl\web\dispatch\mag\model\group\EnumTogglerMag;
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\sort\SortProp;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
+use rocket\ei\manage\entry\EiField;
 
 class EnumEiProp extends DraftableEiPropAdapter implements FilterableEiProp, SortableEiProp, 
 		QuickSearchableEiProp {
@@ -84,7 +85,7 @@ class EnumEiProp extends DraftableEiPropAdapter implements FilterableEiProp, Sor
 		return new EnumEiPropConfigurator($this);
 	}
 	
-	public function buildEiField(Eiu $eiu) {
+	public function buildEiField(Eiu $eiu): ?EiField {
 		$that = $this;
 		$eiu->entry()->onValidate(function () use ($eiu, $that) {
 			$type = $eiu->field()->getValue();

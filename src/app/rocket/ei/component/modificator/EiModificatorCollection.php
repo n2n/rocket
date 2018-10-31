@@ -24,6 +24,7 @@ namespace rocket\ei\component\modificator;
 use rocket\ei\component\EiComponentCollection;
 use rocket\ei\EiType;
 use rocket\ei\mask\EiMask;
+use rocket\ei\EiModificatorPath;
 
 class EiModificatorCollection extends EiComponentCollection {
 	/**
@@ -37,8 +38,29 @@ class EiModificatorCollection extends EiComponentCollection {
 	public function getById(string $id): EiModificator {
 		return $this->getEiComponentById($id);
 	}
+		
+	/**
+	 * @param EiModificator $eiModificator
+	 * @param bool $prepend
+	 * @return EiModificatorWrapper
+	 */
+	public function add(EiModificator $eiModificator, string $id = null, bool $prepend = false) {
+		$eiModificatorPath = new EiModificatorPath([$this->makeId($id, $eiModificator)]);
+		$eiModificatorWrapper = new EiModificatorWrapper($eiModificatorPath, $eiModificator, $this);
+		
+		$this->addElement($eiModificatorPath, $eiModificator);
+		
+		return $eiModificatorWrapper;
+	}
 	
-	public function add(EiModificator $eiModificator) {
-		$this->addEiComponent($eiModificator);
+	/**
+	 * @param IndependentEiModificator $independentEiModificator
+	 * @param string $id
+	 * @return \rocket\ei\component\modificator\EiModificatorWrapper
+	 */
+	public function addIndependent(IndependentEiModificator $independentEiModificator, string $id) {
+		$eiModificatorWrapper = $this->add($independentEiModificator, $id);
+		$this->addIndependentElement($eiModificatorWrapper->getEiModificatorPath(), $independentEiModificator);
+		return $eiModificatorWrapper;
 	}
 }

@@ -21,27 +21,19 @@
  */
 namespace rocket\impl\ei\component\prop\adapter;
 
-use rocket\impl\ei\component\IndependentEiComponentAdapter;
-use rocket\ei\component\prop\indepenent\IndependentEiProp;
+use n2n\l10n\Lstr;
+use rocket\core\model\Rocket;
 use rocket\ei\component\prop\EiProp;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
-use n2n\l10n\Lstr;
-use n2n\util\StringUtils;
-use rocket\ei\component\EiConfigurator;
-use rocket\core\model\Rocket;
+use rocket\ei\component\prop\indepenent\IndependentEiProp;
 
-abstract class IndependentEiPropAdapter extends IndependentEiComponentAdapter implements IndependentEiProp {
+abstract class IndependentEiPropAdapter extends EiPropAdapter implements IndependentEiProp {
 	protected $parentEiProp;
 	protected $labelLstr;
-		
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\component\IndependentEiComponent::createEiConfigurator()
-	 */
-	public final function createEiConfigurator(): EiConfigurator {
-		return $this->createEiPropConfigurator();
-	}
 	
+	public function __construct() {
+	}
+		
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\component\prop\indepenent\IndependentEiProp::createEiPropConfigurator()
@@ -50,24 +42,8 @@ abstract class IndependentEiPropAdapter extends IndependentEiComponentAdapter im
 		return new AdaptableEiPropConfigurator($this);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\EiProp::getParentEiProp()
-	 */
-	public function getParentEiProp() {
-		return $this->parentEiProp;
-	}
-	
-	public function setParentEiProp(EiProp $parentEiProp = null) {
-		return $this->parentEiProp = $parentEiProp;
-	}
-	
 	public function getLabelLstr(): Lstr {
-		if ($this->labelLstr === null) {
-			$this->labelLstr = Rocket::createLstr(StringUtils::pretty($this->getId()));
-		}
-		
-		return $this->labelLstr;
+		return $this->labelLstr ?? parent::getLabelLstr();
 	}
 
 	public function setLabelLstr(Lstr $labelLstr) {

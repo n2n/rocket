@@ -30,13 +30,12 @@ use rocket\ei\manage\entry\EiField;
 use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\FieldEiProp;
-use rocket\ei\component\prop\FieldForkEiProp;
 use rocket\ei\manage\entry\EiFieldFork;
 use n2n\reflection\CastUtils;
 use n2n\reflection\ReflectionUtils;
 use rocket\ei\component\prop\field\EiFieldAdapter;
 
-class EmbeddedEiProp extends ObjectPropertyEiPropAdapter implements GuiEiProp, FieldEiProp, FieldForkEiProp {
+class EmbeddedEiProp extends ObjectPropertyEiPropAdapter implements GuiEiProp, FieldEiProp {
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty instanceof EmbeddedEntityProperty);

@@ -21,12 +21,11 @@
  */
 namespace rocket\impl\ei\component\command;
 
-use rocket\impl\ei\component\IndependentEiComponentAdapter;
 use rocket\ei\component\command\IndependentEiCommand;
 use rocket\ei\component\EiConfigurator;
 use rocket\impl\ei\component\DefaultEiPropConfigurator;
 
-abstract class IndependentEiCommandAdapter extends IndependentEiComponentAdapter implements IndependentEiCommand {
+abstract class IndependentEiCommandAdapter extends EiCommandAdapter implements IndependentEiCommand {
 	
 	public function createEiConfigurator(): EiConfigurator {
 		return new DefaultEiPropConfigurator($this);

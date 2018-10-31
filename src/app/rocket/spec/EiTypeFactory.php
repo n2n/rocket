@@ -49,7 +49,6 @@ use n2n\util\StringUtils;
 use rocket\core\model\Rocket;
 use rocket\ei\component\prop\EiPropCollection;
 use rocket\ei\EiPropPath;
-use phpDocumentor\Reflection\Types\Null_;
 
 class EiTypeFactory {
 	private $entityModelManager;
@@ -124,21 +123,23 @@ class EiTypeFactory {
 		$eiDef->setPreviewControllerLookupId($eiMaskExtraction->getPreviewControllerLookupId());
 		
 		$eiPropCollection = $eiMask->getEiPropCollection();
-		foreach ($eiMaskExtraction->getEiPropExtractions() as $eiPropExtraction) {
-			try {
-				$eiPropWrapper = $eiPropCollection->addIndependent($this->createEiProp($eiPropExtraction, $eiMask));
-				$this->applyEiProps($ei);
-			} catch (TypeNotFoundException $e) {
-				throw $this->createEiPropException($eiPropExtraction, $e);
-			} catch (InvalidConfigurationException $e) {
-				throw $this->createEiPropException($eiPropExtraction, $e);
-			}
-		}
+		$this->applyEiProps($eiMaskExtraction->getEiPropExtractions(), $eiPropCollection);
+// 		foreach ($eiMaskExtraction->getEiPropExtractions() as $eiPropExtraction) {
+// 			try {
+// 				$eiPropWrapper = $eiPropCollection->addIndependent($eiPropExtraction->getId(), 
+// 						$this->createEiProp($eiPropExtraction, $eiMask));
+// 				$this->applyEiProps($ei);
+// 			} catch (TypeNotFoundException $e) {
+// 				throw $this->createEiPropException($eiPropExtraction, $e);
+// 			} catch (InvalidConfigurationException $e) {
+// 				throw $this->createEiPropException($eiPropExtraction, $e);
+// 			}
+// 		}
 		
 		$eiCommandCollection = $eiMask->getEiCommandCollection();
 		foreach ($eiMaskExtraction->getEiCommandExtractions() as $eiComponentExtraction) {
 			try {
-				$eiCommandCollection->addIndependent(
+				$eiCommandCollection->addIndependent($eiComponentExtraction->getId(),
 						$this->createEiCommand($eiComponentExtraction, $eiMask));
 			} catch (TypeNotFoundException $e) {
 				throw $this->createEiCommandException($eiPropExtraction->getId(), $e);
@@ -153,7 +154,8 @@ class EiTypeFactory {
 		$eiModificatorCollection = $eiMask->getEiModificatorCollection();
 		foreach ($eiModificatorExtractions as $eiModificatorExtraction) {
 			try {
-				$eiModificatorCollection->add($this->createEiModificator($eiModificatorExtraction, $eiMask));
+				$eiModificatorCollection->addIndependent($eiModificatorExtraction->getId(),
+						$this->createEiModificator($eiModificatorExtraction, $eiMask));
 			} catch (InvalidConfigurationException $e) {
 				throw $this->createEiModificatorException($eiModificatorExtraction->getId(), $e);
 			}
@@ -170,6 +172,7 @@ class EiTypeFactory {
 			$eiPropWrapper;
 			try {
 				$eiPropWrapper = $eiPropCollection->addIndependent(
+						$eiPropExtraction->getId(),
 						$this->createEiProp($eiPropExtraction, $eiPropCollection->getEiMask()),
 						$contextEiPropPath);
 			} catch (TypeNotFoundException $e) {
@@ -178,7 +181,7 @@ class EiTypeFactory {
 				throw $this->createEiPropException($eiPropExtraction, $e);
 			}
 			
-			$this->applyEiProps($eiPropExtraction->getSubEiPropExtractions(), $eiPropCollection, 
+			$this->applyEiProps($eiPropExtraction->getForkedEiPropExtractions(), $eiPropCollection, 
 					$eiPropWrapper->getEiPropPath());
 		}
 	}
@@ -202,7 +205,6 @@ class EiTypeFactory {
 		}
 		
 		$eiProp = $eiPropClass->newInstance();
-		$eiProp->setId($id);
 		
 		$moduleNamespace = null;
 		if ($eiMask->isExtension()) {
@@ -222,8 +224,8 @@ class EiTypeFactory {
 		$entityPropertyName = $eiPropExtraction->getEntityPropertyName();
 		
 		
-		
-		$this->setupQueue->addPropIn(new PropIn($eiMask->getEiType(), $eiPropConfigurator, $objectPropertyName, $entityPropertyName));
+		$this->setupQueue->addPropIn(new PropIn($eiMask->getEiType(), $eiPropConfigurator, $objectPropertyName, 
+				$entityPropertyName, []));
 		
 		
 		// 		$this->setupQueue->addClosure(function () use ($eiType, $eiPropConfigurator, $objectPropertyName, $entityPropertyName) {

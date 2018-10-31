@@ -26,7 +26,6 @@ use rocket\ei\mask\EiMask;
 use rocket\ei\EiPropPath;
 
 class EiPropCollection extends EiComponentCollection {
-	
 	private $eiPropPaths = array();
 	
 	/**
@@ -46,9 +45,45 @@ class EiPropCollection extends EiComponentCollection {
 	}
 	
 	/**
-	 * @param EiProp $eiProp
+	 * @param EiPropPath $eiPropPath
+	 * @return EiProp[]
 	 */
-	public function add(EiProp $eiProp) {
-		$this->addEiComponent($eiProp);
+	public function getForkedByPath(EiPropPath $eiPropPath) {
+		return $this->getElementyByForkIdPath($forkIdPath);
+	}
+	
+	/**
+	 * @param EiProp $eiProp
+	 * @param string $id
+	 * @param EiPropPath $forkEiPropPath
+	 * @return \rocket\ei\component\prop\EiPropWrapper
+	 */
+	public function add(EiProp $eiProp, string $id = null, EiPropPath $forkEiPropPath = null) {
+		$id = $this->makeId($id, $eiProp);
+		
+		$eiPropPath = null;
+		if ($forkEiPropPath === null) {
+			$eiPropPath = new EiPropPath([$id]);
+		} else {
+			$eiPropPath = $forkEiPropPath->ext($id);
+		}
+		
+		$eiPropWrapper = new EiPropWrapper($eiPropPath, $eiProp, $this);
+		
+		$this->addElement($eiPropPath, $eiProp);
+		
+		return $eiPropWrapper;
+	}
+	
+	/**
+	 * @param string $id
+	 * @param EiProp $eiProp
+	 * @param EiPropPath $forkEiPropPath
+	 * @return \rocket\ei\component\prop\EiPropWrapper
+	 */
+	public function addIndependent(string $id, EiProp $eiProp, EiPropPath $forkEiPropPath = null) {
+		$eiPropWrapper = $this->add($eiProp, $id, $forkEiPropPath);
+		$this->addIndependentElement($eiPropWrapper->getEiPropPath(), $eiProp);
+		return $eiPropWrapper;
 	}
 }

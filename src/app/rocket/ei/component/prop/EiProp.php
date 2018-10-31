@@ -23,6 +23,7 @@ namespace rocket\ei\component\prop;
 
 use rocket\ei\component\EiComponent;
 use n2n\l10n\Lstr;
+use n2n\util\ex\IllegalStateException;
 
 interface EiProp extends EiComponent {
 	
@@ -31,15 +32,15 @@ interface EiProp extends EiComponent {
 	 */
 	public function getLabelLstr(): Lstr;
 	
-	public function setParentEiProp(?EiProp $parentEiProp);
+	/**
+	 * Will be the first called method by rocket
+	 * @param EiPropWrapper $eiPropWrapper
+	 */
+	public function setWrapper(EiPropWrapper $eiPropWrapper);
 	
 	/**
-	 * @return EiProp|null 
+	 * @return EiPropWrapper
+	 * @throws IllegalStateException if {@self::setWrapper()} hasn't been called yet.
 	 */
-	public function getParentEiProp();
-	
-	/**
-	 * @return EiPropCollection|NULL
-	 */
-	public function getForkedEiPropCollection(): ?EiPropCollection;
+	public function getWrapper(): EiPropWrapper;
 }

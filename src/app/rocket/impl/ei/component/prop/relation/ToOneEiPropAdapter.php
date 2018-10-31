@@ -32,6 +32,7 @@ use n2n\reflection\ArgUtils;
 use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\relation\model\ToOneEiField;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
+use rocket\ei\manage\entry\EiField;
 
 abstract class ToOneEiPropAdapter extends SimpleRelationEiPropAdapter implements GuiProp, DraftableEiProp, 
 		DraftProperty {
@@ -41,7 +42,7 @@ abstract class ToOneEiPropAdapter extends SimpleRelationEiPropAdapter implements
 		parent::setEntityProperty($entityProperty);
 	}
 
-	public function buildEiField(Eiu $eiu) {
+	public function buildEiField(Eiu $eiu): ?EiField {
 		$readOnly = $this->eiPropRelation->isReadOnly($eiu->entry()->getEiEntry(), $eiu->frame()->getEiFrame());
 	
 		return new ToOneEiField($eiu->entry()->getEiObject(), $this, $this,

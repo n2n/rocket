@@ -32,6 +32,7 @@ use n2n\web\dispatch\mag\Mag;
 use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\ScalarEiProp;
 use rocket\ei\manage\generic\CommonScalarEiProperty;
+use rocket\ei\manage\generic\ScalarEiProperty;
 
 class IntegerEiProp extends NumericEiPropAdapter implements ScalarEiProp {
 	const INT_SIGNED_MIN = -2147483648;
@@ -48,7 +49,7 @@ class IntegerEiProp extends NumericEiPropAdapter implements ScalarEiProp {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\component\prop\ScalarEiProp::buildScalarValue()
 	 */
-	public function getScalarEiProperty() {
+	public function getScalarEiProperty(): ?ScalarEiProperty {
 		return new CommonScalarEiProperty($this, null, function ($value) {
 			ArgUtils::valScalar($value, true);
 			if ($value === null) return null;

@@ -48,6 +48,7 @@ use n2n\core\config\WebConfig;
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\sort\SortProp;
 use rocket\ei\manage\generic\GenericEiProperty;
+use rocket\ei\manage\generic\ScalarEiProperty;
 
 class N2nLocaleEiProp extends DraftableEiPropAdapter implements FilterableEiProp, SortableEiProp, GenericEiProp,
 		ScalarEiProp {
@@ -168,7 +169,7 @@ class N2nLocaleEiProp extends DraftableEiPropAdapter implements FilterableEiProp
 	}
 
 
-	public function getScalarEiProperty() {
+	public function getScalarEiProperty(): ?ScalarEiProperty {
 		return new CommonScalarEiProperty($this,
 				function (N2nLocale $n2nLocale = null) {
 					if ($n2nLocale === null) return null;

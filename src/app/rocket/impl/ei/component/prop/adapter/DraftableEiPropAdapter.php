@@ -38,6 +38,7 @@ use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\field\SimpleEiField;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
+use rocket\ei\manage\entry\EiField;
 
 abstract class DraftableEiPropAdapter extends PropertyEditableEiPropAdapter implements DraftConfigurable, DraftProperty {
 	protected $draftable = false;
@@ -53,7 +54,11 @@ abstract class DraftableEiPropAdapter extends PropertyEditableEiPropAdapter impl
 		$this->draftable = $draftable;
 	}
 	
-	public function buildEiField(Eiu $eiu) {
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\adapter\PropertyEditableEiPropAdapter::buildEiField()
+	 */
+	public function buildEiField(Eiu $eiu): ?EiField {
 		if (!$eiu->entry()->isDraft()) {
 			return parent::buildEiField($eiu);
 		}

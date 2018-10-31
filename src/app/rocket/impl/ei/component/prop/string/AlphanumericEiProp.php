@@ -44,6 +44,7 @@ use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\sort\SortProp;
 use rocket\ei\manage\generic\GenericEiProperty;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
+use rocket\ei\manage\generic\ScalarEiProperty;
 
 abstract class AlphanumericEiProp extends DraftableEiPropAdapter implements FilterableEiProp, 
 		SortableEiProp, QuickSearchableEiProp, ScalarEiProp, GenericEiProp {
@@ -126,7 +127,7 @@ abstract class AlphanumericEiProp extends DraftableEiPropAdapter implements Filt
 	 * {@inheritDoc}
 	 * @see \rocket\ei\component\prop\ScalarEiProp::buildScalarValue()
 	 */
-	public function getScalarEiProperty() {
+	public function getScalarEiProperty(): ?ScalarEiProperty {
 		return new CommonScalarEiProperty($this);
 	}
 }

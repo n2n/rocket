@@ -19,12 +19,46 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component;
+namespace rocket\ei;
 
-use rocket\ei\component\IndependentEiComponent;
+use rocket\ei\component\command\EiCommand;
+use rocket\ei\component\modificator\EiModificator;
 
-abstract class IndependentEiComponentAdapter extends EiComponentAdapter implements IndependentEiComponent {
+class EiModificatorPath extends IdPath {
+
+	/**
+	 * @param EiCommand $eiCommand
+	 * @return EiModificatorPath
+	 */
+	public static function from(EiModificator $eiModificator) {
+		return $eiModificator->getWrapper()->getEiModificatorPath();
+	}
 	
-	public function __construct() {	}
+	/**
+	 * @param mixed ...$args
+	 * @return EiModificatorPath
+	 */
+	public function ext(...$args) {
+		return new EiModificatorPath(array_merge($this->ids, $this->argsToIds($args)));
+	}
+
+	/**
+	 * @param mixed $expression
+	 * @return \rocket\ei\EiModificatorPath
+	 */
+	public static function create($expression) {
+		if ($expression instanceof EiModificatorPath) {
+			return $expression;
+		}
 	
+		if ($expression instanceof EiModificator) {
+			return self::from($expression);
+		}
+	
+		if (is_array($expression)) {
+			return new EiModificatorPath($expression);
+		}
+	
+		return new EiModificatorPath(explode(self::ID_SEPARATOR, $expression));
+	}
 }

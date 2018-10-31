@@ -23,8 +23,37 @@ namespace rocket\impl\ei\component\command;
 
 use rocket\ei\component\command\EiCommand;
 use rocket\impl\ei\component\EiComponentAdapter;
+use rocket\ei\component\command\EiCommandWrapper;
+use n2n\util\ex\IllegalStateException;
 
 abstract class EiCommandAdapter extends EiComponentAdapter implements EiCommand {
+	private $wrapper;
+	
+	public function setWrapper(EiCommandWrapper $wrapper) {
+		$this->wrapper = $wrapper;
+	}
+	
+	public function getWrapper(): EiCommandWrapper {
+		if ($this->wrapper !== null) {
+			return $this->wrapper;
+		}
+		
+		throw new IllegalStateException(get_class($this) . ' is not assigned to a Wrapper.');
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\EiComponent::__toString()
+	 */
+	public function __toString(): string {
+		return (new \ReflectionClass($this))->getShortName()
+				. ' (id: ' . ($this->wrapper ? $this->wrapper->getEiCommandPath() : 'unknown') . ')';
+	}	
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\EiComponent::equals()
+	 */
 	public function equals($obj) {
 		return $obj instanceof EiCommand && parent::equals($obj);
 	}
