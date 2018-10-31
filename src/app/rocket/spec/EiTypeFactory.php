@@ -127,7 +127,7 @@ class EiTypeFactory {
 		foreach ($eiMaskExtraction->getEiPropExtractions() as $eiPropExtraction) {
 			try {
 				$eiPropWrapper = $eiPropCollection->addIndependent($this->createEiProp($eiPropExtraction, $eiMask));
-				$this->applyEiProps($ei)
+				$this->applyEiProps($ei);
 			} catch (TypeNotFoundException $e) {
 				throw $this->createEiPropException($eiPropExtraction, $e);
 			} catch (InvalidConfigurationException $e) {
@@ -178,7 +178,8 @@ class EiTypeFactory {
 				throw $this->createEiPropException($eiPropExtraction, $e);
 			}
 			
-			$this->applyEiProps($eiPropExtraction->getSubEiPropExtractions(), $eiPropCollection, $eiPropWrapper->getEiPropPath());
+			$this->applyEiProps($eiPropExtraction->getSubEiPropExtractions(), $eiPropCollection, 
+					$eiPropWrapper->getEiPropPath());
 		}
 	}
 	

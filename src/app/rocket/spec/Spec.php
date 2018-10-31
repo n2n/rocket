@@ -222,6 +222,7 @@ class Spec {
 		$this->noSetupMode = null;
 		$this->customTypes = array();
 		$this->eiTypes = array();
+		$this->eiTypeCis = array();
 		$this->launchPads = array();
 	}
 	

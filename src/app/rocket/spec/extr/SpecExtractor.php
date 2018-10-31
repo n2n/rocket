@@ -228,7 +228,7 @@ class SpecExtractor {
 		$parentIds[] = $id;
 		foreach ($eiPropRawDatas as $forkedId => $forkedEiPropRawData) {
 			try {
-				$forkedExtractions[] = $this->createEiPropExtraction($id, new Attributes($forkedEipropRawData), $parentIds);
+				$forkedExtractions[] = $this->createEiPropExtraction($id, new Attributes($forkedEiPropRawData), $parentIds);
 			} catch (AttributesException $e) {
 				throw $this->createEiComponentException('EiProp ' . implode('.' , array_merge($parentIds, [$id])), $e);
 			}
