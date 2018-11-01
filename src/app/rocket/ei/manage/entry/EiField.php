@@ -83,4 +83,14 @@ interface EiField {
 	 * @return EiField|null
 	 */
 	public function copyEiField(Eiu $copyEiu);
+	
+	/**
+	 * @return bool
+	 */
+	public function hasForkedEiFieldMap(): bool;
+	
+	/**
+	 * @return EiFieldMap
+	 */
+	public function getForkedEiFieldMap(): EiFieldMap;
 }

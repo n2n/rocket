@@ -119,7 +119,7 @@ abstract class IdPath implements Hashable {
 	 * @return string
 	 */
 	public static function implodeIds(array $ids) {
-		return implode(self::ID_SEPARATOR, $this->ids);
+		return implode(self::ID_SEPARATOR, $ids);
 	}
 	
 	public function toDbColumnName() {

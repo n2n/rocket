@@ -167,13 +167,14 @@ class EiTypeFactory {
 	/**
 	 * @param EiPropExtraction[] $eiPropExtractions
 	 */
-	private function applyEiProps(array $eiPropExtractions, EiPropCollection $eiPropCollection, EiPropPath $contextEiPropPath = null) {
+	private function applyEiProps(array $eiPropExtractions, EiPropCollection $eiPropCollection, array $contextEntityPropertyNames = array(), 
+			EiPropPath $contextEiPropPath = null) {
 		foreach ($eiPropExtractions as $eiPropExtraction) {
 			$eiPropWrapper;
 			try {
 				$eiPropWrapper = $eiPropCollection->addIndependent(
 						$eiPropExtraction->getId(),
-						$this->createEiProp($eiPropExtraction, $eiPropCollection->getEiMask()),
+						$this->createEiProp($eiPropExtraction, $eiPropCollection->getEiMask(), $contextEntityPropertyNames), 
 						$contextEiPropPath);
 			} catch (TypeNotFoundException $e) {
 				throw $this->createEiPropException($eiPropExtraction, $e);
@@ -181,8 +182,20 @@ class EiTypeFactory {
 				throw $this->createEiPropException($eiPropExtraction, $e);
 			}
 			
+			$forkedEiPropExtractions = $eiPropExtraction->getForkedEiPropExtractions();
+			if (empty($forkedEiPropExtractions)) {
+				continue;
+			}
+			
+			$entityPropertyNames = $contextEntityPropertyNames;
+			if (null !== ($epn = $eiPropExtraction->getEntityPropertyName())) {
+				$entityPropertyNames[] = $epn;
+			} else {
+				throw $this->createEiPropException($eiPropExtraction, new \Exception('tbd'));
+			}
+			
 			$this->applyEiProps($eiPropExtraction->getForkedEiPropExtractions(), $eiPropCollection, 
-					$eiPropWrapper->getEiPropPath());
+					$entityPropertyNames, $eiPropWrapper->getEiPropPath());
 		}
 	}
 	
@@ -195,7 +208,7 @@ class EiTypeFactory {
 	 * @throws TypeNotFoundException
 	 * @return EiProp
 	 */
-	public function createEiProp(EiPropExtraction $eiPropExtraction, EiMask $eiMask) {
+	public function createEiProp(EiPropExtraction $eiPropExtraction, EiMask $eiMask, array $contextEntityPropertyNames) {
 		$id = $eiPropExtraction->getId();
 		$eiPropClass = ReflectionUtils::createReflectionClass($eiPropExtraction->getClassName());
 		
@@ -225,7 +238,7 @@ class EiTypeFactory {
 		
 		
 		$this->setupQueue->addPropIn(new PropIn($eiMask->getEiType(), $eiPropConfigurator, $objectPropertyName, 
-				$entityPropertyName, []));
+				$entityPropertyName, $contextEntityPropertyNames));
 		
 		
 		// 		$this->setupQueue->addClosure(function () use ($eiType, $eiPropConfigurator, $objectPropertyName, $entityPropertyName) {

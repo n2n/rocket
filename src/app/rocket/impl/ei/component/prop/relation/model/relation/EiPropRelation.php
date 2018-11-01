@@ -196,12 +196,11 @@ abstract class EiPropRelation {
 	
 	protected function setupEmbeddedEditEiCommand() {
 		$this->embeddedEditEiCommand = new EmbeddedEditPseudoCommand('Edit embedded in ' 
-						. $this->getRelationEiProp()->getEiMask()->getLabelLstr() 
+						. $this->getRelationEiProp()->getWrapper()->getEiPropCollection()->getEiMask()->getLabelLstr() 
 						. ' - ' . $this->getTargetEiMask()->getLabelLstr(), 
-				$this->getRelationEiProp()->getId(), $this->getTargetEiType()->getId());
+				$this->getRelationEiProp()->getWrapper()->getEiPropPath(), $this->getTargetEiType()->getId());
 		
-		$this->targetEiMask->getEiCommandCollection()
-				->add($this->embeddedEditEiCommand);
+		$this->targetEiMask->getEiCommandCollection()->add($this->embeddedEditEiCommand);
 	}
 	
 // 	public function hasRecursiveConflict(EiFrame $eiFrame) {

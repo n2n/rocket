@@ -38,13 +38,7 @@ class EiPropPath extends IdPath {
 	}
 	
 	public static function from(EiProp $eiProp): EiPropPath {
-		$ids = array();
-		do {
-			$ids[] = $eiProp->getId();
-		} while (null !== ($eiProp = $eiProp->getParentEiProp()));
-	
-		rsort($ids);
-		return new EiPropPath($ids);
+		return $eiProp->getWrapper()->getEiPropPath();
 	}
 	
 	public static function create($expression): EiPropPath {

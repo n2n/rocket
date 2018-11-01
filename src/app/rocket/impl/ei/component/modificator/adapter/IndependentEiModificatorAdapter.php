@@ -22,13 +22,12 @@
 namespace rocket\impl\ei\component\modificator\adapter;
 
 use rocket\ei\component\modificator\EiModificator;
-use rocket\impl\ei\component\IndependentEiComponentAdapter;
 use rocket\ei\component\modificator\IndependentEiModificator;
 use rocket\ei\component\EiConfigurator;
 use rocket\impl\ei\component\DefaultEiConfigurator;
 use rocket\ei\util\Eiu;
 
-abstract class IndependentEiModificatorAdapter extends IndependentEiComponentAdapter implements IndependentEiModificator {
+abstract class IndependentEiModificatorAdapter extends EiModificatorAdapter implements IndependentEiModificator {
 	
 	/**
 	 * {@inheritDoc}

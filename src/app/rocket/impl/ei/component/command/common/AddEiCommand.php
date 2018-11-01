@@ -114,7 +114,7 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 		$eiuControlFactory = $eiu->frame()->controlFactory($this);
 		$dtc = $eiu->dtc(Rocket::NS);
 		
-		$nestedSet = null !== $this->eiMask->getEiType()->getNestedSetStrategy();
+		$nestedSet = null !== $this->getWrapper()->getEiCommandCollection()->getEiMask()->getEiType()->getNestedSetStrategy();
 		
 		$controls = array();
 		

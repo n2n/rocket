@@ -24,5 +24,11 @@ namespace rocket\impl\ei\component;
 use rocket\ei\component\EiComponent;
 
 abstract class EiComponentAdapter implements EiComponent {
-	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\EiComponent::getIdBase()
+	 */
+	public function getIdBase(): ?string {
+		return null;
+	}
 }

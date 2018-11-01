@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\prop\date;
+namespace rocket\impl\ei\component\prop\embedded;
 
 use rocket\impl\ei\component\prop\adapter\ObjectPropertyEiPropAdapter;
 use n2n\persistence\orm\property\EntityProperty;
@@ -30,10 +30,10 @@ use rocket\ei\manage\entry\EiField;
 use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\FieldEiProp;
-use rocket\ei\manage\entry\EiFieldFork;
 use n2n\reflection\CastUtils;
 use n2n\reflection\ReflectionUtils;
 use rocket\ei\component\prop\field\EiFieldAdapter;
+use rocket\ei\manage\entry\EiFieldMap;
 
 class EmbeddedEiProp extends ObjectPropertyEiPropAdapter implements GuiEiProp, FieldEiProp {
 	
@@ -44,17 +44,16 @@ class EmbeddedEiProp extends ObjectPropertyEiPropAdapter implements GuiEiProp, F
 	}
 	
 	public function buildGuiProp(Eiu $eiu): ?GuiProp {
-		
+		return null;
 	}
 	
 	public function buildEiField(Eiu $eiu): ?EiField {
 		$eiFieldMap = $this->buildEiFieldMap($eiu, false);
-		
 	}
 	
 }
 
-class EmbeddedEiField extends EiFieldAdapter implements EiFieldFork {
+class EmbeddedEiField extends EiFieldAdapter {
 	private $eiu;
 	private $eiProp;
 	
@@ -107,22 +106,5 @@ class EmbeddedEiField extends EiFieldAdapter implements EiFieldFork {
 	}
 	
 	public function getForkedEiFieldMap(): EiFieldMap {
-		
-	}
-}
-
-class EmbeddedEiFieldFork implements EiFieldFork {
-	private $eiFieldMap;
-	
-	public function __construct(EiFieldMap $forkedEiFieldMap) {
-		$this->eiFieldMap = $forkedEiFieldMap;
-	}
-	
-	public function getForkedEiFieldMap(): EiFieldMap {
-		return $this->eiFieldMap;
-	}
-	
-	public function write() {
-		
 	}
 }

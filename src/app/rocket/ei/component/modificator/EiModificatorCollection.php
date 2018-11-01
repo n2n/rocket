@@ -58,7 +58,7 @@ class EiModificatorCollection extends EiComponentCollection {
 	 * @param string $id
 	 * @return \rocket\ei\component\modificator\EiModificatorWrapper
 	 */
-	public function addIndependent(IndependentEiModificator $independentEiModificator, string $id) {
+	public function addIndependent(string $id, IndependentEiModificator $independentEiModificator) {
 		$eiModificatorWrapper = $this->add($independentEiModificator, $id);
 		$this->addIndependentElement($eiModificatorWrapper->getEiModificatorPath(), $independentEiModificator);
 		return $eiModificatorWrapper;

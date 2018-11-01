@@ -33,16 +33,16 @@ use n2n\core\container\N2nContext;
 
 class EiEntry {
 	private $eiObject;
+	private $eiFieldMap;
 	private $eiMask;
 	private $validationResult;
 // 	private $accessible = true;
-	private $eiFieldWrappers = array();
-	private $eiFieldForks = array();
 	private $listeners = array();
 	private $constraintSet;
 	
-	public function __construct(EiObject $eiObject, EiMask $eiMask) {
+	public function __construct(EiObject $eiObject, EiFieldMap $eiFieldMap, EiMask $eiMask) {
 		$this->eiObject = $eiObject;
+		$this->eiFieldMap = $eiFieldMap;
 		$this->eiMask = $eiMask;
 		$this->validationResult = new EiEntryValidationResult();
 		$this->constraintSet = new HashSet(EiEntryConstraint::class);
@@ -138,100 +138,39 @@ class EiEntry {
 	
 	/**
 	 * @param EiPropPath $eiPropPath
-	 * @return bool
-	 */
-	public function contains(EiPropPath $eiPropPath): bool {
-		$eiPropPathStr = (string) $eiPropPath;
-		return isset($this->eiFieldWrappers[$eiPropPathStr]) && isset($this->eiFieldForks[$eiPropPathStr]);
-	}
-	
-	/**
-	 * @param EiPropPath $eiPropPath
-	 */
-	public function remove(EiPropPath $eiPropPath) {
-		$eiPropPathStr = (string) $eiPropPath;
-		unset($this->eiFieldWrappers[$eiPropPathStr]);
-		unset($this->eiFieldForks[$eiPropPathStr]);
-	}
-	
-	/**
-	 * @param EiPropPath $eiPropPath
-	 * @param EiField $eiField
-	 * @return \rocket\ei\manage\entry\EiFieldWrapperImpl
-	 */
-	public function putEiField(EiPropPath $eiPropPath, EiField $eiField) {
-		$eiPropPathStr = (string) $eiPropPath;
-		return $this->eiFieldWrappers[$eiPropPathStr] = new EiFieldWrapperImpl($eiField);
-	}
-	
-	/**
-	 * @param EiPropPath $eiPropPath
-	 */
-	public function removeEiField(EiPropPath $eiPropPath) {
-		unset($this->eiFieldWrappers[(string) $eiPropPath]);
-	}
-	
-	/**
-	 * @param EiPropPath $eiPropPath
-	 * @return bool
-	 */
-	public function containsEiField(EiPropPath $eiPropPath): bool {
-		return isset($this->eiFieldWrappers[(string) $eiPropPath]);
-	}
-	
-	/**
-	 * @param EiPropPath $eiPropPath
-	 * @throws EiFieldOperationFailedException
 	 * @return EiField
 	 */
-	public function getEiField(EiPropPath $eiPropPath) {
+	function getEiField(EiPropPath $eiPropPath) {
 		return $this->getEiFieldWrapper($eiPropPath)->getEiField();
 	}
 	
 	/**
 	 * @param EiPropPath $eiPropPath
 	 * @throws EiFieldOperationFailedException
-	 * @return EiFieldWrapper
+	 * @return \rocket\ei\manage\entry\EiFieldWrapper
 	 */
-	public function getEiFieldWrapper(EiPropPath $eiPropPath) {
-		$eiPropPathStr = (string) $eiPropPath;
-		if (!isset($this->eiFieldWrappers[$eiPropPathStr])) {
-			throw new EiFieldOperationFailedException('No EiField defined for EiPropPath \'' . $eiPropPathStr
-					. '\'.');
-		}
-	
-		return $this->eiFieldWrappers[$eiPropPathStr];
-	}
+	function getEiFieldWrapper(EiPropPath $eiPropPath) {
+		$ids = $eiPropPath->toArray();
+		$passedIds = [];
+		$eiFieldWrapper = null;
 		
-	public function getEiFieldWrappers() {
-		return $this->eiFieldWrappers;
-	}
-	
-	public function containsEiFieldFork(EiPropPath $eiPropPath): bool {
-		return isset($this->eiFieldForks[(string) $eiPropPath]);
-	}
-	
-	public function putEiFieldFork(EiPropPath $eiPropPath, EiFieldFork $eiFieldFork) {
-		$this->eiFieldForks[(string) $eiPropPath] = $eiFieldFork;
-	}
-	
-	public function removeEiFieldFork(EiPropPath $eiPropPath) {
-		unset($this->eiFieldForks[(string) $eiPropPath]);
-	}
-	
-	public function getEiFieldFork(EiPropPath $eiPropPath): EiFieldFork {
-		$eiPropPathStr = (string) $eiPropPath;
-		if (!isset($this->eiFieldForks[$eiPropPathStr])) {
-			throw new EiFieldOperationFailedException('No EiFieldFork defined for EiPropPath \''
-					. $eiPropPathStr . '\'.');
+		$eiFieldMap = $this->eiFieldMap;
+		while (null !== ($passedIds[] = $id = array_shift($ids))) {
+			try {
+				$eiFieldWrapper = $eiFieldMap->getWrapper($id);
+				if (empty($ids)) return $eiFieldWrapper;
+			} catch (\rocket\ei\manage\entry\EiFieldOperationFailedException $e) {
+				throw new EiFieldOperationFailedException('No EiField defined for EiPropPath: ' . (new EiPropPath($passedIds)));
+			}
+			
+			$eiFieldMap = $eiFieldWrapper->getEiField()->getForkedEiFieldMap();
+			if ($eiFieldMap !== null) continue;
+			
+			throw new EiFieldOperationFailedException('No EiField defined for EiPropPath: ' . (new EiPropPath(
+					array_merge($passedIds, [reset($ids)]))));
 		}
-	
-		return $this->eiFieldForks[$eiPropPathStr];
 	}
 	
-	public function getEiFieldForks(): array {
-		return $this->eiFieldForks;
-	}
 	
 	// 	public function read($entity, EiPropPath $eiPropPath) {
 	

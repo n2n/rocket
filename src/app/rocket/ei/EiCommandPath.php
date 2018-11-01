@@ -26,7 +26,7 @@ use rocket\ei\component\command\EiCommand;
 class EiCommandPath extends IdPath {
 
 	public static function from(EiCommand $eiCommand): EiCommandPath {
-		return $eiCommand->getEiCommandWrapper()->getEiCommandPath();
+		return $eiCommand->getWrapper()->getEiCommandPath();
 	}
 	
 	public function ext(...$args): EiCommandPath {

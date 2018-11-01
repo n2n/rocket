@@ -26,11 +26,12 @@ use rocket\ei\IdPath;
 use rocket\ei\mask\EiMask;
 use n2n\reflection\ReflectionUtils;
 
-abstract class EiComponentCollection /*implements \IteratorAggregate, \Countable*/ {
+abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	private $elementName;
 	private $genericType;
 	
 	protected $eiMask;
+	private $idPaths = array();
 	private $elements = array();
 	private $forkedElements = array();
 	private $independentElements = array();
@@ -103,6 +104,8 @@ abstract class EiComponentCollection /*implements \IteratorAggregate, \Countable
 		$this->ensureNoEiEngine();
 		
 		$idPathStr = (string) $idPath;
+		
+		$this->idPaths[$idPathStr] = $idPath; 
 		if (!$prepend) {
 			$this->elements[$idPathStr] = $element;
 		} else {
@@ -200,28 +203,48 @@ abstract class EiComponentCollection /*implements \IteratorAggregate, \Countable
 		return false;
 	}
 	
+	/* (non-PHPdoc)
+	 * @see IteratorAggregate::getIterator()
+	 */
+	public function getIterator() {
+		return new \ArrayIterator($this->toArray());
+	}
+
+	/**
+	 * @param string $independentOnly
+	 * @return \rocket\ei\component\EiComponent[]
+	 */
+	public function toArray(bool $includeInherited = true): array {
+		if ($this->inheritedCollection === null || !$includeInherited) return $this->elements;
+
+		$superElements = $this->filterEnableds($this->inheritedCollection->toArray(true));
+
+		return $superElements + $this->elements;
+	}
+	
+	/**
+	 * @todo remove probably
+	 * @param array $elements
+	 */
+	private function filterEnableds(array $elements) {
+		return $elements;
+	}
+	
+	/* (non-PHPdoc)
+	 * @see Countable::count()
+	 */
+	public function count() {
+		$num = count($this->elements);
+		if ($this->inheritedCollection !== null) {
+			$num += $this->inheritedCollection->count();
+		}
+		return $num;
+	}
+	
 /**
  * Remove comments step by step
  */
 	
-// 	/* (non-PHPdoc)
-// 	 * @see IteratorAggregate::getIterator()
-// 	 */
-// 	public function getIterator() {
-// 		return new \ArrayIterator($this->toArray());
-// 	}
-	
-// 	/**
-// 	 * @param string $independentOnly
-// 	 * @return \rocket\ei\component\EiComponent[] 
-// 	 */
-// 	public function toArray(bool $includeInherited = true): array {
-// 		if ($this->inheritedCollection === null || !$includeInherited) return $this->elements;
-		
-// 		$superElements = $this->filterEnableds($this->inheritedCollection->toArray(true));
-
-// 		return $superElements + $this->elements;
-// 	}
 	
 // 	/**
 // 	 * @param string $levelOnly
@@ -296,16 +319,7 @@ abstract class EiComponentCollection /*implements \IteratorAggregate, \Countable
 // 		return $independentElements;
 // 	}
 	
-// 	/* (non-PHPdoc)
-// 	 * @see Countable::count()
-// 	 */
-// 	public function count() {
-// 		$num = count($this->elements);
-// 		if ($this->inheritedCollection !== null) {
-// 			$num += $this->inheritedCollection->count();
-// 		}	
-// 		return $num;
-// 	}
+
 	
 // 	/**
 // 	 * @return number

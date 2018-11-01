@@ -116,7 +116,7 @@ class EiuAnalyst {
 			
 			if ($eiArg instanceof EiProp) {
 				$this->eiPropPath = EiPropPath::from($eiArg);
-				$this->assignEiMask($eiArg->getEiMask());
+				$this->assignEiMask($eiArg->getWrapper()->getEiPropCollection()->getEiMask());
 				continue;
 			}
 			

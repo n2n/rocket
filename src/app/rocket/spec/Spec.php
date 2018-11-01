@@ -482,8 +482,7 @@ class EiSetupQueue {
 					$c($cbr['em']->getEiEngine());
 				}
 			} catch (InvalidConfigurationException $e) {
-				throw new InvalidEiMaskConfigurationException('Failed to setup EiMask '
-						. $cbr['cb'] . '.', 0, $e);
+				throw new InvalidEiMaskConfigurationException('Failed to setup EiMask.', 0, $e);
 			}
 		}
 	}
@@ -548,12 +547,14 @@ class PropIn {
 	private $eiPropConfigurator;
 	private $objectPropertyName;
 	private $entityPropertyName;
+	private $contextEntityPropertyNames;
 
-	public function __construct($eiType, $eiPropConfigurator, $objectPropertyName, $entityPropertyName) {
+	public function __construct($eiType, $eiPropConfigurator, $objectPropertyName, $entityPropertyName, array $contextEntityPropertyNames) {
 		$this->eiType = $eiType;
 		$this->eiPropConfigurator = $eiPropConfigurator;
 		$this->objectPropertyName = $objectPropertyName;
 		$this->entityPropertyName = $entityPropertyName;
+		$this->contextEntityPropertyNames = $contextEntityPropertyNames;
 	}
 
 	public function getEiType() {
@@ -561,11 +562,22 @@ class PropIn {
 	}
 	
 	public function invoke() {
+		$entityPropertyCollection = $this->eiType->getEntityModel();
+		$class = $entityPropertyCollection->getClass();
+		$entityPropName = null;
+		
+		$contextEntityPropertyNames = $this->contextEntityPropertyNames;
+		while (null !== ($cepn = array_shift($contextEntityPropertyNames))) {
+			$entityPropertyCollection = $entityPropertyCollection->getEntityPropertyByName($cepn)
+					->getEmbeddedEntityPropertyCollection();
+			$class = $entityPropertyCollection->getClass();
+		}
+		
 		
 		$accessProxy = null;
 		if (null !== $this->objectPropertyName) {
 			try{
-				$propertiesAnalyzer = new PropertiesAnalyzer($this->eiType->getEntityModel()->getClass(), false);
+				$propertiesAnalyzer = new PropertiesAnalyzer($class, false);
 				$accessProxy = $propertiesAnalyzer->analyzeProperty($this->objectPropertyName, false, true);
 				$accessProxy->setNullReturnAllowed(true);
 			} catch (ReflectionException $e) {
@@ -578,7 +590,7 @@ class PropIn {
 		$entityProperty = null;
 		if (null !== $this->entityPropertyName) {
 			try {
-				$entityProperty = $this->eiType->getEntityModel()->getLevelEntityPropertyByName($this->entityPropertyName, true);
+				$entityProperty = $entityPropertyCollection->getEntityPropertyByName($this->entityPropertyName, true);
 			} catch (UnknownEntityPropertyException $e) {
 				throw $this->createException(
 						new InvalidEiComponentConfigurationException('EiProp is assigned to unknown EntityProperty: '
