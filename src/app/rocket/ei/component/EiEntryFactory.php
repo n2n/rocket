@@ -40,7 +40,8 @@ class EiEntryFactory {
 	private $eiPropCollection;
 	private $eiModificatorCollection;
 	
-	public function __construct(EiMask $eiMask, EiPropCollection $fieldCollection, EiModificatorCollection $eiModificatorCollection) {
+	public function __construct(EiMask $eiMask, EiPropCollection $fieldCollection, 
+			EiModificatorCollection $eiModificatorCollection) {
 		$this->eiMask = $eiMask;
 		$this->eiPropCollection = $fieldCollection;
 		$this->eiModificatorCollection = $eiModificatorCollection;
@@ -79,9 +80,10 @@ class EiEntryFactory {
 		$eiEntry = new EiEntry($eiObject, $eiFieldMap, $this->eiMask);
 		$eiEntry->getConstraintSet()->addAll($eiEntryConstraints);
 		
-		$eiu = new Eiu($eiFrame, $eiEntry);
+		$eiu = new Eiu($eiFrame, $eiEntry, $eiFieldMap);
 		
-		$this->assembleMappingProfile($eiu, $eiFieldMap, $eiEntry, ($copyFrom !== null ? $copyFrom->getEiFieldMap() : null));
+		$this->assembleMappingProfile($eiu, $this->eiPropCollection, $eiFieldMap, $eiEntry, 
+				($copyFrom !== null ? $copyFrom->getEiFieldMap() : null));
 	
 		foreach ($this->eiModificatorCollection as $constraint) {
 			$constraint->setupEiEntry($eiu);
@@ -90,12 +92,18 @@ class EiEntryFactory {
 		return $eiEntry;
 	}
 	
+	public function createEiFieldMap(EiFrame $eiFrame, EiObject $eiObject, ?EiEntry $copyFrom, array $eiEntryConstraints) {
+		
+	}
+	
 	private function assembleMappingProfile(Eiu $eiu, EiFieldMap $eiFieldMap, EiEntry $eiEntry, EiFieldMap $copyFrom = null) {
 		$eiObject = $eiEntry->getEiObject();
-		foreach ($this->eiPropCollection as $id => $eiProp) {
+		$forkEiPropPath = $eiFieldMap->getForkEiPropPath();
+		
+		foreach ($this->eiPropCollection->getForkedByPath($forkEiPropPath) as $id => $eiProp) {
 			if (!($eiProp instanceof FieldEiProp)) continue;
 						
-			$eiPropPath = new EiPropPath(array($id));
+			$eiPropPath = $forkEiPropPath->ext($id);
 			
 			$eiField = null;
 			if ($fromEiEntry !== null && $fromEiEntry->containsEiField($eiPropPath)) {
@@ -129,7 +137,6 @@ class EiEntryFactory {
 		}
 	}
 	
-	public function 
 	
 	public function copyValues(EiFrame $eiFrame, EiEntry $fromEiEntry, EiEntry $toEiEntry,
 			array $eiPropPaths = null) {

@@ -33,6 +33,7 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	protected $eiMask;
 	private $idPaths = array();
 	private $elements = array();
+	private $rootElements = array();
 	private $forkedElements = array();
 	private $independentElements = array();
 	private $inheritedCollection;
@@ -112,7 +113,9 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 			$this->elements = array($idPathStr => $eiComponent) + $this->elements;
 		}
 		
-		if (!$idPath->hasMultipleIds()) return;
+		if (!$idPath->hasMultipleIds()) {
+			$this->rootElements[$idPathStr] = $element;
+		}
 		
 		$ids = $idPath->toArray();
 		$lastId = array_pop($ids);
@@ -152,6 +155,10 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	 * @return array
 	 */
 	protected function getElementyByForkIdPath(IdPath $forkIdPath) {
+		if ($forkIdPath->isEmpty()) {
+			return $this->rootElements;
+		}
+		
 		$forkIdPathStr = (string) $forkIdPath;
 		
 		return $this->forkedElements[$forkIdPathStr] ?? array();

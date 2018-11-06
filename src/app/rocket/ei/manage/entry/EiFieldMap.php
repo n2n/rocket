@@ -4,7 +4,12 @@ namespace rocket\ei\manage\entry;
 use rocket\ei\EiPropPath;
 
 class EiFieldMap {
+	private $forkEiPropPath = null;
 	private $eiFieldWrappers = array();
+	
+	public function __construct(EiPropPath $forkEiPropPath) {
+		$this->forkEiPropPath = $forkEiPropPath;
+	}
 	
 	/**
 	* @param EiPropPath $eiPropPath
