@@ -14,6 +14,7 @@ class Eiu implements Lookupable {
 	private $eiuMask;
 	private $eiuFrame;
 	private $eiuEntry;
+	private $eiuFieldMap;
 	private $eiuGui;
 	private $eiuEntryGui;
 	private $eiuField;
@@ -86,6 +87,14 @@ class Eiu implements Lookupable {
 		}
 		
 		return $this->eiuEntry = $this->eiuAnalyst->getEiuEntry($required);
+	}
+	
+	public function fieldMap(bool $required = true) {
+		if ($this->eiuFieldMap !== null) {
+			return $this->eiuFieldMap;
+		}
+		
+		return $this->eiuFieldMap = $this->eiuAnalyst->getEiuFieldMap($required);
 	}
 	
 	/**

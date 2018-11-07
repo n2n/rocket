@@ -89,6 +89,13 @@ class EiEntry {
 		return $this->eiMask->getEiType();
 	}
 	
+	/**
+	 * @return \rocket\ei\manage\entry\EiFieldMap
+	 */
+	public function getEiFieldMap() {
+		return $this->eiFieldMap;
+	}
+	
 // 	/**
 // 	 * @param bool $accessible
 // 	 */

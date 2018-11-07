@@ -24,6 +24,12 @@ namespace rocket\ei\component\command;
 use rocket\ei\component\EiConfigurator;
 
 interface IndependentEiCommand extends EiCommand {
+	
+	/**
+	 * 
+	 */
+	public function __construct();
+	
 	/**
 	 * @return \rocket\ei\component\EiConfigurator
 	 */

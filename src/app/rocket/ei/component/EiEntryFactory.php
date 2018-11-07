@@ -76,13 +76,13 @@ class EiEntryFactory {
 	 * @return \rocket\ei\manage\entry\EiEntry
 	 */
 	public function createEiEntry(EiFrame $eiFrame, EiObject $eiObject, ?EiEntry $copyFrom, array $eiEntryConstraints) {
-		$eiFieldMap = new EiFieldMap();
+		$eiFieldMap = new EiFieldMap(new EiPropPath([]), $eiObject->getEiEntityObj()->getEntityObj());
 		$eiEntry = new EiEntry($eiObject, $eiFieldMap, $this->eiMask);
 		$eiEntry->getConstraintSet()->addAll($eiEntryConstraints);
 		
 		$eiu = new Eiu($eiFrame, $eiEntry, $eiFieldMap);
 		
-		$this->assembleMappingProfile($eiu, $this->eiPropCollection, $eiFieldMap, $eiEntry, 
+		$this->assembleMappingProfile($eiu, $eiFieldMap, $eiEntry, 
 				($copyFrom !== null ? $copyFrom->getEiFieldMap() : null));
 	
 		foreach ($this->eiModificatorCollection as $constraint) {
@@ -92,12 +92,23 @@ class EiEntryFactory {
 		return $eiEntry;
 	}
 	
-	public function createEiFieldMap(EiFrame $eiFrame, EiObject $eiObject, ?EiEntry $copyFrom, array $eiEntryConstraints) {
+	public function createEiFieldMap(EiFrame $eiFrame, EiEntry $eiEntry, EiPropPath $eiPropPath, ?EiEntry $copyFrom) {
+		$eiFieldMap = new EiFieldMap($forkEiPropPath);
 		
+		$eiu = new Eiu($eiFrame, $eiEntry, $eiFieldMap);
+		
+		$this->assembleMappingProfile($eiu, $this->eiPropCollection, $eiFieldMap, $eiEntry,
+				($copyFrom !== null ? $copyFrom->getEiFieldMap() : null));
+		
+		foreach ($this->eiModificatorCollection as $constraint) {
+			$constraint->setupEiEntry($eiu);
+		}
+		
+		return $eiFieldMap;
 	}
 	
-	private function assembleMappingProfile(Eiu $eiu, EiFieldMap $eiFieldMap, EiEntry $eiEntry, EiFieldMap $copyFrom = null) {
-		$eiObject = $eiEntry->getEiObject();
+	private function assembleMappingProfile(Eiu $eiu, EiFieldMap $eiFieldMap, EiEntry $eiEntry, EiEntry $fromEiEntry = null) {
+// 		$eiObject = $eiEntry->getEiObject();
 		$forkEiPropPath = $eiFieldMap->getForkEiPropPath();
 		
 		foreach ($this->eiPropCollection->getForkedByPath($forkEiPropPath) as $id => $eiProp) {
@@ -118,7 +129,7 @@ class EiEntryFactory {
 			}
 			
 			if ($eiField !== null) { 
-				$eiEntry->putEiField($eiPropPath, $eiField);
+				$eiFieldMap->put($id, $eiField);
 			}
 				
 // 			$eiFieldFork = null;

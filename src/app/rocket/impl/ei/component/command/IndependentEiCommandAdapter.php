@@ -27,6 +27,9 @@ use rocket\impl\ei\component\DefaultEiPropConfigurator;
 
 abstract class IndependentEiCommandAdapter extends EiCommandAdapter implements IndependentEiCommand {
 	
+	public function __construct() {
+	}
+	
 	public function createEiConfigurator(): EiConfigurator {
 		return new DefaultEiPropConfigurator($this);
 	}

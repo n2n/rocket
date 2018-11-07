@@ -25,6 +25,7 @@ use rocket\ei\component\prop\EiProp;
 use n2n\l10n\Lstr;
 
 interface IndependentEiProp extends EiProp {
+	
 	/**
 	 * 
 	 */

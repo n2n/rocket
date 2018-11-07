@@ -49,7 +49,7 @@ class EiPropCollection extends EiComponentCollection {
 	 * @return EiProp[]
 	 */
 	public function getForkedByPath(EiPropPath $eiPropPath) {
-		return $this->getElementyByForkIdPath($forkIdPath);
+		return $this->getElementyByForkIdPath($eiPropPath);
 	}
 	
 	/**

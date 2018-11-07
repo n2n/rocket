@@ -77,6 +77,8 @@ class EiuEntry {
 		if ($required) {
 			throw new EiuPerimeterException('No EiuFrame available.');
 		}
+		
+		return null;
 	}
 	
 	

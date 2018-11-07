@@ -24,6 +24,12 @@ namespace rocket\ei\component\modificator;
 use rocket\ei\component\EiConfigurator;
 
 interface IndependentEiModificator extends EiModificator {
+	
+	/**
+	 * 
+	 */
+	public function __construct();
+	
 	/**
 	 * @return \rocket\ei\component\EiConfigurator
 	 */

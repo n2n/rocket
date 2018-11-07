@@ -27,6 +27,8 @@ use n2n\util\col\HashSet;
 use rocket\ei\manage\EiObject;
 use rocket\ei\manage\entry\EiFieldConstraint;
 use n2n\util\col\Set;
+use rocket\ei\manage\entry\EiFieldMap;
+use n2n\util\ex\IllegalStateException;
 
 abstract class EiFieldAdapter implements EiField {
 	protected $eiObject;
@@ -123,4 +125,12 @@ abstract class EiFieldAdapter implements EiField {
 	}
 
 	protected abstract function writeValue($value);
+	
+	public function hasForkedEiFieldMap(): bool {
+		return false;
+	}
+	
+	public function getForkedEiFieldMap(): EiFieldMap {
+		throw new IllegalStateException('No ForkedEiFieldMap available.');
+	}
 }

@@ -95,6 +95,12 @@ class EiEntityObj {
 	public static function createFrom(EiType $contextEiType, $entityObj) {
 		ArgUtils::valObject($entityObj, false, 'entityObj');
 		
+		if (!$contextEiType->isObjectValid($entityObj)) {
+			throw new \InvalidArgumentException('Passed object is not compatible with EiType ' . $contextEiType->getId() 
+					. '. EiType class: ' . $contextEiType->getEntityModel()->getClass()->getName() 
+					. ', Passed object type: ' . get_class($entityObj));
+		}
+		
 		$id = $contextEiType->extractId($entityObj);
 		return new EiEntityObj(($id === null ? false : true), $id, $entityObj, 
 				$contextEiType->determineAdequateEiType(new \ReflectionClass($entityObj)));

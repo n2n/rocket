@@ -34,6 +34,7 @@ use n2n\reflection\CastUtils;
 use n2n\reflection\ReflectionUtils;
 use rocket\ei\component\prop\field\EiFieldAdapter;
 use rocket\ei\manage\entry\EiFieldMap;
+use n2n\util\ex\NotYetImplementedException;
 
 class EmbeddedEiProp extends ObjectPropertyEiPropAdapter implements GuiEiProp, FieldEiProp {
 	
@@ -48,7 +49,7 @@ class EmbeddedEiProp extends ObjectPropertyEiPropAdapter implements GuiEiProp, F
 	}
 	
 	public function buildEiField(Eiu $eiu): ?EiField {
-		$eiFieldMap = $this->buildEiFieldMap($eiu, false);
+		return new EmbeddedEiField($eiu, $this);
 	}
 	
 }
@@ -62,29 +63,41 @@ class EmbeddedEiField extends EiFieldAdapter {
 	public function __construct(Eiu $eiu, EmbeddedEiProp $eiProp) {
 		$this->eiu = $eiu;	
 		$this->eiProp = $eiProp;
+		
 	}
 	
-	private function buildEiFieldMap(bool $createTargetLiveObject) {
-		$entityProperty = $this->getEntityProperty(true);
+	private function buildEiFieldMap($targetLiveObject) {
+		$entityProperty = $this->eiProp->getEntityProperty(true);
 		CastUtils::assertTrue($entityProperty instanceof EmbeddedEntityProperty);
 		
-		$liveObject = $eiu->fieldMap()->getLiveObject();
-		
-		$targetLiveObject = $this->eiProp->getObjectPropertyAccessProxy(true)->getValue($liveObject);
 		if ($targetLiveObject === null) {
 			$targetLiveObject = ReflectionUtils::createObject($this->eiProp->getEntityProperty(true)
 					->getEmbeddedEntityPropertyCollection()->getClass());
 		}
 		
-		return $eiu->engine()->createEiFieldMap($eiu->mask()->forkedProps($this), $targetLiveObject);
+		return $eiu->engine()->createEiFieldMap($this->eiProp, $targetLiveObject);
 	}
 	
 	protected function readValue() {
-		$this->forkedEiFieldMap = $this->buildEiFieldMap(true);
+		$targetLiveObject = null;
+		
+		if ($this->eiu->entry()->isDraft()) { 
+// 			$targetLiveObject = $this->eiu->entry()->getDraft()->getDraftValueMap()->getValue(EiPropPath::from($this->eiProp));
+			throw new NotYetImplementedException();
+		} else {
+			$targetLiveObject = $this->eiProp->getObjectPropertyAccessProxy(true)->getValue($this->eiu->fieldMap()->getObject());
+		}
+		
+		if ($targetLiveObject !== null) {
+			return $this->forkedEiFieldMap = $this->buildEiFieldMap($targetLiveObject);
+		}
+		
+		$this->forkedEiFieldMap = $this->buildEiFieldMap(null);
+		return null;
 	}
 
 	protected function validateValue($value) {
-		
+		throw new NotYetImplementedException();
 	}
 
 	public function isWritable(): bool {
@@ -96,9 +109,22 @@ class EmbeddedEiField extends EiFieldAdapter {
 	}
 
 	protected function writeValue($value) {
+		if ($value !== null) {
+			CastUtils::assertTrue($value instanceof EiFieldMap);
+			$value->write();
+			$value = $value->getLiveObject();
+		}
+		
+		if ($this->eiu->entry()->isDraft()) {
+			throw new NotYetImplementedException();
+		} else {
+			$this->eiProp->getObjectPropertyAccessProxy(true)
+					->setValue($this->eiu->fieldMap()->getLiveObject(), $value);
+		}
 	}
 
 	public function isReadable(): bool {
+		return true;
 	}
 	
 	public function hasForkedEiFieldMap(): bool {
@@ -106,5 +132,7 @@ class EmbeddedEiField extends EiFieldAdapter {
 	}
 	
 	public function getForkedEiFieldMap(): EiFieldMap {
+		$this->getValue();
+		return $this->forkedEiFieldMap;
 	}
 }
