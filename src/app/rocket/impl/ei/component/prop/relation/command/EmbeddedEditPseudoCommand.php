@@ -27,15 +27,15 @@ use n2n\web\http\controller\ControllerAdapter;
 use rocket\ei\manage\security\privilege\EiCommandPrivilege;
 use n2n\web\http\controller\Controller;
 use rocket\ei\util\Eiu;
-use rocket\core\model\Rocket;
+use n2n\l10n\Lstr;
 
 class EmbeddedEditPseudoCommand extends EiCommandAdapter implements PrivilegedEiCommand {
 	private $idBase;
-	private $privilegeLabel;
+	private $privilegeLabelLstr;
 	
-	public function __construct(string $privilegeLabel, string $relationFieldId, string $targetId) {
+	public function __construct(Lstr $privilegeLabelLstr, string $relationFieldId, string $targetId) {
 		$this->idBase = 'embedded-edit-' . $relationFieldId . '-' . $targetId;
-		$this->privilegeLabel = $privilegeLabel;
+		$this->privilegeLabelLstr = $privilegeLabelLstr;
 	}
 	
 	public function getIdBase(): ?string {
@@ -43,7 +43,7 @@ class EmbeddedEditPseudoCommand extends EiCommandAdapter implements PrivilegedEi
 	}
 	
 	public function createEiCommandPrivilege(Eiu $eiu): EiCommandPrivilege {
-		return $eiu->factory()->newCommandPrivilege(Rocket::createLstr($this->privilegeLabel));
+		return $eiu->factory()->newCommandPrivilege($this->privilegeLabelLstr);
 	}
 	
 	/* (non-PHPdoc)

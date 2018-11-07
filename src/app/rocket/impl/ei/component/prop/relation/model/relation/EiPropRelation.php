@@ -51,6 +51,7 @@ use n2n\reflection\property\PropertiesAnalyzer;
 use n2n\reflection\ReflectionException;
 use rocket\ei\mask\EiMask;
 use rocket\ei\util\Eiu;
+use n2n\l10n\Lstr;
 
 abstract class EiPropRelation {
 	protected $targetEiType;
@@ -195,9 +196,9 @@ abstract class EiPropRelation {
 	}
 	
 	protected function setupEmbeddedEditEiCommand() {
-		$this->embeddedEditEiCommand = new EmbeddedEditPseudoCommand('Edit embedded in ' 
+		$this->embeddedEditEiCommand = new EmbeddedEditPseudoCommand(Lstr::create('Edit embedded in ' 
 						. $this->getRelationEiProp()->getWrapper()->getEiPropCollection()->getEiMask()->getLabelLstr() 
-						. ' - ' . $this->getTargetEiMask()->getLabelLstr(), 
+						. ' - ' . $this->getTargetEiMask()->getLabelLstr()), 
 				$this->getRelationEiProp()->getWrapper()->getEiPropPath(), $this->getTargetEiType()->getId());
 		
 		$this->targetEiMask->getEiCommandCollection()->add($this->embeddedEditEiCommand);
