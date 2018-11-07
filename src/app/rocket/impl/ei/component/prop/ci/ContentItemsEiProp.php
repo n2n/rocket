@@ -57,8 +57,12 @@ class ContentItemsEiProp extends EmbeddedOneToManyEiProp {
 	}
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {
-		ArgUtils::assertTrue($entityProperty instanceof ToManyEntityProperty
-				&& $entityProperty->getRelation()->getTargetEntityModel()->getClass()->getName() === ContentItem::class);
+		ArgUtils::assertTrue($entityProperty instanceof ToManyEntityProperty);
+		
+		$targetEntityModelClass = $entityProperty->getRelation()->getTargetEntityModel()->getClass();
+		ArgUtils::assertTrue($targetEntityModelClass->isSubclassOf(ContentItem::getClass()) || 
+				$targetEntityModelClass->getName() === ContentItem::class);
+		
 		parent::setEntityProperty($entityProperty);
 	}
 	
