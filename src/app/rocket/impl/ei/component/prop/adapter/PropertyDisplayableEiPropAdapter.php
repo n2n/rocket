@@ -140,7 +140,7 @@ abstract class PropertyDisplayableEiPropAdapter extends ObjectPropertyEiPropAdap
 			return null;
 		}
 		
-		return Rocket::createLstr($helpText, $this->eiMask->getModuleNamespace());
+		return Rocket::createLstr($helpText, $this->getEiMask()->getModuleNamespace());
 	}
 	
 	public function buildGuiField(Eiu $eiu): ?GuiField {
@@ -152,10 +152,10 @@ abstract class PropertyDisplayableEiPropAdapter extends ObjectPropertyEiPropAdap
 	}
 	
 	public function getOutputHtmlContainerAttrs(Eiu $eiu) {
-		$eiTypeExtension = $this->eiMask->isExtension() ? $this->eiMask->getExtension() : null;
-		return array('class' => 'rocket-ei-spec-' . $this->eiMask->getEiType()->getId()
+		$eiTypeExtension = $this->getEiMask()->isExtension() ? $this->getEiMask()->getExtension() : null;
+		return array('class' => 'rocket-ei-spec-' . $this->getEiMask()->getEiType()->getId()
 						. ($eiTypeExtension !== null ? ' rocket-ei-mask-' . $eiTypeExtension->getId() : '') 
-						. ' rocket-ei-field-' . $this->getId(), 
+						. ' rocket-ei-field-' . $this->getWrapper()->getEiPropPath(), 
 				'title' => $this->displaySettings->getHelpText());
 	}
 	

@@ -307,7 +307,6 @@ class EiuEngine {
 	 * @return \rocket\ei\util\privilege\EiuPrivilegeForm
 	 */
 	public function newPrivilegeForm(PrivilegeSetting $privilegeSetting = null) {
-		return new EiuPrivilegeForm($this->getPrivilegeDefinition(), $privilegeSetting, $this->eiuAnalyst);
-		
+		return new EiuPrivilegeForm($this->getPrivilegeDefinition(), $privilegeSetting, $this->eiuAnalyst);	
 	}
 }

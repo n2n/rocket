@@ -51,7 +51,6 @@ class SortDefinition {
 	}
 
 	public function putSortPropFork(EiPropPath $eiPropPath, SortPropFork $sortPropFork) {
-		ArgUtils::assertTrue(!EiPropPath::constainsSpecialIdChars($id), 'Invalid id.');
 		$this->sortPropForks[(string) $eiPropPath] = $sortPropFork;
 	}
 	

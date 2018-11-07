@@ -35,6 +35,14 @@ abstract class IndependentEiPropAdapter extends EiPropAdapter implements Indepen
 	}
 		
 	/**
+	 * @return \rocket\ei\mask\EiMask
+	 * @deprecated
+	 */
+	public function getEiMask() {
+		return $this->getWrapper()->getEiPropCollection()->getEiMask();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\component\prop\indepenent\IndependentEiProp::createEiPropConfigurator()
 	 */

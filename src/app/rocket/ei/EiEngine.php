@@ -183,10 +183,26 @@ class EiEngine {
 	 * @param EiEntry $copyFrom
 	 * @return EiEntry
 	 */
-	public function createFramedEiEntry(EiFrame $eiFrame, EiObject $eiObject, ?EiEntry $copyFrom, array $eiEntryConstraints): EiEntry {
+	public function createFramedEiEntry(EiFrame $eiFrame, EiObject $eiObject, ?EiEntry $copyFrom, array $eiEntryConstraints) {
 		$mappingFactory = new EiEntryFactory($this->eiMask, $this->eiMask->getEiPropCollection(), 
 				$this->eiMask->getEiModificatorCollection());
 		return $mappingFactory->createEiEntry($eiFrame, $eiObject, $copyFrom, $eiEntryConstraints);
+	}
+	
+	/**
+	 * @param EiFrame $eiFrame
+	 * @param EiEntry $eiEntry
+	 * @param EiPropPath $forkEiPropPath
+	 * @param object $object
+	 * @param EiEntry $copyFrom
+	 * @return \rocket\ei\manage\entry\EiFieldMap
+	 */
+	public function createFramedEiFieldMap(EiFrame $eiFrame, EiEntry $eiEntry, EiPropPath $forkEiPropPath, object $object, 
+			?EiEntry $copyFrom) {
+		$mappingFactory = new EiEntryFactory($this->eiMask, $this->eiMask->getEiPropCollection(),
+				$this->eiMask->getEiModificatorCollection());
+		
+		return $mappingFactory->createEiFieldMap($eiFrame, $eiEntry, $forkEiPropPath, $object, $copyFrom);
 	}
 	
 	/**

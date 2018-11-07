@@ -92,13 +92,20 @@ class EiEntryFactory {
 		return $eiEntry;
 	}
 	
-	public function createEiFieldMap(EiFrame $eiFrame, EiEntry $eiEntry, EiPropPath $eiPropPath, ?EiEntry $copyFrom) {
-		$eiFieldMap = new EiFieldMap($forkEiPropPath);
+	/**
+	 * @param EiFrame $eiFrame
+	 * @param EiEntry $eiEntry
+	 * @param EiPropPath $eiPropPath
+	 * @param object $object
+	 * @param EiEntry $copyFrom
+	 * @return \rocket\ei\manage\entry\EiFieldMap
+	 */
+	public function createEiFieldMap(EiFrame $eiFrame, EiEntry $eiEntry, EiPropPath $forkEiPropPath, object $object, ?EiEntry $copyFrom) {
+		$eiFieldMap = new EiFieldMap($forkEiPropPath, $object);
 		
 		$eiu = new Eiu($eiFrame, $eiEntry, $eiFieldMap);
 		
-		$this->assembleMappingProfile($eiu, $this->eiPropCollection, $eiFieldMap, $eiEntry,
-				($copyFrom !== null ? $copyFrom->getEiFieldMap() : null));
+		$this->assembleMappingProfile($eiu, $eiFieldMap, $eiEntry, $copyFrom);
 		
 		foreach ($this->eiModificatorCollection as $constraint) {
 			$constraint->setupEiEntry($eiu);

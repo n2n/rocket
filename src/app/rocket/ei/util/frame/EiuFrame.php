@@ -73,6 +73,8 @@ use rocket\ei\util\gui\EiuGui;
 use rocket\ei\manage\frame\CriteriaConstraint;
 use rocket\ei\manage\frame\Boundry;
 use rocket\ei\manage\entry\EiEntryConstraint;
+use rocket\ei\EiPropPath;
+use rocket\ei\util\entry\EiuFieldMap;
 
 class EiuFrame {
 	private $eiFrame;
@@ -208,6 +210,22 @@ class EiuFrame {
 		return new EiuEntry($this->createNewEiObject($draft, 
 				EiuAnalyst::buildEiTypeFromEiArg($eiTypeArg, 'eiTypeArg', false)), null, $this);
 	}
+	
+	
+	public function newFieldMap($eiEntryArg, $forkEiPropPath, object $object, $copyFromEiEntryArg = null) {
+		$eiEntry = EiuAnalyst::buildEiEntryFromEiArg($eiEntryArg);
+		$copyFrom = null;
+		
+		if ($copyFromEiEntryArg !== null) {
+			$copyFrom = EiuAnalyst::buildEiEntryFromEiArg($eiEntryArg);
+		}
+		
+		$eiFieldMap = $eiEntry->getEiMask()->getEiEngine()->createFramedEiFieldMap($this->eiFrame, $eiEntry,
+				EiPropPath::create($forkEiPropPath), $object, $copyFrom);
+		
+		return new EiuFieldMap($eiFieldMap, $this->eiuAnalyst);
+	}
+	
 	
 	public function containsId($id, int $ignoreConstraintTypes = 0): bool {
 		$criteria = $this->eiFrame->createCriteria('e', $ignoreConstraintTypes);
@@ -575,7 +593,7 @@ class EiuFrame {
 	 */
 	public function getUrlToCommand(EiCommand $eiCommand) {
 		return $this->getHttpContext()->getControllerContextPath($this->getEiFrame()->getControllerContext())
-				->ext($eiCommand->getId())->toUrl();
+				->ext((string) EiCommandPath::from($eiCommand))->toUrl();
 	}
 	
 	/**

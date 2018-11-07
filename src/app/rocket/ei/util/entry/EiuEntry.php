@@ -54,7 +54,7 @@ class EiuEntry {
 	private $eiuMask;
 	
 	public function __construct(EiObject $eiObject, EiEntry $eiEntry = null, EiuFrame $eiuFrame = null, 
-			EiuAnalyst $eiuAnalyst = null) {
+			EiuAnalyst $eiuAnalyst) {
 		$this->eiObject = $eiObject;
 		$this->eiEntry = $eiEntry;
 		$this->eiuFrame = $eiuFrame;
@@ -570,6 +570,15 @@ class EiuEntry {
 	 */
 	public function getGeneralId() {
 		return GeneralIdUtils::generalIdOf($this->getEiObject());
+	}
+
+	/**
+	 * @param mixed $forkEiPropPath
+	 * @param object $object
+	 * @return \rocket\ei\util\entry\EiuFieldMap
+	 */
+	public function newFieldMap($forkEiPropPath, object $object) {
+		return $this->getEiuFrame()->newFieldMap($this, $forkEiPropPath, $object);
 	}
 }  
 

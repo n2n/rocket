@@ -66,16 +66,16 @@ class EmbeddedEiField extends EiFieldAdapter {
 		
 	}
 	
-	private function buildEiFieldMap($targetLiveObject) {
+	private function buildEiFieldMap($targetObject) {
 		$entityProperty = $this->eiProp->getEntityProperty(true);
 		CastUtils::assertTrue($entityProperty instanceof EmbeddedEntityProperty);
 		
-		if ($targetLiveObject === null) {
-			$targetLiveObject = ReflectionUtils::createObject($this->eiProp->getEntityProperty(true)
+		if ($targetObject === null) {
+			$targetObject = ReflectionUtils::createObject($this->eiProp->getEntityProperty(true)
 					->getEmbeddedEntityPropertyCollection()->getClass());
 		}
 		
-		return $eiu->engine()->createEiFieldMap($this->eiProp, $targetLiveObject);
+		return $this->eiu->entry()->newFieldMap($this->eiProp, $targetObject);
 	}
 	
 	protected function readValue() {
@@ -133,6 +133,6 @@ class EmbeddedEiField extends EiFieldAdapter {
 	
 	public function getForkedEiFieldMap(): EiFieldMap {
 		$this->getValue();
-		return $this->forkedEiFieldMap;
+		return $this->forkedEiFieldMap->getEiFieldMap();
 	}
 }

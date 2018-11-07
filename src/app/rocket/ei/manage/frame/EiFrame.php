@@ -41,6 +41,7 @@ use rocket\ei\manage\ManageState;
 use rocket\ei\manage\EiObject;
 use rocket\ei\manage\security\EiEntryAccessFactory;
 use rocket\ei\manage\security\EiEntryAccess;
+use rocket\ei\EiPropPath;
 
 class EiFrame {
 	private $contextEiEngine;
@@ -54,7 +55,7 @@ class EiFrame {
 	private $eiEntryAccessFactory;
 // 	private $eiObject;
 // 	private $previewType;
-	private $scriptRelations = array();
+	private $eiRelations = array();
 
 	private $filterModel;
 	private $sortModel;
@@ -182,17 +183,17 @@ class EiFrame {
 		return $eiType->getEiMask();
 	}
 	
-	public function setEiRelation($scriptId, EiRelation $scriptRelation) {
-		$this->scriptRelations[$scriptId] = $scriptRelation;
+	public function setEiRelation(EiPropPath $eiPropPath, EiRelation $scriptRelation) {
+		$this->eiRelations[(string) $eiPropPath] = $scriptRelation;
 	}
 	
-	public function hasEiRelation($scriptId) {
-		return isset($this->scriptRelations[$scriptId]);
+	public function hasEiRelation(EiPropPath $eiPropPath) {
+		return isset($this->eiRelations[(string) $eiPropPath]);
 	}
 	
-	public function getEiRelation($scriptId) {
-		if (isset($this->scriptRelations[$scriptId])) {
-			return $this->scriptRelations[$scriptId];
+	public function getEiRelation(EiPropPath $eiPropPath) {
+		if (isset($this->eiRelations[(string) $eiPropPath])) {
+			return $this->eiRelations[(string) $eiPropPath];
 		}
 		
 		return null;

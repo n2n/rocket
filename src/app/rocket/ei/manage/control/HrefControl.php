@@ -60,7 +60,7 @@ class HrefControl implements Control {
 			ControlButton $controlButton) {
 		return new HrefControl(
 				$eiFrame->getN2nContext()->getHttpContext()->getControllerContextPath($eiFrame->getControllerContext())
-						->ext($eiCommand->getId())->toUrl()->ext($urlExt), 
+						->ext(EiCommandPath::from($eiCommand))->toUrl()->ext($urlExt), 
 				$controlButton);
 	}
 }
