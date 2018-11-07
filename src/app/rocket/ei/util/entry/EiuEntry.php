@@ -265,6 +265,10 @@ class EiuEntry {
 		$this->accessible = true;
 	}
 	
+	public function newEntryForm() {
+		return $this->getEiuFrame()->entryForm($this);
+	}
+	
 	/**
 	 * @param bool $eiObjectObj
 	 * @param bool $editable

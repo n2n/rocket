@@ -229,6 +229,22 @@ class EiuFrame {
 	
 	/**
 	 * @param int $ignoreConstraintTypes
+	 * @return \rocket\ei\util\entry\EiuEntry[]
+	 */
+	public function lookupEntries(int $ignoreConstraintTypes = 0) {
+		$criteria = $this->eiFrame->createCriteria('e', $ignoreConstraintTypes);
+		
+		$entries = [];
+		foreach ($criteria->toQuery()->fetchArray() as $entityObj) {
+			$entries[] = $this->entry(EiEntityObj::createFrom(
+					$this->eiFrame->getContextEiEngine()->getEiMask()->getEiType(), $entityObj));
+		}
+		
+		return $entries;
+	}
+	
+	/**
+	 * @param int $ignoreConstraintTypes
 	 * @return int
 	 */
 	public function countEntries(int $ignoreConstraintTypes = 0) {
@@ -412,7 +428,7 @@ class EiuFrame {
 	 * @param PropertyPath $contextPropertyPath
 	 * @return \rocket\ei\util\entry\form\EiuEntryForm
 	 */
-	public function eiuEntryForm($eiEntryArg, PropertyPath $contextPropertyPath = null) {
+	public function entryForm($eiEntryArg, PropertyPath $contextPropertyPath = null) {
 		$eiEntry = EiuAnalyst::buildEiEntryFromEiArg($eiEntryArg);
 		$contextEiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
 		$eiuEntryForm = new EiuEntryForm($this);
