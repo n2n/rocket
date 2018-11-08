@@ -76,9 +76,10 @@ class EiEntryFactory {
 	 * @return \rocket\ei\manage\entry\EiEntry
 	 */
 	public function createEiEntry(EiFrame $eiFrame, EiObject $eiObject, ?EiEntry $copyFrom, array $eiEntryConstraints) {
-		$eiFieldMap = new EiFieldMap(new EiPropPath([]), $eiObject->getEiEntityObj()->getEntityObj());
-		$eiEntry = new EiEntry($eiObject, $eiFieldMap, $this->eiMask);
+		$eiEntry = new EiEntry($eiObject, $this->eiMask);
 		$eiEntry->getConstraintSet()->addAll($eiEntryConstraints);
+		
+		$eiFieldMap = $eiEntry->getEiFieldMap();
 		
 		$eiu = new Eiu($eiFrame, $eiEntry, $eiFieldMap);
 		

@@ -79,8 +79,16 @@ class EiuEngine {
 	 * @param mixed $eiPropArg See {@see EiPropPath::create()}
 	 * @return bool
 	 */
+	public function containsDraftProperty($eiPropArg) {
+		return $this->eiEngine->getDraftDefinition()->containsEiPropPath(EiPropPath::create($eiPropArg));
+	}
+	
+	/**
+	 * @param mixed $eiPropArg See {@see EiPropPath::create()}
+	 * @return bool
+	 */
 	public function containsGenericEiProperty($eiPropArg) {
-		return $this->eiEngine->getGenericEiDefinition()->getMap()->offsetExists($eiPropArg);
+		return $this->eiEngine->getGenericEiDefinition()->containsEiPropPath(EiPropPath::create($eiPropArg));
 	}
 	
 	/**

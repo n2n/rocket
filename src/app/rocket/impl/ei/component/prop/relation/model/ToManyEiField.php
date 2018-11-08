@@ -90,13 +90,13 @@ class ToManyEiField extends RwEiField {
 		
 		$copy = new ToManyEiField($copyEiu->entry()->getEiObject(), $this->readable, $this->writable, 
 				$this->copyable);
-		$copy->setValue($this->copyable->copy($this->eiObject, $this->getValue(), $copyEiu));
+		$copy->setValue($this->copyable->copy($this->eiFieldMap, $this->getValue(), $copyEiu));
 		return $copy;
 	}
 	
 	public function copyValue(Eiu $copyEiu) {
 		if ($this->copyable === null) return null;
 		
-		return $this->copyable->copy($this->eiObject, $this->getValue(), $copyEiu);
+		return $this->copyable->copy($this->eiFieldMap, $this->getValue(), $copyEiu);
 	}
 }

@@ -137,16 +137,18 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	 * @return mixed
 	 * @throws UnknownEiComponentException
 	 */
-	protected function getElementById($id) {
-		if (isset($this->elements[$id])) {
-			return $this->elements[$id];
+	protected function getElementByIdPath(IdPath $idPath) {
+		$idPathStr = (string) $idPath;
+		
+		if (isset($this->elements[$idPathStr])) {
+			return $this->elements[$idPathStr];
 		}
 		
 		if ($this->inheritedCollection !== null) {
-			return $this->inheritedCollection->getElementById($id);
+			return $this->inheritedCollection->getElementByIdPath($idPathStr);
 		}
 		
-		throw new UnknownEiComponentException('No ' . $this->elementName . ' with id \'' . (string) $id 
+		throw new UnknownEiComponentException('No ' . $this->elementName . ' with id \'' . $idPathStr
 				. '\' found in ' . $this->eiMask . '.');
 	}
 	

@@ -19,10 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\component\prop\field;
+namespace rocket\ei;
 
-use rocket\ei\manage\entry\EiFieldMap;
-
-interface Readable {
-	public function read(EiFieldMap $eiFieldMap);
+class EiPathMissmatchException extends EiException {
 }

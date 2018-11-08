@@ -289,7 +289,7 @@ class EiuFrame {
 		$this->applyIdComparison($criteria->where(), $id);
 		
 		if (null !== ($entityObj = $criteria->toQuery()->fetchSingle())) {
-			return EiEntityObj::createFrom($this->eiFrame->getContextEiEngine()->getEiMask()->getEiType(), $entityObj);
+			return EiEntityObj::createFrom($this->eiFrame->getContextEiEngine()->getEiMask(), $entityObj);
 		}
 		
 		throw new UnknownEiObjectException('Entity not found: ' . EntityInfo::buildEntityString(
@@ -862,7 +862,7 @@ class EiuFrame {
 			return LiveEiObject::create($this->getContextEiType(), $eiEntityObj);
 		}
 
-		return new LiveEiObject(EiEntityObj::createNew($this->getContextEiType()));
+		return new LiveEiObject(EiEntityObj::createNew($this->getContextEiMask()));
 	}
 
 	/**
@@ -875,22 +875,22 @@ class EiuFrame {
 
 	/**
 	 * @param bool $draft
-	 * @param EiType $eiType
+	 * @param EiType $eiMask
 	 * @return EiObject
 	 */
-	public function createNewEiObject(bool $draft = false, EiType $eiType = null): EiObject {
-		if ($eiType === null) {
-			$eiType = $this->getContextEiType();
+	public function createNewEiObject(bool $draft = false, EiMask $eiMask = null): EiObject {
+		if ($eiMask === null) {
+			$eiMask = $this->getContextEiMask();
 		}
 
 		if (!$draft) {
-			return new LiveEiObject(EiEntityObj::createNew($eiType));
+			return new LiveEiObject(EiEntityObj::createNew($eiMask));
 		}
 
 		$loginContext = $this->getN2nContext()->lookup(LoginContext::class);
 		CastUtils::assertTrue($loginContext instanceof LoginContext);
 
-		return new DraftEiObject($this->createNewDraftFromEiEntityObj(EiEntityObj::createNew($eiType)));
+		return new DraftEiObject($this->createNewDraftFromEiEntityObj(EiEntityObj::createNew($eiMask)));
 	}
 
 	/**

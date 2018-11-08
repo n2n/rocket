@@ -22,6 +22,7 @@
 namespace rocket\ei\component\prop;
 
 use rocket\ei\component\EiComponentCollection;
+use rocket\ei\component\UnknownEiComponentException;
 use rocket\ei\mask\EiMask;
 use rocket\ei\EiPropPath;
 
@@ -39,9 +40,10 @@ class EiPropCollection extends EiComponentCollection {
 	/**
 	 * @param EiPropPath $eiPropPath
 	 * @return EiProp
+	 * @throws UnknownEiComponentException
 	 */
 	public function getByPath(EiPropPath $eiPropPath) {
-		return $this->getEiComponentById($eiPropPath->__toString());
+		return $this->getElementByIdPath($eiPropPath);
 	}
 	
 	/**

@@ -40,9 +40,9 @@ class EiEntry {
 	private $listeners = array();
 	private $constraintSet;
 	
-	public function __construct(EiObject $eiObject, EiFieldMap $eiFieldMap, EiMask $eiMask) {
+	public function __construct(EiObject $eiObject, EiMask $eiMask) {
 		$this->eiObject = $eiObject;
-		$this->eiFieldMap = $eiFieldMap;
+		$this->eiFieldMap = new EiFieldMap($this, new EiPropPath([]), $eiObject->getEiEntityObj()->getEntityObj());;
 		$this->eiMask = $eiMask;
 		$this->validationResult = new EiEntryValidationResult();
 		$this->constraintSet = new HashSet(EiEntryConstraint::class);

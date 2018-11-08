@@ -40,6 +40,10 @@ use rocket\ei\EiTypeExtension;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\spec\TypePath;
 use rocket\core\model\Rocket;
+use rocket\ei\EiPropPath;
+use rocket\ei\manage\EiObject;
+use rocket\ei\EiException;
+use rocket\ei\EiPathMissmatchException;
 
 class EiMask {
 	private $eiMaskDef;
@@ -115,6 +119,37 @@ class EiMask {
 		}
 		
 		return $this->eiTypeExtension;
+	}
+	
+	/**
+	 * @param EiPropPath $forkEiPropPath
+	 * @param EiObject $eiObject
+	 * @return object
+	 * @throws EiPathMissmatchException
+	 */
+	public function getForkObject(EiPropPath $forkEiPropPath, EiObject $eiObject) {
+		$ids = $eiPropPath->toArray();
+		
+		$forkObject = $eiObject->getEiEntityObj()->getEntityObj();
+		$eiPropPath = new EiPropPath([]);
+		
+		try {
+			while (null !== ($id = array_shift($ids))) {
+				$eiPropPath = $eiPropPath->ext($id);
+				
+				$eiProp = $this->eiPropCollection->getByPath($eiPropPath);
+				if ($eiProp->isPropFork()) {
+					$forkObject = $eiProp->getPropForkObject($forkObject);
+					continue;
+				}
+				
+				throw new EiPathMissmatchException('EiProp ' . $eiProp . ' is not a PropFork.');
+			}
+		} catch (EiException $e) {
+			throw new EiPathMissmatchException('Could not resolve fork object of ' . $forkEiPropPath);
+		}
+		
+		return $forkObject;
 	}
 
 

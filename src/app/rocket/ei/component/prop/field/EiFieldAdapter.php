@@ -31,7 +31,7 @@ use rocket\ei\manage\entry\EiFieldMap;
 use n2n\util\ex\IllegalStateException;
 
 abstract class EiFieldAdapter implements EiField {
-	protected $eiObject;
+	protected $eiFieldMap;
 	protected $valueLoaded = false;
 	protected $value;
 	protected $orgValueLoaded = false;
@@ -39,7 +39,7 @@ abstract class EiFieldAdapter implements EiField {
 	protected $eiFieldConstraintSet;
 
 	public function __construct(EiObject $eiObject) {
-		$this->eiObject = $eiObject;
+		$this->eiFieldMap = $eiObject;
 		$this->eiFieldConstraintSet = new HashSet(EiFieldConstraint::class);
 	}
 

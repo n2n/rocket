@@ -84,13 +84,13 @@ class SimpleEiField extends RwEiField {
 		$eiField = new SimpleEiField($copyEiu->entry()->getEiObject(), $this->typeConstraint, $this->readable, $this->writable,
 				$this->validatable, $this->copyable);
 		$eiField->setNullReadAllowed($this->isNullReadAllowed());
-		$eiField->setValue($this->copyable->copy($this->eiObject, $this->getValue(), $copyEiu));
+		$eiField->setValue($this->copyable->copy($this->eiFieldMap, $this->getValue(), $copyEiu));
 		return $eiField;
 	}
 	
 	public function copyValue(Eiu $copyEiu) {
 		if ($this->copyable === null) return null;
 		
-		return $this->copyable->copy($this->eiObject, $this->getValue(), $copyEiu);
+		return $this->copyable->copy($this->eiFieldMap, $this->getValue(), $copyEiu);
 	}
 }

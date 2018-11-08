@@ -44,6 +44,16 @@ class EmbeddedEiProp extends ObjectPropertyEiPropAdapter implements GuiEiProp, F
 		parent::setEntityProperty($entityProperty);
 	}
 	
+	public function isPropFork(): bool {
+		return true;
+	}
+	
+	public function getPropForkObject(object $object): object {
+		return $this->getObjectPropertyAccessProxy()->getValue($object) 
+				?? ReflectionUtils::createObject($this->getEntityProperty(true)
+						->getEmbeddedEntityPropertyCollection()->getClass());
+	}
+	
 	public function buildGuiProp(Eiu $eiu): ?GuiProp {
 		return null;
 	}

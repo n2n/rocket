@@ -43,4 +43,16 @@ interface EiProp extends EiComponent {
 	 * @throws IllegalStateException if {@self::setWrapper()} hasn't been called yet.
 	 */
 	public function getWrapper(): EiPropWrapper;
+	
+	/**
+	 * @return bool
+	 */
+	public function isPropFork(): bool;
+	
+	/**
+	 * @param object $object
+	 * @return object
+	 * @throws IllegalStateException if {@see self::isPropFork()} returns false
+	 */
+	public function getPropForkObject(object $object): object;
 }
