@@ -84,7 +84,7 @@
     }
     > tbody {
         tr:hover {
-            box-shadow: -3px 0px 0px 0px $orange;
+            background: linear-gradient(to right, $orange 0, $orange 3px, $gray-300 3px, $gray-300 100%);
         }
         .rocket-table-commands {
             border-left: 1px solid $gray-300;
@@ -175,4 +175,9 @@
     > button {
         margin-left: 0.5rem;
     }
+}
+
+
+.rocket-inactive {
+    color: $gray-500;
 }

@@ -98,17 +98,24 @@
             min-width: 10rem;
             padding: 1rem 0 1rem 0.5rem;
             border-right: 1px solid $gray-500;
+            white-space: nowrap;
+            overflow: hidden;
         }
 
         .rocket-impl-content {
             padding: 1rem 0.5rem;
+            white-space: nowrap;
+            overflow: hidden;
             > div {
                 display: inline-block;
+            }
+            > div:not(:empty) {
+                margin-right: 0.5rem;
             }
         }
 
         > .rocket-simple-commands {
-            padding: 0.5rem 0.75rem 0.5rem 0;
+            padding: 0.75rem 0.75rem 0.75rem 0;
             text-align: right;
         }
 
