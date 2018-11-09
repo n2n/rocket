@@ -29,7 +29,7 @@ class EiuEngine {
 	private $eiuMask;
 	private $eiuAnalyst;
 	
-	public function __construct(EiEngine $eiEngine, EiuMask $eiuMask = null, EiuAnalyst $eiuAnalyst = null) {
+	public function __construct(EiEngine $eiEngine, EiuMask $eiuMask = null, EiuAnalyst $eiuAnalyst) {
 		$this->eiEngine = $eiEngine;
 		$this->eiuMask = $eiuMask;
 		$this->eiuAnalyst = $eiuAnalyst;
@@ -45,7 +45,7 @@ class EiuEngine {
 	/**
 	 * @return EiuMask 
 	 */
-	public function getEiuMask() {
+	public function mask() {
 		if ($this->eiuMask !== null) {
 			return $this->eiuMask;
 		}

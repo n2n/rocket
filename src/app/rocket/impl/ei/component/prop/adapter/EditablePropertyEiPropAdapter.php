@@ -46,7 +46,7 @@ use rocket\ei\manage\gui\GuiField;
 use rocket\ei\manage\gui\GuiProp;
 use n2n\web\dispatch\mag\MagCollection;
 
-abstract class PropertyEditableEiPropAdapter extends PropertyDisplayableEiPropAdapter implements StatelessEditable, Writable, 
+abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAdapter implements StatelessEditable, Writable, 
 		PrivilegedEiProp, Validatable, Copyable {
 	protected $standardEditDefinition;
 
@@ -90,7 +90,7 @@ abstract class PropertyEditableEiPropAdapter extends PropertyDisplayableEiPropAd
 		$constraints = $objectPropertyAccessProxy === null ? TypeConstraint::createSimple('mixed') :
 				$this->getObjectPropertyAccessProxy()->getConstraint()->getLenientCopy();
 
-		return new SimpleEiField($eiu->entry()->getEiObject(), $constraints,
+		return new SimpleEiField($eiu, $constraints,
 				$this, $this, $this, ($this->isReadOnly($eiu) ? null : $this));
 	}
 	
@@ -98,8 +98,8 @@ abstract class PropertyEditableEiPropAdapter extends PropertyDisplayableEiPropAd
 		return null;
 	}
 
-	public function write(EiObject $eiObject, $value) {
-		$this->getObjectPropertyAccessProxy()->setValue($eiObject->getEiEntityObj()->getEntityObj(), $value);
+	public function write(Eiu $eiu, $value) {
+		$eiu->object()->writeNativeValue($this, $value);
 	}
 	
 	public function copy(EiObject $eiObject, $value, Eiu $copyEiu) {

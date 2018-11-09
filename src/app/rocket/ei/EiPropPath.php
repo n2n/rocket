@@ -58,6 +58,6 @@ class EiPropPath extends IdPath {
 	}
 	
 	public function ext(...$args): EiPropPath {
-		return new EiPropPath(array_merge($this->argsToIds($args), $args));
+		return new EiPropPath(array_merge($this->ids, $this->argsToIds($args)));
 	}
 }

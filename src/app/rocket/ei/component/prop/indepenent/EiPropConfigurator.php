@@ -65,7 +65,7 @@ interface EiPropConfigurator extends EiConfigurator {
 	
 // 	public function isPropertyAssignable(): bool;
 	
-	public function getPropertyAssignation(): PropertyAssignation;
+// 	public function getPropertyAssignation(): PropertyAssignation;
 	
 	/**
 	 * Method can be called without assigned EiType or EiMask.

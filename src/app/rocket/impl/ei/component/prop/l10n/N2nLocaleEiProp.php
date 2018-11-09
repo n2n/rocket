@@ -33,7 +33,7 @@ use n2n\impl\web\dispatch\mag\model\EnumMag;
 use rocket\ei\manage\generic\CommonScalarEiProperty;
 use n2n\impl\persistence\orm\property\N2nLocaleEntityProperty;
 use n2n\reflection\ArgUtils;
-use rocket\impl\ei\component\prop\adapter\DraftableEiPropAdapter;
+use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
 use n2n\reflection\property\TypeConstraint;
 use n2n\reflection\property\AccessProxy;
 use rocket\ei\manage\EiObject;
@@ -50,7 +50,7 @@ use rocket\ei\manage\critmod\sort\SortProp;
 use rocket\ei\manage\generic\GenericEiProperty;
 use rocket\ei\manage\generic\ScalarEiProperty;
 
-class N2nLocaleEiProp extends DraftableEiPropAdapter implements FilterableEiProp, SortableEiProp, GenericEiProp,
+class N2nLocaleEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiProp, SortableEiProp, GenericEiProp,
 		ScalarEiProp {
 	private $definedN2nLocales;
 	
@@ -112,8 +112,8 @@ class N2nLocaleEiProp extends DraftableEiPropAdapter implements FilterableEiProp
 // 		$attributes->set($this->id, $attributeValue);
 // 	}
 
-	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): ?string {
-		$value = $this->read($eiObject);
+	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
+		$value = $this->read($eiu);
 		if (null === ($parsedN2nLocale = N2nLocale::create($value))) return $value;
 		return $this->generateDisplayNameForN2nLocale($parsedN2nLocale, $n2nLocale);
 	}

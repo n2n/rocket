@@ -32,6 +32,7 @@ use rocket\ei\manage\gui\ui\DisplayStructure;
 use n2n\util\ex\NotYetImplementedException;
 use n2n\l10n\Lstr;
 use rocket\core\model\Rocket;
+use n2n\core\container\N2nContext;
 
 class GuiDefinition {	
 	private $identityStringPattern;
@@ -400,7 +401,7 @@ class GuiDefinition {
 	 * @param N2nLocale $n2nLocale
 	 * @return string
 	 */
-	private function createDefaultIdentityString(EiObject $eiObject, N2nLocale $n2nLocale) {
+	private function createDefaultIdentityString(EiObject $eiObject, N2nContext $n2nContext, N2nLocale $n2nLocale) {
 		$eiType = $eiObject->getEiEntityObj()->getEiType();
 		
 		$idPatternPart = null;
@@ -425,7 +426,7 @@ class GuiDefinition {
 			$namePatternPart = $this->labelLstr->t($n2nLocale);
 		}
 		
-		return $this->createIdentityStringFromPattern($namePatternPart . ' #' . $idPatternPart, $eiObject, $n2nLocale);
+		return $this->createIdentityStringFromPattern($namePatternPart . ' #' . $idPatternPart, $n2nContext, $eiObject, $n2nLocale);
 	}
 	
 	/**
@@ -433,12 +434,12 @@ class GuiDefinition {
 	 * @param N2nLocale $n2nLocale
 	 * @return string
 	 */
-	public function createIdentityString(EiObject $eiObject, N2nLocale $n2nLocale) {
+	public function createIdentityString(EiObject $eiObject, N2nContext $n2nContext, N2nLocale $n2nLocale) {
 		if ($this->identityStringPattern === null) {
-			return $this->createDefaultIdentityString($eiObject, $n2nLocale);
+			return $this->createDefaultIdentityString($eiObject, $n2nContext, $n2nLocale);
 		}
 		
-		return $this->createIdentityStringFromPattern($this->identityStringPattern, $eiObject, $n2nLocale);
+		return $this->createIdentityStringFromPattern($this->identityStringPattern, $n2nContext, $eiObject, $n2nLocale);
 	}
 	
 	/**
@@ -446,8 +447,8 @@ class GuiDefinition {
 	 * @param N2nLocale $n2nLocale
 	 * @return string
 	 */
-	public function createIdentityStringFromPattern(string $identityStringPattern, EiObject $eiObject, N2nLocale $n2nLocale): string {
-		$builder = new SummarizedStringBuilder($identityStringPattern, $n2nLocale);
+	public function createIdentityStringFromPattern(string $identityStringPattern, N2nContext $n2nContext, EiObject $eiObject, N2nLocale $n2nLocale): string {
+		$builder = new SummarizedStringBuilder($identityStringPattern, $n2nContext, $n2nLocale);
 		$builder->replaceFields(array(), $this, $eiObject);
 		return $builder->__toString();
 	}

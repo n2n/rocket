@@ -73,8 +73,8 @@ abstract class ToManyEiPropAdapter extends SimpleRelationEiPropAdapter implement
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiProp::buildIdentityString()
 	 */
-	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): string {
-		$targetEiObjects = $this->read($eiObject);
+	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): string {
+		$targetEiObjects = $this->read($eiu);
 		
 		$numTargetEiObjects = count($targetEiObjects);
 		if ($numTargetEiObjects == 1) {

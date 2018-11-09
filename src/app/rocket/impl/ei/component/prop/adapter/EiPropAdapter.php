@@ -7,14 +7,23 @@ use n2n\util\ex\IllegalStateException;
 use rocket\impl\ei\component\EiComponentAdapter;
 use rocket\ei\component\prop\EiPropWrapper;
 use n2n\util\StringUtils;
+use n2n\reflection\property\AccessProxy;
 
-class EiPropAdapter extends EiComponentAdapter implements EiProp {
+abstract class EiPropAdapter extends EiComponentAdapter implements EiProp {
 	private $wrapper;
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\prop\EiProp::setWrapper()
+	 */
 	public function setWrapper(EiPropWrapper $wrapper) {
 		$this->wrapper = $wrapper;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\prop\EiProp::getWrapper()
+	 */
 	public function getWrapper(): EiPropWrapper {
 		if ($this->wrapper !== null) {
 			return $this->wrapper;
@@ -23,6 +32,10 @@ class EiPropAdapter extends EiComponentAdapter implements EiProp {
 		throw new IllegalStateException(get_class($this) . ' is not assigned to a Wrapper.');
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\EiComponentAdapter::getIdBase()
+	 */
 	public function getIdBase(): ?string {
 		return null;
 	}
@@ -52,5 +65,24 @@ class EiPropAdapter extends EiComponentAdapter implements EiProp {
 	public function getLabelLstr(): Lstr {
 		return Lstr::create(StringUtils::pretty($this->getWrapper()->getEiPropPath()->getLastId()));
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\prop\EiProp::isPropFork()
+	 */
+	public function isPropFork(): bool {
+		return false;
+	}
 
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\prop\EiProp::getPropForkObject()
+	 */
+	public function getPropForkObject(object $object): object {
+		throw new IllegalStateException($this . ' is not a PropFork.');
+	}
+	
+	public function getObjectPropertyAccessProxy(): ?AccessProxy {
+		return null;
+	}
 }

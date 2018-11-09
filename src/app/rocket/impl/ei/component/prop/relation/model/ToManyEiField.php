@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model;
 
-use rocket\ei\component\prop\field\RwEiField;
+use rocket\ei\component\prop\field\RwvEiField;
 use n2n\reflection\ArgUtils;
 use rocket\ei\manage\entry\EiFieldValidationResult;
 use n2n\util\ex\IllegalStateException;
@@ -31,7 +31,7 @@ use rocket\ei\component\prop\field\Writable;
 use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\field\Copyable;
 
-class ToManyEiField extends RwEiField {
+class ToManyEiField extends RwvEiField {
 	private $copyable = null;
 	
 	public function __construct(EiObject $eiObject, 

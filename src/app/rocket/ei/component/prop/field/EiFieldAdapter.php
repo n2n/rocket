@@ -24,22 +24,19 @@ namespace rocket\ei\component\prop\field;
 use rocket\ei\manage\entry\EiField;
 use rocket\ei\manage\entry\EiFieldValidationResult;
 use n2n\util\col\HashSet;
-use rocket\ei\manage\EiObject;
 use rocket\ei\manage\entry\EiFieldConstraint;
 use n2n\util\col\Set;
 use rocket\ei\manage\entry\EiFieldMap;
 use n2n\util\ex\IllegalStateException;
 
 abstract class EiFieldAdapter implements EiField {
-	protected $eiFieldMap;
 	protected $valueLoaded = false;
 	protected $value;
 	protected $orgValueLoaded = false;
 	protected $orgValue;
 	protected $eiFieldConstraintSet;
 
-	public function __construct(EiObject $eiObject) {
-		$this->eiFieldMap = $eiObject;
+	public function __construct() {
 		$this->eiFieldConstraintSet = new HashSet(EiFieldConstraint::class);
 	}
 

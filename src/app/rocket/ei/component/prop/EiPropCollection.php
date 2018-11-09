@@ -74,6 +74,8 @@ class EiPropCollection extends EiComponentCollection {
 		
 		$this->addElement($eiPropPath, $eiProp);
 		
+		
+		
 		return $eiPropWrapper;
 	}
 	

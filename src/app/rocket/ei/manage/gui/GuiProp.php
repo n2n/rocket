@@ -61,5 +61,5 @@ interface GuiProp {
 	 * @param object $entity
 	 * @return string|null
 	 */
-	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): ?string;
+	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string;
 }

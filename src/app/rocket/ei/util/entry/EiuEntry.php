@@ -35,29 +35,25 @@ use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\EiGui;
 use rocket\ei\manage\gui\EiEntryGui;
 use rocket\ei\manage\gui\EiEntryGuiAssembler;
-use rocket\ei\manage\EiObject;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\util\EiuAnalyst;
 use rocket\ei\util\EiuPerimeterException;
-use rocket\ei\util\spec\EiuEngine;
 use rocket\ei\util\spec\EiuMask;
 use rocket\ei\util\gui\EiuEntryGui;
 use rocket\ei\util\gui\EiuEntryGuiAssembler;
-use rocket\ei\util\frame\EiuFrame;
+use n2n\reflection\ArgUtils;
 
 class EiuEntry {
-	private $eiObject;
 	private $eiEntry;
-	private $eiuFrame;
 	private $eiuAnalyst;
-	private $eiuEngine;
+	private $eiuObject;
 	private $eiuMask;
 	
-	public function __construct(EiObject $eiObject, EiEntry $eiEntry = null, EiuFrame $eiuFrame = null, 
-			EiuAnalyst $eiuAnalyst) {
-		$this->eiObject = $eiObject;
+	public function __construct(EiEntry $eiEntry = null, EiuObject $eiuObject = null, EiuMask $eiuMask = null, EiuAnalyst $eiuAnalyst) {
+		ArgUtils::assertTrue($eiEntry !== null || $eiuObject !== null);
 		$this->eiEntry = $eiEntry;
-		$this->eiuFrame = $eiuFrame;
+		$this->eiuObject = $eiuObject;
+		$this->eiuMask = $eiuMask;
 		$this->eiuAnalyst = $eiuAnalyst;
 	}
 	
@@ -66,43 +62,18 @@ class EiuEntry {
 	 * @return \rocket\ei\util\frame\EiuFrame
 	 */
 	public function getEiuFrame(bool $required = true) {
-		if ($this->eiuFrame !== null) {
-			return $this->eiuFrame;
-		}
-		
-		if ($this->eiuAnalyst !== null) {
-			return $this->eiuFrame = $this->eiuAnalyst->getEiuFrame($required);
-		}
-		
-		if ($required) {
-			throw new EiuPerimeterException('No EiuFrame available.');
-		}
-		
-		return null;
-	}
-	
-	
-	
-	/**
-	 * @return EiuEngine
-	 */
-	public function getEiuEngine() {
-		if ($this->eiuEngine === null) {
-			$this->eiuEngine = $this->getEiuFrame()->engine($this->eiObject);
-		}
-		
-		return $this->eiuEngine;
+		return $this->eiuAnalyst->getEiuFrame($required);
 	}
 	
 	/**
 	 * @return EiuMask
 	 */
-	public function getEiuMask() {
-		if ($this->eiuMask === null) {
-			$this->eiuMask = $this->getEiuFrame()->mask($this->eiObject);
+	public function mask() {
+		if ($this->eiuMask !== null) {
+			return $this->eiuMask;
 		}
 		
-		return $this->eiuMask;
+		return $this->eiuMask = new EiuMask($this->eiEntry->getEiMask(), null, $this->eiuAnalyst);
 	}
 	
 	private $eiuEntryAccess;
@@ -116,36 +87,38 @@ class EiuEntry {
 		return $this->eiuEntryAccess;
 	}
 	
-	/**
-	 * @return \rocket\ei\manage\EiObject
-	 */
-	public function getEiObject() {
-		return $this->eiObject;
+	
+	public function object() {
+		if ($this->eiuObject !== null) {
+			return $this->eiuObject;
+		}
+		
+		return $this->eiuObject = new EiuObject($this->eiEntry->getEiObject(), $this->eiuAnalyst);
 	}
 	
 	/**
-	 * @param bool $createIfNotAvaialble
+	 * @return boolean
+	 */
+	public function isInitialized() {
+		return $this->eiEntry !== null;
+	}
+	
+	/**
 	 * @return \rocket\ei\manage\entry\EiEntry|NULL
 	 */
-	public function getEiEntry(bool $createIfNotAvaialble = true) {
+	public function getEiEntry() {
 		if ($this->eiEntry !== null) {
 			return $this->eiEntry;
 		}
-		
-		if ($createIfNotAvaialble) {
-			$eiFrame = $this->getEiuFrame(true)->getEiFrame();
-			$this->eiEntry =  $eiFrame->createEiEntry($this->eiObject);
-			return $this->eiEntry; 
-		}
-		
-		return null;
+				
+		return $this->eiEntry = $this->eiuAnalyst->getEiuFrame(true)->getEiFrame()->createEiEntry($this->eiEntry->getEiObject());
 	}
 	
 	public function isNew() {
 		if ($this->isDraft()) {
 			return $this->isDraftNew();
 		} else {
-			return !$this->isLivePersistent();
+			return !$this->isPersistent();
 		}
 	}
 		
@@ -153,32 +126,32 @@ class EiuEntry {
 	 * @return \rocket\ei\manage\EiEntityObj
 	 */
 	public function getEiEntityObj() {
-		return $this->eiObject->getEiEntityObj();
+		return $this->eiEntry->getEiObject()->getEiEntityObj();
 	}
 	
 	/**
 	 * @return object
 	 */
 	public function getEntityObj() {
-		return $this->eiObject->getEiEntityObj()->getEntityObj();
+		return $this->eiEntry->getEiObject()->getEiEntityObj()->getEntityObj();
 	}
 	
 	/**
 	 * @return boolean
 	 */
-	public function isLivePersistent() {
-		return $this->eiObject->getEiEntityObj()->isPersistent();
+	public function isPersistent() {
+		return $this->eiEntry->getEiObject()->getEiEntityObj()->isPersistent();
 	}
 	
-	public function hasLiveId() {
-		return $this->eiObject->getEiEntityObj()->hasId();
+	public function hasId() {
+		return $this->eiEntry->getEiObject()->getEiEntityObj()->hasId();
 	}
 	
 	/**
 	 * @param bool $required
 	 * @return mixed
 	 */
-	public function getLiveId(bool $required = true) {
+	public function getId(bool $required = true) {
 		$eiEntityObj = $this->getEiEntityObj();
 		
 		if (!$required && !$eiEntityObj->isPersistent()) {
@@ -192,8 +165,8 @@ class EiuEntry {
 	 * @param bool $required
 	 * @return string
 	 */
-	public function getLivePid(bool $required = true) {
-		if (null !== ($id = $this->getLiveId($required))) {
+	public function getPid(bool $required = true) {
+		if (null !== ($id = $this->getId($required))) {
 			return $this->getEiType()->idToPid($id);
 		}
 		
@@ -211,7 +184,7 @@ class EiuEntry {
 	 * @return boolean
 	 */
 	public function isDraft() {
-		return $this->eiObject->isDraft();
+		return $this->eiEntry->getEiObject()->isDraft();
 	}
 	
 	/**
@@ -223,7 +196,7 @@ class EiuEntry {
 			return null;
 		}
 		
-		return $this->eiObject->getDraft();
+		return $this->eiEntry->getEiObject()->getDraft();
 	}
 	
 	/**
@@ -319,7 +292,7 @@ class EiuEntry {
 		$eiFrame = $this->getEiuFrame()->getEiFrame();
 		$eiMask = null;
 		if ($determineEiMask) {
-			$eiMask = $eiFrame->determineEiMask($this->eiObject->getEiEntityObj()->getEiType());
+			$eiMask = $eiFrame->determineEiMask($this->eiEntry->getEiObject()->getEiEntityObj()->getEiType());
 		} else {
 			$eiMask = $eiFrame->getContextEiEngine()->getEiMask();
 		}
@@ -342,7 +315,7 @@ class EiuEntry {
 	 * @return \rocket\ei\mask\EiMask
 	 */
 	private function determineEiMask() {
-		return $this->eiuFrame->getEiFrame()->determineEiMask($this->eiObject->getEiEntityObj()->getEiType());
+		return $this->eiuFrame->getEiFrame()->determineEiMask($this->eiEntry->getEiObject()->getEiEntityObj()->getEiType());
 	}
 	
 	/**
@@ -360,6 +333,8 @@ class EiuEntry {
 		}
 	}
 	
+	
+	
 	/**
 	 * @param mixed $eiPropArg
 	 * @return \rocket\ei\util\entry\EiuField
@@ -367,7 +342,6 @@ class EiuEntry {
 	public function field($eiPropArg) {
 		return new EiuField($eiPropArg, $this);
 	}
-	
 	
 	public function getValue($eiPropPath) {
 		return $this->getEiEntry()->getValue(EiPropPath::create($eiPropPath));
@@ -425,7 +399,7 @@ class EiuEntry {
 	 * @return string
 	 */
 	public function getGenericIconType() {
-		return $this->eiuFrame->getGenericIconType($this);
+		return $this->getEiuFrame(true)->getGenericIconType($this);
 	}
 	
 	/**
@@ -470,7 +444,7 @@ class EiuEntry {
 	 * @return string
 	 */
 	public function createIdentityString(bool $determineEiMask = true, N2nLocale $n2nLocale = null) {
-		return $this->getEiuFrame()->createIdentityString($this->eiObject, $determineEiMask, $n2nLocale);
+		return $this->getEiuFrame()->createIdentityString($this->eiEntry->getEiObject(), $determineEiMask, $n2nLocale);
 	}
 	
 	/**
@@ -479,7 +453,7 @@ class EiuEntry {
 	 * @return \rocket\ei\manage\draft\Draft[]
 	 */
 	public function lookupDrafts(int $limit = null, int $num = null) {
-		return $this->eiuFrame->lookupDraftsByEntityObjId($this->getLiveId(), $limit, $num);
+		return $this->eiuFrame->lookupDraftsByEntityObjId($this->getId(), $limit, $num);
 	}
 	
 	public function acceptsValue($eiPropPath, $value) {
@@ -534,15 +508,15 @@ class EiuEntry {
 	}
 	
 	public function isPreviewAvailable() {
-		return !empty($this->eiuFrame->getPreviewTypeOptions($this->eiObject));
+		return !empty($this->eiuFrame->getPreviewTypeOptions($this->eiEntry->getEiObject()));
 	}
 	
 	public function getPreviewType() {
-		return $this->getEiuFrame()->getPreviewType($this->eiObject);
+		return $this->getEiuFrame()->getPreviewType($this->eiEntry->getEiObject());
 	}
 	
 	public function getPreviewTypeOptions() {
-		return $this->eiuFrame->getPreviewTypeOptions($this->eiObject);
+		return $this->eiuFrame->getPreviewTypeOptions($this->eiEntry->getEiObject());
 	}
 	
 // 	public function isExecutableBy($eiCommandPath) {

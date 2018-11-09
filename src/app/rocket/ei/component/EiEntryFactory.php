@@ -102,7 +102,7 @@ class EiEntryFactory {
 	 * @return \rocket\ei\manage\entry\EiFieldMap
 	 */
 	public function createEiFieldMap(EiFrame $eiFrame, EiEntry $eiEntry, EiPropPath $forkEiPropPath, object $object, ?EiEntry $copyFrom) {
-		$eiFieldMap = new EiFieldMap($forkEiPropPath, $object);
+		$eiFieldMap = new EiFieldMap($eiEntry, $forkEiPropPath, $object);
 		
 		$eiu = new Eiu($eiFrame, $eiEntry, $eiFieldMap);
 		

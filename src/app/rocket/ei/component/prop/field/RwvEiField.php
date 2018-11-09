@@ -26,21 +26,24 @@ use rocket\ei\manage\entry\EiFieldOperationFailedException;
 use rocket\ei\manage\entry\EiFieldConstraint;
 use rocket\ei\manage\entry\EiField;
 use rocket\ei\manage\entry\EiFieldValidationResult;
+use rocket\ei\util\Eiu;
 
-abstract class RwEiField extends EiFieldAdapter {
+abstract class RwvEiField extends EiFieldAdapter {
+	protected $eiu;
 	protected $readable;
 	protected $writable;
 	protected $validatable;
 
-	public function __construct(EiObject $eiObject, Readable $readable = null, Writable $writable = null, 
+	public function __construct(Eiu $eiu, Readable $readable = null, Writable $writable = null, 
 			Validatable $validatable = null) {
-		parent::__construct($eiObject);
+		parent::__construct();
+		$this->eiu = $eiu;
 		$this->readable = $readable;
 		$this->writable = $writable;
 		$this->validatable = $validatable;
 		
 		if ($validatable !== null) {
-			$this->getEiFieldConstraintSet()->add(new ValidatableEiFieldConstraint($eiObject, $validatable));
+			$this->getEiFieldConstraintSet()->add(new ValidatableEiFieldConstraint($eiu, $validatable));
 		}
 	}
 
@@ -50,7 +53,7 @@ abstract class RwEiField extends EiFieldAdapter {
 
 	protected function readValue() {
 		if (null !== $this->readable) {
-			$value = $this->readable->read($this->eiObject);
+			$value = $this->readable->read($this->eiu);
 			// @todo convert exception to better exception
 			return $value;
 		}
@@ -64,7 +67,7 @@ abstract class RwEiField extends EiFieldAdapter {
 	
 	protected function writeValue($value) {
 		if (null !== $this->writable) {
-			$this->writable->write($this->eiObject, $value);
+			$this->writable->write($this->eiu, $value);
 			return;
 		}
 
@@ -73,11 +76,11 @@ abstract class RwEiField extends EiFieldAdapter {
 }
 
 class ValidatableEiFieldConstraint implements EiFieldConstraint {
-	private $eiObject;
+	private $eiu;
 	private $validatable;
 	
-	public function __construct(EiObject $eiObject, Validatable $validatable) {
-		$this->eiObject = $eiObject;
+	public function __construct(Eiu $eiu, Validatable $validatable) {
+		$this->eiu = $eiu;
 		$this->validatable = $validatable;
 	}
 	/**
@@ -85,7 +88,7 @@ class ValidatableEiFieldConstraint implements EiFieldConstraint {
 	 * @see \rocket\ei\manage\entry\EiFieldConstraint::acceptsValue($value)
 	 */
 	public function acceptsValue($value): bool {
-		$this->validatable->testEiFieldValue($this->eiObject, $value);
+		$this->validatable->testEiFieldValue($this->eiu, $value);
 	}
 
 	/**
@@ -93,7 +96,7 @@ class ValidatableEiFieldConstraint implements EiFieldConstraint {
 	 * @see \rocket\ei\manage\entry\EiFieldConstraint::check($eiField)
 	 */
 	public function check(EiField $eiField): bool {
-		return $this->validatable->testEiFieldValue($this->eiObject, $eiField->getValue());	
+		return $this->validatable->testEiFieldValue($this->eiu, $eiField->getValue());	
 	}
 
 	/**
@@ -101,6 +104,6 @@ class ValidatableEiFieldConstraint implements EiFieldConstraint {
 	 * @see \rocket\ei\manage\entry\EiFieldConstraint::validate($eiField, $fieldErrorInfo)
 	 */
 	public function validate(EiField $eiField, EiFieldValidationResult $fieldErrorInfo) {
-		return $this->validatable->validateEiFieldValue($this->eiObject, $eiField->getValue(), $fieldErrorInfo);
+		return $this->validatable->validateEiFieldValue($this->eiu, $eiField->getValue(), $fieldErrorInfo);
 	}	
 }

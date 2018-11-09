@@ -60,7 +60,7 @@
 				data-rocket-impl-activate-label="<?php $html->text('ei_impl_activate_translation', array(
 						'locale' => $n2nLocale->getName($view->getN2nLocale()),
 						'field' => $view->getParam('label'))) ?>"
-				data-rocket-impl-ei-id="<?php $html->out(isset($eiuEntries[$n2nLocaleId]) ? $eiuEntries[$n2nLocaleId]->getLivePid(false) : null) ?>"
+				data-rocket-impl-ei-id="<?php $html->out(isset($eiuEntries[$n2nLocaleId]) ? $eiuEntries[$n2nLocaleId]->getPid(false) : null) ?>"
 				data-rocket-impl-property-path="<?php $html->out($formHtml->meta()->realPropPath($tPropertyPath->reduced(1))) ?>"
 				data-rocket-impl-copy-tooltip="<?php $html->text('ei_impl_translation_copy_tooltip',
 						array('field' => $view->getParam('label'), 'locale' => $n2nLocale->getName($view->getN2nLocale()))) ?>">

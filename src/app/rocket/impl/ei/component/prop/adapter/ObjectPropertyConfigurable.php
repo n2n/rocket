@@ -25,22 +25,15 @@ use n2n\reflection\property\AccessProxy;
 
 interface ObjectPropertyConfigurable {
 	
-	/**
-	 * @return string
-	 */
-	public function getPropertyName(): string;
-	
-	/**
-	 * @param bool $required
-	 * @return \n2n\reflection\property\AccessProxy
-	 * @throws \n2n\util\ex\IllegalStateException
-	 */
-	public function getObjectPropertyAccessProxy(bool $required = false);
+// 	/**
+// 	 * @return string
+// 	 */
+// 	public function getPropertyName(): string;
 	
 	/**
 	 * @param AccessProxy $objectPropertyAccessProxy
 	 * @throws \InvalidArgumentException
 	 * @throws \n2n\reflection\property\ConstraintsConflictException
 	 */
-	public function setObjectPropertyAccessProxy(AccessProxy $objectPropertyAccessProxy = null);
+	public function setObjectPropertyAccessProxy(?AccessProxy $objectPropertyAccessProxy);
 }

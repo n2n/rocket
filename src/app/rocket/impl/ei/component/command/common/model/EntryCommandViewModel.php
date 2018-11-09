@@ -65,7 +65,7 @@ class EntryCommandViewModel {
 	public function initializeDrafts() {
 		return;
 		$eiuEntry = $this->getEiuEntry();
-		if ($eiuEntry->hasLiveId() && $this->getEiuFrame()->isDraftingEnabled()) {
+		if ($eiuEntry->hasId() && $this->getEiuFrame()->isDraftingEnabled()) {
 			$this->historicizedDrafts = $eiuEntry->lookupDrafts(0, 30);
 		}
 		

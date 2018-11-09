@@ -456,7 +456,7 @@ class EiSetupQueue {
 		
 	public function trigger(N2nContext $n2nContext) {
 		$this->propIns();
-		
+				
 		while (null !== ($eiConfigurator = array_shift($this->eiConfigurators))) {
 			$this->setup($n2nContext, $eiConfigurator);
 		}
@@ -598,13 +598,13 @@ class PropIn {
 			}
 		}
 
-		if ($entityProperty !== null || $accessProxy !== null) {
+// 		if ($entityProperty !== null || $accessProxy !== null) {
 			try {
 				$this->eiPropConfigurator->assignProperty(new PropertyAssignation($entityProperty, $accessProxy));
 			} catch (IncompatiblePropertyException $e) {
 				throw $this->createException($e);
 			}
-		}
+// 		}
 	}
 	
 	private function createException($e) {

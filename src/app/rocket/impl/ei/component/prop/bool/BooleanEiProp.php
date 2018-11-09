@@ -29,7 +29,6 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
-use rocket\impl\ei\component\prop\adapter\DraftableEiPropAdapter;
 use n2n\reflection\ArgUtils;
 use n2n\reflection\property\AccessProxy;
 use n2n\reflection\property\TypeConstraint;
@@ -37,7 +36,6 @@ use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\web\dispatch\mag\Mag;
 use rocket\ei\util\Eiu;
 use rocket\ei\util\filter\prop\BoolFilterProp;
-use rocket\ei\manage\EiObject;
 use rocket\impl\ei\component\prop\bool\conf\BooleanEiPropConfigurator;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\critmod\filter\FilterProp;
@@ -48,12 +46,13 @@ use n2n\impl\persistence\orm\property\BoolEntityProperty;
 use rocket\ei\component\prop\SecurityFilterEiProp;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
 use rocket\ei\manage\entry\EiField;
+use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
 
-class BooleanEiProp extends DraftableEiPropAdapter implements FilterableEiProp, SortableEiProp, SecurityFilterEiProp {
+class BooleanEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiProp, SortableEiProp, SecurityFilterEiProp {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\DraftableEiPropAdapter::createEiPropConfigurator()
+	 * @see \rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter::createEiPropConfigurator()
 	 */
 	public function createEiPropConfigurator(): EiPropConfigurator {
 		return new BooleanEiPropConfigurator($this);
@@ -61,7 +60,7 @@ class BooleanEiProp extends DraftableEiPropAdapter implements FilterableEiProp, 
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\EntityPropertyEiPropAdapter::setEntityProperty()
+	 * @see \rocket\impl\ei\component\prop\adapter\PropertyEiPropAdapter::setEntityProperty()
 	 */
 	public function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty instanceof BoolEntityProperty 
@@ -72,7 +71,7 @@ class BooleanEiProp extends DraftableEiPropAdapter implements FilterableEiProp, 
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\ObjectPropertyEiPropAdapter::setObjectPropertyAccessProxy()
+	 * @see \rocket\impl\ei\component\prop\adapter\PropertyEiPropAdapter::setObjectPropertyAccessProxy()
 	 */
 	public function setObjectPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
 // 		if ($propertyAccessProxy === null) {
@@ -82,13 +81,13 @@ class BooleanEiProp extends DraftableEiPropAdapter implements FilterableEiProp, 
 		
 		
 		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('scalar',
-				$propertyAccessProxy->getConstraint()->allowsNull()));
-		$this->objectPropertyAccessProxy = $propertyAccessProxy;
+					$propertyAccessProxy->getConstraint()->allowsNull()));
+		parent::setObjectPropertyAccessProxy($propertyAccessProxy);
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\PropertyEditableEiPropAdapter::isMandatory()
+	 * @see \rocket\impl\ei\component\prop\adapter\EditablePropertyEiPropAdapter::isMandatory()
 	 */
 	public function isMandatory(Eiu $eiu): bool {
 		return false;
@@ -96,10 +95,10 @@ class BooleanEiProp extends DraftableEiPropAdapter implements FilterableEiProp, 
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\DraftableEiPropAdapter::read()
+	 * @see \rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter::read()
 	 */
-	public function read(EiObject $eiObject) {
-		return (bool) parent::read($eiObject);
+	public function read(Eiu $eiu) {
+		return (bool) parent::read($eiu);
 	}
 	
 	private $onAssociatedGuiIdPaths = array();

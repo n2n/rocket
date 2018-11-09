@@ -21,8 +21,8 @@
  */
 namespace rocket\ei\component\prop\field;
 
-use rocket\ei\manage\EiObject;
+use rocket\ei\util\Eiu;
 
 interface Writable {
-	public function write(EiObject $eiObject, $value);
+	public function write(Eiu $eiu, $value);
 }

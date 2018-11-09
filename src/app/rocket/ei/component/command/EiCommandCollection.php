@@ -44,8 +44,16 @@ class EiCommandCollection extends EiComponentCollection {
 	 * @param string $id
 	 * @return EiCommand
 	 */
+	public function getByPath(EiCommandPath $eiCommandPath) {
+		return $this->getElementByIdPath($eiCommandPath);
+	}
+	
+	/**
+	 * @param string $id
+	 * @return EiCommand
+	 */
 	public function getById(string $id) {
-		return $this->getElementById($id);
+		return $this->getElementByIdPath(new EiCommandPath([$id]));
 	}
 	
 	/**

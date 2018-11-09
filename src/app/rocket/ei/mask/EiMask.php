@@ -128,7 +128,7 @@ class EiMask {
 	 * @throws EiPathMissmatchException
 	 */
 	public function getForkObject(EiPropPath $forkEiPropPath, EiObject $eiObject) {
-		$ids = $eiPropPath->toArray();
+		$ids = $forkEiPropPath->toArray();
 		
 		$forkObject = $eiObject->getEiEntityObj()->getEntityObj();
 		$eiPropPath = new EiPropPath([]);
@@ -146,7 +146,7 @@ class EiMask {
 				throw new EiPathMissmatchException('EiProp ' . $eiProp . ' is not a PropFork.');
 			}
 		} catch (EiException $e) {
-			throw new EiPathMissmatchException('Could not resolve fork object of ' . $forkEiPropPath);
+			throw new EiPathMissmatchException('Could not resolve fork object of ' . $forkEiPropPath, 0, $e);
 		}
 		
 		return $forkObject;

@@ -37,7 +37,7 @@ use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
 use n2n\reflection\ArgUtils;
 use n2n\reflection\property\TypeConstraint;
 use n2n\reflection\property\AccessProxy;
-use rocket\impl\ei\component\prop\adapter\DraftableEiPropAdapter;
+use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
 use rocket\ei\manage\EiObject;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\web\dispatch\mag\Mag;
@@ -53,7 +53,7 @@ use rocket\ei\manage\critmod\sort\SortProp;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\ei\manage\entry\EiField;
 
-class EnumEiProp extends DraftableEiPropAdapter implements FilterableEiProp, SortableEiProp, 
+class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiProp, SortableEiProp, 
 		QuickSearchableEiProp {
 	
 	private $options = array();
@@ -202,8 +202,8 @@ class EnumEiProp extends DraftableEiPropAdapter implements FilterableEiProp, Sor
 		return true;
 	}
 	
-	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): ?string {
-		return $this->read($eiObject);
+	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
+		return $this->read($eiu);
 	}
 	
 	public function setAssociatedGuiIdPathMap(array $associatedGuiIdPathMap) {

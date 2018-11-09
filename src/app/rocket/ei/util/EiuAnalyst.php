@@ -60,6 +60,7 @@ use rocket\ei\util\spec\EiuProp;
 use rocket\ei\util\gui\EiuEntryGuiAssembler;
 use rocket\ei\manage\entry\EiFieldMap;
 use rocket\ei\util\entry\EiuFieldMap;
+use rocket\ei\util\entry\EiuObject;
 
 class EiuAnalyst {
 	const EI_FRAME_TYPES = array(EiFrame::class, EiuFrame::class, N2nContext::class);
@@ -88,6 +89,7 @@ class EiuAnalyst {
 	protected $eiuContext;
 	protected $eiuEngine;
 	protected $eiuFrame;
+	protected $eiuObject;
 	protected $eiuEntry;
 	protected $eiuFieldMap;
 	protected $eiFieldMap;
@@ -225,6 +227,11 @@ class EiuAnalyst {
 				continue;
 			}
 			
+			if ($eiArg instanceof EiuObject) {
+				$this->assignEiuObject($eiArg);
+				continue;
+			}
+			
 			if ($eiArg instanceof EiuEntry) {
 				$this->assignEiuEntry($eiArg);
 				continue;
@@ -307,6 +314,9 @@ class EiuAnalyst {
 				}
 				if ($eiuAnalyst->eiuFrame !== null) {
 					$this->eiuFrame = $eiuAnalyst->eiuFrame;
+				}
+				if ($eiuAnalyst->eiuObject !== null) {
+					$this->eiuObject = $eiuAnalyst->eiuObject;
 				}
 				if ($eiuAnalyst->eiuEntry !== null) {
 					$this->eiuEntry = $eiuAnalyst->eiuEntry;
@@ -579,6 +589,19 @@ class EiuAnalyst {
 	/**
 	 * @param EiuEntry $eiuEntry
 	 */
+	private function assignEiuObject($eiuObject) {
+		if ($this->eiuObject === $eiuObject) {
+			return;
+		}
+		
+		$this->assignEiObject($eiuObject->getEiObject());
+		
+		$this->eiuObject = $eiuObject;
+	}
+	
+	/**
+	 * @param EiuEntry $eiuEntry
+	 */
 	private function assignEiuEntry($eiuEntry) {
 		if ($this->eiuEntry === $eiuEntry) {
 			return;
@@ -616,6 +639,7 @@ class EiuAnalyst {
 		
 		$this->assignEiObject($eiEntry->getEiObject());
 		$this->assignEiFieldMap($eiEntry->getEiFieldMap());
+		$this->assignEiMask($eiEntry->getEiMask());
 	}
 	
 	private function assignEiFieldMap($eiFieldMap) {
@@ -635,6 +659,7 @@ class EiuAnalyst {
 			return;
 		}
 		
+		$this->eiuObject = null;
 		$this->eiuEntry = null;
 		$this->eiObject = $eiObject;
 	}
@@ -868,9 +893,19 @@ class EiuAnalyst {
 		
 		if (!$required) return null;
 		
-		throw new EiuPerimeterException(
-				'Can not create EiuFrame because non of the following types were provided as eiArgs: ' 
-						. implode(', ', self::EI_FRAME_TYPES));
+		throw new EiuPerimeterException('No EiuFrame avialble.');
+	}
+	
+	public function getEiuObject(bool $required) {
+		if ($this->eiuObject !== null) {
+			return $this->eiuObject;
+		}
+		
+		if ($this->eiObject !== null) {
+			return $this->eiuObject = new EiuObject($this->eiObject, $this); 
+		}	
+		
+		throw new EiuPerimeterException('No EiuObject avialble.');
 	}
 	
 	public function getEiuEntry(bool $required) {
@@ -882,27 +917,17 @@ class EiuAnalyst {
 		
 		if ($eiuFrame !== null) {
 			if ($this->eiEntry !== null) {
-				return $this->eiuEntry = $eiuFrame->entry($this->eiEntry, true);
-			}
-			
-			if ($this->eiObject !== null) {
-				return $this->eiuEntry = $eiuFrame->entry($this->eiObject, true);
+				return $this->eiuEntry = $eiuFrame->entry($this->eiEntry);
 			}
 		} else {
 			if ($this->eiEntry !== null) {
-				return $this->eiuEntry = new EiuEntry($this->eiObject, $this->eiEntry, $this->eiuFrame, $this);
-			}
-				
-			if ($this->eiObject !== null) {
-				return $this->eiuEntry = new EiuEntry($this->eiObject, null, $this->eiuFrame, $this);
+				return $this->eiuEntry = new EiuEntry($this->eiEntry, $this->eiuObject, $this);
 			}
 		}
 		
 		if (!$required) return null;
 		
-		throw new EiuPerimeterException(
-				'Can not create EiuEntry because non of the following types were provided as eiArgs: '
-						. implode(', ', self::EI_ENTRY_TYPES));
+		throw new EiuPerimeterException('No EiuEntry available.');
 	}
 	
 	public function getEiuFieldMap(bool $required) {
@@ -916,9 +941,7 @@ class EiuAnalyst {
 		
 		if (!$required) return null;
 		
-		throw new EiuPerimeterException(
-				'Can not create EiuFieldMap because non of the following types were provided as eiArgs: '
-						. implode(', ', self::EI_ENTRY_TYPES));
+		throw new EiuPerimeterException('New EiuFieldMap available.');
 	}
 	
 

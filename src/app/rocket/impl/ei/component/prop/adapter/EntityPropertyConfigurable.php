@@ -26,13 +26,6 @@ use n2n\persistence\orm\property\EntityProperty;
 interface EntityPropertyConfigurable {
 	
 	/**
-	 * @param bool $required
-	 * @return EntityProperty
-	 * @throws \n2n\util\ex\IllegalStateException
-	 */
-	public function getEntityProperty(bool $required);
-	
-	/**
 	 * @param EntityProperty $entityProperty
 	 * @throws \InvalidArgumentException
 	 */

@@ -24,6 +24,7 @@ namespace rocket\ei\component\prop;
 use rocket\ei\component\EiComponent;
 use n2n\l10n\Lstr;
 use n2n\util\ex\IllegalStateException;
+use n2n\reflection\property\AccessProxy;
 
 interface EiProp extends EiComponent {
 	
@@ -43,6 +44,11 @@ interface EiProp extends EiComponent {
 	 * @throws IllegalStateException if {@self::setWrapper()} hasn't been called yet.
 	 */
 	public function getWrapper(): EiPropWrapper;
+	
+	/**
+	 * @return AccessProxy|NULL
+	 */
+	public function getObjectPropertyAccessProxy(): ?AccessProxy;
 	
 	/**
 	 * @return bool

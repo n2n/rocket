@@ -60,8 +60,8 @@ abstract class ToOneEiPropAdapter extends SimpleRelationEiPropAdapter implements
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiProp::buildIdentityString()
 	 */
-	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): string {
-		$targetEiObject = $this->read($eiObject);
+	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): string {
+		$targetEiObject = $this->read($eiu);
 		if ($targetEiObject === null) return '';
 
 		return $this->targetGuiDefinition->createIdentityString($targetEiObject, $n2nLocale);

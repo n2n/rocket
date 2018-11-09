@@ -30,7 +30,6 @@ use rocket\ei\manage\draft\stmt\PersistDraftStmtBuilder;
 use rocket\ei\manage\draft\SimpleDraftValueSelection;
 use rocket\ei\manage\draft\DraftManager;
 use rocket\ei\manage\draft\DraftValueSelection;
-use rocket\ei\manage\EiObject;
 use rocket\ei\manage\draft\PersistDraftAction;
 use rocket\ei\manage\draft\RemoveDraftAction;
 use rocket\ei\EiPropPath;
@@ -40,7 +39,7 @@ use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
 use rocket\ei\manage\entry\EiField;
 
-abstract class DraftableEiPropAdapter extends PropertyEditableEiPropAdapter implements DraftConfigurable, DraftProperty {
+abstract class DraftablePropertyEiPropAdapter extends EditablePropertyEiPropAdapter implements DraftConfigurable, DraftProperty {
 	protected $draftable = false;
 
 	public function isDraftable(): bool {
@@ -56,7 +55,7 @@ abstract class DraftableEiPropAdapter extends PropertyEditableEiPropAdapter impl
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\PropertyEditableEiPropAdapter::buildEiField()
+	 * @see \rocket\impl\ei\component\prop\adapter\EditablePropertyEiPropAdapter::buildEiField()
 	 */
 	public function buildEiField(Eiu $eiu): ?EiField {
 		if (!$eiu->entry()->isDraft()) {
@@ -79,7 +78,7 @@ abstract class DraftableEiPropAdapter extends PropertyEditableEiPropAdapter impl
 	}
 	
 	/* (non-PHPdoc)
-	 * @see \rocket\impl\ei\component\prop\PropertyEditableEiPropAdapter::createEiConfigurator()
+	 * @see \rocket\impl\ei\component\prop\EditablePropertyEiPropAdapter::createEiConfigurator()
 	 */
 	public function createEiPropConfigurator(): EiPropConfigurator {
 		$eiPropConfigurator = parent::createEiPropConfigurator();
@@ -95,23 +94,6 @@ abstract class DraftableEiPropAdapter extends PropertyEditableEiPropAdapter impl
 		}
 		
 		throw new IllegalStateException('EiProp not draftable.');
-	}
-	
-	public function write(EiObject $eiObject, $value) {
-		if (!$this->isDraftable() || !$eiObject->isDraft()) {
-			parent::write($eiObject, $value);
-			return;
-		}
-		
-		$eiObject->getDraftValueMap()->setValue(EiPropPath::from($this), $value);
-	}
-	
-	public function read(EiObject $eiObject) {
-		if (!$this->isDraftable() || !$eiObject->isDraft()) {
-			return parent::read($eiObject);
-		}
-		
-		return $eiObject->getDraftValueMap()->getValue(EiPropPath::from($this));
 	}
 	
 	public function createDraftValueSelection(FetchDraftStmtBuilder $selectDraftStmtBuilder, DraftManager $dm, 

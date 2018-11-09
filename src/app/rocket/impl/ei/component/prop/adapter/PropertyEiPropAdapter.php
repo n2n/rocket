@@ -21,51 +21,92 @@
  */
 namespace rocket\impl\ei\component\prop\adapter;
 
-use n2n\reflection\property\AccessProxy;
+use n2n\persistence\orm\property\EntityProperty;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
+use n2n\reflection\property\AccessProxy;
 
-abstract class ObjectPropertyEiPropAdapter extends EntityPropertyEiPropAdapter implements ObjectPropertyConfigurable {
+abstract class PropertyEiPropAdapter extends IndependentEiPropAdapter 
+		implements EntityPropertyConfigurable, ObjectPropertyConfigurable {
+	
+	protected $entityProperty;
+	protected $entityPropertyRequired = true;
 	protected $objectPropertyAccessProxy;
 	protected $objectPropertyRequired = true;
 	
-	/* (non-PHPdoc)
-	 * @see \rocket\ei\component\prop\ObjectPropertyEiProp::getPropertyAccessProxy()
+	public function getIdBase(): ?string {
+		return $this->entityProperty !== null ? $this->entityProperty->getName() : null; 
+	}
+	
+	/**
+	 * @param EntityProperty $entityProperty
+	 * @throws \InvalidArgumentException
 	 */
-	public function getObjectPropertyAccessProxy(bool $required = false) {
-		if ($this->entityProperty === null && $required) {
+	public function setEntityProperty(?EntityProperty $entityProperty) {
+		if ($entityProperty === null && $this->entityPropertyRequired) {
+			throw new \InvalidArgumentException($this . ' requires an EntityProperty.');
+		}
+		
+		$this->entityProperty = $entityProperty;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\adapter\EntityPropertyConfigurable::getEntityProperty()
+	 */
+	public function getEntityProperty(): ?EntityProperty {
+		return $this->entityProperty;
+	}
+	
+	/**
+	 * @throws IllegalStateException
+	 * @return EntityProperty|NULL
+	 */
+	protected function requireEntityProperty(): ?EntityProperty  {
+		if ($this->entityProperty === null) {
 			throw new IllegalStateException('No EntityProperty assigned to ' . $this);
+		}
+		
+		return $this->entityProperty;
+	}
+	
+	/**
+	 * @throws IllegalStateException
+	 * @return \n2n\reflection\property\AccessProxy
+	 */
+	protected function requireObjectPropertyAccessProxy() {
+		if ($this->objectPropertyAccessProxy === null) {
+			throw new IllegalStateException('No EntityProperty assigned to ' . $this . '.');
 		}
 		
 		return $this->objectPropertyAccessProxy;
 	}
 	
-	public function setObjectPropertyAccessProxy(AccessProxy $objectPropertyAccessProxy = null) {
+	public function getObjectPropertyAccessProxy(): ?AccessProxy {
+		return $this->objectPropertyAccessProxy;
+	}
+	
+	/**
+	 * @param AccessProxy $objectPropertyAccessProxy
+	 * @throws \InvalidArgumentException
+	 */
+	public function setObjectPropertyAccessProxy(?AccessProxy $objectPropertyAccessProxy) {
 		if ($objectPropertyAccessProxy === null && $this->objectPropertyRequired) {
 			throw new \InvalidArgumentException($this . ' requires an object property AccessProxy.');
 		}
 		
 		$this->objectPropertyAccessProxy = $objectPropertyAccessProxy;
 	}
-	
+
 	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\EntityPropertyEiPropAdapter::createEiConfigurator()
+	 * @return EiPropConfigurator
 	 */
 	public function createEiPropConfigurator(): EiPropConfigurator {
 		$eiPropConfigurator = parent::createEiPropConfigurator();
 		IllegalStateException::assertTrue($eiPropConfigurator instanceof AdaptableEiPropConfigurator);
+		$eiPropConfigurator->registerEntityPropertyConfigurable($this);
 		$eiPropConfigurator->registerObjectPropertyConfigurable($this);
 		return $eiPropConfigurator;
 	}
 	
-	public function getPropertyName(): string {
-		return $this->objectPropertyAccessProxy->getPropertyName();
-	}
-	
-// 	public function checkCompatibility(CompatibilityTest $compatibilityTest) {
-// 		parent::checkCompatibility($compatibilityTest);
-		
-// 		if ($compatibilityTest->hasFailed()) return;
-// 	}
 }

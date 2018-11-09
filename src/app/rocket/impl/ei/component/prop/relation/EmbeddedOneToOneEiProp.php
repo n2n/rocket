@@ -114,15 +114,15 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\component\prop\field\Readable::read()
 	 */
-	public function read(EiObject $eiObject) {
-		if ($this->isDraftable() && $eiObject->isDraft()) {
-			$targetDraft = $eiObject->getDraftValueMap()->getValue(EiPropPath::from($this));
+	public function read(Eiu $eiu) {
+		if ($eiu->object()->isDraftProp($this)) {
+			$targetDraft = $eiu->object()->readNativValue($this);
 			if ($targetDraft === null) return null;
 			
 			return new DraftEiObject($targetDraft);
 		}
 		
-		$targetEntityObj = $this->getObjectPropertyAccessProxy()->getValue($eiObject->getLiveObject());
+		$targetEntityObj = $eiu->object()->readNativValue($this);
 		if ($targetEntityObj === null) return null;
 		
 		return LiveEiObject::create($this->eiPropRelation->getTargetEiType(), $targetEntityObj);
@@ -132,21 +132,21 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\component\prop\field\Writable::write()
 	 */
-	public function write(EiObject $eiObject, $value) {
+	public function write(Eiu $eiu, $value) {
 		CastUtils::assertTrue($value === null || $value instanceof EiObject);
 	
-		if ($this->isDraftable() && $eiObject->isDraft()) {
+		if ($eiu->object()->isDraftProp($this)) {
 			$targetDraft = null;
 			if ($value !== null) $targetDraft = $value->getDraft();
 				
-			$eiObject->getDraftValueMap()->setValue(EiPropPath::from($this), $targetDraft);
+			$eiu->object()->writeNativeValue($this, $targetDraft);
 			return;
 		} 
 		
 		$targetEntityObj = null;
 		if ($value !== null) $targetEntityObj = $value->getLiveObject();
 		
-		$this->getObjectPropertyAccessProxy()->setValue($eiObject->getLiveObject(), $targetEntityObj);
+		$eiu->object()->writeNativeValue($this, $targetEntityObj);
 	}
 	
 	public function copy(EiObject $eiObject, $value, Eiu $copyEiu) {

@@ -75,6 +75,7 @@ use rocket\ei\manage\frame\Boundry;
 use rocket\ei\manage\entry\EiEntryConstraint;
 use rocket\ei\EiPropPath;
 use rocket\ei\util\entry\EiuFieldMap;
+use rocket\ei\util\entry\EiuObject;
 
 class EiuFrame {
 	private $eiFrame;
@@ -191,14 +192,19 @@ class EiuFrame {
 	}
 	
 	/**
-	 * @param mixed $eiObjectObj
+	 * @param mixed $eiObjectArg
 	 * @throws EiuPerimeterException
 	 * @return \rocket\ei\util\entry\EiuEntry
 	 */
-	public function entry($eiObjectObj) {
+	public function entry(object $eiObjectArg) {
+		if ($eiObjectArg instanceof EiuEntry) {
+			return $eiObjectArg;
+		}
+		
 		$eiEntry = null;
-		$eiObject = EiuAnalyst::determineEiObject($eiObjectObj, $eiEntry);
-		return new EiuEntry($eiObject, $eiEntry, $this, $this->eiuAnalyst);
+		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectArg, 'eiObjectObj', 
+				$this->eiFrame->getContextEiEngine()->getEiMask()->getEiType(), true, $eiEntry);
+		return new EiuEntry($eiEntry, new EiuObject($eiObject, $this->eiuAnalyst), null, $this->eiuAnalyst);
 	}
 	
 	/**
@@ -730,7 +736,8 @@ class EiuFrame {
 		}
 
 		return $this->eiFrame->getManageState()->getDef()->getGuiDefinition($eiMask)
-				->createIdentityString($eiObject, $n2nLocale ?? $this->getN2nLocale());
+				->createIdentityString($eiObject, $this->eiFrame->getN2nContext(), 
+						$n2nLocale ?? $this->getN2nLocale());
 	}
 
 	/**
@@ -875,22 +882,22 @@ class EiuFrame {
 
 	/**
 	 * @param bool $draft
-	 * @param EiType $eiMask
+	 * @param EiType $eiType
 	 * @return EiObject
 	 */
-	public function createNewEiObject(bool $draft = false, EiMask $eiMask = null): EiObject {
-		if ($eiMask === null) {
-			$eiMask = $this->getContextEiMask();
+	public function createNewEiObject(bool $draft = false, EiType $eiType = null): EiObject {
+		if ($eiType === null) {
+			$eiType = $this->getContextEiType();
 		}
 
 		if (!$draft) {
-			return new LiveEiObject(EiEntityObj::createNew($eiMask));
+			return new LiveEiObject(EiEntityObj::createNew($eiType));
 		}
 
 		$loginContext = $this->getN2nContext()->lookup(LoginContext::class);
 		CastUtils::assertTrue($loginContext instanceof LoginContext);
 
-		return new DraftEiObject($this->createNewDraftFromEiEntityObj(EiEntityObj::createNew($eiMask)));
+		return new DraftEiObject($this->createNewDraftFromEiEntityObj(EiEntityObj::createNew($eiType)));
 	}
 
 	/**

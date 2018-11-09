@@ -222,7 +222,7 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 				$targetEiMask = $targetEiType->getEiMask();
 // 			}
 
-			$entityProperty = $this->requireEntityProperty();
+			$entityProperty = $this->getPropertyAssignation()->getEntityProperty(true);
 			if (CascadeType::ALL !== $entityProperty->getRelation()->getCascadeType()) {
 				throw $eiSetupProcess->createException('EiProp requires an EntityProperty which cascades all: ' 
 						. ReflectionUtils::prettyPropName($entityProperty->getEntityModel()->getClass(),

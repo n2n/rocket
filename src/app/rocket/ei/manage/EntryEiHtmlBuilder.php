@@ -243,7 +243,7 @@ class EntryEiHtmlBuilderMeta {
 	}
 	
 	public function getCurrentPid() {
-		return $this->getCurrentEiuEntryGui()->getEiuEntry()->getLivePid();
+		return $this->getCurrentEiuEntryGui()->getEiuEntry()->getPid();
 	}
 	
 	public function getForkMagPropertyPaths() {

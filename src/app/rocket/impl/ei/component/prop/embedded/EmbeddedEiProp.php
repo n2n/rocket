@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\embedded;
 
-use rocket\impl\ei\component\prop\adapter\ObjectPropertyEiPropAdapter;
+use rocket\impl\ei\component\prop\adapter\PropertyEiPropAdapter;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\EmbeddedEntityProperty;
 use n2n\reflection\ArgUtils;
@@ -36,7 +36,7 @@ use rocket\ei\component\prop\field\EiFieldAdapter;
 use rocket\ei\manage\entry\EiFieldMap;
 use n2n\util\ex\NotYetImplementedException;
 
-class EmbeddedEiProp extends ObjectPropertyEiPropAdapter implements GuiEiProp, FieldEiProp {
+class EmbeddedEiProp extends PropertyEiPropAdapter implements GuiEiProp, FieldEiProp {
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty instanceof EmbeddedEntityProperty);

@@ -43,6 +43,7 @@ use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\util\config\InvalidAttributeException;
 use n2n\util\config\LenientAttributeReader;
 use rocket\ei\manage\gui\ViewMode;
+use n2n\util\ex\IllegalStateException;
 
 class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPropConfigurator {
 	const ATTR_DISPLAY_IN_OVERVIEW_KEY = 'displayInOverview';
@@ -56,6 +57,8 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 	const ATTR_MANDATORY_KEY = 'mandatory';
 	
 	const ATTR_DRAFTABLE_KEY = 'draftable';	
+	
+	private $propertyAssignation;
 	
 	private $displaySettings;
 	
@@ -75,10 +78,10 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 		}
 	}
 	
-	public function getPropertyAssignation(): PropertyAssignation {
-		return new PropertyAssignation($this->getAssignedEntityProperty(), 
-				$this->getAssignedObjectPropertyAccessProxy());
-	}
+// 	public function getPropertyAssignation(): PropertyAssignation {
+// 		return new PropertyAssignation($this->getAssignedEntityProperty(), 
+// 				$this->getAssignedObjectPropertyAccessProxy());
+// 	}
 	
 	public function testCompatibility(PropertyAssignation $propertyAssignation): int {
 		try {
@@ -116,10 +119,12 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 				throw $propertyAssignation->createAccessProxyException(null, $e);
 			}
 		}
+		
+		$this->propertyAssignation = $propertyAssignation;
 	}
 	
 	public function getTypeName(): string {
-		return self::shortenTypeName(parent::getTypeName(), array('Ei', 'Field'));
+		return self::shortenTypeName(parent::getTypeName(), array('Ei', 'Prop'));
 	}
 	
 	public function setMaxCompatibilityLevel(int $maxCompatibilityLevel) {
@@ -165,13 +170,21 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 			$this->registerDisplaySettings($eiComponent->getDisplaySettings());
 		}
 		
-		if ($eiComponent instanceof PropertyEditableEiPropAdapter) {
+		if ($eiComponent instanceof EditablePropertyEiPropAdapter) {
 			$this->registerStandardEditDefinition($eiComponent->getStandardEditDefinition());
 		}
 		
 		if ($eiComponent instanceof DraftConfigurable) {
 			$this->registerDraftConfigurable($eiComponent);
 		}
+	}
+	
+	protected function getPropertyAssignation() {
+		if ($this->propertyAssignation === null) {
+			throw new IllegalStateException('No PropertyAssignation available.');
+		}
+		
+		return $this->propertyAssignation;
 	}
 	
 	/**
@@ -198,19 +211,19 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 		return $this->confEntityPropertyEiProp->getEntityProperty();
 	}
 	
-	protected function getAssignedObjectPropertyAccessProxy() {
-		if ($this->confObjectPropertyEiProp === null) return null;
+// 	protected function getAssignedObjectPropertyAccessProxy() {
+// 		if ($this->confObjectPropertyEiProp === null) return null;
 		
-		return $this->confObjectPropertyEiProp->getObjectPropertyAccessProxy();
-	}
+// 		return $this->confObjectPropertyEiProp->getObjectPropertyAccessProxy();
+// 	}
 	
-	protected function requireEntityProperty(): EntityProperty {
-		if (null !== ($entityProperty = $this->getAssignedEntityProperty())) {
-			return $entityProperty;
-		}
+// 	protected function requireEntityProperty(): EntityProperty {
+// 		if (null !== ($entityProperty = $this->getAssignedEntityProperty())) {
+// 			return $entityProperty;
+// 		}
 	
-		throw new InvalidEiComponentConfigurationException('No EntityProperty assigned to EiProp: ' . $this->eiComponent);
-	}
+// 		throw new InvalidEiComponentConfigurationException('No EntityProperty assigned to EiProp: ' . $this->eiComponent);
+// 	}
 	
 	protected function requireObjectPropertyAccessProxy(): AccessProxy  {
 		if (null !== ($accessProxy = $this->getAssignedObjectPropertyAccessProxy())) {
@@ -349,7 +362,7 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 
 	
 	protected function mandatoryRequired() {
-		$accessProxy = $this->getAssignedObjectPropertyAccessProxy();
+		$accessProxy = $this->getPropertyAssignation()->getObjectPropertyAccessProxy(false);
 		if (null === $accessProxy) return false;
 		return !$accessProxy->getConstraint()->allowsNull() && !$accessProxy->getConstraint()->isArrayLike();
 	}

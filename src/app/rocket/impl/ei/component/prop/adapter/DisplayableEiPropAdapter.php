@@ -128,7 +128,7 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 		return false;
 	}
 	
-	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): ?string {
-		throw new UnsupportedOperationException('EiProp ' . $this->id . ' not string representable.');
+	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
+		throw new UnsupportedOperationException('EiProp ' . $this . ' not string representable.');
 	}
 }

@@ -30,7 +30,6 @@ use n2n\l10n\N2nLocale;
 use n2n\util\ex\UnsupportedOperationException;
 use rocket\ei\component\prop\GuiEiProp;
 use rocket\ei\component\prop\FieldEiProp;
-use rocket\ei\manage\EiObject;
 use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\gui\DisplayDefinition;
@@ -41,7 +40,7 @@ use rocket\ei\manage\gui\GuiField;
 use rocket\core\model\Rocket;
 use n2n\l10n\Lstr;
 
-abstract class PropertyDisplayableEiPropAdapter extends ObjectPropertyEiPropAdapter implements StatelessDisplayable, 
+abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter implements StatelessDisplayable, 
 		FieldEiProp, GuiEiProp, GuiProp, Readable {
 	private $displaySettings;
 
@@ -87,35 +86,9 @@ abstract class PropertyDisplayableEiPropAdapter extends ObjectPropertyEiPropAdap
 				$this);
 	}
 	
-	public function buildEiFieldFork(EiObject $eiObject, EiField $eiField = null) {
-		return null;
-	}
 	
-// 	public function isEiEntryFilterable(): bool {
-// 		return false;
-// 	}
-	
-// 	public function createSecurityFilterProp(N2nContext $n2nContext): SecurityFilterProp {
-// 		throw new IllegalStateException('EiProp cannot provide an SecurityFilterProp: ' . $this);
-// 	}
-	
-// 	public function getTypeConstraint() {
-// 		$typeConstraint = $this->getPropertyAccessProxy()->getConstraint();
-// 		if ($typeConstraint === null) return null;
-// 		return $typeConstraint->getLenientCopy();
-// 	}
-	
-	public function read(EiObject $eiObject) {
-		if ($eiObject->isDraft()) {
-			return $eiObject->getDraft()->getDraftValueMap()->getValue($this);
-		}
-
-		$objectPropertyAccessProxy = $this->getObjectPropertyAccessProxy();
-		if ($objectPropertyAccessProxy === null) {
-			return null;
-		}
-
-		return $objectPropertyAccessProxy->getValue($eiObject->getEiEntityObj()->getEntityObj());
+	public function read(Eiu $eiu) {
+		return $eiu->object()->readNativValue($this);
 	}
 	
 	public function buildGuiProp(Eiu $eiu): ?GuiProp {
@@ -163,7 +136,7 @@ abstract class PropertyDisplayableEiPropAdapter extends ObjectPropertyEiPropAdap
 		return false;
 	}
 	
-	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): ?string {
+	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
 		throw new UnsupportedOperationException('EiProp ' . $this->id . ' not summarizable.');
 	}
 }

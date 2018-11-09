@@ -33,11 +33,11 @@ use rocket\impl\ei\component\prop\relation\conf\RelationEiPropConfigurator;
 use n2n\core\container\N2nContext;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
-use rocket\impl\ei\component\prop\adapter\ObjectPropertyEiPropAdapter;
+use rocket\impl\ei\component\prop\adapter\PropertyEiPropAdapter;
 use rocket\ei\component\prop\field\Copyable;
 use rocket\impl\ei\component\prop\adapter\StandardEditDefinition;
 
-abstract class RelationEiPropAdapter extends ObjectPropertyEiPropAdapter implements RelationEiProp, GuiEiProp, 
+abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements RelationEiProp, GuiEiProp, 
 		FieldEiProp, Readable, Writable, Copyable {
 	/**
 	 * @var EiPropRelation

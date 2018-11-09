@@ -3,23 +3,32 @@ namespace rocket\ei\manage\gui;
 
 use n2n\l10n\N2nLocale;
 use rocket\ei\manage\EiObject;
+use n2n\core\container\N2nContext;
+use rocket\ei\util\Eiu;
 
 class SummarizedStringBuilder {
 	const KNOWN_STRING_FIELD_OPEN_DELIMITER = '{';
 	const KNOWN_STRING_FIELD_CLOSE_DELIMITER = '}';
 	
 	private $identityStringPattern;
+	private $n2nContext;
 	private $n2nLocale;
 	
 	private $placeholders = array();
 	private $replacements = array();
 	
-	public function __construct(string $identityStringPattern, N2nLocale $n2nLocale) {
+	public function __construct(string $identityStringPattern, N2nContext $n2nContext, N2nLocale $n2nLocale) {
 		$this->identityStringPattern = $identityStringPattern;
+		$this->n2nContext = $n2nContext;
 		$this->n2nLocale = $n2nLocale;
 	}
 	
 	public function replaceFields(array $baseIds, GuiDefinition $guiDefinition, EiObject $eiObject = null) {
+		$eiu = null;
+		if ($eiObject !== null) {
+			$eiu = new Eiu($this->n2nContext, $eiObject);
+		}
+		
 		foreach ($guiDefinition->getLevelGuiProps() as $id => $guiProp) {
 			if (!$guiProp->isStringRepresentable()) continue;
 
@@ -30,7 +39,7 @@ class SummarizedStringBuilder {
 			if ($eiObject === null) {
 				$this->replacements[] = '';
 			} else {
-				$this->replacements[] = $guiProp->buildIdentityString($eiObject, $this->n2nLocale);
+				$this->replacements[] = $guiProp->buildIdentityString($eiu, $this->n2nLocale);
 			}
 		}
 		

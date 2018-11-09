@@ -22,20 +22,19 @@
 namespace rocket\ei\component\prop\field;
 
 use n2n\reflection\property\TypeConstraint;
-use rocket\ei\manage\EiObject;
 use n2n\reflection\property\ValueIncompatibleWithConstraintsException;
 use n2n\reflection\ReflectionUtils;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\entry\EiField;
 
-class SimpleEiField extends RwEiField {
+class SimpleEiField extends RwvEiField {
 	private $typeConstraint;
 	private $copyable;
 	private $nullReadAllowed = true;
 	
-	public function __construct(EiObject $eiObject, TypeConstraint $typeConstraint, 
+	public function __construct(Eiu $eiu, TypeConstraint $typeConstraint, 
 			Readable $readable = null, Writable $writable = null, Validatable $validatable = null, Copyable $copyable = null) {
-		parent::__construct($eiObject, $readable, $writable, $validatable);
+		parent::__construct($eiu, $readable, $writable, $validatable);
 		$this->typeConstraint = $typeConstraint;
 		$this->copyable = $copyable;
 	}

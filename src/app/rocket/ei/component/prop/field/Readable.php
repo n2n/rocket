@@ -21,8 +21,8 @@
  */
 namespace rocket\ei\component\prop\field;
 
-use rocket\ei\manage\entry\EiFieldMap;
+use rocket\ei\util\Eiu;
 
 interface Readable {
-	public function read(EiFieldMap $eiFieldMap);
+	public function read(Eiu $eiu);
 }
