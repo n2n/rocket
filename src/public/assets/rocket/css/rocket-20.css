@@ -5264,8 +5264,7 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
 }
 
 .rocket-table > tbody tr:hover {
-  -webkit-box-shadow: -3px 0px 0px 0px #fd7e14;
-          box-shadow: -3px 0px 0px 0px #fd7e14;
+  background: linear-gradient(to right, #fd7e14 0, #fd7e14 3px, #ECEBE9 3px, #ECEBE9 100%);
 }
 
 .rocket-table > tbody .rocket-table-commands {
@@ -5353,6 +5352,10 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
 .rocket-impl-overview-pagination > a,
 .rocket-impl-overview-pagination > button {
   margin-left: 0.5rem;
+}
+
+.rocket-inactive {
+  color: #C2BDB6;
 }
 
 /**
@@ -5459,18 +5462,26 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
   min-width: 10rem;
   padding: 1rem 0 1rem 0.5rem;
   border-right: 1px solid #C2BDB6;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .rocket-impl-entry > .rocket-impl-summary .rocket-impl-content {
   padding: 1rem 0.5rem;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .rocket-impl-entry > .rocket-impl-summary .rocket-impl-content > div {
   display: inline-block;
 }
 
+.rocket-impl-entry > .rocket-impl-summary .rocket-impl-content > div:not(:empty) {
+  margin-right: 0.5rem;
+}
+
 .rocket-impl-entry > .rocket-impl-summary > .rocket-simple-commands {
-  padding: 0.5rem 0.75rem 0.5rem 0;
+  padding: 0.75rem 0.75rem 0.75rem 0;
   text-align: right;
 }
 
