@@ -5615,7 +5615,7 @@ var Rocket;
                 }
                 draw(jqContainer) {
                     var that = this;
-                    this.jqPagination = $("<div />", { "class": "rocket-impl-overview-pagination" });
+                    this.jqPagination = $("<div />", { "class": "rocket-impl-overview-pagination btn-group" });
                     jqContainer.append(this.jqPagination);
                     this.jqPagination.append($("<button />", {
                         "type": "button",

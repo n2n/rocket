@@ -1,3 +1,7 @@
+/*
+ * The small Buttons (without text)
+ */
+
 .rocket-simple-commands {
     // drop down button in simple-commands
     > .dropdown > button, 
@@ -58,7 +62,17 @@ td .rocket-simple-commands {
 
 
 
+/*
+ * Zone Commands (the ones on the bottom of the page)
+ */
+
+
 .rocket-zone-commands {
+    .btn:not(:last-child) {
+        margin-right: 0.5rem;
+    }
+
+    // icons of normal buttons are not displayed
     .btn:not(.rocket-icon-important) > i.fa {
         display: none;
     }
@@ -82,6 +96,7 @@ td .rocket-simple-commands {
             color: $danger;
         }
     }
+    
     .btn:not(.rocket-important) {
         @include button-variant($secondary, darken($secondary, 15));
     }
