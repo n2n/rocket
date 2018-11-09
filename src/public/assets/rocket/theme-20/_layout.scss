@@ -186,7 +186,7 @@ body {
 .rocket-load-blocker > .rocket-loading {
     width: 25px;
     height: 25px;
-    margin: 2px auto auto;
+    margin: 8px auto auto;
     border: solid 5px $gray-400;
     border-top-color: $primary;
 }
@@ -251,10 +251,6 @@ body {
     font-weight: bold;
     background: white;
 }
-
-.rocket-simple-commands > button > span {
-    display: none;
-} 
 
 .rocket-severity-danger {
     color: $white;

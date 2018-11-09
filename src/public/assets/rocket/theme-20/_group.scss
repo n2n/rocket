@@ -88,10 +88,25 @@
     > .rocket-group-controls,
     > .rocket-simple-commands {
         display: inline-block;
-        margin-left: 1rem;
+        > button {
+            margin-left: 0.5rem;
+            > i {
+                font-size: $font-size-lg;
+            }
+        }
     }
 }
 
+.rocket-main-group {
+    position: relative;
+    > .rocket-toolbar {
+        position: absolute;
+        top: -2.825rem;
+        right: 0;
+        padding-right: 0.5rem;
+        background: $white;
+    }
+}
 
 .rocket-main-group-nav {
     background: $gray-300;

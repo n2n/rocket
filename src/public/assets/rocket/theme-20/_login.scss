@@ -47,3 +47,12 @@
         font-size: $font-size-lg;
     }
 }
+
+#rocket-dev-login-container {
+    margin: 1rem -1rem -1rem -1rem;
+    padding: 1rem;
+    background: $gray-200;
+    > h2 {
+        margin-top: 0;
+    }
+}
