@@ -125,6 +125,7 @@
 
 .rocket-impl-translation {
 	position: relative;
+	// must be overwritten in Table Cells
 	min-height: 2.5rem;
 	margin-bottom: 0.5rem;
 	> .rocket-required > label::after {
@@ -140,6 +141,7 @@
 	border-top: 1px solid $primary;
 	font-weight: normal;
 	margin: 2rem 0 1rem;
+	font-weight: bold;
 }
 
 // translation in entry
@@ -241,6 +243,8 @@ td {
 		width: auto;
 	}
 	.rocket-impl-translation {
+		// unsets the min-height of the entry
+		min-height: unset;
 		padding: 0;
 		display: grid;
 		grid-template-columns: auto 1fr;

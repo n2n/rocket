@@ -77,8 +77,8 @@ use rocket\user\model\RocketUserDao;
 					</div>
 				<?php $formHtml->close() ?>
 				<?php if (N2N::isDevelopmentModeOn()): ?>
-					<div class="rocket-dev-login-container">
-						<h2 class="mt-3">Development Login:</h2>
+					<div id="rocket-dev-login-container">
+						<h2>Development Login:</h2>
 							<ul class="list-unstyled mb-0">
 								<?php foreach ($userDao->getUsers() as $user): ?>
 									<li><?php $html->linkToController(['devlogin', $user->getId()], $user->getNick())?></li>

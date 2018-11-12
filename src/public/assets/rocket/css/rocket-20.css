@@ -4463,7 +4463,7 @@ body {
           flex: 0 0 18rem;
 }
 
-@media (max-width: 767.98px) {
+@media (max-width: 991.98px) {
   #rocket-logo {
     display: none;
   }
@@ -4484,6 +4484,19 @@ body {
   line-height: 2.75rem;
 }
 
+@media (max-width: 575.98px) {
+  #rocket-customer-name {
+    display: none;
+  }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+  #rocket-customer-name {
+    position: absolute;
+    left: 3rem;
+  }
+}
+
 #rocket-conf-nav {
   -webkit-box-flex: 1;
       -ms-flex: 1 0 auto;
@@ -4498,7 +4511,7 @@ body {
   color: white;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 992px) {
   #rocket-global-nav {
     position: fixed;
     padding-top: 5rem;
@@ -4508,6 +4521,14 @@ body {
     width: 14rem;
     overflow-y: auto;
     z-index: 100;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .navbar-toggler {
+    position: absolute;
+    top: 0.375rem;
+    color: white;
   }
 }
 
@@ -4526,7 +4547,7 @@ body {
   padding: 1rem;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 992px) {
   #rocket-content-container {
     margin-left: 18rem;
     margin-right: 3rem;
@@ -4545,17 +4566,9 @@ body {
   display: grid;
 }
 
-.rocket-zone-commands .btn {
-  margin-right: 0.5rem;
-}
-
-@media (min-width: 768px) {
+@media (min-width: 576px) {
   .rocket-zone-commands {
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    left: 14rem;
-    padding: 1rem 3rem 1rem 4rem;
+    padding: 1rem 0;
     display: -ms-grid;
     display: grid;
     -ms-grid-columns: auto auto;
@@ -4564,6 +4577,16 @@ body {
   }
   .rocket-zone-commands > div:nth-child(2) {
     text-align: right;
+  }
+}
+
+@media (min-width: 992px) {
+  .rocket-zone-commands {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    left: 14rem;
+    padding: 1rem 3rem 1rem 4rem;
   }
 }
 
@@ -4607,7 +4630,7 @@ body {
 .rocket-load-blocker > .rocket-loading {
   width: 25px;
   height: 25px;
-  margin: 2px auto auto;
+  margin: 8px auto auto;
   border: solid 5px #DAD7D3;
   border-top-color: #ed8207;
 }
@@ -4640,7 +4663,7 @@ body {
 /**
  * rocket addtional
  */
-@media (min-width: 768px) {
+@media (min-width: 992px) {
   .rocket-zone.rocket-contains-additional {
     width: calc(100% - 20rem);
   }
@@ -4678,10 +4701,6 @@ body {
   font-size: 1.25rem;
   font-weight: bold;
   background: white;
-}
-
-.rocket-simple-commands > button > span {
-  display: none;
 }
 
 .rocket-severity-danger {
@@ -4943,6 +4962,7 @@ body {
   border-top: 1px solid #ed8207;
   font-weight: normal;
   margin: 2rem 0 1rem;
+  font-weight: bold;
 }
 
 .rocket-item > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation {
@@ -5044,6 +5064,7 @@ td .rocket-impl-translatable {
 }
 
 td .rocket-impl-translation {
+  min-height: unset;
   padding: 0;
   display: -ms-grid;
   display: grid;
@@ -5165,14 +5186,19 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
  * Toolbar
  */
 .rocket-impl-overview-tools {
-  position: -webkit-sticky;
-  position: sticky;
-  top: 44px;
   background-color: #F7F5F5;
   z-index: 50;
 }
 
 @media (min-width: 768px) {
+  .rocket-impl-overview-tools {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 44px;
+  }
+}
+
+@media (min-width: 576px) {
   .rocket-impl-container {
     display: -ms-grid;
     display: grid;
@@ -5191,7 +5217,7 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
   width: 10rem;
 }
 
-.rocket-impl-quicksearch.rocket-active > .input-group > .input-group-btn > .btn {
+.rocket-impl-quicksearch.rocket-active > .input-group > .input-group-append > .btn:last-child {
   color: white;
   background: #ed8207;
   border-color: #a35905;
@@ -5283,6 +5309,10 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
   padding: 0;
 }
 
+.rocket-table .rocket-simple-commands > .btn > span {
+  display: none;
+}
+
 /*
  * tree
  */
@@ -5294,47 +5324,56 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
   font-weight: bold;
 }
 
-.rocket-tree-level-1 > td:nth-child(2)::before {
+.rocket-tree-level-1 > td:first-child:not(.rocket-entry-selector)::before,
+.rocket-tree-level-1 > .rocket-entry-selector + td::before {
   content: '– ';
   padding-right: 0.5rem;
 }
 
-.rocket-tree-level-2 > td:nth-child(2)::before {
+.rocket-tree-level-2 > td:first-child:not(.rocket-entry-selector)::before,
+.rocket-tree-level-2 > .rocket-entry-selector + td::before {
   content: '– – ';
   padding-right: 0.5rem;
 }
 
-.rocket-tree-level-3 > td:nth-child(2)::before {
+.rocket-tree-level-3 > td:first-child:not(.rocket-entry-selector)::before,
+.rocket-tree-level-3 > .rocket-entry-selector + td::before {
   content: '– – – ';
   padding-right: 0.5rem;
 }
 
-.rocket-tree-level-4 > td:nth-child(2)::before {
+.rocket-tree-level-4 > td:first-child:not(.rocket-entry-selector)::before,
+.rocket-tree-level-4 > .rocket-entry-selector + td::before {
   content: '– – – – ';
   padding-right: 0.5rem;
 }
 
-.rocket-tree-level-5 > td:nth-child(2)::before {
+.rocket-tree-level-5 > td:first-child:not(.rocket-entry-selector)::before,
+.rocket-tree-level-5 > .rocket-entry-selector + td::before {
   content: '– – – – – ';
   padding-right: 0.5rem;
 }
 
-.rocket-tree-level-6 > td:nth-child(2)::before {
+.rocket-tree-level-6 > td:first-child:not(.rocket-entry-selector)::before,
+.rocket-tree-level-6 > .rocket-entry-selector + td::before {
   content: '– – – – – – ';
   padding-right: 0.5rem;
 }
 
-.rocket-tree-level-7 > td:nth-child(2)::before {
+.rocket-tree-level-7 > td:first-child:not(.rocket-entry-selector)::before,
+.rocket-tree-level-7 > .rocket-entry-selector + td::before {
   content: '– – – – – – – ';
   padding-right: 0.5rem;
 }
 
-.rocket-tree-level-8 > td:nth-child(2)::before {
+.rocket-tree-level-8 > td:first-child:not(.rocket-entry-selector)::before,
+.rocket-tree-level-8 > .rocket-entry-selector + td::before {
   content: '– – – – – – – – ';
   padding-right: 0.5rem;
 }
 
-.rocket-tree-level-9 > td:nth-child(2)::before {
+.rocket-tree-level-9 > td:first-child:not(.rocket-entry-selector)::before,
+.rocket-tree-level-9 > .rocket-entry-selector + td::before {
   content: '– – – – – – – – – ';
   padding-right: 0.5rem;
 }
@@ -5346,12 +5385,16 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
   width: 5rem;
   text-align: center;
   display: inline-block;
-  margin-left: 0.5rem;
+  margin-right: 0.5rem;
 }
 
 .rocket-impl-overview-pagination > a,
-.rocket-impl-overview-pagination > button {
-  margin-left: 0.5rem;
+.rocket-impl-overview-pagination > .btn:not(:last-child) {
+  margin: 0 0.5rem 0 0;
+}
+
+.rocket-impl-overview-pagination > .btn {
+  min-width: 2.375rem;
 }
 
 .rocket-inactive {
@@ -5426,7 +5469,7 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
 
 .rocket-read-only > .rocket-control {
   padding: calc(0.375rem + 1px) 0;
-  min-height: 2rem;
+  min-height: 1.375rem;
 }
 
 .form-check-label {
@@ -5463,6 +5506,7 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
   padding: 1rem 0 1rem 0.5rem;
   border-right: 1px solid #C2BDB6;
   white-space: nowrap;
+  text-overflow: ellipsis;
   overflow: hidden;
 }
 
@@ -5514,6 +5558,21 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
 
 .rocket-impl-add-entry {
   margin: 0.5rem 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+.rocket-impl-add-entry > div {
+  width: 100%;
+  margin: 0;
+}
+
+.rocket-impl-add-entry > .rocket-impl-paste {
+  margin-left: 1rem;
 }
 
 .rocket-impl-add-entry > button {
@@ -5700,7 +5759,28 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
 .rocket-toolbar > .rocket-group-controls,
 .rocket-toolbar > .rocket-simple-commands {
   display: inline-block;
-  margin-left: 1rem;
+}
+
+.rocket-toolbar > .rocket-group-controls > button,
+.rocket-toolbar > .rocket-simple-commands > button {
+  margin-left: 0.5rem;
+}
+
+.rocket-toolbar > .rocket-group-controls > button > i,
+.rocket-toolbar > .rocket-simple-commands > button > i {
+  font-size: 1.25rem;
+}
+
+.rocket-main-group {
+  position: relative;
+}
+
+.rocket-main-group > .rocket-toolbar {
+  position: absolute;
+  top: -2.825rem;
+  right: 0;
+  padding-right: 0.5rem;
+  background: #fff;
 }
 
 .rocket-main-group-nav {
@@ -5723,6 +5803,9 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
   color: #373431;
 }
 
+/*
+ * The small Buttons (without text)
+ */
 .rocket-simple-commands > .dropdown > button,
 .rocket-simple-commands > .btn {
   width: 2.25rem;
@@ -5763,29 +5846,36 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
   color: #2D7F00;
 }
 
-.rocket-simple-commands > .dropdown > button > span,
-.rocket-simple-commands > .btn > span {
+.rocket-simple-commands > .dropdown > button:not(.rocket-important) > span,
+.rocket-simple-commands > .btn:not(.rocket-important) > span {
   display: none;
 }
 
-.rocket-simple-commands > .btn.rocket-icon-important.btn-success {
+.btn.rocket-icon-important.btn-success {
   color: #2D7F00;
 }
 
-.rocket-simple-commands > .btn.rocket-icon-important.btn-danger {
+.btn.rocket-icon-important.btn-danger {
   color: #b90f00;
 }
 
-.rocket-simple-commands > .btn.rocket-icon-important.btn-info {
+.btn.rocket-icon-important.btn-info {
   color: #4c97cb;
 }
 
-.rocket-simple-commands > .btn.rocket-icon-important.btn-warning {
+.btn.rocket-icon-important.btn-warning {
   color: #F6A723;
 }
 
 td .rocket-simple-commands > .btn > i {
   font-size: 1.25rem;
+}
+
+/*
+ * Zone Commands (the ones on the bottom of the page)
+ */
+.rocket-zone-commands .btn:not(:last-child) {
+  margin-right: 0.5rem;
 }
 
 .rocket-zone-commands .btn:not(.rocket-icon-important) > i.fa {
@@ -5855,9 +5945,31 @@ td .rocket-simple-commands > .btn > i {
 }
 
 .rocket-toolbar > .rocket-simple-commands > .rocket-important.btn-warning {
+  width: unset;
+  position: relative;
+  padding-right: 3rem;
+}
+
+.rocket-toolbar > .rocket-simple-commands > .rocket-important.btn-warning > i {
   color: white;
+}
+
+.rocket-toolbar > .rocket-simple-commands > .rocket-important.btn-warning > i::before {
+  position: absolute;
+  top: 0.375rem;
+  right: 0.5rem;
+  z-index: 2;
+}
+
+.rocket-toolbar > .rocket-simple-commands > .rocket-important.btn-warning > i::after {
+  position: absolute;
+  content: " ";
   background: #F6A723;
+  width: 2.25rem;
+  height: 2.25rem;
   border-radius: 50%;
+  top: -0.125rem;
+  right: 0;
 }
 
 .rocket-messages {
@@ -6309,6 +6421,16 @@ td .rocket-simple-commands > .btn > i {
 
 .rocket-login-form .btn-lg, .rocket-login-form .btn-group-lg > .btn {
   font-size: 1.25rem;
+}
+
+#rocket-dev-login-container {
+  margin: 1rem -1rem -1rem -1rem;
+  padding: 1rem;
+  background: #F7F5F5;
+}
+
+#rocket-dev-login-container > h2 {
+  margin-top: 0;
 }
 
 .rocket-mail {
