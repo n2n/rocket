@@ -186,8 +186,6 @@ class GuiFactory {
 		return $this->eiMask->getDisplayScheme()->getEntryControlOrder()->sort($controls);
 	}
 	
-	
-	
 	/**
 	 * @param EiMask $eiMask
 	 * @param EiuEntry $eiuEntry

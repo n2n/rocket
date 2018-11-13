@@ -296,6 +296,9 @@ class OneToOneGuiFieldForkEditable implements GuiFieldForkEditable {
 class OneToOneForkMag extends ObjectMagAdapter {
 	private $dispatchable;
 
+	/**
+	 * @param Dispatchable $dispatchable
+	 */
 	public function __construct(Dispatchable $dispatchable) {
 		parent::__construct('', $dispatchable);
 	}
