@@ -18,6 +18,7 @@ use rocket\ei\util\EiuAnalyst;
 use rocket\ei\util\EiuPerimeterException;
 use rocket\ei\util\entry\EiuEntry;
 use n2n\l10n\N2nLocale;
+use rocket\ei\util\entry\EiuObject;
 
 class EiuGui {
 	private $eiGui;
@@ -213,7 +214,8 @@ class EiuGui {
 				$eiEntry);
 		
 		if ($eiEntry === null) {
-			$eiEntry = (new EiuEntry($eiObject, null, $this->eiuFrame, $this->eiuAnalyst))->getEiEntry();
+			$eiEntry = (new EiuEntry(null, new EiuObject($eiObject, $this->eiuAnalyst), 
+					null, $this->eiuAnalyst))->getEiEntry();
 		}
 		
 		return new EiuEntryGui($this->eiGui->createEiEntryGui($eiEntry, $treeLevel, true), $this, $this->eiuAnalyst);

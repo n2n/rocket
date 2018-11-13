@@ -25,7 +25,6 @@ use n2n\l10n\N2nLocale;
 use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\component\prop\DraftableEiProp;
 use rocket\ei\manage\draft\DraftProperty;
-use rocket\ei\manage\EiObject;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\ArgUtils;
@@ -45,8 +44,7 @@ abstract class ToOneEiPropAdapter extends SimpleRelationEiPropAdapter implements
 	public function buildEiField(Eiu $eiu): ?EiField {
 		$readOnly = $this->eiPropRelation->isReadOnly($eiu->entry()->getEiEntry(), $eiu->frame()->getEiFrame());
 	
-		return new ToOneEiField($eiu->entry()->getEiObject(), $this, $this,
-				($readOnly ? null : $this));
+		return new ToOneEiField($eiu, $this, ($readOnly ? null : $this), $this);
 	}
 	
 	/**
@@ -64,7 +62,7 @@ abstract class ToOneEiPropAdapter extends SimpleRelationEiPropAdapter implements
 		$targetEiObject = $this->read($eiu);
 		if ($targetEiObject === null) return '';
 
-		return $this->targetGuiDefinition->createIdentityString($targetEiObject, $n2nLocale);
+		return $this->targetGuiDefinition->createIdentityString($targetEiObject, $eiu->getN2nContext(), $n2nLocale);
 	}
 			
 	/**

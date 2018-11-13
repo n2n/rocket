@@ -42,6 +42,13 @@ class EiuObject {
 	}
 	
 	/**
+	 * @return \rocket\ei\manage\EiObject
+	 */
+	public function getEiObject() {
+		return $this->eiObject;
+	}
+	
+	/**
 	 * @param EiProp $eiProp
 	 * @return boolean
 	 */

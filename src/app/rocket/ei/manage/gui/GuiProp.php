@@ -22,7 +22,6 @@
 namespace rocket\ei\manage\gui;
 
 use n2n\l10n\N2nLocale;
-use rocket\ei\manage\EiObject;
 use rocket\ei\util\Eiu;
 use n2n\l10n\Lstr;
 

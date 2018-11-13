@@ -308,7 +308,6 @@ class GuiDefinition {
 		return $this->composeDisplayStructure($displayStructure, array(), new Eiu($eiGui));
 	}
 	
-	
 	/**
 	 * @param GuiIdPath $guiIdPath
 	 * @return \rocket\ei\manage\gui\GuiProp

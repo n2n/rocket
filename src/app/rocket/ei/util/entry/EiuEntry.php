@@ -111,7 +111,8 @@ class EiuEntry {
 			return $this->eiEntry;
 		}
 				
-		return $this->eiEntry = $this->eiuAnalyst->getEiuFrame(true)->getEiFrame()->createEiEntry($this->eiEntry->getEiObject());
+		return $this->eiEntry = $this->eiuAnalyst->getEiuFrame(true)->getEiFrame()
+				->createEiEntry($this->object()->getEiObject());
 	}
 	
 	public function isNew() {

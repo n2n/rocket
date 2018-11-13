@@ -123,7 +123,11 @@ class EiuMask  {
 	 * @return \rocket\ei\util\spec\EiuEngine|NULL
 	 * @throws IllegalStateException
 	 */
-	public function engine() {
+	public function engine(bool $required = true) {
+		if (!$required && !$this->isEngineReady()) {
+			return null;
+		}
+		
 		if ($this->eiuEngine !== null) {
 			return $this->eiuEngine;
 		}
