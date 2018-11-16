@@ -12,9 +12,9 @@ interface EiGuiViewFactory {
 	public function getGuiDefinition(): GuiDefinition;
 	
 	/**
-	 * @return GuiIdPath[];
+	 * @return GuiPropPath[];
 	 */
-	public function getGuiIdPaths(): array;
+	public function getGuiPropPaths(): array;
 	
 	/**
 	 * @return DisplayStructure

@@ -11,7 +11,7 @@ use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
 use n2n\impl\web\dispatch\mag\model\MultiSelectMag;
 use rocket\ei\component\EiSetup;
 use n2n\reflection\property\TypeConstraint;
-use rocket\ei\manage\gui\GuiIdPath;
+use rocket\ei\manage\gui\GuiPropPath;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use n2n\util\StringUtils;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
@@ -61,21 +61,21 @@ class BooleanEiPropConfigurator extends AdaptableEiPropConfigurator {
 		}
 		
 		$assoicatedGuiPropOptions = array();
-		foreach ($guiProps as $guiIdPathStr => $guiProp) {
-			$assoicatedGuiPropOptions[$guiIdPathStr] = $guiProp->getDisplayLabelLstr()->t($n2nContext->getN2nLocale());
+		foreach ($guiProps as $eiPropPathStr => $guiProp) {
+			$assoicatedGuiPropOptions[$eiPropPathStr] = $guiProp->getDisplayLabelLstr()->t($n2nContext->getN2nLocale());
 		}
 		
-		$onGuiIdPathStrs = $lar->getScalarArray(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY);
-		$offGuiIdPathStrs = $lar->getScalarArray(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY);
+		$onGuiPropPathStrs = $lar->getScalarArray(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY);
+		$offGuiPropPathStrs = $lar->getScalarArray(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY);
 		
-		$eMag = new TogglerMag('Bind GuiProps to value', !empty($onGuiIdPathStrs) || !empty($offGuiIdPathStrs));
+		$eMag = new TogglerMag('Bind GuiProps to value', !empty($onGuiPropPathStrs) || !empty($offGuiPropPathStrs));
 		
 		$magCollection->addMag(self::ATTR_BIND_GUI_PROPS_KEY, $eMag);
 		$eMag->setOnAssociatedMagWrappers(array(
 				$magCollection->addMag(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY, 
-						new MultiSelectMag('Associated Gui Fields when on', $assoicatedGuiPropOptions, $onGuiIdPathStrs)),
+						new MultiSelectMag('Associated Gui Fields when on', $assoicatedGuiPropOptions, $onGuiPropPathStrs)),
 				$magCollection->addMag(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY, 
-						new MultiSelectMag('Associated Gui Fields when off', $assoicatedGuiPropOptions, $offGuiIdPathStrs))));
+						new MultiSelectMag('Associated Gui Fields when off', $assoicatedGuiPropOptions, $offGuiPropPathStrs))));
 		
 		return $magDispatchable;
 	}
@@ -85,11 +85,11 @@ class BooleanEiPropConfigurator extends AdaptableEiPropConfigurator {
 		
 		if (!$magDispatchable->getPropertyValue(self::ATTR_BIND_GUI_PROPS_KEY)) return;
 		
-		$onGuiIdPathStrs = $magDispatchable->getPropertyValue(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY);
-		$offGuiIdPathsStrs = $magDispatchable->getPropertyValue(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY);
+		$onGuiPropPathStrs = $magDispatchable->getPropertyValue(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY);
+		$offGuiPropPathsStrs = $magDispatchable->getPropertyValue(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY);
 		
-		$this->attributes->set(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY, $onGuiIdPathStrs);
-		$this->attributes->set(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY, $offGuiIdPathsStrs);
+		$this->attributes->set(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY, $onGuiPropPathStrs);
+		$this->attributes->set(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY, $offGuiPropPathsStrs);
 	}
 	
 	public function setup(EiSetup $eiSetupProcess) {
@@ -99,25 +99,25 @@ class BooleanEiPropConfigurator extends AdaptableEiPropConfigurator {
 		CastUtils::assertTrue($eiComponent instanceof BooleanEiProp);
 		
 		if ($this->attributes->contains(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY)) {
-			$onGuiIdPathStrs = $this->attributes->getArray(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY, false, array(), 
+			$onGuiPropPathStrs = $this->attributes->getArray(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY, false, array(), 
 					TypeConstraint::createSimple('scalar'));
-			$onGuiIdPaths = array();
-			foreach ($onGuiIdPathStrs as $guiIdPathStr) {
-				$onGuiIdPaths[] = GuiIdPath::create($guiIdPathStr);
+			$onGuiPropPaths = array();
+			foreach ($onGuiPropPathStrs as $eiPropPathStr) {
+				$onGuiPropPaths[] = GuiPropPath::create($eiPropPathStr);
 			}
 			
-			$eiComponent->setOnAssociatedGuiIdPaths($onGuiIdPaths);
+			$eiComponent->setOnAssociatedGuiPropPaths($onGuiPropPaths);
 		}
 		
 		if ($this->attributes->contains(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY)) {
-			$offGuiIdPathStrs = $this->attributes->getArray(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY, false, array(),
+			$offGuiPropPathStrs = $this->attributes->getArray(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY, false, array(),
 					TypeConstraint::createSimple('scalar'));
-			$offGuiIdPaths = array();
-			foreach ($offGuiIdPathStrs as $guiIdPathStr) {
-				$offGuiIdPaths[] = GuiIdPath::create($guiIdPathStr);
+			$offGuiPropPaths = array();
+			foreach ($offGuiPropPathStrs as $eiPropPathStr) {
+				$offGuiPropPaths[] = GuiPropPath::create($eiPropPathStr);
 			}
 			
-			$eiComponent->setOffAssociatedGuiIdPaths($offGuiIdPaths);
+			$eiComponent->setOffAssociatedGuiPropPaths($offGuiPropPaths);
 		}
 	}
 }

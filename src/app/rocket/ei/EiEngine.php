@@ -230,7 +230,7 @@ class EiEngine {
 // 		}
 		
 // 		$guiFactory = new GuiFactory($this->eiMask);
-// 		return $guiFactory->createEiEntryGui($eiMask, $eiuEntry, $viewMode, $guiIdPaths);
+// 		return $guiFactory->createEiEntryGui($eiMask, $eiuEntry, $viewMode, $eiPropPaths);
 // 	}
 	
 	public function getDraftDefinition(): DraftDefinition {

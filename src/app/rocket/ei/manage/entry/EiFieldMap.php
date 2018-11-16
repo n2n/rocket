@@ -54,7 +54,7 @@ class EiFieldMap {
 	 * @return \rocket\ei\manage\entry\EiFieldWrapperImpl
 	 */
 	public function put(string $id, EiField $eiField) {
-		return $this->eiFieldWrappers[$id] = new EiFieldWrapperImpl($eiField);
+		return $this->eiFieldWrappers[$id] = new EiFieldWrapperImpl($this->forkEiPropPath->ext($id), $eiField);
 	}
 	
 	/**
@@ -82,5 +82,18 @@ class EiFieldMap {
 	public function getWrappers() {
 		return $this->eiFieldWrappers;
 	}
+	
+	public function validate(EiEntryValidationResult $eiEntryValidationResult) {
+		foreach ($this->eiFieldWrappers as $eiPropPathStr => $eiFieldWrapper) {
+			$eiFieldValidationResult = $eiEntryValidationResult->getEiFieldValidationResult(EiPropPath::create($eiPropPathStr));
+			
+			if (!$eiFieldWrapper->isIgnored()) {
+				$eiFieldWrapper->getEiField()->validate($eiFieldValidationResult);
+			}
+			
+			$eiFieldWrapper->setValidationResult($eiFieldValidationResult);
+		}
+	}
+	
 	
 }

@@ -5,6 +5,7 @@ use n2n\l10n\N2nLocale;
 use rocket\ei\manage\EiObject;
 use n2n\core\container\N2nContext;
 use rocket\ei\util\Eiu;
+use rocket\ei\EiPropPath;
 
 class SummarizedStringBuilder {
 	const KNOWN_STRING_FIELD_OPEN_DELIMITER = '{';
@@ -29,10 +30,10 @@ class SummarizedStringBuilder {
 			$eiu = new Eiu($this->n2nContext, $eiObject);
 		}
 		
-		foreach ($guiDefinition->getLevelGuiProps() as $id => $guiProp) {
+		foreach ($guiDefinition->getGuiProps() as $id => $guiProp) {
 			if (!$guiProp->isStringRepresentable()) continue;
 
-			$placeholder = self::createPlaceholder($this->createGuiIdPath($baseIds, $id));
+			$placeholder = self::createPlaceholder($this->createGuiPropPath($baseIds, EiPropPath::create($id)));
 			if (false === strpos($this->identityStringPattern, $placeholder)) continue;
 			
 			$this->placeholders[] = $placeholder;
@@ -44,25 +45,29 @@ class SummarizedStringBuilder {
 		}
 		
 		foreach ($guiDefinition->getGuiPropForks() as $id => $guiPropFork) {
+			$forkedGuiDefinition = $guiPropFork->getForkedGuiDefinition();
+			
+			if ($forkedGuiDefinition === null) continue;
+			
 			$forkedEiFieldSource = null;
 			if ($eiObject !== null) {
 				$forkedEiFieldSource = $guiPropFork->determineForkedEiObject($eiObject);
 			}
 			
 			$ids = $baseIds;
-			$ids[] = $id;
-			$this->replaceFields($ids, $guiPropFork->getForkedGuiDefinition(), $forkedEiFieldSource);
+			$ids[] = EiPropPath::create($id);
+			$this->replaceFields($ids, $forkedGuiDefinition, $forkedEiFieldSource);
 		}
 	}
 	
-	private function createGuiIdPath(array $baseIds, $id) {
+	private function createGuiPropPath(array $baseIds, $id) {
 		$ids = $baseIds;
 		$ids[] = $id;
-		return new GuiIdPath($ids);
+		return new GuiPropPath($ids);
 	}
 	
-	public static function createPlaceholder($guiIdPath) {
-		return self::KNOWN_STRING_FIELD_OPEN_DELIMITER . GuiIdPath::create($guiIdPath)
+	public static function createPlaceholder($eiPropPath) {
+		return self::KNOWN_STRING_FIELD_OPEN_DELIMITER . GuiPropPath::create($eiPropPath)
 				. self::KNOWN_STRING_FIELD_CLOSE_DELIMITER;
 	}
 	

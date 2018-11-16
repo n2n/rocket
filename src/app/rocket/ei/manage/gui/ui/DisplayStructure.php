@@ -21,21 +21,21 @@
  */
 namespace rocket\ei\manage\gui\ui;
 
-use rocket\ei\manage\gui\GuiIdPath;
+use rocket\ei\manage\gui\GuiPropPath;
 use n2n\reflection\ArgUtils;
 
 class DisplayStructure {
 	private $displayItems = array();
 	
 	/**
-	 * @param GuiIdPath $guiIdPath
+	 * @param GuiPropPath $eiPropPath
 	 * @param string $type
 	 * @param string $label
 	 * @param string $moduleNamespace
 	 */
-	public function addGuiIdPath(GuiIdPath $guiIdPath, string $type = null, string $label = null, 
+	public function addGuiPropPath(GuiPropPath $eiPropPath, string $type = null, string $label = null, 
 			string $moduleNamespace = null) {
-		$this->displayItems[] = DisplayItem::create($guiIdPath, $type, $label, $moduleNamespace);
+		$this->displayItems[] = DisplayItem::create($eiPropPath, $type, $label, $moduleNamespace);
 	}
 	
 	/**
@@ -82,16 +82,16 @@ class DisplayStructure {
 // 		return false;
 // 	}
 	
-	public function getAllGuiIdPaths() {
-		$guiIdPaths = array();
+	public function getAllGuiPropPaths() {
+		$eiPropPaths = array();
 		foreach ($this->displayItems as $displayItem) {
 			if ($displayItem->hasDisplayStructure()) {
-				$guiIdPaths = array_merge($guiIdPaths, $displayItem->getDisplayStructure()->getAllGuiIdPaths());
+				$eiPropPaths = array_merge($eiPropPaths, $displayItem->getDisplayStructure()->getAllGuiPropPaths());
 			} else{
-				$guiIdPaths[] = $displayItem->getGuiIdPath();
+				$eiPropPaths[] = $displayItem->getGuiPropPath();
 			}
 		}
-		return $guiIdPaths;
+		return $eiPropPaths;
 	}
 		
 	/**
@@ -161,12 +161,12 @@ class DisplayStructure {
 			
 			if (!$displayItem->hasDisplayStructure()) {
 				if ($groupType == DisplayItem::TYPE_AUTONOMIC_GROUP) {
-					$autonomicDs->addGuiIdPath($displayItem->getGuiIdPath(), DisplayItem::TYPE_SIMPLE_GROUP, $displayItem->getLabel(), 
+					$autonomicDs->addGuiPropPath($displayItem->getGuiPropPath(), DisplayItem::TYPE_SIMPLE_GROUP, $displayItem->getLabel(), 
 							$displayItem->getModuleNamespace());
 				} else if ($displayItem->getType() == $groupType) {
 					$ds->displayItems[] = $displayItem;
 				} else {
-					$ds->addGuiIdPath($displayItem->getGuiIdPath(), $groupType, $displayItem->getLabel(), $displayItem->getModuleNamespace());	
+					$ds->addGuiPropPath($displayItem->getGuiPropPath(), $groupType, $displayItem->getLabel(), $displayItem->getModuleNamespace());	
 				}
 				continue;
 			}

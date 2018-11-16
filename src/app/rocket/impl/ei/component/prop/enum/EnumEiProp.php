@@ -46,7 +46,7 @@ use rocket\ei\EiPropPath;
 use rocket\impl\ei\component\prop\enum\conf\EnumEiPropConfigurator;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\critmod\quick\impl\LikeQuickSearchProp;
-use rocket\ei\manage\gui\GuiIdPath;
+use rocket\ei\manage\gui\GuiPropPath;
 use n2n\impl\web\dispatch\mag\model\group\EnumTogglerMag;
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\sort\SortProp;
@@ -57,7 +57,7 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 		QuickSearchableEiProp {
 	
 	private $options = array();
-	private $associatedGuiIdPathMap = array();
+	private $associatedGuiPropPathMap = array();
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty === null || $entityProperty instanceof ScalarEntityProperty);
@@ -90,22 +90,22 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 		$eiu->entry()->onValidate(function () use ($eiu, $that) {
 			$type = $eiu->field()->getValue();
 				
-			$activeGuiIdPaths = array();
-			foreach ($that->getAssociatedGuiIdPathMap() as $value => $guiIdPaths) {
+			$activeGuiPropPaths = array();
+			foreach ($that->getAssociatedGuiPropPathMap() as $value => $eiPropPaths) {
 				if ($value == $type) {
-					$activeGuiIdPaths = $guiIdPaths;
+					$activeGuiPropPaths = $eiPropPaths;
 					continue;
 				}
 				
-				foreach ($guiIdPaths as $guiIdPath) {
-					if (null !== ($eiFieldWrapper = $eiu->entry()->getEiFieldWrapperByGuiIdPath($guiIdPath))) {
+				foreach ($eiPropPaths as $eiPropPath) {
+					if (null !== ($eiFieldWrapper = $eiu->entry()->getEiFieldWrapperByGuiPropPath($eiPropPath))) {
 						$eiFieldWrapper->setIgnored(true);
 					}
 				}
 			}
 			
-			foreach ($activeGuiIdPaths as $guiIdPath) {
-				if (null !== ($eiFieldWrapper = $eiu->entry()->getEiFieldWrapperByGuiIdPath($guiIdPath))) {
+			foreach ($activeGuiPropPaths as $eiPropPath) {
+				if (null !== ($eiFieldWrapper = $eiu->entry()->getEiFieldWrapperByGuiPropPath($eiPropPath))) {
 					$eiFieldWrapper->setIgnored(false);
 				}
 			}
@@ -122,7 +122,7 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 			}
 		}
 		
-		if (empty($this->associatedGuiIdPathMap)) {
+		if (empty($this->associatedGuiPropPathMap)) {
 			return new EnumMag($this->getLabelLstr(), $choicesMap, null, 
 					$this->isMandatory($eiu));
 		}
@@ -133,10 +133,10 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 		$that = $this;
 		$eiu->entryGui()->whenReady(function () use ($eiu, $enablerMag, $that) {
 			$associatedMagWrapperMap = array();
-			foreach ($that->getAssociatedGuiIdPathMap() as $value => $guiIdPaths) {
+			foreach ($that->getAssociatedGuiPropPathMap() as $value => $eiPropPaths) {
 				$magWrappers = array();
-				foreach ($guiIdPaths as $guiIdPath) {
-					$magWrapper = $eiu->entryGui()->getMagWrapper($guiIdPath, false);
+				foreach ($eiPropPaths as $eiPropPath) {
+					$magWrapper = $eiu->entryGui()->getMagWrapper($eiPropPath, false);
 					if ($magWrapper === null) continue;
 					
 					$magWrappers[] = $magWrapper;
@@ -206,16 +206,16 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 		return $this->read($eiu);
 	}
 	
-	public function setAssociatedGuiIdPathMap(array $associatedGuiIdPathMap) {
-		ArgUtils::valArray($associatedGuiIdPathMap, 
-				TypeConstraint::createArrayLike('array', false, TypeConstraint::createSimple(GuiIdPath::class)));
-		$this->associatedGuiIdPathMap = $associatedGuiIdPathMap;
+	public function setAssociatedGuiPropPathMap(array $associatedGuiPropPathMap) {
+		ArgUtils::valArray($associatedGuiPropPathMap, 
+				TypeConstraint::createArrayLike('array', false, TypeConstraint::createSimple(GuiPropPath::class)));
+		$this->associatedGuiPropPathMap = $associatedGuiPropPathMap;
 	}
 	
 	/**
 	 * @return array
 	 */
-	public function getAssociatedGuiIdPathMap() {
-		return $this->associatedGuiIdPathMap;
+	public function getAssociatedGuiPropPathMap() {
+		return $this->associatedGuiPropPathMap;
 	}
 }

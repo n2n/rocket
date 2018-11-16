@@ -625,13 +625,13 @@ class EiuFrame {
 	/**
 	 * @param int $viewMode
 	 * @param \Closure $uiFactory
-	 * @param array $guiIdPaths
+	 * @param array $eiPropPaths
 	 * @return \rocket\ei\util\gui\EiuGui
 	 */
-	public function newCustomGui(int $viewMode, \Closure $uiFactory, array $guiIdPaths) {
+	public function newCustomGui(int $viewMode, \Closure $uiFactory, array $eiPropPaths) {
 		$eiGui = new EiGui($this->eiFrame, $viewMode);
 		$eiuGui = new EiuGui($eiGui, $this, $this->eiuAnalyst);
-		$eiuGui->initWithUiCallback($uiFactory, $guiIdPaths);
+		$eiuGui->initWithUiCallback($uiFactory, $eiPropPaths);
 		return $eiuGui;
 	}
 	

@@ -134,10 +134,8 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 	 * @see \rocket\ei\component\prop\field\Readable::read()
 	 */
 	public function read(Eiu $eiu) {
-		$targetEiObjects = $eiu->object()->readNativValue($this);
-		
 		if ($this->isDraftable() && $eiObject->isDraft()) {
-			$targetDrafts = $eiObject->getDraftValueMap()->getValue(EiPropPath::from($this));
+			$targetDrafts = $eiu->object()->readNativValue($this);
 			if ($targetDrafts === null) return $targetEiObjects;
 			
 			foreach ($targetDrafts as $targetDraft) {
@@ -146,7 +144,7 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 			return $targetEiObjects; 
 		}
 	
-		$targetEntityObjs = $this->getObjectPropertyAccessProxy()->getValue($eiObject->getLiveObject());
+		$targetEntityObjs = $eiu->object()->readNativValue($this);
 		if ($targetEntityObjs === null) return $targetEiObjects;
 		
 		foreach ($targetEntityObjs as $targetEntityObj) {

@@ -7597,12 +7597,12 @@ var Rocket;
                     return true;
                 }
                 exec() {
-                    let guiIdPaths = [];
+                    let eiPropPaths = [];
                     for (let loadJob of this.loadJobs) {
-                        guiIdPaths.push(loadJob.guiIdPath);
+                        eiPropPaths.push(loadJob.eiPropPath);
                         loadJob.content.loading = true;
                     }
-                    let url = this.url.extR(null, { guiIdPaths: guiIdPaths });
+                    let url = this.url.extR(null, { eiPropPaths: eiPropPaths });
                     Jhtml.lookupModel(url).then((result) => {
                         this.splitResult(result.model.snippet);
                     });
@@ -7611,8 +7611,8 @@ var Rocket;
                     let usedElements = [];
                     $(snippet.elements).children().each((i, elem) => {
                         let elemJq = $(elem);
-                        let guiIdPath = elemJq.data("rocket-impl-gui-id-path");
-                        let loadJob = this.loadJobs.find(loadJob => loadJob.guiIdPath == guiIdPath);
+                        let eiPropPath = elemJq.data("rocket-impl-gui-id-path");
+                        let loadJob = this.loadJobs.find(loadJob => loadJob.eiPropPath == eiPropPath);
                         let newContentJq = elemJq.children().first();
                         loadJob.content.replaceField(newContentJq);
                         loadJob.content.loading = false;
@@ -7639,14 +7639,14 @@ var Rocket;
             class Translatable {
                 constructor(jqElem) {
                     this.jqElem = jqElem;
-                    this.srcGuiIdPath = null;
+                    this.srcGuiPropPath = null;
                     this.loadUrlDefs = {};
                     this.copyUrlDefs = {};
                     this._contents = {};
                     let srcLoadConfig = jqElem.data("rocket-impl-src-load-config");
                     if (!srcLoadConfig)
                         return;
-                    this.srcGuiIdPath = srcLoadConfig.guiIdPath;
+                    this.srcGuiPropPath = srcLoadConfig.eiPropPath;
                     for (let localeId in srcLoadConfig.loadUrlDefs) {
                         this.loadUrlDefs[localeId] = {
                             label: srcLoadConfig.loadUrlDefs[localeId].label,
@@ -7704,7 +7704,7 @@ var Rocket;
                     return localeIds;
                 }
                 get loadJobs() {
-                    if (!this.srcGuiIdPath)
+                    if (!this.srcGuiPropPath)
                         return [];
                     let loadJobs = [];
                     for (let content of this.contents) {
@@ -7714,7 +7714,7 @@ var Rocket;
                         }
                         loadJobs.push({
                             url: this.loadUrlDefs[content.localeId].url.extR(null, { "propertyPath": content.propertyPath }),
-                            guiIdPath: this.srcGuiIdPath,
+                            eiPropPath: this.srcGuiPropPath,
                             content: content
                         });
                     }
@@ -7727,7 +7727,7 @@ var Rocket;
                         if (!localeId || this._contents[localeId])
                             return;
                         let tc = this._contents[localeId] = new TranslatedContent(localeId, jqElem);
-                        tc.drawCopyControl(this.copyUrlDefs, this.srcGuiIdPath);
+                        tc.drawCopyControl(this.copyUrlDefs, this.srcGuiPropPath);
                     });
                 }
                 static test(elemJq) {
@@ -7860,12 +7860,12 @@ var Rocket;
                     }
                     this.elemJq.addClass("rocket-inactive");
                 }
-                drawCopyControl(copyUrlDefs, guiIdPath) {
+                drawCopyControl(copyUrlDefs, eiPropPath) {
                     for (let localeId in copyUrlDefs) {
                         if (localeId == this.localeId)
                             continue;
                         if (!this.copyControl) {
-                            this.copyControl = new CopyControl(this, guiIdPath);
+                            this.copyControl = new CopyControl(this, eiPropPath);
                             this.copyControl.draw(this.elemJq.data("rocket-impl-copy-tooltip"));
                         }
                         this.copyControl.addUrlDef(copyUrlDefs[localeId]);
@@ -7899,9 +7899,9 @@ var Rocket;
             }
             Translation.TranslatedContent = TranslatedContent;
             class CopyControl {
-                constructor(translatedContent, guiIdPath) {
+                constructor(translatedContent, eiPropPath) {
                     this.translatedContent = translatedContent;
-                    this.guiIdPath = guiIdPath;
+                    this.eiPropPath = eiPropPath;
                 }
                 draw(tooltip) {
                     this.elemJq = $("<div></div>", { class: "rocket-impl-translation-copy-control rocket-simple-commands" });
@@ -7938,7 +7938,7 @@ var Rocket;
                     let lje = new Translation.LoadJobExecuter();
                     lje.add({
                         content: this.translatedContent,
-                        guiIdPath: this.guiIdPath,
+                        eiPropPath: this.eiPropPath,
                         url: url
                     });
                     lje.exec();

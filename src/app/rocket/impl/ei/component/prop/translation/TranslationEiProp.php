@@ -57,7 +57,7 @@ use rocket\ei\manage\critmod\sort\CriteriaAssemblyState;
 use rocket\impl\ei\component\prop\translation\conf\N2nLocaleDef;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\entry\EiEntry;
-use rocket\ei\manage\gui\GuiIdPath;
+use rocket\ei\manage\gui\GuiPropPath;
 use rocket\impl\ei\component\prop\translation\model\TranslationEiField;
 use rocket\ei\component\prop\QuickSearchableEiProp;
 use rocket\impl\ei\component\prop\translation\model\TranslationQuickSearchProp;
@@ -134,8 +134,8 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiPropFork
 	public function buildEiField(Eiu $eiu): ?EiField {
 		$readOnly = $this->eiPropRelation->isReadOnly($eiu->entry()->getEiEntry(), $eiu->frame()->getEiFrame());
 		
-		return new TranslationEiField($eiu->entry()->getEiObject(), $this, $this,
-				($readOnly ? null : $this));
+		return new TranslationEiField($eiu, $this,
+				($readOnly ? null : $this), $this);
 	}
 	
 	public function buildEiFieldFork(EiObject $eiObject, EiField $eiField = null) {
@@ -236,13 +236,13 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiPropFork
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiPropFork::determineEiFieldWrapper()
 	 */
-	public function determineEiFieldWrapper(EiEntry $eiEntry, GuiIdPath $guiIdPath) {
+	public function determineEiFieldWrapper(EiEntry $eiEntry, GuiPropPath $eiPropPath) {
 		$eiFieldWrappers = array();
 		foreach ($eiEntry->getValue(EiPropPath::from($this->eiPropRelation->getRelationEiProp())) as $targetRelationEntry) {
 			if ($targetRelationEntry->hasEiEntry()) continue;
 				
 			if (null !== ($eiFieldWrapper = $this->guiDefinition
-					->determineEiFieldWrapper($targetRelationEntry->getEiEntry(), $guiIdPath))) {
+					->determineEiFieldWrapper($targetRelationEntry->getEiEntry(), $eiPropPath))) {
 				$eiFieldWrappers[] = $eiFieldWrapper;
 			}
 		}

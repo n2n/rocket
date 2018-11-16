@@ -20,7 +20,7 @@ use rocket\ei\manage\security\privilege\data\PrivilegeSetting;
 use rocket\ei\util\sort\EiuSortForm;
 use rocket\ei\manage\critmod\sort\SortSettingGroup;
 use rocket\ei\manage\ManageState;
-use rocket\ei\manage\gui\GuiIdPath;
+use rocket\ei\manage\gui\GuiPropPath;
 use rocket\ei\manage\gui\GuiException;
 use rocket\ei\util\EiuAnalyst;
 
@@ -71,8 +71,8 @@ class EiuEngine {
 		return new EiuEngine($this->eiEngine->getSupremeEiEngine(), $this->n2nContext);
 	}
 	
-	public function removeGuiProp($guiIdPath) {
-		$this->getGuiDefinition()->removeGuiProp(GuiIdPath::create($guiIdPath));
+	public function removeGuiProp($eiPropPath) {
+		$this->getGuiDefinition()->removeGuiProp(GuiPropPath::create($eiPropPath));
 	}
 	
 	/**
@@ -236,22 +236,22 @@ class EiuEngine {
 	}
 	
 	/**
-	 * @param mixed $guiIdPath
+	 * @param mixed $eiPropPath
 	 * @throws \InvalidArgumentException
 	 * @return boolean
 	 */
-	public function containsGuiProp($guiIdPath) {
-		return $this->getGuiDefinition()->containsGuiProp(GuiIdPath::create($guiIdPath));
+	public function containsGuiProp($eiPropPath) {
+		return $this->getGuiDefinition()->containsGuiProp(GuiPropPath::create($eiPropPath));
 	}
 
 	/**
-	 * @param mixed $guiIdPath
+	 * @param mixed $eiPropPath
 	 * @throws \InvalidArgumentException
 	 * @throws GuiException
 	 * @return EiPropPath
 	 */
-	public function guiIdPathToEiPropPath($guiIdPath) {
-		return $this->getGuiDefinition()->guiIdPathToEiPropPath(GuiIdPath::create($guiIdPath));
+	public function eiPropPathToEiPropPath($eiPropPath) {
+		return $this->getGuiDefinition()->eiPropPathToEiPropPath(GuiPropPath::create($eiPropPath));
 	}
 	
 	

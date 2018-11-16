@@ -24,7 +24,7 @@ namespace rocket\ei\util\gui;
 use rocket\ei\manage\gui\EiEntryGui;
 use n2n\reflection\magic\MagicMethodInvoker;
 use rocket\ei\manage\gui\EiEntryGuiListener;
-use rocket\ei\manage\gui\GuiIdPath;
+use rocket\ei\manage\gui\GuiPropPath;
 use rocket\ei\manage\gui\GuiException;
 use n2n\web\dispatch\mag\MagWrapper;
 use rocket\ei\manage\entry\EiFieldWrapper;
@@ -68,28 +68,28 @@ class EiuEntryGui {
 	
 	/**
 	 * @see EiEntryGui::getGuiIdsPaths()
-	 * @return \rocket\ei\manage\gui\GuiIdPath[]
+	 * @return \rocket\ei\manage\gui\GuiPropPath[]
 	 */
-	public function getGuiIdPaths() {
-		return $this->eiEntryGui->getGuiFieldGuiIdPaths();	
+	public function getGuiPropPaths() {
+		return $this->eiEntryGui->getGuiFieldGuiPropPaths();	
 	}
 	
 	/**
-	 * @param GuiIdPath $guiIdPath
+	 * @param GuiPropPath $eiPropPath
 	 * @return bool
 	 */
-	public function containsGuiIdPath(GuiIdPath $guiIdPath) {
-		return $this->eiEntryGui->containsDisplayable($guiIdPath);
+	public function containsGuiPropPath(GuiPropPath $eiPropPath) {
+		return $this->eiEntryGui->containsDisplayable($eiPropPath);
 	}
 	
 	/**
-	 * @param GuiIdPath|string $guiIdPath
+	 * @param GuiPropPath|string $eiPropPath
 	 * @param bool $required
 	 * @throws GuiException
 	 * @return string|null
 	 */
-	public function getFieldLabel($guiIdPath, N2nLocale $n2nLocale = null, bool $required = false) {
-		return $this->getEiuGui()->getPropLabel($guiIdPath, $n2nLocale, $required);
+	public function getFieldLabel($eiPropPath, N2nLocale $n2nLocale = null, bool $required = false) {
+		return $this->getEiuGui()->getPropLabel($eiPropPath, $n2nLocale, $required);
 	}
 	
 	/**
@@ -175,21 +175,21 @@ class EiuEntryGui {
 	}
 	
 	/**
-	 * @param GuiIdPath|string $guiIdPath
+	 * @param GuiPropPath|string $eiPropPath
 	 * @param bool $required
 	 * @throws GuiException
 	 * @return MagWrapper
 	 */
-	public function getMagWrapper($guiIdPath, bool $required = false) {
+	public function getMagWrapper($eiPropPath, bool $required = false) {
 		$magWrapper = null;
 		
 		try {
-			$magAssembly = $this->eiEntryGui->getGuiFieldAssembly(GuiIdPath::create($guiIdPath))->getMagAssembly();
+			$magAssembly = $this->eiEntryGui->getGuiFieldAssembly(GuiPropPath::create($eiPropPath))->getMagAssembly();
 			if ($magAssembly !== null) {
 				return $magAssembly->getMagWrapper();
 			}
 			
-			throw new GuiException('No GuiField with GuiIdPath \'' . $guiIdPath . '\' is not editable.');
+			throw new GuiException('No GuiField with GuiPropPath \'' . $eiPropPath . '\' is not editable.');
 		} catch (GuiException $e) {
 			if ($required) throw $e;
 			return null;
@@ -197,15 +197,15 @@ class EiuEntryGui {
 	}
 	
 	/**
-	 * @param GuiIdPath|string $guiIdPath
+	 * @param GuiPropPath|string $eiPropPath
 	 * @param bool $required
 	 * @throws GuiException
 	 * @return EiFieldWrapper
 	 */
-	public function getEiFieldWrapper($guiIdPath, bool $required = false) {
+	public function getEiFieldWrapper($eiPropPath, bool $required = false) {
 		try {
-			return $this->eiEntryGui->getEiFieldWrapperByGuiIdPath(
-					GuiIdPath::create($guiIdPath));
+			return $this->eiEntryGui->getEiFieldWrapperByGuiPropPath(
+					GuiPropPath::create($eiPropPath));
 		} catch (GuiException $e) {
 			if ($required) throw $e;
 			return null;

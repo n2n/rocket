@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\translation\model;
 
-use rocket\ei\manage\gui\GuiIdPath;
+use rocket\ei\manage\gui\GuiPropPath;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\manage\gui\Displayable;
@@ -84,12 +84,12 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 		}
 	}
 	
-	private function buildSrcLoadConfig(GuiIdPath $guiIdPath) {
+	private function buildSrcLoadConfig(GuiPropPath $eiPropPath) {
 		$loadUrls = array();
 		$copyUrls = array();
 		
 		if ($this->srcUrl === null) {
-			return new SrcLoadConfig($guiIdPath, $loadUrls, $copyUrls);
+			return new SrcLoadConfig($eiPropPath, $loadUrls, $copyUrls);
 		}
 		
 		foreach ($this->targetRelationEntries as $n2nLocaleId => $targetRelationEntry) {
@@ -103,7 +103,7 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 					array('fromPid' => ($targetRelationEntry->getPid())));
 		}
 		
-		return new SrcLoadConfig($guiIdPath, $loadUrls, $copyUrls);
+		return new SrcLoadConfig($eiPropPath, $loadUrls, $copyUrls);
 	}
 	
 	private function setupTranslationForm() {
@@ -132,9 +132,9 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 		return $this->markClassKey = HtmlUtils::buildUniqueId();
 	}
 	
-	public function assembleGuiField(GuiIdPath $guiIdPath): ?GuiFieldAssembly {
-		$guiProp = $this->guiDefinition->getGuiPropByGuiIdPath($guiIdPath);
-		$eiPropPath = $this->guiDefinition->guiIdPathToEiPropPath($guiIdPath);
+	public function assembleGuiField(GuiPropPath $guiPropPath): ?GuiFieldAssembly {
+		
+		$guiProp = $this->guiDefinition->getGuiPropByGuiPropPath($guiPropPath);
 
 // 		$fieldErrorInfo = new EiFieldValidationResult();
 		
@@ -145,12 +145,12 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 		
 		$mandatory = false;
 		foreach ($this->eiuEntryGuiAssemblers as $n2nLocaleId => $guiFieldAssembler) {
-			$result = $guiFieldAssembler->assembleGuiField($guiIdPath);
+			$result = $guiFieldAssembler->assembleGuiField($guiPropPath);
 			if ($result === null) continue;
 			
 			$eiuEntry = $guiFieldAssembler->getEiuEntryGui()->getEiuEntry();
 			$fieldErrorInfo = $eiuEntry->getEiEntry()->getValidationResult()
-					->getEiFieldValidationResult($eiPropPath);
+					->getEiFieldValidationResult($guiPropPath);
 			if (null !== ($eiFieldWrapper = $result->getEiFieldWrapper())) {
 				$eiFieldWrappers[] = $eiFieldWrapper;
 			}
@@ -186,11 +186,11 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 			return new GuiFieldAssembly($guiProp, $translationDisplayable, $eiFieldWrapperWrapper);
 		}
 		
-		$translationMag->setSrcLoadConfig($this->buildSrcLoadConfig($guiIdPath));
+		$translationMag->setSrcLoadConfig($this->buildSrcLoadConfig($guiPropPath));
 		
 		$this->setupTranslationForm();
 				
-		$magInfo = $this->translationForm->registerMag($guiIdPath->__toString(), $translationMag);
+		$magInfo = $this->translationForm->registerMag($guiPropPath->__toString(), $translationMag);
 		return new GuiFieldAssembly($guiProp, $translationDisplayable, $eiFieldWrapperWrapper, 
 				new MagAssembly($mandatory, $magInfo['propertyPath'], $magInfo['magWrapper']));
 	}
@@ -290,16 +290,16 @@ class EmptyDisplayable implements Displayable {
 } 
 
 class SrcLoadConfig {
-	private $guiIdPath;
+	private $eiPropPath;
 	private $loadUrls;
 	private $copyUrls;
 	
 	/**
-	 * @param GuiIdPath $guiIdPath
+	 * @param GuiPropPath $eiPropPath
 	 * @param Url[] $url
 	 */
-	public function __construct(GuiIdPath $guiIdPath, array $loadUrls, array $copyUrls) {
-		$this->guiIdPath = $guiIdPath;
+	public function __construct(GuiPropPath $eiPropPath, array $loadUrls, array $copyUrls) {
+		$this->eiPropPath = $eiPropPath;
 		$this->loadUrls = $loadUrls;
 		$this->copyUrls = $copyUrls;
 	}
@@ -322,6 +322,6 @@ class SrcLoadConfig {
 					'url' => (string) $url,
 					'n2nLocaleId' => $n2nLocaleId);
 		}
-		return array('loadUrlDefs' => $loadUrlDefs, 'copyUrlDefs' => $copyUrlDefs, 'guiIdPath' => (string) $this->guiIdPath);
+		return array('loadUrlDefs' => $loadUrlDefs, 'copyUrlDefs' => $copyUrlDefs, 'eiPropPath' => (string) $this->eiPropPath);
 	}
 }

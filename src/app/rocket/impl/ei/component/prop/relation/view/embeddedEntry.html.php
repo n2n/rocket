@@ -45,8 +45,8 @@
 					<?php $html->out($eiuEntry->getGenericLabel()) ?>
 				</div>
 				<div class="rocket-impl-content">
-					<?php foreach ($eiuEntryGui->getGuiIdPaths() as $guiIdPath): ?>
-						<?php $eiuHtml->fieldOpen('div', $guiIdPath, null, false, false) ?>
+					<?php foreach ($eiuEntryGui->getGuiPropPaths() as $eiPropPath): ?>
+						<?php $eiuHtml->fieldOpen('div', $eiPropPath, null, false, false) ?>
 							<?php $eiuHtml->fieldContent() ?>
 						<?php $eiuHtml->fieldClose() ?>
 					<?php endforeach ?>

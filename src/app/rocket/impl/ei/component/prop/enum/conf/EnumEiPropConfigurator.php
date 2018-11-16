@@ -35,7 +35,7 @@ use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\reflection\property\TypeConstraint;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
 use n2n\impl\web\dispatch\mag\model\MultiSelectMag;
-use rocket\ei\manage\gui\GuiIdPath;
+use rocket\ei\manage\gui\GuiPropPath;
 
 // @todo validate if attributes are arrays
 
@@ -68,8 +68,8 @@ class EnumEiPropConfigurator extends AdaptableEiPropConfigurator {
 		}
 		
 		$assoicatedGuiPropOptions = array();
-		foreach ($guiProps as $guiIdPathStr => $guiProp) {
-			$assoicatedGuiPropOptions[$guiIdPathStr] = $guiProp->getDisplayLabelLstr()->t($n2nContext->getN2nLocale());
+		foreach ($guiProps as $eiPropPathStr => $guiProp) {
+			$assoicatedGuiPropOptions[$eiPropPathStr] = $guiProp->getDisplayLabelLstr()->t($n2nContext->getN2nLocale());
 		}
 		
 		$optionsMag = new MagCollectionArrayMag('Options',
@@ -81,7 +81,7 @@ class EnumEiPropConfigurator extends AdaptableEiPropConfigurator {
 					$eMag = new TogglerMag('Bind GuiProps to value', false);
 					$magCollection->addMag('bindGuiPropsToValue', $eMag);
 					$eMag->setOnAssociatedMagWrappers(array(
-							$magCollection->addMag('assoicatedGuiIdPaths', new MultiSelectMag('Associated Gui Fields', $assoicatedGuiPropOptions))));
+							$magCollection->addMag('assoicatedGuiPropPaths', new MultiSelectMag('Associated Gui Fields', $assoicatedGuiPropOptions))));
 					return new MagForm($magCollection);
 				});
 		
@@ -93,10 +93,10 @@ class EnumEiPropConfigurator extends AdaptableEiPropConfigurator {
 		
 		foreach ($lar->getArray(self::ASSOCIATED_GUI_FIELD_KEY, array(), 
 				TypeConstraint::createArrayLike('array', false, TypeConstraint::createSimple('scalar'))) 
-						as $value => $assoicatedGuiIdPaths) {
+						as $value => $assoicatedGuiPropPaths) {
 			if (array_key_exists($value, $valueLabelMap)) {
 				$valueLabelMap[$value]['bindGuiPropsToValue'] = true;
-				$valueLabelMap[$value]['assoicatedGuiIdPaths'] = $assoicatedGuiIdPaths;
+				$valueLabelMap[$value]['assoicatedGuiPropPaths'] = $assoicatedGuiPropPaths;
 			}
 		}
 		
@@ -110,17 +110,17 @@ class EnumEiPropConfigurator extends AdaptableEiPropConfigurator {
 		parent::saveMagDispatchable($magDispatchable, $n2nContext);
 		
 		$options = array();
-		$guiIdPathMap = array();
+		$eiPropPathMap = array();
 		foreach ($magDispatchable->getMagCollection()->getMagByPropertyName(self::OPTION_OPTIONS_KEY)->getValue() 
 				as $valueLabelMap) {
 			$options[$valueLabelMap['value']] = $valueLabelMap['label'];
 			
 			if ($valueLabelMap['bindGuiPropsToValue']) {
-				$guiIdPathMap[$valueLabelMap['value']] = $valueLabelMap['assoicatedGuiIdPaths'];
+				$eiPropPathMap[$valueLabelMap['value']] = $valueLabelMap['assoicatedGuiPropPaths'];
 			}
 		}
 		$this->attributes->set(self::OPTION_OPTIONS_KEY, $options);
-		$this->attributes->set(self::ASSOCIATED_GUI_FIELD_KEY, $guiIdPathMap);
+		$this->attributes->set(self::ASSOCIATED_GUI_FIELD_KEY, $eiPropPathMap);
 	}
 	
 	public function setup(EiSetup $eiSetupProcess) {
@@ -136,17 +136,17 @@ class EnumEiPropConfigurator extends AdaptableEiPropConfigurator {
 		}
 		
 		if ($this->attributes->contains(self::ASSOCIATED_GUI_FIELD_KEY)) {
-			$guiIdPathMap = $this->attributes->getArray(self::ASSOCIATED_GUI_FIELD_KEY, false, array(), 
+			$eiPropPathMap = $this->attributes->getArray(self::ASSOCIATED_GUI_FIELD_KEY, false, array(), 
 					TypeConstraint::createArrayLike('array', false, TypeConstraint::createSimple('scalar')));
-			foreach ($guiIdPathMap as $value => $guiIdPathStrs) {
-				$guiIdPaths = array();
-				foreach ($guiIdPathStrs as $guiIdPathStr) {
-					$guiIdPaths[] = GuiIdPath::create($guiIdPathStr);
+			foreach ($eiPropPathMap as $value => $eiPropPathStrs) {
+				$eiPropPaths = array();
+				foreach ($eiPropPathStrs as $eiPropPathStr) {
+					$eiPropPaths[] = GuiPropPath::create($eiPropPathStr);
 				}
-				$guiIdPathMap[$value] = $guiIdPaths;
+				$eiPropPathMap[$value] = $eiPropPaths;
 			}
 			
-			$this->enumEiProp->setAssociatedGuiIdPathMap($guiIdPathMap);
+			$this->enumEiProp->setAssociatedGuiPropPathMap($eiPropPathMap);
 		}
 	}
 }

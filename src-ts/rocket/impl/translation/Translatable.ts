@@ -1,7 +1,7 @@
 namespace Rocket.Impl.Translation {
 
 	export class Translatable {
-		private srcGuiIdPath: string|null = null;
+		private srcGuiPropPath: string|null = null;
 		private loadUrlDefs: { [localeId: string]: UrlDef } = {};
 		private copyUrlDefs: { [localeId: string]: UrlDef } = {};
 		private _contents: { [localeId: string]: TranslatedContent } = {}
@@ -11,7 +11,7 @@ namespace Rocket.Impl.Translation {
 			
 			if (!srcLoadConfig) return;
 			
-			this.srcGuiIdPath = srcLoadConfig.guiIdPath;
+			this.srcGuiPropPath = srcLoadConfig.eiPropPath;
 			for (let localeId in srcLoadConfig.loadUrlDefs) {
 				this.loadUrlDefs[localeId] = {
 					label: srcLoadConfig.loadUrlDefs[localeId].label,
@@ -82,7 +82,7 @@ namespace Rocket.Impl.Translation {
 		}
 		
 		get loadJobs(): LoadJob[] {
-			if (!this.srcGuiIdPath) return [];
+			if (!this.srcGuiPropPath) return [];
 			
 			let loadJobs: LoadJob[] = [];
 			for (let content of this.contents) {
@@ -93,7 +93,7 @@ namespace Rocket.Impl.Translation {
 
 				loadJobs.push({
 					url: this.loadUrlDefs[content.localeId].url.extR(null, { "propertyPath": content.propertyPath }),
-					guiIdPath: this.srcGuiIdPath,
+					eiPropPath: this.srcGuiPropPath,
 					content: content
 				});
 			}
@@ -107,7 +107,7 @@ namespace Rocket.Impl.Translation {
 				if (!localeId || this._contents[localeId]) return;
 
 				let tc = this._contents[localeId] = new TranslatedContent(localeId, jqElem);
-				tc.drawCopyControl(this.copyUrlDefs, this.srcGuiIdPath);
+				tc.drawCopyControl(this.copyUrlDefs, this.srcGuiPropPath);
 			});
 		}
 
@@ -135,7 +135,7 @@ namespace Rocket.Impl.Translation {
 
 	export interface LoadJob {
 		url: Jhtml.Url;
-		guiIdPath: string;
+		eiPropPath: string;
 		content: TranslatedContent
 	}
 	
@@ -290,12 +290,12 @@ namespace Rocket.Impl.Translation {
 
 		private copyControl: CopyControl;
 
-		drawCopyControl(copyUrlDefs: { [localeId: string]: UrlDef }, guiIdPath: string) {
+		drawCopyControl(copyUrlDefs: { [localeId: string]: UrlDef }, eiPropPath: string) {
 			for (let localeId in copyUrlDefs) {
 				if (localeId == this.localeId) continue;
 
 				if (!this.copyControl) {
-					this.copyControl = new CopyControl(this, guiIdPath);
+					this.copyControl = new CopyControl(this, eiPropPath);
 					this.copyControl.draw(this.elemJq.data("rocket-impl-copy-tooltip"));
 				}
 
@@ -342,7 +342,7 @@ namespace Rocket.Impl.Translation {
 		private menuUlJq: JQuery<Element>;
 		private toggler: Display.Toggler;
 
-		constructor(private translatedContent: TranslatedContent, private guiIdPath: string) {
+		constructor(private translatedContent: TranslatedContent, private eiPropPath: string) {
 		}
 
 		draw(tooltip: string) {
@@ -393,7 +393,7 @@ namespace Rocket.Impl.Translation {
 
 			lje.add({
 				content: this.translatedContent,
-				guiIdPath: this.guiIdPath,
+				eiPropPath: this.eiPropPath,
 				url: url
 			});
 			

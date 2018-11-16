@@ -52,7 +52,7 @@ class RawDef {
 	const DISPLAY_ITEM_GROUP_TYPE_KEY = 'type';
 	const DISPLAY_ITEM_LABEL_KEY = 'label';
 	const DISPLAY_ITEM_DISPLAY_STRUCTURE_KEY = 'displayStructure';
-	const DISPLAY_ITEM_GUI_ID_PATH_KEY = 'guiIdPath';
+	const DISPLAY_ITEM_GUI_ID_PATH_KEY = 'eiPropPath';
 
 	const EI_DEF_PARTIAL_CONTROL_ORDER_KEY = 'partialControlOrder';
 	const EI_DEF_OVERALL_CONTROL_ORDER_KEY = 'overallControlOrder';

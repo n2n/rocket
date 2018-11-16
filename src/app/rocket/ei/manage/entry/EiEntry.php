@@ -292,10 +292,7 @@ class EiEntry {
 			$listener->onValidate($this);
 		}
 		
-		foreach ($this->eiFieldWrappers as $eiPropPathStr => $eiFieldWrapper) {
-			if ($eiFieldWrapper->isIgnored()) continue;
-			$eiFieldWrapper->getEiField()->validate($validationResult->getEiFieldValidationResult(EiPropPath::create($eiPropPathStr)));
-		}
+		
 		
 		foreach ($this->constraintSet as $constraint) {
 			$constraint->validate($this);
@@ -551,10 +548,13 @@ class MappingValidationResult {
 
 
 class EiFieldWrapperImpl implements EiFieldWrapper {
+	private $eiPropPath;
 	private $eiField;
 	private $ignored = false;
+	private $validationResult;
 	
-	public function __construct(EiField $eiField) {
+	public function __construct(EiPropPath $eiPropPath, EiField $eiField) {
+		$this->eiPropPath = $eiPropPath;
 		$this->eiField = $eiField;
 	}
 	
@@ -577,5 +577,23 @@ class EiFieldWrapperImpl implements EiFieldWrapper {
 	 */
 	public function getEiField() {
 		return $this->eiField;
+	}
+	
+	/**
+	 * @param EiFieldValidationResult $validationResult
+	 */
+	public function setValidationResult(EiFieldValidationResult $validationResult) {
+		$this->validationResult = $validationResult;
+	}
+	
+	/**
+	 * @return \rocket\ei\manage\entry\EiFieldValidationResult
+	 */
+	public function getValidationResult() {
+		if ($this->validationResult === null) {
+			$this->validationResult = new EiFieldValidationResult($this->eiPropPath);
+		}
+		
+		return $this->validationResult;
 	}
 }

@@ -25,7 +25,6 @@ use rocket\ei\component\prop\field\RwvEiField;
 use n2n\reflection\ArgUtils;
 use rocket\ei\manage\entry\EiFieldValidationResult;
 use n2n\util\ex\IllegalStateException;
-use rocket\ei\manage\EiObject;
 use rocket\ei\component\prop\field\Readable;
 use rocket\ei\component\prop\field\Writable;
 use rocket\ei\util\Eiu;
@@ -34,9 +33,9 @@ use rocket\ei\component\prop\field\Copyable;
 class ToManyEiField extends RwvEiField {
 	private $copyable = null;
 	
-	public function __construct(EiObject $eiObject, 
-			Readable $readable = null, Writable $writable = null, Copyable $copyable = null) {
-		parent::__construct($eiObject, $readable, $writable);
+	public function __construct(Eiu $eiu, Readable $readable = null, Writable $writable = null, 
+			Copyable $copyable = null) {
+		parent::__construct($eiu, $readable, $writable);
 		
 		$this->copyable = $copyable;
 	}	

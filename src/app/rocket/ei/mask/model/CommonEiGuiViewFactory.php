@@ -34,10 +34,10 @@ class CommonEiGuiViewFactory implements EiGuiViewFactory {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\EiGuiViewFactory::getGuiIdPaths()
+	 * @see \rocket\ei\manage\gui\EiGuiViewFactory::getGuiPropPaths()
 	 */
-	public function getGuiIdPaths(): array {
-		return $this->displayStructure->getAllGuiIdPaths();
+	public function getGuiPropPaths(): array {
+		return $this->displayStructure->getAllGuiPropPaths();
 	}
 	
 	
@@ -95,8 +95,8 @@ class CommonEiGuiViewFactory implements EiGuiViewFactory {
 	
 	private function createDefaultDisplayStructure($viewMode) {
 		$displayStructure = new DisplayStructure();
-		foreach ($this->eiGui->getGuiDefinition()->filterGuiIdPaths($viewMode) as $guiIdPath) {
-			$displayStructure->addGuiIdPath($guiIdPath);
+		foreach ($this->eiGui->getGuiDefinition()->filterGuiPropPaths($viewMode) as $eiPropPath) {
+			$displayStructure->addGuiPropPath($eiPropPath);
 		}
 		return $displayStructure;
 	}

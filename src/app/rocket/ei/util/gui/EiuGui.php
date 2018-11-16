@@ -3,7 +3,7 @@ namespace rocket\ei\util\gui;
 
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\gui\ViewMode;
-use rocket\ei\manage\gui\GuiIdPath;
+use rocket\ei\manage\gui\GuiPropPath;
 use rocket\ei\manage\gui\EiGuiViewFactory;
 use rocket\ei\manage\gui\GuiDefinition;
 use n2n\web\ui\UiComponent;
@@ -72,21 +72,21 @@ class EiuGui {
 	}
 	
 	/**
-	 * @param GuiIdPath|string $guiIdPath
+	 * @param GuiPropPath|string $eiPropPath
 	 * @param bool $required
 	 * @return string|null
 	 */
-	public function getPropLabel($guiIdPath, N2nLocale $n2nLocale = null, bool $required = false) {
-		$guiIdPath = GuiIdPath::create($guiIdPath);
+	public function getPropLabel($eiPropPath, N2nLocale $n2nLocale = null, bool $required = false) {
+		$eiPropPath = GuiPropPath::create($eiPropPath);
 		if ($n2nLocale === null) {
 			$n2nLocale = $this->eiGui->getEiFrame()->getN2nContext()->getN2nLocale();
 		}
 		
-		if (null !== ($displayItem = $this->getDisplayItemByGuiIdPath($guiIdPath))) {
+		if (null !== ($displayItem = $this->getDisplayItemByGuiPropPath($eiPropPath))) {
 			return $displayItem->translateLabel($n2nLocale);
 		}
 		
-		if (null !== ($guiProp = $this->getGuiPropByGuiIdPath($guiIdPath, $required))) {
+		if (null !== ($guiProp = $this->getGuiPropByGuiPropPath($eiPropPath, $required))) {
 			return $guiProp->getDisplayLabelLstr()->t($n2nLocale);
 		}
 		
@@ -94,17 +94,17 @@ class EiuGui {
 	}
 	
 	/**
-	 * @param GuiIdPath|string $guiIdPath
+	 * @param GuiPropPath|string $eiPropPath
 	 * @param bool $required
 	 * @throws \InvalidArgumentException
 	 * @throws GuiException
 	 * @return \rocket\ei\manage\gui\GuiProp|null
 	 */
-	public function getGuiPropByGuiIdPath($guiIdPath, bool $required = false) {
-		$guiIdPath = GuiIdPath::create($guiIdPath);
+	public function getGuiPropByGuiPropPath($eiPropPath, bool $required = false) {
+		$eiPropPath = GuiPropPath::create($eiPropPath);
 		
 		try {
-			return $this->eiGui->getEiGuiViewFactory()->getGuiDefinition()->getGuiPropByGuiIdPath($guiIdPath);
+			return $this->eiGui->getEiGuiViewFactory()->getGuiDefinition()->getGuiPropByGuiPropPath($eiPropPath);
 		} catch (GuiException $e) {
 			if (!$required) return null;
 			throw $e;
@@ -112,17 +112,17 @@ class EiuGui {
 	}
 		
 	/**
-	 * @param GuiIdPath|string $guiIdPath
+	 * @param GuiPropPath|string $eiPropPath
 	 * @param bool $required
 	 * @throws \InvalidArgumentException
 	 * @return \rocket\ei\manage\gui\ui\DisplayItem
 	 */
-	public function getDisplayItemByGuiIdPath($guiIdPath) {
-		$guiIdPath = GuiIdPath::create($guiIdPath);
+	public function getDisplayItemByGuiPropPath($eiPropPath) {
+		$eiPropPath = GuiPropPath::create($eiPropPath);
 		
 		$displayStructure = $this->eiGui->getEiGuiViewFactory()->getDisplayStructure();
 		if ($displayStructure !== null) {
-			return $displayStructure->getDisplayItemByGuiIdPath($guiIdPath);
+			return $displayStructure->getDisplayItemByGuiPropPath($eiPropPath);
 		}
 		return null;
 	}
@@ -182,13 +182,13 @@ class EiuGui {
 		return $eiuEntryGuis;
 	}
 	
-	public function initWithUiCallback(\Closure $viewFactory, array $guiIdPaths) {
-		$guiIdPaths = GuiIdPath::createArray($guiIdPaths);
+	public function initWithUiCallback(\Closure $viewFactory, array $eiPropPaths) {
+		$eiPropPaths = GuiPropPath::createArray($eiPropPaths);
 		$eiFrame = $this->eiGui->getEiFrame();
 		$guiDefinition = $this->eiGui->getEiFrame()->getManageState()->getDef()->getGuiDefinition(
 				$eiFrame->getContextEiEngine()->getEiMask());
 		
-		$this->eiGui->init(new CustomGuiViewFactory($guiDefinition, $guiIdPaths, $viewFactory));
+		$this->eiGui->init(new CustomGuiViewFactory($guiDefinition, $eiPropPaths, $viewFactory));
 	}
 // 	/**
 // 	 * @param bool $required
@@ -279,12 +279,12 @@ class EiuGui {
 
 class CustomGuiViewFactory implements EiGuiViewFactory {
 	private $guiDefinition;
-	private $guiIdPaths;
+	private $eiPropPaths;
 	private $factory;
 	private $displayStructure;
 	
-	public function __construct(GuiDefinition $guiDefinition, array $guiIdPaths, \Closure $factory) {
-		$this->guiIdPaths = $guiIdPaths;
+	public function __construct(GuiDefinition $guiDefinition, array $eiPropPaths, \Closure $factory) {
+		$this->eiPropPaths = $eiPropPaths;
 		$this->guiDefinition = $guiDefinition;
 		$this->factory = $factory;
 		$this->displayStructure = new DisplayStructure();
@@ -294,8 +294,8 @@ class CustomGuiViewFactory implements EiGuiViewFactory {
 		return $this->guiDefinition;
 	}
 	
-	public function getGuiIdPaths(): array {
-		return $this->guiIdPaths;
+	public function getGuiPropPaths(): array {
+		return $this->eiPropPaths;
 	}
 	
 	public function getDisplayStructure(): DisplayStructure {

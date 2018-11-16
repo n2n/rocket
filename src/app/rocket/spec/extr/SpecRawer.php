@@ -239,7 +239,7 @@ class SpecRawer {
 					RawDef::DISPLAY_ITEM_LABEL_KEY => $displayItem->getLabel(),
 					RawDef::DISPLAY_ITEM_GROUP_TYPE_KEY => $displayItem->getType());
 			if (!$displayItem->hasDisplayStructure()) {
-				$displayItemData[RawDef::DISPLAY_ITEM_GUI_ID_PATH_KEY] = (string) $displayItem->getGuiIdPath();
+				$displayItemData[RawDef::DISPLAY_ITEM_GUI_ID_PATH_KEY] = (string) $displayItem->getGuiPropPath();
 			} else {
 				$displayItemData[RawDef::DISPLAY_ITEM_DISPLAY_STRUCTURE_KEY] = 
 						$this->buildDisplayStructureRawData($displayItem->getDisplayStructure());

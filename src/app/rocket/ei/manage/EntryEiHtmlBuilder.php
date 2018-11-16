@@ -26,7 +26,7 @@ use n2n\web\dispatch\map\PropertyPath;
 use n2n\impl\web\ui\view\html\HtmlUtils;
 use n2n\util\ex\IllegalStateException;
 use n2n\impl\web\ui\view\html\HtmlElement;
-use rocket\ei\manage\gui\GuiIdPath;
+use rocket\ei\manage\gui\GuiPropPath;
 use rocket\ei\manage\gui\Displayable;
 use n2n\reflection\ArgUtils;
 use n2n\web\ui\UiComponent;
@@ -140,49 +140,49 @@ class EntryEiHtmlBuilder {
 				new HtmlElement('input', array('type' => 'checkbox')));
 	}
 	
-	private function buildAttrs(GuiIdPath $guiIdPath) {
-		return array('class' => 'rocket-gui-field-' . implode('-', $guiIdPath->toArray()));
+	private function buildAttrs(GuiPropPath $eiPropPath) {
+		return array('class' => 'rocket-gui-field-' . implode('-', $eiPropPath->toArray()));
 	}
 	
-	public function openInputField($tagName, $guiIdPath, array $attrs = null) {
-		$this->view->out($this->getOpenInputField($tagName, $guiIdPath, $attrs));
+	public function openInputField($tagName, $eiPropPath, array $attrs = null) {
+		$this->view->out($this->getOpenInputField($tagName, $eiPropPath, $attrs));
 	}
 	
-	public function getOpenInputField($tagName, $guiIdPath, array $attrs = null) {
+	public function getOpenInputField($tagName, $eiPropPath, array $attrs = null) {
 		$eiuEntryGui = $this->meta->getCurrentEiuEntryGui();
-		$guiIdPath = GuiIdPath::create($guiIdPath);
+		$eiPropPath = GuiPropPath::create($eiPropPath);
 		
 		$eiEntryGui = $eiuEntryGui->getEiEntryGui();
-		$displayable = $eiEntryGui->getDisplayableByGuiIdPath($guiIdPath);
+		$displayable = $eiEntryGui->getDisplayableByGuiPropPath($eiPropPath);
 		$fieldErrorInfo = $eiuEntryGui->getEiuEntry()->getEiEntry()->getValidationResult()->getEiFieldValidationResult(
-				$eiEntryGui->getGuiDefinition()->guiIdPathToEiPropPath($guiIdPath));
+				$eiEntryGui->getGuiDefinition()->eiPropPathToEiPropPath($eiPropPath));
 		
-		if (!$eiEntryGui->containsMagAssemblyGuiIdPath($guiIdPath)) {
+		if (!$eiEntryGui->containsMagAssemblyGuiPropPath($eiPropPath)) {
 			return $this->fieldEiHtml->getOpenOutputField($tagName, $displayable, $fieldErrorInfo, 
-					$this->buildAttrs($guiIdPath));
+					$this->buildAttrs($eiPropPath));
 		}
 		
-		$editableInfo = $eiEntryGui->getMagAssemblyByGuiIdPath($guiIdPath);
+		$editableInfo = $eiEntryGui->getMagAssemblyByGuiPropPath($eiPropPath);
 		$propertyPath = $this->meta->getContextPropertyPath()->ext($editableInfo->getMagPropertyPath());
 				
 		$this->pushGuiPropInfo($tagName, $displayable, $fieldErrorInfo, $propertyPath);
 		return $this->fieldEiHtml->getOpenInputField($tagName, $propertyPath, $fieldErrorInfo, 
-				$this->buildAttrs($guiIdPath), $editableInfo->isMandatory());
+				$this->buildAttrs($eiPropPath), $editableInfo->isMandatory());
 	}
 		
-	public function openOutputField($tagName, $guiIdPath, array $attrs = null) {
-		$this->view->out($this->getOpenOutputField($tagName, $guiIdPath, $attrs));
+	public function openOutputField($tagName, $eiPropPath, array $attrs = null) {
+		$this->view->out($this->getOpenOutputField($tagName, $eiPropPath, $attrs));
 	}
 	
-	public function getOpenOutputField($tagName, $guiIdPath, array $attrs = null) {
+	public function getOpenOutputField($tagName, $eiPropPath, array $attrs = null) {
 		$eiuEntryGui = $this->meta->getCurrentEiuEntryGui();
-		$guiIdPath = GuiIdPath::create($guiIdPath);
-		$displayable = $eiuEntryGui->getEiEntryGui()->getDisplayableByGuiIdPath($guiIdPath);
+		$eiPropPath = GuiPropPath::create($eiPropPath);
+		$displayable = $eiuEntryGui->getEiEntryGui()->getDisplayableByGuiPropPath($eiPropPath);
 		$fieldErrorInfo = $eiuEntryGui->getEiuEntry()->getEiEntry()->getValidationResult()->getEiFieldValidationResult(
-				$eiuEntryGui->getEiEntryGui()->getGuiDefinition()->guiIdPathToEiPropPath($guiIdPath));
+				$eiuEntryGui->getEiEntryGui()->getGuiDefinition()->eiPropPathToEiPropPath($eiPropPath));
 		
 		return $this->fieldEiHtml->getOpenOutputField($tagName, $displayable, $fieldErrorInfo, 
-				$this->buildAttrs($guiIdPath));
+				$this->buildAttrs($eiPropPath));
 	}
 	
 	public function closeField() {

@@ -24,13 +24,14 @@ namespace rocket\ei\manage\gui;
 use rocket\ei\manage\EiObject;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\entry\EiEntry;
+use n2n\util\ex\IllegalStateException;
 
 interface GuiPropFork {
 
 	/**
 	 * @return GuiDefinition
 	 */
-	public function getForkedGuiDefinition(): GuiDefinition;
+	public function getForkedGuiDefinition(): ?GuiDefinition;
 	
 	/**
 	 * @param Eiu $eiu
@@ -41,13 +42,15 @@ interface GuiPropFork {
 	/**
 	 * @param EiObject $eiObject
 	 * @return EiObject|null null if not available
+	 * @throws IllegalStateException if {@see self::getForkedGuiDefinition()}
 	 */
 	public function determineForkedEiObject(EiObject $eiObject): ?EiObject;
 	
 	/**
 	 *
-	 * @param GuiIdPath $guiIdPath
+	 * @param GuiPropPath $eiPropPath
 	 * @return null|\rocket\ei\manage\entry\EiFieldWrapper
+	 * @throws IllegalStateException if {@see self::getForkedGuiDefinition()}
 	 */
-	public function determineEiFieldWrapper(EiEntry $eiEntry, GuiIdPath $guiIdPath);
+	public function determineEiFieldWrapper(EiEntry $eiEntry, GuiPropPath $eiPropPath);
 }

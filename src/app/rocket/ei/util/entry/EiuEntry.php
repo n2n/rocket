@@ -29,7 +29,7 @@ use rocket\ei\manage\entry\WrittenMappingListener;
 use rocket\ei\manage\entry\OnValidateMappingListener;
 use rocket\ei\manage\entry\ValidatedMappingListener;
 use rocket\ei\manage\entry\EiFieldOperationFailedException;
-use rocket\ei\manage\gui\GuiIdPath;
+use rocket\ei\manage\gui\GuiPropPath;
 use rocket\ei\manage\gui\GuiException;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\EiGui;
@@ -270,7 +270,7 @@ class EiuEntry {
 		return new EiuEntryGui($eiGui->createEiEntryGui($this->getEiEntry(), $treeLevel), null, $this->eiuAnalyst);
 	}
 	
-	public function newCustomEntryGui(\Closure $uiFactory, array $guiIdPaths, bool $bulky = true, 
+	public function newCustomEntryGui(\Closure $uiFactory, array $eiPropPaths, bool $bulky = true, 
 			bool $editable = false, int $treeLevel = null, bool $determineEiMask = true) {
 // 		$eiMask = null;
 // 		if ($determineEiMask) {
@@ -280,7 +280,7 @@ class EiuEntry {
 // 		}
 		
 		$viewMode = $this->deterViewMode($bulky, $editable);
-		$eiuGui = $this->eiuFrame->newCustomGui($viewMode, $uiFactory, $guiIdPaths);
+		$eiuGui = $this->eiuFrame->newCustomGui($viewMode, $uiFactory, $eiPropPaths);
 		return $eiuGui->appendNewEntryGui($this, $treeLevel);
 	}
 	
@@ -424,19 +424,19 @@ class EiuEntry {
 	}
 	
 // 	/**
-// 	 * @param mixed $guiIdPath
+// 	 * @param mixed $eiPropPath
 // 	 * @return boolean
 // 	 */
-// 	public function containsGuiProp($guiIdPath) {
-// 		return $this->eiuFrame->containsGuiProp($guiIdPath);
+// 	public function containsGuiProp($eiPropPath) {
+// 		return $this->eiuFrame->containsGuiProp($eiPropPath);
 // 	}
 	
 // 	/**
-// 	 * @param GuiIdPath|string $guiIdPath
+// 	 * @param GuiPropPath|string $eiPropPath
 // 	 * @return \rocket\ei\EiPropPath|null
 // 	 */
-// 	public function guiIdPathToEiPropPath($guiIdPath) {
-// 		return $this->eiuFrame->guiIdPathToEiPropPath($guiIdPath, $this);
+// 	public function eiPropPathToEiPropPath($eiPropPath) {
+// 		return $this->eiuFrame->eiPropPathToEiPropPath($eiPropPath, $this);
 // 	}
 	
 	/**
@@ -479,16 +479,16 @@ class EiuEntry {
 	}
 	
 	/**
-	 * @param GuiIdPath $guiIdPath
+	 * @param GuiPropPath $eiPropPath
 	 * @param bool $required
 	 * @throws EiFieldOperationFailedException
 	 * @throws GuiException
 	 * @return \rocket\ei\manage\entry\EiFieldWrapper|null
 	 */
-	public function getEiFieldWrapperByGuiIdPath($guiIdPath, bool $required = false) {
+	public function getEiFieldWrapperByGuiPropPath($eiPropPath, bool $required = false) {
 		$guiDefinition = $this->getEiuFrame()->getContextEiuEngine()->getGuiDefinition();
 		try {
-			return $guiDefinition->determineEiFieldWrapper($this->getEiEntry(), GuiIdPath::create($guiIdPath));
+			return $guiDefinition->determineEiFieldWrapper($this->getEiEntry(), GuiPropPath::create($eiPropPath));
 		} catch (EiFieldOperationFailedException $e) {
 			if ($required) throw $e;
 		} catch (GuiException $e) {

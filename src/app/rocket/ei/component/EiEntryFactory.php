@@ -40,10 +40,10 @@ class EiEntryFactory {
 	private $eiPropCollection;
 	private $eiModificatorCollection;
 	
-	public function __construct(EiMask $eiMask, EiPropCollection $fieldCollection, 
+	public function __construct(EiMask $eiMask, EiPropCollection $eiPropCollection, 
 			EiModificatorCollection $eiModificatorCollection) {
 		$this->eiMask = $eiMask;
-		$this->eiPropCollection = $fieldCollection;
+		$this->eiPropCollection = $eiPropCollection;
 		$this->eiModificatorCollection = $eiModificatorCollection;
 	}
 
