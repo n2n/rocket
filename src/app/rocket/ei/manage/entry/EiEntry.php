@@ -153,7 +153,7 @@ class EiEntry {
 	
 	/**
 	 * @param EiPropPath $eiPropPath
-	 * @throws EiFieldOperationFailedException
+	 * @throws UnknownEiFieldExcpetion
 	 * @return \rocket\ei\manage\entry\EiFieldWrapper
 	 */
 	function getEiFieldWrapper(EiPropPath $eiPropPath) {
@@ -166,14 +166,14 @@ class EiEntry {
 			try {
 				$eiFieldWrapper = $eiFieldMap->getWrapper($id);
 				if (empty($ids)) return $eiFieldWrapper;
-			} catch (\rocket\ei\manage\entry\EiFieldOperationFailedException $e) {
-				throw new EiFieldOperationFailedException('No EiField defined for EiPropPath: ' . (new EiPropPath($passedIds)));
+			} catch (\rocket\ei\manage\entry\UnknownEiFieldExcpetion $e) {
+				throw new UnknownEiFieldExcpetion('No EiField defined for EiPropPath: ' . (new EiPropPath($passedIds)));
 			}
 			
 			$eiFieldMap = $eiFieldWrapper->getEiField()->getForkedEiFieldMap();
 			if ($eiFieldMap !== null) continue;
 			
-			throw new EiFieldOperationFailedException('No EiField defined for EiPropPath: ' . (new EiPropPath(
+			throw new UnknownEiFieldExcpetion('No EiField defined for EiPropPath: ' . (new EiPropPath(
 					array_merge($passedIds, [reset($ids)]))));
 		}
 	}
@@ -547,53 +547,3 @@ class MappingValidationResult {
 
 
 
-class EiFieldWrapperImpl implements EiFieldWrapper {
-	private $eiPropPath;
-	private $eiField;
-	private $ignored = false;
-	private $validationResult;
-	
-	public function __construct(EiPropPath $eiPropPath, EiField $eiField) {
-		$this->eiPropPath = $eiPropPath;
-		$this->eiField = $eiField;
-	}
-	
-	/**
-	 * @param bool $ignored
-	 */
-	public function setIgnored(bool $ignored) {
-		$this->ignored = $ignored;
-	}
-	
-	/**
-	 * @return bool
-	 */
-	public function isIgnored(): bool {
-		return $this->ignored;
-	}
-	
-	/**
-	 * @return \rocket\ei\manage\entry\EiField
-	 */
-	public function getEiField() {
-		return $this->eiField;
-	}
-	
-	/**
-	 * @param EiFieldValidationResult $validationResult
-	 */
-	public function setValidationResult(EiFieldValidationResult $validationResult) {
-		$this->validationResult = $validationResult;
-	}
-	
-	/**
-	 * @return \rocket\ei\manage\entry\EiFieldValidationResult
-	 */
-	public function getValidationResult() {
-		if ($this->validationResult === null) {
-			$this->validationResult = new EiFieldValidationResult($this->eiPropPath);
-		}
-		
-		return $this->validationResult;
-	}
-}

@@ -1,9 +1,9 @@
 <?php
 namespace rocket\ei\component\prop\field;
 
-use rocket\ei\manage\entry\EiFieldWrapper;
+use rocket\ei\manage\gui\EiFieldAbstraction;
 
-class EiFieldWrapperWrapper implements EiFieldWrapper {
+class EiFieldWrapperWrapper implements EiFieldAbstraction {
 	private $eiFieldWrappers = array();
 	
 	public function __construct(array $eiFieldWrappers) {

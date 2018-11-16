@@ -26,7 +26,6 @@ use rocket\ei\EiPropPath;
 use rocket\ei\manage\EiObject;
 use rocket\ei\manage\entry\EiEntry;
 use n2n\reflection\ArgUtils;
-use rocket\ei\manage\entry\EiFieldWrapper;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\gui\ui\DisplayStructure;
 use n2n\util\ex\NotYetImplementedException;
@@ -62,7 +61,7 @@ class GuiDefinition {
 	/**
 	 * @param string $id
 	 * @param GuiProp $guiProp
-	 * @param EiPropPath $eiPropPath
+	 * @param EiPropPath $guiPropPath
 	 * @throws GuiException
 	 */
 	public function putGuiProp(EiPropPath $eiPropPath, GuiProp $guiProp) {
@@ -92,15 +91,15 @@ class GuiDefinition {
 	public function removeGuiPropByPath(GuiPropPath $guiPropPath) {
 		$guiDefinition = $this;
 		$eiPropPaths = $guiPropPath->toArray();
-		while (null !== ($eiPropPath = array_pop($eiPropPaths))) {
+		while (null !== ($eiPropPath = array_shift($eiPropPaths))) {
 			if (empty($eiPropPaths)) {
 				$guiDefinition->removeGuiProp($eiPropPath);
 				return;
 			}
 			
-			try {
-				$guiDefinition = $guiDefinition->getGuiPropFork($eiPropPath)->getForkedGuiDefinition();
-			} catch (\rocket\ei\manage\gui\GuiException $e) {
+			$guiDefinition = $guiDefinition->getGuiPropFork($eiPropPath)->getForkedGuiDefinition();
+		
+			if ($guiDefinition === null) {
 				return;
 			}
 		}
@@ -375,16 +374,21 @@ class GuiDefinition {
 // 		return null;
 // 	}
 	
-	public function determineEiFieldWrapper(EiEntry $eiEntry, GuiPropPath $eiPropPath) {
-		$ids = $eiPropPath->toArray();
+	/**
+	 * @param EiEntry $eiEntry
+	 * @param GuiPropPath $guiPropPath
+	 * @return \rocket\ei\manage\gui\EiFieldAbstraction|null
+	 */
+	public function determineEiFieldAbstraction(EiEntry $eiEntry, GuiPropPath $guiPropPath) {
+		$ids = $guiPropPath->toArray();
 		$id = array_shift($ids);
 		if (empty($ids)) {
 			return $eiEntry->getEiFieldWrapper(new EiPropPath(array($id)));
 		}
 		
 		$guiPropFork = $this->getGuiPropFork($id);
-		$eiFieldWrapper = $guiPropFork->determineEiFieldWrapper($eiEntry, $eiPropPath);
-		ArgUtils::valTypeReturn($eiFieldWrapper, EiFieldWrapper::class, $guiPropFork, 'determineEiFieldWrapper', true);
+		$eiFieldWrapper = $guiPropFork->determineEiFieldAbstraction($eiEntry, new GuiPropPath(array($ids)));
+		ArgUtils::valTypeReturn($eiFieldWrapper, EiFieldAbstraction::class, $guiPropFork, 'determineEiFieldAbstraction', true);
 		return $eiFieldWrapper;
 	}
 	

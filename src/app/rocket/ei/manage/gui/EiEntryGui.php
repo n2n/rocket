@@ -123,7 +123,7 @@ class EiEntryGui {
 	
 	/**
 	 * @param GuiPropPath $eiPropPath
-	 * @param Displayable $displayable
+	 * @param GuiFieldAssembly $guiFieldAssembly
 	 */
 	public function putGuiFieldAssembly(GuiPropPath $eiPropPath, GuiFieldAssembly $guiFieldAssembly) {
 		$this->ensureNotInitialized();
@@ -180,7 +180,7 @@ class EiEntryGui {
 	
 	/**
 	 * @param GuiPropPath $eiPropPath
-	 * @param Displayable $displayable
+	 * @param GuiFieldForkAssembly $guiFieldForkAssembly
 	 */
 	public function putGuiFieldForkAssembly(GuiPropPath $eiPropPath, GuiFieldForkAssembly $guiFieldForkAssembly) {
 		$this->ensureNotInitialized();
@@ -306,7 +306,7 @@ class EiEntryGui {
 		}
 		
 		foreach ($this->guiFieldAssemblies as $guiFieldAssembly) {
-			if (null !== ($savable = $guiFieldAssembly->getSavable())) {
+			if (null !== ($savable = $guiFieldAssembly->getGuiFieldEditable())) {
 				$savable->save();
 			}
 		}

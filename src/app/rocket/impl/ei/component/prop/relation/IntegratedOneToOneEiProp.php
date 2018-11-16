@@ -184,7 +184,7 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiEiPro
 		return $targetEiObject;
 	}
 	
-	public function determineEiFieldWrapper(EiEntry $eiEntry, GuiPropPath $eiPropPath) {
+	public function determineEiFieldAbstraction(EiEntry $eiEntry, GuiPropPath $eiPropPath) {
 		$eiFieldWrappers = array();
 		$targetRelationEntry = $eiEntry->getValue(EiPropPath::from($this->eiPropRelation->getRelationEiProp()));
 		if ($targetRelationEntry === null || !$targetRelationEntry->hasEiEntry()) return null;

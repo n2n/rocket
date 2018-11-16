@@ -485,10 +485,10 @@ class EiuEntry {
 	 * @throws GuiException
 	 * @return \rocket\ei\manage\entry\EiFieldWrapper|null
 	 */
-	public function getEiFieldWrapperByGuiPropPath($eiPropPath, bool $required = false) {
+	public function getEiFieldAbstractionByGuiPropPath($eiPropPath, bool $required = false) {
 		$guiDefinition = $this->getEiuFrame()->getContextEiuEngine()->getGuiDefinition();
 		try {
-			return $guiDefinition->determineEiFieldWrapper($this->getEiEntry(), GuiPropPath::create($eiPropPath));
+			return $guiDefinition->determineEiFieldAbstraction($this->getEiEntry(), GuiPropPath::create($eiPropPath));
 		} catch (EiFieldOperationFailedException $e) {
 			if ($required) throw $e;
 		} catch (GuiException $e) {

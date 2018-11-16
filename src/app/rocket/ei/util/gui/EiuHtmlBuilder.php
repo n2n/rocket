@@ -30,7 +30,7 @@ use rocket\ei\manage\gui\GuiPropPath;
 use rocket\ei\manage\gui\ui\DisplayItem;
 use rocket\ei\manage\gui\EiEntryGui;
 use n2n\impl\web\ui\view\html\HtmlUtils;
-use rocket\ei\manage\gui\Displayable;
+use rocket\ei\manage\gui\GuiField;
 use rocket\ei\manage\entry\EiFieldValidationResult;
 use n2n\l10n\MessageTranslator;
 use n2n\reflection\ArgUtils;
@@ -39,6 +39,7 @@ use rocket\ei\manage\control\Control;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\RocketUiOutfitter;
 use n2n\impl\web\ui\view\html\HtmlSnippet;
+use rocket\ei\manage\gui\GuiField;
 
 class EiuHtmlBuilder {
 	private $view;
@@ -320,7 +321,7 @@ class EiuHtmlBuilder {
 		
 		$fieldErrorInfo = null;
 		if (null !== ($eiFieldWrapper = $eiEntryGui->getGuiFieldAssembly($eiPropPath)->getEiFieldWrapper())) {
-			$fieldErrorInfo = $eiFieldWrapper->getEiFieldErrorInfo();
+			$fieldErrorInfo = $eiFieldWrapper->getValidationResult();
 		}
 		
 		if (!$eiEntryGui->containsGuiFieldGuiPropPath($eiPropPath)) {
@@ -334,7 +335,7 @@ class EiuHtmlBuilder {
 		
 		if ($readOnly || $magAssembly === null) {
 			$this->state->pushField($tagName, $eiPropPath, $fieldErrorInfo, $guiFieldAssembly, null, $displayItem);
-			return $this->createOutputFieldOpen($tagName, $guiFieldAssembly->getDisplayable(), $fieldErrorInfo,
+			return $this->createOutputFieldOpen($tagName, $guiFieldAssembly->getGuiField(), $fieldErrorInfo,
 					$this->buildAttrs($eiPropPath, (array) $attrs, $displayItem));
 		}
 	
@@ -359,9 +360,9 @@ class EiuHtmlBuilder {
 	}
 	
 	
-	private function createOutputFieldOpen($tagName, Displayable $displayable = null, EiFieldValidationResult $fieldErrorInfo, array $attrs = null) {
+	private function createOutputFieldOpen($tagName, GuiField $guiField = null, EiFieldValidationResult $fieldErrorInfo, array $attrs = null) {
 		return new Raw('<' . HtmlUtils::hsc($tagName) . HtmlElement::buildAttrsHtml(
-				$this->buildContainerAttrs(HtmlUtils::mergeAttrs(($displayable !== null ? $displayable->getOutputHtmlContainerAttrs() : array()), $attrs))) . '>');
+				$this->buildContainerAttrs(HtmlUtils::mergeAttrs(($guiField !== null ? $guiField->getOutputHtmlContainerAttrs() : array()), $attrs))) . '>');
 	}
 
 	

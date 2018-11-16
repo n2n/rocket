@@ -19,25 +19,13 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
+
 namespace rocket\ei\manage\gui;
 
-use n2n\impl\web\ui\view\html\HtmlView;
-
-interface Displayable {
+interface EiFieldAbstraction {
 	
-	/**
-	 * @return array
-	 */
-	public function getOutputHtmlContainerAttrs(): array;
+	public function isIgnored(): bool;
 	
-	/**
-	 * @param HtmlView $view
-	 * @return mixed UiComponent or string (will be escaped)
-	 */
-	public function createOutputUiComponent(HtmlView $view);
-	
-	/**
-	 * @return string|null {@see DisplayItem::TYPE_SIMPLE} 
-	 */
-	public function getDisplayItemType(): ?string;
+	public function setIgnored(bool $ignored);
 }
+

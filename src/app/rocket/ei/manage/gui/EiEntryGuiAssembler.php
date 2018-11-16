@@ -150,7 +150,7 @@ class EiEntryGuiAssembler {
 				new MagAssembly($magAssembly->isMandatory(), 
 						$this->forkedPropertyPaths[$eiPropPath]->ext($magAssembly->getMagPropertyPath()), 
 						$magAssembly->getMagWrapper()),
-				$result->getSavable());
+				$result->getGuiFieldEditable());
 	}
 	
 	/**

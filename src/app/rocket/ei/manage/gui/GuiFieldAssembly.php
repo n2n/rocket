@@ -1,22 +1,22 @@
 <?php
 namespace rocket\ei\manage\gui;
 
-use rocket\ei\manage\entry\EiFieldWrapper;
+use rocket\ei\manage\gui\EiFieldAbstraction;
 
 class GuiFieldAssembly {
 	private $guiProp;
-	private $displayable;
+	private $guiField;
 	private $eiFieldWrapper;
 	private $magAssembly;
-	private $savable;
+	private $editable;
 	
-	public function __construct(GuiProp $guiProp, Displayable $displayable, EiFieldWrapper $eiFieldWrapper = null,
-			MagAssembly $magAssembly = null, Savable $savable = null) {
+	public function __construct(GuiProp $guiProp, GuiField $guiField, EiFieldAbstraction $eiFieldWrapper = null,
+			MagAssembly $magAssembly = null, GuiFieldEditable $editable = null) {
 		$this->guiProp = $guiProp;
-		$this->displayable = $displayable;
+		$this->guiField = $guiField;
 		$this->eiFieldWrapper = $eiFieldWrapper;
 		$this->magAssembly = $magAssembly;
-		$this->savable = $savable;
+		$this->editable = $editable;
 	}
 	
 	/**
@@ -27,10 +27,10 @@ class GuiFieldAssembly {
 	}
 	
 	/**
-	 * @return Displayable
+	 * @return GuiField
 	 */
-	public function getDisplayable(): Displayable {
-		return $this->displayable;
+	public function getGuiField(): GuiField {
+		return $this->guiField;
 	}
 	
 	/**
@@ -48,9 +48,9 @@ class GuiFieldAssembly {
 	}
 	
 	/**
-	 * @return Savable|null
+	 * @return GuiFieldEditable|null
 	 */
-	public function getSavable() {
-		return $this->savable;
+	public function getEditable() {
+		return $this->editable;
 	}
 }

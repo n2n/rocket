@@ -25,7 +25,6 @@ use n2n\l10n\N2nLocale;
 use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\component\prop\DraftableEiProp;
 use rocket\ei\manage\draft\DraftProperty;
-use rocket\ei\manage\EiObject;
 use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
 use rocket\ei\manage\entry\EiField;

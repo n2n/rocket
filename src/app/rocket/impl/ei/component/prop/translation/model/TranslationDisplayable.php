@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\translation\model;
 
-use rocket\ei\manage\gui\Displayable;
+use rocket\ei\manage\gui\GuiField;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\gui\GuiField;
 use rocket\ei\manage\gui\GuiFieldEditable;
@@ -87,7 +87,7 @@ class TranslationDisplayable implements GuiField {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\Displayable::getDisplayItemType()
+	 * @see \rocket\ei\manage\gui\GuiField::getDisplayItemType()
 	 */
 	public function getDisplayItemType(): ?string {
 		return null;

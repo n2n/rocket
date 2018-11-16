@@ -27,7 +27,7 @@ use rocket\ei\manage\gui\EiEntryGuiListener;
 use rocket\ei\manage\gui\GuiPropPath;
 use rocket\ei\manage\gui\GuiException;
 use n2n\web\dispatch\mag\MagWrapper;
-use rocket\ei\manage\entry\EiFieldWrapper;
+use rocket\ei\manage\gui\EiFieldAbstraction;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\gui\ViewMode;
@@ -200,7 +200,7 @@ class EiuEntryGui {
 	 * @param GuiPropPath|string $eiPropPath
 	 * @param bool $required
 	 * @throws GuiException
-	 * @return EiFieldWrapper
+	 * @return EiFieldAbstraction
 	 */
 	public function getEiFieldWrapper($eiPropPath, bool $required = false) {
 		try {

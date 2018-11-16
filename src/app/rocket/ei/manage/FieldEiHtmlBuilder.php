@@ -25,7 +25,7 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\map\PropertyPath;
 use rocket\ei\manage\entry\EiFieldValidationResult;
 use n2n\impl\web\ui\view\html\HtmlUtils;
-use rocket\ei\manage\gui\Displayable;
+use rocket\ei\manage\gui\GuiField;
 use n2n\util\ex\IllegalStateException;
 use n2n\web\ui\Raw;
 use n2n\impl\web\ui\view\html\HtmlElement;

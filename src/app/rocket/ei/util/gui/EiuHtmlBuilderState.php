@@ -4,7 +4,7 @@ namespace rocket\ei\util\gui;
 use n2n\util\col\ArrayUtils;
 use n2n\util\ex\IllegalStateException;
 use n2n\web\dispatch\map\PropertyPath;
-use rocket\ei\manage\gui\Displayable;
+use rocket\ei\manage\gui\GuiField;
 use rocket\ei\manage\gui\EiEntryGui;
 use rocket\ei\manage\gui\GuiFieldAssembly;
 use rocket\ei\manage\gui\GuiPropPath;

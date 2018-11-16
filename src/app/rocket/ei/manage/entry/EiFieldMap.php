@@ -51,10 +51,10 @@ class EiFieldMap {
 	/**
 	 * @param EiPropPath $eiPropPath
 	 * @param EiField $eiField
-	 * @return \rocket\ei\manage\entry\EiFieldWrapperImpl
+	 * @return \rocket\ei\manage\entry\EiFieldWrapper
 	 */
 	public function put(string $id, EiField $eiField) {
-		return $this->eiFieldWrappers[$id] = new EiFieldWrapperImpl($this->forkEiPropPath->ext($id), $eiField);
+		return $this->eiFieldWrappers[$id] = new EiFieldWrapper($this->forkEiPropPath->ext($id), $eiField);
 	}
 	
 	/**
@@ -62,13 +62,13 @@ class EiFieldMap {
 	 * @throws EiFieldOperationFailedException
 	 * @return EiField
 	 */
-	public function get(EiPropPath $eiPropPath) {
-		return $this->getWrapper($eiPropPath)->getEiField();
+	public function get(string $id) {
+		return $this->getWrapper($id)->getEiField();
 	}
 	
 	/**
 	 * @param EiPropPath $eiPropPath
-	 * @throws EiFieldOperationFailedException
+	 * @throws UnknownEiFieldExcpetion
 	 * @return EiFieldWrapper
 	 */
 	public function getWrapper(string $id) {
@@ -76,7 +76,7 @@ class EiFieldMap {
 			return $this->eiFieldWrappers[$id];
 		}
 		
-		throw new EiFieldOperationFailedException('No EiField defined for id \'' . $id . '\'.');
+		throw new UnknownEiFieldExcpetion('No EiField defined for id \'' . $id . '\'.');
 	}
 	
 	public function getWrappers() {

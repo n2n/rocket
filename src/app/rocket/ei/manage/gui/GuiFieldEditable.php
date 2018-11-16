@@ -23,7 +23,7 @@ namespace rocket\ei\manage\gui;
 
 use n2n\web\dispatch\mag\Mag;
 
-interface GuiFieldEditable extends Savable {
+interface GuiFieldEditable {
 	
 	/**
 	 * @return boolean
@@ -35,4 +35,6 @@ interface GuiFieldEditable extends Savable {
 	 * @return \n2n\web\dispatch\mag\Mag
 	 */
 	public function getMag(): Mag;
+	
+	public function save();
 }

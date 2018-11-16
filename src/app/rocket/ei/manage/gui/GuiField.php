@@ -21,7 +21,25 @@
  */
 namespace rocket\ei\manage\gui;
 
-interface GuiField extends Displayable {
+use n2n\impl\web\ui\view\html\HtmlView;
+
+interface GuiField {
+	
+	/**
+	 * @return array
+	 */
+	public function getOutputHtmlContainerAttrs(): array;
+	
+	/**
+	 * @param HtmlView $view
+	 * @return mixed UiComponent or string (will be escaped)
+	 */
+	public function createOutputUiComponent(HtmlView $view);
+	
+	/**
+	 * @return string|null {@see DisplayItem::TYPE_SIMPLE}
+	 */
+	public function getDisplayItemType(): ?string;
 
 	/**
 	 * @return boolean 
@@ -30,8 +48,7 @@ interface GuiField extends Displayable {
 	
 	/**
 	 * @return GuiFieldEditable 
-	 * @throws \n2n\util\ex\IllegalStateException if {@link Displayable::isReadOnly()} belonging to this 
-	 * {@link GuiField} returns true
+	 * @throws \n2n\util\ex\IllegalStateException if {@link self::isReadOnly()} returns true.
 	 */
 	public function getEditable(): GuiFieldEditable;
 }

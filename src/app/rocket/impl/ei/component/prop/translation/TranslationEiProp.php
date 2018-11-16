@@ -236,7 +236,7 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiPropFork
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiPropFork::determineEiFieldWrapper()
 	 */
-	public function determineEiFieldWrapper(EiEntry $eiEntry, GuiPropPath $eiPropPath) {
+	public function determineEiFieldAbstraction(EiEntry $eiEntry, GuiPropPath $eiPropPath) {
 		$eiFieldWrappers = array();
 		foreach ($eiEntry->getValue(EiPropPath::from($this->eiPropRelation->getRelationEiProp())) as $targetRelationEntry) {
 			if ($targetRelationEntry->hasEiEntry()) continue;

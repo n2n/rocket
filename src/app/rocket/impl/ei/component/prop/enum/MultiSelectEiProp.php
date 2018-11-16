@@ -128,7 +128,7 @@ class MultiSelectEiProp extends DraftablePropertyEiPropAdapter {
 	}
 
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\manage\gui\Displayable::createOutputUiComponent()
+	 * @see \rocket\ei\manage\gui\GuiField::createOutputUiComponent()
 	 */
 	public function createOutputUiComponent(HtmlView $view,
 			Eiu $eiu) {

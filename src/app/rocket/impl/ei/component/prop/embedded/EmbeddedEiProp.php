@@ -91,7 +91,7 @@ class EmbeddedGuiPropFork implements GuiPropFork {
 		throw new IllegalStateException();
 	}
 
-	public function determineEiFieldWrapper(EiEntry $eiEntry, GuiPropPath $eiPropPath) {
+	public function determineEiFieldAbstraction(EiEntry $eiEntry, GuiPropPath $eiPropPath) {
 		throw new IllegalStateException();
 	}
 }
