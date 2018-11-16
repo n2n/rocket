@@ -479,16 +479,16 @@ class EiuEntry {
 	}
 	
 	/**
-	 * @param GuiPropPath $eiPropPath
+	 * @param GuiPropPath $guiPropPath
 	 * @param bool $required
 	 * @throws EiFieldOperationFailedException
 	 * @throws GuiException
 	 * @return \rocket\ei\manage\entry\EiFieldWrapper|null
 	 */
-	public function getEiFieldAbstractionByGuiPropPath($eiPropPath, bool $required = false) {
+	public function determineEiFieldAbstraction($guiPropPath, bool $required = false) {
 		$guiDefinition = $this->getEiuFrame()->getContextEiuEngine()->getGuiDefinition();
 		try {
-			return $guiDefinition->determineEiFieldAbstraction($this->getEiEntry(), GuiPropPath::create($eiPropPath));
+			return $guiDefinition->determineEiFieldAbstraction($this->getEiEntry(), GuiPropPath::create($guiPropPath));
 		} catch (EiFieldOperationFailedException $e) {
 			if ($required) throw $e;
 		} catch (GuiException $e) {
