@@ -85,13 +85,10 @@ class EiFieldMap {
 	
 	public function validate(EiEntryValidationResult $eiEntryValidationResult) {
 		foreach ($this->eiFieldWrappers as $eiPropPathStr => $eiFieldWrapper) {
-			$eiFieldValidationResult = $eiEntryValidationResult->getEiFieldValidationResult(EiPropPath::create($eiPropPathStr));
+			if ($eiFieldWrapper->isIgnored()) continue;
 			
-			if (!$eiFieldWrapper->isIgnored()) {
-				$eiFieldWrapper->getEiField()->validate($eiFieldValidationResult);
-			}
-			
-			$eiFieldWrapper->setValidationResult($eiFieldValidationResult);
+			$eiFieldWrapper->getEiField()->validate($eiEntryValidationResult->getEiFieldValidationResult(
+					EiPropPath::create($eiPropPathStr)));
 		}
 	}
 	

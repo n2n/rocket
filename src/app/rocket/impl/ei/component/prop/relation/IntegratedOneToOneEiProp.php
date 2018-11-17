@@ -56,6 +56,7 @@ use rocket\ei\util\gui\EiuEntryGuiAssembler;
 use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\component\prop\GuiEiPropFork;
 use rocket\ei\manage\entry\EiField;
+use rocket\ei\manage\gui\EiFieldAbstraction;
 
 class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiEiPropFork, GuiPropFork {
 	
@@ -184,7 +185,7 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiEiPro
 		return $targetEiObject;
 	}
 	
-	public function determineEiFieldAbstraction(EiEntry $eiEntry, GuiPropPath $eiPropPath) {
+	public function determineEiFieldAbstraction(EiEntry $eiEntry, GuiPropPath $eiPropPath): ?EiFieldAbstraction {
 		$eiFieldWrappers = array();
 		$targetRelationEntry = $eiEntry->getValue(EiPropPath::from($this->eiPropRelation->getRelationEiProp()));
 		if ($targetRelationEntry === null || !$targetRelationEntry->hasEiEntry()) return null;

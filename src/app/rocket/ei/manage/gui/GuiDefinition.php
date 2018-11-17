@@ -32,6 +32,7 @@ use n2n\util\ex\NotYetImplementedException;
 use n2n\l10n\Lstr;
 use rocket\core\model\Rocket;
 use n2n\core\container\N2nContext;
+use rocket\ei\manage\entry\UnknownEiFieldExcpetion;
 
 class GuiDefinition {	
 	private $identityStringPattern;
@@ -377,6 +378,7 @@ class GuiDefinition {
 	/**
 	 * @param EiEntry $eiEntry
 	 * @param GuiPropPath $guiPropPath
+	 * @throws UnknownEiFieldExcpetion
 	 * @return \rocket\ei\manage\gui\EiFieldAbstraction|null
 	 */
 	public function determineEiFieldAbstraction(EiEntry $eiEntry, GuiPropPath $guiPropPath) {

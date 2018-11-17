@@ -93,30 +93,30 @@ class EiFieldValidationResult {
 	// 		return $this->errorMessages;
 	// 	}
 
-	public function processMessage(bool $checkrecursive = true) {
-		foreach ($this->errorMessages as $errorMessage) {
-			if ($errorMessage->isProcessed()) continue;
+// 	public function processMessage(bool $checkrecursive = true) {
+// 		foreach ($this->errorMessages as $errorMessage) {
+// 			if ($errorMessage->isProcessed()) continue;
 			
-			$errorMessage->setProcessed(true);
-			return $errorMessage;
-		}
+// 			$errorMessage->setProcessed(true);
+// 			return $errorMessage;
+// 		}
 		
-		if (!$checkrecursive) return null;
+// 		if (!$checkrecursive) return null;
 		
-		foreach ($this->subEiEntryValidationResults as $subValidationResult) {
-			if (null !== ($message = $subValidationResult->processMessage(true))) {
-				return $message;
-			}
-		}
+// 		foreach ($this->subEiEntryValidationResults as $subValidationResult) {
+// 			if (null !== ($message = $subValidationResult->processMessage(true))) {
+// 				return $message;
+// 			}
+// 		}
 		
-		foreach ($this->subEiFieldValidationResults as $subValidationResult) {
-			if (null !== ($message = $subValidationResult->processMessage(true))) {
-				return $message;
-			}
-		}
+// 		foreach ($this->subEiFieldValidationResults as $subValidationResult) {
+// 			if (null !== ($message = $subValidationResult->processMessage(true))) {
+// 				return $message;
+// 			}
+// 		}
 		
-		return null;
-	}
+// 		return null;
+// 	}
 	
 // 	public function addSubEiFieldValidationResult(EiFieldValidationResult $subValidationResult) {
 // 		$this->subEiFieldValidationResults[] = $subValidationResult;

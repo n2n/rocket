@@ -22,6 +22,7 @@
 
 namespace rocket\ei\util\entry;
 
+use n2n\l10n\Message;
 use n2n\l10n\N2nLocale;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\entry\OnWriteMappingListener;
@@ -29,7 +30,6 @@ use rocket\ei\manage\entry\WrittenMappingListener;
 use rocket\ei\manage\entry\OnValidateMappingListener;
 use rocket\ei\manage\entry\ValidatedMappingListener;
 use rocket\ei\manage\entry\EiFieldOperationFailedException;
-use rocket\ei\manage\gui\GuiPropPath;
 use rocket\ei\manage\gui\GuiException;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\EiGui;
@@ -359,6 +359,17 @@ class EiuEntry {
 			$values[$eiPropPathStr] = $this->getEiEntry()->getValue($eiPropPathStr);
 		}
 		return $values;
+	}
+	
+	/**
+	 * @param bool $recurisve
+	 * @return Message[]
+	 */
+	public function getMessages($eiPropPath, bool $recurisve = false) {
+		$vr = $this->eiEntry->getValidationResult();
+		if ($vr === null) return [];
+		
+		return $vr->getEiFieldValidationResult(EiPropPath::create($eiPropPath))->getMessages($recurisve);
 	}
 
 	/**
