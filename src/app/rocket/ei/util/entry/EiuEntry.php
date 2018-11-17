@@ -42,6 +42,8 @@ use rocket\ei\util\spec\EiuMask;
 use rocket\ei\util\gui\EiuEntryGui;
 use rocket\ei\util\gui\EiuEntryGuiAssembler;
 use n2n\reflection\ArgUtils;
+use rocket\ei\manage\entry\UnknownEiFieldExcpetion;
+use rocket\ei\manage\gui\GuiPropPath;
 
 class EiuEntry {
 	private $eiEntry;
@@ -490,19 +492,17 @@ class EiuEntry {
 	}
 	
 	/**
-	 * @param GuiPropPath $eiPropPath
+	 * @param GuiPropPath $guiPropPath
 	 * @param bool $required
 	 * @throws EiFieldOperationFailedException
 	 * @throws GuiException
 	 * @return \rocket\ei\manage\entry\EiFieldWrapper|null
 	 */
-	public function getEiFieldAbstractionByGuiPropPath($eiPropPath, bool $required = false) {
+	public function determineEiFieldAbstraction($guiPropPath, bool $required = false) {
 		$guiDefinition = $this->getEiuFrame()->getContextEiuEngine()->getGuiDefinition();
 		try {
-			return $guiDefinition->determineEiFieldAbstraction($this->getEiEntry(), GuiPropPath::create($eiPropPath));
-		} catch (EiFieldOperationFailedException $e) {
-			if ($required) throw $e;
-		} catch (GuiException $e) {
+			return $guiDefinition->determineEiFieldAbstraction($this->getEiEntry(), GuiPropPath::create($guiPropPath));
+		} catch (UnknownEiFieldExcpetion $e) {
 			if ($required) throw $e;
 		}
 	

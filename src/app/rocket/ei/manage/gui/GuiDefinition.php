@@ -25,7 +25,6 @@ use n2n\l10n\N2nLocale;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\EiObject;
 use rocket\ei\manage\entry\EiEntry;
-use n2n\reflection\ArgUtils;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\gui\ui\DisplayStructure;
 use n2n\util\ex\NotYetImplementedException;
@@ -389,9 +388,7 @@ class GuiDefinition {
 		}
 		
 		$guiPropFork = $this->getGuiPropFork($id);
-		$eiFieldWrapper = $guiPropFork->determineEiFieldAbstraction($eiEntry, new GuiPropPath(array($ids)));
-		ArgUtils::valTypeReturn($eiFieldWrapper, EiFieldAbstraction::class, $guiPropFork, 'determineEiFieldAbstraction', true);
-		return $eiFieldWrapper;
+		return $guiPropFork->determineEiFieldAbstraction(new Eiu($eiEntry), new GuiPropPath(array($ids)));
 	}
 	
 	public function getGuiPropForks() {
