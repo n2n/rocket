@@ -28,14 +28,14 @@ class DisplayStructure {
 	private $displayItems = array();
 	
 	/**
-	 * @param GuiPropPath $eiPropPath
+	 * @param GuiPropPath $guiPropPath
 	 * @param string $type
 	 * @param string $label
 	 * @param string $moduleNamespace
 	 */
-	public function addGuiPropPath(GuiPropPath $eiPropPath, string $type = null, string $label = null, 
+	public function addGuiPropPath(GuiPropPath $guiPropPath, string $type = null, string $label = null, 
 			string $moduleNamespace = null) {
-		$this->displayItems[] = DisplayItem::create($eiPropPath, $type, $label, $moduleNamespace);
+		$this->displayItems[] = DisplayItem::create($guiPropPath, $type, $label, $moduleNamespace);
 	}
 	
 	/**

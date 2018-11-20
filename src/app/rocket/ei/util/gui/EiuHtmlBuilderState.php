@@ -4,12 +4,12 @@ namespace rocket\ei\util\gui;
 use n2n\util\col\ArrayUtils;
 use n2n\util\ex\IllegalStateException;
 use n2n\web\dispatch\map\PropertyPath;
-use rocket\ei\manage\gui\GuiField;
 use rocket\ei\manage\gui\EiEntryGui;
 use rocket\ei\manage\gui\GuiFieldAssembly;
 use rocket\ei\manage\gui\GuiPropPath;
 use rocket\ei\manage\gui\ui\DisplayItem;
 use rocket\ei\manage\entry\EiFieldValidationResult;
+use rocket\ei\manage\entry\ValidationResult;
 
 class EiuHtmlBuilderState {
 	private $stack = array();
@@ -76,12 +76,12 @@ class EiuHtmlBuilderState {
 	/**
 	 * @param string $tagName
 	 * @param EiFieldValidationResult $fieldErrorInfo
-	 * @param Displayable $guiFieldAssembly
+	 * @param GuiFieldAssembly $guiFieldAssembly
 	 * @param PropertyPath $propertyPath
 	 */
-	public function pushField(string $tagName, GuiPropPath $eiPropPath, EiFieldValidationResult $fieldErrorInfo, 
+	public function pushField(string $tagName, GuiPropPath $guiPropPath, ValidationResult $fieldErrorInfo = null, 
 			GuiFieldAssembly $guiFieldAssembly = null, PropertyPath $propertyPath = null, DisplayItem $displayItem = null) {
-		$this->stack[] = array('type' => 'field', 'eiPropPath' => $eiPropPath, 'tagName' => $tagName, 'guiFieldAssembly' => $guiFieldAssembly,
+		$this->stack[] = array('type' => 'field', 'guiPropPath' => $guiPropPath, 'tagName' => $tagName, 'guiFieldAssembly' => $guiFieldAssembly,
 				'fieldErrorInfo' => $fieldErrorInfo, 'propertyPath' => $propertyPath, 'displayItem' => $displayItem);
 	}
 	

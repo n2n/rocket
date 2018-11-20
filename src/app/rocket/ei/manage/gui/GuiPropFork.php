@@ -47,7 +47,8 @@ interface GuiPropFork {
 	public function determineForkedEiObject(EiObject $eiObject): ?EiObject;
 	
 	/**
-	 * @param GuiPropPath $eiPropPath
+	 * @param Eiu $eiu
+	 * @param GuiPropPath $guiPropPath
 	 * @return EiFieldAbstraction
 	 * @throws IllegalStateException if {@see self::getForkedGuiDefinition()}
 	 * @throws UnknownEiFieldExcpetion if EiFieldAbstraction is not resovable.

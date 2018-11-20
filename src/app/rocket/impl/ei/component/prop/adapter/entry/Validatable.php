@@ -19,10 +19,14 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\component\prop\field;
+namespace rocket\impl\ei\component\prop\adapter\entry;
 
-use rocket\ei\util\Eiu;
+use rocket\ei\manage\EiObject;
+use rocket\ei\manage\entry\EiFieldValidationResult;
 
-interface Readable {
-	public function read(Eiu $eiu);
+interface Validatable {
+	
+	public function testEiFieldValue(EiObject $eiObject, $eiFieldValue): bool;
+	
+	public function validateEiFieldValue(EiObject $eiObject, $eiFieldValue, EiFieldValidationResult $fieldErrorInfo);
 }

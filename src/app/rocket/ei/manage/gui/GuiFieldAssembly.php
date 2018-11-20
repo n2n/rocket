@@ -1,20 +1,16 @@
 <?php
 namespace rocket\ei\manage\gui;
 
-use rocket\ei\manage\gui\EiFieldAbstraction;
-
 class GuiFieldAssembly {
 	private $guiProp;
 	private $guiField;
-	private $eiFieldWrapper;
 	private $magAssembly;
 	private $editable;
 	
-	public function __construct(GuiProp $guiProp, GuiField $guiField, EiFieldAbstraction $eiFieldWrapper = null,
+	public function __construct(GuiProp $guiProp, GuiField $guiField, 
 			MagAssembly $magAssembly = null, GuiFieldEditable $editable = null) {
 		$this->guiProp = $guiProp;
 		$this->guiField = $guiField;
-		$this->eiFieldWrapper = $eiFieldWrapper;
 		$this->magAssembly = $magAssembly;
 		$this->editable = $editable;
 	}
@@ -29,15 +25,8 @@ class GuiFieldAssembly {
 	/**
 	 * @return GuiField
 	 */
-	public function getGuiField(): GuiField {
+	public function getGuiField() {
 		return $this->guiField;
-	}
-	
-	/**
-	 * @return \rocket\ei\manage\entry\EiFieldWrapper|null
-	 */
-	public function getEiFieldWrapper() {
-		return $this->eiFieldWrapper;
 	}
 	
 	/**

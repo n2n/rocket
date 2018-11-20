@@ -24,7 +24,7 @@ namespace rocket\impl\ei\component\prop\relation;
 use n2n\reflection\ArgUtils;
 use rocket\impl\ei\component\prop\relation\model\relation\EmbeddedEiPropRelation;
 use rocket\ei\manage\EiObject;
-use rocket\impl\ei\component\prop\adapter\DisplaySettings;
+use rocket\impl\ei\component\prop\adapter\config\DisplaySettings;
 use rocket\impl\ei\component\prop\relation\model\ToOneEditable;
 use rocket\impl\ei\component\prop\relation\model\EmbeddedOneToOneGuiField;
 use rocket\ei\manage\draft\stmt\FetchDraftStmtBuilder;
@@ -112,7 +112,7 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\field\Readable::read()
+	 * @see \rocket\impl\ei\component\prop\adapter\entry\Readable::read()
 	 */
 	public function read(Eiu $eiu) {
 		if ($eiu->object()->isDraftProp($this)) {
@@ -130,7 +130,7 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\field\Writable::write()
+	 * @see \rocket\impl\ei\component\prop\adapter\entry\Writable::write()
 	 */
 	public function write(Eiu $eiu, $value) {
 		CastUtils::assertTrue($value === null || $value instanceof EiObject);

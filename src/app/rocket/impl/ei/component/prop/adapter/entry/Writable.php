@@ -19,15 +19,10 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\prop\adapter;
+namespace rocket\impl\ei\component\prop\adapter\entry;
 
-use n2n\persistence\orm\property\EntityProperty;
+use rocket\ei\util\Eiu;
 
-interface EntityPropertyConfigurable {
-	
-	/**
-	 * @param EntityProperty $entityProperty
-	 * @throws \InvalidArgumentException
-	 */
-	public function setEntityProperty(?EntityProperty $entityProperty);
+interface Writable {
+	public function write(Eiu $eiu, $value);
 }

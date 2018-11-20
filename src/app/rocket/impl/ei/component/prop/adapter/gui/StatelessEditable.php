@@ -19,14 +19,20 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\component\prop\field;
+namespace rocket\impl\ei\component\prop\adapter\gui;
 
-use rocket\ei\manage\EiObject;
-use rocket\ei\manage\entry\EiFieldValidationResult;
+use n2n\web\dispatch\mag\Mag;
+use rocket\ei\util\Eiu;
 
-interface Validatable {
+interface StatelessEditable extends StatelessDisplayable {
+
+	public function isMandatory(Eiu $eiu): bool;
 	
-	public function testEiFieldValue(EiObject $eiObject, $eiFieldValue): bool;
+	public function isReadOnly(Eiu $eiu): bool;
 	
-	public function validateEiFieldValue(EiObject $eiObject, $eiFieldValue, EiFieldValidationResult $fieldErrorInfo);
+	public function createMag(Eiu $eiu): Mag;
+	
+	public function loadMagValue(Eiu $eiu, Mag $mag);
+	
+	public function saveMagValue(Mag $option, Eiu $eiu);
 }

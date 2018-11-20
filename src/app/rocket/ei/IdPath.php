@@ -26,7 +26,7 @@ use n2n\util\ex\IllegalStateException;
 use n2n\util\col\Hashable;
 
 abstract class IdPath implements Hashable {
-	const ID_SEPARATOR = '.';
+	const ID_SEPARATOR = ',';
 	
 	protected $ids;
 	
@@ -68,19 +68,32 @@ abstract class IdPath implements Hashable {
 		return array_slice($this->ids, $offset, $length);
 	}
 	
+	/**
+	 * @return string[]
+	 */
 	public function toArray() {
 		return $this->ids;
 	}
 	
+	/**
+	 * @return bool
+	 */
 	public function isEmpty() {
 		return empty($this->ids);
 	}
 	
+	/**
+	 * @return int
+	 */
 	public function size() {
 		return count($this->ids);
 	}
 	
-	public function startsWith(IdPath $idPath): bool {
+	/**
+	 * @param IdPath $idPath
+	 * @return bool
+	 */
+	public function startsWith(IdPath $idPath) {
 		foreach ($idPath->ids as $key => $id) {
 			if (!isset($this->ids[$key]) || $this->ids[$key] !== $id) return false;
 		}
@@ -88,6 +101,10 @@ abstract class IdPath implements Hashable {
 		return true;
 	}
 	
+	/**
+	 * @param array $args
+	 * @return string[]
+	 */
 	protected function argsToIds(array $args) {
 		$ids = array();
 		foreach ($args as $arg) {
@@ -106,10 +123,18 @@ abstract class IdPath implements Hashable {
 		return $ids;
 	}
 	
+	/**
+	 * @param string $str
+	 * @return boolean
+	 */
 	public static function constainsSpecialIdChars($str) {
 		return (boolean) preg_match('#[^a-zA-Z0-9\\-]#', $str);
 	}
 	
+	/**
+	 * @param string $str
+	 * @return string
+	 */
 	public static function stripSpecialIdChars($str) {
 		return preg_replace('#[^a-zA-Z0-9\\-]#', '', $str);
 	}

@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\prop\adapter;
+namespace rocket\impl\ei\component\prop\adapter\gui;
 
 use n2n\reflection\ArgUtils;
 use n2n\util\ex\IllegalStateException;

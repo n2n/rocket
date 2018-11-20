@@ -3,7 +3,7 @@ namespace rocket\impl\ei\component\modificator\constraint;
 
 use rocket\ei\util\Eiu;
 use rocket\ei\component\EiConfigurator;
-use n2n\l10n\MessageCode;
+use n2n\l10n\Message;
 use n2n\persistence\orm\criteria\Criteria;
 use rocket\ei\util\spec\EiuEngine;
 use rocket\ei\EiPropPath;
@@ -89,7 +89,7 @@ class UniqueEiModificator extends IndependentEiModificatorAdapter {
 		}
 		
 		foreach ($this->uniqueEiPropPaths as $eiPropPath) {
-			$eiuEntry->field($eiPropPath)->addError(new MessageCode('ei_impl_field_not_unique'));
+			$eiuEntry->field($eiPropPath)->addError(Message::createCodeArg('ei_impl_field_not_unique'));
 		}
 	}
 	

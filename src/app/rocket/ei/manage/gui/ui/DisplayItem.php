@@ -18,7 +18,7 @@ class DisplayItem {
 	protected $label;
 	protected $moduleNamespace;
 	protected $type;
-	protected $eiPropPath;
+	protected $guiPropPath;
 	protected $helpText;
 	protected $attrs;
 	protected $displayStructure;
@@ -27,31 +27,31 @@ class DisplayItem {
 	}
 
 	/**
-	 * @param GuiPropPath $eiPropPath
+	 * @param GuiPropPath $guiPropPath
 	 * @return DisplayItem
 	 */
-	public static function create(GuiPropPath $eiPropPath, string $type = null, string $label = null, 
+	public static function create(GuiPropPath $guiPropPath, string $type = null, string $label = null, 
 			string $moduleNamespace = null) {
 		$orderItem = new DisplayItem();
 		$orderItem->label = $label;
 		$orderItem->moduleNamespace = $moduleNamespace;
 		ArgUtils::valEnum($type, self::getTypes(), null, true);
 		$orderItem->type = $type;
-		$orderItem->eiPropPath = $eiPropPath;
+		$orderItem->guiPropPath = $guiPropPath;
 		return $orderItem;
 	}
 	
 	/**
-	 * @param GuiPropPath $eiPropPath
+	 * @param GuiPropPath $guiPropPath
 	 * @return DisplayItem
 	 * @deprecated
 	 */
-	public static function createFromGuiPropPath(GuiPropPath $eiPropPath, string $type = null, string $label = null) {
+	public static function createFromGuiPropPath(GuiPropPath $guiPropPath, string $type = null, string $label = null) {
 		$orderItem = new DisplayItem();
 		$orderItem->label = $label;
 		ArgUtils::valEnum($type, self::getTypes(), null, true);
 		$orderItem->type = $type;
-		$orderItem->eiPropPath = $eiPropPath;
+		$orderItem->guiPropPath = $guiPropPath;
 		return $orderItem;
 	}
 
@@ -78,7 +78,7 @@ class DisplayItem {
 	public function copy(string $type = null, array $attrs = null, string $label = null, string $helpText = null, string $moduleNamespace = null) {
 		$displayItem = new DisplayItem();
 		$displayItem->displayStructure = $this->displayStructure;
-		$displayItem->eiPropPath = $this->eiPropPath;
+		$displayItem->guiPropPath = $this->guiPropPath;
 		ArgUtils::valEnum($type, self::getTypes(), null, true);
 		$displayItem->type = $type ?? $this->type;
 		$displayItem->label = $label ?? $this->label;
@@ -175,8 +175,8 @@ class DisplayItem {
 	}
 
 	public function getGuiPropPath() {
-		if ($this->eiPropPath !== null) {
-			return $this->eiPropPath;
+		if ($this->guiPropPath !== null) {
+			return $this->guiPropPath;
 		}
 
 		throw new IllegalStateException();

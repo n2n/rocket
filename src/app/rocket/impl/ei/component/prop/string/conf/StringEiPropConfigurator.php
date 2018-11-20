@@ -60,7 +60,7 @@ class StringEiPropConfigurator extends AlphanumericEiPropConfigurator {
 	/**
 	 *
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\AdaptableEiPropConfigurator::testCompatibility()
+	 * @see \rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator::testCompatibility()
 	 */
 	public function testCompatibility(PropertyAssignation $propertyAssignation): int {
 		$this->setMaxCompatibilityLevel(CompatibilityLevel::SUITABLE);

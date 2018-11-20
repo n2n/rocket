@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\prop\adapter;
+namespace rocket\impl\ei\component\prop\adapter\config;
 
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
@@ -33,7 +33,6 @@ use n2n\reflection\property\ConstraintsConflictException;
 use rocket\ei\component\prop\EiProp;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use rocket\ei\component\prop\indepenent\IncompatiblePropertyException;
-use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\property\AccessProxy;
 use rocket\ei\component\InvalidEiComponentConfigurationException;
 use n2n\persistence\meta\structure\Column;
@@ -44,6 +43,8 @@ use n2n\util\config\InvalidAttributeException;
 use n2n\util\config\LenientAttributeReader;
 use rocket\ei\manage\gui\ViewMode;
 use n2n\util\ex\IllegalStateException;
+use rocket\impl\ei\component\prop\adapter\EditablePropertyEiPropAdapter;
+use rocket\impl\ei\component\prop\adapter\PropertyDisplayableEiPropAdapter;
 
 class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPropConfigurator {
 	const ATTR_DISPLAY_IN_OVERVIEW_KEY = 'displayInOverview';

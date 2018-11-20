@@ -43,7 +43,6 @@ use rocket\ei\util\gui\EiuEntryGui;
 use rocket\ei\util\gui\EiuEntryGuiAssembler;
 use n2n\reflection\ArgUtils;
 use rocket\ei\manage\entry\UnknownEiFieldExcpetion;
-use rocket\ei\manage\gui\GuiPropPath;
 
 class EiuEntry {
 	private $eiEntry;
@@ -80,6 +79,9 @@ class EiuEntry {
 	
 	private $eiuEntryAccess;
 	
+	/**
+	 * @return \rocket\ei\util\entry\EiuEntryAccess
+	 */
 	public function access() {
 		if ($this->eiuEntryAccess === null) {
 			$this->eiuEntryAccess = new EiuEntryAccess($this->getEiuFrame()->getEiFrame()
@@ -90,6 +92,9 @@ class EiuEntry {
 	}
 	
 	
+	/**
+	 * @return \rocket\ei\util\entry\EiuObject
+	 */
 	public function object() {
 		if ($this->eiuObject !== null) {
 			return $this->eiuObject;
@@ -117,6 +122,9 @@ class EiuEntry {
 				->createEiEntry($this->object()->getEiObject());
 	}
 	
+	/**
+	 * @return boolean
+	 */
 	public function isNew() {
 		if ($this->isDraft()) {
 			return $this->isDraftNew();
@@ -363,17 +371,6 @@ class EiuEntry {
 		return $values;
 	}
 	
-	/**
-	 * @param bool $recurisve
-	 * @return Message[]
-	 */
-	public function getMessages($eiPropPath, bool $recurisve = false) {
-		$vr = $this->eiEntry->getValidationResult();
-		if ($vr === null) return [];
-		
-		return $vr->getEiFieldValidationResult(EiPropPath::create($eiPropPath))->getMessages($recurisve);
-	}
-
 	/**
 	 * @param $eiPropPath
 	 * @param $scalarValue

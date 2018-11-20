@@ -75,11 +75,11 @@ class EiuEntryGui {
 	}
 	
 	/**
-	 * @param GuiPropPath $eiPropPath
+	 * @param GuiPropPath $guiPropPath
 	 * @return bool
 	 */
-	public function containsGuiPropPath(GuiPropPath $eiPropPath) {
-		return $this->eiEntryGui->containsDisplayable($eiPropPath);
+	public function containsGuiPropPath(GuiPropPath $guiPropPath) {
+		return $this->eiEntryGui->containsDisplayable($guiPropPath);
 	}
 	
 	/**

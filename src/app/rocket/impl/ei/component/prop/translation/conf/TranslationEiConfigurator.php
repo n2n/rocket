@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\translation\conf;
 
-use rocket\impl\ei\component\prop\adapter\AdaptableEiPropConfigurator;
+use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\ei\component\EiSetup;
 use n2n\l10n\N2nLocale;
 use rocket\spec\UnknownTypeException;

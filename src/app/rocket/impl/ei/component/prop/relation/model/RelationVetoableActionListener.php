@@ -25,7 +25,6 @@ use rocket\impl\ei\component\prop\relation\RelationEiProp;
 use n2n\reflection\CastUtils;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\persistence\orm\criteria\item\CrIt;
-use n2n\l10n\MessageCode;
 use rocket\ei\manage\LiveEiObject;
 use n2n\util\ex\IllegalStateException;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
@@ -36,6 +35,7 @@ use n2n\core\container\N2nContext;
 use n2n\l10n\DynamicTextCollection;
 use n2n\l10n\N2nLocale;
 use rocket\ei\EiLifecycleListener;
+use n2n\l10n\Message;
 
 class RelationVetoableActionListener implements EiLifecycleListener {
 	const STRATEGY_PREVENT = 'prevent';
@@ -113,11 +113,11 @@ class VetoCheck {
 				'target_generic_label' => $this->getTargetGenericLabel());
 		$dtc = new DynamicTextCollection('rocket', N2nLocale::getAdmin());
 		if ($num === 1) {
-			$this->vetoableRemoveAction->prevent(new MessageCode('ei_impl_relation_remove_veto_err', $attrs));
+			$this->vetoableRemoveAction->prevent(Message::createCodeArg('ei_impl_relation_remove_veto_err', $attrs, null, 'rocket'));
 		} else {
 			$attrs['num_more'] = ($num - 1);
-			$this->vetoableRemoveAction->prevent(new MessageCode('ei_impl_relation_remove_veto_one_and_more_err', 
-					$attrs));
+			$this->vetoableRemoveAction->prevent(Message::createCodeArg('ei_impl_relation_remove_veto_one_and_more_err', 
+					$attrs, null, 'rocket'));
 		}
 	}
 	

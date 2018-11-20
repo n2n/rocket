@@ -31,7 +31,7 @@ use n2n\reflection\ArgUtils;
 use rocket\impl\ei\component\prop\relation\model\RelationEntry;
 use rocket\ei\manage\entry\EiField;
 use rocket\ei\manage\entry\EiFieldValidationResult;
-use n2n\l10n\MessageCode;
+use n2n\l10n\Message;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\ei\manage\entry\EiEntryConstraint;
 use rocket\ei\EiPropPath;
@@ -149,7 +149,7 @@ class RelationEiFieldConstraint implements EiFieldConstraint {
 				break;
 		}
 		
-		$fieldErrorInfo->addError(new MessageCode($messageKey, array('field' => $this->label,
+		$fieldErrorInfo->addError(Message::createCodeArg($messageKey, array('field' => $this->label,
 				'target_entries' => implode(', ', $this->createTragetIdentityStrings()))));
 	}
 }
@@ -223,7 +223,7 @@ class TestEiFieldConstraint implements EiFieldConstraint {
 			$value = $eiField->getValue();
 			if (!$this->toMany) {
 				if ($value === null) {
-					$fieldErrorInfo->addError(new MessageCode('ei_impl_relation_must_exist_err', array('field' => $this->label)));
+					$fieldErrorInfo->addError(Message::createCodeArg('ei_impl_relation_must_exist_err', array('field' => $this->label)));
 					return;
 				}
 				ArgUtils::assertTrue($value instanceof RelationEntry);
@@ -240,7 +240,7 @@ class TestEiFieldConstraint implements EiFieldConstraint {
 		}
 		
 		if (!$this->check($eiField)) {
-			$fieldErrorInfo->addError(new MessageCode('ei_impl_relation_must_not_exist_err', array('field' => $this->label)));
+			$fieldErrorInfo->addError(Message::createCodeArg('ei_impl_relation_must_not_exist_err', array('field' => $this->label)));
 		}
 	}
 

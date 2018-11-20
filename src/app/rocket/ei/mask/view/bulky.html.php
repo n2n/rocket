@@ -78,7 +78,7 @@
 						'eiu' => $eiu, 'renderMeta' => false))) ?>
 			</div>
 		<?php $eiuHtml->displayItemClose() ?>
-	<?php else: ?>
+	<?php elseif ($eiuHtml->meta()->containsGuiPropPath($displayItem->getGuiPropPath())): ?>
 		<?php $eiuHtml->fieldOpen('div', $displayItem) ?>
 			<?php $eiuHtml->fieldLabel() ?>
 			

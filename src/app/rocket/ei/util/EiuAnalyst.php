@@ -1095,7 +1095,7 @@ class EiuAnalyst {
 		
 		if ($eiObjectArg instanceof EiuEntry) {
 			$eiEntry = $eiObjectArg->getEiEntry(false);
-			return $eiObjectArg->getEiObject();
+			return $eiObjectArg->object()->getEiObject();
 		}
 		
 		if ($eiObjectArg instanceof EiuEntryGui && null !== ($eiuEntry = $eiObjectArg->getEiuEntry(false))) {

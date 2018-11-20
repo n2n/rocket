@@ -34,10 +34,12 @@ use rocket\ei\manage\draft\PersistDraftAction;
 use rocket\ei\manage\draft\RemoveDraftAction;
 use rocket\ei\EiPropPath;
 use rocket\ei\util\Eiu;
-use rocket\ei\component\prop\field\SimpleEiField;
+use rocket\impl\ei\component\prop\adapter\entry\SimpleEiField;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
 use rocket\ei\manage\entry\EiField;
+use rocket\impl\ei\component\prop\adapter\config\DraftConfigurable;
+use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 
 abstract class DraftablePropertyEiPropAdapter extends EditablePropertyEiPropAdapter implements DraftConfigurable, DraftProperty {
 	protected $draftable = false;

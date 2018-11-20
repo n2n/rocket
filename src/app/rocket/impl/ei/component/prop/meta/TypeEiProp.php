@@ -22,11 +22,11 @@
 namespace rocket\impl\ei\component\prop\meta;
 
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\impl\ei\component\prop\adapter\AdaptableEiPropConfigurator;
+use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\ei\component\prop\GuiEiProp;
 use rocket\ei\manage\gui\GuiProp;
 use n2n\l10n\N2nLocale;
-use rocket\impl\ei\component\prop\adapter\StatelessDisplayable;
+use rocket\impl\ei\component\prop\adapter\gui\StatelessDisplayable;
 use rocket\ei\manage\EiObject;
 use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;

@@ -34,7 +34,7 @@ use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use rocket\ei\manage\entry\EiFieldConstraint;
 use rocket\ei\manage\entry\EiField;
 use rocket\ei\manage\entry\EiFieldValidationResult;
-use n2n\l10n\MessageCode;
+use n2n\l10n\Message;
 use rocket\ei\manage\critmod\filter\ComparatorConstraint;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\ei\manage\critmod\filter\impl\PropertyValueComparatorConstraint;
@@ -116,7 +116,7 @@ class BoolEiFieldConstraint implements EiFieldConstraint {
 	public function validate(EiField $eiField, EiFieldValidationResult $fieldErrorInfo) {
 		if ($this->check($eiField)) return;
 
-		$fieldErrorInfo->addError(new MessageCode('ei_impl_bool_field_must_be_selected_err', 
+		$fieldErrorInfo->addError(Message::createCodeArg('ei_impl_bool_field_must_be_selected_err', 
 				array('field' => $this->labelLstr)));
 	}
 }

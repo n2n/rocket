@@ -31,15 +31,13 @@ use rocket\ei\manage\gui\ui\DisplayItem;
 use rocket\ei\manage\gui\EiEntryGui;
 use n2n\impl\web\ui\view\html\HtmlUtils;
 use rocket\ei\manage\gui\GuiField;
-use rocket\ei\manage\entry\EiFieldValidationResult;
-use n2n\l10n\MessageTranslator;
 use n2n\reflection\ArgUtils;
 use n2n\reflection\CastUtils;
 use rocket\ei\manage\control\Control;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\RocketUiOutfitter;
 use n2n\impl\web\ui\view\html\HtmlSnippet;
-use rocket\ei\manage\gui\GuiField;
+use rocket\ei\manage\entry\ValidationResult;
 
 class EiuHtmlBuilder {
 	private $view;
@@ -283,8 +281,8 @@ class EiuHtmlBuilder {
 				new HtmlElement('input', array('type' => 'checkbox'))*/);
 	}
 	
-	private function buildAttrs(GuiPropPath $eiPropPath, array $attrs, DisplayItem $displayItem = null) {
-		$attrs = HtmlUtils::mergeAttrs($attrs, array('class' => 'rocket-gui-field-' . implode('-', $eiPropPath->toArray())));
+	private function buildAttrs(GuiPropPath $guiPropPath, array $attrs, DisplayItem $displayItem = null) {
+		$attrs = HtmlUtils::mergeAttrs($attrs, array('class' => 'rocket-gui-field-' . implode('-', $guiPropPath->toArray())));
 // 		$attrs = EiuHtmlBuilderMeta::createDisplayItemAttrs($displayItem !== null ? $displayItem->getType() : DisplayItem::TYPE_ITEM, $attrs);
 		return $attrs;
 	}
@@ -299,58 +297,55 @@ class EiuHtmlBuilder {
 		$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
 		CastUtils::assertTrue($eiEntryGui instanceof EiEntryGui);
 		
-		
-		$eiPropPath = null;
+		$guiPropPath = null;
 		if ($displayItem instanceof DisplayItem) {
 			if ($displayItem->hasDisplayStructure()) {
 				throw new \InvalidArgumentException('DisplayItem with DisplayStructure is disallowed for field opening.');
 			}
 			
-			$eiPropPath = $displayItem->getGuiPropPath();
+			$guiPropPath = $displayItem->getGuiPropPath();
 			if ($addDisplayCl) {
 				$attrs = EiuHtmlBuilderMeta::createDisplayItemAttrs($displayItem->getType(), 
 						HtmlUtils::mergeAttrs((array) $displayItem->getAttrs(), (array) $attrs));
 			}
 		} else {
-			$eiPropPath = GuiPropPath::create($displayItem);
+			$guiPropPath = GuiPropPath::create($displayItem);
 			if ($addDisplayCl) {
 				$attrs = EiuHtmlBuilderMeta::createDisplayItemAttrs(DisplayItem::TYPE_ITEM, (array) $attrs);
 			}
 			$displayItem = null;
 		}
 		
-		$fieldErrorInfo = null;
-		if (null !== ($eiFieldWrapper = $eiEntryGui->getGuiFieldAssembly($eiPropPath)->getEiFieldWrapper())) {
-			$fieldErrorInfo = $eiFieldWrapper->getValidationResult();
+		$guiDefinition = $eiEntryGui->getEiGui()->getEiGuiViewFactory()->getGuiDefinition();
+		$validationResult = $guiDefinition->determineEiFieldAbstraction($eiEntryGui->getEiEntry(), $guiPropPath)->getValidationResult();
+		
+		if (!$eiEntryGui->containsGuiFieldGuiPropPath($guiPropPath)) {
+			$this->state->pushField($tagName, $guiPropPath, $validationResult, null, null, $displayItem);
+			return $this->createOutputFieldOpen($tagName, null, $validationResult,
+					$this->buildAttrs($guiPropPath, (array) $attrs, $displayItem));
 		}
 		
-		if (!$eiEntryGui->containsGuiFieldGuiPropPath($eiPropPath)) {
-			$this->state->pushField($tagName, $eiPropPath, $fieldErrorInfo, null, null, $displayItem);
-			return $this->createOutputFieldOpen($tagName, null, $fieldErrorInfo,
-					$this->buildAttrs($eiPropPath, (array) $attrs, $displayItem));
-		}
-		
-		$guiFieldAssembly = $eiEntryGui->getGuiFieldAssembly($eiPropPath);
+		$guiFieldAssembly = $eiEntryGui->getGuiFieldAssembly($guiPropPath);
 		$magAssembly = $guiFieldAssembly->getMagAssembly();
 		
 		if ($readOnly || $magAssembly === null) {
-			$this->state->pushField($tagName, $eiPropPath, $fieldErrorInfo, $guiFieldAssembly, null, $displayItem);
-			return $this->createOutputFieldOpen($tagName, $guiFieldAssembly->getGuiField(), $fieldErrorInfo,
-					$this->buildAttrs($eiPropPath, (array) $attrs, $displayItem));
+			$this->state->pushField($tagName, $guiPropPath, $validationResult, $guiFieldAssembly, null, $displayItem);
+			return $this->createOutputFieldOpen($tagName, $guiFieldAssembly->getGuiField(), $validationResult,
+					$this->buildAttrs($guiPropPath, (array) $attrs, $displayItem));
 		}
 	
 		$propertyPath = $eiEntryGui->getContextPropertyPath()->ext($magAssembly->getMagPropertyPath());
 		
-		$this->state->pushField($tagName, $eiPropPath, $fieldErrorInfo, $guiFieldAssembly, $propertyPath, $displayItem);
-		return $this->createInputFieldOpen($tagName, $propertyPath, $fieldErrorInfo,
-				$this->buildAttrs($eiPropPath, (array) $attrs, $displayItem), $magAssembly->isMandatory());
+		$this->state->pushField($tagName, $guiPropPath, $validationResult, $validationResult, $propertyPath, $displayItem);
+		return $this->createInputFieldOpen($tagName, $propertyPath, $validationResult,
+				$this->buildAttrs($guiPropPath, (array) $attrs, $displayItem), $magAssembly->isMandatory());
 	}
 	
-	private function createInputFieldOpen(string $tagName, $magPropertyPath, EiFieldValidationResult $fieldErrorInfo,
+	private function createInputFieldOpen(string $tagName, $magPropertyPath, ?ValidationResult $validationResult,
 			array $attrs = null, bool $mandatory = false) {
 		$magPropertyPath = $this->formHtml->meta()->createPropertyPath($magPropertyPath);
 
-		if ($this->formHtml->meta()->hasErrors($magPropertyPath) || !$fieldErrorInfo->isValid()) {
+		if ($this->formHtml->meta()->hasErrors($magPropertyPath) || ($validationResult !== null && !$validationResult->isValid())) {
 			$attrs = HtmlUtils::mergeAttrs((array) $attrs, array('class' => 'rocket-has-error'));
 		}
 
@@ -360,7 +355,7 @@ class EiuHtmlBuilder {
 	}
 	
 	
-	private function createOutputFieldOpen($tagName, GuiField $guiField = null, EiFieldValidationResult $fieldErrorInfo, array $attrs = null) {
+	private function createOutputFieldOpen($tagName, GuiField $guiField = null, ValidationResult $validationResult = null, array $attrs = null) {
 		return new Raw('<' . HtmlUtils::hsc($tagName) . HtmlElement::buildAttrsHtml(
 				$this->buildContainerAttrs(HtmlUtils::mergeAttrs(($guiField !== null ? $guiField->getOutputHtmlContainerAttrs() : array()), $attrs))) . '>');
 	}
@@ -428,7 +423,7 @@ class EiuHtmlBuilder {
 		}
 		
 		if (isset($fieldInfo['guiFieldAssembly'])) {
-			return $this->html->getOut($fieldInfo['guiFieldAssembly']->getDisplayable()->createOutputUiComponent($this->view));
+			return $this->html->getOut($fieldInfo['guiFieldAssembly']->getGuiField()->createOutputUiComponent($this->view));
 		}
 		
 		return null;
@@ -446,12 +441,10 @@ class EiuHtmlBuilder {
 			return new HtmlElement('div', array('class' => 'rocket-messae-error'), $message);
 		}
 		
-		if (null !== ($message = $fieldInfo['fieldErrorInfo']->processMessage(true))) {
-			$messageTranslator = new MessageTranslator($this->view->getModuleNamespace(),
-					$this->view->getN2nLocale());
-				
+		if (isset($fieldInfo['validationResult']) 
+				&& null !== ($message = $fieldInfo['validationResult']->processMessage(true))) {
 			return new HtmlElement('div', array('class' => 'rocket-message-error'),
-					$messageTranslator->translate($message));
+					$message->tByDtc($this->view->getDynamicTextCollection()));
 		}
 
 		return null;
@@ -473,7 +466,7 @@ class EiuHtmlBuilder {
 		if ($helpText === null) {
 			$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
 			$helpTextLstr = $eiEntryGui->getEiGui()->getEiGuiViewFactory()->getGuiDefinition()
-					->getGuiPropByGuiPropPath($fieldInfo['eiPropPath'])->getDisplayHelpTextLstr();
+					->getGuiPropByGuiPropPath($fieldInfo['guiPropPath'])->getDisplayHelpTextLstr();
 			if ($helpTextLstr !== null) {
 				$helpText = $helpTextLstr->t($this->view->getN2nLocale());
 			}

@@ -24,22 +24,22 @@ namespace rocket\impl\ei\component\prop\string;
 use rocket\impl\ei\component\prop\adapter\IndependentEiPropAdapter;
 use n2n\reflection\property\AccessProxy;
 use n2n\reflection\property\TypeConstraint;
-use rocket\impl\ei\component\prop\adapter\AdaptableEiPropConfigurator;
+use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\ei\component\prop\GuiEiProp;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\component\prop\FieldEiProp;
 use rocket\ei\manage\EiObject;
-use rocket\ei\component\prop\field\SimpleEiField;
-use rocket\ei\component\prop\field\Readable;
+use rocket\impl\ei\component\prop\adapter\entry\SimpleEiField;
+use rocket\impl\ei\component\prop\adapter\entry\Readable;
 use rocket\ei\EiPropPath;
-use rocket\impl\ei\component\prop\adapter\DisplaySettings;
-use rocket\impl\ei\component\prop\adapter\StatelessDisplayable;
+use rocket\impl\ei\component\prop\adapter\config\DisplaySettings;
+use rocket\impl\ei\component\prop\adapter\gui\StatelessDisplayable;
 use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\util\Eiu;
-use rocket\impl\ei\component\prop\adapter\StatelessDisplayElement;
+use rocket\impl\ei\component\prop\adapter\gui\StatelessDisplayElement;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
-use rocket\impl\ei\component\prop\adapter\ObjectPropertyConfigurable;
+use rocket\impl\ei\component\prop\adapter\config\ObjectPropertyConfigurable;
 use n2n\reflection\ArgUtils;
 use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\ei\manage\gui\ViewMode;
@@ -161,7 +161,7 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ObjectProp
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\field\Readable::read()
+	 * @see \rocket\impl\ei\component\prop\adapter\entry\Readable::read()
 	 */
 	public function read(EiObject $eiObject) {
 		if ($eiObject->isDraft()) {
@@ -197,7 +197,7 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ObjectProp
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\StatelessDisplayable::getUiOutputLabel()
+	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessDisplayable::getUiOutputLabel()
 	 */
 	public function getUiOutputLabel(\rocket\ei\util\Eiu $eiu) {
 		return $this->getLabelLstr();
@@ -205,7 +205,7 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ObjectProp
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\StatelessDisplayable::getOutputHtmlContainerAttrs()
+	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessDisplayable::getOutputHtmlContainerAttrs()
 	 */
 	public function getOutputHtmlContainerAttrs(\rocket\ei\util\Eiu $eiu) {
 		return array();
@@ -213,14 +213,14 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ObjectProp
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\StatelessDisplayable::createOutputUiComponent()
+	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessDisplayable::createOutputUiComponent()
 	 */
 	public function createOutputUiComponent(\n2n\impl\web\ui\view\html\HtmlView $view, \rocket\ei\util\Eiu $eiu) {
 		return $view->getHtmlBuilder()->getEsc($eiu->field()->getValue());
 	}
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\StatelessDisplayable::getDisplayItemType()
+	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessDisplayable::getDisplayItemType()
 	 */
 	public function getDisplayItemType(): ?string {
 		// TODO Auto-generated method stub

@@ -34,6 +34,7 @@ use rocket\ei\manage\gui\EiEntryGui;
 use n2n\l10n\Message;
 use n2n\l10n\MessageTranslator;
 use n2n\impl\web\ui\view\html\HtmlUtils;
+use rocket\ei\manage\gui\GuiPropPath;
 
 class EiuHtmlBuilderMeta {
 	private $state;
@@ -192,6 +193,14 @@ class EiuHtmlBuilderMeta {
 		$messages = $mt->translateAll($messages);
 		
 		return $messages;
+	}
+	
+	/**
+	 * @param GuiPropPath $guiPropPath
+	 * @return bool
+	 */
+	public function containsGuiPropPath($guiPropPath) {
+		return $this->state->peakEntry()['eiEntryGui']->containsGuiPropPath(GuiPropPath::create($guiPropPath));
 	}
 	
 	/**

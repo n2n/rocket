@@ -438,7 +438,8 @@ class SpecExtractor {
 			if (null !== $eiPropPath) {
 				$displayStructure->addGuiPropPath(GuiPropPath::create($eiPropPath), 
 						$displayStructureAttributes->getEnum(RawDef::DISPLAY_ITEM_GROUP_TYPE_KEY, DisplayItem::getTypes(),
-						false, null, true), $label, $this->moduleNamespace);
+								false, null, true), 
+						$label, $this->moduleNamespace);
 				continue;
 			}
 			

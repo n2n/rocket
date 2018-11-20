@@ -19,17 +19,19 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\prop\adapter;
+namespace rocket\impl\ei\component\prop\adapter\entry;
 
-interface DraftConfigurable {
+use rocket\ei\util\Eiu;
+use rocket\ei\manage\EiObject;
+
+interface Copyable {
 	
 	/**
-	 * @return bool
+	 * @param EiObject $eiObject
+	 * @param mixed $value
+	 * @param Eiu $copyEiu
+	 * @return mixed
 	 */
-	public function isDraftable(): bool;
-	
-	/**
-	 * @param bool $draftable
-	 */
-	public function setDraftable(bool $draftable);
+	public function copy(EiObject $eiObject, $value, Eiu $copyEiu);
 }
+

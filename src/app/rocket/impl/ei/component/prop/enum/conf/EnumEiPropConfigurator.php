@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\enum\conf;
 
-use rocket\impl\ei\component\prop\adapter\AdaptableEiPropConfigurator;
+use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use n2n\reflection\CastUtils;
 use rocket\impl\ei\component\prop\enum\EnumEiProp;
 use rocket\ei\component\EiSetup;

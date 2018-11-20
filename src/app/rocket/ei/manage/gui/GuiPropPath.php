@@ -26,7 +26,7 @@ use n2n\reflection\ArgUtils;
 use rocket\ei\EiPropPath;
 
 class GuiPropPath {
-	const EI_PROP_PATH_SEPARATOR = ',';
+	const EI_PROP_PATH_SEPARATOR = '.';
 	
 	/**
 	 * @var EiPropPath[]

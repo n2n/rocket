@@ -26,6 +26,7 @@ use rocket\core\model\Rocket;
 use rocket\ei\component\prop\EiProp;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\component\prop\indepenent\IndependentEiProp;
+use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 
 abstract class IndependentEiPropAdapter extends EiPropAdapter implements IndependentEiProp {
 	protected $parentEiProp;

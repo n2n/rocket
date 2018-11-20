@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\component\prop\field;
+namespace rocket\impl\ei\component\prop\adapter\entry;
 
 use n2n\reflection\property\TypeConstraint;
 use n2n\reflection\property\ValueIncompatibleWithConstraintsException;

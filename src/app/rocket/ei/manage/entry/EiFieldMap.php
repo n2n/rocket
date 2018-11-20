@@ -54,7 +54,7 @@ class EiFieldMap {
 	 * @return \rocket\ei\manage\entry\EiFieldWrapper
 	 */
 	public function put(string $id, EiField $eiField) {
-		return $this->eiFieldWrappers[$id] = new EiFieldWrapper($this->forkEiPropPath->ext($id), $eiField);
+		return $this->eiFieldWrappers[$id] = new EiFieldWrapper($this, $this->forkEiPropPath->ext($id), $eiField);
 	}
 	
 	/**

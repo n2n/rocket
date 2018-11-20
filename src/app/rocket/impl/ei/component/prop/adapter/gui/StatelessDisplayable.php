@@ -19,21 +19,24 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\prop\adapter;
+namespace rocket\impl\ei\component\prop\adapter\gui;
 
-use n2n\reflection\property\AccessProxy;
+use n2n\impl\web\ui\view\html\HtmlView;
+use n2n\web\ui\UiComponent;
+use rocket\ei\util\Eiu;
 
-interface ObjectPropertyConfigurable {
-	
-// 	/**
-// 	 * @return string
-// 	 */
-// 	public function getPropertyName(): string;
+interface StatelessDisplayable {
 	
 	/**
-	 * @param AccessProxy $objectPropertyAccessProxy
-	 * @throws \InvalidArgumentException
-	 * @throws \n2n\reflection\property\ConstraintsConflictException
+	 * @param Eiu $eiu
+	 * @return array
 	 */
-	public function setObjectPropertyAccessProxy(?AccessProxy $objectPropertyAccessProxy);
+	public function getOutputHtmlContainerAttrs(Eiu $eiu);
+	
+	/**
+	 * @param HtmlView $view
+	 * @param Eiu $eiu
+	 * @return UiComponent
+	 */
+	public function createOutputUiComponent(HtmlView $view, Eiu $eiu);
 }

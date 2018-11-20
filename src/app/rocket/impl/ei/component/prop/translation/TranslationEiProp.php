@@ -29,8 +29,8 @@ use rocket\impl\ei\component\prop\relation\RelationEiProp;
 use rocket\impl\ei\component\prop\translation\model\TranslationGuiFieldFork;
 use rocket\ei\manage\gui\GuiPropFork;
 use rocket\impl\ei\component\prop\translation\conf\TranslationEiConfigurator;
-use rocket\ei\component\prop\field\Readable;
-use rocket\ei\component\prop\field\Writable;
+use rocket\impl\ei\component\prop\adapter\entry\Readable;
+use rocket\impl\ei\component\prop\adapter\entry\Writable;
 use rocket\ei\manage\entry\EiField;
 use rocket\ei\component\prop\FieldEiProp;
 use rocket\ei\manage\gui\GuiFieldFork;
@@ -59,7 +59,7 @@ use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\translation\model\TranslationEiField;
 use rocket\ei\component\prop\QuickSearchableEiProp;
 use rocket\impl\ei\component\prop\translation\model\TranslationQuickSearchProp;
-use rocket\ei\component\prop\field\EiFieldWrapperWrapper;
+use rocket\impl\ei\component\prop\adapter\entry\EiFieldWrapperCollection;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\impl\ei\component\prop\translation\command\TranslationCopyCommand;
 use rocket\ei\manage\gui\GuiDefinition;
@@ -249,7 +249,7 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiPropFork
 			}
 		}
 	
-		return new EiFieldWrapperWrapper($eiFieldWrappers);
+		return new EiFieldWrapperCollection($eiFieldWrappers);
 	}
 	
 	public function buildSortPropFork(Eiu $eiu): ?SortPropFork {

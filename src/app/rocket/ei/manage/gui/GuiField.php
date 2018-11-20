@@ -46,8 +46,6 @@ interface GuiField {
 	 */
 	public function isReadOnly(): bool;
 	
-	public function getMessages(): array;
-	
 	/**
 	 * @return GuiFieldEditable 
 	 * @throws \n2n\util\ex\IllegalStateException if {@link self::isReadOnly()} returns true.

@@ -22,9 +22,9 @@
 namespace rocket\impl\ei\component\prop\relation;
 
 use rocket\impl\ei\component\prop\relation\model\relation\EiPropRelation;
-use rocket\impl\ei\component\prop\adapter\EntityPropertyConfigurable;
-use rocket\impl\ei\component\prop\adapter\ObjectPropertyConfigurable;
-use rocket\impl\ei\component\prop\adapter\DraftConfigurable;
+use rocket\impl\ei\component\prop\adapter\config\EntityPropertyConfigurable;
+use rocket\impl\ei\component\prop\adapter\config\ObjectPropertyConfigurable;
+use rocket\impl\ei\component\prop\adapter\config\DraftConfigurable;
 
 interface RelationEiProp extends EntityPropertyConfigurable, ObjectPropertyConfigurable, DraftConfigurable {
 	

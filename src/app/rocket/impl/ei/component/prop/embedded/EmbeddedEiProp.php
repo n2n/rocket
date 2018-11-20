@@ -26,14 +26,12 @@ use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\EmbeddedEntityProperty;
 use n2n\reflection\ArgUtils;
 use rocket\ei\manage\EiObject;
-use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\manage\entry\EiField;
 use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\manage\gui\GuiFieldAssembly;
 use rocket\ei\manage\gui\GuiFieldFork;
 use rocket\ei\manage\gui\GuiFieldForkEditable;
 use rocket\ei\manage\gui\GuiPropPath;
-use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\FieldEiProp;
 use n2n\reflection\ReflectionUtils;
@@ -42,6 +40,7 @@ use rocket\ei\component\prop\GuiEiPropFork;
 use n2n\util\ex\IllegalStateException;
 use n2n\web\dispatch\mag\Mag;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
+use rocket\ei\manage\gui\EiFieldAbstraction;
 
 class EmbeddedEiProp extends PropertyEiPropAdapter implements GuiEiPropFork, FieldEiProp {
 	
@@ -61,26 +60,24 @@ class EmbeddedEiProp extends PropertyEiPropAdapter implements GuiEiPropFork, Fie
 						->getEmbeddedEntityPropertyCollection()->getClass());
 	}
 	
-	public function buildGuiProp(Eiu $eiu): ?GuiProp {
-		return null;
+	public function buildGuiPropFork(Eiu $eiu): ?GuiPropFork {
+		return new EmbeddedGuiPropFork($this);
 	}
 	
 	public function buildEiField(Eiu $eiu): ?EiField {
 		return new EmbeddedEiField($eiu, $this);
 	}
-	
-	public function buildGuiPropFork(Eiu $eiu): ?GuiPropFork {
-		return new EmbeddedGuiPropFork();
-	}
 }
 
 class EmbeddedGuiPropFork implements GuiPropFork {
+	private $eiProp;
 	
-	
-	public function __construct() {
+	public function __construct(EmbeddedEiProp $eiProp) {
+		$this->eiProp = $eiProp;
 	}
 	
 	public function createGuiFieldFork(Eiu $eiu): GuiFieldFork {
+		return new EmbeddedGuiFieldFork($eiu, $this->eiProp);
 	}
 
 	public function getForkedGuiDefinition(): ?GuiDefinition {
@@ -91,7 +88,7 @@ class EmbeddedGuiPropFork implements GuiPropFork {
 		throw new IllegalStateException();
 	}
 
-	public function determineEiFieldAbstraction(EiEntry $eiEntry, GuiPropPath $eiPropPath) {
+	public function determineEiFieldAbstraction(Eiu $eiu, GuiPropPath $guiPropPath): EiFieldAbstraction {
 		throw new IllegalStateException();
 	}
 }
@@ -110,7 +107,7 @@ class EmbeddedGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 		return $this;
 	}
 
-	public function assembleGuiField(GuiPropPath $eiPropPath): ?GuiFieldAssembly {
+	public function assembleGuiField(GuiPropPath $guiPropPath): ?GuiFieldAssembly {
 		throw new IllegalStateException();
 	}
 	

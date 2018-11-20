@@ -24,11 +24,11 @@ namespace rocket\impl\ei\component\prop\adapter;
 use n2n\reflection\property\TypeConstraint;
 use n2n\util\config\Attributes;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
-use rocket\ei\component\prop\field\Writable;
+use rocket\impl\ei\component\prop\adapter\entry\Writable;
 use n2n\util\ex\IllegalStateException;
 use n2n\web\dispatch\mag\Mag;
 use rocket\ei\manage\entry\EiField;
-use rocket\ei\component\prop\field\SimpleEiField;
+use rocket\impl\ei\component\prop\adapter\entry\SimpleEiField;
 use rocket\ei\manage\EiObject;
 use rocket\ei\component\prop\PrivilegedEiProp;
 use rocket\ei\manage\security\privilege\EiPropPrivilege;
@@ -38,20 +38,24 @@ use rocket\ei\manage\security\EiFieldAccess;
 use n2n\util\config\AttributesException;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\entry\EiFieldValidationResult;
-use n2n\l10n\MessageCode;
-use rocket\ei\component\prop\field\Validatable;
+use rocket\impl\ei\component\prop\adapter\entry\Validatable;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
-use rocket\ei\component\prop\field\Copyable;
+use rocket\impl\ei\component\prop\adapter\entry\Copyable;
 use rocket\ei\manage\gui\GuiField;
 use rocket\ei\manage\gui\GuiProp;
 use n2n\web\dispatch\mag\MagCollection;
+use rocket\impl\ei\component\prop\adapter\gui\StatelessEditable;
+use rocket\impl\ei\component\prop\adapter\config\StandardEditDefinition;
+use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
+use n2n\l10n\Message;
+use rocket\impl\ei\component\prop\adapter\gui\StatelessEditElement;
 
 abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAdapter implements StatelessEditable, Writable, 
 		PrivilegedEiProp, Validatable, Copyable {
 	protected $standardEditDefinition;
 
 	/**
-	 * @return \rocket\impl\ei\component\prop\adapter\StandardEditDefinition
+	 * @return \rocket\impl\ei\component\prop\adapter\config\StandardEditDefinition
 	 */
 	public function getStandardEditDefinition() {
 		if ($this->standardEditDefinition === null) {
@@ -116,7 +120,7 @@ abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAd
 	
 	public function validateEiFieldValue(EiObject $eiObject, $eiFieldValue, EiFieldValidationResult $fieldErrorInfo) {
 		if (!$this->checkMandatory($eiObject, $eiFieldValue)) {
-			$fieldErrorInfo->addError(new MessageCode('ei_impl_mandatory_err', array('field' => $this->labelLstr), null, 
+			$fieldErrorInfo->addError(Message::createCodeArg('ei_impl_mandatory_err', array('field' => $this->labelLstr), null, 
 					Rocket::NS));
 		}
 	}

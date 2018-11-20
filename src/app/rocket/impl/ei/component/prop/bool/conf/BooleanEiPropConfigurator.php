@@ -1,7 +1,7 @@
 <?php
 namespace rocket\impl\ei\component\prop\bool\conf;
 
-use rocket\impl\ei\component\prop\adapter\AdaptableEiPropConfigurator;
+use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\impl\ei\component\prop\bool\BooleanEiProp;
 use n2n\util\config\LenientAttributeReader;
 use n2n\reflection\CastUtils;

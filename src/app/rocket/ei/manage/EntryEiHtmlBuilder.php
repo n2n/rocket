@@ -140,12 +140,12 @@ class EntryEiHtmlBuilder {
 				new HtmlElement('input', array('type' => 'checkbox')));
 	}
 	
-	private function buildAttrs(GuiPropPath $eiPropPath) {
-		return array('class' => 'rocket-gui-field-' . implode('-', $eiPropPath->toArray()));
+	private function buildAttrs(GuiPropPath $guiPropPath) {
+		return array('class' => 'rocket-gui-field-' . implode('-', $guiPropPath->toArray()));
 	}
 	
-	public function openInputField($tagName, $eiPropPath, array $attrs = null) {
-		$this->view->out($this->getOpenInputField($tagName, $eiPropPath, $attrs));
+	public function openInputField($tagName, $guiPropPath, array $attrs = null) {
+		$this->view->out($this->getOpenInputField($tagName, $guiPropPath, $attrs));
 	}
 	
 	public function getOpenInputField($tagName, $eiPropPath, array $attrs = null) {

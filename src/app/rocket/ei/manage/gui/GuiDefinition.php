@@ -356,24 +356,6 @@ class GuiDefinition {
 		return null;
 	}
 	
-// 	/**
-// 	 * @param GuiPropPath $eiPropPath
-// 	 * @return \rocket\ei\EiPropPath|NULL
-// 	 */
-// 	public function eiPropPathToEiPropPath(GuiPropPath $eiPropPath) {
-// 		$ids = $eiPropPath->toArray();
-// 		$guiDefinition = $this;
-// 		while (null !== ($id = array_shift($ids))) {
-// 			if (empty($ids)) {
-// 				return $guiDefinition->getLevelEiPropPathById($id);
-// 			}
-				
-// 			$guiDefinition = $guiDefinition->getGuiPropFork($id)->getForkedGuiDefinition();
-// 		}
-		
-// 		return null;
-// 	}
-	
 	/**
 	 * @param EiEntry $eiEntry
 	 * @param GuiPropPath $guiPropPath
@@ -384,7 +366,7 @@ class GuiDefinition {
 		$ids = $guiPropPath->toArray();
 		$id = array_shift($ids);
 		if (empty($ids)) {
-			return $eiEntry->getEiFieldWrapper(new EiPropPath(array($id)));
+			return $eiEntry->getEiFieldWrapper($id);
 		}
 		
 		$guiPropFork = $this->getGuiPropFork($id);

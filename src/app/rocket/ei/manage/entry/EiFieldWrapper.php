@@ -25,12 +25,14 @@ use rocket\ei\manage\gui\EiFieldAbstraction;
 use rocket\ei\EiPropPath;
 
 class EiFieldWrapper implements EiFieldAbstraction {
+	private $eiFieldMap;
 	private $eiPropPath;
 	private $eiField;
 	private $ignored = false;
 	private $validationResult;
 	
-	public function __construct(EiPropPath $eiPropPath, EiField $eiField) {
+	public function __construct(EiFieldMap $eiFieldMap, EiPropPath $eiPropPath, EiField $eiField) {
+		$this->eiFieldMap = $eiFieldMap;
 		$this->eiPropPath = $eiPropPath;
 		$this->eiField = $eiField;
 	}
@@ -50,27 +52,25 @@ class EiFieldWrapper implements EiFieldAbstraction {
 	}
 	
 	/**
+	 * @return \rocket\ei\manage\entry\EiFieldMap
+	 */
+	public function getEiFieldMap() {
+		return $this->eiFieldMap;
+	}
+	
+	/**
 	 * @return \rocket\ei\manage\entry\EiField
 	 */
 	public function getEiField() {
 		return $this->eiField;
 	}
 	
-	/**
-	 * @param EiFieldValidationResult $validationResult
-	 */
-	public function setValidationResult(EiFieldValidationResult $validationResult) {
-		$this->validationResult = $validationResult;
-	}
-	
-	/**
-	 * @return \rocket\ei\manage\entry\EiFieldValidationResult
-	 */
-	public function getValidationResult() {
-		if ($this->validationResult === null) {
-			$this->validationResult = new EiFieldValidationResult($this->eiPropPath);
-		}
+	public function getValidationResult(): ?EiFieldValidationResult {
+		$eiEntry = $this->eiFieldMap->getEiEntry();
 		
-		return $this->validationResult;
+		if (!$eiEntry->hasValidationResult()) return null;
+		
+		$eiEntry->getValidationResult()->getEiFieldValidationResult($this->eiPropPath);	
 	}
+
 }

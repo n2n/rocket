@@ -43,7 +43,7 @@ class TranslationDisplayable implements GuiField {
 		return empty($this->translatedDisplayables);
 	}
 	
-	public function putDisplayable($n2nLocaleId, Displayable $translatedDisplayable) {
+	public function putDisplayable($n2nLocaleId, GuiField $translatedDisplayable) {
 		$this->translatedDisplayables[$n2nLocaleId] = $translatedDisplayable;
 	}
 	

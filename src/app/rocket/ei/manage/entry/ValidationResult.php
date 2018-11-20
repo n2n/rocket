@@ -19,17 +19,27 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
+namespace rocket\ei\manage\entry;
 
-namespace rocket\ei\manage\gui;
+use n2n\l10n\Message;
 
-use rocket\ei\manage\entry\EiFieldValidationResult;
-
-interface EiFieldAbstraction {
+interface ValidationResult {
 	
-	public function isIgnored(): bool;
+	/**
+	 * @param bool $checkRecurisve
+	 * @return bool
+	 */
+	public function isValid(bool $checkRecurisve = true): bool;
 	
-	public function setIgnored(bool $ignored);
+	/**
+	 * @return Message[]
+	 */
+	public function getMessages(): array;
 	
-	public function getValidationResult(): ?EiFieldValidationResult;
+	/**
+	 * @param bool $recursive
+	 */
+	public function processMessage(bool $recursive): ?Message;
+	
+	
 }
-

@@ -29,6 +29,7 @@ use rocket\ei\mask\EiMask;
 use n2n\reflection\magic\MagicMethodInvoker;
 use rocket\ei\util\Eiu;
 use n2n\core\container\N2nContext;
+use n2n\util\ex\IllegalStateException;
 
 class EiEntry {
 	private $eiObject;
@@ -311,9 +312,13 @@ class EiEntry {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\entry\EiEntryValidationResult|null
+	 * @return \rocket\ei\manage\entry\EiEntryValidationResult
 	 */
 	public function getValidationResult() {
+		if ($this->validationResult === null) {
+			throw new IllegalStateException('EiEntry has no ValidationResult.');
+		}
+		
 		return $this->validationResult;
 	}
 	

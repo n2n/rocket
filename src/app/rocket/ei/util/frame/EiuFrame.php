@@ -295,7 +295,7 @@ class EiuFrame {
 		$this->applyIdComparison($criteria->where(), $id);
 		
 		if (null !== ($entityObj = $criteria->toQuery()->fetchSingle())) {
-			return EiEntityObj::createFrom($this->eiFrame->getContextEiEngine()->getEiMask(), $entityObj);
+			return EiEntityObj::createFrom($this->eiFrame->getContextEiEngine()->getEiMask()->getEiType(), $entityObj);
 		}
 		
 		throw new UnknownEiObjectException('Entity not found: ' . EntityInfo::buildEntityString(

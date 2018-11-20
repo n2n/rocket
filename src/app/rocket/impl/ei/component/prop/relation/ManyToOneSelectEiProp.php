@@ -78,7 +78,7 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\field\Readable::read()
+	 * @see \rocket\impl\ei\component\prop\adapter\entry\Readable::read()
 	 */
 	public function read(Eiu $eiu) {
 		$targetEntityObj = $eiu->object()->readNativValue($this);
@@ -90,7 +90,7 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\field\Writable::write()
+	 * @see \rocket\impl\ei\component\prop\adapter\entry\Writable::write()
 	 */
 	public function write(Eiu $eiu, $value) {
 		CastUtils::assertTrue($value === null || $value instanceof EiObject);
@@ -105,7 +105,7 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 	
 	// 	/**
 	// 	 * {@inheritDoc}
-	// 	 * @see \rocket\ei\component\prop\field\Readable::read()
+	// 	 * @see \rocket\impl\ei\component\prop\adapter\entry\Readable::read()
 	// 	 */
 	// 	public function read(Eiu $eiu) {
 	// 		$targetEntityObj = $eiu->object()->readNativValue($this);
@@ -117,7 +117,7 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 	
 	// 	/**
 	// 	 * {@inheritDoc}
-	// 	 * @see \rocket\ei\component\prop\field\Writable::write()
+	// 	 * @see \rocket\impl\ei\component\prop\adapter\entry\Writable::write()
 	// 	 */
 	// 	public function write(Eiu $eiu, $value) {
 	// 		CastUtils::assertTrue($value === null || $value instanceof EiuEntry);

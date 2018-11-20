@@ -67,7 +67,7 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiEiPro
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\field\Readable::read()
+	 * @see \rocket\impl\ei\component\prop\adapter\entry\Readable::read()
 	 */
 	public function read(Eiu $eiu) {
 		if ($eiu->object()->isDraftProp($this)) {
@@ -85,7 +85,7 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiEiPro
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\field\Writable::write()
+	 * @see \rocket\impl\ei\component\prop\adapter\entry\Writable::write()
 	 */
 	public function write(Eiu $eiu, $value) {
 		CastUtils::assertTrue($value === null || $value instanceof EiObject);
@@ -225,8 +225,8 @@ class OneToOneGuiFieldFork implements GuiFieldFork {
 		$this->targetEiuEntryGuiAssembler = $targetEiuEntryGuiAssembler;
 	}
 	
-	public function assembleGuiField(GuiPropPath $eiPropPath): GuiFieldAssembly {
-		return $this->targetEiuEntryGuiAssembler->assembleGuiField($eiPropPath);
+	public function assembleGuiField(GuiPropPath $guiPropPath): GuiFieldAssembly {
+		return $this->targetEiuEntryGuiAssembler->assembleGuiField($guiPropPath);
 	}
 	
 	public function isReadOnly(): bool {

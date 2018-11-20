@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\embedded;
 
-use rocket\ei\component\prop\field\EiFieldAdapter;
+use rocket\impl\ei\component\prop\adapter\entry\EiFieldAdapter;
 use n2n\impl\persistence\orm\property\EmbeddedEntityProperty;
 use n2n\reflection\ReflectionUtils;
 use n2n\reflection\CastUtils;
@@ -57,7 +57,9 @@ class EmbeddedEiField extends EiFieldAdapter {
 					->getEmbeddedEntityPropertyCollection()->getClass());
 		}
 		
-		return $this->eiu->entry()->newFieldMap($this->eiProp, $targetObject);
+		$efm = $this->eiu->entry()->newFieldMap($this->eiProp, $targetObject);
+		
+		return $efm;
 	}
 	
 	/**

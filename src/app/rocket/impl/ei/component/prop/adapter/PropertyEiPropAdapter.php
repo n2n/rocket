@@ -25,6 +25,9 @@ use n2n\persistence\orm\property\EntityProperty;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\reflection\property\AccessProxy;
+use rocket\impl\ei\component\prop\adapter\config\EntityPropertyConfigurable;
+use rocket\impl\ei\component\prop\adapter\config\ObjectPropertyConfigurable;
+use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 
 abstract class PropertyEiPropAdapter extends IndependentEiPropAdapter 
 		implements EntityPropertyConfigurable, ObjectPropertyConfigurable {
@@ -52,7 +55,7 @@ abstract class PropertyEiPropAdapter extends IndependentEiPropAdapter
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\EntityPropertyConfigurable::getEntityProperty()
+	 * @see \rocket\impl\ei\component\prop\adapter\config\EntityPropertyConfigurable::getEntityProperty()
 	 */
 	public function getEntityProperty(): ?EntityProperty {
 		return $this->entityProperty;

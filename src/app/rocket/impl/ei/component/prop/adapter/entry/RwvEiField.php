@@ -19,9 +19,8 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\component\prop\field;
+namespace rocket\impl\ei\component\prop\adapter\entry;
 
-use rocket\ei\manage\EiObject;
 use rocket\ei\manage\entry\EiFieldOperationFailedException;
 use rocket\ei\manage\entry\EiFieldConstraint;
 use rocket\ei\manage\entry\EiField;

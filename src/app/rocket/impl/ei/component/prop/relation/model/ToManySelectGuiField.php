@@ -30,6 +30,7 @@ use rocket\core\model\Rocket;
 use rocket\ei\component\prop\EiProp;
 use rocket\ei\util\Eiu;
 use n2n\l10n\N2nLocale;
+use rocket\ei\EiPropPath;
 
 class ToManySelectGuiField implements GuiField {
 	private $eiProp;
@@ -89,7 +90,7 @@ class ToManySelectGuiField implements GuiField {
 		}
 
 		if (null !== ($relation = $this->eiu->frame()->getEiFrame()
-				->getEiRelation($this->eiProp->getId()))) {
+				->getEiRelation(EiPropPath::from($this->eiProp)))) {
 			return $this->createUiLink($relation->getEiFrame(), $label, $view);
 		}
 

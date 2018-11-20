@@ -19,10 +19,21 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\component\prop\field;
+namespace rocket\impl\ei\component\prop\adapter\config;
 
-use rocket\ei\util\Eiu;
+use n2n\reflection\property\AccessProxy;
 
-interface Writable {
-	public function write(Eiu $eiu, $value);
+interface ObjectPropertyConfigurable {
+	
+// 	/**
+// 	 * @return string
+// 	 */
+// 	public function getPropertyName(): string;
+	
+	/**
+	 * @param AccessProxy $objectPropertyAccessProxy
+	 * @throws \InvalidArgumentException
+	 * @throws \n2n\reflection\property\ConstraintsConflictException
+	 */
+	public function setObjectPropertyAccessProxy(?AccessProxy $objectPropertyAccessProxy);
 }

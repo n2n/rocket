@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\relation\conf;
 
 use rocket\impl\ei\component\prop\relation\RelationEiProp;
-use rocket\impl\ei\component\prop\adapter\AdaptableEiPropConfigurator;
+use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use n2n\core\container\N2nContext;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use rocket\ei\component\EiSetup;
