@@ -42,6 +42,8 @@ use rocket\ei\util\spec\EiuMask;
 use rocket\ei\util\gui\EiuEntryGui;
 use rocket\ei\util\gui\EiuEntryGuiAssembler;
 use n2n\reflection\ArgUtils;
+use rocket\ei\manage\entry\UnknownEiFieldExcpetion;
+use rocket\ei\manage\gui\GuiPropPath;
 
 class EiuEntry {
 	private $eiEntry;
@@ -360,6 +362,17 @@ class EiuEntry {
 		}
 		return $values;
 	}
+	
+	/**
+	 * @param bool $recurisve
+	 * @return Message[]
+	 */
+	public function getMessages($eiPropPath, bool $recurisve = false) {
+		$vr = $this->eiEntry->getValidationResult();
+		if ($vr === null) return [];
+		
+		return $vr->getEiFieldValidationResult(EiPropPath::create($eiPropPath))->getMessages($recurisve);
+	}
 
 	/**
 	 * @param $eiPropPath
@@ -489,9 +502,7 @@ class EiuEntry {
 		$guiDefinition = $this->getEiuFrame()->getContextEiuEngine()->getGuiDefinition();
 		try {
 			return $guiDefinition->determineEiFieldAbstraction($this->getEiEntry(), GuiPropPath::create($guiPropPath));
-		} catch (EiFieldOperationFailedException $e) {
-			if ($required) throw $e;
-		} catch (GuiException $e) {
+		} catch (UnknownEiFieldExcpetion $e) {
 			if ($required) throw $e;
 		}
 	

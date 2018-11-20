@@ -47,7 +47,6 @@ use n2n\reflection\ArgUtils;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\ei\util\Eiu;
-use rocket\ei\manage\entry\EiEntry;
 use n2n\web\dispatch\mag\UiOutfitter;
 use rocket\ei\manage\gui\GuiProp;
 use n2n\web\dispatch\mag\Mag;
@@ -56,6 +55,7 @@ use rocket\ei\util\gui\EiuEntryGuiAssembler;
 use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\component\prop\GuiEiPropFork;
 use rocket\ei\manage\entry\EiField;
+use rocket\ei\manage\gui\EiFieldAbstraction;
 
 class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiEiPropFork, GuiPropFork {
 	
@@ -184,17 +184,16 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiEiPro
 		return $targetEiObject;
 	}
 	
-	public function determineEiFieldAbstraction(EiEntry $eiEntry, GuiPropPath $eiPropPath) {
+	public function determineEiFieldAbstraction(Eiu $eiu, GuiPropPath $guiPropPath): EiFieldAbstraction {
+		$eiEntry = $eiu->entry()->getEiEntry();
+		
 		$eiFieldWrappers = array();
 		$targetRelationEntry = $eiEntry->getValue(EiPropPath::from($this->eiPropRelation->getRelationEiProp()));
-		if ($targetRelationEntry === null || !$targetRelationEntry->hasEiEntry()) return null;
-	
-		if (null !== ($eiFieldWrapper = $this->getForkedGuiDefinition()
-				->determineEiFieldWrapper($targetRelationEntry->getEiEntry(), $eiPropPath))) {
-			return $eiFieldWrapper;
+		if ($targetRelationEntry === null || !$targetRelationEntry->hasEiEntry()) {
+			throw new NotYetImplementedException();
 		}
 	
-		return null;
+		return $this->getForkedGuiDefinition()->determineEiFieldAbstraction($targetRelationEntry->getEiEntry(), $guiPropPath);
 	}
 	
 	/**

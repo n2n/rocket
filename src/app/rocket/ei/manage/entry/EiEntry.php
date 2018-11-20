@@ -24,7 +24,6 @@ namespace rocket\ei\manage\entry;
 use n2n\l10n\Message;
 use rocket\ei\manage\EiObject;
 use rocket\ei\EiPropPath;
-use n2n\util\ex\IllegalStateException;
 use n2n\util\col\HashSet;
 use rocket\ei\mask\EiMask;
 use n2n\reflection\magic\MagicMethodInvoker;
@@ -44,7 +43,6 @@ class EiEntry {
 		$this->eiObject = $eiObject;
 		$this->eiFieldMap = new EiFieldMap($this, new EiPropPath([]), $eiObject->getEiEntityObj()->getEntityObj());;
 		$this->eiMask = $eiMask;
-		$this->validationResult = new EiEntryValidationResult();
 		$this->constraintSet = new HashSet(EiEntryConstraint::class);
 	}
 	
@@ -292,8 +290,8 @@ class EiEntry {
 			$listener->onValidate($this);
 		}
 		
-		
-		
+		$this->eiFieldMap->validate($validationResult);
+				
 		foreach ($this->constraintSet as $constraint) {
 			$constraint->validate($this);
 		}
@@ -313,11 +311,9 @@ class EiEntry {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\entry\EiEntryValidationResult
+	 * @return \rocket\ei\manage\entry\EiEntryValidationResult|null
 	 */
 	public function getValidationResult() {
-		IllegalStateException::assertTrue($this->validationResult !== null);
-		
 		return $this->validationResult;
 	}
 	

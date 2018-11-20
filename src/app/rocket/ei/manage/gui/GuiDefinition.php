@@ -25,13 +25,13 @@ use n2n\l10n\N2nLocale;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\EiObject;
 use rocket\ei\manage\entry\EiEntry;
-use n2n\reflection\ArgUtils;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\gui\ui\DisplayStructure;
 use n2n\util\ex\NotYetImplementedException;
 use n2n\l10n\Lstr;
 use rocket\core\model\Rocket;
 use n2n\core\container\N2nContext;
+use rocket\ei\manage\entry\UnknownEiFieldExcpetion;
 
 class GuiDefinition {	
 	private $identityStringPattern;
@@ -377,6 +377,7 @@ class GuiDefinition {
 	/**
 	 * @param EiEntry $eiEntry
 	 * @param GuiPropPath $guiPropPath
+	 * @throws UnknownEiFieldExcpetion
 	 * @return \rocket\ei\manage\gui\EiFieldAbstraction|null
 	 */
 	public function determineEiFieldAbstraction(EiEntry $eiEntry, GuiPropPath $guiPropPath) {
@@ -387,9 +388,7 @@ class GuiDefinition {
 		}
 		
 		$guiPropFork = $this->getGuiPropFork($id);
-		$eiFieldWrapper = $guiPropFork->determineEiFieldAbstraction($eiEntry, new GuiPropPath(array($ids)));
-		ArgUtils::valTypeReturn($eiFieldWrapper, EiFieldAbstraction::class, $guiPropFork, 'determineEiFieldAbstraction', true);
-		return $eiFieldWrapper;
+		return $guiPropFork->determineEiFieldAbstraction(new Eiu($eiEntry), new GuiPropPath(array($ids)));
 	}
 	
 	public function getGuiPropForks() {

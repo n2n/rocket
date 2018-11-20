@@ -56,8 +56,6 @@ use rocket\ei\manage\critmod\sort\SortConstraint;
 use rocket\ei\manage\critmod\sort\CriteriaAssemblyState;
 use rocket\impl\ei\component\prop\translation\conf\N2nLocaleDef;
 use rocket\ei\util\Eiu;
-use rocket\ei\manage\entry\EiEntry;
-use rocket\ei\manage\gui\GuiPropPath;
 use rocket\impl\ei\component\prop\translation\model\TranslationEiField;
 use rocket\ei\component\prop\QuickSearchableEiProp;
 use rocket\impl\ei\component\prop\translation\model\TranslationQuickSearchProp;
@@ -68,6 +66,8 @@ use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\ei\component\prop\GuiEiPropFork;
 use rocket\ei\manage\gui\GuiProp;
+use rocket\ei\manage\gui\GuiPropPath;
+use rocket\ei\manage\gui\EiFieldAbstraction;
 
 class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiPropFork, FieldEiProp, RelationEiProp, 
 		Readable, Writable, GuiPropFork, SortableEiPropFork, QuickSearchableEiProp {
@@ -236,18 +236,18 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiPropFork
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiPropFork::determineEiFieldWrapper()
 	 */
-	public function determineEiFieldAbstraction(EiEntry $eiEntry, GuiPropPath $eiPropPath) {
+	public function determineEiFieldAbstraction(Eiu $eiu, GuiPropPath $guiPropPath): EiFieldAbstraction {
+		$eiEntry = $eiu->entry()->getEiEntry();
+		
 		$eiFieldWrappers = array();
 		foreach ($eiEntry->getValue(EiPropPath::from($this->eiPropRelation->getRelationEiProp())) as $targetRelationEntry) {
 			if ($targetRelationEntry->hasEiEntry()) continue;
 				
 			if (null !== ($eiFieldWrapper = $this->guiDefinition
-					->determineEiFieldWrapper($targetRelationEntry->getEiEntry(), $eiPropPath))) {
+					->determineEiFieldWrapper($targetRelationEntry->getEiEntry(), $guiPropPath))) {
 				$eiFieldWrappers[] = $eiFieldWrapper;
 			}
 		}
-	
-		if (empty($eiFieldWrappers)) return null;
 	
 		return new EiFieldWrapperWrapper($eiFieldWrappers);
 	}

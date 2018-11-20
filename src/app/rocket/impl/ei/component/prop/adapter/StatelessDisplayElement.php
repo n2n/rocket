@@ -73,6 +73,10 @@ class StatelessDisplayElement implements GuiField {
 		return $this->statelessDisplayable->createOutputUiComponent($view, $this->eiu);
 	}
 	
+	public function getMessages(): array {
+		return $this->eiu->field()->getMessages();
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiField::isReadOnly()
