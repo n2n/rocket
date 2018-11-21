@@ -67,7 +67,7 @@ class ToManyEiField extends RwvEiField {
 	}
 	
 
-	public function validate(EiFieldValidationResult $fieldErrorInfo) {
+	public function validate(EiFieldValidationResult $validationResult) {
 		$value = $this->getValue();
 		if ($value === null) return;
 		
@@ -75,7 +75,7 @@ class ToManyEiField extends RwvEiField {
 			IllegalStateException::assertTrue($targetRelationEntry instanceof RelationEntry);
 			if ($targetRelationEntry->hasEiEntry()) {
 				$targetRelationEntry->getEiEntry()->validate();
-				$fieldErrorInfo->addSubEiEntryValidationResult($targetRelationEntry->getEiEntry()->getValidationResult());
+				$validationResult->addSubEiEntryValidationResult($targetRelationEntry->getEiEntry()->getValidationResult());
 			}
 		}
 	}

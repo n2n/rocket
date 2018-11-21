@@ -44,6 +44,10 @@ use rocket\ei\EiPropPath;
 use rocket\ei\manage\EiObject;
 use rocket\ei\EiException;
 use rocket\ei\EiPathMissmatchException;
+use n2n\core\container\N2nContext;
+use rocket\ei\manage\entry\EiEntry;
+use n2n\reflection\ArgUtils;
+use n2n\l10n\Lstr;
 
 class EiMask {
 	private $eiMaskDef;
@@ -494,6 +498,22 @@ class EiMask {
 	}
 	
 	/**
+	 * @param N2nContext $n2nContext
+	 * @param EiFrame $eiFrame
+	 * @param EiObject $eiObject
+	 * @param EiEntry $eiEntry
+	 * @return string[]
+	 */
+	public function getPreviewTypeOptions(N2nContext $n2nContext, EiFrame $eiFrame, EiObject $eiObject, EiEntry $eiEntry = null) {
+		$previewController = $this->lookupPreviewController($n2nContext);
+		
+		$options = $previewController->getPreviewTypeOptions(new Eiu($eiFrame, $eiObject, $eiEntry));
+		ArgUtils::valArrayReturn($options, $previewController, 'getPreviewTypeOptions', array('string', Lstr::class));
+		
+		return $options;
+	}
+	
+	/**
 	 * @param EiFrame $eiFrame
 	 * @param PreviewModel $previewModel
 	 * @throws UnavailablePreviewException
@@ -501,7 +521,7 @@ class EiMask {
 	 * @throws UnavailableControlException
 	 * @return PreviewController
 	 */
-	public function lookupPreviewController(EiFrame $eiFrame, PreviewModel $previewModel = null): PreviewController {
+	public function lookupPreviewController(N2nContext $n2nContext, PreviewModel $previewModel = null): PreviewController {
 		$lookupId = $this->eiMaskDef->getPreviewControllerLookupId();
 		if (null === $lookupId) {
 			$lookupId = $this->eiType->getEiMask()->getPreviewControllerLookupId();	
@@ -511,7 +531,7 @@ class EiMask {
 			throw new UnavailablePreviewException('No PreviewController available for EiMask: ' . $this);
 		}
 		
-		$previewController = $eiFrame->getN2nContext()->lookup($lookupId);
+		$previewController = $n2nContext->lookup($lookupId);
 		if (!($previewController instanceof PreviewController)) {
 			throw new InvalidConfigurationException('PreviewController must implement ' . PreviewController::class 
 					. ': ' . get_class($previewController));
@@ -521,7 +541,8 @@ class EiMask {
 			return $previewController;
 		}
 		
-		if (!array_key_exists($previewModel->getPreviewType(), $previewController->getPreviewTypeOptions(new Eiu($eiFrame, $previewModel->getEiObject())))) {
+		if (!array_key_exists($previewModel->getPreviewType(), 
+				$previewController->getPreviewTypeOptions($previewModel->getEiu()))) {
 			throw new UnavailableControlException('Unknown preview type \'' . $previewModel->getPreviewType() 
 					. '\' for PreviewController: ' . get_class($previewController));
 		}

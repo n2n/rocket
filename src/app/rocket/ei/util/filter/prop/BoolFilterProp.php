@@ -111,12 +111,12 @@ class BoolEiFieldConstraint implements EiFieldConstraint {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\entry\EiFieldConstraint::validate($eiField, $fieldErrorInfo)
+	 * @see \rocket\ei\manage\entry\EiFieldConstraint::validate($eiField, $validationResult)
 	 */
-	public function validate(EiField $eiField, EiFieldValidationResult $fieldErrorInfo) {
+	public function validate(EiField $eiField, EiFieldValidationResult $validationResult) {
 		if ($this->check($eiField)) return;
 
-		$fieldErrorInfo->addError(Message::createCodeArg('ei_impl_bool_field_must_be_selected_err', 
+		$validationResult->addError(Message::createCodeArg('ei_impl_bool_field_must_be_selected_err', 
 				array('field' => $this->labelLstr)));
 	}
 }

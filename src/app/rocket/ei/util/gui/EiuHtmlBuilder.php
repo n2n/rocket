@@ -38,6 +38,7 @@ use rocket\ei\util\Eiu;
 use rocket\ei\manage\RocketUiOutfitter;
 use n2n\impl\web\ui\view\html\HtmlSnippet;
 use rocket\ei\manage\entry\ValidationResult;
+use rocket\ei\manage\entry\UnknownEiFieldExcpetion;
 
 class EiuHtmlBuilder {
 	private $view;
@@ -317,7 +318,10 @@ class EiuHtmlBuilder {
 		}
 		
 		$guiDefinition = $eiEntryGui->getEiGui()->getEiGuiViewFactory()->getGuiDefinition();
-		$validationResult = $guiDefinition->determineEiFieldAbstraction($eiEntryGui->getEiEntry(), $guiPropPath)->getValidationResult();
+		$validationResult = null;
+		try {
+			$validationResult = $guiDefinition->determineEiFieldAbstraction($eiEntryGui->getEiEntry(), $guiPropPath)->getValidationResult();
+		} catch (UnknownEiFieldExcpetion $e) {}
 		
 		if (!$eiEntryGui->containsGuiFieldGuiPropPath($guiPropPath)) {
 			$this->state->pushField($tagName, $guiPropPath, $validationResult, null, null, $displayItem);
@@ -336,7 +340,7 @@ class EiuHtmlBuilder {
 	
 		$propertyPath = $eiEntryGui->getContextPropertyPath()->ext($magAssembly->getMagPropertyPath());
 		
-		$this->state->pushField($tagName, $guiPropPath, $validationResult, $validationResult, $propertyPath, $displayItem);
+		$this->state->pushField($tagName, $guiPropPath, $validationResult, $guiFieldAssembly, $propertyPath, $displayItem);
 		return $this->createInputFieldOpen($tagName, $propertyPath, $validationResult,
 				$this->buildAttrs($guiPropPath, (array) $attrs, $displayItem), $magAssembly->isMandatory());
 	}
@@ -408,7 +412,8 @@ class EiuHtmlBuilder {
 		
 		$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
 		return new HtmlElement('label', $attrs, $eiEntryGui->getEiGui()->getEiGuiViewFactory()
-				->getGuiDefinition()->getGuiPropByGuiPropPath($fieldInfo['eiPropPath'])->getDisplayLabelLstr()->t($this->view->getN2nLocale()));
+				->getGuiDefinition()->getGuiPropByGuiPropPath($fieldInfo['guiPropPath'])->getDisplayLabelLstr()
+				->t($this->view->getN2nLocale()));
 	}
 	
 	public function fieldContent() {

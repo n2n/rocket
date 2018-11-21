@@ -35,7 +35,6 @@ use n2n\l10n\N2nLocale;
 use n2n\reflection\ArgUtils;
 use rocket\ei\manage\preview\model\PreviewModel;
 use n2n\util\ex\NotYetImplementedException;
-use n2n\l10n\Lstr;
 use n2n\core\container\N2nContext;
 use rocket\ei\EiCommandPath;
 use n2n\web\dispatch\map\PropertyPath;
@@ -68,7 +67,6 @@ use rocket\ei\manage\entry\EiEntryManageException;
 use rocket\ei\util\entry\form\EiuEntryForm;
 use rocket\ei\util\entry\form\EiuEntryTypeForm;
 use rocket\ei\util\gui\EiuEntryGui;
-use rocket\ei\util\Eiu;
 use rocket\ei\util\gui\EiuGui;
 use rocket\ei\manage\frame\CriteriaConstraint;
 use rocket\ei\manage\frame\Boundry;
@@ -456,7 +454,7 @@ class EiuFrame {
 		$eiEntry = EiuAnalyst::buildEiEntryFromEiArg($eiEntryArg);
 		$contextEiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
 		$eiuEntryForm = new EiuEntryForm($this);
-		$eiType = $eiEntry->getEiType();
+		$eiType = $eiEntry->getEiObject()->getEiEntityObj()->getEiType();
 
 		$eiuEntryForm->setEiuEntryTypeForms(array($eiType->getId() => $this->createEiuEntryTypeForm($eiType, $eiEntry, $contextPropertyPath)));
 		$eiuEntryForm->setChosenId($eiType->getId());
@@ -506,27 +504,23 @@ class EiuFrame {
 				->approve($this->eiFrame->getN2nContext());
 	}
 
+	/**
+	 * @param string $previewType
+	 * @param mixed $eiObjectArg
+	 * @return \rocket\ei\manage\preview\controller\PreviewController
+	 */
 	public function lookupPreviewController(string $previewType, $eiObjectArg) {
-		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectArg, 'eiObjectArg');
+		$eiuEntry = EiuAnalyst::buildEiuEntryFromEiArg($eiObjectArg, $this, 'eiObjectArg');
 		
-		$entityObj = null;
-		if (!$eiObject->isDraft()) {
-			$entityObj = $eiObject->getLiveObject();
-		} else {
-			$eiEntry = $this->createEiEntry($eiObject);
-			$previewEiEntry = $this->createEiEntryCopy($eiEntry, 
-					$this->createNewEiObject(false, $eiObject->getEiEntityObj()->getEiType()));
-			$previewEiEntry->write();
-			$entityObj = $previewEiEntry->getEiObject()->getLiveObject();
-		}
+		$previewModel = new PreviewModel($previewType, $this->eiFrame, $eiuEntry->object()->getEiObject(), 
+				$eiuEntry->getEiEntry(false));
 		
-		$previewModel = new PreviewModel($previewType, $eiObject, $entityObj);
-		
-		return $this->getContextEiMask()->lookupPreviewController($this->eiFrame, $previewModel);
+		return $this->getContextEiMask()->lookupPreviewController($this->eiuAnalyst->getN2nContext(true), 
+				$previewModel);
 	}
 
-	public function getPreviewType(EiObject $eiObject) {
-		$previewTypeOptions = $this->getPreviewTypeOptions($eiObject);
+	public function getDefaultPreviewType($eiObjectArg) {
+		$previewTypeOptions = $this->getPreviewTypeOptions($eiObjectArg);
 		
 		if (empty($previewTypeOptions)) return null;
 			
@@ -536,22 +530,23 @@ class EiuFrame {
 	/**
 	 * @return boolean
 	 */
-	public function isPreviewSupported() {
-		return $this->getContextEiMask()->isPreviewSupported();
+	public function isPreviewSupported($eiObjectArg) {
+		$eiuEntry = EiuAnalyst::buildEiuEntryFromEiArg($eiObjectArg, $this, 'eiObjectArg', true);
+		
+		return $eiuEntry->mask()->getEiMask()->isPreviewSupported();
 	}
 	
-	public function getPreviewTypeOptions(EiObject $eiObject) {
-		$eiMask = $this->getContextEiMask();
+	public function getPreviewTypeOptions($eiObjectArg) {
+		$eiuEntry = EiuAnalyst::buildEiuEntryFromEiArg($eiObjectArg, $this, 'eiObjectArg', true);
+		
+		$eiMask = $eiuEntry->mask()->getEiMask();
+		
 		if (!$eiMask->isPreviewSupported()) {
 			return array();
 		}
 		
-		$previewController = $eiMask->lookupPreviewController($this->eiFrame);
-		$previewTypeOptions = $previewController->getPreviewTypeOptions(new Eiu($this, $eiObject));
-		ArgUtils::valArrayReturn($previewTypeOptions, $previewController, 'getPreviewTypeOptions', 
-				array('string', Lstr::class));
-		
-		return $previewTypeOptions;
+		return $eiMask->getPreviewTypeOptions($this->eiuAnalyst->getN2nContext(true), $this->eiFrame, 
+				$eiuEntry->object()->getEiObject(), $eiuEntry->getEiEntry(false));
 	}
 	
 	public function isExecutedBy($eiCommandPath) {

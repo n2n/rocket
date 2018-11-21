@@ -49,6 +49,13 @@ class EiuObject {
 	}
 	
 	/**
+	 * @return \rocket\ei\EiType
+	 */
+	public function getEiType() {
+		return $this->eiObject->getEiEntityObj()->getEiType();
+	}
+	
+	/**
 	 * @param EiProp $eiProp
 	 * @return boolean
 	 */
@@ -93,11 +100,13 @@ class EiuObject {
 	public function writeNativeValue(EiProp $eiProp, $value) {
 		if ($this->isDraftProp($eiProp)) {
 			$this->eiObject->getDraft()->getDraftValueMap()->setValue($eiPropPath);
+			return;
 		}
 		
 		$objectPropertyAccessProxy = $eiProp->getObjectPropertyAccessProxy();
 		if ($objectPropertyAccessProxy !== null) {
 			$objectPropertyAccessProxy->setValue($this->getForkObject($eiProp), $value);
+			return;
 		}
 		
 		throw new EiFieldOperationFailedException('There is no ObjectPropertyAccessProxy configured for ' . $eiProp);

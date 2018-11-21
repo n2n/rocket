@@ -32,7 +32,7 @@
 	$eiuEntry = $entryCommandViewModel->getEiuEntry();
 	$linkedPreviewType = $currentPreviewType = $view->getParam('currentPreviewType', false);
 	if ($linkedPreviewType === null) {
-		$linkedPreviewType = $eiuEntry->getPreviewType();
+		$linkedPreviewType = $eiuEntry->getDefaultPreviewType();
 	} 
 	
 	$detailPathParts = null;

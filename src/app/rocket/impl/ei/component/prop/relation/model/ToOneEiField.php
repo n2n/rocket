@@ -65,12 +65,12 @@ class ToOneEiField extends RwvEiField {
 		parent::writeValue($targetRelationEntry->getEiObject());
 	}
 	
-	public function validate(EiFieldValidationResult $fieldErrorInfo) {
+	public function validate(EiFieldValidationResult $validationResult) {
 		if (null !== ($value = $this->getValue())) {
 			IllegalStateException::assertTrue($value instanceof RelationEntry);
 			if ($value->hasEiEntry()) {
 				$value->getEiEntry()->validate();
-				$fieldErrorInfo->addSubEiEntryValidationResult($value->getEiEntry()->getValidationResult());
+				$validationResult->addSubEiEntryValidationResult($value->getEiEntry()->getValidationResult());
 			}
 		}
 	}

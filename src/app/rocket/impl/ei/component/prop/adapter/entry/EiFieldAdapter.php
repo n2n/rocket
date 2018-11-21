@@ -109,9 +109,9 @@ abstract class EiFieldAdapter implements EiField {
 		return true;
 	}
 
-	public function validate(EiFieldValidationResult $fieldErrorInfo) {
+	public function validate(EiFieldValidationResult $validationResult) {
 		foreach ($this->eiFieldConstraintSet as $eiFieldConstraint) {
-			$eiFieldConstraint->validate($this, $fieldErrorInfo);
+			$eiFieldConstraint->validate($this, $validationResult);
 		}
 	}
 

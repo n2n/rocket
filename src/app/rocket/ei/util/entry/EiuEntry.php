@@ -50,6 +50,12 @@ class EiuEntry {
 	private $eiuObject;
 	private $eiuMask;
 	
+	/**
+	 * @param EiEntry|null $eiEntry
+	 * @param EiuObject|null $eiuObject
+	 * @param EiuMask|null $eiuMask
+	 * @param EiuAnalyst $eiuAnalyst
+	 */
 	public function __construct(EiEntry $eiEntry = null, EiuObject $eiuObject = null, EiuMask $eiuMask = null, EiuAnalyst $eiuAnalyst) {
 		ArgUtils::assertTrue($eiEntry !== null || $eiuObject !== null);
 		$this->eiEntry = $eiEntry;
@@ -74,7 +80,13 @@ class EiuEntry {
 			return $this->eiuMask;
 		}
 		
-		return $this->eiuMask = new EiuMask($this->eiEntry->getEiMask(), null, $this->eiuAnalyst);
+		if ($this->eiEntry !== null) {
+			return $this->eiuMask = new EiuMask($this->eiEntry->getEiMask(), null, $this->eiuAnalyst);
+		}
+		
+		return $this->eiuMask = new EiuMask(
+				$this->getEiuFrame()->getEiFrame()->determineEiMask($this->eiuObject->getEiType()), 
+				null, $this->eiuAnalyst);
 	}
 	
 	private $eiuEntryAccess;
@@ -113,9 +125,13 @@ class EiuEntry {
 	/**
 	 * @return \rocket\ei\manage\entry\EiEntry|NULL
 	 */
-	public function getEiEntry() {
+	public function getEiEntry(bool $createdIfNotAvailable = false) {
 		if ($this->eiEntry !== null) {
 			return $this->eiEntry;
+		}
+		
+		if (!$createdIfNotAvailable) {
+			return null;
 		}
 				
 		return $this->eiEntry = $this->eiuAnalyst->getEiuFrame(true)->getEiFrame()
@@ -137,25 +153,25 @@ class EiuEntry {
 	 * @return \rocket\ei\manage\EiEntityObj
 	 */
 	public function getEiEntityObj() {
-		return $this->eiEntry->getEiObject()->getEiEntityObj();
+		return $this->object()->getEiObject()->getEiEntityObj();
 	}
 	
 	/**
 	 * @return object
 	 */
 	public function getEntityObj() {
-		return $this->eiEntry->getEiObject()->getEiEntityObj()->getEntityObj();
+		return $this->object()->getEiObject()->getEiEntityObj()->getEntityObj();
 	}
 	
 	/**
 	 * @return boolean
 	 */
 	public function isPersistent() {
-		return $this->eiEntry->getEiObject()->getEiEntityObj()->isPersistent();
+		return $this->object()->getEiObject()->getEiEntityObj()->isPersistent();
 	}
 	
 	public function hasId() {
-		return $this->eiEntry->getEiObject()->getEiEntityObj()->hasId();
+		return $this->object()->getEiObject()->getEiEntityObj()->hasId();
 	}
 	
 	/**
@@ -195,7 +211,7 @@ class EiuEntry {
 	 * @return boolean
 	 */
 	public function isDraft() {
-		return $this->eiEntry->getEiObject()->isDraft();
+		return $this->object()->getEiObject()->isDraft();
 	}
 	
 	/**
@@ -229,6 +245,28 @@ class EiuEntry {
 		}
 		
 		return $draft->getId();
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function isPreviewSupported() {
+		return $this->getEiuFrame()->isPreviewSupported($this);
+	}
+	
+	/**
+	 * @param string $previewType
+	 * @return string[]
+	 */
+	public function getPreviewTypeOptions() {
+		return $this->getEiuFrame()->getPreviewTypeOptions($this);
+	}
+	
+	/**
+	 * @return string|null
+	 */
+	public function getDefaultPreviewType() {
+		return $this->getEiuFrame()->getDefaultPreviewType($this);
 	}
 	
 	/**
@@ -395,7 +433,8 @@ class EiuEntry {
 	 * @return string
 	 */
 	public function getGenericLabel(N2nLocale $n2nLocale = null) {
-		return $this->eiuFrame->getGenericLabel($this, $n2nLocale);
+		return $this->mask()->getEiMask()->getLabelLstr()
+				->t($n2nLocale ?? $this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
 	}
 
 	/**
@@ -403,7 +442,8 @@ class EiuEntry {
 	 * @return string
 	 */
 	public function getGenericPluralLabel(N2nLocale $n2nLocale = null) {
-		return $this->eiuFrame->getGenericPluralLabel($this, $n2nLocale);
+		return $this->mask()->getEiMask()->getPluralLabelLstr()
+				->t($n2nLocale ?? $this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
 	}
 	
 	/**
@@ -454,8 +494,14 @@ class EiuEntry {
 	 * @param N2nLocale $n2nLocale
 	 * @return string
 	 */
-	public function createIdentityString(bool $determineEiMask = true, N2nLocale $n2nLocale = null) {
-		return $this->getEiuFrame()->createIdentityString($this->eiEntry->getEiObject(), $determineEiMask, $n2nLocale);
+	public function createIdentityString(bool $useEntryEiMask = true, N2nLocale $n2nLocale = null) {
+		if ($useEntryEiMask) {
+			$n2nContext = $this->eiuAnalyst->getN2nContext(true);
+			return $this->mask()->engine()->getGuiDefinition()->createIdentityString($this->eiuObject->getEiObject(), 
+					$n2nContext, $n2nContext->getN2nLocale());
+		}
+		
+		return $this->getEiuFrame()->createIdentityString($this, false, $n2nLocale);
 	}
 	
 	/**
@@ -475,13 +521,13 @@ class EiuEntry {
 	 * 
 	 * @param mixed $eiPropPath
 	 * @param bool $required
-	 * @throws EiFieldOperationFailedException
+	 * @throws UnknownEiFieldExcpetion
 	 * @return \rocket\ei\manage\entry\EiFieldWrapper|null
 	 */
 	public function getEiFieldWrapper($eiPropPath, bool $required = false) {
 		try {
-			return $this->getEiEntry()->getEiFieldWrapper(EiPropPath::create($eiPropPath));
-		} catch (EiFieldOperationFailedException $e) {
+			return $this->getEiEntry(true)->getEiFieldWrapper(EiPropPath::create($eiPropPath));
+		} catch (UnknownEiFieldExcpetion $e) {
 			if ($required) throw $e;
 		}
 		
@@ -516,17 +562,6 @@ class EiuEntry {
 		return $this->getEiType()->equals($eiType);
 	}
 	
-	public function isPreviewAvailable() {
-		return !empty($this->eiuFrame->getPreviewTypeOptions($this->eiEntry->getEiObject()));
-	}
-	
-	public function getPreviewType() {
-		return $this->getEiuFrame()->getPreviewType($this->eiEntry->getEiObject());
-	}
-	
-	public function getPreviewTypeOptions() {
-		return $this->eiuFrame->getPreviewTypeOptions($this->eiEntry->getEiObject());
-	}
 	
 // 	public function isExecutableBy($eiCommandPath) {
 // 		return $this->getEiEntry()->isExecutableBy(EiCommandPath::create($eiCommandPath));

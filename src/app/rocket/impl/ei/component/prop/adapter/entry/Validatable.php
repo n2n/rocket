@@ -21,12 +21,12 @@
  */
 namespace rocket\impl\ei\component\prop\adapter\entry;
 
-use rocket\ei\manage\EiObject;
 use rocket\ei\manage\entry\EiFieldValidationResult;
+use rocket\ei\util\Eiu;
 
 interface Validatable {
 	
-	public function testEiFieldValue(EiObject $eiObject, $eiFieldValue): bool;
+	public function testEiFieldValue(Eiu $eiu, $eiFieldValue): bool;
 	
-	public function validateEiFieldValue(EiObject $eiObject, $eiFieldValue, EiFieldValidationResult $fieldErrorInfo);
+	public function validateEiFieldValue(Eiu $eiu, $eiFieldValue, EiFieldValidationResult $validationResult);
 }

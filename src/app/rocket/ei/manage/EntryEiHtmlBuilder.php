@@ -68,10 +68,10 @@ class EntryEiHtmlBuilder {
 		return $this->meta;
 	}
 	
-	private function pushGuiPropInfo($tagName, Displayable $displayable, EiFieldValidationResult $fieldErrorInfo, 
+	private function pushGuiPropInfo($tagName, GuiField $guiField, EiFieldValidationResult $validationResult, 
 			PropertyPath $propertyPath = null) {
-		$this->eiPropInfoStack[] = array('tagName' => $tagName, 'displayable' => $displayable, 
-				'fieldErrorInfo' => $fieldErrorInfo, 'propertyPath' => $propertyPath);
+		$this->eiPropInfoStack[] = array('tagName' => $tagName, 'displayable' => $guiField, 
+				'validationResult' => $validationResult, 'propertyPath' => $propertyPath);
 	}
 	
 	public function peakEiPropInfo($pop) {
@@ -154,19 +154,19 @@ class EntryEiHtmlBuilder {
 		
 		$eiEntryGui = $eiuEntryGui->getEiEntryGui();
 		$displayable = $eiEntryGui->getDisplayableByGuiPropPath($eiPropPath);
-		$fieldErrorInfo = $eiuEntryGui->getEiuEntry()->getEiEntry()->getValidationResult()->getEiFieldValidationResult(
+		$validationResult = $eiuEntryGui->getEiuEntry()->getEiEntry()->getValidationResult()->getEiFieldValidationResult(
 				$eiEntryGui->getGuiDefinition()->eiPropPathToEiPropPath($eiPropPath));
 		
 		if (!$eiEntryGui->containsMagAssemblyGuiPropPath($eiPropPath)) {
-			return $this->fieldEiHtml->getOpenOutputField($tagName, $displayable, $fieldErrorInfo, 
+			return $this->fieldEiHtml->getOpenOutputField($tagName, $displayable, $validationResult, 
 					$this->buildAttrs($eiPropPath));
 		}
 		
 		$editableInfo = $eiEntryGui->getMagAssemblyByGuiPropPath($eiPropPath);
 		$propertyPath = $this->meta->getContextPropertyPath()->ext($editableInfo->getMagPropertyPath());
 				
-		$this->pushGuiPropInfo($tagName, $displayable, $fieldErrorInfo, $propertyPath);
-		return $this->fieldEiHtml->getOpenInputField($tagName, $propertyPath, $fieldErrorInfo, 
+		$this->pushGuiPropInfo($tagName, $displayable, $validationResult, $propertyPath);
+		return $this->fieldEiHtml->getOpenInputField($tagName, $propertyPath, $validationResult, 
 				$this->buildAttrs($eiPropPath), $editableInfo->isMandatory());
 	}
 		
@@ -178,10 +178,10 @@ class EntryEiHtmlBuilder {
 		$eiuEntryGui = $this->meta->getCurrentEiuEntryGui();
 		$eiPropPath = GuiPropPath::create($eiPropPath);
 		$displayable = $eiuEntryGui->getEiEntryGui()->getDisplayableByGuiPropPath($eiPropPath);
-		$fieldErrorInfo = $eiuEntryGui->getEiuEntry()->getEiEntry()->getValidationResult()->getEiFieldValidationResult(
+		$validationResult = $eiuEntryGui->getEiuEntry()->getEiEntry()->getValidationResult()->getEiFieldValidationResult(
 				$eiuEntryGui->getEiEntryGui()->getGuiDefinition()->eiPropPathToEiPropPath($eiPropPath));
 		
-		return $this->fieldEiHtml->getOpenOutputField($tagName, $displayable, $fieldErrorInfo, 
+		return $this->fieldEiHtml->getOpenOutputField($tagName, $displayable, $validationResult, 
 				$this->buildAttrs($eiPropPath));
 	}
 	

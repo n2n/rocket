@@ -296,7 +296,7 @@ class EiEntryGui {
 		}
 		
 		foreach ($this->guiFieldAssemblies as $guiFieldAssembly) {
-			if (null !== ($savable = $guiFieldAssembly->getGuiFieldEditable())) {
+			if (null !== ($savable = $guiFieldAssembly->getEditable())) {
 				$savable->save();
 			}
 		}

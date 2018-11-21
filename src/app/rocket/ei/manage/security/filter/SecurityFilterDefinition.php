@@ -263,9 +263,9 @@ class EiFieldConstraintGroup implements EiEntryConstraint {
 		foreach ($this->eiFieldConstraints as $eiPropPathStr => $eiFieldConstraints) {
 			$eiPropPath = EiPropPath::create($eiPropPathStr);
 			$eiField = $eiEntry->getEiField($eiPropPath);
-			$fieldErrorInfo = $eiEntry->getValidationResult()->getEiFieldValidationResult($eiPropPath);
+			$validationResult = $eiEntry->getValidationResult()->getEiFieldValidationResult($eiPropPath);
 			foreach ($eiFieldConstraints as $eiFieldConstraint) {
-				$eiFieldConstraint->validate($eiField, $fieldErrorInfo);
+				$eiFieldConstraint->validate($eiField, $validationResult);
 			}
 		}
 		

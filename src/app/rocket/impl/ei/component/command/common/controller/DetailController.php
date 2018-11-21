@@ -82,7 +82,7 @@ class DetailController extends ControllerAdapter {
 		
 		$previewController = $this->eiuCtrl->lookupPreviewController($previewType, $eiuEntry);
 		
-		$this->applyBreadcrumbs($eiuEntry->getEiObject(), $previewType);
+		$this->applyBreadcrumbs($eiuEntry->object()->getEiObject(), $previewType);
 		
 		$this->forward('..\view\detailPreview.html', array( 
 				'iframeSrc' => $this->getHttpContext()->getControllerContextPath($this->getControllerContext())

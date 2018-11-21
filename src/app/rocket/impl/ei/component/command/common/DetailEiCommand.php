@@ -100,7 +100,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 		$controls = array(
 				self::CONTROL_DETAIL_KEY => $eiuControlFactory->createJhtml($controlButton, $pathExt->toUrl()));
 		
-		if (!$eiuFrame->isPreviewSupported()) {
+		if (!$eiuEntry->isPreviewSupported()) {
 			return $controls;
 		}
 		
@@ -109,7 +109,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 				$dtc->t('ei_impl_detail_preview_tooltip', array('entry' => $eiuFrame->getGenericLabel())),
 				false, null, IconType::ICON_EYE);
 		
-		$previewType = $eiuEntry->getPreviewType();
+		$previewType = $eiuEntry->getDefaultPreviewType();
 		if ($previewType === null) {
 			$controls[self::CONTROL_PREVIEW_KEY] = $eiuControlFactory->createDeactivated($controlButton);
 			return $controls;

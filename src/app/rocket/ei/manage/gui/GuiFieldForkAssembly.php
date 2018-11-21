@@ -5,16 +5,16 @@ use n2n\reflection\ArgUtils;
 
 class GuiFieldForkAssembly {
 	private $magAssemblies;
-	private $savable;
+	private $guiFieldEditable;
 	
 	/**
 	 * @param MagAssembly[] $magAssemblies
-	 * @param Savable $savable
+	 * @param GuiFieldEditable $guiFieldEditable
 	 */
-	public function __construct(array $magAssemblies, Savable $savable = null) {
+	public function __construct(array $magAssemblies, GuiFieldEditable $guiFieldEditable = null) {
 		ArgUtils::valArray($magAssemblies, MagAssembly::class);
 		$this->magAssemblies = $magAssemblies;
-		$this->savable = $savable;
+		$this->guiFieldEditable = $guiFieldEditable;
 	}
 	
 	/**
@@ -25,9 +25,9 @@ class GuiFieldForkAssembly {
 	}
 	
 	/**
-	 * @return Savable|null
+	 * @return GuiFieldEditable|null
 	 */
 	public function getSavable() {
-		return $this->savable;
+		return $this->guiFieldEditable;
 	}
 }

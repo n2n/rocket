@@ -137,7 +137,7 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 		
 		$guiProp = $this->guiDefinition->getGuiPropByGuiPropPath($guiPropPath);
 
-// 		$fieldErrorInfo = new EiFieldValidationResult();
+// 		$validationResult = new EiFieldValidationResult();
 		
 		$translationDisplayable = new TranslationDisplayable($guiProp, $this->n2nLocaleDefs);
 		
@@ -150,7 +150,7 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 			if ($result === null) continue;
 			
 			$eiuEntry = $guiFieldAssembler->getEiuEntryGui()->getEiuEntry();
-			$fieldErrorInfo = $eiuEntry->getEiEntry()->getValidationResult()
+			$validationResult = $eiuEntry->getEiEntry()->getValidationResult()
 					->getEiFieldValidationResult($guiPropPath);
 			if (null !== ($eiFieldWrapper = $result->getEiFieldWrapper())) {
 				$eiFieldWrappers[] = $eiFieldWrapper;
@@ -169,10 +169,10 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 			}
 			
 			if (null !== ($magAssembly = $result->getMagAssembly())) {
-				$translationMag->putMagPropertyPath($n2nLocaleId, $magAssembly->getMagPropertyPath(), $fieldErrorInfo, $eiuEntry);
+				$translationMag->putMagPropertyPath($n2nLocaleId, $magAssembly->getMagPropertyPath(), $validationResult, $eiuEntry);
 				if (!$mandatory) $mandatory = $magAssembly->isMandatory();
 			} else {
-				$translationMag->putDisplayable($n2nLocaleId, $result->getDisplayable(), $fieldErrorInfo);
+				$translationMag->putDisplayable($n2nLocaleId, $result->getDisplayable(), $validationResult);
 			}
 		}
 		

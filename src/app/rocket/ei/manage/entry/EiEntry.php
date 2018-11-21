@@ -226,12 +226,8 @@ class EiEntry {
 			$listener->onWrite($this);
 		}
 	
-		foreach ($this->eiFieldWrappers as $eiPropPathStr => $eiFieldWrapper) {
-			if ($eiFieldWrapper->isIgnored()) continue;
-			
-			$eiFieldWrapper->getEiField()->write();
-		}
-	
+		$this->eiFieldMap->write();
+		
 		foreach ($this->listeners as $listener) {
 			$listener->written($this);
 		}

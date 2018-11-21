@@ -21,28 +21,25 @@
  */
 namespace rocket\ei\manage\preview\model;
 
+use rocket\ei\util\Eiu;
+use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\EiObject;
+use rocket\ei\manage\entry\EiEntry;
 
 class PreviewModel {
 	private $previewType;
-	private $eiObject;
-	private $entityObj;
+	private $eiu;
 	
-	public function __construct(string $previewType, EiObject $eiObject, $entityObj) {
+	public function __construct(string $previewType, EiFrame $eiFrame, EiObject $eiObject, EiEntry $eiEntry = null) {
 		$this->previewType = $previewType;
-		$this->eiObject = $eiObject;
-		$this->entityObj = $entityObj;
+		$this->eiu = new Eiu($eiFrame, $eiObject, $eiEntry);
 	}
 	
 	public function getPreviewType() {
 		return $this->previewType;
 	}
 	
-	public function getEiObject() {
-		return $this->eiObject;
-	}
-	
-	public function getEntityObj() {
-		return $this->entityObj;
+	public function getEiu() {
+		return $this->eiu;
 	}
 }

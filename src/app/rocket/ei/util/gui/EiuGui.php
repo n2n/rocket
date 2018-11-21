@@ -215,7 +215,7 @@ class EiuGui {
 		
 		if ($eiEntry === null) {
 			$eiEntry = (new EiuEntry(null, new EiuObject($eiObject, $this->eiuAnalyst), 
-					null, $this->eiuAnalyst))->getEiEntry();
+					null, $this->eiuAnalyst))->getEiEntry(true);
 		}
 		
 		return new EiuEntryGui($this->eiGui->createEiEntryGui($eiEntry, $treeLevel, true), $this, $this->eiuAnalyst);

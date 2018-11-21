@@ -30,7 +30,6 @@ use n2n\util\ex\IllegalStateException;
 use n2n\web\ui\Raw;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use n2n\web\ui\UiComponent;
-use n2n\l10n\MessageTranslator;
 
 class FieldEiHtmlBuilder {
 	private $view;
@@ -62,10 +61,10 @@ class FieldEiHtmlBuilder {
 		return $attrs;
 	}
 	
-	private function pushGuiPropInfo($tagName, EiFieldValidationResult $fieldErrorInfo, Displayable $displayable = null, 
+	private function pushGuiPropInfo($tagName, EiFieldValidationResult $validationResult, GuiField $guiField = null, 
 			PropertyPath $propertyPath = null) {
-		$this->eiPropInfoStack[] = array('tagName' => $tagName, 'displayable' => $displayable,
-				'fieldErrorInfo' => $fieldErrorInfo, 'propertyPath' => $propertyPath);
+		$this->eiPropInfoStack[] = array('tagName' => $tagName, 'displayable' => $guiField,
+				'validationResult' => $validationResult, 'propertyPath' => $propertyPath);
 	}
 
 	public function peakEiPropInfo($pop) {
@@ -80,30 +79,30 @@ class FieldEiHtmlBuilder {
 		}
 	}
 	
-	public function openInputField(string $tagName, $magPropertyPath, EiFieldValidationResult $fieldErrorInfo, 
+	public function openInputField(string $tagName, $magPropertyPath, EiFieldValidationResult $validationResult, 
 			array $attrs = null, bool $mandatory = false) {
-		$this->view->out($this->getOpenInputField($tagName, $magPropertyPath, $fieldErrorInfo, $attrs, $mandatory));
+		$this->view->out($this->getOpenInputField($tagName, $magPropertyPath, $validationResult, $attrs, $mandatory));
 	}
 	
-	public function getOpenInputField(string $tagName, $magPropertyPath, EiFieldValidationResult $fieldErrorInfo, 
+	public function getOpenInputField(string $tagName, $magPropertyPath, EiFieldValidationResult $validationResult, 
 			array $attrs = null, bool $mandatory = false) {
 		$magPropertyPath = $this->formHtml->meta()->createPropertyPath($magPropertyPath);
 		
-		if ($this->formHtml->meta()->hasErrors($magPropertyPath) || !$fieldErrorInfo->isValid()) {
+		if ($this->formHtml->meta()->hasErrors($magPropertyPath) || !$validationResult->isValid()) {
 			$attrs = HtmlUtils::mergeAttrs((array) $attrs, array('class' => 'rocket-has-error'));
 		}
 	
-		$this->pushGuiPropInfo($tagName, $fieldErrorInfo, null, $magPropertyPath);
+		$this->pushGuiPropInfo($tagName, $validationResult, null, $magPropertyPath);
 		return $this->formHtml->getMagOpen($tagName, $magPropertyPath, 
 				$this->buildContainerAttrs((array) $attrs, false, $mandatory), $this->uiOutfitter);
 	}
 	
-	public function openOutputField($tagName, Displayable $displayable, EiFieldValidationResult $fieldErrorInfo, array $attrs = null) {
-		$this->view->out($this->getOpenOutputField($tagName, $displayable, $fieldErrorInfo, $attrs));
+	public function openOutputField($tagName, GuiField $displayable, EiFieldValidationResult $validationResult, array $attrs = null) {
+		$this->view->out($this->getOpenOutputField($tagName, $displayable, $validationResult, $attrs));
 	}
 	
-	public function getOpenOutputField($tagName, Displayable $displayable, EiFieldValidationResult $fieldErrorInfo, array $attrs = null) {
-		$this->pushGuiPropInfo($tagName, $fieldErrorInfo, $displayable);
+	public function getOpenOutputField($tagName, GuiField $displayable, EiFieldValidationResult $validationResult, array $attrs = null) {
+		$this->pushGuiPropInfo($tagName, $validationResult, $displayable);
 		
 		return new Raw('<' . HtmlUtils::hsc($tagName) . HtmlElement::buildAttrsHtml(
 				$this->buildContainerAttrs(HtmlUtils::mergeAttrs($displayable->getOutputHtmlContainerAttrs(), $attrs))) . '>');
@@ -162,7 +161,7 @@ class FieldEiHtmlBuilder {
 			return new HtmlElement('div', array('class' => 'rocket-message-error'), $message);
 		}
 
-		if (null !== ($message = $eiPropInfo['fieldErrorInfo']->processMessage())) {
+		if (null !== ($message = $eiPropInfo['validationResult']->processMessage())) {
 			$messageTranslator = new MessageTranslator($this->view->getModuleNamespace(),
 					$this->view->getN2nLocale());
 			

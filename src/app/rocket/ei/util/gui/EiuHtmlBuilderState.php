@@ -75,14 +75,15 @@ class EiuHtmlBuilderState {
 	
 	/**
 	 * @param string $tagName
-	 * @param EiFieldValidationResult $fieldErrorInfo
+	 * @param EiFieldValidationResult $validationResult
 	 * @param GuiFieldAssembly $guiFieldAssembly
 	 * @param PropertyPath $propertyPath
 	 */
-	public function pushField(string $tagName, GuiPropPath $guiPropPath, ValidationResult $fieldErrorInfo = null, 
+	public function pushField(string $tagName, GuiPropPath $guiPropPath, ValidationResult $validationResult = null, 
 			GuiFieldAssembly $guiFieldAssembly = null, PropertyPath $propertyPath = null, DisplayItem $displayItem = null) {
-		$this->stack[] = array('type' => 'field', 'guiPropPath' => $guiPropPath, 'tagName' => $tagName, 'guiFieldAssembly' => $guiFieldAssembly,
-				'fieldErrorInfo' => $fieldErrorInfo, 'propertyPath' => $propertyPath, 'displayItem' => $displayItem);
+		$this->stack[] = array('type' => 'field', 'guiPropPath' => $guiPropPath, 'tagName' => $tagName, 
+				'guiFieldAssembly' => $guiFieldAssembly, 'validationResult' => $validationResult, 
+				'propertyPath' => $propertyPath, 'displayItem' => $displayItem);
 	}
 	
 	/**

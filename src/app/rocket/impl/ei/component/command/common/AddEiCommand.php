@@ -24,7 +24,6 @@ namespace rocket\impl\ei\component\command\common;
 use n2n\l10n\DynamicTextCollection;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\N2nLocale;
-use rocket\impl\ei\component\command\common\controller\AddController;
 use rocket\ei\component\command\control\OverallControlComponent;
 use rocket\ei\manage\control\ControlButton;
 use rocket\ei\manage\control\IconType;
@@ -36,6 +35,7 @@ use rocket\ei\component\command\control\EntryControlComponent;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\security\privilege\EiCommandPrivilege;
 use n2n\web\http\controller\Controller;
+use rocket\impl\ei\component\command\common\controller\AddController;
 
 class AddEiCommand extends IndependentEiCommandAdapter implements OverallControlComponent, EntryControlComponent,
 		PrivilegedEiCommand {

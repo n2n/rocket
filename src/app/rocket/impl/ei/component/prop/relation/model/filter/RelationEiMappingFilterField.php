@@ -128,9 +128,9 @@ class RelationEiFieldConstraint implements EiFieldConstraint {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\entry\EiFieldConstraint::validate($eiField, $fieldErrorInfo)
+	 * @see \rocket\ei\manage\entry\EiFieldConstraint::validate($eiField, $validationResult)
 	 */
-	public function validate(EiField $eiField, EiFieldValidationResult $fieldErrorInfo) {
+	public function validate(EiField $eiField, EiFieldValidationResult $validationResult) {
 		if ($this->check($eiField)) return;
 		
 		$messageKey = null;
@@ -149,7 +149,7 @@ class RelationEiFieldConstraint implements EiFieldConstraint {
 				break;
 		}
 		
-		$fieldErrorInfo->addError(Message::createCodeArg($messageKey, array('field' => $this->label,
+		$validationResult->addError(Message::createCodeArg($messageKey, array('field' => $this->label,
 				'target_entries' => implode(', ', $this->createTragetIdentityStrings()))));
 	}
 }
@@ -216,14 +216,14 @@ class TestEiFieldConstraint implements EiFieldConstraint {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\entry\EiFieldConstraint::validate($eiField, $fieldErrorInfo)
+	 * @see \rocket\ei\manage\entry\EiFieldConstraint::validate($eiField, $validationResult)
 	 */
-	public function validate(EiField $eiField, EiFieldValidationResult $fieldErrorInfo) {
+	public function validate(EiField $eiField, EiFieldValidationResult $validationResult) {
 		if ($this->exists) {
 			$value = $eiField->getValue();
 			if (!$this->toMany) {
 				if ($value === null) {
-					$fieldErrorInfo->addError(Message::createCodeArg('ei_impl_relation_must_exist_err', array('field' => $this->label)));
+					$validationResult->addError(Message::createCodeArg('ei_impl_relation_must_exist_err', array('field' => $this->label)));
 					return;
 				}
 				ArgUtils::assertTrue($value instanceof RelationEntry);
@@ -240,7 +240,7 @@ class TestEiFieldConstraint implements EiFieldConstraint {
 		}
 		
 		if (!$this->check($eiField)) {
-			$fieldErrorInfo->addError(Message::createCodeArg('ei_impl_relation_must_not_exist_err', array('field' => $this->label)));
+			$validationResult->addError(Message::createCodeArg('ei_impl_relation_must_not_exist_err', array('field' => $this->label)));
 		}
 	}
 

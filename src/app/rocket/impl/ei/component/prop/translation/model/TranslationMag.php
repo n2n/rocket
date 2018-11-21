@@ -42,7 +42,7 @@ class TranslationMag extends MagAdapter {
 	
 	private $displayables = array();
 	private $magPropertyPaths = array();
-	private $fieldErrorInfos = array();
+	private $validationResults = array();
 	private $eiuEntries = array();
 	/**
 	 * @var SrcLoadConfig
@@ -58,15 +58,15 @@ class TranslationMag extends MagAdapter {
 		return new ScalarProperty($accessProxy, true);
 	}
 
-	public function putDisplayable($n2nLocaleId, Displayable $displayable, EiFieldValidationResult $fieldErrorInfo) {
+	public function putDisplayable($n2nLocaleId, GuiField $displayable, EiFieldValidationResult $validationResult) {
 		$this->displayables[$n2nLocaleId] = $displayable;
-		$this->fieldErrorInfos[$n2nLocaleId] = $fieldErrorInfo;
+		$this->validationResults[$n2nLocaleId] = $validationResult;
 	}
 
-	public function putMagPropertyPath($n2nLocaleId, PropertyPath $magPropertyPath, EiFieldValidationResult $fieldErrorInfo, 
+	public function putMagPropertyPath($n2nLocaleId, PropertyPath $magPropertyPath, EiFieldValidationResult $validationResult, 
 			EiuEntry $eiuEntry) {
 		$this->magPropertyPaths[$n2nLocaleId] = $magPropertyPath;
-		$this->fieldErrorInfos[$n2nLocaleId] = $fieldErrorInfo;
+		$this->validationResults[$n2nLocaleId] = $validationResult;
 		$this->eiuEntries[$n2nLocaleId] = $eiuEntry;
 		$this->value[$n2nLocaleId] = 1;
 	}
@@ -128,7 +128,7 @@ class TranslationMag extends MagAdapter {
 		}
 
 		return $view->getImport('\rocket\impl\ei\component\prop\translation\view\mag.html', 
-				array('propertyPath' => $propertyPath, 'propertyPaths' => $propertyPaths, 'fieldErrorInfos' => $this->fieldErrorInfos, 
+				array('propertyPath' => $propertyPath, 'propertyPaths' => $propertyPaths, 'validationResults' => $this->validationResults, 
 						'label' => $this->getLabel($view->getN2nLocale()),
 						'srcLoadConfig' => $srcLoadConfig, 'eiuEntries' => $this->eiuEntries,
 						'markClassKey' => $this->markClassKey));

@@ -81,7 +81,7 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 			return null;
 		}
 		
-		return Rocket::createLstr($helpText, $this->eiMask->getModuleNamespace());
+		return Rocket::createLstr($helpText, $this->getWrapper()->getEiPropCollection()->getEiMask()->getModuleNamespace());
 	}
 	
 	/**

@@ -100,9 +100,9 @@ class ValidatableEiFieldConstraint implements EiFieldConstraint {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\entry\EiFieldConstraint::validate($eiField, $fieldErrorInfo)
+	 * @see \rocket\ei\manage\entry\EiFieldConstraint::validate($eiField, $validationResult)
 	 */
-	public function validate(EiField $eiField, EiFieldValidationResult $fieldErrorInfo) {
-		return $this->validatable->validateEiFieldValue($this->eiu, $eiField->getValue(), $fieldErrorInfo);
+	public function validate(EiField $eiField, EiFieldValidationResult $validationResult) {
+		return $this->validatable->validateEiFieldValue($this->eiu, $eiField->getValue(), $validationResult);
 	}	
 }

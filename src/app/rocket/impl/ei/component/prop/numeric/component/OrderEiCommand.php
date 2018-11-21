@@ -82,14 +82,14 @@ class OrderEiCommand extends EiCommandAdapter implements EntryControlComponent {
 		return array(
 				self::CONTROL_INSERT_BEFORE_KEY => new HrefControl(
 						$httpContext->getControllerContextPath($eiFrame->getControllerContext())
-								->ext($this->getId(), 'before', $eiEntry->getPid())
+								->ext($this->getWrapper()->getEiCommandPath(), 'before', $eiEntry->getPid())
 								->toUrl(array('refPath' => (string) $eiFrame->getCurrentUrl($httpContext))), 
 						new ControlButton($dtc->translate('ei_impl_order_insert_before_label'), 
 								$dtc->translate('ei_impl_order_insert_before_tooltip'),
 								true, ControlButton::TYPE_INFO, IconType::ICON_CARET_UP, array('class' => 'rocket-impl-insert-before'), false, false)),
 				self::CONTROL_INSERT_AFTER_KEY => new HrefControl(
 						$httpContext->getControllerContextPath($eiFrame->getControllerContext())
-								->ext($this->getId(), 'after', $eiEntry->getPid())
+								->ext($this->getWrapper()->getEiCommandPath(), 'after', $eiEntry->getPid())
 								->toUrl(array('refPath' => (string) $eiFrame->getCurrentUrl($httpContext))),
 						new ControlButton($dtc->translate('ei_impl_order_insert_after_label'), 
 								$dtc->translate('ei_impl_order_insert_after_tooltip'),

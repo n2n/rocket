@@ -1187,7 +1187,7 @@ class EiuAnalyst {
 		}
 		
 		if ($eiEntryArg instanceof EiuEntry) {
-			return $eiEntryArg->getEiEntry();
+			return $eiEntryArg->getEiEntry($required);
 		}
 		
 		throw new EiuPerimeterException('Can not determine EiEntry of passed argument ' . $argName

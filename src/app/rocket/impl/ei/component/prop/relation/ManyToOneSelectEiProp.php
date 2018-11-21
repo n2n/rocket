@@ -100,7 +100,7 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 			$targetEntityObj = $value->getEiEntityObj()->getEntityObj();
 		}
 		
-		$eiu->object()->writeNativeValue($this, $value);
+		$eiu->object()->writeNativeValue($this, $targetEntityObj);
 	}
 	
 	// 	/**

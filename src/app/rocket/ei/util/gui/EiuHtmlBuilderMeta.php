@@ -32,7 +32,6 @@ use rocket\ei\manage\gui\ui\DisplayItem;
 use n2n\reflection\CastUtils;
 use rocket\ei\manage\gui\EiEntryGui;
 use n2n\l10n\Message;
-use n2n\l10n\MessageTranslator;
 use n2n\impl\web\ui\view\html\HtmlUtils;
 use rocket\ei\manage\gui\GuiPropPath;
 

@@ -92,5 +92,13 @@ class EiFieldMap {
 		}
 	}
 	
+	public function write() {
+		foreach ($this->eiFieldWrappers as $eiPropPathStr => $eiFieldWrapper) {
+			if ($eiFieldWrapper->isIgnored()) continue;
+			
+			$eiFieldWrapper->getEiField()->write();
+		}
+	}
+	
 	
 }

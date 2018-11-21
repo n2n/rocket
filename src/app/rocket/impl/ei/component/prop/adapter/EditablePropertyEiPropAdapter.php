@@ -114,13 +114,13 @@ abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAd
 		return $eiFieldValue !== null || $eiObject->isDraft() || !$this->standardEditDefinition->isMandatory();
 	}
 	
-	public function testEiFieldValue(EiObject $eiObject, $eiFieldValue): bool {
-		return $this->checkMandatory($eiObject, $eiFieldValue);
+	public function testEiFieldValue(Eiu $eiu, $eiFieldValue): bool {
+		return $this->checkMandatory($eiu->object()->getEiObject(), $eiFieldValue);
 	}
 	
-	public function validateEiFieldValue(EiObject $eiObject, $eiFieldValue, EiFieldValidationResult $fieldErrorInfo) {
-		if (!$this->checkMandatory($eiObject, $eiFieldValue)) {
-			$fieldErrorInfo->addError(Message::createCodeArg('ei_impl_mandatory_err', array('field' => $this->labelLstr), null, 
+	public function validateEiFieldValue(Eiu $eiu, $eiFieldValue, EiFieldValidationResult $validationResult) {
+		if (!$this->checkMandatory($eiu->object()->getEiObject(), $eiFieldValue)) {
+			$validationResult->addError(Message::createCodeArg('ei_impl_mandatory_err', array('field' => $this->labelLstr), null, 
 					Rocket::NS));
 		}
 	}

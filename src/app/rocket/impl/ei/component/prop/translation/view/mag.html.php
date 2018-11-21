@@ -36,8 +36,8 @@
 	$tPropertyPaths = $view->getParam('propertyPaths');
 	$view->assert(is_array($tPropertyPaths));
 	
-	$fieldErrorInfos = $view->getParam('fieldErrorInfos');
-	$view->assert(is_array($fieldErrorInfos));
+	$validationResults = $view->getParam('validationResults');
+	$view->assert(is_array($validationResults));
 	
 	$eiuEntries = $view->getParam('eiuEntries');
 	$view->assert(is_array($eiuEntries));
@@ -77,7 +77,7 @@
 					</div>
 				</div>
 			<?php else: ?>
-				<?php $fieldEiHtml->openInputField('div', $tPropertyPath, $fieldErrorInfos[$n2nLocaleId]) ?>
+				<?php $fieldEiHtml->openInputField('div', $tPropertyPath, $validationResults[$n2nLocaleId]) ?>
 					<?php $fieldEiHtml->label(array('title' => $n2nLocale->getName($request->getN2nLocale()), 
 							'class' => 'rocket-impl-locale-label'), $n2nLocale->toPrettyId()) ?>
 					<div class="rocket-control">
