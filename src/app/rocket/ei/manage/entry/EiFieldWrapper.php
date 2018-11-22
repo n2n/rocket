@@ -70,7 +70,7 @@ class EiFieldWrapper implements EiFieldAbstraction {
 		
 		if (!$eiEntry->hasValidationResult()) return null;
 		
-		$eiEntry->getValidationResult()->getEiFieldValidationResult($this->eiPropPath);	
+		return $eiEntry->getValidationResult()->getEiFieldValidationResult($this->eiPropPath);	
 	}
 
 }

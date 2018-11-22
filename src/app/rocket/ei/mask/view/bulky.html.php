@@ -68,11 +68,13 @@
 	
 			<?php if ($renderInnerMeta): ?>
 				<?php $eiuHtml->toolbar(false, $view->getParam('renderForkControls'), $view->getParam('renderEntryControls')) ?>
-				
-				<?php $eiuHtml->entryMessages() ?>
 			<?php endif ?>		
 			
 			<div class="rocket-control">
+				<?php if ($renderInnerMeta): ?>
+					<?php $eiuHtml->entryMessages() ?>
+				<?php endif ?>
+			
 				<?php $view->import('bulky.html', $view->mergeParams(array(
 						'displayStructure' => $displayItem->getDisplayStructure(), 
 						'eiu' => $eiu, 'renderMeta' => false))) ?>

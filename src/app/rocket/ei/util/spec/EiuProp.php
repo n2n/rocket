@@ -8,23 +8,33 @@ use rocket\ei\util\EiuAnalyst;
 
 class EiuProp {
 	private $eiPropPath;
-	private $eiuEngine;
+	private $eiuMask;
+	private $eiuAnalyst;
 	
 	/**
 	 * @param EiPropPath $eiPropPath
 	 * @param EiuEngine $eiuEngine
 	 */
-	public function __construct(EiPropPath $eiPropPath, EiuEngine $eiuEngine) {
+	public function __construct(EiPropPath $eiPropPath, EiuMask $eiuMask, EiuAnalyst $eiuAnalyst) {
 		$this->eiPropPath = $eiPropPath;
-		$this->eiuEngine = $eiuEngine;
+		$this->eiuMask = $eiuMask;
+		$this->eiuAnalyst = $eiuAnalyst;
 	}
 	
 	/**
-	 * @param N2nLocale $n2nLocale
+	 * @param N2nLocale|null $n2nLocale
 	 * @return string
 	 */
-	public function getLabel(N2nLocale $n2nLocale) {
-		return $this->eiuEngine->getEiEngine()->getEiMask()->getEiPropCollection()->getById((string) $this->eiPropPath);
+	public function getLabel(N2nLocale $n2nLocale = null) {
+		return $this->eiuMask->getPropLabel($this->eiPropPath);
+	}
+	
+	/**
+	 * @param N2nLocale|null $n2nLocale
+	 * @return string
+	 */
+	public function getPluralLabel(N2nLocale $n2nLocale = null) {
+		return $this->eiuMask->getPropPluralLabel($this->eiPropPath);
 	}
 	
 	/**

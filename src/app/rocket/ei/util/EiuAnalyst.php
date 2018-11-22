@@ -944,6 +944,14 @@ class EiuAnalyst {
 		throw new EiuPerimeterException('New EiuFieldMap available.');
 	}
 	
+	public function getEiuProp(bool $required) {
+		if ($this->eiuProp !== null) {
+			return $this->eiuProp;
+		}
+		
+		return $this->eiuProp = new EiuProp($this->getEiPropPath(true), $this->getEiuMask(true), $this);
+	}
+	
 
 	/**
 	 * @param bool $required

@@ -3,7 +3,6 @@ namespace rocket\ei\util\spec;
 
 use n2n\l10n\N2nLocale;
 use rocket\ei\EiPropPath;
-use rocket\ei\component\UnknownEiComponentException;
 use rocket\ei\manage\generic\UnknownGenericEiPropertyException;
 use rocket\ei\manage\generic\GenericEiProperty;
 use rocket\ei\manage\generic\UnknownScalarEiPropertyException;
@@ -145,30 +144,6 @@ class EiuEngine {
 			$options[$str] = $str . ' (' . $scalarEiProperty->getLabelLstr()->t(N2nLocale::getAdmin()) . ')';
 		}
 		return $options;
-	}
-	
-	
-	public function containsEiProp($eiPropPath) {
-		return $this->eiEngine->getEiMask()->getEiPropCollection()->containsId(EiPropPath::create($eiPropPath));
-	}
-	
-	/**
-	 * @param string|EiPropPath|\rocket\ei\component\prop\EiProp $eiPropArg
-	 * @param bool $required
-	 * @throws UnknownEiComponentException
-	 * @return \rocket\ei\util\spec\EiuProp|null
-	 */
-	public function prop($eiPropArg, bool $required = true) {
-		$eiPropPath = EiPropPath::create($eiPropArg);
-		try {
-			$this->eiEngine->getEiMask()->getEiPropCollection()->getById((string) $eiPropPath);
-		} catch (UnknownEiComponentException $e) {
-			if (!$required) return null;
-			
-			throw $e;
-		}
-		
-		return new EiuProp($eiPropPath, $this);
 	}
 	
 	/**

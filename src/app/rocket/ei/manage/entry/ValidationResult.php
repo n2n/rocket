@@ -34,12 +34,10 @@ interface ValidationResult {
 	/**
 	 * @return Message[]
 	 */
-	public function getMessages(): array;
+	public function getMessages(bool $recursive = true): array;
 	
-	/**
-	 * @param bool $recursive
-	 */
-	public function processMessage(bool $recursive): ?Message;
-	
-	
+// 	/**
+// 	 * @param bool $recursive
+// 	 */
+// 	public function processMessage(bool $recursive): ?Message;
 }

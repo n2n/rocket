@@ -25,7 +25,7 @@ use n2n\l10n\Message;
 use rocket\ei\EiPropPath;
 use n2n\util\ex\IllegalStateException;
 
-class EiFieldValidationResult {
+class EiFieldValidationResult implements ValidationResult {
 	private $eiPropPath;
 	private $errorMessages = array();
 	/**
@@ -126,7 +126,7 @@ class EiFieldValidationResult {
 		$this->subEiEntryValidationResults[] = $subValidationResult;
 	}
 
-	public function getMessages(bool $recursive = true) {
+	public function getMessages(bool $recursive = true): array {
 		$messages = $this->errorMessages;
 		
 		if ($recursive) {

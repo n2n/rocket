@@ -29,6 +29,9 @@ use rocket\ei\component\modificator\EiModificator;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\util\EiuAnalyst;
 use rocket\ei\util\Eiu;
+use rocket\ei\EiPropPath;
+use n2n\l10n\N2nLocale;
+use rocket\ei\component\UnknownEiComponentException;
 
 class EiuMask  {
 	private $eiMask;
@@ -133,6 +136,42 @@ class EiuMask  {
 		}
 		
 		return $this->eiuEngine = new EiuEngine($this->eiMask->getEiEngine(), $this, $this->eiuAnalyst);
+	}
+	
+	public function getPropLabel($eiPropPath, N2nLocale $n2nLocale = null) {
+		return $this->eiMask->getEiPropCollection()->getByPath(EiPropPath::create($eiPropPath))->getLabelLstr()
+				->t($n2nLocale ?? $this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
+	}
+	
+	public function getPropPluralLabel($eiPropPath, N2nLocale $n2nLocale = null) {
+		return $this->eiMask->getEiPropCollection()->getByPath(EiPropPath::create($eiPropPath))->getPluralLabelLstr()
+				->t($n2nLocale ?? $this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
+	}
+	
+	
+	
+	
+	public function containsEiProp($eiPropPath) {
+		return $this->eiEngine->getEiMask()->getEiPropCollection()->containsId(EiPropPath::create($eiPropPath));
+	}
+	
+	/**
+	 * @param string|EiPropPath|\rocket\ei\component\prop\EiProp $eiPropArg
+	 * @param bool $required
+	 * @throws UnknownEiComponentException
+	 * @return \rocket\ei\util\spec\EiuProp|null
+	 */
+	public function prop($eiPropArg, bool $required = true) {
+		$eiPropPath = EiPropPath::create($eiPropArg);
+		try {
+			$this->eiMask->getEiPropCollection()->getById((string) $eiPropPath);
+		} catch (UnknownEiComponentException $e) {
+			if (!$required) return null;
+			
+			throw $e;
+		}
+		
+		return new EiuProp($eiPropPath, $this, $this->eiuAnalyst);
 	}
 	
 	/**

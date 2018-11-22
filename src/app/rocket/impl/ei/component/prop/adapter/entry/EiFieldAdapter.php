@@ -56,12 +56,11 @@ abstract class EiFieldAdapter implements EiField {
 	 * @throws \InvalidArgumentException
 	 */
 	protected abstract function checkValue($value);
-	
 
 	/**
 	 * @return bool
 	 */
-	public final function isValueLoaded(): bool {
+	public final function isValueLoaded() {
 		return $this->valueLoaded;
 	}
 

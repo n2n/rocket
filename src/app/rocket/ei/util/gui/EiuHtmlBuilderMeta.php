@@ -187,10 +187,6 @@ class EiuHtmlBuilderMeta {
 			}
 		}
 		
-		
-		$mt = new MessageTranslator($this->view->getModuleNamespace(), $this->view->getN2nLocale());
-		$messages = $mt->translateAll($messages);
-		
 		return $messages;
 	}
 	

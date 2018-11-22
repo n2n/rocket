@@ -12,6 +12,7 @@ class Eiu implements Lookupable {
 	private $eiuContext;
 	private $eiuEngine;
 	private $eiuMask;
+	private $eiuProp;
 	private $eiuFrame;
 	private $eiuObject;
 	private $eiuEntry;
@@ -64,6 +65,18 @@ class Eiu implements Lookupable {
 		}
 		
 		return $this->eiuMask = $this->eiuAnalyst->getEiuMask($required);
+	}
+	
+	/**
+	 * @param bool $required
+	 * @return \rocket\ei\util\spec\EiuProp
+	 */
+	public function prop(bool $required = true) {
+		if ($this->eiuProp !== null) {
+			return $this->eiuProp;
+		}
+		
+		return $this->eiuProp = $this->eiuAnalyst->getEiuProp($required);
 	}
 	
 	/**

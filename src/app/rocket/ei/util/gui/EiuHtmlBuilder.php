@@ -39,6 +39,7 @@ use rocket\ei\manage\RocketUiOutfitter;
 use n2n\impl\web\ui\view\html\HtmlSnippet;
 use rocket\ei\manage\entry\ValidationResult;
 use rocket\ei\manage\entry\UnknownEiFieldExcpetion;
+use n2n\l10n\Message;
 
 class EiuHtmlBuilder {
 	private $view;
@@ -434,11 +435,11 @@ class EiuHtmlBuilder {
 		return null;
 	}
 	
-	public function fieldMessage() {
-		$this->html->out($this->getFieldMessage());
+	public function fieldMessage(bool $recursive = true) {
+		$this->html->out($this->getFieldMessage($recursive));
 	}
 	
-	public function getFieldMessage() {
+	public function getFieldMessage(bool $recursive = true) {
 		$fieldInfo = $this->state->peakField(false);
 		
 		if (isset($fieldInfo['propertyPath'])
@@ -447,11 +448,27 @@ class EiuHtmlBuilder {
 		}
 		
 		if (isset($fieldInfo['validationResult']) 
-				&& null !== ($message = $fieldInfo['validationResult']->processMessage(true))) {
+				&& null !== ($message = $this->processMessage($fieldInfo['validationResult'], $recursive))) {
 			return new HtmlElement('div', array('class' => 'rocket-message-error'),
 					$message->tByDtc($this->view->getDynamicTextCollection()));
 		}
 
+		return null;
+	}
+	
+	/**
+	 * @param ValidationResult $validationResult
+	 * @param bool $recursive
+	 * @return Message|null
+	 */
+	private function processMessage(ValidationResult $validationResult, bool $recursive) {
+		foreach ($validationResult->getMessages($recursive) as $message) {
+			if ($message->isProcessed()) continue;
+			
+			$message->setProcessed(true);
+			return $message;
+		}
+		
 		return null;
 	}
 	

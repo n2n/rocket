@@ -30,6 +30,7 @@ use rocket\ei\manage\entry\EiFieldMap;
 use rocket\ei\util\entry\EiuFieldMap;
 use rocket\ei\manage\entry\EiFieldValidationResult;
 use n2n\reflection\ArgUtils;
+use n2n\l10n\Message;
 
 class EmbeddedEiField extends EiFieldAdapter {
 	private $eiu;
@@ -88,7 +89,7 @@ class EmbeddedEiField extends EiFieldAdapter {
 	
 	
 	protected function isValueValid($value) {
-		if ($value === null) return true;
+		if ($value === null) return !$this->eiProp->isMandatory();
 		
 		CastUtils::assertTrue($value instanceof EiuFieldMap);
 		
@@ -100,11 +101,16 @@ class EmbeddedEiField extends EiFieldAdapter {
 	 * @see \rocket\impl\ei\component\prop\adapter\entry\EiFieldAdapter::validateValue()
 	 */
 	protected function validateValue($value, EiFieldValidationResult $validationResult) {
-		if ($value === null) return;
+		if ($value != null) {
+			CastUtils::assertTrue($value instanceof EiuFieldMap);
+			$value->validate($validationResult);
+			return;
+		}
 		
-		CastUtils::assertTrue($value instanceof EiuFieldMap);
-		
-		$value->validate($validationResult);
+		if ($this->eiProp->isMandatory()) {
+			$validationResult->addError(Message::createCodeArg('common_field_required_err', 
+					['field' => $this->eiProp->getLabelLstr()->t($this->eiu->getN2nLocale())], null, 'rocket'));
+		}
 	}
 	
 	public function isWritable(): bool {
@@ -134,8 +140,10 @@ class EmbeddedEiField extends EiFieldAdapter {
 	}
 	
 	public function getForkedEiFieldMap(): EiFieldMap {
-		$this->getValue();
+		if (null !== ($value = $this->getValue())) {
+			return $value->getEiFieldMap();
+		}
+		
 		return $this->forkedEiFieldMap->getEiFieldMap();
 	}
-
 }
