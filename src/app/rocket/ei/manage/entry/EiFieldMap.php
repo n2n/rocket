@@ -9,6 +9,11 @@ class EiFieldMap {
 	private $object;
 	private $eiFieldWrappers = array();
 	
+	/**
+	 * @param EiEntry $eiEntry
+	 * @param EiPropPath $forkEiPropPath
+	 * @param object $object
+	 */
 	public function __construct(EiEntry $eiEntry, EiPropPath $forkEiPropPath, object $object) {
 		$this->eiEntry = $eiEntry;
 		$this->forkEiPropPath = $forkEiPropPath;
@@ -29,14 +34,17 @@ class EiFieldMap {
 		return $this->forkEiPropPath;
 	}
 	
+	/**
+	 * @return object
+	 */
 	public function getObject() {
 		return $this->object;
 	}
 	
 	/**
-	* @param EiPropPath $eiPropPath
-	* @return bool
-	*/
+	 * @param EiPropPath $eiPropPath
+	 * @return bool
+	 */
 	public function containsId(string $id): bool {
 		return isset($this->eiFieldWrappers[$id]);
 	}
@@ -83,6 +91,24 @@ class EiFieldMap {
 		return $this->eiFieldWrappers;
 	}
 	
+	/**
+	 * @return boolean
+	 */
+	public function isValid() {
+		foreach ($this->eiFieldWrappers as $eiPropPathStr => $eiFieldWrapper) {
+			if ($eiFieldWrapper->isIgnored()) continue;
+			
+			if (!$eiFieldWrapper->getEiField()->isValid()) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * @param EiEntryValidationResult $eiEntryValidationResult
+	 */
 	public function validate(EiEntryValidationResult $eiEntryValidationResult) {
 		foreach ($this->eiFieldWrappers as $eiPropPathStr => $eiFieldWrapper) {
 			if ($eiFieldWrapper->isIgnored()) continue;

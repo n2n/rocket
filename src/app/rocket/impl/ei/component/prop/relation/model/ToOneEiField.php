@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\relation\model;
 
 use n2n\reflection\ArgUtils;
-use rocket\impl\ei\component\prop\adapter\entry\RwvEiField;
+use rocket\impl\ei\component\prop\adapter\entry\CrwvEiField;
 use rocket\ei\manage\entry\EiFieldValidationResult;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\util\Eiu;
@@ -30,7 +30,7 @@ use rocket\impl\ei\component\prop\adapter\entry\Readable;
 use rocket\impl\ei\component\prop\adapter\entry\Writable;
 use rocket\impl\ei\component\prop\adapter\entry\Copyable;
 
-class ToOneEiField extends RwvEiField {
+class ToOneEiField extends CrwvEiField {
 	private $copyable;
 	
 	public function __construct(Eiu $eiu, Readable $readable = null, Writable $writable = null,

@@ -24,9 +24,9 @@ class BooleanEiPropConfigurator extends AdaptableEiPropConfigurator {
 	public function __construct(BooleanEiProp $eiComponent) {
 		parent::__construct($eiComponent);
 		
-		$this->addMandatory = false;
-
 		$this->autoRegister();
+		
+		$this->addMandatory = false;
 	}
 	
 	private static $booleanNeedles = ['Available', 'Enabled'];

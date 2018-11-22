@@ -73,12 +73,11 @@ class BooleanEiProp extends DraftablePropertyEiPropAdapter implements Filterable
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\PropertyEiPropAdapter::setObjectPropertyAccessProxy()
 	 */
-	public function setObjectPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
+	public function setObjectPropertyAccessProxy(?AccessProxy $propertyAccessProxy) {
 // 		if ($propertyAccessProxy === null) {
 // 			return;
 // 		}
 		ArgUtils::assertTrue(null !== $propertyAccessProxy);
-		
 		
 		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('scalar',
 					$propertyAccessProxy->getConstraint()->allowsNull()));

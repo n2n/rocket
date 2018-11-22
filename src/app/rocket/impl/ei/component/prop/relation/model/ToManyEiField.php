@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model;
 
-use rocket\impl\ei\component\prop\adapter\entry\RwvEiField;
+use rocket\impl\ei\component\prop\adapter\entry\CrwvEiField;
 use n2n\reflection\ArgUtils;
 use rocket\ei\manage\entry\EiFieldValidationResult;
 use n2n\util\ex\IllegalStateException;
@@ -30,18 +30,17 @@ use rocket\impl\ei\component\prop\adapter\entry\Writable;
 use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\adapter\entry\Copyable;
 
-class ToManyEiField extends RwvEiField {
+class ToManyEiField extends CrwvEiField {
 	private $copyable = null;
 	
 	public function __construct(Eiu $eiu, Readable $readable = null, Writable $writable = null, 
 			Copyable $copyable = null) {
-		parent::__construct($eiu, $readable, $writable);
+		parent::__construct(null, $eiu, $readable, $writable);
 		
 		$this->copyable = $copyable;
 	}	
 	
-	
-	protected function validateValue($value) {
+	protected function checkValue($value) {
 		ArgUtils::valArray($value, RelationEntry::class);
 	}
 	
@@ -67,8 +66,7 @@ class ToManyEiField extends RwvEiField {
 	}
 	
 
-	public function validate(EiFieldValidationResult $validationResult) {
-		$value = $this->getValue();
+	public function validateValue($value, EiFieldValidationResult $validationResult) {
 		if ($value === null) return;
 		
 		foreach ($value as $targetRelationEntry) {

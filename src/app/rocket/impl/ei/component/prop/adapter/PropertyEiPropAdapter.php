@@ -79,7 +79,7 @@ abstract class PropertyEiPropAdapter extends IndependentEiPropAdapter
 	 */
 	protected function requireObjectPropertyAccessProxy() {
 		if ($this->objectPropertyAccessProxy === null) {
-			throw new IllegalStateException('No EntityProperty assigned to ' . $this . '.');
+			throw new IllegalStateException('No ObjectPropertyAccessProxy assigned to ' . $this . '.');
 		}
 		
 		return $this->objectPropertyAccessProxy;

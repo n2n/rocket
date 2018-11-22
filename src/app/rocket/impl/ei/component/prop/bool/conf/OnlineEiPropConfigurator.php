@@ -37,9 +37,10 @@ class OnlineEiPropConfigurator extends AdaptableEiPropConfigurator {
 	public function __construct(OnlineEiProp $onlineEiProp) {
 		parent::__construct($onlineEiProp);
 
+		$this->autoRegister($onlineEiProp);
+		
 		$this->addMandatory = false;
 		$this->addConstant = false;
-		$this->autoRegister($onlineEiProp);
 	}
 	
 	public function testCompatibility(PropertyAssignation $propertyAssignation): int {

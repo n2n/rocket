@@ -22,20 +22,17 @@
 namespace rocket\impl\ei\component\prop\adapter\entry;
 
 use n2n\reflection\property\TypeConstraint;
-use n2n\reflection\property\ValueIncompatibleWithConstraintsException;
 use n2n\reflection\ReflectionUtils;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\entry\EiField;
 
-class SimpleEiField extends RwvEiField {
-	private $typeConstraint;
+class SimpleEiField extends CrwvEiField {
 	private $copyable;
 	private $nullReadAllowed = true;
 	
 	public function __construct(Eiu $eiu, TypeConstraint $typeConstraint, 
 			Readable $readable = null, Writable $writable = null, Validatable $validatable = null, Copyable $copyable = null) {
-		parent::__construct($eiu, $readable, $writable, $validatable);
-		$this->typeConstraint = $typeConstraint;
+		parent::__construct($typeConstraint, $eiu, $readable, $writable, $validatable);
 		$this->copyable = $copyable;
 	}
 	
@@ -58,23 +55,13 @@ class SimpleEiField extends RwvEiField {
 		}
 		
 		try {
-			$this->validateValue($value);
+			$this->checkValue($value);
 		} catch (\InvalidArgumentException $e) {
 			throw new \InvalidArgumentException(ReflectionUtils::prettyMethName(get_class($this->readable), 'read')
 					. ' returns invalid argument.', 0, $e->getPrevious());
 		}
 		
 		return $value;
-	}
-	
-	protected function validateValue($value) {
-		if ($this->typeConstraint === null) return;
-		
-		try {
-			$this->typeConstraint->validate($value);
-		} catch (ValueIncompatibleWithConstraintsException $e) {
-			throw new \InvalidArgumentException('EiField can not adopt passed value.', 0, $e);
-		}
 	}
 	
 	public function copyEiField(Eiu $copyEiu): ?EiField {

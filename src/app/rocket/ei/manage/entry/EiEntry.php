@@ -231,6 +231,8 @@ class EiEntry {
 		foreach ($this->listeners as $listener) {
 			$listener->written($this);
 		}
+		
+		throw new \Exception();
 	}
 	
 	private function flush() {
@@ -278,6 +280,16 @@ class EiEntry {
 		return true;
 	}
 	
+	public function isValid() {
+		if (!$this->eiFieldMap->isValid()) return false;
+		
+		foreach ($this->constraintSet as $constraint) {
+			if (!$constraint->check($this)) return false;
+		}
+		
+		return true;
+	}
+	
 	public function validate(EiEntryValidationResult $validationResult = null): bool {
 		if ($validationResult === null) {
 			$validationResult = $this->validationResult = new EiEntryValidationResult();	
@@ -290,7 +302,7 @@ class EiEntry {
 		$this->eiFieldMap->validate($validationResult);
 				
 		foreach ($this->constraintSet as $constraint) {
-			$constraint->validate($this);
+			$constraint->validate($this, $validationResult);
 		}
 		
 		foreach ($this->listeners as $listener) {

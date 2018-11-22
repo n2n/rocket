@@ -33,7 +33,7 @@ interface EiField {
 	
 	/**
 	 * @param mixed $value
-	 * @throws \n2n\reflection\property\ValueIncompatibleWithConstraintsException
+	 * @throws \InvalidArgumentException
 	 */
 	public function setValue($value);
 	
@@ -66,7 +66,7 @@ interface EiField {
 	/**
 	 * @return bool
 	 */
-	public function check(): bool;
+	public function isValid(): bool;
 	
 	/**
 	 * @param EiFieldValidationResult $eiEiFieldValidationResult

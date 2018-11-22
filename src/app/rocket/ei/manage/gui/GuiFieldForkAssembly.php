@@ -27,7 +27,7 @@ class GuiFieldForkAssembly {
 	/**
 	 * @return GuiFieldEditable|null
 	 */
-	public function getSavable() {
+	public function getGuiFieldEditable() {
 		return $this->guiFieldEditable;
 	}
 }

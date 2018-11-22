@@ -3,6 +3,7 @@ namespace rocket\ei\util\entry;
 
 use rocket\ei\manage\entry\EiFieldMap;
 use rocket\ei\util\EiuAnalyst;
+use rocket\ei\manage\entry\EiEntryValidationResult;
 
 class EiuFieldMap {
 	private $eiFieldMap;
@@ -25,5 +26,9 @@ class EiuFieldMap {
 	 */
 	public function getObject() {
 		return $this->eiFieldMap->getObject();
+	}
+	
+	public function validate(EiEntryValidationResult $eiEntryValidationResult) {
+		$this->eiFieldMap->validate($eiEntryValidationResult);
 	}
 }

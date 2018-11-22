@@ -148,8 +148,13 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 		$this->displaySettings = $displaySettings;
 	}	
 	
-	public function registerStandardEditDefinition(StandardEditDefinition $standardEditDefinition) {
+	public function registerStandardEditDefinition(StandardEditDefinition $standardEditDefinition, 
+			bool $addConstant = true, bool $addReadOnly = true, $addMandatory = true, $autoMandatoryCheck = true) {
 		$this->standardEditDefinition = $standardEditDefinition;
+		$this->addConstant = $addConstant;
+		$this->addReadOnly = $addReadOnly;
+		$this->addMandatory = $addMandatory;
+		$this->autoMandatoryCheck = $autoMandatoryCheck;
 	}
 	
 	public function registerDraftConfigurable(DraftConfigurable $confDraftableEiProp) {
@@ -388,7 +393,8 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 			if (!$this->standardEditDefinition->isMandatory() && $this->addMandatory && $this->autoMandatoryCheck 
 					&& $this->mandatoryRequired()) {
 				throw new InvalidAttributeException(self::ATTR_MANDATORY_KEY . ' must be true because '
-						. $this->getAssignedObjectPropertyAccessProxy() . ' does not allow null value.');
+						. $this->getPropertyAssignation()->getObjectPropertyAccessProxy(true) 
+						. ' does not allow null value.');
 			}
 		}
 	}

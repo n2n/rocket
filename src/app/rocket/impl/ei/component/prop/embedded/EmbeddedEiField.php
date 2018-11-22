@@ -26,8 +26,10 @@ use n2n\impl\persistence\orm\property\EmbeddedEntityProperty;
 use n2n\reflection\ReflectionUtils;
 use n2n\reflection\CastUtils;
 use rocket\ei\util\Eiu;
-use n2n\util\ex\NotYetImplementedException;
 use rocket\ei\manage\entry\EiFieldMap;
+use rocket\ei\util\entry\EiuFieldMap;
+use rocket\ei\manage\entry\EiFieldValidationResult;
+use n2n\reflection\ArgUtils;
 
 class EmbeddedEiField extends EiFieldAdapter {
 	private $eiu;
@@ -42,6 +44,14 @@ class EmbeddedEiField extends EiFieldAdapter {
 	public function __construct(Eiu $eiu, EmbeddedEiProp $eiProp) {
 		$this->eiu = $eiu;
 		$this->eiProp = $eiProp;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\adapter\entry\EiFieldAdapter::checkValue()
+	 */
+	protected function checkValue($value) {
+		ArgUtils::assertTrue($value === null || $value instanceof EiuFieldMap);	
 	}
 	
 	/**
@@ -67,17 +77,34 @@ class EmbeddedEiField extends EiFieldAdapter {
 	 */
 	protected function readValue() {
 		$targetLiveObject = $this->eiu->object()->readNativValue($this->eiProp);
+		$this->forkedEiFieldMap = $this->buildEiFieldMap($targetLiveObject);
 		
 		if ($targetLiveObject !== null) {
-			return $this->forkedEiFieldMap = $this->buildEiFieldMap($targetLiveObject);
+			return $this->forkedEiFieldMap;
 		}
 		
-		$this->forkedEiFieldMap = $this->buildEiFieldMap(null);
 		return null;
 	}
 	
-	protected function validateValue($value) {
-		throw new NotYetImplementedException();
+	
+	protected function isValueValid($value) {
+		if ($value === null) return true;
+		
+		CastUtils::assertTrue($value instanceof EiuFieldMap);
+		
+		return $value->isValid();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\adapter\entry\EiFieldAdapter::validateValue()
+	 */
+	protected function validateValue($value, EiFieldValidationResult $validationResult) {
+		if ($value === null) return;
+		
+		CastUtils::assertTrue($value instanceof EiuFieldMap);
+		
+		$value->validate($validationResult);
 	}
 	
 	public function isWritable(): bool {
@@ -90,7 +117,7 @@ class EmbeddedEiField extends EiFieldAdapter {
 	
 	protected function writeValue($value) {
 		if ($value !== null) {
-			CastUtils::assertTrue($value instanceof EiFieldMap);
+			CastUtils::assertTrue($value instanceof EiuFieldMap);
 			$value->write();
 			$value = $value->getLiveObject();
 		}
@@ -110,4 +137,5 @@ class EmbeddedEiField extends EiFieldAdapter {
 		$this->getValue();
 		return $this->forkedEiFieldMap->getEiFieldMap();
 	}
+
 }

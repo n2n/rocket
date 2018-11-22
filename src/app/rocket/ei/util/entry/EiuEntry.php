@@ -301,9 +301,10 @@ class EiuEntry {
 	 */
 	public function newEntryGui(bool $bulky = true, bool $editable = false, int $treeLevel = null, 
 			bool $determineEiMask = true) {
+		$eiEntry = $eiMask = $this->getEiEntry(true);
 		$eiMask = null;
 		if ($determineEiMask) {
-			$eiMask = $this->determineEiMask();
+			$eiMask = $eiEntry->getEiMask();
 		} else {
 			$eiMask = $this->getEiFrame()->getContextEiEngine()->getEiMask();
 		}
@@ -315,7 +316,7 @@ class EiuEntry {
 		$eiGui->init($eiMask->getDisplayScheme()->createEiGuiViewFactory($eiGui,
 				$eiFrame->getManageState()->getDef()->getGuiDefinition($eiMask)));
 		
-		return new EiuEntryGui($eiGui->createEiEntryGui($this->getEiEntry(), $treeLevel), null, $this->eiuAnalyst);
+		return new EiuEntryGui($eiGui->createEiEntryGui($eiEntry, $treeLevel), null, $this->eiuAnalyst);
 	}
 	
 	public function newCustomEntryGui(\Closure $uiFactory, array $eiPropPaths, bool $bulky = true, 
@@ -360,12 +361,12 @@ class EiuEntry {
 		return new EiuEntryGuiAssembler($eiEntryGuiAssembler, null, $this->eiuAnalyst);
 	}
 	
-	/**
-	 * @return \rocket\ei\mask\EiMask
-	 */
-	private function determineEiMask() {
-		return $this->eiuFrame->getEiFrame()->determineEiMask($this->eiEntry->getEiObject()->getEiEntityObj()->getEiType());
-	}
+// 	/**
+// 	 * @return \rocket\ei\mask\EiMask
+// 	 */
+// 	private function determineEiMask() {
+// 		return $this->eiuFrame->getEiFrame()->determineEiMask($this->eiEntry->getEiObject()->getEiEntityObj()->getEiType());
+// 	}
 	
 	/**
 	 * @param bool $bulky

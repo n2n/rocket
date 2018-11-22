@@ -41,29 +41,92 @@ use n2n\util\ex\IllegalStateException;
 use n2n\web\dispatch\mag\Mag;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
 use rocket\ei\manage\gui\EiFieldAbstraction;
+use n2n\reflection\property\AccessProxy;
+use n2n\reflection\property\TypeConstraint;
+use rocket\ei\component\prop\indepenent\EiPropConfigurator;
+use rocket\impl\ei\component\prop\adapter\config\StandardEditDefinition;
 
 class EmbeddedEiProp extends PropertyEiPropAdapter implements GuiEiPropFork, FieldEiProp {
+	private $sed;
 	
+	/**
+	 * @return \rocket\impl\ei\component\prop\adapter\config\StandardEditDefinition
+	 */
+	private function getStandardEditDefinition() {
+		return $this->sed ?? $this->sed = new StandardEditDefinition();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\adapter\PropertyEiPropAdapter::setEntityProperty()
+	 */
 	public function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty instanceof EmbeddedEntityProperty);
 		
 		parent::setEntityProperty($entityProperty);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\adapter\PropertyEiPropAdapter::setObjectPropertyAccessProxy()
+	 */
+	public function setObjectPropertyAccessProxy(?AccessProxy $accessProxy) {
+		ArgUtils::assertTrue($accessProxy !== null);
+		
+		$targetClass = $this->requireEntityProperty()->getEmbeddedEntityPropertyCollection()->getClass();
+		$accessProxy->setConstraint(TypeConstraint::createSimple($targetClass,
+				$accessProxy->getConstraint()->allowsNull()));
+		
+		parent::setObjectPropertyAccessProxy($accessProxy);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\adapter\PropertyEiPropAdapter::createEiPropConfigurator()
+	 */
+	public function createEiPropConfigurator(): EiPropConfigurator {
+		$eepc = new EmbeddedEiPropConfigurator($this);
+		$eepc->registerStandardEditDefinition($this->getStandardEditDefinition());
+		return $eepc;
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function isMandatory() {
+		return $this->getStandardEditDefinition()->isMandatory();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\adapter\EiPropAdapter::isPropFork()
+	 */
 	public function isPropFork(): bool {
 		return true;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\adapter\EiPropAdapter::getPropForkObject()
+	 */
 	public function getPropForkObject(object $object): object {
 		return $this->getObjectPropertyAccessProxy()->getValue($object) 
 				?? ReflectionUtils::createObject($this->getEntityProperty(true)
 						->getEmbeddedEntityPropertyCollection()->getClass());
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\prop\GuiEiPropFork::buildGuiPropFork()
+	 */
 	public function buildGuiPropFork(Eiu $eiu): ?GuiPropFork {
 		return new EmbeddedGuiPropFork($this);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\prop\FieldEiProp::buildEiField()
+	 */
 	public function buildEiField(Eiu $eiu): ?EiField {
 		return new EmbeddedEiField($eiu, $this);
 	}
@@ -117,14 +180,13 @@ class EmbeddedGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 		$eiuEntryGui = $this->eiu->entryGui();
 		
 		if ($eiuEntryGui->whenReady(function () {
-			
 			$this->eiu->gui()->forkedGuiPropPaths($this->embeddedEiProp);
 			$togglerMag->setOnAssociatedMagWrappers();
 		}));
-		
 	}
 
 	public function isForkMandatory(): bool {
+		
 	}
 
 	public function save() {

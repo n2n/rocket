@@ -23,28 +23,53 @@ namespace rocket\impl\ei\component\prop\adapter\entry;
 
 use rocket\ei\manage\entry\EiField;
 use rocket\ei\manage\entry\EiFieldValidationResult;
-use n2n\util\col\HashSet;
-use rocket\ei\manage\entry\EiFieldConstraint;
-use n2n\util\col\Set;
 use rocket\ei\manage\entry\EiFieldMap;
+use n2n\reflection\property\ValueIncompatibleWithConstraintsException;
+use n2n\reflection\property\TypeConstraint;
 use n2n\util\ex\IllegalStateException;
 
 abstract class EiFieldAdapter implements EiField {
+	protected $typeConstraint;
 	protected $valueLoaded = false;
 	protected $value;
 	protected $orgValueLoaded = false;
 	protected $orgValue;
-	protected $eiFieldConstraintSet;
 
-	public function __construct() {
-		$this->eiFieldConstraintSet = new HashSet(EiFieldConstraint::class);
+	public function __construct(TypeConstraint $typeConstraint = null) {
+		$this->typeConstraint = $typeConstraint;
+// 		$this->eiFieldConstraintSet = new HashSet(EiFieldConstraint::class);
 	}
+	
+	private function assetConstraints($value) {
+		try {
+			$this->checkValue($value);
+		} catch (\InvalidArgumentException $e) {
+			throw new ValueIncompatibleWithConstraintsException('EiField can not adopt passed value.', 0, $e);
+		} catch (ValueIncompatibleWithConstraintsException $e) {
+			throw new ValueIncompatibleWithConstraintsException('EiField can not adopt passed value.', 0, $e);
+		}
+	}
+	
+	/**
+	 * @param mixed $value
+	 * @throws ValueIncompatibleWithConstraintsException
+	 * @throws \InvalidArgumentException
+	 */
+	protected abstract function checkValue($value);
+	
 
-	public function isValueLoaded(): bool {
+	/**
+	 * @return bool
+	 */
+	public final function isValueLoaded(): bool {
 		return $this->valueLoaded;
 	}
 
-	public function getValue() {
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\entry\EiField::getValue()
+	 */
+	public final function getValue() {
 		if ($this->valueLoaded) {
 			return $this->value;
 		}
@@ -52,11 +77,18 @@ abstract class EiFieldAdapter implements EiField {
 		return $this->getOrgValue();
 	}
 
-	public function isOrgValueLoaded() {
+	/**
+	 * @return boolean
+	 */
+	public final function isOrgValueLoaded() {
 		return $this->orgValueLoaded;
 	}
 	
-	public function getOrgValue() {
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\entry\EiField::getOrgValue()
+	 */
+	public final function getOrgValue() {
 		if ($this->orgValueLoaded) {
 			return $this->orgValue;
 		}
@@ -66,56 +98,73 @@ abstract class EiFieldAdapter implements EiField {
 		return $this->orgValue;
 	}
 
-	/* (non-PHPdoc)
+	/**
+	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\entry\EiField::setValue()
 	 */
-	public function setValue($value) {
-		$this->validateValue($value);
+	public final function setValue($value) {
+		$this->assetConstraints($value);
 
 		$this->value = $value;
 		$this->valueLoaded = true;
 	}
 
-	public function resetValue() {
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\entry\EiField::resetValue()
+	 */
+	public final function resetValue() {
 		$this->value = null;
 		$this->valueLoaded = false;
 	}
 
-	/**
-	 * @param mixed $value
-	 * @throws \InvalidArgumentException
-	 */
-	protected abstract function validateValue($value);
+// 	/**
+// 	 * @param mixed $value
+// 	 * @throws ValueIncompatibleWithConstraintsException
+// 	 */
+// 	protected abstract function checkValue($value);
 
+	/**
+	 * 
+	 */
 	protected abstract function readValue();
 
-	public function getEiFieldConstraintSet(): Set {
-		return $this->eiFieldConstraintSet;
-	}
+// 	/**
+// 	 * @return Set
+// 	 */
+// 	public function getEiFieldConstraintSet() {
+// 		if ($this->eiFieldConstraintSet === null) {
+// 			$this->eiFieldConstraintSet = new HashSet(EiFieldConstraint::class);
+// 		}
+// 		return $this->eiFieldConstraintSet;
+// 	}
 
 	public function acceptsValue($value): bool {
-		foreach ($this->eiFieldConstraintSet as $eiFieldConstraint) {
-			if (!$eiFieldConstraint->acceptsValue()) return false;
-		}
-
-		return true;
+		$this->assetConstraints($value);
+		
+		return $this->isValueValid($value);
 	}
 
-	public function check(): bool {
-		foreach ($this->eiFieldConstraintSet as $eiFieldConstraint) {
-			if (!$eiFieldConstraint->check()) return false;
-		}
+	public function isValid(): bool {
+		return $this->isValueValid($this->getValue());
+	}
+	
+	/**
+	 * @param mixed $value
+	 */
+	protected abstract function isValueValid($value);
 
-		return true;
+	public final function validate(EiFieldValidationResult $validationResult) {
+		$this->validateValue($this->getValue(), $validationResult);
 	}
 
-	public function validate(EiFieldValidationResult $validationResult) {
-		foreach ($this->eiFieldConstraintSet as $eiFieldConstraint) {
-			$eiFieldConstraint->validate($this, $validationResult);
-		}
-	}
-
-	public function write() {
+	/**
+	 * @param mixed $value
+	 * @param EiFieldValidationResult $validationResult
+	 */
+	protected abstract function validateValue($value, EiFieldValidationResult $validationResult);
+	
+	public final function write() {
 		if (!$this->valueLoaded) return;
 		
 		$this->writeValue($this->value);

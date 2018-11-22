@@ -26,26 +26,33 @@ use rocket\ei\manage\entry\EiFieldConstraint;
 use rocket\ei\manage\entry\EiField;
 use rocket\ei\manage\entry\EiFieldValidationResult;
 use rocket\ei\util\Eiu;
+use n2n\reflection\property\TypeConstraint;
+use n2n\reflection\ArgUtils;
 
-abstract class RwvEiField extends EiFieldAdapter {
+abstract class CrwvEiField extends EiFieldAdapter {
+	protected $typeConstraint;
 	protected $eiu;
 	protected $readable;
 	protected $writable;
 	protected $validatable;
 
-	public function __construct(Eiu $eiu, Readable $readable = null, Writable $writable = null, 
-			Validatable $validatable = null) {
-		parent::__construct();
+	public function __construct(TypeConstraint $typeConstriant = null, Eiu $eiu = null, Readable $readable = null, 
+			Writable $writable = null, Validatable $validatable = null) {
+		$this->typeConstraint = $typeConstriant;
+		ArgUtils::assertTrue($eiu === null || $readable !== null || $writable !== null || $validatable !== null);
 		$this->eiu = $eiu;
 		$this->readable = $readable;
 		$this->writable = $writable;
 		$this->validatable = $validatable;
-		
-		if ($validatable !== null) {
-			$this->getEiFieldConstraintSet()->add(new ValidatableEiFieldConstraint($eiu, $validatable));
-		}
 	}
-
+	
+	
+	protected function checkValue($value) {
+		if ($this->typeConstraint === null) return;
+		
+		$this->typeConstraint->validate($value);
+	}
+	
 	public function isReadable(): bool {
 		return $this->readable !== null;
 	}
@@ -71,6 +78,26 @@ abstract class RwvEiField extends EiFieldAdapter {
 		}
 
 		throw new EiFieldOperationFailedException('EiField is not writable.');
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\adapter\entry\EiFieldAdapter::testValue()
+	 */
+	protected function isValueValid($value) {
+		$this->checkValue($value);
+		
+		return $this->validatable->testEiFieldValue($this->eiu, $value);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\adapter\entry\EiFieldAdapter::validate()
+	 */
+	protected function validateValue($value, EiFieldValidationResult $validationResult) {
+		$this->checkValue($value);
+		
+		return $this->validatable->validateEiFieldValue($this->eiu, $value, $validationResult);
 	}
 }
 
