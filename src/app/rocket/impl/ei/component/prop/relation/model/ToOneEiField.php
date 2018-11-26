@@ -35,12 +35,12 @@ class ToOneEiField extends CrwvEiField {
 	
 	public function __construct(Eiu $eiu, Readable $readable = null, Writable $writable = null,
 			Copyable $copyable = null) {
-				parent::__construct($eiu, $readable, $writable);
+		parent::__construct(null, $eiu, $readable, $writable);
 
 		$this->copyable = $copyable;
 	}
 	
-	protected function validateValue($value) {
+	protected function checkValue($value) {
 		ArgUtils::valType($value, RelationEntry::class, true);
 	}
 	
@@ -65,8 +65,8 @@ class ToOneEiField extends CrwvEiField {
 		parent::writeValue($targetRelationEntry->getEiObject());
 	}
 	
-	public function validate(EiFieldValidationResult $validationResult) {
-		if (null !== ($value = $this->getValue())) {
+	public function validateValue($value, EiFieldValidationResult $validationResult) {
+		if (null !== $value) {
 			IllegalStateException::assertTrue($value instanceof RelationEntry);
 			if ($value->hasEiEntry()) {
 				$value->getEiEntry()->validate();

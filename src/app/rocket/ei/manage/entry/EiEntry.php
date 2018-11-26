@@ -163,6 +163,7 @@ class EiEntry {
 		$eiFieldMap = $this->eiFieldMap;
 		while (null !== ($passedIds[] = $id = array_shift($ids))) {
 			try {
+				
 				$eiFieldWrapper = $eiFieldMap->getWrapper($id);
 				if (empty($ids)) return $eiFieldWrapper;
 			} catch (\rocket\ei\manage\entry\UnknownEiFieldExcpetion $e) {

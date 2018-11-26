@@ -156,14 +156,20 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	 * @param IdPath $forkIdPath
 	 * @return array
 	 */
-	protected function getElementyByForkIdPath(IdPath $forkIdPath) {
+	protected function getElementsByForkIdPath(IdPath $forkIdPath) {
+		$elements = null;
 		if ($forkIdPath->isEmpty()) {
-			return $this->rootElements;
+			$elements = $this->rootElements;
+		} else {
+			$forkIdPathStr = (string) $forkIdPath;
+			$elements = $this->forkedElements[$forkIdPathStr] ?? array();
 		}
 		
-		$forkIdPathStr = (string) $forkIdPath;
+		if ($this->inheritedCollection !== null) {
+			return array_merge($elements, $this->inheritedCollection->getElementsByForkIdPath($forkIdPath));
+		}
 		
-		return $this->forkedElements[$forkIdPathStr] ?? array();
+		return $elements;
 	}
 	
 	/**

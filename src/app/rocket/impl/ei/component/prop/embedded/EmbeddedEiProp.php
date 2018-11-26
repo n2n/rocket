@@ -209,7 +209,7 @@ class EmbeddedGuiField implements GuiField, GuiFieldEditable {
 		$this->mag = new TogglerMag($this->embeddedEiProp->getLabelLstr(),
 				$this->eiu->field()->getValue() !== null);
 		
-		$this->eiu->entryGui()->getMagWrapper($eiu->getGuiPropPath())
+// 		$this->eiu->entryGui()->getMagWrapper($eiu->getGuiPropPath())
 		
 		return $this->mag;
 	}

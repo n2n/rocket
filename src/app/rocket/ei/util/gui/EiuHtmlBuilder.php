@@ -444,7 +444,7 @@ class EiuHtmlBuilder {
 		
 		if (isset($fieldInfo['propertyPath'])
 				&& null !== ($message = $this->formHtml->getMessage($fieldInfo['propertyPath']))) {
-			return new HtmlElement('div', array('class' => 'rocket-messae-error'), $message);
+			return new HtmlElement('div', array('class' => 'rocket-message-error'), $message);
 		}
 		
 		if (isset($fieldInfo['validationResult']) 

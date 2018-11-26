@@ -134,6 +134,8 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 	 * @see \rocket\impl\ei\component\prop\adapter\entry\Readable::read()
 	 */
 	public function read(Eiu $eiu) {
+		$targetEiObjects = [];
+		
 		if ($this->isDraftable() && $eiObject->isDraft()) {
 			$targetDrafts = $eiu->object()->readNativValue($this);
 			if ($targetDrafts === null) return $targetEiObjects;

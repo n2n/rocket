@@ -146,10 +146,10 @@ class ContentItemGuiField implements GuiField {
 			if ($targetRelationEntry->hasEiEntry()) {
 				$targetEiEntry = $targetRelationEntry->getEiEntry();
 			} else {
-				$targetEiEntry = $targetUtils->entry($targetRelationEntry->getEiObject())->getEiEntry();
+				$targetEiEntry = $targetUtils->entry($targetRelationEntry->getEiObject())->getEiEntry(true);
 			}
 			
-			$panelName = (string) $targetEiEntry->getValue($panelEiPropPath, true);
+			$panelName = (string) $targetEiEntry->getValue($panelEiPropPath);
 			if (!isset($groupedUiComponents[$panelName])) {
 				$groupedUiComponents[$panelName] = array();
 			}
