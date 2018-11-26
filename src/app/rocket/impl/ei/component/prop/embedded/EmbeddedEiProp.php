@@ -27,10 +27,12 @@ use n2n\impl\persistence\orm\property\EmbeddedEntityProperty;
 use n2n\reflection\ArgUtils;
 use rocket\ei\manage\EiObject;
 use rocket\ei\manage\entry\EiField;
+use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\manage\gui\GuiFieldAssembly;
 use rocket\ei\manage\gui\GuiFieldFork;
 use rocket\ei\manage\gui\GuiFieldForkEditable;
+use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\manage\gui\GuiPropPath;
 use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\FieldEiProp;
@@ -40,13 +42,20 @@ use rocket\ei\component\prop\GuiEiPropFork;
 use n2n\util\ex\IllegalStateException;
 use n2n\web\dispatch\mag\Mag;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
+use n2n\impl\web\ui\view\html\HtmlView;
+use n2n\l10n\Lstr;
+use n2n\l10n\N2nLocale;
 use rocket\ei\manage\gui\EiFieldAbstraction;
 use n2n\reflection\property\AccessProxy;
 use n2n\reflection\property\TypeConstraint;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\impl\ei\component\prop\adapter\config\StandardEditDefinition;
+use rocket\ei\manage\gui\GuiField;
+use rocket\ei\component\prop\GuiEiProp;
+use rocket\ei\manage\gui\GuiFieldEditable;
+use rocket\ei\manage\gui\ui\DisplayItem;
 
-class EmbeddedEiProp extends PropertyEiPropAdapter implements GuiEiPropFork, FieldEiProp {
+class EmbeddedEiProp extends PropertyEiPropAdapter implements GuiEiProp, FieldEiProp {
 	private $sed;
 	
 	/**
@@ -119,8 +128,10 @@ class EmbeddedEiProp extends PropertyEiPropAdapter implements GuiEiPropFork, Fie
 	 * {@inheritDoc}
 	 * @see \rocket\ei\component\prop\GuiEiPropFork::buildGuiPropFork()
 	 */
-	public function buildGuiPropFork(Eiu $eiu): ?GuiPropFork {
-		return new EmbeddedGuiPropFork($this);
+	public function buildGuiProp(Eiu $eiu): ?GuiProp {
+		if ($this->isMandatory()) return null;
+		
+		return new EmbeddedGuiProp($this);
 	}
 	
 	/**
@@ -132,68 +143,89 @@ class EmbeddedEiProp extends PropertyEiPropAdapter implements GuiEiPropFork, Fie
 	}
 }
 
-class EmbeddedGuiPropFork implements GuiPropFork {
+class EmbeddedGuiProp implements GuiProp {
 	private $eiProp;
 	
 	public function __construct(EmbeddedEiProp $eiProp) {
 		$this->eiProp = $eiProp;
 	}
 	
-	public function createGuiFieldFork(Eiu $eiu): GuiFieldFork {
-		return new EmbeddedGuiFieldFork($eiu, $this->eiProp);
+	public function isStringRepresentable(): bool {
+		return false;
 	}
 
-	public function getForkedGuiDefinition(): ?GuiDefinition {
+	public function getDisplayHelpTextLstr(): ?Lstr {
 		return null;
 	}
 
-	public function determineForkedEiObject(EiObject $eiObject): ?EiObject {
-		throw new IllegalStateException();
+	public function getDisplayLabelLstr(): Lstr {
+		return $this->eiProp->getLabelLstr();
 	}
 
-	public function determineEiFieldAbstraction(Eiu $eiu, GuiPropPath $guiPropPath): EiFieldAbstraction {
-		throw new IllegalStateException();
+	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
+		return new DisplayDefinition(DisplayItem::TYPE_ITEM, true);
 	}
+
+	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
+		return null;
+	}
+
+	public function buildGuiField(Eiu $eiu): ?GuiField {
+		return new EmbeddedGuiField($eiu, $this->eiProp);
+	}
+
 }
 
 
-class EmbeddedGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
+class EmbeddedGuiField implements GuiField, GuiFieldEditable {
 	private $eiu;
 	private $embeddedEiProp;
+	private $mag;
 	
 	public function __construct(Eiu $eiu, EmbeddedEiProp $embeddedEiProp) {
 		$this->eiu = $eiu;
 		$this->embeddedEiProp = $embeddedEiProp;
 	}
 	
-	public function assembleGuiFieldFork(): ?GuiFieldForkEditable {
+	public function getEditable(): GuiFieldEditable {
 		return $this;
-	}
-
-	public function assembleGuiField(GuiPropPath $guiPropPath): ?GuiFieldAssembly {
-		throw new IllegalStateException();
-	}
-	
-	public function getForkMag(): Mag {
-		$togglerMag = new TogglerMag($this->embeddedEiProp->getLabelLstr());
-		
-		$eiuEntryGui = $this->eiu->entryGui();
-		
-		if ($eiuEntryGui->whenReady(function () {
-			$this->eiu->gui()->forkedGuiPropPaths($this->embeddedEiProp);
-			$togglerMag->setOnAssociatedMagWrappers();
-		}));
-	}
-
-	public function isForkMandatory(): bool {
-		
 	}
 
 	public function save() {
 	}
 
-	public function getInheritForkMagAssemblies(): array {
+	public function getOutputHtmlContainerAttrs(): array {
 	}
+
+	public function isReadOnly(): bool {
+		return false;
+	}
+
+	public function getMag(): Mag {
+		if ($this->mag !== null) {
+			return $this->mag;
+		}
+		
+		$this->mag = new TogglerMag($this->embeddedEiProp->getLabelLstr(),
+				$this->eiu->field()->getValue() !== null);
+		
+		$this->eiu->entryGui()->getMagWrapper($eiu->getGuiPropPath())
+		
+		return $this->mag;
+	}
+
+	public function createOutputUiComponent(HtmlView $view) {
+		return null;
+	}
+
+	public function getDisplayItemType(): ?string {
+		return null;
+	}
+
+	public function isMandatory(): bool {
+		return false;
+	}
+
 
 
 	

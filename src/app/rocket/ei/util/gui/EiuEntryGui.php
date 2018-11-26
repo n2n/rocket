@@ -35,6 +35,7 @@ use rocket\ei\util\Eiu;
 use rocket\ei\util\EiuPerimeterException;
 use rocket\ei\util\EiuAnalyst;
 use n2n\l10n\N2nLocale;
+use rocket\ei\EiPropPath;
 
 class EiuEntryGui {
 	private $eiEntryGui;
@@ -194,6 +195,16 @@ class EiuEntryGui {
 			if ($required) throw $e;
 			return null;
 		}
+	}
+	
+	public function getMagWrappers($prefixGuiPropPath) {
+		$prefixEiPropPath = GuiPropPath::create($prefixEiPropPath);
+		
+		foreach ($this->eiEntryGui->getGuiFieldAssemblies() as $guiFieldAssembly) {
+			$guiFieldAssembly->getMagAssembly();
+		}
+		
+		
 	}
 	
 	/**

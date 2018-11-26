@@ -36,5 +36,5 @@ interface GuiFieldFork {
 	 * 
 	 * @return GuiFieldEditable|null
 	 */
-	public function assembleGuiFieldFork(): ?GuiFieldForkEditable;
+	public function getEditable(): ?GuiFieldForkEditable;
 }

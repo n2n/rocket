@@ -163,12 +163,12 @@ class EiEntryGui {
 	 * @return GuiFieldAssembly
 	 */
 	public function getGuiFieldAssembly(GuiPropPath $guiPropPath) {
-		$eiPropPathStr = (string) $guiPropPath;
-		if (!isset($this->guiFieldAssemblies[$eiPropPathStr])) {
-			throw new GuiException('No GuiField with GuiPropPath \'' . $eiPropPathStr . '\' for \'' . $this . '\' registered');
+		$guiPropPathStr = (string) $guiPropPath;
+		if (!isset($this->guiFieldAssemblies[$guiPropPathStr])) {
+			throw new GuiException('No GuiField with GuiPropPath \'' . $guiPropPathStr . '\' for \'' . $this . '\' registered');
 		}
 		
-		return $this->guiFieldAssemblies[$eiPropPathStr];
+		return $this->guiFieldAssemblies[$guiPropPathStr];
 	}
 	
 	/**

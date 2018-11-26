@@ -233,7 +233,7 @@ class OneToOneGuiFieldFork implements GuiFieldFork {
 		return null === $this->targetEiuEntryGuiAssembler->getEiuEntryGui()->getDispatchable();
 	}
 	
-	public function assembleGuiFieldFork(): ?GuiFieldForkEditable {
+	public function getEditable(): ?GuiFieldForkEditable {
 		if ($this->isReadOnly()) return null;
 		
 		return new OneToOneGuiFieldForkEditable($this->toOneEiField, $this->targetEiuEntryGuiAssembler,

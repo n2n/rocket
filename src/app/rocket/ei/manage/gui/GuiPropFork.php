@@ -31,7 +31,7 @@ interface GuiPropFork {
 	/**
 	 * @return GuiDefinition
 	 */
-	public function getForkedGuiDefinition(): ?GuiDefinition;
+	public function getForkedGuiDefinition(): GuiDefinition;
 	
 	/**
 	 * @param Eiu $eiu

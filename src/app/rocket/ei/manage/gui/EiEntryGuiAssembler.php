@@ -38,7 +38,7 @@ class EiEntryGuiAssembler {
 	private $displayables = array();
 	private $magPropertyPaths = array();
 	
-	private $forkedGuiFields = array();
+	private $guiFieldForks = array();
 	private $forkedPropertyPaths = array();
 	
 	public function __construct(EiEntryGui $eiEntryGui) {
@@ -83,7 +83,7 @@ class EiEntryGuiAssembler {
 	 * @param GuiProp $guiProp
 	 * @return NULL|\rocket\ei\manage\gui\GuiFieldAssembly
 	 */
-	private function assembleGuiProp(EiPropPath $eiPropPath, GuiProp $guiProp) {
+	private function assembleExlGuiField(EiPropPath $eiPropPath, GuiProp $guiProp) {
 		$guiField = $guiProp->buildGuiField(new Eiu($this->eiu->entryGui(), $this->eiu->entry()->field($eiPropPath)));
 		ArgUtils::valTypeReturn($guiField, GuiField::class, $guiProp, 'buildGuiField', true);
 		
@@ -118,15 +118,15 @@ class EiEntryGuiAssembler {
 		$eiPropPathStr = (string) $eiPropPath;
 		
 		$relativeGuiPropPath = $guiPropPath->getShifted();
-		$forkedGuiField = null;
-		if (isset($this->forkedGuiFields[$eiPropPathStr])) {
-			$forkedGuiField = $this->forkedGuiFields[$eiPropPathStr];
+		$guiFieldFork = null;
+		if (isset($this->guiFieldForks[$eiPropPathStr])) {
+			$guiFieldFork = $this->guiFieldForks[$eiPropPathStr];
 		} else {
-			$forkedGuiField = $this->forkedGuiFields[$eiPropPathStr] = $guiPropFork->createGuiFieldFork(
+			$guiFieldFork = $this->guiFieldForks[$eiPropPathStr] = $guiPropFork->createGuiFieldFork(
 					new Eiu($this->eiu->entryGui(), $this->eiu->entry()->field($eiPropPath)));
 		} 
 		
-		$result = $forkedGuiField->assembleGuiField($relativeGuiPropPath);
+		$result = $guiFieldFork->assembleGuiField($relativeGuiPropPath);
 		if ($result === null) {
 			return null;
 		}
@@ -167,7 +167,7 @@ class EiEntryGuiAssembler {
 					$this->guiDefinition->getGuiPropFork($guiPropPath->getFirstEiPropPath()));
 		} else {
 			$eiPropPath = $guiPropPath->getFirstEiPropPath();
-			$guiFieldAssembly = $this->assembleGuiProp($eiPropPath, $this->guiDefinition->getGuiProp($eiPropPath));
+			$guiFieldAssembly = $this->assembleExlGuiField($eiPropPath, $this->guiDefinition->getGuiProp($eiPropPath));
 		}
 		
 		if ($guiFieldAssembly !== null) {
@@ -182,8 +182,8 @@ class EiEntryGuiAssembler {
 // 	}
 	
 	public function finalize() {
-		foreach ($this->forkedGuiFields as $id => $forkedGuiField) {
-			$guiFieldForkEditable = $forkedGuiField->assembleGuiFieldFork();
+		foreach ($this->guiFieldForks as $id => $forkedGuiField) {
+			$guiFieldForkEditable = $forkedGuiField->getEditable();
 			
 			if ($guiFieldForkEditable === null) {
 				$this->eiEntryGui->putGuiFieldForkAssembly(new GuiPropPath([$id]), new GuiFieldForkAssembly(array()));
