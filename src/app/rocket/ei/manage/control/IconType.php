@@ -814,7 +814,6 @@ class IconType {
 	const ICON_MEETUP = 'fa fa-meetup';
 	const ICON_SR_ONLY = 'fa sr-only';
 	const ICON_SR_ONLY_FOCUSABLE = 'sr-only-focusable';
-	const ICON_SR_ONLY_FOCUSABLE = 'sr-only-focusable';
 	
 	static function getAll() {
 		return array(self::ICON_GLASS,
@@ -1604,7 +1603,6 @@ class IconType {
 				self::ICON_WPEXPLORER,
 				self::ICON_MEETUP,
 				self::ICON_SR_ONLY,
-				self::ICON_SR_ONLY_FOCUSABLE,
 				self::ICON_SR_ONLY_FOCUSABLE);
 	}
 }
