@@ -4,7 +4,7 @@ namespace rocket\impl\ei\component\prop\translation\command;
 use n2n\web\http\controller\ControllerAdapter;
 use rocket\ei\util\EiuCtrl;
 use n2n\web\http\controller\ParamQuery;
-use rocket\ei\manage\gui\GuiPropPath;
+use rocket\ei\manage\gui\GuiFieldPath;
 use n2n\web\http\BadRequestException;
 use n2n\impl\web\ui\view\jhtml\JhtmlResponse;
 use n2n\util\ex\UnsupportedOperationException;
@@ -17,7 +17,7 @@ class TranslationCopyController extends ControllerAdapter {
 	public function doLive(EiuCtrl $eiuCtrl, ParamQuery $eiPropPaths, ParamQuery $propertyPath, ParamQuery $bulky,
 			ParamQuery $n2nLocale, ParamQuery $pid = null) {
 		try {
-			$eiPropPaths = $this->parseGuiPropPaths($eiPropPaths);
+			$eiPropPaths = $this->parseGuiFieldPaths($eiPropPaths);
 			$propertyPath = PropertyPath::createFromPropertyExpression((string) $propertyPath);
 			$n2nLocale = N2nLocale::create((string) $n2nLocale);
 		} catch (\InvalidArgumentException $e) {
@@ -49,10 +49,10 @@ class TranslationCopyController extends ControllerAdapter {
 						'n2nLocale' => $n2nLocale, 'eiPropPaths' => $eiPropPaths))));
 	}
 	
-	private function parseGuiPropPaths(ParamQuery $param) {
+	private function parseGuiFieldPaths(ParamQuery $param) {
 		$eiPropPaths = [];
 		foreach ($param->toStringArrayOrReject() as $eiPropPathStr) {
-			$eiPropPaths[] = GuiPropPath::create((string) $eiPropPathStr);
+			$eiPropPaths[] = GuiFieldPath::create((string) $eiPropPathStr);
 		}
 		if (empty($eiPropPaths)) {
 			throw new \InvalidArgumentException('No HuiIdPaths given.');
@@ -64,7 +64,7 @@ class TranslationCopyController extends ControllerAdapter {
 			ParamQuery $toN2nLocale, ParamQuery $fromPid, ParamQuery $toPid = null) {
 				
 		try {
-			$eiPropPath = current($this->parseGuiPropPaths($eiPropPaths));
+			$eiPropPath = current($this->parseGuiFieldPaths($eiPropPaths));
 			$propertyPath = PropertyPath::createFromPropertyExpression((string) $propertyPath);
 			$toN2nLocale = N2nLocale::create((string) $toN2nLocale);
 		} catch (\InvalidArgumentException $e) {

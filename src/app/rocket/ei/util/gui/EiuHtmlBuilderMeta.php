@@ -33,7 +33,7 @@ use n2n\reflection\CastUtils;
 use rocket\ei\manage\gui\EiEntryGui;
 use n2n\l10n\Message;
 use n2n\impl\web\ui\view\html\HtmlUtils;
-use rocket\ei\manage\gui\GuiPropPath;
+use rocket\ei\manage\gui\GuiFieldPath;
 
 class EiuHtmlBuilderMeta {
 	private $state;
@@ -176,9 +176,9 @@ class EiuHtmlBuilderMeta {
 		
 		$guiDefinition = $eiEntryGui->getEiGui()->getEiGuiViewFactory()->getGuiDefinition();
 		foreach ($eiEntry->getValidationResult()->getInvalidEiFieldValidationResults(false) as $result) {
-			$eiPropPath = $guiDefinition->eiPropPathToGuiPropPath($result->getEiPropPath());
+			$eiPropPath = $guiDefinition->eiPropPathToGuiFieldPath($result->getEiPropPath());
 			
-			if ($eiPropPath !== null && $eiEntryGui->containsGuiFieldGuiPropPath($eiPropPath)) continue;
+			if ($eiPropPath !== null && $eiEntryGui->containsGuiFieldGuiFieldPath($eiPropPath)) continue;
 			
 			foreach ($result->getMessages() as $message) {
 				if ($message->isProcessed()) continue;
@@ -191,11 +191,11 @@ class EiuHtmlBuilderMeta {
 	}
 	
 	/**
-	 * @param GuiPropPath $guiPropPath
+	 * @param GuiFieldPath $guiFieldPath
 	 * @return bool
 	 */
-	public function containsGuiPropPath($guiPropPath) {
-		return $this->state->peakEntry()['eiEntryGui']->containsGuiPropPath(GuiPropPath::create($guiPropPath));
+	public function containsGuiFieldPath($guiFieldPath) {
+		return $this->state->peakEntry()['eiEntryGui']->containsGuiFieldPath(GuiFieldPath::create($guiFieldPath));
 	}
 	
 	/**

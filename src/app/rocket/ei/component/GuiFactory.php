@@ -32,7 +32,7 @@ use rocket\ei\manage\gui\GuiPropFork;
 use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\util\entry\EiuEntry;
 use rocket\ei\mask\EiMask;
-use rocket\ei\manage\gui\GuiPropPath;
+use rocket\ei\manage\gui\GuiFieldPath;
 use rocket\ei\manage\gui\EiGui;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\gui\EiGuiListener;
@@ -195,14 +195,14 @@ class GuiFactory {
 	 * @param array $eiPropPaths
 	 * @return EiEntryGui
 	 */
-	public static function createEiEntryGui(EiGui $eiGui, EiEntry $eiEntry, array $eiPropPaths, int $treeLevel = null) {
-		ArgUtils::valArrayLike($eiPropPaths, GuiPropPath::class);
+	public static function createEiEntryGui(EiGui $eiGui, EiEntry $eiEntry, array $guiFieldPaths, int $treeLevel = null) {
+		ArgUtils::valArrayLike($guiFieldPaths, GuiFieldPath::class);
 		
 		$eiEntryGui = new EiEntryGui($eiGui, $eiEntry, $treeLevel);
 		
 		$guiFieldAssembler = new EiEntryGuiAssembler($eiEntryGui);
 				
-		foreach ($eiPropPaths as $eiPropPath) {
+		foreach ($guiFieldPaths as $eiPropPath) {
 			$guiFieldAssembler->assembleGuiField($eiPropPath);
 		}
 		

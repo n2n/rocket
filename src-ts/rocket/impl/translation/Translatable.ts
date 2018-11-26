@@ -1,7 +1,7 @@
 namespace Rocket.Impl.Translation {
 
 	export class Translatable {
-		private srcGuiPropPath: string|null = null;
+		private srcGuiFieldPath: string|null = null;
 		private loadUrlDefs: { [localeId: string]: UrlDef } = {};
 		private copyUrlDefs: { [localeId: string]: UrlDef } = {};
 		private _contents: { [localeId: string]: TranslatedContent } = {}
@@ -11,7 +11,7 @@ namespace Rocket.Impl.Translation {
 			
 			if (!srcLoadConfig) return;
 			
-			this.srcGuiPropPath = srcLoadConfig.eiPropPath;
+			this.srcGuiFieldPath = srcLoadConfig.eiPropPath;
 			for (let localeId in srcLoadConfig.loadUrlDefs) {
 				this.loadUrlDefs[localeId] = {
 					label: srcLoadConfig.loadUrlDefs[localeId].label,
@@ -82,7 +82,7 @@ namespace Rocket.Impl.Translation {
 		}
 		
 		get loadJobs(): LoadJob[] {
-			if (!this.srcGuiPropPath) return [];
+			if (!this.srcGuiFieldPath) return [];
 			
 			let loadJobs: LoadJob[] = [];
 			for (let content of this.contents) {
@@ -93,7 +93,7 @@ namespace Rocket.Impl.Translation {
 
 				loadJobs.push({
 					url: this.loadUrlDefs[content.localeId].url.extR(null, { "propertyPath": content.propertyPath }),
-					eiPropPath: this.srcGuiPropPath,
+					eiPropPath: this.srcGuiFieldPath,
 					content: content
 				});
 			}
@@ -107,7 +107,7 @@ namespace Rocket.Impl.Translation {
 				if (!localeId || this._contents[localeId]) return;
 
 				let tc = this._contents[localeId] = new TranslatedContent(localeId, jqElem);
-				tc.drawCopyControl(this.copyUrlDefs, this.srcGuiPropPath);
+				tc.drawCopyControl(this.copyUrlDefs, this.srcGuiFieldPath);
 			});
 		}
 

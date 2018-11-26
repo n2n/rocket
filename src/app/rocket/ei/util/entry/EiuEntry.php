@@ -29,7 +29,7 @@ use rocket\ei\manage\entry\WrittenMappingListener;
 use rocket\ei\manage\entry\OnValidateMappingListener;
 use rocket\ei\manage\entry\ValidatedMappingListener;
 use rocket\ei\manage\entry\EiFieldOperationFailedException;
-use rocket\ei\manage\gui\GuiPropPath;
+use rocket\ei\manage\gui\GuiFieldPath;
 use rocket\ei\manage\gui\GuiException;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\EiGui;
@@ -483,7 +483,7 @@ class EiuEntry {
 // 	}
 	
 // 	/**
-// 	 * @param GuiPropPath|string $eiPropPath
+// 	 * @param GuiFieldPath|string $eiPropPath
 // 	 * @return \rocket\ei\EiPropPath|null
 // 	 */
 // 	public function eiPropPathToEiPropPath($eiPropPath) {
@@ -536,16 +536,16 @@ class EiuEntry {
 	}
 	
 	/**
-	 * @param GuiPropPath $guiPropPath
+	 * @param GuiFieldPath $guiFieldPath
 	 * @param bool $required
 	 * @throws EiFieldOperationFailedException
 	 * @throws GuiException
 	 * @return \rocket\ei\manage\entry\EiFieldWrapper|null
 	 */
-	public function determineEiFieldAbstraction($guiPropPath, bool $required = false) {
+	public function determineEiFieldAbstraction($guiFieldPath, bool $required = false) {
 		$guiDefinition = $this->getEiuFrame()->getContextEiuEngine()->getGuiDefinition();
 		try {
-			return $guiDefinition->determineEiFieldAbstraction($this->getEiEntry(), GuiPropPath::create($guiPropPath));
+			return $guiDefinition->determineEiFieldAbstraction($this->getEiEntry(), GuiFieldPath::create($guiFieldPath));
 		} catch (UnknownEiFieldExcpetion $e) {
 			if ($required) throw $e;
 		}
@@ -591,6 +591,17 @@ class EiuEntry {
 		return GeneralIdUtils::generalIdOf($this->getEiObject());
 	}
 
+	public function fieldMap($forkEiPropPath = null) {
+		$forkEiPropPath = EiPropPath::create($forkEiPropPath);
+		$eiFieldMap = $this->eiEntry->getEiFieldMap();
+		
+		$ids = $forkEiPropPath->toArray();
+		while (null !== ($id = array_shift($ids))) {
+			$eiFieldMap = $eiFieldMap->get($id)->getForkedEiFieldMap();
+		}
+		return $eiFieldMap;
+	}
+	
 	/**
 	 * @param mixed $forkEiPropPath
 	 * @param object $object

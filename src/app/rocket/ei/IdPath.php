@@ -89,13 +89,19 @@ abstract class IdPath implements Hashable {
 		return count($this->ids);
 	}
 	
+	public function equals($obj) {
+		return $obj instanceof IdPath && $this->ids === $obj->ids;
+	}
+	
 	/**
 	 * @param IdPath $idPath
 	 * @return bool
 	 */
 	public function startsWith(IdPath $idPath) {
 		foreach ($idPath->ids as $key => $id) {
-			if (!isset($this->ids[$key]) || $this->ids[$key] !== $id) return false;
+			if (!isset($this->ids[$key]) || $this->ids[$key] !== $id) {
+				return false;
+			}
 		}
 		
 		return true;

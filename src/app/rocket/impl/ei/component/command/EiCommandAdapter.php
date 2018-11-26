@@ -41,6 +41,10 @@ abstract class EiCommandAdapter extends EiComponentAdapter implements EiCommand 
 		throw new IllegalStateException(get_class($this) . ' is not assigned to a Wrapper.');
 	}
 	
+	public function getId() {
+		return (string) $this->wrapper->getEiCommandPath();
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\component\EiComponent::__toString()

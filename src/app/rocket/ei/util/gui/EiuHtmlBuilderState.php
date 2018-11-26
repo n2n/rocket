@@ -6,7 +6,7 @@ use n2n\util\ex\IllegalStateException;
 use n2n\web\dispatch\map\PropertyPath;
 use rocket\ei\manage\gui\EiEntryGui;
 use rocket\ei\manage\gui\GuiFieldAssembly;
-use rocket\ei\manage\gui\GuiPropPath;
+use rocket\ei\manage\gui\GuiFieldPath;
 use rocket\ei\manage\gui\ui\DisplayItem;
 use rocket\ei\manage\entry\EiFieldValidationResult;
 use rocket\ei\manage\entry\ValidationResult;
@@ -79,9 +79,9 @@ class EiuHtmlBuilderState {
 	 * @param GuiFieldAssembly $guiFieldAssembly
 	 * @param PropertyPath $propertyPath
 	 */
-	public function pushField(string $tagName, GuiPropPath $guiPropPath, ValidationResult $validationResult = null, 
+	public function pushField(string $tagName, GuiFieldPath $guiFieldPath, ValidationResult $validationResult = null, 
 			GuiFieldAssembly $guiFieldAssembly = null, PropertyPath $propertyPath = null, DisplayItem $displayItem = null) {
-		$this->stack[] = array('type' => 'field', 'guiPropPath' => $guiPropPath, 'tagName' => $tagName, 
+		$this->stack[] = array('type' => 'field', 'guiFieldPath' => $guiFieldPath, 'tagName' => $tagName, 
 				'guiFieldAssembly' => $guiFieldAssembly, 'validationResult' => $validationResult, 
 				'propertyPath' => $propertyPath, 'displayItem' => $displayItem);
 	}

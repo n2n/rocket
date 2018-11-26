@@ -19,7 +19,7 @@ use rocket\ei\manage\security\privilege\data\PrivilegeSetting;
 use rocket\ei\util\sort\EiuSortForm;
 use rocket\ei\manage\critmod\sort\SortSettingGroup;
 use rocket\ei\manage\ManageState;
-use rocket\ei\manage\gui\GuiPropPath;
+use rocket\ei\manage\gui\GuiFieldPath;
 use rocket\ei\manage\gui\GuiException;
 use rocket\ei\util\EiuAnalyst;
 
@@ -71,7 +71,7 @@ class EiuEngine {
 	}
 	
 	public function removeGuiProp($eiPropPath) {
-		$this->getGuiDefinition()->removeGuiProp(GuiPropPath::create($eiPropPath));
+		$this->getGuiDefinition()->removeGuiProp(GuiFieldPath::create($eiPropPath));
 	}
 	
 	/**
@@ -216,7 +216,7 @@ class EiuEngine {
 	 * @return boolean
 	 */
 	public function containsGuiProp($eiPropPath) {
-		return $this->getGuiDefinition()->containsGuiProp(GuiPropPath::create($eiPropPath));
+		return $this->getGuiDefinition()->containsGuiProp(GuiFieldPath::create($eiPropPath));
 	}
 
 	/**
@@ -226,7 +226,7 @@ class EiuEngine {
 	 * @return EiPropPath
 	 */
 	public function eiPropPathToEiPropPath($eiPropPath) {
-		return $this->getGuiDefinition()->eiPropPathToEiPropPath(GuiPropPath::create($eiPropPath));
+		return $this->getGuiDefinition()->eiPropPathToEiPropPath(GuiFieldPath::create($eiPropPath));
 	}
 	
 	

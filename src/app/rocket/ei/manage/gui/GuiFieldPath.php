@@ -24,8 +24,11 @@ namespace rocket\ei\manage\gui;
 use n2n\util\ex\IllegalStateException;
 use n2n\reflection\ArgUtils;
 use rocket\ei\EiPropPath;
+use rocket\ei\component\prop\EiProp;
+use n2n\util\col\Hashable;
+use n2n\reflection\ReflectionUtils;
 
-class GuiPropPath {
+class GuiFieldPath implements Hashable {
 	const EI_PROP_PATH_SEPARATOR = '.';
 	
 	/**
@@ -38,7 +41,7 @@ class GuiPropPath {
 	 */
 	public function __construct(array $eiPropPaths) {
 		ArgUtils::valArray($eiPropPaths, EiPropPath::class);
-		$this->eiPropPaths = $eiPropPaths;
+		$this->eiPropPaths = array_values($eiPropPaths);
 	}
 	
 	/**
@@ -55,7 +58,7 @@ class GuiPropPath {
 	protected function ensureNotEmpty() {
 		if (!$this->isEmpty()) return;
 		
-		throw new IllegalStateException('GuiPropPath is empty.');
+		throw new IllegalStateException('GuiFieldPath is empty.');
 	}
 	
 	/**
@@ -75,7 +78,7 @@ class GuiPropPath {
 	
 	/**
 	 * @throws IllegalStateException
-	 * @return \rocket\ei\manage\gui\GuiPropPath
+	 * @return \rocket\ei\manage\gui\GuiFieldPath
 	 */
 	public function getShifted() {
 		$eiPropPaths = $this->eiPropPaths;
@@ -83,12 +86,12 @@ class GuiPropPath {
 		if (empty($eiPropPaths)) {
 			throw new IllegalStateException();
 		}
-		return new GuiPropPath($eiPropPaths);
+		return new GuiFieldPath($eiPropPaths);
 	}
 	
 	/**
 	 * @throws IllegalStateException
-	 * @return \rocket\ei\manage\gui\GuiPropPath
+	 * @return \rocket\ei\manage\gui\GuiFieldPath
 	 */
 	public function getPoped() {
 		$eiPropPaths = $this->eiPropPaths;
@@ -96,7 +99,41 @@ class GuiPropPath {
 		if (empty($eiPropPaths)) {
 			throw new IllegalStateException();
 		}
-		return new GuiPropPath($eiPropPaths);
+		return new GuiFieldPath($eiPropPaths);
+	}
+	
+	public function startsWith(GuiFieldPath $guiFieldPath, bool $checkOnEiPropPathLevel) {
+		$size = $this->size();
+		
+		if ($guiFieldPath->size() > $size) {
+			return false;
+		}
+		
+		foreach ($guiFieldPath->eiPropPaths as $key => $eiPropPath) {
+			if (!isset($this->eiPropPaths[$key])) return false;
+			
+			if ($this->eiPropPaths[$key]->equals($eiPropPath)) {
+				continue;
+			}
+			
+			return $checkOnEiPropPathLevel && $key + 1 == $size && $this->eiPropPaths[$key]->startsWith($eiPropPath);
+		}
+		
+		return true;
+	}
+	
+	public function equals($guiFieldPath) {
+		if (!($guiFieldPath instanceof GuiFieldPath) || $guiFieldPath->size() != $this->size()) {
+			return false;
+		}
+		
+		foreach ($guiFieldPath->eiPropPaths as $key => $eiPropPath) {
+			if (!$eiPropPath->equals($this->eiPropPaths[$key])) {
+				return false;
+			}
+		}
+		
+		return true;
 	}
 	
 	/**
@@ -110,28 +147,41 @@ class GuiPropPath {
 		return implode(self::EI_PROP_PATH_SEPARATOR, $this->eiPropPaths);
 	}
 	
+	public function hashCode(): string {
+		return $this->__toString();
+	}
+	
 	/**
 	 * @param mixed $expression
-	 * @return \rocket\ei\manage\gui\GuiPropPath
+	 * @return \rocket\ei\manage\gui\GuiFieldPath
 	 */
 	public static function create($expression) {
-		if ($expression instanceof GuiPropPath) {
+		if ($expression instanceof GuiFieldPath) {
 			return $expression;
 		}
 	
 		$parts = null;
 		if (is_array($expression)) {
 			$parts = $expression;
-		} else {
+		} else if ($expression instanceof EiProp) {
+			return new GuiFieldPath([EiPropPath::from($expression)]);
+		} else if ($expression instanceof EiPropPath) {
+			return new GuiFieldPath([$expression]);
+		} else if (is_scalar($expression)) {
 			$parts = explode(self::EI_PROP_PATH_SEPARATOR, (string) $expression);
+		} else if ($expression === null) {
+			$pars = [];
+		} else {
+			throw new \InvalidArgumentException('Passed value type can not be converted to a GuiFieldPath: ' 
+					. ReflectionUtils::getTypeInfo($expression));
 		}
 		
-		$guiPropPath = new GuiPropPath([]);
-		$guiPropPath->eiPropPaths = [];
+		$guiFieldPath = new GuiFieldPath([]);
+		$guiFieldPath->eiPropPaths = [];
 		foreach ($parts as $part) {
-			$guiPropPath->eiPropPaths[] = EiPropPath::create($part);
+			$guiFieldPath->eiPropPaths[] = EiPropPath::create($part);
 		}
-		return $guiPropPath;
+		return $guiFieldPath;
 	}
 	
 	public static function createArray(array $expressions) {

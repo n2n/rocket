@@ -60,4 +60,20 @@ class EiPropPath extends IdPath {
 	public function ext(...$args): EiPropPath {
 		return new EiPropPath(array_merge($this->ids, $this->argsToIds($args)));
 	}
+	
+// 	public function startsWith(EiPropPath $eiPropPath) {
+// 		$size = $this->size();
+		
+// 		if ($eiPropPath->size() > $size) {
+// 			return false;
+// 		}
+		
+// 		foreach ($eiPropPath->ids as $key => $id) {
+// 			if (!isset($this->ids[$key]) || $id !== $this->ids[$key]) {
+// 				return false;
+// 			}
+// 		}
+		
+// 		return true;
+// 	}
 }

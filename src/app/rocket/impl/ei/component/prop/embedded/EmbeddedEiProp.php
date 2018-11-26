@@ -25,7 +25,6 @@ use rocket\impl\ei\component\prop\adapter\PropertyEiPropAdapter;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\EmbeddedEntityProperty;
 use n2n\reflection\ArgUtils;
-use rocket\ei\manage\EiObject;
 use rocket\ei\manage\entry\EiField;
 use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\ei\manage\gui\GuiDefinition;
@@ -33,7 +32,7 @@ use rocket\ei\manage\gui\GuiFieldAssembly;
 use rocket\ei\manage\gui\GuiFieldFork;
 use rocket\ei\manage\gui\GuiFieldForkEditable;
 use rocket\ei\manage\gui\GuiProp;
-use rocket\ei\manage\gui\GuiPropPath;
+use rocket\ei\manage\gui\GuiFieldPath;
 use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\FieldEiProp;
 use n2n\reflection\ReflectionUtils;
@@ -45,7 +44,6 @@ use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\Lstr;
 use n2n\l10n\N2nLocale;
-use rocket\ei\manage\gui\EiFieldAbstraction;
 use n2n\reflection\property\AccessProxy;
 use n2n\reflection\property\TypeConstraint;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
@@ -173,7 +171,6 @@ class EmbeddedGuiProp implements GuiProp {
 	public function buildGuiField(Eiu $eiu): ?GuiField {
 		return new EmbeddedGuiField($eiu, $this->eiProp);
 	}
-
 }
 
 
@@ -192,9 +189,16 @@ class EmbeddedGuiField implements GuiField, GuiFieldEditable {
 	}
 
 	public function save() {
+		if (!$this->mag->getValue()) {
+			$this->eiu->field()->setValue(null);
+			return;
+		}
+		
+		$this->eiu->field()->setValue($this->eiu->entry()->fieldMap($this->embeddedEiProp));
 	}
 
 	public function getOutputHtmlContainerAttrs(): array {
+		return [];
 	}
 
 	public function isReadOnly(): bool {
@@ -209,7 +213,9 @@ class EmbeddedGuiField implements GuiField, GuiFieldEditable {
 		$this->mag = new TogglerMag($this->embeddedEiProp->getLabelLstr(),
 				$this->eiu->field()->getValue() !== null);
 		
-// 		$this->eiu->entryGui()->getMagWrapper($eiu->getGuiPropPath())
+		$this->eiu->entryGui()->whenReady(function () {
+			$this->mag->setOnAssociatedMagWrappers($this->eiu->entryGui()->getSubMagWrappers($this->embeddedEiProp, true));
+		});
 		
 		return $this->mag;
 	}

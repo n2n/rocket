@@ -24,7 +24,7 @@ namespace rocket\ei\util\gui;
 use rocket\ei\manage\gui\EiEntryGui;
 use n2n\reflection\magic\MagicMethodInvoker;
 use rocket\ei\manage\gui\EiEntryGuiListener;
-use rocket\ei\manage\gui\GuiPropPath;
+use rocket\ei\manage\gui\GuiFieldPath;
 use rocket\ei\manage\gui\GuiException;
 use n2n\web\dispatch\mag\MagWrapper;
 use rocket\ei\manage\gui\EiFieldAbstraction;
@@ -35,7 +35,6 @@ use rocket\ei\util\Eiu;
 use rocket\ei\util\EiuPerimeterException;
 use rocket\ei\util\EiuAnalyst;
 use n2n\l10n\N2nLocale;
-use rocket\ei\EiPropPath;
 
 class EiuEntryGui {
 	private $eiEntryGui;
@@ -69,22 +68,22 @@ class EiuEntryGui {
 	
 	/**
 	 * @see EiEntryGui::getGuiIdsPaths()
-	 * @return \rocket\ei\manage\gui\GuiPropPath[]
+	 * @return \rocket\ei\manage\gui\GuiFieldPath[]
 	 */
-	public function getGuiPropPaths() {
-		return $this->eiEntryGui->getGuiFieldGuiPropPaths();	
+	public function getGuiFieldPaths() {
+		return $this->eiEntryGui->getGuiFieldGuiFieldPaths();	
 	}
 	
 	/**
-	 * @param GuiPropPath $guiPropPath
+	 * @param GuiFieldPath $guiFieldPath
 	 * @return bool
 	 */
-	public function containsGuiPropPath(GuiPropPath $guiPropPath) {
-		return $this->eiEntryGui->containsDisplayable($guiPropPath);
+	public function containsGuiFieldPath(GuiFieldPath $guiFieldPath) {
+		return $this->eiEntryGui->containsDisplayable($guiFieldPath);
 	}
 	
 	/**
-	 * @param GuiPropPath|string $eiPropPath
+	 * @param GuiFieldPath|string $eiPropPath
 	 * @param bool $required
 	 * @throws GuiException
 	 * @return string|null
@@ -176,47 +175,51 @@ class EiuEntryGui {
 	}
 	
 	/**
-	 * @param GuiPropPath|string $eiPropPath
+	 * @param GuiFieldPath|string $eiPropPath
 	 * @param bool $required
 	 * @throws GuiException
 	 * @return MagWrapper
 	 */
-	public function getMagWrapper($eiPropPath, bool $required = false) {
+	public function getMagWrapper($guiPropPath, bool $required = false) {
 		$magWrapper = null;
 		
 		try {
-			$magAssembly = $this->eiEntryGui->getGuiFieldAssembly(GuiPropPath::create($eiPropPath))->getMagAssembly();
+			$magAssembly = $this->eiEntryGui->getGuiFieldAssembly(GuiFieldPath::create($guiPropPath))->getMagAssembly();
 			if ($magAssembly !== null) {
 				return $magAssembly->getMagWrapper();
 			}
 			
-			throw new GuiException('No GuiField with GuiPropPath \'' . $eiPropPath . '\' is not editable.');
+			throw new GuiException('No GuiField with GuiFieldPath \'' . $guiPropPath . '\' is not editable.');
 		} catch (GuiException $e) {
 			if ($required) throw $e;
 			return null;
 		}
 	}
 	
-	public function getMagWrappers($prefixGuiPropPath) {
-		$prefixEiPropPath = GuiPropPath::create($prefixEiPropPath);
+	public function getSubMagWrappers($prefixGuiFieldPath, bool $checkOnEiPropPathLevel = true) {
+		$prefixGuiFieldPath = GuiFieldPath::create($prefixGuiFieldPath);
 		
-		foreach ($this->eiEntryGui->getGuiFieldAssemblies() as $guiFieldAssembly) {
-			$guiFieldAssembly->getMagAssembly();
+		$magWrappers = [];
+		foreach ($this->eiEntryGui->filterGuiFieldAssemblies($prefixGuiFieldPath, $checkOnEiPropPathLevel)
+				as $key => $guiFieldAssembly) {
+			if (null !== ($magAssembly = $guiFieldAssembly->getMagAssembly())) {
+				$magWrappers[$key] = $magAssembly->getMagWrapper();	
+			}
 		}
 		
-		
+		return $magWrappers;
 	}
 	
 	/**
-	 * @param GuiPropPath|string $eiPropPath
+	 * @param GuiFieldPath|string $eiPropPath
 	 * @param bool $required
 	 * @throws GuiException
 	 * @return EiFieldAbstraction
 	 */
 	public function getEiFieldWrapper($eiPropPath, bool $required = false) {
 		try {
-			return $this->eiEntryGui->getEiFieldWrapperByGuiPropPath(
-					GuiPropPath::create($eiPropPath));
+			return $this->eiEntryGui->getEiFieldWrapperByGuiFieldPath(
+					GuiFieldPath::create($eiPropPath));
 		} catch (GuiException $e) {
 			if ($required) throw $e;
 			return null;

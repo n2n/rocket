@@ -35,7 +35,7 @@ use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\reflection\property\TypeConstraint;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
 use n2n\impl\web\dispatch\mag\model\MultiSelectMag;
-use rocket\ei\manage\gui\GuiPropPath;
+use rocket\ei\manage\gui\GuiFieldPath;
 
 // @todo validate if attributes are arrays
 
@@ -81,7 +81,7 @@ class EnumEiPropConfigurator extends AdaptableEiPropConfigurator {
 					$eMag = new TogglerMag('Bind GuiProps to value', false);
 					$magCollection->addMag('bindGuiPropsToValue', $eMag);
 					$eMag->setOnAssociatedMagWrappers(array(
-							$magCollection->addMag('assoicatedGuiPropPaths', new MultiSelectMag('Associated Gui Fields', $assoicatedGuiPropOptions))));
+							$magCollection->addMag('assoicatedGuiFieldPaths', new MultiSelectMag('Associated Gui Fields', $assoicatedGuiPropOptions))));
 					return new MagForm($magCollection);
 				});
 		
@@ -93,10 +93,10 @@ class EnumEiPropConfigurator extends AdaptableEiPropConfigurator {
 		
 		foreach ($lar->getArray(self::ASSOCIATED_GUI_FIELD_KEY, array(), 
 				TypeConstraint::createArrayLike('array', false, TypeConstraint::createSimple('scalar'))) 
-						as $value => $assoicatedGuiPropPaths) {
+						as $value => $assoicatedGuiFieldPaths) {
 			if (array_key_exists($value, $valueLabelMap)) {
 				$valueLabelMap[$value]['bindGuiPropsToValue'] = true;
-				$valueLabelMap[$value]['assoicatedGuiPropPaths'] = $assoicatedGuiPropPaths;
+				$valueLabelMap[$value]['assoicatedGuiFieldPaths'] = $assoicatedGuiFieldPaths;
 			}
 		}
 		
@@ -116,7 +116,7 @@ class EnumEiPropConfigurator extends AdaptableEiPropConfigurator {
 			$options[$valueLabelMap['value']] = $valueLabelMap['label'];
 			
 			if ($valueLabelMap['bindGuiPropsToValue']) {
-				$eiPropPathMap[$valueLabelMap['value']] = $valueLabelMap['assoicatedGuiPropPaths'];
+				$eiPropPathMap[$valueLabelMap['value']] = $valueLabelMap['assoicatedGuiFieldPaths'];
 			}
 		}
 		$this->attributes->set(self::OPTION_OPTIONS_KEY, $options);
@@ -141,12 +141,12 @@ class EnumEiPropConfigurator extends AdaptableEiPropConfigurator {
 			foreach ($eiPropPathMap as $value => $eiPropPathStrs) {
 				$eiPropPaths = array();
 				foreach ($eiPropPathStrs as $eiPropPathStr) {
-					$eiPropPaths[] = GuiPropPath::create($eiPropPathStr);
+					$eiPropPaths[] = GuiFieldPath::create($eiPropPathStr);
 				}
 				$eiPropPathMap[$value] = $eiPropPaths;
 			}
 			
-			$this->enumEiProp->setAssociatedGuiPropPathMap($eiPropPathMap);
+			$this->enumEiProp->setAssociatedGuiFieldPathMap($eiPropPathMap);
 		}
 	}
 }

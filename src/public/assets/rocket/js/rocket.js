@@ -7639,14 +7639,14 @@ var Rocket;
             class Translatable {
                 constructor(jqElem) {
                     this.jqElem = jqElem;
-                    this.srcGuiPropPath = null;
+                    this.srcGuiFieldPath = null;
                     this.loadUrlDefs = {};
                     this.copyUrlDefs = {};
                     this._contents = {};
                     let srcLoadConfig = jqElem.data("rocket-impl-src-load-config");
                     if (!srcLoadConfig)
                         return;
-                    this.srcGuiPropPath = srcLoadConfig.eiPropPath;
+                    this.srcGuiFieldPath = srcLoadConfig.eiPropPath;
                     for (let localeId in srcLoadConfig.loadUrlDefs) {
                         this.loadUrlDefs[localeId] = {
                             label: srcLoadConfig.loadUrlDefs[localeId].label,
@@ -7704,7 +7704,7 @@ var Rocket;
                     return localeIds;
                 }
                 get loadJobs() {
-                    if (!this.srcGuiPropPath)
+                    if (!this.srcGuiFieldPath)
                         return [];
                     let loadJobs = [];
                     for (let content of this.contents) {
@@ -7714,7 +7714,7 @@ var Rocket;
                         }
                         loadJobs.push({
                             url: this.loadUrlDefs[content.localeId].url.extR(null, { "propertyPath": content.propertyPath }),
-                            eiPropPath: this.srcGuiPropPath,
+                            eiPropPath: this.srcGuiFieldPath,
                             content: content
                         });
                     }
@@ -7727,7 +7727,7 @@ var Rocket;
                         if (!localeId || this._contents[localeId])
                             return;
                         let tc = this._contents[localeId] = new TranslatedContent(localeId, jqElem);
-                        tc.drawCopyControl(this.copyUrlDefs, this.srcGuiPropPath);
+                        tc.drawCopyControl(this.copyUrlDefs, this.srcGuiFieldPath);
                     });
                 }
                 static test(elemJq) {

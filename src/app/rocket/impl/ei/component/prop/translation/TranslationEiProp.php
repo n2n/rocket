@@ -66,7 +66,7 @@ use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\ei\component\prop\GuiEiPropFork;
 use rocket\ei\manage\gui\GuiProp;
-use rocket\ei\manage\gui\GuiPropPath;
+use rocket\ei\manage\gui\GuiFieldPath;
 use rocket\ei\manage\gui\EiFieldAbstraction;
 
 class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiPropFork, FieldEiProp, RelationEiProp, 
@@ -236,7 +236,7 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiPropFork
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiPropFork::determineEiFieldWrapper()
 	 */
-	public function determineEiFieldAbstraction(Eiu $eiu, GuiPropPath $guiPropPath): EiFieldAbstraction {
+	public function determineEiFieldAbstraction(Eiu $eiu, GuiFieldPath $guiFieldPath): EiFieldAbstraction {
 		$eiEntry = $eiu->entry()->getEiEntry();
 		
 		$eiFieldWrappers = array();
@@ -244,7 +244,7 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiPropFork
 			if ($targetRelationEntry->hasEiEntry()) continue;
 				
 			if (null !== ($eiFieldWrapper = $this->guiDefinition
-					->determineEiFieldWrapper($targetRelationEntry->getEiEntry(), $guiPropPath))) {
+					->determineEiFieldWrapper($targetRelationEntry->getEiEntry(), $guiFieldPath))) {
 				$eiFieldWrappers[] = $eiFieldWrapper;
 			}
 		}

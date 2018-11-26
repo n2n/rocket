@@ -108,8 +108,8 @@ class EiGui {
 	public function createEiEntryGui(EiEntry $eiEntry, int $treeLevel = null, bool $append = true): EiEntryGui {
 		$this->ensureInit();
 		
-		$guiIdsPaths = $this->eiGuiViewFactory->getGuiPropPaths();
-		ArgUtils::valArrayReturn($guiIdsPaths, $this->eiGuiViewFactory, 'getGuiPropPaths', GuiPropPath::class);
+		$guiIdsPaths = $this->eiGuiViewFactory->getGuiFieldPaths();
+		ArgUtils::valArrayReturn($guiIdsPaths, $this->eiGuiViewFactory, 'getGuiFieldPaths', GuiFieldPath::class);
 		
 		$eiEntryGui = GuiFactory::createEiEntryGui($this, $eiEntry, $guiIdsPaths, $treeLevel);
 		if ($append) {

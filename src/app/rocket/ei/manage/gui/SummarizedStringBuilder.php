@@ -33,7 +33,7 @@ class SummarizedStringBuilder {
 		foreach ($guiDefinition->getGuiProps() as $id => $guiProp) {
 			if (!$guiProp->isStringRepresentable()) continue;
 
-			$placeholder = self::createPlaceholder($this->createGuiPropPath($baseIds, EiPropPath::create($id)));
+			$placeholder = self::createPlaceholder($this->createGuiFieldPath($baseIds, EiPropPath::create($id)));
 			if (false === strpos($this->identityStringPattern, $placeholder)) continue;
 			
 			$this->placeholders[] = $placeholder;
@@ -60,14 +60,14 @@ class SummarizedStringBuilder {
 		}
 	}
 	
-	private function createGuiPropPath(array $baseIds, $id) {
+	private function createGuiFieldPath(array $baseIds, $id) {
 		$ids = $baseIds;
 		$ids[] = $id;
-		return new GuiPropPath($ids);
+		return new GuiFieldPath($ids);
 	}
 	
 	public static function createPlaceholder($eiPropPath) {
-		return self::KNOWN_STRING_FIELD_OPEN_DELIMITER . GuiPropPath::create($eiPropPath)
+		return self::KNOWN_STRING_FIELD_OPEN_DELIMITER . GuiFieldPath::create($eiPropPath)
 				. self::KNOWN_STRING_FIELD_CLOSE_DELIMITER;
 	}
 	

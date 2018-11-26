@@ -48,10 +48,10 @@ interface GuiPropFork {
 	
 	/**
 	 * @param Eiu $eiu
-	 * @param GuiPropPath $guiPropPath
+	 * @param GuiFieldPath $guiFieldPath
 	 * @return EiFieldAbstraction
 	 * @throws IllegalStateException if {@see self::getForkedGuiDefinition()}
 	 * @throws UnknownEiFieldExcpetion if EiFieldAbstraction is not resovable.
 	 */
-	public function determineEiFieldAbstraction(Eiu $eiu, GuiPropPath $guiPropPath): EiFieldAbstraction;
+	public function determineEiFieldAbstraction(Eiu $eiu, GuiFieldPath $guiFieldPath): EiFieldAbstraction;
 }

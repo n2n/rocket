@@ -28,7 +28,7 @@ use n2n\util\config\InvalidConfigurationException;
 use rocket\spec\InvalidSpecConfigurationException;
 use rocket\ei\mask\model\DisplayScheme;
 use rocket\ei\manage\gui\ui\DisplayStructure;
-use rocket\ei\manage\gui\GuiPropPath;
+use rocket\ei\manage\gui\GuiFieldPath;
 use rocket\spec\InvalidEiMaskConfigurationException;
 use rocket\ei\mask\model\ControlOrder;
 use n2n\reflection\property\TypeConstraint;
@@ -409,7 +409,7 @@ class SpecExtractor {
 		foreach ($data as $key => $fieldId) {
 			//Old specs (guiId)
 			if (!is_array($fieldId)) {
-				$displayStructure->addGuiPropPath(GuiPropPath::create($fieldId));
+				$displayStructure->addGuiFieldPath(GuiFieldPath::create($fieldId));
 				continue;
 			}
 	
@@ -434,9 +434,9 @@ class SpecExtractor {
 			}
 			
 			$label = $displayStructureAttributes->getScalar(RawDef::DISPLAY_ITEM_LABEL_KEY, false, null, true);
-			$eiPropPath = $displayStructureAttributes->getScalar(RawDef::DISPLAY_ITEM_GUI_ID_PATH_KEY, false, null, true);
-			if (null !== $eiPropPath) {
-				$displayStructure->addGuiPropPath(GuiPropPath::create($eiPropPath), 
+			$guiFieldPathStr = $displayStructureAttributes->getScalar(RawDef::DISPLAY_ITEM_GUI_ID_PATH_KEY, false, null, true);
+			if (null !== $guiFieldPathStr) {
+				$displayStructure->addGuiFieldPath(GuiFieldPath::create($guiFieldPathStr), 
 						$displayStructureAttributes->getEnum(RawDef::DISPLAY_ITEM_GROUP_TYPE_KEY, DisplayItem::getTypes(),
 								false, null, true), 
 						$label, $this->moduleNamespace);

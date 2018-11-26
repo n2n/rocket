@@ -54,7 +54,7 @@ use rocket\ei\manage\gui\ui\DisplayItem;
 						<span><?php $html->out($eiuEntry->getGenericLabel()) ?></span>
 					</div>
 					<div class="rocket-impl-content">
-						<?php foreach ($eiuEntryGui->getGuiPropPaths() as $eiPropPath): ?>
+						<?php foreach ($eiuEntryGui->getGuiFieldPaths() as $eiPropPath): ?>
 							<?php $eiuHtml->fieldOpen('div', DisplayItem::create($eiPropPath, DisplayItem::TYPE_ITEM), null, false, false) ?>
 								<?php $eiuHtml->fieldContent() ?>
 							<?php $eiuHtml->fieldClose() ?>
