@@ -55,7 +55,7 @@ use rocket\ei\manage\critmod\sort\SortProp;
 
 class DateTimeEiProp extends DraftablePropertyEiPropAdapter implements SortableEiProp {
 	private $dateStyle = DateTimeFormat::STYLE_MEDIUM;
-	private $timeStyle = DateTimeFormat::STYLE_SHORT;
+	private $timeStyle = DateTimeFormat::STYLE_NONE;
 
 	public function createEiPropConfigurator(): EiPropConfigurator {
 		return new DateTimeEiPropConfigurator($this);

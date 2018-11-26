@@ -1,4 +1,9 @@
+/*
+ * The small Buttons (without text)
+ */
+
 .rocket-simple-commands {
+    // drop down button in simple-commands
     > .dropdown > button, 
     > .btn { 
         width: 2.25rem;
@@ -25,25 +30,28 @@
         &.btn-success:hover {
             color: $success;
         }
-        > span {
+        &:not(.rocket-important) > span {
             display: none;
         }
     }
-    > .btn.rocket-icon-important.btn-success {
+}
+
+.btn.rocket-icon-important {
+    &.btn-success {
         color: $success;
     }
-    > .btn.rocket-icon-important.btn-danger {
+    &.btn-danger {
         color: $danger;
     }
-    > .btn.rocket-icon-important.btn-info {
+    &.btn-info {
         color: $info;
     }
-    > .btn.rocket-icon-important.btn-warning {
+    &.btn-warning {
         color: $warning;
     }
 }
 
-
+// simple commands in table are bigger
 td .rocket-simple-commands {
     > .btn {
         > i {
@@ -54,7 +62,17 @@ td .rocket-simple-commands {
 
 
 
+/*
+ * Zone Commands (the ones on the bottom of the page)
+ */
+
+
 .rocket-zone-commands {
+    .btn:not(:last-child) {
+        margin-right: 0.5rem;
+    }
+
+    // icons of normal buttons are not displayed
     .btn:not(.rocket-icon-important) > i.fa {
         display: none;
     }
@@ -78,6 +96,7 @@ td .rocket-simple-commands {
             color: $danger;
         }
     }
+    
     .btn:not(.rocket-important) {
         @include button-variant($secondary, darken($secondary, 15));
     }
@@ -89,9 +108,30 @@ td .rocket-simple-commands {
 }
 
 
-.rocket-toolbar > .rocket-simple-commands > .rocket-important.btn-warning {
-    color: white;
-    background: $warning;
-    border-radius: 50%;
+.rocket-toolbar > .rocket-simple-commands > .rocket-important {
+    &.btn-warning {
+        width: unset;
+        position: relative;
+        padding-right: 3rem;
+        > i {
+            color: white;
+        }
+        >i::before {
+            position: absolute;
+            top: 0.375rem;
+            right: 0.5rem;
+            z-index: 2;
+        }
+        > i::after {
+            position: absolute;
+            content: " ";
+            background: $warning;
+            width: 2.25rem;
+            height: 2.25rem;
+            border-radius: 50%;
+            top: -0.125rem;
+            right: 0;
+        }
+    }
 }
 
