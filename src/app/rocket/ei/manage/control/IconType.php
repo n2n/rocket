@@ -812,8 +812,6 @@ class IconType {
 	const ICON_SUPERPOWERS = 'fa fa-superpowers';
 	const ICON_WPEXPLORER = 'fa fa-wpexplorer';
 	const ICON_MEETUP = 'fa fa-meetup';
-	const ICON_SR_ONLY = 'fa sr-only';
-	const ICON_SR_ONLY_FOCUSABLE = 'sr-only-focusable';
 	
 	static function getAll() {
 		return array(self::ICON_GLASS,
@@ -1601,8 +1599,6 @@ class IconType {
 				self::ICON_SNOWFLAKE_O,
 				self::ICON_SUPERPOWERS,
 				self::ICON_WPEXPLORER,
-				self::ICON_MEETUP,
-				self::ICON_SR_ONLY,
-				self::ICON_SR_ONLY_FOCUSABLE);
+				self::ICON_MEETUP);
 	}
 }
