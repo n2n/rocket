@@ -38,6 +38,8 @@ class EiGui {
 		$this->eiFrame = $eiFrame;
 		ArgUtils::valEnum($viewMode, ViewMode::getAll());
 		$this->viewMode = $viewMode;
+		
+		
 	}
 	
 	/**
@@ -63,6 +65,10 @@ class EiGui {
 		}
 		
 		$this->eiGuiViewFactory = $eiGuiViewFactory;
+		
+		foreach ($eiGuiViewFactory->getGuiDefinition()->getGuiDefinitionListeners() as $listener) {
+			$listener->onNewEiGui($this);
+		}
 	}
 	
 	/**
@@ -108,10 +114,10 @@ class EiGui {
 	public function createEiEntryGui(EiEntry $eiEntry, int $treeLevel = null, bool $append = true): EiEntryGui {
 		$this->ensureInit();
 		
-		$guiIdsPaths = $this->eiGuiViewFactory->getGuiFieldPaths();
-		ArgUtils::valArrayReturn($guiIdsPaths, $this->eiGuiViewFactory, 'getGuiFieldPaths', GuiFieldPath::class);
+		$guiFieldPaths = $this->eiGuiViewFactory->getGuiFieldPaths();
+		ArgUtils::valArrayReturn($guiFieldPaths, $this->eiGuiViewFactory, 'getGuiFieldPaths', GuiFieldPath::class);
 		
-		$eiEntryGui = GuiFactory::createEiEntryGui($this, $eiEntry, $guiIdsPaths, $treeLevel);
+		$eiEntryGui = GuiFactory::createEiEntryGui($this, $eiEntry, $guiFieldPaths, $treeLevel);
 		if ($append) {
 			$this->eiEntryGuis[] = $eiEntryGui;
 		}

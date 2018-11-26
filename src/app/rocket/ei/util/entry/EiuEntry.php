@@ -599,7 +599,7 @@ class EiuEntry {
 		while (null !== ($id = array_shift($ids))) {
 			$eiFieldMap = $eiFieldMap->get($id)->getForkedEiFieldMap();
 		}
-		return $eiFieldMap;
+		return new EiuFieldMap($eiFieldMap, $this->eiuAnalyst);
 	}
 	
 	/**

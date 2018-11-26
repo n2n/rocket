@@ -31,4 +31,8 @@ class EiuFieldMap {
 	public function validate(EiEntryValidationResult $eiEntryValidationResult) {
 		$this->eiFieldMap->validate($eiEntryValidationResult);
 	}
+	
+	public function write() {
+		$this->eiFieldMap->write();
+	}
 }

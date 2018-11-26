@@ -27,18 +27,9 @@ use n2n\impl\persistence\orm\property\EmbeddedEntityProperty;
 use n2n\reflection\ArgUtils;
 use rocket\ei\manage\entry\EiField;
 use rocket\ei\manage\gui\DisplayDefinition;
-use rocket\ei\manage\gui\GuiDefinition;
-use rocket\ei\manage\gui\GuiFieldAssembly;
-use rocket\ei\manage\gui\GuiFieldFork;
-use rocket\ei\manage\gui\GuiFieldForkEditable;
-use rocket\ei\manage\gui\GuiProp;
-use rocket\ei\manage\gui\GuiFieldPath;
 use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\FieldEiProp;
 use n2n\reflection\ReflectionUtils;
-use rocket\ei\manage\gui\GuiPropFork;
-use rocket\ei\component\prop\GuiEiPropFork;
-use n2n\util\ex\IllegalStateException;
 use n2n\web\dispatch\mag\Mag;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
 use n2n\impl\web\ui\view\html\HtmlView;
@@ -52,6 +43,7 @@ use rocket\ei\manage\gui\GuiField;
 use rocket\ei\component\prop\GuiEiProp;
 use rocket\ei\manage\gui\GuiFieldEditable;
 use rocket\ei\manage\gui\ui\DisplayItem;
+use rocket\ei\manage\gui\GuiProp;
 
 class EmbeddedEiProp extends PropertyEiPropAdapter implements GuiEiProp, FieldEiProp {
 	private $sed;
@@ -127,9 +119,19 @@ class EmbeddedEiProp extends PropertyEiPropAdapter implements GuiEiProp, FieldEi
 	 * @see \rocket\ei\component\prop\GuiEiPropFork::buildGuiPropFork()
 	 */
 	public function buildGuiProp(Eiu $eiu): ?GuiProp {
-		if ($this->isMandatory()) return null;
+		if (!$this->isMandatory()) {
+			return new EmbeddedGuiProp($this);
+		}
 		
-		return new EmbeddedGuiProp($this);
+		$eiu->engine()->onNewEntryGui(function (Eiu $eiu) {
+			$value = $eiu->entry()->getValue($this);
+			
+			if ($value !== null) return;
+			
+			$eiu->entry()->setValue($this, $eiu->entry()->fieldMap($this));
+		});
+		
+		return null;
 	}
 	
 	/**

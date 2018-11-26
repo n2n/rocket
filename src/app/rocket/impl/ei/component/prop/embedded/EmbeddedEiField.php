@@ -31,6 +31,7 @@ use rocket\ei\util\entry\EiuFieldMap;
 use rocket\ei\manage\entry\EiFieldValidationResult;
 use n2n\reflection\ArgUtils;
 use n2n\l10n\Message;
+use rocket\ei\manage\entry\EiEntryValidationResult;
 
 class EmbeddedEiField extends EiFieldAdapter {
 	private $eiu;
@@ -103,7 +104,10 @@ class EmbeddedEiField extends EiFieldAdapter {
 	protected function validateValue($value, EiFieldValidationResult $validationResult) {
 		if ($value != null) {
 			CastUtils::assertTrue($value instanceof EiuFieldMap);
-			$value->validate($validationResult);
+			
+			$eiEntryValidationResult = new EiEntryValidationResult();
+			$validationResult->addSubEiEntryValidationResult($eiEntryValidationResult);
+			$value->validate($eiEntryValidationResult);
 			return;
 		}
 		
@@ -125,7 +129,7 @@ class EmbeddedEiField extends EiFieldAdapter {
 		if ($value !== null) {
 			CastUtils::assertTrue($value instanceof EiuFieldMap);
 			$value->write();
-			$value = $value->getLiveObject();
+			$value = $value->getObject();
 		}
 		
 		$this->eiu->object()->writeNativeValue($this->eiProp, $value);

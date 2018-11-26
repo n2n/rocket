@@ -471,4 +471,11 @@ class GuiDefinition {
 	public function unregisterGuiDefinitionListener(GuiDefinitionListener $guiDefinitionListener) {
 		unset($this->guiDefinitionListeners[spl_object_hash($guiDefinitionListener)]);
 	}
+	
+	/**
+	 * @return GuiDefinitionListener[]
+	 */
+	public function getGuiDefinitionListeners() {
+		return $this->guiDefinitionListeners;
+	}
 }

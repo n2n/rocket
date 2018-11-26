@@ -1,6 +1,7 @@
 <?php
 namespace rocket\ei\util\spec;
 
+use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\N2nLocale;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\generic\UnknownGenericEiPropertyException;
@@ -19,9 +20,14 @@ use rocket\ei\manage\security\privilege\data\PrivilegeSetting;
 use rocket\ei\util\sort\EiuSortForm;
 use rocket\ei\manage\critmod\sort\SortSettingGroup;
 use rocket\ei\manage\ManageState;
+use rocket\ei\manage\gui\EiEntryGui;
+use rocket\ei\manage\gui\EiGui;
 use rocket\ei\manage\gui\GuiFieldPath;
 use rocket\ei\manage\gui\GuiException;
 use rocket\ei\util\EiuAnalyst;
+use rocket\ei\manage\gui\GuiDefinitionListener;
+use rocket\ei\util\Eiu;
+use rocket\ei\manage\gui\EiGuiListener;
 
 class EiuEngine {
 	private $eiEngine;
@@ -210,6 +216,14 @@ class EiuEngine {
 		return $this->getManageState()->getDef()->getGuiDefinition($this->eiEngine->getEiMask());
 	}
 	
+	public function onNewGui(\Closure $callback) {
+		$this->getGuiDefinition()->registerGuiDefinitionListener(new ClosureGuiDefinitionListener($callback));
+	}
+	
+	public function onNewEntryGui(\Closure $callback) {
+		$this->getGuiDefinition()->registerGuiDefinitionListener(new ClosureEiGuiListener($callback));
+	}
+	
 	/**
 	 * @param mixed $eiPropPath
 	 * @throws \InvalidArgumentException
@@ -292,4 +306,39 @@ class EiuEngine {
 	public function newPrivilegeForm(PrivilegeSetting $privilegeSetting = null) {
 		return new EiuPrivilegeForm($this->getPrivilegeDefinition(), $privilegeSetting, $this->eiuAnalyst);	
 	}
+}
+
+class ClosureGuiDefinitionListener implements GuiDefinitionListener {
+	private $callback;
+	
+	public function __construct(\Closure $callback) {
+		$this->callback = $callback;
+	}
+	
+	public function onNewEiGui(EiGui $eiGui) {
+		$c = $this->callback;
+		$c(new Eiu($eiGui));
+	}
+}
+
+class ClosureEiGuiListener implements EiGuiListener, GuiDefinitionListener {
+	private $eiEntryGuiCallback;
+	
+	public function __construct(\Closure $eiEntryGuiCallback) {
+		$this->eiEntryGuiCallback = $eiEntryGuiCallback;
+	}
+	
+	public function onNewEiEntryGui(EiEntryGui $eiEntryGui) {
+		$c = $this->eiEntryGuiCallback;
+		$c(new Eiu($eiEntryGui));
+	}
+
+	public function onNewView(HtmlView $view) {
+	}
+
+	public function onNewEiGui(EiGui $eiGui) {
+		$eiGui->registerEiGuiListener($this);
+	}
+
+	
 }
