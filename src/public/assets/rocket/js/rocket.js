@@ -171,6 +171,18 @@ var Rocket;
                 });
             });
         })();
+        (function () {
+            Jhtml.ready((elements) => {
+                var elementsJq = $(elements);
+                elementsJq.find(".rocket-mail").each(function () {
+                    let mle = new Rocket.Core.MailLogEntry($(this));
+                    mle.listen();
+                });
+                elementsJq.find(".rocket-mail-paging").each(function () {
+                    (new Rocket.Core.MailPaging($(this))).listen();
+                });
+            });
+        })();
     });
     function scan(context = null) {
         initializer.scan();
@@ -1844,6 +1856,59 @@ var Rocket;
                 }
             }
         }
+    })(Core = Rocket.Core || (Rocket.Core = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Core;
+    (function (Core) {
+        class MailLogEntry {
+            constructor(containerJq) {
+                this.containerJq = containerJq;
+                this.expanded = false;
+                this.contentJq = containerJq.children("dl:first");
+                this.contentJq.hide();
+            }
+            listen() {
+                this.containerJq.children("header:first").click(() => {
+                    this.toggle();
+                });
+            }
+            toggle() {
+                if (this.expanded) {
+                    this.minimize();
+                }
+                else {
+                    this.expand();
+                }
+            }
+            expand() {
+                if (this.expanded)
+                    return;
+                this.contentJq.slideDown(100);
+                this.expanded = true;
+                this.containerJq.addClass("rocket-expaned");
+            }
+            minimize() {
+                if (!this.expanded)
+                    return;
+                this.contentJq.slideUp(100);
+                this.expanded = false;
+                this.containerJq.removeClass("rocket-expaned");
+            }
+        }
+        Core.MailLogEntry = MailLogEntry;
+        class MailPaging {
+            constructor(selectJq) {
+                this.selectJq = selectJq;
+            }
+            listen() {
+                this.selectJq.change(() => {
+                    window.location.href = this.selectJq.val();
+                });
+            }
+        }
+        Core.MailPaging = MailPaging;
     })(Core = Rocket.Core || (Rocket.Core = {}));
 })(Rocket || (Rocket = {}));
 var Rocket;

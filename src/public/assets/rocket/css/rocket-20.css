@@ -6439,22 +6439,22 @@ td .rocket-simple-commands > .btn > i {
   margin-bottom: 0.5rem;
 }
 
-.rocket-mail__header {
+.rocket-mail-header {
   padding: 0.5rem 0;
 }
 
-.rocket-mail__properties {
+.rocket-mail-properties {
   margin-bottom: 0;
 }
 
-.rocket-mail__message {
+.rocket-mail-message {
   background: #fff;
   font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   padding: 1rem;
   margin-bottom: 0;
 }
 
-.rocket-mail__message > pre {
+.rocket-mail-message > pre {
   margin-bottom: 0;
 }
 

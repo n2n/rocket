@@ -197,20 +197,35 @@ namespace Rocket {
 				$.get(url);
 			}, 300000);
 		})();
-		
-		(function() {
-			Jhtml.ready((elements) => {
-				var elementsJq = $(elements);
-				elementsJq.find(".rocket-privilege-form").each(function () {
-					(new Core.PrivilegeForm($(this))).setup();
-				});
-				
-				elementsJq.find(".rocket-command-privileges").each(function () {
-				    (new Core.CommandPrivilegeList($(this))).listen();
-				})
-				
-			});
-		})();
+        
+        (function() {
+            Jhtml.ready((elements) => {
+                var elementsJq = $(elements);
+                elementsJq.find(".rocket-privilege-form").each(function () {
+                    (new Core.PrivilegeForm($(this))).setup();
+                });
+                
+                elementsJq.find(".rocket-command-privileges").each(function () {
+                    (new Core.CommandPrivilegeList($(this))).listen();
+                })
+                
+            });
+        })();
+        
+        (function() {
+            Jhtml.ready((elements) => {
+                var elementsJq = $(elements);
+                elementsJq.find(".rocket-mail").each(function () {
+                    let mle = new Core.MailLogEntry($(this));
+                    mle.listen();
+                });
+                
+                elementsJq.find(".rocket-mail-paging").each(function () {
+                    (new Core.MailPaging($(this))).listen()
+                });
+                
+            });
+        })();
 	});
 
 	export function scan(context: Rocket.Cmd.Zone = null) {
