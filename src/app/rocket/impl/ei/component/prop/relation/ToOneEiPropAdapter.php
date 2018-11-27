@@ -43,8 +43,8 @@ abstract class ToOneEiPropAdapter extends SimpleRelationEiPropAdapter implements
 
 	public function buildEiField(Eiu $eiu): ?EiField {
 		$readOnly = $this->eiPropRelation->isReadOnly($eiu->entry()->getEiEntry(), $eiu->frame()->getEiFrame());
-	
-		return new ToOneEiField($eiu, $this, ($readOnly ? null : $this), $this);
+		
+		return new ToOneEiField($eiu, $this, $this, ($readOnly ? null : $this));
 	}
 	
 	/**

@@ -77,6 +77,6 @@ class SimpleEiField extends CrwvEiField {
 	public function copyValue(Eiu $copyEiu) {
 		if ($this->copyable === null) return null;
 		
-		return $this->copyable->copy($this->eiFieldMap, $this->getValue(), $copyEiu);
+		return $this->copyable->copy($this->eiu, $this->getValue(), $copyEiu);
 	}
 }
