@@ -81,7 +81,7 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 	 * @see \rocket\impl\ei\component\prop\adapter\entry\Readable::read()
 	 */
 	public function read(Eiu $eiu) {
-		$targetEntityObj = $eiu->object()->readNativValue($this);
+		$targetEntityObj = $eiu->entry()->readNativValue($this);
 		
 		if ($targetEntityObj === null) return null;
 		
@@ -100,7 +100,7 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 			$targetEntityObj = $value->getEiEntityObj()->getEntityObj();
 		}
 		
-		$eiu->object()->writeNativeValue($this, $targetEntityObj);
+		$eiu->entry()->writeNativeValue($this, $targetEntityObj);
 	}
 	
 	// 	/**
@@ -108,7 +108,7 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 	// 	 * @see \rocket\impl\ei\component\prop\adapter\entry\Readable::read()
 	// 	 */
 	// 	public function read(Eiu $eiu) {
-	// 		$targetEntityObj = $eiu->object()->readNativValue($this);
+	// 		$targetEntityObj = $eiu->entry()->readNativValue($this);
 	
 	// 		if ($targetEntityObj === null) return null;
 	
@@ -131,7 +131,7 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 	// 			$targetEntityObj = $value->getEntityObj();
 	// 		}
 	
-	// 		$eiu->object()->writeNativeValue($this, $targetEntityObj)
+	// 		$eiu->entry()->writeNativeValue($this, $targetEntityObj)
 	// 	}
 	
 	public function copy(EiObject $eiObject, $value, Eiu $copyEiu) {

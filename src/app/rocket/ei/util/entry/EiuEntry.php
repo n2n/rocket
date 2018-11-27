@@ -43,6 +43,7 @@ use rocket\ei\util\gui\EiuEntryGui;
 use rocket\ei\util\gui\EiuEntryGuiAssembler;
 use n2n\reflection\ArgUtils;
 use rocket\ei\manage\entry\UnknownEiFieldExcpetion;
+use rocket\ei\component\prop\EiProp;
 
 class EiuEntry {
 	private $eiEntry;
@@ -115,6 +116,14 @@ class EiuEntry {
 		return $this->eiuObject = new EiuObject($this->eiEntry->getEiObject(), $this->eiuAnalyst);
 	}
 	
+	private function getEiObject() {
+		if ($this->eiuObject !== null) {
+			return $this->eiuObject->getEiObject();
+		}
+		
+		return $this->eiEntry->getEiObject();
+	}
+	
 	/**
 	 * @return boolean
 	 */
@@ -125,7 +134,7 @@ class EiuEntry {
 	/**
 	 * @return \rocket\ei\manage\entry\EiEntry|NULL
 	 */
-	public function getEiEntry(bool $createdIfNotAvailable = false) {
+	public function getEiEntry(bool $createdIfNotAvailable = true) {
 		if ($this->eiEntry !== null) {
 			return $this->eiEntry;
 		}
@@ -135,7 +144,7 @@ class EiuEntry {
 		}
 				
 		return $this->eiEntry = $this->eiuAnalyst->getEiuFrame(true)->getEiFrame()
-				->createEiEntry($this->object()->getEiObject());
+				->createEiEntry($this->getEiObject());
 	}
 	
 	/**
@@ -153,25 +162,25 @@ class EiuEntry {
 	 * @return \rocket\ei\manage\EiEntityObj
 	 */
 	public function getEiEntityObj() {
-		return $this->object()->getEiObject()->getEiEntityObj();
+		return $this->getEiObject()->getEiEntityObj();
 	}
 	
 	/**
 	 * @return object
 	 */
 	public function getEntityObj() {
-		return $this->object()->getEiObject()->getEiEntityObj()->getEntityObj();
+		return $this->getEiObject()->getEiEntityObj()->getEntityObj();
 	}
 	
 	/**
 	 * @return boolean
 	 */
 	public function isPersistent() {
-		return $this->object()->getEiObject()->getEiEntityObj()->isPersistent();
+		return $this->getEiObject()->getEiEntityObj()->isPersistent();
 	}
 	
 	public function hasId() {
-		return $this->object()->getEiObject()->getEiEntityObj()->hasId();
+		return $this->getEiObject()->getEiEntityObj()->hasId();
 	}
 	
 	/**
@@ -211,7 +220,7 @@ class EiuEntry {
 	 * @return boolean
 	 */
 	public function isDraft() {
-		return $this->object()->getEiObject()->isDraft();
+		return $this->getEiObject()->isDraft();
 	}
 	
 	/**
@@ -609,6 +618,75 @@ class EiuEntry {
 	 */
 	public function newFieldMap($forkEiPropPath, object $object) {
 		return $this->getEiuFrame()->newFieldMap($this, $forkEiPropPath, $object);
+	}
+	
+	/**
+	 * @param EiProp $eiProp
+	 * @return boolean
+	 */
+	public function isDraftProp($eiPropPath) {
+		$eiPropPath = EiPropPath::create($eiPropPath);
+		
+		return $this->getEiObject()->isDraft()
+				&& $this->getEiEntry(true)->getEiMask()->getEiEngine()->getDraftDefinition()
+						->containsEiPropPath($eiPropPath);
+	}
+	
+	/**
+	 * @param EiProp $eiProp
+	 * @return object
+	 */
+	public function getForkObject($eiPropPath) {
+		$eiPropPath = EiPropPath::create($eiPropPath);
+		
+		if ($this->isInitialized()) {
+			return $this->getEiFieldWrapper($eiPropPath)->getEiFieldMap()->getObject();
+		}
+			
+		return $this->getEiEntry(true)->getEiMask()->getForkObject($eiPropPath->poped(), $this->eiObject); 
+	}
+	
+	/**
+	 * @param EiProp $eiProp
+	 * @throws EiFieldOperationFailedException
+	 * @return NULL|mixed
+	 */
+	public function readNativValue($eiPropPath) {
+		$eiPropPath = EiPropPath::from($eiPropPath);
+		
+		if ($this->isDraftProp($eiPropPath)) {
+			return $this->getEiObject()->getDraft()->getDraftValueMap()->getValue($eiPropPath);
+		}
+		
+		$eiProp = $this->getEiEntry(true)->getEiMask()->getEiPropCollection()->getByPath($eiPropPath);
+		$objectPropertyAccessProxy = $eiProp->getObjectPropertyAccessProxy();
+		if ($objectPropertyAccessProxy !== null) {
+			return $objectPropertyAccessProxy->getValue($this->getForkObject($eiPropPath));
+		}
+		
+		throw new EiFieldOperationFailedException('There is no ObjectPropertyAccessProxy configured for ' . $eiProp);
+	}
+	
+	/**
+	 * @param EiProp $eiProp
+	 * @param mixed $value
+	 * @throws EiFieldOperationFailedException
+	 */
+	public function writeNativeValue(EiProp $eiProp, $value) {
+		$eiPropPath = EiPropPath::from($eiProp);
+		
+		if ($this->isDraftProp($eiProp)) {
+			$this->eiObject->getDraft()->getDraftValueMap()->setValue($eiPropPath);
+			return;
+		}
+		
+		$objectPropertyAccessProxy = $eiProp->getObjectPropertyAccessProxy();
+		if ($objectPropertyAccessProxy !== null) {
+			$objectPropertyAccessProxy->setValue($this->getForkObject($eiProp), $value);
+			return;
+		}
+		
+		throw new EiFieldOperationFailedException('There is no ObjectPropertyAccessProxy configured for ' . $eiProp);
 	}
 }  
 

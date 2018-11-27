@@ -54,7 +54,7 @@ abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 	 * @see \rocket\impl\ei\component\prop\adapter\entry\Readable::read()
 	 */
 	public function read(Eiu $eiu) {
-		$targetEntityObjs = $eiu->object()->readNativValue($this);
+		$targetEntityObjs = $eiu->entry()->readNativValue($this);
 		
 		if ($targetEntityObjs === null) {
 			return array();
@@ -81,7 +81,7 @@ abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 			$targetEntityObjs[] = $targetEiObject->getLiveObject();
 		}
 		
-		$eiu->object()->writeNativeValue($this, $value);
+		$eiu->entry()->writeNativeValue($this, $value);
 	}
 	
 	public function copy(EiObject $eiObject, $value, Eiu $copyEiu) {

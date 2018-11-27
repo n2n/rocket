@@ -158,7 +158,7 @@ class EiuEntryGui {
 	/**
 	 * @param \Closure $closure
 	 */
-	public function whenSave(\Closure $closure) {
+	public function onSaved(\Closure $closure) {
 		$this->eiEntryGui->registerEiEntryGuiListener(new ClosureGuiListener(new Eiu($this), null, null, $closure));
 	}
 	
@@ -366,7 +366,7 @@ class ClosureGuiListener implements EiEntryGuiListener {
 	 * @param \Closure $onSaveClosure
 	 * @param \Closure $savedClosure
 	 */
-	public function __construct(Eiu $eiu, \Closure $whenReadyClosure, \Closure $onSaveClosure = null,
+	public function __construct(Eiu $eiu, \Closure $whenReadyClosure = null, \Closure $onSaveClosure = null,
 			\Closure $savedClosure = null) {
 		$this->eiu = $eiu;
 		$this->whenReadyClosure = $whenReadyClosure;

@@ -94,14 +94,14 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiEiPro
 			$targetDraft = null;
 			if ($value !== null) $targetDraft = $value->getDraft();
 	
-			$eiu->object()->writeNativeValue($this, $targetDraft);
+			$eiu->entry()->writeNativeValue($this, $targetDraft);
 			return;
 		}
 	
 		$targetEntityObj = null;
 		if ($value !== null) $targetEntityObj = $value->getLiveObject();
 	
-		$eiu->object()->writeNativeValue($this, $targetEntityObj);
+		$eiu->entry()->writeNativeValue($this, $targetEntityObj);
 	}
 	
 	public function copy(EiObject $eiObject, $value, Eiu $copyEiu) {

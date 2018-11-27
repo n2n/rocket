@@ -37,7 +37,7 @@ class EmbeddedEiField extends EiFieldAdapter {
 	private $eiu;
 	private $eiProp;
 	
-	private $forkedEiFieldMap;
+	private $forkedEiuFieldMap;
 	
 	/**
 	 * @param Eiu $eiu
@@ -78,11 +78,11 @@ class EmbeddedEiField extends EiFieldAdapter {
 	 * @return \rocket\ei\util\entry\EiuFieldMap|null
 	 */
 	protected function readValue() {
-		$targetLiveObject = $this->eiu->object()->readNativValue($this->eiProp);
-		$this->forkedEiFieldMap = $this->buildEiFieldMap($targetLiveObject);
+		$targetLiveObject = $this->eiu->entry()->readNativValue($this->eiProp);
+		$this->forkedEiuFieldMap = $this->buildEiFieldMap($targetLiveObject);
 		
 		if ($targetLiveObject !== null) {
-			return $this->forkedEiFieldMap;
+			return $this->forkedEiuFieldMap;
 		}
 		
 		return null;
@@ -132,7 +132,7 @@ class EmbeddedEiField extends EiFieldAdapter {
 			$value = $value->getObject();
 		}
 		
-		$this->eiu->object()->writeNativeValue($this->eiProp, $value);
+		$this->eiu->entry()->writeNativeValue($this->eiProp, $value);
 	}
 	
 	public function isReadable(): bool {
@@ -148,6 +148,6 @@ class EmbeddedEiField extends EiFieldAdapter {
 			return $value->getEiFieldMap();
 		}
 		
-		return $this->forkedEiFieldMap->getEiFieldMap();
+		return $this->forkedEiuFieldMap->getEiFieldMap();
 	}
 }

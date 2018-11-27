@@ -116,13 +116,13 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 	 */
 	public function read(Eiu $eiu) {
 		if ($eiu->object()->isDraftProp($this)) {
-			$targetDraft = $eiu->object()->readNativValue($this);
+			$targetDraft = $eiu->entry()->readNativValue($this);
 			if ($targetDraft === null) return null;
 			
 			return new DraftEiObject($targetDraft);
 		}
 		
-		$targetEntityObj = $eiu->object()->readNativValue($this);
+		$targetEntityObj = $eiu->entry()->readNativValue($this);
 		if ($targetEntityObj === null) return null;
 		
 		return LiveEiObject::create($this->eiPropRelation->getTargetEiType(), $targetEntityObj);
@@ -139,14 +139,14 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 			$targetDraft = null;
 			if ($value !== null) $targetDraft = $value->getDraft();
 				
-			$eiu->object()->writeNativeValue($this, $targetDraft);
+			$eiu->entry()->writeNativeValue($this, $targetDraft);
 			return;
 		} 
 		
 		$targetEntityObj = null;
 		if ($value !== null) $targetEntityObj = $value->getLiveObject();
 		
-		$eiu->object()->writeNativeValue($this, $targetEntityObj);
+		$eiu->entry()->writeNativeValue($this, $targetEntityObj);
 	}
 	
 	public function copy(EiObject $eiObject, $value, Eiu $copyEiu) {

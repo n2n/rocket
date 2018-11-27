@@ -64,7 +64,7 @@ class StatelessEditElement extends StatelessDisplayElement implements GuiFieldEd
 	
 	public function save() {
 		if ($this->mag === null) {
-			throw new IllegalStateException('No option created.');
+			throw new IllegalStateException('No mag created.');
 		}
 
 		$this->statelessEditable->saveMagValue($this->mag, $this->eiu);

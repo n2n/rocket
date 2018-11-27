@@ -92,7 +92,7 @@ abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter im
 	
 	
 	public function read(Eiu $eiu) {
-		return $eiu->object()->readNativValue($this);
+		return $eiu->entry()->readNativValue($this);
 	}
 	
 	public function buildGuiProp(Eiu $eiu): ?GuiProp {

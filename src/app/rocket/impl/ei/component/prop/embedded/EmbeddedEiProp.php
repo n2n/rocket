@@ -128,7 +128,9 @@ class EmbeddedEiProp extends PropertyEiPropAdapter implements GuiEiProp, FieldEi
 			
 			if ($value !== null) return;
 			
-			$eiu->entry()->setValue($this, $eiu->entry()->fieldMap($this));
+			$eiu->entryGui()->onSave(function () use ($eiu) {
+				$eiu->entry()->setValue($this, $eiu->entry()->fieldMap($this));
+			});
 		});
 		
 		return null;
@@ -216,7 +218,8 @@ class EmbeddedGuiField implements GuiField, GuiFieldEditable {
 				$this->eiu->field()->getValue() !== null);
 		
 		$this->eiu->entryGui()->whenReady(function () {
-			$this->mag->setOnAssociatedMagWrappers($this->eiu->entryGui()->getSubMagWrappers($this->embeddedEiProp, true));
+			$this->mag->setOnAssociatedMagWrappers($this->eiu->entryGui()
+					->getSubMagWrappers($this->embeddedEiProp, true));
 		});
 		
 		return $this->mag;
