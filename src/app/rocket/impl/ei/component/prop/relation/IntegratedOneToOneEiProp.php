@@ -104,7 +104,7 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiEiPro
 		$eiu->entry()->writeNativeValue($this, $targetEntityObj);
 	}
 	
-	public function copy(EiObject $eiObject, $value, Eiu $copyEiu) {
+	public function copy(Eiu $eiu, $value, Eiu $copyEiu) {
 		if ($value === null) return $value;
 	
 		$targetEiuFrame = new EiuFrame($this->embeddedEiPropRelation->createTargetEditPseudoEiFrame(
@@ -176,12 +176,12 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiEiPro
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiPropFork::determineForkedEiObject()
 	 */
-	public function determineForkedEiObject(EiObject $eiObject): ?EiObject {
-		$targetEiObject = $this->read($eiObject);
-		if ($targetEiObject === null) {
+	public function determineForkedEiObject(Eiu $eiu): ?EiObject {
+		$targetObject = $eiu->object()->readNativValue($this);
+		if ($targetObject === null) {
 			return null;
 		}
-		return $targetEiObject;
+		return LiveEiObject::create($this->eiPropRelation->getTargetEiType(), $targetObject);
 	}
 	
 	public function determineEiFieldAbstraction(Eiu $eiu, GuiFieldPath $guiFieldPath): EiFieldAbstraction {

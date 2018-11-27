@@ -84,7 +84,7 @@ abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 		$eiu->entry()->writeNativeValue($this, $value);
 	}
 	
-	public function copy(EiObject $eiObject, $value, Eiu $copyEiu) {
+	public function copy(Eiu $eiu, $value, Eiu $copyEiu) {
 		return $value;
 	}
 	

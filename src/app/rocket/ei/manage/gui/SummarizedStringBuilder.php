@@ -51,7 +51,7 @@ class SummarizedStringBuilder {
 			
 			$forkedEiFieldSource = null;
 			if ($eiObject !== null) {
-				$forkedEiFieldSource = $guiPropFork->determineForkedEiObject($eiObject);
+				$forkedEiFieldSource = $guiPropFork->determineForkedEiObject($eiu);
 			}
 			
 			$ids = $baseIds;

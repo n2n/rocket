@@ -251,7 +251,7 @@ class FileEiProp extends DraftablePropertyEiPropAdapter {
 		return $file->getOriginalName();
 	}
 	
-	public function copy(EiObject $eiObject, $value, Eiu $copyEiu) {
+	public function copy(Eiu $eiu, $value, Eiu $copyEiu) {
 		if ($value === null) return null;
 
 		CastUtils::assertTrue($value instanceof File);

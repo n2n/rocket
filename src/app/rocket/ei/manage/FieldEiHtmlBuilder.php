@@ -161,12 +161,14 @@ class FieldEiHtmlBuilder {
 			return new HtmlElement('div', array('class' => 'rocket-message-error'), $message);
 		}
 
-		if (null !== ($message = $eiPropInfo['validationResult']->processMessage())) {
-			$messageTranslator = new MessageTranslator($this->view->getModuleNamespace(),
-					$this->view->getN2nLocale());
+		$messages = $eiPropInfo['validationResult']->getMessages();
+		
+		foreach ($messages as $message) {
+			if ($message->isProcessed()) continue;
 			
+			$message->setProcessed(true);
 			return new HtmlElement('div', array('class' => 'rocket-message-error'), 
-					$messageTranslator->translate($message));
+					$message->tByDtc($this->view->getDynamicTextCollection()));
 		}
 
 		return null;

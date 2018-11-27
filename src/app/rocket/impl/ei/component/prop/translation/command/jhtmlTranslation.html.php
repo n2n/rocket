@@ -21,7 +21,7 @@
 	$n2nLocale = $view->getParam('n2nLocale');
 	$view->assert($n2nLocale instanceof N2nLocale);
 	
-	$eiPropPaths = $view->getParam('eiPropPaths');
+	$guiFieldPaths = $view->getParam('guiFieldPaths');
 	
 	$eiuHtml = new EiuHtmlBuilder($view);
 ?>
@@ -29,9 +29,9 @@
 <?php $formHtml->openPseudo($dispatchable, $propertyPath) ?>
 	
 	<?php $eiuHtml->entryOpen('div', $eiuEntryGui, array('class' => 'rocket-impl-translation-src')) ?>
-		<?php foreach ($eiPropPaths as $eiPropPath): ?>
-			<div data-rocket-impl-gui-id-path="<?php $html->out($eiPropPath) ?>">
-				<?php $eiuHtml->fieldOpen('div', $eiPropPath, null, false, false) ?>
+		<?php foreach ($guiFieldPaths as $guiFieldPath): ?>
+			<div data-rocket-impl-gui-field-path="<?php $html->out($guiFieldPath) ?>">
+				<?php $eiuHtml->fieldOpen('div', $guiFieldPath, null, false, false) ?>
 					<?php $eiuHtml->fieldLabel(array('title' => $n2nLocale->getName($request->getN2nLocale()), 
 								'class' => 'rocket-impl-locale-label'), $n2nLocale->toPrettyId()) ?>
 					<div class="rocket-control">

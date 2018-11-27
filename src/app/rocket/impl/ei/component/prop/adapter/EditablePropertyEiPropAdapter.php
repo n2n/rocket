@@ -106,7 +106,7 @@ abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAd
 		$eiu->entry()->writeNativeValue($this, $value);
 	}
 	
-	public function copy(EiObject $eiObject, $value, Eiu $copyEiu) {
+	public function copy(Eiu $eiu, $value, Eiu $copyEiu) {
 		return $value;
 	}
 	

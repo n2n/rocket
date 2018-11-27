@@ -362,15 +362,15 @@ class GuiDefinition {
 	 * @throws UnknownEiFieldExcpetion
 	 * @return \rocket\ei\manage\gui\EiFieldAbstraction|null
 	 */
-	public function determineEiFieldAbstraction(EiEntry $eiEntry, GuiFieldPath $guiFieldPath) {
-		$ids = $guiFieldPath->toArray();
-		$id = array_shift($ids);
-		if (empty($ids)) {
+	public function determineEiFieldAbstraction(N2nContext $n2nContext, EiEntry $eiEntry, GuiFieldPath $guiFieldPath) {
+		$eiFieldPaths = $guiFieldPath->toArray();
+		$id = array_shift($eiFieldPaths);
+		if (empty($eiFieldPaths)) {
 			return $eiEntry->getEiFieldWrapper($id);
 		}
 		
 		$guiPropFork = $this->getGuiPropFork($id);
-		return $guiPropFork->determineEiFieldAbstraction(new Eiu($eiEntry), new GuiFieldPath(array($ids)));
+		return $guiPropFork->determineEiFieldAbstraction(new Eiu($n2nContext, $eiEntry), new GuiFieldPath($eiFieldPaths));
 	}
 	
 	public function getGuiPropForks() {

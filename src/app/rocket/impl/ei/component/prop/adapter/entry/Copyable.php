@@ -32,6 +32,6 @@ interface Copyable {
 	 * @param Eiu $copyEiu
 	 * @return mixed
 	 */
-	public function copy(EiObject $eiObject, $value, Eiu $copyEiu);
+	public function copy(Eiu $eiu, $value, Eiu $copyEiu);
 }
 

@@ -48,14 +48,14 @@ namespace Rocket.Impl.Translation {
 		}
 		
 		exec() {
-			let eiPropPaths: string[] = [];
+			let guiFieldPaths: string[] = [];
 			
 			for (let loadJob of this.loadJobs) {
-				eiPropPaths.push(loadJob.eiPropPath);
+				guiFieldPaths.push(loadJob.guiFieldPath);
 				loadJob.content.loading = true;
 			}
 			
-			let url = this.url.extR(null, { eiPropPaths: eiPropPaths });
+			let url = this.url.extR(null, { guiFieldPaths: guiFieldPaths });
 			
 			Jhtml.lookupModel(url).then((result) => {
 				this.splitResult(result.model.snippet);
@@ -67,9 +67,9 @@ namespace Rocket.Impl.Translation {
 		
 			$(snippet.elements).children().each((i, elem) => {
 				let elemJq = $(elem);
-				let eiPropPath = elemJq.data("rocket-impl-gui-id-path");
+				let guiFieldPath = elemJq.data("rocket-impl-gui-field-path");
 				
-				let loadJob = this.loadJobs.find(loadJob => loadJob.eiPropPath == eiPropPath);
+				let loadJob = this.loadJobs.find(loadJob => loadJob.guiFieldPath == guiFieldPath);
 				let newContentJq = elemJq.children().first();
 				
 				loadJob.content.replaceField(newContentJq);

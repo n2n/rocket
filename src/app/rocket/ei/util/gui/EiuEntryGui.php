@@ -180,16 +180,16 @@ class EiuEntryGui {
 	 * @throws GuiException
 	 * @return MagWrapper
 	 */
-	public function getMagWrapper($guiPropPath, bool $required = false) {
+	public function getMagWrapper($guiFieldPath, bool $required = false) {
 		$magWrapper = null;
 		
 		try {
-			$magAssembly = $this->eiEntryGui->getGuiFieldAssembly(GuiFieldPath::create($guiPropPath))->getMagAssembly();
+			$magAssembly = $this->eiEntryGui->getGuiFieldAssembly(GuiFieldPath::create($guiFieldPath))->getMagAssembly();
 			if ($magAssembly !== null) {
 				return $magAssembly->getMagWrapper();
 			}
 			
-			throw new GuiException('No GuiField with GuiFieldPath \'' . $guiPropPath . '\' is not editable.');
+			throw new GuiException('No GuiField with GuiFieldPath \'' . $guiFieldPath . '\' is not editable.');
 		} catch (GuiException $e) {
 			if ($required) throw $e;
 			return null;

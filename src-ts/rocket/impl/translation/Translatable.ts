@@ -11,7 +11,7 @@ namespace Rocket.Impl.Translation {
 			
 			if (!srcLoadConfig) return;
 			
-			this.srcGuiFieldPath = srcLoadConfig.eiPropPath;
+			this.srcGuiFieldPath = srcLoadConfig.guiFieldPath;
 			for (let localeId in srcLoadConfig.loadUrlDefs) {
 				this.loadUrlDefs[localeId] = {
 					label: srcLoadConfig.loadUrlDefs[localeId].label,
@@ -93,7 +93,7 @@ namespace Rocket.Impl.Translation {
 
 				loadJobs.push({
 					url: this.loadUrlDefs[content.localeId].url.extR(null, { "propertyPath": content.propertyPath }),
-					eiPropPath: this.srcGuiFieldPath,
+					guiFieldPath: this.srcGuiFieldPath,
 					content: content
 				});
 			}
@@ -135,7 +135,7 @@ namespace Rocket.Impl.Translation {
 
 	export interface LoadJob {
 		url: Jhtml.Url;
-		eiPropPath: string;
+		guiFieldPath: string;
 		content: TranslatedContent
 	}
 	
@@ -290,12 +290,12 @@ namespace Rocket.Impl.Translation {
 
 		private copyControl: CopyControl;
 
-		drawCopyControl(copyUrlDefs: { [localeId: string]: UrlDef }, eiPropPath: string) {
+		drawCopyControl(copyUrlDefs: { [localeId: string]: UrlDef }, guiFieldPath: string) {
 			for (let localeId in copyUrlDefs) {
 				if (localeId == this.localeId) continue;
 
 				if (!this.copyControl) {
-					this.copyControl = new CopyControl(this, eiPropPath);
+					this.copyControl = new CopyControl(this, guiFieldPath);
 					this.copyControl.draw(this.elemJq.data("rocket-impl-copy-tooltip"));
 				}
 
@@ -342,7 +342,7 @@ namespace Rocket.Impl.Translation {
 		private menuUlJq: JQuery<Element>;
 		private toggler: Display.Toggler;
 
-		constructor(private translatedContent: TranslatedContent, private eiPropPath: string) {
+		constructor(private translatedContent: TranslatedContent, private guiFieldPath: string) {
 		}
 
 		draw(tooltip: string) {
@@ -393,7 +393,7 @@ namespace Rocket.Impl.Translation {
 
 			lje.add({
 				content: this.translatedContent,
-				eiPropPath: this.eiPropPath,
+				guiFieldPath: this.guiFieldPath,
 				url: url
 			});
 			

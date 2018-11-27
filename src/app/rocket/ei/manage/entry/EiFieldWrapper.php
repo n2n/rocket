@@ -65,7 +65,7 @@ class EiFieldWrapper implements EiFieldAbstraction {
 		return $this->eiField;
 	}
 	
-	public function getValidationResult(): ?EiFieldValidationResult {
+	public function getValidationResult(): ?ValidationResult {
 		$eiEntry = $this->eiFieldMap->getEiEntry();
 		
 		if (!$eiEntry->hasValidationResult()) return null;

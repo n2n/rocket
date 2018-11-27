@@ -149,12 +149,12 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 		$eiu->entry()->writeNativeValue($this, $targetEntityObj);
 	}
 	
-	public function copy(EiObject $eiObject, $value, Eiu $copyEiu) {
-		if ($value === null || ($eiObject->isDraft() && !$this->isDraftable())) return null;
+	public function copy(Eiu $eiu, $value, Eiu $copyEiu) {
+		if ($value === null || ($eiu->entry()->isDraft() && !$this->isDraftable())) return null;
 		
 		$targetEiuFrame = (new Eiu($this->eiPropRelation->createTargetEditPseudoEiFrame(
 				$copyEiu->frame()->getEiFrame(), $copyEiu->entry()->getEiEntry())))->frame();
-		return RelationEntry::fromM($targetEiuFrame->copyEntry($value->toEiEntry($targetEiuFrame), $eiObject->isDraft())->getEiEntry());
+		return RelationEntry::fromM($targetEiuFrame->copyEntry($value->toEiEntry($targetEiuFrame), $eiu->entry()->isDraft())->getEiEntry());
 	}
 	
 	/**

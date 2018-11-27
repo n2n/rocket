@@ -177,6 +177,19 @@ class EiEntry {
 		}
 	}
 	
+	/**
+	 * @param EiPropPath $eiPropPath
+	 * @return boolean
+	 */
+	function containsEiField(EiPropPath $eiPropPath) {
+		try {
+			$this->getEiFieldWrapper($eiPropPath);
+			return true;
+		} catch (\rocket\ei\manage\entry\UnknownEiFieldExcpetion $e) {
+			return false;
+		}
+	}
+	
 	
 	// 	public function read($entity, EiPropPath $eiPropPath) {
 	

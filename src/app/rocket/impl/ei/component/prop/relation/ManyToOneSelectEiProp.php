@@ -134,7 +134,7 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 	// 		$eiu->entry()->writeNativeValue($this, $targetEntityObj)
 	// 	}
 	
-	public function copy(EiObject $eiObject, $value, Eiu $copyEiu) {
+	public function copy(Eiu $eiu, $value, Eiu $copyEiu) {
 		return $value;
 	}
 	

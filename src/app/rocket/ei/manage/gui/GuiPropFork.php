@@ -40,11 +40,11 @@ interface GuiPropFork {
 	public function createGuiFieldFork(Eiu $eiu): GuiFieldFork;
 		
 	/**
-	 * @param EiObject $eiObject
+	 * @param Eiu $eiu
 	 * @return EiObject|null null if not available
 	 * @throws IllegalStateException if {@see self::getForkedGuiDefinition()}
 	 */
-	public function determineForkedEiObject(EiObject $eiObject): ?EiObject;
+	public function determineForkedEiObject(Eiu $eiu): ?EiObject;
 	
 	/**
 	 * @param Eiu $eiu

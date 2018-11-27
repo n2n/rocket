@@ -321,7 +321,7 @@ class EiuHtmlBuilder {
 		$guiDefinition = $eiEntryGui->getEiGui()->getEiGuiViewFactory()->getGuiDefinition();
 		$validationResult = null;
 		try {
-			$validationResult = $guiDefinition->determineEiFieldAbstraction($eiEntryGui->getEiEntry(), $guiFieldPath)->getValidationResult();
+			$validationResult = $guiDefinition->determineEiFieldAbstraction($eiEntryGui->getEiGui()->getEiFrame()->getN2nContext(), $eiEntryGui->getEiEntry(), $guiFieldPath)->getValidationResult();
 		} catch (UnknownEiFieldExcpetion $e) {}
 		
 		if (!$eiEntryGui->containsGuiFieldGuiFieldPath($guiFieldPath)) {

@@ -7597,12 +7597,12 @@ var Rocket;
                     return true;
                 }
                 exec() {
-                    let eiPropPaths = [];
+                    let guiFieldPaths = [];
                     for (let loadJob of this.loadJobs) {
-                        eiPropPaths.push(loadJob.eiPropPath);
+                        guiFieldPaths.push(loadJob.guiFieldPath);
                         loadJob.content.loading = true;
                     }
-                    let url = this.url.extR(null, { eiPropPaths: eiPropPaths });
+                    let url = this.url.extR(null, { guiFieldPaths: guiFieldPaths });
                     Jhtml.lookupModel(url).then((result) => {
                         this.splitResult(result.model.snippet);
                     });
@@ -7611,8 +7611,8 @@ var Rocket;
                     let usedElements = [];
                     $(snippet.elements).children().each((i, elem) => {
                         let elemJq = $(elem);
-                        let eiPropPath = elemJq.data("rocket-impl-gui-id-path");
-                        let loadJob = this.loadJobs.find(loadJob => loadJob.eiPropPath == eiPropPath);
+                        let guiFieldPath = elemJq.data("rocket-impl-gui-field-path");
+                        let loadJob = this.loadJobs.find(loadJob => loadJob.guiFieldPath == guiFieldPath);
                         let newContentJq = elemJq.children().first();
                         loadJob.content.replaceField(newContentJq);
                         loadJob.content.loading = false;
@@ -7646,7 +7646,7 @@ var Rocket;
                     let srcLoadConfig = jqElem.data("rocket-impl-src-load-config");
                     if (!srcLoadConfig)
                         return;
-                    this.srcGuiFieldPath = srcLoadConfig.eiPropPath;
+                    this.srcGuiFieldPath = srcLoadConfig.guiFieldPath;
                     for (let localeId in srcLoadConfig.loadUrlDefs) {
                         this.loadUrlDefs[localeId] = {
                             label: srcLoadConfig.loadUrlDefs[localeId].label,
@@ -7714,7 +7714,7 @@ var Rocket;
                         }
                         loadJobs.push({
                             url: this.loadUrlDefs[content.localeId].url.extR(null, { "propertyPath": content.propertyPath }),
-                            eiPropPath: this.srcGuiFieldPath,
+                            guiFieldPath: this.srcGuiFieldPath,
                             content: content
                         });
                     }
@@ -7860,12 +7860,12 @@ var Rocket;
                     }
                     this.elemJq.addClass("rocket-inactive");
                 }
-                drawCopyControl(copyUrlDefs, eiPropPath) {
+                drawCopyControl(copyUrlDefs, guiFieldPath) {
                     for (let localeId in copyUrlDefs) {
                         if (localeId == this.localeId)
                             continue;
                         if (!this.copyControl) {
-                            this.copyControl = new CopyControl(this, eiPropPath);
+                            this.copyControl = new CopyControl(this, guiFieldPath);
                             this.copyControl.draw(this.elemJq.data("rocket-impl-copy-tooltip"));
                         }
                         this.copyControl.addUrlDef(copyUrlDefs[localeId]);
@@ -7899,9 +7899,9 @@ var Rocket;
             }
             Translation.TranslatedContent = TranslatedContent;
             class CopyControl {
-                constructor(translatedContent, eiPropPath) {
+                constructor(translatedContent, guiFieldPath) {
                     this.translatedContent = translatedContent;
-                    this.eiPropPath = eiPropPath;
+                    this.guiFieldPath = guiFieldPath;
                 }
                 draw(tooltip) {
                     this.elemJq = $("<div></div>", { class: "rocket-impl-translation-copy-control rocket-simple-commands" });
@@ -7938,7 +7938,7 @@ var Rocket;
                     let lje = new Translation.LoadJobExecuter();
                     lje.add({
                         content: this.translatedContent,
-                        eiPropPath: this.eiPropPath,
+                        guiFieldPath: this.guiFieldPath,
                         url: url
                     });
                     lje.exec();

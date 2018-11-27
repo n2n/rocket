@@ -338,7 +338,7 @@ class EiuEntry {
 // 		}
 		
 		$viewMode = $this->deterViewMode($bulky, $editable);
-		$eiuGui = $this->eiuFrame->newCustomGui($viewMode, $uiFactory, $eiPropPaths);
+		$eiuGui = $this->getEiuFrame()->newCustomGui($viewMode, $uiFactory, $eiPropPaths);
 		return $eiuGui->appendNewEntryGui($this, $treeLevel);
 	}
 	
@@ -473,7 +473,7 @@ class EiuEntry {
 	}
 	
 	public function copyValuesTo($toEiEntryArg, array $eiPropPaths = null) {
-		$this->eiuFrame->copyEntryValuesTo($this, $toEiEntryArg, $eiPropPaths);
+		$this->getEiuFrame()->copyEntryValuesTo($this, $toEiEntryArg, $eiPropPaths);
 	}
 	
 	/**
@@ -554,7 +554,8 @@ class EiuEntry {
 	public function determineEiFieldAbstraction($guiFieldPath, bool $required = false) {
 		$guiDefinition = $this->getEiuFrame()->getContextEiuEngine()->getGuiDefinition();
 		try {
-			return $guiDefinition->determineEiFieldAbstraction($this->getEiEntry(), GuiFieldPath::create($guiFieldPath));
+			return $guiDefinition->determineEiFieldAbstraction($this->eiuAnalyst->getEiuFrame(true),
+					$this->getEiEntry(), GuiFieldPath::create($guiFieldPath));
 		} catch (UnknownEiFieldExcpetion $e) {
 			if ($required) throw $e;
 		}

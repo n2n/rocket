@@ -149,11 +149,11 @@ class EiEntryGui {
 	 * @return \rocket\ei\manage\gui\GuiFieldPath[]
 	 */
 	public function getGuiFieldGuiFieldPaths() {
-		$guiPropPaths = array();
+		$guiFieldPaths = array();
 		foreach (array_keys($this->guiFieldAssemblies) as $eiPropPathStr) {
-			$guiPropPaths[] = GuiFieldPath::create($eiPropPathStr);
+			$guiFieldPaths[] = GuiFieldPath::create($eiPropPathStr);
 		}
-		return $guiPropPaths;
+		return $guiFieldPaths;
 	}
 	
 	/**
@@ -326,7 +326,7 @@ class EiEntryGui {
 		}
 		
 		foreach ($this->guiFieldForkAssemblies as $guiFieldForkAssembly) {
-			if (null !== ($savable = $guiFieldForkAssembly->getSavable())) {
+			if (null !== ($savable = $guiFieldForkAssembly->getEditable())) {
 				$savable->save();
 			}
 		}

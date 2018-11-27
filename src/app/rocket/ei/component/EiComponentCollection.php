@@ -145,7 +145,7 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 		}
 		
 		if ($this->inheritedCollection !== null) {
-			return $this->inheritedCollection->getElementByIdPath($idPathStr);
+			return $this->inheritedCollection->getElementByIdPath($idPath);
 		}
 		
 		throw new UnknownEiComponentException('No ' . $this->elementName . ' with id \'' . $idPathStr

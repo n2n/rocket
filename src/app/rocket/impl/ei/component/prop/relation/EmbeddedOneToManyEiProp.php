@@ -101,7 +101,7 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 		$this->reduced = $reduced;
 	}
 		
-	public function copy(EiObject $eiObject, $value, Eiu $copyEiu) {
+	public function copy(Eiu $eiu, $value, Eiu $copyEiu) {
 		$targetEiuFrame = (new Eiu($this->eiPropRelation->createTargetEditPseudoEiFrame(
 				$copyEiu->frame()->getEiFrame(), $copyEiu->entry()->getEiEntry())))->frame();
 		

@@ -22,7 +22,7 @@
 
 namespace rocket\ei\manage\gui;
 
-use rocket\ei\manage\entry\EiFieldValidationResult;
+use rocket\ei\manage\entry\ValidationResult;
 
 interface EiFieldAbstraction {
 	
@@ -30,6 +30,6 @@ interface EiFieldAbstraction {
 	
 	public function setIgnored(bool $ignored);
 	
-	public function getValidationResult(): ?EiFieldValidationResult;
+	public function getValidationResult(): ?ValidationResult;
 }
 

@@ -14,10 +14,10 @@ use n2n\l10n\IllegalN2nLocaleFormatException;
 
 class TranslationCopyController extends ControllerAdapter {
 	
-	public function doLive(EiuCtrl $eiuCtrl, ParamQuery $eiPropPaths, ParamQuery $propertyPath, ParamQuery $bulky,
+	public function doLive(EiuCtrl $eiuCtrl, ParamQuery $guiFieldPaths, ParamQuery $propertyPath, ParamQuery $bulky,
 			ParamQuery $n2nLocale, ParamQuery $pid = null) {
 		try {
-			$eiPropPaths = $this->parseGuiFieldPaths($eiPropPaths);
+			$guiFieldPaths = $this->parseGuiFieldPaths($guiFieldPaths);
 			$propertyPath = PropertyPath::createFromPropertyExpression((string) $propertyPath);
 			$n2nLocale = N2nLocale::create((string) $n2nLocale);
 		} catch (\InvalidArgumentException $e) {
@@ -34,19 +34,19 @@ class TranslationCopyController extends ControllerAdapter {
 			$eiuEntry->getEntityObj()->setN2nLocale($n2nLocale);
 		}
 		
-		foreach ($eiPropPaths as $eiPropPath) {
-			if ($eiuEntry->getEiuEngine()->containsGuiProp($eiPropPath)) continue;
+		foreach ($guiFieldPaths as $guitFieldPath) {
+			if ($eiuEntry->mask()->engine()->containsGuiProp($guitFieldPath)) continue;
 			
-			throw new BadRequestException('Unknown eiPropPath: ' . $eiPropPath);
+			throw new BadRequestException('Unknown eiPropPath: ' . $guitFieldPath);
 		}
 		
 		$eiuEntryGui = $eiuEntry->newCustomEntryGui(function () {
 			throw new UnsupportedOperationException();
-		}, $eiPropPaths, $bulky->toBool(), true);
+		}, $guiFieldPaths, $bulky->toBool(), true);
 		
 		$this->send(JhtmlResponse::view($this->createView('jhtmlTranslation.html',
 				array('eiuEntryGui' => $eiuEntryGui, 'propertyPath' => $propertyPath,
-						'n2nLocale' => $n2nLocale, 'eiPropPaths' => $eiPropPaths))));
+						'n2nLocale' => $n2nLocale, 'guiFieldPaths' => $guiFieldPaths))));
 	}
 	
 	private function parseGuiFieldPaths(ParamQuery $param) {
@@ -60,11 +60,11 @@ class TranslationCopyController extends ControllerAdapter {
 		return $eiPropPaths;
 	}
 	
-	public function doLiveCopy(EiuCtrl $eiuCtrl, ParamQuery $eiPropPaths, ParamQuery $propertyPath, ParamQuery $bulky,
+	public function doLiveCopy(EiuCtrl $eiuCtrl, ParamQuery $guiFieldPaths, ParamQuery $propertyPath, ParamQuery $bulky,
 			ParamQuery $toN2nLocale, ParamQuery $fromPid, ParamQuery $toPid = null) {
 				
 		try {
-			$eiPropPath = current($this->parseGuiFieldPaths($eiPropPaths));
+			$guiFieldPath = current($this->parseGuiFieldPaths($guiFieldPaths));
 			$propertyPath = PropertyPath::createFromPropertyExpression((string) $propertyPath);
 			$toN2nLocale = N2nLocale::create((string) $toN2nLocale);
 		} catch (\InvalidArgumentException $e) {
@@ -83,19 +83,19 @@ class TranslationCopyController extends ControllerAdapter {
 			$toEiuEntry->getEntityObj()->setN2nLocale($toN2nLocale);
 		}
 		
-		if (!$fromEiuEntry->getEiuEngine()->containsGuiProp($eiPropPath)) {
-			throw new BadRequestException('Unknown eiPropPath: ' . $eiPropPath);
+		if (!$fromEiuEntry->mask()->engine()->containsGuiProp($guiFieldPath)) {
+			throw new BadRequestException('Unknown guiFieldPath: ' . $guiFieldPath);
 		}
 		
-		$eiPropPath = $fromEiuEntry->getEiuEngine()->eiPropPathToEiPropPath($eiPropPath);
+		$eiPropPath = $guiFieldPath->getFirstEiPropPath();
 		$fromEiuEntry->copyValuesTo($toEiuEntry, [$eiPropPath]);
 		
 		$eiuEntryGui = $toEiuEntry->newCustomEntryGui(function () {
 			throw new UnsupportedOperationException();
-		}, array($eiPropPath), $bulky->toBool(), true);
+		}, array($guiFieldPath), $bulky->toBool(), true);
 		
 		$this->send(JhtmlResponse::view($this->createView('jhtmlTranslation.html', 
 				array('eiuEntryGui' => $eiuEntryGui, 'propertyPath' => $propertyPath,
-						'n2nLocale' => $toN2nLocale, 'eiPropPaths' => [$eiPropPath]))));
+						'n2nLocale' => $toN2nLocale, 'guiFieldPaths' => [$guiFieldPath]))));
 	}
 }

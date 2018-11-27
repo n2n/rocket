@@ -26,7 +26,7 @@ class EiFieldWrapperCollection implements EiFieldAbstraction {
 		}
 	}
 	
-	public function getValidationResult(): ValidationResult {
+	public function getValidationResult(): ?ValidationResult {
 		$validationResult = new ValidationResultCollection();
 		
 		foreach ($this->eiFieldWrappers as $eiFieldWrapper) {
@@ -68,7 +68,7 @@ class ValidationResultCollection implements ValidationResult {
 	 * @see \rocket\ei\manage\entry\ValidationResult::isValid()
 	 */
 	public function isValid(bool $checkRecurisve = true): bool {
-		if (!$recursive) return true;
+		if (!$checkRecurisve) return true;
 		
 		foreach ($this->validationResults as $validationResult) {
 			if (!$validationResult->isValid($checkRecurisve)) {
@@ -83,7 +83,7 @@ class ValidationResultCollection implements ValidationResult {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\entry\ValidationResult::getMessages()
 	 */
-	public function getMessages(): array {
+	public function getMessages(bool $recursive = true): array {
 		if (!$recursive) return [];
 		
 		$messages = [];
