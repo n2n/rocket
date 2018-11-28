@@ -85,9 +85,9 @@ class ToManyEiField extends CrwvEiField {
 	public function copyEiField(Eiu $copyEiu) {
 		if ($this->copyable === null) return null;
 		
-		$copy = new ToManyEiField($copyEiu->entry()->getEiObject(), $this->readable, $this->writable, 
+		$copy = new ToManyEiField($copyEiu, $this->readable, $this->writable, 
 				$this->copyable);
-		$copy->setValue($this->copyable->copy($this->eiFieldMap, $this->getValue(), $copyEiu));
+		$copy->setValue($this->copyable->copy($this->eiu, $this->getValue(), $copyEiu));
 		return $copy;
 	}
 	

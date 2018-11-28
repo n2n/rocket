@@ -30,7 +30,9 @@ class EiFieldWrapperCollection implements EiFieldAbstraction {
 		$validationResult = new ValidationResultCollection();
 		
 		foreach ($this->eiFieldWrappers as $eiFieldWrapper) {
-			$validationResult->add($eiFieldWrapper->getValidationResult());
+			if (null !== ($validationResult = $eiFieldWrapper->getValidationResult())) {
+				$validationResult->add($validationResult);
+			}
 		}
 		
 		return $validationResult;

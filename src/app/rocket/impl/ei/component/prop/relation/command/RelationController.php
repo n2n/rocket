@@ -31,6 +31,7 @@ use rocket\ei\EiController;
 use rocket\ei\manage\frame\EiRelation;
 use rocket\ei\util\EiuCtrl;
 use rocket\ei\util\Eiu;
+use rocket\ei\EiPropPath;
 
 class RelationController extends ControllerAdapter {
 	private $eiFrame;
@@ -102,7 +103,7 @@ class RelationController extends ControllerAdapter {
 				$eiObject, $targetControllerContext);
 		
 		if (null !== ($targetEiProp = $this->eiPropRelation->findTargetEiProp())) {
-			$targetEiFrame->setEiRelation($targetEiProp->getId(), new EiRelation($this->eiFrame, null));
+			$targetEiFrame->setEiRelation(EiPropPath::from($targetEiProp), new EiRelation($this->eiFrame, null));
 		}
 		
 		$this->applyBreadcrumb();

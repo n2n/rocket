@@ -1069,7 +1069,7 @@ class EiuAnalyst {
 		if ($eiArg !== null) {
 			$eiEntry = null;
 			$eiObject = self::determineEiObject($eiArg, $eiEntry);
-			return new EiuEntry($eiObject, $eiEntry, $eiuFrame);
+			return (new Eiu($eiObject, $eiEntry, $eiuFrame))->entry();
 		}
 			
 		if (!$required) {

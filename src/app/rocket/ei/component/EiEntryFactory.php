@@ -83,8 +83,7 @@ class EiEntryFactory {
 		
 		$eiu = new Eiu($eiFrame, $eiEntry, $eiFieldMap);
 		
-		$this->assembleMappingProfile($eiu, $eiFieldMap, $eiEntry, 
-				($copyFrom !== null ? $copyFrom->getEiFieldMap() : null));
+		$this->assembleMappingProfile($eiu, $eiFieldMap, $eiEntry, $copyFrom);
 	
 		foreach ($this->eiModificatorCollection as $constraint) {
 			$constraint->setupEiEntry($eiu);

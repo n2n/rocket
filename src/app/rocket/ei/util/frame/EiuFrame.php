@@ -211,8 +211,10 @@ class EiuFrame {
 	 * @return \rocket\ei\util\entry\EiuEntry
 	 */
 	public function newEntry(bool $draft = false, $eiTypeArg = null) {
-		return new EiuEntry($this->createNewEiObject($draft, 
-				EiuAnalyst::buildEiTypeFromEiArg($eiTypeArg, 'eiTypeArg', false)), null, $this);
+		$eiuObject = new EiuObject(
+				$this->createNewEiObject($draft, EiuAnalyst::buildEiTypeFromEiArg($eiTypeArg, 'eiTypeArg', false)),
+				$this->eiuAnalyst);
+		return new EiuEntry(null, $eiuObject, null, $this->eiuAnalyst);
 	}
 	
 	
@@ -338,7 +340,7 @@ class EiuFrame {
 		}
 		
 		$eiObject = $this->createNewEiObject($draft, $eiType);
-		return new EiuEntry($eiObject, $this->createEiEntryCopy($fromEiuEntry, $eiObject), $this, $this->eiuAnalyst);
+		return $this->entry($this->createEiEntryCopy($fromEiuEntry, $eiObject));
 	}
 	
 	public function copyEntryValuesTo($fromEiEntryArg, $toEiEntryArg, array $eiPropPaths = null) {
