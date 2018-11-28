@@ -51,7 +51,7 @@ class EiuEntryGui {
 	/**
 	 * @return EiuGui 
 	 */
-	public function getEiuGui() {
+	public function gui() {
 		if ($this->eiuGui !== null) {
 			return $this->eiuGui;
 		}
@@ -89,7 +89,7 @@ class EiuEntryGui {
 	 * @return string|null
 	 */
 	public function getFieldLabel($eiPropPath, N2nLocale $n2nLocale = null, bool $required = false) {
-		return $this->getEiuGui()->getPropLabel($eiPropPath, $n2nLocale, $required);
+		return $this->gui()->getPropLabel($eiPropPath, $n2nLocale, $required);
 	}
 	
 	/**
@@ -262,9 +262,9 @@ class EiuEntryGui {
 	 * @throws EiuPerimeterException
 	 * @return \rocket\ei\util\entry\EiuEntry
 	 */
-	public function getEiuEntry() {
+	public function entry() {
 		if ($this->eiuEntry === null) {
-			$this->eiuEntry = $this->getEiuGui()->getEiuFrame()->entry($this->getEiEntryGui()->getEiEntry());
+			$this->eiuEntry = $this->gui()->getEiuFrame()->entry($this->getEiEntryGui()->getEiEntry());
 		}
 		
 		return $this->eiuEntry;
@@ -274,7 +274,7 @@ class EiuEntryGui {
 	 * @return \rocket\ei\util\gui\EiuEntryGui
 	 */
 	public function addDisplayContainer(string $type, string $label, array $attrs = null) {
-		$this->getEiuGui()->addDisplayContainer($type, $label, $attrs);
+		$this->gui()->addDisplayContainer($type, $label, $attrs);
 		return $this;
 	}
 		
@@ -282,7 +282,7 @@ class EiuEntryGui {
 	 * @return \rocket\ei\util\gui\EiuEntryGui
 	 */
 	public function removeGroups() {
-		$this->getEiuGui()->removeSubStructures();
+		$this->gui()->removeSubStructures();
 		return $this;
 	}
 	
@@ -290,7 +290,7 @@ class EiuEntryGui {
 	 * @return \rocket\ei\util\gui\EiuEntryGui
 	 */
 	public function forceRootGroups() {
-		$this->getEiuGui()->forceRootGroups();
+		$this->gui()->forceRootGroups();
 		return $this;
 	}
 	
@@ -298,7 +298,7 @@ class EiuEntryGui {
 	 * @return \rocket\ei\util\gui\EiuEntryGui
 	 */
 	public function renderEntryControls(bool $renderEntryControls = true) {
-		$this->getEiuGui()->renderEntryControls($renderEntryControls);
+		$this->gui()->renderEntryControls($renderEntryControls);
 		return $this;
 	}
 	
@@ -306,7 +306,7 @@ class EiuEntryGui {
 	 * @return \rocket\ei\util\gui\EiuEntryGui
 	 */
 	public function renderForkControls(bool $renderForkControls = true) {
-		$this->getEiuGui()->renderForkControls($renderForkControls);
+		$this->gui()->renderForkControls($renderForkControls);
 		return $this;
 	}
 		
@@ -322,7 +322,7 @@ class EiuEntryGui {
 	 * @return \n2n\impl\web\ui\view\html\HtmlView
 	 */
 	public function createView(HtmlView $contextView = null) {
-		return $this->getEiuGui()->createView($contextView);
+		return $this->gui()->createView($contextView);
 	}
 	
 	/**

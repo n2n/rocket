@@ -114,7 +114,7 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 
 		foreach ($this->eiuEntryGuiAssemblers as $n2nLocaleId => $eiuEntryGuiAssembler) {
 			$dispatchable = $eiuEntryGuiAssembler->getEiuEntryGui()->getDispatchable();
-			$eiuEntryGuiAssembler->getEiuEntryGui()->getEiuEntry()->isNew();
+			$eiuEntryGuiAssembler->getEiuEntryGui()->entry()->isNew();
 			if ($dispatchable !== null) {
 				$this->translationForm->putAvailableDispatchable($n2nLocaleId, $dispatchable);
 				
@@ -149,7 +149,7 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 			$result = $guiFieldAssembler->assembleGuiField($guiFieldPath);
 			if ($result === null) continue;
 			
-			$eiuEntry = $guiFieldAssembler->getEiuEntryGui()->getEiuEntry();
+			$eiuEntry = $guiFieldAssembler->getEiuEntryGui()->entry();
 			$validationResult = null;
 			if ($eiuEntry->getEiEntry()->hasValidationResult()) {
 				$validationResult = $eiuEntry->getEiEntry()->getValidationResult()

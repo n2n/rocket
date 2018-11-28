@@ -52,8 +52,8 @@ class EditController extends ControllerAdapter {
 	 * @return \rocket\impl\ei\component\command\common\model\EntryCommandViewModel
 	 */
 	private function createEntryCommandViewModel(EiuEntryGui $eiuEntryGui, Url $cancelUrl = null) {
-		$viewModel = new EntryCommandViewModel($eiuEntryGui->getEiuEntry()->getEiuFrame(), $cancelUrl, 
-				$eiuEntryGui->getEiuEntry());
+		$viewModel = new EntryCommandViewModel($eiuEntryGui->entry()->getEiuFrame(), $cancelUrl, 
+				$eiuEntryGui->entry());
 		$viewModel->initializeDrafts();
 		return $viewModel;
 	}
@@ -77,7 +77,7 @@ class EditController extends ControllerAdapter {
 			return;
 		} else if ($this->dispatch($editModel, 'saveAndPreview')) {
 			$jhtmlEvent = JhtmlEvent::ei()->eiObjectChanged($eiuEntry);
-			$defaultPreviewType = key($this->eiuCtrl->frame()->getPreviewTypeOptions($editModel->getEntryModel()->getEiuEntryGui()->getEiuEntry()->getEiObject()));
+			$defaultPreviewType = key($this->eiuCtrl->frame()->getPreviewTypeOptions($editModel->getEntryModel()->getEiuEntryGui()->entry()->getEiObject()));
 			$this->eiuCtrl->redirect($this->getUrlToController(['livepreview', $pid, $defaultPreviewType],
 					array('refPath' => (string) $redirectUrl)), $jhtmlEvent);
 			return;

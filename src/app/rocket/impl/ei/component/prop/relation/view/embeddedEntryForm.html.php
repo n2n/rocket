@@ -12,7 +12,7 @@ use rocket\ei\manage\gui\ui\DisplayItem;
 	$mappingForm = $view->getParam('mappingForm');
 	$view->assert($mappingForm instanceof MappingForm);
 	
-	$eiuEntry = $mappingForm->getEiuEntryForm()->getChosenEiuEntryTypeForm()->getEiuEntryGui()->getEiuEntry();
+	$eiuEntry = $mappingForm->getEiuEntryForm()->getChosenEiuEntryTypeForm()->getEiuEntryGui()->entry();
 	
 	$grouped = $view->getParam('grouped', false, true);
 	$summaryRequired = $view->getParam('summaryRequired');

@@ -97,7 +97,7 @@ class EntryEiHtmlBuilder {
 		
 		$entryAttrs = array(
 				'class' => 'rocket-entry',
-				'data-rocket-entry-id' => $this->meta()->getCurrentEiuEntryGui()->getEiuEntry()->getGeneralId());
+				'data-rocket-entry-id' => $this->meta()->getCurrentEiuEntryGui()->entry()->getGeneralId());
 		
 		return new Raw('<' . HtmlUtils::hsc($tagName) 
 				. HtmlElement::buildAttrsHtml(HtmlUtils::mergeAttrs($entryAttrs, $attrs)) . '>');
@@ -125,7 +125,7 @@ class EntryEiHtmlBuilder {
 	}
 	
 	public function getSelector(string $containerTagName, array $containerAttrs = null, $content = ''): UiComponent {
-		$eiObject = $this->meta->getCurrentEiuEntryGui()->getEiuEntry()->getEiObject();
+		$eiObject = $this->meta->getCurrentEiuEntryGui()->entry()->getEiObject();
 		$draftId = null;
 		if ($eiObject->isDraft() && !$eiObject->getDraft()->isNew()) {
 			$draftId = $eiObject->getDraft()->getId();
@@ -136,7 +136,7 @@ class EntryEiHtmlBuilder {
 						'data-entry-ei-id' => $this->meta()->getCurrentPid(),
 						'data-draft-id' => ($draftId !== null ? $draftId : ''),
 						'data-identity-string' => $this->eiuFrame->createIdentityString($this->meta()
-								->getCurrentEiuEntryGui()->getEiuEntry()->getEiObject())), (array) $containerAttrs),
+								->getCurrentEiuEntryGui()->entry()->getEiObject())), (array) $containerAttrs),
 				new HtmlElement('input', array('type' => 'checkbox')));
 	}
 	
@@ -154,7 +154,7 @@ class EntryEiHtmlBuilder {
 		
 		$eiEntryGui = $eiuEntryGui->getEiEntryGui();
 		$displayable = $eiEntryGui->getDisplayableByGuiFieldPath($eiPropPath);
-		$validationResult = $eiuEntryGui->getEiuEntry()->getEiEntry()->getValidationResult()->getEiFieldValidationResult(
+		$validationResult = $eiuEntryGui->entry()->getEiEntry()->getValidationResult()->getEiFieldValidationResult(
 				$eiEntryGui->getGuiDefinition()->eiPropPathToEiPropPath($eiPropPath));
 		
 		if (!$eiEntryGui->containsMagAssemblyGuiFieldPath($eiPropPath)) {
@@ -178,7 +178,7 @@ class EntryEiHtmlBuilder {
 		$eiuEntryGui = $this->meta->getCurrentEiuEntryGui();
 		$eiPropPath = GuiFieldPath::create($eiPropPath);
 		$displayable = $eiuEntryGui->getEiEntryGui()->getDisplayableByGuiFieldPath($eiPropPath);
-		$validationResult = $eiuEntryGui->getEiuEntry()->getEiEntry()->getValidationResult()->getEiFieldValidationResult(
+		$validationResult = $eiuEntryGui->entry()->getEiEntry()->getValidationResult()->getEiFieldValidationResult(
 				$eiuEntryGui->getEiEntryGui()->getGuiDefinition()->eiPropPathToEiPropPath($eiPropPath));
 		
 		return $this->fieldEiHtml->getOpenOutputField($tagName, $displayable, $validationResult, 
@@ -243,7 +243,7 @@ class EntryEiHtmlBuilderMeta {
 	}
 	
 	public function getCurrentPid() {
-		return $this->getCurrentEiuEntryGui()->getEiuEntry()->getPid();
+		return $this->getCurrentEiuEntryGui()->entry()->getPid();
 	}
 	
 	public function getForkMagPropertyPaths() {

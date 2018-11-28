@@ -189,7 +189,7 @@ class EiuEntryForm implements Dispatchable {
 	public function buildEiuEntry() {
 		IllegalStateException::assertTrue(isset($this->eiuEntryTypeForms[$this->chosenId]));
 		$this->eiuEntryTypeForms[$this->chosenId]->save();
-		return $this->eiuEntryTypeForms[$this->chosenId]->getEiuEntryGui()->getEiuEntry();
+		return $this->eiuEntryTypeForms[$this->chosenId]->getEiuEntryGui()->entry();
 	}
 	
 	/**

@@ -525,7 +525,7 @@ class EiuAnalyst {
 			return;
 		}
 		
-		$this->assignEiuGui($eiuEntryGui->getEiuGui());
+		$this->assignEiuGui($eiuEntryGui->gui());
 		$this->assignEiEntryGui($eiuEntryGui->getEiEntryGui());
 		$this->eiuEntryGui = $eiuEntryGui;
 	}
