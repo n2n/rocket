@@ -32,6 +32,7 @@ use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\relation\model\ToOneEiField;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
 use rocket\ei\manage\entry\EiField;
+use rocket\ei\manage\LiveEiObject;
 
 abstract class ToOneEiPropAdapter extends SimpleRelationEiPropAdapter implements GuiProp, DraftableEiProp, 
 		DraftProperty {
@@ -59,9 +60,11 @@ abstract class ToOneEiPropAdapter extends SimpleRelationEiPropAdapter implements
 	 * @see \rocket\ei\manage\gui\GuiProp::buildIdentityString()
 	 */
 	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): string {
-		$targetEiObject = $this->read($eiu);
-		if ($targetEiObject === null) return '';
+		$targetObject = $eiu->object()->readNativValue($this);
+		if ($targetObject === null) return '';
 
+		$targetEiObject = LiveEiObject::create($this->eiPropRelation->getTargetEiType(), $targetObject);
+		
 		return $this->targetGuiDefinition->createIdentityString($targetEiObject, $eiu->getN2nContext(), $n2nLocale);
 	}
 			
