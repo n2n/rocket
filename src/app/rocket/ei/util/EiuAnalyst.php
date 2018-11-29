@@ -61,6 +61,7 @@ use rocket\ei\util\gui\EiuEntryGuiAssembler;
 use rocket\ei\manage\entry\EiFieldMap;
 use rocket\ei\util\entry\EiuFieldMap;
 use rocket\ei\util\entry\EiuObject;
+use rocket\ei\component\modificator\EiModificator;
 
 class EiuAnalyst {
 	const EI_FRAME_TYPES = array(EiFrame::class, EiuFrame::class, N2nContext::class);
@@ -133,12 +134,17 @@ class EiuAnalyst {
 			
 			if ($eiArg instanceof EiCommand) {
 				$this->eiCommandPath = EiCommandPath::from($eiArg);
-				$this->assignEiMask($eiArg->getEiMask());
+				$this->assignEiMask($eiArg->getWrapper()->getEiCommandCollection()->getEiMask());
 				continue;
 			}
 			
 			if ($eiArg instanceof EiCommandPath) {
 				$this->eiCommandPath = $eiArg;
+				continue;
+			}
+			
+			if ($eiArg instanceof EiModificator) {
+				$this->assignEiMask($eiArg->getWrapper()->getEiModificatorCollection()->getEiMask());
 				continue;
 			}
 			
