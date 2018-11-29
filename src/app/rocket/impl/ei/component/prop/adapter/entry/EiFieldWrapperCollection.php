@@ -30,8 +30,8 @@ class EiFieldWrapperCollection implements EiFieldAbstraction {
 		$validationResult = new ValidationResultCollection();
 		
 		foreach ($this->eiFieldWrappers as $eiFieldWrapper) {
-			if (null !== ($validationResult = $eiFieldWrapper->getValidationResult())) {
-				$validationResult->add($validationResult);
+			if (null !== ($eiFieldValidationResult = $eiFieldWrapper->getValidationResult())) {
+				$validationResult->add($eiFieldValidationResult);
 			}
 		}
 		
@@ -91,6 +91,10 @@ class ValidationResultCollection implements ValidationResult {
 		$messages = [];
 		
 		foreach ($this->validationResults as $validationResult) {
+			$vrMessages = $validationResult->getMessages();
+			
+			if (empty($vrMessages)) continue;
+			
 			array_push($messages, ...$validationResult->getMessages());
 		}
 		

@@ -216,14 +216,8 @@ class EiuEntryGui {
 	 * @throws GuiException
 	 * @return EiFieldAbstraction
 	 */
-	public function getEiFieldWrapper($eiPropPath, bool $required = false) {
-		try {
-			return $this->eiEntryGui->getEiFieldWrapperByGuiFieldPath(
-					GuiFieldPath::create($eiPropPath));
-		} catch (GuiException $e) {
-			if ($required) throw $e;
-			return null;
-		}
+	public function getEiFieldAbstraction($guiPropPath, bool $required = false) {
+		return $this->eiuEntry->getEiFieldAbstraction($guiFieldPath, $required);
 	}
 	
 // 	/**

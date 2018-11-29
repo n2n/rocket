@@ -201,13 +201,13 @@ class BooleanEiProp extends DraftablePropertyEiPropAdapter implements Filterable
 			}
 			
 			foreach ($notactiveGuiFieldPaths as $key => $eiPropPath) {
-				if (null !== ($eiFieldWrapper = $eiu->entry()->getEiFieldWrapperByGuiFieldPath($eiPropPath))) {
+				if (null !== ($eiFieldWrapper = $eiu->entry()->getEiFieldAbstraction($eiPropPath))) {
 					$eiFieldWrapper->setIgnored(true);
 				}
 			}
 			
 			foreach ($activeGuiFieldPaths as $eiPropPath) {
-				if (null !== ($eiFieldWrapper = $eiu->entry()->getEiFieldWrapperByGuiFieldPath($eiPropPath))) {
+				if (null !== ($eiFieldWrapper = $eiu->entry()->getEiFieldAbstraction($eiPropPath))) {
 					$eiFieldWrapper->setIgnored(false);
 				}
 			}

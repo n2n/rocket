@@ -551,10 +551,10 @@ class EiuEntry {
 	 * @throws GuiException
 	 * @return \rocket\ei\manage\entry\EiFieldWrapper|null
 	 */
-	public function determineEiFieldAbstraction($guiFieldPath, bool $required = false) {
+	public function getEiFieldAbstraction($guiFieldPath, bool $required = false) {
 		$guiDefinition = $this->getEiuFrame()->getContextEiuEngine()->getGuiDefinition();
 		try {
-			return $guiDefinition->determineEiFieldAbstraction($this->eiuAnalyst->getEiuFrame(true),
+			return $guiDefinition->determineEiFieldAbstraction($this->eiuAnalyst->getN2nContext(true),
 					$this->getEiEntry(), GuiFieldPath::create($guiFieldPath));
 		} catch (UnknownEiFieldExcpetion $e) {
 			if ($required) throw $e;
