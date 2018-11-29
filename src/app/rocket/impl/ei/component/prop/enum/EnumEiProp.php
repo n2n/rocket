@@ -38,7 +38,6 @@ use n2n\reflection\ArgUtils;
 use n2n\reflection\property\TypeConstraint;
 use n2n\reflection\property\AccessProxy;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
-use rocket\ei\manage\EiObject;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\web\dispatch\mag\Mag;
 use rocket\ei\util\Eiu;
@@ -91,21 +90,21 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 			$type = $eiu->field()->getValue();
 				
 			$activeGuiFieldPaths = array();
-			foreach ($that->getAssociatedGuiFieldPathMap() as $value => $eiPropPaths) {
+			foreach ($that->getAssociatedGuiFieldPathMap() as $value => $guiFieldPaths) {
 				if ($value == $type) {
-					$activeGuiFieldPaths = $eiPropPaths;
+					$activeGuiFieldPaths = $guiFieldPaths;
 					continue;
 				}
 				
-				foreach ($eiPropPaths as $eiPropPath) {
-					if (null !== ($eiFieldWrapper = $eiu->entry()->getEiFieldWrapperByGuiFieldPath($eiPropPath))) {
+				foreach ($guiFieldPaths as $guiFieldPath) {
+					if (null !== ($eiFieldWrapper = $eiu->entry()->getEiFieldAbstraction($guiFieldPath))) {
 						$eiFieldWrapper->setIgnored(true);
 					}
 				}
 			}
 			
-			foreach ($activeGuiFieldPaths as $eiPropPath) {
-				if (null !== ($eiFieldWrapper = $eiu->entry()->getEiFieldWrapperByGuiFieldPath($eiPropPath))) {
+			foreach ($activeGuiFieldPaths as $guiFieldPath) {
+				if (null !== ($eiFieldWrapper = $eiu->entry()->getEiFieldAbstraction($guiFieldPath))) {
 					$eiFieldWrapper->setIgnored(false);
 				}
 			}
