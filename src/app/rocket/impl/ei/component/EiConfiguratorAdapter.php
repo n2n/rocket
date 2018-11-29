@@ -105,7 +105,7 @@ abstract class EiConfiguratorAdapter implements EiConfigurator {
 	 * @return \rocket\ei\util\Eiu
 	 */
 	protected function eiu(N2nContext $n2nContext) {
-		return new Eiu($this->eiComponent->getEiMask()->getEiEngine(), $n2nContext);
+		return new Eiu($this->eiComponent, $n2nContext);
 	}
 	
 	/**
