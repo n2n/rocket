@@ -22,7 +22,6 @@
 namespace rocket\impl\ei\component\prop\string;
 
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\ei\manage\EiObject;
 use n2n\web\dispatch\mag\Mag;
 use rocket\impl\ei\component\prop\string\conf\UrlEiPropConfigurator;
 use rocket\ei\util\Eiu;

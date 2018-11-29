@@ -118,18 +118,18 @@ class CritmodFactory {
 		$eiu = new Eiu($n2nContext);
 		$sortDefinition = new SortDefinition();
 		
-		foreach ($this->eiPropCollection as $id => $eiProp) {
+		foreach ($this->eiPropCollection as $eiPropPathStr => $eiProp) {
 			if ($eiProp instanceof SortableEiProp) {
 				if (null !== ($sortProp = $eiProp->buildSortProp($eiu))) {
 					ArgUtils::valTypeReturn($sortProp, SortProp::class, $eiProp, 'buildSortProp', true);
-					$sortDefinition->putSortProp($id, $sortProp);
+					$sortDefinition->putSortProp(EiPropPath::create($eiPropPathStr), $sortProp);
 				}
 			}
 			
 			if ($eiProp instanceof SortableEiPropFork) {
 				if (null !== ($sortPropFork = $eiProp->buildSortPropFork($eiu))) {
 					ArgUtils::valTypeReturn($sortPropFork, SortPropFork::class, $eiProp, 'buildSortPropFork', true);
-					$sortDefinition->putSortPropFork($id, $sortPropFork);
+					$sortDefinition->putSortPropFork(EiPropPath::create($eiPropPathStr), $sortPropFork);
 				}
 			}
 		}

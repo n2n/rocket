@@ -171,22 +171,23 @@ class GuiDefinition {
 		return $this->buildGuiProps(array());
 	}
 	
-	protected function buildGuiProps(array $baseIds) {
+	protected function buildGuiProps(array $baseEiPropPaths) {
 		$guiProps = array();
 		
-		foreach ($this->eiPropPaths as $id) {
-			if (isset($this->guiProps[$id])) {
-				$currentIds = $baseIds;
-				$currentIds[] = $id;
-				$guiProps[(string) new GuiFieldPath($currentIds)] = $this->guiProps[$id];
+		foreach ($this->eiPropPaths as $eiPropPath) {
+			$eiPropPathStr = (string) $eiPropPath;
+			if (isset($this->guiProps[$eiPropPathStr])) {
+				$currentEiPropPaths = $baseEiPropPaths;
+				$currentEiPropPaths[] = $eiPropPath;
+				$guiProps[(string) new GuiFieldPath($currentEiPropPaths)] = $this->guiProps[$eiPropPathStr];
 			}
 				
-			if (isset($this->guiPropForks[$id])) {
-				$currentIds = $baseIds;
-				$currentIds[] = $id;
+			if (isset($this->guiPropForks[$eiPropPath])) {
+				$currentEiPropPaths = $baseEiPropPaths;
+				$currentEiPropPaths[] = $eiPropPath;
 					
-				$guiProps = array_merge($guiProps, $this->guiPropForks[$id]->getForkedGuiDefinition()
-						->buildGuiProps($currentIds));
+				$guiProps = array_merge($guiProps, $this->guiPropForks[$eiPropPathStr]->getForkedGuiDefinition()
+						->buildGuiProps($currentEiPropPaths));
 			}
 		}
 		
@@ -205,22 +206,24 @@ class GuiDefinition {
 		return $this->buildGuiFieldPaths(array());
 	}
 	
-	protected function buildGuiFieldPaths(array $baseIds) {
+	protected function buildGuiFieldPaths(array $baseEiPropPaths) {
 		$eiPropPaths = array();
 		
-		foreach ($this->eiPropPaths as $id) {
-			if (isset($this->guiProps[$id])) {
-				$currentIds = $baseIds;
-				$currentIds[] = $id;
-				$eiPropPaths[] = new GuiFieldPath($currentIds);
+		foreach ($this->eiPropPaths as $eiPropPath) {
+			$eiPropPathStr = (string) $eiPropPath;
+			
+			if (isset($this->guiProps[$eiPropPathStr])) {
+				$currentEiPropPaths = $baseEiPropPaths;
+				$currentEiPropPaths[] = $eiPropPath;
+				$eiPropPaths[] = new GuiFieldPath($currentEiPropPaths);
 			}
 			
-			if (isset($this->guiPropForks[$id])) {
-				$currentIds = $baseIds;
-				$currentIds[] = $id;
+			if (isset($this->guiPropForks[$eiPropPathStr])) {
+				$currentEiPropPaths = $baseEiPropPaths;
+				$currentEiPropPaths[] = $eiPropPath;
 				
-				$eiPropPaths = array_merge($eiPropPaths, $this->guiPropForks[$id]->getForkedGuiDefinition()
-						->buildGuiFieldPaths($currentIds));
+				$eiPropPaths = array_merge($eiPropPaths, $this->guiPropForks[$eiPropPathStr]->getForkedGuiDefinition()
+						->buildGuiFieldPaths($currentEiPropPaths));
 			}
 		}
 		

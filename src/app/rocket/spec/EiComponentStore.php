@@ -24,6 +24,12 @@ namespace rocket\spec;
 use n2n\reflection\ReflectionUtils;
 use n2n\core\TypeNotFoundException;
 use rocket\spec\source\ModularConfigSource;
+use rocket\ei\component\prop\indepenent\IndependentEiProp;
+use rocket\ei\component\prop\EiProp;
+use rocket\ei\component\command\EiCommand;
+use rocket\ei\component\command\IndependentEiCommand;
+use rocket\ei\component\modificator\EiModificator;
+use rocket\ei\component\modificator\IndependentEiModificator;
 
 class EiComponentStore {
 	const EI_FIELD_CLASSES_KEY = 'eiPropClasses';
@@ -67,8 +73,8 @@ class EiComponentStore {
 				as $key => $eiPropClassName) {
 			try {
 				$fieldClass = ReflectionUtils::createReflectionClass($eiPropClassName);
-				if (!$fieldClass->implementsInterface('rocket\ei\component\prop\EiProp')
-						|| !$fieldClass->implementsInterface('rocket\ei\component\IndependentEiComponent')) continue;
+				if (!$fieldClass->implementsInterface(EiProp::class)
+						|| !$fieldClass->implementsInterface(IndependentEiProp::class)) continue;
 				
 				$this->eiPropClasses[$eiPropClassName] = $fieldClass;
 				$this->eiPropClassesByModule[$moduleNamespace][$eiPropClassName] = $fieldClass;
@@ -81,8 +87,8 @@ class EiComponentStore {
 				as $key => $eiCommandClassName) {
 			try {
 				$eiCommandClass =  ReflectionUtils::createReflectionClass($eiCommandClassName);
-				if (!$eiCommandClass->implementsInterface('rocket\ei\component\command\EiCommand')
-						|| !$eiCommandClass->implementsInterface('rocket\ei\component\IndependentEiComponent')) continue;
+				if (!$eiCommandClass->implementsInterface(EiCommand::class)
+						|| !$eiCommandClass->implementsInterface(IndependentEiCommand::class)) continue;
 				
 				$this->eiCommandClasses[$eiCommandClassName] = $eiCommandClass;
 				$this->eiCommandClassesByModule[$moduleNamespace][$eiCommandClassName] = $eiCommandClass;
@@ -113,8 +119,8 @@ class EiComponentStore {
 				as $key => $eiModificatorClassName) {
 			try {
 				$constraintClass =  ReflectionUtils::createReflectionClass($eiModificatorClassName);
-				if (!$constraintClass->implementsInterface('rocket\ei\component\modificator\EiModificator')
-						|| !$constraintClass->implementsInterface('rocket\ei\component\IndependentEiComponent')) continue;
+				if (!$constraintClass->implementsInterface(EiModificator::class)
+						|| !$constraintClass->implementsInterface(IndependentEiModificator::class)) continue;
 		
 				$this->eiModificatorClasses[$eiModificatorClassName] = $constraintClass;
 				$this->eiModificatorClassesByModule[$moduleNamespace][$eiModificatorClassName] = $constraintClass;

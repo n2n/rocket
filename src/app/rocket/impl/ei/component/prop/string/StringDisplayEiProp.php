@@ -21,17 +21,14 @@
  */
 namespace rocket\impl\ei\component\prop\string;
 
-use rocket\impl\ei\component\prop\adapter\IndependentEiPropAdapter;
 use n2n\reflection\property\AccessProxy;
 use n2n\reflection\property\TypeConstraint;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\ei\component\prop\GuiEiProp;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\component\prop\FieldEiProp;
-use rocket\ei\manage\EiObject;
 use rocket\impl\ei\component\prop\adapter\entry\SimpleEiField;
 use rocket\impl\ei\component\prop\adapter\entry\Readable;
-use rocket\ei\EiPropPath;
 use rocket\impl\ei\component\prop\adapter\config\DisplaySettings;
 use rocket\impl\ei\component\prop\adapter\gui\StatelessDisplayable;
 use rocket\ei\manage\gui\GuiProp;
@@ -47,8 +44,10 @@ use rocket\ei\manage\gui\GuiField;
 use rocket\core\model\Rocket;
 use n2n\l10n\Lstr;
 use rocket\ei\manage\entry\EiField;
+use n2n\util\StringUtils;
+use rocket\impl\ei\component\prop\adapter\PropertyEiPropAdapter;
 
-class StringDisplayEiProp extends IndependentEiPropAdapter implements ObjectPropertyConfigurable, GuiEiProp, GuiProp, 
+class StringDisplayEiProp extends PropertyEiPropAdapter implements ObjectPropertyConfigurable, GuiEiProp, GuiProp, 
 		FieldEiProp, Readable, StatelessDisplayable {
 	private $accessProxy;
 	private $displaySettings;
@@ -75,20 +74,19 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ObjectProp
 		return $this->getObjectPropertyAccessProxy()->getPropertyName();
 	}
 
-	public function getObjectPropertyAccessProxy(bool $required = false) {
-		if ($this->accessProxy === null && $required) {
-			throw new IllegalStateException('No object property AccessProxy assigned to ' . $this);
-		}
+// 	public function getObjectPropertyAccessProxy(bool $required = false) {
+// 		if ($this->accessProxy === null && $required) {
+// 			throw new IllegalStateException('No object property AccessProxy assigned to ' . $this);
+// 		}
 		
-		return $this->accessProxy;
-	}
+// 		return $this->accessProxy;
+// 	}
 
-	public function setObjectPropertyAccessProxy(AccessProxy $objectPropertyAccessProxy = null) {
+	public function setObjectPropertyAccessProxy(?AccessProxy $objectPropertyAccessProxy) {
 		ArgUtils::assertTrue($objectPropertyAccessProxy !== null);
 		$objectPropertyAccessProxy->setConstraint(TypeConstraint::createSimple('string', true));
-		$this->accessProxy = $objectPropertyAccessProxy;
+		parent::setObjectPropertyAccessProxy($objectPropertyAccessProxy);
 	}
-
 	
 	/**
 	 * {@inheritDoc}
@@ -163,12 +161,14 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ObjectProp
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\entry\Readable::read()
 	 */
-	public function read(EiObject $eiObject) {
-		if ($eiObject->isDraft()) {
-			return $eiObject->getDraftValueMap()->getValue(EiPropPath::from($this));
-		}
+	public function read(Eiu $eiu) {
+		return $eiu->entry()->readNativValue($this);
 		
-		return $this->accessProxy->getValue($eiObject->getLiveObject());
+// 		if ($eiObject->isDraft()) {
+// 			return $eiObject->getDraftValueMap()->getValue(EiPropPath::from($this));
+// 		}
+		
+// 		return $this->accessProxy->getValue($eiObject->getLiveObject());
 	}
 
 	/**
@@ -191,8 +191,8 @@ class StringDisplayEiProp extends IndependentEiPropAdapter implements ObjectProp
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiProp::buildIdentityString($eiObject, $n2nLocale)
 	 */
-	public function buildIdentityString(\rocket\ei\manage\EiObject $eiObject, \n2n\l10n\N2nLocale $n2nLocale): ?string {
-		return $this->read($eiObject);
+	public function buildIdentityString(Eiu $eiu, \n2n\l10n\N2nLocale $n2nLocale): ?string {
+		return StringUtils::strOf($eiu->object()->readNativValue($this), true);
 	}
 
 	/**

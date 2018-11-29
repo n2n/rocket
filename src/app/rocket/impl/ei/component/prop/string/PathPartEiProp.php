@@ -28,7 +28,6 @@ use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\l10n\DynamicTextCollection;
 use rocket\impl\ei\component\prop\string\conf\PathPartEiPropConfigurator;
-use rocket\ei\manage\EiObject;
 use n2n\web\dispatch\mag\Mag;
 use n2n\reflection\ArgUtils;
 use rocket\ei\EiPropPath;
