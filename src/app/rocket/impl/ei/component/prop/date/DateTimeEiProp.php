@@ -109,7 +109,7 @@ class DateTimeEiProp extends DraftablePropertyEiPropAdapter implements SortableE
 	}
 	
     public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
-    	if (null !== ($dateTime = $this->read($eiu))) {
+    	if (null !== ($dateTime = $eiu->object()->readNativValue($this))) {
             return L10nUtils::formatDateTime($dateTime, $n2nLocale, $this->getDateStyle(), $this->getTimeStyle());
         }
 

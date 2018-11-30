@@ -36,7 +36,6 @@ use n2n\reflection\ArgUtils;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
 use n2n\reflection\property\TypeConstraint;
 use n2n\reflection\property\AccessProxy;
-use rocket\ei\manage\EiObject;
 use n2n\core\container\N2nContext;
 use n2n\web\dispatch\mag\Mag;
 use rocket\ei\util\Eiu;
@@ -113,9 +112,13 @@ class N2nLocaleEiProp extends DraftablePropertyEiPropAdapter implements Filterab
 // 	}
 
 	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
-		$value = $this->read($eiu);
-		if (null === ($parsedN2nLocale = N2nLocale::create($value))) return $value;
-		return $this->generateDisplayNameForN2nLocale($parsedN2nLocale, $n2nLocale);
+		$value = $eiu->object()->readNativValue($this);
+		
+		if ($value === null) {
+			return null;
+		}
+		
+		return $this->generateDisplayNameForN2nLocale(N2nLocale::create($value), $n2nLocale);
 	}
 
 	public function isCompatibleWith(EntityProperty $entityProperty) {

@@ -51,6 +51,7 @@ use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\sort\SortProp;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\ei\manage\entry\EiField;
+use n2n\util\StringUtils;
 
 class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiProp, SortableEiProp, 
 		QuickSearchableEiProp {
@@ -202,7 +203,7 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 	}
 	
 	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
-		return $this->read($eiu);
+		return StringUtils::strOf($eiu->object()->readNativValue($this));
 	}
 	
 	public function setAssociatedGuiFieldPathMap(array $associatedGuiFieldPathMap) {

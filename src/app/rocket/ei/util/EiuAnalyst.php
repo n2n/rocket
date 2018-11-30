@@ -616,7 +616,7 @@ class EiuAnalyst {
 		if (null !== ($eiEntry = $eiuEntry->getEiEntry(false))) {
 			$this->assignEiEntry($eiEntry);
 		} else {
-			$this->assignEiObject($eiuEntry->getEiObject());
+			$this->assignEiObject($eiuEntry->object()->getEiObject());
 		}
 		
 		$this->eiuEntry = $eiuEntry;
@@ -1115,7 +1115,7 @@ class EiuAnalyst {
 		if ($eiObjectArg instanceof EiuEntryGui && null !== ($eiuEntry = $eiObjectArg->getEiuEntry(false))) {
 			$eiEntry = $eiuEntry->getEiEntry(false);
 			$eiEntryGui = $eiObjectArg->getEiEntryGui();
-			return $eiuEntry->getEiObject();
+			return $eiuEntry->object()->getEiObject();
 		}
 		
 		if ($eiObjectArg instanceof Eiu && null !== ($eiuEntry = $eiObjectArg->entry(false))) {
