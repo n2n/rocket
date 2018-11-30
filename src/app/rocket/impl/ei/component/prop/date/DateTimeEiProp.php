@@ -40,7 +40,6 @@ use rocket\ei\manage\draft\stmt\PersistDraftStmtBuilder;
 use rocket\ei\manage\draft\stmt\FetchDraftStmtBuilder;
 use rocket\ei\manage\draft\SimpleDraftValueSelection;
 use n2n\persistence\meta\OrmDialectConfig;
-use rocket\ei\manage\EiObject;
 use rocket\ei\manage\draft\DraftManager;
 use rocket\ei\manage\draft\DraftValueSelection;
 use rocket\ei\manage\draft\PersistDraftAction;
