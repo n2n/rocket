@@ -145,9 +145,9 @@ class SpecRawer {
 			$rawData[RawDef::EI_DEF_DEFAULT_SORT_KEY] = $defaultSortDirection->toAttrs();
 		}
 		
-		$rawData[RawDef::EI_DEF_FIELDS_KEY] = array();
+		$rawData[RawDef::EI_DEF_PROPS_KEY] = array();
 		foreach ($extraction->getEiPropExtractions() as $eiPropExtraction) {
-			$rawData[RawDef::EI_DEF_FIELDS_KEY][$eiPropExtraction->getId()] 
+			$rawData[RawDef::EI_DEF_PROPS_KEY][$eiPropExtraction->getId()] 
 					= $this->buildEiPropExtractionRawData($eiPropExtraction);
 		}
 	
