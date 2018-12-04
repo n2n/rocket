@@ -21,7 +21,6 @@
  */
 namespace rocket\ei\manage\critmod\sort;
 
-use n2n\reflection\ArgUtils;
 use rocket\ei\EiPropPath;
 use n2n\util\col\ArrayUtils;
 
