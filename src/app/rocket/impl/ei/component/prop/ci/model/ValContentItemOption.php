@@ -22,9 +22,9 @@
 namespace rocket\impl\ei\component\prop\ci\model;
 
 use n2n\web\dispatch\map\bind\BindingErrors;
-use n2n\l10n\MessageCode;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\web\dispatch\map\val\SimplePropertyValidator;
+use n2n\l10n\Message;
 
 class ValContentItemOption extends SimplePropertyValidator {
 	private $panelConfigs;
@@ -65,6 +65,6 @@ class ValContentItemOption extends SimplePropertyValidator {
 	private function checkTypeId($propertyExpression, $selectedTypeId, array $allowedContentItemIds, 
 			BindingErrors $be) {
 		if (in_array($selectedTypeId, $allowedContentItemIds)) return;
-		$be->addError($propertyExpression, new MessageCode('spec_field_contentitem_invalid_panel'));
+		$be->addError($propertyExpression, Message::createCodeArg('spec_field_contentitem_invalid_panel'));
 	}
 }

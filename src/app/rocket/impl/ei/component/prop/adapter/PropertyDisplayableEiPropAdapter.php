@@ -21,16 +21,15 @@
  */
 namespace rocket\impl\ei\component\prop\adapter;
 
-use rocket\ei\component\prop\field\Readable;
+use rocket\impl\ei\component\prop\adapter\entry\Readable;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\manage\entry\EiField;
 use rocket\ei\manage\gui\GuiProp;
-use rocket\ei\component\prop\field\SimpleEiField;
+use rocket\impl\ei\component\prop\adapter\entry\SimpleEiField;
 use n2n\l10n\N2nLocale;
 use n2n\util\ex\UnsupportedOperationException;
 use rocket\ei\component\prop\GuiEiProp;
 use rocket\ei\component\prop\FieldEiProp;
-use rocket\ei\manage\EiObject;
 use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\gui\DisplayDefinition;
@@ -40,8 +39,12 @@ use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\GuiField;
 use rocket\core\model\Rocket;
 use n2n\l10n\Lstr;
+use rocket\impl\ei\component\prop\adapter\gui\StatelessDisplayable;
+use rocket\impl\ei\component\prop\adapter\config\DisplaySettings;
+use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
+use rocket\impl\ei\component\prop\adapter\gui\StatelessDisplayElement;
 
-abstract class PropertyDisplayableEiPropAdapter extends ObjectPropertyEiPropAdapter implements StatelessDisplayable, 
+abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter implements StatelessDisplayable, 
 		FieldEiProp, GuiEiProp, GuiProp, Readable {
 	private $displaySettings;
 
@@ -81,41 +84,15 @@ abstract class PropertyDisplayableEiPropAdapter extends ObjectPropertyEiPropAdap
 		return true;
 	}
 	
-	public function buildEiField(Eiu $eiu) {
+	public function buildEiField(Eiu $eiu): ?EiField {
 		return new SimpleEiField($eiu->entry()->getEiObject(), 
 				$this->getObjectPropertyAccessProxy()->getConstraint()->getLenientCopy(), 
 				$this);
 	}
 	
-	public function buildEiFieldFork(EiObject $eiObject, EiField $eiField = null) {
-		return null;
-	}
 	
-// 	public function isEiEntryFilterable(): bool {
-// 		return false;
-// 	}
-	
-// 	public function createSecurityFilterProp(N2nContext $n2nContext): SecurityFilterProp {
-// 		throw new IllegalStateException('EiProp cannot provide an SecurityFilterProp: ' . $this);
-// 	}
-	
-// 	public function getTypeConstraint() {
-// 		$typeConstraint = $this->getPropertyAccessProxy()->getConstraint();
-// 		if ($typeConstraint === null) return null;
-// 		return $typeConstraint->getLenientCopy();
-// 	}
-	
-	public function read(EiObject $eiObject) {
-		if ($eiObject->isDraft()) {
-			return $eiObject->getDraft()->getDraftValueMap()->getValue($this);
-		}
-
-		$objectPropertyAccessProxy = $this->getObjectPropertyAccessProxy();
-		if ($objectPropertyAccessProxy === null) {
-			return null;
-		}
-
-		return $objectPropertyAccessProxy->getValue($eiObject->getEiEntityObj()->getEntityObj());
+	public function read(Eiu $eiu) {
+		return $eiu->entry()->readNativValue($this);
 	}
 	
 	public function buildGuiProp(Eiu $eiu): ?GuiProp {
@@ -140,7 +117,7 @@ abstract class PropertyDisplayableEiPropAdapter extends ObjectPropertyEiPropAdap
 			return null;
 		}
 		
-		return Rocket::createLstr($helpText, $this->eiMask->getModuleNamespace());
+		return Rocket::createLstr($helpText, $this->getEiMask()->getModuleNamespace());
 	}
 	
 	public function buildGuiField(Eiu $eiu): ?GuiField {
@@ -152,10 +129,10 @@ abstract class PropertyDisplayableEiPropAdapter extends ObjectPropertyEiPropAdap
 	}
 	
 	public function getOutputHtmlContainerAttrs(Eiu $eiu) {
-		$eiTypeExtension = $this->eiMask->isExtension() ? $this->eiMask->getExtension() : null;
-		return array('class' => 'rocket-ei-spec-' . $this->eiMask->getEiType()->getId()
+		$eiTypeExtension = $this->getEiMask()->isExtension() ? $this->getEiMask()->getExtension() : null;
+		return array('class' => 'rocket-ei-spec-' . $this->getEiMask()->getEiType()->getId()
 						. ($eiTypeExtension !== null ? ' rocket-ei-mask-' . $eiTypeExtension->getId() : '') 
-						. ' rocket-ei-field-' . $this->getId(), 
+						. ' rocket-ei-field-' . $this->getWrapper()->getEiPropPath(), 
 				'title' => $this->displaySettings->getHelpText());
 	}
 	
@@ -163,7 +140,7 @@ abstract class PropertyDisplayableEiPropAdapter extends ObjectPropertyEiPropAdap
 		return false;
 	}
 	
-	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): ?string {
+	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
 		throw new UnsupportedOperationException('EiProp ' . $this->id . ' not summarizable.');
 	}
 }

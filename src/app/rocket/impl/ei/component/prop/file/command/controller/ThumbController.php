@@ -89,7 +89,7 @@ class ThumbController extends ControllerAdapter {
 			$thumbModel->selectedStr = (string) $selected;
 		}
 		
-		$this->applyBreadcrumbs($eiuEntry->getEiObject());
+		$this->applyBreadcrumbs($eiuEntry->object()->getEiObject());
 				
 		$this->forward('..\view\thumb.html', 
 				array('thumbModel' => $thumbModel, 'cancelUrl' => $redirectUrl));

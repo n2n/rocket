@@ -32,7 +32,7 @@ use rocket\ei\manage\gui\GuiPropFork;
 use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\util\entry\EiuEntry;
 use rocket\ei\mask\EiMask;
-use rocket\ei\manage\gui\GuiIdPath;
+use rocket\ei\manage\gui\GuiFieldPath;
 use rocket\ei\manage\gui\EiGui;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\gui\EiGuiListener;
@@ -66,17 +66,19 @@ class GuiFactory {
 		$guiDefinition = new GuiDefinition($this->eiMask->getLabelLstr());
 		$guiDefinition->setIdentityStringPattern($this->eiMask->getIdentityStringPattern());
 		
-		foreach ($this->eiMask->getEiPropCollection() as $id => $eiProp) {
+		foreach ($this->eiMask->getEiPropCollection() as $eiPropPathStr => $eiProp) {
+			$eiPropPath = EiPropPath::create($eiPropPathStr);
+			
 			if (($eiProp instanceof GuiEiProp) && null !== ($guiProp = $eiProp->buildGuiProp($eiu))){
 				ArgUtils::valTypeReturn($guiProp, GuiProp::class, $eiProp, 'buildGuiProp');
 			
-				$guiDefinition->putLevelGuiProp($id, $guiProp, EiPropPath::from($eiProp));
+				$guiDefinition->putGuiProp($eiPropPath, $guiProp, EiPropPath::from($eiProp));
 			}
 			
 			if (($eiProp instanceof GuiEiPropFork) && null !== ($guiPropFork = $eiProp->buildGuiPropFork($eiu))){
 				ArgUtils::valTypeReturn($guiPropFork, GuiPropFork::class, $eiProp, 'buildGuiPropFork');
 				
-				$guiDefinition->putLevelGuiPropFork($id, $guiPropFork, EiPropPath::from($eiProp));
+				$guiDefinition->putGuiPropFork($eiPropPath, $guiPropFork);
 			}
 		}
 		
@@ -98,11 +100,11 @@ class GuiFactory {
 		$idPatternPart = null;
 		$namePatternPart = null;
 		
-		foreach ($guiDefinition->getStringRepresentableGuiProps() as $guiIdPathStr => $guiProp) {
-			if ($guiIdPathStr == $this->eiMask->getEiType()->getEntityModel()->getIdDef()->getPropertyName()) {
-				$idPatternPart = SummarizedStringBuilder::createPlaceholder($guiIdPathStr);
+		foreach ($guiDefinition->getStringRepresentableGuiProps() as $eiPropPathStr => $guiProp) {
+			if ($eiPropPathStr == $this->eiMask->getEiType()->getEntityModel()->getIdDef()->getPropertyName()) {
+				$idPatternPart = SummarizedStringBuilder::createPlaceholder($eiPropPathStr);
 			} else {
-				$namePatternPart = SummarizedStringBuilder::createPlaceholder($guiIdPathStr);
+				$namePatternPart = SummarizedStringBuilder::createPlaceholder($eiPropPathStr);
 			}
 			
 			if ($namePatternPart !== null) break;
@@ -186,24 +188,22 @@ class GuiFactory {
 		return $this->eiMask->getDisplayScheme()->getEntryControlOrder()->sort($controls);
 	}
 	
-	
-	
 	/**
 	 * @param EiMask $eiMask
 	 * @param EiuEntry $eiuEntry
 	 * @param int $viewMode
-	 * @param array $guiIdPaths
+	 * @param array $eiPropPaths
 	 * @return EiEntryGui
 	 */
-	public static function createEiEntryGui(EiGui $eiGui, EiEntry $eiEntry, array $guiIdPaths, int $treeLevel = null) {
-		ArgUtils::valArrayLike($guiIdPaths, GuiIdPath::class);
+	public static function createEiEntryGui(EiGui $eiGui, EiEntry $eiEntry, array $guiFieldPaths, int $treeLevel = null) {
+		ArgUtils::valArrayLike($guiFieldPaths, GuiFieldPath::class);
 		
 		$eiEntryGui = new EiEntryGui($eiGui, $eiEntry, $treeLevel);
 		
 		$guiFieldAssembler = new EiEntryGuiAssembler($eiEntryGui);
 				
-		foreach ($guiIdPaths as $guiIdPath) {
-			$guiFieldAssembler->assembleGuiField($guiIdPath);
+		foreach ($guiFieldPaths as $eiPropPath) {
+			$guiFieldAssembler->assembleGuiField($eiPropPath);
 		}
 		
 		$guiFieldAssembler->finalize();

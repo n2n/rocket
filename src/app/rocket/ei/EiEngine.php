@@ -43,7 +43,6 @@ use rocket\ei\manage\generic\ScalarEiProperty;
 use rocket\ei\manage\generic\GenericEiProperty;
 use rocket\ei\manage\generic\GenericEiDefinition;
 use rocket\ei\manage\critmod\quick\QuickSearchDefinition;
-use rocket\ei\manage\gui\ui\DisplayStructure;
 use rocket\ei\manage\ManageState;
 use rocket\ei\component\EiFrameFactory;
 use n2n\web\http\controller\ControllerContext;
@@ -103,7 +102,7 @@ class EiEngine {
 	/**
 	 * @return \rocket\ei\component\EiFrameFactory
 	 */
-	public function getEiFrameFactory() {
+	private function getEiFrameFactory() {
 		if ($this->eiFrameFactory === null) {
 			$this->eiFrameFactory = new EiFrameFactory($this);
 		}
@@ -184,12 +183,34 @@ class EiEngine {
 	 * @param EiEntry $copyFrom
 	 * @return EiEntry
 	 */
-	public function createFramedEiEntry(EiFrame $eiFrame, EiObject $eiObject, ?EiEntry $copyFrom, array $eiEntryConstraints): EiEntry {
+	public function createFramedEiEntry(EiFrame $eiFrame, EiObject $eiObject, ?EiEntry $copyFrom, array $eiEntryConstraints) {
 		$mappingFactory = new EiEntryFactory($this->eiMask, $this->eiMask->getEiPropCollection(), 
 				$this->eiMask->getEiModificatorCollection());
 		return $mappingFactory->createEiEntry($eiFrame, $eiObject, $copyFrom, $eiEntryConstraints);
 	}
 	
+	/**
+	 * @param EiFrame $eiFrame
+	 * @param EiEntry $eiEntry
+	 * @param EiPropPath $forkEiPropPath
+	 * @param object $object
+	 * @param EiEntry $copyFrom
+	 * @return \rocket\ei\manage\entry\EiFieldMap
+	 */
+	public function createFramedEiFieldMap(EiFrame $eiFrame, EiEntry $eiEntry, EiPropPath $forkEiPropPath, object $object, 
+			?EiEntry $copyFrom) {
+		$mappingFactory = new EiEntryFactory($this->eiMask, $this->eiMask->getEiPropCollection(),
+				$this->eiMask->getEiModificatorCollection());
+		
+		return $mappingFactory->createEiFieldMap($eiFrame, $eiEntry, $forkEiPropPath, $object, $copyFrom);
+	}
+	
+	/**
+	 * @param EiFrame $eiFrame
+	 * @param EiEntry $from
+	 * @param EiEntry $to
+	 * @param array $eiPropPaths
+	 */
 	public function copyValues(EiFrame $eiFrame, EiEntry $from, EiEntry $to, array $eiPropPaths = null) {
 		ArgUtils::valArray($eiPropPaths, EiPropPath::class, true, 'eiPropPaths');
 		$mappingFactory = new EiEntryFactory($this->eiMask, $this->eiMask->getEiPropCollection(), 
@@ -202,15 +223,15 @@ class EiEngine {
 		return $guiFactory->createGuiDefinition($n2nContext, $guiDefinition);
 	}
 	
-	public function createEiGui(int $viewMode, DisplayStructure $displayStructure) {
-		$eiMask = $this->eiMask;
-		if ($this->eiType === null) {
-			$eiMask = $this->eiType->getEiTypeExtensionCollection()->getOrCreateDefault();
-		}
+// 	public function createEiGui(int $viewMode, DisplayStructure $displayStructure) {
+// 		$eiMask = $this->eiMask;
+// 		if ($this->eiType === null) {
+// 			$eiMask = $this->eiType->getEiTypeExtensionCollection()->getOrCreateDefault();
+// 		}
 		
-		$guiFactory = new GuiFactory($this->eiMask);
-		return $guiFactory->createEiEntryGui($eiMask, $eiuEntry, $viewMode, $guiIdPaths);
-	}
+// 		$guiFactory = new GuiFactory($this->eiMask);
+// 		return $guiFactory->createEiEntryGui($eiMask, $eiuEntry, $viewMode, $eiPropPaths);
+// 	}
 	
 	public function getDraftDefinition(): DraftDefinition {
 		if ($this->draftDefinition !== null) {

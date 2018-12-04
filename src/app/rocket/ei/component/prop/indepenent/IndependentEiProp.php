@@ -21,11 +21,16 @@
  */
 namespace rocket\ei\component\prop\indepenent;
 
-use rocket\ei\component\IndependentEiComponent;
 use rocket\ei\component\prop\EiProp;
 use n2n\l10n\Lstr;
 
-interface IndependentEiProp extends EiProp, IndependentEiComponent {
+interface IndependentEiProp extends EiProp {
+	
+	/**
+	 * 
+	 */
+	public function __construct();
+	
 	/**
 	 * @param string $label
 	 */

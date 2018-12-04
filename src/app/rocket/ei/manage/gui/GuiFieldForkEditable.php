@@ -4,7 +4,7 @@ namespace rocket\ei\manage\gui;
 
 use n2n\web\dispatch\mag\Mag;
 
-interface GuiFieldForkEditable extends Savable {
+interface GuiFieldForkEditable {
 	
 	/**
 	 * @return bool
@@ -21,4 +21,6 @@ interface GuiFieldForkEditable extends Savable {
 	 * @return MagAssembly[]
 	 */
 	public function getInheritForkMagAssemblies(): array;
+	
+	public function save();
 }

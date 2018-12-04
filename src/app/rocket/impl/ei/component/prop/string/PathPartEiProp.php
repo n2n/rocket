@@ -28,7 +28,6 @@ use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\l10n\DynamicTextCollection;
 use rocket\impl\ei\component\prop\string\conf\PathPartEiPropConfigurator;
-use rocket\ei\manage\EiObject;
 use n2n\web\dispatch\mag\Mag;
 use n2n\reflection\ArgUtils;
 use rocket\ei\EiPropPath;
@@ -51,13 +50,13 @@ class PathPartEiProp extends AlphanumericEiProp  {
 	private $urlEiCommand;
 	
 	public function __construct() {
-		$this->getDisplaySettings()->setDefaultDisplayedViewModes(ViewMode::BULKY_ADD | ViewMode::COMPACT_READ);
+		$this->getDisplaySettings()->setDefaultDisplayedViewModes(ViewMode::BULKY_EDIT | ViewMode::COMPACT_READ);
 		$this->entityPropertyRequired = true;
 		$this->getStandardEditDefinition()->setMandatory(false);
 	}
 	
 	/* (non-PHPdoc)
-	 * @see \rocket\impl\ei\component\prop\PropertyEditableEiPropAdapter::createEiConfigurator()
+	 * @see \rocket\impl\ei\component\prop\EditablePropertyEiPropAdapter::createEiConfigurator()
 	 */
 	public function createEiPropConfigurator(): EiPropConfigurator {
 		return new PathPartEiPropConfigurator($this);
@@ -153,7 +152,7 @@ class PathPartEiProp extends AlphanumericEiProp  {
 				$this->isMandatory($eiu), $this->getMaxlength(), false, null, $attrs);
 	}
 	
-	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): string {
-		return $this->read($eiObject);
+	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): string {
+		return $eiu->object()->readNativValue($this);
 	}
 }

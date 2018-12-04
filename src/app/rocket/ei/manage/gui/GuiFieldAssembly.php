@@ -1,22 +1,18 @@
 <?php
 namespace rocket\ei\manage\gui;
 
-use rocket\ei\manage\entry\EiFieldWrapper;
-
 class GuiFieldAssembly {
 	private $guiProp;
-	private $displayable;
-	private $eiFieldWrapper;
+	private $guiField;
 	private $magAssembly;
-	private $savable;
+	private $editable;
 	
-	public function __construct(GuiProp $guiProp, Displayable $displayable, EiFieldWrapper $eiFieldWrapper = null,
-			MagAssembly $magAssembly = null, Savable $savable = null) {
+	public function __construct(GuiProp $guiProp, GuiField $guiField, 
+			MagAssembly $magAssembly = null, GuiFieldEditable $editable = null) {
 		$this->guiProp = $guiProp;
-		$this->displayable = $displayable;
-		$this->eiFieldWrapper = $eiFieldWrapper;
+		$this->guiField = $guiField;
 		$this->magAssembly = $magAssembly;
-		$this->savable = $savable;
+		$this->editable = $editable;
 	}
 	
 	/**
@@ -27,17 +23,10 @@ class GuiFieldAssembly {
 	}
 	
 	/**
-	 * @return Displayable
+	 * @return GuiField
 	 */
-	public function getDisplayable(): Displayable {
-		return $this->displayable;
-	}
-	
-	/**
-	 * @return \rocket\ei\manage\entry\EiFieldWrapper|null
-	 */
-	public function getEiFieldWrapper() {
-		return $this->eiFieldWrapper;
+	public function getGuiField() {
+		return $this->guiField;
 	}
 	
 	/**
@@ -48,9 +37,9 @@ class GuiFieldAssembly {
 	}
 	
 	/**
-	 * @return Savable|null
+	 * @return GuiFieldEditable|null
 	 */
-	public function getSavable() {
-		return $this->savable;
+	public function getEditable() {
+		return $this->editable;
 	}
 }

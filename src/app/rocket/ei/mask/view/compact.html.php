@@ -62,6 +62,7 @@
 						<?php $eiuHtml->fieldContent() ?>
 					<?php $eiuHtml->fieldClose() ?>
 				<?php endforeach ?>
+				
 				<?php if ($entryControlsRendered): ?>
 					<?php $view->out('<td class="rocket-table-commands">') ?>
 						<?php $eiuHtml->entryCommands(true, 6) ?>

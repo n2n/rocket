@@ -21,60 +21,14 @@
  */
 namespace rocket\impl\ei\component;
 
-use n2n\reflection\ReflectionUtils;
 use rocket\ei\component\EiComponent;
-use n2n\util\ex\IllegalStateException;
-use rocket\ei\mask\EiMask;
 
 abstract class EiComponentAdapter implements EiComponent {
-	protected $eiMask;
-	protected $id;
-	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\EiComponent::getEiMask()
+	 * @see \rocket\ei\component\EiComponent::getIdBase()
 	 */
-	public function getEiMask(): EiMask {
-		if ($this->eiMask !== null) {
-			return $this->eiMask;
-		}
-		
-		throw new IllegalStateException(get_class($this) . ' is not assigned to an EiMask.');
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\component\EiComponent::setEiMask()
-	 */
-	public function setEiMask(EiMask $eiMask) {
-		$this->eiMask = $eiMask;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\component\EiComponent::getId()
-	 */
-	public function getId(): ?string {
-		return $this->id;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\component\EiComponent::setId()
-	 */
-	public function setId(string $id) {
-		$this->id = $id;
-	}
-	
-	public function getIdBase() {
-		return ReflectionUtils::buildTypeAcronym(get_class($this));
-	}
-	
-	public function equals($obj) {
-		return $obj instanceof EiComponent && $this->id == $obj->getId();
-	}
-	
-	public function __toString(): string {
-		return (new \ReflectionClass($this))->getShortName() . ' (id: ' . $this->id . ')';
+	public function getIdBase(): ?string {
+		return null;
 	}
 }

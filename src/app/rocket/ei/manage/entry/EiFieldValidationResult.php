@@ -25,7 +25,7 @@ use n2n\l10n\Message;
 use rocket\ei\EiPropPath;
 use n2n\util\ex\IllegalStateException;
 
-class EiFieldValidationResult {
+class EiFieldValidationResult implements ValidationResult {
 	private $eiPropPath;
 	private $errorMessages = array();
 	/**
@@ -93,40 +93,40 @@ class EiFieldValidationResult {
 	// 		return $this->errorMessages;
 	// 	}
 
-	public function processMessage(bool $checkrecursive = true) {
-		foreach ($this->errorMessages as $errorMessage) {
-			if ($errorMessage->isProcessed()) continue;
+// 	public function processMessage(bool $checkrecursive = true) {
+// 		foreach ($this->errorMessages as $errorMessage) {
+// 			if ($errorMessage->isProcessed()) continue;
 			
-			$errorMessage->setProcessed(true);
-			return $errorMessage;
-		}
+// 			$errorMessage->setProcessed(true);
+// 			return $errorMessage;
+// 		}
 		
-		if (!$checkrecursive) return null;
+// 		if (!$checkrecursive) return null;
 		
-		foreach ($this->subEiEntryValidationResults as $subValidationResult) {
-			if (null !== ($message = $subValidationResult->processMessage(true))) {
-				return $message;
-			}
-		}
+// 		foreach ($this->subEiEntryValidationResults as $subValidationResult) {
+// 			if (null !== ($message = $subValidationResult->processMessage(true))) {
+// 				return $message;
+// 			}
+// 		}
 		
-		foreach ($this->subEiFieldValidationResults as $subValidationResult) {
-			if (null !== ($message = $subValidationResult->processMessage(true))) {
-				return $message;
-			}
-		}
+// 		foreach ($this->subEiFieldValidationResults as $subValidationResult) {
+// 			if (null !== ($message = $subValidationResult->processMessage(true))) {
+// 				return $message;
+// 			}
+// 		}
 		
-		return null;
-	}
-	
-// 	public function addSubEiFieldValidationResult(EiFieldValidationResult $subValidationResult) {
-// 		$this->subEiFieldValidationResults[] = $subValidationResult;
+// 		return null;
 // 	}
+	
+	public function addSubEiFieldValidationResult(EiFieldValidationResult $subValidationResult) {
+		$this->subEiFieldValidationResults[] = $subValidationResult;
+	}
 
 	public function addSubEiEntryValidationResult(EiEntryValidationResult $subValidationResult) {
 		$this->subEiEntryValidationResults[] = $subValidationResult;
 	}
 
-	public function getMessages(bool $recursive = true) {
+	public function getMessages(bool $recursive = true): array {
 		$messages = $this->errorMessages;
 		
 		if ($recursive) {

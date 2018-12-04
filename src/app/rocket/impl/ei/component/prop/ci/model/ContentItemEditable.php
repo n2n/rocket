@@ -88,7 +88,7 @@ class ContentItemEditable implements GuiFieldEditable {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\Savable::save()
+	 * @see \rocket\ei\manage\gui\GuiFieldEditable::save()
 	 */
 	public function save() {
 		IllegalStateException::assertTrue($this->contentItemMag !== null);

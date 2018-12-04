@@ -68,7 +68,7 @@ class EmbeddedOneToManyGuiField implements GuiField {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\Displayable::getDisplayItemType()
+	 * @see \rocket\ei\manage\gui\GuiField::getDisplayItemType()
 	 */
 	public function getDisplayItemType(): ?string {
 		return DisplayItem::TYPE_SIMPLE_GROUP;
@@ -76,7 +76,7 @@ class EmbeddedOneToManyGuiField implements GuiField {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\Displayable::getUiOutputLabel()
+	 * @see \rocket\ei\manage\gui\GuiField::getUiOutputLabel()
 	 */
 	public function getUiOutputLabel(N2nLocale $n2nLocale): string {
 		return $this->labelLstr->t($n2nLocale);
@@ -84,7 +84,7 @@ class EmbeddedOneToManyGuiField implements GuiField {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\Displayable::getOutputHtmlContainerAttrs()
+	 * @see \rocket\ei\manage\gui\GuiField::getOutputHtmlContainerAttrs()
 	 */
 	public function getOutputHtmlContainerAttrs(): array {
 		return array();
@@ -92,7 +92,7 @@ class EmbeddedOneToManyGuiField implements GuiField {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\Displayable::createOutputUiComponent()
+	 * @see \rocket\ei\manage\gui\GuiField::createOutputUiComponent()
 	 */
 	public function createOutputUiComponent(HtmlView $view) {
 		if ($this->compact) {

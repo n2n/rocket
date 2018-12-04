@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\file\conf;
 
-use rocket\impl\ei\component\prop\adapter\AdaptableEiPropConfigurator;
+use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\ei\component\EiSetup;
 use rocket\impl\ei\component\prop\file\FileEiProp;
 use n2n\core\container\N2nContext;

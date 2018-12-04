@@ -47,16 +47,24 @@ abstract class PreviewControllerAdapter extends ControllerAdapter implements Pre
 		throw new IllegalStateException('No PreviewModel assigned.');
 	}
 	
+	/**
+	 * @return string
+	 * @throws IllegalStateException
+	 */
 	public function getPreviewType() {
 		return $this->getPreviewModel()->getPreviewType();
 	}
 	
-	public function getEiObject() {
-		return $this->getPreviewModel()->getEiObject();
+	/**
+	 * @return \rocket\ei\util\Eiu
+	 * @throws IllegalStateException
+	 */
+	public function eiu() {
+		return $this->getPreviewModel()->getEiu();
 	}
-		
+	
 	public function getEntityObj() {
-		return $this->getPreviewModel()->getEntityObj();
+		return $this->eiu()->getEntityObj();
 	}
 	
 	public function getPreviewTypeOptions(Eiu $eiu): array {

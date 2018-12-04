@@ -33,15 +33,17 @@ use rocket\ei\component\prop\FieldEiProp;
 use rocket\ei\manage\entry\EiField;
 use rocket\ei\util\Eiu;
 use rocket\ei\mask\EiMask;
+use rocket\ei\manage\entry\EiFieldMap;
 
 class EiEntryFactory {
 	private $eiMask;
 	private $eiPropCollection;
 	private $eiModificatorCollection;
 	
-	public function __construct(EiMask $eiMask, EiPropCollection $fieldCollection, EiModificatorCollection $eiModificatorCollection) {
+	public function __construct(EiMask $eiMask, EiPropCollection $eiPropCollection, 
+			EiModificatorCollection $eiModificatorCollection) {
 		$this->eiMask = $eiMask;
-		$this->eiPropCollection = $fieldCollection;
+		$this->eiPropCollection = $eiPropCollection;
 		$this->eiModificatorCollection = $eiModificatorCollection;
 	}
 
@@ -77,9 +79,11 @@ class EiEntryFactory {
 		$eiEntry = new EiEntry($eiObject, $this->eiMask);
 		$eiEntry->getConstraintSet()->addAll($eiEntryConstraints);
 		
-		$eiu = new Eiu($eiFrame, $eiEntry);
+		$eiFieldMap = $eiEntry->getEiFieldMap();
 		
-		$this->assembleMappingProfile($eiu, $eiEntry, $copyFrom);
+		$eiu = new Eiu($eiFrame, $eiEntry, $eiFieldMap);
+		
+		$this->assembleMappingProfile($eiu, $eiFieldMap, $eiEntry, $copyFrom);
 	
 		foreach ($this->eiModificatorCollection as $constraint) {
 			$constraint->setupEiEntry($eiu);
@@ -88,12 +92,36 @@ class EiEntryFactory {
 		return $eiEntry;
 	}
 	
-	private function assembleMappingProfile(Eiu $eiu, EiEntry $eiEntry, EiEntry $fromEiEntry = null) {
-		$eiObject = $eiEntry->getEiObject();
-		foreach ($this->eiPropCollection as $id => $eiProp) {
+	/**
+	 * @param EiFrame $eiFrame
+	 * @param EiEntry $eiEntry
+	 * @param EiPropPath $eiPropPath
+	 * @param object $object
+	 * @param EiEntry $copyFrom
+	 * @return \rocket\ei\manage\entry\EiFieldMap
+	 */
+	public function createEiFieldMap(EiFrame $eiFrame, EiEntry $eiEntry, EiPropPath $forkEiPropPath, object $object, ?EiEntry $copyFrom) {
+		$eiFieldMap = new EiFieldMap($eiEntry, $forkEiPropPath, $object);
+		
+		$eiu = new Eiu($eiFrame, $eiEntry, $eiFieldMap);
+		
+		$this->assembleMappingProfile($eiu, $eiFieldMap, $eiEntry, $copyFrom);
+		
+		foreach ($this->eiModificatorCollection as $constraint) {
+			$constraint->setupEiEntry($eiu);
+		}
+		
+		return $eiFieldMap;
+	}
+	
+	private function assembleMappingProfile(Eiu $eiu, EiFieldMap $eiFieldMap, EiEntry $eiEntry, EiEntry $fromEiEntry = null) {
+// 		$eiObject = $eiEntry->getEiObject();
+		$forkEiPropPath = $eiFieldMap->getForkEiPropPath();
+		
+		foreach ($this->eiPropCollection->getForkedByPath($forkEiPropPath) as $id => $eiProp) {
 			if (!($eiProp instanceof FieldEiProp)) continue;
 						
-			$eiPropPath = new EiPropPath(array($id));
+			$eiPropPath = $forkEiPropPath->ext($id);
 			
 			$eiField = null;
 			if ($fromEiEntry !== null && $fromEiEntry->containsEiField($eiPropPath)) {
@@ -106,9 +134,9 @@ class EiEntryFactory {
 				$eiField = $eiProp->buildEiField(new Eiu($eiu, $eiProp));
 				ArgUtils::valTypeReturn($eiField, EiField::class, $eiProp, 'buildEiField', true);
 			}
-
-			if ($eiField !== null) {
-				$eiEntry->putEiField($eiPropPath, $eiField);
+			
+			if ($eiField !== null) { 
+				$eiFieldMap->put($id, $eiField);
 			}
 				
 // 			$eiFieldFork = null;
@@ -126,6 +154,7 @@ class EiEntryFactory {
 // 			}
 		}
 	}
+	
 	
 	public function copyValues(EiFrame $eiFrame, EiEntry $fromEiEntry, EiEntry $toEiEntry,
 			array $eiPropPaths = null) {
@@ -182,7 +211,7 @@ class EiEntryFactory {
 				continue;
 			}
 			
-			$eiProp = $this->eiPropCollection->getById($eiPropPath->getFirstId());
+			$eiProp = $this->eiPropCollection->getByPath($eiPropPath);
 			if (!($eiProp instanceof FieldEiProp)) continue;
 			
 			$fromEiField = $fromEiEntry->getEiField($eiPropPath);

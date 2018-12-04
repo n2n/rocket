@@ -43,7 +43,6 @@ class EiFrameFactory {
 		$eiFrame->setControllerContext($controllerContext);
 		$eiFrame->setParent($parentEiFrame);
 		
-		
 		$eiMask = $this->eiEngine->getEiMask();
 		
 		if (null !== ($filterSettingGroup = $eiMask->getFilterSettingGroup())) {
@@ -72,17 +71,4 @@ class EiFrameFactory {
 		
 		return $eiFrame;
 	}
-	
-	
-	/**
-	 * @todo move to EiEngine!!
-	 * @param EiFrame $eiFrame
-	 */
-	public function setupEiFrame(EiFrame $eiFrame) {
-		
-		
-		
-	}
-	
-	
 }

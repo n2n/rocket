@@ -12,7 +12,7 @@ use rocket\ei\manage\gui\ui\DisplayItem;
 	$mappingForm = $view->getParam('mappingForm');
 	$view->assert($mappingForm instanceof MappingForm);
 	
-	$eiuEntry = $mappingForm->getEiuEntryForm()->getChosenEiuEntryTypeForm()->getEiuEntryGui()->getEiuEntry();
+	$eiuEntry = $mappingForm->getEiuEntryForm()->getChosenEiuEntryTypeForm()->getEiuEntryGui()->entry();
 	
 	$grouped = $view->getParam('grouped', false, true);
 	$summaryRequired = $view->getParam('summaryRequired');
@@ -54,8 +54,8 @@ use rocket\ei\manage\gui\ui\DisplayItem;
 						<span><?php $html->out($eiuEntry->getGenericLabel()) ?></span>
 					</div>
 					<div class="rocket-impl-content">
-						<?php foreach ($eiuEntryGui->getGuiIdPaths() as $guiIdPath): ?>
-							<?php $eiuHtml->fieldOpen('div', DisplayItem::create($guiIdPath, DisplayItem::TYPE_ITEM), null, false, false) ?>
+						<?php foreach ($eiuEntryGui->getGuiFieldPaths() as $eiPropPath): ?>
+							<?php $eiuHtml->fieldOpen('div', DisplayItem::create($eiPropPath, DisplayItem::TYPE_ITEM), null, false, false) ?>
 								<?php $eiuHtml->fieldContent() ?>
 							<?php $eiuHtml->fieldClose() ?>
 						<?php endforeach ?>

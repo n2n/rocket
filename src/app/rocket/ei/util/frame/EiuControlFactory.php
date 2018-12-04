@@ -7,6 +7,7 @@ use n2n\util\uri\Url;
 use rocket\ei\manage\control\JhtmlControl;
 use rocket\ei\manage\control\GroupControl;
 use rocket\ei\manage\control\DeactivatedControl;
+use rocket\ei\EiCommandPath;
 
 class EiuControlFactory {
 	private $eiuFrame;
@@ -26,7 +27,7 @@ class EiuControlFactory {
 	public function createJhtml(ControlButton $controlButton, $urlExt = null) {
 		$url = $this->eiuFrame->getHttpContext()
 				->getControllerContextPath($this->eiuFrame->getEiFrame()->getControllerContext())
-				->ext($this->eiCommand->getId())->toUrl()->ext($urlExt);
+				->ext((string) EiCommandPath::from($this->eiCommand))->toUrl()->ext($urlExt);
 		return new JhtmlControl($url, $controlButton);
 	}
 	

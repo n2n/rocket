@@ -31,7 +31,7 @@ use rocket\ei\component\EiSetup;
 use n2n\reflection\property\ConstraintsConflictException;
 use n2n\reflection\ArgUtils;
 use n2n\reflection\property\AccessProxy;
-use rocket\impl\ei\component\prop\adapter\DraftableEiPropAdapter;
+use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
 use rocket\ei\util\Eiu;
 use n2n\impl\web\dispatch\mag\model\MagCollectionArrayMag;
 use n2n\impl\web\dispatch\mag\model\NumericMag;
@@ -39,7 +39,7 @@ use n2n\web\dispatch\mag\Mag;
 use n2n\impl\web\dispatch\mag\model\MultiSelectMag;
 use rocket\ei\EiPropPath;
 
-class MultiSelectEiProp extends DraftableEiPropAdapter {
+class MultiSelectEiProp extends DraftablePropertyEiPropAdapter {
 	const OPTION_OPTIONS = 'options';
 	const OPTION_OPTIONS_LABEL = 'label';
 	const OPTION_OPTIONS_VALUE = 'value';
@@ -128,7 +128,7 @@ class MultiSelectEiProp extends DraftableEiPropAdapter {
 	}
 
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\manage\gui\Displayable::createOutputUiComponent()
+	 * @see \rocket\ei\manage\gui\GuiField::createOutputUiComponent()
 	 */
 	public function createOutputUiComponent(HtmlView $view,
 			Eiu $eiu) {

@@ -23,7 +23,7 @@ namespace rocket\impl\ei\component\prop\bool\conf;
 
 use rocket\ei\component\EiSetup;
 use n2n\util\ex\IllegalStateException;
-use rocket\impl\ei\component\prop\adapter\AdaptableEiPropConfigurator;
+use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\impl\ei\component\prop\bool\OnlineEiProp;
 use rocket\impl\ei\component\prop\bool\command\OnlineEiCommand;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
@@ -37,9 +37,10 @@ class OnlineEiPropConfigurator extends AdaptableEiPropConfigurator {
 	public function __construct(OnlineEiProp $onlineEiProp) {
 		parent::__construct($onlineEiProp);
 
+		$this->autoRegister($onlineEiProp);
+		
 		$this->addMandatory = false;
 		$this->addConstant = false;
-		$this->autoRegister($onlineEiProp);
 	}
 	
 	public function testCompatibility(PropertyAssignation $propertyAssignation): int {

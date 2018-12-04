@@ -28,12 +28,16 @@ use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\security\privilege\EiPropPrivilege;
 use rocket\ei\manage\gui\GuiField;
+use rocket\impl\ei\component\prop\adapter\gui\StatelessEditable;
+use rocket\impl\ei\component\prop\adapter\config\StandardEditDefinition;
+use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
+use rocket\impl\ei\component\prop\adapter\gui\StatelessEditElement;
 
 abstract class EditableEiPropAdapter extends DisplayableEiPropAdapter implements StatelessEditable, PrivilegedEiProp {
 	protected $standardEditDefinition;
 
 	/**
-	 * @return \rocket\impl\ei\component\prop\adapter\StandardEditDefinition
+	 * @return \rocket\impl\ei\component\prop\adapter\config\StandardEditDefinition
 	 */
 	public function getStandardEditDefinition() {
 		if ($this->standardEditDefinition === null) {

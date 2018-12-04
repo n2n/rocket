@@ -53,8 +53,12 @@ class DraftDefinition {
 		return $this->entityModel;
 	}
 
-	public function putDraftProperty($id, DraftProperty $draftProperty) {
-		return $this->draftProperties[$id] = $draftProperty;
+	public function putDraftProperty(EiPropPath $eiPropPath, DraftProperty $draftProperty) {
+		return $this->draftProperties[(string) $eiPropPath] = $draftProperty;
+	}
+	
+	public function containsEiPropPath(EiPropPath $eiPropPath) {
+		return isset($this->draftProperties[(string) $eiPropPath]);
 	}
 	
 	public function getDraftProperties() {

@@ -35,7 +35,6 @@ use n2n\l10n\N2nLocale;
 use n2n\reflection\ArgUtils;
 use rocket\ei\manage\preview\model\PreviewModel;
 use n2n\util\ex\NotYetImplementedException;
-use n2n\l10n\Lstr;
 use n2n\core\container\N2nContext;
 use rocket\ei\EiCommandPath;
 use n2n\web\dispatch\map\PropertyPath;
@@ -68,11 +67,13 @@ use rocket\ei\manage\entry\EiEntryManageException;
 use rocket\ei\util\entry\form\EiuEntryForm;
 use rocket\ei\util\entry\form\EiuEntryTypeForm;
 use rocket\ei\util\gui\EiuEntryGui;
-use rocket\ei\util\Eiu;
 use rocket\ei\util\gui\EiuGui;
 use rocket\ei\manage\frame\CriteriaConstraint;
 use rocket\ei\manage\frame\Boundry;
 use rocket\ei\manage\entry\EiEntryConstraint;
+use rocket\ei\EiPropPath;
+use rocket\ei\util\entry\EiuFieldMap;
+use rocket\ei\util\entry\EiuObject;
 
 class EiuFrame {
 	private $eiFrame;
@@ -189,14 +190,19 @@ class EiuFrame {
 	}
 	
 	/**
-	 * @param mixed $eiObjectObj
+	 * @param mixed $eiObjectArg
 	 * @throws EiuPerimeterException
 	 * @return \rocket\ei\util\entry\EiuEntry
 	 */
-	public function entry($eiObjectObj) {
+	public function entry(object $eiObjectArg) {
+		if ($eiObjectArg instanceof EiuEntry) {
+			return $eiObjectArg;
+		}
+		
 		$eiEntry = null;
-		$eiObject = EiuAnalyst::determineEiObject($eiObjectObj, $eiEntry);
-		return new EiuEntry($eiObject, $eiEntry, $this, $this->eiuAnalyst);
+		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectArg, 'eiObjectObj', 
+				$this->eiFrame->getContextEiEngine()->getEiMask()->getEiType(), true, $eiEntry);
+		return new EiuEntry($eiEntry, new EiuObject($eiObject, $this->eiuAnalyst), null, $this->eiuAnalyst);
 	}
 	
 	/**
@@ -205,9 +211,27 @@ class EiuFrame {
 	 * @return \rocket\ei\util\entry\EiuEntry
 	 */
 	public function newEntry(bool $draft = false, $eiTypeArg = null) {
-		return new EiuEntry($this->createNewEiObject($draft, 
-				EiuAnalyst::buildEiTypeFromEiArg($eiTypeArg, 'eiTypeArg', false)), null, $this);
+		$eiuObject = new EiuObject(
+				$this->createNewEiObject($draft, EiuAnalyst::buildEiTypeFromEiArg($eiTypeArg, 'eiTypeArg', false)),
+				$this->eiuAnalyst);
+		return new EiuEntry(null, $eiuObject, null, $this->eiuAnalyst);
 	}
+	
+	
+	public function newFieldMap($eiEntryArg, $forkEiPropPath, object $object, $copyFromEiEntryArg = null) {
+		$eiEntry = EiuAnalyst::buildEiEntryFromEiArg($eiEntryArg);
+		$copyFrom = null;
+		
+		if ($copyFromEiEntryArg !== null) {
+			$copyFrom = EiuAnalyst::buildEiEntryFromEiArg($eiEntryArg);
+		}
+		
+		$eiFieldMap = $eiEntry->getEiMask()->getEiEngine()->createFramedEiFieldMap($this->eiFrame, $eiEntry,
+				EiPropPath::create($forkEiPropPath), $object, $copyFrom);
+		
+		return new EiuFieldMap($eiFieldMap, $this->eiuAnalyst);
+	}
+	
 	
 	public function containsId($id, int $ignoreConstraintTypes = 0): bool {
 		$criteria = $this->eiFrame->createCriteria('e', $ignoreConstraintTypes);
@@ -316,7 +340,7 @@ class EiuFrame {
 		}
 		
 		$eiObject = $this->createNewEiObject($draft, $eiType);
-		return new EiuEntry($eiObject, $this->createEiEntryCopy($fromEiuEntry, $eiObject), $this, $this->eiuAnalyst);
+		return $this->entry($this->createEiEntryCopy($fromEiuEntry, $eiObject));
 	}
 	
 	public function copyEntryValuesTo($fromEiEntryArg, $toEiEntryArg, array $eiPropPaths = null) {
@@ -432,7 +456,7 @@ class EiuFrame {
 		$eiEntry = EiuAnalyst::buildEiEntryFromEiArg($eiEntryArg);
 		$contextEiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
 		$eiuEntryForm = new EiuEntryForm($this);
-		$eiType = $eiEntry->getEiType();
+		$eiType = $eiEntry->getEiObject()->getEiEntityObj()->getEiType();
 
 		$eiuEntryForm->setEiuEntryTypeForms(array($eiType->getId() => $this->createEiuEntryTypeForm($eiType, $eiEntry, $contextPropertyPath)));
 		$eiuEntryForm->setChosenId($eiType->getId());
@@ -482,27 +506,23 @@ class EiuFrame {
 				->approve($this->eiFrame->getN2nContext());
 	}
 
+	/**
+	 * @param string $previewType
+	 * @param mixed $eiObjectArg
+	 * @return \rocket\ei\manage\preview\controller\PreviewController
+	 */
 	public function lookupPreviewController(string $previewType, $eiObjectArg) {
-		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectArg, 'eiObjectArg');
+		$eiuEntry = EiuAnalyst::buildEiuEntryFromEiArg($eiObjectArg, $this, 'eiObjectArg');
 		
-		$entityObj = null;
-		if (!$eiObject->isDraft()) {
-			$entityObj = $eiObject->getLiveObject();
-		} else {
-			$eiEntry = $this->createEiEntry($eiObject);
-			$previewEiEntry = $this->createEiEntryCopy($eiEntry, 
-					$this->createNewEiObject(false, $eiObject->getEiEntityObj()->getEiType()));
-			$previewEiEntry->write();
-			$entityObj = $previewEiEntry->getEiObject()->getLiveObject();
-		}
+		$previewModel = new PreviewModel($previewType, $this->eiFrame, $eiuEntry->object()->getEiObject(), 
+				$eiuEntry->getEiEntry(false));
 		
-		$previewModel = new PreviewModel($previewType, $eiObject, $entityObj);
-		
-		return $this->getContextEiMask()->lookupPreviewController($this->eiFrame, $previewModel);
+		return $this->getContextEiMask()->lookupPreviewController($this->eiuAnalyst->getN2nContext(true), 
+				$previewModel);
 	}
 
-	public function getPreviewType(EiObject $eiObject) {
-		$previewTypeOptions = $this->getPreviewTypeOptions($eiObject);
+	public function getDefaultPreviewType($eiObjectArg) {
+		$previewTypeOptions = $this->getPreviewTypeOptions($eiObjectArg);
 		
 		if (empty($previewTypeOptions)) return null;
 			
@@ -512,22 +532,23 @@ class EiuFrame {
 	/**
 	 * @return boolean
 	 */
-	public function isPreviewSupported() {
-		return $this->getContextEiMask()->isPreviewSupported();
+	public function isPreviewSupported($eiObjectArg) {
+		$eiuEntry = EiuAnalyst::buildEiuEntryFromEiArg($eiObjectArg, $this, 'eiObjectArg', true);
+		
+		return $eiuEntry->mask()->getEiMask()->isPreviewSupported();
 	}
 	
-	public function getPreviewTypeOptions(EiObject $eiObject) {
-		$eiMask = $this->getContextEiMask();
+	public function getPreviewTypeOptions($eiObjectArg) {
+		$eiuEntry = EiuAnalyst::buildEiuEntryFromEiArg($eiObjectArg, $this, 'eiObjectArg', true);
+		
+		$eiMask = $eiuEntry->mask()->getEiMask();
+		
 		if (!$eiMask->isPreviewSupported()) {
 			return array();
 		}
 		
-		$previewController = $eiMask->lookupPreviewController($this->eiFrame);
-		$previewTypeOptions = $previewController->getPreviewTypeOptions(new Eiu($this, $eiObject));
-		ArgUtils::valArrayReturn($previewTypeOptions, $previewController, 'getPreviewTypeOptions', 
-				array('string', Lstr::class));
-		
-		return $previewTypeOptions;
+		return $eiMask->getPreviewTypeOptions($this->eiuAnalyst->getN2nContext(true), $this->eiFrame, 
+				$eiuEntry->object()->getEiObject(), $eiuEntry->getEiEntry(false));
 	}
 	
 	public function isExecutedBy($eiCommandPath) {
@@ -575,7 +596,7 @@ class EiuFrame {
 	 */
 	public function getUrlToCommand(EiCommand $eiCommand) {
 		return $this->getHttpContext()->getControllerContextPath($this->getEiFrame()->getControllerContext())
-				->ext($eiCommand->getId())->toUrl();
+				->ext((string) EiCommandPath::from($eiCommand))->toUrl();
 	}
 	
 	/**
@@ -601,13 +622,13 @@ class EiuFrame {
 	/**
 	 * @param int $viewMode
 	 * @param \Closure $uiFactory
-	 * @param array $guiIdPaths
+	 * @param array $eiPropPaths
 	 * @return \rocket\ei\util\gui\EiuGui
 	 */
-	public function newCustomGui(int $viewMode, \Closure $uiFactory, array $guiIdPaths) {
+	public function newCustomGui(int $viewMode, \Closure $uiFactory, array $eiPropPaths) {
 		$eiGui = new EiGui($this->eiFrame, $viewMode);
 		$eiuGui = new EiuGui($eiGui, $this, $this->eiuAnalyst);
-		$eiuGui->initWithUiCallback($uiFactory, $guiIdPaths);
+		$eiuGui->initWithUiCallback($uiFactory, $eiPropPaths);
 		return $eiuGui;
 	}
 	
@@ -712,7 +733,8 @@ class EiuFrame {
 		}
 
 		return $this->eiFrame->getManageState()->getDef()->getGuiDefinition($eiMask)
-				->createIdentityString($eiObject, $n2nLocale ?? $this->getN2nLocale());
+				->createIdentityString($eiObject, $this->eiFrame->getN2nContext(), 
+						$n2nLocale ?? $this->getN2nLocale());
 	}
 
 	/**
@@ -844,7 +866,7 @@ class EiuFrame {
 			return LiveEiObject::create($this->getContextEiType(), $eiEntityObj);
 		}
 
-		return new LiveEiObject(EiEntityObj::createNew($this->getContextEiType()));
+		return new LiveEiObject(EiEntityObj::createNew($this->getContextEiMask()));
 	}
 
 	/**

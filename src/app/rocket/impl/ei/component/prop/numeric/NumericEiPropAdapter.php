@@ -29,7 +29,7 @@ use n2n\l10n\N2nLocale;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
-use rocket\impl\ei\component\prop\adapter\DraftableEiPropAdapter;
+use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
 use rocket\impl\ei\component\prop\numeric\conf\NumericEiPropConfigurator;
 use n2n\reflection\ArgUtils;
 use n2n\reflection\property\AccessProxy;
@@ -46,7 +46,7 @@ use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
 
-abstract class NumericEiPropAdapter extends DraftableEiPropAdapter 
+abstract class NumericEiPropAdapter extends DraftablePropertyEiPropAdapter 
 		implements FilterableEiProp, SortableEiProp, QuickSearchableEiProp {
 	protected $minValue = null;
 	protected $maxValue = null;
@@ -127,7 +127,7 @@ abstract class NumericEiPropAdapter extends DraftableEiPropAdapter
 		return true;
 	}
 	
-	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): ?string {
-		return $this->read($eiObject);
+	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
+		return $eiu->object()->readNativValue($this);
 	}
 }

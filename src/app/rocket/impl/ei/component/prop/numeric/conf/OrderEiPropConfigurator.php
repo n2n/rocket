@@ -31,7 +31,7 @@ use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use rocket\impl\ei\component\prop\numeric\component\OrderEiCommand;
 use rocket\impl\ei\component\prop\numeric\component\OrderEiModificator;
 use n2n\web\dispatch\mag\MagDispatchable;
-use rocket\impl\ei\component\prop\adapter\EntityPropertyConfigurable;
+use rocket\impl\ei\component\prop\adapter\config\EntityPropertyConfigurable;
 use n2n\persistence\meta\structure\Column;
 
 class OrderEiPropConfigurator extends NumericEiPropConfigurator {

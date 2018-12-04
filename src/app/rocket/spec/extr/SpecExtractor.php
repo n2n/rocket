@@ -28,7 +28,7 @@ use n2n\util\config\InvalidConfigurationException;
 use rocket\spec\InvalidSpecConfigurationException;
 use rocket\ei\mask\model\DisplayScheme;
 use rocket\ei\manage\gui\ui\DisplayStructure;
-use rocket\ei\manage\gui\GuiIdPath;
+use rocket\ei\manage\gui\GuiFieldPath;
 use rocket\spec\InvalidEiMaskConfigurationException;
 use rocket\ei\mask\model\ControlOrder;
 use n2n\reflection\property\TypeConstraint;
@@ -153,8 +153,14 @@ class SpecExtractor {
 				$eiMaskAttributes->getString(RawDef::EI_DEF_PREVIEW_CONTROLLER_LOOKUP_ID_KEY, false, null, true));
 	
 	
-		foreach ($eiMaskAttributes->getArray(RawDef::EI_DEF_FIELDS_KEY, false, array(), 
-				TypeConstraint::createSimple('array')) as $eiPropId => $fieldRawData) {
+		$eiPropRawDatas = $eiMaskAttributes->getArray(RawDef::EI_DEF_PROPS_KEY, false, array(),
+				TypeConstraint::createSimple('array'));
+		if (empty($eiPropRawDatas)) {
+			$eiPropRawDatas = $eiMaskAttributes->getArray('fields', false, array(), 
+					TypeConstraint::createSimple('array'));
+		}
+		
+		foreach ($eiPropRawDatas as $eiPropId => $fieldRawData) {
 			try {
 				$eiMaskExtraction->addEiPropExtraction($this->createEiPropExtraction($eiPropId, new Attributes($fieldRawData)));
 			} catch (AttributesException $e) {
@@ -207,7 +213,7 @@ class SpecExtractor {
 	    		$typeName);
 	}
 	
-	private function createEiPropExtraction($id, Attributes $attributes)  {
+	private function createEiPropExtraction($id, Attributes $attributes, array $parentIds = array())  {
 		$extraction = new EiPropExtraction();
 		$extraction->setId($id);
 		$extraction->setLabel($attributes->getScalar(RawDef::EI_FIELD_LABEL_KEY, false, null, true));
@@ -215,6 +221,20 @@ class SpecExtractor {
 		$extraction->setProps($attributes->getArray(RawDef::EI_COMPONENT_PROPS_KEY, false));
 		$extraction->setEntityPropertyName($attributes->getString(RawDef::EI_FIELD_ENTITY_PROPERTY_KEY, false, null, true));
 		$extraction->setObjectPropertyName($attributes->getString(RawDef::EI_FIELD_OBJECT_PROPERTY_KEY, false, null, true));
+		
+		$forkedExtractions = array();
+		$eiPropRawDatas = $attributes->getArray(RawDef::EI_DEF_FORKED_PROPS_KEY, false, array(),
+				TypeConstraint::createSimple('array'));
+		$parentIds[] = $id;
+		foreach ($eiPropRawDatas as $forkedId => $forkedEiPropRawData) {
+			try {
+				$forkedExtractions[] = $this->createEiPropExtraction($forkedId, new Attributes($forkedEiPropRawData), $parentIds);
+			} catch (AttributesException $e) {
+				throw $this->createEiComponentException('EiProp ' . implode('.' , array_merge($parentIds, [$id])), $e);
+			}
+		}
+		$extraction->setForkedEiPropExtractions($forkedExtractions);
+		
 		return $extraction;
 	}
 	
@@ -389,7 +409,7 @@ class SpecExtractor {
 		foreach ($data as $key => $fieldId) {
 			//Old specs (guiId)
 			if (!is_array($fieldId)) {
-				$displayStructure->addGuiIdPath(GuiIdPath::create($fieldId));
+				$displayStructure->addGuiFieldPath(GuiFieldPath::create($fieldId));
 				continue;
 			}
 	
@@ -414,11 +434,12 @@ class SpecExtractor {
 			}
 			
 			$label = $displayStructureAttributes->getScalar(RawDef::DISPLAY_ITEM_LABEL_KEY, false, null, true);
-			$guiIdPath = $displayStructureAttributes->getScalar(RawDef::DISPLAY_ITEM_GUI_ID_PATH_KEY, false, null, true);
-			if (null !== $guiIdPath) {
-				$displayStructure->addGuiIdPath(GuiIdPath::create($guiIdPath), 
+			$guiFieldPathStr = $displayStructureAttributes->getScalar(RawDef::DISPLAY_ITEM_GUI_ID_PATH_KEY, false, null, true);
+			if (null !== $guiFieldPathStr) {
+				$displayStructure->addGuiFieldPath(GuiFieldPath::create($guiFieldPathStr), 
 						$displayStructureAttributes->getEnum(RawDef::DISPLAY_ITEM_GROUP_TYPE_KEY, DisplayItem::getTypes(),
-						false, null, true), $label, $this->moduleNamespace);
+								false, null, true), 
+						$label, $this->moduleNamespace);
 				continue;
 			}
 			

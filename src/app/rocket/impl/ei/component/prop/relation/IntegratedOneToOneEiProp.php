@@ -24,7 +24,7 @@ namespace rocket\impl\ei\component\prop\relation;
 use rocket\ei\util\frame\EiuFrame;
 use rocket\ei\manage\gui\GuiPropFork;
 use rocket\ei\manage\gui\GuiFieldFork;
-use rocket\ei\manage\gui\GuiIdPath;
+use rocket\ei\manage\gui\GuiFieldPath;
 use rocket\ei\manage\gui\GuiFieldAssembly;
 use rocket\ei\manage\gui\EiEntryGuiAssembler;
 use rocket\ei\EiPropPath;
@@ -47,7 +47,6 @@ use n2n\reflection\ArgUtils;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\ei\util\Eiu;
-use rocket\ei\manage\entry\EiEntry;
 use n2n\web\dispatch\mag\UiOutfitter;
 use rocket\ei\manage\gui\GuiProp;
 use n2n\web\dispatch\mag\Mag;
@@ -55,6 +54,8 @@ use rocket\ei\manage\gui\GuiFieldForkEditable;
 use rocket\ei\util\gui\EiuEntryGuiAssembler;
 use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\component\prop\GuiEiPropFork;
+use rocket\ei\manage\entry\EiField;
+use rocket\ei\manage\gui\EiFieldAbstraction;
 
 class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiEiPropFork, GuiPropFork {
 	
@@ -66,10 +67,10 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiEiPro
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\field\Readable::read()
+	 * @see \rocket\impl\ei\component\prop\adapter\entry\Readable::read()
 	 */
-	public function read(EiObject $eiObject) {
-		if ($this->isDraftable() && $eiObject->isDraft()) {
+	public function read(Eiu $eiu) {
+		if ($eiu->object()->isDraftProp($this)) {
 			$targetDraft = $eiObject->getDraftValueMap()->getValue(EiPropPath::from($this));
 			if ($targetDraft === null) return null;
 				
@@ -84,26 +85,26 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiEiPro
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\field\Writable::write()
+	 * @see \rocket\impl\ei\component\prop\adapter\entry\Writable::write()
 	 */
-	public function write(EiObject $eiObject, $value) {
+	public function write(Eiu $eiu, $value) {
 		CastUtils::assertTrue($value === null || $value instanceof EiObject);
 	
-		if ($this->isDraftable() && $eiObject->isDraft()) {
+		if ($eiu->object()->isDraftProp($this)) {
 			$targetDraft = null;
 			if ($value !== null) $targetDraft = $value->getDraft();
 	
-			$eiObject->getDraftValueMap()->setValue(EiPropPath::from($this), $targetDraft);
+			$eiu->entry()->writeNativeValue($this, $targetDraft);
 			return;
 		}
 	
 		$targetEntityObj = null;
 		if ($value !== null) $targetEntityObj = $value->getLiveObject();
 	
-		$this->getObjectPropertyAccessProxy()->setValue($eiObject->getLiveObject(), $targetEntityObj);
+		$eiu->entry()->writeNativeValue($this, $targetEntityObj);
 	}
 	
-	public function copy(EiObject $eiObject, $value, Eiu $copyEiu) {
+	public function copy(Eiu $eiu, $value, Eiu $copyEiu) {
 		if ($value === null) return $value;
 	
 		$targetEiuFrame = new EiuFrame($this->embeddedEiPropRelation->createTargetEditPseudoEiFrame(
@@ -131,7 +132,7 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiEiPro
 		return $this->forkedGuiDefinition;
 	}
 	
-	public function buildEiField(Eiu $eiu) {
+	public function buildEiField(Eiu $eiu): ?EiField {
 		$readOnly = $this->eiPropRelation->isReadOnly($eiu->entry()->getEiEntry(), $eiu->frame()->getEiFrame());
 		
 		return new ToOneEiField($eiu->entry()->getEiObject(), $this, $this, ($readOnly ? null : $this));
@@ -175,25 +176,24 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiEiPro
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiPropFork::determineForkedEiObject()
 	 */
-	public function determineForkedEiObject(EiObject $eiObject): ?EiObject {
-		$targetEiObject = $this->read($eiObject);
-		if ($targetEiObject === null) {
+	public function determineForkedEiObject(Eiu $eiu): ?EiObject {
+		$targetObject = $eiu->object()->readNativValue($this);
+		if ($targetObject === null) {
 			return null;
 		}
-		return $targetEiObject;
+		return LiveEiObject::create($this->eiPropRelation->getTargetEiType(), $targetObject);
 	}
 	
-	public function determineEiFieldWrapper(EiEntry $eiEntry, GuiIdPath $guiIdPath) {
+	public function determineEiFieldAbstraction(Eiu $eiu, GuiFieldPath $guiFieldPath): EiFieldAbstraction {
+		$eiEntry = $eiu->entry()->getEiEntry();
+		
 		$eiFieldWrappers = array();
 		$targetRelationEntry = $eiEntry->getValue(EiPropPath::from($this->eiPropRelation->getRelationEiProp()));
-		if ($targetRelationEntry === null || !$targetRelationEntry->hasEiEntry()) return null;
-	
-		if (null !== ($eiFieldWrapper = $this->getForkedGuiDefinition()
-				->determineEiFieldWrapper($targetRelationEntry->getEiEntry(), $guiIdPath))) {
-			return $eiFieldWrapper;
+		if ($targetRelationEntry === null || !$targetRelationEntry->hasEiEntry()) {
+			throw new NotYetImplementedException();
 		}
 	
-		return null;
+		return $this->getForkedGuiDefinition()->determineEiFieldAbstraction($targetRelationEntry->getEiEntry(), $guiFieldPath);
 	}
 	
 	/**
@@ -225,15 +225,15 @@ class OneToOneGuiFieldFork implements GuiFieldFork {
 		$this->targetEiuEntryGuiAssembler = $targetEiuEntryGuiAssembler;
 	}
 	
-	public function assembleGuiField(GuiIdPath $guiIdPath): GuiFieldAssembly {
-		return $this->targetEiuEntryGuiAssembler->assembleGuiField($guiIdPath);
+	public function assembleGuiField(GuiFieldPath $guiFieldPath): GuiFieldAssembly {
+		return $this->targetEiuEntryGuiAssembler->assembleGuiField($guiFieldPath);
 	}
 	
 	public function isReadOnly(): bool {
 		return null === $this->targetEiuEntryGuiAssembler->getEiuEntryGui()->getDispatchable();
 	}
 	
-	public function assembleGuiFieldFork(): ?GuiFieldForkEditable {
+	public function getEditable(): ?GuiFieldForkEditable {
 		if ($this->isReadOnly()) return null;
 		
 		return new OneToOneGuiFieldForkEditable($this->toOneEiField, $this->targetEiuEntryGuiAssembler,
@@ -295,6 +295,9 @@ class OneToOneGuiFieldForkEditable implements GuiFieldForkEditable {
 class OneToOneForkMag extends ObjectMagAdapter {
 	private $dispatchable;
 
+	/**
+	 * @param Dispatchable $dispatchable
+	 */
 	public function __construct(Dispatchable $dispatchable) {
 		parent::__construct('', $dispatchable);
 	}

@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\string\conf;
 
-use rocket\impl\ei\component\prop\adapter\AdaptableEiPropConfigurator;
+use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use n2n\core\container\N2nContext;
 use n2n\impl\web\dispatch\mag\model\NumericMag;
 use n2n\util\ex\IllegalStateException;

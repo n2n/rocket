@@ -40,7 +40,6 @@
 	$view->useTemplate('~\core\view\template.html', 
 			array('title' => $view->getL10nText('tool_mail_center_title')));
 	
-	$html->meta()->addJs('js/tools.js');
 	$mailHtml = new MailHtmlBuilder($view);
 	
 	$fileNames = MailCenter::getMailFileNames();
@@ -56,7 +55,7 @@
 							<label><?php $html->text('tool_mail_center_archives_label') ?></label>
 						</dt>
 						<dd>
-							<select class="rocket-paging">
+							<select class="rocket-mail-paging">
 								<?php foreach ($fileNames as $fileName) : ?>
 									<?php if ($fileName == AdminMailCenter::DEFAULT_MAIL_FILE_NAME) : ?>
 										<option value="<?php $html->out($request->getCurrentControllerContextPath()) ?>" 
@@ -80,7 +79,7 @@
 							<label>Seite</label>
 						</dt>
 						<dd>
-							<select class="rocket-paging">
+							<select class="rocket-mail-paging">
 								<?php for ($i = 1; $i <= $numPages; $i++) : ?>
 									<?php $params = ($currentFileName == AdminMailCenter::DEFAULT_MAIL_FILE_NAME) ? array() : array(MailCenterController::ACTION_ARCHIVE, $currentFileName) ?>
 									<?php $params = ($i == 1) ? $params : array_merge($params, array($i)) ?>
@@ -99,13 +98,13 @@
 	<div>
 		<?php foreach ((array) $items as $itemIndex => $mailItem) : $mailItem instanceof MailItem ?>
 			<article class="rocket-mail">
-				<header class="rocket-mail__header">
-					<span class="rocket-mail__senddate float-right">
-						<?php $html->l10nDateTime($mailItem->getDateTime())?> 
+				<header class="rocket-mail-header">
+					<span class="rocket-mail-senddate float-right">
+						<?php $html->l10nDateTime($mailItem->getDateTime()) ?> 
 					</span>
-					<h4 class="rocket-mail__subject"><i class="fa fa-plus"></i> <?php $html->out($mailItem->getSubject())?></h4>
+					<h4 class="rocket-mail-subject"><i class="fa fa-plus"></i> <?php $html->out($mailItem->getSubject())?></h4>
 				</header>
-				<dl class="rocket-mail__properties row">
+				<dl class="rocket-mail-properties row">
 					<dt class="col-sm-2"><?php $html->text('tool_mail_center_mail_to_label') ?></dt>
 					<dd class="col-sm-10"><?php $html->out($mailItem->getTo()) ?></dd>
 					<dt class="col-sm-2"><?php $html->text('tool_mail_center_mail_from_label') ?></dt>
@@ -130,10 +129,9 @@
 							</ul>
 						</dd>
 					<?php endif ?>
-				</dl>
-				<dl class="rocket-mail__properties">
-					<dt class="rocket-mail__message-label sr-only"><?php $html->text('tool_mail_center_mail_message_label') ?></dt>
-					<dd class="rocket-mail__message">
+					
+					<dt class="rocket-mail-message-label sr-only"><?php $html->text('tool_mail_center_mail_message_label') ?></dt>
+					<dd class="rocket-mail-message">
 						<pre><?php $mailHtml->message($mailItem) ?></pre>
 					</dd>
 				</dl>

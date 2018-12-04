@@ -34,7 +34,7 @@ class EntryNavPoint {
 		$this->previewType = $previewType;
 	}
 	
-	public function getLiveId() {
+	public function getId() {
 		return $this->liveId;
 	}
 	

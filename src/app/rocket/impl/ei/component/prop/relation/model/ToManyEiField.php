@@ -21,28 +21,26 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model;
 
-use rocket\ei\component\prop\field\RwEiField;
+use rocket\impl\ei\component\prop\adapter\entry\CrwvEiField;
 use n2n\reflection\ArgUtils;
 use rocket\ei\manage\entry\EiFieldValidationResult;
 use n2n\util\ex\IllegalStateException;
-use rocket\ei\manage\EiObject;
-use rocket\ei\component\prop\field\Readable;
-use rocket\ei\component\prop\field\Writable;
+use rocket\impl\ei\component\prop\adapter\entry\Readable;
+use rocket\impl\ei\component\prop\adapter\entry\Writable;
 use rocket\ei\util\Eiu;
-use rocket\ei\component\prop\field\Copyable;
+use rocket\impl\ei\component\prop\adapter\entry\Copyable;
 
-class ToManyEiField extends RwEiField {
+class ToManyEiField extends CrwvEiField {
 	private $copyable = null;
 	
-	public function __construct(EiObject $eiObject, 
-			Readable $readable = null, Writable $writable = null, Copyable $copyable = null) {
-		parent::__construct($eiObject, $readable, $writable);
+	public function __construct(Eiu $eiu, Readable $readable = null, Writable $writable = null, 
+			Copyable $copyable = null) {
+		parent::__construct(null, $eiu, $readable, $writable);
 		
 		$this->copyable = $copyable;
 	}	
 	
-	
-	protected function validateValue($value) {
+	protected function checkValue($value) {
 		ArgUtils::valArray($value, RelationEntry::class);
 	}
 	
@@ -68,15 +66,14 @@ class ToManyEiField extends RwEiField {
 	}
 	
 
-	public function validate(EiFieldValidationResult $fieldErrorInfo) {
-		$value = $this->getValue();
+	public function validateValue($value, EiFieldValidationResult $validationResult) {
 		if ($value === null) return;
 		
 		foreach ($value as $targetRelationEntry) {
 			IllegalStateException::assertTrue($targetRelationEntry instanceof RelationEntry);
 			if ($targetRelationEntry->hasEiEntry()) {
 				$targetRelationEntry->getEiEntry()->validate();
-				$fieldErrorInfo->addSubEiEntryValidationResult($targetRelationEntry->getEiEntry()->getValidationResult());
+				$validationResult->addSubEiEntryValidationResult($targetRelationEntry->getEiEntry()->getValidationResult());
 			}
 		}
 	}
@@ -88,15 +85,15 @@ class ToManyEiField extends RwEiField {
 	public function copyEiField(Eiu $copyEiu) {
 		if ($this->copyable === null) return null;
 		
-		$copy = new ToManyEiField($copyEiu->entry()->getEiObject(), $this->readable, $this->writable, 
+		$copy = new ToManyEiField($copyEiu, $this->readable, $this->writable, 
 				$this->copyable);
-		$copy->setValue($this->copyable->copy($this->eiObject, $this->getValue(), $copyEiu));
+		$copy->setValue($this->copyable->copy($this->eiu, $this->getValue(), $copyEiu));
 		return $copy;
 	}
 	
 	public function copyValue(Eiu $copyEiu) {
 		if ($this->copyable === null) return null;
 		
-		return $this->copyable->copy($this->eiObject, $this->getValue(), $copyEiu);
+		return $this->copyable->copy($this->eiFieldMap, $this->getValue(), $copyEiu);
 	}
 }

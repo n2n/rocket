@@ -22,7 +22,6 @@
 namespace rocket\impl\ei\component\prop\string;
 
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\ei\manage\EiObject;
 use n2n\web\dispatch\mag\Mag;
 use rocket\impl\ei\component\prop\string\conf\UrlEiPropConfigurator;
 use rocket\ei\util\Eiu;
@@ -108,8 +107,8 @@ class UrlEiProp extends AlphanumericEiProp {
 				array('target' => '_blank'));
 	}
 
-	public function read(EiObject $eiObject) {
-		$urlStr = parent::read($eiObject);
+	public function read(Eiu $eiu) {
+		$urlStr = parent::read($eiu);
 		if ($urlStr === null) return null;
 
 		try {
@@ -119,11 +118,11 @@ class UrlEiProp extends AlphanumericEiProp {
 		}
 	}
 
-	public function write(EiObject $eiObject, $value) {
+	public function write(Eiu $eiu, $value) {
 		if ($value !== null) {
 			$value = (string) $value;
 		}
-		return parent::write($eiObject, $value);
+		return parent::write($eiu, $value);
 	}
 
 	private function buildLabel(Url $url, bool $isBulkyMode) {

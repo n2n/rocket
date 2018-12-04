@@ -59,7 +59,7 @@ use rocket\ei\util\gui\EiuHtmlBuilder;
 		data-reduced="<?php $html->out($toOneForm->isReduced()) ?>"
 		data-close-label="<?php $html->text('common_apply_label') ?>"
 		data-grouped="<?php $html->out($grouped) ?>"
-		data-display-item-label="<?php $html->out($eiuHtml->meta()->getGuiFieldAssembly()->getDisplayable()->getUiOutputLabel($view->getN2nLocale())) ?>">
+		data-display-item-label="<?php $html->out($eiuHtml->meta()->getGuiFieldAssembly()->getGuiField()->getUiOutputLabel($view->getN2nLocale())) ?>">
 		
 	<?php if ($toOneForm->isSelectionModeEnabled()): ?>
 		<div class="rocket-impl-selector" 
@@ -112,8 +112,7 @@ use rocket\ei\util\gui\EiuHtmlBuilder;
 				<?php $formHtml->meta()->pushBasePropertyPath($newMappingFormPropertyPath) ?>
 				
 				<?php $view->import('embeddedEntryForm.html', array('mappingForm' => $currentMappingForm,
-						'grouped' => $grouped,
-						'summaryRequired' => $toOneForm->isReduced())) ?>
+						'grouped' => $grouped, 'summaryRequired' => $toOneForm->isReduced())) ?>
 						
 				<?php $formHtml->meta()->popBasePropertyPath() ?>
 			<?php endif ?>

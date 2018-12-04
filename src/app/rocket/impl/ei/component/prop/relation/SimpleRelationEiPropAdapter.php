@@ -25,8 +25,8 @@ use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\component\prop\DraftableEiProp;
 use rocket\ei\manage\draft\DraftProperty;
 use rocket\impl\ei\component\prop\relation\model\relation\EiPropRelation;
-use rocket\impl\ei\component\prop\adapter\DisplaySettings;
-use rocket\impl\ei\component\prop\adapter\StandardEditDefinition;
+use rocket\impl\ei\component\prop\adapter\config\DisplaySettings;
+use rocket\impl\ei\component\prop\adapter\config\StandardEditDefinition;
 use rocket\ei\component\prop\FilterableEiProp;
 use rocket\ei\manage\frame\EiFrame;
 use n2n\core\container\N2nContext;
@@ -81,7 +81,7 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 			return null;
 		}
 		
-		return Rocket::createLstr($helpText, $this->eiMask->getModuleNamespace());
+		return Rocket::createLstr($helpText, $this->getWrapper()->getEiPropCollection()->getEiMask()->getModuleNamespace());
 	}
 	
 	/**

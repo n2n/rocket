@@ -26,11 +26,11 @@ use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\impl\web\ui\view\html\HtmlView;
 
 use rocket\impl\ei\component\prop\string\conf\StringEiPropConfigurator;
-use rocket\ei\manage\EiObject;
 use rocket\ei\EiPropPath;
 use n2n\web\dispatch\mag\Mag;
 use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
+use n2n\util\StringUtils;
 
 class StringEiProp extends AlphanumericEiProp {
 	private $multiline = false;
@@ -82,8 +82,8 @@ class StringEiProp extends AlphanumericEiProp {
 		return true;
 	}
 
-	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): ?string {
-		return $this->read($eiObject);
+	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
+		return StringUtils::strOf($eiu->object()->readNativValue($this), true);
 	}
 
 }

@@ -22,7 +22,7 @@
 namespace rocket\user\model;
 
 use n2n\impl\web\dispatch\map\val\ValEnum;
-use n2n\l10n\MessageCode;
+use n2n\l10n\Message;
 use n2n\web\dispatch\map\bind\BindingErrors;
 use rocket\user\bo\RocketUser;
 use n2n\web\dispatch\Dispatchable;
@@ -157,13 +157,13 @@ class RocketUserForm implements Dispatchable {
 		$that = $this;
 		$bd->closure(function($rocketUser, BindingErrors $be, RocketUserDao $userDao) use ($that) {
 			if ($that->rocketUser->getNick() != $rocketUser->nick && $userDao->containsNick($rocketUser->nick)) {
-				$be->addError('nick', new MessageCode('user_taken_nick_err', array('nick' => $rocketUser->nick)));
+				$be->addError('nick', Message::createCodeArg('user_taken_nick_err', array('nick' => $rocketUser->nick)));
 			}
 		});
 		
 		$bd->closure(function($rawPassword, $rawPassword2, BindingErrors $be) {
 			if ($rawPassword !== $rawPassword2) {
-				$be->addError('rawPassword', new MessageCode('user_passwords_do_not_equal_err'));
+				$be->addError('rawPassword', Message::createCodeArg('user_passwords_do_not_equal_err'));
 			}
 		});
 		

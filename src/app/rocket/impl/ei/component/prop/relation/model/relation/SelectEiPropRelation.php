@@ -131,7 +131,7 @@ class SelectEiPropRelation extends EiPropRelation {
 
 	public function buildTargetOverviewToolsUrl(EiFrame $eiFrame, HttpContext $httpContext): Url {
 		$contextUrl = $httpContext->getControllerContextPath($eiFrame->getControllerContext())
-				->ext($this->relationEiCommand->getId(), 'rel', $this->relationAjahEiCommand->getId())->toUrl();
+				->ext($this->relationEiCommand->getWrapper()->getEiCommandPath(), 'rel', $this->relationAjahEiCommand->getWrapper()->getEiCommandPath())->toUrl();
 		return RelationJhtmlController::buildSelectToolsUrl($contextUrl);
 	}
 }

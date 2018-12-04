@@ -43,7 +43,7 @@ class EiController extends ControllerAdapter {
 	public function index(ManageState $manageState, $eiCommandId, array $delegateCmds = null) {		
 		$eiCommand = null;
 		try {
-			$eiCommand = $this->eiMask->getEiCommandCollection()->getById($eiCommandId);
+			$eiCommand = $this->eiMask->getEiCommandCollection()->getByPath(EiCommandPath::create($eiCommandId));
 		} catch (UnknownEiComponentException $e) {
 			throw new PageNotFoundException(null, 0, $e);
 		}

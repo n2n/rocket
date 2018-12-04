@@ -31,7 +31,7 @@ use rocket\impl\ei\component\prop\file\command\ThumbEiCommand;
 use n2n\reflection\ArgUtils;
 use n2n\reflection\property\AccessProxy;
 use n2n\reflection\property\TypeConstraint;
-use rocket\impl\ei\component\prop\adapter\DraftableEiPropAdapter;
+use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
 use n2n\io\orm\ManagedFileEntityProperty;
 use n2n\io\orm\FileEntityProperty;
 use n2n\reflection\CastUtils;
@@ -47,7 +47,7 @@ use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\io\managed\impl\TmpFileManager;
 use rocket\ei\EiPropPath;
 
-class FileEiProp extends DraftableEiPropAdapter {
+class FileEiProp extends DraftablePropertyEiPropAdapter {
 	const DIM_IMPORT_MODE_ALL = 'all';
 	const DIM_IMPORT_MODE_USED_ONLY = 'usedOnly';
 	
@@ -183,7 +183,7 @@ class FileEiProp extends DraftableEiPropAdapter {
 			return $file->getFileSource()->getUrl();
 		}
 		
-		return $eiu->frame()->getUrlToCommand($this->thumbEiCommand)->extR(['preview', $eiu->entry()->getLivePid()]);
+		return $eiu->frame()->getUrlToCommand($this->thumbEiCommand)->extR(['preview', $eiu->entry()->getPid()]);
 	}
 	
 	private function createImageUiComponent(HtmlView $view, Eiu $eiu, File $file) {
@@ -203,7 +203,7 @@ class FileEiProp extends DraftableEiPropAdapter {
 		if ($this->isThumbCreationEnabled($file) && !$eiu->entry()->isNew()) {
 			$httpContext = $view->getHttpContext();
 			$uiComponent->appendContent($html->getLink($eiu->frame()->getUrlToCommand($this->thumbEiCommand)
-					->extR($eiu->entry()->getLivePid(), array('refPath' => (string) $eiu->frame()->getEiFrame()->getCurrentUrl($httpContext))),
+					->extR($eiu->entry()->getPid(), array('refPath' => (string) $eiu->frame()->getEiFrame()->getCurrentUrl($httpContext))),
 					new HtmlElement('i', array('class' => IconType::ICON_CROP), ''),
 					array('title' => $view->getL10nText('ei_impl_resize_image'),
 							'class' => 'btn btn-secondary', 'data-jhtml' => 'true')));
@@ -240,8 +240,8 @@ class FileEiProp extends DraftableEiPropAdapter {
 		return true;
 	}
 	
-	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): ?string {
-		$file = $this->getObjectPropertyAccessProxy()->getValue($eiObject->getLiveObject());
+	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
+		$file = $eiu->entry()->readNativValue($this);
 		if ($file === null) return null;
 		
 		CastUtils::assertTrue($file instanceof File);
@@ -251,7 +251,7 @@ class FileEiProp extends DraftableEiPropAdapter {
 		return $file->getOriginalName();
 	}
 	
-	public function copy(EiObject $eiObject, $value, Eiu $copyEiu) {
+	public function copy(Eiu $eiu, $value, Eiu $copyEiu) {
 		if ($value === null) return null;
 
 		CastUtils::assertTrue($value instanceof File);

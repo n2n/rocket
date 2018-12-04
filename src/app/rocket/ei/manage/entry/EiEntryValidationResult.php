@@ -43,7 +43,7 @@ class EiEntryValidationResult {
 	 * @param bool $checkRecurisve
 	 * @return boolean
 	 */
-	function isEiFieldValid(EiPropPath $eiPropPath, bool$checkRecurisve) {
+	function isEiFieldValid(EiPropPath $eiPropPath, bool $checkRecurisve) {
 		$eiPropPathStr = (string) $eiPropPath;
 		return !isset($this->eiFieldValidationResults[$eiPropPathStr]) 
 				||  $this->eiFieldValidationResults[$eiPropPathStr]->isValid($checkRecurisve);

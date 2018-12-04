@@ -8,10 +8,10 @@ use n2n\reflection\property\AccessProxy;
 use n2n\reflection\property\TypeConstraint;
 use n2n\web\dispatch\mag\Mag;
 use n2n\web\ui\UiComponent;
-use rocket\impl\ei\component\prop\adapter\DraftableEiPropAdapter;
+use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
 use rocket\ei\util\Eiu;
 
-class StringArrayEiProp extends DraftableEiPropAdapter {
+class StringArrayEiProp extends DraftablePropertyEiPropAdapter {
 
 	public function __construct() {
 		parent::__construct();

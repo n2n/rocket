@@ -22,26 +22,25 @@
 namespace rocket\impl\ei\component\prop\relation\model;
 
 use n2n\reflection\ArgUtils;
-use rocket\ei\component\prop\field\RwEiField;
+use rocket\impl\ei\component\prop\adapter\entry\CrwvEiField;
 use rocket\ei\manage\entry\EiFieldValidationResult;
 use n2n\util\ex\IllegalStateException;
-use rocket\ei\manage\EiObject;
 use rocket\ei\util\Eiu;
-use rocket\ei\component\prop\field\Readable;
-use rocket\ei\component\prop\field\Writable;
-use rocket\ei\component\prop\field\Copyable;
+use rocket\impl\ei\component\prop\adapter\entry\Readable;
+use rocket\impl\ei\component\prop\adapter\entry\Writable;
+use rocket\impl\ei\component\prop\adapter\entry\Copyable;
 
-class ToOneEiField extends RwEiField {
+class ToOneEiField extends CrwvEiField {
 	private $copyable;
 	
-	public function __construct(EiObject $eiObject, Readable $readable = null, Writable $writable = null,
+	public function __construct(Eiu $eiu, Readable $readable = null, Writable $writable = null,
 			Copyable $copyable = null) {
-		parent::__construct($eiObject, $readable, $writable);
+		parent::__construct(null, $eiu, $readable, $writable);
 
 		$this->copyable = $copyable;
 	}
 	
-	protected function validateValue($value) {
+	protected function checkValue($value) {
 		ArgUtils::valType($value, RelationEntry::class, true);
 	}
 	
@@ -66,12 +65,12 @@ class ToOneEiField extends RwEiField {
 		parent::writeValue($targetRelationEntry->getEiObject());
 	}
 	
-	public function validate(EiFieldValidationResult $fieldErrorInfo) {
-		if (null !== ($value = $this->getValue())) {
+	public function validateValue($value, EiFieldValidationResult $validationResult) {
+		if (null !== $value) {
 			IllegalStateException::assertTrue($value instanceof RelationEntry);
 			if ($value->hasEiEntry()) {
 				$value->getEiEntry()->validate();
-				$fieldErrorInfo->addSubEiEntryValidationResult($value->getEiEntry()->getValidationResult());
+				$validationResult->addSubEiEntryValidationResult($value->getEiEntry()->getValidationResult());
 			}
 		}
 	}
@@ -80,7 +79,7 @@ class ToOneEiField extends RwEiField {
 		if ($this->copyable === null) return null;
 		
 		$copy = new ToOneEiField($copyEiu->entry()->getEiObject(), $this->readable, $this->writable, $this->copyable);
-		$copy->setValue($this->copyable->copy($this->eiObject, $this->getValue(), $copyEiu));
+		$copy->setValue($this->copyable->copy($this->eiFieldMap, $this->getValue(), $copyEiu));
 		return $copy;
 	}
 }

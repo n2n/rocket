@@ -51,18 +51,11 @@ abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\field\Readable::read()
+	 * @see \rocket\impl\ei\component\prop\adapter\entry\Readable::read()
 	 */
-	public function read(EiObject $eiObject) {
-		$targetEntityObjs = null;
-		if ($this->isDraftable() && $eiObject->isDraft()) {
-			throw new NotYetImplementedException();
-			$targetEntityObjs = $eiObject->getDraftValueMap()->getValue(EiPropPath::from($this),
-					$this->getObjectPropertyAccessProxy()->getConstraint());
-		} else {
-			$targetEntityObjs = $this->getObjectPropertyAccessProxy()->getValue($eiObject->getLiveObject());
-		}
-	
+	public function read(Eiu $eiu) {
+		$targetEntityObjs = $eiu->entry()->readNativValue($this);
+		
 		if ($targetEntityObjs === null) {
 			return array();
 		}
@@ -78,9 +71,9 @@ abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\field\Writable::write()
+	 * @see \rocket\impl\ei\component\prop\adapter\entry\Writable::write()
 	 */
-	public function write(EiObject $eiObject, $value) {
+	public function write(Eiu $eiu, $value) {
 		ArgUtils::valArray($value, EiObject::class);
 		
 		$targetEntityObjs = new \ArrayObject();
@@ -88,15 +81,10 @@ abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 			$targetEntityObjs[] = $targetEiObject->getLiveObject();
 		}
 		
-		if ($this->isDraftable() && $eiObject->isDraft()) {
-			throw new NotYetImplementedException();
-			$eiObject->getDraftValueMap()->setValue(EiPropPath::from($this), $targetEntityObjs);
-		} else {
-			$this->getObjectPropertyAccessProxy()->setValue($eiObject->getLiveObject(), $targetEntityObjs);
-		}
+		$eiu->entry()->writeNativeValue($this, $targetEntityObjs);
 	}
 	
-	public function copy(EiObject $eiObject, $value, Eiu $copyEiu) {
+	public function copy(Eiu $eiu, $value, Eiu $copyEiu) {
 		return $value;
 	}
 	

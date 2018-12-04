@@ -38,7 +38,7 @@ class EmbeddedEditPseudoCommand extends EiCommandAdapter implements PrivilegedEi
 		$this->privilegeLabelLstr = $privilegeLabelLstr;
 	}
 	
-	public function getIdBase() {
+	public function getIdBase(): ?string {
 		return $this->idBase; 
 	}
 	

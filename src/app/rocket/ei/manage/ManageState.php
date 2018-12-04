@@ -85,7 +85,11 @@ class ManageState implements RequestScoped {
 		$this->user = $user;
 	}
 	
-	public function getEiPermissionManager(): EiPermissionManager {
+	/**
+	 * @throws IllegalStateException
+	 * @return \rocket\ei\manage\security\EiPermissionManager
+	 */
+	public function getEiPermissionManager() {
 		if ($this->eiPermissionManager === null) {
 			throw new IllegalStateException('No EiPermissionManager assigned.');
 		}

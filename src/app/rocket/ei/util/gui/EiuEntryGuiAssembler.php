@@ -21,7 +21,7 @@
  */
 namespace rocket\ei\util\gui;
 
-use rocket\ei\manage\gui\GuiIdPath;
+use rocket\ei\manage\gui\GuiFieldPath;
 use rocket\ei\manage\gui\EiEntryGuiAssembler;
 use rocket\ei\util\EiuAnalyst;
 
@@ -56,11 +56,11 @@ class EiuEntryGuiAssembler {
 	}
 	
 	/**
-	 * @param GuiIdPath|string $guiIdPath
+	 * @param GuiFieldPath|string $guiFieldPath
 	 * @return \rocket\ei\manage\gui\GuiFieldAssembly
 	 */
-	public function assembleGuiField($guiIdPath) {
-		return $this->eiEntryGuiAssembler->assembleGuiField(GuiIdPath::create($guiIdPath));
+	public function assembleGuiField($guiFieldPath) {
+		return $this->eiEntryGuiAssembler->assembleGuiField(GuiFieldPath::create($guiFieldPath));
 	}
 	
 	/**

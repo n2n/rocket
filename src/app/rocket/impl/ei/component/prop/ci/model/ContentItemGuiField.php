@@ -72,7 +72,7 @@ class ContentItemGuiField implements GuiField {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\Displayable::getDisplayItemType()
+	 * @see \rocket\ei\manage\gui\GuiField::getDisplayItemType()
 	 */
 	public function getDisplayItemType(): ?string {
 		return DisplayItem::TYPE_SIMPLE_GROUP;
@@ -87,7 +87,7 @@ class ContentItemGuiField implements GuiField {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\Displayable::getUiOutputLabel()
+	 * @see \rocket\ei\manage\gui\GuiField::getUiOutputLabel()
 	 */
 	public function getUiOutputLabel(N2nLocale $n2nLocale): string {
 		return $this->labelLstr->t($n2nLocale);
@@ -95,7 +95,7 @@ class ContentItemGuiField implements GuiField {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\Displayable::getOutputHtmlContainerAttrs()
+	 * @see \rocket\ei\manage\gui\GuiField::getOutputHtmlContainerAttrs()
 	 */
 	public function getOutputHtmlContainerAttrs(): array {
 		return array();
@@ -103,7 +103,7 @@ class ContentItemGuiField implements GuiField {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\Displayable::createOutputUiComponent()
+	 * @see \rocket\ei\manage\gui\GuiField::createOutputUiComponent()
 	 */
 	public function createOutputUiComponent(HtmlView $view) {
 		if ($this->compact) {
@@ -146,10 +146,10 @@ class ContentItemGuiField implements GuiField {
 			if ($targetRelationEntry->hasEiEntry()) {
 				$targetEiEntry = $targetRelationEntry->getEiEntry();
 			} else {
-				$targetEiEntry = $targetUtils->entry($targetRelationEntry->getEiObject())->getEiEntry();
+				$targetEiEntry = $targetUtils->entry($targetRelationEntry->getEiObject())->getEiEntry(true);
 			}
 			
-			$panelName = (string) $targetEiEntry->getValue($panelEiPropPath, true);
+			$panelName = (string) $targetEiEntry->getValue($panelEiPropPath);
 			if (!isset($groupedUiComponents[$panelName])) {
 				$groupedUiComponents[$panelName] = array();
 			}

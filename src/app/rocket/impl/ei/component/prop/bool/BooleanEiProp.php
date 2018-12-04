@@ -29,7 +29,6 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
-use rocket\impl\ei\component\prop\adapter\DraftableEiPropAdapter;
 use n2n\reflection\ArgUtils;
 use n2n\reflection\property\AccessProxy;
 use n2n\reflection\property\TypeConstraint;
@@ -37,22 +36,23 @@ use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\web\dispatch\mag\Mag;
 use rocket\ei\util\Eiu;
 use rocket\ei\util\filter\prop\BoolFilterProp;
-use rocket\ei\manage\EiObject;
 use rocket\impl\ei\component\prop\bool\conf\BooleanEiPropConfigurator;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\sort\SortProp;
-use rocket\ei\manage\gui\GuiIdPath;
+use rocket\ei\manage\gui\GuiFieldPath;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
 use n2n\impl\persistence\orm\property\BoolEntityProperty;
 use rocket\ei\component\prop\SecurityFilterEiProp;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
+use rocket\ei\manage\entry\EiField;
+use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
 
-class BooleanEiProp extends DraftableEiPropAdapter implements FilterableEiProp, SortableEiProp, SecurityFilterEiProp {
+class BooleanEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiProp, SortableEiProp, SecurityFilterEiProp {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\DraftableEiPropAdapter::createEiPropConfigurator()
+	 * @see \rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter::createEiPropConfigurator()
 	 */
 	public function createEiPropConfigurator(): EiPropConfigurator {
 		return new BooleanEiPropConfigurator($this);
@@ -60,7 +60,7 @@ class BooleanEiProp extends DraftableEiPropAdapter implements FilterableEiProp, 
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\EntityPropertyEiPropAdapter::setEntityProperty()
+	 * @see \rocket\impl\ei\component\prop\adapter\PropertyEiPropAdapter::setEntityProperty()
 	 */
 	public function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty instanceof BoolEntityProperty 
@@ -71,23 +71,22 @@ class BooleanEiProp extends DraftableEiPropAdapter implements FilterableEiProp, 
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\ObjectPropertyEiPropAdapter::setObjectPropertyAccessProxy()
+	 * @see \rocket\impl\ei\component\prop\adapter\PropertyEiPropAdapter::setObjectPropertyAccessProxy()
 	 */
-	public function setObjectPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
+	public function setObjectPropertyAccessProxy(?AccessProxy $propertyAccessProxy) {
 // 		if ($propertyAccessProxy === null) {
 // 			return;
 // 		}
 		ArgUtils::assertTrue(null !== $propertyAccessProxy);
 		
-		
 		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('scalar',
-				$propertyAccessProxy->getConstraint()->allowsNull()));
-		$this->objectPropertyAccessProxy = $propertyAccessProxy;
+					$propertyAccessProxy->getConstraint()->allowsNull()));
+		parent::setObjectPropertyAccessProxy($propertyAccessProxy);
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\PropertyEditableEiPropAdapter::isMandatory()
+	 * @see \rocket\impl\ei\component\prop\adapter\EditablePropertyEiPropAdapter::isMandatory()
 	 */
 	public function isMandatory(Eiu $eiu): bool {
 		return false;
@@ -95,48 +94,48 @@ class BooleanEiProp extends DraftableEiPropAdapter implements FilterableEiProp, 
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\DraftableEiPropAdapter::read()
+	 * @see \rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter::read()
 	 */
-	public function read(EiObject $eiObject) {
-		return (bool) parent::read($eiObject);
+	public function read(Eiu $eiu) {
+		return (bool) parent::read($eiu);
 	}
 	
-	private $onAssociatedGuiIdPaths = array();
-	private $offAssociatedGuiIdPaths = array();
+	private $onAssociatedGuiFieldPaths = array();
+	private $offAssociatedGuiFieldPaths = array();
 	
 	/**
-	 * @param GuiIdPath[] $onAssociatedGuiIdPaths
+	 * @param GuiFieldPath[] $onAssociatedGuiFieldPaths
 	 */
-	public function setOnAssociatedGuiIdPaths(array $onAssociatedGuiIdPaths) {
-		ArgUtils::valArray($onAssociatedGuiIdPaths, GuiIdPath::class);
-		$this->onAssociatedGuiIdPaths = $onAssociatedGuiIdPaths;
-	}
-	
-	/**
-	 * @return GuiIdPath[]
-	 */
-	public function getOnAssociatedGuiIdPaths() {
-		return $this->onAssociatedGuiIdPaths;
+	public function setOnAssociatedGuiFieldPaths(array $onAssociatedGuiFieldPaths) {
+		ArgUtils::valArray($onAssociatedGuiFieldPaths, GuiFieldPath::class);
+		$this->onAssociatedGuiFieldPaths = $onAssociatedGuiFieldPaths;
 	}
 	
 	/**
-	 * @param GuiIdPath[] $offAssociatedGuiIdPaths
+	 * @return GuiFieldPath[]
 	 */
-	public function setOffAssociatedGuiIdPaths(array $offAssociatedGuiIdPaths) {
-		ArgUtils::valArray($offAssociatedGuiIdPaths, GuiIdPath::class);
-		$this->offAssociatedGuiIdPaths = $offAssociatedGuiIdPaths;
+	public function getOnAssociatedGuiFieldPaths() {
+		return $this->onAssociatedGuiFieldPaths;
 	}
 	
 	/**
-	 * @return GuiIdPath[]
+	 * @param GuiFieldPath[] $offAssociatedGuiFieldPaths
 	 */
-	public function getOffAssociatedGuiIdPaths() {
-		return $this->offAssociatedGuiIdPaths;
+	public function setOffAssociatedGuiFieldPaths(array $offAssociatedGuiFieldPaths) {
+		ArgUtils::valArray($offAssociatedGuiFieldPaths, GuiFieldPath::class);
+		$this->offAssociatedGuiFieldPaths = $offAssociatedGuiFieldPaths;
+	}
+	
+	/**
+	 * @return GuiFieldPath[]
+	 */
+	public function getOffAssociatedGuiFieldPaths() {
+		return $this->offAssociatedGuiFieldPaths;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\StatelessDisplayable::createOutputUiComponent()
+	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessDisplayable::createOutputUiComponent()
 	 */
 	public function createOutputUiComponent(HtmlView $view, Eiu $eiu)  {
 		$value = $this->getObjectPropertyAccessProxy()->getValue(
@@ -149,10 +148,10 @@ class BooleanEiProp extends DraftableEiPropAdapter implements FilterableEiProp, 
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\StatelessEditable::createMag()
+	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessEditable::createMag()
 	 */
 	public function createMag(Eiu $eiu): Mag {
-		if (empty($this->onAssociatedGuiIdPaths) && empty($this->offAssociatedGuiIdPaths)) {
+		if (empty($this->onAssociatedGuiFieldPaths) && empty($this->offAssociatedGuiFieldPaths)) {
 			return new BoolMag($this->getLabelLstr(), true);
 		}
 		
@@ -165,8 +164,8 @@ class BooleanEiProp extends DraftableEiPropAdapter implements FilterableEiProp, 
 		$that = $this;
 		$eiu->entryGui()->whenReady(function () use ($eiu, $enablerMag, $that) {
 			$onMagWrappers = array();
-			foreach ($that->getOnAssociatedGuiIdPaths() as $guiIdPath) {
-				$magWrapper = $eiu->entryGui()->getMagWrapper($guiIdPath, false);
+			foreach ($that->getOnAssociatedGuiFieldPaths() as $eiPropPath) {
+				$magWrapper = $eiu->entryGui()->getMagWrapper($eiPropPath, false);
 				if ($magWrapper === null) continue;
 				
 				$onMagWrappers[] = $magWrapper;
@@ -174,8 +173,8 @@ class BooleanEiProp extends DraftableEiPropAdapter implements FilterableEiProp, 
 			$enablerMag->setOnAssociatedMagWrappers($onMagWrappers);
 
 			$offMagWrappers = array();
-			foreach ($that->getOffAssociatedGuiIdPaths() as $guiIdPath) {
-				$magWrapper = $eiu->entryGui()->getMagWrapper($guiIdPath, false);
+			foreach ($that->getOffAssociatedGuiFieldPaths() as $eiPropPath) {
+				$magWrapper = $eiu->entryGui()->getMagWrapper($eiPropPath, false);
 				if ($magWrapper === null) continue;
 				
 				$offMagWrappers[] = $magWrapper;
@@ -187,28 +186,28 @@ class BooleanEiProp extends DraftableEiPropAdapter implements FilterableEiProp, 
 		return $enablerMag;
 	}
 	
-	public function buildEiField(Eiu $eiu) {
+	public function buildEiField(Eiu $eiu): ?EiField {
 		$that = $this;
 		$eiu->entry()->onValidate(function () use ($eiu, $that) {
-			$activeGuiIdPaths = array();
-			$notactiveGuiIdPaths = array();
+			$activeGuiFieldPaths = array();
+			$notactiveGuiFieldPaths = array();
 			
 			if ($eiu->field()->getValue()) {
-				$activeGuiIdPaths = $this->getOnAssociatedGuiIdPaths();
-				$notactiveGuiIdPaths = $this->getOffAssociatedGuiIdPaths();
+				$activeGuiFieldPaths = $this->getOnAssociatedGuiFieldPaths();
+				$notactiveGuiFieldPaths = $this->getOffAssociatedGuiFieldPaths();
 			} else {
-				$activeGuiIdPaths = $this->getOffAssociatedGuiIdPaths();
-				$notactiveGuiIdPaths = $this->getOnAssociatedGuiIdPaths();
+				$activeGuiFieldPaths = $this->getOffAssociatedGuiFieldPaths();
+				$notactiveGuiFieldPaths = $this->getOnAssociatedGuiFieldPaths();
 			}
 			
-			foreach ($notactiveGuiIdPaths as $key => $guiIdPath) {
-				if (null !== ($eiFieldWrapper = $eiu->entry()->getEiFieldWrapperByGuiIdPath($guiIdPath))) {
+			foreach ($notactiveGuiFieldPaths as $key => $eiPropPath) {
+				if (null !== ($eiFieldWrapper = $eiu->entry()->getEiFieldAbstraction($eiPropPath))) {
 					$eiFieldWrapper->setIgnored(true);
 				}
 			}
 			
-			foreach ($activeGuiIdPaths as $guiIdPath) {
-				if (null !== ($eiFieldWrapper = $eiu->entry()->getEiFieldWrapperByGuiIdPath($guiIdPath))) {
+			foreach ($activeGuiFieldPaths as $eiPropPath) {
+				if (null !== ($eiFieldWrapper = $eiu->entry()->getEiFieldAbstraction($eiPropPath))) {
 					$eiFieldWrapper->setIgnored(false);
 				}
 			}

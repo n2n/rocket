@@ -40,7 +40,7 @@ class OnlineEiCommand extends EiCommandAdapter implements EntryControlComponent 
 	
 	private $onlineEiProp;
 	
-	public function getIdBase() {
+	public function getIdBase(): ?string {
 		return self::ID_BASE;
 	}
 	
@@ -78,11 +78,11 @@ class OnlineEiCommand extends EiCommandAdapter implements EntryControlComponent 
 		if ($eiuEntry->getValue($this->onlineEiProp)) {
 			$controlButton->setType(ControlButton::TYPE_SUCCESS);
 			$controlButton->setIconType(IconType::ICON_CHECK_CIRCLE);
-			$urlExt = (new Path(array('offline', $eiuEntry->getLivePid())))->toUrl();
+			$urlExt = (new Path(array('offline', $eiuEntry->getPid())))->toUrl();
 		} else {
 			$controlButton->setType(ControlButton::TYPE_DANGER);
 			$controlButton->setIconType(IconType::ICON_MINUS_CIRCLE);
-			$urlExt = (new Path(array('online', $eiuEntry->getLivePid())))->toUrl();
+			$urlExt = (new Path(array('online', $eiuEntry->getPid())))->toUrl();
 		}
 		
 		return $eiuControlFactory->createJhtml($controlButton, $urlExt)

@@ -43,12 +43,12 @@ class DetailController extends ControllerAdapter {
 		$eiuEntry = $this->eiuCtrl->lookupEntry($pid);
 		
 		$eiuEntryGui = $eiuEntry->newEntryGui();
-		$eiuEntryGui->getEiuGui()->forceRootGroups();
+		$eiuEntryGui->gui()->forceRootGroups();
 		
 		$viewModel = new EntryCommandViewModel($this->eiuCtrl->frame(), null, $eiuEntry);
 		$viewModel->initializeDrafts();
 		
-		$this->applyBreadcrumbs($eiuEntryGui->getEiuEntry()->getEiObject());
+		$this->applyBreadcrumbs($eiuEntryGui->entry()->object()->getEiObject());
 			
 		$view = $this->createView('..\view\detail.html', array('entryCommandViewModel' => $viewModel,
 				'eiuEntryGui' => $eiuEntryGui));
@@ -82,7 +82,7 @@ class DetailController extends ControllerAdapter {
 		
 		$previewController = $this->eiuCtrl->lookupPreviewController($previewType, $eiuEntry);
 		
-		$this->applyBreadcrumbs($eiuEntry->getEiObject(), $previewType);
+		$this->applyBreadcrumbs($eiuEntry->object()->getEiObject(), $previewType);
 		
 		$this->forward('..\view\detailPreview.html', array( 
 				'iframeSrc' => $this->getHttpContext()->getControllerContextPath($this->getControllerContext())

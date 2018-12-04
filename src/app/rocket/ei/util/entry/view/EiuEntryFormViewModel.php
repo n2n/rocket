@@ -135,7 +135,7 @@ class EiuEntryFormViewModel {
 		$iconTypeMap = array();
 		
 		foreach ($this->eiuEntryForm->getEiuEntryTypeForms() as $eiTypeId => $eiuEntryTypeForm) {
-			$iconTypeMap[$eiTypeId] = $eiuEntryTypeForm->getEiuEntryGui()->getEiuEntry()->getGenericIconType();
+			$iconTypeMap[$eiTypeId] = $eiuEntryTypeForm->getEiuEntryGui()->entry()->getGenericIconType();
 		}
 		
 		return $iconTypeMap;
@@ -183,7 +183,7 @@ class EiuEntryFormViewModel {
 			$htmlSnippet->appendLn($eiuHtml->getEntryOpen('div', $eiuEntryGui, $this->createEntryAttrs()));
 			
 			$htmlSnippet->appendLn(new HtmlElement('label', null, 
-					$this->displayContainerLabel ?? $eiuEntryGui->getEiuEntry()->getGenericLabel()));
+					$this->displayContainerLabel ?? $eiuEntryGui->entry()->getGenericLabel()));
 			
 			$this->groupTypeForm($eiuEntryTypeForm, $htmlSnippet, $contextView);
 			
@@ -220,7 +220,7 @@ class EiuEntryFormViewModel {
 					$this->createEntryAttrs(['class' => 'rocket-ei-type-entry-form rocket-ei-type-' . $eiTypeId
 							. ' rocket-group rocket-simple-group'])));
 			
-			$htmlSnippet->appendLn(new HtmlElement('label', null, $eiuEntryGui->getEiuEntry()->getGenericLabel()));
+			$htmlSnippet->appendLn(new HtmlElement('label', null, $eiuEntryGui->entry()->getGenericLabel()));
 			
 			$this->groupTypeForm($eiuEntryTypeForm, $htmlSnippet, $contextView);
 			

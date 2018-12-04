@@ -26,7 +26,6 @@ use rocket\ei\manage\gui\GuiProp;
 use n2n\l10n\N2nLocale;
 use n2n\util\ex\UnsupportedOperationException;
 use rocket\ei\component\prop\GuiEiProp;
-use rocket\ei\manage\EiObject;
 use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\gui\DisplayDefinition;
@@ -36,6 +35,10 @@ use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\GuiField;
 use rocket\core\model\Rocket;
 use n2n\l10n\Lstr;
+use rocket\impl\ei\component\prop\adapter\gui\StatelessDisplayable;
+use rocket\impl\ei\component\prop\adapter\config\DisplaySettings;
+use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
+use rocket\impl\ei\component\prop\adapter\gui\StatelessDisplayElement;
 
 abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter implements StatelessDisplayable, GuiEiProp, GuiProp {
 	protected $displaySettings;
@@ -121,19 +124,14 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 // 	}
 	
 	public function getOutputHtmlContainerAttrs(Eiu $eiu) {
-		$eiMask = $this->eiMask;
-		return array(
-				'class' => 'rocket-ei-spec-' . $this->eiMask->getEiType()->getId()
-						. ($eiMask->isExtension() ? ' rocket-ei-mask-' . $eiMask->getExtension()->getId() : '') 
-						. ' rocket-ei-field-' . $this->getId(), 
-				'title' => $this->getDisplaySettings()->getHelpText());
+		return array('title' => $this->getDisplaySettings()->getHelpText());
 	}
 	
 	public function isStringRepresentable(): bool {
 		return false;
 	}
 	
-	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): ?string {
-		throw new UnsupportedOperationException('EiProp ' . $this->id . ' not string representable.');
+	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
+		throw new UnsupportedOperationException('EiProp ' . $this . ' not string representable.');
 	}
 }

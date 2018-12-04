@@ -47,7 +47,7 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialCont
 	const PRIVILEGE_LIVE_ENTRY_KEY = 'eiEntityObj';
 	const PRIVILEGE_DRAFT_KEY = 'draft';
 	
-	public function getIdBase() {
+	public function getIdBase(): ?string {
 		return self::ID_BASE;
 	}
 	
@@ -78,7 +78,7 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialCont
 					array('last_mod' => $view->getL10nDateTime($draft->getLastMod())));
 			$iconType = IconType::ICON_TIMES_CIRCLE;
 		} else {
-			$pathExt = new Path(array('live', $eiuEntry->getLivePid()));
+			$pathExt = new Path(array('live', $eiuEntry->getPid()));
 			$identityString = $eiuEntry->createIdentityString();
 			$name = $view->getL10nText('common_delete_label');
 			$tooltip = $view->getL10nText('ei_impl_delete_entry_tooltip', 

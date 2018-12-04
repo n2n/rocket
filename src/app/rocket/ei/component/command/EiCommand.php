@@ -24,8 +24,22 @@ namespace rocket\ei\component\command;
 use rocket\ei\component\EiComponent;
 use rocket\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
+use n2n\util\ex\IllegalStateException;
 
 interface EiCommand extends EiComponent {
+	
+	/**
+	 * Will be the first called method by rocket
+	 * @param EiCommandWrapper $wrapper
+	 */
+	public function setWrapper(EiCommandWrapper $wrapper);
+	
+	/**
+	 * @return EiCommandWrapper
+	 * @throws IllegalStateException if {@self::setWrapper()} hasn't been called yet.
+	 */
+	public function getWrapper(): EiCommandWrapper;
+	
 	/**
 	 * @param Eiu $eiu
 	 * @return Controller

@@ -12,8 +12,11 @@ class Eiu implements Lookupable {
 	private $eiuContext;
 	private $eiuEngine;
 	private $eiuMask;
+	private $eiuProp;
 	private $eiuFrame;
+	private $eiuObject;
 	private $eiuEntry;
+	private $eiuFieldMap;
 	private $eiuGui;
 	private $eiuEntryGui;
 	private $eiuField;
@@ -65,6 +68,18 @@ class Eiu implements Lookupable {
 	}
 	
 	/**
+	 * @param bool $required
+	 * @return \rocket\ei\util\spec\EiuProp
+	 */
+	public function prop(bool $required = true) {
+		if ($this->eiuProp !== null) {
+			return $this->eiuProp;
+		}
+		
+		return $this->eiuProp = $this->eiuAnalyst->getEiuProp($required);
+	}
+	
+	/**
 	 * @return \rocket\ei\util\frame\EiuFrame
 	 */
 	public function frame(bool $required = true)  {
@@ -78,6 +93,19 @@ class Eiu implements Lookupable {
 	/**
 	 * @param bool $required
 	 * @throws EiuPerimeterException
+	 * @return \rocket\ei\util\entry\EiuObject
+	 */
+	public function object(bool $required = true) {
+		if ($this->eiuObject !== null) {
+			return $this->eiuObject;
+		}
+		
+		return $this->eiuObject = $this->eiuAnalyst->getEiuObject($required);
+	}
+	
+	/**
+	 * @param bool $required
+	 * @throws EiuPerimeterException
 	 * @return \rocket\ei\util\entry\EiuEntry
 	 */
 	public function entry(bool $required = true) {
@@ -86,6 +114,14 @@ class Eiu implements Lookupable {
 		}
 		
 		return $this->eiuEntry = $this->eiuAnalyst->getEiuEntry($required);
+	}
+	
+	public function fieldMap(bool $required = true) {
+		if ($this->eiuFieldMap !== null) {
+			return $this->eiuFieldMap;
+		}
+		
+		return $this->eiuFieldMap = $this->eiuAnalyst->getEiuFieldMap($required);
 	}
 	
 	/**

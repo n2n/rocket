@@ -23,7 +23,7 @@ namespace rocket\impl\ei\component\prop\relation\model\relation;
 
 use rocket\ei\manage\EiObject;
 use rocket\ei\manage\frame\EiFrame;
-use rocket\impl\ei\component\prop\adapter\DraftableEiPropAdapter;
+use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\EiType;
 use rocket\ei\mask\EiMask;
@@ -118,7 +118,7 @@ class EmbeddedEiPropRelation extends EiPropRelation {
 	
 // 	public function completeMagCollection(MagCollection $magCollection) {
 // 		$dtc = new DynamicTextCollection('rocket');
-// 		$magCollection->addMag(DraftableEiPropAdapter::ATTR_DRAFTABLE_KEY,
+// 		$magCollection->addMag(DraftablePropertyEiPropAdapter::ATTR_DRAFTABLE_KEY,
 // 				new BoolMag($dtc->translate('ei_impl_draftable_label'), self::OPTION_DRAFTABLE_DEFAULT));
 // 		$magCollection->addMag(TranslatableEiPropAdapter::OPTION_TRANSLATION_ENABLED_KEY,
 // 				new BoolMag($dtc->translate('ei_impl_translatable_label'), self::OPTION_TRANSLATION_ENABLED_DEFAULT));
@@ -132,7 +132,7 @@ class EmbeddedEiPropRelation extends EiPropRelation {
 	
 	public function isDraftable() {
 		return false;
-		return $this->relationEiProp->getAttributes()->get(DraftableEiPropAdapter::ATTR_DRAFTABLE_KEY, 
+		return $this->relationEiProp->getAttributes()->get(DraftablePropertyEiPropAdapter::ATTR_DRAFTABLE_KEY, 
 				self::OPTION_DRAFTABLE_DEFAULT);
 	}
 	

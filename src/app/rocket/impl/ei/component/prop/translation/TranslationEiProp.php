@@ -29,8 +29,8 @@ use rocket\impl\ei\component\prop\relation\RelationEiProp;
 use rocket\impl\ei\component\prop\translation\model\TranslationGuiFieldFork;
 use rocket\ei\manage\gui\GuiPropFork;
 use rocket\impl\ei\component\prop\translation\conf\TranslationEiConfigurator;
-use rocket\ei\component\prop\field\Readable;
-use rocket\ei\component\prop\field\Writable;
+use rocket\impl\ei\component\prop\adapter\entry\Readable;
+use rocket\impl\ei\component\prop\adapter\entry\Writable;
 use rocket\ei\manage\entry\EiField;
 use rocket\ei\component\prop\FieldEiProp;
 use rocket\ei\manage\gui\GuiFieldFork;
@@ -56,18 +56,19 @@ use rocket\ei\manage\critmod\sort\SortConstraint;
 use rocket\ei\manage\critmod\sort\CriteriaAssemblyState;
 use rocket\impl\ei\component\prop\translation\conf\N2nLocaleDef;
 use rocket\ei\util\Eiu;
-use rocket\ei\manage\entry\EiEntry;
-use rocket\ei\manage\gui\GuiIdPath;
 use rocket\impl\ei\component\prop\translation\model\TranslationEiField;
 use rocket\ei\component\prop\QuickSearchableEiProp;
 use rocket\impl\ei\component\prop\translation\model\TranslationQuickSearchProp;
-use rocket\ei\component\prop\field\EiFieldWrapperWrapper;
+use rocket\impl\ei\component\prop\adapter\entry\EiFieldWrapperCollection;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\impl\ei\component\prop\translation\command\TranslationCopyCommand;
 use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\ei\component\prop\GuiEiPropFork;
 use rocket\ei\manage\gui\GuiProp;
+use rocket\ei\manage\gui\GuiFieldPath;
+use rocket\ei\manage\gui\EiFieldAbstraction;
+use rocket\ei\manage\LiveEiObject;
 
 class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiPropFork, FieldEiProp, RelationEiProp, 
 		Readable, Writable, GuiPropFork, SortableEiPropFork, QuickSearchableEiProp {
@@ -131,11 +132,11 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiPropFork
 	/* (non-PHPdoc)
 	 * @see \rocket\ei\component\prop\EiProp::getEiField()
 	 */
-	public function buildEiField(Eiu $eiu) {
+	public function buildEiField(Eiu $eiu): ?EiField {
 		$readOnly = $this->eiPropRelation->isReadOnly($eiu->entry()->getEiEntry(), $eiu->frame()->getEiFrame());
 		
-		return new TranslationEiField($eiu->entry()->getEiObject(), $this, $this,
-				($readOnly ? null : $this));
+		return new TranslationEiField($eiu, $this,
+				($readOnly ? null : $this), $this);
 	}
 	
 	public function buildEiFieldFork(EiObject $eiObject, EiField $eiField = null) {
@@ -227,29 +228,40 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiPropFork
 		return $translationGuiField;
 	}
 	
-	public function determineForkedEiObject(EiObject $eiObject): ?EiObject {
+	public function determineForkedEiObject(Eiu $eiu): ?EiObject {
 		// @todo access locale and use EiObject with admin locale.
-		return ArrayUtils::first($this->read($eiObject));
+		
+		$targetObjects = $eiu->object()->readNativValue($this);
+		
+		if (empty($targetObjects)) {
+			return null;
+		}
+		
+		if ($targetObjects instanceof \ArrayObject) {
+			$targetObjects = $targetObjects->getArrayCopy();
+		}
+		
+		return LiveEiObject::create($this->eiPropRelation->getTargetEiType(), ArrayUtils::first($targetObjects));
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiPropFork::determineEiFieldWrapper()
 	 */
-	public function determineEiFieldWrapper(EiEntry $eiEntry, GuiIdPath $guiIdPath) {
+	public function determineEiFieldAbstraction(Eiu $eiu, GuiFieldPath $guiFieldPath): EiFieldAbstraction {
+		$eiEntry = $eiu->entry()->getEiEntry();
+		
 		$eiFieldWrappers = array();
 		foreach ($eiEntry->getValue(EiPropPath::from($this->eiPropRelation->getRelationEiProp())) as $targetRelationEntry) {
-			if ($targetRelationEntry->hasEiEntry()) continue;
+			if (!$targetRelationEntry->hasEiEntry()) continue;
 				
-			if (null !== ($eiFieldWrapper = $this->guiDefinition
-					->determineEiFieldWrapper($targetRelationEntry->getEiEntry(), $guiIdPath))) {
+			if (null !== ($eiFieldWrapper = $eiu->engine()->getGuiDefinition()
+					->determineEiFieldAbstraction($eiu->getN2nContext(), $targetRelationEntry->getEiEntry(), $guiFieldPath))) {
 				$eiFieldWrappers[] = $eiFieldWrapper;
 			}
 		}
 	
-		if (empty($eiFieldWrappers)) return null;
-	
-		return new EiFieldWrapperWrapper($eiFieldWrappers);
+		return new EiFieldWrapperCollection($eiFieldWrappers);
 	}
 	
 	public function buildSortPropFork(Eiu $eiu): ?SortPropFork {

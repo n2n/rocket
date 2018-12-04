@@ -25,9 +25,9 @@ use n2n\l10n\N2nLocale;
 use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\component\prop\DraftableEiProp;
 use rocket\ei\manage\draft\DraftProperty;
-use rocket\ei\manage\EiObject;
 use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
+use rocket\ei\manage\entry\EiField;
 
 abstract class ToManyEiPropAdapter extends SimpleRelationEiPropAdapter implements GuiProp, DraftableEiProp, 
 		DraftProperty {
@@ -72,8 +72,8 @@ abstract class ToManyEiPropAdapter extends SimpleRelationEiPropAdapter implement
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiProp::buildIdentityString()
 	 */
-	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): string {
-		$targetEiObjects = $this->read($eiObject);
+	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): string {
+		$targetEiObjects = $eiu->object()->readNativValue($this);
 		
 		$numTargetEiObjects = count($targetEiObjects);
 		if ($numTargetEiObjects == 1) {
@@ -83,10 +83,10 @@ abstract class ToManyEiPropAdapter extends SimpleRelationEiPropAdapter implement
 		return $numTargetEiObjects . ' ' . $this->eiPropRelation->getTargetEiMask()->getPluralLabelLstr();
 	}
 
-	public function buildEiField(Eiu $eiu) {
+	public function buildEiField(Eiu $eiu): ?EiField {
 		$readOnly = $this->eiPropRelation->isReadOnly($eiu->entry()->getEiEntry(), $eiu->frame()->getEiFrame());
 	
-		return new ToManyEiField($eiu->entry()->getEiObject(), $this, $this,
+		return new ToManyEiField($eiu, $this, $this,
 				($readOnly ? null : $this));
 	}
 }

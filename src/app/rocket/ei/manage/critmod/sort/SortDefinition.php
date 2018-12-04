@@ -29,13 +29,13 @@ class SortDefinition {
 	private $sortProps = array();
 	private $sortPropForks = array();
 	
-	public function putSortProp(string $id, SortProp $sortProp) {
-		ArgUtils::assertTrue(!EiPropPath::constainsSpecialIdChars($id), 'Invalid id.');
-		$this->sortProps[$id] = $sortProp;	
+	public function putSortProp(EiPropPath $eiPropPath, SortProp $sortProp) {
+// 		ArgUtils::assertTrue(!EiPropPath::constainsSpecialIdChars($id), 'Invalid id.');
+		$this->sortProps[(string) $eiPropPath] = $sortProp;	
 	}
 	
-	public function containsSortPropId(string $id): bool {
-		return isset($this->sortProps[$id]);
+	public function containsEiPropPath(EiPropPath $eiPropPath): bool {
+		return isset($this->sortProps[(string) $eiPropPath]);
 	}
 	
 	public function getSortProps(): array {
@@ -46,13 +46,12 @@ class SortDefinition {
 // 		$this->sortProps = $sortProps;
 // 	}
 
-	public function containsSortPropFork(string $id): bool {
-		return isset($this->sortPropForks[$id]);
+	public function containsSortPropFork(EiPropPath $eiPropPath): bool {
+		return isset($this->sortPropForks[(string) $eiPropPath]);
 	}
 
-	public function putSortPropFork(string $id, SortPropFork $sortPropFork) {
-		ArgUtils::assertTrue(!EiPropPath::constainsSpecialIdChars($id), 'Invalid id.');
-		$this->sortPropForks[$id] = $sortPropFork;
+	public function putSortPropFork(EiPropPath $eiPropPath, SortPropFork $sortPropFork) {
+		$this->sortPropForks[(string) $eiPropPath] = $sortPropFork;
 	}
 	
 	public function getSortPropForks(): array {

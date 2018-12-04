@@ -33,10 +33,9 @@ use n2n\impl\web\dispatch\mag\model\EnumMag;
 use rocket\ei\manage\generic\CommonScalarEiProperty;
 use n2n\impl\persistence\orm\property\N2nLocaleEntityProperty;
 use n2n\reflection\ArgUtils;
-use rocket\impl\ei\component\prop\adapter\DraftableEiPropAdapter;
+use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
 use n2n\reflection\property\TypeConstraint;
 use n2n\reflection\property\AccessProxy;
-use rocket\ei\manage\EiObject;
 use n2n\core\container\N2nContext;
 use n2n\web\dispatch\mag\Mag;
 use rocket\ei\util\Eiu;
@@ -48,8 +47,9 @@ use n2n\core\config\WebConfig;
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\sort\SortProp;
 use rocket\ei\manage\generic\GenericEiProperty;
+use rocket\ei\manage\generic\ScalarEiProperty;
 
-class N2nLocaleEiProp extends DraftableEiPropAdapter implements FilterableEiProp, SortableEiProp, GenericEiProp,
+class N2nLocaleEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiProp, SortableEiProp, GenericEiProp,
 		ScalarEiProp {
 	private $definedN2nLocales;
 	
@@ -111,10 +111,14 @@ class N2nLocaleEiProp extends DraftableEiPropAdapter implements FilterableEiProp
 // 		$attributes->set($this->id, $attributeValue);
 // 	}
 
-	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): ?string {
-		$value = $this->read($eiObject);
-		if (null === ($parsedN2nLocale = N2nLocale::create($value))) return $value;
-		return $this->generateDisplayNameForN2nLocale($parsedN2nLocale, $n2nLocale);
+	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
+		$value = $eiu->object()->readNativValue($this);
+		
+		if ($value === null) {
+			return null;
+		}
+		
+		return $this->generateDisplayNameForN2nLocale(N2nLocale::create($value), $n2nLocale);
 	}
 
 	public function isCompatibleWith(EntityProperty $entityProperty) {
@@ -168,7 +172,7 @@ class N2nLocaleEiProp extends DraftableEiPropAdapter implements FilterableEiProp
 	}
 
 
-	public function getScalarEiProperty() {
+	public function getScalarEiProperty(): ?ScalarEiProperty {
 		return new CommonScalarEiProperty($this,
 				function (N2nLocale $n2nLocale = null) {
 					if ($n2nLocale === null) return null;

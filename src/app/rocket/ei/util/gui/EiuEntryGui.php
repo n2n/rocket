@@ -24,10 +24,10 @@ namespace rocket\ei\util\gui;
 use rocket\ei\manage\gui\EiEntryGui;
 use n2n\reflection\magic\MagicMethodInvoker;
 use rocket\ei\manage\gui\EiEntryGuiListener;
-use rocket\ei\manage\gui\GuiIdPath;
+use rocket\ei\manage\gui\GuiFieldPath;
 use rocket\ei\manage\gui\GuiException;
 use n2n\web\dispatch\mag\MagWrapper;
-use rocket\ei\manage\entry\EiFieldWrapper;
+use rocket\ei\manage\gui\EiFieldAbstraction;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\gui\ViewMode;
@@ -51,7 +51,7 @@ class EiuEntryGui {
 	/**
 	 * @return EiuGui 
 	 */
-	public function getEiuGui() {
+	public function gui() {
 		if ($this->eiuGui !== null) {
 			return $this->eiuGui;
 		}
@@ -68,28 +68,28 @@ class EiuEntryGui {
 	
 	/**
 	 * @see EiEntryGui::getGuiIdsPaths()
-	 * @return \rocket\ei\manage\gui\GuiIdPath[]
+	 * @return \rocket\ei\manage\gui\GuiFieldPath[]
 	 */
-	public function getGuiIdPaths() {
-		return $this->eiEntryGui->getGuiFieldGuiIdPaths();	
+	public function getGuiFieldPaths() {
+		return $this->eiEntryGui->getGuiFieldGuiFieldPaths();	
 	}
 	
 	/**
-	 * @param GuiIdPath $guiIdPath
+	 * @param GuiFieldPath $guiFieldPath
 	 * @return bool
 	 */
-	public function containsGuiIdPath(GuiIdPath $guiIdPath) {
-		return $this->eiEntryGui->containsDisplayable($guiIdPath);
+	public function containsGuiFieldPath(GuiFieldPath $guiFieldPath) {
+		return $this->eiEntryGui->containsDisplayable($guiFieldPath);
 	}
 	
 	/**
-	 * @param GuiIdPath|string $guiIdPath
+	 * @param GuiFieldPath|string $eiPropPath
 	 * @param bool $required
 	 * @throws GuiException
 	 * @return string|null
 	 */
-	public function getFieldLabel($guiIdPath, N2nLocale $n2nLocale = null, bool $required = false) {
-		return $this->getEiuGui()->getPropLabel($guiIdPath, $n2nLocale, $required);
+	public function getFieldLabel($eiPropPath, N2nLocale $n2nLocale = null, bool $required = false) {
+		return $this->gui()->getPropLabel($eiPropPath, $n2nLocale, $required);
 	}
 	
 	/**
@@ -158,7 +158,7 @@ class EiuEntryGui {
 	/**
 	 * @param \Closure $closure
 	 */
-	public function whenSave(\Closure $closure) {
+	public function onSaved(\Closure $closure) {
 		$this->eiEntryGui->registerEiEntryGuiListener(new ClosureGuiListener(new Eiu($this), null, null, $closure));
 	}
 	
@@ -175,41 +175,49 @@ class EiuEntryGui {
 	}
 	
 	/**
-	 * @param GuiIdPath|string $guiIdPath
+	 * @param GuiFieldPath|string $eiPropPath
 	 * @param bool $required
 	 * @throws GuiException
 	 * @return MagWrapper
 	 */
-	public function getMagWrapper($guiIdPath, bool $required = false) {
+	public function getMagWrapper($guiFieldPath, bool $required = false) {
 		$magWrapper = null;
 		
 		try {
-			$magAssembly = $this->eiEntryGui->getGuiFieldAssembly(GuiIdPath::create($guiIdPath))->getMagAssembly();
+			$magAssembly = $this->eiEntryGui->getGuiFieldAssembly(GuiFieldPath::create($guiFieldPath))->getMagAssembly();
 			if ($magAssembly !== null) {
 				return $magAssembly->getMagWrapper();
 			}
 			
-			throw new GuiException('No GuiField with GuiIdPath \'' . $guiIdPath . '\' is not editable.');
+			throw new GuiException('No GuiField with GuiFieldPath \'' . $guiFieldPath . '\' is not editable.');
 		} catch (GuiException $e) {
 			if ($required) throw $e;
 			return null;
 		}
 	}
 	
+	public function getSubMagWrappers($prefixGuiFieldPath, bool $checkOnEiPropPathLevel = true) {
+		$prefixGuiFieldPath = GuiFieldPath::create($prefixGuiFieldPath);
+		
+		$magWrappers = [];
+		foreach ($this->eiEntryGui->filterGuiFieldAssemblies($prefixGuiFieldPath, $checkOnEiPropPathLevel)
+				as $key => $guiFieldAssembly) {
+			if (null !== ($magAssembly = $guiFieldAssembly->getMagAssembly())) {
+				$magWrappers[$key] = $magAssembly->getMagWrapper();	
+			}
+		}
+		
+		return $magWrappers;
+	}
+	
 	/**
-	 * @param GuiIdPath|string $guiIdPath
+	 * @param GuiFieldPath|string $eiPropPath
 	 * @param bool $required
 	 * @throws GuiException
-	 * @return EiFieldWrapper
+	 * @return EiFieldAbstraction
 	 */
-	public function getEiFieldWrapper($guiIdPath, bool $required = false) {
-		try {
-			return $this->eiEntryGui->getEiFieldWrapperByGuiIdPath(
-					GuiIdPath::create($guiIdPath));
-		} catch (GuiException $e) {
-			if ($required) throw $e;
-			return null;
-		}
+	public function getEiFieldAbstraction($guiPropPath, bool $required = false) {
+		return $this->eiuEntry->getEiFieldAbstraction($guiFieldPath, $required);
 	}
 	
 // 	/**
@@ -248,9 +256,9 @@ class EiuEntryGui {
 	 * @throws EiuPerimeterException
 	 * @return \rocket\ei\util\entry\EiuEntry
 	 */
-	public function getEiuEntry() {
+	public function entry() {
 		if ($this->eiuEntry === null) {
-			$this->eiuEntry = $this->getEiuGui()->getEiuFrame()->entry($this->getEiEntryGui()->getEiEntry());
+			$this->eiuEntry = $this->gui()->getEiuFrame()->entry($this->getEiEntryGui()->getEiEntry());
 		}
 		
 		return $this->eiuEntry;
@@ -260,7 +268,7 @@ class EiuEntryGui {
 	 * @return \rocket\ei\util\gui\EiuEntryGui
 	 */
 	public function addDisplayContainer(string $type, string $label, array $attrs = null) {
-		$this->getEiuGui()->addDisplayContainer($type, $label, $attrs);
+		$this->gui()->addDisplayContainer($type, $label, $attrs);
 		return $this;
 	}
 		
@@ -268,7 +276,7 @@ class EiuEntryGui {
 	 * @return \rocket\ei\util\gui\EiuEntryGui
 	 */
 	public function removeGroups() {
-		$this->getEiuGui()->removeSubStructures();
+		$this->gui()->removeSubStructures();
 		return $this;
 	}
 	
@@ -276,7 +284,7 @@ class EiuEntryGui {
 	 * @return \rocket\ei\util\gui\EiuEntryGui
 	 */
 	public function forceRootGroups() {
-		$this->getEiuGui()->forceRootGroups();
+		$this->gui()->forceRootGroups();
 		return $this;
 	}
 	
@@ -284,7 +292,7 @@ class EiuEntryGui {
 	 * @return \rocket\ei\util\gui\EiuEntryGui
 	 */
 	public function renderEntryControls(bool $renderEntryControls = true) {
-		$this->getEiuGui()->renderEntryControls($renderEntryControls);
+		$this->gui()->renderEntryControls($renderEntryControls);
 		return $this;
 	}
 	
@@ -292,7 +300,7 @@ class EiuEntryGui {
 	 * @return \rocket\ei\util\gui\EiuEntryGui
 	 */
 	public function renderForkControls(bool $renderForkControls = true) {
-		$this->getEiuGui()->renderForkControls($renderForkControls);
+		$this->gui()->renderForkControls($renderForkControls);
 		return $this;
 	}
 		
@@ -308,7 +316,7 @@ class EiuEntryGui {
 	 * @return \n2n\impl\web\ui\view\html\HtmlView
 	 */
 	public function createView(HtmlView $contextView = null) {
-		return $this->getEiuGui()->createView($contextView);
+		return $this->gui()->createView($contextView);
 	}
 	
 	/**
@@ -352,7 +360,7 @@ class ClosureGuiListener implements EiEntryGuiListener {
 	 * @param \Closure $onSaveClosure
 	 * @param \Closure $savedClosure
 	 */
-	public function __construct(Eiu $eiu, \Closure $whenReadyClosure, \Closure $onSaveClosure = null,
+	public function __construct(Eiu $eiu, \Closure $whenReadyClosure = null, \Closure $onSaveClosure = null,
 			\Closure $savedClosure = null) {
 		$this->eiu = $eiu;
 		$this->whenReadyClosure = $whenReadyClosure;

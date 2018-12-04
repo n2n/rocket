@@ -41,7 +41,7 @@ class EntryCommandViewModel {
 	public function getTitle() {
 		if ($this->title !== null) return $this->title;
 			
-		return $this->title = $this->eiuEntry->createIdentityString(true);
+		return $this->title = $this->eiuEntry->createIdentityString();
 	}
 	
 	public function setTitle($title) {
@@ -65,7 +65,7 @@ class EntryCommandViewModel {
 	public function initializeDrafts() {
 		return;
 		$eiuEntry = $this->getEiuEntry();
-		if ($eiuEntry->hasLiveId() && $this->getEiuFrame()->isDraftingEnabled()) {
+		if ($eiuEntry->hasId() && $this->getEiuFrame()->isDraftingEnabled()) {
 			$this->historicizedDrafts = $eiuEntry->lookupDrafts(0, 30);
 		}
 		
@@ -103,7 +103,7 @@ class EntryCommandViewModel {
 	}
 	
 	public function isPreviewAvailable() {
-		return $this->getEiuEntry()->isPreviewAvailable();
+		return $this->getEiuEntry()->isPreviewSupported();
 	}
 	
 // 	public function getEiuEntryGui() {

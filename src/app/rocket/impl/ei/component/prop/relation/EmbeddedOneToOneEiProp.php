@@ -24,7 +24,7 @@ namespace rocket\impl\ei\component\prop\relation;
 use n2n\reflection\ArgUtils;
 use rocket\impl\ei\component\prop\relation\model\relation\EmbeddedEiPropRelation;
 use rocket\ei\manage\EiObject;
-use rocket\impl\ei\component\prop\adapter\DisplaySettings;
+use rocket\impl\ei\component\prop\adapter\config\DisplaySettings;
 use rocket\impl\ei\component\prop\relation\model\ToOneEditable;
 use rocket\impl\ei\component\prop\relation\model\EmbeddedOneToOneGuiField;
 use rocket\ei\manage\draft\stmt\FetchDraftStmtBuilder;
@@ -112,17 +112,17 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\field\Readable::read()
+	 * @see \rocket\impl\ei\component\prop\adapter\entry\Readable::read()
 	 */
-	public function read(EiObject $eiObject) {
-		if ($this->isDraftable() && $eiObject->isDraft()) {
-			$targetDraft = $eiObject->getDraftValueMap()->getValue(EiPropPath::from($this));
+	public function read(Eiu $eiu) {
+		if ($eiu->object()->isDraftProp($this)) {
+			$targetDraft = $eiu->entry()->readNativValue($this);
 			if ($targetDraft === null) return null;
 			
 			return new DraftEiObject($targetDraft);
 		}
 		
-		$targetEntityObj = $this->getObjectPropertyAccessProxy()->getValue($eiObject->getLiveObject());
+		$targetEntityObj = $eiu->entry()->readNativValue($this);
 		if ($targetEntityObj === null) return null;
 		
 		return LiveEiObject::create($this->eiPropRelation->getTargetEiType(), $targetEntityObj);
@@ -130,31 +130,31 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\field\Writable::write()
+	 * @see \rocket\impl\ei\component\prop\adapter\entry\Writable::write()
 	 */
-	public function write(EiObject $eiObject, $value) {
+	public function write(Eiu $eiu, $value) {
 		CastUtils::assertTrue($value === null || $value instanceof EiObject);
 	
-		if ($this->isDraftable() && $eiObject->isDraft()) {
+		if ($eiu->object()->isDraftProp($this)) {
 			$targetDraft = null;
 			if ($value !== null) $targetDraft = $value->getDraft();
 				
-			$eiObject->getDraftValueMap()->setValue(EiPropPath::from($this), $targetDraft);
+			$eiu->entry()->writeNativeValue($this, $targetDraft);
 			return;
 		} 
 		
 		$targetEntityObj = null;
 		if ($value !== null) $targetEntityObj = $value->getLiveObject();
 		
-		$this->getObjectPropertyAccessProxy()->setValue($eiObject->getLiveObject(), $targetEntityObj);
+		$eiu->entry()->writeNativeValue($this, $targetEntityObj);
 	}
 	
-	public function copy(EiObject $eiObject, $value, Eiu $copyEiu) {
-		if ($value === null || ($eiObject->isDraft() && !$this->isDraftable())) return null;
+	public function copy(Eiu $eiu, $value, Eiu $copyEiu) {
+		if ($value === null || ($eiu->entry()->isDraft() && !$this->isDraftable())) return null;
 		
 		$targetEiuFrame = (new Eiu($this->eiPropRelation->createTargetEditPseudoEiFrame(
 				$copyEiu->frame()->getEiFrame(), $copyEiu->entry()->getEiEntry())))->frame();
-		return RelationEntry::fromM($targetEiuFrame->copyEntry($value->toEiEntry($targetEiuFrame), $eiObject->isDraft())->getEiEntry());
+		return RelationEntry::fromM($targetEiuFrame->copyEntry($value->toEiEntry($targetEiuFrame), $eiu->entry()->isDraft())->getEiEntry());
 	}
 	
 	/**

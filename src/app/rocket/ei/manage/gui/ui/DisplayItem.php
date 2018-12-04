@@ -1,7 +1,7 @@
 <?php
 namespace rocket\ei\manage\gui\ui;
 
-use rocket\ei\manage\gui\GuiIdPath;
+use rocket\ei\manage\gui\GuiFieldPath;
 use n2n\util\ex\IllegalStateException;
 use n2n\reflection\ArgUtils;
 use n2n\l10n\N2nLocale;
@@ -18,7 +18,7 @@ class DisplayItem {
 	protected $label;
 	protected $moduleNamespace;
 	protected $type;
-	protected $guiIdPath;
+	protected $guiFieldPath;
 	protected $helpText;
 	protected $attrs;
 	protected $displayStructure;
@@ -27,31 +27,31 @@ class DisplayItem {
 	}
 
 	/**
-	 * @param GuiIdPath $guiIdPath
+	 * @param GuiFieldPath $guiFieldPath
 	 * @return DisplayItem
 	 */
-	public static function create(GuiIdPath $guiIdPath, string $type = null, string $label = null, 
+	public static function create(GuiFieldPath $guiFieldPath, string $type = null, string $label = null, 
 			string $moduleNamespace = null) {
 		$orderItem = new DisplayItem();
 		$orderItem->label = $label;
 		$orderItem->moduleNamespace = $moduleNamespace;
 		ArgUtils::valEnum($type, self::getTypes(), null, true);
 		$orderItem->type = $type;
-		$orderItem->guiIdPath = $guiIdPath;
+		$orderItem->guiFieldPath = $guiFieldPath;
 		return $orderItem;
 	}
 	
 	/**
-	 * @param GuiIdPath $guiIdPath
+	 * @param GuiFieldPath $guiFieldPath
 	 * @return DisplayItem
 	 * @deprecated
 	 */
-	public static function createFromGuiIdPath(GuiIdPath $guiIdPath, string $type = null, string $label = null) {
+	public static function createFromGuiFieldPath(GuiFieldPath $guiFieldPath, string $type = null, string $label = null) {
 		$orderItem = new DisplayItem();
 		$orderItem->label = $label;
 		ArgUtils::valEnum($type, self::getTypes(), null, true);
 		$orderItem->type = $type;
-		$orderItem->guiIdPath = $guiIdPath;
+		$orderItem->guiFieldPath = $guiFieldPath;
 		return $orderItem;
 	}
 
@@ -78,7 +78,7 @@ class DisplayItem {
 	public function copy(string $type = null, array $attrs = null, string $label = null, string $helpText = null, string $moduleNamespace = null) {
 		$displayItem = new DisplayItem();
 		$displayItem->displayStructure = $this->displayStructure;
-		$displayItem->guiIdPath = $this->guiIdPath;
+		$displayItem->guiFieldPath = $this->guiFieldPath;
 		ArgUtils::valEnum($type, self::getTypes(), null, true);
 		$displayItem->type = $type ?? $this->type;
 		$displayItem->label = $label ?? $this->label;
@@ -174,9 +174,9 @@ class DisplayItem {
 		throw new IllegalStateException();
 	}
 
-	public function getGuiIdPath() {
-		if ($this->guiIdPath !== null) {
-			return $this->guiIdPath;
+	public function getGuiFieldPath() {
+		if ($this->guiFieldPath !== null) {
+			return $this->guiFieldPath;
 		}
 
 		throw new IllegalStateException();

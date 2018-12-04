@@ -171,6 +171,18 @@ var Rocket;
                 });
             });
         })();
+        (function () {
+            Jhtml.ready((elements) => {
+                var elementsJq = $(elements);
+                elementsJq.find(".rocket-mail").each(function () {
+                    let mle = new Rocket.Core.MailLogEntry($(this));
+                    mle.listen();
+                });
+                elementsJq.find(".rocket-mail-paging").each(function () {
+                    (new Rocket.Core.MailPaging($(this))).listen();
+                });
+            });
+        })();
     });
     function scan(context = null) {
         initializer.scan();
@@ -1844,6 +1856,59 @@ var Rocket;
                 }
             }
         }
+    })(Core = Rocket.Core || (Rocket.Core = {}));
+})(Rocket || (Rocket = {}));
+var Rocket;
+(function (Rocket) {
+    var Core;
+    (function (Core) {
+        class MailLogEntry {
+            constructor(containerJq) {
+                this.containerJq = containerJq;
+                this.expanded = false;
+                this.contentJq = containerJq.children("dl:first");
+                this.contentJq.hide();
+            }
+            listen() {
+                this.containerJq.children("header:first").click(() => {
+                    this.toggle();
+                });
+            }
+            toggle() {
+                if (this.expanded) {
+                    this.minimize();
+                }
+                else {
+                    this.expand();
+                }
+            }
+            expand() {
+                if (this.expanded)
+                    return;
+                this.contentJq.slideDown(100);
+                this.expanded = true;
+                this.containerJq.addClass("rocket-expaned");
+            }
+            minimize() {
+                if (!this.expanded)
+                    return;
+                this.contentJq.slideUp(100);
+                this.expanded = false;
+                this.containerJq.removeClass("rocket-expaned");
+            }
+        }
+        Core.MailLogEntry = MailLogEntry;
+        class MailPaging {
+            constructor(selectJq) {
+                this.selectJq = selectJq;
+            }
+            listen() {
+                this.selectJq.change(() => {
+                    window.location.href = this.selectJq.val();
+                });
+            }
+        }
+        Core.MailPaging = MailPaging;
     })(Core = Rocket.Core || (Rocket.Core = {}));
 })(Rocket || (Rocket = {}));
 var Rocket;
@@ -7597,12 +7662,12 @@ var Rocket;
                     return true;
                 }
                 exec() {
-                    let guiIdPaths = [];
+                    let guiFieldPaths = [];
                     for (let loadJob of this.loadJobs) {
-                        guiIdPaths.push(loadJob.guiIdPath);
+                        guiFieldPaths.push(loadJob.guiFieldPath);
                         loadJob.content.loading = true;
                     }
-                    let url = this.url.extR(null, { guiIdPaths: guiIdPaths });
+                    let url = this.url.extR(null, { guiFieldPaths: guiFieldPaths });
                     Jhtml.lookupModel(url).then((result) => {
                         this.splitResult(result.model.snippet);
                     });
@@ -7611,8 +7676,8 @@ var Rocket;
                     let usedElements = [];
                     $(snippet.elements).children().each((i, elem) => {
                         let elemJq = $(elem);
-                        let guiIdPath = elemJq.data("rocket-impl-gui-id-path");
-                        let loadJob = this.loadJobs.find(loadJob => loadJob.guiIdPath == guiIdPath);
+                        let guiFieldPath = elemJq.data("rocket-impl-gui-field-path");
+                        let loadJob = this.loadJobs.find(loadJob => loadJob.guiFieldPath == guiFieldPath);
                         let newContentJq = elemJq.children().first();
                         loadJob.content.replaceField(newContentJq);
                         loadJob.content.loading = false;
@@ -7639,14 +7704,14 @@ var Rocket;
             class Translatable {
                 constructor(jqElem) {
                     this.jqElem = jqElem;
-                    this.srcGuiIdPath = null;
+                    this.srcGuiFieldPath = null;
                     this.loadUrlDefs = {};
                     this.copyUrlDefs = {};
                     this._contents = {};
                     let srcLoadConfig = jqElem.data("rocket-impl-src-load-config");
                     if (!srcLoadConfig)
                         return;
-                    this.srcGuiIdPath = srcLoadConfig.guiIdPath;
+                    this.srcGuiFieldPath = srcLoadConfig.guiFieldPath;
                     for (let localeId in srcLoadConfig.loadUrlDefs) {
                         this.loadUrlDefs[localeId] = {
                             label: srcLoadConfig.loadUrlDefs[localeId].label,
@@ -7704,7 +7769,7 @@ var Rocket;
                     return localeIds;
                 }
                 get loadJobs() {
-                    if (!this.srcGuiIdPath)
+                    if (!this.srcGuiFieldPath)
                         return [];
                     let loadJobs = [];
                     for (let content of this.contents) {
@@ -7714,7 +7779,7 @@ var Rocket;
                         }
                         loadJobs.push({
                             url: this.loadUrlDefs[content.localeId].url.extR(null, { "propertyPath": content.propertyPath }),
-                            guiIdPath: this.srcGuiIdPath,
+                            guiFieldPath: this.srcGuiFieldPath,
                             content: content
                         });
                     }
@@ -7727,7 +7792,7 @@ var Rocket;
                         if (!localeId || this._contents[localeId])
                             return;
                         let tc = this._contents[localeId] = new TranslatedContent(localeId, jqElem);
-                        tc.drawCopyControl(this.copyUrlDefs, this.srcGuiIdPath);
+                        tc.drawCopyControl(this.copyUrlDefs, this.srcGuiFieldPath);
                     });
                 }
                 static test(elemJq) {
@@ -7860,12 +7925,12 @@ var Rocket;
                     }
                     this.elemJq.addClass("rocket-inactive");
                 }
-                drawCopyControl(copyUrlDefs, guiIdPath) {
+                drawCopyControl(copyUrlDefs, guiFieldPath) {
                     for (let localeId in copyUrlDefs) {
                         if (localeId == this.localeId)
                             continue;
                         if (!this.copyControl) {
-                            this.copyControl = new CopyControl(this, guiIdPath);
+                            this.copyControl = new CopyControl(this, guiFieldPath);
                             this.copyControl.draw(this.elemJq.data("rocket-impl-copy-tooltip"));
                         }
                         this.copyControl.addUrlDef(copyUrlDefs[localeId]);
@@ -7899,9 +7964,9 @@ var Rocket;
             }
             Translation.TranslatedContent = TranslatedContent;
             class CopyControl {
-                constructor(translatedContent, guiIdPath) {
+                constructor(translatedContent, guiFieldPath) {
                     this.translatedContent = translatedContent;
-                    this.guiIdPath = guiIdPath;
+                    this.guiFieldPath = guiFieldPath;
                 }
                 draw(tooltip) {
                     this.elemJq = $("<div></div>", { class: "rocket-impl-translation-copy-control rocket-simple-commands" });
@@ -7938,7 +8003,7 @@ var Rocket;
                     let lje = new Translation.LoadJobExecuter();
                     lje.add({
                         content: this.translatedContent,
-                        guiIdPath: this.guiIdPath,
+                        guiFieldPath: this.guiFieldPath,
                         url: url
                     });
                     lje.exec();

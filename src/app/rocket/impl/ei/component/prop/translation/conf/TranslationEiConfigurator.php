@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\translation\conf;
 
-use rocket\impl\ei\component\prop\adapter\AdaptableEiPropConfigurator;
+use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\ei\component\EiSetup;
 use n2n\l10n\N2nLocale;
 use rocket\spec\UnknownTypeException;
@@ -222,7 +222,7 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 				$targetEiMask = $targetEiType->getEiMask();
 // 			}
 
-			$entityProperty = $this->requireEntityProperty();
+			$entityProperty = $this->getPropertyAssignation()->getEntityProperty(true);
 			if (CascadeType::ALL !== $entityProperty->getRelation()->getCascadeType()) {
 				throw $eiSetupProcess->createException('EiProp requires an EntityProperty which cascades all: ' 
 						. ReflectionUtils::prettyPropName($entityProperty->getEntityModel()->getClass(),

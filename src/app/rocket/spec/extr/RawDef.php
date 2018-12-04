@@ -64,7 +64,8 @@ class RawDef {
 	const EI_DEF_DRAFTING_ALLOWED_KEY = 'draftingAllowed';
 	const EI_DEF_REPRESENTATION_STRING_PATTERN_KEY = 'identityStringPattern';
 	const EI_DEF_PREVIEW_CONTROLLER_LOOKUP_ID_KEY = 'previewControllerLookupId';
-	const EI_DEF_FIELDS_KEY = 'fields';
+	const EI_DEF_PROPS_KEY = 'props';
+	const EI_DEF_FORKED_PROPS_KEY = 'forkedProps';
 	const EI_DEF_COMMANDS_KEY = 'commands';
 	const EI_DEF_FILTER_DATA_KEY = 'filterData';
 	const EI_DEF_DEFAULT_SORT_KEY = 'defaultSort';

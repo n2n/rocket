@@ -46,7 +46,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 	const CONTROL_DETAIL_KEY = 'detail'; 
 	const CONTROL_PREVIEW_KEY = 'preview';
 		
-	public function getIdBase() {
+	public function getIdBase(): ?string {
 		return self::ID_BASE;
 	}
 	
@@ -80,7 +80,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 		$pathExt = null;
 		$iconType = null;
 		if (!$eiuEntry->isDraft()) {
-			$pathExt = new Path(array('live', $eiuEntry->getLivePid()));
+			$pathExt = new Path(array('live', $eiuEntry->getPid()));
 			$iconType = IconType::ICON_FILE_O;
 		} else if (!$eiuEntry->isDraftNew()) {
 			$pathExt = new Path(array('draft', $eiuEntry->getDraftId()));
@@ -100,7 +100,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 		$controls = array(
 				self::CONTROL_DETAIL_KEY => $eiuControlFactory->createJhtml($controlButton, $pathExt->toUrl()));
 		
-		if (!$eiuFrame->isPreviewSupported()) {
+		if (!$eiuEntry->isPreviewSupported()) {
 			return $controls;
 		}
 		
@@ -109,14 +109,14 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 				$dtc->t('ei_impl_detail_preview_tooltip', array('entry' => $eiuFrame->getGenericLabel())),
 				false, null, IconType::ICON_EYE);
 		
-		$previewType = $eiuEntry->getPreviewType();
+		$previewType = $eiuEntry->getDefaultPreviewType();
 		if ($previewType === null) {
 			$controls[self::CONTROL_PREVIEW_KEY] = $eiuControlFactory->createDeactivated($controlButton);
 			return $controls;
 		}
 		
 		if (!$eiuEntry->isDraft()) {
-			$pathExt = new Path(array('livepreview', $eiuEntry->getLivePid(), $previewType));
+			$pathExt = new Path(array('livepreview', $eiuEntry->getPid(), $previewType));
 		} else {
 			$pathExt = new Path(array('draftpreview', $eiuEntry->getDraftId(), $previewType));
 		}

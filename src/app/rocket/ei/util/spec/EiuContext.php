@@ -134,7 +134,7 @@ class EiuContext {
 	function engine($eiTypeArg, bool $required = true) {
 		$eiuMask = $this->mask($eiTypeArg, $required);
 		if ($eiuMask !== null) {
-			return $eiuMask->getEiuEngine($required);
+			return $eiuMask->engine($required);
 		}
 		
 		return null;

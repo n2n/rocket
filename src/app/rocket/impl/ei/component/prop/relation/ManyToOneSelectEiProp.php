@@ -72,21 +72,16 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 	public function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty instanceof ToOneEntityProperty
 				&& $entityProperty->getType() === RelationEntityProperty::TYPE_MANY_TO_ONE);
-	
+		
 		parent::setEntityProperty($entityProperty);
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\field\Readable::read()
+	 * @see \rocket\impl\ei\component\prop\adapter\entry\Readable::read()
 	 */
-	public function read(EiObject $eiObject) {
-		$targetEntityObj = null;
-		if ($this->isDraftable() && $eiObject->isDraft()) {
-			$targetEntityObj = $eiObject->getDraftValueMap()->getValue(EiPropPath::from($this));
-		} else {
-			$targetEntityObj = $this->getObjectPropertyAccessProxy()->getValue($eiObject->getLiveObject());
-		}
+	public function read(Eiu $eiu) {
+		$targetEntityObj = $eiu->entry()->readNativValue($this);
 		
 		if ($targetEntityObj === null) return null;
 		
@@ -95,9 +90,9 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\field\Writable::write()
+	 * @see \rocket\impl\ei\component\prop\adapter\entry\Writable::write()
 	 */
-	public function write(EiObject $eiObject, $value) {
+	public function write(Eiu $eiu, $value) {
 		CastUtils::assertTrue($value === null || $value instanceof EiObject);
 	
 		$targetEntityObj = null;
@@ -105,14 +100,41 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 			$targetEntityObj = $value->getEiEntityObj()->getEntityObj();
 		}
 		
-		if ($this->isDraftable() && $eiObject->isDraft()) {
-			$eiObject->getDraftValueMap()->setValue(EiPropPath::from($this), $targetEntityObj);
-		} else {
-			$this->getObjectPropertyAccessProxy()->setValue($eiObject->getLiveObject(), $targetEntityObj);
-		}		
+		$eiu->entry()->writeNativeValue($this, $targetEntityObj);
 	}
 	
-	public function copy(EiObject $eiObject, $value, Eiu $copyEiu) {
+	// 	/**
+	// 	 * {@inheritDoc}
+	// 	 * @see \rocket\impl\ei\component\prop\adapter\entry\Readable::read()
+	// 	 */
+	// 	public function read(Eiu $eiu) {
+	// 		$targetEntityObj = $eiu->entry()->readNativValue($this);
+	
+	// 		if ($targetEntityObj === null) return null;
+	
+	// 		return $eiu->frame()->entry($targetEntityObj);
+	// 	}
+	
+	// 	/**
+	// 	 * {@inheritDoc}
+	// 	 * @see \rocket\impl\ei\component\prop\adapter\entry\Writable::write()
+	// 	 */
+	// 	public function write(Eiu $eiu, $value) {
+	// 		CastUtils::assertTrue($value === null || $value instanceof EiuEntry);
+	
+	// 		if ($eiu->object()->isDraftProp($this)) {
+	// 			throw new NotYetImplementedException()
+	// 		}
+	
+	// 		$targetEntityObj = null;
+	// 		if ($value !== null) {
+	// 			$targetEntityObj = $value->getEntityObj();
+	// 		}
+	
+	// 		$eiu->entry()->writeNativeValue($this, $targetEntityObj)
+	// 	}
+	
+	public function copy(Eiu $eiu, $value, Eiu $copyEiu) {
 		return $value;
 	}
 	

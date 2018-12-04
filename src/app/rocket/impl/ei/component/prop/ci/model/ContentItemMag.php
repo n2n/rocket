@@ -92,7 +92,7 @@ class ContentItemMag extends MagAdapter {
 		foreach ($targetRelationEntries as $targetRelationEntry) {
 			if (!$targetRelationEntry->hasEiEntry()) {
 				$targetRelationEntry = RelationEntry::fromM($targetEiuFrame
-						->entry($targetRelationEntry->getEiObject())->getEiEntry());
+						->entry($targetRelationEntry->getEiObject())->getEiEntry(true));
 			}
 			
 			$panelName = $targetRelationEntry->getEiEntry()->getValue($panelEiPropPath);

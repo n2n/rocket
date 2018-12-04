@@ -101,94 +101,118 @@ class EiEntryGui {
 	}
 		
 	/**
-	 * @param GuiIdPath $guiIdPath
+	 * @param GuiFieldPath $guiFieldPath
 	 * @return \n2n\web\dispatch\map\PropertyPath
 	 */
-	public function createPropertyPath(GuiIdPath $guiIdPath) {
+	public function createPropertyPath(GuiFieldPath $guiFieldPath) {
 		if ($this->contextPropertyPath !== null) {
-			return $this->contextPropertyPath->ext((string) $guiIdPath);
+			return $this->contextPropertyPath->ext((string) $guiFieldPath);
 		}
 		
-		return new PropertyPath(array((string) $guiIdPath));
+		return new PropertyPath(array((string) $guiFieldPath));
 	}
 	
 	/**
-	 * @param GuiIdPath $guiIdPath
+	 * @param GuiFieldPath $guiFieldPath
 	 * @return bool
 	 */
-	public function containsGuiIdPath(GuiIdPath $guiIdPath) {
-		return isset($this->guiFieldAssemblies[(string) $guiIdPath])
-				|| isset($this->guiFieldForkAssemblies[(string) $guiIdPath]);
+	public function containsGuiFieldPath(GuiFieldPath $guiFieldPath) {
+		return isset($this->guiFieldAssemblies[(string) $guiFieldPath])
+				|| isset($this->guiFieldForkAssemblies[(string) $guiFieldPath]);
 	}
 	
 	/**
-	 * @param GuiIdPath $guiIdPath
-	 * @param Displayable $displayable
+	 * @param GuiFieldPath $guiFieldPath
+	 * @param GuiFieldAssembly $guiFieldAssembly
 	 */
-	public function putGuiFieldAssembly(GuiIdPath $guiIdPath, GuiFieldAssembly $guiFieldAssembly) {
+	public function putGuiFieldAssembly(GuiFieldPath $guiFieldPath, GuiFieldAssembly $guiFieldAssembly) {
 		$this->ensureNotInitialized();
 		
-		$key = (string) $guiIdPath;
+		$key = (string) $guiFieldPath;
 		
 		if (isset($this->guiFieldAssemblies[$key])) {
-			throw new IllegalStateException('GuiIdPath already initialized: ' . $guiIdPath);
+			throw new IllegalStateException('GuiFieldPath already initialized: ' . $guiFieldPath);
 		}
 		
 		$this->guiFieldAssemblies[$key] = $guiFieldAssembly;
 	}
 	
 	/**
-	 * @param GuiIdPath $guiIdPath
+	 * @param GuiFieldPath $guiFieldPath
 	 * @return bool
 	 */
-	public function containsGuiFieldGuiIdPath(GuiIdPath $guiIdPath) {
-		return isset($this->guiFieldAssemblies[(string) $guiIdPath]);
+	public function containsGuiFieldGuiFieldPath(GuiFieldPath $guiFieldPath) {
+		return isset($this->guiFieldAssemblies[(string) $guiFieldPath]);
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\gui\GuiIdPath[]
+	 * @return \rocket\ei\manage\gui\GuiFieldPath[]
 	 */
-	public function getGuiFieldGuiIdPaths() {
-		$guiIdPaths = array();
-		foreach (array_keys($this->guiFieldAssemblies) as $guiIdPathStr) {
-			$guiIdPaths[] = GuiIdPath::create($guiIdPathStr);
+	public function getGuiFieldGuiFieldPaths() {
+		$guiFieldPaths = array();
+		foreach (array_keys($this->guiFieldAssemblies) as $eiPropPathStr) {
+			$guiFieldPaths[] = GuiFieldPath::create($eiPropPathStr);
 		}
-		return $guiIdPaths;
+		return $guiFieldPaths;
 	}
 	
-	
 	/**
-	 * @param GuiIdPath $guiIdPath
+	 * @param GuiFieldPath $guiFieldPath
 	 * @throws GuiException
 	 * @return GuiFieldAssembly
 	 */
-	public function getGuiFieldAssembly(GuiIdPath $guiIdPath) {
-		$guiIdPathStr = (string) $guiIdPath;
-		if (!isset($this->guiFieldAssemblies[$guiIdPathStr])) {
-			throw new GuiException('No GuiField with GuiIdPath \'' . $guiIdPathStr . '\' for \'' . $this . '\' registered');
+	public function getGuiFieldAssembly(GuiFieldPath $guiFieldPath) {
+		$guiFieldPathStr = (string) $guiFieldPath;
+		if (!isset($this->guiFieldAssemblies[$guiFieldPathStr])) {
+			throw new GuiException('No GuiField with GuiFieldPath \'' . $guiFieldPathStr . '\' for \'' . $this . '\' registered');
 		}
 		
-		return $this->guiFieldAssemblies[$guiIdPathStr];
+		return $this->guiFieldAssemblies[$guiFieldPathStr];
 	}
 	
 	/**
 	 * @return \rocket\ei\manage\gui\GuiFieldAssembly[]
 	 */
 	public function getGuiFieldAssemblies() {
+		$this->ensureInitialized();
+		
 		return $this->guiFieldAssemblies;
 	}
 	
 	/**
-	 * @param GuiIdPath $guiIdPath
-	 * @param Displayable $displayable
+	 * @param GuiFieldPath $prefixGuiFieldPath
+	 * @return \rocket\ei\manage\gui\GuiFieldAssembly[]
 	 */
-	public function putGuiFieldForkAssembly(GuiIdPath $guiIdPath, GuiFieldForkAssembly $guiFieldForkAssembly) {
+	public function filterGuiFieldAssemblies(GuiFieldPath $prefixGuiFieldPath, bool $checkOnEiPropPathLevel) {
+		$this->ensureInitialized();
+		
+		$guiFieldAssemblies = [];
+		
+		foreach ($this->guiFieldAssemblies as $guiFieldPathStr => $guiFieldAssembly) {
+			$guiFieldPath = GuiFieldPath::create($guiFieldPathStr);
+			if ($guiFieldPath->equals($prefixGuiFieldPath) 
+					|| !$guiFieldPath->startsWith($prefixGuiFieldPath, $checkOnEiPropPathLevel)) {
+				continue;
+			}
+				
+			$guiFieldAssemblies[] = $guiFieldAssembly;
+		}
+		
+		return $guiFieldAssemblies;
+	}
+	
+	
+	/**
+	 * @param GuiFieldPath $guiFieldPath
+	 * @param GuiFieldForkAssembly $guiFieldForkAssembly
+	 */
+	public function putGuiFieldForkAssembly(GuiFieldPath $guiFieldPath, GuiFieldForkAssembly $guiFieldForkAssembly) {
 		$this->ensureNotInitialized();
 		
-		$key = (string) $guiIdPath;
+		$key = (string) $guiFieldPath;
 		
 		if (isset($this->guiFieldForkAssemblies[$key])) {
-			throw new IllegalStateException('GuiIdPath already initialized: ' . $guiIdPath);
+			throw new IllegalStateException('GuiFieldPath already initialized: ' . $guiFieldPath);
 		}
 		
 		$this->guiFieldForkAssemblies[$key] = $guiFieldForkAssembly;
@@ -196,37 +220,37 @@ class EiEntryGui {
 	
 	
 	/**
-	 * @param GuiIdPath $guiIdPath
+	 * @param GuiFieldPath $guiFieldPath
 	 * @return bool
 	 */
-	public function containsGuiFieldForkGuiIdPath(GuiIdPath $guiIdPath) {
-		return isset($this->guiFieldForkAssemblies[(string) $guiIdPath]);
+	public function containsGuiFieldForkGuiFieldPath(GuiFieldPath $guiFieldPath) {
+		return isset($this->guiFieldForkAssemblies[(string) $guiFieldPath]);
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\gui\GuiIdPath[]
+	 * @return \rocket\ei\manage\gui\GuiFieldPath[]
 	 */
-	public function getGuiFieldForkGuiIdPaths() {
-		$guiIdPaths = array();
-		foreach (array_keys($this->guiFieldForkAssemblies) as $guiIdPathStr) {
-			$guiIdPaths[] = GuiIdPath::create($guiIdPathStr);
+	public function getGuiFieldForkGuiFieldPaths() {
+		$eiPropPaths = array();
+		foreach (array_keys($this->guiFieldForkAssemblies) as $eiPropPathStr) {
+			$eiPropPaths[] = GuiFieldPath::create($eiPropPathStr);
 		}
-		return $guiIdPaths;
+		return $eiPropPaths;
 	}
 	
 	
 	/**
-	 * @param GuiIdPath $guiIdPath
+	 * @param GuiFieldPath $guiFieldPath
 	 * @throws GuiException
 	 * @return GuiFieldForkAssembly
 	 */
-	public function getGuiFieldForkAssembly(GuiIdPath $guiIdPath) {
-		$guiIdPathStr = (string) $guiIdPath;
-		if (!isset($this->guiFieldForkAssemblies[$guiIdPathStr])) {
-			throw new GuiException('No GuiFieldFork with GuiIdPath \'' . $guiIdPathStr . '\' for \'' . $this . '\' registered');
+	public function getGuiFieldForkAssembly(GuiFieldPath $guiFieldPath) {
+		$eiPropPathStr = (string) $guiFieldPath;
+		if (!isset($this->guiFieldForkAssemblies[$eiPropPathStr])) {
+			throw new GuiException('No GuiFieldFork with GuiFieldPath \'' . $eiPropPathStr . '\' for \'' . $this . '\' registered');
 		}
 		
-		return $this->guiFieldForkAssemblies[$guiIdPathStr];
+		return $this->guiFieldForkAssemblies[$eiPropPathStr];
 	}
 	
 	/**
@@ -250,16 +274,6 @@ class EiEntryGui {
 		}
 		return $forkMagAssemblies;
 	}
-	
-// 	public function getEiPropPathByGuiIdPath(GuiIdPath $guiIdPath) {
-// 		$guiIdPathStr = (string) $guiIdPath;
-		
-// 		if (isset($this->eiPropPaths[$guiIdPathStr])) {
-// 			return $this->eiPropPaths[$guiIdPathStr];
-// 		}
-		
-// 		return null;
-// 	}
 
 	/**
 	 * @return \n2n\web\dispatch\Dispatchable|null
@@ -306,13 +320,13 @@ class EiEntryGui {
 		}
 		
 		foreach ($this->guiFieldAssemblies as $guiFieldAssembly) {
-			if (null !== ($savable = $guiFieldAssembly->getSavable())) {
+			if (null !== ($savable = $guiFieldAssembly->getEditable())) {
 				$savable->save();
 			}
 		}
 		
 		foreach ($this->guiFieldForkAssemblies as $guiFieldForkAssembly) {
-			if (null !== ($savable = $guiFieldForkAssembly->getSavable())) {
+			if (null !== ($savable = $guiFieldForkAssembly->getEditable())) {
 				$savable->save();
 			}
 		}
@@ -406,28 +420,3 @@ class MagAssembly {
 		return $this->magWrapper;
 	}
 }
-
-
-// 	/**
-// 	 * @param GuiIdPath $guiIdPath
-// 	 * @throws GuiException
-// 	 * @return EiFieldWrapper
-// 	 */
-// 	public function getEiFieldWrapperByGuiIdPath(GuiIdPath $guiIdPath) {
-// 		$guiIdPathStr = (string) $guiIdPath;
-
-// 		if (!isset($this->eiFieldWrappers[$guiIdPathStr])) {
-// 			throw new GuiException('No EiFieldWrapper with GuiIdPath ' . $guiIdPathStr . ' registered');
-// 		}
-
-// 		return $this->eiFieldWrappers[$guiIdPathStr];
-// 	}
-
-
-// 	/**
-// 	 * @param GuiIdPath $guiIdPath
-// 	 * @return bool
-// 	 */
-// 	public function containsEiFieldWrapper(GuiIdPath $guiIdPath) {
-// 		return isset($this->eiFieldWrappers[(string) $guiIdPath]);
-// 	}

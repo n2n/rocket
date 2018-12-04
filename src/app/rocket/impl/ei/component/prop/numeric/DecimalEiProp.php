@@ -98,7 +98,7 @@ class DecimalEiProp extends NumericEiPropAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\StatelessEditable::createMag($eiu)
+	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessEditable::createMag($eiu)
 	 */
 	public function createMag(Eiu $eiu): Mag {
 		$numericMag = new EiDecimalMag($this->getLabelLstr(), null,

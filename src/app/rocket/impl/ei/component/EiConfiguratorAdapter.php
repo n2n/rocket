@@ -21,7 +21,6 @@
  */
 namespace rocket\impl\ei\component;
 
-use rocket\ei\component\IndependentEiComponent;
 use rocket\ei\component\EiConfigurator;
 use n2n\reflection\ReflectionUtils;
 use n2n\util\config\Attributes;
@@ -38,7 +37,7 @@ abstract class EiConfiguratorAdapter implements EiConfigurator {
 	protected $attributes;
 	protected $reseted = false;
 	
-	public function __construct(IndependentEiComponent $eiComponent) {
+	public function __construct(EiComponent $eiComponent) {
 		$this->eiComponent = $eiComponent;
 		$this->attributes = new Attributes();
 	}
@@ -106,7 +105,7 @@ abstract class EiConfiguratorAdapter implements EiConfigurator {
 	 * @return \rocket\ei\util\Eiu
 	 */
 	protected function eiu(N2nContext $n2nContext) {
-		return new Eiu($this->eiComponent->getEiMask()->getEiEngine(), $n2nContext);
+		return new Eiu($this->eiComponent, $n2nContext);
 	}
 	
 	/**

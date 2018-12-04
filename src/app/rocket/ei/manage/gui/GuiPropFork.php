@@ -23,7 +23,8 @@ namespace rocket\ei\manage\gui;
 
 use rocket\ei\manage\EiObject;
 use rocket\ei\util\Eiu;
-use rocket\ei\manage\entry\EiEntry;
+use n2n\util\ex\IllegalStateException;
+use rocket\ei\manage\entry\UnknownEiFieldExcpetion;
 
 interface GuiPropFork {
 
@@ -39,15 +40,18 @@ interface GuiPropFork {
 	public function createGuiFieldFork(Eiu $eiu): GuiFieldFork;
 		
 	/**
-	 * @param EiObject $eiObject
+	 * @param Eiu $eiu
 	 * @return EiObject|null null if not available
+	 * @throws IllegalStateException if {@see self::getForkedGuiDefinition()}
 	 */
-	public function determineForkedEiObject(EiObject $eiObject): ?EiObject;
+	public function determineForkedEiObject(Eiu $eiu): ?EiObject;
 	
 	/**
-	 *
-	 * @param GuiIdPath $guiIdPath
-	 * @return null|\rocket\ei\manage\entry\EiFieldWrapper
+	 * @param Eiu $eiu
+	 * @param GuiFieldPath $guiFieldPath
+	 * @return EiFieldAbstraction
+	 * @throws IllegalStateException if {@see self::getForkedGuiDefinition()}
+	 * @throws UnknownEiFieldExcpetion if EiFieldAbstraction is not resovable.
 	 */
-	public function determineEiFieldWrapper(EiEntry $eiEntry, GuiIdPath $guiIdPath);
+	public function determineEiFieldAbstraction(Eiu $eiu, GuiFieldPath $guiFieldPath): EiFieldAbstraction;
 }

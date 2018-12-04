@@ -22,22 +22,28 @@
 namespace rocket\impl\ei\component\modificator\adapter;
 
 use rocket\ei\component\modificator\EiModificator;
-use rocket\impl\ei\component\IndependentEiComponentAdapter;
 use rocket\ei\component\modificator\IndependentEiModificator;
 use rocket\ei\component\EiConfigurator;
 use rocket\impl\ei\component\DefaultEiConfigurator;
 use rocket\ei\util\Eiu;
 
-abstract class IndependentEiModificatorAdapter extends IndependentEiComponentAdapter implements IndependentEiModificator {
+abstract class IndependentEiModificatorAdapter extends EiModificatorAdapter implements IndependentEiModificator {
+	
+	public function __construct() {
+	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\IndependentEiComponent::createEiConfigurator()
+	 * @see \rocket\ei\component\modificator\IndependentEiModificator::createEiConfigurator()
 	 */
 	public function createEiConfigurator(): EiConfigurator {
 		return new DefaultEiConfigurator($this);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\modificator\adapter\EiModificatorAdapter::equals()
+	 */
 	public function equals($obj) {
 		return $obj instanceof EiModificator && parent::equals($obj);
 	}

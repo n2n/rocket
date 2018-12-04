@@ -43,7 +43,7 @@ use n2n\web\ui\Raw;
 	if ($eiuEntry->isDraft()) {
 		$previewPath = new Path(array('draftpreview', $eiuEntry->getDraft()->getId()));
 	} else {
-		$previewPath = new Path(array('livepreview', $eiuEntry->getLivePid()));
+		$previewPath = new Path(array('livepreview', $eiuEntry->getPid()));
 	}
 	
 	$eiuHtml = new EiuHtmlBuilder($view);
@@ -69,7 +69,7 @@ use n2n\web\ui\Raw;
 
 <div class="rocket-zone-commands">
 	<div class="rocket-main-commands">
-		<?php $html->linkToController(['live', $eiuEntry->getLivePid()], 
+		<?php $html->linkToController(['live', $eiuEntry->getPid()], 
 				new Raw('<i class="fa fa-pencil"></i><span>' 
 						. $html->getL10nText('common_edit_label') . '</span>'),
 				array('class' => 'btn btn-primary rocket-jhtml rocket-important', 'data-jhtml-use-page-scroll-pos' => 'true'),

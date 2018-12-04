@@ -33,7 +33,7 @@ use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use n2n\persistence\meta\structure\Column;
 use n2n\persistence\meta\structure\IntegerColumn;
 use n2n\util\config\LenientAttributeReader;
-use rocket\impl\ei\component\prop\adapter\AdaptableEiPropConfigurator;
+use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 
 class NumericEiPropConfigurator extends AdaptableEiPropConfigurator {
 	const OPTION_MIN_VALUE_KEY = 'minValue';

@@ -33,7 +33,7 @@ interface EiField {
 	
 	/**
 	 * @param mixed $value
-	 * @throws \n2n\reflection\property\ValueIncompatibleWithConstraintsException
+	 * @throws \InvalidArgumentException
 	 */
 	public function setValue($value);
 	
@@ -66,7 +66,7 @@ interface EiField {
 	/**
 	 * @return bool
 	 */
-	public function check(): bool;
+	public function isValid(): bool;
 	
 	/**
 	 * @param EiFieldValidationResult $eiEiFieldValidationResult
@@ -80,7 +80,17 @@ interface EiField {
 	
 	/**
 	 * @param EiObject $eiObject
-	 * @return EiField
+	 * @return EiField|null
 	 */
 	public function copyEiField(Eiu $copyEiu);
+	
+	/**
+	 * @return bool
+	 */
+	public function hasForkedEiFieldMap(): bool;
+	
+	/**
+	 * @return EiFieldMap
+	 */
+	public function getForkedEiFieldMap(): EiFieldMap;
 }

@@ -25,13 +25,14 @@ use n2n\l10n\N2nLocale;
 use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\component\prop\DraftableEiProp;
 use rocket\ei\manage\draft\DraftProperty;
-use rocket\ei\manage\EiObject;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\ArgUtils;
 use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\relation\model\ToOneEiField;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
+use rocket\ei\manage\entry\EiField;
+use rocket\ei\manage\LiveEiObject;
 
 abstract class ToOneEiPropAdapter extends SimpleRelationEiPropAdapter implements GuiProp, DraftableEiProp, 
 		DraftProperty {
@@ -41,11 +42,10 @@ abstract class ToOneEiPropAdapter extends SimpleRelationEiPropAdapter implements
 		parent::setEntityProperty($entityProperty);
 	}
 
-	public function buildEiField(Eiu $eiu) {
+	public function buildEiField(Eiu $eiu): ?EiField {
 		$readOnly = $this->eiPropRelation->isReadOnly($eiu->entry()->getEiEntry(), $eiu->frame()->getEiFrame());
-	
-		return new ToOneEiField($eiu->entry()->getEiObject(), $this, $this,
-				($readOnly ? null : $this));
+		
+		return new ToOneEiField($eiu, $this, $this, ($readOnly ? null : $this));
 	}
 	
 	/**
@@ -59,11 +59,13 @@ abstract class ToOneEiPropAdapter extends SimpleRelationEiPropAdapter implements
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiProp::buildIdentityString()
 	 */
-	public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): string {
-		$targetEiObject = $this->read($eiObject);
-		if ($targetEiObject === null) return '';
+	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): string {
+		$targetObject = $eiu->object()->readNativValue($this);
+		if ($targetObject === null) return '';
 
-		return $this->targetGuiDefinition->createIdentityString($targetEiObject, $n2nLocale);
+		$targetEiObject = LiveEiObject::create($this->eiPropRelation->getTargetEiType(), $targetObject);
+		
+		return $this->targetGuiDefinition->createIdentityString($targetEiObject, $eiu->getN2nContext(), $n2nLocale);
 	}
 			
 	/**

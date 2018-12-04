@@ -31,7 +31,7 @@ use rocket\ei\component\prop\SortableEiProp;
 use n2n\core\container\N2nContext;
 use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
 use rocket\ei\manage\control\IconType;
-use rocket\impl\ei\component\prop\adapter\DraftableEiPropAdapter;
+use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
 use n2n\reflection\ArgUtils;
 use n2n\reflection\property\AccessProxy;
 use n2n\reflection\property\TypeConstraint;
@@ -40,7 +40,6 @@ use rocket\ei\manage\draft\stmt\PersistDraftStmtBuilder;
 use rocket\ei\manage\draft\stmt\FetchDraftStmtBuilder;
 use rocket\ei\manage\draft\SimpleDraftValueSelection;
 use n2n\persistence\meta\OrmDialectConfig;
-use rocket\ei\manage\EiObject;
 use rocket\ei\manage\draft\DraftManager;
 use rocket\ei\manage\draft\DraftValueSelection;
 use rocket\ei\manage\draft\PersistDraftAction;
@@ -53,9 +52,9 @@ use n2nutil\jquery\datepicker\mag\DateTimePickerMag;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use rocket\ei\manage\critmod\sort\SortProp;
 
-class DateTimeEiProp extends DraftableEiPropAdapter implements SortableEiProp {
+class DateTimeEiProp extends DraftablePropertyEiPropAdapter implements SortableEiProp {
 	private $dateStyle = DateTimeFormat::STYLE_MEDIUM;
-	private $timeStyle = DateTimeFormat::STYLE_SHORT;
+	private $timeStyle = DateTimeFormat::STYLE_NONE;
 
 	public function createEiPropConfigurator(): EiPropConfigurator {
 		return new DateTimeEiPropConfigurator($this);
@@ -108,8 +107,8 @@ class DateTimeEiProp extends DraftableEiPropAdapter implements SortableEiProp {
 		return true;
 	}
 	
-    public function buildIdentityString(EiObject $eiObject, N2nLocale $n2nLocale): ?string {
-        if (null !== ($dateTime = $this->read($eiObject))) {
+    public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
+    	if (null !== ($dateTime = $eiu->object()->readNativValue($this))) {
             return L10nUtils::formatDateTime($dateTime, $n2nLocale, $this->getDateStyle(), $this->getTimeStyle());
         }
 

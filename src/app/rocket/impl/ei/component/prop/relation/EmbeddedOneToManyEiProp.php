@@ -101,7 +101,7 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 		$this->reduced = $reduced;
 	}
 		
-	public function copy(EiObject $eiObject, $value, Eiu $copyEiu) {
+	public function copy(Eiu $eiu, $value, Eiu $copyEiu) {
 		$targetEiuFrame = (new Eiu($this->eiPropRelation->createTargetEditPseudoEiFrame(
 				$copyEiu->frame()->getEiFrame(), $copyEiu->entry()->getEiEntry())))->frame();
 		
@@ -131,13 +131,13 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\field\Readable::read()
+	 * @see \rocket\impl\ei\component\prop\adapter\entry\Readable::read()
 	 */
-	public function read(EiObject $eiObject) {
-		$targetEiObjects = array();
+	public function read(Eiu $eiu) {
+		$targetEiObjects = [];
 		
 		if ($this->isDraftable() && $eiObject->isDraft()) {
-			$targetDrafts = $eiObject->getDraftValueMap()->getValue(EiPropPath::from($this));
+			$targetDrafts = $eiu->entry()->readNativValue($this);
 			if ($targetDrafts === null) return $targetEiObjects;
 			
 			foreach ($targetDrafts as $targetDraft) {
@@ -146,7 +146,7 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 			return $targetEiObjects; 
 		}
 	
-		$targetEntityObjs = $this->getObjectPropertyAccessProxy()->getValue($eiObject->getLiveObject());
+		$targetEntityObjs = $eiu->entry()->readNativValue($this);
 		if ($targetEntityObjs === null) return $targetEiObjects;
 		
 		foreach ($targetEntityObjs as $targetEntityObj) {
@@ -157,18 +157,18 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\field\Writable::write()
+	 * @see \rocket\impl\ei\component\prop\adapter\entry\Writable::write()
 	 */
-	public function write(EiObject $eiObject, $value) {
+	public function write(Eiu $eiu, $value) {
 		CastUtils::assertTrue(is_array($value));
 	
-		if ($this->isDraftable() && $eiObject->isDraft()) {
+		if ($eiu->object()->isDraftProp($this)) {
 			$targetDrafts = array();
 			foreach ($value as $targetEiObject) {
 				CastUtils::assertTrue($targetEiObject instanceof EiObject);
 				$targetDrafts[] = $targetEiObject->getDraft();
 			}
-			$eiObject->getDraftValueMap()->setValue(EiPropPath::from($this), $targetDrafts);
+			$eiu->entry()->writeNativeValue($this, $targetDrafts);
 			return;
 		}
 	
@@ -177,7 +177,7 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 			CastUtils::assertTrue($targetEiObject instanceof EiObject);
 			$targetEntityObjs[] = $targetEiObject->getEiEntityObj()->getEntityObj();
 		}
-		$this->getObjectPropertyAccessProxy()->setValue($eiObject->getLiveObject(), $targetEntityObjs);
+		$eiu->entry()->writeNativeValue($this, $targetEntityObjs);
 	}
 	
 	/**

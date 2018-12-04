@@ -19,13 +19,58 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-
 namespace rocket\ei\manage\entry;
 
-interface EiFieldWrapper {
-	
-	public function isIgnored(): bool;
-	
-	public function setIgnored(bool $ignored);
-}
+use rocket\ei\manage\gui\EiFieldAbstraction;
+use rocket\ei\EiPropPath;
 
+class EiFieldWrapper implements EiFieldAbstraction {
+	private $eiFieldMap;
+	private $eiPropPath;
+	private $eiField;
+	private $ignored = false;
+	private $validationResult;
+	
+	public function __construct(EiFieldMap $eiFieldMap, EiPropPath $eiPropPath, EiField $eiField) {
+		$this->eiFieldMap = $eiFieldMap;
+		$this->eiPropPath = $eiPropPath;
+		$this->eiField = $eiField;
+	}
+	
+	/**
+	 * @param bool $ignored
+	 */
+	public function setIgnored(bool $ignored) {
+		$this->ignored = $ignored;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	public function isIgnored(): bool {
+		return $this->ignored;
+	}
+	
+	/**
+	 * @return \rocket\ei\manage\entry\EiFieldMap
+	 */
+	public function getEiFieldMap() {
+		return $this->eiFieldMap;
+	}
+	
+	/**
+	 * @return \rocket\ei\manage\entry\EiField
+	 */
+	public function getEiField() {
+		return $this->eiField;
+	}
+	
+	public function getValidationResult(): ?ValidationResult {
+		$eiEntry = $this->eiFieldMap->getEiEntry();
+		
+		if (!$eiEntry->hasValidationResult()) return null;
+		
+		return $eiEntry->getValidationResult()->getEiFieldValidationResult($this->eiPropPath);	
+	}
+
+}
