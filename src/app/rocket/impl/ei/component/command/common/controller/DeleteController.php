@@ -29,7 +29,6 @@ use n2n\l10n\MessageContainer;
 use n2n\web\http\StatusException;
 use rocket\ei\util\EiuCtrl;
 use rocket\ajah\JhtmlEvent;
-use n2n\l10n\MessageTranslator;
 use rocket\ei\util\Eiu;
 
 class DeleteController extends ControllerAdapter {
@@ -62,8 +61,7 @@ class DeleteController extends ControllerAdapter {
 		if ($taa->isSuccessful()) {
 			$evt = JhtmlEvent::ei()->eiObjectRemoved($eiObject)->noAutoEvents();
 		} else {
-			$mt = new MessageTranslator('rocket', $eiuFrame->getN2nLocale());
-			$evt = JhtmlEvent::ei()->message(...$mt->translateAll($taa->getReasonMessages()))->noAutoEvents();
+			$evt = JhtmlEvent::ei()->message(...$taa->getReasonMessages())->noAutoEvents();
 		}
 		
 		$this->eiuCtrl->redirectToReferer($redirectUrl, $evt);

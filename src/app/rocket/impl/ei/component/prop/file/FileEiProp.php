@@ -39,7 +39,6 @@ use n2n\io\managed\File;
 use rocket\impl\ei\component\prop\file\conf\FileEiPropConfigurator;
 use n2n\io\managed\img\impl\ThSt;
 use n2n\impl\web\dispatch\mag\model\FileMag;
-use rocket\ei\manage\EiObject;
 use n2n\web\dispatch\mag\Mag;
 use n2n\web\http\Session;
 use rocket\ei\util\Eiu;

@@ -34,7 +34,6 @@ use rocket\impl\ei\component\prop\numeric\conf\NumericEiPropConfigurator;
 use n2n\reflection\ArgUtils;
 use n2n\reflection\property\AccessProxy;
 use n2n\reflection\property\TypeConstraint;
-use rocket\ei\manage\EiObject;
 use n2n\core\container\N2nContext;
 use rocket\ei\EiPropPath;
 use n2n\persistence\orm\criteria\item\CrIt;
