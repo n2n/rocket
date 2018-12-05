@@ -40,6 +40,14 @@ class ScalarEiDefinition {
 	}
 	
 	/**
+	 * @param EiPropPath $eiPropPath
+	 * @return bool
+	 */
+	public function containsEiPropPath(EiPropPath $eiPropPath) {
+		return $this->scalarEiProperties->offsetExists((string) $eiPropPath);
+	}
+	
+	/**
 	 * @return ScalarEiProperty[]
 	 */
 	public function getScalarEiProperties() {
