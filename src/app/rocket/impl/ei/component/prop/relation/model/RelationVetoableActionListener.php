@@ -215,7 +215,7 @@ class VetoCheck {
 		CastUtils::assertTrue($manageState instanceof ManageState);
 		return $manageState->getDef()->getGuiDefinition($eiMask)
 				->createIdentityString(LiveEiObject::create($eiMask->getEiType(), $entityObj),
-						$this->n2nContext->getN2nLocale());
+						$this->n2nContext, $this->n2nContext->getN2nLocale());
 	}
 	
 	private function getTargetGenericLabel(): string {
