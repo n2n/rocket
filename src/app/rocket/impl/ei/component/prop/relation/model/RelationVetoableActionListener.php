@@ -227,6 +227,6 @@ class VetoCheck {
 		$manageState = $this->n2nContext->lookup(ManageState::class);
 		CastUtils::assertTrue($manageState instanceof ManageState);
 		return $manageState->getDef()->getGuiDefinition($this->relationEiProp->getEiPropRelation()->getTargetEiMask())
-				->createIdentityString(new LiveEiObject($this->targetEiEntityObj), $this->n2nContext->getN2nLocale());
+				->createIdentityString(new LiveEiObject($this->targetEiEntityObj), $this->n2nContext, $this->n2nContext->getN2nLocale());
 	}
 }
