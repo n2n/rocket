@@ -148,7 +148,7 @@ class EiuHtmlBuilder {
 	
 	public function getEntryOpen(string $tagName, $eiEntryGuiArg, array $attrs = null) {
 		$eiEntryGui = EiuAnalyst::buildEiEntryGuiFromEiArg($eiEntryGuiArg, 'eiEntryGuiArg');
-		$eiObject = $eiEntryGui->getEiEntry()->getEiObject();
+		$eiObject = $eiEntryGui->getEiEntry()->object()->getEiObject();
 		$pid = null;
 		if ($eiObject->getEiEntityObj()->isPersistent()) {
 			$pid = $eiObject->getEiEntityObj()->getPid();

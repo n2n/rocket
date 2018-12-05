@@ -125,7 +125,7 @@ class EntryEiHtmlBuilder {
 	}
 	
 	public function getSelector(string $containerTagName, array $containerAttrs = null, $content = ''): UiComponent {
-		$eiObject = $this->meta->getCurrentEiuEntryGui()->entry()->getEiObject();
+		$eiObject = $this->meta->getCurrentEiuEntryGui()->entry()->object()->getEiObject();
 		$draftId = null;
 		if ($eiObject->isDraft() && !$eiObject->getDraft()->isNew()) {
 			$draftId = $eiObject->getDraft()->getId();
@@ -136,7 +136,7 @@ class EntryEiHtmlBuilder {
 						'data-entry-ei-id' => $this->meta()->getCurrentPid(),
 						'data-draft-id' => ($draftId !== null ? $draftId : ''),
 						'data-identity-string' => $this->eiuFrame->createIdentityString($this->meta()
-								->getCurrentEiuEntryGui()->entry()->getEiObject())), (array) $containerAttrs),
+								->getCurrentEiuEntryGui()->entry()->object()->getEiObject())), (array) $containerAttrs),
 				new HtmlElement('input', array('type' => 'checkbox')));
 	}
 	

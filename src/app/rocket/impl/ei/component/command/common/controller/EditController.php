@@ -77,7 +77,7 @@ class EditController extends ControllerAdapter {
 			return;
 		} else if ($this->dispatch($editModel, 'saveAndPreview')) {
 			$jhtmlEvent = JhtmlEvent::ei()->eiObjectChanged($eiuEntry);
-			$defaultPreviewType = key($this->eiuCtrl->frame()->getPreviewTypeOptions($editModel->getEntryModel()->getEiuEntryGui()->entry()->getEiObject()));
+			$defaultPreviewType = key($this->eiuCtrl->frame()->getPreviewTypeOptions($editModel->getEntryModel()->getEiuEntryGui()->entry()->object()->getEiObject()));
 			$this->eiuCtrl->redirect($this->getUrlToController(['livepreview', $pid, $defaultPreviewType],
 					array('refPath' => (string) $redirectUrl)), $jhtmlEvent);
 			return;

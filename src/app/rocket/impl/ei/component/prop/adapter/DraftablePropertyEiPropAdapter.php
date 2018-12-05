@@ -64,7 +64,7 @@ abstract class DraftablePropertyEiPropAdapter extends EditablePropertyEiPropAdap
 			return parent::buildEiField($eiu);
 		}
 	
-		return new SimpleEiField($eiu->entry()->getEiObject(), 
+		return new SimpleEiField($eiu, 
 				$this->getObjectPropertyAccessProxy(true)->getConstraint()->getLenientCopy(), 
 				$this, $this, ($this->isReadOnly($eiu) ? null : $this));
 	}
