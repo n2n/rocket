@@ -85,7 +85,7 @@ abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter im
 	}
 	
 	public function buildEiField(Eiu $eiu): ?EiField {
-		return new SimpleEiField($eiu->entry()->getEiObject(), 
+		return new SimpleEiField($eiu->entry()->object()->getEiObject(), 
 				$this->getObjectPropertyAccessProxy()->getConstraint()->getLenientCopy(), 
 				$this);
 	}

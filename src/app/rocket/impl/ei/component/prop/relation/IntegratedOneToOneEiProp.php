@@ -135,7 +135,7 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiEiPro
 	public function buildEiField(Eiu $eiu): ?EiField {
 		$readOnly = $this->eiPropRelation->isReadOnly($eiu->entry()->getEiEntry(), $eiu->frame()->getEiFrame());
 		
-		return new ToOneEiField($eiu->entry()->getEiObject(), $this, $this, ($readOnly ? null : $this));
+		return new ToOneEiField($eiu, $this, $this, ($readOnly ? null : $this));
 	}
 	
 	/**

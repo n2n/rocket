@@ -36,7 +36,7 @@ use n2n\l10n\Lstr;
 use n2n\l10n\DynamicTextCollection;
 
 class Rocket implements RequestScoped {
-	const VERSION = '2.0.0-alpha.3';
+	const VERSION = '2.0.0';
 	const NS = 'rocket';
 	
 	private $dbhPool;

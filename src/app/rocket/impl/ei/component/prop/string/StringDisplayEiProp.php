@@ -130,7 +130,7 @@ class StringDisplayEiProp extends PropertyEiPropAdapter implements ObjectPropert
 	 * @see \rocket\ei\component\prop\FieldEiProp::buildEiField($eiObject)
 	 */
 	public function buildEiField(Eiu $eiu): ?EiField {
-		return new SimpleEiField($eiu->entry()->getEiObject(), $this->accessProxy->getConstraint(), $this);
+		return new SimpleEiField($eiu, $this->accessProxy->getConstraint(), $this);
 	}
 
 	/**
