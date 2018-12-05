@@ -39,6 +39,14 @@ class GenericEiDefinition {
 	}
 	
 	/**
+	 * @param EiPropPath $eiPropPath
+	 * @return bool
+	 */
+	public function containsEiPropPath(EiPropPath $eiPropPath) {
+		return $this->genericEiProperties->offsetExists((string) $eiPropPath);
+	}
+	
+	/**
 	 * @return GenericEiProperty[]
 	 */
 	public function getGenericEiProperties() {
