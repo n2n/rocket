@@ -71,13 +71,13 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiEiPro
 	 */
 	public function read(Eiu $eiu) {
 		if ($eiu->object()->isDraftProp($this)) {
-			$targetDraft = $eiObject->getDraftValueMap()->getValue(EiPropPath::from($this));
+			$targetDraft = $eiu->entry()->readNativValue($this);
 			if ($targetDraft === null) return null;
 				
 			return new DraftEiObject($targetDraft);
 		}
 	
-		$targetEntityObj = $this->getObjectPropertyAccessProxy()->getValue($eiObject->getLiveObject());
+		$targetEntityObj = $eiu->entry()->readNativValue($this);
 		if ($targetEntityObj === null) return null;
 
 		return LiveEiObject::create($this->eiPropRelation->getTargetEiType(), $targetEntityObj);
