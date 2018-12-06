@@ -142,9 +142,9 @@ class EiTypeFactory {
 				$eiCommandCollection->addIndependent($eiComponentExtraction->getId(),
 						$this->createEiCommand($eiComponentExtraction, $eiMask));
 			} catch (TypeNotFoundException $e) {
-				throw $this->createEiCommandException($eiPropExtraction->getId(), $e);
+				throw $this->createEiCommandException($eiComponentExtraction->getId(), $e);
 			} catch (InvalidConfigurationException $e) {
-				throw $this->createEiCommandException($eiPropExtraction->getId(), $e);
+				throw $this->createEiCommandException($eiComponentExtraction->getId(), $e);
 			}
 		}
 		
