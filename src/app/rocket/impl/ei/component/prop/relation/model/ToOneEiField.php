@@ -79,7 +79,7 @@ class ToOneEiField extends CrwvEiField {
 		if ($this->copyable === null) return null;
 		
 		$copy = new ToOneEiField($copyEiu, $this->readable, $this->writable, $this->copyable);
-		$copy->setValue($this->copyable->copy($this->eiFieldMap, $this->getValue(), $copyEiu));
+		$copy->setValue($this->copyable->copy($this->eiu, $this->getValue(), $copyEiu));
 		return $copy;
 	}
 }
