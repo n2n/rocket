@@ -108,7 +108,7 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiEiPro
 	public function copy(Eiu $eiu, $value, Eiu $copyEiu) {
 		if ($value === null) return $value;
 	
-		$targetEiuFrame = new EiuFrame($this->embeddedEiPropRelation->createTargetEditPseudoEiFrame(
+		$targetEiuFrame = new EiuFrame($this->eiPropRelation->createTargetEditPseudoEiFrame(
 				$copyEiu->frame()->getEiFrame(), $copyEiu->entry()->getEiEntry()));
 		return RelationEntry::fromM($targetEiuFrame->createEiEntryCopy($value->toEiEntry($targetEiuFrame)));
 	}
