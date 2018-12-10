@@ -432,7 +432,6 @@ class EiMask {
 		return $this->eiType->getSupremeEiType()->getEiMask();
 	}
 	
-	
 // 	public function getSubEiMaskIds() {
 // 		return $this->subEiMaskIds;
 // 	}
