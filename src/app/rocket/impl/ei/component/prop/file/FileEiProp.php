@@ -240,7 +240,7 @@ class FileEiProp extends DraftablePropertyEiPropAdapter {
 	}
 	
 	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
-		$file = $eiu->entry()->readNativValue($this);
+		$file = $eiu->object()->readNativValue($this);
 		if ($file === null) return null;
 		
 		CastUtils::assertTrue($file instanceof File);
