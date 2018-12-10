@@ -342,6 +342,7 @@ class GuiDefinition {
 	}
 	
 	/**
+	 * @deprecated
 	 * @param EiPropPath $eiPropPath
 	 * @throws NotYetImplementedException
 	 * @return \rocket\ei\manage\gui\GuiFieldPath|NULL
@@ -353,7 +354,7 @@ class GuiDefinition {
 		
 		$id = $eiPropPath->getFirstId();
 		if (isset($this->guiProps[$id])) {
-			return new GuiFieldPath([$id]);
+			return new GuiFieldPath([EiPropPath::create($id)]);
 		}
 		
 		return null;
