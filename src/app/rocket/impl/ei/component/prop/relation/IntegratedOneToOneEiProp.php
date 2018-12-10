@@ -21,7 +21,6 @@
  */
 namespace rocket\impl\ei\component\prop\relation;
 
-use rocket\ei\util\frame\EiuFrame;
 use rocket\ei\manage\gui\GuiPropFork;
 use rocket\ei\manage\gui\GuiFieldFork;
 use rocket\ei\manage\gui\GuiFieldPath;
@@ -108,9 +107,9 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiEiPro
 	public function copy(Eiu $eiu, $value, Eiu $copyEiu) {
 		if ($value === null) return $value;
 	
-		$targetEiuFrame = new EiuFrame($this->eiPropRelation->createTargetEditPseudoEiFrame(
-				$copyEiu->frame()->getEiFrame(), $copyEiu->entry()->getEiEntry()));
-		return RelationEntry::fromM($targetEiuFrame->createEiEntryCopy($value->toEiEntry($targetEiuFrame)));
+		$targetEiuFrame = (new Eiu($this->eiPropRelation->createTargetEditPseudoEiFrame(
+				$copyEiu->frame()->getEiFrame(), $copyEiu->entry()->getEiEntry())))->frame();
+		return RelationEntry::fromM($targetEiuFrame->copyEntry($value->toEiEntry($targetEiuFrame))->getEiEntry());
 	}
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {
@@ -194,7 +193,8 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiEiPro
 			return new EiFieldWrapperCollection([]);
 		}
 	
-		return $this->getForkedGuiDefinition()->determineEiFieldAbstraction($targetRelationEntry->getEiEntry(), $guiFieldPath);
+		return $this->getForkedGuiDefinition()->determineEiFieldAbstraction($eiu->getN2nContext(), 
+				$targetRelationEntry->getEiEntry(), $guiFieldPath);
 	}
 	
 	/**
