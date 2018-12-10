@@ -923,11 +923,17 @@ class EiuAnalyst {
 		
 		if ($eiuFrame !== null) {
 			if ($this->eiEntry !== null) {
-				return $this->eiuEntry = $eiuFrame->entry($this->eiEntry);
+				return $this->eiuEntry = new EiuEntry($this->eiEntry, $this->getEiuObject(true), null, $this);
+			}
+			if ($this->eiObject !== null) {
+				return $this->eiuEntry = $eiuFrame->entry($this->eiObject);
 			}
 		} else {
 			if ($this->eiEntry !== null) {
-				return $this->eiuEntry = new EiuEntry($this->eiEntry, $this->eiuObject, null, $this);
+				return $this->eiuEntry = new EiuEntry($this->eiEntry, $this->getEiuObject(true), null, $this);
+			}
+			if ($this->eiObject !== null) {
+				return $this->eiuEntry = new EiuEntry(null, $this->getEiuObject(true), null, $this);
 			}
 		}
 		
