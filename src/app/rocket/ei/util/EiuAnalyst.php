@@ -887,15 +887,15 @@ class EiuAnalyst {
 			}
 		}
 		
-		if ($this->n2nContext !== null) {
-			try {
-				return $this->eiuFrame = new EiuFrame($this->n2nContext->lookup(ManageState::class)->peakEiFrame(), $this);
-			} catch (ManageException $e) {
-				if (!$required) return null;
+// 		if ($this->n2nContext !== null) {
+// 			try {
+// 				return $this->eiuFrame = new EiuFrame($this->n2nContext->lookup(ManageState::class)->peakEiFrame(), $this);
+// 			} catch (ManageException $e) {
+// 				if (!$required) return null;
 				
-				throw new EiuPerimeterException('Can not create EiuFrame in invalid context.', 0, $e);
-			}
-		}
+// 				throw new EiuPerimeterException('Can not create EiuFrame in invalid context.', 0, $e);
+// 			}
+// 		}
 		
 		if (!$required) return null;
 		
