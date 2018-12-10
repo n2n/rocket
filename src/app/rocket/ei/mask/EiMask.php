@@ -156,19 +156,6 @@ class EiMask {
 		return $forkObject;
 	}
 
-
-// 	public function getEiThingPath(): EiThingPath {
-// 		$ids = array();
-// 		$curEiThing = $this;
-// 		do {
-// 			if (null !== ($id = $curEiThing->getId())) {
-// 				$ids[] = $id;
-// 			}
-// 		} while (null !== ($curEiThing = $curEiThing->getMaskedEiThing()));
-
-// 		return new EiThingPath($ids);
-// 	}
-	
 	/**
 	 * @return \rocket\ei\EiType
 	 */
