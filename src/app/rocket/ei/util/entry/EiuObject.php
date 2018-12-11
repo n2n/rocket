@@ -49,6 +49,13 @@ class EiuObject {
 	}
 	
 	/**
+	 * @return object
+	 */
+	public function getEntityObj() {
+		return $this->eiObject->getEiEntityObj()->getEntityObj();
+	}
+	
+	/**
 	 * @return \rocket\ei\EiType
 	 */
 	public function getEiType() {
