@@ -85,9 +85,13 @@ class EiuEntry {
 			return $this->eiuMask = new EiuMask($this->eiEntry->getEiMask(), null, $this->eiuAnalyst);
 		}
 		
-		return $this->eiuMask = new EiuMask(
-				$this->getEiuFrame()->getEiFrame()->determineEiMask($this->eiuObject->getEiType()), 
-				null, $this->eiuAnalyst);
+		if (null !== ($eiuFrame = $this->getEiuFrame(false))) {
+			return $this->eiuMask = new EiuMask(
+					$eiuFrame->getEiFrame()->determineEiMask($this->eiuObject->getEiType()), 
+					null, $this->eiuAnalyst);
+		}
+		
+		return $this->eiuMask = new EiuMask($this->eiuObject->getEiType()->getEiMask(), null, $this->eiuAnalyst);
 	}
 	
 	private $eiuEntryAccess;
@@ -506,12 +510,13 @@ class EiuEntry {
 	 */
 	public function createIdentityString(bool $useEntryEiMask = true, N2nLocale $n2nLocale = null) {
 		if ($useEntryEiMask) {
-			$n2nContext = $this->eiuAnalyst->getN2nContext(true);
-			return $this->mask()->engine()->getGuiDefinition()->createIdentityString($this->eiuObject->getEiObject(), 
-					$n2nContext, $n2nContext->getN2nLocale());
+			return $this->mask()->engine()->createIdentityString($this, $n2nLocale);
 		}
 		
-		return $this->getEiuFrame()->createIdentityString($this, false, $n2nLocale);
+		$n2nContext = $this->eiuAnalyst->getN2nContext(true);
+		return $this->getEiuFrame(true)->createIdentityString($this->eiuObject->getEiObject(),
+				false, $n2nContext->getN2nLocale());
+		
 	}
 	
 	/**

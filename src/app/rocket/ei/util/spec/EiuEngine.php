@@ -306,6 +306,18 @@ class EiuEngine {
 	public function newPrivilegeForm(PrivilegeSetting $privilegeSetting = null) {
 		return new EiuPrivilegeForm($this->getPrivilegeDefinition(), $privilegeSetting, $this->eiuAnalyst);	
 	}
+	
+	/**
+	 * @param object $eiObjectArg
+	 * @param N2nLocale $n2nLocale
+	 * @return string
+	 */
+	public function createIdentityString(object $eiObjectArg, N2nLocale $n2nLocale = null): string {
+		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectArg, 'eiObjectArg', $this->eiuMask->getEiMask()->getEiType());
+		return $this->getGuiDefinition()
+				->createIdentityString($eiObject, $this->eiuAnalyst->getN2nContext(true),
+						$n2nLocale ?? $this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
+	}
 }
 
 class ClosureGuiDefinitionListener implements GuiDefinitionListener {
