@@ -368,7 +368,9 @@ class EiuAnalyst {
 		
 		$eiType = null;
 		$eiObjectTypes = self::EI_TYPES;
-		if ($this->eiFrame !== null) {
+		if ($this->eiMask !== null) {
+			$eiType = $this->eiMask->getEiType();
+		} else if ($this->eiFrame !== null) {
 			$eiType = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType();
 			$eiObjectTypes[] = $eiType->getEntityModel()->getClass()->getName();
 		}
@@ -882,13 +884,6 @@ class EiuAnalyst {
 		
 		if ($this->eiFrame !== null) {
 			return $this->eiuFrame = new EiuFrame($this->eiFrame, $this);
-		} 
-		
-		if ($this->eiuEntry !== null) {
-			$this->eiuFrame = $this->eiuEntry->getEiuFrame(false);
-			if ($this->eiuFrame !== null) {
-				return $this->eiuFrame;
-			}
 		}
 		
 // 		if ($this->n2nContext !== null) {
