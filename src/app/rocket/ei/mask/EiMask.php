@@ -453,6 +453,39 @@ class EiMask {
 		
 // // 		throw new \InvalidArgumentException();
 // 	}
+
+	
+	/**
+	 * @param EiTypeExtension[] $subEiTypeExtensions
+	 */
+	public function setSubEiTypeExtensions(array $subEiTypeExtensions) {
+		ArgUtils::valArray($subEiTypeExtensions, EiTypeExtension::class);
+		$this->subEiTypeExtensions = $subEiTypeExtensions;
+	}
+	
+	/**
+	 * @param EiType $eiType
+	 * @throws \InvalidArgumentException
+	 * @return \rocket\ei\mask\EiMask
+	 */
+	public function determineEiMask(EiType $eiType) {
+		$contextEiMask = $this;
+		$contextEiType = $contextEiMask->getEiType();
+		if ($eiType->equals($contextEiType)) {
+			return $contextEiMask;
+		}
+		
+		if (!$contextEiType->containsSubEiTypeId($eiType->getId(), true)) {
+			throw new \InvalidArgumentException('EiType ' . $eiType->getId() . ' is no SubEiType of '
+					. $this->getEiType()->getId());
+		}
+		
+		if (isset($this->subEiTypeExtensions[$eiType->getId()])) {
+			return $this->subEiTypeExtensions[$eiType->getId()]->getEiMask();
+		}
+		
+		return $eiType->getEiMask();
+	}
 	
 	/**
 	 * @param string $eiTypeId
