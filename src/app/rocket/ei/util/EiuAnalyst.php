@@ -106,6 +106,10 @@ class EiuAnalyst {
 		$remainingEiArgs = array();
 		
 		foreach ($eiArgs as $key => $eiArg) {
+			if ($eiArg === null) {
+				continue;
+			}
+			
 			if ($eiArg instanceof N2nContext) {
 				$this->n2nContext = $eiArg;
 				continue;
