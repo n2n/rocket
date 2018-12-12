@@ -188,8 +188,8 @@ class PathPartEiPropConfigurator extends AlphanumericEiPropConfigurator {
 	
 	private function getUniquePerOptions() {
 		$options = array();
-		foreach ($this->eiComponent->getEiMask()->getEiEngine()->getGenericEiDefinition()->getGenericEiProperties() as $id => $genericEiProperty) {
-			if ($id === $this->eiComponent->getId()) continue;
+		foreach ($this->pathPartEiProp->getWrapper()->getEiPropCollection()->getEiMask()->getEiEngine()->getGenericEiDefinition()->getGenericEiProperties() as $id => $genericEiProperty) {
+			if ($id === (string) $this->pathPartEiProp->getWrapper()->getEiPropPath()) continue;
 			CastUtils::assertTrue($genericEiProperty instanceof GenericEiProperty);
 			$options[$id] = (string) $genericEiProperty->getLabelLstr();
 		}
