@@ -625,6 +625,10 @@ class EiuAnalyst {
 			$this->assignEiObject($eiuEntry->object()->getEiObject());
 		}
 		
+		if (null !== ($eiuFrame = $eiuEntry->getEiuFrame(false))) {
+			$this->assignEiuFrame($eiuFrame);
+		}
+		
 		$this->eiuEntry = $eiuEntry;
 	}
 	
