@@ -178,7 +178,7 @@ class PathPartEiPropConfigurator extends AlphanumericEiPropConfigurator {
 		$baseEiPropIdOptions = array();
 		foreach ($this->eiComponent->getEiMask()->getEiEngine()->getScalarEiDefinition()->getMap()
 				as $id => $genericScalarProperty) {
-			if ($id === $this->eiComponent->getId()) continue;
+			if ($id === (string) $this->pathPartEiProp->getWrapper()->getEiPropPath()) continue;
 			
 			CastUtils::assertTrue($genericScalarProperty instanceof ScalarEiProperty);
 			$baseEiPropIdOptions[$id] = (string) $genericScalarProperty->getLabelLstr();
