@@ -41,7 +41,7 @@ class EiuProp {
 	 * @return boolean
 	 */
 	public function isGeneric() {
-		return $this->eiuEngine->containsGenericEiProperty($this->eiPropPath);
+		return $this->eiuMask->engine()->containsGenericEiProperty($this->eiPropPath);
 	}
 	
 	/**
@@ -49,7 +49,7 @@ class EiuProp {
 	 * @throws \rocket\ei\manage\generic\UnknownGenericEiPropertyException if {@see self::isGeneric()} returns false
 	 */
 	public function createGenericCriteriaItem(string $entityAlias) {
-		return $this->eiuEngine->getGenericEiProperty($this->eiPropPath)->createCriteriaItem(CrIt::p($entityAlias));
+		return $this->eiuMask->engine()->getGenericEiProperty($this->eiPropPath)->createCriteriaItem(CrIt::p($entityAlias));
 	}
 	
 	/**
@@ -60,7 +60,7 @@ class EiuProp {
 	public function createGenericEntityValue($eiEntryArg, bool $ignoreAccessRestriction = false) {
 		$eiEntry = EiuAnalyst::buildEiEntryFromEiArg($eiEntryArg);
 		
-		return $this->eiuEngine->getGenericEiProperty($this->eiPropPath)
+		return $this->eiuMask->engine()->getGenericEiProperty($this->eiPropPath)
 				->eiFieldValueToEntityValue($eiEntry->getValue($this->eiPropPath, $ignoreAccessRestriction));
 	}
 }
