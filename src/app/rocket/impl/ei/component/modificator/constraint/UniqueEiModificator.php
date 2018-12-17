@@ -101,7 +101,7 @@ class UniqueEiModificator extends IndependentEiModificatorAdapter {
 	 */
 	private function restrictCriteria($criteria, $eiuEngine, $eiPropPaths, $eiuEntry) {
 		foreach ($eiPropPaths as $eiPropPath) {
-			$eiuProp = $eiuEngine->prop($eiPropPath, false);
+			$eiuProp = $eiuEngine->mask()->prop($eiPropPath, false);
 			
 			$ci = $eiuProp->createGenericCriteriaItem('e');
 			$cv = $eiuProp->createGenericEntityValue($eiuEntry);
