@@ -164,7 +164,7 @@ class EiuMask  {
 	public function prop($eiPropArg, bool $required = true) {
 		$eiPropPath = EiPropPath::create($eiPropArg);
 		try {
-			$this->eiMask->getEiPropCollection()->getById((string) $eiPropPath);
+			$this->eiMask->getEiPropCollection()->getByPath($eiPropPath);
 		} catch (UnknownEiComponentException $e) {
 			if (!$required) return null;
 			
