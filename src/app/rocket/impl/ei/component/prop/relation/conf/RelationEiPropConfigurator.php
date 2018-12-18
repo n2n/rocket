@@ -135,18 +135,17 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 				$targetOrderFieldPathOptions[(string) $scalarEiProperties->getKeyByHashCode($ref)]
 						= $scalarEiProperty->getLabelLstr();
 			}
+			
+			$targetEiTypeExtensionIds = $lar->getScalarArray(self::ATTR_TARGET_EXTENSIONS_KEY);
+			if (null !== ($targetEiExtensionId = $lar->getString('targetEiMaskId'))) {
+				$targetEiTypeExtensionIds[$targetEiType->getId()] = $targetEiExtensionId;
+			}
+			$magCollection->addMag(self::ATTR_TARGET_EXTENSIONS_KEY,
+					$this->createTargetExtensionsMag($targetEiType, $targetEiTypeExtensionIds));
 		} catch (UnknownEiComponentException $e) {
 		} catch (UnknownTypeException $e) {
 		} catch (InvalidConfigurationException $e) {
 		}
-		
-		
-		$targetEiTypeExtensionIds = $lar->getScalarArray(self::ATTR_TARGET_EXTENSIONS_KEY);
-		if (null !== ($targetEiExtensionId = $lar->getString('targetEiMaskId'))) {
-			$targetEiTypeExtensionIds[$targetEiType->getId()] = $targetEiExtensionId;	
-		}
-		$magCollection->addMag(self::ATTR_TARGET_EXTENSIONS_KEY, 
-				$this->createTargetExtensionsMag($targetEiType, $targetEiTypeExtensionIds));
 		
 		
 		$eiComponent = $this->eiComponent;
