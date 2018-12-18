@@ -124,8 +124,8 @@ class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 	public function initAutoEiPropAttributes(N2nContext $n2nContext, Column $column = null) {
 		parent::initAutoEiPropAttributes($n2nContext, $column);
 		
-		if (false !== stripos($this->requireEntityProperty()->getName(), 'image')) {
-			$this->attributes->set(self::ATTR_ALLOWED_EXTENSIONS_KEY, array('png', 'jpg', 'jpeg', 'gif'));
+		if (false !== stripos($this->requirePropertyName(), 'image')) {
+			$this->attributes->set(self::ATTR_ALLOWED_EXTENSIONS_KEY, array('png', 'jpg', 'jpeg', 'gif', 'webp'));
 			$this->attributes->set(self::ATTR_DIMENSION_IMPORT_MODE_KEY, FileEiProp::DIM_IMPORT_MODE_ALL);
 		}
 	}
