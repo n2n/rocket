@@ -26,6 +26,7 @@ use rocket\ei\manage\critmod\sort\SortSettingGroup;
 use rocket\ei\manage\critmod\sort\SortDefinition;
 use n2n\persistence\orm\criteria\Criteria;
 use rocket\ei\manage\critmod\sort\SortSetting;
+use rocket\ei\EiPropPath;
 
 class SortForm implements Dispatchable {
 	private $sortData;
@@ -78,7 +79,7 @@ class SortForm implements Dispatchable {
 		
 		$sortItemDatas = $sortData->getSortSettings();
 		foreach ($this->sortPropIds as $key => $sortPropId) {
-			if (!$this->sortDefinition->containsSortPropId($sortPropId)) continue;
+			if (!$this->sortDefinition->containsEiPropPath(EiPropPath::create($sortPropId))) continue;
 			
 			$direction = Criteria::ORDER_DIRECTION_ASC;
 			if (isset($this->directions[$key]) && $this->directions[$key] === Criteria::ORDER_DIRECTION_DESC) {
