@@ -252,8 +252,7 @@ class GuiDefinition {
 				
 				$currentEiPropPaths = $baseEiPropPaths;
 				$currentEiPropPaths[] = $eiPropPath;
-				$displayStructure->addGuiFieldPath(new GuiFieldPath($currentEiPropPaths),
-						$displayDefinition->getDisplayItemType());
+				$displayStructure->addGuiFieldPath(new GuiFieldPath($currentEiPropPaths));
 			}
 			
 			if (isset($this->guiPropForks[$eiPropPathStr])

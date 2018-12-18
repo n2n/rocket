@@ -213,22 +213,29 @@ class GuiFactory {
 }
 
 
-class ModEiGuiListener implements EiGuiListener {
-	private $eiModificatorCollection;
+// class ModEiGuiListener implements EiGuiListener {
+// 	private $eiModificatorCollection;
 	
-	public function __construct(EiModificatorCollection $eiModificatorCollection) {
-		$this->eiModificatorCollection = $eiModificatorCollection;
-	}
+// 	public function __construct(EiModificatorCollection $eiModificatorCollection) {
+// 		$this->eiModificatorCollection = $eiModificatorCollection;
+// 	}
 	
-	public function onNewEiEntryGui(EiEntryGui $eiEntryGui) {
-		foreach ($this->eiModificatorCollection as $eiModificator) {
-			$eiModificator->onNewEiEntryGui($eiEntryGui);
-		}
-	}
+// 	public function onInitialized(EiGui $eiGui) {
+// 		foreach ($this->eiModificatorCollection as $eiModificator) {
+// 			$eiModificator->onEiGuiInitialized($eiGui);
+// 		}
+// 	}
 	
-	public function onNewView(HtmlView $view) {
-		foreach ($this->eiModificatorCollection as $eiModificator) {
-			$eiModificator->onNewView($view);
-		}
-	}
-}
+// 	public function onNewEiEntryGui(EiEntryGui $eiEntryGui) {
+// 		foreach ($this->eiModificatorCollection as $eiModificator) {
+// 			$eiModificator->onNewEiEntryGui($eiEntryGui);
+// 		}
+// 	}
+	
+// 	public function onNewView(HtmlView $view) {
+// 		foreach ($this->eiModificatorCollection as $eiModificator) {
+// 			$eiModificator->onNewView($view);
+// 		}
+// 	}
+
+// }

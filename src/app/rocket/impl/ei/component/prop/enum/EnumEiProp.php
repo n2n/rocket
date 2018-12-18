@@ -152,7 +152,7 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 		return $enablerMag;
 	}
 	
-	public function createOutputUiComponent(HtmlView $view, Eiu $eiu)  {
+	public function createUiComponent(HtmlView $view, Eiu $eiu)  {
 		$html = $view->getHtmlBuilder();
 		$options = $this->getOptions();
 		$value = $eiu->field()->getValue(EiPropPath::from($this));

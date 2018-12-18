@@ -38,7 +38,7 @@ use n2n\l10n\N2nLocale;
 use n2n\reflection\property\AccessProxy;
 use n2n\reflection\property\TypeConstraint;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
-use rocket\impl\ei\component\prop\adapter\config\StandardEditDefinition;
+use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 use rocket\ei\manage\gui\GuiField;
 use rocket\ei\component\prop\GuiEiProp;
 use rocket\ei\manage\gui\GuiFieldEditable;
@@ -49,10 +49,10 @@ class EmbeddedEiProp extends PropertyEiPropAdapter implements GuiEiProp, FieldEi
 	private $sed;
 	
 	/**
-	 * @return \rocket\impl\ei\component\prop\adapter\config\StandardEditDefinition
+	 * @return \rocket\impl\ei\component\prop\adapter\config\EditConfig
 	 */
-	private function getStandardEditDefinition() {
-		return $this->sed ?? $this->sed = new StandardEditDefinition();
+	private function getEditConfig() {
+		return $this->sed ?? $this->sed = new EditConfig();
 	}
 	
 	/**
@@ -85,7 +85,7 @@ class EmbeddedEiProp extends PropertyEiPropAdapter implements GuiEiProp, FieldEi
 	 */
 	public function createEiPropConfigurator(): EiPropConfigurator {
 		$eepc = new EmbeddedEiPropConfigurator($this);
-		$eepc->registerStandardEditDefinition($this->getStandardEditDefinition());
+		$eepc->registerEditConfig($this->getEditConfig());
 		return $eepc;
 	}
 	
@@ -93,7 +93,7 @@ class EmbeddedEiProp extends PropertyEiPropAdapter implements GuiEiProp, FieldEi
 	 * @return boolean
 	 */
 	public function isMandatory() {
-		return $this->getStandardEditDefinition()->isMandatory();
+		return $this->getEditConfig()->isMandatory();
 	}
 	
 	/**
@@ -201,7 +201,7 @@ class EmbeddedGuiField implements GuiField, GuiFieldEditable {
 		$this->eiu->field()->setValue($this->eiu->entry()->fieldMap($this->embeddedEiProp));
 	}
 
-	public function getOutputHtmlContainerAttrs(): array {
+	public function getHtmlContainerAttrs(): array {
 		return [];
 	}
 
@@ -225,11 +225,11 @@ class EmbeddedGuiField implements GuiField, GuiFieldEditable {
 		return $this->mag;
 	}
 
-	public function createOutputUiComponent(HtmlView $view) {
+	public function createUiComponent(HtmlView $view) {
 		return null;
 	}
 
-	public function getDisplayItemType(): ?string {
+	public function getDisplayItemType(): string {
 		return null;
 	}
 

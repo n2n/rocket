@@ -148,9 +148,6 @@ class EiuMask  {
 				->t($n2nLocale ?? $this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
 	}
 	
-	
-	
-	
 	public function containsEiProp($eiPropPath) {
 		return $this->eiEngine->getEiMask()->getEiPropCollection()->containsId(EiPropPath::create($eiPropPath));
 	}

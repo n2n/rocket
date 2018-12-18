@@ -66,7 +66,7 @@ class EmbeddedOneToOneGuiField implements GuiField {
 		return $this->editable === null;
 	}
 
-	public function getDisplayItemType(): ?string {
+	public function getDisplayItemType(): string {
 		return DisplayItem::TYPE_SIMPLE_GROUP;
 	}
 	
@@ -80,11 +80,11 @@ class EmbeddedOneToOneGuiField implements GuiField {
 	/**
 	 * @return array
 	 */
-	public function getOutputHtmlContainerAttrs(): array {
+	public function getHtmlContainerAttrs(): array {
 		return array();
 	}
 	
-	public function createOutputUiComponent(HtmlView $view) {
+	public function createUiComponent(HtmlView $view) {
 		$targetRelationEntry = $this->toOneEiField->getValue();
 		if ($targetRelationEntry === null) return null;
 		

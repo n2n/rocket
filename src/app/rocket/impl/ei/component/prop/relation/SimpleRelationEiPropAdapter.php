@@ -25,8 +25,8 @@ use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\component\prop\DraftableEiProp;
 use rocket\ei\manage\draft\DraftProperty;
 use rocket\impl\ei\component\prop\relation\model\relation\EiPropRelation;
-use rocket\impl\ei\component\prop\adapter\config\DisplaySettings;
-use rocket\impl\ei\component\prop\adapter\config\StandardEditDefinition;
+use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
+use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 use rocket\ei\component\prop\FilterableEiProp;
 use rocket\ei\manage\frame\EiFrame;
 use n2n\core\container\N2nContext;
@@ -50,16 +50,16 @@ use n2n\l10n\Lstr;
 
 abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter implements GuiProp, DraftableEiProp, 
 		DraftProperty, FilterableEiProp {
-	protected $displaySettings;
+	protected $displayConfig;
 
-	protected function initialize(EiPropRelation $eiPropRelation, StandardEditDefinition $standardEditDefinition = null, 
-			DisplaySettings $displayDefinition = null) {
-		parent::initialize($eiPropRelation, $standardEditDefinition, $standardEditDefinition);
+	protected function initialize(EiPropRelation $eiPropRelation, EditConfig $editConfig = null, 
+			DisplayConfig $displayDefinition = null) {
+		parent::initialize($eiPropRelation, $editConfig, $editConfig);
 
 		if ($displayDefinition !== null) {
-			$this->displaySettings = $displayDefinition;
+			$this->displayConfig = $displayDefinition;
 		} else {
-			$this->displaySettings = new DisplaySettings(ViewMode::all());
+			$this->displayConfig = new DisplayConfig(ViewMode::all());
 		}
 	}
 	
@@ -76,7 +76,7 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayHelpTextLstr()
 	 */
 	public function getDisplayHelpTextLstr(): ?Lstr {
-		$helpText = $this->displaySettings->getHelpText();
+		$helpText = $this->displayConfig->getHelpText();
 		if ($helpText === null) {
 			return null;
 		}
@@ -86,24 +86,24 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiProp::getDisplaySettings()
+	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayConfig()
 	 */
-	public function getDisplaySettings(): DisplaySettings {
-		return $this->displaySettings;
+	public function getDisplayConfig(): DisplayConfig {
+		return $this->displayConfig;
 	}
 	
 	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
 		$viewMode = $eiu->gui()->getViewMode();
 		
-		if (!$this->displaySettings->isViewModeCompatible($viewMode)) {
+		if (!$this->displayConfig->isViewModeCompatible($viewMode)) {
 			return null;
 		}
 		
 		return new DisplayDefinition($this->getDisplayItemType(), 
-				$this->displaySettings->isViewModeDefaultDisplayed($viewMode));
+				$this->displayConfig->isViewModeDefaultDisplayed($viewMode));
 	}
 	
-	protected function getDisplayItemType(): ?string {
+	protected function getDisplayItemType(): string {
 		return DisplayItem::TYPE_SIMPLE_GROUP;
 	}
 	

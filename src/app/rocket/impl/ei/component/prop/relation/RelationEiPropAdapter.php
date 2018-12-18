@@ -35,7 +35,7 @@ use rocket\ei\manage\security\filter\SecurityFilterProp;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\impl\ei\component\prop\adapter\PropertyEiPropAdapter;
 use rocket\impl\ei\component\prop\adapter\entry\Copyable;
-use rocket\impl\ei\component\prop\adapter\config\StandardEditDefinition;
+use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 
 abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements RelationEiProp, GuiEiProp, 
 		FieldEiProp, Readable, Writable, Copyable {
@@ -44,15 +44,15 @@ abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements Re
 	 */
 	protected $eiPropRelation;
 	protected $draftable = false;
-	protected $standardEditDefinition;
+	protected $editConfig;
 	
-	protected function initialize(EiPropRelation $eiPropRelation, StandardEditDefinition $standardEditDefinition = null) {
+	protected function initialize(EiPropRelation $eiPropRelation, EditConfig $editConfig = null) {
 		$this->eiPropRelation = $eiPropRelation;
 		
-		if ($standardEditDefinition !== null) {
-			$this->standardEditDefinition = $standardEditDefinition;
+		if ($editConfig !== null) {
+			$this->editConfig = $editConfig;
 		} else {
-			$this->standardEditDefinition = new StandardEditDefinition();
+			$this->editConfig = new EditConfig();
 		}
 	}
 	
@@ -68,8 +68,8 @@ abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements Re
 		return new RelationEiPropConfigurator($this);
 	}
 	
-	public function getStandardEditDefinition(): StandardEditDefinition {
-		return $this->standardEditDefinition;
+	public function getEditConfig(): EditConfig {
+		return $this->editConfig;
 	}
 	
 	public function isEiField(): bool {

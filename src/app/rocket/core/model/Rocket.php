@@ -210,4 +210,15 @@ class Rocket implements RequestScoped {
 
 		return Lstr::createCodeDtc($code, $dtc);
 	}
+	
+	/**
+	 * @param string $code
+	 * @param string $moduleNamespace
+	 * @return NULL|\n2n\l10n\Lstr
+	 */
+	static function buildLstr(?string $code, string $moduleNamespace) {
+		if ($code === null) return null; 
+		
+		return self::createLstr($code, $moduleNamespace);
+	}
 }

@@ -76,7 +76,7 @@ abstract class DraftablePropertyEiPropAdapter extends EditablePropertyEiPropAdap
 		
 // 		if (!$this->checkForWriteAccess($eiu->entry()->getEiEntry())) return true;
 			
-		return $this->standardEditDefinition->isReadOnly() || !$this->isDraftable();
+		return $this->editConfig->isReadOnly() || !$this->isDraftable();
 	}
 	
 	/* (non-PHPdoc)

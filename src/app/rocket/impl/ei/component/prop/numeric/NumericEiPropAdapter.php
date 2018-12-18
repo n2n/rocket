@@ -82,7 +82,7 @@ abstract class NumericEiPropAdapter extends DraftablePropertyEiPropAdapter
 		return new NumericEiPropConfigurator($this);
 	}
 	
-	public function createOutputUiComponent(HtmlView $view, Eiu $eiu)  {
+	public function createUiComponent(HtmlView $view, Eiu $eiu)  {
 		$html = $view->getHtmlBuilder();
 		return $html->getEsc($eiu->field()->getValue(EiPropPath::from($this)));
 	}

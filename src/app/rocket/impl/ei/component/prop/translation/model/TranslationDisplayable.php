@@ -62,14 +62,14 @@ class TranslationDisplayable implements GuiField {
 		return true;
 	}
 	
-	public function getOutputHtmlContainerAttrs(): array {
+	public function getHtmlContainerAttrs(): array {
 		return array();
 	}
 	
-	public function createOutputUiComponent(HtmlView $view) {
+	public function createUiComponent(HtmlView $view) {
 // 		$outputUiComponents = array();
 // 		foreach ($this->translatedDisplayables as $n2nLocaleId => $translatedDisplayable) {
-// 			$outputUiComponents[$n2nLocaleId] = $translatedDisplayable->createOutputUiComponent($view);
+// 			$outputUiComponents[$n2nLocaleId] = $translatedDisplayable->createUiComponent($view);
 // 		}
 		
 		return $view->getImport('\rocket\impl\ei\component\prop\translation\view\displayable.html',
@@ -88,7 +88,7 @@ class TranslationDisplayable implements GuiField {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiField::getDisplayItemType()
 	 */
-	public function getDisplayItemType(): ?string {
+	public function getDisplayItemType(): string {
 		return null;
 	}
 }

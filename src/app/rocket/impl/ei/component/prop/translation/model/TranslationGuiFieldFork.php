@@ -188,7 +188,7 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 // 		$eiFieldWrapperWrapper = new EiFieldWrapperCollection($eiFieldWrappers);
 		
 		if ($translationMag === null) {
-			return new GuiFieldAssembly($guiProp, $translationDisplayable);
+			return new GuiFieldAssembly(/*$guiProp, */$translationDisplayable);
 		}
 		
 		$translationMag->setSrcLoadConfig($this->buildSrcLoadConfig($guiFieldPath));
@@ -196,7 +196,7 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 		$this->setupTranslationForm();
 				
 		$magInfo = $this->translationForm->registerMag($guiFieldPath->__toString(), $translationMag);
-		return new GuiFieldAssembly($guiProp, $translationDisplayable,  
+		return new GuiFieldAssembly(/*$guiProp, */$translationDisplayable,  
 				new MagAssembly($mandatory, $magInfo['propertyPath'], $magInfo['magWrapper']));
 	}
 		
@@ -268,7 +268,7 @@ class EmptyDisplayable implements GuiField {
 		$this->displayable = $displayable;
 	}
 	
-	public function getDisplayItemType(): ?string {
+	public function getDisplayItemType(): string {
 		return $this->displayable->getDisplayItemType();
 	}
 	
@@ -284,11 +284,11 @@ class EmptyDisplayable implements GuiField {
 		return $this->displayable->getUiOutputLabel();
 	}
 	
-	public function getOutputHtmlContainerAttrs(): array {
+	public function getHtmlContainerAttrs(): array {
 		return array('class' => 'rocket-empty-translation');
 	}
 	
-	public function createOutputUiComponent(HtmlView $view) {
+	public function createUiComponent(HtmlView $view) {
 		return new HtmlElement('span', ['class' => 'rocket-inactive'], 
 				$view->getHtmlBuilder()->getText('ei_impl_locale_not_active_label'));
 	}

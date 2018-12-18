@@ -50,9 +50,9 @@ class PathPartEiProp extends AlphanumericEiProp  {
 	private $urlEiCommand;
 	
 	public function __construct() {
-		$this->getDisplaySettings()->setDefaultDisplayedViewModes(ViewMode::BULKY_EDIT | ViewMode::COMPACT_READ);
+		$this->getDisplayConfig()->setDefaultDisplayedViewModes(ViewMode::BULKY_EDIT | ViewMode::COMPACT_READ);
 		$this->entityPropertyRequired = true;
-		$this->getStandardEditDefinition()->setMandatory(false);
+		$this->getEditConfig()->setMandatory(false);
 	}
 	
 	/* (non-PHPdoc)
@@ -123,7 +123,7 @@ class PathPartEiProp extends AlphanumericEiProp  {
 		parent::setEntityProperty($entityProperty);
 	}
 	
-	public function createOutputUiComponent(HtmlView $view, Eiu $eiu)  {
+	public function createUiComponent(HtmlView $view, Eiu $eiu)  {
 		return $view->getHtmlBuilder()->getEsc($eiu->field()->getValue(EiPropPath::from($this)));
 	}
 

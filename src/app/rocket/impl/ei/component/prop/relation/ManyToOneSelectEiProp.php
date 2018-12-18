@@ -65,7 +65,7 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 		$this->initialize(new SelectEiPropRelation($this, true, false));
 	}
 	
-	public function getDisplayItemType(): ?string {
+	public function getDisplayItemType(): string {
 		return DisplayItem::TYPE_ITEM;
 	}
 	
@@ -183,7 +183,7 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 		$toOneEditable = null;
 		if (!$this->eiPropRelation->isReadOnly($mapping, $eiFrame)) {
 			$targetEditEiFrame = $this->eiPropRelation->createTargetEditPseudoEiFrame($eiFrame, $mapping);
-			$toOneEditable = new ToOneEditable($this->getLabelLstr(), $this->standardEditDefinition->isMandatory(),
+			$toOneEditable = new ToOneEditable($this->getLabelLstr(), $this->editConfig->isMandatory(),
 					$relationEiField, $targetReadEiFrame, $targetEditEiFrame);
 			
 			$toOneEditable->setSelectOverviewToolsUrl($this->eiPropRelation->buildTargetOverviewToolsUrl(

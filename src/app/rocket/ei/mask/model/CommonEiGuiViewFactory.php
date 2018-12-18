@@ -41,27 +41,27 @@ class CommonEiGuiViewFactory implements EiGuiViewFactory {
 	}
 	
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\EiGuiViewFactory::getDisplayStructure()
-	 */
-	public function getDisplayStructure(): DisplayStructure {
-		return $this->displayStructure;
-	}
+// 	/**
+// 	 * {@inheritDoc}
+// 	 * @see \rocket\ei\manage\gui\EiGuiViewFactory::getDisplayStructure()
+// 	 */
+// 	public function getDisplayStructure(): DisplayStructure {
+// 		return $this->displayStructure;
+// 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\EiGuiViewFactory::setDisplayStructure()
-	 */
-	public function setDisplayStructure(DisplayStructure $displayStructure) {
-		$this->displayStructure = $displayStructure;
-	}
+// 	/**
+// 	 * {@inheritDoc}
+// 	 * @see \rocket\ei\manage\gui\EiGuiViewFactory::setDisplayStructure()
+// 	 */
+// 	public function setDisplayStructure(DisplayStructure $displayStructure) {
+// 		$this->displayStructure = $displayStructure;
+// 	}
 	
 	
 // 	private function determineDisplayStructure($viewMode): DisplayStructure {
 // 		$displayStructure = null;
 	
-// 		if ($viewMode & DisplaySettings::COMPACT_VIEW_MODES) {
+// 		if ($viewMode & DisplayConfig::COMPACT_VIEW_MODES) {
 // 			if (null !== ($overviewDisplayStructure = $this->displayScheme->getOverviewDisplayStructure())) {
 // 				return $overviewDisplayStructure;
 // 			}
@@ -69,17 +69,17 @@ class CommonEiGuiViewFactory implements EiGuiViewFactory {
 // 		} 
 		
 // 		switch ($viewMode) {
-// 			case DisplaySettings::VIEW_MODE_BULKY_READ:
+// 			case DisplayConfig::VIEW_MODE_BULKY_READ:
 // 				if (null !== ($detailDisplayStructure = $this->displayScheme->getDetailDisplayStructure())) {
 // 					return $detailDisplayStructure;
 // 				}
 // 				break;
-// 			case DisplaySettings::VIEW_MODE_BULKY_EDIT:
+// 			case DisplayConfig::VIEW_MODE_BULKY_EDIT:
 // 				if (null !== $editDisplayStructure = $this->displayScheme->getEditDisplayStructure()) {
 // 					return $editDisplayStructure;
 // 				}
 // 				break;
-// 			case DisplaySettings::VIEW_MODE_BULKY_ADD:
+// 			case DisplayConfig::VIEW_MODE_BULKY_ADD:
 // 				if (null !== ($addDisplayStructure = $this->displayScheme->getAddDisplayStructure())) {
 // 					return $addDisplayStructure;
 // 				}

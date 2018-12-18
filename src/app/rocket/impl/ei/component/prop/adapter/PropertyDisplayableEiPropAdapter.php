@@ -39,26 +39,37 @@ use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\GuiField;
 use rocket\core\model\Rocket;
 use n2n\l10n\Lstr;
-use rocket\impl\ei\component\prop\adapter\gui\StatelessDisplayable;
-use rocket\impl\ei\component\prop\adapter\config\DisplaySettings;
+use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiField;
+use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
-use rocket\impl\ei\component\prop\adapter\gui\StatelessDisplayElement;
+use rocket\impl\ei\component\prop\adapter\gui\GuiFieldProxy;
 
-abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter implements StatelessDisplayable, 
+abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter implements StatelessGuiField, 
 		FieldEiProp, GuiEiProp, GuiProp, Readable {
-	private $displaySettings;
+	private $displayConfig;
 
-	public function getDisplaySettings(): DisplaySettings {
-		if ($this->displaySettings === null) {
-			$this->displaySettings = new DisplaySettings(ViewMode::all());
+	/**
+	 * @return DisplayConfig
+	 */
+	public function getDisplayConfig(): DisplayConfig {
+		if ($this->displayConfig !== null) {
+			return $this->displayConfig;
 		}
-
-		return $this->displaySettings;
+		
+		return $this->displayConfig = new DisplayConfig(ViewMode::all());
+	}
+	
+	/**
+	 * @param Eiu $eiu
+	 * @return string
+	 */
+	public function getDisplayItemType(Eiu $eiu): string {
+		return DisplayItem::TYPE_ITEM;
 	}
 	
 	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
 		$viewMode = $eiu->gui()->getViewMode();
-		if (!$this->getDisplaySettings()->isViewModeCompatible($viewMode)) {
+		if (!$this->getDisplayConfig()->isViewModeCompatible($viewMode)) {
 			return null;
 		}
 		
@@ -66,17 +77,13 @@ abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter im
 		ArgUtils::valEnumReturn($groupType, DisplayItem::getTypes(), $this, 'getGroupType');
 		
 		return new DisplayDefinition($groupType,
-				$this->getDisplaySettings()->isViewModeDefaultDisplayed($viewMode));
-	}
-	
-	protected function getDisplayItemType(Eiu $eiu) {
-		return DisplayItem::TYPE_ITEM;
+				$this->getDisplayConfig()->isViewModeDefaultDisplayed($viewMode));
 	}
 
 	public function createEiPropConfigurator(): EiPropConfigurator {
 		$eiPropConfigurator = parent::createEiPropConfigurator();
 		IllegalStateException::assertTrue($eiPropConfigurator instanceof AdaptableEiPropConfigurator);
-		$eiPropConfigurator->registerDisplaySettings($this->getDisplaySettings());
+		$eiPropConfigurator->registerDisplayConfig($this->getDisplayConfig());
 		return $eiPropConfigurator;
 	}
 	
@@ -112,7 +119,7 @@ abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter im
 	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayHelpTextLstr()
 	 */
 	public function getDisplayHelpTextLstr(): ?Lstr {
-		$helpText = $this->displaySettings->getHelpText();
+		$helpText = $this->displayConfig->getHelpText();
 		if ($helpText === null) {
 			return null;
 		}
@@ -121,19 +128,19 @@ abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter im
 	}
 	
 	public function buildGuiField(Eiu $eiu): ?GuiField {
-		return new StatelessDisplayElement($this, $eiu);
+		return new GuiFieldProxy($this, $eiu);
 	}
 	
 	public function getUiOutputLabel(Eiu $eiu) {
 		return $this->getLabelLstr();
 	}
 	
-	public function getOutputHtmlContainerAttrs(Eiu $eiu) {
+	public function getHtmlContainerAttrs(Eiu $eiu) {
 		$eiTypeExtension = $this->getEiMask()->isExtension() ? $this->getEiMask()->getExtension() : null;
 		return array('class' => 'rocket-ei-spec-' . $this->getEiMask()->getEiType()->getId()
 						. ($eiTypeExtension !== null ? ' rocket-ei-mask-' . $eiTypeExtension->getId() : '') 
 						. ' rocket-ei-field-' . $this->getWrapper()->getEiPropPath(), 
-				'title' => $this->displaySettings->getHelpText());
+				'title' => $this->displayConfig->getHelpText());
 	}
 	
 	public function isStringRepresentable(): bool {

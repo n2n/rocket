@@ -7,6 +7,7 @@ interface GuiDefinitionListener {
 	 */
 	public function onNewEiGui(EiGui $eiGui);
 	
+	
 // 	/**
 // 	 * @param EiEntryGui $eiEntryGui
 // 	 */

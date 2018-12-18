@@ -23,6 +23,7 @@ namespace rocket\ei\manage\gui\ui;
 
 use rocket\ei\manage\gui\GuiFieldPath;
 use n2n\reflection\ArgUtils;
+use n2n\l10n\Lstr;
 
 class DisplayStructure {
 	private $displayItems = array();
@@ -33,9 +34,8 @@ class DisplayStructure {
 	 * @param string $label
 	 * @param string $moduleNamespace
 	 */
-	public function addGuiFieldPath(GuiFieldPath $guiFieldPath, string $type = null, string $label = null, 
-			string $moduleNamespace = null) {
-		$this->displayItems[] = DisplayItem::create($guiFieldPath, $type, $label, $moduleNamespace);
+	public function addGuiFieldPath(GuiFieldPath $guiFieldPath, string $type = null) {
+		$this->displayItems[] = DisplayItem::create($guiFieldPath, $type);
 	}
 	
 	/**
@@ -44,10 +44,8 @@ class DisplayStructure {
 	 * @param string $label
 	 * @param string $moduleNamespace
 	 */
-	public function addDisplayStructure(DisplayStructure $displayStructure, string $type, string $label = null, 
-			string $moduleNamespace = null) {
-		$this->displayItems[] = DisplayItem::createFromDisplayStructure($displayStructure, $type, $label, 
-				$moduleNamespace);
+	public function addDisplayStructure(DisplayStructure $displayStructure, string $type, Lstr $labelLstr = null) {
+		$this->displayItems[] = DisplayItem::createFromDisplayStructure($displayStructure, $type, $labelLstr);
 	}
 	
 	/**

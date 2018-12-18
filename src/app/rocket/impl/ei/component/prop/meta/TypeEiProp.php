@@ -26,7 +26,7 @@ use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\ei\component\prop\GuiEiProp;
 use rocket\ei\manage\gui\GuiProp;
 use n2n\l10n\N2nLocale;
-use rocket\impl\ei\component\prop\adapter\gui\StatelessDisplayable;
+use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiField;
 use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\gui\DisplayDefinition;
@@ -34,13 +34,13 @@ use rocket\impl\ei\component\prop\adapter\DisplayableEiPropAdapter;
 use n2n\impl\web\ui\view\html\HtmlSnippet;
 use n2n\impl\web\ui\view\html\HtmlElement;
 
-class TypeEiProp extends DisplayableEiPropAdapter implements StatelessDisplayable, GuiEiProp, GuiProp {
+class TypeEiProp extends DisplayableEiPropAdapter implements StatelessGuiField, GuiEiProp, GuiProp {
 	
 	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
-		return $this->getDisplaySettings()->toDisplayDefinition($this, $eiu->gui()->getViewMode());
+		return $this->getDisplayConfig()->toDisplayDefinition($this, $eiu->gui()->getViewMode());
 	}
 
-	public function createOutputUiComponent(HtmlView $view, Eiu $eiu) {
+	public function createUiComponent(HtmlView $view, Eiu $eiu) {
 		$eiuMask = $eiu->context()->mask($eiu->entry()->getEiEntry()->getEiType());
 		$iconType = $eiuMask->getIconType();
 		$label = $eiuMask->getLabel();
@@ -55,7 +55,7 @@ class TypeEiProp extends DisplayableEiPropAdapter implements StatelessDisplayabl
 	
 	public function createEiPropConfigurator(): EiPropConfigurator {
 		$configurator = new AdaptableEiPropConfigurator($this);
-		$configurator->registerDisplaySettings($this->getDisplaySettings());
+		$configurator->registerDisplayConfig($this->getDisplayConfig());
 		return $configurator;
 	}
 	

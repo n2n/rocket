@@ -935,9 +935,9 @@ class EiuAnalyst {
 			if ($this->eiEntry !== null) {
 				return $this->eiuEntry = new EiuEntry($this->eiEntry, $this->getEiuObject(true), null, $this);
 			}
-			if ($this->eiObject !== null) {
-				return $this->eiuEntry = new EiuEntry(null, $this->getEiuObject(true), null, $this);
-			}
+// 			if ($this->eiObject !== null) {
+// 				return $this->eiuEntry = new EiuEntry(null, $this->getEiuObject(true), null, $this);
+// 			}
 		}
 		
 		if (!$required) return null;

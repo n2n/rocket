@@ -331,6 +331,10 @@ class ClosureGuiDefinitionListener implements GuiDefinitionListener {
 		$c = $this->callback;
 		$c(new Eiu($eiGui));
 	}
+	
+	public function onEiGuiInitialized(EiGui $eiGui) {
+	}
+
 }
 
 class ClosureEiGuiListener implements EiGuiListener, GuiDefinitionListener {
@@ -344,6 +348,10 @@ class ClosureEiGuiListener implements EiGuiListener, GuiDefinitionListener {
 		$c = $this->eiEntryGuiCallback;
 		$c(new Eiu($eiEntryGui));
 	}
+	
+	public function onInitialized(EiGui $eiGui) {
+		
+	}
 
 	public function onNewView(HtmlView $view) {
 	}
@@ -351,6 +359,7 @@ class ClosureEiGuiListener implements EiGuiListener, GuiDefinitionListener {
 	public function onNewEiGui(EiGui $eiGui) {
 		$eiGui->registerEiGuiListener($this);
 	}
+
 
 	
 }

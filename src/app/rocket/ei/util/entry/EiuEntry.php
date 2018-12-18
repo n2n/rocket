@@ -326,8 +326,7 @@ class EiuEntry {
 		$eiFrame = $this->getEiuFrame()->getEiFrame();
 		
 		$eiGui = new EiGui($eiFrame, $viewMode);
-		$eiGui->init($eiMask->getDisplayScheme()->createEiGuiViewFactory($eiGui,
-				$eiFrame->getManageState()->getDef()->getGuiDefinition($eiMask)));
+		$eiMask->initEiGui($eiGui);
 		
 		return new EiuEntryGui($eiGui->createEiEntryGui($eiEntry, $treeLevel), null, $this->eiuAnalyst);
 	}

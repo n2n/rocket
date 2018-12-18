@@ -47,7 +47,7 @@ class StringEiProp extends AlphanumericEiProp {
 		return new StringEiPropConfigurator($this);
 	}
 	
-	public function createOutputUiComponent(HtmlView $view, Eiu $eiu)  {
+	public function createUiComponent(HtmlView $view, Eiu $eiu)  {
 		$html = $view->getHtmlBuilder();
 		
 		$value = $eiu->field()->getValue(EiPropPath::from($this));

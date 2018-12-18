@@ -72,7 +72,7 @@ class N2nLocaleEiProp extends DraftablePropertyEiPropAdapter implements Filterab
 		$this->definedN2nLocales = $definedN2nLocales;
 	}
 
-	public function createOutputUiComponent(HtmlView $view, Eiu $eiu)  {
+	public function createUiComponent(HtmlView $view, Eiu $eiu)  {
 		$value = $eiu->entry()->getValue($this);
 		if ($value === null) return null;
 		

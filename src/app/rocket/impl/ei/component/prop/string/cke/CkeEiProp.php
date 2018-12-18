@@ -50,8 +50,8 @@ class CkeEiProp extends AlphanumericEiProp {
 	private $bbcode = false;
 	
 	public function __construct() {
-		$this->getDisplaySettings()->setDefaultDisplayedViewModes(ViewMode::bulky());
-		$this->getStandardEditDefinition()->setMandatory(false);
+		$this->getDisplayConfig()->setDefaultDisplayedViewModes(ViewMode::bulky());
+		$this->getEditConfig()->setMandatory(false);
 		
 		$this->ckeLinkProviderLookupIds = new GenericArrayObject(null, CkeLinkProvider::class);
 	}
@@ -115,7 +115,7 @@ class CkeEiProp extends AlphanumericEiProp {
 		$this->bbcode = $bbcode;
 	}
 
-	public function createOutputUiComponent(HtmlView $view, Eiu $eiu) {
+	public function createUiComponent(HtmlView $view, Eiu $eiu) {
 	    $value = $eiu->field()->getValue(EiPropPath::from($this));
 	    if ($value === null) return null;
 	    

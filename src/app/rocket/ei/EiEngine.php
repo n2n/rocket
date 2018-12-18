@@ -53,7 +53,6 @@ use rocket\ei\manage\gui\EiGui;
 class EiEngine {
 	private $eiMask;
 	
-	private $guiDefinition;
 	private $draftDefinition;
 	private $genericEiDefinition;
 	private $scalarEiDefinition;
@@ -70,7 +69,6 @@ class EiEngine {
 	 * 
 	 */
 	public function clear() {
-		$this->guiDefinition = null;
 		$this->draftDefinition = null;
 		$this->genericEiDefinition = null;
 		$this->scalarEiDefinition = null;

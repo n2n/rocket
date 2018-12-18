@@ -36,7 +36,7 @@ class OrderEiProp extends IntegerEiProp {
 	const ORDER_INCREMENT = 10;
 	
 	public function createEiPropConfigurator(): EiPropConfigurator {
-		$this->getDisplaySettings()->setListReadModeDefaultDisplayed(false);
+		$this->getDisplayConfig()->setListReadModeDefaultDisplayed(false);
 		
 		return new OrderEiPropConfigurator($this);
 	}
@@ -45,7 +45,7 @@ class OrderEiProp extends IntegerEiProp {
 		return $entityProperty instanceof ScalarEntityProperty;
 	}
 	
-	public function createOutputUiComponent(HtmlView $view, Eiu $eiu) {
+	public function createUiComponent(HtmlView $view, Eiu $eiu) {
 		return $view->getHtmlBuilder()->getEsc($eiu->field()->getValue(EiPropPath::from($this)));
 	}
 

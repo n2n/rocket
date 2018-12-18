@@ -135,9 +135,9 @@ class BooleanEiProp extends DraftablePropertyEiPropAdapter implements Filterable
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessDisplayable::createOutputUiComponent()
+	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiField::createUiComponent()
 	 */
-	public function createOutputUiComponent(HtmlView $view, Eiu $eiu)  {
+	public function createUiComponent(HtmlView $view, Eiu $eiu)  {
 		$value = $this->getObjectPropertyAccessProxy()->getValue(
 				$eiu->entry()->getEiEntry()->getEiObject()->getLiveObject());
 		if ($value) {
@@ -148,7 +148,7 @@ class BooleanEiProp extends DraftablePropertyEiPropAdapter implements Filterable
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessEditable::createMag()
+	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldEditable::createMag()
 	 */
 	public function createMag(Eiu $eiu): Mag {
 		if (empty($this->onAssociatedGuiFieldPaths) && empty($this->offAssociatedGuiFieldPaths)) {

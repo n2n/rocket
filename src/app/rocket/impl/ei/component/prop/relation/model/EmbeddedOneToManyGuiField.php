@@ -70,7 +70,7 @@ class EmbeddedOneToManyGuiField implements GuiField {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiField::getDisplayItemType()
 	 */
-	public function getDisplayItemType(): ?string {
+	public function getDisplayItemType(): string {
 		return DisplayItem::TYPE_SIMPLE_GROUP;
 	}
 	
@@ -84,17 +84,17 @@ class EmbeddedOneToManyGuiField implements GuiField {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiField::getOutputHtmlContainerAttrs()
+	 * @see \rocket\ei\manage\gui\GuiField::getHtmlContainerAttrs()
 	 */
-	public function getOutputHtmlContainerAttrs(): array {
+	public function getHtmlContainerAttrs(): array {
 		return array();
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiField::createOutputUiComponent()
+	 * @see \rocket\ei\manage\gui\GuiField::createUiComponent()
 	 */
-	public function createOutputUiComponent(HtmlView $view) {
+	public function createUiComponent(HtmlView $view) {
 		if ($this->compact) {
 			return $this->createCompactOutputUiComponent($view);
 		}

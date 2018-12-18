@@ -33,16 +33,16 @@ class IdentityStringEiProp extends DisplayableEiPropAdapter {
 	 * @see \rocket\impl\ei\component\prop\adapter\DisplayableEiPropAdapter::createEiPropConfigurator()
 	 */
 	public function createEiPropConfigurator(): EiPropConfigurator {
-		$this->getDisplaySettings()->setAddModeDefaultDisplayed(false);
-		$this->getDisplaySettings()->setEditModeDefaultDisplayed(false);
+		$this->getDisplayConfig()->setAddModeDefaultDisplayed(false);
+		$this->getDisplayConfig()->setEditModeDefaultDisplayed(false);
 		return parent::createEiPropConfigurator();
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessDisplayable::createOutputUiComponent()
+	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiField::createUiComponent()
 	 */
-	public function createOutputUiComponent(HtmlView $view, Eiu $eiu) {
+	public function createUiComponent(HtmlView $view, Eiu $eiu) {
 		return $eiu->entry()->createIdentityString();
 	}
 }

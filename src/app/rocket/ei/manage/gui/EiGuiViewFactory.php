@@ -1,7 +1,6 @@
 <?php
 namespace rocket\ei\manage\gui;
 
-use rocket\ei\manage\gui\ui\DisplayStructure;
 use n2n\web\ui\UiComponent;
 use n2n\impl\web\ui\view\html\HtmlView;
 
@@ -16,15 +15,15 @@ interface EiGuiViewFactory {
 	 */
 	public function getGuiFieldPaths(): array;
 	
-	/**
-	 * @return DisplayStructure
-	 */
-	public function getDisplayStructure(): DisplayStructure;
+// 	/**
+// 	 * @return DisplayStructure
+// 	 */
+// 	public function getDisplayStructure(): DisplayStructure;
 	
-	/**
-	 * @param DisplayStructure $displayStructure
-	 */
-	public function setDisplayStructure(DisplayStructure $displayStructure);
+// 	/**
+// 	 * @param DisplayStructure $displayStructure
+// 	 */
+// 	public function setDisplayStructure(DisplayStructure $displayStructure);
 	
 	/**
 	 * @return UiComponent

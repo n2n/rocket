@@ -88,19 +88,21 @@ class EiuHtmlBuilder {
 	 * @param GuiFieldPath|string|DisplayItem $eiPropPath
 	 * @return \n2n\web\ui\UiComponent|\n2n\web\ui\Raw|string
 	 */
-	public function getLabel($eiGuiArg, $eiPropPath) {
+	public function getLabel($eiGuiArg, $guiFieldPath) {
 		$eiGui = EiuAnalyst::buildEiGuiFromEiArg($eiGuiArg);
-		if ($eiPropPath instanceof DisplayItem) {
-			if (null !== ($label = $eiPropPath->translateLabel($this->view->getN2nLocale())) || $eiPropPath->hasDisplayStructure()) {
-				return $this->html->getOut($label);
+		if ($guiFieldPath instanceof DisplayItem) {
+			if ($guiFieldPath->hasDisplayStructure()) {
+				$labelLstr = $guiFieldPath->getLabelLstr();
+				return $labelLstr == null ? null : $this->html->getOut($labelLstr->t($this->view->getN2nLocale()));
 			}
 			
-			$eiPropPath = $eiPropPath->getGuiFieldPath();
+			$guiFieldPath = $guiFieldPath->getGuiFieldPath();
 		} else {
-			$eiPropPath = GuiFieldPath::create($eiPropPath);
+			$guiFieldPath = GuiFieldPath::create($guiFieldPath);
 		}
 		
-		return $this->html->getOut($eiGui->getEiGuiViewFactory()->getGuiDefinition()->getGuiPropByGuiFieldPath($eiPropPath)
+		return $this->html->getOut($eiGui->getEiGuiViewFactory()->getGuiDefinition()
+				->getGuiPropByGuiFieldPath($guiFieldPath)
 				->getDisplayLabelLstr()->t($this->view->getN2nLocale()));
 	}
 	
@@ -307,13 +309,16 @@ class EiuHtmlBuilder {
 			
 			$guiFieldPath = $displayItem->getGuiFieldPath();
 			if ($addDisplayCl) {
+				$displayItemType = $displayItem->getType() ?? $eiEntryGui->getGuiFieldAssembly($guiFieldPath)->getGuiField()->getDisplayItemType();
 				$attrs = EiuHtmlBuilderMeta::createDisplayItemAttrs($displayItem->getType(), 
 						HtmlUtils::mergeAttrs((array) $displayItem->getAttrs(), (array) $attrs));
 			}
 		} else {
 			$guiFieldPath = GuiFieldPath::create($displayItem);
 			if ($addDisplayCl) {
-				$attrs = EiuHtmlBuilderMeta::createDisplayItemAttrs(DisplayItem::TYPE_ITEM, (array) $attrs);
+				$displayItemType = $eiEntryGui->getGuiFieldAssembly($guiFieldPath)->getGuiField()->getDisplayItemType();
+				
+				$attrs = EiuHtmlBuilderMeta::createDisplayItemAttrs($displayItemType, (array) $attrs);
 			}
 			$displayItem = null;
 		}
@@ -362,7 +367,7 @@ class EiuHtmlBuilder {
 	
 	private function createOutputFieldOpen($tagName, GuiField $guiField = null, ValidationResult $validationResult = null, array $attrs = null) {
 		return new Raw('<' . HtmlUtils::hsc($tagName) . HtmlElement::buildAttrsHtml(
-				$this->buildContainerAttrs(HtmlUtils::mergeAttrs(($guiField !== null ? $guiField->getOutputHtmlContainerAttrs() : array()), $attrs))) . '>');
+				$this->buildContainerAttrs(HtmlUtils::mergeAttrs(($guiField !== null ? $guiField->getHtmlContainerAttrs() : array()), $attrs))) . '>');
 	}
 
 	
@@ -406,11 +411,6 @@ class EiuHtmlBuilder {
 			return new HtmlElement('label', $attrs, $label);
 		}
 		
-		if (isset($fieldInfo['displayItem']) && null !== ($label = $fieldInfo['displayItem']
-				->translateLabel($this->view->getN2nLocale()))) {
-			return new HtmlElement('label', $attrs, $label);
-		}
-		
 		$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
 		return new HtmlElement('label', $attrs, $eiEntryGui->getEiGui()->getEiGuiViewFactory()
 				->getGuiDefinition()->getGuiPropByGuiFieldPath($fieldInfo['guiFieldPath'])->getDisplayLabelLstr()
@@ -429,7 +429,7 @@ class EiuHtmlBuilder {
 		}
 		
 		if (isset($fieldInfo['guiFieldAssembly'])) {
-			return $this->html->getOut($fieldInfo['guiFieldAssembly']->getGuiField()->createOutputUiComponent($this->view));
+			return $this->html->getOut($fieldInfo['guiFieldAssembly']->getGuiField()->createUiComponent($this->view));
 		}
 		
 		return null;
@@ -480,18 +480,12 @@ class EiuHtmlBuilder {
 	public function getFieldControls(array $attrs = null) {
 		$fieldInfo = $this->state->peakField(false);
 		
+		$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
+		$helpTextLstr = $eiEntryGui->getEiGui()->getEiGuiViewFactory()->getGuiDefinition()
+				->getGuiPropByGuiFieldPath($fieldInfo['guiFieldPath'])->getDisplayHelpTextLstr();
 		$helpText = null;
-		if (isset($fieldInfo['displayItem'])) {
-			$helpText = $fieldInfo['displayItem']->translateHelpText($this->view->getN2nLocale());
-		}
-		
-		if ($helpText === null) {
-			$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
-			$helpTextLstr = $eiEntryGui->getEiGui()->getEiGuiViewFactory()->getGuiDefinition()
-					->getGuiPropByGuiFieldPath($fieldInfo['guiFieldPath'])->getDisplayHelpTextLstr();
-			if ($helpTextLstr !== null) {
-				$helpText = $helpTextLstr->t($this->view->getN2nLocale());
-			}
+		if ($helpTextLstr !== null) {
+			$helpText = $helpTextLstr->t($this->view->getN2nLocale());
 		}
 		
 		if ($helpText === null) return null;

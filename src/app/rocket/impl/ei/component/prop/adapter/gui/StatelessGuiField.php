@@ -25,18 +25,24 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\ui\UiComponent;
 use rocket\ei\util\Eiu;
 
-interface StatelessDisplayable {
+interface StatelessGuiField {
 	
 	/**
 	 * @param Eiu $eiu
 	 * @return array
 	 */
-	public function getOutputHtmlContainerAttrs(Eiu $eiu);
+	public function getHtmlContainerAttrs(Eiu $eiu);
+	
+	/**
+	 * @param Eiu $eiu
+	 * @return string|NULL
+	 */
+	public function getDisplayItemType(Eiu $eiu): string;
 	
 	/**
 	 * @param HtmlView $view
 	 * @param Eiu $eiu
 	 * @return UiComponent
 	 */
-	public function createOutputUiComponent(HtmlView $view, Eiu $eiu);
+	public function createUiComponent(HtmlView $view, Eiu $eiu);
 }

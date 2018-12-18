@@ -19,20 +19,52 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\prop\adapter\gui;
+namespace rocket\impl\ei\component\prop\adapter\config;
 
-use n2n\web\dispatch\mag\Mag;
-use rocket\ei\util\Eiu;
-
-interface StatelessEditable extends StatelessDisplayable {
-
-	public function isMandatory(Eiu $eiu): bool;
+class EditConfig {
+	protected $constant = false;
+	protected $readOnly = false;
+	protected $mandatory = false;
 	
-	public function isReadOnly(Eiu $eiu): bool;
+	/**
+	 * @return boolean
+	 */
+	public function isConstant() {
+		return $this->constant;
+	}
 	
-	public function createMag(Eiu $eiu): Mag;
+	/**
+	 * @param bool $constant
+	 */
+	public function setConstant($constant) {
+		$this->constant = (boolean) $constant;
+	}
 	
-	public function loadMagValue(Eiu $eiu, Mag $mag);
+	/**
+	 * @return boolean
+	 */
+	public function isReadOnly(): bool {
+		return $this->readOnly;
+	}
 	
-	public function saveMagValue(Mag $option, Eiu $eiu);
+	/**
+	 * @param bool $readOnly
+	 */
+	public function setReadOnly($readOnly) {
+		$this->readOnly = (boolean) $readOnly;
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function isMandatory(): bool {
+		return $this->mandatory;
+	}
+	
+	/**
+	 * @param bool $mandatory
+	 */
+	public function setMandatory(bool $mandatory) {
+		$this->mandatory = $mandatory;
+	}
 }

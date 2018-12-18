@@ -193,7 +193,7 @@ class EiuEntryFormViewModel {
 		} 
 			
 		if ($this->grouped) {
-			$eiuEntryTypeForm->getEiuEntryGui()->forceRootGroups();
+// 			$eiuEntryTypeForm->getEiuEntryGui()->forceRootGroups();
 		}
 		
 		return $eiuEntryTypeForm->getEiuEntryGui()->createView($contextView);

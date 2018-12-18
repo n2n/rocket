@@ -151,7 +151,7 @@ class FileEiProp extends DraftablePropertyEiPropAdapter {
 	}
 	
 	
-	public function createOutputUiComponent(HtmlView $view, Eiu $eiu) {
+	public function createUiComponent(HtmlView $view, Eiu $eiu) {
 		$html = $view->getHtmlBuilder();
 		$file = $eiu->field()->getValue();
 		

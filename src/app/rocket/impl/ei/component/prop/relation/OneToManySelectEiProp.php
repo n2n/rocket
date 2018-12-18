@@ -33,7 +33,7 @@ class OneToManySelectEiProp extends ToManySelectEiPropAdapter {
 		parent::__construct();
 		
 		$this->initialize(new SelectEiPropRelation($this, false, true));
-		$this->getStandardEditDefinition()->setReadOnly(true);
+		$this->getEditConfig()->setReadOnly(true);
 	}
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {

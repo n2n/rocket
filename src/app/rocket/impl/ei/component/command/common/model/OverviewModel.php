@@ -136,7 +136,7 @@ class OverviewModel implements Dispatchable {
 	}
 	
 	private function simpleLookup(Criteria $criteria) {
-		$this->eiuGui = $this->eiuFrame->newGui(ViewMode::COMPACT_READ)->renderEntryControls(true);
+		$this->eiuGui = $this->eiuFrame->newGui(ViewMode::COMPACT_READ)/*->renderEntryControls(true)*/;
 		
 		foreach ($criteria->toQuery()->fetchArray() as $entityObj) {
 			$this->eiuGui->appendNewEntryGui($entityObj);

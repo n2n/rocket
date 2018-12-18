@@ -29,29 +29,28 @@ use rocket\ei\component\prop\GuiEiProp;
 use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\gui\DisplayDefinition;
-use n2n\reflection\ArgUtils;
 use rocket\ei\manage\gui\ui\DisplayItem;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\GuiField;
 use rocket\core\model\Rocket;
 use n2n\l10n\Lstr;
-use rocket\impl\ei\component\prop\adapter\gui\StatelessDisplayable;
-use rocket\impl\ei\component\prop\adapter\config\DisplaySettings;
+use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiField;
+use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
-use rocket\impl\ei\component\prop\adapter\gui\StatelessDisplayElement;
+use rocket\impl\ei\component\prop\adapter\gui\GuiFieldProxy;
 
-abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter implements StatelessDisplayable, GuiEiProp, GuiProp {
-	protected $displaySettings;
+abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter implements StatelessGuiField, GuiEiProp, GuiProp {
+	protected $displayConfig;
 
 	/**
-	 * @return DisplaySettings
+	 * @return DisplayConfig
 	 */
-	public function getDisplaySettings(): DisplaySettings {
-		if ($this->displaySettings === null) {
-			$this->displaySettings = new DisplaySettings(ViewMode::all());
+	public function getDisplayConfig(): DisplayConfig {
+		if ($this->displayConfig === null) {
+			$this->displayConfig = new DisplayConfig(ViewMode::all());
 		}
 
-		return $this->displaySettings;
+		return $this->displayConfig;
 	}
 
 	/**
@@ -61,7 +60,7 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 	public function createEiPropConfigurator(): EiPropConfigurator {
 		$eiPropConfigurator = parent::createEiPropConfigurator();
 		IllegalStateException::assertTrue($eiPropConfigurator instanceof AdaptableEiPropConfigurator);
-		$eiPropConfigurator->registerDisplaySettings($this->getDisplaySettings());
+		$eiPropConfigurator->registerDisplayConfig($this->getDisplayConfig());
 		return $eiPropConfigurator;
 	}
 	
@@ -86,7 +85,7 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayHelpTextLstr()
 	 */
 	public function getDisplayHelpTextLstr(): ?Lstr {
-		$helpText = $this->displaySettings->getHelpText();
+		$helpText = $this->displayConfig->getHelpText();
 		if ($helpText === null) {
 			return null;
 		}
@@ -100,31 +99,27 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 	 */
 	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
 		$viewMode = $eiu->gui()->getViewMode();
-		if (!$this->getDisplaySettings()->isViewModeCompatible($viewMode)) {
+		if (!$this->getDisplayConfig()->isViewModeCompatible($viewMode)) {
 			return null;
 		}
 		
-		$groupType = $this->getDisplayItemType($eiu);
-		ArgUtils::valEnumReturn($groupType, DisplayItem::getTypes(), $this, 'getGroupType');
-		
-		return new DisplayDefinition($groupType, 
-				$this->getDisplaySettings()->isViewModeDefaultDisplayed($viewMode));
+		return new DisplayDefinition($this->getDisplayConfig()->isViewModeDefaultDisplayed($viewMode));
 	}
 	
-	protected function getDisplayItemType(Eiu $eiu) {
+	public function getDisplayItemType(Eiu $eiu): string {
 		return DisplayItem::TYPE_ITEM;
 	}
 	
 	public function buildGuiField(Eiu $eiu): ?GuiField {
-		return new StatelessDisplayElement($this, $eiu);
+		return new GuiFieldProxy($this, $eiu);
 	}
 	
 // 	public function getUiOutputLabel(Eiu $eiu) {
 // 		return $this->getLabelLstr()->t($eiu->getN2nLocale());
 // 	}
 	
-	public function getOutputHtmlContainerAttrs(Eiu $eiu) {
-		return array('title' => $this->getDisplaySettings()->getHelpText());
+	public function getHtmlContainerAttrs(Eiu $eiu) {
+		return array('title' => $this->getDisplayConfig()->getHelpText());
 	}
 	
 	public function isStringRepresentable(): bool {

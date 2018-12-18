@@ -7,20 +7,20 @@ class GuiFieldAssembly {
 	private $magAssembly;
 	private $editable;
 	
-	public function __construct(GuiProp $guiProp, GuiField $guiField, 
+	public function __construct(/*GuiProp $guiProp,*/ GuiField $guiField, 
 			MagAssembly $magAssembly = null, GuiFieldEditable $editable = null) {
-		$this->guiProp = $guiProp;
+// 		$this->guiProp = $guiProp;
 		$this->guiField = $guiField;
 		$this->magAssembly = $magAssembly;
 		$this->editable = $editable;
 	}
 	
-	/**
-	 * @return GuiProp
-	 */
-	function getGuiProp() {
-		return $this->guiProp;
-	}
+// 	/**
+// 	 * @return GuiProp
+// 	 */
+// 	function getGuiProp() {
+// 		return $this->guiProp;
+// 	}
 	
 	/**
 	 * @return GuiField
@@ -40,6 +40,10 @@ class GuiFieldAssembly {
 	 * @return GuiFieldEditable|null
 	 */
 	public function getEditable() {
-		return $this->editable;
+		if ($this->guiField->isReadOnly()) {
+			return null;
+		}
+		
+		return $this->guiField->getEditable();
 	}
 }

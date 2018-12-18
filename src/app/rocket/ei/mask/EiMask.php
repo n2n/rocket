@@ -47,8 +47,16 @@ use rocket\ei\EiPathMissmatchException;
 use n2n\core\container\N2nContext;
 use rocket\ei\manage\entry\EiEntry;
 use n2n\reflection\ArgUtils;
+use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\Lstr;
+use rocket\ei\manage\gui\EiEntryGui;
+use rocket\ei\manage\gui\EiGui;
+use rocket\ei\manage\gui\EiGuiListener;
 
+/**
+ * @author andreas
+ *
+ */
 class EiMask {
 	private $eiMaskDef;
 	private $eiType;
@@ -331,6 +339,52 @@ class EiMask {
 		return $this->displayScheme ?? $this->displayScheme = new DisplayScheme();
 	}
 	
+	public function createEiGui(EiFrame $eiFrame, int $viewMode, bool $init) {
+		if (!$this->getEiType()->isA($eiGui->getEiFrame()->getContextEiEngine()->getEiMask()->getEiType())) {
+			throw new \InvalidArgumentException('Incompatible EiGui');
+		}
+		
+		$eiGui = new EiGui($eiFrame, $viewMode);
+		
+		if (!$init) {
+			$this->noInitCb($eiGui);
+			return $eiGui;
+		}
+		
+		$guiDefinition = $eiGui->getEiFrame()->getManageState()->getDef()->getGuiDefinition($this);
+		
+		foreach ($eiGui->getEiGuiViewFactory()->getGuiDefinition()->getGuiDefinitionListeners() as $listener) {
+			$listener->onNewEiGui($eiGui);
+		}
+		
+		if (!$eiGui->isInit()) {
+			$eiGui->init($this->getDisplayScheme()->createEiGuiViewFactory($eiGui, $guiDefinition));
+		}
+		
+		return $eiGui;
+	}
+	
+	
+	/**
+	 * @param EiGui $eiGui
+	 */
+	private function noInitCb($eiGui) {
+		
+		$eiGui->registerEiGuiListener(new class() implements EiGuiListener {
+			public function onInitialized(EiGui $eiGui) {
+				foreach ($eiGui->getEiGuiViewFactory()->getGuiDefinition()->getGuiDefinitionListeners() as $listener) {
+					$listener->onNewEiGui($eiGui);
+				}
+				$eiGui->unregisterEiGuiListener($this);
+			}
+			
+			public function onNewEiEntryGui(EiEntryGui $eiEntryGui) {
+			}
+			
+			public function onNewView(HtmlView $view) {
+			}
+		});
+	}
 
 	
 	/**

@@ -439,14 +439,15 @@ class SpecExtractor {
 				$displayStructure->addGuiFieldPath(GuiFieldPath::create($guiFieldPathStr), 
 						$displayStructureAttributes->getEnum(RawDef::DISPLAY_ITEM_GROUP_TYPE_KEY, DisplayItem::getTypes(),
 								false, null, true), 
-						$label, $this->moduleNamespace);
+						Rocket::buildLstr($label, $this->moduleNamespace));
 				continue;
 			}
 			
 			$childDisplayStructure = $this->createDisplayStructure(
 					$displayStructureAttributes->getArray(RawDef::DISPLAY_ITEM_DISPLAY_STRUCTURE_KEY));
-			$displayStructure->addDisplayStructure($childDisplayStructure, $displayStructureAttributes->getEnum(RawDef::DISPLAY_ITEM_GROUP_TYPE_KEY, 
-					DisplayItem::getGroupTypes()), $label);
+			$displayStructure->addDisplayStructure($childDisplayStructure, 
+					$displayStructureAttributes->getEnum(RawDef::DISPLAY_ITEM_GROUP_TYPE_KEY, DisplayItem::getGroupTypes()), 
+					Rocket::buildLstr($label, $this->moduleNamespace));
 		}
 	
 		return $displayStructure;

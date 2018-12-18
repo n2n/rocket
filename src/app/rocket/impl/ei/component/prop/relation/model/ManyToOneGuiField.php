@@ -28,6 +28,7 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\gui\GuiField;
 use rocket\ei\util\Eiu;
 use n2n\l10n\N2nLocale;
+use rocket\ei\manage\gui\ui\DisplayItem;
 
 class ManyToOneGuiField implements GuiField {
 	private $label;
@@ -58,15 +59,15 @@ class ManyToOneGuiField implements GuiField {
 	/**
 	 * @return array
 	 */
-	public function getOutputHtmlContainerAttrs(): array {
+	public function getHtmlContainerAttrs(): array {
 		return array();
 	}
 	
-	public function getDisplayItemType(): ?string {
-		return null;
+	public function getDisplayItemType(): string {
+		return DisplayItem::TYPE_PANEL;
 	}
 	
-	public function createOutputUiComponent(HtmlView $view) {
+	public function createUiComponent(HtmlView $view) {
 		$html = $view->getHtmlBuilder();
 		$targetRelationEntry = $this->toOneEiField->getValue();
 		

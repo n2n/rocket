@@ -19,7 +19,7 @@ class InaccessibleGuiField implements GuiField {
 		return true;
 	}
 
-	public function getOutputHtmlContainerAttrs(): array {
+	public function getHtmlContainerAttrs(): array {
 		return [];
 	}
 
@@ -27,7 +27,7 @@ class InaccessibleGuiField implements GuiField {
 		throw new UnsupportedOperationException();
 	}
 
-	public function createOutputUiComponent(HtmlView $view) {
+	public function createUiComponent(HtmlView $view) {
 		return $view->getL10nText('common_inaccessible_err', null, null, null, 'rocket');
 	}
 
@@ -35,7 +35,7 @@ class InaccessibleGuiField implements GuiField {
 		return $this->label; 
 	}
 
-	public function getDisplayItemType(): ?string {
+	public function getDisplayItemType(): string {
 		return null;
 	}
 

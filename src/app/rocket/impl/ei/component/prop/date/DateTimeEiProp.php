@@ -89,7 +89,7 @@ class DateTimeEiProp extends DraftablePropertyEiPropAdapter implements SortableE
 		$this->timeStyle = $timeStyle;
 	}
 	
-	public function createOutputUiComponent(HtmlView $view, Eiu $eiu)  {
+	public function createUiComponent(HtmlView $view, Eiu $eiu)  {
 		return $view->getHtmlBuilder()->getL10nDateTime($eiu->field()->getValue(EiPropPath::from($this)), 
 				$this->getDateStyle(), $this->getTimeStyle());
 	}

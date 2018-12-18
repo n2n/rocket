@@ -38,8 +38,6 @@ class EiGui {
 		$this->eiFrame = $eiFrame;
 		ArgUtils::valEnum($viewMode, ViewMode::getAll());
 		$this->viewMode = $viewMode;
-		
-		
 	}
 	
 	/**
@@ -66,8 +64,8 @@ class EiGui {
 		
 		$this->eiGuiViewFactory = $eiGuiViewFactory;
 		
-		foreach ($eiGuiViewFactory->getGuiDefinition()->getGuiDefinitionListeners() as $listener) {
-			$listener->onNewEiGui($this);
+		foreach ($this->eiGuiListeners as $listener) {
+			$listener->onInitialized($this);
 		}
 	}
 	

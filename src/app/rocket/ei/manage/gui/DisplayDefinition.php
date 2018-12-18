@@ -1,8 +1,6 @@
 <?php
 namespace rocket\ei\manage\gui;
 
-use rocket\ei\manage\gui\ui\DisplayItem;
-use n2n\reflection\ArgUtils;
 use n2n\l10n\Lstr;
 
 class DisplayDefinition {
@@ -14,9 +12,7 @@ class DisplayDefinition {
 	 * @param string $displayItemType
 	 * @param bool $defaultDisplayed
 	 */
-	public function __construct(string $displayItemType, bool $defaultDisplayed, string $helpText = null) {
-		ArgUtils::valEnum($displayItemType, DisplayItem::getTypes());
-		$this->displayItemType = $displayItemType;
+	public function __construct(bool $defaultDisplayed) {
 		$this->defaultDisplayed = $defaultDisplayed;
 	}
 	
@@ -27,12 +23,12 @@ class DisplayDefinition {
 // 		return $this->labelLstr;
 // 	}
 	
-	/**
-	 * @return string
-	 */
-	public function getDisplayItemType(): ?string {
-		return $this->displayItemType;
-	}
+// 	/**
+// 	 * @return string
+// 	 */
+// 	public function getDisplayItemType(): string {
+// 		return $this->displayItemType;
+// 	}
 	
 	/**
 	 * @return bool

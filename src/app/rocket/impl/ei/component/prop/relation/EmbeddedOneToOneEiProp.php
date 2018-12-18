@@ -24,7 +24,7 @@ namespace rocket\impl\ei\component\prop\relation;
 use n2n\reflection\ArgUtils;
 use rocket\impl\ei\component\prop\relation\model\relation\EmbeddedEiPropRelation;
 use rocket\ei\manage\EiObject;
-use rocket\impl\ei\component\prop\adapter\config\DisplaySettings;
+use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\impl\ei\component\prop\relation\model\ToOneEditable;
 use rocket\impl\ei\component\prop\relation\model\EmbeddedOneToOneGuiField;
 use rocket\ei\manage\draft\stmt\FetchDraftStmtBuilder;
@@ -61,7 +61,7 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 	public function __construct() {
 		parent::__construct();
 		
-		$this->displaySettings = new DisplaySettings(ViewMode::bulky());
+		$this->displayConfig = new DisplayConfig(ViewMode::bulky());
 		$this->initialize(new EmbeddedEiPropRelation($this, false, false));
 	}
 	
@@ -72,7 +72,7 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 		parent::setEntityProperty($entityProperty);
 	}
 	
-	protected function getDisplayItemType(): ?string {
+	protected function getDisplayItemType(): string {
 		return $this->reduced ? DisplayItem::TYPE_SIMPLE_GROUP : DisplayItem::TYPE_PANEL;
 	}
 	
@@ -176,7 +176,7 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 		$toOneEditable = null;
 		if (!$this->eiPropRelation->isReadOnly($mapping, $eiFrame)) {
 			$targetEditEiFrame = $this->eiPropRelation->createTargetEditPseudoEiFrame($eiFrame, $mapping);
-			$toOneEditable = new ToOneEditable($this->getLabelLstr(), $this->standardEditDefinition->isMandatory(), 
+			$toOneEditable = new ToOneEditable($this->getLabelLstr(), $this->editConfig->isMandatory(), 
 					$relationEiField, $targetReadEiFrame, $targetEditEiFrame);
 			$toOneEditable->setReduced($this->reduced);
 			

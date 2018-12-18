@@ -45,7 +45,7 @@ use rocket\ei\manage\security\InaccessibleEiCommandPathException;
 
 abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 	
-	protected function getDisplayItemType(): ?string {
+	protected function getDisplayItemType(): string {
 		return DisplayItem::TYPE_ITEM;
 	}
 	

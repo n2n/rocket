@@ -44,31 +44,31 @@ use rocket\impl\ei\component\prop\adapter\entry\Copyable;
 use rocket\ei\manage\gui\GuiField;
 use rocket\ei\manage\gui\GuiProp;
 use n2n\web\dispatch\mag\MagCollection;
-use rocket\impl\ei\component\prop\adapter\gui\StatelessEditable;
-use rocket\impl\ei\component\prop\adapter\config\StandardEditDefinition;
+use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldEditable;
+use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use n2n\l10n\Message;
-use rocket\impl\ei\component\prop\adapter\gui\StatelessEditElement;
+use rocket\impl\ei\component\prop\adapter\gui\GuiFieldProxy;
 
-abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAdapter implements StatelessEditable, Writable, 
+abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAdapter implements StatelessGuiFieldEditable, Writable, 
 		PrivilegedEiProp, Validatable, Copyable {
-	protected $standardEditDefinition;
+	protected $editConfig;
 
 	/**
-	 * @return \rocket\impl\ei\component\prop\adapter\config\StandardEditDefinition
+	 * @return \rocket\impl\ei\component\prop\adapter\config\EditConfig
 	 */
-	public function getStandardEditDefinition() {
-		if ($this->standardEditDefinition === null) {
-			$this->standardEditDefinition = new StandardEditDefinition();
+	public function getEditConfig() {
+		if ($this->editConfig === null) {
+			$this->editConfig = new EditConfig();
 		}
 
-		return $this->standardEditDefinition;
+		return $this->editConfig;
 	}
 
 	public function createEiPropConfigurator(): EiPropConfigurator {
 		$eiPropConfigurator = parent::createEiPropConfigurator();
 		IllegalStateException::assertTrue($eiPropConfigurator instanceof AdaptableEiPropConfigurator);
-		$eiPropConfigurator->registerStandardEditDefinition($this->getStandardEditDefinition());
+		$eiPropConfigurator->registerEditConfig($this->getEditConfig());
 		return $eiPropConfigurator;
 	}
 		
@@ -111,7 +111,7 @@ abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAd
 	}
 	
 	private function checkMandatory(EiObject $eiObject, $eiFieldValue): bool {
-		return $eiFieldValue !== null || $eiObject->isDraft() || !$this->standardEditDefinition->isMandatory();
+		return $eiFieldValue !== null || $eiObject->isDraft() || !$this->editConfig->isMandatory();
 	}
 	
 	public function testEiFieldValue(Eiu $eiu, $eiFieldValue): bool {
@@ -138,7 +138,7 @@ abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAd
 	 * @see \rocket\impl\ei\component\prop\adapter\PropertyDisplayableEiPropAdapter::buildGuiField()
 	 */
 	public function buildGuiField(Eiu $eiu): ?GuiField {
-		return new StatelessEditElement($this, $eiu);
+		return new GuiFieldProxy($eiu, $this, $this);
 	}
 	
 	/**
@@ -150,15 +150,15 @@ abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAd
 		}
 		
 		if ($eiu->entry()->isDraft() || (!$eiu->entry()->isNew() 
-				&& $this->standardEditDefinition->isConstant())) {
+				&& $this->getEditConfig()->isConstant())) {
 			return true;
 		}
 		
-		return $this->standardEditDefinition->isReadOnly();
+		return $this->getEditConfig()->isReadOnly();
 	}
 	
 	public function isMandatory(Eiu $eiu): bool {
-		 return $this->standardEditDefinition->isMandatory();
+		 return $this->getEditConfig()->isMandatory();
 	}
 
 	public function createEiPropPrivilege(Eiu $eiu): EiPropPrivilege {

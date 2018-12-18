@@ -215,7 +215,7 @@ abstract class EiPropRelation {
 // 	}
 	
 	public function isReadOnly(EiEntry $mapping, EiFrame $eiFrame) {
-		return $this->relationEiProp->getStandardEditDefinition()->isReadOnly()
+		return $this->relationEiProp->getEditConfig()->isReadOnly()
 				|| (!$this->relationEiProp->isDraftable() && $mapping->getEiObject()->isDraft())
 				|| ($this->isFiltered() && $eiFrame->getEiRelation(EiPropPath::from($this->relationEiProp)));
 	}

@@ -105,7 +105,7 @@ class FieldEiHtmlBuilder {
 		$this->pushGuiPropInfo($tagName, $validationResult, $displayable);
 		
 		return new Raw('<' . HtmlUtils::hsc($tagName) . HtmlElement::buildAttrsHtml(
-				$this->buildContainerAttrs(HtmlUtils::mergeAttrs($displayable->getOutputHtmlContainerAttrs(), $attrs))) . '>');
+				$this->buildContainerAttrs(HtmlUtils::mergeAttrs($displayable->getHtmlContainerAttrs(), $attrs))) . '>');
 	}
 	
 	public function closeField() {
@@ -146,7 +146,7 @@ class FieldEiHtmlBuilder {
 			return $this->formHtml->getMagField();
 		}
 				
-		return $this->html->getOut($eiPropInfo['displayable']->createOutputUiComponent($this->view));
+		return $this->html->getOut($eiPropInfo['displayable']->createUiComponent($this->view));
 	}
 	
 	public function message() {
