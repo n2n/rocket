@@ -64,7 +64,7 @@ abstract class PreviewControllerAdapter extends ControllerAdapter implements Pre
 	}
 	
 	public function getEntityObj() {
-		return $this->eiu()->getEntityObj();
+		return $this->eiu()->object()->getEntityObj();
 	}
 	
 	public function getPreviewTypeOptions(Eiu $eiu): array {
