@@ -32,6 +32,8 @@
 	$eiu = $view->getParam('eiu');
 	$view->assert($eiu instanceof Eiu);
 	
+	$eiuGui = $eiu->gui();
+	
 	$displayStructure = $view->getParam('displayStructure');
 	$view->assert($displayStructure instanceof DisplayStructure);
 	
@@ -43,15 +45,15 @@
 		<tr>
 			<?php $eiuHtml->generalEntrySelector('th') ?>
 			<?php foreach ($displayStructure->getDisplayItems() as $displayItem): ?>
-				<th><?php $eiuHtml->label($eiu, $displayItem) ?></th>
+				<th><?php $eiuHtml->label($eiuGui, $displayItem) ?></th>
 			<?php endforeach ?>
-			<?php if ($entryControlsRendered): ?>
+			<?php if ($eiuGui->getEiGuiNature()->areEntryControlsRendered()): ?>
 				<th><?php $html->l10nText('common_list_tools_label') ?></th>
 			<?php endif ?>
 		</tr>
 	</thead>
 	<?php $eiuHtml->collectionOpen('tbody', $eiu) ?>
-		<?php foreach ($eiu->gui()->entryGuis() as $eiuEntryGui): ?>
+		<?php foreach ($eiuGui->entryGuis() as $eiuEntryGui): ?>
 			<?php $eiuHtml->entryOpen('tr', $eiuEntryGui) ?>
 				<?php $eiuHtml->entrySelector('td') ?>
 				
@@ -61,9 +63,11 @@
 					<?php $eiuHtml->fieldClose() ?>
 				<?php endforeach ?>
 				
-				<?php $view->out('<td class="rocket-table-commands">') ?>
-					<?php $eiuHtml->entryCommands(true, 6) ?>
-				<?php $view->out('</td>') ?>
+				<?php if ($eiuGui->getEiGuiNature()->areEntryControlsRendered()): ?>
+					<?php $view->out('<td class="rocket-table-commands">') ?>
+						<?php $eiuHtml->entryCommands(true, 6) ?>
+					<?php $view->out('</td>') ?>
+				<?php endif ?>
 			<?php $eiuHtml->entryClose() ?>
 		<?php endforeach ?>
 	<?php $eiuHtml->collectionClose() ?>

@@ -229,6 +229,8 @@ class EiuHtmlBuilder {
 	
 	
 	public function getEntryForkControlsFor(DisplayStructure $displayStructure, array $attrs = null) {
+		$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
+		
 		$forkMagAssemblies = array();
 		foreach ($eiEntryGui->getForkMagAssemblies() as $guiFieldPathStr => $forkMagAssembly) {
 			if ($this->state->isForkMagRendered($guiFieldPathStr)) continue;
@@ -366,10 +368,10 @@ class EiuHtmlBuilder {
 		$guiFieldPath = GuiFieldPath::create($guiFieldPath);
 		
 		$guiFieldAssembly = $eiEntryGui->getGuiFieldAssembly($guiFieldPath);
-		$readOnly = $forceReadOnly || $guiFieldAssembly->getGuiField()->isReadOnly();
+		$readOnly = $forceReadOnly || $guiFieldAssembly->isReadOnly();
 		
 		$attrs = $this->buildFieldAttrs($guiFieldPath, $readOnly, 
-				!$readOnly || $guiFieldAssembly->getEditable()->isMandatory(), $attrs);
+				!$readOnly && $guiFieldAssembly->getEditable()->isMandatory(), (array) $attrs);
 		
 		if ($displayItemType === null || $displayItemType === true) {
 			$displayItemType = $guiFieldAssembly->getGuiField()->getDisplayItemType();
@@ -385,12 +387,11 @@ class EiuHtmlBuilder {
 			$validationResult = $guiDefinition->determineEiFieldAbstraction($this->view->getN2nContext(), 
 					$eiEntryGui->getEiEntry(), $guiFieldPath)->getValidationResult();
 		} catch (UnknownEiFieldExcpetion $e) {}
-		
 		if ($readOnly) {
 			$this->state->pushField($tagName, $guiFieldPath, $validationResult, $guiFieldAssembly);
-			return $this->createOutputFieldOpen($tagName, null, $validationResult, $attrs);
+			return $this->createOutputFieldOpen($tagName, $guiFieldAssembly->getGuiField(), $validationResult, $attrs);
 		}
-		
+
 		$magAssembly = $guiFieldAssembly->getMagAssembly();
 		$propertyPath = $eiEntryGui->getContextPropertyPath()->ext($magAssembly->getMagPropertyPath());
 		
@@ -418,7 +419,7 @@ class EiuHtmlBuilder {
 	}
 	
 	private function createOutputFieldOpen($tagName, GuiField $guiField, ValidationResult $validationResult = null, array $attrs = null) {
-		$attrs = HtmlUtils::mergeAttrs($array, $guiField->getHtmlContainerAttrs(), true);
+		$attrs = HtmlUtils::mergeAttrs($attrs, $guiField->getHtmlContainerAttrs(), true);
 		if ($validationResult !== null && !$validationResult->isValid(true)) {
 			$attrs = HtmlUtils::mergeAttrs((array) $attrs, array('class' => 'rocket-has-error'));
 		}
@@ -538,10 +539,10 @@ class EiuHtmlBuilder {
 	/**
 	 * @param bool $showFieldControls
 	 * @param bool|DisplayStructure $showForkControls
-	 * @param bool $showEntryControls
+	 * @param bool|null $showEntryControls
 	 * @param int $entryControlMax
 	 */
-	public function toolbar(bool $showFieldControls, $showForkControls, bool $showEntryControls, int $entryControlMax = 6) {
+	public function toolbar(bool $showFieldControls, $showForkControls, $showEntryControls, int $entryControlMax = 6) {
 		$this->view->out($this->getToolbar($showFieldControls, $showForkControls, $showEntryControls, $entryControlMax));
 	}
 	
@@ -552,16 +553,23 @@ class EiuHtmlBuilder {
 	 * @param int $entryControlMax
 	 * @return \n2n\impl\web\ui\view\html\HtmlElement
 	 */
-	public function getToolbar(bool $showFieldControls, $showForkControls, bool $showEntryControls, int $entryControlMax = 6) {
+	public function getToolbar(bool $showFieldControls, $showForkControls, $showEntryControls, int $entryControlMax = 6) {
 		$fieldControlsUi = $showFieldControls ? $this->getFieldControls() : null;
 		
 		$forkControlsUi = null;
 		if ($showForkControls === true) {
-			$showForkControls = $this->getEntryForkControls();
+			$forkControlsUi = $this->getEntryForkControls();
 		} else if ($showForkControls instanceof DisplayStructure) {
-			$showForkControls = $this->getEntryForkControlsFor($showForkControls);
+			$forkControlsUi = $this->getEntryForkControlsFor($showForkControls);
 		} else if ($showForkControls !== false) {
 			ArgUtils::valType($showForkControls, ['bool', DisplayStructure::class], true, 'showForkControls');
+		}
+		
+		if ($showEntryControls === null) {
+			$showEntryControls = $this->state->peakEntry()['eiEntryGui']->getEiGui()->getEiGuiNature()
+					->areEntryControlsRendered();
+		} else if (!is_bool($showEntryControls)) {
+			ArgUtils::valType($showForkControls, 'bool', true, '$showEntryControls');
 		}
 		
 		$entryControlsUi = $showEntryControls ? $this->getEntryCommands(true, $entryControlMax) : null;

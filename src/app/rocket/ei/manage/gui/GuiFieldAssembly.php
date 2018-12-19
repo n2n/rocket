@@ -29,6 +29,10 @@ class GuiFieldAssembly {
 		return $this->guiField;
 	}
 	
+	public function isReadOnly() {
+		return $this->magAssembly === null;
+	}
+	
 	/**
 	 * @return MagAssembly|null
 	 */
@@ -40,7 +44,7 @@ class GuiFieldAssembly {
 	 * @return GuiFieldEditable|null
 	 */
 	public function getEditable() {
-		if ($this->guiField->isReadOnly()) {
+		if ($this->isReadOnly()) {
 			return null;
 		}
 		

@@ -7,7 +7,6 @@ use n2n\web\dispatch\map\PropertyPath;
 use rocket\ei\manage\gui\EiEntryGui;
 use rocket\ei\manage\gui\GuiFieldAssembly;
 use rocket\ei\manage\gui\GuiFieldPath;
-use rocket\ei\manage\gui\ui\DisplayItem;
 use rocket\ei\manage\entry\EiFieldValidationResult;
 use rocket\ei\manage\entry\ValidationResult;
 

@@ -12,7 +12,6 @@ use n2n\impl\web\ui\view\html\HtmlSnippet;
 use rocket\ei\manage\gui\ui\DisplayStructure;
 use rocket\ei\manage\gui\GuiException;
 use rocket\ei\manage\gui\EiGui;
-use rocket\ei\manage\gui\EiGuiConfig;
 use rocket\ei\util\frame\EiuFrame;
 use rocket\ei\util\EiuAnalyst;
 use rocket\ei\util\EiuPerimeterException;
@@ -24,7 +23,6 @@ class EiuGui {
 	private $eiGui;
 	private $eiuFrame;
 	private $eiuAnalyst;
-// 	private $eiGuiConfig;
 	
 	/**
 	 * @param EiGui $eiGui
@@ -35,7 +33,6 @@ class EiuGui {
 		$this->eiGui = $eiGui;
 		$this->eiuFrame = $eiuFrame;
 		$this->eiuAnalyst = $eiuAnalyst;
-		$this->eiGuiConfig = new EiGuiConfig(false);
 	}
 	
 	/**
@@ -245,14 +242,22 @@ class EiuGui {
 // 		return $this;
 // 	}
 	
-// 	/**
-// 	 * @return \rocket\ei\util\gui\EiuGui
-// 	 */
-// 	public function renderEntryControls(bool $renderEntryControls = true) {
-// 		$this->eiGuiConfig->setEntryControlsRendered($renderEntryControls);
-// 		return $this;
-// 	}
+	/**
+	 * @return \rocket\ei\util\gui\EiuGui
+	 */
+	public function renderEntryControls(bool $renderEntryControls = true) {
+		$this->eiGui->getEiGuiNature()->setEntryControlsRendered($renderEntryControls);
+		return $this;
+	}
 	
+	/**
+	 * @return \rocket\ei\util\gui\EiuGui
+	 */
+	public function forceCollection(bool $collectionForced = true) {
+		$this->eiGui->getEiGuiNature()->setCollectionForced($collectionForced);
+		return $this;
+	}	
+		
 // 	/**
 // 	 * @return \rocket\ei\util\gui\EiuGui
 // 	 */
@@ -261,19 +266,19 @@ class EiuGui {
 // 		return $this;
 // 	}
 	
-// 	/**
-// 	 * @return \rocket\ei\manage\gui\EiGuiConfig
-// 	 */
-// 	function getEiGuiConfig() {
-// 		return $this->eiGuiConfig;
-// 	}
+	/**
+	 * @return \rocket\ei\manage\gui\EiGuiNature
+	 */
+	function getEiGuiNature() {
+		return $this->eiGui->getEiGuiNature();
+	}
 	
 	/**
 	 * @return HtmlView|null $contextView
 	 * @return \n2n\impl\web\ui\view\html\HtmlView
 	 */
 	public function createView(HtmlView $contextView = null) {
-		return $this->eiGui->createUiComponent($contextView, $this->eiGuiConfig);
+		return $this->eiGui->createUiComponent($contextView);
 	}
 }
 
@@ -306,7 +311,7 @@ class CustomGuiViewFactory implements EiGuiViewFactory {
 // 		$this->displayStructure = $displayStructure;
 // 	}
 	
-	public function createUiComponent(array $eiEntryGuis, ?HtmlView $contextView, EiGuiConfig $eiGuiConfig): UiComponent {
+	public function createUiComponent(array $eiEntryGuis, ?HtmlView $contextView): UiComponent {
 		$uiComponent = $this->factory->call(null, $eiEntryGuis, $contextView);
 		ArgUtils::valTypeReturn($uiComponent, [UiComponent::class, 'scalar'], null, $this->factory);
 		

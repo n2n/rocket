@@ -29,6 +29,10 @@ class EiGui {
 	 * @var EiEntryGui[]
 	 */
 	private $eiEntryGuis = array();
+	/**
+	 * @var EiGuiNature
+	 */
+	private $eiGuiNature;
 	
 	/**
 	 * @param EiFrame $eiFrame
@@ -138,10 +142,10 @@ class EiGui {
 	 * @param HtmlView|null $contextView
 	 * @return \n2n\web\ui\UiComponent
 	 */
-	public function createUiComponent(?HtmlView $contextView, EiGuiConfig $eiGuiConfig) {
+	public function createUiComponent(?HtmlView $contextView) {
 		$this->ensureInit();
 		
-		$view = $this->eiGuiViewFactory->createUiComponent($this->eiEntryGuis, $contextView, $eiGuiConfig);
+		$view = $this->eiGuiViewFactory->createUiComponent($this->eiEntryGuis, $contextView);
 		
 		foreach ($this->eiGuiListeners as $eiGuiListener) {
 			$eiGuiListener->onNewView($view);
@@ -171,4 +175,69 @@ class EiGui {
 	public function createOverallControls(HtmlView $view) {
 		return $this->eiFrame->getContextEiEngine()->getEiMask()->getEiEngine()->createEiGuiOverallControls($this, $view);
 	}
+	
+	/**
+	 * @return \rocket\ei\manage\gui\EiGuiNature
+	 */
+	public function getEiGuiNature()  {
+		if ($this->eiGuiNature === null) {
+			$this->eiGuiNature = new EiGuiNature();
+		}
+			
+		return $this->eiGuiNature;
+	}
+}
+
+
+
+class EiGuiNature {
+	private $entryControlsRendered = false;
+	private $collectionForced = false;
+// 	private $forkControlsRendered = true;
+	
+	/**
+	 * @return bool
+	 */
+	function areEntryControlsRendered() {
+		return $this->entryControlsRendered;
+	}
+	
+	/**
+	 * @param bool $entryControlsRendered
+	 * @return \rocket\ei\manage\gui\EiGuiNature
+	 */
+	function setEntryControlsRendered(bool $entryControlsRendered) {
+		$this->entryControlsRendered = $entryControlsRendered;
+		return $this;
+	}
+	/**
+ 	 * @return bool
+ 	 */
+	function isCollectionForced() {
+		return $this->collectionForced;
+	}
+
+	/**
+	 * @param bool $forkControlsRedenered
+	 * @return \rocket\ei\manage\gui\EiGuiNature
+	 */
+	function setCollectionForced(bool $collectionForced) {
+		$this->collectionForced = $collectionForced;
+		return $this;
+	}
+// 	/**
+// 	 * @return bool
+// 	 */
+// 	function areForkControlsRendered() {
+// 		return $this->forkControlsRendered;
+// 	}
+	
+// 	/**
+// 	 * @param bool $forkControlsRedenered
+// 	 * @return \rocket\ei\manage\gui\EiGuiNature
+// 	 */
+// 	function setForkControlsRendered(bool $forkControlsRedenered) {
+// 		$this->forkControlsRendered = $forkControlsRedenered;
+// 		return $this;
+// 	}
 }

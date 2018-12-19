@@ -39,7 +39,7 @@
 	
 	$eiuHtml = new EiuHtmlBuilder($view);
 	
-	$entryOpen = $eiuHtml->meta()->isEntryOpen($eiu->entryGui());
+	$entryOpen = $eiuHtml->meta()->isEntryOpen($eiuEntryGui);
 	
 	$renderInnerToolbar = false;
 	if ($renderToolbar && $displayStructure->size() == 1 && $displayStructure->getDisplayItems()[0]->hasDisplayStructure()) {
@@ -53,7 +53,7 @@
 <?php endif ?>
 
 <?php if ($renderToolbar): ?>
-	<?php $eiuHtml->toolbar(false, $displayStructure, $view->getParam('renderEntryControls')) ?>
+	<?php $eiuHtml->toolbar(false, $displayStructure, null) ?>
 	
 	<?php $eiuHtml->entryMessages() ?>
 <?php endif ?>

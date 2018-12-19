@@ -28,50 +28,5 @@ interface EiGuiViewFactory {
 	/**
 	 * @return UiComponent
 	 */
-	public function createUiComponent(array $eiEntryGuis, ?HtmlView $contextView, 
-			EiGuiConfig $eiGuiConfig): UiComponent;
-}
-
-class EiGuiConfig {
-	private $entryControlsRendered = true;
-	private $forkControlsRendered = true;
-	
-	/**
-	 * @param int $mode
-	 */
-	function __construct(bool $entryControlsRendered) {
-		$this->entryControlsRendered = $entryControlsRendered;
-	}
-	
-	/**
-	 * @return bool
-	 */
-	function areEntryControlsRendered() {
-		return $this->entryControlsRendered;
-	}
-	
-	/**
-	 * @param bool $entryControlsRendered
-	 * @return \rocket\ei\manage\gui\EiGuiConfig
-	 */
-	function setEntryControlsRendered(bool $entryControlsRendered) {
-		$this->entryControlsRendered = $entryControlsRendered;
-		return $this;
-	}
-	
-	/**
-	 * @return bool
-	 */
-	function areForkControlsRendered() {
-		return $this->forkControlsRendered;
-	}
-	
-	/**
-	 * @param bool $forkControlsRedenered
-	 * @return \rocket\ei\manage\gui\EiGuiConfig
-	 */
-	function setForkControlsRendered(bool $forkControlsRedenered) {
-		$this->forkControlsRendered = $forkControlsRedenered;
-		return $this;
-	}
+	public function createUiComponent(array $eiEntryGuis, ?HtmlView $contextView): UiComponent;
 }

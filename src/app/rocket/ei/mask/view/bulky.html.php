@@ -23,7 +23,7 @@
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use rocket\ei\manage\gui\ui\DisplayStructure;
 	use rocket\ei\util\gui\EiuHtmlBuilder;
-	use rocket\ei\util\gui\EiuGui;
+	use rocket\ei\util\Eiu;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -32,9 +32,11 @@
 	$displayStructure = $view->getParam('displayStructure');
 	$view->assert($displayStructure instanceof DisplayStructure);
 	
-	$eiuGui = $view->getParam('eiuGui');
-	$view->assert($eiuGui instanceof EiuGui);
+	$eiu = $view->getParam('eiu');
+	$view->assert($eiu instanceof Eiu);
 
+	$eiuGui = $eiu->gui();
+	
 	$eiuHtml = new EiuHtmlBuilder($view);
 	if (!$eiuHtml->meta()->isEntryOpen()) {
 		$displayStructure = $displayStructure->groupedItems();
@@ -42,11 +44,12 @@
 ?>
 
 <?php if ($eiuGui->isSingle()): ?>
-	<?php $view->import('bulkyEntry.html', [ 'eiuEntryGui' => $eiuGui->entryGui() ]) ?>
+	<?php $view->import('bulkyEntry.html', [ 'eiuEntryGui' => $eiuGui->entryGui(), 'displayStructure' => $displayStructure ]) ?>
 <?php else: ?>
 	<?php $eiuHtml->collectionOpen('div', $eiuGui) ?>
-		<?php foreach ($eiuGui->entryGuis() as $entryGui): ?>
-			<?php $view->import('bulkyEntry.html', [ 'eiuEntryGui' => $eiuGui->entryGui() ]) ?>
+		<?php foreach ($eiuGui->entryGuis() as $eiuEntryGui): ?>
+			<?php $view->import('bulkyEntry.html', 
+					[ 'eiuEntryGui' => $eiuEntryGui, 'displayStructure' => $displayStructure ]) ?>
 		<?php endforeach ?>
 	<?php $eiuHtml->collectionClose() ?>
 <?php endif ?>

@@ -11,7 +11,7 @@ use rocket\ei\util\Eiu;
 use n2n\web\ui\UiComponent;
 use rocket\ei\manage\gui\EiGui;
 use rocket\ei\manage\gui\ViewMode;
-use rocket\ei\manage\gui\EiGuiConfig;
+use rocket\ei\manage\gui\EiGuiNature;
 
 class CommonEiGuiViewFactory implements EiGuiViewFactory {
 	private $eiGui;
@@ -106,7 +106,7 @@ class CommonEiGuiViewFactory implements EiGuiViewFactory {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\EiGuiViewFactory::createUiComponent()
 	 */
-	public function createUiComponent(array $eiEntryGuis, ?HtmlView $contextView, EiGuiConfig $eiGuiConfig): UiComponent {
+	public function createUiComponent(array $eiEntryGuis, ?HtmlView $contextView): UiComponent {
 		$viewFactory = $this->eiGui->getEiFrame()->getN2nContext()->lookup(ViewFactory::class);
 		CastUtils::assertTrue($viewFactory instanceof ViewFactory);
 		
@@ -120,9 +120,7 @@ class CommonEiGuiViewFactory implements EiGuiViewFactory {
 			$displayStructure = $displayStructure->withoutSubStructures();
 		}
 		
-		$params = array('displayStructure' => $displayStructure, 'eiu' => new Eiu($this->eiGui),
-				'renderEntryControls' => $eiGuiConfig->areEntryControlsRendered(),
-				'renderForkControls' => $eiGuiConfig->areForkControlsRendered());
+		$params = array('displayStructure' => $displayStructure, 'eiu' => new Eiu($this->eiGui));
 		
 		if ($contextView !== null) {
 			return $contextView->getImport('\\' .$viewName, $params);
