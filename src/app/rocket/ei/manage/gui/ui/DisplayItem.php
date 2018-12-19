@@ -161,6 +161,10 @@ class DisplayItem {
 		throw new IllegalStateException();
 	}
 
+	/**
+	 * @throws IllegalStateException
+	 * @return GuiFieldPath
+	 */
 	public function getGuiFieldPath() {
 		if ($this->guiFieldPath !== null) {
 			return $this->guiFieldPath;

@@ -40,6 +40,9 @@ use n2n\impl\web\ui\view\html\HtmlSnippet;
 use rocket\ei\manage\entry\ValidationResult;
 use rocket\ei\manage\entry\UnknownEiFieldExcpetion;
 use n2n\l10n\Message;
+use rocket\ei\manage\gui\ui\DisplayStructure;
+use rocket\ei\manage\gui\MagAssembly;
+use n2n\web\dispatch\map\PropertyPath;
 
 class EiuHtmlBuilder {
 	private $view;
@@ -211,8 +214,41 @@ class EiuHtmlBuilder {
 		$eiEntryGui = $info['eiEntryGui'];
 		CastUtils::assertTrue($eiEntryGui instanceof EiEntryGui);
 		
-		$forkMagAssemblies = $eiEntryGui->getForkMagAssemblies();
+		$forkMagAssemblies = array();
+		foreach ($eiEntryGui->getForkMagAssemblies() as $guiFieldPathStr => $forkMagAssembly) {
+			if ($this->state->isForkMagRendered($guiFieldPathStr)) continue;
+			
+			$this->state->markForkMagAsRendered($guiFieldPathStr);
+			$forkMagAssemblies[] = $forkMagAssembly;		
+		}
 		
+		return $this->buildEntryForkControlsUi($eiEntryGui, $forkMagAssemblies);
+	}
+	
+	
+	public function getEntryForkControlsFor(DisplayStructure $displayStructure, array $attrs = null) {
+		$forkMagAssemblies = array();
+		foreach ($eiEntryGui->getForkMagAssemblies() as $guiFieldPathStr => $forkMagAssembly) {
+			if ($this->state->isForkMagRendered($guiFieldPathStr)) continue;
+			
+			$guiFieldPath = GuiFieldPath::create($guiFieldPathStr);
+			
+			if (!$displayStructure->containsLevelGuiFieldPath($guiFieldPath)
+					&& $displayStructure->containsSubGuiFieldPath($guiFieldPath)) {
+				continue;			
+			}
+			
+			$this->state->markForkMagAsRendered($guiFieldPathStr);
+			$forkMagAssemblies[] = $forkMagAssembly;
+		}
+		
+		return $this->buildEntryForkControlsUi($eiEntryGui, $forkMagAssemblies);
+	}
+	
+	/**
+	 * @param MagAssembly[] $forkMagAssemblies
+	 */
+	private function buildEntryForkControlsUi($eiEntryGui, $forkMagAssemblies) {
 		if (empty($forkMagAssemblies)) {
 			return null;
 		}
@@ -225,11 +261,12 @@ class EiuHtmlBuilder {
 			$div->appendLn($this->formHtml->getMagOpen('div', $propertyPath, null, $this->uiOutfitter));
 			$div->appendLn($this->formHtml->getMagLabel());
 			$div->appendLn(new HtmlElement('div', array('class' => 'rocket-control'), $this->formHtml->getMagField()));
-			$div->appendLn($this->formHtml->getMagClose()); 
+			$div->appendLn($this->formHtml->getMagClose());
 		}
 		
 		return $div;
 	}
+	
 	
 	public function entryCommands(bool $iconOnly = false, int $max = null) {
 		$this->view->out($this->getEntryCommands($iconOnly, $max));
@@ -285,106 +322,106 @@ class EiuHtmlBuilder {
 				new HtmlElement('input', array('type' => 'checkbox'))*/);
 	}
 	
-	private function buildAttrs(GuiFieldPath $guiFieldPath, array $attrs, DisplayItem $displayItem = null) {
-		$attrs = HtmlUtils::mergeAttrs($attrs, array('class' => 'rocket-gui-field-' . implode('-', $guiFieldPath->toArray())));
-// 		$attrs = EiuHtmlBuilderMeta::createDisplayItemAttrs($displayItem !== null ? $displayItem->getType() : DisplayItem::TYPE_ITEM, $attrs);
-		return $attrs;
-	}
-	
-	public function fieldOpen(string $tagName, $displayItem, array $attrs = null, bool $readOnly = false,
-			bool $addDisplayCl = true) {
-		$this->view->out($this->getFieldOpen($tagName, $displayItem, $attrs, $readOnly, $addDisplayCl));
-	}
-	
-	public function getFieldOpen(string $tagName, $displayItem, array $attrs = null, bool $readOnly = false,
-			bool $addDisplayCl = false) {
-		$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
-		CastUtils::assertTrue($eiEntryGui instanceof EiEntryGui);
-		
-		$guiFieldPath = null;
-		if ($displayItem instanceof DisplayItem) {
-			if ($displayItem->hasDisplayStructure()) {
-				throw new \InvalidArgumentException('DisplayItem with DisplayStructure is disallowed for field opening.');
-			}
-			
-			$guiFieldPath = $displayItem->getGuiFieldPath();
-			if ($addDisplayCl) {
-				$displayItemType = $displayItem->getType() ?? $eiEntryGui->getGuiFieldAssembly($guiFieldPath)->getGuiField()->getDisplayItemType();
-				$attrs = EiuHtmlBuilderMeta::createDisplayItemAttrs($displayItem->getType(), 
-						HtmlUtils::mergeAttrs((array) $displayItem->getAttrs(), (array) $attrs));
-			}
-		} else {
-			$guiFieldPath = GuiFieldPath::create($displayItem);
-			if ($addDisplayCl) {
-				$displayItemType = $eiEntryGui->getGuiFieldAssembly($guiFieldPath)->getGuiField()->getDisplayItemType();
+	private function buildFieldAttrs(GuiFieldPath $guiFieldPath, bool $readOnly = true, bool $mandatory = false, 
+			array $attrs) {
+		$newAttrs = array('class' => 'rocket-field rocket-gui-field-' . implode('-', $guiFieldPath->toArray()));
 				
-				$attrs = EiuHtmlBuilderMeta::createDisplayItemAttrs($displayItemType, (array) $attrs);
-			}
-			$displayItem = null;
-		}
-		
-		$guiDefinition = $eiEntryGui->getEiGui()->getEiGuiViewFactory()->getGuiDefinition();
-		$validationResult = null;
-		try {
-			$validationResult = $guiDefinition->determineEiFieldAbstraction($eiEntryGui->getEiGui()->getEiFrame()->getN2nContext(), $eiEntryGui->getEiEntry(), $guiFieldPath)->getValidationResult();
-		} catch (UnknownEiFieldExcpetion $e) {}
-		
-		if (!$eiEntryGui->containsGuiFieldGuiFieldPath($guiFieldPath)) {
-			$this->state->pushField($tagName, $guiFieldPath, $validationResult, null, null, $displayItem);
-			return $this->createOutputFieldOpen($tagName, null, $validationResult,
-					$this->buildAttrs($guiFieldPath, (array) $attrs, $displayItem));
-		}
-		
-		$guiFieldAssembly = $eiEntryGui->getGuiFieldAssembly($guiFieldPath);
-		$magAssembly = $guiFieldAssembly->getMagAssembly();
-		
-		if ($readOnly || $magAssembly === null) {
-			$this->state->pushField($tagName, $guiFieldPath, $validationResult, $guiFieldAssembly, null, $displayItem);
-			return $this->createOutputFieldOpen($tagName, $guiFieldAssembly->getGuiField(), $validationResult,
-					$this->buildAttrs($guiFieldPath, (array) $attrs, $displayItem));
-		}
-	
-		$propertyPath = $eiEntryGui->getContextPropertyPath()->ext($magAssembly->getMagPropertyPath());
-		
-		$this->state->pushField($tagName, $guiFieldPath, $validationResult, $guiFieldAssembly, $propertyPath, $displayItem);
-		return $this->createInputFieldOpen($tagName, $propertyPath, $validationResult,
-				$this->buildAttrs($guiFieldPath, (array) $attrs, $displayItem), $magAssembly->isMandatory());
-	}
-	
-	private function createInputFieldOpen(string $tagName, $magPropertyPath, ?ValidationResult $validationResult,
-			array $attrs = null, bool $mandatory = false) {
-		$magPropertyPath = $this->formHtml->meta()->createPropertyPath($magPropertyPath);
-
-		if ($this->formHtml->meta()->hasErrors($magPropertyPath) || ($validationResult !== null && !$validationResult->isValid())) {
-			$attrs = HtmlUtils::mergeAttrs((array) $attrs, array('class' => 'rocket-has-error'));
-		}
-
-		return $this->formHtml->getMagOpen($tagName, $magPropertyPath, 
-				$this->buildContainerAttrs((array) $attrs, false, $mandatory), 
-				$this->uiOutfitter);
-	}
-	
-	
-	private function createOutputFieldOpen($tagName, GuiField $guiField = null, ValidationResult $validationResult = null, array $attrs = null) {
-		return new Raw('<' . HtmlUtils::hsc($tagName) . HtmlElement::buildAttrsHtml(
-				$this->buildContainerAttrs(HtmlUtils::mergeAttrs(($guiField !== null ? $guiField->getHtmlContainerAttrs() : array()), $attrs))) . '>');
-	}
-
-	
-	private function buildContainerAttrs(array $attrs, bool $readOnly = true, bool $mandatory = false) {
-		$attrs = HtmlUtils::mergeAttrs(array('class' => 'rocket-field'), $attrs);
-	
 		if ($mandatory) {
 			$attrs = HtmlUtils::mergeAttrs(array('class' => 'rocket-required'), $attrs);
 		}
-			
+		
 		if ($readOnly) {
 			$attrs = HtmlUtils::mergeAttrs(array('class' => 'rocket-read-only'), $attrs);
 		} else {
 			$attrs = HtmlUtils::mergeAttrs(array('class' => 'rocket-editable'), $attrs);
 		}
 		
-		return $attrs;
+		return HtmlUtils::mergeAttrs($newAttrs, $attrs);
+	}
+	
+	/**
+	 * @param string $tagName
+	 * @param GuiFieldPath|null $guiFieldPath
+	 * @param string|bool|null $displayItemType
+	 * @param array|null $attrs
+	 */
+	public function fieldOpen(string $tagName, $guiFieldPath, $displayItemType = null, array $attrs = null, 
+			bool $forceReadOnly = false) {
+		$this->view->out($this->getFieldOpen($tagName, $guiFieldPath, $displayItemType, $attrs, $forceReadOnly));
+	}
+	
+	/**
+	 * @param string $tagName
+	 * @param GuiFieldPath|null $guiFieldPath
+	 * @param string|bool|null $displayItemType
+	 * @param array|null $attrs
+	 */
+	public function getFieldOpen(string $tagName, $guiFieldPath, $displayItemType = null, array $attrs = null, 
+			bool $forceReadOnly = false) {
+		$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
+		CastUtils::assertTrue($eiEntryGui instanceof EiEntryGui);
+		
+		$guiFieldPath = GuiFieldPath::create($guiFieldPath);
+		
+		$guiFieldAssembly = $eiEntryGui->getGuiFieldAssembly($guiFieldPath);
+		$readOnly = $forceReadOnly || $guiFieldAssembly->getGuiField()->isReadOnly();
+		
+		$attrs = $this->buildFieldAttrs($guiFieldPath, $readOnly, 
+				!$readOnly || $guiFieldAssembly->getEditable()->isMandatory(), $attrs);
+		
+		if ($displayItemType === null || $displayItemType === true) {
+			$displayItemType = $guiFieldAssembly->getGuiField()->getDisplayItemType();
+		} 
+		
+		if ($displayItemType !== false) {
+			$attrs = EiuHtmlBuilderMeta::createDisplayItemAttrs($displayItemType, $attrs);
+		} 
+			
+		$guiDefinition = $eiEntryGui->getEiGui()->getEiGuiViewFactory()->getGuiDefinition();
+		$validationResult = null;
+		try {
+			$validationResult = $guiDefinition->determineEiFieldAbstraction($this->view->getN2nContext(), 
+					$eiEntryGui->getEiEntry(), $guiFieldPath)->getValidationResult();
+		} catch (UnknownEiFieldExcpetion $e) {}
+		
+		if ($readOnly) {
+			$this->state->pushField($tagName, $guiFieldPath, $validationResult, $guiFieldAssembly);
+			return $this->createOutputFieldOpen($tagName, null, $validationResult, $attrs);
+		}
+		
+		$magAssembly = $guiFieldAssembly->getMagAssembly();
+		$propertyPath = $eiEntryGui->getContextPropertyPath()->ext($magAssembly->getMagPropertyPath());
+		
+		$this->state->pushField($tagName, $guiFieldPath, $validationResult, $guiFieldAssembly, $propertyPath);
+		return $this->createInputFieldOpen($tagName, $propertyPath, $validationResult, $attrs);
+	}
+	
+	/**
+	 * @param string $tagName
+	 * @param PropertyPath $magPropertyPath
+	 * @param ValidationResult|null $validationResult
+	 * @param array $attrs
+	 * @param bool $mandatory
+	 * @return \n2n\web\ui\Raw
+	 */
+	private function createInputFieldOpen($tagName, $magPropertyPath, $validationResult, $attrs) {
+		$magPropertyPath = $this->formHtml->meta()->createPropertyPath($magPropertyPath);
+
+		if ($this->formHtml->meta()->hasErrors($magPropertyPath) || ($validationResult !== null 
+				&& !$validationResult->isValid(true))) {
+			$attrs = HtmlUtils::mergeAttrs((array) $attrs, array('class' => 'rocket-has-error'));
+		}
+
+		return $this->formHtml->getMagOpen($tagName, $magPropertyPath, $attrs, $this->uiOutfitter);
+	}
+	
+	private function createOutputFieldOpen($tagName, GuiField $guiField, ValidationResult $validationResult = null, array $attrs = null) {
+		$attrs = HtmlUtils::mergeAttrs($array, $guiField->getHtmlContainerAttrs(), true);
+		if ($validationResult !== null && !$validationResult->isValid(true)) {
+			$attrs = HtmlUtils::mergeAttrs((array) $attrs, array('class' => 'rocket-has-error'));
+		}
+		
+		return new Raw('<' . HtmlUtils::hsc($tagName) . HtmlElement::buildAttrsHtml($attrs) . '>');
 	}
 	
 	public function fieldClose() {
@@ -428,11 +465,7 @@ class EiuHtmlBuilder {
 			return $this->formHtml->getMagField();
 		}
 		
-		if (isset($fieldInfo['guiFieldAssembly'])) {
-			return $this->html->getOut($fieldInfo['guiFieldAssembly']->getGuiField()->createUiComponent($this->view));
-		}
-		
-		return null;
+		return $this->html->getOut($fieldInfo['guiFieldAssembly']->getGuiField()->createUiComponent($this->view));
 	}
 	
 	public function fieldMessage(bool $recursive = true) {
@@ -502,29 +535,41 @@ class EiuHtmlBuilder {
 	
 	/**
 	 * @param bool $showFieldControls
-	 * @param bool $showForkControls
+	 * @param bool|DisplayStructure $showForkControls
 	 * @param bool $showEntryControls
 	 * @param int $entryControlMax
 	 */
-	public function toolbar(bool $showFieldControls, bool $showForkControls, bool $showEntryControls, int $entryControlMax = 6) {
+	public function toolbar(bool $showFieldControls, $showForkControls, bool $showEntryControls, int $entryControlMax = 6) {
 		$this->view->out($this->getToolbar($showFieldControls, $showForkControls, $showEntryControls, $entryControlMax));
 	}
 	
 	/**
 	 * @param bool $showFieldControls
-	 * @param bool $showForkControls
+	 * @param bool|DisplayStructure $showForkControls
 	 * @param bool $showEntryControls
 	 * @param int $entryControlMax
 	 * @return \n2n\impl\web\ui\view\html\HtmlElement
 	 */
-	public function getToolbar(bool $showFieldControls, bool $showForkControls, bool $showEntryControls, int $entryControlMax = 6) {
+	public function getToolbar(bool $showFieldControls, $showForkControls, bool $showEntryControls, int $entryControlMax = 6) {
 		$fieldControlsUi = $showFieldControls ? $this->getFieldControls() : null;
-		$forkControlsUi = $showForkControls ? $this->getEntryForkControls() : null;
+		
+		$forkControlsUi = null;
+		if ($showForkControls === true) {
+			$showForkControls = $this->getEntryForkControls();
+		} else if ($showForkControls instanceof DisplayStructure) {
+			$showForkControls = $this->getEntryForkControlsFor($showForkControls);
+		} else if ($showForkControls !== false) {
+			ArgUtils::valType($showForkControls, ['bool', DisplayStructure::class], true, 'showForkControls');
+		}
+		
 		$entryControlsUi = $showEntryControls ? $this->getEntryCommands(true, $entryControlMax) : null;
 		
-		if ($fieldControlsUi !== null || $forkControlsUi !== null || $entryControlsUi !== null)
-		return new HtmlElement('div', ['class' => 'rocket-toolbar'], 
-				[$fieldControlsUi, $forkControlsUi, $entryControlsUi]);
+		if ($fieldControlsUi !== null || $forkControlsUi !== null || $entryControlsUi !== null) {
+			return new HtmlElement('div', ['class' => 'rocket-toolbar'], 
+					[$fieldControlsUi, $forkControlsUi, $entryControlsUi]);
+		}
+		
+		return null;
 	}
 	
 	/**

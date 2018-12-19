@@ -63,6 +63,13 @@ class DisplayStructure {
 	}
 	
 	/**
+	 * @return int
+	 */
+	public function size() {
+		return count($this->displayItems);
+	}
+	
+	/**
 	 * @param DisplayItem[] $displayItems
 	 */
 	public function setDisplayItems(array $displayItems) {
@@ -220,5 +227,46 @@ class DisplayStructure {
 				
 			$this->stripSubStructures($displayStructure, $displayItem->getDisplayStructure()->getDisplayItems());			
 		}
+	}
+	
+	/**
+	 * @param GuiFieldPath $guiFieldPath
+	 * @return boolean
+	 */
+	public function containsGuiFieldPathPrefix(GuiFieldPath $guiFieldPath) {
+		return $this->containsLevelGuiFieldPathPrefix($guiFieldPath) 
+				|| $this->containsSubGuiFieldPathPrefix($guiFieldPath);
+	}
+	
+	/**
+	 * @param GuiFieldPath $guiFieldPath
+	 * @return boolean
+	 */
+	public function containsLevelGuiFieldPathPrefix(GuiFieldPath $guiFieldPath) {
+		foreach ($this->displayItems as $displayItem) {
+			if ($displayItem->hasDisplayStructure()) continue;
+			
+			if ($displayItem->getGuiFieldPath()->startsWith($guiFieldPath, false)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * @param GuiFieldPath $guiFieldPath
+	 * @return boolean
+	 */
+	public function containsSubGuiFieldPathPrefix(GuiFieldPath $guiFieldPath) {
+		foreach ($this->displayItems as $displayItem) {
+			if (!$displayItem->hasDisplayStructure()) continue;
+			
+			if ($displayItem->getDisplayStructure()->containsGuiFieldPathPrefix($guiFieldPath)) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 }

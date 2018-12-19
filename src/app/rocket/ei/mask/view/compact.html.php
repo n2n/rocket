@@ -35,8 +35,6 @@
 	$displayStructure = $view->getParam('displayStructure');
 	$view->assert($displayStructure instanceof DisplayStructure);
 	
-	$entryControlsRendered = $view->getParam('renderEntryControls');
-	
 	$eiuHtml = new EiuHtmlBuilder($view);
 ?>
 
@@ -52,7 +50,7 @@
 			<?php endif ?>
 		</tr>
 	</thead>
-	<?php $eiuHtml->collectionOpen('tbody', $eiu, array('rocket-collection')) ?>
+	<?php $eiuHtml->collectionOpen('tbody', $eiu) ?>
 		<?php foreach ($eiu->gui()->entryGuis() as $eiuEntryGui): ?>
 			<?php $eiuHtml->entryOpen('tr', $eiuEntryGui) ?>
 				<?php $eiuHtml->entrySelector('td') ?>
@@ -63,11 +61,9 @@
 					<?php $eiuHtml->fieldClose() ?>
 				<?php endforeach ?>
 				
-				<?php if ($entryControlsRendered): ?>
-					<?php $view->out('<td class="rocket-table-commands">') ?>
-						<?php $eiuHtml->entryCommands(true, 6) ?>
-					<?php $view->out('</td>') ?>
-				<?php endif ?>
+				<?php $view->out('<td class="rocket-table-commands">') ?>
+					<?php $eiuHtml->entryCommands(true, 6) ?>
+				<?php $view->out('</td>') ?>
 			<?php $eiuHtml->entryClose() ?>
 		<?php endforeach ?>
 	<?php $eiuHtml->collectionClose() ?>
