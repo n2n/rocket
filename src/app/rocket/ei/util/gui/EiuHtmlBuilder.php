@@ -147,11 +147,11 @@ class EiuHtmlBuilder {
 		return $raw;
 	}
 	
-	public function entryOpen(string $tagName, $eiEntryGuiArg, array $attrs = null) {
-		$this->view->out($this->getEntryOpen($tagName, $eiEntryGuiArg, $attrs));
+	public function entryOpen(string $tagName, $eiEntryGuiArg, string $displayItemType = null, array $attrs = null) {
+		$this->view->out($this->getEntryOpen($tagName, $eiEntryGuiArg, $displayItemType, $attrs));
 	}
 	
-	public function getEntryOpen(string $tagName, $eiEntryGuiArg, array $attrs = null) {
+	public function getEntryOpen(string $tagName, $eiEntryGuiArg, string $displayItemType = null, array $attrs = null) {
 		$eiEntryGui = EiuAnalyst::buildEiEntryGuiFromEiArg($eiEntryGuiArg, 'eiEntryGuiArg');
 		$eiObject = $eiEntryGui->getEiEntry()->getEiObject();
 		$pid = null;
@@ -175,8 +175,10 @@ class EiuHtmlBuilder {
 				'data-rocket-draft-id' => ($draftId !== null ? $draftId : ''),
 				'data-rocket-identity-string' => (new Eiu($eiEntryGui->getEiEntry(), $eiEntryGui->getEiGui()->getEiFrame()))->entry()->createIdentityString());
 		
-		return new Raw('<' . HtmlUtils::hsc($tagName)
-				. HtmlElement::buildAttrsHtml(HtmlUtils::mergeAttrs($entryAttrs, (array) $attrs)) . '>');
+		$entryAttrs = EiuHtmlBuilderMeta::createDisplayItemAttrs($displayItemType, $entryAttrs);
+		$entryAttrs = HtmlUtils::mergeAttrs($entryAttrs, (array) $attrs);
+		
+		return new Raw('<' . HtmlUtils::hsc($tagName) . HtmlElement::buildAttrsHtml($entryAttrs) . '>');
 	}
 	
 	public function entryClose() {

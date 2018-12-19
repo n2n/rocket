@@ -203,7 +203,7 @@ class EiuHtmlBuilderMeta {
 	 * @param array $attrs
 	 * @return array
 	 */
-	static function createDisplayItemAttrs(string $displayItemType = null, array $attrs) {
+	static function createDisplayItemAttrs(?string $displayItemType, array $attrs) {
 		if ($displayItemType === null) {
 			return $attrs;
 		}

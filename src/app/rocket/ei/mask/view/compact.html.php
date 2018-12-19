@@ -56,7 +56,7 @@
 				<?php $eiuHtml->entrySelector('td') ?>
 				
 				<?php foreach ($displayStructure->getDisplayItems() as $displayItem): ?>
-					<?php $eiuHtml->fieldOpen('td', $displayItem, null, false, false) ?>
+					<?php $eiuHtml->fieldOpen('td', $displayItem->getGuiFieldPath(), false) ?>
 						<?php $eiuHtml->fieldContent() ?>
 					<?php $eiuHtml->fieldClose() ?>
 				<?php endforeach ?>
