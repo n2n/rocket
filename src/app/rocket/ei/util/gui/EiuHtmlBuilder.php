@@ -224,7 +224,7 @@ class EiuHtmlBuilder {
 			$forkMagAssemblies[] = $forkMagAssembly;		
 		}
 		
-		return $this->buildEntryForkControlsUi($eiEntryGui, $forkMagAssemblies);
+		return $this->buildEntryForkControlsUi($eiEntryGui, $forkMagAssemblies, $attrs);
 	}
 	
 	
@@ -232,27 +232,30 @@ class EiuHtmlBuilder {
 		$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
 		
 		$forkMagAssemblies = array();
-		foreach ($eiEntryGui->getForkMagAssemblies() as $guiFieldPathStr => $forkMagAssembly) {
+		foreach ($eiEntryGui->getGuiFieldForkAssemblies() as $guiFieldPathStr => $guiFieldForkAssembly) {
 			if ($this->state->isForkMagRendered($guiFieldPathStr)) continue;
 			
 			$guiFieldPath = GuiFieldPath::create($guiFieldPathStr);
 			
-			if (!$displayStructure->containsLevelGuiFieldPath($guiFieldPath)
-					&& $displayStructure->containsSubGuiFieldPath($guiFieldPath)) {
+			if (!$displayStructure->containsLevelGuiFieldPathPrefix($guiFieldPath)
+					&& $displayStructure->containsSubGuiFieldPathPrefix($guiFieldPath)) {
 				continue;			
 			}
 			
 			$this->state->markForkMagAsRendered($guiFieldPathStr);
-			$forkMagAssemblies[] = $forkMagAssembly;
+			
+			foreach ($guiFieldForkAssembly->getMagAssemblies() as $magAssembly) {
+				$forkMagAssemblies[] = $magAssembly;
+			}
 		}
 		
-		return $this->buildEntryForkControlsUi($eiEntryGui, $forkMagAssemblies);
+		return $this->buildEntryForkControlsUi($eiEntryGui, $forkMagAssemblies, $attrs);
 	}
 	
 	/**
 	 * @param MagAssembly[] $forkMagAssemblies
 	 */
-	private function buildEntryForkControlsUi($eiEntryGui, $forkMagAssemblies) {
+	private function buildEntryForkControlsUi($eiEntryGui, $forkMagAssemblies, $attrs) {
 		if (empty($forkMagAssemblies)) {
 			return null;
 		}
@@ -367,6 +370,7 @@ class EiuHtmlBuilder {
 		
 		$guiFieldPath = GuiFieldPath::create($guiFieldPath);
 		
+		$guiPropAssembly = $eiEntryGui->getEiGui()->getGuiPropAssemblyByGuiFieldPath($guiFieldPath);
 		$guiFieldAssembly = $eiEntryGui->getGuiFieldAssembly($guiFieldPath);
 		$readOnly = $forceReadOnly || $guiFieldAssembly->isReadOnly();
 		
@@ -374,14 +378,14 @@ class EiuHtmlBuilder {
 				!$readOnly && $guiFieldAssembly->getEditable()->isMandatory(), (array) $attrs);
 		
 		if ($displayItemType === null || $displayItemType === true) {
-			$displayItemType = $guiFieldAssembly->getGuiField()->getDisplayItemType();
+			$displayItemType = $guiPropAssembly->getDisplayDefinition()->getDisplayItemType();
 		} 
 		
 		if ($displayItemType !== false) {
 			$attrs = EiuHtmlBuilderMeta::createDisplayItemAttrs($displayItemType, $attrs);
 		} 
 			
-		$guiDefinition = $eiEntryGui->getEiGui()->getEiGuiViewFactory()->getGuiDefinition();
+		$guiDefinition = $eiEntryGui->getEiGui()->getGuiDefinition();
 		$validationResult = null;
 		try {
 			$validationResult = $guiDefinition->determineEiFieldAbstraction($this->view->getN2nContext(), 

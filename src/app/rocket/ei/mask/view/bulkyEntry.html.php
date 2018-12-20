@@ -56,17 +56,19 @@
 	<?php $eiuHtml->toolbar(false, $displayStructure, null) ?>
 	
 	<?php $eiuHtml->entryMessages() ?>
+<?php else: ?>
+	<?php $eiuHtml->toolbar(false, $displayStructure, false) ?>
 <?php endif ?>
 
 <div class="rocket-control">
 	<?php foreach ($displayStructure->getDisplayItems() as $displayItem): ?>
 		<?php if ($displayItem->hasDisplayStructure()): ?>
 			<?php $eiuHtml->displayItemOpen('div', $displayItem) ?>
-				<?php if (null !== ($label = $displayItem->getLabel())): ?>
-					<label><?php $html->out($label) ?></label>
+				<?php if (null !== ($labelLstr = $displayItem->getLabelLstr())): ?>
+					<label><?php $html->out($labelLstr->t($view->getN2nLocale())) ?></label>
 				<?php endif ?>
 				
-				<?php $view->import('bulky.html', $view->mergeParams(array(
+				<?php $view->import('bulkyEntry.html', $view->mergeParams(array(
 						'displayStructure' => $displayItem->getDisplayStructure(), 
 						'renderToolbar' => $renderInnerToolbar))) ?>
 			<?php $eiuHtml->displayItemClose() ?>

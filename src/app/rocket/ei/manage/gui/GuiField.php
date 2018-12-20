@@ -21,25 +21,12 @@
  */
 namespace rocket\ei\manage\gui;
 
-use n2n\impl\web\ui\view\html\HtmlView;
-
 interface GuiField {
 	
 	/**
-	 * @return array
+	 * @return GuiFieldDisplayable
 	 */
-	public function getHtmlContainerAttrs(): array;
-	
-	/**
-	 * @param HtmlView $view
-	 * @return mixed UiComponent or string (will be escaped)
-	 */
-	public function createUiComponent(HtmlView $view);
-	
-	/**
-	 * @return string
-	 */
-	public function getDisplayItemType(): string;
+	public function getDisplayable(): GuiFieldDisplayable;
 
 	/**
 	 * @return boolean 

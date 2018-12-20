@@ -11,14 +11,14 @@ use rocket\ei\util\Eiu;
 use n2n\web\ui\UiComponent;
 use rocket\ei\manage\gui\EiGui;
 use rocket\ei\manage\gui\ViewMode;
-use rocket\ei\manage\gui\EiGuiNature;
+use n2n\util\ex\IllegalStateException;
 
 class CommonEiGuiViewFactory implements EiGuiViewFactory {
 	private $eiGui;
 	private $guiDefinition;
 	private $displayStructure;
 	
-	public function __construct(EiGui $eiGui, GuiDefinition $guiDefinition, DisplayStructure $displayStructure) {
+	public function __construct(EiGui $eiGui, GuiDefinition $guiDefinition, DisplayStructure $displayStructure = null) {
 		$this->eiGui = $eiGui;
 		$this->guiDefinition = $guiDefinition;
 		$this->displayStructure = $displayStructure;
@@ -41,21 +41,14 @@ class CommonEiGuiViewFactory implements EiGuiViewFactory {
 	}
 	
 	
-// 	/**
-// 	 * {@inheritDoc}
-// 	 * @see \rocket\ei\manage\gui\EiGuiViewFactory::getDisplayStructure()
-// 	 */
-// 	public function getDisplayStructure(): DisplayStructure {
-// 		return $this->displayStructure;
-// 	}
+	public function getDisplayStructure() {
+		IllegalStateException::assertTrue($this->displayStructure !== null);
+		return $this->displayStructure;
+	}
 	
-// 	/**
-// 	 * {@inheritDoc}
-// 	 * @see \rocket\ei\manage\gui\EiGuiViewFactory::setDisplayStructure()
-// 	 */
-// 	public function setDisplayStructure(DisplayStructure $displayStructure) {
-// 		$this->displayStructure = $displayStructure;
-// 	}
+	public function setDisplayStructure(DisplayStructure $displayStructure) {
+		$this->displayStructure = $displayStructure;
+	}
 	
 	
 // 	private function determineDisplayStructure($viewMode): DisplayStructure {

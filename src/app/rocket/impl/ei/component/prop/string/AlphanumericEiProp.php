@@ -75,7 +75,7 @@ abstract class AlphanumericEiProp extends DraftablePropertyEiPropAdapter impleme
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiField::createUiComponent()
+	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable::createUiComponent()
 	 */
 	public function createUiComponent(HtmlView $view, Eiu $eiu)  {
 		return $view->getHtmlBuilder()->getEsc($eiu->entry()->getEiEntry()->getValue(

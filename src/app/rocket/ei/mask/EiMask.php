@@ -340,25 +340,24 @@ class EiMask {
 	}
 	
 	public function createEiGui(EiFrame $eiFrame, int $viewMode, bool $init) {
-		if (!$this->getEiType()->isA($eiGui->getEiFrame()->getContextEiEngine()->getEiMask()->getEiType())) {
+		if (!$this->getEiType()->isA($eiFrame->getContextEiEngine()->getEiMask()->getEiType())) {
 			throw new \InvalidArgumentException('Incompatible EiGui');
 		}
 		
-		$eiGui = new EiGui($eiFrame, $viewMode);
+		$guiDefinition = $eiFrame->getManageState()->getDef()->getGuiDefinition($this);
+		$eiGui = new EiGui($eiFrame, $guiDefinition, $viewMode);
 		
 		if (!$init) {
 			$this->noInitCb($eiGui);
 			return $eiGui;
 		}
 		
-		$guiDefinition = $eiGui->getEiFrame()->getManageState()->getDef()->getGuiDefinition($this);
-		
-		foreach ($eiGui->getEiGuiViewFactory()->getGuiDefinition()->getGuiDefinitionListeners() as $listener) {
+		foreach ($guiDefinition->getGuiDefinitionListeners() as $listener) {
 			$listener->onNewEiGui($eiGui);
 		}
 		
 		if (!$eiGui->isInit()) {
-			$eiGui->init($this->getDisplayScheme()->createEiGuiViewFactory($eiGui, $guiDefinition));
+			$this->getDisplayScheme()->initEiGui($eiGui, $guiDefinition);
 		}
 		
 		return $eiGui;
@@ -372,7 +371,7 @@ class EiMask {
 		
 		$eiGui->registerEiGuiListener(new class() implements EiGuiListener {
 			public function onInitialized(EiGui $eiGui) {
-				foreach ($eiGui->getEiGuiViewFactory()->getGuiDefinition()->getGuiDefinitionListeners() as $listener) {
+				foreach ($eiGui->getGuiDefinition()->getGuiDefinitionListeners() as $listener) {
 					$listener->onNewEiGui($eiGui);
 				}
 				$eiGui->unregisterEiGuiListener($this);

@@ -39,12 +39,12 @@ use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\GuiField;
 use rocket\core\model\Rocket;
 use n2n\l10n\Lstr;
-use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiField;
+use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\impl\ei\component\prop\adapter\gui\GuiFieldProxy;
 
-abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter implements StatelessGuiField, 
+abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter implements StatelessGuiFieldDisplayable, 
 		FieldEiProp, GuiEiProp, GuiProp, Readable {
 	private $displayConfig;
 

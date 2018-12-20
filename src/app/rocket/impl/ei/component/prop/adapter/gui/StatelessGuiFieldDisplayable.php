@@ -19,30 +19,24 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\prop\meta;
+namespace rocket\impl\ei\component\prop\adapter\gui;
 
 use n2n\impl\web\ui\view\html\HtmlView;
+use n2n\web\ui\UiComponent;
 use rocket\ei\util\Eiu;
-use rocket\impl\ei\component\prop\adapter\DisplayableEiPropAdapter;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 
-class IdentityStringEiProp extends DisplayableEiPropAdapter {
+interface StatelessGuiFieldDisplayable {
 	
 	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\DisplayableEiPropAdapter::createEiPropConfigurator()
+	 * @param Eiu $eiu
+	 * @return array
 	 */
-	public function createEiPropConfigurator(): EiPropConfigurator {
-		$this->getDisplayConfig()->setAddModeDefaultDisplayed(false);
-		$this->getDisplayConfig()->setEditModeDefaultDisplayed(false);
-		return parent::createEiPropConfigurator();
-	}
+	public function getHtmlContainerAttrs(Eiu $eiu);
 	
 	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable::createUiComponent()
+	 * @param HtmlView $view
+	 * @param Eiu $eiu
+	 * @return UiComponent
 	 */
-	public function createUiComponent(HtmlView $view, Eiu $eiu) {
-		return $eiu->entry()->createIdentityString();
-	}
+	public function createUiComponent(HtmlView $view, Eiu $eiu);
 }

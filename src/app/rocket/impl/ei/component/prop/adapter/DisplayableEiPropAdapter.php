@@ -34,12 +34,12 @@ use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\GuiField;
 use rocket\core\model\Rocket;
 use n2n\l10n\Lstr;
-use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiField;
+use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\impl\ei\component\prop\adapter\gui\GuiFieldProxy;
 
-abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter implements StatelessGuiField, GuiEiProp, GuiProp {
+abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter implements StatelessGuiFieldDisplayable, GuiEiProp, GuiProp {
 	protected $displayConfig;
 
 	/**
@@ -103,15 +103,16 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 			return null;
 		}
 		
-		return new DisplayDefinition($this->getDisplayConfig()->isViewModeDefaultDisplayed($viewMode));
+		return new DisplayDefinition($this->getDisplayItemType($eiu),
+				$this->getDisplayConfig()->isViewModeDefaultDisplayed($viewMode));
 	}
 	
-	public function getDisplayItemType(Eiu $eiu): string {
-		return DisplayItem::TYPE_ITEM;
+	protected function getDisplayItemType(Eiu $eiu): string {
+		return $this->displayConfig->getDisplayItemType();
 	}
 	
 	public function buildGuiField(Eiu $eiu): ?GuiField {
-		return new GuiFieldProxy($this, $eiu);
+		return new GuiFieldProxy($eiu, $this);
 	}
 	
 // 	public function getUiOutputLabel(Eiu $eiu) {

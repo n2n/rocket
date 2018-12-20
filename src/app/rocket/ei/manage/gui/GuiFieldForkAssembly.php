@@ -5,16 +5,19 @@ use n2n\reflection\ArgUtils;
 
 class GuiFieldForkAssembly {
 	private $magAssemblies;
-	private $guiFieldForkEditable;
+	private $editable;
 	
 	/**
 	 * @param MagAssembly[] $magAssemblies
 	 * @param GuiFieldEditable $guiFieldForkEditable
 	 */
-	public function __construct(array $magAssemblies, GuiFieldForkEditable $guiFieldForkEditable = null) {
+	public function __construct(array $magAssemblies, GuiFieldForkEditable $editable = null) {
 		ArgUtils::valArray($magAssemblies, MagAssembly::class);
 		$this->magAssemblies = $magAssemblies;
-		$this->guiFieldForkEditable = $guiFieldForkEditable;
+		$this->editable = $editable;
+		
+		ArgUtils::assertTrue(!empty($this->magAssemblies) == ($this->editable !== null),
+				'readonly need GuiFieldEditable and editable need GuiFieldEditable');
 	}
 	
 	/**
@@ -25,9 +28,9 @@ class GuiFieldForkAssembly {
 	}
 	
 	/**
-	 * @return GuiFieldEditable|null
+	 * @return GuiFieldForkEditable|null
 	 */
 	public function getEditable() {
-		return $this->guiFieldForkEditable;
+		return $this->editable;
 	}
 }

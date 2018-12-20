@@ -5,15 +5,15 @@ use n2n\web\ui\UiComponent;
 use n2n\impl\web\ui\view\html\HtmlView;
 
 interface EiGuiViewFactory {
-	/**
-	 * @return GuiDefinition
-	 */
-	public function getGuiDefinition(): GuiDefinition;
+// 	/**
+// 	 * @return GuiDefinition
+// 	 */
+// 	public function getGuiDefinition(): GuiDefinition;
 	
-	/**
-	 * @return GuiFieldPath[];
-	 */
-	public function getGuiFieldPaths(): array;
+// 	/**
+// 	 * @return GuiFieldPath[];
+// 	 */
+// 	public function getGuiFieldPaths(): array;
 	
 // 	/**
 // 	 * @return DisplayStructure

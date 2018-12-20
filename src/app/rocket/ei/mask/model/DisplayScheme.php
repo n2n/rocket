@@ -27,7 +27,6 @@ use rocket\ei\component\command\control\OverallControlComponent;
 use rocket\ei\manage\gui\ui\DisplayStructure;
 use rocket\ei\mask\EiMask;
 use rocket\ei\manage\gui\EiGui;
-use rocket\ei\manage\gui\EiGuiViewFactory;
 use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\manage\gui\ViewMode;
 
@@ -161,9 +160,9 @@ class DisplayScheme {
 	
 	/**
 	 * @param EiGui $eiGui
-	 * @return EiGuiViewFactory
+	 * @return GuiDefinition $guiDefinition
 	 */
-	public function createEiGuiViewFactory(EiGui $eiGui, GuiDefinition $guiDefinition): EiGuiViewFactory {
+	public function initEiGui(EiGui $eiGui, GuiDefinition $guiDefinition) {
 		$displayStructure = null;
 		switch ($eiGui->getViewMode()) {
 			case ViewMode::BULKY_READ:
@@ -182,15 +181,18 @@ class DisplayScheme {
 				break;
 		}
 		
+		$commonEiGuiViewFactory = new CommonEiGuiViewFactory($eiGui, $guiDefinition);
+		
 		if ($displayStructure === null) {
-			$displayStructure = $guiDefinition->createDefaultDisplayStructure($eiGui);
+			$eiGui->init($commonEiGuiViewFactory);
+			
+			$displayStructure = DisplayStructure::fromEiGui($eiGui);
 		} else {
-			$displayStructure = $guiDefinition->purifyDisplayStructure($displayStructure, $eiGui);
+			$eiGui->init($commonEiGuiViewFactory, $displayStructure->getAllGuiFieldPaths());
+			$displayStructure = $displayStructure->purified($eiGui);
 		}
 		
-		$displayStructure = $displayStructure->whitoutAutonomics();
-		
-		return new CommonEiGuiViewFactory($eiGui, $guiDefinition, $displayStructure);
+		$commonEiGuiViewFactory->setDisplayStructure($displayStructure);
 	}
 	
 	/**

@@ -180,7 +180,7 @@ class EiuEntryFormViewModel {
 			
 			$htmlSnippet = new HtmlSnippet();
 			
-			$htmlSnippet->appendLn($eiuHtml->getEntryOpen('div', $eiuEntryGui, $this->createEntryAttrs()));
+			$htmlSnippet->appendLn($eiuHtml->getEntryOpen('div', $eiuEntryGui, null, $this->createEntryAttrs()));
 			
 			$htmlSnippet->appendLn(new HtmlElement('label', null, 
 					$this->displayContainerLabel ?? $eiuEntryGui->entry()->getGenericLabel()));
@@ -241,17 +241,9 @@ class EiuEntryFormViewModel {
 		$eiuHtml = new EiuHtmlBuilder($contextView);
 		$eiuEntryGui = $eiuEntryTypeForm->getEiuEntryGui();
 		
-		$eiuEntryGui->renderEntryControls(false)->renderForkControls(false);
+		$eiuEntryGui->gui()->renderEntryControls(false);
 		
-		
-		if (null !== ($forkControlsUi = $eiuHtml->getEntryForkControls())) {
-			$htmlSnippet->appendLn(new HtmlElement('div', ['class' => 'rocket-toolbar'], $forkControlsUi));
-		}
-		
-		$htmlSnippet->appendLn($eiuHtml->getEntryMessages());
-		
-		$htmlSnippet->appendLn(new HtmlElement('div', ['class' => 'rocket-control'],
-				$eiuEntryGui->createView($contextView)));
+		$htmlSnippet->appendLn($eiuEntryGui->createView($contextView));
 	}
 // 	private function buildTypeHtmlClasses(EiType $eiType, array $htmlClasses) {
 // 		$htmlClasses[] = 'rocket-script-type-' . $eiType->getId();

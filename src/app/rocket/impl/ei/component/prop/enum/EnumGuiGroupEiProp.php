@@ -29,7 +29,7 @@ use rocket\ei\util\Eiu;
 class EnumGuiGroupEiProp extends PropertyDisplayableEiPropAdapter {
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiField::createUiComponent()
+	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable::createUiComponent()
 	 */
 	public function createUiComponent(HtmlView $view, Eiu $eiu) {
 		

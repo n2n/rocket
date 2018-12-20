@@ -52,7 +52,7 @@ class EiuHtmlBuilderState {
 		throw new IllegalStateException('No entry open.');
 	}
 	
-	public function markForkMagAsRendered($guiFieldPaths) {
+	public function markForkMagAsRendered($guiFieldPath) {
 		$entry = $this->peakEntry($i);
 		$entry['renderedForkMagGuiFieldPaths'][(string) $guiFieldPath] = 1;
 		$this->stack[$i] = $entry;

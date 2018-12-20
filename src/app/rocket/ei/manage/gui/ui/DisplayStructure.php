@@ -24,6 +24,8 @@ namespace rocket\ei\manage\gui\ui;
 use rocket\ei\manage\gui\GuiFieldPath;
 use n2n\reflection\ArgUtils;
 use n2n\l10n\Lstr;
+use rocket\ei\manage\gui\EiGui;
+use rocket\ei\manage\gui\GuiException;
 
 class DisplayStructure {
 	private $displayItems = array();
@@ -268,5 +270,54 @@ class DisplayStructure {
 		}
 		
 		return false;
+	}
+	
+	public function purified(EiGui $eiGui) {
+		return $this->rPurifyDisplayStructure($this, $eiGui);
+	}
+	
+	/**
+	 * @param DisplayStructure $displayStructure
+	 * @param EiGui $eiGui
+	 * @return \rocket\ei\manage\gui\ui\DisplayStructure
+	 */
+	private function rPurifyDisplayStructure($displayStructure, $eiGui) {
+		$purifiedDisplayStructure = new DisplayStructure();
+		
+		foreach ($displayStructure->getDisplayItems() as $displayItem) {
+			if ($displayItem->hasDisplayStructure()) {
+				$purifiedDisplayStructure->addDisplayStructure(
+						$this->rPurifyDisplayStructure($displayItem->getDisplayStructure(), $eiGui),
+						$displayItem->getType(), $displayItem->getLabelLstr());
+				continue;
+			}
+			
+			$guiPropAssembly = null;
+			try {
+				$guiPropAssembly = $eiGui->getGuiPropAssemblyByGuiFieldPath($displayItem->getGuiFieldPath());
+			} catch (GuiException $e) {
+				continue;
+			}
+			
+			$purifiedDisplayStructure->addGuiFieldPath($displayItem->getGuiFieldPath(),
+					$displayItem->getType() ?? $guiPropAssembly->getDisplayDefinition()->getDisplayItemType());
+		}
+		
+		return $purifiedDisplayStructure;
+	}
+	
+	/**
+	 * @param EiGui $eiGui
+	 * @return DisplayStructure
+	 */
+	public static function fromEiGui(EiGui $eiGui) {
+		$displayStructure = new DisplayStructure();
+		
+		foreach ($eiGui->getGuiPropAssemblies() as $guiPropAssembly) {
+			$displayStructure->addGuiFieldPath($guiPropAssembly->getGuiFieldPath(), 
+					$guiPropAssembly->getDisplayDefinition()->getDisplayItemType());
+		}
+		
+		return $displayStructure;
 	}
 }

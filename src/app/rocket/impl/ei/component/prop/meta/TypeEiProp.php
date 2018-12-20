@@ -26,7 +26,7 @@ use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\ei\component\prop\GuiEiProp;
 use rocket\ei\manage\gui\GuiProp;
 use n2n\l10n\N2nLocale;
-use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiField;
+use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable;
 use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\gui\DisplayDefinition;
@@ -34,7 +34,7 @@ use rocket\impl\ei\component\prop\adapter\DisplayableEiPropAdapter;
 use n2n\impl\web\ui\view\html\HtmlSnippet;
 use n2n\impl\web\ui\view\html\HtmlElement;
 
-class TypeEiProp extends DisplayableEiPropAdapter implements StatelessGuiField, GuiEiProp, GuiProp {
+class TypeEiProp extends DisplayableEiPropAdapter implements StatelessGuiFieldDisplayable, GuiEiProp, GuiProp {
 	
 	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
 		return $this->getDisplayConfig()->toDisplayDefinition($this, $eiu->gui()->getViewMode());

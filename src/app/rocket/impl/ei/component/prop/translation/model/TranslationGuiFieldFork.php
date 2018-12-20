@@ -32,15 +32,14 @@ use rocket\impl\ei\component\prop\translation\conf\N2nLocaleDef;
 use n2n\util\uri\Url;
 use n2n\web\dispatch\mag\Mag;
 use n2n\util\ex\IllegalStateException;
-use rocket\ei\manage\gui\GuiFieldEditable;
 use rocket\ei\manage\gui\GuiFieldForkEditable;
 use rocket\ei\manage\gui\MagAssembly;
 use rocket\ei\manage\gui\GuiFieldFork;
 use n2n\impl\web\ui\view\html\HtmlUtils;
 use rocket\ei\util\gui\EiuEntryGuiAssembler;
 use n2n\impl\web\ui\view\html\HtmlElement;
-use rocket\ei\manage\gui\GuiField;
 use rocket\ei\manage\entry\EiFieldValidationResult;
+use rocket\ei\manage\gui\GuiFieldDisplayable;
 
 class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 	private $toManyEiField;
@@ -142,7 +141,7 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 		$translationDisplayable = new TranslationDisplayable($guiProp, $this->n2nLocaleDefs);
 		
 		$translationMag = null;
-// 		$eiFieldWrappers = array();
+		$guiFieldEditables = array();
 		
 		$mandatory = false;
 		foreach ($this->eiuEntryGuiAssemblers as $n2nLocaleId => $guiFieldAssembler) {
@@ -157,28 +156,31 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 			} else {
 				$validationResult = new EiFieldValidationResult($guiFieldPath->getFirstEiPropPath());
 			}
-// 			if (null !== ($eiFieldWrapper = $result->getEiFieldWrapper())) {
-// 				$eiFieldWrappers[] = $eiFieldWrapper;
-// 			}
+
 			
 			if ($this->targetRelationEntries[$n2nLocaleId]->getEiObject()->isNew()) {
-				$translationDisplayable->putDisplayable($n2nLocaleId, new EmptyDisplayable($result->getGuiField()));
+				$translationDisplayable->putDisplayable($n2nLocaleId, new EmptyDisplayable($result->getDisplayable()));
 			} else {
-				$translationDisplayable->putDisplayable($n2nLocaleId, $result->getGuiField());
+				$translationDisplayable->putDisplayable($n2nLocaleId, $result->getDisplayable());
 			}
 			
 			if ($guiFieldAssembler->getEiuEntryGui()->isReadOnly()) continue;
 			
 			if ($translationMag === null) {
-				$translationMag = new TranslationMag($result->getGuiProp()->getDisplayLabelLstr(), $this->getMarkClassKey());
+				$translationMag = new TranslationMag($this->guiDefinition->getGuiPropByGuiFieldPath($guiFieldPath)->getDisplayLabelLstr(), $this->getMarkClassKey());
 			}
 			
 			if (null !== ($magAssembly = $result->getMagAssembly())) {
-				$translationMag->putMagPropertyPath($n2nLocaleId, $magAssembly->getMagPropertyPath(), $validationResult, $eiuEntry);
+				$translationMag->putMagPropertyPath($n2nLocaleId, $magAssembly->getMagPropertyPath(), 
+						$validationResult, $eiuEntry);
 				if (!$mandatory) $mandatory = $magAssembly->isMandatory();
+				
+				$guiFieldEditables[] = $result->getEditable();
 			} else {
 				$translationMag->putDisplayable($n2nLocaleId, $result->getDisplayable(), $validationResult);
 			}
+			
+			
 		}
 		
 		if ($translationDisplayable->isEmpty()) {
@@ -197,7 +199,8 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 				
 		$magInfo = $this->translationForm->registerMag($guiFieldPath->__toString(), $translationMag);
 		return new GuiFieldAssembly(/*$guiProp, */$translationDisplayable,  
-				new MagAssembly($mandatory, $magInfo['propertyPath'], $magInfo['magWrapper']));
+				new MagAssembly($mandatory, $magInfo['propertyPath'], $magInfo['magWrapper']),
+						new TranslationEditable($translationMag, $guiFieldEditables));
 	}
 		
 	public function isReadOnly(): bool {
@@ -234,7 +237,7 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 	public function getInheritForkMagAssemblies(): array {
 		$magAssemblies = array();
 		foreach ($this->eiuEntryGuiAssemblers as $guiFieldAssembler) {
-			$forkedMagAssemblies = $guiFieldAssembler->getEiuEntryGui()->getForkMagAssemblies();
+			$forkedMagAssemblies = $guiFieldAssembler->getEiuEntryGui()->getAllForkMagAssemblies();
 			if (!empty($forkedMagAssemblies)) {
 				array_push($magAssemblies, ...$forkedMagAssemblies);
 			}
@@ -261,27 +264,11 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 	}
 }
 
-class EmptyDisplayable implements GuiField {
-	private $displayable;
+class EmptyDisplayable implements GuiFieldDisplayable {
+// 	private $displayable;
 	
-	public function __construct(GuiField $displayable) {
-		$this->displayable = $displayable;
-	}
-	
-	public function getDisplayItemType(): string {
-		return $this->displayable->getDisplayItemType();
-	}
-	
-	public function isMandatory(): bool {
-		return $this->displayable->isMandatory();
-	}
-	
-	public function isReadOnly(): bool {
-		return $this->displayable->isReadOnly();
-	}
-	
-	public function getUiOutputLabel(N2nLocale $n2nLocale): string {
-		return $this->displayable->getUiOutputLabel();
+	public function __construct(/*GuiFieldDisplayable $displayable*/) {
+// 		$this->displayable = $displayable;
 	}
 	
 	public function getHtmlContainerAttrs(): array {
@@ -292,11 +279,6 @@ class EmptyDisplayable implements GuiField {
 		return new HtmlElement('span', ['class' => 'rocket-inactive'], 
 				$view->getHtmlBuilder()->getText('ei_impl_locale_not_active_label'));
 	}
-	public function getEditable(): GuiFieldEditable {
-		return $this->displayable->getEditable();
-	}
-
-
 } 
 
 class SrcLoadConfig {

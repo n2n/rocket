@@ -30,31 +30,33 @@ use n2n\l10n\N2nLocale;
 use rocket\ei\manage\gui\ui\DisplayItem;
 use n2n\web\dispatch\mag\Mag;
 use n2n\reflection\ArgUtils;
+use rocket\ei\manage\gui\GuiFieldDisplayable;
 
-class GuiFieldProxy implements GuiField, GuiFieldEditable {
+class GuiFieldProxy implements GuiField, GuiFieldDisplayable, GuiFieldEditable {
 	private $eiu;
-	private $statelessGuiField;
+	private $statelessGuiFieldDisplayable;
 	private $statelessGuiFieldEditable;
 	
 	private $mag;
 	
 	/**
-	 * @param StatelessGuiField $statelessGuiField
+	 * @param StatelessGuiFieldDisplayable $statelessGuiFieldDisplayable
 	 * @param Eiu $eiu
 	 */
-	public function __construct(Eiu $eiu, StatelessGuiField $statelessGuiField, 
+	public function __construct(Eiu $eiu, StatelessGuiFieldDisplayable $statelessGuiFieldDisplayable, 
 			StatelessGuiFieldEditable $statelessGuiFieldEditable = null) {
 		$this->eiu = $eiu;
-		$this->statelessGuiField = $statelessGuiField;
+		$this->statelessGuiFieldDisplayable = $statelessGuiFieldDisplayable;
 		$this->statelessGuiFieldEditable = $statelessGuiFieldEditable;
 	}
 	
+	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiField::getUiOutputLabel()
+	 * @see \rocket\ei\manage\gui\GuiField::getDisplayable()
 	 */
-	public function getUiOutputLabel(N2nLocale $n2nLocale): string {
-		return $this->statelessGuiField->getUiOutputLabel($this->eiu);
+	public function getDisplayable(): GuiFieldDisplayable {
+		return $this;
 	}
 	
 	/**
@@ -62,7 +64,7 @@ class GuiFieldProxy implements GuiField, GuiFieldEditable {
 	 * @see \rocket\ei\manage\gui\GuiField::getHtmlContainerAttrs()
 	 */
 	public function getHtmlContainerAttrs(): array {
-		return $this->statelessGuiField->getHtmlContainerAttrs($this->eiu);
+		return $this->statelessGuiFieldDisplayable->getHtmlContainerAttrs($this->eiu);
 	}
 	
 	/**
@@ -70,7 +72,7 @@ class GuiFieldProxy implements GuiField, GuiFieldEditable {
 	 * @see \rocket\ei\manage\gui\GuiField::getDisplayItemType()
 	 */
 	public function getDisplayItemType(): string {
-		$displayItemType = $this->statelessGuiField->getDisplayItemType($this->eiu);
+		$displayItemType = $this->statelessGuiFieldDisplayable->getDisplayItemType($this->eiu);
 		ArgUtils::valEnum($displayItemType, DisplayItem::getTypes());
 		return $displayItemType;
 	}
@@ -80,7 +82,7 @@ class GuiFieldProxy implements GuiField, GuiFieldEditable {
 	 * @see \rocket\ei\manage\gui\GuiField::createUiComponent()
 	 */
 	public function createUiComponent(HtmlView $view) {
-		return $this->statelessGuiField->createUiComponent($view, $this->eiu);
+		return $this->statelessGuiFieldDisplayable->createUiComponent($view, $this->eiu);
 	}
 	
 	public function getMessages(): array {

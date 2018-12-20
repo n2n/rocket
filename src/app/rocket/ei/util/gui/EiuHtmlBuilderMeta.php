@@ -62,6 +62,11 @@ class EiuHtmlBuilderMeta {
 		if (!$this->state->containsEntry()) {
 			return false;
 		}
+		
+		if ($eiEntryGui === null) {
+			return true;
+		}
+		
 		$eiEntryGui = EiuAnalyst::buildEiEntryGuiFromEiArg($eiEntryGui);
 		return $eiEntryGui === null || $eiEntryGui === $this->state->peakEntry()['eiEntryGui'];
 	}

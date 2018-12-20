@@ -263,7 +263,7 @@ class EiEntryGui {
 	/**
 	 * @return MagAssembly[]
 	 */
-	public function getForkMagAssemblies() {
+	public function getAllForkMagAssemblies() {
 		$forkMagAssemblies = array();
 		foreach ($this->guiFieldForkAssemblies as $guiFieldForkAssembly) {
 			$magAssemblies = $guiFieldForkAssembly->getMagAssemblies();
@@ -386,7 +386,6 @@ class EiEntryGui {
 		return 'EiEntryGui of ' . $this->eiEntry;
 	}
 }
-
 
 class MagAssembly {
 	private $mandatory;

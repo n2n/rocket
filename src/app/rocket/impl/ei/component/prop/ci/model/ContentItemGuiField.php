@@ -22,6 +22,7 @@
 namespace rocket\impl\ei\component\prop\ci\model;
 
 use rocket\ei\manage\gui\GuiField;
+use rocket\ei\manage\gui\GuiFieldDisplayable;
 use rocket\ei\manage\gui\GuiFieldEditable;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
 use rocket\ei\manage\frame\EiFrame;
@@ -33,7 +34,7 @@ use rocket\ei\util\Eiu;
 use n2n\l10n\Lstr;
 use n2n\l10n\N2nLocale;
 
-class ContentItemGuiField implements GuiField {
+class ContentItemGuiField implements GuiField, GuiFieldDisplayable {
 	private $labelLstr;
 	private $panelConfigs;
 	private $mandatory;
@@ -170,7 +171,11 @@ class ContentItemGuiField implements GuiField {
 		return $view->getImport('\rocket\impl\ei\component\prop\ci\view\compactContentItems.html',
 				array('panelConfigs' => $this->panelConfigs, 'groupedUiComponents' => $groupedUiComponents));
 	}
-
+	
+	public function getDisplayable(): GuiFieldDisplayable {
+		return $this;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiField::createEditable()
@@ -182,4 +187,5 @@ class ContentItemGuiField implements GuiField {
 		
 		throw new IllegalStateException('GuiField read only.');
 	}
+
 }

@@ -22,6 +22,7 @@
 namespace rocket\impl\ei\component\prop\relation\model;
 
 use rocket\ei\manage\gui\GuiField;
+use rocket\ei\manage\gui\GuiFieldDisplayable;
 use rocket\ei\manage\gui\GuiFieldEditable;
 use rocket\ei\manage\frame\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlView;
@@ -32,7 +33,7 @@ use rocket\ei\util\Eiu;
 use n2n\l10n\N2nLocale;
 use n2n\l10n\Lstr;
 
-class EmbeddedOneToOneGuiField implements GuiField {
+class EmbeddedOneToOneGuiField implements GuiField, GuiFieldDisplayable {
 	private $labelLstr;
 	private $reduced;
 	private $readOnly;
@@ -110,6 +111,10 @@ class EmbeddedOneToOneGuiField implements GuiField {
 						'reduced' => $this->reduced));
 	}
 	
+	public function getDisplayable(): GuiFieldDisplayable {
+		return $this;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiField::createEditable()
@@ -121,4 +126,5 @@ class EmbeddedOneToOneGuiField implements GuiField {
 		
 		throw new IllegalStateException('GuiField read only.');
 	}
+
 }

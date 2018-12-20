@@ -44,6 +44,7 @@ use rocket\ei\component\prop\GuiEiProp;
 use rocket\ei\manage\gui\GuiFieldEditable;
 use rocket\ei\manage\gui\ui\DisplayItem;
 use rocket\ei\manage\gui\GuiProp;
+use rocket\ei\manage\gui\GuiFieldDisplayable;
 
 class EmbeddedEiProp extends PropertyEiPropAdapter implements GuiEiProp, FieldEiProp {
 	private $sed;
@@ -178,7 +179,7 @@ class EmbeddedGuiProp implements GuiProp {
 }
 
 
-class EmbeddedGuiField implements GuiField, GuiFieldEditable {
+class EmbeddedGuiField implements GuiField, GuiFieldDisplayable, GuiFieldEditable {
 	private $eiu;
 	private $embeddedEiProp;
 	private $mag;
@@ -186,6 +187,10 @@ class EmbeddedGuiField implements GuiField, GuiFieldEditable {
 	public function __construct(Eiu $eiu, EmbeddedEiProp $embeddedEiProp) {
 		$this->eiu = $eiu;
 		$this->embeddedEiProp = $embeddedEiProp;
+	}
+	
+	public function getDisplayable(): GuiFieldDisplayable {
+		return $this;
 	}
 	
 	public function getEditable(): GuiFieldEditable {
@@ -226,10 +231,6 @@ class EmbeddedGuiField implements GuiField, GuiFieldEditable {
 	}
 
 	public function createUiComponent(HtmlView $view) {
-		return null;
-	}
-
-	public function getDisplayItemType(): string {
 		return null;
 	}
 

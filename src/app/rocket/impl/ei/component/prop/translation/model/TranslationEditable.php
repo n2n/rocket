@@ -19,30 +19,35 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\prop\meta;
+namespace rocket\impl\ei\component\prop\translation\model;
 
-use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\ei\util\Eiu;
-use rocket\impl\ei\component\prop\adapter\DisplayableEiPropAdapter;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
+use rocket\ei\manage\gui\GuiFieldEditable;
+use n2n\web\dispatch\mag\Mag;
 
-class IdentityStringEiProp extends DisplayableEiPropAdapter {
+class TranslationEditable implements GuiFieldEditable {
+	private $mag;
+	private $guiFieldEditables;
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\DisplayableEiPropAdapter::createEiPropConfigurator()
-	 */
-	public function createEiPropConfigurator(): EiPropConfigurator {
-		$this->getDisplayConfig()->setAddModeDefaultDisplayed(false);
-		$this->getDisplayConfig()->setEditModeDefaultDisplayed(false);
-		return parent::createEiPropConfigurator();
+	public function __construct(Mag $mag, array $guiFieldEditables) {
+		$this->mag = $mag;
+		$this->guiFieldEditables = $guiFieldEditables;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable::createUiComponent()
-	 */
-	public function createUiComponent(HtmlView $view, Eiu $eiu) {
-		return $eiu->entry()->createIdentityString();
+	public function getMag(): Mag {
+		return $this->mag;
+	}
+	
+	public function isMandatory(): bool {
+		foreach ($this->guiFieldEditables as $guiFieldEditable) {
+			if ($guiFieldEditable->isMandatory()) return true;
+		}
+		
+		return false;
+	}
+
+	public function save() {
+		foreach ($this->guiFieldEditables as $guiFieldEditable) {
+			$guiFieldEditable->save();
+		}
 	}
 }

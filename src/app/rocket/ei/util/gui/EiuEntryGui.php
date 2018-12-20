@@ -307,8 +307,8 @@ class EiuEntryGui {
 	/**
 	 * @return \rocket\ei\manage\gui\MagAssembly[]
 	 */
-	public function getForkMagAssemblies() {
-		return $this->eiEntryGui->getForkMagAssemblies();
+	public function getAllForkMagAssemblies() {
+		return $this->eiEntryGui->getAllForkMagAssemblies();
 	}
 	
 	/**

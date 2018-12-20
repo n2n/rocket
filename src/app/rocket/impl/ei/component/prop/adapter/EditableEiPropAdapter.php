@@ -31,10 +31,10 @@ use rocket\ei\manage\gui\GuiField;
 use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldEditable;
 use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
-use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiField;
+use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable;
 use rocket\impl\ei\component\prop\adapter\gui\GuiFieldProxy;
 
-abstract class EditableEiPropAdapter extends DisplayableEiPropAdapter implements StatelessGuiField, 
+abstract class EditableEiPropAdapter extends DisplayableEiPropAdapter implements StatelessGuiFieldDisplayable, 
 		StatelessGuiFieldEditable, PrivilegedEiProp {
 	protected $editConfig;
 
