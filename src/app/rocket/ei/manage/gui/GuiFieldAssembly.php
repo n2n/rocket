@@ -10,7 +10,7 @@ class GuiFieldAssembly {
 	private $editable;
 	
 	public function __construct(/*GuiProp $guiProp,*/ GuiFieldDisplayable $displayable, 
-			MagAssembly $magAssembly = null, GuiFieldEditable $editable) {
+			MagAssembly $magAssembly = null, GuiFieldEditable $editable = null) {
 // 		$this->guiProp = $guiProp;
 		$this->displayable = $displayable;
 		$this->magAssembly = $magAssembly;

@@ -26,7 +26,6 @@ use rocket\ei\EiPropPath;
 use rocket\ei\manage\EiObject;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\util\Eiu;
-use rocket\ei\manage\gui\ui\DisplayStructure;
 use n2n\util\ex\NotYetImplementedException;
 use n2n\l10n\Lstr;
 use rocket\core\model\Rocket;

@@ -21,7 +21,6 @@
  */
 namespace rocket\ei\component;
 
-use rocket\ei\component\modificator\EiModificatorCollection;
 use n2n\reflection\ArgUtils;
 use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\manage\gui\EiEntryGuiAssembler;
@@ -35,7 +34,6 @@ use rocket\ei\mask\EiMask;
 use rocket\ei\manage\gui\GuiFieldPath;
 use rocket\ei\manage\gui\EiGui;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\ei\manage\gui\EiGuiListener;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\util\Eiu;
 use rocket\ei\component\command\control\EntryControlComponent;

@@ -168,14 +168,14 @@ class CritmodForm implements Dispatchable {
 
 		$comparatorConstraint = $this->getEiuFilterForm()->getFilterDefinition()
 						->createComparatorConstraint($critmodSave->readFilterSettingGroup());
-		$eiFrame->getBoundry()->add(
+		$eiFrame->getBoundry()->addCriteriaConstraint(
 				($tmp ? Boundry::TYPE_TMP_FILTER : Boundry::TYPE_HARD_FILTER),
 				new ComparatorConstraintGroup(true, array($comparatorConstraint)));
 		
 		$sortCriteriaConstraint = $this->getEiuSortForm()->getSortDefinition()
-				->builCriteriaConstraint($critmodSave->readSortSettingGroup(), $tmp);
+				->createCriteriaConstraint($critmodSave->readSortSettingGroup());
 		if ($sortCriteriaConstraint !== null) {
-			$eiFrame->getBoundry()->add(
+			$eiFrame->getBoundry()->addCriteriaConstraint(
 					($tmp ? Boundry::TYPE_TMP_SORT : Boundry::TYPE_HARD_SORT),
 					$sortCriteriaConstraint);
 		}
@@ -189,7 +189,7 @@ class CritmodForm implements Dispatchable {
 		$critmodSave = null;
 		if ($this->selectedCritmodSaveId !== null) {
 			$critmodSave = $this->critmodSaveDao->getCritmodSaveById(
-					$this->eiTypeId, $this->eiMaskId, $this->selectedCritmodSaveId);
+					$this->eiTypePath, $this->selectedCritmodSaveId);
 		}
 		
 		$this->critmodSaveDao->setTmpCritmodSave($this->categoryKey, null);
@@ -217,12 +217,12 @@ class CritmodForm implements Dispatchable {
 			$this->name = $dtc->t('common_untitled_label');
 		}
 		
-		$this->name = $this->critmodSaveDao->buildUniqueCritmodSaveName($this->eiTypeId, $this->eiMaskId,
+		$this->name = $this->critmodSaveDao->buildUniqueCritmodSaveName($this->eiTypePath,
 				$this->name, $critmodSave);
 		
 		$critmodSave->setName($this->name);
-		$critmodSave->writeFilterData($this->eiuFilterForm->buildFilterSettingGroup());
-		$critmodSave->writeSortSettingGroup($this->eiuSortForm->buildSortSettingGroup());
+		$critmodSave->writeFilterData($this->eiuFilterForm->getSettings());
+		$critmodSave->writeSortSettingGroup($this->eiuSortForm->readSetting());
 		
 		$this->name = $critmodSave->getName();
 	}
@@ -232,11 +232,11 @@ class CritmodForm implements Dispatchable {
 			$this->name = $dtc->t('common_untitled_label');
 		}
 		
-		$this->name = $this->critmodSaveDao->buildUniqueCritmodSaveName($this->eiTypeId, $this->eiMaskId, $this->name);
+		$this->name = $this->critmodSaveDao->buildUniqueCritmodSaveName($this->eiTypePath, $this->name);
 		
-		$critmodSave = $this->critmodSaveDao->createCritmodSave($this->eiTypeId, $this->eiMaskId, $this->name, 
-				$this->eiuFilterForm->buildFilterSettingGroup(), 
-				$this->eiuSortForm->buildSortSettingGroup());
+		$critmodSave = $this->critmodSaveDao->createCritmodSave($this->eiTypePath, $this->name, 
+				$this->eiuFilterForm->getSettings(), 
+				$this->eiuSortForm->readSetting());
 		
 		$this->critmodSaveDao->setSelectedCritmodSave($this->categoryKey, $critmodSave);
 		$this->active = true;

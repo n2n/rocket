@@ -30,7 +30,6 @@ use rocket\ei\manage\gui\GuiFieldPath;
 use rocket\ei\manage\gui\ui\DisplayItem;
 use rocket\ei\manage\gui\EiEntryGui;
 use n2n\impl\web\ui\view\html\HtmlUtils;
-use rocket\ei\manage\gui\GuiField;
 use n2n\reflection\ArgUtils;
 use n2n\reflection\CastUtils;
 use rocket\ei\manage\control\Control;
@@ -43,6 +42,7 @@ use n2n\l10n\Message;
 use rocket\ei\manage\gui\ui\DisplayStructure;
 use rocket\ei\manage\gui\MagAssembly;
 use n2n\web\dispatch\map\PropertyPath;
+use rocket\ei\manage\gui\GuiFieldDisplayable;
 
 class EiuHtmlBuilder {
 	private $view;
@@ -393,7 +393,7 @@ class EiuHtmlBuilder {
 		} catch (UnknownEiFieldExcpetion $e) {}
 		if ($readOnly) {
 			$this->state->pushField($tagName, $guiFieldPath, $validationResult, $guiFieldAssembly);
-			return $this->createOutputFieldOpen($tagName, $guiFieldAssembly->getGuiField(), $validationResult, $attrs);
+			return $this->createOutputFieldOpen($tagName, $guiFieldAssembly->getDisplayable(), $validationResult, $attrs);
 		}
 
 		$magAssembly = $guiFieldAssembly->getMagAssembly();
@@ -422,8 +422,8 @@ class EiuHtmlBuilder {
 		return $this->formHtml->getMagOpen($tagName, $magPropertyPath, $attrs, $this->uiOutfitter);
 	}
 	
-	private function createOutputFieldOpen($tagName, GuiField $guiField, ValidationResult $validationResult = null, array $attrs = null) {
-		$attrs = HtmlUtils::mergeAttrs($attrs, $guiField->getHtmlContainerAttrs(), true);
+	private function createOutputFieldOpen($tagName, GuiFieldDisplayable $guiFieldDisplayable, ValidationResult $validationResult = null, array $attrs = null) {
+		$attrs = HtmlUtils::mergeAttrs($attrs, $guiFieldDisplayable->getHtmlContainerAttrs(), true);
 		if ($validationResult !== null && !$validationResult->isValid(true)) {
 			$attrs = HtmlUtils::mergeAttrs((array) $attrs, array('class' => 'rocket-has-error'));
 		}
@@ -472,7 +472,7 @@ class EiuHtmlBuilder {
 			return $this->formHtml->getMagField();
 		}
 		
-		return $this->html->getOut($fieldInfo['guiFieldAssembly']->getGuiField()->createUiComponent($this->view));
+		return $this->html->getOut($fieldInfo['guiFieldAssembly']->getDisplayable()->createUiComponent($this->view));
 	}
 	
 	public function fieldMessage(bool $recursive = true) {

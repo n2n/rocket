@@ -92,7 +92,7 @@ class EiEntryGuiAssembler {
 		$eiFieldWrapper = $this->eiu->entry()->getEiFieldWrapper($eiPropPath);
 		
 		if ($this->eiu->gui()->isReadOnly() || $guiField->isReadOnly()) {
-			return new GuiFieldAssembly(/*$guiProp,*/ $guiField);
+			return new GuiFieldAssembly(/*$guiProp,*/ $guiField->getDisplayable());
 		}
 		
 		$propertyName = (string) $eiPropPath;
