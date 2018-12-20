@@ -26,7 +26,6 @@ use n2n\util\ex\IllegalStateException;
 use rocket\ei\manage\gui\GuiField;
 use rocket\ei\manage\gui\GuiFieldEditable;
 use rocket\ei\util\Eiu;
-use n2n\l10n\N2nLocale;
 use rocket\ei\manage\gui\ui\DisplayItem;
 use n2n\web\dispatch\mag\Mag;
 use n2n\reflection\ArgUtils;
