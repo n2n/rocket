@@ -47,7 +47,7 @@ use rocket\ei\manage\gui\ui\DisplayItem;
 		<?php if ($summaryRequired): ?>
 			<?php if (!$eiuEntry->isNew()): ?>
 				<?php $eiuEntryGui = $eiuEntry->newEntryGui(false) ?>
-				<?php $eiuHtml->entryOpen('div', $eiuEntryGui, array('class' => 'rocket-impl-summary')) ?>
+				<?php $eiuHtml->entryOpen('div', $eiuEntryGui, null, array('class' => 'rocket-impl-summary')) ?>
 					<div class="rocket-impl-handle"><i class="fa fa-bars"></i></div>
 					<div class="rocket-impl-content-type">
 						<i class="<?php $html->out($eiuEntry->getGenericIconType()) ?>"></i>
@@ -55,7 +55,7 @@ use rocket\ei\manage\gui\ui\DisplayItem;
 					</div>
 					<div class="rocket-impl-content">
 						<?php foreach ($eiuEntryGui->getGuiFieldPaths() as $eiPropPath): ?>
-							<?php $eiuHtml->fieldOpen('div', DisplayItem::create($eiPropPath, DisplayItem::TYPE_ITEM), null, false, false) ?>
+							<?php $eiuHtml->fieldOpen('div', $eiPropPath, false) ?>
 								<?php $eiuHtml->fieldContent() ?>
 							<?php $eiuHtml->fieldClose() ?>
 						<?php endforeach ?>

@@ -281,7 +281,7 @@ class OneToOneGuiFieldForkEditable implements GuiFieldForkEditable {
 	 * @see \rocket\ei\manage\gui\GuiFieldForkEditable::getAdditionalForkMagPropertyPaths()
 	 */
 	public function getInheritForkMagAssemblies(): array {
-		return $this->targetEiuEntryGuiAssembler->getEiuEntryGui()->getForkMagAssemblies();
+		return $this->targetEiuEntryGuiAssembler->getEiuEntryGui()->getAllForkMagAssemblies();
 	}
 	
 	/**

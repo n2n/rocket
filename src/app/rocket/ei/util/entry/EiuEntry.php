@@ -34,7 +34,6 @@ use rocket\ei\manage\gui\EiGuiViewFactory;
 use rocket\ei\manage\gui\GuiFieldPath;
 use rocket\ei\manage\gui\GuiException;
 use rocket\ei\manage\gui\ViewMode;
-use rocket\ei\manage\gui\EiGui;
 use rocket\ei\manage\gui\EiEntryGui;
 use rocket\ei\manage\gui\EiEntryGuiAssembler;
 use rocket\ei\manage\entry\EiEntry;
@@ -329,8 +328,7 @@ class EiuEntry {
 		$viewMode = $this->deterViewMode($bulky, $editable);
 		$eiFrame = $this->getEiuFrame()->getEiFrame();
 		
-		$eiGui = new EiGui($eiFrame, $viewMode);
-		$eiMask->initEiGui($eiGui);
+		$eiGui = $eiMask->createEiGui($eiFrame, $viewMode, true);
 		
 		return new EiuEntryGui($eiGui->createEiEntryGui($eiEntry, $treeLevel), null, $this->eiuAnalyst);
 	}

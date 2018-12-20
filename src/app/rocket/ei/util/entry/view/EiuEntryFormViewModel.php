@@ -216,9 +216,8 @@ class EiuEntryFormViewModel {
 			
 			$eiuEntryGui = $eiuEntryTypeForm->getEiuEntryGui();
 			
-			$htmlSnippet->appendLn($eiuHtml->getEntryOpen('div', $eiuEntryGui,
-					$this->createEntryAttrs(['class' => 'rocket-ei-type-entry-form rocket-ei-type-' . $eiTypeId
-							. ' rocket-group rocket-simple-group'])));
+			$htmlSnippet->appendLn($eiuHtml->getEntryOpen('div', $eiuEntryGui, DisplayItem::TYPE_SIMPLE_GROUP,
+					$this->createEntryAttrs(['class' => 'rocket-ei-type-entry-form rocket-ei-type-' . $eiTypeId])));
 			
 			$htmlSnippet->appendLn(new HtmlElement('label', null, $eiuEntryGui->entry()->getGenericLabel()));
 			
