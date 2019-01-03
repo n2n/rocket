@@ -130,8 +130,8 @@
 						</dd>
 					<?php endif ?>
 					
-					<dt class="rocket-mail-message-label sr-only"><?php $html->text('tool_mail_center_mail_message_label') ?></dt>
-					<dd class="rocket-mail-message">
+					<dt class="rocket-mail-message-label col-sm-12 sr-only"><?php $html->text('tool_mail_center_mail_message_label') ?></dt>
+					<dd class="rocket-mail-message col-sm-12">
 						<pre><?php $mailHtml->message($mailItem) ?></pre>
 					</dd>
 				</dl>
