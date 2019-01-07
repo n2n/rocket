@@ -7,7 +7,7 @@ use n2n\l10n\Message;
 use n2n\persistence\orm\criteria\Criteria;
 use rocket\ei\util\spec\EiuEngine;
 use rocket\ei\EiPropPath;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use rocket\impl\ei\component\modificator\adapter\IndependentEiModificatorAdapter;
 use rocket\ei\manage\frame\Boundry;
 

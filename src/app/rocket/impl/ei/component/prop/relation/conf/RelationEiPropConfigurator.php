@@ -43,7 +43,7 @@ use rocket\impl\ei\component\prop\relation\model\RelationVetoableActionListener;
 use rocket\impl\ei\component\prop\relation\model\relation\SelectEiPropRelation;
 use n2n\util\config\InvalidConfigurationException;
 use rocket\impl\ei\component\prop\relation\EmbeddedOneToManyEiProp;
-use n2n\reflection\CastUtils;
+use n2n\util\type\CastUtils;
 use rocket\spec\Spec;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\generic\ScalarEiProperty;

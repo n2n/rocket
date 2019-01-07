@@ -37,7 +37,7 @@ use n2n\persistence\meta\structure\Column;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\manage\generic\UnknownScalarEiPropertyException;
 use rocket\ei\manage\generic\UnknownGenericEiPropertyException;
-use n2n\reflection\CastUtils;
+use n2n\util\type\CastUtils;
 use rocket\ei\manage\generic\ScalarEiProperty;
 use rocket\ei\manage\generic\GenericEiProperty;
 use rocket\ei\util\spec\EiuEngine;

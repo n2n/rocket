@@ -6,7 +6,7 @@ use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\GuiFieldPath;
 use rocket\ei\manage\gui\EiGuiViewFactory;
 use n2n\web\ui\UiComponent;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use n2n\impl\web\ui\view\html\HtmlSnippet;
 use rocket\ei\manage\gui\GuiException;
 use rocket\ei\manage\gui\EiGui;

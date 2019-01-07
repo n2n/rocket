@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\translation;
 
 use n2n\l10n\N2nLocale;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 
 class Translator {
 	

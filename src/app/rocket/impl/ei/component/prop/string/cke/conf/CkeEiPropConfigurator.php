@@ -34,7 +34,7 @@ use n2n\util\StringUtils;
 use n2n\web\dispatch\mag\MagDispatchable;
 use rocket\impl\ei\component\prop\string\cke\CkeEiProp;
 use n2n\util\config\LenientAttributeReader;
-use n2n\reflection\magic\MagicObjectUnavailableException;
+use n2n\util\magic\MagicObjectUnavailableException;
 use rocket\impl\ei\component\prop\string\cke\model\CkeCssConfig;
 use rocket\impl\ei\component\prop\string\cke\model\CkeLinkProvider;
 use rocket\impl\ei\component\prop\string\cke\model\CkeUtils;

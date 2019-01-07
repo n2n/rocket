@@ -34,7 +34,7 @@ use rocket\user\bo\EiGrant;
 use rocket\ei\manage\frame\Boundry;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\manage\security\EiEntryAccess;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use n2n\util\ex\IllegalStateException;
 use n2n\util\config\Attributes;
 use rocket\ei\manage\security\privilege\PrivilegeDefinition;

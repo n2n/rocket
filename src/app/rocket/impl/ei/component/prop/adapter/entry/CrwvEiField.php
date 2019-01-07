@@ -27,7 +27,7 @@ use rocket\ei\manage\entry\EiField;
 use rocket\ei\manage\entry\EiFieldValidationResult;
 use rocket\ei\util\Eiu;
 use n2n\reflection\property\TypeConstraint;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 
 abstract class CrwvEiField extends EiFieldAdapter {
 	protected $typeConstraint;

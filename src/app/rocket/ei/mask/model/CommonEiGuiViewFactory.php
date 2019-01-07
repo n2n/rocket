@@ -6,7 +6,7 @@ use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\manage\gui\EiGuiViewFactory;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\ui\ViewFactory;
-use n2n\reflection\CastUtils;
+use n2n\util\type\CastUtils;
 use rocket\ei\util\Eiu;
 use n2n\web\ui\UiComponent;
 use rocket\ei\manage\gui\EiGui;

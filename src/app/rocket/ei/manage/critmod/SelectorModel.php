@@ -26,7 +26,7 @@
 // use rocket\ei\manage\critmod\filter\data\FilterDataElement;
 // use rocket\ei\manage\critmod\filter\data\FilterDataUsage;
 // use rocket\ei\manage\critmod\filter\data\FilterDataGroup;
-// use n2n\reflection\ArgUtils;
+// use n2n\util\type\ArgUtils;
 // use n2n\reflection\IllegalArgumentException;
 // use n2n\l10n\Message;
 

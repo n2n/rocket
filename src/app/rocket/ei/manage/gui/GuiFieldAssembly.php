@@ -1,7 +1,7 @@
 <?php
 namespace rocket\ei\manage\gui;
 
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 
 class GuiFieldAssembly {
 // 	private $guiProp;

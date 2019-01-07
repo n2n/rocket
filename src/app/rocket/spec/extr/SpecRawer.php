@@ -22,10 +22,10 @@
 namespace rocket\spec\extr;
 
 use n2n\util\config\Attributes;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use rocket\ei\mask\model\DisplayScheme;
 use rocket\ei\manage\gui\ui\DisplayStructure;
-use n2n\reflection\CastUtils;
+use n2n\util\type\CastUtils;
 
 class SpecRawer {
 	private $attributes;

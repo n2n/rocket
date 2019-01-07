@@ -22,7 +22,7 @@
 namespace rocket\ei\manage\gui\ui;
 
 use rocket\ei\manage\gui\GuiFieldPath;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use n2n\l10n\Lstr;
 use rocket\ei\manage\gui\EiGui;
 use rocket\ei\manage\gui\GuiException;

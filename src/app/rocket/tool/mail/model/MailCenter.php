@@ -23,7 +23,7 @@ namespace rocket\tool\mail\model;
 
 use rocket\tool\xml\ItemCountSaxHandler;
 use rocket\tool\xml\MailItemSaxHandler;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use n2n\io\fs\FsPath;
 use rocket\tool\xml\SaxParser;
 use n2n\core\N2N;

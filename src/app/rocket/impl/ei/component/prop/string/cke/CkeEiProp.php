@@ -23,7 +23,7 @@ namespace rocket\impl\ei\component\prop\string\cke;
 
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\impl\ei\component\prop\string\AlphanumericEiProp;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use rocket\ei\EiPropPath;
 use n2n\web\dispatch\mag\Mag;
 use rocket\ei\util\Eiu;

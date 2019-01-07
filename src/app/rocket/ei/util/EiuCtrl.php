@@ -30,7 +30,7 @@ use n2n\web\http\controller\ParamQuery;
 use rocket\ei\manage\EiObject;
 use n2n\web\http\HttpContext;
 use rocket\core\model\RocketState;
-use n2n\reflection\CastUtils;
+use n2n\util\type\CastUtils;
 use rocket\ei\manage\ManageState;
 use rocket\core\model\Breadcrumb;
 use n2n\context\Lookupable;

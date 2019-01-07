@@ -27,7 +27,7 @@ use rocket\ei\manage\draft\stmt\impl\SimplePersistDraftStmtBuilder;
 use rocket\ei\manage\draft\stmt\impl\SimpleRemoveDraftStmtBuilder;
 use rocket\ei\manage\draft\stmt\impl\SimpleFetchDraftStmtBuilder;
 use rocket\ei\manage\draft\stmt\DraftValuesResult;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use n2n\reflection\ReflectionUtils;
 use n2n\persistence\orm\model\EntityModel;
 use n2n\util\ex\IllegalStateException;

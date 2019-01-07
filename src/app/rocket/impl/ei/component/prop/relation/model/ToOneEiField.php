@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model;
 
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use rocket\impl\ei\component\prop\adapter\entry\CrwvEiField;
 use rocket\ei\manage\entry\EiFieldValidationResult;
 use n2n\util\ex\IllegalStateException;

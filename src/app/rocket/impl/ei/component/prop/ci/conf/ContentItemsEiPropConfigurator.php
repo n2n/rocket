@@ -26,7 +26,7 @@ use n2n\util\ex\IllegalStateException;
 use rocket\impl\ei\component\prop\ci\model\ContentItem;
 use rocket\ei\component\EiSetup;
 use n2n\core\container\N2nContext;
-use n2n\reflection\CastUtils;
+use n2n\util\type\CastUtils;
 use n2n\impl\web\dispatch\mag\model\MagCollectionArrayMag;
 use rocket\impl\ei\component\prop\relation\conf\RelationEiPropConfigurator;
 use n2n\web\dispatch\mag\MagDispatchable;

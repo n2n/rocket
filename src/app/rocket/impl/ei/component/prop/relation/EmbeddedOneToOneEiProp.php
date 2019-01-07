@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\relation;
 
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use rocket\impl\ei\component\prop\relation\model\relation\EmbeddedEiPropRelation;
 use rocket\ei\manage\EiObject;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
@@ -33,7 +33,7 @@ use n2n\core\container\N2nContext;
 use rocket\ei\manage\draft\SimpleDraftValueSelection;
 use rocket\ei\manage\LiveEiObject;
 use rocket\ei\manage\DraftEiObject;
-use n2n\reflection\CastUtils;
+use n2n\util\type\CastUtils;
 use rocket\ei\manage\draft\stmt\PersistDraftStmtBuilder;
 use rocket\ei\manage\draft\DraftDefinition;
 use rocket\ei\manage\draft\Draft;

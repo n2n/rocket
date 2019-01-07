@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\ci\ui;
 
 use n2n\impl\web\ui\view\html\HtmlView;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 
 class ContentItemHtmlBuilder {
 	private $view;

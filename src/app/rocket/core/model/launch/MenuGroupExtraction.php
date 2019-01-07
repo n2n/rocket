@@ -1,7 +1,7 @@
 <?php
 namespace rocket\core\model\launch;
 
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 
 class MenuGroupExtraction {
 	private $label;

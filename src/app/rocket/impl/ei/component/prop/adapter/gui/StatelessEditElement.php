@@ -21,7 +21,7 @@
 //  */
 // namespace rocket\impl\ei\component\prop\adapter\gui;
 
-// use n2n\reflection\ArgUtils;
+// use n2n\util\type\ArgUtils;
 // use n2n\util\ex\IllegalStateException;
 // use rocket\ei\manage\gui\GuiFieldEditable;
 // use n2n\web\dispatch\mag\Mag;

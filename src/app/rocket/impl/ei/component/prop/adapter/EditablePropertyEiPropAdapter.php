@@ -32,7 +32,7 @@ use rocket\impl\ei\component\prop\adapter\entry\SimpleEiField;
 use rocket\ei\manage\EiObject;
 use rocket\ei\component\prop\PrivilegedEiProp;
 use rocket\ei\manage\security\privilege\EiPropPrivilege;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use rocket\core\model\Rocket;
 use rocket\ei\manage\security\EiFieldAccess;
 use n2n\util\config\AttributesException;

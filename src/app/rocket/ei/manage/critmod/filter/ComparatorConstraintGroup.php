@@ -21,7 +21,7 @@
  */
 namespace rocket\ei\manage\critmod\filter;
 
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use n2n\persistence\orm\criteria\item\CriteriaProperty;
 use rocket\ei\manage\frame\CriteriaConstraint;

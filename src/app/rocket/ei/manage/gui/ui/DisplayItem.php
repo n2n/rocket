@@ -3,7 +3,7 @@ namespace rocket\ei\manage\gui\ui;
 
 use rocket\ei\manage\gui\GuiFieldPath;
 use n2n\util\ex\IllegalStateException;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use n2n\l10n\Lstr;
 
 class DisplayItem {

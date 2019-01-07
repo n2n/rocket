@@ -22,7 +22,7 @@
 namespace rocket\ei\component;
 
 use rocket\ei\component\prop\EiPropCollection;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use rocket\ei\manage\EiObject;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\component\modificator\EiModificatorCollection;

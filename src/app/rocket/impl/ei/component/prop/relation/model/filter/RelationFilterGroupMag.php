@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\relation\model\filter;
 
 use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use n2n\impl\web\dispatch\mag\model\MagAdapter;
 use rocket\ei\manage\critmod\filter\FilterDefinition;
 use rocket\ei\util\filter\form\FilterGroupForm;

@@ -27,7 +27,7 @@ use n2n\util\config\InvalidConfigurationException;
 use n2n\util\config\AttributesException;
 use rocket\spec\InvalidSpecConfigurationException;
 use rocket\spec\InvalidEiMaskConfigurationException;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 
 /**
  * Decorates the ConfigSource of a spec configuration from a single module and provides simplified interface to read

@@ -2,7 +2,7 @@
 namespace rocket\impl\ei\component\prop\file\command\model;
 
 use n2n\io\managed\img\ImageDimension;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 
 class ThumbRatio {
 	const STR_ATTR_SEPERATOR = '-';

@@ -46,7 +46,7 @@ use rocket\ei\EiException;
 use rocket\ei\EiPathMissmatchException;
 use n2n\core\container\N2nContext;
 use rocket\ei\manage\entry\EiEntry;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\Lstr;
 use rocket\ei\manage\gui\EiEntryGui;

@@ -31,7 +31,7 @@ use n2n\l10n\Lstr;
 use rocket\core\model\Rocket;
 use n2n\core\container\N2nContext;
 use rocket\ei\manage\entry\UnknownEiFieldExcpetion;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 
 class GuiDefinition {	
 	private $identityStringPattern;

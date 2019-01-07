@@ -24,7 +24,7 @@ namespace rocket\impl\ei\component\prop\relation;
 use rocket\impl\ei\component\prop\relation\model\relation\SelectEiPropRelation;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\ToManyEntityProperty;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 
 class ManyToManySelectEiProp extends ToManySelectEiPropAdapter {

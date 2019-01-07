@@ -22,7 +22,6 @@
 namespace rocket\impl\ei\component;
 
 use rocket\ei\component\EiConfigurator;
-use n2n\reflection\ReflectionUtils;
 use n2n\util\config\Attributes;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\core\container\N2nContext;
@@ -31,6 +30,7 @@ use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use rocket\ei\component\EiComponent;
 use rocket\ei\util\Eiu;
+use n2n\util\type\TypeUtils;
 
 abstract class EiConfiguratorAdapter implements EiConfigurator {
 	protected $eiComponent;
@@ -68,7 +68,7 @@ abstract class EiConfiguratorAdapter implements EiConfigurator {
 	 * @see \rocket\ei\component\EiConfigurator::getTypeName()
 	 */
 	public function getTypeName(): string {
-        return ReflectionUtils::prettyName((new \ReflectionClass($this->getEiComponent()))->getShortName());
+        return TypeUtils::prettyName((new \ReflectionClass($this->getEiComponent()))->getShortName());
 	}
 	
 	/**
@@ -77,7 +77,7 @@ abstract class EiConfiguratorAdapter implements EiConfigurator {
 	 * @return string
 	 */
 	public static function createAutoTypeName(EiComponent $eiComponent, array $suffixes) { 
-		return self::shortenTypeName(ReflectionUtils::prettyName((new \ReflectionClass($eiComponent))->getShortName()),
+		return self::shortenTypeName(TypeUtils::prettyName((new \ReflectionClass($eiComponent))->getShortName()),
 				$suffices);
 	}
 	

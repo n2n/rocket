@@ -50,7 +50,7 @@ use n2n\util\cache\CorruptedCacheStoreException;
 use rocket\ei\component\EiSetup;
 use rocket\custom\CustomLaunchPad;
 use rocket\ei\EiLaunchPad;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 
 class Spec {	
 	private $specExtractionManager;

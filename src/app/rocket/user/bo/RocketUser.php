@@ -23,7 +23,7 @@ namespace rocket\user\bo;
 
 use n2n\impl\web\dispatch\map\val\ValEmail;
 use n2n\reflection\annotation\AnnoInit;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use n2n\reflection\ObjectAdapter;
 use n2n\web\dispatch\Dispatchable;
 use n2n\persistence\orm\annotation\AnnoTable;

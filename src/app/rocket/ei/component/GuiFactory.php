@@ -21,7 +21,7 @@
  */
 namespace rocket\ei\component;
 
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\manage\gui\EiEntryGuiAssembler;
 use rocket\ei\manage\gui\EiEntryGui;

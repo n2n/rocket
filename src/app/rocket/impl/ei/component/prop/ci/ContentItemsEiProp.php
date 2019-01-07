@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\ci;
 
 use n2n\persistence\orm\property\EntityProperty;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use rocket\impl\ei\component\prop\relation\EmbeddedOneToManyEiProp;
 use rocket\impl\ei\component\prop\ci\conf\ContentItemsEiPropConfigurator;
 use rocket\impl\ei\component\prop\ci\model\ContentItem;

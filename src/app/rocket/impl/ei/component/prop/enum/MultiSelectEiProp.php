@@ -29,7 +29,7 @@ use n2n\web\dispatch\mag\MagCollection;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\component\EiSetup;
 use n2n\reflection\property\ConstraintsConflictException;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use n2n\reflection\property\AccessProxy;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
 use rocket\ei\util\Eiu;

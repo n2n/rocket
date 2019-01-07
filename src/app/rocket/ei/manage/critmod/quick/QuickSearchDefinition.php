@@ -21,7 +21,7 @@
  */
 namespace rocket\ei\manage\critmod\quick;
 
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\critmod\filter\ComparatorConstraintGroup;
 

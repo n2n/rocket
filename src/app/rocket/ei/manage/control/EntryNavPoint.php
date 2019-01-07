@@ -21,7 +21,7 @@
  */
 namespace rocket\ei\manage\control;
 
-use n2n\reflection\ReflectionUtils;
+use n2n\util\type\TypeUtils;
 
 class EntryNavPoint {
 	private $liveId;
@@ -54,6 +54,6 @@ class EntryNavPoint {
 	}
 	
 	public function __toString() {
-		return 'EntryNavPoint (entry id: ' .  ReflectionUtils::prettyValue($this->liveId) . ', draft id: ' . $this->draftId . ')'; 
+		return 'EntryNavPoint (entry id: ' .  TypeUtils::prettyValue($this->liveId) . ', draft id: ' . $this->draftId . ')'; 
 	}
 }

@@ -2,7 +2,7 @@
 namespace rocket\ei\manage\gui;
 
 use n2n\l10n\Lstr;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use rocket\ei\manage\gui\ui\DisplayItem;
 
 class DisplayDefinition {

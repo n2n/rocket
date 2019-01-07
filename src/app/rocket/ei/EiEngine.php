@@ -38,7 +38,7 @@ use rocket\ei\mask\EiMask;
 use rocket\ei\component\prop\GenericEiProp;
 use rocket\ei\component\prop\ScalarEiProp;
 use rocket\ei\manage\generic\ScalarEiDefinition;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use rocket\ei\manage\generic\ScalarEiProperty;
 use rocket\ei\manage\generic\GenericEiProperty;
 use rocket\ei\manage\generic\GenericEiDefinition;

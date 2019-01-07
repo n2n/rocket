@@ -21,7 +21,7 @@
  */
 namespace rocket\util;
 
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use n2n\util\ex\UnsupportedOperationException;
 use n2n\util\col\Set;
 use n2n\util\ex\NotYetImplementedException;

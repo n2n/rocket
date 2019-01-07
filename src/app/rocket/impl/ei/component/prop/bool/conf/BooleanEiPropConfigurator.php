@@ -4,7 +4,6 @@ namespace rocket\impl\ei\component\prop\bool\conf;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\impl\ei\component\prop\bool\BooleanEiProp;
 use n2n\util\config\LenientAttributeReader;
-use n2n\reflection\CastUtils;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\core\container\N2nContext;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
@@ -15,6 +14,7 @@ use rocket\ei\manage\gui\GuiFieldPath;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use n2n\util\StringUtils;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
+use n2n\util\type\CastUtils;
 
 class BooleanEiPropConfigurator extends AdaptableEiPropConfigurator {
 	const ATTR_BIND_GUI_PROPS_KEY = 'associatedGuiProps';

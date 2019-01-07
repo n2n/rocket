@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\relation\model;
 
 use rocket\impl\ei\component\prop\relation\RelationEiProp;
-use n2n\reflection\CastUtils;
+use n2n\util\type\CastUtils;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\ei\manage\LiveEiObject;

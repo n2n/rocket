@@ -30,7 +30,7 @@ use n2n\impl\web\dispatch\map\val\ValEnum;
 use n2n\util\ex\IllegalStateException;
 use n2n\web\dispatch\annotation\AnnoDispObjectArray;
 use n2n\web\dispatch\map\PropertyPathPart;
-use n2n\reflection\CastUtils;
+use n2n\util\type\CastUtils;
 use n2n\web\ui\ViewFactory;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\impl\web\ui\view\html\HtmlView;

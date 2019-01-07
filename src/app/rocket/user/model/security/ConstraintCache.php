@@ -25,7 +25,7 @@ use rocket\ei\manage\security\filter\SecurityFilterDefinition;
 use rocket\user\bo\EiGrantPrivilege;
 use rocket\ei\manage\frame\CriteriaConstraint;
 use rocket\ei\manage\entry\EiEntryConstraint;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use rocket\user\bo\EiGrant;
 use rocket\ei\manage\security\privilege\PrivilegeDefinition;
 

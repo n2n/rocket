@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\string\cke\model;
 
 use n2n\core\container\N2nContext;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 
 class CkeUtils {
 	
