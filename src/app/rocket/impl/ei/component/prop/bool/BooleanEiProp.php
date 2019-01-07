@@ -29,7 +29,7 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use n2n\reflection\property\AccessProxy;
 use n2n\reflection\property\TypeConstraint;
 use n2n\persistence\orm\criteria\item\CrIt;
@@ -135,9 +135,9 @@ class BooleanEiProp extends DraftablePropertyEiPropAdapter implements Filterable
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessDisplayable::createOutputUiComponent()
+	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable::createUiComponent()
 	 */
-	public function createOutputUiComponent(HtmlView $view, Eiu $eiu)  {
+	public function createUiComponent(HtmlView $view, Eiu $eiu)  {
 		$value = $this->getObjectPropertyAccessProxy()->getValue(
 				$eiu->entry()->getEiEntry()->getEiObject()->getLiveObject());
 		if ($value) {
@@ -148,7 +148,7 @@ class BooleanEiProp extends DraftablePropertyEiPropAdapter implements Filterable
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessEditable::createMag()
+	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldEditable::createMag()
 	 */
 	public function createMag(Eiu $eiu): Mag {
 		if (empty($this->onAssociatedGuiFieldPaths) && empty($this->offAssociatedGuiFieldPaths)) {

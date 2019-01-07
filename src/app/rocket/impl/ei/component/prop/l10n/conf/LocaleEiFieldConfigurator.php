@@ -26,7 +26,7 @@
 // use rocket\ei\component\EiSetup;
 // use n2n\util\ex\IllegalStateException;
 // use rocket\impl\ei\component\modificator\l10n\N2nLocaleEiModificator;
-// use rocket\impl\ei\component\prop\adapter\config\DisplaySettings;
+// use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 // use n2n\impl\web\dispatch\mag\model\BoolMag;
 // use n2n\impl\web\dispatch\mag\model\StringArrayMag;
 
@@ -65,8 +65,8 @@
 		
 // 		$setupProcess->getEiDef()->getEiModificatorCollection()
 // 				->add(new N2nLocaleEiModificator($this));
-// 		$n2nLocaleEiProp->getDisplaySettings()
-// 				->setDefaultDisplayedViewModes(DisplaySettings::NO_VIEW_MODES);
+// 		$n2nLocaleEiProp->getDisplayConfig()
+// 				->setDefaultDisplayedViewModes(DisplayConfig::NO_VIEW_MODES);
 // 	}
 	
 

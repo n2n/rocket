@@ -28,29 +28,31 @@ use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\security\privilege\EiPropPrivilege;
 use rocket\ei\manage\gui\GuiField;
-use rocket\impl\ei\component\prop\adapter\gui\StatelessEditable;
-use rocket\impl\ei\component\prop\adapter\config\StandardEditDefinition;
+use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldEditable;
+use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
-use rocket\impl\ei\component\prop\adapter\gui\StatelessEditElement;
+use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable;
+use rocket\impl\ei\component\prop\adapter\gui\GuiFieldProxy;
 
-abstract class EditableEiPropAdapter extends DisplayableEiPropAdapter implements StatelessEditable, PrivilegedEiProp {
-	protected $standardEditDefinition;
+abstract class EditableEiPropAdapter extends DisplayableEiPropAdapter implements StatelessGuiFieldDisplayable, 
+		StatelessGuiFieldEditable, PrivilegedEiProp {
+	protected $editConfig;
 
 	/**
-	 * @return \rocket\impl\ei\component\prop\adapter\config\StandardEditDefinition
+	 * @return \rocket\impl\ei\component\prop\adapter\config\EditConfig
 	 */
-	public function getStandardEditDefinition() {
-		if ($this->standardEditDefinition === null) {
-			$this->standardEditDefinition = new StandardEditDefinition();
+	public function getEditConfig() {
+		if ($this->editConfig === null) {
+			$this->editConfig = new EditConfig();
 		}
 
-		return $this->standardEditDefinition;
+		return $this->editConfig;
 	}
 
 	public function createEiPropConfigurator(): EiPropConfigurator {
 		$eiPropConfigurator = parent::createEiPropConfigurator();
 		IllegalStateException::assertTrue($eiPropConfigurator instanceof AdaptableEiPropConfigurator);
-		$eiPropConfigurator->registerStandardEditDefinition($this->getStandardEditDefinition());
+		$eiPropConfigurator->registerEditConfig($this->getEditConfig());
 		return $eiPropConfigurator;
 	}
 
@@ -59,7 +61,7 @@ abstract class EditableEiPropAdapter extends DisplayableEiPropAdapter implements
 	}
 
 	public function buildGuiField(Eiu $eiu): ?GuiField {
-		return new StatelessEditElement($this, $eiu);
+		return new GuiFieldProxy($eiu, $this, $this);
 	}
 
 	/**
@@ -71,15 +73,15 @@ abstract class EditableEiPropAdapter extends DisplayableEiPropAdapter implements
 		}
 
 		if ($eiu->entry()->isDraft() || (!$eiu->entry()->isNew()
-				&& $this->standardEditDefinition->isConstant())) {
+				&& $this->editConfig->isConstant())) {
 			return true;
 		}
 
-		return $this->standardEditDefinition->isReadOnly();
+		return $this->editConfig->isReadOnly();
 	}
 
 	public function isMandatory(Eiu $eiu): bool {
-		return $this->standardEditDefinition->isMandatory();
+		return $this->editConfig->isMandatory();
 	}
 
 	public function createEiPropPrivilege(Eiu $eiu): EiPropPrivilege {

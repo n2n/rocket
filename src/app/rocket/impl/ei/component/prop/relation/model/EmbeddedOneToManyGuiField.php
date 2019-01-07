@@ -22,6 +22,7 @@
 namespace rocket\impl\ei\component\prop\relation\model;
 
 use rocket\ei\manage\gui\GuiField;
+use rocket\ei\manage\gui\GuiFieldDisplayable;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\gui\GuiFieldEditable;
@@ -32,7 +33,7 @@ use rocket\ei\util\Eiu;
 use n2n\l10n\N2nLocale;
 use n2n\l10n\Lstr;
 
-class EmbeddedOneToManyGuiField implements GuiField {
+class EmbeddedOneToManyGuiField implements GuiField, GuiFieldDisplayable {
 	private $labelLstr;
 	private $reduced;
 	private $readOnly;
@@ -70,7 +71,7 @@ class EmbeddedOneToManyGuiField implements GuiField {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiField::getDisplayItemType()
 	 */
-	public function getDisplayItemType(): ?string {
+	public function getDisplayItemType(): string {
 		return DisplayItem::TYPE_SIMPLE_GROUP;
 	}
 	
@@ -84,17 +85,17 @@ class EmbeddedOneToManyGuiField implements GuiField {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiField::getOutputHtmlContainerAttrs()
+	 * @see \rocket\ei\manage\gui\GuiField::getHtmlContainerAttrs()
 	 */
-	public function getOutputHtmlContainerAttrs(): array {
+	public function getHtmlContainerAttrs(): array {
 		return array();
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiField::createOutputUiComponent()
+	 * @see \rocket\ei\manage\gui\GuiField::createUiComponent()
 	 */
-	public function createOutputUiComponent(HtmlView $view) {
+	public function createUiComponent(HtmlView $view) {
 		if ($this->compact) {
 			return $this->createCompactOutputUiComponent($view);
 		}
@@ -142,6 +143,11 @@ class EmbeddedOneToManyGuiField implements GuiField {
 		return $htmlElem;
 	}
 	
+	
+	public function getDisplayable(): GuiFieldDisplayable {
+		return $this;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiField::createEditable()
@@ -153,4 +159,6 @@ class EmbeddedOneToManyGuiField implements GuiField {
 		
 		throw new IllegalStateException('GuiField read only.');
 	}
+	
+
 }

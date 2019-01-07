@@ -29,7 +29,7 @@ use rocket\ei\manage\control\GroupControl;
 use rocket\ei\manage\control\ControlButton;
 use rocket\ei\manage\control\IconType;
 use rocket\ei\manage\gui\ui\DisplayItem;
-use n2n\reflection\CastUtils;
+use n2n\util\type\CastUtils;
 use rocket\ei\manage\gui\EiEntryGui;
 use n2n\l10n\Message;
 use n2n\impl\web\ui\view\html\HtmlUtils;
@@ -62,6 +62,11 @@ class EiuHtmlBuilderMeta {
 		if (!$this->state->containsEntry()) {
 			return false;
 		}
+		
+		if ($eiEntryGui === null) {
+			return true;
+		}
+		
 		$eiEntryGui = EiuAnalyst::buildEiEntryGuiFromEiArg($eiEntryGui);
 		return $eiEntryGui === null || $eiEntryGui === $this->state->peakEntry()['eiEntryGui'];
 	}
@@ -203,7 +208,7 @@ class EiuHtmlBuilderMeta {
 	 * @param array $attrs
 	 * @return array
 	 */
-	static function createDisplayItemAttrs(string $displayItemType = null, array $attrs) {
+	static function createDisplayItemAttrs(?string $displayItemType, array $attrs) {
 		if ($displayItemType === null) {
 			return $attrs;
 		}

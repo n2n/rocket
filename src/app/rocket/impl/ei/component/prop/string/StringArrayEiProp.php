@@ -31,7 +31,7 @@ class StringArrayEiProp extends DraftablePropertyEiPropAdapter {
 	 * @param Eiu $eiu
 	 * @return UiComponent
 	 */
-	public function createOutputUiComponent(HtmlView $view, Eiu $eiu) {
+	public function createUiComponent(HtmlView $view, Eiu $eiu) {
 		return implode(', ', $eiu->field()->getValue());
 	}
 

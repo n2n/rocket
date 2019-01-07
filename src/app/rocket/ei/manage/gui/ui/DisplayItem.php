@@ -3,9 +3,8 @@ namespace rocket\ei\manage\gui\ui;
 
 use rocket\ei\manage\gui\GuiFieldPath;
 use n2n\util\ex\IllegalStateException;
-use n2n\reflection\ArgUtils;
-use n2n\l10n\N2nLocale;
-use rocket\core\model\Rocket;
+use n2n\util\type\ArgUtils;
+use n2n\l10n\Lstr;
 
 class DisplayItem {
 	const TYPE_SIMPLE_GROUP = 'simple-group';
@@ -15,11 +14,9 @@ class DisplayItem {
 	const TYPE_PANEL = 'panel';
 	const TYPE_ITEM = 'item';
 
-	protected $label;
-	protected $moduleNamespace;
+	protected $labelLstr;
 	protected $type;
 	protected $guiFieldPath;
-	protected $helpText;
 	protected $attrs;
 	protected $displayStructure;
 
@@ -30,11 +27,8 @@ class DisplayItem {
 	 * @param GuiFieldPath $guiFieldPath
 	 * @return DisplayItem
 	 */
-	public static function create(GuiFieldPath $guiFieldPath, string $type = null, string $label = null, 
-			string $moduleNamespace = null) {
+	public static function create(GuiFieldPath $guiFieldPath, string $type = null) {
 		$orderItem = new DisplayItem();
-		$orderItem->label = $label;
-		$orderItem->moduleNamespace = $moduleNamespace;
 		ArgUtils::valEnum($type, self::getTypes(), null, true);
 		$orderItem->type = $type;
 		$orderItem->guiFieldPath = $guiFieldPath;
@@ -46,9 +40,8 @@ class DisplayItem {
 	 * @return DisplayItem
 	 * @deprecated
 	 */
-	public static function createFromGuiFieldPath(GuiFieldPath $guiFieldPath, string $type = null, string $label = null) {
+	public static function createFromGuiFieldPath(GuiFieldPath $guiFieldPath, string $type = null) {
 		$orderItem = new DisplayItem();
-		$orderItem->label = $label;
 		ArgUtils::valEnum($type, self::getTypes(), null, true);
 		$orderItem->type = $type;
 		$orderItem->guiFieldPath = $guiFieldPath;
@@ -60,82 +53,76 @@ class DisplayItem {
 	 * @return DisplayItem
 	 */
 	public static function createFromDisplayStructure(DisplayStructure $displayStructure, string $type, 
-			string $label = null, string $moduleNamespace = null) {
+			Lstr $labelLstr = null) {
 		$displayItem = new DisplayItem();
 		$displayItem->displayStructure = $displayStructure;
 		ArgUtils::valEnum($type, self::getTypes());
 		$displayItem->type = $type;
-		$displayItem->label = $label;
-		$displayItem->moduleNamespace = $moduleNamespace;
+		$displayItem->labelLstr = $labelLstr;
 		return $displayItem;
 	}
 	
 	/**
 	 * @param string|null $type
-	 * @param string|null $label
+	 * @param string|null $labelLstr
 	 * @return DisplayItem
 	 */
-	public function copy(string $type = null, array $attrs = null, string $label = null, string $helpText = null, string $moduleNamespace = null) {
+	public function copy(string $type = null, array $attrs = null/*, Lstr $labelLstr = null*/) {
 		$displayItem = new DisplayItem();
 		$displayItem->displayStructure = $this->displayStructure;
 		$displayItem->guiFieldPath = $this->guiFieldPath;
 		ArgUtils::valEnum($type, self::getTypes(), null, true);
 		$displayItem->type = $type ?? $this->type;
-		$displayItem->label = $label ?? $this->label;
-		$displayItem->moduleNamespace = $moduleNamespace ?? $this->moduleNamespace;
-		$displayItem->helpText = $helpText ?? $this->helpText;
+// 		$displayItem->labelLstr = $labelLstr ?? $this->labelLstr;
 		$displayItem->attrs = $attrs ?? $this->attrs;
 		return $displayItem;
 	}
 	
 	/**
-	 * @return string|null
+	 * @return Lstr|null
 	 */
-	public function getLabel() {
-		return $this->label;
-	}
-
-	/**
-	 * @return string|null
-	 */
-	public function getHelpText() {
-		return $this->helpText;
-	}
-	
-	/**
-	 * @return string|null
-	 */
-	public function getModuleNamespace() {
-		return $this->moduleNamespace;
-	}
-	
-	/**
-	 * @param N2nLocale $n2nLocale
-	 * @return string|null
-	 */
-	public function translateLabel(N2nLocale $n2nLocale) {
-		if ($this->label === null) return null;
-		
-		if ($this->moduleNamespace === null) {
-			return $this->label;
+	public function getLabelLstr() {
+		if ($this->hasDisplayStructure()) {
+			return $this->labelLstr;
 		}
 		
-		return Rocket::createLstr($this->label, $this->moduleNamespace)->t($n2nLocale);
+		throw new IllegalStateException('No labels for GuiFieldPath DisplayItem.');
 	}
 	
-	/**
-	 * @param N2nLocale $n2nLocale
-	 * @return string|null
-	 */
-	public function translateHelpText(N2nLocale $n2nLocale) {
-		if ($this->helpText === null) return null;
+// 	/**
+// 	 * @return string|null
+// 	 */
+// 	public function getModuleNamespace() {
+// 		return $this->moduleNamespace;
+// 	}
+	
+// 	/**
+// 	 * @param N2nLocale $n2nLocale
+// 	 * @return string|null
+// 	 */
+// 	public function translateLabel(N2nLocale $n2nLocale) {
+// 		if ($this->labelLstr === null) return null;
 		
-		if ($this->moduleNamespace === null) {
-			return $this->helpText;
-		}
+// 		if ($this->moduleNamespace === null) {
+// 			return $this->labelLstr;
+// 		}
 		
-		return Rocket::createLstr($this->helpText, $this->moduleNamespace)->t($n2nLocale);
-	}
+// 		return Rocket::createLstr($this->labelLstr, $this->moduleNamespace)->t($n2nLocale);
+// 	}
+	
+// 	/**
+// 	 * @param N2nLocale $n2nLocale
+// 	 * @return string|null
+// 	 */
+// 	public function translateHelpText(N2nLocale $n2nLocale) {
+// 		if ($this->helpText === null) return null;
+		
+// 		if ($this->moduleNamespace === null) {
+// 			return $this->helpText;
+// 		}
+		
+// 		return Rocket::createLstr($this->helpText, $this->moduleNamespace)->t($n2nLocale);
+// 	}
 
 	/**
 	 * @return string|null
@@ -174,6 +161,10 @@ class DisplayItem {
 		throw new IllegalStateException();
 	}
 
+	/**
+	 * @throws IllegalStateException
+	 * @return GuiFieldPath
+	 */
 	public function getGuiFieldPath() {
 		if ($this->guiFieldPath !== null) {
 			return $this->guiFieldPath;

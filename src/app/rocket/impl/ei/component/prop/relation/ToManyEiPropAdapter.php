@@ -41,7 +41,7 @@ abstract class ToManyEiPropAdapter extends SimpleRelationEiPropAdapter implement
 	public function setMin(int $min = null) {
 		$this->min = $min;
 		if ($min !== null && $min > 0) {
-			$this->standardEditDefinition->setMandatory(true);
+			$this->editConfig->setMandatory(true);
 		}
 	}
 	
@@ -56,7 +56,7 @@ abstract class ToManyEiPropAdapter extends SimpleRelationEiPropAdapter implement
 	public function getRealMin(): int {
 		if ($this->min !== null && $this->min > 0) return $this->min;
 		
-		if ($this->standardEditDefinition->isMandatory()) return 1;
+		if ($this->editConfig->isMandatory()) return 1;
 		
 		return 0;
 	}

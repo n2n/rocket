@@ -30,7 +30,7 @@ use rocket\ei\component\prop\FilterableEiProp;
 use n2n\core\container\N2nContext;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\critmod\sort\SortDefinition;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use rocket\ei\manage\critmod\sort\SortProp;
 use rocket\ei\component\prop\SortableEiPropFork;
 use rocket\ei\manage\critmod\sort\SortPropFork;

@@ -29,7 +29,7 @@ use n2n\persistence\orm\property\EntityProperty;
 use n2n\l10n\DynamicTextCollection;
 use rocket\impl\ei\component\prop\string\conf\PathPartEiPropConfigurator;
 use n2n\web\dispatch\mag\Mag;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use rocket\ei\EiPropPath;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\generic\GenericEiProperty;
@@ -50,9 +50,9 @@ class PathPartEiProp extends AlphanumericEiProp  {
 	private $urlEiCommand;
 	
 	public function __construct() {
-		$this->getDisplaySettings()->setDefaultDisplayedViewModes(ViewMode::BULKY_EDIT | ViewMode::COMPACT_READ);
+		$this->getDisplayConfig()->setDefaultDisplayedViewModes(ViewMode::BULKY_EDIT | ViewMode::COMPACT_READ);
 		$this->entityPropertyRequired = true;
-		$this->getStandardEditDefinition()->setMandatory(false);
+		$this->getEditConfig()->setMandatory(false);
 	}
 	
 	/* (non-PHPdoc)
@@ -123,7 +123,7 @@ class PathPartEiProp extends AlphanumericEiProp  {
 		parent::setEntityProperty($entityProperty);
 	}
 	
-	public function createOutputUiComponent(HtmlView $view, Eiu $eiu)  {
+	public function createUiComponent(HtmlView $view, Eiu $eiu)  {
 		return $view->getHtmlBuilder()->getEsc($eiu->field()->getValue(EiPropPath::from($this)));
 	}
 

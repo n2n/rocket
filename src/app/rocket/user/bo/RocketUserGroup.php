@@ -25,7 +25,7 @@ use n2n\reflection\ObjectAdapter;
 use n2n\reflection\annotation\AnnoInit;
 use n2n\persistence\orm\CascadeType;
 use n2n\util\StringUtils;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use n2n\persistence\orm\annotation\AnnoTable;
 use n2n\persistence\orm\annotation\AnnoManyToMany;
 use n2n\persistence\orm\annotation\AnnoOneToMany;

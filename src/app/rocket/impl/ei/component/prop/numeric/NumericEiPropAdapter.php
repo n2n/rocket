@@ -31,7 +31,7 @@ use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
 use rocket\impl\ei\component\prop\numeric\conf\NumericEiPropConfigurator;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use n2n\reflection\property\AccessProxy;
 use n2n\reflection\property\TypeConstraint;
 use n2n\core\container\N2nContext;
@@ -82,7 +82,7 @@ abstract class NumericEiPropAdapter extends DraftablePropertyEiPropAdapter
 		return new NumericEiPropConfigurator($this);
 	}
 	
-	public function createOutputUiComponent(HtmlView $view, Eiu $eiu)  {
+	public function createUiComponent(HtmlView $view, Eiu $eiu)  {
 		$html = $view->getHtmlBuilder();
 		return $html->getEsc($eiu->field()->getValue(EiPropPath::from($this)));
 	}

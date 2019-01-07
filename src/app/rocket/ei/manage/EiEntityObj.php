@@ -21,7 +21,7 @@
  */
 namespace rocket\ei\manage;
 
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\EiType;
 use n2n\reflection\ReflectionUtils;

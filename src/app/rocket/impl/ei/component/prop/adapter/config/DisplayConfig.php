@@ -21,15 +21,17 @@
  */
 namespace rocket\impl\ei\component\prop\adapter\config;
 
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\ei\component\prop\EiProp;
 use rocket\ei\manage\gui\ui\DisplayItem;
 
-class DisplaySettings {
+class DisplayConfig {
 	private $compatibleViewModes;
 	private $defaultDisplayedViewModes;
+	
+	private $displayItemType = DisplayItem::TYPE_ITEM;
 	
 	private $helpText;
 	
@@ -103,6 +105,15 @@ class DisplaySettings {
 	
 	public function setAddModeDefaultDisplayed($defaultDisplayaed) {
 		$this->changeDefaultDisplayed(ViewMode::BULKY_ADD, $defaultDisplayaed);
+	}
+	
+	public function setDisplayItemType(string $displayItemType) {
+		ArgUtils::valEnum($displayItemType, DisplayItem::getTypes());
+		$this->dispayItemType = $displayItemType;
+	}
+	
+	public function getDisplayItemType() {
+		return $this->displayItemType;
 	}
 	
 	/**

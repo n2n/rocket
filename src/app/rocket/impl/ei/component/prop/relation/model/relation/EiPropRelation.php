@@ -43,7 +43,7 @@ use rocket\ei\manage\security\InaccessibleEiCommandPathException;
 use rocket\impl\ei\component\prop\relation\command\EmbeddedEditPseudoCommand;
 use n2n\util\uri\Url;
 use rocket\ei\EiPropPath;
-use n2n\reflection\CastUtils;
+use n2n\util\type\CastUtils;
 use rocket\ei\component\InvalidEiComponentConfigurationException;
 use rocket\impl\ei\component\prop\relation\model\RelationEntry;
 use n2n\web\http\HttpContext;
@@ -215,7 +215,7 @@ abstract class EiPropRelation {
 // 	}
 	
 	public function isReadOnly(EiEntry $mapping, EiFrame $eiFrame) {
-		return $this->relationEiProp->getStandardEditDefinition()->isReadOnly()
+		return $this->relationEiProp->getEditConfig()->isReadOnly()
 				|| (!$this->relationEiProp->isDraftable() && $mapping->getEiObject()->isDraft())
 				|| ($this->isFiltered() && $eiFrame->getEiRelation(EiPropPath::from($this->relationEiProp)));
 	}

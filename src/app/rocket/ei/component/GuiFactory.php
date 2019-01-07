@@ -21,8 +21,7 @@
  */
 namespace rocket\ei\component;
 
-use rocket\ei\component\modificator\EiModificatorCollection;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\manage\gui\EiEntryGuiAssembler;
 use rocket\ei\manage\gui\EiEntryGui;
@@ -35,7 +34,6 @@ use rocket\ei\mask\EiMask;
 use rocket\ei\manage\gui\GuiFieldPath;
 use rocket\ei\manage\gui\EiGui;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\ei\manage\gui\EiGuiListener;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\util\Eiu;
 use rocket\ei\component\command\control\EntryControlComponent;
@@ -202,8 +200,8 @@ class GuiFactory {
 		
 		$guiFieldAssembler = new EiEntryGuiAssembler($eiEntryGui);
 				
-		foreach ($guiFieldPaths as $eiPropPath) {
-			$guiFieldAssembler->assembleGuiField($eiPropPath);
+		foreach ($guiFieldPaths as $guiPropPath) {
+			$guiFieldAssembler->assembleGuiField($guiPropPath);
 		}
 		
 		$guiFieldAssembler->finalize();
@@ -213,22 +211,29 @@ class GuiFactory {
 }
 
 
-class ModEiGuiListener implements EiGuiListener {
-	private $eiModificatorCollection;
+// class ModEiGuiListener implements EiGuiListener {
+// 	private $eiModificatorCollection;
 	
-	public function __construct(EiModificatorCollection $eiModificatorCollection) {
-		$this->eiModificatorCollection = $eiModificatorCollection;
-	}
+// 	public function __construct(EiModificatorCollection $eiModificatorCollection) {
+// 		$this->eiModificatorCollection = $eiModificatorCollection;
+// 	}
 	
-	public function onNewEiEntryGui(EiEntryGui $eiEntryGui) {
-		foreach ($this->eiModificatorCollection as $eiModificator) {
-			$eiModificator->onNewEiEntryGui($eiEntryGui);
-		}
-	}
+// 	public function onInitialized(EiGui $eiGui) {
+// 		foreach ($this->eiModificatorCollection as $eiModificator) {
+// 			$eiModificator->onEiGuiInitialized($eiGui);
+// 		}
+// 	}
 	
-	public function onNewView(HtmlView $view) {
-		foreach ($this->eiModificatorCollection as $eiModificator) {
-			$eiModificator->onNewView($view);
-		}
-	}
-}
+// 	public function onNewEiEntryGui(EiEntryGui $eiEntryGui) {
+// 		foreach ($this->eiModificatorCollection as $eiModificator) {
+// 			$eiModificator->onNewEiEntryGui($eiEntryGui);
+// 		}
+// 	}
+	
+// 	public function onNewView(HtmlView $view) {
+// 		foreach ($this->eiModificatorCollection as $eiModificator) {
+// 			$eiModificator->onNewView($view);
+// 		}
+// 	}
+
+// }

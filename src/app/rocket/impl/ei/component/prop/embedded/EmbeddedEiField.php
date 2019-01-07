@@ -24,12 +24,12 @@ namespace rocket\impl\ei\component\prop\embedded;
 use rocket\impl\ei\component\prop\adapter\entry\EiFieldAdapter;
 use n2n\impl\persistence\orm\property\EmbeddedEntityProperty;
 use n2n\reflection\ReflectionUtils;
-use n2n\reflection\CastUtils;
+use n2n\util\type\CastUtils;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\entry\EiFieldMap;
 use rocket\ei\util\entry\EiuFieldMap;
 use rocket\ei\manage\entry\EiFieldValidationResult;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use n2n\l10n\Message;
 use rocket\ei\manage\entry\EiEntryValidationResult;
 

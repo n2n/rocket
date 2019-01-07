@@ -27,7 +27,7 @@ use n2n\core\container\N2nContext;
 use n2n\web\http\controller\ControllerContext;
 use n2n\web\http\controller\Controller;
 use rocket\ei\manage\ManageState;
-use n2n\reflection\CastUtils;
+use n2n\util\type\CastUtils;
 use rocket\core\model\Rocket;
 use rocket\user\model\LoginContext;
 use n2n\core\container\PdoPool;

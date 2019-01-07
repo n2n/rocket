@@ -23,7 +23,7 @@ namespace rocket\impl\ei\component\prop\ci\model;
 
 use n2n\impl\web\dispatch\mag\model\MagAdapter;
 use n2n\impl\web\dispatch\property\ObjectProperty;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\map\PropertyPath;

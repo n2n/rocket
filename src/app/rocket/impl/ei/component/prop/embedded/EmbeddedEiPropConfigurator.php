@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\embedded;
 
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
-use rocket\impl\ei\component\prop\adapter\config\StandardEditDefinition;
+use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 
 class EmbeddedEiPropConfigurator extends AdaptableEiPropConfigurator {
 	private $eiProp;
@@ -31,7 +31,7 @@ class EmbeddedEiPropConfigurator extends AdaptableEiPropConfigurator {
 		parent::__construct($eiProp);
 		
 		$this->autoRegister();
-		$this->registerStandardEditDefinition($this->editDef = new StandardEditDefinition());
+		$this->registerEditConfig($this->editDef = new EditConfig());
 	}
 	
 	

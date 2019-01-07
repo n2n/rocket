@@ -318,6 +318,11 @@ class EiType extends Type {
 	public function isObjectValid($object) {
 		return is_object($object) && ReflectionUtils::isObjectA($object, $this->getEntityModel()->getClass());
 	}
+	
+	public function isA(EiType $eiType) {
+		return $eiType->equals($eiType)
+				|| $this->entityModel->getClass()->isSubclassOf($eiType->getEntityModel()->getClass());
+	}
 
 	/**
 	 * 

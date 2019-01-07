@@ -34,7 +34,7 @@ use n2n\core\container\N2nContext;
 use rocket\ei\util\filter\prop\EnumFilterProp;
 use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
 
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use n2n\reflection\property\TypeConstraint;
 use n2n\reflection\property\AccessProxy;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
@@ -152,7 +152,7 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 		return $enablerMag;
 	}
 	
-	public function createOutputUiComponent(HtmlView $view, Eiu $eiu)  {
+	public function createUiComponent(HtmlView $view, Eiu $eiu)  {
 		$html = $view->getHtmlBuilder();
 		$options = $this->getOptions();
 		$value = $eiu->field()->getValue(EiPropPath::from($this));

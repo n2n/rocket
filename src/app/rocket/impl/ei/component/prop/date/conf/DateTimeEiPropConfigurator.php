@@ -26,7 +26,7 @@ use n2n\l10n\DateTimeFormat;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use n2n\core\container\N2nContext;
 use rocket\impl\ei\component\prop\date\DateTimeEiProp;
-use n2n\reflection\CastUtils;
+use n2n\util\type\CastUtils;
 use rocket\ei\component\EiSetup;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\impl\web\dispatch\mag\model\MagForm;

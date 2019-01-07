@@ -30,7 +30,7 @@ class OnlineEiProp extends BooleanEiProp {
 	public function __construct() {
 		parent::__construct();
 		
-		$this->getDisplaySettings()->setListReadModeDefaultDisplayed(false);
+		$this->getDisplayConfig()->setListReadModeDefaultDisplayed(false);
 	}
 	
 	public function createEiPropConfigurator(): EiPropConfigurator {

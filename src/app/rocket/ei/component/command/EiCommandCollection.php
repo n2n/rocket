@@ -25,7 +25,7 @@ use rocket\ei\component\EiComponentCollection;
 use rocket\ei\manage\control\EntryNavPoint;
 use rocket\ei\component\UnknownEiComponentException;
 use n2n\util\uri\Path;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use n2n\util\uri\Url;
 use rocket\ei\mask\EiMask;
 use rocket\ei\EiCommandPath;

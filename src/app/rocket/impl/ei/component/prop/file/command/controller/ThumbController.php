@@ -30,11 +30,11 @@ use n2n\web\http\controller\ControllerAdapter;
 use rocket\impl\ei\component\command\common\controller\PathUtils;
 use rocket\impl\ei\component\prop\file\command\model\ThumbModel;
 use n2n\web\http\controller\ParamQuery;
-use n2n\reflection\CastUtils;
+use n2n\util\type\CastUtils;
 use n2n\io\managed\File;
 use rocket\ei\manage\EiObject;
 use rocket\ei\util\EiuCtrl;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use n2n\io\managed\ThumbManager;
 
 class ThumbController extends ControllerAdapter {	

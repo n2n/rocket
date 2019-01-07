@@ -216,7 +216,7 @@ class EiuEntryGui {
 	 * @throws GuiException
 	 * @return EiFieldAbstraction
 	 */
-	public function getEiFieldAbstraction($guiPropPath, bool $required = false) {
+	public function getEiFieldAbstraction($guiFieldPath, bool $required = false) {
 		return $this->eiuEntry->getEiFieldAbstraction($guiFieldPath, $required);
 	}
 	
@@ -264,51 +264,51 @@ class EiuEntryGui {
 		return $this->eiuEntry;
 	}
 	
-	/**
-	 * @return \rocket\ei\util\gui\EiuEntryGui
-	 */
-	public function addDisplayContainer(string $type, string $label, array $attrs = null) {
-		$this->gui()->addDisplayContainer($type, $label, $attrs);
-		return $this;
-	}
+// 	/**
+// 	 * @return \rocket\ei\util\gui\EiuEntryGui
+// 	 */
+// 	public function addDisplayContainer(string $type, string $label, array $attrs = null) {
+// 		$this->gui()->addDisplayContainer($type, $label, $attrs);
+// 		return $this;
+// 	}
 		
-	/**
-	 * @return \rocket\ei\util\gui\EiuEntryGui
-	 */
-	public function removeGroups() {
-		$this->gui()->removeSubStructures();
-		return $this;
-	}
+// 	/**
+// 	 * @return \rocket\ei\util\gui\EiuEntryGui
+// 	 */
+// 	public function removeGroups() {
+// 		$this->gui()->removeSubStructures();
+// 		return $this;
+// 	}
 	
-	/**
-	 * @return \rocket\ei\util\gui\EiuEntryGui
-	 */
-	public function forceRootGroups() {
-		$this->gui()->forceRootGroups();
-		return $this;
-	}
+// 	/**
+// 	 * @return \rocket\ei\util\gui\EiuEntryGui
+// 	 */
+// 	public function forceRootGroups() {
+// 		$this->gui()->forceRootGroups();
+// 		return $this;
+// 	}
 	
-	/**
-	 * @return \rocket\ei\util\gui\EiuEntryGui
-	 */
-	public function renderEntryControls(bool $renderEntryControls = true) {
-		$this->gui()->renderEntryControls($renderEntryControls);
-		return $this;
-	}
+// 	/**
+// 	 * @return \rocket\ei\util\gui\EiuEntryGui
+// 	 */
+// 	public function renderEntryControls(bool $renderEntryControls = true) {
+// 		$this->gui()->renderEntryControls($renderEntryControls);
+// 		return $this;
+// 	}
 	
-	/**
-	 * @return \rocket\ei\util\gui\EiuEntryGui
-	 */
-	public function renderForkControls(bool $renderForkControls = true) {
-		$this->gui()->renderForkControls($renderForkControls);
-		return $this;
-	}
+// 	/**
+// 	 * @return \rocket\ei\util\gui\EiuEntryGui
+// 	 */
+// 	public function renderForkControls(bool $renderForkControls = true) {
+// 		$this->gui()->renderForkControls($renderForkControls);
+// 		return $this;
+// 	}
 		
 	/**
 	 * @return \rocket\ei\manage\gui\MagAssembly[]
 	 */
-	public function getForkMagAssemblies() {
-		return $this->eiEntryGui->getForkMagAssemblies();
+	public function getAllForkMagAssemblies() {
+		return $this->eiEntryGui->getAllForkMagAssemblies();
 	}
 	
 	/**

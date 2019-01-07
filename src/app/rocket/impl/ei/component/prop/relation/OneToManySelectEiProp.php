@@ -23,7 +23,7 @@ namespace rocket\impl\ei\component\prop\relation;
 
 use rocket\impl\ei\component\prop\relation\model\relation\SelectEiPropRelation;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 
@@ -33,7 +33,7 @@ class OneToManySelectEiProp extends ToManySelectEiPropAdapter {
 		parent::__construct();
 		
 		$this->initialize(new SelectEiPropRelation($this, false, true));
-		$this->getStandardEditDefinition()->setReadOnly(true);
+		$this->getEditConfig()->setReadOnly(true);
 	}
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {

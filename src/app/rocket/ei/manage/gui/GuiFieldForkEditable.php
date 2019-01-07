@@ -22,5 +22,8 @@ interface GuiFieldForkEditable {
 	 */
 	public function getInheritForkMagAssemblies(): array;
 	
+	/**
+	 * 
+	 */
 	public function save();
 }

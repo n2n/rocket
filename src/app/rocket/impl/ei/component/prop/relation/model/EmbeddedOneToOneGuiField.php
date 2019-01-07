@@ -22,6 +22,7 @@
 namespace rocket\impl\ei\component\prop\relation\model;
 
 use rocket\ei\manage\gui\GuiField;
+use rocket\ei\manage\gui\GuiFieldDisplayable;
 use rocket\ei\manage\gui\GuiFieldEditable;
 use rocket\ei\manage\frame\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlView;
@@ -32,7 +33,7 @@ use rocket\ei\util\Eiu;
 use n2n\l10n\N2nLocale;
 use n2n\l10n\Lstr;
 
-class EmbeddedOneToOneGuiField implements GuiField {
+class EmbeddedOneToOneGuiField implements GuiField, GuiFieldDisplayable {
 	private $labelLstr;
 	private $reduced;
 	private $readOnly;
@@ -66,7 +67,7 @@ class EmbeddedOneToOneGuiField implements GuiField {
 		return $this->editable === null;
 	}
 
-	public function getDisplayItemType(): ?string {
+	public function getDisplayItemType(): string {
 		return DisplayItem::TYPE_SIMPLE_GROUP;
 	}
 	
@@ -80,11 +81,11 @@ class EmbeddedOneToOneGuiField implements GuiField {
 	/**
 	 * @return array
 	 */
-	public function getOutputHtmlContainerAttrs(): array {
+	public function getHtmlContainerAttrs(): array {
 		return array();
 	}
 	
-	public function createOutputUiComponent(HtmlView $view) {
+	public function createUiComponent(HtmlView $view) {
 		$targetRelationEntry = $this->toOneEiField->getValue();
 		if ($targetRelationEntry === null) return null;
 		
@@ -110,6 +111,10 @@ class EmbeddedOneToOneGuiField implements GuiField {
 						'reduced' => $this->reduced));
 	}
 	
+	public function getDisplayable(): GuiFieldDisplayable {
+		return $this;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiField::createEditable()
@@ -121,4 +126,5 @@ class EmbeddedOneToOneGuiField implements GuiField {
 		
 		throw new IllegalStateException('GuiField read only.');
 	}
+
 }

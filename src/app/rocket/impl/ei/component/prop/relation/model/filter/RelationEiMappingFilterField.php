@@ -27,7 +27,7 @@ use rocket\ei\manage\entry\EiFieldConstraint;
 use n2n\util\ex\IllegalStateException;
 use n2n\util\config\Attributes;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use rocket\impl\ei\component\prop\relation\model\RelationEntry;
 use rocket\ei\manage\entry\EiField;
 use rocket\ei\manage\entry\EiFieldValidationResult;

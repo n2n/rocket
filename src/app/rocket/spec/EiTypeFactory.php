@@ -26,7 +26,7 @@ use n2n\reflection\ReflectionUtils;
 use rocket\ei\EiType;
 use n2n\util\config\Attributes;
 use n2n\persistence\orm\model\EntityModelManager;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\component\prop\indepenent\IncompatiblePropertyException;

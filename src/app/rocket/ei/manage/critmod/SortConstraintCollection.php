@@ -22,7 +22,7 @@
 namespace rocket\ei;
 
 use rocket\ei\component\prop\SortableEiProp;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use n2n\util\col\HashMap;
 
 class SortModificatorCollection {

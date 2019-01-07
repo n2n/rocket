@@ -32,7 +32,7 @@ use rocket\ei\component\prop\SortableEiProp;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use rocket\ei\manage\generic\CommonScalarEiProperty;
 use n2n\impl\persistence\orm\property\N2nLocaleEntityProperty;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
 use n2n\reflection\property\TypeConstraint;
 use n2n\reflection\property\AccessProxy;
@@ -72,7 +72,7 @@ class N2nLocaleEiProp extends DraftablePropertyEiPropAdapter implements Filterab
 		$this->definedN2nLocales = $definedN2nLocales;
 	}
 
-	public function createOutputUiComponent(HtmlView $view, Eiu $eiu)  {
+	public function createUiComponent(HtmlView $view, Eiu $eiu)  {
 		$value = $eiu->entry()->getValue($this);
 		if ($value === null) return null;
 		

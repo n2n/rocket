@@ -28,10 +28,12 @@ use n2n\core\container\N2nContext;
 interface EiPropConfigurator extends EiConfigurator {
 	
 	/**
-	 * This method assigns proper default attributes to the EiPropConfigurator. It gets call if the developer adds 
+	 * This method assigns proper default attributes to the EiPropConfigurator. It gets called when the developer adds 
 	 * new EiProp of the particular type.
 	 * 
 	 * EiThing is already assigned when this method gets called.
+	 * 
+	 * PropertyAssgination must be assigned before calling this method.
 	 *   
 	 * @param Column $column
 	 */

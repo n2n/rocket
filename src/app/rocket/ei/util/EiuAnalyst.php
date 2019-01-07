@@ -24,7 +24,7 @@ namespace rocket\ei\util;
 use rocket\ei\manage\frame\EiFrame;
 use n2n\core\container\N2nContext;
 use rocket\ei\manage\ManageException;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use rocket\ei\manage\EiObject;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\manage\EiEntityObj;
@@ -37,7 +37,6 @@ use rocket\ei\component\prop\EiProp;
 use rocket\ei\EiPropPath;
 use rocket\ei\EiType;
 use rocket\ei\mask\EiMask;
-use n2n\reflection\ReflectionUtils;
 use rocket\ei\manage\gui\EiGui;
 use rocket\ei\manage\gui\EiEntryGuiAssembler;
 use rocket\ei\EiEngine;
@@ -62,6 +61,7 @@ use rocket\ei\manage\entry\EiFieldMap;
 use rocket\ei\util\entry\EiuFieldMap;
 use rocket\ei\util\entry\EiuObject;
 use rocket\ei\component\modificator\EiModificator;
+use n2n\util\type\TypeUtils;
 
 class EiuAnalyst {
 	const EI_FRAME_TYPES = array(EiFrame::class, EiuFrame::class, N2nContext::class);
@@ -935,9 +935,9 @@ class EiuAnalyst {
 			if ($this->eiEntry !== null) {
 				return $this->eiuEntry = new EiuEntry($this->eiEntry, $this->getEiuObject(true), null, $this);
 			}
-			if ($this->eiObject !== null) {
-				return $this->eiuEntry = new EiuEntry(null, $this->getEiuObject(true), null, $this);
-			}
+// 			if ($this->eiObject !== null) {
+// 				return $this->eiuEntry = new EiuEntry(null, $this->getEiuObject(true), null, $this);
+// 			}
 		}
 		
 		if (!$required) return null;
@@ -1135,7 +1135,7 @@ class EiuAnalyst {
 // 		if (!$required) return null;
 		
 // 		throw new EiuPerimeterException('Can not determine EiObject of passed argument type ' 
-// 				. ReflectionUtils::getTypeInfo($eiObjectArg) . '. Following types are allowed: '
+// 				. TypeUtils::getTypeInfo($eiObjectArg) . '. Following types are allowed: '
 // 				. implode(', ', array_merge(self::EI_FRAME_TYPES, self::EI_ENTRY_TYPES)));
 	}
 	
@@ -1178,7 +1178,7 @@ class EiuAnalyst {
 		if (!$required) return null;
 		
 		throw new EiuPerimeterException('Can not determine EiType of passed argument type ' 
-				. ReflectionUtils::getTypeInfo($eiTypeArg) . '. Following types are allowed: '
+				. TypeUtils::getTypeInfo($eiTypeArg) . '. Following types are allowed: '
 				. implode(', ', array_merge(self::EI_FRAME_TYPES, EI_ENTRY_TYPES)));
 	}
 	
@@ -1194,7 +1194,7 @@ class EiuAnalyst {
 		throw new EiuPerimeterException('Can not determine EiType of passed argument ' . $argName 
 				. '. Following types are allowed: '
 				. implode(', ', array_merge(self::EI_FRAME_TYPES, self::EI_ENTRY_TYPES)) . '; '
-				. ReflectionUtils::getTypeInfo($eiTypeArg) . ' given.');
+				. TypeUtils::getTypeInfo($eiTypeArg) . ' given.');
 	}
 	
 	/**
@@ -1216,7 +1216,7 @@ class EiuAnalyst {
 		throw new EiuPerimeterException('Can not determine EiEntry of passed argument ' . $argName
 				. '. Following types are allowed: '
 				. implode(', ', array_merge(self::EI_ENTRY_TYPES)) . '; '
-				. ReflectionUtils::getTypeInfo($eiEntryArg) . ' given.');
+				. TypeUtils::getTypeInfo($eiEntryArg) . ' given.');
 	}
 	
 	/**
@@ -1252,7 +1252,7 @@ class EiuAnalyst {
 		throw new EiuPerimeterException('Can not determine EiEntryGui of passed argument ' . $argName
 				. '. Following types are allowed: '
 				. implode(', ', array_merge(self::EI_ENTRY_GUI_TYPES)) . '; '
-				. ReflectionUtils::getTypeInfo($eiEntryGuiArg) . ' given.');
+				. TypeUtils::getTypeInfo($eiEntryGuiArg) . ' given.');
 	}
 	
 	public static function buildEiGuiFromEiArg($eiGuiArg, string $argName = null, bool $required = true) {
@@ -1279,7 +1279,7 @@ class EiuAnalyst {
 		throw new EiuPerimeterException('Can not determine EiGui of passed argument ' . $argName
 				. '. Following types are allowed: '
 				. implode(', ', array_merge(self::EI_GUI_TYPES)) . '; '
-				. ReflectionUtils::getTypeInfo($eiGuiArg) . ' given.');
+				. TypeUtils::getTypeInfo($eiGuiArg) . ' given.');
 	}
 	
 	public static function buildEiObjectFromEiArg($eiObjectObj, string $argName = null, EiType $eiType = null, 

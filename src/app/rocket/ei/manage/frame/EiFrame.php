@@ -32,7 +32,7 @@ use rocket\ei\manage\control\EntryNavPoint;
 use rocket\ei\manage\security\EiExecution;
 use n2n\web\http\HttpContext;
 use n2n\util\uri\Url;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use rocket\ei\EiCommandPath;
 use rocket\ei\EiEngine;
 use rocket\ei\EiTypeExtension;

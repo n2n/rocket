@@ -21,16 +21,14 @@
  */
 namespace rocket\impl\ei\component\prop\translation\model;
 
-use rocket\ei\manage\gui\GuiField;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\ei\manage\gui\GuiFieldEditable;
-use n2n\util\ex\IllegalStateException;
 use rocket\ei\manage\gui\GuiProp;
+use rocket\ei\manage\gui\GuiFieldDisplayable;
 
-class TranslationDisplayable implements GuiField {
+class TranslationDisplayable implements GuiFieldDisplayable {
 	private $guiProp;
 	private $localeDefs;
-	private $translatedDisplayables = array();
+	private $guiFieldDisplayables = array();
 	
 	public function __construct(GuiProp $guiProp, array $localeDefs) {
 		$this->guiProp = $guiProp;
@@ -39,56 +37,33 @@ class TranslationDisplayable implements GuiField {
 	
 	
 	public function isEmpty() {
-		return empty($this->translatedDisplayables);
+		return empty($this->guiFieldDisplayables);
 	}
 	
-	public function putDisplayable($n2nLocaleId, GuiField $translatedDisplayable) {
-		$this->translatedDisplayables[$n2nLocaleId] = $translatedDisplayable;
+	public function putDisplayable($n2nLocaleId, GuiFieldDisplayable $guiFieldDisplayable) {
+		$this->guiFieldDisplayables[$n2nLocaleId] = $guiFieldDisplayable;
 	}
 	
 	public function isMandatory(): bool {
-		foreach ($this->translatedDisplayables as $translatedDisplayable) {
+		foreach ($this->guiFieldDisplayables as $translatedDisplayable) {
 			if ($translatedDisplayable->isMandatory()) return true;
 		}
 		
 		return false;
 	}
 	
-	public function isReadOnly(): bool {
-		foreach ($this->translatedDisplayables as $translatedDisplayable) {
-			if (!$translatedDisplayable->isReadOnly()) return false;
-		}		
-		
-		return true;
-	}
-	
-	public function getOutputHtmlContainerAttrs(): array {
+	public function getHtmlContainerAttrs(): array {
 		return array();
 	}
 	
-	public function createOutputUiComponent(HtmlView $view) {
+	public function createUiComponent(HtmlView $view) {
 // 		$outputUiComponents = array();
 // 		foreach ($this->translatedDisplayables as $n2nLocaleId => $translatedDisplayable) {
-// 			$outputUiComponents[$n2nLocaleId] = $translatedDisplayable->createOutputUiComponent($view);
+// 			$outputUiComponents[$n2nLocaleId] = $translatedDisplayable->createUiComponent($view);
 // 		}
 		
 		return $view->getImport('\rocket\impl\ei\component\prop\translation\view\displayable.html',
-				array('displayables' => $this->translatedDisplayables, 'label' => $this->guiProp->getDisplayLabelLstr()->t($view->getN2nLocale()),
+				array('displayables' => $this->guiFieldDisplayables, 'label' => $this->guiProp->getDisplayLabelLstr()->t($view->getN2nLocale()),
 						'localeDefs' => $this->localeDefs));
-	}
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiField::getEditable()
-	 */
-	public function getEditable(): GuiFieldEditable {
-		throw new IllegalStateException();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiField::getDisplayItemType()
-	 */
-	public function getDisplayItemType(): ?string {
-		return null;
 	}
 }

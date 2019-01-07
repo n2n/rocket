@@ -32,8 +32,8 @@ use rocket\ei\manage\draft\SimpleDraftValueSelection;
 use rocket\ei\manage\draft\DraftManager;
 use n2n\persistence\orm\EntityManager;
 use n2n\persistence\orm\model\EntityModel;
-use n2n\reflection\ArgUtils;
-use n2n\reflection\CastUtils;
+use n2n\util\type\ArgUtils;
+use n2n\util\type\CastUtils;
 use rocket\ei\manage\EiObject;
 use rocket\ei\manage\draft\RemoveDraftAction;
 use rocket\ei\manage\draft\PersistDraftAction;
@@ -65,7 +65,7 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 		$this->initialize(new SelectEiPropRelation($this, true, false));
 	}
 	
-	public function getDisplayItemType(): ?string {
+	public function getDisplayItemType(): string {
 		return DisplayItem::TYPE_ITEM;
 	}
 	
@@ -183,7 +183,7 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 		$toOneEditable = null;
 		if (!$this->eiPropRelation->isReadOnly($mapping, $eiFrame)) {
 			$targetEditEiFrame = $this->eiPropRelation->createTargetEditPseudoEiFrame($eiFrame, $mapping);
-			$toOneEditable = new ToOneEditable($this->getLabelLstr(), $this->standardEditDefinition->isMandatory(),
+			$toOneEditable = new ToOneEditable($this->getLabelLstr(), $this->editConfig->isMandatory(),
 					$relationEiField, $targetReadEiFrame, $targetEditEiFrame);
 			
 			$toOneEditable->setSelectOverviewToolsUrl($this->eiPropRelation->buildTargetOverviewToolsUrl(

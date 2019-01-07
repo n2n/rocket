@@ -7,7 +7,6 @@ use n2n\web\dispatch\map\PropertyPath;
 use rocket\ei\manage\gui\EiEntryGui;
 use rocket\ei\manage\gui\GuiFieldAssembly;
 use rocket\ei\manage\gui\GuiFieldPath;
-use rocket\ei\manage\gui\ui\DisplayItem;
 use rocket\ei\manage\entry\EiFieldValidationResult;
 use rocket\ei\manage\entry\ValidationResult;
 
@@ -33,7 +32,8 @@ class EiuHtmlBuilderState {
 		$this->stack[] = array(
 				'type' => 'entry',
 				'eiEntryGui' => $eiEntryGui,
-				'tagName' => $tagName);
+				'tagName' => $tagName,
+				'renderedForkMagGuiFieldPaths' => array());
 	}
 	
 	/**
@@ -42,7 +42,7 @@ class EiuHtmlBuilderState {
 	 * @throws IllegalStateException
 	 * @return array
 	 */
-	public function peakEntry() {
+	public function peakEntry(&$i = null) {
 		for ($i = count($this->stack) - 1; $i >= 0; $i--) {
 			if ($this->stack[$i]['type'] == 'entry') {
 				return $this->stack[$i];
@@ -51,6 +51,21 @@ class EiuHtmlBuilderState {
 		
 		throw new IllegalStateException('No entry open.');
 	}
+	
+	public function markForkMagAsRendered($guiFieldPath) {
+		$entry = $this->peakEntry($i);
+		$entry['renderedForkMagGuiFieldPaths'][(string) $guiFieldPath] = 1;
+		$this->stack[$i] = $entry;
+	}
+	
+	/**
+	 * @param GuiFieldPath|string $guiFieldPath
+	 * @return bool
+	 */
+	public function isForkMagRendered($guiFieldPath) {
+		return isset($this->peakEntry()['renderedForkMagGuiFieldPaths'][(string) $guiFieldPath]);
+	}
+	
 	
 	/**
 	 *
@@ -80,10 +95,10 @@ class EiuHtmlBuilderState {
 	 * @param PropertyPath $propertyPath
 	 */
 	public function pushField(string $tagName, GuiFieldPath $guiFieldPath, ValidationResult $validationResult = null, 
-			GuiFieldAssembly $guiFieldAssembly = null, PropertyPath $propertyPath = null, DisplayItem $displayItem = null) {
+			GuiFieldAssembly $guiFieldAssembly = null, PropertyPath $propertyPath = null) {
 		$this->stack[] = array('type' => 'field', 'guiFieldPath' => $guiFieldPath, 'tagName' => $tagName, 
 				'guiFieldAssembly' => $guiFieldAssembly, 'validationResult' => $validationResult, 
-				'propertyPath' => $propertyPath, 'displayItem' => $displayItem);
+				'propertyPath' => $propertyPath);
 	}
 	
 	/**

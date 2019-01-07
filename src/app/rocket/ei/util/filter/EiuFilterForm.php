@@ -10,7 +10,7 @@ use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\ui\BuildContext;
 use n2n\web\ui\ViewFactory;
-use n2n\reflection\CastUtils;
+use n2n\util\type\CastUtils;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\web\ui\UiComponent;
 use rocket\ei\util\EiuAnalyst;

@@ -6,19 +6,19 @@ use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\manage\gui\EiGuiViewFactory;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\ui\ViewFactory;
-use n2n\reflection\CastUtils;
+use n2n\util\type\CastUtils;
 use rocket\ei\util\Eiu;
 use n2n\web\ui\UiComponent;
 use rocket\ei\manage\gui\EiGui;
 use rocket\ei\manage\gui\ViewMode;
-use rocket\ei\manage\gui\EiGuiConfig;
+use n2n\util\ex\IllegalStateException;
 
 class CommonEiGuiViewFactory implements EiGuiViewFactory {
 	private $eiGui;
 	private $guiDefinition;
 	private $displayStructure;
 	
-	public function __construct(EiGui $eiGui, GuiDefinition $guiDefinition, DisplayStructure $displayStructure) {
+	public function __construct(EiGui $eiGui, GuiDefinition $guiDefinition, DisplayStructure $displayStructure = null) {
 		$this->eiGui = $eiGui;
 		$this->guiDefinition = $guiDefinition;
 		$this->displayStructure = $displayStructure;
@@ -41,18 +41,11 @@ class CommonEiGuiViewFactory implements EiGuiViewFactory {
 	}
 	
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\EiGuiViewFactory::getDisplayStructure()
-	 */
-	public function getDisplayStructure(): DisplayStructure {
+	public function getDisplayStructure() {
+		IllegalStateException::assertTrue($this->displayStructure !== null);
 		return $this->displayStructure;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\EiGuiViewFactory::setDisplayStructure()
-	 */
 	public function setDisplayStructure(DisplayStructure $displayStructure) {
 		$this->displayStructure = $displayStructure;
 	}
@@ -61,7 +54,7 @@ class CommonEiGuiViewFactory implements EiGuiViewFactory {
 // 	private function determineDisplayStructure($viewMode): DisplayStructure {
 // 		$displayStructure = null;
 	
-// 		if ($viewMode & DisplaySettings::COMPACT_VIEW_MODES) {
+// 		if ($viewMode & DisplayConfig::COMPACT_VIEW_MODES) {
 // 			if (null !== ($overviewDisplayStructure = $this->displayScheme->getOverviewDisplayStructure())) {
 // 				return $overviewDisplayStructure;
 // 			}
@@ -69,17 +62,17 @@ class CommonEiGuiViewFactory implements EiGuiViewFactory {
 // 		} 
 		
 // 		switch ($viewMode) {
-// 			case DisplaySettings::VIEW_MODE_BULKY_READ:
+// 			case DisplayConfig::VIEW_MODE_BULKY_READ:
 // 				if (null !== ($detailDisplayStructure = $this->displayScheme->getDetailDisplayStructure())) {
 // 					return $detailDisplayStructure;
 // 				}
 // 				break;
-// 			case DisplaySettings::VIEW_MODE_BULKY_EDIT:
+// 			case DisplayConfig::VIEW_MODE_BULKY_EDIT:
 // 				if (null !== $editDisplayStructure = $this->displayScheme->getEditDisplayStructure()) {
 // 					return $editDisplayStructure;
 // 				}
 // 				break;
-// 			case DisplaySettings::VIEW_MODE_BULKY_ADD:
+// 			case DisplayConfig::VIEW_MODE_BULKY_ADD:
 // 				if (null !== ($addDisplayStructure = $this->displayScheme->getAddDisplayStructure())) {
 // 					return $addDisplayStructure;
 // 				}
@@ -106,7 +99,7 @@ class CommonEiGuiViewFactory implements EiGuiViewFactory {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\EiGuiViewFactory::createUiComponent()
 	 */
-	public function createUiComponent(array $eiEntryGuis, ?HtmlView $contextView, EiGuiConfig $eiGuiConfig): UiComponent {
+	public function createUiComponent(array $eiEntryGuis, ?HtmlView $contextView): UiComponent {
 		$viewFactory = $this->eiGui->getEiFrame()->getN2nContext()->lookup(ViewFactory::class);
 		CastUtils::assertTrue($viewFactory instanceof ViewFactory);
 		
@@ -120,9 +113,7 @@ class CommonEiGuiViewFactory implements EiGuiViewFactory {
 			$displayStructure = $displayStructure->withoutSubStructures();
 		}
 		
-		$params = array('displayStructure' => $displayStructure, 'eiu' => new Eiu($this->eiGui),
-				'renderEntryControls' => $eiGuiConfig->areEntryControlsRendered(),
-				'renderForkControls' => $eiGuiConfig->areForkControlsRendered());
+		$params = array('displayStructure' => $displayStructure, 'eiu' => new Eiu($this->eiGui));
 		
 		if ($contextView !== null) {
 			return $contextView->getImport('\\' .$viewName, $params);

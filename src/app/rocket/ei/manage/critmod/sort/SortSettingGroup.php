@@ -22,7 +22,7 @@
 namespace rocket\ei\manage\critmod\sort;
 
 use n2n\util\config\Attributes;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use n2n\persistence\orm\criteria\Criteria;
 use n2n\util\col\GenericArrayObject;
 

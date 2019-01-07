@@ -22,8 +22,8 @@
 
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use rocket\ei\manage\gui\ui\DisplayStructure;
-	use rocket\ei\util\Eiu;
 	use rocket\ei\util\gui\EiuHtmlBuilder;
+	use rocket\ei\util\Eiu;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -35,69 +35,21 @@
 	$eiu = $view->getParam('eiu');
 	$view->assert($eiu instanceof Eiu);
 
+	$eiuGui = $eiu->gui();
+	
 	$eiuHtml = new EiuHtmlBuilder($view);
-	
-	$entryOpen = $eiuHtml->meta()->isEntryOpen($eiu->entryGui());
-	
-	$renderMeta = $view->getParam('renderMeta', false, null);
-	
-	$renderInnerMeta = false;
-	if ($renderMeta === null) {
-		$renderInnerMeta = 1 == count($displayStructure->getDisplayItems()) 
-				&& $displayStructure->getDisplayItems()[0]->isGroup();
-		$renderMeta = !$renderInnerMeta;
+	if (!$eiuHtml->meta()->isEntryOpen()) {
+		$displayStructure = $displayStructure->groupedItems();
 	}
 ?>
 
-<?php if (!$entryOpen): ?>
-	<?php $eiuHtml->entryOpen('div', $eiu->entryGui()) ?>
-<?php endif ?>
-
-<?php if ($renderMeta): ?>
-	<?php $eiuHtml->toolbar(false, $view->getParam('renderForkControls'), $view->getParam('renderEntryControls')) ?>
-	
-	<?php $eiuHtml->entryMessages() ?>
-<?php endif ?>
-
-<?php foreach ($displayStructure->getDisplayItems() as $displayItem): ?>
-	<?php if ($displayItem->hasDisplayStructure()): ?>
-		<?php $eiuHtml->displayItemOpen('div', $displayItem) ?>
-			<?php if (null !== ($label = $displayItem->getLabel())): ?>
-				<label><?php $html->out($label) ?></label>
-			<?php endif ?>
-	
-			<?php if ($renderInnerMeta): ?>
-				<?php $eiuHtml->toolbar(false, $view->getParam('renderForkControls'), $view->getParam('renderEntryControls')) ?>
-			<?php endif ?>		
-			
-			<div class="rocket-control">
-				<?php if ($renderInnerMeta): ?>
-					<?php $eiuHtml->entryMessages() ?>
-				<?php endif ?>
-			
-				<?php $view->import('bulky.html', $view->mergeParams(array(
-						'displayStructure' => $displayItem->getDisplayStructure(), 
-						'eiu' => $eiu, 'renderMeta' => false))) ?>
-			</div>
-		<?php $eiuHtml->displayItemClose() ?>
-	<?php elseif ($eiuHtml->meta()->containsGuiFieldPath($displayItem->getGuiFieldPath())): ?>
-		<?php $eiuHtml->fieldOpen('div', $displayItem) ?>
-			<?php $eiuHtml->fieldLabel() ?>
-			
-			<?php if ($renderInnerMeta): ?>
-				<?php $eiuHtml->toolbar(true, $view->getParam('renderForkControls'), $view->getParam('renderEntryControls')) ?>
-			<?php else: ?>
-				<?php $eiuHtml->toolbar(true, false, false) ?>
-			<?php endif ?>	
-			
-			<div class="rocket-control">
-				<?php $eiuHtml->fieldContent() ?>
-				<?php $eiuHtml->fieldMessage() ?>
-			</div>
-		<?php $eiuHtml->fieldClose() ?>
-	<?php endif ?>
-<?php endforeach; ?>
-
-<?php if (!$entryOpen): ?>
-	<?php $eiuHtml->entryClose()?>
+<?php if ($eiuGui->isSingle()): ?>
+	<?php $view->import('bulkyEntry.html', [ 'eiuEntryGui' => $eiuGui->entryGui(), 'displayStructure' => $displayStructure ]) ?>
+<?php else: ?>
+	<?php $eiuHtml->collectionOpen('div', $eiuGui) ?>
+		<?php foreach ($eiuGui->entryGuis() as $eiuEntryGui): ?>
+			<?php $view->import('bulkyEntry.html', 
+					[ 'eiuEntryGui' => $eiuEntryGui, 'displayStructure' => $displayStructure ]) ?>
+		<?php endforeach ?>
+	<?php $eiuHtml->collectionClose() ?>
 <?php endif ?>

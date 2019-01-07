@@ -21,18 +21,22 @@
  */
 namespace rocket\impl\ei\component\prop\adapter\gui;
 
-use n2n\web\dispatch\mag\Mag;
+use n2n\impl\web\ui\view\html\HtmlView;
+use n2n\web\ui\UiComponent;
 use rocket\ei\util\Eiu;
 
-interface StatelessEditable extends StatelessDisplayable {
-
-	public function isMandatory(Eiu $eiu): bool;
+interface StatelessGuiFieldDisplayable {
 	
-	public function isReadOnly(Eiu $eiu): bool;
+	/**
+	 * @param Eiu $eiu
+	 * @return array
+	 */
+	public function getHtmlContainerAttrs(Eiu $eiu);
 	
-	public function createMag(Eiu $eiu): Mag;
-	
-	public function loadMagValue(Eiu $eiu, Mag $mag);
-	
-	public function saveMagValue(Mag $option, Eiu $eiu);
+	/**
+	 * @param HtmlView $view
+	 * @param Eiu $eiu
+	 * @return UiComponent
+	 */
+	public function createUiComponent(HtmlView $view, Eiu $eiu);
 }

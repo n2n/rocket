@@ -21,7 +21,7 @@
  */
 namespace rocket\ei\manage\draft;
 
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use rocket\ei\manage\EiEntityObj;
 use n2n\util\ex\IllegalStateException;
 

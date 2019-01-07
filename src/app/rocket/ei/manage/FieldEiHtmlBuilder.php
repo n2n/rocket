@@ -25,11 +25,11 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\map\PropertyPath;
 use rocket\ei\manage\entry\EiFieldValidationResult;
 use n2n\impl\web\ui\view\html\HtmlUtils;
-use rocket\ei\manage\gui\GuiField;
 use n2n\util\ex\IllegalStateException;
 use n2n\web\ui\Raw;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use n2n\web\ui\UiComponent;
+use rocket\ei\manage\gui\GuiFieldDisplayable;
 
 class FieldEiHtmlBuilder {
 	private $view;
@@ -61,7 +61,7 @@ class FieldEiHtmlBuilder {
 		return $attrs;
 	}
 	
-	private function pushGuiPropInfo($tagName, EiFieldValidationResult $validationResult, GuiField $guiField = null, 
+	private function pushGuiPropInfo($tagName, EiFieldValidationResult $validationResult, GuiFieldDisplayable $guiField = null, 
 			PropertyPath $propertyPath = null) {
 		$this->eiPropInfoStack[] = array('tagName' => $tagName, 'displayable' => $guiField,
 				'validationResult' => $validationResult, 'propertyPath' => $propertyPath);
@@ -97,15 +97,15 @@ class FieldEiHtmlBuilder {
 				$this->buildContainerAttrs((array) $attrs, false, $mandatory), $this->uiOutfitter);
 	}
 	
-	public function openOutputField($tagName, GuiField $displayable, EiFieldValidationResult $validationResult, array $attrs = null) {
+	public function openOutputField($tagName, GuiFieldDisplayable $displayable, EiFieldValidationResult $validationResult, array $attrs = null) {
 		$this->view->out($this->getOpenOutputField($tagName, $displayable, $validationResult, $attrs));
 	}
 	
-	public function getOpenOutputField($tagName, GuiField $displayable, EiFieldValidationResult $validationResult, array $attrs = null) {
+	public function getOpenOutputField($tagName, GuiFieldDisplayable $displayable, EiFieldValidationResult $validationResult, array $attrs = null) {
 		$this->pushGuiPropInfo($tagName, $validationResult, $displayable);
 		
 		return new Raw('<' . HtmlUtils::hsc($tagName) . HtmlElement::buildAttrsHtml(
-				$this->buildContainerAttrs(HtmlUtils::mergeAttrs($displayable->getOutputHtmlContainerAttrs(), $attrs))) . '>');
+				$this->buildContainerAttrs(HtmlUtils::mergeAttrs($displayable->getHtmlContainerAttrs(), $attrs))) . '>');
 	}
 	
 	public function closeField() {
@@ -146,7 +146,7 @@ class FieldEiHtmlBuilder {
 			return $this->formHtml->getMagField();
 		}
 				
-		return $this->html->getOut($eiPropInfo['displayable']->createOutputUiComponent($this->view));
+		return $this->html->getOut($eiPropInfo['displayable']->createUiComponent($this->view));
 	}
 	
 	public function message() {

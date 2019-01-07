@@ -23,7 +23,7 @@ namespace rocket\impl\ei\component\prop\relation;
 
 use rocket\ei\manage\EiObject;
 use n2n\util\ex\NotYetImplementedException;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use rocket\impl\ei\component\prop\relation\model\ToManyEditable;
 use rocket\ei\manage\draft\stmt\FetchDraftStmtBuilder;
 use rocket\ei\manage\draft\DraftManager;
@@ -35,7 +35,7 @@ use rocket\ei\manage\LiveEiObject;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\draft\RemoveDraftAction;
 use rocket\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
-use n2n\reflection\CastUtils;
+use n2n\util\type\CastUtils;
 use rocket\impl\ei\component\prop\relation\model\relation\SelectEiPropRelation;
 use rocket\ei\manage\gui\ui\DisplayItem;
 use rocket\ei\manage\gui\GuiField;
@@ -45,7 +45,7 @@ use rocket\ei\manage\security\InaccessibleEiCommandPathException;
 
 abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 	
-	protected function getDisplayItemType(): ?string {
+	protected function getDisplayItemType(): string {
 		return DisplayItem::TYPE_ITEM;
 	}
 	

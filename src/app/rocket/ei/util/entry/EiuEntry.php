@@ -22,6 +22,7 @@
 
 namespace rocket\ei\util\entry;
 
+use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\N2nLocale;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\entry\OnWriteMappingListener;
@@ -29,10 +30,10 @@ use rocket\ei\manage\entry\WrittenMappingListener;
 use rocket\ei\manage\entry\OnValidateMappingListener;
 use rocket\ei\manage\entry\ValidatedMappingListener;
 use rocket\ei\manage\entry\EiFieldOperationFailedException;
+use rocket\ei\manage\gui\EiGuiViewFactory;
 use rocket\ei\manage\gui\GuiFieldPath;
 use rocket\ei\manage\gui\GuiException;
 use rocket\ei\manage\gui\ViewMode;
-use rocket\ei\manage\gui\EiGui;
 use rocket\ei\manage\gui\EiEntryGui;
 use rocket\ei\manage\gui\EiEntryGuiAssembler;
 use rocket\ei\manage\entry\EiEntry;
@@ -41,9 +42,11 @@ use rocket\ei\util\EiuPerimeterException;
 use rocket\ei\util\spec\EiuMask;
 use rocket\ei\util\gui\EiuEntryGui;
 use rocket\ei\util\gui\EiuEntryGuiAssembler;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
+use n2n\web\ui\UiComponent;
 use rocket\ei\manage\entry\UnknownEiFieldExcpetion;
 use rocket\ei\component\prop\EiProp;
+use n2n\util\ex\UnsupportedOperationException;
 
 class EiuEntry {
 	private $eiEntry;
@@ -325,14 +328,12 @@ class EiuEntry {
 		$viewMode = $this->deterViewMode($bulky, $editable);
 		$eiFrame = $this->getEiuFrame()->getEiFrame();
 		
-		$eiGui = new EiGui($eiFrame, $viewMode);
-		$eiGui->init($eiMask->getDisplayScheme()->createEiGuiViewFactory($eiGui,
-				$eiFrame->getManageState()->getDef()->getGuiDefinition($eiMask)));
+		$eiGui = $eiMask->createEiGui($eiFrame, $viewMode, true);
 		
 		return new EiuEntryGui($eiGui->createEiEntryGui($eiEntry, $treeLevel), null, $this->eiuAnalyst);
 	}
 	
-	public function newCustomEntryGui(\Closure $uiFactory, array $eiPropPaths, bool $bulky = true, 
+	public function newCustomEntryGui(\Closure $uiFactory, array $guiFieldPaths, bool $bulky = true, 
 			bool $editable = false, int $treeLevel = null, bool $determineEiMask = true) {
 // 		$eiMask = null;
 // 		if ($determineEiMask) {
@@ -342,7 +343,7 @@ class EiuEntry {
 // 		}
 		
 		$viewMode = $this->deterViewMode($bulky, $editable);
-		$eiuGui = $this->getEiuFrame()->newCustomGui($viewMode, $uiFactory, $eiPropPaths);
+		$eiuGui = $this->getEiuFrame()->newCustomGui($viewMode, $uiFactory, $guiFieldPaths);
 		return $eiuGui->appendNewEntryGui($this, $treeLevel);
 	}
 	
@@ -360,9 +361,9 @@ class EiuEntry {
 			$eiMask = $eiFrame->getContextEiEngine()->getEiMask();
 		}
 		
-		$eiGui = new EiGui($eiFrame, $viewMode);
-		$eiGui->init($eiMask->getDisplayScheme()->createEiGuiViewFactory($eiGui, 
-				$eiFrame->getManageState()->getDef()->getGuiDefinition($eiMask)));
+		$eiGui = $eiMask->createEiGui($eiFrame, $viewMode, false);
+		$eiGui->init(new DummyEiGuiViewFactory(), $eiGui->getGuiDefinition()->getGuiFieldPaths());
+		
 		$eiEntryGuiAssembler = new EiEntryGuiAssembler(new EiEntryGui($eiGui, $this->eiEntry));
 		
 // 		if ($parentEiEntryGui->isInitialized()) {
@@ -715,3 +716,12 @@ class EiuEntry {
 // 	public function saved(EiEntryGui $eiEntryGui) {
 // 	}
 // }
+
+class DummyEiGuiViewFactory implements EiGuiViewFactory  {
+	
+	public function createUiComponent(array $eiEntryGuis, ?HtmlView $contextView): UiComponent {
+		throw new UnsupportedOperationException();
+	}
+
+	
+}

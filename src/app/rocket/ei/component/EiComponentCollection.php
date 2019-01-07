@@ -24,7 +24,7 @@ namespace rocket\ei\component;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\IdPath;
 use rocket\ei\mask\EiMask;
-use n2n\reflection\ReflectionUtils;
+use n2n\util\type\TypeUtils;
 
 abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	private $elementName;
@@ -88,7 +88,7 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	protected function makeId(?string $id, EiComponent $eiComponent) {
 		if (0 == mb_strlen($id)) {
 			$id = $this->createUniqueId($eiComponent->getIdBase() 
-					?? ReflectionUtils::buildTypeAcronym(get_class($eiComponent)));
+					?? TypeUtils::buildTypeAcronym(get_class($eiComponent)));
 		} else if (IdPath::constainsSpecialIdChars($id)) {
 			throw new InvalidEiComponentConfigurationException($this->elementName . ' contains invalid id: '
 					. $id);

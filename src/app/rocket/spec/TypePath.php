@@ -1,7 +1,7 @@
 <?php
 namespace rocket\spec;
 
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use n2n\io\IoUtils;
 
 class TypePath {

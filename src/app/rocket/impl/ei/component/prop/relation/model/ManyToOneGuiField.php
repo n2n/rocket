@@ -22,14 +22,16 @@
 namespace rocket\impl\ei\component\prop\relation\model;
 
 use rocket\ei\manage\frame\EiFrame;
+use rocket\ei\manage\gui\GuiFieldDisplayable;
 use rocket\ei\manage\gui\GuiFieldEditable;
 use n2n\util\ex\IllegalStateException;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\gui\GuiField;
 use rocket\ei\util\Eiu;
 use n2n\l10n\N2nLocale;
+use rocket\ei\manage\gui\ui\DisplayItem;
 
-class ManyToOneGuiField implements GuiField {
+class ManyToOneGuiField implements GuiField, GuiFieldDisplayable {
 	private $label;
 	private $toOneEiField;
 	private $targetEiFrame;
@@ -58,15 +60,15 @@ class ManyToOneGuiField implements GuiField {
 	/**
 	 * @return array
 	 */
-	public function getOutputHtmlContainerAttrs(): array {
+	public function getHtmlContainerAttrs(): array {
 		return array();
 	}
 	
-	public function getDisplayItemType(): ?string {
-		return null;
+	public function getDisplayItemType(): string {
+		return DisplayItem::TYPE_PANEL;
 	}
 	
-	public function createOutputUiComponent(HtmlView $view) {
+	public function createUiComponent(HtmlView $view) {
 		$html = $view->getHtmlBuilder();
 		$targetRelationEntry = $this->toOneEiField->getValue();
 		
@@ -81,6 +83,10 @@ class ManyToOneGuiField implements GuiField {
 		return $html->getLink($this->targetEiFrame->getDetailUrl($view->getHttpContext(), $targetRelationEntry
 						->getEiObject()->toEntryNavPoint()), 
 				$identityString, array('data-jhtml' => 'true'));
+	}
+	
+	public function getDisplayable(): GuiFieldDisplayable {
+		return $this;
 	}
 	
 	/**

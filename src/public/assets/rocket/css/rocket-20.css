@@ -6443,19 +6443,20 @@ td .rocket-simple-commands > .btn > i {
   padding: 0.5rem 0;
 }
 
+.rocket-mail-subject {
+  margin-bottom: 0;
+}
+
 .rocket-mail-properties {
   margin-bottom: 0;
 }
 
-.rocket-mail-message {
+.rocket-mail-message > pre {
   background: #fff;
   font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   padding: 1rem;
   margin-bottom: 0;
-}
-
-.rocket-mail-message > pre {
-  margin-bottom: 0;
+  white-space: pre-wrap;
 }
 
 /**

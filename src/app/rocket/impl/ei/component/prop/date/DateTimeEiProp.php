@@ -32,7 +32,7 @@ use n2n\core\container\N2nContext;
 use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
 use rocket\ei\manage\control\IconType;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use n2n\reflection\property\AccessProxy;
 use n2n\reflection\property\TypeConstraint;
 use rocket\impl\ei\component\prop\date\conf\DateTimeEiPropConfigurator;
@@ -89,7 +89,7 @@ class DateTimeEiProp extends DraftablePropertyEiPropAdapter implements SortableE
 		$this->timeStyle = $timeStyle;
 	}
 	
-	public function createOutputUiComponent(HtmlView $view, Eiu $eiu)  {
+	public function createUiComponent(HtmlView $view, Eiu $eiu)  {
 		return $view->getHtmlBuilder()->getL10nDateTime($eiu->field()->getValue(EiPropPath::from($this)), 
 				$this->getDateStyle(), $this->getTimeStyle());
 	}

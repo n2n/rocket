@@ -2,7 +2,7 @@
 namespace rocket\impl\ei\component\prop\string\cke\ui;
 
 use rocket\impl\ei\component\prop\string\cke\CkeEiProp;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 
 class CkeComposer {
 	private $mode = CkeEiProp::MODE_NORMAL;

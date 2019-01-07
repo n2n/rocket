@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\numeric;
 
 use n2n\impl\web\dispatch\mag\model\NumericMag;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\reflection\property\AccessProxy;
@@ -98,7 +98,7 @@ class DecimalEiProp extends NumericEiPropAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessEditable::createMag($eiu)
+	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldEditable::createMag($eiu)
 	 */
 	public function createMag(Eiu $eiu): Mag {
 		$numericMag = new EiDecimalMag($this->getLabelLstr(), null,

@@ -45,6 +45,8 @@ use rocket\ei\manage\gui\ViewMode;
 use n2n\util\ex\IllegalStateException;
 use rocket\impl\ei\component\prop\adapter\EditablePropertyEiPropAdapter;
 use rocket\impl\ei\component\prop\adapter\PropertyDisplayableEiPropAdapter;
+use n2n\impl\web\dispatch\mag\model\EnumMag;
+use rocket\ei\manage\gui\ui\DisplayItem;
 
 class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPropConfigurator {
 	const ATTR_DISPLAY_IN_OVERVIEW_KEY = 'displayInOverview';
@@ -52,6 +54,7 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 	const ATTR_DISPLAY_IN_EDIT_VIEW_KEY = 'displayInEditView';
 	const ATTR_DISPLAY_IN_ADD_VIEW_KEY = 'displayInAddView';
 	const ATTR_HELPTEXT_KEY = 'helpText';
+	const ATTR_DISPLAY_ITEM_TYPE = 'containerType';
 
 	const ATTR_CONSTANT_KEY = 'constant';
 	const ATTR_READ_ONLY_KEY = 'readOnly';
@@ -61,9 +64,11 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 	
 	private $propertyAssignation;
 	
-	private $displaySettings;
+	private $displayConfig;
+	protected $addDisplayItemType = true;
+	protected $addHelpText = true;
 	
-	private $standardEditDefinition;
+	private $editConfig;
 	protected $addConstant = true; 
 	protected $addReadOnly = true;
 	protected $addMandatory = true;
@@ -144,13 +149,13 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 		$this->confObjectPropertyEiProp = $confObjectPropertyEiProp;
 	}
 	
-	public function registerDisplaySettings(DisplaySettings $displaySettings) {
-		$this->displaySettings = $displaySettings;
+	public function registerDisplayConfig(DisplayConfig $displayConfig) {
+		$this->displayConfig = $displayConfig;
 	}	
 	
-	public function registerStandardEditDefinition(StandardEditDefinition $standardEditDefinition, 
+	public function registerEditConfig(EditConfig $editConfig, 
 			bool $addConstant = true, bool $addReadOnly = true, $addMandatory = true, $autoMandatoryCheck = true) {
-		$this->standardEditDefinition = $standardEditDefinition;
+		$this->editConfig = $editConfig;
 		$this->addConstant = $addConstant;
 		$this->addReadOnly = $addReadOnly;
 		$this->addMandatory = $addMandatory;
@@ -173,11 +178,11 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 		}
 		
 		if ($eiComponent instanceof PropertyDisplayableEiPropAdapter) {
-			$this->registerDisplaySettings($eiComponent->getDisplaySettings());
+			$this->registerDisplayConfig($eiComponent->getDisplayConfig());
 		}
 		
 		if ($eiComponent instanceof EditablePropertyEiPropAdapter) {
-			$this->registerStandardEditDefinition($eiComponent->getStandardEditDefinition());
+			$this->registerEditConfig($eiComponent->getEditConfig());
 		}
 		
 		if ($eiComponent instanceof DraftConfigurable) {
@@ -271,12 +276,12 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 	
 	public function setup(EiSetup $eiSetupProcess) {
 		try {
-			$this->setupDisplaySettings();
+			$this->setupDisplayConfig();
 		} catch (\InvalidArgumentException $e) {
 			throw $eiSetupProcess->createException('Invalid display configuration', $e);
 		}
 
-		$this->setupEditableAdapter();
+		$this->setupEditConfig();
 		$this->setupDraftableAdapter();
 	}
 	
@@ -295,77 +300,85 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 		return new MagForm($magCollection);
 	}
 
-	private function setupDisplaySettings() {
-		if ($this->displaySettings === null) return;
+	private function setupDisplayConfig() {
+		if ($this->displayConfig === null) return;
 	
 		if ($this->attributes->contains(self::ATTR_DISPLAY_IN_OVERVIEW_KEY)) {
-			$this->displaySettings->changeDefaultDisplayedViewModes(
+			$this->displayConfig->changeDefaultDisplayedViewModes(
 					ViewMode::compact(), 
-					$this->attributes->get(self::ATTR_DISPLAY_IN_OVERVIEW_KEY));
+					$this->attributes->getBool(self::ATTR_DISPLAY_IN_OVERVIEW_KEY));
 		}
 	
 		if ($this->attributes->contains(self::ATTR_DISPLAY_IN_DETAIL_VIEW_KEY)) {
-			$this->displaySettings->changeDefaultDisplayedViewModes(ViewMode::BULKY_READ,
-					$this->attributes->get(self::ATTR_DISPLAY_IN_DETAIL_VIEW_KEY));
+			$this->displayConfig->changeDefaultDisplayedViewModes(ViewMode::BULKY_READ,
+					$this->attributes->getBool(self::ATTR_DISPLAY_IN_DETAIL_VIEW_KEY));
 		}
 	
 		if ($this->attributes->contains(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY)) {
-			$this->displaySettings->changeDefaultDisplayedViewModes(ViewMode::BULKY_EDIT,
-					$this->attributes->get(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY));
+			$this->displayConfig->changeDefaultDisplayedViewModes(ViewMode::BULKY_EDIT,
+					$this->attributes->getBool(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY));
 		}
 	
 		if ($this->attributes->contains(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY)) {
-			$this->displaySettings->changeDefaultDisplayedViewModes(ViewMode::BULKY_ADD,
-					$this->attributes->get(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY));
+			$this->displayConfig->changeDefaultDisplayedViewModes(ViewMode::BULKY_ADD,
+					$this->attributes->getBool(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY));
+		}
+		
+		if ($this->attributes->contains(self::ATTR_DISPLAY_ITEM_TYPE)) {
+			$this->displayConfig->setDisplayItemType(
+					$this->attributes->getEnum(self::ATTR_DISPLAY_ITEM_TYPE, DisplayItem::getTypes()));
 		}
 	
 		if ($this->attributes->contains(self::ATTR_HELPTEXT_KEY)) {
-			$this->displaySettings->setHelpText(
-					$this->attributes->get(self::ATTR_HELPTEXT_KEY));
+			$this->displayConfig->setHelpText(
+					$this->attributes->getString(self::ATTR_HELPTEXT_KEY, true, null, true));
 		}
 	}
 	
 	private function assignDisplayMags(MagCollection $magCollection, DynamicTextCollection $dtc) {
-		if ($this->displaySettings === null) return;
+		if ($this->displayConfig === null) return;
 				
 		$lar = new LenientAttributeReader($this->attributes);
 		
-		if ($this->displaySettings->isCompactViewCompatible()) {
+		if ($this->displayConfig->isCompactViewCompatible()) {
 			$magCollection->addMag(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, new BoolMag(
 					$dtc->translate('ei_impl_display_in_overview_label'),
 					$lar->getBool(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, 
-							$this->displaySettings->isViewModeDefaultDisplayed(ViewMode::BULKY_READ))));
+							$this->displayConfig->isViewModeDefaultDisplayed(ViewMode::BULKY_READ))));
 		}
 	
-		if ($this->displaySettings->isViewModeCompatible(ViewMode::BULKY_READ)) {
+		if ($this->displayConfig->isViewModeCompatible(ViewMode::BULKY_READ)) {
 			$magCollection->addMag(self::ATTR_DISPLAY_IN_DETAIL_VIEW_KEY, new BoolMag(
 					$dtc->translate('ei_impl_display_in_detail_view_label'),
 					$lar->getBool(self::ATTR_DISPLAY_IN_DETAIL_VIEW_KEY,
-							$this->displaySettings->isViewModeDefaultDisplayed(
-									ViewMode::BULKY_READ))));
+							$this->displayConfig->isViewModeDefaultDisplayed(ViewMode::BULKY_READ))));
 		}
 	
-		if ($this->displaySettings->isViewModeCompatible(ViewMode::BULKY_EDIT)) {
+		if ($this->displayConfig->isViewModeCompatible(ViewMode::BULKY_EDIT)) {
 			$magCollection->addMag(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, new BoolMag(
 					$dtc->translate('ei_impl_display_in_edit_view_label'),
 					$lar->getBool(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, 
-							$this->displaySettings->isViewModeDefaultDisplayed(
-									ViewMode::BULKY_EDIT))));
+							$this->displayConfig->isViewModeDefaultDisplayed(ViewMode::BULKY_EDIT))));
 		}
 	
-		if ($this->displaySettings->isViewModeCompatible(ViewMode::BULKY_ADD)) {
+		if ($this->displayConfig->isViewModeCompatible(ViewMode::BULKY_ADD)) {
 			$magCollection->addMag(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY, new BoolMag(
 					$dtc->translate('ei_impl_display_in_add_view_label'),
 					$lar->getBool(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY, 
-							$this->displaySettings->isViewModeDefaultDisplayed(
-									ViewMode::BULKY_ADD))));
+							$this->displayConfig->isViewModeDefaultDisplayed(ViewMode::BULKY_ADD))));
 		}
 		
-		$magCollection->addMag(self::ATTR_HELPTEXT_KEY, new StringMag($dtc->translate('ei_impl_help_text_label'), 
-				$lar->getString(self::ATTR_HELPTEXT_KEY, $this->displaySettings->getHelpText())));
+		if ($this->addDisplayItemType) {
+			$types = DisplayItem::getTypes();
+			$magCollection->addMag(self::ATTR_DISPLAY_ITEM_TYPE, new EnumMag('Container type', 
+					array_combine($types, $types), $this->displayConfig->getDisplayItemType(), true));
+		}
+		
+		if ($this->addHelpText) {
+			$magCollection->addMag(self::ATTR_HELPTEXT_KEY, new StringMag('Helptext', 
+					$lar->getString(self::ATTR_HELPTEXT_KEY, $this->displayConfig->getHelpText())));
+		}
 	}
-	
-
 	
 	protected function mandatoryRequired() {
 		$accessProxy = $this->getPropertyAssignation()->getObjectPropertyAccessProxy(false);
@@ -373,24 +386,24 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 		return !$accessProxy->getConstraint()->allowsNull() && !$accessProxy->getConstraint()->isArrayLike();
 	}
 	
-	private function setupEditableAdapter() {
-		if ($this->standardEditDefinition === null) return;
+	private function setupEditConfig() {
+		if ($this->editConfig === null) return;
 		
 		if ($this->addConstant && $this->attributes->contains(self::ATTR_CONSTANT_KEY)) {
-			$this->standardEditDefinition->setConstant($this->attributes->getBool(self::ATTR_CONSTANT_KEY));
+			$this->editConfig->setConstant($this->attributes->getBool(self::ATTR_CONSTANT_KEY));
 		}
 			
 		if ($this->addReadOnly && $this->attributes->contains(self::ATTR_READ_ONLY_KEY)) {
-			$this->standardEditDefinition->setReadOnly($this->attributes->getBool(self::ATTR_READ_ONLY_KEY));
+			$this->editConfig->setReadOnly($this->attributes->getBool(self::ATTR_READ_ONLY_KEY));
 		}
 		
 		if ($this->addMandatory) {
 			if ($this->attributes->contains(self::ATTR_MANDATORY_KEY)) {
 				$mandatory = $this->attributes->getBool(self::ATTR_MANDATORY_KEY);
-				$this->standardEditDefinition->setMandatory($mandatory);
+				$this->editConfig->setMandatory($mandatory);
 			}
 			
-			if (!$this->standardEditDefinition->isMandatory() && $this->addMandatory && $this->autoMandatoryCheck 
+			if (!$this->editConfig->isMandatory() && $this->addMandatory && $this->autoMandatoryCheck 
 					&& $this->mandatoryRequired()) {
 				throw new InvalidAttributeException(self::ATTR_MANDATORY_KEY . ' must be true because '
 						. $this->getPropertyAssignation()->getObjectPropertyAccessProxy(true) 
@@ -400,23 +413,23 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 	}
 	
 	private function assignEditMags(MagCollection $magCollection) {
-		if ($this->standardEditDefinition === null) return;
+		if ($this->editConfig === null) return;
 
 		$lar = new LenientAttributeReader($this->attributes);
 		
 		if ($this->addConstant) {
 			$magCollection->addMag(self::ATTR_CONSTANT_KEY, new BoolMag('Constant',
-					$lar->getBool(self::ATTR_CONSTANT_KEY, $this->standardEditDefinition->isConstant())));
+					$lar->getBool(self::ATTR_CONSTANT_KEY, $this->editConfig->isConstant())));
 		}
 			
 		if ($this->addReadOnly) {
 			$magCollection->addMag(self::ATTR_READ_ONLY_KEY, new BoolMag('Read only',
-					$lar->getBool(self::ATTR_READ_ONLY_KEY, $this->standardEditDefinition->isReadOnly())));
+					$lar->getBool(self::ATTR_READ_ONLY_KEY, $this->editConfig->isReadOnly())));
 		}
 			
 		if ($this->addMandatory) {
 			$magCollection->addMag(self::ATTR_MANDATORY_KEY, new BoolMag('Mandatory',
-					$lar->getBool(self::ATTR_MANDATORY_KEY, $this->standardEditDefinition->isMandatory())));
+					$lar->getBool(self::ATTR_MANDATORY_KEY, $this->editConfig->isMandatory())));
 		}
 	}
 
@@ -446,7 +459,7 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 	}
 	
 	private function saveDisplayMags(MagCollection $magCollection) {
-		if ($this->displaySettings === null) return;
+		if ($this->displayConfig === null) return;
 		
 		$this->attributes->appendAll($magCollection->readValues(array(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, 
 				self::ATTR_DISPLAY_IN_DETAIL_VIEW_KEY, self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, 
@@ -454,7 +467,7 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 	}
 	
 	private function saveStandardEditMags(MagCollection $magCollection) {
-		if ($this->standardEditDefinition === null) return;
+		if ($this->editConfig === null) return;
 	
 		$this->attributes->appendAll($magCollection->readValues(array(self::ATTR_CONSTANT_KEY,
 				self::ATTR_READ_ONLY_KEY, self::ATTR_MANDATORY_KEY,

@@ -4,11 +4,12 @@ namespace rocket\impl\ei\component\prop\relation;
 
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\gui\GuiField;
+use rocket\ei\manage\gui\GuiFieldDisplayable;
 use rocket\ei\manage\gui\GuiFieldEditable;
 use n2n\util\ex\UnsupportedOperationException;
 use n2n\l10n\N2nLocale;
 
-class InaccessibleGuiField implements GuiField {
+class InaccessibleGuiField implements GuiField, GuiFieldDisplayable {
 	private $label;
 	
 	public function __construct(string $label) {
@@ -19,7 +20,7 @@ class InaccessibleGuiField implements GuiField {
 		return true;
 	}
 
-	public function getOutputHtmlContainerAttrs(): array {
+	public function getHtmlContainerAttrs(): array {
 		return [];
 	}
 
@@ -27,7 +28,7 @@ class InaccessibleGuiField implements GuiField {
 		throw new UnsupportedOperationException();
 	}
 
-	public function createOutputUiComponent(HtmlView $view) {
+	public function createUiComponent(HtmlView $view) {
 		return $view->getL10nText('common_inaccessible_err', null, null, null, 'rocket');
 	}
 
@@ -35,9 +36,14 @@ class InaccessibleGuiField implements GuiField {
 		return $this->label; 
 	}
 
-	public function getDisplayItemType(): ?string {
+	public function getDisplayItemType(): string {
 		return null;
 	}
+	
+	public function getDisplayable(): GuiFieldDisplayable {
+		return $this;
+	}
+
 
 	
 }

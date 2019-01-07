@@ -22,11 +22,11 @@
 namespace rocket\ei\manage\gui;
 
 use n2n\util\ex\IllegalStateException;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use rocket\ei\EiPropPath;
 use rocket\ei\component\prop\EiProp;
 use n2n\util\col\Hashable;
-use n2n\reflection\ReflectionUtils;
+use n2n\util\type\TypeUtils;
 
 class GuiFieldPath implements Hashable {
 	const EI_PROP_PATH_SEPARATOR = '.';
@@ -173,7 +173,7 @@ class GuiFieldPath implements Hashable {
 			$pars = [];
 		} else {
 			throw new \InvalidArgumentException('Passed value type can not be converted to a GuiFieldPath: ' 
-					. ReflectionUtils::getTypeInfo($expression));
+					. TypeUtils::getTypeInfo($expression));
 		}
 		
 		$guiFieldPath = new GuiFieldPath([]);

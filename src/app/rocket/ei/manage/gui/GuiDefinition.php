@@ -26,12 +26,12 @@ use rocket\ei\EiPropPath;
 use rocket\ei\manage\EiObject;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\util\Eiu;
-use rocket\ei\manage\gui\ui\DisplayStructure;
 use n2n\util\ex\NotYetImplementedException;
 use n2n\l10n\Lstr;
 use rocket\core\model\Rocket;
 use n2n\core\container\N2nContext;
 use rocket\ei\manage\entry\UnknownEiFieldExcpetion;
+use n2n\util\type\ArgUtils;
 
 class GuiDefinition {	
 	private $identityStringPattern;
@@ -207,7 +207,7 @@ class GuiDefinition {
 	}
 	
 	protected function buildGuiFieldPaths(array $baseEiPropPaths) {
-		$eiPropPaths = array();
+		$guiFieldPaths = array();
 		
 		foreach ($this->eiPropPaths as $eiPropPath) {
 			$eiPropPathStr = (string) $eiPropPath;
@@ -215,95 +215,89 @@ class GuiDefinition {
 			if (isset($this->guiProps[$eiPropPathStr])) {
 				$currentEiPropPaths = $baseEiPropPaths;
 				$currentEiPropPaths[] = $eiPropPath;
-				$eiPropPaths[] = new GuiFieldPath($currentEiPropPaths);
+				$guiFieldPaths[] = new GuiFieldPath($currentEiPropPaths);
 			}
 			
 			if (isset($this->guiPropForks[$eiPropPathStr])) {
 				$currentEiPropPaths = $baseEiPropPaths;
 				$currentEiPropPaths[] = $eiPropPath;
 				
-				$eiPropPaths = array_merge($eiPropPaths, $this->guiPropForks[$eiPropPathStr]->getForkedGuiDefinition()
+				$guiFieldPaths = array_merge($guiFieldPaths, $this->guiPropForks[$eiPropPathStr]->getForkedGuiDefinition()
 						->buildGuiFieldPaths($currentEiPropPaths));
 			}
 		}
 		
-		return $eiPropPaths;
+		return $guiFieldPaths;
 	}
 	
-	public function createDefaultDisplayStructure(EiGui $eiGui) {
-		$displayStructure = new DisplayStructure();
-		$this->composeDisplayStructure($displayStructure, array(), new Eiu($eiGui));
-		return $displayStructure;
+	public function assembleDefaultGuiProps(EiGui $eiGui) {
+		$guiPropAssemblies = [];
+		$this->composeGuiPropAssemblies($guiPropAssemblies, [], new Eiu($eiGui));
+		return $guiPropAssemblies;
 	}
+	
+	public function assembleGuiProps(EiGui $eiGui, array $guiFieldPaths) {
+		ArgUtils::valArray($guiFieldPaths, GuiFieldPath::class);
+		
+		$eiu = new Eiu($eiGui);
+		
+		$guiPropAssemblies = [];
+		
+		foreach ($guiFieldPaths as $key => $guiFieldPath) {
+			$guiProp = $this->getGuiPropByGuiFieldPath($guiFieldPath);
+			
+			$displayDefinition = $guiProp->buildDisplayDefinition($eiu);
+			if ($displayDefinition === null) {
+				continue;
+			} 
+			
+			$guiPropAssemblies[(string) $guiFieldPath] = new GuiPropAssembly($guiProp, $guiFieldPath, 
+					$displayDefinition);
+		}
+		
+		return $guiPropAssemblies;
+	}
+	
 	
 	/**
 	 * @param array $baseEiPropPaths
 	 * @param Eiu $eiu
 	 * @param int $minTestLevel
 	 */
-	protected function composeDisplayStructure(DisplayStructure $displayStructure, array $baseEiPropPaths, Eiu $eiu) {
+	protected function composeGuiPropAssemblies(array &$guiPropAssemblies, array $baseEiPropPaths, Eiu $eiu) {
 		foreach ($this->eiPropPaths as $eiPropPath) {
 			$eiPropPathStr = (string) $eiPropPath;
 			
 			$displayDefinition = null;
-			if (isset($this->guiProps[$eiPropPathStr]) 
+			if (isset($this->guiProps[$eiPropPathStr])
 					&& null !== ($displayDefinition = $this->guiProps[$eiPropPathStr]->buildDisplayDefinition($eiu))
 					&& $displayDefinition->isDefaultDisplayed()) {
-				
+						
 				$currentEiPropPaths = $baseEiPropPaths;
 				$currentEiPropPaths[] = $eiPropPath;
-				$displayStructure->addGuiFieldPath(new GuiFieldPath($currentEiPropPaths),
-						$displayDefinition->getDisplayItemType());
+				
+				$guiFieldPath = new GuiFieldPath($currentEiPropPaths);
+				$guiPropAssemblies[(string) $guiFieldPath] = new GuiPropAssembly($this->guiProps[$eiPropPathStr], 
+						$guiFieldPath, $displayDefinition);
 			}
 			
 			if (isset($this->guiPropForks[$eiPropPathStr])
 					&& null !== ($forkedGuiDefinition = $this->guiPropForks[$eiPropPathStr]->getForkedGuiDefinition())) {
 				$currentEiPropPaths = $baseEiPropPaths;
 				$currentEiPropPaths[] = $eiPropPath;
-				$forkedGuiDefinition->composeDisplayStructure($displayStructure, $currentEiPropPaths, $eiu);
+				$forkedGuiDefinition->composeGuiPropAssemblies($guiPropAssemblies, $currentEiPropPaths, $eiu);
 			}
 		}
 	}
 	
-	public function purifyDisplayStructure(DisplayStructure $displayStructure, EiGui $eiGui) {
-		return $this->rPurifyDisplayStructure($displayStructure, new Eiu($eiGui));
-	}
+// 	public function createDefaultDisplayStructure(EiGui $eiGui) {
+// 		$displayStructure = new DisplayStructure();
+// 		$this->composeDisplayStructure($displayStructure, array(), new Eiu($eiGui));
+// 		return $displayStructure;
+// 	}
 	
-	private function rPurifyDisplayStructure(DisplayStructure $displayStructure, Eiu $eiu) {
-		$purifiedDisplayStructure = new DisplayStructure();
-		
-		foreach ($displayStructure->getDisplayItems() as $displayItem) {
-			if ($displayItem->hasDisplayStructure()) {
-				$purifiedDisplayStructure->addDisplayStructure(
-						$this->rPurifyDisplayStructure($displayItem->getDisplayStructure(), $eiu), 
-						$displayItem->getType(), $displayItem->getLabel());
-				continue;
-			}
-			
-			$guiProp = null;
-			try {
-				$guiProp = $this->getGuiPropByGuiFieldPath($displayItem->getGuiFieldPath());
-			} catch (GuiException $e) {
-				continue;
-			}
-			
-			$displayDefinition = $guiProp->buildDisplayDefinition($eiu);
-			if ($displayDefinition === null) {
-				continue;
-			}
-			
-			$purifiedDisplayStructure->addGuiFieldPath($displayItem->getGuiFieldPath(),
-					$displayItem->getType() ?? $displayDefinition->getDisplayItemType(),
-					$displayItem->getLabel(), $displayItem->getModuleNamespace());
-		}
-		
-		return $purifiedDisplayStructure;
-	}
+
 	
-	public function completeDisplayStructure(EiGui $eiGui) {
-		$displayStructure = new DisplayStructure();
-		return $this->composeDisplayStructure($displayStructure, array(), new Eiu($eiGui));
-	}
 	
 	/**
 	 * @param GuiFieldPath $guiFieldPath

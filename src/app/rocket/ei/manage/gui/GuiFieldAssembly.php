@@ -1,32 +1,41 @@
 <?php
 namespace rocket\ei\manage\gui;
 
+use n2n\util\type\ArgUtils;
+
 class GuiFieldAssembly {
-	private $guiProp;
-	private $guiField;
+// 	private $guiProp;
+	private $displayable;
 	private $magAssembly;
 	private $editable;
 	
-	public function __construct(GuiProp $guiProp, GuiField $guiField, 
+	public function __construct(/*GuiProp $guiProp,*/ GuiFieldDisplayable $displayable, 
 			MagAssembly $magAssembly = null, GuiFieldEditable $editable = null) {
-		$this->guiProp = $guiProp;
-		$this->guiField = $guiField;
+// 		$this->guiProp = $guiProp;
+		$this->displayable = $displayable;
 		$this->magAssembly = $magAssembly;
 		$this->editable = $editable;
+		
+		ArgUtils::assertTrue(($this->magAssembly !== null) == ($this->editable !== null),
+				'readonly need GuiFieldEditable and editable need GuiFieldEditable');
 	}
 	
-	/**
-	 * @return GuiProp
-	 */
-	function getGuiProp() {
-		return $this->guiProp;
-	}
+// 	/**
+// 	 * @return GuiProp
+// 	 */
+// 	function getGuiProp() {
+// 		return $this->guiProp;
+// 	}
 	
 	/**
-	 * @return GuiField
+	 * @return GuiFieldDisplayable
 	 */
-	public function getGuiField() {
-		return $this->guiField;
+	public function getDisplayable() {
+		return $this->displayable;
+	}
+	
+	public function isReadOnly() {
+		return $this->magAssembly === null;
 	}
 	
 	/**
@@ -37,7 +46,7 @@ class GuiFieldAssembly {
 	}
 	
 	/**
-	 * @return GuiFieldEditable|null
+	 * @return \rocket\ei\manage\gui\GuiFieldEditable
 	 */
 	public function getEditable() {
 		return $this->editable;

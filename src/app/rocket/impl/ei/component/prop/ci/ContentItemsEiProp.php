@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\ci;
 
 use n2n\persistence\orm\property\EntityProperty;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use rocket\impl\ei\component\prop\relation\EmbeddedOneToManyEiProp;
 use rocket\impl\ei\component\prop\ci\conf\ContentItemsEiPropConfigurator;
 use rocket\impl\ei\component\prop\ci\model\ContentItem;
@@ -43,8 +43,8 @@ class ContentItemsEiProp extends EmbeddedOneToManyEiProp {
 	
 	public function __construct() {
 		parent::__construct();
-		$this->displaySettings->setListReadModeDefaultDisplayed(false);
-		$this->standardEditDefinition->setMandatory(false);
+		$this->displayConfig->setListReadModeDefaultDisplayed(false);
+		$this->editConfig->setMandatory(false);
 		$this->panelConfigs = array(new PanelConfig('main', 'Main', null, 0)); 
 	}
 	
@@ -52,7 +52,7 @@ class ContentItemsEiProp extends EmbeddedOneToManyEiProp {
 		return new ContentItemsEiPropConfigurator($this/*, $this->eiPropRelation*/);
 	}
 	
-	protected function getDisplayItemType(): ?string {
+	protected function getDisplayItemType(): string {
 		return DisplayItem::TYPE_LIGHT_GROUP;
 	}
 	

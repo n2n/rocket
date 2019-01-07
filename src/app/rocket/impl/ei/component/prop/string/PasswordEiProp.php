@@ -49,7 +49,7 @@ class PasswordEiProp extends AlphanumericEiProp {
 		return new PasswordEiPropConfigurator($this);
 	}
 	
-	public function createOutputUiComponent(HtmlView $view, Eiu $eiu)  {
+	public function createUiComponent(HtmlView $view, Eiu $eiu)  {
 		return null;
 	}
 	

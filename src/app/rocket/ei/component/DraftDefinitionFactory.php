@@ -23,7 +23,7 @@ namespace rocket\ei\component;
 
 use rocket\ei\component\prop\EiPropCollection;
 use rocket\ei\component\modificator\EiModificatorCollection;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use rocket\ei\component\prop\DraftableEiProp;
 use rocket\ei\manage\draft\DraftDefinition;
 use n2n\persistence\orm\model\EntityModel;

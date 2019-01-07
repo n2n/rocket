@@ -22,6 +22,7 @@
 namespace rocket\impl\ei\component\prop\relation\model;
 
 use rocket\ei\manage\frame\EiFrame;
+use rocket\ei\manage\gui\GuiFieldDisplayable;
 use rocket\ei\manage\gui\GuiFieldEditable;
 use n2n\util\ex\IllegalStateException;
 use n2n\impl\web\ui\view\html\HtmlView;
@@ -32,7 +33,7 @@ use rocket\ei\util\Eiu;
 use n2n\l10n\N2nLocale;
 use rocket\ei\EiPropPath;
 
-class ToManySelectGuiField implements GuiField {
+class ToManySelectGuiField implements GuiField, GuiFieldDisplayable {
 	private $eiProp;
 	private $eiu;
 	private $targetEiFrame;
@@ -51,7 +52,7 @@ class ToManySelectGuiField implements GuiField {
 		return $this->editable === null;
 	}
 	
-	public function getDisplayItemType(): ?string {
+	public function getDisplayItemType(): string {
 		return null;
 	}
 	
@@ -65,7 +66,7 @@ class ToManySelectGuiField implements GuiField {
 	/**
 	 * @return array
 	 */
-	public function getOutputHtmlContainerAttrs(): array {
+	public function getHtmlContainerAttrs(): array {
 // 		if ($this->eiu->entryGui()->isBulky()) {
 // 			return array('class' => 'rocket-block');
 // 		}
@@ -73,7 +74,7 @@ class ToManySelectGuiField implements GuiField {
 		return array();
 	}
 	
-	public function createOutputUiComponent(HtmlView $view) {
+	public function createUiComponent(HtmlView $view) {
 		if ($this->eiu->entry()->getEiEntry()->isNew()) {
 			return null;
 		}
@@ -105,6 +106,13 @@ class ToManySelectGuiField implements GuiField {
 		return $html->getLink($targetEiFrame->getOverviewUrl($view->getHttpContext()), $label, array('data-jhtml' => 'true'));
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\gui\GuiField::getDisplayable()
+	 */
+	public function getDisplayable(): GuiFieldDisplayable {
+		return $this;
+	}
 	
 	/**
 	 * {@inheritDoc}
