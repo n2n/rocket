@@ -95,9 +95,7 @@ class DisplayItem {
 		if ($this->moduleNamespace === null) {
 			return Lstr::create($this->label);
 		}
-		
-		return Rocket::createLstr($this->label, $this->moduleNamespace)->t($n2nLocale);
-		
+				
 		return Rocket::createLstr($this->label, $this->moduleNamespace);
 	}
 	
