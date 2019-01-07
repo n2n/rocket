@@ -86,11 +86,19 @@ class DisplayItem {
 	 * @return Lstr|null
 	 */
 	public function getLabelLstr() {
-		if ($this->hasDisplayStructure()) {
-			return Rocket::createLstr($this->label, $this->moduleNamespace);
+		if (!$this->hasDisplayStructure()) {
+			throw new IllegalStateException('No labels for GuiFieldPath DisplayItem.');
 		}
 		
-		throw new IllegalStateException('No labels for GuiFieldPath DisplayItem.');
+		if ($this->label === null) return null;
+		
+		if ($this->moduleNamespace === null) {
+			return Lstr::create($this->label);
+		}
+		
+		return Rocket::createLstr($this->label, $this->moduleNamespace)->t($n2nLocale);
+		
+		return Rocket::createLstr($this->label, $this->moduleNamespace);
 	}
 	
 	/**
@@ -112,13 +120,11 @@ class DisplayItem {
 	 * @return string|null
 	 */
 	public function translateLabel(N2nLocale $n2nLocale) {
-		if ($this->label === null) return null;
-		
-		if ($this->moduleNamespace === null) {
-			return $this->label;
+		$lstr = $this->getLabelLstr();
+		if ($lstr !== null) {
+			return $lstr->t($n2nLocale);
 		}
-		
-		return Rocket::createLstr($this->label, $this->moduleNamespace)->t($n2nLocale);
+		return null;
 	}
 	
 // 	/**
