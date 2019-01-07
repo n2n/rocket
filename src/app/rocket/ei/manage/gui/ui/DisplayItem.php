@@ -62,7 +62,7 @@ class DisplayItem {
 		ArgUtils::valEnum($type, self::getTypes());
 		$displayItem->type = $type;
 		$displayItem->label = $label;
-		$displayItem->moduleNamespace = $moduleNamspace;
+		$displayItem->moduleNamespace = $moduleNamespace;
 		return $displayItem;
 	}
 	
