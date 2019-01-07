@@ -5,6 +5,8 @@ use rocket\ei\manage\gui\GuiFieldPath;
 use n2n\util\ex\IllegalStateException;
 use n2n\util\type\ArgUtils;
 use n2n\l10n\Lstr;
+use rocket\core\model\Rocket;
+use n2n\l10n\N2nLocale;
 
 class DisplayItem {
 	const TYPE_SIMPLE_GROUP = 'simple-group';
@@ -14,7 +16,8 @@ class DisplayItem {
 	const TYPE_PANEL = 'panel';
 	const TYPE_ITEM = 'item';
 
-	protected $labelLstr;
+	protected $label;
+	protected $moduleNamespace;
 	protected $type;
 	protected $guiFieldPath;
 	protected $attrs;
@@ -53,12 +56,13 @@ class DisplayItem {
 	 * @return DisplayItem
 	 */
 	public static function createFromDisplayStructure(DisplayStructure $displayStructure, string $type, 
-			Lstr $labelLstr = null) {
+			string $label = null, string $moduleNamespace = null) {
 		$displayItem = new DisplayItem();
 		$displayItem->displayStructure = $displayStructure;
 		ArgUtils::valEnum($type, self::getTypes());
 		$displayItem->type = $type;
-		$displayItem->labelLstr = $labelLstr;
+		$displayItem->label = $label;
+		$displayItem->moduleNamespace = $moduleNamspace;
 		return $displayItem;
 	}
 	
@@ -83,32 +87,39 @@ class DisplayItem {
 	 */
 	public function getLabelLstr() {
 		if ($this->hasDisplayStructure()) {
-			return $this->labelLstr;
+			return Rocket::createLstr($this->label, $this->moduleNamespace);
 		}
 		
 		throw new IllegalStateException('No labels for GuiFieldPath DisplayItem.');
 	}
 	
-// 	/**
-// 	 * @return string|null
-// 	 */
-// 	public function getModuleNamespace() {
-// 		return $this->moduleNamespace;
-// 	}
+	/**
+	 * @return string|null
+	 */
+	public function getLabel() {
+		return $this->label;
+	}
 	
-// 	/**
-// 	 * @param N2nLocale $n2nLocale
-// 	 * @return string|null
-// 	 */
-// 	public function translateLabel(N2nLocale $n2nLocale) {
-// 		if ($this->labelLstr === null) return null;
+	/**
+	 * @return string|null
+	 */
+	public function getModuleNamespace() {
+		return $this->moduleNamespace;
+	}
+	
+	/**
+	 * @param N2nLocale $n2nLocale
+	 * @return string|null
+	 */
+	public function translateLabel(N2nLocale $n2nLocale) {
+		if ($this->label === null) return null;
 		
-// 		if ($this->moduleNamespace === null) {
-// 			return $this->labelLstr;
-// 		}
+		if ($this->moduleNamespace === null) {
+			return $this->label;
+		}
 		
-// 		return Rocket::createLstr($this->labelLstr, $this->moduleNamespace)->t($n2nLocale);
-// 	}
+		return Rocket::createLstr($this->label, $this->moduleNamespace)->t($n2nLocale);
+	}
 	
 // 	/**
 // 	 * @param N2nLocale $n2nLocale
