@@ -23,7 +23,6 @@ namespace rocket\ei\manage\gui\ui;
 
 use rocket\ei\manage\gui\GuiFieldPath;
 use n2n\util\type\ArgUtils;
-use n2n\l10n\Lstr;
 use rocket\ei\manage\gui\EiGui;
 use rocket\ei\manage\gui\GuiException;
 
@@ -46,8 +45,9 @@ class DisplayStructure {
 	 * @param string $label
 	 * @param string $moduleNamespace
 	 */
-	public function addDisplayStructure(DisplayStructure $displayStructure, string $type, Lstr $labelLstr = null) {
-		$this->displayItems[] = DisplayItem::createFromDisplayStructure($displayStructure, $type, $labelLstr);
+	public function addDisplayStructure(DisplayStructure $displayStructure, string $type, string $label = null, 
+			string $moduleNamespace = null) {
+		$this->displayItems[] = DisplayItem::createFromDisplayStructure($displayStructure, $type, $label, $moduleNamespace);
 	}
 	
 	/**
@@ -183,9 +183,11 @@ class DisplayStructure {
 					($displayItem->getType() == DisplayItem::TYPE_MAIN_GROUP ? $newDisplayStructure : $autonomicDs));
 			
 			if ($displayItem->getType() == DisplayItem::TYPE_AUTONOMIC_GROUP) {
-				$autonomicDs->addDisplayStructure($newDisplayStructure, DisplayItem::TYPE_SIMPLE_GROUP, $displayItem->getLabel());	
+				$autonomicDs->addDisplayStructure($newDisplayStructure, DisplayItem::TYPE_SIMPLE_GROUP, 
+						$displayItem->getLabel(), $displayItem->getModuleNamespace());	
 			} else {
-				$ds->addDisplayStructure($newDisplayStructure, $displayItem->getType(), $displayItem->getLabel());
+				$ds->addDisplayStructure($newDisplayStructure, $displayItem->getType(), $displayItem->getLabel(), 
+						$displayItem->getModuleNamespace());
 			}
 		}
 	}
@@ -288,7 +290,7 @@ class DisplayStructure {
 			if ($displayItem->hasDisplayStructure()) {
 				$purifiedDisplayStructure->addDisplayStructure(
 						$this->rPurifyDisplayStructure($displayItem->getDisplayStructure(), $eiGui),
-						$displayItem->getType(), $displayItem->getLabelLstr());
+						$displayItem->getType(), $displayItem->getLabel(), $displayItem->getModuleNamespace());
 				continue;
 			}
 			
