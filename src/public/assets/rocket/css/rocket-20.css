@@ -5325,57 +5325,63 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
 }
 
 .rocket-tree-level-1 > td:first-child:not(.rocket-entry-selector)::before,
-.rocket-tree-level-1 > .rocket-entry-selector + td::before {
-  content: '– ';
+.rocket-tree-level-1 > .rocket-entry-selector + td::before, .rocket-tree-level-2 > td:first-child:not(.rocket-entry-selector)::before,
+.rocket-tree-level-2 > .rocket-entry-selector + td::before, .rocket-tree-level-3 > td:first-child:not(.rocket-entry-selector)::before,
+.rocket-tree-level-3 > .rocket-entry-selector + td::before, .rocket-tree-level-4 > td:first-child:not(.rocket-entry-selector)::before,
+.rocket-tree-level-4 > .rocket-entry-selector + td::before, .rocket-tree-level-5 > td:first-child:not(.rocket-entry-selector)::before,
+.rocket-tree-level-5 > .rocket-entry-selector + td::before, .rocket-tree-level-6 > td:first-child:not(.rocket-entry-selector)::before,
+.rocket-tree-level-6 > .rocket-entry-selector + td::before, .rocket-tree-level-7 > td:first-child:not(.rocket-entry-selector)::before,
+.rocket-tree-level-7 > .rocket-entry-selector + td::before, .rocket-tree-level-8 > td:first-child:not(.rocket-entry-selector)::before,
+.rocket-tree-level-8 > .rocket-entry-selector + td::before, .rocket-tree-level-9 > td:first-child:not(.rocket-entry-selector)::before,
+.rocket-tree-level-9 > .rocket-entry-selector + td::before {
   padding-right: 0.5rem;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.rocket-tree-level-1 > td:first-child:not(.rocket-entry-selector)::before,
+.rocket-tree-level-1 > .rocket-entry-selector + td::before {
+  content: "– ";
 }
 
 .rocket-tree-level-2 > td:first-child:not(.rocket-entry-selector)::before,
 .rocket-tree-level-2 > .rocket-entry-selector + td::before {
-  content: '– – ';
-  padding-right: 0.5rem;
+  content: "– – ";
 }
 
 .rocket-tree-level-3 > td:first-child:not(.rocket-entry-selector)::before,
 .rocket-tree-level-3 > .rocket-entry-selector + td::before {
-  content: '– – – ';
-  padding-right: 0.5rem;
+  content: "– – – ";
 }
 
 .rocket-tree-level-4 > td:first-child:not(.rocket-entry-selector)::before,
 .rocket-tree-level-4 > .rocket-entry-selector + td::before {
-  content: '– – – – ';
-  padding-right: 0.5rem;
+  content: "– – – – ";
 }
 
 .rocket-tree-level-5 > td:first-child:not(.rocket-entry-selector)::before,
 .rocket-tree-level-5 > .rocket-entry-selector + td::before {
-  content: '– – – – – ';
-  padding-right: 0.5rem;
+  content: "– – – – – ";
 }
 
 .rocket-tree-level-6 > td:first-child:not(.rocket-entry-selector)::before,
 .rocket-tree-level-6 > .rocket-entry-selector + td::before {
-  content: '– – – – – – ';
-  padding-right: 0.5rem;
+  content: "– – – – – – ";
 }
 
 .rocket-tree-level-7 > td:first-child:not(.rocket-entry-selector)::before,
 .rocket-tree-level-7 > .rocket-entry-selector + td::before {
-  content: '– – – – – – – ';
-  padding-right: 0.5rem;
+  content: "– – – – – – – ";
 }
 
 .rocket-tree-level-8 > td:first-child:not(.rocket-entry-selector)::before,
 .rocket-tree-level-8 > .rocket-entry-selector + td::before {
-  content: '– – – – – – – – ';
-  padding-right: 0.5rem;
+  content: "– – – – – – – – ";
 }
 
 .rocket-tree-level-9 > td:first-child:not(.rocket-entry-selector)::before,
 .rocket-tree-level-9 > .rocket-entry-selector + td::before {
-  content: '– – – – – – – – – ';
-  padding-right: 0.5rem;
+  content: "– – – – – – – – – ";
 }
 
 /*
