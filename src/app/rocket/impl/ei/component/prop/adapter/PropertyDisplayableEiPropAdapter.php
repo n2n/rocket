@@ -92,7 +92,7 @@ abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter im
 	}
 	
 	public function buildEiField(Eiu $eiu): ?EiField {
-		return new SimpleEiField($eiu->entry()->object()->getEiObject(), 
+		return new SimpleEiField($eiu, 
 				$this->getObjectPropertyAccessProxy()->getConstraint()->getLenientCopy(), 
 				$this);
 	}
@@ -128,7 +128,7 @@ abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter im
 	}
 	
 	public function buildGuiField(Eiu $eiu): ?GuiField {
-		return new GuiFieldProxy($this, $eiu);
+		return new GuiFieldProxy($eiu, $this);
 	}
 	
 	public function getUiOutputLabel(Eiu $eiu) {
