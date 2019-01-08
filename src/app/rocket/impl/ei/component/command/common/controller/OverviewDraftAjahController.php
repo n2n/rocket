@@ -49,7 +49,7 @@ class OverviewDraftJhtmlController extends ControllerAdapter {
 	public function doSelect(string $stateKey, ParamQuery $pageNo, ParamQuery $pids = null) {
 		$eiFrame = $this->manageState->peakEiFrame();
 
-		$draftListModel = new DraftListModel($eiFrame, $this->listSize, $critmodForm, $quickSearchForm);
+		$draftListModel = new DraftListModel($eiFrame, $this->listSize);
 		
 		if ($pids != null) {
 			$draftListModel->initByPids($pids->toStringArrayOrReject());

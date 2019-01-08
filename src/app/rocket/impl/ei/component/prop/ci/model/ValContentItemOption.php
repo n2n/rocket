@@ -19,52 +19,52 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\prop\ci\model;
+// namespace rocket\impl\ei\component\prop\ci\model;
 
-use n2n\web\dispatch\map\bind\BindingErrors;
-use n2n\web\dispatch\map\PropertyPath;
-use n2n\web\dispatch\map\val\SimplePropertyValidator;
-use n2n\l10n\Message;
+// use n2n\web\dispatch\map\bind\BindingErrors;
+// use n2n\web\dispatch\map\PropertyPath;
+// use n2n\web\dispatch\map\val\SimplePropertyValidator;
+// use n2n\l10n\Message;
 
-class ValContentItemOption extends SimplePropertyValidator {
-	private $panelConfigs;
+// class ValContentItemOption extends SimplePropertyValidator {
+// 	private $panelConfigs;
 	
-	public function __construct(array $panelConfigs) {
-		$this->panelConfigs = $panelConfigs;
-	}
-	/* (non-PHPdoc)
-	 * @see \n2n\impl\web\dispatch\map\val\SimplePropertyValidator::validateValue()
-	 */
-	protected function validateValue($mapValue) {
-		return;	
-		foreach ($this->panelConfigs as $panelConfig) {
-			if (!$panelConfig->isRestricted()) continue;
+// 	public function __construct(array $panelConfigs) {
+// 		$this->panelConfigs = $panelConfigs;
+// 	}
+// 	/* (non-PHPdoc)
+// 	 * @see \n2n\impl\web\dispatch\map\val\SimplePropertyValidator::validateValue()
+// 	 */
+// 	protected function validateValue($mapValue) {
+// 		return;	
+// 		foreach ($this->panelConfigs as $panelConfig) {
+// 			if (!$panelConfig->isRestricted()) continue;
 
-			$panelName = $panelConfig->getName();
-			$allowedContentItemIds = $panelConfig->getAllowedContentItemIds();
-			$propertyPath = new PropertyPath(array($pathPart));
-			foreach ($mapValue->currentMappingForms as $key => $eiuEntryFormMappingResult) {
-				if (!$eiuEntryFormMappingResult->mainEiuEntryFormPart->MagForm->has('panel')
-						|| $eiuEntryFormMappingResult->mainEiuEntryFormPart->MagForm->panel != $panelName) continue;
-				$this->checkTypeId(
-						$propertyPath->ext('currentMappingForms[' . $key . ']')->ext('selectedTypeId'), 
-						$eiuEntryFormMappingResult->selectedTypeId, $allowedContentItemIds, $bindingErrors);
-			}
+// 			$panelName = $panelConfig->getName();
+// 			$allowedContentItemIds = $panelConfig->getAllowedContentItemIds();
+// 			$propertyPath = new PropertyPath(array($pathPart));
+// 			foreach ($mapValue->currentMappingForms as $key => $eiuEntryFormMappingResult) {
+// 				if (!$eiuEntryFormMappingResult->mainEiuEntryFormPart->MagForm->has('panel')
+// 						|| $eiuEntryFormMappingResult->mainEiuEntryFormPart->MagForm->panel != $panelName) continue;
+// 				$this->checkTypeId(
+// 						$propertyPath->ext('currentMappingForms[' . $key . ']')->ext('selectedTypeId'), 
+// 						$eiuEntryFormMappingResult->selectedTypeId, $allowedContentItemIds, $bindingErrors);
+// 			}
 
-			foreach ($mapValue->newMappingForms as $key => $eiuEntryFormMappingResult) {
-				if (!$eiuEntryFormMappingResult->mainEiuEntryFormPart->MagForm->has('panel')
-						|| $eiuEntryFormMappingResult->mainEiuEntryFormPart->MagForm->panel != $panelName) continue;
-				$this->checkTypeId(
-						$propertyPath->ext('newMappingForms[' . $key . ']')->ext('selectedTypeId'),
-						$eiuEntryFormMappingResult->selectedTypeId, $allowedContentItemIds, $bindingErrors);
-			}
+// 			foreach ($mapValue->newMappingForms as $key => $eiuEntryFormMappingResult) {
+// 				if (!$eiuEntryFormMappingResult->mainEiuEntryFormPart->MagForm->has('panel')
+// 						|| $eiuEntryFormMappingResult->mainEiuEntryFormPart->MagForm->panel != $panelName) continue;
+// 				$this->checkTypeId(
+// 						$propertyPath->ext('newMappingForms[' . $key . ']')->ext('selectedTypeId'),
+// 						$eiuEntryFormMappingResult->selectedTypeId, $allowedContentItemIds, $bindingErrors);
+// 			}
 			
-		}		
-	}
+// 		}		
+// 	}
 	
-	private function checkTypeId($propertyExpression, $selectedTypeId, array $allowedContentItemIds, 
-			BindingErrors $be) {
-		if (in_array($selectedTypeId, $allowedContentItemIds)) return;
-		$be->addError($propertyExpression, Message::createCodeArg('spec_field_contentitem_invalid_panel'));
-	}
-}
+// 	private function checkTypeId($propertyExpression, $selectedTypeId, array $allowedContentItemIds, 
+// 			BindingErrors $be) {
+// 		if (in_array($selectedTypeId, $allowedContentItemIds)) return;
+// 		$be->addError($propertyExpression, Message::createCodeArg('spec_field_contentitem_invalid_panel'));
+// 	}
+// }

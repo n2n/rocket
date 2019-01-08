@@ -45,7 +45,7 @@
 	$typeChoicesMap = $eiuEntryFormViewModel->getTypeChoicesMap();
 	$iconTypesMap = $eiuEntryFormViewModel->getIconTypeMap();
 ?>
-	
+
 <?php if (!$eiuEntryFormViewModel->isTypeChangable()): ?>
 	<div class="rocket-entry-form" 
 			data-rocket-ei-type-id="<?php $html->out(key($typeChoicesMap)) ?>"

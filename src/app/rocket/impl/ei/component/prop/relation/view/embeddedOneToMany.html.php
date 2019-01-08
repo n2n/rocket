@@ -23,6 +23,7 @@
 	use n2n\impl\web\ui\view\html\HtmlView;
 	
 	$view = HtmlView::view($this);
+	$html = HtmlView::html($view);
 
 	$eiuEntries = $view->getParam('eiuEntries');
 ?>
