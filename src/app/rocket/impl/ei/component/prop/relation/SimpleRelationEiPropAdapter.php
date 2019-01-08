@@ -54,7 +54,7 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 
 	protected function initialize(EiPropRelation $eiPropRelation, EditConfig $editConfig = null, 
 			DisplayConfig $displayDefinition = null) {
-		parent::initialize($eiPropRelation, $editConfig, $editConfig);
+		parent::initialize($eiPropRelation, $editConfig);
 
 		if ($displayDefinition !== null) {
 			$this->displayConfig = $displayDefinition;

@@ -78,7 +78,7 @@ class CiConfigUtils {
 	}
 
 	public function createPanelConfigMagCollection(bool $includePanelName) {
-		$allowedContentItemOptions = $this->getAllowedContentItemOptions();
+// 		$allowedContentItemOptions = $this->getAllowedContentItemOptions();
 		
 		$magCollection = new MagCollection();
 		if ($includePanelName) {

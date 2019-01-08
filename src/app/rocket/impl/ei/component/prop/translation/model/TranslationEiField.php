@@ -57,6 +57,6 @@ class TranslationEiField extends ToManyEiField {
 					$targetRelationEntry->getEiObject()->getEiEntityObj()->getEntityObj()->getN2nLocale());
 		}
 		
-		return $copy;
+		return $valueCopy;
 	}
 }

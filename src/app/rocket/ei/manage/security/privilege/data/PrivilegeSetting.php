@@ -20,7 +20,7 @@ class PrivilegeSetting {
 	 */
 	function __construct(array $eiCommandPaths = array(), Attributes $eiPropAttributes = null) {
 		$this->setEiCommandPaths($eiCommandPaths);
-		$this->setEiPropAttributes($attributes ?? new Attributes());
+		$this->setEiPropAttributes($eiPropAttributes ?? new Attributes());
 	}
 	
 	/**
