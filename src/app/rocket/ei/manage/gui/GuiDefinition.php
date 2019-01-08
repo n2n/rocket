@@ -202,6 +202,19 @@ class GuiDefinition {
 		return $this->getGuiFieldPaths();
 	}
 	
+	/**
+	 * @param GuiFieldPath[] $guiFieldPaths
+	 * @return GuiFieldPath[]
+	 */
+	public function filtetGuiFieldPaths(array $guiFieldPaths) {
+		return array_filter($guiFieldPaths, function (GuiFieldPath $guiFieldPath) {
+			return $this->containsGuiProp($guiFieldPath);
+		});
+	}
+	
+	/**
+	 * @return \rocket\ei\manage\gui\GuiFieldPath[]
+	 */
 	public function getGuiFieldPaths() {
 		return $this->buildGuiFieldPaths(array());
 	}
