@@ -206,7 +206,7 @@ class GuiDefinition {
 	 * @param GuiFieldPath[] $guiFieldPaths
 	 * @return GuiFieldPath[]
 	 */
-	public function filtetGuiFieldPaths(array $guiFieldPaths) {
+	public function filterGuiFieldPaths(array $guiFieldPaths) {
 		return array_filter($guiFieldPaths, function (GuiFieldPath $guiFieldPath) {
 			return $this->containsGuiProp($guiFieldPath);
 		});
@@ -256,7 +256,7 @@ class GuiDefinition {
 		
 		$guiPropAssemblies = [];
 		
-		foreach ($guiFieldPaths as $key => $guiFieldPath) {
+		foreach ($guiFieldPaths as $guiFieldPath) {
 			$guiProp = $this->getGuiPropByGuiFieldPath($guiFieldPath);
 			
 			$displayDefinition = $guiProp->buildDisplayDefinition($eiu);

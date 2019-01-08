@@ -170,7 +170,7 @@ class GuiFieldPath implements Hashable {
 		} else if (is_scalar($expression)) {
 			$parts = explode(self::EI_PROP_PATH_SEPARATOR, (string) $expression);
 		} else if ($expression === null) {
-			$pars = [];
+			$parts = [];
 		} else {
 			throw new \InvalidArgumentException('Passed value type can not be converted to a GuiFieldPath: ' 
 					. TypeUtils::getTypeInfo($expression));
