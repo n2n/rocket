@@ -38,7 +38,7 @@
 	<?php else: ?>
 		<?php if ($summaryRequired): ?>
 			<?php $eiuEntryGui = $eiuEntry->newEntryGui(false) ?>
-			<?php $eiuHtml->entryOpen('div', $eiuEntryGui, array('class' => 'rocket-impl-summary')) ?>
+			<?php $eiuHtml->entryOpen('div', $eiuEntryGui, null, array('class' => 'rocket-impl-summary')) ?>
 				<div class="rocket-impl-handle"></div>
 				<div class="rocket-impl-content-type">
 					<i class="<?php $html->out($eiuEntry->getGenericIconType()) ?>"></i>
@@ -46,7 +46,7 @@
 				</div>
 				<div class="rocket-impl-content">
 					<?php foreach ($eiuEntryGui->getGuiFieldPaths() as $eiPropPath): ?>
-						<?php $eiuHtml->fieldOpen('div', $eiPropPath, null, false, false) ?>
+						<?php $eiuHtml->fieldOpen('div', $eiPropPath, false) ?>
 							<?php $eiuHtml->fieldContent() ?>
 						<?php $eiuHtml->fieldClose() ?>
 					<?php endforeach ?>
@@ -56,7 +56,7 @@
 		<?php endif ?>
 	
 		<?php $eiuEntryGui = $eiuEntry->newEntryGui(true) ?>
-		<?php $eiuHtml->entryOpen('div', $eiuEntryGui, array('class' => 'rocket-impl-body rocket-group rocket-light-group')) ?>
+		<?php $eiuHtml->entryOpen('div', $eiuEntryGui, null, array('class' => 'rocket-impl-body rocket-group rocket-light-group')) ?>
 			<label><?php $html->out($eiuEntry->createIdentityString()) ?></label>
 			<div class="rocket-control">
 				<?php $view->import($eiuEntryGui->createView($view)) ?>
