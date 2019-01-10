@@ -25,7 +25,6 @@
 	use n2n\util\uri\Url;
 	use rocket\impl\ei\component\prop\relation\model\mag\MappingForm;
 	use rocket\impl\ei\component\prop\relation\model\mag\ToManyForm;
-	use rocket\ei\util\gui\EiuHtmlBuilder;
 
 	/**
 	 * @var \n2n\web\ui\view\View $view
@@ -45,9 +44,9 @@
 	$newMappingFormUrl = $view->getParam('newMappingFormUrl');
 	$view->assert($newMappingFormUrl === null || $newMappingFormUrl instanceof Url);
 	
-	$eiuHtml = new EiuHtmlBuilder($view);
+// 	$eiuHtml = new EiuHtmlBuilder($view);
 	
-	$combined = $toManyForm->isSelectionModeEnabled() && count($toManyForm->getCurrentMappingForms()) > 0
+// 	$combined = $toManyForm->isSelectionModeEnabled() && count($toManyForm->getCurrentMappingForms()) > 0
 ?>
 <div class="rocket-impl-to-many" 
 		data-min="<?php $html->out($toManyForm->getMin()) ?>"

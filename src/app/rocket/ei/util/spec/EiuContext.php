@@ -81,7 +81,6 @@ class EiuContext {
 			return new EiuMask($eiTypeArg->getEiMask(), null, $this->eiuAnalyst);
 		}
 		
-		$eiEngine = null;
 		try {
 			if ($eiTypeArg instanceof TypePath) {
 				return new EiuMask($this->getEiMaskByEiTypePath($eiTypeArg), null,

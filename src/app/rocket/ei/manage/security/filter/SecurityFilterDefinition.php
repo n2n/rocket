@@ -107,8 +107,6 @@ class SecurityFilterDefinition {
 	public function createEiEntryConstraint(FilterSettingGroup $filterSettingGroup): EiEntryConstraint {
 		$group = new EiFieldConstraintGroup($filterSettingGroup->isAndUsed());
 		
-		$criteriaComparators = array();
-		
 		foreach ($filterSettingGroup->getFilterSettings() as $subFilterSetting) {
 			$id = $subFilterSetting->getFilterPropId();
 			if (!isset($this->props[$id])) {

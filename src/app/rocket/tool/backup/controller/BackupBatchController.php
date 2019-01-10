@@ -39,7 +39,7 @@ class BackupBatchController extends ControllerAdapter implements Lookupable {
 	private function cleanUpBackupDir() {
 		$today = new \DateTime();
 		$backupIndex = array();
-		$children = BackupManager::getBackupDir()->getChildren();
+// 		$children = BackupManager::getBackupDir()->getChildren();
 		foreach (array_reverse(BackupManager::getBackupDir()->getChildren()) as $file) {
 			//Just Regard automatically created Backups
 			if (strpos($file, self::SUFFIX_FILE_NAME) === false) continue;

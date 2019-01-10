@@ -452,7 +452,7 @@ class EiuFrame {
 	 */
 	public function entryForm($eiEntryArg, PropertyPath $contextPropertyPath = null) {
 		$eiEntry = EiuAnalyst::buildEiEntryFromEiArg($eiEntryArg);
-		$contextEiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
+// 		$contextEiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
 		$eiuEntryForm = new EiuEntryForm($this);
 		$eiType = $eiEntry->getEiObject()->getEiEntityObj()->getEiType();
 
