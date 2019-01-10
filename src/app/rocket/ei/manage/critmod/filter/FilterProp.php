@@ -21,7 +21,7 @@
  */
 namespace rocket\ei\manage\critmod\filter;
 
-use n2n\util\config\Attributes;
+use n2n\config\Attributes;
 use n2n\web\dispatch\mag\MagDispatchable;
 
 interface FilterProp {

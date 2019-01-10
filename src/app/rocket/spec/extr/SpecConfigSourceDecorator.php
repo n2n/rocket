@@ -21,10 +21,10 @@
  */
 namespace rocket\spec\extr;
 
-use n2n\util\config\source\WritableConfigSource;
-use n2n\util\config\Attributes;
-use n2n\util\config\InvalidConfigurationException;
-use n2n\util\config\AttributesException;
+use n2n\config\source\WritableConfigSource;
+use n2n\config\Attributes;
+use n2n\config\InvalidConfigurationException;
+use n2n\config\AttributesException;
 use rocket\spec\InvalidSpecConfigurationException;
 use rocket\spec\InvalidEiMaskConfigurationException;
 use n2n\util\type\ArgUtils;
@@ -62,7 +62,7 @@ class SpecConfigSourceDecorator {
 	}
 	
 	/**
-	 * @return \n2n\util\config\source\WritableConfigSource
+	 * @return \n2n\config\source\WritableConfigSource
 	 */
 	public function getConfigSource() {
 		return $this->configSource;

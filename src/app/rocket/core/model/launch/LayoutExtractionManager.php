@@ -21,12 +21,12 @@
  */
 namespace rocket\core\model\launch;
 
-use n2n\util\config\Attributes;
-use n2n\util\config\source\WritableConfigSource;
+use n2n\config\Attributes;
+use n2n\config\source\WritableConfigSource;
 use n2n\reflection\property\TypeConstraint;
 use n2n\util\type\ArgUtils;
-use n2n\util\config\AttributesException;
-use n2n\util\config\InvalidConfigurationException;
+use n2n\config\AttributesException;
+use n2n\config\InvalidConfigurationException;
 
 class LayoutExtractionManager {
 	const START_MENU_ITEM_ID_KEY = 'startLaunchPadId';

@@ -21,10 +21,10 @@
  */
 namespace rocket\spec\extr;
 
-use n2n\util\config\Attributes;
+use n2n\config\Attributes;
 use rocket\ei\component\InvalidEiComponentConfigurationException;
-use n2n\util\config\AttributesException;
-use n2n\util\config\InvalidConfigurationException;
+use n2n\config\AttributesException;
+use n2n\config\InvalidConfigurationException;
 use rocket\spec\InvalidSpecConfigurationException;
 use rocket\ei\mask\model\DisplayScheme;
 use rocket\ei\manage\gui\ui\DisplayStructure;
@@ -36,7 +36,7 @@ use rocket\spec\InvalidLaunchPadConfigurationException;
 use rocket\ei\manage\critmod\sort\SortSettingGroup;
 use n2n\persistence\orm\util\NestedSetStrategy;
 use n2n\persistence\orm\criteria\item\CrIt;
-use n2n\util\config\InvalidAttributeException;
+use n2n\config\InvalidAttributeException;
 use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
 use rocket\ei\manage\gui\ui\DisplayItem;
 use n2n\util\StringUtils;

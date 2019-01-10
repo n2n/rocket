@@ -24,7 +24,7 @@ namespace rocket\impl\ei\component\prop\l10n;
 use rocket\ei\util\filter\prop\EnumFilterProp;
 use rocket\ei\manage\critmod\filter\impl\SimpleComparatorConstraint;
 use n2n\l10n\N2nLocale;
-use n2n\util\config\Attributes;
+use n2n\config\Attributes;
 use rocket\ei\manage\critmod\filter\ComparatorConstraint;
 
 class N2nLocaleFilterProp extends EnumFilterProp {

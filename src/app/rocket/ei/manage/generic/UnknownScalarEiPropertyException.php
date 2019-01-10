@@ -21,7 +21,7 @@
  */
 namespace rocket\ei\manage\generic;
 
-use n2n\util\config\InvalidConfigurationException;
+use n2n\config\InvalidConfigurationException;
 
 class UnknownScalarEiPropertyException extends InvalidConfigurationException {
 

@@ -30,7 +30,7 @@ use n2n\reflection\property\TypeConstraint;
 use n2n\core\container\N2nContext;
 use n2n\web\dispatch\mag\MagDispatchable;
 use rocket\ei\component\EiSetup;
-use n2n\util\config\LenientAttributeReader;
+use n2n\config\LenientAttributeReader;
 use n2n\persistence\meta\structure\Column;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 

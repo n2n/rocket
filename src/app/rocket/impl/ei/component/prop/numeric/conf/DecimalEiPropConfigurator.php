@@ -27,7 +27,7 @@ use rocket\ei\component\EiSetup;
 use n2n\util\type\CastUtils;
 use rocket\impl\ei\component\prop\numeric\DecimalEiProp;
 use n2n\web\dispatch\mag\MagDispatchable;
-use n2n\util\config\LenientAttributeReader;
+use n2n\config\LenientAttributeReader;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 
 class DecimalEiPropConfigurator extends NumericEiPropConfigurator {

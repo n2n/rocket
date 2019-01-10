@@ -21,8 +21,8 @@
  */
 namespace rocket\spec\source;
 
-use n2n\util\config\source\ConfigSource;
-use n2n\util\config\source\WritableConfigSource;
+use n2n\config\source\ConfigSource;
+use n2n\config\source\WritableConfigSource;
 
 interface ModularConfigSource {
 	

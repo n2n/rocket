@@ -27,7 +27,7 @@ use rocket\ei\manage\preview\model\PreviewModel;
 use rocket\ei\mask\model\DisplayScheme;
 use rocket\ei\EiEngine;
 use rocket\ei\manage\preview\controller\PreviewController;
-use n2n\util\config\InvalidConfigurationException;
+use n2n\config\InvalidConfigurationException;
 use rocket\ei\manage\preview\model\UnavailablePreviewException;
 use rocket\ei\manage\control\UnavailableControlException;
 use rocket\ei\util\Eiu;
