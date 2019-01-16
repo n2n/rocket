@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\adapter\entry;
 
-use n2n\reflection\property\TypeConstraint;
+use n2n\util\type\TypeConstraint;
 use n2n\reflection\ReflectionUtils;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\entry\EiField;

@@ -30,7 +30,7 @@ use n2n\persistence\orm\property\EntityProperty;
 use rocket\impl\ei\component\prop\file\command\ThumbEiCommand;
 use n2n\util\type\ArgUtils;
 use n2n\reflection\property\AccessProxy;
-use n2n\reflection\property\TypeConstraint;
+use n2n\util\type\TypeConstraint;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
 use n2n\io\orm\ManagedFileEntityProperty;
 use n2n\io\orm\FileEntityProperty;

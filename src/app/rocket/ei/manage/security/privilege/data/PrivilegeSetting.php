@@ -4,7 +4,7 @@ namespace rocket\ei\manage\security\privilege\data;
 use n2n\util\type\ArgUtils;
 use rocket\ei\EiCommandPath;
 use n2n\config\Attributes;
-use n2n\reflection\property\TypeConstraint;
+use n2n\util\type\TypeConstraint;
 use rocket\ei\EiPropPath;
 
 class PrivilegeSetting {

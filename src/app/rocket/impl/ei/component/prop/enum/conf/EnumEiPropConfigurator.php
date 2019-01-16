@@ -32,7 +32,7 @@ use n2n\web\dispatch\mag\MagCollection;
 use n2n\impl\web\dispatch\mag\model\MagCollectionArrayMag;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\impl\web\dispatch\mag\model\MagForm;
-use n2n\reflection\property\TypeConstraint;
+use n2n\util\type\TypeConstraint;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
 use n2n\impl\web\dispatch\mag\model\MultiSelectMag;
 use rocket\ei\manage\gui\GuiFieldPath;

@@ -26,7 +26,7 @@ use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
 use n2n\impl\web\dispatch\mag\model\StringArrayMag;
-use n2n\reflection\property\TypeConstraint;
+use n2n\util\type\TypeConstraint;
 use n2n\core\container\N2nContext;
 use n2n\web\dispatch\mag\MagDispatchable;
 use rocket\ei\component\EiSetup;

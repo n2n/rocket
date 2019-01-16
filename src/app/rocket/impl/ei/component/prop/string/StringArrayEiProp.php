@@ -5,7 +5,7 @@ use n2n\impl\web\dispatch\mag\model\MagArrayMag;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\reflection\property\AccessProxy;
-use n2n\reflection\property\TypeConstraint;
+use n2n\util\type\TypeConstraint;
 use n2n\web\dispatch\mag\Mag;
 use n2n\web\ui\UiComponent;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;

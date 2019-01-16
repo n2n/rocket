@@ -23,7 +23,7 @@ namespace rocket\ei\manage\critmod\filter\data;
 
 use n2n\util\col\GenericArrayObject;
 use n2n\config\Attributes;
-use n2n\reflection\property\TypeConstraint;
+use n2n\util\type\TypeConstraint;
 
 class FilterSettingGroup {
 	const ATTR_USE_AND_KEY = 'useAnd';

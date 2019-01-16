@@ -427,7 +427,7 @@ class EiuEntry {
 	/**
 	 * @param $eiPropPath
 	 * @param $scalarValue
-	 * @throws \n2n\reflection\property\ValueIncompatibleWithConstraintsException
+	 * @throws \n2n\util\type\ValueIncompatibleWithConstraintsException
 	 */
 	public function setScalarValue($eiPropPath, $scalarValue) {
 		$eiPropPath = EiPropPath::create($eiPropPath);

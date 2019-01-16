@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\adapter;
 
-use n2n\reflection\property\TypeConstraint;
+use n2n\util\type\TypeConstraint;
 use n2n\config\Attributes;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
 use rocket\impl\ei\component\prop\adapter\entry\Writable;

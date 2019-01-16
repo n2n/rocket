@@ -42,7 +42,7 @@ use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\l10n\IllegalN2nLocaleFormatException;
-use n2n\reflection\property\TypeConstraint;
+use n2n\util\type\TypeConstraint;
 use n2n\core\config\WebConfig;
 use rocket\impl\ei\component\prop\translation\command\TranslationCopyCommand;
 use n2n\impl\web\dispatch\mag\model\NumericMag;

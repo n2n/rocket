@@ -34,7 +34,7 @@ use rocket\ei\manage\control\IconType;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
 use n2n\util\type\ArgUtils;
 use n2n\reflection\property\AccessProxy;
-use n2n\reflection\property\TypeConstraint;
+use n2n\util\type\TypeConstraint;
 use rocket\impl\ei\component\prop\date\conf\DateTimeEiPropConfigurator;
 use rocket\ei\manage\draft\stmt\PersistDraftStmtBuilder;
 use rocket\ei\manage\draft\stmt\FetchDraftStmtBuilder;

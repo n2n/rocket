@@ -31,7 +31,7 @@ use rocket\ei\manage\gui\ui\DisplayStructure;
 use rocket\ei\manage\gui\GuiFieldPath;
 use rocket\spec\InvalidEiMaskConfigurationException;
 use rocket\ei\mask\model\ControlOrder;
-use n2n\reflection\property\TypeConstraint;
+use n2n\util\type\TypeConstraint;
 use rocket\spec\InvalidLaunchPadConfigurationException;
 use rocket\ei\manage\critmod\sort\SortSettingGroup;
 use n2n\persistence\orm\util\NestedSetStrategy;

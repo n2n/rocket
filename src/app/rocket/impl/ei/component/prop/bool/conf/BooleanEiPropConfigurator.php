@@ -9,7 +9,7 @@ use n2n\core\container\N2nContext;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
 use n2n\impl\web\dispatch\mag\model\MultiSelectMag;
 use rocket\ei\component\EiSetup;
-use n2n\reflection\property\TypeConstraint;
+use n2n\util\type\TypeConstraint;
 use rocket\ei\manage\gui\GuiFieldPath;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use n2n\util\StringUtils;

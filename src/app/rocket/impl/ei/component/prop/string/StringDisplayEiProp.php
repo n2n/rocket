@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\string;
 
 use n2n\reflection\property\AccessProxy;
-use n2n\reflection\property\TypeConstraint;
+use n2n\util\type\TypeConstraint;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\ei\component\prop\GuiEiProp;
 use n2n\util\ex\IllegalStateException;

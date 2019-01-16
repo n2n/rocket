@@ -31,7 +31,7 @@ use n2n\impl\web\dispatch\mag\model\MultiSelectMag;
 use n2n\impl\web\dispatch\mag\model\NumericMag;
 use n2n\config\LenientAttributeReader;
 use n2n\config\Attributes;
-use n2n\reflection\property\TypeConstraint;
+use n2n\util\type\TypeConstraint;
 use rocket\impl\ei\component\prop\ci\model\PanelConfig;
 use n2n\config\AttributesException;
 use n2n\util\StringUtils;

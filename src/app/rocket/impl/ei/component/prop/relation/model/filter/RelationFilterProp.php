@@ -32,7 +32,7 @@ use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use n2n\util\type\ArgUtils;
 use rocket\ei\manage\entry\UnknownEiObjectException;
-use n2n\reflection\property\TypeConstraint;
+use n2n\util\type\TypeConstraint;
 use n2n\config\AttributesException;
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\filter\FilterDefinition;
