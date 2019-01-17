@@ -86,7 +86,7 @@ class EnumEiPropConfigurator extends AdaptableEiPropConfigurator {
 				});
 		
 		$valueLabelMap = array();
-		foreach ($lar->getArray(self::OPTION_OPTIONS_KEY, array(), TypeConstraint::createSimple('scalar')) 
+		foreach ($lar->getArray(self::OPTION_OPTIONS_KEY, TypeConstraint::createSimple('scalar')) 
 				as $value => $label) {
 			$valueLabelMap[$value] = array('value' => $value, 'label' => $label, 'bindGuiPropsToValue' => false);
 		}
