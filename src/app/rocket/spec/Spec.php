@@ -31,7 +31,7 @@ use rocket\spec\extr\SpecExtractionManager;
 use rocket\core\model\launch\LaunchPad;
 use rocket\core\model\launch\UnknownLaunchPadException;
 use rocket\spec\extr\CustomTypeExtraction;
-use n2n\config\AttributesException;
+use n2n\util\type\attrs\AttributesException;
 use rocket\core\model\Rocket;
 use n2n\reflection\property\PropertiesAnalyzer;
 use n2n\reflection\ReflectionException;

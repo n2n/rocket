@@ -21,11 +21,11 @@
  */
 namespace rocket\core\model\launch;
 
-use n2n\config\Attributes;
+use n2n\util\type\attrs\Attributes;
 use n2n\config\source\WritableConfigSource;
 use n2n\util\type\TypeConstraint;
 use n2n\util\type\ArgUtils;
-use n2n\config\AttributesException;
+use n2n\util\type\attrs\AttributesException;
 use n2n\config\InvalidConfigurationException;
 
 class LayoutExtractionManager {
@@ -54,7 +54,7 @@ class LayoutExtractionManager {
 	
 	public function extractStartLaunchPadId() {
 		try {
-			return $this->attributes->getString(self::START_MENU_ITEM_ID_KEY, false, null, true);
+			return $this->attributes->optString(self::START_MENU_ITEM_ID_KEY);
 		} catch (AttributesException $e) {
 			throw $this->createDataSourceException($e);
 		}

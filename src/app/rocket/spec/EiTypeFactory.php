@@ -24,7 +24,7 @@ namespace rocket\spec;
 use n2n\core\TypeNotFoundException;
 use n2n\reflection\ReflectionUtils;
 use rocket\ei\EiType;
-use n2n\config\Attributes;
+use n2n\util\type\attrs\Attributes;
 use n2n\persistence\orm\model\EntityModelManager;
 use n2n\util\type\ArgUtils;
 use n2n\util\ex\IllegalStateException;

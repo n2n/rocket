@@ -21,7 +21,7 @@
  */
 namespace rocket\user\bo;
 
-use n2n\config\Attributes;
+use n2n\util\type\attrs\Attributes;
 use n2n\reflection\ObjectAdapter;
 use n2n\reflection\annotation\AnnoInit;
 use n2n\util\StringUtils;

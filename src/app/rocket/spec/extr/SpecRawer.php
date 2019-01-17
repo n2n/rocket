@@ -21,7 +21,7 @@
  */
 namespace rocket\spec\extr;
 
-use n2n\config\Attributes;
+use n2n\util\type\attrs\Attributes;
 use n2n\util\type\ArgUtils;
 use rocket\ei\mask\model\DisplayScheme;
 use rocket\ei\manage\gui\ui\DisplayStructure;

@@ -33,7 +33,7 @@ use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use n2n\util\StringUtils;
 use n2n\web\dispatch\mag\MagDispatchable;
 use rocket\impl\ei\component\prop\string\cke\CkeEiProp;
-use n2n\config\LenientAttributeReader;
+use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\util\magic\MagicObjectUnavailableException;
 use rocket\impl\ei\component\prop\string\cke\model\CkeCssConfig;
 use rocket\impl\ei\component\prop\string\cke\model\CkeLinkProvider;
@@ -110,8 +110,7 @@ class CkeEiPropConfigurator extends AdaptableEiPropConfigurator {
 	public function setup(EiSetup $eiSetupProcess) {
 		parent::setup($eiSetupProcess);
 		
-		$this->ckeEiProp->setMode($this->attributes->getEnum(self::PROP_MODE_KEY, CkeEiProp::getModes(),
-				false, $this->ckeEiProp->getMode()));
+		$this->ckeEiProp->setMode($this->attributes->optEnum(self::PROP_MODE_KEY, CkeEiProp::getModes(), $this->ckeEiProp->getMode(), false));
 		
 		
 		$ckeLinkProviderLookupIds = $this->attributes->getScalarArray(self::PROP_LINK_PROVIDER_LOOKUP_IDS_KEY, false);

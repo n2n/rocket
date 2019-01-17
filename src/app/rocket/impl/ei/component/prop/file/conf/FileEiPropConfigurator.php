@@ -32,12 +32,12 @@ use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\persistence\meta\structure\Column;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use n2n\io\managed\img\ImageDimension;
-use n2n\config\LenientAttributeReader;
+use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
 use rocket\ei\manage\generic\UnknownScalarEiPropertyException;
 use rocket\ei\util\spec\EiuEngine;
 use rocket\ei\EiPropPath;
-use n2n\config\AttributesException;
+use n2n\util\type\attrs\AttributesException;
 use rocket\impl\ei\component\prop\file\command\MultiUploadEiCommand;
 use rocket\impl\ei\component\prop\file\command\controller\MultiUploadEiController;
 
@@ -74,8 +74,8 @@ class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$this->fileEiProp->setCheckImageMemoryEnabled($this->attributes->getBool(self::ATTR_CHECK_IMAGE_MEMORY_KEY, 
 				false, $this->fileEiProp->isCheckImageMemoryEnabled()));
 		
-		$this->fileEiProp->setImageDimensionImportMode($this->attributes->getEnum(self::ATTR_DIMENSION_IMPORT_MODE_KEY,
-				FileEiProp::getImageDimensionImportModes(), false, $this->fileEiProp->getImageDimensionImportMode(), true));
+		$this->fileEiProp->setImageDimensionImportMode($this->attributes->optEnum(self::ATTR_DIMENSION_IMPORT_MODE_KEY,
+				FileEiProp::getImageDimensionImportModes(), $this->fileEiProp->getImageDimensionImportMode(), true));
 		
 		$extraImageDimensions = array();
 		if ($this->attributes->contains(self::ATTR_EXTRA_THUMB_DIMENSIONS_KEY)) {

@@ -28,7 +28,7 @@ use n2n\web\dispatch\map\InvalidPropertyExpressionException;
 use n2n\web\dispatch\map\PropertyPath;
 use rocket\ei\util\filter\form\FilterPropItemForm;
 use rocket\ei\manage\critmod\filter\data\FilterSetting;
-use n2n\config\Attributes;
+use n2n\util\type\attrs\Attributes;
 use rocket\ei\util\filter\form\FilterGroupForm;
 use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
 use n2n\util\uri\Url;

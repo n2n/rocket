@@ -37,7 +37,7 @@ use rocket\ei\component\InvalidEiComponentConfigurationException;
 use rocket\ei\EiException;
 use n2n\web\dispatch\mag\MagDispatchable;
 use rocket\core\model\Rocket;
-use n2n\config\LenientAttributeReader;
+use n2n\util\type\attrs\LenientAttributeReader;
 use rocket\spec\UnknownTypeException;
 use rocket\impl\ei\component\prop\relation\model\RelationVetoableActionListener;
 use rocket\impl\ei\component\prop\relation\model\relation\SelectEiPropRelation;
@@ -244,7 +244,7 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 			$targetEiMask = $target->getEiMask();
 			$targetSubEiTypes = $target->getAllSubEiTypes();
 			$targetSubEiTypeExtensions = array();
-			foreach ($this->attributes->getScalarArray(self::ATTR_TARGET_EXTENSIONS_KEY, false, array()) 
+			foreach ((array) $this->attributes->getScalarArray(self::ATTR_TARGET_EXTENSIONS_KEY, false, array(), true) 
 					as $targetEiTypeId => $targetEiTypeExtensionId) {
 				if ($targetEiTypeExtensionId === null) continue;
 						
@@ -275,11 +275,11 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		
 		if ($eiComponent instanceof ToManyEiPropAdapter) {
 			if ($this->attributes->contains(self::ATTR_MIN_KEY)) {
-				$eiComponent->setMin($this->attributes->getNumeric(self::ATTR_MIN_KEY, true, null, true));
+				$eiComponent->setMin($this->attributes->reqNumeric(self::ATTR_MIN_KEY, true));
 			}
 			
 			if ($this->attributes->contains(self::ATTR_MAX_KEY)) {
-				$eiComponent->setMax($this->attributes->getNumeric(self::ATTR_MAX_KEY, true, null, true));
+				$eiComponent->setMax($this->attributes->reqNumeric(self::ATTR_MAX_KEY, true));
 			}
 		}
 
@@ -318,7 +318,7 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 			}
 			
 			if ($this->attributes->contains(self::ATTR_EMBEDDED_ADD_KEY)) {
-				$eiPropRelation->setEmbeddedAddEnabled($this->attributes->get(self::ATTR_EMBEDDED_ADD_KEY));
+				$eiPropRelation->setEmbeddedAddEnabled($this->attributes->req(self::ATTR_EMBEDDED_ADD_KEY));
 			}
 			
 			if ($eiPropRelation->isEmbeddedAddEnabled() && !$eiPropRelation->isPersistCascaded()) {
@@ -328,9 +328,9 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		}
 		
 		if ($eiPropRelation->getRelationEntityProperty()->isMaster()) {
-			$strategy = $this->attributes->getEnum(self::ATTR_TARGET_REMOVAL_STRATEGY_KEY, 
-					RelationVetoableActionListener::getStrategies(), false, 
-					RelationVetoableActionListener::STRATEGY_PREVENT);
+			$strategy = $this->attributes->optEnum(self::ATTR_TARGET_REMOVAL_STRATEGY_KEY, 
+					RelationVetoableActionListener::getStrategies(),  
+					RelationVetoableActionListener::STRATEGY_PREVENT, false);
 			
 			$eiPropRelation->getTargetEiType()->registerVetoableActionListener(
 					new RelationVetoableActionListener($eiPropRelation->getRelationEiProp(), $strategy));		

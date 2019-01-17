@@ -35,7 +35,7 @@ use n2n\persistence\orm\CascadeType;
 use n2n\reflection\ReflectionUtils;
 use n2n\core\container\N2nContext;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
-use n2n\config\LenientAttributeReader;
+use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\impl\web\dispatch\mag\model\MagCollectionArrayMag;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\impl\web\dispatch\mag\model\StringMag;
@@ -151,7 +151,7 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 	
 	private function readN2nLocaleDefs($key, LenientAttributeReader $lar): array {
 		$n2nLocaleDefs = array();
-		foreach ($lar->getArray($key, array(), TypeConstraint::createArrayLike('array', false, 
+		foreach ($lar->getArray($key, TypeConstraint::createArrayLike('array', false, 
 				TypeConstraint::createSimple('scalar'))) as $n2nLocaleDefAttr) {
 			if (!isset($n2nLocaleDefAttr[self::ATTR_LOCALE_ID_KEY])) continue;
 			$n2nLocale = null;
@@ -204,7 +204,7 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 		}
 		$this->translationEiProp->setN2nLocaleDefs($n2nLocaleDefs);
 		
-		$this->translationEiProp->setMinNumTranslations($this->attributes->getInt(self::ATTR_MIN_NUM_TRANSLATIONS_KEY, false, 0));
+		$this->translationEiProp->setMinNumTranslations($this->attributes->optInt(self::ATTR_MIN_NUM_TRANSLATIONS_KEY, 0));
 		
 		$this->addMandatory = true;
 		

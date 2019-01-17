@@ -22,7 +22,7 @@
 namespace rocket\ei\util\filter\prop;
 
 use n2n\web\dispatch\mag\MagCollection;
-use n2n\config\Attributes;
+use n2n\util\type\attrs\Attributes;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use rocket\ei\manage\critmod\filter\FilterProp;
@@ -74,7 +74,7 @@ abstract class FilterPropAdapter implements FilterProp {
 	 */
 	public function createComparatorConstraint(Attributes $attributes): ComparatorConstraint {
 		return new PropertyValueComparatorConstraint($this->criteriaProperty,
-				$attributes->getEnum(self::ATTR_OPERATOR_KEY, $this->getOperators()),
+				$attributes->reqEnum(self::ATTR_OPERATOR_KEY, $this->getOperators()),
 				CrIt::c($attributes->get(self::ATTR_VALUE_KEY)));
 	}
 	

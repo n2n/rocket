@@ -22,7 +22,7 @@
 namespace rocket\user\model\security;
 
 use rocket\ei\manage\security\EiFieldAccess;
-use n2n\config\Attributes;
+use n2n\util\type\attrs\Attributes;
 use n2n\util\type\ArgUtils;
 
 class RestrictedEiFieldAccess implements EiFieldAccess {

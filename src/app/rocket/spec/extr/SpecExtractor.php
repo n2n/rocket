@@ -21,9 +21,9 @@
  */
 namespace rocket\spec\extr;
 
-use n2n\config\Attributes;
+use n2n\util\type\attrs\Attributes;
 use rocket\ei\component\InvalidEiComponentConfigurationException;
-use n2n\config\AttributesException;
+use n2n\util\type\attrs\AttributesException;
 use n2n\config\InvalidConfigurationException;
 use rocket\spec\InvalidSpecConfigurationException;
 use rocket\ei\mask\model\DisplayScheme;
@@ -36,7 +36,7 @@ use rocket\spec\InvalidLaunchPadConfigurationException;
 use rocket\ei\manage\critmod\sort\SortSettingGroup;
 use n2n\persistence\orm\util\NestedSetStrategy;
 use n2n\persistence\orm\criteria\item\CrIt;
-use n2n\config\InvalidAttributeException;
+use n2n\util\type\attrs\InvalidAttributeException;
 use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
 use rocket\ei\manage\gui\ui\DisplayItem;
 use n2n\util\StringUtils;
@@ -74,8 +74,8 @@ class SpecExtractor {
 			$typesKey = 'specs';
 		}
 		
-		foreach ($this->attributes->getArray($typesKey, false, array(), 
-				TypeConstraint::createArrayLike('array', true)) as $typeId => $typeRawData) {
+		foreach ($this->attributes->optArray($typesKey, 
+				TypeConstraint::createArrayLike('array', true), array()) as $typeId => $typeRawData) {
 // 			$eiTypeExtractions[$specId] = $this->createTypeExtraction($specId, );
 			$typeAttributes = new Attributes($typeRawData);
 			
@@ -84,7 +84,7 @@ class SpecExtractor {
 				if (!$typeAttributes->contains(RawDef::TYPE_NATURE_KEY) && $typeAttributes->contains('type')) {
 					$natureKey = 'type';
 				}
-				$nature = $typeAttributes->getEnum($natureKey, RawDef::getTypeNatures());
+				$nature = $typeAttributes->reqEnum($natureKey, RawDef::getTypeNatures());
 				
 				if ($nature == RawDef::NATURE_ENTITY) {
 					$eiTypeExtractions[$typeId] = $this->createEiTypeExtraction($typeId, $typeAttributes);
@@ -146,8 +146,8 @@ class SpecExtractor {
 		$eiMaskExtraction->setIdentityStringPattern(
 				$eiMaskAttributes->getString(RawDef::EI_DEF_REPRESENTATION_STRING_PATTERN_KEY, false, null, true));
 	
-		$eiMaskExtraction->setDraftingAllowed($eiMaskAttributes->getBool(RawDef::EI_DEF_DRAFTING_ALLOWED_KEY,
-				false, $eiMaskExtraction->isDraftingAllowed()));
+		$eiMaskExtraction->setDraftingAllowed($eiMaskAttributes->optBool(RawDef::EI_DEF_DRAFTING_ALLOWED_KEY, 
+				$eiMaskExtraction->isDraftingAllowed()));
 	
 		$eiMaskExtraction->setPreviewControllerLookupId(
 				$eiMaskAttributes->getString(RawDef::EI_DEF_PREVIEW_CONTROLLER_LOOKUP_ID_KEY, false, null, true));
@@ -423,8 +423,8 @@ class SpecExtractor {
 			        $dsa = $displayStructureAttributes->getArray(RawDef::GUI_FIELD_ORDER_KEY);
 			    }
 			    $childDisplayStructure = $this->createDisplayStructure($dsa);
-				$groupType = $displayStructureAttributes->getEnum(RawDef::GUI_FIELD_ORDER_GROUP_TYPE_KEY, DisplayItem::getGroupTypes(), 
-						false, DisplayItem::TYPE_SIMPLE_GROUP, true);
+				$groupType = $displayStructureAttributes->optEnum(RawDef::GUI_FIELD_ORDER_GROUP_TYPE_KEY, DisplayItem::getGroupTypes(),
+						DisplayItem::TYPE_SIMPLE_GROUP);
 				if ($groupType === null) {
 					$groupType = DisplayItem::TYPE_SIMPLE_GROUP;
 				}
@@ -437,8 +437,7 @@ class SpecExtractor {
 			$guiFieldPathStr = $displayStructureAttributes->getScalar(RawDef::DISPLAY_ITEM_GUI_ID_PATH_KEY, false, null, true);
 			if (null !== $guiFieldPathStr) {
 				$displayStructure->addGuiFieldPath(GuiFieldPath::create($guiFieldPathStr), 
-						$displayStructureAttributes->getEnum(RawDef::DISPLAY_ITEM_GROUP_TYPE_KEY, DisplayItem::getTypes(),
-								false, null, true), 
+						$displayStructureAttributes->optEnum(RawDef::DISPLAY_ITEM_GROUP_TYPE_KEY, DisplayItem::getTypes()), 
 						Rocket::buildLstr($label, $this->moduleNamespace));
 				continue;
 			}
@@ -446,7 +445,7 @@ class SpecExtractor {
 			$childDisplayStructure = $this->createDisplayStructure(
 					$displayStructureAttributes->getArray(RawDef::DISPLAY_ITEM_DISPLAY_STRUCTURE_KEY));
 			$displayStructure->addDisplayStructure($childDisplayStructure, 
-					$displayStructureAttributes->getEnum(RawDef::DISPLAY_ITEM_GROUP_TYPE_KEY, DisplayItem::getGroupTypes()), 
+					$displayStructureAttributes->reqEnum(RawDef::DISPLAY_ITEM_GROUP_TYPE_KEY, DisplayItem::getGroupTypes()), 
 					Rocket::buildLstr($label, $this->moduleNamespace));
 		}
 	

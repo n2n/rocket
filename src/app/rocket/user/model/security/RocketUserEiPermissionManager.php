@@ -36,7 +36,7 @@ use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\manage\security\EiEntryAccess;
 use n2n\util\type\ArgUtils;
 use n2n\util\ex\IllegalStateException;
-use n2n\config\Attributes;
+use n2n\util\type\attrs\Attributes;
 use rocket\ei\manage\security\privilege\PrivilegeDefinition;
 use rocket\ei\manage\security\privilege\data\PrivilegeSetting;
 use rocket\ei\manage\security\EiEntryAccessFactory;

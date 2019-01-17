@@ -22,9 +22,9 @@
 namespace rocket\spec\extr;
 
 use n2n\config\source\WritableConfigSource;
-use n2n\config\Attributes;
+use n2n\util\type\attrs\Attributes;
 use n2n\config\InvalidConfigurationException;
-use n2n\config\AttributesException;
+use n2n\util\type\attrs\AttributesException;
 use rocket\spec\InvalidSpecConfigurationException;
 use rocket\spec\InvalidEiMaskConfigurationException;
 use n2n\util\type\ArgUtils;

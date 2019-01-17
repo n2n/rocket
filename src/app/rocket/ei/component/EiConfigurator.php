@@ -21,7 +21,7 @@
  */
 namespace rocket\ei\component;
 
-use n2n\config\Attributes;
+use n2n\util\type\attrs\Attributes;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\core\container\N2nContext;
 use n2n\web\dispatch\mag\MagDispatchable;
@@ -49,7 +49,7 @@ interface EiConfigurator {
 	public function getEiComponent(): EiComponent;
 	
 	/**
-	 * No Exception should be thrown if Attributes are invalid. Use of {@link \n2n\config\LenientAttributeReader}
+	 * No Exception should be thrown if Attributes are invalid. Use of {@link \n2n\util\type\attrs\LenientAttributeReader}
 	 * recommended. {@link EiConfigurator::setup()} may have already been called or not.
 	 * @return MagDispatchable 
 	 */
@@ -64,7 +64,7 @@ interface EiConfigurator {
 	/**
 	 * @param EiSetup $eiSetup
 	 * @throws InvalidEiComponentConfigurationException can be created with {@link EiSetup::createExcpetion()}
-	 * @throws \n2n\config\AttributesException will be converted to InvalidEiComponentConfigurationException
+	 * @throws \n2n\util\type\attrs\AttributesException will be converted to InvalidEiComponentConfigurationException
 	 * @throws \InvalidArgumentException will be converted to InvalidEiComponentConfigurationException
 	 */
 	public function setup(EiSetup $eiSetup);

@@ -32,7 +32,7 @@ use rocket\impl\ei\component\prop\relation\conf\RelationEiPropConfigurator;
 use n2n\web\dispatch\mag\MagDispatchable;
 use rocket\spec\UnknownTypeException;
 use n2n\impl\web\dispatch\mag\model\MagForm;
-use n2n\config\LenientAttributeReader;
+use n2n\util\type\attrs\LenientAttributeReader;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
 

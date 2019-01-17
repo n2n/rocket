@@ -96,7 +96,7 @@ class ListEiConfigurator extends EiConfiguratorAdapter {
 		$eiComponent = $this->eiComponent;
 	    CastUtils::assertTrue($eiComponent instanceof OverviewEiCommand);
 
-	    $eiComponent->setPageSize($this->attributes->getInt(self::OPTION_PAGE_SIZE_KEY, false, 
+	    $eiComponent->setPageSize($this->attributes->optInt(self::OPTION_PAGE_SIZE_KEY,  
 	           $eiComponent->getPageSize()));
 	}
 }

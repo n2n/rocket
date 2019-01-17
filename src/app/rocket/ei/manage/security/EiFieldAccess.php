@@ -29,7 +29,7 @@ interface EiFieldAccess {
 	public function isFullyGranted(): bool;
 	
 	/**
-	 * @return \n2n\config\Attributes[]
+	 * @return \n2n\util\type\attrs\Attributes[]
 	 * @throws \n2n\util\ex\IllegalStateException if {@see self::isFullyGranted()}
 	 */
 	public function getAttributes(): array;

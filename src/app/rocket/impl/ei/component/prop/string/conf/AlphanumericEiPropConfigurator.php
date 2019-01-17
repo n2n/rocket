@@ -30,7 +30,7 @@ use rocket\impl\ei\component\prop\string\AlphanumericEiProp;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\persistence\meta\structure\Column;
 use n2n\persistence\meta\structure\StringColumn;
-use n2n\config\LenientAttributeReader;
+use n2n\util\type\attrs\LenientAttributeReader;
 
 class AlphanumericEiPropConfigurator extends AdaptableEiPropConfigurator {
 	const OPTION_MAXLENGTH_KEY = 'maxlength';
@@ -55,7 +55,7 @@ class AlphanumericEiPropConfigurator extends AdaptableEiPropConfigurator {
 		IllegalStateException::assertTrue($this->eiComponent instanceof AlphanumericEiProp);
 		
 		if ($this->attributes->contains(self::OPTION_MAXLENGTH_KEY)) {
-			$this->eiComponent->setMaxlength($this->attributes->getInt(self::OPTION_MAXLENGTH_KEY, false, null, true));
+			$this->eiComponent->setMaxlength($this->attributes->optInt(self::OPTION_MAXLENGTH_KEY, null));
 		}
 	}
 	

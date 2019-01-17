@@ -32,7 +32,7 @@ use rocket\impl\ei\component\prop\numeric\IntegerEiProp;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use n2n\persistence\meta\structure\Column;
 use n2n\persistence\meta\structure\IntegerColumn;
-use n2n\config\LenientAttributeReader;
+use n2n\util\type\attrs\LenientAttributeReader;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 
 class NumericEiPropConfigurator extends AdaptableEiPropConfigurator {
@@ -78,11 +78,11 @@ class NumericEiPropConfigurator extends AdaptableEiPropConfigurator {
 		IllegalStateException::assertTrue($this->eiComponent instanceof NumericEiPropAdapter);
 		
 		if ($this->attributes->contains(self::OPTION_MIN_VALUE_KEY)) {
-			$this->eiComponent->setMinValue($this->attributes->get(self::OPTION_MIN_VALUE_KEY));
+			$this->eiComponent->setMinValue($this->attributes->req(self::OPTION_MIN_VALUE_KEY));
 		}
 		
 		if ($this->attributes->contains(self::OPTION_MAX_VALUE_KEY)) {
-			$this->eiComponent->setMaxValue($this->attributes->get(self::OPTION_MAX_VALUE_KEY));
+			$this->eiComponent->setMaxValue($this->attributes->req(self::OPTION_MAX_VALUE_KEY));
 		}
 	}
 	
