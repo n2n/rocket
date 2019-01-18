@@ -608,7 +608,7 @@ var Rocket;
                     if (lastModDefs.length > 0) {
                         layer.currentZone.lastModDefs = lastModDefs;
                     }
-                    if (messages.length > 0) {
+                    if (messages.length > 0 && !layer.currentZone.isLoading()) {
                         layer.currentZone.messageList.clear();
                         layer.currentZone.messageList.addAll(messages);
                     }

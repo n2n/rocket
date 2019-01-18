@@ -115,7 +115,8 @@ namespace Rocket.Cmd {
 					layer.currentZone.lastModDefs = lastModDefs; 
 				}
 				
-				if (messages.length > 0) {
+				// quick fix because of spinning message
+				if (messages.length > 0 && !layer.currentZone.isLoading()) {
 					layer.currentZone.messageList.clear()
 					layer.currentZone.messageList.addAll(messages);
 				}
@@ -193,6 +194,8 @@ namespace Rocket.Cmd {
 			let data = directive.getAdditionalData();
 
 			if (!data || !data.rocketEvent || !data.rocketEvent.messages) return [];
+			
+			
 			
 			let messages = [];
 			for (let message of data.rocketEvent.messages) {
