@@ -32,7 +32,6 @@ use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\component\InvalidEiComponentConfigurationException;
 use n2n\persistence\orm\CascadeType;
-use n2n\reflection\ReflectionUtils;
 use n2n\core\container\N2nContext;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
 use n2n\util\type\attrs\LenientAttributeReader;
@@ -46,6 +45,7 @@ use n2n\util\type\TypeConstraint;
 use n2n\core\config\WebConfig;
 use rocket\impl\ei\component\prop\translation\command\TranslationCopyCommand;
 use n2n\impl\web\dispatch\mag\model\NumericMag;
+use n2n\util\type\TypeUtils;
 
 class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 	const ATTR_USE_SYSTEM_LOCALES_KEY = 'useSystemN2nLocales';
@@ -225,13 +225,13 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 			$entityProperty = $this->getPropertyAssignation()->getEntityProperty(true);
 			if (CascadeType::ALL !== $entityProperty->getRelation()->getCascadeType()) {
 				throw $eiSetupProcess->createException('EiProp requires an EntityProperty which cascades all: ' 
-						. ReflectionUtils::prettyPropName($entityProperty->getEntityModel()->getClass(),
+						. TypeUtils::prettyPropName($entityProperty->getEntityModel()->getClass(),
 								$entityProperty->getName()));
 			}
 			
 			if (!$entityProperty->getRelation()->isOrphanRemoval()) {
 				throw $eiSetupProcess->createException('EiProp requires an EntityProperty which removes orphans: '
-						. ReflectionUtils::prettyPropName($entityProperty->getEntityModel()->getClass(),
+						. TypeUtils::prettyPropName($entityProperty->getEntityModel()->getClass(),
 								$entityProperty->getName()));
 			}
 

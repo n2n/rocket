@@ -22,9 +22,9 @@
 namespace rocket\impl\ei\component\prop\adapter\entry;
 
 use n2n\util\type\TypeConstraint;
-use n2n\reflection\ReflectionUtils;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\entry\EiField;
+use n2n\util\type\TypeUtils;
 
 class SimpleEiField extends CrwvEiField {
 	private $copyable;
@@ -57,7 +57,7 @@ class SimpleEiField extends CrwvEiField {
 		try {
 			$this->checkValue($value);
 		} catch (\InvalidArgumentException $e) {
-			throw new \InvalidArgumentException(ReflectionUtils::prettyMethName(get_class($this->readable), 'read')
+			throw new \InvalidArgumentException(TypeUtils::prettyMethName(get_class($this->readable), 'read')
 					. ' returns invalid argument.', 0, $e->getPrevious());
 		}
 		
