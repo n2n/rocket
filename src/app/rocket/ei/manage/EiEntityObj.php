@@ -92,7 +92,7 @@ class EiEntityObj {
 		return $obj instanceof EiEntityObj && $this->getEntityObj() === $obj->getEntityObj();
 	}
 	
-	public static function createFrom(EiType $contextEiType, $entityObj) {
+	public static function createFrom(EiType $contextEiType, object $entityObj) {
 		ArgUtils::valObject($entityObj, false, 'entityObj');
 		
 		if (!$contextEiType->isObjectValid($entityObj)) {
