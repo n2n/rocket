@@ -31,7 +31,7 @@ use n2n\impl\web\ui\view\html\HtmlElement;
 use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
 use n2n\util\type\ArgUtils;
 use n2n\reflection\property\AccessProxy;
-use n2n\reflection\property\TypeConstraint;
+use n2n\util\type\TypeConstraint;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\web\dispatch\mag\Mag;
 use rocket\ei\util\Eiu;

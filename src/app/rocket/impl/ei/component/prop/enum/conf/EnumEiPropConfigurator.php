@@ -27,12 +27,12 @@ use rocket\impl\ei\component\prop\enum\EnumEiProp;
 use rocket\ei\component\EiSetup;
 use n2n\core\container\N2nContext;
 use n2n\web\dispatch\mag\MagDispatchable;
-use n2n\util\config\LenientAttributeReader;
+use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\impl\web\dispatch\mag\model\MagCollectionArrayMag;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\impl\web\dispatch\mag\model\MagForm;
-use n2n\reflection\property\TypeConstraint;
+use n2n\util\type\TypeConstraint;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
 use n2n\impl\web\dispatch\mag\model\MultiSelectMag;
 use rocket\ei\manage\gui\GuiFieldPath;
@@ -86,12 +86,12 @@ class EnumEiPropConfigurator extends AdaptableEiPropConfigurator {
 				});
 		
 		$valueLabelMap = array();
-		foreach ($lar->getArray(self::OPTION_OPTIONS_KEY, array(), TypeConstraint::createSimple('scalar')) 
+		foreach ($lar->getArray(self::OPTION_OPTIONS_KEY, TypeConstraint::createSimple('scalar')) 
 				as $value => $label) {
 			$valueLabelMap[$value] = array('value' => $value, 'label' => $label, 'bindGuiPropsToValue' => false);
 		}
 		
-		foreach ($lar->getArray(self::ASSOCIATED_GUI_FIELD_KEY, array(), 
+		foreach ($lar->getArray(self::ASSOCIATED_GUI_FIELD_KEY,  
 				TypeConstraint::createArrayLike('array', false, TypeConstraint::createSimple('scalar'))) 
 						as $value => $assoicatedGuiFieldPaths) {
 			if (array_key_exists($value, $valueLabelMap)) {

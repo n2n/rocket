@@ -22,10 +22,10 @@
 namespace rocket\spec\source;
 
 use n2n\core\VarStore;
-use n2n\util\config\source\JsonFileConfigSource;
+use n2n\config\source\impl\JsonFileConfigSource;
 use rocket\core\model\Rocket;
 use n2n\core\container\N2nContext;
-use n2n\util\config\source\WritableConfigSource;
+use n2n\config\source\WritableConfigSource;
 
 class N2nContextRocketConfigSource implements RocketConfigSource {
 	const ROCKET_CONFIG_FOLDER = 'rocket';

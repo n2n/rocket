@@ -36,7 +36,7 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\Lstr;
 use n2n\l10n\N2nLocale;
 use n2n\reflection\property\AccessProxy;
-use n2n\reflection\property\TypeConstraint;
+use n2n\util\type\TypeConstraint;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 use rocket\ei\manage\gui\GuiField;

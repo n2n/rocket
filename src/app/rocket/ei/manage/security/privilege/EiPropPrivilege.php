@@ -21,7 +21,7 @@
  */
 namespace rocket\ei\manage\security\privilege;
 
-use n2n\util\config\Attributes;
+use n2n\util\type\attrs\Attributes;
 use n2n\web\dispatch\mag\MagCollection;
 
 interface EiPropPrivilege {
@@ -39,7 +39,7 @@ interface EiPropPrivilege {
 	
 	/**
 	 * @param MagCollection $magCollection
-	 * @return \n2n\util\config\Attributes
+	 * @return \n2n\util\type\attrs\Attributes
 	 */
 	public function buildAttributes(MagCollection $magCollection): Attributes;	
 }

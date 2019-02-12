@@ -30,7 +30,7 @@ use n2n\util\type\CastUtils;
 use rocket\ei\component\EiSetup;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\impl\web\dispatch\mag\model\MagForm;
-use n2n\util\config\LenientAttributeReader;
+use n2n\util\type\attrs\LenientAttributeReader;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
  
 class DateTimeEiPropConfigurator extends AdaptableEiPropConfigurator {

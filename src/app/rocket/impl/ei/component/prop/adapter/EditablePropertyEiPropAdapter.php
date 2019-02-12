@@ -21,8 +21,8 @@
  */
 namespace rocket\impl\ei\component\prop\adapter;
 
-use n2n\reflection\property\TypeConstraint;
-use n2n\util\config\Attributes;
+use n2n\util\type\TypeConstraint;
+use n2n\util\type\attrs\Attributes;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
 use rocket\impl\ei\component\prop\adapter\entry\Writable;
 use n2n\util\ex\IllegalStateException;
@@ -35,7 +35,7 @@ use rocket\ei\manage\security\privilege\EiPropPrivilege;
 use n2n\util\type\ArgUtils;
 use rocket\core\model\Rocket;
 use rocket\ei\manage\security\EiFieldAccess;
-use n2n\util\config\AttributesException;
+use n2n\util\type\attrs\AttributesException;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\entry\EiFieldValidationResult;
 use rocket\impl\ei\component\prop\adapter\entry\Validatable;

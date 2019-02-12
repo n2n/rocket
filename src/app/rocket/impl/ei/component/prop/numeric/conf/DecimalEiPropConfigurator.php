@@ -27,7 +27,7 @@ use rocket\ei\component\EiSetup;
 use n2n\util\type\CastUtils;
 use rocket\impl\ei\component\prop\numeric\DecimalEiProp;
 use n2n\web\dispatch\mag\MagDispatchable;
-use n2n\util\config\LenientAttributeReader;
+use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 
 class DecimalEiPropConfigurator extends NumericEiPropConfigurator {
@@ -55,7 +55,7 @@ class DecimalEiPropConfigurator extends NumericEiPropConfigurator {
 			
 		CastUtils::assertTrue($this->eiComponent instanceof DecimalEiProp);
 
-		$this->eiComponent->setDecimalPlaces($this->attributes->getInt(self::OPTION_DECIMAL_PLACES_KEY, false, 0));
+		$this->eiComponent->setDecimalPlaces($this->attributes->optInt(self::OPTION_DECIMAL_PLACES_KEY, 0));
 		$this->eiComponent->setPrefix($this->attributes->getString(self::OPTION_PREFIX_KEY, false));
 	}
 	

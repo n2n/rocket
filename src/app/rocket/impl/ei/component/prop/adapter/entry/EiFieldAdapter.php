@@ -24,8 +24,8 @@ namespace rocket\impl\ei\component\prop\adapter\entry;
 use rocket\ei\manage\entry\EiField;
 use rocket\ei\manage\entry\EiFieldValidationResult;
 use rocket\ei\manage\entry\EiFieldMap;
-use n2n\reflection\property\ValueIncompatibleWithConstraintsException;
-use n2n\reflection\property\TypeConstraint;
+use n2n\util\type\ValueIncompatibleWithConstraintsException;
+use n2n\util\type\TypeConstraint;
 use n2n\util\ex\IllegalStateException;
 
 abstract class EiFieldAdapter implements EiField {

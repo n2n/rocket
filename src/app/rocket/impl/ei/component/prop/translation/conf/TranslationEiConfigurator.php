@@ -32,20 +32,20 @@ use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\component\InvalidEiComponentConfigurationException;
 use n2n\persistence\orm\CascadeType;
-use n2n\reflection\ReflectionUtils;
 use n2n\core\container\N2nContext;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
-use n2n\util\config\LenientAttributeReader;
+use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\impl\web\dispatch\mag\model\MagCollectionArrayMag;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\l10n\IllegalN2nLocaleFormatException;
-use n2n\reflection\property\TypeConstraint;
+use n2n\util\type\TypeConstraint;
 use n2n\core\config\WebConfig;
 use rocket\impl\ei\component\prop\translation\command\TranslationCopyCommand;
 use n2n\impl\web\dispatch\mag\model\NumericMag;
+use n2n\util\type\TypeUtils;
 
 class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 	const ATTR_USE_SYSTEM_LOCALES_KEY = 'useSystemN2nLocales';
@@ -151,7 +151,7 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 	
 	private function readN2nLocaleDefs($key, LenientAttributeReader $lar): array {
 		$n2nLocaleDefs = array();
-		foreach ($lar->getArray($key, array(), TypeConstraint::createArrayLike('array', false, 
+		foreach ($lar->getArray($key, TypeConstraint::createArrayLike('array', false, 
 				TypeConstraint::createSimple('scalar'))) as $n2nLocaleDefAttr) {
 			if (!isset($n2nLocaleDefAttr[self::ATTR_LOCALE_ID_KEY])) continue;
 			$n2nLocale = null;
@@ -204,7 +204,7 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 		}
 		$this->translationEiProp->setN2nLocaleDefs($n2nLocaleDefs);
 		
-		$this->translationEiProp->setMinNumTranslations($this->attributes->getInt(self::ATTR_MIN_NUM_TRANSLATIONS_KEY, false, 0));
+		$this->translationEiProp->setMinNumTranslations($this->attributes->optInt(self::ATTR_MIN_NUM_TRANSLATIONS_KEY, 0));
 		
 		$this->addMandatory = true;
 		
@@ -225,13 +225,13 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 			$entityProperty = $this->getPropertyAssignation()->getEntityProperty(true);
 			if (CascadeType::ALL !== $entityProperty->getRelation()->getCascadeType()) {
 				throw $eiSetupProcess->createException('EiProp requires an EntityProperty which cascades all: ' 
-						. ReflectionUtils::prettyPropName($entityProperty->getEntityModel()->getClass(),
+						. TypeUtils::prettyPropName($entityProperty->getEntityModel()->getClass(),
 								$entityProperty->getName()));
 			}
 			
 			if (!$entityProperty->getRelation()->isOrphanRemoval()) {
 				throw $eiSetupProcess->createException('EiProp requires an EntityProperty which removes orphans: '
-						. ReflectionUtils::prettyPropName($entityProperty->getEntityModel()->getClass(),
+						. TypeUtils::prettyPropName($entityProperty->getEntityModel()->getClass(),
 								$entityProperty->getName()));
 			}
 

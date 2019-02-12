@@ -28,9 +28,9 @@ use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\EiType;
 use rocket\ei\mask\EiMask;
 use rocket\ei\component\InvalidEiComponentConfigurationException;
-use n2n\reflection\ReflectionUtils;
 use rocket\impl\ei\component\prop\relation\conf\RelationEiPropConfigurator;
 use rocket\ei\util\Eiu;
+use n2n\util\type\TypeUtils;
 
 class EmbeddedEiPropRelation extends EiPropRelation {
 	private $embeddedPseudoCommand;
@@ -52,7 +52,7 @@ class EmbeddedEiPropRelation extends EiPropRelation {
 			$entityProperty = $this->getRelationEiProp()->getEntityProperty();
 			throw new InvalidEiComponentConfigurationException(
 					'EiProp requires an EntityProperty which cascades persist: ' 
-							. ReflectionUtils::prettyPropName($entityProperty->getEntityModel()->getClass(),
+							. TypeUtils::prettyPropName($entityProperty->getEntityModel()->getClass(),
 									$entityProperty->getName()));
 		}
 		
@@ -68,7 +68,7 @@ class EmbeddedEiPropRelation extends EiPropRelation {
 		if (!$entityProperty->getRelation()->isOrphanRemoval()) {
 			if (!$this->getOrphansAllowed()) {
 				throw new InvalidEiComponentConfigurationException('EiProp requires an EntityProperty '
-						. ReflectionUtils::prettyPropName($entityProperty->getEntityModel()->getClass(), $entityProperty->getName())
+						. TypeUtils::prettyPropName($entityProperty->getEntityModel()->getClass(), $entityProperty->getName())
 						. ' which removes orphans or an EiProp configuration with ' 
 						. RelationEiPropConfigurator::ATTR_ORPHANS_ALLOWED_KEY . '=true.');
 			}
@@ -76,7 +76,7 @@ class EmbeddedEiPropRelation extends EiPropRelation {
 			if (!$this->getRelationEntityProperty()->isMaster() && !$this->isSourceMany()
 					&& !$this->getTargetMasterAccessProxy()->getConstraint()->allowsNull()) {
 				throw new InvalidEiComponentConfigurationException('EiProp requires an EntityProperty '
-						. ReflectionUtils::prettyPropName($entityProperty->getEntityModel()->getClass(), $entityProperty->getName())
+						. TypeUtils::prettyPropName($entityProperty->getEntityModel()->getClass(), $entityProperty->getName())
 						. ' which removes orphans or target ' . $this->getTargetMasterAccessProxy()
 						. ' must accept null.');
 			}
@@ -89,7 +89,7 @@ class EmbeddedEiPropRelation extends EiPropRelation {
 // 					&& (!$this->isSourceMany() && !$this->getTargetMasterAccessProxy()->getConstraint()->allowsNull())) {
 								
 // 				throw new InvalidEiComponentConfigurationException('EiProp requires an EntityProperty '
-// 						. ReflectionUtils::prettyPropName($entityProperty->getEntityModel()->getClass(), $entityProperty->getName())
+// 						. TypeUtils::prettyPropName($entityProperty->getEntityModel()->getClass(), $entityProperty->getName())
 // 						. ' which removes orphans or target ' . $this->getTargetMasterAccessProxy()
 // 						. ' must accept null.');
 // 			}

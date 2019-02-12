@@ -29,11 +29,11 @@ use n2n\web\dispatch\mag\MagCollection;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\impl\web\dispatch\mag\model\MultiSelectMag;
 use n2n\impl\web\dispatch\mag\model\NumericMag;
-use n2n\util\config\LenientAttributeReader;
-use n2n\util\config\Attributes;
-use n2n\reflection\property\TypeConstraint;
+use n2n\util\type\attrs\LenientAttributeReader;
+use n2n\util\type\attrs\Attributes;
+use n2n\util\type\TypeConstraint;
 use rocket\impl\ei\component\prop\ci\model\PanelConfig;
-use n2n\util\config\AttributesException;
+use n2n\util\type\attrs\AttributesException;
 use n2n\util\StringUtils;
 use n2n\impl\web\dispatch\mag\model\MagCollectionMag;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
@@ -109,8 +109,8 @@ class CiConfigUtils {
 				self::ATTR_PANEL_NAME_KEY => $lar->getString(self::ATTR_PANEL_NAME_KEY),
 				self::ATTR_PANEL_LABEL_KEY => $lar->getString(self::ATTR_PANEL_LABEL_KEY),
 				self::ATTR_ALLOWED_CONTENT_ITEM_IDS_KEY => $lar->getArray(
-						self::ATTR_ALLOWED_CONTENT_ITEM_IDS_KEY, null,
-						TypeConstraint::createSimple('string'), true),
+						self::ATTR_ALLOWED_CONTENT_ITEM_IDS_KEY, 
+						TypeConstraint::createSimple('string'), null, true),
 				self::ATTR_MIN_KEY => $lar->getInt(self::ATTR_MIN_KEY, 0),
 				self::ATTR_MAX_KEY => $lar->getInt(self::ATTR_MAX_KEY));
 		
@@ -170,17 +170,17 @@ class CiConfigUtils {
 		if ($gridAttrs !== null) {
 			$gridAttributes = new Attributes($gridAttrs);
 			$gridPos = new GridPos(
-					$gridAttributes->getInt(self::ATTR_GRID_COL_START_KEY),
-					$gridAttributes->getInt(self::ATTR_GRID_COL_END_KEY, false, null, true),
-					$gridAttributes->getInt(self::ATTR_GRID_ROW_START_KEY),
-					$gridAttributes->getInt(self::ATTR_GRID_ROW_END_KEY, false, null, true));
+					$gridAttributes->reqInt(self::ATTR_GRID_COL_START_KEY),
+					$gridAttributes->optInt(self::ATTR_GRID_COL_END_KEY, null, true),
+					$gridAttributes->reqInt(self::ATTR_GRID_ROW_START_KEY),
+					$gridAttributes->optInt(self::ATTR_GRID_ROW_END_KEY, null, true));
 		}
 		
 		
 		return new PanelConfig($panelName, $panelLabel,
 				empty($allowedCiIds) ? null : $allowedCiIds,
-				$panelAttributes->getInt(self::ATTR_MIN_KEY, false, 0, true),
-				$panelAttributes->getInt(self::ATTR_MAX_KEY, false, null, true),
+				$panelAttributes->optInt(self::ATTR_MIN_KEY, 0, true),
+				$panelAttributes->optInt(self::ATTR_MAX_KEY, null, true),
 				$gridPos);
 	}
 }

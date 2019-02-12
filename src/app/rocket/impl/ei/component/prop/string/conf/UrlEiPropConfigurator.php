@@ -26,11 +26,11 @@ use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
 use n2n\impl\web\dispatch\mag\model\StringArrayMag;
-use n2n\reflection\property\TypeConstraint;
+use n2n\util\type\TypeConstraint;
 use n2n\core\container\N2nContext;
 use n2n\web\dispatch\mag\MagDispatchable;
 use rocket\ei\component\EiSetup;
-use n2n\util\config\LenientAttributeReader;
+use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\persistence\meta\structure\Column;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 
@@ -93,8 +93,8 @@ class UrlEiPropConfigurator extends AlphanumericEiPropConfigurator {
 				$lar->getBool(self::MAG_RELATIVE_ALLOWED_KEY, $this->eiComponent->isRelativeAllowed())));
 	
 		$magDispatchable->getMagCollection()->addMag(self::MAG_ALLOWED_PROTOCOLS_KEY, 
-				new StringArrayMag('Allowed protocols', $lar->getArray(self::MAG_ALLOWED_PROTOCOLS_KEY,
-						$this->eiComponent->getAllowedSchemes(), TypeConstraint::createSimple('string'))));
+				new StringArrayMag('Allowed protocols', $lar->getArray(self::MAG_ALLOWED_PROTOCOLS_KEY, 
+						TypeConstraint::createSimple('string'), $this->eiComponent->getAllowedSchemes())));
 	
 		$magDispatchable->getMagCollection()->addMag(self::ATTR_AUTO_SCHEME_KEY, 
 				new StringMag('Auto scheme', $lar->getString(self::ATTR_AUTO_SCHEME_KEY, 

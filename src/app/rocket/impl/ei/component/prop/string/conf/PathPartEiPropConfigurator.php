@@ -30,7 +30,7 @@ use n2n\impl\web\dispatch\mag\model\EnumMag;
 use rocket\impl\ei\component\prop\string\modificator\PathPartEiModificator;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\web\dispatch\mag\MagDispatchable;
-use n2n\util\config\InvalidAttributeException;
+use n2n\util\type\attrs\InvalidAttributeException;
 use n2n\util\StringUtils;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use n2n\persistence\meta\structure\Column;

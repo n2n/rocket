@@ -39,8 +39,8 @@ use n2n\persistence\meta\structure\Column;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\impl\web\dispatch\mag\model\StringMag;
-use n2n\util\config\InvalidAttributeException;
-use n2n\util\config\LenientAttributeReader;
+use n2n\util\type\attrs\InvalidAttributeException;
+use n2n\util\type\attrs\LenientAttributeReader;
 use rocket\ei\manage\gui\ViewMode;
 use n2n\util\ex\IllegalStateException;
 use rocket\impl\ei\component\prop\adapter\EditablePropertyEiPropAdapter;
@@ -306,32 +306,32 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 		if ($this->attributes->contains(self::ATTR_DISPLAY_IN_OVERVIEW_KEY)) {
 			$this->displayConfig->changeDefaultDisplayedViewModes(
 					ViewMode::compact(), 
-					$this->attributes->getBool(self::ATTR_DISPLAY_IN_OVERVIEW_KEY));
+					$this->attributes->reqBool(self::ATTR_DISPLAY_IN_OVERVIEW_KEY));
 		}
 	
 		if ($this->attributes->contains(self::ATTR_DISPLAY_IN_DETAIL_VIEW_KEY)) {
 			$this->displayConfig->changeDefaultDisplayedViewModes(ViewMode::BULKY_READ,
-					$this->attributes->getBool(self::ATTR_DISPLAY_IN_DETAIL_VIEW_KEY));
+					$this->attributes->reqBool(self::ATTR_DISPLAY_IN_DETAIL_VIEW_KEY));
 		}
 	
 		if ($this->attributes->contains(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY)) {
 			$this->displayConfig->changeDefaultDisplayedViewModes(ViewMode::BULKY_EDIT,
-					$this->attributes->getBool(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY));
+					$this->attributes->reqBool(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY));
 		}
 	
 		if ($this->attributes->contains(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY)) {
 			$this->displayConfig->changeDefaultDisplayedViewModes(ViewMode::BULKY_ADD,
-					$this->attributes->getBool(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY));
+					$this->attributes->reqBool(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY));
 		}
 		
 		if ($this->attributes->contains(self::ATTR_DISPLAY_ITEM_TYPE)) {
 			$this->displayConfig->setDisplayItemType(
-					$this->attributes->getEnum(self::ATTR_DISPLAY_ITEM_TYPE, DisplayItem::getTypes()));
+					$this->attributes->reqEnum(self::ATTR_DISPLAY_ITEM_TYPE, DisplayItem::getTypes()));
 		}
 	
 		if ($this->attributes->contains(self::ATTR_HELPTEXT_KEY)) {
 			$this->displayConfig->setHelpText(
-					$this->attributes->getString(self::ATTR_HELPTEXT_KEY, true, null, true));
+					$this->attributes->optString(self::ATTR_HELPTEXT_KEY));
 		}
 	}
 	
