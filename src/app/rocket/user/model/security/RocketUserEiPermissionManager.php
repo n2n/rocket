@@ -69,7 +69,7 @@ class RocketUserEiPermissionManager implements EiPermissionManager {
 	public function isEiCommandAccessible(EiCommand $eiCommand, ManageState $manageState): bool {
 		if ($this->rocketUser->isAdmin()) return true;
 		
-		$eiMask = $eiCommand->getEiMask();
+		$eiMask = $eiCommand->getWrapper()->getEiCommandCollection()->getEiMask();
 		$eiGrant = $this->findEiGrant($eiMask->getEiTypePath());
 		$eiCommandPath = EiCommandPath::from($eiCommand);
 		return null !== $eiGrant && ($eiGrant->isFull()

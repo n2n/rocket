@@ -66,7 +66,6 @@ class StringEiProp extends AlphanumericEiProp {
 // 		}
 // 		return $view->getFormHtmlBuilder()->getInputField($propertyPath, array('class' => 'rocket-preview-inpage-component'));
 // 	}
-	
 
 	public function createMag(Eiu $eiu): Mag {
 		$mag = new StringMag($this->getLabelLstr(), null, $this->isMandatory($eiu), 

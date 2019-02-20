@@ -31,7 +31,7 @@
 	<?php $eiuHtml->entryOpen('div', $eiuEntryGui, null, array('class' => 'rocket-impl-translation-src')) ?>
 		<?php foreach ($guiFieldPaths as $guiFieldPath): ?>
 			<div data-rocket-impl-gui-field-path="<?php $html->out($guiFieldPath) ?>">
-				<?php $eiuHtml->fieldOpen('div', $guiFieldPath) ?>
+				<?php $eiuHtml->fieldOpen('div', $guiFieldPath, false) ?>
 					<?php $eiuHtml->fieldLabel(array('title' => $n2nLocale->getName($request->getN2nLocale()), 
 								'class' => 'rocket-impl-locale-label'), $n2nLocale->toPrettyId()) ?>
 					<div class="rocket-control">

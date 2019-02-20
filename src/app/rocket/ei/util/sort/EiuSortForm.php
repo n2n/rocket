@@ -37,7 +37,7 @@ class EiuSortForm implements Dispatchable, UiComponent {
 		$this->sortDefinition = $sortDefinition;
 		$this->eiuAnalyst = $eiuAnalyst;
 		
-		$this->writeSetting($rootGroup ?? new SortSettingGroup(), $sortDefinition);
+		$this->writeSetting($sortSetting ?? new SortSettingGroup(), $sortDefinition);
 	}
 	
 	/**
