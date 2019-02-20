@@ -21,7 +21,6 @@
  */
 namespace rocket\spec;
 
-use rocket\ei\EiType;
 use n2n\reflection\ReflectionUtils;
 use n2n\persistence\orm\model\EntityModelManager;
 use rocket\ei\component\EiConfigurator;
@@ -55,13 +54,12 @@ use n2n\util\type\ArgUtils;
 class Spec {	
 	private $specExtractionManager;
 	private $entityModelManager;
+	private $eiSetupQueue;
 	
 	private $launchPads = array();
 	private $customTypes = array();
 	private $eiTypes = array();
 	private $eiTypeCis = array();
-	
-	private $noSetupMode = false;
 	
 	/**
 	 * @param SpecExtractionManager $specExtractionManager
@@ -140,6 +138,7 @@ class Spec {
 	public function initialize(N2nContext $n2nContext, bool $noSetupMode = false) {
 		$this->clear();
 		$this->eiSetupQueue->clear();
+		$this->noSetupMode = $noSetupMode;
 		
 		$cacheStore = $n2nContext->getAppCache()->lookupCacheStore(Spec::class);
 		
@@ -207,8 +206,7 @@ class Spec {
 				$eiType->setSuperEiType($this->eiTypeCis[$superClassName]);
 			}
 		}
-		
-		if (!$this->noSetupMode) {
+		if (!$noSetupMode ) {
 			$this->eiSetupQueue->trigger($n2nContext);
 		} else {
 			$this->eiSetupQueue->clear();
@@ -219,7 +217,6 @@ class Spec {
 	 * 
 	 */
 	public function clear() {
-		$this->noSetupMode = null;
 		$this->customTypes = array();
 		$this->eiTypes = array();
 		$this->eiTypeCis = array();
