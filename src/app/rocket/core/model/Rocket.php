@@ -34,6 +34,7 @@ use rocket\core\model\launch\LayoutExtractionManager;
 use rocket\core\model\launch\Layout;
 use n2n\l10n\Lstr;
 use n2n\l10n\DynamicTextCollection;
+use n2n\web\http\controller\ControllerContext;
 
 class Rocket implements RequestScoped {
 	const VERSION = '2.0.0';
@@ -46,6 +47,7 @@ class Rocket implements RequestScoped {
 	private $spec;
 	private $layoutManager;
 	private $eiComponentStore;
+	private $controllerContext;
 	
 	private function _init(PdoPool $dbhPool, N2nContext $n2nContext) {
 		$this->dbhPool = $dbhPool;
@@ -62,6 +64,14 @@ class Rocket implements RequestScoped {
 		}
 		
 		return $this->rocketConfigSource;
+	}
+	
+	public function setControllerContext(?ControllerContext $controllerContext) {
+		$this->controllerContext = $controllerContext;
+	}
+	
+	public function isActive() {
+		return $this->controllerContext !== null;
 	}
 	
 	/**
