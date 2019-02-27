@@ -53,11 +53,13 @@ class RocketController extends ControllerAdapter {
 		$this->loginContext = $loginContext;
 	}
 	
-	public function prepare(Request $request, N2nLocaleConfig $localeConfig, ScrRegistry $scrRegistry) {
+	public function prepare(Request $request, N2nLocaleConfig $localeConfig, ScrRegistry $scrRegistry, 
+			Rocket $rocket) {
 		$request->setN2nLocale($localeConfig->getAdminN2nLocale());
 		$this->getControllerContext()->setName(self::NAME);
 		$scrRegistry->setBaseUrl($this->getHttpContext()->getControllerContextPath($this->getControllerContext())
 				->ext('scr')->toUrl());
+		$rocket->setControllerContext($this->getControllerContext());
 	}
 	
 	public function doDevLogin($userId) {
