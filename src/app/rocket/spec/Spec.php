@@ -399,7 +399,7 @@ class Spec {
 	
 	
 	/**
-	 * @return EiType[]
+	 * @return \rocket\ei\EiType[]
 	 */
 	public function getEiTypes() {
 		return $this->eiTypes;
@@ -561,7 +561,6 @@ class PropIn {
 	public function invoke() {
 		$entityPropertyCollection = $this->eiType->getEntityModel();
 		$class = $entityPropertyCollection->getClass();
-		$entityPropName = null;
 		
 		$contextEntityPropertyNames = $this->contextEntityPropertyNames;
 		while (null !== ($cepn = array_shift($contextEntityPropertyNames))) {
