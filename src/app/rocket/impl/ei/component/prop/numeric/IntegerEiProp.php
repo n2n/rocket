@@ -63,7 +63,7 @@ class IntegerEiProp extends NumericEiPropAdapter implements ScalarEiProp {
 	}
 	
 	public function setObjectPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
-		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('scalar',
+		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('int',
 				$propertyAccessProxy->getBaseConstraint()->allowsNull()));
 		$this->objectPropertyAccessProxy = $propertyAccessProxy;
 	}

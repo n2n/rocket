@@ -52,6 +52,7 @@ use rocket\ei\manage\critmod\sort\SortProp;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\ei\manage\entry\EiField;
 use n2n\util\StringUtils;
+use n2n\util\type\TypeConstraints;
 
 class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiProp, SortableEiProp, 
 		QuickSearchableEiProp {
@@ -66,6 +67,12 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 	
 	public function setObjectPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
 		ArgUtils::assertTrue($propertyAccessProxy !== null);
+		
+		if (null !== ($typeConstraint = $propertyAccessProxy->getConstraint())) {
+			$typeConstraint->isPassableTo(TypeConstraints::scalar(true), true);
+			$this->objectPropertyAccessProxy = $propertyAccessProxy;
+			return;
+		}
 		
 		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('scalar', 
 				$propertyAccessProxy->getBaseConstraint()->allowsNull()));
