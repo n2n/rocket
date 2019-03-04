@@ -439,7 +439,6 @@ class SpecExtractionManager {
 		return isset($this->eiTypeExtensionExtractionGroups[(string) $extendedEiTypePath][$id]);
 	}
 	
-	
 	/**
 	 * @param TypePath $eiTypePath
 	 * @return EiTypeExtensionExtraction|null

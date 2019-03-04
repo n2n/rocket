@@ -79,8 +79,8 @@ class BooleanEiProp extends DraftablePropertyEiPropAdapter implements Filterable
 // 		}
 		ArgUtils::assertTrue(null !== $propertyAccessProxy);
 		
-		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('scalar',
-					$propertyAccessProxy->getConstraint()->allowsNull()));
+		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('bool',
+					$propertyAccessProxy->getConstraint()->allowsNull(), true));
 		parent::setObjectPropertyAccessProxy($propertyAccessProxy);
 	}
 	

@@ -131,7 +131,7 @@ class RocketUser extends ObjectAdapter implements Dispatchable {
 	/**
 	 * @return \rocket\user\bo\RocketUserGroup[]
 	 */
-	public function getRocketUserGroups(): \ArrayObject {
+	public function getRocketUserGroups() {
 		return $this->rocketUserGroups;
 	}
 	

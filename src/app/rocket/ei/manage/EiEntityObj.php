@@ -21,7 +21,6 @@
  */
 namespace rocket\ei\manage;
 
-use n2n\util\type\ArgUtils;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\EiType;
 use n2n\reflection\ReflectionUtils;
@@ -93,8 +92,6 @@ class EiEntityObj {
 	}
 	
 	public static function createFrom(EiType $contextEiType, object $entityObj) {
-// 		ArgUtils::valObject($entityObj, false, 'entityObj');
-		
 		if (!$contextEiType->isObjectValid($entityObj)) {
 			throw new \InvalidArgumentException('Passed object is not compatible with EiType ' . $contextEiType->getId() 
 					. '. EiType class: ' . $contextEiType->getEntityModel()->getClass()->getName() 
