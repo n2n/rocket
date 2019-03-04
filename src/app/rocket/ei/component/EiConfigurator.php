@@ -50,7 +50,8 @@ interface EiConfigurator {
 	
 	/**
 	 * No Exception should be thrown if Attributes are invalid. Use of {@link \n2n\util\type\attrs\LenientAttributeReader}
-	 * recommended. {@link EiConfigurator::setup()} may have already been called or not.
+	 * recommended. {@link EiConfigurator::setup()} has already been called when invoked. It will be called whether 
+	 * {@link EiConfigurator::setup()} threw an exception or not.
 	 * @return MagDispatchable 
 	 */
 	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable;

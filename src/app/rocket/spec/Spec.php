@@ -50,6 +50,14 @@ use rocket\ei\component\EiSetup;
 use rocket\custom\CustomLaunchPad;
 use rocket\ei\EiLaunchPad;
 use n2n\util\type\ArgUtils;
+use rocket\ei\component\prop\EiProp;
+use rocket\ei\component\prop\indepenent\EiPropConfigurator;
+use rocket\ei\component\modificator\EiModificator;
+use rocket\ei\component\command\EiCommand;
+use rocket\ei\EiPropPath;
+use n2n\util\col\ArrayUtils;
+use rocket\ei\EiModificatorPath;
+use rocket\ei\EiCommandPath;
 
 class Spec {	
 	private $specExtractionManager;
@@ -130,39 +138,44 @@ class Spec {
 		return $this->launchPads[(string) $typePath] = new EiLaunchPad($typePath, $eiMask, $label);
 	}
 	
+	const MODE_NO_SETUP = 1;
+	const MODE_ERR_RESULT = 2;
+	
 	/**
 	 * @param N2nContext $n2nContext
-	 * @param bool $noSetupMode
+	 * @param int $setupMode
 	 * @throws InvalidConfigurationException
+	 * @return EiSetupResult|null
 	 */
-	public function initialize(N2nContext $n2nContext, bool $noSetupMode = false) {
+	public function initialize(N2nContext $n2nContext, int $setupMode = 0) {
 		$this->clear();
 		$this->eiSetupQueue->clear();
-		$this->noSetupMode = $noSetupMode;
 		
-		$cacheStore = $n2nContext->getAppCache()->lookupCacheStore(Spec::class);
+		$noSetupMode = $setupMode === true || ($setupMode & self::MODE_NO_SETUP);
+		
+// 		$cacheStore = $n2nContext->getAppCache()->lookupCacheStore(Spec::class);
 		
 		$this->specExtractionManager->load();
 		
-		$charcs = null;
-		if (!N2N::isDevelopmentModeOn() && null !== ($hashCode = $this->specExtractionManager->getModularConfigSource()->hashCode())) {
-			$charcs = array('version' => Rocket::VERSION, 'hashCode' => $hashCode);
-		}
+// 		$charcs = null;
+// 		if (!N2N::isDevelopmentModeOn() && null !== ($hashCode = $this->specExtractionManager->getModularConfigSource()->hashCode())) {
+// 			$charcs = array('version' => Rocket::VERSION, 'hashCode' => $hashCode);
+// 		}
 		
-		if ($charcs !== null && null !== ($cacheItem = $cacheStore->get(Spec::class, $charcs))) {
-// 			$data = $cacheItem->getData();
-			try {
-				$this->customTypes = $cacheItem->data['customTypes'] ?? array();
-				$this->eiTypes = $cacheItem->data['eiTypes'] ?? array();
-				$this->eiTypeCis = $cacheItem->data['eiTypeCis'] ?? array();
-				$this->launchPads = $cacheItem->data['launchPads'] ?? array();
-				$this->eiSetupQueue->setPropIns($cacheItem->data['propIns'] ?? array());
-				$this->eiSetupQueue->setEiConfigurators($cacheItem->data['eiConfigurators'] ?? array());
-			} catch (\Throwable $e) {
-				$cacheStore->remove(Spec::class, $charcs);
-				throw new CorruptedCacheStoreException(null, null, $e);
-			}
-		} else {
+// 		if ($charcs !== null && null !== ($cacheItem = $cacheStore->get(Spec::class, $charcs))) {
+// // 			$data = $cacheItem->getData();
+// 			try {
+// 				$this->customTypes = $cacheItem->data['customTypes'] ?? array();
+// 				$this->eiTypes = $cacheItem->data['eiTypes'] ?? array();
+// 				$this->eiTypeCis = $cacheItem->data['eiTypeCis'] ?? array();
+// 				$this->launchPads = $cacheItem->data['launchPads'] ?? array();
+// 				$this->eiSetupQueue->setPropIns($cacheItem->data['propIns'] ?? array());
+// 				$this->eiSetupQueue->setEiConfigurators($cacheItem->data['eiConfigurators'] ?? array());
+// 			} catch (\Throwable $e) {
+// 				$cacheStore->remove(Spec::class, $charcs);
+// 				throw new CorruptedCacheStoreException(null, null, $e);
+// 			}
+// 		} else {
 			if (!$this->specExtractionManager->isInitialized()) {
 				$this->specExtractionManager->extract();
 			}
@@ -175,14 +188,14 @@ class Spec {
 				 $this->createEiTypeFromExtr($eiTypeExtraction);
 			}
 			
-			if ($charcs !== null) {
-				$cacheStore->store(Spec::class, $charcs, array(
-						'customTypes' => $this->customTypes, 'eiTypes' => $this->eiTypes, 
-						'eiTypeCis' => $this->eiTypeCis, 'launchPads' => $this->launchPads,
-						'propIns' => $this->eiSetupQueue->getPropIns(),
-						'eiConfigurators' => $this->eiSetupQueue->getEiConfigurators()));
-			}
-		}
+// 			if ($charcs !== null) {
+// 				$cacheStore->store(Spec::class, $charcs, array(
+// 						'customTypes' => $this->customTypes, 'eiTypes' => $this->eiTypes, 
+// 						'eiTypeCis' => $this->eiTypeCis, 'launchPads' => $this->launchPads,
+// 						'propIns' => $this->eiSetupQueue->getPropIns(),
+// 						'eiConfigurators' => $this->eiSetupQueue->getEiConfigurators()));
+// 			}
+// 		}
 		
 		foreach ($this->eiTypeCis as $className => $eiType) {
 			$entityModel = null;
@@ -206,11 +219,12 @@ class Spec {
 				$eiType->setSuperEiType($this->eiTypeCis[$superClassName]);
 			}
 		}
-		if (!$noSetupMode ) {
-			$this->eiSetupQueue->trigger($n2nContext);
-		} else {
-			$this->eiSetupQueue->clear();
-		}
+		if (!$noSetupMode) {
+			return $this->eiSetupQueue->trigger($n2nContext, $setupMode & self::MODE_ERR_RESULT);
+		} 
+		
+		$this->eiSetupQueue->clear();
+		return null;
 	}
 	
 	/**
@@ -416,7 +430,10 @@ class Spec {
 class EiSetupQueue {
 	private $spec;
 	private $propIns = array();
-	private $eiConfigurators = array();
+	//private $eiConfigurators = array();
+	private $eiPropSetupTasks = array();
+	private $eiModificatorSetupTasks = array();
+	private $eiCommandSetupTasks = array();
 	
 	public function __construct(Spec $spec) {
 		$this->spec = $spec;
@@ -426,8 +443,20 @@ class EiSetupQueue {
 		$this->propIns[] = $propIn;
 	}
 	
-	public function addEiConfigurator(EiConfigurator $eiConfigurator) {
-		$this->eiConfigurators[] = $eiConfigurator;
+// 	public function addEiConfigurator(EiConfigurator $eiConfigurator) {
+// 		$this->eiConfigurators[] = $eiConfigurator;
+// 	}
+	
+	public function addEiPropConfigurator(EiProp $eiProp, EiConfigurator $eiConfigurator) {
+		$this->eiPropSetupTasks[] = new EiPropSetupTask($eiProp, $eiConfigurator);
+	}
+	
+	public function addEiModificatorConfigurator(EiModificator $eiModificator, EiConfigurator $eiConfigurator) {
+		$this->eiModificatorSetupTasks[] = new EiModificatorSetupTask($eiModificator, $eiConfigurator);
+	}
+	
+	public function addEiCommandConfigurator(EiCommand $eiCommand, EiConfigurator $eiConfigurator) {
+		$this->eiCommandSetupTasks[] = new EiCommandSetupTask($eiCommand, $eiConfigurator);
 	}
 	
 	public function getPropIns() {
@@ -438,24 +467,68 @@ class EiSetupQueue {
 		$this->propIns = $propIns;
 	}
 	
-	public function getEiConfigurators() {
-		return $this->eiConfigurators;
-	}
+// 	public function getEiConfigurators() {
+// 		return $this->eiConfigurators;
+// 	}
 	
-	public function setEiConfigurators(array $eiConfigurators) {
-		$this->eiConfigurators = $eiConfigurators;
-	}
+// 	public function setEiConfigurators(array $eiConfigurators) {
+// 		$this->eiConfigurators = $eiConfigurators;
+// 	}
 	
 	public function clear()  {
 		$this->propIns = array();
 		$this->eiConfigurators = array();
+		$this->eiPropSetupTasks = array();
 	}
 		
-	public function trigger(N2nContext $n2nContext) {
+	public function trigger(N2nContext $n2nContext, bool $resultMode) {
+		$result = null;
+		if ($resultMode) {
+			$result = new EiSetupResult();
+		}
+		
 		$this->propIns();
 				
-		while (null !== ($eiConfigurator = array_shift($this->eiConfigurators))) {
-			$this->setup($n2nContext, $eiConfigurator);
+// 		while (null !== ($eiConfigurator = array_shift($this->eiConfigurators))) {
+// 			$this->setup($n2nContext, $eiConfigurator);
+// 		}
+		
+		while (null !== ($eiPropSetupTask = array_shift($this->eiPropSetupTasks))) {
+			try {
+				$this->setup($n2nContext, $eiPropSetupTask->getEiConfigurator());
+			} catch (\Throwable $e) {
+				if ($result === null) {
+					throw $e;
+				}
+				
+				$result->putEiPropSetupError(new EiPropSetupError($eiPropSetupTask->getEiProp(), $e));
+			}
+		}
+		
+		while (null !== ($eiModificatorSetupTask = array_shift($this->eiModificatorSetupTasks))) {
+			try {
+				$this->setup($n2nContext, $eiModificatorSetupTask->getEiConfigurator());
+			} catch (\Throwable $e) {
+				if ($result === null) {
+					throw $e;
+				}
+				
+				$result->putEiModificatorSetupError(
+						new EiModificatorSetupError($eiModificatorSetupTask->getEiModificator(), $e));
+			}
+		}
+		
+ 		while (null !== ($eiCommandSetupTask = array_shift($this->eiCommandSetupTasks))) {
+			try {
+				$this->setup($n2nContext, $eiCommandSetupTask->getEiConfigurator());
+			} catch (\Throwable $e) {
+				if ($result === null) {
+					throw $e;
+				}
+				
+				$result->putEiCommandSetupError(
+						new EiCommandSetupError($eiCommandSetupTask->getEiCommand(), $e));
+			}
 		}
 		
 		$cbrs = [];
@@ -482,6 +555,8 @@ class EiSetupQueue {
 				throw new InvalidEiMaskConfigurationException('Failed to setup EiMask.', 0, $e);
 			}
 		}
+		
+		return $result;
 	}
 
 // 	public function exclusiveTriggerForEiType($eiTypeId, N2nContext $n2nContext) {
@@ -536,6 +611,171 @@ class EiSetupQueue {
 			$propIn->invoke();
 			unset($this->propIns[$key]);
 		}
+	}
+}
+
+class EiSetupResult {
+	private $eiPropSetupErrors = [];
+	private $eiModificatorSetupErrors = [];
+	private $eiCommandSetupErrors = [];
+	
+	/**
+	 * @param EiPropSetupError $eiPropSetupError
+	 */
+	public function putEiPropSetupError(EiPropSetupError $eiPropSetupError) {
+		$this->eiPropSetupErrors[spl_object_hash($eiPropSetupError)] = $eiPropSetupError;
+	}
+	
+	/**
+	 * @param EiProp $eiProp
+	 * @return EiPropSetupError|null
+	 */
+	public function errorOfEiProp(EiProp $eiProp) {
+		foreach ($this->eiPropSetupErrors as $eiPropSetupError) {
+			if ($eiPropSetupError->getEiProp()->equals($eiProp)) return $eiPropSetupError;
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * @param TypePath $typePath
+	 * @param EiPropPath $eiPropPath
+	 * @return EiPropSetupError|null
+	 */
+	public function findEiPropSetupError(TypePath $typePath, EiPropPath $eiPropPath) {
+		return ArrayUtils::first(array_filter($this->eiPropSetupErrors, function (EiPropSetupError $eiPropSetupError) use ($typePath, $eiPropPath){
+			$wrapper = $eiPropSetupError->getEiProp()->getWrapper();
+			return $wrapper->getEiPropPath()->equals($eiPropPath)
+					&& $wrapper->getEiPropCollection()->getEiMask()->getEiTypePath()->equals($typePath);
+		}));
+	}
+	
+	/**
+	 * @param EiModificatorSetupError $eiModificatorSetupError
+	 */
+	public function putEiModificatorSetupError(EiModificatorSetupError $eiModificatorSetupError) {
+		$this->eiModificatorSetupErrors[] = $eiModificatorSetupError;
+	}
+	
+	/**
+	 * @param EiProp $eiModificator
+	 * @return EiModificatorSetupError|null
+	 */
+	public function errorOfEiModificator(EiModificator $eiModificator) {
+		foreach ($this->eiModificatorSetupErrors as $eiModificatorSetupError) {
+			if ($eiModificatorSetupError->getEiModificator()->equals($eiModificator)) return $eiModificatorSetupError;
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * @param TypePath $typePath
+	 * @param EiModificatorPath $eiCommandPath
+	 * @return EiModificatorSetupError|null
+	 */
+	public function findEiModificatorSetupError(TypePath $typePath, EiModificatorPath $eiModificatorPath) {
+		return ArrayUtils::first(array_filter($this->eiModificatorSetupErrors, function (EiModificatorSetupError $eiModificatorSetupError) use ($typePath, $eiModificatorPath){
+			$wrapper = $eiModificatorSetupError->getEiModificator()->getWrapper();
+			return $wrapper->getEiModificatorPath()->equals($eiModificatorPath)
+					&& $wrapper->getEiModificatorCollection()->getEiMask()->getEiTypePath()->equals($typePath);
+		}));
+	}
+	
+	/**
+	 * @param EiCommandSetupError $eiCommandSetupError
+	 */
+	public function putEiCommandSetupError(EiCommandSetupError $eiCommandSetupError) {
+		$this->eiCommandSetupErrors[] = $eiCommandSetupError;
+	}
+	
+	/**
+	 * @param EiCommand $eiCommand
+	 * @return EiCommandSetupError|null
+	 */
+	public function errorOfEiCommand(EiCommand $eiCommand) {
+		foreach ($this->eiCommandSetupErrors as $eiCommandSetupError) {
+			if ($eiCommandSetupError->getEiCommand()->equals($eiCommand)) return $eiCommandSetupError;
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * @param TypePath $typePath
+	 * @param EiCommandPath $eiCommandPath
+	 * @return EiCommandSetupError|null
+	 */
+	public function findEiCommandSetupError(TypePath $typePath, EiCommandPath $eiCommandPath) {
+		return ArrayUtils::first(array_filter($this->eiModificatorSetupErrors, function (EiCommandSetupError $eiCommandSetupError) use ($typePath, $eiCommandPath){
+			$wrapper = $eiCommandSetupError->getEiCommand()->getWrapper();
+			return $wrapper->getEiCommandPath()->equals($eiCommandPath)
+					&& $wrapper->getEiCommandCollection()->getEiMask()->getEiTypePath()->equals($typePath);
+		}));
+	}
+}
+
+class EiPropSetupError {
+	private $eiProp;
+	private $t;
+	
+	public function __construct(EiProp $eiProp, \Throwable $t) {
+		$this->eiProp = $eiProp;
+		$this->t = $t;
+	}
+	
+	public function getEiProp() {
+		return $this->eiProp;
+	}
+	
+	/**
+	 * @return \Throwable
+	 */
+	public function getThrowable() {
+		return $this->t;
+	}
+}
+
+class EiModificatorSetupError {
+	private $eiModificator;
+	private $t;
+	
+	public function __construct(EiModificator $eiModificator, \Throwable $t) {
+		$this->eiModificator = $eiModificator;
+		$this->t = $t;
+	}
+	
+	public function getEiModificator() {
+		return $this->eiModificator;
+	}
+	
+	/**
+	 * @return \Throwable
+	 */
+	public function getThrowable() {
+		return $this->t;
+	}
+}
+
+class EiCommandSetupError {
+	private $eiCommand;
+	private $t;
+	
+	public function __construct(EiCommand $eiCommand, \Throwable $t) {
+		$this->eiCommand = $eiCommand;
+		$this->t = $t;
+	}
+	
+	public function getEiCommand() {
+		return $this->eiCommand;
+	}
+	
+	/**
+	 * @return \Throwable
+	 */
+	public function getThrowable() {
+		return $this->t;
 	}
 }
 
@@ -608,3 +848,76 @@ class PropIn {
 		return new InvalidEiComponentConfigurationException('EiProp is invalid configured: ' . $eiComponent, 0, $e);
 	}
 }
+
+class EiPropSetupTask {
+	private $eiProp;
+	private $eiConfigurator;
+	
+	public function __construct(EiProp $eiProp, EiConfigurator $eiConfigurator) {
+		$this->eiProp = $eiProp;
+		$this->eiConfigurator = $eiConfigurator;
+	}
+	
+	/**
+	 * @return \rocket\ei\component\prop\EiProp
+	 */
+	public function getEiProp() {
+		return $this->eiProp;
+	}
+	
+	/**
+	 * @return \rocket\ei\component\EiConfigurator
+	 */
+	public function getEiConfigurator() {
+		return $this->eiConfigurator;
+	}
+}
+
+class EiModificatorSetupTask {
+	private $eiModificator;
+	private $eiConfigurator;
+	
+	public function __construct(EiModificator $eiModificator, EiConfigurator $eiConfigurator) {
+		$this->eiModificator = $eiModificator;
+		$this->eiConfigurator = $eiConfigurator;
+	}
+	
+	/**
+	 * @return \rocket\ei\component\modificator\EiModificator
+	 */
+	public function getEiModificator() {
+		return $this->eiModificator;
+	}
+	
+	/**
+	 * @return \rocket\ei\component\EiConfigurator
+	 */
+	public function getEiConfigurator() {
+		return $this->eiConfigurator;
+	}
+}
+
+class EiCommandSetupTask {
+	private $eiCommand;
+	private $eiConfigurator;
+	
+	public function __construct(EiCommand $eiCommand, EiConfigurator $eiConfigurator) {
+		$this->eiCommand = $eiCommand;
+		$this->eiConfigurator = $eiConfigurator;
+	}
+	
+	/**
+	 * @return \rocket\ei\component\command\EiCommand
+	 */
+	public function getEiCommand() {
+		return $this->eiCommand;
+	}
+	
+	/**
+	 * @return \rocket\ei\component\EiConfigurator
+	 */
+	public function getEiConfigurator() {
+		return $this->eiConfigurator;
+	}
+}
+
