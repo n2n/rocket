@@ -53,6 +53,7 @@ use rocket\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\ei\manage\entry\EiField;
 use n2n\util\StringUtils;
 use n2n\util\type\TypeConstraints;
+use n2n\impl\persistence\orm\property\IntEntityProperty;
 
 class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiProp, SortableEiProp, 
 		QuickSearchableEiProp {
@@ -61,7 +62,8 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 	private $associatedGuiFieldPathMap = array();
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {
-		ArgUtils::assertTrue($entityProperty === null || $entityProperty instanceof ScalarEntityProperty);
+		ArgUtils::assertTrue($entityProperty === null || $entityProperty instanceof ScalarEntityProperty
+				|| $entityProperty instanceof IntEntityProperty);
 		$this->entityProperty = $entityProperty;
 	}
 	
