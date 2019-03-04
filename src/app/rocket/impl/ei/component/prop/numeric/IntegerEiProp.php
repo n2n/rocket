@@ -33,6 +33,7 @@ use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\ScalarEiProp;
 use rocket\ei\manage\generic\CommonScalarEiProperty;
 use rocket\ei\manage\generic\ScalarEiProperty;
+use n2n\impl\persistence\orm\property\IntEntityProperty;
 
 class IntegerEiProp extends NumericEiPropAdapter implements ScalarEiProp {
 	const INT_SIGNED_MIN = -2147483648;
@@ -58,13 +59,14 @@ class IntegerEiProp extends NumericEiPropAdapter implements ScalarEiProp {
 	}
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {
-		ArgUtils::assertTrue($entityProperty instanceof ScalarEntityProperty);
+		ArgUtils::assertTrue($entityProperty instanceof IntEntityProperty || $entityProperty instanceof ScalarEntityProperty);
 		$this->entityProperty = $entityProperty;
 	}
 	
 	public function setObjectPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
 		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('int',
-				$propertyAccessProxy->getBaseConstraint()->allowsNull()));
+				$propertyAccessProxy->getBaseConstraint()->allowsNull(), true));
+		
 		$this->objectPropertyAccessProxy = $propertyAccessProxy;
 	}
 	
