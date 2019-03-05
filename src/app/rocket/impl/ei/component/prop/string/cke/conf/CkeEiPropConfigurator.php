@@ -39,6 +39,8 @@ use rocket\impl\ei\component\prop\string\cke\model\CkeCssConfig;
 use rocket\impl\ei\component\prop\string\cke\model\CkeLinkProvider;
 use rocket\impl\ei\component\prop\string\cke\model\CkeUtils;
 use n2n\persistence\meta\structure\Column;
+use rocket\impl\ei\component\prop\string\cke\model\CkeState;
+use n2n\util\type\CastUtils;
 
 class CkeEiPropConfigurator extends AdaptableEiPropConfigurator {
 	const PROP_MODE_KEY = 'mode';
@@ -64,6 +66,9 @@ class CkeEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$magDispatchable = parent::createMagDispatchable($n2nContext);
 		$magCollection = $magDispatchable->getMagCollection();
 	
+		$ckeState = $n2nContext->lookup(CkeState::class);
+		CastUtils::assertTrue($ckeState instanceof CkeState);
+		
 		$lar = new LenientAttributeReader($this->attributes);
 		
 		$magCollection->addMag(self::PROP_MODE_KEY, new EnumMag('Mode',
@@ -71,11 +76,12 @@ class CkeEiPropConfigurator extends AdaptableEiPropConfigurator {
 				$lar->getEnum(self::PROP_MODE_KEY, CkeEiProp::getModes(), $this->ckeEiProp->getMode())));
 		
 		$magCollection->addMag(self::PROP_LINK_PROVIDER_LOOKUP_IDS_KEY, 
-				new StringArrayMag('Link Provider Lookup Ids',
-						$lar->getScalarArray(self::PROP_LINK_PROVIDER_LOOKUP_IDS_KEY)));
+				new StringArrayMag('Link Provider Lookup Ids', $lar->getScalarArray(self::PROP_LINK_PROVIDER_LOOKUP_IDS_KEY), false,
+						['class' => 'hangar-autocompletion', 'data-suggestions' => StringUtils::jsonEncode($ckeState->getRegisteredCkeLinkProviderLookupIds())]));
 		
 		$magCollection->addMag(self::PROP_CSS_CONFIG_LOOKUP_ID_KEY, new StringMag('Css Config Lookup Id',
-				$lar->getString(self::PROP_CSS_CONFIG_LOOKUP_ID_KEY)));
+				$lar->getString(self::PROP_CSS_CONFIG_LOOKUP_ID_KEY), false, null, false, null, 
+				['class' => 'hangar-autocompletion', 'data-suggestions' => StringUtils::jsonEncode($ckeState->getRegisteredCkeCssConfigLookupIds())]));
 		
 		$magCollection->addMag(self::PROP_TABLES_SUPPORTED_KEY, new BoolMag('Table Editing',
 				$lar->getBool(self::PROP_TABLES_SUPPORTED_KEY, $this->ckeEiProp->isTableSupported())));
@@ -112,19 +118,26 @@ class CkeEiPropConfigurator extends AdaptableEiPropConfigurator {
 		
 		$this->ckeEiProp->setMode($this->attributes->optEnum(self::PROP_MODE_KEY, CkeEiProp::getModes(), $this->ckeEiProp->getMode(), false));
 		
+		$ckeState = $eiSetupProcess->getN2nContext()->lookup(CkeState::class);
+		CastUtils::assertTrue($ckeState instanceof CkeState);
 		
 		$ckeLinkProviderLookupIds = $this->attributes->getScalarArray(self::PROP_LINK_PROVIDER_LOOKUP_IDS_KEY, false);
 		try {
-			CkeUtils::lookupCkeLinkProviders($ckeLinkProviderLookupIds, $eiSetupProcess->getN2nContext());
+			$ckeLinkProviders = CkeUtils::lookupCkeLinkProviders($ckeLinkProviderLookupIds, $eiSetupProcess->getN2nContext());
+			foreach ($ckeLinkProviders as $ckeLinkProvider) {
+				$ckeState->registerCkeLinkProvider($ckeLinkProvider);
+			}
 		} catch (\InvalidArgumentException $e) {
 			throw $eiSetupProcess->createException('Invalid css config', $e);
 		}
-		$this->ckeEiProp->setCkeLinkProviderLookupIds($ckeLinkProviderLookupIds);
 		
 		
 		$ckeCssConfigLookupId = $this->attributes->getString(self::PROP_CSS_CONFIG_LOOKUP_ID_KEY, false, null, true);
 		try {
-			CkeUtils::lookupCkeCssConfig($ckeCssConfigLookupId, $eiSetupProcess->getN2nContext());
+			$ckeCssConfig = CkeUtils::lookupCkeCssConfig($ckeCssConfigLookupId, $eiSetupProcess->getN2nContext());
+			if (null !== $ckeCssConfig) {
+				$ckeState->registerCkeCssConfig($ckeCssConfig);
+			}
 		} catch (\InvalidArgumentException $e) {
 			throw $eiSetupProcess->createException('Invalid css config', $e);
 		}
