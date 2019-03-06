@@ -87,6 +87,10 @@ abstract class CrwvEiField extends EiFieldAdapter {
 	protected function isValueValid($value) {
 		$this->checkValue($value);
 		
+		if ($this->validatable === null) {
+			return true;
+		}
+		
 		return $this->validatable->testEiFieldValue($this->eiu, $value);
 	}
 	
@@ -96,6 +100,10 @@ abstract class CrwvEiField extends EiFieldAdapter {
 	 */
 	protected function validateValue($value, EiFieldValidationResult $validationResult) {
 		$this->checkValue($value);
+		
+		if ($this->validatable === null) {
+			return;
+		}
 		
 		return $this->validatable->validateEiFieldValue($this->eiu, $value, $validationResult);
 	}
