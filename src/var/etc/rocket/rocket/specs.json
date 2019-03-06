@@ -8,7 +8,7 @@
             "pluralLabel": "Content Item",
             "iconType": null,
             "defaultSort": [],
-            "fields": {
+            "props": {
                 "panel": {
                     "class": "rocket\\impl\\ei\\component\\prop\\string\\StringEiProp",
                     "props": {
