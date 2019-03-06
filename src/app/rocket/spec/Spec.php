@@ -31,7 +31,6 @@ use rocket\core\model\launch\LaunchPad;
 use rocket\core\model\launch\UnknownLaunchPadException;
 use rocket\spec\extr\CustomTypeExtraction;
 use n2n\util\type\attrs\AttributesException;
-use rocket\core\model\Rocket;
 use n2n\reflection\property\PropertiesAnalyzer;
 use n2n\reflection\ReflectionException;
 use rocket\ei\component\InvalidEiComponentConfigurationException;
@@ -39,19 +38,16 @@ use n2n\persistence\orm\model\UnknownEntityPropertyException;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\component\prop\indepenent\IncompatiblePropertyException;
 use n2n\config\InvalidConfigurationException;
-use n2n\core\N2N;
 use n2n\core\TypeNotFoundException;
 use n2n\persistence\orm\OrmConfigurationException;
 use rocket\spec\extr\EiTypeExtraction;
 use rocket\ei\mask\EiMask;
 use rocket\custom\CustomType;
-use n2n\util\cache\CorruptedCacheStoreException;
 use rocket\ei\component\EiSetup;
 use rocket\custom\CustomLaunchPad;
 use rocket\ei\EiLaunchPad;
 use n2n\util\type\ArgUtils;
 use rocket\ei\component\prop\EiProp;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\component\modificator\EiModificator;
 use rocket\ei\component\command\EiCommand;
 use rocket\ei\EiPropPath;
@@ -477,8 +473,10 @@ class EiSetupQueue {
 	
 	public function clear()  {
 		$this->propIns = array();
-		$this->eiConfigurators = array();
+		//$this->eiConfigurators = array();
 		$this->eiPropSetupTasks = array();
+		$this->eiModificatorSetupTasks = array();
+		$this->eiCommandSetupTasks = array();
 	}
 		
 	public function trigger(N2nContext $n2nContext, bool $resultMode) {
@@ -713,6 +711,63 @@ class EiSetupResult {
 			return $wrapper->getEiCommandPath()->equals($eiCommandPath)
 					&& $wrapper->getEiCommandCollection()->getEiMask()->getEiTypePath()->equals($typePath);
 		}));
+	}
+	
+	public function getThrowables(TypePath $typePath = null) {
+		$throwables = [];
+		array_walk($this->eiPropSetupErrors, function (EiPropSetupError $eiPropSetupError) use ($typePath, $throwables) {
+			if ($typePath === null || !$eiPropSetupError->getEiProp()->getWrapper()->getEiPropCollection()
+					->getEiMask()->getEiTypePath()->equals($typePath)) return;
+			$throwables[] = $eiPropSetupError->getThrowable();
+		});
+		
+		array_walk($this->eiModificatorSetupErrors, function (EiModificatorSetupError $eiModificatorSetupError) use ($typePath, $throwables) {
+			if ($typePath === null || !$eiModificatorSetupError->getEiModificator()->getWrapper()->getEiModificatorCollection()
+					->getEiMask()->getEiTypePath()->equals($typePath)) return;
+			$throwables[] = $eiModificatorSetupError->getThrowable();
+		});
+		
+		array_walk($this->eiCommandSetupErrors, function (EiCommandSetupError $eiCommandSetupError) use ($typePath, $throwables) {
+			if ($typePath === null || !$eiCommandSetupError->getEiCommand()->getWrapper()->getEiCommandCollection()
+					->getEiMask()->getEiTypePath()->equals($typePath)) return;
+			$throwables[] = $eiCommandSetupError->getThrowable();
+		});
+		
+		return $throwables;
+	}
+	
+	public function hasErrors(TypePath $typePath = null) {
+		return !empty($this->getThrowables($typePath)); 
+	}
+	
+	/**
+	 * @param TypePath $typePath
+	 * @return EiPropSetupError[]
+	 */
+	public function getEiPropSetupErrors(TypePath $typePath) {
+		return array_filter($this->eiPropSetupErrors, function (EiPropSetupError $eiPropSetupError) use ($typePath) {
+			return $eiPropSetupError->getEiProp()->getWrapper()->getEiPropCollection()->getEiMask()->getEiTypePath()->equals($typePath);
+		});
+	}
+	
+	/**
+	 * @param TypePath $typePath
+	 * @return EiModificatorSetupError[]
+	 */
+	public function getEiModificatorSetupErrors(TypePath $typePath) {
+		return array_filter($this->eiModificatorSetupErrors, function (EiModificatorSetupError $eiModificatorSetupError) use ($typePath) {
+			return $eiModificatorSetupError->getEiModificator()->getWrapper()->getEiModificatorCollection()->getEiMask()->getEiTypePath()->equals($typePath);
+		});
+	}
+	
+	/**
+	 * @param TypePath $typePath
+	 * @return EiCommandSetupError[]
+	 */
+	public function getEiCommandSetupErrors(TypePath $typePath) {
+		return array_filter($this->eiCommandSetupErrors, function (EiCommandSetupError $eiCommandSetupError) use ($typePath) {
+			return $eiCommandSetupError->getEiCommand()->getWrapper()->getEiCommandCollection()->getEiMask()->getEiTypePath()->equals($typePath);
+		});
 	}
 }
 
