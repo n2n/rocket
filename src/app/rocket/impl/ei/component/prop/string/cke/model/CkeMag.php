@@ -29,24 +29,26 @@ use rocket\impl\ei\component\prop\string\cke\ui\Cke;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\web\dispatch\mag\UiOutfitter;
 use rocket\impl\ei\component\prop\string\cke\CkeEiProp;
+use n2n\util\type\ArgUtils;
 
 class CkeMag extends StringMag {
 	private $mode;
 	private $bbcode;
 	private $tableEditing;
-	private $ckeLinkProviderLookupIds;
-	private $ckeCssConfigLookupId;
+	private $ckeLinkProviders;
+	private $ckeCssConfig;
 
 	public function __construct($label, $value = null, bool $mandatory = false, 
 			int $maxlength = null, array $inputAttrs = null, string $mode = CkeEiProp::MODE_NORMAL, bool $bbcode = false, 
-			bool $tableEditing = false, array $ckeLinkProviderLookupIds, string $ckeCssConfigLookupId = null) {
+			bool $tableEditing = false, array $ckeLinkProviders, CkeCssConfig $ckeCssConfig = null) {
+		ArgUtils::valArray($ckeLinkProviders, CkeLinkProvider::class);
+		
 		parent::__construct($label, $value, $mandatory, $maxlength, true, $inputAttrs);
 		$this->bbcode = $bbcode;
 		$this->mode = $mode;
 		$this->tableEditing = $tableEditing;
-		$this->ckeLinkProviderLookupIds = $ckeLinkProviderLookupIds;
-		$this->ckeCssConfigLookupId = $ckeCssConfigLookupId;
-		$this->ckeLinkProviderLookupIds = $ckeLinkProviderLookupIds;
+		$this->ckeLinkProviders = $ckeLinkProviders;
+		$this->ckeCssConfig = $ckeCssConfig;
 	}
 	
 	public function isMultiline() {
@@ -59,18 +61,8 @@ class CkeMag extends StringMag {
 		
 		$ckeHtml = new CkeHtmlBuilder($htmlView);
 
-		$ckeCss = null;
-		if ($this->ckeCssConfigLookupId !== null) {
-			$ckeCss = $htmlView->lookup($this->ckeCssConfigLookupId);
-		}
-
-		$linkProviders = array();
-		foreach ($this->ckeLinkProviderLookupIds as $linkProviderLookupId) {
-			$linkProviders[$linkProviderLookupId] = $htmlView->lookup($linkProviderLookupId);
-		}
-
 		return $ckeHtml->getEditor($propertyPath,
 				Cke::classic()->mode($this->mode)->table($this->tableEditing)->bbcode($this->bbcode),
-				$ckeCss, $linkProviders);
+				$this->ckeCssConfig, $this->ckeLinkProviders);
 	}
 }
