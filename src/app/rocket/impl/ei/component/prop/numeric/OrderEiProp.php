@@ -31,6 +31,7 @@ use n2n\web\dispatch\mag\Mag;
 use rocket\ei\util\Eiu;
 use rocket\ei\EiPropPath;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
+use n2n\impl\persistence\orm\property\IntEntityProperty;
 
 class OrderEiProp extends IntegerEiProp {
 	const ORDER_INCREMENT = 10;
@@ -42,7 +43,8 @@ class OrderEiProp extends IntegerEiProp {
 	}
 
 	public function isCompatibleWith(EntityProperty $entityProperty) {
-		return $entityProperty instanceof ScalarEntityProperty;
+		return $entityProperty instanceof ScalarEntityProperty
+				|| $entityProperty instanceof IntEntityProperty;
 	}
 	
 	public function createUiComponent(HtmlView $view, Eiu $eiu) {
