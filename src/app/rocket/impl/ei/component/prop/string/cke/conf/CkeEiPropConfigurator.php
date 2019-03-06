@@ -130,7 +130,7 @@ class CkeEiPropConfigurator extends AdaptableEiPropConfigurator {
 		} catch (\InvalidArgumentException $e) {
 			throw $eiSetupProcess->createException('Invalid css config', $e);
 		}
-		
+		$this->ckeEiProp->setCkeLinkProviders($ckeLinkProviders);
 		
 		$ckeCssConfigLookupId = $this->attributes->getString(self::PROP_CSS_CONFIG_LOOKUP_ID_KEY, false, null, true);
 		try {
@@ -141,7 +141,7 @@ class CkeEiPropConfigurator extends AdaptableEiPropConfigurator {
 		} catch (\InvalidArgumentException $e) {
 			throw $eiSetupProcess->createException('Invalid css config', $e);
 		}
-		$this->ckeEiProp->setCkeCssConfigLookupId($ckeCssConfigLookupId);
+		$this->ckeEiProp->setCkeCssConfig($ckeCssConfig);
 		
 		$this->ckeEiProp->setTableSupported($this->attributes->getBool(self::PROP_TABLES_SUPPORTED_KEY, false,
 				$this->ckeEiProp->isTableSupported()));

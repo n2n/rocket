@@ -37,6 +37,7 @@ use rocket\impl\ei\component\prop\string\cke\ui\CkeHtmlBuilder;
 use rocket\ei\manage\gui\ViewMode;
 use n2n\util\StringUtils;
 use n2n\core\N2N;
+use n2n\util\type\TypeUtils;
 
 class CkeEiProp extends AlphanumericEiProp {
 	const MODE_SIMPLE = 'simple';
@@ -44,8 +45,8 @@ class CkeEiProp extends AlphanumericEiProp {
 	const MODE_ADVANCED = 'advanced';
 	
 	private $mode = self::MODE_SIMPLE;
-	private $ckeLinkProviderLookupIds;
-	private $ckeCssConfigLookupId = null;
+	private $ckeLinkProviders;
+	private $ckeCssConfig = null;
 	private $tableSupported = false;
 	private $bbcode = false;
 	
@@ -53,7 +54,7 @@ class CkeEiProp extends AlphanumericEiProp {
 		$this->getDisplayConfig()->setDefaultDisplayedViewModes(ViewMode::bulky());
 		$this->getEditConfig()->setMandatory(false);
 		
-		$this->ckeLinkProviderLookupIds = new GenericArrayObject(null, CkeLinkProvider::class);
+		$this->ckeLinkProviders = new GenericArrayObject(null, CkeLinkProvider::class);
 	}
 	
 	public function createEiPropConfigurator(): EiPropConfigurator {
@@ -76,24 +77,23 @@ class CkeEiProp extends AlphanumericEiProp {
 	/**
 	 * @return \ArrayObject 
 	 */
-	public function getCkeLinkProviderLookupIds() {
-		return $this->ckeLinkProviderLookupIds;
+	public function getCkeLinkProviders() {
+		return $this->ckeLinkProviders;
 	}
 	
-	public function setCkeLinkProviderLookupIds(array $ckeLinkProviderLookupIds) {
-		ArgUtils::valArray($ckeLinkProviderLookupIds, 'string');
-		$this->ckeLinkProviderLookupIds = $ckeLinkProviderLookupIds;
+	public function setCkeLinkProviders(array $ckeLinkProviders) {
+		$this->ckeLinkProviders->exchangeArray($ckeLinkProviders);
 	}
 		
 	/**
 	 * @return CkeCssConfig
 	 */
-	public function getCkeCssConfigLookupId() {
-		return $this->ckeCssConfigLookupId;
+	public function getCkeCssConfig() {
+		return $this->ckeCssConfig;
 	}
 	
-	public function setCkeCssConfigLookupId(string $ckeCssConfigLookupId = null) {
-		$this->ckeCssConfigLookupId = $ckeCssConfigLookupId;
+	public function setCkeCssConfig(CkeCssConfig $ckeCssConfig = null) {
+		$this->ckeCssConfig = $ckeCssConfig;
 	}
 	
 	/**
@@ -122,19 +122,10 @@ class CkeEiProp extends AlphanumericEiProp {
 		if ($eiu->gui()->isCompact()) {
 			return StringUtils::reduce(html_entity_decode(strip_tags($value), null, N2N::CHARSET), 50, '...');
 		}
-	    
-		$ckeCss = null;
-		if ($this->ckeCssConfigLookupId !== null) {
-			$ckeCss = $view->lookup($this->ckeCssConfigLookupId);
-		}
 
-		$linkProviders = array();
-		foreach ($this->ckeLinkProviderLookupIds as $linkProviderLookupId) {
-			$linkProviders[] = $view->lookup($linkProviderLookupId);
-		}
 		$ckeHtmlBuidler = new CkeHtmlBuilder($view);
 
-		return $ckeHtmlBuidler->getIframe((string) $value, $ckeCss, $linkProviders);
+		return $ckeHtmlBuidler->getIframe((string) $value, $this->ckeCssConfig, $this->ckeLinkProviders);
 	}
 	
 	public function createMag(Eiu $eiu): Mag {
@@ -142,7 +133,7 @@ class CkeEiProp extends AlphanumericEiProp {
 		
 		return new CkeMag($this->getLabelLstr(), null, $this->isMandatory($eiu),
 				null, $this->getMaxlength(), $this->getMode(), $this->bbcode,
-				$this->isTableSupported(), $this->getCkeLinkProviderLookupIds(), $this->getCkeCssConfigLookupId());
+				$this->isTableSupported(), (array) $this->getCkeLinkProviders(), $this->getCkeCssConfig());
 	}
 	
 // 	/**
