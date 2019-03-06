@@ -45,6 +45,7 @@ use rocket\ei\manage\critmod\sort\SortProp;
 use rocket\ei\manage\generic\GenericEiProperty;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\ei\manage\generic\ScalarEiProperty;
+use n2n\impl\persistence\orm\property\StringEntityProperty;
 
 abstract class AlphanumericEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiProp, 
 		SortableEiProp, QuickSearchableEiProp, ScalarEiProp, GenericEiProp {
@@ -66,7 +67,8 @@ abstract class AlphanumericEiProp extends DraftablePropertyEiPropAdapter impleme
 	}
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {
-		if ($entityProperty !== null && !($entityProperty instanceof ScalarEntityProperty)) {
+		if ($entityProperty !== null && !($entityProperty instanceof ScalarEntityProperty 
+				|| $entityProperty instanceof StringEntityProperty)) {
 			throw new \InvalidArgumentException();
 		}
 
