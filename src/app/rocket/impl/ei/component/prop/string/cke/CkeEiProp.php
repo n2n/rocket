@@ -125,7 +125,7 @@ class CkeEiProp extends AlphanumericEiProp {
 
 		$ckeHtmlBuidler = new CkeHtmlBuilder($view);
 
-		return $ckeHtmlBuidler->getIframe((string) $value, $this->ckeCssConfig, $this->ckeLinkProviders);
+		return $ckeHtmlBuidler->getIframe((string) $value, $this->ckeCssConfig, (array) $this->ckeLinkProviders);
 	}
 	
 	public function createMag(Eiu $eiu): Mag {
