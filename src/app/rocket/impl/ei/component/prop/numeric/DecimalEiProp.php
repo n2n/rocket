@@ -36,6 +36,7 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\ui\UiComponent;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use n2n\web\dispatch\mag\UiOutfitter;
+use n2n\impl\persistence\orm\property\FloatEntityProperty;
 
 class DecimalEiProp extends NumericEiPropAdapter {
 	protected $decimalPlaces = 0;
@@ -54,7 +55,8 @@ class DecimalEiProp extends NumericEiPropAdapter {
 	 * @see \rocket\impl\ei\component\prop\numeric\NumericEiPropAdapter::setEntityProperty()
 	 */
 	public function setEntityProperty(?EntityProperty $entityProperty) {
-		ArgUtils::assertTrue($entityProperty instanceof ScalarEntityProperty);
+		ArgUtils::assertTrue($entityProperty instanceof ScalarEntityProperty
+				|| $entityProperty instanceof FloatEntityProperty);
 		$this->entityProperty = $entityProperty;
 	}
 	
@@ -63,8 +65,8 @@ class DecimalEiProp extends NumericEiPropAdapter {
 	 * @see \rocket\impl\ei\component\prop\numeric\NumericEiPropAdapter::setObjectPropertyAccessProxy()
 	 */
 	public function setObjectPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
-		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('scalar',
-				$propertyAccessProxy->getBaseConstraint()->allowsNull()));
+		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('float',
+				$propertyAccessProxy->getBaseConstraint()->allowsNull(), true));
 		$this->objectPropertyAccessProxy = $propertyAccessProxy;
 	}
 	
