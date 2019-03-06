@@ -75,7 +75,13 @@ abstract class ToManyEiPropAdapter extends SimpleRelationEiPropAdapter implement
 	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): string {
 		$targetEiObjects = $eiu->object()->readNativValue($this);
 		
-		$numTargetEiObjects = count($targetEiObjects);
+		$numTargetEiObjects = null;
+		if ($targetEiObjects === null) {
+			$numTargetEiObjects = 0;
+		} else {
+			$numTargetEiObjects = count($targetEiObjects);
+		}
+		
 		if ($numTargetEiObjects == 1) {
 			return $numTargetEiObjects . ' ' . $this->eiPropRelation->getTargetEiMask()->getLabelLstr();
 		}
