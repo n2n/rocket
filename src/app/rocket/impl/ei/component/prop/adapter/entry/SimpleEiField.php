@@ -25,6 +25,7 @@ use n2n\util\type\TypeConstraint;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\entry\EiField;
 use n2n\util\type\TypeUtils;
+use n2n\util\type\ValueIncompatibleWithConstraintsException;
 
 class SimpleEiField extends CrwvEiField {
 	private $copyable;
@@ -54,9 +55,14 @@ class SimpleEiField extends CrwvEiField {
 			return $value;
 		}
 		
+		$e = null;
 		try {
 			$this->checkValue($value);
+			return $value;
 		} catch (\InvalidArgumentException $e) {
+			throw new \InvalidArgumentException(TypeUtils::prettyMethName(get_class($this->readable), 'read')
+					. ' returns invalid argument.', 0, $e->getPrevious());
+		} catch (ValueIncompatibleWithConstraintsException $e) {
 			throw new \InvalidArgumentException(TypeUtils::prettyMethName(get_class($this->readable), 'read')
 					. ' returns invalid argument.', 0, $e->getPrevious());
 		}
