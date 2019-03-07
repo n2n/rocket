@@ -28,6 +28,7 @@ use rocket\ei\util\Eiu;
 use n2n\impl\web\dispatch\mag\model\UrlMag;
 use n2n\util\uri\Url;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
+use n2n\reflection\property\AccessProxy;
 
 class UrlEiProp extends AlphanumericEiProp {
 	private $autoScheme;
@@ -36,6 +37,14 @@ class UrlEiProp extends AlphanumericEiProp {
 	
 	public function getTypeName(): string {
 		return "Link";
+	}
+	
+	public function setObjectPropertyAccessProxy(?AccessProxy $objectPropertyAccessProxy) {
+		parent::setObjectPropertyAccessProxy($objectPropertyAccessProxy);
+		
+		if ($objectPropertyAccessProxy !== null) {
+			$objectPropertyAccessProxy->getConstraint()->setWhitelistTypes([Url::class]);
+		}
 	}
 
 	public function createEiPropConfigurator(): EiPropConfigurator {
