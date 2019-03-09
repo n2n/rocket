@@ -72,6 +72,9 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 		
 		if (null !== ($typeConstraint = $propertyAccessProxy->getConstraint())) {
 			$typeConstraint->isPassableTo(TypeConstraints::scalar(true), true);
+			if (!$typeConstraint->isEmpty()) {
+				$typeConstraint->setConvertable(true);
+			}
 			$this->objectPropertyAccessProxy = $propertyAccessProxy;
 			return;
 		}
