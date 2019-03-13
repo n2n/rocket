@@ -5494,17 +5494,27 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
 .rocket-impl-entry > .rocket-impl-summary {
   display: -ms-grid;
   display: grid;
-  -ms-grid-columns: 3rem 10rem 1fr auto;
-      grid-template-columns: 3rem 10rem 1fr auto;
+  -ms-grid-columns: 3.75rem 10rem 1fr auto;
+      grid-template-columns: 3.75rem 10rem 1fr auto;
   border: 1px solid #C2BDB6;
   margin: 0.5rem 0;
   background: #fff;
 }
 
 .rocket-impl-entry > .rocket-impl-summary > .rocket-impl-handle {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
   padding: 1rem;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
   background: #FBFAFA;
   border-right: 1px solid #C2BDB6;
+}
+
+.rocket-impl-entry > .rocket-impl-summary > .rocket-impl-handle > .fa {
+  padding-top: 0.3em;
 }
 
 .rocket-impl-entry > .rocket-impl-summary .rocket-impl-content-type {
@@ -5554,13 +5564,15 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
 .rocket-impl-content-type > .fa::after {
   content: " ";
   position: absolute;
+  width: 2.3em;
+  height: 2.3em;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate3d(-50%, -50%, 0);
+          transform: translate3d(-50%, -50%, 0);
   background: #837E78;
-  width: 36px;
-  height: 36px;
   border-radius: 50%;
   z-index: 1;
-  top: -10px;
-  left: 0px;
 }
 
 .rocket-impl-add-entry {
@@ -6534,14 +6546,6 @@ h1, .h1 {
   font-weight: normal;
 }
 
-.btn {
-  font-size: 0.875rem;
-}
-
-.btn > i {
-  font-size: 1rem;
-}
-
 .btn-primary {
   border-color: #a35905;
 }
@@ -6584,7 +6588,19 @@ h1, .h1 {
 }
 
 .form-check-input {
-  top: 0.555rem;
+  top: 0.45rem;
+}
+
+@-moz-document url-prefix() {
+  .form-check-input {
+    top: 0.55rem;
+  }
+}
+
+@supports (-ms-ime-align: auto) {
+  .form-check-input {
+    top: 0.54rem;
+  }
 }
 
 .align-baseline {
