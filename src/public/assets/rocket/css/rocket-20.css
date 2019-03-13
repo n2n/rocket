@@ -5542,6 +5542,7 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
 .rocket-impl-content-type > .fa {
   position: relative;
   padding: 0 0.75rem;
+  z-index: 0;
 }
 
 .rocket-impl-content-type > .fa::before {
@@ -6307,6 +6308,46 @@ td .rocket-simple-commands > .btn > i {
 
 .rocket-impl-critmod-commands {
   margin-right: 3rem;
+}
+
+.rocket-impl-critmod-blocker {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(247, 245, 245, 0.45);
+  cursor: wait;
+}
+
+.rocket-impl-critmod-blocker:after {
+  content: "";
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate3d(-50%, -50%, 0) rotate(0deg);
+          transform: translate3d(-50%, -50%, 0) rotate(0deg);
+  border-radius: 50%;
+  border: solid 10px rgba(0, 0, 0, 0.1);
+  border-top-color: #ed8207;
+  -webkit-animation: spin-transform 1s infinite linear;
+          animation: spin-transform 1s infinite linear;
+}
+
+@-webkit-keyframes spin-transform {
+  100% {
+    -webkit-transform: translate3d(-50%, -50%, 0) rotate(360deg);
+            transform: translate3d(-50%, -50%, 0) rotate(360deg);
+  }
+}
+
+@keyframes spin-transform {
+  100% {
+    -webkit-transform: translate3d(-50%, -50%, 0) rotate(360deg);
+            transform: translate3d(-50%, -50%, 0) rotate(360deg);
+  }
 }
 
 .rocket-impl-multi-type-menu {
