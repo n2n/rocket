@@ -369,7 +369,7 @@ namespace Rocket.Display {
 			} else {
 				jqButton.append($("<i />", {
 					"class": buttonConfig.iconType
-				})).append($("<span />", {
+				})).append("&nbsp;").append($("<span />", {
 					"text": buttonConfig.label
 				}));
 			}
