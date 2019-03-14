@@ -4425,6 +4425,7 @@ button.close {
 
 html {
   height: 100%;
+  font-size: 15px;
 }
 
 body {
@@ -5670,6 +5671,14 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
 
 .rocket-ei-type-selector > div {
   display: inline-block;
+}
+
+.rocket-impl-to-one .rocket-impl-selector {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
 }
 
 .rocket-panel,
