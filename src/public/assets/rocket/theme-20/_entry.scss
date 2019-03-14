@@ -253,3 +253,11 @@
         display: inline-block;
     }
 }
+
+
+.rocket-impl-to-one {
+    .rocket-impl-selector {
+        display: flex;
+        flex-wrap: wrap;
+    }
+}
