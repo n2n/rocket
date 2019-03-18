@@ -84,15 +84,20 @@
 .rocket-impl-entry {
     > .rocket-impl-summary {
         display: grid;
-        grid-template-columns: 3rem 10rem 1fr auto;
+        grid-template-columns: 3.75rem 10rem 1fr auto;
         border: 1px solid $gray-500;
         margin: 0.5rem 0;
         background: $white;
 
         > .rocket-impl-handle {
+            display: flex;
             padding: 1rem;
+            justify-content: center;
             background: $gray-100;
             border-right: 1px solid $gray-500;
+            > .fa {
+                padding-top: 0.3em;
+            }
         }
 
         .rocket-impl-content-type {
@@ -134,6 +139,7 @@
     > .fa {
         position: relative;
         padding: 0 0.75rem;
+        z-index: 0;
         &::before {
             position: relative;
             z-index: 10;
@@ -142,13 +148,14 @@
         &::after {
             content: " ";
             position: absolute;
+            width: 2.3em;
+            height: 2.3em;
+            top: 50%;
+            left: 50%;
+            transform: translate3d(-50%, -50%, 0);
             background: $gray-600;
-            width: 36px;
-            height: 36px;
             border-radius: 50%;
             z-index: 1;
-            top: -10px;
-            left: 0px;
         }
     }
 }
@@ -244,5 +251,13 @@
 .rocket-ei-type-selector {
     > div {
         display: inline-block;
+    }
+}
+
+
+.rocket-impl-to-one {
+    .rocket-impl-selector {
+        display: flex;
+        flex-wrap: wrap;
     }
 }
