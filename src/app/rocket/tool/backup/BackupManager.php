@@ -33,7 +33,7 @@ class BackupManager {
 	const MODULE_DIR = 'rocket';
 	
 	public static function createBackup($fileName = null) {
-		$backuper = N2N::getPdoPool()->getPdo()->getMetaData()->getDatabase()->createBackuper();
+		$backuper = N2N::getPdoPool()->getPdo()->getMetaData()->getMetaManager()->createBackuper();
 		$backuper->setBackupDataEnabled(true);
 		$backuper->setReplaceTableEnabled(true);
 		$backuper->setOutputStream(new FileResourceStream(self::generateFile($fileName), 'w'));
