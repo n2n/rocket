@@ -84,15 +84,6 @@ $htmlMeta->addLink(array('rel' => 'apple-touch-icon', 'href' => $httpContext->ge
 <?php $html->headStart() ?>
 	<meta charset="<?php $html->out(N2n::CHARSET) ?>" />
 	<style>
-	
-		form.rocket-impl-critmod .rocket-impl-critmod-blocker {
-			position: absolute;
-			top: 0px;
-			left: 0px;
-			right: 0px;
-			bottom: 0px;
-			background: url('https://media.giphy.com/media/jAYUbVXgESSti/giphy.gif') center center no-repeat;
-		}
 		
 		.rocket-layer {
 			animation: layertransform 0.2s;
