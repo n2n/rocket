@@ -52,7 +52,7 @@ class EmbeddedEiPropRelation extends EiPropRelation {
 			$entityProperty = $this->getRelationEiProp()->getEntityProperty();
 			throw new InvalidEiComponentConfigurationException(
 					'EiProp requires an EntityProperty which cascades persist: ' 
-							. TypeUtils::prettyPropName($entityProperty->getEntityModel()->getClass(),
+							. TypeUtils::prettyClassPropName($entityProperty->getEntityModel()->getClass(),
 									$entityProperty->getName()));
 		}
 		
