@@ -36,6 +36,15 @@ use rocket\ei\util\Eiu;
 use rocket\ei\manage\security\privilege\EiCommandPrivilege;
 use n2n\web\http\controller\Controller;
 use rocket\impl\ei\component\command\common\controller\AddController;
+use n2n\web\dispatch\mag\MagDispatchable;
+use n2n\impl\web\dispatch\mag\model\BoolMag;
+use n2n\web\dispatch\mag\MagCollection;
+use n2n\util\ex\IllegalStateException;
+use n2n\impl\web\dispatch\mag\model\MagForm;
+use rocket\ei\component\EiSetup;
+use n2n\util\type\CastUtils;
+use rocket\impl\ei\component\EiConfiguratorAdapter;
+use rocket\ei\component\EiConfigurator;
 
 class AddEiCommand extends IndependentEiCommandAdapter implements OverallControlComponent, EntryControlComponent,
 		PrivilegedEiCommand {
@@ -182,4 +191,37 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 		
 		return array(self::CONTROL_INSERT_BRANCH_KEY => $groupControl);
 	}
+	
+	public function createEiConfigurator(): EiConfigurator {
+		return new AddEiConfigurator($this);
+	}
 }
+	
+
+class AddEiConfigurator extends EiConfiguratorAdapter {
+	const OPTION_DUPLICATE_ALLOWED_KEY = 'duplicateAllowed';
+	
+	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
+		$eiComponent = $this->eiComponent;
+		IllegalStateException::assertTrue($eiComponent instanceof AddEiCommand);
+		
+		$magCollection = new MagCollection();
+		$magCollection->addMag(self::OPTION_DUPLICATE_ALLOWED_KEY, new BoolMag('Duplicating Allowed', 
+				$this->getAttributes()->get(
+						self::OPTION_DUPLICATE_ALLOWED_KEY, false, $eiComponent->isDublicatingAllowed())));
+		return new MagForm($magCollection);
+	}
+	
+	public function saveMagDispatchable(MagDispatchable $magDispatchable, N2nContext $n2nContext) {
+		$this->attributes->set(self::OPTION_DUPLICATE_ALLOWED_KEY, $magDispatchable->getPropertyValue(self::OPTION_DUPLICATE_ALLOWED_KEY));
+	}
+	
+	public function setup(EiSetup $eiSetupProcess) {
+		$eiComponent = $this->eiComponent;
+		CastUtils::assertTrue($eiComponent instanceof AddEiCommand);
+		
+		$eiComponent->setDublicatingAllowed($this->attributes->optBool(self::OPTION_DUPLICATE_ALLOWED_KEY,
+				$eiComponent->isDublicatingAllowed()));
+	}
+}
+
