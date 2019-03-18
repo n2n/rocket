@@ -465,7 +465,7 @@ class EiuEntry {
 	 * @return string
 	 */
 	public function getGenericIconType() {
-		return $this->getEiuFrame(true)->getGenericIconType($this);
+		return $this->getEiuFrame()->getGenericIconType($this);
 	}
 	
 	/**
@@ -474,7 +474,7 @@ class EiuEntry {
 	 * @return \rocket\ei\util\entry\EiuEntry
 	 */
 	public function copy(bool $draft = null, $eiTypeArg = null) {
-		return $this->eiuFrame->copyEntry($this, $draft, $eiTypeArg);
+		return $this->getEiuFrame()->copyEntry($this, $draft, $eiTypeArg);
 	}
 	
 	public function copyValuesTo($toEiEntryArg, array $eiPropPaths = null) {
@@ -485,7 +485,7 @@ class EiuEntry {
 	 * @return \rocket\ei\EiEngine
 	 */
 	public function getEiEngine() {
-		return $this->eiuFrame->determineEiEngine($this);
+		return $this->getEiuFrame()->determineEiEngine($this);
 	}
 	
 // 	/**
