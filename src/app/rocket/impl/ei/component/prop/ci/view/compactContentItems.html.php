@@ -31,20 +31,24 @@
 
 	$groupedUiComponents = $view->getParam('groupedUiComponents');
 	$view->assert(is_array($groupedUiComponents));
+	
+	$i = 0;
 ?>
 <div class="rocket-content-nested rocket-content-item-composer">
 	<?php foreach ($panelConfigs as $panelConfig): ?>
-		<h4><?php $html->out($panelConfig->getLabel()) ?></h4>
-		<?php if (!isset($groupedUiComponents[$panelConfig->getName()])): ?>
-			<div>
-				<?php $html->text('common_empty_label') ?>
-			</div>
-		<?php else: ?>
-			<ul class="list-inline rocket-content-item">
-				<?php foreach ($groupedUiComponents[$panelConfig->getName()] as $uiComponent): ?>
-					<?php $view->out($uiComponent) ?>
-				<?php endforeach ?>
-			</ul>
-		<?php endif ?>
+		<div>
+			<span><?php $html->out('P' . ++$i) ?></span>
+			<?php if (!isset($groupedUiComponents[$panelConfig->getName()])): ?>
+				<div>
+					<?php $html->text('common_empty_label') ?>
+				</div>
+			<?php else: ?>
+				<ul class="list-inline rocket-content-item">
+					<?php foreach ($groupedUiComponents[$panelConfig->getName()] as $uiComponent): ?>
+						<?php $view->out($uiComponent) ?>
+					<?php endforeach ?>
+				</ul>
+			<?php endif ?>
+		</div>
 	<?php endforeach ?>
 </div>

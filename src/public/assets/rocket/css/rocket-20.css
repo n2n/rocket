@@ -5550,6 +5550,13 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
   color: #b90f00;
 }
 
+.rocket-content-nested,
+.rocket-content-nested > div {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
 .rocket-impl-content-type > .fa {
   position: relative;
   padding: 0 0.75rem;

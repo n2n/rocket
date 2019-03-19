@@ -33,6 +33,7 @@ use n2n\util\ex\IllegalStateException;
 use rocket\ei\util\Eiu;
 use n2n\l10n\Lstr;
 use n2n\l10n\N2nLocale;
+use n2n\impl\web\ui\view\html\HtmlElement;
 
 class ContentItemGuiField implements GuiField, GuiFieldDisplayable {
 	private $labelLstr;
@@ -156,12 +157,12 @@ class ContentItemGuiField implements GuiField, GuiFieldDisplayable {
 			}
 			
 // 			if ($targetEiEntry->isAccessible()) {
-// 				$iconType = $targetUtils->getGenericIconType($targetEiEntry);
-// 				// $label = $targetUtils->getGenericLabel($targetEiEntry);
-// 				$label = $targetUtils->createIdentityString($targetEiEntry->getEiObject());
-// 				$groupedUiComponents[$panelName][] = new HtmlElement('li', array('title' => $label,
-// 						'class' => 'list-inline-item rocket-impl-content-type'), 
-// 						array(new HtmlElement('i', array('class' => 'fa fa-' . $iconType), '')));
+				$iconType = $targetUtils->getGenericIconType($targetEiEntry);
+				// $label = $targetUtils->getGenericLabel($targetEiEntry);
+				$label = $targetUtils->createIdentityString($targetEiEntry->getEiObject());
+				$groupedUiComponents[$panelName][] = new HtmlElement('li', array('title' => $label,
+						'class' => 'list-inline-item rocket-impl-content-type'), 
+						array(new HtmlElement('i', array('class' => 'fa fa-' . $iconType), '')));
 // 			} else {
 // 				$groupedUiComponents[$panelName][] = new HtmlElement('li', array('rocket-inaccessible'),
 // 						$targetUtils->createIdentityString($targetEiEntry->getEiObject()));

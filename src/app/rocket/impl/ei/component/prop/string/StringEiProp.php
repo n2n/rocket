@@ -31,6 +31,7 @@ use n2n\web\dispatch\mag\Mag;
 use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\util\StringUtils;
+use n2n\impl\web\ui\view\html\HtmlElement;
 
 class StringEiProp extends AlphanumericEiProp {
 	private $multiline = false;
@@ -51,6 +52,10 @@ class StringEiProp extends AlphanumericEiProp {
 		$html = $view->getHtmlBuilder();
 		
 		$value = $eiu->field()->getValue(EiPropPath::from($this));
+		
+		if ($eiu->gui()->isCompact()) {
+			return new HtmlElement('div', ['class' => 'text-truncate'], $value);
+		}
 		
 		if ($this->isMultiline()) {
 			return $html->getEscBr($value);

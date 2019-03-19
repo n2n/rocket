@@ -29,6 +29,13 @@ Jhtml.ready(function(elements) {
 		});
 	})();
 	
+	(function() {
+		if (typeof $.fn.magnificPopup != 'function') return;
+		$(elements).find(".rocket-video-previewable").magnificPopup({
+            type: 'iframe'
+		});
+	})();
+	
 	(function(){
 		var jqImagePreviewItem = $(elements).find('.rocket-image-previewable');
 		

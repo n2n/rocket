@@ -133,6 +133,10 @@
     }
 }
 
+.rocket-content-nested,
+.rocket-content-nested > div {
+    display: flex;
+}
 
 // round icon
 .rocket-impl-content-type {
