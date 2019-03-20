@@ -23,6 +23,7 @@
         grid-template-columns: 15rem 1fr auto;
 
         > label {
+            grid-row-start: 1;
             grid-column-start: 1;
             grid-column-end: 2; 
             padding: calc(0.375rem + 1px) 0;

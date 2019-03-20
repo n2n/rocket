@@ -5291,7 +5291,7 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
 }
 
 .rocket-table > tbody tr:hover {
-  background: linear-gradient(to right, #fd7e14 0, #fd7e14 3px, #ECEBE9 3px, #ECEBE9 100%);
+  background: linear-gradient(to right, #fd7e14 0px, #fd7e14 3px, #ECEBE9 3px, #ECEBE9 100%);
 }
 
 .rocket-table > tbody .rocket-table-commands {
@@ -5434,6 +5434,8 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
         grid-template-columns: 15rem 1fr auto;
   }
   .rocket-item > label {
+    -ms-grid-row: 1;
+        grid-row-start: 1;
     -ms-grid-column: 1;
         grid-column-start: 1;
     grid-column-end: 2;
@@ -5795,6 +5797,7 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
       grid-column-start: 2;
   grid-column-end: 3;
   padding-top: 0.5rem;
+  padding-right: 0.5rem;
 }
 
 .rocket-group {
@@ -5860,18 +5863,12 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
  * Toolbar
  */
 .rocket-toolbar {
-  padding: 0.5rem 0;
   text-align: right;
 }
 
 .rocket-toolbar > .rocket-group-controls,
 .rocket-toolbar > .rocket-simple-commands {
   display: inline-block;
-}
-
-.rocket-toolbar > .rocket-group-controls > button,
-.rocket-toolbar > .rocket-simple-commands > button {
-  margin-left: 0.5rem;
 }
 
 .rocket-main-group {
@@ -5882,7 +5879,7 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
   position: absolute;
   top: -2.825rem;
   right: 0;
-  padding-right: 0.5rem;
+  padding: 0.5rem;
   background: #fff;
 }
 

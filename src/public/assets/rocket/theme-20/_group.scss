@@ -20,6 +20,7 @@
         grid-column-start: 2;
         grid-column-end: 3;
         padding-top: 0.5rem;
+        padding-right: 0.5rem;
     }
 }
 
@@ -82,18 +83,11 @@
  * Toolbar
  */
  .rocket-toolbar {
-    padding: 0.5rem 0;
     text-align: right;
 
     > .rocket-group-controls,
     > .rocket-simple-commands {
         display: inline-block;
-        > button {
-            margin-left: 0.5rem;
-            // > i {
-            //     font-size: $font-size-lg;
-            // }
-        }
     }
 }
 
@@ -103,7 +97,7 @@
         position: absolute;
         top: -2.825rem;
         right: 0;
-        padding-right: 0.5rem;
+        padding: 0.5rem;
         background: $white;
     }
 }
