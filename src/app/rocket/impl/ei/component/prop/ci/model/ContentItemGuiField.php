@@ -162,7 +162,7 @@ class ContentItemGuiField implements GuiField, GuiFieldDisplayable {
 				$label = $targetUtils->createIdentityString($targetEiEntry->getEiObject());
 				$groupedUiComponents[$panelName][] = new HtmlElement('li', array('title' => $label,
 						'class' => 'list-inline-item rocket-impl-content-type'), 
-						array(new HtmlElement('i', array('class' => 'fa fa-' . $iconType), '')));
+						array(new HtmlElement('i', array('class' => $iconType), '')));
 // 			} else {
 // 				$groupedUiComponents[$panelName][] = new HtmlElement('li', array('rocket-inaccessible'),
 // 						$targetUtils->createIdentityString($targetEiEntry->getEiObject()));
