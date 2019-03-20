@@ -110,14 +110,30 @@
         }
 
         .rocket-impl-content {
+            position: relative;
+            z-index: 0;
             padding: 1rem 0.5rem;
-            white-space: nowrap;
+            display: flex;
+            flex: 1 1 100%;
             overflow: hidden;
-            > div {
-                display: inline-block;
+
+            &:before {
+                content: "";
+                z-index: 1;
+                width: 0.75rem;
+                height: 100%;
+                position: absolute;
+                top: 0;
+                right: 0;
+                background-image:  linear-gradient(to right, rgba($white, 0), rgba($white, 1) 80%);
             }
-            > div:not(:empty) {
-                margin-right: 0.5rem;
+
+            > div {
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+            > div:not(:last-child):not(:empty) {
+                margin-right: 1.5rem;
             }
         }
 
@@ -129,13 +145,18 @@
         .rocket-impl-status {
             color: $danger;
         }
-
     }
 }
 
-.rocket-content-nested,
-.rocket-content-nested > div {
+.rocket-content-nested {
     display: flex;
+    > div {
+        display: flex;
+    }
+
+    > div:not(:empty) {
+        margin-right: 1.5rem;
+    }
 }
 
 // round icon

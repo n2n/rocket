@@ -5528,17 +5528,38 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
 }
 
 .rocket-impl-entry > .rocket-impl-summary .rocket-impl-content {
+  position: relative;
+  z-index: 0;
   padding: 1rem 0.5rem;
-  white-space: nowrap;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-flex: 1;
+      -ms-flex: 1 1 100%;
+          flex: 1 1 100%;
   overflow: hidden;
 }
 
-.rocket-impl-entry > .rocket-impl-summary .rocket-impl-content > div {
-  display: inline-block;
+.rocket-impl-entry > .rocket-impl-summary .rocket-impl-content:before {
+  content: "";
+  z-index: 1;
+  width: 0.75rem;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-image: -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, 0)), color-stop(80%, white));
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0), white 80%);
 }
 
-.rocket-impl-entry > .rocket-impl-summary .rocket-impl-content > div:not(:empty) {
-  margin-right: 0.5rem;
+.rocket-impl-entry > .rocket-impl-summary .rocket-impl-content > div {
+  white-space: nowrap;
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+}
+
+.rocket-impl-entry > .rocket-impl-summary .rocket-impl-content > div:not(:last-child):not(:empty) {
+  margin-right: 1.5rem;
 }
 
 .rocket-impl-entry > .rocket-impl-summary > .rocket-simple-commands {
@@ -5550,11 +5571,20 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
   color: #b90f00;
 }
 
-.rocket-content-nested,
+.rocket-content-nested {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
 .rocket-content-nested > div {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+}
+
+.rocket-content-nested > div:not(:empty) {
+  margin-right: 1.5rem;
 }
 
 .rocket-impl-content-type > .fa {
@@ -6604,18 +6634,12 @@ h1, .h1 {
 }
 
 .form-check-input {
-  top: 0.45rem;
+  top: 0.5rem;
 }
 
-@-moz-document url-prefix() {
+@supports (-moz-osx-font-smoothing: auto) {
   .form-check-input {
-    top: 0.55rem;
-  }
-}
-
-@supports (-ms-ime-align: auto) {
-  .form-check-input {
-    top: 0.54rem;
+    top: 0.35rem;
   }
 }
 
