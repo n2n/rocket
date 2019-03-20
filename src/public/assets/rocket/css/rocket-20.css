@@ -5450,6 +5450,7 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
     -ms-grid-column: 3;
         grid-column-start: 3;
     grid-column-end: 4;
+    padding: 0;
   }
   .rocket-group:not(.rocket-light-group) .rocket-group:not(.rocket-light-group) .rocket-control > .rocket-item {
     -ms-grid-columns: 14rem 1fr auto;
@@ -5560,6 +5561,11 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
 
 .rocket-impl-entry > .rocket-impl-summary .rocket-impl-content > div:not(:last-child):not(:empty) {
   margin-right: 1.5rem;
+}
+
+.rocket-impl-entry > .rocket-impl-summary .rocket-impl-content > div.rocket-gui-field-fileImage {
+  margin-top: -0.35rem;
+  margin-bottom: -0.41rem;
 }
 
 .rocket-impl-entry > .rocket-impl-summary > .rocket-simple-commands {
