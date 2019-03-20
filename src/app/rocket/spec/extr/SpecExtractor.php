@@ -445,7 +445,7 @@ class SpecExtractor {
 			$childDisplayStructure = $this->createDisplayStructure(
 					$displayStructureAttributes->getArray(RawDef::DISPLAY_ITEM_DISPLAY_STRUCTURE_KEY));
 			$displayStructure->addDisplayStructure($childDisplayStructure, 
-					$displayStructureAttributes->reqEnum(RawDef::DISPLAY_ITEM_GROUP_TYPE_KEY, DisplayItem::getGroupTypes()), 
+					$displayStructureAttributes->reqEnum(RawDef::DISPLAY_ITEM_GROUP_TYPE_KEY, DisplayItem::getTypes()), 
 					Rocket::buildLstr($label, $this->moduleNamespace));
 		}
 	
