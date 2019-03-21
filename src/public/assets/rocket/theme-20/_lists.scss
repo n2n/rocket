@@ -92,29 +92,19 @@ $rocket-tree-level-line-string:         '';
 
     > tbody {
         tr:hover {
-            background: linear-gradient(to right, #fd7e14 0px, #fd7e14 3px, #ECEBE9 3px, #ECEBE9 100%);
+            > td:first-child {
+                position: relative;
+                &:before {
+                    content: "";
+                    position: absolute;
+                    top: -$table-border-width;
+                    left: 0;
+                    width: 3px;
+                    bottom: -$table-border-width;
+                    background: $primary;
+                }
+            }
         }
-
-        // tr {
-        //     position: relative;
-        // }
-
-        // tr:before {
-        //     content: "";
-        //     position: absolute;
-        //     display: block;
-        //     top: 0;
-        //     left: 0;
-        //     bottom: 0;
-        //     width: 3px;
-        //     background: $primary;
-        //     opacity: 0;
-        //     // background: linear-gradient(to right, $orange 0, $orange 3px, $gray-300 3px, $gray-300 100%);
-        // }
-        
-        // tr:hover:before {
-        //     opacity: 1;
-        // }
 
         .rocket-table-commands {
             border-left: 1px solid $gray-300;

@@ -5290,8 +5290,18 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
   padding: 0;
 }
 
-.rocket-table > tbody tr:hover {
-  background: linear-gradient(to right, #fd7e14 0px, #fd7e14 3px, #ECEBE9 3px, #ECEBE9 100%);
+.rocket-table > tbody tr:hover > td:first-child {
+  position: relative;
+}
+
+.rocket-table > tbody tr:hover > td:first-child:before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 3px;
+  bottom: -1px;
+  background: #ed8207;
 }
 
 .rocket-table > tbody .rocket-table-commands {
