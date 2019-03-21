@@ -1674,7 +1674,7 @@ mark,
 }
 
 .table-hover tbody tr:hover {
-  background-color: #ECEBE9;
+  background-color: #F7F5F5;
 }
 
 .table-primary,
@@ -1800,16 +1800,16 @@ mark,
 .table-active,
 .table-active > th,
 .table-active > td {
-  background-color: #ECEBE9;
+  background-color: #F7F5F5;
 }
 
 .table-hover .table-active:hover {
-  background-color: #e0dfdb;
+  background-color: #ece7e7;
 }
 
 .table-hover .table-active:hover > td,
 .table-hover .table-active:hover > th {
-  background-color: #e0dfdb;
+  background-color: #ece7e7;
 }
 
 .table .thead-dark th {
@@ -5305,7 +5305,7 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
 }
 
 .rocket-table > tbody .rocket-table-commands {
-  border-left: 1px solid #ECEBE9;
+  border-left: 1px solid #DAD7D3;
   white-space: nowrap;
   width: 5%;
   padding: 0.5rem 0.75rem;
