@@ -97,10 +97,10 @@ $rocket-tree-level-line-string:         '';
                 &:before {
                     content: "";
                     position: absolute;
-                    top: -$table-border-width;
+                    top: 0;
                     left: 0;
                     width: 3px;
-                    bottom: -$table-border-width;
+                    bottom: 0;
                     background: $primary;
                 }
             }

@@ -5297,10 +5297,10 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
 .rocket-table > tbody tr:hover > td:first-child:before {
   content: "";
   position: absolute;
-  top: -1px;
+  top: 0;
   left: 0;
   width: 3px;
-  bottom: -1px;
+  bottom: 0;
   background: #ed8207;
 }
 
