@@ -37,11 +37,8 @@
 <div class="rocket-content-nested rocket-content-item-composer">
 	<?php foreach ($panelConfigs as $panelConfig): ?>
 		<div>
-			<span><?php $html->out('P' . ++$i) ?></span>
 			<?php if (!isset($groupedUiComponents[$panelConfig->getName()])): ?>
-				<div>
-					<?php $html->text('common_empty_label') ?>
-				</div>
+				—
 			<?php else: ?>
 				<ul class="list-inline rocket-content-item">
 					<?php foreach ($groupedUiComponents[$panelConfig->getName()] as $uiComponent): ?>
