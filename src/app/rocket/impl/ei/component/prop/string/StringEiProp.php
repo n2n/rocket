@@ -53,9 +53,9 @@ class StringEiProp extends AlphanumericEiProp {
 		
 		$value = $eiu->field()->getValue(EiPropPath::from($this));
 		
-		if ($eiu->gui()->isCompact()) {
-			return new HtmlElement('div', ['class' => 'text-truncate'], $value);
-		}
+// 		if ($eiu->gui()->isCompact()) {
+// 			return new HtmlElement('div', ['class' => 'text-truncate'], $value);
+// 		}
 		
 		if ($this->isMultiline()) {
 			return $html->getEscBr($value);
