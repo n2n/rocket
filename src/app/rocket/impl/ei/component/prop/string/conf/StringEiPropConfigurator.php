@@ -31,7 +31,6 @@ use n2n\persistence\meta\structure\Column;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use n2n\util\type\CastUtils;
-
 class StringEiPropConfigurator extends AlphanumericEiPropConfigurator {
 	const OPTION_MULTILINE_KEY = 'multiline';
 	
