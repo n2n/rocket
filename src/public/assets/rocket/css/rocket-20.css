@@ -5650,7 +5650,6 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
 
 .rocket-impl-content-type > .fa::before {
   position: relative;
-  z-index: 10;
   color: white;
 }
 
@@ -5665,7 +5664,17 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
           transform: translate3d(-50%, -50%, 0);
   background: #837E78;
   border-radius: 50%;
-  z-index: 1;
+  z-index: -1;
+}
+
+.rocket-impl-content-type-empty {
+  color: #DAD7D3;
+  cursor: default;
+}
+
+.rocket-impl-content-type-empty > .fa::after {
+  background: none;
+  border: 1px solid #DAD7D3;
 }
 
 .rocket-impl-add-entry {

@@ -38,7 +38,9 @@
 	<?php foreach ($panelConfigs as $panelConfig): ?>
 		<div>
 			<?php if (!isset($groupedUiComponents[$panelConfig->getName()])): ?>
-				—
+				<div class="rocket-impl-content-type rocket-impl-content-type-empty">
+					<span class="fa" title="leer">0</span>
+				</div>
 			<?php else: ?>
 				<ul class="list-inline rocket-content-item">
 					<?php foreach ($groupedUiComponents[$panelConfig->getName()] as $uiComponent): ?>
