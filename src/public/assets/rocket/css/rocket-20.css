@@ -5548,7 +5548,7 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
   padding-bottom: 1.2rem;
 }
 
-.rocket-impl-entry > .rocket-impl-summary .rocket-impl-content-type {
+.rocket-impl-entry > .rocket-impl-summary.rocket-entry > .rocket-impl-content-type {
   min-width: 10rem;
   padding: 1rem 0 1rem 0.5rem;
   border-right: 1px solid #C2BDB6;
@@ -5620,12 +5620,12 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
 }
 
 .rocket-content-nested > div:not(:empty) {
-  padding-right: .75rem;
-  padding-right: calc(.75rem + 1px);
+  padding-right: 1.85rem;
+  padding-right: calc(1.85rem + 1px);
 }
 
 .rocket-content-nested > div:not(:last-child):not(:empty) {
-  margin-right: .75rem;
+  margin-right: 1.85rem;
 }
 
 .rocket-content-nested > div:not(:last-child):not(:empty):after {
@@ -5640,6 +5640,10 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
 
 .rocket-content-nested > div > .list-inline.rocket-content-item {
   margin-bottom: 0;
+}
+
+.rocket-content-nested > div > .list-inline.rocket-content-item > .list-inline-item:not(:last-child) {
+  margin-right: .15rem;
 }
 
 .rocket-impl-content-type > .fa {
