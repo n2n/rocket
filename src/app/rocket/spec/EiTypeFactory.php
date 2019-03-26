@@ -49,14 +49,23 @@ use n2n\util\StringUtils;
 use rocket\core\model\Rocket;
 use rocket\ei\component\prop\EiPropCollection;
 use rocket\ei\EiPropPath;
+use rocket\spec\result\EiErrorResult;
+use rocket\ei\EiCommandPath;
+use rocket\spec\result\EiCommandError;
+use rocket\spec\result\EiModificatorError;
+use rocket\ei\EiModificatorPath;
+use rocket\spec\result\EiPropError;
 
 class EiTypeFactory {
 	private $entityModelManager;
 	private $setupQueue;
+	private $eiErrorResult;
 	
-	public function __construct(EntityModelManager $entityModelManager, EiSetupQueue $setupQueue) {
+	public function __construct(EntityModelManager $entityModelManager, EiSetupQueue $setupQueue, 
+			?EiErrorResult $eiErrorResult) {
 		$this->entityModelManager = $entityModelManager;
 		$this->setupQueue = $setupQueue;
+		$this->eiErrorResult = $eiErrorResult;
 	}
 	/**
 	 * @param EiTypeExtraction $eiTypeExtraction
@@ -110,8 +119,9 @@ class EiTypeFactory {
 	 * @param EiModificatorExtraction[] $eiModificatorExtractions
 	 */
 	private function asdf(EiMaskExtraction $eiMaskExtraction, EiMask $eiMask, array $eiModificatorExtractions) {
-		$eiDef = $eiMask->getDef();
+		$eiTypePath = $eiMask->getEiTypePath();
 		
+		$eiDef = $eiMask->getDef();
 		$eiDef->setLabel($eiMaskExtraction->getLabel());
 		$eiDef->setPluralLabel($eiMaskExtraction->getPluralLabel());
 		$eiDef->setIconType($eiMaskExtraction->getIconType());
@@ -135,16 +145,25 @@ class EiTypeFactory {
 // 				throw $this->createEiPropException($eiPropExtraction, $e);
 // 			}
 // 		}
-		
+
 		$eiCommandCollection = $eiMask->getEiCommandCollection();
 		foreach ($eiMaskExtraction->getEiCommandExtractions() as $eiComponentExtraction) {
 			try {
-				$eiCommandCollection->addIndependent($eiComponentExtraction->getId(),
-						$this->createEiCommand($eiComponentExtraction, $eiMask));
-			} catch (TypeNotFoundException $e) {
-				throw $this->createEiCommandException($eiComponentExtraction->getId(), $e);
-			} catch (InvalidConfigurationException $e) {
-				throw $this->createEiCommandException($eiComponentExtraction->getId(), $e);
+				try {
+					$eiCommandCollection->addIndependent($eiComponentExtraction->getId(),
+							$this->createEiCommand($eiComponentExtraction, $eiMask));
+				} catch (TypeNotFoundException $e) {
+					throw $this->createEiCommandException($eiComponentExtraction->getId(), $e);
+				} catch (InvalidConfigurationException $e) {
+					throw $this->createEiCommandException($eiComponentExtraction->getId(), $e);
+				}
+			} catch (\Throwable $t) {
+				if (null === $this->eiErrorResult) {
+					throw $t;
+				}
+				
+				$this->eiErrorResult->putEiCommandError(
+						new EiCommandError($eiTypePath, EiCommandPath::create($eiComponentExtraction->getId()), $t));
 			}
 		}
 		
@@ -154,10 +173,19 @@ class EiTypeFactory {
 		$eiModificatorCollection = $eiMask->getEiModificatorCollection();
 		foreach ($eiModificatorExtractions as $eiModificatorExtraction) {
 			try {
-				$eiModificatorCollection->addIndependent($eiModificatorExtraction->getId(),
-						$this->createEiModificator($eiModificatorExtraction, $eiMask));
-			} catch (InvalidConfigurationException $e) {
-				throw $this->createEiModificatorException($eiModificatorExtraction->getId(), $e);
+				try {
+					$eiModificatorCollection->addIndependent($eiModificatorExtraction->getId(),
+							$this->createEiModificator($eiModificatorExtraction, $eiMask));
+				} catch (InvalidConfigurationException $e) {
+					throw $this->createEiModificatorException($eiModificatorExtraction->getId(), $e);
+				}
+			} catch (\Throwable $t) {
+				if (null === $this->eiErrorResult) {
+					throw $t;
+				}
+				
+				$this->eiErrorResult->putEiModificatorError(
+						new EiModificatorError($eiTypePath, EiModificatorPath::create($eiModificatorExtraction->getId()), $t));
 			}
 		}
 		
@@ -170,32 +198,44 @@ class EiTypeFactory {
 	private function applyEiProps(array $eiPropExtractions, EiPropCollection $eiPropCollection, array $contextEntityPropertyNames = array(), 
 			EiPropPath $contextEiPropPath = null) {
 		foreach ($eiPropExtractions as $eiPropExtraction) {
-			$eiPropWrapper;
 			try {
-				$eiPropWrapper = $eiPropCollection->addIndependent(
-						$eiPropExtraction->getId(),
-						$this->createEiProp($eiPropExtraction, $eiPropCollection->getEiMask(), $contextEntityPropertyNames), 
-						$contextEiPropPath);
-			} catch (TypeNotFoundException $e) {
-				throw $this->createEiPropException($eiPropExtraction, $e);
-			} catch (InvalidConfigurationException $e) {
-				throw $this->createEiPropException($eiPropExtraction, $e);
+				$eiPropWrapper = null;
+				try {
+					$eiPropWrapper = $eiPropCollection->addIndependent(
+							$eiPropExtraction->getId(),
+							$this->createEiProp($eiPropExtraction, $eiPropCollection->getEiMask(), $contextEntityPropertyNames), 
+							$contextEiPropPath);
+				} catch (TypeNotFoundException $e) {
+					throw $this->createEiPropException($eiPropExtraction, $e);
+				} catch (InvalidConfigurationException $e) {
+					throw $this->createEiPropException($eiPropExtraction, $e);
+				}
+				
+				$forkedEiPropExtractions = $eiPropExtraction->getForkedEiPropExtractions();
+				if (empty($forkedEiPropExtractions)) {
+					continue;
+				}
+				
+				$entityPropertyNames = $contextEntityPropertyNames;
+				if (null !== ($epn = $eiPropExtraction->getEntityPropertyName())) {
+					$entityPropertyNames[] = $epn;
+				} else {
+					throw $this->createEiPropException($eiPropExtraction, new \Exception('tbd'));
+				}
+				
+				$this->applyEiProps($forkedEiPropExtractions, $eiPropCollection, 
+						$entityPropertyNames, $eiPropWrapper->getEiPropPath());
+			} catch (\Throwable $t) {
+				if (null === $this->eiErrorResult) {
+					throw $t;
+				}
+				
+				$eiPropPath = (null !== $contextEiPropPath) ? $contextEiPropPath->ext($eiPropExtraction->getId()) 
+						: EiPropPath::create($eiPropExtraction->getId());
+				
+				$this->eiErrorResult->putEiPropError(
+						new EiPropError($eiPropCollection->getEiMask()->getEiTypePath(), $eiPropPath, $t));
 			}
-			
-			$forkedEiPropExtractions = $eiPropExtraction->getForkedEiPropExtractions();
-			if (empty($forkedEiPropExtractions)) {
-				continue;
-			}
-			
-			$entityPropertyNames = $contextEntityPropertyNames;
-			if (null !== ($epn = $eiPropExtraction->getEntityPropertyName())) {
-				$entityPropertyNames[] = $epn;
-			} else {
-				throw $this->createEiPropException($eiPropExtraction, new \Exception('tbd'));
-			}
-			
-			$this->applyEiProps($eiPropExtraction->getForkedEiPropExtractions(), $eiPropCollection, 
-					$entityPropertyNames, $eiPropWrapper->getEiPropPath());
 		}
 	}
 	

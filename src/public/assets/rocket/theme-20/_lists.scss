@@ -89,12 +89,25 @@ $rocket-tree-level-line-string:         '';
             }
         }
     }
+
     > tbody {
         tr:hover {
-            background: linear-gradient(to right, $orange 0, $orange 3px, $gray-300 3px, $gray-300 100%);
+            > td:first-child {
+                position: relative;
+                &:before {
+                    content: "";
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 3px;
+                    bottom: 0;
+                    background: $primary;
+                }
+            }
         }
+
         .rocket-table-commands {
-            border-left: 1px solid $gray-300;
+            border-left: 1px solid $table-border-color;
             white-space: nowrap;
             width: 5%;
             padding: 0.5rem 0.75rem;

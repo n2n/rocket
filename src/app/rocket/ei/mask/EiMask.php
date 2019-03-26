@@ -308,6 +308,13 @@ class EiMask {
 	}
 	
 	/**
+	 * @return \Closure[];
+	 */
+	public function getEiEngineSetupCallbacks() {
+		return $this->eiEngineCallbacks;
+	}
+	
+	/**
 	 * @param \Closure $callback
 	 */
 	public function onEiEngineSetup(\Closure $callback) {

@@ -1674,7 +1674,7 @@ mark,
 }
 
 .table-hover tbody tr:hover {
-  background-color: #ECEBE9;
+  background-color: #F7F5F5;
 }
 
 .table-primary,
@@ -1800,16 +1800,16 @@ mark,
 .table-active,
 .table-active > th,
 .table-active > td {
-  background-color: #ECEBE9;
+  background-color: #F7F5F5;
 }
 
 .table-hover .table-active:hover {
-  background-color: #e0dfdb;
+  background-color: #ece7e7;
 }
 
 .table-hover .table-active:hover > td,
 .table-hover .table-active:hover > th {
-  background-color: #e0dfdb;
+  background-color: #ece7e7;
 }
 
 .table .thead-dark th {
@@ -5290,12 +5290,22 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
   padding: 0;
 }
 
-.rocket-table > tbody tr:hover {
-  background: linear-gradient(to right, #fd7e14 0, #fd7e14 3px, #ECEBE9 3px, #ECEBE9 100%);
+.rocket-table > tbody tr:hover > td:first-child {
+  position: relative;
+}
+
+.rocket-table > tbody tr:hover > td:first-child:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  bottom: 0;
+  background: #ed8207;
 }
 
 .rocket-table > tbody .rocket-table-commands {
-  border-left: 1px solid #ECEBE9;
+  border-left: 1px solid #DAD7D3;
   white-space: nowrap;
   width: 5%;
   padding: 0.5rem 0.75rem;
@@ -5434,6 +5444,8 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
         grid-template-columns: 15rem 1fr auto;
   }
   .rocket-item > label {
+    -ms-grid-row: 1;
+        grid-row-start: 1;
     -ms-grid-column: 1;
         grid-column-start: 1;
     grid-column-end: 2;
@@ -5450,6 +5462,7 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
     -ms-grid-column: 3;
         grid-column-start: 3;
     grid-column-end: 4;
+    padding: 0;
   }
   .rocket-group:not(.rocket-light-group) .rocket-group:not(.rocket-light-group) .rocket-control > .rocket-item {
     -ms-grid-columns: 14rem 1fr auto;
@@ -5495,8 +5508,9 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
 .rocket-impl-entry > .rocket-impl-summary {
   display: -ms-grid;
   display: grid;
-  -ms-grid-columns: 3.75rem 10rem 1fr auto;
-      grid-template-columns: 3.75rem 10rem 1fr auto;
+  -ms-grid-columns: minmax(min-content, max-content) 10rem 1fr auto;
+      grid-template-columns: minmax(-webkit-min-content, -webkit-max-content) 10rem 1fr auto;
+      grid-template-columns: minmax(min-content, max-content) 10rem 1fr auto;
   border: 1px solid #C2BDB6;
   margin: 0.5rem 0;
   background: #fff;
@@ -5506,16 +5520,32 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  padding: 1rem;
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
   background: #FBFAFA;
   border-right: 1px solid #C2BDB6;
+  width: 3.5rem;
+}
+
+.rocket-impl-entry > .rocket-impl-summary > .rocket-impl-handle.rocket-not-sortable {
+  width: 0;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  visibility: hidden;
+}
+
+.rocket-impl-entry > .rocket-impl-summary > .rocket-impl-handle:after {
+  content: "";
+  display: table;
+  padding-bottom: 100%;
+  padding-bottom: calc(100% + 1px);
 }
 
 .rocket-impl-entry > .rocket-impl-summary > .rocket-impl-handle > .fa {
-  padding-top: 0.3em;
+  padding-top: 1.2rem;
+  padding-bottom: 1.2rem;
 }
 
 .rocket-impl-entry > .rocket-impl-summary .rocket-impl-content-type {
@@ -5528,21 +5558,47 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
 }
 
 .rocket-impl-entry > .rocket-impl-summary .rocket-impl-content {
-  padding: 1rem 0.5rem;
-  white-space: nowrap;
+  position: relative;
+  z-index: 0;
+  padding: 1rem 1rem 1rem 0.5rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-flex: 1;
+      -ms-flex: 1 1 100%;
+          flex: 1 1 100%;
   overflow: hidden;
 }
 
-.rocket-impl-entry > .rocket-impl-summary .rocket-impl-content > div {
-  display: inline-block;
+.rocket-impl-entry > .rocket-impl-summary .rocket-impl-content:before {
+  content: "";
+  z-index: 1;
+  width: 1rem;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-image: -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, 0)), color-stop(50%, white));
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0), white 50%);
 }
 
-.rocket-impl-entry > .rocket-impl-summary .rocket-impl-content > div:not(:empty) {
-  margin-right: 0.5rem;
+.rocket-impl-entry > .rocket-impl-summary .rocket-impl-content > div {
+  white-space: nowrap;
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+}
+
+.rocket-impl-entry > .rocket-impl-summary .rocket-impl-content > div:not(:last-child):not(:empty) {
+  margin-right: 1.5rem;
+}
+
+.rocket-impl-entry > .rocket-impl-summary .rocket-impl-content > div.rocket-gui-field-fileImage {
+  margin-top: -0.35rem;
+  margin-bottom: -0.41rem;
 }
 
 .rocket-impl-entry > .rocket-impl-summary > .rocket-simple-commands {
-  padding: 0.75rem 0.75rem 0.75rem 0;
+  padding: 0.62rem 0.75rem 0.62rem 0;
   text-align: right;
 }
 
@@ -5550,15 +5606,50 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
   color: #b90f00;
 }
 
+.rocket-content-nested {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.rocket-content-nested > div {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  position: relative;
+}
+
+.rocket-content-nested > div:not(:empty) {
+  padding-right: .75rem;
+  padding-right: calc(.75rem + 1px);
+}
+
+.rocket-content-nested > div:not(:last-child):not(:empty) {
+  margin-right: .75rem;
+}
+
+.rocket-content-nested > div:not(:last-child):not(:empty):after {
+  content: "";
+  width: 1px;
+  height: 100%;
+  top: 0;
+  right: 0;
+  position: absolute;
+  background: #d5cbcb;
+}
+
+.rocket-content-nested > div > .list-inline.rocket-content-item {
+  margin-bottom: 0;
+}
+
 .rocket-impl-content-type > .fa {
   position: relative;
-  padding: 0 0.75rem;
+  padding: 0 .75rem;
   z-index: 0;
 }
 
 .rocket-impl-content-type > .fa::before {
   position: relative;
-  z-index: 10;
   color: white;
 }
 
@@ -5573,7 +5664,17 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
           transform: translate3d(-50%, -50%, 0);
   background: #837E78;
   border-radius: 50%;
-  z-index: 1;
+  z-index: -1;
+}
+
+.rocket-impl-content-type-empty {
+  color: #DAD7D3;
+  cursor: default;
+}
+
+.rocket-impl-content-type-empty > .fa::after {
+  background: none;
+  border: 1px solid #DAD7D3;
 }
 
 .rocket-impl-add-entry {
@@ -5715,6 +5816,7 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
       grid-column-start: 2;
   grid-column-end: 3;
   padding-top: 0.5rem;
+  padding-right: 0.5rem;
 }
 
 .rocket-group {
@@ -5780,23 +5882,12 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
  * Toolbar
  */
 .rocket-toolbar {
-  padding: 0.5rem 0;
   text-align: right;
 }
 
 .rocket-toolbar > .rocket-group-controls,
 .rocket-toolbar > .rocket-simple-commands {
   display: inline-block;
-}
-
-.rocket-toolbar > .rocket-group-controls > button,
-.rocket-toolbar > .rocket-simple-commands > button {
-  margin-left: 0.5rem;
-}
-
-.rocket-toolbar > .rocket-group-controls > button > i,
-.rocket-toolbar > .rocket-simple-commands > button > i {
-  font-size: 1.25rem;
 }
 
 .rocket-main-group {
@@ -5807,7 +5898,7 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
   position: absolute;
   top: -2.825rem;
   right: 0;
-  padding-right: 0.5rem;
+  padding: 0.5rem;
   background: #fff;
 }
 
@@ -5836,7 +5927,7 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
  */
 .rocket-simple-commands > .dropdown > button,
 .rocket-simple-commands > .btn {
-  width: 2.25rem;
+  min-width: 2.25rem;
   text-align: center;
   background: transparent;
   border: none;
@@ -5972,32 +6063,37 @@ td .rocket-simple-commands > .btn > i {
   display: inline-block;
 }
 
-.rocket-toolbar > .rocket-simple-commands > .rocket-important.btn-warning {
-  width: unset;
+.rocket-toolbar > .rocket-simple-commands > .rocket-important {
   position: relative;
-  padding-right: 3rem;
 }
 
-.rocket-toolbar > .rocket-simple-commands > .rocket-important.btn-warning > i {
+.rocket-toolbar > .rocket-simple-commands > .rocket-important > i {
   color: white;
+  position: relative;
+  z-index: 0;
+  margin-left: 1.625em;
 }
 
-.rocket-toolbar > .rocket-simple-commands > .rocket-important.btn-warning > i::before {
+.rocket-toolbar > .rocket-simple-commands > .rocket-important > i::before {
+  z-index: 1;
+}
+
+.rocket-toolbar > .rocket-simple-commands > .rocket-important > i::after {
   position: absolute;
-  top: 0.375rem;
-  right: 0.5rem;
-  z-index: 2;
+  content: " ";
+  background: #837E78;
+  width: 2.25em;
+  height: 2.25em;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate3d(-50%, -50%, 0);
+          transform: translate3d(-50%, -50%, 0);
+  z-index: -1;
 }
 
 .rocket-toolbar > .rocket-simple-commands > .rocket-important.btn-warning > i::after {
-  position: absolute;
-  content: " ";
   background: #F6A723;
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: 50%;
-  top: -0.125rem;
-  right: 0;
 }
 
 .rocket-messages {
@@ -6597,18 +6693,12 @@ h1, .h1 {
 }
 
 .form-check-input {
-  top: 0.45rem;
+  top: 0.5rem;
 }
 
-@-moz-document url-prefix() {
+@supports (-moz-osx-font-smoothing: auto) {
   .form-check-input {
-    top: 0.55rem;
-  }
-}
-
-@supports (-ms-ime-align: auto) {
-  .form-check-input {
-    top: 0.54rem;
+    top: 0.35rem;
   }
 }
 

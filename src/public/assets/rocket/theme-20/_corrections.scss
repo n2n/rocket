@@ -51,15 +51,12 @@ h1, .h1 {
 
 
 .form-check-input {
-    top: 0.45rem;
-    // 1. reset for moz firefox
-    @-moz-document url-prefix() {
-        top: 0.55rem;
-    }
-    // 2. reset for edge
-    @supports (-ms-ime-align: auto) {
-        top: 0.54rem;
-    }
+    top: 0.5rem;
 }
 
- 	
+// 1. reset for moz firefox on mac
+@supports (-moz-osx-font-smoothing: auto) {
+    .form-check-input {
+        top: 0.35rem;
+    }
+}

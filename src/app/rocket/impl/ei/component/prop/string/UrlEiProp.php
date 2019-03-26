@@ -29,6 +29,8 @@ use n2n\impl\web\dispatch\mag\model\UrlMag;
 use n2n\util\uri\Url;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\reflection\property\AccessProxy;
+use n2n\persistence\orm\property\EntityProperty;
+use n2n\impl\persistence\orm\property\UrlEntityProperty;
 
 class UrlEiProp extends AlphanumericEiProp {
 	private $autoScheme;
@@ -45,6 +47,15 @@ class UrlEiProp extends AlphanumericEiProp {
 		if ($objectPropertyAccessProxy !== null) {
 			$objectPropertyAccessProxy->getConstraint()->setWhitelistTypes([Url::class]);
 		}
+	}
+	
+	public function setEntityProperty(?EntityProperty $entityProperty) {
+		if ($entityProperty instanceof UrlEntityProperty) {
+			$this->entityProperty = $entityProperty;
+			return;
+		}
+		
+		parent::setEntityProperty($entityProperty);
 	}
 
 	public function createEiPropConfigurator(): EiPropConfigurator {
@@ -128,7 +139,8 @@ class UrlEiProp extends AlphanumericEiProp {
 	}
 
 	public function write(Eiu $eiu, $value) {
-		if ($value !== null) {
+		if ($value instanceof Url 
+				&& $this->getObjectPropertyAccessProxy()->getConstraint()->getTypeName() != Url::class) {
 			$value = (string) $value;
 		}
 		return parent::write($eiu, $value);

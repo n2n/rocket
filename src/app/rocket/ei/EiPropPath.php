@@ -25,23 +25,38 @@ use rocket\ei\component\prop\EiProp;
 
 class EiPropPath extends IdPath {
 
-	public function pushed($id): EiPropPath {
+	/**
+	 * @param string $id
+	 * @return \rocket\ei\EiPropPath
+	 */
+	public function pushed($id) {
 		$ids = $this->ids;
 		$ids[] = $id;
 		return new EiPropPath($ids);
 	}	
 	
-	public function poped(): EiPropPath {
+	/**
+	 * @return EiPropPath
+	 */
+	public function poped() {
 		$ids = $this->ids;
 		array_pop($ids);
 		return new EiPropPath($ids);
 	}
 	
-	public static function from(EiProp $eiProp): EiPropPath {
+	/**
+	 * @param EiProp $eiProp
+	 * @return \rocket\ei\EiPropPath
+	 */
+	public static function from(EiProp $eiProp) {
 		return $eiProp->getWrapper()->getEiPropPath();
 	}
 	
-	public static function create($expression): EiPropPath {
+	/**
+	 * @param mixed $expression
+	 * @return \rocket\ei\EiPropPath
+	 */
+	public static function create($expression) {
 		if ($expression instanceof EiPropPath) {
 			return $expression;
 		}
@@ -57,7 +72,11 @@ class EiPropPath extends IdPath {
 		return new EiPropPath(explode(self::ID_SEPARATOR, $expression));
 	}
 	
-	public function ext(...$args): EiPropPath {
+	/**
+	 * @param mixed ...$args
+	 * @return \rocket\ei\EiPropPath
+	 */
+	public function ext(...$args) {
 		return new EiPropPath(array_merge($this->ids, $this->argsToIds($args)));
 	}
 	

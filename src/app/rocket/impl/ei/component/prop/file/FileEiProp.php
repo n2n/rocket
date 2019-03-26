@@ -189,8 +189,8 @@ class FileEiProp extends DraftablePropertyEiPropAdapter {
 		$html = $view->getHtmlBuilder();
 		
 		$meta = $html->meta();
-		$html->meta()->addCss('impl/js/thirdparty/magnific-popup/magnific-popup-min.css', 'screen');
-		$html->meta()->addJs('impl/js/thirdparty/magnific-popup/magnific-popup-min.js');
+		$html->meta()->addCss('impl/js/thirdparty/magnific-popup/magnific-popup.min.css', 'screen');
+		$html->meta()->addJs('impl/js/thirdparty/magnific-popup/jquery.magnific-popup.min.js');
 		$meta->addJs('impl/js/image-preview.js');
 		
 		$uiComponent = new HtmlElement('div', 

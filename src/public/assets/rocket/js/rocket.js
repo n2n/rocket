@@ -6128,7 +6128,7 @@ var Rocket;
                         formElemsJq.on("change", changedCallback);
                     }
                     if (!sortable) {
-                        jqEntry.find(".rocket-impl-handle:first").css("visibility", "hidden");
+                        jqEntry.find(".rocket-impl-handle:first").addClass("rocket-not-sortable");
                     }
                     this.reduce();
                     jqEntry.data("rocketImplEmbeddedEntry", this);
