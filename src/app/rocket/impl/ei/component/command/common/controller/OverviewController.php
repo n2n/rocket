@@ -54,44 +54,47 @@ class OverviewController extends ControllerAdapter {
 	}
 	
 	public function index(CritmodSaveDao $critmodSaveDao, $pageNo = null, ParamQuery $numPages = null, ParamQuery $stateKey = null) {
-		$eiuFrame = $this->eiuCtrl->frame();
-		$eiFrame = $eiuFrame->getEiFrame();
-		if ($stateKey !== null) {
-            $stateKey = $stateKey->__toString();
-		} else {
-            $stateKey = OverviewJhtmlController::genStateKey();
-		}
+		$this->forward('\rocket\core\view\anglTemplate.html');
+		return;
 		
-		$overviewAjahHook = OverviewJhtmlController::buildAjahHook(
-				$this->getControllerPath()->ext(['ajah'])->toUrl(), $stateKey);
+// 		$eiuFrame = $this->eiuCtrl->frame();
+// 		$eiFrame = $eiuFrame->getEiFrame();
+// 		if ($stateKey !== null) {
+//             $stateKey = $stateKey->__toString();
+// 		} else {
+//             $stateKey = OverviewJhtmlController::genStateKey();
+// 		}
 		
-		$critmodForm = CritmodForm::create($eiuFrame, $overviewAjahHook->getFilterJhtmlHook(), $critmodSaveDao, $stateKey);
-		$quickSearchForm = QuickSearchForm::create($eiuFrame, $critmodSaveDao, $stateKey);
-		$listModel = new OverviewModel($eiuFrame, $this->listSize, $critmodForm, $quickSearchForm);
+// 		$overviewAjahHook = OverviewJhtmlController::buildAjahHook(
+// 				$this->getControllerPath()->ext(['ajah'])->toUrl(), $stateKey);
 		
-		if ($pageNo === null) {
-			$pageNo = 1;
-		} else if ($pageNo == 1) {
-			throw new PageNotFoundException();
-		}
+// 		$critmodForm = CritmodForm::create($eiuFrame, $overviewAjahHook->getFilterJhtmlHook(), $critmodSaveDao, $stateKey);
+// 		$quickSearchForm = QuickSearchForm::create($eiuFrame, $critmodSaveDao, $stateKey);
+// 		$listModel = new OverviewModel($eiuFrame, $this->listSize, $critmodForm, $quickSearchForm);
 		
-		if (!$listModel->initialize((int) $pageNo, ($numPages === null ? 1 : $numPages->toIntOrReject()))) {
-			throw new PageNotFoundException();
-		}
+// 		if ($pageNo === null) {
+// 			$pageNo = 1;
+// 		} else if ($pageNo == 1) {
+// 			throw new PageNotFoundException();
+// 		}
+		
+// 		if (!$listModel->initialize((int) $pageNo, ($numPages === null ? 1 : $numPages->toIntOrReject()))) {
+// 			throw new PageNotFoundException();
+// 		}
 		
 		
-		$this->eiuCtrl->applyCommonBreadcrumbs();
+// 		$this->eiuCtrl->applyCommonBreadcrumbs();
 		
-		$this->eiuCtrl->forwardView(
-				$this->createView('..\view\overview.html', array('listModel' => $listModel, 
-						'critmodForm' => $critmodForm,
-						'quickSearchForm' => $quickSearchForm, 'overviewAjahHook' => $overviewAjahHook/*, 
-						'filterJhtmlHook' => $filterJhtmlHook*/)));
+// 		$this->eiuCtrl->forwardView(
+// 				$this->createView('..\view\overview.html', array('listModel' => $listModel, 
+// 						'critmodForm' => $critmodForm,
+// 						'quickSearchForm' => $quickSearchForm, 'overviewAjahHook' => $overviewAjahHook/*, 
+// 						'filterJhtmlHook' => $filterJhtmlHook*/)));
 				
-// 		$this->forward('..\view\overview.html', 
-// 				array('listModel' => $listModel, 'critmodForm' => $critmodForm,
-// 						'quickSearchForm' => $quickSearchForm, 'overviewAjahHook' => $overviewAjahHook, 
-// 						'filterJhtmlHook' => $filterJhtmlHook, 'listView' => $listView));
+// // 		$this->forward('..\view\overview.html', 
+// // 				array('listModel' => $listModel, 'critmodForm' => $critmodForm,
+// // 						'quickSearchForm' => $quickSearchForm, 'overviewAjahHook' => $overviewAjahHook, 
+// // 						'filterJhtmlHook' => $filterJhtmlHook, 'listView' => $listView));
 	}
 	
 	public function doAjah(array $delegateCmds = array(), OverviewJhtmlController $ajahOverviewController, 

@@ -2,12 +2,13 @@
   "name": "rocket",
   "version": "0.0.0",
   "scripts": {
-    "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "test": "ng test",
-    "lint": "ng lint",
-    "e2e": "ng e2e"
+    "ng": "npx ng",
+    "start": "npx ng serve",
+    "dev": "npx ng build --watch --output-hashing none --output-path=../../src/public/assets/rocket/angl-dev",
+    "build": "npx ng build --prod --configuration=production --output-hashing none --output-path=../../src/public/assets/rocket/angl",
+    "test": "npx ng test",
+    "lint": "npx ng lint",
+    "e2e": "npx ng e2e"
   },
   "private": true,
   "dependencies": {

@@ -30,6 +30,7 @@ use rocket\ei\manage\security\InaccessibleEiCommandPathException;
 use rocket\ei\util\Eiu;
 use rocket\ei\mask\EiMask;
 use rocket\ei\manage\frame\EiFrame;
+use rocket\ei\manage\EiApiController;
 
 class EiController extends ControllerAdapter {
 	private $eiMask;	
@@ -40,7 +41,11 @@ class EiController extends ControllerAdapter {
 		$this->eiFrame = $eiFrame;
 	}
 	
-	public function index(ManageState $manageState, $eiCommandId, array $delegateCmds = null) {		
+	public function doApi(EiApiController $eiApiController, ManageState $manageState, array $delegateParams = null) {
+		$this->delegate($eiApiController);
+	}
+	
+	public function doCmd(ManageState $manageState, $eiCommandId, array $delegateCmds = null) {		
 		$eiCommand = null;
 		try {
 			$eiCommand = $this->eiMask->getEiCommandCollection()->getByPath(EiCommandPath::create($eiCommandId));
