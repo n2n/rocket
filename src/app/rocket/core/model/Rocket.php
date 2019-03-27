@@ -92,20 +92,21 @@ class Rocket implements RequestScoped {
 	 * @return \rocket\spec\Spec
 	 */
 	public function getSpec(): Spec {
-		if ($this->spec === null) {
-			
-			$rocketConfigSource = $this->getRocketConfigSource();
-			
-			$sem = new SpecExtractionManager($rocketConfigSource->getSpecsConfigSource(), 
-					$rocketConfigSource->getModuleNamespaces());
-// 			$sem->initialize();
-			$this->spec = new Spec($sem, $this->dbhPool->getEntityModelManager());
-			$this->spec->initialize($this->n2nContext);
-// 			die('HUII');
+		if ($this->spec !== null) {
+			return $this->spec;
 		}
 		
-		return $this->spec;
+		$rocketConfigSource = $this->getRocketConfigSource();
+		
+		$sem = new SpecExtractionManager($rocketConfigSource->getSpecsConfigSource(), 
+				$rocketConfigSource->getModuleNamespaces());
+
+		$spec = new Spec($sem, $this->dbhPool->getEntityModelManager());
+		$spec->initialize($this->n2nContext);
+
+		return $this->spec = $spec;
 	}
+	
 	/**
 	 * @return \rocket\spec\EiComponentStore
 	 */
