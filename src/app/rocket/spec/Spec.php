@@ -141,7 +141,7 @@ class Spec {
 	 * @param N2nContext $n2nContext
 	 * @param int $setupMode
 	 * @throws InvalidConfigurationException
-	 * @return EiSetupResult|null
+	 * @return EiErrorResult|null
 	 */
 	public function initialize(N2nContext $n2nContext, int $setupMode = 0) {
 		$this->clear();
