@@ -43,6 +43,8 @@ use n2n\impl\web\ui\view\jhtml\JhtmlExec;
 use n2n\l10n\MessageContainer;
 use rocket\ei\manage\entry\UnknownEiObjectException;
 use rocket\ei\util\entry\EiuEntry;
+use n2n\web\http\payload\impl\JsonPayload;
+use rocket\ei\component\ListZone;
 
 class EiuCtrl implements Lookupable {
 	private $eiu;
@@ -308,6 +310,12 @@ class EiuCtrl implements Lookupable {
 	public function redirectToOverview(int $status = null) {
 		$this->httpContext->getResponse()->send(
 				new Redirect($this->eiuFrame->getEiFrame()->getOverviewUrl($this->httpContext), $status));
+	}
+	
+	public function forwardListZone() {
+		$listZone = new ListZone();
+		
+		$this->httpContext->getResponse()->send(new JsonPayload($listZone));
 	}
 	
 	public static function from(HttpContext $httpContext, EiFrame $eiFrame = null) {

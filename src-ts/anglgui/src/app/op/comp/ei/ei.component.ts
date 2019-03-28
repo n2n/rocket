@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ComponentFactoryResolver } from '@angular/core';
+import { ZoneDirective } from "src/app/op/comp/ei/zone.directive";
+import { ZoneComponent } from "src/app/ui/zone/comp/zone.component";
+import { ListZoneComponent } from "src/app/ui/zone/comp/list-zone/list-zone.component";
 
 @Component({
   selector: 'rocket-ei',
@@ -7,9 +10,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class EiComponent implements OnInit {
 
-  constructor() { }
+    @ViewChild(ZoneDirective) zoneDirective: ZoneDirective;
+    interval: any;
+    
+    constructor(private componentFactoryResolver: ComponentFactoryResolver) { }
 
-  ngOnInit() {
-  }
-
+    ngOnInit() {
+        const componentFactory = this.componentFactoryResolver.resolveComponentFactory(ListZoneComponent);
+        
+        const componentRef = this.zoneDirective.viewContainerRef.createComponent(componentFactory);
+        
+        (<ZoneComponent> componentRef.instance).data = {};
+    }
 }
