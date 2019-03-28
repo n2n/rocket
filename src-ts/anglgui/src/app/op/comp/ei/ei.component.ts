@@ -11,7 +11,7 @@ import { ListZoneComponent } from "src/app/ui/zone/comp/list-zone/list-zone.comp
 export class EiComponent implements OnInit {
 
     @ViewChild(ZoneDirective) zoneDirective: ZoneDirective;
-    interval: any;
+    
     
     constructor(private componentFactoryResolver: ComponentFactoryResolver) { }
 

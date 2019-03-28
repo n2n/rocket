@@ -5,7 +5,7 @@ import { FallbackComponent } from "src/app/op/comp/common/fallback/fallback.comp
 
 const routes: Routes = [
     {
-        path: '**', component: EiComponent
+        path: 'manage', component: EiComponent, pathMatch: 'prefix'
     },
     {
         path: '**', component: FallbackComponent

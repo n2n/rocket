@@ -81,7 +81,7 @@
 <html lang="<?php $html->out($request->getN2nLocale()->getLanguage()->getShort()) ?>">
 <?php $html->headStart() ?>
 	<meta charset="<?php $html->out(N2n::CHARSET) ?>" />
-	<base href="<?php $html->out($view->buildUrl(Murl::context(RocketController::class))->getPath()->chEndingDelimiter(true)) ?>" />
+	<base href="<?php $html->out($view->buildUrl(Murl::controller(RocketController::class))->getPath()->chEndingDelimiter(true)) ?>" />
 <?php $html->headEnd() ?>
 <?php $html->bodyStart(array('data-refresh-path' => $view->buildUrl(Murl::controller('rocket')),
 		'class' => (isset($view->params['tmplMode']) ? $view->params['tmplMode'] : null))) ?>
