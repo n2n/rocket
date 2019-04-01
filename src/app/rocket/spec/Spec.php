@@ -141,7 +141,7 @@ class Spec {
 	 * @param N2nContext $n2nContext
 	 * @param int $setupMode
 	 * @throws InvalidConfigurationException
-	 * @return EiSetupResult|null
+	 * @return EiErrorResult|null
 	 */
 	public function initialize(N2nContext $n2nContext, int $setupMode = 0) {
 		$this->clear();
@@ -643,9 +643,7 @@ class EiMaskCallbackProcess {
 		foreach ($this->callbackConfigurations as $callbackConfiguration) {
 			try {
 				try {
-					foreach ($callbackConfiguration['callback'] as $callback) {
-						$callback($callbackConfiguration['eiMask']->getEiEngine());
-					}
+					$callbackConfiguration['callback']($callbackConfiguration['eiMask']->getEiEngine());
 				} catch (InvalidConfigurationException $e) {
 						throw new InvalidEiMaskConfigurationException('Failed to setup EiMask.', 0, $e);
 				}
