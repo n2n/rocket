@@ -1674,7 +1674,7 @@ mark,
 }
 
 .table-hover tbody tr:hover {
-  background-color: #F7F5F5;
+  background-color: #ECEBE9;
 }
 
 .table-primary,
@@ -1800,16 +1800,16 @@ mark,
 .table-active,
 .table-active > th,
 .table-active > td {
-  background-color: #F7F5F5;
+  background-color: #ECEBE9;
 }
 
 .table-hover .table-active:hover {
-  background-color: #ece7e7;
+  background-color: #e0dfdb;
 }
 
 .table-hover .table-active:hover > td,
 .table-hover .table-active:hover > th {
-  background-color: #ece7e7;
+  background-color: #e0dfdb;
 }
 
 .table .thead-dark th {
@@ -5548,13 +5548,19 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
   padding-bottom: 1.2rem;
 }
 
-.rocket-impl-entry > .rocket-impl-summary.rocket-entry > .rocket-impl-content-type {
+.rocket-impl-entry > .rocket-impl-summary .rocket-impl-content-type {
   min-width: 10rem;
   padding: 1rem 0 1rem 0.5rem;
   border-right: 1px solid #C2BDB6;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+}
+
+.rocket-impl-entry > .rocket-impl-summary .rocket-content-nested .rocket-impl-content-type {
+  padding: 1rem 0 1rem 0;
+  margin: -1rem 0;
+  border-right: none;
 }
 
 .rocket-impl-entry > .rocket-impl-summary .rocket-impl-content {
@@ -5676,7 +5682,15 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
   cursor: default;
 }
 
-.rocket-impl-content-type-empty > .fa::after {
+.rocket-impl-content-type-empty > .fa.fa-rocket-empty:before {
+  content: "0";
+  display: block;
+  color: #DAD7D3;
+  width: 15px;
+  text-align: center;
+}
+
+.rocket-impl-content-type-empty > .fa.fa-rocket-empty:after {
   background: none;
   border: 1px solid #DAD7D3;
 }
