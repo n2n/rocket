@@ -44,8 +44,8 @@ use n2n\l10n\MessageContainer;
 use rocket\ei\manage\entry\UnknownEiObjectException;
 use rocket\ei\util\entry\EiuEntry;
 use n2n\web\http\payload\impl\JsonPayload;
-use rocket\ei\component\ListZone;
 use rocket\ei\manage\gui\ViewMode;
+use rocket\angl\zone\impl\ListZone;
 
 class EiuCtrl implements Lookupable {
 	private $eiu;
@@ -314,13 +314,20 @@ class EiuCtrl implements Lookupable {
 	}
 	
 	public function forwardListZone(int $pageSize = 30) {
-		$listZone = new ListZone();
+		if ('text/html' == $this->httpContext->getRequest()->getAcceptRange()->bestMatch(['text/html', 'application/json'])) {
+			$this->forward('\rocket\core\view\anglTemplate.html');
+			return;
+		}
+		
 		
 		$eiuGui = $this->eiu->frame()->newGui(ViewMode::COMPACT_READ);
 		
+		new ListZone($apiUrl, $eiuGui->toCompactContent());
 		
 		
-		$this->httpContext->getResponse()->send(new JsonPayload($listZone));
+		
+		
+		$this->httpContext->getResponse()->send(new ZonePayload($listZone));
 	}
 	
 	public static function from(HttpContext $httpContext, EiFrame $eiFrame = null) {

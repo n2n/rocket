@@ -104,7 +104,7 @@ class EiuHtmlBuilder {
 			$guiFieldPath = GuiFieldPath::create($guiFieldPath);
 		}
 		
-		return $this->html->getOut($eiGui->getEiGuiViewFactory()->getGuiDefinition()
+		return $this->html->getOut($eiGui->getEiGuiAnglFactory()->getGuiDefinition()
 				->getGuiPropByGuiFieldPath($guiFieldPath)
 				->getDisplayLabelLstr()->t($this->view->getN2nLocale()));
 	}
@@ -456,7 +456,7 @@ class EiuHtmlBuilder {
 		}
 		
 		$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
-		return new HtmlElement('label', $attrs, $eiEntryGui->getEiGui()->getEiGuiViewFactory()
+		return new HtmlElement('label', $attrs, $eiEntryGui->getEiGui()->getEiGuiAnglFactory()
 				->getGuiDefinition()->getGuiPropByGuiFieldPath($fieldInfo['guiFieldPath'])->getDisplayLabelLstr()
 				->t($this->view->getN2nLocale()));
 	}
@@ -521,7 +521,7 @@ class EiuHtmlBuilder {
 		$fieldInfo = $this->state->peakField(false);
 		
 		$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
-		$helpTextLstr = $eiEntryGui->getEiGui()->getEiGuiViewFactory()->getGuiDefinition()
+		$helpTextLstr = $eiEntryGui->getEiGui()->getEiGuiAnglFactory()->getGuiDefinition()
 				->getGuiPropByGuiFieldPath($fieldInfo['guiFieldPath'])->getDisplayHelpTextLstr();
 		$helpText = null;
 		if ($helpTextLstr !== null) {

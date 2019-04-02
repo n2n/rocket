@@ -256,8 +256,7 @@ class EiuEngine {
 						$this->eiEngine->getEiMask()->getEiTypePath()),
 				$rootGroup);
 	}
-	
-	
+		
 	/**
 	 * @param FilterSettingGroup|null $rootGroup
 	 * @return \rocket\ei\util\filter\EiuFilterForm
@@ -354,6 +353,7 @@ class ClosureEiGuiListener implements EiGuiListener, GuiDefinitionListener {
 	}
 
 	public function onNewView(HtmlView $view) {
+		
 	}
 
 	public function onNewEiGui(EiGui $eiGui) {

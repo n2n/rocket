@@ -179,7 +179,7 @@ class EiuHtmlBuilderMeta {
 		
 		$messages = [];
 		
-		$guiDefinition = $eiEntryGui->getEiGui()->getEiGuiViewFactory()->getGuiDefinition();
+		$guiDefinition = $eiEntryGui->getEiGui()->getEiGuiAnglFactory()->getGuiDefinition();
 		foreach ($eiEntry->getValidationResult()->getInvalidEiFieldValidationResults(false) as $result) {
 			$eiPropPath = $guiDefinition->eiPropPathToGuiFieldPath($result->getEiPropPath());
 			

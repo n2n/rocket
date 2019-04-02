@@ -30,7 +30,7 @@ use rocket\ei\manage\entry\WrittenMappingListener;
 use rocket\ei\manage\entry\OnValidateMappingListener;
 use rocket\ei\manage\entry\ValidatedMappingListener;
 use rocket\ei\manage\entry\EiFieldOperationFailedException;
-use rocket\ei\manage\gui\EiGuiViewFactory;
+use rocket\ei\manage\gui\EiGuiAnglFactory;
 use rocket\ei\manage\gui\GuiFieldPath;
 use rocket\ei\manage\gui\GuiException;
 use rocket\ei\manage\gui\ViewMode;
@@ -362,7 +362,7 @@ class EiuEntry {
 		}
 		
 		$eiGui = $eiMask->createEiGui($eiFrame, $viewMode, false);
-		$eiGui->init(new DummyEiGuiViewFactory(), $eiGui->getGuiDefinition()->getGuiFieldPaths());
+		$eiGui->init(new DummyEiGuiAnglFactory(), $eiGui->getGuiDefinition()->getGuiFieldPaths());
 		
 		$eiEntryGuiAssembler = new EiEntryGuiAssembler(new EiEntryGui($eiGui, $this->eiEntry));
 		
@@ -717,7 +717,7 @@ class EiuEntry {
 // 	}
 // }
 
-class DummyEiGuiViewFactory implements EiGuiViewFactory  {
+class DummyEiGuiAnglFactory implements EiGuiAnglFactory  {
 	
 	public function createUiComponent(array $eiEntryGuis, ?HtmlView $contextView): UiComponent {
 		throw new UnsupportedOperationException();

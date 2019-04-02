@@ -181,19 +181,20 @@ class DisplayScheme {
 				break;
 		}
 		
-		$commonEiGuiViewFactory = new CommonEiGuiViewFactory($eiGui, $guiDefinition);
+		$commonEiGuiAnglFactory = new CommonEiGuiAnglFactory($eiGui, $guiDefinition);
 		
 		if ($displayStructure === null) {
-			$eiGui->init($commonEiGuiViewFactory);
+			$eiGui->init($commonEiGuiAnglFactory);
 			
 			$displayStructure = DisplayStructure::fromEiGui($eiGui);
 		} else {
-			$eiGui->init($commonEiGuiViewFactory, 
+			$eiGui->init($commonEiGuiAnglFactory, 
 					$guiDefinition->filterGuiFieldPaths($displayStructure->getAllGuiFieldPaths()));
 			$displayStructure = $displayStructure->purified($eiGui);
 		}
 		
-		$commonEiGuiViewFactory->setDisplayStructure($displayStructure);
+		new EiGuiAnglFactory($eiGui);
+		$commonEiGuiAnglFactory->setDisplayStructure($displayStructure);
 	}
 	
 	/**

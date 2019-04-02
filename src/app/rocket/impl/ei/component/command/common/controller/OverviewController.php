@@ -54,8 +54,8 @@ class OverviewController extends ControllerAdapter {
 	}
 	
 	public function index(CritmodSaveDao $critmodSaveDao, $pageNo = null, ParamQuery $numPages = null, ParamQuery $stateKey = null) {
-		$this->forward('\rocket\core\view\anglTemplate.html');
-		return;
+		
+		$this->eiuCtrl->forwardListZone($this->listSize);
 		
 // 		$eiuFrame = $this->eiuCtrl->frame();
 // 		$eiFrame = $eiuFrame->getEiFrame();

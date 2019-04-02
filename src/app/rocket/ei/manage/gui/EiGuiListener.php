@@ -1,8 +1,6 @@
 <?php
 namespace rocket\ei\manage\gui;
 
-use n2n\impl\web\ui\view\html\HtmlView;
-
 interface EiGuiListener {
 	
 	/**
@@ -10,7 +8,13 @@ interface EiGuiListener {
 	 */
 	public function onInitialized(EiGui $eiGui);
 
+	/**
+	 * @param EiEntryGui $eiEntryGui
+	 */
 	public function onNewEiEntryGui(EiEntryGui $eiEntryGui);
 
-	public function onNewView(HtmlView $view);
+	/**
+	 * 
+	 */
+	public function onSerialize();
 }

@@ -19,20 +19,4 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\gui;
-
-use n2n\impl\web\ui\view\html\HtmlView;
-
-interface GuiFieldDisplayable {
-	
-	/**
-	 * @return array
-	 */
-	public function getHtmlContainerAttrs(): array;
-	
-	/**
-	 * @param HtmlView $view
-	 * @return mixed UiComponent or string (will be escaped)
-	 */
-	public function createAnglField(): AnglField;
-}
+namespace rocket\gi\content;

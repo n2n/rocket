@@ -34,7 +34,7 @@ class EiGui {
 	 */
 	private $guiFieldPaths;
 	/**
-	 * @var EiGuiViewFactory
+	 * @var EiGuiAnglFactory
 	 */
 	private $eiGuiViewFactory;
 	/**
@@ -119,10 +119,10 @@ class EiGui {
 	}
 	
 	/**
-	 * @param EiGuiViewFactory $eiGuiViewFactory
+	 * @param EiGuiAnglFactory $eiGuiViewFactory
 	 * @param GuiFieldPath[]
 	 */
-	public function init(EiGuiViewFactory $eiGuiViewFactory, array $guiFieldPaths = null) {
+	public function init(EiGuiAnglFactory $eiGuiViewFactory, array $guiFieldPaths = null) {
 		if ($this->eiGuiViewFactory !== null) {
 			throw new IllegalStateException('EiGui already initialized.');
 		}
@@ -161,10 +161,10 @@ class EiGui {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\gui\EiGuiViewFactory
+	 * @return \rocket\ei\manage\gui\EiGuiAnglFactory
 	 * @throws IllegalStateException If EiGui {@see self::init()} hasn't been called yet.
 	 */
-	public function getEiGuiViewFactory() {
+	public function getEiGuiAnglFactory() {
 		$this->ensureInit();
 		
 		return $this->eiGuiViewFactory;

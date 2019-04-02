@@ -86,7 +86,9 @@ class EiEngine {
 	 */
 	private function getSupremeEiMask() {
 		$eiType = $this->eiMask->getEiType();
-		if (!$eiType->hasSuperEiType()) return $this->eiMask;
+		if (!$eiType->hasSuperEiType()) {
+			return $this->eiMask;
+		}
 		
 		return $eiType->getSupremeEiType()->getEiMask();
 	}

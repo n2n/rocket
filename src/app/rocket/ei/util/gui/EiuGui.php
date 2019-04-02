@@ -4,7 +4,7 @@ namespace rocket\ei\util\gui;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\GuiFieldPath;
-use rocket\ei\manage\gui\EiGuiViewFactory;
+use rocket\ei\manage\gui\EiGuiAnglFactory;
 use n2n\web\ui\UiComponent;
 use n2n\util\type\ArgUtils;
 use n2n\impl\web\ui\view\html\HtmlSnippet;
@@ -99,7 +99,7 @@ class EiuGui {
 		$eiPropPath = GuiFieldPath::create($eiPropPath);
 		
 		try {
-			return $this->eiGui->getEiGuiViewFactory()->getGuiDefinition()->getGuiPropByGuiFieldPath($eiPropPath);
+			return $this->eiGui->getEiGuiAnglFactory()->getGuiDefinition()->getGuiPropByGuiFieldPath($eiPropPath);
 		} catch (GuiException $e) {
 			if (!$required) return null;
 			throw $e;
@@ -115,7 +115,7 @@ class EiuGui {
 // 	public function getDisplayItemByGuiFieldPath($eiPropPath) {
 // 		$eiPropPath = GuiFieldPath::create($eiPropPath);
 		
-// 		$displayStructure = $this->eiGui->getEiGuiViewFactory()->getDisplayStructure();
+// 		$displayStructure = $this->eiGui->getEiGuiAnglFactory()->getDisplayStructure();
 // 		if ($displayStructure !== null) {
 // 			return $displayStructure->getDisplayItemByGuiFieldPath($eiPropPath);
 // 		}
@@ -214,7 +214,7 @@ class EiuGui {
 	}
 	
 // 	public function addDisplayContainer(string $type, string $label, array $attrs = null) {
-// 		$egvf = $this->eiGui->getEiGuiViewFactory();
+// 		$egvf = $this->eiGui->getEiGuiAnglFactory();
 // 		$egvf->setDisplayStructure($egvf->getDisplayStructure()->withContainer($type, $label, $attrs));
 // 		return $this;
 // 	}
@@ -223,7 +223,7 @@ class EiuGui {
 // 	 * @return \rocket\ei\util\gui\EiuGui
 // 	 */
 // 	public function removeSubStructures() {
-// 		$egvf = $this->eiGui->getEiGuiViewFactory();
+// 		$egvf = $this->eiGui->getEiGuiAnglFactory();
 // 		$egvf->setDisplayStructure($egvf->getDisplayStructure()->withoutSubStructures());
 // 		return $this;
 // 	}
@@ -232,7 +232,7 @@ class EiuGui {
 // 	 * @return \rocket\ei\util\gui\EiuGui
 // 	 */
 // 	public function forceRootGroups() {
-// 		$egvf = $this->eiGui->getEiGuiViewFactory();
+// 		$egvf = $this->eiGui->getEiGuiAnglFactory();
 // 		$egvf->setDisplayStructure($egvf->getDisplayStructure()->groupedItems());
 // 		return $this;
 // 	}
@@ -277,7 +277,7 @@ class EiuGui {
 	}
 }
 
-class CustomGuiViewFactory implements EiGuiViewFactory {
+class CustomGuiViewFactory implements EiGuiAnglFactory {
 	private $factory;
 	
 	public function __construct(\Closure $factory) {
