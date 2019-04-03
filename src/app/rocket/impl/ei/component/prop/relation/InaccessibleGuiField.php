@@ -8,6 +8,8 @@ use rocket\ei\manage\gui\GuiFieldDisplayable;
 use rocket\ei\manage\gui\GuiFieldEditable;
 use n2n\util\ex\UnsupportedOperationException;
 use n2n\l10n\N2nLocale;
+use rocket\ei\util\Eiu;
+use rocket\gi\content\GiField;
 
 class InaccessibleGuiField implements GuiField, GuiFieldDisplayable {
 	private $label;
@@ -28,7 +30,7 @@ class InaccessibleGuiField implements GuiField, GuiFieldDisplayable {
 		throw new UnsupportedOperationException();
 	}
 
-	public function createUiComponent(HtmlView $view) {
+	public function createOutGiField(Eiu $eiu): GiField {
 		return $view->getL10nText('common_inaccessible_err', null, null, null, 'rocket');
 	}
 

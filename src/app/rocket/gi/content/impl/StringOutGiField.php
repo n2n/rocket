@@ -24,24 +24,77 @@ namespace rocket\gi\content\impl;
 use n2n\util\ex\IllegalStateException;
 
 class StringOutGiField extends OutGiFieldAdapter {
+	private $value;
+	private $multiline = false;
 	
-	function getType(): string {
-		return 'rocket-ui-string-out';
+	function __construct(?string $value) {
+		$this->value = $value;
 	}
 	
+	/**
+	 * @return string
+	 */
+	function getValue() {
+		return $this->value;
+	}
 	
-	function getData(): array {
-		return [];
+	/**
+	 * @param string|null $value
+	 * @return \rocket\gi\content\impl\StringOutGiField
+	 */
+	function setValue(?string $value) {
+		$this->value = $value;;
+		return $this;
 	}
 	
 	/**
 	 * @return bool
 	 */
+	function isMultiline() {
+		return $this->multiline;
+	}
+	
+	/**
+	 * @param bool $multiline
+	 * @return \rocket\gi\content\impl\StringOutGiField
+	 */
+	function setMultiline(bool $multiline) {
+		$this->multiline = $multiline;
+		return $this;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\gi\content\GiField::getType()
+	 */
+	function getType(): string {
+		return 'rocket-ui-string-out';
+	}
+	
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\gi\content\GiField::getData()
+	 */
+	function getData(): array {
+		return [
+			'value' => $this->value,
+			'multiline' => $this->multiline
+		];
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\gi\content\impl\OutGiFieldAdapter::isReadOnly()
+	 */
 	function isReadOnly(): bool {
 		return false;
 	}
 	
-	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\gi\content\impl\OutGiFieldAdapter::handleInput()
+	 */
 	function handleInput(array $data) {
 		throw new IllegalStateException();
 	}

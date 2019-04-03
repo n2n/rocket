@@ -32,6 +32,7 @@ use rocket\impl\ei\component\prop\string\conf\PasswordEiPropConfigurator;
 use rocket\ei\util\Eiu;
 use n2n\web\dispatch\mag\Mag;
 use n2n\util\ex\IllegalStateException;
+use rocket\gi\content\GiField;
 
 class PasswordEiProp extends AlphanumericEiProp {
 	const ALGORITHM_SHA1 = 'sha1';
@@ -49,11 +50,11 @@ class PasswordEiProp extends AlphanumericEiProp {
 		return new PasswordEiPropConfigurator($this);
 	}
 	
-	public function createUiComponent(HtmlView $view, Eiu $eiu)  {
+	public function createOutGiField(Eiu $eiu): GiField  {
 		return null;
 	}
 	
-	public function createMag(Eiu $eiu): Mag {
+	public function createInGiField(Eiu $eiu): GiField {
 		return new SecretStringMag($this->getLabelLstr(), null,
 				$this->isMandatory($eiu), $this->getMaxlength(), 
 				array('placeholder' => $this->getLabelLstr()));
@@ -67,9 +68,9 @@ class PasswordEiProp extends AlphanumericEiProp {
 		$this->algorithm = $algorithm;
 	}
 	
-	public function loadMagValue(Eiu $eiu, Mag $option) { }
+	public function loadGiField(Eiu $eiu, GiField $giField) { }
 	
-	public function saveMagValue(Mag $option, Eiu $eiu) {
+	public function saveGiField(GiField $giField, Eiu $eiu) {
 		$value = $option->getValue();
 		if (mb_strlen($value) === 0 && !$eiu->entry()->isNew()) {
 			return;

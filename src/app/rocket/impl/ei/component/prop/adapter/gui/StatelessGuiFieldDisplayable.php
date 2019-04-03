@@ -21,22 +21,14 @@
  */
 namespace rocket\impl\ei\component\prop\adapter\gui;
 
-use n2n\impl\web\ui\view\html\HtmlView;
-use n2n\web\ui\UiComponent;
 use rocket\ei\util\Eiu;
+use rocket\gi\content\GiField;
 
 interface StatelessGuiFieldDisplayable {
 	
 	/**
 	 * @param Eiu $eiu
-	 * @return array
+	 * @return GiField
 	 */
-	public function getHtmlContainerAttrs(Eiu $eiu);
-	
-	/**
-	 * @param HtmlView $view
-	 * @param Eiu $eiu
-	 * @return UiComponent
-	 */
-	public function createUiComponent(HtmlView $view, Eiu $eiu);
+	public function createOutGiField(Eiu $eiu): GiField;
 }

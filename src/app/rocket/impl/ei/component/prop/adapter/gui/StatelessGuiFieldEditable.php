@@ -21,18 +21,26 @@
  */
 namespace rocket\impl\ei\component\prop\adapter\gui;
 
-use n2n\web\dispatch\mag\Mag;
 use rocket\ei\util\Eiu;
+use rocket\gi\content\GiField;
 
 interface StatelessGuiFieldEditable {
 
+	/**
+	 * @param Eiu $eiu
+	 * @return GiField
+	 */
+	public function createInGiField(Eiu $eiu): GiField;
+	
+	/**
+	 * @param Eiu $eiu
+	 * @return bool
+	 */
 	public function isMandatory(Eiu $eiu): bool;
 	
-	public function isReadOnly(Eiu $eiu): bool;
-	
-	public function createMag(Eiu $eiu): Mag;
-	
-	public function loadMagValue(Eiu $eiu, Mag $mag);
-	
-	public function saveMagValue(Mag $option, Eiu $eiu);
+	/**
+	 * @param GiField $giField
+	 * @param Eiu $eiu
+	 */
+	public function saveGiField(GiField $giField, Eiu $eiu);
 }

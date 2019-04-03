@@ -37,6 +37,7 @@ use rocket\impl\ei\component\prop\string\cke\ui\CkeHtmlBuilder;
 use rocket\ei\manage\gui\ViewMode;
 use n2n\util\StringUtils;
 use n2n\core\N2N;
+use rocket\gi\content\GiField;
 
 class CkeEiProp extends AlphanumericEiProp {
 	const MODE_SIMPLE = 'simple';
@@ -114,7 +115,7 @@ class CkeEiProp extends AlphanumericEiProp {
 		$this->bbcode = $bbcode;
 	}
 
-	public function createUiComponent(HtmlView $view, Eiu $eiu) {
+	public function createOutGiField(Eiu $eiu): GiField {
 	    $value = $eiu->field()->getValue(EiPropPath::from($this));
 	    if ($value === null) return null;
 	    
@@ -127,7 +128,7 @@ class CkeEiProp extends AlphanumericEiProp {
 		return $ckeHtmlBuidler->getIframe((string) $value, $this->ckeCssConfig, (array) $this->ckeLinkProviders);
 	}
 	
-	public function createMag(Eiu $eiu): Mag {
+	public function createInGiField(Eiu $eiu): GiField {
 		$eiEntry = $eiu->entry()->getEiEntry();
 		
 		return new CkeMag($this->getLabelLstr(), null, $this->isMandatory($eiu),

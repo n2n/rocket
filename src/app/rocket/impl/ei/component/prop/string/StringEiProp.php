@@ -32,6 +32,8 @@ use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\util\StringUtils;
 use n2n\impl\web\ui\view\html\HtmlElement;
+use rocket\gi\content\GiField;
+use rocket\gi\content\impl\GiFields;
 
 class StringEiProp extends AlphanumericEiProp {
 	private $multiline = false;
@@ -48,20 +50,9 @@ class StringEiProp extends AlphanumericEiProp {
 		return new StringEiPropConfigurator($this);
 	}
 	
-	public function createUiComponent(HtmlView $view, Eiu $eiu)  {
-		$html = $view->getHtmlBuilder();
-		
-		$value = $eiu->field()->getValue(EiPropPath::from($this));
-		
-// 		if ($eiu->gui()->isCompact()) {
-// 			return new HtmlElement('div', ['class' => 'text-truncate'], $value);
-// 		}
-		
-		if ($this->isMultiline()) {
-			return $html->getEscBr($value);
-		}
-		
-		return $html->getEsc($value);
+	public function createOutGiField(Eiu $eiu): GiField  {
+		return GiFields::stringOut($eiu->field()->getValue())
+				->setMultiline($this->isMultiline());
 	}
 	
 // 	public function createEditablePreviewUiComponent(PreviewModel $previewModel, PropertyPath $propertyPath,
@@ -72,7 +63,7 @@ class StringEiProp extends AlphanumericEiProp {
 // 		return $view->getFormHtmlBuilder()->getInputField($propertyPath, array('class' => 'rocket-preview-inpage-component'));
 // 	}
 
-	public function createMag(Eiu $eiu): Mag {
+	public function createInGiField(Eiu $eiu): GiField {
 		$mag = new StringMag($this->getLabelLstr(), null, $this->isMandatory($eiu), 
 				$this->getMaxlength(), $this->isMultiline(),
 				array('placeholder' => $this->getLabelLstr()->t($eiu->frame()->getN2nLocale())));

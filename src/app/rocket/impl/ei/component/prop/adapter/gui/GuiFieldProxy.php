@@ -27,7 +27,6 @@ use rocket\ei\manage\gui\GuiField;
 use rocket\ei\manage\gui\GuiFieldEditable;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\gui\ui\DisplayItem;
-use n2n\web\dispatch\mag\Mag;
 use n2n\util\type\ArgUtils;
 use rocket\ei\manage\gui\GuiFieldDisplayable;
 use rocket\gi\content\GiField;
@@ -37,7 +36,7 @@ class GuiFieldProxy implements GuiField, GuiFieldDisplayable, GuiFieldEditable {
 	private $statelessGuiFieldDisplayable;
 	private $statelessGuiFieldEditable;
 	
-	private $mag;
+	private $giField;
 	
 	/**
 	 * @param StatelessGuiFieldDisplayable $statelessGuiFieldDisplayable
@@ -81,7 +80,7 @@ class GuiFieldProxy implements GuiField, GuiFieldDisplayable, GuiFieldEditable {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiField::createUiComponent()
 	 */
-	public function createUiComponent(HtmlView $view) {
+	public function createOutGiField(Eiu $eiu): GiField {
 		return $this->statelessGuiFieldDisplayable->createUiComponent($view, $this->eiu);
 	}
 	
@@ -118,9 +117,19 @@ class GuiFieldProxy implements GuiField, GuiFieldDisplayable, GuiFieldEditable {
 	}
 	
 	public function getGiField(): GiField {
-		$giField = $this->statelessGuiFieldEditable->createGiField($this->eiu);
-		ArgUtils::valTypeReturn($giField, GiField::class, $this->statelessGuiFieldEditable, 'createGiField');
-		$this->statelessGuiFieldEditable->loadMagValue($this->eiu, $giField);
+		if ($this->giField !== null) {
+			return $this->giField;
+		}
+		
+		if ($this->statelessGuiFieldEditable === null || $this->eiu->gui()->isReadOnly()) {
+			$giField = $this->statelessGuiFieldEditable->createOutGiField($this->eiu);
+			ArgUtils::valTypeReturn($giField, GiField::class, $this->statelessGuiFieldDisplayable, 'createOutGiField');
+			return $this->giField = $giField;
+		}
+		
+		$giField = $this->statelessGuiFieldEditable->createInGiField($this->eiu);
+		ArgUtils::valTypeReturn($giField, GiField::class, $this->statelessGuiFieldEditable, 'createInGiField');
+		
 		return $this->giField = $giField;
 	}
 	

@@ -232,7 +232,7 @@ class EmbeddedGuiField implements GuiField, GuiFieldDisplayable, GuiFieldEditabl
 		return $this->mag;
 	}
 
-	public function createUiComponent(HtmlView $view) {
+	public function createOutGiField(Eiu $eiu): GiField {
 		return null;
 	}
 

@@ -56,6 +56,7 @@ use rocket\ei\component\prop\GuiEiPropFork;
 use rocket\ei\manage\entry\EiField;
 use rocket\ei\manage\gui\EiFieldAbstraction;
 use rocket\impl\ei\component\prop\adapter\entry\EiFieldWrapperCollection;
+use rocket\ei\manage\gui\GuiField;
 
 class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiEiPropFork, GuiPropFork {
 	
@@ -226,7 +227,7 @@ class OneToOneGuiFieldFork implements GuiFieldFork {
 		$this->targetEiuEntryGuiAssembler = $targetEiuEntryGuiAssembler;
 	}
 	
-	public function assembleGuiField(GuiFieldPath $guiFieldPath): GuiFieldAssembly {
+	public function assembleGuiField(GuiFieldPath $guiFieldPath): GuiField {
 		return $this->targetEiuEntryGuiAssembler->assembleGuiField($guiFieldPath);
 	}
 	

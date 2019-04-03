@@ -33,7 +33,7 @@ class GiFields {
 	/**
 	 * @return \rocket\gi\content\impl\StringOutGiField
 	 */
-	static function stringOut() {
-		return new StringOutGiField();
+	static function stringOut(?string $value) {
+		return new StringOutGiField($value);
 	}
 }

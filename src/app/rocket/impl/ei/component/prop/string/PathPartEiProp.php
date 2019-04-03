@@ -36,6 +36,7 @@ use rocket\ei\manage\generic\GenericEiProperty;
 use rocket\ei\manage\generic\ScalarEiProperty;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\gui\ViewMode;
+use rocket\gi\content\GiField;
 
 class PathPartEiProp extends AlphanumericEiProp  {
 	const URL_COUNT_SEPERATOR = '-';
@@ -123,7 +124,7 @@ class PathPartEiProp extends AlphanumericEiProp  {
 		parent::setEntityProperty($entityProperty);
 	}
 	
-	public function createUiComponent(HtmlView $view, Eiu $eiu)  {
+	public function createOutGiField(Eiu $eiu): GiField  {
 		return $view->getHtmlBuilder()->getEsc($eiu->field()->getValue(EiPropPath::from($this)));
 	}
 
@@ -145,7 +146,7 @@ class PathPartEiProp extends AlphanumericEiProp  {
 		return $attrs;
 	}
 	
-	public function createMag(Eiu $eiu): Mag {
+	public function createInGiField(Eiu $eiu): GiField {
 		$attrs = $this->buildMagInputAttrs($eiu);
 		
 		return new StringMag($this->getLabelLstr(), null,

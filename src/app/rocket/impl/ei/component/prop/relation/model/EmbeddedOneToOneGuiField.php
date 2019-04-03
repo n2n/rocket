@@ -32,6 +32,7 @@ use n2n\impl\web\ui\view\html\HtmlElement;
 use rocket\ei\util\Eiu;
 use n2n\l10n\N2nLocale;
 use n2n\l10n\Lstr;
+use rocket\gi\content\GiField;
 
 class EmbeddedOneToOneGuiField implements GuiField, GuiFieldDisplayable {
 	private $labelLstr;
@@ -85,7 +86,7 @@ class EmbeddedOneToOneGuiField implements GuiField, GuiFieldDisplayable {
 		return array();
 	}
 	
-	public function createUiComponent(HtmlView $view) {
+	public function createOutGiField(Eiu $eiu): GiField {
 		$targetRelationEntry = $this->toOneEiField->getValue();
 		if ($targetRelationEntry === null) return null;
 		

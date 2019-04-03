@@ -220,7 +220,7 @@ class EiGui {
 		
 		$giEntries = [];
 		foreach ($this->eiEntryGuis as $eiEntryGui) {
-			$giEntries = $this->createGiEntry($eiEntryGui);
+			$giEntries[] = $this->createGiEntry($eiEntryGui);
 		}
 		return $giEntries;
 	}
@@ -229,11 +229,24 @@ class EiGui {
 	 * @param EiEntryGui $eiEntryGui
 	 * @return GiEntry
 	 */
-	private function createEntry(EiEntryGui $eiEntryGui) {
-		$giEntry = new GiEntry();
+	private function createGiEntry(EiEntryGui $eiEntryGui) {
+		$eiEntry = $eiEntryGui->getEiEntry();
 		
-		foreach ($eiEntryGui->getGuiFieldAssemblies() as $guiFieldPathStr => $guiFieldAssembly) {
-			$giEntry->putField($guiFieldPathStr, $guiFieldAssembly->getGuiField());
+		$name = null;
+		if ($eiEntry->isNew()) {
+			$name = $eiEntry->getEiMask()->getLabelLstr()->t($this->eiFrame->getN2nContext()->getN2nLocale());
+		} else {
+			$name = $this->eiFrame->getManageState()->getDef()
+					->getGuiDefinition($eiEntry->getEiMask())
+					->createIdentityString($eiEntry->getEiObject(), $this->eiFrame->getN2nContext(),
+							$this->eiFrame->getN2nContext()->getN2nLocale());
+		}
+		
+		$giEntry = new GiEntry($eiEntryGui->getEiEntry()->getEiType()->getSupremeEiType()->getId(),
+				$eiEntryGui->getEiEntry()->getPid(), $name);
+		
+		foreach ($eiEntryGui->getGuiFields() as $guiFieldPathStr => $guiField) {
+			$giEntry->putGiField($guiFieldPathStr, $guiField->getGiField());
 		}
 		
 		return $giEntry;

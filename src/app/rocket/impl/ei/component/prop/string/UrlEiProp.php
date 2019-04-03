@@ -31,6 +31,7 @@ use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\reflection\property\AccessProxy;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\UrlEntityProperty;
+use rocket\gi\content\GiField;
 
 class UrlEiProp extends AlphanumericEiProp {
 	private $autoScheme;
@@ -91,7 +92,7 @@ class UrlEiProp extends AlphanumericEiProp {
 // 		return $view->getFormHtmlBuilder()->getInput($propertyPath, array('class' => 'rocket-preview-inpage-component'));
 // 	}
 	
-	public function createMag(Eiu $eiu): Mag {
+	public function createInGiField(Eiu $eiu): GiField {
 		$mag = new UrlMag($this->getLabelLstr(), null, $this->isMandatory($eiu), 
 				$this->getMaxlength());
 		if (!empty($this->allowedSchemes)) {
@@ -120,7 +121,7 @@ class UrlEiProp extends AlphanumericEiProp {
 		$eiu->field()->setValue($value);
 	}
 
-	public function createUiComponent(HtmlView $view, Eiu $eiu)  {
+	public function createOutGiField(Eiu $eiu): GiField  {
 		$value = $eiu->field()->getValue();
 		if ($value === null) return null;
 		return $view->getHtmlBuilder()->getLink($value, $this->buildLabel($value, $eiu->entryGui()->isBulky()),

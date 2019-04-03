@@ -37,6 +37,7 @@ use n2n\web\ui\UiComponent;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use n2n\web\dispatch\mag\UiOutfitter;
 use n2n\impl\persistence\orm\property\FloatEntityProperty;
+use rocket\gi\content\GiField;
 
 class DecimalEiProp extends NumericEiPropAdapter {
 	protected $decimalPlaces = 0;
@@ -102,7 +103,7 @@ class DecimalEiProp extends NumericEiPropAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldEditable::createMag($eiu)
 	 */
-	public function createMag(Eiu $eiu): Mag {
+	public function createInGiField(Eiu $eiu): GiField {
 		$numericMag = new EiDecimalMag($this->getLabelLstr(), null,
 				$this->isMandatory($eiu), $this->getMinValue(), $this->getMaxValue(), 
 				$this->getDecimalPlaces(), array('placeholder' => $this->getLabelLstr()));

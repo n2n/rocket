@@ -24,6 +24,8 @@ namespace rocket\impl\ei\component\prop\translation\model;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\manage\gui\GuiFieldDisplayable;
+use rocket\ei\util\Eiu;
+use rocket\gi\content\GiField;
 
 class TranslationDisplayable implements GuiFieldDisplayable {
 	private $guiProp;
@@ -56,7 +58,7 @@ class TranslationDisplayable implements GuiFieldDisplayable {
 		return array();
 	}
 	
-	public function createUiComponent(HtmlView $view) {
+	public function createOutGiField(Eiu $eiu): GiField {
 // 		$outputUiComponents = array();
 // 		foreach ($this->translatedDisplayables as $n2nLocaleId => $translatedDisplayable) {
 // 			$outputUiComponents[$n2nLocaleId] = $translatedDisplayable->createUiComponent($view);

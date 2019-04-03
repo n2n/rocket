@@ -26,7 +26,6 @@ use rocket\ei\util\filter\prop\StringFilterProp;
 use rocket\ei\component\prop\SortableEiProp;
 use rocket\ei\component\prop\FilterableEiProp;
 use n2n\l10n\N2nLocale;
-use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
@@ -44,6 +43,7 @@ use rocket\ei\manage\critmod\quick\impl\LikeQuickSearchProp;
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
+use rocket\gi\content\GiField;
 
 abstract class NumericEiPropAdapter extends DraftablePropertyEiPropAdapter 
 		implements FilterableEiProp, SortableEiProp, QuickSearchableEiProp {
@@ -82,7 +82,7 @@ abstract class NumericEiPropAdapter extends DraftablePropertyEiPropAdapter
 		return new NumericEiPropConfigurator($this);
 	}
 	
-	public function createUiComponent(HtmlView $view, Eiu $eiu)  {
+	public function createOutGiField(Eiu $eiu): GiField  {
 		$html = $view->getHtmlBuilder();
 		return $html->getEsc($eiu->field()->getValue(EiPropPath::from($this)));
 	}

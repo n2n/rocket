@@ -32,6 +32,7 @@ use rocket\ei\util\Eiu;
 use rocket\ei\EiPropPath;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\impl\persistence\orm\property\IntEntityProperty;
+use rocket\gi\content\GiField;
 
 class OrderEiProp extends IntegerEiProp {
 	const ORDER_INCREMENT = 10;
@@ -47,7 +48,7 @@ class OrderEiProp extends IntegerEiProp {
 				|| $entityProperty instanceof IntEntityProperty;
 	}
 	
-	public function createUiComponent(HtmlView $view, Eiu $eiu) {
+	public function createOutGiField(Eiu $eiu): GiField {
 		return $view->getHtmlBuilder()->getEsc($eiu->field()->getValue(EiPropPath::from($this)));
 	}
 
@@ -55,7 +56,7 @@ class OrderEiProp extends IntegerEiProp {
 		return new SimpleSortProp($this->getEntityProperty()->getName(), $this->getLabelLstr());
 	}
 
-	public function createMag(Eiu $eiu): Mag {
+	public function createInGiField(Eiu $eiu): GiField {
 		return new NumericMag($this->getLabelLstr(), null, $this->isMandatory($eiu), 
 				null, null, 0, null, array('placeholder' => $this->getLabelLstr()));
 	}

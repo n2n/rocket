@@ -40,6 +40,8 @@ use rocket\ei\util\gui\EiuEntryGuiAssembler;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use rocket\ei\manage\entry\EiFieldValidationResult;
 use rocket\ei\manage\gui\GuiFieldDisplayable;
+use rocket\gi\content\GiField;
+use rocket\ei\manage\gui\GuiField;
 
 class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 	private $toManyEiField;
@@ -132,7 +134,7 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 		return $this->markClassKey = HtmlUtils::buildUniqueId();
 	}
 	
-	public function assembleGuiField(GuiFieldPath $guiFieldPath): ?GuiFieldAssembly {
+	public function assembleGuiField(GuiFieldPath $guiFieldPath): ?GuiField {
 		
 		$guiProp = $this->guiDefinition->getGuiPropByGuiFieldPath($guiFieldPath);
 
@@ -275,7 +277,7 @@ class EmptyDisplayable implements GuiFieldDisplayable {
 		return array('class' => 'rocket-empty-translation');
 	}
 	
-	public function createUiComponent(HtmlView $view) {
+	public function createOutGiField(Eiu $eiu): GiField {
 		return new HtmlElement('span', ['class' => 'rocket-inactive'], 
 				$view->getHtmlBuilder()->getText('ei_impl_locale_not_active_label'));
 	}

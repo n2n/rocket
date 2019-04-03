@@ -21,6 +21,8 @@
  */
 namespace rocket\ei\manage\gui;
 
+use rocket\gi\content\GiField;
+
 interface GuiField {
 	
 	/**
@@ -34,8 +36,12 @@ interface GuiField {
 	public function isReadOnly(): bool;
 	
 	/**
-	 * @return GuiFieldEditable 
-	 * @throws \n2n\util\ex\IllegalStateException if {@link self::isReadOnly()} returns true.
+	 * @return GiField 
 	 */
-	public function getEditable(): GuiFieldEditable;
+	public function getGiField(): GiField;
+	
+	/**
+	 * @throws \n2n\util\ex\IllegalStateException if {@link self::getGiField()::isReadOnly()} returns true.
+	 */
+	public function save();
 }

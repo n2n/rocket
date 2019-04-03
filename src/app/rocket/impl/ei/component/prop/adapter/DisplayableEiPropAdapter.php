@@ -118,10 +118,6 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 // 		return $this->getLabelLstr()->t($eiu->getN2nLocale());
 // 	}
 	
-	public function getHtmlContainerAttrs(Eiu $eiu) {
-		return array('title' => $this->getDisplayConfig()->getHelpText());
-	}
-	
 	public function isStringRepresentable(): bool {
 		return false;
 	}

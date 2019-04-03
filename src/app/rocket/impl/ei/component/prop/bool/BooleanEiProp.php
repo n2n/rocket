@@ -33,7 +33,6 @@ use n2n\util\type\ArgUtils;
 use n2n\reflection\property\AccessProxy;
 use n2n\util\type\TypeConstraint;
 use n2n\persistence\orm\criteria\item\CrIt;
-use n2n\web\dispatch\mag\Mag;
 use rocket\ei\util\Eiu;
 use rocket\ei\util\filter\prop\BoolFilterProp;
 use rocket\impl\ei\component\prop\bool\conf\BooleanEiPropConfigurator;
@@ -47,6 +46,7 @@ use rocket\ei\component\prop\SecurityFilterEiProp;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
 use rocket\ei\manage\entry\EiField;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
+use rocket\gi\content\GiField;
 
 class BooleanEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiProp, SortableEiProp, SecurityFilterEiProp {
 
@@ -137,7 +137,7 @@ class BooleanEiProp extends DraftablePropertyEiPropAdapter implements Filterable
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable::createUiComponent()
 	 */
-	public function createUiComponent(HtmlView $view, Eiu $eiu)  {
+	public function createOutGiField(Eiu $eiu): GiField  {
 		$value = $this->getObjectPropertyAccessProxy()->getValue(
 				$eiu->entry()->getEiEntry()->getEiObject()->getLiveObject());
 		if ($value) {
@@ -150,7 +150,7 @@ class BooleanEiProp extends DraftablePropertyEiPropAdapter implements Filterable
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldEditable::createMag()
 	 */
-	public function createMag(Eiu $eiu): Mag {
+	public function createInGiField(Eiu $eiu): GiField {
 		if (empty($this->onAssociatedGuiFieldPaths) && empty($this->offAssociatedGuiFieldPaths)) {
 			return new BoolMag($this->getLabelLstr(), true);
 		}
