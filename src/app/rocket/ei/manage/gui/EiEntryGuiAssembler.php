@@ -22,9 +22,7 @@
 namespace rocket\ei\manage\gui;
 
 use n2n\util\type\ArgUtils;
-use n2n\web\dispatch\map\PropertyPath;
 use n2n\web\dispatch\mag\MagCollection;
-use n2n\web\dispatch\map\PropertyPathPart;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use rocket\ei\util\Eiu;
 use rocket\ei\EiPropPath;
