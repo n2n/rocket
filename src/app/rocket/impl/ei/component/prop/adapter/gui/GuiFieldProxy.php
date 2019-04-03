@@ -30,6 +30,7 @@ use rocket\ei\manage\gui\ui\DisplayItem;
 use n2n\web\dispatch\mag\Mag;
 use n2n\util\type\ArgUtils;
 use rocket\ei\manage\gui\GuiFieldDisplayable;
+use rocket\gi\content\GiField;
 
 class GuiFieldProxy implements GuiField, GuiFieldDisplayable, GuiFieldEditable {
 	private $eiu;
@@ -116,15 +117,11 @@ class GuiFieldProxy implements GuiField, GuiFieldDisplayable, GuiFieldEditable {
 		return $this;
 	}
 	
-	public function getMag(): Mag {
-		if ($this->mag !== null) {
-			throw new IllegalStateException('Mag already created.');
-		}
-		
-		$mag = $this->statelessGuiFieldEditable->createMag($this->eiu);
-		ArgUtils::valTypeReturn($mag, Mag::class, $this->statelessGuiFieldEditable, 'createMag');
-		$this->statelessGuiFieldEditable->loadMagValue($this->eiu, $mag);
-		return $this->mag = $mag;
+	public function getGiField(): GiField {
+		$giField = $this->statelessGuiFieldEditable->createGiField($this->eiu);
+		ArgUtils::valTypeReturn($giField, GiField::class, $this->statelessGuiFieldEditable, 'createGiField');
+		$this->statelessGuiFieldEditable->loadMagValue($this->eiu, $giField);
+		return $this->giField = $giField;
 	}
 	
 	public function save() {

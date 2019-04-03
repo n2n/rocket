@@ -21,11 +21,14 @@
  */
 namespace rocket\gi\content;
 
-class GiEntry {
+class GiEntry implements \JsonSerializable {
 	private $category;
 	private $id;
 	private $name;
 	private $treeLevel;
+	/**
+	 * @var GiField[]
+	 */
 	private $giFields;
 	
 	/**
@@ -103,7 +106,7 @@ class GiEntry {
 	}
 
 	/**
-	 * @return mixed
+	 * @return GiField[]
 	 */
 	public function getGiFields() {
 		return $this->giFields;
@@ -126,4 +129,23 @@ class GiEntry {
 		$this->giFields[$id] = $giField;
 		return $this;
 	}
+	
+	public function jsonSerialize() {
+		$giFieldsArr = array();
+		foreach ($this->giFields as $id => $giField) {
+			$giFieldsArr[$id] = [
+				'type' => $giField->getType(),
+				'data' => $giField->getData()
+			];
+		}
+		
+		return [
+			'category' => $this->category,
+			'id' => $this->id,
+			'name' => $this->name,
+			'treeLevel' => $this->treeLevel,
+			'giFields' => $giFieldsArr
+		];
+	}
+
 }

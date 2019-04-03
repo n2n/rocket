@@ -21,7 +21,7 @@
  */
 namespace rocket\gi\content;
 
-class GiFieldDeclaration {
+class GiFieldDeclaration implements \JsonSerializable {
 	private $giFieldId;
 	private $label;
 	private $helpText;
@@ -82,6 +82,15 @@ class GiFieldDeclaration {
 		$this->helpText = $helpText;
 		return $this;
 	}
+	
+	public function jsonSerialize() {
+		return [
+			'giFieldId' => $this->giFieldId,
+			'label' => $this->label,
+			'helpText' => $this->helpText
+		];
+	}
+
 	
 	
 	

@@ -23,7 +23,7 @@ namespace rocket\gi\content;
 
 use n2n\util\type\ArgUtils;
 
-class GiCompactContent {
+class GiCompactContent implements \JsonSerializable {
 	private $giFieldDeclarations;
 	private $giEntries;
 	
@@ -64,5 +64,12 @@ class GiCompactContent {
 	 */
 	function getGiEntries() {
 		return $this->giEntries;
+	}
+	
+	function jsonSerialize() {
+		return [
+			'giFieldDeclarations' => $this->giFieldDeclarations,
+			'giEntries' => $this->giEntries
+		];
 	}
 }

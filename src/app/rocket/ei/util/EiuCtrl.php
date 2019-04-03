@@ -47,6 +47,10 @@ use rocket\ei\manage\gui\ViewMode;
 use n2n\web\http\controller\impl\ControllingUtils;
 use rocket\gi\context\impl\ListGiZone;
 use rocket\gi\GiPayloadFactory;
+use n2n\persistence\orm\criteria\Criteria;
+use n2n\persistence\orm\util\NestedSetUtils;
+use n2n\persistence\orm\util\NestedSetStrategy;
+use rocket\ei\util\gui\EiuGui;
 
 class EiuCtrl implements Lookupable {
 	private $eiu;
@@ -335,12 +339,47 @@ class EiuCtrl implements Lookupable {
 			return;
 		}
 		
-		$eiuGui = $this->eiu->frame()->newGui(ViewMode::COMPACT_READ);
+		$eiuGui = $this->eiuFrame->newGui(ViewMode::COMPACT_READ);
+		
+		$this->composeEiuGuiForList($eiuGui, $pageSize);
+		
 		$giZone = new ListGiZone($this->eiu->frame()->getApiUrl(), 
 				$eiuGui->getEiGui()->getEiGuiGiFactory()->createGiCompactContent());
 		
 		$this->httpContext->getResponse()->send(GiPayloadFactory::createFromGiZone($giZone));
 	}
+	
+	private function composeEiuGuiForList(EiuGui $eiuGui, int $limit) {
+		$eiType = $this->eiuFrame->getEiFrame()->getContextEiEngine()->getEiMask()->getEiType();
+		
+		$criteria = $this->eiuFrame->getEiFrame()->createCriteria(NestedSetUtils::NODE_ALIAS, false);
+		$criteria->select(NestedSetUtils::NODE_ALIAS)->limit($limit);
+		
+		$criteria->limit($limit);
+		
+		if (null !== ($nestedSetStrategy = $eiType->getNestedSetStrategy())) {
+			$this->treeLookup($eiuGui, $criteria, $nestedSetStrategy);
+		} else {
+			$this->simpleLookup($eiuGui, $criteria);
+		}
+	}
+	
+	private function simpleLookup(EiuGui $eiuGui, Criteria $criteria) {
+		foreach ($criteria->toQuery()->fetchArray() as $entityObj) {
+			$eiuGui->appendNewEntryGui($entityObj);
+		}
+	}
+	
+	private function treeLookup(EiuGui $eiuGui, Criteria $criteria, NestedSetStrategy $nestedSetStrategy) {
+		$nestedSetUtils = new NestedSetUtils($this->eiuFrame->em(), $this->eiuFrame->getContextEiType()->getEntityModel()->getClass(), $nestedSetStrategy);
+		
+		$eiuGui = $this->eiuFrame->newGui(ViewMode::COMPACT_READ)->renderEntryControls();
+		
+		foreach ($nestedSetUtils->fetch(null, false, $criteria) as $nestedSetItem) {
+			$eiuGui->appendNewEntryGui($nestedSetItem->getEntityObj(), $nestedSetItem->getLevel());
+		}
+	}
+	
 	
 	public static function from(HttpContext $httpContext, EiFrame $eiFrame = null) {
 		$manageState = $httpContext->getN2nContext()->lookup(ManageState::class);

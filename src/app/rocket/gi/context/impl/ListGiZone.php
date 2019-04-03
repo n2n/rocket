@@ -26,8 +26,12 @@ use n2n\util\uri\Url;
 use rocket\gi\content\GiCompactContent;
 
 class ListGiZone implements GiZone {
+	private $apiUrl;
+	private $giCompactContent;
 	
 	public function __construct(Url $apiUrl, GiCompactContent $giCompactContent) {
+		$this->apiUrl = $apiUrl;
+		$this->giCompactContent = $giCompactContent;
 	}
 	
 	public function getTypeName(): string {
@@ -36,7 +40,7 @@ class ListGiZone implements GiZone {
 	
 	public function getData(): array {
 		return [ 
-			'atusch' => 'btusch'
+			'giCompactContent' => $this->giCompactContent
 		];
 	}
 }
