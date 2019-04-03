@@ -43,9 +43,10 @@ use n2n\impl\web\ui\view\jhtml\JhtmlExec;
 use n2n\l10n\MessageContainer;
 use rocket\ei\manage\entry\UnknownEiObjectException;
 use rocket\ei\util\entry\EiuEntry;
-use n2n\web\http\payload\impl\JsonPayload;
 use rocket\ei\manage\gui\ViewMode;
-use rocket\angl\zone\impl\ListZone;
+use n2n\web\http\controller\impl\ControllingUtils;
+use rocket\gi\context\impl\ListGiZone;
+use rocket\gi\GiPayloadFactory;
 
 class EiuCtrl implements Lookupable {
 	private $eiu;
@@ -313,21 +314,32 @@ class EiuCtrl implements Lookupable {
 				new Redirect($this->eiuFrame->getEiFrame()->getOverviewUrl($this->httpContext), $status));
 	}
 	
+	private $controllingUtils;
+	
+	/**
+	 * @return \n2n\web\http\controller\impl\ControllingUtils
+	 */
+	function getControllingUtils() {
+		if ($this->controllingUtils === null) {
+			$this->controllingUtils = new ControllingUtils(get_class($this), 
+					$this->eiuFrame->getEiFrame()->getControllerContext());
+		}
+		
+		return $this->controllingUtils;
+	}
+	
 	public function forwardListZone(int $pageSize = 30) {
-		if ('text/html' == $this->httpContext->getRequest()->getAcceptRange()->bestMatch(['text/html', 'application/json'])) {
-			$this->forward('\rocket\core\view\anglTemplate.html');
+		if ('text/html' == $this->httpContext->getRequest()->getAcceptRange()
+				->bestMatch(['text/html', 'application/json'])) {
+			$this->getControllingUtils()->forward('\rocket\core\view\anglTemplate.html');
 			return;
 		}
 		
-		
 		$eiuGui = $this->eiu->frame()->newGui(ViewMode::COMPACT_READ);
+		$giZone = new ListGiZone($this->eiu->frame()->getApiUrl(), 
+				$eiuGui->getEiGui()->getEiGuiGiFactory()->createGiCompactContent());
 		
-		new ListZone($apiUrl, $eiuGui->toCompactContent());
-		
-		
-		
-		
-		$this->httpContext->getResponse()->send(new ZonePayload($listZone));
+		$this->httpContext->getResponse()->send(GiPayloadFactory::createFromGiZone($giZone));
 	}
 	
 	public static function from(HttpContext $httpContext, EiFrame $eiFrame = null) {

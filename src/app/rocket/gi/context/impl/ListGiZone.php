@@ -19,11 +19,24 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\gui;
+namespace rocket\gi\context\impl;
 
-use rocket\gi\content\GiField;
+use rocket\gi\context\GiZone;
+use n2n\util\uri\Url;
+use rocket\gi\content\GiCompactContent;
 
-interface GuiFieldDisplayable {
+class ListGiZone implements GiZone {
 	
-	public function getGiField(): GiField;
+	public function __construct(Url $apiUrl, GiCompactContent $giCompactContent) {
+	}
+	
+	public function getTypeName(): string {
+		return 'list';
+	}
+	
+	public function getData(): array {
+		return [ 
+			'atusch' => 'btusch'
+		];
+	}
 }

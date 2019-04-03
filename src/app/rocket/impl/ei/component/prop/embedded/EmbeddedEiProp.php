@@ -21,6 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\embedded;
 
+use rocket\gi\content\GiField;
 use rocket\impl\ei\component\prop\adapter\PropertyEiPropAdapter;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\EmbeddedEntityProperty;
@@ -45,6 +46,7 @@ use rocket\ei\manage\gui\GuiFieldEditable;
 use rocket\ei\manage\gui\ui\DisplayItem;
 use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\manage\gui\GuiFieldDisplayable;
+use n2n\util\ex\NotYetImplementedException;
 
 class EmbeddedEiProp extends PropertyEiPropAdapter implements GuiEiProp, FieldEiProp {
 	private $sed;
@@ -237,6 +239,11 @@ class EmbeddedGuiField implements GuiField, GuiFieldDisplayable, GuiFieldEditabl
 	public function isMandatory(): bool {
 		return false;
 	}
+	
+	public function getGiField(): GiField {
+		throw new NotYetImplementedException();
+	}
+
 
 
 

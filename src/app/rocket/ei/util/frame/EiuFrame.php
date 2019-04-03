@@ -113,6 +113,13 @@ class EiuFrame {
 	}
 
 	/**
+	 * @return \n2n\util\uri\Url
+	 */
+	public function getApiUrl() {
+		return $this->eiFrame->getApiUrl($this->getHttpContext());
+	}
+	
+	/**
 	 * @return EntityManager
 	 */
 	public function em() {

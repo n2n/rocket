@@ -19,11 +19,30 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\gui;
+namespace rocket\gi\content\impl;
 
-use rocket\gi\content\GiField;
+use n2n\util\ex\IllegalStateException;
 
-interface GuiFieldDisplayable {
+class StringOutGiField extends OutGiFieldAdapter {
 	
-	public function getGiField(): GiField;
+	function getType(): string {
+		return 'rocket-ui-string-out';
+	}
+	
+	
+	function getData(): array {
+		return [];
+	}
+	
+	/**
+	 * @return bool
+	 */
+	function isReadOnly(): bool {
+		return false;
+	}
+	
+	
+	function handleInput(array $data) {
+		throw new IllegalStateException();
+	}
 }

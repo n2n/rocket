@@ -16,5 +16,5 @@ interface EiGuiListener {
 	/**
 	 * 
 	 */
-	public function onSerialize();
+	public function onGiBuild(EiGui $eiGui);
 }

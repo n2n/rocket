@@ -1,7 +1,6 @@
 <?php
 namespace rocket\ei\util\spec;
 
-use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\N2nLocale;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\generic\UnknownGenericEiPropertyException;
@@ -352,12 +351,12 @@ class ClosureEiGuiListener implements EiGuiListener, GuiDefinitionListener {
 		
 	}
 
-	public function onNewView(HtmlView $view) {
-		
-	}
-
 	public function onNewEiGui(EiGui $eiGui) {
 		$eiGui->registerEiGuiListener($this);
+	}
+	
+	public function onGiBuild(EiGui $eiGui) {
+		
 	}
 
 

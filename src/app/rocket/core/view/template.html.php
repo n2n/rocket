@@ -34,9 +34,6 @@ use rocket\core\model\TemplateModel;
 	$templateModel = $view->lookup(TemplateModel::class);
 	$view->assert($templateModel instanceof TemplateModel);
 	
-	$html->meta()->addJs('js/ajah.js', 'n2n\impl\web\ui');
-	$html->meta()->addJs('js/rocket.js', null);
-	
 	$html->meta()->addCssCode('
 			.rocket-layer {
 				animation: layertransform 0.2s;

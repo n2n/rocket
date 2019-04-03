@@ -42,6 +42,7 @@ use rocket\ei\manage\EiObject;
 use rocket\ei\manage\security\EiEntryAccessFactory;
 use rocket\ei\manage\security\EiEntryAccess;
 use rocket\ei\EiPropPath;
+use rocket\ei\EiController;
 
 class EiFrame {
 	private $contextEiEngine;
@@ -411,6 +412,10 @@ class EiFrame {
 		return new Breadcrumb(
 				$this->getDetailUrl($httpContext, $eiObject->toEntryNavPoint($this->getContextEiEngine()->getEiMask()->getEiType())),
 				$this->getDetailBreadcrumbLabel($eiObject));
+	}
+	
+	public function getApiUrl(HttpContext $httpContext) {
+		return $httpContext->getControllerContextPath($this->getControllerContext())->toUrl()->ext(EiController::API_PATH_PART);
 	}
 	
 	public function setDetailDisabled($detailDisabled) {

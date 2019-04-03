@@ -33,6 +33,9 @@ use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\EiApiController;
 
 class EiController extends ControllerAdapter {
+	const API_PATH_PART = 'api';
+	const CMD_PATH_PART = 'cmd';
+	
 	private $eiMask;	
 	private $eiFrame;
 	

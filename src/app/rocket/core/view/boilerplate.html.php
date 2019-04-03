@@ -148,8 +148,9 @@
 					<ul class="nav flex-column">
 						<?php foreach ($navArray['launchPads'] as $launchPad): ?>
 							<li class="nav-item">
-								<?php $html->link(Murl::controller('rocket')->pathExt('manage', $launchPad->getId(),
-									$launchPad->determinePathExt($view->getN2nContext())),
+								<?php $html->link(
+										$view->buildUrl(Murl::controller('rocket')->pathExt('manage', $launchPad->getId()))
+											->ext($launchPad->determinePathExt($view->getN2nContext())),
 									new Raw($html->getEsc($navArray['menuGroup']->determineLabel($launchPad))
 										. '<span></span>'),
 									array('data-jhtml' => 'true', 'class' => 'nav-link'

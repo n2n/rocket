@@ -22,7 +22,6 @@
 
 namespace rocket\ei\util\entry;
 
-use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\N2nLocale;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\entry\OnWriteMappingListener;
@@ -30,7 +29,7 @@ use rocket\ei\manage\entry\WrittenMappingListener;
 use rocket\ei\manage\entry\OnValidateMappingListener;
 use rocket\ei\manage\entry\ValidatedMappingListener;
 use rocket\ei\manage\entry\EiFieldOperationFailedException;
-use rocket\ei\manage\gui\EiGuiAnglFactory;
+use rocket\ei\manage\gui\EiGuiGiFactory;
 use rocket\ei\manage\gui\GuiFieldPath;
 use rocket\ei\manage\gui\GuiException;
 use rocket\ei\manage\gui\ViewMode;
@@ -43,9 +42,10 @@ use rocket\ei\util\spec\EiuMask;
 use rocket\ei\util\gui\EiuEntryGui;
 use rocket\ei\util\gui\EiuEntryGuiAssembler;
 use n2n\util\type\ArgUtils;
-use n2n\web\ui\UiComponent;
 use rocket\ei\manage\entry\UnknownEiFieldExcpetion;
 use rocket\ei\component\prop\EiProp;
+use rocket\gi\content\GiBulkyContent;
+use rocket\gi\content\GiCompactContent;
 use n2n\util\ex\UnsupportedOperationException;
 
 class EiuEntry {
@@ -362,7 +362,7 @@ class EiuEntry {
 		}
 		
 		$eiGui = $eiMask->createEiGui($eiFrame, $viewMode, false);
-		$eiGui->init(new DummyEiGuiAnglFactory(), $eiGui->getGuiDefinition()->getGuiFieldPaths());
+		$eiGui->init(new DummyEiGuiGiFactory(), $eiGui->getGuiDefinition()->getGuiFieldPaths());
 		
 		$eiEntryGuiAssembler = new EiEntryGuiAssembler(new EiEntryGui($eiGui, $this->eiEntry));
 		
@@ -717,11 +717,16 @@ class EiuEntry {
 // 	}
 // }
 
-class DummyEiGuiAnglFactory implements EiGuiAnglFactory  {
+class DummyEiGuiGiFactory implements EiGuiGiFactory  {
 	
-	public function createUiComponent(array $eiEntryGuis, ?HtmlView $contextView): UiComponent {
+	public function createGiBulkyContent(): GiBulkyContent {
 		throw new UnsupportedOperationException();
 	}
+
+	public function createGiCompactContent(): GiCompactContent {
+		throw new UnsupportedOperationException();
+	}
+
 
 	
 }

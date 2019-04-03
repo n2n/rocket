@@ -19,22 +19,30 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\angl\zone\impl;
+namespace rocket\gi\content\impl;
 
-use rocket\angl\zone\Zone;
-
-class ListZone implements Zone {
+class StringInGiField extends InGiFieldAdapter {
 	
-	public function __construct() {
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\gi\content\GiField::getType()
+	 */
+	function getType(): string {
+		return 'rocket-ui-string-in';
 	}
 	
-	public function getTypeName(): string {
-		return 'rocket-ui-list-zone';
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\gi\content\GiField::getData()
+	 */
+	function getData(): array {
+		return [];
 	}
-	
-	public function getData(): array {
-		return [ 'atusch' => 'btusch' ];
+	 
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\gi\content\GiField::handleInput()
+	 */
+	function handleInput(array $data) {
 	}
-	
-	
 }

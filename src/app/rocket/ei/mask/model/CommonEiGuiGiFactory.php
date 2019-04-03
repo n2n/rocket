@@ -2,23 +2,17 @@
 namespace rocket\ei\mask\model;
 
 use rocket\ei\manage\gui\ui\DisplayStructure;
-use rocket\ei\manage\gui\GuiDefinition;
-use rocket\ei\manage\gui\EiGuiAnglFactory;
-use n2n\impl\web\ui\view\html\HtmlView;
-use n2n\web\ui\ViewFactory;
-use n2n\util\type\CastUtils;
-use rocket\ei\util\Eiu;
-use n2n\web\ui\UiComponent;
+use rocket\ei\manage\gui\EiGuiGiFactory;
 use rocket\ei\manage\gui\EiGui;
-use rocket\ei\manage\gui\ViewMode;
 use n2n\util\ex\IllegalStateException;
-use rocket\angl\zone\Zone;
-use rocket\angl\zone\impl\ListZone;
-use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\manage\gui\GuiPropAssembly;
-use rocket\ei\manage\gui\EiEntryGui;
+use rocket\gi\content\GiFieldDeclaration;
+use rocket\gi\content\GiCompactContent;
+use rocket\gi\content\GiFieldStructureDeclaration;
+use rocket\gi\content\GiBulkyContent;
+use n2n\util\ex\NotYetImplementedException;
 
-class CommonEiGuiAnglFactory implements EiGuiAnglFactory {
+class CommonEiGuiGiFactory implements EiGuiGiFactory {
 	private $eiGui;
 	private $guiDefinition;
 	private $displayStructure;
@@ -39,9 +33,9 @@ class CommonEiGuiAnglFactory implements EiGuiAnglFactory {
 	
 	/**
 	 * @param GuiPropAssembly $guiPropAssembly
-	 * @return FieldDeclaration
+	 * @return GiFieldDeclaration
 	 */
-	private function createFieldDeclaration(GuiPropAssembly $guiPropAssembly) {
+	private function createGiFieldDeclaration(GuiPropAssembly $guiPropAssembly) {
 		$n2nLocale = $this->eiGui->getEiFrame()->getN2nContext()->getN2nLocale();
 		
 		$guiProp = $guiPropAssembly->getGuiProp();
@@ -51,38 +45,37 @@ class CommonEiGuiAnglFactory implements EiGuiAnglFactory {
 			$helpText = $helpTextLstr->t($n2nLocale);
 		}
 		
-		return new FieldDeclaration($guiPropAssembly->getGuiFieldPath(),
+		return new GiFieldDeclaration($guiPropAssembly->getGuiFieldPath(),
 				$label, $helpText);
 	}
 	
 	/**
-	 * @param GuiPropAssembly[]
-	 * @return FieldDeclaration[]
+	 * @return GiFieldDeclaration[]
 	 */
-	private function createDefaultFieldDeclarations(array $guiPropAssemblies) {
-		$fieldDeclarations = [];
+	private function createDefaultGiFieldDeclarations() {
+		$giFieldDeclarations = [];
 		foreach ($this->eiGui->getGuiPropAssemblies() as $guiPropAssembly) {
-			$fieldDeclarations[] = $this->createFieldDeclaration($guiPropAssembly); 
+			$giFieldDeclarations[] = $this->createGiFieldDeclaration($guiPropAssembly); 
 		}
-		return $fieldDeclarations;
+		return $giFieldDeclarations;
 	}
 	
 	/**
 	 * @param DisplayStructure $displayStructure
-	 * @return FieldDeclarationStructure[]
+	 * @return GiFieldStructureDeclaration[]
 	 */
-	private function createFieldDeclarationStructures(DisplayStructure $displayStructure) {
+	private function createGiFieldStructureDeclarations(DisplayStructure $displayStructure) {
 		$fieldDeclarationStructures = [];
 		foreach ($displayStructure->getDisplayItems() as $displayItem) {
 			$guiPropAssembly = $this->eiGui->getGuiPropAssemblyByGuiFieldPath($displayItem->getGuiFieldPath());
-			$fieldDeclaration = $this->createFieldDeclaration($guiPropAssembly); 
+			$fieldDeclaration = $this->createGiFieldDeclaration($guiPropAssembly); 
 			
 			$children = [];
 			if ($displayItem->hasDisplayStructure()) {
 				$children = $this->createFieldDeclarationStructures($displayItem->getDisplayStructure());
 			}
 			
-			$fieldDeclarationStructures[] = new FieldDeclarationStructure(
+			$fieldDeclarationStructures[] = new GiFieldStructureDeclaration(
 					$displayItem->getType() ?? $guiPropAssembly->getDisplayDefinition()->getDisplayItemType(),
 					$fieldDeclaration, $children);
 		}
@@ -90,45 +83,23 @@ class CommonEiGuiAnglFactory implements EiGuiAnglFactory {
 	}
 	
 	/**
-	 * @param EiEntryGui $eiEntryGui
-	 * @return Entry
+	 * @param array $eiEntryGuis
+	 * @return GiCompactContent
 	 */
-	private function createEntry(EiEntryGui $eiEntryGui) {
-		$entry = new Entry();
-		
-		foreach ($eiEntryGui->getGuiFieldAssemblies() as $guiFieldPathStr => $guiFieldAssembly) {
-			$entry->putField($guiFieldPathStr, $field);
-		}
-		
-		return $entry;
+	public function createGiCompactContent(): GiCompactContent {
+		return new GiCompactContent($this->createDefaultGiFieldDeclarations(),
+				$this->eiGui->createGiEntries());
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\EiGuiAnglFactory::createCompactContent()
+	 * @see \rocket\ei\manage\gui\EiGuiGiFactory::createBulkyContent()
 	 */
-	public function createCompactContent(array $eiEntryGuis): CompactContent {
-		$compactContent = new CompactContent($this->createDefaultFieldDeclarations());
-		
-		$entries = [];
-		foreach ($this->eiGui->getEiEntryGuis() as $eiEntryGui) {
-			$entries[] = $this->createEntry($eiEntryGui);			
-		}
-		$compactContent->setEntries($entries);
-		
-		return $compactContent;
-	}
-	
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\EiGuiAnglFactory::createBulkyContent()
-	 */
-	public function createBulkyContent(): BulkyContent {
+	public function createGiBulkyContent(): GiBulkyContent {
 		IllegalStateException::assertTrue($this->displayStructure !== null);
 		
-		$bulkyContent = new BulkyContent($this->createFieldDeclarationStructures($this->displayStructure));
-		
+		$giBulkyContent = new GiBulkyContent($this->createFieldDeclarationStructures($this->displayStructure));
+		throw new NotYetImplementedException();
 		
 	}
 	
@@ -175,31 +146,29 @@ class CommonEiGuiAnglFactory implements EiGuiAnglFactory {
 		}
 		return $displayStructure;
 	}
+
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\EiGuiAnglFactory::createUiComponent()
-	 */
-	public function createUiComponent(array $eiEntryGuis, ?HtmlView $contextView): UiComponent {
-		$viewFactory = $this->eiGui->getEiFrame()->getN2nContext()->lookup(ViewFactory::class);
-		CastUtils::assertTrue($viewFactory instanceof ViewFactory);
+	
+// 	public function createUiComponent(array $eiEntryGuis, ?HtmlView $contextView): UiComponent {
+// 		$viewFactory = $this->eiGui->getEiFrame()->getN2nContext()->lookup(ViewFactory::class);
+// 		CastUtils::assertTrue($viewFactory instanceof ViewFactory);
 		
-		$displayStructure = $this->displayStructure;
-		$viewName = null;
+// 		$displayStructure = $this->displayStructure;
+// 		$viewName = null;
 		
-		if ($this->eiGui->getViewMode() & ViewMode::bulky()) {
-			$viewName = 'rocket\ei\mask\view\bulky.html';
-		} else {
-			$viewName = 'rocket\ei\mask\view\compact.html';
-			$displayStructure = $displayStructure->withoutSubStructures();
-		}
+// 		if ($this->eiGui->getViewMode() & ViewMode::bulky()) {
+// 			$viewName = 'rocket\ei\mask\view\bulky.html';
+// 		} else {
+// 			$viewName = 'rocket\ei\mask\view\compact.html';
+// 			$displayStructure = $displayStructure->withoutSubStructures();
+// 		}
 		
-		$params = array('displayStructure' => $displayStructure, 'eiu' => new Eiu($this->eiGui));
+// 		$params = array('displayStructure' => $displayStructure, 'eiu' => new Eiu($this->eiGui));
 		
-		if ($contextView !== null) {
-			return $contextView->getImport('\\' . $viewName, $params);
-		} 
+// 		if ($contextView !== null) {
+// 			return $contextView->getImport('\\' . $viewName, $params);
+// 		} 
 		
-		return $viewFactory->create($viewName, $params);
-	}
+// 		return $viewFactory->create($viewName, $params);
+// 	}
 }

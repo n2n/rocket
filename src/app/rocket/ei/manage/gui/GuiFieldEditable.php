@@ -21,9 +21,7 @@
  */
 namespace rocket\ei\manage\gui;
 
-use n2n\web\dispatch\mag\Mag;
-
-interface GuiFieldEditable {
+interface GuiFieldEditable extends GuiFieldDisplayable {
 	
 	/**
 	 * @return boolean
@@ -31,10 +29,7 @@ interface GuiFieldEditable {
 	public function isMandatory(): bool;
 	
 	/**
-	 * @param string $propertyName
-	 * @return \n2n\web\dispatch\mag\Mag
+	 * 
 	 */
-	public function getMag(): Mag;
-	
 	public function save();
 }

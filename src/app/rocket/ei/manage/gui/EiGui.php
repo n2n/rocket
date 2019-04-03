@@ -7,6 +7,7 @@ use rocket\ei\manage\entry\EiEntry;
 use n2n\util\type\ArgUtils;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\component\GuiFactory;
+use rocket\gi\content\GiEntry;
 
 /**
  * @author andreas
@@ -34,9 +35,9 @@ class EiGui {
 	 */
 	private $guiFieldPaths;
 	/**
-	 * @var EiGuiAnglFactory
+	 * @var EiGuiGiFactory
 	 */
-	private $eiGuiViewFactory;
+	private $eiGuiGiFactory;
 	/**
 	 * @var DisplayDefinition[]
 	 */
@@ -119,15 +120,15 @@ class EiGui {
 	}
 	
 	/**
-	 * @param EiGuiAnglFactory $eiGuiViewFactory
+	 * @param EiGuiGiFactory $eiGuiGiFactory
 	 * @param GuiFieldPath[]
 	 */
-	public function init(EiGuiAnglFactory $eiGuiViewFactory, array $guiFieldPaths = null) {
-		if ($this->eiGuiViewFactory !== null) {
+	public function init(EiGuiGiFactory $eiGuiGiFactory, array $guiFieldPaths = null) {
+		if ($this->eiGuiGiFactory !== null) {
 			throw new IllegalStateException('EiGui already initialized.');
 		}
 		
-		$this->eiGuiViewFactory = $eiGuiViewFactory;
+		$this->eiGuiGiFactory = $eiGuiGiFactory;
 		if ($guiFieldPaths === null) {
 			$this->guiPropAssemblies = $this->guiDefinition->assembleDefaultGuiProps($this);
 		} else {
@@ -148,26 +149,26 @@ class EiGui {
 	 * @return boolean
 	 */
 	public function isInit() {
-		return $this->eiGuiViewFactory !== null;
+		return $this->eiGuiGiFactory !== null;
 	}
 	
 	/**
 	 * @throws IllegalStateException
 	 */
 	private function ensureInit() {
-		if ($this->eiGuiViewFactory !== null) return;
+		if ($this->eiGuiGiFactory !== null) return;
 		
 		throw new IllegalStateException('EiGui not yet initialized.');
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\gui\EiGuiAnglFactory
+	 * @return \rocket\ei\manage\gui\EiGuiGiFactory
 	 * @throws IllegalStateException If EiGui {@see self::init()} hasn't been called yet.
 	 */
-	public function getEiGuiAnglFactory() {
+	public function getEiGuiGiFactory() {
 		$this->ensureInit();
 		
-		return $this->eiGuiViewFactory;
+		return $this->eiGuiGiFactory;
 	}
 	
 	/**
@@ -208,19 +209,34 @@ class EiGui {
 	}
 	
 	/**
-	 * @param HtmlView|null $contextView
-	 * @return \n2n\web\ui\UiComponent
+	 * @return GiEntry[]
 	 */
-	public function createUiComponent(?HtmlView $contextView) {
+	public function createGiEntries() {
 		$this->ensureInit();
 		
-		$view = $this->eiGuiViewFactory->createUiComponent($this->eiEntryGuis, $contextView);
-		
 		foreach ($this->eiGuiListeners as $eiGuiListener) {
-			$eiGuiListener->onNewView($view);
+			$eiGuiListener->onBuild();
 		}
 		
-		return $view;
+		$giEntries = [];
+		foreach ($this->eiEntryGuis as $eiEntryGui) {
+			$giEntries = $this->createGiEntry($eiEntryGui);
+		}
+		return $giEntries;
+	}
+	
+	/**
+	 * @param EiEntryGui $eiEntryGui
+	 * @return GiEntry
+	 */
+	private function createEntry(EiEntryGui $eiEntryGui) {
+		$giEntry = new GiEntry();
+		
+		foreach ($eiEntryGui->getGuiFieldAssemblies() as $guiFieldPathStr => $guiFieldAssembly) {
+			$giEntry->putField($guiFieldPathStr, $guiFieldAssembly->getGuiField());
+		}
+		
+		return $giEntry;
 	}
 	
 	/**
