@@ -39,7 +39,7 @@
 		<div>
 			<?php if (!isset($groupedUiComponents[$panelConfig->getName()])): ?>
 				<div class="rocket-impl-content-type rocket-impl-content-type-empty">
-					<span class="fa" title="leer">0</span>
+					<span class="fa fa-rocket-empty" title="<?php $html->text('common_empty_label') ?>"></span>
 				</div>
 			<?php else: ?>
 				<ul class="list-inline rocket-content-item">
