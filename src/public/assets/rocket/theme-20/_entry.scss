@@ -120,13 +120,20 @@
 
         }
         
-        &.rocket-entry > .rocket-impl-content-type {
+        .rocket-impl-content-type {
             min-width: 10rem;
             padding: 1rem 0 1rem 0.5rem;
             border-right: 1px solid $gray-500;
             white-space: nowrap;
             text-overflow: ellipsis;
             overflow: hidden;
+        }
+
+        .rocket-content-nested .rocket-impl-content-type {
+            padding: 1rem 0 1rem 0;
+            min-width: 0;
+            margin: -1rem 0;
+            border-right: none;
         }
 
         .rocket-impl-content {
@@ -238,7 +245,14 @@
     color: $gray-400;
     cursor: default;
     > .fa {
-        &::after {
+        &.fa-rocket-empty:before {
+            content: "0";
+            display: block;
+            color: $gray-400;
+            width: 15px;
+            text-align: center;
+        }
+        &.fa-rocket-empty:after {
             background: none;
             border: 1px solid $gray-400;
         }
