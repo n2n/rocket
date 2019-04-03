@@ -24,29 +24,29 @@ namespace rocket\gi\content;
 use n2n\util\type\ArgUtils;
 
 class GiBulkyContent {
-	private $giFieldDeclarations;
+	private $giFieldStructureDeclarations;
 	private $giEntries;
 	
-	function __construct(array $giFieldDeclarations, array $giEntries = []) {
-		$this->setGiFieldDeclarations($giFieldDeclarations);
+	function __construct(array $giFieldStructureDeclarations, array $giEntries = []) {
+		$this->setGiFieldStructureDeclarations($giFieldStructureDeclarations);
 		$this->setGiEntries($giEntries);
 	}
 	
 	/**
-	 * @param GiFieldDeclaration[] $giFieldDeclarations
+	 * @param GiFieldStructureDeclaration[] $giFieldStructureDeclarations
 	 * @return \rocket\gi\content\GiCompactContent
 	 */
-	function setGiFieldDeclarations(array $giFieldDeclarations) {
-		ArgUtils::valArray($giFieldDeclarations, GiFieldDeclaration::class);
-		$this->giFieldDeclarations = $giFieldDeclarations;
+	function setGiFieldStructureDeclarations(array $giFieldStructureDeclarations) {
+		ArgUtils::valArray($giFieldStructureDeclarations, GiFieldStructureDeclaration::class);
+		$this->giFieldStructureDeclarations = $giFieldStructureDeclarations;
 		return $this;
 	}
 	
 	/**
-	 * @return GiFieldDeclaration[]
+	 * @return GiFieldStructureDeclaration[]
 	 */
-	function getGiFieldDeclarations() {
-		return $this->giFieldDeclarations;
+	function getGiFieldStructureDeclarations() {
+		return $this->giFieldStructureDeclarations;
 	}
 	
 	/**
