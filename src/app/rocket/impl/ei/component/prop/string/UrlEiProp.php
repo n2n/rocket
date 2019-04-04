@@ -31,7 +31,7 @@ use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\reflection\property\AccessProxy;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\UrlEntityProperty;
-use rocket\ei\component\prop\QuickSearchableEiProp;
+use rocket\ei\manage\critmod\quick\QuickSearchProp;
 
 class UrlEiProp extends AlphanumericEiProp {
 	private $autoScheme;
