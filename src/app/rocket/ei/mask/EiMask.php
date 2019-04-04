@@ -320,6 +320,7 @@ class EiMask {
 	public function onEiEngineSetup(\Closure $callback) {
 		if ($this->eiEngine !== null) {
 			$callback($this->eiEngine);
+			return;
 		}
 		
 		$this->eiEngineCallbacks[spl_object_hash($callback)] = $callback;

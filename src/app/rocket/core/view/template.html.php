@@ -112,7 +112,7 @@ $htmlMeta->addLink(array('rel' => 'apple-touch-icon', 'href' => $httpContext->ge
 		data-rocket-url="<?php $html->out($view->buildUrlStr(Murl::controller('rocket'))) ?>">
 	<header id="rocket-header">
 		<div id="rocket-logo">
-			<?php $html->link(Murl::controller('rocket'), $html->getImageAsset('img/nav-logo-05.png', 'logo'),
+			<?php $html->link(Murl::controller('rocket'), $html->getImageAsset('img/rocket-logo.svg', 'logo'),
 				array('id' => 'rocket-branding')) ?>
 		</div>
 		<h2 id="rocket-customer-name"><?php $html->out(N2N::getAppConfig()->general()->getPageName()) ?></h2>
