@@ -18,6 +18,15 @@ export class Extractor {
         throw new ObjectMissmatchError('Property ' + propName + ' must be of type string. Given: ' 
                 + typeof this.obj[propName]);
     }
+    
+    reqArray(propName: string, nullable: boolean = false): Array<any>|null {
+    	if (Array.isArray(this.obj[propName]) || (nullable && this.obj[propName] === null)) {
+            return this.obj[propName];
+        }
+        
+        throw new ObjectMissmatchError('Property ' + propName + ' must be of type Array. Given: ' 
+                + typeof this.obj[propName]);
+    }
 }
 
 export class ObjectMissmatchError extends Error {

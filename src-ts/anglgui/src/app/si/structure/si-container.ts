@@ -9,4 +9,8 @@ export class SiContainer {
     	console.log("huii");
         this.siLayers.push(new SiLayer());
     }
+    
+    get mainSiLayer(): SiLayer {
+    	return this.siLayers[0];
+    }
 }

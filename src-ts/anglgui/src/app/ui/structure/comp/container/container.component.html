@@ -3,4 +3,5 @@
 </p>
 
 
-<rocket-ui-layer *ngFor="let siLayer of siContainer.siLayers" [siLayer]="siLayer"></rocket-ui-layer>
+<rocket-ui-layer *ngFor="let siLayer of siContainer.siLayers" [siLayer]="siLayer"
+		[class.rocket-main-layer]="siContainer.mainSiLayer == siLayer"></rocket-ui-layer>
