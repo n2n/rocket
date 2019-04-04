@@ -40,7 +40,7 @@ use rocket\ei\util\gui\EiuEntryGuiAssembler;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use rocket\ei\manage\entry\EiFieldValidationResult;
 use rocket\ei\manage\gui\GuiFieldDisplayable;
-use rocket\gi\content\GiField;
+use rocket\si\content\SiField;
 use rocket\ei\manage\gui\GuiField;
 
 class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
@@ -277,7 +277,7 @@ class EmptyDisplayable implements GuiFieldDisplayable {
 		return array('class' => 'rocket-empty-translation');
 	}
 	
-	public function createOutGiField(Eiu $eiu): GiField {
+	public function createOutSiField(Eiu $eiu): SiField {
 		return new HtmlElement('span', ['class' => 'rocket-inactive'], 
 				$view->getHtmlBuilder()->getText('ei_impl_locale_not_active_label'));
 	}

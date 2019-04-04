@@ -13,7 +13,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [ RouterModule.forRoot(routes/*, { enableTracing: true }*/) ],
+    imports: [ RouterModule.forRoot(routes, { enableTracing: true }) ],
     exports: [ RouterModule ],
     providers: [  ]
 })
@@ -22,7 +22,8 @@ export class OpRoutingModule {}
 
 export function matchesManageUrl(url: UrlSegment[], group: UrlSegmentGroup, route: Route): UrlMatchResult {
     if (url.length < 1 || url[0].path != 'manage') {
-        return null;
+        alert('not found');
+        return <any> null;
     }
     
     return { consumed: url };

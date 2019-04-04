@@ -49,7 +49,7 @@ use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use n2n\l10n\Message;
 use rocket\impl\ei\component\prop\adapter\gui\GuiFieldProxy;
-use rocket\gi\content\GiField;
+use rocket\si\content\SiField;
 
 abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAdapter implements StatelessGuiFieldEditable, Writable, 
 		PrivilegedEiProp, Validatable, Copyable {
@@ -172,12 +172,12 @@ abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAd
 // 		return (boolean) $accessAttributes->get('writingAllowed');
 // 	}
 	
-	public function loadGiField(Eiu $eiu, GiField $giField) {
-		$giField->setValue($eiu->field()->getValue());
+	public function loadSiField(Eiu $eiu, SiField $siField) {
+		$siField->setValue($eiu->field()->getValue());
 	}
 	
-	public function saveGiField(GiField $giField, Eiu $eiu) {
-		$eiu->field()->setValue($giField->getValue());
+	public function saveSiField(SiField $siField, Eiu $eiu) {
+		$eiu->field()->setValue($siField->getValue());
 	}
 }
 

@@ -46,7 +46,7 @@ use rocket\ei\manage\generic\GenericEiProperty;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\ei\manage\generic\ScalarEiProperty;
 use n2n\impl\persistence\orm\property\StringEntityProperty;
-use rocket\gi\content\GiField;
+use rocket\si\content\SiField;
 
 abstract class AlphanumericEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiProp, 
 		SortableEiProp, QuickSearchableEiProp, ScalarEiProp, GenericEiProp {
@@ -80,7 +80,7 @@ abstract class AlphanumericEiProp extends DraftablePropertyEiPropAdapter impleme
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable::createUiComponent()
 	 */
-	public function createOutGiField(Eiu $eiu): GiField  {
+	public function createOutSiField(Eiu $eiu): SiField  {
 		return $view->getHtmlBuilder()->getEsc($eiu->entry()->getEiEntry()->getValue(
 				EiPropPath::from($this)));
 	}

@@ -38,7 +38,7 @@ use n2n\impl\web\dispatch\mag\model\NumericMag;
 use n2n\web\dispatch\mag\Mag;
 use n2n\impl\web\dispatch\mag\model\MultiSelectMag;
 use rocket\ei\EiPropPath;
-use rocket\gi\content\GiField;
+use rocket\si\content\SiField;
 
 class MultiSelectEiProp extends DraftablePropertyEiPropAdapter {
 	const OPTION_OPTIONS = 'options';
@@ -116,7 +116,7 @@ class MultiSelectEiProp extends DraftablePropertyEiPropAdapter {
 		return $this->getMin() > 0;
 	}
 	
-	public function createInGiField(Eiu $eiu): GiField {
+	public function createInSiField(Eiu $eiu): SiField {
 		return new MultiSelectMag($this->getLabelCode(), $this->getOptions(), array(), 
 				$this->getMin(), $this->getMax());
 	}

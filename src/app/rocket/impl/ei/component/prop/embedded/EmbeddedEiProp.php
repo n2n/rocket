@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\embedded;
 
-use rocket\gi\content\GiField;
+use rocket\si\content\SiField;
 use rocket\impl\ei\component\prop\adapter\PropertyEiPropAdapter;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\EmbeddedEntityProperty;
@@ -232,7 +232,7 @@ class EmbeddedGuiField implements GuiField, GuiFieldDisplayable, GuiFieldEditabl
 		return $this->mag;
 	}
 
-	public function createOutGiField(Eiu $eiu): GiField {
+	public function createOutSiField(Eiu $eiu): SiField {
 		return null;
 	}
 
@@ -240,7 +240,7 @@ class EmbeddedGuiField implements GuiField, GuiFieldDisplayable, GuiFieldEditabl
 		return false;
 	}
 	
-	public function getGiField(): GiField {
+	public function getSiField(): SiField {
 		throw new NotYetImplementedException();
 	}
 

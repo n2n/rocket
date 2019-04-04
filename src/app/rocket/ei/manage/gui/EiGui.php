@@ -7,7 +7,7 @@ use rocket\ei\manage\entry\EiEntry;
 use n2n\util\type\ArgUtils;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\component\GuiFactory;
-use rocket\gi\content\GiEntry;
+use rocket\si\content\SiEntry;
 
 /**
  * @author andreas
@@ -208,7 +208,7 @@ class EiGui {
 	}
 	
 	/**
-	 * @return GiEntry[]
+	 * @return SiEntry[]
 	 */
 	public function createGiEntries() {
 		$this->ensureInit();
@@ -219,16 +219,16 @@ class EiGui {
 		
 		$giEntries = [];
 		foreach ($this->eiEntryGuis as $eiEntryGui) {
-			$giEntries[] = $this->createGiEntry($eiEntryGui);
+			$giEntries[] = $this->createSiEntry($eiEntryGui);
 		}
 		return $giEntries;
 	}
 	
 	/**
 	 * @param EiEntryGui $eiEntryGui
-	 * @return GiEntry
+	 * @return SiEntry
 	 */
-	private function createGiEntry(EiEntryGui $eiEntryGui) {
+	private function createSiEntry(EiEntryGui $eiEntryGui) {
 		$eiEntry = $eiEntryGui->getEiEntry();
 		
 		$name = null;
@@ -241,11 +241,11 @@ class EiGui {
 							$this->eiFrame->getN2nContext()->getN2nLocale());
 		}
 		
-		$giEntry = new GiEntry($eiEntryGui->getEiEntry()->getEiType()->getSupremeEiType()->getId(),
+		$giEntry = new SiEntry($eiEntryGui->getEiEntry()->getEiType()->getSupremeEiType()->getId(),
 				$eiEntryGui->getEiEntry()->getPid(), $name);
 		
 		foreach ($eiEntryGui->getGuiFields() as $guiFieldPathStr => $guiField) {
-			$giEntry->putGiField($guiFieldPathStr, $guiField->getGiField());
+			$giEntry->putSiField($guiFieldPathStr, $guiField->getSiField());
 		}
 		
 		return $giEntry;

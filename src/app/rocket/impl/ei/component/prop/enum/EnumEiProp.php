@@ -54,7 +54,7 @@ use rocket\ei\manage\entry\EiField;
 use n2n\util\StringUtils;
 use n2n\util\type\TypeConstraints;
 use n2n\impl\persistence\orm\property\IntEntityProperty;
-use rocket\gi\content\GiField;
+use rocket\si\content\SiField;
 
 class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiProp, SortableEiProp, 
 		QuickSearchableEiProp {
@@ -127,7 +127,7 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 		return parent::buildEiField($eiu);
 	}
 	
-	public function createInGiField(Eiu $eiu): GiField {
+	public function createInSiField(Eiu $eiu): SiField {
 		$choicesMap = $this->getOptions();
 		foreach (array_values($choicesMap) as $value) {
 			if (!$eiu->entry()->acceptsValue($this, $value)) {
@@ -165,7 +165,7 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 		return $enablerMag;
 	}
 	
-	public function createOutGiField(Eiu $eiu): GiField  {
+	public function createOutSiField(Eiu $eiu): SiField  {
 		$html = $view->getHtmlBuilder();
 		$options = $this->getOptions();
 		$value = $eiu->field()->getValue(EiPropPath::from($this));

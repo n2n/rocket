@@ -34,7 +34,7 @@ use rocket\ei\util\Eiu;
 use n2n\l10n\Lstr;
 use n2n\l10n\N2nLocale;
 use n2n\impl\web\ui\view\html\HtmlElement;
-use rocket\gi\content\GiField;
+use rocket\si\content\SiField;
 
 class ContentItemGuiField implements GuiField, GuiFieldDisplayable {
 	private $labelLstr;
@@ -108,7 +108,7 @@ class ContentItemGuiField implements GuiField, GuiFieldDisplayable {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiField::createUiComponent()
 	 */
-	public function createOutGiField(Eiu $eiu): GiField {
+	public function createOutSiField(Eiu $eiu): SiField {
 		if ($this->compact) {
 			return $this->createCompactOutputUiComponent($view);
 		}

@@ -33,7 +33,7 @@ use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\impl\ei\component\prop\adapter\DisplayableEiPropAdapter;
 use n2n\impl\web\ui\view\html\HtmlSnippet;
 use n2n\impl\web\ui\view\html\HtmlElement;
-use rocket\gi\content\GiField;
+use rocket\si\content\SiField;
 
 class TypeEiProp extends DisplayableEiPropAdapter implements StatelessGuiFieldDisplayable, GuiEiProp, GuiProp {
 	
@@ -41,7 +41,7 @@ class TypeEiProp extends DisplayableEiPropAdapter implements StatelessGuiFieldDi
 		return $this->getDisplayConfig()->toDisplayDefinition($this, $eiu->gui()->getViewMode());
 	}
 
-	public function createOutGiField(Eiu $eiu): GiField {
+	public function createOutSiField(Eiu $eiu): SiField {
 		$eiuMask = $eiu->context()->mask($eiu->entry()->getEiEntry()->getEiType());
 		$iconType = $eiuMask->getIconType();
 		$label = $eiuMask->getLabel();

@@ -21,7 +21,7 @@
  */
 namespace rocket\ei\manage\gui;
 
-use rocket\gi\content\GiField;
+use rocket\si\content\SiField;
 
 interface GuiField {
 	
@@ -36,12 +36,12 @@ interface GuiField {
 	public function isReadOnly(): bool;
 	
 	/**
-	 * @return GiField 
+	 * @return SiField 
 	 */
-	public function getGiField(): GiField;
+	public function getSiField(): SiField;
 	
 	/**
-	 * @throws \n2n\util\ex\IllegalStateException if {@link self::getGiField()::isReadOnly()} returns true.
+	 * @throws \n2n\util\ex\IllegalStateException if {@link self::getSiField()::isReadOnly()} returns true.
 	 */
 	public function save();
 }

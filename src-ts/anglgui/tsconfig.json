@@ -16,7 +16,9 @@
     ],
     "lib": [
       "es2018",
-      "dom"
-    ]
+      "dom",
+      "es6"
+    ],
+		"strictNullChecks": true
   }
 }

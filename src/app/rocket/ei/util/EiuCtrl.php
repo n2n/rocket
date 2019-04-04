@@ -45,8 +45,8 @@ use rocket\ei\manage\entry\UnknownEiObjectException;
 use rocket\ei\util\entry\EiuEntry;
 use rocket\ei\manage\gui\ViewMode;
 use n2n\web\http\controller\impl\ControllingUtils;
-use rocket\gi\context\impl\ListGiZone;
-use rocket\gi\GiPayloadFactory;
+use rocket\si\context\impl\ListSiZone;
+use rocket\si\SiPayloadFactory;
 use n2n\persistence\orm\criteria\Criteria;
 use n2n\persistence\orm\util\NestedSetUtils;
 use n2n\persistence\orm\util\NestedSetStrategy;
@@ -343,10 +343,10 @@ class EiuCtrl implements Lookupable {
 		
 		$this->composeEiuGuiForList($eiuGui, $pageSize);
 		
-		$giZone = new ListGiZone($this->eiu->frame()->getApiUrl(), 
-				$eiuGui->getEiGui()->getEiGuiGiFactory()->createGiCompactContent());
+		$siZone = new ListSiZone($this->eiu->frame()->getApiUrl(), 
+				$eiuGui->getEiGui()->getEiGuiGiFactory()->createSiCompactContent());
 		
-		$this->httpContext->getResponse()->send(GiPayloadFactory::createFromGiZone($giZone));
+		$this->httpContext->getResponse()->send(SiPayloadFactory::createFromSiZone($siZone));
 	}
 	
 	private function composeEiuGuiForList(EiuGui $eiuGui, int $limit) {

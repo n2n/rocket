@@ -16,8 +16,8 @@ use rocket\ei\util\EiuPerimeterException;
 use rocket\ei\util\entry\EiuEntry;
 use n2n\l10n\N2nLocale;
 use rocket\ei\util\entry\EiuObject;
-use rocket\gi\content\GiBulkyContent;
-use rocket\gi\content\GiCompactContent;
+use rocket\si\content\SiBulkyContent;
+use rocket\si\content\SiCompactContent;
 use n2n\util\ex\NotYetImplementedException;
 
 class EiuGui {
@@ -297,11 +297,11 @@ class CustomGuiViewFactory implements EiGuiGiFactory {
 		
 		return $uiComponent;
 	}
-	public function createGiBulkyContent(): GiBulkyContent {
+	public function createSiBulkyContent(): SiBulkyContent {
 		throw new NotYetImplementedException();
 	}
 
-	public function createGiCompactContent(): GiCompactContent {
+	public function createSiCompactContent(): SiCompactContent {
 		throw new NotYetImplementedException();
 	}
 

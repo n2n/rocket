@@ -29,14 +29,14 @@ use rocket\ei\util\Eiu;
 use rocket\ei\manage\gui\ui\DisplayItem;
 use n2n\util\type\ArgUtils;
 use rocket\ei\manage\gui\GuiFieldDisplayable;
-use rocket\gi\content\GiField;
+use rocket\si\content\SiField;
 
 class GuiFieldProxy implements GuiField, GuiFieldDisplayable, GuiFieldEditable {
 	private $eiu;
 	private $statelessGuiFieldDisplayable;
 	private $statelessGuiFieldEditable;
 	
-	private $giField;
+	private $siField;
 	
 	/**
 	 * @param StatelessGuiFieldDisplayable $statelessGuiFieldDisplayable
@@ -80,7 +80,7 @@ class GuiFieldProxy implements GuiField, GuiFieldDisplayable, GuiFieldEditable {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiField::createUiComponent()
 	 */
-	public function createOutGiField(Eiu $eiu): GiField {
+	public function createOutSiField(Eiu $eiu): SiField {
 		return $this->statelessGuiFieldDisplayable->createUiComponent($view, $this->eiu);
 	}
 	
@@ -116,21 +116,21 @@ class GuiFieldProxy implements GuiField, GuiFieldDisplayable, GuiFieldEditable {
 		return $this;
 	}
 	
-	public function getGiField(): GiField {
-		if ($this->giField !== null) {
-			return $this->giField;
+	public function getSiField(): SiField {
+		if ($this->siField !== null) {
+			return $this->siField;
 		}
 		
 		if ($this->statelessGuiFieldEditable === null || $this->eiu->gui()->isReadOnly()) {
-			$giField = $this->statelessGuiFieldEditable->createOutGiField($this->eiu);
-			ArgUtils::valTypeReturn($giField, GiField::class, $this->statelessGuiFieldDisplayable, 'createOutGiField');
-			return $this->giField = $giField;
+			$siField = $this->statelessGuiFieldEditable->createOutSiField($this->eiu);
+			ArgUtils::valTypeReturn($siField, SiField::class, $this->statelessGuiFieldDisplayable, 'createOutSiField');
+			return $this->siField = $siField;
 		}
 		
-		$giField = $this->statelessGuiFieldEditable->createInGiField($this->eiu);
-		ArgUtils::valTypeReturn($giField, GiField::class, $this->statelessGuiFieldEditable, 'createInGiField');
+		$siField = $this->statelessGuiFieldEditable->createInSiField($this->eiu);
+		ArgUtils::valTypeReturn($siField, SiField::class, $this->statelessGuiFieldEditable, 'createInSiField');
 		
-		return $this->giField = $giField;
+		return $this->siField = $siField;
 	}
 	
 	public function save() {

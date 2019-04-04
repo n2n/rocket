@@ -51,7 +51,7 @@ use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2nutil\jquery\datepicker\mag\DateTimePickerMag;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use rocket\ei\manage\critmod\sort\SortProp;
-use rocket\gi\content\GiField;
+use rocket\si\content\SiField;
 
 class DateTimeEiProp extends DraftablePropertyEiPropAdapter implements SortableEiProp {
 	private $dateStyle = DateTimeFormat::STYLE_MEDIUM;
@@ -90,12 +90,12 @@ class DateTimeEiProp extends DraftablePropertyEiPropAdapter implements SortableE
 		$this->timeStyle = $timeStyle;
 	}
 	
-	public function createOutGiField(Eiu $eiu): GiField  {
+	public function createOutSiField(Eiu $eiu): SiField  {
 		return $view->getHtmlBuilder()->getL10nDateTime($eiu->field()->getValue(EiPropPath::from($this)), 
 				$this->getDateStyle(), $this->getTimeStyle());
 	}
 	
-	public function createInGiField(Eiu $eiu): GiField {
+	public function createInSiField(Eiu $eiu): SiField {
 		$iconElem = new HtmlElement('i', array('class' => IconType::ICON_CALENDAR), '');
 		
 		return new DateTimePickerMag($this->getLabelLstr(), $iconElem, $this->getDateStyle(), $this->getTimeStyle(), null, null, 

@@ -30,7 +30,7 @@ use rocket\ei\manage\gui\GuiField;
 use rocket\ei\util\Eiu;
 use n2n\l10n\N2nLocale;
 use rocket\ei\manage\gui\ui\DisplayItem;
-use rocket\gi\content\GiField;
+use rocket\si\content\SiField;
 
 class ManyToOneGuiField implements GuiField, GuiFieldDisplayable {
 	private $label;
@@ -69,7 +69,7 @@ class ManyToOneGuiField implements GuiField, GuiFieldDisplayable {
 		return DisplayItem::TYPE_PANEL;
 	}
 	
-	public function createOutGiField(Eiu $eiu): GiField {
+	public function createOutSiField(Eiu $eiu): SiField {
 		$html = $view->getHtmlBuilder();
 		$targetRelationEntry = $this->toOneEiField->getValue();
 		

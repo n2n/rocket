@@ -32,7 +32,7 @@ use rocket\ei\component\prop\EiProp;
 use rocket\ei\util\Eiu;
 use n2n\l10n\N2nLocale;
 use rocket\ei\EiPropPath;
-use rocket\gi\content\GiField;
+use rocket\si\content\SiField;
 
 class ToManySelectGuiField implements GuiField, GuiFieldDisplayable {
 	private $eiProp;
@@ -75,7 +75,7 @@ class ToManySelectGuiField implements GuiField, GuiFieldDisplayable {
 		return array();
 	}
 	
-	public function createOutGiField(Eiu $eiu): GiField {
+	public function createOutSiField(Eiu $eiu): SiField {
 		if ($this->eiu->entry()->getEiEntry()->isNew()) {
 			return null;
 		}

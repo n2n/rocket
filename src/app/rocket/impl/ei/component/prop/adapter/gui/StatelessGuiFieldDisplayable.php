@@ -22,13 +22,13 @@
 namespace rocket\impl\ei\component\prop\adapter\gui;
 
 use rocket\ei\util\Eiu;
-use rocket\gi\content\GiField;
+use rocket\si\content\SiField;
 
 interface StatelessGuiFieldDisplayable {
 	
 	/**
 	 * @param Eiu $eiu
-	 * @return GiField
+	 * @return SiField
 	 */
-	public function createOutGiField(Eiu $eiu): GiField;
+	public function createOutSiField(Eiu $eiu): SiField;
 }

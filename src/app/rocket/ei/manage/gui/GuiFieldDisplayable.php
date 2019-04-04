@@ -21,9 +21,9 @@
  */
 namespace rocket\ei\manage\gui;
 
-use rocket\gi\content\GiField;
+use rocket\si\content\SiField;
 
 interface GuiFieldDisplayable {
 	
-	public function getGiField(): GiField;
+	public function getSiField(): SiField;
 }

@@ -5,6 +5,8 @@ import { OpRoutingModule } from "src/app/op/op-routing.module";
 import { ZoneDirective } from './comp/ei/zone.directive';
 import { UiModule } from "src/app/ui/ui.module";
 import { FallbackComponent } from "src/app/op/comp/common/fallback/fallback.component";
+import { BrowserModule } from "@angular/platform-browser";
+import { HttpClientModule } from "@angular/common/http";
 
 @NgModule({
   declarations: [EiComponent, ZoneDirective, FallbackComponent],
@@ -12,6 +14,7 @@ import { FallbackComponent } from "src/app/op/comp/common/fallback/fallback.comp
     CommonModule,
     OpRoutingModule,
     UiModule,
+    HttpClientModule
   ]
 })
 export class OpModule { }

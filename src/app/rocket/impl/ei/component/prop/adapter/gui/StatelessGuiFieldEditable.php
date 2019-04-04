@@ -22,15 +22,15 @@
 namespace rocket\impl\ei\component\prop\adapter\gui;
 
 use rocket\ei\util\Eiu;
-use rocket\gi\content\GiField;
+use rocket\si\content\SiField;
 
 interface StatelessGuiFieldEditable {
 
 	/**
 	 * @param Eiu $eiu
-	 * @return GiField
+	 * @return SiField
 	 */
-	public function createInGiField(Eiu $eiu): GiField;
+	public function createInSiField(Eiu $eiu): SiField;
 	
 	/**
 	 * @param Eiu $eiu
@@ -39,8 +39,8 @@ interface StatelessGuiFieldEditable {
 	public function isMandatory(Eiu $eiu): bool;
 	
 	/**
-	 * @param GiField $giField
+	 * @param SiField $siField
 	 * @param Eiu $eiu
 	 */
-	public function saveGiField(GiField $giField, Eiu $eiu);
+	public function saveSiField(SiField $siField, Eiu $eiu);
 }

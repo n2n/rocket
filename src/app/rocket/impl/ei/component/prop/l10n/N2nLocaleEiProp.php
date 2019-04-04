@@ -48,7 +48,7 @@ use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\sort\SortProp;
 use rocket\ei\manage\generic\GenericEiProperty;
 use rocket\ei\manage\generic\ScalarEiProperty;
-use rocket\gi\content\GiField;
+use rocket\si\content\SiField;
 
 class N2nLocaleEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiProp, SortableEiProp, GenericEiProp,
 		ScalarEiProp {
@@ -73,7 +73,7 @@ class N2nLocaleEiProp extends DraftablePropertyEiPropAdapter implements Filterab
 		$this->definedN2nLocales = $definedN2nLocales;
 	}
 
-	public function createOutGiField(Eiu $eiu): GiField  {
+	public function createOutSiField(Eiu $eiu): SiField  {
 		$value = $eiu->entry()->getValue($this);
 		if ($value === null) return null;
 		
@@ -81,7 +81,7 @@ class N2nLocaleEiProp extends DraftablePropertyEiPropAdapter implements Filterab
 		return $this->generateDisplayNameForN2nLocale($n2nLocale, $view->getN2nContext()->getN2nLocale());
 	}
 
-	public function createInGiField(Eiu $eiu): GiField {
+	public function createInSiField(Eiu $eiu): SiField {
 		return new EnumMag($this->getLabelLstr(), 
 				$this->buildN2nLocaleOptions($eiu->lookup(WebConfig::class), $eiu->frame()->getN2nLocale()), 
 				null, $this->isMandatory($eiu));

@@ -34,7 +34,7 @@ use rocket\ei\component\prop\ScalarEiProp;
 use rocket\ei\manage\generic\CommonScalarEiProperty;
 use rocket\ei\manage\generic\ScalarEiProperty;
 use n2n\impl\persistence\orm\property\IntEntityProperty;
-use rocket\gi\content\GiField;
+use rocket\si\content\SiField;
 
 class IntegerEiProp extends NumericEiPropAdapter implements ScalarEiProp {
 	const INT_SIGNED_MIN = -2147483648;
@@ -72,7 +72,7 @@ class IntegerEiProp extends NumericEiPropAdapter implements ScalarEiProp {
 		$this->objectPropertyAccessProxy = $propertyAccessProxy;
 	}
 	
-	public function createInGiField(Eiu $eiu): GiField {
+	public function createInSiField(Eiu $eiu): SiField {
 		return new NumericMag($this->getLabelLstr(), null,
 				$this->isMandatory($eiu), $this->getMinValue(), $this->getMaxValue(), 
 				0, array('placeholder' => $this->getLabelLstr()));

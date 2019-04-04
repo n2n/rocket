@@ -6,10 +6,10 @@ use rocket\ei\manage\gui\EiGuiGiFactory;
 use rocket\ei\manage\gui\EiGui;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\manage\gui\GuiPropAssembly;
-use rocket\gi\content\GiFieldDeclaration;
-use rocket\gi\content\GiCompactContent;
-use rocket\gi\content\GiFieldStructureDeclaration;
-use rocket\gi\content\GiBulkyContent;
+use rocket\si\content\SiFieldDeclaration;
+use rocket\si\content\SiCompactContent;
+use rocket\si\content\SiFieldStructureDeclaration;
+use rocket\si\content\SiBulkyContent;
 use n2n\util\ex\NotYetImplementedException;
 
 class CommonEiGuiGiFactory implements EiGuiGiFactory {
@@ -33,9 +33,9 @@ class CommonEiGuiGiFactory implements EiGuiGiFactory {
 	
 	/**
 	 * @param GuiPropAssembly $guiPropAssembly
-	 * @return GiFieldDeclaration
+	 * @return SiFieldDeclaration
 	 */
-	private function createGiFieldDeclaration(GuiPropAssembly $guiPropAssembly) {
+	private function createSiFieldDeclaration(GuiPropAssembly $guiPropAssembly) {
 		$n2nLocale = $this->eiGui->getEiFrame()->getN2nContext()->getN2nLocale();
 		
 		$guiProp = $guiPropAssembly->getGuiProp();
@@ -45,37 +45,37 @@ class CommonEiGuiGiFactory implements EiGuiGiFactory {
 			$helpText = $helpTextLstr->t($n2nLocale);
 		}
 		
-		return new GiFieldDeclaration($guiPropAssembly->getGuiFieldPath(),
+		return new SiFieldDeclaration($guiPropAssembly->getGuiFieldPath(),
 				$label, $helpText);
 	}
 	
 	/**
-	 * @return GiFieldDeclaration[]
+	 * @return SiFieldDeclaration[]
 	 */
-	private function createDefaultGiFieldDeclarations() {
-		$giFieldDeclarations = [];
+	private function createDefaultSiFieldDeclarations() {
+		$siFieldDeclarations = [];
 		foreach ($this->eiGui->getGuiPropAssemblies() as $guiPropAssembly) {
-			$giFieldDeclarations[] = $this->createGiFieldDeclaration($guiPropAssembly); 
+			$siFieldDeclarations[] = $this->createSiFieldDeclaration($guiPropAssembly); 
 		}
-		return $giFieldDeclarations;
+		return $siFieldDeclarations;
 	}
 	
 	/**
 	 * @param DisplayStructure $displayStructure
-	 * @return GiFieldStructureDeclaration[]
+	 * @return SiFieldStructureDeclaration[]
 	 */
-	private function createGiFieldStructureDeclarations(DisplayStructure $displayStructure) {
+	private function createSiFieldStructureDeclarations(DisplayStructure $displayStructure) {
 		$fieldDeclarationStructures = [];
 		foreach ($displayStructure->getDisplayItems() as $displayItem) {
 			$guiPropAssembly = $this->eiGui->getGuiPropAssemblyByGuiFieldPath($displayItem->getGuiFieldPath());
-			$fieldDeclaration = $this->createGiFieldDeclaration($guiPropAssembly); 
+			$fieldDeclaration = $this->createSiFieldDeclaration($guiPropAssembly); 
 			
 			$children = [];
 			if ($displayItem->hasDisplayStructure()) {
 				$children = $this->createFieldDeclarationStructures($displayItem->getDisplayStructure());
 			}
 			
-			$fieldDeclarationStructures[] = new GiFieldStructureDeclaration(
+			$fieldDeclarationStructures[] = new SiFieldStructureDeclaration(
 					$displayItem->getType() ?? $guiPropAssembly->getDisplayDefinition()->getDisplayItemType(),
 					$fieldDeclaration, $children);
 		}
@@ -84,10 +84,10 @@ class CommonEiGuiGiFactory implements EiGuiGiFactory {
 	
 	/**
 	 * @param array $eiEntryGuis
-	 * @return GiCompactContent
+	 * @return SiCompactContent
 	 */
-	public function createGiCompactContent(): GiCompactContent {
-		return new GiCompactContent($this->createDefaultGiFieldDeclarations(),
+	public function createSiCompactContent(): SiCompactContent {
+		return new SiCompactContent($this->createDefaultSiFieldDeclarations(),
 				$this->eiGui->createGiEntries());
 	}
 	
@@ -95,10 +95,10 @@ class CommonEiGuiGiFactory implements EiGuiGiFactory {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\EiGuiGiFactory::createBulkyContent()
 	 */
-	public function createGiBulkyContent(): GiBulkyContent {
+	public function createSiBulkyContent(): SiBulkyContent {
 		IllegalStateException::assertTrue($this->displayStructure !== null);
 		
-		$giBulkyContent = new GiBulkyContent($this->createFieldDeclarationStructures($this->displayStructure));
+		$siBulkyContent = new SiBulkyContent($this->createFieldDeclarationStructures($this->displayStructure));
 		throw new NotYetImplementedException();
 		
 	}

@@ -43,7 +43,7 @@ use rocket\ei\manage\critmod\quick\impl\LikeQuickSearchProp;
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
-use rocket\gi\content\GiField;
+use rocket\si\content\SiField;
 
 abstract class NumericEiPropAdapter extends DraftablePropertyEiPropAdapter 
 		implements FilterableEiProp, SortableEiProp, QuickSearchableEiProp {
@@ -82,7 +82,7 @@ abstract class NumericEiPropAdapter extends DraftablePropertyEiPropAdapter
 		return new NumericEiPropConfigurator($this);
 	}
 	
-	public function createOutGiField(Eiu $eiu): GiField  {
+	public function createOutSiField(Eiu $eiu): SiField  {
 		$html = $view->getHtmlBuilder();
 		return $html->getEsc($eiu->field()->getValue(EiPropPath::from($this)));
 	}

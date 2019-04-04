@@ -44,8 +44,8 @@ use rocket\ei\util\gui\EiuEntryGuiAssembler;
 use n2n\util\type\ArgUtils;
 use rocket\ei\manage\entry\UnknownEiFieldExcpetion;
 use rocket\ei\component\prop\EiProp;
-use rocket\gi\content\GiBulkyContent;
-use rocket\gi\content\GiCompactContent;
+use rocket\si\content\SiBulkyContent;
+use rocket\si\content\SiCompactContent;
 use n2n\util\ex\UnsupportedOperationException;
 
 class EiuEntry {
@@ -719,11 +719,11 @@ class EiuEntry {
 
 class DummyEiGuiGiFactory implements EiGuiGiFactory  {
 	
-	public function createGiBulkyContent(): GiBulkyContent {
+	public function createSiBulkyContent(): SiBulkyContent {
 		throw new UnsupportedOperationException();
 	}
 
-	public function createGiCompactContent(): GiCompactContent {
+	public function createSiCompactContent(): SiCompactContent {
 		throw new UnsupportedOperationException();
 	}
 

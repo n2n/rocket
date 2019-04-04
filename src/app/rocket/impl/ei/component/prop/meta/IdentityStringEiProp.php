@@ -25,7 +25,7 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\adapter\DisplayableEiPropAdapter;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
-use rocket\gi\content\GiField;
+use rocket\si\content\SiField;
 
 class IdentityStringEiProp extends DisplayableEiPropAdapter {
 	
@@ -43,7 +43,7 @@ class IdentityStringEiProp extends DisplayableEiPropAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable::createUiComponent()
 	 */
-	public function createOutGiField(Eiu $eiu): GiField {
+	public function createOutSiField(Eiu $eiu): SiField {
 		return $eiu->entry()->createIdentityString();
 	}
 }

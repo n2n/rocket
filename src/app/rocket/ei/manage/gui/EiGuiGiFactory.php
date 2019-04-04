@@ -1,18 +1,18 @@
 <?php
 namespace rocket\ei\manage\gui;
 
-use rocket\gi\content\GiBulkyContent;
-use rocket\gi\content\GiCompactContent;
+use rocket\si\content\SiBulkyContent;
+use rocket\si\content\SiCompactContent;
 
 interface EiGuiGiFactory {
 
 	/**
-	 * @return GiCompactContent
+	 * @return SiCompactContent
 	 */
-	public function createGiCompactContent(): GiCompactContent;	
+	public function createSiCompactContent(): SiCompactContent;	
 	
 	/**
-	 * @return GiBulkyContent
+	 * @return SiBulkyContent
 	 */
-	public function createGiBulkyContent(): GiBulkyContent;
+	public function createSiBulkyContent(): SiBulkyContent;
 }

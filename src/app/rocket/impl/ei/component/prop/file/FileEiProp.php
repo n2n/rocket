@@ -45,7 +45,7 @@ use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\io\managed\impl\TmpFileManager;
 use rocket\ei\EiPropPath;
-use rocket\gi\content\GiField;
+use rocket\si\content\SiField;
 
 class FileEiProp extends DraftablePropertyEiPropAdapter {
 	const DIM_IMPORT_MODE_ALL = 'all';
@@ -152,7 +152,7 @@ class FileEiProp extends DraftablePropertyEiPropAdapter {
 	}
 	
 	
-	public function createOutGiField(Eiu $eiu): GiField {
+	public function createOutSiField(Eiu $eiu): SiField {
 		$html = $view->getHtmlBuilder();
 		$file = $eiu->field()->getValue();
 		
@@ -229,7 +229,7 @@ class FileEiProp extends DraftablePropertyEiPropAdapter {
 		}
 	}
 	
-	public function createInGiField(Eiu $eiu): GiField {
+	public function createInSiField(Eiu $eiu): SiField {
 		$allowedExtensions = $this->getAllowedExtensions();
 		return new FileMag($this->getLabelLstr(), (sizeof($allowedExtensions) ? $allowedExtensions : null), 
 				$this->isCheckImageMemoryEnabled(), null, 

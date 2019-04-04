@@ -32,8 +32,8 @@ use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\util\StringUtils;
 use n2n\impl\web\ui\view\html\HtmlElement;
-use rocket\gi\content\GiField;
-use rocket\gi\content\impl\GiFields;
+use rocket\si\content\SiField;
+use rocket\si\content\impl\SiFields;
 
 class StringEiProp extends AlphanumericEiProp {
 	private $multiline = false;
@@ -50,8 +50,8 @@ class StringEiProp extends AlphanumericEiProp {
 		return new StringEiPropConfigurator($this);
 	}
 	
-	public function createOutGiField(Eiu $eiu): GiField  {
-		return GiFields::stringOut($eiu->field()->getValue())
+	public function createOutSiField(Eiu $eiu): SiField  {
+		return SiFields::stringOut($eiu->field()->getValue())
 				->setMultiline($this->isMultiline());
 	}
 	
@@ -63,7 +63,7 @@ class StringEiProp extends AlphanumericEiProp {
 // 		return $view->getFormHtmlBuilder()->getInputField($propertyPath, array('class' => 'rocket-preview-inpage-component'));
 // 	}
 
-	public function createInGiField(Eiu $eiu): GiField {
+	public function createInSiField(Eiu $eiu): SiField {
 		$mag = new StringMag($this->getLabelLstr(), null, $this->isMandatory($eiu), 
 				$this->getMaxlength(), $this->isMultiline(),
 				array('placeholder' => $this->getLabelLstr()->t($eiu->frame()->getN2nLocale())));

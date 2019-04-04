@@ -46,7 +46,7 @@ use rocket\ei\component\prop\SecurityFilterEiProp;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
 use rocket\ei\manage\entry\EiField;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
-use rocket\gi\content\GiField;
+use rocket\si\content\SiField;
 
 class BooleanEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiProp, SortableEiProp, SecurityFilterEiProp {
 
@@ -137,7 +137,7 @@ class BooleanEiProp extends DraftablePropertyEiPropAdapter implements Filterable
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable::createUiComponent()
 	 */
-	public function createOutGiField(Eiu $eiu): GiField  {
+	public function createOutSiField(Eiu $eiu): SiField  {
 		$value = $this->getObjectPropertyAccessProxy()->getValue(
 				$eiu->entry()->getEiEntry()->getEiObject()->getLiveObject());
 		if ($value) {
@@ -150,7 +150,7 @@ class BooleanEiProp extends DraftablePropertyEiPropAdapter implements Filterable
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldEditable::createMag()
 	 */
-	public function createInGiField(Eiu $eiu): GiField {
+	public function createInSiField(Eiu $eiu): SiField {
 		if (empty($this->onAssociatedGuiFieldPaths) && empty($this->offAssociatedGuiFieldPaths)) {
 			return new BoolMag($this->getLabelLstr(), true);
 		}
