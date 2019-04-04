@@ -31,6 +31,7 @@ use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\reflection\property\AccessProxy;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\UrlEntityProperty;
+use rocket\ei\component\prop\QuickSearchableEiProp;
 
 class UrlEiProp extends AlphanumericEiProp {
 	private $autoScheme;
@@ -56,6 +57,14 @@ class UrlEiProp extends AlphanumericEiProp {
 		}
 		
 		parent::setEntityProperty($entityProperty);
+	}
+	
+	public function buildQuickSearchProp(Eiu $eiu): QuickSearchableEiProp {
+		if ($this->entityProperty instanceof UrlEntityProperty) {
+			return null;
+		}
+		
+		return parent::buildQuickSearchProp($eiu);
 	}
 
 	public function createEiPropConfigurator(): EiPropConfigurator {
