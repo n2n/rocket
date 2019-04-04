@@ -59,7 +59,7 @@ class UrlEiProp extends AlphanumericEiProp {
 		parent::setEntityProperty($entityProperty);
 	}
 	
-	public function buildQuickSearchProp(Eiu $eiu): ?QuickSearchableEiProp {
+	public function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp {
 		if ($this->entityProperty instanceof UrlEntityProperty) {
 			return null;
 		}
