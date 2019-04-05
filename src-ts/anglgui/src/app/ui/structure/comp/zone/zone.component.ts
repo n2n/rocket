@@ -17,8 +17,6 @@ export class ZoneComponent implements OnInit {
 	constructor(private componentFactoryResolver: ComponentFactoryResolver) { }
 
 	ngOnInit() {
-		console.log("init ngz");
-		
 		this.siZone.initComponent(this.zoneContentDirective.viewContainerRef,
 				this.componentFactoryResolver);
 		

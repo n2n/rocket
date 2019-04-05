@@ -7,7 +7,7 @@ import { ListZoneContentComponent } from "src/app/ui/content/zone/comp/list-zone
 
 export class ListSiZone implements SiZone {
  
-	constructor(siFieldDeclarations: SiFieldDeclaration[], siEntries: SiEntry[]|null) {
+	constructor(public siFieldDeclarations: SiFieldDeclaration[], public siEntries: SiEntry[]|null) {
 		
 	}
 	

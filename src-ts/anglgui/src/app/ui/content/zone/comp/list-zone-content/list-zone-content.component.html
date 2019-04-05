@@ -1,3 +1,17 @@
-<p>
-  list-zone-content works!
-</p>
+
+<table class="table table-hover rocket-table">
+	<thead>
+		<tr>
+			<th *ngFor="let siFieldDeclaration of listSiZone.siFieldDeclarations">
+				{{ siFieldDeclaration.label }}
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr *ngFor="const siEntry of listSiZone.siEntries">
+			<td *ngFor="const siField of pickSiFields(siEntry)">
+				field
+			</td>
+		</tr>
+	</tbody>
+</table>

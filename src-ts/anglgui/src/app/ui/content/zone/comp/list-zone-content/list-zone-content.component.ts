@@ -1,5 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ListSiZone } from "src/app/si/model/structure/impl/list-si-zone";
+import { SiEntry } from "src/app/si/model/content/si-entry";
+import { SiField } from "src/app/si/model/content/si-field";
 
 @Component({
   selector: 'rocket-list-zone-content',
@@ -13,5 +15,17 @@ export class ListZoneContentComponent implements OnInit {
 	constructor() { }
 
 	ngOnInit() {
+	}
+	
+	pickSiFields(siEntry: SiEntry): SiField[] {
+		const siFields: Array<SiField> = [];
+		for (const siFieldDeclaration of this.listSiZone.siFieldDeclarations) {
+			const siField = siEntry.getSiFieldById(siFieldDeclaration.siFieldId)
+			if (siField) {
+				siFields.push(siField);				
+			}
+		}
+		
+		return siFields;
 	}
 }

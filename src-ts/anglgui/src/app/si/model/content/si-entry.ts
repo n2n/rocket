@@ -7,4 +7,8 @@ export class SiEntry {
 	
 	constructor(public category: string, public id: string|null, public name: string) {	
 	}
+	
+	getSiFieldById(id: string): SiField|null {
+		return null;
+	}
 }
