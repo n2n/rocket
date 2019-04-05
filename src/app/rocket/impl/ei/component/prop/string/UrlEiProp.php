@@ -32,7 +32,7 @@ use n2n\reflection\property\AccessProxy;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\UrlEntityProperty;
 use rocket\si\content\SiField;
-
+use rocket\ei\manage\critmod\quick\QuickSearchProp;
 class UrlEiProp extends AlphanumericEiProp {
 	private $autoScheme;
 	private $allowedSchemes = array();
@@ -57,6 +57,14 @@ class UrlEiProp extends AlphanumericEiProp {
 		}
 		
 		parent::setEntityProperty($entityProperty);
+	}
+	
+	public function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp {
+		if ($this->entityProperty instanceof UrlEntityProperty) {
+			return null;
+		}
+		
+		return parent::buildQuickSearchProp($eiu);
 	}
 
 	public function createEiPropConfigurator(): EiPropConfigurator {
