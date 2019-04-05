@@ -1,8 +1,8 @@
-import { ZoneDirective } from './zone.directive';
+import { ZoneContentDirective } from './zone.directive';
 
 describe('ZoneDirective', () => {
   it('should create an instance', () => {
-    const directive = new ZoneDirective();
+    const directive = new ZoneContentDirective();
     expect(directive).toBeTruthy();
   });
 });

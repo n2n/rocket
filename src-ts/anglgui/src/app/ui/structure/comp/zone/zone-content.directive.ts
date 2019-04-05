@@ -2,12 +2,12 @@ import { Directive } from '@angular/core';
 import { ViewContainerRef } from "@angular/core";
 
 @Directive({
-  selector: '[rocketZone]'
+  selector: '[rocketZoneContent]'
 })
-export class ZoneDirective {
+export class ZoneContentDirective {
 
   constructor(public viewContainerRef: ViewContainerRef) { 
-      
+      console.log("refref! " + viewContainerRef);
   }
 
 }

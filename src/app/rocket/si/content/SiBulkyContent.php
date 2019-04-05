@@ -25,11 +25,11 @@ use n2n\util\type\ArgUtils;
 
 class SiBulkyContent {
 	private $siFieldStructureDeclarations;
-	private $giEntries;
+	private $siEntries;
 	
-	function __construct(array $siFieldStructureDeclarations, array $giEntries = []) {
+	function __construct(array $siFieldStructureDeclarations, array $siEntries = []) {
 		$this->setSiFieldStructureDeclarations($siFieldStructureDeclarations);
-		$this->setGiEntries($giEntries);
+		$this->setGiEntries($siEntries);
 	}
 	
 	/**
@@ -50,12 +50,12 @@ class SiBulkyContent {
 	}
 	
 	/**
-	 * @param SiEntry[] $giEntries
+	 * @param SiEntry[] $siEntries
 	 * @return \rocket\si\content\SiCompactContent
 	 */
-	function setGiEntries(array $giEntries) {
-		ArgUtils::valArray($giEntries, SiEntry::class);
-		$this->giEntries = $giEntries;
+	function setGiEntries(array $siEntries) {
+		ArgUtils::valArray($siEntries, SiEntry::class);
+		$this->siEntries = $siEntries;
 		return $this;
 	}
 	
@@ -63,6 +63,6 @@ class SiBulkyContent {
 	 * @return SiEntry[]
 	 */
 	function getGiEntries() {
-		return $this->giEntries;
+		return $this->siEntries;
 	}
 }

@@ -1,5 +1,5 @@
 
-import { SiLayer } from "src/app/si/structure/si-layer";
+import { SiLayer } from "src/app/si/model/structure/si-layer";
 
 export class SiContainer {
     

@@ -46,6 +46,7 @@ use n2n\l10n\Lstr;
 use rocket\ei\manage\entry\EiField;
 use n2n\util\StringUtils;
 use rocket\impl\ei\component\prop\adapter\PropertyEiPropAdapter;
+use rocket\si\content\SiField;
 
 class StringDisplayEiProp extends PropertyEiPropAdapter implements ObjectPropertyConfigurable, GuiEiProp, GuiProp, 
 		FieldEiProp, Readable, StatelessGuiFieldDisplayable {
@@ -215,7 +216,7 @@ class StringDisplayEiProp extends PropertyEiPropAdapter implements ObjectPropert
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable::createUiComponent()
 	 */
-	public function createUiComponent(\n2n\impl\web\ui\view\html\HtmlView $view, \rocket\ei\util\Eiu $eiu) {
+	public function createOutSiField(Eiu $eiu): SiField {
 		return $view->getHtmlBuilder()->getEsc($eiu->field()->getValue());
 	}
 	/**
@@ -226,4 +227,5 @@ class StringDisplayEiProp extends PropertyEiPropAdapter implements ObjectPropert
 		// TODO Auto-generated method stub
 		
 	}
+
 }

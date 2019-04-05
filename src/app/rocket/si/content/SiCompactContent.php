@@ -25,11 +25,11 @@ use n2n\util\type\ArgUtils;
 
 class SiCompactContent implements \JsonSerializable {
 	private $siFieldDeclarations;
-	private $giEntries;
+	private $siEntries;
 	
-	function __construct(array $siFieldDeclarations, array $giEntries = []) {
+	function __construct(array $siFieldDeclarations, array $siEntries = []) {
 		$this->setSiFieldDeclarations($siFieldDeclarations);
-		$this->setGiEntries($giEntries);
+		$this->setSiEntries($siEntries);
 	}
 	
 	/**
@@ -50,26 +50,30 @@ class SiCompactContent implements \JsonSerializable {
 	}
 	
 	/**
-	 * @param SiEntry[] $giEntries
+	 * @param SiEntry[] $siEntries
 	 * @return \rocket\si\content\SiCompactContent
 	 */
-	function setGiEntries(array $giEntries) {
-		ArgUtils::valArray($giEntries, SiEntry::class);
-		$this->giEntries = $giEntries;
+	function setSiEntries(array $siEntries) {
+		ArgUtils::valArray($siEntries, SiEntry::class);
+		$this->siEntries = $siEntries;
 		return $this;
 	}
 	
 	/**
 	 * @return SiEntry[]
 	 */
-	function getGiEntries() {
-		return $this->giEntries;
+	function getSiEntries() {
+		return $this->siEntries;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \JsonSerializable::jsonSerialize()
+	 */
 	function jsonSerialize() {
 		return [
 			'siFieldDeclarations' => $this->siFieldDeclarations,
-			'giEntries' => $this->giEntries
+			'siEntries' => $this->siEntries
 		];
 	}
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { SiContainer } from "src/app/si/structure/si-container";
 import { Input } from "@angular/core";
+import { SiContainer } from "src/app/si/model/structure/si-container";
 
 @Component({
   selector: 'rocket-ui-container',

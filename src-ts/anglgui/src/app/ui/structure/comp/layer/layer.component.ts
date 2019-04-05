@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { SiLayer } from "src/app/si/structure/si-layer";
 import { Input } from "@angular/core";
+import { SiLayer } from "src/app/si/model/structure/si-layer";
 
 @Component({
   selector: 'rocket-ui-layer',

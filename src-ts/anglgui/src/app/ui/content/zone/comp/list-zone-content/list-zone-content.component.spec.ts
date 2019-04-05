@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ListZoneComponent } from './list-zone.component';
+import { ListZoneContentComponent } from './list-zone-content.component';
 
-describe('ListZoneComponent', () => {
-  let component: ListZoneComponent;
-  let fixture: ComponentFixture<ListZoneComponent>;
+describe('ListZoneContentComponent', () => {
+  let component: ListZoneContentComponent;
+  let fixture: ComponentFixture<ListZoneContentComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ListZoneComponent ]
+      declarations: [ ListZoneContentComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ListZoneComponent);
+    fixture = TestBed.createComponent(ListZoneContentComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

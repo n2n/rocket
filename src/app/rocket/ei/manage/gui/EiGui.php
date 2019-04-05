@@ -217,11 +217,11 @@ class EiGui {
 			$eiGuiListener->onBuild();
 		}
 		
-		$giEntries = [];
+		$siEntries = [];
 		foreach ($this->eiEntryGuis as $eiEntryGui) {
-			$giEntries[] = $this->createSiEntry($eiEntryGui);
+			$siEntries[] = $this->createSiEntry($eiEntryGui);
 		}
-		return $giEntries;
+		return $siEntries;
 	}
 	
 	/**

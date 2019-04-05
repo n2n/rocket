@@ -21,7 +21,6 @@
  */
 namespace rocket\impl\ei\component\prop\string;
 
-use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\mag\Mag;
 use rocket\impl\ei\component\prop\string\conf\UrlEiPropConfigurator;
 use rocket\ei\util\Eiu;
@@ -33,6 +32,7 @@ use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\UrlEntityProperty;
 use rocket\si\content\SiField;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
+
 class UrlEiProp extends AlphanumericEiProp {
 	private $autoScheme;
 	private $allowedSchemes = array();
