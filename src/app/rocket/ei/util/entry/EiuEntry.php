@@ -29,7 +29,7 @@ use rocket\ei\manage\entry\WrittenMappingListener;
 use rocket\ei\manage\entry\OnValidateMappingListener;
 use rocket\ei\manage\entry\ValidatedMappingListener;
 use rocket\ei\manage\entry\EiFieldOperationFailedException;
-use rocket\ei\manage\gui\EiGuiGiFactory;
+use rocket\ei\manage\gui\EiGuiSiFactory;
 use rocket\ei\manage\gui\GuiFieldPath;
 use rocket\ei\manage\gui\GuiException;
 use rocket\ei\manage\gui\ViewMode;
@@ -45,7 +45,7 @@ use n2n\util\type\ArgUtils;
 use rocket\ei\manage\entry\UnknownEiFieldExcpetion;
 use rocket\ei\component\prop\EiProp;
 use rocket\si\content\SiBulkyContent;
-use rocket\si\content\SiCompactContent;
+use rocket\si\structure\SiCompactDeclaration;
 use n2n\util\ex\UnsupportedOperationException;
 
 class EiuEntry {
@@ -362,7 +362,7 @@ class EiuEntry {
 		}
 		
 		$eiGui = $eiMask->createEiGui($eiFrame, $viewMode, false);
-		$eiGui->init(new DummyEiGuiGiFactory(), $eiGui->getGuiDefinition()->getGuiFieldPaths());
+		$eiGui->init(new DummyEiGuiSiFactory(), $eiGui->getGuiDefinition()->getGuiFieldPaths());
 		
 		$eiEntryGuiAssembler = new EiEntryGuiAssembler(new EiEntryGui($eiGui, $this->eiEntry));
 		
@@ -717,13 +717,13 @@ class EiuEntry {
 // 	}
 // }
 
-class DummyEiGuiGiFactory implements EiGuiGiFactory  {
+class DummyEiGuiSiFactory implements EiGuiSiFactory  {
 	
 	public function createSiBulkyContent(): SiBulkyContent {
 		throw new UnsupportedOperationException();
 	}
 
-	public function createSiCompactContent(): SiCompactContent {
+	public function createSiCompactDeclaration(): SiCompactDeclaration {
 		throw new UnsupportedOperationException();
 	}
 

@@ -1,0 +1,18 @@
+<button type="button" class="rocket-impl-pagination-first btn btn-secondary">
+	<span>1</span> <i class="fa fa-step-backward"></i>
+</button>
+
+<button type="button" class="rocket-impl-pagination-prev btn btn-secondary">
+	<i class="fa fa-chevron-left"></i>
+</button>
+
+<input class="rocket-impl-pagination-no form-control" type="text" value="1"
+	[(ngModel)]="curPage">
+
+<button type="button" class="rocket-impl-pagination-next btn btn-secondary">
+	<i class="fa fa-chevron-right"></i>
+</button>
+
+<button type="button" class="rocket-impl-pagination-last btn btn-secondary">
+	<i class="fa fa-step-forward"></i> <span>{{ lastPageNo }}</span>
+</button>

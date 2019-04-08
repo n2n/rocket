@@ -19,22 +19,25 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\si\content;
+namespace rocket\si\structure;
 
 use n2n\util\type\ArgUtils;
+use rocket\si\content\SiEntry;
 
-class SiCompactContent implements \JsonSerializable {
+class SiCompactDeclaration implements \JsonSerializable {
 	private $siFieldDeclarations;
+	private $count;
 	private $siEntries;
 	
-	function __construct(array $siFieldDeclarations, array $siEntries = []) {
+	function __construct(array $siFieldDeclarations, int $count, array $siEntries = []) {
 		$this->setSiFieldDeclarations($siFieldDeclarations);
+		$this->count = $count;
 		$this->setSiEntries($siEntries);
 	}
 	
 	/**
 	 * @param SiFieldDeclaration[] $siFieldDeclarations
-	 * @return \rocket\si\content\SiCompactContent
+	 * @return \rocket\si\structure\SiCompactDeclaration
 	 */
 	function setSiFieldDeclarations(array $siFieldDeclarations) {
 		ArgUtils::valArray($siFieldDeclarations, SiFieldDeclaration::class);
@@ -51,13 +54,23 @@ class SiCompactContent implements \JsonSerializable {
 	
 	/**
 	 * @param SiEntry[] $siEntries
-	 * @return \rocket\si\content\SiCompactContent
+	 * @return \rocket\si\structure\SiCompactDeclaration
 	 */
 	function setSiEntries(array $siEntries) {
 		ArgUtils::valArray($siEntries, SiEntry::class);
 		$this->siEntries = $siEntries;
 		return $this;
 	}
+	
+	function getCount() {
+		return $this->count;
+	}
+	
+	function setCount(int $count) {
+		$this->count = $count;
+		return $this;
+	}
+	
 	
 	/**
 	 * @return SiEntry[]
@@ -73,7 +86,8 @@ class SiCompactContent implements \JsonSerializable {
 	function jsonSerialize() {
 		return [
 			'siFieldDeclarations' => $this->siFieldDeclarations,
-			'siEntries' => $this->siEntries
+			'siEntries' => $this->siEntries,
+			'count' => $this->count
 		];
 	}
 }

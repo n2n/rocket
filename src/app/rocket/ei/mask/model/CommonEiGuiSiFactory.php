@@ -2,17 +2,14 @@
 namespace rocket\ei\mask\model;
 
 use rocket\ei\manage\gui\ui\DisplayStructure;
-use rocket\ei\manage\gui\EiGuiGiFactory;
+use rocket\ei\manage\gui\EiGuiSiFactory;
 use rocket\ei\manage\gui\EiGui;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\manage\gui\GuiPropAssembly;
-use rocket\si\content\SiFieldDeclaration;
-use rocket\si\content\SiCompactContent;
-use rocket\si\content\SiFieldStructureDeclaration;
-use rocket\si\content\SiBulkyContent;
-use n2n\util\ex\NotYetImplementedException;
+use rocket\si\structure\SiFieldDeclaration;
+use rocket\si\structure\SiFieldStructureDeclaration;
 
-class CommonEiGuiGiFactory implements EiGuiGiFactory {
+class CommonEiGuiSiFactory implements EiGuiSiFactory {
 	private $eiGui;
 	private $guiDefinition;
 	private $displayStructure;
@@ -50,9 +47,10 @@ class CommonEiGuiGiFactory implements EiGuiGiFactory {
 	}
 	
 	/**
-	 * @return SiFieldDeclaration[]
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\gui\EiGuiSiFactory::getSiFieldDeclarations()
 	 */
-	private function createDefaultSiFieldDeclarations() {
+	function getSiFieldDeclarations() {
 		$siFieldDeclarations = [];
 		foreach ($this->eiGui->getGuiPropAssemblies() as $guiPropAssembly) {
 			$siFieldDeclarations[] = $this->createSiFieldDeclaration($guiPropAssembly); 
@@ -60,11 +58,12 @@ class CommonEiGuiGiFactory implements EiGuiGiFactory {
 		return $siFieldDeclarations;
 	}
 	
+	
 	/**
-	 * @param DisplayStructure $displayStructure
-	 * @return SiFieldStructureDeclaration[]
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\gui\EiGuiSiFactory::getSiFieldStructureDeclarations()
 	 */
-	private function createSiFieldStructureDeclarations(DisplayStructure $displayStructure) {
+	private function createFieldStructureDeclarations(DisplayStructure $displayStructure) {
 		$fieldDeclarationStructures = [];
 		foreach ($displayStructure->getDisplayItems() as $displayItem) {
 			$guiPropAssembly = $this->eiGui->getGuiPropAssemblyByGuiFieldPath($displayItem->getGuiFieldPath());
@@ -82,25 +81,23 @@ class CommonEiGuiGiFactory implements EiGuiGiFactory {
 		return $fieldDeclarationStructures;
 	}
 	
+	
 	/**
-	 * @param array $eiEntryGuis
-	 * @return SiCompactContent
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\gui\EiGuiSiFactory::getSiFieldDeclarations()
 	 */
-	public function createSiCompactContent(): SiCompactContent {
-		return new SiCompactContent($this->createDefaultSiFieldDeclarations(),
-				$this->eiGui->createGiEntries());
+	function getSiFieldDeclarations(): array {
+		return $this->getDefaultSiFieldDeclarations();
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\EiGuiGiFactory::createBulkyContent()
+	 * @see \rocket\ei\manage\gui\EiGuiSiFactory::getFieldDeclarationStrutures()
 	 */
-	public function createSiBulkyContent(): SiBulkyContent {
+	function getSiFieldStructureDeclarations(): array {
 		IllegalStateException::assertTrue($this->displayStructure !== null);
 		
-		$siBulkyContent = new SiBulkyContent($this->createFieldDeclarationStructures($this->displayStructure));
-		throw new NotYetImplementedException();
-		
+		return $this->createFieldStructureDeclarations($this->displayStructure);
 	}
 	
 	
@@ -139,13 +136,13 @@ class CommonEiGuiGiFactory implements EiGuiGiFactory {
 // 		return $this->createDefaultDisplayStructure($viewMode);
 // 	}
 	
-	private function createDefaultDisplayStructure($viewMode) {
-		$displayStructure = new DisplayStructure();
-		foreach ($this->eiGui->getGuiDefinition()->filterGuiFieldPaths($viewMode) as $eiPropPath) {
-			$displayStructure->addGuiFieldPath($eiPropPath);
-		}
-		return $displayStructure;
-	}
+// 	private function createDefaultDisplayStructure($viewMode) {
+// 		$displayStructure = new DisplayStructure();
+// 		foreach ($this->eiGui->getGuiDefinition()->filterGuiFieldPaths($viewMode) as $eiPropPath) {
+// 			$displayStructure->addGuiFieldPath($eiPropPath);
+// 		}
+// 		return $displayStructure;
+// 	}
 
 	
 	

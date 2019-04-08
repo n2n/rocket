@@ -4,7 +4,7 @@ namespace rocket\ei\util\gui;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\GuiFieldPath;
-use rocket\ei\manage\gui\EiGuiGiFactory;
+use rocket\ei\manage\gui\EiGuiSiFactory;
 use n2n\web\ui\UiComponent;
 use n2n\util\type\ArgUtils;
 use n2n\impl\web\ui\view\html\HtmlSnippet;
@@ -17,7 +17,7 @@ use rocket\ei\util\entry\EiuEntry;
 use n2n\l10n\N2nLocale;
 use rocket\ei\util\entry\EiuObject;
 use rocket\si\content\SiBulkyContent;
-use rocket\si\content\SiCompactContent;
+use rocket\si\structure\SiCompactDeclaration;
 use n2n\util\ex\NotYetImplementedException;
 
 class EiuGui {
@@ -102,7 +102,7 @@ class EiuGui {
 		$eiPropPath = GuiFieldPath::create($eiPropPath);
 		
 		try {
-			return $this->eiGui->getEiGuiGiFactory()->getGuiDefinition()->getGuiPropByGuiFieldPath($eiPropPath);
+			return $this->eiGui->getEiGuiSiFactory()->getGuiDefinition()->getGuiPropByGuiFieldPath($eiPropPath);
 		} catch (GuiException $e) {
 			if (!$required) return null;
 			throw $e;
@@ -118,7 +118,7 @@ class EiuGui {
 // 	public function getDisplayItemByGuiFieldPath($eiPropPath) {
 // 		$eiPropPath = GuiFieldPath::create($eiPropPath);
 		
-// 		$displayStructure = $this->eiGui->getEiGuiGiFactory()->getDisplayStructure();
+// 		$displayStructure = $this->eiGui->getEiGuiSiFactory()->getDisplayStructure();
 // 		if ($displayStructure !== null) {
 // 			return $displayStructure->getDisplayItemByGuiFieldPath($eiPropPath);
 // 		}
@@ -217,7 +217,7 @@ class EiuGui {
 	}
 	
 // 	public function addDisplayContainer(string $type, string $label, array $attrs = null) {
-// 		$egvf = $this->eiGui->getEiGuiGiFactory();
+// 		$egvf = $this->eiGui->getEiGuiSiFactory();
 // 		$egvf->setDisplayStructure($egvf->getDisplayStructure()->withContainer($type, $label, $attrs));
 // 		return $this;
 // 	}
@@ -226,7 +226,7 @@ class EiuGui {
 // 	 * @return \rocket\ei\util\gui\EiuGui
 // 	 */
 // 	public function removeSubStructures() {
-// 		$egvf = $this->eiGui->getEiGuiGiFactory();
+// 		$egvf = $this->eiGui->getEiGuiSiFactory();
 // 		$egvf->setDisplayStructure($egvf->getDisplayStructure()->withoutSubStructures());
 // 		return $this;
 // 	}
@@ -235,7 +235,7 @@ class EiuGui {
 // 	 * @return \rocket\ei\util\gui\EiuGui
 // 	 */
 // 	public function forceRootGroups() {
-// 		$egvf = $this->eiGui->getEiGuiGiFactory();
+// 		$egvf = $this->eiGui->getEiGuiSiFactory();
 // 		$egvf->setDisplayStructure($egvf->getDisplayStructure()->groupedItems());
 // 		return $this;
 // 	}
@@ -280,7 +280,7 @@ class EiuGui {
 	}
 }
 
-class CustomGuiViewFactory implements EiGuiGiFactory {
+class CustomGuiViewFactory implements EiGuiSiFactory {
 	private $factory;
 	
 	public function __construct(\Closure $factory) {
@@ -301,7 +301,7 @@ class CustomGuiViewFactory implements EiGuiGiFactory {
 		throw new NotYetImplementedException();
 	}
 
-	public function createSiCompactContent(): SiCompactContent {
+	public function createSiCompactDeclaration(): SiCompactDeclaration {
 		throw new NotYetImplementedException();
 	}
 

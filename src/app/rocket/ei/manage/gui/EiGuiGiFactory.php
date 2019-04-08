@@ -1,18 +1,15 @@
 <?php
 namespace rocket\ei\manage\gui;
 
-use rocket\si\content\SiBulkyContent;
-use rocket\si\content\SiCompactContent;
-
-interface EiGuiGiFactory {
+interface EiGuiSiFactory {
 
 	/**
-	 * @return SiCompactContent
+	 * @return \rocket\si\structure\SiFieldDeclaration[]
 	 */
-	public function createSiCompactContent(): SiCompactContent;	
+	public function getSiFieldDeclarations(): array;	
 	
 	/**
-	 * @return SiBulkyContent
+	 * @return \rocket\si\structure\SiFieldStructureDeclaration[]
 	 */
-	public function createSiBulkyContent(): SiBulkyContent;
+	public function getSiFieldStructureDeclarations(): array;
 }

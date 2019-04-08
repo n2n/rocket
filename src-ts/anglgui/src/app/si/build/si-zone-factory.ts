@@ -1,11 +1,12 @@
 
 import { ObjectMissmatchError, Extractor } from "src/app/util/mapping/extractor";
 import { DlSiZone } from "src/app/si/model/structure/impl/dl-si-zone";
-import { ListSiZone } from "src/app/si/model/structure/impl/list-si-zone";
+import { ListSiZone, SiPage } from "src/app/si/model/structure/impl/list-si-zone";
 import { SiZone } from "src/app/si/model/structure/si-zone";
 import { SiEntry } from "src/app/si/model/content/si-entry";
 import { SiField } from "src/app/si/model/content/si-field";
 import { SiFieldDeclaration } from "src/app/si/model/structure/si-field-declaration";
+import { SiCompactDeclaration } from "src/app/si/model/structure/si-compact-declaration";
 
 export class SiZoneFactory {
 	
@@ -14,16 +15,29 @@ export class SiZoneFactory {
 		
 		switch (extr.reqString('type')) {
 			case SiZoneType.LIST:
-				const compactExtr = new Extractor(extr.reqExtractor('data').reqObject('siCompactContent'));
+				const dataExtr = extr.reqExtractor('data');
+				
+				const compactDeclaration = SiZoneFactory.createCompactDeclaration(dataExtr.reqObject('siCompactDeclaration'))
 
-				return new ListSiZone(
-						SiZoneFactory.createDeclarations(compactExtr.reqArray('siFieldDeclarations')),
-						SiZoneFactory.createEntries(compactExtr.nullaArray('siEntries')));
+				const listSiZone = new ListSiZone(extr.reqString('apiUrl'), dataExtr.reqNumber('pageSize'));
+				listSiZone.setup(compactDeclaration.siFieldDeclarations, compactDeclaration.count);
+				if (compactDeclaration.siEntries) {
+					listSiZone.putPage(new SiPage(1, compactDeclaration.siEntries));
+				}
 			case SiZoneType.DL:
 				return new DlSiZone();
 			default:
 				throw new ObjectMissmatchError('Invalid si zone type: ' + data.type);
 		}
+	}
+	
+	static createCompactDeclaration(data: any): SiCompactDeclaration {
+		const compactExtr = new Extractor(data);
+		
+		return new SiCompactDeclaration(
+				SiZoneFactory.createDeclarations(compactExtr.reqArray('siFieldDeclarations')),
+				compactExtr.reqNumber('count'),
+				SiZoneFactory.createEntries(compactExtr.nullaArray('siEntries')));
 	}
 	
 	private static createDeclarations(data: Array<any>): SiFieldDeclaration[] {

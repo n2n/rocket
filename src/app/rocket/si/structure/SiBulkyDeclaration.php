@@ -19,22 +19,27 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\si\content;
+namespace rocket\si\structure;
 
 use n2n\util\type\ArgUtils;
+use rocket\si\content\SiEntry;
 
-class SiBulkyContent {
+class SiBulkyDeclaration {
 	private $siFieldStructureDeclarations;
 	private $siEntries;
 	
+	/**
+	 * @param SiFieldStructureDeclaration[] $siFieldStructureDeclarations
+	 * @param SiEntry[] $siEntries
+	 */
 	function __construct(array $siFieldStructureDeclarations, array $siEntries = []) {
 		$this->setSiFieldStructureDeclarations($siFieldStructureDeclarations);
-		$this->setGiEntries($siEntries);
+		$this->setSiEntries($siEntries);
 	}
 	
 	/**
 	 * @param SiFieldStructureDeclaration[] $siFieldStructureDeclarations
-	 * @return \rocket\si\content\SiCompactContent
+	 * @return \rocket\si\structure\SiBulkyDeclaration
 	 */
 	function setSiFieldStructureDeclarations(array $siFieldStructureDeclarations) {
 		ArgUtils::valArray($siFieldStructureDeclarations, SiFieldStructureDeclaration::class);
@@ -51,9 +56,9 @@ class SiBulkyContent {
 	
 	/**
 	 * @param SiEntry[] $siEntries
-	 * @return \rocket\si\content\SiCompactContent
+	 * @return \rocket\si\structure\SiBulkyDeclaration
 	 */
-	function setGiEntries(array $siEntries) {
+	function setSiEntries(array $siEntries) {
 		ArgUtils::valArray($siEntries, SiEntry::class);
 		$this->siEntries = $siEntries;
 		return $this;
@@ -62,7 +67,7 @@ class SiBulkyContent {
 	/**
 	 * @return SiEntry[]
 	 */
-	function getGiEntries() {
+	function getSiEntries() {
 		return $this->siEntries;
 	}
 }

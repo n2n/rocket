@@ -4,7 +4,7 @@ import { SiEntry } from "src/app/si/model/content/si-entry";
 import { SiField } from "src/app/si/model/content/si-field";
 
 @Component({
-  selector: 'rocket-list-zone-content',
+  selector: 'rocket-ui-list-zone-content',
   templateUrl: './list-zone-content.component.html',
   styleUrls: ['./list-zone-content.component.css']
 })
@@ -19,7 +19,7 @@ export class ListZoneContentComponent implements OnInit {
 	
 	pickSiFields(siEntry: SiEntry): SiField[] {
 		const siFields: Array<SiField> = [];
-		for (const siFieldDeclaration of this.listSiZone.siFieldDeclarations) {
+		for (const siFieldDeclaration of this.listSiZone.fieldDeclarations) {
 			const siField = siEntry.getSiFieldById(siFieldDeclaration.siFieldId)
 			if (siField) {
 				siFields.push(siField);				

@@ -25,8 +25,8 @@ use rocket\ei\manage\gui\GuiFieldEditable;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
 use n2n\util\ex\IllegalStateException;
-use n2n\web\dispatch\mag\Mag;
 use n2n\util\uri\Url;
+use rocket\si\content\SiField;
 
 class ContentItemEditable implements GuiFieldEditable {
 	private $label;
@@ -77,7 +77,7 @@ class ContentItemEditable implements GuiFieldEditable {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiFieldEditable::createMag($propertyName)
 	 */
-	public function getMag(): Mag {
+	public function getSiField(): SiField {
 		$this->contentItemMag = new ContentItemMag($this->label, $this->panelConfigs,
 				$this->targetReadEiFrame, $this->targetEditEiFrame);
 		$this->contentItemMag->setNewMappingFormUrl($this->newMappingFormUrl);

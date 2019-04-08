@@ -23,23 +23,55 @@ namespace rocket\si\context\impl;
 
 use rocket\si\context\SiZone;
 use n2n\util\uri\Url;
-use rocket\si\content\SiCompactContent;
+use rocket\si\structure\SiCompactDeclaration;
 
 class ListSiZone implements SiZone {
 	private $apiUrl;
+	private $pageSize;
 	private $siCompactContent;
 	
-	public function __construct(Url $apiUrl, SiCompactContent $siCompactContent) {
+	/**
+	 * @param Url $apiUrl
+	 * @param int $pageSize
+	 * @param SiCompactDeclaration $siCompactContent
+	 */
+	public function __construct(Url $apiUrl, int $pageSize, SiCompactDeclaration $siCompactContent = null) {
 		$this->apiUrl = $apiUrl;
+		$this->pageSize = $pageSize;
 		$this->siCompactContent = $siCompactContent;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\si\context\SiZone::getTypeName()
+	 */
 	public function getTypeName(): string {
 		return 'list';
 	}
 	
+	/**
+	 * @return int
+	 */
+	public function getPageSize() {
+		return $this->pageSize;
+	}
+	
+	/**
+	 * @param int $pageSize
+	 * @return \rocket\si\context\impl\ListSiZone
+	 */
+	public function setPageSize(int $pageSize) {
+		$this->pageSize = $pageSize;
+		return $this;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\si\context\SiZone::getData()
+	 */
 	public function getData(): array {
-		return [ 
+		return [
+			'pageSize' => $this->pageSize,
 			'siCompactContent' => $this->siCompactContent
 		];
 	}

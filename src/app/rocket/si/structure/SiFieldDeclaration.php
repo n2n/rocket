@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\si\content;
+namespace rocket\si\structure;
 
 class SiFieldDeclaration implements \JsonSerializable {
 	private $siFieldId;
@@ -44,7 +44,7 @@ class SiFieldDeclaration implements \JsonSerializable {
 
 	/**
 	 * @param string $siFieldId
-	 * @return \rocket\si\content\SiFieldDeclaration
+	 * @return \rocket\si\structure\SiFieldDeclaration
 	 */
 	public function setSiFieldId(string $siFieldId) {
 		$this->siFieldId = $siFieldId;
@@ -60,7 +60,7 @@ class SiFieldDeclaration implements \JsonSerializable {
 
 	/**
 	 * @param string $label
-	 * @return \rocket\si\content\SiFieldDeclaration
+	 * @return \rocket\si\structure\SiFieldDeclaration
 	 */
 	public function setLabel(string $label) {
 		$this->label = $label;
@@ -76,7 +76,7 @@ class SiFieldDeclaration implements \JsonSerializable {
 
 	/**
 	 * @param string|null $helpText
-	 * @return \rocket\si\content\SiFieldDeclaration
+	 * @return \rocket\si\structure\SiFieldDeclaration
 	 */
 	public function setHelpText(?string $helpText) {
 		$this->helpText = $helpText;

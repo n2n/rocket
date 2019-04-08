@@ -51,6 +51,7 @@ use n2n\persistence\orm\criteria\Criteria;
 use n2n\persistence\orm\util\NestedSetUtils;
 use n2n\persistence\orm\util\NestedSetStrategy;
 use rocket\ei\util\gui\EiuGui;
+use rocket\si\structure\SiCompactDeclaration;
 
 class EiuCtrl implements Lookupable {
 	private $eiu;
@@ -343,8 +344,10 @@ class EiuCtrl implements Lookupable {
 		
 		$this->composeEiuGuiForList($eiuGui, $pageSize);
 		
+		new SiCompactDeclaration();
+		
 		$siZone = new ListSiZone($this->eiu->frame()->getApiUrl(), 
-				$eiuGui->getEiGui()->getEiGuiGiFactory()->createSiCompactContent());
+				$pageSize, $eiuGui->getEiGui()->getEiGuiSiFactory()->createSiCompactDeclaration());
 		
 		$this->httpContext->getResponse()->send(SiPayloadFactory::createFromSiZone($siZone));
 	}
@@ -356,6 +359,7 @@ class EiuCtrl implements Lookupable {
 		$criteria->select(NestedSetUtils::NODE_ALIAS)->limit($limit);
 		
 		$criteria->limit($limit);
+		
 		
 		if (null !== ($nestedSetStrategy = $eiType->getNestedSetStrategy())) {
 			$this->treeLookup($eiuGui, $criteria, $nestedSetStrategy);

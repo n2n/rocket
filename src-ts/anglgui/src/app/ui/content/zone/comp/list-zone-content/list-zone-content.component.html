@@ -8,10 +8,17 @@
 		</tr>
 	</thead>
 	<tbody>
-		<tr *ngFor="const siEntry of listSiZone.siEntries">
-			<td *ngFor="const siField of pickSiFields(siEntry)">
+		<tr *ngFor="let siEntry of listSiZone.siEntries">
+			<td *ngFor="let siField of pickSiFields(siEntry)">
 				field
 			</td>
 		</tr>
 	</tbody>
 </table>
+
+<div class="rocket-zone-commands">
+
+	<div class="rocket-aside-commands">
+		<rocket-ui-pagination></rocket-ui-pagination>
+	</div>
+</div>

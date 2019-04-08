@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\si\content;
+namespace rocket\si\structure;
 
 use n2n\util\type\ArgUtils;
 use rocket\ei\manage\gui\ui\DisplayItem;
@@ -47,7 +47,7 @@ class SiFieldStructureDeclaration {
 
 	/**
 	 * @param SiFieldDeclaration $siFieldId
-	 * @return \rocket\si\content\SiFieldDeclaration
+	 * @return \rocket\si\structure\SiFieldDeclaration
 	 */
 	public function setSiFieldDeclaration(SiFieldDeclaration $siFieldDeclaration) {
 		$this->siFieldDeclaration = $siFieldDeclaration;
@@ -63,7 +63,7 @@ class SiFieldStructureDeclaration {
 
 	/**
 	 * @param string $displayType
-	 * @return \rocket\si\content\SiFieldDeclaration
+	 * @return \rocket\si\structure\SiFieldDeclaration
 	 */
 	public function setDisplyType(string $displayType) {
 		ArgUtils::valEnum($displayType, DisplayItem::getTypes());
