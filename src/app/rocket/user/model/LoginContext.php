@@ -30,6 +30,7 @@ use n2n\util\crypt\hash\HashUtils;
 use rocket\user\model\security\RocketUserSecurityManager;
 use n2n\util\ex\IllegalStateException;
 use rocket\user\model\security\SecurityManager;
+use rocket\user\bo\RocketUser;
 
 class LoginContext implements RequestScoped, Dispatchable {
 	private static function _annos(AnnoInit $ai) {
@@ -41,6 +42,7 @@ class LoginContext implements RequestScoped, Dispatchable {
 	protected $nick;
 	protected $rawPassword;
 	
+	private $currentUser;
 	private $currentUserId;
 	private $userDao;
 	private $securityManager;
@@ -89,6 +91,7 @@ class LoginContext implements RequestScoped, Dispatchable {
 		}
 		
 		$this->currentUserId = $user->getId();
+		$this->currentUser = $user;
 		return true;
 	}
 	
@@ -115,11 +118,13 @@ class LoginContext implements RequestScoped, Dispatchable {
 		$this->userDao->createLogin($this->getNick(), $this->getRawPassword(), $currentUser);
 		$this->rawPassword = null;
 		$this->currentUserId = $currentUser->getId();
+		$this->currentUser = $currentUser;
 		$this->securityManager = null;
 		return true;
 	}
 	
 	public function logout() {
+		$this->currentUser = null;
 		$this->currentUserId = null;
 	}
 	
@@ -128,8 +133,19 @@ class LoginContext implements RequestScoped, Dispatchable {
 	}
 	
 	public function getCurrentUser() {
-		if ($this->currentUserId === null) return null;
-		return $this->userDao->getUserById($this->currentUserId);
+		if ($this->currentUser !== null) {
+			return $this->currentUser;
+		}
+		
+		if ($this->currentUserId === null) {
+			return null;
+		}
+		
+		return $this->currentUser = $this->userDao->getUserById($this->currentUserId);
+	}
+	
+	function temporalLogin(RocketUser $currentUser) {
+		$this->currentUser = $currentUser;
 	}
 	
 	/**

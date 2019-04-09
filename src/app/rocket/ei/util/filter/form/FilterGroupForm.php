@@ -55,15 +55,15 @@ class FilterGroupForm implements Dispatchable {
 		$this->useAnd = $filterSettingGroup->isAndUsed();
 		
 		$this->filterPropItemForms = array();
-		foreach ($filterSettingGroup->getFilterSettings() as $filterPropSetting) {
+		foreach ($filterSettingGroup->getFilterSettings() as $key => $filterPropSetting) {
 			try {
-				$this->filterPropItemForms[] = new FilterPropItemForm($filterPropSetting, $filterDefinition);
+				$this->filterPropItemForms['p-' . $key] = new FilterPropItemForm($filterPropSetting, $filterDefinition);
 			} catch (UnknownFilterPropException $e) {}
 		}
 		
 		$this->filterGroupForms = array();
-		foreach ($filterSettingGroup->getFilterSettingGroups() as $filterSettingGroup) {
-			$this->filterGroupForms[] = new FilterGroupForm($filterSettingGroup, $filterDefinition);
+		foreach ($filterSettingGroup->getFilterSettingGroups() as $key => $filterSettingGroup) {
+			$this->filterGroupForms['g-' . $key] = new FilterGroupForm($filterSettingGroup, $filterDefinition);
 		}
 	}
 	
