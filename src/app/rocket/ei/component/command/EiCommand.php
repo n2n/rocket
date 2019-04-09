@@ -23,7 +23,6 @@ namespace rocket\ei\component\command;
 
 use rocket\ei\component\EiComponent;
 use rocket\ei\util\Eiu;
-use n2n\web\http\controller\Controller;
 use n2n\util\ex\IllegalStateException;
 
 interface EiCommand extends EiComponent {
@@ -41,13 +40,14 @@ interface EiCommand extends EiComponent {
 	public function getWrapper(): EiCommandWrapper;
 	
 	/**
-	 * @param Eiu $eiu
-	 * @return Controller
-	 */
-	public function lookupController(Eiu $eiu): Controller;
-	/**
 	 * @param mixed $obj
 	 * @return boolean
 	 */
 	public function equals($obj);
+	
+	public function createOverallControls(Eiu $eiu): array;
+	
+	public function createPartialControls(Eiu $eiu): array;
+	
+	public function createEntryControls(Eiu $eiu): array;
 }

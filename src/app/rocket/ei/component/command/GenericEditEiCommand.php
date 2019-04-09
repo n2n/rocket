@@ -25,9 +25,10 @@ use rocket\ei\manage\control\EntryNavPoint;
 use n2n\util\uri\Url;
 use n2n\util\ex\UnsupportedOperationException;
 
-interface GenericEditEiCommand {
+interface GenericEditEiCommand extends ControllerEiCommand {
 	
 	public function isEditAvailable(EntryNavPoint $entryNavPoint): bool;
+	
 	/**
 	 * @param EntryNavPoint
 	 * @return \n2n\util\uri\Url
