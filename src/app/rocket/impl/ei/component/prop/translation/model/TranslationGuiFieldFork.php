@@ -24,7 +24,6 @@ namespace rocket\impl\ei\component\prop\translation\model;
 use rocket\ei\manage\gui\GuiFieldPath;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\gui\GuiDefinition;
-use rocket\ei\manage\gui\GuiFieldAssembly;
 use n2n\l10n\N2nLocale;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
 use rocket\impl\ei\component\prop\relation\model\RelationEntry;
@@ -42,6 +41,7 @@ use rocket\ei\manage\entry\EiFieldValidationResult;
 use rocket\ei\manage\gui\GuiFieldDisplayable;
 use rocket\si\content\SiField;
 use rocket\ei\manage\gui\GuiField;
+use rocket\ei\util\Eiu;
 
 class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 	private $toManyEiField;

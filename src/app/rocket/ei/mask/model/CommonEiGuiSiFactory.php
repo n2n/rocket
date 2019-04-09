@@ -50,7 +50,7 @@ class CommonEiGuiSiFactory implements EiGuiSiFactory {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\EiGuiSiFactory::getSiFieldDeclarations()
 	 */
-	function getSiFieldDeclarations() {
+	function getSiFieldDeclarations(): array {
 		$siFieldDeclarations = [];
 		foreach ($this->eiGui->getGuiPropAssemblies() as $guiPropAssembly) {
 			$siFieldDeclarations[] = $this->createSiFieldDeclaration($guiPropAssembly); 
@@ -79,15 +79,6 @@ class CommonEiGuiSiFactory implements EiGuiSiFactory {
 					$fieldDeclaration, $children);
 		}
 		return $fieldDeclarationStructures;
-	}
-	
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\EiGuiSiFactory::getSiFieldDeclarations()
-	 */
-	function getSiFieldDeclarations(): array {
-		return $this->getDefaultSiFieldDeclarations();
 	}
 	
 	/**

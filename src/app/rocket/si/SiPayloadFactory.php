@@ -22,7 +22,7 @@
 namespace rocket\si;
 
 use n2n\web\http\payload\impl\JsonPayload;
-use rocket\si\context\SiZone;
+use rocket\si\structure\SiZone;
 
 class SiPayloadFactory extends JsonPayload {
 	
@@ -30,10 +30,11 @@ class SiPayloadFactory extends JsonPayload {
 	 * @param SiZone $siZone
 	 * @return \n2n\web\http\payload\impl\JsonPayload
 	 */
-	static function createFromSiZone(SiZone $siZone) {
+	static function createFromZone(SiZone $zone) {
 		return new JsonPayload([
-			'type' => $siZone->getTypeName(),
-			'data' => $siZone->getData()
+			'type' => $zone->getTypeName(),
+			'apiUrl' => (string) $zone->getApiUrl(),
+			'data' => $zone->getData()
 		]);
 	}
 	

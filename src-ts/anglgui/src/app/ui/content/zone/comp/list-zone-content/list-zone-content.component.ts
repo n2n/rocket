@@ -16,16 +16,4 @@ export class ListZoneContentComponent implements OnInit {
 
 	ngOnInit() {
 	}
-	
-	pickSiFields(siEntry: SiEntry): SiField[] {
-		const siFields: Array<SiField> = [];
-		for (const siFieldDeclaration of this.listSiZone.fieldDeclarations) {
-			const siField = siEntry.getSiFieldById(siFieldDeclaration.siFieldId)
-			if (siField) {
-				siFields.push(siField);				
-			}
-		}
-		
-		return siFields;
-	}
 }

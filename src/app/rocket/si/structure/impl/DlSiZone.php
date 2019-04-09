@@ -19,22 +19,27 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\si\context\impl;
+namespace rocket\si\structure\impl;
 
-use rocket\si\context\SiZone;
+use n2n\util\uri\Url;
+use rocket\si\structure\SiZone;
 
 class DlSiZone implements SiZone {
+	private $apiUrl;
 	
-	public function __construct() {
+	public function __construct(Url $apiUrl) {
+		$this->apiUrl = $apiUrl;
 	}
 	
 	public function getTypeName(): string {
 		return 'dl';
 	}
 	
+	public function getApiUrl(): Url {
+		return $this->apiUrl;
+	}
+	
 	public function getData(): array {
 		return [ 'atusch' => 'btusch' ];
 	}
-	
-	
 }

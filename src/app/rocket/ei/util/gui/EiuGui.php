@@ -5,9 +5,6 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\GuiFieldPath;
 use rocket\ei\manage\gui\EiGuiSiFactory;
-use n2n\web\ui\UiComponent;
-use n2n\util\type\ArgUtils;
-use n2n\impl\web\ui\view\html\HtmlSnippet;
 use rocket\ei\manage\gui\GuiException;
 use rocket\ei\manage\gui\EiGui;
 use rocket\ei\util\frame\EiuFrame;
@@ -16,8 +13,6 @@ use rocket\ei\util\EiuPerimeterException;
 use rocket\ei\util\entry\EiuEntry;
 use n2n\l10n\N2nLocale;
 use rocket\ei\util\entry\EiuObject;
-use rocket\si\content\SiBulkyContent;
-use rocket\si\structure\SiCompactDeclaration;
 use n2n\util\ex\NotYetImplementedException;
 
 class EiuGui {
@@ -287,22 +282,28 @@ class CustomGuiViewFactory implements EiGuiSiFactory {
 		$this->factory = $factory;
 	}
 	
-	public function createUiComponent(array $eiEntryGuis, ?HtmlView $contextView): UiComponent {
-		$uiComponent = $this->factory->call(null, $eiEntryGuis, $contextView);
-		ArgUtils::valTypeReturn($uiComponent, [UiComponent::class, 'scalar'], null, $this->factory);
+// 	public function createUiComponent(array $eiEntryGuis, ?HtmlView $contextView): UiComponent {
+// 		$uiComponent = $this->factory->call(null, $eiEntryGuis, $contextView);
+// 		ArgUtils::valTypeReturn($uiComponent, [UiComponent::class, 'scalar'], null, $this->factory);
 		
-		if (is_scalar($uiComponent)) {
-			$uiComponent = new HtmlSnippet($uiComponent);
-		}
+// 		if (is_scalar($uiComponent)) {
+// 			$uiComponent = new HtmlSnippet($uiComponent);
+// 		}
 		
-		return $uiComponent;
-	}
-	public function createSiBulkyContent(): SiBulkyContent {
+// 		return $uiComponent;
+// 	}
+	
+// 	public function createSiCompactDeclaration(): SiCompactDeclaration {
+// 		throw new NotYetImplementedException();
+// 	}
+	
+	public function getSiFieldStructureDeclarations(): array {
 		throw new NotYetImplementedException();
 	}
 
-	public function createSiCompactDeclaration(): SiCompactDeclaration {
+	public function getSiFieldDeclarations(): array {
 		throw new NotYetImplementedException();
 	}
+
 
 }

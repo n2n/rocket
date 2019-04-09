@@ -3,12 +3,12 @@ import { SiField } from "src/app/si/model/content/si-field";
 
 export class SiEntry {
 	public treeLevel: number|null = null;
-	public siFields: SiField[] = [];
+	public fieldMap = new Map<string, SiField>();
 	
 	constructor(public category: string, public id: string|null, public name: string) {	
 	}
 	
-	getSiFieldById(id: string): SiField|null {
-		return null;
+	public getFieldById(id: string): SiField|null {
+		return this.fieldMap.get(id) || null;
 	}
 }

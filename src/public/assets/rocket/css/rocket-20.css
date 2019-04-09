@@ -4599,7 +4599,7 @@ body {
   display: inline-block;
 }
 
-.rocket-impl-overview-pagination {
+.rocket-pagination {
   text-align: right;
 }
 
@@ -5403,19 +5403,19 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
 /*
  * Footer
  */
-.rocket-impl-overview-pagination .rocket-impl-pagination-no {
+.rocket-pagination .rocket-pagination-no  {
   width: 5rem;
   text-align: center;
   display: inline-block;
   margin-right: 0.5rem;
 }
 
-.rocket-impl-overview-pagination > a,
-.rocket-impl-overview-pagination > .btn:not(:last-child) {
+.rocket-pagination > a,
+.rocket-pagination > .btn:not(:last-child) {
   margin: 0 0.5rem 0 0;
 }
 
-.rocket-impl-overview-pagination > .btn {
+.rocket-pagination > .btn {
   min-width: 2.375rem;
 }
 
@@ -6025,7 +6025,7 @@ td .rocket-simple-commands > .btn > i {
   display: none;
 }
 
-.rocket-zone-commands .rocket-impl-overview-pagination i.fa {
+.rocket-zone-commands .rocket-pagination i.fa {
   display: inline-block !important;
 }
 

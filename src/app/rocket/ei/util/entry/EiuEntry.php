@@ -44,9 +44,7 @@ use rocket\ei\util\gui\EiuEntryGuiAssembler;
 use n2n\util\type\ArgUtils;
 use rocket\ei\manage\entry\UnknownEiFieldExcpetion;
 use rocket\ei\component\prop\EiProp;
-use rocket\si\content\SiBulkyContent;
-use rocket\si\structure\SiCompactDeclaration;
-use n2n\util\ex\UnsupportedOperationException;
+use n2n\util\ex\NotYetImplementedException;
 
 class EiuEntry {
 	private $eiEntry;
@@ -719,14 +717,11 @@ class EiuEntry {
 
 class DummyEiGuiSiFactory implements EiGuiSiFactory  {
 	
-	public function createSiBulkyContent(): SiBulkyContent {
-		throw new UnsupportedOperationException();
+	public function getSiFieldStructureDeclarations(): array {
+		throw new NotYetImplementedException();
 	}
 
-	public function createSiCompactDeclaration(): SiCompactDeclaration {
-		throw new UnsupportedOperationException();
+	public function getSiFieldDeclarations(): array {
+		throw new NotYetImplementedException();
 	}
-
-
-	
 }

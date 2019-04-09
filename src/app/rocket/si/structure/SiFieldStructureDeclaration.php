@@ -25,7 +25,7 @@ use n2n\util\type\ArgUtils;
 use rocket\ei\manage\gui\ui\DisplayItem;
 
 class SiFieldStructureDeclaration {
-	private $siFieldDeclaration;
+	private $fieldDeclaration;
 	private $displayType;
 	private $children = [];
 	
@@ -33,24 +33,24 @@ class SiFieldStructureDeclaration {
 	 * @param SiFieldDeclaration $siFieldDeclaration
 	 * @param string $label
 	 */
-	function __construct(SiFieldDeclaration $siFieldDeclaration, string $displayType) {
-		$this->siFieldDeclaration = $siFieldDeclaration;
+	function __construct(SiFieldDeclaration $fieldDeclaration, string $displayType) {
+		$this->fieldDeclaration = $fieldDeclaration;
 		$this->setDisplyType($displayType);
 	}
 	
 	/**
 	 * @return SiFieldDeclaration
 	 */
-	public function getSiFieldDeclaration() {
-		return $this->siFieldDeclaration;
+	public function getFieldDeclaration() {
+		return $this->fieldDeclaration;
 	}
 
 	/**
 	 * @param SiFieldDeclaration $siFieldId
 	 * @return \rocket\si\structure\SiFieldDeclaration
 	 */
-	public function setSiFieldDeclaration(SiFieldDeclaration $siFieldDeclaration) {
-		$this->siFieldDeclaration = $siFieldDeclaration;
+	public function setSiFieldDeclaration(SiFieldDeclaration $fieldDeclaration) {
+		$this->fieldDeclaration = $fieldDeclaration;
 		return $this;
 	}
 

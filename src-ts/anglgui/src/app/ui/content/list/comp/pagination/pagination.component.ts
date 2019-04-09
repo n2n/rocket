@@ -7,7 +7,7 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class PaginationComponent implements OnInit {
 
-	@Input() curPagNo: number
+	@Input() curPageNo: number
 	@Input() lastPageNo: number;
  
 	constructor() { }

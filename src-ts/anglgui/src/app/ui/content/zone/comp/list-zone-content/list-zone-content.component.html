@@ -2,23 +2,26 @@
 <table class="table table-hover rocket-table">
 	<thead>
 		<tr>
-			<th *ngFor="let siFieldDeclaration of listSiZone.siFieldDeclarations">
+			<th *ngFor="let siFieldDeclaration of listSiZone.fieldDeclarations">
 				{{ siFieldDeclaration.label }}
 			</th>
 		</tr>
 	</thead>
 	<tbody>
-		<tr *ngFor="let siEntry of listSiZone.siEntries">
-			<td *ngFor="let siField of pickSiFields(siEntry)">
-				field
+		<tr *ngFor="let siEntry of listSiZone.getPageByNo(1).entries" rocketUiEntry [siEntry]="siEntry">
+			<td *ngFor="let siFieldDeclaration of listSiZone.fieldDeclarations">
+				<ng-template rocketUiField [siEntry]="siEntry" [siFieldDeclaration]="siFieldDeclaration"></ng-template>
 			</td>
 		</tr>
 	</tbody>
 </table>
 
 <div class="rocket-zone-commands">
-
+	<div class="rocket-main-commands">
+	
+	</div>
 	<div class="rocket-aside-commands">
-		<rocket-ui-pagination></rocket-ui-pagination>
+		<rocket-ui-pagination [curPageNo]="1" [lastPageNo]="listSiZone.pagesNum" 
+				class="rocket-pagination btn-group"></rocket-ui-pagination>
 	</div>
 </div>

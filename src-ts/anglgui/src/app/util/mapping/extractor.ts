@@ -78,6 +78,13 @@ export class Extractor {
                 + typeof this.obj[propName]);
     }
     
+    reqMap(propName: string): Map<string, any> {
+    	const obj = this.reqObject(propName);
+    	
+    	const entries = Object.keys(obj).map(k => [k, obj[k]]);
+    	return new Map(<any> entries);
+    }
+    
     reqExtractor(propName: string): Extractor {
     	return new Extractor(this.reqObject(propName));
     }

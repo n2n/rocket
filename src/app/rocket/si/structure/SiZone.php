@@ -19,7 +19,9 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\si\context;
+namespace rocket\si\structure;
+
+use n2n\util\uri\Url;
 
 interface SiZone {
 	
@@ -27,6 +29,11 @@ interface SiZone {
 	 * @return string
 	 */
 	function getTypeName(): string;
+	
+	/**
+	 * @return Url
+	 */
+	function getApiUrl(): Url;
 	
 	/**
 	 * @return array

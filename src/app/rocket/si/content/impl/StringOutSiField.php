@@ -68,7 +68,7 @@ class StringOutSiField extends OutSiFieldAdapter {
 	 * @see \rocket\si\content\SiField::getType()
 	 */
 	function getType(): string {
-		return 'rocket-ui-string-out';
+		return 'string-out';
 	}
 	
 	

@@ -25,41 +25,53 @@ use n2n\util\type\ArgUtils;
 use rocket\si\content\SiEntry;
 
 class SiCompactDeclaration implements \JsonSerializable {
-	private $siFieldDeclarations;
+	private $fieldDeclarations;
 	private $count;
-	private $siEntries;
+	private $entries;
 	
-	function __construct(array $siFieldDeclarations, int $count, array $siEntries = []) {
-		$this->setSiFieldDeclarations($siFieldDeclarations);
+	/**
+	 * @param SiFieldDeclaration[] $fieldDeclarations
+	 * @param int $count
+	 * @param SiEntry[] $entries
+	 */
+	function __construct(array $fieldDeclarations, int $count, array $entries = []) {
+		$this->seFieldDeclarations($fieldDeclarations);
 		$this->count = $count;
-		$this->setSiEntries($siEntries);
+		$this->setEntries($entries);
 	}
 	
 	/**
 	 * @param SiFieldDeclaration[] $siFieldDeclarations
 	 * @return \rocket\si\structure\SiCompactDeclaration
 	 */
-	function setSiFieldDeclarations(array $siFieldDeclarations) {
-		ArgUtils::valArray($siFieldDeclarations, SiFieldDeclaration::class);
-		$this->siFieldDeclarations = $siFieldDeclarations;
+	function seFieldDeclarations(array $fieldDeclarations) {
+		ArgUtils::valArray($fieldDeclarations, SiFieldDeclaration::class);
+		$this->fieldDeclarations = $fieldDeclarations;
 		return $this;
 	}
 	
 	/**
 	 * @return SiFieldDeclaration[]
 	 */
-	function getSiFieldDeclarations() {
-		return $this->siFieldDeclarations;
+	function getFieldDeclarations() {
+		return $this->fieldDeclarations;
 	}
 	
 	/**
 	 * @param SiEntry[] $siEntries
 	 * @return \rocket\si\structure\SiCompactDeclaration
 	 */
-	function setSiEntries(array $siEntries) {
-		ArgUtils::valArray($siEntries, SiEntry::class);
-		$this->siEntries = $siEntries;
+	function setEntries(array $entries) {
+		ArgUtils::valArray($entries, SiEntry::class);
+		$this->entries = $entries;
 		return $this;
+	}
+	
+	/**
+	 * @return SiEntry[]
+	 */
+	function getEntries() {
+		return $this->entries;
 	}
 	
 	function getCount() {
@@ -71,22 +83,14 @@ class SiCompactDeclaration implements \JsonSerializable {
 		return $this;
 	}
 	
-	
-	/**
-	 * @return SiEntry[]
-	 */
-	function getSiEntries() {
-		return $this->siEntries;
-	}
-	
 	/**
 	 * {@inheritDoc}
 	 * @see \JsonSerializable::jsonSerialize()
 	 */
 	function jsonSerialize() {
 		return [
-			'siFieldDeclarations' => $this->siFieldDeclarations,
-			'siEntries' => $this->siEntries,
+			'fieldDeclarations' => $this->fieldDeclarations,
+			'entries' => $this->entries,
 			'count' => $this->count
 		];
 	}

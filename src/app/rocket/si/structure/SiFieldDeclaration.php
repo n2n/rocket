@@ -22,7 +22,7 @@
 namespace rocket\si\structure;
 
 class SiFieldDeclaration implements \JsonSerializable {
-	private $siFieldId;
+	private $fieldId;
 	private $label;
 	private $helpText;
 	
@@ -30,24 +30,24 @@ class SiFieldDeclaration implements \JsonSerializable {
 	 * @param string $siFieldId
 	 * @param string $label
 	 */
-	function __construct(?string $siFieldId, ?string $label) {
-		$this->siFieldId = $siFieldId;
+	function __construct(?string $fieldId, ?string $label) {
+		$this->fieldId = $fieldId;
 		$this->label = $label;
 	}
 	
 	/**
 	 * @return string
 	 */
-	public function getSiFieldId() {
-		return $this->siFieldId;
+	public function getFieldId() {
+		return $this->fieldId;
 	}
 
 	/**
 	 * @param string $siFieldId
 	 * @return \rocket\si\structure\SiFieldDeclaration
 	 */
-	public function setSiFieldId(string $siFieldId) {
-		$this->siFieldId = $siFieldId;
+	public function setFieldId(string $fieldId) {
+		$this->fieldId = $fieldId;
 		return $this;
 	}
 
@@ -83,9 +83,13 @@ class SiFieldDeclaration implements \JsonSerializable {
 		return $this;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \JsonSerializable::jsonSerialize()
+	 */
 	public function jsonSerialize() {
 		return [
-			'siFieldId' => $this->siFieldId,
+			'fieldId' => $this->fieldId,
 			'label' => $this->label,
 			'helpText' => $this->helpText
 		];

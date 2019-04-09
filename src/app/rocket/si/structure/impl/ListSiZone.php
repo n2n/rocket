@@ -19,34 +19,38 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\si\context\impl;
+namespace rocket\si\structure\impl;
 
-use rocket\si\context\SiZone;
+use rocket\si\structure\SiZone;
 use n2n\util\uri\Url;
 use rocket\si\structure\SiCompactDeclaration;
 
 class ListSiZone implements SiZone {
 	private $apiUrl;
 	private $pageSize;
-	private $siCompactContent;
+	private $compactDeclaration;
 	
 	/**
 	 * @param Url $apiUrl
 	 * @param int $pageSize
 	 * @param SiCompactDeclaration $siCompactContent
 	 */
-	public function __construct(Url $apiUrl, int $pageSize, SiCompactDeclaration $siCompactContent = null) {
+	public function __construct(Url $apiUrl, int $pageSize, SiCompactDeclaration $compactDeclaration = null) {
 		$this->apiUrl = $apiUrl;
 		$this->pageSize = $pageSize;
-		$this->siCompactContent = $siCompactContent;
+		$this->compactDeclaration = $compactDeclaration;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\si\context\SiZone::getTypeName()
+	 * @see \rocket\si\structure\SiZone::getTypeName()
 	 */
 	public function getTypeName(): string {
 		return 'list';
+	}
+	
+	public function getApiUrl(): Url {
+		return $this->apiUrl;
 	}
 	
 	/**
@@ -58,7 +62,7 @@ class ListSiZone implements SiZone {
 	
 	/**
 	 * @param int $pageSize
-	 * @return \rocket\si\context\impl\ListSiZone
+	 * @return \rocket\si\structure\impl\ListSiZone
 	 */
 	public function setPageSize(int $pageSize) {
 		$this->pageSize = $pageSize;
@@ -67,12 +71,13 @@ class ListSiZone implements SiZone {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\si\context\SiZone::getData()
+	 * @see \rocket\si\structure\SiZone::getData()
 	 */
 	public function getData(): array {
 		return [
 			'pageSize' => $this->pageSize,
-			'siCompactContent' => $this->siCompactContent
+			'compactDeclaration' => $this->compactDeclaration
 		];
 	}
+
 }
