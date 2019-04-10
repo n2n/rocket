@@ -119,7 +119,7 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 		return $options;
 	}
 
-	public function createOverallControls(Eiu $eiu, HtmlView $view): array {
+	public function createOverallControls(Eiu $eiu): array {
 		$eiuControlFactory = $eiu->frame()->controlFactory($this);
 		$dtc = $eiu->dtc(Rocket::NS);
 		

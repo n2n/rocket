@@ -4,7 +4,6 @@ namespace rocket\ei\util\frame;
 use rocket\ei\component\command\EiCommand;
 use rocket\ei\manage\control\ControlButton;
 use n2n\util\uri\Url;
-use rocket\ei\manage\control\JhtmlControl;
 use rocket\ei\manage\control\GroupControl;
 use rocket\ei\manage\control\DeactivatedControl;
 use rocket\ei\EiCommandPath;
@@ -19,16 +18,31 @@ class EiuControlFactory {
 	}
 	
 	/**
+	 * @param mixed $urlExt
+	 * @return \n2n\util\uri\Url
+	 */
+	private function createUrl($urlExt) {
+		return $this->eiuFrame->getHttpContext()
+				->getControllerContextPath($this->eiuFrame->getEiFrame()->getControllerContext())
+				->ext((string) EiCommandPath::from($this->eiCommand))->toUrl()->ext($urlExt);
+	}
+	
+	/**
 	 * @param EiCommand $eiCommand
 	 * @param ControlButton $controlButton
 	 * @param Url $urlExt
 	 * @return \rocket\ei\manage\control\JhtmlControl
 	 */
-	public function createJhtml(ControlButton $controlButton, $urlExt = null) {
-		$url = $this->eiuFrame->getHttpContext()
-				->getControllerContextPath($this->eiuFrame->getEiFrame()->getControllerContext())
-				->ext((string) EiCommandPath::from($this->eiCommand))->toUrl()->ext($urlExt);
-		return new JhtmlControl($url, $controlButton);
+	public function createZone(ControlButton $controlButton, $urlExt = null) {
+		return new SiControl($this->createUrl($urlExt), $controlButton);
+	}
+	
+	public function createCallback(ControlButton $controlButton, \Closure $callback) {
+		return new SiCallbackControl($callback, $controlButton);
+	}
+	
+	public function createHref(ControlButton $controlButton, $urlExt = null) {
+		return new HrefControl($this->createUrl($urlExt), $controlButton);
 	}
 	
 	public function createGroup(ControlButton $controlButton): GroupControl {
