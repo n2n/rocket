@@ -97,9 +97,13 @@ class ManageState implements RequestScoped {
 		return $this->eiPermissionManager;
 	}
 	
+	/**
+	 * @param EiPermissionManager $eiPermissionManager
+	 */
 	public function setEiPermissionManager(EiPermissionManager $eiPermissionManager) {
 		$this->eiPermissionManager = $eiPermissionManager;
 	}
+	
 	/**
 	 * @throws IllegalStateException
 	 * @return EntityManager

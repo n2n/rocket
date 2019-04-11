@@ -21,44 +21,13 @@
  */
 namespace rocket\ei\manage\control;
 
-use n2n\web\ui\UiComponent;
-use n2n\impl\web\ui\view\html\HtmlView;
-use n2n\web\dispatch\map\PropertyPath;
+use rocket\ei\util\Eiu;
 
-class PartialControl {
-	private $controlButton;
-	private $executeClosure;
+interface ControlCommand {
 	
-	public function __construct(ControlButton $controlButton, \Closure $executeClosure) {
-		$this->controlButton = $controlButton;
-		$this->executeClosure = $executeClosure;
-		
-	}
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\control\PartialControl::getControlButton()
-	 */
-	public function getControlButton(): ControlButton {
-		return $this->controlButton;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\control\PartialControl::execute($eiObjects)
-	 */
-	public function execute(array $eiObjects) {
-		$this->executeClosure->__invoke($eiObjects);
-	}
+	public function createGeneralControls(Eiu $eiu): array;
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\control\Control::isStatic()
-	 */
-	public function isStatic(): bool {
-		return $this->controlButton->isStatic();
-	}
+	public function createSelectionControls(Eiu $eiu): array;
 	
-	public function createUiComponent(PropertyPath $propertyPath, HtmlView $view): UiComponent {
-		
-	}
+	public function createEntryControls(Eiu $eiu): array;
 }

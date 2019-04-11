@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\file;
 
 use n2n\impl\web\ui\view\html\Link;
-use rocket\ei\manage\control\IconType;
+use rocket\si\control\SiIconType;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use n2n\l10n\N2nLocale;
 use n2n\impl\web\ui\view\html\HtmlView;
@@ -204,7 +204,7 @@ class FileEiProp extends DraftablePropertyEiPropAdapter {
 			$httpContext = $view->getHttpContext();
 			$uiComponent->appendContent($html->getLink($eiu->frame()->getUrlToCommand($this->thumbEiCommand)
 					->extR($eiu->entry()->getPid(), array('refPath' => (string) $eiu->frame()->getEiFrame()->getCurrentUrl($httpContext))),
-					new HtmlElement('i', array('class' => IconType::ICON_CROP), ''),
+					new HtmlElement('i', array('class' => SiIconType::ICON_CROP), ''),
 					array('title' => $view->getL10nText('ei_impl_resize_image'),
 							'class' => 'btn btn-secondary', 'data-jhtml' => 'true')));
 		}

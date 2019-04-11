@@ -27,9 +27,9 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\N2nLocale;
 use rocket\ei\component\command\control\EntryControlComponent;
 use rocket\impl\ei\component\command\common\controller\DetailController;
-use rocket\ei\manage\control\ControlButton;
+use rocket\si\control\SiButton;
 use rocket\impl\ei\component\command\common\controller\PathUtils;
-use rocket\ei\manage\control\IconType;
+use rocket\si\control\SiIconType;
 use rocket\impl\ei\component\command\IndependentEiCommandAdapter;
 use rocket\ei\component\command\PrivilegedEiCommand;
 use n2n\util\uri\Path;
@@ -81,10 +81,10 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 		$iconType = null;
 		if (!$eiuEntry->isDraft()) {
 			$pathExt = new Path(array('live', $eiuEntry->getPid()));
-			$iconType = IconType::ICON_FILE_O;
+			$iconType = SiIconType::ICON_FILE_O;
 		} else if (!$eiuEntry->isDraftNew()) {
 			$pathExt = new Path(array('draft', $eiuEntry->getDraftId()));
-			$iconType = IconType::ICON_FILE_O;
+			$iconType = SiIconType::ICON_FILE_O;
 		} else {
 			return array();
 		}
@@ -92,26 +92,26 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 		$dtc = $eiu->dtc(Rocket::NS);
 		$eiuControlFactory = $eiu->frame()->controlFactory($this);
 		
-		$controlButton = new ControlButton(
+		$siButton = new SiButton(
 				$dtc->t('ei_impl_detail_label'),
 				$dtc->t('ei_impl_detail_tooltip', array('entry' => $eiuFrame->getGenericLabel())),
 				false, null, $iconType);
 		
 		$controls = array(
-				self::CONTROL_DETAIL_KEY => $eiuControlFactory->createJhtml($controlButton, $pathExt->toUrl()));
+				self::CONTROL_DETAIL_KEY => $eiuControlFactory->createJhtml($siButton, $pathExt->toUrl()));
 		
 		if (!$eiuEntry->isPreviewSupported()) {
 			return $controls;
 		}
 		
-		$controlButton = new ControlButton(
+		$siButton = new SiButton(
 				$dtc->t('ei_impl_detail_preview_label'),
 				$dtc->t('ei_impl_detail_preview_tooltip', array('entry' => $eiuFrame->getGenericLabel())),
-				false, null, IconType::ICON_EYE);
+				false, null, SiIconType::ICON_EYE);
 		
 		$previewType = $eiuEntry->getDefaultPreviewType();
 		if ($previewType === null) {
-			$controls[self::CONTROL_PREVIEW_KEY] = $eiuControlFactory->createDeactivated($controlButton);
+			$controls[self::CONTROL_PREVIEW_KEY] = $eiuControlFactory->createDeactivated($siButton);
 			return $controls;
 		}
 		
@@ -122,7 +122,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 		}
 		
 		
-		$controls[self::CONTROL_PREVIEW_KEY] = $eiuControlFactory->createJhtml($controlButton, $pathExt->toUrl());
+		$controls[self::CONTROL_PREVIEW_KEY] = $eiuControlFactory->createJhtml($siButton, $pathExt->toUrl());
 		
 		return $controls;
 	}

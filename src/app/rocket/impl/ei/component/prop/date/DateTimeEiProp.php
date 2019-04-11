@@ -30,7 +30,7 @@ use n2n\persistence\orm\property\EntityProperty;
 use rocket\ei\component\prop\SortableEiProp;
 use n2n\core\container\N2nContext;
 use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
-use rocket\ei\manage\control\IconType;
+use rocket\si\control\SiIconType;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
 use n2n\util\type\ArgUtils;
 use n2n\reflection\property\AccessProxy;
@@ -96,7 +96,7 @@ class DateTimeEiProp extends DraftablePropertyEiPropAdapter implements SortableE
 	}
 	
 	public function createInSiField(Eiu $eiu): SiField {
-		$iconElem = new HtmlElement('i', array('class' => IconType::ICON_CALENDAR), '');
+		$iconElem = new HtmlElement('i', array('class' => SiIconType::ICON_CALENDAR), '');
 		
 		return new DateTimePickerMag($this->getLabelLstr(), $iconElem, $this->getDateStyle(), $this->getTimeStyle(), null, null, 
 				$this->isMandatory($eiu), array('placeholder' => $this->getLabelLstr(),

@@ -19,7 +19,27 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\control;
+namespace rocket\si\control;
 
-class UnavailableControlException extends \RuntimeException {
+use n2n\util\uri\Url;
+
+class RefSiControl implements  SiControl {
+	private $url;
+	private $button;
+	
+	function __construct(Url $url, SiButton $button) {
+		$this->url = $url;
+		$this->button = $button;
+	}
+	
+	function getType(): string {
+		return 'ref';
+	}
+	
+	function getData(): array {
+		return [
+			'url' => (string) $this->url,
+			'button' => $this->button
+		];
+	}
 }

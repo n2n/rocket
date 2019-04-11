@@ -29,13 +29,13 @@ use rocket\ei\EiEngine;
 use rocket\ei\manage\preview\controller\PreviewController;
 use n2n\config\InvalidConfigurationException;
 use rocket\ei\manage\preview\model\UnavailablePreviewException;
-use rocket\ei\manage\control\UnavailableControlException;
+use rocket\ei\manage\control\UnknownEiControlException;
 use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\EiPropCollection;
 use rocket\ei\component\command\EiCommandCollection;
 use rocket\ei\component\modificator\EiModificatorCollection;
 use n2n\util\ex\IllegalStateException;
-use rocket\ei\manage\control\IconType;
+use rocket\si\control\SiIconType;
 use rocket\ei\EiTypeExtension;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\spec\TypePath;
@@ -249,7 +249,7 @@ class EiMask {
 			return $iconType;
 		}
 		
-		return IconType::ICON_FILE_TEXT;
+		return SiIconType::ICON_FILE_TEXT;
 	}
 	
 	/**
@@ -598,7 +598,7 @@ class EiMask {
 	 * @param PreviewModel $previewModel
 	 * @throws UnavailablePreviewException
 	 * @throws InvalidConfigurationException
-	 * @throws UnavailableControlException
+	 * @throws UnknownEiControlException
 	 * @return PreviewController
 	 */
 	public function lookupPreviewController(N2nContext $n2nContext, PreviewModel $previewModel = null): PreviewController {
@@ -623,7 +623,7 @@ class EiMask {
 		
 		if (!array_key_exists($previewModel->getPreviewType(), 
 				$previewController->getPreviewTypeOptions($previewModel->getEiu()))) {
-			throw new UnavailableControlException('Unknown preview type \'' . $previewModel->getPreviewType() 
+			throw new UnknownEiControlException('Unknown preview type \'' . $previewModel->getPreviewType() 
 					. '\' for PreviewController: ' . get_class($previewController));
 		}
 		

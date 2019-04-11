@@ -12,20 +12,20 @@ import { SiZoneFactory } from "src/app/si/build/si-zone-factory";
   providedIn: 'root'
 })
 export class SiService {
-
-  constructor(private httpClient: HttpClient) { 
-  }
-  
-  lookupSiZone(url: string): Observable<SiZone> {
-      return this.httpClient.get<any>(url)
-            .pipe(map((data: any) => {
-                return this.createSiZone(data);
-            }));
-  }
-  
-  private createSiZone(data: any): SiZone {
-      return SiZoneFactory.create(data);
-  }
+	
+	constructor(private httpClient: HttpClient) { 
+	}
+	  
+	lookupSiZone(url: string): Observable<SiZone> {
+		return this.httpClient.get<any>(url)
+	            .pipe(map((data: any) => {
+	                return this.createSiZone(data);
+	            }));
+	}
+	  
+	private createSiZone(data: any): SiZone {
+		return SiZoneFactory.create(data);
+	}
 }
 
 

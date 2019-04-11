@@ -25,8 +25,8 @@ use n2n\l10n\DynamicTextCollection;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\impl\ei\component\prop\numeric\OrderEiProp;
 use rocket\ei\component\command\control\EntryControlComponent;
-use rocket\ei\manage\control\ControlButton;
-use rocket\ei\manage\control\IconType;
+use rocket\si\control\SiButton;
+use rocket\si\control\SiIconType;
 use rocket\impl\ei\component\command\EiCommandAdapter;
 use rocket\ei\manage\control\HrefControl;
 use rocket\ei\util\Eiu;
@@ -84,16 +84,16 @@ class OrderEiCommand extends EiCommandAdapter implements EntryControlComponent {
 						$httpContext->getControllerContextPath($eiFrame->getControllerContext())
 								->ext($this->getWrapper()->getEiCommandPath(), 'before', $eiEntry->getPid())
 								->toUrl(array('refPath' => (string) $eiFrame->getCurrentUrl($httpContext))), 
-						new ControlButton($dtc->translate('ei_impl_order_insert_before_label'), 
+						new SiButton($dtc->translate('ei_impl_order_insert_before_label'), 
 								$dtc->translate('ei_impl_order_insert_before_tooltip'),
-								true, ControlButton::TYPE_INFO, IconType::ICON_CARET_UP, array('class' => 'rocket-impl-insert-before'), false, false)),
+								true, SiButton::TYPE_INFO, SiIconType::ICON_CARET_UP, array('class' => 'rocket-impl-insert-before'), false, false)),
 				self::CONTROL_INSERT_AFTER_KEY => new HrefControl(
 						$httpContext->getControllerContextPath($eiFrame->getControllerContext())
 								->ext($this->getWrapper()->getEiCommandPath(), 'after', $eiEntry->getPid())
 								->toUrl(array('refPath' => (string) $eiFrame->getCurrentUrl($httpContext))),
-						new ControlButton($dtc->translate('ei_impl_order_insert_after_label'), 
+						new SiButton($dtc->translate('ei_impl_order_insert_after_label'), 
 								$dtc->translate('ei_impl_order_insert_after_tooltip'),
-								true, ControlButton::TYPE_INFO, IconType::ICON_CARET_DOWN, array('class' => 'rocket-impl-insert-after'), false, false)));
+								true, SiButton::TYPE_INFO, SiIconType::ICON_CARET_DOWN, array('class' => 'rocket-impl-insert-after'), false, false)));
 	}
 
 	/**

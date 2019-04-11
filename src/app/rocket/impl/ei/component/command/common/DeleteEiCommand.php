@@ -29,8 +29,8 @@ use n2n\l10n\N2nLocale;
 use rocket\ei\component\command\control\PartialControlComponent;
 use rocket\ei\component\command\control\EntryControlComponent;
 use rocket\impl\ei\component\command\common\controller\DeleteController;
-use rocket\ei\manage\control\ControlButton;
-use rocket\ei\manage\control\IconType;
+use rocket\si\control\SiButton;
+use rocket\si\control\SiIconType;
 use rocket\impl\ei\component\command\IndependentEiCommandAdapter;
 use rocket\ei\component\command\PrivilegedEiCommand;
 use n2n\core\container\N2nContext;
@@ -76,7 +76,7 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialCont
 					array('last_mod' => $view->getL10nDateTime($draft->getLastMod())));
 			$confirmMessage = $view->getL10nText('ei_impl_delete_draft_confirm_message', 
 					array('last_mod' => $view->getL10nDateTime($draft->getLastMod())));
-			$iconType = IconType::ICON_TIMES_CIRCLE;
+			$iconType = SiIconType::ICON_TIMES_CIRCLE;
 		} else {
 			$pathExt = new Path(array('live', $eiuEntry->getPid()));
 			$identityString = $eiuEntry->createIdentityString();
@@ -84,21 +84,21 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialCont
 			$tooltip = $view->getL10nText('ei_impl_delete_entry_tooltip', 
 					array('entry' => $eiuFrame->getGenericLabel()));
 			$confirmMessage = $view->getL10nText('ei_impl_delete_entry_confirm', array('entry' => $identityString));
-			$iconType = IconType::ICON_TRASH_O;
+			$iconType = SiIconType::ICON_TRASH_O;
 		}
 		
-		$controlButton = new ControlButton($name, $tooltip, false, ControlButton::TYPE_DANGER, $iconType);
-		$controlButton->setConfirmMessage($confirmMessage);
-		$controlButton->setConfirmOkButtonLabel($view->getL10nText('common_yes_label'));
-		$controlButton->setConfirmCancelButtonLabel($view->getL10nText('common_no_label'));
-		$controlButton->setAttrs(array('class' => 'rocket-impl-remove'));
+		$siButton = new SiButton($name, $tooltip, false, SiButton::TYPE_DANGER, $iconType);
+		$siButton->setConfirmMessage($confirmMessage);
+		$siButton->setConfirmOkButtonLabel($view->getL10nText('common_yes_label'));
+		$siButton->setConfirmCancelButtonLabel($view->getL10nText('common_no_label'));
+		$siButton->setAttrs(array('class' => 'rocket-impl-remove'));
 		
 		$query = array();
 		if ($eiu->gui()->isCompact()) {
 			$query['refPath'] = (string) $eiuFrame->getEiFrame()->getCurrentUrl($view->getHttpContext());
 		}
 		
-		$hrefControl = $eiu->frame()->controlFactory($this)->createJhtml($controlButton, $pathExt->toUrl($query))
+		$hrefControl = $eiu->frame()->controlFactory($this)->createJhtml($siButton, $pathExt->toUrl($query))
 		      ->setPushToHistory(false)->setForceReload(true);
 		
 		return array(self::CONTROL_BUTTON_KEY => $hrefControl);
@@ -112,9 +112,9 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialCont
 	
 	public function createPartialControlButtons(EiFrame $eiFrame, HtmlView $htmlView) {
 		$dtc = new DynamicTextCollection('rocket', $htmlView->getN2nContext()->getN2nLocale());
-		$eiCommandButton = new ControlButton(null, $dtc->translate('ei_impl_partial_delete_label'), 
-				$dtc->translate('ei_impl_partial_delete_tooltip'), false, ControlButton::TYPE_SECONDARY,
-				IconType::ICON_TIMES_SIGN);
+		$eiCommandButton = new SiButton(null, $dtc->translate('ei_impl_partial_delete_label'), 
+				$dtc->translate('ei_impl_partial_delete_tooltip'), false, SiButton::TYPE_SECONDARY,
+				SiIconType::ICON_TIMES_SIGN);
 		$eiCommandButton->setConfirmMessage($dtc->translate('ei_impl_partial_delete_confirm_message'));
 		$eiCommandButton->setConfirmOkButtonLabel($dtc->translate('common_yes_label'));
 		$eiCommandButton->setConfirmCancelButtonLabel($dtc->translate('common_no_label'));

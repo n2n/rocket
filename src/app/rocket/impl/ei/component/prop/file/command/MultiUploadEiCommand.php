@@ -25,8 +25,8 @@ use rocket\impl\ei\component\command\EiCommandAdapter;
 use n2n\l10n\N2nLocale;
 use n2n\l10n\DynamicTextCollection;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\ei\manage\control\ControlButton;
-use rocket\ei\manage\control\IconType;
+use rocket\si\control\SiButton;
+use rocket\si\control\SiIconType;
 use rocket\impl\ei\component\prop\file\command\controller\MultiUploadEiController;
 use rocket\ei\component\command\control\OverallControlComponent;
 use rocket\ei\util\Eiu;
@@ -69,6 +69,6 @@ class MultiUploadEiCommand extends EiCommandAdapter implements OverallControlCom
 		$tooltip = $dtc->translate('ei_impl_multi_upload_tooltip');
 		
 		return array(self::MULTI_UPLOAD_KEY => HrefControl::create($eiu->frame()->getEiFrame(), $this, null,
-				new ControlButton($name, $tooltip, true, ControlButton::TYPE_SECONDARY, IconType::ICON_UPLOAD)));
+				new SiButton($name, $tooltip, true, SiButton::TYPE_SECONDARY, SiIconType::ICON_UPLOAD)));
 	}
 }

@@ -21,29 +21,7 @@
  */
 namespace rocket\ei\manage\control;
 
-use n2n\web\ui\UiComponent;
-use n2n\impl\web\ui\view\html\HtmlUtils;
+use rocket\ei\EiException;
 
-class DeactivatedControl implements Control {
-	private $controlButton;
-	
-	public function __construct(ControlButton $controlButton) {
-		$this->controlButton = $controlButton;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\control\Control::isStatic()
-	 */
-	public function isStatic(): bool {
-		return $this->controlButton->isStatic();
-	}
-	
-	public function getControlButton(): ControlButton {
-		return $this->controlButton;
-	}
-	
-	public function createUiComponent(array $attrs = array()): UiComponent {
-		return $this->controlButton->toButton(HtmlUtils::mergeAttrs(array('disabled'), $attrs), false);
-	}
+class UnknownEiControlException extends EiException {
 }

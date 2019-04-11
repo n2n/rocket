@@ -73,6 +73,7 @@ use rocket\ei\manage\entry\EiEntryConstraint;
 use rocket\ei\EiPropPath;
 use rocket\ei\util\entry\EiuFieldMap;
 use rocket\ei\util\entry\EiuObject;
+use rocket\ei\util\control\EiuControlFactory;
 
 class EiuFrame {
 	private $eiFrame;
@@ -582,7 +583,7 @@ class EiuFrame {
 	
 	/**
 	 * @param EiCommand $eiCommand
-	 * @return \rocket\ei\util\frame\EiuControlFactory
+	 * @return \rocket\ei\util\control\EiuControlFactory
 	 */
 	public function controlFactory(EiCommand $eiCommand) {
 		return new EiuControlFactory($this, $eiCommand);

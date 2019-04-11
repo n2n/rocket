@@ -25,6 +25,9 @@ use rocket\ei\component\command\EiCommand;
 use rocket\impl\ei\component\EiComponentAdapter;
 use rocket\ei\component\command\EiCommandWrapper;
 use n2n\util\ex\IllegalStateException;
+use rocket\ei\util\Eiu;
+use n2n\web\http\controller\Controller;
+use n2n\util\ex\UnsupportedOperationException;
 
 abstract class EiCommandAdapter extends EiComponentAdapter implements EiCommand {
 	private $wrapper;
@@ -47,6 +50,14 @@ abstract class EiCommandAdapter extends EiComponentAdapter implements EiCommand 
 	
 	/**
 	 * {@inheritDoc}
+	 * @see \rocket\ei\component\command\EiCommand::lookupController()
+	 */
+	public function lookupController(Eiu $eiu): Controller {
+		throw new UnsupportedOperationException();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @see \rocket\ei\component\EiComponent::__toString()
 	 */
 	public function __toString(): string {
@@ -60,5 +71,29 @@ abstract class EiCommandAdapter extends EiComponentAdapter implements EiCommand 
 	 */
 	public function equals($obj) {
 		return $obj instanceof EiCommand && parent::equals($obj);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\command\EiCommand::createSelectionControls()
+	 */
+	public function createSelectionControls(Eiu $eiu): array {
+		return [];
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\command\EiCommand::createEntryControls()
+	 */
+	public function createEntryControls(Eiu $eiu): array {
+		return [];
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\command\EiCommand::createOverallControls()
+	 */
+	public function createGeneralControls(Eiu $eiu): array {
+		return [];
 	}
 }

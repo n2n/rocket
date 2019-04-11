@@ -19,40 +19,20 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\component\command;
+namespace rocket\si\control;
 
-use rocket\ei\component\EiComponent;
-use rocket\ei\util\Eiu;
-use n2n\util\ex\IllegalStateException;
-use n2n\web\http\controller\Controller;
-use n2n\util\ex\UnsupportedOperationException;
-use rocket\ei\manage\control\ControlCommand;
+class ApiCallSiControl implements SiControl {
+	private $id;
+	
+	public function __construct(string $id) {
+		$this->id = $id;
+	}
+	
+	public function getType(): string {
+		return 'api-call';
+	}
 
-interface EiCommand extends EiComponent, ControlCommand {
-	
-	/**
-	 * Will be the first called method by rocket
-	 * @param EiCommandWrapper $wrapper
-	 */
-	public function setWrapper(EiCommandWrapper $wrapper);
-	
-	/**
-	 * @return EiCommandWrapper
-	 * @throws IllegalStateException if {@self::setWrapper()} hasn't been called yet.
-	 */
-	public function getWrapper(): EiCommandWrapper;
-	
-	/**
-	 * @param Eiu $eiu
-	 * @return Controller
-	 * @throws UnsupportedOperationException if this command does not provide a controller.
-	 */
-	public function lookupController(Eiu $eiu): Controller;
-	
-	/**
-	 * @param mixed $obj
-	 * @return boolean
-	 */
-	public function equals($obj);
-	
+	public function getData(): array {
+		return [ 'id' => $id ];
+	}
 }

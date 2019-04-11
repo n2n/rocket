@@ -19,17 +19,16 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\component\command\control;
+namespace rocket\ei\manage\control;
 
-use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\ei\util\Eiu;
+use rocket\ei\manage\frame\EiFrame;
+use rocket\si\control\SiResult;
 
-interface EntryControlComponent {
+interface GeneralEiControl extends EiControl {
 	
 	/**
-	 * @param Eiu $eiu
-	 * @param HtmlView $view
-	 * @return \rocket\ei\manage\control\Control[]
+	 * @param EiFrame $eiFrame
+	 * @return SiResult
 	 */
-	public function createEntryControls(Eiu $eiu, HtmlView $view): array;
+	function handle(EiFrame $eiFrame): SiResult;
 }

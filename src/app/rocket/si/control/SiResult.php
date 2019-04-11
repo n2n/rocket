@@ -19,15 +19,8 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\component\command;
+namespace rocket\si\control;
 
-use n2n\web\http\controller\Controller;
-use rocket\ei\util\Eiu;
-
-interface ControllerEiCommand extends EiCommand {
-	/**
-	 * @param Eiu $eiu
-	 * @return Controller
-	 */
-	public function lookupController(Eiu $eiu): Controller;
+interface SiResult {
+	
 }

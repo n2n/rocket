@@ -19,19 +19,11 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\component\command\control;
+namespace rocket\si\control;
 
-use n2n\impl\web\ui\view\html\HtmlView;
-use n2n\l10n\N2nLocale;
-use rocket\ei\util\Eiu;
-
-interface OverallControlComponent {
-	public function getOverallControlOptions(N2nLocale $n2nLocale);
+interface SiControl {
 	
-	/**
-	 * @param Eiu $eiu
-	 * @param HtmlView $view
-	 * @return \rocket\ei\manage\control\ControlButton[]
-	 */
-	public function createOverallControls(Eiu $eiu, HtmlView $view): array;
+	function getType(): string;
+	
+	function getData(): array;
 }

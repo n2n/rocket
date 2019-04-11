@@ -25,8 +25,8 @@ use n2n\l10n\DynamicTextCollection;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\N2nLocale;
 use rocket\ei\component\command\control\OverallControlComponent;
-use rocket\ei\manage\control\ControlButton;
-use rocket\ei\manage\control\IconType;
+use rocket\si\control\SiButton;
+use rocket\si\control\SiIconType;
 use rocket\impl\ei\component\command\IndependentEiCommandAdapter;
 use rocket\ei\component\command\PrivilegedEiCommand;
 use n2n\core\container\N2nContext;
@@ -128,14 +128,14 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 		$controls = array();
 		
 		$key = $nestedSet ? self::CONTROL_ADD_ROOT_BRANCH_KEY : self::CONTROL_ADD_KEY;
-		$controls[$key] = $eiuControlFactory->createJhtml(new ControlButton(
+		$controls[$key] = $eiuControlFactory->createJhtml(new SiButton(
 				$dtc->t($nestedSet ? 'ei_impl_add_root_branch_label' : 'common_new_entry_label'),
-				null, true, ControlButton::TYPE_SUCCESS, IconType::ICON_PLUS_CIRCLE));
+				null, true, SiButton::TYPE_SUCCESS, SiIconType::ICON_PLUS_CIRCLE));
 		
 		if ($eiu->frame()->isDraftingEnabled()) {
-			$controls[self::CONTROL_ADD_DRAFT_KEY] = $eiuControlFactory->createJhtml(new ControlButton(
+			$controls[self::CONTROL_ADD_DRAFT_KEY] = $eiuControlFactory->createJhtml(new SiButton(
 					$dtc->translate('ei_impl_add_draft_label'),
-					null, true, ControlButton::TYPE_SUCCESS, IconType::ICON_PLUS_CIRCLE));
+					null, true, SiButton::TYPE_SUCCESS, SiIconType::ICON_PLUS_CIRCLE));
 		}
 		
 		return $controls;
@@ -161,32 +161,32 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 			
 			$name = $dtc->t('ei_impl_duplicate_label');
 			$tooltip = $dtc->t('ei_impl_duplicate_tooltip', array('entry' => $eiuEntry->createIdentityString()));
-			$controlButton = new ControlButton($name, $tooltip, false, ControlButton::TYPE_SUCCESS, IconType::ICON_COPY);
+			$siButton = new SiButton($name, $tooltip, false, SiButton::TYPE_SUCCESS, SiIconType::ICON_COPY);
 			
 			return array(self::CONTROL_DUPLICATE_KEY => $eiuControlFactory
-					->createJhtml($controlButton, [$eiuEntry->getPid()]));
+					->createJhtml($siButton, [$eiuEntry->getPid()]));
 		}
 
 
-		$groupControl = $eiuControlFactory->createGroup(new ControlButton($dtc->t('ei_impl_insert_branch_label'),
-						$dtc->t('ei_impl_add_branch_tooltip'), false, ControlButton::TYPE_SECONDARY, 
-						IconType::ICON_PLUS));
+		$groupControl = $eiuControlFactory->createGroup(new SiButton($dtc->t('ei_impl_insert_branch_label'),
+						$dtc->t('ei_impl_add_branch_tooltip'), false, SiButton::TYPE_SECONDARY, 
+						SiIconType::ICON_PLUS));
 		
 		$groupControl->add(
 				 $eiuControlFactory->createJhtml(
-						new ControlButton($dtc->t('ei_impl_add_before_branch_label'),
+						new SiButton($dtc->t('ei_impl_add_before_branch_label'),
 								$dtc->t('ei_impl_add_before_branch_tooltip'),
-								true, ControlButton::TYPE_SUCCESS, IconType::ICON_ANGLE_UP),
+								true, SiButton::TYPE_SUCCESS, SiIconType::ICON_ANGLE_UP),
 						['before', $eiuEntry->getPid()]),
 				$eiuControlFactory->createJhtml(
-						new ControlButton($dtc->t('ei_impl_add_after_branch_label'),
+						new SiButton($dtc->t('ei_impl_add_after_branch_label'),
 								$dtc->t('ei_impl_add_after_branch_tooltip'),
-								true, ControlButton::TYPE_SUCCESS, IconType::ICON_ANGLE_DOWN),
+								true, SiButton::TYPE_SUCCESS, SiIconType::ICON_ANGLE_DOWN),
 						['after', $eiuEntry->getPid()]),
 				$eiuControlFactory->createJhtml(
-						new ControlButton($dtc->translate('ei_impl_add_child_branch_label'),
+						new SiButton($dtc->translate('ei_impl_add_child_branch_label'),
 								$dtc->translate('ei_impl_add_child_branch_tooltip'),
-								true, ControlButton::TYPE_SUCCESS, IconType::ICON_ANGLE_RIGHT),
+								true, SiButton::TYPE_SUCCESS, SiIconType::ICON_ANGLE_RIGHT),
 						['child', $eiuEntry->getPid()]));
 		
 		return array(self::CONTROL_INSERT_BRANCH_KEY => $groupControl);

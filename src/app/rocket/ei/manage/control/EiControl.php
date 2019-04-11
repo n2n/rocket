@@ -21,39 +21,17 @@
  */
 namespace rocket\ei\manage\control;
 
-use n2n\util\type\TypeUtils;
+use rocket\si\control\SiControl;
 
-class EntryNavPoint {
-	private $liveId;
-	private $draftId;
-	private $previewType;
+interface EiControl {
 	
-	public function __construct(string $liveId = null, string $draftId = null, $previewType = null) {
-		$this->liveId = $liveId;
-		$this->draftId = $draftId;
-		$this->previewType = $previewType;
-	}
+	/**
+	 * @return string
+	 */
+	function getId(): string;
 	
-	public function getId() {
-		return $this->liveId;
-	}
-	
-	public function getDraftId() {
-		return $this->draftId;
-	}
-	
-	public function getPreviewType() {
-		return $this->previewType;
-	}
-	
-	public function copy($removeDraftId = false, $removeTranslationN2nLocale = false, $removePreviewType = false) {
-		return new EntryNavPoint($this->liveId, 
-				($removeDraftId ? null : $this->draftId), 
-				($removeTranslationN2nLocale ? null : $this->translationN2nLocale),
-				($removePreviewType ? null : $this->previewType));
-	}
-	
-	public function __toString() {
-		return 'EntryNavPoint (entry id: ' .  TypeUtils::prettyValue($this->liveId) . ', draft id: ' . $this->draftId . ')'; 
-	}
+	/**
+	 * @return SiControl
+	 */
+	function toSiControl(): SiControl;
 }

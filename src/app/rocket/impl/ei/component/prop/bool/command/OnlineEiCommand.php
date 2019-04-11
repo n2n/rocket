@@ -26,8 +26,8 @@ use n2n\l10n\DynamicTextCollection;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\component\command\control\EntryControlComponent;
 use n2n\l10n\N2nLocale;
-use rocket\ei\manage\control\IconType;
-use rocket\ei\manage\control\ControlButton;
+use rocket\si\control\SiIconType;
+use rocket\si\control\SiButton;
 use rocket\impl\ei\component\command\EiCommandAdapter;
 use rocket\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
@@ -70,22 +70,22 @@ class OnlineEiCommand extends EiCommandAdapter implements EntryControlComponent 
 		$eiuFrame = $eiu->frame();
 		$dtc = new DynamicTextCollection('rocket', $eiuFrame->getN2nLocale());
 		
-		$controlButton = new ControlButton($dtc->t('ei_impl_online_offline_label'),
+		$siButton = new SiButton($dtc->t('ei_impl_online_offline_label'),
 				$dtc->t('ei_impl_online_offline_tooltip', array('entry' => $eiuFrame->getGenericLabel())));
-		$controlButton->setIconImportant(true);
+		$siButton->setIconImportant(true);
 		
 		$urlExt = null;
 		if ($eiuEntry->getValue($this->onlineEiProp)) {
-			$controlButton->setType(ControlButton::TYPE_SUCCESS);
-			$controlButton->setIconType(IconType::ICON_CHECK_CIRCLE);
+			$siButton->setType(SiButton::TYPE_SUCCESS);
+			$siButton->setIconType(SiIconType::ICON_CHECK_CIRCLE);
 			$urlExt = (new Path(array('offline', $eiuEntry->getPid())))->toUrl();
 		} else {
-			$controlButton->setType(ControlButton::TYPE_DANGER);
-			$controlButton->setIconType(IconType::ICON_MINUS_CIRCLE);
+			$siButton->setType(SiButton::TYPE_DANGER);
+			$siButton->setIconType(SiIconType::ICON_MINUS_CIRCLE);
 			$urlExt = (new Path(array('online', $eiuEntry->getPid())))->toUrl();
 		}
 		
-		return $eiuControlFactory->createJhtml($controlButton, $urlExt)
+		return $eiuControlFactory->createJhtml($siButton, $urlExt)
 				->setForceReload(true)->setPushToHistory(false);
 	}
 	

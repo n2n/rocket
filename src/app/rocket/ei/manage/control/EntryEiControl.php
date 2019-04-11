@@ -19,40 +19,18 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\component\command;
+namespace rocket\ei\manage\control;
 
-use rocket\ei\component\EiComponent;
-use rocket\ei\util\Eiu;
-use n2n\util\ex\IllegalStateException;
-use n2n\web\http\controller\Controller;
-use n2n\util\ex\UnsupportedOperationException;
-use rocket\ei\manage\control\ControlCommand;
+use rocket\ei\manage\frame\EiFrame;
+use rocket\ei\manage\entry\EiEntry;
+use rocket\si\control\SiResult;
 
-interface EiCommand extends EiComponent, ControlCommand {
+interface EntryEiControl extends EiControl {
 	
 	/**
-	 * Will be the first called method by rocket
-	 * @param EiCommandWrapper $wrapper
+	 * @param EiFrame $eiFrame
+	 * @param EiEntry $eiEntry
+	 * @return SiResult
 	 */
-	public function setWrapper(EiCommandWrapper $wrapper);
-	
-	/**
-	 * @return EiCommandWrapper
-	 * @throws IllegalStateException if {@self::setWrapper()} hasn't been called yet.
-	 */
-	public function getWrapper(): EiCommandWrapper;
-	
-	/**
-	 * @param Eiu $eiu
-	 * @return Controller
-	 * @throws UnsupportedOperationException if this command does not provide a controller.
-	 */
-	public function lookupController(Eiu $eiu): Controller;
-	
-	/**
-	 * @param mixed $obj
-	 * @return boolean
-	 */
-	public function equals($obj);
-	
+	function handleEntry(EiFrame $eiFrame, EiEntry $eiEntry): SiResult;
 }

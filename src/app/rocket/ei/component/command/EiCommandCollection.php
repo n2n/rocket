@@ -22,7 +22,6 @@
 namespace rocket\ei\component\command;
 
 use rocket\ei\component\EiComponentCollection;
-use rocket\ei\manage\control\EntryNavPoint;
 use rocket\ei\component\UnknownEiComponentException;
 use n2n\util\uri\Path;
 use n2n\util\type\ArgUtils;

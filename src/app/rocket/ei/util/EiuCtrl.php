@@ -344,7 +344,8 @@ class EiuCtrl implements Lookupable {
 		
 		$this->composeEiuGuiForList($eiuGui, $pageSize);
 		
-		$siCompactDeclaration = new SiCompactDeclaration($eiuGui->getEiGui()->getEiGuiSiFactory()->getSiFieldDeclarations(),
+		$siCompactDeclaration = new SiCompactDeclaration(
+				$eiuGui->getEiGui()->getEiGuiSiFactory()->getSiFieldDeclarations(),
 				$this->eiuFrame->countEntries(), $eiuGui->getEiGui()->createSiEntries());
 		
 		$zone = new ListSiZone($this->eiu->frame()->getApiUrl(), 

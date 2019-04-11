@@ -19,13 +19,13 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\control;
+namespace rocket\si\control;
 /**
  * 
  * @see http://fortawesome.github.io/Font-Awesome/cheatsheet/
  * @see http://fortawesome.github.io/Font-Awesome/cheatsheet/
  */
-class IconType {
+class SiIconType {
 	const ICON_GLASS = 'fa fa-glass';
 	const ICON_MUSIC = 'fa fa-music';
 	const ICON_SEARCH = 'fa fa-search';

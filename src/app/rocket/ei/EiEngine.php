@@ -49,6 +49,7 @@ use n2n\web\http\controller\ControllerContext;
 use rocket\ei\manage\gui\EiEntryGui;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\gui\EiGui;
+use rocket\ei\manage\control\ControlDefinition;
 
 class EiEngine {
 	private $eiMask;
@@ -150,6 +151,18 @@ class EiEngine {
 	 */
 	public function createSortDefinition(N2nContext $n2nContext): SortDefinition {
 		return $this->getCritmodFactory()->createSortDefinition($n2nContext);
+	}
+	
+	public function getControlDefinition() {
+		if ($this->controlDefinition === null) {
+			$this->controlDefinition = new ControlDefinition($this->eiMask->getEiCommandCollection()->toArray());
+		}
+	
+		return $this->controlDefinition;
+	}
+	
+	public function createEntryControlDefinition() {
+		
 	}
 	
 	public function createFramedQuickSearchDefinition(EiFrame $eiFrame): QuickSearchDefinition {

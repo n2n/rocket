@@ -19,40 +19,25 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\component\command;
+namespace rocket\ei\manage\control;
 
-use rocket\ei\component\EiComponent;
-use rocket\ei\util\Eiu;
-use n2n\util\ex\IllegalStateException;
-use n2n\web\http\controller\Controller;
-use n2n\util\ex\UnsupportedOperationException;
-use rocket\ei\manage\control\ControlCommand;
+use rocket\ei\IdPath;
 
-interface EiCommand extends EiComponent, ControlCommand {
+class EiControlPath extends IdPath {
 	
-	/**
-	 * Will be the first called method by rocket
-	 * @param EiCommandWrapper $wrapper
-	 */
-	public function setWrapper(EiCommandWrapper $wrapper);
+	public function ext(...$args): EiControlPath {
+		return new EiControlPath(array_merge($this->ids, $this->argsToIds($args)));
+	}
 	
-	/**
-	 * @return EiCommandWrapper
-	 * @throws IllegalStateException if {@self::setWrapper()} hasn't been called yet.
-	 */
-	public function getWrapper(): EiCommandWrapper;
-	
-	/**
-	 * @param Eiu $eiu
-	 * @return Controller
-	 * @throws UnsupportedOperationException if this command does not provide a controller.
-	 */
-	public function lookupController(Eiu $eiu): Controller;
-	
-	/**
-	 * @param mixed $obj
-	 * @return boolean
-	 */
-	public function equals($obj);
-	
+	public static function create($expression): EiControlPath {
+		if ($expression instanceof EiControlPath) {
+			return $expression;
+		}
+		
+		if (is_array($expression)) {
+			return new EiControlPath($expression);
+		}
+		
+		return new EiControlPath(explode(self::ID_SEPARATOR, $expression));
+	}
 }

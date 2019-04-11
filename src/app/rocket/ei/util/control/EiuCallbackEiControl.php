@@ -19,16 +19,28 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\component\command\control;
+namespace rocket\ei\util\control;
 
-use n2n\impl\web\ui\view\html\HtmlView;
+use rocket\ei\component\command\EiControl;
+use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\manage\frame\EiFrame;
-use n2n\l10n\N2nLocale;
+use rocket\si\control\SiControl;
+use rocket\si\control\SiResult;
 
-interface PartialControlComponent {
-	public function getPartialControlOptions(N2nLocale $n2nLocale);
+class EiuCallbackEiControl implements EiControl {
 	
-	public function createPartialControlButtons(EiFrame $eiFrame, HtmlView $htmlView);
+	public function toSiControl(string $controlId): SiControl {
+		return new ApiCallSiControl($controlId);
+	}
+
+	public function handle(EiFrame $eiFrame): SiResult {
+	}
+
+	public function handleEntry(EiFrame $eiFrame, EiEntry $eiEntry): SiResult {
+	}
 	
-	public function processEntries(EiFrame $eiFrame, array $entries);
+	public function handleEntries(EiFrame $eiFrame, array $eiEntries): SiResult {
+	}
+
+	
 }
