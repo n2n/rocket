@@ -28,7 +28,7 @@ use rocket\si\control\SiResult;
 use n2n\util\ex\NotYetImplementedException;
 use n2n\util\uri\Url;
 use rocket\si\control\SiButton;
-use rocket\si\control\RefSiControl;
+use rocket\si\control\impl\RefSiControl;
 use rocket\ei\manage\gui\control\EntryGuiControl;
 use rocket\ei\manage\gui\control\GeneralGuiControl;
 use rocket\ei\manage\gui\control\SelectionGuiControl;
@@ -66,7 +66,7 @@ class EiuRefGuiControl implements GeneralGuiControl, EntryGuiControl, SelectionG
 		return $this;
 	}
 	
-	public function toSiControl(): SiControl {
+	public function toSiControl(string $controlId): SiControl {
 		return new RefSiControl($this->url, $this->siButton);
 	}
 	

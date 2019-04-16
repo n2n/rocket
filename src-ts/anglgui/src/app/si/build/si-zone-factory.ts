@@ -68,7 +68,7 @@ export class SiZoneFactory {
 			const siEntry = new SiEntry(<string> extr.reqString('category'), extr.nullaString('id'), 
 						<string> extr.reqString('name'));
 			siEntry.treeLevel = extr.nullaNumber('treeLevel');
-			siEntry.fieldMap = SiZoneFactory.createFieldMap(extr.reqMap('siFields'));
+			siEntry.fieldMap = SiZoneFactory.createFieldMap(extr.reqMap('fields'));
 			
 			entries.push(siEntry);
 		}

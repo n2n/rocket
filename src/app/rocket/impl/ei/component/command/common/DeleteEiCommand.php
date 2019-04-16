@@ -56,50 +56,50 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 		return $eiu->lookup(DeleteController::class);
 	}
 	
-	public function createEntryGuiControls(Eiu $eiu): array {
-		$eiuEntry = $eiu->entry();
-		$eiuFrame = $eiu->frame();
+// 	public function createEntryGuiControls(Eiu $eiu): array {
+// 		$eiuEntry = $eiu->entry();
+// 		$eiuFrame = $eiu->frame();
 		
-		$pathExt = null;
-		$name = null;
-		$tooltip = null;
-		$confirmMessage = null;
-		$iconType = null;
-		if ($eiuEntry->isDraft()) {
-			$draft = $eiuEntry->getDraft();
-			$pathExt = new Path(array('draft', $draft->getId()));
-			$name = $view->getL10nText('ei_impl_delete_draft_label');
-			$tooltip = $view->getL10nText('ei_impl_delete_draft_tooltip', 
-					array('last_mod' => $view->getL10nDateTime($draft->getLastMod())));
-			$confirmMessage = $view->getL10nText('ei_impl_delete_draft_confirm_message', 
-					array('last_mod' => $view->getL10nDateTime($draft->getLastMod())));
-			$iconType = SiIconType::ICON_TIMES_CIRCLE;
-		} else {
-			$pathExt = new Path(array('live', $eiuEntry->getPid()));
-			$identityString = $eiuEntry->createIdentityString();
-			$name = $view->getL10nText('common_delete_label');
-			$tooltip = $view->getL10nText('ei_impl_delete_entry_tooltip', 
-					array('entry' => $eiuFrame->getGenericLabel()));
-			$confirmMessage = $view->getL10nText('ei_impl_delete_entry_confirm', array('entry' => $identityString));
-			$iconType = SiIconType::ICON_TRASH_O;
-		}
+// 		$pathExt = null;
+// 		$name = null;
+// 		$tooltip = null;
+// 		$confirmMessage = null;
+// 		$iconType = null;
+// 		if ($eiuEntry->isDraft()) {
+// 			$draft = $eiuEntry->getDraft();
+// 			$pathExt = new Path(array('draft', $draft->getId()));
+// 			$name = $view->getL10nText('ei_impl_delete_draft_label');
+// 			$tooltip = $view->getL10nText('ei_impl_delete_draft_tooltip', 
+// 					array('last_mod' => $view->getL10nDateTime($draft->getLastMod())));
+// 			$confirmMessage = $view->getL10nText('ei_impl_delete_draft_confirm_message', 
+// 					array('last_mod' => $view->getL10nDateTime($draft->getLastMod())));
+// 			$iconType = SiIconType::ICON_TIMES_CIRCLE;
+// 		} else {
+// 			$pathExt = new Path(array('live', $eiuEntry->getPid()));
+// 			$identityString = $eiuEntry->createIdentityString();
+// 			$name = $view->getL10nText('common_delete_label');
+// 			$tooltip = $view->getL10nText('ei_impl_delete_entry_tooltip', 
+// 					array('entry' => $eiuFrame->getGenericLabel()));
+// 			$confirmMessage = $view->getL10nText('ei_impl_delete_entry_confirm', array('entry' => $identityString));
+// 			$iconType = SiIconType::ICON_TRASH_O;
+// 		}
 		
-		$siButton = new SiButton($name, $tooltip, false, SiButton::TYPE_DANGER, $iconType);
-		$siButton->setConfirmMessage($confirmMessage);
-		$siButton->setConfirmOkButtonLabel($view->getL10nText('common_yes_label'));
-		$siButton->setConfirmCancelButtonLabel($view->getL10nText('common_no_label'));
-		$siButton->setAttrs(array('class' => 'rocket-impl-remove'));
+// 		$siButton = new SiButton($name, $tooltip, false, SiButton::TYPE_DANGER, $iconType);
+// 		$siButton->setConfirmMessage($confirmMessage);
+// 		$siButton->setConfirmOkButtonLabel($view->getL10nText('common_yes_label'));
+// 		$siButton->setConfirmCancelButtonLabel($view->getL10nText('common_no_label'));
+// 		$siButton->setAttrs(array('class' => 'rocket-impl-remove'));
 		
-		$query = array();
-		if ($eiu->gui()->isCompact()) {
-			$query['refPath'] = (string) $eiuFrame->getEiFrame()->getCurrentUrl($view->getHttpContext());
-		}
+// 		$query = array();
+// 		if ($eiu->gui()->isCompact()) {
+// 			$query['refPath'] = (string) $eiuFrame->getEiFrame()->getCurrentUrl($view->getHttpContext());
+// 		}
 		
-		$hrefControl = $eiu->frame()->controlFactory($this)->createJhtml($siButton, $pathExt->toUrl($query))
-		      ->setPushToHistory(false)->setForceReload(true);
+// 		$hrefControl = $eiu->frame()->controlFactory($this)->createJhtml($siButton, $pathExt->toUrl($query))
+// 		      ->setPushToHistory(false)->setForceReload(true);
 		
-		return array(self::CONTROL_BUTTON_KEY => $hrefControl);
-	}
+// 		return array(self::CONTROL_BUTTON_KEY => $hrefControl);
+// 	}
 	
 	public function getEntryGuiControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {
 		$dtc = new DynamicTextCollection('rocket');

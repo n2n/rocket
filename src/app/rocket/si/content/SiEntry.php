@@ -171,12 +171,21 @@ class SiEntry implements \JsonSerializable {
 			];
 		}
 		
+		$controlsArr = array();
+		foreach ($this->controls as $id => $control) {
+			$controlsArr[$id] = [
+				'type' => $control->getType(),
+				'data' => $control->getData()
+			];
+		}
+		
 		return [
 			'category' => $this->category,
 			'id' => $this->id,
 			'name' => $this->name,
 			'treeLevel' => $this->treeLevel,
-			'fields' => $fieldsArr
+			'fields' => $fieldsArr,
+			'controls' => $controlsArr
 		];
 	}
 

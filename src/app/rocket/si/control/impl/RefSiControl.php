@@ -19,11 +19,13 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\si\control;
+namespace rocket\si\control\impl;
 
 use n2n\util\uri\Url;
+use rocket\si\control\SiControl;
+use rocket\si\control\SiButton;
 
-class RefSiControl implements  SiControl {
+class RefSiControl implements SiControl {
 	private $url;
 	private $button;
 	

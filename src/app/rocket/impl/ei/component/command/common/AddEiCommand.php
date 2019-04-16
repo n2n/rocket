@@ -160,8 +160,8 @@ class AddEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiCo
 			$tooltip = $dtc->t('ei_impl_duplicate_tooltip', array('entry' => $eiuEntry->createIdentityString()));
 			$siButton = new SiButton($name, $tooltip, false, SiButton::TYPE_SUCCESS, SiIconType::ICON_COPY);
 			
-			return array(self::CONTROL_DUPLICATE_KEY => $eiuControlFactory
-					->createJhtml($siButton, [$eiuEntry->getPid()]));
+			return array($eiuControlFactory
+					->createCmdRef(self::CONTROL_DUPLICATE_KEY , $siButton, [$eiuEntry->getPid()]));
 		}
 
 

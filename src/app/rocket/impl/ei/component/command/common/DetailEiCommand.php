@@ -25,7 +25,6 @@ use n2n\l10n\DynamicTextCollection;
 use n2n\l10n\N2nLocale;
 use rocket\impl\ei\component\command\common\controller\DetailController;
 use rocket\si\control\SiButton;
-use rocket\impl\ei\component\command\common\controller\PathUtils;
 use rocket\si\control\SiIconType;
 use rocket\impl\ei\component\command\IndependentEiCommandAdapter;
 use rocket\ei\component\command\PrivilegedEiCommand;
@@ -92,8 +91,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 				$dtc->t('ei_impl_detail_tooltip', array('entry' => $eiuFrame->getGenericLabel())),
 				false, null, $iconType);
 		
-		$controls = array(
-				self::CONTROL_DETAIL_KEY => $eiuControlFactory->createJhtml($siButton, $pathExt->toUrl()));
+		$controls = array($eiuControlFactory->createCmdRef(self::CONTROL_DETAIL_KEY, $siButton, $pathExt->toUrl()));
 		
 		if (!$eiuEntry->isPreviewSupported()) {
 			return $controls;
@@ -106,7 +104,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 		
 		$previewType = $eiuEntry->getDefaultPreviewType();
 		if ($previewType === null) {
-			$controls[self::CONTROL_PREVIEW_KEY] = $eiuControlFactory->createDeactivated($siButton);
+			$controls[] = $eiuControlFactory->createDeactivated(self::CONTROL_PREVIEW_KEY, $siButton);
 			return $controls;
 		}
 		
@@ -117,37 +115,37 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 		}
 		
 		
-		$controls[self::CONTROL_PREVIEW_KEY] = $eiuControlFactory->createJhtml($siButton, $pathExt->toUrl());
+		$controls[] = $eiuControlFactory->createCmdRef(self::CONTROL_PREVIEW_KEY, $siButton, $pathExt->toUrl());
 		
 		return $controls;
 	}
 	
-	public function getDetailUrlExt(EntryNavPoint $entryNavPoint) {
-// 		if (!$this->getEiType()->getEiMask()->getisPreviewAvailable()) {
-// 			$entryNavPoint = $entryNavPoint->copy(false, false, true);
-// 		}
+// 	public function getDetailUrlExt(EntryNavPoint $entryNavPoint) {
+// // 		if (!$this->getEiType()->getEiMask()->getisPreviewAvailable()) {
+// // 			$entryNavPoint = $entryNavPoint->copy(false, false, true);
+// // 		}
 		
-		return PathUtils::createPathExtFromEntryNavPoint($this, $entryNavPoint)->toUrl();
-	}
+// 		return PathUtils::createPathExtFromEntryNavPoint($this, $entryNavPoint)->toUrl();
+// 	}
 	
 	public function createEiCommandPrivilege(Eiu $eiu): EiCommandPrivilege {
 		$dtc = $eiu->dtc(Rocket::NS);
 		return $eiu->factory()->newCommandPrivilege($dtc->t('ei_impl_detail_label'));
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\component\command\GenericDetailEiCommand::isDetailAvailable($entryNavPoint)
-	 */
-	public function isDetailAvailable(EntryNavPoint $entryNavPoint): bool {
-		return true;
-	}
+// 	/**
+// 	 * {@inheritDoc}
+// 	 * @see \rocket\ei\component\command\GenericDetailEiCommand::isDetailAvailable($entryNavPoint)
+// 	 */
+// 	public function isDetailAvailable(EntryNavPoint $entryNavPoint): bool {
+// 		return true;
+// 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\component\command\GenericDetailEiCommand::buildDetailPathExt($entryNavPoint)
-	 */
-	public function getDetailPathExt(EntryNavPoint $entryNavPoint): Path {
-		return PathUtils::createPathExtFromEntryNavPoint($this, $entryNavPoint);
-	}
+// 	/**
+// 	 * {@inheritDoc}
+// 	 * @see \rocket\ei\component\command\GenericDetailEiCommand::buildDetailPathExt($entryNavPoint)
+// 	 */
+// 	public function getDetailPathExt(EntryNavPoint $entryNavPoint): Path {
+// 		return PathUtils::createPathExtFromEntryNavPoint($this, $entryNavPoint);
+// 	}
 }

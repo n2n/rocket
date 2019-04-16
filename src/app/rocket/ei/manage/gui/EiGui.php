@@ -1,7 +1,6 @@
 <?php
 namespace rocket\ei\manage\gui;
 
-use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\entry\EiEntry;
 use n2n\util\type\ArgUtils;
@@ -272,7 +271,7 @@ class EiGui {
 		
 		foreach ($deterGuiDefinition->createEntryGuiControls($this, $eiEntry) 
 				as $guiControlPathStr => $entryGuiControl) {
-			$siEntry->putSiControl($guiControlPathStr, $entryGuiControl->toSiControl($guiControlPathStr));			
+			$siEntry->putControl($guiControlPathStr, $entryGuiControl->toSiControl($guiControlPathStr));			
 		}
 		
 		return $siEntry;

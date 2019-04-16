@@ -45,16 +45,16 @@ class EiuControlFactory {
 				->ext((string) EiCommandPath::from($this->eiCommand))->toUrl()->ext($urlExt);
 	}
 	
-	public function createCmdRef(SiButton $siButton, $urlExt = null) {
-		return new EiuRefGuiControl($this->createCmdUrl($urlExt), $siButton, false);
+	public function createCmdRef(string $id, SiButton $siButton, $urlExt = null) {
+		return new EiuRefGuiControl($id, $this->createCmdUrl($urlExt), $siButton, false);
 	}
 	
-	public function createCmdHref(SiButton $siButton, $urlExt = null) {
-		return new EiuRefGuiControl($this->createCmdUrl($urlExt), $siButton, true);
+	public function createCmdHref(string $id, SiButton $siButton, $urlExt = null) {
+		return new EiuRefGuiControl($id, $this->createCmdUrl($urlExt), $siButton, true);
 	}
 	
 	public function createCallback(SiButton $siButton, \Closure $callback) {
-		return new EiuCallbackGuiControl($callback, $siButton);
+		return new EiuCallbackGuiControl($id, $callback, $siButton);
 	}
 	
 // 	public function createGroup(ControlButton $siButton): GroupControl {

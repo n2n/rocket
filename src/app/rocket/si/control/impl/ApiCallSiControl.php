@@ -19,7 +19,9 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\si\control;
+namespace rocket\si\control\impl;
+
+use rocket\si\control\SiControl;
 
 class ApiCallSiControl implements SiControl {
 	private $id;
