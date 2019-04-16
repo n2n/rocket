@@ -1,7 +1,7 @@
 <?php
 namespace rocket\ei\mask\model;
 
-use rocket\ei\manage\gui\ui\DisplayStructure;
+use rocket\ei\mask\model\DisplayStructure;
 use rocket\ei\manage\gui\EiGuiSiFactory;
 use rocket\ei\manage\gui\EiGui;
 use n2n\util\ex\IllegalStateException;

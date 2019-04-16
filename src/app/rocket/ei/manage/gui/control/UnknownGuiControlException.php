@@ -21,16 +21,7 @@
  */
 namespace rocket\ei\manage\control;
 
-use rocket\ei\manage\frame\EiFrame;
-use rocket\ei\manage\entry\EiEntry;
-use rocket\si\control\SiResult;
+use rocket\ei\EiException;
 
-interface EntryEiControl extends EiControl {
-	
-	/**
-	 * @param EiFrame $eiFrame
-	 * @param EiEntry $eiEntry
-	 * @return SiResult
-	 */
-	function handleEntry(EiFrame $eiFrame, EiEntry $eiEntry): SiResult;
+class UnknownGuiControlException extends EiException {
 }

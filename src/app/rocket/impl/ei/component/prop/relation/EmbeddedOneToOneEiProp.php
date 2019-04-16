@@ -51,7 +51,7 @@ use rocket\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
 use rocket\impl\ei\component\prop\relation\model\RelationEntry;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\GuiField;
-use rocket\ei\manage\gui\ui\DisplayItem;
+use rocket\ei\mask\model\DisplayItem;
 use rocket\ei\manage\security\InaccessibleEiCommandPathException;
 
 class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
@@ -73,7 +73,7 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 	}
 	
 	protected function getDisplayItemType(): string {
-		return $this->reduced ? DisplayItem::TYPE_SIMPLE_GROUP : DisplayItem::TYPE_PANEL;
+		return $this->reduced ? SiStructureTypes::TYPE_SIMPLE_GROUP : SiStructureTypes::TYPE_PANEL;
 	}
 	
 	/**

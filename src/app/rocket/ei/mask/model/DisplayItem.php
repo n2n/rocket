@@ -1,5 +1,5 @@
 <?php
-namespace rocket\ei\manage\gui\ui;
+namespace rocket\ei\mask\model;
 
 use rocket\ei\manage\gui\GuiFieldPath;
 use n2n\util\ex\IllegalStateException;
@@ -7,18 +7,13 @@ use n2n\util\type\ArgUtils;
 use n2n\l10n\Lstr;
 use rocket\core\model\Rocket;
 use n2n\l10n\N2nLocale;
+use rocket\si\structure\SiStructureTypes;
 
 class DisplayItem {
-	const TYPE_SIMPLE_GROUP = 'simple-group';
-	const TYPE_MAIN_GROUP = 'main-group';
-	const TYPE_AUTONOMIC_GROUP = 'autonomic-group';
-	const TYPE_LIGHT_GROUP = 'light-group';
-	const TYPE_PANEL = 'panel';
-	const TYPE_ITEM = 'item';
-
+	
 	protected $label;
 	protected $moduleNamespace;
-	protected $type;
+	protected $siStructureType;
 	protected $guiFieldPath;
 	protected $attrs;
 	protected $displayStructure;
@@ -30,10 +25,10 @@ class DisplayItem {
 	 * @param GuiFieldPath $guiFieldPath
 	 * @return DisplayItem
 	 */
-	public static function create(GuiFieldPath $guiFieldPath, string $type = null) {
+	public static function create(GuiFieldPath $guiFieldPath, string $siStructureType = null) {
 		$orderItem = new DisplayItem();
-		ArgUtils::valEnum($type, self::getTypes(), null, true);
-		$orderItem->type = $type;
+		ArgUtils::valEnum($siStructureType, SiStructureTypes::all(), null, true);
+		$orderItem->siStructureType = $siStructureType;
 		$orderItem->guiFieldPath = $guiFieldPath;
 		return $orderItem;
 	}
@@ -43,10 +38,10 @@ class DisplayItem {
 	 * @return DisplayItem
 	 * @deprecated
 	 */
-	public static function createFromGuiFieldPath(GuiFieldPath $guiFieldPath, string $type = null) {
+	public static function createFromGuiFieldPath(GuiFieldPath $guiFieldPath, string $siStructureType = null) {
 		$orderItem = new DisplayItem();
-		ArgUtils::valEnum($type, self::getTypes(), null, true);
-		$orderItem->type = $type;
+		ArgUtils::valEnum($siStructureType, SiStructureTypes::all(), null, true);
+		$orderItem->siStructureType = $siStructureType;
 		$orderItem->guiFieldPath = $guiFieldPath;
 		return $orderItem;
 	}
@@ -55,12 +50,12 @@ class DisplayItem {
 	 * @param DisplayStructure $displayStructure
 	 * @return DisplayItem
 	 */
-	public static function createFromDisplayStructure(DisplayStructure $displayStructure, string $type, 
+	public static function createFromDisplayStructure(DisplayStructure $displayStructure, string $siStructureType, 
 			string $label = null, string $moduleNamespace = null) {
 		$displayItem = new DisplayItem();
 		$displayItem->displayStructure = $displayStructure;
-		ArgUtils::valEnum($type, self::getTypes());
-		$displayItem->type = $type;
+		ArgUtils::valEnum($siStructureType, SiStructureTypes::all());
+		$displayItem->siStructureType = $siStructureType;
 		$displayItem->label = $label;
 		$displayItem->moduleNamespace = $moduleNamespace;
 		return $displayItem;
@@ -71,12 +66,12 @@ class DisplayItem {
 	 * @param string|null $labelLstr
 	 * @return DisplayItem
 	 */
-	public function copy(string $type = null, array $attrs = null/*, Lstr $labelLstr = null*/) {
+	public function copy(string $siStructureType = null, array $attrs = null/*, Lstr $labelLstr = null*/) {
 		$displayItem = new DisplayItem();
 		$displayItem->displayStructure = $this->displayStructure;
 		$displayItem->guiFieldPath = $this->guiFieldPath;
-		ArgUtils::valEnum($type, self::getTypes(), null, true);
-		$displayItem->type = $type ?? $this->type;
+		ArgUtils::valEnum($siStructureType, SiStructureTypes::all(), null, true);
+		$displayItem->siStructureType = $siStructureType ?? $this->siStructureType;
 // 		$displayItem->labelLstr = $labelLstr ?? $this->labelLstr;
 		$displayItem->attrs = $attrs ?? $this->attrs;
 		return $displayItem;
@@ -142,8 +137,8 @@ class DisplayItem {
 	/**
 	 * @return string|null
 	 */
-	public function getType() {
-		return $this->type;
+	public function getSiStructureType() {
+		return $this->siStructureType;
 	}
 	
 	/**
@@ -157,7 +152,7 @@ class DisplayItem {
 	 * @return boolean
 	 */
 	public function isGroup() {
-		return in_array($this->type, DisplayItem::getGroupTypes());
+		return in_array($this->siStructureType, SiStructureTypes::groups());
 	}
 
 	public function hasDisplayStructure() {
@@ -186,21 +181,5 @@ class DisplayItem {
 		}
 
 		throw new IllegalStateException();
-	}
-	
-	/**
-	 * @return string[]
-	 */
-	public static function getGroupTypes() {
-		return array(self::TYPE_SIMPLE_GROUP, self::TYPE_MAIN_GROUP, self::TYPE_AUTONOMIC_GROUP,
-				self::TYPE_LIGHT_GROUP);
-	}
-	
-	/**
-	 * @return string[]
-	 */
-	public static function getTypes() {
-		return array(self::TYPE_ITEM, self::TYPE_SIMPLE_GROUP, self::TYPE_MAIN_GROUP, self::TYPE_AUTONOMIC_GROUP,
-				self::TYPE_LIGHT_GROUP, self::TYPE_PANEL);
 	}
 }

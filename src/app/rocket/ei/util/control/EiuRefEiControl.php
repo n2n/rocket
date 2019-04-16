@@ -21,7 +21,6 @@
  */
 namespace rocket\ei\util\control;
 
-use rocket\ei\component\command\EiControl;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\si\control\SiControl;
@@ -30,11 +29,15 @@ use n2n\util\ex\NotYetImplementedException;
 use n2n\util\uri\Url;
 use rocket\si\control\SiButton;
 use rocket\si\control\RefSiControl;
+use rocket\ei\manage\control\EntryGuiControl;
+use rocket\ei\manage\control\GeneralGuiControl;
+use rocket\ei\manage\control\SelectionGuiControl;
 
-class EiuRefEiControl implements EiControl {
+class EiuRefGuiControl implements GeneralGuiControl, EntryGuiControl, SelectionGuiControl {
 	private $id;
 	private $url;
 	private $siButton;
+	private $inputHandled = false;
 	
 	function __construct(string $id, Url $url, SiButton $siButton, bool $href) {
 		$this->id = $id;
@@ -44,6 +47,23 @@ class EiuRefEiControl implements EiControl {
 	
 	function getId(): string {
 		return $this->id;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\control\GuiControl::isInputHandled()
+	 */
+	public function isInputHandled(): bool {
+		return $this->inputHandled;
+	}
+	
+	/**
+	 * @param bool $inputHandled
+	 * @return \rocket\ei\util\control\EiuRefGuiControl
+	 */
+	public function setInputHandled(bool $inputHandled) {
+		$this->inputHandled = $inputHandled;
+		return $this;
 	}
 	
 	public function toSiControl(): SiControl {

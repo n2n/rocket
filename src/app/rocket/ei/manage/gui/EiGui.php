@@ -57,6 +57,7 @@ class EiGui {
 	
 	/**
 	 * @param EiFrame $eiFrame
+	 * @param GuiDefinition $guiDefinition
 	 * @param int $viewMode Use constants from {@see ViewMode}
 	 */
 	public function __construct(EiFrame $eiFrame, GuiDefinition $guiDefinition, int $viewMode) {
@@ -224,6 +225,14 @@ class EiGui {
 		return $siEntries;
 	}
 	
+	public function createSelectionSiControls() {
+		$this->guiDefinition->createSelectionSiControls($eiFrame)
+	}
+	
+	public function createGeneralSiControls() {
+		
+	}
+	
 	/**
 	 * @param EiEntryGui $eiEntryGui
 	 * @return SiEntry
@@ -248,6 +257,8 @@ class EiGui {
 			$giEntry->putSiField($guiFieldPathStr, $guiField->getSiField());
 		}
 		
+		foreach ($eiEntry->getEiMask()->getEiEngine()->create)
+		
 		return $giEntry;
 	}
 	
@@ -263,14 +274,6 @@ class EiGui {
 	 */
 	public function unregisterEiGuiListener(EiGuiListener $eiGuiListener) {
 		unset($this->eiGuiListeners[spl_object_hash($eiGuiListener)]);
-	}
-	
-	/**
-	 * @param HtmlView $view
-	 * @return \rocket\ei\manage\control\Control[]
-	 */
-	public function createOverallControls(HtmlView $view) {
-		return $this->eiFrame->getContextEiEngine()->getEiMask()->getEiEngine()->createEiGuiOverallControls($this, $view);
 	}
 	
 	/**

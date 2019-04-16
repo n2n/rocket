@@ -19,15 +19,35 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\control;
+namespace rocket\si\input;
 
-use rocket\ei\util\Eiu;
+class SiInput {
+	/**
+	 * @var SiEntryInput[] $entryInputs
+	 */
+	protected $entryInputs = [];
+	
+	/**
+	 * @return SiEntryInput[];
+	 */
+	function getEntryInputs() {
+		return $this->entryInputs;
+	}
+	
+	function putEntryInput(SiEntryInput $entryInput) {
+		$this->entryInputs[$entryInput->getId()] = $entryInput;
+	}
 
-interface ControlCommand {
 	
-	public function createGeneralControls(Eiu $eiu): array;
+}
+
+class SiEntryInput {
 	
-	public function createSelectionControls(Eiu $eiu): array;
+	static function crate(array $data) {
+		
+	}
+}
+
+class SiFieldInput {
 	
-	public function createEntryControls(Eiu $eiu): array;
 }

@@ -39,7 +39,6 @@ use rocket\ei\manage\critmod\filter\FilterDefinition;
 use rocket\ei\util\filter\controller\FilterJhtmlHook;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\gui\DisplayDefinition;
-use rocket\ei\manage\gui\ui\DisplayItem;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
@@ -47,6 +46,7 @@ use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\manage\security\InaccessibleEiCommandPathException;
 use rocket\core\model\Rocket;
 use n2n\l10n\Lstr;
+use rocket\si\structure\SiStructureTypes;
 
 abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter implements GuiProp, DraftableEiProp, 
 		DraftProperty, FilterableEiProp {
@@ -104,7 +104,7 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 	}
 	
 	protected function getDisplayItemType(): string {
-		return DisplayItem::TYPE_SIMPLE_GROUP;
+		return SiStructureTypes::TYPE_SIMPLE_GROUP;
 	}
 	
 	/**

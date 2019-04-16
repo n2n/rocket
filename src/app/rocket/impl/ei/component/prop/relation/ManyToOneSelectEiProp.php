@@ -49,7 +49,7 @@ use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\web\http\HttpContext;
 use rocket\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
-use rocket\ei\manage\gui\ui\DisplayItem;
+use rocket\ei\mask\model\DisplayItem;
 use rocket\ei\manage\gui\GuiField;
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
@@ -66,7 +66,7 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 	}
 	
 	public function getDisplayItemType(): string {
-		return DisplayItem::TYPE_ITEM;
+		return SiStructureTypes::TYPE_ITEM;
 	}
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {

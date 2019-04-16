@@ -25,13 +25,13 @@ use n2n\util\type\ArgUtils;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\ei\component\prop\EiProp;
-use rocket\ei\manage\gui\ui\DisplayItem;
+use rocket\si\structure\SiStructureTypes;
 
 class DisplayConfig {
 	private $compatibleViewModes;
 	private $defaultDisplayedViewModes;
 	
-	private $displayItemType = DisplayItem::TYPE_ITEM;
+	private $displayItemType = SiStructureTypes::TYPE_ITEM;
 	
 	private $helpText;
 	
@@ -108,7 +108,7 @@ class DisplayConfig {
 	}
 	
 	public function setDisplayItemType(string $displayItemType) {
-		ArgUtils::valEnum($displayItemType, DisplayItem::getTypes());
+		ArgUtils::valEnum($displayItemType, SiStructureTypes::all());
 		$this->dispayItemType = $displayItemType;
 	}
 	
@@ -134,7 +134,7 @@ class DisplayConfig {
 	 * @param int $viewMode
 	 * @return DisplayDefinition|null
 	 */
-	public function toDisplayDefinition(EiProp $eiProp, int $viewMode, string $groupType = DisplayItem::TYPE_ITEM) {
+	public function toDisplayDefinition(EiProp $eiProp, int $viewMode, string $groupType = SiStructureTypes::TYPE_ITEM) {
 		if (!$this->isViewModeCompatible($viewMode)) return null;
 		
 		return new DisplayDefinition($groupType,

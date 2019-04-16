@@ -19,13 +19,15 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage;
+namespace rocket\ei\manage\control;
 
-use n2n\web\http\controller\ControllerAdapter;
+use rocket\ei\util\Eiu;
 
-class EiApiController extends ControllerAdapter {
+interface GuiCommand {
 	
-	function index() {
-		echo 'very apisch';
-	}
+	public function createGeneralControls(Eiu $eiu): array;
+	
+	public function createSelectionControls(Eiu $eiu): array;
+	
+	public function createEntryControls(Eiu $eiu): array;
 }

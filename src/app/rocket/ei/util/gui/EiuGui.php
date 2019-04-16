@@ -108,7 +108,7 @@ class EiuGui {
 // 	 * @param GuiFieldPath|string $eiPropPath
 // 	 * @param bool $required
 // 	 * @throws \InvalidArgumentException
-// 	 * @return \rocket\ei\manage\gui\ui\DisplayItem
+// 	 * @return \rocket\ei\mask\model\DisplayItem
 // 	 */
 // 	public function getDisplayItemByGuiFieldPath($eiPropPath) {
 // 		$eiPropPath = GuiFieldPath::create($eiPropPath);

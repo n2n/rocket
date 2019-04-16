@@ -24,7 +24,7 @@ namespace rocket\ei\util\entry\view;
 use n2n\util\ex\IllegalStateException;
 use n2n\web\dispatch\map\PropertyPathPart;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\ei\manage\gui\ui\DisplayItem;
+use rocket\ei\mask\model\DisplayItem;
 use rocket\ei\util\entry\form\EiuEntryForm;
 use rocket\ei\util\gui\EiuHtmlBuilder;
 use n2n\impl\web\ui\view\html\HtmlSnippet;
@@ -63,7 +63,7 @@ class EiuEntryFormViewModel {
 	 * @param string $type
 	 * @return EiuEntryFormViewModel
 	 */
-	public function addDisplayContainer(string $label, string $type = DisplayItem::TYPE_SIMPLE_GROUP, array $attrs = null) {
+	public function addDisplayContainer(string $label, string $type = SiStructureTypes::TYPE_SIMPLE_GROUP, array $attrs = null) {
 		$this->displayContainerType = $type;
 		$this->displayContainerLabel = $label;
 		$this->displayContainerAttrs = $attrs;
@@ -152,7 +152,7 @@ class EiuEntryFormViewModel {
 		}
 		
 		return EiuHtmlBuilderMeta::createDisplayItemAttrs(
-				$this->displayContainerType ?? DisplayItem::TYPE_SIMPLE_GROUP, 
+				$this->displayContainerType ?? SiStructureTypes::TYPE_SIMPLE_GROUP, 
 				$cattrs);
 	}
 	
@@ -216,7 +216,7 @@ class EiuEntryFormViewModel {
 			
 			$eiuEntryGui = $eiuEntryTypeForm->getEiuEntryGui();
 			
-			$htmlSnippet->appendLn($eiuHtml->getEntryOpen('div', $eiuEntryGui, DisplayItem::TYPE_SIMPLE_GROUP,
+			$htmlSnippet->appendLn($eiuHtml->getEntryOpen('div', $eiuEntryGui, SiStructureTypes::TYPE_SIMPLE_GROUP,
 					$this->createEntryAttrs(['class' => 'rocket-ei-type-entry-form rocket-ei-type-' . $eiTypeId])));
 			
 			$htmlSnippet->appendLn(new HtmlElement('label', null, $eiuEntryGui->entry()->getGenericLabel()));

@@ -22,20 +22,26 @@
 namespace rocket\si\structure;
 
 use n2n\util\type\ArgUtils;
-use rocket\ei\manage\gui\ui\DisplayItem;
 
 class SiFieldStructureDeclaration {
+	const TYPE_SIMPLE_GROUP = 'simple-group';
+	const TYPE_MAIN_GROUP = 'main-group';
+	const TYPE_AUTONOMIC_GROUP = 'autonomic-group';
+	const TYPE_LIGHT_GROUP = 'light-group';
+	const TYPE_PANEL = 'panel';
+	const TYPE_ITEM = 'item';
+	
 	private $fieldDeclaration;
-	private $displayType;
+	private $structureType;
 	private $children = [];
 	
 	/**
 	 * @param SiFieldDeclaration $siFieldDeclaration
 	 * @param string $label
 	 */
-	function __construct(SiFieldDeclaration $fieldDeclaration, string $displayType) {
+	function __construct(SiFieldDeclaration $fieldDeclaration, string $structureType) {
 		$this->fieldDeclaration = $fieldDeclaration;
-		$this->setDisplyType($displayType);
+		$this->setStructureType($structureType);
 	}
 	
 	/**
@@ -57,17 +63,17 @@ class SiFieldStructureDeclaration {
 	/**
 	 * @return string
 	 */
-	public function getDisplayType() {
-		return $this->displayType;
+	public function getStructureType() {
+		return $this->structureType;
 	}
 
 	/**
 	 * @param string $displayType
 	 * @return \rocket\si\structure\SiFieldDeclaration
 	 */
-	public function setDisplyType(string $displayType) {
-		ArgUtils::valEnum($displayType, DisplayItem::getTypes());
-		$this->displayType = $displayType;
+	public function setStructureType(string $structureType) {
+		ArgUtils::valEnum($structureType, SiStructureTypes::getAll());
+		$this->structureType = $structureType;
 		return $this;
 	}
 	

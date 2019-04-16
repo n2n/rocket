@@ -26,8 +26,6 @@ use n2n\l10n\DynamicTextCollection;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\frame\EiFrame;
 use n2n\l10n\N2nLocale;
-use rocket\ei\component\command\control\PartialControlComponent;
-use rocket\ei\component\command\control\EntryControlComponent;
 use rocket\impl\ei\component\command\common\controller\DeleteController;
 use rocket\si\control\SiButton;
 use rocket\si\control\SiIconType;
@@ -40,8 +38,7 @@ use n2n\util\uri\Path;
 use rocket\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
 
-class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialControlComponent, 
-		EntryControlComponent, PrivilegedEiCommand {
+class DeleteEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiCommand {
 	const ID_BASE = 'delete';
 	const CONTROL_BUTTON_KEY = 'delete'; 
 	const PRIVILEGE_LIVE_ENTRY_KEY = 'eiEntityObj';
@@ -59,7 +56,7 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialCont
 		return $eiu->lookup(DeleteController::class);
 	}
 	
-	public function createEntryControls(Eiu $eiu, HtmlView $view): array {
+	public function createEntryControls(Eiu $eiu): array {
 		$eiuEntry = $eiu->entry();
 		$eiuFrame = $eiu->frame();
 		

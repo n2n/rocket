@@ -19,21 +19,18 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\component\command;
+namespace rocket\ei\manage\control;
 
+use rocket\ei\manage\frame\EiFrame;
+use rocket\ei\manage\entry\EiEntry;
+use rocket\si\control\SiResult;
 
-use rocket\ei\manage\control\EntryNavPoint;
-use n2n\util\uri\Url;
-use n2n\util\ex\UnsupportedOperationException;
-
-interface GenericAddEiCommand {
-	
-	public function isAddAvailable(EntryNavPoint $entryNavPoint): bool;
+interface EntryGuiControl extends GuiControl {
 	
 	/**
-	 * @param EntryNavPoint
-	 * @return Url
-	 * @throws UnsupportedOperationException if EiCommand can not be used as ..
+	 * @param EiFrame $eiFrame
+	 * @param EiEntry $eiEntry
+	 * @return SiResult
 	 */
-	public function getAddUrlExt(EntryNavPoint $entryNavPoint): Url;
+	function handleEntry(EiFrame $eiFrame, EiEntry $eiEntry): SiResult;
 }

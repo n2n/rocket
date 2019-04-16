@@ -24,7 +24,7 @@ namespace rocket\ei\mask\model;
 use rocket\ei\component\command\control\PartialControlComponent;
 use n2n\l10n\N2nLocale;
 use rocket\ei\component\command\control\OverallControlComponent;
-use rocket\ei\manage\gui\ui\DisplayStructure;
+use rocket\ei\mask\model\DisplayStructure;
 use rocket\ei\mask\EiMask;
 use rocket\ei\manage\gui\EiGui;
 use rocket\ei\manage\gui\GuiDefinition;
@@ -42,7 +42,7 @@ class DisplayScheme {
 	private $entryControlOrder;
 
 	/**
-	 * @return \rocket\ei\manage\gui\ui\DisplayStructure|null
+	 * @return \rocket\ei\mask\model\DisplayStructure|null
 	 */
 	public function getOverviewDisplayStructure() {
 		return $this->overviewDisplayStructure;
@@ -56,7 +56,7 @@ class DisplayScheme {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\gui\ui\DisplayStructure|null
+	 * @return \rocket\ei\mask\model\DisplayStructure|null
 	 */
 	public function getBulkyDisplayStructure() {
 		return $this->bulkyDisplayStructure;
@@ -70,7 +70,7 @@ class DisplayScheme {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\gui\ui\DisplayStructure|null
+	 * @return \rocket\ei\mask\model\DisplayStructure|null
 	 */
 	public function getDetailDisplayStructure() {
 		return $this->detailDisplayStructure;
@@ -84,7 +84,7 @@ class DisplayScheme {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\gui\ui\DisplayStructure|null
+	 * @return \rocket\ei\mask\model\DisplayStructure|null
 	 */
 	public function getEditDisplayStructure() {
 		return $this->editDisplayStructure;
@@ -98,7 +98,7 @@ class DisplayScheme {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\gui\ui\DisplayStructure|null
+	 * @return \rocket\ei\mask\model\DisplayStructure|null
 	 */
 	public function getAddDisplayStructure() {
 		return $this->addDisplayStructure;

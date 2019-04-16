@@ -21,11 +21,8 @@
  */
 namespace rocket\impl\ei\component\command\common;
 
-use rocket\ei\manage\control\EntryNavPoint;
 use n2n\l10n\DynamicTextCollection;
-use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\N2nLocale;
-use rocket\ei\component\command\control\EntryControlComponent;
 use rocket\impl\ei\component\command\common\controller\DetailController;
 use rocket\si\control\SiButton;
 use rocket\impl\ei\component\command\common\controller\PathUtils;
@@ -36,12 +33,10 @@ use n2n\util\uri\Path;
 use n2n\core\container\N2nContext;
 use rocket\core\model\Rocket;
 use rocket\ei\manage\security\privilege\EiCommandPrivilege;
-use rocket\ei\component\command\GenericDetailEiCommand;
 use rocket\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
 
-class DetailEiCommand extends IndependentEiCommandAdapter implements EntryControlComponent, GenericDetailEiCommand, 
-		PrivilegedEiCommand {
+class DetailEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiCommand {
 	const ID_BASE = 'detail';
 	const CONTROL_DETAIL_KEY = 'detail'; 
 	const CONTROL_PREVIEW_KEY = 'preview';
@@ -69,7 +64,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 	/* (non-PHPdoc)
 	 * @see \rocket\ei\component\command\control\EntryControlComponent::createEntryControls()
 	 */
-	public function createEntryControls(Eiu $eiu, HtmlView $view): array {
+	public function createEntryControls(Eiu $eiu): array {
 		$eiuFrame = $eiu->frame();
 		if ($eiuFrame->isExecutedBy($this)) {
 			return array();

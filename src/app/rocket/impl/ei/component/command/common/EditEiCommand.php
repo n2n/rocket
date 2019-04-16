@@ -64,7 +64,7 @@ class EditEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiC
 	}
 	
 	
-	public function createEntryControls(Eiu $eiu, HtmlView $view): array {
+	public function createEntryControls(Eiu $eiu): array {
 		if ($eiu->frame()->isExecutedBy($this)) {
 			return array();
 		}

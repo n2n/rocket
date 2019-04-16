@@ -34,7 +34,7 @@ use n2n\web\http\controller\Controller;
 use n2n\core\container\N2nContext;
 use n2n\l10n\N2nLocale;
 
-class OrderEiCommand extends EiCommandAdapter implements EntryControlComponent {
+class OrderEiCommand extends EiCommandAdapter {
 	const ID_BASE = 'order';
 	const CONTROL_INSERT_BEFORE_KEY = 'insertBefore';
 	const CONTROL_INSERT_AFTER_KEY = 'insertAfter';
@@ -66,11 +66,8 @@ class OrderEiCommand extends EiCommandAdapter implements EntryControlComponent {
 		return $controller;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\component\command\control\EntryControlComponent::createEntryControls()
-	 */
-	public function createEntryControls(Eiu $eiu, HtmlView $view): array {
+
+	public function createEntryControls(Eiu $eiu): array {
 		$httpContext = $view->getHttpContext();
 		$dtc = new DynamicTextCollection('rocket', $view->getRequest()->getN2nLocale());
 

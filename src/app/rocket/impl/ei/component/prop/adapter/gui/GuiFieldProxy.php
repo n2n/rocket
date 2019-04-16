@@ -21,15 +21,14 @@
  */
 namespace rocket\impl\ei\component\prop\adapter\gui;
 
-use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\manage\gui\GuiField;
 use rocket\ei\manage\gui\GuiFieldEditable;
 use rocket\ei\util\Eiu;
-use rocket\ei\manage\gui\ui\DisplayItem;
 use n2n\util\type\ArgUtils;
 use rocket\ei\manage\gui\GuiFieldDisplayable;
 use rocket\si\content\SiField;
+use rocket\si\structure\SiStructureTypes;
 
 class GuiFieldProxy implements GuiField, GuiFieldDisplayable, GuiFieldEditable {
 	private $eiu;
@@ -72,7 +71,7 @@ class GuiFieldProxy implements GuiField, GuiFieldDisplayable, GuiFieldEditable {
 	 */
 	public function getDisplayItemType(): string {
 		$displayItemType = $this->statelessGuiFieldDisplayable->getDisplayItemType($this->eiu);
-		ArgUtils::valEnum($displayItemType, DisplayItem::getTypes());
+		ArgUtils::valEnum($displayItemType, SiStructureTypes::all());
 		return $displayItemType;
 	}
 	

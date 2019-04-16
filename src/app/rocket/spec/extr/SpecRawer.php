@@ -24,7 +24,7 @@ namespace rocket\spec\extr;
 use n2n\util\type\attrs\Attributes;
 use n2n\util\type\ArgUtils;
 use rocket\ei\mask\model\DisplayScheme;
-use rocket\ei\manage\gui\ui\DisplayStructure;
+use rocket\ei\mask\model\DisplayStructure;
 use n2n\util\type\CastUtils;
 
 class SpecRawer {

@@ -29,7 +29,7 @@ use rocket\ei\EiEngine;
 use rocket\ei\manage\preview\controller\PreviewController;
 use n2n\config\InvalidConfigurationException;
 use rocket\ei\manage\preview\model\UnavailablePreviewException;
-use rocket\ei\manage\control\UnknownEiControlException;
+use rocket\ei\manage\control\UnknownGuiControlException;
 use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\EiPropCollection;
 use rocket\ei\component\command\EiCommandCollection;
@@ -598,7 +598,7 @@ class EiMask {
 	 * @param PreviewModel $previewModel
 	 * @throws UnavailablePreviewException
 	 * @throws InvalidConfigurationException
-	 * @throws UnknownEiControlException
+	 * @throws UnknownGuiControlException
 	 * @return PreviewController
 	 */
 	public function lookupPreviewController(N2nContext $n2nContext, PreviewModel $previewModel = null): PreviewController {
@@ -623,7 +623,7 @@ class EiMask {
 		
 		if (!array_key_exists($previewModel->getPreviewType(), 
 				$previewController->getPreviewTypeOptions($previewModel->getEiu()))) {
-			throw new UnknownEiControlException('Unknown preview type \'' . $previewModel->getPreviewType() 
+			throw new UnknownGuiControlException('Unknown preview type \'' . $previewModel->getPreviewType() 
 					. '\' for PreviewController: ' . get_class($previewController));
 		}
 		

@@ -27,7 +27,7 @@ use rocket\ei\manage\gui\GuiFieldEditable;
 use rocket\ei\manage\frame\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\util\ex\IllegalStateException;
-use rocket\ei\manage\gui\ui\DisplayItem;
+use rocket\ei\mask\model\DisplayItem;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use rocket\ei\util\Eiu;
 use n2n\l10n\N2nLocale;
@@ -69,7 +69,7 @@ class EmbeddedOneToOneGuiField implements GuiField, GuiFieldDisplayable {
 	}
 
 	public function getDisplayItemType(): string {
-		return DisplayItem::TYPE_SIMPLE_GROUP;
+		return SiStructureTypes::TYPE_SIMPLE_GROUP;
 	}
 	
 	/**
@@ -104,7 +104,7 @@ class EmbeddedOneToOneGuiField implements GuiField, GuiFieldDisplayable {
 		if (!$this->reduced) {
 			$eiuEntry = $targetUtils->entry($targetRelationEntry->toEiEntry($targetUtils));
 			return $eiuEntry->newEntryGui()/*->allowControls()
-					->addDisplayContainer(DisplayItem::TYPE_LIGHT_GROUP, $eiuEntry->getGenericLabel())*/
+					->addDisplayContainer(SiStructureTypes::TYPE_LIGHT_GROUP, $eiuEntry->getGenericLabel())*/
 					->createView($view);
 		}
 		

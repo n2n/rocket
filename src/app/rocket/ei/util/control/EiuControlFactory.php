@@ -46,15 +46,15 @@ class EiuControlFactory {
 	}
 	
 	public function createCmdRef(SiButton $siButton, $urlExt = null) {
-		return new EiuRefEiControl($this->createCmdUrl($urlExt), $siButton, false);
+		return new EiuRefGuiControl($this->createCmdUrl($urlExt), $siButton, false);
 	}
 	
 	public function createCmdHref(SiButton $siButton, $urlExt = null) {
-		return new EiuRefEiControl($this->createCmdUrl($urlExt), $siButton, true);
+		return new EiuRefGuiControl($this->createCmdUrl($urlExt), $siButton, true);
 	}
 	
 	public function createCallback(SiButton $siButton, \Closure $callback) {
-		return new EiuCallbackEiControl($callback, $siButton);
+		return new EiuCallbackGuiControl($callback, $siButton);
 	}
 	
 // 	public function createGroup(ControlButton $siButton): GroupControl {

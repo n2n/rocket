@@ -19,45 +19,51 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\util\control;
+namespace rocket\si\input;
 
-use rocket\ei\manage\entry\EiEntry;
-use rocket\ei\manage\frame\EiFrame;
-use rocket\si\control\SiControl;
-use rocket\si\control\SiResult;
-use rocket\ei\manage\control\GeneralGuiControl;
-use rocket\ei\manage\control\EntryGuiControl;
-use rocket\ei\manage\control\SelectionGuiControl;
-use rocket\si\control\ApiCallSiControl;
+use n2n\util\type\attrs\DataSet;
 
-class EiuCallbackGuiControl implements GeneralGuiControl, EntryGuiControl, SelectionGuiControl {
-	private $id;
+class SiInputFactory {
 	
-	function __construct(string $id, \Closure $callback) {
-		$this->id = $id;
+	/**
+	 * @param array $uploadDefinitions
+	 */
+	function __construct(array $uploadDefinitions) {
 	}
 	
-	function getId(): string {
-		return $this->id;
+	/**
+	 * @param array $data
+	 * @return SiInput
+	 */
+	function create(array $data) {
+		$dataSet = new DataSet($data);
+		
+		$input = new SiInput();
+		foreach ($dataSet->reqArray('entryInputs', 'array') as $entryData) {
+			$input->addEntryInput($this->createEntry($entryData));
+		}
+		return $input;
 	}
 	
-	public function isInputHandled(): bool {
-		return false;
+	/**
+	 * @param array $data
+	 * @return SiEntryInput
+	 */
+	function createEntry(array $data) {
+		$dataSet = new DataSet($data);
+		
+		$siEntryInput = new SiEntryInput($dataSet->optString('id'));
+		foreach ($dataSet->reqArray('entryInputs', 'array') as $fieldId => $fielData) {
+			$siEntryInput->setFieldInput($fieldId, $this->createField($fielData));
+		}
+		return $siEntryInput;
 	}
 	
-	public function toSiControl(string $controlId): SiControl {
-		return new ApiCallSiControl($controlId);
+	/**
+	 * @param array $data
+	 * @return \rocket\si\input\SiFieldInput
+	 */
+	function createField(array $data) {
+		return new SiFieldInput($data);
 	}
-	
-	public function handle(EiFrame $eiFrame): SiResult {
-	}
-
-	public function handleEntry(EiFrame $eiFrame, EiEntry $eiEntry): SiResult {
-	}
-	
-	public function handleEntries(EiFrame $eiFrame, array $eiEntries): SiResult {
-	}
-
-
-	
 }

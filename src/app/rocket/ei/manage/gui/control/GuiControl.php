@@ -23,15 +23,17 @@ namespace rocket\ei\manage\control;
 
 use rocket\si\control\SiControl;
 
-interface EiControl {
+interface GuiControl {
 	
 	/**
 	 * @return string
 	 */
 	function getId(): string;
 	
+	function isInputHandled(): bool;
+	
 	/**
 	 * @return SiControl
 	 */
-	function toSiControl(): SiControl;
+	function toSiControl(string $siControlId): SiControl;
 }

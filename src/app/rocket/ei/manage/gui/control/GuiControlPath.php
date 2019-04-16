@@ -21,14 +21,23 @@
  */
 namespace rocket\ei\manage\control;
 
-use rocket\ei\manage\frame\EiFrame;
-use rocket\si\control\SiResult;
+use rocket\ei\IdPath;
 
-interface GeneralEiControl extends EiControl {
+class GuiControlPath extends IdPath {
 	
-	/**
-	 * @param EiFrame $eiFrame
-	 * @return SiResult
-	 */
-	function handle(EiFrame $eiFrame): SiResult;
+	public function ext(...$args): GuiControlPath {
+		return new GuiControlPath(array_merge($this->ids, $this->argsToIds($args)));
+	}
+	
+	public static function create($expression): GuiControlPath {
+		if ($expression instanceof GuiControlPath) {
+			return $expression;
+		}
+		
+		if (is_array($expression)) {
+			return new GuiControlPath($expression);
+		}
+		
+		return new GuiControlPath(explode(self::ID_SEPARATOR, $expression));
+	}
 }

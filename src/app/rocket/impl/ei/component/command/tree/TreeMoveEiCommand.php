@@ -21,20 +21,16 @@
  */
 namespace rocket\impl\ei\component\command\tree;
 
-use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\DynamicTextCollection;
 use rocket\impl\ei\component\command\tree\controller\TreeMoveController;
-use rocket\ei\component\command\control\EntryControlComponent;
-use rocket\si\control\SiButton;
 use rocket\si\control\SiIconType;
 use rocket\impl\ei\component\command\IndependentEiCommandAdapter;
-use rocket\ei\manage\control\HrefControl;
 use rocket\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
 use n2n\core\container\N2nContext;
 use n2n\l10n\N2nLocale;
 
-class TreeMoveEiCommand extends IndependentEiCommandAdapter implements EntryControlComponent {
+class TreeMoveEiCommand extends IndependentEiCommandAdapter {
 	const ID_BASE = 'tree-move';
 	const CONTROL_INSERT_BEFORE_KEY = 'insertBefore';
 	const CONTROL_INSERT_AFTER_KEY = 'insertAfter';
@@ -56,7 +52,7 @@ class TreeMoveEiCommand extends IndependentEiCommandAdapter implements EntryCont
 		return $eiu->lookup(TreeMoveController::class);
 	}
 	
-	public function createEntryControls(Eiu $eiu, HtmlView $view): array {
+	public function createEntryControls(Eiu $eiu): array {
 		$httpContext = $view->getHttpContext();
 		$dtc = new DynamicTextCollection('rocket', $view->getRequest()->getN2nLocale());
 	

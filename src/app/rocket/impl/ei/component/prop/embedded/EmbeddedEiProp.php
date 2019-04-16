@@ -43,7 +43,7 @@ use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 use rocket\ei\manage\gui\GuiField;
 use rocket\ei\component\prop\GuiEiProp;
 use rocket\ei\manage\gui\GuiFieldEditable;
-use rocket\ei\manage\gui\ui\DisplayItem;
+use rocket\ei\mask\model\DisplayItem;
 use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\manage\gui\GuiFieldDisplayable;
 use n2n\util\ex\NotYetImplementedException;
@@ -168,7 +168,7 @@ class EmbeddedGuiProp implements GuiProp {
 	}
 
 	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
-		return new DisplayDefinition(DisplayItem::TYPE_ITEM, true);
+		return new DisplayDefinition(SiStructureTypes::TYPE_ITEM, true);
 	}
 
 	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {

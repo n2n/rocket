@@ -36,14 +36,11 @@ use rocket\ei\manage\gui\EiGui;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\util\Eiu;
-use rocket\ei\component\command\control\EntryControlComponent;
 use rocket\ei\mask\model\ControlOrder;
-use rocket\ei\manage\control\Control;
 use rocket\ei\manage\gui\SummarizedStringBuilder;
 use rocket\ei\manage\EiObject;
 use n2n\l10n\N2nLocale;
 use n2n\core\container\N2nContext;
-use rocket\ei\component\command\control\OverallControlComponent;
 use rocket\ei\component\prop\GuiEiPropFork;
 
 class GuiFactory {
@@ -135,30 +132,30 @@ class GuiFactory {
 		return $guiDefinition->createIdentityString($identityStringPattern, $eiObject, $n2nLocale);
 	}
 
-	/**
-	 * @param EiGui $eiGui
-	 * @param HtmlView $view
-	 * @return Control[]
-	 */
-	public function createOverallControls(EiGui $eiGui, HtmlView $view) {
-		$eiu = new Eiu($eiGui);
+// 	/**
+// 	 * @param EiGui $eiGui
+// 	 * @param HtmlView $view
+// 	 * @return Control[]
+// 	 */
+// 	public function createOverallControls(EiGui $eiGui, HtmlView $view) {
+// 		$eiu = new Eiu($eiGui);
 		
-		$controls = array();
+// 		$controls = array();
 		
-		foreach ($this->eiMask->getEiCommandCollection() as $eiCommandId => $eiCommand) {
-			if (!($eiCommand instanceof OverallControlComponent) || !$eiu->frame()->isExecutableBy($eiCommand)) {
-				continue;
-			}
+// 		foreach ($this->eiMask->getEiCommandCollection() as $eiCommandId => $eiCommand) {
+// 			if (!($eiCommand instanceof OverallControlComponent) || !$eiu->frame()->isExecutableBy($eiCommand)) {
+// 				continue;
+// 			}
 					
-			$overallControls = $eiCommand->createOverallControls($eiu, $view);
-			ArgUtils::valArrayReturn($overallControls, $eiCommand, 'createOverallControls', Control::class);
-			foreach ($overallControls as $controlId => $control) {
-				$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;
-			}
-		}
+// 			$overallControls = $eiCommand->createOverallControls($eiu, $view);
+// 			ArgUtils::valArrayReturn($overallControls, $eiCommand, 'createOverallControls', Control::class);
+// 			foreach ($overallControls as $controlId => $control) {
+// 				$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;
+// 			}
+// 		}
 		
-		return $this->eiMask->getDisplayScheme()->getOverallControlOrder()->sort($controls);
-	}
+// 		return $this->eiMask->getDisplayScheme()->getOverallControlOrder()->sort($controls);
+// 	}
 	
 	/**
 	 * @param EiEntryGui $eiEntryGui

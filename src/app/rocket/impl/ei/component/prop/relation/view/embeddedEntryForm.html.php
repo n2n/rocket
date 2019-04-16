@@ -2,7 +2,7 @@
 	use rocket\impl\ei\component\prop\relation\model\mag\MappingForm;
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use rocket\ei\util\gui\EiuHtmlBuilder;
-use rocket\ei\manage\gui\ui\DisplayItem;
+use rocket\ei\mask\model\DisplayItem;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
@@ -87,7 +87,7 @@ use rocket\ei\manage\gui\ui\DisplayItem;
 			<div class="rocket-impl-body">
 				<?php $view->out($mappingForm->getEiuEntryForm()
 						->setContextPropertyPath($formHtml->meta()->propPath('eiuEntryForm'))
-						->createView($view, true, DisplayItem::TYPE_LIGHT_GROUP, $mappingForm->getEntryLabel())) ?>
+						->createView($view, true, SiStructureTypes::TYPE_LIGHT_GROUP, $mappingForm->getEntryLabel())) ?>
 			</div>
 		<?php endif ?>
 	<?php endif ?>

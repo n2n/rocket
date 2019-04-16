@@ -28,14 +28,12 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\si\control\SiButton;
 use rocket\si\control\SiIconType;
 use rocket\impl\ei\component\prop\file\command\controller\MultiUploadEiController;
-use rocket\ei\component\command\control\OverallControlComponent;
 use rocket\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
-use rocket\ei\manage\control\HrefControl;
 use rocket\impl\ei\component\prop\file\FileEiProp;
 use rocket\ei\EiPropPath;
 
-class MultiUploadEiCommand extends EiCommandAdapter implements OverallControlComponent {
+class MultiUploadEiCommand extends EiCommandAdapter {
 	const MULTI_UPLOAD_KEY = 'multi-upload';
 	/**
 	 * @var \rocket\impl\ei\component\prop\file\FileEiProp

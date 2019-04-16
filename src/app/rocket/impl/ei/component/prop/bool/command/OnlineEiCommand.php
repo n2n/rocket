@@ -23,8 +23,6 @@ namespace rocket\impl\ei\component\prop\bool\command;
 
 use rocket\impl\ei\component\prop\bool\OnlineEiProp;
 use n2n\l10n\DynamicTextCollection;
-use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\ei\component\command\control\EntryControlComponent;
 use n2n\l10n\N2nLocale;
 use rocket\si\control\SiIconType;
 use rocket\si\control\SiButton;
@@ -34,7 +32,7 @@ use n2n\web\http\controller\Controller;
 use n2n\util\uri\Path;
 use n2n\core\container\N2nContext;
 
-class OnlineEiCommand extends EiCommandAdapter implements EntryControlComponent {
+class OnlineEiCommand extends EiCommandAdapter {
 	const CONTROL_KEY = 'online_status';
 	const ID_BASE = 'online-status';
 	
@@ -59,11 +57,7 @@ class OnlineEiCommand extends EiCommandAdapter implements EntryControlComponent 
 		return $controller;
 	}
 	
-	/**
-	 * @param Eiu $eiu
-	 * @return \rocket\ei\manage\control\JhtmlControl
-	 */
-	public function createEntryControl(Eiu $eiu) {
+	public function createEntryControl(Eiu $eiu): array {
 		$eiuControlFactory = $eiu->frame()->controlFactory($this);
 		
 		$eiuEntry = $eiu->entry();
@@ -89,12 +83,10 @@ class OnlineEiCommand extends EiCommandAdapter implements EntryControlComponent 
 				->setForceReload(true)->setPushToHistory(false);
 	}
 	
-	public function createEntryControls(Eiu $eiu, HtmlView $view): array {
+	public function createEntryControls(Eiu $eiu): array {
 		return array(self::CONTROL_KEY => $this->createEntryControl($eiu));
 	}
-	/* (non-PHPdoc)
-	 * @see \rocket\ei\component\command\control\EntryControlComponent::getEntryControlOptions()
-	 */
+
 	public function getEntryControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {
 		$dtc = new DynamicTextCollection('rocket', $n2nLocale);
 		return array(self::CONTROL_KEY => $dtc->translate('ei_impl_online_set_label'));

@@ -46,7 +46,7 @@ use n2n\util\ex\IllegalStateException;
 use rocket\impl\ei\component\prop\adapter\EditablePropertyEiPropAdapter;
 use rocket\impl\ei\component\prop\adapter\PropertyDisplayableEiPropAdapter;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
-use rocket\ei\manage\gui\ui\DisplayItem;
+use rocket\si\structure\SiStructureTypes;
 
 class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPropConfigurator {
 	const ATTR_DISPLAY_IN_OVERVIEW_KEY = 'displayInOverview';
@@ -326,7 +326,7 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 		
 		if ($this->attributes->contains(self::ATTR_DISPLAY_ITEM_TYPE)) {
 			$this->displayConfig->setDisplayItemType(
-					$this->attributes->reqEnum(self::ATTR_DISPLAY_ITEM_TYPE, DisplayItem::getTypes()));
+					$this->attributes->reqEnum(self::ATTR_DISPLAY_ITEM_TYPE, SiStructureTypes::all()));
 		}
 	
 		if ($this->attributes->contains(self::ATTR_HELPTEXT_KEY)) {
@@ -369,7 +369,7 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 		}
 		
 		if ($this->addDisplayItemType) {
-			$types = DisplayItem::getTypes();
+			$types = SiStructureTypes::all();
 			$magCollection->addMag(self::ATTR_DISPLAY_ITEM_TYPE, new EnumMag('Container type', 
 					array_combine($types, $types), $this->displayConfig->getDisplayItemType(), true));
 		}

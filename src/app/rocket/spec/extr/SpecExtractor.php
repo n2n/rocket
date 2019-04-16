@@ -27,7 +27,7 @@ use n2n\util\type\attrs\AttributesException;
 use n2n\config\InvalidConfigurationException;
 use rocket\spec\InvalidSpecConfigurationException;
 use rocket\ei\mask\model\DisplayScheme;
-use rocket\ei\manage\gui\ui\DisplayStructure;
+use rocket\ei\mask\model\DisplayStructure;
 use rocket\ei\manage\gui\GuiFieldPath;
 use rocket\spec\InvalidEiMaskConfigurationException;
 use rocket\ei\mask\model\ControlOrder;
@@ -38,10 +38,11 @@ use n2n\persistence\orm\util\NestedSetStrategy;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\util\type\attrs\InvalidAttributeException;
 use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
-use rocket\ei\manage\gui\ui\DisplayItem;
+use rocket\ei\mask\model\DisplayItem;
 use n2n\util\StringUtils;
 use rocket\spec\TypePath;
 use rocket\core\model\Rocket;
+use rocket\si\structure\SiStructureTypes;
 
 class SpecExtractor {
 	private $attributes;
@@ -424,9 +425,9 @@ class SpecExtractor {
 			    }
 			    $childDisplayStructure = $this->createDisplayStructure($dsa);
 				$groupType = $displayStructureAttributes->optEnum(RawDef::GUI_FIELD_ORDER_GROUP_TYPE_KEY, DisplayItem::getGroupTypes(),
-						DisplayItem::TYPE_SIMPLE_GROUP);
+						SiStructureTypes::TYPE_SIMPLE_GROUP);
 				if ($groupType === null) {
-					$groupType = DisplayItem::TYPE_SIMPLE_GROUP;
+					$groupType = SiStructureTypes::TYPE_SIMPLE_GROUP;
 				}
 				
 				$displayStructure->addDisplayStructure($childDisplayStructure, $groupType, $title);
@@ -437,7 +438,7 @@ class SpecExtractor {
 			$guiFieldPathStr = $displayStructureAttributes->getScalar(RawDef::DISPLAY_ITEM_GUI_ID_PATH_KEY, false, null, true);
 			if (null !== $guiFieldPathStr) {
 				$displayStructure->addGuiFieldPath(GuiFieldPath::create($guiFieldPathStr), 
-						$displayStructureAttributes->optEnum(RawDef::DISPLAY_ITEM_GROUP_TYPE_KEY, DisplayItem::getTypes()), 
+						$displayStructureAttributes->optEnum(RawDef::DISPLAY_ITEM_GROUP_TYPE_KEY, SiStructureTypes::all()), 
 						Rocket::buildLstr($label, $this->moduleNamespace));
 				continue;
 			}
@@ -445,7 +446,7 @@ class SpecExtractor {
 			$childDisplayStructure = $this->createDisplayStructure(
 					$displayStructureAttributes->getArray(RawDef::DISPLAY_ITEM_DISPLAY_STRUCTURE_KEY));
 			$displayStructure->addDisplayStructure($childDisplayStructure, 
-					$displayStructureAttributes->reqEnum(RawDef::DISPLAY_ITEM_GROUP_TYPE_KEY, DisplayItem::getTypes()), 
+					$displayStructureAttributes->reqEnum(RawDef::DISPLAY_ITEM_GROUP_TYPE_KEY, SiStructureTypes::all()), 
 					Rocket::buildLstr($label, $this->moduleNamespace));
 		}
 	

@@ -24,14 +24,12 @@ namespace rocket\impl\ei\component\command\common;
 use n2n\l10n\DynamicTextCollection;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\N2nLocale;
-use rocket\ei\component\command\control\OverallControlComponent;
 use rocket\si\control\SiButton;
 use rocket\si\control\SiIconType;
 use rocket\impl\ei\component\command\IndependentEiCommandAdapter;
 use rocket\ei\component\command\PrivilegedEiCommand;
 use n2n\core\container\N2nContext;
 use rocket\core\model\Rocket;
-use rocket\ei\component\command\control\EntryControlComponent;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\security\privilege\EiCommandPrivilege;
 use n2n\web\http\controller\Controller;
@@ -46,8 +44,7 @@ use n2n\util\type\CastUtils;
 use rocket\impl\ei\component\EiConfiguratorAdapter;
 use rocket\ei\component\EiConfigurator;
 
-class AddEiCommand extends IndependentEiCommandAdapter implements OverallControlComponent, EntryControlComponent,
-		PrivilegedEiCommand {
+class AddEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiCommand {
 	const ID_BASE = 'add';
 	const CONTROL_ADD_KEY = 'add';
 	const CONTROL_DUPLICATE_KEY = 'duplicate';
@@ -147,7 +144,7 @@ class AddEiCommand extends IndependentEiCommandAdapter implements OverallControl
 		return array(self::CONTROL_INSERT_BRANCH_KEY => $dtc->t('ei_impl_insert_branch_label'));
 	}
 
-	public function createEntryControls(Eiu $eiu, HtmlView $view): array {
+	public function createEntryControls(Eiu $eiu): array {
 		if ($eiu->frame()->isExecutedBy($this)) {
 			return array();
 		}

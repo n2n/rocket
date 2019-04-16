@@ -29,7 +29,7 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\gui\GuiField;
 use rocket\ei\util\Eiu;
 use n2n\l10n\N2nLocale;
-use rocket\ei\manage\gui\ui\DisplayItem;
+use rocket\ei\mask\model\DisplayItem;
 use rocket\si\content\SiField;
 
 class ManyToOneGuiField implements GuiField, GuiFieldDisplayable {
@@ -66,7 +66,7 @@ class ManyToOneGuiField implements GuiField, GuiFieldDisplayable {
 	}
 	
 	public function getDisplayItemType(): string {
-		return DisplayItem::TYPE_PANEL;
+		return SiStructureTypes::TYPE_PANEL;
 	}
 	
 	public function createOutSiField(Eiu $eiu): SiField {

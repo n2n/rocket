@@ -28,7 +28,7 @@ use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
 use rocket\ei\manage\frame\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\impl\ei\component\prop\ci\ContentItemsEiProp;
-use rocket\ei\manage\gui\ui\DisplayItem;
+use rocket\ei\mask\model\DisplayItem;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\util\Eiu;
 use n2n\l10n\Lstr;
@@ -78,7 +78,7 @@ class ContentItemGuiField implements GuiField, GuiFieldDisplayable {
 	 * @see \rocket\ei\manage\gui\GuiField::getDisplayItemType()
 	 */
 	public function getDisplayItemType(): string {
-		return DisplayItem::TYPE_SIMPLE_GROUP;
+		return SiStructureTypes::TYPE_SIMPLE_GROUP;
 	}
 	
 	/**

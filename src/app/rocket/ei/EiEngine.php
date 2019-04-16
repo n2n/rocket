@@ -303,15 +303,6 @@ class EiEngine {
 	}
 	
 	/**
-	 * @param EiGui $eiGui
-	 * @param HtmlView $view
-	 * @return \rocket\ei\manage\control\Control[]
-	 */
-	public function createEiGuiOverallControls(EiGui $eiGui, HtmlView $view) {
-		return (new GuiFactory($this->eiMask))->createOverallControls($eiGui, $view);
-	}
-	
-	/**
 	 * @param EiEntryGui $eiEntryGui
 	 * @param HtmlView $view
 	 * @return \rocket\ei\manage\control\Control[]

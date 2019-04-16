@@ -21,23 +21,16 @@
  */
 namespace rocket\ei\manage\control;
 
+use rocket\ei\manage\frame\EiFrame;
+use rocket\ei\util\Eiu;
+use n2n\util\type\ArgUtils;
 use rocket\ei\IdPath;
+use n2n\util\StringUtils;
+use rocket\ei\manage\entry\EiEntry;
+use rocket\si\control\SiControl;
 
-class EiControlPath extends IdPath {
+class ControlDefinition {
 	
-	public function ext(...$args): EiControlPath {
-		return new EiControlPath(array_merge($this->ids, $this->argsToIds($args)));
-	}
 	
-	public static function create($expression): EiControlPath {
-		if ($expression instanceof EiControlPath) {
-			return $expression;
-		}
-		
-		if (is_array($expression)) {
-			return new EiControlPath($expression);
-		}
-		
-		return new EiControlPath(explode(self::ID_SEPARATOR, $expression));
-	}
+	
 }

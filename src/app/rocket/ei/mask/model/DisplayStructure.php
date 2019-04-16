@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\gui\ui;
+namespace rocket\ei\mask\model;
 
 use rocket\ei\manage\gui\GuiFieldPath;
 use n2n\util\type\ArgUtils;
@@ -102,21 +102,21 @@ class DisplayStructure {
 	}
 		
 	/**
-	 * @return \rocket\ei\manage\gui\ui\DisplayStructure
+	 * @return \rocket\ei\mask\model\DisplayStructure
 	 */
 	public function groupedItems() {
 		$displayStructure = new DisplayStructure();
 		
 		$curDisplayStructure = null;
 		foreach ($this->displayItems as $displayItem) {
-			if ($displayItem->getType() == DisplayItem::TYPE_PANEL 
+			if ($displayItem->getType() == SiStructureTypes::TYPE_PANEL 
 					&& $this->containsNonGrouped($displayItem)) {
-				$displayStructure->addDisplayItem($displayItem->copy(DisplayItem::TYPE_SIMPLE_GROUP));
+				$displayStructure->addDisplayItem($displayItem->copy(SiStructureTypes::TYPE_SIMPLE_GROUP));
 				$curDisplayStructure = null;
 				continue;
 			}
 			
-			if ($displayItem->getType() != DisplayItem::TYPE_ITEM) {
+			if ($displayItem->getType() != SiStructureTypes::TYPE_ITEM) {
 				$displayStructure->addDisplayItem($displayItem);
 				$curDisplayStructure = null;
 				continue;
@@ -124,7 +124,7 @@ class DisplayStructure {
 			
 			if ($curDisplayStructure === null) {
 				$curDisplayStructure = new DisplayStructure();
-				$displayStructure->addDisplayStructure($curDisplayStructure, DisplayItem::TYPE_SIMPLE_GROUP);
+				$displayStructure->addDisplayStructure($curDisplayStructure, SiStructureTypes::TYPE_SIMPLE_GROUP);
 			}
 			
 			$curDisplayStructure->addDisplayItem($displayItem);
@@ -143,7 +143,7 @@ class DisplayStructure {
 		foreach ($displayItem->getDisplayStructure()->getDisplayItems() as $displayItem) {
 			if ($displayItem->isGroup()) continue;
 			
-			if ($displayItem->getType() == DisplayItem::TYPE_PANEL
+			if ($displayItem->getType() == SiStructureTypes::TYPE_PANEL
 					&& !$this->containsNonGrouped($displayItem)) {
 				continue;
 			}
@@ -167,8 +167,8 @@ class DisplayStructure {
 			$groupType = $displayItem->getType();
 			
 			if (!$displayItem->hasDisplayStructure()) {
-				if ($groupType == DisplayItem::TYPE_AUTONOMIC_GROUP) {
-					$autonomicDs->addGuiFieldPath($displayItem->getGuiFieldPath(), DisplayItem::TYPE_SIMPLE_GROUP, $displayItem->getLabel(), 
+				if ($groupType == SiStructureTypes::TYPE_AUTONOMIC_GROUP) {
+					$autonomicDs->addGuiFieldPath($displayItem->getGuiFieldPath(), SiStructureTypes::TYPE_SIMPLE_GROUP, $displayItem->getLabel(), 
 							$displayItem->getModuleNamespace());
 				} else if ($displayItem->getType() == $groupType) {
 					$ds->displayItems[] = $displayItem;
@@ -180,10 +180,10 @@ class DisplayStructure {
 			
 			$newDisplayStructure = new DisplayStructure();
 			$this->roAutonomics($displayItem->getDisplayStructure()->getDisplayItems(), $newDisplayStructure, 
-					($displayItem->getType() == DisplayItem::TYPE_MAIN_GROUP ? $newDisplayStructure : $autonomicDs));
+					($displayItem->getType() == SiStructureTypes::TYPE_MAIN_GROUP ? $newDisplayStructure : $autonomicDs));
 			
-			if ($displayItem->getType() == DisplayItem::TYPE_AUTONOMIC_GROUP) {
-				$autonomicDs->addDisplayStructure($newDisplayStructure, DisplayItem::TYPE_SIMPLE_GROUP, 
+			if ($displayItem->getType() == SiStructureTypes::TYPE_AUTONOMIC_GROUP) {
+				$autonomicDs->addDisplayStructure($newDisplayStructure, SiStructureTypes::TYPE_SIMPLE_GROUP, 
 						$displayItem->getLabel(), $displayItem->getModuleNamespace());	
 			} else {
 				$ds->addDisplayStructure($newDisplayStructure, $displayItem->getType(), $displayItem->getLabel(), 
@@ -281,7 +281,7 @@ class DisplayStructure {
 	/**
 	 * @param DisplayStructure $displayStructure
 	 * @param EiGui $eiGui
-	 * @return \rocket\ei\manage\gui\ui\DisplayStructure
+	 * @return \rocket\ei\mask\model\DisplayStructure
 	 */
 	private function rPurifyDisplayStructure($displayStructure, $eiGui) {
 		$purifiedDisplayStructure = new DisplayStructure();

@@ -25,7 +25,7 @@ use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\si\control\SiResult;
 
-interface SelectionEiControl extends EiControl {
+interface SelectionGuiControl extends GuiControl {
 	
 	/**
 	 * @param EiFrame $eiFrame

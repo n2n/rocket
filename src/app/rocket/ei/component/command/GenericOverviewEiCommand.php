@@ -23,7 +23,7 @@ namespace rocket\ei\component\command;
 
 use n2n\util\ex\IllegalStateException;
 
-interface GenericOverviewEiCommand extends ControllerEiCommand {
+interface GenericOverviewEiCommand {
 	
 	/**
 	 * 

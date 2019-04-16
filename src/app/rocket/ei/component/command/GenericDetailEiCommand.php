@@ -21,10 +21,9 @@
  */
 namespace rocket\ei\component\command;
 
-use rocket\ei\manage\control\EntryNavPoint;
 use n2n\util\ex\UnsupportedOperationException;
 
-interface GenericDetailEiCommand extends ControllerEiCommand {
+interface GenericDetailEiCommand {
 	
 	public function isDetailAvailable(EntryNavPoint $entryNavPoint): bool;
 	
