@@ -138,13 +138,13 @@ class AddEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiCo
 		return $controls;
 	}
 
-	public function getEntryControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {
+	public function getEntryGuiControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {
 		$dtc = new DynamicTextCollection('rocket', $n2nLocale);
 		
 		return array(self::CONTROL_INSERT_BRANCH_KEY => $dtc->t('ei_impl_insert_branch_label'));
 	}
 
-	public function createEntryControls(Eiu $eiu): array {
+	public function createEntryGuiControls(Eiu $eiu): array {
 		if ($eiu->frame()->isExecutedBy($this)) {
 			return array();
 		}

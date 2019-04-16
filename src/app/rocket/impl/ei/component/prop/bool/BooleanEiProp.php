@@ -39,7 +39,7 @@ use rocket\impl\ei\component\prop\bool\conf\BooleanEiPropConfigurator;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\sort\SortProp;
-use rocket\ei\manage\gui\GuiFieldPath;
+use rocket\ei\manage\gui\field\GuiFieldPath;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
 use n2n\impl\persistence\orm\property\BoolEntityProperty;
 use rocket\ei\component\prop\SecurityFilterEiProp;

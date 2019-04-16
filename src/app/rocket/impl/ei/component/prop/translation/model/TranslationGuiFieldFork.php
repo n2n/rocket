@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\translation\model;
 
-use rocket\ei\manage\gui\GuiFieldPath;
+use rocket\ei\manage\gui\field\GuiFieldPath;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\gui\GuiDefinition;
 use n2n\l10n\N2nLocale;
@@ -31,16 +31,16 @@ use rocket\impl\ei\component\prop\translation\conf\N2nLocaleDef;
 use n2n\util\uri\Url;
 use n2n\web\dispatch\mag\Mag;
 use n2n\util\ex\IllegalStateException;
-use rocket\ei\manage\gui\GuiFieldForkEditable;
+use rocket\ei\manage\gui\field\GuiFieldForkEditable;
 use rocket\ei\manage\gui\MagAssembly;
-use rocket\ei\manage\gui\GuiFieldFork;
+use rocket\ei\manage\gui\field\GuiFieldFork;
 use n2n\impl\web\ui\view\html\HtmlUtils;
 use rocket\ei\util\gui\EiuEntryGuiAssembler;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use rocket\ei\manage\entry\EiFieldValidationResult;
-use rocket\ei\manage\gui\GuiFieldDisplayable;
+use rocket\ei\manage\gui\field\GuiFieldDisplayable;
 use rocket\si\content\SiField;
-use rocket\ei\manage\gui\GuiField;
+use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\util\Eiu;
 
 class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
@@ -227,7 +227,7 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiFieldFork::buildForkMag()
+	 * @see \rocket\ei\manage\gui\field\GuiFieldFork::buildForkMag()
 	 */
 	public function getForkMag(): Mag {
 		IllegalStateException::assertTrue($this->translationForm !== null);

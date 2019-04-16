@@ -3,7 +3,7 @@ namespace rocket\ei\manage\gui;
 
 use n2n\l10n\Lstr;
 use n2n\util\type\ArgUtils;
-use rocket\ei\mask\model\DisplayItem;
+use rocket\si\structure\SiStructureTypes;
 
 class DisplayDefinition {
 	private $displayItemType;

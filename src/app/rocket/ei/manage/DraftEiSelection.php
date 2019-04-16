@@ -22,7 +22,7 @@
 namespace rocket\ei\manage;
 
 use rocket\ei\manage\draft\Draft;
-use rocket\ei\manage\control\EntryNavPoint;
+use rocket\ei\manage\gui\control\EntryNavPoint;
 
 class DraftEiObject extends EiObjectAdapter {
 	private $draft;

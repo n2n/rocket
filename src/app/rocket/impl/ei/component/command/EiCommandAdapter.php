@@ -75,17 +75,17 @@ abstract class EiCommandAdapter extends EiComponentAdapter implements EiCommand 
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\command\EiCommand::createSelectionControls()
+	 * @see \rocket\ei\component\command\EiCommand::createSelectionGuiControls()
 	 */
-	public function createSelectionControls(Eiu $eiu): array {
+	public function createSelectionGuiControls(Eiu $eiu): array {
 		return [];
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\command\EiCommand::createEntryControls()
+	 * @see \rocket\ei\component\command\EiCommand::createEntryGuiControls()
 	 */
-	public function createEntryControls(Eiu $eiu): array {
+	public function createEntryGuiControls(Eiu $eiu): array {
 		return [];
 	}
 
@@ -93,7 +93,7 @@ abstract class EiCommandAdapter extends EiComponentAdapter implements EiCommand 
 	 * {@inheritDoc}
 	 * @see \rocket\ei\component\command\EiCommand::createOverallControls()
 	 */
-	public function createGeneralControls(Eiu $eiu): array {
+	public function createGeneralGuiControls(Eiu $eiu): array {
 		return [];
 	}
 }

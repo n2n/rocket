@@ -1,7 +1,7 @@
 <?php
 namespace rocket\ei\mask\model;
 
-use rocket\ei\manage\gui\GuiFieldPath;
+use rocket\ei\manage\gui\field\GuiFieldPath;
 use n2n\util\ex\IllegalStateException;
 use n2n\util\type\ArgUtils;
 use n2n\l10n\Lstr;

@@ -21,9 +21,9 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model;
 
-use rocket\ei\manage\gui\GuiField;
-use rocket\ei\manage\gui\GuiFieldDisplayable;
-use rocket\ei\manage\gui\GuiFieldEditable;
+use rocket\ei\manage\gui\field\GuiField;
+use rocket\ei\manage\gui\field\GuiFieldDisplayable;
+use rocket\ei\manage\gui\field\GuiFieldEditable;
 use rocket\ei\manage\frame\EiFrame;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\util\ex\IllegalStateException;
@@ -69,7 +69,7 @@ class EmbeddedOneToOneGuiField implements GuiField, GuiFieldDisplayable {
 	}
 
 	public function getDisplayItemType(): string {
-		return SiStructureTypes::TYPE_SIMPLE_GROUP;
+		return SiStructureTypes::SIMPLE_GROUP;
 	}
 	
 	/**
@@ -104,7 +104,7 @@ class EmbeddedOneToOneGuiField implements GuiField, GuiFieldDisplayable {
 		if (!$this->reduced) {
 			$eiuEntry = $targetUtils->entry($targetRelationEntry->toEiEntry($targetUtils));
 			return $eiuEntry->newEntryGui()/*->allowControls()
-					->addDisplayContainer(SiStructureTypes::TYPE_LIGHT_GROUP, $eiuEntry->getGenericLabel())*/
+					->addDisplayContainer(SiStructureTypes::LIGHT_GROUP, $eiuEntry->getGenericLabel())*/
 					->createView($view);
 		}
 		
@@ -119,7 +119,7 @@ class EmbeddedOneToOneGuiField implements GuiField, GuiFieldDisplayable {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiField::createEditable()
+	 * @see \rocket\ei\manage\gui\field\GuiField::createEditable()
 	 */
 	public function getEditable(): GuiFieldEditable {
 		if ($this->editable !== null) {

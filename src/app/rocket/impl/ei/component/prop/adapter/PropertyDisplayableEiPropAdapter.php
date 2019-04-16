@@ -35,7 +35,7 @@ use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\gui\DisplayDefinition;
 use n2n\util\type\ArgUtils;
 use rocket\ei\manage\gui\ViewMode;
-use rocket\ei\manage\gui\GuiField;
+use rocket\ei\manage\gui\field\GuiField;
 use rocket\core\model\Rocket;
 use n2n\l10n\Lstr;
 use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable;
@@ -64,7 +64,7 @@ abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter im
 	 * @return string
 	 */
 	public function getDisplayItemType(Eiu $eiu): string {
-		return SiStructureTypes::TYPE_ITEM;
+		return SiStructureTypes::ITEM;
 	}
 	
 	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {

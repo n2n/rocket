@@ -147,14 +147,14 @@ class DisplayScheme {
 	/**
 	 * @return \rocket\ei\mask\model\ControlOrder|null
 	 */
-	public function getEntryControlOrder() {
+	public function getEntryGuiControlOrder() {
 		return $this->entryControlOrder;
 	}
 	
 	/**
 	 * @param ControlOrder|null $entryControlOrder
 	 */
-	public function setEntryControlOrder(ControlOrder $entryControlOrder = null) {
+	public function setEntryGuiControlOrder(ControlOrder $entryControlOrder = null) {
 		$this->entryControlOrder = $entryControlOrder;
 	}
 	
@@ -238,13 +238,13 @@ class DisplayScheme {
 // 	 * @param N2nLocale $n2nLocale
 // 	 * @return array
 // 	 */
-// 	public static function buildEntryControlMap(EiMask $eiDef, N2nLocale $n2nLocale) {
+// 	public static function buildEntryGuiControlMap(EiMask $eiDef, N2nLocale $n2nLocale) {
 // 		$labels = array();
 	
 // 		foreach ($this->eiType->getEiCommandCollection() as $eiCommandId => $eiCommand) {
-// 			if (!($eiCommand instanceof EntryControlComponent)) continue;
+// 			if (!($eiCommand instanceof EntryGuiControlComponent)) continue;
 				
-// 			foreach ($eiCommand->getEntryControlOptions($n2nLocale) as $controlId => $label) {
+// 			foreach ($eiCommand->getEntryGuiControlOptions($n2nLocale) as $controlId => $label) {
 // 				$labels[ControlOrder::buildControlId($eiCommandId, $controlId)] = $label;
 // 			}
 // 		}

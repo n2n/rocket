@@ -87,7 +87,7 @@ use rocket\ei\mask\model\DisplayItem;
 			<div class="rocket-impl-body">
 				<?php $view->out($mappingForm->getEiuEntryForm()
 						->setContextPropertyPath($formHtml->meta()->propPath('eiuEntryForm'))
-						->createView($view, true, SiStructureTypes::TYPE_LIGHT_GROUP, $mappingForm->getEntryLabel())) ?>
+						->createView($view, true, SiStructureTypes::LIGHT_GROUP, $mappingForm->getEntryLabel())) ?>
 			</div>
 		<?php endif ?>
 	<?php endif ?>

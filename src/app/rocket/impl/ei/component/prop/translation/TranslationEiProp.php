@@ -33,7 +33,7 @@ use rocket\impl\ei\component\prop\adapter\entry\Readable;
 use rocket\impl\ei\component\prop\adapter\entry\Writable;
 use rocket\ei\manage\entry\EiField;
 use rocket\ei\component\prop\FieldEiProp;
-use rocket\ei\manage\gui\GuiFieldFork;
+use rocket\ei\manage\gui\field\GuiFieldFork;
 use rocket\ei\manage\EiObject;
 use rocket\impl\ei\component\prop\relation\model\relation\EiPropRelation;
 use n2n\core\container\N2nContext;
@@ -66,7 +66,7 @@ use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\ei\component\prop\GuiEiPropFork;
 use rocket\ei\manage\gui\GuiProp;
-use rocket\ei\manage\gui\GuiFieldPath;
+use rocket\ei\manage\gui\field\GuiFieldPath;
 use rocket\ei\manage\gui\EiFieldAbstraction;
 use rocket\ei\manage\LiveEiObject;
 

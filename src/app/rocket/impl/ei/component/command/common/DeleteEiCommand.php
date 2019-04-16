@@ -56,7 +56,7 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 		return $eiu->lookup(DeleteController::class);
 	}
 	
-	public function createEntryControls(Eiu $eiu): array {
+	public function createEntryGuiControls(Eiu $eiu): array {
 		$eiuEntry = $eiu->entry();
 		$eiuFrame = $eiu->frame();
 		
@@ -101,7 +101,7 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 		return array(self::CONTROL_BUTTON_KEY => $hrefControl);
 	}
 	
-	public function getEntryControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {
+	public function getEntryGuiControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {
 		$dtc = new DynamicTextCollection('rocket');
 		
 		return array(self::CONTROL_BUTTON_KEY => $dtc->translate('ei_impl_delete_draft_label'));

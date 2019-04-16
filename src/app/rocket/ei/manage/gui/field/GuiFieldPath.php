@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\gui;
+namespace rocket\ei\manage\gui\field;
 
 use n2n\util\ex\IllegalStateException;
 use n2n\util\type\ArgUtils;
@@ -78,7 +78,7 @@ class GuiFieldPath implements Hashable {
 	
 	/**
 	 * @throws IllegalStateException
-	 * @return \rocket\ei\manage\gui\GuiFieldPath
+	 * @return \rocket\ei\manage\gui\field\GuiFieldPath
 	 */
 	public function getShifted() {
 		$eiPropPaths = $this->eiPropPaths;
@@ -91,7 +91,7 @@ class GuiFieldPath implements Hashable {
 	
 	/**
 	 * @throws IllegalStateException
-	 * @return \rocket\ei\manage\gui\GuiFieldPath
+	 * @return \rocket\ei\manage\gui\field\GuiFieldPath
 	 */
 	public function getPoped() {
 		$eiPropPaths = $this->eiPropPaths;
@@ -153,7 +153,7 @@ class GuiFieldPath implements Hashable {
 	
 	/**
 	 * @param mixed $expression
-	 * @return \rocket\ei\manage\gui\GuiFieldPath
+	 * @return \rocket\ei\manage\gui\field\GuiFieldPath
 	 */
 	public static function create($expression) {
 		if ($expression instanceof GuiFieldPath) {

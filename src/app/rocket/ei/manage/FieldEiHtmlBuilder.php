@@ -29,7 +29,7 @@ use n2n\util\ex\IllegalStateException;
 use n2n\web\ui\Raw;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use n2n\web\ui\UiComponent;
-use rocket\ei\manage\gui\GuiFieldDisplayable;
+use rocket\ei\manage\gui\field\GuiFieldDisplayable;
 
 class FieldEiHtmlBuilder {
 	private $view;

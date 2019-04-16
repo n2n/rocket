@@ -21,15 +21,21 @@
  */
 namespace rocket\si\content;
 
+use rocket\si\control\SiControl;
+
 class SiEntry implements \JsonSerializable {
 	private $category;
 	private $id;
 	private $name;
 	private $treeLevel;
 	/**
-	 * @var SiField[]
+	 * @var SiField[] $fields
 	 */
-	private $siFields;
+	private $fields = [];
+	/**
+	 * @var SiControl[] $controls
+	 */	
+	private $controls = [];
 	
 	/**
 	 * @param string $category
@@ -45,7 +51,7 @@ class SiEntry implements \JsonSerializable {
 	/**
 	 * @return string
 	 */
-	public function getCategory() {
+	function getCategory() {
 		return $this->category;
 	}
 
@@ -53,7 +59,7 @@ class SiEntry implements \JsonSerializable {
 	 * @param string $category
 	 * @return SiEntry
 	 */
-	public function setCategory(string $category) {
+	function setCategory(string $category) {
 		$this->category = $category;
 		return $this;
 	}
@@ -61,7 +67,7 @@ class SiEntry implements \JsonSerializable {
 	/**
 	 * @return string
 	 */
-	public function getId() {
+	function getId() {
 		return $this->id;
 	}
 
@@ -69,7 +75,7 @@ class SiEntry implements \JsonSerializable {
 	 * @param string|null $id
 	 * @return SiEntry
 	 */
-	public function setId(?string $id) {
+	function setId(?string $id) {
 		$this->id = $id;
 		return $this;
 	}
@@ -77,7 +83,7 @@ class SiEntry implements \JsonSerializable {
 	/**
 	 * @return string
 	 */
-	public function getName() {
+	function getName() {
 		return $this->name;
 	}
 
@@ -85,7 +91,7 @@ class SiEntry implements \JsonSerializable {
 	 * @param string $name
 	 * @return SiEntry
 	 */
-	public function setName(string $name) {
+	function setName(string $name) {
 		$this->name = $name;
 		return $this;
 	}
@@ -93,7 +99,7 @@ class SiEntry implements \JsonSerializable {
 	/**
 	 * @return mixed
 	 */
-	public function getTreeLevel() {
+	function getTreeLevel() {
 		return $this->treeLevel;
 	}
 
@@ -101,41 +107,67 @@ class SiEntry implements \JsonSerializable {
 	 * @param int|null $treeLevel
 	 * @return SiEntry
 	 */
-	public function setTreeLevel(?int $treeLevel) {
+	function setTreeLevel(?int $treeLevel) {
 		$this->treeLevel = $treeLevel;
 	}
 
 	/**
 	 * @return SiField[]
 	 */
-	public function getSiFields() {
-		return $this->siFields;
+	function getFields() {
+		return $this->fields;
 	}
 
 	/**
-	 * @param SiField[] $fields key is siFieldId 
+	 * @param SiField[] $fields key is fieldId 
 	 */
-	public function setSiFields(array $siFields) {
-		$this->siFields = $siFields;
+	function setFields(array $fields) {
+		$this->fields = $fields;
 		return $this;
 	}
 	
 	/**
 	 * @param string $id
-	 * @param SiField $siField
+	 * @param SiField $field
 	 * @return \rocket\si\content\SiEntry
 	 */
-	function putSiField(string $id, SiField $siField) {
-		$this->siFields[$id] = $siField;
+	function putField(string $id, SiField $field) {
+		$this->fields[$id] = $field;
 		return $this;
 	}
 	
-	public function jsonSerialize() {
-		$siFieldsArr = array();
-		foreach ($this->siFields as $id => $siField) {
-			$siFieldsArr[$id] = [
-				'type' => $siField->getType(),
-				'data' => $siField->getData()
+	/**
+	 * @return SiControl[] 
+	 */
+	function getControls() {
+		return $this->controls;
+	}
+	
+	/**
+	 * @param SiControl[] $controls
+	 * @return \rocket\si\content\SiEntry
+	 */
+	function setControls(array $controls) {
+		$this->controls = $controls;
+		return $this;
+	}
+	
+	/**
+	 * @param string $id
+	 * @param SiControl $control
+	 * @return \rocket\si\content\SiEntry
+	 */
+	function putControl(string $id, SiControl $control) {
+		$this->controls[$id] = $control;
+		return $this;
+	}
+	
+	function jsonSerialize() {
+		$fieldsArr = array();
+		foreach ($this->fields as $id => $field) {
+			$fieldsArr[$id] = [
+				'type' => $field->getType(),
+				'data' => $field->getData()
 			];
 		}
 		
@@ -144,7 +176,7 @@ class SiEntry implements \JsonSerializable {
 			'id' => $this->id,
 			'name' => $this->name,
 			'treeLevel' => $this->treeLevel,
-			'siFields' => $siFieldsArr
+			'fields' => $fieldsArr
 		];
 	}
 

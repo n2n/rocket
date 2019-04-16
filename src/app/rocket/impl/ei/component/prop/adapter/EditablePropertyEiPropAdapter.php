@@ -41,7 +41,7 @@ use rocket\ei\manage\entry\EiFieldValidationResult;
 use rocket\impl\ei\component\prop\adapter\entry\Validatable;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\impl\ei\component\prop\adapter\entry\Copyable;
-use rocket\ei\manage\gui\GuiField;
+use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\manage\gui\GuiProp;
 use n2n\web\dispatch\mag\MagCollection;
 use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldEditable;

@@ -30,7 +30,7 @@ use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\ei\manage\gui\ViewMode;
-use rocket\ei\manage\gui\GuiField;
+use rocket\ei\manage\gui\field\GuiField;
 use rocket\core\model\Rocket;
 use n2n\l10n\Lstr;
 use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable;

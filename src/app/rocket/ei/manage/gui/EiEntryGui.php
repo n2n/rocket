@@ -27,8 +27,9 @@ use n2n\web\dispatch\mag\MagWrapper;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\mask\EiMask;
 use rocket\ei\manage\entry\EiEntry;
-use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\ei\manage\control\Control;
+use rocket\ei\manage\gui\field\GuiFieldPath;
+use rocket\ei\manage\gui\field\GuiFieldFork;
+use rocket\ei\manage\gui\field\GuiField;
 
 class EiEntryGui {
 	/**
@@ -146,7 +147,7 @@ class EiEntryGui {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\gui\GuiFieldPath[]
+	 * @return \rocket\ei\manage\gui\field\GuiFieldPath[]
 	 */
 	public function getGuiFieldGuiFieldPaths() {
 		$guiFieldPaths = array();
@@ -171,7 +172,7 @@ class EiEntryGui {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\gui\GuiField[]
+	 * @return \rocket\ei\manage\gui\field\GuiField[]
 	 */
 	public function getGuiFields() {
 		$this->ensureInitialized();
@@ -181,7 +182,7 @@ class EiEntryGui {
 	
 	/**
 	 * @param GuiFieldPath $prefixGuiFieldPath
-	 * @return \rocket\ei\manage\gui\GuiField[]
+	 * @return \rocket\ei\manage\gui\field\GuiField[]
 	 */
 	public function filterGuiFields(GuiFieldPath $prefixGuiFieldPath, bool $checkOnEiPropPathLevel) {
 		$this->ensureInitialized();
@@ -228,7 +229,7 @@ class EiEntryGui {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\gui\GuiFieldPath[]
+	 * @return \rocket\ei\manage\gui\field\GuiFieldPath[]
 	 */
 	public function getGuiFieldForkGuiFieldPaths() {
 		$eiPropPaths = array();
@@ -372,14 +373,6 @@ class EiEntryGui {
 	
 	public function unregisterEiEntryGuiListener(EiEntryGuiListener $eiEntryGuiListener) {
 		unset($this->eiEntryGuiListeners[spl_object_hash($eiEntryGuiListener)]);
-	}
-	
-	/**
-	 * @param HtmlView $view
-	 * @return Control[]
-	 */
-	public function createControls(HtmlView $view) {
-		return $this->eiEntry->getEiMask()->getEiEngine()->createEiEntryGuiControls($this, $view);
 	}
 	
 	public function __toString() {

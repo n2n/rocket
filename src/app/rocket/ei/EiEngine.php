@@ -49,7 +49,7 @@ use n2n\web\http\controller\ControllerContext;
 use rocket\ei\manage\gui\EiEntryGui;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\gui\EiGui;
-use rocket\ei\manage\control\ControlDefinition;
+use rocket\ei\manage\gui\control\ControlDefinition;
 
 class EiEngine {
 	private $eiMask;
@@ -161,7 +161,7 @@ class EiEngine {
 		return $this->controlDefinition;
 	}
 	
-	public function createEntryControlDefinition() {
+	public function createEntryGuiControlDefinition() {
 		
 	}
 	
@@ -305,10 +305,10 @@ class EiEngine {
 	/**
 	 * @param EiEntryGui $eiEntryGui
 	 * @param HtmlView $view
-	 * @return \rocket\ei\manage\control\Control[]
+	 * @return \rocket\ei\manage\gui\control\Control[]
 	 */
 	public function createEiEntryGuiControls(EiEntryGui $eiEntryGui, HtmlView $view) {
-		return (new GuiFactory($this->eiMask))->createEntryControls($eiEntryGui, $view);
+		return (new GuiFactory($this->eiMask))->createEntryGuiControls($eiEntryGui, $view);
 	}
 	
 }

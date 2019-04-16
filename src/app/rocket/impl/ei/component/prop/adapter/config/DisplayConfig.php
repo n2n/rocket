@@ -31,7 +31,7 @@ class DisplayConfig {
 	private $compatibleViewModes;
 	private $defaultDisplayedViewModes;
 	
-	private $displayItemType = SiStructureTypes::TYPE_ITEM;
+	private $displayItemType = SiStructureTypes::ITEM;
 	
 	private $helpText;
 	
@@ -134,7 +134,7 @@ class DisplayConfig {
 	 * @param int $viewMode
 	 * @return DisplayDefinition|null
 	 */
-	public function toDisplayDefinition(EiProp $eiProp, int $viewMode, string $groupType = SiStructureTypes::TYPE_ITEM) {
+	public function toDisplayDefinition(EiProp $eiProp, int $viewMode, string $groupType = SiStructureTypes::ITEM) {
 		if (!$this->isViewModeCompatible($viewMode)) return null;
 		
 		return new DisplayDefinition($groupType,

@@ -31,7 +31,7 @@ use rocket\ei\manage\gui\GuiPropFork;
 use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\util\entry\EiuEntry;
 use rocket\ei\mask\EiMask;
-use rocket\ei\manage\gui\GuiFieldPath;
+use rocket\ei\manage\gui\field\GuiFieldPath;
 use rocket\ei\manage\gui\EiGui;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\entry\EiEntry;
@@ -55,7 +55,7 @@ class ControlFactory {
 	 * @param GuiDefinition|null $guiDefinition
 	 * @return \rocket\ei\manage\gui\GuiDefinition
 	 */
-	public function createEntryControlDefinition(N2nContext $n2nContext, &$guiDefinition = null) {
+	public function createEntryGuiControlDefinition(N2nContext $n2nContext, &$guiDefinition = null) {
 		$eiu = new Eiu($n2nContext, $this->eiMask);
 		
 		$guiDefinition = new GuiDefinition($this->eiMask->getLabelLstr());
@@ -162,25 +162,25 @@ class ControlFactory {
 	 * @param HtmlView $view
 	 * @return Control[]
 	 */
-	public function createEntryControls(EiEntryGui $eiEntryGui, HtmlView $view) {
+	public function createEntryGuiControls(EiEntryGui $eiEntryGui, HtmlView $view) {
 		$eiu = new Eiu($eiEntryGui);
 		
 		$controls = array();
 		
 		foreach ($this->eiMask->getEiCommandCollection() as $eiCommandId => $eiCommand) {
-			if (!($eiCommand instanceof EntryControlComponent)
+			if (!($eiCommand instanceof EntryGuiControlComponent)
 					|| !$eiu->entry()->access()->isExecutableBy($eiCommand)) {
 						continue;
 					}
 					
-					$entryControls = $eiCommand->createEntryControls($eiu, $view);
-					ArgUtils::valArrayReturn($entryControls, $eiCommand, 'createEntryControls', Control::class);
+					$entryControls = $eiCommand->createEntryGuiControls($eiu, $view);
+					ArgUtils::valArrayReturn($entryControls, $eiCommand, 'createEntryGuiControls', Control::class);
 					foreach ($entryControls as $controlId => $control) {
 						$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;
 					}
 		}
 		
-		return $this->eiMask->getDisplayScheme()->getEntryControlOrder()->sort($controls);
+		return $this->eiMask->getDisplayScheme()->getEntryGuiControlOrder()->sort($controls);
 	}
 	
 	/**

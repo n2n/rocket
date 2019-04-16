@@ -21,11 +21,11 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model;
 
-use rocket\ei\manage\gui\GuiField;
-use rocket\ei\manage\gui\GuiFieldDisplayable;
+use rocket\ei\manage\gui\field\GuiField;
+use rocket\ei\manage\gui\field\GuiFieldDisplayable;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\frame\EiFrame;
-use rocket\ei\manage\gui\GuiFieldEditable;
+use rocket\ei\manage\gui\field\GuiFieldEditable;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\mask\model\DisplayItem;
 use n2n\impl\web\ui\view\html\HtmlElement;
@@ -70,15 +70,15 @@ class EmbeddedOneToManyGuiField implements GuiField, GuiFieldDisplayable {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiField::getDisplayItemType()
+	 * @see \rocket\ei\manage\gui\field\GuiField::getDisplayItemType()
 	 */
 	public function getDisplayItemType(): string {
-		return SiStructureTypes::TYPE_SIMPLE_GROUP;
+		return SiStructureTypes::SIMPLE_GROUP;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiField::getUiOutputLabel()
+	 * @see \rocket\ei\manage\gui\field\GuiField::getUiOutputLabel()
 	 */
 	public function getUiOutputLabel(N2nLocale $n2nLocale): string {
 		return $this->labelLstr->t($n2nLocale);
@@ -86,7 +86,7 @@ class EmbeddedOneToManyGuiField implements GuiField, GuiFieldDisplayable {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiField::getHtmlContainerAttrs()
+	 * @see \rocket\ei\manage\gui\field\GuiField::getHtmlContainerAttrs()
 	 */
 	public function getHtmlContainerAttrs(): array {
 		return array();
@@ -94,7 +94,7 @@ class EmbeddedOneToManyGuiField implements GuiField, GuiFieldDisplayable {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiField::createUiComponent()
+	 * @see \rocket\ei\manage\gui\field\GuiField::createUiComponent()
 	 */
 	public function createOutSiField(Eiu $eiu): SiField {
 		if ($this->compact) {
@@ -151,7 +151,7 @@ class EmbeddedOneToManyGuiField implements GuiField, GuiFieldDisplayable {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiField::createEditable()
+	 * @see \rocket\ei\manage\gui\field\GuiField::createEditable()
 	 */
 	public function getEditable(): GuiFieldEditable {
 		if ($this->editable !== null) {

@@ -25,6 +25,8 @@ use rocket\ei\manage\EiObject;
 use rocket\ei\util\Eiu;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\manage\entry\UnknownEiFieldExcpetion;
+use rocket\ei\manage\gui\field\GuiFieldPath;
+use rocket\ei\manage\gui\field\GuiFieldFork;
 
 interface GuiPropFork {
 

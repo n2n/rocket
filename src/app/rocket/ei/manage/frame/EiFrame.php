@@ -28,7 +28,7 @@ use rocket\ei\mask\EiMask;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\core\container\N2nContext;
 use rocket\ei\manage\entry\EiEntry;
-use rocket\ei\manage\control\EntryNavPoint;
+use rocket\ei\manage\gui\control\EntryNavPoint;
 use rocket\ei\manage\security\EiExecution;
 use n2n\web\http\HttpContext;
 use n2n\util\uri\Url;

@@ -22,7 +22,6 @@
 namespace rocket\ei\manage;
 
 use rocket\ei\manage\draft\Draft;
-use rocket\ei\manage\control\EntryNavPoint;
 
 interface EiObject {
     
@@ -46,8 +45,8 @@ interface EiObject {
 	 */
 	public function getDraft(): Draft;
 
-	/**
-	 * @return EntryNavPoint
-	 */
-	public function toEntryNavPoint(): EntryNavPoint;
+// 	/**
+// 	 * @return EntryNavPoint
+// 	 */
+// 	public function toEntryNavPoint(): EntryNavPoint;
 }

@@ -21,7 +21,7 @@ use rocket\ei\manage\critmod\sort\SortSettingGroup;
 use rocket\ei\manage\ManageState;
 use rocket\ei\manage\gui\EiEntryGui;
 use rocket\ei\manage\gui\EiGui;
-use rocket\ei\manage\gui\GuiFieldPath;
+use rocket\ei\manage\gui\field\GuiFieldPath;
 use rocket\ei\manage\gui\GuiException;
 use rocket\ei\util\EiuAnalyst;
 use rocket\ei\manage\gui\GuiDefinitionListener;

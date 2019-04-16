@@ -24,11 +24,11 @@ namespace rocket\impl\ei\component\prop\numeric\component;
 use n2n\l10n\DynamicTextCollection;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\impl\ei\component\prop\numeric\OrderEiProp;
-use rocket\ei\component\command\control\EntryControlComponent;
+use rocket\ei\component\command\control\EntryGuiControlComponent;
 use rocket\si\control\SiButton;
 use rocket\si\control\SiIconType;
 use rocket\impl\ei\component\command\EiCommandAdapter;
-use rocket\ei\manage\control\HrefControl;
+use rocket\ei\manage\gui\control\HrefControl;
 use rocket\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
 use n2n\core\container\N2nContext;
@@ -67,7 +67,7 @@ class OrderEiCommand extends EiCommandAdapter {
 	}
 	
 
-	public function createEntryControls(Eiu $eiu): array {
+	public function createEntryGuiControls(Eiu $eiu): array {
 		$httpContext = $view->getHttpContext();
 		$dtc = new DynamicTextCollection('rocket', $view->getRequest()->getN2nLocale());
 
@@ -95,9 +95,9 @@ class OrderEiCommand extends EiCommandAdapter {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\command\control\EntryControlComponent::getEntryControlOptions()
+	 * @see \rocket\ei\component\command\control\EntryGuiControlComponent::getEntryGuiControlOptions()
 	 */
-	public function getEntryControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {
+	public function getEntryGuiControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {
 		$dtc = new DynamicTextCollection('rocket', $n2nLocale);
 		return array(self::CONTROL_INSERT_BEFORE_KEY => $dtc->translate('ei_impl_order_insert_before_label'),
 				self::CONTROL_INSERT_AFTER_KEY => $dtc->translate('ei_impl_order_insert_after_label'));

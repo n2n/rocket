@@ -3,7 +3,7 @@ namespace rocket\ei\util\gui;
 
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\gui\ViewMode;
-use rocket\ei\manage\gui\GuiFieldPath;
+use rocket\ei\manage\gui\field\GuiFieldPath;
 use rocket\ei\manage\gui\EiGuiSiFactory;
 use rocket\ei\manage\gui\GuiException;
 use rocket\ei\manage\gui\EiGui;
@@ -238,8 +238,8 @@ class EiuGui {
 	/**
 	 * @return \rocket\ei\util\gui\EiuGui
 	 */
-	public function renderEntryControls(bool $renderEntryControls = true) {
-		$this->eiGui->getEiGuiNature()->setEntryControlsRendered($renderEntryControls);
+	public function renderEntryGuiControls(bool $renderEntryGuiControls = true) {
+		$this->eiGui->getEiGuiNature()->setEntryGuiControlsRendered($renderEntryGuiControls);
 		return $this;
 	}
 	

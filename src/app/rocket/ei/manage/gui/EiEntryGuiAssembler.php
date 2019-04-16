@@ -26,6 +26,8 @@ use n2n\web\dispatch\mag\MagCollection;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use rocket\ei\util\Eiu;
 use rocket\ei\EiPropPath;
+use rocket\ei\manage\gui\field\GuiFieldPath;
+use rocket\ei\manage\gui\field\GuiField;
 
 class EiEntryGuiAssembler {
 	private $guiDefinition;
@@ -79,7 +81,7 @@ class EiEntryGuiAssembler {
 	/**
 	 * @param string $propertyName
 	 * @param GuiProp $guiProp
-	 * @return NULL|\rocket\ei\manage\gui\GuiField
+	 * @return NULL|\rocket\ei\manage\gui\field\GuiField
 	 */
 	private function assembleExlGuiField(EiPropPath $eiPropPath, GuiProp $guiProp, GuiFieldPath $guiFieldPath) {
 		$guiField = $guiProp->buildGuiField(new Eiu($this->eiu, $eiPropPath, $guiFieldPath));
@@ -92,7 +94,7 @@ class EiEntryGuiAssembler {
 	 * @param GuiFieldPath $guiFieldPath
 	 * @param GuiPropFork $guiPropFork
 	 * @param EiPropPath $guiFieldPath
-	 * @return NULL|\rocket\ei\manage\gui\GuiField
+	 * @return NULL|\rocket\ei\manage\gui\field\GuiField
 	 */
 	private function assembleGuiPropFork(GuiFieldPath $guiFieldPath, GuiPropFork $guiPropFork) {
 		$eiPropPath = $guiFieldPath->getFirstEiPropPath();
@@ -112,7 +114,7 @@ class EiEntryGuiAssembler {
 	
 	/**
 	 * @param GuiFieldPath $guiFieldPath
-	 * @return \rocket\ei\manage\gui\GuiField
+	 * @return \rocket\ei\manage\gui\field\GuiField
 	 */
 	public function assembleGuiField(GuiFieldPath $guiFieldPath) {
 		if ($this->eiEntryGui->containsGuiFieldGuiFieldPath($guiFieldPath)) {

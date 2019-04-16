@@ -32,14 +32,17 @@ use rocket\core\model\Rocket;
 use n2n\core\container\N2nContext;
 use rocket\ei\manage\entry\UnknownEiFieldExcpetion;
 use n2n\util\type\ArgUtils;
-use rocket\ei\manage\control\GuiControlPath;
-use rocket\ei\manage\control\UnknownGuiControlException;
-use rocket\ei\manage\control\GuiCommand;
-use rocket\ei\manage\control\EntryGuiControl;
-use rocket\ei\manage\control\SelectionGuiControl;
+use rocket\ei\manage\gui\control\GuiControlPath;
+use rocket\ei\manage\gui\control\UnknownGuiControlException;
+use rocket\ei\manage\gui\control\EntryGuiControl;
+use rocket\ei\manage\gui\control\SelectionGuiControl;
 use rocket\ei\manage\frame\EiFrame;
-use rocket\ei\manage\control\GuiControl;
-use rocket\ei\manage\control\GeneralGuiControl;
+use rocket\ei\manage\gui\control\GuiControl;
+use rocket\ei\manage\gui\control\GeneralGuiControl;
+use rocket\ei\manage\gui\field\GuiFieldPath;
+use rocket\ei\IdPath;
+use n2n\util\StringUtils;
+use rocket\ei\EiCommandPath;
 
 class GuiDefinition {	
 	private $identityStringPattern;
@@ -48,13 +51,12 @@ class GuiDefinition {
 	private $guiPropForks = array();
 	private $eiPropPaths = array();
 	/**
-	 * @var GuiCommand[] key = id
+	 * @var GuiCommand[]
 	 */
-	private $controlCommands;
+	private $guiCommands;
 	
-	function __construct(Lstr $labelLstr, array $controlCommands) {
+	function __construct(Lstr $labelLstr) {
 		$this->labelLstr = $labelLstr;
-		$this->controlCommands = $controlCommands;
 	}
 	
 	/**
@@ -209,7 +211,7 @@ class GuiDefinition {
 	
 	/**
 	 * @deprecated use {@see GuiDefinition::getGuiFieldPaths()}
-	 * @return \rocket\ei\manage\gui\GuiFieldPath[]
+	 * @return \rocket\ei\manage\gui\field\GuiFieldPath[]
 	 */
 	public function getAllGuiFieldPaths() {
 		return $this->getGuiFieldPaths();
@@ -226,7 +228,7 @@ class GuiDefinition {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\gui\GuiFieldPath[]
+	 * @return \rocket\ei\manage\gui\field\GuiFieldPath[]
 	 */
 	public function getGuiFieldPaths() {
 		return $this->buildGuiFieldPaths(array());
@@ -365,7 +367,7 @@ class GuiDefinition {
 	 * @deprecated
 	 * @param EiPropPath $eiPropPath
 	 * @throws NotYetImplementedException
-	 * @return \rocket\ei\manage\gui\GuiFieldPath|NULL
+	 * @return \rocket\ei\manage\gui\field\GuiFieldPath|NULL
 	 */
 	public function eiPropPathToGuiFieldPath(EiPropPath $eiPropPath) {
 		if ($eiPropPath->hasMultipleIds()) {
@@ -487,6 +489,22 @@ class GuiDefinition {
 	}
 		
 	/**
+	 * @param string $id
+	 * @param GuiProp $guiProp
+	 * @param EiPropPath $guiFieldPath
+	 * @throws GuiException
+	 */
+	public function putGuiCommand(EiCommandPath $eiCommandPath, GuiCommand $guiCommand) {
+		$eiCommandPathStr = (string) $eiCommandPath;
+		
+		if (isset($this->guiCommand[$eiCommandPathStr])) {
+			throw new GuiException('GuiCommand for EiCommandPath \'' . $eiCommandPathStr . '\' is already registered');
+		}
+		
+		$this->guiCommands[$eiCommandPathStr] = $guiCommand;
+	}
+	
+	/**
 	 * @param EiFrame $eiFrame
 	 * @param EiEntry $eiEntry
 	 * @param GuiControlPath $guiControlPath
@@ -502,12 +520,12 @@ class GuiDefinition {
 		$cmdId = $guiControlPath->getFirstId();
 		$controlId = $guiControlPath->getLastId();
 		
-		foreach ($this->controlCommands as $id => $controlCommand) {
+		foreach ($this->guiCommands as $id => $guiCommand) {
 			if ($cmdId != $id) {
 				continue;
 			}
 			
-			$guiControls = $this->extractEntryGuiControls($controlCommand, $id, $eiu);
+			$guiControls = $this->extractEntryGuiControls($guiCommand, $id, $eiu);
 			if ($guiControls[$controlId]) {
 				return $guiControls[$controlId];
 			}
@@ -521,12 +539,12 @@ class GuiDefinition {
 	 * @param EiEntry $eiEntry
 	 * @return GuiControl[]
 	 */
-	function createEntryGuiControls(EiFrame $eiFrame, EiEntry $eiEntry): array {
-		$eiu = new Eiu($eiFrame, $eiEntry);
+	function createEntryGuiControls(EiGui $eiGui, EiEntry $eiEntry): array {
+		$eiu = new Eiu($eiGui, $eiEntry);
 		
 		$siControls = [];
-		foreach ($this->controlCommands as $id => $controlCommand) {
-			foreach ($this->extractEntryGuiControls($controlCommand, $id, $eiu) as $entryGuiControl) {
+		foreach ($this->guiCommands as $id => $guiCommand) {
+			foreach ($this->extractEntryGuiControls($guiCommand, $id, $eiu) as $entryGuiControl) {
 				$guiControlPath = new GuiControlPath([$id, $entryGuiControl->getId()]);
 				
 				$siControls[(string) $guiControlPath] = $entryGuiControl;
@@ -535,11 +553,11 @@ class GuiDefinition {
 		return $siControls;
 	}
 	
-	private function extractEntryGuiControls(GuiCommand $controlCommand, string $controlCommandId, Eiu $eiu) {
-		$entryGuiControls = $controlCommand->createEntryGuiControls($eiu);
-		ArgUtils::valArrayReturn($entryGuiControls, $controlCommand, 'createEntryGuiControls', EntryGuiControl::class);
+	private function extractEntryGuiControls(GuiCommand $guiCommand, string $guiCommandId, Eiu $eiu) {
+		$entryGuiControls = $guiCommand->createEntryGuiControls($eiu);
+		ArgUtils::valArrayReturn($entryGuiControls, $guiCommand, 'createEntryGuiControls', EntryGuiControl::class);
 		
-		return $this->mapGuiControls($entryGuiControls, $controlCommand, EntryGuiControl::class);
+		return $this->mapGuiControls($entryGuiControls, $guiCommand, EntryGuiControl::class);
 	}
 	
 	/**
@@ -558,12 +576,12 @@ class GuiDefinition {
 		$cmdId = $guiControlPath->getFirstId();
 		$controlId = $guiControlPath->getLastId();
 		
-		foreach ($this->controlCommands as $id => $controlCommand) {
+		foreach ($this->guiCommands as $id => $guiCommand) {
 			if ($cmdId != $id) {
 				continue;
 			}
 			
-			$guiControls = $this->extractEntryGuiControls($controlCommand, $id, $eiu);
+			$guiControls = $this->extractEntryGuiControls($guiCommand, $id, $eiu);
 			if ($guiControls[$controlId]) {
 				return $guiControls[$controlId];
 			}
@@ -577,31 +595,31 @@ class GuiDefinition {
 	 * @param EiFrame $eiFrame
 	 * @return EntryGuiControl[]
 	 */
-	function createEntryGuiControls(EiFrame $eiFrame): array {
-		$eiu = new Eiu($eiFrame);
+	function createGeneralGuiControls(EiGui $eiGui): array {
+		$eiu = new Eiu($eiGui);
 		
 		$siControls = [];
-		foreach ($this->controlCommands as $id => $controlCommand) {
-			foreach ($this->extractGeneralGuiControls($controlCommand, $id, $eiu) as $generalGuiControl) {
+		foreach ($this->guiCommands as $id => $guiCommand) {
+			foreach ($this->extractGeneralGuiControls($guiCommand, $id, $eiu) as $generalGuiControl) {
 				$guiControlPath = new GuiControlPath([$id, $generalGuiControl->getId()]);
 				
-				$siControls[(string)] = $generalGuiControl;
+				$siControls[(string) $guiControlPath] = $generalGuiControl;
 			}
 		}
 		return $siControls;
 	}
 	
 	/**
-	 * @param GuiCommand $controlCommand
-	 * @param string $controlCommandId
+	 * @param GuiCommand $guiCommand
+	 * @param string $guiCommandId
 	 * @param Eiu $eiu
-	 * @return \rocket\ei\manage\control\GeneralGuiControl[]
+	 * @return \rocket\ei\manage\gui\control\GeneralGuiControl[]
 	 */
-	private function extractGeneralGuiControls(GuiCommand $controlCommand, string $controlCommandId, Eiu $eiu) {
-		$generalGuiControls = $controlCommand->createGeneralGuiControls($eiu);
-		ArgUtils::valArrayReturn($generalGuiControls, $controlCommand, 'extractGeneralGuiControls', GeneralGuiControl::class);
+	private function extractGeneralGuiControls(GuiCommand $guiCommand, string $guiCommandId, Eiu $eiu) {
+		$generalGuiControls = $guiCommand->createGeneralGuiControls($eiu);
+		ArgUtils::valArrayReturn($generalGuiControls, $guiCommand, 'extractGeneralGuiControls', GeneralGuiControl::class);
 		
-		return $this->mapGuiControls($generalGuiControls, $controlCommand, GeneralGuiControl::class);
+		return $this->mapGuiControls($generalGuiControls, $guiCommand, GeneralGuiControl::class);
 	}
 	
 	/**
@@ -619,12 +637,12 @@ class GuiDefinition {
 		$cmdId = $guiControlPath->getFirstId();
 		$controlId = $guiControlPath->getLastId();
 		
-		foreach ($this->controlCommands as $id => $controlCommand) {
+		foreach ($this->guiCommands as $id => $guiCommand) {
 			if ($cmdId != $id) {
 				continue;
 			}
 			
-			$guiControls = $this->extractSelectionGuiControls($controlCommand, $id, $eiu);
+			$guiControls = $this->extractSelectionGuiControls($guiCommand, $id, $eiu);
 			if ($guiControls[$controlId]) {
 				return $guiControls[$controlId];
 			}
@@ -641,8 +659,8 @@ class GuiDefinition {
 		$eiu = new Eiu($eiFrame);
 		
 		$guiControls = [];
-		foreach ($this->controlCommands as $id => $controlCommand) {
-			foreach ($this->extractSelectionGuiControls($controlCommand, $id, $eiu) as $selectionGuiControl) {
+		foreach ($this->guiCommands as $id => $guiCommand) {
+			foreach ($this->extractSelectionGuiControls($guiCommand, $id, $eiu) as $selectionGuiControl) {
 				$guiControlPath = new GuiControlPath([$id, $selectionGuiControl->getId()]);
 				
 				$guiControls[(string) $guiControlPath] = $selectionGuiControl;
@@ -652,35 +670,35 @@ class GuiDefinition {
 	}
 	
 	/**
-	 * @param GuiCommand $controlCommand
-	 * @param string $controlCommandId
+	 * @param GuiCommand $guiCommand
+	 * @param string $guiCommandId
 	 * @param Eiu $eiu
-	 * @return \rocket\ei\manage\control\GeneralGuiControl[]
+	 * @return \rocket\ei\manage\gui\control\GeneralGuiControl[]
 	 */
-	private function extractSelectionGuiControls(GuiCommand $controlCommand, string $controlCommandId, Eiu $eiu) {
-		$selectionGuiControls = $controlCommand->createSelectionGuiControls($eiu);
-		ArgUtils::valArrayReturn($selectionGuiControls, $controlCommand, 'createSelectionGuiControls', SelectionGuiControl::class);
+	private function extractSelectionGuiControls(GuiCommand $guiCommand, string $guiCommandId, Eiu $eiu) {
+		$selectionGuiControls = $guiCommand->createSelectionGuiControls($eiu);
+		ArgUtils::valArrayReturn($selectionGuiControls, $guiCommand, 'createSelectionGuiControls', SelectionGuiControl::class);
 		
-		return $this->mapGuiControls($selectionGuiControls, $controlCommand, SelectionGuiControl::class);
+		return $this->mapGuiControls($selectionGuiControls, $guiCommand, SelectionGuiControl::class);
 	}
 	
 	/**
 	 * @param GuiControl[] $guiControls
 	 * @return GuiControl[]
 	 */
-	private function mapGuiControls($guiControls, $controlCommand, $guiControlClassName) {
+	private function mapGuiControls($guiControls, $guiCommand, $guiControlClassName) {
 		$mappedGuiControls = [];
 		
 		foreach ($guiControls as $guiControl) {
 			$id = $guiControl->getId();
 			
 			if (!IdPath::isIdValid($id)) {
-				throw new \InvalidArgumentException(StringUtils::strOf($controlCommand) . ' returns '
+				throw new \InvalidArgumentException(StringUtils::strOf($guiCommand) . ' returns '
 						. $guiControlClassName . ' with illegal id: ' . $id);
 			}
 			
 			if (isset($mappedGuiControls[$id])) {
-				throw new \InvalidArgumentException(StringUtils::strOf($controlCommand) . ' returns multiple '
+				throw new \InvalidArgumentException(StringUtils::strOf($guiCommand) . ' returns multiple '
 						. $guiControlClassName . ' objects with id: ' . $id);
 			}
 			

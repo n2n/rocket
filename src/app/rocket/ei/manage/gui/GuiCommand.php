@@ -19,15 +19,15 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\control;
+namespace rocket\ei\manage\gui;
 
 use rocket\ei\util\Eiu;
 
 interface GuiCommand {
 	
-	public function createGeneralControls(Eiu $eiu): array;
+	public function createGeneralGuiControls(Eiu $eiu): array;
 	
-	public function createSelectionControls(Eiu $eiu): array;
+	public function createSelectionGuiControls(Eiu $eiu): array;
 	
-	public function createEntryControls(Eiu $eiu): array;
+	public function createEntryGuiControls(Eiu $eiu): array;
 }

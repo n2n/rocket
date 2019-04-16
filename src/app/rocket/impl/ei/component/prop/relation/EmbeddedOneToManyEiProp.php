@@ -34,7 +34,7 @@ use rocket\ei\manage\draft\stmt\PersistDraftStmtBuilder;
 use rocket\ei\manage\draft\RemoveDraftAction;
 use rocket\ei\manage\draft\DraftValueSelection;
 use rocket\ei\manage\draft\PersistDraftAction;
-use rocket\ei\manage\gui\GuiField;
+use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\DraftEiObject;
 use rocket\ei\manage\LiveEiObject;

@@ -49,13 +49,13 @@ use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\web\http\HttpContext;
 use rocket\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
-use rocket\ei\mask\model\DisplayItem;
-use rocket\ei\manage\gui\GuiField;
+use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
 use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\ei\manage\frame\Boundry;
 use rocket\ei\manage\security\InaccessibleEiCommandPathException;
+use rocket\si\structure\SiStructureTypes;
 
 class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 
@@ -66,7 +66,7 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 	}
 	
 	public function getDisplayItemType(): string {
-		return SiStructureTypes::TYPE_ITEM;
+		return SiStructureTypes::ITEM;
 	}
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {

@@ -35,7 +35,7 @@ use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\util\type\TypeConstraint;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
 use n2n\impl\web\dispatch\mag\model\MultiSelectMag;
-use rocket\ei\manage\gui\GuiFieldPath;
+use rocket\ei\manage\gui\field\GuiFieldPath;
 
 // @todo validate if attributes are arrays
 

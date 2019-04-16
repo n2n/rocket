@@ -24,7 +24,7 @@ namespace rocket\ei\util\gui;
 use rocket\ei\manage\gui\EiEntryGui;
 use n2n\reflection\magic\MagicMethodInvoker;
 use rocket\ei\manage\gui\EiEntryGuiListener;
-use rocket\ei\manage\gui\GuiFieldPath;
+use rocket\ei\manage\gui\field\GuiFieldPath;
 use rocket\ei\manage\gui\GuiException;
 use n2n\web\dispatch\mag\MagWrapper;
 use rocket\ei\manage\gui\EiFieldAbstraction;
@@ -68,7 +68,7 @@ class EiuEntryGui {
 	
 	/**
 	 * @see EiEntryGui::getGuiIdsPaths()
-	 * @return \rocket\ei\manage\gui\GuiFieldPath[]
+	 * @return \rocket\ei\manage\gui\field\GuiFieldPath[]
 	 */
 	public function getGuiFieldPaths() {
 		return $this->eiEntryGui->getGuiFieldGuiFieldPaths();	
@@ -291,8 +291,8 @@ class EiuEntryGui {
 // 	/**
 // 	 * @return \rocket\ei\util\gui\EiuEntryGui
 // 	 */
-// 	public function renderEntryControls(bool $renderEntryControls = true) {
-// 		$this->gui()->renderEntryControls($renderEntryControls);
+// 	public function renderEntryGuiControls(bool $renderEntryGuiControls = true) {
+// 		$this->gui()->renderEntryGuiControls($renderEntryGuiControls);
 // 		return $this;
 // 	}
 	

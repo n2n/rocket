@@ -56,18 +56,18 @@ class ControlEiuHtmlBuilder {
 	
 	public function getEntryGuiControlList(EiuEntryGui $eiuEntryGui, bool $useIcons = false) {
 		$entryControls = $this->eiuFrame->getEiFrame()->getContextEiEngine()
-				->createEntryControls($eiuEntryGui, $this->view);
+				->createEntryGuiControls($eiuEntryGui, $this->view);
 	
 		return $this->createControlList($entryControls, $useIcons);
 	}
 	
 	public function entryControlList(EiuEntryGui $eiuEntryGui, int $viewMode, bool $useIcons = false) {
-		$this->view->out($this->getEntryControlList($eiuEntryGui, $viewMode, $useIcons));
+		$this->view->out($this->getEntryGuiControlList($eiuEntryGui, $viewMode, $useIcons));
 	}
 	
-	public function getEntryControlList(EiuEntryGui $eiuEntryGui, $useIcons = false) {
+	public function getEntryGuiControlList(EiuEntryGui $eiuEntryGui, $useIcons = false) {
 		return $this->createControlList($this->eiuFrame->getContextEiMask()
-				->createEntryControls($eiuEntryGui, $this->view), $useIcons);
+				->createEntryGuiControls($eiuEntryGui, $this->view), $useIcons);
 	}
 	
 	private function createControlList(array $entryControls, bool $useIcons) {

@@ -24,7 +24,6 @@ namespace rocket\ei\manage;
 use rocket\ei\manage\draft\Draft;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\EiType;
-use rocket\ei\manage\control\EntryNavPoint;
 
 class LiveEiObject extends EiObjectAdapter {
 	private $eiEntityObj;
@@ -49,9 +48,9 @@ class LiveEiObject extends EiObjectAdapter {
 		throw new IllegalStateException('EiObject contains no Draft.');
 	}
 	
-	public function toEntryNavPoint(): EntryNavPoint {
-		return new EntryNavPoint($this->eiEntityObj->getId());
-	}
+// 	public function toEntryNavPoint(): EntryNavPoint {
+// 		return new EntryNavPoint($this->eiEntityObj->getId());
+// 	}
 	
 	public static function create(EiType $eiType, $entityObj) {
 		if ($entityObj === null) return null;

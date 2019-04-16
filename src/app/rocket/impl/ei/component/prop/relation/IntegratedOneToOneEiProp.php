@@ -22,9 +22,8 @@
 namespace rocket\impl\ei\component\prop\relation;
 
 use rocket\ei\manage\gui\GuiPropFork;
-use rocket\ei\manage\gui\GuiFieldFork;
-use rocket\ei\manage\gui\GuiFieldPath;
-use rocket\ei\manage\gui\GuiFieldAssembly;
+use rocket\ei\manage\gui\field\GuiFieldFork;
+use rocket\ei\manage\gui\field\GuiFieldPath;
 use rocket\ei\manage\gui\EiEntryGuiAssembler;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\EiObject;
@@ -49,14 +48,14 @@ use rocket\ei\util\Eiu;
 use n2n\web\dispatch\mag\UiOutfitter;
 use rocket\ei\manage\gui\GuiProp;
 use n2n\web\dispatch\mag\Mag;
-use rocket\ei\manage\gui\GuiFieldForkEditable;
+use rocket\ei\manage\gui\field\GuiFieldForkEditable;
 use rocket\ei\util\gui\EiuEntryGuiAssembler;
 use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\component\prop\GuiEiPropFork;
 use rocket\ei\manage\entry\EiField;
 use rocket\ei\manage\gui\EiFieldAbstraction;
 use rocket\impl\ei\component\prop\adapter\entry\EiFieldWrapperCollection;
-use rocket\ei\manage\gui\GuiField;
+use rocket\ei\manage\gui\field\GuiField;
 
 class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiEiPropFork, GuiPropFork {
 	
@@ -265,7 +264,7 @@ class OneToOneGuiFieldForkEditable implements GuiFieldForkEditable {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiFieldForkEditable::getForkMag()
+	 * @see \rocket\ei\manage\gui\field\GuiFieldForkEditable::getForkMag()
 	 */
 	public function getForkMag(): Mag {
 		$dispatchable = $this->targetEiuEntryGuiAssembler->getEiuEntryGui()->getDispatchable();
@@ -279,7 +278,7 @@ class OneToOneGuiFieldForkEditable implements GuiFieldForkEditable {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiFieldForkEditable::getAdditionalForkMagPropertyPaths()
+	 * @see \rocket\ei\manage\gui\field\GuiFieldForkEditable::getAdditionalForkMagPropertyPaths()
 	 */
 	public function getInheritForkMagAssemblies(): array {
 		return $this->targetEiuEntryGuiAssembler->getEiuEntryGui()->getAllForkMagAssemblies();

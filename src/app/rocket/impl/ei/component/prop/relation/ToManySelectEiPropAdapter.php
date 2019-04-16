@@ -37,16 +37,16 @@ use rocket\ei\manage\draft\RemoveDraftAction;
 use rocket\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
 use n2n\util\type\CastUtils;
 use rocket\impl\ei\component\prop\relation\model\relation\SelectEiPropRelation;
-use rocket\ei\mask\model\DisplayItem;
-use rocket\ei\manage\gui\GuiField;
+use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\ei\manage\frame\Boundry;
 use rocket\ei\manage\security\InaccessibleEiCommandPathException;
+use rocket\si\structure\SiStructureTypes;
 
 abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 	
 	protected function getDisplayItemType(): string {
-		return SiStructureTypes::TYPE_ITEM;
+		return SiStructureTypes::ITEM;
 	}
 	
 	/**

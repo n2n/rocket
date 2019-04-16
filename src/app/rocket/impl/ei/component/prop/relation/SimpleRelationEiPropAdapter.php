@@ -104,7 +104,7 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 	}
 	
 	protected function getDisplayItemType(): string {
-		return SiStructureTypes::TYPE_SIMPLE_GROUP;
+		return SiStructureTypes::SIMPLE_GROUP;
 	}
 	
 	/**

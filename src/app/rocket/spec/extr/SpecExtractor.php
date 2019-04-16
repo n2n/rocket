@@ -28,7 +28,7 @@ use n2n\config\InvalidConfigurationException;
 use rocket\spec\InvalidSpecConfigurationException;
 use rocket\ei\mask\model\DisplayScheme;
 use rocket\ei\mask\model\DisplayStructure;
-use rocket\ei\manage\gui\GuiFieldPath;
+use rocket\ei\manage\gui\field\GuiFieldPath;
 use rocket\spec\InvalidEiMaskConfigurationException;
 use rocket\ei\mask\model\ControlOrder;
 use n2n\util\type\TypeConstraint;
@@ -386,7 +386,7 @@ class SpecExtractor {
 		}
 		
 		if (null !== ($controlIds = $attributes->getScalarArray(RawDef::EI_DEF_ENTRY_CONTROL_ORDER_KEY, false))) {
-			$guiOrder->setEntryControlOrder(new ControlOrder($controlIds));
+			$guiOrder->setEntryGuiControlOrder(new ControlOrder($controlIds));
 		}
 		
 		return $guiOrder;
@@ -425,9 +425,9 @@ class SpecExtractor {
 			    }
 			    $childDisplayStructure = $this->createDisplayStructure($dsa);
 				$groupType = $displayStructureAttributes->optEnum(RawDef::GUI_FIELD_ORDER_GROUP_TYPE_KEY, DisplayItem::getGroupTypes(),
-						SiStructureTypes::TYPE_SIMPLE_GROUP);
+						SiStructureTypes::SIMPLE_GROUP);
 				if ($groupType === null) {
-					$groupType = SiStructureTypes::TYPE_SIMPLE_GROUP;
+					$groupType = SiStructureTypes::SIMPLE_GROUP;
 				}
 				
 				$displayStructure->addDisplayStructure($childDisplayStructure, $groupType, $title);

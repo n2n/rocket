@@ -24,6 +24,7 @@ namespace rocket\ei\manage\gui;
 use n2n\l10n\N2nLocale;
 use rocket\ei\util\Eiu;
 use n2n\l10n\Lstr;
+use rocket\ei\manage\gui\field\GuiField;
 
 interface GuiProp {
 	/**
@@ -47,7 +48,7 @@ interface GuiProp {
 		
 	/**
 	 * @param Eiu $eiu
-	 * @return \rocket\ei\manage\gui\GuiField|null
+	 * @return \rocket\ei\manage\gui\field\GuiField|null
 	 */
 	public function buildGuiField(Eiu $eiu): ?GuiField;
 		

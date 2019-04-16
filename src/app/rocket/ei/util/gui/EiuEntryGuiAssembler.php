@@ -21,10 +21,10 @@
  */
 namespace rocket\ei\util\gui;
 
-use rocket\ei\manage\gui\GuiFieldPath;
+use rocket\ei\manage\gui\field\GuiFieldPath;
 use rocket\ei\manage\gui\EiEntryGuiAssembler;
 use rocket\ei\util\EiuAnalyst;
-use rocket\ei\manage\gui\GuiField;
+use rocket\ei\manage\gui\field\GuiField;
 
 class EiuEntryGuiAssembler {
 	private $eiEntryGuiAssembler;

@@ -6,6 +6,7 @@ use rocket\ei\manage\EiObject;
 use n2n\core\container\N2nContext;
 use rocket\ei\util\Eiu;
 use rocket\ei\EiPropPath;
+use rocket\ei\manage\gui\field\GuiFieldPath;
 
 class SummarizedStringBuilder {
 	const KNOWN_STRING_FIELD_OPEN_DELIMITER = '{';

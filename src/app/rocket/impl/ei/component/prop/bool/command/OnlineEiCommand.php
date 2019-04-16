@@ -57,7 +57,7 @@ class OnlineEiCommand extends EiCommandAdapter {
 		return $controller;
 	}
 	
-	public function createEntryControl(Eiu $eiu): array {
+	public function createEntryGuiControl(Eiu $eiu): array {
 		$eiuControlFactory = $eiu->frame()->controlFactory($this);
 		
 		$eiuEntry = $eiu->entry();
@@ -83,11 +83,11 @@ class OnlineEiCommand extends EiCommandAdapter {
 				->setForceReload(true)->setPushToHistory(false);
 	}
 	
-	public function createEntryControls(Eiu $eiu): array {
-		return array(self::CONTROL_KEY => $this->createEntryControl($eiu));
+	public function createEntryGuiControls(Eiu $eiu): array {
+		return array(self::CONTROL_KEY => $this->createEntryGuiControl($eiu));
 	}
 
-	public function getEntryControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {
+	public function getEntryGuiControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {
 		$dtc = new DynamicTextCollection('rocket', $n2nLocale);
 		return array(self::CONTROL_KEY => $dtc->translate('ei_impl_online_set_label'));
 	}

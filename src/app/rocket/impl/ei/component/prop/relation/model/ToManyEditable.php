@@ -23,7 +23,7 @@ namespace rocket\impl\ei\component\prop\relation\model;
 
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\manage\frame\EiFrame;
-use rocket\ei\manage\gui\GuiFieldEditable;
+use rocket\ei\manage\gui\field\GuiFieldEditable;
 use rocket\impl\ei\component\prop\relation\model\mag\ToManyMag;
 use n2n\web\dispatch\mag\Mag;
 use n2n\util\uri\Url;
@@ -54,7 +54,7 @@ class ToManyEditable implements GuiFieldEditable {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiFieldEditable::isMandatory()
+	 * @see \rocket\ei\manage\gui\field\GuiFieldEditable::isMandatory()
 	 */
 	public function isMandatory(): bool {
 		return $this->min > 0;

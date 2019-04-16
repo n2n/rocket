@@ -47,7 +47,7 @@
 			<?php foreach ($displayStructure->getDisplayItems() as $displayItem): ?>
 				<th><?php $eiuHtml->label($eiuGui, $displayItem) ?></th>
 			<?php endforeach ?>
-			<?php if ($eiuGui->getEiGuiNature()->areEntryControlsRendered()): ?>
+			<?php if ($eiuGui->getEiGuiNature()->areEntryGuiControlsRendered()): ?>
 				<th><?php $html->l10nText('common_list_tools_label') ?></th>
 			<?php endif ?>
 		</tr>
@@ -63,7 +63,7 @@
 					<?php $eiuHtml->fieldClose() ?>
 				<?php endforeach ?>
 				
-				<?php if ($eiuGui->getEiGuiNature()->areEntryControlsRendered()): ?>
+				<?php if ($eiuGui->getEiGuiNature()->areEntryGuiControlsRendered()): ?>
 					<?php $view->out('<td class="rocket-table-commands">') ?>
 						<?php $eiuHtml->entryCommands(true, 6) ?>
 					<?php $view->out('</td>') ?>

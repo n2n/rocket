@@ -223,7 +223,7 @@ class SpecRawer {
 			$rawData[RawDef::EI_DEF_OVERALL_CONTROL_ORDER_KEY] = $controlOrder->getControlIds();
 		}
 		
-		if (null !== ($controlOrder = $guiOrder->getEntryControlOrder())) {
+		if (null !== ($controlOrder = $guiOrder->getEntryGuiControlOrder())) {
 			$rawData[RawDef::EI_DEF_ENTRY_CONTROL_ORDER_KEY] = $controlOrder->getControlIds();
 		}
 	

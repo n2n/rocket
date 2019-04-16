@@ -23,7 +23,7 @@
 
 // use n2n\util\type\ArgUtils;
 // use n2n\util\ex\IllegalStateException;
-// use rocket\ei\manage\gui\GuiFieldEditable;
+// use rocket\ei\manage\gui\field\GuiFieldEditable;
 // use n2n\web\dispatch\mag\Mag;
 // use rocket\ei\util\Eiu;
 

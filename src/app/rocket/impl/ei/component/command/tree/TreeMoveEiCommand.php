@@ -52,7 +52,7 @@ class TreeMoveEiCommand extends IndependentEiCommandAdapter {
 		return $eiu->lookup(TreeMoveController::class);
 	}
 	
-	public function createEntryControls(Eiu $eiu): array {
+	public function createEntryGuiControls(Eiu $eiu): array {
 		$httpContext = $view->getHttpContext();
 		$dtc = new DynamicTextCollection('rocket', $view->getRequest()->getN2nLocale());
 	
@@ -87,9 +87,9 @@ class TreeMoveEiCommand extends IndependentEiCommandAdapter {
 								true, SiButton::TYPE_INFO, SiIconType::ICON_CARET_RIGHT, array('class' => 'rocket-impl-insert-as-child'), false, false)));
 	}
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\component\command\control\EntryControlComponent::getEntryControlOptions()
+	 * @see \rocket\ei\component\command\control\EntryGuiControlComponent::getEntryGuiControlOptions()
 	 */
-	public function getEntryControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {
+	public function getEntryGuiControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {
 		$dtc = new DynamicTextCollection('rocket', $n2nLocale);
 		return array(self::CONTROL_INSERT_BEFORE_KEY => $dtc->translate('ei_impl_tree_insert_before_label'),
 				self::CONTROL_INSERT_AFTER_KEY => $dtc->translate('ei_impl_tree_insert_after_label'));

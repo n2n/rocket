@@ -22,11 +22,11 @@
 namespace rocket\impl\ei\component\prop\adapter\gui;
 
 use n2n\util\ex\IllegalStateException;
-use rocket\ei\manage\gui\GuiField;
-use rocket\ei\manage\gui\GuiFieldEditable;
+use rocket\ei\manage\gui\field\GuiField;
+use rocket\ei\manage\gui\field\GuiFieldEditable;
 use rocket\ei\util\Eiu;
 use n2n\util\type\ArgUtils;
-use rocket\ei\manage\gui\GuiFieldDisplayable;
+use rocket\ei\manage\gui\field\GuiFieldDisplayable;
 use rocket\si\content\SiField;
 use rocket\si\structure\SiStructureTypes;
 
@@ -51,7 +51,7 @@ class GuiFieldProxy implements GuiField, GuiFieldDisplayable, GuiFieldEditable {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiField::getDisplayable()
+	 * @see \rocket\ei\manage\gui\field\GuiField::getDisplayable()
 	 */
 	public function getDisplayable(): GuiFieldDisplayable {
 		return $this;
@@ -59,7 +59,7 @@ class GuiFieldProxy implements GuiField, GuiFieldDisplayable, GuiFieldEditable {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiField::getHtmlContainerAttrs()
+	 * @see \rocket\ei\manage\gui\field\GuiField::getHtmlContainerAttrs()
 	 */
 	public function getHtmlContainerAttrs(): array {
 		return $this->statelessGuiFieldDisplayable->getHtmlContainerAttrs($this->eiu);
@@ -67,7 +67,7 @@ class GuiFieldProxy implements GuiField, GuiFieldDisplayable, GuiFieldEditable {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiField::getDisplayItemType()
+	 * @see \rocket\ei\manage\gui\field\GuiField::getDisplayItemType()
 	 */
 	public function getDisplayItemType(): string {
 		$displayItemType = $this->statelessGuiFieldDisplayable->getDisplayItemType($this->eiu);
@@ -77,7 +77,7 @@ class GuiFieldProxy implements GuiField, GuiFieldDisplayable, GuiFieldEditable {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiField::createUiComponent()
+	 * @see \rocket\ei\manage\gui\field\GuiField::createUiComponent()
 	 */
 	public function createOutSiField(Eiu $eiu): SiField {
 		return $this->statelessGuiFieldDisplayable->createUiComponent($view, $this->eiu);
@@ -89,7 +89,7 @@ class GuiFieldProxy implements GuiField, GuiFieldDisplayable, GuiFieldEditable {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiField::isReadOnly()
+	 * @see \rocket\ei\manage\gui\field\GuiField::isReadOnly()
 	 */
 	public function isReadOnly(): bool {
 		return $this->statelessGuiFieldEditable === null

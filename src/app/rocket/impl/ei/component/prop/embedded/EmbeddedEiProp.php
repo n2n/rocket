@@ -40,12 +40,12 @@ use n2n\reflection\property\AccessProxy;
 use n2n\util\type\TypeConstraint;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\impl\ei\component\prop\adapter\config\EditConfig;
-use rocket\ei\manage\gui\GuiField;
+use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\component\prop\GuiEiProp;
-use rocket\ei\manage\gui\GuiFieldEditable;
+use rocket\ei\manage\gui\field\GuiFieldEditable;
 use rocket\ei\mask\model\DisplayItem;
 use rocket\ei\manage\gui\GuiProp;
-use rocket\ei\manage\gui\GuiFieldDisplayable;
+use rocket\ei\manage\gui\field\GuiFieldDisplayable;
 use n2n\util\ex\NotYetImplementedException;
 
 class EmbeddedEiProp extends PropertyEiPropAdapter implements GuiEiProp, FieldEiProp {
@@ -168,7 +168,7 @@ class EmbeddedGuiProp implements GuiProp {
 	}
 
 	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
-		return new DisplayDefinition(SiStructureTypes::TYPE_ITEM, true);
+		return new DisplayDefinition(SiStructureTypes::ITEM, true);
 	}
 
 	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {

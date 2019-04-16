@@ -3,7 +3,7 @@ namespace rocket\ei\util;
 
 use rocket\ei\EiType;
 use rocket\ei\manage\EiObject;
-use rocket\ei\manage\control\Control;
+use rocket\ei\manage\gui\control\Control;
 use n2n\web\ui\SimpleBuildContext;
 use rocket\ajah\JhtmlEventInfo;
 use rocket\ei\manage\veto\EiLifecycleMonitor;

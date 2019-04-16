@@ -8,6 +8,7 @@ use n2n\util\type\ArgUtils;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\component\GuiFactory;
 use rocket\si\content\SiEntry;
+use rocket\ei\manage\gui\field\GuiFieldPath;
 
 /**
  * @author andreas
@@ -226,11 +227,21 @@ class EiGui {
 	}
 	
 	public function createSelectionSiControls() {
-		$this->guiDefinition->createSelectionSiControls($eiFrame)
+		$siControls = [];
+		foreach ($controlGuiDefinition->createSelectionGuiControls($eiGui)
+				as $guiControlPathStr => $selectionGuiControl) {
+			$siControls[$guiControlPathStr] = $selectionGuiControl->toSiControl($guiControlPathStr);
+		}
+		return $siControls;
 	}
 	
 	public function createGeneralSiControls() {
-		
+		$siControls = [];
+		foreach ($controlGuiDefinition->createSelectionGuiControls($eiGui)
+				as $guiControlPathStr => $generalGuiControl) {
+			$siControls[$guiControlPathStr] = $generalGuiControl->toSiControl($guiControlPathStr);
+		}
+		return $siControls;
 	}
 	
 	/**
@@ -241,25 +252,30 @@ class EiGui {
 		$eiEntry = $eiEntryGui->getEiEntry();
 		
 		$name = null;
+		$deterGuiDefinition = null;
 		if ($eiEntry->isNew()) {
+			$deterGuiDefinition = $this->guiDefinition;
 			$name = $eiEntry->getEiMask()->getLabelLstr()->t($this->eiFrame->getN2nContext()->getN2nLocale());
 		} else {
-			$name = $this->eiFrame->getManageState()->getDef()
-					->getGuiDefinition($eiEntry->getEiMask())
-					->createIdentityString($eiEntry->getEiObject(), $this->eiFrame->getN2nContext(),
-							$this->eiFrame->getN2nContext()->getN2nLocale());
+			$deterGuiDefinition = $this->eiFrame->getManageState()->getDef()
+					->getGuiDefinition($eiEntry->getEiMask());
+			$name = $deterGuiDefinition->createIdentityString($eiEntry->getEiObject(), $this->eiFrame->getN2nContext(),
+					$this->eiFrame->getN2nContext()->getN2nLocale());
 		}
 		
-		$giEntry = new SiEntry($eiEntryGui->getEiEntry()->getEiType()->getSupremeEiType()->getId(),
+		$siEntry = new SiEntry($eiEntryGui->getEiEntry()->getEiType()->getSupremeEiType()->getId(),
 				$eiEntryGui->getEiEntry()->getPid(), $name);
 		
 		foreach ($eiEntryGui->getGuiFields() as $guiFieldPathStr => $guiField) {
-			$giEntry->putSiField($guiFieldPathStr, $guiField->getSiField());
+			$siEntry->putField($guiFieldPathStr, $guiField->getSiField());
 		}
 		
-		foreach ($this->gui)
+		foreach ($deterGuiDefinition->createEntryGuiControls($this, $eiEntry) 
+				as $guiControlPathStr => $entryGuiControl) {
+			$siEntry->putSiControl($guiControlPathStr, $entryGuiControl->toSiControl($guiControlPathStr));			
+		}
 		
-		return $giEntry;
+		return $siEntry;
 	}
 	
 	/**
@@ -308,7 +324,7 @@ class GuiPropAssembly {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\gui\GuiFieldPath
+	 * @return \rocket\ei\manage\gui\field\GuiFieldPath
 	 */
 	public function getGuiFieldPath() {
 		return $this->guiFieldPath;
@@ -331,7 +347,7 @@ class EiGuiNature {
 	/**
 	 * @return bool
 	 */
-	function areEntryControlsRendered() {
+	function areEntryGuiControlsRendered() {
 		return $this->entryControlsRendered;
 	}
 	
@@ -339,7 +355,7 @@ class EiGuiNature {
 	 * @param bool $entryControlsRendered
 	 * @return \rocket\ei\manage\gui\EiGuiNature
 	 */
-	function setEntryControlsRendered(bool $entryControlsRendered) {
+	function setEntryGuiControlsRendered(bool $entryControlsRendered) {
 		$this->entryControlsRendered = $entryControlsRendered;
 		return $this;
 	}

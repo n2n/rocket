@@ -25,9 +25,9 @@ use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\si\control\SiControl;
 use rocket\si\control\SiResult;
-use rocket\ei\manage\control\GeneralGuiControl;
-use rocket\ei\manage\control\EntryGuiControl;
-use rocket\ei\manage\control\SelectionGuiControl;
+use rocket\ei\manage\gui\control\GeneralGuiControl;
+use rocket\ei\manage\gui\control\EntryGuiControl;
+use rocket\ei\manage\gui\control\SelectionGuiControl;
 use rocket\si\control\ApiCallSiControl;
 
 class EiuCallbackGuiControl implements GeneralGuiControl, EntryGuiControl, SelectionGuiControl {

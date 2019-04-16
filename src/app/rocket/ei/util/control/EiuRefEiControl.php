@@ -29,9 +29,9 @@ use n2n\util\ex\NotYetImplementedException;
 use n2n\util\uri\Url;
 use rocket\si\control\SiButton;
 use rocket\si\control\RefSiControl;
-use rocket\ei\manage\control\EntryGuiControl;
-use rocket\ei\manage\control\GeneralGuiControl;
-use rocket\ei\manage\control\SelectionGuiControl;
+use rocket\ei\manage\gui\control\EntryGuiControl;
+use rocket\ei\manage\gui\control\GeneralGuiControl;
+use rocket\ei\manage\gui\control\SelectionGuiControl;
 
 class EiuRefGuiControl implements GeneralGuiControl, EntryGuiControl, SelectionGuiControl {
 	private $id;
@@ -51,7 +51,7 @@ class EiuRefGuiControl implements GeneralGuiControl, EntryGuiControl, SelectionG
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\control\GuiControl::isInputHandled()
+	 * @see \rocket\ei\manage\gui\control\GuiControl::isInputHandled()
 	 */
 	public function isInputHandled(): bool {
 		return $this->inputHandled;

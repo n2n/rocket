@@ -33,7 +33,7 @@ use rocket\impl\ei\component\prop\ci\model\ContentItemEditable;
 use rocket\ei\EiPropPath;
 use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
-use rocket\ei\manage\gui\GuiField;
+use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\mask\model\DisplayItem;
 use rocket\ei\manage\security\InaccessibleEiCommandPathException;
 
@@ -53,7 +53,7 @@ class ContentItemsEiProp extends EmbeddedOneToManyEiProp {
 	}
 	
 	protected function getDisplayItemType(): string {
-		return SiStructureTypes::TYPE_LIGHT_GROUP;
+		return SiStructureTypes::LIGHT_GROUP;
 	}
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {

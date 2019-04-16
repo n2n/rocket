@@ -4,7 +4,7 @@ namespace rocket\impl\ei\component\prop\translation\command;
 use n2n\web\http\controller\ControllerAdapter;
 use rocket\ei\util\EiuCtrl;
 use n2n\web\http\controller\ParamQuery;
-use rocket\ei\manage\gui\GuiFieldPath;
+use rocket\ei\manage\gui\field\GuiFieldPath;
 use n2n\web\http\BadRequestException;
 use n2n\impl\web\ui\view\jhtml\JhtmlResponse;
 use n2n\util\ex\UnsupportedOperationException;

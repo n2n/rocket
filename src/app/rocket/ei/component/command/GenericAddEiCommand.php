@@ -22,7 +22,7 @@
 namespace rocket\ei\component\command;
 
 
-use rocket\ei\manage\control\EntryNavPoint;
+use rocket\ei\manage\gui\control\EntryNavPoint;
 use n2n\util\uri\Url;
 use n2n\util\ex\UnsupportedOperationException;
 

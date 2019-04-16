@@ -22,11 +22,11 @@
 namespace rocket\impl\ei\component\prop\relation\model;
 
 use rocket\ei\manage\frame\EiFrame;
-use rocket\ei\manage\gui\GuiFieldDisplayable;
-use rocket\ei\manage\gui\GuiFieldEditable;
+use rocket\ei\manage\gui\field\GuiFieldDisplayable;
+use rocket\ei\manage\gui\field\GuiFieldEditable;
 use n2n\util\ex\IllegalStateException;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\ei\manage\gui\GuiField;
+use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\util\Eiu;
 use n2n\l10n\N2nLocale;
 use rocket\ei\mask\model\DisplayItem;
@@ -66,7 +66,7 @@ class ManyToOneGuiField implements GuiField, GuiFieldDisplayable {
 	}
 	
 	public function getDisplayItemType(): string {
-		return SiStructureTypes::TYPE_PANEL;
+		return SiStructureTypes::PANEL;
 	}
 	
 	public function createOutSiField(Eiu $eiu): SiField {
@@ -92,7 +92,7 @@ class ManyToOneGuiField implements GuiField, GuiFieldDisplayable {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiField::createEditable()
+	 * @see \rocket\ei\manage\gui\field\GuiField::createEditable()
 	 */
 	public function getEditable(): GuiFieldEditable {
 		if ($this->editable !== null) {
