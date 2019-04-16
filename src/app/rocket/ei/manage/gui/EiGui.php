@@ -257,7 +257,7 @@ class EiGui {
 			$giEntry->putSiField($guiFieldPathStr, $guiField->getSiField());
 		}
 		
-		foreach ($eiEntry->getEiMask()->getEiEngine()->create)
+		foreach ($this->gui)
 		
 		return $giEntry;
 	}
