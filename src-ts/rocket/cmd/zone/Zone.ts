@@ -186,7 +186,7 @@ namespace Rocket.Cmd {
 		
 		public clear(showLoader: boolean = false) {
 			if (showLoader) {
-				this.jqZone.addClass("rocket-loading");
+				this.jqZone.addClass("rocket-loader");
 			} else {
 				this.endLoading();
 			}
@@ -222,11 +222,11 @@ namespace Rocket.Cmd {
 		}
 		
 		public isLoading(): boolean {
-			return this.jqZone.hasClass("rocket-loading");
+			return this.jqZone.hasClass("rocket-loader");
 		}
 		
 		public endLoading() {
-			this.jqZone.removeClass("rocket-loading");
+			this.jqZone.removeClass("rocket-loader");
 		}
 		
 		public applyContent(jqContent: JQuery<Element>) {

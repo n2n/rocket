@@ -179,7 +179,7 @@ body {
  */
 
 
-.rocket-loading,
+.rocket-loader,
 .rocket-impl-overview-loading {
     margin: 40px auto 0;
     width: 50px;
@@ -195,7 +195,7 @@ body {
 
 }
 
-.rocket-zone.rocket-loading {
+.rocket-zone.rocket-loader {
     margin-top: 10rem;
 }
 
@@ -208,7 +208,7 @@ body {
     background: $gray-200;
 }
 
-.rocket-load-blocker > .rocket-loading {
+.rocket-load-blocker > .rocket-loader {
     width: 25px;
     height: 25px;
     margin: 8px auto auto;

@@ -12,6 +12,6 @@ export class SiLayer {
 	}
 	
 	get curSiZone(): SiZone {
-		return this.siZones[0];
+		return this.siZones[this.siZones.length - 1];
 	}
 }

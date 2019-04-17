@@ -12,7 +12,7 @@ export class ListSiZoneContent implements SiZoneContent {
 	public size: number|null = null;
 	
 	constructor(public apiUrl: string, public pageSize: number,
-			public compactDeclaration: SiCompactDeclaration|null) {	
+			public compactDeclaration: SiCompactDeclaration|null) {
 	}
 	
 	private ensureSetup() {

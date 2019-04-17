@@ -22,16 +22,10 @@
 namespace rocket\impl\ei\component\prop\string;
 
 use n2n\l10n\N2nLocale;
-use n2n\impl\web\dispatch\mag\model\StringMag;
-use n2n\impl\web\ui\view\html\HtmlView;
-
 use rocket\impl\ei\component\prop\string\conf\StringEiPropConfigurator;
-use rocket\ei\EiPropPath;
-use n2n\web\dispatch\mag\Mag;
 use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\util\StringUtils;
-use n2n\impl\web\ui\view\html\HtmlElement;
 use rocket\si\content\SiField;
 use rocket\si\content\impl\SiFields;
 
@@ -54,23 +48,13 @@ class StringEiProp extends AlphanumericEiProp {
 		return SiFields::stringOut($eiu->field()->getValue())
 				->setMultiline($this->isMultiline());
 	}
-	
-// 	public function createEditablePreviewUiComponent(PreviewModel $previewModel, PropertyPath $propertyPath,
-// 			HtmlView $view, \Closure $createCustomUiElementCallback = null) {
-// 		if ($this->isMultiline()) {
-// 			return $view->getFormHtmlBuilder()->getTextarea($propertyPath, array('class' => 'rocket-preview-inpage-component'));
-// 		}
-// 		return $view->getFormHtmlBuilder()->getInputField($propertyPath, array('class' => 'rocket-preview-inpage-component'));
-// 	}
 
 	public function createInSiField(Eiu $eiu): SiField {
-		$mag = new StringMag($this->getLabelLstr(), null, $this->isMandatory($eiu), 
-				$this->getMaxlength(), $this->isMultiline(),
-				array('placeholder' => $this->getLabelLstr()->t($eiu->frame()->getN2nLocale())));
-// 		$mag->setAttrs(array('class' => 'rocket-block'));
-		$mag->setInputAttrs(array('placeholder' => $this->getLabelLstr()));
-// 		$mag->setHelpTextLstr($this->getHelpTextLstr());
-		return $mag;
+		return SiFields::stringIn($eiu->field()->getValue())
+				->setMandatory($this->isMandatory($eiu))
+				->setMaxlength($this->getMaxlength())
+				->setMultiline($this->multiline);
+		
 	}
 	
 	public function isStringRepresentable(): bool {
@@ -80,5 +64,4 @@ class StringEiProp extends AlphanumericEiProp {
 	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
 		return StringUtils::strOf($eiu->object()->readNativValue($this), true);
 	}
-
 }

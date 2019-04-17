@@ -236,7 +236,7 @@ class EiGui {
 	
 	public function createGeneralSiControls() {
 		$siControls = [];
-		foreach ($this->guiDefinition->createSelectionGuiControls($eiGui)
+		foreach ($this->guiDefinition->createSelectionGuiControls($this->eiFrame)
 				as $guiControlPathStr => $generalGuiControl) {
 			$siControls[$guiControlPathStr] = $generalGuiControl->toSiControl($guiControlPathStr);
 		}

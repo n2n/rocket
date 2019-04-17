@@ -26,8 +26,8 @@ class SiFields {
 	/**
 	 * @return \rocket\si\content\impl\StringInSiField
 	 */
-	static function stringIn() {
-		return new StringInSiField();
+	static function stringIn(?string $value) {
+		return new StringInSiField($value);
 	}
 	
 	/**

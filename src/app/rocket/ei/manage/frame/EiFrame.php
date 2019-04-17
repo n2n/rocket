@@ -414,8 +414,14 @@ class EiFrame {
 				$this->getDetailBreadcrumbLabel($eiObject));
 	}
 	
-	public function getApiUrl(HttpContext $httpContext) {
-		return $httpContext->getControllerContextPath($this->getControllerContext())->toUrl()->ext(EiController::API_PATH_PART);
+	public function getApiUrl() {
+		return $this->getN2nContext()->getHttpContext()->getControllerContextPath($this->getControllerContext())
+				->toUrl()->ext(EiController::API_PATH_PART);
+	}
+	
+	public function getCmdUrl(EiCommandPath $eiCommandPath) {
+		return $this->getN2nContext()->getHttpContext()->getControllerContextPath($this->getControllerContext())
+				->toUrl()->ext([EiController::CMD_PATH_PART, (string) $eiCommandPath]);
 	}
 	
 	public function setDetailDisabled($detailDisabled) {

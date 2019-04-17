@@ -40,9 +40,7 @@ class EiuControlFactory {
 	 * @return \n2n\util\uri\Url
 	 */
 	private function createCmdUrl($urlExt) {
-		return $this->eiuFrame->getHttpContext()
-				->getControllerContextPath($this->eiuFrame->getEiFrame()->getControllerContext())
-				->ext((string) EiCommandPath::from($this->eiCommand))->toUrl()->ext($urlExt);
+		return $this->eiuFrame->getCmdUrl($this->eiCommand)->ext($urlExt);
 	}
 	
 	public function createCmdRef(string $id, SiButton $siButton, $urlExt = null) {

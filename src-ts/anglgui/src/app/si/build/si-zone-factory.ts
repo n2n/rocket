@@ -15,6 +15,7 @@ import { SiFieldStructureDeclaration } from "src/app/si/model/structure/si-field
 import { SiBulkyDeclaration } from "src/app/si/model/structure/si-bulky-declaration";
 import { SiZoneContent } from "src/app/si/model/structure/si-zone-content";
 import { SiPartialContent } from "src/app/si/model/content/si-partial-content";
+import { StringInSiField } from "src/app/si/model/content/impl/string-in-si-field";
 
 export class SiFactory {
 	
@@ -32,8 +33,8 @@ export class SiFactory {
 				if (partialContentData) {
 					const partialContent = SiFactory.createPartialContent(partialContentData);
 					
-					listSiZoneContent.putPage(new SiPage(1, partialContent.entries));
 					listSiZoneContent.size = partialContent.count;
+					listSiZoneContent.putPage(new SiPage(1, partialContent.entries));
 				}
 				
 				return listSiZoneContent;
@@ -41,7 +42,8 @@ export class SiFactory {
 				const bulkyDeclaration = SiFactory.createBulkyDeclaration(dataExtr.reqObject('bulkyDeclaration'))
 				
 				const dlSiZoneContent = new DlSiZoneContent(extr.reqString('apiUrl'), bulkyDeclaration);
-				
+				dlSiZoneContent.entries = SiFactory.createEntries(dataExtr.reqArray('entries'));
+				return dlSiZoneContent;
 			default:
 				throw new ObjectMissmatchError('Invalid si zone type: ' + data.type);
 		}
@@ -60,7 +62,7 @@ export class SiFactory {
 		const compactExtr = new Extractor(data);
 		
 		return new SiCompactDeclaration(
-				SiFactory.createFieldDeclarations(compactExtr.reqArray('fieldDeclarations')),);
+				SiFactory.createFieldDeclarations(compactExtr.reqArray('fieldDeclarations')));
 	}
 	
 	
@@ -85,7 +87,7 @@ export class SiFactory {
 		const extr = new Extractor(data);
 		
 		return new SiFieldStructureDeclaration(
-				SiFactory.createFieldDeclaration(extr.reqString('fieldDeclaration')), 
+				SiFactory.createFieldDeclaration(extr.reqObject('fieldDeclaration')), 
 				<any> extr.reqString('structureType'), 
 				SiFactory.createFieldStructureDeclarations(extr.reqArray('children')));
 	}
@@ -139,6 +141,12 @@ export class SiFactory {
 		switch (extr.reqString('type')) {
 		case SiFieldType.STRING_OUT:
 			return new StringOutSiField(dataExtr.nullaString('value'));
+		case SiFieldType.STRING_IN:
+			const field = new StringInSiField(dataExtr.nullaString('value'), dataExtr.reqBoolean('multiline'));
+			field.maxlength = dataExtr.nullaNumber('maxlength');
+			field.mandatory = dataExtr.reqBoolean('mandatory');
+			
+			return field;
 		default: 
 			throw new ObjectMissmatchError('Invalid si field type: ' + data.type);
 		}	
@@ -200,7 +208,8 @@ export enum SiZoneType {
 } 
 
 export enum SiFieldType {
-	STRING_OUT = 'string-out'
+	STRING_OUT = 'string-out',
+	STRING_IN = 'string-in'
 }
 
 export enum SiControlType {

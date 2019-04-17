@@ -19,10 +19,9 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\si\structure;
+namespace rocket\si\content;
 
 use n2n\util\type\ArgUtils;
-use rocket\si\content\SiEntry;
 
 class SiPartialContent implements \JsonSerializable {
 	private $count;

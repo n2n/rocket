@@ -61,7 +61,7 @@ class EditController extends ControllerAdapter {
 	public function index($pid) {
 		$eiuEntry = $this->eiuCtrl->lookupEntry($pid);
 		
-		$this->eiuCtrl->forwardDlZone($eiuEntry);
+		$this->eiuCtrl->forwardDlZone($eiuEntry, true);
 	}
 	
 	public function doPreview($pid, $previewType, ParamQuery $refPath) {

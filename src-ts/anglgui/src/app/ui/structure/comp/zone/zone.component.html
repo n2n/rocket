@@ -8,6 +8,6 @@
 	<h1>Kunde</h1>
 </header>
 
-<div *ngIf="!loaded" class="rocket-content">loading..</div>
+<div *ngIf="!loaded" class="rocket-loader"></div>
 
-<ng-template *ngIf="loaded" rocketZoneContent class="rocket-content"></ng-template>
+<ng-template rocketZoneContent class="rocket-content"></ng-template>

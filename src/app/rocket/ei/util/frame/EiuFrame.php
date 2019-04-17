@@ -112,12 +112,19 @@ class EiuFrame {
 	public function getN2nLocale() {
 		return $this->eiFrame->getN2nContext()->getN2nLocale();
 	}
-
+	
 	/**
 	 * @return \n2n\util\uri\Url
 	 */
 	public function getApiUrl() {
-		return $this->eiFrame->getApiUrl($this->getHttpContext());
+		return $this->eiFrame->getApiUrl();
+	}
+	
+	/**
+	 * @return \n2n\util\uri\Url
+	 */
+	public function getCmdUrl($eiCommandPath) {
+		return $this->eiFrame->getCmdUrl(EiCommandPath::create($eiCommandPath));
 	}
 	
 	/**

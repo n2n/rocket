@@ -54,6 +54,7 @@ use rocket\ei\util\gui\EiuGui;
 use rocket\si\structure\SiCompactDeclaration;
 use rocket\si\structure\SiBulkyDeclaration;
 use rocket\si\structure\impl\DlSiZone;
+use rocket\si\content\SiPartialContent;
 
 class EiuCtrl implements Lookupable {
 	private $eiu;
@@ -355,11 +356,10 @@ class EiuCtrl implements Lookupable {
 		$this->composeEiuGuiForList($eiuGui, $pageSize);
 		
 		$siCompactDeclaration = new SiCompactDeclaration(
-				$eiuGui->getEiGui()->getEiGuiSiFactory()->getSiFieldDeclarations(),
-				$this->eiuFrame->countEntries(), $eiuGui->getEiGui()->createSiEntries());
+				$eiuGui->getEiGui()->getEiGuiSiFactory()->getSiFieldDeclarations());
 		
-		$zone = new ListSiZone($this->eiu->frame()->getApiUrl(), 
-				$pageSize, $siCompactDeclaration);
+		$zone = new ListSiZone($this->eiu->frame()->getApiUrl(), $pageSize, $siCompactDeclaration, 
+				new SiPartialContent($this->eiuFrame->countEntries(), $eiuGui->getEiGui()->createSiEntries()));
 		
 		$this->httpContext->getResponse()->send(SiPayloadFactory::createFromZone($zone));
 	}
@@ -401,7 +401,7 @@ class EiuCtrl implements Lookupable {
 			return;
 		}
 
-		$eiuEntry = EiuAnalyst::buildEiuEntryFromEiArg($eiEntry, $this->eiuFrame->getEiFrame(), 'eiEntry', true);
+		$eiuEntry = EiuAnalyst::buildEiuEntryFromEiArg($eiEntry, $this->eiuFrame, 'eiEntry', true);
 		$eiuEntryGui = $eiuEntry->newEntryGui(true, $editable);
 		
 		$eiGui = $eiuEntryGui->gui()->getEiGui();

@@ -32,9 +32,9 @@ class SiFieldStructureDeclaration implements \JsonSerializable {
 	 * @param SiFieldDeclaration $siFieldDeclaration
 	 * @param string $label
 	 */
-	function __construct(SiFieldDeclaration $fieldDeclaration, string $structureType) {
-		$this->fieldDeclaration = $fieldDeclaration;
+	function __construct(string $structureType, SiFieldDeclaration $fieldDeclaration) {
 		$this->setStructureType($structureType);
+		$this->fieldDeclaration = $fieldDeclaration;
 	}
 	
 	/**
@@ -65,7 +65,7 @@ class SiFieldStructureDeclaration implements \JsonSerializable {
 	 * @return \rocket\si\structure\SiFieldDeclaration
 	 */
 	public function setStructureType(string $structureType) {
-		ArgUtils::valEnum($structureType, SiStructureType::getAll());
+		ArgUtils::valEnum($structureType, SiStructureType::all());
 		$this->structureType = $structureType;
 		return $this;
 	}

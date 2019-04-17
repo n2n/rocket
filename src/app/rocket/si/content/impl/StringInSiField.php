@@ -22,13 +22,97 @@
 namespace rocket\si\content\impl;
 
 class StringInSiField extends InSiFieldAdapter {
+	/**
+	 * @var string|null
+	 */
+	private $value;
+	/**
+	 * @var int|null
+	 */
+	private $maxlength;
+	/**
+	 * @var bool
+	 */
+	private $multiline = false;
+	/**
+	 * @var bool
+	 */
+	private $mandatory = false;
+	
+	function __construct(?string $value) {
+		$this->value = $value;	
+	}
+	
+	/**
+	 * @param string|null $value
+	 * @return \rocket\si\content\impl\StringInSiField
+	 */
+	function setValue(?string $value) {
+		$this->maxlength;
+		return $this;
+	}
+	
+	/**
+	 * @return string|null
+	 */
+	function getValue() {
+		return $this->value;
+	}
+	
+	/**
+	 * @param int|null $maxlength
+	 * @return \rocket\si\content\impl\StringInSiField
+	 */
+	function setMaxlength(?int $maxlength) {
+		$this->maxlength = $maxlength;
+		return $this;
+	}
+	
+	/**
+	 * @return int|null
+	 */
+	function getMaxlength() {
+		return $this->maxlength;
+	}
+	
+	/**
+	 * @param bool $multiline
+	 * @return \rocket\si\content\impl\StringInSiField
+	 */
+	function setMultiline(bool $multiline) {
+		$this->multiline = $multiline;
+		return $this;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	function isMultiline() {
+		return $this->multiline;
+	}
+	
+	/**
+	 * @param bool $mandatory
+	 * @return \rocket\si\content\impl\StringInSiField
+	 */
+	function setMandatory(bool $mandatory) {
+		$this->mandatory = $mandatory;
+		return $this;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	function isMandatory() {
+		return $this->mandatory;
+	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\si\content\SiField::getType()
 	 */
 	function getType(): string {
-		return 'rocket-ui-string-in';
+		return 'string-in';
 	}
 	
 	/**
@@ -36,7 +120,12 @@ class StringInSiField extends InSiFieldAdapter {
 	 * @see \rocket\si\content\SiField::getData()
 	 */
 	function getData(): array {
-		return [];
+		return [
+			'value' => $this->value,
+			'maxlength' => $this->maxlength,
+			'multiline' => $this->multiline,
+			'mandatory' => $this->mandatory
+		];
 	}
 	 
 	/**

@@ -19,7 +19,7 @@ export class ZoneComponent implements OnInit, DoCheck {
     constructor(private componentFactoryResolver: ComponentFactoryResolver) { }
 
 	ngOnInit() {
-//
+		
 //		const componentFactory = this.componentFactoryResolver.resolveComponentFactory(ListZoneContentComponent);
 //	      
 //	      const componentRef = this.zoneContentDirective.viewContainerRef.createComponent(componentFactory);

@@ -24,7 +24,7 @@ namespace rocket\si\structure\impl;
 use rocket\si\structure\SiZone;
 use n2n\util\uri\Url;
 use rocket\si\structure\SiCompactDeclaration;
-use rocket\si\structure\SiPartialContent;
+use rocket\si\content\SiPartialContent;
 
 class ListSiZone implements SiZone {
 	private $apiUrl;
@@ -81,7 +81,7 @@ class ListSiZone implements SiZone {
 	}
 	
 	/**
-	 * @return \rocket\si\structure\SiPartialContent
+	 * @return \rocket\si\content\SiPartialContent
 	 */
 	public function getPartialContent() {
 		return $this->partialContent;
