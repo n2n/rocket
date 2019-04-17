@@ -14,11 +14,16 @@
 			<td *ngFor="let siFieldDeclaration of listSiZone.fieldDeclarations">
 				<ng-template rocketUiField [siEntry]="siEntry" [siFieldDeclaration]="siFieldDeclaration"></ng-template>
 			</td>
-			<td></td>
+			<td class="rocket-table-commands rocket-simple-commands">
+				<ng-container *ngFor="let pair of siEntry.controlMap | keyvalue">
+					<rocket-ui-control [siControl]="pair.value"></rocket-ui-control>
+				</ng-container>
+			
+			</td>
 		</tr>
 	</tbody>
 </table>
-
+ 
 <div class="rocket-zone-commands">
 	<div class="rocket-main-commands">
 	

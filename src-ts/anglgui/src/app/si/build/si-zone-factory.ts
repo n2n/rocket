@@ -8,6 +8,9 @@ import { SiField } from "src/app/si/model/content/si-field";
 import { SiFieldDeclaration } from "src/app/si/model/structure/si-field-declaration";
 import { SiCompactDeclaration } from "src/app/si/model/structure/si-compact-declaration";
 import { StringOutSiField } from "src/app/si/model/content/impl/string-out-si-field";
+import { SiControl } from "src/app/si/model/control/si-control";
+import { SiButton, SiConfirm } from "src/app/si/model/control/si-button";
+import { RefSiControl } from "src/app/si/model/control/impl/ref-si-control";
 
 export class SiZoneFactory {
 	
@@ -69,6 +72,7 @@ export class SiZoneFactory {
 						<string> extr.reqString('name'));
 			siEntry.treeLevel = extr.nullaNumber('treeLevel');
 			siEntry.fieldMap = SiZoneFactory.createFieldMap(extr.reqMap('fields'));
+			siEntry.controlMap = SiZoneFactory.createControlMap(extr.reqMap('controls'));
 			
 			entries.push(siEntry);
 		}
@@ -96,6 +100,55 @@ export class SiZoneFactory {
 			throw new ObjectMissmatchError('Invalid si field type: ' + data.type);
 		}	
 	}
+	
+	private static createControlMap(data: Map<string, any>): Map<string, SiControl> {
+		const controls = new Map<string, SiControl>();
+		
+		for (let[controlId, controlData] of data) {
+			controls.set(controlId, SiZoneFactory.createControl(controlId, controlData));
+		}
+		return controls;
+	}
+	
+	private static createControl(controlId: string, data: any): SiControl {
+		const extr = new Extractor(data);
+		const dataExtr = extr.reqExtractor('data');
+		
+		switch (extr.reqString('type')) {
+			case SiControlType.REF:
+				return new RefSiControl(
+						dataExtr.reqString('url'),
+						this.createButton(controlId, dataExtr.reqObject('button')));
+			default: 
+				throw new ObjectMissmatchError('Invalid si field type: ' + data.type);
+		}	
+	}
+	
+	private static createButton(controlId, data: any): SiButton {
+		const extr = new Extractor(data);
+		const btn = new SiButton(extr.reqString('name'), extr.reqString('btnClass'), extr.reqString('iconClass'));
+		
+		btn.tooltip = extr.nullaString('tooltip');
+		btn.important = extr.reqBoolean('important');
+		btn.iconImportant = extr.reqBoolean('iconImportant');
+		btn.labelImportant = extr.reqBoolean('labelImportant');
+		
+		const confirmData = extr.nullaObject('confirm');
+		if (confirmData) {
+			btn.confirm = SiZoneFactory.createConfirm(confirmData);
+		}
+		return btn;
+	}
+	
+	private static createConfirm(data: any): SiConfirm {
+		const extr = new Extractor(data);
+		
+		return {
+			message: extr.nullaString('message'),
+			okLabel: extr.nullaString('okLabel'),
+			cancelLabel: extr.nullaString('cancelLabel')
+		};
+	}	
 }
 
 export enum SiZoneType {
@@ -103,7 +156,10 @@ export enum SiZoneType {
     DL = 'dl'
 } 
 
-
 export enum SiFieldType {
 	STRING_OUT = 'string-out'
+}
+
+export enum SiControlType {
+	REF = 'ref'
 }

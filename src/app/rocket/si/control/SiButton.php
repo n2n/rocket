@@ -39,17 +39,15 @@ class SiButton implements \JsonSerializable {
 	private $labelImportant = false;
 // 	private $static = true;
 	
-	private $confirmMessage;
-	private $confirmOkButtonLabel;
-	private $confirmCancelButtonLabel;
+	private $confirm;
 	
 	public function __construct(string $name, string $tooltip = null, bool $important = false, string $type = null, 
 			string $iconType = null, array $attrs = null, bool $iconImportant = false/*, bool $static = true*/) {
 		$this->name = $name;
 		$this->tooltip = $tooltip;
 		$this->important = $important;
-		$this->type = $type;
-		$this->iconType = $iconType;
+		$this->type = $type ?? self::TYPE_SECONDARY;
+		$this->iconType = $iconType ?? SiIconType::ICON_ROCKET;
 		$this->attrs = (array) $attrs;
 		$this->iconImportant = $iconImportant;
 // 		$this->static = $static;
@@ -91,7 +89,7 @@ class SiButton implements \JsonSerializable {
 	 * @param string $type
 	 * @return \rocket\si\control\SiButton
 	 */
-	public function setType(string $type = null) {
+	public function setType(string $type) {
 		$this->type = $type;
 		return $this;
 	}
@@ -104,7 +102,7 @@ class SiButton implements \JsonSerializable {
 	 * @param string $iconType
 	 * @return \rocket\si\control\SiButton
 	 */
-	public function setIconType(string $iconType = null) {
+	public function setIconType(string $iconType) {
 		$this->iconType = $iconType;
 		return $this;
 	}
@@ -208,8 +206,9 @@ class SiButton implements \JsonSerializable {
 		return [
 			'name' => $this->name,
 			'tooltip' => $this->tooltip,
-			'iconType' => $this->iconType,
-			'type' => $this->type,
+			'iconClass' => $this->iconType,
+			'btnClass' => $this->type,
+			'important' => $this->important,
 			'iconImportant' => $this->iconImportant,
 			'labelImportant' => $this->labelImportant,
 			'confirm' => $this->confirm

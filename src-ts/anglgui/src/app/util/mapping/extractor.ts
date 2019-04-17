@@ -27,6 +27,23 @@ export class Extractor {
                 + typeof this.obj[propName]);
     }
     
+	nullaBoolean(propName: string): boolean|null {
+		if (this.obj[propName] === null) {
+			return null;
+		}
+		
+		return this.reqBoolean(propName);
+	}
+    
+    reqBoolean(propName: string): boolean {
+        if (typeof this.obj[propName] === 'boolean') {
+            return this.obj[propName];
+        }
+        
+        throw new ObjectMissmatchError('Property ' + propName + ' must be of type boolean. Given: ' 
+                + typeof this.obj[propName]);
+    }
+    
     nullaNumber(propName: string): number|null {
 		if (this.obj[propName] === null) {
 			return null;

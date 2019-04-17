@@ -7,7 +7,6 @@ import { ViewContainerRef } from "@angular/core";
 export class ZoneContentDirective {
 
   constructor(public viewContainerRef: ViewContainerRef) { 
-      console.log("refref! " + viewContainerRef);
   }
 
 }
