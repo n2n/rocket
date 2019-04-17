@@ -63,7 +63,7 @@ class EiuEntryFormViewModel {
 	 * @param string $type
 	 * @return EiuEntryFormViewModel
 	 */
-	public function addDisplayContainer(string $label, string $type = SiStructureTypes::SIMPLE_GROUP, array $attrs = null) {
+	public function addDisplayContainer(string $label, string $type = SiStructureType::SIMPLE_GROUP, array $attrs = null) {
 		$this->displayContainerType = $type;
 		$this->displayContainerLabel = $label;
 		$this->displayContainerAttrs = $attrs;
@@ -152,7 +152,7 @@ class EiuEntryFormViewModel {
 		}
 		
 		return EiuHtmlBuilderMeta::createDisplayItemAttrs(
-				$this->displayContainerType ?? SiStructureTypes::SIMPLE_GROUP, 
+				$this->displayContainerType ?? SiStructureType::SIMPLE_GROUP, 
 				$cattrs);
 	}
 	
@@ -216,7 +216,7 @@ class EiuEntryFormViewModel {
 			
 			$eiuEntryGui = $eiuEntryTypeForm->getEiuEntryGui();
 			
-			$htmlSnippet->appendLn($eiuHtml->getEntryOpen('div', $eiuEntryGui, SiStructureTypes::SIMPLE_GROUP,
+			$htmlSnippet->appendLn($eiuHtml->getEntryOpen('div', $eiuEntryGui, SiStructureType::SIMPLE_GROUP,
 					$this->createEntryAttrs(['class' => 'rocket-ei-type-entry-form rocket-ei-type-' . $eiTypeId])));
 			
 			$htmlSnippet->appendLn(new HtmlElement('label', null, $eiuEntryGui->entry()->getGenericLabel()));

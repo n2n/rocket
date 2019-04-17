@@ -41,12 +41,12 @@ use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\ei\manage\frame\Boundry;
 use rocket\ei\manage\security\InaccessibleEiCommandPathException;
-use rocket\si\structure\SiStructureTypes;
+use rocket\si\structure\SiStructureType;
 
 abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 	
 	protected function getDisplayItemType(): string {
-		return SiStructureTypes::ITEM;
+		return SiStructureType::ITEM;
 	}
 	
 	/**

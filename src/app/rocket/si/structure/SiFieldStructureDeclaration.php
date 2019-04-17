@@ -72,7 +72,7 @@ class SiFieldStructureDeclaration {
 	 * @return \rocket\si\structure\SiFieldDeclaration
 	 */
 	public function setStructureType(string $structureType) {
-		ArgUtils::valEnum($structureType, SiStructureTypes::getAll());
+		ArgUtils::valEnum($structureType, SiStructureType::getAll());
 		$this->structureType = $structureType;
 		return $this;
 	}

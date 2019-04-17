@@ -1,7 +1,7 @@
 <?php
 namespace rocket\si\structure;
 
-class SiStructureTypes {
+class SiStructureType {
 	const SIMPLE_GROUP = 'simple-group';
 	const MAIN_GROUP = 'main-group';
 	const AUTONOMIC_GROUP = 'autonomic-group';

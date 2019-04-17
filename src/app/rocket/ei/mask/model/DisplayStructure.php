@@ -109,14 +109,14 @@ class DisplayStructure {
 		
 		$curDisplayStructure = null;
 		foreach ($this->displayItems as $displayItem) {
-			if ($displayItem->getType() == SiStructureTypes::PANEL 
+			if ($displayItem->getType() == SiStructureType::PANEL 
 					&& $this->containsNonGrouped($displayItem)) {
-				$displayStructure->addDisplayItem($displayItem->copy(SiStructureTypes::SIMPLE_GROUP));
+				$displayStructure->addDisplayItem($displayItem->copy(SiStructureType::SIMPLE_GROUP));
 				$curDisplayStructure = null;
 				continue;
 			}
 			
-			if ($displayItem->getType() != SiStructureTypes::ITEM) {
+			if ($displayItem->getType() != SiStructureType::ITEM) {
 				$displayStructure->addDisplayItem($displayItem);
 				$curDisplayStructure = null;
 				continue;
@@ -124,7 +124,7 @@ class DisplayStructure {
 			
 			if ($curDisplayStructure === null) {
 				$curDisplayStructure = new DisplayStructure();
-				$displayStructure->addDisplayStructure($curDisplayStructure, SiStructureTypes::SIMPLE_GROUP);
+				$displayStructure->addDisplayStructure($curDisplayStructure, SiStructureType::SIMPLE_GROUP);
 			}
 			
 			$curDisplayStructure->addDisplayItem($displayItem);
@@ -143,7 +143,7 @@ class DisplayStructure {
 		foreach ($displayItem->getDisplayStructure()->getDisplayItems() as $displayItem) {
 			if ($displayItem->isGroup()) continue;
 			
-			if ($displayItem->getType() == SiStructureTypes::PANEL
+			if ($displayItem->getType() == SiStructureType::PANEL
 					&& !$this->containsNonGrouped($displayItem)) {
 				continue;
 			}
@@ -167,8 +167,8 @@ class DisplayStructure {
 			$groupType = $displayItem->getType();
 			
 			if (!$displayItem->hasDisplayStructure()) {
-				if ($groupType == SiStructureTypes::AUTONOMIC_GROUP) {
-					$autonomicDs->addGuiFieldPath($displayItem->getGuiFieldPath(), SiStructureTypes::SIMPLE_GROUP, $displayItem->getLabel(), 
+				if ($groupType == SiStructureType::AUTONOMIC_GROUP) {
+					$autonomicDs->addGuiFieldPath($displayItem->getGuiFieldPath(), SiStructureType::SIMPLE_GROUP, $displayItem->getLabel(), 
 							$displayItem->getModuleNamespace());
 				} else if ($displayItem->getType() == $groupType) {
 					$ds->displayItems[] = $displayItem;
@@ -180,10 +180,10 @@ class DisplayStructure {
 			
 			$newDisplayStructure = new DisplayStructure();
 			$this->roAutonomics($displayItem->getDisplayStructure()->getDisplayItems(), $newDisplayStructure, 
-					($displayItem->getType() == SiStructureTypes::MAIN_GROUP ? $newDisplayStructure : $autonomicDs));
+					($displayItem->getType() == SiStructureType::MAIN_GROUP ? $newDisplayStructure : $autonomicDs));
 			
-			if ($displayItem->getType() == SiStructureTypes::AUTONOMIC_GROUP) {
-				$autonomicDs->addDisplayStructure($newDisplayStructure, SiStructureTypes::SIMPLE_GROUP, 
+			if ($displayItem->getType() == SiStructureType::AUTONOMIC_GROUP) {
+				$autonomicDs->addDisplayStructure($newDisplayStructure, SiStructureType::SIMPLE_GROUP, 
 						$displayItem->getLabel(), $displayItem->getModuleNamespace());	
 			} else {
 				$ds->addDisplayStructure($newDisplayStructure, $displayItem->getType(), $displayItem->getLabel(), 

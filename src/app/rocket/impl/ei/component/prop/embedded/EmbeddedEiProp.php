@@ -168,7 +168,7 @@ class EmbeddedGuiProp implements GuiProp {
 	}
 
 	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
-		return new DisplayDefinition(SiStructureTypes::ITEM, true);
+		return new DisplayDefinition(SiStructureType::ITEM, true);
 	}
 
 	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {

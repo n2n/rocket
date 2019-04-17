@@ -28,7 +28,7 @@ use rocket\ei\util\Eiu;
 use n2n\util\type\ArgUtils;
 use rocket\ei\manage\gui\field\GuiFieldDisplayable;
 use rocket\si\content\SiField;
-use rocket\si\structure\SiStructureTypes;
+use rocket\si\structure\SiStructureType;
 
 class GuiFieldProxy implements GuiField, GuiFieldDisplayable, GuiFieldEditable {
 	private $eiu;
@@ -71,7 +71,7 @@ class GuiFieldProxy implements GuiField, GuiFieldDisplayable, GuiFieldEditable {
 	 */
 	public function getDisplayItemType(): string {
 		$displayItemType = $this->statelessGuiFieldDisplayable->getDisplayItemType($this->eiu);
-		ArgUtils::valEnum($displayItemType, SiStructureTypes::all());
+		ArgUtils::valEnum($displayItemType, SiStructureType::all());
 		return $displayItemType;
 	}
 	

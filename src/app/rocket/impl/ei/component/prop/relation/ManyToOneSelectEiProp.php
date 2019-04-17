@@ -55,7 +55,7 @@ use rocket\ei\manage\security\filter\SecurityFilterProp;
 use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\ei\manage\frame\Boundry;
 use rocket\ei\manage\security\InaccessibleEiCommandPathException;
-use rocket\si\structure\SiStructureTypes;
+use rocket\si\structure\SiStructureType;
 
 class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 
@@ -66,7 +66,7 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 	}
 	
 	public function getDisplayItemType(): string {
-		return SiStructureTypes::ITEM;
+		return SiStructureType::ITEM;
 	}
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {

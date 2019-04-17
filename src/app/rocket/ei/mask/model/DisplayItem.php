@@ -7,7 +7,7 @@ use n2n\util\type\ArgUtils;
 use n2n\l10n\Lstr;
 use rocket\core\model\Rocket;
 use n2n\l10n\N2nLocale;
-use rocket\si\structure\SiStructureTypes;
+use rocket\si\structure\SiStructureType;
 
 class DisplayItem {
 	
@@ -27,7 +27,7 @@ class DisplayItem {
 	 */
 	public static function create(GuiFieldPath $guiFieldPath, string $siStructureType = null) {
 		$orderItem = new DisplayItem();
-		ArgUtils::valEnum($siStructureType, SiStructureTypes::all(), null, true);
+		ArgUtils::valEnum($siStructureType, SiStructureType::all(), null, true);
 		$orderItem->siStructureType = $siStructureType;
 		$orderItem->guiFieldPath = $guiFieldPath;
 		return $orderItem;
@@ -40,7 +40,7 @@ class DisplayItem {
 	 */
 	public static function createFromGuiFieldPath(GuiFieldPath $guiFieldPath, string $siStructureType = null) {
 		$orderItem = new DisplayItem();
-		ArgUtils::valEnum($siStructureType, SiStructureTypes::all(), null, true);
+		ArgUtils::valEnum($siStructureType, SiStructureType::all(), null, true);
 		$orderItem->siStructureType = $siStructureType;
 		$orderItem->guiFieldPath = $guiFieldPath;
 		return $orderItem;
@@ -54,7 +54,7 @@ class DisplayItem {
 			string $label = null, string $moduleNamespace = null) {
 		$displayItem = new DisplayItem();
 		$displayItem->displayStructure = $displayStructure;
-		ArgUtils::valEnum($siStructureType, SiStructureTypes::all());
+		ArgUtils::valEnum($siStructureType, SiStructureType::all());
 		$displayItem->siStructureType = $siStructureType;
 		$displayItem->label = $label;
 		$displayItem->moduleNamespace = $moduleNamespace;
@@ -70,7 +70,7 @@ class DisplayItem {
 		$displayItem = new DisplayItem();
 		$displayItem->displayStructure = $this->displayStructure;
 		$displayItem->guiFieldPath = $this->guiFieldPath;
-		ArgUtils::valEnum($siStructureType, SiStructureTypes::all(), null, true);
+		ArgUtils::valEnum($siStructureType, SiStructureType::all(), null, true);
 		$displayItem->siStructureType = $siStructureType ?? $this->siStructureType;
 // 		$displayItem->labelLstr = $labelLstr ?? $this->labelLstr;
 		$displayItem->attrs = $attrs ?? $this->attrs;
@@ -152,7 +152,7 @@ class DisplayItem {
 	 * @return boolean
 	 */
 	public function isGroup() {
-		return in_array($this->siStructureType, SiStructureTypes::groups());
+		return in_array($this->siStructureType, SiStructureType::groups());
 	}
 
 	public function hasDisplayStructure() {

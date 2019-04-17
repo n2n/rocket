@@ -73,7 +73,7 @@ class EmbeddedOneToManyGuiField implements GuiField, GuiFieldDisplayable {
 	 * @see \rocket\ei\manage\gui\field\GuiField::getDisplayItemType()
 	 */
 	public function getDisplayItemType(): string {
-		return SiStructureTypes::SIMPLE_GROUP;
+		return SiStructureType::SIMPLE_GROUP;
 	}
 	
 	/**

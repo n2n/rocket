@@ -69,7 +69,7 @@ class EmbeddedOneToOneGuiField implements GuiField, GuiFieldDisplayable {
 	}
 
 	public function getDisplayItemType(): string {
-		return SiStructureTypes::SIMPLE_GROUP;
+		return SiStructureType::SIMPLE_GROUP;
 	}
 	
 	/**
@@ -104,7 +104,7 @@ class EmbeddedOneToOneGuiField implements GuiField, GuiFieldDisplayable {
 		if (!$this->reduced) {
 			$eiuEntry = $targetUtils->entry($targetRelationEntry->toEiEntry($targetUtils));
 			return $eiuEntry->newEntryGui()/*->allowControls()
-					->addDisplayContainer(SiStructureTypes::LIGHT_GROUP, $eiuEntry->getGenericLabel())*/
+					->addDisplayContainer(SiStructureType::LIGHT_GROUP, $eiuEntry->getGenericLabel())*/
 					->createView($view);
 		}
 		

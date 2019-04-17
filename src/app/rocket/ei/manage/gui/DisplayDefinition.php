@@ -3,7 +3,7 @@ namespace rocket\ei\manage\gui;
 
 use n2n\l10n\Lstr;
 use n2n\util\type\ArgUtils;
-use rocket\si\structure\SiStructureTypes;
+use rocket\si\structure\SiStructureType;
 
 class DisplayDefinition {
 	private $displayItemType;
@@ -15,7 +15,7 @@ class DisplayDefinition {
 	 * @param bool $defaultDisplayed
 	 */
 	public function __construct(string $displayItemType, bool $defaultDisplayed) {
-		ArgUtils::valEnum($displayItemType, SiStructureTypes::all());
+		ArgUtils::valEnum($displayItemType, SiStructureType::all());
 		
 		$this->displayItemType = $displayItemType;
 		$this->defaultDisplayed = $defaultDisplayed;

@@ -72,7 +72,7 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 	}
 	
 	protected function getDisplayItemType(): string {
-		return $this->reduced ? SiStructureTypes::SIMPLE_GROUP : SiStructureTypes::PANEL;
+		return $this->reduced ? SiStructureType::SIMPLE_GROUP : SiStructureType::PANEL;
 	}
 	
 	/**

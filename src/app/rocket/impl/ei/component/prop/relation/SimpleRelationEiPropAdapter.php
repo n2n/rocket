@@ -46,7 +46,7 @@ use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\manage\security\InaccessibleEiCommandPathException;
 use rocket\core\model\Rocket;
 use n2n\l10n\Lstr;
-use rocket\si\structure\SiStructureTypes;
+use rocket\si\structure\SiStructureType;
 
 abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter implements GuiProp, DraftableEiProp, 
 		DraftProperty, FilterableEiProp {
@@ -104,7 +104,7 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 	}
 	
 	protected function getDisplayItemType(): string {
-		return SiStructureTypes::SIMPLE_GROUP;
+		return SiStructureType::SIMPLE_GROUP;
 	}
 	
 	/**

@@ -53,7 +53,7 @@ class ContentItemsEiProp extends EmbeddedOneToManyEiProp {
 	}
 	
 	protected function getDisplayItemType(): string {
-		return SiStructureTypes::LIGHT_GROUP;
+		return SiStructureType::LIGHT_GROUP;
 	}
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {

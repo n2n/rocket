@@ -66,7 +66,7 @@ class ManyToOneGuiField implements GuiField, GuiFieldDisplayable {
 	}
 	
 	public function getDisplayItemType(): string {
-		return SiStructureTypes::PANEL;
+		return SiStructureType::PANEL;
 	}
 	
 	public function createOutSiField(Eiu $eiu): SiField {
