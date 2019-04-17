@@ -22,7 +22,6 @@
 namespace rocket\impl\ei\component\command\common;
 
 use n2n\l10n\DynamicTextCollection;
-use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\N2nLocale;
 use rocket\si\control\SiButton;
 use rocket\si\control\SiIconType;
@@ -83,7 +82,7 @@ class EditEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiC
 				true, SiButton::TYPE_WARNING, SiIconType::ICON_PENCIL);
 			
 		return [$eiuControlFactory->createCmdRef(self::CONTROL_KEY, $siButton, 
-				new Path(['live', $eiuEntry->getPid()]))];
+				new Path([$eiuEntry->getPid()]))];
 	}
 	
 	/**

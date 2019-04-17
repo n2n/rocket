@@ -1,8 +1,9 @@
 import { Component, OnInit, ViewChild, ComponentFactoryResolver } from '@angular/core';
-import { Route, ActivatedRoute, Router } from "@angular/router";
+import { Route, ActivatedRoute, Router, UrlSegment } from "@angular/router";
 import { PlatformLocation } from "@angular/common";
 import { SiService } from "src/app/op/model/si.service";
 import { SiContainer } from "src/app/si/model/structure/si-container";
+import { SiZone } from "src/app/si/model/structure/si-zone";
 
 @Component({
   selector: 'rocket-ei',
@@ -22,9 +23,17 @@ export class EiComponent implements OnInit {
     }
 
     ngOnInit() {
-    	this.siService.lookupSiZone(this.route.snapshot.url.join('/')).subscribe((siZone) => {
+    	this.route.url.subscribe((url: UrlSegment[]) => {
+    		const siZone = new SiZone();
+    		
     		this.siContainer.mainSiLayer.pushSiZone(siZone);
-        });
+    		
+    		this.siService.lookupSiZoneContent(url.join('/')).subscribe((siZoneContent) => {
+    			siZone.content = siZoneContent;
+            });
+    	});
+    	
+    	
         
     }
 }

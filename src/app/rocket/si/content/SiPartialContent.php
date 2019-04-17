@@ -24,33 +24,44 @@ namespace rocket\si\structure;
 use n2n\util\type\ArgUtils;
 use rocket\si\content\SiEntry;
 
-class SiCompactDeclaration implements \JsonSerializable {
-	private $fieldDeclarations;
+class SiPartialContent implements \JsonSerializable {
+	private $count;
+	private $offset = 0;
+	private $entries;
 	
 	/**
-	 * @param SiFieldDeclaration[] $fieldDeclarations
 	 * @param int $count
 	 * @param SiEntry[] $entries
 	 */
-	function __construct(array $fieldDeclarations) {
-		$this->seFieldDeclarations($fieldDeclarations);
+	function __construct(int $count, array $entries = []) {
+		$this->count = $count;
+		$this->setEntries($entries);
 	}
-	
+
 	/**
-	 * @param SiFieldDeclaration[] $siFieldDeclarations
+	 * @param SiEntry[] $siEntries
 	 * @return \rocket\si\structure\SiCompactDeclaration
 	 */
-	function seFieldDeclarations(array $fieldDeclarations) {
-		ArgUtils::valArray($fieldDeclarations, SiFieldDeclaration::class);
-		$this->fieldDeclarations = $fieldDeclarations;
+	function setEntries(array $entries) {
+		ArgUtils::valArray($entries, SiEntry::class);
+		$this->entries = $entries;
 		return $this;
 	}
 	
 	/**
-	 * @return SiFieldDeclaration[]
+	 * @return SiEntry[]
 	 */
-	function getFieldDeclarations() {
-		return $this->fieldDeclarations;
+	function getEntries() {
+		return $this->entries;
+	}
+	
+	function getCount() {
+		return $this->count;
+	}
+	
+	function setCount(int $count) {
+		$this->count = $count;
+		return $this;
 	}
 	
 	/**
@@ -59,7 +70,9 @@ class SiCompactDeclaration implements \JsonSerializable {
 	 */
 	function jsonSerialize() {
 		return [
-			'fieldDeclarations' => $this->fieldDeclarations
+			'entries' => $this->entries,
+			'count' => $this->count,
+			'offset' => $this->offset
 		];
 	}
 }

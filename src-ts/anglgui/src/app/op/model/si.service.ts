@@ -4,12 +4,13 @@ import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { Extractor, ObjectMissmatchError } from "src/app/util/mapping/extractor";
 import { SiZone } from "src/app/si/model/structure/si-zone";
-import { ListSiZone } from "src/app/si/model/structure/impl/list-si-zone";
-import { DlSiZone } from "src/app/si/model/structure/impl/dl-si-zone";
-import { SiZoneFactory } from "src/app/si/build/si-zone-factory";
+import { ListSiZoneContent } from "src/app/si/model/structure/impl/list-si-zone-content";
+import { DlSiZoneContent } from "src/app/si/model/structure/impl/dl-si-zone-content";
+import { SiFactory } from "src/app/si/build/si-zone-factory";
 import { Router } from "@angular/router";
 import { PlatformLocation } from "@angular/common";
 import { IllegalSiStateError } from "src/app/si/model/illegal-si-state-error";
+import { SiZoneContent } from "src/app/si/model/structure/si-zone-content";
 
 @Injectable({
   providedIn: 'root'
@@ -19,15 +20,15 @@ export class SiService {
 	constructor(private httpClient: HttpClient, private router: Router, private platformLocation: PlatformLocation) { 
 	}
 	  
-	lookupSiZone(url: string): Observable<SiZone> {
+	lookupSiZoneContent(url: string): Observable<SiZoneContent> {
 		return this.httpClient.get<any>(url)
 	            .pipe(map((data: any) => {
-	                return this.createSiZone(data);
+	                return this.createSiZoneContent(data);
 	            }));
 	}
 	  
-	private createSiZone(data: any): SiZone {
-		return SiZoneFactory.create(data);
+	private createSiZoneContent(data: any): SiZoneContent {
+		return SiFactory.createZoneContent(data);
 	}
 	
 	navigate(url: string) {

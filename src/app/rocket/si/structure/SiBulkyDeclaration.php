@@ -6,12 +6,12 @@
  * This file is part of the n2n module ROCKET.
  *
  * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
- * GNU Lesser General Public License as published by the Free Software Foundation, either
+ * GNU Lesser  Public License as published by the Free Software Foundation, either
  * version 2.1 of the License, or (at your option) any later version.
  *
  * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
  * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
+ * GNU Lesser  Public License for more details: http://www.gnu.org/licenses/
  *
  * The following people participated in this project:
  *
@@ -23,51 +23,80 @@ namespace rocket\si\structure;
 
 use n2n\util\type\ArgUtils;
 use rocket\si\content\SiEntry;
+use rocket\si\control\SiControl;
 
-class SiBulkyDeclaration {
-	private $siFieldStructureDeclarations;
-	private $siEntries;
+class SiBulkyDeclaration implements \JsonSerializable {
+	private $fieldStructureDeclarations;
+	private $controls;
 	
 	/**
-	 * @param SiFieldStructureDeclaration[] $siFieldStructureDeclarations
+	 * @param SiFieldStructureDeclaration[] $fieldStructureDeclarations
 	 * @param SiEntry[] $siEntries
+	 * @param SiControl[] $siControls;
 	 */
-	function __construct(array $siFieldStructureDeclarations, array $siEntries = []) {
-		$this->setSiFieldStructureDeclarations($siFieldStructureDeclarations);
-		$this->setSiEntries($siEntries);
+	function __construct(array $fieldStructureDeclarations, array $siEntries = [],
+			array $siControls = []) {
+		$this->setFieldStructureDeclarations($fieldStructureDeclarations);
+		$this->setEntries($siEntries);
+		$this->setControls($siControls);
 	}
 	
 	/**
-	 * @param SiFieldStructureDeclaration[] $siFieldStructureDeclarations
+	 * @param SiFieldStructureDeclaration[] $fieldStructureDeclarations
 	 * @return \rocket\si\structure\SiBulkyDeclaration
 	 */
-	function setSiFieldStructureDeclarations(array $siFieldStructureDeclarations) {
-		ArgUtils::valArray($siFieldStructureDeclarations, SiFieldStructureDeclaration::class);
-		$this->siFieldStructureDeclarations = $siFieldStructureDeclarations;
+	function setFieldStructureDeclarations(array $fieldStructureDeclarations) {
+		ArgUtils::valArray($fieldStructureDeclarations, SiFieldStructureDeclaration::class);
+		$this->fieldStructureDeclarations = $fieldStructureDeclarations;
 		return $this;
 	}
 	
 	/**
 	 * @return SiFieldStructureDeclaration[]
 	 */
-	function getSiFieldStructureDeclarations() {
-		return $this->siFieldStructureDeclarations;
+	function getFieldStructureDeclarations() {
+		return $this->fieldStructureDeclarations;
 	}
 	
 	/**
 	 * @param SiEntry[] $siEntries
 	 * @return \rocket\si\structure\SiBulkyDeclaration
 	 */
-	function setSiEntries(array $siEntries) {
-		ArgUtils::valArray($siEntries, SiEntry::class);
-		$this->siEntries = $siEntries;
+	function setEntries(array $entries) {
+		ArgUtils::valArray($entries, SiEntry::class);
+		$this->entries = $entries;
 		return $this;
 	}
 	
 	/**
 	 * @return SiEntry[]
 	 */
-	function getSiEntries() {
-		return $this->siEntries;
+	function getEntries() {
+		return $this->entries;
+	}
+	
+	/**
+	 * @param SiControl[] $controls
+	 * @return \rocket\si\structure\SiBulkyDeclaration
+	 */
+	function setControls(array $controls) {
+		ArgUtils::valArray($controls, SiControl::class);
+		$this->controls = $controls;
+		return $this;
+	}
+	
+	/**
+	 * @return SiControl[]
+	 */
+	function getControls() {
+		return $this->Controls;
+	}
+	
+	function jsonSerialize() {
+		return [
+			'fieldStructureDeclarations' => $this->fieldStructureDeclarations,
+			'entries' => $this->entries,
+			'controls' => $this->controls
+		];
 	}
 }

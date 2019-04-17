@@ -23,14 +23,7 @@ namespace rocket\si\structure;
 
 use n2n\util\type\ArgUtils;
 
-class SiFieldStructureDeclaration {
-	const TYPE_SIMPLE_GROUP = 'simple-group';
-	const TYPE_MAIN_GROUP = 'main-group';
-	const TYPE_AUTONOMIC_GROUP = 'autonomic-group';
-	const TYPE_LIGHT_GROUP = 'light-group';
-	const TYPE_PANEL = 'panel';
-	const TYPE_ITEM = 'item';
-	
+class SiFieldStructureDeclaration implements \JsonSerializable {
 	private $fieldDeclaration;
 	private $structureType;
 	private $children = [];
@@ -55,7 +48,7 @@ class SiFieldStructureDeclaration {
 	 * @param SiFieldDeclaration $siFieldId
 	 * @return \rocket\si\structure\SiFieldDeclaration
 	 */
-	public function setSiFieldDeclaration(SiFieldDeclaration $fieldDeclaration) {
+	public function setFieldDeclaration(SiFieldDeclaration $fieldDeclaration) {
 		$this->fieldDeclaration = $fieldDeclaration;
 		return $this;
 	}
@@ -91,4 +84,13 @@ class SiFieldStructureDeclaration {
 		ArgUtils::valArray($children, SiFieldStructureDeclaration::class);
 		$this->children = $children;
 	}
+	
+	public function jsonSerialize() {
+		return [
+			'structureType' => $this->structureType,
+			'fieldDeclaration' => $this->fieldDeclaration,
+			'children' => $this->children
+		];
+	}
+
 }

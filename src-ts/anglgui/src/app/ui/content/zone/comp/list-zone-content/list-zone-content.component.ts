@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ListSiZone } from "src/app/si/model/structure/impl/list-si-zone";
+import { ListSiZoneContent } from "src/app/si/model/structure/impl/list-si-zone-content";
 import { SiEntry } from "src/app/si/model/content/si-entry";
 import { SiField } from "src/app/si/model/content/si-field";
 
@@ -10,7 +10,7 @@ import { SiField } from "src/app/si/model/content/si-field";
 })
 export class ListZoneContentComponent implements OnInit {
 
-	listSiZone: ListSiZone;
+	listSiZone: ListSiZoneContent;
 	
 	constructor() { }
 

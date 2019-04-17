@@ -24,21 +24,25 @@ namespace rocket\si\structure\impl;
 use rocket\si\structure\SiZone;
 use n2n\util\uri\Url;
 use rocket\si\structure\SiCompactDeclaration;
+use rocket\si\structure\SiPartialContent;
 
 class ListSiZone implements SiZone {
 	private $apiUrl;
 	private $pageSize;
 	private $compactDeclaration;
+	private $partialContent;
 	
 	/**
 	 * @param Url $apiUrl
 	 * @param int $pageSize
 	 * @param SiCompactDeclaration $siCompactContent
 	 */
-	public function __construct(Url $apiUrl, int $pageSize, SiCompactDeclaration $compactDeclaration = null) {
+	public function __construct(Url $apiUrl, int $pageSize, SiCompactDeclaration $compactDeclaration = null,
+			SiPartialContent $partialContent = null) {
 		$this->apiUrl = $apiUrl;
 		$this->pageSize = $pageSize;
 		$this->compactDeclaration = $compactDeclaration;
+		$this->partialContent = $partialContent;
 	}
 	
 	/**
@@ -70,13 +74,28 @@ class ListSiZone implements SiZone {
 	}
 	
 	/**
+	 * @param SiPartialContent|null $partialContent
+	 */
+	public function setPartialContent(?SiPartialContent $partialContent) {
+		$this->partialContent = $partialContent;
+	}
+	
+	/**
+	 * @return \rocket\si\structure\SiPartialContent
+	 */
+	public function getPartialContent() {
+		return $this->partialContent;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @see \rocket\si\structure\SiZone::getData()
 	 */
 	public function getData(): array {
 		return [
 			'pageSize' => $this->pageSize,
-			'compactDeclaration' => $this->compactDeclaration
+			'compactDeclaration' => $this->compactDeclaration,
+			'partialContent' => $this->partialContent
 		];
 	}
 

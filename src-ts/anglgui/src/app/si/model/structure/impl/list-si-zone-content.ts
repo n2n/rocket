@@ -1,27 +1,22 @@
 
 import { SiEntry } from "src/app/si/model/content/si-entry";
 import { SiFieldDeclaration } from "src/app/si/model/structure/si-field-declaration";
-import { SiZone } from "src/app/si/model/structure/si-zone";
+import { SiZoneContent } from "src/app/si/model/structure/si-zone-content";
 import { ViewContainerRef, ComponentFactoryResolver, ComponentRef } from "@angular/core";
 import { ListZoneContentComponent } from "src/app/ui/content/zone/comp/list-zone-content/list-zone-content.component";
 import { IllegalSiStateError } from "src/app/si/model/illegal-si-state-error";
+import { SiCompactDeclaration } from "src/app/si/model/structure/si-compact-declaration";
 
-export class ListSiZone implements SiZone {
+export class ListSiZoneContent implements SiZoneContent {
 	private pages = new Map<number, SiPage>();
-	private _count: number|null = null;
-	private _fieldDeclarations: SiFieldDeclaration[]|null = null;
+	public size: number|null = null;
 	
-	constructor(public apiUrl: string, public pageSize: number) {
-		
-	}
-	
-	setup(fieldDeclarations: SiFieldDeclaration[], count: number) {
-		this._fieldDeclarations = fieldDeclarations;
-		this._count = count;
+	constructor(public apiUrl: string, public pageSize: number,
+			public compactDeclaration: SiCompactDeclaration|null) {	
 	}
 	
 	private ensureSetup() {
-		if (this._fieldDeclarations && this._count != null) return;
+		if (this.compactDeclaration && this.size) return;
 		
 		throw new IllegalSiStateError('ListSiZone not set up.')
 	}
@@ -46,24 +41,10 @@ export class ListSiZone implements SiZone {
 		throw new IllegalSiStateError('Unknown page with no: ' + no);
 	}
 	
-	get fieldDeclarations(): SiFieldDeclaration[] {
-		this.ensureSetup();
-		
-		return <SiFieldDeclaration[]> this._fieldDeclarations;
-	}
-	
-	set count(count: number) {
-		this._count = count;
-	}
-	
-	get count(): number {
-		this.ensureSetup();
-		
-		return <number> this._count;
-	}
-	
 	get pagesNum(): number {
-		return Math.ceil(this.count / this.pageSize);
+		this.ensureSetup();
+		
+		return Math.ceil(<number> this.size / this.pageSize);
 	}
 	
 	initComponent(viewContainerRef: ViewContainerRef, 

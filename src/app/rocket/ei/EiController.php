@@ -30,7 +30,7 @@ use rocket\ei\manage\security\InaccessibleEiCommandPathException;
 use rocket\ei\util\Eiu;
 use rocket\ei\mask\EiMask;
 use rocket\ei\manage\frame\EiFrame;
-use rocket\ei\manage\EiApiController;
+use rocket\ei\manage\SiApiController;
 
 class EiController extends ControllerAdapter {
 	const API_PATH_PART = 'api';
@@ -44,8 +44,8 @@ class EiController extends ControllerAdapter {
 		$this->eiFrame = $eiFrame;
 	}
 	
-	public function doApi(EiApiController $eiApiController, ManageState $manageState, array $delegateParams = null) {
-		$this->delegate($eiApiController);
+	public function doApi(SiApiController $siApiController, ManageState $manageState, array $delegateParams = null) {
+		$this->delegate($siApiController);
 	}
 	
 	public function doCmd(ManageState $manageState, $eiCommandId, array $delegateCmds = null) {		

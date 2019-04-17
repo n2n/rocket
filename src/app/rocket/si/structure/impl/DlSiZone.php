@@ -23,23 +23,60 @@ namespace rocket\si\structure\impl;
 
 use n2n\util\uri\Url;
 use rocket\si\structure\SiZone;
+use rocket\si\structure\SiBulkyDeclaration;
+use rocket\si\content\SiEntry;
+use n2n\util\type\ArgUtils;
 
 class DlSiZone implements SiZone {
 	private $apiUrl;
+	private $bulkyDeclaration;
+	private $entries;
 	
-	public function __construct(Url $apiUrl) {
+	public function __construct(Url $apiUrl, SiBulkyDeclaration $bulkyDeclaration,
+			array $entries = []) {
 		$this->apiUrl = $apiUrl;
+		$this->bulkyDeclaration = $bulkyDeclaration;
+		$this->setEntries($entries);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\si\structure\SiZone::getTypeName()
+	 */
 	public function getTypeName(): string {
 		return 'dl';
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\si\structure\SiZone::getApiUrl()
+	 */
 	public function getApiUrl(): Url {
 		return $this->apiUrl;
 	}
 	
+	
+	/**
+	 * @param SiEntry[] $siEntries
+	 * @return \rocket\si\structure\SiCompactDeclaration
+	 */
+	function setEntries(array $entries) {
+		ArgUtils::valArray($entries, SiEntry::class);
+		$this->entries = $entries;
+		return $this;
+	}
+	
+	/**
+	 * @return SiEntry[]
+	 */
+	function getEntries() {
+		return $this->entries;
+	}
+	
 	public function getData(): array {
-		return [ 'atusch' => 'btusch' ];
+		return [ 
+			'bulkyDeclaration' => $this->bulkyDeclaration,
+			'entries' => $this->entries
+		];
 	}
 }

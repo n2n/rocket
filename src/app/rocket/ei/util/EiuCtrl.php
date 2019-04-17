@@ -52,6 +52,8 @@ use n2n\persistence\orm\util\NestedSetUtils;
 use n2n\persistence\orm\util\NestedSetStrategy;
 use rocket\ei\util\gui\EiuGui;
 use rocket\si\structure\SiCompactDeclaration;
+use rocket\si\structure\SiBulkyDeclaration;
+use rocket\si\structure\impl\DlSiZone;
 
 class EiuCtrl implements Lookupable {
 	private $eiu;
@@ -333,10 +335,18 @@ class EiuCtrl implements Lookupable {
 		return $this->controllingUtils;
 	}
 	
-	public function forwardListZone(int $pageSize = 30) {
+	private function forwardHtml() {
 		if ('text/html' == $this->httpContext->getRequest()->getAcceptRange()
 				->bestMatch(['text/html', 'application/json'])) {
 			$this->getControllingUtils()->forward('\rocket\core\view\anglTemplate.html');
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public function forwardListZone(int $pageSize = 30) {
+		if ($this->forwardHtml()) {
 			return;
 		}
 		
@@ -384,6 +394,25 @@ class EiuCtrl implements Lookupable {
 		foreach ($nestedSetUtils->fetch(null, false, $criteria) as $nestedSetItem) {
 			$eiuGui->appendNewEntryGui($nestedSetItem->getEntityObj(), $nestedSetItem->getLevel());
 		}
+	}
+	
+	public function forwardDlZone($eiEntry, bool $editable) {
+		if ($this->forwardHtml()) {
+			return;
+		}
+
+		$eiuEntry = EiuAnalyst::buildEiuEntryFromEiArg($eiEntry, $this->eiuFrame->getEiFrame(), 'eiEntry', true);
+		$eiuEntryGui = $eiuEntry->newEntryGui(true, $editable);
+		
+		$eiGui = $eiuEntryGui->gui()->getEiGui();
+		
+		$siBulkyDeclaration = new SiBulkyDeclaration(
+				$eiGui->getEiGuiSiFactory()->getSiFieldStructureDeclarations(),
+				$eiGui->createSiEntries(), $eiGui->createGeneralSiControls());
+		
+		$zone = new DlSiZone($this->eiu->frame()->getApiUrl(), $siBulkyDeclaration);
+		
+		$this->httpContext->getResponse()->send(SiPayloadFactory::createFromZone($zone));
 	}
 	
 	

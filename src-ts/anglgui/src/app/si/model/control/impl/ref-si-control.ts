@@ -15,7 +15,6 @@ export class RefSiControl implements SiControl {
 	}
 	
 	exec(siService: SiService) {
-		
 		siService.navigate(this.url);
 	}
 }

@@ -227,7 +227,7 @@ class EiGui {
 	
 	public function createSelectionSiControls() {
 		$siControls = [];
-		foreach ($controlGuiDefinition->createSelectionGuiControls($eiGui)
+		foreach ($this->guiDefinition->createSelectionGuiControls($eiGui)
 				as $guiControlPathStr => $selectionGuiControl) {
 			$siControls[$guiControlPathStr] = $selectionGuiControl->toSiControl($guiControlPathStr);
 		}
@@ -236,7 +236,7 @@ class EiGui {
 	
 	public function createGeneralSiControls() {
 		$siControls = [];
-		foreach ($controlGuiDefinition->createSelectionGuiControls($eiGui)
+		foreach ($this->guiDefinition->createSelectionGuiControls($eiGui)
 				as $guiControlPathStr => $generalGuiControl) {
 			$siControls[$guiControlPathStr] = $generalGuiControl->toSiControl($guiControlPathStr);
 		}

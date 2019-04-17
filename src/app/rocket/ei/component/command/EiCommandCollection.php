@@ -52,7 +52,7 @@ class EiCommandCollection extends EiComponentCollection {
 	 * @return EiCommand
 	 */
 	public function getById(string $id) {
-		return $this->getElementByIdPath(new EiCommandPath([$id]));
+		return $this->getElementByIdPath(new EiCommandPath($id));
 	}
 	
 	/**
@@ -61,7 +61,7 @@ class EiCommandCollection extends EiComponentCollection {
 	 * @return EiCommandWrapper
 	 */
 	public function add(EiCommand $eiCommand, string $id = null, bool $prepend = false) {
-		$eiCommandPath = new EiCommandPath([$this->makeId($id, $eiCommand)]);
+		$eiCommandPath = new EiCommandPath($this->makeId($id, $eiCommand));
 		$eiCommandWrapper = new EiCommandWrapper($eiCommandPath, $eiCommand, $this);
 		
 		$this->addElement($eiCommandPath, $eiCommand);

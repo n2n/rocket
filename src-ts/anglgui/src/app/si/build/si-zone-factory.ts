@@ -1,7 +1,7 @@
 
 import { ObjectMissmatchError, Extractor } from "src/app/util/mapping/extractor";
-import { DlSiZone } from "src/app/si/model/structure/impl/dl-si-zone";
-import { ListSiZone, SiPage } from "src/app/si/model/structure/impl/list-si-zone";
+import { DlSiZoneContent } from "src/app/si/model/structure/impl/dl-si-zone-content";
+import { ListSiZoneContent, SiPage } from "src/app/si/model/structure/impl/list-si-zone-content";
 import { SiZone } from "src/app/si/model/structure/si-zone";
 import { SiEntry } from "src/app/si/model/content/si-entry";
 import { SiField } from "src/app/si/model/content/si-field";
@@ -11,29 +11,48 @@ import { StringOutSiField } from "src/app/si/model/content/impl/string-out-si-fi
 import { SiControl } from "src/app/si/model/control/si-control";
 import { SiButton, SiConfirm } from "src/app/si/model/control/si-button";
 import { RefSiControl } from "src/app/si/model/control/impl/ref-si-control";
+import { SiFieldStructureDeclaration } from "src/app/si/model/structure/si-field-structure-declaration";
+import { SiBulkyDeclaration } from "src/app/si/model/structure/si-bulky-declaration";
+import { SiZoneContent } from "src/app/si/model/structure/si-zone-content";
+import { SiPartialContent } from "src/app/si/model/content/si-partial-content";
 
-export class SiZoneFactory {
+export class SiFactory {
 	
-	static create(data: any): SiZone {
+	static createZoneContent(data: any): SiZoneContent {
 		const extr = new Extractor(data);
+		const dataExtr = extr.reqExtractor('data');
 		
 		switch (extr.reqString('type')) {
 			case SiZoneType.LIST:
-				const dataExtr = extr.reqExtractor('data');
+				const listSiZoneContent = new ListSiZoneContent(extr.reqString('apiUrl'), 
+						dataExtr.reqNumber('pageSize'), 
+						SiFactory.createCompactDeclaration(dataExtr.reqObject('compactDeclaration')));
 				
-				const listSiZone = new ListSiZone(extr.reqString('apiUrl'), dataExtr.reqNumber('pageSize'));
-				
-				const compactDeclaration = SiZoneFactory.createCompactDeclaration(dataExtr.reqObject('compactDeclaration'))
-				listSiZone.setup(compactDeclaration.siFieldDeclarations, compactDeclaration.count);
-				if (compactDeclaration.siEntries) {
-					listSiZone.putPage(new SiPage(1, compactDeclaration.siEntries));
+				const partialContentData = dataExtr.nullaObject('partialContent');
+				if (partialContentData) {
+					const partialContent = SiFactory.createPartialContent(partialContentData);
+					
+					listSiZoneContent.putPage(new SiPage(1, partialContent.entries));
+					listSiZoneContent.size = partialContent.count;
 				}
 				
-				return listSiZone;
+				return listSiZoneContent;
 			case SiZoneType.DL:
-				return new DlSiZone();
+				const bulkyDeclaration = SiFactory.createBulkyDeclaration(dataExtr.reqObject('bulkyDeclaration'))
+				
+				const dlSiZoneContent = new DlSiZoneContent(extr.reqString('apiUrl'), bulkyDeclaration);
+				
 			default:
 				throw new ObjectMissmatchError('Invalid si zone type: ' + data.type);
+		}
+	}
+	
+	static createPartialContent(data: any): SiPartialContent {
+		const extr = new Extractor(data);
+		return {
+			entries: SiFactory.createEntries(extr.reqArray('entries')),
+			count: extr.reqNumber('count'),
+			offset: extr.reqNumber('offset')
 		}
 	}
 	
@@ -41,29 +60,53 @@ export class SiZoneFactory {
 		const compactExtr = new Extractor(data);
 		
 		return new SiCompactDeclaration(
-				SiZoneFactory.createFieldDeclarations(compactExtr.reqArray('fieldDeclarations')),
-				compactExtr.reqNumber('count'),
-				SiZoneFactory.createEntries(compactExtr.nullaArray('entries')));
+				SiFactory.createFieldDeclarations(compactExtr.reqArray('fieldDeclarations')),);
+	}
+	
+	
+	static createBulkyDeclaration(data: any): SiBulkyDeclaration {
+		const extr = new Extractor(data);
+		
+		return new SiBulkyDeclaration(
+				SiFactory.createFieldStructureDeclarations(extr.reqArray('fieldStructureDeclarations')),
+				SiFactory.createEntries(extr.reqArray('entries')),
+				SiFactory.createControlMap(extr.reqMap('controls')));
+	}
+	
+	private static createFieldStructureDeclarations(data: Array<any>): SiFieldStructureDeclaration[] {
+		const declarations: Array<SiFieldStructureDeclaration> = [];
+		for (const declarationData of data) {
+			declarations.push(SiFactory.createFieldStructureDeclaration(declarationData));
+		}
+		return declarations;
+	}
+	
+	private static createFieldStructureDeclaration(data: any): SiFieldStructureDeclaration {
+		const extr = new Extractor(data);
+		
+		return new SiFieldStructureDeclaration(
+				SiFactory.createFieldDeclaration(extr.reqString('fieldDeclaration')), 
+				<any> extr.reqString('structureType'), 
+				SiFactory.createFieldStructureDeclarations(extr.reqArray('children')));
 	}
 	
 	private static createFieldDeclarations(data: Array<any>): SiFieldDeclaration[] {
 		const declarations: Array<SiFieldDeclaration> = [];
 		for (const declarationData of data) {
-			const extr = new Extractor(declarationData);
-			
-			declarations.push(new SiFieldDeclaration(extr.reqString('fieldId'), 
-					extr.nullaString('label'), extr.nullaString('helpText')));
+			declarations.push(SiFactory.createFieldDeclaration(declarationData));
 			
 		}
-		
 		return declarations;
 	}
 	
-	private static createEntries(data: Array<any>|null): SiEntry[]|null {
-		if (data === null) {
-			return null;
-		}
+	private static createFieldDeclaration(data: any): SiFieldDeclaration {
+		const extr = new Extractor(data);
 		
+		return new SiFieldDeclaration(extr.reqString('fieldId'), 
+				extr.nullaString('label'), extr.nullaString('helpText'));
+	}
+	
+	private static createEntries(data: Array<any>): SiEntry[] {
 		let entries: Array<SiEntry> = [];
 		for (let entryData of data) {
 			const extr = new Extractor(entryData);
@@ -71,8 +114,8 @@ export class SiZoneFactory {
 			const siEntry = new SiEntry(<string> extr.reqString('category'), extr.nullaString('id'), 
 						<string> extr.reqString('name'));
 			siEntry.treeLevel = extr.nullaNumber('treeLevel');
-			siEntry.fieldMap = SiZoneFactory.createFieldMap(extr.reqMap('fields'));
-			siEntry.controlMap = SiZoneFactory.createControlMap(extr.reqMap('controls'));
+			siEntry.fieldMap = SiFactory.createFieldMap(extr.reqMap('fields'));
+			siEntry.controlMap = SiFactory.createControlMap(extr.reqMap('controls'));
 			
 			entries.push(siEntry);
 		}
@@ -84,7 +127,7 @@ export class SiZoneFactory {
 		const fields = new Map<string, SiField>();
 		
 		for (let[fieldId, fieldData] of data) {
-			fields.set(fieldId, SiZoneFactory.createField(fieldId, fieldData));
+			fields.set(fieldId, SiFactory.createField(fieldId, fieldData));
 		}
 		return fields;
 	}
@@ -105,7 +148,7 @@ export class SiZoneFactory {
 		const controls = new Map<string, SiControl>();
 		
 		for (let[controlId, controlData] of data) {
-			controls.set(controlId, SiZoneFactory.createControl(controlId, controlData));
+			controls.set(controlId, SiFactory.createControl(controlId, controlData));
 		}
 		return controls;
 	}
@@ -135,7 +178,7 @@ export class SiZoneFactory {
 		
 		const confirmData = extr.nullaObject('confirm');
 		if (confirmData) {
-			btn.confirm = SiZoneFactory.createConfirm(confirmData);
+			btn.confirm = SiFactory.createConfirm(confirmData);
 		}
 		return btn;
 	}

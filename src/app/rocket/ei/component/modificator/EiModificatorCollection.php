@@ -45,7 +45,7 @@ class EiModificatorCollection extends EiComponentCollection {
 	 * @return EiModificatorWrapper
 	 */
 	public function add(EiModificator $eiModificator, string $id = null, bool $prepend = false) {
-		$eiModificatorPath = new EiModificatorPath([$this->makeId($id, $eiModificator)]);
+		$eiModificatorPath = new EiModificatorPath($this->makeId($id, $eiModificator));
 		$eiModificatorWrapper = new EiModificatorWrapper($eiModificatorPath, $eiModificator, $this);
 		
 		$this->addElement($eiModificatorPath, $eiModificator);
