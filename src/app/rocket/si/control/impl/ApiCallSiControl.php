@@ -22,12 +22,15 @@
 namespace rocket\si\control\impl;
 
 use rocket\si\control\SiControl;
+use rocket\si\control\SiButton;
 
 class ApiCallSiControl implements SiControl {
-	private $id;
+	private $apiCallId;
+	private $button;
 	
-	public function __construct(string $id) {
-		$this->id = $id;
+	public function __construct(string $apiCallId, SiButton $button) {
+		$this->apiCallId = $apiCallId;
+		$this->button = $button;
 	}
 	
 	public function getType(): string {
@@ -35,6 +38,6 @@ class ApiCallSiControl implements SiControl {
 	}
 
 	public function getData(): array {
-		return [ 'id' => $id ];
+		return [ 'apiCallId' => $this->apiCallId, 'button' => $this->button ];
 	}
 }

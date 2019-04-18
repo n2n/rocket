@@ -23,7 +23,6 @@ namespace rocket\ei\util\control;
 
 use rocket\ei\component\command\EiCommand;
 use rocket\si\control\SiButton;
-use rocket\ei\EiCommandPath;
 use rocket\ei\util\frame\EiuFrame;
 
 class EiuControlFactory {
@@ -51,7 +50,7 @@ class EiuControlFactory {
 		return new EiuRefGuiControl($id, $this->createCmdUrl($urlExt), $siButton, true);
 	}
 	
-	public function createCallback(SiButton $siButton, \Closure $callback) {
+	public function createCallback(string $id, SiButton $siButton, \Closure $callback) {
 		return new EiuCallbackGuiControl($id, $callback, $siButton);
 	}
 	

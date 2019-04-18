@@ -3,8 +3,8 @@ import { SiEntry } from "src/app/si/model/content/si-entry";
 import { SiControl } from "src/app/si/model/control/si-control";
 
 export class SiBulkyDeclaration {
-	constructor(public fieldStructureDeclaration: SiFieldStructureDeclaration[],  
-			public entries: SiEntry[]|null, public controlMap: Map<string, SiControl>) {
+	constructor(public fieldStructureDeclaration: SiFieldStructureDeclaration[],
+			public controlMap: Map<string, SiControl>) {
 		
 	}
 }

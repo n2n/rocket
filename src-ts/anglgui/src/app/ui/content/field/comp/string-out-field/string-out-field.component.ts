@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ElementRef } from '@angular/core';
 import { StringOutSiField } from "src/app/si/model/content/impl/string-out-si-field";
 
 @Component({
@@ -10,7 +10,9 @@ export class StringOutFieldComponent implements OnInit {
 
 	@Input() value: string|null;
 	
-	constructor() { }
+	constructor(elRef: ElementRef) { 
+		elRef.nativeElement.classList.add('form-control-plaintext');
+	}
 
 	ngOnInit() {
 	}

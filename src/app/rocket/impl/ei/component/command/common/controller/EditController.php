@@ -22,7 +22,6 @@
 namespace rocket\impl\ei\component\command\common\controller;
 
 use n2n\l10n\DynamicTextCollection;
-use rocket\impl\ei\component\command\common\model\EditModel;
 use n2n\web\http\controller\ControllerAdapter;
 use rocket\impl\ei\component\command\common\model\EntryCommandViewModel;
 use n2n\util\uri\Url;
@@ -30,12 +29,9 @@ use rocket\ei\manage\EiObject;
 use rocket\core\model\Breadcrumb;
 use n2n\web\http\controller\ParamQuery;
 use n2n\l10n\DateTimeFormat;
-use rocket\ei\manage\draft\Draft;
-use n2n\util\col\ArrayUtils;
 use rocket\ei\util\EiuCtrl;
 use rocket\ei\util\Eiu;
 use rocket\ei\util\gui\EiuEntryGui;
-use rocket\ajah\JhtmlEvent;
 
 class EditController extends ControllerAdapter {
 	private $dtc;
@@ -44,18 +40,6 @@ class EditController extends ControllerAdapter {
 	public function prepare(DynamicTextCollection $dtc, EiuCtrl $eiuCtrl, Eiu $eiu) {
 		$this->dtc = $dtc;
 		$this->eiuCtrl = $eiuCtrl;
-	}
-	
-	/**
-	 * @param EiuEntryGui $eiuEntryGui
-	 * @param Url $cancelUrl
-	 * @return \rocket\impl\ei\component\command\common\model\EntryCommandViewModel
-	 */
-	private function createEntryCommandViewModel(EiuEntryGui $eiuEntryGui, Url $cancelUrl = null) {
-		$viewModel = new EntryCommandViewModel($eiuEntryGui->entry()->getEiuFrame(), $cancelUrl, 
-				$eiuEntryGui->entry());
-		$viewModel->initializeDrafts();
-		return $viewModel;
 	}
 	
 	public function index($pid) {

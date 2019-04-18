@@ -21,11 +21,6 @@
  */
 namespace rocket\ei\mask\model;
 
-use rocket\ei\component\command\control\PartialControlComponent;
-use n2n\l10n\N2nLocale;
-use rocket\ei\component\command\control\OverallControlComponent;
-use rocket\ei\mask\model\DisplayStructure;
-use rocket\ei\mask\EiMask;
 use rocket\ei\manage\gui\EiGui;
 use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\manage\gui\ViewMode;
@@ -193,47 +188,47 @@ class DisplayScheme {
 			$displayStructure = $displayStructure->purified($eiGui);
 		}
 		
-		$commonEiGuiSiFactory->setDisplayStructure($displayStructure);
+		$commonEiGuiSiFactory->setDisplayStructure($displayStructure->groupedItems());
 	}
 	
-	/**
-	 * @param N2nLocale $n2nLocale
-	 * @return array
-	 */
-	public static function buildPartialControlMap(EiMask $eiDef, N2nLocale $n2nLocale) {
-		$labels = array();
+// 	/**
+// 	 * @param N2nLocale $n2nLocale
+// 	 * @return array
+// 	 */
+// 	public static function buildPartialControlMap(EiMask $eiDef, N2nLocale $n2nLocale) {
+// 		$labels = array();
 	
-		foreach ($eiDef->getEiCommandCollection() as $eiCommandId => $eiCommand) {
-			if (!($eiCommand instanceof PartialControlComponent)) continue;
+// 		foreach ($eiDef->getEiCommandCollection() as $eiCommandId => $eiCommand) {
+// 			if (!($eiCommand instanceof PartialControlComponent)) continue;
 				
-			foreach ($eiCommand->getPartialControlOptions($n2nLocale) as $controlId => $label) {
-				$labels[ControlOrder::buildControlId($eiCommandId, $controlId)] = $label;
-			}
-		}
+// 			foreach ($eiCommand->getPartialControlOptions($n2nLocale) as $controlId => $label) {
+// 				$labels[ControlOrder::buildControlId($eiCommandId, $controlId)] = $label;
+// 			}
+// 		}
 	
-		if ($this->partialControlOrder === null) return $labels;
+// 		if ($this->partialControlOrder === null) return $labels;
 		
-		return $this->partialControlOrder->sort($labels);
-	}
-	/**
-	 * @param N2nLocale $n2nLocale
-	 * @return array
-	 */
-	public static function buildOverallControlMap(EiMask $eiDef, N2nLocale $n2nLocale) {
-		$labels = array();
+// 		return $this->partialControlOrder->sort($labels);
+// 	}
+// 	/**
+// 	 * @param N2nLocale $n2nLocale
+// 	 * @return array
+// 	 */
+// 	public static function buildOverallControlMap(EiMask $eiDef, N2nLocale $n2nLocale) {
+// 		$labels = array();
 	
-		foreach ($this->eiType->getEiCommandCollection() as $eiCommandId => $eiCommand) {
-			if (!($eiCommand instanceof OverallControlComponent)) continue;
+// 		foreach ($this->eiType->getEiCommandCollection() as $eiCommandId => $eiCommand) {
+// 			if (!($eiCommand instanceof OverallControlComponent)) continue;
 				
-			foreach ($eiCommand->getOverallControlOptions($n2nLocale) as $controlId => $label) {
-				$labels[ControlOrder::buildControlId($eiCommandId, $controlId)] = $label;
-			}
-		}
+// 			foreach ($eiCommand->getOverallControlOptions($n2nLocale) as $controlId => $label) {
+// 				$labels[ControlOrder::buildControlId($eiCommandId, $controlId)] = $label;
+// 			}
+// 		}
 	
-		if ($this->overallControlOrder === null) return $labels;
+// 		if ($this->overallControlOrder === null) return $labels;
 		
-		return $this->overallControlOrder->sort($labels);
-	}
+// 		return $this->overallControlOrder->sort($labels);
+// 	}
 // 	/**
 // 	 * @param N2nLocale $n2nLocale
 // 	 * @return array

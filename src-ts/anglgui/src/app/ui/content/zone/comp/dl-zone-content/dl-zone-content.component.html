@@ -1,0 +1,17 @@
+
+
+<ng-container *ngFor="let siEntry of siEntries">
+	<ng-container *ngFor="let siFieldStructureDeclaration of siFieldStructureDeclarations">	
+		<rocket-ui-field-structure [siEntry]="siEntry" [siFieldStructureDeclaration]="siFieldStructureDeclaration">
+		</rocket-ui-field-structure>
+	</ng-container>
+</ng-container>
+
+
+<div class="rocket-zone-commands">
+	<div class="rocket-main-commands">
+		<ng-container *ngFor="let pair of siControlMap | keyvalue">
+			<rocket-ui-control [siControl]="pair.value"></rocket-ui-control>
+		</ng-container>
+	</div>
+</div>

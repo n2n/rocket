@@ -22,7 +22,6 @@
 namespace rocket\impl\ei\component\command\common;
 
 use n2n\l10n\DynamicTextCollection;
-use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\N2nLocale;
 use rocket\si\control\SiButton;
 use rocket\si\control\SiIconType;

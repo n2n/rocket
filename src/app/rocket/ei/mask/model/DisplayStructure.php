@@ -25,6 +25,7 @@ use rocket\ei\manage\gui\field\GuiFieldPath;
 use n2n\util\type\ArgUtils;
 use rocket\ei\manage\gui\EiGui;
 use rocket\ei\manage\gui\GuiException;
+use rocket\si\structure\SiStructureType;
 
 class DisplayStructure {
 	private $displayItems = array();
@@ -109,14 +110,14 @@ class DisplayStructure {
 		
 		$curDisplayStructure = null;
 		foreach ($this->displayItems as $displayItem) {
-			if ($displayItem->getType() == SiStructureType::PANEL 
+			if ($displayItem->getSiStructureType() == SiStructureType::PANEL 
 					&& $this->containsNonGrouped($displayItem)) {
 				$displayStructure->addDisplayItem($displayItem->copy(SiStructureType::SIMPLE_GROUP));
 				$curDisplayStructure = null;
 				continue;
 			}
 			
-			if ($displayItem->getType() != SiStructureType::ITEM) {
+			if ($displayItem->getSiStructureType() != SiStructureType::ITEM) {
 				$displayStructure->addDisplayItem($displayItem);
 				$curDisplayStructure = null;
 				continue;
@@ -143,7 +144,7 @@ class DisplayStructure {
 		foreach ($displayItem->getDisplayStructure()->getDisplayItems() as $displayItem) {
 			if ($displayItem->isGroup()) continue;
 			
-			if ($displayItem->getType() == SiStructureType::PANEL
+			if ($displayItem->getSiStructureType() == SiStructureType::PANEL
 					&& !$this->containsNonGrouped($displayItem)) {
 				continue;
 			}
@@ -164,13 +165,13 @@ class DisplayStructure {
 	
 	private function roAutonomics(array $displayItems, DisplayStructure $ds, DisplayStructure $autonomicDs) {
 		foreach ($displayItems as $displayItem) {
-			$groupType = $displayItem->getType();
+			$groupType = $displayItem->getSiStructureType();
 			
 			if (!$displayItem->hasDisplayStructure()) {
 				if ($groupType == SiStructureType::AUTONOMIC_GROUP) {
 					$autonomicDs->addGuiFieldPath($displayItem->getGuiFieldPath(), SiStructureType::SIMPLE_GROUP, $displayItem->getLabel(), 
 							$displayItem->getModuleNamespace());
-				} else if ($displayItem->getType() == $groupType) {
+				} else if ($displayItem->getSiStructureType() == $groupType) {
 					$ds->displayItems[] = $displayItem;
 				} else {
 					$ds->addGuiFieldPath($displayItem->getGuiFieldPath(), $groupType, $displayItem->getLabel(), $displayItem->getModuleNamespace());	
@@ -180,13 +181,13 @@ class DisplayStructure {
 			
 			$newDisplayStructure = new DisplayStructure();
 			$this->roAutonomics($displayItem->getDisplayStructure()->getDisplayItems(), $newDisplayStructure, 
-					($displayItem->getType() == SiStructureType::MAIN_GROUP ? $newDisplayStructure : $autonomicDs));
+					($displayItem->getSiStructureType() == SiStructureType::MAIN_GROUP ? $newDisplayStructure : $autonomicDs));
 			
-			if ($displayItem->getType() == SiStructureType::AUTONOMIC_GROUP) {
+			if ($displayItem->getSiStructureType() == SiStructureType::AUTONOMIC_GROUP) {
 				$autonomicDs->addDisplayStructure($newDisplayStructure, SiStructureType::SIMPLE_GROUP, 
 						$displayItem->getLabel(), $displayItem->getModuleNamespace());	
 			} else {
-				$ds->addDisplayStructure($newDisplayStructure, $displayItem->getType(), $displayItem->getLabel(), 
+				$ds->addDisplayStructure($newDisplayStructure, $displayItem->getSiStructureType(), $displayItem->getLabel(), 
 						$displayItem->getModuleNamespace());
 			}
 		}
@@ -290,7 +291,7 @@ class DisplayStructure {
 			if ($displayItem->hasDisplayStructure()) {
 				$purifiedDisplayStructure->addDisplayStructure(
 						$this->rPurifyDisplayStructure($displayItem->getDisplayStructure(), $eiGui),
-						$displayItem->getType(), $displayItem->getLabel(), $displayItem->getModuleNamespace());
+						$displayItem->getSiStructureType(), $displayItem->getLabel(), $displayItem->getModuleNamespace());
 				continue;
 			}
 			
@@ -302,7 +303,7 @@ class DisplayStructure {
 			}
 			
 			$purifiedDisplayStructure->addGuiFieldPath($displayItem->getGuiFieldPath(),
-					$displayItem->getType() ?? $guiPropAssembly->getDisplayDefinition()->getDisplayItemType());
+					$displayItem->getSiStructureType() ?? $guiPropAssembly->getDisplayDefinition()->getDisplayItemType());
 		}
 		
 		return $purifiedDisplayStructure;

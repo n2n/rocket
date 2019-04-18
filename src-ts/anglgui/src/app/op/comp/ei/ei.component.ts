@@ -12,28 +12,24 @@ import { SiZone } from "src/app/si/model/structure/si-zone";
 })
 export class EiComponent implements OnInit {
 
-    private siContainer: SiContainer;
-    
-    
-    
-    constructor(private componentFactoryResolver: ComponentFactoryResolver, private route: ActivatedRoute, 
-            private siService: SiService/*private router: Router, platformLocation: PlatformLocation*/) {
-        this.siContainer = new SiContainer();
-//        alert(platformLocation.getBaseHrefFromDOM() + ' ' + route.snapshot.url.join('/'));
-    }
+	private siContainer: SiContainer;
+	
+	constructor(private componentFactoryResolver: ComponentFactoryResolver, private route: ActivatedRoute, 
+			private siService: SiService/*private router: Router, platformLocation: PlatformLocation*/) {
+		this.siContainer = new SiContainer();
+//		alert(platformLocation.getBaseHrefFromDOM() + ' ' + route.snapshot.url.join('/'));
+	}
 
-    ngOnInit() {
-    	this.route.url.subscribe((url: UrlSegment[]) => {
-    		const siZone = new SiZone();
-    		
-    		console.log(url);
-    		
-    		this.siContainer.mainSiLayer.pushSiZone(siZone);
-    		
-    		this.siService.lookupSiZoneContent(url.join('/'))
-		    		.subscribe((siZoneContent) => {
-		    			siZone.content = siZoneContent;
-		            });
-    	});
-    }
+	ngOnInit() {
+		this.route.url.subscribe((url: UrlSegment[]) => {
+			const siZone = new SiZone();
+			
+			this.siContainer.mainSiLayer.pushSiZone(siZone);
+			
+			this.siService.lookupSiZoneContent(url.join('/'))
+					.subscribe((siZoneContent) => {
+						siZone.content = siZoneContent;
+					});
+		});
+	}
 }

@@ -73,7 +73,7 @@
 						'renderToolbar' => $renderInnerToolbar))) ?>
 			<?php $eiuHtml->displayItemClose() ?>
 		<?php elseif ($eiuHtml->meta()->containsGuiFieldPath($displayItem->getGuiFieldPath())): ?>
-			<?php $eiuHtml->fieldOpen('div', $displayItem->getGuiFieldPath(), $displayItem->getType(), $displayItem->getAttrs()) ?>
+			<?php $eiuHtml->fieldOpen('div', $displayItem->getGuiFieldPath(), $displayItem->getSiStructureType(), $displayItem->getAttrs()) ?>
 				<?php $eiuHtml->fieldLabel() ?>
 				
 				<?php $eiuHtml->toolbar(true, false, false) ?>

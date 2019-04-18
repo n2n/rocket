@@ -37,9 +37,9 @@ use n2n\web\http\controller\Controller;
 
 class EditEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiCommand {
 	const ID_BASE = 'edit';
-	const CONTROL_KEY = 'edit';
-	const PRIVILEGE_LIVE_ENTRY_KEY = 'eiEntityObj';
-	const PRIVILEGE_DRAFT_KEY = 'draft';
+	const CONTROL_EDIT_KEY = 'edit';
+	const CONTROL_SAVE_KEY = 'save';
+	
 	
 	public function getIdBase(): ?string {
 		return self::ID_BASE;
@@ -59,9 +59,29 @@ class EditEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiC
 	
 	public function getEntryGuiControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {
 		$dtc = new DynamicTextCollection('rocket', $n2nLocale);
-		return array(self::CONTROL_KEY => $dtc->translate('common_edit_label'));
+		return array(self::CONTROL_EDIT_KEY => $dtc->translate('common_edit_label'));
 	}
 	
+	
+	function createGeneralGuiControls(Eiu $eiu): array {
+		if (!$eiu->frame()->isExecutedBy($this)) {
+			return [];
+		}
+		
+		$eiuControlFactory = $eiu->frame()->controlFactory($this);
+		$dtc = $eiu->dtc(Rocket::NS);
+		
+		$siButton = SiButton::primary($dtc->t('common_save_label'), SiIconType::ICON_SAVE);
+		$callback = function (Eiu $eiu) {
+			$this->save($eiu);
+		};
+		
+		return [$eiuControlFactory->createCallback(self::CONTROL_SAVE_KEY, $siButton, $callback)];
+	}
+	
+	private function save(Eiu $eiu) {
+		
+	}
 	
 	public function createEntryGuiControls(Eiu $eiu): array {
 		if ($eiu->frame()->isExecutedBy($this)) {
@@ -81,7 +101,7 @@ class EditEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiC
 				$dtc->t('ei_impl_edit_entry_tooltip', array('entry' => $eiuEntry->getGenericLabel())), 
 				true, SiButton::TYPE_WARNING, SiIconType::ICON_PENCIL);
 			
-		return [$eiuControlFactory->createCmdRef(self::CONTROL_KEY, $siButton, 
+		return [$eiuControlFactory->createCmdRef(self::CONTROL_EDIT_KEY, $siButton, 
 				new Path([$eiuEntry->getPid()]))];
 	}
 	

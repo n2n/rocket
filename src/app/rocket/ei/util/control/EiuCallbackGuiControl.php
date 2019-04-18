@@ -28,13 +28,18 @@ use rocket\si\control\SiResult;
 use rocket\ei\manage\gui\control\GeneralGuiControl;
 use rocket\ei\manage\gui\control\EntryGuiControl;
 use rocket\ei\manage\gui\control\SelectionGuiControl;
-use rocket\si\control\ApiCallSiControl;
+use rocket\si\control\impl\ApiCallSiControl;
+use rocket\si\control\SiButton;
 
 class EiuCallbackGuiControl implements GeneralGuiControl, EntryGuiControl, SelectionGuiControl {
 	private $id;
+	private $callback;
+	private $siButton;
 	
-	function __construct(string $id, \Closure $callback) {
+	function __construct(string $id, \Closure $callback, SiButton $siButton) {
 		$this->id = $id;
+		$this->callback = $callback;
+		$this->siButton = $siButton;
 	}
 	
 	function getId(): string {
@@ -46,7 +51,7 @@ class EiuCallbackGuiControl implements GeneralGuiControl, EntryGuiControl, Selec
 	}
 	
 	public function toSiControl(string $controlId): SiControl {
-		return new ApiCallSiControl($controlId);
+		return new ApiCallSiControl($controlId, $this->siButton);
 	}
 	
 	public function handle(EiFrame $eiFrame): SiResult {

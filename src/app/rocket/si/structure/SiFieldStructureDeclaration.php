@@ -32,9 +32,10 @@ class SiFieldStructureDeclaration implements \JsonSerializable {
 	 * @param SiFieldDeclaration $siFieldDeclaration
 	 * @param string $label
 	 */
-	function __construct(string $structureType, SiFieldDeclaration $fieldDeclaration) {
+	function __construct(string $structureType, SiFieldDeclaration $fieldDeclaration, array $children = []) {
 		$this->setStructureType($structureType);
 		$this->fieldDeclaration = $fieldDeclaration;
+		$this->setChildren($children);
 	}
 	
 	/**

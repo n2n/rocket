@@ -33,7 +33,7 @@ use n2n\util\uri\Path;
 use n2n\core\container\N2nContext;
 
 class OnlineEiCommand extends EiCommandAdapter {
-	const CONTROL_KEY = 'online_status';
+	const CONTROL_EDIT_KEY = 'online_status';
 	const ID_BASE = 'online-status';
 	
 	private $onlineEiProp;

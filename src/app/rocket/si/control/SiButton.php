@@ -48,7 +48,6 @@ class SiButton implements \JsonSerializable {
 		$this->important = $important;
 		$this->type = $type ?? self::TYPE_SECONDARY;
 		$this->iconType = $iconType ?? SiIconType::ICON_ROCKET;
-		$this->attrs = (array) $attrs;
 		$this->iconImportant = $iconImportant;
 // 		$this->static = $static;
 	}
@@ -117,22 +116,6 @@ class SiButton implements \JsonSerializable {
 	 */
 	public function setTooltip(string $tooltip = null) {
 		$this->tooltip = $tooltip;
-		return $this;
-	}
-	
-	/**
-	 * @return array
-	 */
-	public function getAttrs(): array {
-		return $this->attrs;
-	}
-	
-	/**
-	 * @param array $attrs
-	 * @return \rocket\si\control\SiButton
-	 */
-	public function setAttrs(array $attrs) {
-		$this->attrs = $attrs;
 		return $this;
 	}
 	
@@ -215,6 +198,60 @@ class SiButton implements \JsonSerializable {
 		];
 	}
 	
+	
+	/**
+	 * @param string $name
+	 * @param string $siIconType
+	 * @return \rocket\si\control\SiButton
+	 */
+	static function primary(string $name, string $siIconType) {
+		return new SiButton($name, null, false, self::TYPE_PRIMARY, $siIconType);
+	}
+	
+	/**
+	 * @param string $name
+	 * @param string $siIconType
+	 * @return \rocket\si\control\SiButton
+	 */
+	static function secondary(string $name, string $siIconType) {
+		return new SiButton($name, null, false, self::TYPE_SECONDARY, $siIconType);
+	}
+	
+	/**
+	 * @param string $name
+	 * @param string $siIconType
+	 * @return \rocket\si\control\SiButton
+	 */
+	static function success(string $name, string $siIconType) {
+		return new SiButton($name, null, false, self::TYPE_SUCCESS, $siIconType);
+	}
+	
+	/**
+	 * @param string $name
+	 * @param string $siIconType
+	 * @return \rocket\si\control\SiButton
+	 */
+	static function danger(string $name, string $siIconType) {
+		return new SiButton($name, null, false, self::TYPE_DANGER, $siIconType);
+	}
+	
+	/**
+	 * @param string $name
+	 * @param string $siIconType
+	 * @return \rocket\si\control\SiButton
+	 */
+	static function info(string $name, string $siIconType) {
+		return new SiButton($name, null, false, self::TYPE_INFO, $siIconType);
+	}
+	
+	/**
+	 * @param string $name
+	 * @param string $siIconType
+	 * @return \rocket\si\control\SiButton
+	 */
+	static function warning(string $name, string $siIconType) {
+		return new SiButton($name, null, false, self::TYPE_WARNING, $siIconType);
+	}
 	
 // 	public function toSubmitButton(PropertyPath $propertyPath): UiComponent {
 // 		$attrs = $inputField->getAttrs();

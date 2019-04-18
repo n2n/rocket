@@ -1,7 +1,6 @@
 <?php
 namespace rocket\ei\mask\model;
 
-use rocket\ei\mask\model\DisplayStructure;
 use rocket\ei\manage\gui\EiGuiSiFactory;
 use rocket\ei\manage\gui\EiGui;
 use n2n\util\ex\IllegalStateException;
@@ -64,21 +63,28 @@ class CommonEiGuiSiFactory implements EiGuiSiFactory {
 	 * @see \rocket\ei\manage\gui\EiGuiSiFactory::getSiFieldStructureDeclarations()
 	 */
 	private function createFieldStructureDeclarations(DisplayStructure $displayStructure) {
-		$fieldDeclarationStructures = [];
+		$fieldStructureDeclarations = [];
 		foreach ($displayStructure->getDisplayItems() as $displayItem) {
-			$guiPropAssembly = $this->eiGui->getGuiPropAssemblyByGuiFieldPath($displayItem->getGuiFieldPath());
-			$fieldDeclaration = $this->createSiFieldDeclaration($guiPropAssembly); 
 			
+			$fieldDeclaration = null;
 			$children = [];
-			if ($displayItem->hasDisplayStructure()) {
-				$children = $this->createFieldDeclarationStructures($displayItem->getDisplayStructure());
+			if (!$displayItem->hasDisplayStructure()) {
+				$guiPropAssembly = $this->eiGui->getGuiPropAssemblyByGuiFieldPath($displayItem->getGuiFieldPath());
+				$fieldDeclaration = $this->createSiFieldDeclaration($guiPropAssembly);
+			} else {
+				$label = null;
+				if (null !== ($labelLstr = $displayItem->getLabelLstr())) {
+					$label = $labelLstr->t($this->eiGui->getEiFrame()->getN2nContext()->getN2nLocale());
+				}
+				$fieldDeclaration = new SiFieldDeclaration(null, $label);
+				$children = $this->createFieldStructureDeclarations($displayItem->getDisplayStructure());
 			}
 			
-			$fieldDeclarationStructures[] = new SiFieldStructureDeclaration(
+			$fieldStructureDeclarations[] = new SiFieldStructureDeclaration(
 					$displayItem->getSiStructureType() ?? $guiPropAssembly->getDisplayDefinition()->getDisplayItemType(),
 					$fieldDeclaration, $children);
 		}
-		return $fieldDeclarationStructures;
+		return $fieldStructureDeclarations;
 	}
 	
 	/**

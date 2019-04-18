@@ -245,7 +245,7 @@ class SpecExtractor {
 		$extraction->setClassName($this->upgradeTypeName($attributes->getScalar(RawDef::EI_COMPONENT_CLASS_KEY)));
 		$extraction->setProps($attributes->getArray(RawDef::EI_COMPONENT_PROPS_KEY, false));
 		return $extraction;
-	}	
+	}
 	
 	private function createEiModficatorExtraction(string $eiModificatorId, Attributes $attributes, 
 			TypePath $eiTypePath) {

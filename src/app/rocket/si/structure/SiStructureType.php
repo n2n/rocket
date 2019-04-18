@@ -9,7 +9,6 @@ class SiStructureType {
 	const PANEL = 'panel';
 	const ITEM = 'item';
 	
-	
 	/**
 	 * @return string[]
 	 */

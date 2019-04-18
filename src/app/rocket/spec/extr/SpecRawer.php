@@ -237,7 +237,7 @@ class SpecRawer {
 		foreach ($displayStructure->getDisplayItems() as $displayItem) {
 			$displayItemData = array(
 					RawDef::DISPLAY_ITEM_LABEL_KEY => $displayItem->getLabel(),
-					RawDef::DISPLAY_ITEM_GROUP_TYPE_KEY => $displayItem->getType());
+					RawDef::DISPLAY_ITEM_GROUP_TYPE_KEY => $displayItem->getSiStructureType());
 			if (!$displayItem->hasDisplayStructure()) {
 				$displayItemData[RawDef::DISPLAY_ITEM_GUI_ID_PATH_KEY] = (string) $displayItem->getGuiFieldPath();
 			} else {
