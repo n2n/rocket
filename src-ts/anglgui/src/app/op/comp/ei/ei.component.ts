@@ -26,14 +26,14 @@ export class EiComponent implements OnInit {
     	this.route.url.subscribe((url: UrlSegment[]) => {
     		const siZone = new SiZone();
     		
+    		console.log(url);
+    		
     		this.siContainer.mainSiLayer.pushSiZone(siZone);
     		
-    		this.siService.lookupSiZoneContent(url.join('/')).subscribe((siZoneContent) => {
-    			siZone.content = siZoneContent;
-            });
+    		this.siService.lookupSiZoneContent(url.join('/'))
+		    		.subscribe((siZoneContent) => {
+		    			siZone.content = siZoneContent;
+		            });
     	});
-    	
-    	
-        
     }
 }
