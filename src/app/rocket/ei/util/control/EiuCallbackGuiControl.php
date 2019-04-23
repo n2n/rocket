@@ -35,34 +35,70 @@ class EiuCallbackGuiControl implements GeneralGuiControl, EntryGuiControl, Selec
 	private $id;
 	private $callback;
 	private $siButton;
+	private $inputHandled;
 	
+	/**
+	 * @param string $id
+	 * @param \Closure $callback
+	 * @param SiButton $siButton
+	 */
 	function __construct(string $id, \Closure $callback, SiButton $siButton) {
 		$this->id = $id;
 		$this->callback = $callback;
 		$this->siButton = $siButton;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\gui\control\GuiControl::getId()
+	 */
 	function getId(): string {
 		return $this->id;
 	}
 	
-	public function isInputHandled(): bool {
-		return false;
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\gui\control\GuiControl::isInputHandled()
+	 */
+	function isInputHandled(): bool {
+		return $this->inputHandled;
 	}
 	
-	public function toSiControl(string $controlId): SiControl {
-		return new ApiCallSiControl($controlId, $this->siButton);
+	/**
+	 * @param bool $inputHandled
+	 * @return \rocket\ei\util\control\EiuCallbackGuiControl
+	 */
+	function setInputHandled(bool $inputHandled) {
+		$this->inputHandled = $inputHandled;
+		return $this;
 	}
 	
-	public function handle(EiFrame $eiFrame): SiResult {
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\gui\control\GuiControl::toSiControl()
+	 */
+	function toSiControl(string $controlId): SiControl {
+		return new ApiCallSiControl($controlId, $this->siButton, $this->inputHandled);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\gui\control\GeneralGuiControl::handle()
+	 */
+	function handle(EiFrame $eiFrame): SiResult {
 	}
 
-	public function handleEntry(EiFrame $eiFrame, EiEntry $eiEntry): SiResult {
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\gui\control\EntryGuiControl::handleEntry()
+	 */
+	function handleEntry(EiFrame $eiFrame, EiEntry $eiEntry): SiResult {
 	}
 	
-	public function handleEntries(EiFrame $eiFrame, array $eiEntries): SiResult {
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\gui\control\SelectionGuiControl::handleEntries()
+	 */
+	function handleEntries(EiFrame $eiFrame, array $eiEntries): SiResult {
 	}
-
-
-	
 }

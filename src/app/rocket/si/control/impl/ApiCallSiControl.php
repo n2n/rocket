@@ -27,10 +27,12 @@ use rocket\si\control\SiButton;
 class ApiCallSiControl implements SiControl {
 	private $apiCallId;
 	private $button;
+	private $inputHandled;
 	
-	public function __construct(string $apiCallId, SiButton $button) {
+	public function __construct(string $apiCallId, SiButton $button, bool $inputHandled = false) {
 		$this->apiCallId = $apiCallId;
 		$this->button = $button;
+		$this->inputHandled = $inputHandled;
 	}
 	
 	public function getType(): string {
@@ -38,6 +40,6 @@ class ApiCallSiControl implements SiControl {
 	}
 
 	public function getData(): array {
-		return [ 'apiCallId' => $this->apiCallId, 'button' => $this->button ];
+		return [ 'apiCallId' => $this->apiCallId, 'button' => $this->button, 'inputHandled' => $this->inputHandled ];
 	}
 }

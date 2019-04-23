@@ -6,7 +6,7 @@ import { Extractor, ObjectMissmatchError } from "src/app/util/mapping/extractor"
 import { SiZone } from "src/app/si/model/structure/si-zone";
 import { ListSiZoneContent } from "src/app/si/model/structure/impl/list-si-zone-content";
 import { DlSiZoneContent } from "src/app/si/model/structure/impl/dl-si-zone-content";
-import { SiFactory } from "src/app/si/build/si-zone-factory";
+import { SiFactory } from "src/app/si/build/si-factory";
 import { Router } from "@angular/router";
 import { PlatformLocation } from "@angular/common";
 import { IllegalSiStateError } from "src/app/si/model/illegal-si-state-error";

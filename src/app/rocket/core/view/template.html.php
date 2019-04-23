@@ -22,7 +22,8 @@
 	
 	use n2n\l10n\Message;
 	use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\core\model\TemplateModel;
+	use rocket\core\model\TemplateModel;
+	use n2nutil\jquery\JQueryUiLibrary;
 	
 	$view = HtmlView::view($this);
 	$request = HtmlView::request($view);
@@ -30,6 +31,8 @@ use rocket\core\model\TemplateModel;
 	$httpContext = HtmlView::httpContext($view);
 	
 	$view->useTemplate('boilerplate.html', $view->getParams());
+	
+	$htmlMeta->addLibrary(new JQueryUiLibrary(3));
 	
 	$templateModel = $view->lookup(TemplateModel::class);
 	$view->assert($templateModel instanceof TemplateModel);

@@ -25,8 +25,6 @@
 	use rocket\core\model\TemplateModel;
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use n2n\web\http\nav\Murl;
-	use n2nutil\jquery\JQueryUiLibrary;
-	use n2n\impl\web\ui\view\jhtml\JhtmlLibrary;
 	use rocket\user\model\LoginContext;
 	use rocket\core\controller\RocketController;
 	
@@ -58,8 +56,7 @@
 	$htmlMeta->addMeta(array('name' => 'viewport', 'content' => 'width=device-width, initial-scale=1.0'));
 	$htmlMeta->addMeta(array('content' => 'IE=edge', 'http-equiv' => 'x-ua-compatible'));
 	$htmlMeta->addMeta(array('name' => 'robots', 'content' => 'noindex, nofollow'));
-	$htmlMeta->addLibrary(new JQueryUiLibrary(3));
-	$htmlMeta->addLibrary(new JhtmlLibrary(false));
+	
 	// new design (not ready yet):
 	$htmlMeta->addCss('css/rocket-20.css');
 	// old design:
