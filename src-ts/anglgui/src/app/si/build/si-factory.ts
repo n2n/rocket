@@ -20,7 +20,10 @@ import { ApiCallSiControl } from "src/app/si/model/control/impl/api-call-si-cont
 
 export class SiFactory {
 	
-	static createZoneContent(data: any): SiZoneContent {
+	constructor(private zone: SiZone) {
+	}
+	
+	createZoneContent(data: any): SiZoneContent {
 		const extr = new Extractor(data);
 		const dataExtr = extr.reqExtractor('data');
 		
@@ -28,11 +31,11 @@ export class SiFactory {
 			case SiZoneType.LIST:
 				const listSiZoneContent = new ListSiZoneContent(extr.reqString('apiUrl'), 
 						dataExtr.reqNumber('pageSize'), 
-						SiFactory.createCompactDeclaration(dataExtr.reqObject('compactDeclaration')));
+						this.createCompactDeclaration(dataExtr.reqObject('compactDeclaration')));
 				
 				const partialContentData = dataExtr.nullaObject('partialContent');
 				if (partialContentData) {
-					const partialContent = SiFactory.createPartialContent(partialContentData);
+					const partialContent = this.createPartialContent(partialContentData);
 					
 					listSiZoneContent.size = partialContent.count;
 					listSiZoneContent.putPage(new SiPage(1, partialContent.entries));
@@ -40,75 +43,75 @@ export class SiFactory {
 				
 				return listSiZoneContent;
 			case SiZoneType.DL:
-				const bulkyDeclaration = SiFactory.createBulkyDeclaration(dataExtr.reqObject('bulkyDeclaration'))
+				const bulkyDeclaration = this.createBulkyDeclaration(dataExtr.reqObject('bulkyDeclaration'))
 				
 				const dlSiZoneContent = new DlSiZoneContent(extr.reqString('apiUrl'), bulkyDeclaration);
-				dlSiZoneContent.entries = SiFactory.createEntries(dataExtr.reqArray('entries'));
+				dlSiZoneContent.entries = this.createEntries(dataExtr.reqArray('entries'));
 				return dlSiZoneContent;
 			default:
 				throw new ObjectMissmatchError('Invalid si zone type: ' + data.type);
 		}
 	}
 	
-	static createPartialContent(data: any): SiPartialContent {
+	createPartialContent(data: any): SiPartialContent {
 		const extr = new Extractor(data);
 		return {
-			entries: SiFactory.createEntries(extr.reqArray('entries')),
+			entries: this.createEntries(extr.reqArray('entries')),
 			count: extr.reqNumber('count'),
 			offset: extr.reqNumber('offset')
 		}
 	}
 	
-	static createCompactDeclaration(data: any): SiCompactDeclaration {
+	createCompactDeclaration(data: any): SiCompactDeclaration {
 		const compactExtr = new Extractor(data);
 		
 		return new SiCompactDeclaration(
-				SiFactory.createFieldDeclarations(compactExtr.reqArray('fieldDeclarations')));
+				this.createFieldDeclarations(compactExtr.reqArray('fieldDeclarations')));
 	}
 	
 	
-	static createBulkyDeclaration(data: any): SiBulkyDeclaration {
+	createBulkyDeclaration(data: any): SiBulkyDeclaration {
 		const extr = new Extractor(data);
 		
 		return new SiBulkyDeclaration(
-				SiFactory.createFieldStructureDeclarations(extr.reqArray('fieldStructureDeclarations')),
-				SiFactory.createControlMap(extr.reqMap('controls')));
+				this.createFieldStructureDeclarations(extr.reqArray('fieldStructureDeclarations')),
+				this.createControlMap(extr.reqMap('controls')));
 	}
 	
-	private static createFieldStructureDeclarations(data: Array<any>): SiFieldStructureDeclaration[] {
+	private createFieldStructureDeclarations(data: Array<any>): SiFieldStructureDeclaration[] {
 		const declarations: Array<SiFieldStructureDeclaration> = [];
 		for (const declarationData of data) {
-			declarations.push(SiFactory.createFieldStructureDeclaration(declarationData));
+			declarations.push(this.createFieldStructureDeclaration(declarationData));
 		}
 		return declarations;
 	}
 	
-	private static createFieldStructureDeclaration(data: any): SiFieldStructureDeclaration {
+	private createFieldStructureDeclaration(data: any): SiFieldStructureDeclaration {
 		const extr = new Extractor(data);
 		
 		return new SiFieldStructureDeclaration(
-				SiFactory.createFieldDeclaration(extr.reqObject('fieldDeclaration')), 
+				this.createFieldDeclaration(extr.reqObject('fieldDeclaration')), 
 				<any> extr.reqString('structureType'), 
-				SiFactory.createFieldStructureDeclarations(extr.reqArray('children')));
+				this.createFieldStructureDeclarations(extr.reqArray('children')));
 	}
 	
-	private static createFieldDeclarations(data: Array<any>): SiFieldDeclaration[] {
+	private createFieldDeclarations(data: Array<any>): SiFieldDeclaration[] {
 		const declarations: Array<SiFieldDeclaration> = [];
 		for (const declarationData of data) {
-			declarations.push(SiFactory.createFieldDeclaration(declarationData));
+			declarations.push(this.createFieldDeclaration(declarationData));
 			
 		}
 		return declarations;
 	}
 	
-	private static createFieldDeclaration(data: any): SiFieldDeclaration {
+	private createFieldDeclaration(data: any): SiFieldDeclaration {
 		const extr = new Extractor(data);
 		
 		return new SiFieldDeclaration(extr.nullaString('fieldId'), 
 				extr.nullaString('label'), extr.nullaString('helpText'));
 	}
 	
-	private static createEntries(data: Array<any>): SiEntry[] {
+	private createEntries(data: Array<any>): SiEntry[] {
 		let entries: Array<SiEntry> = [];
 		for (let entryData of data) {
 			const extr = new Extractor(entryData);
@@ -116,8 +119,8 @@ export class SiFactory {
 			const siEntry = new SiEntry(<string> extr.reqString('category'), extr.nullaString('id'), 
 						<string> extr.reqString('name'));
 			siEntry.treeLevel = extr.nullaNumber('treeLevel');
-			siEntry.fieldMap = SiFactory.createFieldMap(extr.reqMap('fields'));
-			siEntry.controlMap = SiFactory.createControlMap(extr.reqMap('controls'));
+			siEntry.fieldMap = this.createFieldMap(extr.reqMap('fields'));
+			siEntry.controlMap = this.createControlMap(extr.reqMap('controls'));
 			
 			entries.push(siEntry);
 		}
@@ -125,16 +128,16 @@ export class SiFactory {
 		return entries;
 	}
 	
-	private static createFieldMap(data: Map<string, any>): Map<string, SiField> {
+	private createFieldMap(data: Map<string, any>): Map<string, SiField> {
 		const fields = new Map<string, SiField>();
 		
 		for (let[fieldId, fieldData] of data) {
-			fields.set(fieldId, SiFactory.createField(fieldId, fieldData));
+			fields.set(fieldId, this.createField(fieldId, fieldData));
 		}
 		return fields;
 	}
 	
-	private static createField(fieldId: string, data: any): SiField {
+	private createField(fieldId: string, data: any): SiField {
 		const extr = new Extractor(data);
 		const dataExtr = extr.reqExtractor('data');
 		
@@ -152,16 +155,16 @@ export class SiFactory {
 		}	
 	}
 	
-	private static createControlMap(data: Map<string, any>): Map<string, SiControl> {
+	private createControlMap(data: Map<string, any>): Map<string, SiControl> {
 		const controls = new Map<string, SiControl>();
 		
 		for (let[controlId, controlData] of data) {
-			controls.set(controlId, SiFactory.createControl(controlId, controlData));
+			controls.set(controlId, this.createControl(controlId, controlData));
 		}
 		return controls;
 	}
 	
-	private static createControl(controlId: string, data: any): SiControl {
+	private createControl(controlId: string, data: any): SiControl {
 		const extr = new Extractor(data);
 		const dataExtr = extr.reqExtractor('data');
 		
@@ -179,7 +182,7 @@ export class SiFactory {
 		}	
 	}
 	
-	private static createButton(controlId, data: any): SiButton {
+	private createButton(controlId, data: any): SiButton {
 		const extr = new Extractor(data);
 		const btn = new SiButton(extr.reqString('name'), extr.reqString('btnClass'), extr.reqString('iconClass'));
 		
@@ -190,12 +193,12 @@ export class SiFactory {
 		
 		const confirmData = extr.nullaObject('confirm');
 		if (confirmData) {
-			btn.confirm = SiFactory.createConfirm(confirmData);
+			btn.confirm = this.createConfirm(confirmData);
 		}
 		return btn;
 	}
 	
-	private static createConfirm(data: any): SiConfirm {
+	private createConfirm(data: any): SiConfirm {
 		const extr = new Extractor(data);
 		
 		return {

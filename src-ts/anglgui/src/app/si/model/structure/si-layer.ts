@@ -4,7 +4,7 @@ import { SiZone } from "src/app/si/model/structure/si-zone";
 export class SiLayer {
     private siZones: SiZone[] = [];
 	
-	constructor() {
+	constructor(readonly main: boolean) {
 	}
 	
 	pushSiZone(siZone: SiZone) {

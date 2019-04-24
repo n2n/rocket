@@ -70,8 +70,6 @@ class SiApiController extends ControllerAdapter {
 		$siControl->handle($eiGui);
 	}
 	
-	
-	
 	function doExecEntryGuiControl(ParamPost $siEntryId, ParamPost $siControlId, ParamPost $inputMap) {
 		$inputMap->parseJsonToAttributes();
 	}

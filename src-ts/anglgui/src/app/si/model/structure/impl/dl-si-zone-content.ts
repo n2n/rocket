@@ -11,6 +11,10 @@ export class DlSiZoneContent implements SiZoneContent {
 		
 	}
 	
+	getApiUrl(): string {
+		return this.apiUrl;
+	}
+	
 	initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver) {
 		const componentFactory = componentFactoryResolver.resolveComponentFactory(DlZoneContentComponent);
 

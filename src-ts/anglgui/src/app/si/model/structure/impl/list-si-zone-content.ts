@@ -15,6 +15,10 @@ export class ListSiZoneContent implements SiZoneContent {
 			public compactDeclaration: SiCompactDeclaration|null) {
 	}
 	
+	getApiUrl(): string {
+		return this.apiUrl;
+	}
+	
 	private ensureSetup() {
 		if (this.compactDeclaration && this.size) return;
 		
