@@ -42,7 +42,7 @@ class SiApiController extends ControllerAdapter {
 		echo 'very apisch';
 	}
 	
-	function doExecGeneralGuiControl(ParamPost $siControlId, ParamPost $inputMap = null) {
+	function doExecControl(ParamPost $siControlId, ParamPost $inputMap = null) {
 		$eiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
 		$eiGui = $eiMask->createEiGui($eiFrame, $viewMode, $init);
 		
@@ -70,11 +70,11 @@ class SiApiController extends ControllerAdapter {
 		$siControl->handle($eiGui);
 	}
 	
-	function doExecEntryGuiControl(ParamPost $siEntryId, ParamPost $siControlId, ParamPost $inputMap) {
+	function doExecEntryControl(ParamPost $siEntryId, ParamPost $siControlId, ParamPost $inputMap) {
 		$inputMap->parseJsonToAttributes();
 	}
 	
-	function doExecSelectionGuiControl(ParamPost $siEntryIds, ParamPost $siControlId) {
+	function doExecSelectionControl(ParamPost $siEntryIds, ParamPost $siControlId) {
 		
 	}
 	
