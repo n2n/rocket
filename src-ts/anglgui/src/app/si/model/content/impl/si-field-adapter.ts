@@ -7,7 +7,6 @@ import { IllegalSiStateError } from "src/app/si/model/illegal-si-state-error";
 export abstract class OutSiFieldAdapter implements SiField {
     abstract initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver);
     
-	
 	hasInput(): boolean {
 		return false;
 	}
