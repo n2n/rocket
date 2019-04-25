@@ -127,9 +127,9 @@ class SiEntry implements \JsonSerializable {
 	}
 	
 	function jsonSerialize() {
-		$buildupsArr = array();
+		$buildups = array();
 		foreach ($this->buildups as $id => $buildup) {
-			$buildupsArr[$id] = $buildup;
+			$buildups[$id] = $buildup;
 		}
 				
 		return [
@@ -137,7 +137,7 @@ class SiEntry implements \JsonSerializable {
 			'id' => $this->id,
 			'treeLevel' => $this->treeLevel,
 			'inputAvailable' => $this->inputAvailable,
-			'buildups' => $buildupsArr
+			'buildups' => $buildups
 		];
 	}
 

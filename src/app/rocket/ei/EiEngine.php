@@ -291,7 +291,7 @@ class EiEngine {
 	/**
 	 * @param EiEntryGui $eiEntryGui
 	 * @param HtmlView $view
-	 * @return \rocket\ei\manage\gui\control\Control[]
+	 * @return \rocket\ei\manage\gui\control\GuiControl[]
 	 */
 	public function createEiEntryGuiControls(EiEntryGui $eiEntryGui, HtmlView $view) {
 		return (new GuiFactory($this->eiMask))->createEntryGuiControls($eiEntryGui, $view);
