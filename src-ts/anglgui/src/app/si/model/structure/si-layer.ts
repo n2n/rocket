@@ -2,16 +2,24 @@
 import { SiZone } from "src/app/si/model/structure/si-zone";
 
 export class SiLayer {
-    private siZones: SiZone[] = [];
-	
+    private zoneMap = new Map<string, SiZone>();
+	private zones: Array<SiZone> = [];
+    
 	constructor(readonly main: boolean) {
 	}
 	
-	pushSiZone(siZone: SiZone) {
-		this.siZones.push(siZone);
+	pushZone(url: string): SiZone {
+		let zone = this.zoneMap.get(url)
+		
+		if (!zone) {
+			zone = new SiZone(url, this);
+			this.zones.push(zone);
+		}
+		
+		return zone;
 	}
 	
 	get curSiZone(): SiZone {
-		return this.siZones[this.siZones.length - 1];
+		return this.zones[this.zones.length - 1];
 	}
 }

@@ -34,6 +34,12 @@ use rocket\spec\Type;
 use rocket\ei\mask\EiMask;
 use rocket\ei\mask\model\DisplayScheme;
 use rocket\ei\manage\veto\VetoableLifecycleAction;
+use rocket\ei\manage\EiObject;
+use rocket\ei\manage\LiveEiObject;
+use rocket\ei\manage\EiEntityObj;
+use rocket\ei\manage\DraftEiObject;
+use rocket\ei\manage\draft\Draft;
+use rocket\ei\manage\draft\DraftValueMap;
 
 class EiType extends Type {
 	private $entityModel;
@@ -242,75 +248,11 @@ class EiType extends Type {
 		return $eiType;
 	}
 	
-// 	public function setupEiFrame(EiFrame $eiFrame) {
-// 		foreach ($this->getEiEngine()->getEiModificatorCollection() as $eiModificator) {
-// 			$eiModificator->setupEiFrame($eiFrame);
-// 		}
-// 	}
-	
-// 	public function hasSecurityOptions() {
-// 		return $this->superEiType === null;
-// 	}
-	
-// 	public function getPrivilegeOptions(N2nContext $n2nContext) {
-// 		if ($this->superEiType !== null) return null;
-		
-// 		return $this->buildPrivilegeOptions($this, $n2nContext, array());
-// 	}
-	
-// 	private function buildPrivilegeOptions(EiType $eiType, N2nContext $n2nContext, array $options) {
-// 		$n2nLocale = $n2nContext->getN2nLocale();
-// 		foreach ($eiType->getEiCommandCollection()->filterLevel() as $eiCommand) {
-// 			if ($eiCommand instanceof PrivilegedEiCommand) {
-// 				$options[PrivilegeBuilder::buildPrivilege($eiCommand)]
-// 						= $eiCommand->getPrivilegeLabel($n2nLocale);
-// 			}
-				
-// // 			if ($eiCommand instanceof PrivilegeExtendableEiCommand) {
-// // 				$privilegeOptions = $eiCommand->getPrivilegeExtOptions($n2nLocale);
-					
-// // 				ArgUtils::valArrayReturnType($privilegeOptions, 'scalar', $eiCommand, 'getPrivilegeOptions');
-					
-// // 				foreach ($privilegeOptions as $privilegeExt => $label) {
-// // 					if ($eiType->hasSuperEiType()) {
-// // 						$label . ' (' . $eiType->getLabel() . ')';
-// // 					}
-					
-// // 					$options[PrivilegeBuilder::buildPrivilege($eiCommand, $privilegeExt)] = $label;
-// // 				}
-// // 			}
-// 		}
-		
-// 		foreach ($eiType->getSubEiTypes() as $subEiType) {
-// 			$options = $this->buildPrivilegeOptions($subEiType, $n2nContext, $options);
-// 		}
-		
-// 		return $options;
-// 	}
-	
 	private function ensureIsTop() {
 		if ($this->superEiType !== null) {
 			throw new UnsupportedOperationException('EiType has super EiType');
 		}
 	}
-	
-// 	public function createRestrictionSelectorItems(N2nContext $n2nContext) {
-// 		$this->ensureIsTop();
-		
-// 		$restrictionSelectorItems = array();
-// 		foreach ($this->eiPropCollection as $eiProp) {
-// 			if (!($eiProp instanceof RestrictionEiProp)) continue;
-			
-// 			$restrictionSelectorItem = $eiProp->createRestrictionSelectorItem($n2nContext);
-			
-// 			ArgUtils::valTypeReturn($restrictionSelectorItem, 'rocket\ei\util\filter\prop\SelectorItem', 
-// 					$eiProp, 'createRestrictionSelectorItem');
-			
-// 			$restrictionSelectorItems[$eiProp->getId()] = $restrictionSelectorItem;
-// 		}
-		
-// 		return $restrictionSelectorItems;
-// 	}
 	
 	/**
 	 * @param object $object
@@ -422,6 +364,18 @@ class EiType extends Type {
 	 */
 	public function getEiTypeExtensionCollection(): EiTypeExtensionCollection {
 		return $this->eiTypeExtensionCollection;
+	}
+	
+	/**
+	 * @param bool $draft
+	 * @return EiObject
+	 */
+	public function createNewEiObject(bool $draft = false) {
+		if (!$draft) {
+			return new LiveEiObject(EiEntityObj::createNew($eiType));
+		}
+		
+		return new DraftEiObject(new Draft(null, EiEntityObj::createNew($eiType), new \DateTime()));
 	}
 	
 	public function __toString(): string {

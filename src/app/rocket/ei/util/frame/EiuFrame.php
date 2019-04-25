@@ -890,37 +890,7 @@ class EiuFrame {
 		return new DraftEiObject($draft);
 	}
 
-	/**
-	 * @param bool $draft
-	 * @param EiType $eiType
-	 * @return EiObject
-	 */
-	public function createNewEiObject(bool $draft = false, EiType $eiType = null): EiObject {
-		if ($eiType === null) {
-			$eiType = $this->getContextEiType();
-		}
-
-		if (!$draft) {
-			return new LiveEiObject(EiEntityObj::createNew($eiType));
-		}
-
-		$loginContext = $this->getN2nContext()->lookup(LoginContext::class);
-		CastUtils::assertTrue($loginContext instanceof LoginContext);
-
-		return new DraftEiObject($this->createNewDraftFromEiEntityObj(EiEntityObj::createNew($eiType)));
-	}
-
-	/**
-	 * @param EiEntityObj $eiEntityObj
-	 * @return \rocket\ei\manage\draft\Draft
-	 */
-	public function createNewDraftFromEiEntityObj(EiEntityObj $eiEntityObj) {
-		$loginContext = $this->getN2nContext()->lookup(LoginContext::class);
-		CastUtils::assertTrue($loginContext instanceof LoginContext);
-
-		return new Draft(null, $eiEntityObj, new \DateTime(),
-				$loginContext->getCurrentUser()->getId(), new DraftValueMap());
-	}
+	
 
 	/**
 	 * @param mixed $eiObjectObj

@@ -12,11 +12,10 @@ import { IllegalSiStateError } from "src/app/si/model/illegal-si-state-error";
 export class ApiCallSiControl implements SiControl {
 	
 	inputSent = false;
-	zone: SiZone|null = null;
-	entryBoundFlag: boolean
+	private entryBoundFlag: boolean
 	
 	constructor(public apiCallId: string, public button: SiButton,
-			public entry: SiEntry|null = null) {	
+			public zone: SiZone, public entry: SiEntry|null = null) {	
 	}
 	
 	getButton(): SiButton {
@@ -37,16 +36,16 @@ export class ApiCallSiControl implements SiControl {
 	
 	exec(commandService: SiCommanderService) {
 		if (this.entry) {
-			commandService.execEntryControl(this.apiCallId, this.zone, this.inputSent, this.entry);
+			commandService.execEntryControl(this.apiCallId, this.zone, this.entry, this.inputSent);
 			return;
 		}
 		
 		if (this.entryBound) {
-			commandService.execSelectionControl(this.apiCallId, this.zone, 
-					this.inputSent, this.zone.content.getSelectedEntries());
+			commandService.execSelectionControl(this.apiCallId, this.zone, this.zone.content.getSelectedEntries(), 
+					this.inputSent);
 			return;
 		}
 		
-		commandService.execControl(this.apiCallId, this.zone);
+		commandService.execControl(this.apiCallId, this.zone, this.inputSent);
 	}
 }

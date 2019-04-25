@@ -5,6 +5,5 @@ import { SiControl } from "src/app/si/model/control/si-control";
 export class SiBulkyDeclaration {
 	constructor(public fieldStructureDeclaration: SiFieldStructureDeclaration[],
 			public controlMap: Map<string, SiControl>) {
-		
 	}
 }

@@ -38,7 +38,7 @@ class EiuMask  {
 	private $eiuEngine;
 	private $eiuAnalyst;
 	
-	public function __construct(EiMask $eiMask, EiuEngine $eiuEngine = null, EiuAnalyst $eiuAnalyst = null) {
+	public function __construct(EiMask $eiMask, ?EiuEngine $eiuEngine, EiuAnalyst $eiuAnalyst) {
 		$this->eiMask = $eiMask;
 		$this->eiuEngine = $eiuEngine;
 		$this->eiuAnalyst = $eiuAnalyst;

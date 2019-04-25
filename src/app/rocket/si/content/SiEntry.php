@@ -21,31 +21,21 @@
  */
 namespace rocket\si\content;
 
-use rocket\si\control\SiControl;
-
 class SiEntry implements \JsonSerializable {
 	private $category;
 	private $id;
-	private $name;
+	private $buildups = [];
 	private $treeLevel;
-	/**
-	 * @var SiField[] $fields
-	 */
-	private $fields = [];
-	/**
-	 * @var SiControl[] $controls
-	 */	
-	private $controls = [];
 	
 	/**
 	 * @param string $category
 	 * @param string|null $id
 	 * @param string $name
 	 */
-	function __construct(string $category, ?string $id, string $name) {
+	function __construct(string $category, ?string $id, bool $inputAvailable) {
 		$this->category = $category;
 		$this->id = $id;
-		$this->name = $name;
+		$this->inputAvailable = $inputAvailable;
 	}
 	
 	/**
@@ -97,7 +87,7 @@ class SiEntry implements \JsonSerializable {
 	}
 
 	/**
-	 * @return mixed
+	 * @return int|null
 	 */
 	function getTreeLevel() {
 		return $this->treeLevel;
@@ -112,17 +102,17 @@ class SiEntry implements \JsonSerializable {
 	}
 
 	/**
-	 * @return SiField[]
+	 * @return SiEntryBuildup[]
 	 */
-	function getFields() {
-		return $this->fields;
+	function getBuildups() {
+		return $this->buildups;
 	}
 
 	/**
-	 * @param SiField[] $fields key is fieldId 
+	 * @param SiEntryBuildup[] $buildups 
 	 */
-	function setFields(array $fields) {
-		$this->fields = $fields;
+	function setBuildups(array $buildups) {
+		$this->buildups = $buildups;
 		return $this;
 	}
 	
@@ -131,61 +121,23 @@ class SiEntry implements \JsonSerializable {
 	 * @param SiField $field
 	 * @return \rocket\si\content\SiEntry
 	 */
-	function putField(string $id, SiField $field) {
-		$this->fields[$id] = $field;
-		return $this;
-	}
-	
-	/**
-	 * @return SiControl[] 
-	 */
-	function getControls() {
-		return $this->controls;
-	}
-	
-	/**
-	 * @param SiControl[] $controls
-	 * @return \rocket\si\content\SiEntry
-	 */
-	function setControls(array $controls) {
-		$this->controls = $controls;
-		return $this;
-	}
-	
-	/**
-	 * @param string $id
-	 * @param SiControl $control
-	 * @return \rocket\si\content\SiEntry
-	 */
-	function putControl(string $id, SiControl $control) {
-		$this->controls[$id] = $control;
+	function putBuildup(string $id, SiEntryBuildup $buildup) {
+		$this->buildups[$id] = $buildup;
 		return $this;
 	}
 	
 	function jsonSerialize() {
-		$fieldsArr = array();
-		foreach ($this->fields as $id => $field) {
-			$fieldsArr[$id] = [
-				'type' => $field->getType(),
-				'data' => $field->getData()
-			];
+		$buildupsArr = array();
+		foreach ($this->buildups as $id => $buildup) {
+			$buildupsArr[$id] = $buildup;
 		}
-		
-		$controlsArr = array();
-		foreach ($this->controls as $id => $control) {
-			$controlsArr[$id] = [
-				'type' => $control->getType(),
-				'data' => $control->getData()
-			];
-		}
-		
+				
 		return [
 			'category' => $this->category,
 			'id' => $this->id,
-			'name' => $this->name,
 			'treeLevel' => $this->treeLevel,
-			'fields' => $fieldsArr,
-			'controls' => $controlsArr
+			'inputAvailable' => $this->inputAvailable,
+			'buildups' => $buildupsArr
 		];
 	}
 

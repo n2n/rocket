@@ -7,6 +7,7 @@ use n2n\util\ex\IllegalStateException;
 use rocket\ei\manage\gui\GuiPropAssembly;
 use rocket\si\structure\SiFieldDeclaration;
 use rocket\si\structure\SiFieldStructureDeclaration;
+use rocket\si\structure\SiStructureType;
 
 class CommonEiGuiSiFactory implements EiGuiSiFactory {
 	private $eiGui;
@@ -91,11 +92,14 @@ class CommonEiGuiSiFactory implements EiGuiSiFactory {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\EiGuiSiFactory::getFieldDeclarationStrutures()
 	 */
-	function getSiFieldStructureDeclarations(): array {
+	function getSiFieldStructureDeclaration(): SiFieldStructureDeclaration {
 		IllegalStateException::assertTrue($this->displayStructure !== null);
 		
-		return $this->createFieldStructureDeclarations($this->displayStructure);
+		return new SiFieldStructureDeclaration(SiStructureType::PANEL,
+				new SiFieldDeclaration(null, null),
+				$this->createFieldStructureDeclarations($this->displayStructure));
 	}
+
 	
 	
 // 	private function determineDisplayStructure($viewMode): DisplayStructure {

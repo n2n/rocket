@@ -30,6 +30,8 @@ use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\manage\gui\field\GuiFieldPath;
 use rocket\ei\manage\gui\field\GuiFieldFork;
 use rocket\ei\manage\gui\field\GuiField;
+use rocket\si\content\SiEntryBuildup;
+use rocket\si\content\SiEntry;
 
 class EiEntryGui {
 	/**
@@ -373,6 +375,46 @@ class EiEntryGui {
 	
 	public function unregisterEiEntryGuiListener(EiEntryGuiListener $eiEntryGuiListener) {
 		unset($this->eiEntryGuiListeners[spl_object_hash($eiEntryGuiListener)]);
+	}
+	
+	function createSiEntry() {
+		$eiType = $this->eiEntry->getEiType();
+		$siEntry = new SiEntry($eiType->getSupremeEiType()->getId(), $eiType->getId());
+		$siEntry->putBuildup($eiType->getId(), $this->createSiEntryBuildup());
+		return $siEntry;
+	}
+	
+	/**
+	 * @return SiEntryBuildup
+	 */
+	function createSiEntryBuildup() {
+		$eiEntry = $this->eiEntry;
+		$eiFrame = $this->eiGui->getEiFrame();
+		
+		$name = null;
+		$deterGuiDefinition = null;
+		if ($eiEntry->isNew()) {
+			$deterGuiDefinition = $this->eiGui->getGuiDefinition();
+			$name = $eiEntry->getEiMask()->getLabelLstr()->t($eiFrame->getN2nContext()->getN2nLocale());
+		} else {
+			$deterGuiDefinition = $eiFrame->getManageState()->getDef()
+					->getGuiDefinition($eiEntry->getEiMask());
+			$name = $deterGuiDefinition->createIdentityString($eiEntry->getEiObject(), $eiFrame->getN2nContext(),
+					$eiFrame->getN2nContext()->getN2nLocale());
+		}
+		
+		$siEntry = new SiEntryBuildup($name);
+		
+		foreach ($this->guiFields as $guiFieldPathStr => $guiField) {
+			$siEntry->putField($guiFieldPathStr, $guiField->getSiField());
+		}
+		
+		foreach ($deterGuiDefinition->createEntryGuiControls($this, $eiEntry)
+				as $guiControlPathStr => $entryGuiControl) {
+			$siEntry->putControl($guiControlPathStr, $entryGuiControl->toSiControl($guiControlPathStr));
+		}
+		
+		return $siEntry;
 	}
 	
 	public function __toString() {

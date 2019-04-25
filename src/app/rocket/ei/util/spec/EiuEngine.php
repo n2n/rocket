@@ -57,10 +57,18 @@ class EiuEngine {
 		return $this->eiuMask = new EiuMask($this->eiEngine->getEiMask(), $this, $this->eiuAnalyst);
 	}
 	
+	public function type() {
+		if ($this->eiuType !== null) {
+			return $this->eiuType;
+		}
+		
+		return $this->eiuType = new EiuType($this->getEiType(), $this->eiuAnalyst);
+	}
+	
 	/**
 	 * @return \rocket\ei\EiType
 	 */
-	public function getEiType() {
+	private function getEiType() {
 		return $this->eiEngine->getEiMask()->getEiType();
 	}
 	
@@ -72,8 +80,10 @@ class EiuEngine {
 			return $this;
 		}
 		
-		return new EiuEngine($this->eiEngine->getSupremeEiEngine(), $this->n2nContext);
+		return new EiuEngine($this->eiEngine->getSupremeEiEngine(), null, $this->eiuAnalyst);
 	}
+	
+	
 	
 	public function removeGuiProp($guiFieldPath) {
 		$this->getGuiDefinition()->removeGuiPropByPath(GuiFieldPath::create($guiFieldPath));

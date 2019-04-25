@@ -21,16 +21,17 @@ export class ListSiZoneContent implements SiZoneContent {
 	}
 	
 	getEntries(): SiEntry[] {
-	        throw new Error("Method not implemented.");
-	    }
-	    getSelectedEntries(): SiEntry[] {
-	        throw new Error("Method not implemented.");
-	    }
+	    throw new Error("Method not implemented.");
+    }
+	
+    getSelectedEntries(): SiEntry[] {
+        throw new Error("Method not implemented.");
+    }
 	
 	private ensureSetup() {
 		if (this.compactDeclaration && this.size) return;
 		
-		throw new IllegalSiStateError('ListSiZone not set up.')
+		throw new IllegalSiStateError('ListSiZone not set up.');
 	}
 	
 	putPage(page: SiPage) {

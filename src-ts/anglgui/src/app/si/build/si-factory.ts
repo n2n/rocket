@@ -177,7 +177,8 @@ export class SiFactory {
 			case SiControlType.API_CALL:
 				return new ApiCallSiControl(
 						dataExtr.reqString('apiCallId'),
-						this.createButton(controlId, dataExtr.reqObject('button')));
+						this.createButton(controlId, dataExtr.reqObject('button')),
+						this.zone);
 			default: 
 				throw new ObjectMissmatchError('Invalid si field type: ' + data.type);
 		}	

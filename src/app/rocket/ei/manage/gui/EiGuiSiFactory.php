@@ -1,6 +1,8 @@
 <?php
 namespace rocket\ei\manage\gui;
 
+use rocket\si\structure\SiFieldStructureDeclaration;
+
 interface EiGuiSiFactory {
 
 	/**
@@ -9,7 +11,7 @@ interface EiGuiSiFactory {
 	public function getSiFieldDeclarations(): array;	
 	
 	/**
-	 * @return \rocket\si\structure\SiFieldStructureDeclaration[]
+	 * @return \rocket\si\structure\SiFieldStructureDeclaration
 	 */
-	public function getSiFieldStructureDeclarations(): array;
+	public function getSiFieldStructureDeclaration(): SiFieldStructureDeclaration;
 }

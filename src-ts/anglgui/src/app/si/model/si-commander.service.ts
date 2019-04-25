@@ -18,7 +18,7 @@ export class SiCommanderService {
 	}
   
 	loadZone(zone: SiZone) {
-		zone.content = null;
+		zone.removeContent();
 		
 		this.siService.lookupSiZoneContent(zone)
 				.subscribe((siZoneContent) => {
@@ -44,11 +44,10 @@ export class SiCommanderService {
 		if (!entry.id) {
 			throw new IllegalSiStateError('Entry control cannnot be executed on new entry.');
 		}
-		
 
 		const entryInputs: SiEntryInput[] = [];
 		if (includeInput) {
-			entry.readInput()
+			entryInputs.push(entry.readInput());
 		} 
 
 		this.siService.entryControlCall(zone.content.getApiUrl(), callId, entry.id, entryInputs);

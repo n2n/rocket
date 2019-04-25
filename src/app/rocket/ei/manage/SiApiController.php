@@ -28,7 +28,6 @@ use rocket\ei\manage\gui\control\UnknownGuiControlException;
 use n2n\web\http\BadRequestException;
 use rocket\ei\manage\gui\control\GuiControlPath;
 use n2n\util\type\attrs\AttributesException;
-use rocket\si\input\SiInput;
 use rocket\si\input\SiInputFactory;
 
 class SiApiController extends ControllerAdapter {
@@ -42,9 +41,12 @@ class SiApiController extends ControllerAdapter {
 		echo 'very apisch';
 	}
 	
-	function doExecControl(ParamPost $siControlId, ParamPost $inputMap = null) {
+	function doExecControl(ParamPost $siControlId, ParamPost $bulky, ParamPost $inputMap) {
 		$eiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
 		$eiGui = $eiMask->createEiGui($eiFrame, $viewMode, $init);
+		
+		$bulky = $bulky->toBool();
+		$readOnly = $readOnly->toBool();
 		
 		$guiControl = null;
 		try {
@@ -70,11 +72,11 @@ class SiApiController extends ControllerAdapter {
 		$siControl->handle($eiGui);
 	}
 	
-	function doExecEntryControl(ParamPost $siEntryId, ParamPost $siControlId, ParamPost $inputMap) {
+	function doExecEntryControl(ParamPost $siEntryId, ParamPost $siControlId, ParamPost $bulky, ParamPost $inputMap) {
 		$inputMap->parseJsonToAttributes();
 	}
 	
-	function doExecSelectionControl(ParamPost $siEntryIds, ParamPost $siControlId) {
+	function doExecSelectionControl(ParamPost $siEntryIds, ParamPost $siControlId, ParamPost $bulky) {
 		
 	}
 	
