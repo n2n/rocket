@@ -22,9 +22,8 @@ export class EiComponent implements OnInit {
 
 	ngOnInit() {
 		this.route.url.subscribe((url: UrlSegment[]) => {
-			const siZone = new SiZone(url.join('/'));
 			
-			this.siContainer.mainSiLayer.pushSiZone(siZone);
+			const siZone = this.siContainer.mainSiLayer.createZone(url.join('/'));
 			
 			this.siCommanderService.loadZone(siZone);
 		});

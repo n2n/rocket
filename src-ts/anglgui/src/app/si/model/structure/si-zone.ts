@@ -1,11 +1,12 @@
 
 import { SiZoneContent } from "src/app/si/model/structure/si-zone-content";
 import { IllegalSiStateError } from "src/app/si/model/illegal-si-state-error";
+import { SiLayer } from "src/app/si/model/structure/si-layer";
 
 export class SiZone {
 	public _content: SiZoneContent|null;
 	
-	constructor(readonly url: string) {
+	constructor(readonly url: string, readonly layer: SiLayer) {
 		
 	}
 	

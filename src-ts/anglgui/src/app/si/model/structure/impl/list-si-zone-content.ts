@@ -8,6 +8,7 @@ import { IllegalSiStateError } from "src/app/si/model/illegal-si-state-error";
 import { SiCompactDeclaration } from "src/app/si/model/structure/si-compact-declaration";
 
 export class ListSiZoneContent implements SiZoneContent {
+    
 	private pages = new Map<number, SiPage>();
 	public size: number|null = null;
 	
@@ -18,6 +19,13 @@ export class ListSiZoneContent implements SiZoneContent {
 	getApiUrl(): string {
 		return this.apiUrl;
 	}
+	
+	getEntries(): SiEntry[] {
+	        throw new Error("Method not implemented.");
+	    }
+	    getSelectedEntries(): SiEntry[] {
+	        throw new Error("Method not implemented.");
+	    }
 	
 	private ensureSetup() {
 		if (this.compactDeclaration && this.size) return;

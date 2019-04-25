@@ -43,7 +43,7 @@ class SiInput {
 
 class SiEntryInput {
 	
-	static function crate(array $data) {
+	static function create(array $data) {
 		
 	}
 }

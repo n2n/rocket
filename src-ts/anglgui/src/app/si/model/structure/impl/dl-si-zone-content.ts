@@ -15,6 +15,14 @@ export class DlSiZoneContent implements SiZoneContent {
 		return this.apiUrl;
 	}
 	
+    getEntries(): SiEntry[] {
+        throw new Error("Method not implemented.");
+    }
+    
+    getSelectedEntries(): SiEntry[] {
+        throw new Error("Method not implemented.");
+    }
+	
 	initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver) {
 		const componentFactory = componentFactoryResolver.resolveComponentFactory(DlZoneContentComponent);
 

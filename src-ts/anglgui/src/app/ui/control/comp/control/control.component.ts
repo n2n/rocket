@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { SiControl } from "src/app/si/model/control/si-control";
 import { SiButton } from "src/app/si/model/control/si-button";
 import { Router } from "@angular/router";
-import { SiService } from "src/app/op/model/si.service";
+import { SiCommanderService } from "src/app/si/model/si-commander.service";
 
 @Component({
   selector: 'rocket-ui-control',
@@ -13,7 +13,7 @@ export class ControlComponent implements OnInit {
 
     @Input() siControl: SiControl;
     
-    constructor(private siService: SiService) {
+    constructor(private siCommanderService: SiCommanderService) {
     	
     }
     
@@ -25,6 +25,6 @@ export class ControlComponent implements OnInit {
 	}
 	
 	exec() {
-		this.siControl.exec(this.siService);
+		this.siControl.exec(this.siCommanderService);
 	}
 }

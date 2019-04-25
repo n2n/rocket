@@ -172,7 +172,8 @@ export class SiFactory {
 			case SiControlType.REF:
 				return new RefSiControl(
 						dataExtr.reqString('url'),
-						this.createButton(controlId, dataExtr.reqObject('button')));
+						this.createButton(controlId, dataExtr.reqObject('button')),
+						this.zone.layer);
 			case SiControlType.API_CALL:
 				return new ApiCallSiControl(
 						dataExtr.reqString('apiCallId'),

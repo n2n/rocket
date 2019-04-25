@@ -6,7 +6,7 @@ export class SiContainer {
     readonly siLayers: SiLayer[] = [];
     
     constructor() {
-        this.siLayers.push(new SiLayer());
+        this.siLayers.push(new SiLayer(true));
     }
     
     get mainSiLayer(): SiLayer {

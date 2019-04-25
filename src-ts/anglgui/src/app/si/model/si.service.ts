@@ -11,6 +11,7 @@ import { Router } from "@angular/router";
 import { PlatformLocation } from "@angular/common";
 import { IllegalSiStateError } from "src/app/si/model/illegal-si-state-error";
 import { SiZoneContent } from "src/app/si/model/structure/si-zone-content";
+import { SiEntryInput } from "src/app/si/model/input/si-entry-input";
 
 @Injectable({
   providedIn: 'root'
@@ -31,9 +32,11 @@ export class SiService {
 		return new SiFactory(zone).createZoneContent(data);
 	}
 	
-	entryControlCall(apiUrl: string, ) {
+	entryControlCall(apiUrl: string, callId: string, entryId: string, entryInputs: SiEntryInput[]): Observable<any> {
 		const formData = new FormData();
-        formData.append('upload', file);
+		formData.append('callId', callId);
+		formData.append('siEntryId', entryId);
+//        formData.append('inputMap', JSON.stringify(entryInput));
 
         const params = new HttpParams();
 
@@ -42,13 +45,21 @@ export class SiService {
             reportProgress: true
         };
 
-        return this.httpClient.post<any>(apiUrl + '/entryapi/expert/avatar', formData, options)
+        return this.httpClient.post<any>(apiUrl + '/ExecEntryControl', formData, options)
                 .pipe(map(data => {
                     if (data.errors) {
                         throw data.errors;
                     }
 
-                    return <Expert> data.expert;
+                    return data.expert;
                 }));
     }
+	
+	selectionControlCall(apiUrl: string, callId: string, entryIds: string[], entryInputs: SiEntryInput[]): Observable<any> {
+		throw new Error('not yet implemented');
+	}
+	
+	controlCall(apiUrl: string, callId: string, entryInputs: SiEntryInput[]) {
+		throw new Error('not yet implemented');
+	}
 }

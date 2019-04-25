@@ -1,10 +1,10 @@
 
 export class SiEntryInput {
 	
-	constructor(public id: string|null, readonly fieldInputMap: Map<string, Map<string, SiInputType>>) {
+	constructor(public id: string|null, readonly fieldInputMap: Map<string, Map<string, SiInputValue>>) {
 		
 	}
 	
 }
 
-export type SiInputType = string|number|boolean|File|null; 
+export type SiInputValue = string|number|boolean|File|null; 
