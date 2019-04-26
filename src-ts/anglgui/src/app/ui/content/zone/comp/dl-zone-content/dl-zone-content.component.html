@@ -1,7 +1,8 @@
 
 
 <ng-container *ngFor="let siEntry of siEntries">
-	<rocket-ui-field-structure [siEntry]="siEntry" [siFieldStructureDeclaration]="getFieldStructureDeclaration(siEntry)">
+	<rocket-ui-field-structure [siEntry]="siEntry" 
+			[siFieldStructureDeclaration]="getFieldStructureDeclaration(siEntry)">
 	</rocket-ui-field-structure>
 </ng-container>
 
@@ -9,7 +10,7 @@
 <div class="rocket-zone-commands">
 	<div class="rocket-main-commands">
 		<ng-container *ngFor="let pair of siControlMap | keyvalue">
-			<rocket-ui-control [siControl]="pair.value"></rocket-ui-control>
+			<rocket-ui-control [siControl]="pair.value"></rocket-ui-control>		
 		</ng-container>
 	</div>
 </div>
