@@ -17,6 +17,7 @@ import { SiZoneContent } from "src/app/si/model/structure/si-zone-content";
 import { SiPartialContent } from "src/app/si/model/content/si-partial-content";
 import { StringInSiField } from "src/app/si/model/content/impl/string-in-si-field";
 import { ApiCallSiControl } from "src/app/si/model/control/impl/api-call-si-control";
+import { SiEntryBuildup } from "src/app/si/model/content/si-entry-buildup";
 
 export class SiFactory {
 	
@@ -69,13 +70,15 @@ export class SiFactory {
 				this.createFieldDeclarations(compactExtr.reqArray('fieldDeclarations')));
 	}
 	
-	
 	createBulkyDeclaration(data: any): SiBulkyDeclaration {
 		const extr = new Extractor(data);
 		
-		return new SiBulkyDeclaration(
-				this.createFieldStructureDeclarations(extr.reqArray('fieldStructureDeclarations')),
-				this.createControlMap(extr.reqMap('controls')));
+		const declarationMap = new Map<string, SiFieldStructureDeclaration>();
+		for (let [buildupId, declarationData] of extr.reqMap('fieldStructureDeclarations')) {
+			declarationMap.set(buildupId, this.createFieldStructureDeclaration(declarationData));
+		}
+		
+		return new SiBulkyDeclaration(declarationMap, this.createControlMap(extr.reqMap('controls')));
 	}
 	
 	private createFieldStructureDeclarations(data: Array<any>): SiFieldStructureDeclaration[] {
@@ -116,16 +119,25 @@ export class SiFactory {
 		for (let entryData of data) {
 			const extr = new Extractor(entryData);
 			
-			const siEntry = new SiEntry(<string> extr.reqString('category'), extr.nullaString('id'), 
-						<string> extr.reqString('name'));
+			const siEntry = new SiEntry(extr.reqString('category'), extr.nullaString('id'));
 			siEntry.treeLevel = extr.nullaNumber('treeLevel');
-			siEntry.fieldMap = this.createFieldMap(extr.reqMap('fields'));
-			siEntry.controlMap = this.createControlMap(extr.reqMap('controls'));
+			
+			for (let [buildupId, buildupData] of extr.reqMap('buildups')) {
+				siEntry.putBuildup(buildupId, this.createBuildup(buildupData));
+			}
 			
 			entries.push(siEntry);
 		}
 		
 		return entries;
+	}
+	
+	private createBuildup(data: any): SiEntryBuildup { 
+		const extr = new Extractor(data);
+		
+		return new SiEntryBuildup(extr.reqString('name'),
+				this.createFieldMap(extr.reqMap('fields')),
+				this.createControlMap(extr.reqMap('controls')));
 	}
 	
 	private createFieldMap(data: Map<string, any>): Map<string, SiField> {

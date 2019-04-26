@@ -377,9 +377,13 @@ class EiEntryGui {
 		unset($this->eiEntryGuiListeners[spl_object_hash($eiEntryGuiListener)]);
 	}
 	
+	/**
+	 * @return \rocket\si\content\SiEntry
+	 */
 	function createSiEntry() {
 		$eiType = $this->eiEntry->getEiType();
-		$siEntry = new SiEntry($eiType->getSupremeEiType()->getId(), $eiType->getId());
+		$siEntry = new SiEntry($eiType->getSupremeEiType()->getId(), $eiType->getId(), 
+				!ViewMode::isReadOnly($this->eiGui->getViewMode()));
 		$siEntry->putBuildup($eiType->getId(), $this->createSiEntryBuildup());
 		return $siEntry;
 	}
@@ -409,7 +413,7 @@ class EiEntryGui {
 			$siEntry->putField($guiFieldPathStr, $guiField->getSiField());
 		}
 		
-		foreach ($deterGuiDefinition->createEntryGuiControls($this, $eiEntry)
+		foreach ($deterGuiDefinition->createEntryGuiControls($this->eiGui, $eiEntry)
 				as $guiControlPathStr => $entryGuiControl) {
 			$siEntry->putControl($guiControlPathStr, $entryGuiControl->toSiControl($guiControlPathStr));
 		}

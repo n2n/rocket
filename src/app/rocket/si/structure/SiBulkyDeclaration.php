@@ -34,7 +34,7 @@ class SiBulkyDeclaration implements \JsonSerializable {
 	 * @param SiEntry[] $siEntries
 	 * @param SiControl[] $siControls;
 	 */
-	function __construct(array $fieldStructureDeclarations,
+	function __construct(array $fieldStructureDeclarations = [],
 			array $siControls = []) {
 		$this->setFieldStructureDeclarations($fieldStructureDeclarations);
 		$this->setControls($siControls);
@@ -48,6 +48,10 @@ class SiBulkyDeclaration implements \JsonSerializable {
 		ArgUtils::valArray($fieldStructureDeclarations, SiFieldStructureDeclaration::class);
 		$this->fieldStructureDeclarations = $fieldStructureDeclarations;
 		return $this;
+	}
+	
+	function putFieldStructureDeclaration(string $buildupId, SiFieldStructureDeclaration $fieldStructureDeclaration) {
+		$this->fieldStructureDeclarations[$buildupId] = $fieldStructureDeclaration;
 	}
 	
 	/**

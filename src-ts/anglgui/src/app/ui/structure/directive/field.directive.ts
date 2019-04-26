@@ -25,7 +25,7 @@ export class FieldDirective implements OnInit {
 		
 		let siField: SiField|null;
 		if (this.siFieldDeclaration.fieldId
-				&& null != (siField = this.siEntry.getFieldById(this.siFieldDeclaration.fieldId))) {
+				&& null != (siField = this.siEntry.selectedBuildup.getFieldById(this.siFieldDeclaration.fieldId))) {
 			siField.initComponent(this.viewContainerRef, this.componentFactoryResolver);
 		}
 	}

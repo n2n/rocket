@@ -1,7 +1,8 @@
 
 export class SiEntryInput {
 	
-	constructor(public id: string|null, readonly fieldInputMap: Map<string, Map<string, SiInputValue>>) {
+	constructor(public id: string|null, public buildupId, 
+			readonly fieldInputMap: Map<string, Map<string, SiInputValue>>) {
 		
 	}
 	

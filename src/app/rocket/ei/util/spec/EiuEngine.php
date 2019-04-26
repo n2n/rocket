@@ -30,6 +30,7 @@ use rocket\ei\manage\gui\EiGuiListener;
 
 class EiuEngine {
 	private $eiEngine;
+	private $eiuType;
 	private $eiuMask;
 	private $eiuAnalyst;
 	

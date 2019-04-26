@@ -14,6 +14,7 @@ use rocket\ei\util\entry\EiuEntry;
 use n2n\l10n\N2nLocale;
 use rocket\ei\util\entry\EiuObject;
 use n2n\util\ex\NotYetImplementedException;
+use rocket\si\structure\SiFieldStructureDeclaration;
 
 class EiuGui {
 	private $eiGui;
@@ -297,7 +298,7 @@ class CustomGuiViewFactory implements EiGuiSiFactory {
 // 		throw new NotYetImplementedException();
 // 	}
 	
-	public function getSiFieldStructureDeclarations(): array {
+	public function getSiFieldStructureDeclaration(): SiFieldStructureDeclaration {
 		throw new NotYetImplementedException();
 	}
 

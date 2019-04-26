@@ -22,8 +22,8 @@ export class DlZoneContentComponent implements OnInit {
 		return this.dlSiZoneContent.entries;
 	}
 	
-	get siFieldStructureDeclarations(): SiFieldStructureDeclaration[] {
-		return this.dlSiZoneContent.bulkyDeclaration.fieldStructureDeclaration;
+	getFieldStructureDeclaration(entry: SiEntry): SiFieldStructureDeclaration {
+		return this.dlSiZoneContent.bulkyDeclaration.getFieldStructureDeclarationByBuildupId(entry.selectedBuildupId);
 	}
 	
 	get siControlMap(): Map<string, SiControl> {

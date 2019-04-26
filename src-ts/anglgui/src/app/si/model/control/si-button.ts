@@ -2,6 +2,7 @@
 export class SiButton {
 	public tooltip: string|null = null;
 	public important = false;
+	public inputAvailable: boolean = false;
 	public iconImportant = false;
 	public labelImportant = false;
 	public confirm: SiConfirm|null = null;

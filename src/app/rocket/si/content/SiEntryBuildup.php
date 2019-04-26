@@ -24,6 +24,9 @@ namespace rocket\si\content;
 use rocket\si\control\SiControl;
 
 class SiEntryBuildup implements \JsonSerializable {
+	/**
+	 * @var string
+	 */
 	private $name;
 	/**
 	 * @var SiField[] $fields

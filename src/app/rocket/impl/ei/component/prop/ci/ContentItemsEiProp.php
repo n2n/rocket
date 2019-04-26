@@ -36,6 +36,7 @@ use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\mask\model\DisplayItem;
 use rocket\ei\manage\security\InaccessibleEiCommandPathException;
+use rocket\si\structure\SiStructureType;
 
 class ContentItemsEiProp extends EmbeddedOneToManyEiProp {
 	private $panelConfigs = array();

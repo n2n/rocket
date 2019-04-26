@@ -35,7 +35,7 @@ class EiuCallbackGuiControl implements GeneralGuiControl, EntryGuiControl, Selec
 	private $id;
 	private $callback;
 	private $siButton;
-	private $inputHandled;
+	private $inputHandled = false;
 	
 	/**
 	 * @param string $id

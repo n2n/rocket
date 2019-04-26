@@ -24,8 +24,18 @@ class ViewMode {
 		return self::BULKY_READ | self::BULKY_EDIT | self::BULKY_ADD;
 	}
 	
+	/**
+	 * @return int
+	 */
 	public static function read() {
 		return self::COMPACT_READ | self::BULKY_READ;
+	}
+	
+	/**
+	 * @return int
+	 */
+	public static function edit() {
+		return self::COMPACT_EDIT | self::BULKY_EDIT;
 	}
 	
 	public static function all() {
@@ -53,5 +63,13 @@ class ViewMode {
 	public static function getAll() {
 		return array(self::COMPACT_READ, self::COMPACT_EDIT, self::COMPACT_ADD,
 				self::BULKY_READ, self::BULKY_EDIT, self::BULKY_ADD);
+	}
+	
+	/**
+	 * @param int $viewMode
+	 * @return boolean
+	 */
+	static function isReadOnly(int $viewMode) {
+		return $viewMode & self::read();
 	}
 }

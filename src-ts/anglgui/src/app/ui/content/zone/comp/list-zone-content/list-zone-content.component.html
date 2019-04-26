@@ -15,7 +15,7 @@
 				<ng-template rocketUiField [siEntry]="siEntry" [siFieldDeclaration]="siFieldDeclaration"></ng-template>
 			</td>
 			<td class="rocket-table-commands rocket-simple-commands">
-				<ng-container *ngFor="let pair of siEntry.controlMap | keyvalue">
+				<ng-container *ngFor="let pair of siEntry.selectedBuildup.controlMap | keyvalue">
 					<rocket-ui-control [siControl]="pair.value"></rocket-ui-control>
 				</ng-container>
 			</td>

@@ -28,12 +28,13 @@ export class ZoneComponent implements OnInit, DoCheck {
 	}
 	
 	ngDoCheck() {
-		if (this.currentSiZoneContent && this.currentSiZoneContent !== this.siZone.content) {
+		if (this.currentSiZoneContent && 
+				(!this.siZone.hasContent() ||  this.currentSiZoneContent !== this.siZone.content)) {
 			this.zoneContentDirective.viewContainerRef.clear();
 			this.currentSiZoneContent = null;
 		}
 		
-		if (this.currentSiZoneContent || !this.siZone.content) {
+		if (this.currentSiZoneContent || !this.siZone.hasContent()) {
 			return;
 		}
 		

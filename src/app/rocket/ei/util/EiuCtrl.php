@@ -45,7 +45,6 @@ use rocket\si\structure\SiCompactDeclaration;
 use rocket\si\structure\SiBulkyDeclaration;
 use rocket\si\structure\impl\DlSiZone;
 use rocket\si\content\SiPartialContent;
-use rocket\ei\manage\gui\EiGui;
 use rocket\si\content\SiEntry;
 
 class EiuCtrl implements Lookupable {
@@ -303,9 +302,6 @@ class EiuCtrl implements Lookupable {
 		
 		$this->composeEiuGuiForList($eiuGui, $pageSize);
 		
-		$eiuType = $this->eiuFrame->engine()->type();
-		$category = $eiuType->supremeType()->getId();
-		
 		$siCompactDeclaration = new SiCompactDeclaration(
 				$eiuGui->getEiGui()->getEiGuiSiFactory()->getSiFieldDeclarations());
 		
@@ -360,7 +356,7 @@ class EiuCtrl implements Lookupable {
 		
 		$eiTypeId = $this->eiuFrame->engine()->type()->getId();
 		
-		$siBulkyDeclaration = new SiBulkyDeclaration($eiGui->createGeneralSiControls());
+		$siBulkyDeclaration = new SiBulkyDeclaration([], $eiGui->createGeneralSiControls());
 		$siBulkyDeclaration->putFieldStructureDeclaration($eiTypeId, 
 				$eiGui->getEiGuiSiFactory()->getSiFieldStructureDeclaration());
 		

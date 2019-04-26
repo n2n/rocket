@@ -76,7 +76,7 @@ export class SiCommanderService {
 		const entryInputs: SiEntryInput[] = [];
 	
 		for (const entry of zone.content.getEntries()) {
-			if (entry.readOnly) {
+			if (entry.inputAvailable) {
 				continue;
 			}
 			
