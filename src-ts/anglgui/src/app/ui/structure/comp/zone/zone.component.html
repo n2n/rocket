@@ -1,13 +1,11 @@
 <header>
 	<ol class="breadcrumb">
 		<li class="breadcrumb-item active">
-			<a href="/admin-hnm/manage/project-project-customer/overviewEiCommand" data-jhtml="true" data-jhtml-use-page-scroll-pos="true">Kunden</a>							
+			<a href="/admin-hnm/manage/project-project-customer/overviewEiCommand">Kunden</a>							
 		</li>
 	</ol>
 	
 	<h1>Kunde</h1>
 </header>
 
-<div *ngIf="!loaded" class="rocket-loader"></div>
-
-<ng-template rocketZoneContent class="rocket-content"></ng-template>
+<rocket-ui-structure [siStructure]="siStructure"></rocket-ui-structure>

@@ -1,8 +1,12 @@
 
-import { SiEntry } from "src/app/si/model/content/si-entry";
+import { ComponentFactoryResolver, ViewContainerRef, ComponentRef } from "@angular/core";
 import { SiStructureType } from "src/app/si/model/structure/si-field-structure-declaration";
 
-export class SiStructure {
-	entry: SiEntry|null;
-	type: SiStructureType|null;
+export interface SiStructure {
+
+	getType(): SiStructureType|null
+	
+	getLabel(): string|null;
+	
+	initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver): ComponentRef<any>;
 }

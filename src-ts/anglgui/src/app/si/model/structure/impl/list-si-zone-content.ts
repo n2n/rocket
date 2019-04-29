@@ -6,6 +6,7 @@ import { ViewContainerRef, ComponentFactoryResolver, ComponentRef } from "@angul
 import { ListZoneContentComponent } from "src/app/ui/content/zone/comp/list-zone-content/list-zone-content.component";
 import { IllegalSiStateError } from "src/app/si/model/illegal-si-state-error";
 import { SiCompactDeclaration } from "src/app/si/model/structure/si-compact-declaration";
+import { SiStructureType } from "src/app/si/model/structure/si-field-structure-declaration";
 
 export class ListSiZoneContent implements SiZoneContent {
     
@@ -14,6 +15,14 @@ export class ListSiZoneContent implements SiZoneContent {
 	
 	constructor(public apiUrl: string, public pageSize: number,
 			public compactDeclaration: SiCompactDeclaration|null) {
+	}
+	
+	getLabel(): string|null {
+		return null;
+	}
+	
+	getType(): SiStructureType|null {
+		return null;
 	}
 	
 	getApiUrl(): string {
@@ -61,7 +70,7 @@ export class ListSiZoneContent implements SiZoneContent {
 	}
 	
 	initComponent(viewContainerRef: ViewContainerRef, 
-			componentFactoryResolver: ComponentFactoryResolver): ComponentRef<ListZoneContentComponent> {
+			componentFactoryResolver: ComponentFactoryResolver): ComponentRef<any> {
 		const componentFactory = componentFactoryResolver.resolveComponentFactory(ListZoneContentComponent);
 	    
 	    const componentRef = viewContainerRef.createComponent(componentFactory);

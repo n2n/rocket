@@ -1,13 +1,7 @@
 
+<ng-template rocketUiField [siEntry]="siEntry" 
+		[siFieldDeclaration]="siFieldStructureDeclaration.fieldDeclaration">
+</ng-template>
 
-	<label *ngIf="label">{{ label }}</label>
-	
-	<div class="rocket-control">
-		<ng-template rocketUiField [siEntry]="siEntry" 
-				[siFieldDeclaration]="siFieldStructureDeclaration.fieldDeclaration">
-		</ng-template>
-		
-		<rocket-ui-field-structure *ngFor="let child of siFieldStructureDeclaration.children"
-				[siEntry]="siEntry" [siFieldStructureDeclaration]="child">
-		</rocket-ui-field-structure>
-	</div>
+<rocket-ui-structure *ngFor="let child of children" [siStructure]="child">
+</rocket-ui-structure>

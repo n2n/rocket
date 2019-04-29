@@ -1,23 +1,19 @@
 import { Component, OnInit, DoCheck, Input, ViewChild, ComponentFactoryResolver, OnDestroy } from '@angular/core';
 import { SiZone } from "src/app/si/model/structure/si-zone";
-import { ZoneContentDirective } from "src/app/ui/structure/comp/zone/zone-content.directive";
 import { ListZoneContentComponent } from "src/app/ui/content/zone/comp/list-zone-content/list-zone-content.component";
 import { SiZoneContent } from "src/app/si/model/structure/si-zone-content";
+import { SiStructure } from "src/app/si/model/structure/si-structure";
 
 @Component({
   selector: 'rocket-ui-zone',
   templateUrl: './zone.component.html',
   styleUrls: ['./zone.component.css']
 })
-export class ZoneComponent implements OnInit, DoCheck {
+export class ZoneComponent implements OnInit {
 
 	@Input() siZone: SiZone;
 	
-	private currentSiZoneContent: SiZoneContent|null = null;
-	
-    @ViewChild(ZoneContentDirective) zoneContentDirective: ZoneContentDirective;
-	
-    constructor(private componentFactoryResolver: ComponentFactoryResolver) { }
+	constructor(private componentFactoryResolver: ComponentFactoryResolver) { }
 
 	ngOnInit() {
 //		const componentFactory = this.componentFactoryResolver.resolveComponentFactory(ListZoneContentComponent);
@@ -27,24 +23,12 @@ export class ZoneComponent implements OnInit, DoCheck {
 //      (<ZoneComponent> componentRef.instance).data = {};
 	}
 	
-	ngDoCheck() {
-		if (this.currentSiZoneContent && 
-				(!this.siZone.hasContent() ||  this.currentSiZoneContent !== this.siZone.content)) {
-			this.zoneContentDirective.viewContainerRef.clear();
-			this.currentSiZoneContent = null;
-		}
+	get siStructure(): SiStructure|null {
+		if (this.siZone.hasContent()) {
+			return this.siZone.content
+		} 
 		
-		if (this.currentSiZoneContent || !this.siZone.hasContent()) {
-			return;
-		}
-		
-		this.currentSiZoneContent = this.siZone.content;
-		this.currentSiZoneContent.initComponent(this.zoneContentDirective.viewContainerRef,
-				this.componentFactoryResolver);
+		return null;
 	}
-	
-	get loaded(): boolean {
-		return !!this.currentSiZoneContent;
-	}
-
 }
+

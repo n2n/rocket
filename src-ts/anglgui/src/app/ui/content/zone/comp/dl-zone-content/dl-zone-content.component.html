@@ -1,9 +1,7 @@
 
 
-<ng-container *ngFor="let siEntry of siEntries">
-	<rocket-ui-field-structure [siEntry]="siEntry" 
-			[siFieldStructureDeclaration]="getFieldStructureDeclaration(siEntry)">
-	</rocket-ui-field-structure>
+<ng-container *ngFor="let fieldSiStructure of fieldSiStructures">
+	<rocket-ui-structure [siStructure]="fieldSiStructure"></rocket-ui-structure>
 </ng-container>
 
 

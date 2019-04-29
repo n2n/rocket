@@ -3,6 +3,7 @@ import { ViewContainerRef, ComponentFactoryResolver } from "@angular/core";
 import { SiBulkyDeclaration } from "src/app/si/model/structure/si-bulky-declaration";
 import { SiEntry } from "src/app/si/model/content/si-entry";
 import { DlZoneContentComponent } from "src/app/ui/content/zone/comp/dl-zone-content/dl-zone-content.component";
+import { SiStructureType } from "src/app/si/model/structure/si-field-structure-declaration";
 
 export class DlSiZoneContent implements SiZoneContent {
     public entries: SiEntry[] = [];
@@ -11,16 +12,24 @@ export class DlSiZoneContent implements SiZoneContent {
 		
 	}
 	
+	getLabel(): string|null {
+		return null;
+	}
+	
+	getType(): SiStructureType|null {
+		return null;
+	}
+	
 	getApiUrl(): string {
 		return this.apiUrl;
 	}
 	
     getEntries(): SiEntry[] {
-        throw new Error("Method not implemented.");
+    	return this.entries;
     }
     
     getSelectedEntries(): SiEntry[] {
-        throw new Error("Method not implemented.");
+        return [];
     }
 	
 	initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver) {
