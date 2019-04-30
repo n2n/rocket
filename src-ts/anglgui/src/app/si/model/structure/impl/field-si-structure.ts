@@ -8,16 +8,9 @@ import { FieldStructureComponent } from "src/app/ui/structure/comp/field-structu
 export class FieldSiStructure implements SiStructure {
     readonly children: FieldSiStructure[] = []; 
 
-	static ui = 0;
-
 	constructor(readonly entry: SiEntry,
 			readonly fieldStructureDeclaration: SiFieldStructureDeclaration) {
-		
-	    if (FieldSiStructure.ui++ > 10) {
-	        throw new Error('huii');
-	    }
-	    
-	    for (let child of fieldStructureDeclaration.children) {
+		for (let child of fieldStructureDeclaration.children) {
 			this.children.push(new FieldSiStructure(this.entry, child));
     	}
 	}
@@ -27,7 +20,7 @@ export class FieldSiStructure implements SiStructure {
     }
 	
 	getType(): SiStructureType | null {
-        return null;
+        return this.fieldStructureDeclaration.type;
     }
 	
 	initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver): ComponentRef<any> {

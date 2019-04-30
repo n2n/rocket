@@ -32,7 +32,7 @@
 	
 	$view->useTemplate('boilerplate.html', $view->getParams());
 	
-	$htmlMeta->addLibrary(new JQueryUiLibrary(3));
+	$html->meta()->addLibrary(new JQueryUiLibrary(3));
 	
 	$templateModel = $view->lookup(TemplateModel::class);
 	$view->assert($templateModel instanceof TemplateModel);

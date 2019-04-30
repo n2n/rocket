@@ -1,5 +1,5 @@
-<ng-container *ngIf="label">
-	<label>{{ label }}</label>
+<ng-container *ngIf="getLabel()">
+	<label>{{ getLabel() }}</label>
 </ng-container>
 
 <div *ngIf="!loaded" class="rocket-loader"></div>

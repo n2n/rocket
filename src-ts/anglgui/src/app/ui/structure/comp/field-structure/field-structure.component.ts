@@ -12,11 +12,11 @@ export class FieldStructureComponent implements OnInit {
 	
 	public fieldSiStructure: FieldSiStructure;
 	
-	constructor() {}
+	constructor(private elemRef: ElementRef) {
+		elemRef.nativeElement.classList.add('rocket-control');
+	}
 
     ngOnInit() {
-    	console.log('init--');
-    	console.log(this.fieldSiStructure.fieldStructureDeclaration.children);
     }
 	
     get siEntry(): SiEntry {

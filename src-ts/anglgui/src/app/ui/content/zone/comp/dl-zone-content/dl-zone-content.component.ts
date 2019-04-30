@@ -14,26 +14,18 @@ export class DlZoneContentComponent implements OnInit {
 
 	public dlSiZoneContent: DlSiZoneContent;
 
-	private structures: FieldSiStructure[] = [];
-	
 	constructor() { }
 
 	ngOnInit() {
-		for (let siEntry of this.siEntries) {
-			this.structures.push(new FieldSiStructure(siEntry, this.getFieldStructureDeclaration(siEntry)));
-		}
+		this.dlSiZoneContent.refreshChildStructures();
 	}
 	
-	get fieldSiStructures(): FieldSiStructure[] {
-		return this.structures;
+	get siStructures(): SiStructure[] {
+		return this.dlSiZoneContent.getChildStructures();
 	}
 	
 	get siEntries(): SiEntry[] {
 		return this.dlSiZoneContent.entries;
-	}
-	
-	getFieldStructureDeclaration(entry: SiEntry): SiFieldStructureDeclaration {
-		return this.dlSiZoneContent.bulkyDeclaration.getFieldStructureDeclarationByBuildupId(entry.selectedBuildupId);
 	}
 	
 	get siControlMap(): Map<string, SiControl> {
