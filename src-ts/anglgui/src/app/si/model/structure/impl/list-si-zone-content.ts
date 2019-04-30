@@ -7,22 +7,20 @@ import { ListZoneContentComponent } from "src/app/ui/content/zone/comp/list-zone
 import { IllegalSiStateError } from "src/app/si/model/illegal-si-state-error";
 import { SiCompactDeclaration } from "src/app/si/model/structure/si-compact-declaration";
 import { SiStructureType } from "src/app/si/model/structure/si-field-structure-declaration";
+import { SiStructureContent } from "src/app/si/model/structure/si-structure-content";
+import { SiStructure } from "src/app/si/model/structure/si-structure";
 
-export class ListSiZoneContent implements SiZoneContent {
+export class ListSiZoneContent implements SiZoneContent, SiStructureContent {
     
 	private pages = new Map<number, SiPage>();
 	public size: number|null = null;
+	private structure: SiStructure;
 	
 	constructor(public apiUrl: string, public pageSize: number,
 			public compactDeclaration: SiCompactDeclaration|null) {
-	}
-	
-	getLabel(): string|null {
-		return null;
-	}
-	
-	getType(): SiStructureType|null {
-		return null;
+		
+		this.structure = new SiStructure();
+		this.structure.content = this;
 	}
 	
 	getApiUrl(): string {
@@ -67,6 +65,10 @@ export class ListSiZoneContent implements SiZoneContent {
 		this.ensureSetup();
 		
 		return Math.ceil(<number> this.size / this.pageSize);
+	}
+	
+	getStructure(): SiStructure {
+		return this.structure;
 	}
 	
 	initComponent(viewContainerRef: ViewContainerRef, 

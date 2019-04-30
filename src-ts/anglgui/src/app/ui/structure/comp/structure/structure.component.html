@@ -1,7 +1,16 @@
+
 <ng-container *ngIf="getLabel()">
 	<label>{{ getLabel() }}</label>
 </ng-container>
 
-<div *ngIf="!loaded" class="rocket-loader"></div>
-
-<ng-template rocketStructureContent></ng-template>
+<div class="rocket-control">
+	<ul *ngIf="isMain()" class="rocket-main-group-nav nav nav-tabs">
+		<li *ngFor="let child of children" [class.active]="child.visible">
+			{{ child.label }}
+		<li>
+	</ul>
+	
+	<div *ngIf="!loaded" class="rocket-loader"></div>
+	
+	<ng-template rocketStructureContent [siStructureContent]="siStructureContent"></ng-template>
+</div>

@@ -8,4 +8,6 @@
 	<h1>Kunde</h1>
 </header>
 
-<rocket-ui-structure [siStructure]="siStructure"></rocket-ui-structure>
+<div *ngIf="!siStructure" class="rocket-loader"></div>
+
+<rocket-ui-structure *ngIf="siStructure" [siStructure]="siStructure"></rocket-ui-structure>

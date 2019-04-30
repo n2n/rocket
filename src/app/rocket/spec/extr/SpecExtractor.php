@@ -38,7 +38,6 @@ use n2n\persistence\orm\util\NestedSetStrategy;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\util\type\attrs\InvalidAttributeException;
 use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
-use rocket\ei\mask\model\DisplayItem;
 use n2n\util\StringUtils;
 use rocket\spec\TypePath;
 use rocket\core\model\Rocket;
@@ -424,7 +423,7 @@ class SpecExtractor {
 			        $dsa = $displayStructureAttributes->getArray(RawDef::GUI_FIELD_ORDER_KEY);
 			    }
 			    $childDisplayStructure = $this->createDisplayStructure($dsa);
-				$groupType = $displayStructureAttributes->optEnum(RawDef::GUI_FIELD_ORDER_GROUP_TYPE_KEY, DisplayItem::getGroupTypes(),
+			    $groupType = $displayStructureAttributes->optEnum(RawDef::GUI_FIELD_ORDER_GROUP_TYPE_KEY, SiStructureType::groups(),
 						SiStructureType::SIMPLE_GROUP);
 				if ($groupType === null) {
 					$groupType = SiStructureType::SIMPLE_GROUP;
@@ -433,7 +432,7 @@ class SpecExtractor {
 				$displayStructure->addDisplayStructure($childDisplayStructure, $groupType, $title);
 				continue;
 			}
-			
+						
 			$label = $displayStructureAttributes->getScalar(RawDef::DISPLAY_ITEM_LABEL_KEY, false, null, true);
 			$guiFieldPathStr = $displayStructureAttributes->getScalar(RawDef::DISPLAY_ITEM_GUI_ID_PATH_KEY, false, null, true);
 			if (null !== $guiFieldPathStr) {

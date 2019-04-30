@@ -3,8 +3,8 @@ import { DlSiZoneContent } from "src/app/si/model/structure/impl/dl-si-zone-cont
 import { SiFieldStructureDeclaration } from "src/app/si/model/structure/si-field-structure-declaration";
 import { SiEntry } from "src/app/si/model/content/si-entry";
 import { SiControl } from "src/app/si/model/control/si-control";
+import { SiStructureContent } from "src/app/si/model/structure/si-structure-content";
 import { SiStructure } from "src/app/si/model/structure/si-structure";
-import { FieldSiStructure } from "src/app/si/model/structure/impl/field-si-structure";
 
 @Component({
   selector: 'rocket-dl-zone-content',
@@ -21,7 +21,7 @@ export class DlZoneContentComponent implements OnInit {
 	}
 	
 	get siStructures(): SiStructure[] {
-		return this.dlSiZoneContent.getChildStructures();
+		return this.dlSiZoneContent.getStructure().getChildren();
 	}
 	
 	get siEntries(): SiEntry[] {

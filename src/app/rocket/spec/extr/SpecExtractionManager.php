@@ -87,7 +87,8 @@ class SpecExtractionManager {
 			}
 				
 			$this->specCsDecs[$moduleNamespace] = new SpecConfigSourceDecorator(
-					$this->modularConfigSource->getOrCreateConfigSourceByModuleNamespace($moduleNamespace), $moduleNamespace);
+					$this->modularConfigSource->getOrCreateConfigSourceByModuleNamespace($moduleNamespace), 
+					$moduleNamespace);
 		}
 	}
 	
@@ -197,9 +198,7 @@ class SpecExtractionManager {
 					if (isset($this->eiModificatorExtractionGroups[$typePathStr][$id])) {
 						throw new $this->createDuplicatedEiModificatorIdException($typePathStr, $id);
 					}
-					
-					
-					
+										
 					if (isset($this->customTypeExtractions[$typePath->getTypeId()])) {
 						throw new InvalidConfigurationException('Invalid configuration in: ' . $specCsDec->getDataSource(), 0, 
 								new InvalidEiMaskConfigurationException('EiModificator with id \'' . $eiModificatorId 

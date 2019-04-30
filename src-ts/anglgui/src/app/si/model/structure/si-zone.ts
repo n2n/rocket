@@ -2,7 +2,7 @@
 import { SiZoneContent } from "src/app/si/model/structure/si-zone-content";
 import { IllegalSiStateError } from "src/app/si/model/illegal-si-state-error";
 import { SiLayer } from "src/app/si/model/structure/si-layer";
-import { SiStructure } from "src/app/si/model/structure/si-structure";
+import { SiStructureContent } from "src/app/si/model/structure/si-structure-content";
 
 export class SiZone {
 	public _content: SiZoneContent|null;
@@ -16,7 +16,7 @@ export class SiZone {
 	}
 	
 	removeContent() {
-		this._content;
+		this._content = null;
 	}
 	
 	get content(): SiZoneContent {

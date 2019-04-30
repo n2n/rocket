@@ -1,7 +1,8 @@
 import { Component, OnInit, Input, ComponentFactoryResolver, ViewChild, ElementRef } from '@angular/core';
-import { SiStructure } from "src/app/si/model/structure/si-structure";
+import { SiStructureContent } from "src/app/si/model/structure/si-structure-content";
 import { StructureContentDirective } from "src/app/ui/structure/comp/structure/structure-content.directive";
 import { SiStructureType } from "src/app/si/model/structure/si-field-structure-declaration";
+import { SiStructure } from "src/app/si/model/structure/si-structure";
 
 @Component({
   selector: 'rocket-ui-structure',
@@ -10,19 +11,11 @@ import { SiStructureType } from "src/app/si/model/structure/si-field-structure-d
 })
 export class StructureComponent implements OnInit {
 
-	@Input()
-	siStructureType: SiStructureType|null = null;
-	@Input()
-	label: string|null = null;
-	@Input()
-	siStructure: SiStructure|null = null;
+	private _siStructure: SiStructure;
 	
 	@ViewChild(StructureContentDirective) structureContentDirective: StructureContentDirective;
 
-	private currentSiStructure: SiStructure|null = null;
-	
     constructor(private elRef: ElementRef, private componentFactoryResolver: ComponentFactoryResolver) { 
-    	console.log("create Sc");
     }
 
 	ngOnInit() {
@@ -32,29 +25,51 @@ export class StructureComponent implements OnInit {
       
 //      (<ZoneComponent> componentRef.instance).data = {};
 	}
-
-	getLabel(): string|null {
-		return this.label || (this.siStructure && this.siStructure.getLabel());
-	}
 	
-	ngDoCheck() {
-		if (this.currentSiStructure && 
-				(this.currentSiStructure !== this.siStructure)) {
-			this.structureContentDirective.viewContainerRef.clear();
-			this.currentSiStructure = null;
-		}
-		
-		if (this.currentSiStructure || !this.siStructure) {
-			return;
-		}
-		
-		this.currentSiStructure = this.siStructure;
-		this.currentSiStructure.initComponent(this.structureContentDirective.viewContainerRef,
-				this.componentFactoryResolver);
-//		this.structureContentDirective.viewContainerRef.element.nativeElement.childNodes[0].classList.add('rocket-control');
-		
+	@Input()
+	set siStructure(siStructure: SiStructure) {
+		this._siStructure = siStructure;
 		this.applyCssClass();
 	}
+	
+	get siStructure(): SiStructure {
+		return this._siStructure;
+	}
+	
+	get siStructureContent(): SiStructureContent|null {
+		return this._siStructure.content;
+	}
+	
+	getType(): SiStructureType|null {
+		return this.siStructure.type;
+	}
+
+	getLabel(): string|null {
+		return this.siStructure.label;
+	}
+	
+	isMain() {
+		return this.getType() == SiStructureType.MAIN_GROUP;
+	}
+	
+//	ngDoCheck() {
+//		if (this.currentSiStructure && 
+//				(this.currentSiStructure !== this.siStructure)) {
+//			this.structureContentDirective.viewContainerRef.clear();
+//			this.currentSiStructure = null;
+//		}
+//		
+//		if (this.currentSiStructure || !this.siStructure) {
+//			return;
+//		}
+//		
+//		this.currentSiStructure = this.siStructure;
+//		this.currentSiStructure.initComponent(this.structureContentDirective.viewContainerRef,
+//				this.componentFactoryResolver);
+////		this.structureContentDirective.viewContainerRef.element.nativeElement.childNodes[0].classList.add('rocket-control');
+//		
+//		this.applyCssClass();
+//	}
 	
 	private applyCssClass() {
 		const classList = this.elRef.nativeElement.classList
@@ -66,7 +81,7 @@ export class StructureComponent implements OnInit {
 		classList.remove('rocket-light-group');
 		classList.remove('rocket-panel');
 		
-		switch (this.siStructureType || (this.siStructure && this.siStructure.getType())) {
+		switch (this.getType()) {
 			case SiStructureType.ITEM:
 				classList.add('rocket-item');
 				break;
@@ -91,7 +106,7 @@ export class StructureComponent implements OnInit {
 	}
 	
 	get loaded(): boolean {
-		return !!this.currentSiStructure;
+		return !!this.siStructure;
 	}
 
 }

@@ -2,6 +2,7 @@ import { Component, OnInit, DoCheck, Input, ViewChild, ComponentFactoryResolver,
 import { SiZone } from "src/app/si/model/structure/si-zone";
 import { ListZoneContentComponent } from "src/app/ui/content/zone/comp/list-zone-content/list-zone-content.component";
 import { SiZoneContent } from "src/app/si/model/structure/si-zone-content";
+import { SiStructureContent } from "src/app/si/model/structure/si-structure-content";
 import { SiStructure } from "src/app/si/model/structure/si-structure";
 
 @Component({
@@ -25,7 +26,7 @@ export class ZoneComponent implements OnInit {
 	
 	get siStructure(): SiStructure|null {
 		if (this.siZone.hasContent()) {
-			return this.siZone.content
+			return this.siZone.content.getStructure()
 		} 
 		
 		return null;

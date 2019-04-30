@@ -4,23 +4,18 @@ import { SiBulkyDeclaration } from "src/app/si/model/structure/si-bulky-declarat
 import { SiEntry } from "src/app/si/model/content/si-entry";
 import { DlZoneContentComponent } from "src/app/ui/content/zone/comp/dl-zone-content/dl-zone-content.component";
 import { SiStructureType, SiFieldStructureDeclaration } from "src/app/si/model/structure/si-field-structure-declaration";
-import { SiStructure } from "src/app/si/model/structure/si-structure";
-import { FieldSiStructure } from "src/app/si/model/structure/impl/field-si-structure";
+import { SiStructureContent } from "src/app/si/model/structure/si-structure-content";
+import { FieldSiStructureContent } from "src/app/si/model/structure/impl/field-si-structure-content";
 import { SiFieldDeclaration } from "src/app/si/model/structure/si-field-declaration";
+import { SiStructure } from "src/app/si/model/structure/si-structure";
 
-export class DlSiZoneContent implements SiZoneContent {
+export class DlSiZoneContent implements SiZoneContent, SiStructureContent {
+   
     public entries: SiEntry[] = [];
+	private structure = new SiStructure();
 	
 	constructor(public apiUrl: string, public bulkyDeclaration: SiBulkyDeclaration) {
-		
-	}
-	
-	getLabel(): string|null {
-		return this.fieldDeclaration ? this.fieldDeclaration.label : null;
-	}
-	
-	getType(): SiStructureType|null {
-		return null;
+		this.structure.content = this;
 	}
 	
 	getApiUrl(): string {
@@ -35,36 +30,48 @@ export class DlSiZoneContent implements SiZoneContent {
         return [];
     }
     
-    private fieldDeclaration: SiFieldDeclaration|null = null;
-    private childStructures: SiStructure[] = [];
+    getStructure(): SiStructure {
+        return this.structure;
+    }
     
 	refreshChildStructures() {
-		this.fieldDeclaration = null;
-		this.childStructures = [];
+		this.structure.clearChildren();
 		
-    	if (this.entries.length != 1) {
+		if (this.entries.length != 1) {
     		for (let entry of this.entries) {
-    			this.childStructures.push(new FieldSiStructure(entry, this.getFieldStructureDeclaration(entry)));
+    			const fsd = this.getFieldStructureDeclaration(entry);
+    			
+    			this.structure.addChild(this.dingsel(entry, fsd));
     		}
     		return;
     	}
     	
     	const entry = this.entries[0]
     	const declaration = this.getFieldStructureDeclaration(entry);
-    	this.fieldDeclaration = declaration.fieldDeclaration;
+    	this.structure.label = declaration.fieldDeclaration.label;
     	for (const child of declaration.children) {
-    		this.childStructures.push(new FieldSiStructure(entry, child));
+    		this.structure.addChild(this.dingsel(entry, child));
     	}
+	}
+	
+	private dingsel(entry: SiEntry, fsd: SiFieldStructureDeclaration): SiStructure {
+		const structure = new SiStructure();
+		structure.label = fsd.fieldDeclaration.label;
+		structure.type = fsd.type;
+		
+		for (const childFsd of fsd.children) {
+			structure.addChild(this.dingsel(entry, childFsd));
+		}
+		
+		structure.content = new FieldSiStructureContent(entry, fsd.fieldDeclaration, structure.getChildren());
+	
+		return structure;
 	}
 
 	getFieldStructureDeclaration(entry: SiEntry): SiFieldStructureDeclaration {
 		return this.bulkyDeclaration.getFieldStructureDeclarationByBuildupId(entry.selectedBuildupId);
 	}
-	
-	getChildStructures(): SiStructure[] {
-		return this.childStructures;
-	}
-	
+		
 	initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver) {
 		const componentFactory = componentFactoryResolver.resolveComponentFactory(DlZoneContentComponent);
 

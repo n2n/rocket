@@ -1,33 +1,34 @@
 import { Component, OnInit, Input, ElementRef } from '@angular/core';
 import { SiEntry } from "src/app/si/model/content/si-entry";
 import { SiFieldStructureDeclaration, SiStructureType } from "src/app/si/model/structure/si-field-structure-declaration";
-import { FieldSiStructure } from "src/app/si/model/structure/impl/field-si-structure";
+import { SiStructure } from "src/app/si/model/structure/si-structure";
+import { SiFieldDeclaration } from "src/app/si/model/structure/si-field-declaration";
+import { FieldSiStructureContent } from "src/app/si/model/structure/impl/field-si-structure-content";
 
 @Component({
   selector: 'rocket-field-structure',
   templateUrl: './field-structure.component.html'
 })
 export class FieldStructureComponent implements OnInit {
-	static $i = 0;
 	
-	public fieldSiStructure: FieldSiStructure;
+	public fieldSiStructureContent: FieldSiStructureContent;
 	
 	constructor(private elemRef: ElementRef) {
-		elemRef.nativeElement.classList.add('rocket-control');
+//		elemRef.nativeElement.classList.add('rocket-control');
 	}
 
     ngOnInit() {
     }
 	
     get siEntry(): SiEntry {
-    	return this.fieldSiStructure.entry;
+    	return this.fieldSiStructureContent.entry;
     }
   
-    get siFieldStructureDeclaration(): SiFieldStructureDeclaration {
-    	return this.fieldSiStructure.fieldStructureDeclaration;
+    get siFieldDeclaration(): SiFieldDeclaration {
+    	return this.fieldSiStructureContent.fieldDeclaration;
     }
 //    
-    get children(): FieldSiStructure[] {
-    	return this.fieldSiStructure.children;
+    get children(): SiStructure[] {
+    	return this.fieldSiStructureContent.children;
     }
 }
