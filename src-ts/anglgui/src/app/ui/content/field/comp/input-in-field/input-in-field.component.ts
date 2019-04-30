@@ -7,7 +7,9 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class InputInFieldComponent implements OnInit {
 
-	@Input() value: string|null;
+	mandatory = false;
+	maxlength: number|null = null; 
+	value: string|null;
 	
 	constructor() { }
 

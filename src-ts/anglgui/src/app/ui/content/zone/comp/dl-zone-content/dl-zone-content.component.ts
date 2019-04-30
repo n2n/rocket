@@ -13,20 +13,19 @@ import { FieldSiStructure } from "src/app/si/model/structure/impl/field-si-struc
 export class DlZoneContentComponent implements OnInit {
 
 	public dlSiZoneContent: DlSiZoneContent;
+
+	private structures: FieldSiStructure[] = [];
 	
 	constructor() { }
 
 	ngOnInit() {
+		for (let siEntry of this.siEntries) {
+			this.structures.push(new FieldSiStructure(siEntry, this.getFieldStructureDeclaration(siEntry)));
+		}
 	}
 	
 	get fieldSiStructures(): FieldSiStructure[] {
-		let structures: FieldSiStructure[] = [];
-			
-		for (let siEntry of this.siEntries) {
-			structures.push(new FieldSiStructure(siEntry, this.getFieldStructureDeclaration(siEntry)));
-		}
-		
-		return structures;
+		return this.structures;
 	}
 	
 	get siEntries(): SiEntry[] {

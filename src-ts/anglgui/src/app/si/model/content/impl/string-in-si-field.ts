@@ -23,7 +23,7 @@ export class StringInSiField implements SiField {
 	
 	
 	initComponent(viewContainerRef: ViewContainerRef, 
-			componentFactoryResolver: ComponentFactoryResolver): ComponentRef<InputInFieldComponent> {
+			componentFactoryResolver: ComponentFactoryResolver): ComponentRef<any> {
 		const componentFactory = componentFactoryResolver.resolveComponentFactory(InputInFieldComponent);
 	    
 	    const componentRef = viewContainerRef.createComponent(componentFactory);
