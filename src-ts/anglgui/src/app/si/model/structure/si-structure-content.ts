@@ -4,5 +4,6 @@ import { SiStructureType } from "src/app/si/model/structure/si-field-structure-d
 
 export interface SiStructureContent {
 
-	initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver): ComponentRef<any>;
+	initComponent(viewContainerRef: ViewContainerRef, 
+			componentFactoryResolver: ComponentFactoryResolver): ComponentRef<any>;
 }

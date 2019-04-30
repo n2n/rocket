@@ -10,8 +10,7 @@ import { SiFieldDeclaration } from "src/app/si/model/structure/si-field-declarat
 export class FieldSiStructureContent implements SiStructureContent {
 
 	constructor(readonly entry: SiEntry,
-			readonly fieldDeclaration: SiFieldDeclaration,
-			readonly children: SiStructure[]) {
+			readonly fieldDeclaration: SiFieldDeclaration) {
 	}
 	
 	

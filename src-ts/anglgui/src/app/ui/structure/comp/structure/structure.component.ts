@@ -40,6 +40,10 @@ export class StructureComponent implements OnInit {
 		return this._siStructure.content;
 	}
 	
+	get children(): SiStructure[] {
+		return this._siStructure.getChildren();
+	}
+	
 	getType(): SiStructureType|null {
 		return this.siStructure.type;
 	}

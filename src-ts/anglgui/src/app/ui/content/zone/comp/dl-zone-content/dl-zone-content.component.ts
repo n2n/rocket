@@ -17,7 +17,6 @@ export class DlZoneContentComponent implements OnInit {
 	constructor() { }
 
 	ngOnInit() {
-		this.dlSiZoneContent.refreshChildStructures();
 	}
 	
 	get siStructures(): SiStructure[] {

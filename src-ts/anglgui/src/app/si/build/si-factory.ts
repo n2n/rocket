@@ -48,6 +48,7 @@ export class SiFactory {
 				
 				const dlSiZoneContent = new DlSiZoneContent(extr.reqString('apiUrl'), bulkyDeclaration);
 				dlSiZoneContent.entries = this.createEntries(dataExtr.reqArray('entries'));
+				dlSiZoneContent.refreshChildStructures();
 				return dlSiZoneContent;
 			default:
 				throw new ObjectMissmatchError('Invalid si zone type: ' + data.type);

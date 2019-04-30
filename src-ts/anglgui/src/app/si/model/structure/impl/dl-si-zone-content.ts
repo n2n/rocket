@@ -63,8 +63,7 @@ export class DlSiZoneContent implements SiZoneContent, SiStructureContent {
 			structure.addChild(this.dingsel(entry, childFsd));
 		}
 		
-		structure.content = new FieldSiStructureContent(entry, fsd.fieldDeclaration, structure.getChildren());
-	
+		structure.content = new FieldSiStructureContent(entry, fsd.fieldDeclaration);
 		return structure;
 	}
 

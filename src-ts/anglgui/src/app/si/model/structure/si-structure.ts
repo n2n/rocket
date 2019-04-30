@@ -10,12 +10,15 @@ export class SiStructure {
 	private children: SiStructure[] = [];
 	content: SiStructureContent|null = null;
 	
+	constructor() {
+	}
+	
 	get visible(): boolean {
 		return this.visibleSubject.getValue();
 	}
 	
 	set visible(visible: boolean) {
-		this.visibleSubject.next (visible);
+		this.visibleSubject.next(visible);
 	}
 	
 	get visible$(): Observable<boolean> {
@@ -26,7 +29,7 @@ export class SiStructure {
 		this.children.push(child);
 	}
 	
-	getChildren() {
+	getChildren(): SiStructure[] {
 		return this.children;
 	}
 	

@@ -28,7 +28,7 @@ export class FieldStructureComponent implements OnInit {
     	return this.fieldSiStructureContent.fieldDeclaration;
     }
 //    
-    get children(): SiStructure[] {
-    	return this.fieldSiStructureContent.children;
-    }
+//    get children(): SiStructure[] {
+//    	return this.fieldSiStructureContent.children;
+//    }
 }
