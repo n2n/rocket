@@ -23,35 +23,50 @@ namespace rocket\si\content\impl;
 
 use n2n\io\managed\File;
 
-class SiFields {
+class FileOutSiField extends OutSiFieldAdapter {
+	/**
+	 * @var File|null
+	 */
+	private $value;
+		
+	/**
+	 * @param File|null $value
+	 */
+	function __construct(?File $value) {
+		$this->value = $value;	
+	}
 	
 	/**
+	 * @param string|null $value
 	 * @return \rocket\si\content\impl\StringInSiField
 	 */
-	static function stringIn(?string $value) {
-		return new StringInSiField($value);
+	function setValue(?File $value) {
+		$this->value = $value;
+		return $this;
 	}
 	
 	/**
-	 * @return \rocket\si\content\impl\StringOutSiField
+	 * @return File|null
 	 */
-	static function stringOut(?string $value) {
-		return new StringOutSiField($value);
+	function getValue() {
+		return $this->value;
 	}
 	
 	/**
-	 * @param File $file
-	 * @return \rocket\si\content\impl\FileInSiField
+	 * {@inheritDoc}
+	 * @see \rocket\si\content\SiField::getType()
 	 */
-	static function fileIn(?File $file) {
-		return new FileInSiField($file);
+	function getType(): string {
+		return 'file-out';
 	}
 	
 	/**
-	 * @param File $file
-	 * @return \rocket\si\content\impl\FileOutSiField
+	 * {@inheritDoc}
+	 * @see \rocket\si\content\SiField::getData()
 	 */
-	static function fileOut(?File $file) {
-		return new FileOutSiField($file);
+	function getData(): array {
+		return [
+			'value' => SiFile::build($this->value),
+		];
 	}
 }

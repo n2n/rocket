@@ -78,6 +78,18 @@ export class Extractor {
                 + typeof this.obj[propName]);
     }
     
+    reqStringArray(propName: string): Array<string> {
+    	const arr = this.reqArray(propName);
+    	for (const value of arr) {
+        	if (typeof value === 'string') {
+        		continue;
+        	}
+        	
+        	throw new ObjectMissmatchError('Property ' + propName + ' must be of type string[] but array contains non-string.');
+    	}
+    	return arr;
+    }
+    
     nullaObject(propName: string): object|null {
     	if (this.obj[propName] === null) {
 			return null;

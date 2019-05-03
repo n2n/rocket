@@ -21,11 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\file;
 
-use n2n\impl\web\ui\view\html\Link;
-use rocket\si\control\SiIconType;
-use n2n\impl\web\ui\view\html\HtmlElement;
 use n2n\l10n\N2nLocale;
-use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\persistence\orm\property\EntityProperty;
 use rocket\impl\ei\component\prop\file\command\ThumbEiCommand;
 use n2n\util\type\ArgUtils;
@@ -37,15 +33,13 @@ use n2n\io\orm\FileEntityProperty;
 use n2n\util\type\CastUtils;
 use n2n\io\managed\File;
 use rocket\impl\ei\component\prop\file\conf\FileEiPropConfigurator;
-use n2n\io\managed\img\impl\ThSt;
-use n2n\impl\web\dispatch\mag\model\FileMag;
-use n2n\web\dispatch\mag\Mag;
 use n2n\web\http\Session;
 use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\io\managed\impl\TmpFileManager;
 use rocket\ei\EiPropPath;
 use rocket\si\content\SiField;
+use rocket\si\content\impl\SiFields;
 
 class FileEiProp extends DraftablePropertyEiPropAdapter {
 	const DIM_IMPORT_MODE_ALL = 'all';
@@ -153,29 +147,30 @@ class FileEiProp extends DraftablePropertyEiPropAdapter {
 	
 	
 	public function createOutSiField(Eiu $eiu): SiField {
-		$html = $view->getHtmlBuilder();
 		$file = $eiu->field()->getValue();
 		
 		if ($file === null) {
-			return null;
+			return SiFields::stringOut(null);
 		}
 
 		CastUtils::assertTrue($file instanceof File);
 		
-		if (!$file->isValid()) {
-			return $html->getEsc('[missing file]');
-		} 
+		return SiFields::fileOut($file);
 		
-		if ($file->getFileSource()->isImage()) {
-			return $this->createImageUiComponent($view, $eiu, $file);
-		} 
+// 		if (!$file->isValid()) {
+// 			return $html->getEsc('[missing file]');
+// 		} 
 		
-		$url = $this->createFileUrl($file, $eiu);
-// 		if ($file->getFileSource()->isHttpaccessible()) {
-			return new Link($url, $html->getEsc($file->getOriginalName()), array('target' => '_blank'));
-// 		}
+// 		if ($file->getFileSource()->isImage()) {
+// 			return $this->createImageUiComponent($view, $eiu, $file);
+// 		} 
 		
-// 		return $html->getEsc($file->getOriginalName());
+// 		$url = $this->createFileUrl($file, $eiu);
+// // 		if ($file->getFileSource()->isHttpaccessible()) {
+// 			return new Link($url, $html->getEsc($file->getOriginalName()), array('target' => '_blank'));
+// // 		}
+		
+// // 		return $html->getEsc($file->getOriginalName());
 	}
 	
 	private function createFileUrl(File $file, Eiu $eiu) {
@@ -186,31 +181,31 @@ class FileEiProp extends DraftablePropertyEiPropAdapter {
 		return $eiu->frame()->getUrlToCommand($this->thumbEiCommand)->extR(['preview', $eiu->entry()->getPid()]);
 	}
 	
-	private function createImageUiComponent(HtmlView $view, Eiu $eiu, File $file) {
-		$html = $view->getHtmlBuilder();
+// 	private function createImageUiComponent(HtmlView $view, Eiu $eiu, File $file) {
+// 		$html = $view->getHtmlBuilder();
 		
-		$meta = $html->meta();
-		$html->meta()->addCss('impl/js/thirdparty/magnific-popup/magnific-popup.min.css', 'screen');
-		$html->meta()->addJs('impl/js/thirdparty/magnific-popup/jquery.magnific-popup.min.js');
-		$meta->addJs('impl/js/image-preview.js');
+// 		$meta = $html->meta();
+// 		$html->meta()->addCss('impl/js/thirdparty/magnific-popup/magnific-popup.min.css', 'screen');
+// 		$html->meta()->addJs('impl/js/thirdparty/magnific-popup/jquery.magnific-popup.min.js');
+// 		$meta->addJs('impl/js/image-preview.js');
 		
-		$uiComponent = new HtmlElement('div', 
-				array('class' => 'rocket-simple-commands'), 
-				new Link($this->createFileUrl($file, $eiu), 
-						$html->getImage($file, ThSt::crop(40, 30, true), array('title' => $file->getOriginalName())), 
-						array('class' => 'rocket-image-previewable')));
+// 		$uiComponent = new HtmlElement('div', 
+// 				array('class' => 'rocket-simple-commands'), 
+// 				new Link($this->createFileUrl($file, $eiu), 
+// 						$html->getImage($file, ThSt::crop(40, 30, true), array('title' => $file->getOriginalName())), 
+// 						array('class' => 'rocket-image-previewable')));
 		
-		if ($this->isThumbCreationEnabled($file) && !$eiu->entry()->isNew()) {
-			$httpContext = $view->getHttpContext();
-			$uiComponent->appendContent($html->getLink($eiu->frame()->getUrlToCommand($this->thumbEiCommand)
-					->extR($eiu->entry()->getPid(), array('refPath' => (string) $eiu->frame()->getEiFrame()->getCurrentUrl($httpContext))),
-					new HtmlElement('i', array('class' => SiIconType::ICON_CROP), ''),
-					array('title' => $view->getL10nText('ei_impl_resize_image'),
-							'class' => 'btn btn-secondary', 'data-jhtml' => 'true')));
-		}
+// 		if ($this->isThumbCreationEnabled($file) && !$eiu->entry()->isNew()) {
+// 			$httpContext = $view->getHttpContext();
+// 			$uiComponent->appendContent($html->getLink($eiu->frame()->getUrlToCommand($this->thumbEiCommand)
+// 					->extR($eiu->entry()->getPid(), array('refPath' => (string) $eiu->frame()->getEiFrame()->getCurrentUrl($httpContext))),
+// 					new HtmlElement('i', array('class' => SiIconType::ICON_CROP), ''),
+// 					array('title' => $view->getL10nText('ei_impl_resize_image'),
+// 							'class' => 'btn btn-secondary', 'data-jhtml' => 'true')));
+// 		}
 		
-		return $uiComponent;
-	}
+// 		return $uiComponent;
+// 	}
 	
 	private function isThumbCreationEnabled(File $file) {
 		if ($this->thumbEiCommand === null 
@@ -230,10 +225,13 @@ class FileEiProp extends DraftablePropertyEiPropAdapter {
 	}
 	
 	public function createInSiField(Eiu $eiu): SiField {
-		$allowedExtensions = $this->getAllowedExtensions();
-		return new FileMag($this->getLabelLstr(), (sizeof($allowedExtensions) ? $allowedExtensions : null), 
-				$this->isCheckImageMemoryEnabled(), null, 
-				$this->isMandatory($eiu));
+		return SiFields::fileIn($eiu->field()->getValue())
+				->setMandatory($this->isMandatory($eiu));
+		
+// 		$allowedExtensions = $this->getAllowedExtensions();
+// 		return new FileMag($this->getLabelLstr(), (sizeof($allowedExtensions) ? $allowedExtensions : null), 
+// 				$this->isCheckImageMemoryEnabled(), null, 
+// 				$this->isMandatory($eiu));
 	}
 
 	public function isStringRepresentable(): bool {

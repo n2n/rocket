@@ -46,6 +46,6 @@ export class ApiCallSiControl implements SiControl {
 			return;
 		}
 		
-		commandService.execControl(this.apiCallId, this.zone, this.inputSent);
+		commandService.execControl(this.apiCallId, this.zone.content, this.inputSent);
 	}
 }

@@ -75,15 +75,15 @@ class SiBulkyDeclaration implements \JsonSerializable {
 	 * @return SiControl[]
 	 */
 	function getControls() {
-		return $this->Controls;
+		return $this->controls;
 	}
 	
 	function jsonSerialize() {
 		$controlsArr = array();
 		foreach ($this->controls as $id => $control) {
 			$controlsArr[$id] = [
-					'type' => $control->getType(),
-					'data' => $control->getData()
+				'type' => $control->getType(),
+				'data' => $control->getData()
 			];
 		}
 		

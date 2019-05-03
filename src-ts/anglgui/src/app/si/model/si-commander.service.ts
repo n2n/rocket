@@ -8,6 +8,7 @@ import { SiZone } from "src/app/si/model/structure/si-zone";
 import { SiInput } from "src/app/si/model/input/si-input";
 import { SiEntryInput } from "src/app/si/model/input/si-entry-input";
 import { SiEntry } from "src/app/si/model/content/si-entry";
+import { SiZoneContent } from "src/app/si/model/structure/si-zone-content";
 
 @Injectable({
   providedIn: 'root'
@@ -72,18 +73,20 @@ export class SiCommanderService {
 		this.siService.selectionControlCall(zone.content.getApiUrl(), callId, entryIds, entryInputs);
 	}
 	
-	execControl(callId: string, zone: SiZone, includeInput: boolean) {
+	execControl(callId: string, zoneContent: SiZoneContent, includeInput: boolean) {
 		const entryInputs: SiEntryInput[] = [];
 	
-		for (const entry of zone.content.getEntries()) {
-			if (entry.inputAvailable) {
-				continue;
+		if (includeInput) {
+			for (const entry of zoneContent.getEntries()) {
+				if (entry.inputAvailable) {
+					continue;
+				}
+				
+				entryInputs.push(entry.readInput());
 			}
-			
-			entryInputs.push(entry.readInput());
 		}
 		
-		this.siService.controlCall(zone.content.getApiUrl(), callId, entryInputs);
+		this.siService.controlCall(zoneContent.getApiUrl(), callId, entryInputs);
 	}
 	
 }

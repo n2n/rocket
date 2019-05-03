@@ -18,6 +18,8 @@ import { SiPartialContent } from "src/app/si/model/content/si-partial-content";
 import { StringInSiField } from "src/app/si/model/content/impl/string-in-si-field";
 import { ApiCallSiControl } from "src/app/si/model/control/impl/api-call-si-control";
 import { SiEntryBuildup } from "src/app/si/model/content/si-entry-buildup";
+import { SiFile, FileInSiField } from "src/app/si/model/content/impl/file-in-si-field";
+import { FileOutSiField } from "src/app/si/model/content/impl/file-out-si-field";
 
 export class SiFactory {
 	
@@ -158,15 +160,37 @@ export class SiFactory {
 		case SiFieldType.STRING_OUT:
 			return new StringOutSiField(dataExtr.nullaString('value'));
 		case SiFieldType.STRING_IN:
-			const field = new StringInSiField(dataExtr.nullaString('value'), dataExtr.reqBoolean('multiline'));
-			field.maxlength = dataExtr.nullaNumber('maxlength');
-			field.mandatory = dataExtr.reqBoolean('mandatory');
-			
-			return field;
+			const stringInSiField = new StringInSiField(dataExtr.nullaString('value'), dataExtr.reqBoolean('multiline'));
+			stringInSiField.maxlength = dataExtr.nullaNumber('maxlength');
+			stringInSiField.mandatory = dataExtr.reqBoolean('mandatory');
+			return stringInSiField;
+		case SiFieldType.FILE_OUT:
+			return new FileOutSiField(this.buildSiFile(dataExtr.nullaObject('value')));
+		case SiFieldType.FILE_IN:
+			const fileInSiField = new FileInSiField(this.buildSiFile(dataExtr.nullaObject('value')));
+			fileInSiField.mandatory = dataExtr.reqBoolean('mandatory');
+			fileInSiField.mimeTypes = dataExtr.reqStringArray('mimeTypes');
+			fileInSiField.extensions = dataExtr.reqStringArray('extensions');
+			return fileInSiField;
 		default: 
 			throw new ObjectMissmatchError('Invalid si field type: ' + data.type);
 		}	
 	}
+	
+	private buildSiFile(data: any): SiFile|null {
+		if (data === null) {
+			return null;
+		}
+		
+		const extr = new Extractor(data);
+		
+		return {
+			valid: extr.reqBoolean('valid'),
+			name: extr.reqString('name'),
+			url: extr.nullaString('url'),
+			thumbUrl: extr.nullaString('thumbUrl')
+		}
+	} 
 	
 	private createControlMap(data: Map<string, any>): Map<string, SiControl> {
 		const controls = new Map<string, SiControl>();
@@ -231,7 +255,9 @@ export enum SiZoneType {
 
 export enum SiFieldType {
 	STRING_OUT = 'string-out',
-	STRING_IN = 'string-in'
+	STRING_IN = 'string-in',
+    FILE_OUT = 'file-out',
+    FILE_IN = 'file-in'
 }
 
 export enum SiControlType {

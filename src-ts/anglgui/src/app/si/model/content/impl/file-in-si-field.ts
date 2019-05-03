@@ -4,12 +4,15 @@ import { ComponentRef, ComponentFactoryResolver, ViewContainerRef } from "@angul
 import { StringOutFieldComponent } from "src/app/ui/content/field/comp/string-out-field/string-out-field.component";
 import { InputInFieldComponent } from "src/app/ui/content/field/comp/input-in-field/input-in-field.component";
 import { SiInputValue } from "src/app/si/model/input/si-entry-input";
+import { FileInFieldComponent } from "src/app/ui/content/field/comp/file-in-field/file-in-field.component";
 
-export class StringInSiField implements SiField {
+export class FileInSiField implements SiField {
+	private uploadedFile: File|null;
 	public mandatory: boolean = false;
-	public maxlength: number|null = null;
+	public mimeTypes: string[] = [];
+	public extensions: string[] = [];
 	
-	constructor(public value: string|null, public multiline: boolean = false) {
+	constructor(public value: SiFile|null) {
 		
 	}
 		
@@ -18,24 +21,34 @@ export class StringInSiField implements SiField {
 	}
 	
     readInput(): Map<string, SiInputValue> {
-        return new Map([['value', this.value]]);
+        return new Map<string, SiInputValue>([
+                ['keep', !!this.value],
+                ['file', this.uploadedFile]]);
     }
 	
 	initComponent(viewContainerRef: ViewContainerRef, 
 			componentFactoryResolver: ComponentFactoryResolver): ComponentRef<any> {
-		const componentFactory = componentFactoryResolver.resolveComponentFactory(InputInFieldComponent);
+		const componentFactory = componentFactoryResolver.resolveComponentFactory(FileInFieldComponent);
 	    
 	    const componentRef = viewContainerRef.createComponent(componentFactory);
 	    
 	    const component = componentRef.instance;
-	    component.value = this.value;
 	    component.mandatory = this.mandatory;
-	    component.maxlength = this.maxlength;
+	    component.currentSiFile = this.value;
+	    component.mimeTypes = this.mimeTypes;
 	    
-	    component.value$.subscribe(value => {
+	    component.currentSiFile$.subscribe(value => {
 	    	this.value = value;
 	    });
 	    
 	    return componentRef;
 	}
+}
+
+export interface SiFile {
+	valid: boolean;
+	name: string;
+	url: string|null;
+	thumbUrl: string|null;
+		
 }

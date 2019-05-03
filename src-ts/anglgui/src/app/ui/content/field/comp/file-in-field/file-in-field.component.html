@@ -1,0 +1,5 @@
+<input type="file" (change)="change($event)" [accept]="mimeTypes.join(', ')" />
+
+<span *ngIf="currentSiFile">
+	{{ currentSiFile.name }}
+</span>

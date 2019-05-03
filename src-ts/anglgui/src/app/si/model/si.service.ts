@@ -45,7 +45,7 @@ export class SiService {
             reportProgress: true
         };
 
-        return this.httpClient.post<any>(apiUrl + '/ExecEntryControl', formData, options)
+        return this.httpClient.post<any>(apiUrl + '/execEntryControl', formData, options)
                 .pipe(map(data => {
                     if (data.errors) {
                         throw data.errors;
@@ -59,7 +59,28 @@ export class SiService {
 		throw new Error('not yet implemented');
 	}
 	
-	controlCall(apiUrl: string, callId: string, entryInputs: SiEntryInput[]) {
-		throw new Error('not yet implemented');
+	controlCall(apiUrl: string, apiCallId: string, bulky: boolean, entryInputs: SiEntryInput[]) {
+		const formData = new FormData();
+		formData.append('apiCallId', apiCallId);
+		formData.append('inputMap', JSON.stringify(entryInputs));
+
+        const params = new HttpParams();
+
+        const options = {
+            params: params,
+            reportProgress: true
+        };
+
+        return this.httpClient.post<any>(apiUrl + '/execControl', formData, options)
+//		        .pipe(map(data => {
+//		            if (data.errors) {
+//		                throw data.errors;
+//		            }
+//		
+//		            return data.expert;
+//		        }))
+		        .subscribe(data => {
+		        	console.log(data);
+		        });
 	}
 }

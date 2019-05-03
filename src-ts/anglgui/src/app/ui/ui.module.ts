@@ -16,11 +16,13 @@ import { TextareaInFieldComponent } from './content/field/comp/textarea-in-field
 import { StructureComponent } from './structure/comp/structure/structure.component';
 import { StructureContentDirective } from "src/app/ui/structure/comp/structure/structure-content.directive";
 import { FieldStructureComponent } from "src/app/ui/structure/comp/field-structure/field-structure.component";
+import { FileInFieldComponent } from './content/field/comp/file-in-field/file-in-field.component';
+import { FileOutFieldComponent } from './content/field/comp/file-out-field/file-out-field.component';
 
 @NgModule({
   declarations: [ LayerComponent, ContainerComponent, ZoneComponent, StructureContentDirective, ListZoneContentComponent, 
     PaginationComponent, EntryDirective, FieldDirective, StringOutFieldComponent, ControlComponent, DlZoneContentComponent, 
-    FieldStructureComponent, InputInFieldComponent, TextareaInFieldComponent, StructureComponent ],
+    FieldStructureComponent, InputInFieldComponent, TextareaInFieldComponent, StructureComponent, FileInFieldComponent, FileOutFieldComponent ],
   imports: [
     CommonModule,
     FormsModule
@@ -31,6 +33,6 @@ import { FieldStructureComponent } from "src/app/ui/structure/comp/field-structu
     ControlComponent
   ],
   entryComponents: [ ListZoneContentComponent, DlZoneContentComponent, FieldStructureComponent, StringOutFieldComponent, 
-    InputInFieldComponent, TextareaInFieldComponent ]
+    InputInFieldComponent, TextareaInFieldComponent, FileInFieldComponent, FileOutFieldComponent ]
 })
 export class UiModule { }

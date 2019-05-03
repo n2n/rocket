@@ -23,35 +23,45 @@ namespace rocket\si\content\impl;
 
 use n2n\io\managed\File;
 
-class SiFields {
+class SiFile implements \JsonSerializable {
+	private $file;
 	
-	/**
-	 * @return \rocket\si\content\impl\StringInSiField
-	 */
-	static function stringIn(?string $value) {
-		return new StringInSiField($value);
+	function __construct(File $file) {
+		$this->file = $file;
 	}
 	
-	/**
-	 * @return \rocket\si\content\impl\StringOutSiField
-	 */
-	static function stringOut(?string $value) {
-		return new StringOutSiField($value);
+	function jsonSerialize() {
+		if (!$this->file->isValid()) {
+			return [
+				'name' => '[missing file]',
+				'url' => null,
+				'valid' => false,
+				'thumbUrl' => null
+			];
+		}
+		
+		$urlStr = null;
+		if ($this->file->getFileSource()->isHttpaccessible()) {
+			$urlStr = (string) $this->file->getFileSource()->getUrl();
+		}
+		
+		return [
+			'name' => $this->file->getOriginalName(),
+			'url' => $urlStr,
+			'valid' => true,
+			'thumbUrl' => null
+		];
 	}
 	
 	/**
 	 * @param File $file
-	 * @return \rocket\si\content\impl\FileInSiField
+	 * @return NULL|\rocket\si\content\impl\SiFile
 	 */
-	static function fileIn(?File $file) {
-		return new FileInSiField($file);
-	}
-	
-	/**
-	 * @param File $file
-	 * @return \rocket\si\content\impl\FileOutSiField
-	 */
-	static function fileOut(?File $file) {
-		return new FileOutSiField($file);
+	static function build(?File $file) {
+		if ($file === null) {
+			return null;
+		}
+		
+		return new SiFile($file);
 	}
 }
