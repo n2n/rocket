@@ -26,6 +26,7 @@ use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\util\type\ArgUtils;
 use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
+use rocket\ei\util\Eiu;
 
 class OneToManySelectEiProp extends ToManySelectEiPropAdapter {
 	
@@ -41,5 +42,9 @@ class OneToManySelectEiProp extends ToManySelectEiPropAdapter {
 				&& $entityProperty->getType() === RelationEntityProperty::TYPE_ONE_TO_MANY);
 	
 		parent::setEntityProperty($entityProperty);
+	}
+	
+	public function copy(Eiu $eiu, $value, Eiu $copyEiu) {
+		return [];
 	}
 }

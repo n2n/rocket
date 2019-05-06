@@ -41,8 +41,8 @@ class SortForm implements Dispatchable {
 		
 		$this->clear();
 		foreach ($sortData->getSortSettings() as $key => $sortItemData) {
-			$this->sortPropIds[$key] = $sortItemData->getSortPropId(); 
-			$this->directions[$key] = $sortItemData->getDirection();
+			$this->sortPropIds['s-' . $key] = $sortItemData->getSortPropId(); 
+			$this->directions['s-' . $key] = $sortItemData->getDirection();
 		}
 	}
 	
