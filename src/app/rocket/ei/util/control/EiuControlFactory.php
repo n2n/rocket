@@ -23,14 +23,14 @@ namespace rocket\ei\util\control;
 
 use rocket\ei\component\command\EiCommand;
 use rocket\si\control\SiButton;
-use rocket\ei\util\frame\EiuFrame;
+use rocket\ei\util\gui\EiuGui;
 
 class EiuControlFactory {
-	private $eiuFrame;
+	private $eiuGui;
 	private $eiCommand;
 	
-	public function __construct(EiuFrame $eiuFrame, EiCommand $eiCommand) {
-		$this->eiuFrame = $eiuFrame;
+	public function __construct(EiuGui $eiuGui, EiCommand $eiCommand) {
+		$this->eiuGui = $eiuGui;
 		$this->eiCommand = $eiCommand;
 	}
 	
@@ -39,19 +39,37 @@ class EiuControlFactory {
 	 * @return \n2n\util\uri\Url
 	 */
 	private function createCmdUrl($urlExt) {
-		return $this->eiuFrame->getCmdUrl($this->eiCommand)->ext($urlExt);
+		return $this->eiuGui->getEiuFrame()->getCmdUrl($this->eiCommand)->ext($urlExt);
 	}
 	
+	/**
+	 * @param string $id
+	 * @param SiButton $siButton
+	 * @param mixed|null $urlExt
+	 * @return \rocket\ei\util\control\EiuRefGuiControl
+	 */
 	public function createCmdRef(string $id, SiButton $siButton, $urlExt = null) {
 		return new EiuRefGuiControl($id, $this->createCmdUrl($urlExt), $siButton, false);
 	}
 	
+	/**
+	 * @param string $id
+	 * @param SiButton $siButton
+	 * @param mixed|null $urlExt
+	 * @return \rocket\ei\util\control\EiuRefGuiControl
+	 */
 	public function createCmdHref(string $id, SiButton $siButton, $urlExt = null) {
 		return new EiuRefGuiControl($id, $this->createCmdUrl($urlExt), $siButton, true);
 	}
 	
+	/**
+	 * @param string $id
+	 * @param SiButton $siButton
+	 * @param \Closure $callback
+	 * @return \rocket\ei\util\control\EiuCallbackGuiControl
+	 */
 	public function createCallback(string $id, SiButton $siButton, \Closure $callback) {
-		return new EiuCallbackGuiControl($id, $callback, $siButton);
+		return new EiuCallbackGuiControl($id, $this->eiuGui->getViewMode(), $callback, $siButton);
 	}
 	
 // 	public function createGroup(ControlButton $siButton): GroupControl {

@@ -29,6 +29,7 @@ class SiInputFactory {
 	 * @param array $uploadDefinitions
 	 */
 	function __construct(array $uploadDefinitions) {
+		test(array_keys($uploadDefinitions));
 	}
 	
 	/**
@@ -36,13 +37,15 @@ class SiInputFactory {
 	 * @return SiInput
 	 */
 	function create(array $data) {
-		$dataSet = new DataSet($data);
+		test($data);
 		
-		$input = new SiInput();
-		foreach ($dataSet->reqArray('entryInputs', 'array') as $entryData) {
-			$input->addEntryInput($this->createEntry($entryData));
-		}
-		return $input;
+// 		$dataSet = new DataSet($data);
+		
+// 		$input = new SiInput();
+// 		foreach ($dataSet->reqArray('entryInputs', 'array') as $entryData) {
+// 			$input->addEntryInput($this->createEntry($entryData));
+// 		}
+// 		return $input;
 	}
 	
 	/**

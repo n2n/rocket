@@ -28,7 +28,7 @@ export class DlZoneContentComponent implements OnInit {
 	}
 	
 	get siControlMap(): Map<string, SiControl> {
-		return this.dlSiZoneContent.bulkyDeclaration.controlMap;
+		return this.dlSiZoneContent.controlMap;
 	}
 
 }

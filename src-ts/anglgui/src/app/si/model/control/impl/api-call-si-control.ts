@@ -8,14 +8,15 @@ import { SiService } from "src/app/si/model/si.service";
 import { SiZone } from "src/app/si/model/structure/si-zone";
 import { SiCommanderService } from "src/app/si/model/si-commander.service";
 import { IllegalSiStateError } from "src/app/si/model/illegal-si-state-error";
+import { SiZoneContent } from "src/app/si/model/structure/si-zone-content";
 
 export class ApiCallSiControl implements SiControl {
 	
 	inputSent = false;
 	private entryBoundFlag: boolean
 	
-	constructor(public apiCallId: string, public button: SiButton,
-			public zone: SiZone, public entry: SiEntry|null = null) {	
+	constructor(public apiCallId: object, public button: SiButton,
+			public zoneContent: SiZoneContent, public entry: SiEntry|null = null) {	
 	}
 	
 	getButton(): SiButton {
@@ -36,16 +37,16 @@ export class ApiCallSiControl implements SiControl {
 	
 	exec(commandService: SiCommanderService) {
 		if (this.entry) {
-			commandService.execEntryControl(this.apiCallId, this.zone, this.entry, this.inputSent);
+			commandService.execEntryControl(this.apiCallId, this.zoneContent, this.entry, this.inputSent);
 			return;
 		}
 		
 		if (this.entryBound) {
-			commandService.execSelectionControl(this.apiCallId, this.zone, this.zone.content.getSelectedEntries(), 
+			commandService.execSelectionControl(this.apiCallId, this.zoneContent, this.zoneContent.getSelectedEntries(), 
 					this.inputSent);
 			return;
 		}
 		
-		commandService.execControl(this.apiCallId, this.zone.content, this.inputSent);
+		commandService.execControl(this.apiCallId, this.zoneContent, this.inputSent);
 	}
 }

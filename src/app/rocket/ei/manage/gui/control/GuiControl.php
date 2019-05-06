@@ -35,5 +35,5 @@ interface GuiControl {
 	/**
 	 * @return SiControl
 	 */
-	function toSiControl(string $siControlId): SiControl;
+	function toSiControl(GuiControlPath $guiControlPath): SiControl;
 }

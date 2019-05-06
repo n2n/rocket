@@ -589,14 +589,6 @@ class EiuFrame {
 	}
 	
 	/**
-	 * @param EiCommand $eiCommand
-	 * @return \rocket\ei\util\control\EiuControlFactory
-	 */
-	public function controlFactory(EiCommand $eiCommand) {
-		return new EiuControlFactory($this, $eiCommand);
-	}
-	
-	/**
 	 * @return \n2n\util\uri\Url
 	 */
 	public function getCurrentUrl() {

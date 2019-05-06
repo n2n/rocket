@@ -26,7 +26,6 @@ use n2n\web\http\controller\ParamPost;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\gui\control\UnknownGuiControlException;
 use n2n\web\http\BadRequestException;
-use rocket\ei\manage\gui\control\GuiControlPath;
 use n2n\util\type\attrs\AttributesException;
 use rocket\si\input\SiInputFactory;
 
@@ -41,29 +40,33 @@ class SiApiController extends ControllerAdapter {
 		echo 'very apisch';
 	}
 	
-	function doExecControl(ParamPost $apiCallId, ParamPost $inputMap) {
-		$eiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
-		$eiGui = $eiMask->createEiGui($eiFrame, $viewMode, $init);
+	function doExecControl(ParamPost $apiCallId, ParamPost $entryInputMaps = null) {
+		$siApiCallId = null;
+		try {
+			$siApiCallId = SiApiCallId::parse($apiCallId->parseJson());
+		} catch (\InvalidArgumentException $e) {
+			throw new BadRequestException(null, null, $e);	
+		}
 		
-		$bulky = $bulky->toBool();
-		$readOnly = $readOnly->toBool();
+		$eiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
+		$eiGui = $eiMask->createEiGui($this->eiFrame, $siApiCallId->getViewMode(), true);
 		
 		$guiControl = null;
 		try {
-			$guiControl = $eiGui->createGeneralGuiControl(GuiControlPath::create($siControlId->toNotEmptyString()));
+			$guiControl = $eiGui->createGeneralGuiControl($siApiCallId->getGuiControlPath());
 		} catch (UnknownGuiControlException $e) {
 			throw new BadRequestException($e->getMessage(), null, $e);
 		}
 		
-		if ($inputMap !== null) {
-			if (!$siControl->isInputHandled()) {
+		if ($entryInputMaps !== null) {
+			if (!$guiControl->isInputHandled()) {
 				throw new BadRequestException('No input SiControl executed with input.');
 			}
 			
-			$siInputFactory = new SiInputFactory([]);
+			$siInputFactory = new SiInputFactory($this->getRequest()->getUploadDefinitions());
 			
 			try {
-				$this->handleInput($eiGui, $siInputFactory->create($inputMap->parseJson()));
+				$this->handleInput($eiGui, $siInputFactory->create($entryInputMaps->parseJson()));
 			} catch (AttributesException $e) {
 				throw new BadRequestException(null, null, $e);
 			}

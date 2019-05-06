@@ -116,7 +116,7 @@ class AddEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiCo
 	}
 
 	public function createOverallControls(Eiu $eiu): array {
-		$eiuControlFactory = $eiu->frame()->controlFactory($this);
+		$eiuControlFactory = $eiu->gui()->controlFactory($this);
 		$dtc = $eiu->dtc(Rocket::NS);
 		
 		$nestedSet = null !== $this->getWrapper()->getEiCommandCollection()->getEiMask()->getEiType()->getNestedSetStrategy();
@@ -148,7 +148,7 @@ class AddEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiCo
 			return array();
 		}
 		
-		$eiuControlFactory = $eiu->frame()->controlFactory($this);
+		$eiuControlFactory = $eiu->gui()->controlFactory($this);
 		$eiuEntry = $eiu->entry();
 		$dtc = $eiu->dtc(Rocket::NS);
 		

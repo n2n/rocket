@@ -29,16 +29,19 @@ export class SiFactory {
 	createZoneContent(data: any): SiZoneContent {
 		const extr = new Extractor(data);
 		const dataExtr = extr.reqExtractor('data');
+		let compFactory: SiCompFactory;
 		
 		switch (extr.reqString('type')) {
 			case SiZoneType.LIST:
 				const listSiZoneContent = new ListSiZoneContent(extr.reqString('apiUrl'), 
-						dataExtr.reqNumber('pageSize'), 
-						this.createCompactDeclaration(dataExtr.reqObject('compactDeclaration')));
+						dataExtr.reqNumber('pageSize'), this.zone);
+				
+				compFactory = new SiCompFactory(listSiZoneContent);
+				listSiZoneContent.compactDeclaration = this.createCompactDeclaration(dataExtr.reqObject('compactDeclaration'));
 				
 				const partialContentData = dataExtr.nullaObject('partialContent');
 				if (partialContentData) {
-					const partialContent = this.createPartialContent(partialContentData);
+					const partialContent = compFactory.createPartialContent(partialContentData);
 					
 					listSiZoneContent.size = partialContent.count;
 					listSiZoneContent.putPage(new SiPage(1, partialContent.entries));
@@ -46,23 +49,16 @@ export class SiFactory {
 				
 				return listSiZoneContent;
 			case SiZoneType.DL:
-				const bulkyDeclaration = this.createBulkyDeclaration(dataExtr.reqObject('bulkyDeclaration'))
+				const bulkyDeclaration = this.createBulkyDeclaration(dataExtr.reqObject('bulkyDeclaration'));
+				const dlSiZoneContent = new DlSiZoneContent(extr.reqString('apiUrl'), bulkyDeclaration, this.zone);
 				
-				const dlSiZoneContent = new DlSiZoneContent(extr.reqString('apiUrl'), bulkyDeclaration);
-				dlSiZoneContent.entries = this.createEntries(dataExtr.reqArray('entries'));
+				compFactory = new SiCompFactory(dlSiZoneContent);
+				dlSiZoneContent.controlMap = compFactory.createControlMap(dataExtr.reqMap('controls'));
+				dlSiZoneContent.entries = compFactory.createEntries(dataExtr.reqArray('entries'));
 				dlSiZoneContent.refreshChildStructures();
 				return dlSiZoneContent;
 			default:
 				throw new ObjectMissmatchError('Invalid si zone type: ' + data.type);
-		}
-	}
-	
-	createPartialContent(data: any): SiPartialContent {
-		const extr = new Extractor(data);
-		return {
-			entries: this.createEntries(extr.reqArray('entries')),
-			count: extr.reqNumber('count'),
-			offset: extr.reqNumber('offset')
 		}
 	}
 	
@@ -81,7 +77,7 @@ export class SiFactory {
 			declarationMap.set(buildupId, this.createFieldStructureDeclaration(declarationData));
 		}
 		
-		return new SiBulkyDeclaration(declarationMap, this.createControlMap(extr.reqMap('controls')));
+		return new SiBulkyDeclaration(declarationMap);
 	}
 	
 	private createFieldStructureDeclarations(data: Array<any>): SiFieldStructureDeclaration[] {
@@ -105,7 +101,6 @@ export class SiFactory {
 		const declarations: Array<SiFieldDeclaration> = [];
 		for (const declarationData of data) {
 			declarations.push(this.createFieldDeclaration(declarationData));
-			
 		}
 		return declarations;
 	}
@@ -116,14 +111,31 @@ export class SiFactory {
 		return new SiFieldDeclaration(extr.nullaString('fieldId'), 
 				extr.nullaString('label'), extr.nullaString('helpText'));
 	}
+}
+
+
+export class SiCompFactory {
+
+	constructor(private zoneContent: SiZoneContent) {
+	}
 	
-	private createEntries(data: Array<any>): SiEntry[] {
+	createPartialContent(data: any): SiPartialContent {
+		const extr = new Extractor(data);
+		return {
+			entries: this.createEntries(extr.reqArray('entries')),
+			count: extr.reqNumber('count'),
+			offset: extr.reqNumber('offset')
+		};
+	}
+	
+	createEntries(data: Array<any>): SiEntry[] {
 		let entries: Array<SiEntry> = [];
 		for (let entryData of data) {
 			const extr = new Extractor(entryData);
 			
 			const siEntry = new SiEntry(extr.reqString('category'), extr.nullaString('id'));
 			siEntry.treeLevel = extr.nullaNumber('treeLevel');
+			siEntry.inputAvailable = extr.reqBoolean('inputAvailable');
 			
 			for (let [buildupId, buildupData] of extr.reqMap('buildups')) {
 				siEntry.putBuildup(buildupId, this.createBuildup(buildupData));
@@ -192,7 +204,7 @@ export class SiFactory {
 		}
 	} 
 	
-	private createControlMap(data: Map<string, any>): Map<string, SiControl> {
+	createControlMap(data: Map<string, any>): Map<string, SiControl> {
 		const controls = new Map<string, SiControl>();
 		
 		for (let[controlId, controlData] of data) {
@@ -210,12 +222,14 @@ export class SiFactory {
 				return new RefSiControl(
 						dataExtr.reqString('url'),
 						this.createButton(controlId, dataExtr.reqObject('button')),
-						this.zone.layer);
+						this.zoneContent.getZone().layer);
 			case SiControlType.API_CALL:
-				return new ApiCallSiControl(
-						dataExtr.reqString('apiCallId'),
+				const apiControl = new ApiCallSiControl(
+						dataExtr.reqObject('apiCallId'),
 						this.createButton(controlId, dataExtr.reqObject('button')),
-						this.zone);
+						this.zoneContent);
+				apiControl.inputSent = dataExtr.reqBoolean('inputHandled');
+				return apiControl;
 			default: 
 				throw new ObjectMissmatchError('Invalid si field type: ' + data.type);
 		}	
@@ -245,7 +259,8 @@ export class SiFactory {
 			okLabel: extr.nullaString('okLabel'),
 			cancelLabel: extr.nullaString('cancelLabel')
 		};
-	}	
+	}
+	
 }
 
 export enum SiZoneType {

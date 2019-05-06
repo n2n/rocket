@@ -9,18 +9,23 @@ import { SiCompactDeclaration } from "src/app/si/model/structure/si-compact-decl
 import { SiStructureType } from "src/app/si/model/structure/si-field-structure-declaration";
 import { SiStructureContent } from "src/app/si/model/structure/si-structure-content";
 import { SiStructure } from "src/app/si/model/structure/si-structure";
+import { SiZone } from "src/app/si/model/structure/si-zone";
 
 export class ListSiZoneContent implements SiZoneContent, SiStructureContent {
     
 	private pages = new Map<number, SiPage>();
 	public size: number|null = null;
+	public compactDeclaration: SiCompactDeclaration|null = null;
 	private structure: SiStructure;
+
 	
-	constructor(public apiUrl: string, public pageSize: number,
-			public compactDeclaration: SiCompactDeclaration|null) {
-		
+	constructor(public apiUrl: string, public pageSize: number, public zone: SiZone) {
 		this.structure = new SiStructure();
 		this.structure.content = this;
+	}
+	
+	getZone(): SiZone {
+		return this.zone;
 	}
 	
 	getApiUrl(): string {

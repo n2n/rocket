@@ -94,7 +94,7 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 // 			$query['refPath'] = (string) $eiuFrame->getEiFrame()->getCurrentUrl($view->getHttpContext());
 // 		}
 		
-// 		$hrefControl = $eiu->frame()->controlFactory($this)->createJhtml($siButton, $pathExt->toUrl($query))
+// 		$hrefControl = $eiu->gui()->controlFactory($this)->createJhtml($siButton, $pathExt->toUrl($query))
 // 		      ->setPushToHistory(false)->setForceReload(true);
 		
 // 		return array(self::CONTROL_BUTTON_KEY => $hrefControl);

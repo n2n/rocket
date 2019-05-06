@@ -356,12 +356,12 @@ class EiuCtrl implements Lookupable {
 		
 		$eiTypeId = $this->eiuFrame->engine()->type()->getId();
 		
-		$siBulkyDeclaration = new SiBulkyDeclaration([], $eiGui->createGeneralSiControls());
+		$siBulkyDeclaration = new SiBulkyDeclaration([]);
 		$siBulkyDeclaration->putFieldStructureDeclaration($eiTypeId, 
 				$eiGui->getEiGuiSiFactory()->getSiFieldStructureDeclaration());
 		
 		$zone = new DlSiZone($this->eiu->frame()->getApiUrl(), $siBulkyDeclaration,
-				$eiGui->createSiEntries());
+				$eiGui->createSiEntries(), $eiGui->createGeneralSiControls());
 		
 		$this->httpContext->getResponse()->send(SiPayloadFactory::createFromZone($zone));
 	}

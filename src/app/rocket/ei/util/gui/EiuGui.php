@@ -15,6 +15,8 @@ use n2n\l10n\N2nLocale;
 use rocket\ei\util\entry\EiuObject;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\si\structure\SiFieldStructureDeclaration;
+use rocket\ei\component\command\EiCommand;
+use rocket\ei\util\control\EiuControlFactory;
 
 class EiuGui {
 	private $eiGui;
@@ -147,6 +149,14 @@ class EiuGui {
 	 */
 	public function isSingle() {
 		return 1 == count($this->eiGui->getEiEntryGuis());
+	}
+	
+	/**
+	 * @param EiCommand $eiCommand
+	 * @return \rocket\ei\util\control\EiuControlFactory
+	 */
+	public function controlFactory(EiCommand $eiCommand) {
+		return new EiuControlFactory($this, $eiCommand);
 	}
 	
 	/**

@@ -12,6 +12,7 @@ import { PlatformLocation } from "@angular/common";
 import { IllegalSiStateError } from "src/app/si/model/illegal-si-state-error";
 import { SiZoneContent } from "src/app/si/model/structure/si-zone-content";
 import { SiEntryInput } from "src/app/si/model/input/si-entry-input";
+import { SiInput } from "src/app/si/model/input/si-input";
 
 @Injectable({
   providedIn: 'root'
@@ -32,9 +33,9 @@ export class SiService {
 		return new SiFactory(zone).createZoneContent(data);
 	}
 	
-	entryControlCall(apiUrl: string, callId: string, entryId: string, entryInputs: SiEntryInput[]): Observable<any> {
+	entryControlCall(apiUrl: string, callId: object, entryId: string, entryInputs: SiEntryInput[]): Observable<any> {
 		const formData = new FormData();
-		formData.append('callId', callId);
+		formData.append('callId', JSON.stringify(callId));
 		formData.append('siEntryId', entryId);
 //        formData.append('inputMap', JSON.stringify(entryInput));
 
@@ -55,14 +56,17 @@ export class SiService {
                 }));
     }
 	
-	selectionControlCall(apiUrl: string, callId: string, entryIds: string[], entryInputs: SiEntryInput[]): Observable<any> {
+	selectionControlCall(apiUrl: string, callId: object, entryIds: string[], entryInputs: SiEntryInput[]): Observable<any> {
 		throw new Error('not yet implemented');
 	}
 	
-	controlCall(apiUrl: string, apiCallId: string, bulky: boolean, entryInputs: SiEntryInput[]) {
+	controlCall(apiUrl: string, apiCallId: object, input: SiInput) {
 		const formData = new FormData();
-		formData.append('apiCallId', apiCallId);
-		formData.append('inputMap', JSON.stringify(entryInputs));
+		formData.append('apiCallId', JSON.stringify(apiCallId));
+		
+		for (let [name, param] of input.toParamMap()) {
+			formData.append(name, param);
+		}
 
         const params = new HttpParams();
 
@@ -71,7 +75,7 @@ export class SiService {
             reportProgress: true
         };
 
-        return this.httpClient.post<any>(apiUrl + '/execControl', formData, options)
+        return this.httpClient.post<any>(apiUrl + '/execcontrol', formData, options)
 //		        .pipe(map(data => {
 //		            if (data.errors) {
 //		                throw data.errors;

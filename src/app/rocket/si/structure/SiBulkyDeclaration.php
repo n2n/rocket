@@ -27,17 +27,14 @@ use rocket\si\control\SiControl;
 
 class SiBulkyDeclaration implements \JsonSerializable {
 	private $fieldStructureDeclarations;
-	private $controls;
 	
 	/**
 	 * @param SiFieldStructureDeclaration[] $fieldStructureDeclarations
 	 * @param SiEntry[] $siEntries
 	 * @param SiControl[] $siControls;
 	 */
-	function __construct(array $fieldStructureDeclarations = [],
-			array $siControls = []) {
+	function __construct(array $fieldStructureDeclarations = []) {
 		$this->setFieldStructureDeclarations($fieldStructureDeclarations);
-		$this->setControls($siControls);
 	}
 	
 	/**
@@ -61,36 +58,9 @@ class SiBulkyDeclaration implements \JsonSerializable {
 		return $this->fieldStructureDeclarations;
 	}
 	
-	/**
-	 * @param SiControl[] $controls
-	 * @return \rocket\si\structure\SiBulkyDeclaration
-	 */
-	function setControls(array $controls) {
-		ArgUtils::valArray($controls, SiControl::class);
-		$this->controls = $controls;
-		return $this;
-	}
-	
-	/**
-	 * @return SiControl[]
-	 */
-	function getControls() {
-		return $this->controls;
-	}
-	
 	function jsonSerialize() {
-		$controlsArr = array();
-		foreach ($this->controls as $id => $control) {
-			$controlsArr[$id] = [
-				'type' => $control->getType(),
-				'data' => $control->getData()
-			];
-		}
-		
 		return [
-			'fieldStructureDeclarations' => $this->fieldStructureDeclarations,
-			'entries' => $this->entries,
-			'controls' => $controlsArr
+			'fieldStructureDeclarations' => $this->fieldStructureDeclarations
 		];
 	}
 }

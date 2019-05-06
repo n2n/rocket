@@ -26,17 +26,20 @@ use rocket\si\structure\SiZone;
 use rocket\si\structure\SiBulkyDeclaration;
 use rocket\si\content\SiEntry;
 use n2n\util\type\ArgUtils;
+use rocket\si\control\SiControl;
 
 class DlSiZone implements SiZone {
 	private $apiUrl;
 	private $bulkyDeclaration;
 	private $entries;
+	private $controls;
 	
 	public function __construct(Url $apiUrl, SiBulkyDeclaration $bulkyDeclaration,
-			array $entries = []) {
+			array $entries = [], array $controls = []) {
 		$this->apiUrl = $apiUrl;
 		$this->bulkyDeclaration = $bulkyDeclaration;
 		$this->setEntries($entries);
+		$this->setControls($controls);
 	}
 	
 	/**
@@ -55,7 +58,6 @@ class DlSiZone implements SiZone {
 		return $this->apiUrl;
 	}
 	
-	
 	/**
 	 * @param SiEntry[] $siEntries
 	 * @return \rocket\si\structure\SiCompactDeclaration
@@ -73,10 +75,36 @@ class DlSiZone implements SiZone {
 		return $this->entries;
 	}
 	
+	/**
+	 * @param SiControl[] $controls
+	 * @return \rocket\si\structure\SiBulkyDeclaration
+	 */
+	function setControls(array $controls) {
+		ArgUtils::valArray($controls, SiControl::class);
+		$this->controls = $controls;
+		return $this;
+	}
+	
+	/**
+	 * @return SiControl[]
+	 */
+	function getControls() {
+		return $this->controls;
+	}
+	
 	public function getData(): array {
+		$controlsArr = array();
+		foreach ($this->controls as $id => $control) {
+			$controlsArr[$id] = [
+					'type' => $control->getType(),
+					'data' => $control->getData()
+			];
+		}
+		
 		return [ 
 			'bulkyDeclaration' => $this->bulkyDeclaration,
-			'entries' => $this->entries
+			'entries' => $this->entries,
+			'controls' => $controlsArr
 		];
 	}
 }

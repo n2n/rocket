@@ -32,6 +32,7 @@ use rocket\si\control\impl\RefSiControl;
 use rocket\ei\manage\gui\control\EntryGuiControl;
 use rocket\ei\manage\gui\control\GeneralGuiControl;
 use rocket\ei\manage\gui\control\SelectionGuiControl;
+use rocket\ei\manage\gui\control\GuiControlPath;
 
 class EiuRefGuiControl implements GeneralGuiControl, EntryGuiControl, SelectionGuiControl {
 	private $id;
@@ -66,7 +67,7 @@ class EiuRefGuiControl implements GeneralGuiControl, EntryGuiControl, SelectionG
 		return $this;
 	}
 	
-	public function toSiControl(string $controlId): SiControl {
+	public function toSiControl(GuiControlPath $controlId): SiControl {
 		return new RefSiControl($this->url, $this->siButton);
 	}
 	

@@ -30,9 +30,12 @@ use rocket\ei\manage\gui\control\EntryGuiControl;
 use rocket\ei\manage\gui\control\SelectionGuiControl;
 use rocket\si\control\impl\ApiCallSiControl;
 use rocket\si\control\SiButton;
+use rocket\ei\manage\gui\control\GuiControlPath;
+use rocket\ei\manage\SiApiCallId;
 
 class EiuCallbackGuiControl implements GeneralGuiControl, EntryGuiControl, SelectionGuiControl {
 	private $id;
+	private $viewMode;
 	private $callback;
 	private $siButton;
 	private $inputHandled = false;
@@ -42,8 +45,9 @@ class EiuCallbackGuiControl implements GeneralGuiControl, EntryGuiControl, Selec
 	 * @param \Closure $callback
 	 * @param SiButton $siButton
 	 */
-	function __construct(string $id, \Closure $callback, SiButton $siButton) {
+	function __construct(string $id, int $viewMode, \Closure $callback, SiButton $siButton) {
 		$this->id = $id;
+		$this->viewMode = $viewMode;
 		$this->callback = $callback;
 		$this->siButton = $siButton;
 	}
@@ -77,8 +81,9 @@ class EiuCallbackGuiControl implements GeneralGuiControl, EntryGuiControl, Selec
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\control\GuiControl::toSiControl()
 	 */
-	function toSiControl(string $controlId): SiControl {
-		return new ApiCallSiControl($controlId, $this->siButton, $this->inputHandled);
+	function toSiControl(GuiControlPath $guiControlPath): SiControl {
+		return new ApiCallSiControl(new SiApiCallId($guiControlPath, $this->viewMode), 
+				$this->siButton, $this->inputHandled);
 	}
 	
 	/**

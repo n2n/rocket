@@ -26,6 +26,7 @@ class SiEntry implements \JsonSerializable {
 	private $id;
 	private $buildups = [];
 	private $treeLevel;
+	private $inputAvailable;
 	
 	/**
 	 * @param string $category

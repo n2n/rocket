@@ -4,8 +4,7 @@ import { SiControl } from "src/app/si/model/control/si-control";
 import { IllegalSiStateError } from "src/app/si/model/illegal-si-state-error";
 
 export class SiBulkyDeclaration {
-	constructor(public fieldStructureDeclarationMap: Map<string, SiFieldStructureDeclaration>,
-			public controlMap: Map<string, SiControl>) {
+	constructor(public fieldStructureDeclarationMap: Map<string, SiFieldStructureDeclaration>) {
 	}
 	
 	getFieldStructureDeclarationByBuildupId(buildupId: string): SiFieldStructureDeclaration {

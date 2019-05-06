@@ -7,6 +7,7 @@ use n2n\util\type\ArgUtils;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\component\GuiFactory;
 use rocket\ei\manage\gui\field\GuiFieldPath;
+use rocket\ei\manage\gui\control\GuiControlPath;
 
 /**
  * @author andreas
@@ -211,7 +212,7 @@ class EiGui {
 		$siControls = [];
 		foreach ($this->guiDefinition->createSelectionGuiControls($this)
 				as $guiControlPathStr => $selectionGuiControl) {
-			$siControls[$guiControlPathStr] = $selectionGuiControl->toSiControl($guiControlPathStr);
+			$siControls[$guiControlPathStr] = $selectionGuiControl->toSiControl(GuiControlPath::create($guiControlPathStr));
 		}
 		return $siControls;
 	}
@@ -220,7 +221,7 @@ class EiGui {
 		$siControls = [];
 		foreach ($this->guiDefinition->createGeneralGuiControls($this)
 				as $guiControlPathStr => $generalGuiControl) {
-			$siControls[$guiControlPathStr] = $generalGuiControl->toSiControl($guiControlPathStr);
+			$siControls[$guiControlPathStr] = $generalGuiControl->toSiControl(GuiControlPath::create($guiControlPathStr));
 		}
 		return $siControls;
 	}

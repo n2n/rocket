@@ -8,14 +8,22 @@ import { SiStructureContent } from "src/app/si/model/structure/si-structure-cont
 import { FieldSiStructureContent } from "src/app/si/model/structure/impl/field-si-structure-content";
 import { SiFieldDeclaration } from "src/app/si/model/structure/si-field-declaration";
 import { SiStructure } from "src/app/si/model/structure/si-structure";
+import { SiControl } from "src/app/si/model/control/si-control";
+import { SiZone } from "src/app/si/model/structure/si-zone";
 
 export class DlSiZoneContent implements SiZoneContent, SiStructureContent {
    
     public entries: SiEntry[] = [];
 	private structure = new SiStructure();
+	public controlMap: Map<string, SiControl> = new Map()
 	
-	constructor(public apiUrl: string, public bulkyDeclaration: SiBulkyDeclaration) {
+	constructor(public apiUrl: string, public bulkyDeclaration: SiBulkyDeclaration,
+			public zone: SiZone) {
 		this.structure.content = this;
+	}
+	
+	getZone(): SiZone {
+		return this.zone;
 	}
 	
 	getApiUrl(): string {

@@ -32,6 +32,7 @@ use rocket\ei\manage\gui\field\GuiFieldFork;
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\si\content\SiEntryBuildup;
 use rocket\si\content\SiEntry;
+use rocket\ei\manage\gui\control\GuiControlPath;
 
 class EiEntryGui {
 	/**
@@ -415,7 +416,8 @@ class EiEntryGui {
 		
 		foreach ($deterGuiDefinition->createEntryGuiControls($this->eiGui, $eiEntry)
 				as $guiControlPathStr => $entryGuiControl) {
-			$siEntry->putControl($guiControlPathStr, $entryGuiControl->toSiControl($guiControlPathStr));
+			$siEntry->putControl($guiControlPathStr, $entryGuiControl->toSiControl(
+					GuiControlPath::create($guiControlPathStr)));
 		}
 		
 		return $siEntry;

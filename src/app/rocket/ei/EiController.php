@@ -26,11 +26,11 @@ use n2n\web\http\controller\ControllerAdapter;
 use n2n\web\http\ForbiddenException;
 use rocket\ei\manage\ManageState;
 use rocket\ei\component\UnknownEiComponentException;
-use rocket\ei\manage\security\InaccessibleEiCommandPathException;
 use rocket\ei\util\Eiu;
 use rocket\ei\mask\EiMask;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\SiApiController;
+use rocket\ei\manage\security\InaccessibleEiCommandPathException;
 
 class EiController extends ControllerAdapter {
 	const API_PATH_PART = 'api';
@@ -44,7 +44,21 @@ class EiController extends ControllerAdapter {
 		$this->eiFrame = $eiFrame;
 	}
 	
+	private function getOrCreateEiFrame(ManageState $manageState) {
+		try {
+			if ($this->eiFrame !== null) {
+				$this->eiFrame->getEiExecution()->extEiCommandPath(EiCommandPath::from($eiCommand));
+				return $this->eiFrame;
+			}
+			
+			return $manageState->createEiFrame($this->eiMask->getEiEngine(), $this->getControllerContext(), EiCommandPath::from($eiCommand));
+		} catch (InaccessibleEiCommandPathException $e) {
+			throw new ForbiddenException(null, 0, $e);
+		}
+	}
+	
 	public function doApi(SiApiController $siApiController, ManageState $manageState, array $delegateParams = null) {
+		$siApiController->setEiFrame($this->getOrCreateEiFrame());
 		$this->delegate($siApiController);
 	}
 	
@@ -56,16 +70,7 @@ class EiController extends ControllerAdapter {
 			throw new PageNotFoundException(null, 0, $e);
 		}
 		
-		$eiFrame = $this->eiFrame;
-		if ($eiFrame === null) {
-			try {
-				$eiFrame = $manageState->createEiFrame($this->eiMask->getEiEngine(), $this->getControllerContext(), EiCommandPath::from($eiCommand));
-			} catch (InaccessibleEiCommandPathException $e) {
-				throw new ForbiddenException(null, 0, $e);
-			}
-		} else {
-			$eiFrame->getEiExecution()->extEiCommandPath(EiCommandPath::from($eiCommand));
-		}
+		
 		
 		$this->delegate($eiCommand->lookupController(new Eiu($eiFrame)));
 	}

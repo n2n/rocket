@@ -7,7 +7,7 @@ import { SiInputValue } from "src/app/si/model/input/si-entry-input";
 import { FileInFieldComponent } from "src/app/ui/content/field/comp/file-in-field/file-in-field.component";
 
 export class FileInSiField implements SiField {
-	private uploadedFile: File|null;
+	private uploadedFile: File|null = null;
 	public mandatory: boolean = false;
 	public mimeTypes: string[] = [];
 	public extensions: string[] = [];
@@ -40,6 +40,9 @@ export class FileInSiField implements SiField {
 	    component.currentSiFile$.subscribe(value => {
 	    	this.value = value;
 	    });
+	    component.uploadedFile$.subscribe(file => {
+	    	this.uploadedFile = file;
+	    })
 	    
 	    return componentRef;
 	}

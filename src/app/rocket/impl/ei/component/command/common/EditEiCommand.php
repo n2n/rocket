@@ -68,7 +68,7 @@ class EditEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiC
 			return [];
 		}
 		
-		$eiuControlFactory = $eiu->frame()->controlFactory($this);
+		$eiuControlFactory = $eiu->gui()->controlFactory($this);
 		$dtc = $eiu->dtc(Rocket::NS);
 		
 		$siButton = SiButton::primary($dtc->t('common_save_label'), SiIconType::ICON_SAVE);
@@ -76,7 +76,7 @@ class EditEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiC
 			$this->save($eiu);
 		};
 		
-		return [$eiuControlFactory->createCallback(self::CONTROL_SAVE_KEY, $siButton, $callback)];
+		return [$eiuControlFactory->createCallback(self::CONTROL_SAVE_KEY, $siButton, $callback)->setInputHandled(true)];
 	}
 	
 	private function save(Eiu $eiu) {
@@ -94,7 +94,7 @@ class EditEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiC
 			return [];
 		}
 		
-		$eiuControlFactory = $eiu->frame()->controlFactory($this);
+		$eiuControlFactory = $eiu->gui()->controlFactory($this);
 		$dtc = $eiu->dtc(Rocket::NS);
 			
 		$siButton = new SiButton($dtc->t('common_edit_label'), 
