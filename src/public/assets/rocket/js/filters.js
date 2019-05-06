@@ -438,14 +438,20 @@ jQuery(document).ready(function($) {
 						"text": jqElemOption.text()
 					}).click(function(e) {
 						e.preventDefault();
+						//hide li
+						$(this).parent().hide();
+						that.deactivatePropName(jqElemOption.val());
 						that.jqElemSortConstraints.append(that.requestSortConstraint(jqElemOption.val()));
-					})).appendTo(that.jqElemUlFieldList);
+					})).data("propName", jqElemOption.val()).appendTo(that.jqElemUlFieldList);
 				});
 				
 				new MultiAdd(this.jqElemAdd, this.jqElemUlFieldList);
+				if (this.jqElemUlFieldList.children.length === 0) {
+					this.jqElemAdd.hide();
+				}
 				
 				jqElem.find(".rocket-sort-constraint").each(function() {
-					that.initializeSortItem($(this));
+					that.deactivatePropName(that.initializeSortItem($(this)));
 				});
 			}).call(this, this);
 		};
@@ -461,14 +467,16 @@ jQuery(document).ready(function($) {
 			var jqElemSortProp = jqElem.find(".rocket-sort-prop:first");
 			if (propName) {
 				jqElemSortProp.val(propName);
+			} else {
+				propName = jqElemSortProp.val();
 			}
 			
 			jqElemSortProp.hide();
-			
+			var that = this;
 			$("<span>", {
 				"text": jqElemSortProp.children(":selected").text()
 			}).prependTo(jqElem);
-			
+			var _obj = _obj;
 			jqElem.append($("<a />", {
 				"class": "rocket-control rocket-sort-constraint-remove",
 				"href": "#"
@@ -478,8 +486,33 @@ jQuery(document).ready(function($) {
 				"class": this.textRemoveSort
 			}))).click(function(e) {
 				e.preventDefault();
+				that.activatePropName(propName);
 				jqElem.remove();
 			}));
+			
+			return propName;
+		};
+		
+		Sort.prototype.activatePropName = function(propName) {
+			this.jqElemUlFieldList.children().each(function() {
+				if ($(this).data("propName") != propName) return;
+				
+				$(this).show();
+			});
+			
+			this.jqElemAdd.show();
+		};
+		
+		Sort.prototype.deactivatePropName = function(propName) {
+			this.jqElemUlFieldList.children().each(function() {
+				if ($(this).data("propName") != propName) return;
+				
+				$(this).hide();
+			});
+			
+			if (this.jqElemUlFieldList.children(":visible").length === 0) {
+				this.jqElemAdd.hide();
+			}
 		};
 		
 		var initialize = function() {

@@ -55,7 +55,7 @@ use n2n\web\dispatch\map\PropertyPath;
 	<div class="rocket-sort-contraints">
 		<?php foreach ($formHtml->meta()->getMapValue($propertyPath->ext('directions')) as $key => $direction): ?>
 			<div class="nav-item rocket-sort-constraint">
-				<?php $formHtml->select($propertyPath->ext('sortPropIds')->fieldExt($key), $sortPropIdOptions, array('class' => 'form-control')) ?>
+				<?php $formHtml->select($propertyPath->ext('sortPropIds')->fieldExt($key), $sortPropIdOptions, array('class' => 'form-control rocket-sort-prop')) ?>
 				<?php $formHtml->select($propertyPath->ext('directions')->fieldExt($key), $directionsOptions, array('class' => 'form-control')) ?>
 			</div>
 		<?php endforeach ?>

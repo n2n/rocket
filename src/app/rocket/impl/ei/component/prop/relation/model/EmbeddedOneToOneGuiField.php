@@ -91,19 +91,20 @@ class EmbeddedOneToOneGuiField implements GuiField, GuiFieldDisplayable {
 		
 		$targetUtils = (new Eiu($this->targetEiFrame))->frame();
 		
+		if ($this->compact) {
+			$iconType = $targetUtils->getGenericIconType($targetRelationEntry->getEiObject());
+			$label  = $targetUtils->getGenericLabel($targetRelationEntry->getEiObject());
+			return new HtmlElement('span', null, array(
+					new HtmlElement('i', array('class' => $iconType), ''),
+					PHP_EOL,
+					new HtmlElement('span', null, $label)));
+		}
+		
 		if (!$this->reduced) {
 			$eiuEntry = $targetUtils->entry($targetRelationEntry->toEiEntry($targetUtils));
 			return $eiuEntry->newEntryGui()/*->allowControls()
 					->addDisplayContainer(DisplayItem::TYPE_LIGHT_GROUP, $eiuEntry->getGenericLabel())*/
 					->createView($view);
-		}
-
-		if ($this->compact) {
-			$iconType = $targetUtils->getGenericIconType($targetRelationEntry->getEiObject());
-			$label  = $targetUtils->getGenericLabel($targetRelationEntry->getEiObject());
-			return new HtmlElement('span', null, array(
-					new HtmlElement('i', array('class' => 'fa fa-' . $iconType), ''),
-					new HtmlElement('span', null, $label)));
 		}
 		
 		return $view->getImport('\rocket\impl\ei\component\prop\relation\view\embeddedOneToOne.html',

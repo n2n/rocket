@@ -5,6 +5,7 @@ use rocket\spec\TypePath;
 use rocket\ei\EiPropPath;
 use rocket\ei\EiModificatorPath;
 use rocket\ei\EiCommandPath;
+use n2n\util\type\CastUtils;
 
 class EiErrorResult {
 	private $eiPropErrors = [];
@@ -43,7 +44,7 @@ class EiErrorResult {
 	 * @param EiModificatorError $eiModificatorError
 	 */
 	public function putEiModificatorError(EiModificatorError $eiModificatorError) {
-		$this->eiModificatorErrors[] = $eiModificatorError;
+		$this->eiModificatorErrors[spl_object_hash($eiModificatorError)] = $eiModificatorError;
 	}
 	
 // 	/**
@@ -71,7 +72,7 @@ class EiErrorResult {
 	 * @param EiCommandError $eiCommandError
 	 */
 	public function putEiCommandError(EiCommandError $eiCommandError) {
-		$this->eiCommandErrors[] = $eiCommandError;
+		$this->eiCommandErrors[spl_object_hash($eiCommandError)] = $eiCommandError;
 	}
 	
 // 	/**

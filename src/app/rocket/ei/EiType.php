@@ -131,7 +131,8 @@ class EiType extends Type {
 		}
 		
 		$eiType = $this;
-		while (null != ($eiType = $eiType->getSuperEiType())) {
+		while ($eiType->hasSuperEiType()) {
+			$eiType = $eiType->getSuperEiType();
 			$superEiTypes[$eiType->getId()] = $eiType;
 		}
 		return $superEiTypes;
