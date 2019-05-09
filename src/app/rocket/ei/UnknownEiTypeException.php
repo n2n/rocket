@@ -19,20 +19,9 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\security;
+namespace rocket\ei;
 
-use rocket\ei\component\command\EiCommand;
-use rocket\ei\EiCommandPath;
+use rocket\spec\UnknownTypeException;
 
-interface EiExecution {
-	
-	/**
-	 * @return \rocket\ei\EiCommandPath
-	 */
-	public function getEiCommandPath(): EiCommandPath;
-	
-	/**
-	 * @return \rocket\ei\component\command\EiCommand
-	 */
-	public function getEiCommand(): EiCommand;
+class UnknownEiTypeException extends UnknownTypeException {
 }

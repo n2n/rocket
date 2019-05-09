@@ -21,7 +21,6 @@
  */
 namespace rocket\ei\manage;
 
-use n2n\web\http\controller\ControllerContext;
 use n2n\context\RequestScoped;
 use rocket\ei\EiType;
 use rocket\user\model\LoginContext;
@@ -34,8 +33,6 @@ use rocket\ei\manage\draft\DraftManager;
 use rocket\ei\manage\security\EiPermissionManager;
 use rocket\ei\manage\veto\EiLifecycleMonitor;
 use rocket\ei\manage\frame\EiFrame;
-use rocket\ei\EiEngine;
-use rocket\ei\EiCommandPath;
 
 class ManageState implements RequestScoped {
 	private $n2nContext;
@@ -156,13 +153,13 @@ class ManageState implements RequestScoped {
 		$this->eiLifecycleMonitor = $eiLifecycleMonitor;
 	}
 	
-	public function createEiFrame(EiEngine $contextEiEngine, ControllerContext $controllerContext, EiCommandPath $eiCommandPath) {
-		$eiFrame = $contextEiEngine->createEiFrame($controllerContext, $this, $this->peakEiFrame(false), $eiCommandPath);
+// 	public function createEiFrame(EiEngine $contextEiEngine, ControllerContext $controllerContext, EiCommandPath $eiCommandPath) {
+// 		$eiFrame = $contextEiEngine->createEiFrame($controllerContext, $this, $this->peakEiFrame(false), $eiCommandPath);
 		
-		$this->pushEiFrame($eiFrame);
+// 		$this->pushEiFrame($eiFrame);
 		
-		return $eiFrame;
-	}
+// 		return $eiFrame;
+// 	}
 	
 	public function pushEiFrame(EiFrame $eiFrame) {
 		$this->eiFrames[] = $eiFrame;
@@ -194,10 +191,10 @@ class ManageState implements RequestScoped {
 		return $eiFrame;
 	}
 	
-	public function popEiFrameBy(EiType $eiType) {
-		$this->peakEiFrame($eiType);
-		return array_pop($this->eiFrames);
-	}
+// 	public function popEiFrameBy(EiType $eiType) {
+// 		$this->peakEiFrame($eiType);
+// 		return array_pop($this->eiFrames);
+// 	}
 	
 	public function getMainId() {
 		if (!sizeof($this->eiFrames)) {

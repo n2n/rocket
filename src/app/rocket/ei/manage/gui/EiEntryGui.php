@@ -383,7 +383,7 @@ class EiEntryGui {
 	 */
 	function createSiEntry() {
 		$eiType = $this->eiEntry->getEiType();
-		$siEntry = new SiEntry($eiType->getSupremeEiType()->getId(), $eiType->getId(), 
+		$siEntry = new SiEntry($eiType->getSupremeEiType()->getId(), $this->eiEntry->getPid(), 
 				!ViewMode::isReadOnly($this->eiGui->getViewMode()));
 		$siEntry->putBuildup($eiType->getId(), $this->createSiEntryBuildup());
 		return $siEntry;

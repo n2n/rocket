@@ -77,13 +77,12 @@ class RocketUserEiPermissionManager implements EiPermissionManager {
 				|| $eiGrant->containsEiCommandPath($eiCommandPath));
 	}
 
-	function applyToEiFrame(EiFrame $eiFrame, EiCommandPath $eiCommandPath) {
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\security\EiPermissionManager::applyToEiFrame()
+	 */
+	function applyToEiFrame(EiFrame $eiFrame, EiCommandPath $eiCommandPath, ?EiCommand $eiCommand) {
 		$eiMask = $eiFrame->getContextEiEngine()->getEiMask();
-		$eiCommand = null;
-		
-		if (!$eiCommandPath->isEmpty()) {
-			$eiCommand = $eiMask->getEiCommandCollection()->getById($eiCommandPath->getFirstId());
-		}
 				
 		if ($this->rocketUser->isAdmin()) {
 			$eiFrame->setEiExecution(new FullyGrantedEiExecution($eiCommandPath, $eiCommand));

@@ -23,17 +23,19 @@ namespace rocket\ei\manage;
 
 use n2n\web\http\controller\ControllerAdapter;
 use n2n\web\http\controller\ParamPost;
-use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\gui\control\UnknownGuiControlException;
 use n2n\web\http\BadRequestException;
 use n2n\util\type\attrs\AttributesException;
 use rocket\si\input\SiInputFactory;
+use rocket\ei\manage\gui\EiGui;
+use rocket\si\input\SiInput;
+use rocket\ei\manage\frame\EiFrameUtil;
 
 class SiApiController extends ControllerAdapter {
 	private $eiFrame;
 	
-	function setEiFrame(EiFrame $eiFrame) {
-		$this->eiFrame = $eiFrame;
+	function prepare(ManageState $manageState) {
+		$this->eiFrame = $manageState->peakEiFrame();
 	}
 	
 	function index() {
@@ -48,12 +50,17 @@ class SiApiController extends ControllerAdapter {
 			throw new BadRequestException(null, null, $e);	
 		}
 		
+		$guiControlPath = $siApiCallId->getGuiControlPath();
+		if (!$guiControlPath->startsWith($this->eiFrame->getEiExecution()->getEiCommandPath())) {
+			throw new BadRequestException(null, null, $e);
+		}
+		
 		$eiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
 		$eiGui = $eiMask->createEiGui($this->eiFrame, $siApiCallId->getViewMode(), true);
 		
 		$guiControl = null;
 		try {
-			$guiControl = $eiGui->createGeneralGuiControl($siApiCallId->getGuiControlPath());
+			$guiControl = $eiGui->createGeneralGuiControl($guiControlPath);
 		} catch (UnknownGuiControlException $e) {
 			throw new BadRequestException($e->getMessage(), null, $e);
 		}
@@ -72,7 +79,57 @@ class SiApiController extends ControllerAdapter {
 			}
 		}
 		
-		$siControl->handle($eiGui);
+		$guiControl->handle($eiGui);
+	}
+	
+	/**
+	 * @param string $pid
+	 * @return \rocket\ei\manage\EiEntityObj
+	 */
+	private function lookupEiObject($pid) {
+		$efu = new EiFrameUtil($this->eiFrame);
+		return $efu->lookupEiEntityObj($efu->pidToId($pid));
+	}
+	
+	/**
+	 * @param string $buildupId
+	 * @return EiObject
+	 */
+	private function createEiObject($buildupId) {
+		$eiType = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType();
+		if ($eiType->getId() == $buildupId) {
+			return $eiType->createNewEiObject(false);
+		}
+		
+		try {
+			return $eiType->getSubEiTypeById($buildupId)->createNewEiObject();
+		} catch (\rocket\ei\UnknownEiTypeException $e) {
+			throw new BadRequestException(null, 0, $e);	
+		}
+	}
+	
+	/**
+	 * @param EiGui $eiGui
+	 * @param SiInput $siInput
+	 */
+	private function handleInput($eiGui, $siInput) {
+		$contextEiEngine = $this->eiFrame->getContextEiEngine();
+		
+		foreach ($siInput->getEntryInputs() as $entryInput) {
+			$eiObject = null;
+			if (null !== $entryInput->getId()) {
+				$eiObject = $this->lookupEiObject($entryInput->getId());
+			} else {
+				$eiObject = $this->createEiObject($entryInput->getBuildupId());
+			}
+			
+			$eiEntry = $this->eiFrame->createEiEntry($eiObject);
+			
+			$eiEntryGui = $eiGui->createEiEntryGui($eiEntry, 0);
+			
+			$eiEntryGui->get
+			
+		}
 	}
 	
 	function doExecEntryControl(ParamPost $siEntryId, ParamPost $apiCallId, ParamPost $bulky, ParamPost $inputMap) {

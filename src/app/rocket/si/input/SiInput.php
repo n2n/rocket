@@ -21,6 +21,9 @@
  */
 namespace rocket\si\input;
 
+use n2n\util\type\ArgUtils;
+use n2n\l10n\Message;
+
 class SiInput {
 	/**
 	 * @var SiEntryInput[] $entryInputs
@@ -35,10 +38,8 @@ class SiInput {
 	}
 	
 	function putEntryInput(SiEntryInput $entryInput) {
-		$this->entryInputs[$entryInput->getId()] = $entryInput;
+		$this->entryInputs[] = $entryInput;
 	}
-
-	
 }
 
 class SiEntryInput {
@@ -49,5 +50,31 @@ class SiEntryInput {
 }
 
 class SiFieldInput {
+	private $data;
+	private $errors;
 	
+	/**
+	 * @param array $data
+	 * @param Message[] $errors
+	 */
+	function __construct(array $data, array $errors) {
+		ArgUtils::valArray($errors, Message::class);
+		$this->data = $data;
+		$this->errors = $errors;
+		
+	}
+	
+	/**
+	 * @return array
+	 */
+	function getData() {
+		return $this->data;
+	}
+	
+	/**
+	 * @return Message[]
+	 */
+	function getErrors() {
+		return $this->errors;
+	}
 }

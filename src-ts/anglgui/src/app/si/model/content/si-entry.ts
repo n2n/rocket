@@ -57,7 +57,7 @@ export class SiEntry {
 			throw new IllegalSiStateError('No input available.');
 		}
 		
-		return new SiEntryInput(this.id, this._selectedBuildupId, fieldInputMap);
+		return new SiEntryInput(this.category, this.id, this._selectedBuildupId, fieldInputMap);
 	}
 	
 	toString() {

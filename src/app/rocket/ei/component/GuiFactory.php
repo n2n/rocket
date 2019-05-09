@@ -64,7 +64,7 @@ class GuiFactory {
 		foreach ($this->eiMask->getEiPropCollection() as $eiPropPathStr => $eiProp) {
 			$eiPropPath = EiPropPath::create($eiPropPathStr);
 			
-			if (($eiProp instanceof GuiEiProp) && null !== ($guiProp = $eiProp->buildGuiProp($eiu))){
+			if (($eiProp instanceof GuiEiProp) && null !== ($guiProp = $eiProp->buildGuiProp($eiu))) {
 				ArgUtils::valTypeReturn($guiProp, GuiProp::class, $eiProp, 'buildGuiProp');
 			
 				$guiDefinition->putGuiProp($eiPropPath, $guiProp, EiPropPath::from($eiProp));
@@ -81,7 +81,6 @@ class GuiFactory {
 			$eiCommandPath = $eiCommand->getWrapper()->getEiCommandPath();
 			
 			$guiDefinition->putGuiCommand($eiCommandPath, $eiCommand);
-			
 		}
 		
 		foreach ($this->eiMask->getEiModificatorCollection() as $eiModificator) {

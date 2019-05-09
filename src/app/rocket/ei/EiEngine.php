@@ -48,6 +48,8 @@ use rocket\ei\component\EiFrameFactory;
 use n2n\web\http\controller\ControllerContext;
 use rocket\ei\manage\gui\EiEntryGui;
 use n2n\impl\web\ui\view\html\HtmlView;
+use rocket\ei\component\UnknownEiComponentException;
+use rocket\ei\manage\security\InaccessibleEiCommandPathException;
 
 class EiEngine {
 	private $eiMask;
@@ -113,6 +115,8 @@ class EiEngine {
 	 * @param ControllerContext $controllerContext
 	 * @param ManageState $manageState
 	 * @param EiFrame $parent
+	 * @throws InaccessibleEiCommandPathException
+	 * @throws UnknownEiComponentException
 	 * @return \rocket\ei\manage\frame\EiFrame
 	 */
 	public function createEiFrame(ControllerContext $controllerContext, ManageState $manageState, ?EiFrame $parent, 

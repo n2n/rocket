@@ -42,10 +42,7 @@ use n2n\web\dispatch\map\PropertyPathPart;
 use rocket\ei\component\command\EiCommand;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\LiveEiObject;
-use n2n\util\type\CastUtils;
 use rocket\ei\manage\DraftEiObject;
-use rocket\user\model\LoginContext;
-use rocket\ei\manage\draft\DraftValueMap;
 use n2n\reflection\ReflectionUtils;
 use rocket\ei\manage\draft\Draft;
 use rocket\ei\mask\EiMask;
@@ -73,7 +70,7 @@ use rocket\ei\manage\entry\EiEntryConstraint;
 use rocket\ei\EiPropPath;
 use rocket\ei\util\entry\EiuFieldMap;
 use rocket\ei\util\entry\EiuObject;
-use rocket\ei\util\control\EiuControlFactory;
+use rocket\ei\manage\frame\EiFrameUtil;
 
 class EiuFrame {
 	private $eiFrame;
@@ -92,7 +89,7 @@ class EiuFrame {
 	}
 	
 	/**
-	 * @throws IllegalStateException;
+	 * @throws IllegalStateException
 	 * @return \n2n\web\http\HttpContext
 	 */
 	public function getHttpContext() {
@@ -116,15 +113,27 @@ class EiuFrame {
 	/**
 	 * @return \n2n\util\uri\Url
 	 */
-	public function getApiUrl() {
-		return $this->eiFrame->getApiUrl();
+	public function getApiUrl($eiCommandPath = null) {
+		if ($eiCommandPath === null) {
+			$eiCommandPath = $this->eiFrame->getEiExecution()->getEiCommandPath();
+		} else {
+			$eiCommandPath = EiCommandPath::create($eiCommandPath);
+		}
+		
+		return $this->eiFrame->getApiUrl($eiCommandPath);
 	}
 	
 	/**
 	 * @return \n2n\util\uri\Url
 	 */
-	public function getCmdUrl($eiCommandPath) {
-		return $this->eiFrame->getCmdUrl(EiCommandPath::create($eiCommandPath));
+	public function getCmdUrl($eiCommandPath = null) {
+		if ($eiCommandPath === null) {
+			$eiCommandPath = $this->eiFrame->getEiExecution()->getEiCommandPath();
+		} else {
+			$eiCommandPath = EiCommandPath::create($eiCommandPath);
+		}
+		
+		return $this->eiFrame->getCmdUrl($eiCommandPath);
 	}
 	
 	/**
@@ -247,12 +256,13 @@ class EiuFrame {
 	}
 	
 	
-	public function containsId($id, int $ignoreConstraintTypes = 0): bool {
-		$criteria = $this->eiFrame->createCriteria('e', $ignoreConstraintTypes);
-		$criteria->select(CrIt::c('1'));
-		$this->applyIdComparison($criteria->where(), $id);
-		
-		return null !== $criteria->toQuery()->fetchSingle();
+	/**
+	 * @param mixed $id
+	 * @param int $ignoreConstraintTypes
+	 * @return bool
+	 */
+	public function containsId($id, int $ignoreConstraintTypes = 0) {
+		return (new EiFrameUtil($this->eiFrame))->containsId($id, $ignoreConstraintTypes);
 	}
 	
 	/**
@@ -300,26 +310,12 @@ class EiuFrame {
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\util\frame\EiuFrame::lookupEiEntityObj($id, $ignoreConstraints)
+	 * @param mixed $id
+	 * @param int $ignoreConstraintTypes
+	 * @return EiEntityObj
 	 */
-	private function lookupEiEntityObj($id, int $ignoreConstraintTypes = 0): EiEntityObj {
-		$criteria = $this->eiFrame->createCriteria('e', $ignoreConstraintTypes);
-		$criteria->select('e');
-		$this->applyIdComparison($criteria->where(), $id);
-		
-		if (null !== ($entityObj = $criteria->toQuery()->fetchSingle())) {
-			return EiEntityObj::createFrom($this->eiFrame->getContextEiEngine()->getEiMask()->getEiType(), $entityObj);
-		}
-		
-		throw new UnknownEiObjectException('Entity not found: ' . EntityInfo::buildEntityString(
-				$this->getContextEiType()->getEntityModel(), $id));
-		
-	}
-	
-	private function applyIdComparison(CriteriaComparator $criteriaComparator, $id) {
-		$criteriaComparator->match(CrIt::p('e', $this->getEiFrame()->getContextEiEngine()->getEiMask()->getEiType()
-				->getEntityModel()->getIdDef()->getEntityProperty()), CriteriaComparator::OPERATOR_EQUAL, $id);
+	private function lookupEiEntityObj($id, int $ignoreConstraintTypes = 0) {
+		return (new EiFrameUtil($this->eiFrame))->lookupEiEntityObj($id, $ignoreConstraintTypes);	
 	}
 	
 	public function getDraftManager() {

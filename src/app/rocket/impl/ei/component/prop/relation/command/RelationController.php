@@ -27,7 +27,7 @@ use n2n\web\http\PageNotFoundException;
 use rocket\ei\manage\EiObject;
 use n2n\web\http\controller\ControllerAdapter;
 use rocket\impl\ei\component\prop\relation\model\relation\EiPropRelation;
-use rocket\ei\EiController;
+use rocket\ei\EiFrameController;
 use rocket\ei\manage\frame\EiRelation;
 use rocket\ei\util\EiuCtrl;
 use rocket\ei\util\Eiu;
@@ -67,12 +67,12 @@ class RelationController extends ControllerAdapter {
 		
 		$this->applyBreadcrumb($eiObject);
 
-		$targetControllerContext->setController(new EiController($targetEiFrame->getContextEiEngine()->getEiMask(), $targetEiFrame));
+		$targetControllerContext->setController(new EiFrameController($targetEiFrame->getContextEiEngine()->getEiMask(), $targetEiFrame));
 		
 		$this->delegateToControllerContext($targetControllerContext);
 	}
 	
-// 	public function doRelUnknownEntry(array $delegateCmds, EiController $eiTypeController) {
+// 	public function doRelUnknownEntry(array $delegateCmds, EiFrameController $eiTypeController) {
 // 		$targetControllerContext = $this->createDelegateContext($eiTypeController);
 			
 // 		$targetEiFrame = $this->eiPropRelation->createTargetEiFrame($this->manageState, $this->eiFrame,
@@ -108,7 +108,7 @@ class RelationController extends ControllerAdapter {
 		
 		$this->applyBreadcrumb();
 		
-		$targetControllerContext->setController(new EiController($targetEiFrame->getContextEiEngine()->getEiMask(), $targetEiFrame));
+		$targetControllerContext->setController(new EiFrameController($targetEiFrame->getContextEiEngine()->getEiMask(), $targetEiFrame));
 		$this->delegateToControllerContext($targetControllerContext);
 	}
 	public function doRel(array $delegateCmds) {
@@ -119,7 +119,7 @@ class RelationController extends ControllerAdapter {
 	
 		$this->applyBreadcrumb();
 		
-		$targetControllerContext->setController(new EiController($targetEiFrame->getContextEiEngine()->getEiMask(), $targetEiFrame));
+		$targetControllerContext->setController(new EiFrameController($targetEiFrame->getContextEiEngine()->getEiMask(), $targetEiFrame));
 	
 		$this->delegateToControllerContext($targetControllerContext);
 	}

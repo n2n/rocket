@@ -22,30 +22,57 @@
 namespace rocket\si\input;
 
 use n2n\util\type\attrs\DataSet;
+use n2n\util\type\attrs\AttributesException;
+use n2n\web\http\UploadDefinition;
+use n2n\io\managed\impl\FileFactory;
+use n2n\util\type\ArgUtils;
 
 class SiInputFactory {
+	
+	private $fileMap = [];
 	
 	/**
 	 * @param array $uploadDefinitions
 	 */
-	function __construct(array $uploadDefinitions) {
-		test(array_keys($uploadDefinitions));
+	function __construct() {
+		
+	}
+	
+	/**
+	 * @param UploadDefinition[] $uploadDefinitions
+	 */
+	function registerUploadDefinitions(array $uploadDefinitions) {
+		ArgUtils::valArray($uploadDefinitions, UploadDefinition::class);
+		
+		$files = [];
+		foreach ($uploadDefinitions as $key => $uploadDefinition) {
+			if ($uploadDefinition->hasClientError()) {
+				$files[] = FileFactory::createFromUploadDefinition($uploadDefinition);
+			}
+			
+			test(array_keys($uploadDefinitions['fileInputs']));
+			
+		}
+		
 	}
 	
 	/**
 	 * @param array $data
 	 * @return SiInput
+	 * @throws CorruptedSiInputDataException
 	 */
 	function create(array $data) {
-		test($data);
+		$input = new SiInput();
 		
-// 		$dataSet = new DataSet($data);
+		foreach ($data as $entryData) {
+			try {
+				$input->addEntryInput($this->createEntry($entryData));
+			} catch (AttributesException $e) {
+				throw new CorruptedSiInputDataException(null, 0, $e);
+			}
+		}
 		
-// 		$input = new SiInput();
-// 		foreach ($dataSet->reqArray('entryInputs', 'array') as $entryData) {
-// 			$input->addEntryInput($this->createEntry($entryData));
-// 		}
-// 		return $input;
+		return $input;
 	}
 	
 	/**
@@ -55,8 +82,9 @@ class SiInputFactory {
 	function createEntry(array $data) {
 		$dataSet = new DataSet($data);
 		
-		$siEntryInput = new SiEntryInput($dataSet->optString('id'));
-		foreach ($dataSet->reqArray('entryInputs', 'array') as $fieldId => $fielData) {
+		$siEntryInput = new SiEntryInput($dataSet->reqString('category'), $dataSet->reqString('buildupId'), 
+				$dataSet->optString('id'));
+		foreach ($dataSet->reqArray('fieldInputMap', 'array') as $fieldId => $fielData) {
 			$siEntryInput->setFieldInput($fieldId, $this->createField($fielData));
 		}
 		return $siEntryInput;
@@ -69,4 +97,8 @@ class SiInputFactory {
 	function createField(array $data) {
 		return new SiFieldInput($data);
 	}
+}
+
+class CorruptedSiInputDataException extends \Exception {
+	
 }

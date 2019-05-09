@@ -22,11 +22,16 @@
 namespace rocket\ei\manage\gui\control;
 
 use rocket\ei\IdPath;
+use rocket\ei\EiCommandPath;
 
 class GuiControlPath extends IdPath {
 	
 	public function ext(...$args): GuiControlPath {
 		return new GuiControlPath(array_merge($this->ids, $this->argsToIds($args)));
+	}
+	
+	public static function from(EiCommandPath $eiCommandPath, array $controlIds) {
+		return new GuiControlPath(array_merge($eiCommandPath->toArray(), $controlIds));
 	}
 	
 	public static function create($expression): GuiControlPath {

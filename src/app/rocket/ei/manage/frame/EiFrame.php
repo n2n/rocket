@@ -28,7 +28,6 @@ use rocket\ei\mask\EiMask;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\core\container\N2nContext;
 use rocket\ei\manage\entry\EiEntry;
-use rocket\ei\manage\gui\control\EntryNavPoint;
 use rocket\ei\manage\security\EiExecution;
 use n2n\web\http\HttpContext;
 use n2n\util\uri\Url;
@@ -42,7 +41,6 @@ use rocket\ei\manage\EiObject;
 use rocket\ei\manage\security\EiEntryAccessFactory;
 use rocket\ei\manage\security\EiEntryAccess;
 use rocket\ei\EiPropPath;
-use rocket\ei\EiController;
 
 class EiFrame {
 	private $contextEiEngine;
@@ -121,14 +119,14 @@ class EiFrame {
 	}
 	
 	/**
-	 * @param EiFrame $parent
+	 * @param EiFrame|null $parent
 	 */
-	public function setParent(EiFrame $parent = null) {
+	public function setParent(?EiFrame $parent) {
 		$this->parent = $parent;
 	}
 	
 	/**
-	 * @return EiFrame
+	 * @return EiFrame|null
 	 */
 	public function getParent() {
 		return $this->parent;
@@ -414,14 +412,14 @@ class EiFrame {
 				$this->getDetailBreadcrumbLabel($eiObject));
 	}
 	
-	public function getApiUrl() {
+	public function getApiUrl(EiCommandPath $eiCommandPath) {
 		return $this->getN2nContext()->getHttpContext()->getControllerContextPath($this->getControllerContext())
-				->toUrl()->ext(EiController::API_PATH_PART);
+				->toUrl()->ext([EiFrameController::API_PATH_PART, (string) $eiCommandPath]);
 	}
 	
 	public function getCmdUrl(EiCommandPath $eiCommandPath) {
 		return $this->getN2nContext()->getHttpContext()->getControllerContextPath($this->getControllerContext())
-				->toUrl()->ext([EiController::CMD_PATH_PART, (string) $eiCommandPath]);
+				->toUrl()->ext([EiFrameController::CMD_PATH_PART, (string) $eiCommandPath]);
 	}
 	
 	public function setDetailDisabled($detailDisabled) {

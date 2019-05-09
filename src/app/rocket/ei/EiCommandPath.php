@@ -24,7 +24,7 @@ namespace rocket\ei;
 use rocket\ei\component\command\EiCommand;
 use n2n\util\type\ArgUtils;
 
-class EiCommandPath extends IdPath{
+class EiCommandPath extends IdPath {
 	
 	public function __construct(string $id) {
 		parent::__construct([$id]);

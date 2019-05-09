@@ -29,6 +29,7 @@ use rocket\ei\manage\critmod\filter\FilterCriteriaConstraint;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\frame\Boundry;
 use rocket\ei\EiCommandPath;
+use rocket\ei\manage\security\InaccessibleEiCommandPathException;
 
 class EiFrameFactory {
 	private $eiEngine;
@@ -37,6 +38,15 @@ class EiFrameFactory {
 		$this->eiEngine = $eiEngine;		
 	}
 	
+	/**
+	 * @param ControllerContext $controllerContext
+	 * @param ManageState $manageState
+	 * @param EiFrame $parentEiFrame
+	 * @param EiCommandPath $eiCommandPath
+	 * @throws InaccessibleEiCommandPathException
+	 * @throws UnknownEiComponentException
+	 * @return \rocket\ei\manage\frame\EiFrame
+	 */
 	public function create(ControllerContext $controllerContext, ManageState $manageState,  
 			?EiFrame $parentEiFrame, EiCommandPath $eiCommandPath) {
 		$eiFrame = new EiFrame($this->eiEngine, $manageState);
@@ -53,7 +63,7 @@ class EiFrameFactory {
 						new FilterCriteriaConstraint($filterDefinition->createComparatorConstraint($filterSettingGroup)));
 			}
 		}
-			
+		
 		if (null !== ($sortSettingGroup = $eiMask->getSortSettingGroup())) {
 			$sortDefinition = $this->eiEngine->createFramedSortDefinition($eiFrame);
 			if ($sortDefinition !== null) {
@@ -62,7 +72,12 @@ class EiFrameFactory {
 			}
 		}
 		
-		$manageState->getEiPermissionManager()->applyToEiFrame($eiFrame, $eiCommandPath);
+		$eiCommand = null;
+		if (!$eiCommandPath->isEmpty()) {
+			$eiCommand = $eiMask->getEiCommandCollection()->getById($eiCommandPath->getFirstId());
+		}
+		
+		$manageState->getEiPermissionManager()->applyToEiFrame($eiFrame, $eiCommandPath, $eiCommand);
 		
 		$eiu = new Eiu($eiFrame);
 		foreach ($eiMask->getEiModificatorCollection()->toArray() as $eiModificator) {

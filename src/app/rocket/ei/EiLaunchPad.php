@@ -34,6 +34,7 @@ use n2n\core\container\PdoPool;
 use n2n\util\uri\Path;
 use rocket\core\model\launch\TransactionApproveAttempt;
 use rocket\ei\manage\veto\EiLifecycleMonitor;
+use rocket\ei\manage\frame\EiFrameController;
 
 class EiLaunchPad implements LaunchPad {
 	private $id;
@@ -116,7 +117,7 @@ class EiLaunchPad implements LaunchPad {
 		$eiLifecycleMonitor->initialize($manageState->getEntityManager(), $manageState->getDraftManager(), $n2nContext);
 		$manageState->setEiLifecycleMonitor($eiLifecycleMonitor);
 		
-		return new EiController($this->eiMask);
+		return new EiFrameController($this->eiMask);
 	}
 
 	public function approveTransaction(N2nContext $n2nContext): TransactionApproveAttempt {

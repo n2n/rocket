@@ -8,6 +8,8 @@ use n2n\util\ex\IllegalStateException;
 use rocket\ei\component\GuiFactory;
 use rocket\ei\manage\gui\field\GuiFieldPath;
 use rocket\ei\manage\gui\control\GuiControlPath;
+use rocket\ei\manage\gui\control\UnknownGuiControlException;
+use rocket\ei\manage\gui\control\GuiControl;
 
 /**
  * @author andreas
@@ -224,6 +226,15 @@ class EiGui {
 			$siControls[$guiControlPathStr] = $generalGuiControl->toSiControl(GuiControlPath::create($guiControlPathStr));
 		}
 		return $siControls;
+	}
+	
+	/**
+	 * @param GuiControlPath $guiControlPath
+	 * @return GuiControl
+	 * @throws UnknownGuiControlException
+	 */
+	public function createGeneralGuiControl(GuiControlPath $guiControlPath) {
+		return $this->guiDefinition->createGeneralGuiControl($this, $guiControlPath);
 	}
 	
 	/**

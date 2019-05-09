@@ -39,7 +39,6 @@ use rocket\ei\manage\LiveEiObject;
 use rocket\ei\manage\EiEntityObj;
 use rocket\ei\manage\DraftEiObject;
 use rocket\ei\manage\draft\Draft;
-use rocket\ei\manage\draft\DraftValueMap;
 
 class EiType extends Type {
 	private $entityModel;
@@ -170,6 +169,28 @@ class EiType extends Type {
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * @param string $eiTypeId
+	 * @param bool $deepCheck
+	 * @throws UnknownEiTypeException
+	 * @return EiType
+	 */
+	public function getSubEiTypeById(string $eiTypeId, bool $deepCheck = false) {
+		if (isset($this->subEiTypes[$eiTypeId])) {
+			return $this->subEiTypes[$eiTypeId];
+		}
+		
+		if ($deepCheck) {
+			foreach ($this->subEiTypes as $subEiType) {
+				try {
+					return $subEiType->getSubEiTypeById($eiTypeId, true);
+				} catch (UnknownEiTypeException $e) { }
+			}
+		}
+		
+		throw new UnknownEiTypeException('EiType ' . $this->__toString() . ' contains no sub EiType with id ' . $eiTypeId);
 	}
 	
 	/**

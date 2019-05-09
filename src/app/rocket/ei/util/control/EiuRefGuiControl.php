@@ -38,7 +38,6 @@ class EiuRefGuiControl implements GeneralGuiControl, EntryGuiControl, SelectionG
 	private $id;
 	private $url;
 	private $siButton;
-	private $inputHandled = false;
 	
 	function __construct(string $id, Url $url, SiButton $siButton, bool $href) {
 		$this->id = $id;
@@ -55,16 +54,7 @@ class EiuRefGuiControl implements GeneralGuiControl, EntryGuiControl, SelectionG
 	 * @see \rocket\ei\manage\gui\control\GuiControl::isInputHandled()
 	 */
 	public function isInputHandled(): bool {
-		return $this->inputHandled;
-	}
-	
-	/**
-	 * @param bool $inputHandled
-	 * @return \rocket\ei\util\control\EiuRefGuiControl
-	 */
-	public function setInputHandled(bool $inputHandled) {
-		$this->inputHandled = $inputHandled;
-		return $this;
+		return false;
 	}
 	
 	public function toSiControl(GuiControlPath $controlId): SiControl {
@@ -82,6 +72,4 @@ class EiuRefGuiControl implements GeneralGuiControl, EntryGuiControl, SelectionG
 	public function handleEntry(EiFrame $eiFrame, EiEntry $eiEntry): SiResult {
 		throw new NotYetImplementedException();
 	}
-
-	
 }
