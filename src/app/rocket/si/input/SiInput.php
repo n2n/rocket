@@ -49,6 +49,15 @@ class SiEntryInput {
 	}
 }
 
+class SiInputError {
+	
+}
+
+class SiEntryInputError {
+	
+	
+}
+
 class SiFieldInput {
 	private $data;
 	private $errors;

@@ -25,15 +25,15 @@ use rocket\si\content\SiField;
 
 interface GuiField {
 	
-	/**
-	 * @return GuiFieldDisplayable
-	 */
-	public function getDisplayable(): GuiFieldDisplayable;
+// 	/**
+// 	 * @return GuiFieldDisplayable
+// 	 */
+// 	public function getDisplayable(): GuiFieldDisplayable;
 
-	/**
-	 * @return boolean 
-	 */
-	public function isReadOnly(): bool;
+// 	/**
+// 	 * @return boolean 
+// 	 */
+// 	public function isReadOnly(): bool;
 	
 	/**
 	 * @return SiField 

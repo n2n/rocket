@@ -19,25 +19,49 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\entry;
+namespace rocket\si\control;
 
-use n2n\l10n\Message;
+use rocket\si\input\SiInputError;
 
-interface ValidationResult {
+class SiApiCallResult implements \JsonSerializable {
 	
 	/**
-	 * @param bool $checkRecursive
-	 * @return bool
+	 * @var SiInputError
 	 */
-	public function isValid(bool $checkRecursive = true): bool;
+	private $inputError;
+	/**
+	 * @var SiEntryEvent[]
+	 */
+	private $entryEvents = [];
+	
 	
 	/**
-	 * @return Message[]
+	 * @param SiInputError $inputError
+	 * @return \rocket\si\control\SiApiCallResult
 	 */
-	public function getMessages(bool $recursive = true): array;
+	function setInputError(SiInputError $inputError) {
+		$this->inputError = $inputError;
+		return $this;
+	}
 	
-// 	/**
-// 	 * @param bool $recursive
-// 	 */
-// 	public function processMessage(bool $recursive): ?Message;
+	/**
+	 * @return \rocket\si\input\SiInputError
+	 */
+	function getInputError() {
+		return $this->inputError;
+	}
+	
+	/**
+	 * @param SiEntryEvent $entryEvent
+	 */
+	function addEntryEvent(SiEntryEvent $entryEvent) {
+		$this->entryEvents[] = $entryEvent;
+	}
+	
+	function jsonSerialize() {
+		return [
+			'inputError' => $this->inputError,
+			'entryEvents' => $this->entryEvents
+		];
+	}
 }

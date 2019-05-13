@@ -30,6 +30,12 @@ use rocket\si\input\SiInputFactory;
 use rocket\ei\manage\gui\EiGui;
 use rocket\si\input\SiInput;
 use rocket\ei\manage\frame\EiFrameUtil;
+use rocket\ei\manage\frame\EiFrame;
+use n2n\web\http\controller\ParamQuery;
+use rocket\ei\manage\gui\control\GuiControlPath;
+use rocket\si\input\SiEntryInput;
+use rocket\ei\manage\gui\EiEntryGui;
+use rocket\si\input\SiInputError;
 
 class SiApiController extends ControllerAdapter {
 	private $eiFrame;
@@ -42,44 +48,78 @@ class SiApiController extends ControllerAdapter {
 		echo 'very apisch';
 	}
 	
-	function doExecControl(ParamPost $apiCallId, ParamPost $entryInputMaps = null) {
-		$siApiCallId = null;
+	private function parseApiCallId(ParamQuery $paramQuery) {
 		try {
-			$siApiCallId = SiApiCallId::parse($apiCallId->parseJson());
+			return SiApiCallId::parse($paramQuery->parseJson());
 		} catch (\InvalidArgumentException $e) {
-			throw new BadRequestException(null, null, $e);	
+			throw new BadRequestException(null, null, $e);
+		}
+	}
+	
+	function doExecControl(ParamPost $apiCallId, ParamPost $entryInputMaps = null) {
+		$siApiCallId = $this->parseApiCallId($apiCallId);
+		
+		$callProcess = new ApiControlProcess($this->eiFrame);
+		$callProcess->determineGuiControl($apiCallId->getGuiControlPath());
+		$callProcess->setupGui($apiCallId->getViewMode());
+		
+		$guiControl = null;
+		
+		
+		if ($entryInputMaps !== null) {
+			$callProcess->handleInput($entryInputMaps->parseJson());
+			
+			
 		}
 		
-		$guiControlPath = $siApiCallId->getGuiControlPath();
+		$guiControl->handle($eiGui);
+	}
+	
+	
+	
+	function doExecEntryControl(ParamPost $siEntryId, ParamPost $apiCallId, ParamPost $bulky, ParamPost $inputMap) {
+		$inputMap->parseJsonToAttributes();
+	}
+	
+	function doExecSelectionControl(ParamPost $siEntryIds, ParamPost $apiCallId, ParamPost $bulky) {
+		
+	}
+	
+	function doLoadSiEntries(ParamPost $pids) {
+		
+	}
+}
+
+class ApiControlProcess {
+	private $eiFrame;
+	private $guiControl;
+	private $eiGui;
+	
+	/**
+	 * @param EiFrame $eiFrame
+	 */
+	function __construct(EiFrame $eiFrame) {
+		$this->eiFrame = $eiFrame;
+	}
+	
+	function determineGuiControl(GuiControlPath $guiControlPath) {
 		if (!$guiControlPath->startsWith($this->eiFrame->getEiExecution()->getEiCommandPath())) {
 			throw new BadRequestException(null, null, $e);
 		}
 		
-		$eiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
-		$eiGui = $eiMask->createEiGui($this->eiFrame, $siApiCallId->getViewMode(), true);
-		
-		$guiControl = null;
 		try {
-			$guiControl = $eiGui->createGeneralGuiControl($guiControlPath);
+			$this->guiControl = $eiGui->createGeneralGuiControl($guiControlPath);
 		} catch (UnknownGuiControlException $e) {
 			throw new BadRequestException($e->getMessage(), null, $e);
 		}
-		
-		if ($entryInputMaps !== null) {
-			if (!$guiControl->isInputHandled()) {
-				throw new BadRequestException('No input SiControl executed with input.');
-			}
-			
-			$siInputFactory = new SiInputFactory($this->getRequest()->getUploadDefinitions());
-			
-			try {
-				$this->handleInput($eiGui, $siInputFactory->create($entryInputMaps->parseJson()));
-			} catch (AttributesException $e) {
-				throw new BadRequestException(null, null, $e);
-			}
-		}
-		
-		$guiControl->handle($eiGui);
+	}
+	
+	/**
+	 * @param int $viewMode
+	 */
+	function setupEiGui(int $viewMode) {
+		$eiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
+		$this->eiGui = $eiMask->createEiGui($this->eiFrame, $viewMode, true);
 	}
 	
 	/**
@@ -104,7 +144,39 @@ class SiApiController extends ControllerAdapter {
 		try {
 			return $eiType->getSubEiTypeById($buildupId)->createNewEiObject();
 		} catch (\rocket\ei\UnknownEiTypeException $e) {
-			throw new BadRequestException(null, 0, $e);	
+			throw new BadRequestException(null, 0, $e);
+		}
+	}
+	
+	/**
+	 * @param array $data
+	 * @throws BadRequestException
+	 * @return \rocket\si\input\SiEntryInputError|null
+	 */
+	function handleInput(array $data) {
+		if (!$this->guiControl->isInputHandled()) {
+			throw new BadRequestException('No input SiControl executed with input.');
+		}
+		
+		$inputFactory = new SiInputFactory();
+		$inputFactory->registerUploadDefinitions($this->getRequest()->getUploadDefinitions());
+		
+		if ($inputFactory->hasErrors()) {
+			return $inputFactory->createInputError();			
+		}
+		
+		try {
+			$this->applyInput($this->eiGui, $inputFactory->create($data));
+		} catch (AttributesException $e) {
+			throw new BadRequestException(null, null, $e);
+		} catch (\InvalidArgumentException $e) {
+			throw new BadRequestException(null, null, $e);
+		}
+		
+		foreach ($this->eiGui->getEiEntryGuis() as $eiEntryGui) {
+			
+			
+			
 		}
 	}
 	
@@ -112,10 +184,10 @@ class SiApiController extends ControllerAdapter {
 	 * @param EiGui $eiGui
 	 * @param SiInput $siInput
 	 */
-	private function handleInput($eiGui, $siInput) {
-		$contextEiEngine = $this->eiFrame->getContextEiEngine();
+	private function applyInput($siInput) {
+		$entryInputErrors = [];
 		
-		foreach ($siInput->getEntryInputs() as $entryInput) {
+		foreach ($siInput->getEntryInputs() as $key => $entryInput) {
 			$eiObject = null;
 			if (null !== $entryInput->getId()) {
 				$eiObject = $this->lookupEiObject($entryInput->getId());
@@ -125,22 +197,44 @@ class SiApiController extends ControllerAdapter {
 			
 			$eiEntry = $this->eiFrame->createEiEntry($eiObject);
 			
-			$eiEntryGui = $eiGui->createEiEntryGui($eiEntry, 0);
+			$eiEntryGui = $this->eiGui->createEiEntryGui($eiEntry, 0);
 			
-			$eiEntryGui->get
+			$this->applyEntryInput($entryInput, $eiEntryGui);
 			
+			
+			if ($eiEntry->validate()) {
+				continue;
+			}
+			
+			$entryInputErrors[$key] = $eiEntry->getValidationResult()->toSiEntryInputError();
 		}
-	}
-	
-	function doExecEntryControl(ParamPost $siEntryId, ParamPost $apiCallId, ParamPost $bulky, ParamPost $inputMap) {
-		$inputMap->parseJsonToAttributes();
-	}
-	
-	function doExecSelectionControl(ParamPost $siEntryIds, ParamPost $apiCallId, ParamPost $bulky) {
 		
+		if (empty($entryInputErrors)) {
+			return null;
+		}
+		
+		return new SiInputError($entryInputErrors);
 	}
 	
-	function doLoadSiEntries(ParamPost $pids) {
+	/**
+	 * @param SiEntryInput $entryInput
+	 * @param EiEntryGui $eiEntryGui
+	 */
+	private function applyEntryInput($entryInput, $eiEntryGui) {
 		
+		// 			foreach ($eiEntryGui->getGuiFieldForks() as $guiFieldPathStr => $guiFieldFork) {
+		// 				$guiFieldFork->
+		// 			}
+		
+		foreach ($eiEntryGui->getGuiField() as $guiFieldPathStr => $guiField) {
+			if ($guiField->getSiField()->isReadOnly()
+					|| !$entryInput->containsFieldName($guiFieldPathStr)) {
+				continue;
+			}
+			
+			$guiField->getSiField()->handleInput($entryInput->getFieldData($guiFieldPathStr));
+		}
+		
+		$eiEntryGui->save();
 	}
 }

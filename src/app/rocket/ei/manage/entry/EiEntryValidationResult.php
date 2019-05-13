@@ -30,9 +30,9 @@ class EiEntryValidationResult {
 	 */
 	private $eiFieldValidationResults = array();
 	
-	public function isValid(bool $checkRecurisve = true): bool {
+	public function isValid(bool $checkRecursive = true): bool {
 		 foreach ($this->eiFieldValidationResults as $eiEiFieldValidationResult) {
-		 	if (!$eiEiFieldValidationResult->isValid($checkRecurisve)) return false;
+		 	if (!$eiEiFieldValidationResult->isValid($checkRecursive)) return false;
 		 }
 		 
 		 return true;
@@ -40,23 +40,23 @@ class EiEntryValidationResult {
 	
 	/**
 	 * @param EiPropPath $eiPropPath
-	 * @param bool $checkRecurisve
+	 * @param bool $checkRecursive
 	 * @return boolean
 	 */
-	function isEiFieldValid(EiPropPath $eiPropPath, bool $checkRecurisve) {
+	function isEiFieldValid(EiPropPath $eiPropPath, bool $checkRecursive) {
 		$eiPropPathStr = (string) $eiPropPath;
 		return !isset($this->eiFieldValidationResults[$eiPropPathStr]) 
-				||  $this->eiFieldValidationResults[$eiPropPathStr]->isValid($checkRecurisve);
+				||  $this->eiFieldValidationResults[$eiPropPathStr]->isValid($checkRecursive);
 	}
 	
 	/**
-	 * @param bool $checkRecurisve
+	 * @param bool $checkRecursive
 	 * @return \rocket\ei\manage\entry\EiFieldValidationResult[]
 	 */
-	function getInvalidEiFieldValidationResults(bool $checkRecurisve) {
+	function getInvalidEiFieldValidationResults(bool $checkRecursive) {
 		$results = [];
 		foreach ($this->eiFieldValidationResults as $eiPropPathStr => $eiFieldValidationResult) {
-			if ($eiFieldValidationResult->isValid($checkRecurisve)) continue;
+			if ($eiFieldValidationResult->isValid($checkRecursive)) continue;
 			
 			$results[$eiPropPathStr] = $eiFieldValidationResult;
 		}

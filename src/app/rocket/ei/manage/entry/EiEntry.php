@@ -370,7 +370,7 @@ class EiEntry {
 		
 		$eiEntityObj = $this->eiObject->getEiEntityObj();
 		
-		return  'EiEntry (' . $this->eiObject->getEiEntityObj()->getEiType()->getEntityModel()->getClass()->getShortName()
+		return 'EiEntry (' . $this->eiObject->getEiEntityObj()->getEiType()->getEntityModel()->getClass()->getShortName()
 				. '#' . ($eiEntityObj->hasId() ? $eiEntityObj->getPid() : 'new') . ')';
 	}
 }

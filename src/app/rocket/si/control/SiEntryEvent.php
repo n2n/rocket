@@ -19,25 +19,58 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\entry;
+namespace rocket\si\control;
 
-use n2n\l10n\Message;
+use n2n\util\type\ArgUtils;
 
-interface ValidationResult {
+class SiEntryEvent implements \JsonSerializable {
+	const TYPE_ADDED = 'added';
+	const TYPE_UPDATED = 'updated';
+	const TYPE_REMOVED = 'removed';
 	
 	/**
-	 * @param bool $checkRecursive
-	 * @return bool
+	 * @var string
 	 */
-	public function isValid(bool $checkRecursive = true): bool;
+	private $category;
+	/**
+	 * @var string|null
+	 */
+	private $id;
+	/**
+	 * @var string
+	 */
+	private $type;
 	
 	/**
-	 * @return Message[]
+	 * @param string $category
+	 * @param string|null $id
+	 * @param string $type
 	 */
-	public function getMessages(bool $recursive = true): array;
+	function __construct(string $category, ?string $id, string $type) {
+		ArgUtils::valEnum($type, self::getTypes());
+		
+		$this->category = $category;
+		$this->id = $id;
+		$this->type = $type;
+	}
 	
-// 	/**
-// 	 * @param bool $recursive
-// 	 */
-// 	public function processMessage(bool $recursive): ?Message;
+	/**
+	 * {@inheritDoc}
+	 * @see \JsonSerializable::jsonSerialize()
+	 */
+	function jsonSerialize() {
+		return [
+			'category' => $this->category,
+			'id' => $this->id,
+			'type' => $this->type
+		];
+	}
+	
+	/**
+	 * @return string[]
+	 */
+	static function getTypes() {
+		return [self::TYPE_ADDED, self::TYPE_REMOVED, self::TYPE_UPDATED];
+	}
+
 }

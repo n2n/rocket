@@ -22,7 +22,6 @@
 namespace rocket\ei\manage\gui;
 
 use n2n\web\dispatch\map\PropertyPath;
-use n2n\web\dispatch\Dispatchable;
 use n2n\web\dispatch\mag\MagWrapper;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\mask\EiMask;
@@ -63,14 +62,6 @@ class EiEntryGui {
 	 * @var bool
 	 */
 	private $initialized = false;
-	/**
-	 * @var Dispatchable|null
-	 */
-	private $dispatchable;
-	/**
-	 * @var PropertyPath|null
-	 */
-	private $contextPropertyPath = null;
 	
 	/**
 	 * @param EiMask $eiMask
@@ -263,59 +254,7 @@ class EiEntryGui {
 	public function getGuiFieldForks() {
 		return $this->guiFieldForks;
 	}
-	
-	/**
-	 * @return MagAssembly[]
-	 */
-	public function getAllForkMagAssemblies() {
-		$forkMagAssemblies = array();
-		foreach ($this->guiFieldForks as $guiFieldForkAssembly) {
-			$magAssemblies = $guiFieldForkAssembly->getMagAssemblies();
-			
-			if (empty($magAssemblies)) continue;
-			
-			array_push($forkMagAssemblies, ...$magAssemblies);
-		}
-		return $forkMagAssemblies;
-	}
 
-	/**
-	 * @return \n2n\web\dispatch\Dispatchable|null
-	 */
-	public function getDispatchable() {
-		return $this->dispatchable;
-	}
-	
-	/**
-	 * @param Dispatchable $dispatchable
-	 */
-	public function setDispatchable(?Dispatchable $dispatchable) {
-		$this->ensureNotInitialized();
-		$this->dispatchable = $dispatchable;
-	}
-		
-	/**
-	 * @return \n2n\web\dispatch\map\PropertyPath|null
-	 */
-	public function getContextPropertyPath() {
-		if ($this->contextPropertyPath !== null) {
-			return $this->contextPropertyPath;
-		}
-		
-		if ($this->dispatchable !== null) {
-			return new PropertyPath(array());
-		}
-		
-		return null;
-	}
-
-	/**
-	 * @param PropertyPath|null $contextPropertyPath
-	 */
-	public function setContextPropertyPath(?PropertyPath $contextPropertyPath) {
-		$this->contextPropertyPath = $contextPropertyPath;
-	}
-	
 	public function save() {
 		$this->ensureInitialized();
 		
