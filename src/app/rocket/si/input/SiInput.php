@@ -44,9 +44,6 @@ class SiInput {
 
 class SiEntryInput {
 	
-	static function create(array $data) {
-		
-	}
 }
 
 class SiInputError {
@@ -54,7 +51,6 @@ class SiInputError {
 }
 
 class SiEntryInputError {
-	
 	
 }
 

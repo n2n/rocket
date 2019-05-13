@@ -175,8 +175,6 @@ class ApiControlProcess {
 		
 		foreach ($this->eiGui->getEiEntryGuis() as $eiEntryGui) {
 			
-			
-			
 		}
 	}
 	
