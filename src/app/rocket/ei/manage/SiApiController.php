@@ -166,7 +166,9 @@ class ApiControlProcess {
 		}
 		
 		try {
-			$this->applyInput($this->eiGui, $inputFactory->create($data));
+			if (null !== ($err = $this->applyInput($this->eiGui, $inputFactory->create($data)))) {
+				return $err;
+			}
 		} catch (AttributesException $e) {
 			throw new BadRequestException(null, null, $e);
 		} catch (\InvalidArgumentException $e) {
@@ -181,6 +183,7 @@ class ApiControlProcess {
 	/**
 	 * @param EiGui $eiGui
 	 * @param SiInput $siInput
+	 * @return SiInputError|null
 	 */
 	private function applyInput($siInput) {
 		$entryInputErrors = [];

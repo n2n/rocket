@@ -23,6 +23,7 @@ namespace rocket\ei\manage\entry;
 
 use n2n\l10n\Message;
 use rocket\ei\EiPropPath;
+use rocket\si\input\SiEntryInputError;
 
 class EiEntryValidationResult {
 	/**
@@ -98,5 +99,11 @@ class EiEntryValidationResult {
 		}
 	}
 
+	/**
+	 * @return SiEntryInputError|null 
+	 */
+	function toSiEntryInputError() {
+		$error = new SiEntryInputError();
+	}
 
 }
