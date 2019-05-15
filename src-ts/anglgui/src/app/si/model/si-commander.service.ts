@@ -86,7 +86,9 @@ export class SiCommanderService {
 			}
 		}
 		
-		this.siService.controlCall(zoneContent.getApiUrl(), callId, input);
+		const result = this.siService.controlCall(zoneContent.getApiUrl(), callId, input);
+		
+		
 	}
 	
 }
