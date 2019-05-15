@@ -43,16 +43,27 @@ class SiInput {
 }
 
 class SiEntryInput {
+	/**
+	 * @var SiFieldInput[]
+	 */
+	private $fieldInputs = [];
 	
+	/**
+	 * @param string $fieldId
+	 * @param SiFieldInput $fieldInput
+	 */
+	function putFieldInput(string $fieldId, SiFieldInput $fieldInput) {
+		$this->fieldInputs[$fieldId] = $fieldInput;
+	}
+	
+	/**
+	 * @return SiFieldInput[]
+	 */
+	function getFieldInputs() {
+		return $this->fieldInputs;
+	}
 }
 
-class SiInputError {
-	
-}
-
-class SiEntryInputError {
-	
-}
 
 class SiFieldInput {
 	private $data;
@@ -81,5 +92,68 @@ class SiFieldInput {
 	 */
 	function getErrors() {
 		return $this->errors;
+	}
+}
+
+
+class SiError implements \JsonSerializable {
+	private $entryErrors;
+	
+	function __construct(array $entryErrors) {
+		$this->entryErrors = $entryErrors;
+	}
+	
+	function jsonSerialize() {
+		return [
+			'entryErrors' => $this->entryErrors	
+		];
+	}
+}
+
+class SiEntryError implements \JsonSerializable {
+	/**
+	 * @var SiFieldError[]
+	 */
+	private $fieldErrors = [];
+	
+	/**
+	 * @param string $key
+	 * @param SiFieldError $fieldError
+	 */
+	function putFieldError(string $key, SiFieldError $fieldError) {
+		$this->fieldErrors[$key] = $fieldError;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \JsonSerializable::jsonSerialize()
+	 */
+	function jsonSerialize() {
+		return [
+				'fieldErrors' => $this->fieldErrors
+		];
+	}
+}
+
+class SiFieldError {
+	/**
+	 * @var Message[]
+	 */
+	private $messages;
+	/**
+	 * @var SiEntryError[]
+	 */
+	private $entryErrors = [];
+	
+	/**
+	 * @param array $messages
+	 */
+	function __construct(array $messages = []) {
+		ArgUtils::valArray($messages, Message::class);
+		$this->messages = $message;
+	}
+	
+	function putSubEntryError(string $key, SiEntryError $entryError) {
+		$this->entryErrors[$key] = $entryError;
 	}
 }

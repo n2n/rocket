@@ -35,7 +35,7 @@ use n2n\web\http\controller\ParamQuery;
 use rocket\ei\manage\gui\control\GuiControlPath;
 use rocket\si\input\SiEntryInput;
 use rocket\ei\manage\gui\EiEntryGui;
-use rocket\si\input\SiInputError;
+use rocket\si\input\SiError;
 
 class SiApiController extends ControllerAdapter {
 	private $eiFrame;
@@ -151,7 +151,7 @@ class ApiControlProcess {
 	/**
 	 * @param array $data
 	 * @throws BadRequestException
-	 * @return \rocket\si\input\SiEntryInputError|null
+	 * @return \rocket\si\input\SiEntryError|null
 	 */
 	function handleInput(array $data) {
 		if (!$this->guiControl->isInputHandled()) {
@@ -159,11 +159,6 @@ class ApiControlProcess {
 		}
 		
 		$inputFactory = new SiInputFactory();
-		$inputFactory->registerUploadDefinitions($this->getRequest()->getUploadDefinitions());
-		
-		if ($inputFactory->hasErrors()) {
-			return $inputFactory->createInputError();			
-		}
 		
 		try {
 			if (null !== ($err = $this->applyInput($this->eiGui, $inputFactory->create($data)))) {
@@ -183,10 +178,10 @@ class ApiControlProcess {
 	/**
 	 * @param EiGui $eiGui
 	 * @param SiInput $siInput
-	 * @return SiInputError|null
+	 * @return SiError|null
 	 */
 	private function applyInput($siInput) {
-		$entryInputErrors = [];
+		$entryErrors = [];
 		
 		foreach ($siInput->getEntryInputs() as $key => $entryInput) {
 			$eiObject = null;
@@ -202,19 +197,18 @@ class ApiControlProcess {
 			
 			$this->applyEntryInput($entryInput, $eiEntryGui);
 			
-			
 			if ($eiEntry->validate()) {
 				continue;
 			}
 			
-			$entryInputErrors[$key] = $eiEntry->getValidationResult()->toSiEntryInputError();
+			$entryErrors[$key] = $eiEntry->getValidationResult()->toSiEntryError();
 		}
 		
-		if (empty($entryInputErrors)) {
+		if (empty($entryErrors)) {
 			return null;
 		}
 		
-		return new SiInputError($entryInputErrors);
+		return new SiError($entryErrors);
 	}
 	
 	/**

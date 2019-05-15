@@ -35,104 +35,6 @@ use n2n\util\ex\IllegalStateException;
 class SiInputFactory {
 	
 	/**
-	 * @var File[]
-	 */
-	private $fileMap = [];
-	
-	/**
-	 * @var SiEntryInputError[]
-	 */
-	private $entryErrors = [];
-	
-	/**
-	 * @param UploadDefinition[] $uploadDefinitions key must be http param name
-	 */
-	function registerUploadDefinitions(array $uploadDefinitions) {
-		ArgUtils::valArray($uploadDefinitions, UploadDefinition::class);
-		
-		foreach ($uploadDefinitions as $key => $uploadDefinition) {
-			$this->registerUploadDefinition($key, $uploadDefinition);
-		}
-	}
-	
-	/**
-	 * @return boolean
-	 */
-	function hasErrors() {
-		return !empty($this->entryErrors);
-	}
-	
-	/**
-	 * @return \rocket\si\input\SiEntryInputError
-	 */
-	function createInputError() {
-		if ($this->hasErrors()) {
-			return new SiInputError($this->entryErrors);
-		}
-		
-		throw new IllegalStateException('No errors.');
-	}
-	
-	/**
-	 * @param string $key
-	 * @param UploadDefinition $uploadDefinition
-	 * @throws CorruptedSiInputDataException
-	 */
-	private function registerUploadDefinition($key, $uploadDefinition) {
-		$entryKey = null;
-		$fieldName = null;
-		$dataKey = null;
-		
-		try {
-			$ds = new DataSet(StringUtils::jsonDecode(urldecode($json)));
-			$entryKey = $ds->reqInt(0);
-			$fieldName = $ds->reqString(1);
-			$dataKey = $ds->reqString(2);
-		} catch (JsonDecodeFailedException $e) {
-			throw new CorruptedSiInputDataException(null, 0, $e);
-		}
-		
-		if ($uploadDefinition->hasClientError()) {
-			$this->registerMessage($entryKey, $fieldName, $uploadDefinition->buildClientErrorMessage());
-			continue;
-		}
-		
-		$this->registerFile($entryKey, $fieldName, $dataKey,
-				FileFactory::createFromUploadDefinition($uploadDefinition));
-	}
-	
-	/**
-	 * @param int $entryKey
-	 * @param string $fieldName
-	 * @param string $datKey
-	 * @param File $file
-	 */
-	private function registerFile($entryKey, $fieldName, $dataKey, $file) {
-		if (!isset($this->fileMap[$entryKey])) {
-			$this->fileMap[$entryKey] = [];
-		}
-		
-		if (!isset($this->fileMap[$entryKey][$fieldName])) {
-			$this->fileMap[$entryKey][$fieldName] = [];
-		}
-		
-		$this->fileMap[$entryKey][$fieldName][$dataKey] = $file;
-	}
-	
-	/**
-	 * @param int $entryKey
-	 * @param string $fieldName
-	 * @param Message $message
-	 */
-	private function registerMessage($entryKey, $fieldName, $message) {
-		if (!isset($this->entryErrors[$entryKey])) {
-			$this->entryErrors[$entryKey] = new SiEntryInputError();
-		}
-			
-		$this->entryErrors[$entryKey]->registerError($fieldName, $message);
-	}
-	
-	/**
 	 * @param array $data
 	 * @return SiInput
 	 * @throws CorruptedSiInputDataException
@@ -166,22 +68,11 @@ class SiInputFactory {
 		$siEntryInput = new SiEntryInput($dataSet->reqString('category'), $dataSet->reqString('buildupId'), 
 				$dataSet->optString('id'));
 		foreach ($dataSet->reqArray('fieldInputMap', 'array') as $fieldId => $fielData) {
-			$siEntryInput->setFieldInput($fieldId, $this->createField($entryKey, $fieldId, $fielData));
+			$siEntryInput->setFieldInput($fieldId, $this->createField($entryKey, $fieldId, new SiFieldInput($fielData)));
 		}
 		return $siEntryInput;
 	}
 	
-	/**
-	 * @param array $data
-	 * @return \rocket\si\input\SiFieldInput
-	 */
-	private function createField($entryKey, $fieldName, $data) {
-		if (isset($this->fileMap[$entryKey][$fieldName])) {
-			$data = $this->fileMap[$entryKey][$fieldName] + $data;
-		}
-		
-		return new SiFieldInput($data);
-	}
 }
 
 class CorruptedSiInputDataException extends \Exception {

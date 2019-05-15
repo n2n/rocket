@@ -21,12 +21,12 @@
  */
 namespace rocket\si\control;
 
-use rocket\si\input\SiInputError;
+use rocket\si\input\SiError;
 
 class SiApiCallResult implements \JsonSerializable {
 	
 	/**
-	 * @var SiInputError
+	 * @var SiError
 	 */
 	private $inputError;
 	/**
@@ -36,16 +36,16 @@ class SiApiCallResult implements \JsonSerializable {
 	
 	
 	/**
-	 * @param SiInputError $inputError
+	 * @param SiError $inputError
 	 * @return \rocket\si\control\SiApiCallResult
 	 */
-	function setInputError(SiInputError $inputError) {
+	function setInputError(SiError $inputError) {
 		$this->inputError = $inputError;
 		return $this;
 	}
 	
 	/**
-	 * @return \rocket\si\input\SiInputError
+	 * @return \rocket\si\input\SiError
 	 */
 	function getInputError() {
 		return $this->inputError;

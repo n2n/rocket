@@ -23,7 +23,7 @@ namespace rocket\ei\manage\entry;
 
 use n2n\l10n\Message;
 use rocket\ei\EiPropPath;
-use rocket\si\input\SiEntryInputError;
+use rocket\si\input\SiEntryError;
 
 class EiEntryValidationResult {
 	/**
@@ -100,10 +100,20 @@ class EiEntryValidationResult {
 	}
 
 	/**
-	 * @return SiEntryInputError|null 
+	 * @return SiEntryError|null 
 	 */
-	function toSiEntryInputError() {
-		$error = new SiEntryInputError();
+	function toSiEntryError() {
+		$error = new SiEntryError();
+		
+		foreach ($this->getInvalidEiFieldValidationResults($checkRecursive) as $key => $eiFieldValidationResult) {
+			$error->putFieldError($key, $eiFieldValidationResult->toSiFieldError());	
+		}
+		
+		if ($error->isEmpty()) {
+			return null;
+		}
+		
+		return $error;
 	}
 
 }
