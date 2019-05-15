@@ -40,15 +40,11 @@ class SiInputFactory {
 	 * @throws CorruptedSiInputDataException
 	 */
 	function create(array $data) {
-		if ($this->hasErrors()) {
-			throw new IllegalStateException('Can not create with upload errors.');
-		}
-		
 		$input = new SiInput();
 		
 		foreach ($data as $key => $entryData) {
 			try {
-				$input->addEntryInput($this->createEntry($entryKey, $entryData));
+				$input->addEntryInput($this->createEntry($entryData));
 			} catch (AttributesException $e) {
 				throw new CorruptedSiInputDataException(null, 0, $e);
 			}
@@ -62,13 +58,13 @@ class SiInputFactory {
 	 * @param array $data
 	 * @return SiEntryInput
 	 */
-	private function createEntry($entryKey, $data) {
+	private function createEntry($data) {
 		$dataSet = new DataSet($data);
 		
 		$siEntryInput = new SiEntryInput($dataSet->reqString('category'), $dataSet->reqString('buildupId'), 
 				$dataSet->optString('id'));
 		foreach ($dataSet->reqArray('fieldInputMap', 'array') as $fieldId => $fielData) {
-			$siEntryInput->setFieldInput($fieldId, $this->createField($entryKey, $fieldId, new SiFieldInput($fielData)));
+			$siEntryInput->setFieldInput($fieldId, new SiFieldInput($fielData));
 		}
 		return $siEntryInput;
 	}

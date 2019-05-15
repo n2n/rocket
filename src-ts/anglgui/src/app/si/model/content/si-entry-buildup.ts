@@ -1,7 +1,7 @@
 
 import { SiField } from "src/app/si/model/content/si-field";
 import { SiControl } from "src/app/si/model/control/si-control";
-import { SiEntryInput, SiInputValue } from "src/app/si/model/input/si-entry-input";
+import { SiEntryInput } from "src/app/si/model/input/si-entry-input";
 import { IllegalSiStateError } from "src/app/si/model/illegal-si-state-error";
 
 export class SiEntryBuildup {

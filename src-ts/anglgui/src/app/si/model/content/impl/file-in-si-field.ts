@@ -3,7 +3,6 @@ import { SiField } from "src/app/si/model/content/si-field";
 import { ComponentRef, ComponentFactoryResolver, ViewContainerRef } from "@angular/core";
 import { StringOutFieldComponent } from "src/app/ui/content/field/comp/string-out-field/string-out-field.component";
 import { InputInFieldComponent } from "src/app/ui/content/field/comp/input-in-field/input-in-field.component";
-import { SiInputValue } from "src/app/si/model/input/si-entry-input";
 import { FileInFieldComponent } from "src/app/ui/content/field/comp/file-in-field/file-in-field.component";
 
 export class FileInSiField implements SiField {
@@ -20,10 +19,11 @@ export class FileInSiField implements SiField {
 		return true;
 	}
 	
-    readInput(): Map<string, SiInputValue> {
-        return new Map<string, SiInputValue>([
-                ['keep', !!this.value],
-                ['file', this.uploadedFile]]);
+    readInput(): object {
+        return {
+            'keep': !!this.value,
+            'file': this.uploadedFile
+        };
     }
 	
 	initComponent(viewContainerRef: ViewContainerRef, 

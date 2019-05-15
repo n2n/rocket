@@ -1,7 +1,7 @@
 
 import { SiField } from "src/app/si/model/content/si-field";
 import { SiControl } from "src/app/si/model/control/si-control";
-import { SiEntryInput, SiInputValue } from "src/app/si/model/input/si-entry-input";
+import { SiEntryInput } from "src/app/si/model/input/si-entry-input";
 import { IllegalSiStateError } from "src/app/si/model/illegal-si-state-error";
 import { SiEntryBuildup } from "src/app/si/model/content/si-entry-buildup";
 
@@ -43,7 +43,7 @@ export class SiEntry {
 //	}
 	
 	readInput(): SiEntryInput {
-		const fieldInputMap = new Map<string, Map<string, SiInputValue>>();
+		const fieldInputMap = new Map<string, object>();
 		
 		for (let [id, field] of this.selectedBuildup.fieldMap) {
 			if (!field.hasInput()) {

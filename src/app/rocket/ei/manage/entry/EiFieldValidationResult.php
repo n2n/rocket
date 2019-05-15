@@ -24,6 +24,7 @@ namespace rocket\ei\manage\entry;
 use n2n\l10n\Message;
 use rocket\ei\EiPropPath;
 use n2n\util\ex\IllegalStateException;
+use rocket\si\input\SiFieldError;
 
 class EiFieldValidationResult implements ValidationResult {
 	private $eiPropPath;
@@ -142,6 +143,9 @@ class EiFieldValidationResult implements ValidationResult {
 		return $messages;
 	}
 	
+	/**
+	 * @return \rocket\si\input\SiFieldError
+	 */
 	public function toSiFieldError() {
 		$err = new SiFieldError($this->errorMessages);
 		
@@ -154,7 +158,7 @@ class EiFieldValidationResult implements ValidationResult {
 		foreach ($this->subEiEntryValidationResults as $key => $valResult) {
 			if ($valResult->isValid()) continue;
 				
-			$err->putSubEiEntryError($key, $valResult->toSiFieldError());
+			$err->putSubEiEntryError($key, $valResult->toSiEntryError());
 		}
 		
 		return $err;

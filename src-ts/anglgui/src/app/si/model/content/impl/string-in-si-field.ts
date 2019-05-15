@@ -3,7 +3,6 @@ import { SiField } from "src/app/si/model/content/si-field";
 import { ComponentRef, ComponentFactoryResolver, ViewContainerRef } from "@angular/core";
 import { StringOutFieldComponent } from "src/app/ui/content/field/comp/string-out-field/string-out-field.component";
 import { InputInFieldComponent } from "src/app/ui/content/field/comp/input-in-field/input-in-field.component";
-import { SiInputValue } from "src/app/si/model/input/si-entry-input";
 
 export class StringInSiField implements SiField {
 	public mandatory: boolean = false;
@@ -17,8 +16,8 @@ export class StringInSiField implements SiField {
 		return true;
 	}
 	
-    readInput(): Map<string, SiInputValue> {
-        return new Map([['value', this.value]]);
+    readInput(): object {
+        return { 'value': this.value };
     }
 	
 	initComponent(viewContainerRef: ViewContainerRef, 
