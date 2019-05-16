@@ -9,6 +9,8 @@ import { SiInput } from "src/app/si/model/input/si-input";
 import { SiEntryInput } from "src/app/si/model/input/si-entry-input";
 import { SiEntry } from "src/app/si/model/content/si-entry";
 import { SiZoneContent } from "src/app/si/model/structure/si-zone-content";
+import { SiEntryError } from "src/app/si/model/input/si-entry-error";
+import { SiResult } from "src/app/si/model/input/si-result";
 
 @Injectable({
   providedIn: 'root'
@@ -49,7 +51,7 @@ export class SiCommanderService {
 		const entryInputs: SiEntryInput[] = [];
 		if (includeInput) {
 			entryInputs.push(entry.readInput());
-		} 
+		}
 
 		this.siService.entryControlCall(zoneContent.getApiUrl(), callId, entry.id, entryInputs);
 	}
@@ -76,19 +78,44 @@ export class SiCommanderService {
 	execControl(callId: object, zoneContent: SiZoneContent, includeInput: boolean) {
 		const input = new SiInput();
 
-		if (includeInput) {
-			for (const entry of zoneContent.getEntries()) {
-				if (!entry.inputAvailable) {
-					continue;
-				}
-				
-				input.entryInputs.push(entry.readInput());
-			}
+		if (!includeInput) {
+			throw new Error('not yet implemented');
 		}
 		
-		const result = this.siService.controlCall(zoneContent.getApiUrl(), callId, input);
+		const entries: SiEntry[] = [];
+		for (const entry of zoneContent.getEntries()) {
+			if (!entry.inputAvailable) {
+				continue;
+			}
+			
+			entries.push(entry);
+			input.entryInputs.push(entry.readInput());
+		}
 		
+		this.siService.controlCall(zoneContent.getApiUrl(), callId, input).subscribe((result) => {
+			this.handleResult(result, entries);
+		});
+	}
+	
+	private handleResult(result: SiResult, inputEntries: SiEntry[]) {
+		if (inputEntries.length > 0) {
+			this.handleEntryErrors(result.entryErrors, inputEntries)
+		}
 		
+	}
+	
+	private handleEntryErrors(entryErrors: Map<string, SiEntryError>, entries: SiEntry[]) {
+		if (entries.length == 0) {
+			return;
+		}
+		
+		for (let [key, entryError] of entryErrors) {
+			if (!entries[key]) {
+				throw new IllegalSiStateError('Unknown entry key ' + key);
+			}
+			
+			entries[0].handleError(entryError);
+		}
 	}
 	
 }

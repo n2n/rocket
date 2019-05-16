@@ -23,14 +23,6 @@ namespace rocket\si\input;
 
 use n2n\util\type\attrs\DataSet;
 use n2n\util\type\attrs\AttributesException;
-use n2n\web\http\UploadDefinition;
-use n2n\io\managed\impl\FileFactory;
-use n2n\util\type\ArgUtils;
-use n2n\util\StringUtils;
-use n2n\util\JsonDecodeFailedException;
-use n2n\io\managed\File;
-use n2n\l10n\Message;
-use n2n\util\ex\IllegalStateException;
 
 class SiInputFactory {
 	

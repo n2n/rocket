@@ -5,6 +5,7 @@ import { SiEntryInput } from "src/app/si/model/input/si-entry-input";
 import { IllegalSiStateError } from "src/app/si/model/illegal-si-state-error";
 
 export class SiEntryBuildup {
+	public messages: string[] = [];
 	
 	constructor(public name: string, 
 			public fieldMap: Map<string, SiField> = new Map<string, SiField>(), 

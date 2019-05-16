@@ -1,4 +1,5 @@
 import { ViewContainerRef, ComponentFactoryResolver } from "@angular/core";
+import { SiFieldError } from "src/app/si/model/input/si-field-error";
 
 export interface SiField {
 	
@@ -7,4 +8,8 @@ export interface SiField {
 	hasInput(): boolean;
 	
 	readInput(): object;
+	
+	handleError(error: SiFieldError): void;
+	
+	resetError(): void;
 }

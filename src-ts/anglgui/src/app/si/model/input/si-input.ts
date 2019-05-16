@@ -33,8 +33,4 @@ export class SiInput {
 		
 		return map;
 	}
-	
-	private createFileParamName(entryNo: number, fieldId: string, inputName: string): string {
-		return 'fileInputs[ ' + encodeURI(JSON.stringify([entryNo, fieldId, inputName])) + ']';
-	}
 }

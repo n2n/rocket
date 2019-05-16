@@ -13,6 +13,8 @@ import { IllegalSiStateError } from "src/app/si/model/illegal-si-state-error";
 import { SiZoneContent } from "src/app/si/model/structure/si-zone-content";
 import { SiEntryInput } from "src/app/si/model/input/si-entry-input";
 import { SiInput } from "src/app/si/model/input/si-input";
+import { SiResult } from "src/app/si/model/input/si-result";
+import { SiResultFactory } from "src/app/si/build/si-result-factory";
 
 @Injectable({
   providedIn: 'root'
@@ -60,7 +62,7 @@ export class SiService {
 		throw new Error('not yet implemented');
 	}
 	
-	controlCall(apiUrl: string, apiCallId: object, input: SiInput) {
+	controlCall(apiUrl: string, apiCallId: object, input: SiInput): Observable<SiResult> {
 		const formData = new FormData();
 		formData.append('apiCallId', JSON.stringify(apiCallId));
 		
@@ -83,8 +85,8 @@ export class SiService {
 //		
 //		            return data.expert;
 //		        }))
-		        .subscribe(data => {
-		        	console.log(data);
-		        });
+		        .pipe(map(data => {
+		        	return SiResultFactory.create(data);
+		        }));
 	}
 }

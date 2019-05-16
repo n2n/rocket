@@ -1,19 +1,29 @@
 
-import { SiField } from "src/app/si/model/content/si-field";
-import { ComponentRef, ComponentFactoryResolver, ViewContainerRef } from "@angular/core";
-import { StringOutFieldComponent } from "src/app/ui/content/field/comp/string-out-field/string-out-field.component";
-import { IllegalSiStateError } from "src/app/si/model/illegal-si-state-error";
 
-export abstract class OutSiFieldAdapter implements SiField {
-    abstract initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver);
+
+import { ViewContainerRef, ComponentFactoryResolver, ComponentRef } from "@angular/core";
+import { SiFieldError } from "src/app/si/model/input/si-field-error";
+import { SiField } from "src/app/si/model/content/si-field";
+
+export abstract class SiFieldAdapter implements SiField {
+	messages: string[] = [];
+	
+	abstract initComponent(viewContainerRef: ViewContainerRef, 
+			componentFactoryResolver: ComponentFactoryResolver): ComponentRef<any>;
     
-	hasInput(): boolean {
-		return false;
+	abstract hasInput(): boolean;
+	
+	abstract readInput(): object;
+	
+	getMessages(): string[] {
+		return this.messages;	
 	}
 	
-	readInput(): Map<string, string | number | boolean | File | null> {
-        throw new IllegalSiStateError('no input');
-    }
-		
+	handleError(error: SiFieldError): void {
+		this.messages.push(...error.getAllMessages());
+	}
 	
+	resetError(): void {
+		this.messages = [];
+	}
 }

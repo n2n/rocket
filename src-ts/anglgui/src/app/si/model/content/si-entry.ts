@@ -4,6 +4,7 @@ import { SiControl } from "src/app/si/model/control/si-control";
 import { SiEntryInput } from "src/app/si/model/input/si-entry-input";
 import { IllegalSiStateError } from "src/app/si/model/illegal-si-state-error";
 import { SiEntryBuildup } from "src/app/si/model/content/si-entry-buildup";
+import { SiEntryError } from "src/app/si/model/input/si-entry-error";
 
 export class SiEntry {
 	public treeLevel: number|null = null;
@@ -58,6 +59,29 @@ export class SiEntry {
 		}
 		
 		return new SiEntryInput(this.category, this.id, this._selectedBuildupId, fieldInputMap);
+	}
+	
+	handleError(error: SiEntryError) {
+		for (let [fieldId, fieldError] of error.fieldErrors) {
+			if (!this.selectedBuildup.fieldMap.has(fieldId)) {
+				this.selectedBuildup.messages.push(...fieldError.getAllMessages());
+				continue;
+			}
+			
+			const field = <SiField> this.selectedBuildup.fieldMap.get(fieldId);
+			field.handleError(fieldError);
+		}
+	}
+	
+	resetError() {
+		for (const [buildupId, buildup] of this._buildups) {
+			buildup.messages = [];
+			
+			for (const [fieldId, field] of this.selectedBuildup.fieldMap) {
+				field.resetError();
+			}
+		}
+		
 	}
 	
 	toString() {

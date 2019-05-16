@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, ElementRef } from '@angular/core';
 import { StringOutSiField } from "src/app/si/model/content/impl/string-out-si-field";
+import { StringFieldModel } from "src/app/ui/content/field/string-field-model";
 
 @Component({
   selector: 'rocket-ui-string-out-field',
@@ -8,7 +9,7 @@ import { StringOutSiField } from "src/app/si/model/content/impl/string-out-si-fi
 })
 export class StringOutFieldComponent implements OnInit {
 
-	@Input() value: string|null;
+	@Input() model: StringFieldModel;
 	
 	constructor(elRef: ElementRef) { 
 		elRef.nativeElement.classList.add('form-control-plaintext');

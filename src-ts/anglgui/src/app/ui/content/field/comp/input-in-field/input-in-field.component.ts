@@ -1,30 +1,26 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { BehaviorSubject } from "rxjs";
+import { StringInFieldModel } from "src/app/ui/content/field/string-in-field-model";
 
 @Component({
   selector: 'rocket-input-in-field',
   templateUrl: './input-in-field.component.html'
 })
 export class InputInFieldComponent implements OnInit {
-
-	mandatory = false;
-	maxlength: number|null = null; 
-	readonly value$ = new BehaviorSubject<string|null>(null);
+	model: StringInFieldModel;
 	
 	constructor() { }
 	
 	ngOnInit() {
 	}
 	
-	ngOnDestroy() {
-		this.value$.complete();
-	}
+	
 
 	get value() {
-		return this.value$.getValue();
+		return this.model.getValue();
 	}
 	
 	set value(value: string|null) {
-		this.value$.next(value);
+		this.model.setValue(value);
 	}
 }

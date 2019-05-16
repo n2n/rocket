@@ -99,6 +99,9 @@ class SiFieldInput {
 class SiError implements \JsonSerializable {
 	private $entryErrors;
 	
+	/**
+	 * @param SiEntryError[] $entryErrors
+	 */
 	function __construct(array $entryErrors) {
 		$this->entryErrors = $entryErrors;
 	}
@@ -130,7 +133,7 @@ class SiEntryError implements \JsonSerializable {
 	 */
 	function jsonSerialize() {
 		return [
-				'fieldErrors' => $this->fieldErrors
+			'fieldErrors' => $this->fieldErrors
 		];
 	}
 }
