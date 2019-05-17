@@ -35,6 +35,7 @@ use rocket\ei\util\Eiu;
 use rocket\ei\util\EiuPerimeterException;
 use rocket\ei\util\EiuAnalyst;
 use n2n\l10n\N2nLocale;
+use rocket\ei\util\spec\EiuGuiField;
 
 class EiuEntryGui {
 	private $eiEntryGui;
@@ -264,59 +265,12 @@ class EiuEntryGui {
 		return $this->eiuEntry;
 	}
 	
-// 	/**
-// 	 * @return \rocket\ei\util\gui\EiuEntryGui
-// 	 */
-// 	public function addDisplayContainer(string $type, string $label, array $attrs = null) {
-// 		$this->gui()->addDisplayContainer($type, $label, $attrs);
-// 		return $this;
-// 	}
-		
-// 	/**
-// 	 * @return \rocket\ei\util\gui\EiuEntryGui
-// 	 */
-// 	public function removeGroups() {
-// 		$this->gui()->removeSubStructures();
-// 		return $this;
-// 	}
-	
-// 	/**
-// 	 * @return \rocket\ei\util\gui\EiuEntryGui
-// 	 */
-// 	public function forceRootGroups() {
-// 		$this->gui()->forceRootGroups();
-// 		return $this;
-// 	}
-	
-// 	/**
-// 	 * @return \rocket\ei\util\gui\EiuEntryGui
-// 	 */
-// 	public function renderEntryGuiControls(bool $renderEntryGuiControls = true) {
-// 		$this->gui()->renderEntryGuiControls($renderEntryGuiControls);
-// 		return $this;
-// 	}
-	
-// 	/**
-// 	 * @return \rocket\ei\util\gui\EiuEntryGui
-// 	 */
-// 	public function renderForkControls(bool $renderForkControls = true) {
-// 		$this->gui()->renderForkControls($renderForkControls);
-// 		return $this;
-// 	}
-		
 	/**
-	 * @return \rocket\ei\manage\gui\MagAssembly[]
+	 * @param GuiFieldPath|string $guiFieldPath
+	 * @return \rocket\ei\util\entry\EiuField
 	 */
-	public function getAllForkMagAssemblies() {
-		return $this->eiEntryGui->getAllForkMagAssemblies();
-	}
-	
-	/**
-	 * 
-	 * @return \n2n\impl\web\ui\view\html\HtmlView
-	 */
-	public function createView(HtmlView $contextView = null) {
-		return $this->gui()->createView($contextView);
+	public function field($guiFieldPath) {
+		return new EiuGuiField(GuiFieldPath::create($eiPropArg), $this, $this->eiuAnalyst);
 	}
 	
 	/**

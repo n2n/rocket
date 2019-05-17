@@ -38,7 +38,7 @@ abstract class SiFieldAdapter implements SiField {
 	 * {@inheritDoc}
 	 * @see \rocket\si\content\SiField::handleCall()
 	 */
-	function handleCall(array $data, array $uploadDefinitions) {
+	function handleCall(array $data, array $uploadDefinitions): array {
 		throw new IllegalStateException(get_class($this) . ' is not callable.');
 	}
 }

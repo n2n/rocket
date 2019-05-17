@@ -62,6 +62,8 @@ use rocket\ei\util\entry\EiuFieldMap;
 use rocket\ei\util\entry\EiuObject;
 use rocket\ei\component\modificator\EiModificator;
 use n2n\util\type\TypeUtils;
+use rocket\ei\manage\gui\field\GuiFieldPath;
+use rocket\ei\util\spec\EiuGuiField;
 
 class EiuAnalyst {
 	const EI_FRAME_TYPES = array(EiFrame::class, EiuFrame::class, N2nContext::class);
@@ -82,6 +84,7 @@ class EiuAnalyst {
 	protected $eiEntryGui;
 	protected $eiEntryGuiAssembler;
 	protected $eiPropPath;
+	protected $guiFieldPath;
 	protected $eiCommandPath;
 	protected $eiEngine;
 	protected $spec;
@@ -97,6 +100,7 @@ class EiuAnalyst {
 	protected $eiuGui;
 	protected $eiuEntryGui;
 	protected $eiuEntryGuiAssembler;
+	protected $eiuGuiField;
 	protected $eiuField;
 	protected $eiuMask;
 	protected $eiuProp;
@@ -136,6 +140,11 @@ class EiuAnalyst {
 				continue;
 			}
 			
+			if ($eiArg instanceof GuiFieldPath) {
+				$this->guiFieldPath = $eiArg;
+				continue;
+			}
+			
 			if ($eiArg instanceof EiCommand) {
 				$this->eiCommandPath = EiCommandPath::from($eiArg);
 				$this->assignEiMask($eiArg->getWrapper()->getEiCommandCollection()->getEiMask());
@@ -169,6 +178,11 @@ class EiuAnalyst {
 			
 			if ($eiArg instanceof EiEntryGui) {
 				$this->assignEiEntryGui($eiArg);
+				continue;
+			}
+			
+			if ($eiArg instanceof EiuGuiField) {
+				$this->assignEiuGuiField($eiArg);
 				continue;
 			}
 			
@@ -305,6 +319,9 @@ class EiuAnalyst {
 				}
 				if ($eiuAnalyst->eiPropPath !== null) {
 					$this->eiPropPath = $eiuAnalyst->eiPropPath;
+				}
+				if ($eiuAnalyst->guiFieldPath !== null) {
+					$this->guiFieldPath = $eiuAnalyst->guiFieldPath;
 				}
 				if ($eiuAnalyst->eiCommandPath !== null) {
 					$this->eiCommandPath = $eiuAnalyst->eiCommandPath;
@@ -454,7 +471,7 @@ class EiuAnalyst {
 		$this->eiPropPath = $eiuProp->getEiPropPath();
 		$this->eiuProp = $eiuProp;
 	}
-	
+		
 	/**
 	 * @param EiuCommand $eiuCommand
 	 */
@@ -593,6 +610,20 @@ class EiuAnalyst {
 		}
 		
 		$this->assignEiuEntry($eiuField->getEiuEntry());
+		
+		$this->eiuField = $eiuField;
+		$this->eiPropPath = $eiuField->getEiPropPath();
+	}
+	
+	/**
+	 * @param EiuGuiField $eiuGuiField
+	 */
+	private function assignEiuGuiField($eiuGuiField) {
+		if ($this->eiuGuiField === $eiuGuiField) {
+			return;
+		}
+		
+		$this->assignEiuEntryGui($eiuGuiField->getEiuEntryGui());
 		
 		$this->eiuField = $eiuField;
 		$this->eiPropPath = $eiuField->getEiPropPath();
@@ -773,6 +804,21 @@ class EiuAnalyst {
 		
 		throw new EiuPerimeterException(
 				'Could not determine EiCommandPath because non of the following types were provided as eiArgs: '
+				. implode(', ', self::EI_FIELD_TYPES));
+	}
+	
+	/**
+	 * @param bool $required
+	 * @throws EiuPerimeterException
+	 * @return \rocket\ei\manage\gui\field\GuiFieldPath
+	 */
+	public function getGuiFieldPath(bool $required) {
+		if (!$required || $this->guiFieldPath !== null) {
+			return $this->guiFieldPath;
+		}
+		
+		throw new EiuPerimeterException(
+				'Could not determine GuiFieldPath because non of the following types were provided as eiArgs: '
 				. implode(', ', self::EI_FIELD_TYPES));
 	}
 	
@@ -1031,6 +1077,25 @@ class EiuAnalyst {
 		throw new EiuPerimeterException(
 				'Can not create EiuField because non of the following types were provided as eiArgs: '
 						. implode(', ', self::EI_FIELD_TYPES));
+	}
+	
+	public function getEiuGuiField(bool $required) {
+		if ($this->eiuGuiField !== null) {
+			return $this->eiuField;
+		}
+		
+		$eiuEntryGui = $this->getEiuEntryGui(false);
+		if ($eiuEntryGui !== null) {
+			if ($this->guiFieldPath !== null) {
+				return $this->eiuField = $eiuEntryGui->field($this->eiuGuiField);
+			}
+		}
+		
+		if (!$required) return null;
+		
+		throw new EiuPerimeterException(
+				'Can not create EiuField because non of the following types were provided as eiArgs: '
+				. implode(', ', self::EI_FIELD_TYPES));
 	}
 	
 	public static function buildEiuFrameFormEiArg($eiArg, string $argName = null, bool $required = false) {

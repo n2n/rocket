@@ -78,7 +78,7 @@ class EiFrameUtil {
 	}
 	
 	private function applyIdComparison(CriteriaComparator $criteriaComparator, $id) {
-		$criteriaComparator->match(CrIt::p('e', $this->getEiFrame()->getContextEiEngine()->getEiMask()->getEiType()
+		$criteriaComparator->match(CrIt::p('e', $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()
 				->getEntityModel()->getIdDef()->getEntityProperty()), CriteriaComparator::OPERATOR_EQUAL, $id);
 	}
 }

@@ -24,6 +24,7 @@ namespace rocket\si\content\impl;
 use n2n\io\managed\File;
 use n2n\util\uri\Url;
 use n2n\io\managed\FileManager;
+use rocket\ei\manage\gui\field\GuiFieldPath;
 
 class FileInSiField extends InSiFieldAdapter {
 	/**
@@ -34,6 +35,11 @@ class FileInSiField extends InSiFieldAdapter {
 	 * @var Url
 	 */
 	private $apiUrl;
+	
+	/**
+	 * @var GuiFieldPath
+	 */
+	private $guiFieldPath;
 	/**
 	 * @var FileManager
 	 */
@@ -49,10 +55,12 @@ class FileInSiField extends InSiFieldAdapter {
 	/**
 	 * @param File|null $value
 	 */
-	function __construct(?File $value, Url $apiUrl, FileManager $fileManager) {
+	function __construct(?File $value, Url $apiUrl, GuiFieldPath $guiFieldPath, FileManager $fileManager) {
 		$this->value = $value;	
 		$this->apiUrl = $apiUrl;
+		$this->guiFieldPath = $guiFieldPath;
 		$this->fileManager = $fileManager;
+	
 	}
 	
 	/**
@@ -105,7 +113,8 @@ class FileInSiField extends InSiFieldAdapter {
 			'mandatory' => $this->mandatory,
 			'mimeTypes' => $this->mimeTypes,
 			'extensions' => $this->extensions,
-			'apiUrl' => (string) $this->apiUrl
+			'apiUrl' => (string) $this->apiUrl,
+			'fieldId' => (string) $this->guiFieldPath
 		];
 	}
 	

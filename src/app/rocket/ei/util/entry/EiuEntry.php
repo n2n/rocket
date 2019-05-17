@@ -403,7 +403,7 @@ class EiuEntry {
 	 * @return \rocket\ei\util\entry\EiuField
 	 */
 	public function field($eiPropArg) {
-		return new EiuField($eiPropArg, $this);
+		return new EiuField(EiPropPath::create($eiPropArg), $this, $this->eiuAnalyst);
 	}
 	
 	public function getValue($eiPropPath) {

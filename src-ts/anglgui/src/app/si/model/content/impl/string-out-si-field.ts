@@ -23,6 +23,6 @@ export class StringOutSiField extends OutSiFieldAdapter implements StringFieldMo
 	}
 	
 	getValue(): string | null {
-        return this.getValue();
+        return this.value;
     }
 }

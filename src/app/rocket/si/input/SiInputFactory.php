@@ -36,7 +36,7 @@ class SiInputFactory {
 		
 		foreach ($data as $key => $entryData) {
 			try {
-				$input->addEntryInput($this->createEntry($entryData));
+				$input->putEntryInput($key, $this->createEntry($entryData));
 			} catch (AttributesException $e) {
 				throw new CorruptedSiInputDataException(null, 0, $e);
 			}
@@ -56,7 +56,7 @@ class SiInputFactory {
 		$siEntryInput = new SiEntryInput($dataSet->reqString('category'), $dataSet->reqString('buildupId'), 
 				$dataSet->optString('id'));
 		foreach ($dataSet->reqArray('fieldInputMap', 'array') as $fieldId => $fielData) {
-			$siEntryInput->setFieldInput($fieldId, new SiFieldInput($fielData));
+			$siEntryInput->putFieldInput($fieldId, new SiFieldInput($fielData));
 		}
 		return $siEntryInput;
 	}

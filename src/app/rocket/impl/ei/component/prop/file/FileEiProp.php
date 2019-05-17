@@ -226,7 +226,7 @@ class FileEiProp extends DraftablePropertyEiPropAdapter {
 	
 	public function createInSiField(Eiu $eiu): SiField {
 		return SiFields::fileIn($eiu->field()->getValue(), $eiu->frame()->getApiUrl(),
-					$eiu->lookup(TmpFileManager::class))
+					$eiu->lookup(TmpFileManager::class), $eiu->guiField()->getPath())
 				->setMandatory($this->isMandatory($eiu));
 		
 // 		$allowedExtensions = $this->getAllowedExtensions();

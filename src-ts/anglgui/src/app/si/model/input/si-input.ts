@@ -23,6 +23,7 @@ export class SiInput {
 			}
 			
 			entryInputMaps.push({
+				category: entryInput.category,
 				buildupId: entryInput.buildupId,
 				id: entryInput.id,
 				fieldInputMap: fieldInputObj

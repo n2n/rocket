@@ -39,6 +39,7 @@ use rocket\si\input\SiError;
 use n2n\web\http\controller\ParamGet;
 use rocket\ei\manage\gui\field\GuiFieldPath;
 use rocket\ei\manage\gui\GuiException;
+use n2n\web\http\controller\Param;
 
 class SiApiController extends ControllerAdapter {
 	private $eiFrame;
@@ -51,7 +52,7 @@ class SiApiController extends ControllerAdapter {
 		echo 'very apisch';
 	}
 	
-	private function parseApiCallId(ParamQuery $paramQuery) {
+	private function parseApiCallId(Param $paramQuery) {
 		try {
 			return SiApiCallId::parse($paramQuery->parseJson());
 		} catch (\InvalidArgumentException $e) {
@@ -63,8 +64,8 @@ class SiApiController extends ControllerAdapter {
 		$siApiCallId = $this->parseApiCallId($apiCallId);
 		
 		$callProcess = new ApiControlProcess($this->eiFrame);
-		$callProcess->setupGui($apiCallId->getViewMode());
-		$callProcess->determineGuiControl($apiCallId->getGuiControlPath());
+		$callProcess->setupEiGui($siApiCallId->getViewMode());
+		$callProcess->determineGuiControl($siApiCallId->getGuiControlPath());
 		
 		$guiControl = null;
 		
@@ -126,7 +127,7 @@ class ApiControlProcess {
 	 */
 	private function lookupEiObject($pid) {
 		$efu = new EiFrameUtil($this->eiFrame);
-		return $efu->lookupEiEntityObj($efu->pidToId($pid));
+		return new LiveEiObject($efu->lookupEiEntityObj($efu->pidToId($pid)));
 	}
 	
 	/**
@@ -185,7 +186,7 @@ class ApiControlProcess {
 		$inputFactory = new SiInputFactory();
 		
 		try {
-			if (null !== ($err = $this->applyInput($this->eiGui, $inputFactory->create($data)))) {
+			if (null !== ($err = $this->applyInput($inputFactory->create($data)))) {
 				return $err;
 			}
 		} catch (AttributesException $e) {
@@ -200,7 +201,6 @@ class ApiControlProcess {
 	}
 	
 	/**
-	 * @param EiGui $eiGui
 	 * @param SiInput $siInput
 	 * @return SiError|null
 	 */
@@ -245,13 +245,13 @@ class ApiControlProcess {
 		// 				$guiFieldFork->
 		// 			}
 		
-		foreach ($eiEntryGui->getGuiField() as $guiFieldPathStr => $guiField) {
+		foreach ($eiEntryGui->getGuiFields() as $guiFieldPathStr => $guiField) {
 			if ($guiField->getSiField()->isReadOnly()
 					|| !$entryInput->containsFieldName($guiFieldPathStr)) {
 				continue;
 			}
 			
-			$guiField->getSiField()->handleInput($entryInput->getFieldData($guiFieldPathStr));
+			$guiField->getSiField()->handleInput($entryInput->getFieldInput($guiFieldPathStr)->getData());
 		}
 		
 		$eiEntryGui->save();

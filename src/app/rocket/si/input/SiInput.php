@@ -23,6 +23,7 @@ namespace rocket\si\input;
 
 use n2n\util\type\ArgUtils;
 use n2n\l10n\Message;
+use n2n\persistence\meta\structure\UnknownIndexException;
 
 class SiInput {
 	/**
@@ -37,23 +38,87 @@ class SiInput {
 		return $this->entryInputs;
 	}
 	
-	function putEntryInput(SiEntryInput $entryInput) {
-		$this->entryInputs[] = $entryInput;
+	/**
+	 * @param string $key
+	 * @param SiEntryInput $entryInput
+	 */
+	function putEntryInput(string $key, SiEntryInput $entryInput) {
+		$this->entryInputs[$key] = $entryInput;
 	}
 }
 
 class SiEntryInput {
+	/**
+	 * @var string
+	 */
+	private $category;
+	/**
+	 * @var string
+	 */
+	private $buildupId;
+	/**
+	 * @var string
+	 */
+	private $id;
 	/**
 	 * @var SiFieldInput[]
 	 */
 	private $fieldInputs = [];
 	
 	/**
+	 * @param string $category
+	 * @param string $buildupId
+	 * @param string $id
+	 */
+	function __construct(string $category, string $buildupId, string $id) {
+		$this->category = $category;
+		$this->buildupId = $buildupId;
+		$this->id = $id;
+	}
+	
+	/**
+	 * @return string
+	 */
+	function getCategory() {
+		return $this->category;
+	}
+	
+	/**
+	 * @return string
+	 */
+	function getBuildupId() {
+		return $this->buildupId;
+	}
+	
+	/**
+	 * @return string
+	 */
+	function getId() {
+		return $this->id;
+	}
+	
+	/**
 	 * @param string $fieldId
 	 * @param SiFieldInput $fieldInput
 	 */
-	function putFieldInput(string $fieldId, SiFieldInput $fieldInput) {
-		$this->fieldInputs[$fieldId] = $fieldInput;
+	function putFieldInput(string $fieldName, SiFieldInput $fieldInput) {
+		$this->fieldInputs[$fieldName] = $fieldInput;
+	}
+	
+	/**
+	 * @param string $fieldName
+	 * @return bool
+	 */
+	function containsFieldName(string $fieldName) {
+		return isset($this->fieldInputs[$fieldName]);
+	}
+	
+	function getFieldInput(string $fieldName) {
+		if (isset($this->fieldInputs[$fieldName])) {
+			return $this->fieldInputs[$fieldName];
+		}
+		
+		throw new UnknownIndexException('Unknown field name: ' . $fieldName);
 	}
 	
 	/**
@@ -67,17 +132,13 @@ class SiEntryInput {
 
 class SiFieldInput {
 	private $data;
-	private $errors;
 	
 	/**
 	 * @param array $data
 	 * @param Message[] $errors
 	 */
-	function __construct(array $data, array $errors) {
-		ArgUtils::valArray($errors, Message::class);
+	function __construct(array $data) {
 		$this->data = $data;
-		$this->errors = $errors;
-		
 	}
 	
 	/**
@@ -85,13 +146,6 @@ class SiFieldInput {
 	 */
 	function getData() {
 		return $this->data;
-	}
-	
-	/**
-	 * @return Message[]
-	 */
-	function getErrors() {
-		return $this->errors;
 	}
 }
 
@@ -146,7 +200,7 @@ class SiFieldError {
 	/**
 	 * @var SiEntryError[]
 	 */
-	private $entryErrors = [];
+	private $subEntryErrors = [];
 	
 	/**
 	 * @param array $messages
@@ -157,6 +211,6 @@ class SiFieldError {
 	}
 	
 	function putSubEntryError(string $key, SiEntryError $entryError) {
-		$this->entryErrors[$key] = $entryError;
+		$this->subEntryErrors[$key] = $entryError;
 	}
 }

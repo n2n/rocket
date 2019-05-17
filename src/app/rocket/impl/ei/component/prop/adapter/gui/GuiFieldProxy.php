@@ -133,10 +133,10 @@ class GuiFieldProxy implements GuiField, GuiFieldDisplayable, GuiFieldEditable {
 	}
 	
 	public function save() {
-		if ($this->mag === null) {
-			throw new IllegalStateException('No mag created.');
+		if ($this->siField === null) {
+			throw new IllegalStateException('No SiField created.');
 		}
 		
-		$this->statelessGuiFieldEditable->saveMagValue($this->mag, $this->eiu);
+		$this->statelessGuiFieldEditable->saveSiField($this->siField, $this->eiu);
 	}
 }
