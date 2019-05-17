@@ -4,15 +4,17 @@ import { ComponentRef, ComponentFactoryResolver, ViewContainerRef } from "@angul
 import { StringOutFieldComponent } from "src/app/ui/content/field/comp/string-out-field/string-out-field.component";
 import { InputInFieldComponent } from "src/app/ui/content/field/comp/input-in-field/input-in-field.component";
 import { FileInFieldComponent } from "src/app/ui/content/field/comp/file-in-field/file-in-field.component";
+import { FileInFieldModel } from "src/app/ui/content/field/file-in-field-model";
+import { InSiFieldAdapter } from "src/app/si/model/content/impl/in-si-field-adapter";
 
-export class FileInSiField implements SiField {
+export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel {
 	private uploadedFile: File|null = null;
 	public mandatory: boolean = false;
 	public mimeTypes: string[] = [];
 	public extensions: string[] = [];
 	
 	constructor(public value: SiFile|null) {
-		
+        super();
 	}
 		
 	hasInput(): boolean {
@@ -26,6 +28,22 @@ export class FileInSiField implements SiField {
         };
     }
 	
+    getMimeTypes(): string[] {
+        throw new Error("Method not implemented.");
+    }
+    
+    removeFile(): void {
+        throw new Error("Method not implemented.");
+    }
+    
+    uploadFile(file: File): void {
+        throw new Error("Method not implemented.");
+    }
+    
+    getSiFile(): SiFile|null {
+        throw new Error("Method not implemented.");
+    }
+    
 	initComponent(viewContainerRef: ViewContainerRef, 
 			componentFactoryResolver: ComponentFactoryResolver): ComponentRef<any> {
 		const componentFactory = componentFactoryResolver.resolveComponentFactory(FileInFieldComponent);
@@ -42,7 +60,7 @@ export class FileInSiField implements SiField {
 	    });
 	    component.uploadedFile$.subscribe(file => {
 	    	this.uploadedFile = file;
-	    })
+	    });
 	    
 	    return componentRef;
 	}

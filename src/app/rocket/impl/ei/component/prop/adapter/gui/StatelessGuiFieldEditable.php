@@ -32,11 +32,11 @@ interface StatelessGuiFieldEditable {
 	 */
 	public function createInSiField(Eiu $eiu): SiField;
 	
-	/**
-	 * @param Eiu $eiu
-	 * @return bool
-	 */
-	public function isMandatory(Eiu $eiu): bool;
+// 	/**
+// 	 * @param Eiu $eiu
+// 	 * @return bool
+// 	 */
+// 	public function isMandatory(Eiu $eiu): bool;
 	
 	/**
 	 * @param SiField $siField

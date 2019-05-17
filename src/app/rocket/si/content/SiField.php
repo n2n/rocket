@@ -23,6 +23,8 @@ namespace rocket\si\content;
 
 use n2n\util\ex\IllegalStateException;
 use n2n\util\type\attrs\AttributesException;
+use n2n\web\http\UploadDefinition;
+use Doctrine\Instantiator\Exception\InvalidArgumentException;
 
 interface SiField {
 	
@@ -48,4 +50,18 @@ interface SiField {
 	 * @throws AttributesException if data is corrupt
 	 */
 	function handleInput(array $data);
+	
+	/**
+	 * @return bool
+	 */
+	function isCallable(): bool;
+	
+	/**
+	 * @param array $data
+	 * @param UploadDefinition[] $uploadDefinitions
+	 * @return array
+	 * @throws \InvalidArgumentException
+	 * @throws AttributesException
+	 */
+	function handleCall(array $data, array $uploadDefinitions): array;
 }

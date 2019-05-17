@@ -92,15 +92,17 @@ export class SiCommanderService {
 			input.entryInputs.push(entry.readInput());
 		}
 		
-		this.siService.controlCall(zoneContent.getApiUrl(), callId, input).subscribe((result) => {
-			this.handleResult(result, entries);
-		});
+		this.siService.controlCall(zoneContent.getApiUrl(), callId, input)
+				.subscribe((result) => {
+					this.handleResult(result, entries);
+				});
 	}
 	
 	private handleResult(result: SiResult, inputEntries: SiEntry[]) {
 		if (inputEntries.length > 0) {
 			this.handleEntryErrors(result.entryErrors, inputEntries)
 		}
+		
 		
 	}
 	

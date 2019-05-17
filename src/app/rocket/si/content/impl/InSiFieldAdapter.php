@@ -21,9 +21,7 @@
  */
 namespace rocket\si\content\impl;
 
-use rocket\si\content\SiField;
-
-abstract class InSiFieldAdapter implements SiField {
+abstract class InSiFieldAdapter extends SiFieldAdapter {
 
 	/**
 	 * {@inheritDoc}
@@ -33,3 +31,4 @@ abstract class InSiFieldAdapter implements SiField {
 		return false;
 	}
 }
+

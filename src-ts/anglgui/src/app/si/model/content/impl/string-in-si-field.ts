@@ -27,7 +27,7 @@ export class StringInSiField extends InSiFieldAdapter implements StringInFieldMo
     	return this.maxlength;
     }
     
-    setValue(value: string | null) {
+    setValue(value: string|null) {
     	this.value = value;
     }
     

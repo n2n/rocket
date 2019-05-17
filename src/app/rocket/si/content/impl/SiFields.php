@@ -22,6 +22,8 @@
 namespace rocket\si\content\impl;
 
 use n2n\io\managed\File;
+use n2n\util\uri\Url;
+use n2n\io\managed\FileManager;
 
 class SiFields {
 	
@@ -43,8 +45,8 @@ class SiFields {
 	 * @param File $file
 	 * @return \rocket\si\content\impl\FileInSiField
 	 */
-	static function fileIn(?File $file) {
-		return new FileInSiField($file);
+	static function fileIn(?File $file, Url $apiUrl, FileManager $fileManager) {
+		return new FileInSiField($file, $apiUrl, $fileManager);
 	}
 	
 	/**

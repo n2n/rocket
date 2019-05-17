@@ -22,22 +22,23 @@
 namespace rocket\si\content\impl;
 
 use n2n\util\ex\IllegalStateException;
+use rocket\si\content\SiField;
 
-abstract class OutSiFieldAdapter extends  SiFieldAdapter {
+abstract class SiFieldAdapter implements SiField {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\si\content\SiField::isReadOnly()
+	 * @see \rocket\si\content\SiField::isCallable()
 	 */
-	function isReadOnly(): bool {
-		return true;
+	function isCallable(): bool {
+		return false;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\si\content\SiField::handleInput()
+	 * @see \rocket\si\content\SiField::handleCall()
 	 */
-	function handleInput(array $data) {
-		throw new IllegalStateException(get_class($this) . ' is ready only.');
+	function handleCall(array $data, array $uploadDefinitions) {
+		throw new IllegalStateException(get_class($this) . ' is not callable.');
 	}
 }

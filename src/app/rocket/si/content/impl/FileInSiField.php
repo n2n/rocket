@@ -22,13 +22,22 @@
 namespace rocket\si\content\impl;
 
 use n2n\io\managed\File;
+use n2n\util\uri\Url;
+use n2n\io\managed\FileManager;
 
 class FileInSiField extends InSiFieldAdapter {
 	/**
 	 * @var File|null
 	 */
 	private $value;
-	
+	/**
+	 * @var Url
+	 */
+	private $apiUrl;
+	/**
+	 * @var FileManager
+	 */
+	private $fileManager;
 	/**
 	 * @var bool
 	 */
@@ -40,8 +49,10 @@ class FileInSiField extends InSiFieldAdapter {
 	/**
 	 * @param File|null $value
 	 */
-	function __construct(?File $value) {
+	function __construct(?File $value, Url $apiUrl, FileManager $fileManager) {
 		$this->value = $value;	
+		$this->apiUrl = $apiUrl;
+		$this->fileManager = $fileManager;
 	}
 	
 	/**
@@ -93,7 +104,8 @@ class FileInSiField extends InSiFieldAdapter {
 			'value' => SiFile::build($this->value),
 			'mandatory' => $this->mandatory,
 			'mimeTypes' => $this->mimeTypes,
-			'extensions' => $this->extensions
+			'extensions' => $this->extensions,
+			'apiUrl' => (string) $this->apiUrl
 		];
 	}
 	
