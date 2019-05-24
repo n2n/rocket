@@ -28,7 +28,7 @@ export class SiEntry {
 	get selectedBuildupId(): string {
 		this.ensureBuildups();
 		
-		return this._selectedBuildupId
+		return this._selectedBuildupId;
 	}
 	
 	putBuildup(id: string, buildup: SiEntryBuildup) {
@@ -81,7 +81,6 @@ export class SiEntry {
 				field.resetError();
 			}
 		}
-		
 	}
 	
 	toString() {

@@ -27,19 +27,20 @@ use rocket\ei\manage\gui\control\UnknownGuiControlException;
 use n2n\web\http\BadRequestException;
 use n2n\util\type\attrs\AttributesException;
 use rocket\si\input\SiInputFactory;
-use rocket\ei\manage\gui\EiGui;
 use rocket\si\input\SiInput;
 use rocket\ei\manage\frame\EiFrameUtil;
 use rocket\ei\manage\frame\EiFrame;
-use n2n\web\http\controller\ParamQuery;
 use rocket\ei\manage\gui\control\GuiControlPath;
 use rocket\si\input\SiEntryInput;
 use rocket\ei\manage\gui\EiEntryGui;
 use rocket\si\input\SiError;
-use n2n\web\http\controller\ParamGet;
 use rocket\ei\manage\gui\field\GuiFieldPath;
 use rocket\ei\manage\gui\GuiException;
 use n2n\web\http\controller\Param;
+use rocket\ei\manage\entry\UnknownEiObjectException;
+use rocket\ei\manage\gui\control\GeneralGuiControl;
+use rocket\ei\manage\gui\control\EntryGuiControl;
+use rocket\ei\manage\gui\control\GuiControl;
 
 class SiApiController extends ControllerAdapter {
 	private $eiFrame;
@@ -52,41 +53,48 @@ class SiApiController extends ControllerAdapter {
 		echo 'very apisch';
 	}
 	
-	private function parseApiCallId(Param $paramQuery) {
+	private function parseApiControlCallId(Param $paramQuery) {
 		try {
-			return SiApiCallId::parse($paramQuery->parseJson());
+			return SiApiControlCallId::parse($paramQuery->parseJson());
+		} catch (\InvalidArgumentException $e) {
+			throw new BadRequestException(null, null, $e);
+		}
+	}
+	
+	private function parseApiFieldCallId(Param $paramQuery) {
+		try {
+			return SiApiFieldCallId::parse($paramQuery->parseJson());
 		} catch (\InvalidArgumentException $e) {
 			throw new BadRequestException(null, null, $e);
 		}
 	}
 	
 	function doExecControl(ParamPost $apiCallId, ParamPost $entryInputMaps = null) {
-		$siApiCallId = $this->parseApiCallId($apiCallId);
+		$siApiCallId = $this->parseApiControlCallId($apiCallId);
 		
 		$callProcess = new ApiControlProcess($this->eiFrame);
+		
+		if (null !== ($pid = $apiCallId->getPid())) {
+			$callProcess->determineEiEntry($pid);
+		}
 		$callProcess->setupEiGui($siApiCallId->getViewMode());
 		$callProcess->determineGuiControl($siApiCallId->getGuiControlPath());
-		
-		$guiControl = null;
 		
 		if ($entryInputMaps !== null) {
 			$callProcess->handleInput($entryInputMaps->parseJson());
 		}
 		
-		$callProcess->execGuiControl();
+		$callProcess->callGuiControl();
 	}
 	
-	function doCallField(ParamPost $fieldId, ParamPost $data) {
+	function doCallField(ParamPost $apiCallId, ParamPost $data) {
+		$siApiCallId = $this->parseApiFieldCallId($apiCallId);
+		
 		$callProcess = new ApiControlProcess($this->eiFrame);
-		$callProcess->setupEiGui($viewMode);
-		$callProcess->determineGuiField($pid, $guiFieldPath);
+		$callProcess->determineEiEntry($siApiCallId->getPid());
+		$callProcess->determineGuiField($siApiCallId->getGuiFieldPath());
 		
 		$this->sendJson($callProcess->callSiField($data->toJson(), $this->getRequest()->getUploadDefinitions()));
-		
-	}
-	
-	function doExecEntryControl(ParamPost $siEntryId, ParamPost $apiCallId, ParamPost $bulky, ParamPost $inputMap) {
-		$inputMap->parseJsonToAttributes();
 	}
 	
 	function doExecSelectionControl(ParamPost $siEntryIds, ParamPost $apiCallId, ParamPost $bulky) {
@@ -100,9 +108,21 @@ class SiApiController extends ControllerAdapter {
 
 class ApiControlProcess {
 	private $eiFrame;
-	private $guiField;
-	private $guiControl;
 	private $eiGui;
+	private $eiEntry;
+	private $guiField;
+	/**
+	 * @var GuiControl
+	 */
+	private $guiControl;
+	/**
+	 * @var EntryGuiControl
+	 */
+	private $entryGuiControl;
+	/**
+	 * @var GeneralGuiControl
+	 */
+	private $generalGuiControl;
 	
 	/**
 	 * @param EiFrame $eiFrame
@@ -117,17 +137,19 @@ class ApiControlProcess {
 	function setupEiGui(int $viewMode) {
 		$eiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
 		$this->eiGui = $eiMask->createEiGui($this->eiFrame, $viewMode, true);
-		
 	}
-	
 	
 	/**
 	 * @param string $pid
 	 * @return \rocket\ei\manage\EiEntityObj
 	 */
 	private function lookupEiObject($pid) {
-		$efu = new EiFrameUtil($this->eiFrame);
-		return new LiveEiObject($efu->lookupEiEntityObj($efu->pidToId($pid)));
+		try {
+			$efu = new EiFrameUtil($this->eiFrame);
+			return new LiveEiObject($efu->lookupEiEntityObj($efu->pidToId($pid)));
+		} catch (UnknownEiObjectException $e) {
+			throw new BadRequestException(null, 0, $e);
+		}
 	}
 	
 	/**
@@ -148,10 +170,12 @@ class ApiControlProcess {
 	}
 	
 	
-	function determineGuiField(string $pid, GuiFieldPath $guiFieldPath) {
+	function determineEiEntry(string $pid) {
 		$eiObject = $this->lookupEiObject($pid);
-		$eiEntry = $this->eiFrame->createEiEntry($eiObject);
-		
+		$this->eiEntry = $this->eiFrame->createEiEntry($eiObject);
+	}
+	
+	function determineGuiField(GuiFieldPath $guiFieldPath) {
 		$eiEntryGui = $this->eiGui->createEiEntryGui($eiEntry, 0);
 		
 		try {
@@ -167,7 +191,11 @@ class ApiControlProcess {
 		}
 		
 		try {
-			$this->guiControl = $this->eiGui->createGeneralGuiControl($guiControlPath);
+			if ($this->eiEntry !== null) {
+				$this->entryGuiControl = $this->guiControl = $this->eiGui->createEntryGuiControl($guiControlPath);
+			} else {
+				$this->generalGuiControl = $this->guiControl = $this->eiGui->createGeneralGuiControl($guiControlPath);
+			}
 		} catch (UnknownGuiControlException $e) {
 			throw new BadRequestException($e->getMessage(), null, $e);
 		}
@@ -193,10 +221,6 @@ class ApiControlProcess {
 			throw new BadRequestException(null, null, $e);
 		} catch (\InvalidArgumentException $e) {
 			throw new BadRequestException(null, null, $e);
-		}
-		
-		foreach ($this->eiGui->getEiEntryGuis() as $eiEntryGui) {
-			
 		}
 	}
 	
@@ -255,5 +279,15 @@ class ApiControlProcess {
 		}
 		
 		$eiEntryGui->save();
+	}
+	
+	function execGuiControl() {
+		if ($this->generalGuiControl !== null) {
+			$this->generalGuiControl->handle($this->eiGui);
+		}
+		
+		if ($this->entryGuiControl !== null) {
+			$this->entryGuiControl->handleEntry($this->eiGui, $this->eiEntry);
+		}
 	}
 }

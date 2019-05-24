@@ -9,7 +9,6 @@ use rocket\ei\component\GuiFactory;
 use rocket\ei\manage\gui\field\GuiFieldPath;
 use rocket\ei\manage\gui\control\GuiControlPath;
 use rocket\ei\manage\gui\control\UnknownGuiControlException;
-use rocket\ei\manage\gui\control\GuiControl;
 
 /**
  * @author andreas
@@ -230,7 +229,7 @@ class EiGui {
 	
 	/**
 	 * @param GuiControlPath $guiControlPath
-	 * @return GuiControl
+	 * @return GeneralGuiControl
 	 * @throws UnknownGuiControlException
 	 */
 	public function createGeneralGuiControl(GuiControlPath $guiControlPath) {

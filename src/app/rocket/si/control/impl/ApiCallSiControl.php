@@ -23,14 +23,13 @@ namespace rocket\si\control\impl;
 
 use rocket\si\control\SiControl;
 use rocket\si\control\SiButton;
-use rocket\ei\manage\SiApiCallId;
 
 class ApiCallSiControl implements SiControl {
 	private $apiCallId;
 	private $button;
 	private $inputHandled;
 	
-	public function __construct(SiApiCallId $apiCallId, SiButton $button, bool $inputHandled = false) {
+	public function __construct(\JsonSerializable $apiCallId, SiButton $button, bool $inputHandled = false) {
 		$this->apiCallId = $apiCallId;
 		$this->button = $button;
 		$this->inputHandled = $inputHandled;

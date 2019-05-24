@@ -21,14 +21,14 @@
  */
 namespace rocket\ei\manage\gui\control;
 
-use rocket\ei\manage\frame\EiFrame;
 use rocket\si\control\SiResult;
+use rocket\ei\manage\gui\EiGui;
 
 interface GeneralGuiControl extends GuiControl {
 	
 	/**
-	 * @param EiFrame $eiFrame
+	 * @param EiGui $eiGui
 	 * @return SiResult
 	 */
-	function handle(EiFrame $eiFrame): SiResult;
+	function handle(EiGui $eiGui): SiResult;
 }

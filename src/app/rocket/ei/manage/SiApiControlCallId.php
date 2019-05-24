@@ -26,14 +26,16 @@ use n2n\util\type\ArgUtils;
 use rocket\ei\manage\gui\ViewMode;
 use n2n\util\type\attrs\DataSet;
 
-class SiApiCallId implements \JsonSerializable {
+class SiApiControlCallId implements \JsonSerializable {
 	private $guiControlPath;
 	private $viewMode;
+	private $pid;
 	
-	public function __construct(GuiControlPath $guiControlPath, int $viewMode) {
+	function __construct(GuiControlPath $guiControlPath, int $viewMode, ?string $pid) {
 		$this->guiControlPath = $guiControlPath;
 		ArgUtils::valEnum($viewMode, ViewMode::getAll());
 		$this->viewMode = $viewMode;
+		$this->pid = $pid;
 	}
 	
 	/**
@@ -51,28 +53,36 @@ class SiApiCallId implements \JsonSerializable {
 	}
 	
 	/**
+	 * @return string|null
+	 */
+	function getPid() {
+		return $this->pid;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @see \JsonSerializable::jsonSerialize()
 	 */
-	public function jsonSerialize() {
+	function jsonSerialize() {
 		return [
 			'guiControlPath' => (string) $this->guiControlPath,
-			'viewMode' => $this->viewMode
+			'viewMode' => $this->viewMode,
+			'pid' => $this->pid
 		];
 	}
 	
 	/**
 	 * @param array $data
 	 * @throws \InvalidArgumentException
-	 * @return SiApiCallId
+	 * @return SiApiControlCallId
 	 */
 	static function parse(array $data) {
 		$ds = new DataSet($data);
 		
 		try {
-			return new SiApiCallId(
+			return new SiApiControlCallId(
 					GuiControlPath::create($ds->reqString('guiControlPath')),
-					$ds->reqInt('viewMode'));
+					$ds->reqInt('viewMode'), $ds->optString('pid'));
 		} catch (\n2n\util\type\attrs\AttributesException $e) {
 			throw new \InvalidArgumentException(null, null, $e);
 		}

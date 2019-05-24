@@ -24,7 +24,6 @@ namespace rocket\si\content\impl;
 use n2n\io\managed\File;
 use n2n\util\uri\Url;
 use n2n\io\managed\FileManager;
-use rocket\ei\manage\gui\field\GuiFieldPath;
 
 class FileInSiField extends InSiFieldAdapter {
 	/**
@@ -37,9 +36,9 @@ class FileInSiField extends InSiFieldAdapter {
 	private $apiUrl;
 	
 	/**
-	 * @var GuiFieldPath
+	 * @var \JsonSerializable
 	 */
-	private $guiFieldPath;
+	private $apiCallId;
 	/**
 	 * @var FileManager
 	 */
@@ -55,10 +54,10 @@ class FileInSiField extends InSiFieldAdapter {
 	/**
 	 * @param File|null $value
 	 */
-	function __construct(?File $value, Url $apiUrl, GuiFieldPath $guiFieldPath, FileManager $fileManager) {
+	function __construct(?File $value, Url $apiUrl, \JsonSerializable $apiCallId, FileManager $fileManager) {
 		$this->value = $value;	
 		$this->apiUrl = $apiUrl;
-		$this->guiFieldPath = $guiFieldPath;
+		$this->apiCallId = $apiCallId;
 		$this->fileManager = $fileManager;
 	
 	}
@@ -114,7 +113,7 @@ class FileInSiField extends InSiFieldAdapter {
 			'mimeTypes' => $this->mimeTypes,
 			'extensions' => $this->extensions,
 			'apiUrl' => (string) $this->apiUrl,
-			'fieldId' => (string) $this->guiFieldPath
+			'apiCallId' => $this->apiCallId
 		];
 	}
 	
@@ -123,5 +122,14 @@ class FileInSiField extends InSiFieldAdapter {
 	 * @see \rocket\si\content\SiField::handleInput()
 	 */
 	function handleInput(array $data) {
+		
+	}
+	
+	function isCallable(): bool {
+		return null;
+	}
+	
+	function handleCall(array $data, array $uploadDefinitions): array {
+		return [];
 	}
 }

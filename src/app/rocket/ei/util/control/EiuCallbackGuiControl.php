@@ -31,7 +31,6 @@ use rocket\ei\manage\gui\control\SelectionGuiControl;
 use rocket\si\control\impl\ApiCallSiControl;
 use rocket\si\control\SiButton;
 use rocket\ei\manage\gui\control\GuiControlPath;
-use rocket\ei\manage\SiApiCallId;
 
 class EiuCallbackGuiControl implements GeneralGuiControl, EntryGuiControl, SelectionGuiControl {
 	private $id;
