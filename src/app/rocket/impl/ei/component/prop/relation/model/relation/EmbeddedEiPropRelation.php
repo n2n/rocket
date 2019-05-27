@@ -68,7 +68,7 @@ class EmbeddedEiPropRelation extends EiPropRelation {
 		if (!$entityProperty->getRelation()->isOrphanRemoval()) {
 			if (!$this->getOrphansAllowed()) {
 				throw new InvalidEiComponentConfigurationException('EiProp requires an EntityProperty '
-						. TypeUtils::prettyPropName($entityProperty->getEntityModel()->getClass(), $entityProperty->getName())
+						. TypeUtils::prettyClassPropName($entityProperty->getEntityModel()->getClass(), $entityProperty->getName())
 						. ' which removes orphans or an EiProp configuration with ' 
 						. RelationEiPropConfigurator::ATTR_ORPHANS_ALLOWED_KEY . '=true.');
 			}
@@ -76,7 +76,7 @@ class EmbeddedEiPropRelation extends EiPropRelation {
 			if (!$this->getRelationEntityProperty()->isMaster() && !$this->isSourceMany()
 					&& !$this->getTargetMasterAccessProxy()->getConstraint()->allowsNull()) {
 				throw new InvalidEiComponentConfigurationException('EiProp requires an EntityProperty '
-						. TypeUtils::prettyPropName($entityProperty->getEntityModel()->getClass(), $entityProperty->getName())
+						. TypeUtils::prettyClassPropName($entityProperty->getEntityModel()->getClass(), $entityProperty->getName())
 						. ' which removes orphans or target ' . $this->getTargetMasterAccessProxy()
 						. ' must accept null.');
 			}

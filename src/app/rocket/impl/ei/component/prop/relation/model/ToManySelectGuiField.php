@@ -91,10 +91,10 @@ class ToManySelectGuiField implements GuiField, GuiFieldDisplayable {
 			$label = $num . ' ' . $targetEiuFrame->getGenericPluralLabel();
 		}
 
-		if (null !== ($relation = $this->eiu->frame()->getEiFrame()
-				->getEiRelation(EiPropPath::from($this->eiProp)))) {
-			return $this->createUiLink($relation->getEiFrame(), $label, $view);
-		}
+// 		if (null !== ($relation = $this->eiu->frame()->getEiFrame()
+// 				->getEiRelation(EiPropPath::from($this->eiProp)))) {
+// 			return $this->createUiLink($relation->getEiFrame(), $label, $view);
+// 		}
 
 		return $this->createUiLink($this->targetEiFrame, $label, $view);
 	}

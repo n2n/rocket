@@ -22,7 +22,6 @@
 namespace rocket\ei\util\control;
 
 use rocket\ei\manage\entry\EiEntry;
-use rocket\ei\manage\frame\EiFrame;
 use rocket\si\control\SiControl;
 use rocket\si\control\SiResult;
 use rocket\ei\manage\gui\control\GeneralGuiControl;
@@ -30,7 +29,11 @@ use rocket\ei\manage\gui\control\EntryGuiControl;
 use rocket\ei\manage\gui\control\SelectionGuiControl;
 use rocket\si\control\impl\ApiCallSiControl;
 use rocket\si\control\SiButton;
-use rocket\ei\manage\gui\control\GuiControlPath;
+use rocket\ei\manage\SiApiControlCallId;
+use rocket\ei\manage\gui\EiGui;
+use n2n\reflection\magic\MagicMethodInvoker;
+use rocket\ei\util\Eiu;
+use n2n\util\type\TypeConstraints;
 
 class EiuCallbackGuiControl implements GeneralGuiControl, EntryGuiControl, SelectionGuiControl {
 	private $id;
@@ -80,29 +83,44 @@ class EiuCallbackGuiControl implements GeneralGuiControl, EntryGuiControl, Selec
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\control\GuiControl::toSiControl()
 	 */
-	function toSiControl(GuiControlPath $guiControlPath): SiControl {
-		return new ApiCallSiControl(new SiApiCallId($guiControlPath, $this->viewMode), 
-				$this->siButton, $this->inputHandled);
+	function toSiControl(SiApiControlCallId $siApiCallId): SiControl {
+		return new ApiCallSiControl($siApiCallId, $this->siButton, $this->inputHandled);
+	}
+	
+	/**
+	 * @param Eiu $eiu
+	 * @return SiResult
+	 */
+	private function execCall(Eiu $eiu) {
+		$mmi = new MagicMethodInvoker($eiu->getN2nContext());
+		$mmi->setMethod(new \ReflectionFunction($this->callback));
+		$mmi->setClassParamObject(Eiu::class, $eiu);
+		$mmi->setReturnTypeConstraint(TypeConstraints::type(Eiu::class));
+		
+		return $mmi->invoke();
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\control\GeneralGuiControl::handle()
 	 */
-	function handle(EiFrame $eiFrame): SiResult {
+	function handle(EiGui $eiGui): SiResult {
+		return $this->execCall(new Eiu($eiGui));
 	}
 
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\control\EntryGuiControl::handleEntry()
 	 */
-	function handleEntry(EiFrame $eiFrame, EiEntry $eiEntry): SiResult {
+	function handleEntry(EiGui $eiGui, EiEntry $eiEntry): SiResult {
+		return $this->execCall(new Eiu($eiGui, $eiEntry));
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\control\SelectionGuiControl::handleEntries()
 	 */
-	function handleEntries(EiFrame $eiFrame, array $eiEntries): SiResult {
+	function handleEntries(EiGui $eiGui, array $eiEntries): SiResult {
+		
 	}
 }

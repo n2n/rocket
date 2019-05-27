@@ -63,7 +63,7 @@ class EditEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiC
 	}
 	
 	
-	function createGeneralGuiControls(Eiu $eiu): array {
+	public function createGeneralGuiControls(Eiu $eiu): array {
 		if (!$eiu->frame()->isExecutedBy($this)) {
 			return [];
 		}
@@ -73,14 +73,14 @@ class EditEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiC
 		
 		$siButton = SiButton::primary($dtc->t('common_save_label'), SiIconType::ICON_SAVE);
 		$callback = function (Eiu $eiu) {
-			$this->save($eiu);
+			$eiu->entry()->save();
+			
+			return $eiu->factory()->newControlResponse()
+					->redirectBack()
+					->highlight($eiu->entry());
 		};
 		
 		return [$eiuControlFactory->createCallback(self::CONTROL_SAVE_KEY, $siButton, $callback)->setInputHandled(true)];
-	}
-	
-	private function save(Eiu $eiu) {
-		
 	}
 	
 	public function createEntryGuiControls(Eiu $eiu): array {

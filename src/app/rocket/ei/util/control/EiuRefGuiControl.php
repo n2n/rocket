@@ -22,7 +22,6 @@
 namespace rocket\ei\util\control;
 
 use rocket\ei\manage\entry\EiEntry;
-use rocket\ei\manage\frame\EiFrame;
 use rocket\si\control\SiControl;
 use rocket\si\control\SiResult;
 use n2n\util\ex\NotYetImplementedException;
@@ -33,6 +32,8 @@ use rocket\ei\manage\gui\control\EntryGuiControl;
 use rocket\ei\manage\gui\control\GeneralGuiControl;
 use rocket\ei\manage\gui\control\SelectionGuiControl;
 use rocket\ei\manage\gui\control\GuiControlPath;
+use rocket\ei\manage\gui\EiGui;
+use rocket\ei\manage\SiApiControlCallId;
 
 class EiuRefGuiControl implements GeneralGuiControl, EntryGuiControl, SelectionGuiControl {
 	private $id;
@@ -57,19 +58,19 @@ class EiuRefGuiControl implements GeneralGuiControl, EntryGuiControl, SelectionG
 		return false;
 	}
 	
-	public function toSiControl(GuiControlPath $controlId): SiControl {
+	function toSiControl(SiApiControlCallId $siApiCallId): SiControl {
 		return new RefSiControl($this->url, $this->siButton);
 	}
 	
-	public function handleEntries(EiFrame $eiFrame, array $eiEntries): SiResult {
+	public function handleEntries(EiGui $eiGui, array $eiEntries): SiResult {
 		throw new NotYetImplementedException();
 	}
 
-	public function handle(EiFrame $eiFrame): SiResult {
+	public function handle(EiGui $eiGui): SiResult {
 		throw new NotYetImplementedException();
 	}
 
-	public function handleEntry(EiFrame $eiFrame, EiEntry $eiEntry): SiResult {
+	public function handleEntry(EiGui $eiGui, EiEntry $eiEntry): SiResult {
 		throw new NotYetImplementedException();
 	}
 }

@@ -22,7 +22,6 @@
 namespace rocket\ei\manage\gui;
 
 use n2n\web\dispatch\map\PropertyPath;
-use n2n\web\dispatch\mag\MagWrapper;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\mask\EiMask;
 use rocket\ei\manage\entry\EiEntry;
@@ -32,6 +31,7 @@ use rocket\ei\manage\gui\field\GuiField;
 use rocket\si\content\SiEntryBuildup;
 use rocket\si\content\SiEntry;
 use rocket\ei\manage\gui\control\GuiControlPath;
+use rocket\ei\manage\SiApiControlCallId;
 
 class EiEntryGui {
 	/**
@@ -356,7 +356,8 @@ class EiEntryGui {
 		foreach ($deterGuiDefinition->createEntryGuiControls($this->eiGui, $eiEntry)
 				as $guiControlPathStr => $entryGuiControl) {
 			$siEntry->putControl($guiControlPathStr, $entryGuiControl->toSiControl(
-					GuiControlPath::create($guiControlPathStr)));
+					new SiApiControlCallId(GuiControlPath::create($guiControlPathStr), $this->eiGui->getViewMode(), 
+							$eiEntry->getPid())));
 		}
 		
 		return $siEntry;
@@ -364,38 +365,5 @@ class EiEntryGui {
 	
 	public function __toString() {
 		return 'EiEntryGui of ' . $this->eiEntry;
-	}
-}
-
-class MagAssembly {
-	private $mandatory;
-	private $magPropertyPath;
-	private $magWrapper;
-	
-	public function __construct(bool $mandatory, PropertyPath $magPropertyPath, MagWrapper $magWrapper) {
-		$this->mandatory = $mandatory;
-		$this->magPropertyPath = $magPropertyPath;
-		$this->magWrapper = $magWrapper;
-	}
-	
-	/**
-	 * @return boolean
-	 */
-	public function isMandatory() {
-		return $this->mandatory;
-	}
-	
-	/**
-	 * @return \n2n\web\dispatch\map\PropertyPath
-	 */
-	public function getMagPropertyPath() {
-		return $this->magPropertyPath;
-	}
-	
-	/**
-	 * @return \n2n\web\dispatch\mag\Mag
-	 */
-	public function getMagWrapper() {
-		return $this->magWrapper;
 	}
 }

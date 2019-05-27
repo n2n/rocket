@@ -74,7 +74,7 @@ class SiApiController extends ControllerAdapter {
 		
 		$callProcess = new ApiControlProcess($this->eiFrame);
 		
-		if (null !== ($pid = $apiCallId->getPid())) {
+		if (null !== ($pid = $siApiCallId->getPid())) {
 			$callProcess->determineEiEntry($pid);
 		}
 		$callProcess->setupEiGui($siApiCallId->getViewMode());
@@ -281,7 +281,7 @@ class ApiControlProcess {
 		$eiEntryGui->save();
 	}
 	
-	function execGuiControl() {
+	function callGuiControl() {
 		if ($this->generalGuiControl !== null) {
 			$this->generalGuiControl->handle($this->eiGui);
 		}

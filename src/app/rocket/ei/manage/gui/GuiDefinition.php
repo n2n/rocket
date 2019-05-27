@@ -542,15 +542,15 @@ class GuiDefinition {
 	function createEntryGuiControls(EiGui $eiGui, EiEntry $eiEntry): array {
 		$eiu = new Eiu($eiGui, $eiEntry);
 		
-		$siControls = [];
+		$guiControls = [];
 		foreach ($this->guiCommands as $id => $guiCommand) {
 			foreach ($this->extractEntryGuiControls($guiCommand, $id, $eiu) as $entryGuiControl) {
 				$guiControlPath = new GuiControlPath([$id, $entryGuiControl->getId()]);
 				
-				$siControls[(string) $guiControlPath] = $entryGuiControl;
+				$guiControls[(string) $guiControlPath] = $entryGuiControl;
 			}
 		}
-		return $siControls;
+		return $guiControls;
 	}
 	
 	private function extractEntryGuiControls(GuiCommand $guiCommand, string $guiCommandId, Eiu $eiu) {
