@@ -31,7 +31,6 @@ use rocket\si\control\impl\RefSiControl;
 use rocket\ei\manage\gui\control\EntryGuiControl;
 use rocket\ei\manage\gui\control\GeneralGuiControl;
 use rocket\ei\manage\gui\control\SelectionGuiControl;
-use rocket\ei\manage\gui\control\GuiControlPath;
 use rocket\ei\manage\gui\EiGui;
 use rocket\ei\manage\SiApiControlCallId;
 

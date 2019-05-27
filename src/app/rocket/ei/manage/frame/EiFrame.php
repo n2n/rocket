@@ -381,7 +381,9 @@ class EiFrame {
 				&& $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()->hasGenericOverview());
 	}
 	
-	public function getOverviewUrl(HttpContext $httpContext, bool $required = true) {
+	public function getOverviewUrl(bool $required = true) {
+		$httpContext = $this->getN2nContext()->getHttpContext();
+		
 		if ($this->overviewUrlExt !== null) {
 			return $httpContext->getRequest()->getContextPath()->toUrl()->ext($this->overviewUrlExt);
 		} 

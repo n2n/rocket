@@ -21,6 +21,135 @@
  */
 namespace rocket\si\control;
 
-interface SiResult {
+use n2n\l10n\Message;
+use n2n\util\type\ArgUtils;
+use n2n\l10n\N2nLocale;
+
+class SiResult implements \JsonSerializable {
+	const DIRECTIVE_REDIRECT_BACK = 'redirectBack';
+	const DIRECTIVE_REDIRECT = 'redirect';
 	
+	const EVENT_TYPE_CHANGED = 'changed';
+	const EVENT_TYPE_REMOVED = 'removed';
+	const EVENT_TYPE_ADDED = 'added';
+	
+	private $directive;
+	private $ref;
+	private $href;
+	/**
+	 * @var array
+	 */
+	private $messageArr = [];
+	/**
+	 * @var SiButton
+	 */
+	private $newButton;
+	/**
+	 * @var array
+	 */
+	private $highlightMap = [];
+	/**
+	 * @var array
+	 */
+	private $eventMap = [];
+	
+	/**
+	 * @param string|null $directive
+	 * @return \rocket\si\control\SiResult
+	 */
+	function setDirective(?string $directive) {
+		ArgUtils::valEnum($directive, [self::DIRECTIVE_REDIRECT_BACK, self::DIRECTIVE_REDIRECT_TO_REF, 
+				self::DIRECTIVE_REDIRECT_TO_HREF]);
+		$this->directive = $directive;
+		return $this;
+	}
+	
+	/**
+	 * @param string|null $ref
+	 * @return \rocket\si\control\SiResult
+	 */
+	function setRef(?string $ref) {
+		$this->ref = $ref;
+		return $this;
+	}
+	
+	/**
+	 * @param string|null $href
+	 * @return \rocket\si\control\SiResult
+	 */
+	function setHref(?string $href) {
+		$this->href = $href;
+		return $this;
+	}
+	
+	/**
+	 * @param string $category
+	 * @param string $id
+	 * @return \rocket\si\control\SiResult
+	 */
+	function addHighlight(string $category, string $id) {
+		if (!isset($this->highlightMap[$category])) {
+			$this->highlightMap[$category] = array('ids' => []);
+		}
+		
+		$this->highlightMap[$category]['ids'][$id] = true;
+		return $this;
+	}
+	
+	/**
+	 * @param string $category
+	 * @param string $id
+	 * @param string $modType
+	 * @return \rocket\si\control\SiResult
+	 */
+	function addEvent(string $category, string $id, string $modType) {
+		ArgUtils::valEnum($modType, [self::EVENT_TYPE_ADDED, self::EVENT_TYPE_CHANGED, self::EVENT_TYPE_REMOVED]);
+		
+		if (!isset($this->eventMap[$category])) {
+			$this->eventMap[$category] = array('ids' => []);
+		}
+		
+		$this->eventMap[$category]['ids'][$id] = $modType;
+		return $this;
+	}
+	
+	function setNewButton(?SiButton $newButton) {
+		$this->newButton = $newButton;
+		return $this;
+	}
+	
+	function addMessage(Message $message, N2nLocale $n2nLocale) {
+		$severity = null;
+		switch ($message->getSeverity()) {
+			case Message::SEVERITY_INFO:
+				$severity = 'info';
+				break;
+			case Message::SEVERITY_ERROR:
+				$severity = 'error';
+				break;
+			case Message::SEVERITY_SUCCESS:
+				$severity = 'success';
+				break;
+			case Message::SEVERITY_WARN:
+				$severity = 'warn';
+				break;
+		}
+		
+		$this->messageArr[] = [
+			'text' => $message->t($n2nLocale),
+			'severity' => $severity
+		];
+	}
+	
+	function jsonSerialize() {
+		return [
+			'directive' => $this->directive,
+			'ref' => $this->ref,
+			'href' => $this->href,
+			'messages' => $this->messageArr,
+			'newButton' => $this->newButton,
+			'highlightMap' => $this->highlightMap,
+			'eventMap' => $this->eventMap
+		];
+	}
 }

@@ -722,6 +722,22 @@ class EiuAnalyst {
 // 	}
 	
 	/**
+	 *
+	 * @param bool $required
+	 * @throws EiuPerimeterException
+	 * @return \rocket\ei\manage\frame\EiFrame|null
+	 */
+	public function getEiFrame(bool $required) {
+		if (!$required || $this->eiFrame !== null) {
+			return $this->eiFrame;
+		}
+		
+		throw new EiuPerimeterException(
+				'Could not determine EiFrame because non of the following types were provided as eiArgs: '
+				. implode(', ', self::EI_FRAME_TYPES));
+	}
+	
+	/**
 	 * @return NULL|\rocket\ei\manage\entry\EiEntry
 	 */
 	public function getEiEntry() {

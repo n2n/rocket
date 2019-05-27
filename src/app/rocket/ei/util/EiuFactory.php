@@ -2,6 +2,7 @@
 namespace rocket\ei\util;
 
 use rocket\ei\util\privilege\EiuCommandPrivilege;
+use rocket\ei\util\control\EiuControlResponse;
 
 class EiuFactory {
 	
@@ -11,5 +12,12 @@ class EiuFactory {
 	 */
 	function newCommandPrivilege(string $label) {
 		return new EiuCommandPrivilege($label);
+	}
+	
+	/**
+	 * @return \rocket\ei\util\control\EiuControlResponse
+	 */
+	function newControlResponse() {
+		return new EiuControlResponse();
 	}
 }
