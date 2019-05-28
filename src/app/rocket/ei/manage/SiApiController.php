@@ -42,6 +42,7 @@ use rocket\ei\manage\gui\control\GeneralGuiControl;
 use rocket\ei\manage\gui\control\EntryGuiControl;
 use rocket\ei\manage\gui\control\GuiControl;
 use n2n\util\ex\IllegalStateException;
+use rocket\si\control\SiResult;
 
 class SiApiController extends ControllerAdapter {
 	private $eiFrame;
@@ -81,8 +82,10 @@ class SiApiController extends ControllerAdapter {
 		$callProcess->setupEiGui($siApiCallId->getViewMode());
 		$callProcess->determineGuiControl($siApiCallId->getGuiControlPath());
 		
-		if ($entryInputMaps !== null) {
-			$callProcess->handleInput($entryInputMaps->parseJson());
+		if ($entryInputMaps !== null
+				&& null !== ($siResult = $callProcess->handleInput($entryInputMaps->parseJson()))) {
+			$this->sendJson($siResult);
+			return;
 		}
 		
 		$this->sendJson($callProcess->callGuiControl());
@@ -216,8 +219,10 @@ class ApiControlProcess {
 		
 		try {
 			if (null !== ($err = $this->applyInput($inputFactory->create($data)))) {
-				return $err;
+				return (new SiResult())->setInputError($err);
 			}
+			
+			return null;
 		} catch (AttributesException $e) {
 			throw new BadRequestException(null, null, $e);
 		} catch (\InvalidArgumentException $e) {

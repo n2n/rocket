@@ -53,8 +53,7 @@ class StringEiProp extends AlphanumericEiProp {
 		return SiFields::stringIn($eiu->field()->getValue())
 				->setMandatory($this->isMandatory($eiu))
 				->setMaxlength($this->getMaxlength())
-				->setMultiline($this->multiline);
-		
+				->setMultiline($this->isMultiline());
 	}
 	
 	public function isStringRepresentable(): bool {

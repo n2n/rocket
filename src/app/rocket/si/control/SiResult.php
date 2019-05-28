@@ -24,6 +24,7 @@ namespace rocket\si\control;
 use n2n\l10n\Message;
 use n2n\util\type\ArgUtils;
 use n2n\l10n\N2nLocale;
+use rocket\si\input\SiError;
 
 class SiResult implements \JsonSerializable {
 	const DIRECTIVE_REDIRECT_BACK = 'redirectBack';
@@ -52,6 +53,10 @@ class SiResult implements \JsonSerializable {
 	 * @var array
 	 */
 	private $eventMap = [];
+	/**
+	 * @var SiError|null
+	 */
+	private $inputError = null;
 	
 	/**
 	 * @param string|null $directive
@@ -117,6 +122,11 @@ class SiResult implements \JsonSerializable {
 		return $this;
 	}
 	
+	/**
+	 * @param Message $message
+	 * @param N2nLocale $n2nLocale
+	 * @return \rocket\si\control\SiResult
+	 */
 	function addMessage(Message $message, N2nLocale $n2nLocale) {
 		$severity = null;
 		switch ($message->getSeverity()) {
@@ -138,6 +148,17 @@ class SiResult implements \JsonSerializable {
 			'text' => $message->t($n2nLocale),
 			'severity' => $severity
 		];
+		
+		return $this;
+	}
+	
+	/**
+	 * @param SiError $inputError
+	 * @return \rocket\si\control\SiResult
+	 */
+	function setInputError(?SiError $inputError) {
+		$this->inputError = $inputError;
+		return $this;
 	}
 	
 	function jsonSerialize() {
@@ -148,7 +169,8 @@ class SiResult implements \JsonSerializable {
 			'messages' => $this->messageArr,
 			'newButton' => $this->newButton,
 			'highlightMap' => $this->highlightMap,
-			'eventMap' => $this->eventMap
+			'eventMap' => $this->eventMap,
+			'inputError' => $this->inputError
 		];
 	}
 }

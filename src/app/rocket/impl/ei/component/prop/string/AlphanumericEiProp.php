@@ -26,7 +26,6 @@ use rocket\ei\util\filter\prop\StringFilterProp;
 use rocket\ei\component\prop\SortableEiProp;
 use rocket\ei\component\prop\FilterableEiProp;
 use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
-use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
 use rocket\ei\manage\frame\EiFrame;
 use n2n\core\container\N2nContext;

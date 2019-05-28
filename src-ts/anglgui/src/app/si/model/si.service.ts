@@ -13,8 +13,8 @@ import { IllegalSiStateError } from "src/app/si/model/illegal-si-state-error";
 import { SiZoneContent } from "src/app/si/model/structure/si-zone-content";
 import { SiEntryInput } from "src/app/si/model/input/si-entry-input";
 import { SiInput } from "src/app/si/model/input/si-input";
-import { SiResult } from "src/app/si/model/input/si-result";
 import { SiResultFactory } from "src/app/si/build/si-result-factory";
+import { SiResult } from "src/app/si/model/control/si-result";
 
 @Injectable({
   providedIn: 'root'

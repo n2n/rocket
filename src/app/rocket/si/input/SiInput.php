@@ -181,6 +181,10 @@ class SiEntryError implements \JsonSerializable {
 		$this->fieldErrors[$key] = $fieldError;
 	}
 	
+	function isEmpty() {
+		return empty($this->fieldErrors);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @see \JsonSerializable::jsonSerialize()
@@ -192,7 +196,7 @@ class SiEntryError implements \JsonSerializable {
 	}
 }
 
-class SiFieldError {
+class SiFieldError implements \JsonSerializable {
 	/**
 	 * @var Message[]
 	 */
@@ -207,7 +211,7 @@ class SiFieldError {
 	 */
 	function __construct(array $messages = []) {
 		ArgUtils::valArray($messages, Message::class);
-		$this->messages = $message;
+		$this->messages = $messages;
 	}
 	
 	function putSubEntryError(string $key, SiEntryError $entryError) {

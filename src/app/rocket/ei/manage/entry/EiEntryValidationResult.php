@@ -105,7 +105,7 @@ class EiEntryValidationResult {
 	function toSiEntryError() {
 		$error = new SiEntryError();
 		
-		foreach ($this->getInvalidEiFieldValidationResults($checkRecursive) as $key => $eiFieldValidationResult) {
+		foreach ($this->getInvalidEiFieldValidationResults(true) as $key => $eiFieldValidationResult) {
 			$error->putFieldError($key, $eiFieldValidationResult->toSiFieldError());	
 		}
 		

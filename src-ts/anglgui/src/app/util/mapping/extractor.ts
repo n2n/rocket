@@ -99,7 +99,7 @@ export class Extractor {
     }
     
     reqObject(propName: string): object {
-    	if (typeof this.obj[propName] === 'object') {
+    	if (typeof this.obj[propName] === 'object' && this.obj[propName] !== null) {
             return this.obj[propName];
         }
         

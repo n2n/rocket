@@ -21,6 +21,9 @@ export class InputInFieldComponent implements OnInit {
 	}
 	
 	set value(value: string|null) {
+		if (value == '') {
+			value = null;
+		}
 		this.model.setValue(value);
 	}
 }

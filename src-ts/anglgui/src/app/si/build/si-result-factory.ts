@@ -2,7 +2,7 @@
 import { Extractor } from "src/app/util/mapping/extractor";
 import { SiEntryError } from "src/app/si/model/input/si-entry-error";
 import { SiFieldError } from "src/app/si/model/input/si-field-error";
-import { SiResult } from "src/app/si/model/input/si-result";
+import { SiResult } from "src/app/si/model/control/si-result";
 
 export class SiResultFactory {
 	
@@ -11,8 +11,16 @@ export class SiResultFactory {
 		
 		const result = new SiResult();
 		
-		for (let [key, data] of extr.reqMap('entryErrors')) {
-			result.entryErrors.set(key, SiResultFactory.createEntryError(data));
+		result.directive = extr.nullaString('directive');
+		result.ref = extr.nullaString('ref');
+		result.href = extr.nullaString('href');
+		
+		const inputErrorData = extr.nullaObject('inputError');
+		
+		if (inputErrorData) {
+			for (let [key, data] of new Extractor(inputErrorData).reqMap('entryErrors')) {
+				result.entryErrors.set(key, SiResultFactory.createEntryError(data));
+			}
 		}
 		
 		return result;

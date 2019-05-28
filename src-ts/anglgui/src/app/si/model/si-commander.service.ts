@@ -10,7 +10,7 @@ import { SiEntryInput } from "src/app/si/model/input/si-entry-input";
 import { SiEntry } from "src/app/si/model/content/si-entry";
 import { SiZoneContent } from "src/app/si/model/structure/si-zone-content";
 import { SiEntryError } from "src/app/si/model/input/si-entry-error";
-import { SiResult } from "src/app/si/model/input/si-result";
+import { SiResult } from "src/app/si/model/control/si-result";
 
 @Injectable({
   providedIn: 'root'
