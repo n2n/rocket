@@ -41,6 +41,7 @@ use rocket\ei\manage\entry\UnknownEiObjectException;
 use rocket\ei\manage\gui\control\GeneralGuiControl;
 use rocket\ei\manage\gui\control\EntryGuiControl;
 use rocket\ei\manage\gui\control\GuiControl;
+use n2n\util\ex\IllegalStateException;
 
 class SiApiController extends ControllerAdapter {
 	private $eiFrame;
@@ -84,7 +85,7 @@ class SiApiController extends ControllerAdapter {
 			$callProcess->handleInput($entryInputMaps->parseJson());
 		}
 		
-		$callProcess->callGuiControl();
+		$this->sendJson($callProcess->callGuiControl());
 	}
 	
 	function doCallField(ParamPost $apiCallId, ParamPost $data) {
@@ -283,11 +284,13 @@ class ApiControlProcess {
 	
 	function callGuiControl() {
 		if ($this->generalGuiControl !== null) {
-			$this->generalGuiControl->handle($this->eiGui);
+			return $this->generalGuiControl->handle($this->eiGui);
 		}
 		
 		if ($this->entryGuiControl !== null) {
-			$this->entryGuiControl->handleEntry($this->eiGui, $this->eiEntry);
+			return $this->entryGuiControl->handleEntry($this->eiGui, $this->eiEntry);
 		}
+		
+		throw new IllegalStateException();
 	}
 }

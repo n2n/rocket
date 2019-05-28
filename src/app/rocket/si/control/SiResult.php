@@ -58,8 +58,7 @@ class SiResult implements \JsonSerializable {
 	 * @return \rocket\si\control\SiResult
 	 */
 	function setDirective(?string $directive) {
-		ArgUtils::valEnum($directive, [self::DIRECTIVE_REDIRECT_BACK, self::DIRECTIVE_REDIRECT_TO_REF, 
-				self::DIRECTIVE_REDIRECT_TO_HREF]);
+		ArgUtils::valEnum($directive, [self::DIRECTIVE_REDIRECT_BACK, self::DIRECTIVE_REDIRECT], null, true);
 		$this->directive = $directive;
 		return $this;
 	}

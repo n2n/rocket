@@ -34,6 +34,7 @@ use rocket\ei\manage\gui\EiGui;
 use n2n\reflection\magic\MagicMethodInvoker;
 use rocket\ei\util\Eiu;
 use n2n\util\type\TypeConstraints;
+use rocket\ei\manage\ManageState;
 
 class EiuCallbackGuiControl implements GeneralGuiControl, EntryGuiControl, SelectionGuiControl {
 	private $id;
@@ -95,9 +96,14 @@ class EiuCallbackGuiControl implements GeneralGuiControl, EntryGuiControl, Selec
 		$mmi = new MagicMethodInvoker($eiu->getN2nContext());
 		$mmi->setMethod(new \ReflectionFunction($this->callback));
 		$mmi->setClassParamObject(Eiu::class, $eiu);
-		$mmi->setReturnTypeConstraint(TypeConstraints::type(Eiu::class));
+		$mmi->setReturnTypeConstraint(TypeConstraints::type(EiuControlResponse::class, true));
 		
-		return $mmi->invoke();
+		$eiuControlResponse = $mmi->invoke();
+		if ($eiuControlResponse === null) {
+			$eiuControlResponse = $eiu->factory()->newControlResponse();
+		}
+		
+		return $eiuControlResponse->finalize($eiu->lookup(ManageState::class)->getEiLifecycleMonitor());
 	}
 	
 	/**

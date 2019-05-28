@@ -182,7 +182,7 @@ class Eiu implements Lookupable {
 	 */
 	public function factory() {
 		if ($this->eiuFactory === null) {
-			$this->eiuFactory = new EiuFactory();
+			$this->eiuFactory = new EiuFactory($this->eiuAnalyst);
 		}
 		
 		return $this->eiuFactory;

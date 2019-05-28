@@ -6,6 +6,7 @@ use rocket\ei\util\EiuAnalyst;
 use rocket\ei\EiType;
 use n2n\l10n\Message;
 use n2n\util\uri\Url;
+use rocket\ei\manage\veto\EiLifecycleMonitor;
 
 class EiuControlResponse {
 	private $eiuAnalyst;
@@ -161,14 +162,14 @@ class EiuControlResponse {
 	private function eiObjectMod($eiObjectArg, string $modType) {
 		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectArg, 'eiObjectArg', null, true);
 		
-		$eiTypeId = self::buildCategory($eiObject->getEiEntityObj()->getEiType());
+		$category = self::buildCategory($eiObject->getEiEntityObj()->getEiType());
 		
 		$pid = null;
 		if ($eiObject->getEiEntityObj()->hasId()) {
 			$pid = $eiObject->getEiEntityObj()->getPid();
 		}
 		
-		$this->siResult->addEvent($eiTypeId, $pid, $modType);
+		$this->siResult->addEvent($category, $pid, $modType);
 	}
 	
 	/**
@@ -177,5 +178,38 @@ class EiuControlResponse {
 	 */
 	private static function buildCategory(EiType $eiType) {
 		return $eiType->getSupremeEiType()->getId();
+	}
+	
+	/**
+	 * @param EiLifecycleMonitor $elm
+	 * @return \rocket\si\control\SiResult
+	 */
+	function finalize(EiLifecycleMonitor $elm) {
+		if ($this->noAutoEvents) {
+			return $this->siResult;
+		}
+		
+		$taa = $elm->approve();
+		
+		if (!$taa->isSuccessful()) {
+			$this->message(...$taa->getReasonMessages());
+			return;
+		}
+		
+		foreach ($elm->getUpdateActions() as $action) {
+			$this->eiObjectMod($action->getEiObject(), SiResult::EVENT_TYPE_CHANGED);
+			$this->highlight($action->getEiObject());
+		}
+		
+		foreach ($elm->getPersistActions() as $action) {
+			$this->eiObjectMod($action->getEiObject(), SiResult::EVENT_TYPE_ADDED);
+			$this->highlight($action->getEiObject());
+		}
+		
+		foreach ($elm->getRemoveActions() as $action) {
+			$this->eiObjectMod($action->getEiObject(), SiResult::EVENT_TYPE_REMOVED);
+		}
+		
+		return $this->siResult;
 	}
 }

@@ -23,14 +23,10 @@ namespace rocket\impl\ei\component\prop\adapter\gui;
 
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\manage\gui\field\GuiField;
-use rocket\ei\manage\gui\field\GuiFieldEditable;
 use rocket\ei\util\Eiu;
-use n2n\util\type\ArgUtils;
-use rocket\ei\manage\gui\field\GuiFieldDisplayable;
 use rocket\si\content\SiField;
-use rocket\si\structure\SiStructureType;
 
-class GuiFieldProxy implements GuiField, GuiFieldDisplayable, GuiFieldEditable {
+class GuiFieldProxy implements GuiField {
 	private $eiu;
 	private $statelessGuiFieldDisplayable;
 	private $statelessGuiFieldEditable;
@@ -46,97 +42,62 @@ class GuiFieldProxy implements GuiField, GuiFieldDisplayable, GuiFieldEditable {
 		$this->eiu = $eiu;
 		$this->statelessGuiFieldDisplayable = $statelessGuiFieldDisplayable;
 		$this->statelessGuiFieldEditable = $statelessGuiFieldEditable;
-	}
-	
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\field\GuiField::getDisplayable()
-	 */
-	public function getDisplayable(): GuiFieldDisplayable {
-		return $this;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\field\GuiField::getHtmlContainerAttrs()
-	 */
-	public function getHtmlContainerAttrs(): array {
-		return $this->statelessGuiFieldDisplayable->getHtmlContainerAttrs($this->eiu);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\field\GuiField::getDisplayItemType()
-	 */
-	public function getDisplayItemType(): string {
-		$displayItemType = $this->statelessGuiFieldDisplayable->getDisplayItemType($this->eiu);
-		ArgUtils::valEnum($displayItemType, SiStructureType::all());
-		return $displayItemType;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\field\GuiField::createUiComponent()
-	 */
-	public function createOutSiField(Eiu $eiu): SiField {
-		return $this->statelessGuiFieldDisplayable->createUiComponent($view, $this->eiu);
-	}
-	
-	public function getMessages(): array {
-		return $this->eiu->field()->getMessages();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\field\GuiField::isReadOnly()
-	 */
-	public function isReadOnly(): bool {
-		return $this->statelessGuiFieldEditable === null
-				|| $this->statelessGuiFieldEditable->isReadOnly($this->eiu);
-	}
-	
-	/**
-	 * @return bool
-	 */
-	public function isMandatory(): bool {
-		if ($this->statelessGuiFieldEditable === null) {
-			return false;
+		
+		if ($this->statelessGuiFieldEditable === null || $eiu->gui()->isReadOnly()) {
+			$this->siField = $this->statelessGuiFieldDisplayable->createOutSiField($eiu);
+			return;
 		}
 		
-		return $this->statelessGuiFieldEditable->isMandatory($this->eiu);
+		$this->siField = $this->statelessGuiFieldEditable->createInSiField($eiu);
 	}
+	
+	function getSiField(): SiField {
+		return $this->siField;
+	}
+	
+// 	/**
+// 	 * @return bool
+// 	 */
+// 	public function isMandatory(): bool {
+// 		if ($this->statelessGuiFieldEditable === null) {
+// 			return false;
+// 		}
+		
+// 		return $this->statelessGuiFieldEditable->isMandatory($this->eiu);
+// 	}
 
-	public function getEditable(): GuiFieldEditable {
-		if ($this->statelessGuiFieldEditable === null) {
-			throw new IllegalStateException();
-		}
+// 	public function getEditable(): GuiFieldEditable {
+// 		if ($this->statelessGuiFieldEditable === null) {
+// 			throw new IllegalStateException();
+// 		}
 		
-		return $this;
-	}
+// 		return $this;
+// 	}
 	
-	public function getSiField(): SiField {
-		if ($this->siField !== null) {
-			return $this->siField;
-		}
+// 	public function getSiField(): SiField {
+// 		if ($this->siField !== null) {
+// 			return $this->siField;
+// 		}
 		
-		if ($this->statelessGuiFieldEditable === null || $this->eiu->gui()->isReadOnly()) {
-			$siField = $this->statelessGuiFieldEditable->createOutSiField($this->eiu);
-			ArgUtils::valTypeReturn($siField, SiField::class, $this->statelessGuiFieldDisplayable, 'createOutSiField');
-			return $this->siField = $siField;
-		}
+// 		if ($this->statelessGuiFieldEditable === null || $this->eiu->gui()->isReadOnly()) {
+// 			$siField = $this->statelessGuiFieldEditable->createOutSiField($this->eiu);
+// 			ArgUtils::valTypeReturn($siField, SiField::class, $this->statelessGuiFieldDisplayable, 'createOutSiField');
+// 			return $this->siField = $siField;
+// 		}
 		
-		$siField = $this->statelessGuiFieldEditable->createInSiField($this->eiu);
-		ArgUtils::valTypeReturn($siField, SiField::class, $this->statelessGuiFieldEditable, 'createInSiField');
+// 		$siField = $this->statelessGuiFieldEditable->createInSiField($this->eiu);
+// 		ArgUtils::valTypeReturn($siField, SiField::class, $this->statelessGuiFieldEditable, 'createInSiField');
 		
-		return $this->siField = $siField;
-	}
+// 		return $this->siField = $siField;
+// 	}
 	
 	public function save() {
-		if ($this->siField === null) {
-			throw new IllegalStateException('No SiField created.');
+		if ($this->siField->isReadOnly() || $this->statelessGuiFieldEditable === null) {
+			throw new IllegalStateException('Can not save ready only GuiField');
 		}
 		
 		$this->statelessGuiFieldEditable->saveSiField($this->siField, $this->eiu);
 	}
+	
+
 }

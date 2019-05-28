@@ -599,13 +599,7 @@ class EiuEntry {
 		$this->getEiEntry()->registerListener(new WrittenMappingListener($closure));
 	}
 	
-	/**
-	 * @return NULL|string
-	 */
-	public function getGeneralId() {
-		return GeneralIdUtils::generalIdOf($this->getEiObject());
-	}
-
+	
 	public function fieldMap($forkEiPropPath = null) {
 		$forkEiPropPath = EiPropPath::create($forkEiPropPath);
 		$eiFieldMap = $this->eiEntry->getEiFieldMap();
@@ -693,6 +687,10 @@ class EiuEntry {
 		}
 		
 		throw new EiFieldOperationFailedException('There is no ObjectPropertyAccessProxy configured for ' . $eiProp);
+	}
+	
+	function save() {
+		return $this->eiEntry->save();
 	}
 }  
 

@@ -5,6 +5,14 @@ use rocket\ei\util\privilege\EiuCommandPrivilege;
 use rocket\ei\util\control\EiuControlResponse;
 
 class EiuFactory {
+	private $eiuAnalyst;
+	
+	/**
+	 * @param EiuAnalyst $eiuAnalyst
+	 */
+	function __construct(EiuAnalyst $eiuAnalyst) {
+		$this->eiuAnalyst = $eiuAnalyst;
+	}
 	
 	/**
 	 * @param string $label
@@ -18,6 +26,6 @@ class EiuFactory {
 	 * @return \rocket\ei\util\control\EiuControlResponse
 	 */
 	function newControlResponse() {
-		return new EiuControlResponse();
+		return new EiuControlResponse($this->eiuAnalyst);
 	}
 }

@@ -21,6 +21,8 @@
  */
 namespace rocket\si\content\impl;
 
+use n2n\util\type\attrs\DataSet;
+
 class StringInSiField extends InSiFieldAdapter {
 	/**
 	 * @var string|null
@@ -133,5 +135,6 @@ class StringInSiField extends InSiFieldAdapter {
 	 * @see \rocket\si\content\SiField::handleInput()
 	 */
 	function handleInput(array $data) {
+		$this->value = (new DataSet($data))->reqString('value', true);
 	}
 }

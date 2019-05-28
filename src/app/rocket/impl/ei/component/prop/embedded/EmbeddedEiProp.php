@@ -181,7 +181,7 @@ class EmbeddedGuiProp implements GuiProp {
 }
 
 
-class EmbeddedGuiField implements GuiField, GuiFieldDisplayable, GuiFieldEditable {
+class EmbeddedGuiField implements GuiField {
 	private $eiu;
 	private $embeddedEiProp;
 	private $mag;
@@ -191,14 +191,6 @@ class EmbeddedGuiField implements GuiField, GuiFieldDisplayable, GuiFieldEditabl
 		$this->embeddedEiProp = $embeddedEiProp;
 	}
 	
-	public function getDisplayable(): GuiFieldDisplayable {
-		return $this;
-	}
-	
-	public function getEditable(): GuiFieldEditable {
-		return $this;
-	}
-
 	public function save() {
 		if (!$this->mag->getValue()) {
 			$this->eiu->field()->setValue(null);

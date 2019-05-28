@@ -262,14 +262,14 @@ class EiEntryGui {
 			$eiEntryGuiListener->onSave($this);
 		}
 		
-		foreach ($this->guiFields as $guiFieldAssembly) {
-			if (null !== ($savable = $guiFieldAssembly->getEditable())) {
-				$savable->save();
+		foreach ($this->guiFields as $guiField) {
+			if (!$guiField->getSiField()->isReadOnly()) {
+				$guiField->save();
 			}
 		}
 		
 		foreach ($this->guiFieldForks as $guiFieldForkAssembly) {
-			if (null !== ($savable = $guiFieldForkAssembly->getEditable())) {
+			if (null !== ($guiField = $guiFieldForkAssembly->getEditable())) {
 				$savable->save();
 			}
 		}
