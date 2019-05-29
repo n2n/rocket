@@ -107,7 +107,7 @@ class EiEntryValidationResult {
 		$error = new SiEntryError();
 				
 		foreach ($this->getInvalidEiFieldValidationResults(true) as $key => $eiFieldValidationResult) {
-			$error->putFieldError($key, $eiFieldValidationResult->toSiFieldError());	
+			$error->putFieldError($key, $eiFieldValidationResult->toSiFieldError($n2nLocale));	
 		}
 		
 		if ($error->isEmpty()) {

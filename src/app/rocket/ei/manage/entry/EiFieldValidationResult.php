@@ -154,7 +154,7 @@ class EiFieldValidationResult implements ValidationResult {
 		$err = new SiFieldError();
 		
 		foreach ($this->errorMessages as $message) {
-			$err->addMesssage($message->t($n2nLocale));
+			$err->addMessage($message->t($n2nLocale));
 		}
 		
 // 		foreach ($this->subEiFieldValidationResults as $key => $valResult) {

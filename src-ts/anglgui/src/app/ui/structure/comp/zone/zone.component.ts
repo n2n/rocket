@@ -1,4 +1,4 @@
-import { Component, OnInit, DoCheck, Input, ViewChild, ComponentFactoryResolver, OnDestroy } from '@angular/core';
+import { Component, OnInit, DoCheck, Input, ViewChild, ComponentFactoryResolver, OnDestroy, ElementRef } from '@angular/core';
 import { SiZone } from "src/app/si/model/structure/si-zone";
 import { ListZoneContentComponent } from "src/app/ui/content/zone/comp/list-zone-content/list-zone-content.component";
 import { SiZoneContent } from "src/app/si/model/structure/si-zone-content";
@@ -14,7 +14,9 @@ export class ZoneComponent implements OnInit {
 
 	@Input() siZone: SiZone;
 	
-	constructor(private componentFactoryResolver: ComponentFactoryResolver) { }
+	constructor(private componentFactoryResolver: ComponentFactoryResolver, private elemRef: ElementRef) { 
+		elemRef.nativeElement.classList.add('rocket-contains-additional');
+	}
 
 	ngOnInit() {
 //		const componentFactory = this.componentFactoryResolver.resolveComponentFactory(ListZoneContentComponent);

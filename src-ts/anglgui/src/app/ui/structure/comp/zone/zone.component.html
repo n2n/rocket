@@ -10,4 +10,18 @@
 
 <div *ngIf="!siStructure" class="rocket-loader"></div>
 
-<rocket-ui-structure *ngIf="siStructure" [siStructure]="siStructure"></rocket-ui-structure>
+<rocket-ui-structure *ngIf="siStructure" [siStructure]="siStructure" class="rocket-content"></rocket-ui-structure>
+
+<div class="rocket-additional">
+	<ul class="rocket-additional-nav">
+		<li class="rocket-severity-danger rocket-active">Errors</li>
+	</ul>
+	<div class="rocket-additional-container">
+		<div class="rocket-additional-content" style="">
+			<div class="rocket-error-index-entry">
+				<div class="rocket-error-index-message">Created ist obligatorisch.</div>
+				<a href="#">Fehler anzeigen</a>
+			</div>
+		</div>
+	</div>
+</div>

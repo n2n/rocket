@@ -4,7 +4,7 @@
 import { SiFieldError } from "src/app/si/model/input/si-field-error";
 
 export class SiEntryError {
-	constructor (public messages: string[] = []) {
+	constructor (/*public messages: string[] = []*/) {
 	}
 	
 	public fieldErrors = new Map<string, SiFieldError>();
@@ -12,7 +12,7 @@ export class SiEntryError {
 	getAllMessages(): string[] {
 		const messages: string[] = [];
 		
-		messages.push(...this.messages);
+//		messages.push(...this.messages);
 		
 		for (const [key, fieldError] of this.fieldErrors) {
 			messages.push(...fieldError.getAllMessages());

@@ -102,13 +102,15 @@ export class SiCommanderService {
 		if (inputEntries.length > 0) {
 			this.handleEntryErrors(result.entryErrors, inputEntries)
 		}
-		
-		
 	}
 	
 	private handleEntryErrors(entryErrors: Map<string, SiEntryError>, entries: SiEntry[]) {
 		if (entries.length == 0) {
 			return;
+		}
+		
+		for (let entry of entries) {
+			entry.resetError();
 		}
 		
 		for (let [key, entryError] of entryErrors) {

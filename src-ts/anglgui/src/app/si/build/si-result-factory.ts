@@ -29,7 +29,7 @@ export class SiResultFactory {
 	static createEntryError(data: any): SiEntryError {
 		const extr = new Extractor(data);
 		
-		const entryError = new SiEntryError(extr.reqStringArray('messages'));
+		const entryError = new SiEntryError(/*extr.reqStringArray('messages')*/);
 		
 		for (let [key, fieldData] of extr.reqMap('fieldErrors')) {
 			entryError.fieldErrors.set(key, SiResultFactory.createFieldError(fieldData));

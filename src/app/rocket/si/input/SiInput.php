@@ -215,19 +215,30 @@ class SiFieldError implements \JsonSerializable {
 	private $subEntryErrors = [];
 	
 	/**
-	 * @param array $messages
+	 * 
 	 */
 	function __construct() {
 	}
 	
+	/**
+	 * @param string $message
+	 */
 	function addMessage(string $message) {
 		$this->messages[] = $message;
 	}
 	
+	/**
+	 * @param string $key
+	 * @param SiEntryError $entryError
+	 */
 	function putSubEntryError(string $key, SiEntryError $entryError) {
 		$this->subEntryErrors[$key] = $entryError;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \JsonSerializable::jsonSerialize()
+	 */
 	function jsonSerialize() {
 		return [
 			'messages' => $this->messages,

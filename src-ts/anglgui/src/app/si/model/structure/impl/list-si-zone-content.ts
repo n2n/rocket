@@ -17,7 +17,6 @@ export class ListSiZoneContent implements SiZoneContent, SiStructureContent {
 	public size: number|null = null;
 	public compactDeclaration: SiCompactDeclaration|null = null;
 	private structure: SiStructure;
-
 	
 	constructor(public apiUrl: string, public pageSize: number, public zone: SiZone) {
 		this.structure = new SiStructure();
@@ -33,7 +32,7 @@ export class ListSiZoneContent implements SiZoneContent, SiStructureContent {
 	}
 	
 	getEntries(): SiEntry[] {
-	    throw new Error("Method not implemented.");
+		throw new Error("Method not implemented.");
     }
 	
     getSelectedEntries(): SiEntry[] {

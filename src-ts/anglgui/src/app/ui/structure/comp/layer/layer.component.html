@@ -1,13 +1,8 @@
-<p>
-  
-</p>
-
-
 
 <ng-container *ngIf="!siLayer.curSiZone; else siZoneContent">
 	<div class="rocket-loader"></div>
 </ng-container>
 
 <ng-template #siZoneContent>
-	<rocket-ui-zone [siZone]="siLayer.curSiZone"></rocket-ui-zone>
+	<rocket-ui-zone [siZone]="siLayer.curSiZone" class="rocket-zone"></rocket-ui-zone>
 </ng-template>
