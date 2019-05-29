@@ -255,7 +255,7 @@ class ApiControlProcess {
 				continue;
 			}
 			
-			$entryErrors[$key] = $eiEntry->getValidationResult()->toSiEntryError();
+			$entryErrors[$key] = $eiEntry->getValidationResult()->toSiEntryError($this->eiFrame->getN2nContext()->getN2nLocale());
 		}
 		
 		if (empty($entryErrors)) {

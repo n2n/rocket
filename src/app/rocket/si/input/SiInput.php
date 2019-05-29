@@ -21,7 +21,6 @@
  */
 namespace rocket\si\input;
 
-use n2n\util\type\ArgUtils;
 use n2n\l10n\Message;
 use n2n\persistence\meta\structure\UnknownIndexException;
 
@@ -168,10 +167,19 @@ class SiError implements \JsonSerializable {
 }
 
 class SiEntryError implements \JsonSerializable {
+// 	/**
+// 	 * @var string[]
+// 	 */
+// 	private $messages = [];
 	/**
 	 * @var SiFieldError[]
 	 */
 	private $fieldErrors = [];
+	
+// 	function __construct(array $messages = []) {
+// 		ArgUtils::valArray($messages, 'string');
+// 		$this->messages = $messages;
+// 	}
 	
 	/**
 	 * @param string $key
@@ -198,9 +206,9 @@ class SiEntryError implements \JsonSerializable {
 
 class SiFieldError implements \JsonSerializable {
 	/**
-	 * @var Message[]
+	 * @var string[]
 	 */
-	private $messages;
+	private $messages = [];
 	/**
 	 * @var SiEntryError[]
 	 */
@@ -209,12 +217,21 @@ class SiFieldError implements \JsonSerializable {
 	/**
 	 * @param array $messages
 	 */
-	function __construct(array $messages = []) {
-		ArgUtils::valArray($messages, Message::class);
-		$this->messages = $messages;
+	function __construct() {
+	}
+	
+	function addMessage(string $message) {
+		$this->messages[] = $message;
 	}
 	
 	function putSubEntryError(string $key, SiEntryError $entryError) {
 		$this->subEntryErrors[$key] = $entryError;
+	}
+	
+	function jsonSerialize() {
+		return [
+			'messages' => $this->messages,
+			'subEntryErrors' => $this->subEntryErrors
+		];
 	}
 }

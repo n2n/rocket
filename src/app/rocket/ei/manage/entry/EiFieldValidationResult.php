@@ -25,9 +25,13 @@ use n2n\l10n\Message;
 use rocket\ei\EiPropPath;
 use n2n\util\ex\IllegalStateException;
 use rocket\si\input\SiFieldError;
+use n2n\l10n\N2nLocale;
 
 class EiFieldValidationResult implements ValidationResult {
 	private $eiPropPath;
+	/**
+	 * @var Message
+	 */
 	private $errorMessages = array();
 // 	/**
 // 	 * @var EiFieldValidationResult[]
@@ -146,8 +150,12 @@ class EiFieldValidationResult implements ValidationResult {
 	/**
 	 * @return \rocket\si\input\SiFieldError
 	 */
-	public function toSiFieldError() {
-		$err = new SiFieldError($this->errorMessages);
+	public function toSiFieldError(N2nLocale $n2nLocale) {
+		$err = new SiFieldError();
+		
+		foreach ($this->errorMessages as $message) {
+			$err->addMesssage($message->t($n2nLocale));
+		}
 		
 // 		foreach ($this->subEiFieldValidationResults as $key => $valResult) {
 // 			if ($valResult->isValid()) continue;
@@ -158,7 +166,7 @@ class EiFieldValidationResult implements ValidationResult {
 		foreach ($this->subEiEntryValidationResults as $key => $valResult) {
 			if ($valResult->isValid()) continue;
 				
-			$err->putSubEiEntryError($key, $valResult->toSiEntryError());
+			$err->putSubEiEntryError($key, $valResult->toSiEntryError($n2nLocale));
 		}
 		
 		return $err;

@@ -24,6 +24,7 @@ namespace rocket\ei\manage\entry;
 use n2n\l10n\Message;
 use rocket\ei\EiPropPath;
 use rocket\si\input\SiEntryError;
+use n2n\l10n\N2nLocale;
 
 class EiEntryValidationResult {
 	/**
@@ -102,9 +103,9 @@ class EiEntryValidationResult {
 	/**
 	 * @return SiEntryError|null 
 	 */
-	function toSiEntryError() {
+	function toSiEntryError(N2nLocale $n2nLocale) {
 		$error = new SiEntryError();
-		
+				
 		foreach ($this->getInvalidEiFieldValidationResults(true) as $key => $eiFieldValidationResult) {
 			$error->putFieldError($key, $eiFieldValidationResult->toSiFieldError());	
 		}
