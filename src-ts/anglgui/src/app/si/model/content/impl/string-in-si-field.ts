@@ -9,10 +9,12 @@ import { InSiFieldAdapter } from "src/app/si/model/content/impl/in-si-field-adap
 export class StringInSiField extends InSiFieldAdapter implements StringInFieldModel {
     
     public mandatory: boolean = false;
+	public minlength: number|null = null;
 	public maxlength: number|null = null;
 	
 	constructor(public value: string|null, public multiline: boolean = false) {
 		super();
+		this.validate();
 	}
 	
     readInput(): object {
@@ -29,6 +31,23 @@ export class StringInSiField extends InSiFieldAdapter implements StringInFieldMo
     
     setValue(value: string|null) {
     	this.value = value;
+    	this.validate();
+    }
+    
+    private validate() {
+    	this.messages = [];
+    	
+    	if (this.mandatory && this.value === null) {
+    		this.messages.push('mandatory front err');
+    	}
+    	
+    	if (this.minlength && this.value && this.value.length < this.minlength) {
+    		this.messages.push('minlength front err');
+    	}
+    	
+    	if (this.maxlength && this.value && this.value.length > this.maxlength) {
+    		this.messages.push('maxlength front err');
+    	}
     }
     
 	initComponent(viewContainerRef: ViewContainerRef, 

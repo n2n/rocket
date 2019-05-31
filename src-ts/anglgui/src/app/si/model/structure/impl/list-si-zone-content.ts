@@ -10,9 +10,9 @@ import { SiStructureType } from "src/app/si/model/structure/si-field-structure-d
 import { SiStructureContent } from "src/app/si/model/structure/si-structure-content";
 import { SiStructure } from "src/app/si/model/structure/si-structure";
 import { SiZone } from "src/app/si/model/structure/si-zone";
+import { SiZoneError } from "src/app/si/model/structure/si-zone-error";
 
 export class ListSiZoneContent implements SiZoneContent, SiStructureContent {
-    
 	private pages = new Map<number, SiPage>();
 	public size: number|null = null;
 	public compactDeclaration: SiCompactDeclaration|null = null;
@@ -37,6 +37,10 @@ export class ListSiZoneContent implements SiZoneContent, SiStructureContent {
 	
     getSelectedEntries(): SiEntry[] {
         throw new Error("Method not implemented.");
+    }
+    
+    getZoneErrors(): SiZoneError[] {
+        return [];
     }
 	
 	private ensureSetup() {

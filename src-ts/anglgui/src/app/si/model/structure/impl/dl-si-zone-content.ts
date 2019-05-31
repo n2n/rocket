@@ -10,6 +10,7 @@ import { SiFieldDeclaration } from "src/app/si/model/structure/si-field-declarat
 import { SiStructure } from "src/app/si/model/structure/si-structure";
 import { SiControl } from "src/app/si/model/control/si-control";
 import { SiZone } from "src/app/si/model/structure/si-zone";
+import { SiZoneError } from "src/app/si/model/structure/si-zone-error";
 
 export class DlSiZoneContent implements SiZoneContent, SiStructureContent {
    
@@ -32,6 +33,19 @@ export class DlSiZoneContent implements SiZoneContent, SiStructureContent {
 	
     getEntries(): SiEntry[] {
     	return this.entries;
+    }
+    
+    getZoneErrors(): SiZoneError[] {
+    	let zoneErrors: SiZoneError[] = [];
+    		
+    	for (let entry of this.entries) {
+    		for (let [key, siField] of entry.selectedBuildup.fieldMap) {
+    			zoneErrors.push(...siField.getZoneErrors());
+    		}
+    	}
+    	
+    	return zoneErrors;
+    	
     }
     
     getSelectedEntries(): SiEntry[] {

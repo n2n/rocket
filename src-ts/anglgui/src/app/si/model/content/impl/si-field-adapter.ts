@@ -4,9 +4,10 @@
 import { ViewContainerRef, ComponentFactoryResolver, ComponentRef } from "@angular/core";
 import { SiFieldError } from "src/app/si/model/input/si-field-error";
 import { SiField } from "src/app/si/model/content/si-field";
+import { SiZoneError } from "src/app/si/model/structure/si-zone-error";
 
 export abstract class SiFieldAdapter implements SiField {
-	messages: string[] = [];
+	protected messages: string[] = [];
 	
 	abstract initComponent(viewContainerRef: ViewContainerRef, 
 			componentFactoryResolver: ComponentFactoryResolver): ComponentRef<any>;
@@ -26,4 +27,32 @@ export abstract class SiFieldAdapter implements SiField {
 	resetError(): void {
 		this.messages = [];
 	}
+	
+	getZoneErrors(): SiZoneError[] {
+		if (this.messages.length > 0) {
+			return [new SiFieldZoneError(this, this.messages)];
+		}
+	
+		return [];
+	}
+}
+
+export class SiFieldZoneError implements SiZoneError {
+	constructor(private siField: SiField, private messages: string[]) {
+	}
+	
+    getTitle(): string {
+    	return 'title';
+    }
+    getMessages(): string[] {
+        return this.messages;
+    }
+    
+    setHighlighted(highlighted: any): void {
+    	throw new Error("Method not implemented.");
+    }
+    focus(): void {
+        throw new Error("Method not implemented.");
+    }
+	
 }

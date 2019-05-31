@@ -12,4 +12,6 @@ export interface SiField {
 	handleError(error: SiFieldError): void;
 	
 	resetError(): void;
+	
+	getZoneErrors(): SiZoneError[];
 }
