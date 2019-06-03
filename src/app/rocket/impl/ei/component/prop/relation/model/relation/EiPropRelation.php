@@ -347,16 +347,16 @@ abstract class EiPropRelation {
 		return $targetEiFrame;
 	}
 
-	protected function createTargetCriteriaFactory(EiObject $eiObject) {
-		if ($eiObject->isNew()) return null;
+// 	protected function createTargetCriteriaFactory(EiObject $eiObject) {
+// 		if ($eiObject->isNew()) return null;
 
-		if (!$this->getRelationEntityProperty()->isMaster() && !$this->isSourceMany()) {
-			return new MappedOneToCriteriaFactory($this->getRelationEntityProperty()->getRelation(), 
-					$eiObject->getLiveObject());
-		}
+// 		if (!$this->getRelationEntityProperty()->isMaster() && !$this->isSourceMany()) {
+// 			return new MappedOneToCriteriaFactory($this->getRelationEntityProperty()->getRelation(), 
+// 					$eiObject->getLiveObject());
+// 		}
 
-		return new RelationCriteriaFactory($this->getRelationEntityProperty(), $eiObject->getLiveObject());
-	}
+// 		return new RelationCriteriaFactory($this->getRelationEntityProperty(), $eiObject->getLiveObject());
+// 	}
 	
 	protected function applyTargetModificators(EiFrame $targetEiFrame, EiFrame $eiFrame, 
 			EiObject $eiObject) {
@@ -388,13 +388,6 @@ abstract class EiPropRelation {
 		return $this->getRelationEntityProperty()->getRelation()->getCascadeType() & CascadeType::PERSIST;
 	}
 	
-// 	public function isRemoveCascaded() {
-// 		return $this->getRelationEntityProperty()->getRelation()->getCascadeType() & CascadeType::REMOVE;
-// 	}
-	
-// 	public function isJoinTableRelation() {
-// 		return $this->getRelationEntityProperty()->getRelation() instanceof JoinTableRelation;
-// 	}
 
 	public function buildTargetNewEiuEntryFormUrl(EiEntry $eiEntry, bool $draft, EiFrame $eiFrame, HttpContext $httpContext): Url {
 		$pathParts = array($this->relationEiCommand->getWrapper()->getEiCommandPath());
