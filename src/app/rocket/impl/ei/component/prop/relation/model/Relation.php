@@ -63,7 +63,7 @@ class Relation {
 			return null;
 		}
 		
-		$this->relationEntityProperty->
+		$this->$targetMasterEiProp == RelationUtils::deterTargetMas
 	}
 	
 	/**

@@ -57,12 +57,12 @@ use n2n\persistence\meta\structure\Column;
 
 class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 	const ATTR_TARGET_EXTENSIONS_KEY = 'targetExtensions';
-	const ATTR_MIN_KEY = 'min';
-	const ATTR_MAX_KEY = 'max';
-	const ATTR_REPLACEABLE_KEY = 'replaceable';
-	const ATTR_REDUCED_KEY = 'reduced';
+	const ATTR_MIN_KEY = 'min';	// tm
+	const ATTR_MAX_KEY = 'max'; // tm
+	const ATTR_REPLACEABLE_KEY = 'replaceable'; // eto
+	const ATTR_REDUCED_KEY = 'reduced'; // emb
 	const ATTR_TARGET_REMOVAL_STRATEGY_KEY = 'targetRemovalStrategy';
-	const ATTR_TARGET_ORDER_EI_FIELD_PATH_KEY = 'targetOrderField';
+	const ATTR_TARGET_ORDER_EI_FIELD_PATH_KEY = 'targetOrderField'; // etm
 	const ATTR_ORPHANS_ALLOWED_KEY = 'orphansAllowed';
 	const ATTR_FILTERED_KEY = 'filtered';
 	const ATTR_HIDDEN_IF_TARGET_EMPTY_KEY = 'hiddenIfTargetEmpty';
