@@ -18,6 +18,7 @@ import { StructureContentDirective } from "src/app/ui/structure/comp/structure/s
 import { FieldStructureComponent } from "src/app/ui/structure/comp/field-structure/field-structure.component";
 import { FileInFieldComponent } from './content/field/comp/file-in-field/file-in-field.component';
 import { FileOutFieldComponent } from './content/field/comp/file-out-field/file-out-field.component';
+import { UtilModule } from "src/app/util/util.module";
 
 @NgModule({
   declarations: [ LayerComponent, ContainerComponent, ZoneComponent, StructureContentDirective, ListZoneContentComponent, 
@@ -25,7 +26,8 @@ import { FileOutFieldComponent } from './content/field/comp/file-out-field/file-
     FieldStructureComponent, InputInFieldComponent, TextareaInFieldComponent, StructureComponent, FileInFieldComponent, FileOutFieldComponent ],
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule,
+    UtilModule
   ],
   exports: [
     ContainerComponent,

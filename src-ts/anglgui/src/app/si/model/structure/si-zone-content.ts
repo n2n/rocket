@@ -10,8 +10,6 @@ export interface SiZoneContent {
  	
 	getZone(): SiZone;
 	
-//	getApiUrl(): string;
-	
 	getEntries(): SiEntry[];
 	
 	getSelectedEntries(): SiEntry[];

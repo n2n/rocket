@@ -12,14 +12,15 @@
 
 <rocket-ui-structure *ngIf="siStructure" [siStructure]="siStructure" class="rocket-content"></rocket-ui-structure>
 
-<div class="rocket-additional">
+<div *ngIf="hasSiZoneErrors()" class="rocket-additional">
 	<ul class="rocket-additional-nav">
-		<li class="rocket-severity-danger rocket-active">Errors</li>
+		<li class="rocket-severity-danger rocket-active">{{ 'errors_txt' | translate }}</li>
 	</ul>
 	<div class="rocket-additional-container">
 		<div class="rocket-additional-content" style="">
-			<div class="rocket-error-index-entry">
-				<div class="rocket-error-index-message">Created ist obligatorisch.</div>
+			<div *ngFor="let siZoneError of siZoneErrors" class="rocket-error-index-entry">
+				<div *ngFor="let message of siZoneError.getMessages()" 
+						class="rocket-error-index-message">{{ message }}</div>
 				<a href="#">Fehler anzeigen</a>
 			</div>
 		</div>
