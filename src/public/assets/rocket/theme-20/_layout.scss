@@ -116,6 +116,7 @@ body {
 
 .rocket-content {
     margin-top: 1rem;
+    display: block;
 }
 
  #rocket-content-container {
@@ -239,7 +240,8 @@ body {
 
  @include media-breakpoint-up(lg) {
 	.rocket-zone.rocket-contains-additional {
-		width: calc(100% - 20rem);
+        width: calc(100% - 20rem);
+        display: block;
 		> .rocket-additional {
 			position: fixed;
 			top: 7.825rem;

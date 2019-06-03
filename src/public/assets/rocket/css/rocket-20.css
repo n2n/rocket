@@ -4546,6 +4546,7 @@ body {
  */
 .rocket-content {
   margin-top: 1rem;
+  display: block;
 }
 
 #rocket-content-container {
@@ -4671,6 +4672,7 @@ body {
 @media (min-width: 992px) {
   .rocket-zone.rocket-contains-additional {
     width: calc(100% - 20rem);
+    display: block;
   }
   .rocket-zone.rocket-contains-additional > .rocket-additional {
     position: fixed;
@@ -5403,7 +5405,7 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
 /*
  * Footer
  */
-.rocket-pagination .rocket-pagination-no  {
+.rocket-pagination .rocket-pagination-no {
   width: 5rem;
   text-align: center;
   display: inline-block;
