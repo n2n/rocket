@@ -15,7 +15,7 @@ export class ApiCallSiControl implements SiControl {
 	inputSent = false;
 	private entryBoundFlag: boolean
 	
-	constructor(public apiCallId: object, public button: SiButton,
+	constructor(public apiUrl: string, public apiCallId: object, public button: SiButton,
 			public zoneContent: SiZoneContent, public entry: SiEntry|null = null) {	
 	}
 	
@@ -37,16 +37,16 @@ export class ApiCallSiControl implements SiControl {
 	
 	exec(commandService: SiCommanderService) {
 		if (this.entry) {
-			commandService.execEntryControl(this.apiCallId, this.zoneContent, this.entry, this.inputSent);
+			commandService.execEntryControl(this.apiUrl, this.apiCallId, this.entry, this.inputSent);
 			return;
 		}
 		
 		if (this.entryBound) {
-			commandService.execSelectionControl(this.apiCallId, this.zoneContent, this.zoneContent.getSelectedEntries(), 
+			commandService.execSelectionControl(this.apiUrl, this.apiCallId, this.zoneContent, this.zoneContent.getSelectedEntries(), 
 					this.inputSent);
 			return;
 		}
 		
-		commandService.execControl(this.apiCallId, this.zoneContent, this.inputSent);
+		commandService.execControl(this.apiUrl, this.apiCallId, this.zoneContent, this.inputSent);
 	}
 }

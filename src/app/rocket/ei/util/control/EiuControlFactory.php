@@ -43,6 +43,13 @@ class EiuControlFactory {
 	}
 	
 	/**
+	 * @return \n2n\util\uri\Url
+	 */
+	private function getApiUrl() {
+		return $this->eiuGui->getEiuFrame()->getApiUrl($this->eiCommand);
+	}
+	
+	/**
 	 * @param string $id
 	 * @param SiButton $siButton
 	 * @param mixed|null $urlExt
@@ -69,7 +76,7 @@ class EiuControlFactory {
 	 * @return \rocket\ei\util\control\EiuCallbackGuiControl
 	 */
 	public function createCallback(string $id, SiButton $siButton, \Closure $callback) {
-		return new EiuCallbackGuiControl($id, $this->eiuGui->getViewMode(), $callback, $siButton);
+		return new EiuCallbackGuiControl($id, $this->getApiUrl(), $this->eiuGui->getViewMode(), $callback, $siButton);
 	}
 	
 // 	public function createGroup(ControlButton $siButton): GroupControl {

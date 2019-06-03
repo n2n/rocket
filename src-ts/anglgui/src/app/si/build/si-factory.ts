@@ -225,6 +225,7 @@ export class SiCompFactory {
 						this.zoneContent.getZone().layer);
 			case SiControlType.API_CALL:
 				const apiControl = new ApiCallSiControl(
+						dataExtr.reqString('apiUrl'),
 						dataExtr.reqObject('apiCallId'),
 						this.createButton(controlId, dataExtr.reqObject('button')),
 						this.zoneContent);

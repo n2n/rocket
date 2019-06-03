@@ -25,11 +25,13 @@ use rocket\si\control\SiControl;
 use rocket\si\control\SiButton;
 
 class ApiCallSiControl implements SiControl {
+	private $apiUrl;
 	private $apiCallId;
 	private $button;
 	private $inputHandled;
 	
-	public function __construct(\JsonSerializable $apiCallId, SiButton $button, bool $inputHandled = false) {
+	public function __construct(string $apiUrl, \JsonSerializable $apiCallId, SiButton $button, bool $inputHandled = false) {
+		$this->apiUrl = $apiUrl;
 		$this->apiCallId = $apiCallId;
 		$this->button = $button;
 		$this->inputHandled = $inputHandled;
@@ -40,6 +42,6 @@ class ApiCallSiControl implements SiControl {
 	}
 
 	public function getData(): array {
-		return [ 'apiCallId' => $this->apiCallId, 'button' => $this->button, 'inputHandled' => $this->inputHandled ];
+		return [ 'apiUrl' => $this->apiUrl, 'apiCallId' => $this->apiCallId, 'button' => $this->button, 'inputHandled' => $this->inputHandled ];
 	}
 }

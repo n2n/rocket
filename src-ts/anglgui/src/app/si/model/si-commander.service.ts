@@ -43,7 +43,7 @@ export class SiCommanderService {
 		this.router.navigateByUrl(url.substring(baseHref.length));
 	}
 	
-	execEntryControl(callId: object, zoneContent: SiZoneContent, entry: SiEntry, includeInput: boolean) {
+	execEntryControl(apiUrl: string, callId: object, entry: SiEntry, includeInput: boolean) {
 		if (!entry.id) {
 			throw new IllegalSiStateError('Entry control cannnot be executed on new entry.');
 		}
@@ -53,10 +53,10 @@ export class SiCommanderService {
 			entryInputs.push(entry.readInput());
 		}
 
-		this.siService.entryControlCall(zoneContent.getApiUrl(), callId, entry.id, entryInputs);
+		this.siService.entryControlCall(apiUrl, callId, entry.id, entryInputs);
 	}
 	
-	execSelectionControl(callId: object, zoneContent: SiZoneContent, entries: SiEntry[], includeInput: boolean) {
+	execSelectionControl(apiUrl: string, callId: object, zoneContent: SiZoneContent, entries: SiEntry[], includeInput: boolean) {
 		const entryIds: string[] = [];
 		const entryInputs: SiEntryInput[] = [];
 	
@@ -72,10 +72,10 @@ export class SiCommanderService {
 			}
 		}
 		
-		this.siService.selectionControlCall(zoneContent.getApiUrl(), callId, entryIds, entryInputs);
+		this.siService.selectionControlCall(apiUrl, callId, entryIds, entryInputs);
 	}
 	
-	execControl(callId: object, zoneContent: SiZoneContent, includeInput: boolean) {
+	execControl(apiUrl: string, callId: object, zoneContent: SiZoneContent, includeInput: boolean) {
 		const input = new SiInput();
 
 		if (!includeInput) {
@@ -92,7 +92,7 @@ export class SiCommanderService {
 			input.entryInputs.push(entry.readInput());
 		}
 		
-		this.siService.controlCall(zoneContent.getApiUrl(), callId, input)
+		this.siService.controlCall(apiUrl, callId, input)
 				.subscribe((result) => {
 					this.handleResult(result, entries);
 				});

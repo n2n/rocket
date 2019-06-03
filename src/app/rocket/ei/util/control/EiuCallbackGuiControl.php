@@ -35,9 +35,11 @@ use n2n\reflection\magic\MagicMethodInvoker;
 use rocket\ei\util\Eiu;
 use n2n\util\type\TypeConstraints;
 use rocket\ei\manage\ManageState;
+use n2n\util\uri\Url;
 
 class EiuCallbackGuiControl implements GeneralGuiControl, EntryGuiControl, SelectionGuiControl {
 	private $id;
+	private $apiUrl;
 	private $viewMode;
 	private $callback;
 	private $siButton;
@@ -48,8 +50,9 @@ class EiuCallbackGuiControl implements GeneralGuiControl, EntryGuiControl, Selec
 	 * @param \Closure $callback
 	 * @param SiButton $siButton
 	 */
-	function __construct(string $id, int $viewMode, \Closure $callback, SiButton $siButton) {
+	function __construct(string $id, Url $apiUrl, int $viewMode, \Closure $callback, SiButton $siButton) {
 		$this->id = $id;
+		$this->apiUrl = $apiUrl;
 		$this->viewMode = $viewMode;
 		$this->callback = $callback;
 		$this->siButton = $siButton;
@@ -85,7 +88,7 @@ class EiuCallbackGuiControl implements GeneralGuiControl, EntryGuiControl, Selec
 	 * @see \rocket\ei\manage\gui\control\GuiControl::toSiControl()
 	 */
 	function toSiControl(SiApiControlCallId $siApiCallId): SiControl {
-		return new ApiCallSiControl($siApiCallId, $this->siButton, $this->inputHandled);
+		return new ApiCallSiControl($this->apiUrl, $siApiCallId, $this->siButton, $this->inputHandled);
 	}
 	
 	/**
