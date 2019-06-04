@@ -25,25 +25,39 @@ use n2n\util\ex\IllegalStateException;
 use rocket\ei\manage\EiObject;
 
 class EiRelation {
-	private $eiFrame;
-	private $eiObject;
+	private $targetEiFrame;
+	private $targetEiObject;
 	
-	public function __construct(EiFrame $eiFrame, EiObject $eiObject = null) {
-		$this->eiFrame = $eiFrame;
-		$this->eiObject = $eiObject;
+	/**
+	 * @param EiFrame $targetEiFrame
+	 * @param EiObject $targetEiObject
+	 */
+	public function __construct(EiFrame $targetEiFrame, EiObject $targetEiObject = null) {
+		$this->targetEiFrame = $targetEiFrame;
+		$this->targetEiObject = $targetEiObject;
 	}
 	
-	public function getEiFrame() {
-		return $this->eiFrame;
+	/**
+	 * @return \rocket\ei\manage\frame\EiFrame
+	 */
+	public function getTargetEiFrame() {
+		return $this->targetEiFrame;
 	}
 	
-	public function hasEiObject(): bool {
-		return $this->eiObject !== null;
+	/**
+	 * @return boolean
+	 */
+	public function hasTargetEiObject() {
+		return $this->targetEiObject !== null;
 	}
 	
-	public function getEiObject() {
-		if ($this->eiObject !== null) {
-			return $this->eiObject;
+	/**
+	 * @throws IllegalStateException
+	 * @return \rocket\ei\manage\EiObject
+	 */
+	public function getTargetEiObject() {
+		if ($this->targetEiObject !== null) {
+			return $this->targetEiObject;
 		}
 		
 		throw new IllegalStateException();

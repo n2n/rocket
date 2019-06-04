@@ -22,9 +22,6 @@
 namespace rocket\ei\util\frame;
 
 use rocket\ei\manage\entry\EiEntry;
-use n2n\persistence\orm\criteria\compare\CriteriaComparator;
-use n2n\persistence\orm\criteria\item\CrIt;
-use n2n\persistence\orm\store\EntityInfo;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\EiObject;
 use rocket\ei\EiType;
@@ -71,6 +68,8 @@ use rocket\ei\EiPropPath;
 use rocket\ei\util\entry\EiuFieldMap;
 use rocket\ei\util\entry\EiuObject;
 use rocket\ei\manage\frame\EiFrameUtil;
+use rocket\ei\manage\frame\EiRelation;
+use rocket\ei\component\prop\EiProp;
 
 class EiuFrame {
 	private $eiFrame;
@@ -1026,6 +1025,28 @@ class EiuFrame {
 	 */
 	public function newSortForm(SortSettingGroup $sortSetting = null) {
 		return new EiuSortForm($this->getSortDefinition(), $sortSetting, $this->eiuAnalyst);
+	}
+	
+	/**
+	 * @param EiPropPath|EiProp|string $eiPropPath
+	 * @param mixed $targetEiFrameArg
+	 * @param mixed $targetEiObjectArg
+	 * @return bool
+	 */
+	public function setRelation($eiPropPath, $targetEiFrameArg, $targetEiObjectArg = null) {
+		$eiPropPath = EiPropPath::create($eiPropPath);
+		$targetEiFrame = EiuAnalyst::buildEiFrameFromEiArg($targetEiFrameArg, 'targetEiFrameArg');
+		$targetEiObject = EiuAnalyst::buildEiObjectFromEiArg($targetEiObjectArg, 'targetEiObjectArg', false);
+		
+		$this->eiFrame->setEiRelation($eiPropPath, new EiRelation($targetEiFrame, $targetEiObject));
+	}
+	
+	/**
+	 * @param EiPropPath|EiProp|string $eiPropPath
+	 * @return bool
+	 */
+	public function hasRelation($eiPropPath) {
+		return $this->eiFrame->hasEiRelation(EiPropPath::create($eiPropPath));
 	}
 }
 

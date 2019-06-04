@@ -1387,4 +1387,21 @@ class EiuAnalyst {
 		
 		ArgUtils::valType($eiObjectObj, $eiObjectTypes, !$required, $argName);
 	}
+	
+	public static function buildEiFrameFromEiArg($eiFrameObj, string $argName = null, bool $required = true) {
+		if (!$required && $eiFrameObj === null) {
+			return null;
+		}
+				
+		if ($eiFrameObj instanceof EiFrame) {
+			return $eiFrameObj;
+		}
+		
+		if ($eiFrameObj instanceof EiuFrame) {
+			return $eiFrameObj->getEiFrame();
+		}
+				
+		ArgUtils::valType($eiFrameObj, [EiFrame::class, EiuFrame::class], !$required, $argName);
+		throw new \LogicException();
+	}
 }

@@ -56,13 +56,18 @@ use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\ei\manage\frame\Boundry;
 use rocket\ei\manage\security\InaccessibleEiCommandPathException;
 use rocket\si\structure\SiStructureType;
+use rocket\impl\ei\component\prop\relation\model\Relation;
 
 class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 
-	public function __construct() {
-		parent::__construct();
-		
-		$this->initialize(new SelectEiPropRelation($this, true, false));
+	private $relation;
+	
+	function getRelation() {
+		if ($this->relation === null) {
+			$this->relation = Relation::createManyToOne($this->getRelationEntityProperty(), false)
+		}
+			
+		return $this->relation;
 	}
 	
 	public function getDisplayItemType(): string {
