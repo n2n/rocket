@@ -29,13 +29,13 @@ use rocket\ei\manage\entry\EiEntry;
 
 class MappedRelationEiModificator implements EiFrameListener {
 	private $targetEiFrame;
-	private $relationEntry;
+	private $relationEiuObj;
 	private $targetEiPropPath;
 	private $sourceMany;
 
-	public function __construct(EiFrame $targetEiFrame, RelationEntry $relationEntry, EiPropPath $targetEiPropPath, bool $sourceMany) {
+	public function __construct(EiFrame $targetEiFrame, $relationEiuObj, EiPropPath $targetEiPropPath, bool $sourceMany) {
 		$this->targetEiFrame = $targetEiFrame;
-		$this->relationEntry = $relationEntry;
+		$this->relationEiuObj = $relationEiuObj;
 		$this->targetEiPropPath = $targetEiPropPath;
 		$this->sourceMany = (boolean) $sourceMany;
 	}
@@ -48,7 +48,7 @@ class MappedRelationEiModificator implements EiFrameListener {
 				||*/ !$eiEntry->getEiObject()->isNew()) return;
 
 		if (!$this->sourceMany) {
-			$eiEntry->setValue($this->targetEiPropPath, $this->relationEntry);
+			$eiEntry->setValue($this->targetEiPropPath, $this->relationEiuObj);
 			return;
 		}
 		
@@ -56,7 +56,7 @@ class MappedRelationEiModificator implements EiFrameListener {
 		if ($value === null) {
 			$value = new \ArrayObject();
 		}
-		$value[] = $this->relationEntry;
+		$value[] = $this->relationEiuObj;
 		$eiEntry->setValue($this->targetEiPropPath, $value);
 	}
 }
