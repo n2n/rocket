@@ -88,7 +88,8 @@ class Relation {
 		$this->targetEiuEngine = $targetEiuEngine;
 		$this->targetPropInfo = RelationUtils::deterTargetPropInfo($this->relationEntityProperty, $targetEiuEngine);
 		if ($this->embedded) {
-			RelationUtils::validateEmbedded($this->relationEntityProperty, $this->sourceMany);
+			RelationUtils::validateEmbedded($this->relationEntityProperty, $this->sourceMany,
+					$this->targetPropInfo);
 		}
 	}
 	
