@@ -48,16 +48,6 @@ interface EiField {
 	public function resetValue();
 	
 	/**
-	 * @return boolean 
-	 */
-	public function isReadable(): bool;
-		
-	/**
-	 * @return boolean 
-	 */
-	public function isWritable(): bool;
-	
-	/**
 	 * @param mixed $value
 	 * @return bool
 	 */
@@ -74,15 +64,27 @@ interface EiField {
 	public function validate(EiFieldValidationResult $eiEiFieldValidationResult);
 	
 	/**
+	 * Security can be ignored
+	 * @return boolean
+	 */
+	public function isWritable(): bool;
+	
+	/**
 	 * 
 	 */
 	public function write();	
 	
 	/**
-	 * @param EiObject $eiObject
-	 * @return EiField|null
+	 * @return bool
 	 */
-	public function copyEiField(Eiu $copyEiu);
+	public function isCopyable(): bool;
+	
+	/**
+	 * Security can be ignored
+	 * @param EiObject $eiObject
+	 * @return EiField
+	 */
+	public function copyValue(Eiu $copyEiu);
 	
 	/**
 	 * @return bool

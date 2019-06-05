@@ -46,11 +46,11 @@ abstract class CrwvEiField extends EiFieldAdapter {
 		$this->validatable = $validatable;
 	}
 	
-	
 	protected function checkValue($value) {
 		if ($this->typeConstraint === null) return;
 		
 		$this->typeConstraint->validate($value);
+		return true;
 	}
 	
 	public function isReadable(): bool {

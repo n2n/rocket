@@ -42,18 +42,21 @@ abstract class EiFieldAdapter implements EiField {
 	
 	private function assetConstraints($value) {
 		try {
-			$this->checkValue($value);
+			if ($this->checkValue($value)) return;
 		} catch (\InvalidArgumentException $e) {
 			throw new ValueIncompatibleWithConstraintsException('EiField can not adopt passed value.', 0, $e);
 		} catch (ValueIncompatibleWithConstraintsException $e) {
 			throw new ValueIncompatibleWithConstraintsException('EiField can not adopt passed value.', 0, $e);
 		}
+		
+		throw new ValueIncompatibleWithConstraintsException('EiField can not adopt passed value.');
 	}
 	
 	/**
 	 * @param mixed $value
 	 * @throws ValueIncompatibleWithConstraintsException
 	 * @throws \InvalidArgumentException
+	 * @return bool
 	 */
 	protected abstract function checkValue($value);
 
@@ -165,6 +168,8 @@ abstract class EiFieldAdapter implements EiField {
 	
 	public final function write() {
 		if (!$this->valueLoaded) return;
+		
+		IllegalStateException::assertTrue($this->isWritable());
 		
 		$this->writeValue($this->value);
 	}

@@ -81,6 +81,10 @@ class ManyToOneSelectEiProp extends RelationEiPropAdapter {
 		$this->configurator->setRelationModel($this->relationModel);
 	}
 	
+	function buildEiField(Eiu $eiu) {
+		return new RelationEiField($eiu);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\entry\Readable::read()
