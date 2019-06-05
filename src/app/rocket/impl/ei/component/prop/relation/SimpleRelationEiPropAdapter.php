@@ -25,7 +25,7 @@ use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\component\prop\DraftableEiProp;
 use rocket\ei\manage\draft\DraftProperty;
 use rocket\impl\ei\component\prop\relation\model\relation\EiPropRelation;
-use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
+use rocket\impl\ei\component\prop\adapter\config\DisplayConfigModel;
 use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 use rocket\ei\component\prop\FilterableEiProp;
 use rocket\ei\manage\frame\EiFrame;
@@ -53,13 +53,13 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 	protected $displayConfig;
 
 	protected function initialize(EiPropRelation $eiPropRelation, EditConfig $editConfig = null, 
-			DisplayConfig $displayDefinition = null) {
+			DisplayConfigModel $displayDefinition = null) {
 		parent::initialize($eiPropRelation, $editConfig);
 
 		if ($displayDefinition !== null) {
 			$this->displayConfig = $displayDefinition;
 		} else {
-			$this->displayConfig = new DisplayConfig(ViewMode::all());
+			$this->displayConfig = new DisplayConfigModel(ViewMode::all());
 		}
 	}
 	

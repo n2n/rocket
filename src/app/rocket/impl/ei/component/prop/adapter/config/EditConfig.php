@@ -22,9 +22,27 @@
 namespace rocket\impl\ei\component\prop\adapter\config;
 
 class EditConfig {
+	private $mandatoryEditable;
+	private $readOnlyEditable;
+	private $constantEditable;
+	
+	protected $mandatory = false;
 	protected $constant = false;
 	protected $readOnly = false;
-	protected $mandatory = false;
+	
+	function __construct(bool $mandatoryEditable = true, bool $constantEditable = true, 
+			bool $readOnlyEditable = true) {
+		$this->mandatoryEditable = $mandatoryEditable;
+		$this->constantEditable = $constantEditable;
+		$this->readOnlyEditable = $readOnlyEditable;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	function isConstantEditable() {
+		return $this->constantEditable;
+	}
 	
 	/**
 	 * @return boolean
@@ -41,6 +59,13 @@ class EditConfig {
 	}
 	
 	/**
+	 * @return bool
+	 */
+	function isReadOnlyEditable() {
+		return $this->readOnlyEditable;
+	}
+	
+	/**
 	 * @return boolean
 	 */
 	public function isReadOnly(): bool {
@@ -52,6 +77,13 @@ class EditConfig {
 	 */
 	public function setReadOnly($readOnly) {
 		$this->readOnly = (boolean) $readOnly;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	function isMandatoryEditable() {
+		return $this->mandatoryEditable;
 	}
 	
 	/**

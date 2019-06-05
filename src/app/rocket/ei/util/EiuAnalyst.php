@@ -64,6 +64,7 @@ use rocket\ei\component\modificator\EiModificator;
 use n2n\util\type\TypeUtils;
 use rocket\ei\manage\gui\field\GuiFieldPath;
 use rocket\ei\util\spec\EiuGuiField;
+use rocket\spec\UnknownTypeException;
 
 class EiuAnalyst {
 	const EI_FRAME_TYPES = array(EiFrame::class, EiuFrame::class, N2nContext::class);
@@ -1261,6 +1262,34 @@ class EiuAnalyst {
 		throw new EiuPerimeterException('Can not determine EiType of passed argument type ' 
 				. TypeUtils::getTypeInfo($eiTypeArg) . '. Following types are allowed: '
 				. implode(', ', array_merge(self::EI_FRAME_TYPES, EI_ENTRY_TYPES)));
+	}
+	
+	/**
+	 * @param mixed $eiTypeArg
+	 * @param Spec $spec
+	 * @param string $argName
+	 * @throws EiuPerimeterException
+	 * @return \rocket\ei\EiType
+	 */
+	public static function lookupEiTypeFromEiArg($eiTypeArg, Spec $spec, string $argName = null) {
+		try {
+			if ($eiTypeArg instanceof \ReflectionClass) {
+				return $spec->getEiTypeByClass($class);
+			}
+			
+			if (!is_scalar($eiTypeArg)) {
+				return self::buildEiTypeFromEiArg($eiTypeArg, $argName, true);
+			}
+			
+			if (!$spec->containsEiTypeId($eiTypeId) && $spec->containsEiTypeClassName($eiTypeArg)) {
+				return $spec->getEiTypeByClassName($eiTypeArg);
+			}
+			
+			return $spec->getEiTypeByClassName($eiTypeArg);
+		} catch (UnknownTypeException $e) {
+			throw new EiuPerimeterException('Can not determine EiType of passed argument ' . $argName . ': '
+					. \n2n\util\StringUtils::strOf($eiTypeArg, true));
+		}
 	}
 	
 	public static function buildEiTypeFromEiArg($eiTypeArg, string $argName = null, bool $required = true) {

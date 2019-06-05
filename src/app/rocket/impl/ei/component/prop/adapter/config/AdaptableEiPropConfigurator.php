@@ -65,6 +65,7 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 	private $propertyAssignation;
 	
 	private $displayConfig;
+	protected $addDefaultDisplay = true;
 	protected $addDisplayItemType = true;
 	protected $addHelpText = true;
 	
@@ -149,12 +150,29 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 		$this->confObjectPropertyEiProp = $confObjectPropertyEiProp;
 	}
 	
-	public function registerDisplayConfig(DisplayConfig $displayConfig) {
+	/**
+	 * @param DisplayConfig $displayConfig
+	 * @param bool $addDisplayItemType
+	 * @param bool $addHelpText
+	 * @param bool $addDefaultDisplay
+	 */
+	public function registerDisplayConfig(DisplayConfig $displayConfig, bool $addDisplayItemType = true, 
+			bool $addHelpText = true, bool $addDefaultDisplay = true) {
 		$this->displayConfig = $displayConfig;
+		$this->addDisplayItemType = $addDisplayItemType;
+		$this->addHelpText = $addHelpText;
+		$this->addDefaultDisplay = $addDefaultDisplay;
 	}	
 	
-	public function registerEditConfig(EditConfig $editConfig, 
-			bool $addConstant = true, bool $addReadOnly = true, $addMandatory = true, $autoMandatoryCheck = true) {
+	/**
+	 * @param EditConfig $editConfig
+	 * @param bool $addConstant
+	 * @param bool $addReadOnly
+	 * @param boolean $addMandatory
+	 * @param boolean $autoMandatoryCheck
+	 */
+	public function registerEditConfig(EditConfig $editConfig, bool $addConstant = true, bool $addReadOnly = true, 
+			$addMandatory = true, $autoMandatoryCheck = true) {
 		$this->editConfig = $editConfig;
 		$this->addConstant = $addConstant;
 		$this->addReadOnly = $addReadOnly;
@@ -162,9 +180,9 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 		$this->autoMandatoryCheck = $autoMandatoryCheck;
 	}
 	
-	public function registerDraftConfigurable(DraftConfigurable $confDraftableEiProp) {
-		$this->confDraftableEiProp = $confDraftableEiProp;		
-	}
+// 	public function registerDraftConfigurable(DraftConfigurable $confDraftableEiProp) {
+// 		$this->confDraftableEiProp = $confDraftableEiProp;		
+// 	}
 	
 	public function autoRegister() {
 		$eiComponent = $this->eiComponent;
@@ -340,32 +358,34 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 				
 		$lar = new LenientAttributeReader($this->attributes);
 		
-		if ($this->displayConfig->isCompactViewCompatible()) {
-			$magCollection->addMag(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, new BoolMag(
-					$dtc->translate('ei_impl_display_in_overview_label'),
-					$lar->getBool(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, 
-							$this->displayConfig->isViewModeDefaultDisplayed(ViewMode::BULKY_READ))));
-		}
-	
-		if ($this->displayConfig->isViewModeCompatible(ViewMode::BULKY_READ)) {
-			$magCollection->addMag(self::ATTR_DISPLAY_IN_DETAIL_VIEW_KEY, new BoolMag(
-					$dtc->translate('ei_impl_display_in_detail_view_label'),
-					$lar->getBool(self::ATTR_DISPLAY_IN_DETAIL_VIEW_KEY,
-							$this->displayConfig->isViewModeDefaultDisplayed(ViewMode::BULKY_READ))));
-		}
-	
-		if ($this->displayConfig->isViewModeCompatible(ViewMode::BULKY_EDIT)) {
-			$magCollection->addMag(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, new BoolMag(
-					$dtc->translate('ei_impl_display_in_edit_view_label'),
-					$lar->getBool(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, 
-							$this->displayConfig->isViewModeDefaultDisplayed(ViewMode::BULKY_EDIT))));
-		}
-	
-		if ($this->displayConfig->isViewModeCompatible(ViewMode::BULKY_ADD)) {
-			$magCollection->addMag(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY, new BoolMag(
-					$dtc->translate('ei_impl_display_in_add_view_label'),
-					$lar->getBool(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY, 
-							$this->displayConfig->isViewModeDefaultDisplayed(ViewMode::BULKY_ADD))));
+		if ($this->addDefaultDisplay) {
+			if ($this->displayConfig->isCompactViewCompatible()) {
+				$magCollection->addMag(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, new BoolMag(
+						$dtc->translate('ei_impl_display_in_overview_label'),
+						$lar->getBool(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, 
+								$this->displayConfig->isViewModeDefaultDisplayed(ViewMode::BULKY_READ))));
+			}
+		
+			if ($this->displayConfig->isViewModeCompatible(ViewMode::BULKY_READ)) {
+				$magCollection->addMag(self::ATTR_DISPLAY_IN_DETAIL_VIEW_KEY, new BoolMag(
+						$dtc->translate('ei_impl_display_in_detail_view_label'),
+						$lar->getBool(self::ATTR_DISPLAY_IN_DETAIL_VIEW_KEY,
+								$this->displayConfig->isViewModeDefaultDisplayed(ViewMode::BULKY_READ))));
+			}
+		
+			if ($this->displayConfig->isViewModeCompatible(ViewMode::BULKY_EDIT)) {
+				$magCollection->addMag(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, new BoolMag(
+						$dtc->translate('ei_impl_display_in_edit_view_label'),
+						$lar->getBool(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, 
+								$this->displayConfig->isViewModeDefaultDisplayed(ViewMode::BULKY_EDIT))));
+			}
+		
+			if ($this->displayConfig->isViewModeCompatible(ViewMode::BULKY_ADD)) {
+				$magCollection->addMag(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY, new BoolMag(
+						$dtc->translate('ei_impl_display_in_add_view_label'),
+						$lar->getBool(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY, 
+								$this->displayConfig->isViewModeDefaultDisplayed(ViewMode::BULKY_ADD))));
+			}
 		}
 		
 		if ($this->addDisplayItemType) {

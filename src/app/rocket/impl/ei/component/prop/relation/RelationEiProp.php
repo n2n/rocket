@@ -21,15 +21,20 @@
  */
 namespace rocket\impl\ei\component\prop\relation;
 
-use rocket\impl\ei\component\prop\relation\model\relation\EiPropRelation;
 use rocket\impl\ei\component\prop\adapter\config\EntityPropertyConfigurable;
 use rocket\impl\ei\component\prop\adapter\config\ObjectPropertyConfigurable;
 use rocket\impl\ei\component\prop\adapter\config\DraftConfigurable;
+use n2n\impl\persistence\orm\property\RelationEntityProperty;
 
 interface RelationEiProp extends EntityPropertyConfigurable, ObjectPropertyConfigurable, DraftConfigurable {
 	
 	/**
-	 * @return \rocket\impl\ei\component\prop\relation\model\relation\EiPropRelation
+	 * @return RelationEntityProperty
 	 */
-	public function getEiPropRelation(): EiPropRelation;
+	function getRelationEntityProperty(): RelationEntityProperty;
+	
+	/**
+	 * @return bool
+	 */
+	function hasEntryValues(): bool;
 }

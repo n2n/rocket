@@ -21,7 +21,6 @@
  */
 namespace rocket\impl\ei\component\prop\relation;
 
-use rocket\impl\ei\component\prop\relation\model\relation\EiPropRelation;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\component\prop\GuiEiProp;
 use rocket\ei\component\prop\FieldEiProp;
@@ -36,36 +35,34 @@ use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\impl\ei\component\prop\adapter\PropertyEiPropAdapter;
 use rocket\impl\ei\component\prop\adapter\entry\Copyable;
 use rocket\impl\ei\component\prop\adapter\config\EditConfig;
+use n2n\impl\persistence\orm\property\RelationEntityProperty;
+use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 
 abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements RelationEiProp, GuiEiProp, 
 		FieldEiProp, Readable, Writable, Copyable {
+			
 	/**
-	 * @var EiPropRelation
+	 * @var RelationEiPropConfigurator
 	 */
-	protected $eiPropRelation;
-	protected $draftable = false;
-	protected $editConfig;
+	protected $configurator;
 	
-	protected function initialize(EiPropRelation $eiPropRelation, EditConfig $editConfig = null) {
-		$this->eiPropRelation = $eiPropRelation;
+	/**
+	 * @var RelationModel
+	 */
+	protected $relationModel;
+			
+	function __construct() {
+		parent::__construct();
 		
-		if ($editConfig !== null) {
-			$this->editConfig = $editConfig;
-		} else {
-			$this->editConfig = new EditConfig();
-		}
+		$this->configurator = new RelationEiPropConfigurator($this);
 	}
 	
-	public function getEiPropRelation(): EiPropRelation {
-		if ($this->eiPropRelation !== null) {
-			return $this->eiPropRelation;
-		}
-		
-		throw new IllegalStateException();
+	function getRelationEntityProperty(): RelationEntityProperty {
+		return $this->requireEntityProperty();
 	}
-
+	
 	public function createEiPropConfigurator(): EiPropConfigurator {
-		return new RelationEiPropConfigurator($this);
+		return $this->configurator;
 	}
 	
 	public function getEditConfig(): EditConfig {

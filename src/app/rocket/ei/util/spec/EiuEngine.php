@@ -135,6 +135,14 @@ class EiuEngine {
 	}
 	
 	/**
+	 * @param EiPropPath|string $eiPropPath
+	 * @return boolean
+	 */
+	function containsScalarEiProperty($eiPropPath) {
+		return $this->eiEngine->getScalarEiDefinition()->containsEiPropPath(EiPropPath::create($eiPropPath));
+	}
+	
+	/**
 	 * @param mixed $eiPropArg See {@see EiPropPath::create()}
 	 * @return ScalarEiProperty
 	 * @throws UnknownScalarEiPropertyException

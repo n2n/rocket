@@ -56,6 +56,16 @@ class EiuContext {
 	}
 	
 	/**
+	 * @param string|\ReflectionClass id, classname or class object
+	 * @param bool $required
+	 */
+	function type($eiTypeId, bool $required = true) {
+		$eiType = EiuAnalyst::lookupEiTypeFromEiArg($eiTypeId);
+		
+		return new EiuType($eiType, $this->eiuAnalyst);
+	}
+	
+	/**
 	 * @param string|\ReflectionClass|EiType|EiComponent $eiTypeArg id, entity class name of the affiliated EiType or the EiType itself.
 	 * @param bool $required
 	 * @return EiuMask

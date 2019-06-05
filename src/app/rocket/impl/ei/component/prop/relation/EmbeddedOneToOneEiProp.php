@@ -24,7 +24,7 @@ namespace rocket\impl\ei\component\prop\relation;
 use n2n\util\type\ArgUtils;
 use rocket\impl\ei\component\prop\relation\model\relation\EmbeddedEiPropRelation;
 use rocket\ei\manage\EiObject;
-use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
+use rocket\impl\ei\component\prop\adapter\config\DisplayConfigModel;
 use rocket\impl\ei\component\prop\relation\model\ToOneEditable;
 use rocket\impl\ei\component\prop\relation\model\EmbeddedOneToOneGuiField;
 use rocket\ei\manage\draft\stmt\FetchDraftStmtBuilder;
@@ -60,7 +60,7 @@ class EmbeddedOneToOneEiProp extends ToOneEiPropAdapter {
 	public function __construct() {
 		parent::__construct();
 		
-		$this->displayConfig = new DisplayConfig(ViewMode::bulky());
+		$this->displayConfig = new DisplayConfigModel(ViewMode::bulky());
 		$this->initialize(new EmbeddedEiPropRelation($this, false, false));
 	}
 	

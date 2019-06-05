@@ -48,22 +48,7 @@ use rocket\impl\ei\component\prop\relation\conf\RelationEiPropConfigurator;
 use n2n\persistence\orm\CascadeType;
 
 class Relation {
-	/**
-	 * @var RelationEntityProperty
-	 */
-	private $relationEntityProperty;
-	/**
-	 * @var bool
-	 */
-	private $sourceMany;
-	/**
-	 * @var bool
-	 */
-	private $targetMany;
-	/**
-	 * @var bool
-	 */
-	private $embedded;
+	
 	
 	/**
 	 * @var EiuEngine
@@ -76,9 +61,6 @@ class Relation {
 	
 	private function __construct(RelationEntityProperty $relationEntityProperty, bool $sourceMany, bool $targetMany, 
 			bool $embedded) {
-		$this->sourceMany = $sourceMany;
-		$this->targetMany = $targetMany;
-		$this->embedded = $embedded;
 	}
 	
 	/**
@@ -164,12 +146,6 @@ class Relation {
 		}
 	}
 	
-	static function createManyToOne(RelationEntityProperty $relationEntityProperty, bool $embedded) {
-		$configurator = new asdf();
-		$relation = new Relation($relationEntityProperty, true, false);
-		$configurator->setModel();
-		return $relation;
-	}
 }
 
 class RelationUtils {

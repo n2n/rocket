@@ -57,21 +57,18 @@ use rocket\ei\manage\frame\Boundry;
 use rocket\ei\manage\security\InaccessibleEiCommandPathException;
 use rocket\si\structure\SiStructureType;
 use rocket\impl\ei\component\prop\relation\model\Relation;
+use rocket\impl\ei\component\prop\relation\conf\RelationModel;
+use rocket\impl\ei\component\prop\adapter\config\EditConfig;
+use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
+use rocket\ei\manage\gui\ViewMode;
 
-class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
-
-	private $relation;
+class ManyToOneSelectEiProp extends RelationEiPropAdapter {
 	
-	function getRelation() {
-		if ($this->relation === null) {
-			$this->relation = Relation::createManyToOne($this->getRelationEntityProperty(), false)
-		}
-			
-		return $this->relation;
-	}
-	
-	public function getDisplayItemType(): string {
-		return SiStructureType::ITEM;
+	function __construct() {
+		parent::__construct();
+		
+		$this->configurator->registerDisplayConfig(new DisplayConfig(ViewMode::all()));
+		$this->configurator->registerEditConfig(new EditConfig());
 	}
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {
@@ -79,6 +76,9 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 				&& $entityProperty->getType() === RelationEntityProperty::TYPE_MANY_TO_ONE);
 		
 		parent::setEntityProperty($entityProperty);
+		
+		$this->relationModel = new RelationModel($entityProperty, true, false, RelationModel::MODE_SELECT);
+		$this->configurator->setRelationModel($this->relationModel);
 	}
 	
 	/**

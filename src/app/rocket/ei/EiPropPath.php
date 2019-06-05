@@ -73,6 +73,18 @@ class EiPropPath extends IdPath {
 	}
 	
 	/**
+	 * @param mixed|null $expression
+	 * @return NULL|\rocket\ei\EiPropPath
+	 */
+	public static function build($expression) {
+		if ($expression === null) {
+			return null;
+		}
+		
+		return self::create($expression);
+	}
+	
+	/**
 	 * @param mixed ...$args
 	 * @return \rocket\ei\EiPropPath
 	 */

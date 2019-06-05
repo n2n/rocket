@@ -29,7 +29,7 @@ use n2n\util\ex\IllegalStateException;
 use rocket\ei\component\prop\FieldEiProp;
 use rocket\impl\ei\component\prop\adapter\entry\SimpleEiField;
 use rocket\impl\ei\component\prop\adapter\entry\Readable;
-use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
+use rocket\impl\ei\component\prop\adapter\config\DisplayConfigModel;
 use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable;
 use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\util\Eiu;
@@ -56,7 +56,7 @@ class StringDisplayEiProp extends PropertyEiPropAdapter implements ObjectPropert
 	public function __construct() {
 		parent::__construct();
 	
-		$this->displayConfig = new DisplayConfig(ViewMode::read());
+		$this->displayConfig = new DisplayConfigModel(ViewMode::read());
 	}
 	
 	public function buildDisplayDefinition(Eiu $eiu): DisplayDefinition {

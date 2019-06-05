@@ -26,6 +26,8 @@ use rocket\ei\EiType;
 use rocket\ei\util\entry\EiuObject;
 use rocket\user\model\LoginContext;
 use n2n\util\type\CastUtils;
+use rocket\ei\UnknownEiTypeExtensionException;
+use rocket\spec\UnknownTypeException;
 
 class EiuType  {
 	private $eiType;
@@ -60,6 +62,48 @@ class EiuType  {
 		}
 		
 		return $this->eiuMask = new EiuMask($this->eiType->getEiMask(), $this->eiuAnalyst);
+	}
+	
+	/**
+	 * @param string $eiTypeExtensionId
+	 * @param bool $required
+	 * @throws UnknownTypeException
+	 * @return void|\rocket\ei\util\spec\EiuMask
+	 */
+	function extensionMask(string $eiTypeExtensionId, bool $required = true) {
+		try {
+			return new EiuMask(
+					$this->eiType->getEiTypeExtensionCollection()->getById($eiTypeExtensionId),
+					null, $this->eiuAnalyst);
+		} catch (UnknownTypeException $e) {
+			if (!$required) return;
+				
+			throw $e;
+		}
+	}
+	
+	/**
+	 * @return \rocket\ei\util\spec\EiuMask[]
+	 */
+	function extensionMasks() {
+		$eiuMasks = [];
+		foreach ($this->eiType->getEiTypeExtensionCollection() as $eiTypeExtension) {
+			$eiuMasks[$eiTypeExtension->getId()] = new EiuMask($eiTypeExtension->getEiMask(), null, $this->eiuAnalyst);
+		}
+		return $eiuMasks;
+	}
+	
+	/**
+	 * @return string[] key is EiTypePath
+	 */
+	function getExtensionMaskOptions() {
+		$n2nLocale = $this->eiuAnalyst->getN2nContext(true)->getN2nLocale();
+		
+		$options = [];
+		foreach ($this->eiType->getEiTypeExtensionCollection() as $eiTypeExtension) {
+			$options[$eiTypeExtension->getId()] = $eiTypeExtension->getEiMask()->getLabelLstr()->t($n2nLocale);
+		}
+		return $options;
 	}
 	
 	/**
