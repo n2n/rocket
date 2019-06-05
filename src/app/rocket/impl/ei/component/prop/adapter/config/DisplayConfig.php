@@ -27,26 +27,20 @@ use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\ei\component\prop\EiProp;
 use rocket\si\structure\SiStructureType;
 
-class DisplayConfigModel {
+class DisplayConfig {
 	private $compatibleViewModes;
-	private $displayTypeEditable;
-	private $helpTextEditable;
-	
 	private $defaultDisplayedViewModes;
+	
 	private $displayItemType = SiStructureType::ITEM;
+	
 	private $helpText;
 	
 	/**
 	 * @param int $compatibleViewModes
-	 * @param bool $displayTypeEditable
-	 * @param bool $helpTextEditable
 	 */
-	public function __construct(int $compatibleViewModes, bool $displayTypeEditable = true, bool $helpTextEditable = false) {
+	public function __construct(int $compatibleViewModes) {
 		$this->compatibleViewModes = $compatibleViewModes;
 		$this->defaultDisplayedViewModes = $this->compatibleViewModes;
-		
-		$this->displayTypeEditable = $displayTypeEditable;
-		$this->helpTextEditable = $helpTextEditable;
 	}
 	
 	public function isViewModeCompatible($viewMode) {
@@ -113,16 +107,6 @@ class DisplayConfigModel {
 		$this->changeDefaultDisplayed(ViewMode::BULKY_ADD, $defaultDisplayaed);
 	}
 	
-	/**
-	 * @return bool
-	 */
-	public function isDisplayTypeEditable() {
-		return $this->displayTypeEditable;
-	}
-	
-	/**
-	 * @param string $displayItemType
-	 */
 	public function setDisplayItemType(string $displayItemType) {
 		ArgUtils::valEnum($displayItemType, SiStructureType::all());
 		$this->dispayItemType = $displayItemType;
@@ -130,13 +114,6 @@ class DisplayConfigModel {
 	
 	public function getDisplayItemType() {
 		return $this->displayItemType;
-	}
-	
-	/**
-	 * @return bool
-	 */
-	public function isHelpTextEditable() {
-		return $this->helpTextEditable;
 	}
 	
 	/**
