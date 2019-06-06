@@ -19,29 +19,43 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\gui\field;
+namespace rocket\impl\ei\component\prop\relation\model\gui;
 
+use rocket\ei\manage\gui\field\GuiField;
 use rocket\si\content\SiField;
+use rocket\ei\util\Eiu;
+use rocket\impl\ei\component\prop\relation\conf\RelationModel;
+use rocket\si\content\impl\SiFields;
+use rocket\si\content\SiObjectQualifier;
+use n2n\impl\persistence\orm\property\relation\Relation;
 
-interface GuiField {
-	
-// 	/**
-// 	 * @return GuiFieldDisplayable
-// 	 */
-// 	public function getDisplayable(): GuiFieldDisplayable;
-
-// 	/**
-// 	 * @return boolean 
-// 	 */
-// 	public function isReadOnly(): bool;
+class ToOneGuiField implements GuiField {
+	/**
+	 * @var Eiu
+	 */
+	private $eiu;
+	/**
+	 * @var SiField
+	 */
+	private $siField;
 	
 	/**
-	 * @return SiField 
+	 * @param Eiu $eiu
+	 * @param RelationModel $relationModel
 	 */
-	function getSiField(): SiField;
+	function __construct(Eiu $eiu, RelationModel $relationModel) {
+		$this->eiu = $eiu;
+		
+		$this->siField = SiFields::entryToOneSelect(
+				$relation->getTargetReadApiUrl(),
+				($editConfig->isMandatory() ? 1 : 0), 1);
+	}
 	
-	/**
-	 * @throws \n2n\util\ex\IllegalStateException if {@link self::getSiField()::isReadOnly()} returns true.
-	 */
-	function save();
+	function save() {
+		
+	}
+
+	function getSiField(): SiField {
+		return $this->siField;
+	}	
 }

@@ -19,29 +19,39 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\gui\field;
+namespace rocket\impl\ei\component\prop\relation\model\gui;
 
-use rocket\si\content\SiField;
+use n2n\l10n\Lstr;
+use n2n\l10n\N2nLocale;
+use rocket\ei\manage\gui\DisplayDefinition;
+use rocket\ei\manage\gui\GuiProp;
+use rocket\ei\manage\gui\field\GuiField;
+use rocket\ei\util\Eiu;
 
-interface GuiField {
+class RelationGuiProp implements GuiProp {
 	
-// 	/**
-// 	 * @return GuiFieldDisplayable
-// 	 */
-// 	public function getDisplayable(): GuiFieldDisplayable;
+	function __construct(Eiu $eiu) {
+		
+	}
+	
+	public function isStringRepresentable(): bool {
+		
+	}
 
-// 	/**
-// 	 * @return boolean 
-// 	 */
-// 	public function isReadOnly(): bool;
+	public function getDisplayHelpTextLstr(): ?Lstr {
+	}
+
+	public function getDisplayLabelLstr(): Lstr {
+	}
+
+	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
+	}
+
+	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
+	}
+
+	public function buildGuiField(Eiu $eiu): ?GuiField {
+	}
+
 	
-	/**
-	 * @return SiField 
-	 */
-	function getSiField(): SiField;
-	
-	/**
-	 * @throws \n2n\util\ex\IllegalStateException if {@link self::getSiField()::isReadOnly()} returns true.
-	 */
-	function save();
 }

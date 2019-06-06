@@ -61,6 +61,7 @@ use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\ei\manage\gui\ViewMode;
+use rocket\impl\ei\component\prop\relation\model\ToOneEiField;
 
 class ManyToOneSelectEiProp extends RelationEiPropAdapter {
 	
@@ -71,7 +72,7 @@ class ManyToOneSelectEiProp extends RelationEiPropAdapter {
 		$this->configurator->registerEditConfig(new EditConfig());
 	}
 	
-	public function setEntityProperty(?EntityProperty $entityProperty) {
+	function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty instanceof ToOneEntityProperty
 				&& $entityProperty->getType() === RelationEntityProperty::TYPE_MANY_TO_ONE);
 		
@@ -82,201 +83,144 @@ class ManyToOneSelectEiProp extends RelationEiPropAdapter {
 	}
 	
 	function buildEiField(Eiu $eiu) {
-		return new RelationEiField($eiu);
+		return new ToOneEiField($eiu, $this, $this->relationModel);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\entry\Readable::read()
-	 */
-	public function read(Eiu $eiu) {
-		$targetEntityObj = $eiu->entry()->readNativValue($this);
+	function buildGuiProp(Eiu $eiu) {
 		
-		if ($targetEntityObj === null) return null;
-		
-		return LiveEiObject::create($this->eiPropRelation->getTargetEiType(), $targetEntityObj);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\entry\Writable::write()
-	 */
-	public function write(Eiu $eiu, $value) {
-		CastUtils::assertTrue($value === null || $value instanceof EiObject);
 	
-		$targetEntityObj = null;
-		if ($value !== null) {
-			$targetEntityObj = $value->getEiEntityObj()->getEntityObj();
-		}
+// 	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
+// 		$eiPropRelation = $this->eiPropRelation;
+// 		CastUtils::assertTrue($eiPropRelation instanceof SelectEiPropRelation);
 		
-		$eiu->entry()->writeNativeValue($this, $targetEntityObj);
-	}
-	
-	// 	/**
-	// 	 * {@inheritDoc}
-	// 	 * @see \rocket\impl\ei\component\prop\adapter\entry\Readable::read()
-	// 	 */
-	// 	public function read(Eiu $eiu) {
-	// 		$targetEntityObj = $eiu->entry()->readNativValue($this);
-	
-	// 		if ($targetEntityObj === null) return null;
-	
-	// 		return $eiu->frame()->entry($targetEntityObj);
-	// 	}
-	
-	// 	/**
-	// 	 * {@inheritDoc}
-	// 	 * @see \rocket\impl\ei\component\prop\adapter\entry\Writable::write()
-	// 	 */
-	// 	public function write(Eiu $eiu, $value) {
-	// 		CastUtils::assertTrue($value === null || $value instanceof EiuEntry);
-	
-	// 		if ($eiu->object()->isDraftProp($this)) {
-	// 			throw new NotYetImplementedException()
-	// 		}
-	
-	// 		$targetEntityObj = null;
-	// 		if ($value !== null) {
-	// 			$targetEntityObj = $value->getEntityObj();
-	// 		}
-	
-	// 		$eiu->entry()->writeNativeValue($this, $targetEntityObj)
-	// 	}
-	
-	public function copy(Eiu $eiu, $value, Eiu $copyEiu) {
-		return $value;
-	}
-	
-	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
-		$eiPropRelation = $this->eiPropRelation;
-		CastUtils::assertTrue($eiPropRelation instanceof SelectEiPropRelation);
-		
-		if (!$eiPropRelation->isHiddenIfTargetEmpty()) {
-			return parent::buildDisplayDefinition($eiu);
-		}
+// 		if (!$eiPropRelation->isHiddenIfTargetEmpty()) {
+// 			return parent::buildDisplayDefinition($eiu);
+// 		}
 
-		$eiFrame = $eiu->frame()->getEiFrame();
-		$targetReadEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame);
+// 		$eiFrame = $eiu->frame()->getEiFrame();
+// 		$targetReadEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame);
 		
-		$targetEiu = new Eiu($targetReadEiFrame);
-		$eiPropRelation = $this->eiPropRelation;
-		CastUtils::assertTrue($eiPropRelation instanceof SelectEiPropRelation);
+// 		$targetEiu = new Eiu($targetReadEiFrame);
+// 		$eiPropRelation = $this->eiPropRelation;
+// 		CastUtils::assertTrue($eiPropRelation instanceof SelectEiPropRelation);
 		
-		if ($eiPropRelation->isHiddenIfTargetEmpty()
-				&& 0 == $targetEiu->frame()->countEntries(Boundry::NON_SECURITY_TYPES)) {
-			return null;
-		}
+// 		if ($eiPropRelation->isHiddenIfTargetEmpty()
+// 				&& 0 == $targetEiu->frame()->countEntries(Boundry::NON_SECURITY_TYPES)) {
+// 			return null;
+// 		}
 		
-		return parent::buildDisplayDefinition($eiu);
-	}
+// 		return parent::buildDisplayDefinition($eiu);
+// 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiProp::buildGuiField()
-	 */
-	public function buildGuiField(Eiu $eiu): ?GuiField {
-		$mapping = $eiu->entry()->getEiEntry();
-		$eiFrame = $eiu->frame()->getEiFrame();
-		$relationEiField = $mapping->getEiField(EiPropPath::from($this));
-		$targetReadEiFrame = null;
+// 	/**
+// 	 * {@inheritDoc}
+// 	 * @see \rocket\ei\manage\gui\GuiProp::buildGuiField()
+// 	 */
+// 	public function buildGuiField(Eiu $eiu): ?GuiField {
+// 		$mapping = $eiu->entry()->getEiEntry();
+// 		$eiFrame = $eiu->frame()->getEiFrame();
+// 		$relationEiField = $mapping->getEiField(EiPropPath::from($this));
+// 		$targetReadEiFrame = null;
 		
-		try {
-			$targetReadEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame, $mapping);
-		} catch (InaccessibleEiCommandPathException $e) {
-			return new InaccessibleGuiField($this->getLabelLstr());
-		}
+// 		try {
+// 			$targetReadEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame, $mapping);
+// 		} catch (InaccessibleEiCommandPathException $e) {
+// 			return new InaccessibleGuiField($this->getLabelLstr());
+// 		}
 		
-		$eiPropRelation = $this->eiPropRelation;
-		CastUtils::assertTrue($eiPropRelation instanceof SelectEiPropRelation);
+// 		$eiPropRelation = $this->eiPropRelation;
+// 		CastUtils::assertTrue($eiPropRelation instanceof SelectEiPropRelation);
 		
-		$toOneEditable = null;
-		if (!$this->eiPropRelation->isReadOnly($mapping, $eiFrame)) {
-			$targetEditEiFrame = $this->eiPropRelation->createTargetEditPseudoEiFrame($eiFrame, $mapping);
-			$toOneEditable = new ToOneEditable($this->getLabelLstr(), $this->editConfig->isMandatory(),
-					$relationEiField, $targetReadEiFrame, $targetEditEiFrame);
+// 		$toOneEditable = null;
+// 		if (!$this->eiPropRelation->isReadOnly($mapping, $eiFrame)) {
+// 			$targetEditEiFrame = $this->eiPropRelation->createTargetEditPseudoEiFrame($eiFrame, $mapping);
+// 			$toOneEditable = new ToOneEditable($this->getLabelLstr(), $this->editConfig->isMandatory(),
+// 					$relationEiField, $targetReadEiFrame, $targetEditEiFrame);
 			
-			$toOneEditable->setSelectOverviewToolsUrl($this->eiPropRelation->buildTargetOverviewToolsUrl(
-					$eiFrame, $eiu->frame()->getHttpContext()));
+// 			$toOneEditable->setSelectOverviewToolsUrl($this->eiPropRelation->buildTargetOverviewToolsUrl(
+// 					$eiFrame, $eiu->frame()->getHttpContext()));
 			
-			if ($this->eiPropRelation->isEmbeddedAddActivated($eiu->frame()->getEiFrame())
-					 && $targetEditEiFrame->getEiExecution()->isGranted()) {
-				$toOneEditable->setNewMappingFormUrl($this->eiPropRelation->buildTargetNewEiuEntryFormUrl(
-						$mapping, false, $eiFrame, $eiu->frame()->getHttpContext()));
-			}
-		}
+// 			if ($this->eiPropRelation->isEmbeddedAddActivated($eiu->frame()->getEiFrame())
+// 					 && $targetEditEiFrame->getEiExecution()->isGranted()) {
+// 				$toOneEditable->setNewMappingFormUrl($this->eiPropRelation->buildTargetNewEiuEntryFormUrl(
+// 						$mapping, false, $eiFrame, $eiu->frame()->getHttpContext()));
+// 			}
+// 		}
 		
-		return new ManyToOneGuiField($this->getLabelLstr(), $relationEiField, $targetReadEiFrame, $toOneEditable);		
-	}
+// 		return new ManyToOneGuiField($this->getLabelLstr(), $relationEiField, $targetReadEiFrame, $toOneEditable);		
+// 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\draft\DraftProperty::createDraftValueSelection()
-	 */
-	public function createDraftValueSelection(FetchDraftStmtBuilder $selectDraftStmtBuilder, DraftManager $dm, 
-			N2nContext $n2nContext): DraftValueSelection {
+// 	/**
+// 	 * {@inheritDoc}
+// 	 * @see \rocket\ei\manage\draft\DraftProperty::createDraftValueSelection()
+// 	 */
+// 	public function createDraftValueSelection(FetchDraftStmtBuilder $selectDraftStmtBuilder, DraftManager $dm, 
+// 			N2nContext $n2nContext): DraftValueSelection {
 				
-		return new SimpleToOneDraftValueSelection($selectDraftStmtBuilder->requestColumn(EiPropPath::from($this)),
-				$dm->getEntityManager(), $this->eiPropRelation->getTargetEiType()->getEntityModel());
-	}
+// 		return new SimpleToOneDraftValueSelection($selectDraftStmtBuilder->requestColumn(EiPropPath::from($this)),
+// 				$dm->getEntityManager(), $this->eiPropRelation->getTargetEiType()->getEntityModel());
+// 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\draft\DraftProperty::supplyPersistDraftStmtBuilder()
-	 */
-	public function supplyPersistDraftStmtBuilder($value, $oldValue, PersistDraftStmtBuilder $persistDraftStmtBuilder, 
-			PersistDraftAction $persistDraftAction) {
-		ArgUtils::valObject($value, true);
+// 	/**
+// 	 * {@inheritDoc}
+// 	 * @see \rocket\ei\manage\draft\DraftProperty::supplyPersistDraftStmtBuilder()
+// 	 */
+// 	public function supplyPersistDraftStmtBuilder($value, $oldValue, PersistDraftStmtBuilder $persistDraftStmtBuilder, 
+// 			PersistDraftAction $persistDraftAction) {
+// 		ArgUtils::valObject($value, true);
 		
-		if ($value === null) {
-			$persistDraftStmtBuilder->registerColumnRawValue(EiPropPath::from($this), null);
-			return;
-		}
+// 		if ($value === null) {
+// 			$persistDraftStmtBuilder->registerColumnRawValue(EiPropPath::from($this), null);
+// 			return;
+// 		}
 		
-		$em = $persistDraftAction->getQueue()->getEntityManager();
-		if (!$em->contains($value)) {
-			$em->persist($value);
-		}
+// 		$em = $persistDraftAction->getQueue()->getEntityManager();
+// 		if (!$em->contains($value)) {
+// 			$em->persist($value);
+// 		}
 		
-		$target = $this->eiPropRelation->getTargetEiType();
+// 		$target = $this->eiPropRelation->getTargetEiType();
 		
-		$targetId = $target->extractId($value);
-		if ($targetId === null) {
-			$em->flush();
-			$targetId = $target->extractId($value);
-		}
+// 		$targetId = $target->extractId($value);
+// 		if ($targetId === null) {
+// 			$em->flush();
+// 			$targetId = $target->extractId($value);
+// 		}
 		
-		$persistDraftStmtBuilder->registerColumnRawValue(EiPropPath::from($this), 
-				$target->idToPid($targetId));
-	}
+// 		$persistDraftStmtBuilder->registerColumnRawValue(EiPropPath::from($this), 
+// 				$target->idToPid($targetId));
+// 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\draft\DraftProperty::supplyRemoveDraftStmtBuilder()
-	 */
-	public function supplyRemoveDraftStmtBuilder($value, $oldValue, RemoveDraftStmtBuilder $removeDraftStmtBuilder, 
-			RemoveDraftAction $draftActionQueue) {
-	}
+// 	/**
+// 	 * {@inheritDoc}
+// 	 * @see \rocket\ei\manage\draft\DraftProperty::supplyRemoveDraftStmtBuilder()
+// 	 */
+// 	public function supplyRemoveDraftStmtBuilder($value, $oldValue, RemoveDraftStmtBuilder $removeDraftStmtBuilder, 
+// 			RemoveDraftAction $draftActionQueue) {
+// 	}
 	
-	public function writeDraftValue($object, $value) {
-		$this->getObjectPropertyAccessProxy()->setValue($object, $value);
-	}
+// 	public function writeDraftValue($object, $value) {
+// 		$this->getObjectPropertyAccessProxy()->setValue($object, $value);
+// 	}
 	
-	public function buildFilterProp(Eiu $eiu): ?FilterProp  {
-		$eiuFrame = $eiu->frame(false);
-		if (null === $eiuFrame) return null;
+// 	public function buildFilterProp(Eiu $eiu): ?FilterProp  {
+// 		$eiuFrame = $eiu->frame(false);
+// 		if (null === $eiuFrame) return null;
 		
-		$eiFrame = $eiuFrame->getEiFrame();
-		$filterProp = parent::buildManagedFilterProp($eiFrame);
-		if ($filterProp === null) return null;
-		CastUtils::assertTrue($filterProp instanceof RelationFilterProp);
+// 		$eiFrame = $eiuFrame->getEiFrame();
+// 		$filterProp = parent::buildManagedFilterProp($eiFrame);
+// 		if ($filterProp === null) return null;
+// 		CastUtils::assertTrue($filterProp instanceof RelationFilterProp);
 		
-		$that = $this;
-		$filterProp->setTargetSelectUrlCallback(function (HttpContext $httpContext) use ($that, $eiFrame) {
-			return $that->eiPropRelation->buildTargetOverviewToolsUrl($eiFrame, $httpContext);
-		});
+// 		$that = $this;
+// 		$filterProp->setTargetSelectUrlCallback(function (HttpContext $httpContext) use ($that, $eiFrame) {
+// 			return $that->eiPropRelation->buildTargetOverviewToolsUrl($eiFrame, $httpContext);
+// 		});
 				
-		return $filterProp;
-	}
+// 		return $filterProp;
+// 	}
 	
 // 	/**
 // 	 * {@inheritDoc}

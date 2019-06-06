@@ -41,6 +41,7 @@ use rocket\ei\manage\EiObject;
 use rocket\ei\manage\security\EiEntryAccessFactory;
 use rocket\ei\manage\security\EiEntryAccess;
 use rocket\ei\EiPropPath;
+use rocket\ei\component\command\EiCommand;
 
 class EiFrame {
 	private $contextEiEngine;
@@ -48,7 +49,6 @@ class EiFrame {
 	private $boundry;
 	private $parent;
 	private $controllerContext;
-	private $subEiTypeExtensions = array();
 	
 	private $eiExecution;
 	private $eiEntryAccessFactory;
@@ -142,7 +142,7 @@ class EiFrame {
 	/**
 	 * @return ControllerContext
 	 */
-	public function getControllerContext(): ControllerContext {
+	public function getControllerContext() {
 		if (null === $this->controllerContext) {
 			throw new IllegalStateException('EiFrame has no ControllerContext available');
 		}
@@ -150,37 +150,37 @@ class EiFrame {
 		return $this->controllerContext;
 	}
 	
-	/**
-	 * @param EiTypeExtension[] $subEiTypeExtensions
-	 */
-	public function setSubEiTypeExtensions(array $subEiTypeExtensions) {
-		ArgUtils::valArray($subEiTypeExtensions, EiTypeExtension::class);
-		$this->subEiTypeExtensions = $subEiTypeExtensions;
-	}
+// 	/**
+// 	 * @param EiTypeExtension[] $subEiTypeExtensions
+// 	 */
+// 	public function setSubEiTypeExtensions(array $subEiTypeExtensions) {
+// 		ArgUtils::valArray($subEiTypeExtensions, EiTypeExtension::class);
+// 		$this->subEiTypeExtensions = $subEiTypeExtensions;
+// 	}
 	
-	/**
-	 * @param EiType $eiType
-	 * @throws \InvalidArgumentException
-	 * @return \rocket\ei\mask\EiMask
-	 */
-	public function determineEiMask(EiType $eiType) {
-		$contextEiMask = $this->contextEiEngine->getEiMask();
-		$contextEiType = $contextEiMask->getEiType();
-		if ($eiType->equals($contextEiType)) {
-			return $contextEiMask;
-		}
+// 	/**
+// 	 * @param EiType $eiType
+// 	 * @throws \InvalidArgumentException
+// 	 * @return \rocket\ei\mask\EiMask
+// 	 */
+// 	public function determineEiMask(EiType $eiType) {
+// 		$contextEiMask = $this->contextEiEngine->getEiMask();
+// 		$contextEiType = $contextEiMask->getEiType();
+// 		if ($eiType->equals($contextEiType)) {
+// 			return $contextEiMask;
+// 		}
 		
-		if (!$contextEiType->containsSubEiTypeId($eiType->getId(), true)) {
-			throw new \InvalidArgumentException('Passed EiType ' . $eiType->getId() 
-					. ' is not compatible with EiFrame with context EiType ' . $contextEiType->getId() . '.');
-		}
+// 		if (!$contextEiType->containsSubEiTypeId($eiType->getId(), true)) {
+// 			throw new \InvalidArgumentException('Passed EiType ' . $eiType->getId() 
+// 					. ' is not compatible with EiFrame with context EiType ' . $contextEiType->getId() . '.');
+// 		}
 		
-		if (isset($this->subEiTypeExtensions[$eiType->getId()])) {
-			return $this->subEiTypeExtensions[$eiType->getId()]->getEiMask();
-		}
+// 		if (isset($this->subEiTypeExtensions[$eiType->getId()])) {
+// 			return $this->subEiTypeExtensions[$eiType->getId()]->getEiMask();
+// 		}
 		
-		return $eiType->getEiMask();
-	}
+// 		return $eiType->getEiMask();
+// 	}
 	
 	public function setEiRelation(EiPropPath $eiPropPath, EiRelation $scriptRelation) {
 		$this->eiRelations[(string) $eiPropPath] = $scriptRelation;
@@ -270,7 +270,10 @@ class EiFrame {
 	/**
 	 * @param EiExecution $eiExecution
 	 */
-	public function setEiExecution(EiExecution $eiExecution) {
+	public function exec(?EiCommandPath $eiCommandPath, EiCommand $eiCommand) {
+		return $this->manageState->getEiPermissionManager()
+				->applyToEiFrame($this->eiFrame, $eiCommandPath, $eiCommand);
+		
 		$this->eiExecution = $eiExecution;
 	}
 	

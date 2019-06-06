@@ -30,7 +30,6 @@ use n2n\util\type\TypeConstraints;
 use rocket\ei\util\entry\EiuEntry;
 use n2n\validation\impl\ValidationMessages;
 use n2n\util\type\ArgUtils;
-use n2n\util\ex\IllegalStateException;
 
 class ToManyEiField extends EiFieldAdapter {
 	/**
@@ -46,6 +45,11 @@ class ToManyEiField extends EiFieldAdapter {
 	 */
 	private $eiu;
 	
+	/**
+	 * @param Eiu $eiu
+	 * @param RelationEiProp $eiProp
+	 * @param RelationModel $relationModel
+	 */
 	function __construct(Eiu $eiu, RelationEiProp $eiProp, RelationModel $relationModel) {
 		parent::__construct(TypeConstraints::array(false, EiuEntry::class));
 		
@@ -105,12 +109,12 @@ class ToManyEiField extends EiFieldAdapter {
 	protected function validateValue($value, EiFieldValidationResult $validationResult) {
 		$min = $this->relationModel->getMin();
 		if ($min !== null && $min > count($value)) {
-			$validationResult->addError(ValidationMessages::minElements(null, $this->eiu->prop()->getLabel()));
+			$validationResult->addError(ValidationMessages::minElements($min, $this->eiu->prop()->getLabel()));
 		}
 		
 		$max = $this->relationModel->getMax();
 		if ($max !== null && $max < count($value)) {
-			$validationResult->addError(ValidationMessages::maxElements(null, $this->eiu->prop()->getLabel()));
+			$validationResult->addError(ValidationMessages::maxElements($max, $this->eiu->prop()->getLabel()));
 		}
 	}
 
@@ -149,8 +153,6 @@ class ToManyEiField extends EiFieldAdapter {
 	 * @see \rocket\ei\manage\entry\EiField::copyValue()
 	 */
 	public function copyValue(Eiu $copyEiu) {
-		IllegalStateException::assertTrue($this->isCopyable());
-		
 		$targetEiuEntries = $this->getValue();
 		
 		if (empty($targetEiuEntries)) return [];

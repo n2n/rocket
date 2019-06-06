@@ -22,8 +22,10 @@
 namespace rocket\si\content;
 
 class SiEntry implements \JsonSerializable {
-	private $category;
-	private $id;
+	/**
+	 * @var SiObjectQualifier
+	 */
+	private $qualifier;
 	private $buildups = [];
 	private $treeLevel;
 	private $inputAvailable;
@@ -33,60 +35,27 @@ class SiEntry implements \JsonSerializable {
 	 * @param string|null $id
 	 * @param string $name
 	 */
-	function __construct(string $category, ?string $id, bool $inputAvailable) {
-		$this->category = $category;
-		$this->id = $id;
+	function __construct(SiObjectQualifier $qualifier, bool $inputAvailable) {
+		$this->qualifier = $qualifier;
 		$this->inputAvailable = $inputAvailable;
+	}
+
+	/**
+	 * @return \rocket\si\content\SiObjectQualifier
+	 */
+	function getQualifier() {
+		return $this->qualifier;
 	}
 	
 	/**
-	 * @return string
+	 * @param SiObjectQualifier $qualifier
+	 * @return \rocket\si\content\SiEntry
 	 */
-	function getCategory() {
-		return $this->category;
-	}
-
-	/**
-	 * @param string $category
-	 * @return SiEntry
-	 */
-	function setCategory(string $category) {
-		$this->category = $category;
+	function setQualifier(SiObjectQualifier $qualifier) {
+		$this->qualifier = $qualifier;
 		return $this;
 	}
-
-	/**
-	 * @return string
-	 */
-	function getId() {
-		return $this->id;
-	}
-
-	/**
-	 * @param string|null $id
-	 * @return SiEntry
-	 */
-	function setId(?string $id) {
-		$this->id = $id;
-		return $this;
-	}
-
-	/**
-	 * @return string
-	 */
-	function getName() {
-		return $this->name;
-	}
-
-	/**
-	 * @param string $name
-	 * @return SiEntry
-	 */
-	function setName(string $name) {
-		$this->name = $name;
-		return $this;
-	}
-
+	
 	/**
 	 * @return int|null
 	 */
