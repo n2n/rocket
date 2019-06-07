@@ -67,6 +67,8 @@ class DisplayConfig {
 		}
 		
 		$this->defaultDisplayedViewModes = $viewModes;
+		
+		return $this;
 	}
 	
 	public function changeDefaultDisplayedViewModes($viewModes, $defaultDisplayed) {
@@ -77,6 +79,8 @@ class DisplayConfig {
 		}
 		
 		$this->changeDefaultDisplayed($viewModes, $defaultDisplayed);
+		
+		return $this;
 	}
 	
 	private function changeDefaultDisplayed($viewModes, $defaultDisplayed) {
@@ -93,23 +97,32 @@ class DisplayConfig {
 	
 	public function setListReadModeDefaultDisplayed($defaultDisplayaed) {
 		$this->changeDefaultDisplayed(ViewMode::COMPACT_READ, $defaultDisplayaed);
+		return $this;
 	}
 	
 	public function setBulkyModeDefaultDisplayed($defaultDisplayaed) {
 		$this->changeDefaultDisplayed(ViewMode::BULKY_READ, $defaultDisplayaed);
+		return $this;
 	}
 	
 	public function setEditModeDefaultDisplayed($defaultDisplayaed) {
 		$this->changeDefaultDisplayed(ViewMode::BULKY_EDIT, $defaultDisplayaed);
+		return $this;
 	}
 	
 	public function setAddModeDefaultDisplayed($defaultDisplayaed) {
 		$this->changeDefaultDisplayed(ViewMode::BULKY_ADD, $defaultDisplayaed);
+		return $this;
 	}
 	
+	/**
+	 * @param string $displayItemType
+	 * @return \rocket\impl\ei\component\prop\adapter\config\DisplayConfig
+	 */
 	public function setDisplayItemType(string $displayItemType) {
 		ArgUtils::valEnum($displayItemType, SiStructureType::all());
 		$this->dispayItemType = $displayItemType;
+		return $this;
 	}
 	
 	public function getDisplayItemType() {

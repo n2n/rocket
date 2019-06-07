@@ -22,57 +22,30 @@
 namespace rocket\impl\ei\component\prop\relation\model;
 
 use rocket\ei\util\Eiu;
-use rocket\ei\util\spec\EiuEngine;
 use n2n\web\http\controller\ControllerContext;
 use rocket\ei\util\frame\EiuFrame;
-use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\ei\util\entry\EiuObject;
 use rocket\impl\ei\component\prop\relation\model\relation\MappedOneToCriteriaFactory;
 use rocket\impl\ei\component\prop\relation\model\relation\RelationCriteriaFactory;
-use rocket\impl\ei\component\prop\relation\RelationEiProp;
-use rocket\ei\EiPropPath;
-use n2n\reflection\property\AccessProxy;
-use n2n\util\type\CastUtils;
-use n2n\impl\persistence\orm\property\relation\MappedRelation;
-use rocket\ei\mask\EiMask;
-use n2n\reflection\property\PropertiesAnalyzer;
-use n2n\reflection\ReflectionException;
-use rocket\ei\component\InvalidEiComponentConfigurationException;
 use n2n\util\ex\IllegalStateException;
 use rocket\impl\ei\component\prop\relation\model\relation\MappedRelationEiModificator;
 use rocket\ei\util\entry\EiuEntry;
 use rocket\impl\ei\component\prop\relation\model\relation\PlainMappedRelationEiModificator;
 use rocket\impl\ei\component\prop\relation\model\relation\MasterRelationEiModificator;
-use n2n\util\type\TypeUtils;
-use rocket\impl\ei\component\prop\relation\conf\RelationEiPropConfigurator;
-use n2n\persistence\orm\CascadeType;
+use rocket\impl\ei\component\prop\relation\conf\RelationModel;
+use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 
 class Relation {
-	
+	/**
+	 * @var RelationModel
+	 */
+	private $relationModel;
 	
 	/**
-	 * @var EiuEngine
+	 * @param RelationModel $relationModel
 	 */
-	private $targetEiuEngine;
-	/**
-	 * @var TargetPropInfo
-	 */
-	private $targetPropInfo;
-	
-	private function __construct(RelationEntityProperty $relationEntityProperty, bool $sourceMany, bool $targetMany, 
-			bool $embedded) {
-	}
-	
-	/**
-	 * @param EiuEngine $targetEiuEngine
-	 */
-	function init(EiuEngine $targetEiuEngine) {
-		$this->targetEiuEngine = $targetEiuEngine;
-		$this->targetPropInfo = RelationUtils::deterTargetPropInfo($this->relationEntityProperty, $targetEiuEngine);
-		if ($this->embedded) {
-			RelationUtils::validateEmbedded($this->relationEntityProperty, $this->sourceMany,
-					$this->targetPropInfo);
-		}
+	private function __construct(RelationModel $relationModel) {
+		$this->relationModel = $relationModel;
 	}
 	
 	function ensureInit() {
@@ -123,18 +96,17 @@ class Relation {
 	 */
 	private function applyTargetModificators(EiuFrame $targetEiuFrame, EiuFrame $eiuFrame, EiuEntry $eiuEntry) {
 		$targetEiFrame = $eiuFrame->getEiFrame();
+		$targetPropInfo = $this->relationModel->getTargetPropInfo();
 		
-		if (null !== $this->targetPropInfo->eiPropPath) {
-			$targetEiuFrame->setEiRelation($this->targetPropInfo->eiPropPath, $eiuFrame, $eiuEntry);
+		if (null !== $targetPropInfo->eiPropPath) {
+			$targetEiuFrame->setEiRelation($targetPropInfo->eiPropPath, $eiuFrame, $eiuEntry);
 			
 			if (!$eiuEntry->isDraft()) {
-				$relationEiuObj = ($this->targetPropInfo->hasEntryValues() ? $eiuEntry : $eiuEntry->object());
+				$relationEiuObj = ($targetPropInfo->hasEntryValues() ? $eiuEntry : $eiuEntry->object());
 				$targetEiuFrame->registerListener(new MappedRelationEiModificator($targetEiFrame,
-						$relationEiuObj, EiPropPath::from($targetEiProp), $this->isSourceMany()));
+						$relationEiuObj, $targetPropInfo->eiPropPath, $this->isSourceMany()));
 			}
-		} 
-		
-		if ($this->targetMasterAccessProxy !== null) {
+		} else if ($targetPropInfo->targetMasterAccessProxy !== null) {
 			$targetEiuFrame->registerListener(
 					new PlainMappedRelationEiModificator($targetEiFrame, $eiuEntry->getEntityObj(),
 							$this->targetMasterAccessProxy, $this->isSourceMany()));
@@ -144,125 +116,6 @@ class Relation {
 			$targetEiFrame->registerListener(new MasterRelationEiModificator($targetEiFrame, $eiuEntry->getEntityObj(),
 					$this->relationEiProp->getObjectPropertyAccessProxy(), $this->targetMany));
 		}
-	}
-	
-}
-
-class RelationUtils {
-	/**
-	 * @throws InvalidEiComponentConfigurationException
-	 */
-	function deterTargetPropInfo(RelationEntityProperty $entityProperty, EiuEngine $targetEiuEngine) {
-		$entityProperty = $this->getRelationEntityProperty();
-		
-		$targetEiMask = $targetEiuEngine->getEiEngine()->getEiMask();
-		
-		if (!$entityProperty->isMaster()) {
-			return self::deterTargetMaster($entityProperty, $targetEiMask);
-		}
-		
-		return self::deterTargetMapped($entityProperty, $targetEiMask);
-	}
-	
-	/**
-	 * @param RelationEntityProperty $entityProperty
-	 * @param EiMask $targetEiMask
-	 * @return \rocket\impl\ei\component\prop\relation\model\TargetPropInfo
-	 */
-	private function deterTargetMapped(RelationEntityProperty $entityProperty, EiMask $targetEiMask) {
-		foreach ($targetEiMask->getEiPropCollection() as $targetEiProp) {
-			if (!($targetEiProp instanceof RelationEiProp)) continue;
-			
-			$targetRelationEntityProperty = $targetEiProp->getRelationEntityProperty();
-			
-			$targetRelation = $targetRelationEntityProperty->getRelation();
-			if ($targetRelation instanceof MappedRelation
-					&& $targetRelation->getTargetEntityProperty()->equals($relationEntityProperty)) {
-				return new TargetPropInfo(EiPropPath::from($targetEiProp));
-			}
-		}
-		
-		return new TargetPropInfo();
-	}
-	
-	/**
-	 * @param RelationEntityProperty $entityProperty
-	 * @param EiMask $targetEiMask
-	 * @throws InvalidEiComponentConfigurationException
-	 * @return \rocket\impl\ei\component\prop\relation\model\TargetPropInfo
-	 */
-	private function deterTargetMaster(RelationEntityProperty $entityProperty, EiMask $targetEiMask) {
-		$mappedRelation = $entityProperty->getRelation();
-		CastUtils::assertTrue($mappedRelation instanceof MappedRelation);
-		
-		$targetEntityProperty = $mappedRelation->getTargetEntityProperty();
-		
-		foreach ($targetEiMask->getEiPropCollection() as $targetEiProp) {
-			if (($targetEiProp instanceof RelationEiProp)
-					&& $targetEntityProperty->equals($targetEiProp->getRelationEntityProperty())) {
-				return new TargetPropInfo(EiPropPath::from($targetEiProp));
-			}
-		}
-		
-		$targetClass = $targetEiMask->getEiType()->getEntityModel()->getClass();
-		$propertiesAnalyzer = new PropertiesAnalyzer($targetClass);
-		try {
-			return new TargetPropInfo(null, $propertiesAnalyzer->analyzeProperty($targetEntityProperty->getName()));
-		} catch (ReflectionException $e) {
-			throw new InvalidEiComponentConfigurationException('No Target master property not accessible: '
-					. $targetEntityProperty, 0, $e);
-		}
-	}
-	
-	static function validateEmbedded(RelationEntityProperty $entityProperty, bool $sourceMany, RelationModel $relationModel) {
-		if (!($entityProperty->getRelation()->getCascadeType() & CascadeType::PERSIST)) {
-			$entityProperty = $this->getRelationEiProp()->getEntityProperty();
-			throw new InvalidEiComponentConfigurationException(
-					'EiProp requires an EntityProperty which cascades persist: '
-							. TypeUtils::prettyClassPropName($entityProperty->getEntityModel()->getClass(),
-									$entityProperty->getName()));
-		}
-		
-// 		if ($this->isDraftable() && !$this->isJoinTableRelation($this)) {
-// 			throw new InvalidEiComponentConfigurationException(
-// 					'Only EiProps of properties with join table relations can be drafted.');
-// 		}
-		
-		// reason to remove: orphans should never remain in db on embeddedeiprops
-		if ($entityProperty->getRelation()->isOrphanRemoval()) {
-			return;
-		}
-		
-		if (!$relationModel->getOrphansAllowed()) {
-			throw new InvalidEiComponentConfigurationException('EiProp requires an EntityProperty '
-					. TypeUtils::prettyClassPropName($entityProperty->getEntityModel()->getClass(), $entityProperty->getName())
-					. ' which removes orphans or an EiProp configuration with '
-					. RelationEiPropConfigurator::ATTR_ORPHANS_ALLOWED_KEY . '=true.');
-		}
-		
-		if (!$entityProperty->isMaster() && !$sourceMany
-				&& !$this->getTargetMasterAccessProxy()->getConstraint()->allowsNull()) {
-					throw new InvalidEiComponentConfigurationException('EiProp requires an EntityProperty '
-							. TypeUtils::prettyClassPropName($entityProperty->getEntityModel()->getClass(), $entityProperty->getName())
-							. ' which removes orphans or target ' . $this->getTargetMasterAccessProxy()
-							. ' must accept null.');
-		}
-	}
-}
-
-class TargetPropInfo {
-	/**
-	 * @var EiPropPath|null
-	 */
-	public $eiPropPath;
-	/**
-	 * @var AccessProxy|null
-	 */
-	public $masterAccessProxy;
-	
-	function __construct(EiPropPath $eiPropPath = null, AccessProxy $masterAccessProxy = null) {
-		$this->eiPropPath = $eiPropPath;
-		$this->masterAccessProxy = $masterAccessProxy;
 	}
 	
 }

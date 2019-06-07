@@ -39,7 +39,7 @@ use rocket\ei\manage\gui\field\GuiField;
 use rocket\core\model\Rocket;
 use n2n\l10n\Lstr;
 use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable;
-use rocket\impl\ei\component\prop\adapter\config\DisplayConfigModel;
+use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\impl\ei\component\prop\adapter\gui\GuiFieldProxy;
 use rocket\si\structure\SiStructureType;
@@ -49,14 +49,14 @@ abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter im
 	private $displayConfig;
 
 	/**
-	 * @return DisplayConfigModel
+	 * @return DisplayConfig
 	 */
 	public function getDisplayConfig(): DisplayConfig {
 		if ($this->displayConfig !== null) {
 			return $this->displayConfig;
 		}
 		
-		return $this->displayConfig = new DisplayConfigModel(ViewMode::all());
+		return $this->displayConfig = new DisplayConfig(ViewMode::all());
 	}
 	
 	/**

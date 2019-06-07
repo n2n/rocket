@@ -234,6 +234,27 @@ class EiuEngine {
 		return $this->getManageState()->getDef()->getGuiDefinition($this->eiEngine->getEiMask());
 	}
 	
+	/**
+	 * @param mixed $eiObjectArg
+	 * @param bool $determineEiMask
+	 * @param N2nLocale $n2nLocale
+	 * @return string
+	 */
+	public function createIdentityString($eiObjectArg, bool $determineEiMask = true,
+			N2nLocale $n2nLocale = null): string {
+		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectArg, 'eiObjectArg', $this->getEiType());
+				
+		$eiMask = $this->getEiEngine()->getEiMask();
+		if ($determineEiMask) {
+			$eiMask = $eiMask->determineEiMask($eiObject->getEiEntityObj()->getEiType());
+		}
+		
+		$n2nContext = $this->eiuAnalyst->getN2nContext(true);
+		return $this->getManageState()->getDef()->getGuiDefinition($eiMask)
+				->createIdentityString($eiObject, $n2nContext,
+						$n2nLocale ?? $n2nContext->getN2nLocale());
+	}
+	
 	public function onNewGui(\Closure $callback) {
 		$this->getGuiDefinition()->registerGuiDefinitionListener(new ClosureGuiDefinitionListener($callback));
 	}
@@ -324,17 +345,17 @@ class EiuEngine {
 		return new EiuPrivilegeForm($this->getPrivilegeDefinition(), $privilegeSetting, $this->eiuAnalyst);	
 	}
 	
-	/**
-	 * @param object $eiObjectArg
-	 * @param N2nLocale $n2nLocale
-	 * @return string
-	 */
-	public function createIdentityString(object $eiObjectArg, N2nLocale $n2nLocale = null): string {
-		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectArg, 'eiObjectArg', $this->eiuMask->getEiMask()->getEiType());
-		return $this->getGuiDefinition()
-				->createIdentityString($eiObject, $this->eiuAnalyst->getN2nContext(true),
-						$n2nLocale ?? $this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
-	}
+// 	/**
+// 	 * @param object $eiObjectArg
+// 	 * @param N2nLocale $n2nLocale
+// 	 * @return string
+// 	 */
+// 	public function createIdentityString(object $eiObjectArg, N2nLocale $n2nLocale = null): string {
+// 		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectArg, 'eiObjectArg', $this->eiuMask->getEiMask()->getEiType());
+// 		return $this->getGuiDefinition()
+// 				->createIdentityString($eiObject, $this->eiuAnalyst->getN2nContext(true),
+// 						$n2nLocale ?? $this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
+// 	}
 }
 
 class ClosureGuiDefinitionListener implements GuiDefinitionListener {

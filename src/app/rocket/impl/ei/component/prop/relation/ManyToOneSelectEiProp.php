@@ -21,55 +21,31 @@
  */
 namespace rocket\impl\ei\component\prop\relation;
 
-use rocket\impl\ei\component\prop\relation\model\relation\SelectEiPropRelation;
-use rocket\impl\ei\component\prop\relation\model\ManyToOneGuiField;
-use rocket\ei\manage\draft\stmt\FetchDraftStmtBuilder;
-use rocket\ei\manage\draft\stmt\PersistDraftStmtBuilder;
-use n2n\core\container\N2nContext;
-use rocket\impl\ei\component\prop\relation\model\ToOneEditable;
-use rocket\ei\manage\draft\DraftValueSelection;
-use rocket\ei\manage\draft\SimpleDraftValueSelection;
-use rocket\ei\manage\draft\DraftManager;
-use n2n\persistence\orm\EntityManager;
-use n2n\persistence\orm\model\EntityModel;
 use n2n\util\type\ArgUtils;
 use n2n\util\type\CastUtils;
-use rocket\ei\manage\EiObject;
-use rocket\ei\manage\draft\RemoveDraftAction;
-use rocket\ei\manage\draft\PersistDraftAction;
 use rocket\impl\ei\component\prop\relation\model\filter\ToOneSecurityFilterProp;
 use n2n\web\http\controller\impl\ScrRegistry;
-use rocket\ei\EiPropPath;
 use rocket\impl\ei\component\command\common\controller\GlobalOverviewJhtmlController;
-use rocket\impl\ei\component\prop\relation\model\filter\RelationFilterProp;
-use rocket\ei\manage\LiveEiObject;
 use rocket\ei\util\Eiu;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
-use n2n\web\http\HttpContext;
-use rocket\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
-use rocket\ei\manage\gui\field\GuiField;
-use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
-use rocket\ei\manage\gui\DisplayDefinition;
-use rocket\ei\manage\frame\Boundry;
-use rocket\ei\manage\security\InaccessibleEiCommandPathException;
-use rocket\si\structure\SiStructureType;
-use rocket\impl\ei\component\prop\relation\model\Relation;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\ei\manage\gui\ViewMode;
-use rocket\impl\ei\component\prop\relation\model\ToOneEiField;
 
 class ManyToOneSelectEiProp extends RelationEiPropAdapter {
 	
 	function __construct() {
 		parent::__construct();
 		
-		$this->configurator->registerDisplayConfig(new DisplayConfig(ViewMode::all()));
-		$this->configurator->registerEditConfig(new EditConfig());
+		$this->displayConfig = new DisplayConfig(ViewMode::all());
+		$this->editConfig = new EditConfig();
+		
+		$this->configurator->registerDisplayConfig($this->displayConfig);
+		$this->configurator->registerEditConfig($this->editConfig);
 	}
 	
 	function setEntityProperty(?EntityProperty $entityProperty) {
@@ -78,16 +54,7 @@ class ManyToOneSelectEiProp extends RelationEiPropAdapter {
 		
 		parent::setEntityProperty($entityProperty);
 		
-		$this->relationModel = new RelationModel($entityProperty, true, false, RelationModel::MODE_SELECT);
-		$this->configurator->setRelationModel($this->relationModel);
-	}
-	
-	function buildEiField(Eiu $eiu) {
-		return new ToOneEiField($eiu, $this, $this->relationModel);
-	}
-	
-	function buildGuiProp(Eiu $eiu) {
-		
+		$this->setRelationModel(new RelationModel($entityProperty, true, false, RelationModel::MODE_SELECT));
 	}
 	
 	
@@ -259,26 +226,28 @@ class ManyToOneSelectEiProp extends RelationEiPropAdapter {
 				
 		return $eiEntryFilterProp;
 	}
-}
-
-class SimpleToOneDraftValueSelection extends SimpleDraftValueSelection {
-	private $em;
-	private $targetEntityModel;
 	
-	public function __construct($columnAlias, EntityManager $em, EntityModel $targetEntityModel) {
-		parent::__construct($columnAlias);
-		$this->em = $em;
-		$this->targetEntityModel = $targetEntityModel;
-	}
 
-	/* (non-PHPdoc)
-	 * @see \rocket\ei\manage\draft\DraftValueSelection::buildDraftValue()
-	 */
-	public function buildDraftValue() {
-		if ($this->rawValue === null) return null;
-		
-		$targetId = $this->targetEntityModel->getIdDef()->getEntityProperty()->parseValue($this->rawValue, 
-				$this->em->getPdo());
-		return $this->em->find($this->targetEntityModel->getClass(), $targetId);
-	}
 }
+
+// class SimpleToOneDraftValueSelection extends SimpleDraftValueSelection {
+// 	private $em;
+// 	private $targetEntityModel;
+	
+// 	public function __construct($columnAlias, EntityManager $em, EntityModel $targetEntityModel) {
+// 		parent::__construct($columnAlias);
+// 		$this->em = $em;
+// 		$this->targetEntityModel = $targetEntityModel;
+// 	}
+
+// 	/* (non-PHPdoc)
+// 	 * @see \rocket\ei\manage\draft\DraftValueSelection::buildDraftValue()
+// 	 */
+// 	public function buildDraftValue() {
+// 		if ($this->rawValue === null) return null;
+		
+// 		$targetId = $this->targetEntityModel->getIdDef()->getEntityProperty()->parseValue($this->rawValue, 
+// 				$this->em->getPdo());
+// 		return $this->em->find($this->targetEntityModel->getClass(), $targetId);
+// 	}
+// }

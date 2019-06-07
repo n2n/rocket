@@ -22,6 +22,13 @@ class EiuProp {
 	}
 	
 	/**
+	 * @return \rocket\ei\component\prop\EiProp
+	 */
+	public function getEiProp() {
+		return $this->eiuMask->getEiMask()->getEiPropCollection()->getByPath($this->eiPropPath);
+	}
+	
+	/**
 	 * @param N2nLocale|null $n2nLocale
 	 * @return string
 	 */

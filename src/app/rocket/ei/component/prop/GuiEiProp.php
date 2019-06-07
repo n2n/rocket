@@ -28,5 +28,5 @@ interface GuiEiProp extends EiProp {
 	/**
 	 * @return \rocket\ei\manage\gui\GuiProp|null null if not displayable
 	 */
-	public function buildGuiProp(Eiu $eiu): ?GuiProp;
+	function buildGuiProp(Eiu $eiu): ?GuiProp;
 }

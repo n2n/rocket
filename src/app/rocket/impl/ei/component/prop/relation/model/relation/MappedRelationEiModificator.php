@@ -23,7 +23,6 @@ namespace rocket\impl\ei\component\prop\relation\model\relation;
 
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\EiPropPath;
-use rocket\impl\ei\component\prop\relation\model\RelationEntry;
 use rocket\ei\manage\frame\EiFrameListener;
 use rocket\ei\manage\entry\EiEntry;
 

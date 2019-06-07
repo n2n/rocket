@@ -19,26 +19,18 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\prop\relation;
+namespace rocket\impl\ei\component\prop\relation\model\gui;
 
-use n2n\persistence\orm\property\EntityProperty;
-use n2n\impl\persistence\orm\property\ToManyEntityProperty;
-use n2n\util\type\ArgUtils;
-use n2n\impl\persistence\orm\property\RelationEntityProperty;
-use rocket\impl\ei\component\prop\relation\conf\RelationModel;
+use rocket\ei\manage\gui\field\GuiField;
+use rocket\si\content\SiField;
 
-class ManyToManySelectEiProp extends RelationEiPropAdapter {
+class ToManyGuiField implements GuiField {
 	
-	public function __construct() {
-		parent::__construct();
+	public function getSiField(): SiField {
 	}
 	
-	public function setEntityProperty(?EntityProperty $entityProperty) {
-		ArgUtils::assertTrue($entityProperty instanceof ToManyEntityProperty
-				&& $entityProperty->getType() === RelationEntityProperty::TYPE_MANY_TO_MANY);
-	
-		parent::setEntityProperty($entityProperty);
-		
-		$this->setRelationModel(new RelationModel($entityProperty, true, true, RelationModel::MODE_SELECT));
+	public function save() {
 	}
+
+	
 }

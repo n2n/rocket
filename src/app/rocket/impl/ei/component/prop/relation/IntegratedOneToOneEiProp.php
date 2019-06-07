@@ -30,7 +30,6 @@ use rocket\ei\manage\EiObject;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\impl\ei\component\prop\relation\model\ToOneEiField;
 use rocket\impl\ei\component\prop\relation\model\relation\EmbeddedEiPropRelation;
-use rocket\ei\manage\DraftEiObject;
 use rocket\ei\manage\LiveEiObject;
 use n2n\util\type\CastUtils;
 use n2n\impl\web\dispatch\mag\model\ObjectMagAdapter;
@@ -56,60 +55,12 @@ use rocket\ei\manage\entry\EiField;
 use rocket\ei\manage\gui\EiFieldAbstraction;
 use rocket\impl\ei\component\prop\adapter\entry\EiFieldWrapperCollection;
 use rocket\ei\manage\gui\field\GuiField;
+use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 
 class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiEiPropFork, GuiPropFork {
 	
 	public function __construct() {
 		parent::__construct();
-	
-		$this->initialize(new EmbeddedEiPropRelation($this, false, false));
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\entry\Readable::read()
-	 */
-	public function read(Eiu $eiu) {
-		if ($eiu->object()->isDraftProp($this)) {
-			$targetDraft = $eiu->entry()->readNativValue($this);
-			if ($targetDraft === null) return null;
-				
-			return new DraftEiObject($targetDraft);
-		}
-	
-		$targetEntityObj = $eiu->entry()->readNativValue($this);
-		if ($targetEntityObj === null) return null;
-
-		return LiveEiObject::create($this->eiPropRelation->getTargetEiType(), $targetEntityObj);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\entry\Writable::write()
-	 */
-	public function write(Eiu $eiu, $value) {
-		CastUtils::assertTrue($value === null || $value instanceof EiObject);
-	
-		if ($eiu->object()->isDraftProp($this)) {
-			$targetDraft = null;
-			if ($value !== null) $targetDraft = $value->getDraft();
-	
-			$eiu->entry()->writeNativeValue($this, $targetDraft);
-			return;
-		}
-	
-		$targetEntityObj = null;
-		if ($value !== null) $targetEntityObj = $value->getLiveObject();
-	
-		$eiu->entry()->writeNativeValue($this, $targetEntityObj);
-	}
-	
-	public function copy(Eiu $eiu, $value, Eiu $copyEiu) {
-		if ($value === null) return $value;
-	
-		$targetEiuFrame = (new Eiu($this->eiPropRelation->createTargetEditPseudoEiFrame(
-				$copyEiu->frame()->getEiFrame(), $copyEiu->entry()->getEiEntry())))->frame();
-		return RelationEntry::fromM($targetEiuFrame->copyEntry($value->toEiEntry($targetEiuFrame))->getEiEntry());
 	}
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {
@@ -117,6 +68,8 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiEiPro
 				&& $entityProperty->getType() === RelationEntityProperty::TYPE_ONE_TO_ONE);
 	
 		parent::setEntityProperty($entityProperty);
+		
+		$this->setRelationModel(new RelationModel($entityProperty, false, false, RelationModel::MODE_INTEGRATED));
 	}
 	
 	private $forkedGuiDefinition;

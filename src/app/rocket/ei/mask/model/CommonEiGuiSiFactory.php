@@ -33,14 +33,9 @@ class CommonEiGuiSiFactory implements EiGuiSiFactory {
 	 * @return SiFieldDeclaration
 	 */
 	private function createSiFieldDeclaration(GuiPropAssembly $guiPropAssembly) {
-		$n2nLocale = $this->eiGui->getEiFrame()->getN2nContext()->getN2nLocale();
-		
 		$guiProp = $guiPropAssembly->getGuiProp();
-		$label = $guiProp->getDisplayLabelLstr()->t($n2nLocale);
-		$helpText = null;
-		if (null !== ($helpTextLstr = $guiProp->getDisplayHelpTextLstr())) {
-			$helpText = $helpTextLstr->t($n2nLocale);
-		}
+		$label = $guiProp->getDisplayLabel();
+		$helpText = $guiProp->getDisplayHelpText();
 		
 		return new SiFieldDeclaration($guiPropAssembly->getGuiFieldPath(),
 				$label, $helpText);

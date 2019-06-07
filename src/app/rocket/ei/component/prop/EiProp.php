@@ -29,9 +29,14 @@ use n2n\reflection\property\AccessProxy;
 interface EiProp extends EiComponent {
 	
 	/**
-	 * @return string
+	 * @return Lstr
 	 */
 	public function getLabelLstr(): Lstr;
+	
+	/**
+	 * @return Lstr|NULL
+	 */
+	public function getHelpTextLstr(): ?Lstr;
 	
 	/**
 	 * Will be the first called method by rocket

@@ -68,6 +68,14 @@ abstract class EiPropAdapter extends EiComponentAdapter implements EiProp {
 	
 	/**
 	 * {@inheritDoc}
+	 * @see \rocket\ei\component\prop\EiProp::getHelpTextLstr()
+	 */
+	public function getHelpTextLstr(): ?Lstr {
+		return null;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @see \rocket\ei\component\prop\EiProp::isPropFork()
 	 */
 	public function isPropFork(): bool {

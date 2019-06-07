@@ -270,8 +270,8 @@ class EiFrame {
 	/**
 	 * @param EiExecution $eiExecution
 	 */
-	public function exec(?EiCommandPath $eiCommandPath, EiCommand $eiCommand) {
-		return $this->manageState->getEiPermissionManager()
+	public function exec(EiCommandPath $eiCommandPath, ?EiCommand $eiCommand) {
+		$this->manageState->getEiPermissionManager()
 				->applyToEiFrame($this->eiFrame, $eiCommandPath, $eiCommand);
 		
 		$this->eiExecution = $eiExecution;
@@ -300,7 +300,7 @@ class EiFrame {
 	 * @param EiEntryAccessFactory $eiEntryAccessFactory
 	 */
 	public function setEiEntryAccessFactory(EiEntryAccessFactory $eiEntryAccessFactory) {
-		$this->eiEntryAccessFactory = $eiEntryAccessFactory;
+		$this->eiExecution = $eiEntryAccessFactory;
 	}
 	
 	/**

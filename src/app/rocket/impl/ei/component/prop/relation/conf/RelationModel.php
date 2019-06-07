@@ -24,11 +24,24 @@ namespace rocket\impl\ei\component\prop\relation\conf;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\ei\EiPropPath;
 use n2n\util\type\ArgUtils;
+use rocket\ei\util\spec\EiuEngine;
+use rocket\ei\mask\EiMask;
+use rocket\impl\ei\component\prop\relation\RelationEiProp;
+use n2n\impl\persistence\orm\property\relation\MappedRelation;
+use n2n\reflection\property\AccessProxy;
+use n2n\reflection\ReflectionException;
+use rocket\ei\component\InvalidEiComponentConfigurationException;
+use n2n\reflection\property\PropertiesAnalyzer;
+use n2n\util\type\CastUtils;
+use n2n\persistence\orm\CascadeType;
+use n2n\util\type\TypeUtils;
+use n2n\util\ex\IllegalStateException;
 
 class RelationModel {
 	const MODE_SELECT = 'select';
 	const MODE_EMBEDDED = 'embedded';
 	const MODE_PICK = 'pick';
+	const MODE_INTEGRATED = 'integrated';
 	
 	/**
 	 * @var RelationEntityProperty
@@ -66,6 +79,18 @@ class RelationModel {
 	// EmbeddedToMany
 	
 	private $tragetOrderEiPropPath = null; 
+	
+	// Finalize
+	
+	/**
+	 * @var EiuEngine
+	 */
+	private $targetEiuEngine;
+	/**
+	 * @var TargetPropInfo
+	 */
+	private $targetPropInfo;
+	
 
 	/**
 	 * @param RelationEntityProperty $relationEntityProperty
@@ -250,4 +275,166 @@ class RelationModel {
 	function setTragetOrderEiPropPath(?EiPropPath $tragetOrderEiPropPath) {
 		$this->tragetOrderEiPropPath = $tragetOrderEiPropPath;
 	}
+	
+	/**
+	 * @param EiuEngine $targetEiuEngine
+	 */
+	function finalize(EiuEngine $targetEiuEngine) {
+		$rf = new RelationFinalizer($this);
+		
+		$this->targetPropInfo = $rf->deterTargetPropInfo($targetEiuEngine);
+		if ($this->isEmbedded()) {
+			$rf->validateEmbedded($targetEiuEngine);
+		}
+		$this->targetEiuEngine = $targetEiuEngine;
+	}
+	
+	/**
+	 * @return \rocket\impl\ei\component\prop\relation\conf\TargetPropInfo
+	 */
+	function getTargetPropInfo() {
+		IllegalStateException::assertTrue($this->targetPropInfo !== null);
+		return $this->targetPropInfo;
+	}
+	
+	/**
+	 * @return \rocket\ei\util\spec\EiuEngine
+	 */
+	function getTargetEiuEngine() {
+		IllegalStateException::assertTrue($this->targetEiuEngine !== null);
+		return $this->targetEiuEngine;
+	}
+}
+
+
+class RelationFinalizer {
+	private $relationModel;
+	
+	/**
+	 * @param RelationModel $relationModel
+	 */
+	function __construct(RelationModel $relationModel) {
+		$this->relationModel = $relationModel;
+	}
+	
+	/**
+	 * @throws InvalidEiComponentConfigurationException
+	 */
+	function deterTargetPropInfo(EiuEngine $targetEiuEngine) {
+		$entityProperty = $this->getRelationEntityProperty();
+		
+		$targetEiMask = $targetEiuEngine->getEiEngine()->getEiMask();
+		
+		if (!$entityProperty->isMaster()) {
+			return self::deterTargetMaster($entityProperty, $targetEiMask);
+		}
+		
+		return self::deterTargetMapped($entityProperty, $targetEiMask);
+	}
+	
+	/**
+	 * @param RelationEntityProperty $entityProperty
+	 * @param EiMask $targetEiMask
+	 * @return TargetPropInfo
+	 */
+	private function deterTargetMapped(EiMask $targetEiMask) {
+		$relationEntityProperty = $this->relationModel->getRelationEntityProperty();
+		
+		foreach ($targetEiMask->getEiPropCollection() as $targetEiProp) {
+			if (!($targetEiProp instanceof RelationEiProp)) continue;
+			
+			$targetRelationEntityProperty = $targetEiProp->getRelationEntityProperty();
+			
+			$targetRelation = $targetRelationEntityProperty->getRelation();
+			if ($targetRelation instanceof MappedRelation
+					&& $targetRelation->getTargetEntityProperty()->equals($relationEntityProperty)) {
+				return new TargetPropInfo(EiPropPath::from($targetEiProp), 
+						$targetEiProp->getObjectPropertyAccessProxy());
+			}
+		}
+		
+		return new TargetPropInfo();
+	}
+	
+	/**
+	 * @param RelationEntityProperty $entityProperty
+	 * @param EiMask $targetEiMask
+	 * @throws InvalidEiComponentConfigurationException
+	 * @return TargetPropInfo
+	 */
+	private function deterTargetMaster(EiMask $targetEiMask) {
+		$mappedRelation = $entityProperty->getRelation();
+		CastUtils::assertTrue($mappedRelation instanceof MappedRelation);
+		
+		$targetEntityProperty = $mappedRelation->getTargetEntityProperty();
+		
+		foreach ($targetEiMask->getEiPropCollection() as $targetEiProp) {
+			if (($targetEiProp instanceof RelationEiProp)
+					&& $targetEntityProperty->equals($targetEiProp->getRelationEntityProperty())) {
+				return new TargetPropInfo(EiPropPath::from($targetEiProp));
+			}
+		}
+		
+		$targetClass = $targetEiMask->getEiType()->getEntityModel()->getClass();
+		$propertiesAnalyzer = new PropertiesAnalyzer($targetClass);
+		try {
+			return new TargetPropInfo(null, $propertiesAnalyzer->analyzeProperty($targetEntityProperty->getName()));
+		} catch (ReflectionException $e) {
+			throw new InvalidEiComponentConfigurationException('No Target master property not accessible: '
+					. $targetEntityProperty, 0, $e);
+		}
+	}
+	
+	function validateEmbedded() {
+		$entityProperty = $this->relationModel->getRelationEntityProperty();
+		
+		if (!($entityProperty->getRelation()->getCascadeType() & CascadeType::PERSIST)) {
+			throw new InvalidEiComponentConfigurationException(
+					'EiProp requires an EntityProperty which cascades persist: '
+							. TypeUtils::prettyClassPropName($entityProperty->getEntityModel()->getClass(),
+									$entityProperty->getName()));
+		}
+		
+		// 		if ($this->isDraftable() && !$this->isJoinTableRelation($this)) {
+		// 			throw new InvalidEiComponentConfigurationException(
+		// 					'Only EiProps of properties with join table relations can be drafted.');
+		// 		}
+		
+		// reason to remove: orphans should never remain in db on embeddedeiprops
+		if ($entityProperty->getRelation()->isOrphanRemoval()) {
+			return;
+		}
+		
+		if (!$this->relationModel->isOrphansAllowed()) {
+			throw new InvalidEiComponentConfigurationException('EiProp requires an EntityProperty '
+					. TypeUtils::prettyClassPropName($entityProperty->getEntityModel()->getClass(), $entityProperty->getName())
+					. ' which removes orphans or an EiProp configuration with '
+					. RelationEiPropConfigurator::ATTR_ORPHANS_ALLOWED_KEY . '=true.');
+		}
+		
+		if (!$entityProperty->isMaster() && !$this->relationModel->isSourceMany()
+				&& !$this->relationModel->getTargetPropInfo()->getTargetMasterAccessProxy()->getConstraint()->allowsNull()) {
+			throw new InvalidEiComponentConfigurationException('EiProp requires an EntityProperty '
+					. TypeUtils::prettyClassPropName($entityProperty->getEntityModel()->getClass(), $entityProperty->getName())
+					. ' which removes orphans or target ' . $this->getTargetMasterAccessProxy()
+					. ' must accept null.');
+		}
+	}
+}
+
+class TargetPropInfo {
+	/**
+	 * @var EiPropPath|null
+	 */
+	public $eiPropPath;
+	/**
+	 * @var AccessProxy|null
+	 */
+	public $masterAccessProxy;
+	
+	function __construct(EiPropPath $eiPropPath = null, AccessProxy $masterAccessProxy = null) {
+		$this->eiPropPath = $eiPropPath;
+		$this->masterAccessProxy = $masterAccessProxy;
+	}
+	
 }

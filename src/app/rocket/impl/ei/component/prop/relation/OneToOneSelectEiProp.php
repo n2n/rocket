@@ -21,38 +21,27 @@
  */
 namespace rocket\impl\ei\component\prop\relation;
 
-use n2n\util\type\ArgUtils;
-use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
-use n2n\persistence\orm\property\EntityProperty;
-use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
-use rocket\ei\manage\gui\ViewMode;
+use n2n\util\type\ArgUtils;
+use n2n\impl\persistence\orm\property\ToManyEntityProperty;
+use n2n\persistence\orm\property\EntityProperty;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
-use rocket\si\structure\SiStructureType;
 
-class EmbeddedOneToOneEiProp extends RelationEiPropAdapter {
+class OneToOneSelectEiProp extends RelationEiPropAdapter {
 	
-	/**
-	 * 
-	 */
 	public function __construct() {
 		parent::__construct();
 		
-		$this->configurator->registerDisplayConfig((new DisplayConfig(ViewMode::bulky()))
-				->setDisplayItemType(SiStructureType::SIMPLE_GROUP));
+		$this->initialize();
+		$this->getEditConfig()->setReadOnly(true);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\relation\ToOneEiPropAdapter::setEntityProperty()
-	 */
 	public function setEntityProperty(?EntityProperty $entityProperty) {
-		ArgUtils::assertTrue($entityProperty instanceof ToOneEntityProperty
-				&& $entityProperty->getType() === RelationEntityProperty::TYPE_ONE_TO_ONE);
+		ArgUtils::assertTrue($entityProperty instanceof ToManyEntityProperty 
+				&& $entityProperty->getType() === RelationEntityProperty::TYPE_ONE_TO_MANY);
 	
 		parent::setEntityProperty($entityProperty);
 		
-		$this->configurator->setRelationModel(
-				new RelationModel($entityProperty, false, false, RelationModel::MODE_EMBEDDED));
+		$this->setRelationModel(new RelationModel($entityProperty, false, false, RelationModel::MODE_SELECT));
 	}
 }

@@ -25,9 +25,7 @@ use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use n2n\core\container\N2nContext;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use rocket\ei\component\EiSetup;
-use rocket\impl\ei\component\prop\relation\SimpleRelationEiPropAdapter;
 use n2n\impl\web\dispatch\mag\model\NumericMag;
-use rocket\impl\ei\component\prop\relation\ToManyEiPropAdapter;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\util\type\attrs\LenientAttributeReader;
@@ -219,7 +217,7 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 					$this->attributes->optBool(self::ATTR_REDUCED_KEY, $this->relationModel->isReduced()));
 			
 			
-			$this->relationModel->setReplaceable(
+			$this->relationModel->setRemovable(
 					$this->attributes->optBool(self::ATTR_REMOVABLE_KEY, $this->relationModel->isRemovable()));
 		}
 		

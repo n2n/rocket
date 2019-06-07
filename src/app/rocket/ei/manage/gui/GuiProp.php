@@ -23,19 +23,9 @@ namespace rocket\ei\manage\gui;
 
 use n2n\l10n\N2nLocale;
 use rocket\ei\util\Eiu;
-use n2n\l10n\Lstr;
 use rocket\ei\manage\gui\field\GuiField;
 
 interface GuiProp {
-	/**
-	 * @return Lstr 
-	 */
-	public function getDisplayLabelLstr(): Lstr;
-	
-	/**
-	 * @return Lstr|NULL
-	 */
-	public function getDisplayHelpTextLstr(): ?Lstr;
 	
 	/**
 	 * <p>Tests if this GuiProp is compatible with the passed EiGui and returns an {@see DisplayDefinition}

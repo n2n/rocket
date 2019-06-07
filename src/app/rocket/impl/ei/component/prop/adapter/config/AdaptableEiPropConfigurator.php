@@ -203,9 +203,9 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 			$this->registerEditConfig($eiComponent->getEditConfig());
 		}
 		
-		if ($eiComponent instanceof DraftConfigurable) {
-			$this->registerDraftConfigurable($eiComponent);
-		}
+// 		if ($eiComponent instanceof DraftConfigurable) {
+// 			$this->registerDraftConfigurable($eiComponent);
+// 		}
 	}
 	
 	protected function getPropertyAssignation() {

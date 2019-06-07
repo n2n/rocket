@@ -21,20 +21,27 @@
  */
 namespace rocket\impl\ei\component\prop\relation;
 
-use rocket\impl\ei\component\prop\relation\model\relation\SelectEiPropRelation;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\util\type\ArgUtils;
 use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
-use rocket\ei\util\Eiu;
+use rocket\impl\ei\component\prop\relation\conf\RelationModel;
+use rocket\impl\ei\component\prop\adapter\config\EditConfig;
+use rocket\ei\manage\gui\ViewMode;
+use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 
-class OneToManySelectEiProp extends ToManySelectEiPropAdapter {
+class OneToManySelectEiProp extends RelationEiPropAdapter {
 	
 	public function __construct() {
 		parent::__construct();
 		
-		$this->initialize(new SelectEiPropRelation($this, false, true));
-		$this->getEditConfig()->setReadOnly(true);
+		$this->displayConfig = new DisplayConfig(ViewMode::all());
+		$this->editConfig = new EditConfig();
+		$this->editConfig->setReadOnly(true);
+		
+		$this->configurator->registerDisplayConfig($this->displayConfig);
+		$this->configurator->registerEditConfig($this->editConfig);
+		
 	}
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {
@@ -42,9 +49,7 @@ class OneToManySelectEiProp extends ToManySelectEiPropAdapter {
 				&& $entityProperty->getType() === RelationEntityProperty::TYPE_ONE_TO_MANY);
 	
 		parent::setEntityProperty($entityProperty);
-	}
-	
-	public function copy(Eiu $eiu, $value, Eiu $copyEiu) {
-		return [];
+		
+		$this->setRelationModel(new RelationModel($entityProperty, false, true, RelationModel::MODE_SELECT));
 	}
 }
