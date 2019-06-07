@@ -717,25 +717,7 @@ class EiuFrame {
 		return $this->determineEiMask($eiObjectObj)->getIconType();
 	}
 
-	/**
-	 * @param EiObject $eiObject
-	 * @param bool $determineEiMask
-	 * @param N2nLocale $n2nLocale
-	 * @return string
-	 */
-	public function createIdentityString(EiObject $eiObject, bool $determineEiMask = true,
-			N2nLocale $n2nLocale = null): string {
-		$eiMask = null;
-		if ($determineEiMask) {
-			$eiMask = $this->determineEiMask($eiObject);
-		} else {
-			$eiMask = $this->getContextEiMask();
-		}
-
-		return $this->eiFrame->getManageState()->getDef()->getGuiDefinition($eiMask)
-				->createIdentityString($eiObject, $this->eiFrame->getN2nContext(), 
-						$n2nLocale ?? $this->getN2nLocale());
-	}
+	
 
 	/**
 	 * @param mixed $eiObjectObj
