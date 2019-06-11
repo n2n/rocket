@@ -112,7 +112,7 @@ class RelationModel {
 	 * @return string[]
 	 */
 	static function getModes() {
-		return [self::MODE_SELECT, self::MODE_EMBEDDED, self::MODE_PICK];
+		return [self::MODE_SELECT, self::MODE_EMBEDDED, self::MODE_PICK, self::MODE_INTEGRATED];
 	}
 	
 	/**

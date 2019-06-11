@@ -26,7 +26,6 @@ use rocket\ei\EiType;
 use rocket\ei\util\entry\EiuObject;
 use rocket\user\model\LoginContext;
 use n2n\util\type\CastUtils;
-use rocket\ei\UnknownEiTypeExtensionException;
 use rocket\spec\UnknownTypeException;
 
 class EiuType  {
@@ -47,6 +46,13 @@ class EiuType  {
 	}
 
 	/**
+	 * @return \rocket\ei\EiType
+	 */
+	function getEiType() {
+		return $this->eiType;
+	}
+	
+	/**
 	 * @return string
 	 */
 	function getId() {
@@ -61,7 +67,7 @@ class EiuType  {
 			return $this->eiuMask;
 		}
 		
-		return $this->eiuMask = new EiuMask($this->eiType->getEiMask(), $this->eiuAnalyst);
+		return $this->eiuMask = new EiuMask($this->eiType->getEiMask(), null, $this->eiuAnalyst);
 	}
 	
 	/**

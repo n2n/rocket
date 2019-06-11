@@ -45,7 +45,6 @@ class ContentItemsEiPropConfigurator extends RelationEiPropConfigurator {
 		parent::__construct($contentItemsEiProp);
 		
 		$this->contentItemsEiProp = $contentItemsEiProp;
-		$this->setDisplayInOverviewDefault(false);
 	}
 	
 	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {

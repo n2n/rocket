@@ -1274,7 +1274,7 @@ class EiuAnalyst {
 	public static function lookupEiTypeFromEiArg($eiTypeArg, Spec $spec, string $argName = null) {
 		try {
 			if ($eiTypeArg instanceof \ReflectionClass) {
-				return $spec->getEiTypeByClass($class);
+				return $spec->getEiTypeByClass($eiTypeArg);
 			}
 			
 			if (!is_scalar($eiTypeArg)) {

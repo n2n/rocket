@@ -85,7 +85,7 @@ abstract class DraftablePropertyEiPropAdapter extends EditablePropertyEiPropAdap
 	public function createEiPropConfigurator(): EiPropConfigurator {
 		$eiPropConfigurator = parent::createEiPropConfigurator();
 		IllegalStateException::assertTrue($eiPropConfigurator instanceof AdaptableEiPropConfigurator);
-		$eiPropConfigurator->registerDraftConfigurable($this);
+// 		$eiPropConfigurator->registerDraftConfigurable($this);
 		return $eiPropConfigurator;
 	}
 	

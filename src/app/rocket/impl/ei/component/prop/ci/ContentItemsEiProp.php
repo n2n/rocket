@@ -46,11 +46,8 @@ class ContentItemsEiProp extends EmbeddedOneToManyEiProp {
 		parent::__construct();
 		$this->displayConfig->setListReadModeDefaultDisplayed(false);
 		$this->editConfig->setMandatory(false);
-		$this->panelConfigs = array(new PanelConfig('main', 'Main', null, 0)); 
-	}
-	
-	public function createEiPropConfigurator(): EiPropConfigurator {
-		return new ContentItemsEiPropConfigurator($this/*, $this->eiPropRelation*/);
+		$this->panelConfigs = array(new PanelConfig('main', 'Main', null, 0));
+		$this->configurator = new ContentItemsEiPropConfigurator($this/*, $this->eiPropRelation*/);
 	}
 	
 	protected function getDisplayItemType(): string {

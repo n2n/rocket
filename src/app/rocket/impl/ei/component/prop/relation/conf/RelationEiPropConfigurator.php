@@ -98,7 +98,7 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 	}
 	
 	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
-		IllegalStateException::assertTrue($this->relationModel, self::class . ' misses RelationModel.');
+		IllegalStateException::assertTrue($this->relationModel !== null, self::class . ' misses RelationModel.');
 		
 		$magDispatchable = parent::createMagDispatchable($n2nContext);
 		$magCollection = $magDispatchable->getMagCollection();
@@ -163,7 +163,8 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 	}
 	
 	public function setup(EiSetup $eiSetupProcess) {
-		IllegalStateException::assertTrue($this->relationModel, self::class . ' misses RelationModel.');
+		IllegalStateException::assertTrue($this->relationModel !== null, self::class . ' misses RelationModel for ' 
+				. $this->eiComponent . '.');
 		
 		parent::setup($eiSetupProcess);
 

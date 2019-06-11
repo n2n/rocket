@@ -70,8 +70,7 @@ use rocket\ei\manage\gui\field\GuiFieldPath;
 use rocket\ei\manage\gui\EiFieldAbstraction;
 use rocket\ei\manage\LiveEiObject;
 
-class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiPropFork, FieldEiProp, RelationEiProp, 
-		Readable, Writable, GuiPropFork, SortableEiPropFork, QuickSearchableEiProp {
+class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiPropFork, FieldEiProp, RelationEiProp, QuickSearchableEiProp {
 	private $n2nLocaleDefs = array();
 	private $minNumTranslations = 0;
 	private $copyCommand;
