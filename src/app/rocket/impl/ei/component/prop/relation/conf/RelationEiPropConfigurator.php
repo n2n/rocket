@@ -172,7 +172,7 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$targetClass = $this->relationModel->getRelationEntityProperty()->getTargetEntityModel()->getClass();
 		$targetEiuType = $eiu->context()->type($targetClass);
 		
-		if (null !== ($teArr = $this->attributes->optScalarArray('targetExtensions', null))) {
+		if (null !== ($teArr = $this->attributes->optScalarArray('targetExtensions', null, true, true))) {
 			$this->attributes->set(self::ATTR_TARGET_EXTENSION_ID_KEY, ArrayUtils::current($teArr));
 		}
 		

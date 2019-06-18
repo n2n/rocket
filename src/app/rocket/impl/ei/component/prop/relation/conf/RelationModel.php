@@ -321,15 +321,13 @@ class RelationFinalizer {
 	 * @throws InvalidEiComponentConfigurationException
 	 */
 	function deterTargetPropInfo(EiuEngine $targetEiuEngine) {
-		$entityProperty = $this->getRelationEntityProperty();
-		
 		$targetEiMask = $targetEiuEngine->getEiEngine()->getEiMask();
 		
-		if (!$entityProperty->isMaster()) {
-			return self::deterTargetMaster($entityProperty, $targetEiMask);
+		if (!$this->relationModel->isMaster()) {
+			return self::deterTargetMaster($targetEiMask);
 		}
 		
-		return self::deterTargetMapped($entityProperty, $targetEiMask);
+		return self::deterTargetMapped($targetEiMask);
 	}
 	
 	/**
@@ -363,7 +361,7 @@ class RelationFinalizer {
 	 * @return TargetPropInfo
 	 */
 	private function deterTargetMaster(EiMask $targetEiMask) {
-		$mappedRelation = $entityProperty->getRelation();
+		$mappedRelation = $this->relationModel->getRelationEntityProperty()->getRelation();
 		CastUtils::assertTrue($mappedRelation instanceof MappedRelation);
 		
 		$targetEntityProperty = $mappedRelation->getTargetEntityProperty();
@@ -371,7 +369,7 @@ class RelationFinalizer {
 		foreach ($targetEiMask->getEiPropCollection() as $targetEiProp) {
 			if (($targetEiProp instanceof RelationEiProp)
 					&& $targetEntityProperty->equals($targetEiProp->getRelationEntityProperty())) {
-				return new TargetPropInfo(EiPropPath::from($targetEiProp));
+				return new TargetPropInfo(EiPropPath::from($targetEiProp), $targetEiProp->getObjectPropertyAccessProxy());
 			}
 		}
 		
@@ -410,10 +408,10 @@ class RelationFinalizer {
 					. TypeUtils::prettyClassPropName($entityProperty->getEntityModel()->getClass(), $entityProperty->getName())
 					. ' which removes orphans or an EiProp configuration with '
 					. RelationEiPropConfigurator::ATTR_ORPHANS_ALLOWED_KEY . '=true.');
-		}
+		} 
 		
 		if (!$entityProperty->isMaster() && !$this->relationModel->isSourceMany()
-				&& !$this->relationModel->getTargetPropInfo()->getTargetMasterAccessProxy()->getConstraint()->allowsNull()) {
+				&& !$this->relationModel->getTargetPropInfo()->masterAccessProxy->getConstraint()->allowsNull()) {
 			throw new InvalidEiComponentConfigurationException('EiProp requires an EntityProperty '
 					. TypeUtils::prettyClassPropName($entityProperty->getEntityModel()->getClass(), $entityProperty->getName())
 					. ' which removes orphans or target ' . $this->getTargetMasterAccessProxy()

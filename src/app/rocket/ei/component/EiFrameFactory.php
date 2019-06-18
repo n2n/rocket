@@ -30,6 +30,11 @@ use rocket\ei\util\Eiu;
 use rocket\ei\manage\frame\Boundry;
 use rocket\ei\EiCommandPath;
 use rocket\ei\manage\security\InaccessibleEiCommandPathException;
+use rocket\ei\component\prop\ForkEiProp;
+use rocket\ei\EiException;
+use rocket\ei\EiPropPath;
+use n2n\util\type\TypeUtils;
+use rocket\ei\manage\frame\EiForkLink;
 
 class EiFrameFactory {
 	private $eiEngine;
@@ -47,17 +52,13 @@ class EiFrameFactory {
 	 * @throws UnknownEiComponentException
 	 * @return \rocket\ei\manage\frame\EiFrame
 	 */
-	public function create(ControllerContext $controllerContext, ManageState $manageState,  
-			?EiFrame $parentEiFrame, EiCommandPath $eiCommandPath) {
+	public function create(ManageState $manageState) {
 		$eiFrame = new EiFrame($this->eiEngine, $manageState);
-		$eiFrame->setControllerContext($controllerContext);
-		$eiFrame->setParent($parentEiFrame);
 		
 		$eiMask = $this->eiEngine->getEiMask();
 		
 		if (null !== ($filterSettingGroup = $eiMask->getFilterSettingGroup())) {
 			$filterDefinition = $this->eiEngine->createFramedFilterDefinition($eiFrame);
-			
 			if ($filterDefinition !== null) {
 				$eiFrame->getBoundry()->addCriteriaConstraint(Boundry::TYPE_HARD_FILTER,
 						new FilterCriteriaConstraint($filterDefinition->createComparatorConstraint($filterSettingGroup)));
@@ -72,18 +73,51 @@ class EiFrameFactory {
 			}
 		}
 		
-		$eiCommand = null;
-		if (!$eiCommandPath->isEmpty()) {
-			$eiCommand = $eiMask->getEiCommandCollection()->getById($eiCommandPath->getFirstId());
-		}
-		
-		$manageState->getEiPermissionManager()->applyToEiFrame($eiFrame, $eiCommandPath, $eiCommand);
+		return $eiFrame;
+	}
+	
+	/**
+	 * @param ManageState $manageState
+	 * @return \rocket\ei\manage\frame\EiFrame
+	 */
+	public function createRoot(ManageState $manageState) {
+		$eiFrame = $this->create($manageState);
 		
 		$eiu = new Eiu($eiFrame);
-		foreach ($eiMask->getEiModificatorCollection()->toArray() as $eiModificator) {
+		foreach ($this->eiEngine->getEiMask()->getEiModificatorCollection()->toArray() as $eiModificator) {
 			$eiModificator->setupEiFrame($eiu);
 		}
 		
 		return $eiFrame;
 	}
+	
+	/**
+	 * @param EiPropPath $eiPropPath
+	 * @param EiForkLink $eiForkLink
+	 * @throws EiException
+	 * @return \rocket\ei\manage\frame\EiFrame
+	 */
+	public function createForked(EiPropPath $eiPropPath, EiForkLink $eiForkLink) {
+		$eiProp = $this->eiEngine->getEiMask()->getEiPropCollection()->getByPath($eiPropPath);
+		if (!($eiProp instanceof ForkEiProp)) {
+			throw new EiException('EiProp ' . $eiProp . ' does not implement ' . ForkEiProp::class);
+		}
+		
+		$parentEiFrame = $eiForkLink->getParent();
+		$eiu = new Eiu($parentEiFrame, $eiForkLink->getEiObject(), $eiPropPath);
+		$forkedEiFrame = $eiProp->createForkedEiFrame($eiu, $eiForkLink->getMode());
+		
+		if ($forkedEiFrame->isExecuted()) {
+			throw new EiException(TypeUtils::prettyMethName(get_class($eiProp), 'createForkedEiFrame')
+					. ' must return an EiFrame which is not yet executed.');
+		}
+		
+		$forkedEiFrame->setEiForkLink($eiForkLink);
+		$forkedEiFrame->setBaseUrl($parentEiFrame->getForkUrl($eiPropPath, $eiForkLink->getMode(), 
+				$eiForkLink->getEiObject()));
+		
+		return $forkedEiFrame;
+	}
+	
+	
 }

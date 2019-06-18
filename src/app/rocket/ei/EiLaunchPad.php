@@ -117,7 +117,9 @@ class EiLaunchPad implements LaunchPad {
 		$eiLifecycleMonitor->initialize($manageState->getEntityManager(), $manageState->getDraftManager(), $n2nContext);
 		$manageState->setEiLifecycleMonitor($eiLifecycleMonitor);
 		
-		return new EiFrameController($this->eiMask);
+		$eiFrame = $this->eiMask->getEiEngine()->createEiFrame($manageState);
+		
+		return new EiFrameController($eiFrame);
 	}
 
 	public function approveTransaction(N2nContext $n2nContext): TransactionApproveAttempt {

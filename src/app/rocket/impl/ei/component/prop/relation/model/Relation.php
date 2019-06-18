@@ -33,7 +33,6 @@ use rocket\ei\util\entry\EiuEntry;
 use rocket\impl\ei\component\prop\relation\model\relation\PlainMappedRelationEiModificator;
 use rocket\impl\ei\component\prop\relation\model\relation\MasterRelationEiModificator;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
-use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 
 class Relation {
 	/**
@@ -106,7 +105,7 @@ class Relation {
 				$targetEiuFrame->registerListener(new MappedRelationEiModificator($targetEiFrame,
 						$relationEiuObj, $targetPropInfo->eiPropPath, $this->isSourceMany()));
 			}
-		} else if ($targetPropInfo->targetMasterAccessProxy !== null) {
+		} else if ($targetPropInfo->masterAccessProxy !== null) {
 			$targetEiuFrame->registerListener(
 					new PlainMappedRelationEiModificator($targetEiFrame, $eiuEntry->getEntityObj(),
 							$this->targetMasterAccessProxy, $this->isSourceMany()));

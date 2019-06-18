@@ -321,23 +321,27 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 	private function setupDisplayConfig() {
 		if ($this->displayConfig === null) return;
 	
-		if ($this->attributes->contains(self::ATTR_DISPLAY_IN_OVERVIEW_KEY)) {
+		if ($this->attributes->contains(self::ATTR_DISPLAY_IN_OVERVIEW_KEY)
+				&& $this->displayConfig->isViewModeCompatible(ViewMode::compact())) {
 			$this->displayConfig->changeDefaultDisplayedViewModes(
 					ViewMode::compact(), 
 					$this->attributes->reqBool(self::ATTR_DISPLAY_IN_OVERVIEW_KEY));
 		}
 	
-		if ($this->attributes->contains(self::ATTR_DISPLAY_IN_DETAIL_VIEW_KEY)) {
+		if ($this->attributes->contains(self::ATTR_DISPLAY_IN_DETAIL_VIEW_KEY)
+				&& $this->displayConfig->isViewModeCompatible(ViewMode::BULKY_READ)) {
 			$this->displayConfig->changeDefaultDisplayedViewModes(ViewMode::BULKY_READ,
 					$this->attributes->reqBool(self::ATTR_DISPLAY_IN_DETAIL_VIEW_KEY));
 		}
 	
-		if ($this->attributes->contains(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY)) {
+		if ($this->attributes->contains(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY)
+				&& $this->displayConfig->isViewModeCompatible(ViewMode::BULKY_EDIT)) {
 			$this->displayConfig->changeDefaultDisplayedViewModes(ViewMode::BULKY_EDIT,
 					$this->attributes->reqBool(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY));
 		}
 	
-		if ($this->attributes->contains(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY)) {
+		if ($this->attributes->contains(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY)
+				&& $this->displayConfig->isViewModeCompatible(ViewMode::BULKY_ADD)) {
 			$this->displayConfig->changeDefaultDisplayedViewModes(ViewMode::BULKY_ADD,
 					$this->attributes->reqBool(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY));
 		}

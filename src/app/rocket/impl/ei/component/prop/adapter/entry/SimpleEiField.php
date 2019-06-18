@@ -80,6 +80,10 @@ class SimpleEiField extends CrwvEiField {
 		return $eiField;
 	}
 	
+	public function isCopyable(): bool {
+		return $this->copyable !== null;
+	}
+	
 	public function copyValue(Eiu $copyEiu) {
 		if ($this->copyable === null) return null;
 		

@@ -40,6 +40,7 @@ class EiFrameUtil {
 	/**
 	 * @param string $pid
 	 * @return mixed
+	 * @throws \InvalidArgumentException
 	 */
 	function pidToId(string $pid) {
 		return $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()->pidToId($pid);

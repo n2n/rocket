@@ -70,6 +70,10 @@ use rocket\ei\util\entry\EiuObject;
 use rocket\ei\manage\frame\EiFrameUtil;
 use rocket\ei\manage\frame\EiRelation;
 use rocket\ei\component\prop\EiProp;
+use rocket\ei\util\Eiu;
+use rocket\ei\component\prop\ForkEiProp;
+use n2n\web\http\controller\ControllerContext;
+use rocket\ei\manage\frame\EiForkLink;
 
 class EiuFrame {
 	private $eiFrame;
@@ -1030,6 +1034,41 @@ class EiuFrame {
 	public function hasRelation($eiPropPath) {
 		return $this->eiFrame->hasEiRelation(EiPropPath::create($eiPropPath));
 	}
+	
+	
+	/**
+	 * @param string|EiPropPath $eiPropPath
+	 * @param EiObject|object|null $eiObjectArg
+	 * @return \rocket\ei\manage\frame\EiFrame
+	 */
+	function forkSelect($eiPropPath, $eiObjectArg = null) {
+		return $this->fork($eiPropPath, EiForkLink::MODE_SELECT, $eiObjectArg);
+	}
+	
+	/**
+	 * @param string|EiPropPath $eiPropPath
+	 * @param EiObject|object|null $eiObjectArg
+	 * @return \rocket\ei\manage\frame\EiFrame
+	 */
+	function forkDiscover($eiPropPath, $eiObjectArg = null) {
+		return $this->fork($eiPropPath, EiForkLink::MODE_DISCOVER, $eiObjectArg);
+	}
+	
+	/**
+	 * @param string|EiPropPath $eiPropPath
+	 * @param string $mode
+	 * @param EiObject|object|null $eiObjectArg
+	 * @return \rocket\ei\manage\frame\EiFrame
+	 */
+	function fork($eiPropPath, string $mode, $eiObjectArg = null) {
+		$eiPropPath = EiPropPath::create($eiPropPath);
+		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectArg, 'eiObjectArg', 
+				$this->eiFrame->getContextEiEngine()->getEiMask()->getEiType(), false);
+		$eiForkLink = new EiForkLink($this->eiFrame, $mode, $eiObject);
+		
+		return $this->eiFrame->getContextEiEngine()->createForkedEiFrame($eiPropPath, $eiForkLink);
+	}
+	
 }
 
 // class EiCascadeOperation implements CascadeOperation {

@@ -188,67 +188,67 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 	}
 	
 	public function setup(EiSetup $eiSetupProcess) {
-		$eiu = $eiSetupProcess->eiu();
+// 		$eiu = $eiSetupProcess->eiu();
 		
-		$lar = new LenientAttributeReader($this->attributes);
+// 		$lar = new LenientAttributeReader($this->attributes);
 		
-		$n2nLocaleDefs = array();
-		if ($this->attributes->getBool(self::ATTR_USE_SYSTEM_LOCALES_KEY, false, true)) {
-			$n2nLocaleDefs = $this->readModN2nLocaleDefs(self::ATTR_SYSTEM_LOCALE_DEFS_KEY, $lar, 
-					$eiu->lookup(WebConfig::class)->getAllN2nLocales());
-		} 
+// 		$n2nLocaleDefs = array();
+// 		if ($this->attributes->getBool(self::ATTR_USE_SYSTEM_LOCALES_KEY, false, true)) {
+// 			$n2nLocaleDefs = $this->readModN2nLocaleDefs(self::ATTR_SYSTEM_LOCALE_DEFS_KEY, $lar, 
+// 					$eiu->lookup(WebConfig::class)->getAllN2nLocales());
+// 		} 
 		
-		$n2nLocaleDefs = array_merge($n2nLocaleDefs, $this->readN2nLocaleDefs(self::ATTR_CUSTOM_LOCALE_DEFS_KEY, $lar));
-		if (empty($n2nLocaleDefs)) {
-			$n2nLocaleDefs = array(N2nLocale::getDefault()->getId() => new N2nLocaleDef(N2nLocale::getDefault(), false));
-		}
-		$this->translationEiProp->setN2nLocaleDefs($n2nLocaleDefs);
+// 		$n2nLocaleDefs = array_merge($n2nLocaleDefs, $this->readN2nLocaleDefs(self::ATTR_CUSTOM_LOCALE_DEFS_KEY, $lar));
+// 		if (empty($n2nLocaleDefs)) {
+// 			$n2nLocaleDefs = array(N2nLocale::getDefault()->getId() => new N2nLocaleDef(N2nLocale::getDefault(), false));
+// 		}
+// 		$this->translationEiProp->setN2nLocaleDefs($n2nLocaleDefs);
 		
-		$this->translationEiProp->setMinNumTranslations($this->attributes->optInt(self::ATTR_MIN_NUM_TRANSLATIONS_KEY, 0));
+// 		$this->translationEiProp->setMinNumTranslations($this->attributes->optInt(self::ATTR_MIN_NUM_TRANSLATIONS_KEY, 0));
 		
-		$this->addMandatory = true;
+// 		$this->addMandatory = true;
 		
-		// @todo combine with relation eifields
-		$eiPropRelation = $this->translationEiProp->getEiPropRelation();
-		$relationProperty = $eiPropRelation->getRelationEntityProperty();
-		$targetEntityClass = $relationProperty->getRelation()->getTargetEntityModel()->getClass();
-		try {
-			$targetEiType = $eiSetupProcess->eiu()->context()->mask($targetEntityClass)->getEiType();
+// 		// @todo combine with relation eifields
+// 		$eiPropRelation = $this->translationEiProp->getEiPropRelation();
+// 		$relationProperty = $eiPropRelation->getRelationEntityProperty();
+// 		$targetEntityClass = $relationProperty->getRelation()->getTargetEntityModel()->getClass();
+// 		try {
+// 			$targetEiType = $eiSetupProcess->eiu()->context()->mask($targetEntityClass)->getEiType();
 				
-			$targetEiMask = null;
-// 			if (null !== ($eiMaskId = $this->attributes->get(self::OPTION_TARGET_MASK_KEY))) {
-// 				$targetEiMask = $target->getEiTypeExtensionCollection()->getById($eiMaskId);
-// 			} else {
-				$targetEiMask = $targetEiType->getEiMask();
+// 			$targetEiMask = null;
+// // 			if (null !== ($eiMaskId = $this->attributes->get(self::OPTION_TARGET_MASK_KEY))) {
+// // 				$targetEiMask = $target->getEiTypeExtensionCollection()->getById($eiMaskId);
+// // 			} else {
+// 				$targetEiMask = $targetEiType->getEiMask();
+// // 			}
+
+// 			$entityProperty = $this->getPropertyAssignation()->getEntityProperty(true);
+// 			if (CascadeType::ALL !== $entityProperty->getRelation()->getCascadeType()) {
+// 				throw $eiSetupProcess->createException('EiProp requires an EntityProperty which cascades all: ' 
+// 						. TypeUtils::prettyPropName($entityProperty->getEntityModel()->getClass(),
+// 								$entityProperty->getName()));
+// 			}
+			
+// 			if (!$entityProperty->getRelation()->isOrphanRemoval()) {
+// 				throw $eiSetupProcess->createException('EiProp requires an EntityProperty which removes orphans: '
+// 						. TypeUtils::prettyPropName($entityProperty->getEntityModel()->getClass(),
+// 								$entityProperty->getName()));
 // 			}
 
-			$entityProperty = $this->getPropertyAssignation()->getEntityProperty(true);
-			if (CascadeType::ALL !== $entityProperty->getRelation()->getCascadeType()) {
-				throw $eiSetupProcess->createException('EiProp requires an EntityProperty which cascades all: ' 
-						. TypeUtils::prettyPropName($entityProperty->getEntityModel()->getClass(),
-								$entityProperty->getName()));
-			}
-			
-			if (!$entityProperty->getRelation()->isOrphanRemoval()) {
-				throw $eiSetupProcess->createException('EiProp requires an EntityProperty which removes orphans: '
-						. TypeUtils::prettyPropName($entityProperty->getEntityModel()->getClass(),
-								$entityProperty->getName()));
-			}
-
-			$eiPropRelation->init($eiSetupProcess->eiu(), $targetEiType, $targetEiMask, []);
-		} catch (UnknownTypeException $e) {
-			throw $eiSetupProcess->createException(null, $e);
-		} catch (UnknownEiTypeExtensionException $e) {
-			throw $eiSetupProcess->createException(null, $e);
-		} catch (UnknownEiComponentException $e) {
-			throw $eiSetupProcess->createException('EiProp for Mapped Property required', $e);
-		} catch (InvalidEiComponentConfigurationException $e) {
-			throw $eiSetupProcess->createException(null, $e);
-		}
+// 			$eiPropRelation->init($eiSetupProcess->eiu(), $targetEiType, $targetEiMask, []);
+// 		} catch (UnknownTypeException $e) {
+// 			throw $eiSetupProcess->createException(null, $e);
+// 		} catch (UnknownEiTypeExtensionException $e) {
+// 			throw $eiSetupProcess->createException(null, $e);
+// 		} catch (UnknownEiComponentException $e) {
+// 			throw $eiSetupProcess->createException('EiProp for Mapped Property required', $e);
+// 		} catch (InvalidEiComponentConfigurationException $e) {
+// 			throw $eiSetupProcess->createException(null, $e);
+// 		}
 		
-		$copyCommand = new TranslationCopyCommand();
-		$targetEiMask->getEiCommandCollection()->add($copyCommand);
-		$this->translationEiProp->setCopyCommand($copyCommand);
+// 		$copyCommand = new TranslationCopyCommand();
+// 		$targetEiMask->getEiCommandCollection()->add($copyCommand);
+// 		$this->translationEiProp->setCopyCommand($copyCommand);
 	}
 }
 

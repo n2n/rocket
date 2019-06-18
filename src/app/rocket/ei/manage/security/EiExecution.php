@@ -35,4 +35,6 @@ interface EiExecution {
 	 * @return \rocket\ei\component\command\EiCommand
 	 */
 	public function getEiCommand(): EiCommand;
+	
+	public function getEiEntryAccessFactory(): EiEntryAccessFactory;
 }

@@ -25,14 +25,18 @@ use rocket\ei\manage\security\EiExecution;
 use rocket\ei\EiCommandPath;
 use rocket\ei\component\command\EiCommand;
 use n2n\util\ex\IllegalStateException;
+use rocket\ei\manage\security\EiEntryAccessFactory;
 
 class FullyGrantedEiExecution implements EiExecution {
 	private $commandPath;
 	private $eiCommand;
-
+	private $eiEntryAccessFactory;
+	
 	public function __construct(EiCommandPath $commandPath, ?EiCommand $eiCommand) {
 		$this->commandPath = $commandPath;
 		$this->eiCommand = $eiCommand;
+		$this->eiEntryAccessFactory = new FullEiEntryAccessFactory();
+		
 	}
 
 	public function isGranted(): bool {
@@ -69,5 +73,13 @@ class FullyGrantedEiExecution implements EiExecution {
 	 */
 	public function isExecutableBy(EiCommandPath $eiCommandPath): bool {
 		return true;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\security\EiExecution::getEiEntryAccessFactory()
+	 */
+	public function getEiEntryAccessFactory(): EiEntryAccessFactory {
+		return $this->eiEntryAccessFactory;
 	}
 }

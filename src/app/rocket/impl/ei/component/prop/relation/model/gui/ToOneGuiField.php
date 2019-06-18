@@ -26,8 +26,6 @@ use rocket\si\content\SiField;
 use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\si\content\impl\SiFields;
-use rocket\si\content\SiObjectQualifier;
-use n2n\impl\persistence\orm\property\relation\Relation;
 
 class ToOneGuiField implements GuiField {
 	/**
@@ -41,13 +39,13 @@ class ToOneGuiField implements GuiField {
 	
 	/**
 	 * @param Eiu $eiu
-	 * @param RelationModel $relationModel
+	 * @param EiRelation $relationModel
 	 */
-	function __construct(Eiu $eiu, RelationModel $relationModel) {
+	function __construct(Eiu $eiu, EiRelation $relation) {
 		$this->eiu = $eiu;
 		
 		$this->siField = SiFields::entryToOneSelect(
-				$relation->getTargetReadApiUrl(),
+				$relation->getTargetReadApiUrl($eiu->frame()->),
 				($editConfig->isMandatory() ? 1 : 0), 1);
 	}
 	

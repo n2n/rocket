@@ -147,10 +147,10 @@ class DisplayConfig {
 	 * @param int $viewMode
 	 * @return DisplayDefinition|null
 	 */
-	public function toDisplayDefinition(EiProp $eiProp, int $viewMode, string $groupType = SiStructureType::ITEM) {
+	public function toDisplayDefinition(int $viewMode) {
 		if (!$this->isViewModeCompatible($viewMode)) return null;
 		
-		return new DisplayDefinition($groupType,
+		return new DisplayDefinition($this->displayItemType,
 				$this->isViewModeDefaultDisplayed($viewMode), $this->helpText);
 	}
 }

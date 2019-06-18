@@ -45,11 +45,9 @@ use rocket\ei\manage\generic\GenericEiDefinition;
 use rocket\ei\manage\critmod\quick\QuickSearchDefinition;
 use rocket\ei\manage\ManageState;
 use rocket\ei\component\EiFrameFactory;
-use n2n\web\http\controller\ControllerContext;
 use rocket\ei\manage\gui\EiEntryGui;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\ei\component\UnknownEiComponentException;
-use rocket\ei\manage\security\InaccessibleEiCommandPathException;
+use rocket\ei\manage\frame\EiForkLink;
 
 class EiEngine {
 	private $eiMask;
@@ -112,16 +110,28 @@ class EiEngine {
 	}
 	
 	/**
-	 * @param ControllerContext $controllerContext
 	 * @param ManageState $manageState
-	 * @param EiFrame $parent
-	 * @throws InaccessibleEiCommandPathException
-	 * @throws UnknownEiComponentException
 	 * @return \rocket\ei\manage\frame\EiFrame
 	 */
-	public function createEiFrame(ControllerContext $controllerContext, ManageState $manageState, ?EiFrame $parent, 
-			EiCommandPath $eiCommandPath) {
-		return $this->getEiFrameFactory()->create($controllerContext, $manageState, $parent, $eiCommandPath);
+	public function createEiFrame(ManageState $manageState) {
+		return $this->getEiFrameFactory()->create($manageState);
+	}
+	
+	/**
+	 * @param ManageState $manageState
+	 * @return \rocket\ei\manage\frame\EiFrame
+	 */
+	public function createRootEiFrame(ManageState $manageState) {
+		return $this->getEiFrameFactory()->createRoot($manageState);
+	}
+	
+	/**
+	 * @param EiPropPath $eiPropPath
+	 * @param EiForkLink $eiForkLink
+	 * @return \rocket\ei\manage\frame\EiFrame
+	 */
+	public function createForkedEiFrame(EiPropPath $eiPropPath, EiForkLink $eiForkLink) {
+		return $this->getEiFrameFactory()->createForked($eiPropPath, $eiForkLink);
 	}
 
 	private $critmodFactory;

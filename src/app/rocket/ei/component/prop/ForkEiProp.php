@@ -19,34 +19,14 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\security;
+namespace rocket\ei\component\prop;
 
-use rocket\ei\component\command\EiCommand;
-use rocket\ei\EiCommandPath;
-use rocket\ei\mask\EiMask;
+use rocket\ei\util\Eiu;
 use rocket\ei\manage\frame\EiFrame;
-use rocket\ei\manage\ManageState;
 
-interface EiPermissionManager {
-
+interface ForkEiProp extends EiProp {
 	/**
-	 * @param EiCommand $eiCommand
-	 * @return bool
+	 * @return EiFrame
 	 */
-	public function isEiCommandAccessible(EiCommand $eiCommand, ManageState $manageState): bool;
-	
-// 	/**
-// 	 * @param EiCommand $eiCommand
-// 	 * @throws InaccessibleControlException
-// 	 * @return \rocket\ei\manage\security\EiExecution
-// 	 */
-// 	public function createEiExecution(EiCommand $eiCommand, N2nContext $n2nContext): EiExecution;
-	
-	/**
-	 * @param EiMask $eiMask
-	 * @param EiCommandPath $commandPath
-	 * @throws InaccessibleEiCommandPathException
-	 * @return \rocket\ei\manage\security\EiExecution
-	 */
-	public function createEiExecution(EiFrame $eiFrame, EiCommandPath $eiCommandPath, ?EiCommand $eiCommand);
+	public function createForkedEiFrame(Eiu $eiu, string $mode): EiFrame;
 }

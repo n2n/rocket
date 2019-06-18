@@ -29,8 +29,6 @@ use rocket\impl\ei\component\prop\relation\RelationEiProp;
 use rocket\impl\ei\component\prop\translation\model\TranslationGuiFieldFork;
 use rocket\ei\manage\gui\GuiPropFork;
 use rocket\impl\ei\component\prop\translation\conf\TranslationEiConfigurator;
-use rocket\impl\ei\component\prop\adapter\entry\Readable;
-use rocket\impl\ei\component\prop\adapter\entry\Writable;
 use rocket\ei\manage\entry\EiField;
 use rocket\ei\component\prop\FieldEiProp;
 use rocket\ei\manage\gui\field\GuiFieldFork;
@@ -45,7 +43,6 @@ use rocket\impl\ei\component\prop\relation\model\RelationEntry;
 use rocket\impl\ei\component\prop\relation\EmbeddedOneToManyEiProp;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\util\col\ArrayUtils;
-use rocket\ei\component\prop\SortableEiPropFork;
 use rocket\ei\manage\critmod\sort\SortPropFork;
 use n2n\persistence\orm\criteria\item\CriteriaProperty;
 use n2n\persistence\orm\criteria\Criteria;
@@ -118,14 +115,6 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiPropFork
 	 */
 	public function getMinNumTranslations() {
 		return $this->minNumTranslations;
-	}
-	
-	public function getEiPropRelation(): EiPropRelation {
-		return $this->eiPropRelation;
-	}
-	
-	public function isEiField(): bool {
-		return true;
 	}
 	
 	/* (non-PHPdoc)

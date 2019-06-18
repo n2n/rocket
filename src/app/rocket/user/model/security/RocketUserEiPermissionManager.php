@@ -41,6 +41,7 @@ use rocket\ei\manage\security\privilege\PrivilegeDefinition;
 use rocket\ei\manage\security\privilege\data\PrivilegeSetting;
 use rocket\ei\manage\security\EiEntryAccessFactory;
 use rocket\ei\manage\ManageState;
+use rocket\ei\manage\security\EiExecution;
 
 class RocketUserEiPermissionManager implements EiPermissionManager {
 	private $rocketUser;
@@ -77,17 +78,11 @@ class RocketUserEiPermissionManager implements EiPermissionManager {
 				|| $eiGrant->containsEiCommandPath($eiCommandPath));
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\security\EiPermissionManager::applyToEiFrame()
-	 */
-	function applyToEiFrame(EiFrame $eiFrame, EiCommandPath $eiCommandPath, ?EiCommand $eiCommand) {
+	function createEiExecution(EiFrame $eiFrame, EiCommandPath $eiCommandPath, ?EiCommand $eiCommand): EiExecution {
 		$eiMask = $eiFrame->getContextEiEngine()->getEiMask();
 				
 		if ($this->rocketUser->isAdmin()) {
-			$eiFrame->setEiExecution(new FullyGrantedEiExecution($eiCommandPath, $eiCommand));
-			$eiFrame->setEiEntryAccessFactory(new FullEiEntryAccessFactory());
-			return;
+			return new FullyGrantedEiExecution($eiCommandPath, $eiCommand);
 		}
 		
 		$eiGrant = $this->findEiGrant($eiMask->getEiTypePath());
@@ -113,8 +108,7 @@ class RocketUserEiPermissionManager implements EiPermissionManager {
 		$eiFrame->setEiEntryAccessFactory($eiEntryAccessFactory);
 		
 		if ($eiGrant->isFull()) {
-			$eiFrame->setEiExecution(new FullyGrantedEiExecution($eiCommandPath, $eiCommand));
-			return;
+			return new FullyGrantedEiExecution($eiCommandPath, $eiCommand);
 		}
 		
 		$ree = new RestrictedEiExecution($eiCommand, $eiCommandPath, $constraintCache, $eiEntryAccessFactory);
