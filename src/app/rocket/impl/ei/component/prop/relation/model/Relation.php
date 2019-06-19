@@ -34,6 +34,8 @@ use rocket\impl\ei\component\prop\relation\model\relation\MasterRelationEiModifi
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\ei\util\spec\EiuEngine;
 use rocket\ei\manage\frame\EiForkLink;
+use rocket\ei\manage\critmod\filter\impl\SimpleComparatorConstraint;
+use n2n\util\ex\NotYetImplementedException;
 
 class Relation {
 	/**
@@ -60,7 +62,21 @@ class Relation {
 			$this->applyTargetCriteriaFactory($targetEiuFrame, $eiuEntry);
 		}
 		
+		if ($eiForkLink->getMode() != EiForkLink::MODE_SELECT && null !== ($eiuEntry = $eiu->entry(false))) {
+			$this->applyTargetModificators($targetEiuFrame, $eiu->frame(), $eiuEntry);
+		}
+		
+		if ($eiForkLink->getMode() == EiForkLink::MODE_SELECT && !$this->relationModel->isSourceMany()
+				&& null !== ($eiuEntry = $eiu->entry(false))) {
+			$this->applyOneToTargetSelectConstraints($targetEiuFrame, $eiu->frame(), $eiuEntry);
+		}
+		
 		return $targetEiuFrame->getEiFrame();
+	}
+	
+	
+	private function applyOneToTargetSelectConstraints(EiuFrame $targetEiuFrame, EiuObject $eiuObject) {
+		throw new NotYetImplementedException();
 	}
 	
 	/**
