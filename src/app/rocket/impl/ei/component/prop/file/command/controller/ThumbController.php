@@ -42,8 +42,8 @@ class ThumbController extends ControllerAdapter {
 	private $eiuCtrl;
 	private $dtc;
 	
-	public function prepare(DynamicTextCollection $dtc, EiuCtrl $eiuCtrl) {
-		$this->eiuCtrl = $eiuCtrl;
+	public function prepare(DynamicTextCollection $dtc) {
+		$this->eiuCtrl = EiuCtrl::from($this->cu());
 		$this->dtc = $dtc;
 	}
 	

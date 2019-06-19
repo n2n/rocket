@@ -36,6 +36,9 @@ use n2n\util\type\CastUtils;
 use n2n\persistence\orm\CascadeType;
 use n2n\util\type\TypeUtils;
 use n2n\util\ex\IllegalStateException;
+use rocket\ei\EiCommandPath;
+use rocket\impl\ei\component\prop\relation\command\TargetReadEiCommand;
+use n2n\l10n\Lstr;
 
 class RelationModel {
 	const MODE_SELECT = 'select';
@@ -90,6 +93,10 @@ class RelationModel {
 	 * @var TargetPropInfo
 	 */
 	private $targetPropInfo;
+	/**
+	 * @var EiCommandPath
+	 */
+	private $targetReadEiCommandPath;
 	
 
 	/**
@@ -277,6 +284,25 @@ class RelationModel {
 	}
 	
 	/**
+	 * @param EiCommandPath $targetEiCommandPath
+	 */
+	function setTargetReadEiCommandPath(EiCommandPath $targetEiCommandPath) {
+		$this->targetReadEiCommandPath = $targetEiCommandPath;
+	}
+		
+	/**
+	 * @throws IllegalStateException
+	 * @return \rocket\ei\EiCommandPath
+	 */
+	function getTargetReadEiCommandPath() {
+		if ($this->targetReadEiCommandPath !== null) {
+			return $this->targetReadEiCommandPath;
+		}
+		
+		throw new IllegalStateException('TargetReadEiCommandPath not defined.');
+	}
+	
+	/**
 	 * @param EiuEngine $targetEiuEngine
 	 */
 	function finalize(EiuEngine $targetEiuEngine) {
@@ -287,6 +313,19 @@ class RelationModel {
 			$rf->validateEmbedded($targetEiuEngine);
 		}
 		$this->targetEiuEngine = $targetEiuEngine;
+		
+		
+		
+// 		$this->embeddedEditPseudoCommand = new EmbeddedEditPseudoCommand($this->getRelationEiProp()->getEiEngine()->getEiMask()->getEiType()->getEiMask()->getLabel()
+// 		// 						. ' > ' . $this->relationEiProp->getLabel() . ' Embedded Edit',
+// 		// 				$this->getRelationEiProp()->getId(), $this->getTarget()->getId());
+				
+// 		// 		$this->getTarget()->getEiEngine()->getEiCommandCollection()->add($this->embeddedEditPseudoCommand);
+		
+	}
+	
+	function getTargetReadCommandPath() {
+		return $this->targetReadEiCommandPath;
 	}
 	
 	/**

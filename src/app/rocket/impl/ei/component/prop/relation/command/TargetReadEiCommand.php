@@ -19,15 +19,28 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\component\prop;
+namespace rocket\impl\ei\component\prop\relation\command;
 
+use rocket\impl\ei\component\command\EiCommandAdapter;
+use rocket\ei\component\command\PrivilegedEiCommand;
+use rocket\ei\manage\security\privilege\EiCommandPrivilege;
 use rocket\ei\util\Eiu;
-use rocket\ei\manage\frame\EiFrame;
-use rocket\ei\manage\frame\EiForkLink;
+use n2n\l10n\Lstr;
 
-interface ForkEiProp extends EiProp {
-	/**
-	 * @return EiFrame
-	 */
-	public function createForkedEiFrame(Eiu $eiu, EiForkLink $eiForkLink): EiFrame;
+class TargetReadEiCommand extends EiCommandAdapter implements PrivilegedEiCommand {
+	private $idBase;
+	private $privilegeLabelLstr;
+	
+	public function __construct(Lstr $privilegeLabelLstr, string $relationFieldId, string $targetId) {
+		$this->idBase = 'relation-read-' . $relationFieldId . '-' . $targetId;
+		$this->privilegeLabelLstr = $privilegeLabelLstr;
+	}
+	
+	public function getIdBase(): ?string {
+		return $this->idBase;
+	}
+	
+	public function createEiCommandPrivilege(Eiu $eiu): EiCommandPrivilege {
+		return $eiu->factory()->newCommandPrivilege($this->privilegeLabelLstr);
+	}
 }

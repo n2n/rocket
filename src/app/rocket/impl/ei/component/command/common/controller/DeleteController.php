@@ -36,10 +36,10 @@ class DeleteController extends ControllerAdapter {
 	private $utils;
 	private $eiuCtrl;
 	
-	public function prepare(ManageState $manageState, DynamicTextCollection $dtc, EiuCtrl $eiuCtrl) {
+	public function prepare(ManageState $manageState, DynamicTextCollection $dtc) {
 		$this->dtc = $dtc;
 		$this->utils = (new Eiu($manageState->peakEiFrame()))->frame();
-		$this->eiuCtrl = $eiuCtrl;
+		$this->eiuCtrl = EiuCtrl::from($this->cu());
 	}
 	
 	public function doLive($pid, ParamQuery $refPath = null, MessageContainer $mc) {

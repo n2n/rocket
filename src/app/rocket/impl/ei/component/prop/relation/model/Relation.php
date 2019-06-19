@@ -22,7 +22,6 @@
 namespace rocket\impl\ei\component\prop\relation\model;
 
 use rocket\ei\util\Eiu;
-use n2n\web\http\controller\ControllerContext;
 use rocket\ei\util\frame\EiuFrame;
 use rocket\ei\util\entry\EiuObject;
 use rocket\impl\ei\component\prop\relation\model\relation\MappedOneToCriteriaFactory;
@@ -33,6 +32,8 @@ use rocket\ei\util\entry\EiuEntry;
 use rocket\impl\ei\component\prop\relation\model\relation\PlainMappedRelationEiModificator;
 use rocket\impl\ei\component\prop\relation\model\relation\MasterRelationEiModificator;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
+use rocket\ei\util\spec\EiuEngine;
+use rocket\ei\manage\frame\EiForkLink;
 
 class Relation {
 	/**
@@ -43,23 +44,17 @@ class Relation {
 	/**
 	 * @param RelationModel $relationModel
 	 */
-	private function __construct(RelationModel $relationModel) {
+	function __construct(RelationModel $relationModel) {
 		$this->relationModel = $relationModel;
 	}
 	
-	function ensureInit() {
-		if ($this->targetEiuEngine !== null) return;
-		
-		throw new IllegalStateException('Relation not initialized.');
-	}
 	
 	/**
 	 * @param Eiu $eiu
 	 * @return Eiu
 	 */
-	function createForkEiFrame(Eiu $eiu, ControllerContext $controllerContext) {
-		$this->ensureInit();
-		$targetEiuFrame = $this->targetEiuEngine->newFrame($controllerContext);
+	function createForkEiFrame(Eiu $eiu, EiForkLink $eiForkLink) {
+		$targetEiuFrame = $this->relationModel->getTargetEiuEngine()->newFrame($eiForkLink);
 		
 		if (null !== ($eiuEntry = $eiu->entry(false))) {
 			$this->applyTargetCriteriaFactory($targetEiuFrame, $eiuEntry);

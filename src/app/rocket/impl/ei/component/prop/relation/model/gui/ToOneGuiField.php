@@ -24,8 +24,9 @@ namespace rocket\impl\ei\component\prop\relation\model\gui;
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\si\content\SiField;
 use rocket\ei\util\Eiu;
-use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\si\content\impl\SiFields;
+use rocket\impl\ei\component\prop\relation\conf\RelationModel;
+use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 
 class ToOneGuiField implements GuiField {
 	/**
@@ -37,15 +38,13 @@ class ToOneGuiField implements GuiField {
 	 */
 	private $siField;
 	
-	/**
-	 * @param Eiu $eiu
-	 * @param EiRelation $relationModel
-	 */
-	function __construct(Eiu $eiu, EiRelation $relation) {
+	function __construct(Eiu $eiu, RelationModel $relationModel, EditConfig $editConfig) {
 		$this->eiu = $eiu;
 		
+		$targetEiFrame = $eiu->frame()->forkSelect($eiu->prop()->getPath());
+		
 		$this->siField = SiFields::entryToOneSelect(
-				$relation->getTargetReadApiUrl($eiu->frame()->),
+				$targetEiFrame->getApiUrl($relationModel->getTargetReadEiCommandPath()),
 				($editConfig->isMandatory() ? 1 : 0), 1);
 	}
 	

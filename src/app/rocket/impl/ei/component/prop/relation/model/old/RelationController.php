@@ -27,7 +27,6 @@ use n2n\web\http\PageNotFoundException;
 use rocket\ei\manage\EiObject;
 use n2n\web\http\controller\ControllerAdapter;
 use rocket\impl\ei\component\prop\relation\model\relation\EiPropRelation;
-use rocket\ei\EiFrameController;
 use rocket\ei\manage\frame\EiRelation;
 use rocket\ei\util\EiuCtrl;
 use rocket\ei\util\Eiu;
@@ -44,10 +43,10 @@ class RelationController extends ControllerAdapter {
 		$this->eiPropRelation = $eifieldRelation;
 	}
 	
-	public function prepare(ManageState $manageState, RocketState $rocketState, EiuCtrl $eiuCtrl) {
+	public function prepare(ManageState $manageState, RocketState $rocketState) {
 		$this->eiFrame = $manageState->peakEiFrame();
 		$this->manageState = $manageState;
-		$this->eiuCtrl = $eiuCtrl;
+		$this->eiuCtrl = EiuCtrl::from($this->cu());
 		$this->rocketState = $rocketState;
 	}
 		

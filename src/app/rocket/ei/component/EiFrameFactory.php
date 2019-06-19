@@ -104,17 +104,17 @@ class EiFrameFactory {
 		}
 		
 		$parentEiFrame = $eiForkLink->getParent();
-		$eiu = new Eiu($parentEiFrame, $eiForkLink->getEiObject(), $eiPropPath);
-		$forkedEiFrame = $eiProp->createForkedEiFrame($eiu, $eiForkLink->getMode());
+		$eiu = new Eiu($parentEiFrame, $eiForkLink->getParentEiObject(), $eiPropPath);
+		$forkedEiFrame = $eiProp->createForkedEiFrame($eiu, $eiForkLink);
 		
-		if ($forkedEiFrame->isExecuted()) {
+		if ($forkedEiFrame->hasEiExecution()) {
 			throw new EiException(TypeUtils::prettyMethName(get_class($eiProp), 'createForkedEiFrame')
 					. ' must return an EiFrame which is not yet executed.');
 		}
 		
 		$forkedEiFrame->setEiForkLink($eiForkLink);
 		$forkedEiFrame->setBaseUrl($parentEiFrame->getForkUrl($eiPropPath, $eiForkLink->getMode(), 
-				$eiForkLink->getEiObject()));
+				$eiForkLink->getParentEiObject()));
 		
 		return $forkedEiFrame;
 	}

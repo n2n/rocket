@@ -32,8 +32,8 @@ use rocket\ei\manage\entry\UnknownEiObjectException;
 class TreeMoveController extends ControllerAdapter {
 	private $eiCtrl;
 
-	public function prepare(ManageState $manageState, EiuCtrl $eiuCtrl) {
-		$this->eiCtrl = $eiuCtrl;
+	public function prepare(ManageState $manageState) {
+		$this->eiCtrl = EiuCtrl::from($this->cu());
 	}
 
 	public function doChild($targetPid, ParamGet $pids, ParamGet $refPath) {

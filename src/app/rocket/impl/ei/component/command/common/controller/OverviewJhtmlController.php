@@ -50,10 +50,10 @@ class OverviewJhtmlController extends ControllerAdapter {
 		return $this->listSize;
 	}
 
-	public function prepare(ManageState $manageState, CritmodSaveDao $critmodSaveDao, EiuCtrl $eiuCtrl) {
+	public function prepare(ManageState $manageState, CritmodSaveDao $critmodSaveDao) {
 		$this->manageState = $manageState;
 		$this->critmodSaveDao = $critmodSaveDao;
-		$this->eiuCtrl = $eiuCtrl;
+		$this->eiuCtrl = EiuCtrl::from($this->cu());
 	}
 
 	public function doOverviewTools(string $stateKey, ScrRegistry $scrRegistry) {

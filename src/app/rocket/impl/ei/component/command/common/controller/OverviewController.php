@@ -22,11 +22,8 @@
 namespace rocket\impl\ei\component\command\common\controller;
 
 use n2n\web\http\PageNotFoundException;
-use rocket\impl\ei\component\command\common\model\OverviewModel;
 use n2n\web\http\controller\ControllerAdapter;
 use rocket\ei\manage\critmod\save\CritmodSaveDao;
-use rocket\impl\ei\component\command\common\model\critmod\CritmodForm;
-use rocket\impl\ei\component\command\common\model\critmod\QuickSearchForm;
 use n2n\web\http\controller\impl\ScrRegistry;
 use rocket\ei\util\filter\controller\FramedFilterPropController;
 use n2n\web\http\controller\ParamQuery;
@@ -46,15 +43,14 @@ class OverviewController extends ControllerAdapter {
 		$this->listSize = $listSize;
 	}
 	
-	public function prepare(ScrRegistry $scrRegistry, EiuCtrl $eiuCtrl) {
+	public function prepare(ScrRegistry $scrRegistry) {
 // 		$this->manageState = $manageState;
 // 		$this->rocketState = $rocketState;
 		$this->scrRegistry = $scrRegistry;
-		$this->eiuCtrl = $eiuCtrl;
+		$this->eiuCtrl = EiuCtrl::from($this->cu());
 	}
 	
 	public function index(CritmodSaveDao $critmodSaveDao, $pageNo = null, ParamQuery $numPages = null, ParamQuery $stateKey = null) {
-		
 		$this->eiuCtrl->forwardListZone($this->listSize);
 		
 // 		$eiuFrame = $this->eiuCtrl->frame();

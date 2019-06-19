@@ -27,6 +27,8 @@ use rocket\ei\util\EiuAnalyst;
 use rocket\ei\manage\gui\GuiDefinitionListener;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\gui\EiGuiListener;
+use rocket\ei\util\frame\EiuFrame;
+use rocket\ei\manage\frame\EiForkLink;
 
 class EiuEngine {
 	private $eiEngine;
@@ -356,6 +358,23 @@ class EiuEngine {
 // 				->createIdentityString($eiObject, $this->eiuAnalyst->getN2nContext(true),
 // 						$n2nLocale ?? $this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
 // 	}
+
+	/**
+	 * @return \rocket\ei\util\frame\EiuFrame
+	 */
+	public function newFrame(EiForkLink $eiForkLink = null) {
+		$n2nContext = $this->eiuAnalyst->getN2nContext(true);
+		
+		$newEiFrame = $this->eiEngine->createEiFrame($n2nContext->lookup(ManageState::class));
+		if ($eiForkLink !== null) {
+			$newEiFrame->setEiForkLink($eiForkLink);
+		}
+		
+		$newEiuAnalyst = new EiuAnalyst();
+		$newEiuAnalyst->applyEiArgs($n2nContext);
+		
+		return new EiuFrame($newEiFrame, $newEiuAnalyst);
+	}
 }
 
 class ClosureGuiDefinitionListener implements GuiDefinitionListener {

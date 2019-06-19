@@ -22,6 +22,13 @@ class EiuProp {
 	}
 	
 	/**
+	 * @return \rocket\ei\EiPropPath
+	 */
+	public function getPath() {
+		return $this->eiPropPath;
+	}
+	
+	/**
 	 * @return \rocket\ei\component\prop\EiProp
 	 */
 	public function getEiProp() {

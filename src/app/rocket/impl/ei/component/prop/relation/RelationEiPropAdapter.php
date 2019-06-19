@@ -38,8 +38,11 @@ use rocket\impl\ei\component\prop\relation\model\Relation;
 use n2n\util\ex\IllegalStateException;
 use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
+use rocket\ei\component\prop\ForkEiProp;
+use rocket\ei\manage\frame\EiFrame;
+use rocket\ei\manage\frame\EiForkLink;
 
-abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements RelationEiProp, GuiEiProp, GuiProp {
+abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements RelationEiProp, GuiEiProp, GuiProp, ForkEiProp {
 			
 	/**
 	 * @var RelationEiPropConfigurator
@@ -146,9 +149,13 @@ abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements Re
 	
 	function buildGuiField(Eiu $eiu): ?GuiField {
 		if (!$this->getRelationModel()->isTargetMany()) {
-			return new ToOneGuiField($eiu, $this->relation);
+			return new ToOneGuiField($eiu, $this->relationModel, $this->editConfig);
 		}
 		
 		return new ToManyGuiField($eiu, $this->relation);
+	}
+	
+	function createForkedEiFrame(Eiu $eiu, EiForkLink $eiForkLink): EiFrame {
+		return $this->getRelation()->createForkEiFrame($eiu, $eiForkLink);
 	}
 }

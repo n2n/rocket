@@ -571,7 +571,7 @@ class EiForkLink {
 	 * @return string[]
 	 */
 	static function getModes() {
-		return [self::MODE_BOUNDLESS, self::MODE_SELECT];
+		return [self::MODE_DISCOVER, self::MODE_SELECT];
 	}
 }
 

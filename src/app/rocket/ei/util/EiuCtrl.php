@@ -24,13 +24,9 @@ namespace rocket\ei\util;
 use n2n\web\http\PageNotFoundException;
 use rocket\ei\security\InaccessibleEntryException;
 use n2n\web\http\ForbiddenException;
-use n2n\web\http\HttpContext;
-use n2n\util\type\CastUtils;
 use rocket\ei\manage\ManageState;
-use n2n\context\Lookupable;
 use rocket\ei\manage\preview\model\UnavailablePreviewException;
 use n2n\web\http\payload\impl\Redirect;
-use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\entry\UnknownEiObjectException;
 use rocket\ei\util\entry\EiuEntry;
 use rocket\ei\manage\gui\ViewMode;
@@ -47,36 +43,35 @@ use rocket\si\structure\impl\DlSiZone;
 use rocket\si\content\SiPartialContent;
 use rocket\si\content\SiEntry;
 
-class EiuCtrl implements Lookupable {
+class EiuCtrl {
 	private $eiu;
 	private $eiuFrame;	
 	private $httpContext;
+	private $cu;
 	
-	private function _init(ManageState $manageState, HttpContext $httpContext) {
-		$this->init($manageState, $httpContext);
-	}
-	
-	protected function init(ManageState $manageState, HttpContext $httpContext, EiFrame $eiFrame = null) {
-		if ($eiFrame === null) {
-			$eiFrame = $manageState->peakEiFrame();
-		}
-		$this->eiu = new Eiu($eiFrame);
+	/**
+	 * Private so future backwards compatible changes can be made.
+	 * @param ControllingUtils $cu
+	 */
+	private function __construct(ControllingUtils $cu) {
+		$this->cu = $cu;
+		$manageState = $cu->getN2nContext()->lookup(ManageState::class);
+		$this->eiu = new Eiu($manageState->peakEiFrame());
 		$this->eiuFrame = $this->eiu->frame();
-		$this->httpContext = $httpContext;
+		$this->httpContext = $manageState->getN2nContext()->getHttpContext();
 	}
 	
 	/**
 	 * @return Eiu
 	 */
-	public function eiu() {
+	function eiu() {
 		return $this->eiu;
 	}
 	
 	/**
-	 * 
 	 * @return \rocket\ei\util\frame\EiuFrame
 	 */
-	public function frame() {
+	function frame() {
 		return $this->eiuFrame;
 	}
 	
@@ -86,7 +81,7 @@ class EiuCtrl implements Lookupable {
 	 * @throws PageNotFoundException
 	 * @throws ForbiddenException
 	 */
-	public function lookupEntry(string $pid, int $ignoreConstraintTypes = 0) {
+	function lookupEntry(string $pid, int $ignoreConstraintTypes = 0) {
 		return $this->eiuFrame->entry($this->lookupEiObject($pid, $ignoreConstraintTypes));
 	}
 	
@@ -133,7 +128,7 @@ class EiuCtrl implements Lookupable {
 // 		return $ajahEventInfo;
 // 	}
 	
-// 	public function redirectToReferer(string $fallbackUrl, EiJhtmlEventInfo $ajahEventInfo = null, JhtmlExec $ajahExec = null) {
+// 	function redirectToReferer(string $fallbackUrl, EiJhtmlEventInfo $ajahEventInfo = null, JhtmlExec $ajahExec = null) {
 // 	    $refererUrl = $this->httpContext->getRequest()->getHeader('Referer');
 // 	    if ($refererUrl === null) {
 // 	        $refererUrl = $fallbackUrl;
@@ -150,7 +145,7 @@ class EiuCtrl implements Lookupable {
 // 	    		$this->completeEventInfo($ajahEventInfo), $ajahExec));
 // 	}
 	
-// 	public function redirectBack(string $fallbackUrl, EiJhtmlEventInfo $ajahEventInfo = null, JhtmlExec $ajahExec = null) {
+// 	function redirectBack(string $fallbackUrl, EiJhtmlEventInfo $ajahEventInfo = null, JhtmlExec $ajahExec = null) {
 // 	    $response = $this->httpContext->getResponse();
 // 	    $acceptRange = $this->httpContext->getRequest()->getAcceptRange();
 // 	    if ('application/json' != $acceptRange->bestMatch(['text/html', 'application/json'])) {
@@ -162,7 +157,7 @@ class EiuCtrl implements Lookupable {
 // 	    		$this->completeEventInfo($ajahEventInfo), $ajahExec));
 // 	}
 	
-// 	public function redirect(string $url, EiJhtmlEventInfo $ajahEventInfo = null, JhtmlExec $ajahExec = null) {
+// 	function redirect(string $url, EiJhtmlEventInfo $ajahEventInfo = null, JhtmlExec $ajahExec = null) {
 // 		$response = $this->httpContext->getResponse();
 // 		$acceptRange = $this->httpContext->getRequest()->getAcceptRange();
 // 		if ('application/json' != $acceptRange->bestMatch(['text/html', 'application/json'])) {
@@ -174,7 +169,7 @@ class EiuCtrl implements Lookupable {
 // 				$this->completeEventInfo($ajahEventInfo), $ajahExec));
 // 	}
 	
-// 	public function forwardView(HtmlView $view, EiJhtmlEventInfo $ajahEventInfo = null) {
+// 	function forwardView(HtmlView $view, EiJhtmlEventInfo $ajahEventInfo = null) {
 // 		$response = $this->httpContext->getResponse();
 // 		$acceptRange = $this->httpContext->getRequest()->getAcceptRange();
 		
@@ -191,7 +186,7 @@ class EiuCtrl implements Lookupable {
 // 		$response->send(RocketJhtmlResponse::view($view, $this->completeEventInfo($ajahEventInfo)));
 // 	}
 
-// 	public function buildRedirectUrl($eiEntryArg = null) { 
+// 	function buildRedirectUrl($eiEntryArg = null) { 
 // 		$eiObject = $eiEntryArg === null ? null : EiuAnalyst::buildEiObjectFromEiArg($eiEntryArg);
 // 		$eiFrame = $this->eiuFrame->getEiFrame(); 
 		
@@ -205,7 +200,7 @@ class EiuCtrl implements Lookupable {
 // 		return $eiFrame->getOverviewUrl($this->httpContext);
 // 	}
 	
-// 	public function parseRefUrl(ParamQuery $refPath = null) {
+// 	function parseRefUrl(ParamQuery $refPath = null) {
 // 		if ($refPath === null) return null;
 		
 // 		try {
@@ -218,7 +213,7 @@ class EiuCtrl implements Lookupable {
 // 		}
 // 	}
 	
-// 	public function buildRefRedirectUrl(Url $redirectUrl = null, EiObject $eiObject = null) {
+// 	function buildRefRedirectUrl(Url $redirectUrl = null, EiObject $eiObject = null) {
 // 		if ($redirectUrl !== null) {
 // 			return $redirectUrl;	
 // 		}
@@ -226,7 +221,7 @@ class EiuCtrl implements Lookupable {
 // 		return $this->buildRedirectUrl($eiObject);
 // 	}
 	
-// 	public function applyCommonBreadcrumbs($eiObjectObj = null, string $currentBreadcrumbLabel = null) {
+// 	function applyCommonBreadcrumbs($eiObjectObj = null, string $currentBreadcrumbLabel = null) {
 // 		$eiFrame = $this->eiuFrame->getEiFrame();
 // 		$rocketState = $eiFrame->getN2nContext()->lookup(RocketState::class);
 // 		CastUtils::assertTrue($rocketState instanceof RocketState);
@@ -246,7 +241,7 @@ class EiuCtrl implements Lookupable {
 // 		}
 // 	}
 	
-// 	public function applyBreadcrumbs(Breadcrumb ...$additionalBreadcrumbs) {
+// 	function applyBreadcrumbs(Breadcrumb ...$additionalBreadcrumbs) {
 // 		$eiFrame = $this->eiuFrame->getEiFrame();
 // 		$rocketState = $eiFrame->getN2nContext()->lookup(RocketState::class);
 // 		CastUtils::assertTrue($rocketState instanceof RocketState);
@@ -256,7 +251,7 @@ class EiuCtrl implements Lookupable {
 // 		}
 // 	}
 	
-	public function lookupPreviewController(string $previewType, $eiObjectArg) {
+	function lookupPreviewController(string $previewType, $eiObjectArg) {
 		try {
 			return $this->eiuFrame->lookupPreviewController($previewType, $eiObjectArg);
 		} catch (UnavailablePreviewException $e) {
@@ -264,36 +259,23 @@ class EiuCtrl implements Lookupable {
 		}
 	}
 	
-	public function redirectToOverview(int $status = null) {
+	function redirectToOverview(int $status = null) {
 		$this->httpContext->getResponse()->send(
 				new Redirect($this->eiuFrame->getEiFrame()->getOverviewUrl($this->httpContext), $status));
 	}
 	
-	private $controllingUtils;
-	
-	/**
-	 * @return \n2n\web\http\controller\impl\ControllingUtils
-	 */
-	function getControllingUtils() {
-		if ($this->controllingUtils === null) {
-			$this->controllingUtils = new ControllingUtils(get_class($this), 
-					$this->eiuFrame->getEiFrame()->getControllerContext());
-		}
-		
-		return $this->controllingUtils;
-	}
 	
 	private function forwardHtml() {
 		if ('text/html' == $this->httpContext->getRequest()->getAcceptRange()
 				->bestMatch(['text/html', 'application/json'])) {
-			$this->getControllingUtils()->forward('\rocket\core\view\anglTemplate.html');
+			$this->cu->forward('\rocket\core\view\anglTemplate.html');
 			return true;
 		}
 		
 		return false;
 	}
 	
-	public function forwardListZone(int $pageSize = 30) {
+	function forwardListZone(int $pageSize = 30) {
 		if ($this->forwardHtml()) {
 			return;
 		}
@@ -344,7 +326,7 @@ class EiuCtrl implements Lookupable {
 		}
 	}
 	
-	public function forwardDlZone($eiEntry, bool $editable) {
+	function forwardDlZone($eiEntry, bool $editable) {
 		if ($this->forwardHtml()) {
 			return;
 		}
@@ -409,21 +391,15 @@ class EiuCtrl implements Lookupable {
 	
 	
 	
-	public static function from(HttpContext $httpContext, EiFrame $eiFrame = null) {
-		$manageState = $httpContext->getN2nContext()->lookup(ManageState::class);
-		CastUtils::assertTrue($manageState instanceof ManageState);
-		
-		
-		$eiCtrlUtils = new EiuCtrl();
-		$eiCtrlUtils->init($manageState, $httpContext, $eiFrame);
-		return $eiCtrlUtils;
+	public static function from(ControllingUtils $cu) {
+		return new EiuCtrl($cu);
 	}
 	
 	/**
 	 * @param object $eiObjectObj
 	 * @return \rocket\ei\util\entry\EiuEntry
 	 */
-	public function toEiuEntry($eiObjectObj) {
+	function toEiuEntry($eiObjectObj) {
 		return new EiuEntry($eiObjectObj, $this);
 	}
 }
