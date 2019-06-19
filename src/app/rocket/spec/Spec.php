@@ -54,6 +54,7 @@ use rocket\spec\result\EiErrorResult;
 use rocket\spec\result\EiPropError;
 use rocket\spec\result\EiModificatorError;
 use rocket\spec\result\EiCommandError;
+use rocket\ei\EiType;
 
 class Spec {	
 	private $specExtractionManager;
@@ -485,7 +486,7 @@ class EiSetupQueue {
 	}
 		
 	public function trigger(N2nContext $n2nContext, EiErrorResult $eiErrorResult = null) {
-		$this->propIns();
+		$this->propIns($eiErrorResult);
 				
 // 		while (null !== ($eiConfigurator = array_shift($this->eiConfigurators))) {
 // 			$this->setup($n2nContext, $eiConfigurator);
@@ -602,9 +603,9 @@ class EiSetupQueue {
 		}
 	}
 	
-	public function propIns() {
+	public function propIns(EiErrorResult $eiErrorResult = null) {
 		while (null !== ($propIns = array_shift($this->propIns))) {
-			$propIns->invoke();
+			$propIns->invoke($eiErrorResult);
 		}
 	}
 	
@@ -691,7 +692,7 @@ class PropIn {
 	private $entityPropertyName;
 	private $contextEntityPropertyNames;
 
-	public function __construct($eiType, $eiPropConfigurator, $objectPropertyName, $entityPropertyName, array $contextEntityPropertyNames) {
+	public function __construct(EiType $eiType, $eiPropConfigurator, $objectPropertyName, $entityPropertyName, array $contextEntityPropertyNames) {
 		$this->eiType = $eiType;
 		$this->eiPropConfigurator = $eiPropConfigurator;
 		$this->objectPropertyName = $objectPropertyName;
@@ -703,7 +704,7 @@ class PropIn {
 		return $this->eiType;
 	}
 	
-	public function invoke() {
+	public function invoke(EiErrorResult $eiErrorResult = null) {
 		$entityPropertyCollection = $this->eiType->getEntityModel();
 		$class = $entityPropertyCollection->getClass();
 		
@@ -714,7 +715,6 @@ class PropIn {
 			$class = $entityPropertyCollection->getClass();
 		}
 		
-		
 		$accessProxy = null;
 		if (null !== $this->objectPropertyName) {
 			try{
@@ -722,9 +722,8 @@ class PropIn {
 				$accessProxy = $propertiesAnalyzer->analyzeProperty($this->objectPropertyName, false, true);
 				$accessProxy->setNullReturnAllowed(true);
 			} catch (ReflectionException $e) {
-				throw $this->createException(
-						new InvalidEiComponentConfigurationException('EiProp is assigned to unknown property: '
-								. $this->objectPropertyName, 0, $e));
+				$this->handleException(new InvalidEiComponentConfigurationException('EiProp is assigned to unknown property: '
+						. $this->objectPropertyName, 0, $e), $eiErrorResult);
 			}
 		}
 			
@@ -733,9 +732,8 @@ class PropIn {
 			try {
 				$entityProperty = $entityPropertyCollection->getEntityPropertyByName($this->entityPropertyName, true);
 			} catch (UnknownEntityPropertyException $e) {
-				throw $this->createException(
-						new InvalidEiComponentConfigurationException('EiProp is assigned to unknown EntityProperty: '
-								. $this->entityPropertyName, 0, $e));
+				$this->handleException(new InvalidEiComponentConfigurationException('EiProp is assigned to unknown EntityProperty: '
+						. $this->entityPropertyName, 0, $e), $eiErrorResult);
 			}
 		}
 
@@ -743,13 +741,25 @@ class PropIn {
 			try {
 				$this->eiPropConfigurator->assignProperty(new PropertyAssignation($entityProperty, $accessProxy));
 			} catch (IncompatiblePropertyException $e) {
-				throw $this->createException($e);
+				$this->handleException($e, $eiErrorResult);
 			}
 // 		}
 	}
 	
+	private function handleException($e, EiErrorResult $eiErrorResult = null) {
+		$e = $this->createException($e);
+		if (null !== $eiErrorResult) {
+			$eiErrorResult->putEiPropError(EiPropError::fromEiProp(
+					$this->eiPropConfigurator->getEiComponent(), $e));
+			return;
+		}
+		
+		throw new $e;
+	}
+	
 	private function createException($e) {
 		$eiComponent = $this->eiPropConfigurator->getEiComponent();
+		
 		return new InvalidEiComponentConfigurationException('EiProp is invalid configured: ' . $eiComponent, 0, $e);
 	}
 }
