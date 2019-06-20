@@ -32,6 +32,7 @@ use n2n\validation\impl\ValidationMessages;
 use n2n\util\type\CastUtils;
 use n2n\util\type\ArgUtils;
 use n2n\util\ex\IllegalStateException;
+use rocket\ei\util\frame\EiuFrame;
 
 class ToOneEiField extends EiFieldAdapter {
 	/**
@@ -43,11 +44,17 @@ class ToOneEiField extends EiFieldAdapter {
 	 */
 	private $eiu;
 	
-	function __construct(Eiu $eiu, RelationEiProp $eiProp, RelationModel $relationModel) {
+	/**
+	 * @var EiuFrame
+	 */
+	private $targetEiuFrame;
+	
+	function __construct(Eiu $eiu, EiuFrame $targetEiuFrame, RelationEiProp $eiProp, RelationModel $relationModel) {
 		parent::__construct(TypeConstraints::type(EiuEntry::class, true));
 		
 		$this->eiProp = $eiProp;
 		$this->eiu = $eiu;
+		$this->targetEiuFrame = $targetEiuFrame;
 	}
 	
 	protected function checkValue($value) {
@@ -65,7 +72,7 @@ class ToOneEiField extends EiFieldAdapter {
 			return $targetEntityObj;
 		}
 		
-		return $this->eiu->frame()->entry($targetEntityObj);
+		return $this->targetEiuFrame->entry($targetEntityObj);
 	}
 	
 	protected function isValueValid($value) {

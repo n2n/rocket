@@ -53,10 +53,10 @@ class EiGui {
 	 * @var EiEntryGui[]
 	 */
 	private $eiEntryGuis = array();
-	/**
-	 * @var EiGuiNature
-	 */
-	private $eiGuiNature;
+// 	/**
+// 	 * @var EiGuiNature
+// 	 */
+// 	private $eiGuiNature;
 	
 	/**
 	 * @param EiFrame $eiFrame
@@ -68,7 +68,7 @@ class EiGui {
 		$this->guiDefinition = $guiDefinition;
 		ArgUtils::valEnum($viewMode, ViewMode::getAll());
 		$this->viewMode = $viewMode;
-		$this->eiGuiNature = new EiGuiNature();
+// 		$this->eiGuiNature = new EiGuiNature();
 	}
 	
 	/**
@@ -279,7 +279,6 @@ class EiGui {
 }
 
 class GuiPropAssembly {
-	private $guiProp;
 	private $guiFieldPath;
 	private $displayDefinition;
 	
@@ -288,18 +287,17 @@ class GuiPropAssembly {
 	 * @param GuiFieldPath $guiFieldPath
 	 * @param DisplayDefinition $displayDefinition
 	 */
-	public function __construct(GuiProp $guiProp, GuiFieldPath $guiFieldPath, DisplayDefinition $displayDefinition) {
-		$this->guiProp = $guiProp;
+	public function __construct(GuiFieldPath $guiFieldPath, DisplayDefinition $displayDefinition) {
 		$this->guiFieldPath = $guiFieldPath;
 		$this->displayDefinition = $displayDefinition;
 	}
 	
-	/**
-	 * @return \rocket\ei\manage\gui\GuiProp
-	 */
-	public function getGuiProp() {
-		return $this->guiProp;
-	}
+// 	/**
+// 	 * @return \rocket\ei\manage\gui\GuiProp
+// 	 */
+// 	public function getGuiProp() {
+// 		return $this->guiProp;
+// 	}
 	
 	/**
 	 * @return \rocket\ei\manage\gui\field\GuiFieldPath

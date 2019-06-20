@@ -37,8 +37,6 @@ use n2n\persistence\orm\CascadeType;
 use n2n\util\type\TypeUtils;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\EiCommandPath;
-use rocket\impl\ei\component\prop\relation\command\TargetReadEiCommand;
-use n2n\l10n\Lstr;
 
 class RelationModel {
 	const MODE_SELECT = 'select';
@@ -97,7 +95,10 @@ class RelationModel {
 	 * @var EiCommandPath
 	 */
 	private $targetReadEiCommandPath;
-	
+	/**
+	 * @var EiCommandPath
+	 */
+	private $targetEditEiCommandPath;
 
 	/**
 	 * @param RelationEntityProperty $relationEntityProperty
@@ -289,7 +290,7 @@ class RelationModel {
 	function setTargetReadEiCommandPath(EiCommandPath $targetEiCommandPath) {
 		$this->targetReadEiCommandPath = $targetEiCommandPath;
 	}
-		
+	
 	/**
 	 * @throws IllegalStateException
 	 * @return \rocket\ei\EiCommandPath
@@ -300,6 +301,24 @@ class RelationModel {
 		}
 		
 		throw new IllegalStateException('TargetReadEiCommandPath not defined.');
+	}
+	/**
+	 * @param EiCommandPath $targetEiCommandPath
+	 */
+	function setTargetEditEiCommandPath(EiCommandPath $targetEiCommandPath) {
+		$this->targetEditEiCommandPath = $targetEiCommandPath;
+	}
+	
+	/**
+	 * @throws IllegalStateException
+	 * @return \rocket\ei\EiCommandPath
+	 */
+	function getTargetEditEiCommandPath() {
+		if ($this->targetEditEiCommandPath !== null) {
+			return $this->targetEditEiCommandPath;
+		}
+		
+		throw new IllegalStateException('TargetEditEiCommandPath not defined.');
 	}
 	
 	/**

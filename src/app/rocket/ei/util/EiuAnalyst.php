@@ -65,6 +65,7 @@ use n2n\util\type\TypeUtils;
 use rocket\ei\manage\gui\field\GuiFieldPath;
 use rocket\ei\util\spec\EiuGuiField;
 use rocket\spec\UnknownTypeException;
+use n2n\util\ex\IllegalStateException;
 
 class EiuAnalyst {
 	const EI_FRAME_TYPES = array(EiFrame::class, EiuFrame::class, N2nContext::class);
@@ -977,6 +978,8 @@ class EiuAnalyst {
 			return $this->eiuObject = new EiuObject($this->eiObject, $this); 
 		}	
 		
+		if (!$required) return null;
+		
 		throw new EiuPerimeterException('No EiuObject avialble.');
 	}
 	
@@ -1198,6 +1201,10 @@ class EiuAnalyst {
 			return new DraftEiObject($eiObjectArg);
 		}
 		
+		if ($eiObjectArg instanceof EiuObject) {
+			return $eiObjectArg->getEiObject();
+		}
+		
 		if ($eiObjectArg instanceof EiuEntry) {
 			$eiEntry = $eiObjectArg->getEiEntry(false);
 			return $eiObjectArg->object()->getEiObject();
@@ -1410,11 +1417,11 @@ class EiuAnalyst {
 			try {
 				return LiveEiObject::create($eiType, $eiObjectObj);
 			} catch (\InvalidArgumentException $e) {
-				return null;
 			}
 		}
 		
 		ArgUtils::valType($eiObjectObj, $eiObjectTypes, !$required, $argName);
+		throw new IllegalStateException();
 	}
 	
 	public static function buildEiFrameFromEiArg($eiFrameObj, string $argName = null, bool $required = true) {

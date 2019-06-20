@@ -40,6 +40,7 @@ use n2n\util\ex\IllegalStateException;
 use rocket\impl\ei\component\prop\relation\command\TargetReadEiCommand;
 use rocket\ei\EiCommandPath;
 use n2n\l10n\Lstr;
+use rocket\impl\ei\component\prop\relation\command\TargetEditEiCommand;
 
 class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 	const ATTR_TARGET_EXTENSION_ID_KEY = 'targetExtension';
@@ -194,6 +195,10 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$targetReadEiCommand = new TargetReadEiCommand(Lstr::create('Change this name'), 'change this', 'change this');
 		$targetEiuMask->addEiCommand($targetReadEiCommand);
 		$this->relationModel->setTargetReadEiCommandPath(EiCommandPath::from($targetReadEiCommand));
+		
+		$targetEditEiCommand = new TargetEditEiCommand(Lstr::create('Change this name'), 'change this', 'change this');
+		$targetEiuMask->addEiCommand($targetEditEiCommand);
+		$this->relationModel->setTargetEditEiCommandPath(EiCommandPath::from($targetEditEiCommand));
 		
 				
 		if ($this->relationModel->isTargetMany()) {

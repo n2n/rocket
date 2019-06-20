@@ -8,17 +8,21 @@ use rocket\si\structure\SiStructureType;
 class DisplayDefinition {
 	private $displayItemType;
 	private $defaultDisplayed;
+	private $label;
+	private $helpText;
 	
 	/**
 	 * @param Lstr $labelLstr
 	 * @param string $displayItemType
 	 * @param bool $defaultDisplayed
 	 */
-	public function __construct(string $displayItemType, bool $defaultDisplayed) {
+	public function __construct(string $displayItemType, bool $defaultDisplayed, string $label, string $helpText = null) {
 		ArgUtils::valEnum($displayItemType, SiStructureType::all());
 		
 		$this->displayItemType = $displayItemType;
 		$this->defaultDisplayed = $defaultDisplayed;
+		$this->label = $label;
+		$this->helpText = $helpText;
 	}
 	
 	/**
@@ -33,6 +37,14 @@ class DisplayDefinition {
 	 */
 	public function isDefaultDisplayed() {
 		return $this->defaultDisplayed;
+	}
+	
+	public function getLabel() {
+		return $this->label;
+	}
+	
+	public function getHelpText() {
+		return $this->helpText;
 	}
 }
 

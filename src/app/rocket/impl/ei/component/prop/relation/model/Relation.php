@@ -50,7 +50,6 @@ class Relation {
 		$this->relationModel = $relationModel;
 	}
 	
-	
 	/**
 	 * @param Eiu $eiu
 	 * @return Eiu
@@ -58,8 +57,8 @@ class Relation {
 	function createForkEiFrame(Eiu $eiu, EiForkLink $eiForkLink) {
 		$targetEiuFrame = $this->relationModel->getTargetEiuEngine()->newFrame($eiForkLink);
 		
-		if (null !== ($eiuEntry = $eiu->entry(false))) {
-			$this->applyTargetCriteriaFactory($targetEiuFrame, $eiuEntry);
+		if (null !== ($eiuObject = $eiu->object(false))) {
+			$this->applyTargetCriteriaFactory($targetEiuFrame, $eiuObject);
 		}
 		
 		if ($eiForkLink->getMode() != EiForkLink::MODE_SELECT && null !== ($eiuEntry = $eiu->entry(false))) {
@@ -88,14 +87,16 @@ class Relation {
 			return;
 		}
 		
-		if (!$this->relationEntityProperty->isMaster() && !$this->isSourceMany()) {
+		$relationEntityProperty = $this->relationModel->getRelationEntityProperty();
+		
+		if (!$relationEntityProperty->isMaster() && !$this->isSourceMany()) {
 			$targetEiuFrame->setCriteriaFactory(new MappedOneToCriteriaFactory(
 					$this->getRelationEntityProperty()->getRelation(),
 					$eiuObject->getEntityObj()));
 			return;
 		}
 		
-		$targetEiuFrame->setCriteriaFactory(new RelationCriteriaFactory($this->relationEntityProperty, 
+		$targetEiuFrame->setCriteriaFactory(new RelationCriteriaFactory($relationEntityProperty, 
 				$eiuObject->getEntityObj()));
 	}
 	

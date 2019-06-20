@@ -40,7 +40,7 @@ class EiuProp {
 	 * @return string
 	 */
 	public function getLabel(N2nLocale $n2nLocale = null) {
-		return $this->eiuMask->getPropLabel($this->eiPropPath);
+		return $this->eiuMask->getPropLabel($this->eiPropPath, $n2nLocale);
 	}
 	
 	/**
@@ -48,7 +48,15 @@ class EiuProp {
 	 * @return string
 	 */
 	public function getPluralLabel(N2nLocale $n2nLocale = null) {
-		return $this->eiuMask->getPropPluralLabel($this->eiPropPath);
+		return $this->eiuMask->getPropPluralLabel($this->eiPropPath, $n2nLocale);
+	}
+	
+	/**
+	 * @param N2nLocale|null $n2nLocale
+	 * @return string
+	 */
+	public function getHelpText(N2nLocale $n2nLocale = null) {
+		return $this->eiuMask->getPropHelpText($this->eiPropPath, $n2nLocale);
 	}
 	
 	/**

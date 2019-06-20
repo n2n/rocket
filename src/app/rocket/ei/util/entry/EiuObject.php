@@ -27,6 +27,7 @@ use rocket\ei\manage\entry\EiFieldOperationFailedException;
 use rocket\ei\manage\EiObject;
 use rocket\ei\util\EiuAnalyst;
 use rocket\ei\component\prop\EiProp;
+use rocket\si\content\SiObjectQualifier;
 
 class EiuObject {
 	private $eiObject;
@@ -39,6 +40,27 @@ class EiuObject {
 	public function __construct(EiObject $eiObject, EiuAnalyst $eiuAnalyst) {
 		$this->eiObject = $eiObject;
 		$this->eiuAnalyst = $eiuAnalyst;
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function isNew() {
+		return $this->eiObject->isNew();
+	}
+	
+	/**
+	 * @param bool $required
+	 * @return NULL|string
+	 */
+	public function getPid(bool $required = true) {
+		$eiEntityObj = $this->eiObject->getEiEntityObj();
+		
+		if (!$required && !$eiEntityObj->hasId()) {
+			return null;
+		}
+		
+		return $eiEntityObj->getPid();
 	}
 	
 	/**
@@ -145,5 +167,26 @@ class EiuObject {
 	public function newEntry() {
 		$this->eiuAnalyst->getEiFrame(true);
 		return new EiuEntry(null, $this, null, $this->eiuAnalyst);
+	}
+	
+	/**
+	 * @return string
+	 */
+	function createIndetityString() {
+		return $this->eiuAnalyst->getEiuFrame(true)->mask()->createIdentityString($this->eiObject);
+	}
+	
+	/**
+	 * @param string $name
+	 * @return SiObjectQualifier
+	 */
+	function createSiObjectQualifier(string $name = null) {
+		$name = $name ?? $this->createIdentityString();
+		
+		if ($this->eiuObject !== null) {
+			return $this->eiuObject->getEiObject()->createSiObjectQualifier($name);
+		}
+		
+		return $this->eiEntry->getEiObject()->createSiObjectQualifier($name);
 	}
 }

@@ -434,7 +434,7 @@ class EiFrame {
 			return $this->getBaseUrl()->ext([EiFrameController::FORK_PATH, (string) $eiPropPath, $mode]);
 		}
 		 
-		return $this->getBaseUrl()->ext([EiFrameController::FORK_ENTRY_PATH, $eiObject->getPid(), 
+		return $this->getBaseUrl()->ext([EiFrameController::FORK_ENTRY_PATH, $eiObject->getEiEntityObj()->getPid(), 
 				(string) $eiPropPath, $mode]);
 	}
 	

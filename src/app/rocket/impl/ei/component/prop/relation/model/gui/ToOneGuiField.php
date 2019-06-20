@@ -27,6 +27,8 @@ use rocket\ei\util\Eiu;
 use rocket\si\content\impl\SiFields;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\impl\ei\component\prop\adapter\config\EditConfig;
+use n2n\util\type\CastUtils;
+use rocket\ei\util\entry\EiuEntry;
 
 class ToOneGuiField implements GuiField {
 	/**
@@ -41,11 +43,17 @@ class ToOneGuiField implements GuiField {
 	function __construct(Eiu $eiu, RelationModel $relationModel, EditConfig $editConfig) {
 		$this->eiu = $eiu;
 		
-		$targetEiFrame = $eiu->frame()->forkSelect($eiu->prop()->getPath());
+		$targetEiuFrame = $eiu->frame()->forkSelect($eiu->prop()->getPath());
 		
-		$this->siField = SiFields::entryToOneSelect(
-				$targetEiFrame->getApiUrl($relationModel->getTargetReadEiCommandPath()),
-				($editConfig->isMandatory() ? 1 : 0), 1);
+		$values = [];
+		if (null !== ($eiuEntry = $eiu->field()->getValue())) {
+			CastUtils::assertTrue($eiuEntry instanceof EiuEntry);
+			$values[] = $eiuEntry->createSiObjectQualifier();
+		}
+		
+		$this->siField = SiFields::apiSelectIn(
+				$targetEiuFrame->getApiUrl($relationModel->getTargetReadEiCommandPath()),
+				$values, ($editConfig->isMandatory() ? 1 : 0), 1);
 	}
 	
 	function save() {

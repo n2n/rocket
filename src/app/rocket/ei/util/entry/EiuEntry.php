@@ -508,15 +508,8 @@ class EiuEntry {
 	 * @param N2nLocale $n2nLocale
 	 * @return string
 	 */
-	public function createIdentityString(bool $useEntryEiMask = true, N2nLocale $n2nLocale = null) {
-		if ($useEntryEiMask) {
-			return $this->mask()->engine()->createIdentityString($this, $n2nLocale);
-		}
-		
-		$n2nContext = $this->eiuAnalyst->getN2nContext(true);
-		return $this->getEiuFrame(true)->createIdentityString($this->eiuObject->getEiObject(),
-				false, $n2nContext->getN2nLocale());
-		
+	public function createIdentityString(N2nLocale $n2nLocale = null) {
+		return $this->mask()->engine()->createIdentityString($this, true, $n2nLocale);
 	}
 	
 	/**
@@ -691,6 +684,19 @@ class EiuEntry {
 	
 	function save() {
 		return $this->eiEntry->save();
+	}
+	
+	/**
+	 * @return \rocket\si\content\SiObjectQualifier
+	 */
+	function createSiObjectQualifier(string $name = null) {
+		$name = $name ?? $this->createIdentityString();
+		
+		if ($this->eiuObject !== null) {
+			return $this->eiuObject->getEiObject()->createSiObjectQualifier($name);
+		}
+		
+		return $this->eiEntry->getEiObject()->createSiObjectQualifier($name);
 	}
 }  
 

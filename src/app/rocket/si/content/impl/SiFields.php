@@ -56,4 +56,8 @@ class SiFields {
 	static function fileOut(?File $file) {
 		return new FileOutSiField($file);
 	}
+	
+	static function apiSelectIn(Url $apiUrl, array $values = [], int $min = 0, int $max = null) {
+		return (new ApiSelectInSiField($apiUrl, $values))->setMin($min)->setMax($max);
+	}
 }

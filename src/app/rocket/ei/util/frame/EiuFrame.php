@@ -70,10 +70,8 @@ use rocket\ei\util\entry\EiuObject;
 use rocket\ei\manage\frame\EiFrameUtil;
 use rocket\ei\manage\frame\EiRelation;
 use rocket\ei\component\prop\EiProp;
-use rocket\ei\util\Eiu;
-use rocket\ei\component\prop\ForkEiProp;
-use n2n\web\http\controller\ControllerContext;
 use rocket\ei\manage\frame\EiForkLink;
+use rocket\ei\manage\frame\CriteriaFactory;
 
 class EiuFrame {
 	private $eiFrame;
@@ -184,8 +182,7 @@ class EiuFrame {
 			return $this->getContextEiuEngine()->getEiuMask();
 		}
 		
-		
-		return new EiuMask($this->eiFrame->determineEiMask($eiType), null, $this->eiuAnalyst);
+		return new EiuMask($this->getContextEiMask()->determineEiMask($eiType), null, $this->eiuAnalyst);
 	}
 	
 	
@@ -205,7 +202,6 @@ class EiuFrame {
 		if ($contextEiType->equals($eiType)) {
 			return $this->getContextEiuEngine();
 		}
-		
 		
 		return new EiuEngine($this->eiFrame->determineEiMask($eiType)->getEiEngine(), null, $this->eiuAnalyst);
 	}
@@ -244,6 +240,13 @@ class EiuFrame {
 	}
 	
 	
+	/**
+	 * @param EiEntry|object $eiEntryArg
+	 * @param EiPropPath|null $forkEiPropPath
+	 * @param object $object
+	 * @param EiEntry|object $copyFromEiEntryArg
+	 * @return \rocket\ei\util\entry\EiuFieldMap
+	 */
 	public function newFieldMap($eiEntryArg, $forkEiPropPath, object $object, $copyFromEiEntryArg = null) {
 		$eiEntry = EiuAnalyst::buildEiEntryFromEiArg($eiEntryArg);
 		$copyFrom = null;
@@ -1039,7 +1042,7 @@ class EiuFrame {
 	/**
 	 * @param string|EiPropPath $eiPropPath
 	 * @param EiObject|object|null $eiObjectArg
-	 * @return \rocket\ei\manage\frame\EiFrame
+	 * @return EiuFrame
 	 */
 	function forkSelect($eiPropPath, $eiObjectArg = null) {
 		return $this->fork($eiPropPath, EiForkLink::MODE_SELECT, $eiObjectArg);
@@ -1048,7 +1051,7 @@ class EiuFrame {
 	/**
 	 * @param string|EiPropPath $eiPropPath
 	 * @param EiObject|object|null $eiObjectArg
-	 * @return \rocket\ei\manage\frame\EiFrame
+	 * @return EiuFrame
 	 */
 	function forkDiscover($eiPropPath, $eiObjectArg = null) {
 		return $this->fork($eiPropPath, EiForkLink::MODE_DISCOVER, $eiObjectArg);
@@ -1058,7 +1061,7 @@ class EiuFrame {
 	 * @param string|EiPropPath $eiPropPath
 	 * @param string $mode
 	 * @param EiObject|object|null $eiObjectArg
-	 * @return \rocket\ei\manage\frame\EiFrame
+	 * @return EiuFrame
 	 */
 	function fork($eiPropPath, string $mode, $eiObjectArg = null) {
 		$eiPropPath = EiPropPath::create($eiPropPath);
@@ -1066,7 +1069,32 @@ class EiuFrame {
 				$this->eiFrame->getContextEiEngine()->getEiMask()->getEiType(), false);
 		$eiForkLink = new EiForkLink($this->eiFrame, $mode, $eiObject);
 		
-		return $this->eiFrame->getContextEiEngine()->createForkedEiFrame($eiPropPath, $eiForkLink);
+		$newEiFrame = $this->eiFrame->getContextEiEngine()->createForkedEiFrame($eiPropPath, $eiForkLink);
+		$newEiuAnalyst = new EiuAnalyst();
+		$newEiuAnalyst->applyEiArgs($this->getN2nContext());
+		return new EiuFrame($newEiFrame, $newEiuAnalyst);
+	}
+	
+	/**
+	 * @param EiCommandPath|string $eiCommandPath
+	 * @return EiuFrame
+	 */
+	function exec($eiCommandPath) {
+		$eiCommandPath = EiCommandPath::create($eiCommandPath);
+		$eiCommand = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiCommandCollection()
+				->getByPath($eiCommandPath);
+		
+		$this->eiFrame->exec($eiCommandPath, $eiCommand);
+		return $this;
+	}
+	
+	/**
+	 * @param CriteriaFactory $criteriaFactory
+	 * @return \rocket\ei\util\frame\EiuFrame
+	 */
+	function setCriteriaFactory(?CriteriaFactory $criteriaFactory) {
+		$this->eiFrame->getBoundry()->setCriteriaFactory($criteriaFactory);
+		return $this;
 	}
 	
 }

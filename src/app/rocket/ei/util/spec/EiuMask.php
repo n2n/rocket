@@ -148,6 +148,17 @@ class EiuMask  {
 				->t($n2nLocale ?? $this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
 	}
 	
+	public function getPropHelpText($eiPropPath, N2nLocale $n2nLocale = null) {
+		$helpTextLstr = $this->eiMask->getEiPropCollection()->getByPath(EiPropPath::create($eiPropPath))
+				->getHelpTextLstr();
+		
+		if ($helpTextLstr === null) {
+			return null;
+		}
+				
+		return $helpTextLstr->t($n2nLocale ?? $this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
+	}
+	
 	public function containsEiProp($eiPropPath) {
 		return $this->eiEngine->getEiMask()->getEiPropCollection()->containsId(EiPropPath::create($eiPropPath));
 	}

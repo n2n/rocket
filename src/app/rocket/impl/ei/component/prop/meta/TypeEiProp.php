@@ -21,7 +21,6 @@
  */
 namespace rocket\impl\ei\component\prop\meta;
 
-use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\ei\component\prop\GuiEiProp;
 use rocket\ei\manage\gui\GuiProp;
@@ -38,6 +37,8 @@ use rocket\si\content\SiField;
 class TypeEiProp extends DisplayableEiPropAdapter implements StatelessGuiFieldDisplayable, GuiEiProp, GuiProp {
 	
 	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
+// 		$eiu->prop()->getLabel();
+// 		$eiu->prop()->getHelpText();
 		return $this->getDisplayConfig()->toDisplayDefinition($this, $eiu->gui()->getViewMode());
 	}
 

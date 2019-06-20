@@ -77,7 +77,8 @@ abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter im
 		ArgUtils::valEnumReturn($groupType, SiStructureType::all(), $this, 'getGroupType');
 		
 		return new DisplayDefinition($groupType,
-				$this->getDisplayConfig()->isViewModeDefaultDisplayed($viewMode));
+				$this->getDisplayConfig()->isViewModeDefaultDisplayed($viewMode),
+				$eiu->prop()->getLabel(), $eiu->prop()->getHelpText());
 	}
 
 	public function createEiPropConfigurator(): EiPropConfigurator {

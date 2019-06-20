@@ -34,9 +34,12 @@ use rocket\ei\manage\security\filter\SecurityFilterProp;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
+use rocket\ei\manage\entry\EiField;
 use rocket\ei\manage\gui\ViewMode;
+use rocket\ei\component\prop\FieldEiProp;
+use rocket\impl\ei\component\prop\relation\model\ToOneEiField;
 
-class ManyToOneSelectEiProp extends RelationEiPropAdapter {
+class ManyToOneSelectEiProp extends RelationEiPropAdapter implements FieldEiProp {
 	
 	function __construct() {
 		parent::__construct();
@@ -56,6 +59,14 @@ class ManyToOneSelectEiProp extends RelationEiPropAdapter {
 		
 		$this->setRelationModel(new RelationModel($entityProperty, true, false, RelationModel::MODE_SELECT));
 	}
+	
+	public function buildEiField(Eiu $eiu): ?EiField {
+		$targetEiuFrame = $eiu->frame()->forkSelect($this, $eiu->object())
+				->exec($this->getRelationModel()->getTargetReadEiCommandPath());
+		
+		return new ToOneEiField($eiu, $targetEiuFrame, $this, $this->getRelationModel());
+	}
+	
 	
 	
 // 	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
