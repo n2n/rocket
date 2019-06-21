@@ -34,6 +34,7 @@ class CommonEiGuiSiFactory implements EiGuiSiFactory {
 	 */
 	private function createSiFieldDeclaration(GuiPropAssembly $guiPropAssembly) {
 		$guiProp = $guiPropAssembly->getGuiProp();
+		$this->eiGui->getGuiDefinition()->get
 		$label = $guiProp->getDisplayLabel();
 		$helpText = $guiProp->getDisplayHelpText();
 		
