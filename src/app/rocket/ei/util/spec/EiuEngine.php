@@ -229,11 +229,18 @@ class EiuEngine {
 		return $this->getManageState()->getDef()->getPrivilegeDefinition($this->eiEngine->getEiMask());
 	}
 	
+// 	/**
+// 	 * @return \rocket\ei\manage\gui\GuiDefinition
+// 	 */
+// 	public function getGuiDefinition() {
+// 		return $this->getManageState()->getDef()->getGuiDefinition($this->eiEngine->getEiMask());
+// 	}
+	
 	/**
-	 * @return \rocket\ei\manage\gui\GuiDefinition
+	 * @return \rocket\ei\manage\gui\IdNameDefinition
 	 */
-	public function getGuiDefinition() {
-		return $this->getManageState()->getDef()->getGuiDefinition($this->eiEngine->getEiMask());
+	public function getIdNameDefinition() {
+		return $this->getManageState()->getDef()->getIdNameDefinition($this->eiEngine->getEiMask());
 	}
 	
 	/**
@@ -252,7 +259,7 @@ class EiuEngine {
 		}
 		
 		$n2nContext = $this->eiuAnalyst->getN2nContext(true);
-		return $this->getManageState()->getDef()->getGuiDefinition($eiMask)
+		return $this->getManageState()->getDef()->getIdNameDefinition($eiMask)
 				->createIdentityString($eiObject, $n2nContext,
 						$n2nLocale ?? $n2nContext->getN2nLocale());
 	}

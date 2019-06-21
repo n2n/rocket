@@ -231,6 +231,11 @@ class EiEngine {
 		$mappingFactory->copyValues($eiFrame, $from, $to, $eiPropPaths);
 	}
 	
+	public function createIdNameDefinition(N2nContext $n2nContext) {
+		$idNameFactory = new IdNameFactory($this->eiMask);
+		return $idNameFactory->createIdNameDefinition($n2nContext);
+	}
+	
 	public function createGuiDefinition(N2nContext $n2nContext, &$guiDefinition = null) {
 		$guiFactory = new GuiFactory($this->eiMask);
 		return $guiFactory->createGuiDefinition($n2nContext, $guiDefinition);

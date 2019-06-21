@@ -28,6 +28,7 @@ use rocket\ei\manage\security\filter\SecurityFilterDefinition;
 use rocket\ei\manage\security\privilege\PrivilegeDefinition;
 use rocket\ei\manage\draft\DraftDefinition;
 use rocket\ei\manage\gui\GuiDefinition;
+use rocket\ei\manage\gui\IdNameDefinition;
 
 class ManagedDef {
 	
@@ -119,24 +120,44 @@ class ManagedDef {
 		return $this->privilegeDefinitions[$eiTypePathStr];
 	}
 	
+// 	/**
+// 	 * @var GuiDefinition[]
+// 	 */
+// 	private $guiDefinitions = array();
+	
+// 	/**
+// 	 * @param EiMask $eiMask
+// 	 * @return GuiDefinition
+// 	 */
+// 	public function getGuiDefinition(EiMask $eiMask) {
+// 		$eiTypePathStr = (string) $eiMask->getEiTypePath();
+		
+// 		if (!isset($this->guiDefinitions[$eiTypePathStr])) {
+// 			$eiMask->getEiEngine()
+// 					->createGuiDefinition($this->manageState->getN2nContext(), $this->guiDefinitions[$eiTypePathStr]);
+// 		}
+		
+// 		return $this->guiDefinitions[$eiTypePathStr];
+// 	}
+	
 	/**
-	 * @var GuiDefinition[]
+	 * @var IdNameDefinition[]
 	 */
-	private $guiDefinitions = array();
+	private $idNameDefinitions = array();
 	
 	/**
 	 * @param EiMask $eiMask
-	 * @return GuiDefinition
+	 * @return IdNameDefinition
 	 */
-	public function getGuiDefinition(EiMask $eiMask) {
+	public function getIdNameDefinition(EiMask $eiMask) {
 		$eiTypePathStr = (string) $eiMask->getEiTypePath();
 		
-		if (!isset($this->guiDefinitions[$eiTypePathStr])) {
-			$eiMask->getEiEngine()
-					->createGuiDefinition($this->manageState->getN2nContext(), $this->guiDefinitions[$eiTypePathStr]);
+		if (!isset($this->idNameDefinitions[$eiTypePathStr])) {
+			$eiMask->getEiEngine()->createIdNameDefinition($this->manageState->getN2nContext(), 
+					$this->idNameDefinitions[$eiTypePathStr]);
 		}
 		
-		return $this->guiDefinitions[$eiTypePathStr];
+		return $this->idNameDefinitions[$eiTypePathStr];
 	}
 	
 	/**

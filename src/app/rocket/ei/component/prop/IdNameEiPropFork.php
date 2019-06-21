@@ -19,16 +19,14 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\gui;
+namespace rocket\ei\component\prop;
 
-use n2n\l10n\N2nLocale;
+use rocket\ei\manage\gui\GuiPropFork;
 use rocket\ei\util\Eiu;
 
-interface GuiProp {
-	
+interface GuiEiPropFork extends EiProp {
 	/**
-	 * @param object $entity
-	 * @return string|null
+	 * @return \rocket\ei\manage\gui\GuiPropFork|null null if not displayable
 	 */
-	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string;
+	public function buildGuiPropFork(Eiu $eiu): ?GuiPropFork;
 }
