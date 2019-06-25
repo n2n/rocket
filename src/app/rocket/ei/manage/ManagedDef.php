@@ -153,8 +153,8 @@ class ManagedDef {
 		$eiTypePathStr = (string) $eiMask->getEiTypePath();
 		
 		if (!isset($this->idNameDefinitions[$eiTypePathStr])) {
-			$eiMask->getEiEngine()->createIdNameDefinition($this->manageState->getN2nContext(), 
-					$this->idNameDefinitions[$eiTypePathStr]);
+			$this->idNameDefinitions[$eiTypePathStr] = $eiMask->getEiEngine()
+					->createIdNameDefinition($this->manageState->getN2nContext());
 		}
 		
 		return $this->idNameDefinitions[$eiTypePathStr];
