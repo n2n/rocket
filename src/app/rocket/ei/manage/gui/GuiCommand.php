@@ -25,9 +25,9 @@ use rocket\ei\util\Eiu;
 
 interface GuiCommand {
 	
-	public function createGeneralGuiControls(Eiu $eiu): array;
+	public function createGeneralGuiControls(): array;
 	
-	public function createSelectionGuiControls(Eiu $eiu): array;
+	public function createSelectionGuiControls(): array;
 	
 	public function createEntryGuiControls(Eiu $eiu): array;
 }

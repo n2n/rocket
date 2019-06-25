@@ -41,8 +41,10 @@ use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\ei\component\prop\ForkEiProp;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\frame\EiForkLink;
+use rocket\impl\ei\component\prop\adapter\gui\GuiPropProxy;
+use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiProp;
 
-abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements RelationEiProp, GuiEiProp, GuiProp, ForkEiProp {
+abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements RelationEiProp, GuiEiProp, StatelessGuiProp, ForkEiProp {
 			
 	/**
 	 * @var RelationEiPropConfigurator
@@ -125,7 +127,7 @@ abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements Re
 	 * @see \rocket\ei\component\prop\GuiEiProp::buildGuiProp()
 	 */
 	function buildGuiProp(Eiu $eiu): ?GuiProp {
-		return $this;
+		return new GuiPropProxy($eiu, $this);
 	}
 	
 	function isStringRepresentable(): bool {
@@ -144,7 +146,8 @@ abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements Re
 	}
 	
 	function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
-		return $this->displayConfig->toDisplayDefinition($eiu->gui()->getViewMode());
+		return $this->displayConfig->toDisplayDefinition($eiu->gui()->getViewMode(), $eiu->prop()->getLabel(),
+				$eiu->prop()->getHelpText());
 	}
 	
 	function buildGuiField(Eiu $eiu): ?GuiField {

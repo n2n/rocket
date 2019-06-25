@@ -24,7 +24,6 @@ namespace rocket\impl\ei\component\prop\adapter\config;
 use n2n\util\type\ArgUtils;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\DisplayDefinition;
-use rocket\ei\component\prop\EiProp;
 use rocket\si\structure\SiStructureType;
 
 class DisplayConfig {
@@ -32,8 +31,6 @@ class DisplayConfig {
 	private $defaultDisplayedViewModes;
 	
 	private $displayItemType = SiStructureType::ITEM;
-	
-	private $helpText;
 	
 	/**
 	 * @param int $compatibleViewModes
@@ -147,10 +144,10 @@ class DisplayConfig {
 	 * @param int $viewMode
 	 * @return DisplayDefinition|null
 	 */
-	public function toDisplayDefinition(int $viewMode) {
+	public function toDisplayDefinition(int $viewMode, string $label, string $helpText = null) {
 		if (!$this->isViewModeCompatible($viewMode)) return null;
 		
 		return new DisplayDefinition($this->displayItemType,
-				$this->isViewModeDefaultDisplayed($viewMode), $this->helpText);
+				$this->isViewModeDefaultDisplayed($viewMode), $label, $helpText);
 	}
 }

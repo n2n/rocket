@@ -43,9 +43,11 @@ use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\impl\ei\component\prop\adapter\gui\GuiFieldProxy;
 use rocket\si\structure\SiStructureType;
+use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiProp;
+use rocket\impl\ei\component\prop\adapter\gui\GuiPropProxy;
 
 abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter implements StatelessGuiFieldDisplayable, 
-		FieldEiProp, GuiEiProp, GuiProp, Readable {
+		FieldEiProp, GuiEiProp, StatelessGuiProp, Readable {
 	private $displayConfig;
 
 	/**
@@ -104,7 +106,7 @@ abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter im
 	}
 	
 	public function buildGuiProp(Eiu $eiu): ?GuiProp {
-		return $this;
+		return new GuiPropProxy($eiu, $this);
 	}
 	
 	/**

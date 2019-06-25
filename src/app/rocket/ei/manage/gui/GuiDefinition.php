@@ -21,13 +21,10 @@
  */
 namespace rocket\ei\manage\gui;
 
-use n2n\l10n\N2nLocale;
 use rocket\ei\EiPropPath;
-use rocket\ei\manage\EiObject;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\util\Eiu;
 use n2n\util\ex\NotYetImplementedException;
-use n2n\l10n\Lstr;
 use rocket\core\model\Rocket;
 use n2n\core\container\N2nContext;
 use rocket\ei\manage\entry\UnknownEiFieldExcpetion;
@@ -45,8 +42,6 @@ use n2n\util\StringUtils;
 use rocket\ei\EiCommandPath;
 
 class GuiDefinition {	
-	private $identityStringPattern;
-	private $labelLstr;
 	private $guiProps = array();
 	private $guiPropForks = array();
 	private $eiPropPaths = array();
@@ -55,23 +50,6 @@ class GuiDefinition {
 	 */
 	private $guiCommands;
 	
-	function __construct(Lstr $labelLstr) {
-		$this->labelLstr = $labelLstr;
-	}
-	
-	/**
-	 * @param string|null $identityStringPattern
-	 */
-	public function setIdentityStringPattern(?string $identityStringPattern) {
-		$this->identityStringPattern = $identityStringPattern;
-	}
-	
-	/**
-	 * @return string|null
-	 */
-	public function getIdentityStringPattern() {
-		return $this->identityStringPattern;
-	}
 	
 	/**
 	 * @param string $id
@@ -258,9 +236,9 @@ class GuiDefinition {
 		return $guiFieldPaths;
 	}
 	
-	public function assembleDefaultGuiProps(EiGui $eiGui) {
+	public function assembleDefaultGuiProps() {
 		$guiPropAssemblies = [];
-		$this->composeGuiPropAssemblies($guiPropAssemblies, [], new Eiu($eiGui));
+		$this->composeGuiPropAssemblies($guiPropAssemblies, []);
 		return $guiPropAssemblies;
 	}
 	
@@ -292,28 +270,27 @@ class GuiDefinition {
 	 * @param Eiu $eiu
 	 * @param int $minTestLevel
 	 */
-	protected function composeGuiPropAssemblies(array &$guiPropAssemblies, array $baseEiPropPaths, Eiu $eiu) {
+	protected function composeGuiPropAssemblies(array &$guiPropAssemblies, array $baseEiPropPaths) {
 		foreach ($this->eiPropPaths as $eiPropPath) {
 			$eiPropPathStr = (string) $eiPropPath;
 			
 			$displayDefinition = null;
 			if (isset($this->guiProps[$eiPropPathStr])
-					&& null !== ($displayDefinition = $this->guiProps[$eiPropPathStr]->buildDisplayDefinition($eiu))
+					&& null !== ($displayDefinition = $this->guiProps[$eiPropPathStr]->getDisplayDefinition())
 					&& $displayDefinition->isDefaultDisplayed()) {
 						
 				$currentEiPropPaths = $baseEiPropPaths;
 				$currentEiPropPaths[] = $eiPropPath;
 				
 				$guiFieldPath = new GuiFieldPath($currentEiPropPaths);
-				$guiPropAssemblies[(string) $guiFieldPath] = new GuiPropAssembly($this->guiProps[$eiPropPathStr], 
-						$guiFieldPath, $displayDefinition);
+				$guiPropAssemblies[(string) $guiFieldPath] = new GuiPropAssembly($guiFieldPath, $displayDefinition);
 			}
 			
 			if (isset($this->guiPropForks[$eiPropPathStr])
 					&& null !== ($forkedGuiDefinition = $this->guiPropForks[$eiPropPathStr]->getForkedGuiDefinition())) {
 				$currentEiPropPaths = $baseEiPropPaths;
 				$currentEiPropPaths[] = $eiPropPath;
-				$forkedGuiDefinition->composeGuiPropAssemblies($guiPropAssemblies, $currentEiPropPaths, $eiu);
+				$forkedGuiDefinition->composeGuiPropAssemblies($guiPropAssemblies, $currentEiPropPaths);
 			}
 		}
 	}
@@ -401,91 +378,6 @@ class GuiDefinition {
 	
 	public function getGuiPropForks() {
 		return $this->guiPropForks;
-	}
-	
-	/**
-	 * @param EiObject $eiObject
-	 * @param N2nLocale $n2nLocale
-	 * @return string
-	 */
-	private function createDefaultIdentityString(EiObject $eiObject, N2nContext $n2nContext, N2nLocale $n2nLocale) {
-		$eiType = $eiObject->getEiEntityObj()->getEiType();
-		
-		$idPatternPart = null;
-		$namePatternPart = null;
-		
-		foreach ($this->getStringRepresentableGuiProps() as $eiPropPathStr => $guiProp) {
-			if ($eiPropPathStr == $eiType->getEntityModel()->getIdDef()->getPropertyName()) {
-				$idPatternPart = SummarizedStringBuilder::createPlaceholder($eiPropPathStr);
-			} else {
-				$namePatternPart = SummarizedStringBuilder::createPlaceholder($eiPropPathStr);
-			}
-			
-			if ($namePatternPart !== null) break;
-		}
-		
-		if ($idPatternPart === null) {
-			$idPatternPart = $eiObject->getEiEntityObj()->hasId() ?
-			$eiType->idToPid($eiObject->getEiEntityObj()->getId()) : 'new';
-		}
-		
-		if ($namePatternPart === null) {
-			$namePatternPart = $this->labelLstr->t($n2nLocale);
-		}
-		
-		return $this->createIdentityStringFromPattern($namePatternPart . ' #' . $idPatternPart, $n2nContext, $eiObject, $n2nLocale);
-	}
-	
-	/**
-	 * @param EiObject $eiObject
-	 * @param N2nLocale $n2nLocale
-	 * @return string
-	 */
-	public function createIdentityString(EiObject $eiObject, N2nContext $n2nContext, N2nLocale $n2nLocale) {
-		if ($this->identityStringPattern === null) {
-			return $this->createDefaultIdentityString($eiObject, $n2nContext, $n2nLocale);
-		}
-		
-		return $this->createIdentityStringFromPattern($this->identityStringPattern, $n2nContext, $eiObject, $n2nLocale);
-	}
-	
-	/**
-	 * @param $entity
-	 * @param N2nLocale $n2nLocale
-	 * @return string
-	 */
-	public function createIdentityStringFromPattern(string $identityStringPattern, N2nContext $n2nContext, EiObject $eiObject, N2nLocale $n2nLocale): string {
-		$builder = new SummarizedStringBuilder($identityStringPattern, $n2nContext, $n2nLocale);
-		$builder->replaceFields(array(), $this, $eiObject);
-		return $builder->__toString();
-	}
-	
-	public function getStringRepresentableGuiProps() {
-		return $this->filterStringRepresentableGuiProps($this, array());
-	}
-	
-	private function filterStringRepresentableGuiProps(GuiDefinition $guiDefinition, array $baseIds) {
-		$guiProps = array();
-		
-		foreach ($guiDefinition->getGuiProps() as $id => $guiProp) {
-			if (!$guiProp->isStringRepresentable()) continue;
-			
-			$ids = $baseIds;
-			$ids[] = EiPropPath::create($id);
-			$guiProps[(string) new GuiFieldPath($ids)] = $guiProp;
-		}
-		
-		foreach ($guiDefinition->getGuiPropForks() as $id => $guiPropFork) {
-			$forkedGuiDefinition = $guiPropFork->getForkedGuiDefinition();
-			
-			if ($forkedGuiDefinition === null) continue;
-			
-			$ids = $baseIds;
-			$ids[] = EiPropPath::create($id);
-			$guiProps = array_merge($guiProps, $this->filterStringRepresentableGuiProps($forkedGuiDefinition, $ids));
-		}
-		
-		return $guiProps;
 	}
 		
 	/**

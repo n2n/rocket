@@ -21,7 +21,6 @@
  */
 namespace rocket\ei\manage\gui;
 
-use n2n\l10n\N2nLocale;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\gui\field\GuiField;
 
@@ -34,22 +33,11 @@ interface GuiProp {
 	 * 
 	 * @return DisplayDefinition|null return null if this GuiProp is not compatible with passed EiGui.
 	 */
-	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition;
+	public function getDisplayDefinition(): ?DisplayDefinition;
 		
 	/**
 	 * @param Eiu $eiu
 	 * @return \rocket\ei\manage\gui\field\GuiField|null
 	 */
 	public function buildGuiField(Eiu $eiu): ?GuiField;
-		
-	/**
-	 * @return boolean
-	 */
-	public function isStringRepresentable(): bool;
-	
-	/**
-	 * @param object $entity
-	 * @return string|null
-	 */
-	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string;
 }

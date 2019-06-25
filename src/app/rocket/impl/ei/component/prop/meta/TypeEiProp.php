@@ -23,7 +23,6 @@ namespace rocket\impl\ei\component\prop\meta;
 
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\ei\component\prop\GuiEiProp;
-use rocket\ei\manage\gui\GuiProp;
 use n2n\l10n\N2nLocale;
 use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable;
 use rocket\ei\util\Eiu;
@@ -34,7 +33,7 @@ use n2n\impl\web\ui\view\html\HtmlSnippet;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use rocket\si\content\SiField;
 
-class TypeEiProp extends DisplayableEiPropAdapter implements StatelessGuiFieldDisplayable, GuiEiProp, GuiProp {
+class TypeEiProp extends DisplayableEiPropAdapter implements StatelessGuiFieldDisplayable {
 	
 	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
 // 		$eiu->prop()->getLabel();

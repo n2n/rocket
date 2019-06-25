@@ -27,21 +27,15 @@ use rocket\ei\manage\gui\EiEntryGuiAssembler;
 use rocket\ei\manage\gui\EiEntryGui;
 use rocket\ei\component\prop\GuiEiProp;
 use rocket\ei\EiPropPath;
-use rocket\ei\manage\gui\GuiPropFork;
-use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\util\entry\EiuEntry;
 use rocket\ei\mask\EiMask;
 use rocket\ei\manage\gui\field\GuiFieldPath;
 use rocket\ei\manage\gui\EiGui;
-use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\util\Eiu;
-use rocket\ei\mask\model\ControlOrder;
-use rocket\ei\manage\gui\SummarizedStringBuilder;
-use rocket\ei\manage\EiObject;
-use n2n\l10n\N2nLocale;
-use n2n\core\container\N2nContext;
 use rocket\ei\component\prop\GuiEiPropFork;
+use rocket\ei\manage\frame\EiFrame;
+use rocket\ei\component\command\GuiEiCommand;
 
 class GuiFactory {
 	private $eiMask;
@@ -50,29 +44,31 @@ class GuiFactory {
 		$this->eiMask = $eiMask;
 	}
 	
+	
 	/**
-	 * @param N2nContext $n2nContext
-	 * @param GuiDefinition|null $guiDefinition
-	 * @return \rocket\ei\manage\gui\GuiDefinition
+	 * @param EiFrame $eiFrame
+	 * @param int $viewMode
+	 * @throws \InvalidArgumentException
+	 * @return \rocket\ei\manage\gui\EiGui
 	 */
-	public function createGuiDefinition(N2nContext $n2nContext, &$guiDefinition = null) {
-		$eiu = new Eiu($n2nContext, $this->eiMask);
+	public function createEiGui(EiFrame $eiFrame, int $viewMode) {
+		if (!$this->eiMask->getEiType()->isA($eiFrame->getContextEiEngine()->getEiMask()->getEiType())) {
+			throw new \InvalidArgumentException('Incompatible EiGui');
+		}
 		
-		$guiDefinition = new GuiDefinition($this->eiMask->getLabelLstr());
-		$guiDefinition->setIdentityStringPattern($this->eiMask->getIdentityStringPattern());
+		$guiDefinition = new GuiDefinition();
+		$eiGui = new EiGui($eiFrame, $guiDefinition, $viewMode);
 		
 		foreach ($this->eiMask->getEiPropCollection() as $eiPropPathStr => $eiProp) {
-			$eiPropPath = EiPropPath::create($eiPropPathStr);
+			$eiPropPath = $eiProp->getWrapper()->getEiPropPath();
 			
-			if (($eiProp instanceof GuiEiProp) && null !== ($guiProp = $eiProp->buildGuiProp($eiu))) {
-				ArgUtils::valTypeReturn($guiProp, GuiProp::class, $eiProp, 'buildGuiProp');
-			
+			if (($eiProp instanceof GuiEiProp) 
+					&& null !== ($guiProp = $eiProp->buildGuiProp(new Eiu($eiGui, $eiPropPath)))) {
 				$guiDefinition->putGuiProp($eiPropPath, $guiProp, EiPropPath::from($eiProp));
 			}
 			
-			if (($eiProp instanceof GuiEiPropFork) && null !== ($guiPropFork = $eiProp->buildGuiPropFork($eiu))){
-				ArgUtils::valTypeReturn($guiPropFork, GuiPropFork::class, $eiProp, 'buildGuiPropFork');
-				
+			if (($eiProp instanceof GuiEiPropFork) 
+					&& null !== ($guiPropFork = $eiProp->buildGuiPropFork(new Eiu($eiGui, $eiPropPath)))){
 				$guiDefinition->putGuiPropFork($eiPropPath, $guiPropFork);
 			}
 		}
@@ -80,64 +76,32 @@ class GuiFactory {
 		foreach ($this->eiMask->getEiCommandCollection() as $eiCommandPathStr => $eiCommand) {
 			$eiCommandPath = $eiCommand->getWrapper()->getEiCommandPath();
 			
-			$guiDefinition->putGuiCommand($eiCommandPath, $eiCommand);
+			if ($eiCommand instanceof GuiEiCommand && null !== ($guiCommand = $eiCommand->buildGuiCommand(new Eiu($eiGui, $eiCommandPath)))) {
+				$guiDefinition->putGuiCommand($eiCommandPath, $guiCommand);
+			}
 		}
 		
 		foreach ($this->eiMask->getEiModificatorCollection() as $eiModificator) {
-			$eiModificator->setupGuiDefinition($eiu);
+			$eiModificator->setupEiGui($eiu);
 		}
 		
-		return $guiDefinition;
+		
+// 		if (!$init) {
+// 			$this->noInitCb($eiGui);
+// 			return $eiGui;
+// 		}
+		
+// 		foreach ($guiDefinition->getGuiDefinitionListeners() as $listener) {
+// 			$listener->onNewEiGui($eiGui);
+// 		}
+		
+		if (!$eiGui->isInit()) {
+			$this->eiMask->getDisplayScheme()->initEiGui($eiGui, $guiDefinition);
+		}
+		
+		return $eiGui;
 	}
 	
-	/**
-	 * @param EiObject $eiObject
-	 * @param N2nLocale $n2nLocale
-	 * @return string
-	 */
-	private function createDefaultIdentityString(EiObject $eiObject, N2nLocale $n2nLocale, GuiDefinition $guiDefinition) {
-		$eiType = $eiObject->getEiEntityObj()->getEiType();
-		
-		$idPatternPart = null;
-		$namePatternPart = null;
-		
-		foreach ($guiDefinition->getStringRepresentableGuiProps() as $eiPropPathStr => $guiProp) {
-			if ($eiPropPathStr == $this->eiMask->getEiType()->getEntityModel()->getIdDef()->getPropertyName()) {
-				$idPatternPart = SummarizedStringBuilder::createPlaceholder($eiPropPathStr);
-			} else {
-				$namePatternPart = SummarizedStringBuilder::createPlaceholder($eiPropPathStr);
-			}
-			
-			if ($namePatternPart !== null) break;
-		}
-		
-		if ($idPatternPart === null) {
-			$idPatternPart = $eiObject->getEiEntityObj()->hasId() ?
-					$this->eiMask->getEiType()->idToPid($eiObject->getEiEntityObj()->getId()) : 'new';
-		}
-		
-		if ($namePatternPart === null) {
-			$namePatternPart = $this->eiMask->getLabelLstr()->t($n2nLocale);
-		}
-		
-		return $guiDefinition->createIdentityString($namePatternPart . ' #' . $idPatternPart, $eiObject, $n2nLocale);
-	}
-	
-	/**
-	 * @param EiObject $eiObject
-	 * @param N2nLocale $n2nLocale
-	 * @return string
-	 */
-	public function createIdentityString(EiObject $eiObject, N2nLocale $n2nLocale, GuiDefinition $guiDefinition) {
-		$identityStringPattern = $this->eiMaskDef->getIdentityStringPattern();
-		
-		if ($manageState === null || $identityStringPattern === null) {
-			return $this->createDefaultIdentityString($eiObject, $n2nLocale, $guiDefinition);
-		}
-		
-		return $guiDefinition->createIdentityString($identityStringPattern, $eiObject, $n2nLocale);
-	}
-
 // 	/**
 // 	 * @param EiGui $eiGui
 // 	 * @param HtmlView $view
@@ -163,31 +127,31 @@ class GuiFactory {
 // 		return $this->eiMask->getDisplayScheme()->getOverallControlOrder()->sort($controls);
 // 	}
 	
-	/**
-	 * @param EiEntryGui $eiEntryGui
-	 * @param HtmlView $view
-	 * @return Control[]
-	 */
-	public function createEntryGuiControls(EiEntryGui $eiEntryGui, HtmlView $view) {
-		$eiu = new Eiu($eiEntryGui);
+// 	/**
+// 	 * @param EiEntryGui $eiEntryGui
+// 	 * @param HtmlView $view
+// 	 * @return GuiControl[]
+// 	 */
+// 	public function createEntryGuiControls(EiEntryGui $eiEntryGui, HtmlView $view) {
+// 		$eiu = new Eiu($eiEntryGui);
 		
-		$controls = array();
+// 		$controls = array();
 		
-		foreach ($this->eiMask->getEiCommandCollection() as $eiCommandId => $eiCommand) {
-			if (!($eiCommand instanceof EntryGuiControlComponent)
-					|| !$eiu->entry()->access()->isExecutableBy($eiCommand)) {
-				continue;
-			}
+// 		foreach ($this->eiMask->getEiCommandCollection() as $eiCommandId => $eiCommand) {
+// 			if (!($eiCommand instanceof EntryGuiControlComponent)
+// 					|| !$eiu->entry()->access()->isExecutableBy($eiCommand)) {
+// 				continue;
+// 			}
 			
-			$entryControls = $eiCommand->createEntryGuiControls($eiu, $view);
-			ArgUtils::valArrayReturn($entryControls, $eiCommand, 'createEntryGuiControls', Control::class);
-			foreach ($entryControls as $controlId => $control) {
-				$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;
-			}
-		}
+// 			$entryControls = $eiCommand->createEntryGuiControls($eiu, $view);
+// 			ArgUtils::valArrayReturn($entryControls, $eiCommand, 'createEntryGuiControls', Control::class);
+// 			foreach ($entryControls as $controlId => $control) {
+// 				$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;
+// 			}
+// 		}
 		
-		return $this->eiMask->getDisplayScheme()->getEntryGuiControlOrder()->sort($controls);
-	}
+// 		return $this->eiMask->getDisplayScheme()->getEntryGuiControlOrder()->sort($controls);
+// 	}
 	
 	/**
 	 * @param EiMask $eiMask

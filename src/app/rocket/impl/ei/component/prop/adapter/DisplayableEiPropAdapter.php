@@ -32,13 +32,14 @@ use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\core\model\Rocket;
-use n2n\l10n\Lstr;
 use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\impl\ei\component\prop\adapter\gui\GuiFieldProxy;
+use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiProp;
+use rocket\impl\ei\component\prop\adapter\gui\GuiPropProxy;
 
-abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter implements StatelessGuiFieldDisplayable, GuiEiProp, GuiProp {
+abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter implements StatelessGuiFieldDisplayable, GuiEiProp, StatelessGuiProp {
 	protected $displayConfig;
 
 	/**
@@ -68,36 +69,16 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 	 * @see \rocket\ei\component\prop\GuiEiProp::buildGuiProp()
 	 */
 	public function buildGuiProp(Eiu $eiu): ?GuiProp {
-		return $this;
+		return new GuiPropProxy($eiu, $this);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayLabelLstr()
-	 */
-	public function getDisplayLabelLstr(): Lstr {
-		return $this->getLabelLstr();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayHelpTextLstr()
-	 */
-	public function getDisplayHelpTextLstr(): ?Lstr {
-		$helpText = $this->displayConfig->getHelpText();
-		if ($helpText === null) {
-			return null;
-		}
-		
-		return Rocket::createLstr($helpText, $this->getEiMask()->getModuleNamespace())->t($n2nLocale);
-	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiProp::buildDisplayDefinition()
 	 */
 	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
-		$viewMode = $eiu->gui()->getViewMode();
+		$viewMode = $this->eiu->gui()->getViewMode();
 		if (!$this->getDisplayConfig()->isViewModeCompatible($viewMode)) {
 			return null;
 		}

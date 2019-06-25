@@ -50,6 +50,7 @@ use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use n2n\l10n\Message;
 use rocket\impl\ei\component\prop\adapter\gui\GuiFieldProxy;
 use rocket\si\content\SiField;
+use rocket\impl\ei\component\prop\adapter\gui\GuiPropProxy;
 
 abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAdapter implements StatelessGuiFieldEditable, Writable, 
 		PrivilegedEiProp, Validatable, Copyable {
@@ -131,7 +132,7 @@ abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAd
 	 * @see \rocket\impl\ei\component\prop\adapter\PropertyDisplayableEiPropAdapter::getGuiProp()
 	 */
 	public function buildGuiProp(Eiu $eiu): ?GuiProp {
-		return $this;
+		return new GuiPropProxy($eiu, $this);
 	}
 	
 	/**

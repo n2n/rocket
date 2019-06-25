@@ -26,9 +26,8 @@ use rocket\ei\util\Eiu;
 use n2n\util\ex\IllegalStateException;
 use n2n\web\http\controller\Controller;
 use n2n\util\ex\UnsupportedOperationException;
-use rocket\ei\manage\gui\GuiCommand;
 
-interface EiCommand extends EiComponent, GuiCommand {
+interface EiCommand extends EiComponent {
 	
 	/**
 	 * Will be the first called method by rocket

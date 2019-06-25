@@ -48,6 +48,8 @@ use rocket\ei\component\EiFrameFactory;
 use rocket\ei\manage\gui\EiEntryGui;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\frame\EiForkLink;
+use rocket\ei\manage\gui\EiGui;
+use rocket\ei\manage\gui\GuiDefinition;
 
 class EiEngine {
 	private $eiMask;
@@ -236,9 +238,9 @@ class EiEngine {
 		return $idNameFactory->createIdNameDefinition($n2nContext);
 	}
 	
-	public function createGuiDefinition(N2nContext $n2nContext, &$guiDefinition = null) {
+	public function createFramedEiGui(EiFrame $eiFrame, int $viewMode) {
 		$guiFactory = new GuiFactory($this->eiMask);
-		return $guiFactory->createGuiDefinition($n2nContext, $guiDefinition);
+		return $guiFactory->createEiGui($eiFrame, $viewMode);
 	}
 	
 // 	public function createEiGui(int $viewMode, DisplayStructure $displayStructure) {

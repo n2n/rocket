@@ -28,8 +28,10 @@ use n2n\util\ex\IllegalStateException;
 use rocket\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
 use n2n\util\ex\UnsupportedOperationException;
+use rocket\ei\component\command\GuiEiCommand;
+use rocket\ei\manage\gui\GuiCommand;
 
-abstract class EiCommandAdapter extends EiComponentAdapter implements EiCommand {
+abstract class EiCommandAdapter extends EiComponentAdapter implements EiCommand, GuiEiCommand {
 	private $wrapper;
 	
 	public function setWrapper(EiCommandWrapper $wrapper) {
@@ -74,6 +76,15 @@ abstract class EiCommandAdapter extends EiComponentAdapter implements EiCommand 
 	}
 	
 	/**
+	 * @param Eiu $eiu
+	 * @return \rocket\impl\ei\component\command\StatelessGuiCommand
+	 */
+	public function buildGuiCommand(Eiu $eiu): GuiCommand {
+		return new StatelessGuiCommand($this, $eiu);
+	}
+	
+	
+	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\component\command\EiCommand::createSelectionGuiControls()
 	 */
@@ -95,5 +106,40 @@ abstract class EiCommandAdapter extends EiComponentAdapter implements EiCommand 
 	 */
 	public function createGeneralGuiControls(Eiu $eiu): array {
 		return [];
+	}
+}
+
+
+class StatelessGuiCommand implements GuiCommand {
+	private $eiu;
+	private $adapter;
+	
+	function __construct(EiCommandAdapter $adapter, Eiu $eiu) {
+		$this->eiu = $eiu;
+		$this->adapter = $adapter;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\command\EiCommand::createSelectionGuiControls()
+	 */
+	public function createSelectionGuiControls(): array {
+		return $this->adapter->createSelectionGuiControls($this->eiu);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\command\EiCommand::createEntryGuiControls()
+	 */
+	public function createEntryGuiControls(Eiu $eiu): array {
+		return $this->adapter->createEntryGuiControls($eiu);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\command\EiCommand::createOverallControls()
+	 */
+	public function createGeneralGuiControls(): array {
+		return $this->adapter->createGeneralGuiControls($this->eiu);
 	}
 }

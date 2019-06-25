@@ -33,7 +33,6 @@ use rocket\ei\component\prop\FieldEiProp;
 use n2n\reflection\ReflectionUtils;
 use n2n\web\dispatch\mag\Mag;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
-use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\Lstr;
 use n2n\l10n\N2nLocale;
 use n2n\reflection\property\AccessProxy;
@@ -42,11 +41,9 @@ use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\component\prop\GuiEiProp;
-use rocket\ei\manage\gui\field\GuiFieldEditable;
-use rocket\ei\mask\model\DisplayItem;
 use rocket\ei\manage\gui\GuiProp;
-use rocket\ei\manage\gui\field\GuiFieldDisplayable;
 use n2n\util\ex\NotYetImplementedException;
+use rocket\si\structure\SiStructureType;
 
 class EmbeddedEiProp extends PropertyEiPropAdapter implements GuiEiProp, FieldEiProp {
 	private $sed;
@@ -167,7 +164,7 @@ class EmbeddedGuiProp implements GuiProp {
 		return $this->eiProp->getLabelLstr();
 	}
 
-	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
+	public function getDisplayDefinition(): ?DisplayDefinition {
 		return new DisplayDefinition(SiStructureType::ITEM, true);
 	}
 
