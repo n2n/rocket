@@ -1,5 +1,5 @@
 <?php 
-namespace rocket\ei\manage\gui;
+namespace rocket\ei\manage\idname;
 
 use n2n\l10n\N2nLocale;
 use rocket\ei\manage\EiObject;
@@ -25,14 +25,14 @@ class SummarizedStringBuilder {
 		$this->n2nLocale = $n2nLocale;
 	}
 	
-	public function replaceFields(array $baseIds, GuiDefinition $guiDefinition, EiObject $eiObject = null) {
+	public function replaceFields(array $baseIds, IdNameDefinition $idNameDefinition, EiObject $eiObject = null) {
 		$eiu = null;
 		if ($eiObject !== null) {
 			$eiu = new Eiu($this->n2nContext, $eiObject);
 		}
 		
-		foreach ($guiDefinition->getGuiProps() as $id => $guiProp) {
-			if (!$guiProp->isStringRepresentable()) continue;
+		foreach ($idNameDefinition->getIdNameProps() as $id => $idNameProp) {
+			if (!$idNameProp->isStringRepresentable()) continue;
 
 			$placeholder = self::createPlaceholder($this->createGuiFieldPath($baseIds, EiPropPath::create($id)));
 			if (false === strpos($this->identityStringPattern, $placeholder)) continue;
@@ -41,23 +41,23 @@ class SummarizedStringBuilder {
 			if ($eiObject === null) {
 				$this->replacements[] = '';
 			} else {
-				$this->replacements[] = $guiProp->buildIdentityString($eiu, $this->n2nLocale);
+				$this->replacements[] = $idNameProp->buildIdentityString($eiu, $this->n2nLocale);
 			}
 		}
 		
-		foreach ($guiDefinition->getGuiPropForks() as $id => $guiPropFork) {
-			$forkedGuiDefinition = $guiPropFork->getForkedGuiDefinition();
+		foreach ($idNameDefinition->getIdNamePropForks() as $id => $idNamePropFork) {
+			$forkedIdNameDefinition = $idNamePropFork->getForkedIdNameDefinition();
 			
-			if ($forkedGuiDefinition === null) continue;
+			if ($forkedIdNameDefinition === null) continue;
 			
 			$forkedEiFieldSource = null;
 			if ($eiObject !== null) {
-				$forkedEiFieldSource = $guiPropFork->determineForkedEiObject($eiu);
+				$forkedEiFieldSource = $idNamePropFork->determineForkedEiObject($eiu);
 			}
 			
 			$ids = $baseIds;
 			$ids[] = EiPropPath::create($id);
-			$this->replaceFields($ids, $forkedGuiDefinition, $forkedEiFieldSource);
+			$this->replaceFields($ids, $forkedIdNameDefinition, $forkedEiFieldSource);
 		}
 	}
 	

@@ -37,11 +37,11 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\util\Eiu;
 use rocket\ei\mask\model\ControlOrder;
-use rocket\ei\manage\gui\SummarizedStringBuilder;
 use rocket\ei\manage\EiObject;
 use n2n\l10n\N2nLocale;
 use n2n\core\container\N2nContext;
 use rocket\ei\component\prop\GuiEiPropFork;
+use rocket\ei\manage\idname\SummarizedStringBuilder;
 
 class ControlFactory {
 	private $eiMask;
@@ -170,14 +170,14 @@ class ControlFactory {
 		foreach ($this->eiMask->getEiCommandCollection() as $eiCommandId => $eiCommand) {
 			if (!($eiCommand instanceof EntryGuiControlComponent)
 					|| !$eiu->entry()->access()->isExecutableBy($eiCommand)) {
-						continue;
-					}
-					
-					$entryControls = $eiCommand->createEntryGuiControls($eiu, $view);
-					ArgUtils::valArrayReturn($entryControls, $eiCommand, 'createEntryGuiControls', Control::class);
-					foreach ($entryControls as $controlId => $control) {
-						$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;
-					}
+				continue;
+			}
+			
+			$entryControls = $eiCommand->createEntryGuiControls($eiu, $view);
+			ArgUtils::valArrayReturn($entryControls, $eiCommand, 'createEntryGuiControls', Control::class);
+			foreach ($entryControls as $controlId => $control) {
+				$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;
+			}
 		}
 		
 		return $this->eiMask->getDisplayScheme()->getEntryGuiControlOrder()->sort($controls);

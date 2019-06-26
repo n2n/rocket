@@ -19,14 +19,13 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\gui;
+namespace rocket\ei\manage\idname;
 
 use n2n\l10n\N2nLocale;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\EiObject;
 use n2n\l10n\Lstr;
 use n2n\core\container\N2nContext;
-use rocket\ei\manage\gui\field\IdNamePath;
 
 class IdNameDefinition {
 	private $identityStringPattern;
@@ -34,10 +33,6 @@ class IdNameDefinition {
 	private $idNameProps = array();
 	private $idNamePropForks = array();
 	private $eiPropPaths = array();
-	/**
-	 * @var GuiCommand[]
-	 */
-	private $guiCommands;
 	
 	function __construct(Lstr $labelLstr) {
 		$this->labelLstr = $labelLstr;
@@ -55,6 +50,20 @@ class IdNameDefinition {
 	 */
 	public function getIdentityStringPattern() {
 		return $this->identityStringPattern;
+	}
+	
+	/**
+	 * @return IdNameProp[]
+	 */
+	public function getIdNameProps() {
+		return $this->idNameProps;
+	}
+	
+	/**
+	 * @return IdNamePropFork[]
+	 */
+	public function getIdNamePropForks() {
+		return $this->idNamePropForks;
 	}
 	
 	/**
@@ -120,10 +129,10 @@ class IdNameDefinition {
 		return $this->filterStringRepresentableIdNameProps($this, array());
 	}
 	
-	private function filterStringRepresentableIdNameProps(GuiDefinition $guiDefinition, array $baseIds) {
+	private function filterStringRepresentableIdNameProps(IdNameDefinition $idNameDefinition, array $baseIds) {
 		$idNameProps = array();
 		
-		foreach ($guiDefinition->getIdNameProps() as $id => $idNameProp) {
+		foreach ($idNameDefinition->getIdNameProps() as $id => $idNameProp) {
 			if (!$idNameProp->isStringRepresentable()) continue;
 			
 			$ids = $baseIds;
@@ -131,14 +140,15 @@ class IdNameDefinition {
 			$idNameProps[(string) new IdNamePath($ids)] = $idNameProp;
 		}
 		
-		foreach ($guiDefinition->getIdNamePropForks() as $id => $idNamePropFork) {
-			$forkedGuiDefinition = $idNamePropFork->getForkedGuiDefinition();
+		foreach ($idNameDefinition->getIdNamePropForks() as $id => $idNamePropFork) {
+			$forkedIdNameDefinition = $idNamePropFork->getForkedIdNameDefinition();
 			
-			if ($forkedGuiDefinition === null) continue;
+			if ($forkedIdNameDefinition === null) continue;
 			
 			$ids = $baseIds;
 			$ids[] = EiPropPath::create($id);
-			$idNameProps = array_merge($idNameProps, $this->filterStringRepresentableIdNameProps($forkedGuiDefinition, $ids));
+			$idNameProps = array_merge($idNameProps, 
+					$this->filterStringRepresentableIdNameProps($forkedIdNameDefinition, $ids));
 		}
 		
 		return $idNameProps;

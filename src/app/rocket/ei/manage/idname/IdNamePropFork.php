@@ -19,13 +19,13 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\gui;
+namespace rocket\ei\manage\idname;
 
 use rocket\ei\manage\EiObject;
 use rocket\ei\util\Eiu;
 use n2n\util\ex\IllegalStateException;
 
-interface GuiPropFork {
+interface IdNamePropFork {
 	
 	/**
 	 * @return IdNameDefinition

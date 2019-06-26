@@ -5,6 +5,7 @@ import { SiEntryInput } from "src/app/si/model/input/si-entry-input";
 import { IllegalSiStateError } from "src/app/si/model/illegal-si-state-error";
 import { SiEntryBuildup } from "src/app/si/model/content/si-entry-buildup";
 import { SiEntryError } from "src/app/si/model/input/si-entry-error";
+import { SiQualifier } from "src/app/si/model/content/si-qualifier";
 
 export class SiEntry {
 	public treeLevel: number|null = null;
@@ -12,7 +13,7 @@ export class SiEntry {
 	public inputAvailable: boolean = false;
 	private _buildups = new Map<string, SiEntryBuildup>();
 	
-	constructor(public category: string, public id: string|null) {	
+	constructor(public qualifier: SiQualifier) {	
 	}
 
 	private ensureBuildups() {
@@ -58,7 +59,7 @@ export class SiEntry {
 			throw new IllegalSiStateError('No input available.');
 		}
 		
-		return new SiEntryInput(this.category, this.id, this._selectedBuildupId, fieldInputMap);
+		return new SiEntryInput(this.qualifier, this._selectedBuildupId, fieldInputMap);
 	}
 	
 	handleError(error: SiEntryError) {
@@ -84,7 +85,7 @@ export class SiEntry {
 	}
 	
 	toString() {
-		return this.category + '#' + this.id;
+		return this.qualifier.category + '#' + this.qualifier.id;
 	}
 	
 }

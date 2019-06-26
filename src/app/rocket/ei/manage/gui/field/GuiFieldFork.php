@@ -34,7 +34,7 @@ interface GuiFieldFork {
 	 * Gets called to finalize this GuiFieldFork. Which means that there will be no future calls of 
 	 * {@see self::assembleGuiField()} after that.
 	 * 
-	 * @return GuiFieldEditable|null
+	 * @return GuiFieldForkEditable|null
 	 */
 	public function getEditable(): ?GuiFieldForkEditable;
 }

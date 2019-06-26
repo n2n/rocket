@@ -48,8 +48,7 @@ use rocket\ei\component\EiFrameFactory;
 use rocket\ei\manage\gui\EiEntryGui;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\frame\EiForkLink;
-use rocket\ei\manage\gui\EiGui;
-use rocket\ei\manage\gui\GuiDefinition;
+use rocket\ei\component\IdNameFactory;
 
 class EiEngine {
 	private $eiMask;

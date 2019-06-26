@@ -326,7 +326,7 @@ class EiEntryGui {
 		$n2nContext = $this->eiGui->getEiFrame()->getN2nContext();
 		$idNameDefinition = $this->eiGui->getEiFrame()->getManageState()->getDef()
 				->getIdNameDefinition($this->eiEntry->getEiMask());
-		$name = $idNameDefinition->createIdentityString($this->eiEntry->getEiObject(), $n2nContext->getN2nLocale());
+		$name = $idNameDefinition->createIdentityString($this->eiEntry->getEiObject(), $n2nContext, $n2nContext->getN2nLocale());
 		
 		$siQualifier = $this->eiEntry->getEiObject()->createSiObjectQualifier($name);
 		$siEntry = new SiEntry($siQualifier, !ViewMode::isReadOnly($this->eiGui->getViewMode()));
@@ -342,14 +342,14 @@ class EiEntryGui {
 		$eiFrame = $this->eiGui->getEiFrame();
 		
 		$name = null;
-		$deterGuiDefinition = null;
+		$deterIdNameDefinition = null;
 		if ($eiEntry->isNew()) {
-			$deterGuiDefinition = $this->eiGui->getGuiDefinition();
+			$deterIdNameDefinition = $this->eiGui->getGuiDefinition();
 			$name = $eiEntry->getEiMask()->getLabelLstr()->t($eiFrame->getN2nContext()->getN2nLocale());
 		} else {
-			$deterGuiDefinition = $eiFrame->getManageState()->getDef()
-					->getGuiDefinition($eiEntry->getEiMask());
-			$name = $deterGuiDefinition->createIdentityString($eiEntry->getEiObject(), $eiFrame->getN2nContext(),
+			$deterIdNameDefinition = $eiFrame->getManageState()->getDef()
+					->getIdNameDefinition($eiEntry->getEiMask());
+			$name = $deterIdNameDefinition->createIdentityString($eiEntry->getEiObject(), $eiFrame->getN2nContext(),
 					$eiFrame->getN2nContext()->getN2nLocale());
 		}
 		
@@ -359,7 +359,7 @@ class EiEntryGui {
 			$siEntry->putField($guiFieldPathStr, $guiField->getSiField());
 		}
 		
-		foreach ($deterGuiDefinition->createEntryGuiControls($this->eiGui, $eiEntry)
+		foreach ($this->eiGui->getGuiDefinition()->createEntryGuiControls($this->eiGui, $eiEntry)
 				as $guiControlPathStr => $entryGuiControl) {
 			$siEntry->putControl($guiControlPathStr, $entryGuiControl->toSiControl(
 					new SiApiControlCallId(GuiControlPath::create($guiControlPathStr), $this->eiGui->getViewMode(), 

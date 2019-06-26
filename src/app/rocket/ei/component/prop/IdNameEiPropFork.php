@@ -21,12 +21,12 @@
  */
 namespace rocket\ei\component\prop;
 
-use rocket\ei\manage\gui\GuiPropFork;
 use rocket\ei\util\Eiu;
+use rocket\ei\manage\idname\IdNamePropFork;
 
-interface GuiEiPropFork extends EiProp {
+interface IdNameEiPropFork extends EiProp {
 	/**
-	 * @return \rocket\ei\manage\gui\GuiPropFork|null null if not displayable
+	 * @return \rocket\ei\manage\idname\IdNamePropFork|null
 	 */
-	public function buildGuiPropFork(Eiu $eiu): ?GuiPropFork;
+	public function buildIdNamePropFork(Eiu $eiu): ?IdNamePropFork;
 }

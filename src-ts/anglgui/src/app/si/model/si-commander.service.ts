@@ -44,7 +44,7 @@ export class SiCommanderService {
 	}
 	
 	execEntryControl(apiUrl: string, callId: object, entry: SiEntry, includeInput: boolean) {
-		if (!entry.id) {
+		if (!entry.qualifier.id) {
 			throw new IllegalSiStateError('Entry control cannnot be executed on new entry.');
 		}
 
@@ -53,7 +53,7 @@ export class SiCommanderService {
 			entryInputs.push(entry.readInput());
 		}
 
-		this.siService.entryControlCall(apiUrl, callId, entry.id, entryInputs);
+		this.siService.entryControlCall(apiUrl, callId, entry.qualifier.id, entryInputs);
 	}
 	
 	execSelectionControl(apiUrl: string, callId: object, zoneContent: SiZoneContent, entries: SiEntry[], includeInput: boolean) {
@@ -61,11 +61,11 @@ export class SiCommanderService {
 		const entryInputs: SiEntryInput[] = [];
 	
 		for (const entry of entries) {
-			if (!entry.id) {
+			if (!entry.qualifier.id) {
 				throw new IllegalSiStateError('Selection control cannnot be executed on new entry.');
 			}
 			
-			entryIds.push(entry.id);
+			entryIds.push(entry.qualifier.id);
 			
 			if (includeInput) {
 				entryInputs.push(entry.readInput());

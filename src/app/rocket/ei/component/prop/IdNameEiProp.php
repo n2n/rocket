@@ -21,12 +21,10 @@
  */
 namespace rocket\ei\component\prop;
 
-use rocket\ei\manage\idname\IdNameProp;
 use rocket\ei\util\Eiu;
+use rocket\ei\manage\idname\IdNameProp;
 
 interface IdNameEiProp extends EiProp {
-	/**
-	 * @return \rocket\ei\manage\idname\IdNameProp|null null if not displayable
-	 */
+	
 	function buildIdNameProp(Eiu $eiu): ?IdNameProp;
 }

@@ -27,8 +27,7 @@ use rocket\ei\manage\critmod\sort\SortDefinition;
 use rocket\ei\manage\security\filter\SecurityFilterDefinition;
 use rocket\ei\manage\security\privilege\PrivilegeDefinition;
 use rocket\ei\manage\draft\DraftDefinition;
-use rocket\ei\manage\gui\GuiDefinition;
-use rocket\ei\manage\gui\IdNameDefinition;
+use rocket\ei\manage\idname\IdNameDefinition;
 
 class ManagedDef {
 	

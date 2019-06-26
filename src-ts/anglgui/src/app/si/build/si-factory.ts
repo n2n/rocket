@@ -20,6 +20,7 @@ import { ApiCallSiControl } from "src/app/si/model/control/impl/api-call-si-cont
 import { SiEntryBuildup } from "src/app/si/model/content/si-entry-buildup";
 import { SiFile, FileInSiField } from "src/app/si/model/content/impl/file-in-si-field";
 import { FileOutSiField } from "src/app/si/model/content/impl/file-out-si-field";
+import { SiQualifier } from "src/app/si/model/content/si-qualifier";
 
 export class SiFactory {
 	
@@ -133,7 +134,7 @@ export class SiCompFactory {
 		for (let entryData of data) {
 			const extr = new Extractor(entryData);
 			
-			const siEntry = new SiEntry(extr.reqString('category'), extr.nullaString('id'));
+			const siEntry = new SiEntry(this.createSiObjectQualifier(extr.reqObject('qualifier')));
 			siEntry.treeLevel = extr.nullaNumber('treeLevel');
 			siEntry.inputAvailable = extr.reqBoolean('inputAvailable');
 			
@@ -145,6 +146,13 @@ export class SiCompFactory {
 		}
 		
 		return entries;
+	}
+	
+	private createSiObjectQualifier(data: any): SiQualifier {
+		const extr = new Extractor(data);
+		
+		return new SiQualifier(extr.reqString('category'), extr.nullaString('id'),
+				extr.reqString('name'));
 	}
 	
 	private createBuildup(data: any): SiEntryBuildup { 

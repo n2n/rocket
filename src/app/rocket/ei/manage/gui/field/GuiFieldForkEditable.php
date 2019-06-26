@@ -37,7 +37,7 @@ interface GuiFieldForkEditable {
 	public function getForkMag(): Mag;
 	
 	/**
-	 * @return MagAssembly[]
+	 * @return ForkMagAssembly[]
 	 */
 	public function getInheritForkMagAssemblies(): array;
 	

@@ -23,9 +23,9 @@ export class SiInput {
 			}
 			
 			entryInputMaps.push({
-				category: entryInput.category,
+				category: entryInput.qualifier.category,
 				buildupId: entryInput.buildupId,
-				id: entryInput.id,
+				id: entryInput.qualifier.id,
 				fieldInputMap: fieldInputObj
 			});
 		}

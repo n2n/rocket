@@ -237,7 +237,7 @@ class EiuEngine {
 // 	}
 	
 	/**
-	 * @return \rocket\ei\manage\gui\IdNameDefinition
+	 * @return \rocket\ei\manage\idname\IdNameDefinition
 	 */
 	public function getIdNameDefinition() {
 		return $this->getManageState()->getDef()->getIdNameDefinition($this->eiEngine->getEiMask());
