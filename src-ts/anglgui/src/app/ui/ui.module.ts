@@ -19,11 +19,13 @@ import { FieldStructureComponent } from "src/app/ui/structure/comp/field-structu
 import { FileInFieldComponent } from './content/field/comp/file-in-field/file-in-field.component';
 import { FileOutFieldComponent } from './content/field/comp/file-out-field/file-out-field.component';
 import { UtilModule } from "src/app/util/util.module";
+import { LinkOutFieldComponent } from './content/field/comp/link-out-field/link-out-field.component';
+import { QualifierSelectInFieldComponent } from './content/field/comp/qualifier-select-in-field/qualifier-select-in-field.component';
 
 @NgModule({
   declarations: [ LayerComponent, ContainerComponent, ZoneComponent, StructureContentDirective, ListZoneContentComponent, 
     PaginationComponent, EntryDirective, FieldDirective, StringOutFieldComponent, ControlComponent, DlZoneContentComponent, 
-    FieldStructureComponent, InputInFieldComponent, TextareaInFieldComponent, StructureComponent, FileInFieldComponent, FileOutFieldComponent ],
+    FieldStructureComponent, InputInFieldComponent, TextareaInFieldComponent, StructureComponent, FileInFieldComponent, FileOutFieldComponent, LinkOutFieldComponent, QualifierSelectInFieldComponent ],
   imports: [
     CommonModule,
     FormsModule,

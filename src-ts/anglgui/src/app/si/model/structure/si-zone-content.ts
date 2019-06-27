@@ -8,7 +8,7 @@ import { SiZoneError } from "src/app/si/model/structure/si-zone-error";
 
 export interface SiZoneContent {
  	
-	getZone(): SiZone;
+//	getZone(): SiZone;
 	
 	getEntries(): SiEntry[];
 	

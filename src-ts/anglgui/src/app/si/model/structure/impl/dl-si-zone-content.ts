@@ -16,7 +16,7 @@ export class DlSiZoneContent implements SiZoneContent, SiStructureContent {
    
     public entries: SiEntry[] = [];
 	private structure = new SiStructure();
-	public controlMap: Map<string, SiControl> = new Map()
+	public controlMap: Map<string, SiControl> = new Map();
 	
 	constructor(public apiUrl: string, public bulkyDeclaration: SiBulkyDeclaration,
 			public zone: SiZone) {

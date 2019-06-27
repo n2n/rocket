@@ -23,7 +23,7 @@ namespace rocket\si\content;
 
 class SiEntry implements \JsonSerializable {
 	/**
-	 * @var SiObjectQualifier
+	 * @var SiQualifier
 	 */
 	private $qualifier;
 	private $buildups = [];
@@ -35,23 +35,23 @@ class SiEntry implements \JsonSerializable {
 	 * @param string|null $id
 	 * @param string $name
 	 */
-	function __construct(SiObjectQualifier $qualifier, bool $inputAvailable) {
+	function __construct(SiQualifier $qualifier, bool $inputAvailable) {
 		$this->qualifier = $qualifier;
 		$this->inputAvailable = $inputAvailable;
 	}
 
 	/**
-	 * @return \rocket\si\content\SiObjectQualifier
+	 * @return \rocket\si\content\SiQualifier
 	 */
 	function getQualifier() {
 		return $this->qualifier;
 	}
 	
 	/**
-	 * @param SiObjectQualifier $qualifier
+	 * @param SiQualifier $qualifier
 	 * @return \rocket\si\content\SiEntry
 	 */
-	function setQualifier(SiObjectQualifier $qualifier) {
+	function setQualifier(SiQualifier $qualifier) {
 		$this->qualifier = $qualifier;
 		return $this;
 	}
@@ -103,8 +103,7 @@ class SiEntry implements \JsonSerializable {
 		}
 				
 		return [
-			'category' => $this->category,
-			'id' => $this->id,
+			'qualifier' => $this->qualifier,
 			'treeLevel' => $this->treeLevel,
 			'inputAvailable' => $this->inputAvailable,
 			'buildups' => $buildups

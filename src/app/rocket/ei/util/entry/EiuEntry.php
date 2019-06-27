@@ -687,16 +687,16 @@ class EiuEntry {
 	}
 	
 	/**
-	 * @return \rocket\si\content\SiObjectQualifier
+	 * @return \rocket\si\content\SiQualifier
 	 */
-	function createSiObjectQualifier(string $name = null) {
+	function createSiQualifier(string $name = null) {
 		$name = $name ?? $this->createIdentityString();
 		
 		if ($this->eiuObject !== null) {
-			return $this->eiuObject->getEiObject()->createSiObjectQualifier($name);
+			return $this->eiuObject->getEiObject()->createSiQualifier($name);
 		}
 		
-		return $this->eiEntry->getEiObject()->createSiObjectQualifier($name);
+		return $this->eiEntry->getEiObject()->createSiQualifier($name);
 	}
 }  
 

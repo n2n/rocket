@@ -22,7 +22,7 @@
 namespace rocket\ei\manage;
 
 use rocket\ei\manage\draft\Draft;
-use rocket\si\content\SiObjectQualifier;
+use rocket\si\content\SiQualifier;
 
 interface EiObject {
     
@@ -47,9 +47,9 @@ interface EiObject {
 	public function getDraft(): Draft;
 
 	/**
-	 * @return SiObjectQualifier
+	 * @return SiQualifier
 	 */
-	public function createSiObjectQualifier(string $name): SiObjectQualifier;
+	public function createSiQualifier(string $name): SiQualifier;
 	
 // 	/**
 // 	 * @return EntryNavPoint

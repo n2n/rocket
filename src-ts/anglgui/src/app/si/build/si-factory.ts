@@ -21,6 +21,7 @@ import { SiEntryBuildup } from "src/app/si/model/content/si-entry-buildup";
 import { SiFile, FileInSiField } from "src/app/si/model/content/impl/file-in-si-field";
 import { FileOutSiField } from "src/app/si/model/content/impl/file-out-si-field";
 import { SiQualifier } from "src/app/si/model/content/si-qualifier";
+import { LinkOutSiField } from "src/app/si/model/content/impl/link-out-si-field";
 
 export class SiFactory {
 	
@@ -192,6 +193,12 @@ export class SiCompFactory {
 			fileInSiField.mimeTypes = dataExtr.reqStringArray('mimeTypes');
 			fileInSiField.extensions = dataExtr.reqStringArray('extensions');
 			return fileInSiField;
+		case SiFieldType.LINK_OUT:
+			return new LinkOutSiField(dataExtr.reqBoolean('href'), dataExtr.reqString('ref'),
+					dataExtr.reqString('label'));
+		case SiFieldType.QUALIFIER_SELECT_IN:
+			return new 
+			
 		default: 
 			throw new ObjectMissmatchError('Invalid si field type: ' + data.type);
 		}	
@@ -281,7 +288,9 @@ export enum SiFieldType {
 	STRING_OUT = 'string-out',
 	STRING_IN = 'string-in',
     FILE_OUT = 'file-out',
-    FILE_IN = 'file-in'
+    FILE_IN = 'file-in',
+    LINK_OUT = 'link-out',
+    QUALIFIER_SELECT_IN = 'qualifier-select-in'
 }
 
 export enum SiControlType {

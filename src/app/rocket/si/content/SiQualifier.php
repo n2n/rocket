@@ -21,7 +21,7 @@
  */
 namespace rocket\si\content;
 
-class SiObjectQualifier implements \JsonSerializable {
+class SiQualifier implements \JsonSerializable {
 	private $category;
 	private $id;
 	private $name;
@@ -41,7 +41,7 @@ class SiObjectQualifier implements \JsonSerializable {
 	
 	/**
 	 * @param string $category
-	 * @return SiObjectQualifier
+	 * @return SiQualifier
 	 */
 	function setCategory(string $category) {
 		$this->category = $category;
@@ -57,7 +57,7 @@ class SiObjectQualifier implements \JsonSerializable {
 	
 	/**
 	 * @param string|null $id
-	 * @return SiObjectQualifier
+	 * @return SiQualifier
 	 */
 	function setId(?string $id) {
 		$this->id = $id;
@@ -73,7 +73,7 @@ class SiObjectQualifier implements \JsonSerializable {
 	
 	/**
 	 * @param string $name
-	 * @return SiObjectQualifier
+	 * @return SiQualifier
 	 */
 	function setName(string $name) {
 		$this->name = $name;

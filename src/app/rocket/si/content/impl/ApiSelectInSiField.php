@@ -22,13 +22,13 @@
 namespace rocket\si\content\impl;
 
 use n2n\util\type\attrs\DataSet;
-use rocket\si\content\SiObjectQualifier;
+use rocket\si\content\SiQualifier;
 use n2n\util\uri\Url;
 use n2n\util\type\ArgUtils;
 
 class ApiSelectInSiField extends InSiFieldAdapter {
 	/**
-	 * @var SiObjectQualifier[]
+	 * @var SiQualifier[]
 	 */
 	private $values;
 	/**
@@ -47,7 +47,7 @@ class ApiSelectInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param Url $apiUrl
-	 * @param SiObjectQualifier[] $values
+	 * @param SiQualifier[] $values
 	 */
 	function __construct(Url $apiUrl, array $values = []) {
 		$this->setValues($values);	
@@ -55,11 +55,11 @@ class ApiSelectInSiField extends InSiFieldAdapter {
 	}
 	
 	/**
-	 * @param SiObjectQualifier[] $values
+	 * @param SiQualifier[] $values
 	 * @return \rocket\si\content\impl\StringInSiField
 	 */
 	function setValues(array $values) {
-		ArgUtils::valArray($values, SiObjectQualifier::class);
+		ArgUtils::valArray($values, SiQualifier::class);
 		$this->values = $values;
 		return $this;
 	}

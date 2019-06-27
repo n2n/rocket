@@ -328,7 +328,7 @@ class EiEntryGui {
 				->getIdNameDefinition($this->eiEntry->getEiMask());
 		$name = $idNameDefinition->createIdentityString($this->eiEntry->getEiObject(), $n2nContext, $n2nContext->getN2nLocale());
 		
-		$siQualifier = $this->eiEntry->getEiObject()->createSiObjectQualifier($name);
+		$siQualifier = $this->eiEntry->getEiObject()->createSiQualifier($name);
 		$siEntry = new SiEntry($siQualifier, !ViewMode::isReadOnly($this->eiGui->getViewMode()));
 		$siEntry->putBuildup($eiType->getId(), $this->createSiEntryBuildup());
 		return $siEntry;
