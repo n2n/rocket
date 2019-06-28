@@ -39,5 +39,5 @@ interface GuiProp {
 	 * @param Eiu $eiu
 	 * @return \rocket\ei\manage\gui\field\GuiField|null
 	 */
-	public function buildGuiField(Eiu $eiu): ?GuiField;
+	public function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField;
 }

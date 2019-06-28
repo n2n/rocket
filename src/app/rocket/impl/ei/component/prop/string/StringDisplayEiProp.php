@@ -176,7 +176,7 @@ class StringDisplayEiProp extends PropertyEiPropAdapter implements ObjectPropert
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiProp::buildGuiField($eiu)
 	 */
-	public function buildGuiField(Eiu $eiu): ?GuiField {
+	public function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
 		return new GuiFieldProxy($this, $eiu);
 	}
 

@@ -137,6 +137,26 @@ class EiuFrame {
 		return $this->eiFrame->getCmdUrl($eiCommandPath);
 	}
 	
+	public function getOverviewUrl(bool $required = true) {
+		return $this->eiFrame->getOverviewUrl($required);
+	}
+	
+	public function getDetailUrl($eiObjectArg, bool $required = true) {
+		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectArg, '$eiObjectArg', 
+				$this->eiFrame->getContextEiEngine()->getEiMask()->getEiType());
+		return $this->eiFrame->getDetailUrl($eiObject, $required);
+	}
+	
+	public function getEditUrl(bool $required = true) {
+		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectArg, '$eiObjectArg',
+				$this->eiFrame->getContextEiEngine()->getEiMask()->getEiType());
+		return $this->eiFrame->getEditUrl($eiObject, $required);
+	}
+	
+	public function getAddUrl(bool $required = true) {
+		return $this->eiFrame->getAddUrl($required);
+	}
+	
 	/**
 	 * @return EntityManager
 	 */

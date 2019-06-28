@@ -19,16 +19,28 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\component\command;
+namespace rocket\impl\ei\component\prop\relation\model\gui;
 
-use n2n\util\uri\Url;
 use rocket\ei\util\Eiu;
+use rocket\si\content\SiField;
+use rocket\impl\ei\component\prop\relation\conf\RelationModel;
+use rocket\ei\manage\gui\field\GuiField;
 
-interface GenericEditEiCommand {
-		
+class RelationLinkGuiField implements GuiField {
 	/**
-	 * @param Eiu $eiu
-	 * @return \n2n\util\uri\Url
+	 * @var Eiu
 	 */
-	public function buildEditUrlExt(Eiu $eiu): Url;
+	private $eiu;
+	/**
+	 * @var SiField
+	 */
+	private $siField;
+	
+	function __construct(Eiu $eiu, RelationModel $relationModel) {
+		$eiu->frame()->forkDiscover($eiu->prop());
+	}
+	
+	function getSiField(): SiField {
+		return $this->siField;
+	}
 }

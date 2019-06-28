@@ -91,7 +91,7 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 		return $this->displayConfig->getDisplayItemType();
 	}
 	
-	public function buildGuiField(Eiu $eiu): ?GuiField {
+	public function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
 		return new GuiFieldProxy($eiu, $this);
 	}
 	

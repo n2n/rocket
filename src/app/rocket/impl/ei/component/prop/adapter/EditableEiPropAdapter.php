@@ -60,7 +60,7 @@ abstract class EditableEiPropAdapter extends DisplayableEiPropAdapter implements
 		return $this;
 	}
 
-	public function buildGuiField(Eiu $eiu): ?GuiField {
+	public function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
 		return new GuiFieldProxy($eiu, $this, $this);
 	}
 

@@ -84,7 +84,10 @@ class EiEntryGuiAssembler {
 	 * @return NULL|\rocket\ei\manage\gui\field\GuiField
 	 */
 	private function assembleExlGuiField(EiPropPath $eiPropPath, GuiProp $guiProp, GuiFieldPath $guiFieldPath) {
-		$guiField = $guiProp->buildGuiField(new Eiu($this->eiu, $eiPropPath, $guiFieldPath));
+		$readOnly = $this->eiEntryGui->getEiGui()->getViewMode() & ViewMode::read();
+		// @todo check accessiblity
+		
+		$guiField = $guiProp->buildGuiField(new Eiu($this->eiu, $eiPropPath, $guiFieldPath), $readOnly);
 		ArgUtils::valTypeReturn($guiField, GuiField::class, $guiProp, 'buildGuiField', true);
 		
 		return $guiField;

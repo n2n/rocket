@@ -36,6 +36,7 @@ use rocket\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
 use rocket\ei\component\EiSetup;
 use n2n\util\type\CastUtils;
+use n2n\util\uri\Url;
 
 class OverviewEiCommand extends IndependentEiCommandAdapter implements GenericOverviewEiCommand {
 	const ID_BASE = 'overview';
@@ -45,13 +46,9 @@ class OverviewEiCommand extends IndependentEiCommandAdapter implements GenericOv
 	public function getIdBase(): ?string {
 		return self::ID_BASE;
 	}
-	
-	public function isOverviewAvaialble(): bool {
-		return true;
-	}
-	
-	public function getOverviewUrlExt() {
-		return null;
+		
+	public function buildOverviewUrlExt(Eiu $eiu): ?Url {
+		return new Url();
 	}
 	
 	public function getTypeName(): string {
@@ -73,6 +70,8 @@ class OverviewEiCommand extends IndependentEiCommandAdapter implements GenericOv
 	public function setPageSize($pageSize) {
 		$this->pageSize = $pageSize;
 	}
+	
+
 }
 
 class ListEiConfigurator extends EiConfiguratorAdapter {

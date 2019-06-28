@@ -37,6 +37,8 @@ use rocket\ei\EiPropPath;
 use rocket\ei\manage\LiveEiObject;
 use rocket\ei\manage\entry\UnknownEiObjectException;
 use rocket\ei\manage\EiObject;
+use n2n\util\uri\Url;
+use n2n\util\uri\Path;
 
 class EiFrameController extends ControllerAdapter {
 	const API_PATH_PART = 'api';
@@ -196,5 +198,13 @@ class EiFrameController extends ControllerAdapter {
 		
 		$this->delegate(new EiFrameController($this->createForked($eiPropPath, $eiForkLink)));
 		
+	}
+	
+	/**
+	 * @param Url $urlExt
+	 * @return Url
+	 */
+	static function createCmdUrlExt(EiCommandPath $eiCommandPath) {
+		return (new Path([self::CMD_PATH_PART]))->toUrl()->ext((string) $eiCommandPath);
 	}
 }

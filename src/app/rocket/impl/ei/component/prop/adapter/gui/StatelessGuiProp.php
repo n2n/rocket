@@ -37,5 +37,5 @@ interface StatelessGuiProp {
 	 * @param Eiu $eiu
 	 * @return GuiField|NULL
 	 */
-	public function buildGuiField(Eiu $eiu): ?GuiField;
+	public function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField;
 }

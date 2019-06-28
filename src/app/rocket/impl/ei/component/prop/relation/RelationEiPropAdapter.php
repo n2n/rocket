@@ -150,7 +150,7 @@ abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements Re
 				$eiu->prop()->getHelpText());
 	}
 	
-	function buildGuiField(Eiu $eiu): ?GuiField {
+	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
 		if (!$this->getRelationModel()->isTargetMany()) {
 			return new ToOneGuiField($eiu, $this->relationModel, $this->editConfig);
 		}

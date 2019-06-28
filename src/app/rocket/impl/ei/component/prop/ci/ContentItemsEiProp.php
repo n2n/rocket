@@ -114,7 +114,7 @@ class ContentItemsEiProp extends EmbeddedOneToManyEiProp {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiProp::buildGuiField()
 	 */
-	public function buildGuiField(Eiu $eiu): ?GuiField {
+	public function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
 		$mapping = $eiu->entry()->getEiEntry();
 	
 		$eiFrame = $eiu->frame()->getEiFrame();

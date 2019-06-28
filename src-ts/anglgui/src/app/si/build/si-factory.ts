@@ -38,7 +38,7 @@ export class SiFactory {
 				const listSiZoneContent = new ListSiZoneContent(extr.reqString('apiUrl'), 
 						dataExtr.reqNumber('pageSize'), this.zone);
 				
-				compFactory = new SiCompFactory(listSiZoneContent);
+				compFactory = new SiCompFactory(this.zone, listSiZoneContent);
 				listSiZoneContent.compactDeclaration = this.createCompactDeclaration(dataExtr.reqObject('compactDeclaration'));
 				
 				const partialContentData = dataExtr.nullaObject('partialContent');
@@ -54,7 +54,7 @@ export class SiFactory {
 				const bulkyDeclaration = this.createBulkyDeclaration(dataExtr.reqObject('bulkyDeclaration'));
 				const dlSiZoneContent = new DlSiZoneContent(extr.reqString('apiUrl'), bulkyDeclaration, this.zone);
 				
-				compFactory = new SiCompFactory(dlSiZoneContent);
+				compFactory = new SiCompFactory(this.zone, dlSiZoneContent);
 				dlSiZoneContent.controlMap = compFactory.createControlMap(dataExtr.reqMap('controls'));
 				dlSiZoneContent.entries = compFactory.createEntries(dataExtr.reqArray('entries'));
 				dlSiZoneContent.refreshChildStructures();
@@ -118,7 +118,7 @@ export class SiFactory {
 
 export class SiCompFactory {
 
-	constructor(private zoneContent: SiZoneContent) {
+	constructor(private zone: SiZone, private zoneContent: SiZoneContent) {
 	}
 	
 	createPartialContent(data: any): SiPartialContent {
@@ -197,7 +197,7 @@ export class SiCompFactory {
 			return new LinkOutSiField(dataExtr.reqBoolean('href'), dataExtr.reqString('ref'),
 					dataExtr.reqString('label'));
 		case SiFieldType.QUALIFIER_SELECT_IN:
-			return new 
+			
 			
 		default: 
 			throw new ObjectMissmatchError('Invalid si field type: ' + data.type);
@@ -237,7 +237,7 @@ export class SiCompFactory {
 				return new RefSiControl(
 						dataExtr.reqString('url'),
 						this.createButton(controlId, dataExtr.reqObject('button')),
-						this.zoneContent.getZone().layer);
+						this.zone.layer);
 			case SiControlType.API_CALL:
 				const apiControl = new ApiCallSiControl(
 						dataExtr.reqString('apiUrl'),

@@ -38,6 +38,7 @@ use rocket\ei\manage\entry\EiField;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\component\prop\FieldEiProp;
 use rocket\impl\ei\component\prop\relation\model\ToOneEiField;
+use rocket\ei\manage\gui\field\GuiField;
 
 class ManyToOneSelectEiProp extends RelationEiPropAdapter implements FieldEiProp {
 	
@@ -60,13 +61,20 @@ class ManyToOneSelectEiProp extends RelationEiPropAdapter implements FieldEiProp
 		$this->setRelationModel(new RelationModel($entityProperty, true, false, RelationModel::MODE_SELECT));
 	}
 	
-	public function buildEiField(Eiu $eiu): ?EiField {
+	function buildEiField(Eiu $eiu): ?EiField {
 		$targetEiuFrame = $eiu->frame()->forkSelect($this, $eiu->object())
 				->exec($this->getRelationModel()->getTargetReadEiCommandPath());
 		
 		return new ToOneEiField($eiu, $targetEiuFrame, $this, $this->getRelationModel());
 	}
 	
+	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
+		if ($readOnly || $this->editConfig->isReadOnly()) {
+			return new ToOneGuiField($eiu, $this->relationModel, $this->editConfig);
+		}
+		
+		return new ToManyGuiField($eiu, $this->relation);
+	}
 	
 	
 // 	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
@@ -96,7 +104,7 @@ class ManyToOneSelectEiProp extends RelationEiPropAdapter implements FieldEiProp
 // 	 * {@inheritDoc}
 // 	 * @see \rocket\ei\manage\gui\GuiProp::buildGuiField()
 // 	 */
-// 	public function buildGuiField(Eiu $eiu): ?GuiField {
+// 	public function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
 // 		$mapping = $eiu->entry()->getEiEntry();
 // 		$eiFrame = $eiu->frame()->getEiFrame();
 // 		$relationEiField = $mapping->getEiField(EiPropPath::from($this));

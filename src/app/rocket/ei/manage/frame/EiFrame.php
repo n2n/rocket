@@ -60,10 +60,6 @@ class EiFrame {
 	
 	private $overviewDisabled = false;
 	private $overviewBreadcrumbLabelOverride;
-	private $overviewUrlExt;
-	private $detailDisabled = false;
-	private $detailBreadcrumbLabelOverride;
-	private $detailUrlExt;
 	
 	private $listeners = array();
 
@@ -367,36 +363,21 @@ class EiFrame {
 		
 		return $this->getContextEiEngine()->getEiMask()->getPluralLabelLstr();
 	}
-	
-	public function setOverviewUrlExt(Url $overviewUrlExt = null) {
-		ArgUtils::assertTrue($overviewUrlExt->isRelative(), 'Url must be relative.');
-		$this->overviewUrlExt = $overviewUrlExt;
-	}
-	
-	public function getOverviewUrlExt() {
-		return $this->overviewUrlExt;
-	}
 
 	public function isOverviewUrlAvailable() {
-		return $this->overviewUrlExt !== null || (!$this->overviewDisabled
+		return (!$this->overviewDisabled
 				&& $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()->hasGenericOverview());
 	}
 	
 	public function getOverviewUrl(bool $required = true) {
-		$httpContext = $this->getN2nContext()->getHttpContext();
+		$result = $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()
+				->determineGenericOverview($required);
 		
-		if ($this->overviewUrlExt !== null) {
-			return $httpContext->getRequest()->getContextPath()->toUrl()->ext($this->overviewUrlExt);
-		} 
-		
-		$overviewUrlExt = $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()
-				->getGenericOverviewUrlExt($required);
-		
-		if ($overviewUrlExt === null) return null;
+		if ($result === null) return null;
 		
 		$this->ensureOverviewEnabled();
 		
-		return $httpContext->getControllerContextPath($this->getControllerContext())->toUrl()->ext($overviewUrlExt);
+		return $this->getBaseUrl()->ext($result->getCmdUrlExt());
 	}
 
 	public function createOverviewBreadcrumb(HttpContext $httpContext) {
@@ -472,35 +453,28 @@ class EiFrame {
 				->createIdentityString($eiObject, $this->getN2nContext(), $this->getN2nContext()->getN2nLocale());
 	}
 	
-	public function setDetailUrlExt(Url $detailUrlExt) {
-		ArgUtils::assertTrue($detailUrlExt->isRelative(), 'Url must be relative.');
-		$this->detailUrlExt = $detailUrlExt;
-	}
-	
-	public function getDetailUrlExt() {
-		return $this->detailUrlExt;
-	}
-
-	public function isDetailUrlAvailable(EntryNavPoint $entryNavPoint) {
+	public function isDetailUrlAvailable(EiObject $eiObject) {
 		return $this->detailUrlExt !== null || 
 				(!$this->detailDisabled && $this->getContextEiEngine()->getEiMask()
 						->getEiCommandCollection()->hasGenericDetail($entryNavPoint));
 	}
 	
-	public function getDetailUrl(HttpContext $httpContext, EntryNavPoint $entryNavPoint, bool $required = true) {
-		if ($this->detailUrlExt !== null) {
-			return $httpContext->getRequest()->getContextPath()->ext($this->detailUrlExt);
-		}
+	public function getEditUrl(EiObject $eiObject, bool $required = true) {
+		$result = $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()
+				->determineGenericEdit($eiObject, $required);
 		
-		$detailUrlExt = $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()
-				->getGenericDetailUrlExt($entryNavPoint, $required);
+		if ($result === null) return null;
 		
-		if ($detailUrlExt === null) return null;
+		return $this->getBaseUrl()->ext($result->getCmdUrlExt());
+	}
+	
+	public function getAddUrl(bool $required = true) {
+		$result = $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()
+		->determineGenericAdd($required);
 		
-		$this->ensureDetailEnabled();
+		if ($result === null) return null;
 		
-		return $httpContext->getControllerContextPath($this->getControllerContext())->toUrl()
-				->ext($detailUrlExt);
+		return $this->getBaseUrl()->ext($result->getCmdUrlExt());
 	}
 	
 	private $currentUrlExt;
