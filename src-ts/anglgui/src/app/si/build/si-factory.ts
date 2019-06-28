@@ -206,7 +206,7 @@ export class SiCompFactory {
 			return new LinkOutSiField(dataExtr.reqBoolean('href'), dataExtr.reqString('ref'),
 					dataExtr.reqString('label'));
 		case SiFieldType.QUALIFIER_SELECT_IN:
-			const qualifierSelectInSiField new QualifierSelectInSiField(dataExtr.reqString('apiUrl'),
+			const qualifierSelectInSiField = new QualifierSelectInSiField(dataExtr.reqString('apiUrl'),
 					this.createQualifiers(dataExtr.reqArray('values')));
 			qualifierSelectInSiField.min = dataExtr.nullaNumber('min');
 			qualifierSelectInSiField.max = dataExtr.nullaNumber('max');
