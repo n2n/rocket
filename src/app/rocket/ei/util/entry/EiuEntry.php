@@ -317,17 +317,17 @@ class EiuEntry {
 	public function newEntryGui(bool $bulky = true, bool $editable = false, int $treeLevel = null, 
 			bool $determineEiMask = true) {
 		$eiEntry = $eiMask = $this->getEiEntry(true);
-		$eiMask = null;
+		$eiEngine = null;
 		if ($determineEiMask) {
-			$eiMask = $eiEntry->getEiMask();
+			$eiEngine = $eiEntry->getEiMask()->getEiEngine();
 		} else {
-			$eiMask = $this->getEiFrame()->getContextEiEngine()->getEiMask();
+			$eiEngine = $this->getEiFrame()->getContextEiEngine();
 		}
 		
 		$viewMode = $this->deterViewMode($bulky, $editable);
 		$eiFrame = $this->getEiuFrame()->getEiFrame();
 		
-		$eiGui = $eiMask->createEiGui($eiFrame, $viewMode, true);
+		$eiGui = $eiEngine->createFramedEiGui($eiFrame, $viewMode);
 		
 		return new EiuEntryGui($eiGui->createEiEntryGui($eiEntry, $treeLevel), null, $this->eiuAnalyst);
 	}

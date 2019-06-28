@@ -39,6 +39,8 @@ use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\component\prop\FieldEiProp;
 use rocket\impl\ei\component\prop\relation\model\ToOneEiField;
 use rocket\ei\manage\gui\field\GuiField;
+use rocket\impl\ei\component\prop\relation\model\gui\RelationLinkGuiField;
+use rocket\impl\ei\component\prop\relation\model\gui\ToOneGuiField;
 
 class ManyToOneSelectEiProp extends RelationEiPropAdapter implements FieldEiProp {
 	
@@ -70,10 +72,11 @@ class ManyToOneSelectEiProp extends RelationEiPropAdapter implements FieldEiProp
 	
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
 		if ($readOnly || $this->editConfig->isReadOnly()) {
-			return new ToOneGuiField($eiu, $this->relationModel, $this->editConfig);
+			return new RelationLinkGuiField($eiu, $this->relationModel);
 		}
 		
-		return new ToManyGuiField($eiu, $this->relation);
+		return new ToOneGuiField($eiu, $this->getRelationModel(), $this->editConfig);
+		
 	}
 	
 	

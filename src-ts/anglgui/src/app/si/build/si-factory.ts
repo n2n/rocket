@@ -22,6 +22,7 @@ import { SiFile, FileInSiField } from "src/app/si/model/content/impl/file-in-si-
 import { FileOutSiField } from "src/app/si/model/content/impl/file-out-si-field";
 import { SiQualifier } from "src/app/si/model/content/si-qualifier";
 import { LinkOutSiField } from "src/app/si/model/content/impl/link-out-si-field";
+import { QualifierSelectInSiField } from "src/app/si/model/content/impl/qualifier-select-in-si-field";
 
 export class SiFactory {
 	
@@ -135,7 +136,7 @@ export class SiCompFactory {
 		for (let entryData of data) {
 			const extr = new Extractor(entryData);
 			
-			const siEntry = new SiEntry(this.createSiObjectQualifier(extr.reqObject('qualifier')));
+			const siEntry = new SiEntry(this.createQualifier(extr.reqObject('qualifier')));
 			siEntry.treeLevel = extr.nullaNumber('treeLevel');
 			siEntry.inputAvailable = extr.reqBoolean('inputAvailable');
 			
@@ -149,7 +150,15 @@ export class SiCompFactory {
 		return entries;
 	}
 	
-	private createSiObjectQualifier(data: any): SiQualifier {
+	private createQualifiers(datas: Array<any>): SiQualifier[] {
+		const qualifiers = new Array<SiQualifier>();
+		for (const data of datas) {
+			qualifiers.push(this.createQualifier(data));
+		}
+		return qualifiers;
+	}
+	
+	private createQualifier(data: any): SiQualifier {
 		const extr = new Extractor(data);
 		
 		return new SiQualifier(extr.reqString('category'), extr.nullaString('id'),
@@ -197,8 +206,11 @@ export class SiCompFactory {
 			return new LinkOutSiField(dataExtr.reqBoolean('href'), dataExtr.reqString('ref'),
 					dataExtr.reqString('label'));
 		case SiFieldType.QUALIFIER_SELECT_IN:
-			
-			
+			const qualifierSelectInSiField new QualifierSelectInSiField(dataExtr.reqString('apiUrl'),
+					this.createQualifiers(dataExtr.reqArray('values')));
+			qualifierSelectInSiField.min = dataExtr.nullaNumber('min');
+			qualifierSelectInSiField.max = dataExtr.nullaNumber('max');
+			return qualifierSelectInSiField;
 		default: 
 			throw new ObjectMissmatchError('Invalid si field type: ' + data.type);
 		}	

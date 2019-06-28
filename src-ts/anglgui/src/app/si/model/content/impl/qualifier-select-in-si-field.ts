@@ -5,24 +5,28 @@ import { StringOutFieldComponent } from "src/app/ui/content/field/comp/string-ou
 import { InputInFieldComponent } from "src/app/ui/content/field/comp/input-in-field/input-in-field.component";
 import { StringInFieldModel } from "src/app/ui/content/field/string-in-field-model";
 import { InSiFieldAdapter } from "src/app/si/model/content/impl/in-si-field-adapter";
+import { SiQualifier } from "src/app/si/model/content/si-qualifier";
 
 export class QualifierSelectInSiField extends InSiFieldAdapter implements StringInFieldModel {
     
-    public mandatory: boolean = false;
-	public minlength: number|null = null;
-	public maxlength: number|null = null;
+    public min: number|null = null;
+	public max: number|null = null;
 	
-	constructor(public value: string|null, public multiline: boolean = false) {
+	constructor(public apiUrl: string, public values: SiQualifier[] = []) {
 		super();
 		this.validate();
 	}
 	
     readInput(): object {
-        return { 'value': this.value };
+        return { 'values': this.values };
     }
 	
-    getValue(): string|null {
-    	return this.value;
+    getValues(): SiQualifier[] {
+    	return this.values;
+    }
+    
+    setValues(values: SiQualifier[]) {
+    	this.values = values;
     }
     
     getMaxlength(): number|null {

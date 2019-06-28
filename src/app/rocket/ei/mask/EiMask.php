@@ -347,29 +347,29 @@ class EiMask {
 		return $this->displayScheme ?? $this->displayScheme = new DisplayScheme();
 	}
 	
-	public function createEiGui(EiFrame $eiFrame, int $viewMode, bool $init) {
-		if (!$this->getEiType()->isA($eiFrame->getContextEiEngine()->getEiMask()->getEiType())) {
-			throw new \InvalidArgumentException('Incompatible EiGui');
-		}
+// 	public function createEiGui(EiFrame $eiFrame, int $viewMode, bool $init) {
+// 		if (!$this->getEiType()->isA($eiFrame->getContextEiEngine()->getEiMask()->getEiType())) {
+// 			throw new \InvalidArgumentException('Incompatible EiGui');
+// 		}
 		
-		$guiDefinition = $eiFrame->getManageState()->getDef()->getGuiDefinition($this);
-		$eiGui = new EiGui($eiFrame, $guiDefinition, $viewMode);
+// 		$guiDefinition = $eiFrame->getManageState()->getDef()->getGuiDefinition($this);
+// 		$eiGui = new EiGui($eiFrame, $guiDefinition, $viewMode);
 		
-		if (!$init) {
-			$this->noInitCb($eiGui);
-			return $eiGui;
-		}
+// 		if (!$init) {
+// 			$this->noInitCb($eiGui);
+// 			return $eiGui;
+// 		}
 		
-		foreach ($guiDefinition->getGuiDefinitionListeners() as $listener) {
-			$listener->onNewEiGui($eiGui);
-		}
+// 		foreach ($guiDefinition->getGuiDefinitionListeners() as $listener) {
+// 			$listener->onNewEiGui($eiGui);
+// 		}
 		
-		if (!$eiGui->isInit()) {
-			$this->getDisplayScheme()->initEiGui($eiGui, $guiDefinition);
-		}
+// 		if (!$eiGui->isInit()) {
+// 			$this->getDisplayScheme()->initEiGui($eiGui, $guiDefinition);
+// 		}
 		
-		return $eiGui;
-	}
+// 		return $eiGui;
+// 	}
 	
 	
 	/**
