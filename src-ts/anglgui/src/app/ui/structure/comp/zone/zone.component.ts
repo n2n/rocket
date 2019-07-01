@@ -50,7 +50,7 @@ export class ZoneComponent implements OnInit, DoCheck {
 	
 	get siStructure(): SiStructure|null {
 		if (this.siZone.hasContent()) {
-			return this.siZone.content.getStructure();
+			return this.siZone.structure;
 		}
 		
 		return null;

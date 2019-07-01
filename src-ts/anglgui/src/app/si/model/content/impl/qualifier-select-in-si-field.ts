@@ -6,63 +6,68 @@ import { InputInFieldComponent } from "src/app/ui/content/field/comp/input-in-fi
 import { StringInFieldModel } from "src/app/ui/content/field/string-in-field-model";
 import { InSiFieldAdapter } from "src/app/si/model/content/impl/in-si-field-adapter";
 import { SiQualifier } from "src/app/si/model/content/si-qualifier";
+import { QualifierSelectInModel } from "src/app/ui/content/field/qualifier-select-in-model";
+import { QualifierSelectInFieldComponent } from "src/app/ui/content/field/comp/qualifier-select-in-field/qualifier-select-in-field.component";
+import { SiZone } from "src/app/si/model/structure/si-zone";
 
-export class QualifierSelectInSiField extends InSiFieldAdapter implements StringInFieldModel {
-    
-    public min: number|null = null;
+export class QualifierSelectInSiField extends InSiFieldAdapter implements QualifierSelectInModel {
+	
+	public min: number = 0;
 	public max: number|null = null;
 	
-	constructor(public apiUrl: string, public values: SiQualifier[] = []) {
+	constructor(public zone: SiZone, public apiUrl: string, public values: SiQualifier[] = []) {
 		super();
 		this.validate();
 	}
 	
-    readInput(): object {
-        return { 'values': this.values };
-    }
+	readInput(): object {
+		return { 'values': this.values };
+	}
 	
-    getValues(): SiQualifier[] {
-    	return this.values;
-    }
-    
-    setValues(values: SiQualifier[]) {
-    	this.values = values;
-    }
-    
-    getMaxlength(): number|null {
-    	return this.maxlength;
-    }
-    
-    setValue(value: string|null) {
-    	this.value = value;
-    	this.validate();
-    }
-    
-    private validate() {
-    	this.messages = [];
-    	
-    	if (this.mandatory && this.value === null) {
-    		this.messages.push('mandatory front err');
-    	}
-    	
-    	if (this.minlength && this.value && this.value.length < this.minlength) {
-    		this.messages.push('minlength front err');
-    	}
-    	
-    	if (this.maxlength && this.value && this.value.length > this.maxlength) {
-    		this.messages.push('maxlength front err');
-    	}
-    }
-    
+	getSiZone(): SiZone {
+		return this.zone;
+	}
+	
+	getApiUrl(): string {
+		return this.apiUrl;
+	}
+	
+	getValues(): SiQualifier[] {
+		return this.values;
+	}
+	
+	setValues(values: SiQualifier[]) {
+		this.values = values;
+	}
+	
+	getMin(): number {
+		return this.min
+	}
+	
+	getMax(): number|null {
+		return this.max;
+	}
+	private validate() {
+		this.messages = [];
+		
+		if (this.values.length < this.min) {
+			this.messages.push('min front err');
+		}
+		
+		if (this.max && this.values.length > this.max) {
+			this.messages.push('max front err');
+		}
+	}
+	
 	initComponent(viewContainerRef: ViewContainerRef, 
 			componentFactoryResolver: ComponentFactoryResolver): ComponentRef<any> {
-		const componentFactory = componentFactoryResolver.resolveComponentFactory(InputInFieldComponent);
-	    
-	    const componentRef = viewContainerRef.createComponent(componentFactory);
-	    
-	    const component = componentRef.instance;
-	    component.model = this;
-	    
-	    return componentRef;
+		const componentFactory = componentFactoryResolver.resolveComponentFactory(QualifierSelectInFieldComponent);
+		
+		const componentRef = viewContainerRef.createComponent(componentFactory);
+		
+		const component = componentRef.instance;
+		component.model = this;
+		
+		return componentRef;
 	}
 }

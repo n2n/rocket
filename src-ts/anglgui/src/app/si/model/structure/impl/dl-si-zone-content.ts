@@ -15,12 +15,10 @@ import { SiZoneError } from "src/app/si/model/structure/si-zone-error";
 export class DlSiZoneContent implements SiZoneContent, SiStructureContent {
    
     public entries: SiEntry[] = [];
-	private structure = new SiStructure();
 	public controlMap: Map<string, SiControl> = new Map();
 	
 	constructor(public apiUrl: string, public bulkyDeclaration: SiBulkyDeclaration,
 			public zone: SiZone) {
-		this.structure.content = this;
 	}
 	
 	getZone(): SiZone {
@@ -52,27 +50,26 @@ export class DlSiZoneContent implements SiZoneContent, SiStructureContent {
         return [];
     }
     
-    getStructure(): SiStructure {
-        return this.structure;
-    }
+    reload() {
+	}
     
-	refreshChildStructures() {
-		this.structure.clearChildren();
+    applyTo(structure: SiStructure) {
+    	structure.clearChildren();
 		
 		if (this.entries.length != 1) {
     		for (let entry of this.entries) {
     			const fsd = this.getFieldStructureDeclaration(entry);
     			
-    			this.structure.addChild(this.dingsel(entry, fsd));
+    			structure.addChild(this.dingsel(entry, fsd));
     		}
     		return;
     	}
     	
     	const entry = this.entries[0]
     	const declaration = this.getFieldStructureDeclaration(entry);
-    	this.structure.label = declaration.fieldDeclaration.label;
+    	structure.label = declaration.fieldDeclaration.label;
     	for (const child of declaration.children) {
-    		this.structure.addChild(this.dingsel(entry, child));
+    		structure.addChild(this.dingsel(entry, child));
     	}
 	}
 	

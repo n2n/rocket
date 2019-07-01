@@ -26,7 +26,7 @@ use rocket\si\content\SiQualifier;
 use n2n\util\uri\Url;
 use n2n\util\type\ArgUtils;
 
-class ApiSelectInSiField extends InSiFieldAdapter {
+class QualifierSelectInSiField extends InSiFieldAdapter {
 	/**
 	 * @var SiQualifier[]
 	 */
@@ -124,7 +124,7 @@ class ApiSelectInSiField extends InSiFieldAdapter {
 	 * @see \rocket\si\content\SiField::getType()
 	 */
 	function getType(): string {
-		return 'object-select-in';
+		return 'qualifier-select-in';
 	}
 	
 	/**

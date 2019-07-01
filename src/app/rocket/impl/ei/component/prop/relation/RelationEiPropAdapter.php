@@ -103,7 +103,7 @@ abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements Re
 		}
 		
 // 		IllegalStateException::assertTrue($this->displayConfig !== null && $this->editConfig !== null);
-		return $this->relation = new Relation($this->getRelationModel()); 
+		return $this->relation = new Relation($this, $this->getRelationModel()); 
 	}
 	
 	/**

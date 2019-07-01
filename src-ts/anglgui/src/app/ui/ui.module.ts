@@ -39,6 +39,6 @@ import { RouterModule } from "@angular/router";
     ControlComponent
   ],
   entryComponents: [ ListZoneContentComponent, DlZoneContentComponent, FieldStructureComponent, StringOutFieldComponent, 
-    InputInFieldComponent, TextareaInFieldComponent, FileInFieldComponent, FileOutFieldComponent ]
+    InputInFieldComponent, TextareaInFieldComponent, FileInFieldComponent, FileOutFieldComponent, QualifierSelectInFieldComponent ]
 })
 export class UiModule { }

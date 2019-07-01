@@ -19,10 +19,6 @@ export class DlZoneContentComponent implements OnInit {
 	ngOnInit() {
 	}
 	
-	get siStructures(): SiStructure[] {
-		return this.dlSiZoneContent.getStructure().getChildren();
-	}
-	
 	get siEntries(): SiEntry[] {
 		return this.dlSiZoneContent.entries;
 	}

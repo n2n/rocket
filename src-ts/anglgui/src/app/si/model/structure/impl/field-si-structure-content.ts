@@ -13,14 +13,13 @@ export class FieldSiStructureContent implements SiStructureContent {
 			readonly fieldDeclaration: SiFieldDeclaration) {
 	}
 	
-	
 	initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver): ComponentRef<any> {
 		const componentFactory = componentFactoryResolver.resolveComponentFactory(FieldStructureComponent);
 
 		const componentRef = viewContainerRef.createComponent(componentFactory);
-	    
-	    componentRef.instance.fieldSiStructureContent = this;
-	    
-	    return componentRef;
+		
+		componentRef.instance.fieldSiStructureContent = this;
+		
+		return componentRef;
 	}
 }

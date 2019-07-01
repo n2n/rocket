@@ -58,6 +58,6 @@ class SiFields {
 	}
 	
 	static function apiSelectIn(Url $apiUrl, array $values = [], int $min = 0, int $max = null) {
-		return (new ApiSelectInSiField($apiUrl, $values))->setMin($min)->setMax($max);
+		return (new QualifierSelectInSiField($apiUrl, $values))->setMin($min)->setMax($max);
 	}
 }

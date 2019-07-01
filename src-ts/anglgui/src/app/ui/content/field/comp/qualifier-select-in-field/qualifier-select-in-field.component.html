@@ -1,3 +1,14 @@
-<p>
-  qualifier-select-in-field works!
-</p>
+
+
+<div *ngFor="let siQualifier of model.getValues()" class="rocket-impl-selector">
+	{{ siQualifier.name }}
+	
+	<button class="btn btn-secondary" (click)="remove(siQualifier)">
+		<i class="fa fa-trash-o"></i>
+	</button>
+</div>
+
+
+<div>
+	<button class="btn btn-secondary" (click)="openOptions()">{{ 'select_txt' | translate }}</button>
+</div>

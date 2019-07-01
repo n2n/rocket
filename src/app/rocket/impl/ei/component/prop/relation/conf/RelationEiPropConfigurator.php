@@ -211,9 +211,8 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		if ($this->relationModel->isEmbedded() && $this->relationModel->isTargetMany()) {
 			$targetOrderEiPropPath = EiPropPath::build(
 					$this->attributes->optString(self::ATTR_TARGET_ORDER_EI_PROP_PATH_KEY));
-			
 			$targetEiuType->mask()->onEngineReady(function (EiuEngine $eiuEngine) use ($targetOrderEiPropPath) {
-				if ($eiuEngine->containsScalarEiProperty($targetOrderEiPropPath)) {
+				if ($targetOrderEiPropPath !== null && $eiuEngine->containsScalarEiProperty($targetOrderEiPropPath)) {
 					$this->relationModel->setTragetOrderEiPropPath($targetOrderEiPropPath);
 				} else {
 					$this->relationModel->setTragetOrderEiPropPath(null);

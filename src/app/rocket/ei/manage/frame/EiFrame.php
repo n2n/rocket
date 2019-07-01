@@ -459,9 +459,18 @@ class EiFrame {
 						->getEiCommandCollection()->hasGenericDetail($entryNavPoint));
 	}
 	
+	public function getDetailUrl(EiObject $eiObject, bool $required = true) {
+		$result = $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()
+				->determineGenericDetail($eiObject, $required);
+		
+		if ($result === null) return null;
+		
+		return $this->getBaseUrl()->ext($result->getCmdUrlExt());
+	}
+	
 	public function getEditUrl(EiObject $eiObject, bool $required = true) {
 		$result = $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()
-				->determineGenericEdit($eiObject, $required);
+		->determineGenericEdit($eiObject, $required);
 		
 		if ($result === null) return null;
 		
@@ -470,7 +479,7 @@ class EiFrame {
 	
 	public function getAddUrl(bool $required = true) {
 		$result = $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()
-		->determineGenericAdd($required);
+				->determineGenericAdd($required);
 		
 		if ($result === null) return null;
 		

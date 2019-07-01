@@ -26,18 +26,17 @@ use rocket\ei\util\frame\EiuFrame;
 use rocket\ei\util\entry\EiuObject;
 use rocket\impl\ei\component\prop\relation\model\relation\MappedOneToCriteriaFactory;
 use rocket\impl\ei\component\prop\relation\model\relation\RelationCriteriaFactory;
-use n2n\util\ex\IllegalStateException;
 use rocket\impl\ei\component\prop\relation\model\relation\MappedRelationEiModificator;
 use rocket\ei\util\entry\EiuEntry;
 use rocket\impl\ei\component\prop\relation\model\relation\PlainMappedRelationEiModificator;
 use rocket\impl\ei\component\prop\relation\model\relation\MasterRelationEiModificator;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
-use rocket\ei\util\spec\EiuEngine;
 use rocket\ei\manage\frame\EiForkLink;
-use rocket\ei\manage\critmod\filter\impl\SimpleComparatorConstraint;
 use n2n\util\ex\NotYetImplementedException;
+use rocket\impl\ei\component\prop\relation\RelationEiProp;
 
 class Relation {
+	private $eiProp;
 	/**
 	 * @var RelationModel
 	 */
@@ -46,7 +45,8 @@ class Relation {
 	/**
 	 * @param RelationModel $relationModel
 	 */
-	function __construct(RelationModel $relationModel) {
+	function __construct(RelationEiProp $eiProp, RelationModel $relationModel) {
+		$this->eiProp = $eiProp;
 		$this->relationModel = $relationModel;
 	}
 	
@@ -123,10 +123,9 @@ class Relation {
 							$this->targetMasterAccessProxy, $this->isSourceMany()));
 		}
 		
-		if ($this->getRelationEntityProperty()->isMaster() && !$eiuEntry->isDraft()) {
+		if ($this->relationModel->getRelationEntityProperty()->isMaster() && !$eiuEntry->isDraft()) {
 			$targetEiFrame->registerListener(new MasterRelationEiModificator($targetEiFrame, $eiuEntry->getEntityObj(),
-					$this->relationEiProp->getObjectPropertyAccessProxy(), $this->targetMany));
+					$this->eiProp->getObjectPropertyAccessProxy(), $this->relationModel->isTargetMany()));
 		}
-	}
-	
+	}	
 }

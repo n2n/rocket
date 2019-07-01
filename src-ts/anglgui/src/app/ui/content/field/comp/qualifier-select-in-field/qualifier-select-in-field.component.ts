@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { QualifierSelectInModel } from "src/app/ui/content/field/qualifier-select-in-model";
+import { SiQualifier } from "src/app/si/model/content/si-qualifier";
+import { SiLayer } from "src/app/si/model/structure/si-layer";
 
 @Component({
   selector: 'rocket-qualifier-select-in-field',
@@ -7,9 +10,26 @@ import { Component, OnInit } from '@angular/core';
 })
 export class QualifierSelectInFieldComponent implements OnInit {
 
-  constructor() { }
+	model: QualifierSelectInModel;
 
-  ngOnInit() {
-  }
+	private optionsSiLayer: SiLayer|null = null;
 
+	constructor() { }
+	
+	ngOnInit() {
+	}
+	
+	remove(siQualifier: SiQualifier) {
+		const values = this.model.getValues();
+		
+		const index = values.indexOf(siQualifier);
+		if (index > -1) {
+			values.splice(0, 1);
+		}
+	}
+	
+	openOptions() {
+		const siZone = this.model.getSiZone();
+		this.optionsSiLayer = siZone.layer.container.createLayer();
+	}
 }

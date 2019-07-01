@@ -10,11 +10,13 @@ export interface SiZoneContent {
  	
 //	getZone(): SiZone;
 	
+	reload(): void
+	
 	getEntries(): SiEntry[];
 	
 	getSelectedEntries(): SiEntry[];
-	
-	getStructure(): SiStructure;
-	
+		
 	getZoneErrors(): SiZoneError[];
+	
+	applyTo(structure: SiStructure);
 }

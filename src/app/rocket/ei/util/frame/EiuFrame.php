@@ -147,7 +147,7 @@ class EiuFrame {
 		return $this->eiFrame->getDetailUrl($eiObject, $required);
 	}
 	
-	public function getEditUrl(bool $required = true) {
+	public function getEditUrl($eiObjectArg, bool $required = true) {
 		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectArg, '$eiObjectArg',
 				$this->eiFrame->getContextEiEngine()->getEiMask()->getEiType());
 		return $this->eiFrame->getEditUrl($eiObject, $required);

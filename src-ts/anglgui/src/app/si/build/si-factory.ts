@@ -58,7 +58,6 @@ export class SiFactory {
 				compFactory = new SiCompFactory(this.zone, dlSiZoneContent);
 				dlSiZoneContent.controlMap = compFactory.createControlMap(dataExtr.reqMap('controls'));
 				dlSiZoneContent.entries = compFactory.createEntries(dataExtr.reqArray('entries'));
-				dlSiZoneContent.refreshChildStructures();
 				return dlSiZoneContent;
 			default:
 				throw new ObjectMissmatchError('Invalid si zone type: ' + data.type);
@@ -206,9 +205,9 @@ export class SiCompFactory {
 			return new LinkOutSiField(dataExtr.reqBoolean('href'), dataExtr.reqString('ref'),
 					dataExtr.reqString('label'));
 		case SiFieldType.QUALIFIER_SELECT_IN:
-			const qualifierSelectInSiField = new QualifierSelectInSiField(dataExtr.reqString('apiUrl'),
+			const qualifierSelectInSiField = new QualifierSelectInSiField(this.zone, dataExtr.reqString('apiUrl'),
 					this.createQualifiers(dataExtr.reqArray('values')));
-			qualifierSelectInSiField.min = dataExtr.nullaNumber('min');
+			qualifierSelectInSiField.min = dataExtr.reqNumber('min');
 			qualifierSelectInSiField.max = dataExtr.nullaNumber('max');
 			return qualifierSelectInSiField;
 		default: 

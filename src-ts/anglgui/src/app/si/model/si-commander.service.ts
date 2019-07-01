@@ -29,6 +29,14 @@ export class SiCommanderService {
 				});
 	}
 	
+	navigateBack(layer: SiLayer, fallbackUrl: string|null = null) {
+		
+	}
+	
+	navigateForward(layer: SiLayer, fallbackUrl: string|null = null) {
+		
+	}
+	
 	navigate(url: string, layer: SiLayer) {
 		if (!layer.main) {
 			throw new Error('not yet implemented');

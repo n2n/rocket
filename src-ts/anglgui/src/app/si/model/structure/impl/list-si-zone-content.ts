@@ -16,11 +16,8 @@ export class ListSiZoneContent implements SiZoneContent, SiStructureContent {
 	private pages = new Map<number, SiPage>();
 	public size: number|null = null;
 	public compactDeclaration: SiCompactDeclaration|null = null;
-	private structure: SiStructure;
 	
 	constructor(public apiUrl: string, public pageSize: number, public zone: SiZone) {
-		this.structure = new SiStructure();
-		this.structure.content = this;
 	}
 	
 	getZone(): SiZone {
@@ -75,8 +72,11 @@ export class ListSiZoneContent implements SiZoneContent, SiStructureContent {
 		return Math.ceil(<number> this.size / this.pageSize);
 	}
 	
-	getStructure(): SiStructure {
-		return this.structure;
+	applyTo(structure: SiStructure) {
+		structure.content = this;
+	}
+	
+	reload() {
 	}
 	
 	initComponent(viewContainerRef: ViewContainerRef, 

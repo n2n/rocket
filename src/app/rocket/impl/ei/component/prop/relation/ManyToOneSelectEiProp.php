@@ -72,7 +72,7 @@ class ManyToOneSelectEiProp extends RelationEiPropAdapter implements FieldEiProp
 	
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
 		if ($readOnly || $this->editConfig->isReadOnly()) {
-			return new RelationLinkGuiField($eiu, $this->relationModel);
+			return new RelationLinkGuiField($eiu, $this->getRelationModel());
 		}
 		
 		return new ToOneGuiField($eiu, $this->getRelationModel(), $this->editConfig);
