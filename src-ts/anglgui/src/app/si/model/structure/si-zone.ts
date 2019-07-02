@@ -11,7 +11,7 @@ export class SiZone {
 	public _content: SiZoneContent|null;
 	private disposeSubject = new Subject<void>();
 	
-	constructor(readonly url: string, readonly layer: SiLayer) {
+	constructor(readonly id: number, readonly url: string|null, readonly layer: SiLayer) {
 		
 	}
 	

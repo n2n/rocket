@@ -1,20 +1,23 @@
 
-import { SiLayer } from "src/app/si/model/structure/si-layer";
+import { SiLayer, MainSiLayer, PopupSiLayer } from "src/app/si/model/structure/si-layer";
 
 export class SiContainer {
-    
-    readonly layers: SiLayer[] = [];
+    private layers: SiLayer[] = [];
     
     constructor() {
-        this.layers.push(new SiLayer(this, true));
+        this.layers.push(new MainSiLayer(this));
     }
     
-    get mainSiLayer(): SiLayer {
-    	return this.layers[0];
+    getMainLayer(): MainSiLayer {
+    	return <MainSiLayer> this.layers[0];
     }
     
-    createLayer(): SiLayer {
-    	const layer = new SiLayer(this, false);
+    getPopupLayers(): PopupSiLayer[] {
+    	return <PopupSiLayer[]> this.layers.slice(1);	
+    }
+    
+    createLayer(): PopupSiLayer {
+    	const layer = new PopupSiLayer(this);
     	
     	this.layers.push(layer);
     	layer.onDispose(() => {

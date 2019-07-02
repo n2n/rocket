@@ -11,6 +11,7 @@ import { SiEntry } from "src/app/si/model/content/si-entry";
 import { SiZoneContent } from "src/app/si/model/structure/si-zone-content";
 import { SiEntryError } from "src/app/si/model/input/si-entry-error";
 import { SiResult } from "src/app/si/model/control/si-result";
+import { SiCommandError } from "src/app/si/model/si-command-error";
 
 @Injectable({
   providedIn: 'root'
@@ -21,9 +22,13 @@ export class SiCommanderService {
 	}
   
 	loadZone(zone: SiZone) {
+		if (!zone.url) {
+			throw new SiCommandError('Zone contains no url.');
+		}
+		
 		zone.removeContent();
 		
-		this.siService.lookupSiZoneContent(zone)
+		this.siService.lookupSiZoneContent(zone, zone.url)
 				.subscribe((siZoneContent) => {
 					zone.content = siZoneContent;
 				});

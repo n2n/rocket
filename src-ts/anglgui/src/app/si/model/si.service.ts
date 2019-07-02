@@ -24,8 +24,8 @@ export class SiService {
 	constructor(private httpClient: HttpClient) { 
 	}
 	  
-	lookupSiZoneContent(zone: SiZone): Observable<SiZoneContent> {
-		return this.httpClient.get<any>(zone.url)
+	lookupSiZoneContent(zone: SiZone, url: string): Observable<SiZoneContent> {
+		return this.httpClient.get<any>(url)
 	            .pipe(map((data: any) => {
 	                return this.createSiZoneContent(data, zone);
 	            }));
