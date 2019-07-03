@@ -48,10 +48,9 @@ abstract class SiLayerAdapter implements SiLayer {
 			this.clearZoneAfterIndex(this.currentZoneIndex);
 		}
 		
-		
 		const zone = new SiZone(id, url, <any> this);
 		this.currentZoneIndex = this.zones.push(zone) - 1;
-		zone.onDispose(() =>  {
+		zone.onDispose(() => {
 			this.removeZone(zone);
 		});
 		return zone;
