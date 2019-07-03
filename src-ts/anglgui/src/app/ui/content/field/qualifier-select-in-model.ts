@@ -7,7 +7,7 @@ export interface QualifierSelectInModel extends MessageFieldModel {
 	
 	getSiZone(): SiZone;
 	
-	getApiUrl(): string|null;
+	getApiUrl(): string;
 	
 	getValues(): SiQualifier[];
 	

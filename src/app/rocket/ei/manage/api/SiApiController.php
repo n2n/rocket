@@ -19,10 +19,11 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage;
+namespace rocket\ei\manage\api;
 
 use n2n\web\http\controller\ControllerAdapter;
 use n2n\web\http\controller\ParamPost;
+use rocket\ei\manage\ManageState;
 use rocket\ei\manage\gui\control\UnknownGuiControlException;
 use n2n\web\http\BadRequestException;
 use n2n\util\type\attrs\AttributesException;
@@ -43,6 +44,10 @@ use rocket\ei\manage\gui\control\EntryGuiControl;
 use rocket\ei\manage\gui\control\GuiControl;
 use n2n\util\ex\IllegalStateException;
 use rocket\si\control\SiResult;
+use n2n\web\http\controller\ParamBody;
+use rocket\si\api\SiGetRequest;
+use rocket\ei\manage\LiveEiObject;
+use rocket\ei\manage\EiObject;
 
 class SiApiController extends ControllerAdapter {
 	private $eiFrame;
@@ -69,6 +74,18 @@ class SiApiController extends ControllerAdapter {
 		} catch (\InvalidArgumentException $e) {
 			throw new BadRequestException(null, null, $e);
 		}
+	}
+	
+	private function parseGetRequest(Param $param) {
+		try {
+			return SiGetRequest::createFromData($param->parseJson());
+		} catch (\InvalidArgumentException $e) {
+			throw new BadRequestException(null, null, $e);
+		}
+	}
+	
+	function postDoGet(ParamBody $param) {
+		$getRequest = $this->parseGetRequest($param);
 	}
 	
 	function doExecControl(ParamPost $apiCallId, ParamPost $entryInputMaps = null) {
