@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage;
+namespace rocket\ei\manage\api;
 
 use n2n\util\type\attrs\DataSet;
 use rocket\ei\manage\gui\field\GuiFieldPath;
