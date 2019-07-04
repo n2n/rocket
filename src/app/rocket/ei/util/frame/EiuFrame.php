@@ -332,7 +332,7 @@ class EiuFrame {
 	 */
 	public function createCountCriteria(string $entityAlias, int $ignoreConstraintTypes = 0) {
 		return $this->eiFrame->createCriteria($entityAlias, $ignoreConstraintTypes)
-				->select('COUNT(e)');
+				->select('COUNT(1)');
 	}
 	
 	/**

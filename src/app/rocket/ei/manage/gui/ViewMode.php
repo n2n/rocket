@@ -72,4 +72,12 @@ class ViewMode {
 	static function isReadOnly(int $viewMode) {
 		return $viewMode & self::read();
 	}
+	
+	/**
+	 * @param int $viewMode
+	 * @return boolean
+	 */
+	static function isBulky(int $viewMode) {
+		return $viewMode & self::bulky();
+	}
 }

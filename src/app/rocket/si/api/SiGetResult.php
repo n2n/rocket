@@ -36,17 +36,13 @@ class SiGetResult implements \JsonSerializable {
 	 */
 	private $bulkyDeclaration;
 	/**
-	 * @var SiEntry[]
+	 * @var SiEntry
 	 */
-	private $entries = [];
+	private $entry = [];
 	/**
 	 * @var SiPartialContent|null
 	 */
 	private $partialContent;
-	/**
-	 * @var SiEntry[]
-	 */
-	private $newEntries = [];
 	
 	function __construct() {
 	}
@@ -61,7 +57,7 @@ class SiGetResult implements \JsonSerializable {
 	/**
 	 * @param \rocket\si\structure\SiCompactDeclaration|null $compactDeclaration
 	 */
-	public function setCompactDeclaration($compactDeclaration) {
+	public function setCompactDeclaration(?SiCompactDeclaration $compactDeclaration) {
 		$this->compactDeclaration = $compactDeclaration;
 	}
 
@@ -75,22 +71,22 @@ class SiGetResult implements \JsonSerializable {
 	/**
 	 * @param \rocket\si\structure\SiBulkyDeclaration|null $bulkyDeclaration
 	 */
-	public function setBulkyDeclaration($bulkyDeclaration) {
+	public function setBulkyDeclaration(?SiBulkyDeclaration $bulkyDeclaration) {
 		$this->bulkyDeclaration = $bulkyDeclaration;
 	}
 
 	/**
-	 * @return \rocket\si\content\SiEntry[] 
+	 * @return \rocket\si\content\SiEntry
 	 */
-	public function getEntries() {
-		return $this->entries;
+	public function getEntry() {
+		return $this->entry;
 	}
 
 	/**
-	 * @param \rocket\si\content\SiEntry[] $entries
+	 * @param \rocket\si\content\SiEntry|null $entries
 	 */
-	public function setEntries($entries) {
-		$this->entries = $entries;
+	public function setEntry(?SiEntry $entry) {
+		$this->entry = $entry;
 	}
 
 	/**
@@ -103,22 +99,8 @@ class SiGetResult implements \JsonSerializable {
 	/**
 	 * @param \rocket\si\content\SiPartialContent|null $partialContent
 	 */
-	public function setPartialContent($partialContent) {
+	public function setPartialContent(?SiPartialContent $partialContent) {
 		$this->partialContent = $partialContent;
-	}
-
-	/**
-	 * @return \rocket\si\content\SiEntry[] 
-	 */
-	public function getNewEntries() {
-		return $this->newEntries;
-	}
-
-	/**
-	 * @param \rocket\si\content\SiEntry[] $newEntries
-	 */
-	public function setNewEntries($newEntries) {
-		$this->newEntries = $newEntries;
 	}
 
 	/**
@@ -129,9 +111,8 @@ class SiGetResult implements \JsonSerializable {
 		return [
 			'bulkyDeclaration' => $this->bulkyDeclaration,
 			'compactDeclaration' => $this->compactDeclaration,
-			'entries' => $this->entries,
-			'partialContent' => $this->partialContent,
-			'newEntries' => $this->newEntries
+			'entry' => $this->entry,
+			'partialContent' => $this->partialContent
 		];
 	}	
 }

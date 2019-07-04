@@ -22,7 +22,7 @@
 namespace rocket\ei\manage\gui\control;
 
 use rocket\si\control\SiControl;
-use rocket\ei\manage\SiApiControlCallId;
+use rocket\ei\manage\ApiControlCallId;
 
 interface GuiControl {
 	
@@ -36,5 +36,5 @@ interface GuiControl {
 	/**
 	 * @return SiControl
 	 */
-	function toSiControl(SiApiControlCallId $siApiCallId): SiControl;
+	function toSiControl(ApiControlCallId $siApiCallId): SiControl;
 }

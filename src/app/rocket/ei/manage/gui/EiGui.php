@@ -10,7 +10,7 @@ use rocket\ei\manage\gui\field\GuiFieldPath;
 use rocket\ei\manage\gui\control\GuiControlPath;
 use rocket\ei\manage\gui\control\UnknownGuiControlException;
 use rocket\ei\manage\gui\control\GeneralGuiControl;
-use rocket\ei\manage\SiApiControlCallId;
+use rocket\ei\manage\api\ApiControlCallId;
 
 /**
  * @author andreas
@@ -216,7 +216,7 @@ class EiGui {
 		foreach ($this->guiDefinition->createSelectionGuiControls($this)
 				as $guiControlPathStr => $selectionGuiControl) {
 			$siControls[$guiControlPathStr] = $selectionGuiControl->toSiControl(
-					new SiApiControlCallId(GuiControlPath::create($guiControlPathStr), $this->viewMode, null));
+					new ApiControlCallId(GuiControlPath::create($guiControlPathStr), $this->viewMode, null));
 		}
 		return $siControls;
 	}
@@ -226,7 +226,7 @@ class EiGui {
 		foreach ($this->guiDefinition->createGeneralGuiControls($this)
 				as $guiControlPathStr => $generalGuiControl) {
 			$siControls[$guiControlPathStr] = $generalGuiControl->toSiControl(
-					new SiApiControlCallId(GuiControlPath::create($guiControlPathStr), $this->viewMode, null));
+					new ApiControlCallId(GuiControlPath::create($guiControlPathStr), $this->viewMode, null));
 		}
 		return $siControls;
 	}

@@ -21,23 +21,35 @@
  */
 namespace rocket\ei\manage\api;
 
+use rocket\ei\manage\gui\control\GuiControlPath;
+use n2n\util\type\ArgUtils;
+use rocket\ei\manage\gui\ViewMode;
 use n2n\util\type\attrs\DataSet;
-use rocket\ei\manage\gui\field\GuiFieldPath;
 
-class SiApiFieldCallId implements \JsonSerializable {
-	private $guiFieldPath;
+class ApiControlCallId implements \JsonSerializable {
+	private $guiControlPath;
+	private $viewMode;
 	private $pid;
 	
-	public function __construct(GuiFieldPath $guiFieldPath, ?string $pid) {
-		$this->guiFieldPath = $guiFieldPath;
+	function __construct(GuiControlPath $guiControlPath, int $viewMode, ?string $pid) {
+		$this->guiControlPath = $guiControlPath;
+		ArgUtils::valEnum($viewMode, ViewMode::getAll());
+		$this->viewMode = $viewMode;
 		$this->pid = $pid;
 	}
 	
 	/**
 	 * @return \rocket\ei\manage\gui\control\GuiControlPath
 	 */
-	function getGuiFieldPath() {
-		return $this->guiFieldPath;
+	function getGuiControlPath() {
+		return $this->guiControlPath;
+	}
+	
+	/**
+	 * @return int
+	 */
+	function getViewMode() {
+		return $this->viewMode;
 	}
 	
 	/**
@@ -53,7 +65,8 @@ class SiApiFieldCallId implements \JsonSerializable {
 	 */
 	function jsonSerialize() {
 		return [
-			'guiFieldPath' => (string) $this->guiFieldPath,
+			'guiControlPath' => (string) $this->guiControlPath,
+			'viewMode' => $this->viewMode,
 			'pid' => $this->pid
 		];
 	}
@@ -61,15 +74,15 @@ class SiApiFieldCallId implements \JsonSerializable {
 	/**
 	 * @param array $data
 	 * @throws \InvalidArgumentException
-	 * @return SiApiFieldCallId
+	 * @return ApiControlCallId
 	 */
 	static function parse(array $data) {
 		$ds = new DataSet($data);
 		
 		try {
-			return new SiApiFieldCallId(
-					GuiFieldPath::create($ds->reqString('guiControlPath')),
-					$ds->optString('pid'));
+			return new ApiControlCallId(
+					GuiControlPath::create($ds->reqString('guiControlPath')),
+					$ds->reqInt('viewMode'), $ds->optString('pid'));
 		} catch (\n2n\util\type\attrs\AttributesException $e) {
 			throw new \InvalidArgumentException(null, null, $e);
 		}

@@ -29,7 +29,7 @@ use rocket\ei\manage\gui\control\EntryGuiControl;
 use rocket\ei\manage\gui\control\SelectionGuiControl;
 use rocket\si\control\impl\ApiCallSiControl;
 use rocket\si\control\SiButton;
-use rocket\ei\manage\SiApiControlCallId;
+use rocket\ei\manage\ApiControlCallId;
 use rocket\ei\manage\gui\EiGui;
 use n2n\reflection\magic\MagicMethodInvoker;
 use rocket\ei\util\Eiu;
@@ -87,7 +87,7 @@ class EiuCallbackGuiControl implements GeneralGuiControl, EntryGuiControl, Selec
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\control\GuiControl::toSiControl()
 	 */
-	function toSiControl(SiApiControlCallId $siApiCallId): SiControl {
+	function toSiControl(ApiControlCallId $siApiCallId): SiControl {
 		return new ApiCallSiControl($this->apiUrl, $siApiCallId, $this->siButton, $this->inputHandled);
 	}
 	

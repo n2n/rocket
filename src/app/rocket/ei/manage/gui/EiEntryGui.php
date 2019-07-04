@@ -31,7 +31,7 @@ use rocket\ei\manage\gui\field\GuiField;
 use rocket\si\content\SiEntryBuildup;
 use rocket\si\content\SiEntry;
 use rocket\ei\manage\gui\control\GuiControlPath;
-use rocket\ei\manage\SiApiControlCallId;
+use rocket\ei\manage\api\ApiControlCallId;
 
 class EiEntryGui {
 	/**
@@ -362,7 +362,7 @@ class EiEntryGui {
 		foreach ($this->eiGui->getGuiDefinition()->createEntryGuiControls($this->eiGui, $eiEntry)
 				as $guiControlPathStr => $entryGuiControl) {
 			$siEntry->putControl($guiControlPathStr, $entryGuiControl->toSiControl(
-					new SiApiControlCallId(GuiControlPath::create($guiControlPathStr), $this->eiGui->getViewMode(), 
+					new ApiControlCallId(GuiControlPath::create($guiControlPathStr), $this->eiGui->getViewMode(), 
 							$eiEntry->getPid())));
 		}
 		

@@ -23,15 +23,15 @@ namespace rocket\si\api;
 
 use n2n\util\type\attrs\DataSet;
 use n2n\util\type\attrs\AttributesException;
-use n2n\util\type\TypeName;
+use n2n\util\ex\IllegalStateException;
 
 class SiGetInstruction {
 	private $bulky;
 	private $readOnly;
-	private $declarationIncluded = true;
-	private $entityIds = [];
-	private $partialContentInstruction;
-	private $numNews = 0;
+	private $declarationRequested = true;
+	private $entryId = null;
+	private $partialContentInstruction = null;
+	private $newEntryRequested = false;
 	
 	/**
 	 * @param bool $bulky
@@ -52,7 +52,7 @@ class SiGetInstruction {
 	/**
 	 * @param bool $bulky
 	 */
-	function setBulky($bulky) {
+	function setBulky(bool $bulky) {
 		$this->bulky = $bulky;
 	}
 
@@ -66,22 +66,22 @@ class SiGetInstruction {
 	/**
 	 * @param bool $readOnly
 	 */
-	function setReadOnly($readOnly) {
+	function setReadOnly(bool $readOnly) {
 		$this->readOnly = $readOnly;
 	}
 
 	/**
 	 * @return bool
 	 */
-	function isDeclarationIncluded() {
-		return $this->declarationIncluded;
+	function isDeclarationRequested() {
+		return $this->declarationRequested;
 	}
 
 	/**
-	 * @param bool $declarationIncluded
+	 * @param bool $declarationRequested
 	 */
-	function setDeclarationIncluded(bool $declarationIncluded) {
-		$this->declarationIncluded = $declarationIncluded;
+	function setDeclarationRequested(bool $declarationRequested) {
+		$this->declarationRequested = $declarationRequested;
 	}
 
 	/**
@@ -94,47 +94,56 @@ class SiGetInstruction {
 	/**
 	 * @param mixed $partialContentInstruction
 	 */
-	function setPartialContentInstruction(SiPartialContentInstruction $partialContentInstruction) {
+	function setPartialContentInstruction(?SiPartialContentInstruction $partialContentInstruction) {
+		IllegalStateException::assertTrue(($this->entryId === null && !$this->newEntryRequested)
+				|| $partialContentInstruction === null);
 		$this->partialContentInstruction = $partialContentInstruction;
 	}
 
 	/**
-	 * @return number
+	 * @return int
 	 */
-	function getNumNews() {
-		return $this->numNews;
+	function getNewEntryRequested() {
+		return $this->newEntryRequested;
 	}
 
 	/**
-	 * @param number $numNews
+	 * @param int $newEntriesNum
 	 */
-	function setNumNews($numNews) {
-		$this->numNews = $numNews;
+	function setNewEntryRequested(bool $newEntryRequested) {
+		IllegalStateException::assertTrue(($this->partialContentInstruction === null && $this->entryId === null)
+				|| !$newEntryRequested);
+		$this->newEntryRequested = $newEntryRequested;
 	}
 
 	/**
-	 * @param multitype: $entityIds
+	 * @param string|null $entryId
 	 */
-	function setEntryIds($entityIds) {
-		$this->entityIds = $entityIds;
+	function setEntryId(?string $entryId) {
+		IllegalStateException::assertTrue(($this->partialContentInstruction === null && !$this->newEntryRequested)
+				|| $entryId === null);
+		$this->entryId = $entryId;
 	}
-
-
 	
 	/**
-	 * @return string[]
+	 * @return string|null
 	 */
-	function getEntityIds() {
-		return $this->entityIds;
+	function getEntryId() {
+		return $this->entryId;
 	}
 	
+	/**
+	 * @param array $data
+	 * @throws \InvalidArgumentException
+	 * @return \rocket\si\api\SiGetInstruction
+	 */
 	static function createFromData(array $data) {
 		$ds = new DataSet($data);
 		
 		try {
 			$instruction = new SiGetInstruction($ds->reqBool('bulky'), $ds->reqBool('readOnly'));
-			$instruction->setDeclarationIncluded($ds->reqBool('declarationIncluded'));
-			$instruction->setEntryIds($ds->reqArray('entryIds', TypeName::INT));
+			$instruction->setDeclarationRequested($ds->reqBool('declarationRequested'));
+			$instruction->setEntryId($ds->reqInt('entryId'));
 			
 			$pcData = $ds->optArray('partialContentInstruction', null, null);
 			if ($pcData == null) {
@@ -143,7 +152,7 @@ class SiGetInstruction {
 				$instruction->setPartialContentInstruction(SiPartialContentInstruction::createFromData($pcData));
 			}
 			
-			$instruction->setNumNews($ds->reqArray('numNews'));
+			$instruction->setNewEntryRequested($ds->reqInt('newEntryRequested'));
 			return $instruction;
 		} catch (AttributesException $e) {
 			throw new \InvalidArgumentException(null, 0, $e);

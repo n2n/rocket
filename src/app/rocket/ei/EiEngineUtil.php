@@ -19,47 +19,42 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\si\api;
+namespace rocket\ei;
 
-use n2n\util\type\attrs\DataSet;
-use n2n\util\type\attrs\AttributesException;
-use n2n\util\type\ArgUtils;
+use rocket\ei\manage\EiObject;
+use rocket\ei\manage\ManageState;
 
-class SiGetRequest {
-	private $instructions = [];
+class EiEngineUtil {
+	private $eiEngine;
+	private $manageState;
+	
+	function __construct(EiEngine $eiEngine, ManageState $manageState) {
+		$this->eiEngine = $eiEngine;
+		$this->manageState = $manageState;
+	}
 	
 	/**
-	 * 
+	 * @param EiObject $eiObject
+	 * @return \rocket\ei\EiEngine
 	 */
-	function __construct() {	
+	function determineEiEngine(EiObject $eiObject) {
+		return $this->eiEngine->getEiMask()->determineEiMask($eiObject->getEiEntityObj()->getEiType())
+				->getEiEngine();
 	}
 	
 	/**
-	 * @return SiGetInstruction[]
+	 * @param EiObject $eiObject
+	 * @param bool $determineEiMask
+	 * @return string
 	 */
-	function getInstructions() {
-		return $this->instructions;
-	}
-
-	/**
-	 * @param SiGetInstruction[]
-	 */
-	function setInstructions(array $instructions) {
-		ArgUtils::valArray($instructions, SiGetInstruction::class);
-		$this->instructions = $instructions;
-	}
-
-	static function createFromData(array $data) {
-		$ds = new DataSet($data);
-		
-		$getRequest = new SiGetRequest();
-		try {
-			foreach ($ds->reqArray('instructions') as $key => $instructionData) {
-				$getRequest->addInstruction($key, SiGetInstruction::createFromData($instructionData));
-			}
-		} catch (AttributesException $e) {
-			throw new \InvalidArgumentException(null, 0, $e);
+	function createIdName(EiObject $eiObject, bool $determineEiMask = true) {
+		$eiMask = $this->eiEngine->getEiMask(); 
+		if ($determineEiMask) {
+			$eiMask = $eiMask->determineEiMask($eiObject->getEiEntityObj()->getEiType());
 		}
-		return $getRequest;
+		
+		$n2nContext = $this->manageState->getN2nContext();
+		return $this->manageState->getDef()->getIdNameDefinition($eiMask)
+				->createIdentityString($eiObject, $n2nContext, $n2nContext->getN2nLocale());
 	}
 }

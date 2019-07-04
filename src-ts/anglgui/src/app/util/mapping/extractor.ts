@@ -114,6 +114,19 @@ export class Extractor {
 		return new Map(<any> entries);
 	}
 	
+	reqArrayMap(propName: string): Map<string, Array<any>> {
+		const map = this.reqMap(propName);
+		
+		map.forEach((value, key) => {
+			if (Array.isArray(value)) return;
+			
+			throw new ObjectMissmatchError('Property ' + propName + '[' + key + '] must be of type array. Given: ' 
+					+ typeof value);
+		});
+		
+		return map;
+	}
+	
 	reqExtractor(propName: string): Extractor {
 		return new Extractor(this.reqObject(propName));
 	}

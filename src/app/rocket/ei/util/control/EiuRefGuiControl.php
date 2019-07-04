@@ -32,7 +32,7 @@ use rocket\ei\manage\gui\control\EntryGuiControl;
 use rocket\ei\manage\gui\control\GeneralGuiControl;
 use rocket\ei\manage\gui\control\SelectionGuiControl;
 use rocket\ei\manage\gui\EiGui;
-use rocket\ei\manage\SiApiControlCallId;
+use rocket\ei\manage\ApiControlCallId;
 
 class EiuRefGuiControl implements GeneralGuiControl, EntryGuiControl, SelectionGuiControl {
 	private $id;
@@ -57,7 +57,7 @@ class EiuRefGuiControl implements GeneralGuiControl, EntryGuiControl, SelectionG
 		return false;
 	}
 	
-	function toSiControl(SiApiControlCallId $siApiCallId): SiControl {
+	function toSiControl(ApiControlCallId $siApiCallId): SiControl {
 		return new RefSiControl($this->url, $this->siButton);
 	}
 	

@@ -28,6 +28,7 @@ class SiPartialContent implements \JsonSerializable {
 	private $offset = 0;
 	private $entries;
 	
+
 	/**
 	 * @param int $count
 	 * @param SiEntry[] $entries
@@ -35,6 +36,37 @@ class SiPartialContent implements \JsonSerializable {
 	function __construct(int $count, array $entries = []) {
 		$this->count = $count;
 		$this->setEntries($entries);
+	}
+	
+	/**
+	 * @return int
+	 */
+	public function getOffset() {
+		return $this->offset;
+	}
+	
+	/**
+	 * @param int $offset
+	 */
+	public function setOffset(int $offset) {
+		$this->offset = $offset;
+		return $this;
+	}
+	
+	/**
+	 * @return int
+	 */
+	function getCount() {
+		return $this->count;
+	}
+	
+	/**
+	 * @param int $count
+	 * @return \rocket\si\content\SiPartialContent
+	 */
+	function setCount(int $count) {
+		$this->count = $count;
+		return $this;
 	}
 
 	/**
@@ -52,15 +84,6 @@ class SiPartialContent implements \JsonSerializable {
 	 */
 	function getEntries() {
 		return $this->entries;
-	}
-	
-	function getCount() {
-		return $this->count;
-	}
-	
-	function setCount(int $count) {
-		$this->count = $count;
-		return $this;
 	}
 	
 	/**

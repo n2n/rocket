@@ -26,6 +26,12 @@ use rocket\ei\manage\entry\UnknownEiObjectException;
 use rocket\ei\manage\EiEntityObj;
 use n2n\persistence\orm\store\EntityInfo;
 use n2n\persistence\orm\criteria\item\CrIt;
+use rocket\ei\manage\gui\ViewMode;
+use rocket\ei\manage\EiObject;
+use n2n\persistence\orm\util\NestedSetUtils;
+use n2n\persistence\orm\criteria\Criteria;
+use rocket\ei\manage\gui\EiGui;
+use n2n\persistence\orm\util\NestedSetStrategy;
 
 class EiFrameUtil {
 	private $eiFrame;
@@ -81,5 +87,112 @@ class EiFrameUtil {
 	private function applyIdComparison(CriteriaComparator $criteriaComparator, $id) {
 		$criteriaComparator->match(CrIt::p('e', $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()
 				->getEntityModel()->getIdDef()->getEntityProperty()), CriteriaComparator::OPERATOR_EQUAL, $id);
+	}
+	
+	/**
+	 * @return \rocket\ei\manage\entry\EiEntry[]
+	 */
+	function createPossibleNewEiEntries() {
+		$contextEiType = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType(); 
+		
+		$newEiEntries = [];
+		
+		if (!$contextEiType->isAbstract()) {
+			$newEiEntries[$contextEiType->getId()] = $this->eiFrame
+					->createEiEntry($contextEiType->createNewEiObject());
+		}
+		
+		foreach ($contextEiType->getAllSubEiTypes() as $eiType) {
+			if ($eiType->isAbstract()) {
+				continue;
+			}
+			
+			$newEiEntries[$eiType->getId()] = $this->eiFrame
+					->createEiEntry($eiType->createNewEiObject());
+		}
+		
+		return $newEiEntries;
+	}
+	
+	function createPossibleNewEiEntryGuis(bool $bulky, bool $readOnly) {
+		$viewMode = ViewMode::determine($bulky, $readOnly, true);
+		
+		$newEiEntryGuis = [];
+		
+		foreach ($eiEntries as $eiTypeId => $newEiEntry) {
+			$newEiGui = $newEiEntry->getEiMask()->getEiEngine()->createFramedEiGui($this->eiFrame, $viewMode);
+			$newEiEntryGuis[$eiTypeId] = $newEiGui->createEiEntryGui($newEiEntry);
+		}
+		
+		return $newEiEntryGuis;
+	}
+	
+	function createEiEntryGuiFromEiObject(EiObject $eiObject, bool $bulky, bool $readOnly) {
+		$eiEntry = $this->eiFrame->createEiEntry($eiObject);
+		$eiGui = $eiEntry->getEiMask()->getEiEngine()->createFramedEiGui($this->eiFrame, 
+				ViewMode::determine($bulky, $readOnly, $eiObject->isNew()));
+		return $eiGui->createEiEntryGui($eiEntry);
+	}
+	
+	/**
+	 * @param int $ignoreConstraintTypes
+	 * @return int
+	 */
+	function count(int $ignoreConstraintTypes = 0) {
+		return $this->eiFrame->createCriteria('e', $ignoreConstraintTypes)
+				->select('COUNT(1)')->toQuery()->fetchSingle();
+	}
+	
+	/**
+	 * @param int $from
+	 * @param int $num
+	 * @param bool $bulky
+	 * @param bool $readOnly
+	 * @return \rocket\ei\manage\gui\EiGui
+	 */
+	function lookupEiGuiFromRange(int $from, int $num, bool $bulky, bool $readOnly) {
+		$eiGui = $this->eiFrame->getContextEiEngine()->createFramedEiGui($this->eiFrame, 
+				ViewMode::determine($bulky, $readOnly, false));
+			
+		$criteria = $this->eiFrame->createCriteria(NestedSetUtils::NODE_ALIAS, false);
+		$criteria->select(NestedSetUtils::NODE_ALIAS)->limit($limit);
+		$criteria->limit($from, $num);
+		
+		$eiType = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType();
+		if (null !== ($nestedSetStrategy = $eiType->getNestedSetStrategy())) {
+			$this->treeLookup($eiGui, $criteria, $eiType->getEntityModel()->getClass(), $nestedSetStrategy);
+		} else {
+			$this->simpleLookup($eiGui, $criteria);
+		}
+			
+		return $eiGui;		
+	}
+		
+	/**
+	 * @param EiGui $eiGui
+	 * @param Criteria $criteria
+	 */
+	private function simpleLookup(EiGui $eiGui, Criteria $criteria) {
+		foreach ($criteria->toQuery()->fetchArray() as $entityObj) {
+			$eiGui->createEiEntryGui($eiEntry);
+		}
+	}
+		
+	/**
+	 * @param EiGui $eiuGui
+	 * @param Criteria $criteria
+	 * @param \ReflectionClass $class
+	 * @param NestedSetStrategy $nestedSetStrategy
+	 */
+	private function treeLookup(EiGui $eiuGui, Criteria $criteria, \ReflectionClass $class, 
+			NestedSetStrategy $nestedSetStrategy) {
+		$nestedSetUtils = new NestedSetUtils($this->eiFrame->getManageState()->getEntityManager(), 
+				$class, $nestedSetStrategy);
+		
+		$eiuGui = $this->eiuFrame->newGui(ViewMode::COMPACT_READ)->renderEntryGuiControls();
+		
+		foreach ($nestedSetUtils->fetch(null, false, $criteria) as $nestedSetItem) {
+			$eiuGui->appendNewEntryGui($nestedSetItem->getEntityObj(), $nestedSetItem->getLevel());
+		}
 	}
 }

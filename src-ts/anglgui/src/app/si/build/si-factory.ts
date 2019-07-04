@@ -65,18 +65,22 @@ export class SiFactory {
 	}
 	
 	createCompactDeclaration(data: any): SiCompactDeclaration {
-		const compactExtr = new Extractor(data);
+		const extr = new Extractor(data);
 		
-		return new SiCompactDeclaration(
-				this.createFieldDeclarations(compactExtr.reqArray('fieldDeclarations')));
+		const declarationMap = new Map<string, SiFieldDeclaration[]>();
+		for (let [buildupId, declarationData] of extr.reqArrayMap('fieldStructureDeclarations')) {
+			declarationMap.set(buildupId, this.createFieldDeclarations(declarationData));
+		}
+		
+		return new SiCompactDeclaration(declarationMap);
 	}
 	
 	createBulkyDeclaration(data: any): SiBulkyDeclaration {
 		const extr = new Extractor(data);
 		
-		const declarationMap = new Map<string, SiFieldStructureDeclaration>();
-		for (let [buildupId, declarationData] of extr.reqMap('fieldStructureDeclarations')) {
-			declarationMap.set(buildupId, this.createFieldStructureDeclaration(declarationData));
+		const declarationMap = new Map<string, SiFieldStructureDeclaration[]>();
+		for (let [buildupId, declarationData] of extr.reqArrayMap('fieldStructureDeclarations')) {
+			declarationMap.set(buildupId, this.createFieldStructureDeclarations(declarationData));
 		}
 		
 		return new SiBulkyDeclaration(declarationMap);

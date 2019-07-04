@@ -43,7 +43,6 @@ export class DlSiZoneContent implements SiZoneContent, SiStructureContent {
     	}
     	
     	return zoneErrors;
-    	
     }
     
     getSelectedEntries(): SiEntry[] {
@@ -56,21 +55,12 @@ export class DlSiZoneContent implements SiZoneContent, SiStructureContent {
     applyTo(structure: SiStructure) {
     	structure.clearChildren();
 		
-		if (this.entries.length != 1) {
-    		for (let entry of this.entries) {
-    			const fsd = this.getFieldStructureDeclaration(entry);
-    			
-    			structure.addChild(this.dingsel(entry, fsd));
-    		}
-    		return;
-    	}
-    	
-    	const entry = this.entries[0]
-    	const declaration = this.getFieldStructureDeclaration(entry);
-    	structure.label = declaration.fieldDeclaration.label;
-    	for (const child of declaration.children) {
-    		structure.addChild(this.dingsel(entry, child));
-    	}
+		for (let entry of this.entries) {
+			const declarations = this.getFieldStructureDeclarations(entry);
+	    	for (const child of declarations) {
+	    		structure.addChild(this.dingsel(entry, child));
+	    	}
+		}
 	}
 	
 	private dingsel(entry: SiEntry, fsd: SiFieldStructureDeclaration): SiStructure {
@@ -86,8 +76,8 @@ export class DlSiZoneContent implements SiZoneContent, SiStructureContent {
 		return structure;
 	}
 
-	getFieldStructureDeclaration(entry: SiEntry): SiFieldStructureDeclaration {
-		return this.bulkyDeclaration.getFieldStructureDeclarationByBuildupId(entry.selectedBuildupId);
+	getFieldStructureDeclarations(entry: SiEntry): SiFieldStructureDeclaration[] {
+		return this.bulkyDeclaration.getFieldStructureDeclarationsByBuildupId(entry.selectedBuildupId);
 	}
 		
 	initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver) {
