@@ -23,6 +23,7 @@ namespace rocket\si\structure;
 
 use n2n\util\type\ArgUtils;
 use rocket\si\content\SiEntry;
+use n2n\util\type\TypeConstraints;
 
 class SiCompactDeclaration implements \JsonSerializable {
 	private $fieldDeclarations;
@@ -41,9 +42,19 @@ class SiCompactDeclaration implements \JsonSerializable {
 	 * @return \rocket\si\structure\SiCompactDeclaration
 	 */
 	function seFieldDeclarations(array $fieldDeclarations) {
-		ArgUtils::valArray($fieldDeclarations, SiFieldDeclaration::class);
+		ArgUtils::valArray($fieldDeclarations,
+				TypeConstraints::array(false, SiFieldDeclaration::class));
 		$this->fieldDeclarations = $fieldDeclarations;
 		return $this;
+	}
+	
+	/**
+	 * @param string $buildupId
+	 * @param SiFieldDeclaration[] $fieldDeclarations
+	 */
+	function putFieldDeclarations(string $buildupId, array $fieldDeclarations) {
+		ArgUtils::valArray($fieldDeclarations, SiFieldDeclaration::class);
+		$this->fieldStructureDeclarations[$buildupId] = $fieldDeclarations;
 	}
 	
 	/**

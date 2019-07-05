@@ -24,27 +24,10 @@ namespace rocket\ei\manage\api;
 use n2n\web\http\controller\ControllerAdapter;
 use n2n\web\http\controller\ParamPost;
 use rocket\ei\manage\ManageState;
-use rocket\ei\manage\gui\control\UnknownGuiControlException;
 use n2n\web\http\BadRequestException;
-use n2n\util\type\attrs\AttributesException;
-use rocket\si\input\SiInputFactory;
-use rocket\si\input\SiInput;
-use rocket\ei\manage\frame\EiFrame;
-use rocket\ei\manage\gui\control\GuiControlPath;
-use rocket\si\input\SiEntryInput;
-use rocket\ei\manage\gui\EiEntryGui;
-use rocket\si\input\SiError;
-use rocket\ei\manage\gui\field\GuiFieldPath;
-use rocket\ei\manage\gui\GuiException;
 use n2n\web\http\controller\Param;
-use rocket\ei\manage\gui\control\GeneralGuiControl;
-use rocket\ei\manage\gui\control\EntryGuiControl;
-use rocket\ei\manage\gui\control\GuiControl;
-use n2n\util\ex\IllegalStateException;
-use rocket\si\control\SiResult;
 use n2n\web\http\controller\ParamBody;
 use rocket\si\api\SiGetRequest;
-use rocket\ei\manage\EiObject;
 use rocket\si\api\SiGetResponse;
 
 class ApiController extends ControllerAdapter {

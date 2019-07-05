@@ -285,7 +285,7 @@ class EiuCtrl {
 		$this->composeEiuGuiForList($eiuGui, $pageSize);
 		
 		$siCompactDeclaration = new SiCompactDeclaration(
-				$eiuGui->getEiGui()->getEiGuiSiFactory()->getSiFieldDeclarations());
+				[$this->eiuFrame->getContextEiType()->getId() => $eiuGui->getEiGui()->getEiGuiSiFactory()->getSiFieldDeclarations()]);
 		
 		$zone = new ListSiZone($this->eiu->frame()->getApiUrl(), $pageSize, $siCompactDeclaration, 
 				new SiPartialContent($this->eiuFrame->countEntries(), $eiuGui->getEiGui()->createSiEntries()));

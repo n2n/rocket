@@ -45,7 +45,6 @@ use n2n\util\type\ArgUtils;
 use rocket\ei\manage\entry\UnknownEiFieldExcpetion;
 use rocket\ei\component\prop\EiProp;
 use n2n\util\ex\NotYetImplementedException;
-use rocket\si\structure\SiFieldStructureDeclaration;
 
 class EiuEntry {
 	private $eiEntry;
@@ -720,9 +719,9 @@ class EiuEntry {
 // 	}
 // }
 
-class DummyEiGuiSiFactory implements EiGuiSiFactory  {
+class DummyEiGuiSiFactory implements EiGuiSiFactory {
 	
-	public function getSiFieldStructureDeclaration(): SiFieldStructureDeclaration {
+	public function getSiFieldStructureDeclarations(): array {
 		throw new NotYetImplementedException();
 	}
 

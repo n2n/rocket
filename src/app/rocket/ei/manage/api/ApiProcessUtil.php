@@ -34,6 +34,9 @@ use rocket\ei\manage\gui\EiEntryGui;
 class ApiProcessUtil {
 	private $eiFrame;
 	
+	/**
+	 * @param EiFrame $eiFrame
+	 */
 	function __construct(EiFrame $eiFrame) {
 		$this->eiFrame = $eiFrame;
 	}

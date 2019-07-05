@@ -68,7 +68,7 @@ export class SiFactory {
 		const extr = new Extractor(data);
 		
 		const declarationMap = new Map<string, SiFieldDeclaration[]>();
-		for (let [buildupId, declarationData] of extr.reqArrayMap('fieldStructureDeclarations')) {
+		for (let [buildupId, declarationData] of extr.reqArrayMap('fieldDeclarations')) {
 			declarationMap.set(buildupId, this.createFieldDeclarations(declarationData));
 		}
 		

@@ -15,6 +15,7 @@ import { SiEntryInput } from "src/app/si/model/input/si-entry-input";
 import { SiInput } from "src/app/si/model/input/si-input";
 import { SiResultFactory } from "src/app/si/build/si-result-factory";
 import { SiResult } from "src/app/si/model/control/si-result";
+import { SiGetRequest } from "src/app/si/model/api/si-get-request";
 
 @Injectable({
   providedIn: 'root'
@@ -89,5 +90,12 @@ export class SiService {
 		        .pipe(map(data => {
 		        	return SiResultFactory.create(data);
 		        }));
+	}
+	
+	apiGet(apiUrl: string, getRequest: SiGetRequest) {
+		return this.httpClient.post<any>(apiUrl + '/get', getRequest)
+				.subscribe((data) => {
+					console.log(data);
+				});
 	}
 }

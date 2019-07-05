@@ -24,6 +24,7 @@ namespace rocket\si\structure;
 use n2n\util\type\ArgUtils;
 use rocket\si\content\SiEntry;
 use rocket\si\control\SiControl;
+use n2n\util\type\TypeConstraints;
 
 class SiBulkyDeclaration implements \JsonSerializable {
 	private $fieldStructureDeclarations;
@@ -42,13 +43,15 @@ class SiBulkyDeclaration implements \JsonSerializable {
 	 * @return \rocket\si\structure\SiBulkyDeclaration
 	 */
 	function setFieldStructureDeclarations(array $fieldStructureDeclarations) {
-		ArgUtils::valArray($fieldStructureDeclarations, SiFieldStructureDeclaration::class);
+		ArgUtils::valArray($fieldStructureDeclarations, 
+				TypeConstraints::array(false, SiFieldStructureDeclaration::class));
 		$this->fieldStructureDeclarations = $fieldStructureDeclarations;
 		return $this;
 	}
 	
-	function putFieldStructureDeclaration(string $buildupId, SiFieldStructureDeclaration $fieldStructureDeclaration) {
-		$this->fieldStructureDeclarations[$buildupId] = $fieldStructureDeclaration;
+	function putFieldStructureDeclaration(string $buildupId, array $fieldStructureDeclarations) {
+		ArgUtils::valArray($fieldStructureDeclarations, SiFieldStructureDeclaration::class);
+		$this->fieldStructureDeclarations[$buildupId] = $fieldStructureDeclarations;
 	}
 	
 	/**

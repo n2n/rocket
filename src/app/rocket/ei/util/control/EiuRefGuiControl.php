@@ -32,7 +32,7 @@ use rocket\ei\manage\gui\control\EntryGuiControl;
 use rocket\ei\manage\gui\control\GeneralGuiControl;
 use rocket\ei\manage\gui\control\SelectionGuiControl;
 use rocket\ei\manage\gui\EiGui;
-use rocket\ei\manage\ApiControlCallId;
+use rocket\ei\manage\api\ApiControlCallId;
 
 class EiuRefGuiControl implements GeneralGuiControl, EntryGuiControl, SelectionGuiControl {
 	private $id;

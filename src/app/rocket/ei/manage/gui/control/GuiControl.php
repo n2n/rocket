@@ -22,7 +22,7 @@
 namespace rocket\ei\manage\gui\control;
 
 use rocket\si\control\SiControl;
-use rocket\ei\manage\ApiControlCallId;
+use rocket\ei\manage\api\ApiControlCallId;
 
 interface GuiControl {
 	

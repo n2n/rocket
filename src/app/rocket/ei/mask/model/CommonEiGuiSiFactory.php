@@ -86,7 +86,7 @@ class CommonEiGuiSiFactory implements EiGuiSiFactory {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\EiGuiSiFactory::getFieldDeclarationStrutures()
 	 */
-	function getSiFieldStructureDeclarations(): SiFieldStructureDeclaration {
+	function getSiFieldStructureDeclarations(): array {
 		IllegalStateException::assertTrue($this->displayStructure !== null);
 		
 		return $this->createFieldStructureDeclarations($this->displayStructure);
