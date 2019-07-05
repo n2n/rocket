@@ -31,7 +31,7 @@ export class SiService {
 	                return this.createSiZoneContent(data, zone);
 	            }));
 	}
-	  
+	
 	private createSiZoneContent(data: any, zone: SiZone): SiZoneContent {
 		return new SiFactory(zone).createZoneContent(data);
 	}

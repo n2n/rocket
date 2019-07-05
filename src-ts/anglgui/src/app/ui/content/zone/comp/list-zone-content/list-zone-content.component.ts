@@ -6,6 +6,7 @@ import { SiFieldDeclaration } from "src/app/si/model/structure/si-field-declarat
 import { SiService } from "src/app/si/model/si.service";
 import { SiGetRequest } from "src/app/si/model/api/si-get-request";
 import { SiGetInstruction } from "src/app/si/model/api/si-get-instruction";
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'rocket-ui-list-zone-content',
@@ -14,11 +15,14 @@ import { SiGetInstruction } from "src/app/si/model/api/si-get-instruction";
 })
 export class ListZoneContentComponent implements OnInit {
 
+	siService: SiService
 	listSiZone: ListSiZoneContent;
 	
 	private fieldDeclarations: Array<SiFieldDeclaration>|null = null;
 
-	constructor(private siService: SiService) { }
+	constructor(private router: Router) { 
+		
+	}
 
 	ngOnInit() {
 		if (this.listSiZone.compactDeclaration) {

@@ -13,7 +13,7 @@ export class StructureComponent implements OnInit {
 
 	private _siStructure: SiStructure;
 	
-	@ViewChild(StructureContentDirective) structureContentDirective: StructureContentDirective;
+	@ViewChild(StructureContentDirective, { static: true }) structureContentDirective: StructureContentDirective;
 
     constructor(private elRef: ElementRef, private componentFactoryResolver: ComponentFactoryResolver) { 
     }
