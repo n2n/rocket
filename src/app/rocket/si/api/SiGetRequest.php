@@ -48,6 +48,10 @@ class SiGetRequest {
 		ArgUtils::valArray($instructions, SiGetInstruction::class);
 		$this->instructions = $instructions;
 	}
+	
+	function putInsturction(string $key, SiGetInstruction $instruction) {
+		$this->instructions[$key] = $instruction;
+	}
 
 	static function createFromData(array $data) {
 		$ds = new DataSet($data);
@@ -55,7 +59,7 @@ class SiGetRequest {
 		$getRequest = new SiGetRequest();
 		try {
 			foreach ($ds->reqArray('instructions') as $key => $instructionData) {
-				$getRequest->addInstruction($key, SiGetInstruction::createFromData($instructionData));
+				$getRequest->putInstruction($key, SiGetInstruction::createFromData($instructionData));
 			}
 		} catch (AttributesException $e) {
 			throw new \InvalidArgumentException(null, 0, $e);

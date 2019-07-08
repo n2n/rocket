@@ -340,7 +340,7 @@ class EiuCtrl {
 		
 		$siBulkyDeclaration = new SiBulkyDeclaration([]);
 		$siBulkyDeclaration->putFieldStructureDeclaration($eiTypeId, 
-				$eiGui->getEiGuiSiFactory()->getSiFieldStructureDeclaration());
+				$eiGui->getEiGuiSiFactory()->getSiFieldStructureDeclarations());
 		
 		$zone = new DlSiZone($this->eiu->frame()->getApiUrl(), $siBulkyDeclaration,
 				$eiGui->createSiEntries(), $eiGui->createGeneralSiControls());

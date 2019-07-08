@@ -27,7 +27,6 @@ use n2n\web\http\ForbiddenException;
 use rocket\ei\manage\ManageState;
 use rocket\ei\component\UnknownEiComponentException;
 use rocket\ei\util\Eiu;
-use rocket\ei\manage\SiApiController;
 use rocket\ei\manage\security\InaccessibleEiCommandPathException;
 use n2n\web\http\BadRequestException;
 use n2n\util\ex\UnsupportedOperationException;
@@ -39,6 +38,7 @@ use rocket\ei\manage\entry\UnknownEiObjectException;
 use rocket\ei\manage\EiObject;
 use n2n\util\uri\Url;
 use n2n\util\uri\Path;
+use rocket\ei\manage\api\ApiController;
 
 class EiFrameController extends ControllerAdapter {
 	const API_PATH_PART = 'api';
@@ -55,6 +55,7 @@ class EiFrameController extends ControllerAdapter {
 	
 	function prepare(ManageState $manageState) {
 		$this->manageState = $manageState;
+		$this->eiFrame->setBaseUrl($this->getUrlToController());
 	}
 	
 	/**
@@ -153,7 +154,7 @@ class EiFrameController extends ControllerAdapter {
 	 */
 	private function createForked($eiPropPath, $eiForkLink) {
 		try {
-			return $this->eiMask->getEiEngine()->createForkedEiFrame($eiPropPath, $eiForkLink);
+			return $this->eiFrame->getContextEiEngine()->createForkedEiFrame($eiPropPath, $eiForkLink);
 		} catch (InaccessibleEiCommandPathException $e) {
 			throw new ForbiddenException(null, 0, $e);
 		} catch (UnknownEiComponentException $e) {
@@ -161,11 +162,13 @@ class EiFrameController extends ControllerAdapter {
 		}
 	}
 	
-	public function doApi($eiCommandPathStr, SiApiController $siApiController, array $delegateParams = null) {
+	public function doApi($eiCommandPathStr, ApiController $apiController, array $delegateParams = null) {
 		$eiCommandPath = $this->parseEiCommandPath($eiCommandPathStr);
-		$this->pushEiFrame($eiCommandPath);
+		$eiCommand = $this->lookupEiCommand($eiCommandPath);
 		
-		$this->delegate($siApiController);
+		$this->pushEiFrame($eiCommandPath, $eiCommand);
+		
+		$this->delegate($apiController);
 	}
 	
 	public function doCmd($eiCommandPathStr, array $delegateCmds = null) {		

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Inject, Injector } from '@angular/core';
 import { ListSiZoneContent } from "src/app/si/model/structure/impl/list-si-zone-content";
 import { SiEntry } from "src/app/si/model/content/si-entry";
 import { SiField } from "src/app/si/model/content/si-field";
@@ -15,12 +15,12 @@ import { Router } from "@angular/router";
 })
 export class ListZoneContentComponent implements OnInit {
 
-	siService: SiService
 	listSiZone: ListSiZoneContent;
 	
 	private fieldDeclarations: Array<SiFieldDeclaration>|null = null;
+	private siService: SiService;
 
-	constructor(private router: Router) { 
+	constructor(private injector: Injector) { 
 		
 	}
 
@@ -29,6 +29,7 @@ export class ListZoneContentComponent implements OnInit {
 			return;
 		}
 		
+		this.siService = this.injector.get(SiService);
 		this.siService.apiGet(this.listSiZone.getApiUrl(),
 				new SiGetRequest(SiGetInstruction.partialContent(false, true, 0, this.listSiZone.pageSize)));
 	}
