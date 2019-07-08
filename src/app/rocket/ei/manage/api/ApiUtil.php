@@ -82,7 +82,7 @@ class ApiUtil {
 	 * @return SiCompactDeclaration
 	 */
 	function createSiCompactDeclaration(EiGui $eiGui) {
-		$declaration = new SiCompactDeclaration([]);
+		$declaration = new SiCompactDeclaration();
 		$declaration->putFieldDeclarations(
 				$this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()->getId(),
 				$eiGui->getEiGuiSiFactory()->getSiFieldDeclarations());
