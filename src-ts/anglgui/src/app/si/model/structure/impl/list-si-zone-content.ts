@@ -11,6 +11,7 @@ import { SiStructureContent } from "src/app/si/model/structure/si-structure-cont
 import { SiStructure } from "src/app/si/model/structure/si-structure";
 import { SiZone } from "src/app/si/model/structure/si-zone";
 import { SiZoneError } from "src/app/si/model/structure/si-zone-error";
+import { SiCommanderService } from "src/app/si/model/si-commander.service";
 
 export class ListSiZoneContent implements SiZoneContent, SiStructureContent {
 	private pages = new Map<number, SiPage>();
@@ -80,12 +81,14 @@ export class ListSiZoneContent implements SiZoneContent, SiStructureContent {
 	}
 	
 	initComponent(viewContainerRef: ViewContainerRef, 
-			componentFactoryResolver: ComponentFactoryResolver): ComponentRef<any> {
+			componentFactoryResolver: ComponentFactoryResolver,
+			commanderService: SiCommanderService): ComponentRef<any> {
 		const componentFactory = componentFactoryResolver.resolveComponentFactory(ListZoneContentComponent);
 	    
 	    const componentRef = viewContainerRef.createComponent(componentFactory);
 	    
 	    componentRef.instance.listSiZone = this;
+	    componentRef.instance.siService = commanderService.service;
 	    
 	    return componentRef;
 	}

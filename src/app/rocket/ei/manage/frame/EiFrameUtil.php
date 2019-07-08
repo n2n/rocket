@@ -32,6 +32,7 @@ use n2n\persistence\orm\util\NestedSetUtils;
 use n2n\persistence\orm\criteria\Criteria;
 use rocket\ei\manage\gui\EiGui;
 use n2n\persistence\orm\util\NestedSetStrategy;
+use rocket\ei\manage\LiveEiObject;
 
 class EiFrameUtil {
 	private $eiFrame;
@@ -150,13 +151,13 @@ class EiFrameUtil {
 	 * @param bool $readOnly
 	 * @return \rocket\ei\manage\gui\EiGui
 	 */
-	function lookupEiGuiFromRange(int $from, int $num, bool $bulky, bool $readOnly) {
+	function lookupEiGuiFromRange(int $offset, int $num, bool $bulky, bool $readOnly) {
 		$eiGui = $this->eiFrame->getContextEiEngine()->createFramedEiGui($this->eiFrame, 
 				ViewMode::determine($bulky, $readOnly, false));
 			
 		$criteria = $this->eiFrame->createCriteria(NestedSetUtils::NODE_ALIAS, false);
-		$criteria->select(NestedSetUtils::NODE_ALIAS)->limit($limit);
-		$criteria->limit($from, $num);
+		$criteria->select(NestedSetUtils::NODE_ALIAS);
+		$criteria->limit($offset, $num);
 		
 		$eiType = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType();
 		if (null !== ($nestedSetStrategy = $eiType->getNestedSetStrategy())) {
@@ -169,12 +170,23 @@ class EiFrameUtil {
 	}
 		
 	/**
+	 * @param object $entityObj
+	 * @return \rocket\ei\manage\LiveEiObject
+	 */
+	private function createEiObject(object $entityObj) {
+		$eiType = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType();
+		
+		return LiveEiObject::create($eiType, $entityObj);
+	}
+	
+	/**
 	 * @param EiGui $eiGui
 	 * @param Criteria $criteria
 	 */
 	private function simpleLookup(EiGui $eiGui, Criteria $criteria) {
 		foreach ($criteria->toQuery()->fetchArray() as $entityObj) {
-			$eiGui->createEiEntryGui($eiEntry);
+			$eiGui->createEiEntryGui($this->eiFrame->createEiEntry(
+					$this->createEiObject($entityObj)));
 		}
 	}
 		
@@ -192,7 +204,9 @@ class EiFrameUtil {
 		$eiuGui = $this->eiuFrame->newGui(ViewMode::COMPACT_READ)->renderEntryGuiControls();
 		
 		foreach ($nestedSetUtils->fetch(null, false, $criteria) as $nestedSetItem) {
-			$eiuGui->appendNewEntryGui($nestedSetItem->getEntityObj(), $nestedSetItem->getLevel());
+			$eiuGui->createEiEntryGui($this->eiFrame->createEiEntry(
+							$this->createEiObject($nestedSetItem->getEntityObj())), 
+					$nestedSetItem->getLevel());
 		}
 	}
 }

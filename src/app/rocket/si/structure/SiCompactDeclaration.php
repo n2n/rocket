@@ -33,7 +33,7 @@ class SiCompactDeclaration implements \JsonSerializable {
 	 * @param int $count
 	 * @param SiEntry[] $entries
 	 */
-	function __construct(array $fieldDeclarations) {
+	function __construct(array $fieldDeclarations = []) {
 		$this->seFieldDeclarations($fieldDeclarations);
 	}
 	

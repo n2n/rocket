@@ -36,7 +36,6 @@ export class SiService {
 		return new SiFactory(zone).createZoneContent(data);
 	}
 	
-	
 	entryControlCall(apiUrl: string, callId: object, entryId: string, entryInputs: SiEntryInput[]): Observable<any> {
 		const formData = new FormData();
 		formData.append('callId', JSON.stringify(callId));

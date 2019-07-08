@@ -101,9 +101,9 @@ class SiGetInstruction {
 	}
 
 	/**
-	 * @return int
+	 * @return bool
 	 */
-	function getNewEntryRequested() {
+	function isNewEntryRequested() {
 		return $this->newEntryRequested;
 	}
 
@@ -143,7 +143,7 @@ class SiGetInstruction {
 		try {
 			$instruction = new SiGetInstruction($ds->reqBool('bulky'), $ds->reqBool('readOnly'));
 			$instruction->setDeclarationRequested($ds->reqBool('declarationRequested'));
-			$instruction->setEntryId($ds->reqInt('entryId'));
+			$instruction->setEntryId($ds->optInt('entryId'));
 			
 			$pcData = $ds->optArray('partialContentInstruction', null, null);
 			if ($pcData == null) {
@@ -152,7 +152,7 @@ class SiGetInstruction {
 				$instruction->setPartialContentInstruction(SiPartialContentInstruction::createFromData($pcData));
 			}
 			
-			$instruction->setNewEntryRequested($ds->reqInt('newEntryRequested'));
+			$instruction->setNewEntryRequested($ds->reqBool('newEntryRequested'));
 			return $instruction;
 		} catch (AttributesException $e) {
 			throw new \InvalidArgumentException(null, 0, $e);
@@ -198,8 +198,8 @@ class SiPartialContentInstruction {
 		
 		try {
 			$instruction = new SiPartialContentInstruction();
-			$instruction->setFrom($ds->reqInt('entries'));
-			$instruction->setNum($ds->reqInt('numNews'));
+			$instruction->setFrom($ds->reqInt('offset'));
+			$instruction->setNum($ds->reqInt('num'));
 			return $instruction;
 		} catch (AttributesException $e) {
 			throw new \InvalidArgumentException(null, 0, $e);

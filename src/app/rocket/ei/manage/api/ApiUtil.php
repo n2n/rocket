@@ -81,8 +81,8 @@ class ApiUtil {
 	 * @param EiGui $eiGui
 	 * @return SiCompactDeclaration
 	 */
-	function createSiCompactDelcaration(EiGui $eiGui) {
-		$declaration = new SiCompactDeclaration();
+	function createSiCompactDeclaration(EiGui $eiGui) {
+		$declaration = new SiCompactDeclaration([]);
 		$declaration->putFieldDeclarations(
 				$this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()->getId(),
 				$eiGui->getEiGuiSiFactory()->getSiFieldDeclarations());
@@ -94,7 +94,7 @@ class ApiUtil {
 	 * @param EiGui $eiGui
 	 * @return SiBulkyDeclaration
 	 */
-	function createSiBulkyDelcaration(EiGui $eiGui) {
+	function createSiBulkyDeclaration(EiGui $eiGui) {
 		$declaration = new SiBulkyDeclaration();
 		$declaration->putFieldStructureDeclarations(
 				$this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()->getId(),

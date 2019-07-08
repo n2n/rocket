@@ -18,7 +18,7 @@ import { SiCommandError } from "src/app/si/model/si-command-error";
 })
 export class SiCommanderService {
 
-	constructor(private siService: SiService, private router: Router, private platformLocation: PlatformLocation) {
+	constructor(readonly service: SiService, private router: Router, private platformLocation: PlatformLocation) {
 	}
   
 	loadZone(zone: SiZone) {
@@ -28,7 +28,7 @@ export class SiCommanderService {
 		
 		zone.removeContent();
 		
-		this.siService.lookupSiZoneContent(zone, zone.url)
+		this.service.lookupSiZoneContent(zone, zone.url)
 				.subscribe((siZoneContent) => {
 					zone.content = siZoneContent;
 				});
@@ -66,7 +66,7 @@ export class SiCommanderService {
 			entryInputs.push(entry.readInput());
 		}
 
-		this.siService.entryControlCall(apiUrl, callId, entry.qualifier.id, entryInputs);
+		this.service.entryControlCall(apiUrl, callId, entry.qualifier.id, entryInputs);
 	}
 	
 	execSelectionControl(apiUrl: string, callId: object, zoneContent: SiZoneContent, entries: SiEntry[], includeInput: boolean) {
@@ -85,7 +85,7 @@ export class SiCommanderService {
 			}
 		}
 		
-		this.siService.selectionControlCall(apiUrl, callId, entryIds, entryInputs);
+		this.service.selectionControlCall(apiUrl, callId, entryIds, entryInputs);
 	}
 	
 	execControl(apiUrl: string, callId: object, zoneContent: SiZoneContent, includeInput: boolean) {
@@ -105,7 +105,7 @@ export class SiCommanderService {
 			input.entryInputs.push(entry.readInput());
 		}
 		
-		this.siService.controlCall(apiUrl, callId, input)
+		this.service.controlCall(apiUrl, callId, input)
 				.subscribe((result) => {
 					this.handleResult(result, entries);
 				});

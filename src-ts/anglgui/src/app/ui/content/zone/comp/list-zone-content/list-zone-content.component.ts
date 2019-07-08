@@ -16,9 +16,9 @@ import { Router } from "@angular/router";
 export class ListZoneContentComponent implements OnInit {
 
 	listSiZone: ListSiZoneContent;
+	siService: SiService;
 	
 	private fieldDeclarations: Array<SiFieldDeclaration>|null = null;
-	private siService: SiService;
 
 	constructor(private injector: Injector) { 
 		
@@ -29,7 +29,6 @@ export class ListZoneContentComponent implements OnInit {
 			return;
 		}
 		
-		this.siService = this.injector.get(SiService);
 		this.siService.apiGet(this.listSiZone.getApiUrl(),
 				new SiGetRequest(SiGetInstruction.partialContent(false, true, 0, this.listSiZone.pageSize)));
 	}

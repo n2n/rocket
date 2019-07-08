@@ -49,7 +49,7 @@ class SiGetRequest {
 		$this->instructions = $instructions;
 	}
 	
-	function putInsturction(string $key, SiGetInstruction $instruction) {
+	function putInstruction(string $key, SiGetInstruction $instruction) {
 		$this->instructions[$key] = $instruction;
 	}
 
