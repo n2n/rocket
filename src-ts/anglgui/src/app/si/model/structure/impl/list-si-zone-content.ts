@@ -15,7 +15,7 @@ import { SiCommanderService } from "src/app/si/model/si-commander.service";
 
 export class ListSiZoneContent implements SiZoneContent, SiStructureContent {
 	private pages = new Map<number, SiPage>();
-	public size: number|null = null;
+	private _size: number|null = null;
 	public compactDeclaration: SiCompactDeclaration|null = null;
 	
 	constructor(public apiUrl: string, public pageSize: number, public zone: SiZone) {
@@ -41,8 +41,24 @@ export class ListSiZoneContent implements SiZoneContent, SiStructureContent {
         return [];
     }
     
+    get size(): number {
+    	this.ensureSetup();
+    	return <number> this._size;
+    }
+    
+    set size(size: number) {
+    	this._size = size;
+    	
+    	const pagesNum = this.pagesNum;
+    	for (let pageNo of this.pages.keys()) {
+    		if (pageNo > pagesNum) {
+    			this.pages.delete(pageNo);
+    		}
+    	}
+    }
+    
     get setup(): boolean {
-    	return !!(this.compactDeclaration && this.size);
+    	return !!(this.compactDeclaration && this._size);
     }
 	
 	private ensureSetup() {
@@ -100,5 +116,8 @@ export class ListSiZoneContent implements SiZoneContent, SiStructureContent {
 
 export class SiPage {
 	constructor(readonly number: number, readonly entries: SiEntry[]) {
+		if (number < 1) {
+			throw new IllegalSiStateError('Illegal page no: ' + number);
+		}
 	}
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Inject, Injector } from '@angular/core';
-import { ListSiZoneContent } from "src/app/si/model/structure/impl/list-si-zone-content";
+import { ListSiZoneContent, SiPage } from "src/app/si/model/structure/impl/list-si-zone-content";
 import { SiEntry } from "src/app/si/model/content/si-entry";
 import { SiField } from "src/app/si/model/content/si-field";
 import { SiFieldDeclaration } from "src/app/si/model/structure/si-field-declaration";
@@ -33,8 +33,6 @@ export class ListZoneContentComponent implements OnInit {
 		}
 		
 		this.loadPage(1);
-		
-		
 	}
 	
 	private loadPage(pageNo: number) {
@@ -42,12 +40,19 @@ export class ListZoneContentComponent implements OnInit {
 				(pageNo - 1) * this.model.pageSize, pageNo * this.model.pageSize));
 		this.siService.apiGet(this.model.getApiUrl(), getRequest, this.model.getZone(), this.model)
 				.subscribe((getResponse: SiGetResponse) => {
+					const result = getResponse.results[0];
+					
+					if (result.compactDeclaration) {
+						this.model.compactDeclaration = result.compactDeclaration;
+					}
+					
 					this.initPage(pageNo, <SiPartialContent> getResponse.results[0].partialContent);
 				});
 	}
 	
 	private initPage(pageNo: number, partialContent: SiPartialContent) {
-		
+		this.model.size = partialContent.count;
+		this.model.putPage(new SiPage(pageNo, partialContent.entries));
 	}
 	
 	getFieldDeclarations(): Array<SiFieldDeclaration>|null {
