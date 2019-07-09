@@ -40,9 +40,13 @@ export class ListSiZoneContent implements SiZoneContent, SiStructureContent {
     getZoneErrors(): SiZoneError[] {
         return [];
     }
+    
+    get setup(): boolean {
+    	return !!(this.compactDeclaration && this.size);
+    }
 	
 	private ensureSetup() {
-		if (this.compactDeclaration && this.size) return;
+		if (this.setup) return;
 		
 		throw new IllegalSiStateError('ListSiZone not set up.');
 	}
@@ -59,9 +63,9 @@ export class ListSiZoneContent implements SiZoneContent, SiStructureContent {
 		return this.pages.has(number);
 	}
 	
-	getPageByNo(no: number) {
+	getPageByNo(no: number): SiPage {
 		if (this.constainsPageNo(no)) {
-			return this.pages.get(no);
+			return <SiPage> this.pages.get(no);
 		}
 		
 		throw new IllegalSiStateError('Unknown page with no: ' + no);
@@ -87,7 +91,7 @@ export class ListSiZoneContent implements SiZoneContent, SiStructureContent {
 	    
 	    const componentRef = viewContainerRef.createComponent(componentFactory);
 	    
-	    componentRef.instance.listSiZone = this;
+	    componentRef.instance.model = this;
 	    componentRef.instance.siService = commanderService.service;
 	    
 	    return componentRef;

@@ -16,6 +16,8 @@ import { SiInput } from "src/app/si/model/input/si-input";
 import { SiResultFactory } from "src/app/si/build/si-result-factory";
 import { SiResult } from "src/app/si/model/control/si-result";
 import { SiGetRequest } from "src/app/si/model/api/si-get-request";
+import { SiApiFactory } from "src/app/si/build/si-api-factory";
+import { SiGetResponse } from "src/app/si/model/api/si-get-response";
 
 @Injectable({
   providedIn: 'root'
@@ -87,14 +89,17 @@ export class SiService {
 //		            return data.expert;
 //		        }))
 		        .pipe(map(data => {
-		        	return SiResultFactory.create(data);
+		        	return SiResultFactory.createResult(data);
 		        }));
 	}
 	
-	apiGet(apiUrl: string, getRequest: SiGetRequest) {
-		return this.httpClient.post<any>(apiUrl + '/get', getRequest)
-				.subscribe((data) => {
-					console.log(data);
-				});
+	apiGet(apiUrl: string, getRequest: SiGetRequest, zone: SiZone, zoneContent: SiZoneContent): Observable<SiGetResponse> {
+		return this.httpClient
+				.post<any>(apiUrl + '/get', getRequest)
+				.pipe(map(data => {
+					return new SiApiFactory(zone, zoneContent).createGetResponse(data);
+				}));
 	}
+	
+	
 }

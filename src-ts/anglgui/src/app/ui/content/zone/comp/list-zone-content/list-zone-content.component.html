@@ -1,5 +1,5 @@
 
-<table *ngIf="listSiZone.compactDeclaration" class="table table-hover rocket-table">
+<table *ngIf="model.compactDeclaration" class="table table-hover rocket-table">
 	<thead>
 		<tr>
 			<th *ngFor="let siFieldDeclaration of getFieldDeclarations()">
@@ -10,7 +10,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		<tr *ngFor="let siEntry of listSiZone.getPageByNo(1).entries" rocketUiEntry [siEntry]="siEntry">
+		<tr *ngFor="let siEntry of model.getPageByNo(1).entries" rocketUiEntry [siEntry]="siEntry">
 			<td *ngFor="let siFieldDeclaration of getFieldDeclarations()">
 				<ng-template rocketUiField [siEntry]="siEntry" [siFieldDeclaration]="siFieldDeclaration"></ng-template>
 			</td>
@@ -28,7 +28,7 @@
 	
 	</div>
 	<div class="rocket-aside-commands">
-		<rocket-ui-pagination [curPageNo]="1" [lastPageNo]="listSiZone.pagesNum" 
+		<rocket-ui-pagination *ngIf="model.isSetup()" [curPageNo]="1" [lastPageNo]="model.pagesNum" 
 				class="rocket-pagination btn-group"></rocket-ui-pagination>
 	</div>
 </div>

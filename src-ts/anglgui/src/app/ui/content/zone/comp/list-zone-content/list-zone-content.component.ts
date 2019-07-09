@@ -7,6 +7,9 @@ import { SiService } from "src/app/si/model/si.service";
 import { SiGetRequest } from "src/app/si/model/api/si-get-request";
 import { SiGetInstruction } from "src/app/si/model/api/si-get-instruction";
 import { Router } from "@angular/router";
+import { SiGetResponse } from "src/app/si/model/api/si-get-response";
+import { SiGetResult } from "src/app/si/model/api/si-get-result";
+import { SiPartialContent } from "src/app/si/model/content/si-partial-content";
 
 @Component({
   selector: 'rocket-ui-list-zone-content',
@@ -15,22 +18,36 @@ import { Router } from "@angular/router";
 })
 export class ListZoneContentComponent implements OnInit {
 
-	listSiZone: ListSiZoneContent;
+	model: ListSiZoneContent;
 	siService: SiService;
 	
 	private fieldDeclarations: Array<SiFieldDeclaration>|null = null;
 
-	constructor(private injector: Injector) { 
+	constructor() { 
 		
 	}
 
 	ngOnInit() {
-		if (this.listSiZone.compactDeclaration) {
+		if (this.model.setup) {
 			return;
 		}
 		
-		this.siService.apiGet(this.listSiZone.getApiUrl(),
-				new SiGetRequest(SiGetInstruction.partialContent(false, true, 0, this.listSiZone.pageSize)));
+		this.loadPage(1);
+		
+		
+	}
+	
+	private loadPage(pageNo: number) {
+		const getRequest = new SiGetRequest(SiGetInstruction.partialContent(false, true, 
+				(pageNo - 1) * this.model.pageSize, pageNo * this.model.pageSize));
+		this.siService.apiGet(this.model.getApiUrl(), getRequest, this.model.getZone(), this.model)
+				.subscribe((getResponse: SiGetResponse) => {
+					this.initPage(pageNo, <SiPartialContent> getResponse.results[0].partialContent);
+				});
+	}
+	
+	private initPage(pageNo: number, partialContent: SiPartialContent) {
+		
 	}
 	
 	getFieldDeclarations(): Array<SiFieldDeclaration>|null {
@@ -38,8 +55,8 @@ export class ListZoneContentComponent implements OnInit {
 			return this.fieldDeclarations
 		}
 		
-		if (this.listSiZone.compactDeclaration) {
-			this.fieldDeclarations = this.listSiZone.compactDeclaration.getBasicFieldDeclarations(); 
+		if (this.model.compactDeclaration) {
+			this.fieldDeclarations = this.model.compactDeclaration.getBasicFieldDeclarations(); 
 		}
 		
 		return this.fieldDeclarations;

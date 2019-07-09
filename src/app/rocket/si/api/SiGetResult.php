@@ -36,9 +36,9 @@ class SiGetResult implements \JsonSerializable {
 	 */
 	private $bulkyDeclaration;
 	/**
-	 * @var SiEntry
+	 * @var SiEntry|null
 	 */
-	private $entry = [];
+	private $entry = null;
 	/**
 	 * @var SiPartialContent|null
 	 */
