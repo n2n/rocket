@@ -1,7 +1,7 @@
 
 import { ObjectMissmatchError, Extractor } from "src/app/util/mapping/extractor";
 import { DlSiZoneContent } from "src/app/si/model/structure/impl/dl-si-zone-content";
-import { ListSiZoneContent, SiPage } from "src/app/si/model/structure/impl/list-si-zone-content";
+import { ListSiZoneContent } from "src/app/si/model/structure/impl/list-si-zone-content";
 import { SiZone } from "src/app/si/model/structure/si-zone";
 import { SiEntry } from "src/app/si/model/content/si-entry";
 import { SiField } from "src/app/si/model/content/si-field";
@@ -25,6 +25,7 @@ import { LinkOutSiField } from "src/app/si/model/content/impl/link-out-si-field"
 import { QualifierSelectInSiField } from "src/app/si/model/content/impl/qualifier-select-in-si-field";
 import { SiResultFactory } from "src/app/si/build/si-result-factory";
 import { SiCompFactory } from "src/app/si/build/si-comp-factory";
+import { SiPage } from "src/app/si/model/structure/impl/si-page";
 
 export class SiFactory {
 	

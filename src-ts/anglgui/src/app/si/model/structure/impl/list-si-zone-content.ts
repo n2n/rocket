@@ -12,6 +12,7 @@ import { SiStructure } from "src/app/si/model/structure/si-structure";
 import { SiZone } from "src/app/si/model/structure/si-zone";
 import { SiZoneError } from "src/app/si/model/structure/si-zone-error";
 import { SiCommanderService } from "src/app/si/model/si-commander.service";
+import { SiPage } from "src/app/si/model/structure/impl/si-page";
 
 export class ListSiZoneContent implements SiZoneContent, SiStructureContent {
 	private pages = new Map<number, SiPage>();
@@ -106,7 +107,7 @@ export class ListSiZoneContent implements SiZoneContent, SiStructureContent {
 		const componentFactory = componentFactoryResolver.resolveComponentFactory(ListZoneContentComponent);
 	    
 	    const componentRef = viewContainerRef.createComponent(componentFactory);
-	    
+
 	    componentRef.instance.model = this;
 	    componentRef.instance.siService = commanderService.service;
 	    
@@ -114,10 +115,3 @@ export class ListSiZoneContent implements SiZoneContent, SiStructureContent {
 	}
 }
 
-export class SiPage {
-	constructor(readonly number: number, readonly entries: SiEntry[]) {
-		if (number < 1) {
-			throw new IllegalSiStateError('Illegal page no: ' + number);
-		}
-	}
-}

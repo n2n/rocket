@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Inject, Injector } from '@angular/core';
-import { ListSiZoneContent, SiPage } from "src/app/si/model/structure/impl/list-si-zone-content";
+import { ListSiZoneContent } from "src/app/si/model/structure/impl/list-si-zone-content";
 import { SiEntry } from "src/app/si/model/content/si-entry";
 import { SiField } from "src/app/si/model/content/si-field";
 import { SiFieldDeclaration } from "src/app/si/model/structure/si-field-declaration";
@@ -10,6 +10,7 @@ import { Router } from "@angular/router";
 import { SiGetResponse } from "src/app/si/model/api/si-get-response";
 import { SiGetResult } from "src/app/si/model/api/si-get-result";
 import { SiPartialContent } from "src/app/si/model/content/si-partial-content";
+import { SiPage } from "src/app/si/model/structure/impl/si-page";
 
 @Component({
   selector: 'rocket-ui-list-zone-content',
@@ -18,7 +19,7 @@ import { SiPartialContent } from "src/app/si/model/content/si-partial-content";
 })
 export class ListZoneContentComponent implements OnInit {
 
-	model: ListSiZoneContent;
+	model: any;
 	siService: SiService;
 	
 	private fieldDeclarations: Array<SiFieldDeclaration>|null = null;

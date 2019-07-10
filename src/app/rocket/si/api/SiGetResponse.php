@@ -40,6 +40,6 @@ class SiGetResponse implements \JsonSerializable {
 	}
 	
 	public function jsonSerialize() {
-		return $this->results;
+		return ['results' => $this->results];
 	}	
 }

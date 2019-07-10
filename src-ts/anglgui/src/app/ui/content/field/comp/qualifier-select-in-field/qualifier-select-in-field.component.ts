@@ -42,7 +42,6 @@ export class QualifierSelectInFieldComponent implements OnInit {
 		});
 		
 		const content = new ListSiZoneContent(this.model.getApiUrl(), 30, siZone);
-		
-		content.applyTo(siZone.structure);
+		this.optionsSiLayer.pushZone(null).content = content;
 	}
 }
