@@ -76,6 +76,12 @@ export class ListSiZoneContent implements SiZoneContent, SiStructureContent {
 		this.pages.set(page.number, page);
 	}
 	
+	getVisiblePages(): SiPage[] {
+		return this.pages.values().filter((page: SiPage) => {
+			return page.offsetHeight !== null;
+		});
+	}
+	
 	constainsPageNo(number: number): boolean {
 		return this.pages.has(number);
 	}

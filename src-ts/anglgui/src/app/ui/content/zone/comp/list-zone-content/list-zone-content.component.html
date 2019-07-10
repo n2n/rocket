@@ -9,16 +9,18 @@
 		</tr>
 	</thead>
 	<tbody>
-		<tr *ngFor="let siEntry of model.getPageByNo(1).entries" rocketUiEntry [siEntry]="siEntry">
-			<td *ngFor="let siFieldDeclaration of getFieldDeclarations()">
-				<ng-template rocketUiField [siEntry]="siEntry" [siFieldDeclaration]="siFieldDeclaration"></ng-template>
-			</td>
-			<td class="rocket-table-commands rocket-simple-commands">
-				<ng-container *ngFor="let pair of siEntry.selectedBuildup.controlMap | keyvalue">
-					<rocket-ui-control [siControl]="pair.value"></rocket-ui-control>
-				</ng-container>
-			</td>
-		</tr>
+		<ng-container *ngFor="let page of model.getVisiblePages()">
+			<tr *ngFor="let siEntry of page.entries" rocketUiEntry [siEntry]="siEntry">
+				<td *ngFor="let siFieldDeclaration of getFieldDeclarations()">
+					<ng-template rocketUiField [siEntry]="siEntry" [siFieldDeclaration]="siFieldDeclaration"></ng-template>
+				</td>
+				<td class="rocket-table-commands rocket-simple-commands">
+					<ng-container *ngFor="let pair of siEntry.selectedBuildup.controlMap | keyvalue">
+						<rocket-ui-control [siControl]="pair.value"></rocket-ui-control>
+					</ng-container>
+				</td>
+			</tr>
+		</ng-container>
 	</tbody>
 </table>
  
@@ -27,7 +29,7 @@
 	
 	</div>
 	<div class="rocket-aside-commands">
-		<rocket-ui-pagination *ngIf="model.setup" [curPageNo]="1" [lastPageNo]="model.pagesNum" 
+		<rocket-ui-pagination *ngIf="model.setup" [curPageNo]="model.currentPageNo" [lastPageNo]="model.pagesNum" 
 				class="rocket-pagination btn-group"></rocket-ui-pagination>
 	</div>
 </div>

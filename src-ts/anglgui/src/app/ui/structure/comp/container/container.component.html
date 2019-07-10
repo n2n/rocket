@@ -5,5 +5,5 @@
 
 
 <rocket-ui-layer *ngFor="let siLayer of siContainer.layers" [siLayer]="siLayer"
-		[class.rocket-main-layer]="siContainer.mainLayer == siLayer"
-		[class.rocket-layer]="siContainer.mainLayer != siLayer"></rocket-ui-layer>
+		[class.rocket-main-layer]="siLayer.main"
+		[class.rocket-layer]="!siLayer.main"></rocket-ui-layer>

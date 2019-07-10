@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Inject, Injector } from '@angular/core';
+import { Component, OnInit, Input, Inject, Injector, ElementRef } from '@angular/core';
 import { ListSiZoneContent } from "src/app/si/model/structure/impl/list-si-zone-content";
 import { SiEntry } from "src/app/si/model/content/si-entry";
 import { SiField } from "src/app/si/model/content/si-field";
@@ -11,6 +11,7 @@ import { SiGetResponse } from "src/app/si/model/api/si-get-response";
 import { SiGetResult } from "src/app/si/model/api/si-get-result";
 import { SiPartialContent } from "src/app/si/model/content/si-partial-content";
 import { SiPage } from "src/app/si/model/structure/impl/si-page";
+import { fromEvent, Subscription } from "rxjs";
 
 @Component({
   selector: 'rocket-ui-list-zone-content',
@@ -19,41 +20,66 @@ import { SiPage } from "src/app/si/model/structure/impl/si-page";
 })
 export class ListZoneContentComponent implements OnInit {
 
-	model: any;
+	model: ListSiZoneContent;
 	siService: SiService;
 	
+	private subscription: Subscription;
 	private fieldDeclarations: Array<SiFieldDeclaration>|null = null;
 
-	constructor() { 
-		
+	constructor(private elemRef: ElementRef) {
 	}
 
 	ngOnInit() {
+		this.subscription = fromEvent<MouseEvent>(window, 'scroll').subscribe((event: MouseEvent) => {
+			this.handleScroll(event.pageY);
+		});
+		
 		if (this.model.setup) {
 			return;
 		}
 		
-		this.loadPage(1);
+		this.loadPage(1, true);
 	}
 	
-	private loadPage(pageNo: number) {
-		const getRequest = new SiGetRequest(SiGetInstruction.partialContent(false, true, 
-				(pageNo - 1) * this.model.pageSize, pageNo * this.model.pageSize));
+	ngOnDestroy() {
+		this.subscription.unsubscribe();
+	}
+	
+	private loadPage(pageNo: number, requestDeclaration: boolean) {
+		let siPage: SiPage;
+		if (this.model.containsPageNo(pageNo)) {
+			siPage = this.model.getPageByNo(pageNo);
+		} else {
+			siPage = new SiPage(pageNo, null, null);
+			this.model.putPage(siPage);
+		}
+		
+		const instruction = SiGetInstruction.partialContent(false, true, 
+						(pageNo - 1) * this.model.pageSize, pageNo * this.model.pageSize)
+				.setDeclarationRequested(requestDeclaration)
+		const getRequest = new SiGetRequest(instruction);
+		
 		this.siService.apiGet(this.model.getApiUrl(), getRequest, this.model.getZone(), this.model)
 				.subscribe((getResponse: SiGetResponse) => {
-					const result = getResponse.results[0];
-					
-					if (result.compactDeclaration) {
-						this.model.compactDeclaration = result.compactDeclaration;
-					}
-					
-					this.initPage(pageNo, <SiPartialContent> getResponse.results[0].partialContent);
+					this.applyResult(getResponse.results[0], siPage)
 				});
 	}
 	
-	private initPage(pageNo: number, partialContent: SiPartialContent) {
-		this.model.size = partialContent.count;
-		this.model.putPage(new SiPage(pageNo, partialContent.entries));
+	private applyResult(result: SiGetResult, siPage: SiPage) {
+		if (result.compactDeclaration) {
+			this.model.compactDeclaration = result.compactDeclaration;
+		}
+		
+		this.model.size = result.partialContent.count;
+		siPage.entries = result.partialContent.entries;
+	}
+	
+	private handleScroll(pageY: number) {
+		if ((window.scrollY + window.innerHeight) < document.body.offsetHeight) {
+			return;
+		}
+		
+		
 	}
 	
 	getFieldDeclarations(): Array<SiFieldDeclaration>|null {
