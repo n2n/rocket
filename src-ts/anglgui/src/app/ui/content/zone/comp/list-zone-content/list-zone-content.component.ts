@@ -80,11 +80,23 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 		
 		this.model.size = result.partialContent.count;
 		siPage.entries = result.partialContent.entries;
+		
+		this.updateCurrentPage();
 	}
 	
 	private updateCurrentPage() {
-		const page = this.model.getBestPageByOffsetHeight(window.scrollY);
-		this.model.currentPageNo = page.number;
+		let page = this.model.getBestPageByOffsetHeight(window.scrollY);
+		if (page) {
+			this.model.currentPageNo = page.number;
+			return;
+		}
+		
+		if (this.model.containsPageNo(this.model.currentPageNo)) {
+			page = this.model.getPageByNo(this.model.currentPageNo);
+		} else {
+			page = this.loadPage(this.model.currentPageNo)
+		}
+		page.offsetHeight = 0;
 	}
 	
 	private updateVisiblePages() {
@@ -115,7 +127,7 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 	
 	private updateOffsetHeight(siPage: SiPage) {
 		siPage.offsetHeight = window.scrollY + window.innerHeight; /* document.body.offsetHeight - window.innerHeight;*/
-		console.log(siPage.number + ' ' + document.body.offsetHeight + ' ' + (window.scrollY + window.innerHeight));
+//		console.log(siPage.number + ' ' + document.body.offsetHeight + ' ' + (window.scrollY + window.innerHeight));
 	}
 	
 	getFieldDeclarations(): Array<SiFieldDeclaration>|null {
