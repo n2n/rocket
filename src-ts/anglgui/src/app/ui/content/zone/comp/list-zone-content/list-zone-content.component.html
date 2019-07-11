@@ -23,13 +23,16 @@
 		</ng-container>
 	</tbody>
 </table>
+
+<div *ngIf="loading" class="rocket-loader"></div>
+
  
 <div class="rocket-zone-commands">
 	<div class="rocket-main-commands">
 	
 	</div>
 	<div class="rocket-aside-commands">
-		<rocket-ui-pagination *ngIf="model.setup" [curPageNo]="model.currentPageNo" [lastPageNo]="model.pagesNum" 
+		<rocket-ui-pagination *ngIf="model.setup" [(currentPageNo)]="currentPageNo" [lastPageNo]="model.pagesNum" 
 				class="rocket-pagination btn-group"></rocket-ui-pagination>
 	</div>
 </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Inject, Injector, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, Inject, Injector, ElementRef, OnDestroy, DoCheck } from '@angular/core';
 import { ListSiZoneContent } from "src/app/si/model/structure/impl/list-si-zone-content";
 import { SiEntry } from "src/app/si/model/content/si-entry";
 import { SiField } from "src/app/si/model/content/si-field";
@@ -18,7 +18,7 @@ import { fromEvent, Subscription } from "rxjs";
   templateUrl: './list-zone-content.component.html',
   styleUrls: ['./list-zone-content.component.css']
 })
-export class ListZoneContentComponent implements OnInit {
+export class ListZoneContentComponent implements OnInit, OnDestroy {
 
 	model: ListSiZoneContent;
 	siService: SiService;
@@ -31,21 +31,27 @@ export class ListZoneContentComponent implements OnInit {
 
 	ngOnInit() {
 		this.subscription = fromEvent<MouseEvent>(window, 'scroll').subscribe((event: MouseEvent) => {
-			this.handleScroll(event.pageY);
+			this.updateVisiblePages();
 		});
 		
 		if (this.model.setup) {
 			return;
 		}
 		
-		this.loadPage(1, true);
+		const page = this.loadPage(1);
+		page.offsetHeight = 0;
+		this.model.currentPageNo = 1;
 	}
 	
 	ngOnDestroy() {
 		this.subscription.unsubscribe();
 	}
 	
-	private loadPage(pageNo: number, requestDeclaration: boolean) {
+	get loading(): boolean {
+		return !this.model.getLastVisiblePage().loaded;
+	}
+	
+	private loadPage(pageNo: number): SiPage {
 		let siPage: SiPage;
 		if (this.model.containsPageNo(pageNo)) {
 			siPage = this.model.getPageByNo(pageNo);
@@ -55,14 +61,16 @@ export class ListZoneContentComponent implements OnInit {
 		}
 		
 		const instruction = SiGetInstruction.partialContent(false, true, 
-						(pageNo - 1) * this.model.pageSize, pageNo * this.model.pageSize)
-				.setDeclarationRequested(requestDeclaration)
+						(pageNo - 1) * this.model.pageSize, this.model.pageSize)
+				.setDeclarationRequested(!this.model.setup)
 		const getRequest = new SiGetRequest(instruction);
 		
 		this.siService.apiGet(this.model.getApiUrl(), getRequest, this.model.getZone(), this.model)
 				.subscribe((getResponse: SiGetResponse) => {
 					this.applyResult(getResponse.results[0], siPage)
 				});
+		
+		return siPage;
 	}
 	
 	private applyResult(result: SiGetResult, siPage: SiPage) {
@@ -74,12 +82,40 @@ export class ListZoneContentComponent implements OnInit {
 		siPage.entries = result.partialContent.entries;
 	}
 	
-	private handleScroll(pageY: number) {
+	private updateCurrentPage() {
+		const page = this.model.getBestPageByOffsetHeight(window.scrollY);
+		this.model.currentPageNo = page.number;
+	}
+	
+	private updateVisiblePages() {
+		this.updateCurrentPage();
+		
 		if ((window.scrollY + window.innerHeight) < document.body.offsetHeight) {
 			return;
 		}
 		
+		const lastVisiblePage = this.model.getLastVisiblePage();
+		if (!lastVisiblePage.loaded) {
+			return;
+		}
 		
+		const newPageNo = lastVisiblePage.number + 1;
+		if (newPageNo > this.model.pagesNum) {
+			return;
+		}
+		
+		let newSiPage: SiPage;
+		if (this.model.containsPageNo(newPageNo)) {
+			newSiPage = this.model.getPageByNo(newPageNo);
+		} else {
+			newSiPage = this.loadPage(newPageNo)
+		}
+		this.updateOffsetHeight(newSiPage);
+	}
+	
+	private updateOffsetHeight(siPage: SiPage) {
+		siPage.offsetHeight = window.scrollY + window.innerHeight; /* document.body.offsetHeight - window.innerHeight;*/
+		console.log(siPage.number + ' ' + document.body.offsetHeight + ' ' + (window.scrollY + window.innerHeight));
 	}
 	
 	getFieldDeclarations(): Array<SiFieldDeclaration>|null {
@@ -92,5 +128,34 @@ export class ListZoneContentComponent implements OnInit {
 		}
 		
 		return this.fieldDeclarations;
+	}
+	
+	get currentPageNo(): number {
+		return this.model.currentPageNo;
+	}
+	
+	set currentPageNo(currentPageNo: number) {
+		if (this.model.pagesNum < currentPageNo || 0 > currentPageNo) {
+			return;
+		}
+		
+		if (!this.model.containsPageNo(currentPageNo)) {
+			this.model.hideAllPages();
+			this.loadPage(currentPageNo).offsetHeight = 0;
+			this.model.currentPageNo = currentPageNo;
+			return;
+		}
+			
+		const page = this.model.getPageByNo(currentPageNo);
+		
+		if (page.visible) {
+			window.scrollTo(window.scrollX, page.offsetHeight);
+			this.model.currentPageNo = currentPageNo
+			return;
+		}
+			
+		this.model.hideAllPages();
+		page.offsetHeight = 0;
+		this.model.currentPageNo = currentPageNo;
 	}
 }

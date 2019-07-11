@@ -15,8 +15,9 @@ import { SiCommanderService } from "src/app/si/model/si-commander.service";
 import { SiPage } from "src/app/si/model/structure/impl/si-page";
 
 export class ListSiZoneContent implements SiZoneContent, SiStructureContent {
-	private pages = new Map<number, SiPage>();
+	private pagesMap = new Map<number, SiPage>();
 	private _size: number|null = null;
+	private _currentPageNo: number|null = null;
 	public compactDeclaration: SiCompactDeclaration|null = null;
 	
 	constructor(public apiUrl: string, public pageSize: number, public zone: SiZone) {
@@ -42,24 +43,61 @@ export class ListSiZoneContent implements SiZoneContent, SiStructureContent {
         return [];
     }
     
-    get size(): number {
+    get pages(): SiPage[] {
+    	return Array.from(this.pagesMap.values());
+    }
+    
+    get currentPage(): SiPage {
+    	return this.getPageByNo(this._currentPageNo);
+    }
+    
+    get currentPageNo(): number {
     	this.ensureSetup();
+    	return this._currentPageNo;
+    }
+    
+    set currentPageNo(currentPageNo: number) {
+    	if (currentPageNo > this.pagesNum) {
+    		throw new IllegalSiStateError('CurrentPageNo too large: ' + currentPageNo);
+    	}
+    	
+    	if (!this.getPageByNo(currentPageNo).visible) {
+    		throw new IllegalSiStateError('Page not visible: ' + currentPageNo);
+    	}
+    	
+    	this._currentPageNo = currentPageNo;
+    }
+    
+    get size(): number {
+    	if (this._size === null) {
+    		throw new IllegalSiStateError('Size not set.');
+    	}
+    	
     	return <number> this._size;
     }
     
     set size(size: number) {
     	this._size = size;
     	
+    	if (!this.setup) {
+    		return;
+    	}
+    	
     	const pagesNum = this.pagesNum;
-    	for (let pageNo of this.pages.keys()) {
+    	
+    	if (this._currentPageNo > pagesNum) {
+    		this._currentPageNo = pagesNum;
+    	}
+    	
+    	for (let pageNo of this.pagesMap.keys()) {
     		if (pageNo > pagesNum) {
-    			this.pages.delete(pageNo);
+    			this.pagesMap.delete(pageNo);
     		}
     	}
     }
     
     get setup(): boolean {
-    	return !!(this.compactDeclaration && this._size);
+    	return !!(this._currentPageNo && this.compactDeclaration && this._size);
     }
 	
 	private ensureSetup() {
@@ -73,30 +111,67 @@ export class ListSiZoneContent implements SiZoneContent, SiStructureContent {
 			throw new IllegalSiStateError('Page num to high.');
 		}
 		
-		this.pages.set(page.number, page);
+		this.pagesMap.set(page.number, page);
 	}
 	
 	getVisiblePages(): SiPage[] {
-		return this.pages.values().filter((page: SiPage) => {
+		return this.pages.filter((page: SiPage) => {
 			return page.offsetHeight !== null;
 		});
 	}
 	
-	constainsPageNo(number: number): boolean {
-		return this.pages.has(number);
+	getLastVisiblePage(): SiPage|null {
+		let lastPage: SiPage|null = null;
+		for (const page of this.pagesMap.values()) {
+			if (page.offsetHeight !== null && (lastPage === null || page.number > lastPage.number)) {
+				lastPage = page;
+			}
+		}
+		return lastPage;
+	}
+	
+	getBestPageByOffsetHeight(offsetHeight: number): SiPage|null {
+		let prevPage: SiPage|null = null;
+		
+		for (const page of this.getVisiblePages()) {
+			if (prevPage === null || (prevPage.offsetHeight < offsetHeight
+					&& prevPage.offsetHeight <= page.offsetHeight)) {
+				prevPage = page;
+				continue;
+			}
+			
+			const bestPageDelta = offsetHeight - prevPage.offsetHeight;
+			const pageDelta = page.offsetHeight - offsetHeight;
+			
+			if (bestPageDelta < pageDelta) {
+				return prevPage;
+			} else {
+				return page;
+			}
+		}
+		
+		return prevPage;
+	}
+	
+	hideAllPages() {
+		for (const page of this.pagesMap.values()) {
+			page.offsetHeight = null;
+		}
+	}
+	
+	containsPageNo(number: number): boolean {
+		return this.pagesMap.has(number);
 	}
 	
 	getPageByNo(no: number): SiPage {
-		if (this.constainsPageNo(no)) {
-			return <SiPage> this.pages.get(no);
+		if (this.containsPageNo(no)) {
+			return <SiPage> this.pagesMap.get(no);
 		}
 		
 		throw new IllegalSiStateError('Unknown page with no: ' + no);
 	}
 	
 	get pagesNum(): number {
-		this.ensureSetup();
-		
 		return Math.ceil(<number> this.size / this.pageSize);
 	}
 	

@@ -50,7 +50,7 @@ export class SiFactory {
 					const partialContent = compFactory.createPartialContent(partialContentData);
 					
 					listSiZoneContent.size = partialContent.count;
-					listSiZoneContent.putPage(new SiPage(1, partialContent.entries));
+					listSiZoneContent.putPage(new SiPage(1, partialContent.entries, null));
 				}
 				
 				return listSiZoneContent;

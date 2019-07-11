@@ -12,4 +12,8 @@ export class SiPage {
 	get loaded(): boolean {
 		return !!this.entries;
 	}
+	
+	get visible(): boolean {
+		return this.offsetHeight !== null;
+	}
 }
