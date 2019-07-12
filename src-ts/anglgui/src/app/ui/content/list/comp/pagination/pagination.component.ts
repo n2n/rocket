@@ -7,7 +7,7 @@ import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 })
 export class PaginationComponent implements OnInit {
 
-	private _currentPageNo: number
+	private _internalValue: number = 1;
 	@Output() currentPageNoChange = new EventEmitter<number>();
 	@Input() lastPageNo: number;
  
@@ -16,17 +16,21 @@ export class PaginationComponent implements OnInit {
 	ngOnInit() {
 	}
 	
-	@Input() 
-	set currentPageNo(currentPageNo: number) {
-		if (this._currentPageNo == currentPageNo || 1 > currentPageNo || this.lastPageNo < currentPageNo) {
+	get internalValue() {
+		return this._internalValue;
+	}
+	
+	set internalValue(currentPageNo: number) {
+		if (this._internalValue == currentPageNo || 1 > currentPageNo || this.lastPageNo < currentPageNo) {
 			return;
 		}
 		
-		this._currentPageNo = currentPageNo;
+		this._internalValue = currentPageNo;
 		this.currentPageNoChange.emit(currentPageNo);
 	}
 	
-	get currentPageNo(): number {
-		return this._currentPageNo;
+	@Input()
+	set currentPageNo(no: number) {
+		this._internalValue = no;
 	}
 }

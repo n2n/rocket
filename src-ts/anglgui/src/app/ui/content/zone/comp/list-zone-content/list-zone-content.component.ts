@@ -159,10 +159,9 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 		}
 			
 		const page = this.model.getPageByNo(currentPageNo);
-		
 		if (page.visible) {
 			window.scrollTo(window.scrollX, page.offsetHeight);
-			this.model.currentPageNo = currentPageNo
+//			this.model.currentPageNo = currentPageNo
 			return;
 		}
 			

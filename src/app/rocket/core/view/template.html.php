@@ -38,6 +38,10 @@
 	$view->assert($templateModel instanceof TemplateModel);
 	
 	$html->meta()->addCssCode('
+			body {
+				scroll-behavior: smooth;
+			}
+
 			.rocket-layer {
 				animation: layertransform 0.2s;
 			}

@@ -1,18 +1,18 @@
-<button type="button" class="btn btn-secondary"  (click)="currentPageNo = 1">
+<button type="button" class="btn btn-secondary"  (click)="internalValue = 1">
 	<span>1</span> <i class="fa fa-step-backward"></i>
 </button>
 
-<button type="button" class="btn btn-secondary" (click)="currentPageNo = currentPageNo -1">
+<button type="button" class="btn btn-secondary" (click)="internalValue = internalValue -1">
 	<i class="fa fa-chevron-left"></i>
 </button>
 
 <input class="rocket-pagination-no form-control" type="text" value="1"
-		[(ngModel)]="currentPageNo">
+		[(ngModel)]="internalValue">
 
-<button type="button" class="btn btn-secondary" (click)="currentPageNo = currentPageNo + 1">
+<button type="button" class="btn btn-secondary" (click)="internalValue = internalValue + 1">
 	<i class="fa fa-chevron-right"></i>
 </button>
 
-<button type="button" class="btn btn-secondary" (click)="currentPageNo = lastPageNo">
+<button type="button" class="btn btn-secondary" (click)="internalValue = lastPageNo">
 	<i class="fa fa-step-forward"></i> <span>{{ lastPageNo }}</span>
 </button>
