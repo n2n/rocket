@@ -16,8 +16,8 @@ import { SiPage } from "src/app/si/model/structure/impl/si-page";
 
 export class ListSiZoneContent implements SiZoneContent, SiStructureContent {
 	private pagesMap = new Map<number, SiPage>();
-	private _size: number|null = null;
-	private _currentPageNo: number|null = null;
+	private _size: number = 0;
+	private _currentPageNo: number = 1;
 	public compactDeclaration: SiCompactDeclaration|null = null;
 	
 	constructor(public apiUrl: string, public pageSize: number, public zone: SiZone) {
@@ -69,10 +69,6 @@ export class ListSiZoneContent implements SiZoneContent, SiStructureContent {
     }
     
     get size(): number {
-    	if (this._size === null) {
-    		throw new IllegalSiStateError('Size not set.');
-    	}
-    	
     	return <number> this._size;
     }
     
@@ -97,7 +93,7 @@ export class ListSiZoneContent implements SiZoneContent, SiStructureContent {
     }
     
     get setup(): boolean {
-    	return !!(this._currentPageNo && this.compactDeclaration && this._size);
+    	return !!(this.compactDeclaration);
     }
 	
 	private ensureSetup() {
@@ -172,7 +168,7 @@ export class ListSiZoneContent implements SiZoneContent, SiStructureContent {
 	}
 	
 	get pagesNum(): number {
-		return Math.ceil(<number> this.size / this.pageSize);
+		return Math.ceil(<number> this.size / this.pageSize) || 1;
 	}
 	
 	applyTo(structure: SiStructure) {
