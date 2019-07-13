@@ -9,7 +9,7 @@ import { StringFieldModel } from "src/app/ui/content/field/string-field-model";
 })
 export class StringOutFieldComponent implements OnInit {
 
-	@Input() model: StringFieldModel;
+	model: StringFieldModel;
 	
 	constructor(elRef: ElementRef) { 
 		elRef.nativeElement.classList.add('form-control-plaintext');

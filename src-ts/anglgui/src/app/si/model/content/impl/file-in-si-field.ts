@@ -1,7 +1,6 @@
 
 import { SiField } from "src/app/si/model/content/si-field";
 import { ComponentRef, ComponentFactoryResolver, ViewContainerRef } from "@angular/core";
-import { StringOutFieldComponent } from "src/app/ui/content/field/comp/string-out-field/string-out-field.component";
 import { InputInFieldComponent } from "src/app/ui/content/field/comp/input-in-field/input-in-field.component";
 import { FileInFieldComponent } from "src/app/ui/content/field/comp/file-in-field/file-in-field.component";
 import { FileInFieldModel } from "src/app/ui/content/field/file-in-field-model";

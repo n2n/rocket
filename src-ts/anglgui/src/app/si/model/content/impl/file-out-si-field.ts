@@ -15,10 +15,14 @@ export class FileOutSiField extends OutSiFieldAdapter implements FileFieldModel 
     }
 	
 	initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver) {
-		const componentFactory = componentFactoryResolver.resolveComponentFactory(StringOutFieldComponent);
-	    const componentRef = viewContainerRef.createComponent(componentFactory);
-	    
-	    
-	    return componentRef;
+//		const componentFactory = componentFactoryResolver.resolveComponentFactory(StringOutFieldComponent);
+//	    const componentRef = viewContainerRef.createComponent(componentFactory);
+//	    componentRef.instance.model = {
+//	    	getValue() {
+//	    		return 'file';
+//	    	}
+//	    }
+//	    
+//	    return componentRef;
     }
 }

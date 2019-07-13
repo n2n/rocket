@@ -13,14 +13,25 @@ import { SiZone } from "src/app/si/model/structure/si-zone";
 import { SiZoneError } from "src/app/si/model/structure/si-zone-error";
 import { SiCommanderService } from "src/app/si/model/si-commander.service";
 import { SiPage } from "src/app/si/model/structure/impl/si-page";
+import { SiQualifier } from "src/app/si/model/content/si-qualifier";
 
 export class ListSiZoneContent implements SiZoneContent, SiStructureContent {
 	private pagesMap = new Map<number, SiPage>();
 	private _size: number = 0;
 	private _currentPageNo: number = 1;
 	public compactDeclaration: SiCompactDeclaration|null = null;
+	public qualifierSelection: SiQualifierSelection|null = null;
 	
 	constructor(public apiUrl: string, public pageSize: number, public zone: SiZone) {
+		this.qualifierSelection = {
+			min: 0,
+			max: 2,
+			selectedQualfiers: [], 
+	
+			done: () => { },
+			
+			cancel: () => { }
+		}
 	}
 	
 	getZone(): SiZone {
@@ -93,7 +104,7 @@ export class ListSiZoneContent implements SiZoneContent, SiStructureContent {
     }
     
     get setup(): boolean {
-    	return !!(this.compactDeclaration);
+    	return !!(this.compactDeclaration && this.pagesMap.size > 0);
     }
 	
 	private ensureSetup() {
@@ -190,5 +201,15 @@ export class ListSiZoneContent implements SiZoneContent, SiStructureContent {
 	    
 	    return componentRef;
 	}
+}
+
+interface SiQualifierSelection {
+	min: number;
+	max: number|null;
+	selectedQualfiers: SiQualifier[]; 
+
+	done: () => any
+	
+	cancel: () => any
 }
 

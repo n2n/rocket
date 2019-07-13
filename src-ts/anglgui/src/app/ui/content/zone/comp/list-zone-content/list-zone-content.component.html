@@ -1,6 +1,8 @@
 <table *ngIf="model.compactDeclaration" class="table table-hover rocket-table">
 	<thead>
 		<tr>
+			<th *ngIf="selectable" class="rocket-entry-selector">
+			</th>
 			<th *ngFor="let siFieldDeclaration of getFieldDeclarations()">
 				{{ siFieldDeclaration.label }}
 			</th>
@@ -11,6 +13,17 @@
 	<tbody>
 		<ng-container *ngFor="let page of model.getVisiblePages()">
 			<tr *ngFor="let siEntry of page.entries" rocketUiEntry [siEntry]="siEntry">
+				<td *ngIf="selectable" class="rocket-entry-selector">
+					<ng-container *ngIf="singleSelect">
+						<input type="radio" (change)="select(siEntry.qualifier)" 
+								[checked]="isSelected(siEntry.qualifier)" />
+					</ng-container>
+					<ng-container *ngIf="!singleSelect">
+						<input type="checkbox" (change)="toggleSelection(siEntry.qualifier)" 
+								[checked]="isSelected(siEntry.qualifier)"
+								[disabled]="!areMoreSelectable() && !isSelected(siEntry.qualifier)" />
+					</ng-container> 
+				</td>
 				<td *ngFor="let siFieldDeclaration of getFieldDeclarations()">
 					<ng-template rocketUiField [siEntry]="siEntry" [siFieldDeclaration]="siFieldDeclaration"></ng-template>
 				</td>
@@ -28,6 +41,18 @@
 
  
 <div class="rocket-zone-commands">
+	<div *ngIf="selectable" class="rocket-partial-commands">
+		<button class="btn btn-primary rocket-important" type="button">
+			<i class="fa fa-circle-o"></i>
+			<span>{{ 'common_select_txt' | translate }}</span>
+		</button>
+		
+		<button class="btn btn-secondary" type="button">
+			<i class="fa fa-circle-o"></i>
+			<span>{{ 'common_cancel_txt' | translate }}</span>
+		</button>
+	</div>
+
 	<div class="rocket-main-commands">
 	
 	</div>

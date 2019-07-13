@@ -12,6 +12,7 @@ import { SiGetResult } from "src/app/si/model/api/si-get-result";
 import { SiPartialContent } from "src/app/si/model/content/si-partial-content";
 import { SiPage } from "src/app/si/model/structure/impl/si-page";
 import { fromEvent, Subscription } from "rxjs";
+import { SiQualifier } from "src/app/si/model/content/si-qualifier";
 
 @Component({
   selector: 'rocket-ui-list-zone-content',
@@ -27,6 +28,8 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 	private fieldDeclarations: Array<SiFieldDeclaration>|null = null;
 
 	constructor(private elemRef: ElementRef) {
+		
+		
 	}
 
 	ngOnInit() {
@@ -34,13 +37,17 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 			this.updateVisiblePages();
 		});
 		
-		if (this.model.setup) {
+		if (!this.model.setup) {
+			const page = this.loadPage(1);
+			page.offsetHeight = 0;
+			this.model.currentPageNo = 1;
 			return;
 		}
 		
-		const page = this.loadPage(1);
-		page.offsetHeight = 0;
-		this.model.currentPageNo = 1;
+		const page = this.model.currentPage;
+		if (!page.visible) {
+			page.offsetHeight = 0;
+		}
 	}
 	
 	ngOnDestroy() {
@@ -62,7 +69,7 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 		
 		const instruction = SiGetInstruction.partialContent(false, true, 
 						(pageNo - 1) * this.model.pageSize, this.model.pageSize)
-				.setDeclarationRequested(!this.model.setup)
+				.setDeclarationRequested(!this.model.compactDeclaration);
 		const getRequest = new SiGetRequest(instruction);
 		
 		this.siService.apiGet(this.model.getApiUrl(), getRequest, this.model.getZone(), this.model)
@@ -168,5 +175,62 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 		this.model.hideAllPages();
 		page.offsetHeight = 0;
 		this.model.currentPageNo = currentPageNo;
+	}
+	
+	get selectable(): boolean {
+		return !!this.model.qualifierSelection;
+	}
+	
+	get singleSelect(): boolean {
+		return this.model.qualifierSelection.max == 1;
+	}
+	
+	toggleSelection(qualifier: SiQualifier) {
+		if (this.singleSelect) {
+			this.model.qualifierSelection.selectedQualfiers = [qualifier];
+			return;
+		}
+		
+		const i = this.model.qualifierSelection.selectedQualfiers.findIndex((selectedQualifier) => {
+			return qualifier.equals(selectedQualifier);
+		});
+		
+		if (i == -1) {
+			this.model.qualifierSelection.selectedQualfiers.splice(i, 1);
+			return;
+		}
+		
+		this.model.qualifierSelection.selectedQualfiers.push(qualifier);
+	}
+	
+	isSelected(qualifier: SiQualifier) {
+		return undefined !== this.model.qualifierSelection.selectedQualfiers.find((selectedQualifier) => {
+			return qualifier.equals(selectedQualifier);
+		});
+	}
+	
+	areMoreSelectable(): boolean {
+		return this.model.qualifierSelection.max === null 
+				|| this.model.qualifierSelection.selectedQualfiers.length < this.model.qualifierSelection.max;  
+	}
+	
+	saveSelection() {
+		this.model.qualifierSelection.done();
+	}
+	
+	cancelSelection() {
+		this.model.qualifierSelection.cancel();
+	}
+	
+	static radioNameIndex = 0;
+	
+	private _radioName: string
+	
+	get radioName(): string {
+		if (!this._radioName) {
+			this._radioName = 'list-si-select-' + (ListZoneContentComponent.radioNameIndex++);
+		}
+		
+		return this._radioName;
 	}
 }
