@@ -57,7 +57,7 @@ class GuiFactory {
 		}
 		
 		$guiDefinition = new GuiDefinition();
-		$eiGui = new EiGui($eiFrame, $guiDefinition, $viewMode);
+		$eiGui = new EiGui($eiFrame, $this->eiMask, $guiDefinition, $viewMode);
 		
 		foreach ($this->eiMask->getEiPropCollection() as $eiPropPathStr => $eiProp) {
 			$eiPropPath = $eiProp->getWrapper()->getEiPropPath();

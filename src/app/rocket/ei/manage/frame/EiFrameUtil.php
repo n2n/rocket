@@ -70,6 +70,16 @@ class EiFrameUtil {
 	 * @param mixed $id
 	 * @param int $ignoreConstraintTypes
 	 * @throws UnknownEiObjectException
+	 * @return \rocket\ei\manage\LiveEiObject
+	 */
+	function lookupEiObject($id, int $ignoreConstraintTypes = 0) {
+		return new LiveEiObject($this->lookupEiEntityObj($id, $ignoreConstraintTypes));
+	}
+	
+	/**
+	 * @param mixed $id
+	 * @param int $ignoreConstraintTypes
+	 * @throws UnknownEiObjectException
 	 * @return \rocket\ei\manage\EiEntityObj
 	 */
 	function lookupEiEntityObj($id, int $ignoreConstraintTypes = 0) {

@@ -17,7 +17,6 @@ export class QualifierSelectInSiField extends InSiFieldAdapter implements Qualif
 	
 	constructor(public zone: SiZone, public apiUrl: string, public values: SiQualifier[] = []) {
 		super();
-		this.validate();
 	}
 	
 	readInput(): object {
@@ -38,6 +37,7 @@ export class QualifierSelectInSiField extends InSiFieldAdapter implements Qualif
 	
 	setValues(values: SiQualifier[]) {
 		this.values = values;
+    	this.validate();
 	}
 	
 	getMin(): number {

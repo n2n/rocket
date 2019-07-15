@@ -11,6 +11,7 @@ use rocket\ei\manage\gui\control\GuiControlPath;
 use rocket\ei\manage\gui\control\UnknownGuiControlException;
 use rocket\ei\manage\gui\control\GeneralGuiControl;
 use rocket\ei\manage\api\ApiControlCallId;
+use rocket\ei\mask\EiMask;
 
 /**
  * @author andreas
@@ -21,6 +22,10 @@ class EiGui {
 	 * @var EiFrame
 	 */
 	private $eiFrame;
+	/**
+	 * @var EiMask
+	 */
+	private $eiMask;
 	/**
 	 * @var GuiDefinition
 	 */
@@ -63,8 +68,9 @@ class EiGui {
 	 * @param GuiDefinition $guiDefinition
 	 * @param int $viewMode Use constants from {@see ViewMode}
 	 */
-	public function __construct(EiFrame $eiFrame, GuiDefinition $guiDefinition, int $viewMode) {
+	public function __construct(EiFrame $eiFrame, EiMask $eiMask, GuiDefinition $guiDefinition, int $viewMode) {
 		$this->eiFrame = $eiFrame;
+		$this->eiMask = $eiMask;
 		$this->guiDefinition = $guiDefinition;
 		ArgUtils::valEnum($viewMode, ViewMode::getAll());
 		$this->viewMode = $viewMode;
@@ -76,6 +82,13 @@ class EiGui {
 	 */
 	public function getEiFrame() {
 		return $this->eiFrame;
+	}
+	
+	/**
+	 * @return EiMask
+	 */
+	public function getEiMask() {
+		return $this->eiMask;
 	}
 	
 	/**
@@ -216,7 +229,8 @@ class EiGui {
 		foreach ($this->guiDefinition->createSelectionGuiControls($this)
 				as $guiControlPathStr => $selectionGuiControl) {
 			$siControls[$guiControlPathStr] = $selectionGuiControl->toSiControl(
-					new ApiControlCallId(GuiControlPath::create($guiControlPathStr), $this->viewMode, null));
+					new ApiControlCallId(GuiControlPath::create($guiControlPathStr), $this->eiMask->getEiTypePath(),
+							$this->viewMode, null));
 		}
 		return $siControls;
 	}
@@ -226,7 +240,8 @@ class EiGui {
 		foreach ($this->guiDefinition->createGeneralGuiControls($this)
 				as $guiControlPathStr => $generalGuiControl) {
 			$siControls[$guiControlPathStr] = $generalGuiControl->toSiControl(
-					new ApiControlCallId(GuiControlPath::create($guiControlPathStr), $this->viewMode, null));
+					new ApiControlCallId(GuiControlPath::create($guiControlPathStr), $this->eiMask->getEiTypePath(),
+							$this->viewMode, null));
 		}
 		return $siControls;
 	}

@@ -72,6 +72,7 @@ use rocket\ei\manage\frame\EiRelation;
 use rocket\ei\component\prop\EiProp;
 use rocket\ei\manage\frame\EiForkLink;
 use rocket\ei\manage\frame\CriteriaFactory;
+use rocket\si\content\SiQualifier;
 
 class EiuFrame {
 	private $eiFrame;
@@ -295,10 +296,14 @@ class EiuFrame {
 	 * 
 	 * @param mixed $id
 	 * @param int $ignoreConstraintTypes
-	 * @return \rocket\ei\util\entry\EiuEntry
+	 * @return \rocket\ei\util\entry\EiuEntry|null
 	 */
 	public function lookupEntry($id, int $ignoreConstraintTypes = 0) {
-		return $this->entry($this->lookupEiEntityObj($id, $ignoreConstraintTypes));
+		try {
+			return $this->entry($this->lookupEiEntityObj($id, $ignoreConstraintTypes));
+		} catch (UnknownEiObjectException $e) {
+			return null;
+		}
 	}
 	
 	/**
@@ -714,6 +719,18 @@ class EiuFrame {
 		return $this->getContextEiType()->pidToId($pid);
 	}
 
+	/**
+	 * @param SiQualifier $siQualifier
+	 * @return mixed|null
+	 */
+	public function siQualifierToId(SiQualifier $siQualifier) {
+		if (null !== ($pid = $siQualifier->getId())) {
+			return $this->pidToId($pid);
+		}
+		
+		return null;
+	}
+	
 	/**
 	 * @param mixed $eiObjectObj
 	 * @param N2nLocale $n2nLocale

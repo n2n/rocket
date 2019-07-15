@@ -9,10 +9,12 @@ import { SiZone } from "src/app/si/model/structure/si-zone";
 import { SiCommanderService } from "src/app/si/model/si-commander.service";
 import { IllegalSiStateError } from "src/app/si/model/illegal-si-state-error";
 import { SiZoneContent } from "src/app/si/model/structure/si-zone-content";
+import { Observable } from "rxjs";
 
 export class ApiCallSiControl implements SiControl {
 	
 	inputSent = false;
+	private loading = false;
 	private entryBoundFlag: boolean
 	
 	constructor(public apiUrl: string, public apiCallId: object, public button: SiButton,
@@ -21,6 +23,10 @@ export class ApiCallSiControl implements SiControl {
 	
 	getButton(): SiButton {
 		return this.button;
+	}
+	
+	isLoading(): boolean {
+		return this.loading;
 	}
 	
 	set entryBound(entryBound: boolean) {
@@ -36,17 +42,20 @@ export class ApiCallSiControl implements SiControl {
 	}
 	
 	exec(commandService: SiCommanderService) {
+		let obs: Observable<void>;
+		
 		if (this.entry) {
-			commandService.execEntryControl(this.apiUrl, this.apiCallId, this.entry, this.inputSent);
-			return;
+			obs = commandService.execEntryControl(this.apiUrl, this.apiCallId, this.entry, this.inputSent);
+		} else if (this.entryBound) {
+			obs = commandService.execSelectionControl(this.apiUrl, this.apiCallId, this.zoneContent, this.zoneContent.getSelectedEntries(), 
+					this.inputSent);	
+		} else {
+			obs = commandService.execControl(this.apiUrl, this.apiCallId, this.zoneContent, this.inputSent);
 		}
 		
-		if (this.entryBound) {
-			commandService.execSelectionControl(this.apiUrl, this.apiCallId, this.zoneContent, this.zoneContent.getSelectedEntries(), 
-					this.inputSent);
-			return;
-		}
-		
-		commandService.execControl(this.apiUrl, this.apiCallId, this.zoneContent, this.inputSent);
+		this.loading = true;
+		obs.subscribe(() => {
+			this.loading = false;
+		});
 	}
 }

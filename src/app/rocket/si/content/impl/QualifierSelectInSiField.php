@@ -65,7 +65,7 @@ class QualifierSelectInSiField extends InSiFieldAdapter {
 	}
 	
 	/**
-	 * @return string|null
+	 * @return SiQualifier[]
 	 */
 	function getValues() {
 		return $this->values;
@@ -145,6 +145,11 @@ class QualifierSelectInSiField extends InSiFieldAdapter {
 	 * @see \rocket\si\content\SiField::handleInput()
 	 */
 	function handleInput(array $data) {
-		$this->value = (new DataSet($data))->reqString('value', true);
+		$siQualifiers = [];
+		foreach ((new DataSet($data))->reqArray('values', 'array') as $data) {
+			$siQualifiers[] = SiQualifier::parse($data);
+		}
+		
+		$this->values = $siQualifiers;
 	}
 }

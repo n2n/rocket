@@ -67,7 +67,9 @@ class ManyToOneSelectEiProp extends RelationEiPropAdapter implements FieldEiProp
 		$targetEiuFrame = $eiu->frame()->forkSelect($this, $eiu->object())
 				->exec($this->getRelationModel()->getTargetReadEiCommandPath());
 		
-		return new ToOneEiField($eiu, $targetEiuFrame, $this, $this->getRelationModel());
+		$field = new ToOneEiField($eiu, $targetEiuFrame, $this, $this->getRelationModel());
+		$field->setMandatory($this->editConfig->isMandatory());
+		return $field;
 	}
 	
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {

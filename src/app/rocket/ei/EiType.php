@@ -39,6 +39,7 @@ use rocket\ei\manage\LiveEiObject;
 use rocket\ei\manage\EiEntityObj;
 use rocket\ei\manage\DraftEiObject;
 use rocket\ei\manage\draft\Draft;
+use rocket\spec\TypePath;
 
 class EiType extends Type {
 	private $entityModel;
@@ -267,6 +268,26 @@ class EiType extends Type {
 		}
 		
 		return $eiType;
+	}
+	
+	/**
+	 * @param TypePath $typePath
+	 * @throws UnknownEiTypeException
+	 * @throws UnknownEiTypeExtensionException
+	 * @return EiMask
+	 */
+	public function determineEiMask(TypePath $typePath) {
+		$eiType = $this;
+		if ($this->getId() !== $typePath->getTypeId()) {
+			$eiType = $this->getSubEiTypeById($typePath->getTypeId(), true);
+		}
+		
+		$extensionId = $typePath->getEiTypeExtensionId();
+		if ($extensionId === null) {
+			return $eiType->getEiMask();
+		}
+		
+		return $eiType->getEiTypeExtensionCollection()->getById($extensionId)->getEiMask();
 	}
 	
 	private function ensureIsTop() {

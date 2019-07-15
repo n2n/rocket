@@ -362,7 +362,8 @@ class EiEntryGui {
 		foreach ($this->eiGui->getGuiDefinition()->createEntryGuiControls($this->eiGui, $eiEntry)
 				as $guiControlPathStr => $entryGuiControl) {
 			$siEntry->putControl($guiControlPathStr, $entryGuiControl->toSiControl(
-					new ApiControlCallId(GuiControlPath::create($guiControlPathStr), $this->eiGui->getViewMode(), 
+					new ApiControlCallId(GuiControlPath::create($guiControlPathStr), 
+							$this->eiGui->getEiMask()->getEiTypePath(), $this->eiGui->getViewMode(), 
 							$eiEntry->getPid())));
 		}
 		

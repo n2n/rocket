@@ -12,3 +12,9 @@
 <div>
 	<button class="btn btn-secondary" (click)="openOptions()">{{ 'select_txt' | translate }}</button>
 </div>
+
+<div *ngIf="model.getMessages().length > 0" class="rocket-message-error">
+	<div *ngFor="let message of model.getMessages()">
+		{{ message }}
+	</div>
+</div>

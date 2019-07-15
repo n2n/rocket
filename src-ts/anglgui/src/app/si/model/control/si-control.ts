@@ -8,5 +8,7 @@ export interface SiControl {
 	
 	getButton(): SiButton;
 	
+	isLoading(): boolean;
+	
 	exec(siCommanderService: SiCommanderService);
 }

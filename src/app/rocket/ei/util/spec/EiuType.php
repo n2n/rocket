@@ -166,4 +166,13 @@ class EiuType  {
 		}
 		return $this->allSubEiuTypes;
 	}
+	
+	/**
+	 * @param object $object
+	 * @return boolean
+	 */
+	function matches($object) {
+		$eiType = EiuAnalyst::determineEiType($object);
+		return $this->eiType->isA($eiType);
+	}
 }

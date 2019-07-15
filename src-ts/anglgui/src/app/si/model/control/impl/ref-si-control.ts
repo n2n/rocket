@@ -11,6 +11,10 @@ export class RefSiControl implements SiControl {
 	constructor(public url: string, public siButton: SiButton, public layer: SiLayer) {
 	}
 	
+	isLoading(): boolean {
+		return false;
+	}
+	
 	getButton(): SiButton {
 		return this.siButton;
 	}

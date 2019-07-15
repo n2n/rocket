@@ -24,6 +24,10 @@ export class ControlComponent implements OnInit {
 		return this.siControl.getButton();
 	}
 	
+	get loading() {
+		return this.siControl.isLoading();
+	}
+	
 	exec() {
 		this.siControl.exec(this.siCommanderService);
 	}

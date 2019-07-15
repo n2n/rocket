@@ -39,6 +39,8 @@ use rocket\si\input\SiError;
 use rocket\si\input\SiEntryInput;
 use rocket\ei\manage\gui\EiEntryGui;
 use n2n\util\ex\IllegalStateException;
+use rocket\spec\TypePath;
+use rocket\ei\manage\frame\EiFrameUtil;
 
 class ApiControlProcess {
 	private $eiFrame;
@@ -46,6 +48,10 @@ class ApiControlProcess {
 	 * @var ApiProcessUtil
 	 */
 	private $util;
+	/**
+	 * @var EiFrameUtil
+	 */
+	private $eiFrameUtil;
 	private $eiGui;
 	private $eiEntry;
 	private $guiField;
@@ -68,14 +74,19 @@ class ApiControlProcess {
 	function __construct(EiFrame $eiFrame) {
 		$this->eiFrame = $eiFrame;
 		$this->util = new ApiProcessUtil($eiFrame);
+		$this->eiFrameUtil = new EiFrameUtil($eiFrame);
 	}
 	
 	/**
 	 * @param int $viewMode
 	 */
-	function setupEiGui(int $viewMode) {
-		$eiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
-		$this->eiGui = $eiMask->createEiGui($this->eiFrame, $viewMode, true);
+	function setupEiGui(int $viewMode, TypePath $eiTypePath) {
+		try {
+			$eiMask = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()->determineEiMask($eiTypePath);
+			$this->eiGui = $eiMask->getEiEngine()->createFramedEiGui($this->eiFrame, $viewMode, true);
+		} catch (\rocket\ei\EiException $e) {
+			throw new BadRequestException(null, 0, $e);
+		}
 	}
 	
 	/**
@@ -97,7 +108,7 @@ class ApiControlProcess {
 	
 	
 	function determineEiEntry(string $pid) {
-		$eiObject = $this->lookupEiObject($pid);
+		$eiObject = $this->eiFrameUtil->lookupEiObject($pid);
 		$this->eiEntry = $this->eiFrame->createEiEntry($eiObject);
 	}
 	
@@ -162,7 +173,7 @@ class ApiControlProcess {
 		foreach ($siInput->getEntryInputs() as $key => $entryInput) {
 			$eiObject = null;
 			if (null !== $entryInput->getId()) {
-				$eiObject = $this->lookupEiObject($entryInput->getId());
+				$eiObject = $this->eiFrameUtil->lookupEiObject($entryInput->getId());
 			} else {
 				$eiObject = $this->createEiObject($entryInput->getBuildupId());
 			}

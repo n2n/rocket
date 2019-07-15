@@ -224,15 +224,15 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 		this.model.qualifierSelection.cancel();
 	}
 	
-	static radioNameIndex = 0;
-	
-	private _radioName: string
-	
-	get radioName(): string {
-		if (!this._radioName) {
-			this._radioName = 'list-si-select-' + (ListZoneContentComponent.radioNameIndex++);
-		}
-		
-		return this._radioName;
-	}
+//	static radioNameIndex = 0;
+//	
+//	private _radioName: string
+//	
+//	get radioName(): string {
+//		if (!this._radioName) {
+//			this._radioName = 'list-si-select-' + (ListZoneContentComponent.radioNameIndex++);
+//		}
+//		
+//		return this._radioName;
+//	}
 }

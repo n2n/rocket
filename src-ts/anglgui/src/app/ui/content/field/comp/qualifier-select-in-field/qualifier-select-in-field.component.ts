@@ -27,6 +27,7 @@ export class QualifierSelectInFieldComponent implements OnInit {
 		if (index > -1) {
 			values.splice(0, 1);
 		}
+		this.model.setValues(values);
 	}
 	
 	openOptions() {

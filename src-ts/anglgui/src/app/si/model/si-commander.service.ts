@@ -12,6 +12,8 @@ import { SiZoneContent } from "src/app/si/model/structure/si-zone-content";
 import { SiEntryError } from "src/app/si/model/input/si-entry-error";
 import { SiResult } from "src/app/si/model/control/si-result";
 import { SiCommandError } from "src/app/si/model/si-command-error";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
@@ -56,7 +58,7 @@ export class SiCommanderService {
 		this.router.navigateByUrl(url.substring(baseHref.length));
 	}
 	
-	execEntryControl(apiUrl: string, callId: object, entry: SiEntry, includeInput: boolean) {
+	execEntryControl(apiUrl: string, callId: object, entry: SiEntry, includeInput: boolean): Observable<void> {
 		if (!entry.qualifier.id) {
 			throw new IllegalSiStateError('Entry control cannnot be executed on new entry.');
 		}
@@ -66,10 +68,18 @@ export class SiCommanderService {
 			entryInputs.push(entry.readInput());
 		}
 
-		this.service.entryControlCall(apiUrl, callId, entry.qualifier.id, entryInputs);
+		const obs = this.service.entryControlCall(apiUrl, callId, entry.qualifier.id, entryInputs);
+		
+		obs.subscribe((result) => {
+//			this.handleResult(result);
+		});
+		
+		return obs.pipe(map((result) => {
+			return;
+		}));
 	}
 	
-	execSelectionControl(apiUrl: string, callId: object, zoneContent: SiZoneContent, entries: SiEntry[], includeInput: boolean) {
+	execSelectionControl(apiUrl: string, callId: object, zoneContent: SiZoneContent, entries: SiEntry[], includeInput: boolean): Observable<void> {
 		const entryIds: string[] = [];
 		const entryInputs: SiEntryInput[] = [];
 	
@@ -85,10 +95,18 @@ export class SiCommanderService {
 			}
 		}
 		
-		this.service.selectionControlCall(apiUrl, callId, entryIds, entryInputs);
+		const obs = this.service.selectionControlCall(apiUrl, callId, entryIds, entryInputs);
+		
+		obs.subscribe((result) => {
+			this.handleResult(result, entries);
+		});
+		
+		return obs.pipe(map((result) => {
+			return;
+		}));
 	}
 	
-	execControl(apiUrl: string, callId: object, zoneContent: SiZoneContent, includeInput: boolean) {
+	execControl(apiUrl: string, callId: object, zoneContent: SiZoneContent, includeInput: boolean): Observable<void> {
 		const input = new SiInput();
 
 		if (!includeInput) {
@@ -105,10 +123,15 @@ export class SiCommanderService {
 			input.entryInputs.push(entry.readInput());
 		}
 		
-		this.service.controlCall(apiUrl, callId, input)
-				.subscribe((result) => {
-					this.handleResult(result, entries);
-				});
+		const obs = this.service.controlCall(apiUrl, callId, input);
+				
+		return new Observable<void>((observer) => {
+			obs.subscribe((result) => {
+				this.handleResult(result, entries);
+				observer.next();
+				observer.complete();
+			});
+		});
 	}
 	
 	private handleResult(result: SiResult, inputEntries: SiEntry[]) {

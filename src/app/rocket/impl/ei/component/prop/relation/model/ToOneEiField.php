@@ -24,7 +24,6 @@ namespace rocket\impl\ei\component\prop\relation\model;
 use rocket\ei\manage\entry\EiFieldValidationResult;
 use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\adapter\entry\EiFieldAdapter;
-use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\impl\ei\component\prop\relation\RelationEiProp;
 use n2n\util\type\TypeConstraints;
 use rocket\ei\util\entry\EiuEntry;
@@ -33,12 +32,21 @@ use n2n\util\type\CastUtils;
 use n2n\util\type\ArgUtils;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\util\frame\EiuFrame;
+use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 
 class ToOneEiField extends EiFieldAdapter {
 	/**
 	 * @var RelationEiProp
 	 */
 	private $eiProp;
+	/**
+	 * @var RelationModel
+	 */
+	private $relationModel;
+	/**
+	 * @var bool
+	 */
+	private $mandatory = true;
 	/**
 	 * @var Eiu
 	 */
@@ -49,12 +57,32 @@ class ToOneEiField extends EiFieldAdapter {
 	 */
 	private $targetEiuFrame;
 	
+	/**
+	 * @param Eiu $eiu
+	 * @param EiuFrame $targetEiuFrame
+	 * @param RelationEiProp $eiProp
+	 */
 	function __construct(Eiu $eiu, EiuFrame $targetEiuFrame, RelationEiProp $eiProp, RelationModel $relationModel) {
 		parent::__construct(TypeConstraints::type(EiuEntry::class, true));
 		
 		$this->eiProp = $eiProp;
+		$this->relationModel = $relationModel;
 		$this->eiu = $eiu;
 		$this->targetEiuFrame = $targetEiuFrame;
+	}
+	
+	/**
+	 * @param bool $mandatory
+	 */
+	function setMandatory(bool $mandatory) {
+		$this->mandatory = $mandatory;
+	}
+	
+	/**
+	 * @return \rocket\impl\ei\component\prop\relation\conf\RelationModel
+	 */
+	function isMandatory() {
+		return $this->mandatory;
 	}
 	
 	protected function checkValue($value) {
@@ -62,7 +90,7 @@ class ToOneEiField extends EiFieldAdapter {
 		
 		CastUtils::assertTrue($value instanceof EiuEntry);
 		
-		return $this->relationModel->getTargetEiuEngine()->type()->test($value);
+		return $this->relationModel->getTargetEiuEngine()->type()->matches($value);
 	}
 	
 	protected function readValue() {
@@ -76,7 +104,7 @@ class ToOneEiField extends EiFieldAdapter {
 	}
 	
 	protected function isValueValid($value) {
-		return $value !== null || !$this->relationModel->getEditConfig()->isMandatory();
+		return $value !== null || !$this->mandatory;
 	}
 
 	protected function validateValue($value, EiFieldValidationResult $validationResult) {

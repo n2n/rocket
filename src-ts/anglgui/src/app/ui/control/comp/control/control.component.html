@@ -1,4 +1,5 @@
-<button class="{{ siButton.btnClass }}" (click)="exec()">
+<button class="{{ siButton.btnClass }}" (click)="exec()" [disabled]="loading">
+	<span *ngIf="loading" class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true">[@tomekk: mach da einen loader]</span>
 	<i class="{{ siButton.iconClass }}"></i>
 	<span>{{ siButton.name }}</span>
 </button>

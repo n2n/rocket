@@ -29,6 +29,7 @@ use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 use n2n\util\type\CastUtils;
 use rocket\ei\util\entry\EiuEntry;
+use rocket\si\content\impl\QualifierSelectInSiField;
 
 class ToOneGuiField implements GuiField {
 	/**
@@ -36,14 +37,18 @@ class ToOneGuiField implements GuiField {
 	 */
 	private $eiu;
 	/**
-	 * @var SiField
+	 * @var Eiu
+	 */
+	private $targetEiu;
+	/**
+	 * @var QualifierSelectInSiField
 	 */
 	private $siField;
 	
 	function __construct(Eiu $eiu, RelationModel $relationModel, EditConfig $editConfig) {
 		$this->eiu = $eiu;
 		
-		$targetEiuFrame = $eiu->frame()->forkSelect($eiu->prop()->getPath());
+		$this->targetEiuFrame = $eiu->frame()->forkSelect($eiu->prop()->getPath());
 		
 		$values = [];
 		if (null !== ($eiuEntry = $eiu->field()->getValue())) {
@@ -52,12 +57,21 @@ class ToOneGuiField implements GuiField {
 		}
 		
 		$this->siField = SiFields::apiSelectIn(
-				$targetEiuFrame->getApiUrl($relationModel->getTargetReadEiCommandPath()),
+				$this->targetEiuFrame->getApiUrl($relationModel->getTargetReadEiCommandPath()),
 				$values, ($editConfig->isMandatory() ? 1 : 0), 1);
 	}
 	
 	function save() {
+		$siQualifiers = $this->siField->getValues();
 		
+		if (empty($siQualifiers)) {
+			$this->eiu->field()->setValue(null);
+			return;
+		}
+		
+		$id = $this->targetEiuFrame->siQualifierToId(current($siQualifiers));
+		$value = $this->targetEiuFrame->lookupEntry($id);
+		$this->eiu->field()->setValue($value);
 	}
 
 	function getSiField(): SiField {

@@ -85,7 +85,7 @@ class ApiController extends ControllerAdapter {
 		if (null !== ($pid = $siApiCallId->getPid())) {
 			$callProcess->determineEiEntry($pid);
 		}
-		$callProcess->setupEiGui($siApiCallId->getViewMode());
+		$callProcess->setupEiGui($siApiCallId->getViewMode(), $siApiCallId->getEiTypePath());
 		$callProcess->determineGuiControl($siApiCallId->getGuiControlPath());
 		
 		if ($entryInputMaps !== null

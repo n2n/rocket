@@ -21,6 +21,8 @@
  */
 namespace rocket\si\content;
 
+use n2n\util\type\attrs\DataSet;
+
 class SiQualifier implements \JsonSerializable {
 	private $category;
 	private $id;
@@ -49,7 +51,7 @@ class SiQualifier implements \JsonSerializable {
 	}
 	
 	/**
-	 * @return string
+	 * @return string|null
 	 */
 	function getId() {
 		return $this->id;
@@ -88,8 +90,13 @@ class SiQualifier implements \JsonSerializable {
 		];
 	}
 
-	
-	
-	
-	
+	static function parse(array $data) {
+		$ds = new DataSet($data);
+		
+		try {
+			return new SiQualifier($ds->reqString('category'), $ds->optString('id'), $ds->reqString('name'));
+		} catch (\n2n\util\type\attrs\AttributesException $e) {
+			throw new \InvalidArgumentException(null, null, $e);
+		}
+	}
 }
