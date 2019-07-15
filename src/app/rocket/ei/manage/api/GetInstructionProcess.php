@@ -60,6 +60,10 @@ class GetInstructionProcess {
 		}
 	}
 	
+	/**
+	 * @param string $entryId
+	 * @return \rocket\si\api\SiGetResult
+	 */
 	private function handleEntryId(string $entryId) {
 		$eiObject = $this->util->lookupEiObject($entryId);
 		
@@ -69,6 +73,9 @@ class GetInstructionProcess {
 		return $this->createEntryResult([$eiEntryGui]);
 	}
 	
+	/**
+	 * @return \rocket\si\api\SiGetResult
+	 */
 	private function handleNewEntry() {
 		$eiEntryGuis = $this->eiFrameUtil->createPossibleNewEiEntryGuis(
 				$this->instruction->isBulky(), $this->instruction->isReadOnly());
@@ -97,8 +104,6 @@ class GetInstructionProcess {
 		
 		return $result;
 	}
-	
-	
 	
 	private function handlePartialContent(SiPartialContentInstruction $spci) {
 		$num = $this->eiFrameUtil->count();

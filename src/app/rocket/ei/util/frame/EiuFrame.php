@@ -649,14 +649,14 @@ class EiuFrame {
 	/**
 	 * @param int $viewMode
 	 * @param \Closure $uiFactory
-	 * @param array $guiPropPaths
+	 * @param array $guiFieldPaths
 	 * @return \rocket\ei\util\gui\EiuGui
 	 */
-	public function newCustomGui(int $viewMode, \Closure $uiFactory, array $guiPropPaths) {
+	public function newCustomGui(int $viewMode, \Closure $uiFactory, array $guiFieldPaths) {
 		$eiGui = $this->eiFrame->getContextEiEngine()->getEiMask()->createEiGui($this->eiFrame, $viewMode, false);
 		
 		$eiuGui = new EiuGui($eiGui, $this, $this->eiuAnalyst);
-		$eiuGui->initWithUiCallback($uiFactory, $guiPropPaths);
+		$eiuGui->initWithUiCallback($uiFactory, $guiFieldPaths);
 		return $eiuGui;
 	}
 	
@@ -1058,7 +1058,7 @@ class EiuFrame {
 	public function setRelation($eiPropPath, $targetEiFrameArg, $targetEiObjectArg = null) {
 		$eiPropPath = EiPropPath::create($eiPropPath);
 		$targetEiFrame = EiuAnalyst::buildEiFrameFromEiArg($targetEiFrameArg, 'targetEiFrameArg');
-		$targetEiObject = EiuAnalyst::buildEiObjectFromEiArg($targetEiObjectArg, 'targetEiObjectArg', false);
+		$targetEiObject = EiuAnalyst::buildEiObjectFromEiArg($targetEiObjectArg, 'targetEiObjectArg', null, false);
 		
 		$this->eiFrame->setEiRelation($eiPropPath, new EiRelation($targetEiFrame, $targetEiObject));
 	}

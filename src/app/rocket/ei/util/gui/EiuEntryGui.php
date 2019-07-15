@@ -29,13 +29,11 @@ use rocket\ei\manage\gui\GuiException;
 use n2n\web\dispatch\mag\MagWrapper;
 use rocket\ei\manage\gui\EiFieldAbstraction;
 use n2n\web\dispatch\map\PropertyPath;
-use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\util\Eiu;
 use rocket\ei\util\EiuPerimeterException;
 use rocket\ei\util\EiuAnalyst;
 use n2n\l10n\N2nLocale;
-use rocket\ei\util\spec\EiuGuiField;
 
 class EiuEntryGui {
 	private $eiEntryGui;
@@ -270,7 +268,7 @@ class EiuEntryGui {
 	 * @return \rocket\ei\util\entry\EiuField
 	 */
 	public function field($guiFieldPath) {
-		return new EiuGuiField(GuiFieldPath::create($eiPropArg), $this, $this->eiuAnalyst);
+		return new EiuGuiField(GuiFieldPath::create($guiFieldPath), $this, $this->eiuAnalyst);
 	}
 	
 	/**

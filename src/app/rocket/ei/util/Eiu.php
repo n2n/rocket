@@ -16,10 +16,11 @@ class Eiu implements Lookupable {
 	private $eiuFrame;
 	private $eiuObject;
 	private $eiuEntry;
+	private $eiuField;
 	private $eiuFieldMap;
 	private $eiuGui;
 	private $eiuEntryGui;
-	private $eiuField;
+	private $eiuGuiField;
 	private $eiuFactory;
 	
 	public function __construct(...$eiArgs) {
@@ -167,7 +168,7 @@ class Eiu implements Lookupable {
 	
 	/**
 	 * @param bool $required
-	 * @return \rocket\ei\util\entry\EiuField|null
+	 * @return \rocket\ei\util\gui\EiuGuiField|null
 	 */
 	public function guiField(bool $required = true) {
 		if ($this->eiuGuiField !== null) {

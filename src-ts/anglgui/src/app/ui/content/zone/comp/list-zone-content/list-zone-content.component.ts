@@ -74,7 +74,7 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 		
 		this.siService.apiGet(this.model.getApiUrl(), getRequest, this.model.getZone(), this.model)
 				.subscribe((getResponse: SiGetResponse) => {
-					this.applyResult(getResponse.results[0], siPage)
+					this.applyResult(getResponse.results[0], siPage);
 				});
 		
 		return siPage;

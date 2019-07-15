@@ -69,12 +69,12 @@ class EiuMask  {
 	 * @return string
 	 */
 	public function getLabel(N2nLocale $n2nLocale = null) {
-		return $this->eiMask->getLabelLstr()->t($n2nLocale ?? $this->eiuAnalyst->getN2nContext()->getN2nLocale());
+		return $this->eiMask->getLabelLstr()->t($n2nLocale ?? $this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
 	}
 	
 	public function getPluralLabel(N2nLocale $n2nLocale = null) {
 		return $this->eiMask->getPluralLabelLstr()
-				->t($n2nLocale ?? $this->eiuAnalyst->getN2nContext()->getN2nLocale());
+				->t($n2nLocale ?? $this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
 	}
 	
 	/**

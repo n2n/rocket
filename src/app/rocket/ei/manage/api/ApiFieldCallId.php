@@ -23,13 +23,18 @@ namespace rocket\ei\manage\api;
 
 use n2n\util\type\attrs\DataSet;
 use rocket\ei\manage\gui\field\GuiFieldPath;
+use rocket\spec\TypePath;
 
 class ApiFieldCallId implements \JsonSerializable {
 	private $guiFieldPath;
+	private $eiTypePath;
+	private $viewMode;
 	private $pid;
 	
-	public function __construct(GuiFieldPath $guiFieldPath, ?string $pid) {
+	public function __construct(GuiFieldPath $guiFieldPath, TypePath $eiTypePath, int $viewMode, ?string $pid) {
 		$this->guiFieldPath = $guiFieldPath;
+		$this->eiTypePath = $eiTypePath;
+		$this->viewMode = $viewMode;
 		$this->pid = $pid;
 	}
 	
@@ -48,12 +53,28 @@ class ApiFieldCallId implements \JsonSerializable {
 	}
 	
 	/**
+	 * @return \rocket\spec\TypePath
+	 */
+	function getEiTypePath() {
+		return $this->eiTypePath;
+	}
+	
+	/**
+	 * @return int
+	 */
+	function getViewMode() {
+		return $this->viewMode;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @see \JsonSerializable::jsonSerialize()
 	 */
 	function jsonSerialize() {
 		return [
 			'guiFieldPath' => (string) $this->guiFieldPath,
+			'eiTypePath' => (string) $this->eiTypePath,
+			'viewMode' => $this->viewMode,
 			'pid' => $this->pid
 		];
 	}
@@ -69,6 +90,8 @@ class ApiFieldCallId implements \JsonSerializable {
 		try {
 			return new ApiFieldCallId(
 					GuiFieldPath::create($ds->reqString('guiControlPath')),
+					TypePath::create($ds->reqString('eiTypePath')),
+					$ds->reqInt('viewMode'),
 					$ds->optString('pid'));
 		} catch (\n2n\util\type\attrs\AttributesException $e) {
 			throw new \InvalidArgumentException(null, null, $e);

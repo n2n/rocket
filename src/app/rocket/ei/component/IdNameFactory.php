@@ -89,8 +89,8 @@ class IdNameFactory {
 		
 		$guiFieldAssembler = new EiEntryGuiAssembler($eiEntryGui);
 		
-		foreach ($guiFieldPaths as $guiPropPath) {
-			$guiFieldAssembler->assembleGuiField($guiPropPath);
+		foreach ($guiFieldPaths as $guiFieldPath) {
+			$guiFieldAssembler->assembleGuiField($guiFieldPath);
 		}
 		
 		$guiFieldAssembler->finalize();

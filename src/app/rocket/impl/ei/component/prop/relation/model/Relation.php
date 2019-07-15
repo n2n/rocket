@@ -32,8 +32,9 @@ use rocket\impl\ei\component\prop\relation\model\relation\PlainMappedRelationEiM
 use rocket\impl\ei\component\prop\relation\model\relation\MasterRelationEiModificator;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\ei\manage\frame\EiForkLink;
-use n2n\util\ex\NotYetImplementedException;
 use rocket\impl\ei\component\prop\relation\RelationEiProp;
+use rocket\impl\ei\component\prop\relation\model\relation\OneToManySelectCriteriaConstraint;
+use rocket\impl\ei\component\prop\relation\model\relation\OneToOneSelectCriteriaConstraint;
 
 class Relation {
 	private $eiProp;
@@ -66,16 +67,26 @@ class Relation {
 		}
 		
 		if ($eiForkLink->getMode() == EiForkLink::MODE_SELECT && !$this->relationModel->isSourceMany()
-				&& null !== ($eiuEntry = $eiu->entry(false))) {
-			$this->applyOneToTargetSelectConstraints($targetEiuFrame, $eiu->frame(), $eiuEntry);
+				&& null !== ($eiuEntry = $eiu->entry(false)) && $this->relationModel->isFiltered()) {
+			$this->applyOneToTargetSelectConstraints($targetEiuFrame, $eiuEntry);
 		}
 		
 		return $targetEiuFrame->getEiFrame();
 	}
 	
 	
-	private function applyOneToTargetSelectConstraints(EiuFrame $targetEiuFrame, EiuObject $eiuObject) {
-		throw new NotYetImplementedException();
+	private function applyOneToTargetSelectConstraints(EiuFrame $targetEiuFrame, EiuEntry $eiuEntry) {
+		$srcEntityObj = $eiuEntry->getEntityObj();
+		$srcEntityProperty = $this->relationModel->getRelationEntityProperty();
+		
+		$criteriaConstraint = null;
+		if ($this->relationModel->isTargetMany()) {
+			$criteriaConstraint = new OneToManySelectCriteriaConstraint($srcEntityObj, $srcEntityProperty);
+		} else {
+			$criteriaConstraint = new OneToOneSelectCriteriaConstraint($srcEntityObj, $srcEntityProperty);
+		}
+		
+		$targetEiuFrame->addCriteriaConstraint($criteriaConstraint);
 	}
 	
 	/**
@@ -89,9 +100,9 @@ class Relation {
 		
 		$relationEntityProperty = $this->relationModel->getRelationEntityProperty();
 		
-		if (!$relationEntityProperty->isMaster() && !$this->isSourceMany()) {
+		if (!$relationEntityProperty->isMaster() && !$this->relationModel->isSourceMany()) {
 			$targetEiuFrame->setCriteriaFactory(new MappedOneToCriteriaFactory(
-					$this->getRelationEntityProperty()->getRelation(),
+					$this->relationModel->getRelationEntityProperty()->getRelation(),
 					$eiuObject->getEntityObj()));
 			return;
 		}
@@ -110,17 +121,17 @@ class Relation {
 		$targetPropInfo = $this->relationModel->getTargetPropInfo();
 		
 		if (null !== $targetPropInfo->eiPropPath) {
-			$targetEiuFrame->setEiRelation($targetPropInfo->eiPropPath, $eiuFrame, $eiuEntry);
+			$targetEiuFrame->setRelation($targetPropInfo->eiPropPath, $eiuFrame, $eiuEntry);
 			
 			if (!$eiuEntry->isDraft()) {
-				$relationEiuObj = ($targetPropInfo->hasEntryValues() ? $eiuEntry : $eiuEntry->object());
-				$targetEiuFrame->registerListener(new MappedRelationEiModificator($targetEiFrame,
-						$relationEiuObj, $targetPropInfo->eiPropPath, $this->isSourceMany()));
+				$relationEiuEntry = $eiuEntry;
+				$targetEiFrame->registerListener(new MappedRelationEiModificator($targetEiFrame,
+						$relationEiuEntry, $targetPropInfo->eiPropPath, $this->relationModel->isSourceMany()));
 			}
 		} else if ($targetPropInfo->masterAccessProxy !== null) {
 			$targetEiuFrame->registerListener(
 					new PlainMappedRelationEiModificator($targetEiFrame, $eiuEntry->getEntityObj(),
-							$this->targetMasterAccessProxy, $this->isSourceMany()));
+							$this->targetMasterAccessProxy, $this->relationModel->isSourceMany()));
 		}
 		
 		if ($this->relationModel->getRelationEntityProperty()->isMaster() && !$eiuEntry->isDraft()) {

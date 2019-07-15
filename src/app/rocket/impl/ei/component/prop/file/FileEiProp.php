@@ -40,6 +40,7 @@ use n2n\io\managed\impl\TmpFileManager;
 use rocket\ei\EiPropPath;
 use rocket\si\content\SiField;
 use rocket\si\content\impl\SiFields;
+use n2n\io\managed\impl\PublicFileManager;
 
 class FileEiProp extends DraftablePropertyEiPropAdapter {
 	const DIM_IMPORT_MODE_ALL = 'all';
@@ -226,7 +227,7 @@ class FileEiProp extends DraftablePropertyEiPropAdapter {
 	
 	public function createInSiField(Eiu $eiu): SiField {
 		return SiFields::fileIn($eiu->field()->getValue(), $eiu->frame()->getApiUrl(),
-					$eiu->lookup(TmpFileManager::class), $eiu->guiField()->getPath())
+						$eiu->guiField()->createCallId(), $eiu->lookup(PublicFileManager::class))
 				->setMandatory($this->isMandatory($eiu));
 		
 // 		$allowedExtensions = $this->getAllowedExtensions();

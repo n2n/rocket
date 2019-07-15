@@ -62,7 +62,7 @@ class RelationLinkGuiField implements GuiField {
 		}
 		
 		if (null !== ($overviewUrl = $targetEiuFrame->getOverviewUrl(false))) {
-			return SiFields::linkOut($overviewUrl, $label);
+			return SiFields::linkOut($overviewUrl, $label, false);
 		}
 		
 		return SiFields::stringOut($label);

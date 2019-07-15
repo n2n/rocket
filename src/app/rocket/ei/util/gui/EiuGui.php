@@ -185,10 +185,10 @@ class EiuGui {
 		return $eiuEntryGuis;
 	}
 	
-	public function initWithUiCallback(\Closure $viewFactory, array $guiPropPaths) {
-		$guiPropPaths = GuiFieldPath::createArray($guiPropPaths);
+	public function initWithUiCallback(\Closure $viewFactory, array $guiFieldPaths) {
+		$guiFieldPaths = GuiFieldPath::createArray($guiFieldPaths);
 		
-		$this->eiGui->init(new CustomGuiViewFactory($viewFactory), $guiPropPaths);
+		$this->eiGui->init(new CustomGuiViewFactory($viewFactory), $guiFieldPaths);
 	}
 // 	/**
 // 	 * @param bool $required

@@ -45,8 +45,8 @@ class SiFields {
 	 * @param File $file
 	 * @return \rocket\si\content\impl\FileInSiField
 	 */
-	static function fileIn(?File $file, Url $apiUrl, FileManager $fileManager) {
-		return new FileInSiField($file, $apiUrl, $fileManager);
+	static function fileIn(?File $file, Url $apiUrl, \JsonSerializable $apiCallId,FileManager $fileManager) {
+		return new FileInSiField($file, $apiUrl, $apiCallId, $fileManager);
 	}
 	
 	/**
@@ -55,6 +55,16 @@ class SiFields {
 	 */
 	static function fileOut(?File $file) {
 		return new FileOutSiField($file);
+	}
+	
+	/**
+	 * @param Url $ref
+	 * @param string $label
+	 * @param bool $href
+	 * @return \rocket\si\content\impl\LinkOutSiField
+	 */
+	static function linkOut(Url $ref, string $label, bool $href) {
+		return new LinkOutSiField($ref, $label, $href);
 	}
 	
 	/**

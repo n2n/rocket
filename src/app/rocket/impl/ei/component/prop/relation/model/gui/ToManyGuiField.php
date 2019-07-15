@@ -23,14 +23,54 @@ namespace rocket\impl\ei\component\prop\relation\model\gui;
 
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\si\content\SiField;
+use rocket\si\content\impl\QualifierSelectInSiField;
+use rocket\ei\util\Eiu;
+use rocket\impl\ei\component\prop\relation\conf\RelationModel;
+use rocket\si\content\impl\SiFields;
+use n2n\util\type\CastUtils;
+use rocket\ei\util\entry\EiuEntry;
 
 class ToManyGuiField implements GuiField {
+	/**
+	 * @var Eiu
+	 */
+	private $eiu;
+	/**
+	 * @var Eiu
+	 */
+	private $targetEiu;
+	/**
+	 * @var QualifierSelectInSiField
+	 */
+	private $siField;
 	
-	public function getSiField(): SiField {
+	function __construct(Eiu $eiu, RelationModel $relationModel) {
+		$this->eiu = $eiu;
+		
+		$this->targetEiuFrame = $eiu->frame()->forkSelect($eiu->prop()->getPath());
+		
+		$values = [];
+		foreach ($eiu->field()->getValue() as $eiuEntry) {
+			CastUtils::assertTrue($eiuEntry instanceof EiuEntry);
+			$values[] = $eiuEntry->createSiQualifier();
+		}
+		
+		$this->siField = SiFields::apiSelectIn(
+				$this->targetEiuFrame->getApiUrl($relationModel->getTargetReadEiCommandPath()),
+				$values, (int) $relationModel->getMin(), $relationModel->getMax());
 	}
 	
-	public function save() {
+	function save() {
+		$values = [];
+		foreach ($this->siField->getValues() as $siQualifier) {
+			$id = $this->targetEiuFrame->siQualifierToId($siQualifier);
+			$values[] = $this->targetEiuFrame->lookupEntry($id);
+		}
+		
+		$this->eiu->field()->setValue($values);
 	}
-
 	
+	function getSiField(): SiField {
+		return $this->siField;
+	}	
 }

@@ -1,12 +1,12 @@
 <?php
-namespace rocket\ei\util\spec;
+namespace rocket\ei\util\gui;
 
 use rocket\ei\util\EiuAnalyst;
 use rocket\ei\manage\gui\field\GuiFieldPath;
-use rocket\ei\util\gui\EiuEntryGui;
+use rocket\ei\manage\api\ApiFieldCallId;
 
 class EiuGuiField {
-	private $guiPropPath;
+	private $guiFieldPath;
 	private $eiuEntryGui;
 	private $eiuAnalyst;
 	
@@ -16,7 +16,7 @@ class EiuGuiField {
 	 * @param EiuAnalyst $eiuAnalyst
 	 */
 	function __construct(GuiFieldPath $guiFieldPath, EiuEntryGui $eiuEntryGui, EiuAnalyst $eiuAnalyst) {
-		$this->guiPropPath = $guiPropPath;
+		$this->guiFieldPath = $guiFieldPath;
 		$this->eiuEntryGui = $eiuEntryGui;
 		$this->eiuAnalyst = $eiuAnalyst;
 	}
@@ -25,6 +25,15 @@ class EiuGuiField {
 	 * @return GuiFieldPath
 	 */
 	function getPath() {
-		return $this->guiPropPath;
+		return $this->guiFieldPath;
+	}
+	
+	function createCallId() {
+		$eiEntryGui = $this->eiuEntryGui->getEiEntryGui();
+		
+		return new ApiFieldCallId($this->guiFieldPath, 
+				$eiEntryGui->getEiEntry()->getEiMask()->getEiTypePath(),
+				$eiEntryGui->getEiGui()->getViewMode(),
+				$eiEntryGui->getEiEntry()->getPid());
 	}
 }

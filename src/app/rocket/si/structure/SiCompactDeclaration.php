@@ -54,7 +54,7 @@ class SiCompactDeclaration implements \JsonSerializable {
 	 */
 	function putFieldDeclarations(string $buildupId, array $fieldDeclarations) {
 		ArgUtils::valArray($fieldDeclarations, SiFieldDeclaration::class);
-		$this->fieldStructureDeclarations[$buildupId] = $fieldDeclarations;
+		$this->fieldDeclarations[$buildupId] = $fieldDeclarations;
 	}
 	
 	/**

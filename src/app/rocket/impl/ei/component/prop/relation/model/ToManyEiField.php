@@ -30,6 +30,7 @@ use n2n\util\type\TypeConstraints;
 use rocket\ei\util\entry\EiuEntry;
 use n2n\validation\impl\ValidationMessages;
 use n2n\util\type\ArgUtils;
+use rocket\ei\util\frame\EiuFrame;
 
 class ToManyEiField extends EiFieldAdapter {
 	/**
@@ -44,17 +45,23 @@ class ToManyEiField extends EiFieldAdapter {
 	 * @var Eiu
 	 */
 	private $eiu;
+	/**
+	 * @var EiuFrame
+	 */
+	private $targetEiuFrame;
 	
 	/**
 	 * @param Eiu $eiu
 	 * @param RelationEiProp $eiProp
 	 * @param RelationModel $relationModel
 	 */
-	function __construct(Eiu $eiu, RelationEiProp $eiProp, RelationModel $relationModel) {
+	function __construct(Eiu $eiu, EiuFrame $targetEiuFrame, RelationEiProp $eiProp, RelationModel $relationModel) {
 		parent::__construct(TypeConstraints::array(false, EiuEntry::class));
 		
-		$this->eiProp = $eiProp;
 		$this->eiu = $eiu;
+		$this->targetEiuFrame = $targetEiuFrame;
+		$this->eiProp = $eiProp;
+		$this->relationModel = $relationModel;
 	}
 	
 	/**
@@ -65,7 +72,7 @@ class ToManyEiField extends EiFieldAdapter {
 		ArgUtils::assertTrue(is_array($value));
 		foreach ($value as $eiuEntry) {
 			ArgUtils::assertTrue($eiuEntry instanceof EiuEntry);
-			if (!$this->relationModel->getTargetEiuEngine()->type()->test($value)) {
+			if (!$this->relationModel->getTargetEiuEngine()->type()->matches($value)) {
 				return false;
 			}
 		}
@@ -86,7 +93,7 @@ class ToManyEiField extends EiFieldAdapter {
 		
 		$value = [];
 		foreach ($targetEntityObjs as $key => $targetEntityObj) {
-			$value[$key] = $this->eiu->frame()->entry($targetEntityObj);
+			$value[$key] = $this->targetEiuFrame->entry($targetEntityObj);
 		}
 		return $value;
 	}

@@ -25,6 +25,7 @@ use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\frame\EiFrameListener;
 use rocket\ei\manage\entry\EiEntry;
+use rocket\ei\util\entry\EiuEntry;
 
 class MappedRelationEiModificator implements EiFrameListener {
 	private $targetEiFrame;
@@ -32,7 +33,7 @@ class MappedRelationEiModificator implements EiFrameListener {
 	private $targetEiPropPath;
 	private $sourceMany;
 
-	public function __construct(EiFrame $targetEiFrame, $relationEiuObj, EiPropPath $targetEiPropPath, bool $sourceMany) {
+	public function __construct(EiFrame $targetEiFrame, EiuEntry $relationEiuObj, EiPropPath $targetEiPropPath, bool $sourceMany) {
 		$this->targetEiFrame = $targetEiFrame;
 		$this->relationEiuObj = $relationEiuObj;
 		$this->targetEiPropPath = $targetEiPropPath;
