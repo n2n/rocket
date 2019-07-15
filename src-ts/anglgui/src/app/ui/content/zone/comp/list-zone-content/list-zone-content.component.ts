@@ -195,12 +195,14 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 			return qualifier.equals(selectedQualifier);
 		});
 		
-		if (i == -1) {
+		if (i != -1) {
 			this.model.qualifierSelection.selectedQualfiers.splice(i, 1);
 			return;
 		}
 		
-		this.model.qualifierSelection.selectedQualfiers.push(qualifier);
+		if (this.areMoreSelectable()) {
+			this.model.qualifierSelection.selectedQualfiers.push(qualifier);
+		}
 	}
 	
 	isSelected(qualifier: SiQualifier) {

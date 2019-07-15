@@ -23,15 +23,15 @@ export class ListSiZoneContent implements SiZoneContent, SiStructureContent {
 	public qualifierSelection: SiQualifierSelection|null = null;
 	
 	constructor(public apiUrl: string, public pageSize: number, public zone: SiZone) {
-		this.qualifierSelection = {
-			min: 0,
-			max: 2,
-			selectedQualfiers: [], 
-	
-			done: () => { },
-			
-			cancel: () => { }
-		}
+//		this.qualifierSelection = {
+//			min: 0,
+//			max: 1,
+//			selectedQualfiers: [], 
+//	
+//			done: () => { },
+//			
+//			cancel: () => { }
+//		}
 	}
 	
 	getZone(): SiZone {

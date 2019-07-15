@@ -47,6 +47,7 @@ export class QualifierSelectInSiField extends InSiFieldAdapter implements Qualif
 	getMax(): number|null {
 		return this.max;
 	}
+	
 	private validate() {
 		this.messages = [];
 		

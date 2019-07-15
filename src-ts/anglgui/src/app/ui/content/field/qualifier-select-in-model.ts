@@ -9,6 +9,10 @@ export interface QualifierSelectInModel extends MessageFieldModel {
 	
 	getApiUrl(): string;
 	
+	getMin(): number;
+	
+	getMax(): number|null;
+	
 	getValues(): SiQualifier[];
 	
 	setValues(values: SiQualifier[]);

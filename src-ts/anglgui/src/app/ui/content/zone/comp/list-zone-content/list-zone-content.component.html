@@ -13,18 +13,19 @@
 	<tbody>
 		<ng-container *ngFor="let page of model.getVisiblePages()">
 			<tr *ngFor="let siEntry of page.entries" rocketUiEntry [siEntry]="siEntry">
-				<td *ngIf="selectable" class="rocket-entry-selector">
+				<td *ngIf="selectable" class="rocket-entry-selector" (click)="toggleSelection(siEntry.qualifier)">
 					<ng-container *ngIf="singleSelect">
-						<input type="radio" (change)="select(siEntry.qualifier)" 
-								[checked]="isSelected(siEntry.qualifier)" />
+						<input type="radio" 
+								[value]="true"
+								[ngModel]="isSelected(siEntry.qualifier)" />
 					</ng-container>
 					<ng-container *ngIf="!singleSelect">
-						<input type="checkbox" (change)="toggleSelection(siEntry.qualifier)" 
-								[checked]="isSelected(siEntry.qualifier)"
+						<input type="checkbox" 
+								[ngModel]="isSelected(siEntry.qualifier)"
 								[disabled]="!areMoreSelectable() && !isSelected(siEntry.qualifier)" />
 					</ng-container> 
 				</td>
-				<td *ngFor="let siFieldDeclaration of getFieldDeclarations()">
+				<td *ngFor="let siFieldDeclaration of getFieldDeclarations()" (click)="toggleSelection(siEntry.qualifier)">
 					<ng-template rocketUiField [siEntry]="siEntry" [siFieldDeclaration]="siFieldDeclaration"></ng-template>
 				</td>
 				<td class="rocket-table-commands rocket-simple-commands">
@@ -42,12 +43,12 @@
  
 <div class="rocket-zone-commands">
 	<div *ngIf="selectable" class="rocket-partial-commands">
-		<button class="btn btn-primary rocket-important" type="button">
+		<button class="btn btn-primary rocket-important" type="button" (click)="saveSelection()">
 			<i class="fa fa-circle-o"></i>
 			<span>{{ 'common_select_txt' | translate }}</span>
 		</button>
 		
-		<button class="btn btn-secondary" type="button">
+		<button class="btn btn-secondary" type="button" (click)="cancelSelection()">
 			<i class="fa fa-circle-o"></i>
 			<span>{{ 'common_cancel_txt' | translate }}</span>
 		</button>

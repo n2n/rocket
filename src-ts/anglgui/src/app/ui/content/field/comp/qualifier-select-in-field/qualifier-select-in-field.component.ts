@@ -43,5 +43,20 @@ export class QualifierSelectInFieldComponent implements OnInit {
 		
 		const content = new ListSiZoneContent(this.model.getApiUrl(), 30, siZone);
 		this.optionsSiLayer.pushZone(null).content = content;
+		
+		content.qualifierSelection = {
+				min: this.model.getMin(),
+				max: this.model.getMax(),
+				selectedQualfiers: this.model.getValues(), 
+		
+				done: () => { 
+					this.model.setValues(content.qualifierSelection.selectedQualfiers)
+					this.optionsSiLayer.dispose();
+				},
+				
+				cancel: () => { 
+					this.optionsSiLayer.dispose();
+				}
+			}
 	}
 }
