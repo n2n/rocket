@@ -152,10 +152,10 @@ abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements Re
 	
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
 		if (!$this->getRelationModel()->isTargetMany()) {
-			return new ToOneGuiField($eiu, $this->relationModel, $this->editConfig);
+			return new ToOneGuiField($eiu, $this->getRelationModel());
 		}
 		
-		return new ToManyGuiField($eiu, $this->relation);
+		return new ToManyGuiField($eiu, $this->getRelationModel());
 	}
 	
 	function createForkedEiFrame(Eiu $eiu, EiForkLink $eiForkLink): EiFrame {

@@ -29,7 +29,6 @@ use rocket\ei\EiPropPath;
 use rocket\ei\manage\EiObject;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\impl\ei\component\prop\relation\model\ToOneEiField;
-use rocket\impl\ei\component\prop\relation\model\relation\EmbeddedEiPropRelation;
 use rocket\ei\manage\LiveEiObject;
 use n2n\util\type\CastUtils;
 use n2n\impl\web\dispatch\mag\model\ObjectMagAdapter;
@@ -62,7 +61,7 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiEiPro
 	public function __construct() {
 		parent::__construct();
 		
-		$this->setRelationModel(new RelationModel($this, false, false, RelationModel::MODE_INTEGRATED, $this->editConfig));
+		$this->setRelationModel(new RelationModel($this, false, false, RelationModel::MODE_INTEGRATED, null));
 	}
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {

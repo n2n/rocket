@@ -29,8 +29,15 @@ use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\impl\ei\component\prop\adapter\config\EditConfig;
+use rocket\ei\manage\entry\EiField;
+use rocket\ei\util\Eiu;
+use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
+use rocket\ei\manage\gui\field\GuiField;
+use rocket\impl\ei\component\prop\relation\model\gui\RelationLinkGuiField;
+use rocket\impl\ei\component\prop\relation\model\gui\ToManyGuiField;
+use rocket\ei\component\prop\FieldEiProp;
 
-class ManyToManySelectEiProp extends RelationEiPropAdapter {
+class ManyToManySelectEiProp extends RelationEiPropAdapter implements FieldEiProp {
 	
 	public function __construct() {
 		parent::__construct();
@@ -48,5 +55,21 @@ class ManyToManySelectEiProp extends RelationEiPropAdapter {
 				&& $entityProperty->getType() === RelationEntityProperty::TYPE_MANY_TO_MANY);
 	
 		parent::setEntityProperty($entityProperty);
+	}
+	
+	function buildEiField(Eiu $eiu): ?EiField {
+		$targetEiuFrame = $eiu->frame()->forkSelect($this, $eiu->object())
+				->exec($this->getRelationModel()->getTargetReadEiCommandPath());
+		
+		return new ToManyEiField($eiu, $targetEiuFrame, $this, $this->getRelationModel());
+	}
+	
+	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
+		if ($readOnly || $this->editConfig->isReadOnly()) {
+			return new RelationLinkGuiField($eiu, $this->getRelationModel());
+		}
+		
+		return new ToManyGuiField($eiu, $this->getRelationModel());
+		
 	}
 }

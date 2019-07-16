@@ -25,7 +25,7 @@ export class QualifierSelectInFieldComponent implements OnInit {
 		
 		const index = values.indexOf(siQualifier);
 		if (index > -1) {
-			values.splice(0, 1);
+			values.splice(index, 1);
 		}
 		this.model.setValues(values);
 	}

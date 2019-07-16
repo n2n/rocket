@@ -26,7 +26,6 @@ use rocket\si\content\SiField;
 use rocket\ei\util\Eiu;
 use rocket\si\content\impl\SiFields;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
-use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 use n2n\util\type\CastUtils;
 use rocket\ei\util\entry\EiuEntry;
 use rocket\si\content\impl\QualifierSelectInSiField;
@@ -45,7 +44,7 @@ class ToOneGuiField implements GuiField {
 	 */
 	private $siField;
 	
-	function __construct(Eiu $eiu, RelationModel $relationModel, EditConfig $editConfig) {
+	function __construct(Eiu $eiu, RelationModel $relationModel) {
 		$this->eiu = $eiu;
 		
 		$this->targetEiuFrame = $eiu->frame()->forkSelect($eiu->prop()->getPath());
@@ -58,7 +57,7 @@ class ToOneGuiField implements GuiField {
 		
 		$this->siField = SiFields::apiSelectIn(
 				$this->targetEiuFrame->getApiUrl($relationModel->getTargetReadEiCommandPath()),
-				$values, ($editConfig->isMandatory() ? 1 : 0), 1);
+				$values, ($relationModel->isMandatory() ? 1 : 0), 1);
 	}
 	
 	function save() {
