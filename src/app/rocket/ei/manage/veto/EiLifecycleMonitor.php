@@ -122,12 +122,7 @@ class EiLifecycleMonitor implements LifecycleListener {
 		$this->em->getActionQueue()->registerLifecycleListener($this);
 	}
 	
-	/**
-	 * @param N2nContext $n2nContext
-	 * @return \rocket\core\model\launch\TransactionApproveAttempt
-	 */
-	public function approve() {
-		$this->em->flush();
+	public function onPreFinalized($em) {
 		/**
 		 * @var VetoableLifecycleAction $action
 		 */
@@ -141,12 +136,19 @@ class EiLifecycleMonitor implements LifecycleListener {
 				}
 			}
 			$eiEntityObj->getEiType()->validateLifecycleAction($action, $this->n2nContext);
-				
+			
 			if (!$action->hasVeto()) {
 				$action->approve();
 			}
-			
 		}
+	}
+	
+	/**
+	 * @param N2nContext $n2nContext
+	 * @return \rocket\core\model\launch\TransactionApproveAttempt
+	 */
+	public function approve() {
+		$this->em->flush();
 		
 		$reasonMessages = array();
 		foreach ($this->persistActions as $action) {
@@ -187,7 +189,6 @@ class EiLifecycleMonitor implements LifecycleListener {
 			case LifecycleEvent::PRE_UPDATE:
 				$this->update($eiType, $e->getEntityObj());
 				break;
-			
 		}
 	}
 	

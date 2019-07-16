@@ -37,7 +37,11 @@ use n2n\l10n\DynamicTextCollection;
 use n2n\web\http\controller\ControllerContext;
 
 class Rocket implements RequestScoped {
+<<<<<<< HEAD
 	const VERSION = '2.1.0';
+=======
+	const VERSION = '2.0.8';
+>>>>>>> refs/remotes/origin/master
 	const NS = 'rocket';
 	
 	private $dbhPool;
