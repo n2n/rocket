@@ -25,34 +25,34 @@ use rocket\impl\ei\component\modificator\adapter\EiModificatorAdapter;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\manage\entry\EiEntryListenerAdapter;
 use rocket\ei\util\Eiu;
+use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 
 class TargetMasterRelationEiModificator extends EiModificatorAdapter {
-	private $eiPropRelation;
+	private $relationModel;
 
-	public function __construct(EiPropRelation $eiPropRelation) {
-		$this->eiPropRelation = $eiPropRelation;
+	public function __construct(RelationModel $relationModel) {
+		$this->relationModel = $relationModel;
 	}
 
 	public function setupEiEntry(Eiu $eiu) {
 		$eiEntry = $eiu->entry()->getEiEntry();
 		if ($eiEntry->getEiObject()->isDraft()) return;
 		
-		$that = $this;
-		$eiEntry->registerListener(new TargetMasterEiEntryListener($this->eiPropRelation));
+		$eiEntry->registerListener(new TargetMasterEiEntryListener($this->relationModel));
 	}
 }
 
 class TargetMasterEiEntryListener extends EiEntryListenerAdapter {
-	private $eiPropRelation;
+	private $relationModel;
 	private $accessProxy;
 	private $orphanRemoval;
 	
 	private $oldValue;
 	
-	public function __construct(EiPropRelation $eiPropRelation) {
-		$this->eiPropRelation = $eiPropRelation;
-		$this->accessProxy = $this->eiPropRelation->getRelationEiProp()->getObjectPropertyAccessProxy();
-		$this->orphanRemoval = $this->eiPropRelation->getRelationEntityProperty()->getRelation()->isOrphanRemoval();
+	public function __construct(RelationModel $relationModel) {
+		$this->relationModel = $relationModel;
+		$this->accessProxy = $this->relationModel->getObjectPropertyAccessProxy();
+		$this->orphanRemoval = $this->relationModel->getRelationEntityProperty()->getRelation()->isOrphanRemoval();
 	}
 	
 	public function onWrite(EiEntry $eiEntry) {
@@ -62,7 +62,7 @@ class TargetMasterEiEntryListener extends EiEntryListenerAdapter {
 	public function written(EiEntry $eiEntry) {
 		$entityObj = $eiEntry->getEiObject()->getLiveObject();
 		
-		if ($this->eiPropRelation->isTargetMany()) {
+		if ($this->relationModel->isTargetMany()) {
 			$this->writeToMany($entityObj);
 		} else {
 			$this->writeToOne($entityObj);
@@ -111,9 +111,9 @@ class TargetMasterEiEntryListener extends EiEntryListenerAdapter {
 	}
 	
 	private function writeToMaster($entityObj, $targetEntityObj) {
-		$targetAccessProxy = $this->eiPropRelation->getTargetMasterAccessProxy();
+		$targetAccessProxy = $this->relationModel->getTargetPropInfo()->masterAccessProxy;
 	
-		if (!$this->eiPropRelation->isSourceMany()) {
+		if (!$this->relationModel->isSourceMany()) {
 			$targetAccessProxy->setValue($targetEntityObj, $entityObj);
 			return;
 		}
@@ -132,9 +132,9 @@ class TargetMasterEiEntryListener extends EiEntryListenerAdapter {
 	}
 	
 	private function removeFromMaster($entityObj, $targetEntityObj) {
-		$targetAccessProxy = $this->eiPropRelation->getTargetMasterAccessProxy();
+		$targetAccessProxy = $this->relationModel->getTargetPropInfo()->masterAccessProxy;
 	
-		if (!$this->eiPropRelation->isSourceMany()) {
+		if (!$this->relationModel->isSourceMany()) {
 			if ($entityObj === $targetAccessProxy->getValue($targetEntityObj)) {
 				$targetAccessProxy->setValue($targetEntityObj, null);
 			}

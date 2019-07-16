@@ -72,7 +72,7 @@ class ToManyEiField extends EiFieldAdapter {
 		ArgUtils::assertTrue(is_array($value));
 		foreach ($value as $eiuEntry) {
 			ArgUtils::assertTrue($eiuEntry instanceof EiuEntry);
-			if (!$this->relationModel->getTargetEiuEngine()->type()->matches($value)) {
+			if (!$this->relationModel->getTargetEiuEngine()->type()->matches($eiuEntry)) {
 				return false;
 			}
 		}
@@ -137,14 +137,16 @@ class ToManyEiField extends EiFieldAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\entry\EiFieldAdapter::writeValue()
 	 */
-	protected function writeValue($value) {
-		$nativeValue = null;
-		if ($value !== null) {
+	protected function writeValue($values) {
+		ArgUtils::assertTrue(is_array($values));
+		
+		$nativeValues = new \ArrayObject();
+		foreach ($values as $value) {
 			ArgUtils::assertTrue($value instanceof EiuEntry);
-			$nativeValue = $value->getEntityObj();
+			$nativeValues->append($value->getEntityObj());
 		}
 		
-		$this->eiu->object()->writeNativeValue($this->eiProp, $nativeValue);		
+		$this->eiu->object()->writeNativeValue($this->eiProp, $nativeValues);		
 	}
 	
 	/**

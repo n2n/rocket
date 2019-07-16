@@ -37,6 +37,10 @@ use n2n\persistence\orm\CascadeType;
 use n2n\util\type\TypeUtils;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\EiCommandPath;
+use rocket\impl\ei\component\prop\relation\model\relation\TargetMasterRelationEiModificator;
+use rocket\ei\util\spec\EiuMask;
+use rocket\impl\ei\component\prop\adapter\config\EditConfig;
+use n2n\config\InvalidConfigurationException;
 
 class RelationModel {
 	const MODE_SELECT = 'select';
@@ -45,9 +49,9 @@ class RelationModel {
 	const MODE_INTEGRATED = 'integrated';
 	
 	/**
-	 * @var RelationEntityProperty
+	 * @var RelationEiProp
 	 */
-	private $relationEntityProperty;
+	private $relationEiProp;
 	/**
 	 * @var bool
 	 */
@@ -106,14 +110,34 @@ class RelationModel {
 	 * @param bool $targetMany
 	 * @param bool $embedded
 	 */
-	function __construct(RelationEntityProperty $relationEntityProperty, bool $sourceMany, bool $targetMany,
-			string $mode) {
-		$this->relationEntityProperty = $relationEntityProperty;
+	function __construct(RelationEiProp $relationEiProp, bool $sourceMany, bool $targetMany, string $mode, 
+			?EditConfig $editConfig) {
+		$this->relationEiProp = $relationEiProp;
 		$this->sourceMany = $sourceMany;
 		$this->targetMany = $targetMany;
 
 		ArgUtils::valEnum($mode, self::getModes());
 		$this->mode = $mode;
+		
+		$this->editConfig = $editConfig;
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	function isReadOnly() {
+		IllegalStateException::assertTrue($this->editConfig !== null);
+		
+		return $this->editConfig->isReadOnly();
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	function isMandatory() {
+		IllegalStateException::assertTrue($this->editConfig !== null);
+		
+		return ($this->min > 0 || $this->editConfig->isMandatory());
 	}
 	
 	/**
@@ -127,7 +151,13 @@ class RelationModel {
 	 * @return \n2n\impl\persistence\orm\property\RelationEntityProperty
 	 */
 	function getRelationEntityProperty() {
-		return $this->relationEntityProperty;
+		return $this->relationEiProp->getRelationEntityProperty();
+	}
+	
+	function getObjectPropertyAccessProxy() {
+		$accessProxy = $this->relationEiProp->getObjectPropertyAccessProxy();
+		IllegalStateException::assertTrue($accessProxy !== null);
+		return $accessProxy;
 	}
 	
 	/**
@@ -148,7 +178,7 @@ class RelationModel {
 	 * @return boolean
 	 */
 	function isMaster() {
-		return $this->relationEntityProperty->isMaster();
+		return $this->getRelationEntityProperty()->isMaster();
 	}
 	
 	/**
@@ -163,6 +193,13 @@ class RelationModel {
 	 */
 	function isEmbedded() {
 		return $this->mode == self::MODE_EMBEDDED;
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	function isIntegrated() {
+		return $this->mode == self::MODE_INTEGRATED;
 	}
 	
 	/**
@@ -321,15 +358,32 @@ class RelationModel {
 		throw new IllegalStateException('TargetEditEiCommandPath not defined.');
 	}
 	
+	function prepare(EiuMask $eiuMask, EiuMask $targetEiuMask) {
+		if (!$this->getRelationEntityProperty()->isMaster()) {
+			$eiuMask->addEiModificator(new TargetMasterRelationEiModificator($this));
+		}
+		
+		$targetEiuMask->onEngineReady(function ($eiuEngine) {
+			try {
+				$this->finalize($eiuEngine);
+			} catch (InvalidConfigurationException $e) {
+				throw new InvalidEiComponentConfigurationException('Failed to setup EiProp: ' . $this->relationEiProp,
+						0, $e);
+			}
+		});
+	}
+	
 	/**
 	 * @param EiuEngine $targetEiuEngine
 	 */
-	function finalize(EiuEngine $targetEiuEngine) {
+	private function finalize(EiuEngine $targetEiuEngine) {
 		$rf = new RelationFinalizer($this);
 		
 		$this->targetPropInfo = $rf->deterTargetPropInfo($targetEiuEngine);
-		if ($this->isEmbedded()) {
+		if ($this->isEmbedded() || $this->isIntegrated()) {
 			$rf->validateEmbedded($targetEiuEngine);
+		} else {
+			$rf->validateNonEmbedded();
 		}
 		$this->targetEiuEngine = $targetEiuEngine;
 		
@@ -436,10 +490,25 @@ class RelationFinalizer {
 		try {
 			return new TargetPropInfo(null, $propertiesAnalyzer->analyzeProperty($targetEntityProperty->getName()));
 		} catch (ReflectionException $e) {
-			throw new InvalidEiComponentConfigurationException('No Target master property not accessible: '
+			throw new InvalidEiComponentConfigurationException('No target master property accessible: '
 					. $targetEntityProperty, 0, $e);
 		}
 	}
+	
+	function validateNonEmbedded() {
+		$entityProperty = $this->relationModel->getRelationEntityProperty();
+		
+		if ($this->relationModel->isReadOnly() || $this->relationModel->isMaster() 
+				|| $entityProperty->getRelation()->isOrphanRemoval() || $this->relationModel->isSourceMany()
+				|| $this->relationModel->getTargetPropInfo()->masterAccessProxy->getConstraint()->allowsNull()) {
+			return;			
+		}
+		
+		throw new InvalidEiComponentConfigurationException('Non-master OneToXEiProp is editable and doesn\'t remove '
+				. 'orphans. So target master property must allow null: '
+				. $this->relationModel->getTargetPropInfo()->masterAccessProxy);
+	}
+		
 	
 	function validateEmbedded() {
 		$entityProperty = $this->relationModel->getRelationEntityProperty();

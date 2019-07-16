@@ -39,6 +39,6 @@ class ManyToManySelectEiProp extends RelationEiPropAdapter {
 	
 		parent::setEntityProperty($entityProperty);
 		
-		$this->setRelationModel(new RelationModel($entityProperty, true, true, RelationModel::MODE_PICK));
+		$this->setRelationModel(new RelationModel($entityProperty, true, true, RelationModel::MODE_PICK, $this->editConfig));
 	}
 }

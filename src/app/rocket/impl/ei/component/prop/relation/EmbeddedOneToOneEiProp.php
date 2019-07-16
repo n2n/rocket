@@ -40,6 +40,9 @@ class EmbeddedOneToOneEiProp extends RelationEiPropAdapter {
 		
 		$this->configurator->registerDisplayConfig((new DisplayConfig(ViewMode::bulky()))
 				->setDisplayItemType(SiStructureType::SIMPLE_GROUP));
+		
+		$this->configurator->setRelationModel(
+				new RelationModel($this, false, false, RelationModel::MODE_EMBEDDED, $this->editConfig));
 	}
 	
 	/**
@@ -51,8 +54,5 @@ class EmbeddedOneToOneEiProp extends RelationEiPropAdapter {
 				&& $entityProperty->getType() === RelationEntityProperty::TYPE_ONE_TO_ONE);
 	
 		parent::setEntityProperty($entityProperty);
-		
-		$this->configurator->setRelationModel(
-				new RelationModel($entityProperty, false, false, RelationModel::MODE_EMBEDDED));
 	}
 }

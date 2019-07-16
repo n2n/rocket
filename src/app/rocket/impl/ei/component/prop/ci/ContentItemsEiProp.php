@@ -32,11 +32,10 @@ use rocket\impl\ei\component\prop\ci\model\ContentItemGuiField;
 use rocket\impl\ei\component\prop\ci\model\ContentItemEditable;
 use rocket\ei\EiPropPath;
 use rocket\ei\util\Eiu;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\gui\field\GuiField;
-use rocket\ei\mask\model\DisplayItem;
 use rocket\ei\manage\security\InaccessibleEiCommandPathException;
 use rocket\si\structure\SiStructureType;
+use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 
 class ContentItemsEiProp extends EmbeddedOneToManyEiProp {
 	private $panelConfigs = array();
@@ -47,7 +46,11 @@ class ContentItemsEiProp extends EmbeddedOneToManyEiProp {
 		$this->displayConfig->setListReadModeDefaultDisplayed(false);
 		$this->editConfig->setMandatory(false);
 		$this->panelConfigs = array(new PanelConfig('main', 'Main', null, 0));
+		
 		$this->configurator = new ContentItemsEiPropConfigurator($this/*, $this->eiPropRelation*/);
+		$this->configurator->registerDisplayConfig($this->displayConfig);
+		$this->configurator->registerEditConfig($this->editConfig);
+		$this->setRelationModel(new RelationModel($this, false, true, RelationModel::MODE_EMBEDDED, $this->editConfig));
 	}
 	
 	protected function getDisplayItemType(): string {

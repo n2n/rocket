@@ -81,6 +81,7 @@ class GuiFactory {
 			}
 		}
 		
+		$eiu = new Eiu($eiGui);
 		foreach ($this->eiMask->getEiModificatorCollection() as $eiModificator) {
 			$eiModificator->setupEiGui($eiu);
 		}

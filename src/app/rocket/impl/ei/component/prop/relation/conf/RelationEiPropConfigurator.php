@@ -188,9 +188,6 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		if ($targetEiuMask === null) {
 			$targetEiuMask = $targetEiuType->mask();
 		}
-		$targetEiuMask->onEngineReady(function ($eiuEngine) {
-			$this->relationModel->finalize($eiuEngine);
-		});
 			
 		$targetReadEiCommand = new TargetReadEiCommand(Lstr::create('Change this name'), 'change this', 'change this');
 		$targetEiuMask->addEiCommand($targetReadEiCommand);
@@ -252,5 +249,7 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 			$targetEiuType->getEiType()->registerVetoableActionListener(
 					new RelationVetoableActionListener($this->eiComponent, $strategy));		
 		}
+		
+		$this->relationModel->prepare($eiu->mask(), $targetEiuMask);
 	}
 }

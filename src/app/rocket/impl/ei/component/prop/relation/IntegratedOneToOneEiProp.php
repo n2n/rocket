@@ -61,6 +61,8 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiEiPro
 	
 	public function __construct() {
 		parent::__construct();
+		
+		$this->setRelationModel(new RelationModel($this, false, false, RelationModel::MODE_INTEGRATED, $this->editConfig));
 	}
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {
@@ -68,8 +70,6 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiEiPro
 				&& $entityProperty->getType() === RelationEntityProperty::TYPE_ONE_TO_ONE);
 	
 		parent::setEntityProperty($entityProperty);
-		
-		$this->setRelationModel(new RelationModel($entityProperty, false, false, RelationModel::MODE_INTEGRATED));
 	}
 	
 	private $forkedGuiDefinition;

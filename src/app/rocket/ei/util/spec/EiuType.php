@@ -172,7 +172,7 @@ class EiuType  {
 	 * @return boolean
 	 */
 	function matches($object) {
-		$eiType = EiuAnalyst::determineEiType($object);
+		$eiType = EiuAnalyst::determineEiType($object, true);
 		return $this->eiType->isA($eiType);
 	}
 }

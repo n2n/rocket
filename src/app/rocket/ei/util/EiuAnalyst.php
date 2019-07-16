@@ -1268,7 +1268,7 @@ class EiuAnalyst {
 		
 		throw new EiuPerimeterException('Can not determine EiType of passed argument type ' 
 				. TypeUtils::getTypeInfo($eiTypeArg) . '. Following types are allowed: '
-				. implode(', ', array_merge(self::EI_FRAME_TYPES, EI_ENTRY_TYPES)));
+				. implode(', ', array_merge(self::EI_FRAME_TYPES, self::EI_ENTRY_TYPES)));
 	}
 	
 	/**

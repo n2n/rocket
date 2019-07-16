@@ -43,6 +43,8 @@ class EmbeddedOneToManyEiProp extends RelationEiPropAdapter {
 		
 		$this->configurator->registerDisplayConfig($this->displayConfig);
 		$this->configurator->registerEditConfig($this->editConfig);
+		$this->configurator->setRelationModel(
+				new RelationModel($this, false, true, RelationModel::MODE_EMBEDDED, $this->editConfig));
 	}
 	
 	/**
@@ -54,8 +56,5 @@ class EmbeddedOneToManyEiProp extends RelationEiPropAdapter {
 				&& $entityProperty->getType() === RelationEntityProperty::TYPE_ONE_TO_MANY);
 	
 		parent::setEntityProperty($entityProperty);
-		
-		$this->configurator->setRelationModel(
-				new RelationModel($entityProperty, false, true, RelationModel::MODE_EMBEDDED));
 	}
 }

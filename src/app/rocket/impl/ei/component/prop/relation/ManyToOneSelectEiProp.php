@@ -52,6 +52,7 @@ class ManyToOneSelectEiProp extends RelationEiPropAdapter implements FieldEiProp
 		
 		$this->configurator->registerDisplayConfig($this->displayConfig);
 		$this->configurator->registerEditConfig($this->editConfig);
+		$this->setRelationModel(new RelationModel($this, true, false, RelationModel::MODE_SELECT, $this->editConfig));
 	}
 	
 	function setEntityProperty(?EntityProperty $entityProperty) {
@@ -59,8 +60,6 @@ class ManyToOneSelectEiProp extends RelationEiPropAdapter implements FieldEiProp
 				&& $entityProperty->getType() === RelationEntityProperty::TYPE_MANY_TO_ONE);
 		
 		parent::setEntityProperty($entityProperty);
-		
-		$this->setRelationModel(new RelationModel($entityProperty, true, false, RelationModel::MODE_SELECT));
 	}
 	
 	function buildEiField(Eiu $eiu): ?EiField {
