@@ -90,7 +90,7 @@ abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements Re
 	 * @return \rocket\impl\ei\component\prop\relation\conf\RelationModel
 	 */
 	protected function getRelationModel() {
-		IllegalStateException::assertTrue($this->relationModel !== null);
+		IllegalStateException::assertTrue($this->relationModel !== null, get_class($this));
 		return $this->relationModel;
 	}
 	

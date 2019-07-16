@@ -15,8 +15,6 @@ export interface SiZoneContent {
 	getEntries(): SiEntry[];
 	
 	getSelectedEntries(): SiEntry[];
-		
-	getZoneErrors(): SiZoneError[];
 	
 	applyTo(structure: SiStructure);
 }

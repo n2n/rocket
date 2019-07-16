@@ -6,6 +6,7 @@ import { ViewContainerRef, ComponentFactoryResolver, ComponentRef } from "@angul
 import { FieldStructureComponent } from "src/app/ui/structure/comp/field-structure/field-structure.component";
 import { SiStructure } from "src/app/si/model/structure/si-structure";
 import { SiFieldDeclaration } from "src/app/si/model/structure/si-field-declaration";
+import { SiZoneError } from "src/app/si/model/structure/si-zone-error";
 
 export class FieldSiStructureContent implements SiStructureContent {
 
@@ -22,4 +23,14 @@ export class FieldSiStructureContent implements SiStructureContent {
 		
 		return componentRef;
 	}
+
+	 getZoneErrors(): SiZoneError[] {
+		let zoneErrors: SiZoneError[] = [];
+    		
+		for (let [key, siField] of this.entry.selectedBuildup.fieldMap) {
+			zoneErrors.push(...siField.getZoneErrors());
+		}
+    	
+    	return zoneErrors;
+    }
 }

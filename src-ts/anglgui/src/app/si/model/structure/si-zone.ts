@@ -15,29 +15,9 @@ export class SiZone {
 		
 	}
 	
-	hasContent(): boolean {
-		return !!this._content;
-	}
-	
-	removeContent() {
-		this._content = null;
-	}
-	
-	get content(): SiZoneContent {
-		if (this._content) {
-			return this._content;
-		}
 		
-		throw new IllegalSiStateError('SiZoneContent not assinged.');
-	}
-	
-	set content(content: SiZoneContent) {
-		this._content = content;
-		content.applyTo(this.structure);
-	}
-	
 	dispose() {
-		this.removeContent();
+		this.structure.clear()
 		this.disposeSubject.next();
 		this.disposeSubject.complete();
 	}

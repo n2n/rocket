@@ -43,7 +43,11 @@ export class ListSiZoneContent implements SiZoneContent, SiStructureContent {
 	}
 	
 	getEntries(): SiEntry[] {
-		throw new Error("Method not implemented.");
+		const entries = [];
+		for (let [no, page] of this.pagesMap) {
+			entries.push(...page.entries);
+		}
+		return entries;
     }
 	
     getSelectedEntries(): SiEntry[] {
@@ -51,7 +55,15 @@ export class ListSiZoneContent implements SiZoneContent, SiStructureContent {
     }
     
     getZoneErrors(): SiZoneError[] {
-        return [];
+    	let zoneErrors: SiZoneError[] = [];
+    		
+    	for (let entry of this.getEntries()) {
+    		for (let [key, siField] of entry.selectedBuildup.fieldMap) {
+    			zoneErrors.push(...siField.getZoneErrors());
+    		}
+    	}
+    	
+    	return zoneErrors;
     }
     
     get pages(): SiPage[] {

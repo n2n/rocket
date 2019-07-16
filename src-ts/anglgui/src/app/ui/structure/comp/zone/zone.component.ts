@@ -30,11 +30,7 @@ export class ZoneComponent implements OnInit, DoCheck {
 	}
 	
 	ngDoCheck(){
-		if (this.siZone.hasContent()) {
-			this.siZoneErrors = this.siZone.content.getZoneErrors();
-		} else {
-			this.siZoneErrors = [];
-		}
+		this.siZoneErrors = this.siZone.structure.getZoneErrors();
 		
 		if (this.hasSiZoneErrors()) {
 			this.elemRef.nativeElement.classList.add('rocket-contains-additional');
@@ -48,12 +44,8 @@ export class ZoneComponent implements OnInit, DoCheck {
 		return this.siZoneErrors.length > 0;
 	}
 	
-	get siStructure(): SiStructure|null {
-		if (this.siZone.hasContent()) {
-			return this.siZone.structure;
-		}
-		
-		return null;
+	get siStructure(): SiStructure {
+		return this.siZone.structure;
 	}
 }
 

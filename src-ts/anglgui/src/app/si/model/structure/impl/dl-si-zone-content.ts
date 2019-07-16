@@ -34,15 +34,7 @@ export class DlSiZoneContent implements SiZoneContent, SiStructureContent {
     }
     
     getZoneErrors(): SiZoneError[] {
-    	let zoneErrors: SiZoneError[] = [];
-    		
-    	for (let entry of this.entries) {
-    		for (let [key, siField] of entry.selectedBuildup.fieldMap) {
-    			zoneErrors.push(...siField.getZoneErrors());
-    		}
-    	}
-    	
-    	return zoneErrors;
+    	return [];
     }
     
     getSelectedEntries(): SiEntry[] {

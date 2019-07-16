@@ -43,7 +43,7 @@ export class QualifierSelectInFieldComponent implements OnInit {
 		});
 		
 		const content = new ListSiZoneContent(this.model.getApiUrl(), 30, siZone);
-		this.optionsSiLayer.pushZone(null).content = content;
+		content.applyTo(this.optionsSiLayer.pushZone(null).structure);
 		
 		content.qualifierSelection = {
 				min: this.model.getMin(),

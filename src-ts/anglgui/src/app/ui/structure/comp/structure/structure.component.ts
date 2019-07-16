@@ -110,7 +110,7 @@ export class StructureComponent implements OnInit {
 	}
 	
 	get loaded(): boolean {
-		return !!this.siStructure;
+		return !!this.siStructure.content;
 	}
 
 }

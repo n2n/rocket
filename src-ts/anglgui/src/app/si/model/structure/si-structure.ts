@@ -2,6 +2,7 @@
 import { SiStructureType } from "src/app/si/model/structure/si-field-structure-declaration";
 import { Subject, Observable, BehaviorSubject } from "rxjs";
 import { SiStructureContent } from "src/app/si/model/structure/si-structure-content";
+import { SiZoneError } from "src/app/si/model/structure/si-zone-error";
 
 export class SiStructure {
 	label: string|null = null;
@@ -25,6 +26,11 @@ export class SiStructure {
 		return this.visibleSubject;
 	}
 	
+	clear() {
+		this.content = null;
+		this.clearChildren();
+	}
+	
 	addChild(child: SiStructure) {
 		this.children.push(child);
 	}
@@ -35,5 +41,19 @@ export class SiStructure {
 	
 	clearChildren() {
 		this.children.length = 0;
+	}
+	
+	getZoneErrors(): SiZoneError[] {
+		const errors: SiZoneError[] = [];
+		
+		if (this.content) {
+			errors.push(...this.content.getZoneErrors());
+		}
+		
+		for (const child of this.children) {
+			errors.push(...child.getZoneErrors());
+		}
+		
+		return errors;
 	}
 }
