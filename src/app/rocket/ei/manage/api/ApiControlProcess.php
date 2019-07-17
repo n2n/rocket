@@ -203,19 +203,13 @@ class ApiControlProcess {
 	 * @param EiEntryGui $eiEntryGui
 	 */
 	private function applyEntryInput($entryInput, $eiEntryGui) {
+		$eiEntryGui->handleSiEntryInput($entryInput);
 		
 		// 			foreach ($eiEntryGui->getGuiFieldForks() as $guiFieldPathStr => $guiFieldFork) {
 		// 				$guiFieldFork->
 		// 			}
 		
-		foreach ($eiEntryGui->getGuiFields() as $guiFieldPathStr => $guiField) {
-			if ($guiField->getSiField()->isReadOnly()
-					|| !$entryInput->containsFieldName($guiFieldPathStr)) {
-						continue;
-					}
-					
-					$guiField->getSiField()->handleInput($entryInput->getFieldInput($guiFieldPathStr)->getData());
-		}
+		
 		
 		$eiEntryGui->save();
 	}

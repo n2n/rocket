@@ -57,6 +57,11 @@ class EditEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiC
 		return $eiu->lookup(EditController::class);
 	}
 	
+	/**
+	 * @param N2nContext $n2nContext
+	 * @param N2nLocale $n2nLocale
+	 * @return string[]
+	 */
 	public function getEntryGuiControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {
 		$dtc = new DynamicTextCollection('rocket', $n2nLocale);
 		return array(self::CONTROL_EDIT_KEY => $dtc->translate('common_edit_label'));

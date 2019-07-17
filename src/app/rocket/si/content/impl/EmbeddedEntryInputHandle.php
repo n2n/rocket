@@ -19,49 +19,15 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\si\content;
+namespace rocket\si\content\impl;
 
-use n2n\util\type\attrs\DataSet;
+use rocket\si\input\SiEntryInput;
+use rocket\si\content\SiEntry;
 
-class SiQualifier extends SiIdentifier implements \JsonSerializable {
-	private $name;
-	
-	function __construct(string $category, ?string $id, string $name) {
-		parent::__construct($category, $id);
-		$this->name = $name;
-	}
-	
+interface EmbeddedEntryInputHandle {
 	/**
-	 * @return string
+	 * @param SiEntryInput[] $siEntryInputs
+	 * @return SiEntry[]
 	 */
-	function getName() {
-		return $this->name;
-	}
-	
-	/**
-	 * @param string $name
-	 * @return SiQualifier
-	 */
-	function setName(string $name) {
-		$this->name = $name;
-		return $this;
-	}
-	
-	function jsonSerialize() {
-		return [
-			'category' => $this->category,
-			'id' => $this->id,
-			'name' => $this->name
-		];
-	}
-
-	static function parse(array $data) {
-		$ds = new DataSet($data);
-		
-		try {
-			return new SiQualifier($ds->reqString('category'), $ds->optString('id'), $ds->reqString('name'));
-		} catch (\n2n\util\type\attrs\AttributesException $e) {
-			throw new \InvalidArgumentException(null, null, $e);
-		}
-	}
+	function handleInput(array $siEntryInputs): array;
 }

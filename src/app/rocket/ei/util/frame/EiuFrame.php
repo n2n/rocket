@@ -73,6 +73,7 @@ use rocket\ei\component\prop\EiProp;
 use rocket\ei\manage\frame\EiForkLink;
 use rocket\ei\manage\frame\CriteriaFactory;
 use rocket\si\content\SiQualifier;
+use rocket\ei\util\gui\EiuEntryGuiMulti;
 
 class EiuFrame {
 	private $eiFrame;
@@ -647,6 +648,17 @@ class EiuFrame {
 	}
 	
 	/**
+	 * @param bool $bulky
+	 * @param bool $readOnly
+	 * @return \rocket\ei\util\gui\EiuEntryGuiMulti
+	 */
+	function newEntryGuiMulti(bool $bulky, bool $readOnly) {
+		$eiEntryGuiMulti = (new EiFrameUtil($this->eiFrame))->createNewEiEntryGuiMulti($bulky, $readOnly);
+		
+		return new EiuEntryGuiMulti($eiEntryGuiMulti);
+	}
+	
+	/**
 	 * @param int $viewMode
 	 * @param \Closure $uiFactory
 	 * @param array $guiFieldPaths
@@ -659,6 +671,8 @@ class EiuFrame {
 		$eiuGui->initWithUiCallback($uiFactory, $guiFieldPaths);
 		return $eiuGui;
 	}
+	
+	
 	
 	/**
 	 * @param CriteriaConstraint $criteriaConstraint

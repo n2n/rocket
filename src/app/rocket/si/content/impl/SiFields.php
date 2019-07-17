@@ -77,4 +77,9 @@ class SiFields {
 	static function apiSelectIn(Url $apiUrl, array $values = [], int $min = 0, int $max = null) {
 		return (new QualifierSelectInSiField($apiUrl, $values))->setMin($min)->setMax($max);
 	}
+	
+	static function apiEmbeddedIn(Url $apiUrl, array $values = [], array $summarySiEntries = [], int $min = 0, 
+			int $max = null) {
+		return (new EmbeddedInSiField($apiUrl, $values, $summarySiEntries))->setMin($min)->setMax($max);
+	}
 }

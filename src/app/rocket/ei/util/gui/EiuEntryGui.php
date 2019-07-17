@@ -34,6 +34,7 @@ use rocket\ei\util\Eiu;
 use rocket\ei\util\EiuPerimeterException;
 use rocket\ei\util\EiuAnalyst;
 use n2n\l10n\N2nLocale;
+use rocket\si\input\SiEntryInput;
 
 class EiuEntryGui {
 	private $eiEntryGui;
@@ -41,7 +42,7 @@ class EiuEntryGui {
 	private $eiuEntry;
 	private $eiuAnalyst;
 	
-	public function __construct(EiEntryGui $eiEntryGui, ?EiuGui $eiuGui, EiuAnalyst $eiuAnalyst) {
+	function __construct(EiEntryGui $eiEntryGui, ?EiuGui $eiuGui, EiuAnalyst $eiuAnalyst) {
 		$this->eiEntryGui = $eiEntryGui;
 		$this->eiuGui = $eiuGui;
 		$this->eiuAnalyst = $eiuAnalyst;
@@ -50,7 +51,7 @@ class EiuEntryGui {
 	/**
 	 * @return EiuGui 
 	 */
-	public function gui() {
+	function gui() {
 		if ($this->eiuGui !== null) {
 			return $this->eiuGui;
 		}
@@ -61,7 +62,7 @@ class EiuEntryGui {
 	/**
 	 * @return int
 	 */
-	public function getViewMode() {
+	function getViewMode() {
 		return $this->eiEntryGui->getEiGui()->getViewMode();
 	}
 	
@@ -69,7 +70,7 @@ class EiuEntryGui {
 	 * @see EiEntryGui::getGuiIdsPaths()
 	 * @return \rocket\ei\manage\gui\field\GuiFieldPath[]
 	 */
-	public function getGuiFieldPaths() {
+	function getGuiFieldPaths() {
 		return $this->eiEntryGui->getGuiFieldGuiFieldPaths();	
 	}
 	
@@ -77,7 +78,7 @@ class EiuEntryGui {
 	 * @param GuiFieldPath $guiFieldPath
 	 * @return bool
 	 */
-	public function containsGuiFieldPath(GuiFieldPath $guiFieldPath) {
+	function containsGuiFieldPath(GuiFieldPath $guiFieldPath) {
 		return $this->eiEntryGui->containsDisplayable($guiFieldPath);
 	}
 	
@@ -87,14 +88,14 @@ class EiuEntryGui {
 	 * @throws GuiException
 	 * @return string|null
 	 */
-	public function getFieldLabel($eiPropPath, N2nLocale $n2nLocale = null, bool $required = false) {
+	function getFieldLabel($eiPropPath, N2nLocale $n2nLocale = null, bool $required = false) {
 		return $this->gui()->getPropLabel($eiPropPath, $n2nLocale, $required);
 	}
 	
 	/**
 	 * @return boolean
 	 */
-	public function isCompact() {
+	function isCompact() {
 		$viewMode = $this->getViewMode();
 		return $viewMode & ViewMode::compact();
 	}
@@ -102,42 +103,42 @@ class EiuEntryGui {
 	/**
 	 * @return boolean
 	 */
-	public function isBulky() {
+	function isBulky() {
 		return (bool) ($this->getViewMode() & ViewMode::bulky());
 	}
 	
 	/**
 	 * @return boolean
 	 */
-	public function isReadOnly() {
+	function isReadOnly() {
 		return (bool) ($this->getViewMode() & ViewMode::read());
 	}
 	
 	/**
 	 * @return EiEntryGui 
 	 */
-	public function getEiEntryGui() {
+	function getEiEntryGui() {
 		return $this->eiEntryGui;
 	}
 	
 	/**
 	 * @return \n2n\web\dispatch\Dispatchable|null
 	 */
-	public function getDispatchable() {
+	function getDispatchable() {
 		return $this->eiEntryGui->getDispatchable();
 	}
 	
 	/**
 	 * @return boolean
 	 */
-	public function isReady() {
+	function isReady() {
 		return $this->eiEntryGui->isInitialized();
 	}
 	
 	/**
 	 * @param \Closure $closure
 	 */
-	public function whenReady(\Closure $closure) {
+	function whenReady(\Closure $closure) {
 		$listener = new ClosureGuiListener(new Eiu($this), $closure);
 		
 		if ($this->isReady()) {
@@ -150,21 +151,21 @@ class EiuEntryGui {
 	/**
 	 * @param \Closure $closure
 	 */
-	public function onSave(\Closure $closure) {
+	function onSave(\Closure $closure) {
 		$this->eiEntryGui->registerEiEntryGuiListener(new ClosureGuiListener(new Eiu($this), null, $closure));
 	}
 	
 	/**
 	 * @param \Closure $closure
 	 */
-	public function onSaved(\Closure $closure) {
+	function onSaved(\Closure $closure) {
 		$this->eiEntryGui->registerEiEntryGuiListener(new ClosureGuiListener(new Eiu($this), null, null, $closure));
 	}
 	
 	/**
 	 * @return boolean
 	 */
-	public function hasForkMags() {
+	function hasForkMags() {
 		foreach ($this->eiEntryGui->getGuiFieldForkAssemblies() as $guiFieldForkAssembly) {
 			if (!empty($guiFieldForkAssembly->getMagAssemblies())) {
 				return true;
@@ -179,7 +180,7 @@ class EiuEntryGui {
 	 * @throws GuiException
 	 * @return MagWrapper
 	 */
-	public function getMagWrapper($guiFieldPath, bool $required = false) {
+	function getMagWrapper($guiFieldPath, bool $required = false) {
 		$magWrapper = null;
 		
 		try {
@@ -195,7 +196,7 @@ class EiuEntryGui {
 		}
 	}
 	
-	public function getSubMagWrappers($prefixGuiFieldPath, bool $checkOnEiPropPathLevel = true) {
+	function getSubMagWrappers($prefixGuiFieldPath, bool $checkOnEiPropPathLevel = true) {
 		$prefixGuiFieldPath = GuiFieldPath::create($prefixGuiFieldPath);
 		
 		$magWrappers = [];
@@ -215,7 +216,7 @@ class EiuEntryGui {
 	 * @throws GuiException
 	 * @return EiFieldAbstraction
 	 */
-	public function getEiFieldAbstraction($guiFieldPath, bool $required = false) {
+	function getEiFieldAbstraction($guiFieldPath, bool $required = false) {
 		return $this->eiuEntry->getEiFieldAbstraction($guiFieldPath, $required);
 	}
 	
@@ -239,14 +240,14 @@ class EiuEntryGui {
 	/**
 	 * @param PropertyPath|null $propertyPath
 	 */
-	public function setContextPropertyPath(PropertyPath $propertyPath = null) {
+	function setContextPropertyPath(PropertyPath $propertyPath = null) {
 		$this->eiEntryGui->setContextPropertyPath($propertyPath);
 	}
 	
 	/**
 	 * @return \n2n\web\dispatch\map\PropertyPath|null
 	 */
-	public function getContextPropertyPath() {
+	function getContextPropertyPath() {
 		return $this->eiEntryGui->getContextPropertyPath();
 	}
 	
@@ -255,7 +256,7 @@ class EiuEntryGui {
 	 * @throws EiuPerimeterException
 	 * @return \rocket\ei\util\entry\EiuEntry
 	 */
-	public function entry() {
+	function entry() {
 		if ($this->eiuEntry === null) {
 			$this->eiuEntry = $this->gui()->getEiuFrame()->entry($this->getEiEntryGui()->getEiEntry());
 		}
@@ -267,18 +268,29 @@ class EiuEntryGui {
 	 * @param GuiFieldPath|string $guiFieldPath
 	 * @return \rocket\ei\util\entry\EiuField
 	 */
-	public function field($guiFieldPath) {
+	function field($guiFieldPath) {
 		return new EiuGuiField(GuiFieldPath::create($guiFieldPath), $this, $this->eiuAnalyst);
+	}
+	
+	function handleSiEntryInput(SiEntryInput $siEntryInput) {
+		$this->eiEntryGui->handleSiEntryInput($siEntryInput);
 	}
 	
 	/**
 	 * 
 	 */
-	public function save() {
+	function save() {
 		$this->eiEntryGui->save();
 	}
 	
-// 	public function getEiMask() {
+	/**
+	 * @return \rocket\ei\util\gui\EiuEntryGuiMulti
+	 */
+	function toMulti() {
+		return new EiuEntryGuiMulti($this->eiEntryGui->toMulti(), $this->eiuAnalyst);
+	}
+	
+// 	function getEiMask() {
 // 		if ($this->eiMask !== null) {
 // 			return $this->eiMask;
 // 		}
@@ -312,7 +324,7 @@ class ClosureGuiListener implements EiEntryGuiListener {
 	 * @param \Closure $onSaveClosure
 	 * @param \Closure $savedClosure
 	 */
-	public function __construct(Eiu $eiu, \Closure $whenReadyClosure = null, \Closure $onSaveClosure = null,
+	function __construct(Eiu $eiu, \Closure $whenReadyClosure = null, \Closure $onSaveClosure = null,
 			\Closure $savedClosure = null) {
 		$this->eiu = $eiu;
 		$this->whenReadyClosure = $whenReadyClosure;
@@ -324,7 +336,7 @@ class ClosureGuiListener implements EiEntryGuiListener {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\EiEntryGuiListener::finalized()
 	 */
-	public function finalized(EiEntryGui $eiEntryGui) {
+	function finalized(EiEntryGui $eiEntryGui) {
 		if ($this->whenReadyClosure === null) return;
 		
 		$this->call($this->whenReadyClosure);
@@ -338,7 +350,7 @@ class ClosureGuiListener implements EiEntryGuiListener {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\EiEntryGuiListener::onSave()
 	 */
-	public function onSave(EiEntryGui $eiEntryGui) {
+	function onSave(EiEntryGui $eiEntryGui) {
 		if ($this->onSaveClosure !== null) {
 			$this->call($this->onSaveClosure);
 		}
@@ -348,7 +360,7 @@ class ClosureGuiListener implements EiEntryGuiListener {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\EiEntryGuiListener::saved()
 	 */
-	public function saved(EiEntryGui $eiEntryGui) {
+	function saved(EiEntryGui $eiEntryGui) {
 		if ($this->savedClosure !== null) {
 			$this->call($this->savedClosure);
 		}

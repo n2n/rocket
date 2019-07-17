@@ -117,6 +117,13 @@ export class SiCompFactory {
 			qualifierSelectInSiField.min = dataExtr.reqNumber('min');
 			qualifierSelectInSiField.max = dataExtr.nullaNumber('max');
 			return qualifierSelectInSiField;
+		case SiFieldType.EMBEDDED_ENTRY_IN:
+			const embeddedEntryInSiField = new EmbeddedEntryInSiField(this.zone, dataExtr.reqString('apiUrl'),
+					this.createEntries(dataExtr.reqArray('values')));
+			embeddedEntryInSiField.summaryEiEntries = this.createEntries(dataExtr.reqArray('summaryEiEntries')); 
+			embeddedEntryInSiField.min = dataExtr.reqNumber('min');
+			embeddedEntryInSiField.max = dataExtr.nullaNumber('max');
+			return embeddedEntryInSiField;
 		default: 
 			throw new ObjectMissmatchError('Invalid si field type: ' + data.type);
 		}	
@@ -203,7 +210,8 @@ export enum SiFieldType {
     FILE_OUT = 'file-out',
     FILE_IN = 'file-in',
     LINK_OUT = 'link-out',
-    QUALIFIER_SELECT_IN = 'qualifier-select-in'
+    QUALIFIER_SELECT_IN = 'qualifier-select-in',
+    EMBEDDED_ENTRY_IN = 'embedded-entry-in';
 }
 
 export enum SiControlType {

@@ -70,6 +70,5 @@ class ManyToManySelectEiProp extends RelationEiPropAdapter implements FieldEiPro
 		}
 		
 		return new ToManyGuiField($eiu, $this->getRelationModel());
-		
 	}
 }

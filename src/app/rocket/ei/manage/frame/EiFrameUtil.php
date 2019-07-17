@@ -33,6 +33,8 @@ use n2n\persistence\orm\criteria\Criteria;
 use rocket\ei\manage\gui\EiGui;
 use n2n\persistence\orm\util\NestedSetStrategy;
 use rocket\ei\manage\LiveEiObject;
+use rocket\ei\manage\gui\EiEntryGuiMulti;
+use rocket\ei\EiException;
 
 class EiFrameUtil {
 	private $eiFrame;
@@ -125,17 +127,29 @@ class EiFrameUtil {
 		return $newEiEntries;
 	}
 	
-	function createPossibleNewEiEntryGuis(bool $bulky, bool $readOnly) {
+	/**
+	 * @param bool $bulky
+	 * @param bool $readOnly
+	 * @return \rocket\ei\manage\gui\EiEntryGuiMulti
+	 * @throws EiException
+	 */
+	function createNewEiEntryGuiMulti(bool $bulky, bool $readOnly) {
 		$viewMode = ViewMode::determine($bulky, $readOnly, true);
 		
 		$newEiEntryGuis = [];
 		
-		foreach ($eiEntries as $eiTypeId => $newEiEntry) {
+		foreach ($this->createPossibleNewEiEntries() as $eiTypeId => $newEiEntry) {
 			$newEiGui = $newEiEntry->getEiMask()->getEiEngine()->createFramedEiGui($this->eiFrame, $viewMode);
 			$newEiEntryGuis[$eiTypeId] = $newEiGui->createEiEntryGui($newEiEntry);
 		}
 		
-		return $newEiEntryGuis;
+		if (!empty($newEiEntryGuis)) {
+			throw new EiException('Can not create a new EiEntryGui of ' 
+					. $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()
+					. ' because this type is abstract and doesn\'t have any sub EiTypes.');
+		}
+		
+		return new EiEntryGuiMulti($newEiEntryGuis);
 	}
 	
 	function createEiEntryGuiFromEiObject(EiObject $eiObject, bool $bulky, bool $readOnly) {

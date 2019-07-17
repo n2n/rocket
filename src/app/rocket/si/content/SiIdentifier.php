@@ -23,27 +23,44 @@ namespace rocket\si\content;
 
 use n2n\util\type\attrs\DataSet;
 
-class SiQualifier extends SiIdentifier implements \JsonSerializable {
-	private $name;
+class SiIdentifier implements \JsonSerializable {
+	private $category;
+	private $id;
 	
-	function __construct(string $category, ?string $id, string $name) {
-		parent::__construct($category, $id);
-		$this->name = $name;
+	function __construct(string $category, ?string $id) {
+		$this->category = $category;
+		$this->id = $id;
 	}
 	
 	/**
 	 * @return string
 	 */
-	function getName() {
-		return $this->name;
+	function getCategory() {
+		return $this->category;
 	}
 	
 	/**
-	 * @param string $name
+	 * @param string $category
 	 * @return SiQualifier
 	 */
-	function setName(string $name) {
-		$this->name = $name;
+	function setCategory(string $category) {
+		$this->category = $category;
+		return $this;
+	}
+	
+	/**
+	 * @return string|null
+	 */
+	function getId() {
+		return $this->id;
+	}
+	
+	/**
+	 * @param string|null $id
+	 * @return SiQualifier
+	 */
+	function setId(?string $id) {
+		$this->id = $id;
 		return $this;
 	}
 	
@@ -51,15 +68,19 @@ class SiQualifier extends SiIdentifier implements \JsonSerializable {
 		return [
 			'category' => $this->category,
 			'id' => $this->id,
-			'name' => $this->name
 		];
 	}
-
+	
+	/**
+	 * @param array $data
+	 * @throws \InvalidArgumentException
+	 * @return \rocket\si\content\SiIdentifier
+	 */
 	static function parse(array $data) {
 		$ds = new DataSet($data);
 		
 		try {
-			return new SiQualifier($ds->reqString('category'), $ds->optString('id'), $ds->reqString('name'));
+			return new SiIdentifier($ds->reqString('category'), $ds->optString('id'));
 		} catch (\n2n\util\type\attrs\AttributesException $e) {
 			throw new \InvalidArgumentException(null, null, $e);
 		}

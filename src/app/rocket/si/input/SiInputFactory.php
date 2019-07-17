@@ -21,7 +21,6 @@
  */
 namespace rocket\si\input;
 
-use n2n\util\type\attrs\DataSet;
 use n2n\util\type\attrs\AttributesException;
 
 class SiInputFactory {
@@ -36,7 +35,7 @@ class SiInputFactory {
 		
 		foreach ($data as $key => $entryData) {
 			try {
-				$input->putEntryInput($key, $this->createEntry($entryData));
+				$input->putEntryInput($key, SiEntryInput::parse($entryData));
 			} catch (AttributesException $e) {
 				throw new CorruptedSiInputDataException(null, 0, $e);
 			}
@@ -45,21 +44,7 @@ class SiInputFactory {
 		return $input;
 	}
 	
-	/**
-	 * @param int $entryKey
-	 * @param array $data
-	 * @return SiEntryInput
-	 */
-	private function createEntry($data) {
-		$dataSet = new DataSet($data);
-		
-		$siEntryInput = new SiEntryInput($dataSet->reqString('category'), $dataSet->reqString('buildupId'), 
-				$dataSet->optString('id'));
-		foreach ($dataSet->reqArray('fieldInputMap', 'array') as $fieldId => $fielData) {
-			$siEntryInput->putFieldInput($fieldId, new SiFieldInput($fielData));
-		}
-		return $siEntryInput;
-	}
+	
 	
 }
 

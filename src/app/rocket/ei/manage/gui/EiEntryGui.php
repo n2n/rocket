@@ -32,6 +32,7 @@ use rocket\si\content\SiEntryBuildup;
 use rocket\si\content\SiEntry;
 use rocket\ei\manage\gui\control\GuiControlPath;
 use rocket\ei\manage\api\ApiControlCallId;
+use rocket\si\input\SiEntryInput;
 
 class EiEntryGui {
 	/**
@@ -318,15 +319,19 @@ class EiEntryGui {
 	}
 	
 	/**
+	 * @return \rocket\ei\manage\gui\EiEntryGuiMulti
+	 */
+	function toMulti() {
+		return new EiEntryGuiMulti([$this]);
+	}
+	
+	/**
 	 * @return \rocket\si\content\SiEntry
 	 */
 	function createSiEntry() {
 		$eiType = $this->eiEntry->getEiType();
 		
 		$n2nContext = $this->eiGui->getEiFrame()->getN2nContext();
-		$idNameDefinition = $this->eiGui->getEiFrame()->getManageState()->getDef()
-				->getIdNameDefinition($this->eiEntry->getEiMask());
-		$name = $idNameDefinition->createIdentityString($this->eiEntry->getEiObject(), $n2nContext, $n2nContext->getN2nLocale());
 		
 		$siQualifier = $this->eiEntry->getEiObject()->createSiQualifier($name);
 		$siEntry = new SiEntry($siQualifier, !ViewMode::isReadOnly($this->eiGui->getViewMode()));
@@ -341,19 +346,16 @@ class EiEntryGui {
 		$eiEntry = $this->eiEntry;
 		$eiFrame = $this->eiGui->getEiFrame();
 		
-		$name = null;
-		$deterIdNameDefinition = null;
-		if ($eiEntry->isNew()) {
-			$deterIdNameDefinition = $this->eiGui->getGuiDefinition();
-			$name = $eiEntry->getEiMask()->getLabelLstr()->t($eiFrame->getN2nContext()->getN2nLocale());
-		} else {
+		$name = $eiEntry->getEiMask()->getLabelLstr()->t($eiFrame->getN2nContext()->getN2nLocale());
+		$idName = null;
+		if (!$eiEntry->isNew()) {
 			$deterIdNameDefinition = $eiFrame->getManageState()->getDef()
 					->getIdNameDefinition($eiEntry->getEiMask());
-			$name = $deterIdNameDefinition->createIdentityString($eiEntry->getEiObject(), $eiFrame->getN2nContext(),
+			$idName = $deterIdNameDefinition->createIdentityString($eiEntry->getEiObject(), $eiFrame->getN2nContext(),
 					$eiFrame->getN2nContext()->getN2nLocale());
 		}
 		
-		$siEntry = new SiEntryBuildup($name);
+		$siEntry = new SiEntryBuildup($name, $idName);
 		
 		foreach ($this->guiFields as $guiFieldPathStr => $guiField) {
 			$siEntry->putField($guiFieldPathStr, $guiField->getSiField());
@@ -368,6 +370,24 @@ class EiEntryGui {
 		}
 		
 		return $siEntry;
+	}
+	
+	/**
+	 * @param SiEntryInput $siEntryInput
+	 */
+	function handleSiEntryInput(SiEntryInput $siEntryInput) {
+		if ($this->eiEntry->getEiType()->getId() != $siEntryInput->getBuildupId()) {
+			throw new IllegalStateException('EiType missmatch.');
+		}
+		
+		foreach ($this->getGuiFields() as $guiFieldPathStr => $guiField) {
+			if ($guiField->getSiField()->isReadOnly()
+					|| !$siEntryInput->containsFieldName($guiFieldPathStr)) {
+				continue;
+			}
+			
+			$guiField->getSiField()->handleInput($siEntryInput->getFieldInput($guiFieldPathStr)->getData());
+		}
 	}
 	
 	public function __toString() {

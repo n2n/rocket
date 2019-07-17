@@ -150,7 +150,7 @@ abstract class EiPropRelation {
 		try {
 			$this->targetMasterAccessProxy = $propertiesAnalyzer->analyzeProperty($targetEntityProperty->getName());
 		} catch (ReflectionException $e) {
-			throw new InvalidEiComponentConfigurationException('No Target master property not accessible: '
+			throw new InvalidEiComponentConfigurationException('No Target master property accessible: '
 					. $targetEntityProperty, 0, $e);
 		}
 	}

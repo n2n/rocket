@@ -23,7 +23,7 @@ export class FieldStructureComponent implements OnInit {
     get siEntry(): SiEntry {
     	return this.fieldSiStructureContent.entry;
     }
-  
+    
     get siFieldDeclaration(): SiFieldDeclaration {
     	return this.fieldSiStructureContent.fieldDeclaration;
     }
