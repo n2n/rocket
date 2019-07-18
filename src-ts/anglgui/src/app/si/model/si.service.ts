@@ -4,13 +4,13 @@ import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { Extractor, ObjectMissmatchError } from "src/app/util/mapping/extractor";
 import { SiZone } from "src/app/si/model/structure/si-zone";
-import { ListSiZoneContent } from "src/app/si/model/structure/impl/list-si-zone-content";
-import { DlSiZoneContent } from "src/app/si/model/structure/impl/dl-si-zone-content";
+import { EntriesListSiContent } from "src/app/si/model/structure/impl/list-si-zone-content";
+import { DlSiContent } from "src/app/si/model/structure/impl/dl-si-zone-content";
 import { SiFactory } from "src/app/si/build/si-factory";
 import { Router } from "@angular/router";
 import { PlatformLocation } from "@angular/common";
 import { IllegalSiStateError } from "src/app/si/model/illegal-si-state-error";
-import { SiZoneContent } from "src/app/si/model/structure/si-zone-content";
+import { SiContent } from "src/app/si/model/structure/si-zone-content";
 import { SiEntryInput } from "src/app/si/model/input/si-entry-input";
 import { SiInput } from "src/app/si/model/input/si-input";
 import { SiResultFactory } from "src/app/si/build/si-result-factory";
@@ -27,14 +27,14 @@ export class SiService {
 	constructor(private httpClient: HttpClient) { 
 	}
 	  
-	lookupSiZoneContent(zone: SiZone, url: string): Observable<SiZoneContent> {
+	lookupSiContent(zone: SiZone, url: string): Observable<SiContent> {
 		return this.httpClient.get<any>(url)
 	            .pipe(map((data: any) => {
-	                return this.createSiZoneContent(data, zone);
+	                return this.createSiContent(data, zone);
 	            }));
 	}
 	
-	private createSiZoneContent(data: any, zone: SiZone): SiZoneContent {
+	private createSiContent(data: any, zone: SiZone): SiContent {
 		return new SiFactory(zone).createZoneContent(data);
 	}
 	
@@ -93,7 +93,7 @@ export class SiService {
 		        }));
 	}
 	
-	apiGet(apiUrl: string, getRequest: SiGetRequest, zone: SiZone, zoneContent: SiZoneContent): Observable<SiGetResponse> {
+	apiGet(apiUrl: string, getRequest: SiGetRequest, zone: SiZone, zoneContent: SiContent): Observable<SiGetResponse> {
 		return this.httpClient
 				.post<any>(apiUrl + '/get', getRequest)
 				.pipe(map(data => {

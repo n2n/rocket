@@ -1,5 +1,5 @@
 
-import { SiZoneContent } from "src/app/si/model/structure/si-zone-content";
+import { SiContent } from "src/app/si/model/structure/si-zone-content";
 import { IllegalSiStateError } from "src/app/si/model/illegal-si-state-error";
 import { SiLayer } from "src/app/si/model/structure/si-layer";
 import { SiStructureContent } from "src/app/si/model/structure/si-structure-content";
@@ -8,7 +8,7 @@ import { SiStructure } from "src/app/si/model/structure/si-structure";
 
 export class SiZone {
 	public structure = new SiStructure();
-	public _content: SiZoneContent|null;
+	public _content: SiContent|null;
 	private disposeSubject = new Subject<void>();
 	
 	constructor(readonly id: number, readonly url: string|null, readonly layer: SiLayer) {

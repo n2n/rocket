@@ -1,7 +1,7 @@
 
 import { ObjectMissmatchError, Extractor } from "src/app/util/mapping/extractor";
-import { DlSiZoneContent } from "src/app/si/model/structure/impl/dl-si-zone-content";
-import { ListSiZoneContent } from "src/app/si/model/structure/impl/list-si-zone-content";
+import { DlSiContent } from "src/app/si/model/structure/impl/dl-si-zone-content";
+import { EntriesListSiContent } from "src/app/si/model/structure/impl/list-si-zone-content";
 import { SiZone } from "src/app/si/model/structure/si-zone";
 import { SiEntry } from "src/app/si/model/content/si-entry";
 import { SiField } from "src/app/si/model/content/si-field";
@@ -13,7 +13,7 @@ import { SiButton, SiConfirm } from "src/app/si/model/control/si-button";
 import { RefSiControl } from "src/app/si/model/control/impl/ref-si-control";
 import { SiFieldStructureDeclaration } from "src/app/si/model/structure/si-field-structure-declaration";
 import { SiBulkyDeclaration } from "src/app/si/model/structure/si-bulky-declaration";
-import { SiZoneContent } from "src/app/si/model/structure/si-zone-content";
+import { SiContent } from "src/app/si/model/structure/si-zone-content";
 import { SiPartialContent } from "src/app/si/model/content/si-partial-content";
 import { StringInSiField } from "src/app/si/model/content/impl/string-in-si-field";
 import { ApiCallSiControl } from "src/app/si/model/control/impl/api-call-si-control";
@@ -32,36 +32,36 @@ export class SiFactory {
 	constructor(private zone: SiZone) {
 	}
 	
-	createZoneContent(data: any): SiZoneContent {
+	createZoneContent(data: any): SiContent {
 		const extr = new Extractor(data);
 		const dataExtr = extr.reqExtractor('data');
 		let compFactory: SiCompFactory;
 		
 		switch (extr.reqString('type')) {
 			case SiZoneType.LIST:
-				const listSiZoneContent = new ListSiZoneContent(extr.reqString('apiUrl'), 
+				const listSiContent = new EntriesListSiContent(extr.reqString('apiUrl'), 
 						dataExtr.reqNumber('pageSize'), this.zone);
 				
-				compFactory = new SiCompFactory(this.zone, listSiZoneContent);
-				listSiZoneContent.compactDeclaration = SiResultFactory.createCompactDeclaration(dataExtr.reqObject('compactDeclaration'));
+				compFactory = new SiCompFactory(this.zone, listSiContent);
+				listSiContent.compactDeclaration = SiResultFactory.createCompactDeclaration(dataExtr.reqObject('compactDeclaration'));
 				
 				const partialContentData = dataExtr.nullaObject('partialContent');
 				if (partialContentData) {
 					const partialContent = compFactory.createPartialContent(partialContentData);
 					
-					listSiZoneContent.size = partialContent.count;
-					listSiZoneContent.putPage(new SiPage(1, partialContent.entries, null));
+					listSiContent.size = partialContent.count;
+					listSiContent.putPage(new SiPage(1, partialContent.entries, null));
 				}
 				
-				return listSiZoneContent;
+				return listSiContent;
 			case SiZoneType.DL:
 				const bulkyDeclaration = SiResultFactory.createBulkyDeclaration(dataExtr.reqObject('bulkyDeclaration'));
-				const dlSiZoneContent = new DlSiZoneContent(extr.reqString('apiUrl'), bulkyDeclaration, this.zone);
+				const dlSiContent = new DlSiContent(extr.reqString('apiUrl'), bulkyDeclaration, this.zone);
 				
-				compFactory = new SiCompFactory(this.zone, dlSiZoneContent);
-				dlSiZoneContent.controlMap = compFactory.createControlMap(dataExtr.reqMap('controls'));
-				dlSiZoneContent.entries = compFactory.createEntries(dataExtr.reqArray('entries'));
-				return dlSiZoneContent;
+				compFactory = new SiCompFactory(this.zone, dlSiContent);
+				dlSiContent.controlMap = compFactory.createControlMap(dataExtr.reqMap('controls'));
+				dlSiContent.entries = compFactory.createEntries(dataExtr.reqArray('entries'));
+				return dlSiContent;
 			default:
 				throw new ObjectMissmatchError('Invalid si zone type: ' + data.type);
 		}

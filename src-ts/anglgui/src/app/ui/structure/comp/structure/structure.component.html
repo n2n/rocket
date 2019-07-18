@@ -12,7 +12,7 @@
 	
 	<div *ngIf="!loaded" class="rocket-loader"></div>
 	
-	<ng-template rocketStructureContent [siStructureContent]="siStructureContent"></ng-template>
+	<ng-template *ngIf="siStructureContent" rocketStructureContent [siStructureContent]="siStructureContent"></ng-template>
 
 	<ng-container *ngFor="let child of children">
 		<rocket-ui-structure *ngIf="child.visible" [siStructure]="child"></rocket-ui-structure>

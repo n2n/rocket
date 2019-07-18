@@ -20,9 +20,9 @@ export class StructureComponent implements OnInit {
 
 	ngOnInit() {
 //		const componentFactory = this.componentFactoryResolver.resolveComponentFactory(ListZoneContentComponent);
-      
+
 //	    const componentRef = this.zoneContentDirective.viewContainerRef.createComponent(componentFactory);
-      
+
 //      (<ZoneComponent> componentRef.instance).data = {};
 	}
 	

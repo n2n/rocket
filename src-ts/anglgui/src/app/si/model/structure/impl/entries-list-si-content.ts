@@ -1,7 +1,7 @@
 
 import { SiEntry } from "src/app/si/model/content/si-entry";
 import { SiFieldDeclaration } from "src/app/si/model/structure/si-field-declaration";
-import { SiZoneContent } from "src/app/si/model/structure/si-zone-content";
+import { SiContent } from "src/app/si/model/structure/si-zone-content";
 import { ViewContainerRef, ComponentFactoryResolver, ComponentRef } from "@angular/core";
 import { ListZoneContentComponent } from "src/app/ui/content/zone/comp/list-zone-content/list-zone-content.component";
 import { IllegalSiStateError } from "src/app/si/model/illegal-si-state-error";
@@ -15,7 +15,7 @@ import { SiCommanderService } from "src/app/si/model/si-commander.service";
 import { SiPage } from "src/app/si/model/structure/impl/si-page";
 import { SiQualifier } from "src/app/si/model/content/si-qualifier";
 
-export class ListSiZoneContent implements SiZoneContent, SiStructureContent {
+export class EntriesListSiContent implements SiContent, SiStructureContent {
 	private pagesMap = new Map<number, SiPage>();
 	private _size: number = 0;
 	private _currentPageNo: number = 1;

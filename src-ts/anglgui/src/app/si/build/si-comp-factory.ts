@@ -16,12 +16,12 @@ import { SiQualifier, SiIdentifier } from "src/app/si/model/content/si-qualifier
 import { SiEntry } from "src/app/si/model/content/si-entry";
 import { SiPartialContent } from "src/app/si/model/content/si-partial-content";
 import { SiZone } from "src/app/si/model/structure/si-zone";
-import { SiZoneContent } from "src/app/si/model/structure/si-zone-content";
+import { SiContent } from "src/app/si/model/structure/si-zone-content";
 import { EmbeddedEntryInSiField } from "src/app/si/model/content/impl/embedded-entry-in-si-field";
 
 export class SiCompFactory {
 
-	constructor(private zone: SiZone, private zoneContent: SiZoneContent) {
+	constructor(private zone: SiZone, private zoneContent: SiContent) {
 	}
 	
 	createPartialContent(data: any): SiPartialContent {

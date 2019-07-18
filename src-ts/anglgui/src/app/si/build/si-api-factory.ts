@@ -1,5 +1,5 @@
 
-import { SiZoneContent } from "src/app/si/model/structure/si-zone-content";
+import { SiContent } from "src/app/si/model/structure/si-zone-content";
 import { SiZone } from "src/app/si/model/structure/si-zone";
 import { Extractor } from "src/app/util/mapping/extractor";
 import { SiGetResponse } from "src/app/si/model/api/si-get-response";
@@ -10,7 +10,7 @@ import { SiResultFactory } from "src/app/si/build/si-result-factory";
 export class SiApiFactory {
 	private compFactory: SiCompFactory;
 	
-	constructor(public zone: SiZone, public zoneContent: SiZoneContent) {
+	constructor(public zone: SiZone, public zoneContent: SiContent) {
 		this.compFactory = new SiCompFactory(zone, zoneContent);
 	}
 	

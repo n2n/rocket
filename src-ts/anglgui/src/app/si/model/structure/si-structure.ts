@@ -10,6 +10,7 @@ export class SiStructure {
 	private visibleSubject = new BehaviorSubject<boolean>(true);
 	private children: SiStructure[] = [];
 	content: SiStructureContent|null = null;
+	loaded = false;
 	
 	constructor() {
 	}

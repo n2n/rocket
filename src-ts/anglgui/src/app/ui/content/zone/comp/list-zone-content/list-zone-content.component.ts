@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Inject, Injector, ElementRef, OnDestroy, DoCheck } from '@angular/core';
-import { ListSiZoneContent } from "src/app/si/model/structure/impl/list-si-zone-content";
+import { EntriesListSiContent } from "src/app/si/model/structure/impl/list-si-zone-content";
 import { SiEntry } from "src/app/si/model/content/si-entry";
 import { SiField } from "src/app/si/model/content/si-field";
 import { SiFieldDeclaration } from "src/app/si/model/structure/si-field-declaration";
@@ -21,7 +21,7 @@ import { SiQualifier } from "src/app/si/model/content/si-qualifier";
 })
 export class ListZoneContentComponent implements OnInit, OnDestroy {
 
-	model: ListSiZoneContent;
+	model: EntriesListSiContent;
 	siService: SiService;
 	
 	private subscription: Subscription;

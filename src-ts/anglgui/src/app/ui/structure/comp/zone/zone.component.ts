@@ -1,7 +1,7 @@
 import { Component, OnInit, DoCheck, Input, ViewChild, ComponentFactoryResolver, OnDestroy, ElementRef } from '@angular/core';
 import { SiZone } from "src/app/si/model/structure/si-zone";
 import { ListZoneContentComponent } from "src/app/ui/content/zone/comp/list-zone-content/list-zone-content.component";
-import { SiZoneContent } from "src/app/si/model/structure/si-zone-content";
+import { SiContent } from "src/app/si/model/structure/si-zone-content";
 import { SiStructureContent } from "src/app/si/model/structure/si-structure-content";
 import { SiStructure } from "src/app/si/model/structure/si-structure";
 import { SiZoneError } from "src/app/si/model/structure/si-zone-error";

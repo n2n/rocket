@@ -8,7 +8,7 @@ import { SiZone } from "src/app/si/model/structure/si-zone";
 import { SiInput } from "src/app/si/model/input/si-input";
 import { SiEntryInput } from "src/app/si/model/input/si-entry-input";
 import { SiEntry } from "src/app/si/model/content/si-entry";
-import { SiZoneContent } from "src/app/si/model/structure/si-zone-content";
+import { SiContent } from "src/app/si/model/structure/si-zone-content";
 import { SiEntryError } from "src/app/si/model/input/si-entry-error";
 import { SiResult } from "src/app/si/model/control/si-result";
 import { SiCommandError } from "src/app/si/model/si-command-error";
@@ -30,7 +30,7 @@ export class SiCommanderService {
 		
 		zone.structure.clear();
 		
-		this.service.lookupSiZoneContent(zone, zone.url)
+		this.service.lookupSiContent(zone, zone.url)
 				.subscribe((siZoneContent) => {
 					siZoneContent.applyTo(zone.structure);
 				});
@@ -79,7 +79,7 @@ export class SiCommanderService {
 		}));
 	}
 	
-	execSelectionControl(apiUrl: string, callId: object, zoneContent: SiZoneContent, entries: SiEntry[], includeInput: boolean): Observable<void> {
+	execSelectionControl(apiUrl: string, callId: object, zoneContent: SiContent, entries: SiEntry[], includeInput: boolean): Observable<void> {
 		const entryIds: string[] = [];
 		const entryInputs: SiEntryInput[] = [];
 	
@@ -106,7 +106,7 @@ export class SiCommanderService {
 		}));
 	}
 	
-	execControl(apiUrl: string, callId: object, zoneContent: SiZoneContent, includeInput: boolean): Observable<void> {
+	execControl(apiUrl: string, callId: object, zoneContent: SiContent, includeInput: boolean): Observable<void> {
 		const input = new SiInput();
 
 		if (!includeInput) {

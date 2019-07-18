@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DlSiZoneContent } from "src/app/si/model/structure/impl/dl-si-zone-content";
+import { DlSiContent } from "src/app/si/model/structure/impl/dl-si-zone-content";
 import { SiFieldStructureDeclaration } from "src/app/si/model/structure/si-field-structure-declaration";
 import { SiEntry } from "src/app/si/model/content/si-entry";
 import { SiControl } from "src/app/si/model/control/si-control";
@@ -12,7 +12,7 @@ import { SiStructure } from "src/app/si/model/structure/si-structure";
 })
 export class DlZoneContentComponent implements OnInit {
 
-	public dlSiZoneContent: DlSiZoneContent;
+	public dlSiContent: DlSiContent;
 
 	constructor() { }
 
@@ -20,11 +20,11 @@ export class DlZoneContentComponent implements OnInit {
 	}
 	
 	get siEntries(): SiEntry[] {
-		return this.dlSiZoneContent.entries;
+		return this.dlSiContent.entries;
 	}
 	
 	get siControlMap(): Map<string, SiControl> {
-		return this.dlSiZoneContent.controlMap;
+		return this.dlSiContent.controlMap;
 	}
 
 }

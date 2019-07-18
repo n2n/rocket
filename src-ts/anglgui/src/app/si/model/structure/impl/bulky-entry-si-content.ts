@@ -1,4 +1,4 @@
-import { SiZoneContent } from "src/app/si/model/structure/si-zone-content";
+import { SiContent } from "src/app/si/model/structure/si-zone-content";
 import { ViewContainerRef, ComponentFactoryResolver } from "@angular/core";
 import { SiBulkyDeclaration } from "src/app/si/model/structure/si-bulky-declaration";
 import { SiEntry } from "src/app/si/model/content/si-entry";
@@ -12,7 +12,7 @@ import { SiControl } from "src/app/si/model/control/si-control";
 import { SiZone } from "src/app/si/model/structure/si-zone";
 import { SiZoneError } from "src/app/si/model/structure/si-zone-error";
 
-export class DlSiZoneContent implements SiZoneContent, SiStructureContent {
+export class BulkyEntrySiContent implements SiContent, SiStructureContent {
    
     public entries: SiEntry[] = [];
 	public controlMap: Map<string, SiControl> = new Map();
@@ -47,12 +47,10 @@ export class DlSiZoneContent implements SiZoneContent, SiStructureContent {
     applyTo(structure: SiStructure) {
     	structure.clearChildren();
 		
-		for (let entry of this.entries) {
-			const declarations = this.getFieldStructureDeclarations(entry);
-	    	for (const child of declarations) {
-	    		structure.addChild(this.dingsel(entry, child));
-	    	}
-		}
+    	const declarations = this.getFieldStructureDeclarations(this.entry);
+    	for (const child of declarations) {
+    		structure.addChild(this.dingsel(entry, child));
+    	}
 		
 		structure.content = this;
 	}
@@ -79,7 +77,7 @@ export class DlSiZoneContent implements SiZoneContent, SiStructureContent {
 
 		const componentRef = viewContainerRef.createComponent(componentFactory);
 	    
-	    componentRef.instance.dlSiZoneContent = this;
+	    componentRef.instance.dlSiContent = this;
 	    
 	    return componentRef;
 	}
