@@ -33,8 +33,11 @@ use rocket\ei\util\Eiu;
 use rocket\ei\manage\entry\EiField;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
 use rocket\ei\manage\gui\field\GuiField;
+use rocket\impl\ei\component\prop\relation\model\gui\EmbeddedToManyGuiField;
+use rocket\impl\ei\component\prop\relation\model\gui\RelationLinkGuiField;
+use rocket\ei\component\prop\FieldEiProp;
 
-class EmbeddedOneToManyEiProp extends RelationEiPropAdapter {
+class EmbeddedOneToManyEiProp extends RelationEiPropAdapter implements FieldEiProp {
 
 	/**
 	 * 
@@ -74,6 +77,9 @@ class EmbeddedOneToManyEiProp extends RelationEiPropAdapter {
 			return new RelationLinkGuiField($eiu, $this->getRelationModel());
 		}
 		
-		return new EmbeddedToManyGuiField($eiu, $this->getRelationModel());
+		$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())
+				->exec($this->getRelationModel()->getTargetEditEiCommandPath());
+		
+		return new EmbeddedToManyGuiField($eiu, $targetEiuFrame, $this->getRelationModel());
 	}
 }

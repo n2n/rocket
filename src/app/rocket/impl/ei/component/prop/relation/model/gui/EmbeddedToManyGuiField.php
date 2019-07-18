@@ -32,8 +32,13 @@ use n2n\util\type\CastUtils;
 use rocket\ei\util\entry\EiuEntry;
 use rocket\si\input\SiEntryInput;
 use rocket\si\input\CorruptedSiInputDataException;
+use rocket\si\content\impl\EmbeddedEntryInputHandle;
 
-class EmbeddedToManyGuiField implements GuiField {
+class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandle {
+	/**
+	 * @var RelationModel
+	 */
+	private $relationModel;
 	/**
 	 * @var Eiu
 	 */
@@ -52,6 +57,7 @@ class EmbeddedToManyGuiField implements GuiField {
 	function __construct(Eiu $eiu, EiuFrame $targetEiuFrame, RelationModel $relationModel) {
 		$this->eiu = $eiu;
 		$this->targetEiuFrame = $targetEiuFrame;
+		$this->relationModel = $relationModel;
 		
 		$values = [];
 		$summarySiEntries =  [];
@@ -63,15 +69,17 @@ class EmbeddedToManyGuiField implements GuiField {
 		}
 		
 		$this->siField = SiFields::embeddedEntryIn(
-				$this->targetEiuFrame->getApiUrl($relationModel->getTargetEditEiCommandPath()),
-				$this, $values, $summarySiEntries, (int) $relationModel->getMin(), $relationModel->getMax());
+						$this->targetEiuFrame->getApiUrl($relationModel->getTargetEditEiCommandPath()),
+						$this, $values, $summarySiEntries, (int) $relationModel->getMin(), $relationModel->getMax())
+				->setReduced($this->relationModel->isReduced())
+				->setNonNewRemovable($this->relationModel->isRemovable());
 	}
 	
 	/**
 	 * @param array $siEntryInputs
 	 * @throws CorruptedSiInputDataException
 	 */
-	function handleInput(array $siEntryInputs) {
+	function handleInput(array $siEntryInputs): array {
 		$newEiuEntryGuis = []; 
 		$siEntries = [];
 		
@@ -93,7 +101,7 @@ class EmbeddedToManyGuiField implements GuiField {
 		}
 		
 		$this->eiuEntryGuis = $newEiuEntryGuis;
-		$this->siField->setValues($siEntries);
+		return $siEntries;
 	}
 	
 	function save() {

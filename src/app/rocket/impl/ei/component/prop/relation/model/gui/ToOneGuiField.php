@@ -55,7 +55,7 @@ class ToOneGuiField implements GuiField {
 			$values[] = $eiuEntry->createSiQualifier();
 		}
 		
-		$this->siField = SiFields::apiSelectIn(
+		$this->siField = SiFields::qualifierSelectIn(
 				$this->targetEiuFrame->getApiUrl($relationModel->getTargetReadEiCommandPath()),
 				$values, ($relationModel->isMandatory() ? 1 : 0), 1);
 	}

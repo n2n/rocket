@@ -22,7 +22,7 @@
 namespace rocket\ei\manage;
 
 use rocket\ei\manage\draft\DraftValueMap;
-use rocket\si\content\SiQualifier;
+use rocket\si\content\SiIdentifier;
 
 abstract class EiObjectAdapter implements EiObject {
 	public function getLiveObject() {
@@ -46,13 +46,13 @@ abstract class EiObjectAdapter implements EiObject {
 		return true;
 	}
 	
-	public function createSiQualifier(string $name): SiQualifier {
+	public function createSiIdentifier(): SiIdentifier {
 		$eiEntityObj = $this->getEiEntityObj();
 		$pid = null;
 		if ($eiEntityObj->hasId()) {
 			$pid = $eiEntityObj->getPid();
 		}
 		
-		return new SiQualifier($eiEntityObj->getEiType()->getSupremeEiType()->getId(), $pid, $name);
+		return new SiIdentifier($eiEntityObj->getEiType()->getSupremeEiType()->getId(), $pid);
 	}
 }

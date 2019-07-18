@@ -93,6 +93,13 @@ class EiuEntryGui {
 	}
 	
 	/**
+	 * @return \rocket\si\content\SiEntry
+	 */
+	function createSiEntry() {
+		return $this->eiEntryGui->createSiEntry();
+	}
+	
+	/**
 	 * @return boolean
 	 */
 	function isCompact() {

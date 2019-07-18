@@ -5,7 +5,7 @@ import { SiEntryInput } from "src/app/si/model/input/si-entry-input";
 import { IllegalSiStateError } from "src/app/si/model/illegal-si-state-error";
 import { SiEntryBuildup } from "src/app/si/model/content/si-entry-buildup";
 import { SiEntryError } from "src/app/si/model/input/si-entry-error";
-import { SiQualifier } from "src/app/si/model/content/si-qualifier";
+import { SiQualifier, SiIdentifier } from "src/app/si/model/content/si-qualifier";
 
 export class SiEntry {
 	public treeLevel: number|null = null;
@@ -13,13 +13,18 @@ export class SiEntry {
 	public inputAvailable: boolean = false;
 	private _buildups = new Map<string, SiEntryBuildup>();
 	
-	constructor(public qualifier: SiQualifier) {	
+	constructor(public identifier: SiIdentifier) {	
 	}
 
 	private ensureBuildups() {
 		if (this._selectedBuildupId) return;
 		
 		throw new IllegalSiStateError('No buildup available for entry: ' + this.toString());
+	}
+	
+	get qualifier(): SiQualifier {
+		return new SiQualifier(this.identifier.category, this.identifier.id,
+				this.selectedBuildup.getBestName());
 	}
 	
 	get selectedBuildup(): SiEntryBuildup {

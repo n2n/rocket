@@ -7,9 +7,17 @@ import { IllegalSiStateError } from "src/app/si/model/illegal-si-state-error";
 export class SiEntryBuildup {
 	public messages: string[] = [];
 	
-	constructor(public name: string, 
+	constructor(public name: string, public idName: string|null,
 			public fieldMap: Map<string, SiField> = new Map<string, SiField>(), 
 			public controlMap: Map<string, SiControl> = new Map<string, SiControl>()) {	
+	}
+	
+	getBestName(): string {
+		if (this.idName) {
+			return this.idName;
+		}
+		
+		return this.name;
 	}
 	
 	getFieldById(id: string): SiField|null {

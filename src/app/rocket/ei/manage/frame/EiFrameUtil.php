@@ -149,7 +149,8 @@ class EiFrameUtil {
 					. ' because this type is abstract and doesn\'t have any sub EiTypes.');
 		}
 		
-		return new EiEntryGuiMulti($newEiEntryGuis);
+		return new EiEntryGuiMulti($this->eiFrame->getContextEiEngine()->getEiMask()->getEiType(), 
+				$newEiEntryGuis);
 	}
 	
 	function createEiEntryGuiFromEiObject(EiObject $eiObject, bool $bulky, bool $readOnly) {

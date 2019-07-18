@@ -1118,8 +1118,9 @@ class EiuFrame {
 		
 		$newEiFrame = $this->eiFrame->getContextEiEngine()->createForkedEiFrame($eiPropPath, $eiForkLink);
 		$newEiuAnalyst = new EiuAnalyst();
-		$newEiuAnalyst->applyEiArgs($this->getN2nContext());
-		return new EiuFrame($newEiFrame, $newEiuAnalyst);
+		$newEiuFrame = new EiuFrame($newEiFrame, $newEiuAnalyst);
+		$newEiuAnalyst->applyEiArgs($this->getN2nContext(), $newEiuFrame);
+		return $newEiuFrame;
 	}
 	
 	/**

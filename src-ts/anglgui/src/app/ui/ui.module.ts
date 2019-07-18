@@ -22,11 +22,12 @@ import { UtilModule } from "src/app/util/util.module";
 import { LinkOutFieldComponent } from './content/field/comp/link-out-field/link-out-field.component';
 import { QualifierSelectInFieldComponent } from './content/field/comp/qualifier-select-in-field/qualifier-select-in-field.component';
 import { RouterModule } from "@angular/router";
+import { EmbeddedEntryInFieldComponent } from './content/field/comp/embedded-entry-in-field/embedded-entry-in-field.component';
 
 @NgModule({
   declarations: [ LayerComponent, ContainerComponent, ZoneComponent, StructureContentDirective, ListZoneContentComponent, 
     PaginationComponent, EntryDirective, FieldDirective, StringOutFieldComponent, ControlComponent, DlZoneContentComponent, 
-    FieldStructureComponent, InputInFieldComponent, TextareaInFieldComponent, StructureComponent, FileInFieldComponent, FileOutFieldComponent, LinkOutFieldComponent, QualifierSelectInFieldComponent ],
+    FieldStructureComponent, InputInFieldComponent, TextareaInFieldComponent, StructureComponent, FileInFieldComponent, FileOutFieldComponent, LinkOutFieldComponent, QualifierSelectInFieldComponent, EmbeddedEntryInFieldComponent ],
   imports: [
     CommonModule,
     FormsModule,
@@ -40,7 +41,7 @@ import { RouterModule } from "@angular/router";
   ],
   entryComponents: [ ListZoneContentComponent, DlZoneContentComponent, FieldStructureComponent, StringOutFieldComponent, 
     InputInFieldComponent, TextareaInFieldComponent, FileInFieldComponent, FileOutFieldComponent, QualifierSelectInFieldComponent,
-    LinkOutFieldComponent
+    LinkOutFieldComponent, EmbeddedEntryInFieldComponent
   ]
 })
 export class UiModule { }

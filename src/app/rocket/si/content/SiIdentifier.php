@@ -64,6 +64,14 @@ class SiIdentifier implements \JsonSerializable {
 		return $this;
 	}
 	
+	/**
+	 * @param string $name
+	 * @return \rocket\si\content\SiQualifier
+	 */
+	function toQualifier(string $name) {
+		return new SiQualifier($this->category, $this->id, $name);
+	}
+	
 	function jsonSerialize() {
 		return [
 			'category' => $this->category,

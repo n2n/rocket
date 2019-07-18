@@ -25,8 +25,15 @@ use n2n\util\type\ArgUtils;
 use rocket\si\input\SiEntryInput;
 use rocket\si\input\CorruptedSiInputDataException;
 use n2n\util\ex\IllegalStateException;
+use rocket\si\content\SiIdentifier;
+use rocket\si\content\SiEntry;
+use rocket\ei\EiType;
 
 class EiEntryGuiMulti {
+	/**
+	 * @var EiType
+	 */
+	private $contextEiType;
 	/**
 	 * @var string|null
 	 */
@@ -39,7 +46,8 @@ class EiEntryGuiMulti {
 	/**
 	 * @param EiEntryGui[]
 	 */
-	function __construct(array $eiEntryGuis) {
+	function __construct(EiType $contextEiType, array $eiEntryGuis) {
+		$this->contextEiType = $contextEiType;
 		$this->setEiEntryGuis($eiEntryGuis);
 	}
 	
@@ -96,6 +104,13 @@ class EiEntryGuiMulti {
 	}
 	
 	function createSiEntry() {
-		new SiEntry($, $inputAvailable)
+		$siEntry = new SiEntry(new SiIdentifier($this->contextEiType->supremeType()->getId(), null));
+		
+		foreach ($this->eiEntryGuis as $eiEntryGui) {
+			$siEntry->putBuildup($eiEntryGui->getEiEntry()->getEiType()->getId(), 
+					$eiEntryGui->createSiEntryBuildup());
+		}
+		
+		return $siEntry;
 	}
 }

@@ -49,8 +49,8 @@ class SiQualifier extends SiIdentifier implements \JsonSerializable {
 	
 	function jsonSerialize() {
 		return [
-			'category' => $this->category,
-			'id' => $this->id,
+			'category' => $this->getCategory(),
+			'id' => $this->getId(),
 			'name' => $this->name
 		];
 	}

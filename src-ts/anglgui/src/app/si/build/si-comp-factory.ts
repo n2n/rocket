@@ -12,11 +12,12 @@ import { StringInSiField } from "src/app/si/model/content/impl/string-in-si-fiel
 import { StringOutSiField } from "src/app/si/model/content/impl/string-out-si-field";
 import { SiField } from "src/app/si/model/content/si-field";
 import { SiEntryBuildup } from "src/app/si/model/content/si-entry-buildup";
-import { SiQualifier } from "src/app/si/model/content/si-qualifier";
+import { SiQualifier, SiIdentifier } from "src/app/si/model/content/si-qualifier";
 import { SiEntry } from "src/app/si/model/content/si-entry";
 import { SiPartialContent } from "src/app/si/model/content/si-partial-content";
 import { SiZone } from "src/app/si/model/structure/si-zone";
 import { SiZoneContent } from "src/app/si/model/structure/si-zone-content";
+import { EmbeddedEntryInSiField } from "src/app/si/model/content/impl/embedded-entry-in-si-field";
 
 export class SiCompFactory {
 
@@ -35,7 +36,6 @@ export class SiCompFactory {
 	createEntries(data: Array<any>): SiEntry[] {
 		let entries: Array<SiEntry> = [];
 		for (let entryData of data) {
-			
 			entries.push(this.createEntry(entryData));
 		}
 		
@@ -45,7 +45,7 @@ export class SiCompFactory {
 	createEntry(entryData :any): SiEntry {
 		const extr = new Extractor(entryData);
 		
-		const siEntry = new SiEntry(this.createQualifier(extr.reqObject('qualifier')));
+		const siEntry = new SiEntry(this.createIdentifier(extr.reqObject('identifier')));
 		siEntry.treeLevel = extr.nullaNumber('treeLevel');
 		siEntry.inputAvailable = extr.reqBoolean('inputAvailable');
 		
@@ -71,10 +71,16 @@ export class SiCompFactory {
 				extr.reqString('name'));
 	}
 	
+	private createIdentifier(data: any): SiIdentifier {
+		const extr = new Extractor(data);
+		
+		return new SiIdentifier(extr.reqString('category'), extr.nullaString('id'));
+	}
+	
 	private createBuildup(data: any): SiEntryBuildup { 
 		const extr = new Extractor(data);
 		
-		return new SiEntryBuildup(extr.reqString('name'),
+		return new SiEntryBuildup(extr.reqString('name'), extr.nullaString('idName'),
 				this.createFieldMap(extr.reqMap('fields')),
 				this.createControlMap(extr.reqMap('controls')));
 	}
@@ -120,7 +126,7 @@ export class SiCompFactory {
 		case SiFieldType.EMBEDDED_ENTRY_IN:
 			const embeddedEntryInSiField = new EmbeddedEntryInSiField(this.zone, dataExtr.reqString('apiUrl'),
 					this.createEntries(dataExtr.reqArray('values')));
-			embeddedEntryInSiField.summaryEiEntries = this.createEntries(dataExtr.reqArray('summaryEiEntries')); 
+			embeddedEntryInSiField.summaryEntries = this.createEntries(dataExtr.reqArray('summaryEntries')); 
 			embeddedEntryInSiField.min = dataExtr.reqNumber('min');
 			embeddedEntryInSiField.max = dataExtr.nullaNumber('max');
 			return embeddedEntryInSiField;
@@ -211,7 +217,7 @@ export enum SiFieldType {
     FILE_IN = 'file-in',
     LINK_OUT = 'link-out',
     QUALIFIER_SELECT_IN = 'qualifier-select-in',
-    EMBEDDED_ENTRY_IN = 'embedded-entry-in';
+    EMBEDDED_ENTRY_IN = 'embedded-entry-in'
 }
 
 export enum SiControlType {

@@ -86,9 +86,10 @@ class EiuEntry {
 			return $this->eiuMask = new EiuMask($this->eiEntry->getEiMask(), null, $this->eiuAnalyst);
 		}
 		
-		if (null !== ($eiuFrame = $this->getEiuFrame(false))) {
+		
+		if (null !== ($eiFrame = $this->eiuAnalyst->getEiFrame(false))) {
 			return $this->eiuMask = new EiuMask(
-					$eiuFrame->getEiFrame()->determineEiMask($this->eiuObject->getEiType()), 
+					$eiFrame->getContextEiEngine()->getEiMask()->determineEiMask($this->eiuObject->getEiType()), 
 					null, $this->eiuAnalyst);
 		}
 		
@@ -148,7 +149,7 @@ class EiuEntry {
 			return null;
 		}
 				
-		return $this->eiEntry = $this->eiuAnalyst->getEiuFrame(true)->getEiFrame()
+		return $this->eiEntry = $this->eiuAnalyst->getEiFrame(false)
 				->createEiEntry($this->getEiObject());
 	}
 	
@@ -692,10 +693,10 @@ class EiuEntry {
 		$name = $name ?? $this->createIdentityString();
 		
 		if ($this->eiuObject !== null) {
-			return $this->eiuObject->getEiObject()->createSiQualifier($name);
+			return $this->eiuObject->getEiObject()->createSiIdentifier()->toQualifier($name);
 		}
 		
-		return $this->eiEntry->getEiObject()->createSiQualifier($name);
+		return $this->eiEntry->getEiObject()->createSiIdentifier()->toQualifier($name);
 	}
 }  
 

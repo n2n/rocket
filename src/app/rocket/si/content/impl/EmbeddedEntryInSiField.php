@@ -46,10 +46,6 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	 */
 	private $summarySiEntries;
 	/**
-	 * @var Url
-	 */
-	private $apiUrl;
-	/**
 	 * @var int
 	 */
 	private $min = 0;
@@ -58,6 +54,15 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	 * @var int|null
 	 */
 	private $max = null;
+	/**
+	 * @var bool
+	 */
+	private $reduced = false;
+	
+	/**
+	 * @var string
+	 */
+	private $nonNewRemovable = true;
 	
 	/**
 	 * @param Url $apiUrl
@@ -72,7 +77,7 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param Url|null $apiUrl
-	 * @return \rocket\si\content\impl\StringInSiField
+	 * @return \rocket\si\content\impl\EmbeddedEntryInSiField
 	 */
 	function setApiUrl(?Url $apiUrl) {
 		$this->apiUrl = $apiUrl;
@@ -88,7 +93,7 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param SiEntry[] $values
-	 * @return \rocket\si\content\impl\StringInSiField
+	 * @return \rocket\si\content\impl\EmbeddedEntryInSiField
 	 */
 	function setValues(array $values) {
 		ArgUtils::valArray($values, SiEntry::class);
@@ -122,7 +127,7 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param int $min
-	 * @return \rocket\si\content\impl\StringInSiField
+	 * @return \rocket\si\content\impl\EmbeddedEntryInSiField
 	 */
 	function setMin(int $min) {
 		$this->min = $min;
@@ -138,7 +143,7 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param int|null $max
-	 * @return \rocket\si\content\impl\StringInSiField
+	 * @return \rocket\si\content\impl\EmbeddedEntryInSiField
 	 */
 	function setMax(?int $max) {
 		$this->max = $max;
@@ -150,6 +155,38 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	 */
 	function getMax() {
 		return $this->max;
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function isReduced() {
+		return $this->reduced;
+	}
+	
+	/**
+	 * @param boolean $reduced
+	 * @return EmbeddedEntryInSiField
+	 */
+	public function setReduced(bool $reduced) {
+		$this->reduced = $reduced;
+		return $this;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	public function isNonNewRemovable() {
+		return $this->nonNewRemovable;
+	}
+	
+	/**
+	 * @param bool $nonNewRemovable
+	 * @return EmbeddedEntryInSiField
+	 */
+	public function setNonNewRemovable(bool $nonNewRemovable) {
+		$this->nonNewRemovable = $nonNewRemovable;
+		return $this;
 	}
 	
 	/**
@@ -170,7 +207,9 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 			'summaryEntries' => $this->summarySiEntries,
 			'apiUrl' => (string) $this->apiUrl,
 			'min' => $this->min,
-			'max' => $this->max
+			'max' => $this->max,
+			'reduced' => $this->reduced,
+			'nonNewRemovable' => $this->nonNewRemovable
 		];
 	}
 	 

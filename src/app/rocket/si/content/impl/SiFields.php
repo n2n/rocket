@@ -74,12 +74,22 @@ class SiFields {
 	 * @param int|null $max
 	 * @return QualifierSelectInSiField
 	 */
-	static function apiSelectIn(Url $apiUrl, array $values = [], int $min = 0, int $max = null) {
+	static function qualifierSelectIn(Url $apiUrl, array $values = [], int $min = 0, int $max = null) {
 		return (new QualifierSelectInSiField($apiUrl, $values))->setMin($min)->setMax($max);
 	}
 	
-	static function apiEmbeddedIn(Url $apiUrl, array $values = [], array $summarySiEntries = [], int $min = 0, 
-			int $max = null) {
-		return (new EmbeddedInSiField($apiUrl, $values, $summarySiEntries))->setMin($min)->setMax($max);
+	/**
+	 * @param Url $apiUrl
+	 * @param array $values
+	 * @param array $summarySiEntries
+	 * @param int $min
+	 * @param int $max
+	 * @return EmbeddedEntryInSiField
+	 */
+	static function embeddedEntryIn(Url $apiUrl, EmbeddedEntryInputHandle $inputHandler, array $values = [], 
+			array $summarySiEntries = [], int $min = 0, int $max = null) {
+				return (new EmbeddedEntryInSiField($apiUrl, $inputHandler, $values))
+						->setSummarySiEntries($summarySiEntries)
+						->setMin($min)->setMax($max);
 	}
 }

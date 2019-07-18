@@ -322,7 +322,7 @@ class EiEntryGui {
 	 * @return \rocket\ei\manage\gui\EiEntryGuiMulti
 	 */
 	function toMulti() {
-		return new EiEntryGuiMulti([$this]);
+		return new EiEntryGuiMulti($this->eiEntry->getEiType(), [$this]);
 	}
 	
 	/**
@@ -331,10 +331,8 @@ class EiEntryGui {
 	function createSiEntry() {
 		$eiType = $this->eiEntry->getEiType();
 		
-		$n2nContext = $this->eiGui->getEiFrame()->getN2nContext();
-		
-		$siQualifier = $this->eiEntry->getEiObject()->createSiQualifier($name);
-		$siEntry = new SiEntry($siQualifier, !ViewMode::isReadOnly($this->eiGui->getViewMode()));
+		$siIdentifier = $this->eiEntry->getEiObject()->createSiIdentifier();
+		$siEntry = new SiEntry($siIdentifier, !ViewMode::isReadOnly($this->eiGui->getViewMode()));
 		$siEntry->putBuildup($eiType->getId(), $this->createSiEntryBuildup());
 		return $siEntry;
 	}
