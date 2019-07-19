@@ -32,7 +32,7 @@ export class SiStructure {
 		
 		if (this.model) {
 			errors.push(...this.model.getZoneErrors());
-		
+			console.log(this.model)
 			for (const child of this.model.getChildren()) {
 				errors.push(...child.getZoneErrors());
 			}
