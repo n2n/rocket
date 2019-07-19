@@ -55,7 +55,7 @@ export class SiContentFactory {
 		
 		switch (type) {
 			case SiContentType.ENTRIES_LIST:
-				const listSiContent = new EntriesListSiContent(extr.reqString('apiUrl'), 
+				const listSiContent = new EntriesListSiContent(dataExtr.reqString('apiUrl'), 
 						dataExtr.reqNumber('pageSize'), this.zone);
 				
 				compFactory = new SiCompFactory(this.zone, listSiContent);

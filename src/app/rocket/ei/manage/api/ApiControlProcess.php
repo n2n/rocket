@@ -172,8 +172,8 @@ class ApiControlProcess {
 		
 		foreach ($siInput->getEntryInputs() as $key => $entryInput) {
 			$eiObject = null;
-			if (null !== $entryInput->getId()) {
-				$eiObject = $this->eiFrameUtil->lookupEiObject($entryInput->getId());
+			if (null !== $entryInput->getIdentifier()->getId()) {
+				$eiObject = $this->eiFrameUtil->lookupEiObject($entryInput->getIdentifier()->getId());
 			} else {
 				$eiObject = $this->createEiObject($entryInput->getBuildupId());
 			}

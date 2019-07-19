@@ -96,6 +96,7 @@ class EntriesListSiContent implements SiContent {
 	 */
 	public function getData(): array {
 		return [
+			'apiUrl' => (string) $this->apiUrl,
 			'pageSize' => $this->pageSize,
 			'compactDeclaration' => $this->compactDeclaration,
 			'partialContent' => $this->partialContent

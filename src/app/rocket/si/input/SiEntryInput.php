@@ -43,16 +43,15 @@ class SiEntryInput {
 	 * @param string $buildupId
 	 * @param string $id
 	 */
-	function __construct(SiIdentifier $identifier, string $buildupId, string $id) {
+	function __construct(SiIdentifier $identifier, string $buildupId) {
 		$this->identifier = $identifier;
 		$this->buildupId = $buildupId;
-		$this->id = $id;
 	}
 	
 	/**
 	 * @return SiIdentifier
 	 */
-	function getSiIdentifier() {
+	function getIdentifier() {
 		return $this->identifier;
 	}
 	
