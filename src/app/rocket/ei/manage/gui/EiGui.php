@@ -265,7 +265,9 @@ class EiGui {
 	 */
 	public function createSiBulkyDeclaration() {
 		if (ViewMode::isBulky($this->viewMode)) {
-			return new SiBulkyDeclaration($this->eiGuiGiFactory->getSiFieldStructureDeclarations());
+			return (new SiBulkyDeclaration())->putFieldStructureDeclaration(
+					(string) $this->eiMask->getEiType()->getId(),
+					$this->eiGuiGiFactory->getSiFieldStructureDeclarations());
 		}
 		
 		throw new EiException('EiGui is not bulky.');
@@ -277,10 +279,11 @@ class EiGui {
 	 */
 	public function createSiCompactDeclaration() {
 		if (ViewMode::isCompact($this->viewMode)) {
-			return new SiCompactDeclaration($this->eiGuiGiFactory->getSiFieldDeclarations());
+			return new SiCompactDeclaration(
+					[$this->eiMask->getEiType()->getId() => $this->eiGuiGiFactory->getSiFieldDeclarations()]);
 		}
 		
-		throw new EiException('EiGui is not bulky.');
+		throw new EiException('EiGui is not compact.');
 	}
 	
 	/**

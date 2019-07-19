@@ -49,9 +49,15 @@ class SiBulkyDeclaration implements \JsonSerializable {
 		return $this;
 	}
 	
+	/**
+	 * @param string $buildupId
+	 * @param array $fieldStructureDeclarations
+	 * @return \rocket\si\structure\SiBulkyDeclaration
+	 */
 	function putFieldStructureDeclaration(string $buildupId, array $fieldStructureDeclarations) {
 		ArgUtils::valArray($fieldStructureDeclarations, SiFieldStructureDeclaration::class);
 		$this->fieldStructureDeclarations[$buildupId] = $fieldStructureDeclarations;
+		return $this;
 	}
 	
 	/**

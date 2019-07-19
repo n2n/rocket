@@ -28,6 +28,7 @@ use rocket\si\content\SiEntry;
 use rocket\si\input\SiEntryInput;
 use rocket\si\structure\impl\BulkyEntrySiContent;
 use rocket\si\structure\impl\CompactEntrySiContent;
+use rocket\si\SiPayloadFactory;
 
 class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	
@@ -98,7 +99,7 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	 * @return \rocket\si\content\impl\EmbeddedEntryInSiField
 	 */
 	function setValues(array $values) {
-		ArgUtils::valArray($values, CompactEntrySiContent::class);
+		ArgUtils::valArray($values, BulkyEntrySiContent::class);
 		$this->values = $values;
 		return $this;
 	}
@@ -115,7 +116,7 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	 * @return \rocket\si\content\impl\EmbeddedEntryInSiField
 	 */
 	function setSummarySiContents(array $summarySiEntries) {
-		ArgUtils::valArray($summarySiEntries, BulkyEntrySiContent::class);
+		ArgUtils::valArray($summarySiEntries, CompactEntrySiContent::class);
 		$this->summarySiEntries = $summarySiEntries;
 		return $this;
 	}
@@ -205,8 +206,8 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	 */
 	function getData(): array {
 		return [
-			'values' => $this->values,
-			'summaryContents' => $this->summarySiEntries,
+			'values' => SiPayloadFactory::createDataFromContents($this->values),
+			'summaryContents' => SiPayloadFactory::createDataFromContents($this->summarySiEntries),
 			'apiUrl' => (string) $this->apiUrl,
 			'min' => $this->min,
 			'max' => $this->max,

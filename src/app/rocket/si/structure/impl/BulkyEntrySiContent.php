@@ -26,6 +26,7 @@ use rocket\si\structure\SiBulkyDeclaration;
 use rocket\si\content\SiEntry;
 use n2n\util\type\ArgUtils;
 use rocket\si\control\SiControl;
+use rocket\si\SiPayloadFactory;
 
 class BulkyEntrySiContent implements SiContent {
 	private $bulkyDeclaration;
@@ -80,18 +81,12 @@ class BulkyEntrySiContent implements SiContent {
 	}
 	
 	public function getData(): array {
-		$controlsArr = array();
-		foreach ($this->controls as $id => $control) {
-			$controlsArr[$id] = [
-				'type' => $control->getType(),
-				'data' => $control->getData()
-			];
-		}
+		
 		
 		return [ 
 			'bulkyDeclaration' => $this->bulkyDeclaration,
 			'entry' => $this->entry,
-			'controls' => $controlsArr
+			'controls' => SiPayloadFactory::createDataFromControls($this->controls)
 		];
 	}
 }

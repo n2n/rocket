@@ -7,12 +7,12 @@ import { SiStructure } from "src/app/si/model/structure/si-structure";
 import { BulkyEntrySiContent } from "src/app/si/model/structure/impl/bulky-entry-si-content";
 
 @Component({
-  selector: 'rocket-dl-zone-content',
-  templateUrl: './dl-zone-content.component.html'
+  selector: 'rocket-bulky-entry',
+  templateUrl: './bulky-entry.component.html'
 })
-export class DlZoneContentComponent implements OnInit {
+export class BulkyEntryComponent implements OnInit {
 
-	public bulkyEntrySiContent: BulkyEntrySiContent;
+	public siContent: BulkyEntrySiContent;
 
 	constructor() { }
 
@@ -20,11 +20,11 @@ export class DlZoneContentComponent implements OnInit {
 	}
 	
 	get siEntry(): SiEntry {
-		return this.bulkyEntrySiContent.entry;
+		return this.siContent.entry;
 	}
 	
 	get siControlMap(): Map<string, SiControl> {
-		return this.bulkyEntrySiContent.controlMap;
+		return this.siContent.controlMap;
 	}
 
 }

@@ -4,8 +4,8 @@ import { SiZone } from "src/app/si/model/structure/si-zone";
 import { Extractor } from "src/app/util/mapping/extractor";
 import { SiGetResponse } from "src/app/si/model/api/si-get-response";
 import { SiGetResult } from "src/app/si/model/api/si-get-result";
-import { SiCompFactory } from "src/app/si/build/si-comp-factory";
 import { SiResultFactory } from "src/app/si/build/si-result-factory";
+import { SiCompFactory } from "src/app/si/build/si-factory";
 
 export class SiApiFactory {
 	private compFactory: SiCompFactory;

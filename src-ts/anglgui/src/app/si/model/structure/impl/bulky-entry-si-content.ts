@@ -2,7 +2,7 @@ import { SiContent } from "src/app/si/model/structure/si-zone-content";
 import { ViewContainerRef, ComponentFactoryResolver } from "@angular/core";
 import { SiBulkyDeclaration } from "src/app/si/model/structure/si-bulky-declaration";
 import { SiEntry } from "src/app/si/model/content/si-entry";
-import { DlZoneContentComponent } from "src/app/ui/content/zone/comp/dl-zone-content/dl-zone-content.component";
+import { BulkyEntryComponent } from "src/app/ui/content/zone/comp/bulky-entry/bulky-entry.component";
 import { SiStructureType, SiFieldStructureDeclaration } from "src/app/si/model/structure/si-field-structure-declaration";
 import { SiStructureContent } from "src/app/si/model/structure/si-structure-content";
 import { FieldSiStructureContent } from "src/app/si/model/structure/impl/field-si-structure-content";
@@ -53,10 +53,11 @@ export class BulkyEntrySiContent implements SiContent {
     	}
     	
 		this.children = [];
-    	const declarations = this.getFieldStructureDeclarations(this.entry);
+    	const declarations = this.getFieldStructureDeclarations();
     	for (const child of declarations) {
     		this.children.push(this.dingsel(this.entry, child));
     	}
+    	return this.children;
 	}
     
     getControls(): SiControl[] {
@@ -80,16 +81,16 @@ export class BulkyEntrySiContent implements SiContent {
 		return structure;
 	}
 
-	getFieldStructureDeclarations(entry: SiEntry): SiFieldStructureDeclaration[] {
-		return this.bulkyDeclaration.getFieldStructureDeclarationsByBuildupId(entry.selectedBuildupId);
+	getFieldStructureDeclarations(): SiFieldStructureDeclaration[] {
+		return this.bulkyDeclaration.getFieldStructureDeclarationsByBuildupId(this.entry.selectedBuildupId);
 	}
 		
 	initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver) {
-		const componentFactory = componentFactoryResolver.resolveComponentFactory(DlZoneContentComponent);
+		const componentFactory = componentFactoryResolver.resolveComponentFactory(BulkyEntryComponent);
 
 		const componentRef = viewContainerRef.createComponent(componentFactory);
 	    
-	    componentRef.instance.bulkyEntrySiContent = this;
+	    componentRef.instance.siContent = this;
 	    
 	    return componentRef;
 	}
@@ -99,7 +100,6 @@ class FieldSiStructureModel implements SiStructureModel {
 	public children: SiStructure[] = [];
 	
 	constructor(public content: FieldSiStructureContent) {
-		
 	}
 	
     getContent(): SiStructureContent {

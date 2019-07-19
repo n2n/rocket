@@ -24,8 +24,8 @@ export class StructureComponent implements OnInit {
 	
 	readonly controls: SiControl[] = [];
 	
-    constructor(private elRef: ElementRef, private componentFactoryResolver: ComponentFactoryResolver) { 
-    }
+	constructor(private elRef: ElementRef, private componentFactoryResolver: ComponentFactoryResolver) {
+	}
 
 	ngOnInit() {
 //		const componentFactory = this.componentFactoryResolver.resolveComponentFactory(ListZoneContentComponent);

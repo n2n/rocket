@@ -4,7 +4,6 @@ import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { Extractor, ObjectMissmatchError } from "src/app/util/mapping/extractor";
 import { SiZone } from "src/app/si/model/structure/si-zone";
-import { SiFactory } from "src/app/si/build/si-factory";
 import { Router } from "@angular/router";
 import { PlatformLocation } from "@angular/common";
 import { IllegalSiStateError } from "src/app/si/model/illegal-si-state-error";
@@ -16,6 +15,7 @@ import { SiResult } from "src/app/si/model/control/si-result";
 import { SiGetRequest } from "src/app/si/model/api/si-get-request";
 import { SiApiFactory } from "src/app/si/build/si-api-factory";
 import { SiGetResponse } from "src/app/si/model/api/si-get-response";
+import { SiContentFactory } from "src/app/si/build/si-factory";
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +33,7 @@ export class SiService {
 	}
 	
 	private createSiContent(data: any, zone: SiZone): SiContent {
-		return new SiFactory(zone).createZoneContent(data);
+		return new SiContentFactory(zone).createContent(data);
 	}
 	
 	entryControlCall(apiUrl: string, callId: object, entryId: string, entryInputs: SiEntryInput[]): Observable<any> {

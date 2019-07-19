@@ -39,9 +39,9 @@ use n2n\persistence\orm\util\NestedSetStrategy;
 use rocket\ei\util\gui\EiuGui;
 use rocket\si\structure\SiCompactDeclaration;
 use rocket\si\structure\SiBulkyDeclaration;
-use rocket\si\structure\impl\BulkySiContentContent;
 use rocket\si\content\SiPartialContent;
 use rocket\si\content\SiEntry;
+use rocket\si\structure\impl\BulkyEntrySiContent;
 
 class EiuCtrl {
 	private $eiu;
@@ -290,7 +290,7 @@ class EiuCtrl {
 		$zone = new EntriesListSiContent($this->eiu->frame()->getApiUrl(), $pageSize, $siCompactDeclaration, 
 				new SiPartialContent($this->eiuFrame->countEntries(), $eiuGui->getEiGui()->createSiEntries()));
 		
-		$this->httpContext->getResponse()->send(SiPayloadFactory::createFromZone($zone));
+		$this->httpContext->getResponse()->send(SiPayloadFactory::createFromContent($zone));
 	}
 	
 	
@@ -342,10 +342,10 @@ class EiuCtrl {
 		$siBulkyDeclaration->putFieldStructureDeclaration($eiTypeId, 
 				$eiGui->getEiGuiSiFactory()->getSiFieldStructureDeclarations());
 		
-		$zone = new BulkySiContentContent($this->eiu->frame()->getApiUrl(), $siBulkyDeclaration,
-				$eiGui->createSiEntries(), $eiGui->createGeneralSiControls());
+		$zone = new BulkyEntrySiContent($siBulkyDeclaration,
+				$eiuEntryGui->createSiEntry(), $eiGui->createGeneralSiControls());
 		
-		$this->httpContext->getResponse()->send(SiPayloadFactory::createFromZone($zone));
+		$this->httpContext->getResponse()->send(SiPayloadFactory::createFromContent($zone));
 	}
 	
 	function forwardNewEntryDlZone(bool $editable = true) {
@@ -384,9 +384,9 @@ class EiuCtrl {
 					. ' because this type is abstract and doesn\'t have any sub EiTypes.');
 		}
 		
-		$zone = new BulkySiContentContent($this->eiu->frame()->getApiUrl(), $siBulkyDeclaration, $siEntry);
+		$zone = new BulkyEntrySiContent($this->eiu->frame()->getApiUrl(), $siBulkyDeclaration, $siEntry);
 		
-		$this->httpContext->getResponse()->send(SiPayloadFactory::createFromZone($zone));
+		$this->httpContext->getResponse()->send(SiPayloadFactory::createFromContent($zone));
 	}
 	
 	

@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DlZoneContentComponent } from './dl-zone-content.component';
+import { CompactEntryComponent } from './compact-entry.component';
 
-describe('DlZoneContentComponent', () => {
-  let component: DlZoneContentComponent;
-  let fixture: ComponentFixture<DlZoneContentComponent>;
+describe('CompactEntryComponent', () => {
+  let component: CompactEntryComponent;
+  let fixture: ComponentFixture<CompactEntryComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DlZoneContentComponent ]
+      declarations: [ CompactEntryComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DlZoneContentComponent);
+    fixture = TestBed.createComponent(CompactEntryComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

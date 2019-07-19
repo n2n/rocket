@@ -23,6 +23,8 @@ namespace rocket\si;
 
 use n2n\web\http\payload\impl\JsonPayload;
 use rocket\si\structure\SiContent;
+use n2n\util\type\ArgUtils;
+use rocket\si\control\SiControl;
 
 class SiPayloadFactory extends JsonPayload {
 	
@@ -30,12 +32,50 @@ class SiPayloadFactory extends JsonPayload {
 	 * @param SiContent $siZone
 	 * @return \n2n\web\http\payload\impl\JsonPayload
 	 */
-	static function createFromZone(SiContent $zone) {
-		return new JsonPayload([
-			'type' => $zone->getTypeName(),
-			'apiUrl' => (string) $zone->getApiUrl(),
-			'data' => $zone->getData()
-		]);
+	static function createFromContent(SiContent $content) {
+		return new JsonPayload(self::createDataFromContent($content));
+	}
+	
+	/**
+	 * @param SiContent $content
+	 * @return array
+	 */
+	static function createDataFromContent(SiContent $content) {
+		return [
+			'type' => $content->getTypeName(),
+			'data' => $content->getData()
+		];
+	}
+	
+	/**
+	 * @param array $contents
+	 * @return array
+	 */
+	static function createDataFromContents(array $contents) {
+		ArgUtils::valArray($contents, SiContent::class);
+		
+		$json = [];
+		foreach ($contents as $key => $content) {
+			$json[$key] = self::createDataFromContent($content);
+		}
+		return $json;
+	}
+	
+	/**
+	 * @param SiControl[] $controls
+	 * @return array
+	 */
+	static function createDataFromControls(array $controls) {
+		ArgUtils::valArray($controls, SiControl::class);
+		
+		$controlsArr = array();
+		foreach ($controls as $id => $control) {
+			$controlsArr[$id] = [
+				'type' => $control->getType(),
+				'data' => $control->getData()
+			];
+		}
+		return $controlsArr;
 	}
 	
 }

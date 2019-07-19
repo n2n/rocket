@@ -12,6 +12,9 @@ import { SiZone } from "src/app/si/model/structure/si-zone";
 import { SiEntry } from "src/app/si/model/content/si-entry";
 import { EmbeddedEntryInFieldComponent } from "src/app/ui/content/field/comp/embedded-entry-in-field/embedded-entry-in-field.component";
 import { EmbeddedEntryInModel } from "src/app/ui/content/field/embedded-entry-in-model";
+import { SiContent } from "src/app/si/model/structure/si-zone-content";
+import { BulkyEntrySiContent } from "src/app/si/model/structure/impl/bulky-entry-si-content";
+import { CompactEntrySiContent } from "src/app/si/model/structure/impl/compact-entry-si-content";
 
 export class EmbeddedEntryInSiField extends InSiFieldAdapter implements EmbeddedEntryInModel {
 	
@@ -20,8 +23,8 @@ export class EmbeddedEntryInSiField extends InSiFieldAdapter implements Embedded
 	public nonNewRemovable = true;
 	public reduced = false;
 	
-	constructor(public zone: SiZone, public apiUrl: string, public values: SiEntry[] = [],
-			public summaryEntries: SiEntry[] = []) {
+	constructor(public zone: SiZone, public apiUrl: string, public values: BulkyEntrySiContent[] = [],
+			public summaryContents: CompactEntrySiContent[] = []) {
 		super();
 	}
 	
@@ -37,11 +40,11 @@ export class EmbeddedEntryInSiField extends InSiFieldAdapter implements Embedded
 		return this.apiUrl;
 	}
 	
-	getValues(): SiEntry[] {
+	getValues(): BulkyEntrySiContent[] {
 		return this.values;
 	}
 	
-	setValues(values: SiEntry[]) {
+	setValues(values: BulkyEntrySiContent[]) {
 		this.values = values;
     	this.validate();
 	}
@@ -58,15 +61,15 @@ export class EmbeddedEntryInSiField extends InSiFieldAdapter implements Embedded
 		return this.nonNewRemovable;
 	}
 	
-	findSummarySiEntry(siIdentifier: SiIdentifier): SiEntry|null {
-        return this.summaryEntries.find((entry) => {
-        	return entry.identifier.equals(siIdentifier);
+	findSummarySiContent(siIdentifier: SiIdentifier): CompactEntrySiContent|null {
+        return this.summaryContents.find((content) => {
+        	return content.entry.identifier.equals(siIdentifier);
         }) || null;
     }
 	
-    addSummarySiEntry(siEntry: SiEntry) {
-        this.summaryEntries.push(siEntry);
-    }
+	addSummarySiContent(siContent: CompactEntrySiContent) {
+    	this.summaryContents.push(siContent);
+	}
 	
 	private validate() {
 		this.messages = [];
