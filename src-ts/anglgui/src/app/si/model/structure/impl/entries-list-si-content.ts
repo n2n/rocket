@@ -14,8 +14,10 @@ import { SiZoneError } from "src/app/si/model/structure/si-zone-error";
 import { SiCommanderService } from "src/app/si/model/si-commander.service";
 import { SiPage } from "src/app/si/model/structure/impl/si-page";
 import { SiQualifier } from "src/app/si/model/content/si-qualifier";
+import { SiStructureModel } from "src/app/si/model/structure/si-structure-model";
 
 export class EntriesListSiContent implements SiContent, SiStructureContent {
+   
 	private pagesMap = new Map<number, SiPage>();
 	private _size: number = 0;
 	private _currentPageNo: number = 1;
@@ -194,8 +196,8 @@ export class EntriesListSiContent implements SiContent, SiStructureContent {
 		return Math.ceil(<number> this.size / this.pageSize) || 1;
 	}
 	
-	applyTo(structure: SiStructure) {
-		structure.content = this;
+	getStructureModel(): SiStructureModel {
+		return this;
 	}
 	
 	reload() {
@@ -212,6 +214,18 @@ export class EntriesListSiContent implements SiContent, SiStructureContent {
 	    componentRef.instance.siService = commanderService.service;
 	    
 	    return componentRef;
+	}
+	
+	getContent() {
+		return this;
+	}
+	
+	getChildren() {
+		return [];
+	}
+	
+	getControls() {
+		return [];
 	}
 }
 

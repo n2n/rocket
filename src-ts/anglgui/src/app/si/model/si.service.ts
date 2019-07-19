@@ -4,8 +4,6 @@ import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { Extractor, ObjectMissmatchError } from "src/app/util/mapping/extractor";
 import { SiZone } from "src/app/si/model/structure/si-zone";
-import { EntriesListSiContent } from "src/app/si/model/structure/impl/list-si-zone-content";
-import { DlSiContent } from "src/app/si/model/structure/impl/dl-si-zone-content";
 import { SiFactory } from "src/app/si/build/si-factory";
 import { Router } from "@angular/router";
 import { PlatformLocation } from "@angular/common";

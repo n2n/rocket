@@ -21,19 +21,13 @@
  */
 namespace rocket\si\structure;
 
-use n2n\util\uri\Url;
-
-interface SiZone {
+interface SiContent {
 	
 	/**
 	 * @return string
 	 */
 	function getTypeName(): string;
 	
-	/**
-	 * @return Url
-	 */
-	function getApiUrl(): Url;
 	
 	/**
 	 * @return array

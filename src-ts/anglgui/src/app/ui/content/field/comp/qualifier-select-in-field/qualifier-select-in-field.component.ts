@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { QualifierSelectInModel } from "src/app/ui/content/field/qualifier-select-in-model";
 import { SiQualifier } from "src/app/si/model/content/si-qualifier";
 import { SiLayer, PopupSiLayer } from "src/app/si/model/structure/si-layer";
-import { EntriesListSiContent } from "src/app/si/model/structure/impl/list-si-zone-content";
+import { EntriesListSiContent } from "src/app/si/model/structure/impl/entries-list-si-content";
 
 @Component({
   selector: 'rocket-qualifier-select-in-field',
@@ -43,7 +43,8 @@ export class QualifierSelectInFieldComponent implements OnInit {
 		});
 		
 		const content = new EntriesListSiContent(this.model.getApiUrl(), 30, siZone);
-		content.applyTo(this.optionsSiLayer.pushZone(null).structure);
+		
+		this.optionsSiLayer.pushZone(null).structure.model = content;
 		
 		content.qualifierSelection = {
 				min: this.model.getMin(),

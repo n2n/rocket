@@ -3,6 +3,7 @@ import { SiStructureContent } from "src/app/si/model/structure/si-structure-cont
 import { StructureContentDirective } from "src/app/ui/structure/comp/structure/structure-content.directive";
 import { SiStructureType } from "src/app/si/model/structure/si-field-structure-declaration";
 import { SiStructure } from "src/app/si/model/structure/si-structure";
+import { SiControl } from "src/app/si/model/control/si-control";
 
 @Component({
   selector: 'rocket-ui-structure',
@@ -11,10 +12,18 @@ import { SiStructure } from "src/app/si/model/structure/si-structure";
 })
 export class StructureComponent implements OnInit {
 
+	@Input()
+	root = false;
+	
+	siControlsVisible = true;
+	
 	private _siStructure: SiStructure;
 	
-	@ViewChild(StructureContentDirective, { static: true }) structureContentDirective: StructureContentDirective;
-
+	@ViewChild(StructureContentDirective, { static: true }) 
+	structureContentDirective: StructureContentDirective;
+	
+	readonly controls: SiControl[] = [];
+	
     constructor(private elRef: ElementRef, private componentFactoryResolver: ComponentFactoryResolver) { 
     }
 
@@ -37,11 +46,15 @@ export class StructureComponent implements OnInit {
 	}
 	
 	get siStructureContent(): SiStructureContent|null {
-		return this._siStructure.content;
+		return this._siStructure.model.getContent();
+	}
+	
+	get siControls() {
+		return this._siStructure.model.getControls();
 	}
 	
 	get children(): SiStructure[] {
-		return this._siStructure.getChildren();
+		return this._siStructure.model.getChildren();
 	}
 	
 	getType(): SiStructureType|null {
@@ -110,7 +123,7 @@ export class StructureComponent implements OnInit {
 	}
 	
 	get loaded(): boolean {
-		return !!this.siStructure.content;
+		return !!this.siStructure.model;
 	}
 
 }

@@ -33,6 +33,8 @@ use rocket\si\content\SiEntry;
 use rocket\ei\manage\gui\control\GuiControlPath;
 use rocket\ei\manage\api\ApiControlCallId;
 use rocket\si\input\SiEntryInput;
+use rocket\si\structure\impl\BulkyEntrySiContent;
+use rocket\si\structure\impl\CompactEntrySiContent;
 
 class EiEntryGui {
 	/**
@@ -328,19 +330,19 @@ class EiEntryGui {
 	/**
 	 * @return \rocket\si\content\SiEntry
 	 */
-	function createSiEntry() {
+	function createSiEntry(bool $siControlsIncluded = true) {
 		$eiType = $this->eiEntry->getEiType();
 		
 		$siIdentifier = $this->eiEntry->getEiObject()->createSiIdentifier();
 		$siEntry = new SiEntry($siIdentifier, !ViewMode::isReadOnly($this->eiGui->getViewMode()));
-		$siEntry->putBuildup($eiType->getId(), $this->createSiEntryBuildup());
+		$siEntry->putBuildup($eiType->getId(), $this->createSiEntryBuildup($siControlsIncluded));
 		return $siEntry;
 	}
 	
 	/**
 	 * @return SiEntryBuildup
 	 */
-	function createSiEntryBuildup() {
+	function createSiEntryBuildup(bool $siControlsIncluded = true) {
 		$eiEntry = $this->eiEntry;
 		$eiFrame = $this->eiGui->getEiFrame();
 		
@@ -359,6 +361,10 @@ class EiEntryGui {
 			$siEntry->putField($guiFieldPathStr, $guiField->getSiField());
 		}
 		
+		if (!$siControlsIncluded) {
+			return $siEntry;
+		}
+		
 		foreach ($this->eiGui->getGuiDefinition()->createEntryGuiControls($this->eiGui, $eiEntry)
 				as $guiControlPathStr => $entryGuiControl) {
 			$siEntry->putControl($guiControlPathStr, $entryGuiControl->toSiControl(
@@ -368,6 +374,38 @@ class EiEntryGui {
 		}
 		
 		return $siEntry;
+	}
+		
+	/**
+	 * @param bool $controlsIncluded
+	 * @return \rocket\si\structure\impl\BulkyEntrySiContent
+	 */
+	function createCompactEntrySiContent(bool $generalSiControlsIncluded = true,
+			bool $entrySiControlsIncluded = true) {
+		$siContent = new CompactEntrySiContent($this->eiGui->createSiCompactDeclaration(),
+				$this->createSiEntry($entrySiControlsIncluded));
+		
+		if ($generalSiControlsIncluded) {
+			$siContent->setControls($this->eiGui->createGeneralSiControls());
+		}
+		
+		return $siContent;
+	}
+	
+	/**
+	 * @param bool $controlsIncluded
+	 * @return \rocket\si\structure\impl\BulkyEntrySiContent
+	 */
+	function createBulkyEntrySiContent(bool $generalSiControlsIncluded = true,
+			bool $entrySiControlsIncluded = true) {
+		$siContent = new BulkyEntrySiContent($this->eiGui->createSiBulkyDeclaration(),
+				$this->createSiEntry($entrySiControlsIncluded));
+		
+		if ($generalSiControlsIncluded) {
+			$siContent->setControls($this->eiGui->createGeneralSiControls());
+		}
+		
+		return $siContent;
 	}
 	
 	/**

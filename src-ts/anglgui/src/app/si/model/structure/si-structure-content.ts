@@ -10,6 +10,4 @@ export interface SiStructureContent {
 			componentFactoryResolver: ComponentFactoryResolver,
 			commanderService: SiCommanderService): ComponentRef<any>;
 	
-
-	getZoneErrors(): SiZoneError[];
 }

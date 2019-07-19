@@ -1,7 +1,5 @@
 
 import { ObjectMissmatchError, Extractor } from "src/app/util/mapping/extractor";
-import { DlSiContent } from "src/app/si/model/structure/impl/dl-si-zone-content";
-import { EntriesListSiContent } from "src/app/si/model/structure/impl/list-si-zone-content";
 import { SiZone } from "src/app/si/model/structure/si-zone";
 import { SiEntry } from "src/app/si/model/content/si-entry";
 import { SiField } from "src/app/si/model/content/si-field";
@@ -26,6 +24,8 @@ import { QualifierSelectInSiField } from "src/app/si/model/content/impl/qualifie
 import { SiResultFactory } from "src/app/si/build/si-result-factory";
 import { SiCompFactory } from "src/app/si/build/si-comp-factory";
 import { SiPage } from "src/app/si/model/structure/impl/si-page";
+import { EntriesListSiContent } from "src/app/si/model/structure/impl/entries-list-si-content";
+import { BulkyEntrySiContent } from "src/app/si/model/structure/impl/bulky-entry-si-content";
 
 export class SiFactory {
 	
@@ -38,7 +38,7 @@ export class SiFactory {
 		let compFactory: SiCompFactory;
 		
 		switch (extr.reqString('type')) {
-			case SiZoneType.LIST:
+			case SiZoneType.ENTRIES_LIST:
 				const listSiContent = new EntriesListSiContent(extr.reqString('apiUrl'), 
 						dataExtr.reqNumber('pageSize'), this.zone);
 				
@@ -54,14 +54,14 @@ export class SiFactory {
 				}
 				
 				return listSiContent;
-			case SiZoneType.DL:
+			case SiZoneType.BULKY_ENTRY:
 				const bulkyDeclaration = SiResultFactory.createBulkyDeclaration(dataExtr.reqObject('bulkyDeclaration'));
-				const dlSiContent = new DlSiContent(extr.reqString('apiUrl'), bulkyDeclaration, this.zone);
+				const bulkyEntrySiContent = new BulkyEntrySiContent(bulkyDeclaration, this.zone);
 				
-				compFactory = new SiCompFactory(this.zone, dlSiContent);
-				dlSiContent.controlMap = compFactory.createControlMap(dataExtr.reqMap('controls'));
-				dlSiContent.entries = compFactory.createEntries(dataExtr.reqArray('entries'));
-				return dlSiContent;
+				compFactory = new SiCompFactory(this.zone, bulkyEntrySiContent);
+				bulkyEntrySiContent.controlMap = compFactory.createControlMap(dataExtr.reqMap('controls'));
+				bulkyEntrySiContent.entry = compFactory.createEntry(dataExtr.reqArray('entry'));
+				return bulkyEntrySiContent;
 			default:
 				throw new ObjectMissmatchError('Invalid si zone type: ' + data.type);
 		}
@@ -71,7 +71,8 @@ export class SiFactory {
 
 
 export enum SiZoneType {
-    LIST = 'list',
-    DL = 'dl'
+    ENTRIES_LIST = 'entries-list',
+    BULKY_ENTRY = 'bulky-entry',
+    COMPACT_ENTRY = 'compcat-entry'
 } 
 

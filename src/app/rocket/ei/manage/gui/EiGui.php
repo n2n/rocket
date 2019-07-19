@@ -12,6 +12,9 @@ use rocket\ei\manage\gui\control\UnknownGuiControlException;
 use rocket\ei\manage\gui\control\GeneralGuiControl;
 use rocket\ei\manage\api\ApiControlCallId;
 use rocket\ei\mask\EiMask;
+use rocket\si\structure\SiBulkyDeclaration;
+use rocket\ei\EiException;
+use rocket\si\structure\SiCompactDeclaration;
 
 /**
  * @author andreas
@@ -256,8 +259,28 @@ class EiGui {
 	}
 	
 	
-	public function createGuiField() {
+	/**
+	 * @throws EiException
+	 * @return \rocket\si\structure\SiBulkyDeclaration
+	 */
+	public function createSiBulkyDeclaration() {
+		if (ViewMode::isBulky($this->viewMode)) {
+			return new SiBulkyDeclaration($this->eiGuiGiFactory->getSiFieldStructureDeclarations());
+		}
 		
+		throw new EiException('EiGui is not bulky.');
+	}
+	
+	/**
+	 * @throws EiException
+	 * @return \rocket\si\structure\SiBulkyDeclaration
+	 */
+	public function createSiCompactDeclaration() {
+		if (ViewMode::isCompact($this->viewMode)) {
+			return new SiCompactDeclaration($this->eiGuiGiFactory->getSiFieldDeclarations());
+		}
+		
+		throw new EiException('EiGui is not bulky.');
 	}
 	
 	/**

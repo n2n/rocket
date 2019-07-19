@@ -28,11 +28,11 @@ export class SiCommanderService {
 			throw new SiCommandError('Zone contains no url.');
 		}
 		
-		zone.structure.clear();
+		zone.structure.model = null;
 		
 		this.service.lookupSiContent(zone, zone.url)
 				.subscribe((siZoneContent) => {
-					siZoneContent.applyTo(zone.structure);
+					zone.structure.model = siZoneContent;
 				});
 	}
 	

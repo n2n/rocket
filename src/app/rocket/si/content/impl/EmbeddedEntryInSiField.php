@@ -26,6 +26,8 @@ use n2n\util\uri\Url;
 use n2n\util\type\ArgUtils;
 use rocket\si\content\SiEntry;
 use rocket\si\input\SiEntryInput;
+use rocket\si\structure\impl\BulkyEntrySiContent;
+use rocket\si\structure\impl\CompactEntrySiContent;
 
 class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	
@@ -92,11 +94,11 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	}
 	
 	/**
-	 * @param SiEntry[] $values
+	 * @param CompactEntrySiContent[] $values
 	 * @return \rocket\si\content\impl\EmbeddedEntryInSiField
 	 */
 	function setValues(array $values) {
-		ArgUtils::valArray($values, SiEntry::class);
+		ArgUtils::valArray($values, CompactEntrySiContent::class);
 		$this->values = $values;
 		return $this;
 	}
@@ -109,11 +111,11 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	}
 	
 	/**
-	 * @param SiEntry[] $summarySiEntries
+	 * @param BulkyEntrySiContent[] $summarySiEntries
 	 * @return \rocket\si\content\impl\EmbeddedEntryInSiField
 	 */
-	function setSummarySiEntries(array $summarySiEntries) {
-		ArgUtils::valArray($summarySiEntries, SiEntry::class);
+	function setSummarySiContents(array $summarySiEntries) {
+		ArgUtils::valArray($summarySiEntries, BulkyEntrySiContent::class);
 		$this->summarySiEntries = $summarySiEntries;
 		return $this;
 	}
@@ -204,7 +206,7 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	function getData(): array {
 		return [
 			'values' => $this->values,
-			'summaryEntries' => $this->summarySiEntries,
+			'summaryContents' => $this->summarySiEntries,
 			'apiUrl' => (string) $this->apiUrl,
 			'min' => $this->min,
 			'max' => $this->max,

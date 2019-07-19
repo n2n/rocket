@@ -21,63 +21,50 @@
  */
 namespace rocket\si\structure\impl;
 
-use n2n\util\uri\Url;
-use rocket\si\structure\SiZone;
-use rocket\si\structure\SiBulkyDeclaration;
+use rocket\si\structure\SiContent;
+use rocket\si\structure\SiCompactDeclaration;
 use rocket\si\content\SiEntry;
 use n2n\util\type\ArgUtils;
 use rocket\si\control\SiControl;
 
-class DlSiZone implements SiZone {
-	private $apiUrl;
-	private $bulkyDeclaration;
-	private $entries;
+class CompactEntrySiContent implements SiContent {
+	private $compactDeclaration;
+	private $entry;
 	private $controls;
 	
-	public function __construct(Url $apiUrl, SiBulkyDeclaration $bulkyDeclaration,
-			array $entries = [], array $controls = []) {
-		$this->apiUrl = $apiUrl;
-		$this->bulkyDeclaration = $bulkyDeclaration;
-		$this->setEntries($entries);
+	function __construct(SiCompactDeclaration $compactDeclaration, SiEntry $entry = null, array $controls = []) {
+		$this->compactDeclaration = $compactDeclaration;
+		$this->setEntry($entry);
 		$this->setControls($controls);
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\si\structure\SiZone::getTypeName()
+	 * @see \rocket\si\structure\SiContent::getTypeName()
 	 */
-	public function getTypeName(): string {
-		return 'dl';
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\si\structure\SiZone::getApiUrl()
-	 */
-	public function getApiUrl(): Url {
-		return $this->apiUrl;
+	function getTypeName(): string {
+		return 'compact-entry';
 	}
 	
 	/**
 	 * @param SiEntry[] $siEntries
-	 * @return \rocket\si\structure\SiCompactDeclaration
+	 * @return CompactEntrySiContent
 	 */
-	function setEntries(array $entries) {
-		ArgUtils::valArray($entries, SiEntry::class);
-		$this->entries = $entries;
+	function setEntry(?SiEntry $entry) {
+		$this->entry = $entry;
 		return $this;
 	}
 	
 	/**
 	 * @return SiEntry[]
 	 */
-	function getEntries() {
-		return $this->entries;
+	function getEntry() {
+		return $this->entry;
 	}
 	
 	/**
 	 * @param SiControl[] $controls
-	 * @return \rocket\si\structure\SiBulkyDeclaration
+	 * @return CompactEntrySiContent
 	 */
 	function setControls(array $controls) {
 		ArgUtils::valArray($controls, SiControl::class);
@@ -96,14 +83,14 @@ class DlSiZone implements SiZone {
 		$controlsArr = array();
 		foreach ($this->controls as $id => $control) {
 			$controlsArr[$id] = [
-					'type' => $control->getType(),
-					'data' => $control->getData()
+				'type' => $control->getType(),
+				'data' => $control->getData()
 			];
 		}
 		
 		return [ 
-			'bulkyDeclaration' => $this->bulkyDeclaration,
-			'entries' => $this->entries,
+			'compactDeclaration' => $this->compactDeclaration,
+			'entry' => $this->entry,
 			'controls' => $controlsArr
 		];
 	}

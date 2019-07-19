@@ -21,12 +21,12 @@
  */
 namespace rocket\si\structure\impl;
 
-use rocket\si\structure\SiZone;
+use rocket\si\structure\SiContent;
 use n2n\util\uri\Url;
 use rocket\si\structure\SiCompactDeclaration;
 use rocket\si\content\SiPartialContent;
 
-class ListSiZone implements SiZone {
+class EntriesListSiContent implements SiContent {
 	private $apiUrl;
 	private $pageSize;
 	private $compactDeclaration;
@@ -47,12 +47,15 @@ class ListSiZone implements SiZone {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\si\structure\SiZone::getTypeName()
+	 * @see \rocket\si\structure\SiContent::getTypeName()
 	 */
 	public function getTypeName(): string {
-		return 'list';
+		return 'entries-list';
 	}
 	
+	/**
+	 * @return Url
+	 */
 	public function getApiUrl(): Url {
 		return $this->apiUrl;
 	}
@@ -66,7 +69,7 @@ class ListSiZone implements SiZone {
 	
 	/**
 	 * @param int $pageSize
-	 * @return \rocket\si\structure\impl\ListSiZone
+	 * @return \rocket\si\structure\impl\EntriesListSiContent
 	 */
 	public function setPageSize(int $pageSize) {
 		$this->pageSize = $pageSize;
@@ -89,7 +92,7 @@ class ListSiZone implements SiZone {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\si\structure\SiZone::getData()
+	 * @see \rocket\si\structure\SiContent::getData()
 	 */
 	public function getData(): array {
 		return [

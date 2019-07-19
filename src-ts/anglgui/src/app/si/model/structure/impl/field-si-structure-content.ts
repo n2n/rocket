@@ -29,12 +29,5 @@ export class FieldSiStructureContent implements SiStructureContent {
 		return this.entry.selectedBuildup.getFieldById(this.fieldDeclaration.fieldId);
 	}
 
-	getZoneErrors(): SiZoneError[] {
-		const field = this.field;
-	 	if (field) {
-	 		return field.getZoneErrors()
-	 	}
-		
-		return [];
-	}
+	
 }

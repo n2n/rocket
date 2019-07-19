@@ -3,18 +3,34 @@
 	<label>{{ getLabel() }}</label>
 </ng-container>
 
+<div *ngIf="siControlsVisible && !root && siControls.length > 0" class="rocket-toolbar">
+	<ng-container *ngFor="let siControl of siControls">
+		<rocket-ui-control [siControl]="siControl"></rocket-ui-control>		
+	</ng-container>
+</div>
+
 <div class="rocket-control">
-	<ul *ngIf="isMain()" class="rocket-main-group-nav nav nav-tabs">
-		<li *ngFor="let child of children" [class.active]="child.visible">
-			{{ child.label }}
-		<li>
-	</ul>
-	
 	<div *ngIf="!loaded" class="rocket-loader"></div>
 	
-	<ng-template *ngIf="siStructureContent" rocketStructureContent [siStructureContent]="siStructureContent"></ng-template>
-
-	<ng-container *ngFor="let child of children">
-		<rocket-ui-structure *ngIf="child.visible" [siStructure]="child"></rocket-ui-structure>
+	<ng-container *ngIf="loaded">
+		<ul *ngIf="isMain()" class="rocket-main-group-nav nav nav-tabs">
+			<li *ngFor="let child of children" [class.active]="child.visible">
+				{{ child.label }}
+			<li>
+		</ul>
+		
+		<ng-template *ngIf="siStructureContent" rocketStructureContent [siStructureContent]="siStructureContent"></ng-template>
+	
+		<ng-container *ngFor="let child of children">
+			<rocket-ui-structure *ngIf="child.visible" [siStructure]="child"></rocket-ui-structure>
+		</ng-container>
+		
+		<div *ngIf="siControlsVisible && root && siControls.length > 0" class="rocket-zone-commands">
+			<div class="rocket-main-commands">
+				<ng-container *ngFor="let siControl of siControls">
+					<rocket-ui-control [siControl]="siControl"></rocket-ui-control>		
+				</ng-container>
+			</div>
+		</div>
 	</ng-container>
 </div>

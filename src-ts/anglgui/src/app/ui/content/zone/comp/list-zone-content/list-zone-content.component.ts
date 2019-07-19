@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, Inject, Injector, ElementRef, OnDestroy, DoCheck } from '@angular/core';
-import { EntriesListSiContent } from "src/app/si/model/structure/impl/list-si-zone-content";
 import { SiEntry } from "src/app/si/model/content/si-entry";
 import { SiField } from "src/app/si/model/content/si-field";
 import { SiFieldDeclaration } from "src/app/si/model/structure/si-field-declaration";
@@ -13,6 +12,7 @@ import { SiPartialContent } from "src/app/si/model/content/si-partial-content";
 import { SiPage } from "src/app/si/model/structure/impl/si-page";
 import { fromEvent, Subscription } from "rxjs";
 import { SiQualifier } from "src/app/si/model/content/si-qualifier";
+import { EntriesListSiContent } from "src/app/si/model/structure/impl/entries-list-si-content";
 
 @Component({
   selector: 'rocket-ui-list-zone-content',
@@ -28,8 +28,6 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 	private fieldDeclarations: Array<SiFieldDeclaration>|null = null;
 
 	constructor(private elemRef: ElementRef) {
-		
-		
 	}
 
 	ngOnInit() {

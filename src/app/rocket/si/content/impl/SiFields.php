@@ -81,15 +81,15 @@ class SiFields {
 	/**
 	 * @param Url $apiUrl
 	 * @param array $values
-	 * @param array $summarySiEntries
+	 * @param array $summarySiContents
 	 * @param int $min
 	 * @param int $max
 	 * @return EmbeddedEntryInSiField
 	 */
 	static function embeddedEntryIn(Url $apiUrl, EmbeddedEntryInputHandle $inputHandler, array $values = [], 
-			array $summarySiEntries = [], int $min = 0, int $max = null) {
-				return (new EmbeddedEntryInSiField($apiUrl, $inputHandler, $values))
-						->setSummarySiEntries($summarySiEntries)
-						->setMin($min)->setMax($max);
+			array $summarySiContents = [], int $min = 0, int $max = null) {
+		return (new EmbeddedEntryInSiField($apiUrl, $inputHandler, $values))
+				->setSummarySiContents($summarySiContents)
+				->setMin($min)->setMax($max);
 	}
 }

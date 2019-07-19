@@ -60,17 +60,17 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandle {
 		$this->relationModel = $relationModel;
 		
 		$values = [];
-		$summarySiEntries =  [];
+		$summarySiContents =  [];
 		foreach ($eiu->field()->getValue() as $eiuEntry) {
 			CastUtils::assertTrue($eiuEntry instanceof EiuEntry);
 			$this->currentEiuEntryGuis[] = $eiuEntryGui = $eiuEntry->newEntryGui(true, true);
-			$values[] = $eiuEntryGui->createSiEntry();
-			$summarySiEntries[] = $eiuEntry->newEntryGui(false, false)->createSiEntry();
+			$values[] = $eiuEntryGui->createBulkyEntrySiContent(false, false);
+			$summarySiContents[] = $eiuEntry->newEntryGui(false, false)->createCompactEntrySiContent(false, false);
 		}
 		
 		$this->siField = SiFields::embeddedEntryIn(
 						$this->targetEiuFrame->getApiUrl($relationModel->getTargetEditEiCommandPath()),
-						$this, $values, $summarySiEntries, (int) $relationModel->getMin(), $relationModel->getMax())
+						$this, $values, $summarySiContents, (int) $relationModel->getMin(), $relationModel->getMax())
 				->setReduced($this->relationModel->isReduced())
 				->setNonNewRemovable($this->relationModel->isRemovable());
 	}

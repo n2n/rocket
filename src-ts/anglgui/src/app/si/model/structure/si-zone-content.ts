@@ -5,8 +5,9 @@ import { SiStructureContent } from "src/app/si/model/structure/si-structure-cont
 import { SiStructure } from "src/app/si/model/structure/si-structure";
 import { SiZone } from "src/app/si/model/structure/si-zone";
 import { SiZoneError } from "src/app/si/model/structure/si-zone-error";
+import { SiStructureModel } from "src/app/si/model/structure/si-structure-model";
 
-export interface SiContent {
+export interface SiContent extends SiStructureModel {
  	
 //	getZone(): SiZone;
 	
@@ -15,6 +16,4 @@ export interface SiContent {
 	getEntries(): SiEntry[];
 	
 	getSelectedEntries(): SiEntry[];
-	
-	applyTo(structure: SiStructure);
 }

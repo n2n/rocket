@@ -80,4 +80,12 @@ class ViewMode {
 	static function isBulky(int $viewMode) {
 		return $viewMode & self::bulky();
 	}
+	
+	/**
+	 * @param int $viewMode
+	 * @return boolean
+	 */
+	static function isCompact(int $viewMode) {
+		return $viewMode & self::compact();
+	}
 }

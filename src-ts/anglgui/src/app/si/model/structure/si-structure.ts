@@ -3,14 +3,14 @@ import { SiStructureType } from "src/app/si/model/structure/si-field-structure-d
 import { Subject, Observable, BehaviorSubject } from "rxjs";
 import { SiStructureContent } from "src/app/si/model/structure/si-structure-content";
 import { SiZoneError } from "src/app/si/model/structure/si-zone-error";
+import { SiControl } from "src/app/si/model/control/si-control";
+import { SiStructureModel } from "src/app/si/model/structure/si-structure-model";
 
 export class SiStructure {
 	label: string|null = null;
 	type: SiStructureType|null = null;
 	private visibleSubject = new BehaviorSubject<boolean>(true);
-	private children: SiStructure[] = [];
-	content: SiStructureContent|null = null;
-	loaded = false;
+	model: SiStructureModel|null;
 	
 	constructor() {
 	}
@@ -27,32 +27,15 @@ export class SiStructure {
 		return this.visibleSubject;
 	}
 	
-	clear() {
-		this.content = null;
-		this.clearChildren();
-	}
-	
-	addChild(child: SiStructure) {
-		this.children.push(child);
-	}
-	
-	getChildren(): SiStructure[] {
-		return this.children;
-	}
-	
-	clearChildren() {
-		this.children.length = 0;
-	}
-	
 	getZoneErrors(): SiZoneError[] {
 		const errors: SiZoneError[] = [];
 		
-		if (this.content) {
-			errors.push(...this.content.getZoneErrors());
-		}
+		if (this.model) {
+			errors.push(...this.model.getZoneErrors());
 		
-		for (const child of this.children) {
-			errors.push(...child.getZoneErrors());
+			for (const child of this.model.getChildren()) {
+				errors.push(...child.getZoneErrors());
+			}
 		}
 		
 		return errors;

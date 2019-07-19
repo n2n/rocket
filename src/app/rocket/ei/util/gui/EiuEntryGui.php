@@ -100,6 +100,26 @@ class EiuEntryGui {
 	}
 	
 	/**
+	 * @param bool $generalSiControlsIncluded
+	 * @param bool $entrySiControlsIncluded
+	 * @return \rocket\si\structure\impl\BulkyEntrySiContent
+	 */
+	function createCompactEntrySiContent(bool $generalSiControlsIncluded = true,
+			bool $entrySiControlsIncluded = true) {
+		return $this->eiEntryGui->createCompactEntrySiContent($generalSiControlsIncluded, $entrySiControlsIncluded);
+	}
+	
+	/**
+	 * @param bool $generalSiControlsIncluded
+	 * @param bool $entrySiControlsIncluded
+	 * @return \rocket\si\structure\impl\BulkyEntrySiContent
+	 */
+	function createBulkyEntrySiContent(bool $generalSiControlsIncluded = true,
+			bool $entrySiControlsIncluded = true) {
+		return $this->eiEntryGui->createBulkyEntrySiContent($generalSiControlsIncluded, $entrySiControlsIncluded);
+	}
+	
+	/**
 	 * @return boolean
 	 */
 	function isCompact() {
