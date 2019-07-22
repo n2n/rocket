@@ -5,6 +5,7 @@ import { StringOutFieldComponent } from "src/app/ui/content/field/comp/string-ou
 import { InputInFieldComponent } from "src/app/ui/content/field/comp/input-in-field/input-in-field.component";
 import { StringInFieldModel } from "src/app/ui/content/field/string-in-field-model";
 import { InSiFieldAdapter } from "src/app/si/model/content/impl/in-si-field-adapter";
+import { SiCommanderService } from "src/app/si/model/si-commander.service";
 
 export class StringInSiField extends InSiFieldAdapter implements StringInFieldModel {
     
@@ -51,7 +52,8 @@ export class StringInSiField extends InSiFieldAdapter implements StringInFieldMo
     }
     
 	initComponent(viewContainerRef: ViewContainerRef, 
-			componentFactoryResolver: ComponentFactoryResolver): ComponentRef<any> {
+			componentFactoryResolver: ComponentFactoryResolver,
+			commanderService: SiCommanderService): ComponentRef<any> {
 		const componentFactory = componentFactoryResolver.resolveComponentFactory(InputInFieldComponent);
 	    
 	    const componentRef = viewContainerRef.createComponent(componentFactory);

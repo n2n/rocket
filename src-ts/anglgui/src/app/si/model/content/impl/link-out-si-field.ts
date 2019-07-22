@@ -6,6 +6,7 @@ import { StringFieldModel } from "src/app/ui/content/field/string-field-model";
 import { OutSiFieldAdapter } from "src/app/si/model/content/impl/out-si-field-adapter";
 import { LinkOutModel } from "src/app/ui/content/field/link-field-model";
 import { LinkOutFieldComponent } from "src/app/ui/content/field/comp/link-out-field/link-out-field.component";
+import { SiCommanderService } from "src/app/si/model/si-commander.service";
 
 export class LinkOutSiField extends OutSiFieldAdapter implements LinkOutModel {
 
@@ -15,7 +16,8 @@ export class LinkOutSiField extends OutSiFieldAdapter implements LinkOutModel {
 	}
 	
 	initComponent(viewContainerRef: ViewContainerRef, 
-			componentFactoryResolver: ComponentFactoryResolver): ComponentRef<any> {
+			componentFactoryResolver: ComponentFactoryResolver,
+			commanderService: SiCommanderService): ComponentRef<any> {
 		const componentFactory = componentFactoryResolver.resolveComponentFactory(LinkOutFieldComponent);
 	    
 	    const componentRef = viewContainerRef.createComponent(componentFactory);
