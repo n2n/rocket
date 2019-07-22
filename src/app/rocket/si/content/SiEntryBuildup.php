@@ -29,6 +29,10 @@ class SiEntryBuildup implements \JsonSerializable {
 	 */
 	private $name;
 	/**
+	 * @var string
+	 */
+	private $iconClass;
+	/**
 	 * @var string|null
 	 */
 	private $idName;
@@ -46,8 +50,9 @@ class SiEntryBuildup implements \JsonSerializable {
 	 * @param string|null $id
 	 * @param string $name
 	 */
-	function __construct(string $name, ?string $idName) {
+	function __construct(string $name, string $iconClass, ?string $idName) {
 		$this->name = $name;
+		$this->iconClass = $iconClass;
 		$this->idName = $idName;
 	}
 
@@ -151,6 +156,7 @@ class SiEntryBuildup implements \JsonSerializable {
 		
 		return [
 			'name' => $this->name,
+			'iconClass' => $this->iconClass,
 			'idName' => $this->idName,
 			'fields' => $fieldsArr,
 			'controls' => $controlsArr

@@ -25,11 +25,13 @@ use n2n\util\type\attrs\DataSet;
 
 class SiQualifier extends SiIdentifier implements \JsonSerializable {
 	private $name;
+	private $iconClass;
 	private $idName;
 	
-	function __construct(string $category, ?string $id, string $name, string $idName = null) {
+	function __construct(string $category, ?string $id, string $name, string $iconClass, string $idName = null) {
 		parent::__construct($category, $id);
 		$this->name = $name;
+		$this->iconClass = $iconClass;
 		$this->idName = $idName;
 	}
 	
@@ -54,6 +56,7 @@ class SiQualifier extends SiIdentifier implements \JsonSerializable {
 			'category' => $this->getCategory(),
 			'id' => $this->getId(),
 			'name' => $this->name,
+			'iconClass' => $this->iconClass,
 			'idName' => $this->idName
 		];
 	}

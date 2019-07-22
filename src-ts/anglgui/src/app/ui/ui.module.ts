@@ -23,11 +23,14 @@ import { QualifierSelectInFieldComponent } from './content/field/comp/qualifier-
 import { RouterModule } from "@angular/router";
 import { EmbeddedEntryInFieldComponent } from './content/field/comp/embedded-entry-in-field/embedded-entry-in-field.component';
 import { CompactEntryComponent } from './content/zone/comp/compact-entry/compact-entry.component';
+import { QualifierComponent } from './content/entry/comp/qualifier/qualifier.component';
 
 @NgModule({
   declarations: [ LayerComponent, ContainerComponent, ZoneComponent, StructureContentDirective, ListZoneContentComponent, 
     PaginationComponent, EntryDirective, StringOutFieldComponent, ControlComponent, BulkyEntryComponent, 
-    FieldStructureComponent, InputInFieldComponent, TextareaInFieldComponent, StructureComponent, FileInFieldComponent, FileOutFieldComponent, LinkOutFieldComponent, QualifierSelectInFieldComponent, EmbeddedEntryInFieldComponent, CompactEntryComponent ],
+    FieldStructureComponent, InputInFieldComponent, TextareaInFieldComponent, StructureComponent, FileInFieldComponent, 
+    FileOutFieldComponent, LinkOutFieldComponent, QualifierSelectInFieldComponent, EmbeddedEntryInFieldComponent, 
+    CompactEntryComponent, QualifierComponent ],
   imports: [
     CommonModule,
     FormsModule,
@@ -41,7 +44,7 @@ import { CompactEntryComponent } from './content/zone/comp/compact-entry/compact
   ],
   entryComponents: [ ListZoneContentComponent, BulkyEntryComponent, FieldStructureComponent, StringOutFieldComponent, 
     InputInFieldComponent, TextareaInFieldComponent, FileInFieldComponent, FileOutFieldComponent, QualifierSelectInFieldComponent,
-    LinkOutFieldComponent, EmbeddedEntryInFieldComponent
+    LinkOutFieldComponent, EmbeddedEntryInFieldComponent, CompactEntryComponent
   ]
 })
 export class UiModule { }

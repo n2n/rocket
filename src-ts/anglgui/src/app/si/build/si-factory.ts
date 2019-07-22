@@ -54,6 +54,7 @@ export class SiContentFactory {
 			throw new ObjectMissmatchError('Type ' + requiredType + ' required. Give. ' + type);
 		}
 		
+
 		switch (type) {
 			case SiContentType.ENTRIES_LIST:
 				const listSiContent = new EntriesListSiContent(dataExtr.reqString('apiUrl'), 
@@ -71,6 +72,7 @@ export class SiContentFactory {
 				}
 				
 				return listSiContent;
+				
 			case SiContentType.BULKY_ENTRY:
 				const bulkyDeclaration = SiResultFactory.createBulkyDeclaration(dataExtr.reqObject('bulkyDeclaration'));
 				const bulkyEntrySiContent = new BulkyEntrySiContent(bulkyDeclaration, this.zone);
@@ -154,7 +156,7 @@ export class SiCompFactory {
 		const extr = new Extractor(data);
 		
 		return new SiQualifier(extr.reqString('category'), extr.nullaString('id'),
-				extr.reqString('name'));
+				extr.reqString('name'), extr.reqString('iconClass'), extr.reqString('idName'));
 	}
 	
 	private createIdentifier(data: any): SiIdentifier {
@@ -166,9 +168,8 @@ export class SiCompFactory {
 	private createBuildup(data: any): SiEntryBuildup { 
 		const extr = new Extractor(data);
 		
-		return new SiEntryBuildup(extr.reqString('name'), extr.nullaString('idName'),
-				this.createFieldMap(extr.reqMap('fields')),
-				this.createControlMap(extr.reqMap('controls')));
+		return new SiEntryBuildup(extr.reqString('name'), extr.reqString('iconClass'), extr.nullaString('idName'),
+				this.createFieldMap(extr.reqMap('fields')), this.createControlMap(extr.reqMap('controls')));
 	}
 	
 	private createFieldMap(data: Map<string, any>): Map<string, SiField> {

@@ -15,7 +15,7 @@ import { CompactEntryComponent } from "src/app/ui/content/zone/comp/compact-entr
 import { SiFieldDeclaration } from "src/app/si/model/structure/si-field-declaration";
 import { SiCommanderService } from "src/app/si/model/si-commander.service";
 
-export class CompactEntrySiContent implements SiContent {
+export class CompactEntrySiContent implements SiContent, SiStructureContent {
     public entry: SiEntry|null = null;
 	public controlMap: Map<string, SiControl> = new Map();
 	
@@ -43,7 +43,7 @@ export class CompactEntrySiContent implements SiContent {
 	}
     
     getContent() {
-    	return null;
+    	return this;
     }
     
     getChildren(): SiStructure[] {

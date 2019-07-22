@@ -10,7 +10,8 @@ export class SiIdentifier {
 }
 
 export class SiQualifier extends SiIdentifier {
-	constructor(category: string, id: string|null, public name: string) {
+	constructor(category: string, id: string|null, public name: string, public iconClass: string, 
+			public idName: string|null) {
 		super(category, id)
 	}
 	

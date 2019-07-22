@@ -347,6 +347,7 @@ class EiEntryGui {
 		$eiFrame = $this->eiGui->getEiFrame();
 		
 		$name = $eiEntry->getEiMask()->getLabelLstr()->t($eiFrame->getN2nContext()->getN2nLocale());
+		$iconClass = $eiEntry->getEiMask()->getIconType();
 		$idName = null;
 		if (!$eiEntry->isNew()) {
 			$deterIdNameDefinition = $eiFrame->getManageState()->getDef()
@@ -355,7 +356,7 @@ class EiEntryGui {
 					$eiFrame->getN2nContext()->getN2nLocale());
 		}
 		
-		$siEntry = new SiEntryBuildup($name, $idName);
+		$siEntry = new SiEntryBuildup($name, $iconClass, $idName);
 		
 		foreach ($this->guiFields as $guiFieldPathStr => $guiField) {
 			$siEntry->putField($guiFieldPathStr, $guiField->getSiField());

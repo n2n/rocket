@@ -23,8 +23,9 @@ export class SiEntry {
 	}
 	
 	get qualifier(): SiQualifier {
+		const buildup = this.selectedBuildup;
 		return new SiQualifier(this.identifier.category, this.identifier.id,
-				this.selectedBuildup.getBestName());
+				buildup.name, buildup.iconClass, buildup.idName);
 	}
 	
 	get selectedBuildup(): SiEntryBuildup {

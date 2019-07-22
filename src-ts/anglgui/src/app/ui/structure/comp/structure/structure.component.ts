@@ -19,6 +19,8 @@ export class StructureComponent implements OnInit {
 	
 	private _siStructure: SiStructure;
 	
+	@ViewChild('contentProjection', { static: true }) contentProjection: ElementRef;
+	
 	@ViewChild(StructureContentDirective, { static: true }) 
 	structureContentDirective: StructureContentDirective;
 	

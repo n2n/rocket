@@ -18,7 +18,7 @@ export class SiEmbeddedEntry {
 	}
 	
 	get entry(): SiEntry {
-		return this.content.entry;
+		return this._content.entry;
 	}
 	
 	set content(content: BulkyEntrySiContent) {

@@ -1,1 +1,6 @@
-<p>compact-entry works!</p>
+
+<div *ngFor="let siFieldDeclaration of siContent.getFieldDeclarations()">
+	<ng-template rocketStructureContent 
+			[siStructureContent]="siContent.entry.selectedBuildup.getFieldById(siFieldDeclaration.fieldId)">
+	</ng-template>
+</div>
