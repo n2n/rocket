@@ -5,10 +5,12 @@ import { StringOutFieldComponent } from "src/app/ui/content/field/comp/string-ou
 import { IllegalSiStateError } from "src/app/si/model/illegal-si-state-error";
 import { SiFieldError } from "src/app/si/model/input/si-field-error";
 import { SiFieldAdapter } from "src/app/si/model/content/impl/si-field-adapter";
+import { SiCommanderService } from "src/app/si/model/si-commander.service";
 
 export abstract class OutSiFieldAdapter extends SiFieldAdapter {
 	
-	abstract initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver);
+	abstract initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver,
+			commanderService: SiCommanderService);
     
 	hasInput(): boolean {
 		return false;

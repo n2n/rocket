@@ -72,7 +72,7 @@ export class BulkyEntrySiContent implements SiContent {
 		structure.label = fsd.fieldDeclaration.label;
 		structure.type = fsd.type;
 		
-		const model = new FieldSiStructureModel(new FieldSiStructureContent(entry, fsd.fieldDeclaration));
+		const model = new FieldSiStructureModel(entry.selectedBuildup.getFieldById(fsd.fieldDeclaration.fieldId));
 		for (const childFsd of fsd.children) {
 			model.children.push(this.dingsel(entry, childFsd));
 		}
@@ -97,27 +97,24 @@ export class BulkyEntrySiContent implements SiContent {
 }
 
 class FieldSiStructureModel implements SiStructureModel {
-	public children: SiStructure[] = [];
+    public children: SiStructure[] = [];
 	
-	constructor(public content: FieldSiStructureContent) {
+	constructor(public content: SiStructureContent) {
 	}
 	
     getContent(): SiStructureContent {
     	return this.content;
     }
+    
     getChildren(): SiStructure[] {
     	return this.children;
     }
+    
     getControls(): SiControl[] {
         return [];
     }
     
     getZoneErrors(): SiZoneError[] {
-		const field = this.content.field;
-	 	if (field) {
-	 		return field.getZoneErrors()
-	 	}
-		
-		return [];
-	}
+        return [];
+    }
 }

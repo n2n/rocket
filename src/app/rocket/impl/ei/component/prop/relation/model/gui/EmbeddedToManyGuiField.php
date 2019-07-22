@@ -33,6 +33,8 @@ use rocket\ei\util\entry\EiuEntry;
 use rocket\si\input\SiEntryInput;
 use rocket\si\input\CorruptedSiInputDataException;
 use rocket\si\content\impl\EmbeddedEntryInputHandle;
+use rocket\si\content\SiEmbeddedEntry;
+use rocket\ei\util\gui\EiuEntryGui;
 
 class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandle {
 	/**
@@ -51,7 +53,9 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandle {
 	 * @var EmbeddedEntryInSiField
 	 */
 	private $siField;
-	
+	/**
+	 * @var EiuEntryGui
+	 */
 	private $currentEiuEntryGuis = [];
 	
 	function __construct(Eiu $eiu, EiuFrame $targetEiuFrame, RelationModel $relationModel) {
@@ -60,17 +64,19 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandle {
 		$this->relationModel = $relationModel;
 		
 		$values = [];
-		$summarySiContents =  [];
 		foreach ($eiu->field()->getValue() as $eiuEntry) {
 			CastUtils::assertTrue($eiuEntry instanceof EiuEntry);
 			$this->currentEiuEntryGuis[] = $eiuEntryGui = $eiuEntry->newEntryGui(true, true);
-			$values[] = $eiuEntryGui->createBulkyEntrySiContent(false, false);
-			$summarySiContents[] = $eiuEntry->newEntryGui(false, false)->createCompactEntrySiContent(false, false);
+			$values[] = new SiEmbeddedEntry(
+					$eiuEntryGui->createBulkyEntrySiContent(false, false),
+					($this->relationModel->isReduced() ? 
+							$eiuEntry->newEntryGui(false, false)->createCompactEntrySiContent(false, false) :
+							null));
 		}
 		
 		$this->siField = SiFields::embeddedEntryIn(
 						$this->targetEiuFrame->getApiUrl($relationModel->getTargetEditEiCommandPath()),
-						$this, $values, $summarySiContents, (int) $relationModel->getMin(), $relationModel->getMax())
+						$this, $values, (int) $relationModel->getMin(), $relationModel->getMax())
 				->setReduced($this->relationModel->isReduced())
 				->setNonNewRemovable($this->relationModel->isRemovable());
 	}

@@ -3,6 +3,7 @@ import { ComponentFactoryResolver, ViewContainerRef, ComponentRef } from "@angul
 import { SiStructureType } from "src/app/si/model/structure/si-field-structure-declaration";
 import { SiCommanderService } from "src/app/si/model/si-commander.service";
 import { SiZoneError } from "src/app/si/model/structure/si-zone-error";
+import { SiStructure } from "src/app/si/model/structure/si-structure";
 
 export interface SiStructureContent {
 
@@ -10,4 +11,6 @@ export interface SiStructureContent {
 			componentFactoryResolver: ComponentFactoryResolver,
 			commanderService: SiCommanderService): ComponentRef<any>;
 	
+	getZoneErrors(): SiZoneError[];
+
 }

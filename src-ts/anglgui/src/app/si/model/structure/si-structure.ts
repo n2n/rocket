@@ -7,12 +7,10 @@ import { SiControl } from "src/app/si/model/control/si-control";
 import { SiStructureModel } from "src/app/si/model/structure/si-structure-model";
 
 export class SiStructure {
-	label: string|null = null;
-	type: SiStructureType|null = null;
 	private visibleSubject = new BehaviorSubject<boolean>(true);
-	model: SiStructureModel|null;
 	
-	constructor() {
+	constructor(public type: SiStructureType|null = null, public label: string|null = null,
+			public model: SiStructureModel|null = null) {		
 	}
 	
 	get visible(): boolean {

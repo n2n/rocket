@@ -27,6 +27,7 @@ import { EntriesListSiContent } from "src/app/si/model/structure/impl/entries-li
 import { BulkyEntrySiContent } from "src/app/si/model/structure/impl/bulky-entry-si-content";
 import { EmbeddedEntryInSiField } from "src/app/si/model/content/impl/embedded-entry-in-si-field";
 import { CompactEntrySiContent } from "src/app/si/model/structure/impl/compact-entry-si-content";
+import { SiEmbeddedEntry } from "src/app/si/model/content/si-embedded-entry";
 
 
 export class SiContentFactory {
@@ -216,13 +217,8 @@ export class SiCompFactory {
 			return qualifierSelectInSiField;
 			
 		case SiFieldType.EMBEDDED_ENTRY_IN: 
-			const contentFactory = new SiContentFactory(this.zone);
 			const embeddedEntryInSiField = new EmbeddedEntryInSiField(this.zone, dataExtr.reqString('apiUrl'),
-					<BulkyEntrySiContent[]> contentFactory.createContents(dataExtr.reqArray('values'), 
-							SiContentType.BULKY_ENTRY));
-			embeddedEntryInSiField.summaryContents = 
-					<CompactEntrySiContent[]> contentFactory.createContents(dataExtr.reqArray('summaryContents'), 
-							SiContentType.COMPACT_ENTRY); 
+					this.createEmbeddedEntries(dataExtr.reqArray('values'))); 
 			embeddedEntryInSiField.min = dataExtr.reqNumber('min');
 			embeddedEntryInSiField.max = dataExtr.nullaNumber('max');
 			return embeddedEntryInSiField;
@@ -230,6 +226,25 @@ export class SiCompFactory {
 		default: 
 			throw new ObjectMissmatchError('Invalid si field type: ' + data.type);
 		}	
+	}
+	
+	private createEmbeddedEntries(data: Array<any>): SiEmbeddedEntry[] {
+		const entries: SiEmbeddedEntry[] = [];
+		for (let entryData of data) {
+			entries.push(this.createEmbeddedEntry(entryData));
+		}
+		return entries;
+	}
+	
+	private createEmbeddedEntry(data: any): SiEmbeddedEntry {
+		const extr = new Extractor(data);
+		const contentFactory = new SiContentFactory(this.zone);
+		
+		return new SiEmbeddedEntry(
+				<BulkyEntrySiContent> contentFactory.createContent(extr.reqObject('content'), 
+						SiContentType.BULKY_ENTRY),
+				<CompactEntrySiContent> contentFactory.createContent(extr.reqObject('summaryContent'), 
+						SiContentType.COMPACT_ENTRY));
 	}
 	
 	private buildSiFile(data: any): SiFile|null {

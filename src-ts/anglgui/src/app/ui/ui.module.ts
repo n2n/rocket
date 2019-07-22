@@ -7,7 +7,6 @@ import { ZoneComponent } from './structure/comp/zone/zone.component';
 import { ListZoneContentComponent } from './content/zone/comp/list-zone-content/list-zone-content.component';
 import { PaginationComponent } from './content/list/comp/pagination/pagination.component';
 import { EntryDirective } from './structure/directive/entry.directive';
-import { FieldDirective } from './structure/directive/field.directive';
 import { StringOutFieldComponent } from './content/field/comp/string-out-field/string-out-field.component';
 import { ControlComponent } from './control/comp/control/control.component';
 import { BulkyEntryComponent } from './content/zone/comp/bulky-entry/bulky-entry.component';
@@ -27,7 +26,7 @@ import { CompactEntryComponent } from './content/zone/comp/compact-entry/compact
 
 @NgModule({
   declarations: [ LayerComponent, ContainerComponent, ZoneComponent, StructureContentDirective, ListZoneContentComponent, 
-    PaginationComponent, EntryDirective, FieldDirective, StringOutFieldComponent, ControlComponent, BulkyEntryComponent, 
+    PaginationComponent, EntryDirective, StringOutFieldComponent, ControlComponent, BulkyEntryComponent, 
     FieldStructureComponent, InputInFieldComponent, TextareaInFieldComponent, StructureComponent, FileInFieldComponent, FileOutFieldComponent, LinkOutFieldComponent, QualifierSelectInFieldComponent, EmbeddedEntryInFieldComponent, CompactEntryComponent ],
   imports: [
     CommonModule,

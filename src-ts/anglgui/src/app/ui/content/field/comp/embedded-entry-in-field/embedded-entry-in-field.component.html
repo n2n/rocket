@@ -1,3 +1,4 @@
-<div *ngFor="let siContent of model.getValues()">
-	{{ siContent.entry.qualifier.name }}
+<div *ngFor="let siEmbeddedEntry of model.getValues()">
+	
+	<rocket-ui-structure [siStructure]="siEmbeddedEntry.structure"></rocket-ui-structure>
 </div>

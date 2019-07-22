@@ -25,10 +25,12 @@ use n2n\util\type\attrs\DataSet;
 
 class SiQualifier extends SiIdentifier implements \JsonSerializable {
 	private $name;
+	private $idName;
 	
-	function __construct(string $category, ?string $id, string $name) {
+	function __construct(string $category, ?string $id, string $name, string $idName = null) {
 		parent::__construct($category, $id);
 		$this->name = $name;
+		$this->idName = $idName;
 	}
 	
 	/**
@@ -51,7 +53,8 @@ class SiQualifier extends SiIdentifier implements \JsonSerializable {
 		return [
 			'category' => $this->getCategory(),
 			'id' => $this->getId(),
-			'name' => $this->name
+			'name' => $this->name,
+			'idName' => $this->idName
 		];
 	}
 
@@ -59,7 +62,8 @@ class SiQualifier extends SiIdentifier implements \JsonSerializable {
 		$ds = new DataSet($data);
 		
 		try {
-			return new SiQualifier($ds->reqString('category'), $ds->optString('id'), $ds->reqString('name'));
+			return new SiQualifier($ds->reqString('category'), $ds->optString('id'), $ds->reqString('name'), 
+					$ds->optString('idName'));
 		} catch (\n2n\util\type\attrs\AttributesException $e) {
 			throw new \InvalidArgumentException(null, null, $e);
 		}

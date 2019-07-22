@@ -12,7 +12,7 @@ class SiStructureType {
 	/**
 	 * @return string[]
 	 */
-	public static function groups() {
+	static function groups() {
 		return array(self::SIMPLE_GROUP, self::MAIN_GROUP, self::AUTONOMIC_GROUP,
 				self::LIGHT_GROUP);
 	}
@@ -20,7 +20,7 @@ class SiStructureType {
 	/**
 	 * @return string[]
 	 */
-	public static function all() {
+	static function all() {
 		return array(self::ITEM, self::SIMPLE_GROUP, self::MAIN_GROUP, self::AUTONOMIC_GROUP,
 				self::LIGHT_GROUP, self::PANEL);
 	}

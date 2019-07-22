@@ -5,12 +5,14 @@ import { ViewContainerRef, ComponentFactoryResolver, ComponentRef } from "@angul
 import { SiFieldError } from "src/app/si/model/input/si-field-error";
 import { SiField } from "src/app/si/model/content/si-field";
 import { SiZoneError } from "src/app/si/model/structure/si-zone-error";
+import { SiCommanderService } from "src/app/si/model/si-commander.service";
 
 export abstract class SiFieldAdapter implements SiField {
 	protected messages: string[] = [];
 	
 	abstract initComponent(viewContainerRef: ViewContainerRef, 
-			componentFactoryResolver: ComponentFactoryResolver): ComponentRef<any>;
+			componentFactoryResolver: ComponentFactoryResolver,
+			commanderService: SiCommanderService): ComponentRef<any>;
     
 	abstract hasInput(): boolean;
 	

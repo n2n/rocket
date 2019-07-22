@@ -13,9 +13,9 @@ import { SiZoneError } from "src/app/si/model/structure/si-zone-error";
 import { SiStructureModel } from "src/app/si/model/structure/si-structure-model";
 import { CompactEntryComponent } from "src/app/ui/content/zone/comp/compact-entry/compact-entry.component";
 import { SiFieldDeclaration } from "src/app/si/model/structure/si-field-declaration";
+import { SiCommanderService } from "src/app/si/model/si-commander.service";
 
 export class CompactEntrySiContent implements SiContent {
-   
     public entry: SiEntry|null = null;
 	public controlMap: Map<string, SiControl> = new Map();
 	
@@ -61,7 +61,8 @@ export class CompactEntrySiContent implements SiContent {
 		return this.compactDeclaration.getFieldDeclarationsByBuildupId(this.entry.selectedBuildupId);
 	}
 		
-	initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver) {
+	initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver,
+			commanderService: SiCommanderService) {
 		const componentFactory = componentFactoryResolver.resolveComponentFactory(CompactEntryComponent);
 
 		const componentRef = viewContainerRef.createComponent(componentFactory);
@@ -69,31 +70,5 @@ export class CompactEntrySiContent implements SiContent {
 	    componentRef.instance.siContent = this;
 	    
 	    return componentRef;
-	}
-}
-
-class FieldSiStructureModel implements SiStructureModel {
-	public children: SiStructure[] = [];
-	
-	constructor(public content: FieldSiStructureContent) {
-	}
-	
-    getContent(): SiStructureContent {
-    	return this.content;
-    }
-    getChildren(): SiStructure[] {
-    	return this.children;
-    }
-    getControls(): SiControl[] {
-        return [];
-    }
-    
-    getZoneErrors(): SiZoneError[] {
-		const field = this.content.field;
-	 	if (field) {
-	 		return field.getZoneErrors()
-	 	}
-		
-		return [];
 	}
 }

@@ -9,6 +9,7 @@ import { SiQualifier } from "src/app/si/model/content/si-qualifier";
 import { QualifierSelectInModel } from "src/app/ui/content/field/qualifier-select-in-model";
 import { QualifierSelectInFieldComponent } from "src/app/ui/content/field/comp/qualifier-select-in-field/qualifier-select-in-field.component";
 import { SiZone } from "src/app/si/model/structure/si-zone";
+import { SiCommanderService } from "src/app/si/model/si-commander.service";
 
 export class QualifierSelectInSiField extends InSiFieldAdapter implements QualifierSelectInModel {
 	
@@ -61,7 +62,8 @@ export class QualifierSelectInSiField extends InSiFieldAdapter implements Qualif
 	}
 	
 	initComponent(viewContainerRef: ViewContainerRef, 
-			componentFactoryResolver: ComponentFactoryResolver): ComponentRef<any> {
+			componentFactoryResolver: ComponentFactoryResolver,
+			commanderService: SiCommanderService): ComponentRef<any> {
 		const componentFactory = componentFactoryResolver.resolveComponentFactory(QualifierSelectInFieldComponent);
 		
 		const componentRef = viewContainerRef.createComponent(componentFactory);

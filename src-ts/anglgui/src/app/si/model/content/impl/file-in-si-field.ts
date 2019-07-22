@@ -5,6 +5,7 @@ import { InputInFieldComponent } from "src/app/ui/content/field/comp/input-in-fi
 import { FileInFieldComponent } from "src/app/ui/content/field/comp/file-in-field/file-in-field.component";
 import { FileInFieldModel } from "src/app/ui/content/field/file-in-field-model";
 import { InSiFieldAdapter } from "src/app/si/model/content/impl/in-si-field-adapter";
+import { SiCommanderService } from "src/app/si/model/si-commander.service";
 
 export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel {
 	private uploadedFile: File|null = null;
@@ -44,7 +45,8 @@ export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel 
     }
     
 	initComponent(viewContainerRef: ViewContainerRef, 
-			componentFactoryResolver: ComponentFactoryResolver): ComponentRef<any> {
+			componentFactoryResolver: ComponentFactoryResolver,
+			commanderService: SiCommanderService): ComponentRef<any> {
 		const componentFactory = componentFactoryResolver.resolveComponentFactory(FileInFieldComponent);
 	    
 	    const componentRef = viewContainerRef.createComponent(componentFactory);

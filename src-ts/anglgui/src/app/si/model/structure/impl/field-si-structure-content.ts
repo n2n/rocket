@@ -10,9 +10,9 @@ import { SiZoneError } from "src/app/si/model/structure/si-zone-error";
 import { SiField } from "src/app/si/model/content/si-field";
 
 export class FieldSiStructureContent implements SiStructureContent {
+    
 
-	constructor(readonly entry: SiEntry,
-			readonly fieldDeclaration: SiFieldDeclaration) {
+	constructor(readonly entry: SiEntry, readonly fieldDeclaration: SiFieldDeclaration) {
 	}
 	
 	initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver): ComponentRef<any> {
@@ -29,5 +29,8 @@ export class FieldSiStructureContent implements SiStructureContent {
 		return this.entry.selectedBuildup.getFieldById(this.fieldDeclaration.fieldId);
 	}
 
+	getZoneErrors(): SiZoneError[] {
+       return [];
+    }
 	
 }

@@ -15,6 +15,10 @@ import { EmbeddedEntryInModel } from "src/app/ui/content/field/embedded-entry-in
 import { SiContent } from "src/app/si/model/structure/si-zone-content";
 import { BulkyEntrySiContent } from "src/app/si/model/structure/impl/bulky-entry-si-content";
 import { CompactEntrySiContent } from "src/app/si/model/structure/impl/compact-entry-si-content";
+import { SiStructure } from "src/app/si/model/structure/si-structure";
+import { SiStructureType } from "src/app/si/model/structure/si-field-structure-declaration";
+import { SiEmbeddedEntry } from "src/app/si/model/content/si-embedded-entry";
+import { SiCommanderService } from "src/app/si/model/si-commander.service";
 
 export class EmbeddedEntryInSiField extends InSiFieldAdapter implements EmbeddedEntryInModel {
 	
@@ -23,8 +27,9 @@ export class EmbeddedEntryInSiField extends InSiFieldAdapter implements Embedded
 	public nonNewRemovable = true;
 	public reduced = false;
 	
-	constructor(public zone: SiZone, public apiUrl: string, public values: BulkyEntrySiContent[] = [],
-			public summaryContents: CompactEntrySiContent[] = []) {
+	private siStructures: SiStructure[] = [];
+	
+	constructor(public zone: SiZone, public apiUrl: string, public values: SiEmbeddedEntry[] = []) {
 		super();
 	}
 	
@@ -40,13 +45,12 @@ export class EmbeddedEntryInSiField extends InSiFieldAdapter implements Embedded
 		return this.apiUrl;
 	}
 	
-	getValues(): BulkyEntrySiContent[] {
+	getValues(): SiEmbeddedEntry[] {
 		return this.values;
 	}
 	
-	setValues(values: BulkyEntrySiContent[]) {
+	setValues(values: SiEmbeddedEntry[]) {
 		this.values = values;
-    	this.validate();
 	}
 	
 	getMax(): number|null {
@@ -61,15 +65,6 @@ export class EmbeddedEntryInSiField extends InSiFieldAdapter implements Embedded
 		return this.nonNewRemovable;
 	}
 	
-	findSummarySiContent(siIdentifier: SiIdentifier): CompactEntrySiContent|null {
-        return this.summaryContents.find((content) => {
-        	return content.entry.identifier.equals(siIdentifier);
-        }) || null;
-    }
-	
-	addSummarySiContent(siContent: CompactEntrySiContent) {
-    	this.summaryContents.push(siContent);
-	}
 	
 	private validate() {
 		this.messages = [];
@@ -84,7 +79,8 @@ export class EmbeddedEntryInSiField extends InSiFieldAdapter implements Embedded
 	}
 	
 	initComponent(viewContainerRef: ViewContainerRef, 
-			componentFactoryResolver: ComponentFactoryResolver): ComponentRef<any> {
+			componentFactoryResolver: ComponentFactoryResolver,
+			commanderService: SiCommanderService): ComponentRef<any> {
 		const componentFactory = componentFactoryResolver.resolveComponentFactory(EmbeddedEntryInFieldComponent);
 		
 		const componentRef = viewContainerRef.createComponent(componentFactory);
