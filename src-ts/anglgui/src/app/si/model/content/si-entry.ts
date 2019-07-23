@@ -24,8 +24,8 @@ export class SiEntry {
 	
 	get qualifier(): SiQualifier {
 		const buildup = this.selectedBuildup;
-		return new SiQualifier(this.identifier.category, this.identifier.id,
-				buildup.name, buildup.iconClass, buildup.idName);
+		return new SiQualifier(this.identifier.category, this.identifier.id, buildup.name, buildup.iconClass, 
+				buildup.idName);
 	}
 	
 	get selectedBuildup(): SiEntryBuildup {
@@ -103,5 +103,14 @@ export class SiEntry {
 	}
 	
 	copy(): SiEntry {
+		const entry = new SiEntry(this.identifier);
+		entry.treeLevel = this.treeLevel;
+		
+		for (const buildup of this._buildups) {
+			entry.putBuildup(buildup.id, buildup.copy());		
+		}
+		
+		entry.selectedBuildupId = this.selectedBuildupId;
+		return entry;
 	}
 }

@@ -54,13 +54,13 @@ export class EmbeddedEntryInFieldComponent implements OnInit {
 		
 		if (this.reduced) {
 			siEmbeddedEntry.content.controls = [ 
-    				new SimpleSiControl(
-    						new SiButton(this.translationService.t('common_save_label'), 'btn btn-success', 'fas fa-save'),
-    						() => { this.apply(siEmbeddedEntry); }); 
-    				new SimpleSiControl(
-    						new SiButton(this.translationService.t('common_save_label'), 'btn btn-success', 'fas fa-trash-restore-alt'),
-    						() => { this.cancel(siEmbeddedEntry); }); 
-			]
+				new SimpleSiControl(
+						new SiButton(this.translationService.t('common_save_label'), 'btn btn-success', 'fas fa-save'),
+						() => { this.apply(siEmbeddedEntry); }), 
+				new SimpleSiControl(
+						new SiButton(this.translationService.t('common_save_label'), 'btn btn-success', 'fas fa-trash-restore-alt'),
+						() => { this.cancel(siEmbeddedEntry); }) 
+			];
 		}
 		
 		embe = new Embe(siEmbeddedEntry, siStructure, summarySiStructure)

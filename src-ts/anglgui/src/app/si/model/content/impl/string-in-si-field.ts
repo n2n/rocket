@@ -51,6 +51,14 @@ export class StringInSiField extends InSiFieldAdapter implements StringInFieldMo
     	}
     }
     
+    copy(): SiField {
+    	const copy = new StringInSiField(this.value, this.multiline);
+    	copy.mandatory = this.mandatory;
+    	copy.minlength = this.minlength;
+    	copy.maxlength = this.maxlength;
+    	return copy;
+    }
+    
 	initComponent(viewContainerRef: ViewContainerRef, 
 			componentFactoryResolver: ComponentFactoryResolver,
 			commanderService: SiCommanderService): ComponentRef<any> {

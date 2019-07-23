@@ -61,6 +61,13 @@ export class QualifierSelectInSiField extends InSiFieldAdapter implements Qualif
 		}
 	}
 	
+	copy() {
+		const copy = new QualifierSelectInSiField(this.zone, this.apiUrl, this.values);
+		copy.min = this.min;
+		copy.max = this.max;
+		return copy;
+	}
+	
 	initComponent(viewContainerRef: ViewContainerRef, 
 			componentFactoryResolver: ComponentFactoryResolver,
 			commanderService: SiCommanderService): ComponentRef<any> {

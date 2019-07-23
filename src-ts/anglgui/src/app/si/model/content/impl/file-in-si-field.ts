@@ -44,6 +44,10 @@ export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel 
         throw new Error("Method not implemented.");
     }
     
+    copy() {
+    	throw new Error("Method not implemented.");
+    }
+    
 	initComponent(viewContainerRef: ViewContainerRef, 
 			componentFactoryResolver: ComponentFactoryResolver,
 			commanderService: SiCommanderService): ComponentRef<any> {
