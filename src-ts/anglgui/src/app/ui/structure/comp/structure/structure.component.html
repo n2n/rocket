@@ -9,9 +9,9 @@
 	</ng-container>
 </div>
 
-<ng-content select="[controls]"></ng-content>
+<ng-content select="[pre-content]"></ng-content>
 
-<div class="rocket-control">
+<div class="rocket-structure-content">
 	<div *ngIf="!loaded" class="rocket-loader"></div>
 	
 	<ng-container *ngIf="loaded">
@@ -36,3 +36,5 @@
 		</div>
 	</ng-container>
 </div>
+
+<ng-content select="[post-content]"></ng-content>

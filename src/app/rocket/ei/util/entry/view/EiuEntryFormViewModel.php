@@ -242,7 +242,7 @@ class EiuEntryFormViewModel {
 		
 		$eiuEntryGui->gui()->renderEntryGuiControls(false);
 		
-		$htmlSnippet->appendLn(new HtmlElement('div', ['class' => 'rocket-control'], $eiuEntryGui->createView($contextView)));
+		$htmlSnippet->appendLn(new HtmlElement('div', ['class' => 'rocket-structure-content'], $eiuEntryGui->createView($contextView)));
 	}
 // 	private function buildTypeHtmlClasses(EiType $eiType, array $htmlClasses) {
 // 		$htmlClasses[] = 'rocket-script-type-' . $eiType->getId();

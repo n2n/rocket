@@ -52,7 +52,7 @@
 			<?php $fieldEiHtml->label(
 					array('title' => $n2nLocale->getName($request->getN2nLocale()), 'class' => 'rocket-impl-locale-label'), 
 					$n2nLocale->toPrettyId()) ?>
-			<div class="rocket-control">
+			<div class="rocket-structure-content">
 				<?php $fieldEiHtml->field() ?>
 				<?php $fieldEiHtml->message() ?>
 			</div>

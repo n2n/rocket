@@ -41,40 +41,40 @@
 <?php $formHtml->open($userGroupForm, null, 'post', array('class' => 'rocket-edit-form'))?>
 	<?php $formHtml->messageList(null, array('class' => 'alert alert-danger list-unstyled')) ?>
 	<div class="rocket-group">
-		<div class="rocket-control">
+		<div class="rocket-structure-content">
 			<div class="rocket-item">
 				<?php $formHtml->label('rocketUser.nick') ?>
-				<div class="rocket-control">
+				<div class="rocket-structure-content">
 					<?php $formHtml->input('rocketUser.nick', array('maxlength' => 128, 'class' => 'form-control')) ?>
 				</div>
 			</div>
 			<div class="rocket-item">
 				<?php $formHtml->label('rawPassword') ?>
-				<div class="rocket-control">
+				<div class="rocket-structure-content">
 					<?php $formHtml->input('rawPassword', array('class' => 'form-control'), 'password', true) ?>
 				</div>
 			</div>
 			<div class="rocket-item">
 				<?php $formHtml->label('rawPassword2') ?>
-				<div class="rocket-control">
+				<div class="rocket-structure-content">
 					<?php $formHtml->input('rawPassword2', array('class' => 'form-control'), 'password', true) ?>
 				</div>
 			</div>
 			<div class="rocket-item">
 				<?php $formHtml->label('rocketUser.firstname') ?>
-				<div class="rocket-control">
+				<div class="rocket-structure-content">
 					<?php $formHtml->input('rocketUser.firstname', array('maxlength' => 32, 'class' => 'form-control')) ?>
 				</div>
 			</div>
 			<div class="rocket-item">
 				<?php $formHtml->label('rocketUser.lastname') ?>
-				<div class="rocket-control">
+				<div class="rocket-structure-content">
 					<?php $formHtml->input('rocketUser.lastname', array('maxlength' => 32, 'class' => 'form-control')) ?>
 				</div>
 			</div>
 			<div class="rocket-item">
 				<?php $formHtml->label('rocketUser.email') ?>
-				<div class="rocket-control">
+				<div class="rocket-structure-content">
 					<?php $formHtml->input('rocketUser.email', array('maxlength' => 128, 'class' => 'form-control'), 'email') ?>
 				</div>
 			</div>
@@ -82,7 +82,7 @@
 			<?php if (null !== ($powerOptions = $userGroupForm->getPowerOptions())): ?>
 				<div class="rocket-item">
 					<?php $formHtml->label('power') ?>
-					<div class="rocket-control">
+					<div class="rocket-structure-content">
 						<?php $formHtml->select('power', $powerOptions) ?>
 					</div>
 				</div>
@@ -90,7 +90,7 @@
 			
 			<div class="rocket-item">
 				<?php $formHtml->label('rocketUserGroupIds') ?>
-				<div class="rocket-control">
+				<div class="rocket-structure-content">
 					<?php $availableRocketUserGroups = $userGroupForm->getAvailableRocketUserGroups() ?>
 					<ul>
 						<?php if ($availableRocketUserGroups === null): ?>

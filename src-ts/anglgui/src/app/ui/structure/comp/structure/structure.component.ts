@@ -14,13 +14,11 @@ export class StructureComponent implements OnInit {
 
 	@Input()
 	root = false;
-	
+	@Input()
 	siControlsVisible = true;
 	
 	private _siStructure: SiStructure;
-	
-	@ViewChild('contentProjection', { static: true }) contentProjection: ElementRef;
-	
+		
 	@ViewChild(StructureContentDirective, { static: true }) 
 	structureContentDirective: StructureContentDirective;
 	
@@ -35,6 +33,7 @@ export class StructureComponent implements OnInit {
 //		const componentRef = this.zoneContentDirective.viewContainerRef.createComponent(componentFactory);
 
 //		(<ZoneComponent> componentRef.instance).data = {};
+		
 	}
 	
 	@Input()

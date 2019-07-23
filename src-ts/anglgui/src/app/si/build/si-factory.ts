@@ -219,7 +219,8 @@ export class SiCompFactory {
 			
 		case SiFieldType.EMBEDDED_ENTRY_IN: 
 			const embeddedEntryInSiField = new EmbeddedEntryInSiField(this.zone, dataExtr.reqString('apiUrl'),
-					this.createEmbeddedEntries(dataExtr.reqArray('values'))); 
+					this.createEmbeddedEntries(dataExtr.reqArray('values')));
+			embeddedEntryInSiField.reduced = dataExtr.reqBoolean('reduced');
 			embeddedEntryInSiField.min = dataExtr.reqNumber('min');
 			embeddedEntryInSiField.max = dataExtr.nullaNumber('max');
 			return embeddedEntryInSiField;

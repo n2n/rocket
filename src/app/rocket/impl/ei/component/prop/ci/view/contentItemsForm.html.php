@@ -51,7 +51,7 @@
 						'style' => ($gridPos === null ? null : 'grid-column-start: ' . $gridPos->getColStart() . '; grid-column-end: ' . $gridPos->getColEnd() 
 								. '; grid-row-start: ' . $gridPos->getRowStart() . '; grid-row-end: ' . $gridPos->getRowEnd()))) ?>
 			<?php $formHtml->magLabel() ?>
-			<div class="rocket-control">
+			<div class="rocket-structure-content">
 				<?php $formHtml->magField() ?>
 			</div>
 		<?php $formHtml->magClose() ?>

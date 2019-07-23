@@ -49,7 +49,7 @@ use n2n\web\http\nav\Murl;
 			<div class="rocket-toolbar">
 				<?php $formHtml->optionalObjectCheckbox(null, ['class' => 'rocket-privilege-enabler'])  ?>
 			</div>
-			<div class="rocket-control">
+			<div class="rocket-structure-content">
 				<?php if (null !== ($mappingResult = $formHtml->meta()->getMapValue('eiuPrivilegeForm'))): ?>
 					<?php $html->out($mappingResult->getObject()
 							->setContextPropertyPath($formHtml->meta()->propPath('eiuPrivilegeForm'))) ?>
@@ -57,7 +57,7 @@ use n2n\web\http\nav\Murl;
 				
 				<?php if ($eiGrantForm->areRestrictionsAvailable()): ?>
 					<div class="rocket-panel">
-						<div class="rocket-control">
+						<div class="rocket-structure-content">
 							<?php $formHtml->optionalObjectCheckbox('restrictionEiuFilterForm', 
 									['class' => 'rocket-restrictions-enabler'], 
 									$html->getL10nText('user_access_restricted_label')) ?>
@@ -66,7 +66,7 @@ use n2n\web\http\nav\Murl;
 				
 					<div class="rocket-group rocket-simple-group rocket-restrictions">	
 						<label><?php $html->l10nText('user_group_access_restrictions_label')?></label>
-						<div class="rocket-control">
+						<div class="rocket-structure-content">
 							<?php $html->out($formHtml->meta()->getMapValue('restrictionEiuFilterForm')->getObject()
 									->setContextPropertyPath($formHtml->meta()->propPath('restrictionEiuFilterForm')))?>
 						</div>

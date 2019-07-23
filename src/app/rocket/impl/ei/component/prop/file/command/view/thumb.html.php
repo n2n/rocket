@@ -47,7 +47,7 @@
 
 <div class="rocket-group rocket-simple-group">
 	<label><?php $html->out($imageFile->getFile()->getOriginalName()) ?></label>
-	<div class="rocket-image-resizer-container rocket-control">
+	<div class="rocket-image-resizer-container rocket-structure-content">
 		<?php $formHtml->open($thumbModel, null, null, array('class' => 'rocket-form')) ?>
 			
 			<?php $formHtml->input('x', array('id' => 'rocket-thumb-pos-x')) ?>

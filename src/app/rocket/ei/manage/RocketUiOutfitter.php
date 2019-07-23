@@ -45,7 +45,7 @@ class RocketUiOutfitter implements UiOutfitter {
 		}
 
 		if ($nature & self::NATURE_CONTROL_WRAPPER) {
-			$attrs = HtmlUtils::mergeAttrs(array('class' => 'rocket-control'), $attrs);
+			$attrs = HtmlUtils::mergeAttrs(array('class' => 'rocket-structure-content'), $attrs);
 		}
 		
 		if ($nature & self::NATURE_CONTROL_GROUP) {
@@ -102,11 +102,11 @@ class RocketUiOutfitter implements UiOutfitter {
 
 
 		if ($elemNature & self::EL_NATURE_ARRAY_ITEM_CONTROL) {
-			$summary = new HtmlElement('div', array('class' => 'rocket-impl-summary'), '');
+			$summary = new HtmlElement('div', array('class' => 'rocket-summary'), '');
 
 			$container = new HtmlElement('div', HtmlUtils::mergeAttrs($attrs, $this->createAttrs(UiOutfitter::NATURE_MASSIVE_ARRAY_ITEM_STRUCTURE)), $summary);
 
-			$summary->appendLn(new HtmlElement('div', array('class' => 'rocket-impl-handle'), ''));
+			$summary->appendLn(new HtmlElement('div', array('class' => 'rocket-handle'), ''));
 			$summary->appendLn(new HtmlElement('div', array('class' => 'rocket-impl-content'), $contents));
 			$summary->appendLn(new HtmlElement('div',
 				array('class' => 'rocket-simple-commands ' . MagCollection::CONTROL_WRAPPER_CLASS),

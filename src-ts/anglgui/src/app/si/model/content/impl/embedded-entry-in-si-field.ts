@@ -21,13 +21,12 @@ import { SiEmbeddedEntry } from "src/app/si/model/content/si-embedded-entry";
 import { SiCommanderService } from "src/app/si/model/si-commander.service";
 
 export class EmbeddedEntryInSiField extends InSiFieldAdapter implements EmbeddedEntryInModel {
-	
 	public min = 0;
 	public max: number|null = null;
 	public nonNewRemovable = true;
 	public reduced = false;
 	
-	private siStructures: SiStructure[] = [];
+	private structures: SiStructure[] = [];
 	
 	constructor(public zone: SiZone, public apiUrl: string, public values: SiEmbeddedEntry[] = []) {
 		super();
@@ -51,6 +50,17 @@ export class EmbeddedEntryInSiField extends InSiFieldAdapter implements Embedded
 	
 	setValues(values: SiEmbeddedEntry[]) {
 		this.values = values;
+	}
+	
+	registerSiStructure(siStructure: SiStructure) {
+		this.structures.push(siStructure);
+	}
+	
+	unregisterSiStructure(siStructure: SiStructure) {
+		const i = this.structures.indexOf(siStructure);
+		if (i > -1) {
+			this.structures.splice(i, 1);
+		}
 	}
 	
 	getMax(): number|null {

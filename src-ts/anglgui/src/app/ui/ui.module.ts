@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { DragDropModule  } from '@angular/cdk/drag-drop';
 import { LayerComponent } from './structure/comp/layer/layer.component';
 import { ContainerComponent } from './structure/comp/container/container.component';
 import { ZoneComponent } from './structure/comp/zone/zone.component';
@@ -35,7 +36,8 @@ import { QualifierComponent } from './content/entry/comp/qualifier/qualifier.com
     CommonModule,
     FormsModule,
     UtilModule,
-    RouterModule
+    RouterModule,
+    DragDropModule 
   ],
   exports: [
     ContainerComponent,

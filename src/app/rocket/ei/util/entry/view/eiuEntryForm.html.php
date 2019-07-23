@@ -58,7 +58,7 @@
 		<?php $eiuHtml->displayItemOpen('div', $eiuEntryFormViewModel->getDisplayContainerType(), 
 				$eiuEntryFormViewModel->getDisplayContainerAttrs()) ?>
 			<label><?php $html->out($eiuEntryFormViewModel->getDisplayContainerLabel()) ?></label>
-			<div class="rocket-control">
+			<div class="rocket-structure-content">
 	<?php endif ?>
 
 	<div class="rocket-entry-form rocket-multi-ei-type">

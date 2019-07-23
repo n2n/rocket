@@ -48,7 +48,7 @@ use rocket\ei\manage\RocketUiOutfitter;
 	<label><?php $html->l10nText('user_command_privileges_label')?></label>
 	
 		
-	<div class="rocket-control rocket-command-privileges">
+	<div class="rocket-structure-content rocket-command-privileges">
 		<?php $eiuPrivilegeHtml->privilegeCheckboxes($basePropertyPath->ext('eiCommandPathStrs[]'), 
 				$eiuPrivilegeForm->getPrivilegeDefinition()) ?>
 	</div>
@@ -56,11 +56,11 @@ use rocket\ei\manage\RocketUiOutfitter;
 
 <div class="rocket-group rocket-simple-group">
 	<label><?php $html->l10nText('user_prop_privileges_label')?></label>
-	<div class="rocket-control">
+	<div class="rocket-structure-content">
 		<?php $formHtml->meta()->objectProps($basePropertyPath->ext('eiPropMagForm'), function() use ($formHtml, $ruio) { ?>
 			<?php $formHtml->magOpen('div', null, array('class' => 'rocket-item'), $ruio) ?>
 				<?php $formHtml->magLabel() ?>
-				<div class="rocket-control">
+				<div class="rocket-structure-content">
 					<?php $formHtml->magField() ?>
 				</div>
 			<?php $formHtml->magClose() ?>

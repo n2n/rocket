@@ -6,8 +6,11 @@ import { BulkyEntrySiContent } from "src/app/si/model/structure/impl/bulky-entry
 import { SiContent } from "src/app/si/model/structure/si-zone-content";
 import { SiStructure } from "src/app/si/model/structure/si-structure";
 import { SiEmbeddedEntry } from "src/app/si/model/content/si-embedded-entry";
+import { SiZone } from "src/app/si/model/structure/si-zone";
 
 export interface EmbeddedEntryInModel {
+	
+	getSiZone(): SiZone;
 	
 	isNonNewRemovable(): boolean;
 	
@@ -18,4 +21,8 @@ export interface EmbeddedEntryInModel {
 	getValues(): SiEmbeddedEntry[];
 	
 	setValues(values: SiEmbeddedEntry[]);
+	
+	registerSiStructure(siStructure: SiStructure);
+	
+	unregisterSiStructure(siStructure: SiStructure);
 }

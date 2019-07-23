@@ -17,7 +17,6 @@ export class SiZone {
 	
 		
 	dispose() {
-		this.structure.model = null
 		this.disposeSubject.next();
 		this.disposeSubject.complete();
 	}

@@ -42,7 +42,7 @@
 				. '; grid-row-end: ' . $gridPos->getRowEnd() . '"') ?>>
 				
 			<label><?php $html->out($panelConfig->getLabel()) ?></label>
-			<div class="rocket-control">
+			<div class="rocket-structure-content">
 				<?php if (!isset($groupedEiuEntries[$panelConfig->getName()])): ?>
 					<?php $html->text('common_empty_label') ?>
 				<?php else: ?>

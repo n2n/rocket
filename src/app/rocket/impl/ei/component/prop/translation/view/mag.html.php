@@ -71,7 +71,7 @@
 							title="<?php $html->out($n2nLocale->getName($request->getN2nLocale())) ?>">
 						<?php $html->out($n2nLocale->toPrettyId()) ?>
 					</label>
-					<div class="rocket-control">
+					<div class="rocket-structure-content">
 						<?php $formHtml->input($propertyPath->fieldExt($n2nLocaleId), array('class' => 'rocket-impl-unloaded'), 
 								'hidden', false, '1') ?>
 					</div>
@@ -80,7 +80,7 @@
 				<?php $fieldEiHtml->openInputField('div', $tPropertyPath, $validationResults[$n2nLocaleId]) ?>
 					<?php $fieldEiHtml->label(array('title' => $n2nLocale->getName($request->getN2nLocale()), 
 							'class' => 'rocket-impl-locale-label'), $n2nLocale->toPrettyId()) ?>
-					<div class="rocket-control">
+					<div class="rocket-structure-content">
 						<?php $fieldEiHtml->field() ?>
 						<?php $fieldEiHtml->message() ?>
 					</div>

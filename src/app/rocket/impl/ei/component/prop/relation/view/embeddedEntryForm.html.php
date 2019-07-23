@@ -27,8 +27,8 @@ use rocket\ei\mask\model\DisplayItem;
 	
 	<?php if (!$mappingForm->isAccessible()): ?>
 		<?php if ($summaryRequired): ?>
-			<div class="rocket-impl-summary">
-				<div class="rocket-impl-handle"><i class="fa fa-bars"></i></div>
+			<div class="rocket-summary">
+				<div class="rocket-handle"><i class="fa fa-bars"></i></div>
 				<div class="rocket-impl-content-type">
 					<?php $html->out($mappingForm->getEntryLabel()) ?>
 				</div>
@@ -39,7 +39,7 @@ use rocket\ei\mask\model\DisplayItem;
 		
 		<div class="rocket-impl-body rocket-group rocket-light-group">
 			<label><?php $html->out($mappingForm->getEntryLabel()) ?></label>
-			<div class="rocket-control">
+			<div class="rocket-structure-content">
 				<?php $html->text('ei_impl_not_accessible') ?>
 			</div>
 		</div>
@@ -47,8 +47,8 @@ use rocket\ei\mask\model\DisplayItem;
 		<?php if ($summaryRequired): ?>
 			<?php if (!$eiuEntry->isNew()): ?>
 				<?php $eiuEntryGui = $eiuEntry->newEntryGui(false) ?>
-				<?php $eiuHtml->entryOpen('div', $eiuEntryGui, null, array('class' => 'rocket-impl-summary')) ?>
-					<div class="rocket-impl-handle"><i class="fa fa-bars"></i></div>
+				<?php $eiuHtml->entryOpen('div', $eiuEntryGui, null, array('class' => 'rocket-summary')) ?>
+					<div class="rocket-handle"><i class="fa fa-bars"></i></div>
 					<div class="rocket-impl-content-type">
 						<i class="<?php $html->out($eiuEntry->getGenericIconType()) ?>"></i>
 						<span><?php $html->out($eiuEntry->getGenericLabel()) ?></span>
@@ -63,8 +63,8 @@ use rocket\ei\mask\model\DisplayItem;
 					<div class="rocket-simple-commands"></div>
 				<?php $eiuHtml->entryClose() ?>
 			<?php else: ?>
-				<div class="rocket-impl-summary">
-					<div class="rocket-impl-handle"><i class="fa fa-bars"></i></div>
+				<div class="rocket-summary">
+					<div class="rocket-handle"><i class="fa fa-bars"></i></div>
 					<div class="rocket-impl-content-type">
 						<i class="<?php $html->out($eiuEntry->getGenericIconType()) ?>"></i>
 						<span><?php $html->out($eiuEntry->getGenericLabel()) ?></span>
