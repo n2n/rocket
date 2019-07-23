@@ -16,7 +16,7 @@ import { SiStructureModel } from "src/app/si/model/structure/si-structure-model"
 export class BulkyEntrySiContent implements SiContent {
    
     public entry: SiEntry|null = null;
-	public controlMap: Map<string, SiControl> = new Map();
+	public controls: Array<SiControl> = [];
 	
 	constructor(public bulkyDeclaration: SiBulkyDeclaration,
 			public zone: SiZone) {
@@ -62,7 +62,7 @@ export class BulkyEntrySiContent implements SiContent {
     
     getControls(): SiControl[] {
     	const controls: SiControl[] = [];
-		controls.push(...this.controlMap.values());
+		controls.push(...this.controls);
 		controls.push(...this.entry.selectedBuildup.controlMap.values());
 		return controls;
     }

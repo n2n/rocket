@@ -5,6 +5,9 @@ import { PopupSiLayer } from "src/app/si/model/structure/si-layer";
 import { SiStructure } from "src/app/si/model/structure/si-structure";
 import { SiEntry } from "src/app/si/model/content/si-entry";
 import { CdkDragDrop } from "@angular/cdk/drag-drop";
+import { TranslationService } from "src/app/util/i18n/translation.service";
+import { SiButton } from "src/app/si/model/control/si-button";
+import { SimpleSiControl } from "src/app/si/model/control/impl/simple-si-control";
 
 @Component({
   selector: 'rocket-embedded-entry-in-field',
@@ -19,7 +22,7 @@ export class EmbeddedEntryInFieldComponent implements OnInit {
 
 	private embes: Embe[] = []
 
-	constructor() {}
+	constructor(private translationService: TranslationService) {}
 
 	ngOnInit() {
 	}
@@ -48,6 +51,18 @@ export class EmbeddedEntryInFieldComponent implements OnInit {
 		
 		const siStructure = new SiStructure(null, null, siEmbeddedEntry.content);
 		const summarySiStructure = (this.reduced ? new SiStructure(null, null, siEmbeddedEntry.summaryContent) : null);
+		
+		if (this.reduced) {
+			siEmbeddedEntry.content.controls = [ 
+    				new SimpleSiControl(
+    						new SiButton(this.translationService.t('common_save_label'), 'btn btn-success', 'fas fa-save'),
+    						() => { this.apply(siEmbeddedEntry); }); 
+    				new SimpleSiControl(
+    						new SiButton(this.translationService.t('common_save_label'), 'btn btn-success', 'fas fa-trash-restore-alt'),
+    						() => { this.cancel(siEmbeddedEntry); }); 
+			]
+		}
+		
 		embe = new Embe(siEmbeddedEntry, siStructure, summarySiStructure)
 		this.model.registerSiStructure(siStructure);
 		this.model.registerSiStructure(summarySiStructure);
@@ -75,6 +90,15 @@ export class EmbeddedEntryInFieldComponent implements OnInit {
 		this.popupSiLayer.pushZone(null).structure = embe.siStructure;
 	}
 	
+	apply(siEmbeddedEntry: SiEmbeddedEntry) {
+		if (this.popupSiLayer) {
+			this.popupSiLayer.dispose();
+		}
+	}
+	
+	cancel(siEmbeddedEntry: SiEmbeddedEntry) {
+		
+	}
 }
 
 

@@ -18,4 +18,6 @@ export abstract class InSiFieldAdapter extends SiFieldAdapter {
 	}
 	
 	abstract readInput(): object;
+	
+	abstract copy(): SiField;
 }

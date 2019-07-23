@@ -78,7 +78,7 @@ export class SiContentFactory {
 				const bulkyEntrySiContent = new BulkyEntrySiContent(bulkyDeclaration, this.zone);
 				
 				compFactory = new SiCompFactory(this.zone, bulkyEntrySiContent);
-				bulkyEntrySiContent.controlMap = compFactory.createControlMap(dataExtr.reqMap('controls'));
+				bulkyEntrySiContent.controls = Array.from(compFactory.createControlMap(dataExtr.reqMap('controls')).values());
 				bulkyEntrySiContent.entry = compFactory.createEntry(dataExtr.reqObject('entry'));
 				return bulkyEntrySiContent;
 				

@@ -23,8 +23,8 @@ export class BulkyEntryComponent implements OnInit {
 		return this.siContent.entry;
 	}
 	
-	get siControlMap(): Map<string, SiControl> {
-		return this.siContent.controlMap;
+	get siControlMap(): SiControl[] {
+		return this.siContent.controls;
 	}
 
 }

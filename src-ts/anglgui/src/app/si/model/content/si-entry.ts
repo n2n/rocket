@@ -38,6 +38,14 @@ export class SiEntry {
 		return this._selectedBuildupId;
 	}
 	
+	set selectedBuildupId(id: string) {
+		if (!this._buildups.has(id)) {
+			throw new IllegalSiStateError('Buildup id does not exist on entry: ' + id);
+		}
+		
+		this._selectedBuildupId = id;
+	}
+	
 	putBuildup(id: string, buildup: SiEntryBuildup) {
 		this._buildups.set(id, buildup);
 		if (!this._selectedBuildupId) {
@@ -94,4 +102,6 @@ export class SiEntry {
 		return this.qualifier.category + '#' + this.qualifier.id;
 	}
 	
+	copy(): SiEntry {
+	}
 }

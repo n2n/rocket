@@ -12,4 +12,6 @@ export interface SiField extends SiStructureContent {
 	handleError(error: SiFieldError): void;
 	
 	resetError(): void;
+	
+	copy(): SiField;
 }

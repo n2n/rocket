@@ -26,10 +26,12 @@ export class EmbeddedEntryInSiField extends InSiFieldAdapter implements Embedded
 	public nonNewRemovable = true;
 	public reduced = false;
 	
+	private savedValues: SiEmbeddedEntry[];
 	private structures: SiStructure[] = [];
 	
 	constructor(public zone: SiZone, public apiUrl: string, public values: SiEmbeddedEntry[] = []) {
 		super();
+		this.savedValues = values;
 	}
 	
 	readInput(): object {
@@ -50,6 +52,14 @@ export class EmbeddedEntryInSiField extends InSiFieldAdapter implements Embedded
 	
 	setValues(values: SiEmbeddedEntry[]) {
 		this.values = values;
+	}
+	
+	save() {
+    	this.savedValues = this.values;
+	}
+	
+	reset() {
+		this.values = this.savedValues;
 	}
 	
 	registerSiStructure(siStructure: SiStructure) {

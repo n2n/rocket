@@ -1,8 +1,5 @@
 <div *ngIf="reduced" cdkDropList (cdkDropListDropped)="drop($event)" class="rocket-draggable-list">
 	<div *ngFor="let embe of visibleEmbes" cdkDrag class="rocket-draggable">
-
-
-
 		<rocket-ui-structure *ngIf="reduced" class="rocket-summary" 
 					[siStructure]="embe.summarySiStructure"
 					[siControlsVisible]="false">
@@ -30,5 +27,7 @@
 </div>
 
 <div *ngIf="!reduced">
-	<rocket-ui-structure  [siStructure]="embe.siStructure"></rocket-ui-structure>
+	<div *ngFor="let embe of visibleEmbes">
+		<rocket-ui-structure  [siStructure]="embe.siStructure"></rocket-ui-structure>
+	</div>
 </div>
