@@ -6,27 +6,34 @@ import { SiGetResponse } from "src/app/si/model/api/si-get-response";
 import { SiGetResult } from "src/app/si/model/api/si-get-result";
 import { SiResultFactory } from "src/app/si/build/si-result-factory";
 import { SiCompFactory } from "src/app/si/build/si-factory";
+import { SiGetRequest } from "src/app/si/model/api/si-get-request";
 
 export class SiApiFactory {
 	private compFactory: SiCompFactory;
 	
-	constructor(public zone: SiZone, public zoneContent: SiContent) {
-		this.compFactory = new SiCompFactory(zone, zoneContent);
+	constructor(public zone: SiZone) {
+		
 	}
 	
-	createGetResponse(data: any): SiGetResponse {
+	createGetResponse(data: any, request: SiGetRequest): SiGetResponse {
 		const extr = new Extractor(data);
 	
 		const response = new SiGetResponse();
 		
-		for (const resultData of extr.reqArray('results')) {
-			response.results.push(this.createGetResult(resultData));
+		const resultsData = extr.reqArray('results')
+		for (const key in request.instructions) {
+			if (!resultsData[key]) {
+				throw new Error('No result for key: ' + key);
+			}
+			
+			response.results[key] = this.createGetResult(resultsData[key], request.instructions[key].zoneContent);
 		}
 		
 		return response;
 	}
 	
-	private createGetResult(data: any): SiGetResult {
+	private createGetResult(data: any, zoneContent: SiContent): SiGetResult {
+		const compFactory = new SiCompFactory(this.zone, zoneContent);
 		const extr = new Extractor(data);
 		
 		const result: SiGetResult = {
@@ -47,11 +54,11 @@ export class SiApiFactory {
 		}
 		
 		if (null !== (propData = extr.nullaObject('entry'))) {
-			result.entry = this.compFactory.createEntry(propData);
+			result.entry = compFactory.createEntry(propData);
 		}
 		
 		if (null !== (propData = extr.nullaObject('partialContent'))) {
-			result.partialContent = this.compFactory.createPartialContent(propData);
+			result.partialContent = compFactory.createPartialContent(propData);
 		}
 		
 		return result;

@@ -5698,7 +5698,7 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   border: 1px solid #DAD7D3;
 }
 
-.rocket-impl-add-entry {
+.rocket-add-paste {
   margin: 0.5rem 0;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -5708,16 +5708,16 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
           justify-content: space-between;
 }
 
-.rocket-impl-add-entry > div {
+.rocket-add-paste > div {
   width: 100%;
   margin: 0;
 }
 
-.rocket-impl-add-entry > .rocket-impl-paste {
+.rocket-add-paste > .rocket-impl-paste {
   margin-left: 1rem;
 }
 
-.rocket-impl-add-entry > button {
+.rocket-add-paste > button {
   text-align: left;
   font-weight: bold;
   font-size: 1rem;
@@ -5727,7 +5727,7 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   position: relative;
 }
 
-.rocket-impl-add-entry > button::after {
+.rocket-add-paste > button::after {
   font-family: fontawesome;
   content: '\f067';
   position: absolute;

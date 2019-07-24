@@ -89,7 +89,7 @@ class RocketUiOutfitter implements UiOutfitter {
 		}
 
 		if ($elemNature & self::EL_NATURE_CONTROL_ADD) {
-			return new HtmlElement('div', array('class' => 'rocket-impl-add-entry'),
+			return new HtmlElement('div', array('class' => 'rocket-add-paste'),
 					new HtmlElement('button', HtmlUtils::mergeAttrs(
 					$this->createAttrs(UiOutfitter::NATURE_BTN_SECONDARY + UiOutfitter::NATURE_BTN_FULL_WIDTH), $attrs), $contents));
 		}
