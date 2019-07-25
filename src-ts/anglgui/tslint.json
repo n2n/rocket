@@ -85,7 +85,8 @@
     "template-no-negated-async": true,
     "use-lifecycle-interface": true,
 	"use-pipe-transform-interface": true,
-	"indent": [true, "tabs", 4]
+	"indent": [true, "tabs", 4],
+	"align": [true, "statements"]
   },
   "rulesDirectory": [
     "codelyzer"

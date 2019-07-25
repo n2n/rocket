@@ -27,9 +27,9 @@
 		
 		<ul *ngIf="pastablesVisible" class="rocket-multi-type-menu">
 			<li *ngFor="let siQualifier of pastables">
-				<button *ngIf="isAllowed(siQualifier); else #disabledPaste" type="button" (click)="paste(siQualifier)"
+				<button *ngIf="isAllowed(siQualifier); else disabledPaste" type="button" (click)="paste(siQualifier)"
 						[disabled]="loading">
-					<span *ngIf="isLoading(siQualifier)" class="spinner-grow spinner-grow-sm" role="status" 
+					<span *ngIf="isPasteLoading(siQualifier)" class="spinner-grow spinner-grow-sm" role="status" 
 							aria-hidden="true">[@tomekk: mach da einen loader]</span>
 						
 					<rocket-ui-qualifier siQualifier="siQualifier"></rocket-ui-qualifier>

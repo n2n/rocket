@@ -24,13 +24,15 @@ namespace rocket\si\content;
 use n2n\util\type\attrs\DataSet;
 
 class SiQualifier extends SiIdentifier implements \JsonSerializable {
-	private $name;
+    private $typeId;
+	private $typeName;
 	private $iconClass;
 	private $idName;
 	
-	function __construct(string $category, ?string $id, string $name, string $iconClass, string $idName = null) {
+	function __construct(string $category, ?string $id, string $typeId, string $typeName, string $iconClass, string $idName = null) {
 		parent::__construct($category, $id);
-		$this->name = $name;
+		$this->typeId = $typeId;
+		$this->typeName = $typeName;
 		$this->iconClass = $iconClass;
 		$this->idName = $idName;
 	}
@@ -39,7 +41,7 @@ class SiQualifier extends SiIdentifier implements \JsonSerializable {
 	 * @return string
 	 */
 	function getName() {
-		return $this->name;
+		return $this->typeName;
 	}
 	
 	/**
@@ -47,7 +49,7 @@ class SiQualifier extends SiIdentifier implements \JsonSerializable {
 	 * @return SiQualifier
 	 */
 	function setName(string $name) {
-		$this->name = $name;
+		$this->typeName = $name;
 		return $this;
 	}
 	
@@ -55,7 +57,8 @@ class SiQualifier extends SiIdentifier implements \JsonSerializable {
 		return [
 			'category' => $this->getCategory(),
 			'id' => $this->getId(),
-			'name' => $this->name,
+		    'typeId' => $this->typeId,
+			'typeName' => $this->typeName,
 			'iconClass' => $this->iconClass,
 			'idName' => $this->idName
 		];

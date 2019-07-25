@@ -1,15 +1,15 @@
 
-import { SiField } from "src/app/si/model/content/si-field";
-import { ComponentRef, ComponentFactoryResolver, ViewContainerRef } from "@angular/core";
-import { StringOutFieldComponent } from "src/app/ui/content/field/comp/string-out-field/string-out-field.component";
-import { InputInFieldComponent } from "src/app/ui/content/field/comp/input-in-field/input-in-field.component";
-import { StringInFieldModel } from "src/app/ui/content/field/string-in-field-model";
-import { InSiFieldAdapter } from "src/app/si/model/content/impl/in-si-field-adapter";
-import { SiQualifier } from "src/app/si/model/content/si-qualifier";
-import { QualifierSelectInModel } from "src/app/ui/content/field/qualifier-select-in-model";
-import { QualifierSelectInFieldComponent } from "src/app/ui/content/field/comp/qualifier-select-in-field/qualifier-select-in-field.component";
-import { SiZone } from "src/app/si/model/structure/si-zone";
-import { SiCommanderService } from "src/app/si/model/si-commander.service";
+import { SiField } from 'src/app/si/model/content/si-field';
+import { ComponentRef, ComponentFactoryResolver, ViewContainerRef } from '@angular/core';
+import { StringOutFieldComponent } from 'src/app/ui/content/field/comp/string-out-field/string-out-field.component';
+import { InputInFieldComponent } from 'src/app/ui/content/field/comp/input-in-field/input-in-field.component';
+import { StringInFieldModel } from 'src/app/ui/content/field/string-in-field-model';
+import { InSiFieldAdapter } from 'src/app/si/model/content/impl/in-si-field-adapter';
+import { SiQualifier } from 'src/app/si/model/content/si-qualifier';
+import { QualifierSelectInModel } from 'src/app/ui/content/field/qualifier-select-in-model';
+import { QualifierSelectInFieldComponent } from 'src/app/ui/content/field/comp/qualifier-select-in-field/qualifier-select-in-field.component';
+import { SiZone } from 'src/app/si/model/structure/si-zone';
+import { SiCommanderService } from 'src/app/si/model/si-commander.service';
 
 export class QualifierSelectInSiField extends InSiFieldAdapter implements QualifierSelectInModel {
 	
