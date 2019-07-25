@@ -1,8 +1,45 @@
 <div class="rocket-add-paste">
 	<div>
-		<button type="button" class="btn btn-block btn-secondary">{{ 'common_add_label' | translate }}</button>
+		<button type="button" class="btn btn-block btn-secondary" [disabled]="loading"
+				(click)="add()" (mouseenter)="preloadAdd()">
+			<span *ngIf="isAddLoading()" class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true">
+				[@tomekk: mach da einen loader]
+			</span>	
+			
+			{{ 'common_add_label' | translate }}
+		</button>
+		
+		<ul *ngIf="addablesVisible" class="rocket-multi-type-menu">
+			<li *ngFor="let siQualifier of addables">
+				<button type="button" (click)="choose(siQualifier)"
+						[disabled]="loading">
+					<rocket-ui-qualifier siQualifier="siQualifier"></rocket-ui-qualifier>
+				</button>
+				
+			</li>
+		</ul>
 	</div>
-	<div>
-		<button type="button" class="btn btn-block btn-secondary">{{ 'common_past_label' | translate }}</button>
+	
+	<div *ngIf="pastablesAvailable">
+		<button type="button" class="btn btn-block btn-secondary" (click)="pastablesVisible != pastablesVisible">
+			{{ 'common_past_label' | translate }}
+		</button>
+		
+		<ul *ngIf="pastablesVisible" class="rocket-multi-type-menu">
+			<li *ngFor="let siQualifier of pastables">
+				<button *ngIf="isAllowed(siQualifier); else #disabledPaste" type="button" (click)="paste(siQualifier)"
+						[disabled]="loading">
+					<span *ngIf="isLoading(siQualifier)" class="spinner-grow spinner-grow-sm" role="status" 
+							aria-hidden="true">[@tomekk: mach da einen loader]</span>
+						
+					<rocket-ui-qualifier siQualifier="siQualifier"></rocket-ui-qualifier>
+				</button>
+				
+				<button #disabledPaste type="button" disabled>
+					<rocket-ui-qualifier siQualifier="siQualifier"></rocket-ui-qualifier>
+					<i class="fas fa-ban"></i>
+				</button>
+			</li>
+		</ul>
 	</div>
 </div>

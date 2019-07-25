@@ -1,4 +1,4 @@
-import { SiContent } from "src/app/si/model/structure/si-zone-content";
+import { SiComp } from "src/app/si/model/structure/si-zone-content";
 import { ViewContainerRef, ComponentFactoryResolver } from "@angular/core";
 import { SiCompactDeclaration } from "src/app/si/model/structure/si-compact-declaration";
 import { SiEntry } from "src/app/si/model/content/si-entry";
@@ -15,7 +15,7 @@ import { CompactEntryComponent } from "src/app/ui/content/zone/comp/compact-entr
 import { SiFieldDeclaration } from "src/app/si/model/structure/si-field-declaration";
 import { SiCommanderService } from "src/app/si/model/si-commander.service";
 
-export class CompactEntrySiContent implements SiContent, SiStructureContent {
+export class CompactEntrySiComp implements SiComp, SiStructureContent {
     public entry: SiEntry|null = null;
 	public controlMap: Map<string, SiControl> = new Map();
 	
@@ -53,12 +53,12 @@ export class CompactEntrySiContent implements SiContent, SiStructureContent {
     getControls(): SiControl[] {
     	const controls: SiControl[] = [];
 		controls.push(...this.controlMap.values());
-		controls.push(...this.entry.selectedBuildup.controlMap.values());
+		controls.push(...this.entry.selectedTypeBuildup.controlMap.values());
 		return controls;
     }
 	
 	getFieldDeclarations(): SiFieldDeclaration[] {
-		return this.compactDeclaration.getFieldDeclarationsByBuildupId(this.entry.selectedBuildupId);
+		return this.compactDeclaration.getFieldDeclarationsByBuildupId(this.entry.selectedTypeId);
 	}
 		
 	initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver,

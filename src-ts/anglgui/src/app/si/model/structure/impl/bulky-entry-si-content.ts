@@ -1,4 +1,4 @@
-import { SiContent } from "src/app/si/model/structure/si-zone-content";
+import { SiComp } from "src/app/si/model/structure/si-zone-content";
 import { ViewContainerRef, ComponentFactoryResolver } from "@angular/core";
 import { SiBulkyDeclaration } from "src/app/si/model/structure/si-bulky-declaration";
 import { SiEntry } from "src/app/si/model/content/si-entry";
@@ -13,7 +13,7 @@ import { SiZone } from "src/app/si/model/structure/si-zone";
 import { SiZoneError } from "src/app/si/model/structure/si-zone-error";
 import { SiStructureModel } from "src/app/si/model/structure/si-structure-model";
 
-export class BulkyEntrySiContent implements SiContent {
+export class BulkyEntrySiComp implements SiComp {
    
     public entry: SiEntry|null = null;
 	public controls: Array<SiControl> = [];
@@ -63,7 +63,7 @@ export class BulkyEntrySiContent implements SiContent {
     getControls(): SiControl[] {
     	const controls: SiControl[] = [];
 		controls.push(...this.controls);
-		controls.push(...this.entry.selectedBuildup.controlMap.values());
+		controls.push(...this.entry.selectedTypeBuildup.controlMap.values());
 		return controls;
     }
 	
@@ -72,7 +72,7 @@ export class BulkyEntrySiContent implements SiContent {
 		structure.label = fsd.fieldDeclaration.label;
 		structure.type = fsd.type;
 		
-		const model = new FieldSiStructureModel(entry.selectedBuildup.getFieldById(fsd.fieldDeclaration.fieldId));
+		const model = new FieldSiStructureModel(entry.selectedTypeBuildup.getFieldById(fsd.fieldDeclaration.fieldId));
 		for (const childFsd of fsd.children) {
 			model.children.push(this.dingsel(entry, childFsd));
 		}
@@ -82,7 +82,7 @@ export class BulkyEntrySiContent implements SiContent {
 	}
 
 	getFieldStructureDeclarations(): SiFieldStructureDeclaration[] {
-		return this.bulkyDeclaration.getFieldStructureDeclarationsByBuildupId(this.entry.selectedBuildupId);
+		return this.bulkyDeclaration.getFieldStructureDeclarationsByBuildupId(this.entry.selectedTypeId);
 	}
 		
 	initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver) {

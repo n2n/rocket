@@ -7,7 +7,7 @@ import { SiZone } from "src/app/si/model/structure/si-zone";
 import { SiZoneError } from "src/app/si/model/structure/si-zone-error";
 import { SiStructureModel } from "src/app/si/model/structure/si-structure-model";
 
-export interface SiContent extends SiStructureModel {
+export interface SiComp extends SiStructureModel {
  	
 //	getZone(): SiZone;
 	

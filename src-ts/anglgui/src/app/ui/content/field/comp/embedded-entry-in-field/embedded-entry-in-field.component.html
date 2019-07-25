@@ -24,10 +24,14 @@
 			</ng-container>
 		</rocket-ui-structure>
 	</div>
+	
+	<rocket-ui-add-past></rocket-ui-add-past>
 </div>
 
 <div *ngIf="!reduced">
 	<div *ngFor="let embe of visibleEmbes">
 		<rocket-ui-structure  [siStructure]="embe.siStructure"></rocket-ui-structure>
 	</div>
+	
+	<rocket-ui-add-past></rocket-ui-add-past>
 </div>

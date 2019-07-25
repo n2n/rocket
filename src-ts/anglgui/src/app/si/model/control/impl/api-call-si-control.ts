@@ -8,7 +8,7 @@ import { SiService } from "src/app/si/model/si.service";
 import { SiZone } from "src/app/si/model/structure/si-zone";
 import { SiCommanderService } from "src/app/si/model/si-commander.service";
 import { IllegalSiStateError } from "src/app/si/model/illegal-si-state-error";
-import { SiContent } from "src/app/si/model/structure/si-zone-content";
+import { SiComp } from "src/app/si/model/structure/si-zone-content";
 import { Observable } from "rxjs";
 
 export class ApiCallSiControl implements SiControl {
@@ -18,7 +18,7 @@ export class ApiCallSiControl implements SiControl {
 	private entryBoundFlag: boolean
 	
 	constructor(public apiUrl: string, public apiCallId: object, public button: SiButton,
-			public zoneContent: SiContent, public entry: SiEntry|null = null) {	
+			public zoneContent: SiComp, public entry: SiEntry|null = null) {	
 	}
 	
 	getButton(): SiButton {

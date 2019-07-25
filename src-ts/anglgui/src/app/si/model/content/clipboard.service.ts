@@ -24,6 +24,10 @@ export class ClipboardService {
 		this.qualifiersMap.clear();
 	}
 	
+	containsCategory(category: string): boolean {
+		return this.qualifiersMap.has(category);
+	}
+	
 	getByCategory(category: string): SiQualifier[] {
 		return this.qualifiersMap.get(category) || [];
 	}

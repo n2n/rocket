@@ -1,5 +1,5 @@
 
-import { SiContent } from "src/app/si/model/structure/si-zone-content";
+import { SiComp } from "src/app/si/model/structure/si-zone-content";
 import { SiZone } from "src/app/si/model/structure/si-zone";
 import { Extractor } from "src/app/util/mapping/extractor";
 import { SiGetResponse } from "src/app/si/model/api/si-get-response";
@@ -32,7 +32,7 @@ export class SiApiFactory {
 		return response;
 	}
 	
-	private createGetResult(data: any, zoneContent: SiContent): SiGetResult {
+	private createGetResult(data: any, zoneContent: SiComp): SiGetResult {
 		const compFactory = new SiCompFactory(this.zone, zoneContent);
 		const extr = new Extractor(data);
 		

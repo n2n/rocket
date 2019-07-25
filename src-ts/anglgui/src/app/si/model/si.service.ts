@@ -7,7 +7,7 @@ import { SiZone } from "src/app/si/model/structure/si-zone";
 import { Router } from "@angular/router";
 import { PlatformLocation } from "@angular/common";
 import { IllegalSiStateError } from "src/app/si/model/illegal-si-state-error";
-import { SiContent } from "src/app/si/model/structure/si-zone-content";
+import { SiComp } from "src/app/si/model/structure/si-zone-content";
 import { SiEntryInput } from "src/app/si/model/input/si-entry-input";
 import { SiInput } from "src/app/si/model/input/si-input";
 import { SiResultFactory } from "src/app/si/build/si-result-factory";
@@ -25,14 +25,14 @@ export class SiService {
 	constructor(private httpClient: HttpClient) { 
 	}
 	  
-	lookupSiContent(zone: SiZone, url: string): Observable<SiContent> {
+	lookupSiContent(zone: SiZone, url: string): Observable<SiComp> {
 		return this.httpClient.get<any>(url)
 	            .pipe(map((data: any) => {
 	                return this.createSiContent(data, zone);
 	            }));
 	}
 	
-	private createSiContent(data: any, zone: SiZone): SiContent {
+	private createSiContent(data: any, zone: SiZone): SiComp {
 		return new SiContentFactory(zone).createContent(data);
 	}
 	
@@ -91,11 +91,11 @@ export class SiService {
 		        }));
 	}
 	
-	apiGet(apiUrl: string, getRequest: SiGetRequest, zone: SiZone, zoneContent: SiContent): Observable<SiGetResponse> {
+	apiGet(apiUrl: string, getRequest: SiGetRequest, zone: SiZone): Observable<SiGetResponse> {
 		return this.httpClient
 				.post<any>(apiUrl + '/get', getRequest)
 				.pipe(map(data => {
-					return new SiApiFactory(zone, zoneContent).createGetResponse(data);
+					return new SiApiFactory(zone).createGetResponse(data, getRequest);
 				}));
 	}
 	

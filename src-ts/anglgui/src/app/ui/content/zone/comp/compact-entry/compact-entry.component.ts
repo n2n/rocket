@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CompactEntrySiContent } from "src/app/si/model/structure/impl/compact-entry-si-content";
+import { CompactEntrySiComp } from "src/app/si/model/structure/impl/compact-entry-si-content";
 
 @Component({
   selector: 'rocket-compact-entry',
@@ -8,7 +8,7 @@ import { CompactEntrySiContent } from "src/app/si/model/structure/impl/compact-e
 })
 export class CompactEntryComponent implements OnInit {
 
-	siContent: CompactEntrySiContent;
+	siContent: CompactEntrySiComp;
 
 	constructor() { }
 

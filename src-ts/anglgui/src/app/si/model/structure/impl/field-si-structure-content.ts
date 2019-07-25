@@ -26,7 +26,7 @@ export class FieldSiStructureContent implements SiStructureContent {
 	}
 	
 	get field(): SiField|null {
-		return this.entry.selectedBuildup.getFieldById(this.fieldDeclaration.fieldId);
+		return this.entry.selectedTypeBuildup.getFieldById(this.fieldDeclaration.fieldId);
 	}
 
 	getZoneErrors(): SiZoneError[] {

@@ -6488,18 +6488,18 @@ td .rocket-simple-commands > .btn > i {
   }
 }
 
-.rocket-impl-multi-type-menu {
+.rocket-multi-type-menu {
   padding: 0;
   margin: 0;
   list-style: none;
   border: 1px solid #DAD7D3;
 }
 
-.rocket-impl-multi-type-menu > li {
+.rocket-multi-type-menu > li {
   border-bottom: 1px solid #DAD7D3;
 }
 
-.rocket-impl-multi-type-menu > li > button {
+.rocket-multi-type-menu > li > button {
   display: block;
   width: 100%;
   text-align: left;
@@ -6508,11 +6508,11 @@ td .rocket-simple-commands > .btn > i {
   padding: 0.375rem 0.625rem;
 }
 
-.rocket-impl-multi-type-menu > li > button:hover {
+.rocket-multi-type-menu > li > button:hover {
   background-color: #F7F5F5;
 }
 
-.rocket-impl-multi-type-menu > li:last-child {
+.rocket-multi-type-menu > li:last-child {
   border-bottom: none;
 }
 

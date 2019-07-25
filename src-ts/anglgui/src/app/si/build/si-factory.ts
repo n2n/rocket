@@ -11,11 +11,11 @@ import { SiButton, SiConfirm } from "src/app/si/model/control/si-button";
 import { RefSiControl } from "src/app/si/model/control/impl/ref-si-control";
 import { SiFieldStructureDeclaration } from "src/app/si/model/structure/si-field-structure-declaration";
 import { SiBulkyDeclaration } from "src/app/si/model/structure/si-bulky-declaration";
-import { SiContent } from "src/app/si/model/structure/si-zone-content";
+import { SiComp } from "src/app/si/model/structure/si-zone-content";
 import { SiPartialContent } from "src/app/si/model/content/si-partial-content";
 import { StringInSiField } from "src/app/si/model/content/impl/string-in-si-field";
 import { ApiCallSiControl } from "src/app/si/model/control/impl/api-call-si-control";
-import { SiEntryBuildup } from "src/app/si/model/content/si-entry-buildup";
+import { SiTypeBuildup } from "src/app/si/model/content/si-entry-buildup";
 import { SiFile, FileInSiField } from "src/app/si/model/content/impl/file-in-si-field";
 import { FileOutSiField } from "src/app/si/model/content/impl/file-out-si-field";
 import { SiQualifier, SiIdentifier } from "src/app/si/model/content/si-qualifier";
@@ -24,9 +24,9 @@ import { QualifierSelectInSiField } from "src/app/si/model/content/impl/qualifie
 import { SiResultFactory } from "src/app/si/build/si-result-factory";
 import { SiPage } from "src/app/si/model/structure/impl/si-page";
 import { EntriesListSiContent } from "src/app/si/model/structure/impl/entries-list-si-content";
-import { BulkyEntrySiContent } from "src/app/si/model/structure/impl/bulky-entry-si-content";
+import { BulkyEntrySiComp } from "src/app/si/model/structure/impl/bulky-entry-si-content";
 import { EmbeddedEntryInSiField } from "src/app/si/model/content/impl/embedded-entry-in-si-field";
-import { CompactEntrySiContent } from "src/app/si/model/structure/impl/compact-entry-si-content";
+import { CompactEntrySiComp } from "src/app/si/model/structure/impl/compact-entry-si-content";
 import { SiEmbeddedEntry } from "src/app/si/model/content/si-embedded-entry";
 
 
@@ -35,7 +35,7 @@ export class SiContentFactory {
 	constructor(private zone: SiZone) {
 	}
 	
-	createContents(dataArr: Array<any>, requiredType: SiContentType|null = null): SiContent[] {
+	createContents(dataArr: Array<any>, requiredType: SiContentType|null = null): SiComp[] {
 		const contents = [];
 		for (const data of dataArr) {
 			contents.push(this.createContent(data));
@@ -43,7 +43,7 @@ export class SiContentFactory {
 		return contents;
 	}
 	
-	createContent(data: any, requiredType: SiContentType|null = null): SiContent {
+	createContent(data: any, requiredType: SiContentType|null = null): SiComp {
 		const extr = new Extractor(data);
 		const dataExtr = extr.reqExtractor('data');
 		let compFactory: SiCompFactory;
@@ -75,7 +75,7 @@ export class SiContentFactory {
 				
 			case SiContentType.BULKY_ENTRY:
 				const bulkyDeclaration = SiResultFactory.createBulkyDeclaration(dataExtr.reqObject('bulkyDeclaration'));
-				const bulkyEntrySiContent = new BulkyEntrySiContent(bulkyDeclaration, this.zone);
+				const bulkyEntrySiContent = new BulkyEntrySiComp(bulkyDeclaration, this.zone);
 				
 				compFactory = new SiCompFactory(this.zone, bulkyEntrySiContent);
 				bulkyEntrySiContent.controls = Array.from(compFactory.createControlMap(dataExtr.reqMap('controls')).values());
@@ -84,7 +84,7 @@ export class SiContentFactory {
 				
 			case SiContentType.COMPACT_ENTRY:
 				const compactDeclaration = SiResultFactory.createCompactDeclaration(dataExtr.reqObject('compactDeclaration'));
-				const compactEntrySiContent = new CompactEntrySiContent(compactDeclaration, this.zone);
+				const compactEntrySiContent = new CompactEntrySiComp(compactDeclaration, this.zone);
 				
 				compFactory = new SiCompFactory(this.zone, compactEntrySiContent);
 				compactEntrySiContent.controlMap = compFactory.createControlMap(dataExtr.reqMap('controls'));
@@ -109,7 +109,7 @@ export enum SiContentType {
 
 export class SiCompFactory {
 	
-	constructor(private zone: SiZone, private zoneContent: SiContent) {
+	constructor(private zone: SiZone, private zoneContent: SiComp) {
 	}
 	
 	createPartialContent(data: any): SiPartialContent {
@@ -138,7 +138,7 @@ export class SiCompFactory {
 		siEntry.inputAvailable = extr.reqBoolean('inputAvailable');
 		
 		for (let [buildupId, buildupData] of extr.reqMap('buildups')) {
-			siEntry.putBuildup(buildupId, this.createBuildup(buildupData));
+			siEntry.putTypeBuildup(buildupId, this.createBuildup(buildupData));
 		}
 		
 		return siEntry;
@@ -165,10 +165,10 @@ export class SiCompFactory {
 		return new SiIdentifier(extr.reqString('category'), extr.nullaString('id'));
 	}
 	
-	private createBuildup(data: any): SiEntryBuildup { 
+	private createBuildup(data: any): SiTypeBuildup { 
 		const extr = new Extractor(data);
 		
-		return new SiEntryBuildup(extr.reqString('name'), extr.reqString('iconClass'), extr.nullaString('idName'),
+		return new SiTypeBuildup(extr.reqString('name'), extr.reqString('iconClass'), extr.nullaString('idName'),
 				this.createFieldMap(extr.reqMap('fields')), this.createControlMap(extr.reqMap('controls')));
 	}
 	
@@ -243,9 +243,9 @@ export class SiCompFactory {
 		const contentFactory = new SiContentFactory(this.zone);
 		
 		return new SiEmbeddedEntry(
-				<BulkyEntrySiContent> contentFactory.createContent(extr.reqObject('content'), 
+				<BulkyEntrySiComp> contentFactory.createContent(extr.reqObject('content'), 
 						SiContentType.BULKY_ENTRY),
-				<CompactEntrySiContent> contentFactory.createContent(extr.reqObject('summaryContent'), 
+				<CompactEntrySiComp> contentFactory.createContent(extr.reqObject('summaryContent'), 
 						SiContentType.COMPACT_ENTRY));
 	}
 	

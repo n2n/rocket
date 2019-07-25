@@ -3,13 +3,18 @@ import { SiField } from "src/app/si/model/content/si-field";
 import { SiControl } from "src/app/si/model/control/si-control";
 import { SiEntryInput } from "src/app/si/model/input/si-entry-input";
 import { IllegalSiStateError } from "src/app/si/model/illegal-si-state-error";
+import { SiIdentifier, SiQualifier } from "src/app/si/model/content/si-qualifier";
 
-export class SiEntryBuildup {
+export class SiTypeBuildup {
 //	public messages: string[] = [];
 	
-	constructor(public name: string, public iconClass: string, public idName: string|null,
+	constructor(public typeId: string, public typeName: string, public iconClass: string, public idName: string|null,
 			public fieldMap: Map<string, SiField> = new Map<string, SiField>(), 
 			public controlMap: Map<string, SiControl> = new Map<string, SiControl>()) {	
+	}
+	
+	createQualifier(identifier: SiIdentifier): SiQualifier {
+		return new SiQualifier(identifier.category, identifier.id, this.typeId, this.typeName, this.iconClass, this.idName);
 	}
 	
 	getBestName(): string {
@@ -17,7 +22,7 @@ export class SiEntryBuildup {
 			return this.idName;
 		}
 		
-		return this.name;
+		return this.typeName;
 	}
 	
 	getFieldById(id: string): SiField|null {
@@ -35,7 +40,7 @@ export class SiEntryBuildup {
 			controlMapCopy.set(key, value);
 		}
 		
-		const copy = new SiEntryBuildup(this.name, this.iconClass, this.idName, fieldMapCopy, controlMapCopy);
+		const copy = new SiTypeBuildup(this.typeName, this.iconClass, this.idName, fieldMapCopy, controlMapCopy);
 //		copy.messgaes = this.messages;
 		return copy;
 		

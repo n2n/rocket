@@ -65,12 +65,12 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 			this.model.putPage(siPage);
 		}
 		
-		const instruction = SiGetInstruction.partialContent(false, true, 
+		const instruction = SiGetInstruction.partialContent(this.model, false, true, 
 						(pageNo - 1) * this.model.pageSize, this.model.pageSize)
 				.setDeclarationRequested(!this.model.compactDeclaration);
 		const getRequest = new SiGetRequest(instruction);
 		
-		this.siService.apiGet(this.model.getApiUrl(), getRequest, this.model.getZone(), this.model)
+		this.siService.apiGet(this.model.getApiUrl(), getRequest, this.model.getZone())
 				.subscribe((getResponse: SiGetResponse) => {
 					this.applyResult(getResponse.results[0], siPage);
 				});

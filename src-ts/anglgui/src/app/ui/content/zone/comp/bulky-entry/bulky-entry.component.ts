@@ -4,7 +4,7 @@ import { SiEntry } from "src/app/si/model/content/si-entry";
 import { SiControl } from "src/app/si/model/control/si-control";
 import { SiStructureContent } from "src/app/si/model/structure/si-structure-content";
 import { SiStructure } from "src/app/si/model/structure/si-structure";
-import { BulkyEntrySiContent } from "src/app/si/model/structure/impl/bulky-entry-si-content";
+import { BulkyEntrySiComp } from "src/app/si/model/structure/impl/bulky-entry-si-content";
 
 @Component({
   selector: 'rocket-bulky-entry',
@@ -12,7 +12,7 @@ import { BulkyEntrySiContent } from "src/app/si/model/structure/impl/bulky-entry
 })
 export class BulkyEntryComponent implements OnInit {
 
-	public siContent: BulkyEntrySiContent;
+	public siContent: BulkyEntrySiComp;
 
 	constructor() { }
 
