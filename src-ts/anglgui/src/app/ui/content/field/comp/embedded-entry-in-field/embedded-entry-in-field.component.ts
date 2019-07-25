@@ -1,23 +1,23 @@
 import { Component, OnInit } from '@angular/core';
-import { EmbeddedEntryInModel } from "src/app/ui/content/field/embedded-entry-in-model";
-import { SiEmbeddedEntry } from "src/app/si/model/content/si-embedded-entry";
-import { PopupSiLayer } from "src/app/si/model/structure/si-layer";
-import { SiStructure } from "src/app/si/model/structure/si-structure";
-import { SiEntry } from "src/app/si/model/content/si-entry";
-import { CdkDragDrop } from "@angular/cdk/drag-drop";
-import { TranslationService } from "src/app/util/i18n/translation.service";
-import { SiButton } from "src/app/si/model/control/si-button";
-import { SimpleSiControl } from "src/app/si/model/control/impl/simple-si-control";
-import { AddPastOptainer } from "src/app/ui/control/comp/add-past/add-past.component";
-import { Observable } from "rxjs";
-import { SiIdentifier } from "src/app/si/model/content/si-qualifier";
-import { SiService } from "src/app/si/model/si.service";
-import { BulkyEntrySiComp } from "src/app/si/model/structure/impl/bulky-entry-si-content";
-import { SiGetRequest } from "src/app/si/model/api/si-get-request";
-import { SiGetInstruction } from "src/app/si/model/api/si-get-instruction";
-import { CompactEntrySiComp } from "src/app/si/model/structure/impl/compact-entry-si-content";
-import { SiZone } from "src/app/si/model/structure/si-zone";
-import { SiGetResponse } from "src/app/si/model/api/si-get-response";
+import { EmbeddedEntryInModel } from 'src/app/ui/content/field/embedded-entry-in-model';
+import { SiEmbeddedEntry } from 'src/app/si/model/content/si-embedded-entry';
+import { PopupSiLayer } from 'src/app/si/model/structure/si-layer';
+import { SiStructure } from 'src/app/si/model/structure/si-structure';
+import { SiEntry } from 'src/app/si/model/content/si-entry';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { TranslationService } from 'src/app/util/i18n/translation.service';
+import { SiButton } from 'src/app/si/model/control/si-button';
+import { SimpleSiControl } from 'src/app/si/model/control/impl/simple-si-control';
+import { AddPastOptainer } from 'src/app/ui/control/comp/add-past/add-past.component';
+import { Observable } from 'rxjs';
+import { SiIdentifier } from 'src/app/si/model/content/si-qualifier';
+import { SiService } from 'src/app/si/model/si.service';
+import { BulkyEntrySiComp } from 'src/app/si/model/structure/impl/bulky-entry-si-content';
+import { SiGetRequest } from 'src/app/si/model/api/si-get-request';
+import { SiGetInstruction } from 'src/app/si/model/api/si-get-instruction';
+import { CompactEntrySiComp } from 'src/app/si/model/structure/impl/compact-entry-si-content';
+import { SiZone } from 'src/app/si/model/structure/si-zone';
+import { SiGetResponse } from 'src/app/si/model/api/si-get-response';
 
 @Component({
   selector: 'rocket-embedded-entry-in-field',
@@ -125,7 +125,6 @@ class Embe {
 
 class EmbeddedAddPastOptainer implements AddPastOptainer {
 	constructor(private siService: SiService, private apiUrl: string, private siZone: SiZone, private optainSummary: boolean) {
-		
 	}
 	
 	private createBulkyInstruction(comp: CompactEntrySiComp, siIdentifier: SiIdentifier|null): SiGetInstruction {
