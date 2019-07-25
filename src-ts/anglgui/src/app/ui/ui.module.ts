@@ -25,7 +25,6 @@ import { RouterModule } from "@angular/router";
 import { EmbeddedEntryInFieldComponent } from './content/field/comp/embedded-entry-in-field/embedded-entry-in-field.component';
 import { CompactEntryComponent } from './content/zone/comp/compact-entry/compact-entry.component';
 import { QualifierComponent } from './content/entry/comp/qualifier/qualifier.component';
-import { AddCopyControlComponent } from './control/comp/add-copy-control/add-copy-control.component';
 import { AddPastComponent } from './control/comp/add-past/add-past.component';
 
 @NgModule({
