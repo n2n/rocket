@@ -1,7 +1,6 @@
 <div class="rocket-add-paste">
 	<div>
-		<button type="button" class="btn btn-block btn-secondary" [disabled]="loading"
-				(click)="add()" (mouseenter)="preloadAdd()">
+		<button type="button" class="btn btn-block btn-secondary" [disabled]="loading" (click)="add()">
 			<span *ngIf="isAddLoading()" class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true">
 				[@tomekk: mach da einen loader]
 			</span>	

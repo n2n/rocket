@@ -92,7 +92,7 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 	private updateCurrentPage() {
 		let page = this.model.getBestPageByOffsetHeight(window.scrollY);
 		if (page) {
-			this.model.currentPageNo = page.number;
+			this.model.currentPageNo = page.num;
 			return;
 		}
 		
@@ -116,7 +116,7 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 			return;
 		}
 		
-		const newPageNo = lastVisiblePage.number + 1;
+		const newPageNo = lastVisiblePage.num + 1;
 		if (newPageNo > this.model.pagesNum) {
 			return;
 		}

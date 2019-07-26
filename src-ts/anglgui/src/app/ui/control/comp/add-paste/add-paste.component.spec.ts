@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddPastComponent } from './add-past.component';
+import { AddPasteComponent } from './add-paste.component';
 
-describe('AddPastComponent', () => {
-  let component: AddPastComponent;
-  let fixture: ComponentFixture<AddPastComponent>;
+describe('AddPasteComponent', () => {
+  let component: AddPasteComponent;
+  let fixture: ComponentFixture<AddPasteComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AddPastComponent ]
+      declarations: [ AddPasteComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AddPastComponent);
+    fixture = TestBed.createComponent(AddPasteComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

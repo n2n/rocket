@@ -1,4 +1,3 @@
-import { AddPastOptainer } from 'src/app/ui/control/comp/add-past/add-past.component';
 import { SiService } from 'src/app/si/model/si.service';
 import { SiZone } from 'src/app/si/model/structure/si-zone';
 import { BulkyEntrySiComp } from 'src/app/si/model/structure/impl/bulky-entry-si-content';
@@ -10,9 +9,11 @@ import { SiEmbeddedEntry } from 'src/app/si/model/content/si-embedded-entry';
 import { SiGetRequest } from 'src/app/si/model/api/si-get-request';
 import { map } from 'rxjs/operators';
 import { SiGetResponse } from 'src/app/si/model/api/si-get-response';
+import { AddPasteObtainer } from 'src/app/ui/control/comp/add-paste/add-paste.component';
 
-export class EmbeddedAddPastOptainer implements AddPastOptainer {
-	constructor(private siService: SiService, private apiUrl: string, private siZone: SiZone, private optainSummary: boolean) {
+export class EmbeddedAddPasteObtainer implements AddPasteObtainer {
+	constructor(private siService: SiService, private apiUrl: string, private siZone: SiZone,
+		private optainSummary: boolean) {
 	}
 
 	private createBulkyInstruction(comp: BulkyEntrySiComp, siIdentifier: SiIdentifier|null): SiGetInstruction {
@@ -31,7 +32,7 @@ export class EmbeddedAddPastOptainer implements AddPastOptainer {
 		return SiGetInstruction.newEntry(comp, false, false);
 	}
 
-	optain(siIdentifier: SiIdentifier|null): Observable<SiEmbeddedEntry> {
+	obtain(siIdentifier: SiIdentifier|null): Observable<SiEmbeddedEntry> {
 		const request = new SiGetRequest();
 
 		const comp = new BulkyEntrySiComp(undefined, undefined);

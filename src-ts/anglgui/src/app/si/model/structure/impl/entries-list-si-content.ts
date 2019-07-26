@@ -125,11 +125,11 @@ export class EntriesListSiContent implements SiComp, SiStructureContent {
 	}
 
 	putPage(page: SiPage) {
-		if (page.number > this.pagesNum) {
+		if (page.num > this.pagesNum) {
 			throw new IllegalSiStateError('Page num to high.');
 		}
 
-		this.pagesMap.set(page.number, page);
+		this.pagesMap.set(page.num, page);
 	}
 
 	getVisiblePages(): SiPage[] {
@@ -141,7 +141,7 @@ export class EntriesListSiContent implements SiComp, SiStructureContent {
 	getLastVisiblePage(): SiPage|null {
 		let lastPage: SiPage|null = null;
 		for (const page of this.pagesMap.values()) {
-			if (page.offsetHeight !== null && (lastPage === null || page.number > lastPage.number)) {
+			if (page.offsetHeight !== null && (lastPage === null || page.num > lastPage.num)) {
 				lastPage = page;
 			}
 		}

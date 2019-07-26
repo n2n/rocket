@@ -44,6 +44,7 @@ class EiFrameController extends ControllerAdapter {
 	const API_PATH_PART = 'api';
 	const CMD_PATH_PART = 'cmd';
 	const FORK_PATH = 'fork';
+	const FORK_NEW_ENTRY_PATH = 'forknewentry';
 	const FORK_ENTRY_PATH = 'forkentry';
 	
 	private $eiFrame;	
@@ -126,6 +127,21 @@ class EiFrameController extends ControllerAdapter {
 	}
 	
 	/**
+	 * @param string $eiTypeId
+	 * @throws BadRequestException
+	 * @return \rocket\ei\manage\EiObject
+	 */
+	private function createEiObject($eiTypeId) {
+		$util = new EiFrameUtil($this->eiFrame);
+		
+		try {
+			return $util->createNewEiObject($eiTypeId);
+		} catch (\rocket\ei\UnknownEiTypeException $e) {
+			throw new BadRequestException(null, 0, $e);
+		}
+	}
+	
+	/**
 	 * @param EiCommandPath $eiCommandPath
 	 * @param EiCommand $eiCommand
 	 * @return EiFrame
@@ -200,7 +216,13 @@ class EiFrameController extends ControllerAdapter {
 		$eiForkLink = $this->createEiForkLink($mode, $this->lookupEiObject($pid));
 		
 		$this->delegate(new EiFrameController($this->createForked($eiPropPath, $eiForkLink)));
+	}
+	
+	public function doForkNewEntry($eiTypeId, $eiPropPathStr, $mode, array $deleteCmds) {
+		$eiPropPath = $this->parseEiPropPath($eiPropPathStr);
+		$eiForkLink = $this->createEiForkLink($mode, $this->createEiObject($eiTypeId));
 		
+		$this->delegate(new EiFrameController($this->createForked($eiPropPath, $eiForkLink)));
 	}
 	
 	/**

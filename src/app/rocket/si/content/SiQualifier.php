@@ -29,7 +29,8 @@ class SiQualifier extends SiIdentifier implements \JsonSerializable {
 	private $iconClass;
 	private $idName;
 	
-	function __construct(string $category, ?string $id, string $typeId, string $typeName, string $iconClass, string $idName = null) {
+	function __construct(string $category, ?string $id, string $typeId, string $typeName, string $iconClass, 
+			string $idName = null) {
 		parent::__construct($category, $id);
 		$this->typeId = $typeId;
 		$this->typeName = $typeName;
@@ -40,7 +41,7 @@ class SiQualifier extends SiIdentifier implements \JsonSerializable {
 	/**
 	 * @return string
 	 */
-	function getName() {
+	function getTypeName() {
 		return $this->typeName;
 	}
 	
@@ -48,8 +49,8 @@ class SiQualifier extends SiIdentifier implements \JsonSerializable {
 	 * @param string $name
 	 * @return SiQualifier
 	 */
-	function setName(string $name) {
-		$this->typeName = $name;
+	function setTypeName(string $typeName) {
+		$this->typeName = $typeName;
 		return $this;
 	}
 	
@@ -68,8 +69,8 @@ class SiQualifier extends SiIdentifier implements \JsonSerializable {
 		$ds = new DataSet($data);
 		
 		try {
-			return new SiQualifier($ds->reqString('category'), $ds->optString('id'), $ds->reqString('name'), 
-					$ds->optString('idName'));
+			return new SiQualifier($ds->reqString('category'), $ds->optString('id'), $ds->reqString('typeId'),
+					$ds->reqString('typeName'), $ds->reqString('iconClass'), $ds->optString('idName'));
 		} catch (\n2n\util\type\attrs\AttributesException $e) {
 			throw new \InvalidArgumentException(null, null, $e);
 		}

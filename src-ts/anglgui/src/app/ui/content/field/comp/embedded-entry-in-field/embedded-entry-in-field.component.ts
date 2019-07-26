@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Injector } from '@angular/core';
 import { EmbeddedEntryInModel } from 'src/app/ui/content/field/embedded-entry-in-model';
 import { SiEmbeddedEntry } from 'src/app/si/model/content/si-embedded-entry';
 import { PopupSiLayer } from 'src/app/si/model/structure/si-layer';
@@ -9,7 +9,7 @@ import { TranslationService } from 'src/app/util/i18n/translation.service';
 import { SiButton } from 'src/app/si/model/control/si-button';
 import { SimpleSiControl } from 'src/app/si/model/control/impl/simple-si-control';
 import { SiService } from 'src/app/si/model/si.service';
-import { EmbeddedAddPastOptainer } from './embedded-add-paste-optainer';
+import { EmbeddedAddPasteObtainer } from './embedded-add-paste-optainer';
 
 @Component({
   selector: 'rocket-embedded-entry-in-field',
@@ -19,16 +19,17 @@ import { EmbeddedAddPastOptainer } from './embedded-add-paste-optainer';
 export class EmbeddedEntryInFieldComponent implements OnInit {
 
 	model: EmbeddedEntryInModel;
-	siService: SiService;
 
 	private popupSiLayer: PopupSiLayer|null = null;
 
 	private embes: Embe[] = [];
+	obtainer: EmbeddedAddPasteObtainer;
 
-	constructor(private translationService: TranslationService) {}
+	constructor(private translationService: TranslationService, private injector: Injector) {}
 
 	ngOnInit() {
-		new EmbeddedAddPastOptainer(siService, this.model.getApi);
+		this.obtainer = new EmbeddedAddPasteObtainer(this.injector.get(SiService), this.model.getApiUrl(), 
+				this.model.getSiZone(), this.reduced);
 	}
 
 	get visibleEmbes(): Embe[] {

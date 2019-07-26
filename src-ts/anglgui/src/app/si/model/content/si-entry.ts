@@ -62,7 +62,7 @@ export class SiEntry {
 	}
 
 // 	getFieldById(id: string): SiField|null {
-// 		return this.selectedBuildup.getFieldById(id);
+// 		return this.selectedTypeBuildup.getFieldById(id);
 // 	}
 
 	readInput(): SiEntryInput {

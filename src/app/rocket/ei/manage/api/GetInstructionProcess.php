@@ -27,8 +27,8 @@ use rocket\si\api\SiGetInstruction;
 use rocket\si\api\SiGetResult;
 use rocket\ei\manage\frame\EiFrameUtil;
 use rocket\ei\manage\gui\EiEntryGui;
-use rocket\ei\manage\EiObject;
 use rocket\si\api\SiPartialContentInstruction;
+use rocket\si\content\SiEntry;
 
 class GetInstructionProcess {
 	private $instruction;
@@ -70,36 +70,36 @@ class GetInstructionProcess {
 		$eiEntryGui = $this->eiFrameUtil->createEiEntryGuiFromEiObject($eiObject, 
 				$this->instruction->isBulky(), $this->instruction->isReadOnly());
 		
-		return $this->createEntryResult([$eiEntryGui]);
+		return $this->createEntryResult($eiEntryGui->createSiEntry(), [$eiEntryGui]);
 	}
 	
 	/**
 	 * @return \rocket\si\api\SiGetResult
 	 */
 	private function handleNewEntry() {
-		$eiEntryGuis = $this->eiFrameUtil->createPossibleNewEiEntryGuis(
+		$eiEntryGuiMulti = $this->eiFrameUtil->createNewEiEntryGuiMulti(
 				$this->instruction->isBulky(), $this->instruction->isReadOnly());
 				
-		return $this->createEntryResult($eiEntryGuis);	
+		return $this->createEntryResult($eiEntryGuiMulti->createSiEntry(), $eiEntryGuiMulti->getEiEntryGuis());	
 	}
 	
 	/**
-	 * @param EiObject $eiObject
+	 * @param SiEntry $siEntry
 	 * @param EiEntryGui[] $eiEntryGuis
 	 * @return \rocket\si\api\SiGetResult
 	 */
-	private function createEntryResult($eiObject, array $eiEntryGuis) {
+	private function createEntryResult(SiEntry $siEntry, array $eiEntryGuis) {
 		$result = new SiGetResult();
-		$result->setEntry($this->apiUtil->createSiEntry($eiObject, $eiEntryGuis));
+		$result->setEntry($siEntry);
 		
 		if (!$this->instruction->isDeclarationRequested()) {
 			return $result;
 		}
 		
 		if ($this->instruction->isBulky()) {
-			$result->setBulkyDeclaration($this->apiUtil->createMulitBuildupSiBulkyDeclaration($eiEntryGuis));
+			$result->setBulkyDeclaration($this->apiUtil->createMultiBuildupSiBulkyDeclaration($eiEntryGuis));
 		} else {
-			$result->setCompactDeclaration($this->apiUtil->createMulitBuildupSiCompactDeclaration($eiEntryGuis));
+			$result->setCompactDeclaration($this->apiUtil->createMultiBuildupSiCompactDeclaration($eiEntryGuis));
 		}
 		
 		return $result;

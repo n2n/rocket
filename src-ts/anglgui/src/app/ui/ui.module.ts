@@ -25,14 +25,14 @@ import { RouterModule } from '@angular/router';
 import { EmbeddedEntryInFieldComponent } from './content/field/comp/embedded-entry-in-field/embedded-entry-in-field.component';
 import { CompactEntryComponent } from './content/zone/comp/compact-entry/compact-entry.component';
 import { QualifierComponent } from './content/entry/comp/qualifier/qualifier.component';
-import { AddPastComponent } from './control/comp/add-past/add-past.component';
+import { AddPasteComponent } from './control/comp/add-paste/add-paste.component';
 
 @NgModule({
   declarations: [ LayerComponent, ContainerComponent, ZoneComponent, StructureContentDirective, ListZoneContentComponent,
 	PaginationComponent, EntryDirective, StringOutFieldComponent, ControlComponent, BulkyEntryComponent,
 	FieldStructureComponent, InputInFieldComponent, TextareaInFieldComponent, StructureComponent, FileInFieldComponent,
 	FileOutFieldComponent, LinkOutFieldComponent, QualifierSelectInFieldComponent, EmbeddedEntryInFieldComponent,
-	CompactEntryComponent, QualifierComponent, AddPastComponent ],
+	CompactEntryComponent, QualifierComponent, AddPasteComponent ],
   imports: [
 	CommonModule,
 	FormsModule,

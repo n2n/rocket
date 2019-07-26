@@ -6,13 +6,13 @@ import { Observable } from 'rxjs';
 
 @Component({
   selector: 'rocket-ui-add-past',
-  templateUrl: './add-past.component.html',
-  styleUrls: ['./add-past.component.css']
+  templateUrl: './add-paste.component.html',
+  styleUrls: ['./add-paste.component.css']
 })
-export class AddPastComponent implements OnInit {
+export class AddPasteComponent implements OnInit {
 
 	@Input()
-	optainer: AddPastOptainer;
+	obtainer: AddPasteObtainer;
 	@Input()
 	pasteCategory: string|null = null;
 	@Input()
@@ -42,7 +42,7 @@ export class AddPastComponent implements OnInit {
 		}
 
 		this.addLoading = true;
-		this.optainer.optain(null).subscribe((siEmbeddedEntry) => {
+		this.obtainer.obtain(null).subscribe((siEmbeddedEntry) => {
 			this.addLoading = false;
 			this.handleAddResponse(siEmbeddedEntry);
 		});
@@ -50,6 +50,7 @@ export class AddPastComponent implements OnInit {
 
 	private handleAddResponse(siEmbeddedEntry: SiEmbeddedEntry) {
 		this.addables = [];
+
 		for (const siQualifier of siEmbeddedEntry.entry.typeQualifiers) {
 			if (!this.isAllowed(siQualifier)) {
 				continue;
@@ -81,13 +82,13 @@ export class AddPastComponent implements OnInit {
 		this.pastablesVisible = false;
 	}
 
-	past(siQualifier: SiQualifier) {
+	paste(siQualifier: SiQualifier) {
 		if (this.loading) {
 			return false;
 		}
 
 		this.pasteLoadingSiQualifier = siQualifier;
-		this.optainer.optain(siQualifier).subscribe((siEmbeddedEntry) => {
+		this.obtainer.obtain(siQualifier).subscribe((siEmbeddedEntry) => {
 			this.pasteLoadingSiQualifier = null;
 			this.handlePasteResponse(siEmbeddedEntry);
 		});
@@ -129,7 +130,7 @@ export class AddPastComponent implements OnInit {
 
 }
 
-export interface AddPastOptainer {
+export interface AddPasteObtainer {
 
-	optain: (siIdentifier: SiIdentifier|null) => Observable<SiEmbeddedEntry>;
+	obtain: (siIdentifier: SiIdentifier|null) => Observable<SiEmbeddedEntry>;
 }

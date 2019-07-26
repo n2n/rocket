@@ -26,10 +26,10 @@
 					</ng-container> 
 				</td>
 				<td *ngFor="let siFieldDeclaration of getFieldDeclarations()" (click)="toggleSelection(siEntry.qualifier)">
-					<ng-template rocketStructureContent [siStructureContent]="siEntry.selectedBuildup.getFieldById(siFieldDeclaration.fieldId)"></ng-template>
+					<ng-template rocketStructureContent [siStructureContent]="siEntry.selectedTypeBuildup.getFieldById(siFieldDeclaration.fieldId)"></ng-template>
 				</td>
 				<td class="rocket-table-commands rocket-simple-commands">
-					<ng-container *ngFor="let pair of siEntry.selectedBuildup.controlMap | keyvalue">
+					<ng-container *ngFor="let pair of siEntry.selectedTypeBuildup.controlMap | keyvalue">
 						<rocket-ui-control [siControl]="pair.value"></rocket-ui-control>
 					</ng-container>
 				</td>

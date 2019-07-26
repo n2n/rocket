@@ -89,11 +89,11 @@ class EditEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiC
 	}
 	
 	public function createEntryGuiControls(Eiu $eiu): array {
-		if ($eiu->frame()->isExecutedBy($this)) {
+		$eiuEntry = $eiu->entry();
+		
+		if ($eiuEntry->isNew() || $eiu->frame()->isExecutedBy($this)) {
 			return array();
 		}
-
-		$eiuEntry = $eiu->entry();
 		
 		if ($eiuEntry->isDraft()) {
 			return [];

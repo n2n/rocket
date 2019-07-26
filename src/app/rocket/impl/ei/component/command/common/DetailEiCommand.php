@@ -65,11 +65,11 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 	 */
 	public function createEntryGuiControls(Eiu $eiu): array {
 		$eiuFrame = $eiu->frame();
-		if ($eiuFrame->isExecutedBy($this)) {
+		$eiuEntry = $eiu->entry();
+		
+		if ($eiuEntry->isNew() || $eiuFrame->isExecutedBy($this)) {
 			return array();
 		}
-		
-		$eiuEntry = $eiu->entry();
 		
 		$pathExt = null;
 		$iconType = null;

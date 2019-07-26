@@ -35,6 +35,7 @@ use n2n\persistence\orm\util\NestedSetStrategy;
 use rocket\ei\manage\LiveEiObject;
 use rocket\ei\manage\gui\EiEntryGuiMulti;
 use rocket\ei\EiException;
+use rocket\ei\UnknownEiTypeException;
 
 class EiFrameUtil {
 	private $eiFrame;
@@ -143,14 +144,14 @@ class EiFrameUtil {
 			$newEiEntryGuis[$eiTypeId] = $newEiGui->createEiEntryGui($newEiEntry);
 		}
 		
-		if (!empty($newEiEntryGuis)) {
+		if (empty($newEiEntryGuis)) {
 			throw new EiException('Can not create a new EiEntryGui of ' 
 					. $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()
 					. ' because this type is abstract and doesn\'t have any sub EiTypes.');
 		}
 		
 		return new EiEntryGuiMulti($this->eiFrame->getContextEiEngine()->getEiMask()->getEiType(), 
-				$newEiEntryGuis);
+				ViewMode::determine($bulky, $readOnly, true), $newEiEntryGuis);
 	}
 	
 	function createEiEntryGuiFromEiObject(EiObject $eiObject, bool $bulky, bool $readOnly) {
@@ -233,5 +234,20 @@ class EiFrameUtil {
 							$this->createEiObject($nestedSetItem->getEntityObj())), 
 					$nestedSetItem->getLevel());
 		}
+	}
+	
+	/**
+	 * @param string $eiTypeId
+	 * @return \rocket\ei\manage\EiObject
+	 * @throws UnknownEiTypeException
+	 */
+	function createNewEiObject(string $eiTypeId) {
+		$contextEiType = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType();
+		
+		if ($contextEiType->getId() == $eiTypeId) {
+			return $contextEiType->createNewEiObject(false);
+		}
+		
+		return $contextEiType->getSubEiTypeById($eiTypeId, true)->createNewEiObject(false);
 	}
 }

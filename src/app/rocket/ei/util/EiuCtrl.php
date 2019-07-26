@@ -339,7 +339,7 @@ class EiuCtrl {
 		$eiTypeId = $this->eiuFrame->engine()->type()->getId();
 		
 		$siBulkyDeclaration = new SiBulkyDeclaration([]);
-		$siBulkyDeclaration->putFieldStructureDeclaration($eiTypeId, 
+		$siBulkyDeclaration->putFieldStructureDeclarations($eiTypeId, 
 				$eiGui->getEiGuiSiFactory()->getSiFieldStructureDeclarations());
 		
 		$zone = new BulkyEntrySiContent($siBulkyDeclaration,
@@ -361,7 +361,7 @@ class EiuCtrl {
 			$eiEntryGui = $this->eiuFrame->newEntry()->newEntryGui()->getEiEntryGui();
 			
 			$siEntry->putBuildup($buildupId, $eiEntryGui->createSiEntryBuildup());
-			$siBulkyDeclaration->putFieldStructureDeclaration(
+			$siBulkyDeclaration->putFieldStructureDeclarations(
 					$eiEntryGui->getEiEntry()->getEiGuiSiFactory()->getSiFieldStructureDeclaration());
 		}
 		

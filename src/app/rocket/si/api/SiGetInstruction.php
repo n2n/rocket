@@ -145,7 +145,7 @@ class SiGetInstruction {
 			$instruction->setDeclarationRequested($ds->reqBool('declarationRequested'));
 			$instruction->setEntryId($ds->optInt('entryId'));
 			
-			$pcData = $ds->optArray('partialContentInstruction', null, null);
+			$pcData = $ds->optArray('partialContentInstruction', null, null, true);
 			if ($pcData == null) {
 				$instruction->setPartialContentInstruction(null);
 			} else {

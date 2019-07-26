@@ -46,13 +46,13 @@ class ApiUtil {
 	 * @param EiEntryGui[]
 	 * @return \rocket\ei\manage\gui\EiGui
 	 */
-	function createMulitBuildupSiBulkyDeclaration(array $eiEntryGuis) {
+	function createMultiBuildupSiBulkyDeclaration(array $eiEntryGuis) {
 		$declaration = new SiBulkyDeclaration();
 		
 		foreach ($eiEntryGuis as $eiEntryGui) {
 			ArgUtils::assertTrue($eiEntryGui instanceof EiEntryGui
 					&& ViewMode::isBulky($eiEntryGui->getEiGui()->getViewMode()));
-			$declaration->putFieldStructureDeclaration(
+			$declaration->putFieldStructureDeclarations(
 					$eiEntryGui->getEiEntry()->getEiType()->getId(), 
 					$eiEntryGui->getEiGui()->getEiGuiSiFactory()->getSiFieldStructureDeclarations());
 		}
@@ -63,15 +63,15 @@ class ApiUtil {
 	/**
 	 * @param array $eiEntryGuis
 	 * @return \rocket\si\structure\SiBulkyDeclaration
-	 */
+	 */      
 	function createMultiBuildupSiCompactDeclaration(array $eiEntryGuis) {
-		$declaration = new SiBulkyDeclaration();
+		$declaration = new SiCompactDeclaration();
 		
 		foreach ($eiEntryGuis as $eiEntryGui) {
 			ArgUtils::assertTrue($eiEntryGui instanceof EiEntryGui);
-			$declaration->putFieldStructureDeclaration(
+			$declaration->putFieldDeclarations(
 					$eiEntryGui->getEiEntry()->getEiType()->getId(),
-					$eiEntryGui->getEiGui()->getEiGuiSiFactory()->getSiFieldStructureDeclarations());
+					$eiEntryGui->getEiGui()->getEiGuiSiFactory()->getSiFieldDeclarations());
 		}
 		
 		return $declaration;
@@ -117,11 +117,12 @@ class ApiUtil {
 	 * @return \rocket\si\content\SiEntry
 	 */
 	function createSiEntry(EiObject $eiObject, array $eiEntryGuis) {
-		$siEntry = new SiEntry($eiObject->createSiQualifier($eiObject), $inputAvailable);
+		$siEntry = new SiEntry($eiObject->createSiQualifier($eiObject), 
+				!ViewMode::isReadOnly($this->eiGui->getViewMode()));
 		
 		foreach ($eiEntryGuis as $eiEntryGui) {
 			ArgUtils::assertTrue($eiEntryGui instanceof EiEntryGui);
-			$declaration->putFieldStructureDeclaration(
+			$declaration->putFieldStructureDeclarations(
 					$eiEntryGui->getEiEntry()->getEiType()->getId(),
 					$eiEntryGui->getEiGui()->getEiGuiSiFactory()->getSiFieldStructureDeclarations());
 		}

@@ -144,12 +144,13 @@ class AddEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiCo
 	}
 
 	public function createEntryGuiControls(Eiu $eiu): array {
-		if ($eiu->frame()->isExecutedBy($this)) {
+		$eiuEntry = $eiu->entry();
+		
+		if ($eiuEntry->isNew() || $eiu->frame()->isExecutedBy($this)) {
 			return array();
 		}
 		
 		$eiuControlFactory = $eiu->gui()->controlFactory($this);
-		$eiuEntry = $eiu->entry();
 		$dtc = $eiu->dtc(Rocket::NS);
 		
 		if ($eiu->frame()->getNestedSetStrategy() === null) {

@@ -8,6 +8,7 @@ import { SiStructure } from 'src/app/si/model/structure/si-structure';
 import { SiEmbeddedEntry } from 'src/app/si/model/content/si-embedded-entry';
 import { SiCommanderService } from 'src/app/si/model/si-commander.service';
 import { SiField } from '../si-field';
+import { EmbeddedAddPasteObtainer } from 'src/app/ui/content/field/comp/embedded-entry-in-field/embedded-add-paste-optainer';
 
 export class EmbeddedEntryInSiField extends InSiFieldAdapter implements EmbeddedEntryInModel {
 	public min = 0;
@@ -77,8 +78,6 @@ export class EmbeddedEntryInSiField extends InSiFieldAdapter implements Embedded
 	isNonNewRemovable() {
 		return this.nonNewRemovable;
 	}
-
-
 
 	initComponent(viewContainerRef: ViewContainerRef,
 			componentFactoryResolver: ComponentFactoryResolver,

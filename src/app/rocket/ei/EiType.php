@@ -414,10 +414,10 @@ class EiType extends Type {
 	 */
 	public function createNewEiObject(bool $draft = false) {
 		if (!$draft) {
-			return new LiveEiObject(EiEntityObj::createNew($eiType));
+			return new LiveEiObject(EiEntityObj::createNew($this));
 		}
 		
-		return new DraftEiObject(new Draft(null, EiEntityObj::createNew($eiType), new \DateTime()));
+		return new DraftEiObject(new Draft(null, EiEntityObj::createNew($this), new \DateTime()));
 	}
 	
 	public function __toString(): string {

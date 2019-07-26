@@ -35,6 +35,10 @@ class EiEntryGuiMulti {
 	 */
 	private $contextEiType;
 	/**
+	 * @var int
+	 */
+	private $viewMode;
+	/**
 	 * @var string|null
 	 */
 	private $selectedEiTypeId = null;
@@ -46,8 +50,9 @@ class EiEntryGuiMulti {
 	/**
 	 * @param EiEntryGui[]
 	 */
-	function __construct(EiType $contextEiType, array $eiEntryGuis) {
+	function __construct(EiType $contextEiType, int $viewMode, array $eiEntryGuis) {
 		$this->contextEiType = $contextEiType;
+		$this->viewMode = $viewMode;
 		$this->setEiEntryGuis($eiEntryGuis);
 	}
 	
@@ -104,7 +109,8 @@ class EiEntryGuiMulti {
 	}
 	
 	function createSiEntry() {
-		$siEntry = new SiEntry(new SiIdentifier($this->contextEiType->supremeType()->getId(), null));
+		$siEntry = new SiEntry(new SiIdentifier($this->contextEiType->getSupremeEiType()->getId(), null),
+				!ViewMode::isReadOnly($this->viewMode));
 		
 		foreach ($this->eiEntryGuis as $eiEntryGui) {
 			$siEntry->putBuildup($eiEntryGui->getEiEntry()->getEiType()->getId(), 

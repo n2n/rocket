@@ -265,7 +265,7 @@ class EiGui {
 	 */
 	public function createSiBulkyDeclaration() {
 		if (ViewMode::isBulky($this->viewMode)) {
-			return (new SiBulkyDeclaration())->putFieldStructureDeclaration(
+			return (new SiBulkyDeclaration())->putFieldStructureDeclarations(
 					(string) $this->eiMask->getEiType()->getId(),
 					$this->eiGuiGiFactory->getSiFieldStructureDeclarations());
 		}
