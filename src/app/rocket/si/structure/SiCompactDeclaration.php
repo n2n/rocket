@@ -34,14 +34,14 @@ class SiCompactDeclaration implements \JsonSerializable {
 	 * @param SiEntry[] $entries
 	 */
 	function __construct(array $fieldDeclarations = []) {
-		$this->seFieldDeclarations($fieldDeclarations);
+		$this->setFieldDeclarations($fieldDeclarations);
 	}
 	
 	/**
 	 * @param SiFieldDeclaration[] $siFieldDeclarations
 	 * @return \rocket\si\structure\SiCompactDeclaration
 	 */
-	function seFieldDeclarations(array $fieldDeclarations) {
+	function setFieldDeclarations(array $fieldDeclarations) {
 		ArgUtils::valArray($fieldDeclarations,
 				TypeConstraints::array(false, SiFieldDeclaration::class));
 		$this->fieldDeclarations = $fieldDeclarations;

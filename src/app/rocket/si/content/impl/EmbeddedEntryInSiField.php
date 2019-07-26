@@ -54,11 +54,14 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	 * @var bool
 	 */
 	private $reduced = false;
-	
 	/**
-	 * @var string
+	 * @var bool
 	 */
 	private $nonNewRemovable = true;
+	/**
+	 * @var bool
+	 */
+	private $sortable = false;
 	
 	/**
 	 * @param Url $apiUrl
@@ -169,6 +172,22 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	}
 	
 	/**
+	 * @return bool
+	 */
+	public function isSortable() {
+		return $this->sortable;
+	}
+	
+	/**
+	 * @param bool $sortable
+	 * @return EmbeddedEntryInSiField
+	 */
+	public function setSortable(bool $sortable) {
+		$this->sortable = $sortable;
+		return $this;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @see \rocket\si\content\SiField::getType()
 	 */
@@ -187,7 +206,8 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 			'min' => $this->min,
 			'max' => $this->max,
 			'reduced' => $this->reduced,
-			'nonNewRemovable' => $this->nonNewRemovable
+			'nonNewRemovable' => $this->nonNewRemovable,
+			'sortable' => $this->sortable
 		];
 	}
 	 

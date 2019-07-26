@@ -63,23 +63,32 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandle {
 		$this->targetEiuFrame = $targetEiuFrame;
 		$this->relationModel = $relationModel;
 		
+		$this->siField = SiFields::embeddedEntryIn(
+						$this->targetEiuFrame->getApiUrl($relationModel->getTargetEditEiCommandPath()),
+						$this, $this->getValues($eiu), (int) $relationModel->getMin(), $relationModel->getMax())
+				->setReduced($this->relationModel->isReduced())
+				->setNonNewRemovable($this->relationModel->isRemovable())
+				->setSortable($relationModel->getMax() > 1 && $relationModel->getTragetOrderEiPropPath() !== null);
+	}
+	
+	/**
+	 * @param Eiu $eiu
+	 * @return \rocket\si\content\SiEmbeddedEntry[]
+	 */
+	private function getValues(Eiu $eiu) {
 		$values = [];
 		foreach ($eiu->field()->getValue() as $eiuEntry) {
 			CastUtils::assertTrue($eiuEntry instanceof EiuEntry);
 			$this->currentEiuEntryGuis[] = $eiuEntryGui = $eiuEntry->newEntryGui(true, true);
 			$values[] = new SiEmbeddedEntry(
 					$eiuEntryGui->createBulkyEntrySiContent(false, false),
-					($this->relationModel->isReduced() ? 
+					($this->relationModel->isReduced() ?
 							$eiuEntry->newEntryGui(false, false)->createCompactEntrySiContent(false, false) :
 							null));
 		}
-		
-		$this->siField = SiFields::embeddedEntryIn(
-						$this->targetEiuFrame->getApiUrl($relationModel->getTargetEditEiCommandPath()),
-						$this, $values, (int) $relationModel->getMin(), $relationModel->getMax())
-				->setReduced($this->relationModel->isReduced())
-				->setNonNewRemovable($this->relationModel->isRemovable());
+		return $values;
 	}
+	
 	
 	/**
 	 * @param array $siEntryInputs

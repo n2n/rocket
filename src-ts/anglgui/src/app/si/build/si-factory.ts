@@ -214,6 +214,8 @@ export class SiCompFactory {
 			embeddedEntryInSiField.reduced = dataExtr.reqBoolean('reduced');
 			embeddedEntryInSiField.min = dataExtr.reqNumber('min');
 			embeddedEntryInSiField.max = dataExtr.nullaNumber('max');
+			embeddedEntryInSiField.nonNewRemovable = dataExtr.reqBoolean('nonNewRemovable');
+			embeddedEntryInSiField.sortable = dataExtr.reqBoolean('sortable');
 			return embeddedEntryInSiField;
 
 		default:
@@ -234,10 +236,10 @@ export class SiCompFactory {
 		const contentFactory = new SiContentFactory(this.zone);
 
 		return new SiEmbeddedEntry(
-				<BulkyEntrySiComp> contentFactory.createContent(extr.reqObject('content'),
-						SiContentType.BULKY_ENTRY),
-				<CompactEntrySiComp> contentFactory.createContent(extr.reqObject('summaryContent'),
-						SiContentType.COMPACT_ENTRY));
+				contentFactory.createContent(extr.reqObject('content'),
+						SiContentType.BULKY_ENTRY) as BulkyEntrySiComp,
+				contentFactory.createContent(extr.reqObject('summaryContent'),
+						SiContentType.COMPACT_ENTRY) as CompactEntrySiComp);
 	}
 
 	private buildSiFile(data: any): SiFile|null {

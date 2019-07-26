@@ -19,11 +19,13 @@ export class AddPasteComponent implements OnInit {
 	allowedTypeNames: string[]|null = null;
 	@Output()
 	newEntry = new EventEmitter<SiEmbeddedEntry>();
+	@Input()
+	reduced = false;
 
 	pastablesVisible = false;
 	addLoading = false;
 	pasteLoadingSiQualifier: SiQualifier|null = null;
-	loadedSiEmbeddedEntry: SiEmbeddedEntry|null = null;
+	addableSiEmbeddedEntry: SiEmbeddedEntry|null = null;
 	addables: SiQualifier[]|null = null;
 
 	constructor(private clipboardService: ClipboardService) {
@@ -49,6 +51,7 @@ export class AddPasteComponent implements OnInit {
 	}
 
 	private handleAddResponse(siEmbeddedEntry: SiEmbeddedEntry) {
+		this.addableSiEmbeddedEntry = siEmbeddedEntry;
 		this.addables = [];
 
 		for (const siQualifier of siEmbeddedEntry.entry.typeQualifiers) {
@@ -65,16 +68,18 @@ export class AddPasteComponent implements OnInit {
 
 		if (this.addables.length === 1) {
 			this.choose(this.addables[0]);
+			return;
 		}
 	}
 
 	choose(siQualifier: SiQualifier) {
 		this.reset();
-		this.loadedSiEmbeddedEntry.comp.entry.selectedTypeId = siQualifier.buildupId;
-		if (this.loadedSiEmbeddedEntry.summaryComp) {
-			this.loadedSiEmbeddedEntry.summaryComp.entry.selectedTypeId = siQualifier.buildupId;
+		this.addableSiEmbeddedEntry.comp.entry.selectedTypeId = siQualifier.buildupId;
+		if (this.addableSiEmbeddedEntry.summaryComp) {
+			this.addableSiEmbeddedEntry.summaryComp.entry.selectedTypeId = siQualifier.buildupId;
 		}
-		this.newEntry.emit(this.loadedSiEmbeddedEntry);
+		this.newEntry.emit(this.addableSiEmbeddedEntry);
+		this.addableSiEmbeddedEntry = null;
 	}
 
 	reset() {
@@ -112,7 +117,7 @@ export class AddPasteComponent implements OnInit {
 	}
 
 	isAllowed(siQualifier: SiQualifier): boolean {
-		if (siQualifier.category !== this.pasteCategory) {
+		if (!!this.pasteCategory && siQualifier.category !== this.pasteCategory) {
 			return false;
 		}
 

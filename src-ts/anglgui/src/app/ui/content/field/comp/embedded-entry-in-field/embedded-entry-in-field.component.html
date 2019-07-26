@@ -1,10 +1,14 @@
 <div *ngIf="reduced" cdkDropList (cdkDropListDropped)="drop($event)" class="rocket-draggable-list">
 	<div *ngFor="let embe of visibleEmbes" cdkDrag class="rocket-draggable">
+		<rocket-ui-add-past [obtainer]="obtainer" (newEntry)="addBefore($event, embe)"
+				reduced="true"></rocket-ui-add-past>
+
 		<rocket-ui-structure *ngIf="reduced" class="rocket-summary" 
-					[siStructure]="embe.summarySiStructure"
-					[siControlsVisible]="false">
+					[siStructure]="embe.summarySiStructure" [siControlsVisible]="false">
 			<ng-container pre-content>
-				<div cdkDragHandle class="rocket-handle"><i class="fa fa-bars"></i></div>
+				<div [class.d-none]="!model.isSortable()" cdkDragHandle class="rocket-handle">
+					<i class="fa fa-bars"></i>
+				</div>
 				
 				<rocket-ui-qualifier [siQualifier]="embe.siEntry.qualifier" [showIdName]="false"></rocket-ui-qualifier>
 			</ng-container>
@@ -25,7 +29,7 @@
 		</rocket-ui-structure>
 	</div>
 	
-	<rocket-ui-add-past [obtainer]="obtainer"></rocket-ui-add-past>
+	<rocket-ui-add-past [obtainer]="obtainer" (newEntry)="add($event)"></rocket-ui-add-past>
 </div>
 
 <div *ngIf="!reduced">
@@ -33,5 +37,5 @@
 		<rocket-ui-structure  [siStructure]="embe.siStructure"></rocket-ui-structure>
 	</div>
 	
-	<rocket-ui-add-past></rocket-ui-add-past>
+	<rocket-ui-add-past [obtainer]="obtainer"></rocket-ui-add-past>
 </div>

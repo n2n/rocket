@@ -44,8 +44,8 @@ class EiFrameController extends ControllerAdapter {
 	const API_PATH_PART = 'api';
 	const CMD_PATH_PART = 'cmd';
 	const FORK_PATH = 'fork';
-	const FORK_NEW_ENTRY_PATH = 'forknewentry';
 	const FORK_ENTRY_PATH = 'forkentry';
+	const FORK_NEW_ENTRY_PATH = 'forknewentry';
 	
 	private $eiFrame;	
 	private $manageState;

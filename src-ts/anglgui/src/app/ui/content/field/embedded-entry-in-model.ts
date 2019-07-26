@@ -11,15 +11,17 @@ export interface EmbeddedEntryInModel {
 
 	isNonNewRemovable(): boolean;
 
+	isSortable(): boolean;
+
 	getMax(): number;
 
 	isReduced(): boolean;
 
 	getValues(): SiEmbeddedEntry[];
 
-	setValues(values: SiEmbeddedEntry[]);
+	setValues(values: SiEmbeddedEntry[]): void;
 
-	registerSiStructure(siStructure: SiStructure);
+	registerSiStructure(siStructure: SiStructure): void;
 
-	unregisterSiStructure(siStructure: SiStructure);
+	unregisterSiStructure(siStructure: SiStructure): void;
 }

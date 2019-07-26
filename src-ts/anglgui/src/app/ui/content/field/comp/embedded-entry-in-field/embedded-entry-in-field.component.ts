@@ -28,7 +28,7 @@ export class EmbeddedEntryInFieldComponent implements OnInit {
 	constructor(private translationService: TranslationService, private injector: Injector) {}
 
 	ngOnInit() {
-		this.obtainer = new EmbeddedAddPasteObtainer(this.injector.get(SiService), this.model.getApiUrl(), 
+		this.obtainer = new EmbeddedAddPasteObtainer(this.injector.get(SiService), this.model.getApiUrl(),
 				this.model.getSiZone(), this.reduced);
 	}
 
@@ -103,6 +103,14 @@ export class EmbeddedEntryInFieldComponent implements OnInit {
 
 	cancel() {
 
+	}
+
+	add(siEmbeddedEntry: SiEmbeddedEntry) {
+		this.reqEmbe(siEmbeddedEntry);
+	}
+
+	addBefore(siEmbeddedEntry: SiEmbeddedEntry, embe: Embe) {
+		this.reqEmbe(siEmbeddedEntry);
 	}
 }
 

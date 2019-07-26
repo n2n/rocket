@@ -1,4 +1,4 @@
-<div class="rocket-add-paste">
+<div class="rocket-add-paste" [class.reduced]="reduced">
 	<div>
 		<button type="button" class="btn btn-block btn-secondary" [disabled]="loading" (click)="add()">
 			<span *ngIf="isAddLoading()" class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true">
@@ -10,11 +10,9 @@
 		
 		<ul *ngIf="addablesVisible" class="rocket-multi-type-menu">
 			<li *ngFor="let siQualifier of addables">
-				<button type="button" (click)="choose(siQualifier)"
-						[disabled]="loading">
+				<button type="button" (click)="choose(siQualifier)" [disabled]="loading">
 					<rocket-ui-qualifier siQualifier="siQualifier"></rocket-ui-qualifier>
 				</button>
-				
 			</li>
 		</ul>
 	</div>
