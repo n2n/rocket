@@ -9,9 +9,7 @@ export class SiZone {
 	private disposeSubject = new Subject<void>();
 
 	constructor(readonly id: number, readonly url: string|null, readonly layer: SiLayer) {
-
 	}
-
 
 	dispose() {
 		this.disposeSubject.next();
