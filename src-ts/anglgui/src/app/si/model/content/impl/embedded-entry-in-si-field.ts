@@ -8,20 +8,22 @@ import { SiStructure } from 'src/app/si/model/structure/si-structure';
 import { SiEmbeddedEntry } from 'src/app/si/model/content/si-embedded-entry';
 import { SiCommanderService } from 'src/app/si/model/si-commander.service';
 import { SiField } from '../si-field';
+import { SiType } from "src/app/si/model/content/si-type";
 
 export class EmbeddedEntryInSiField extends InSiFieldAdapter implements EmbeddedEntryInModel {
+
 	public min = 0;
 	public max: number|null = null;
 	public reduced = false;
 	public nonNewRemovable = true;
 	public sortable = false;
+	public pastCategory: string|null = null;
+	public allowedSiTypes: SiType[]|null = null;
 
-	private savedValues: SiEmbeddedEntry[];
 	private structures: SiStructure[] = [];
 
 	constructor(public zone: SiZone, public apiUrl: string, public values: SiEmbeddedEntry[] = []) {
 		super();
-		this.savedValues = values;
 	}
 
 	readInput(): object {
@@ -48,14 +50,6 @@ export class EmbeddedEntryInSiField extends InSiFieldAdapter implements Embedded
 		throw new Error('not yet implemented');
 	}
 
-	save() {
-		this.savedValues = this.values;
-	}
-
-	reset() {
-		this.values = this.savedValues;
-	}
-
 	registerSiStructure(siStructure: SiStructure) {
 		this.structures.push(siStructure);
 	}
@@ -67,6 +61,10 @@ export class EmbeddedEntryInSiField extends InSiFieldAdapter implements Embedded
 		}
 	}
 
+	getMin(): number {
+		return this.min;
+	}
+	
 	getMax(): number|null {
 		return this.max;
 	}
@@ -81,6 +79,14 @@ export class EmbeddedEntryInSiField extends InSiFieldAdapter implements Embedded
 
 	isSortable(): boolean {
 		return this.sortable;
+	}
+	
+	getPastCategory(): string|null {
+		return this.pastCategory;
+	}
+	
+	getAllowedSiTypes(): SiType[]|null {
+		return this.allowedSiTypes;
 	}
 
 	initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver,

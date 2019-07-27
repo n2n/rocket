@@ -1,4 +1,4 @@
-<div class="rocket-add-paste" [class.reduced]="reduced">
+<div *ngIf="type != 'reduced'" class="rocket-add-paste" [class.rocket-reduced]="type == 'reduced'">
 	<div>
 		<button type="button" class="btn btn-block btn-secondary" [disabled]="loading" (click)="add()">
 			<span *ngIf="isAddLoading()" class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true">
@@ -11,7 +11,7 @@
 		<ul *ngIf="addablesVisible" class="rocket-multi-type-menu">
 			<li *ngFor="let siQualifier of addables">
 				<button type="button" (click)="choose(siQualifier)" [disabled]="loading">
-					<rocket-ui-qualifier siQualifier="siQualifier"></rocket-ui-qualifier>
+					<rocket-ui-qualifier siQualifier="siQualifier" [showIdName]="false"></rocket-ui-qualifier>
 				</button>
 			</li>
 		</ul>
@@ -24,7 +24,7 @@
 		
 		<ul *ngIf="pastablesVisible" class="rocket-multi-type-menu">
 			<li *ngFor="let siQualifier of pastables">
-				<button *ngIf="isAllowed(siQualifier); else disabledPaste" type="button" (click)="paste(siQualifier)"
+				<button *ngIf="isSiTypeAllowed(siQualifier.type); else disabledPaste" type="button" (click)="paste(siQualifier)"
 						[disabled]="loading">
 					<span *ngIf="isPasteLoading(siQualifier)" class="spinner-grow spinner-grow-sm" role="status" 
 							aria-hidden="true">[@tomekk: mach da einen loader]</span>
@@ -39,4 +39,25 @@
 			</li>
 		</ul>
 	</div>
+</div>
+
+<div *ngIf="type == 'tiles'" class="rocket-add-paste rocket-tiles">
+	<ng-container *ngFor="let siType of allowedSiType">
+		<button type="button" (click)="addBySiType(siType)" [disabled]="loading">
+			<span *ngIf="isAddLoading(siType)" class="spinner-grow spinner-grow-sm" role="status" 
+					aria-hidden="true">[@tomekk: mach da einen loader]</span>
+				
+			<rocket-ui-qualifier siType="siType" [showIdName]="false"></rocket-ui-qualifier>
+		</button>
+	</ng-container>
+	
+	<ng-container *ngFor="let siQualifier of pastables">
+		<button *ngIf="isSiTypeAllowed(siQualifier.type)" type="button" (click)="paste(siQualifier)"
+				[disabled]="loading">
+			<span *ngIf="isPasteLoading(siQualifier)" class="spinner-grow spinner-grow-sm" role="status" 
+					aria-hidden="true">[@tomekk: mach da einen loader]</span>
+				
+			<rocket-ui-qualifier siQualifier="siQualifier"></rocket-ui-qualifier>
+		</button>
+	</ng-container>
 </div>

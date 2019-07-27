@@ -32,6 +32,7 @@ use rocket\ei\util\Eiu;
 use rocket\ei\EiPropPath;
 use n2n\l10n\N2nLocale;
 use rocket\ei\component\UnknownEiComponentException;
+use rocket\si\content\SiType;
 
 class EiuMask  {
 	private $eiMask;
@@ -85,8 +86,24 @@ class EiuMask  {
 			return $this;
 		}
 		
-		return new EiuMask($this->eiMask->getEiType()->getSupremeEiType()->getEiMask(),
+		return new EiuMask($this->eiMask->determineEiMask($this->eiMask->getEiType()->getSupremeEiType()),
 				null, $this->eiuAnalyst);
+	}
+	
+	public function possibleMasks(bool $includeAbstractTypes = false) {
+		$eiuMasks = [];
+		
+		if ($includeAbstractTypes || $this->eiMask->getEiType()->isAbstract()) {
+			$eiuMasks[] = $this;
+		}
+		
+		foreach ($this->eiMask->getEiType()->getAllSubEiTypes() as $subEiType) {
+			if ($includeAbstractTypes || $subEiType->isAbstract()) {
+				$eiuMasks[] = new EiuMask($this->eiMask->determineEiMask($subEiType), null, $this->eiuAnalyst);
+			}
+		}
+		
+		return $eiuMasks;
 	}
 	
 // 	public function extensionMasks() {
@@ -203,5 +220,12 @@ class EiuMask  {
 		$this->eiMask->onEiEngineSetup(function () use ($readyCallback, $that) {
 			$readyCallback($that->engine());
 		});
+	}
+	
+	/**
+	 * @return SiType
+	 */
+	public function createSiType(N2nLocale $n2nLocale = null) {
+		return $this->eiMask->createSiType($n2nLocale ?? $this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
 	}
 }

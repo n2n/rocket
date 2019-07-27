@@ -1,3 +1,5 @@
+import { SiType } from "src/app/si/model/content/si-type";
+
 export class SiIdentifier {
 	constructor(public category: string , public id: string|null) {
 		
@@ -10,8 +12,7 @@ export class SiIdentifier {
 }
 
 export class SiQualifier extends SiIdentifier {
-	constructor(category: string, id: string|null, public buildupId, public typeName: string, 
-			public iconClass: string, public idName: string|null) {
+	constructor(category: string, id: string|null, public type: SiType, public idName: string|null) {
 		super(category, id)
 	}
 	

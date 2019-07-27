@@ -28,7 +28,7 @@ use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\manage\gui\field\GuiFieldPath;
 use rocket\ei\manage\gui\field\GuiFieldFork;
 use rocket\ei\manage\gui\field\GuiField;
-use rocket\si\content\SiEntryBuildup;
+use rocket\si\content\SiTypeBuildup;
 use rocket\si\content\SiEntry;
 use rocket\ei\manage\gui\control\GuiControlPath;
 use rocket\ei\manage\api\ApiControlCallId;
@@ -335,14 +335,15 @@ class EiEntryGui {
 		
 		$siIdentifier = $this->eiEntry->getEiObject()->createSiIdentifier();
 		$siEntry = new SiEntry($siIdentifier, !ViewMode::isReadOnly($this->eiGui->getViewMode()));
-		$siEntry->putBuildup($eiType->getId(), $this->createSiEntryBuildup($siControlsIncluded));
+		$siEntry->putBuildup($eiType->getId(), $this->createSiTypeBuildup($siControlsIncluded));
+		$siEntry->setSelectedTypeId($eiType->getId());
 		return $siEntry;
 	}
 	
 	/**
-	 * @return SiEntryBuildup
+	 * @return SiTypeBuildup
 	 */
-	function createSiEntryBuildup(bool $siControlsIncluded = true) {
+	function createSiTypeBuildup(bool $siControlsIncluded = true) {
 		$eiEntry = $this->eiEntry;
 		$eiFrame = $this->eiGui->getEiFrame();
 		
@@ -357,7 +358,7 @@ class EiEntryGui {
 					$eiFrame->getN2nContext()->getN2nLocale());
 		}
 		
-		$siEntry = new SiEntryBuildup($typeId, $typeName, $iconClass, $idName);
+		$siEntry = new SiTypeBuildup($typeId, $typeName, $iconClass, $idName);
 		
 		foreach ($this->guiFields as $guiFieldPathStr => $guiField) {
 			$siEntry->putField($guiFieldPathStr, $guiField->getSiField());

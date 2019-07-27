@@ -27,6 +27,7 @@ use n2n\util\type\ArgUtils;
 use rocket\si\content\SiEntry;
 use rocket\si\input\SiEntryInput;
 use rocket\si\content\SiEmbeddedEntry;
+use rocket\si\content\SiType;
 
 class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	
@@ -62,6 +63,14 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	 * @var bool
 	 */
 	private $sortable = false;
+	/**
+	 * @var string|null
+	 */
+	private $pastCategory = null;
+	/**
+	 * @var SiType[]|null
+	 */
+	private $allowedSiTypes = null;
 	
 	/**
 	 * @param Url $apiUrl
@@ -188,6 +197,41 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	}
 	
 	/**
+	 * @return string
+	 */
+	public function isPasteCategory() {
+		return $this->pasteCategory;
+	}
+	
+	/**
+	 * @param string $pasteCategory
+	 * @return EmbeddedEntryInSiField
+	 */
+	public function setPasteCategory(string $pasteCategory) {
+		$this->pasteCategory = $pasteCategory;
+		return $this;
+	}
+	
+	/**
+	 * @return SiType[]|null
+	 */
+	public function isAllowedTypes() {
+		return $this->allowedTypes;
+	}
+	
+	/**
+	 * @param SiType[]|null $allowedTypes
+	 * @return EmbeddedEntryInSiField
+	 */
+	public function setAllowedTypes(?array $allowedTypes) {
+		ArgUtils::valArray($allowedTypes, SiType::class, true);
+		$this->allowedTypes = $allowedTypes;
+		return $this;
+	}
+	
+	
+	
+	/**
 	 * {@inheritDoc}
 	 * @see \rocket\si\content\SiField::getType()
 	 */
@@ -207,7 +251,8 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 			'max' => $this->max,
 			'reduced' => $this->reduced,
 			'nonNewRemovable' => $this->nonNewRemovable,
-			'sortable' => $this->sortable
+			'pastCategory' => $this->pastCategory,
+			'allowedSiTypes' => $this->allowedSiTypes
 		];
 	}
 	 

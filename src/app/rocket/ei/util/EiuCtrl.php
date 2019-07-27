@@ -360,7 +360,7 @@ class EiuCtrl {
 			$buildupId = $contextEiuType->getId();
 			$eiEntryGui = $this->eiuFrame->newEntry()->newEntryGui()->getEiEntryGui();
 			
-			$siEntry->putBuildup($buildupId, $eiEntryGui->createSiEntryBuildup());
+			$siEntry->putBuildup($buildupId, $eiEntryGui->createSiTypeBuildup());
 			$siBulkyDeclaration->putFieldStructureDeclarations(
 					$eiEntryGui->getEiEntry()->getEiGuiSiFactory()->getSiFieldStructureDeclaration());
 		}

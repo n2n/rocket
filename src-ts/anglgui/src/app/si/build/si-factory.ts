@@ -25,6 +25,7 @@ import { StringOutSiField } from '../model/content/impl/string-out-si-field';
 import { SiControl } from '../model/control/si-control';
 import { SiButton, SiConfirm } from '../model/control/si-button';
 import { SiControlType, SiFieldType, SiContentType } from './si-type';
+import { SiType } from "src/app/si/model/content/si-type";
 
 
 export class SiContentFactory {
@@ -48,7 +49,7 @@ export class SiContentFactory {
 		const type = extr.reqString('type');
 
 		if (!!requiredType && requiredType !== type) {
-			throw new ObjectMissmatchError('Type ' + requiredType + ' required. Give. ' + type);
+			throw new ObjectMissmatchError('Type ' + requiredType + ' required. Given: ' + type);
 		}
 
 		switch (type) {
@@ -145,8 +146,21 @@ export class SiCompFactory {
 		const extr = new Extractor(data);
 
 		return new SiQualifier(extr.reqString('category'), extr.nullaString('id'),
-				extr.reqString('typeId'), extr.reqString('typeName'), extr.reqString('iconClass'),
-				extr.nullaString('idName'));
+				this.createType(extr.reqObject('type')), extr.nullaString('idName'));
+	}
+	
+	private createTypes(data: Array<any>) {
+		const types: SiType[] = [];
+		for (const typeData of data) {
+			types.push(this.createType(typeData));
+		}
+		return types;
+	}
+	
+	private createType(data: any): SiType {
+		const extr = new Extractor(data);
+		
+		return new SiType(extr.reqString('typeId'), extr.reqString('typeName'), extr.reqString('iconClass'));
 	}
 
 	private createIdentifier(data: any): SiIdentifier {
@@ -158,7 +172,7 @@ export class SiCompFactory {
 	private createBuildup(data: any): SiTypeBuildup {
 		const extr = new Extractor(data);
 
-		return new SiTypeBuildup(extr.reqString('typeId'), extr.reqString('typeName'), extr.reqString('iconClass'),
+		return new SiTypeBuildup(this.createType(extr.reqObject('type')),
 				extr.nullaString('idName'), this.createFieldMap(extr.reqMap('fields')),
 				this.createControlMap(extr.reqMap('controls')));
 	}
@@ -216,6 +230,15 @@ export class SiCompFactory {
 			embeddedEntryInSiField.max = dataExtr.nullaNumber('max');
 			embeddedEntryInSiField.nonNewRemovable = dataExtr.reqBoolean('nonNewRemovable');
 			embeddedEntryInSiField.sortable = dataExtr.reqBoolean('sortable');
+			embeddedEntryInSiField.pastCategory = dataExtr.nullaString('pastCategory');
+			
+			const allowedsiTypesData = dataExtr.nullaArray('allowedSiTypes')
+			if (allowedsiTypesData) {
+				embeddedEntryInSiField.allowedSiTypes = this.createTypes(allowedsiTypesData);
+			} else {
+				embeddedEntryInSiField.allowedSiTypes = null;
+			}
+			
 			return embeddedEntryInSiField;
 
 		default:

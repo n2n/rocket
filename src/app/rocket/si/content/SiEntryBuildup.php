@@ -23,7 +23,7 @@ namespace rocket\si\content;
 
 use rocket\si\control\SiControl;
 
-class SiEntryBuildup implements \JsonSerializable {
+class SiTypeBuildup implements \JsonSerializable {
 	/**
 	 * @var string
 	 */

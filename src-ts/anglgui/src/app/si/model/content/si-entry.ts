@@ -6,12 +6,13 @@ import { IllegalSiStateError } from 'src/app/si/model/illegal-si-state-error';
 import { SiTypeBuildup } from 'src/app/si/model/content/si-entry-buildup';
 import { SiEntryError } from 'src/app/si/model/input/si-entry-error';
 import { SiQualifier, SiIdentifier } from 'src/app/si/model/content/si-qualifier';
+import { SiType } from "src/app/si/model/content/si-type";
 
 export class SiEntry {
 	public treeLevel: number|null = null;
-	private _selectedTypeId: string;
+	private _selectedTypeId: string|null = null;
 	public inputAvailable: boolean = false;
-	private _buildupsMap = new Map<string, SiTypeBuildup>();
+	private _typeBuildupsMap = new Map<string, SiTypeBuildup>();
 
 	constructor(public identifier: SiIdentifier) {
 	}
@@ -21,7 +22,7 @@ export class SiEntry {
 			return; 
 		}
 
-		throw new IllegalSiStateError('No buildup available for entry: ' + this.toString());
+		throw new IllegalSiStateError('No buildup selected for entry: ' + this.toString());
 	}
 
 	get qualifier(): SiQualifier {
@@ -29,7 +30,7 @@ export class SiEntry {
 	}
 
 	get selectedTypeBuildup(): SiTypeBuildup {
-		return this._buildupsMap.get(this.selectedTypeId) as SiTypeBuildup;
+		return this._typeBuildupsMap.get(this.selectedTypeId) as SiTypeBuildup;
 	}
 
 	get selectedTypeId(): string {
@@ -39,25 +40,29 @@ export class SiEntry {
 	}
 
 	set selectedTypeId(id: string) {
-		if (!this._buildupsMap.has(id)) {
+		if (!this._typeBuildupsMap.has(id)) {
 			throw new IllegalSiStateError('Buildup id does not exist on entry: ' + id);
 		}
 
 		this._selectedTypeId = id;
 	}
 
+	get types(): SiType[] {
+		return Array.from(this._typeBuildupsMap.values()).map(buildup => buildup.type);
+	}
+	
 	get typeQualifiers(): SiQualifier[] {
 		const qualifiers: SiQualifier[] = [];
-		for (const buildup of this._buildupsMap.values()) {
+		for (const buildup of this._typeBuildupsMap.values()) {
 			qualifiers.push(buildup.createQualifier(this.identifier));
 		}
 		return qualifiers;
 	}
 
 	putTypeBuildup(buildup: SiTypeBuildup) {
-		this._buildupsMap.set(buildup.typeId, buildup);
+		this._typeBuildupsMap.set(buildup.type.id, buildup);
 		if (!this._selectedTypeId) {
-			this._selectedTypeId = buildup.typeId;
+			this._selectedTypeId = buildup.type.id;
 		}
 	}
 
@@ -96,7 +101,7 @@ export class SiEntry {
 	}
 
 	resetError() {
-		for (const [buildupId, buildup] of this._buildupsMap) {
+		for (const [buildupId, buildup] of this._typeBuildupsMap) {
 			buildup.messages = [];
 
 			for (const [fieldId, field] of this.selectedTypeBuildup.fieldMap) {
@@ -113,7 +118,7 @@ export class SiEntry {
 		const entry = new SiEntry(this.identifier);
 		entry.treeLevel = this.treeLevel;
 
-		for (const buildup of this._buildupsMap.values()) {
+		for (const buildup of this._typeBuildupsMap.values()) {
 			entry.putTypeBuildup(buildup.copy());
 		}
 

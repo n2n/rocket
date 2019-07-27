@@ -27,6 +27,7 @@ use rocket\ei\util\entry\EiuObject;
 use rocket\user\model\LoginContext;
 use n2n\util\type\CastUtils;
 use rocket\spec\UnknownTypeException;
+use rocket\si\content\SiType;
 
 class EiuType  {
 	private $eiType;
@@ -153,6 +154,26 @@ class EiuType  {
 	}
 	
 	/**
+	 * @param bool $includeAbstracts
+	 * @return \rocket\ei\util\spec\EiuType[]
+	 */
+	function possibleTypes(bool $includeAbstracts = false) {
+		$eiuTypes = [];
+		
+		if ($includeAbstracts || !$this->isAbstract()) {
+			$eiuTypes[] = $this; 
+		}
+		
+		foreach ($this->allSubTypes() as $subEiuType) {
+			if ($includeAbstracts || !$subEiuType->isAbstract()) {
+				$eiuTypes[] = $subEiuType;
+			}
+		}
+		
+		return $eiuTypes;
+	}
+	
+	/**
 	 * @return EiuType[]
 	 */
 	function allSubTypes() {
@@ -174,5 +195,12 @@ class EiuType  {
 	function matches($object) {
 		$eiType = EiuAnalyst::determineEiType($object, true);
 		return $this->eiType->isA($eiType);
+	}
+	
+	/**
+	 * @return SiType
+	 */
+	function createSiType() {
+		return $this->eiType->createSiType();
 	}
 }

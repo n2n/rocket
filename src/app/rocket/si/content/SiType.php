@@ -23,40 +23,54 @@ namespace rocket\si\content;
 
 use n2n\util\type\attrs\DataSet;
 
-class SiQualifier extends SiIdentifier implements \JsonSerializable {
-    private $type;
-	private $idName;
+class SiType implements \JsonSerializable {
+    private $id;
+	private $name;
+	private $iconClass;
 	
-	function __construct(string $category, ?string $id, SiType $type, string $idName = null) {
-		parent::__construct($category, $id);
-		$this->type = $type;
-		$this->idName = $idName;
+	function __construct(string $id, string $name, string $iconClass) {
+		$this->id = $id;
+		$this->name = $name;
+		$this->iconClass = $iconClass;
 	}
 	
 	/**
-	 * @return SiType
+	 * @return string
 	 */
-	function getType() {
-		return $this->type;
+	function getId() {
+		return $this->id;
+	}
+	
+	/**
+	 * @param string $id
+	 * @return \rocket\si\content\SiType
+	 */
+	function setId(string $id) {
+		$this->id;
+		return $this;
+	}
+	
+	/**
+	 * @return string
+	 */
+	function getName() {
+		return $this->name;
 	}
 	
 	/**
 	 * @param string $name
 	 * @return SiQualifier
 	 */
-	function setTypeName(SiType $type) {
-		$this->type = $type;
+	function setName(string $name) {
+		$this->name = $name;
 		return $this;
 	}
 	
 	function jsonSerialize() {
 		return [
-			'category' => $this->getCategory(),
-			'id' => $this->getId(),
-		    'typeId' => $this->typeId,
-			'type' => $this->type,
-			'iconClass' => $this->iconClass,
-			'idName' => $this->idName
+		    'id' => $this->id,
+			'name' => $this->name,
+			'iconClass' => $this->iconClass
 		];
 	}
 
@@ -64,8 +78,7 @@ class SiQualifier extends SiIdentifier implements \JsonSerializable {
 		$ds = new DataSet($data);
 		
 		try {
-			return new SiQualifier($ds->reqString('category'), $ds->optString('id'), 
-					SiType::parse($ds->reqArray('type')), $ds->optString('idName'));
+			return new SiType($ds->reqString('id'), $ds->reqString('name'), $ds->reqString('iconClass'));
 		} catch (\n2n\util\type\attrs\AttributesException $e) {
 			throw new \InvalidArgumentException(null, null, $e);
 		}

@@ -22,7 +22,7 @@ export class EmbeddedEntryInFieldComponent implements OnInit {
 
 	private popupSiLayer: PopupSiLayer|null = null;
 
-	private embes: Embe[] = [];
+	public embes: Embe[] = [];
 	obtainer: EmbeddedAddPasteObtainer;
 
 	constructor(private translationService: TranslationService, private injector: Injector) {}
@@ -30,30 +30,104 @@ export class EmbeddedEntryInFieldComponent implements OnInit {
 	ngOnInit() {
 		this.obtainer = new EmbeddedAddPasteObtainer(this.injector.get(SiService), this.model.getApiUrl(),
 				this.model.getSiZone(), this.reduced);
+		
+		this.readEmbes();
+		this.fillWithPlaceholerEmbes();
 	}
-
-	get visibleEmbes(): Embe[] {
-		const embes = [];
-		for (const siEmbeddedEntry of this.model.getValues()) {
-			embes.push(this.reqEmbe(siEmbeddedEntry));
+	
+	ngOnDestroy() {
+		this.clearEmbes();
+	}
+	
+	private unregisterEmbe(embe: Embe) {
+		if (embe.siStructure) {
+			this.model.unregisterSiStructure(embe.siStructure);
 		}
-		return embes;
+		
+		if (embe.summarySiStructure) {
+			this.model.unregisterSiStructure(embe.siStructure)
+		}
 	}
-
+	
+	private clearEmbes() {
+		let embe: Embe;
+		while (embe = this.embes.pop()) {
+			this.unregisterEmbe(embe);
+		}
+	}
+	
+	private createEmbe(): Embe {
+		const embe = new Embe();
+		this.embes.push(embe);
+		return embe;
+	}
+	
+	private removeEmbe(embe: Embe) {
+		const i = this.embes.indexOf(embe);
+		if (i < 0) {
+			throw new Error('Unknown Embe');
+		}
+		
+		this.embes.splice(i, 1);
+		this.unregisterEmbe(embe);
+	}
+	
+	private changeEmbePosition(oldIndex: number, newIndex: number) {
+		const moveEmbe = this.embes[oldIndex];
+		
+		if (oldIndex < newIndex) {
+			for (let i = oldIndex; i < newIndex; i++) {
+				this.embes[i] = this.embes[i + 1];
+			}
+		}
+		
+		if (oldIndex < newIndex) {
+			for (let i = oldIndex; i > newIndex; i--) {
+				this.embes[i] = this.embes[i - 1];
+			}
+		}
+		
+		this.embes[newIndex] = moveEmbe;
+	}
+	
+	private readEmbes() {
+		this.clearEmbes();
+		
+		for (const siEmbeddedEntry of this.model.getValues()) {
+			this.initEmbe(this.createEmbe(), siEmbeddedEntry);
+		}
+	}
+	
+	private writeEmbes() {
+		const values: SiEmbeddedEntry[] = [];
+	
+		for (const embe of this.embes) {
+			if (embe.isPlaceholder()) {
+				continue;
+			}
+			
+			values.push(embe.siEmbeddedEntry);
+		}
+		
+		this.model.setValues(values);
+	}
+	
+	private fillWithPlaceholerEmbes() {
+		if (!this.model.getAllowedSiTypes()) {
+			return;
+		}
+		
+		const min = this.model.getMin();
+		while (this.embes.length < min) {
+			this.createEmbe();
+		}
+	}
+	
 	get reduced(): boolean {
 		return this.model.isReduced();
 	}
-
-	private reqEmbe(siEmbeddedEntry: SiEmbeddedEntry): Embe {
-		let embe = this.embes.find(embe => embe.siEmbeddedEntry === siEmbeddedEntry);
-		if (embe) {
-			embe.siStructure.model = siEmbeddedEntry.comp;
-			if (this.reduced) {
-				embe.summarySiStructure.model = siEmbeddedEntry.summaryComp;
-			}
-			return embe;
-		}
-
+	
+	private initEmbe(embe: Embe, siEmbeddedEntry: SiEmbeddedEntry) {
 		const siStructure = new SiStructure(null, null, siEmbeddedEntry.comp);
 		const summarySiStructure = (this.reduced ? new SiStructure(null, null, siEmbeddedEntry.summaryComp) : null);
 
@@ -68,16 +142,30 @@ export class EmbeddedEntryInFieldComponent implements OnInit {
 			];
 		}
 
-		embe = new Embe(siEmbeddedEntry, siStructure, summarySiStructure);
+		embe.siEmbeddedEntry = siEmbeddedEntry;
+		embe.siStructure = siStructure;
+		embe.summarySiStructure = summarySiStructure;
+		
 		this.model.registerSiStructure(siStructure);
 		this.model.registerSiStructure(summarySiStructure);
-		this.embes.push(embe);
+		
 		return embe;
 	}
 
 	drop(event: CdkDragDrop<string[]>) {
-		console.log(event);
-// 		moveItemInArray(this.movies, event.previousIndex, event.currentIndex);
+		this.changeEmbePosition(event.previousIndex, event.currentIndex);
+		this.writeEmbes();
+	}
+	
+	add(siEmbeddedEntry: SiEmbeddedEntry) {
+		this.initEmbe(this.createEmbe(), siEmbeddedEntry);
+		this.writeEmbes();
+	}
+	
+	addBefore(embe: Embe, siEmbeddedEntry: SiEmbeddedEntry) {
+		this.initEmbe(this.createEmbe(), siEmbeddedEntry);
+		this.changeEmbePosition(this.embes.length - 1, this.embes.indexOf(embe));
+		this.writeEmbes();
 	}
 
 	open(embe: Embe) {
@@ -104,23 +192,18 @@ export class EmbeddedEntryInFieldComponent implements OnInit {
 	cancel() {
 
 	}
-
-	add(siEmbeddedEntry: SiEmbeddedEntry) {
-		this.reqEmbe(siEmbeddedEntry);
-	}
-
-	addBefore(siEmbeddedEntry: SiEmbeddedEntry, embe: Embe) {
-		this.reqEmbe(siEmbeddedEntry);
-	}
 }
 
-
 class Embe {
-	constructor(public siEmbeddedEntry: SiEmbeddedEntry,
-			public siStructure: SiStructure,
-			public summarySiStructure: SiStructure|null) {
+	constructor(public siEmbeddedEntry: SiEmbeddedEntry|null = null,
+			public siStructure: SiStructure|null = null,
+			public summarySiStructure: SiStructure|null = null) {
 	}
 
+	isPlaceholder(): boolean {
+		return !this.siEmbeddedEntry;
+	}
+	
 	get siEntry(): SiEntry {
 		return this.siEmbeddedEntry.entry;
 	}

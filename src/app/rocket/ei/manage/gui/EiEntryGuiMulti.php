@@ -114,7 +114,11 @@ class EiEntryGuiMulti {
 		
 		foreach ($this->eiEntryGuis as $eiEntryGui) {
 			$siEntry->putBuildup($eiEntryGui->getEiEntry()->getEiType()->getId(), 
-					$eiEntryGui->createSiEntryBuildup());
+					$eiEntryGui->createSiTypeBuildup());
+		}
+		
+		if (count($this->eiEntryGuis) == 1) {
+			$siEntry->setSelectedTypeId(current($this->eiEntryGuis)->getEiEntry()->getEiType()->getId());
 		}
 		
 		return $siEntry;

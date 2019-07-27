@@ -35,6 +35,8 @@ use rocket\si\input\CorruptedSiInputDataException;
 use rocket\si\content\impl\EmbeddedEntryInputHandle;
 use rocket\si\content\SiEmbeddedEntry;
 use rocket\ei\util\gui\EiuEntryGui;
+use rocket\ei\util\spec\EiuType;
+use rocket\ei\util\spec\EiuMask;
 
 class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandle {
 	/**
@@ -68,7 +70,10 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandle {
 						$this, $this->getValues($eiu), (int) $relationModel->getMin(), $relationModel->getMax())
 				->setReduced($this->relationModel->isReduced())
 				->setNonNewRemovable($this->relationModel->isRemovable())
-				->setSortable($relationModel->getMax() > 1 && $relationModel->getTragetOrderEiPropPath() !== null);
+				->setSortable($relationModel->getMax() > 1 && $relationModel->getTragetOrderEiPropPath() !== null)
+				->setPasteCategory($targetEiuFrame->engine()->type()->supremeType()->getId())
+				->setAllowedTypes(array_map($targetEiuFrame->engine()->mask()->possibleMasks(), 
+						function (EiuMask $eiuMask) { return $eiuMask->createSiType(); }));
 	}
 	
 	/**
@@ -88,7 +93,6 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandle {
 		}
 		return $values;
 	}
-	
 	
 	/**
 	 * @param array $siEntryInputs

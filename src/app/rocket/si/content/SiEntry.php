@@ -26,6 +26,7 @@ class SiEntry implements \JsonSerializable {
 	 * @var SiIdentifier
 	 */
 	private $identifier;
+	private $selectedTypeId = null;
 	private $buildups = [];
 	private $treeLevel;
 	private $inputAvailable;
@@ -72,14 +73,14 @@ class SiEntry implements \JsonSerializable {
 	}
 
 	/**
-	 * @return SiEntryBuildup[]
+	 * @return SiTypeBuildup[]
 	 */
 	function getBuildups() {
 		return $this->buildups;
 	}
 
 	/**
-	 * @param SiEntryBuildup[] $buildups 
+	 * @param SiTypeBuildup[] $buildups 
 	 */
 	function setBuildups(array $buildups) {
 		$this->buildups = $buildups;
@@ -91,9 +92,25 @@ class SiEntry implements \JsonSerializable {
 	 * @param SiField $field
 	 * @return \rocket\si\content\SiEntry
 	 */
-	function putBuildup(string $id, SiEntryBuildup $buildup) {
+	function putBuildup(string $id, SiTypeBuildup $buildup) {
 		$this->buildups[$id] = $buildup;
 		return $this;
+	}
+	
+	/**
+	 * @param string $id
+	 * @return \rocket\si\content\SiEntry
+	 */
+	function setSelectedTypeId(?string $id) {
+		$this->selectedTypeId = $id;
+		return $this;
+	}
+	
+	/**
+	 * @return string
+	 */
+	function getSelectTypeId() {
+		return $this->selectedTypeId;
 	}
 	
 	function jsonSerialize() {

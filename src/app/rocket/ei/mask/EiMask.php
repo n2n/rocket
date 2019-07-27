@@ -52,6 +52,8 @@ use n2n\l10n\Lstr;
 use rocket\ei\manage\gui\EiEntryGui;
 use rocket\ei\manage\gui\EiGui;
 use rocket\ei\manage\gui\EiGuiListener;
+use rocket\si\content\SiType;
+use n2n\l10n\N2nLocale;
 
 /**
  * @author andreas
@@ -629,6 +631,14 @@ class EiMask {
 		
 		$previewController->setPreviewModel($previewModel);
 		return $previewController;
+	}
+	
+	/**
+	 * @param N2nLocale $n2nLocale
+	 * @return \rocket\si\content\SiType
+	 */
+	public function createSiType(N2nLocale $n2nLocale) {
+		return new SiType($this->getEiType()->getId(), $this->getLabelLstr()->t($n2nLocale), $this->getIconType());
 	}
 	
 	public function __toString(): string {
