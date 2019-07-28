@@ -347,18 +347,17 @@ class EiEntryGui {
 		$eiEntry = $this->eiEntry;
 		$eiFrame = $this->eiGui->getEiFrame();
 		
-		$typeId = $eiEntry->getEiMask()->getEiType()->getId();
-		$typeName = $eiEntry->getEiMask()->getLabelLstr()->t($eiFrame->getN2nContext()->getN2nLocale());
-		$iconClass = $eiEntry->getEiMask()->getIconType();
+		$n2nLocale = $eiFrame->getN2nContext()->getN2nLocale();
+		$type = $eiEntry->getEiMask()->createSiType($n2nLocale);
 		$idName = null;
 		if (!$eiEntry->isNew()) {
 			$deterIdNameDefinition = $eiFrame->getManageState()->getDef()
 					->getIdNameDefinition($eiEntry->getEiMask());
 			$idName = $deterIdNameDefinition->createIdentityString($eiEntry->getEiObject(), $eiFrame->getN2nContext(),
-					$eiFrame->getN2nContext()->getN2nLocale());
+					$n2nLocale);
 		}
 		
-		$siEntry = new SiTypeBuildup($typeId, $typeName, $iconClass, $idName);
+		$siEntry = new SiTypeBuildup($type, $idName);
 		
 		foreach ($this->guiFields as $guiFieldPathStr => $guiField) {
 			$siEntry->putField($guiFieldPathStr, $guiField->getSiField());

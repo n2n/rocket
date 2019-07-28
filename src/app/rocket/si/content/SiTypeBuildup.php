@@ -25,17 +25,9 @@ use rocket\si\control\SiControl;
 
 class SiTypeBuildup implements \JsonSerializable {
 	/**
-	 * @var string
+	 * @var SiType
 	 */
-	private $typeId;
-	/**
-	 * @var string
-	 */
-	private $typeName;
-	/**
-	 * @var string
-	 */
-	private $iconClass;
+	private $type;
 	/**
 	 * @var string|null
 	 */
@@ -54,26 +46,24 @@ class SiTypeBuildup implements \JsonSerializable {
 	 * @param string|null $id
 	 * @param string $name
 	 */
-	function __construct(string $typeId, string $typeName, string $iconClass, ?string $idName) {
-		$this->typeId = $typeId;
-		$this->typeName = $typeName;
-		$this->iconClass = $iconClass;
+	function __construct(SiType $type, ?string $idName) {
+		$this->type = $type;
 		$this->idName = $idName;
 	}
 	
 	/**
-	 * @return string
+	 * @return SiType
 	 */
-	function getTypeName() {
-		return $this->typeName;
+	function getType() {
+		return $this->type;
 	}
 	
 	/**
-	 * @param string $name
+	 * @param SiType $name
 	 * @return SiEntry
 	 */
-	function setTypeName(string $name) {
-		$this->typeName = $name;
+	function setType(SiType $type) {
+		$this->type = $type;
 		return $this;
 	}
 	
@@ -160,9 +150,7 @@ class SiTypeBuildup implements \JsonSerializable {
 		}
 		
 		return [
-			'typeId' => $this->typeId,
-			'typeName' => $this->typeName,
-			'iconClass' => $this->iconClass,
+			'type' => $this->type,
 			'idName' => $this->idName,
 			'fields' => $fieldsArr,
 			'controls' => $controlsArr

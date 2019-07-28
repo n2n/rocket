@@ -24,12 +24,12 @@ namespace rocket\si\content;
 use n2n\util\type\attrs\DataSet;
 
 class SiType implements \JsonSerializable {
-    private $id;
+    private $typeId;
 	private $name;
 	private $iconClass;
 	
-	function __construct(string $id, string $name, string $iconClass) {
-		$this->id = $id;
+	function __construct(string $typeId, string $name, string $iconClass) {
+		$this->typeId = $typeId;
 		$this->name = $name;
 		$this->iconClass = $iconClass;
 	}
@@ -37,16 +37,16 @@ class SiType implements \JsonSerializable {
 	/**
 	 * @return string
 	 */
-	function getId() {
-		return $this->id;
+	function getTypeId() {
+		return $this->typeId;
 	}
 	
 	/**
 	 * @param string $id
 	 * @return \rocket\si\content\SiType
 	 */
-	function setId(string $id) {
-		$this->id;
+	function setTypeId(string $typeId) {
+		$this->typeId = $typeId;
 		return $this;
 	}
 	
@@ -68,7 +68,7 @@ class SiType implements \JsonSerializable {
 	
 	function jsonSerialize() {
 		return [
-		    'id' => $this->id,
+		    'typeId' => $this->typeId,
 			'name' => $this->name,
 			'iconClass' => $this->iconClass
 		];
@@ -78,7 +78,7 @@ class SiType implements \JsonSerializable {
 		$ds = new DataSet($data);
 		
 		try {
-			return new SiType($ds->reqString('id'), $ds->reqString('name'), $ds->reqString('iconClass'));
+			return new SiType($ds->reqString('typeId'), $ds->reqString('name'), $ds->reqString('iconClass'));
 		} catch (\n2n\util\type\attrs\AttributesException $e) {
 			throw new \InvalidArgumentException(null, null, $e);
 		}

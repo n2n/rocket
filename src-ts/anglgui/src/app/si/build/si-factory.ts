@@ -160,7 +160,7 @@ export class SiCompFactory {
 	private createType(data: any): SiType {
 		const extr = new Extractor(data);
 		
-		return new SiType(extr.reqString('typeId'), extr.reqString('typeName'), extr.reqString('iconClass'));
+		return new SiType(extr.reqString('typeId'), extr.reqString('name'), extr.reqString('iconClass'));
 	}
 
 	private createIdentifier(data: any): SiIdentifier {

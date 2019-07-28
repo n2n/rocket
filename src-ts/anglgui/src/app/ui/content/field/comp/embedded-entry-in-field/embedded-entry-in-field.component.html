@@ -1,7 +1,7 @@
 <div *ngIf="reduced" cdkDropList (cdkDropListDropped)="drop($event)" class="rocket-draggable-list">
 	<div *ngFor="let embe of embes" cdkDrag class="rocket-draggable">
-		<rocket-ui-add-past [obtainer]="obtainer" (newEntry)="addBefore($event, embe)"
-				reduced="true"></rocket-ui-add-past>
+		<rocket-ui-add-past [obtainer]="obtainer" [allowedSiTypes]="model.getAllowedSiTypes()" type="reduced"
+				(newEntry)="addBefore($event, embe)"></rocket-ui-add-past>
 
 		<rocket-ui-structure *ngIf="reduced" class="rocket-summary" 
 					[siStructure]="embe.summarySiStructure" [siControlsVisible]="false">
@@ -29,16 +29,18 @@
 		</rocket-ui-structure>
 	</div>
 	
-	<rocket-ui-add-past [obtainer]="obtainer" (newEntry)="add($event)"></rocket-ui-add-past>
+	<rocket-ui-add-past [obtainer]="obtainer" [allowedSiTypes]="model.getAllowedSiTypes()" 
+			(newEntry)="add($event)"></rocket-ui-add-past>
 </div>
 
 <div *ngIf="!reduced">
-	<ng-container *ngIf="!embe.siEmbeddedEntry">
-		<rocket-ui-add-past [obtainer]="obtainer" [place] (newEntry)="add($event)"></rocket-ui-add-past>
+	<ng-container *ngIf="embe.isPlaceholder()">
+		<rocket-ui-add-past [obtainer]="obtainer" [allowedSiTypes]="model.getAllowedSiTypes()" type="tiles" 
+				(newEntry)="add($event)"></rocket-ui-add-past>
 	</ng-container>
 	
 	<div *ngFor="let embe of embes">
-		<ng-container *ngIf="embe.siEmbeddedEntry">
+		<ng-container *ngIf="!embe.isPlaceholder()">
 			<rocket-ui-add-past [obtainer]="obtainer" [allowedSiTypes]="model.getAllowedSiTypes()"
 					(newEntry)="addBefore($event, embe)"></rocket-ui-add-past>	
 		
@@ -46,5 +48,6 @@
 		</ng-container>
 	</div>
 	
-	<rocket-ui-add-past [obtainer]="obtainer"></rocket-ui-add-past>
+	<rocket-ui-add-past [obtainer]="obtainer" [allowedSiTypes]="model.getAllowedSiTypes()" 
+			(newEntry)="add($event)"></rocket-ui-add-past>
 </div>

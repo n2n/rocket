@@ -9,7 +9,7 @@ import { TranslationService } from 'src/app/util/i18n/translation.service';
 import { SiButton } from 'src/app/si/model/control/si-button';
 import { SimpleSiControl } from 'src/app/si/model/control/impl/simple-si-control';
 import { SiService } from 'src/app/si/model/si.service';
-import { EmbeddedAddPasteObtainer } from './embedded-add-paste-optainer';
+import { EmbeddedAddPasteObtainer } from './embedded-add-paste-obtainer';
 
 @Component({
   selector: 'rocket-embedded-entry-in-field',
@@ -165,6 +165,11 @@ export class EmbeddedEntryInFieldComponent implements OnInit {
 	addBefore(embe: Embe, siEmbeddedEntry: SiEmbeddedEntry) {
 		this.initEmbe(this.createEmbe(), siEmbeddedEntry);
 		this.changeEmbePosition(this.embes.length - 1, this.embes.indexOf(embe));
+		this.writeEmbes();
+	}
+	
+	place(siEmbeddedEntry: SiEmbeddedEntry, embe: Embe) {
+		this.initEmbe(embe, siEmbeddedEntry);
 		this.writeEmbes();
 	}
 

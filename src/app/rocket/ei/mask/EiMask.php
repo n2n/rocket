@@ -531,16 +531,20 @@ class EiMask {
 	 * @throws \InvalidArgumentException
 	 * @return \rocket\ei\mask\EiMask
 	 */
-	public function determineEiMask(EiType $eiType) {
+	public function determineEiMask(EiType $eiType, bool $superIncluded = false) {
 		$contextEiMask = $this;
 		$contextEiType = $contextEiMask->getEiType();
 		if ($eiType->equals($contextEiType)) {
 			return $contextEiMask;
 		}
 		
-		if (!$contextEiType->containsSubEiTypeId($eiType->getId(), true)) {
+		if ($superIncluded) {
+			$contextEiType = $contextEiType->getSupremeEiType();
+		}
+		
+		if (!$eiType->isA($contextEiType)) {
 			throw new \InvalidArgumentException('EiType ' . $eiType->getId() . ' is no SubEiType of '
-					. $this->getEiType()->getId());
+					. $contextEiType->getId());
 		}
 		
 		if (isset($this->subEiTypeExtensions[$eiType->getId()])) {

@@ -91,9 +91,9 @@ export class AddPasteComponent implements OnInit {
 
 	choose(siType: SiType) {
 		this.reset();
-		this.addableSiEmbeddedEntry.comp.entry.selectedTypeId = siType.id;
+		this.addableSiEmbeddedEntry.comp.entry.selectedTypeId = siType.typeId;
 		if (this.addableSiEmbeddedEntry.summaryComp) {
-			this.addableSiEmbeddedEntry.summaryComp.entry.selectedTypeId = siType.id;
+			this.addableSiEmbeddedEntry.summaryComp.entry.selectedTypeId = siType.typeId;
 		}
 		this.newEntry.emit(this.addableSiEmbeddedEntry);
 		this.addableSiEmbeddedEntry = null;

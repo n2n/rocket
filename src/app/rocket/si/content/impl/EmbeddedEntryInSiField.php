@@ -251,6 +251,7 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 			'max' => $this->max,
 			'reduced' => $this->reduced,
 			'nonNewRemovable' => $this->nonNewRemovable,
+			'sortable' => $this->sortable,
 			'pastCategory' => $this->pastCategory,
 			'allowedSiTypes' => $this->allowedSiTypes
 		];

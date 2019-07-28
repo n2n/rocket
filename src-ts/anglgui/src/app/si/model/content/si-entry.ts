@@ -60,9 +60,9 @@ export class SiEntry {
 	}
 
 	putTypeBuildup(buildup: SiTypeBuildup) {
-		this._typeBuildupsMap.set(buildup.type.id, buildup);
+		this._typeBuildupsMap.set(buildup.type.typeId, buildup);
 		if (!this._selectedTypeId) {
-			this._selectedTypeId = buildup.type.id;
+			this._selectedTypeId = buildup.type.typeId;
 		}
 	}
 

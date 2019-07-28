@@ -86,7 +86,7 @@ class EiuMask  {
 			return $this;
 		}
 		
-		return new EiuMask($this->eiMask->determineEiMask($this->eiMask->getEiType()->getSupremeEiType()),
+		return new EiuMask($this->eiMask->determineEiMask($this->eiMask->getEiType()->getSupremeEiType(), true),
 				null, $this->eiuAnalyst);
 	}
 	
