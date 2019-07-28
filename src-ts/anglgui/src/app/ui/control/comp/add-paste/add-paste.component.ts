@@ -39,7 +39,7 @@ export class AddPasteComponent implements OnInit {
 	}
 	
 	get loading(): boolean {
-		return this.addLoading || !this.addLoadingSiType ||  !!this.pasteLoadingSiQualifier;
+		return this.addLoading || !!this.addLoadingSiType ||  !!this.pasteLoadingSiQualifier;
 	}
 
 	add() {

@@ -13,12 +13,12 @@ import { AddPasteObtainer } from 'src/app/ui/control/comp/add-paste/add-paste.co
 
 export class EmbeddedAddPasteObtainer implements AddPasteObtainer {
 	constructor(private siService: SiService, private apiUrl: string, private siZone: SiZone,
-		private optainSummary: boolean) {
+			private optainSummary: boolean) {
 	}
 
 	private createBulkyInstruction(comp: BulkyEntrySiComp, siIdentifier: SiIdentifier|null): SiGetInstruction {
 		if (siIdentifier) {
-			return SiGetInstruction.entry(comp, true, true, siIdentifier.id);
+			return SiGetInstruction.entry(comp, true, false, siIdentifier.id);
 		}
 
 		return SiGetInstruction.newEntry(comp, true, false);
@@ -29,7 +29,7 @@ export class EmbeddedAddPasteObtainer implements AddPasteObtainer {
 			return SiGetInstruction.entry(comp, false, true, siIdentifier.id);
 		}
 
-		return SiGetInstruction.newEntry(comp, false, false);
+		return SiGetInstruction.newEntry(comp, false, true);
 	}
 
 	obtain(siIdentifier: SiIdentifier|null): Observable<SiEmbeddedEntry> {
