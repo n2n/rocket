@@ -28,18 +28,19 @@
 			</ng-container>
 		</rocket-ui-structure>
 	</div>
-	
+
 	<rocket-ui-add-past [obtainer]="obtainer" [allowedSiTypes]="model.getAllowedSiTypes()" 
 			(newEntry)="add($event)"></rocket-ui-add-past>
 </div>
 
 <div *ngIf="!reduced">
-	<ng-container *ngIf="embe.isPlaceholder()">
-		<rocket-ui-add-past [obtainer]="obtainer" [allowedSiTypes]="model.getAllowedSiTypes()" type="tiles" 
-				(newEntry)="add($event)"></rocket-ui-add-past>
-	</ng-container>
 	
 	<div *ngFor="let embe of embes">
+		<ng-container *ngIf="embe.isPlaceholder()">
+			<rocket-ui-add-past [obtainer]="obtainer" [allowedSiTypes]="model.getAllowedSiTypes()" type="tiles" 
+					(newEntry)="add($event)"></rocket-ui-add-past>
+		</ng-container>
+
 		<ng-container *ngIf="!embe.isPlaceholder()">
 			<rocket-ui-add-past [obtainer]="obtainer" [allowedSiTypes]="model.getAllowedSiTypes()"
 					(newEntry)="addBefore($event, embe)"></rocket-ui-add-past>	

@@ -8,7 +8,7 @@ import { SiStructure } from 'src/app/si/model/structure/si-structure';
 import { SiEmbeddedEntry } from 'src/app/si/model/content/si-embedded-entry';
 import { SiCommanderService } from 'src/app/si/model/si-commander.service';
 import { SiField } from '../si-field';
-import { SiType } from "src/app/si/model/content/si-type";
+import { SiType } from 'src/app/si/model/content/si-type';
 
 export class EmbeddedEntryInSiField extends InSiFieldAdapter implements EmbeddedEntryInModel {
 
@@ -64,7 +64,7 @@ export class EmbeddedEntryInSiField extends InSiFieldAdapter implements Embedded
 	getMin(): number {
 		return this.min;
 	}
-	
+
 	getMax(): number|null {
 		return this.max;
 	}
@@ -80,11 +80,11 @@ export class EmbeddedEntryInSiField extends InSiFieldAdapter implements Embedded
 	isSortable(): boolean {
 		return this.sortable;
 	}
-	
+
 	getPastCategory(): string|null {
 		return this.pastCategory;
 	}
-	
+
 	getAllowedSiTypes(): SiType[]|null {
 		return this.allowedSiTypes;
 	}

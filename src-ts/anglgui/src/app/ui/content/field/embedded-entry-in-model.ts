@@ -2,7 +2,7 @@
 import { SiStructure } from 'src/app/si/model/structure/si-structure';
 import { SiEmbeddedEntry } from 'src/app/si/model/content/si-embedded-entry';
 import { SiZone } from 'src/app/si/model/structure/si-zone';
-import { SiType } from "src/app/si/model/content/si-type";
+import { SiType } from 'src/app/si/model/content/si-type';
 
 export interface EmbeddedEntryInModel {
 
@@ -15,13 +15,13 @@ export interface EmbeddedEntryInModel {
 	isSortable(): boolean;
 
 	getMin(): number;
-	
+
 	getMax(): number|null;
 
 	isReduced(): boolean;
-	
-	getPastCategory(): string|null
-	
+
+	getPastCategory(): string|null;
+
 	getAllowedSiTypes(): SiType[]|null;
 
 	getValues(): SiEmbeddedEntry[];
