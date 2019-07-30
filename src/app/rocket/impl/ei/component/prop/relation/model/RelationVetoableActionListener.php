@@ -135,10 +135,14 @@ class VetoCheck {
 		foreach ($this->findAll() as $entityObj) {
 			if ($queue->isEntityObjRemoved($entityObj)) continue;
 				
+			
 			$that = $this;
 			$this->vetoableRemoveAction->executeWhenApproved(function () use ($that, $queue, $entityObj) {
-				$queue->removeEiObject(LiveEiObject::create(
-						$that->relationEiProp->getEiMask()->getEiType(), $entityObj));
+				
+				$queue->getEntityManager()->remove($entityObj);
+// 				$queue->getEntityManager()->getActionQueue()->getOrCreateRemoveAction($entityObj);
+// 				$queue->removeEiObject(LiveEiObject::create(
+// 						$that->relationEiProp->getEiMask()->getEiType(), $entityObj));
 			});
 		}
 	}
