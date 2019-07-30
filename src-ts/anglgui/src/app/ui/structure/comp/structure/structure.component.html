@@ -18,10 +18,10 @@
 		<ul *ngIf="isMain()" class="rocket-main-group-nav nav nav-tabs">
 			<li *ngFor="let child of children" [class.active]="child.visible">
 				{{ child.label }}
-			<li>
+			</li>
 		</ul>
 		
-		<ng-template *ngIf="siStructureContent" rocketStructureContent [siStructureContent]="siStructureContent"></ng-template>
+		<ng-template *ngIf="siContent" rocketContent [siContent]="siContent"></ng-template>
 	
 		<ng-container *ngFor="let child of children">
 			<rocket-ui-structure *ngIf="child.visible" [siStructure]="child"></rocket-ui-structure>

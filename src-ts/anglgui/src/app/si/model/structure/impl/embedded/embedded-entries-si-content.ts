@@ -4,14 +4,14 @@ import { SiBulkyDeclaration } from 'src/app/si/model/structure/si-bulky-declarat
 import { SiEntry } from 'src/app/si/model/content/si-entry';
 import { BulkyEntryComponent } from 'src/app/ui/content/zone/comp/bulky-entry/bulky-entry.component';
 import { SiFieldStructureDeclaration } from 'src/app/si/model/structure/si-field-structure-declaration';
-import { SiStructureContent } from 'src/app/si/model/structure/si-structure-content';
+import { SiContent } from 'src/app/si/model/structure/si-content';
 import { SiStructure } from 'src/app/si/model/structure/si-structure';
 import { SiControl } from 'src/app/si/model/control/si-control';
 import { SiZone } from 'src/app/si/model/structure/si-zone';
 import { SiZoneError } from 'src/app/si/model/structure/si-zone-error';
 import { SiStructureModel } from 'src/app/si/model/structure/si-structure-model';
 
-export class SiEmbeddedEntriesSiContent implements SiComp {
+export class SiEmbeddedEntriesSiContent implements SiContent {
 
 	constructor(public bulkyDeclaration: SiBulkyDeclaration, public zone: SiZone) {
 	}
@@ -41,7 +41,7 @@ export class SiEmbeddedEntriesSiContent implements SiComp {
 	}
 
 	getContent() {
-		return null;
+		return this;
 	}
 
 	getChildren(): SiStructure[] {
@@ -69,7 +69,7 @@ export class SiEmbeddedEntriesSiContent implements SiComp {
 		structure.label = fsd.fieldDeclaration.label;
 		structure.type = fsd.type;
 
-		const model = new FieldSiStructureModel(entry.selectedTypeBuildup.getFieldById(fsd.fieldDeclaration.fieldId));
+		const model = new FieldSiStructureModel(entry.selectedTypeBuildup.getFieldById(fsd.fieldDeclaration.fieldId).getContent());
 		for (const childFsd of fsd.children) {
 			model.children.push(this.dingsel(entry, childFsd));
 		}
@@ -96,10 +96,10 @@ export class SiEmbeddedEntriesSiContent implements SiComp {
 class FieldSiStructureModel implements SiStructureModel {
 	public children: SiStructure[] = [];
 
-	constructor(public content: SiStructureContent) {
+	constructor(public content: SiContent) {
 	}
 
-	getContent(): SiStructureContent {
+	getContent(): SiContent {
 		return this.content;
 	}
 

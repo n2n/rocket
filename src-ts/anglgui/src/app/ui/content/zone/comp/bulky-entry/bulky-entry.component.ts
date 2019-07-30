@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { SiFieldStructureDeclaration } from "src/app/si/model/structure/si-field-structure-declaration";
 import { SiEntry } from "src/app/si/model/content/si-entry";
 import { SiControl } from "src/app/si/model/control/si-control";
-import { SiStructureContent } from "src/app/si/model/structure/si-structure-content";
+import { SiContent } from "src/app/si/model/structure/si-content";
 import { SiStructure } from "src/app/si/model/structure/si-structure";
 import { BulkyEntrySiComp } from "src/app/si/model/structure/impl/bulky-entry-si-content";
 

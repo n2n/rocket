@@ -1,0 +1,34 @@
+<div  cdkDropList (cdkDropListDropped)="drop($event)" class="rocket-draggable-list">
+	<div *ngFor="let embe of embes" cdkDrag class="rocket-draggable">
+		<rocket-ui-add-past [obtainer]="obtainer" [allowedSiTypes]="model.getAllowedSiTypes()" type="reduced"
+				(newEntry)="addBefore($event, embe)"></rocket-ui-add-past>
+
+		<rocket-ui-structure class="rocket-summary" 
+					[siStructure]="embe.summarySiStructure" [siControlsVisible]="false">
+			<ng-container pre-content>
+				<div [class.d-none]="!model.isSortable()" cdkDragHandle class="rocket-handle">
+					<i class="fa fa-bars"></i>
+				</div>
+				
+				<rocket-ui-qualifier [siQualifier]="embe.siEntry.qualifier" [showIdName]="false"></rocket-ui-qualifier>
+			</ng-container>
+			
+			<ng-container post-content>
+				<div class="rocket-simple-controls">
+					<button class="btn btn-warining" (click)="open(embe)">
+						<span>{{ 'common_edit_label' | translate }}</span>
+						<i class="fa fa-pencil"></i>
+					</button>
+					
+					<button class="btn btn-danger">
+						<span>{{ 'common_delete_label' | translate }}</span>
+						<i class="fa fa-trash-o"></i>
+					</button>
+				</div>
+			</ng-container>
+		</rocket-ui-structure>
+	</div>
+
+	<rocket-ui-add-past [obtainer]="obtainer" [allowedSiTypes]="model.getAllowedSiTypes()" 
+			(newEntry)="add($event)"></rocket-ui-add-past>
+</div>

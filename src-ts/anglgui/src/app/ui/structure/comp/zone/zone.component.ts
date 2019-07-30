@@ -2,7 +2,7 @@ import { Component, OnInit, DoCheck, Input, ViewChild, ComponentFactoryResolver,
 import { SiZone } from "src/app/si/model/structure/si-zone";
 import { ListZoneContentComponent } from "src/app/ui/content/zone/comp/list-zone-content/list-zone-content.component";
 import { SiComp } from "src/app/si/model/structure/si-zone-content";
-import { SiStructureContent } from "src/app/si/model/structure/si-structure-content";
+import { SiContent } from "src/app/si/model/structure/si-content";
 import { SiStructure } from "src/app/si/model/structure/si-structure";
 import { SiZoneError } from "src/app/si/model/structure/si-zone-error";
 

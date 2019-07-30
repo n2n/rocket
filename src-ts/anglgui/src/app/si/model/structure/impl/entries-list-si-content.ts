@@ -5,7 +5,7 @@ import { ViewContainerRef, ComponentFactoryResolver, ComponentRef } from '@angul
 import { ListZoneContentComponent } from 'src/app/ui/content/zone/comp/list-zone-content/list-zone-content.component';
 import { IllegalSiStateError } from 'src/app/si/model/illegal-si-state-error';
 import { SiCompactDeclaration } from 'src/app/si/model/structure/si-compact-declaration';
-import { SiStructureContent } from 'src/app/si/model/structure/si-structure-content';
+import { SiContent } from 'src/app/si/model/structure/si-content';
 import { SiZone } from 'src/app/si/model/structure/si-zone';
 import { SiZoneError } from 'src/app/si/model/structure/si-zone-error';
 import { SiCommanderService } from 'src/app/si/model/si-commander.service';
@@ -13,11 +13,11 @@ import { SiPage } from 'src/app/si/model/structure/impl/si-page';
 import { SiQualifier } from 'src/app/si/model/content/si-qualifier';
 import { SiStructureModel } from 'src/app/si/model/structure/si-structure-model';
 
-export class EntriesListSiContent implements SiComp, SiStructureContent {
+export class EntriesListSiContent implements SiComp, SiContent {
 
 	private pagesMap = new Map<number, SiPage>();
-	private _size: number = 0;
-	private _currentPageNo: number = 1;
+	private _size = 0;
+	private _currentPageNo = 1;
 	public compactDeclaration: SiCompactDeclaration|null = null;
 	public qualifierSelection: SiQualifierSelection|null = null;
 
@@ -43,83 +43,86 @@ export class EntriesListSiContent implements SiComp, SiStructureContent {
 
 	getEntries(): SiEntry[] {
 		const entries = [];
-		for (let [, page] of this.pagesMap) {
+		for (const [, page] of this.pagesMap) {
 			entries.push(...page.entries);
 		}
 		return entries;
-    }
+	}
 
-    getSelectedEntries(): SiEntry[] {
-        throw new Error('Method not implemented.');
-    }
+	getSelectedEntries(): SiEntry[] {
+		throw new Error('Method not implemented.');
+	}
 
-    getZoneErrors(): SiZoneError[] {
-    	let zoneErrors: SiZoneError[] = [];
+	getZoneErrors(): SiZoneError[] {
+		const zoneErrors: SiZoneError[] = [];
 
-    	for (let entry of this.getEntries()) {
-    		for (let [, siField] of entry.selectedTypeBuildup.fieldMap) {
-    			zoneErrors.push(...siField.getZoneErrors());
-    		}
-    	}
+		for (const entry of this.getEntries()) {
+			for (const [, siField] of entry.selectedTypeBuildup.fieldMap) {
+				const siContent = siField.getContent();
+				if (siContent) {
+					zoneErrors.push(...siContent.getZoneErrors());
+				}
+			}
+		}
 
-    	return zoneErrors;
-    }
+		return zoneErrors;
+	}
 
-    get pages(): SiPage[] {
-    	return Array.from(this.pagesMap.values());
-    }
+	get pages(): SiPage[] {
+		return Array.from(this.pagesMap.values());
+	}
 
-    get currentPage(): SiPage {
-    	return this.getPageByNo(this._currentPageNo);
-    }
+	get currentPage(): SiPage {
+		return this.getPageByNo(this._currentPageNo);
+	}
 
-    get currentPageNo(): number {
-    	this.ensureSetup();
-    	return this._currentPageNo;
-    }
+	get currentPageNo(): number {
+		this.ensureSetup();
+		return this._currentPageNo;
+	}
 
-    set currentPageNo(currentPageNo: number) {
-    	if (currentPageNo > this.pagesNum) {
-    		throw new IllegalSiStateError('CurrentPageNo too large: ' + currentPageNo);
-    	}
+	set currentPageNo(currentPageNo: number) {
+		if (currentPageNo > this.pagesNum) {
+			throw new IllegalSiStateError('CurrentPageNo too large: ' + currentPageNo);
+		}
 
-    	if (!this.getPageByNo(currentPageNo).visible) {
-    		throw new IllegalSiStateError('Page not visible: ' + currentPageNo);
-    	}
+		if (!this.getPageByNo(currentPageNo).visible) {
+			throw new IllegalSiStateError('Page not visible: ' + currentPageNo);
+		}
 
-    	this._currentPageNo = currentPageNo;
-    }
+		this._currentPageNo = currentPageNo;
+	}
 
-    get size(): number {
-    	return <number> this._size;
-    }
+	get size(): number {
+		return this._size as number;
+	}
 
-    set size(size: number) {
-    	this._size = size;
+	set size(size: number) {
+		this._size = size;
 
-    	if (!this.setup) {
-    		return;
-    	}
+		if (!this.setup) {
+			return;
+		}
 
-    	const pagesNum = this.pagesNum;
+		const pagesNum = this.pagesNum;
 
-    	if (this._currentPageNo > pagesNum) {
-    		this._currentPageNo = pagesNum;
-    	}
+		if (this._currentPageNo > pagesNum) {
+			this._currentPageNo = pagesNum;
+		}
 
-    	for (let pageNo of this.pagesMap.keys()) {
-    		if (pageNo > pagesNum) {
-    			this.pagesMap.delete(pageNo);
-    		}
-    	}
-    }
+		for (const pageNo of this.pagesMap.keys()) {
+			if (pageNo > pagesNum) {
+				this.pagesMap.delete(pageNo);
+			}
+		}
+	}
 
-    get setup(): boolean {
-    	return !!(this.compactDeclaration && this.pagesMap.size > 0);
-    }
+	get setup(): boolean {
+		return !!(this.compactDeclaration && this.pagesMap.size > 0);
+	}
 
 	private ensureSetup() {
-		if (this.setup) return;
+		if (this.setup) { return; }
 
 		throw new IllegalSiStateError('ListSiZone not set up.');
 	}
@@ -183,14 +186,14 @@ export class EntriesListSiContent implements SiComp, SiStructureContent {
 
 	getPageByNo(no: number): SiPage {
 		if (this.containsPageNo(no)) {
-			return <SiPage> this.pagesMap.get(no);
+			return this.pagesMap.get(no) as SiPage;
 		}
 
 		throw new IllegalSiStateError('Unknown page with no: ' + no);
 	}
 
 	get pagesNum(): number {
-		return Math.ceil(<number> this.size / this.pageSize) || 1;
+		return Math.ceil(this.size as number / this.pageSize) || 1;
 	}
 
 	getStructureModel(): SiStructureModel {
@@ -231,8 +234,8 @@ interface SiQualifierSelection {
 	max: number|null;
 	selectedQualfiers: SiQualifier[];
 
-	done: () => any
+	done: () => any;
 
-	cancel: () => any
+	cancel: () => any;
 }
 

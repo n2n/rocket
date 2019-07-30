@@ -1,6 +1,6 @@
 
 <div *ngFor="let siFieldDeclaration of siContent.getFieldDeclarations()">
-	<ng-template rocketStructureContent 
-			[siStructureContent]="siContent.entry.selectedTypeBuildup.getFieldById(siFieldDeclaration.fieldId)">
+	<ng-template rocketContent 
+			[siContent]="siContent.entry.selectedTypeBuildup.getFieldById(siFieldDeclaration.fieldId)">
 	</ng-template>
 </div>

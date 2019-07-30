@@ -4,7 +4,7 @@ import { SiBulkyDeclaration } from 'src/app/si/model/structure/si-bulky-declarat
 import { SiEntry } from 'src/app/si/model/content/si-entry';
 import { BulkyEntryComponent } from 'src/app/ui/content/zone/comp/bulky-entry/bulky-entry.component';
 import { SiFieldStructureDeclaration } from 'src/app/si/model/structure/si-field-structure-declaration';
-import { SiStructureContent } from 'src/app/si/model/structure/si-structure-content';
+import { SiContent } from 'src/app/si/model/structure/si-content';
 import { SiStructure } from 'src/app/si/model/structure/si-structure';
 import { SiControl } from 'src/app/si/model/control/si-control';
 import { SiZone } from 'src/app/si/model/structure/si-zone';
@@ -42,7 +42,7 @@ export class BulkyEntrySiComp implements SiComp {
 	}
 
 	getContent() {
-		return null;
+		return this;
 	}
 
 	getChildren(): SiStructure[] {
@@ -70,7 +70,8 @@ export class BulkyEntrySiComp implements SiComp {
 		structure.label = fsd.fieldDeclaration.label;
 		structure.type = fsd.type;
 
-		const model = new FieldSiStructureModel(entry.selectedTypeBuildup.getFieldById(fsd.fieldDeclaration.fieldId));
+		const model = new FieldSiStructureModel(entry.selectedTypeBuildup.getFieldById(fsd.fieldDeclaration.fieldId)
+				.getContent());
 		for (const childFsd of fsd.children) {
 			model.children.push(this.dingsel(entry, childFsd));
 		}
@@ -97,10 +98,10 @@ export class BulkyEntrySiComp implements SiComp {
 class FieldSiStructureModel implements SiStructureModel {
 	public children: SiStructure[] = [];
 
-	constructor(public content: SiStructureContent) {
+	constructor(public content: SiContent|null) {
 	}
 
-	getContent(): SiStructureContent {
+	getContent(): SiContent|null {
 		return this.content;
 	}
 

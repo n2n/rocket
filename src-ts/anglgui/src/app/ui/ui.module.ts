@@ -26,13 +26,20 @@ import { EmbeddedEntryInFieldComponent } from './content/field/comp/embedded-ent
 import { CompactEntryComponent } from './content/zone/comp/compact-entry/compact-entry.component';
 import { QualifierComponent } from './content/entry/comp/qualifier/qualifier.component';
 import { AddPasteComponent } from './control/comp/add-paste/add-paste.component';
+import { EmbeddedEntrySummaryOutComponentComponent } from './content/embedded/comp/embedded-entry-summary-out-component/embedded-entry-summary-out-component.component';
+import { EmbeddedEntryOutComponent } from './content/embedded/comp/embedded-entry-out/embedded-entry-out.component';
+import { EmbeddedEntrySummaryOutComponent } from './content/embedded/comp/embedded-entry-summary-out/embedded-entry-summary-out.component';
+import { EmbeddedEntriesInComponent } from './content/embedded/comp/embedded-entries-in/embedded-entries-in.component';
+import { EmbeddedEntriesSummaryInComponent } from './content/embedded/comp/embedded-entries-summary-in/embedded-entries-summary-in.component';
+import { EmbeddedEntriesOutComponent } from './content/embedded/comp/embedded-entries-out/embedded-entries-out.component';
+import { EmbeddedEntriesSummaryOutComponent } from './content/embedded/comp/embedded-entries-summary-out/embedded-entries-summary-out.component';
 
 @NgModule({
   declarations: [ LayerComponent, ContainerComponent, ZoneComponent, StructureContentDirective, ListZoneContentComponent,
 	PaginationComponent, EntryDirective, StringOutFieldComponent, ControlComponent, BulkyEntryComponent,
 	FieldStructureComponent, InputInFieldComponent, TextareaInFieldComponent, StructureComponent, FileInFieldComponent,
 	FileOutFieldComponent, LinkOutFieldComponent, QualifierSelectInFieldComponent, EmbeddedEntryInFieldComponent,
-	CompactEntryComponent, QualifierComponent, AddPasteComponent ],
+	CompactEntryComponent, QualifierComponent, AddPasteComponent, EmbeddedEntrySummaryOutComponentComponent, EmbeddedEntryOutComponent, EmbeddedEntrySummaryOutComponent, EmbeddedEntriesInComponent, EmbeddedEntriesSummaryInComponent, EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent ],
   imports: [
 	CommonModule,
 	FormsModule,
