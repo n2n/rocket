@@ -12,6 +12,9 @@ export class StringOutSiField extends OutSiFieldAdapter implements StringFieldMo
         super();
 	}
 	
+	getContent() {
+		return this;
+	}s
 	initComponent(viewContainerRef: ViewContainerRef, 
 			componentFactoryResolver: ComponentFactoryResolver,
 			commanderService: SiCommanderService): ComponentRef<any> {
