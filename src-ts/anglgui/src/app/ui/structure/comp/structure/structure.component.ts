@@ -50,8 +50,13 @@ export class StructureComponent implements OnInit {
 		return this._siStructure.model.getContent();
 	}
 
-	get siControls() {
-		return this._siStructure.model.getControls();
+	get siControls(): SiControl[] {
+		const controls: SiControl[] = [];
+	
+		controls.push(...this._siStructure.controls);
+		controls.push(...this._siStructure.model.getControls());
+		
+		return controls;
 	}
 
 	get children(): SiStructure[] {

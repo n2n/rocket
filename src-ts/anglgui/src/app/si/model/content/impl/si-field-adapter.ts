@@ -6,19 +6,18 @@ import { SiFieldError } from 'src/app/si/model/input/si-field-error';
 import { SiField } from 'src/app/si/model/content/si-field';
 import { SiZoneError } from 'src/app/si/model/structure/si-zone-error';
 import { SiCommanderService } from 'src/app/si/model/si-commander.service';
+import { SiContent } from "src/app/si/model/structure/si-content";
 
 export abstract class SiFieldAdapter implements SiField {
 	protected messages: string[] = [];
-
-	abstract initComponent(viewContainerRef: ViewContainerRef,
-			componentFactoryResolver: ComponentFactoryResolver,
-			commanderService: SiCommanderService): ComponentRef<any>;
 
 	abstract hasInput(): boolean;
 
 	abstract readInput(): object;
 
 	abstract copy(): SiField;
+	
+	abstract getContent(): SiContent|null;
 
 	getMessages(): string[] {
 		return this.messages;

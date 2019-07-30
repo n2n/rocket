@@ -10,8 +10,10 @@ import { QualifierSelectInModel } from 'src/app/ui/content/field/qualifier-selec
 import { QualifierSelectInFieldComponent } from 'src/app/ui/content/field/comp/qualifier-select-in-field/qualifier-select-in-field.component';
 import { SiZone } from 'src/app/si/model/structure/si-zone';
 import { SiCommanderService } from 'src/app/si/model/si-commander.service';
+import { SiContent } from "src/app/si/model/structure/si-content";
 
 export class QualifierSelectInSiField extends InSiFieldAdapter implements QualifierSelectInModel {
+   
 	
 	public min: number = 0;
 	public max: number|null = null;
@@ -67,6 +69,10 @@ export class QualifierSelectInSiField extends InSiFieldAdapter implements Qualif
 		copy.max = this.max;
 		return copy;
 	}
+	
+	getContent(): SiContent|null {
+        return this;
+    }
 	
 	initComponent(viewContainerRef: ViewContainerRef, 
 			componentFactoryResolver: ComponentFactoryResolver,

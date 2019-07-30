@@ -4,8 +4,9 @@ import { StringOutFieldComponent } from "src/app/ui/content/field/comp/string-ou
 import { OutSiFieldAdapter } from "src/app/si/model/content/impl/out-si-field-adapter";
 import { FileFieldModel } from "src/app/ui/content/field/file-field-model";
 import { SiCommanderService } from "src/app/si/model/si-commander.service";
+import { SiContent } from "src/app/si/model/structure/si-content";
 
-export class FileOutSiField extends OutSiFieldAdapter implements FileFieldModel {
+export class FileOutSiField extends OutSiFieldAdapter implements FileFieldModel, SiContent {
     
     constructor(public value: SiFile|null) {
 		super();
@@ -14,6 +15,10 @@ export class FileOutSiField extends OutSiFieldAdapter implements FileFieldModel 
 	getSiFile(): SiFile | null {
         return this.value;
     }
+	
+	getContent(): SiContent|null {
+		return this;
+	}
 	
 	initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver,
 			commanderService: SiCommanderService): ComponentRef<any> {

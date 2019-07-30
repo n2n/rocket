@@ -17,7 +17,7 @@ export class BulkyEntrySiComp implements SiComp {
 			public zone: SiZone) {
 	}
 
-	public entry: SiEntry|null = null;
+	private _entry: SiEntry|null = null;
 	public controls: Array<SiControl> = [];
 
 	private children: SiStructure[];
@@ -44,6 +44,19 @@ export class BulkyEntrySiComp implements SiComp {
 	getContent() {
 		return this;
 	}
+	
+	get entry(): SiEntry {
+		return this._entry;
+	}
+	
+	set entry(entry: SiEntry) {
+		this._entry = entry;
+		this.recheck();
+	}
+	
+	recheck() {
+		return this.children = null;
+	}
 
 	getChildren(): SiStructure[] {
 		if (this.children) {
@@ -57,6 +70,22 @@ export class BulkyEntrySiComp implements SiComp {
 		}
 		return this.children;
 	}
+	
+	private dingsel(entry: SiEntry, fsd: SiFieldStructureDeclaration): SiStructure {
+		const structure = new SiStructure();
+		structure.label = fsd.fieldDeclaration.label;
+		structure.type = fsd.type;
+
+		const field = entry.selectedTypeBuildup.getFieldById(fsd.fieldDeclaration.fieldId);
+		const model = new FieldSiStructureModel(field ? field.getContent() : null);
+		for (const childFsd of fsd.children) {
+			model.children.push(this.dingsel(entry, childFsd));
+		}
+
+		structure.model = model;
+		return structure;
+	}
+	
 
 	getControls(): SiControl[] {
 		const controls: SiControl[] = [];
@@ -65,20 +94,7 @@ export class BulkyEntrySiComp implements SiComp {
 		return controls;
 	}
 
-	private dingsel(entry: SiEntry, fsd: SiFieldStructureDeclaration): SiStructure {
-		const structure = new SiStructure();
-		structure.label = fsd.fieldDeclaration.label;
-		structure.type = fsd.type;
-
-		const model = new FieldSiStructureModel(entry.selectedTypeBuildup.getFieldById(fsd.fieldDeclaration.fieldId)
-				.getContent());
-		for (const childFsd of fsd.children) {
-			model.children.push(this.dingsel(entry, childFsd));
-		}
-
-		structure.model = model;
-		return structure;
-	}
+	
 
 	getFieldStructureDeclarations(): SiFieldStructureDeclaration[] {
 		return this.bulkyDeclaration.getFieldStructureDeclarationsByBuildupId(this.entry.selectedTypeId);

@@ -6,12 +6,9 @@ import { IllegalSiStateError } from "src/app/si/model/illegal-si-state-error";
 import { SiFieldError } from "src/app/si/model/input/si-field-error";
 import { SiFieldAdapter } from "src/app/si/model/content/impl/si-field-adapter";
 import { SiCommanderService } from "src/app/si/model/si-commander.service";
+import { SiContent } from "src/app/si/model/structure/si-content";
 
 export abstract class InSiFieldAdapter extends SiFieldAdapter {
-	
-	abstract initComponent(viewContainerRef: ViewContainerRef, 
-			componentFactoryResolver: ComponentFactoryResolver,
-			commanderService: SiCommanderService): ComponentRef<any>;
     
 	hasInput(): boolean {
 		return true;
@@ -20,4 +17,6 @@ export abstract class InSiFieldAdapter extends SiFieldAdapter {
 	abstract readInput(): object;
 	
 	abstract copy(): SiField;
+	
+	abstract getContent(): SiContent|null;
 }

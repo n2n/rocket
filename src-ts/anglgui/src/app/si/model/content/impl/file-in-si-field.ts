@@ -5,8 +5,9 @@ import { FileInFieldComponent } from 'src/app/ui/content/field/comp/file-in-fiel
 import { FileInFieldModel } from 'src/app/ui/content/field/file-in-field-model';
 import { InSiFieldAdapter } from 'src/app/si/model/content/impl/in-si-field-adapter';
 import { SiCommanderService } from 'src/app/si/model/si-commander.service';
+import { SiContent } from "src/app/si/model/structure/si-content";
 
-export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel {
+export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel, SiContent {
 	private uploadedFile: File|null = null;
 	public mandatory = false;
 	public mimeTypes: string[] = [];
@@ -45,6 +46,10 @@ export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel 
 
 	copy(): SiField {
 		throw new Error('Method not implemented.');
+	}
+	
+	getContent(): SiContent|null {
+		return this;
 	}
 
 	initComponent(viewContainerRef: ViewContainerRef,

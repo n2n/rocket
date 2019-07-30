@@ -11,4 +11,9 @@ export class SiEmbeddedEntry {
 	get entry(): SiEntry {
 		return this.comp.entry;
 	}
+	
+	set entry(entry: SiEntry) {
+		this.comp.entry = entry;
+		this.comp.recheck();
+	}
 }

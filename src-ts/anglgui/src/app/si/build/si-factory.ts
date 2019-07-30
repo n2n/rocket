@@ -225,18 +225,18 @@ export class SiCompFactory {
 		case SiFieldType.EMBEDDED_ENTRY_IN:
 			const embeddedEntryInSiField = new EmbeddedEntryInSiField(this.zone, dataExtr.reqString('apiUrl'),
 					this.createEmbeddedEntries(dataExtr.reqArray('values')));
-			embeddedEntryInSiField.reduced = dataExtr.reqBoolean('reduced');
-			embeddedEntryInSiField.min = dataExtr.reqNumber('min');
-			embeddedEntryInSiField.max = dataExtr.nullaNumber('max');
-			embeddedEntryInSiField.nonNewRemovable = dataExtr.reqBoolean('nonNewRemovable');
-			embeddedEntryInSiField.sortable = dataExtr.reqBoolean('sortable');
-			embeddedEntryInSiField.pastCategory = dataExtr.nullaString('pastCategory');
+			embeddedEntryInSiField.content.reduced = dataExtr.reqBoolean('reduced');
+			embeddedEntryInSiField.content.min = dataExtr.reqNumber('min');
+			embeddedEntryInSiField.content.max = dataExtr.nullaNumber('max');
+			embeddedEntryInSiField.content.nonNewRemovable = dataExtr.reqBoolean('nonNewRemovable');
+			embeddedEntryInSiField.content.sortable = dataExtr.reqBoolean('sortable');
+			embeddedEntryInSiField.content.pastCategory = dataExtr.nullaString('pastCategory');
 			
 			const allowedsiTypesData = dataExtr.nullaArray('allowedSiTypes')
 			if (allowedsiTypesData) {
-				embeddedEntryInSiField.allowedSiTypes = this.createTypes(allowedsiTypesData);
+				embeddedEntryInSiField.content.allowedSiTypes = this.createTypes(allowedsiTypesData);
 			} else {
-				embeddedEntryInSiField.allowedSiTypes = null;
+				embeddedEntryInSiField.content.allowedSiTypes = null;
 			}
 			
 			return embeddedEntryInSiField;
