@@ -754,7 +754,7 @@ class PropIn {
 			return;
 		}
 		
-		throw new $e;
+		throw $e;
 	}
 	
 	private function createException($e) {
