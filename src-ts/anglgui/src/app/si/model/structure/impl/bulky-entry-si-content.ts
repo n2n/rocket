@@ -44,16 +44,16 @@ export class BulkyEntrySiComp implements SiComp {
 	getContent() {
 		return this;
 	}
-	
+
 	get entry(): SiEntry {
 		return this._entry;
 	}
-	
+
 	set entry(entry: SiEntry) {
 		this._entry = entry;
 		this.recheck();
 	}
-	
+
 	recheck() {
 		return this.children = null;
 	}
@@ -70,7 +70,7 @@ export class BulkyEntrySiComp implements SiComp {
 		}
 		return this.children;
 	}
-	
+
 	private dingsel(entry: SiEntry, fsd: SiFieldStructureDeclaration): SiStructure {
 		const structure = new SiStructure();
 		structure.label = fsd.fieldDeclaration.label;
@@ -85,7 +85,7 @@ export class BulkyEntrySiComp implements SiComp {
 		structure.model = model;
 		return structure;
 	}
-	
+
 
 	getControls(): SiControl[] {
 		const controls: SiControl[] = [];
@@ -94,7 +94,7 @@ export class BulkyEntrySiComp implements SiComp {
 		return controls;
 	}
 
-	
+
 
 	getFieldStructureDeclarations(): SiFieldStructureDeclaration[] {
 		return this.bulkyDeclaration.getFieldStructureDeclarationsByBuildupId(this.entry.selectedTypeId);

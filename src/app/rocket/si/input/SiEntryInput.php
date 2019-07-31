@@ -39,9 +39,8 @@ class SiEntryInput {
 	private $fieldInputs = [];
 	
 	/**
-	 * @param string $category
+	 * @param SiIdentifier $identifier
 	 * @param string $buildupId
-	 * @param string $id
 	 */
 	function __construct(SiIdentifier $identifier, string $buildupId) {
 		$this->identifier = $identifier;

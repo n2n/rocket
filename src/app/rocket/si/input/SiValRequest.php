@@ -21,31 +21,45 @@
  */
 namespace rocket\si\input;
 
-use n2n\util\type\attrs\AttributesException;
-
-class SiInputFactory {
+class SiValidationRequest {
+	private $instructions = [];
 	
 	/**
-	 * @param array $data
-	 * @return SiInput
-	 * @throws CorruptedSiInputDataException
+	 * 
 	 */
-	function create(array $data) {
-		$input = new SiInput();
-		
-		foreach ($data as $key => $entryData) {
-			try {
-				$input->putEntryInput($key, SiEntryInput::parse($entryData));
-			} catch (AttributesException $e) {
-				throw new CorruptedSiInputDataException(null, 0, $e);
-			}
-		}
-		
-		return $input;
+	function __construct() {	
 	}
 	
-}
+	/**
+	 * @return SiValInstruction[]
+	 */
+	function getInstructions() {
+		return $this->instructions;
+	}
 
-class CorruptedSiInputDataException extends \Exception {
+	/**
+	 * @param SiValInstruction[]
+	 */
+	function setInstructions(array $instructions) {
+		ArgUtils::valArray($instructions, SiValInstruction::class);
+		$this->instructions = $instructions;
+	}
 	
+	function putInstruction(string $key, SiValInstruction $instruction) {
+		$this->instructions[$key] = $instruction;
+	}
+
+	static function createFromData(array $data) {
+		$ds = new DataSet($data);
+		
+		$getRequest = new SiValRequest();
+		try {
+			foreach ($ds->reqArray('instructions') as $key => $instructionData) {
+				$getRequest->putInstruction($key, SiValInstruction::createFromData($instructionData));
+			}
+		} catch (AttributesException $e) {
+			throw new \InvalidArgumentException(null, 0, $e);
+		}
+		return $getRequest;
+	}
 }

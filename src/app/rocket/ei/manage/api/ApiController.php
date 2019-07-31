@@ -40,7 +40,7 @@ class ApiController extends ControllerAdapter {
 	function index() {
 		echo 'very apisch';
 	}
-	
+
 	private function parseApiControlCallId(Param $paramQuery) {
 		try {
 			return ApiControlCallId::parse($paramQuery->parseJson());
@@ -75,6 +75,10 @@ class ApiController extends ControllerAdapter {
 		}
 		
 		$this->sendJson($siGetResponse);
+	}
+
+	function postDoValidate(ParamBody $param) {
+		
 	}
 	
 	function doExecControl(ParamPost $apiCallId, ParamPost $entryInputMaps = null) {
