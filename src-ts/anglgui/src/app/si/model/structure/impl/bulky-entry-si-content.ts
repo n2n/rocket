@@ -1,6 +1,6 @@
 import { SiComp } from 'src/app/si/model/structure/si-zone-content';
 import { ViewContainerRef, ComponentFactoryResolver } from '@angular/core';
-import { SiBulkyDeclaration } from 'src/app/si/model/structure/si-bulky-declaration';
+import { SiEntryDeclaration } from 'src/app/si/model/structure/si-entry-declaration';
 import { SiEntry } from 'src/app/si/model/content/si-entry';
 import { BulkyEntryComponent } from 'src/app/ui/content/zone/comp/bulky-entry/bulky-entry.component';
 import { SiFieldStructureDeclaration } from 'src/app/si/model/structure/si-field-structure-declaration';
@@ -13,7 +13,7 @@ import { SiStructureModel } from 'src/app/si/model/structure/si-structure-model'
 
 export class BulkyEntrySiComp implements SiComp {
 
-	constructor(public bulkyDeclaration: SiBulkyDeclaration,
+	constructor(public entryDeclaration: SiEntryDeclaration,
 			public zone: SiZone) {
 	}
 
@@ -97,7 +97,7 @@ export class BulkyEntrySiComp implements SiComp {
 
 
 	getFieldStructureDeclarations(): SiFieldStructureDeclaration[] {
-		return this.bulkyDeclaration.getFieldStructureDeclarationsByBuildupId(this.entry.selectedTypeId);
+		return this.entryDeclaration.getFieldStructureDeclarationsByBuildupId(this.entry.selectedTypeId);
 	}
 
 	initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver) {

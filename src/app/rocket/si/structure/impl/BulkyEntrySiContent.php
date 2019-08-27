@@ -22,19 +22,19 @@
 namespace rocket\si\structure\impl;
 
 use rocket\si\structure\SiContent;
-use rocket\si\structure\SiBulkyDeclaration;
+use rocket\si\structure\SiEntryDeclaration;
 use rocket\si\content\SiEntry;
 use n2n\util\type\ArgUtils;
 use rocket\si\control\SiControl;
 use rocket\si\SiPayloadFactory;
 
 class BulkyEntrySiContent implements SiContent {
-	private $bulkyDeclaration;
+	private $entryDeclaration;
 	private $entry;
 	private $controls;
 	
-	function __construct(SiBulkyDeclaration $bulkyDeclaration, SiEntry $entry = null, array $controls = []) {
-		$this->bulkyDeclaration = $bulkyDeclaration;
+	function __construct(SiEntryDeclaration $entryDeclaration, SiEntry $entry = null, array $controls = []) {
+		$this->entryDeclaration = $entryDeclaration;
 		$this->setEntry($entry);
 		$this->setControls($controls);
 	}
@@ -84,7 +84,7 @@ class BulkyEntrySiContent implements SiContent {
 		
 		
 		return [ 
-			'bulkyDeclaration' => $this->bulkyDeclaration,
+			'entryDeclaration' => $this->entryDeclaration,
 			'entry' => $this->entry,
 			'controls' => SiPayloadFactory::createDataFromControls($this->controls)
 		];

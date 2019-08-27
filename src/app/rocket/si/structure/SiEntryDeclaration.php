@@ -22,26 +22,24 @@
 namespace rocket\si\structure;
 
 use n2n\util\type\ArgUtils;
-use rocket\si\content\SiEntry;
 use n2n\util\type\TypeConstraints;
 
-class SiCompactDeclaration implements \JsonSerializable {
-	private $fieldDeclarations;
+class SiEntryDeclaration implements \JsonSerializable {
+	private $fieldDeclarationsMap = [];
+	private $fieldStructureDeclarationsMap = [];
 	
-	/**
-	 * @param SiFieldDeclaration[] $fieldDeclarations
-	 * @param int $count
-	 * @param SiEntry[] $entries
-	 */
-	function __construct(array $fieldDeclarations = []) {
-		$this->setFieldDeclarations($fieldDeclarations);
-	}
+	// /**
+	//  * @param SiFieldDeclaration[] $fieldDeclarations
+	//  */
+	// function __construct(array $fieldDeclarations = []) {
+	// 	$this->setFieldDeclarations($fieldDeclarations);
+	// }
 	
 	/**
 	 * @param SiFieldDeclaration[] $siFieldDeclarations
-	 * @return \rocket\si\structure\SiCompactDeclaration
+	 * @return \rocket\si\structure\SiEntryDeclaration
 	 */
-	function setFieldDeclarations(array $fieldDeclarations) {
+	function setFieldDeclarationsMap(array $fieldDeclarations) {
 		ArgUtils::valArray($fieldDeclarations,
 				TypeConstraints::array(false, SiFieldDeclaration::class));
 		$this->fieldDeclarations = $fieldDeclarations;
@@ -51,17 +49,49 @@ class SiCompactDeclaration implements \JsonSerializable {
 	/**
 	 * @param string $buildupId
 	 * @param SiFieldDeclaration[] $fieldDeclarations
+	 * @return SiEntryDeclaration
 	 */
 	function putFieldDeclarations(string $buildupId, array $fieldDeclarations) {
 		ArgUtils::valArray($fieldDeclarations, SiFieldDeclaration::class);
-		$this->fieldDeclarations[$buildupId] = $fieldDeclarations;
+		$this->fieldDeclarationsMap[$buildupId] = $fieldDeclarations;
+		return $this;
 	}
 	
 	/**
-	 * @return SiFieldDeclaration[]
+	 * @return array
 	 */
-	function getFieldDeclarations() {
+	function getFieldDeclarationsMap() {
 		return $this->fieldDeclarations;
+	}
+
+	
+	/**
+	 * @param SiFieldStructureDeclaration[] $fieldStructureDeclarations
+	 * @return \rocket\si\structure\SiEntryDeclaration
+	 */
+	function setFieldStructureDeclarationsMap(array $fieldStructureDeclarations) {
+		ArgUtils::valArray($fieldStructureDeclarations, 
+				TypeConstraints::array(false, SiFieldStructureDeclaration::class));
+		$this->fieldStructureDeclarationsMap = $fieldStructureDeclarations;
+		return $this;
+	}
+	
+	/**
+	 * @param string $buildupId
+	 * @param SiFieldStructureDeclaration[] $fieldStructureDeclarations
+	 * @return \rocket\si\structure\SiEntryDeclaration
+	 */
+	function putFieldStructureDeclarations(string $buildupId, array $fieldStructureDeclarations) {
+		ArgUtils::valArray($fieldStructureDeclarations, SiFieldStructureDeclaration::class);
+		$this->fieldStructureDeclarationsMap[$buildupId] = $fieldStructureDeclarations;
+		return $this;
+	}
+	
+	/**
+	 * @return array
+	 */
+	function getFieldStructureDeclarationsMap() {
+		return $this->fieldStructureDeclarationsMap;
 	}
 	
 	/**
@@ -70,7 +100,8 @@ class SiCompactDeclaration implements \JsonSerializable {
 	 */
 	function jsonSerialize() {
 		return [
-			'fieldDeclarations' => $this->fieldDeclarations
+			'fieldDeclarationsMap' => $this->fieldDeclarationsMap,
+			'fieldStructureDeclarationsMap' => $this->fieldStructureDeclarationsMap
 		];
 	}
 }

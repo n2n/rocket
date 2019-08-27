@@ -52,11 +52,11 @@ export class EmbeddedAddPasteObtainer implements AddPasteObtainer {
 	private handleResponse(response: SiGetResponse, comp: BulkyEntrySiComp,
 			summaryComp: CompactEntrySiComp|null): SiEmbeddedEntry {
 
-		comp.bulkyDeclaration = response.results[0].bulkyDeclaration;
+		comp.entryDeclaration = response.results[0].entryDeclaration;
 		comp.entry = response.results[0].entry;
 
 		if (summaryComp) {
-			summaryComp.compactDeclaration = response.results[1].compactDeclaration;
+			summaryComp.entryDeclaration = response.results[1].entryDeclaration;
 			summaryComp.entry = response.results[1].entry;
 		}
 

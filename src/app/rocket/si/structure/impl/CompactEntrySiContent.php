@@ -22,18 +22,18 @@
 namespace rocket\si\structure\impl;
 
 use rocket\si\structure\SiContent;
-use rocket\si\structure\SiCompactDeclaration;
+use rocket\si\structure\SiEntryDeclaration;
 use rocket\si\content\SiEntry;
 use n2n\util\type\ArgUtils;
 use rocket\si\control\SiControl;
 
 class CompactEntrySiContent implements SiContent {
-	private $compactDeclaration;
+	private $entryDeclaration;
 	private $entry;
 	private $controls;
 	
-	function __construct(SiCompactDeclaration $compactDeclaration, SiEntry $entry = null, array $controls = []) {
-		$this->compactDeclaration = $compactDeclaration;
+	function __construct(SiEntryDeclaration $entryDeclaration, SiEntry $entry = null, array $controls = []) {
+		$this->entryDeclaration = $entryDeclaration;
 		$this->setEntry($entry);
 		$this->setControls($controls);
 	}
@@ -89,7 +89,7 @@ class CompactEntrySiContent implements SiContent {
 		}
 		
 		return [ 
-			'compactDeclaration' => $this->compactDeclaration,
+			'entryDeclaration' => $this->entryDeclaration,
 			'entry' => $this->entry,
 			'controls' => $controlsArr
 		];

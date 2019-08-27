@@ -97,9 +97,9 @@ class GetInstructionProcess {
 		}
 		
 		if ($this->instruction->isBulky()) {
-			$result->setBulkyDeclaration($this->apiUtil->createMultiBuildupSiBulkyDeclaration($eiEntryGuis));
+			$result->setBulkyDeclaration($this->apiUtil->createMultiBuildupSiEntryDeclaration($eiEntryGuis));
 		} else {
-			$result->setCompactDeclaration($this->apiUtil->createMultiBuildupSiCompactDeclaration($eiEntryGuis));
+			$result->setCompactDeclaration($this->apiUtil->createMultiBuildupSiEntryDeclaration($eiEntryGuis));
 		}
 		
 		return $result;
@@ -118,9 +118,9 @@ class GetInstructionProcess {
 		}
 		
 		if ($this->instruction->isBulky()) {
-			$result->setBulkyDeclaration($this->apiUtil->createSiBulkyDeclaration($eiGui));
+			$result->setBulkyDeclaration($this->apiUtil->createSiEntryDeclaration($eiGui));
 		} else {
-			$result->setCompactDeclaration($this->apiUtil->createSiCompactDeclaration($eiGui));
+			$result->setCompactDeclaration($this->apiUtil->createSiEntryDeclaration($eiGui));
 		}
 		
 		return $result;

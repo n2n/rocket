@@ -32,7 +32,11 @@ class SiEntryInput {
 	/**
 	 * @var string
 	 */
-	private $buildupId;
+	private $typeId;
+	/**
+	 * @var bool
+	 */
+	private $bulky;
 	/**
 	 * @var SiFieldInput[]
 	 */
@@ -40,11 +44,13 @@ class SiEntryInput {
 	
 	/**
 	 * @param SiIdentifier $identifier
-	 * @param string $buildupId
+	 * @param string $typeId
+	 * @param bool $bulky
 	 */
-	function __construct(SiIdentifier $identifier, string $buildupId) {
+	function __construct(SiIdentifier $identifier, string $typeId, bool $bulky) {
 		$this->identifier = $identifier;
-		$this->buildupId = $buildupId;
+		$this->typeId = $typeId;
+		$this->bulky = $bulky;
 	}
 	
 	/**
@@ -57,8 +63,8 @@ class SiEntryInput {
 	/**
 	 * @return string
 	 */
-	function getBuildupId() {
-		return $this->buildupId;
+	function getTypeId() {
+		return $this->typeId;
 	}
 	
 	/**
@@ -102,7 +108,7 @@ class SiEntryInput {
 		
 		try {
 			$siEntryInput = new SiEntryInput(SiIdentifier::parse($dataSet->reqArray('identifier')),
-					$dataSet->reqString('buildupId'));
+					$dataSet->reqString('typeId'), $dataSet->reqBool('bulky'));
 			foreach ($dataSet->reqArray('fieldInputMap', 'array') as $fieldId => $fielData) {
 				$siEntryInput->putFieldInput($fieldId, new SiFieldInput($fielData));
 			}

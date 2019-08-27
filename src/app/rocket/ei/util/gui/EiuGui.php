@@ -303,7 +303,7 @@ class CustomGuiViewFactory implements EiGuiSiFactory {
 // 		return $uiComponent;
 // 	}
 	
-// 	public function createSiCompactDeclaration(): SiCompactDeclaration {
+// 	public function createSiEntryDeclaration(): SiEntryDeclaration {
 // 		throw new NotYetImplementedException();
 // 	}
 	

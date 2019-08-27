@@ -6,20 +6,21 @@ import { IllegalSiStateError } from 'src/app/si/model/illegal-si-state-error';
 import { SiTypeBuildup } from 'src/app/si/model/content/si-entry-buildup';
 import { SiEntryError } from 'src/app/si/model/input/si-entry-error';
 import { SiQualifier, SiIdentifier } from 'src/app/si/model/content/si-qualifier';
-import { SiType } from "src/app/si/model/content/si-type";
+import { SiType } from './si-type';
 
 export class SiEntry {
 	public treeLevel: number|null = null;
 	private _selectedTypeId: string|null = null;
-	public inputAvailable: boolean = false;
+	public bulky = false;
+	public readOnly = true;
 	private _typeBuildupsMap = new Map<string, SiTypeBuildup>();
 
 	constructor(public identifier: SiIdentifier) {
 	}
 
 	private ensureBuildups() {
-		if (this._selectedTypeId) { 
-			return; 
+		if (this._selectedTypeId) {
+			return;
 		}
 
 		throw new IllegalSiStateError('No buildup selected for entry: ' + this.toString());
@@ -50,7 +51,7 @@ export class SiEntry {
 	get types(): SiType[] {
 		return Array.from(this._typeBuildupsMap.values()).map(buildup => buildup.type);
 	}
-	
+
 	get typeQualifiers(): SiQualifier[] {
 		const qualifiers: SiQualifier[] = [];
 		for (const buildup of this._typeBuildupsMap.values()) {
@@ -73,7 +74,7 @@ export class SiEntry {
 	readInput(): SiEntryInput {
 		const fieldInputMap = new Map<string, object>();
 
-		for (let [id, field] of this.selectedTypeBuildup.fieldMap) {
+		for (const [id, field] of this.selectedTypeBuildup.fieldMap) {
 			if (!field.hasInput()) {
 				continue;
 			}
@@ -85,11 +86,11 @@ export class SiEntry {
 			throw new IllegalSiStateError('No input available.');
 		}
 
-		return new SiEntryInput(this.qualifier, this._selectedTypeId, fieldInputMap);
+		return new SiEntryInput(this.qualifier, this._selectedTypeId, this.bulky, fieldInputMap);
 	}
 
 	handleError(error: SiEntryError) {
-		for (let [fieldId, fieldError] of error.fieldErrors) {
+		for (const [fieldId, fieldError] of error.fieldErrors) {
 			if (!this.selectedTypeBuildup.fieldMap.has(fieldId)) {
 				this.selectedTypeBuildup.messages.push(...fieldError.getAllMessages());
 				continue;

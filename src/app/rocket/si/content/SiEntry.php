@@ -29,16 +29,18 @@ class SiEntry implements \JsonSerializable {
 	private $selectedTypeId = null;
 	private $buildups = [];
 	private $treeLevel;
-	private $inputAvailable;
+	private $readOnly;
+	private $bulky;
 	
 	/**
 	 * @param string $category
 	 * @param string|null $id
 	 * @param string $name
 	 */
-	function __construct(SiIdentifier $identifier, bool $inputAvailable) {
+	function __construct(SiIdentifier $identifier, bool $readOnly, bool $bulky) {
 		$this->identifier = $identifier;
-		$this->inputAvailable = $inputAvailable;
+		$this->readOnly = $readOnly;
+		$this->bulky = $bulky;
 	}
 
 	/**
@@ -122,7 +124,8 @@ class SiEntry implements \JsonSerializable {
 		return [
 			'identifier' => $this->identifier,
 			'treeLevel' => $this->treeLevel,
-			'inputAvailable' => $this->inputAvailable,
+			'readOnly' => $this->readOnly,
+		    'bulky' => $this->bulky,
 			'buildups' => $buildups
 		];
 	}

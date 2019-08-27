@@ -25,12 +25,12 @@ use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\EiObject;
 use rocket\ei\manage\gui\EiEntryGui;
 use n2n\util\type\ArgUtils;
-use rocket\si\structure\SiBulkyDeclaration;
+use rocket\si\structure\SiEntryDeclaration;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\EiEngineUtil;
 use rocket\si\content\SiEntry;
 use rocket\ei\manage\gui\EiGui;
-use rocket\si\structure\SiCompactDeclaration;
+use rocket\si\structure\SiEntryDeclaration;
 use rocket\si\content\SiPartialContent;
 
 class ApiUtil {
@@ -46,8 +46,8 @@ class ApiUtil {
 	 * @param EiEntryGui[]
 	 * @return \rocket\ei\manage\gui\EiGui
 	 */
-	function createMultiBuildupSiBulkyDeclaration(array $eiEntryGuis) {
-		$declaration = new SiBulkyDeclaration();
+	function createMultiBuildupSiEntryDeclaration(array $eiEntryGuis) {
+		$declaration = new SiEntryDeclaration();
 		
 		foreach ($eiEntryGuis as $eiEntryGui) {
 			ArgUtils::assertTrue($eiEntryGui instanceof EiEntryGui
@@ -62,10 +62,10 @@ class ApiUtil {
 	
 	/**
 	 * @param array $eiEntryGuis
-	 * @return \rocket\si\structure\SiBulkyDeclaration
+	 * @return \rocket\si\structure\SiEntryDeclaration
 	 */      
-	function createMultiBuildupSiCompactDeclaration(array $eiEntryGuis) {
-		$declaration = new SiCompactDeclaration();
+	function createMultiBuildupSiEntryDeclaration(array $eiEntryGuis) {
+		$declaration = new SiEntryDeclaration();
 		
 		foreach ($eiEntryGuis as $eiEntryGui) {
 			ArgUtils::assertTrue($eiEntryGui instanceof EiEntryGui);
@@ -79,10 +79,10 @@ class ApiUtil {
 	
 	/**
 	 * @param EiGui $eiGui
-	 * @return SiCompactDeclaration
+	 * @return SiEntryDeclaration
 	 */
-	function createSiCompactDeclaration(EiGui $eiGui) {
-		$declaration = new SiCompactDeclaration();
+	function createSiEntryDeclaration(EiGui $eiGui) {
+		$declaration = new SiEntryDeclaration();
 		$declaration->putFieldDeclarations(
 				$this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()->getId(),
 				$eiGui->getEiGuiSiFactory()->getSiFieldDeclarations());
@@ -92,10 +92,10 @@ class ApiUtil {
 	
 	/**
 	 * @param EiGui $eiGui
-	 * @return SiBulkyDeclaration
+	 * @return SiEntryDeclaration
 	 */
-	function createSiBulkyDeclaration(EiGui $eiGui) {
-		$declaration = new SiBulkyDeclaration();
+	function createSiEntryDeclaration(EiGui $eiGui) {
+		$declaration = new SiEntryDeclaration();
 		$declaration->putFieldStructureDeclarations(
 				$this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()->getId(),
 				$eiGui->getEiGuiSiFactory()->getSiFieldStructureDeclarations());
@@ -118,7 +118,7 @@ class ApiUtil {
 // 	 */
 // 	function createSiEntry(EiObject $eiObject, array $eiEntryGuis) {
 // 		$siEntry = new SiEntry($eiObject->createSiQualifier($eiObject), 
-// 				!ViewMode::isReadOnly($this->eiGui->getViewMode()));
+// 				ViewMode::isReadOnly($this->eiGui->getViewMode()));
 		
 // 		foreach ($eiEntryGuis as $eiEntryGui) {
 // 			ArgUtils::assertTrue($eiEntryGui instanceof EiEntryGui);

@@ -12,9 +12,7 @@ use rocket\ei\manage\gui\control\UnknownGuiControlException;
 use rocket\ei\manage\gui\control\GeneralGuiControl;
 use rocket\ei\manage\api\ApiControlCallId;
 use rocket\ei\mask\EiMask;
-use rocket\si\structure\SiBulkyDeclaration;
-use rocket\ei\EiException;
-use rocket\si\structure\SiCompactDeclaration;
+use rocket\si\structure\SiEntryDeclaration;
 
 /**
  * @author andreas
@@ -258,32 +256,18 @@ class EiGui {
 		return $this->guiDefinition->createGeneralGuiControl($this, $guiControlPath);
 	}
 	
-	
 	/**
-	 * @throws EiException
-	 * @return \rocket\si\structure\SiBulkyDeclaration
+	 * @return \rocket\si\structure\SiEntryDeclaration
 	 */
-	public function createSiBulkyDeclaration() {
-		if (ViewMode::isBulky($this->viewMode)) {
-			return (new SiBulkyDeclaration())->putFieldStructureDeclarations(
+	public function createSiEntryDeclaration() {
+		if (ViewMode::isCompact($this->viewMode)) {
+			return (new SiEntryDeclaration())->putFieldDeclarations(
+					$this->eiMask->getEiType()->getId(), $this->eiGuiGiFactory->getSiFieldDeclarations());
+		} 
+
+		return (new SiEntryDeclaration())->putFieldStructureDeclarations(
 					(string) $this->eiMask->getEiType()->getId(),
 					$this->eiGuiGiFactory->getSiFieldStructureDeclarations());
-		}
-		
-		throw new EiException('EiGui is not bulky.');
-	}
-	
-	/**
-	 * @throws EiException
-	 * @return \rocket\si\structure\SiBulkyDeclaration
-	 */
-	public function createSiCompactDeclaration() {
-		if (ViewMode::isCompact($this->viewMode)) {
-			return new SiCompactDeclaration(
-					[$this->eiMask->getEiType()->getId() => $this->eiGuiGiFactory->getSiFieldDeclarations()]);
-		}
-		
-		throw new EiException('EiGui is not compact.');
 	}
 	
 	/**

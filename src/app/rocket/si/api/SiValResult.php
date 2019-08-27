@@ -24,9 +24,59 @@ namespace rocket\si\api;
 use rocket\si\structure\SiEntryDeclaration;
 use rocket\si\structure\SiEntryDeclaration;
 use rocket\si\content\SiEntry;
-use rocket\si\content\SiPartialContent;
+use rocket\si\content\SiEntryError;
 
-class SiGetResult implements \JsonSerializable {
+class SiValResult implements \JsonSerializable {
+	/**
+	 * @var SiEntryError|null
+	 */
+	private $entryError = null;
+	/** 
+	 * @var SiValGetResult[]
+	 */
+	private $getResults = [];
+
+	/**
+	 * @return \rocket\si\content\SiEntryError|null
+	 */
+	public function getEntryError() {
+		return $this->entryError;
+	}
+
+	/**
+	 * @param \rocket\si\content\SiEntryError|null $entryError
+	 */
+	public function setEntryError(?SiEntryError $entryError) {
+		$this->entryError = $entryError;
+	}
+
+	/** 
+	 * @return SiValGetResult[]
+	 */
+	function getGetResults() {
+		return $this->getResults;
+	}
+
+	/**
+	 * @param SiValGetResult[]
+	 */
+	function setGetResults(array $getResults) {
+		$this->getResults = $getResults;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \JsonSerializable::jsonSerialize()
+	 */
+	public function jsonSerialize() {
+		return [
+			'getResults' => $this->getResults,
+			'entryError' => $this->entryError
+		];
+	}
+}
+
+class SiValGetResult implements \JsonSerializable {
 	/**
 	 * @var SiEntryDeclaration|null
 	 */
@@ -34,15 +84,11 @@ class SiGetResult implements \JsonSerializable {
 	/**
 	 * @var SiEntryDeclaration|null
 	 */
-	private $entryDeclaration;
+	private $entryDeclaration = null;
 	/**
 	 * @var SiEntry|null
 	 */
 	private $entry = null;
-	/**
-	 * @var SiPartialContent|null
-	 */
-	private $partialContent;
 	
 	function __construct() {
 	}
@@ -90,20 +136,6 @@ class SiGetResult implements \JsonSerializable {
 	}
 
 	/**
-	 * @return \rocket\si\content\SiPartialContent|null
-	 */
-	public function getPartialContent() {
-		return $this->partialContent;
-	}
-
-	/**
-	 * @param \rocket\si\content\SiPartialContent|null $partialContent
-	 */
-	public function setPartialContent(?SiPartialContent $partialContent) {
-		$this->partialContent = $partialContent;
-	}
-
-	/**
 	 * {@inheritDoc}
 	 * @see \JsonSerializable::jsonSerialize()
 	 */
@@ -112,7 +144,7 @@ class SiGetResult implements \JsonSerializable {
 			'entryDeclaration' => $this->entryDeclaration,
 			'entryDeclaration' => $this->entryDeclaration,
 			'entry' => $this->entry,
-			'partialContent' => $this->partialContent
+			'entryError' => $this->entryError
 		];
 	}	
 }

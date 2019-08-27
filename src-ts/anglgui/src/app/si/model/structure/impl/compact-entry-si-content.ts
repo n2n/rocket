@@ -1,6 +1,6 @@
 import { SiComp } from 'src/app/si/model/structure/si-zone-content';
 import { ViewContainerRef, ComponentFactoryResolver } from '@angular/core';
-import { SiCompactDeclaration } from 'src/app/si/model/structure/si-compact-declaration';
+import { SiEntryDeclaration } from 'src/app/si/model/structure/si-entry-declaration';
 import { SiEntry } from 'src/app/si/model/content/si-entry';
 import { SiContent } from 'src/app/si/model/structure/si-content';
 import { SiStructure } from 'src/app/si/model/structure/si-structure';
@@ -15,7 +15,7 @@ export class CompactEntrySiComp implements SiComp, SiContent {
 	public entry: SiEntry|null = null;
 	public controlMap: Map<string, SiControl> = new Map();
 
-	constructor(public compactDeclaration: SiCompactDeclaration,
+	constructor(public entryDeclaration: SiEntryDeclaration,
 			public zone: SiZone) {
 	}
 
@@ -54,7 +54,7 @@ export class CompactEntrySiComp implements SiComp, SiContent {
 	}
 
 	getFieldDeclarations(): SiFieldDeclaration[] {
-		return this.compactDeclaration.getFieldDeclarationsByBuildupId(this.entry.selectedTypeId);
+		return this.entryDeclaration.getFieldDeclarationsByTypeId(this.entry.selectedTypeId);
 	}
 
 	initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver,

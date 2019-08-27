@@ -37,8 +37,7 @@ use n2n\persistence\orm\criteria\Criteria;
 use n2n\persistence\orm\util\NestedSetUtils;
 use n2n\persistence\orm\util\NestedSetStrategy;
 use rocket\ei\util\gui\EiuGui;
-use rocket\si\structure\SiCompactDeclaration;
-use rocket\si\structure\SiBulkyDeclaration;
+use rocket\si\structure\SiEntryDeclaration;
 use rocket\si\content\SiPartialContent;
 use rocket\si\content\SiEntry;
 use rocket\si\structure\impl\BulkyEntrySiContent;
@@ -284,7 +283,7 @@ class EiuCtrl {
 		
 		$this->composeEiuGuiForList($eiuGui, $pageSize);
 		
-		$siCompactDeclaration = new SiCompactDeclaration(
+		$siCompactDeclaration = new SiEntryDeclaration(
 				[$this->eiuFrame->getContextEiType()->getId() => $eiuGui->getEiGui()->getEiGuiSiFactory()->getSiFieldDeclarations()]);
 		
 		$zone = new EntriesListSiContent($this->eiu->frame()->getApiUrl(), $pageSize, $siCompactDeclaration, 
@@ -338,7 +337,7 @@ class EiuCtrl {
 		
 		$eiTypeId = $this->eiuFrame->engine()->type()->getId();
 		
-		$siBulkyDeclaration = new SiBulkyDeclaration([]);
+		$siBulkyDeclaration = new SiEntryDeclaration([]);
 		$siBulkyDeclaration->putFieldStructureDeclarations($eiTypeId, 
 				$eiGui->getEiGuiSiFactory()->getSiFieldStructureDeclarations());
 		
@@ -351,9 +350,9 @@ class EiuCtrl {
 	function forwardNewEntryDlZone(bool $editable = true) {
 		$contextEiuType = $this->eiuFrame->engine()->type();
 		
-		$siEntry = new SiEntry($contextEiuType->supremeType()->getId(), null);
+		$siEntry = new SiEntry($contextEiuType->supremeType()->getId(), !$editable, true);
 		
-		$siBulkyDeclaration = new SiBulkyDeclaration(
+		$siBulkyDeclaration = new SiEntryDeclaration(
 				$this->eiuFrame->newGui(ViewMode::determine(true, !$editable, true)->createGeneralSiControls()));
 		
 		if (!$contextEiuType->isAbstract()) {

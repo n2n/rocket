@@ -21,21 +21,45 @@
  */
 namespace rocket\si\input;
 
-class SiValInstruction {
+class SiValRequest {
+	private $instructions = [];
+	
 	/**
-	 * @var SiEntryInput
+	 * 
 	 */
-	private $entryInput;
-	private $getInstructions = [];
-
-	function __construct(SiEntryInput $entryInput) {
-
+	function __construct() {
+	}
+	
+	/**
+	 * @return SiValInstruction[]
+	 */
+	function getInstructions() {
+		return $this->instructions;
 	}
 
-}
+	/**
+	 * @param SiValInstruction[]
+	 */
+	function setInstructions(array $instructions) {
+		ArgUtils::valArray($instructions, SiValInstruction::class);
+		$this->instructions = $instructions;
+	}
+	
+	function putInstruction(string $key, SiValInstruction $instruction) {
+		$this->instructions[$key] = $instruction;
+	}
 
-class SiValGetInstruction {
-	private $bulky;
-	private $readOnly;
-	private $declarationRequested = true;
+	static function createFromData(array $data) {
+		$ds = new DataSet($data);
+		
+		$getRequest = new SiValRequest();
+		try {
+			foreach ($ds->reqArray('instructions') as $key => $instructionData) {
+				$getRequest->putInstruction($key, SiValInstruction::createFromData($instructionData));
+			}
+		} catch (AttributesException $e) {
+			throw new \InvalidArgumentException(null, 0, $e);
+		}
+		return $getRequest;
+	}
 }

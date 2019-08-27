@@ -4,7 +4,7 @@ import { SiComp } from 'src/app/si/model/structure/si-zone-content';
 import { ViewContainerRef, ComponentFactoryResolver, ComponentRef } from '@angular/core';
 import { ListZoneContentComponent } from 'src/app/ui/content/zone/comp/list-zone-content/list-zone-content.component';
 import { IllegalSiStateError } from 'src/app/si/model/illegal-si-state-error';
-import { SiCompactDeclaration } from 'src/app/si/model/structure/si-compact-declaration';
+import { SiEntryDeclaration } from 'src/app/si/model/structure/si-entry-declaration';
 import { SiContent } from 'src/app/si/model/structure/si-content';
 import { SiZone } from 'src/app/si/model/structure/si-zone';
 import { SiZoneError } from 'src/app/si/model/structure/si-zone-error';
@@ -18,7 +18,7 @@ export class EntriesListSiContent implements SiComp, SiContent {
 	private pagesMap = new Map<number, SiPage>();
 	private _size = 0;
 	private _currentPageNo = 1;
-	public compactDeclaration: SiCompactDeclaration|null = null;
+	public entryDeclaration: SiEntryDeclaration|null = null;
 	public qualifierSelection: SiQualifierSelection|null = null;
 
 	constructor(public apiUrl: string, public pageSize: number, public zone: SiZone) {
@@ -118,7 +118,7 @@ export class EntriesListSiContent implements SiComp, SiContent {
 	}
 
 	get setup(): boolean {
-		return !!(this.compactDeclaration && this.pagesMap.size > 0);
+		return !!(this.entryDeclaration && this.pagesMap.size > 0);
 	}
 
 	private ensureSetup() {

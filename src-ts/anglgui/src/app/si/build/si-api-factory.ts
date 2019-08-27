@@ -37,20 +37,15 @@ export class SiApiFactory {
 		const extr = new Extractor(data);
 
 		const result: SiGetResult = {
-			bulkyDeclaration: null,
-			compactDeclaration: null,
+			entryDeclaration: null,
 			entry: null,
 			partialContent: null
 		};
 
 		let propData: any = null;
 
-		if (null !== (propData = extr.nullaObject('bulkyDeclaration'))) {
-			result.bulkyDeclaration = SiResultFactory.createBulkyDeclaration(propData);
-		}
-
-		if (null !== (propData = extr.nullaObject('compactDeclaration'))) {
-			result.compactDeclaration = SiResultFactory.createCompactDeclaration(propData);
+		if (null !== (propData = extr.nullaObject('entryDeclaration'))) {
+			result.entryDeclaration = SiResultFactory.createEntryDeclaration(propData);
 		}
 
 		if (null !== (propData = extr.nullaObject('entry'))) {

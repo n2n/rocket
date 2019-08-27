@@ -110,7 +110,7 @@ class EiEntryGuiMulti {
 	
 	function createSiEntry() {
 		$siEntry = new SiEntry(new SiIdentifier($this->contextEiType->getSupremeEiType()->getId(), null),
-				!ViewMode::isReadOnly($this->viewMode));
+		    ViewMode::isReadOnly($this->viewMode), ViewMode::isBulky($this->viewMode));
 		
 		foreach ($this->eiEntryGuis as $eiEntryGui) {
 			$siEntry->putBuildup($eiEntryGui->getEiEntry()->getEiType()->getId(), 

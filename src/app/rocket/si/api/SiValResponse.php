@@ -19,47 +19,43 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\si\input;
+namespace rocket\si\api;
 
-class SiValidationRequest {
-	private $instructions = [];
+use n2n\util\type\ArgUtils;
+
+class SiValResponse implements \JsonSerializable {
+	/**
+	 * @var SiValResult[]
+	 */
+	private $results = [];
 	
 	/**
-	 * 
+	 * @return SiValResult[]
 	 */
-	function __construct() {	
+	function getResults() {
+		return $this->results;
 	}
 	
 	/**
-	 * @return SiValInstruction[]
+	 * @param SiValResult[]
 	 */
-	function getInstructions() {
-		return $this->instructions;
-	}
-
-	/**
-	 * @param SiValInstruction[]
-	 */
-	function setInstructions(array $instructions) {
-		ArgUtils::valArray($instructions, SiValInstruction::class);
-		$this->instructions = $instructions;
+	function setResults(array $results) {
+		ArgUtils::valArray($results, SiValResult::class);
+		$this->results = $results;
 	}
 	
-	function putInstruction(string $key, SiValInstruction $instruction) {
-		$this->instructions[$key] = $instruction;
+	/** 
+	 * @param string $key
+	 * @param SiValResult $result 
+	 */
+	function putResult(string $key, SiValResult $result) {
+		$this->results[$key] = $result;
 	}
-
-	static function createFromData(array $data) {
-		$ds = new DataSet($data);
-		
-		$getRequest = new SiValRequest();
-		try {
-			foreach ($ds->reqArray('instructions') as $key => $instructionData) {
-				$getRequest->putInstruction($key, SiValInstruction::createFromData($instructionData));
-			}
-		} catch (AttributesException $e) {
-			throw new \InvalidArgumentException(null, 0, $e);
-		}
-		return $getRequest;
-	}
+	
+	/** 
+	 * @return array
+	 */
+	public function jsonSerialize() {
+		return ['results' => $this->results];
+	}	
 }

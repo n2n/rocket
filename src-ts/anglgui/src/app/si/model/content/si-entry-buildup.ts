@@ -2,7 +2,7 @@
 import { SiField } from 'src/app/si/model/content/si-field';
 import { SiControl } from 'src/app/si/model/control/si-control';
 import { SiIdentifier, SiQualifier } from 'src/app/si/model/content/si-qualifier';
-import { SiType } from "src/app/si/model/content/si-type";
+import { SiType } from 'src/app/si/model/content/si-type';
 
 export class SiTypeBuildup {
 	public messages: string[] = [];

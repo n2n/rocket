@@ -71,7 +71,7 @@ class SiPartialContent implements \JsonSerializable {
 
 	/**
 	 * @param SiEntry[] $siEntries
-	 * @return \rocket\si\structure\SiCompactDeclaration
+	 * @return \rocket\si\structure\SiEntryDeclaration
 	 */
 	function setEntries(array $entries) {
 		ArgUtils::valArray($entries, SiEntry::class);

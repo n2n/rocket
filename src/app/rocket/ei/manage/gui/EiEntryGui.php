@@ -332,11 +332,13 @@ class EiEntryGui {
 	 */
 	function createSiEntry(bool $siControlsIncluded = true) {
 		$eiType = $this->eiEntry->getEiType();
-		
 		$siIdentifier = $this->eiEntry->getEiObject()->createSiIdentifier();
-		$siEntry = new SiEntry($siIdentifier, !ViewMode::isReadOnly($this->eiGui->getViewMode()));
+		$viewMode = $this->eiGui->getViewMode();
+
+		$siEntry = new SiEntry($siIdentifier, ViewMode::isReadOnly($viewMode), ViewMode::isBulky($viewMode));
 		$siEntry->putBuildup($eiType->getId(), $this->createSiTypeBuildup($siControlsIncluded));
 		$siEntry->setSelectedTypeId($eiType->getId());
+
 		return $siEntry;
 	}
 	
@@ -384,7 +386,7 @@ class EiEntryGui {
 	 */
 	function createCompactEntrySiContent(bool $generalSiControlsIncluded = true,
 			bool $entrySiControlsIncluded = true) {
-		$siContent = new CompactEntrySiContent($this->eiGui->createSiCompactDeclaration(),
+		$siContent = new CompactEntrySiContent($this->eiGui->createSiEntryDeclaration(),
 				$this->createSiEntry($entrySiControlsIncluded));
 		
 		if ($generalSiControlsIncluded) {
@@ -400,7 +402,7 @@ class EiEntryGui {
 	 */
 	function createBulkyEntrySiContent(bool $generalSiControlsIncluded = true,
 			bool $entrySiControlsIncluded = true) {
-		$siContent = new BulkyEntrySiContent($this->eiGui->createSiBulkyDeclaration(),
+		$siContent = new BulkyEntrySiContent($this->eiGui->createSiEntryDeclaration(),
 				$this->createSiEntry($entrySiControlsIncluded));
 		
 		if ($generalSiControlsIncluded) {

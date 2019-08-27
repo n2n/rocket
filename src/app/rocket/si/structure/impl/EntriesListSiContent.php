@@ -23,25 +23,25 @@ namespace rocket\si\structure\impl;
 
 use rocket\si\structure\SiContent;
 use n2n\util\uri\Url;
-use rocket\si\structure\SiCompactDeclaration;
+use rocket\si\structure\SiEntryDeclaration;
 use rocket\si\content\SiPartialContent;
 
 class EntriesListSiContent implements SiContent {
 	private $apiUrl;
 	private $pageSize;
-	private $compactDeclaration;
+	private $entryDeclaration;
 	private $partialContent;
 	
 	/**
 	 * @param Url $apiUrl
 	 * @param int $pageSize
-	 * @param SiCompactDeclaration $siCompactContent
+	 * @param SiEntryDeclaration $siCompactContent
 	 */
-	public function __construct(Url $apiUrl, int $pageSize, SiCompactDeclaration $compactDeclaration = null,
+	public function __construct(Url $apiUrl, int $pageSize, SiEntryDeclaration $entryDeclaration = null,
 			SiPartialContent $partialContent = null) {
 		$this->apiUrl = $apiUrl;
 		$this->pageSize = $pageSize;
-		$this->compactDeclaration = $compactDeclaration;
+		$this->entryDeclaration = $entryDeclaration;
 		$this->partialContent = $partialContent;
 	}
 	
@@ -98,7 +98,7 @@ class EntriesListSiContent implements SiContent {
 		return [
 			'apiUrl' => (string) $this->apiUrl,
 			'pageSize' => $this->pageSize,
-			'compactDeclaration' => $this->compactDeclaration,
+			'entryDeclaration' => $this->entryDeclaration,
 			'partialContent' => $this->partialContent
 		];
 	}

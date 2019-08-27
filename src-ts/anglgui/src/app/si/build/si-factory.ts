@@ -25,7 +25,8 @@ import { StringOutSiField } from '../model/content/impl/string-out-si-field';
 import { SiControl } from '../model/control/si-control';
 import { SiButton, SiConfirm } from '../model/control/si-button';
 import { SiControlType, SiFieldType, SiContentType } from './si-type';
-import { SiType } from "src/app/si/model/content/si-type";
+import { SiType } from 'src/app/si/model/content/si-type';
+import { SiEntryDeclaration } from '../model/structure/si-entry-declaration';
 
 
 export class SiContentFactory {
@@ -45,6 +46,7 @@ export class SiContentFactory {
 		const extr = new Extractor(data);
 		const dataExtr = extr.reqExtractor('data');
 		let compFactory: SiCompFactory;
+		let entryDeclaration: SiEntryDeclaration;
 
 		const type = extr.reqString('type');
 
@@ -58,7 +60,7 @@ export class SiContentFactory {
 						dataExtr.reqNumber('pageSize'), this.zone);
 
 				compFactory = new SiCompFactory(this.zone, listSiContent);
-				listSiContent.compactDeclaration = SiResultFactory.createCompactDeclaration(dataExtr.reqObject('compactDeclaration'));
+				listSiContent.entryDeclaration = SiResultFactory.createEntryDeclaration(dataExtr.reqObject('entryDeclaration'));
 
 				const partialContentData = dataExtr.nullaObject('partialContent');
 				if (partialContentData) {
@@ -71,8 +73,8 @@ export class SiContentFactory {
 				return listSiContent;
 
 			case SiContentType.BULKY_ENTRY:
-				const bulkyDeclaration = SiResultFactory.createBulkyDeclaration(dataExtr.reqObject('bulkyDeclaration'));
-				const bulkyEntrySiContent = new BulkyEntrySiComp(bulkyDeclaration, this.zone);
+				entryDeclaration = SiResultFactory.createEntryDeclaration(dataExtr.reqObject('entryDeclaration'));
+				const bulkyEntrySiContent = new BulkyEntrySiComp(entryDeclaration, this.zone);
 
 				compFactory = new SiCompFactory(this.zone, bulkyEntrySiContent);
 				bulkyEntrySiContent.controls = Array.from(compFactory.createControlMap(dataExtr.reqMap('controls')).values());
@@ -80,8 +82,8 @@ export class SiContentFactory {
 				return bulkyEntrySiContent;
 
 			case SiContentType.COMPACT_ENTRY:
-				const compactDeclaration = SiResultFactory.createCompactDeclaration(dataExtr.reqObject('compactDeclaration'));
-				const compactEntrySiContent = new CompactEntrySiComp(compactDeclaration, this.zone);
+				entryDeclaration = SiResultFactory.createEntryDeclaration(dataExtr.reqObject('entryDeclaration'));
+				const compactEntrySiContent = new CompactEntrySiComp(entryDeclaration, this.zone);
 
 				compFactory = new SiCompFactory(this.zone, compactEntrySiContent);
 				compactEntrySiContent.controlMap = compFactory.createControlMap(dataExtr.reqMap('controls'));
@@ -125,7 +127,8 @@ export class SiCompFactory {
 
 		const siEntry = new SiEntry(this.createIdentifier(extr.reqObject('identifier')));
 		siEntry.treeLevel = extr.nullaNumber('treeLevel');
-		siEntry.inputAvailable = extr.reqBoolean('inputAvailable');
+		siEntry.bulky = extr.reqBoolean('bulky');
+		siEntry.readOnly = extr.reqBoolean('readOnly');
 
 		for (const [buildupId, buildupData] of extr.reqMap('buildups')) {
 			siEntry.putTypeBuildup(this.createBuildup(buildupData));
@@ -148,7 +151,7 @@ export class SiCompFactory {
 		return new SiQualifier(extr.reqString('category'), extr.nullaString('id'),
 				this.createType(extr.reqObject('type')), extr.nullaString('idName'));
 	}
-	
+
 	private createTypes(data: Array<any>) {
 		const types: SiType[] = [];
 		for (const typeData of data) {
@@ -156,10 +159,10 @@ export class SiCompFactory {
 		}
 		return types;
 	}
-	
+
 	private createType(data: any): SiType {
 		const extr = new Extractor(data);
-		
+
 		return new SiType(extr.reqString('typeId'), extr.reqString('name'), extr.reqString('iconClass'));
 	}
 
@@ -231,14 +234,14 @@ export class SiCompFactory {
 			embeddedEntryInSiField.content.nonNewRemovable = dataExtr.reqBoolean('nonNewRemovable');
 			embeddedEntryInSiField.content.sortable = dataExtr.reqBoolean('sortable');
 			embeddedEntryInSiField.content.pastCategory = dataExtr.nullaString('pastCategory');
-			
-			const allowedsiTypesData = dataExtr.nullaArray('allowedSiTypes')
+
+			const allowedsiTypesData = dataExtr.nullaArray('allowedSiTypes');
 			if (allowedsiTypesData) {
 				embeddedEntryInSiField.content.allowedSiTypes = this.createTypes(allowedsiTypesData);
 			} else {
 				embeddedEntryInSiField.content.allowedSiTypes = null;
 			}
-			
+
 			return embeddedEntryInSiField;
 
 		default:
@@ -277,7 +280,7 @@ export class SiCompFactory {
 			name: extr.reqString('name'),
 			url: extr.nullaString('url'),
 			thumbUrl: extr.nullaString('thumbUrl')
-		}
+		};
 	}
 
 	createControlMap(data: Map<string, any>): Map<string, SiControl> {
