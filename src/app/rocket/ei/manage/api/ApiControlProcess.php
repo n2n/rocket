@@ -89,24 +89,6 @@ class ApiControlProcess {
 		}
 	}
 	
-	/**
-	 * @param string $buildupId
-	 * @return EiObject
-	 */
-	private function createEiObject($buildupId) {
-		$eiType = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType();
-		if ($eiType->getId() == $buildupId) {
-			return $eiType->createNewEiObject(false);
-		}
-		
-		try {
-			return $eiType->getSubEiTypeById($buildupId)->createNewEiObject();
-		} catch (\rocket\ei\UnknownEiTypeException $e) {
-			throw new BadRequestException(null, 0, $e);
-		}
-	}
-	
-	
 	function determineEiEntry(string $pid) {
 		$eiObject = $this->eiFrameUtil->lookupEiObject($pid);
 		$this->eiEntry = $this->eiFrame->createEiEntry($eiObject);
@@ -175,12 +157,12 @@ class ApiControlProcess {
 			if (null !== $entryInput->getIdentifier()->getId()) {
 				$eiObject = $this->eiFrameUtil->lookupEiObject($entryInput->getIdentifier()->getId());
 			} else {
-				$eiObject = $this->createEiObject($entryInput->getBuildupId());
+				$eiObject = $this->createEiObject($entryInput->getTypeId());
 			}
 			
 			$eiEntry = $this->eiFrame->createEiEntry($eiObject);
 			
-			$eiEntryGui = $this->eiGui->createEiEntryGui($eiEntry, 0);
+			$eiEntryGui = $this->eiGui->createEiEntryGui($eiEntry);
 			
 			$this->applyEntryInput($entryInput, $eiEntryGui);
 			

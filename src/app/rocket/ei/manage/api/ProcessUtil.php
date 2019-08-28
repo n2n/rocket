@@ -30,8 +30,10 @@ use rocket\ei\manage\EiObject;
 use rocket\ei\mask\EiMask;
 use rocket\ei\manage\gui\EiGui;
 use rocket\ei\manage\gui\EiEntryGui;
+use rocket\si\input\SiEntryInput;
+use rocket\ei\manage\security\SecurityException;
 
-class ApiProcessUtil {
+class ProcessUtil {
 	private $eiFrame;
 	
 	/**
@@ -39,6 +41,23 @@ class ApiProcessUtil {
 	 */
 	function __construct(EiFrame $eiFrame) {
 		$this->eiFrame = $eiFrame;
+	}
+	
+	/**
+	 * @param string $typeId
+	 * @return EiObject
+	 */
+	function createEiObject(string $typeId) {
+		$eiType = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType();
+		if ($eiType->getId() == $typeId) {
+			return $eiType->createNewEiObject(false);
+		}
+		
+		try {
+			return $eiType->getSubEiTypeById($typeId)->createNewEiObject();
+		} catch (\rocket\ei\UnknownEiTypeException $e) {
+			throw new BadRequestException(null, 0, $e);
+		}
 	}
 	
 	/**
@@ -52,6 +71,70 @@ class ApiProcessUtil {
 		} catch (UnknownEiObjectException $e) {
 			throw new BadRequestException(null, 0, $e);
 		}
+	}
+	
+	/**
+	 * @param SiEntryInput $siEntryInput
+	 * @return EiObject
+	 */
+	function determineEiObjectOfInput(SiEntryInput $siEntryInput) {
+		if (null !== ($pid = $siEntryInput->getIdentifier()->getId())) {
+			return $this->lookupEiObject($pid);
+		}
+		
+		return $this->createEiObject($siEntryInput->getTypeId());
+	}
+	
+	/**
+	 * @param SiEntryInput $siEntryInput
+	 * @return EiObject
+	 */
+	function determineEiEntryOfInput(SiEntryInput $siEntryInput) {
+		try {
+			return $this->eiFrame->createEiEntry($this->determineEiObjectOfInput($siEntryInput));
+		} catch (SecurityException $e) {
+			throw new BadRequestException(null, 0, $e);
+		}
+	}
+	
+	/**
+	 * @param SiEntryInput $siEntryInput
+	 * @throws BadRequestException
+	 * @return \rocket\ei\manage\gui\EiEntryGui
+	 */
+	function determineEiEntryGuiOfInput(SiEntryInput $siEntryInput) {
+		$eiObject = $this->determineEiObjectOfInput($siEntryInput);
+		
+		try {
+			$efu = new EiFrameUtil($this->eiFrame);
+			return $efu->createEiEntryGuiFromEiObject($eiObject, $siEntryInput->isBulky(), false);
+		} catch (SecurityException $e) {
+			throw new BadRequestException(null, 0, $e);
+		}
+	}
+	
+	/**
+	 * @param SiEntryInput $siEntryInput
+	 * @param EiEntryGui $eiEntryGui
+	 * @throws BadRequestException
+	 * @return \rocket\si\input\SiEntryError|NULL
+	 */
+	function handleEntryInput(SiEntryInput $siEntryInput, EiEntryGui $eiEntryGui) {
+		try {
+			$eiEntryGui->handleSiEntryInput($siEntryInput);
+		} catch (\InvalidArgumentException $e) {
+			throw new BadRequestException(null, 0, $e);
+		}
+		
+		$eiEntryGui->save();
+		
+		$eiEntry = $eiEntryGui->getEiEntry();
+		
+		if ($eiEntry->validate()) {
+			return null;
+		}
+		
+		return $eiEntry->getValidationResult()->toSiEntryError($this->eiFrame->getN2nContext()->getN2nLocale());
 	}
 	
 	/**

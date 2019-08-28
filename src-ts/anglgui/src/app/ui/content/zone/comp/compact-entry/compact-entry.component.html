@@ -1,6 +1,10 @@
 
-<div *ngFor="let siFieldDeclaration of siContent.getFieldDeclarations()">
-	<ng-template rocketContent 
-			[siContent]="siContent.entry.selectedTypeBuildup.getFieldById(siFieldDeclaration.fieldId)">
-	</ng-template>
-</div>
+<div *ngIf="!siContent.entry" class="rocket-loader"></div>
+
+<ng-container *ngIf="siContent.entry">
+	<div *ngFor="let siFieldDeclaration of siContent.getFieldDeclarations()">
+		<ng-template rocketContent 
+				[siContent]="siContent.entry.selectedTypeBuildup.getFieldById(siFieldDeclaration.fieldId)">
+		</ng-template>
+	</div>
+</ng-container>

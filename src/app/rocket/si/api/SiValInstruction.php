@@ -19,24 +19,80 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\si\input;
+namespace rocket\si\api;
+
+use n2n\util\type\ArgUtils;
+use n2n\util\type\attrs\DataSet;
+use n2n\util\type\attrs\AttributesException;
+use rocket\si\input\SiEntryInput;
 
 class SiValInstruction {
 	/**
 	 * @var SiEntryInput
 	 */
 	private $entryInput;
+	/**
+	 * @var SiValGetInstruction[]
+	 */
 	private $getInstructions = [];
 
 	function __construct(SiEntryInput $entryInput) {
-
+		$this->entryInput = $entryInput;
+	}
+	
+	/**
+	 * @return \rocket\si\input\SiEntryInput
+	 */
+	public function getEntryInput() {
+		return $this->entryInput;
+	}
+	
+	/**
+	 * @param \rocket\si\input\SiEntryInput $entryInput
+	 */
+	public function setEntryInput($entryInput) {
+		$this->entryInput = $entryInput;
 	}
 
-}
+	/**
+	 * @return \rocket\si\api\SiValGetInstruction[] 
+	 */
+	public function getGetInstructions() {
+		return $this->getInstructions;
+	}
 
-class SiValGetInstruction {
-	private $bulky;
-	private $readOnly;
-	private $declarationRequested = true;
+	/**
+	 * @param \rocket\si\api\SiValGetInstruction[]  $getInstructions
+	 */
+	public function setGetInstructions(array $getInstructions) {
+		ArgUtils::valArray($getInstructions, SiValGetInstruction::class);
+		$this->getInstructions = $getInstructions;
+	}
 	
+	/**
+	 * @param string $key
+	 * @param SiValGetInstruction $getInstruction
+	 */
+	function putGetInstruction(string $key, SiValGetInstruction $getInstruction) {
+		$this->getInstructions[$key] = $getInstruction;
+	}
+	
+	/**
+	 * @param array $data
+	 * @throws \InvalidArgumentException
+	 * @return \rocket\si\api\SiValRequest
+	 */
+	static function createFromData(array $data) {
+		$ds = new DataSet($data);
+		
+		$valInstruction = new SiValInstruction(SiEntryInput::parse($ds->reqArray('entryInput')));
+		try {
+			foreach ($ds->reqArray('getInstructions') as $key => $instructionData) {
+				$valInstruction->putGetInstruction($key, SiValGetInstruction::createFromData($instructionData));
+			}
+		} catch (AttributesException $e) {
+			throw new \InvalidArgumentException(null, 0, $e);
+		}
+		return $valInstruction;
+	}
 }

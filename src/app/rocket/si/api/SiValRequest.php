@@ -19,7 +19,11 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\si\input;
+namespace rocket\si\api;
+
+use n2n\util\type\attrs\AttributesException;
+use n2n\util\type\attrs\DataSet;
+use n2n\util\type\ArgUtils;
 
 class SiValRequest {
 	private $instructions = [];
@@ -49,6 +53,11 @@ class SiValRequest {
 		$this->instructions[$key] = $instruction;
 	}
 
+	/**
+	 * @param array $data
+	 * @throws \InvalidArgumentException
+	 * @return \rocket\si\api\SiValRequest
+	 */
 	static function createFromData(array $data) {
 		$ds = new DataSet($data);
 		

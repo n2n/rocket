@@ -102,7 +102,7 @@ export class SiEntry {
 	}
 
 	resetError() {
-		for (const [buildupId, buildup] of this._typeBuildupsMap) {
+		for (const [typeId, buildup] of this._typeBuildupsMap) {
 			buildup.messages = [];
 
 			for (const [fieldId, field] of this.selectedTypeBuildup.fieldMap) {

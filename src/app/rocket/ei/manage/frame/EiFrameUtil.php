@@ -36,6 +36,7 @@ use rocket\ei\manage\LiveEiObject;
 use rocket\ei\manage\gui\EiEntryGuiMulti;
 use rocket\ei\EiException;
 use rocket\ei\UnknownEiTypeException;
+use rocket\ei\manage\entry\EiEntry;
 
 class EiFrameUtil {
 	private $eiFrame;
@@ -154,10 +155,29 @@ class EiFrameUtil {
 				ViewMode::determine($bulky, $readOnly, true), $newEiEntryGuis);
 	}
 	
+	/**
+	 * @param EiObject $eiObject
+	 * @param bool $bulky
+	 * @param bool $readOnly
+	 * @throws SecurityException
+	 * @return \rocket\ei\manage\gui\EiEntryGui
+	 */
 	function createEiEntryGuiFromEiObject(EiObject $eiObject, bool $bulky, bool $readOnly) {
 		$eiEntry = $this->eiFrame->createEiEntry($eiObject);
 		$eiGui = $eiEntry->getEiMask()->getEiEngine()->createFramedEiGui($this->eiFrame, 
 				ViewMode::determine($bulky, $readOnly, $eiObject->isNew()));
+		return $eiGui->createEiEntryGui($eiEntry);
+	}
+	
+	/**
+	 * @param EiEntry $eiEntry
+	 * @param bool $bulky
+	 * @param bool $readOnly
+	 * @return \rocket\ei\manage\gui\EiEntryGui
+	 */
+	function createEiEntryGui(EiEntry $eiEntry, bool $bulky, bool $readOnly) {
+		$eiGui = $eiEntry->getEiMask()->getEiEngine()->createFramedEiGui($this->eiFrame,
+				ViewMode::determine($bulky, $readOnly, $eiEntry->isNew()));
 		return $eiGui->createEiEntryGui($eiEntry);
 	}
 	

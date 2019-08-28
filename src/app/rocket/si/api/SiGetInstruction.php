@@ -28,7 +28,8 @@ use n2n\util\ex\IllegalStateException;
 class SiGetInstruction {
 	private $bulky;
 	private $readOnly;
-	private $declarationRequested = true;
+	private $declarationRequested = false;
+	private $controlsIncluded = false;
 	private $entryId = null;
 	private $partialContentInstruction = null;
 	private $newEntryRequested = false;
@@ -82,6 +83,20 @@ class SiGetInstruction {
 	 */
 	function setDeclarationRequested(bool $declarationRequested) {
 		$this->declarationRequested = $declarationRequested;
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	function areControlsIncluded() {
+		return $this->controlsIncluded;
+	}
+	
+	/**
+	 * @param boolean $controlsIncluded
+	 */
+	function setControlsIncluded(bool $controlsIncluded) {
+		$this->controlsIncluded = $controlsIncluded;
 	}
 
 	/**

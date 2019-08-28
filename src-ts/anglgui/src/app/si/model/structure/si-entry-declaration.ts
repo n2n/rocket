@@ -26,7 +26,7 @@ export class SiEntryDeclaration {
 		throw new IllegalSiStateError('Unkown typeId: ' + typeId);
 	}
 
-	getFieldStructureDeclarationsByBuildupId(typeId: string): SiFieldStructureDeclaration[] {
+	getFieldStructureDeclarationsByTypeId(typeId: string): SiFieldStructureDeclaration[] {
 		if (this.fieldStructureDeclarationMap.has(typeId)) {
 			return this.fieldStructureDeclarationMap.get(typeId);
 		}

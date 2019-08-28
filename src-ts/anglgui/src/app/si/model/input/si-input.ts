@@ -24,7 +24,7 @@ export class SiInput {
 			
 			entryInputMaps.push({
 				identifier: entryInput.identifier,
-				buildupId: entryInput.typeId,
+				typeId: entryInput.typeId,
 				fieldInputMap: fieldInputObj
 			});
 		}

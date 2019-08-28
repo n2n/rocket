@@ -23,69 +23,9 @@ namespace rocket\si\api;
 
 use rocket\si\structure\SiEntryDeclaration;
 use rocket\si\content\SiEntry;
-use rocket\si\input\SiEntryError;
-use n2n\util\type\ArgUtils;
+use rocket\si\content\SiPartialContent;
 
-class SiValResult implements \JsonSerializable {
-	/**
-	 * @var SiEntryError|null
-	 */
-	private $entryError = null;
-	/** 
-	 * @var SiValGetResult[]
-	 */
-	private $getResults = [];
-
-	/**
-	 * @return SiEntryError|null
-	 */
-	public function getEntryError() {
-		return $this->entryError;
-	}
-
-	/**
-	 * @param SiEntryError|null $entryError
-	 */
-	public function setEntryError(?SiEntryError $entryError) {
-		$this->entryError = $entryError;
-	}
-
-	/** 
-	 * @return SiValGetResult[]
-	 */
-	function getGetResults() {
-		return $this->getResults;
-	}
-
-	/**
-	 * @param SiValGetResult[]
-	 */
-	function setGetResults(array $getResults) {
-		ArgUtils::valArray($getResults, SiValGetResult::class);
-		$this->getResults = $getResults;
-	}
-	
-	/**
-	 * @param string $key
-	 * @param SiValGetResult $getResult
-	 */
-	function putGetResult(string $key, SiValGetResult $getResult) {
-		$this->getResults[$key] = $getResult;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @see \JsonSerializable::jsonSerialize()
-	 */
-	public function jsonSerialize() {
-		return [
-			'getResults' => $this->getResults,
-			'entryError' => $this->entryError
-		];
-	}
-}
-
-class SiValGetResult implements \JsonSerializable {
+class SiGetResult implements \JsonSerializable {
 	/**
 	 * @var SiEntryDeclaration|null
 	 */
@@ -95,6 +35,9 @@ class SiValGetResult implements \JsonSerializable {
 	 */
 	private $entry = null;
 	
+	/**
+	 *
+	 */
 	function __construct() {
 	}
 	
@@ -104,28 +47,28 @@ class SiValGetResult implements \JsonSerializable {
 	public function getEntryDeclaration() {
 		return $this->entryDeclaration;
 	}
-
+	
 	/**
 	 * @param \rocket\si\structure\SiEntryDeclaration|null $entryDeclaration
 	 */
 	public function setEntryDeclaration(?SiEntryDeclaration $entryDeclaration) {
 		$this->entryDeclaration = $entryDeclaration;
 	}
-
+	
 	/**
 	 * @return \rocket\si\content\SiEntry
 	 */
 	public function getEntry() {
 		return $this->entry;
 	}
-
+	
 	/**
 	 * @param \rocket\si\content\SiEntry|null $entries
 	 */
 	public function setEntry(?SiEntry $entry) {
 		$this->entry = $entry;
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 * @see \JsonSerializable::jsonSerialize()
@@ -133,8 +76,7 @@ class SiValGetResult implements \JsonSerializable {
 	public function jsonSerialize() {
 		return [
 			'entryDeclaration' => $this->entryDeclaration,
-			'entry' => $this->entry,
-			'entryError' => $this->entryError
+			'entry' => $this->entry
 		];
-	}	
+	}
 }

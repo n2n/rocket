@@ -97,7 +97,7 @@ export class BulkyEntrySiComp implements SiComp {
 
 
 	getFieldStructureDeclarations(): SiFieldStructureDeclaration[] {
-		return this.entryDeclaration.getFieldStructureDeclarationsByBuildupId(this.entry.selectedTypeId);
+		return this.entryDeclaration.getFieldStructureDeclarationsByTypeId(this.entry.selectedTypeId);
 	}
 
 	initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver) {

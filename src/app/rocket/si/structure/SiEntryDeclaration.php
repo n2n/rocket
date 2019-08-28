@@ -42,18 +42,18 @@ class SiEntryDeclaration implements \JsonSerializable {
 	function setFieldDeclarationsMap(array $fieldDeclarations) {
 		ArgUtils::valArray($fieldDeclarations,
 				TypeConstraints::array(false, SiFieldDeclaration::class));
-		$this->fieldDeclarations = $fieldDeclarations;
+		$this->fieldDeclarationsMap = $fieldDeclarations;
 		return $this;
 	}
 	
 	/**
-	 * @param string $buildupId
+	 * @param string $typeId
 	 * @param SiFieldDeclaration[] $fieldDeclarations
 	 * @return SiEntryDeclaration
 	 */
-	function putFieldDeclarations(string $buildupId, array $fieldDeclarations) {
-		ArgUtils::valArray($fieldDeclarations, SiFieldDeclaration::class);
-		$this->fieldDeclarationsMap[$buildupId] = $fieldDeclarations;
+	function putFieldDeclarations(string $typeId, array $fieldDeclarations) {
+	    ArgUtils::valArray($fieldDeclarations, SiFieldDeclaration::class);
+		$this->fieldDeclarationsMap[$typeId] = $fieldDeclarations;
 		return $this;
 	}
 	
@@ -61,7 +61,7 @@ class SiEntryDeclaration implements \JsonSerializable {
 	 * @return array
 	 */
 	function getFieldDeclarationsMap() {
-		return $this->fieldDeclarations;
+		return $this->fieldDeclarationsMap;
 	}
 
 	
@@ -77,13 +77,13 @@ class SiEntryDeclaration implements \JsonSerializable {
 	}
 	
 	/**
-	 * @param string $buildupId
+	 * @param string $typeId
 	 * @param SiFieldStructureDeclaration[] $fieldStructureDeclarations
 	 * @return \rocket\si\structure\SiEntryDeclaration
 	 */
-	function putFieldStructureDeclarations(string $buildupId, array $fieldStructureDeclarations) {
+	function putFieldStructureDeclarations(string $typeId, array $fieldStructureDeclarations) {
 		ArgUtils::valArray($fieldStructureDeclarations, SiFieldStructureDeclaration::class);
-		$this->fieldStructureDeclarationsMap[$buildupId] = $fieldStructureDeclarations;
+		$this->fieldStructureDeclarationsMap[$typeId] = $fieldStructureDeclarations;
 		return $this;
 	}
 	

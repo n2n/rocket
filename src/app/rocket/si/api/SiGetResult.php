@@ -22,7 +22,6 @@
 namespace rocket\si\api;
 
 use rocket\si\structure\SiEntryDeclaration;
-use rocket\si\structure\SiEntryDeclaration;
 use rocket\si\content\SiEntry;
 use rocket\si\content\SiPartialContent;
 
@@ -32,10 +31,6 @@ class SiGetResult implements \JsonSerializable {
 	 */
 	private $entryDeclaration = null;
 	/**
-	 * @var SiEntryDeclaration|null
-	 */
-	private $entryDeclaration;
-	/**
 	 * @var SiEntry|null
 	 */
 	private $entry = null;
@@ -44,34 +39,23 @@ class SiGetResult implements \JsonSerializable {
 	 */
 	private $partialContent;
 	
+	/**
+	 * 
+	 */
 	function __construct() {
 	}
 	
 	/**
 	 * @return \rocket\si\structure\SiEntryDeclaration|null
 	 */
-	public function getCompactDeclaration() {
+	public function getEntryDeclaration() {
 		return $this->entryDeclaration;
 	}
 
 	/**
 	 * @param \rocket\si\structure\SiEntryDeclaration|null $entryDeclaration
 	 */
-	public function setCompactDeclaration(?SiEntryDeclaration $entryDeclaration) {
-		$this->entryDeclaration = $entryDeclaration;
-	}
-
-	/**
-	 * @return \rocket\si\structure\SiEntryDeclaration|null
-	 */
-	public function getBulkyDeclaration() {
-		return $this->entryDeclaration;
-	}
-
-	/**
-	 * @param \rocket\si\structure\SiEntryDeclaration|null $entryDeclaration
-	 */
-	public function setBulkyDeclaration(?SiEntryDeclaration $entryDeclaration) {
+	public function setEntryDeclaration(?SiEntryDeclaration $entryDeclaration) {
 		$this->entryDeclaration = $entryDeclaration;
 	}
 
@@ -109,7 +93,6 @@ class SiGetResult implements \JsonSerializable {
 	 */
 	public function jsonSerialize() {
 		return [
-			'entryDeclaration' => $this->entryDeclaration,
 			'entryDeclaration' => $this->entryDeclaration,
 			'entry' => $this->entry,
 			'partialContent' => $this->partialContent

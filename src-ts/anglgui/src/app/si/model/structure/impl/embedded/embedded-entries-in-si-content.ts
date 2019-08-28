@@ -82,7 +82,7 @@ export class EmbeddedEntriesInSiContent implements SiContent, EmbeddedEntryInMod
 	}
 
 	getZoneErrors(): SiZoneError[] {
-        const errors: SiZoneError[] = [];
+		const errors: SiZoneError[] = [];
 
 		for (const structure of this.structures) {
 			if (!structure.model) {
@@ -96,7 +96,7 @@ export class EmbeddedEntriesInSiContent implements SiContent, EmbeddedEntryInMod
 		}
 
 		return errors;
-    }
+	}
 
 	initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver) {
 		if (this.reduced) {

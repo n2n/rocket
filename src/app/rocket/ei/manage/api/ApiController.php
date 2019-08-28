@@ -29,6 +29,8 @@ use n2n\web\http\controller\Param;
 use n2n\web\http\controller\ParamBody;
 use rocket\si\api\SiGetRequest;
 use rocket\si\api\SiGetResponse;
+use rocket\si\api\SiValRequest;
+use rocket\si\api\SiValResponse;
 
 class ApiController extends ControllerAdapter {
 	private $eiFrame;
@@ -57,9 +59,27 @@ class ApiController extends ControllerAdapter {
 		}
 	}
 	
+	/**
+	 * @param Param $param
+	 * @throws BadRequestException
+	 * @return \rocket\si\api\SiGetRequest
+	 */
 	private function parseGetRequest(Param $param) {
 		try {
 			return SiGetRequest::createFromData($param->parseJson());
+		} catch (\InvalidArgumentException $e) {
+			throw new BadRequestException(null, null, $e);
+		}
+	}
+	
+	/**
+	 * @param Param $param
+	 * @throws BadRequestException
+	 * @return \rocket\si\api\SiValRequest
+	 */
+	private function parseValRequest(Param $param) {
+		try {
+			return SiValRequest::createFromData($param->parseJson());
 		} catch (\InvalidArgumentException $e) {
 			throw new BadRequestException(null, null, $e);
 		}
@@ -77,8 +97,16 @@ class ApiController extends ControllerAdapter {
 		$this->sendJson($siGetResponse);
 	}
 
-	function postDoValidate(ParamBody $param) {
+	function postDoVal(ParamBody $param) {
+		$siValRequest = $this->parseValRequest($param);
+		$siValResponse = new SiValResponse();
 		
+		foreach ($siValRequest->getInstructions() as $key => $instruction) {
+			$process = new ValInstructionProcess($instruction, $this->eiFrame);
+			$siValResponse->putResult($key, $process->exec());
+		}
+		
+		$this->sendJson($siValResponse);
 	}
 	
 	function doExecControl(ParamPost $apiCallId, ParamPost $entryInputMaps = null) {

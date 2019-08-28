@@ -19,8 +19,8 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\si\input;
+namespace rocket\ei\manage\api;
 
-class CorruptedSiInputDataException extends \Exception {
+class InputApplyProccess {
 	
 }

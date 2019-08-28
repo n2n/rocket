@@ -8,8 +8,8 @@ import { SiService } from 'src/app/si/model/si.service';
 import { SiEmbeddedEntry } from 'src/app/si/model/content/si-embedded-entry';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Embe } from '../../embe';
-import { SimpleSiControl } from "src/app/si/model/control/impl/simple-si-control";
-import { SiButton } from "src/app/si/model/control/si-button";
+import { SimpleSiControl } from 'src/app/si/model/control/impl/simple-si-control';
+import { SiButton } from 'src/app/si/model/control/si-button';
 
 @Component({
   selector: 'rocket-embedded-entries-summary-in',
@@ -73,30 +73,31 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 
 		this.popupSiLayer = siZone.layer.container.createLayer();
 		this.popupSiLayer.pushZone(null).structure = embe.siStructure;
-		
+
 		let bakEntry = embe.siEmbeddedEntry.entry.copy();
-		
+
 		this.popupSiLayer.onDispose(() => {
 			this.popupSiLayer = null;
 			if (bakEntry) {
 				embe.siEmbeddedEntry.entry = bakEntry;
+			} else {
+				this.obtainer.val(embe.siEmbeddedEntry);
 			}
 		});
-		
+
 		embe.siStructure.controls = [
 			new SimpleSiControl(
-					new SiButton(this.translationService.t('common_apply_label'), 'btn btn-success', 'fas fa-save'), 
+					new SiButton(this.translationService.t('common_apply_label'), 'btn btn-success', 'fas fa-save'),
 					() => {
 						bakEntry = null;
 						this.popupSiLayer.dispose();
 					}),
 			new SimpleSiControl(
-					new SiButton(this.translationService.t('common_discard_label'), 'btn btn-secondary', 'fas fa-trash'), 
+					new SiButton(this.translationService.t('common_discard_label'), 'btn btn-secondary', 'fas fa-trash'),
 					() => {
 						this.popupSiLayer.dispose();
 					})
-		]
-		
+		];
 	}
 
 	openAll() {
@@ -126,5 +127,7 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 	cancel() {
 
 	}
+
+
 
 }

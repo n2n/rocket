@@ -35,6 +35,8 @@ use rocket\ei\manage\api\ApiControlCallId;
 use rocket\si\input\SiEntryInput;
 use rocket\si\structure\impl\BulkyEntrySiContent;
 use rocket\si\structure\impl\CompactEntrySiContent;
+use n2n\util\type\attrs\AttributesException;
+use n2n\impl\web\dispatch\ui\IllegalFormStateException;
 
 class EiEntryGui {
 	/**
@@ -414,9 +416,11 @@ class EiEntryGui {
 	
 	/**
 	 * @param SiEntryInput $siEntryInput
+	 * @throws IllegalStateException
+	 * @throws \InvalidArgumentException
 	 */
 	function handleSiEntryInput(SiEntryInput $siEntryInput) {
-		if ($this->eiEntry->getEiType()->getId() != $siEntryInput->getBuildupId()) {
+		if ($this->eiEntry->getEiType()->getId() != $siEntryInput->getTypeId()) {
 			throw new IllegalStateException('EiType missmatch.');
 		}
 		
@@ -426,7 +430,11 @@ class EiEntryGui {
 				continue;
 			}
 			
-			$guiField->getSiField()->handleInput($siEntryInput->getFieldInput($guiFieldPathStr)->getData());
+			try {
+				$guiField->getSiField()->handleInput($siEntryInput->getFieldInput($guiFieldPathStr)->getData());
+			} catch (AttributesException $e) {
+				throw new \InvalidArgumentExcpetion(null, 0, $e);
+			}
 		}
 	}
 	

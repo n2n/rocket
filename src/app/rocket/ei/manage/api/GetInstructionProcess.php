@@ -38,7 +38,7 @@ class GetInstructionProcess {
 	
 	function __construct(SiGetInstruction $instruction, EiFrame $eiFrame) {
 		$this->instruction = $instruction;
-		$this->util = new ApiProcessUtil($eiFrame);
+		$this->util = new ProcessUtil($eiFrame);
 		$this->apiUtil = new ApiUtil($eiFrame);
 		$this->eiFrameUtil = new EiFrameUtil($eiFrame);
 	}
@@ -70,7 +70,9 @@ class GetInstructionProcess {
 		$eiEntryGui = $this->eiFrameUtil->createEiEntryGuiFromEiObject($eiObject, 
 				$this->instruction->isBulky(), $this->instruction->isReadOnly());
 		
-		return $this->createEntryResult($eiEntryGui->createSiEntry(), [$eiEntryGui]);
+		return $this->createEntryResult(
+				$eiEntryGui->createSiEntry($this->instruction->areControlsIncluded()), 
+				[$eiEntryGui]);
 	}
 	
 	/**
@@ -80,7 +82,9 @@ class GetInstructionProcess {
 		$eiEntryGuiMulti = $this->eiFrameUtil->createNewEiEntryGuiMulti(
 				$this->instruction->isBulky(), $this->instruction->isReadOnly());
 				
-		return $this->createEntryResult($eiEntryGuiMulti->createSiEntry(), $eiEntryGuiMulti->getEiEntryGuis());	
+		return $this->createEntryResult(
+				$eiEntryGuiMulti->createSiEntry($this->instruction->areControlsIncluded()), 
+				$eiEntryGuiMulti->getEiEntryGuis());	
 	}
 	
 	/**
@@ -97,9 +101,9 @@ class GetInstructionProcess {
 		}
 		
 		if ($this->instruction->isBulky()) {
-			$result->setBulkyDeclaration($this->apiUtil->createMultiBuildupSiEntryDeclaration($eiEntryGuis));
+			$result->setEntryDeclaration($this->apiUtil->createMultiBuildupSiEntryDeclaration($eiEntryGuis));
 		} else {
-			$result->setCompactDeclaration($this->apiUtil->createMultiBuildupSiEntryDeclaration($eiEntryGuis));
+			$result->setEntryDeclaration($this->apiUtil->createMultiBuildupSiEntryDeclaration($eiEntryGuis));
 		}
 		
 		return $result;
@@ -117,11 +121,7 @@ class GetInstructionProcess {
 			return $result;
 		}
 		
-		if ($this->instruction->isBulky()) {
-			$result->setBulkyDeclaration($this->apiUtil->createSiEntryDeclaration($eiGui));
-		} else {
-			$result->setCompactDeclaration($this->apiUtil->createSiEntryDeclaration($eiGui));
-		}
+		$result->setEntryDeclaration($this->apiUtil->createSiEntryDeclaration($eiGui));
 		
 		return $result;
 	}

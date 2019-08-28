@@ -256,6 +256,7 @@ class EiFrame {
 	 * @param EiObject $eiObject
 	 * @param int $ignoreConstraintTypes
 	 * @return EiEntry
+	 * @throws SecurityException
 	 */
 	public function createEiEntry(EiObject $eiObject, EiEntry $copyFrom = null, int $ignoreConstraintTypes = 0) {
 		$eiEntry = $this->contextEiEngine->getEiMask()->determineEiMask($eiObject->getEiEntityObj()->getEiType())->getEiEngine()

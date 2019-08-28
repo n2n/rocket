@@ -212,7 +212,9 @@ class EiEntryFactory {
 			}
 			
 			$eiProp = $this->eiPropCollection->getByPath($eiPropPath);
-			if (!($eiProp instanceof FieldEiProp)) continue;
+			if (!($eiProp instanceof FieldEiProp)) {
+				continue;
+			}
 			
 			$fromEiField = $fromEiEntry->getEiField($eiPropPath);
 			$copy = $fromEiField->copyEiField(new Eiu($eiu, $eiProp));

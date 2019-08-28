@@ -38,7 +38,7 @@ class EmbeddedOneToOneEiProp extends RelationEiPropAdapter {
 	public function __construct() {
 		parent::__construct();
 		
-		$this->configurator->registerDisplayConfig((new DisplayConfig(ViewMode::bulky()))
+		$this->configurator->registerDisplayConfig(($this->displayConfig = new DisplayConfig(ViewMode::bulky()))
 				->setDisplayItemType(SiStructureType::SIMPLE_GROUP));
 		
 		$this->configurator->setRelationModel(

@@ -21,8 +21,8 @@ export class SiResultFactory {
 		const inputErrorData = extr.nullaObject('inputError');
 
 		if (inputErrorData) {
-			for (const [key, data] of new Extractor(inputErrorData).reqMap('entryErrors')) {
-				result.entryErrors.set(key, SiResultFactory.createEntryError(data));
+			for (const [ieKey, ieData] of new Extractor(inputErrorData).reqMap('entryErrors')) {
+				result.entryErrors.set(ieKey, SiResultFactory.createEntryError(ieData));
 			}
 		}
 
@@ -57,13 +57,13 @@ export class SiResultFactory {
 		const extr = new Extractor(data);
 
 		const fieldDeclarationMap = new Map<string, SiFieldDeclaration[]>();
-		for (const [buildupId, declarationData] of extr.reqArrayMap('fieldDeclarationsMap')) {
-			fieldDeclarationMap.set(buildupId, SiResultFactory.createFieldDeclarations(declarationData));
+		for (const [typeId, declarationData] of extr.reqArrayMap('fieldDeclarationsMap')) {
+			fieldDeclarationMap.set(typeId, SiResultFactory.createFieldDeclarations(declarationData));
 		}
 
 		const fieldStructureDeclarationMap = new Map<string, SiFieldStructureDeclaration[]>();
-		for (const [buildupId, declarationData] of extr.reqArrayMap('fieldStructureDeclarationsMap')) {
-			fieldStructureDeclarationMap.set(buildupId, SiResultFactory.createFieldStructureDeclarations(declarationData));
+		for (const [typeId, declarationData] of extr.reqArrayMap('fieldStructureDeclarationsMap')) {
+			fieldStructureDeclarationMap.set(typeId, SiResultFactory.createFieldStructureDeclarations(declarationData));
 		}
 
 		return new SiEntryDeclaration(fieldDeclarationMap, fieldStructureDeclarationMap);

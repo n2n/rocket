@@ -68,6 +68,13 @@ class SiEntryInput {
 	}
 	
 	/**
+	 * @return boolean
+	 */
+	function isBulky() {
+		return $this->bulky;
+	}
+	
+	/**
 	 * @param string $fieldId
 	 * @param SiFieldInput $fieldInput
 	 */

@@ -208,12 +208,12 @@ export class EntriesListSiContent implements SiComp, SiContent {
 			commanderService: SiCommanderService): ComponentRef<any> {
 		const componentFactory = componentFactoryResolver.resolveComponentFactory(ListZoneContentComponent);
 
-	    const componentRef = viewContainerRef.createComponent(componentFactory);
+		const componentRef = viewContainerRef.createComponent(componentFactory);
 
-	    componentRef.instance.model = this;
-	    componentRef.instance.siService = commanderService.service;
+		componentRef.instance.model = this;
+		componentRef.instance.siService = commanderService.service;
 
-	    return componentRef;
+		return componentRef;
 	}
 
 	getContent() {

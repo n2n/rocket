@@ -836,14 +836,12 @@ class EiuFrame {
 		return new LiveEiObject($this->lookupEiEntityObj($id, $ignoreConstraintTypes));
 	}
 
-
 	/**
 	 * @return bool
 	 */
 	public function isDraftingEnabled(): bool {
 		return $this->getContextEiMask()->isDraftingEnabled();
 	}
-
 
 	/**
 	 * @param int $id

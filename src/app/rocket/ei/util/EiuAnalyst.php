@@ -63,9 +63,9 @@ use rocket\ei\util\entry\EiuObject;
 use rocket\ei\component\modificator\EiModificator;
 use n2n\util\type\TypeUtils;
 use rocket\ei\manage\gui\field\GuiFieldPath;
-use rocket\ei\util\spec\EiuGuiField;
 use rocket\spec\UnknownTypeException;
 use n2n\util\ex\IllegalStateException;
+use rocket\ei\util\gui\EiuGuiField;
 
 class EiuAnalyst {
 	const EI_FRAME_TYPES = array(EiFrame::class, EiuFrame::class, N2nContext::class);

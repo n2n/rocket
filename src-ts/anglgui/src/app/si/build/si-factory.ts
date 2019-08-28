@@ -130,7 +130,7 @@ export class SiCompFactory {
 		siEntry.bulky = extr.reqBoolean('bulky');
 		siEntry.readOnly = extr.reqBoolean('readOnly');
 
-		for (const [buildupId, buildupData] of extr.reqMap('buildups')) {
+		for (const [typeId, buildupData] of extr.reqMap('buildups')) {
 			siEntry.putTypeBuildup(this.createBuildup(buildupData));
 		}
 
