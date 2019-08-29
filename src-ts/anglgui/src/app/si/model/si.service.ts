@@ -93,6 +93,10 @@ export class SiService {
 				}));
 	}
 
+	fieldCall(apiUrl: string, apiCallId: object, input) {
+
+	}
+
 	apiGet(apiUrl: string, getRequest: SiGetRequest, zone: SiZone): Observable<SiGetResponse> {
 		return this.httpClient
 				.post<any>(apiUrl + '/get', getRequest)
