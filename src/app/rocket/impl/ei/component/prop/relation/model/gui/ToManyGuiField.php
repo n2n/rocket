@@ -55,7 +55,7 @@ class ToManyGuiField implements GuiField {
 			$values[] = $eiuEntry->createSiQualifier();
 		}
 		
-		$this->siField = SiFields::apiSelectIn(
+		$this->siField = SiFields::qualifierSelectIn(
 				$this->targetEiuFrame->getApiUrl($relationModel->getTargetReadEiCommandPath()),
 				$values, (int) $relationModel->getMin(), $relationModel->getMax());
 	}

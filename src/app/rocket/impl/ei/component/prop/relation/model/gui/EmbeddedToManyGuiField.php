@@ -35,7 +35,6 @@ use rocket\si\input\CorruptedSiInputDataException;
 use rocket\si\content\impl\EmbeddedEntryInputHandle;
 use rocket\si\content\SiEmbeddedEntry;
 use rocket\ei\util\gui\EiuEntryGui;
-use rocket\ei\util\spec\EiuType;
 use rocket\ei\util\spec\EiuMask;
 
 class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandle {

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SiFile } from 'src/app/si/model/content/impl/file-in-si-field';
 import { BehaviorSubject } from 'rxjs';
+import { SiService } from 'src/app/si/model/si.service';
 
 @Component({
   selector: 'rocket-file-in-field',
@@ -14,7 +15,7 @@ export class FileInFieldComponent implements OnInit {
 	readonly uploadedFile$ = new BehaviorSubject<File|null>(null);
 	mimeTypes: string[] = [];
 
-	constructor() { }
+	constructor(private siService: SiService) { }
 
 	ngOnInit() {
 	}

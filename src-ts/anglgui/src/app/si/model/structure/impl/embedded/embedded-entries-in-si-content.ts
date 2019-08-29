@@ -1,10 +1,8 @@
 import { ViewContainerRef, ComponentFactoryResolver } from '@angular/core';
 import { SiContent } from 'src/app/si/model/structure/si-content';
 import { SiStructure } from 'src/app/si/model/structure/si-structure';
-import { SiControl } from 'src/app/si/model/control/si-control';
 import { SiZone } from 'src/app/si/model/structure/si-zone';
 import { SiZoneError } from 'src/app/si/model/structure/si-zone-error';
-import { SiStructureModel } from 'src/app/si/model/structure/si-structure-model';
 import { EmbeddedEntryInModel } from 'src/app/ui/content/embedded/embedded-entry-in-model';
 import { SiType } from 'src/app/si/model/content/si-type';
 import { SiEmbeddedEntry } from 'src/app/si/model/content/si-embedded-entry';
