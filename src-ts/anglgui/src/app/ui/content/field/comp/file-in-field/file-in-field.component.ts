@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { SiFile } from 'src/app/si/model/content/impl/file-in-si-field';
 import { BehaviorSubject } from 'rxjs';
 import { SiService } from 'src/app/si/model/si.service';
+import { FileInFieldModel } from '../../file-in-field-model';
+import { SiResultFactory } from 'src/app/si/build/si-result-factory';
 
 @Component({
   selector: 'rocket-file-in-field',
@@ -11,8 +13,7 @@ import { SiService } from 'src/app/si/model/si.service';
 export class FileInFieldComponent implements OnInit {
 
 	mandatory = true;
-	readonly currentSiFile$ = new BehaviorSubject<SiFile|null>(null);
-	readonly uploadedFile$ = new BehaviorSubject<File|null>(null);
+	model: FileInFieldModel;
 	mimeTypes: string[] = [];
 
 	constructor(private siService: SiService) { }
@@ -44,7 +45,11 @@ export class FileInFieldComponent implements OnInit {
 			return;
 		}
 
-		this.uploadedFile = fileList[0];
+		this.siService.fieldCall(this.model.getApiUrl(), this.model.getApiCallId(),
+						new Map().set('uploadedFile', fileList[0]))
+				.subscribe((data) => {
+					this.model.setSiFile(SiResultFactory.buildSiFile(data.file));
+				});
 	}
 
 }

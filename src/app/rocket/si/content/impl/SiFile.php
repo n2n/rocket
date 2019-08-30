@@ -30,6 +30,8 @@ class SiFile implements \JsonSerializable {
 		$this->file = $file;
 	}
 	
+	
+	
 	function jsonSerialize() {
 		if (!$this->file->isValid()) {
 			return [

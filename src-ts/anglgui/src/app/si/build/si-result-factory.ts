@@ -6,6 +6,7 @@ import { SiResult } from 'src/app/si/model/control/si-result';
 import { SiEntryDeclaration } from 'src/app/si/model/structure/si-entry-declaration';
 import { SiFieldStructureDeclaration } from 'src/app/si/model/structure/si-field-structure-declaration';
 import { SiFieldDeclaration } from 'src/app/si/model/structure/si-field-declaration';
+import { SiFile } from '../model/content/impl/file-in-si-field';
 
 export class SiResultFactory {
 
@@ -99,5 +100,20 @@ export class SiResultFactory {
 
 		return new SiFieldDeclaration(extr.nullaString('fieldId'),
 				extr.nullaString('label'), extr.nullaString('helpText'));
+	}
+
+	static buildSiFile(data: any): SiFile|null {
+		if (data === null) {
+			return null;
+		}
+
+		const extr = new Extractor(data);
+
+		return {
+			valid: extr.reqBoolean('valid'),
+			name: extr.reqString('name'),
+			url: extr.nullaString('url'),
+			thumbUrl: extr.nullaString('thumbUrl')
+		};
 	}
 }

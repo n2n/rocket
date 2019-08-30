@@ -27,6 +27,7 @@ import { SiButton, SiConfirm } from '../model/control/si-button';
 import { SiControlType, SiFieldType, SiContentType } from './si-type';
 import { SiType } from 'src/app/si/model/content/si-type';
 import { SiEntryDeclaration } from '../model/structure/si-entry-declaration';
+import { SiResult } from '../model/control/si-result';
 
 
 export class SiContentFactory {
@@ -205,10 +206,10 @@ export class SiCompFactory {
 			return stringInSiField;
 
 		case SiFieldType.FILE_OUT:
-			return new FileOutSiField(this.buildSiFile(dataExtr.nullaObject('value')));
+			return new FileOutSiField(SiResultFactory.buildSiFile(dataExtr.nullaObject('value')));
 
 		case SiFieldType.FILE_IN:
-			const fileInSiField = new FileInSiField(this.buildSiFile(dataExtr.nullaObject('value')));
+			const fileInSiField = new FileInSiField(SiResultFactory.buildSiFile(dataExtr.nullaObject('value')));
 			fileInSiField.mandatory = dataExtr.reqBoolean('mandatory');
 			fileInSiField.mimeTypes = dataExtr.reqStringArray('mimeTypes');
 			fileInSiField.extensions = dataExtr.reqStringArray('extensions');
@@ -266,21 +267,6 @@ export class SiCompFactory {
 						SiContentType.BULKY_ENTRY) as BulkyEntrySiComp,
 				contentFactory.createContent(extr.reqObject('summaryContent'),
 						SiContentType.COMPACT_ENTRY) as CompactEntrySiComp);
-	}
-
-	private buildSiFile(data: any): SiFile|null {
-		if (data === null) {
-			return null;
-		}
-
-		const extr = new Extractor(data);
-
-		return {
-			valid: extr.reqBoolean('valid'),
-			name: extr.reqString('name'),
-			url: extr.nullaString('url'),
-			thumbUrl: extr.nullaString('thumbUrl')
-		};
 	}
 
 	createControlMap(data: Map<string, any>): Map<string, SiControl> {

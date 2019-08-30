@@ -93,8 +93,25 @@ export class SiService {
 				}));
 	}
 
-	fieldCall(apiUrl: string, apiCallId: object, input) {
+	fieldCall(apiUrl: string, apiCallId: object, paramMap: Map<string, string|Blob>): Observable<object> {
+		const formData = new FormData();
+		formData.append('apiCallId', JSON.stringify(apiCallId));
 
+		for (const [name, param] of paramMap) {
+			formData.append(name, param);
+		}
+
+		const params = new HttpParams();
+
+		const options = {
+			params,
+			reportProgress: true
+		};
+
+		return this.httpClient.post<any>(apiUrl + '/callfield', formData, options)
+		 		.pipe(map(data => {
+					return new Extractor(data).reqObject('data');
+				}));
 	}
 
 	apiGet(apiUrl: string, getRequest: SiGetRequest, zone: SiZone): Observable<SiGetResponse> {
