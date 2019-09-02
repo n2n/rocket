@@ -16,37 +16,24 @@ export class FileInFieldComponent implements OnInit {
 	model: FileInFieldModel;
 	mimeTypes: string[] = [];
 
+	uploadingFile: File|null = null;
+
 	constructor(private siService: SiService) { }
 
 	ngOnInit() {
-	}
-
-	get currentSiFile(): SiFile|null {
-		return this.currentSiFile$.getValue();
-	}
-
-	set currentSiFile(siFile: SiFile|null) {
-		this.currentSiFile$.next(siFile);
-	}
-
-	get uploadedFile(): File|null {
-		return this.uploadedFile$.getValue();
-	}
-
-	set uploadedFile(uploadedFile: File|null) {
-		this.uploadedFile$.next(uploadedFile);
 	}
 
 	change(event: any) {
 		const fileList: FileList = event.target.files;
 
 		if (fileList.length === 0) {
-			this.uploadedFile = null;
+			this.uploadingFile = null;
 			return;
 		}
 
-		this.siService.fieldCall(this.model.getApiUrl(), this.model.getApiCallId(),
-						new Map().set('uploadedFile', fileList[0]))
+		const file = this.uploadingFile = fileList[0];
+
+		this.siService.fieldCall(this.model.getApiUrl(), this.model.getApiCallId(),	{}, new Map().set('upload', file))
 				.subscribe((data) => {
 					this.model.setSiFile(SiResultFactory.buildSiFile(data.file));
 				});

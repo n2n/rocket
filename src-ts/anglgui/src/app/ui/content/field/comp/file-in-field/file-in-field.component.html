@@ -1,5 +1,7 @@
 <input type="file" (change)="change($event)" [accept]="mimeTypes.join(', ')" />
 
+<span *ngIf="uploadingFile" class="rocket-loading"></span>
+
 <span *ngIf="currentSiFile">
 	{{ currentSiFile.name }}
 </span>

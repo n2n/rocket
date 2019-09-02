@@ -209,7 +209,8 @@ export class SiCompFactory {
 			return new FileOutSiField(SiResultFactory.buildSiFile(dataExtr.nullaObject('value')));
 
 		case SiFieldType.FILE_IN:
-			const fileInSiField = new FileInSiField(SiResultFactory.buildSiFile(dataExtr.nullaObject('value')));
+			const fileInSiField = new FileInSiField(dataExtr.reqString('apiUrl'), dataExtr.reqObject('apiCallId'),
+					SiResultFactory.buildSiFile(dataExtr.nullaObject('value')));
 			fileInSiField.mandatory = dataExtr.reqBoolean('mandatory');
 			fileInSiField.mimeTypes = dataExtr.reqStringArray('mimeTypes');
 			fileInSiField.extensions = dataExtr.reqStringArray('extensions');

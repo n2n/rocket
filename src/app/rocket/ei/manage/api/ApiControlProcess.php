@@ -25,13 +25,11 @@ use rocket\ei\manage\gui\control\GuiControl;
 use rocket\ei\manage\gui\control\EntryGuiControl;
 use rocket\ei\manage\gui\control\GeneralGuiControl;
 use rocket\ei\manage\frame\EiFrame;
-use rocket\ei\manage\EiObject;
 use n2n\web\http\BadRequestException;
 use rocket\ei\manage\gui\field\GuiFieldPath;
 use rocket\ei\manage\gui\GuiException;
 use rocket\ei\manage\gui\control\GuiControlPath;
 use rocket\ei\manage\gui\control\UnknownGuiControlException;
-use rocket\si\input\SiInputFactory;
 use rocket\si\control\SiResult;
 use n2n\util\type\attrs\AttributesException;
 use rocket\si\input\SiInput;
@@ -45,7 +43,7 @@ use rocket\ei\manage\frame\EiFrameUtil;
 class ApiControlProcess {
 	private $eiFrame;
 	/**
-	 * @var ApiProcessUtil
+	 * @var ProcessUtil
 	 */
 	private $util;
 	/**
@@ -73,7 +71,7 @@ class ApiControlProcess {
 	 */
 	function __construct(EiFrame $eiFrame) {
 		$this->eiFrame = $eiFrame;
-		$this->util = new ApiProcessUtil($eiFrame);
+		$this->util = new ProcessUtil($eiFrame);
 		$this->eiFrameUtil = new EiFrameUtil($eiFrame);
 	}
 	
@@ -95,7 +93,7 @@ class ApiControlProcess {
 	}
 	
 	function determineGuiField(GuiFieldPath $guiFieldPath) {
-		$eiEntryGui = $this->eiGui->createEiEntryGui($eiEntry, 0);
+		$eiEntryGui = $this->eiGui->createEiEntryGui($this->eiEntry, 0);
 		
 		try {
 			$this->guiField = $eiEntryGui->getGuiField($guiFieldPath);
@@ -191,8 +189,6 @@ class ApiControlProcess {
 		// 				$guiFieldFork->
 		// 			}
 		
-		
-		
 		$eiEntryGui->save();
 	}
 	
@@ -203,6 +199,14 @@ class ApiControlProcess {
 		
 		if ($this->entryGuiControl !== null) {
 			return $this->entryGuiControl->handleEntry($this->eiGui, $this->eiEntry);
+		}
+		
+		throw new IllegalStateException();
+	}
+	
+	function callSiField(array $data, array $uploadDefinitions) {
+		if ($this->guiField !== null) {
+			return $this->guiField->getSiField()->handleCall($data, $uploadDefinitions);
 		}
 		
 		throw new IllegalStateException();

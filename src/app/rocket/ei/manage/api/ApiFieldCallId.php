@@ -89,7 +89,7 @@ class ApiFieldCallId implements \JsonSerializable {
 		
 		try {
 			return new ApiFieldCallId(
-					GuiFieldPath::create($ds->reqString('guiControlPath')),
+					GuiFieldPath::create($ds->reqString('guiFieldPath')),
 					TypePath::create($ds->reqString('eiTypePath')),
 					$ds->reqInt('viewMode'),
 					$ds->optString('pid'));

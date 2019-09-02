@@ -100,7 +100,7 @@ class LinkOutSiField extends OutSiFieldAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\si\content\impl\OutSiFieldAdapter::handleInput()
 	 */
-	function handleInput(array $data) {
+	function handleInput(array $data): array {
 		throw new IllegalStateException();
 	}
 }

@@ -49,7 +49,7 @@ interface SiField {
 	 * @throws \InvalidArgumentException if data is corrupt
 	 * @throws AttributesException if data is corrupt
 	 */
-	function handleInput(array $data, array $uploadDefinitions);
+	function handleInput(array $data);
 	
 	/**
 	 * @return bool

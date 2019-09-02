@@ -93,18 +93,23 @@ export class SiService {
 				}));
 	}
 
-	fieldCall(apiUrl: string, apiCallId: object, paramMap: Map<string, string|Blob>): Observable<object> {
+	fieldCall(apiUrl: string, apiCallId: object, data: object, uploadMap: Map<string, Blob>): Observable<any> {
 		const formData = new FormData();
 		formData.append('apiCallId', JSON.stringify(apiCallId));
+		formData.append('data', JSON.stringify(data));
 
-		for (const [name, param] of paramMap) {
+		for (const [name, param] of uploadMap) {
+			if (formData.has('name')) {
+				throw new IllegalSiStateError('Error illegal paramName ' + name);
+			}
+
 			formData.append(name, param);
 		}
 
-		const params = new HttpParams();
+		const httpParams = new HttpParams();
 
 		const options = {
-			params,
+			httpParams,
 			reportProgress: true
 		};
 

@@ -24,6 +24,13 @@ namespace rocket\si\content\impl;
 use n2n\io\managed\File;
 use n2n\util\uri\Url;
 use n2n\io\managed\FileManager;
+use n2n\io\managed\impl\TmpFileManager;
+use n2n\validation\impl\ValidationMessages;
+use n2n\io\UploadedFileExceedsMaxSizeException;
+use n2n\io\IncompleteFileUploadException;
+use n2n\web\http\UploadDefinition;
+use n2n\io\managed\impl\FileFactory;
+use n2n\core\container\N2nContext;
 
 class FileInSiField extends InSiFieldAdapter {
 	/**
@@ -40,9 +47,9 @@ class FileInSiField extends InSiFieldAdapter {
 	 */
 	private $apiCallId;
 	/**
-	 * @var FileManager
+	 * @var N2nContext
 	 */
-	private $fileManager;
+	private $n2nContext;
 	/**
 	 * @var bool
 	 */
@@ -54,12 +61,11 @@ class FileInSiField extends InSiFieldAdapter {
 	/**
 	 * @param File|null $value
 	 */
-	function __construct(?File $value, Url $apiUrl, \JsonSerializable $apiCallId, FileManager $fileManager) {
+	function __construct(?File $value, Url $apiUrl, \JsonSerializable $apiCallId, N2nContext $n2nContext) {
 		$this->value = $value;	
 		$this->apiUrl = $apiUrl;
 		$this->apiCallId = $apiCallId;
-		$this->fileManager = $fileManager;
-	
+		$this->n2nContext = $n2nContext;
 	}
 	
 	/**
@@ -121,15 +127,49 @@ class FileInSiField extends InSiFieldAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\si\content\SiField::handleInput()
 	 */
-	function handleInput(array $data, array $uploadDefinitions) {
+	function handleInput(array $data) {
 		
 	}
 	
 	function isCallable(): bool {
-		return null;
+		return true;
 	}
 	
 	function handleCall(array $data, array $uploadDefinitions): array {
-		return [];
+		if (empty($uploadDefinitions)) {
+			$this->setValue(null);
+			return [];
+		}
+		
+		/**
+		 * @var UploadDefinition $uploadDefinition
+		 */
+		$uploadDefinition = current($uploadDefinitions);
+		/**
+		 * @var TmpFileManager $tmpFileManager
+		 */
+		$tmpFileManager = $this->n2nContext->lookup(TmpFileManager::class);
+		
+		$file = null;
+		try {
+			$file = FileFactory::createFromUploadDefinition($uploadDefinition);
+		} catch (UploadedFileExceedsMaxSizeException $e) {
+			return [
+				'error' => ValidationMessages
+						::uploadMaxSize($e->getMaxSize(), $uploadDefinition->getName(), $uploadDefinition->getSize())
+						->t($this->n2nContext->getN2nLocale())
+			];
+		} catch (IncompleteFileUploadException $e) {
+			return [
+				'error' => ValidationMessages::uploadIncomplete($uploadDefinition->getName())
+						->t($this->n2nContext->getN2nLocale())
+			];
+		}
+		
+		$tmpFileManager->add($file);
+		
+		return [
+			'file' => new SiFile($file)
+		];
 	}
 }
