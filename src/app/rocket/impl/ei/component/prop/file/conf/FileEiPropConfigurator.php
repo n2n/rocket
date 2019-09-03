@@ -74,8 +74,8 @@ class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$this->fileEiProp->setCheckImageMemoryEnabled($this->attributes->getBool(self::ATTR_CHECK_IMAGE_MEMORY_KEY, 
 				false, $this->fileEiProp->isCheckImageMemoryEnabled()));
 		
-		$this->fileEiProp->setImageDimensionImportMode($this->attributes->optEnum(self::ATTR_DIMENSION_IMPORT_MODE_KEY,
-				FileEiProp::getImageDimensionImportModes(), $this->fileEiProp->getImageDimensionImportMode(), true));
+		$this->fileEiProp->getThumbResolver()->setImageDimensionImportMode($this->attributes->optEnum(self::ATTR_DIMENSION_IMPORT_MODE_KEY,
+				ThumbResolver::getImageDimensionImportModes(), null, true));
 		
 		$extraImageDimensions = array();
 		if ($this->attributes->contains(self::ATTR_EXTRA_THUMB_DIMENSIONS_KEY)) {
@@ -86,12 +86,12 @@ class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 					throw $eiSetup->createException('Invalid ImageDimension string: ' . $imageDimensionStr, $e);
 				}
 			}
-			$this->fileEiProp->setExtraImageDimensions($extraImageDimensions);
+			$this->fileEiProp->getThumbResolver()->setExtraImageDimensions($extraImageDimensions);
 		}
 		
 		$thumbEiCommand = new ThumbEiCommand($this->fileEiProp);
 		$eiSetup->eiu()->mask()->supremeMask()->addEiCommand($thumbEiCommand);
-		$this->fileEiProp->setThumbEiCommand($thumbEiCommand);
+		$this->fileEiProp->getThumbResolver()->setThumbEiCommand($thumbEiCommand);
 		
 		if ($this->attributes->getBool(self::ATTR_MULTI_UPLOAD_AVAILABLE_KEY, false)) {
 			$this->setupMulti($eiSetup);

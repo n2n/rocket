@@ -23,6 +23,10 @@ export class FileInFieldComponent implements OnInit {
 	ngOnInit() {
 	}
 
+	get currentSiFile(): SiFile|null {
+		return this.model.getSiFile();
+	}
+
 	change(event: any) {
 		const fileList: FileList = event.target.files;
 
@@ -35,6 +39,11 @@ export class FileInFieldComponent implements OnInit {
 
 		this.siService.fieldCall(this.model.getApiUrl(), this.model.getApiCallId(),	{}, new Map().set('upload', file))
 				.subscribe((data) => {
+					if (file !== this.uploadingFile) {
+						return;
+					}
+
+					this.uploadingFile = null;
 					this.model.setSiFile(SiResultFactory.buildSiFile(data.file));
 				});
 	}

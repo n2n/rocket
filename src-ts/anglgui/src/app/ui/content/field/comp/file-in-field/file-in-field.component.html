@@ -1,7 +1,14 @@
 <input type="file" (change)="change($event)" [accept]="mimeTypes.join(', ')" />
 
-<span *ngIf="uploadingFile" class="rocket-loading"></span>
+<div *ngIf="uploadingFile" class="rocket-loader"></div>
 
-<span *ngIf="currentSiFile">
-	{{ currentSiFile.name }}
-</span>
+<ng-container *ngIf="currentSiFile">
+	<a *ngIf="currentSiFile.url" [href]="currentSiFile.url">
+		<img *ngIf="currentSiFile.thumbUrl; else nothumb" [src]="currentSiFile.thumbUrl" 
+				[alt]="currentSiFile.name" width="40" height="30" />
+
+		<ng-template #nothumb>{{ currentSiFile.name }}</ng-template>
+	</a>
+	
+	<span *ngIf="!currentSiFile.url">{{ currentSiFile.name }}</span>
+</ng-container>

@@ -21,49 +21,47 @@
  */
 namespace rocket\si\content\impl;
 
-use n2n\io\managed\File;
+use n2n\io\managed\img\impl\ThSt;
+use n2n\util\uri\Url;
 
 class SiFile implements \JsonSerializable {
-	private $file;
+	private $name;
+	private $url;
+	private $thumbUrl;
 	
-	function __construct(File $file) {
-		$this->file = $file;
+	function __construct(string $name, Url $url = null) {
+		$this->name = $name;
+		$this->url = $url;
 	}
 	
+	/**
+	 * @return \n2n\util\uri\Url|null
+	 */
+	function getThumbUrl() {
+		return $this->thumbUrl;
+	}
 	
+	/**
+	 * @param Url|null $thumbUrl
+	 */
+	function setThumbUrl(?Url $thumbUrl) {
+		$this->thumbUrl = $thumbUrl;
+	}
 	
 	function jsonSerialize() {
-		if (!$this->file->isValid()) {
-			return [
-				'name' => '[missing file]',
-				'url' => null,
-				'valid' => false,
-				'thumbUrl' => null
-			];
-		}
-		
-		$urlStr = null;
-		if ($this->file->getFileSource()->isHttpaccessible()) {
-			$urlStr = (string) $this->file->getFileSource()->getUrl();
-		}
-		
 		return [
-			'name' => $this->file->getOriginalName(),
-			'url' => $urlStr,
-			'valid' => true,
-			'thumbUrl' => null
+			'name' => '[missing file]',
+			'url' => ($this->url !== null ? (string) $this->url : null),
+			'thumbUrl' => ($this->thumbUrl !== null ? (string) $this->thumbUrl : null)
 		];
 	}
 	
 	/**
-	 * @param File $file
-	 * @return NULL|\rocket\si\content\impl\SiFile
+	 * @return \n2n\io\managed\img\ThumbStrategy
 	 */
-	static function build(?File $file) {
-		if ($file === null) {
-			return null;
-		}
-		
-		return new SiFile($file);
+	static function getThumbStrategy() {
+		return ThSt::crop(40, 30, true);
 	}
+	
+	
 }

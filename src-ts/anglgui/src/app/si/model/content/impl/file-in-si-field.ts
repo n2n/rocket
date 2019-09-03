@@ -37,7 +37,7 @@ export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel,
 		return this.apiCallId;
 	}
 
-	getValue(): SiFile {
+	getSiFile(): SiFile|null {
 		return this.value;
 	}
 
@@ -50,11 +50,6 @@ export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel,
 	}
 
 	removeFile(): void {
-		throw new Error('Method not implemented.');
-	}
-
-
-	getSiFile(): SiFile|null {
 		throw new Error('Method not implemented.');
 	}
 
@@ -83,7 +78,6 @@ export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel,
 }
 
 export interface SiFile {
-	valid: boolean;
 	name: string;
 	url: string|null;
 	thumbUrl: string|null;

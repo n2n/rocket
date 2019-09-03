@@ -110,7 +110,6 @@ export class SiResultFactory {
 		const extr = new Extractor(data);
 
 		return {
-			valid: extr.reqBoolean('valid'),
 			name: extr.reqString('name'),
 			url: extr.nullaString('url'),
 			thumbUrl: extr.nullaString('thumbUrl')

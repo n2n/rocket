@@ -1101,13 +1101,13 @@ class EiuAnalyst {
 	
 	public function getEiuGuiField(bool $required) {
 		if ($this->eiuGuiField !== null) {
-			return $this->eiuField;
+			return $this->eiuGuiField;
 		}
 		
 		$eiuEntryGui = $this->getEiuEntryGui(false);
 		if ($eiuEntryGui !== null) {
 			if ($this->guiFieldPath !== null) {
-				return $this->eiuField = $eiuEntryGui->field($this->eiuGuiField);
+				return $this->eiuGuiField = $eiuEntryGui->field($this->guiFieldPath);
 			}
 		}
 		

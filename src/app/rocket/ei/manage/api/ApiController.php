@@ -134,9 +134,10 @@ class ApiController extends ControllerAdapter {
 		
 		$callProcess = new ApiControlProcess($this->eiFrame);
 		$callProcess->determineEiEntry($siApiCallId->getPid());
+		$callProcess->setupEiGui($siApiCallId->getViewMode(), $siApiCallId->getEiTypePath());
 		$callProcess->determineGuiField($siApiCallId->getGuiFieldPath());
 		
-		$this->sendJson($callProcess->callSiField($data->toJson(), $this->getRequest()->getUploadDefinitions()));
+		$this->sendJson(['data' => $callProcess->callSiField($data->parseJson(), $this->getRequest()->getUploadDefinitions()) ]);
 	}
 	
 	function doExecSelectionControl(ParamPost $siEntryIds, ParamPost $apiCallId, ParamPost $bulky) {

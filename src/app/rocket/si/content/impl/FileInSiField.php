@@ -23,14 +23,6 @@ namespace rocket\si\content\impl;
 
 use n2n\io\managed\File;
 use n2n\util\uri\Url;
-use n2n\io\managed\FileManager;
-use n2n\io\managed\impl\TmpFileManager;
-use n2n\validation\impl\ValidationMessages;
-use n2n\io\UploadedFileExceedsMaxSizeException;
-use n2n\io\IncompleteFileUploadException;
-use n2n\web\http\UploadDefinition;
-use n2n\io\managed\impl\FileFactory;
-use n2n\core\container\N2nContext;
 
 class FileInSiField extends InSiFieldAdapter {
 	/**
@@ -47,9 +39,9 @@ class FileInSiField extends InSiFieldAdapter {
 	 */
 	private $apiCallId;
 	/**
-	 * @var N2nContext
+	 * @var SiFileHandler
 	 */
-	private $n2nContext;
+	private $fileHandler;
 	/**
 	 * @var bool
 	 */
@@ -61,24 +53,24 @@ class FileInSiField extends InSiFieldAdapter {
 	/**
 	 * @param File|null $value
 	 */
-	function __construct(?File $value, Url $apiUrl, \JsonSerializable $apiCallId, N2nContext $n2nContext) {
+	function __construct(?SiFile $value, Url $apiUrl, \JsonSerializable $apiCallId, SiFileHandler $fileHandler) {
 		$this->value = $value;	
 		$this->apiUrl = $apiUrl;
 		$this->apiCallId = $apiCallId;
-		$this->n2nContext = $n2nContext;
+		$this->fileHandler = $fileHandler;
 	}
 	
 	/**
-	 * @param string|null $value
-	 * @return \rocket\si\content\impl\StringInSiField
+	 * @param SiFile|null $value
+	 * @return \rocket\si\content\impl\FileInSiField
 	 */
-	function setValue(?File $value) {
+	function setValue(?SiFile $value) {
 		$this->value = $value;
 		return $this;
 	}
 	
 	/**
-	 * @return File|null
+	 * @return SiFile|null
 	 */
 	function getValue() {
 		return $this->value;
@@ -86,7 +78,7 @@ class FileInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param bool $mandatory
-	 * @return \rocket\si\content\impl\StringInSiField
+	 * @return \rocket\si\content\impl\FileInSiField
 	 */
 	function setMandatory(bool $mandatory) {
 		$this->mandatory = $mandatory;
@@ -114,7 +106,7 @@ class FileInSiField extends InSiFieldAdapter {
 	 */
 	function getData(): array {
 		return [
-			'value' => SiFile::build($this->value),
+			'value' => $this->value,
 			'mandatory' => $this->mandatory,
 			'mimeTypes' => $this->mimeTypes,
 			'extensions' => $this->extensions,
@@ -145,31 +137,14 @@ class FileInSiField extends InSiFieldAdapter {
 		 * @var UploadDefinition $uploadDefinition
 		 */
 		$uploadDefinition = current($uploadDefinitions);
-		/**
-		 * @var TmpFileManager $tmpFileManager
-		 */
-		$tmpFileManager = $this->n2nContext->lookup(TmpFileManager::class);
+		$uploadResult = $this->fileHandler->upload($uploadDefinition);
 		
-		$file = null;
-		try {
-			$file = FileFactory::createFromUploadDefinition($uploadDefinition);
-		} catch (UploadedFileExceedsMaxSizeException $e) {
-			return [
-				'error' => ValidationMessages
-						::uploadMaxSize($e->getMaxSize(), $uploadDefinition->getName(), $uploadDefinition->getSize())
-						->t($this->n2nContext->getN2nLocale())
-			];
-		} catch (IncompleteFileUploadException $e) {
-			return [
-				'error' => ValidationMessages::uploadIncomplete($uploadDefinition->getName())
-						->t($this->n2nContext->getN2nLocale())
-			];
+		if (!$uploadResult->isSuccess()) {
+			return ['error' => $uploadResult->getErrorMessage()];
 		}
 		
-		$tmpFileManager->add($file);
-		
-		return [
-			'file' => new SiFile($file)
-		];
+		$siFile = $uploadResult->getSiFile();
+		$this->setValue($siFile);
+		return ['file' => $siFile];
 	}
 }

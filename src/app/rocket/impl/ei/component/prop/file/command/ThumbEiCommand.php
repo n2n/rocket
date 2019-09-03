@@ -21,16 +21,16 @@
  */
 namespace rocket\impl\ei\component\prop\file\command;
 
-use rocket\impl\ei\component\prop\file\FileEiProp;
 use rocket\impl\ei\component\command\EiCommandAdapter;
 use rocket\impl\ei\component\prop\file\command\controller\ThumbController;
 use rocket\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
+use rocket\impl\ei\component\prop\file\conf\ThumbResolver;
 
 class ThumbEiCommand extends EiCommandAdapter {
 	const ID_BASE = 'thumb';
 	
-	private $fileEiProp;
+	private $thumbResolver;
 	
 	public function getIdBase(): ?string {
 		return self::ID_BASE;
@@ -40,13 +40,13 @@ class ThumbEiCommand extends EiCommandAdapter {
 		return 'Thumb';
 	}
 	
-	public function setFileEiProp(FileEiProp $fileEiProp) {
-		$this->fileEiProp = $fileEiProp;
+	public function setThubResolver(ThumbResolver $thumbResolver) {
+		$this->thumbResolver = $thumbResolver;
 	}
 		
 	public function lookupController(Eiu $eiu): Controller {
 		$thumbController = $eiu->lookup(ThumbController::class);
-		$thumbController->setFileEiProp($this->fileEiProp);
+// 		$thumbController->setThubResolver($this->thumbResolver);
 		return $thumbController;
 	}
 }
