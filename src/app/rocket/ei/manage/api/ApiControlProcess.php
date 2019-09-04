@@ -39,6 +39,7 @@ use rocket\ei\manage\gui\EiEntryGui;
 use n2n\util\ex\IllegalStateException;
 use rocket\spec\TypePath;
 use rocket\ei\manage\frame\EiFrameUtil;
+use rocket\si\input\SiInputFactory;
 
 class ApiControlProcess {
 	private $eiFrame;
@@ -104,7 +105,7 @@ class ApiControlProcess {
 	
 	function determineGuiControl(GuiControlPath $guiControlPath) {
 		if (!$guiControlPath->startsWith($this->eiFrame->getEiExecution()->getEiCommandPath())) {
-			throw new BadRequestException(null, null, $e);
+			throw new BadRequestException();
 		}
 		
 		try {

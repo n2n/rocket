@@ -25,13 +25,49 @@ use n2n\io\managed\img\impl\ThSt;
 use n2n\util\uri\Url;
 
 class SiFile implements \JsonSerializable {
+	private $id;
 	private $name;
 	private $url;
 	private $thumbUrl;
 	
-	function __construct(string $name, Url $url = null) {
+	/**
+	 * @param string $name
+	 * @param Url|null $url
+	 */
+	function __construct(\JsonSerializable $id, string $name, Url $url = null) {
+		$this->id = $id;
 		$this->name = $name;
 		$this->url = $url;
+	}
+	
+	/**
+	 * @param \JsonSerializable $id
+	 */
+	function setId(\JsonSerializable $id) {
+		$this->id = $id;
+		return $this;
+	}
+	
+	/**
+	 * @return \JsonSerializable
+	 */
+	function getId() {
+		return $this->id;
+	}
+		
+	/**
+	 * @return \n2n\util\uri\Url|null
+	 */
+	function getUrl() {
+		return $this->url;
+	}
+	
+	/**
+	 * @param Url|null $url
+	 */
+	function setUrl(?Url $url) {
+		$this->url = $url;
+		return $this;
 	}
 	
 	/**
@@ -46,11 +82,13 @@ class SiFile implements \JsonSerializable {
 	 */
 	function setThumbUrl(?Url $thumbUrl) {
 		$this->thumbUrl = $thumbUrl;
+		return $this;
 	}
 	
 	function jsonSerialize() {
 		return [
-			'name' => '[missing file]',
+			'id' => $this->id,
+			'name' => $this->name,
 			'url' => ($this->url !== null ? (string) $this->url : null),
 			'thumbUrl' => ($this->thumbUrl !== null ? (string) $this->thumbUrl : null)
 		];

@@ -27,10 +27,10 @@ use n2n\io\managed\img\ImageDimension;
 use rocket\ei\util\frame\EiuFrame;
 use rocket\ei\util\Eiu;
 use rocket\si\content\impl\SiFile;
-use n2n\util\type\CastUtils;
-use SebastianBergmann\FileIterator\Facade;
 use n2n\io\managed\img\ImageFile;
 use n2n\util\type\ArgUtils;
+use n2n\io\managed\impl\TmpFileManager;
+use n2n\util\type\CastUtils;
 
 class ThumbResolver {
 	
@@ -71,10 +71,73 @@ class ThumbResolver {
 		$this->extraImageDimensions = $extraImageDimensions;
 	}
 	
+	/**
+	 * @param File $file
+	 * @param Eiu $eiu
+	 * @return \rocket\si\content\impl\SiFile
+	 */
+	function createSiFile(File $file, Eiu $eiu) {
+		if (!$file->isValid()) {
+			return new SiFile(FileId::create($file), $eiu->dtc('rocket')->t('missing_file_err'));
+		}
+		
+		$fileSource = $file->getFileSource();
+		
+		$siFile = new SiFile(FileId::create($file), $file->getOriginalName());
+		
+		$tmpQualifiedName = null;
+		if ($eiu->lookup(TmpFileManager::class)
+				->containsSessionFile($file, $eiu->getN2nContext()->getHttpContext()->getSession())) {
+			$tmpQualifiedName = $fileSource->getQualifiedName();
+		}
+		
+		if ($fileSource->isHttpAccessible()) {
+			$siFile->setUrl($fileSource->getUrl());
+		} else if ($tmpQualifiedName !== null) {
+			$siFile->setUrl($this->createTmpUrl($eiu, $tmpQualifiedName));
+		} else {
+			$siFile->setUrl($this->createFileUrl($eiu, $eiu->entry()->getPid()));
+		}
+		
+		$thumbFile = $this->buildThumbFile($file);
+		
+		if ($thumbFile === null) {
+			return $siFile;
+		}
+		
+		if ($thumbFile->getFileSource()->isHttpAccessible()) {
+			$siFile->setThumbUrl($thumbFile->getFileSource()->getUrl());
+		} else if ($tmpQualifiedName !== null) {
+			$siFile->setThumbUrl($this->createTmpThumbUrl($eiu, $tmpQualifiedName, 
+					SiFile::getThumbStrategy()->getImageDimension()));
+		} else {
+			$siFile->setThumbUrl($this->createThumbUrl($eiu,
+					SiFile::getThumbStrategy()->getImageDimension()));
+		}
+		
+		return $siFile;
+	}
+	
+	function determineFile(FileId $fileId, Eiu $eiu): ?File {
+		if ($fileId->getFileManagerName() === TmpFileManager::class) {
+			$tfm = $eiu->lookup(TmpFileManager::class);
+			CastUtils::assertTrue($tfm instanceof TmpFileManager);
+			return $tfm->getSessionFile($fileId->getQualifiedName(), 
+					$eiu->getN2nContext()->getHttpContext()->getSession());
+		}
+		
+		$file = $eiu->field()->getValue();
+		CastUtils::assertTrue($file instanceof File);
+		if ($file !== null && $fileId->matches($file)) {
+			return $file;
+		}
+		
+		return null;
+	}
 		
 	/**
 	 * @param File $file
-	 * @return \n2n\io\managed\img\ImageFile|null
+	 * @return \n2n\io\managed\File|null
 	 */
 	function buildThumbFile(File $file) {
 		if (!$file->getFileSource()->getVariationEngine()->hasThumbSupport()) {
@@ -82,11 +145,11 @@ class ThumbResolver {
 		}
 		
 		$thumbStartegy = SiFile::getThumbStrategy();
-		return (new ImageFile($file))->getOrCreateThumb($thumbStartegy);
+		return (new ImageFile($file))->getOrCreateThumb($thumbStartegy)->getFile();
 	}
 	
-	function createFileUrl(string $pid) {
-		return $eiu->frame()->getCmdUrl($this->thumbEiCommand)->extR(['file', $eiu->entry()->getPid()]);
+	function createFileUrl(Eiu $eiu, string $pid) {
+		return $eiu->frame()->getCmdUrl($this->thumbEiCommand)->extR(['file', $pid]);
 	}
 		
 	/**

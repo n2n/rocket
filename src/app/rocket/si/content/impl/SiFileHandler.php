@@ -30,6 +30,12 @@ interface SiFileHandler {
 	 * @return SiUploadResult
 	 */
 	function upload(UploadDefinition $uploadDefinition): SiUploadResult;
+	
+	/**
+	 * @param array $idData
+	 * @throws \InvalidArgumentException
+	 */
+	function getSiFileByRawId(array $rawId): ?SiFile;
 }
 
 class SiUploadResult {

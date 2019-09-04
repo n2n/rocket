@@ -48,6 +48,8 @@ use n2n\validation\impl\ValidationMessages;
 use rocket\si\content\impl\SiFile;
 use rocket\si\content\impl\SiUploadResult;
 use rocket\si\content\impl\SiFileHandler;
+use rocket\impl\ei\component\prop\file\conf\FileId;
+use rocket\si\content\impl\FileInSiField;
 
 class FileEiProp extends DraftablePropertyEiPropAdapter {
 	
@@ -138,15 +140,9 @@ class FileEiProp extends DraftablePropertyEiPropAdapter {
 	
 	
 	public function createOutSiField(Eiu $eiu): SiField {
-		$file = $eiu->field()->getValue();
+		$siFile = $this->buildSiFileFromEiu($eiu);
 		
-		if ($file === null) {
-			return SiFields::stringOut(null);
-		}
-
-		CastUtils::assertTrue($file instanceof File);
-		
-		return SiFields::fileOut($file);
+		return SiFields::fileOut($siFile);
 		
 // 		if (!$file->isValid()) {
 // 			return $html->getEsc('[missing file]');
@@ -213,45 +209,33 @@ class FileEiProp extends DraftablePropertyEiPropAdapter {
 // 				$this->isMandatory($eiu));
 	}
 
+	function saveSiField(SiField $siField, Eiu $eiu) {
+		CastUtils::assertTrue($siField instanceof FileInSiField);
+		
+		$siFile = $siField->getValue();
+		if ($siFile === null) {
+			$eiu->field()->setValue(null);
+			return;
+		}
+		
+		$fileId = $siFile->getId();
+		CastUtils::assertTrue($fileId instanceof FileId);
+		
+		$eiu->field()->setValue($this->thumbResolver->determineFile($fileId, $eiu));
+	}
 	
 	/**
 	 * @param Eiu $eiu
 	 * @return SiFile|null
 	 */
-	function buildSiFileFromEiu(Eiu $eiu) {
+	private function buildSiFileFromEiu(Eiu $eiu) {
 		$file = $eiu->field()->getValue();
 		if ($file === null) {
 			return null;
 		}
 		
 		CastUtils::assertTrue($file instanceof File);
-		
-		if (!$file->isValid()) {
-			return new SiFile($eiu->dtc('rocket')->t('missing_file_err'));
-		}
-		
-		$siFile = new SiFile($file->getOriginalName());
-		
-		if ($file->getFileSource()->isHttpAccessible()) {
-			$siFile->setUrl($file->getFileSource()->getUrl());
-		} else {
-			$siFile->setUrl($this->createFileUrl($eiu->entry()->getPid()));
-		}
-		
-		$thumbFile = $this->buildThumb($file);
-		
-		if ($thumbFile === null) {
-			return null;
-		}
-		
-		if ($thumbFile->getFileSource()->isHttpAccessible()) {
-			$siFile->setThumbUrl($thumbFile->getFileSource()->getUrl());
-		} else {
-			$siFile->setThumbUrl($this->createThumbUrl($eiu,
-					SiFile::getThumbStrategy()->getImageDimension()));
-		}
-		
-		return $siFile;
+		return $this->thumbResolver->createSiFile($file, $eiu);
 	}
 	
 	public function isStringRepresentable(): bool {
@@ -312,19 +296,30 @@ class SiFileHanlderImpl implements SiFileHandler {
 					->t($this->n2nContext->getN2nLocale()));
 		}
 		
-		$qualifiedName = $tmpFileManager->add($file, $this->eiu->getN2nContext()->getHttpContext()->getSession());
+		/* $qualifiedName = */ $tmpFileManager->add($file, $this->eiu->getN2nContext()->getHttpContext()->getSession());
 				
-		return SiUploadResult::createSuccess($this->createTmpSiFile($file, $qualifiedName));
+		return SiUploadResult::createSuccess($this->thumbResolver->createSiFile($file, $this->eiu));
 	}
 	
-	function createTmpSiFile(File $file, string $qualifiedName) {
-		$siFile = new SiFile($file->getOriginalName(), $this->thumbResolver->createTmpUrl($this->eiu, $qualifiedName));
+	function getSiFileByRawId(array $rawId): ?SiFile {
+		$fileId = FileId::parse($rawId);
 		
-		if (null !== ($this->thumbResolver->buildThumbFile($file))) {
-			$siFile->setThumbUrl($this->thumbResolver->createTmpThumbUrl($this->eiu, $qualifiedName,
-					SiFile::getThumbStrategy()->getImageDimension()));
+		$file = $this->thumbResolver->determineFile($fileId, $this->eiu);
+		if ($file !== null) {
+			return $this->thumbResolver->createSiFile($file, $this->eiu);
 		}
 		
-		return $siFile;
+		return null;
 	}
+	
+// 	function createTmpSiFile(File $file, string $qualifiedName) {
+// 		$siFile = new SiFile($file->getOriginalName(), $this->thumbResolver->createTmpUrl($this->eiu, $qualifiedName));
+		
+// 		if (null !== ($this->thumbResolver->buildThumbFile($file))) {
+// 			$siFile->setThumbUrl($this->thumbResolver->createTmpThumbUrl($this->eiu, $qualifiedName,
+// 					SiFile::getThumbStrategy()->getImageDimension()));
+// 		}
+		
+// 		return $siFile;
+// 	}
 }

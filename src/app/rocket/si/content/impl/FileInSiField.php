@@ -23,6 +23,7 @@ namespace rocket\si\content\impl;
 
 use n2n\io\managed\File;
 use n2n\util\uri\Url;
+use n2n\util\type\attrs\DataSet;
 
 class FileInSiField extends InSiFieldAdapter {
 	/**
@@ -120,7 +121,14 @@ class FileInSiField extends InSiFieldAdapter {
 	 * @see \rocket\si\content\SiField::handleInput()
 	 */
 	function handleInput(array $data) {
+		$valueId = (new DataSet($data))->optArray('valueId');
 		
+		if ($valueId === null) {
+			$this->value = null;
+			return;
+		}
+		
+		$this->value = $this->fileHandler->getSiFileByRawId($valueId);
 	}
 	
 	function isCallable(): bool {

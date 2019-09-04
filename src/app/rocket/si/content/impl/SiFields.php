@@ -52,7 +52,7 @@ class SiFields {
 	 * @param File $file
 	 * @return \rocket\si\content\impl\FileOutSiField
 	 */
-	static function fileOut(?File $file) {
+	static function fileOut(?SiFile $file) {
 		return new FileOutSiField($file);
 	}
 	

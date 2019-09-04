@@ -21,6 +21,27 @@
  */
 namespace rocket\si\input;
 
-class CorruptedSiInputDataException extends \Exception {
+use n2n\util\type\attrs\AttributesException;
+
+class SiInputFactory {
+	
+	/**
+	 * @param array $data
+	 * @return SiInput
+	 * @throws CorruptedSiInputDataException
+	 */
+	function create(array $data) {
+		$input = new SiInput();
+		
+		foreach ($data as $key => $entryData) {
+			try {
+				$input->putEntryInput($key, SiEntryInput::parse($entryData));
+			} catch (AttributesException $e) {
+				throw new CorruptedSiInputDataException(null, 0, $e);
+			}
+		}
+		
+		return $input;
+	}
 	
 }

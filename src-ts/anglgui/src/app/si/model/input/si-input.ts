@@ -22,11 +22,7 @@ export class SiInput {
 				fieldInputObj[fieldId] = inputObj;
 			}
 
-			entryInputMaps.push({
-				identifier: entryInput.identifier,
-				typeId: entryInput.typeId,
-				fieldInputMap: fieldInputObj
-			});
+			entryInputMaps.push(entryInput.toJSON());
 		}
 
 		map.set('entryInputMaps', JSON.stringify(entryInputMaps));

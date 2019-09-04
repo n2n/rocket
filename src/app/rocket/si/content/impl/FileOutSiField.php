@@ -32,7 +32,7 @@ class FileOutSiField extends OutSiFieldAdapter {
 	/**
 	 * @param File|null $value
 	 */
-	function __construct(?File $value) {
+	function __construct(?SiFile $value) {
 		$this->value = $value;	
 	}
 	
@@ -66,7 +66,7 @@ class FileOutSiField extends OutSiFieldAdapter {
 	 */
 	function getData(): array {
 		return [
-			'value' => SiFile::build($this->value),
+			'value' => $this->value,
 		];
 	}
 }
