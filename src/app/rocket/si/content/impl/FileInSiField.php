@@ -24,6 +24,8 @@ namespace rocket\si\content\impl;
 use n2n\io\managed\File;
 use n2n\util\uri\Url;
 use n2n\util\type\attrs\DataSet;
+use n2n\io\IoUtils;
+use n2n\util\type\ArgUtils;
 
 class FileInSiField extends InSiFieldAdapter {
 	/**
@@ -47,10 +49,14 @@ class FileInSiField extends InSiFieldAdapter {
 	 * @var bool
 	 */
 	private $mandatory = false;
+	/**
+	 * @var int|null
+	 */
+	private $maxSize = null;
 	
-	private $extensions = [];
-	private $mimeTypes = [];
-		
+	private $acceptedExtensions = [];
+	private $acceptedMimeTypes = [];
+
 	/**
 	 * @param File|null $value
 	 */
@@ -94,6 +100,56 @@ class FileInSiField extends InSiFieldAdapter {
 	}
 	
 	/**
+	 * @return int|null
+	 */
+	public function getMaxSize() {
+		return $this->maxSize;
+	}
+	
+	/**
+	 * @param int $maxSize
+	 * @return FileInSiField
+	 */
+	public function setMaxSize(?int $maxSize) {
+		$this->maxSize = $maxSize;
+		return $this;
+	}
+	
+	/**
+	 * @return string[]
+	 */
+	public function getAcceptedExtensions() {
+		return $this->acceptedExtensions;
+	}
+	
+	/**
+	 * @param string[] $acceptedExtensions
+	 * @return FileInSiField
+	 */
+	public function setAcceptedExtensions(array $acceptedExtensions) {
+		ArgUtils::valArray($acceptedExtensions, 'string');
+		$this->acceptedExtensions = $acceptedExtensions;
+		return $this;
+	}
+	
+	/**
+	 * @return string[]
+	 */
+	public function getAcceptedMimeTypes() {
+		return $this->acceptedMimeTypes;
+	}
+	
+	/**
+	 * @param string[] $acceptedMimeTypes
+	 * @return FileInSiField
+	 */
+	public function setAcceptedMimeTypes(array $acceptedMimeTypes) {
+		ArgUtils::valArray($acceptedMimeTypes, 'string');
+		$this->acceptedMimeTypes = $acceptedMimeTypes;
+		return $this;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @see \rocket\si\content\SiField::getType()
 	 */
@@ -112,7 +168,10 @@ class FileInSiField extends InSiFieldAdapter {
 			'mimeTypes' => $this->mimeTypes,
 			'extensions' => $this->extensions,
 			'apiUrl' => (string) $this->apiUrl,
-			'apiCallId' => $this->apiCallId
+			'apiCallId' => $this->apiCallId,
+			'maxSize' => $this->maxSize ?? IoUtils::determineFileUploadMaxSize(),
+			'acceptedExtensions' => $this->acceptedExtensions,
+			'acceptedMimeTypes' => $this->acceptedMimeTypes
 		];
 	}
 	
@@ -122,7 +181,6 @@ class FileInSiField extends InSiFieldAdapter {
 	 */
 	function handleInput(array $data) {
 		$valueId = (new DataSet($data))->optArray('valueId');
-		
 		if ($valueId === null) {
 			$this->value = null;
 			return;

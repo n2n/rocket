@@ -75,7 +75,6 @@ class FileId implements \JsonSerializable {
 	 */
 	static function parse(array $data) {
 		$ds = new DataSet($data);
-		
 		try {
 			return new FileId($ds->optString('fileManagerName'), $ds->optString('qualifiedName'));
 		} catch (AttributesException $e) {

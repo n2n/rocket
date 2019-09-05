@@ -6,7 +6,7 @@ import { SiResult } from 'src/app/si/model/control/si-result';
 import { SiEntryDeclaration } from 'src/app/si/model/structure/si-entry-declaration';
 import { SiFieldStructureDeclaration } from 'src/app/si/model/structure/si-field-structure-declaration';
 import { SiFieldDeclaration } from 'src/app/si/model/structure/si-field-declaration';
-import { SiFile } from '../model/content/impl/file-in-si-field';
+import { SiFile, SiImageDimension } from '../model/content/impl/file-in-si-field';
 
 export class SiResultFactory {
 
@@ -109,10 +109,28 @@ export class SiResultFactory {
 
 		const extr = new Extractor(data);
 
+		const imageDimensions: SiImageDimension[] = [];
+		for (const idData of extr.reqArray('imageDimensions')) {
+			imageDimensions.push(SiResultFactory.createSiImageDimension(idData));
+		}
+
 		return {
+			id: extr.reqObject('id'),
 			name: extr.reqString('name'),
 			url: extr.nullaString('url'),
-			thumbUrl: extr.nullaString('thumbUrl')
+			thumbUrl: extr.nullaString('thumbUrl'),
+			imageDimensions
+		};
+	}
+
+	static createSiImageDimension(data: any): SiImageDimension {
+		const extr = new Extractor(data);
+
+		return {
+			id: extr.reqString('id'),
+			name: extr.reqString('name'),
+			width: extr.reqNumber('width'),
+			height: extr.reqNumber('height')
 		};
 	}
 }

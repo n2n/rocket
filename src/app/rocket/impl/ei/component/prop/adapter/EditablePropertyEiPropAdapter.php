@@ -122,8 +122,8 @@ abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAd
 	
 	public function validateEiFieldValue(Eiu $eiu, $eiFieldValue, EiFieldValidationResult $validationResult) {
 		if (!$this->checkMandatory($eiu->object()->getEiObject(), $eiFieldValue)) {
-			$validationResult->addError(Message::createCodeArg('ei_impl_mandatory_err', array('field' => $this->labelLstr), null, 
-					Rocket::NS));
+			$validationResult->addError(Message::createCodeArg('ei_impl_mandatory_err', 
+					array('field' => $this->labelLstr), null, Rocket::NS));
 		}
 	}
 	

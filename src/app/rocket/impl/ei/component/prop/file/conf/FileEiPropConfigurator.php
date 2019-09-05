@@ -40,11 +40,13 @@ use rocket\ei\EiPropPath;
 use n2n\util\type\attrs\AttributesException;
 use rocket\impl\ei\component\prop\file\command\MultiUploadEiCommand;
 use rocket\impl\ei\component\prop\file\command\controller\MultiUploadEiController;
+use n2n\io\img\impl\ImageSourceFactory;
 
 class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 	const ATTR_CHECK_IMAGE_MEMORY_KEY = 'checkImageResourceMemory';
 	
 	const ATTR_ALLOWED_EXTENSIONS_KEY = 'allowedExtensions';
+	const ATTR_ALLOWED_MIME_TYPES_KEY = 'allowedMimeTypes';
 	
 	const ATTR_DIMENSION_IMPORT_MODE_KEY = 'dimensionImportMode';
 	
@@ -56,6 +58,9 @@ class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 	
 	const ATTR_MULTI_UPLOAD_ORDER_KEY = 'multiUploadOrder'; 
 	
+	/**
+	 * @var FileEiProp
+	 */
 	private $fileEiProp;
 	
 	public function __construct(FileEiProp $fileEiProp) {
@@ -68,34 +73,44 @@ class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 	public function setup(EiSetup $eiSetup) {
 		parent::setup($eiSetup);
 	
-		$this->fileEiProp->setAllowedExtensions($this->attributes->getScalarArray(self::ATTR_ALLOWED_EXTENSIONS_KEY,
-				false, $this->fileEiProp->getAllowedExtensions(), true));
+		$this->fileEiProp->setAllowedExtensions(
+				$this->attributes->optScalarArray(self::ATTR_ALLOWED_EXTENSIONS_KEY));
 		
-		$this->fileEiProp->setCheckImageMemoryEnabled($this->attributes->getBool(self::ATTR_CHECK_IMAGE_MEMORY_KEY, 
-				false, $this->fileEiProp->isCheckImageMemoryEnabled()));
+		$this->fileEiProp->setAllowedMimeTypes(
+				$this->attributes->optScalarArray(self::ATTR_ALLOWED_MIME_TYPES_KEY));
 		
-		$this->fileEiProp->getThumbResolver()->setImageDimensionImportMode($this->attributes->optEnum(self::ATTR_DIMENSION_IMPORT_MODE_KEY,
-				ThumbResolver::getImageDimensionImportModes(), null, true));
+		$this->fileEiProp->setCheckImageMemoryEnabled(
+				$this->attributes->reqBool(self::ATTR_CHECK_IMAGE_MEMORY_KEY, false, true));
 		
-		$extraImageDimensions = array();
+		$this->fileEiProp->getThumbResolver()->setImageDimensionImportMode(
+				$this->attributes->optEnum(self::ATTR_DIMENSION_IMPORT_MODE_KEY, 
+						ThumbResolver::getImageDimensionImportModes()));
+		
 		if ($this->attributes->contains(self::ATTR_EXTRA_THUMB_DIMENSIONS_KEY)) {
-			foreach ($this->attributes->getScalarArray(self::ATTR_EXTRA_THUMB_DIMENSIONS_KEY) as $imageDimensionStr) {
-				try {
-					$extraImageDimensions[$imageDimensionStr] = ImageDimension::createFromString($imageDimensionStr);
-				} catch (\InvalidArgumentException $e) {
-					throw $eiSetup->createException('Invalid ImageDimension string: ' . $imageDimensionStr, $e);
-				}
-			}
-			$this->fileEiProp->getThumbResolver()->setExtraImageDimensions($extraImageDimensions);
+			$this->setupExtraImageDimensions($eiSetup);
 		}
 		
 		$thumbEiCommand = new ThumbEiCommand($this->fileEiProp);
 		$eiSetup->eiu()->mask()->supremeMask()->addEiCommand($thumbEiCommand);
 		$this->fileEiProp->getThumbResolver()->setThumbEiCommand($thumbEiCommand);
 		
-		if ($this->attributes->getBool(self::ATTR_MULTI_UPLOAD_AVAILABLE_KEY, false)) {
+		if ($this->attributes->optBool(self::ATTR_MULTI_UPLOAD_AVAILABLE_KEY, false)) {
 			$this->setupMulti($eiSetup);
 		}
+	}
+	
+	private function setupExtraImageDimensions(EiSetup $eiSetup) {
+		$extraImageDimensions = array();
+		
+		foreach ($this->attributes->reqScalarArray(self::ATTR_EXTRA_THUMB_DIMENSIONS_KEY) as $imageDimensionStr) {
+			try {
+				$extraImageDimensions[$imageDimensionStr] = ImageDimension::createFromString($imageDimensionStr);
+			} catch (\InvalidArgumentException $e) {
+				throw $eiSetup->createException('Invalid ImageDimension string: ' . $imageDimensionStr, $e);
+			}
+		}
+		
+		$this->fileEiProp->getThumbResolver()->setExtraImageDimensions($extraImageDimensions);
 	}
 	
 	private function setupMulti(EiSetup $eiSetup) {
@@ -107,7 +122,7 @@ class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 		
 		if ($this->attributes->contains(self::ATTR_MULTI_UPLOAD_NAMING_EI_PROP_PATH_KEY)) {
 			$fileEiProp = $this->fileEiProp;
-			$eiuMask->onEngineReady(function (EiuEngine $eiuEngine) use ($fileEiProp) {
+			$eiuMask->onEngineReady(function (EiuEngine $eiuEngine) use ($fileEiProp, $eiSetup) {
 				try {
 					$fileEiProp->setNamingEiPropPath($eiuEngine
 							->getScalarEiProperty($this->attributes->getString(self::ATTR_MULTI_UPLOAD_NAMING_EI_PROP_PATH_KEY))
@@ -125,7 +140,7 @@ class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 		parent::initAutoEiPropAttributes($n2nContext, $column);
 		
 		if (false !== stripos($this->requirePropertyName(), 'image')) {
-			$this->attributes->set(self::ATTR_ALLOWED_EXTENSIONS_KEY, array('png', 'jpg', 'jpeg', 'gif', 'webp'));
+			$this->attributes->set(self::ATTR_ALLOWED_MIME_TYPES_KEY, ImageSourceFactory::getSupportedMimeTypes());
 			$this->attributes->set(self::ATTR_DIMENSION_IMPORT_MODE_KEY, FileEiProp::DIM_IMPORT_MODE_ALL);
 		}
 	}
@@ -138,6 +153,10 @@ class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 				
 		$magCollection->addMag(self::ATTR_ALLOWED_EXTENSIONS_KEY, new StringArrayMag('Allowed Extensions', 
 				$lar->getScalarArray(self::ATTR_ALLOWED_EXTENSIONS_KEY, $this->fileEiProp->getAllowedExtensions()), 
+				false));
+				
+		$magCollection->addMag(self::ATTR_ALLOWED_MIME_TYPES_KEY, new StringArrayMag('Allowed Mime Types',
+				$lar->getScalarArray(self::ATTR_ALLOWED_EXTENSIONS_KEY, $this->fileEiProp->getAllowedMimeTypes()),
 				false));
 		
 		$magCollection->addMag(self::ATTR_DIMENSION_IMPORT_MODE_KEY, new EnumMag('Dimensions import mode', 
@@ -212,9 +231,9 @@ class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$magCollection = $magDispatchable->getMagCollection();
 		
 		$this->attributes->appendAll($magDispatchable->getMagCollection()->readValues(array(
-				self::ATTR_ALLOWED_EXTENSIONS_KEY, self::ATTR_DIMENSION_IMPORT_MODE_KEY, 
-				self::ATTR_EXTRA_THUMB_DIMENSIONS_KEY, self::ATTR_CHECK_IMAGE_MEMORY_KEY,
-				self::ATTR_MULTI_UPLOAD_AVAILABLE_KEY), true), true);
+				self::ATTR_ALLOWED_EXTENSIONS_KEY, self::ATTR_ALLOWED_MIME_TYPES_KEY, 
+				self::ATTR_DIMENSION_IMPORT_MODE_KEY, self::ATTR_EXTRA_THUMB_DIMENSIONS_KEY, 
+				self::ATTR_CHECK_IMAGE_MEMORY_KEY, self::ATTR_MULTI_UPLOAD_AVAILABLE_KEY), true), true);
 		
 		if ($magCollection->containsPropertyName(self::ATTR_MULTI_UPLOAD_NAMING_EI_PROP_PATH_KEY)) {
 			$this->attributes->appendAll($magDispatchable->getMagCollection()

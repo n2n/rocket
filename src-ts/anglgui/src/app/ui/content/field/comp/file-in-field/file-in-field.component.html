@@ -1,14 +1,29 @@
-<input type="file" (change)="change($event)" [accept]="mimeTypes.join(', ')" />
+<input #fileInput type="file" (change)="change($event)" [accept]="getAcceptStr()" />
 
-<div *ngIf="uploadingFile" class="rocket-loader"></div>
+<span>({{ 'max_label'| translate }} {{ getPrettySize() }})</span>
 
-<ng-container *ngIf="currentSiFile">
+<div *ngIf="loading" class="rocket-loader"></div>
+
+<ng-container *ngIf="currentSiFile && !uploadingFile && !uploadTooLarge">
 	<a *ngIf="currentSiFile.url" [href]="currentSiFile.url">
-		<img *ngIf="currentSiFile.thumbUrl; else nothumb" [src]="currentSiFile.thumbUrl" 
-				[alt]="currentSiFile.name" width="40" height="30" />
+		<ng-container *ngIf="currentSiFile.thumbUrl; else nothumb">
+			<img [class.sr-only]="!imgLoaded" [src]="currentSiFile.thumbUrl"
+					[alt]="currentSiFile.name" height="30" (load)="imgLoaded = true" />
+		</ng-container>
 
 		<ng-template #nothumb>{{ currentSiFile.name }}</ng-template>
 	</a>
 	
 	<span *ngIf="!currentSiFile.url">{{ currentSiFile.name }}</span>
 </ng-container>
+
+
+<button *ngIf="!loading && fileSelected" (click)="removeCurrent()">{{ 'common_remove_txt' | translate }}</button>
+
+<div *ngIf="uploadTooLarge" class="rocket-message-error">
+	{{ 'upload_too_large_err' | translate }}
+</div>
+
+<div *ngIf="!uploadTooLarge && model.getMessages().length > 0" class="rocket-message-error">
+	<div *ngFor="let message of model.getMessages()">{{ message }}</div>
+</div>

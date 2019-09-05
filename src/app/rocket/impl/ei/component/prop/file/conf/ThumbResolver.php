@@ -31,6 +31,8 @@ use n2n\io\managed\img\ImageFile;
 use n2n\util\type\ArgUtils;
 use n2n\io\managed\impl\TmpFileManager;
 use n2n\util\type\CastUtils;
+use rocket\si\content\impl\SiImageDimension;
+use n2n\util\StringUtils;
 
 class ThumbResolver {
 	
@@ -115,6 +117,8 @@ class ThumbResolver {
 					SiFile::getThumbStrategy()->getImageDimension()));
 		}
 		
+		$siFile->setImageDimensions($this->createSiImageDimensions($this->determineImageDimensions($file)));
+		
 		return $siFile;
 	}
 	
@@ -122,6 +126,7 @@ class ThumbResolver {
 		if ($fileId->getFileManagerName() === TmpFileManager::class) {
 			$tfm = $eiu->lookup(TmpFileManager::class);
 			CastUtils::assertTrue($tfm instanceof TmpFileManager);
+			
 			return $tfm->getSessionFile($fileId->getQualifiedName(), 
 					$eiu->getN2nContext()->getHttpContext()->getSession());
 		}
@@ -204,6 +209,19 @@ class ThumbResolver {
 	}
 	
 	/**
+	 * @param ImageDimension[] $imageDimensions
+	 * @return \rocket\si\content\impl\SiImageDimension[]
+	 */
+	private function createSiImageDimensions($imageDimensions) {
+		$siImageDimensions = []; 
+		foreach ($imageDimensions as $id => $imageDimension) {
+			$siImageDimensions[] = new SiImageDimension($id, StringUtils::pretty($id), 
+					$imageDimension->getWidth(), $imageDimension->getHeight());
+		}
+		return $siImageDimensions;
+	}
+	
+	/**
 	 * @param File $file
 	 * @return ImageDimension[]
 	 */
@@ -218,7 +236,7 @@ class ThumbResolver {
 			$imageDimensions[(string) $imageDimension] = $imageDimension;
 		}
 		
-		$thumbEngine = $file->getFileSource()->getThumbManager();
+		$thumbEngine = $file->getFileSource()->getVariationEngine()->getThumbManager();
 		
 		$autoImageDimensions = array();
 		switch ($this->imageDimensionsImportMode) {
@@ -230,8 +248,16 @@ class ThumbResolver {
 				break;
 		}
 		
+		$rocketImageDimensionStr = (string) SiFile::getThumbStrategy()->getImageDimension();
+		
 		foreach ($autoImageDimensions as $autoImageDimension) {
-			$imageDimensions[(string) $autoImageDimension] = $autoImageDimension;
+			$autoImageDimensionStr = (string) $autoImageDimension;
+			
+			if ($autoImageDimensionStr == $rocketImageDimensionStr) {
+				continue;
+			}
+			
+			$imageDimensions[$autoImageDimensionStr] = $autoImageDimension;
 		}
 		
 		return $imageDimensions;

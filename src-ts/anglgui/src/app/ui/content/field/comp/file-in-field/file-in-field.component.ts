@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { SiFile } from 'src/app/si/model/content/impl/file-in-si-field';
 import { BehaviorSubject } from 'rxjs';
 import { SiService } from 'src/app/si/model/si.service';
@@ -11,16 +11,29 @@ import { SiResultFactory } from 'src/app/si/build/si-result-factory';
   styleUrls: ['./file-in-field.component.css']
 })
 export class FileInFieldComponent implements OnInit {
-
+	imgLoaded = false;
 	mandatory = true;
 	model: FileInFieldModel;
 	mimeTypes: string[] = [];
 
 	uploadingFile: File|null = null;
+	uploadTooLarge = false;
+
+	@ViewChild('fileInput', { static: true })
+	fileInputRef: ElementRef;
+
 
 	constructor(private siService: SiService) { }
 
 	ngOnInit() {
+	}
+
+	get loading() {
+		return !!this.uploadingFile || (this.currentSiFile && this.currentSiFile.thumbUrl && !this.imgLoaded);
+	}
+
+	getPrettySize(): string {
+		return (this.model.getMaxSize() / 1024 / 1024).toLocaleString() + 'MB';
 	}
 
 	get currentSiFile(): SiFile|null {
@@ -28,6 +41,8 @@ export class FileInFieldComponent implements OnInit {
 	}
 
 	change(event: any) {
+		this.uploadTooLarge = false;
+
 		const fileList: FileList = event.target.files;
 
 		if (fileList.length === 0) {
@@ -35,7 +50,14 @@ export class FileInFieldComponent implements OnInit {
 			return;
 		}
 
-		const file = this.uploadingFile = fileList[0];
+		const file = fileList[0];
+
+		if (file.size > this.model.getMaxSize()) {
+			this.uploadTooLarge = true;
+			return;
+		}
+
+		this.uploadingFile = file;
 
 		this.siService.fieldCall(this.model.getApiUrl(), this.model.getApiCallId(),	{}, new Map().set('upload', file))
 				.subscribe((data) => {
@@ -43,9 +65,27 @@ export class FileInFieldComponent implements OnInit {
 						return;
 					}
 
+					this.imgLoaded = false;
 					this.uploadingFile = null;
 					this.model.setSiFile(SiResultFactory.buildSiFile(data.file));
 				});
 	}
 
+	get fileSelected(): boolean {
+		return !!(this.currentSiFile || this.uploadingFile || this.uploadTooLarge);
+	}
+
+	getAcceptStr(): string {
+		const acceptParts = this.model.getAcceptedExtensions().map(ext => '.' + ext.split(',').join(''));
+		acceptParts.push(...this.model.getAcceptedMimeTypes().map(ext => ext.split(',').join('')));
+
+		return acceptParts.join(',');
+	}
+
+	removeCurrent() {
+		this.model.setSiFile(null);
+		(this.fileInputRef.nativeElement as HTMLInputElement).value = '';
+		this.uploadTooLarge = false;
+		this.uploadingFile = null;
+	}
 }

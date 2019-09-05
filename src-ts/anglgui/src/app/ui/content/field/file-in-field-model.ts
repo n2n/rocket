@@ -7,7 +7,11 @@ export interface FileInFieldModel extends FileFieldModel {
 
 	getApiCallId(): object;
 
-	getMimeTypes(): string[];
+	getAcceptedExtensions(): string[];
+
+	getAcceptedMimeTypes(): string[];
+
+	getMaxSize(): number;
 
 	setSiFile(file: SiFile|null): void;
 }

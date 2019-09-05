@@ -23,12 +23,15 @@ namespace rocket\si\content\impl;
 
 use n2n\io\managed\img\impl\ThSt;
 use n2n\util\uri\Url;
+use n2n\util\type\ArgUtils;
+use n2n\io\managed\img\ImageDimension;
 
 class SiFile implements \JsonSerializable {
 	private $id;
 	private $name;
 	private $url;
 	private $thumbUrl;
+	private $imageDimensions = [];
 	
 	/**
 	 * @param string $name
@@ -85,12 +88,30 @@ class SiFile implements \JsonSerializable {
 		return $this;
 	}
 	
+	/**
+	 * @return SiImageDimension[]
+	 */
+	function getImageDimensions() {
+		return $this->imageDimensions;
+	}
+	
+	/**
+	 * @param SiImageDimension[] $imageDimensions
+	 * @return \rocket\si\content\impl\SiFile
+	 */
+	function setImageDimensions(array $imageDimensions) {
+		ArgUtils::valArray($imageDimensions, ImageDimension::class);
+		$this->imageDimensions = $imageDimensions;
+		return $this;
+	}
+	
 	function jsonSerialize() {
 		return [
 			'id' => $this->id,
 			'name' => $this->name,
 			'url' => ($this->url !== null ? (string) $this->url : null),
-			'thumbUrl' => ($this->thumbUrl !== null ? (string) $this->thumbUrl : null)
+			'thumbUrl' => ($this->thumbUrl !== null ? (string) $this->thumbUrl : null),
+			'imageDimensions' => $this->imageDimensions
 		];
 	}
 	
@@ -100,6 +121,27 @@ class SiFile implements \JsonSerializable {
 	static function getThumbStrategy() {
 		return ThSt::crop(40, 30, true);
 	}
+}
+
+class SiImageDimension implements \JsonSerializable {
+	private $id;
+	private $name;
+	private $width;
+	private $height;
 	
+	function __construct(string $id, string $name, int $width, int $height) {
+		$this->id = $id;
+		$this->name = $name;
+		$this->width = $width;
+		$this->height = $height;
+	}
 	
+	function jsonSerialize() {
+		return [
+			'id' => $this->id,
+			'name' => $this->name,
+			'width' => $this->width,
+			'height' => $this->height
+		];
+	}
 }

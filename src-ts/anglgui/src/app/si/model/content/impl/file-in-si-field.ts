@@ -9,10 +9,10 @@ import { SiContent } from 'src/app/si/model/structure/si-content';
 
 export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel, SiContent {
 
-	private uploadedFile: File|null = null;
+	public maxSize: number;
 	public mandatory = false;
-	public mimeTypes: string[] = [];
-	public extensions: string[] = [];
+	public acceptedMimeTypes: string[] = [];
+	public acceptedExtensions: string[] = [];
 
 	constructor(public apiUrl: string, public apiCallId: object, public value: SiFile|null) {
 		super();
@@ -24,8 +24,7 @@ export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel,
 
 	readInput(): object {
 		return {
-			keep: !!this.value,
-			file: this.uploadedFile
+			valueId: (this.value ? this.value.id : null)
 		};
 	}
 
@@ -41,12 +40,16 @@ export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel,
 		return this.value;
 	}
 
-	setSiFile(value: SiFile): void {
+	setSiFile(value: SiFile|null): void {
 		this.value = value;
 	}
 
-	getMimeTypes(): string[] {
-		throw new Error('Method not implemented.');
+	getAcceptedExtensions(): string[] {
+		return this.acceptedExtensions;
+	}
+
+	getAcceptedMimeTypes(): string[] {
+		return this.acceptedMimeTypes;
 	}
 
 	removeFile(): void {
@@ -61,6 +64,10 @@ export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel,
 		return this;
 	}
 
+	getMaxSize(): number {
+		return this.maxSize;
+	}
+
 	initComponent(viewContainerRef: ViewContainerRef,
 			componentFactoryResolver: ComponentFactoryResolver,
 			commanderService: SiCommanderService): ComponentRef<any> {
@@ -71,14 +78,23 @@ export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel,
 		const component = componentRef.instance;
 		component.model = this;
 		component.mandatory = this.mandatory;
-		component.mimeTypes = this.mimeTypes;
+		component.mimeTypes = this.acceptedMimeTypes;
 
 		return componentRef;
 	}
 }
 
 export interface SiFile {
+	id: object;
 	name: string;
 	url: string|null;
 	thumbUrl: string|null;
+	imageDimensions: SiImageDimension[];
+}
+
+export interface SiImageDimension {
+	id: string;
+	name: string;
+	width: number;
+	height: number;
 }
