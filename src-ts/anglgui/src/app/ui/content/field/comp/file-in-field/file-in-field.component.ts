@@ -16,10 +16,12 @@ export class FileInFieldComponent implements OnInit {
 	model: FileInFieldModel;
 	mimeTypes: string[] = [];
 
+	uploadInitiated = false;
 	uploadingFile: File|null = null;
 	uploadTooLarge = false;
+	uploadErrorMessage: string|null = null;
 
-	@ViewChild('fileInput', { static: true })
+	@ViewChild('fileInput', { static: false })
 	fileInputRef: ElementRef;
 
 
@@ -36,12 +38,16 @@ export class FileInFieldComponent implements OnInit {
 		return (this.model.getMaxSize() / 1024 / 1024).toLocaleString() + 'MB';
 	}
 
+	get inputAvailable(): boolean {
+		return !this.currentSiFile || (this.uploadInitiated && this.loading)
+	}
+
 	get currentSiFile(): SiFile|null {
 		return this.model.getSiFile();
 	}
 
 	change(event: any) {
-		this.uploadTooLarge = false;
+		this.reset();
 
 		const fileList: FileList = event.target.files;
 
@@ -58,6 +64,7 @@ export class FileInFieldComponent implements OnInit {
 		}
 
 		this.uploadingFile = file;
+		this.uploadInitiated = true;
 
 		this.siService.fieldCall(this.model.getApiUrl(), this.model.getApiCallId(),	{}, new Map().set('upload', file))
 				.subscribe((data) => {
@@ -67,12 +74,29 @@ export class FileInFieldComponent implements OnInit {
 
 					this.imgLoaded = false;
 					this.uploadingFile = null;
-					this.model.setSiFile(SiResultFactory.buildSiFile(data.file));
+
+					if (data.error) {
+						this.uploadErrorMessage = data.error;
+					} else {
+						this.model.setSiFile(SiResultFactory.buildSiFile(data.file));
+					}
 				});
 	}
 
-	get fileSelected(): boolean {
-		return !!(this.currentSiFile || this.uploadingFile || this.uploadTooLarge);
+	get removable(): boolean {
+		if (this.loading) {
+			return false;
+		}
+
+		if (this.currentSiFile) {
+			return true;
+		}
+
+		if (this.fileInputRef && (this.fileInputRef.nativeElement as HTMLInputElement).value !== '') {
+			return true;
+		}
+
+		return false;
 	}
 
 	getAcceptStr(): string {
@@ -82,10 +106,18 @@ export class FileInFieldComponent implements OnInit {
 		return acceptParts.join(',');
 	}
 
-	removeCurrent() {
+	private reset() {
 		this.model.setSiFile(null);
-		(this.fileInputRef.nativeElement as HTMLInputElement).value = '';
+		this.uploadInitiated = false;
 		this.uploadTooLarge = false;
+		this.uploadErrorMessage = null;
 		this.uploadingFile = null;
+	}
+
+	removeCurrent() {
+		this.reset();
+		if (this.fileInputRef) {
+			(this.fileInputRef.nativeElement as HTMLInputElement).value = '';
+		}
 	}
 }

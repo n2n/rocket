@@ -51,69 +51,65 @@ use rocket\si\content\impl\SiFileHandler;
 use rocket\impl\ei\component\prop\file\conf\FileId;
 use rocket\si\content\impl\FileInSiField;
 use rocket\ei\manage\entry\EiFieldValidationResult;
-use n2n\io\managed\val\ValidationMessagesFile;
-use n2n\validation\impl\ValidationUtils;
+use rocket\impl\ei\component\prop\file\conf\FileVerificator;
 
 class FileEiProp extends DraftablePropertyEiPropAdapter {
 	
-	private $checkImageResourceMemory = true;
-	private $allowedExtensions = [];
-	private $allowedMimeTypes = [];
-	private $maxSize;
+	/**
+	 * @var EiPropPath|null
+	 */
 	private $namingEiPropPath;
 	/**
-	 * @var ThumbResolver|null
+	 * @var ThumbResolver
 	 */
 	private $thumbResolver;
+	/**
+	 * @var FileVerificator
+	 */
+	private $fileVerificator;
+	
 	
 	function __construct() {
 		parent::__construct();
 		
 		$this->thumbResolver = new ThumbResolver();
+		$this->fileVerificator = new FileVerificator();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter::createEiPropConfigurator()
+	 */
 	public function createEiPropConfigurator(): EiPropConfigurator {
 		return new FileEiPropConfigurator($this);
 	}
 	
+	/**
+	 * @return \rocket\impl\ei\component\prop\file\conf\ThumbResolver
+	 */
 	public function getThumbResolver() {
 		return $this->thumbResolver;
 	}
 	
+	/**
+	 * @param ThumbResolver $thumbResolver
+	 */
 	public function setThumbResolver(ThumbResolver $thumbResolver) {
 		$this->thumbResolver = $thumbResolver;
 	}
 	
-	public function getAllowedExtensions() {
-		return $this->allowedExtensions;
+	/**
+	 * @return \rocket\impl\ei\component\prop\file\conf\FileVerificator
+	 */
+	public function getFileVerificator() {
+		return $this->fileVerificator;
 	}
 	
-	public function setAllowedExtensions(array $allowedExtensions) {
-		$this->allowedExtensions = $allowedExtensions;
-	}
-	
-	public function getAllowedMimeTypes() {
-		return $this->allowedMimeTypes;
-	}
-	
-	public function setAllowedMimeTypes(array $allowedMimeTypes) {
-		$this->allowedMimeTypes = $allowedMimeTypes;
-	}
-	
-	public function setMaxSize(int $maxSize = null) {
-		$this->maxSize = $maxSize;
-	}
-	
-	public function getMaxSize() {
-		return $this->maxSize;
-	}
-
-	public function isCheckImageMemoryEnabled(): bool {
-		return $this->checkImageResourceMemory;
-	}
-	
-	public function setCheckImageMemoryEnabled(bool $checkImageResourceMemory) {
-		$this->checkImageResourceMemory = $checkImageResourceMemory;
+	/**
+	 * @param FileVerificator $fileVerificator
+	 */
+	public function setFileVerificator(FileVerificator $fileVerificator) {
+		$this->fileVerificator = $fileVerificator;
 	}
 		
 	/**
@@ -155,34 +151,26 @@ class FileEiProp extends DraftablePropertyEiPropAdapter {
 			return false;
 		}
 		
-		return $eiFieldValue !== null && $this->testType($eiFieldValue);
+		if ($eiFieldValue === null) {
+			return true;
+		}
+		
+		\InvalidArgumentException::assertTrue($eiFieldValue instanceof File);
+		return $this->fileVerificator->test($eiFieldValue);
 	}
 	
-	
-	public function validateEiFieldValue(Eiu $eiu, $eiFieldValue, EiFieldValidationResult $validationResult) {
-		parent::validateEiFieldValue($eiu, $eiFieldValue, $validationResult);
-		
-		$file = $eiFieldValue;
+	public function validateEiFieldValue(Eiu $eiu, $file, EiFieldValidationResult $validationResult) {
+		parent::validateEiFieldValue($eiu, $file, $validationResult);
 		
 		if ($file === null) {
 			return;
 		}
 		
-		CastUtils::assertTrue($file instanceof File);
+		ArgUtils::assertTrue($file instanceof File);
 		
-		if (!$this->testType($file)) {
-			$validationResult->addError(ValidationMessages::fileType($file,
-					array_merge($this->allowedExtensions, $this->allowedMimeTypes)));
+		if (null !== ($message = $this->fileVerificator->validate($file))) {
+			$validationResult->addError($message);
 		}
-	}
-	
-	/**
-	 * @return boolean
-	 */
-	private function testType($file) {
-		return ValidationUtils::isFileTypeSupported($file,
-				(empty($this->allowedMimeTypes) ? null : $this->allowedMimeTypes),
-				(empty($this->allowedExtensions) ? null : $this->allowedExtensions));
 	}
 	
 	public function createOutSiField(Eiu $eiu): SiField {
@@ -246,15 +234,15 @@ class FileEiProp extends DraftablePropertyEiPropAdapter {
 		$siFile = $this->buildSiFileFromEiu($eiu);
 		
 		return SiFields::fileIn($siFile, $eiu->frame()->getApiUrl(), $eiu->guiField()->createCallId(), 
-						new SiFileHanlderImpl($eiu, $this->thumbResolver))
+						new SiFileHanlderImpl($eiu, $this->thumbResolver, $this->fileVerificator))
 				->setMandatory($this->isMandatory($eiu))
-				->setMaxSize($this->maxSize)
-				->setAcceptedExtensions($this->allowedExtensions)
-				->setAcceptedMimeTypes($this->allowedMimeTypes);
+				->setMaxSize($this->fileVerificator->getMaxSize())
+				->setAcceptedExtensions($this->fileVerificator->getAllowedExtensions())
+				->setAcceptedMimeTypes($this->fileVerificator->getAllowedMimeTypes());
 		
 // 		$allowedExtensions = $this->getAllowedExtensions();
 // 		return new FileMag($this->getLabelLstr(), (sizeof($allowedExtensions) ? $allowedExtensions : null), 
-// 				$this->isCheckImageMemoryEnabled(), null, 
+// 				$this->isImageRecognized(), null, 
 // 				$this->isMandatory($eiu));
 	}
 
@@ -284,7 +272,8 @@ class FileEiProp extends DraftablePropertyEiPropAdapter {
 		}
 		
 		CastUtils::assertTrue($file instanceof File);
-		return $this->thumbResolver->createSiFile($file, $eiu);
+		return $this->thumbResolver->createSiFile($file, $eiu, 
+				$this->fileVerificator->isImageRecognized());
 	}
 	
 	public function isStringRepresentable(): bool {
@@ -320,11 +309,12 @@ class FileEiProp extends DraftablePropertyEiPropAdapter {
 class SiFileHanlderImpl implements SiFileHandler {
 	private $eiu;
 	private $thumbResolver;
+	private $fileVerificator;
 	
-	function __construct(Eiu $eiu, FileEiProp $fileEiProp, ThumbResolver $thumbResolver) {
+	function __construct(Eiu $eiu, ThumbResolver $thumbResolver, FileVerificator $fileVerificator) {
 		$this->eiu = $eiu;
-		$this->fileEiProp = $fileEiProp
 		$this->thumbResolver = $thumbResolver;
+		$this->fileVerificator = $fileVerificator;
 	}
 	
 	function upload(UploadDefinition $uploadDefinition): SiUploadResult {
@@ -339,18 +329,21 @@ class SiFileHanlderImpl implements SiFileHandler {
 		} catch (UploadedFileExceedsMaxSizeException $e) {
 			return SiUploadResult::createError(ValidationMessages
 					::uploadMaxSize($e->getMaxSize(), $uploadDefinition->getName(), $uploadDefinition->getSize())
-					->t($this->n2nContext->getN2nLocale()));
+					->t($this->eiu->getN2nLocale()));
 		} catch (IncompleteFileUploadException $e) {
 			return SiUploadResult::createError(ValidationMessages
 					::uploadIncomplete($uploadDefinition->getName())
-					->t($this->n2nContext->getN2nLocale()));
+					->t($this->eiu->getN2nLocale()));
 		}
 		
+		if (null !== ($message = $this->fileVerificator->validate($file))){
+			return SiUploadResult::createError($message->t($this->eiu->getN2nLocale()));
+		}
 		
-		
-		/* $qualifiedName = */ $tmpFileManager->add($file, $this->eiu->getN2nContext()->getHttpContext()->getSession());
+		$tmpFileManager->add($file, $this->eiu->getN2nContext()->getHttpContext()->getSession());
 				
-		return SiUploadResult::createSuccess($this->thumbResolver->createSiFile($file, $this->eiu));
+		return SiUploadResult::createSuccess($this->thumbResolver->createSiFile($file, $this->eiu,
+				$this->fileVerificator->isImageRecognized()));
 	}
 	
 	function getSiFileByRawId(array $rawId): ?SiFile {
@@ -358,7 +351,7 @@ class SiFileHanlderImpl implements SiFileHandler {
 		
 		$file = $this->thumbResolver->determineFile($fileId, $this->eiu);
 		if ($file !== null) {
-			return $this->thumbResolver->createSiFile($file, $this->eiu);
+			return $this->thumbResolver->createSiFile($file, $this->eiu, $this->fileVerificator->isImageRecognized());
 		}
 		
 		return null;

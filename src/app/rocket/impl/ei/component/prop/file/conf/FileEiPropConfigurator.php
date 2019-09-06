@@ -43,7 +43,7 @@ use rocket\impl\ei\component\prop\file\command\controller\MultiUploadEiControlle
 use n2n\io\img\impl\ImageSourceFactory;
 
 class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
-	const ATTR_CHECK_IMAGE_MEMORY_KEY = 'checkImageResourceMemory';
+	const ATTR_IMAGE_RECOGNIZED_KEY = 'imageRecognized';
 	
 	const ATTR_ALLOWED_EXTENSIONS_KEY = 'allowedExtensions';
 	const ATTR_ALLOWED_MIME_TYPES_KEY = 'allowedMimeTypes';
@@ -73,14 +73,14 @@ class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 	public function setup(EiSetup $eiSetup) {
 		parent::setup($eiSetup);
 	
-		$this->fileEiProp->setAllowedExtensions(
+		$this->fileEiProp->getFileVerificator()->setAllowedExtensions(
 				$this->attributes->optScalarArray(self::ATTR_ALLOWED_EXTENSIONS_KEY));
 		
-		$this->fileEiProp->setAllowedMimeTypes(
+		$this->fileEiProp->getFileVerificator()->setAllowedMimeTypes(
 				$this->attributes->optScalarArray(self::ATTR_ALLOWED_MIME_TYPES_KEY));
 		
-		$this->fileEiProp->setCheckImageMemoryEnabled(
-				$this->attributes->reqBool(self::ATTR_CHECK_IMAGE_MEMORY_KEY, false, true));
+		$this->fileEiProp->getFileVerificator()->setImageRecognized(
+				$this->attributes->optBool(self::ATTR_IMAGE_RECOGNIZED_KEY, true));
 		
 		$this->fileEiProp->getThumbResolver()->setImageDimensionImportMode(
 				$this->attributes->optEnum(self::ATTR_DIMENSION_IMPORT_MODE_KEY, 
@@ -152,18 +152,18 @@ class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$lar = new LenientAttributeReader($this->attributes);
 				
 		$magCollection->addMag(self::ATTR_ALLOWED_EXTENSIONS_KEY, new StringArrayMag('Allowed Extensions', 
-				$lar->getScalarArray(self::ATTR_ALLOWED_EXTENSIONS_KEY, $this->fileEiProp->getAllowedExtensions()), 
+				$lar->getScalarArray(self::ATTR_ALLOWED_EXTENSIONS_KEY, $this->fileEiProp->getFileVerificator()->getAllowedExtensions()), 
 				false));
 				
 		$magCollection->addMag(self::ATTR_ALLOWED_MIME_TYPES_KEY, new StringArrayMag('Allowed Mime Types',
-				$lar->getScalarArray(self::ATTR_ALLOWED_EXTENSIONS_KEY, $this->fileEiProp->getAllowedMimeTypes()),
+				$lar->getScalarArray(self::ATTR_ALLOWED_EXTENSIONS_KEY, $this->fileEiProp->getFileVerificator()->getAllowedMimeTypes()),
 				false));
 		
 		$magCollection->addMag(self::ATTR_DIMENSION_IMPORT_MODE_KEY, new EnumMag('Dimensions import mode', 
 				array(FileEiProp::DIM_IMPORT_MODE_ALL => 'All possible dimensions',
 						FileEiProp::DIM_IMPORT_MODE_USED_ONLY => 'Only for current image used dimensions'),
 				$lar->getString(self::ATTR_DIMENSION_IMPORT_MODE_KEY, 
-						$this->fileEiProp->getImageDimensionImportMode())));
+						$this->fileEiProp->getThumbResolver()->getImageDimensionImportMode())));
 		
 		$extraImageDimensionStrs = array();
 		if ($lar->contains(self::ATTR_EXTRA_THUMB_DIMENSIONS_KEY)) {
@@ -176,8 +176,8 @@ class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$magCollection->addMag(self::ATTR_EXTRA_THUMB_DIMENSIONS_KEY, new StringArrayMag('Extra Thumb Dimensions', 
 				$extraImageDimensionStrs, false));
 		
-		$magCollection->addMag(self::ATTR_CHECK_IMAGE_MEMORY_KEY, new BoolMag('Check Image Resource Memory',
-				$lar->getBool(self::ATTR_CHECK_IMAGE_MEMORY_KEY, $this->fileEiProp->isCheckImageMemoryEnabled())));
+		$magCollection->addMag(self::ATTR_IMAGE_RECOGNIZED_KEY, new BoolMag('Check Image Resource Memory',
+				$lar->getBool(self::ATTR_IMAGE_RECOGNIZED_KEY, $this->fileEiProp->getFileVerificator()->isImageRecognized())));
 		
 		$enablerMag = new TogglerMag('Multi upload',
 				$lar->getBool(self::ATTR_MULTI_UPLOAD_AVAILABLE_KEY, false));
@@ -233,7 +233,7 @@ class FileEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$this->attributes->appendAll($magDispatchable->getMagCollection()->readValues(array(
 				self::ATTR_ALLOWED_EXTENSIONS_KEY, self::ATTR_ALLOWED_MIME_TYPES_KEY, 
 				self::ATTR_DIMENSION_IMPORT_MODE_KEY, self::ATTR_EXTRA_THUMB_DIMENSIONS_KEY, 
-				self::ATTR_CHECK_IMAGE_MEMORY_KEY, self::ATTR_MULTI_UPLOAD_AVAILABLE_KEY), true), true);
+				self::ATTR_IMAGE_RECOGNIZED_KEY, self::ATTR_MULTI_UPLOAD_AVAILABLE_KEY), true), true);
 		
 		if ($magCollection->containsPropertyName(self::ATTR_MULTI_UPLOAD_NAMING_EI_PROP_PATH_KEY)) {
 			$this->attributes->appendAll($magDispatchable->getMagCollection()

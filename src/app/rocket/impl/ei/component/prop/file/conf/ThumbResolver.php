@@ -78,7 +78,7 @@ class ThumbResolver {
 	 * @param Eiu $eiu
 	 * @return \rocket\si\content\impl\SiFile
 	 */
-	function createSiFile(File $file, Eiu $eiu) {
+	function createSiFile(File $file, Eiu $eiu, bool $imageSupported) {
 		if (!$file->isValid()) {
 			return new SiFile(FileId::create($file), $eiu->dtc('rocket')->t('missing_file_err'));
 		}
@@ -99,6 +99,10 @@ class ThumbResolver {
 			$siFile->setUrl($this->createTmpUrl($eiu, $tmpQualifiedName));
 		} else {
 			$siFile->setUrl($this->createFileUrl($eiu, $eiu->entry()->getPid()));
+		}
+		
+		if (!$imageSupported) {
+			return $siFile;
 		}
 		
 		$thumbFile = $this->buildThumbFile($file);
@@ -144,7 +148,7 @@ class ThumbResolver {
 	 * @param File $file
 	 * @return \n2n\io\managed\File|null
 	 */
-	function buildThumbFile(File $file) {
+	private function buildThumbFile(File $file) {
 		if (!$file->getFileSource()->getVariationEngine()->hasThumbSupport()) {
 			return null;
 		}

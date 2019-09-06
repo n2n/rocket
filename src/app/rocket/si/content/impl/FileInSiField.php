@@ -54,7 +54,13 @@ class FileInSiField extends InSiFieldAdapter {
 	 */
 	private $maxSize = null;
 	
+	/**
+	 * @var string[]
+	 */
 	private $acceptedExtensions = [];
+	/**
+	 * @var string[]
+	 */
 	private $acceptedMimeTypes = [];
 
 	/**
