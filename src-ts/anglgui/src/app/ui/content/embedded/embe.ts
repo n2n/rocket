@@ -16,4 +16,3 @@ export class Embe {
 		return this.siEmbeddedEntry.entry;
 	}
 }
-

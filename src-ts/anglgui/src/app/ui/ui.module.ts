@@ -32,6 +32,7 @@ import { EmbeddedEntriesOutComponent }
 		from './content/embedded/comp/embedded-entries-out/embedded-entries-out.component';
 import { EmbeddedEntriesSummaryOutComponent }
 		from './content/embedded/comp/embedded-entries-summary-out/embedded-entries-summary-out.component';
+import { ImageResizeComponent } from './content/file/image-resize/image-resize.component';
 
 @NgModule({
   declarations: [ LayerComponent, ContainerComponent, ZoneComponent, StructureContentDirective, ListZoneContentComponent,
@@ -39,7 +40,7 @@ import { EmbeddedEntriesSummaryOutComponent }
 	FieldStructureComponent, InputInFieldComponent, TextareaInFieldComponent, StructureComponent, FileInFieldComponent,
 	FileOutFieldComponent, LinkOutFieldComponent, QualifierSelectInFieldComponent,
 	CompactEntryComponent, QualifierComponent, AddPasteComponent, EmbeddedEntriesInComponent, EmbeddedEntriesSummaryInComponent,
-	EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent ],
+	EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent ],
   imports: [
 	CommonModule,
 	FormsModule,
@@ -55,7 +56,7 @@ import { EmbeddedEntriesSummaryOutComponent }
   entryComponents: [ ListZoneContentComponent, BulkyEntryComponent, FieldStructureComponent, StringOutFieldComponent,
 	InputInFieldComponent, TextareaInFieldComponent, FileInFieldComponent, FileOutFieldComponent, QualifierSelectInFieldComponent,
 	LinkOutFieldComponent, CompactEntryComponent, EmbeddedEntriesInComponent, EmbeddedEntriesSummaryInComponent,
-	EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent
+	EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent
   ]
 })
 export class UiModule { }

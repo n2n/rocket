@@ -6,6 +6,7 @@ import { FileInFieldModel } from 'src/app/ui/content/field/file-in-field-model';
 import { InSiFieldAdapter } from 'src/app/si/model/content/impl/in-si-field-adapter';
 import { SiCommanderService } from 'src/app/si/model/si-commander.service';
 import { SiContent } from 'src/app/si/model/structure/si-content';
+import { SiZone } from '../../structure/si-zone';
 
 export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel, SiContent {
 
@@ -14,7 +15,7 @@ export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel,
 	public acceptedMimeTypes: string[] = [];
 	public acceptedExtensions: string[] = [];
 
-	constructor(public apiUrl: string, public apiCallId: object, public value: SiFile|null) {
+	constructor(public zone: SiZone, public apiUrl: string, public apiCallId: object, public value: SiFile|null) {
 		super();
 	}
 
@@ -26,6 +27,10 @@ export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel,
 		return {
 			valueId: (this.value ? this.value.id : null)
 		};
+	}
+
+	getSiZone(): SiZone {
+		return this.zone;
 	}
 
 	getApiUrl(): string {

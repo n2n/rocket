@@ -24,7 +24,6 @@ namespace rocket\si\content\impl;
 use n2n\io\managed\img\impl\ThSt;
 use n2n\util\uri\Url;
 use n2n\util\type\ArgUtils;
-use n2n\io\managed\img\ImageDimension;
 
 class SiFile implements \JsonSerializable {
 	private $id;
@@ -100,7 +99,7 @@ class SiFile implements \JsonSerializable {
 	 * @return \rocket\si\content\impl\SiFile
 	 */
 	function setImageDimensions(array $imageDimensions) {
-		ArgUtils::valArray($imageDimensions, ImageDimension::class);
+		ArgUtils::valArray($imageDimensions, SiImageDimension::class);
 		$this->imageDimensions = $imageDimensions;
 		return $this;
 	}

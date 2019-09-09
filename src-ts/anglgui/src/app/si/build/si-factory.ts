@@ -206,11 +206,11 @@ export class SiCompFactory {
 			return stringInSiField;
 
 		case SiFieldType.FILE_OUT:
-			return new FileOutSiField(SiResultFactory.buildSiFile(dataExtr.nullaObject('value')));
+			return new FileOutSiField(this.zone, SiResultFactory.buildSiFile(dataExtr.nullaObject('value')));
 
 		case SiFieldType.FILE_IN:
-			const fileInSiField = new FileInSiField(dataExtr.reqString('apiUrl'), dataExtr.reqObject('apiCallId'),
-					SiResultFactory.buildSiFile(dataExtr.nullaObject('value')));
+			const fileInSiField = new FileInSiField(this.zone, dataExtr.reqString('apiUrl'),
+					dataExtr.reqObject('apiCallId'), SiResultFactory.buildSiFile(dataExtr.nullaObject('value')));
 			fileInSiField.mandatory = dataExtr.reqBoolean('mandatory');
 			fileInSiField.maxSize = dataExtr.reqNumber('maxSize');
 			fileInSiField.acceptedMimeTypes = dataExtr.reqStringArray('acceptedMimeTypes');

@@ -17,9 +17,14 @@
 	<span *ngIf="!currentSiFile.url">{{ currentSiFile.name }}</span>
 </ng-container>
 
+<button *ngIf="resizable" (click)="resize()">
+	<i class="fa fa-crop"></i>
+</button>
+
 <button *ngIf="removable" (click)="removeCurrent()">
 	{{ 'common_remove_txt' | translate }}
 </button>
+
 
 <div *ngIf="loading" class="rocket-loader"></div>
 
