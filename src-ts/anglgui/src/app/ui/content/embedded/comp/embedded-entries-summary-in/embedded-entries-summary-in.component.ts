@@ -116,9 +116,10 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 			this.popupSiLayer = null;
 			if (bakEntries) {
 				this.resetEmbeCol(bakEmbes, bakEntries);
-				embe.siEmbeddedEntry.entry = bakEntry;
 			} else {
-				this.obtainer.val(embe.siEmbeddedEntry);
+				this.obtainer.val(this.embe);
+				
+				this.embeCol.writeEmbes();
 			}
 		});
 
