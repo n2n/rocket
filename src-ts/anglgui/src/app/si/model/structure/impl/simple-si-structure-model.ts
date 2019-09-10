@@ -39,7 +39,7 @@ export class TypeSiContent<T> implements SiContent {
 	}
 
 	initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver,
-			commanderService: SiCommanderService): ComponentRef<any> {
+			commanderService: SiCommanderService): ComponentRef<T> {
 		const componentFactory = componentFactoryResolver.resolveComponentFactory<T>(this.type);
 
 		const componentRef = viewContainerRef.createComponent(componentFactory);

@@ -14,36 +14,36 @@ import { SiZoneError } from "src/app/si/model/structure/si-zone-error";
 export class ZoneComponent implements OnInit, DoCheck {
 
 	@Input() siZone: SiZone;
-	
+
 	siZoneErrors: SiZoneError[] = [];
-	
-	constructor(private componentFactoryResolver: ComponentFactoryResolver, private elemRef: ElementRef) { 
-		
+
+	constructor(private componentFactoryResolver: ComponentFactoryResolver, private elemRef: ElementRef) {
+
 	}
 
 	ngOnInit() {
 //		const componentFactory = this.componentFactoryResolver.resolveComponentFactory(ListZoneContentComponent);
-      
+
 //	    const componentRef = this.zoneContentDirective.viewContainerRef.createComponent(componentFactory);
-      
+
 //      (<ZoneComponent> componentRef.instance).data = {};
 	}
-	
-	ngDoCheck(){
+
+	ngDoCheck() {
 		this.siZoneErrors = this.siZone.structure.getZoneErrors();
-		
+
 		if (this.hasSiZoneErrors()) {
 			this.elemRef.nativeElement.classList.add('rocket-contains-additional');
 		} else {
 			this.elemRef.nativeElement.classList.remove('rocket-contains-additional');
 		}
-		 
+
 	}
-	
+
 	hasSiZoneErrors() {
 		return this.siZoneErrors.length > 0;
 	}
-	
+
 	get siStructure(): SiStructure {
 		return this.siZone.structure;
 	}

@@ -28,7 +28,11 @@ export class CompactEntrySiComp implements SiComp, SiContent {
 	}
 
 	getZoneErrors(): SiZoneError[] {
-		return [];
+		if (!this.entry) {
+			return [];
+		}
+
+		return this.entry.getZoneErrors();
 	}
 
 	getSelectedEntries(): SiEntry[] {

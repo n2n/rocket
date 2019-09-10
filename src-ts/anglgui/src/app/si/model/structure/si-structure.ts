@@ -3,7 +3,7 @@ import { SiStructureType } from 'src/app/si/model/structure/si-field-structure-d
 import { Observable, BehaviorSubject } from 'rxjs';
 import { SiZoneError } from 'src/app/si/model/structure/si-zone-error';
 import { SiStructureModel } from 'src/app/si/model/structure/si-structure-model';
-import { SiControl } from "src/app/si/model/control/si-control";
+import { SiControl } from 'src/app/si/model/control/si-control';
 
 export class SiStructure {
 	private visibleSubject = new BehaviorSubject<boolean>(true);

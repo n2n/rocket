@@ -15,6 +15,7 @@ import { SiValInstruction } from 'src/app/si/model/api/si-val-instruction';
 import { Embe } from './embe';
 import { SiValGetInstruction } from 'src/app/si/model/api/si-val-get-instruction';
 import { SiValResponse } from 'src/app/si/model/api/si-val-response';
+import { SiValResult } from 'src/app/si/model/api/si-val-result';
 
 export class EmbeddedAddPasteObtainer implements AddPasteObtainer {
 	constructor(private siService: SiService, private apiUrl: string, private siZone: SiZone,
@@ -68,27 +69,64 @@ export class EmbeddedAddPasteObtainer implements AddPasteObtainer {
 		return new SiEmbeddedEntry(comp, summaryComp);
 	}
 
-	val(siEmbeddedEntry: SiEmbeddedEntry) {
+	// val(siEmbeddedEntry: SiEmbeddedEntry) {
+	// 	const request = new SiValRequest();
+	// 	const instruction = request.instructions[0] = new SiValInstruction(siEmbeddedEntry.entry.readInput());
+
+	// 	if (siEmbeddedEntry.summaryComp) {
+	// 		siEmbeddedEntry.summaryComp.entry = null;
+	// 		instruction.getInstructions[0] = SiValGetInstruction.create(siEmbeddedEntry.summaryComp, false, true);
+	// 	}
+
+	// 	siEmbeddedEntry.entry.resetError();
+
+	// 	this.siService.apiVal(this.apiUrl, request, this.siZone).subscribe((response: SiValResponse) => {
+	// 		const result = response.results[0];
+
+	// 		if (result.entryError) {
+	// 			siEmbeddedEntry.entry.handleError(result.entryError);
+	// 		}
+
+	// 		if (siEmbeddedEntry.summaryComp) {
+	// 			siEmbeddedEntry.summaryComp.entry = result.getResults[0].entry;
+	// 		}
+	// 	});
+	// }
+
+	val(siEmbeddedEntries: SiEmbeddedEntry[]) {
 		const request = new SiValRequest();
-		const instruction = request.instructions[0] = new SiValInstruction(siEmbeddedEntry.entry.readInput());
+
+		siEmbeddedEntries.forEach((siEmbeddedEntry, i) => {
+			request.instructions[i] = this.createValInstruction(siEmbeddedEntry);
+
+			siEmbeddedEntry.entry.resetError();
+		});
+
+		this.siService.apiVal(this.apiUrl, request, this.siZone).subscribe((response: SiValResponse) => {
+			siEmbeddedEntries.forEach((siEmbeddedEntry, i) => {
+				this.handleValResult(siEmbeddedEntry, response.results[i]);
+			});
+		});
+	}
+
+	private handleValResult(siEmbeddedEntry: SiEmbeddedEntry, siValResult: SiValResult) {
+		if (siValResult.entryError) {
+			siEmbeddedEntry.entry.handleError(siValResult.entryError);
+		}
+
+		if (siEmbeddedEntry.summaryComp) {
+			siEmbeddedEntry.summaryComp.entry = siValResult.getResults[0].entry;
+		}
+	}
+
+	private createValInstruction(siEmbeddedEntry: SiEmbeddedEntry): SiValInstruction {
+		const instruction = new SiValInstruction(siEmbeddedEntry.entry.readInput());
 
 		if (siEmbeddedEntry.summaryComp) {
 			siEmbeddedEntry.summaryComp.entry = null;
 			instruction.getInstructions[0] = SiValGetInstruction.create(siEmbeddedEntry.summaryComp, false, true);
 		}
 
-		siEmbeddedEntry.entry.resetError();
-
-		this.siService.apiVal(this.apiUrl, request, this.siZone).subscribe((response: SiValResponse) => {
-			const result = response.results[0];
-
-			if (result.entryError) {
-				siEmbeddedEntry.entry.handleError(result.entryError);
-			}
-
-			if (siEmbeddedEntry.summaryComp) {
-				siEmbeddedEntry.summaryComp.entry = result.getResults[0].entry;
-			}
-		});
+		return instruction;
 	}
 }

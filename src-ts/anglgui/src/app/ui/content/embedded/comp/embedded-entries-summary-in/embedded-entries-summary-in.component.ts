@@ -10,6 +10,7 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Embe } from '../../embe';
 import { SimpleSiControl } from 'src/app/si/model/control/impl/simple-si-control';
 import { SiButton } from 'src/app/si/model/control/si-button';
+import { SiEntry } from 'src/app/si/model/content/si-entry';
 
 @Component({
   selector: 'rocket-embedded-entries-summary-in',
@@ -81,7 +82,7 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 			if (bakEntry) {
 				embe.siEmbeddedEntry.entry = bakEntry;
 			} else {
-				this.obtainer.val(embe.siEmbeddedEntry);
+				this.obtainer.val([embe.siEmbeddedEntry]);
 			}
 		});
 
@@ -107,15 +108,34 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 
 		const siZone = this.model.getSiZone();
 
+		const bakEmbes = [...this.embeCol.embes];
+		const bakEntries = this.embeCol.copyEntries();
+
 		this.popupSiLayer = siZone.layer.container.createLayer();
 		this.popupSiLayer.onDispose(() => {
 			this.popupSiLayer = null;
+			if (bakEntries) {
+				this.resetEmbeCol(bakEmbes, bakEntries);
+				embe.siEmbeddedEntry.entry = bakEntry;
+			} else {
+				this.obtainer.val(embe.siEmbeddedEntry);
+			}
 		});
 
 
 		// for (this.emb) {
 		// 	this.popupSiLayer.pushZone(null).structure = embe.siStructure;
 		// }
+	}
+
+	private resetEmbeCol(bakEmbes: Embe[], bakEntries: SiEntry[]) {
+		this.embeCol.clearEmbes();
+
+		bakEmbes.forEach((embe, i) => {
+			embe.siEmbeddedEntry.entry = bakEntries[i];
+
+			this.embeCol.initEmbe(this.embeCol.createEmbe(), embe.siEmbeddedEntry);
+		});
 	}
 
 	apply() {

@@ -7,19 +7,19 @@ describe('EmbeddedEntriesInComponent', () => {
   let fixture: ComponentFixture<EmbeddedEntriesInComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ EmbeddedEntriesInComponent ]
-    })
-    .compileComponents();
+	TestBed.configureTestingModule({
+		declarations: [ EmbeddedEntriesInComponent ]
+	})
+	.compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(EmbeddedEntriesInComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+	fixture = TestBed.createComponent(EmbeddedEntriesInComponent);
+	component = fixture.componentInstance;
+	fixture.detectChanges();
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+	expect(component).toBeTruthy();
   });
 });

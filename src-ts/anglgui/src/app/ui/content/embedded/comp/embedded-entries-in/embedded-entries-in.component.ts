@@ -25,7 +25,7 @@ export class EmbeddedEntriesInComponent implements OnInit {
 				this.model.getSiZone(), this.model.isSummaryRequired());
 
 		this.embeCol.readEmbes();
-		this.embeCol.fillWithPlaceholerEmbes();
+		this.embeCol.fillWithPlaceholderEmbes();
 	}
 
 	get embes(): Embe[] {

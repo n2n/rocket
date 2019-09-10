@@ -102,12 +102,12 @@ export class EmbeddedEntriesInSiContent implements SiContent, EmbeddedEntryInMod
 			const componentRef = viewContainerRef.createComponent(componentFactory);
 			componentRef.instance.model = this;
 			return componentRef;
+		} else {
+			const componentFactory = componentFactoryResolver.resolveComponentFactory(EmbeddedEntriesInComponent);
+			const componentRef = viewContainerRef.createComponent(componentFactory);
+			componentRef.instance.model = this;
+			return componentRef;
 		}
-
-		const componentFactory = componentFactoryResolver.resolveComponentFactory(EmbeddedEntriesInComponent);
-		const componentRef = viewContainerRef.createComponent(componentFactory);
-		componentRef.instance.model = this;
-		return componentRef;
 	}
 }
 

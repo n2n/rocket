@@ -32,11 +32,11 @@ abstract class SiLayerAdapter implements SiLayer {
 	}
 
 	protected getZoneById(id: number): SiZone|null {
-		return this.zones.find(zone => zone.id == id) || null;
+		return this.zones.find(zone => zone.id === id) || null;
 	}
 
 	protected getZoneIndexById(id: number): number|null {
-		return this.zones.findIndex(zone => zone.id == id) || null;
+		return this.zones.findIndex(zone => zone.id === id) || null;
 	}
 
 	protected createZone(id: number, url: string|null): SiZone {
@@ -48,7 +48,7 @@ abstract class SiLayerAdapter implements SiLayer {
 			this.clearZoneAfterIndex(this.currentZoneIndex);
 		}
 
-		const zone = new SiZone(id, url, <any> this);
+		const zone = new SiZone(id, url, this as any);
 		this.currentZoneIndex = this.zones.push(zone) - 1;
 		zone.onDispose(() => {
 			this.removeZone(zone);
@@ -63,7 +63,7 @@ abstract class SiLayerAdapter implements SiLayer {
 	}
 
 	private removeZone(zone: SiZone) {
-		const i = this.zones.indexOf(zone)
+		const i = this.zones.indexOf(zone);
 		if (i > -1) {
 			this.zones.splice(i, 1);
 			return;
@@ -87,10 +87,10 @@ export class MainSiLayer extends SiLayerAdapter {
 
 	popZone(id: number, verifyUrl: string): boolean {
 		const index = this.getZoneIndexById(id);
-		if (!index || this.zones[index].url != verifyUrl) {
+		if (!index || this.zones[index].url !== verifyUrl) {
 			// @todo temporary test to monitor angular routing behaviour
 			throw new IllegalSiStateError('Zone pop url verify missmatch for id ' + id + ': '
-					+ this.zones[<number> index].url + ' != ' + verifyUrl);
+					+ this.zones[index as number].url + ' != ' + verifyUrl);
 //    		return false;
 		}
 

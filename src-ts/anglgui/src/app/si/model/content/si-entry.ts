@@ -7,6 +7,7 @@ import { SiTypeBuildup } from 'src/app/si/model/content/si-entry-buildup';
 import { SiEntryError } from 'src/app/si/model/input/si-entry-error';
 import { SiQualifier, SiIdentifier } from 'src/app/si/model/content/si-qualifier';
 import { SiType } from './si-type';
+import { SiZoneError } from '../structure/si-zone-error';
 
 export class SiEntry {
 	public treeLevel: number|null = null;
@@ -109,6 +110,19 @@ export class SiEntry {
 				field.resetError();
 			}
 		}
+	}
+
+	getZoneErrors(): SiZoneError[] {
+		const zoneErrors: SiZoneError[] = [];
+
+		for (const [, siField] of this.selectedTypeBuildup.fieldMap) {
+			const siContent = siField.getContent();
+			if (siContent) {
+				zoneErrors.push(...siContent.getZoneErrors());
+			}
+		}
+
+		return zoneErrors;
 	}
 
 	toString() {

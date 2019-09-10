@@ -27,6 +27,6 @@ export class FieldSiStructureContent implements SiContent {
 	}
 
 	getZoneErrors(): SiZoneError[] {
-		return [];
+		return this.entry.getZoneErrors();
 	}
 }

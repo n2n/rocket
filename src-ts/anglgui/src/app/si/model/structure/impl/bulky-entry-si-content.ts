@@ -31,7 +31,11 @@ export class BulkyEntrySiComp implements SiComp {
 	}
 
 	getZoneErrors(): SiZoneError[] {
-		return [];
+		if (!this.entry) {
+			return [];
+		}
+
+		return this.entry.getZoneErrors();
 	}
 
 	getSelectedEntries(): SiEntry[] {
@@ -86,15 +90,12 @@ export class BulkyEntrySiComp implements SiComp {
 		return structure;
 	}
 
-
 	getControls(): SiControl[] {
 		const controls: SiControl[] = [];
 		controls.push(...this.controls);
 		controls.push(...this.entry.selectedTypeBuildup.controlMap.values());
 		return controls;
 	}
-
-
 
 	getFieldStructureDeclarations(): SiFieldStructureDeclaration[] {
 		return this.entryDeclaration.getFieldStructureDeclarationsByTypeId(this.entry.selectedTypeId);

@@ -57,12 +57,7 @@ export class EntriesListSiContent implements SiComp, SiContent {
 		const zoneErrors: SiZoneError[] = [];
 
 		for (const entry of this.getEntries()) {
-			for (const [, siField] of entry.selectedTypeBuildup.fieldMap) {
-				const siContent = siField.getContent();
-				if (siContent) {
-					zoneErrors.push(...siContent.getZoneErrors());
-				}
-			}
+			zoneErrors.push(...entry.getZoneErrors());
 		}
 
 		return zoneErrors;
