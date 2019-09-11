@@ -11,6 +11,9 @@ import { Embe } from '../../embe';
 import { SimpleSiControl } from 'src/app/si/model/control/impl/simple-si-control';
 import { SiButton } from 'src/app/si/model/control/si-button';
 import { SiEntry } from 'src/app/si/model/content/si-entry';
+import { SiControl } from 'src/app/si/model/control/si-control';
+import { SimpleSiStructureModel, TypeSiContent } from 'src/app/si/model/structure/impl/simple-si-structure-model';
+import { EmbeddedEntriesInComponent } from '../embedded-entries-in/embedded-entries-in.component';
 
 @Component({
   selector: 'rocket-embedded-entries-summary-in',
@@ -86,19 +89,7 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 			}
 		});
 
-		embe.siStructure.controls = [
-			new SimpleSiControl(
-					new SiButton(this.translationService.t('common_apply_label'), 'btn btn-success', 'fas fa-save'),
-					() => {
-						bakEntry = null;
-						this.popupSiLayer.dispose();
-					}),
-			new SimpleSiControl(
-					new SiButton(this.translationService.t('common_discard_label'), 'btn btn-secondary', 'fas fa-trash'),
-					() => {
-						this.popupSiLayer.dispose();
-					})
-		];
+		embe.siStructure.controls = this.createPopupControls(() => { bakEntry = null; });
 	}
 
 	openAll() {
@@ -108,25 +99,43 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 
 		const siZone = this.model.getSiZone();
 
-		const bakEmbes = [...this.embeCol.embes];
+		let bakEmbes: Embe[]|null = [...this.embeCol.embes];
 		const bakEntries = this.embeCol.copyEntries();
 
 		this.popupSiLayer = siZone.layer.container.createLayer();
 		this.popupSiLayer.onDispose(() => {
 			this.popupSiLayer = null;
-			if (bakEntries) {
+
+			if (bakEmbes) {
 				this.resetEmbeCol(bakEmbes, bakEntries);
-			} else {
-				this.obtainer.val(this.embe);
-				
-				this.embeCol.writeEmbes();
+				return;
 			}
+
+			this.obtainer.val(this.embeCol.embes.map(embe => embe.siEmbeddedEntry));
+			this.embeCol.writeEmbes();
 		});
 
+		const siStructure = this.popupSiLayer.pushZone(null).structure;
+		siStructure.model = new SimpleSiStructureModel(
+				new TypeSiContent(EmbeddedEntriesInComponent, (ref) => { ref.instance.model = this.model; }));
 
-		// for (this.emb) {
-		// 	this.popupSiLayer.pushZone(null).structure = embe.siStructure;
-		// }
+		siStructure.controls = this.createPopupControls(() => { bakEmbes = null; });
+	}
+
+	private createPopupControls(applyCallback: () => any): SiControl[] {
+		return [
+			new SimpleSiControl(
+					new SiButton(this.translationService.t('common_apply_label'), 'btn btn-success', 'fas fa-save'),
+					() => {
+						applyCallback();
+						this.popupSiLayer.dispose();
+					}),
+			new SimpleSiControl(
+					new SiButton(this.translationService.t('common_discard_label'), 'btn btn-secondary', 'fas fa-trash'),
+					() => {
+						this.popupSiLayer.dispose();
+					})
+		];
 	}
 
 	private resetEmbeCol(bakEmbes: Embe[], bakEntries: SiEntry[]) {
