@@ -655,7 +655,7 @@ class EiuFrame {
 	function newEntryGuiMulti(bool $bulky, bool $readOnly) {
 		$eiEntryGuiMulti = (new EiFrameUtil($this->eiFrame))->createNewEiEntryGuiMulti($bulky, $readOnly);
 		
-		return new EiuEntryGuiMulti($eiEntryGuiMulti);
+		return new EiuEntryGuiMulti($eiEntryGuiMulti, $this->eiuAnalyst);
 	}
 	
 	/**

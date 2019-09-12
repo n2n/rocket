@@ -210,9 +210,9 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 					$this->attributes->optString(self::ATTR_TARGET_ORDER_EI_PROP_PATH_KEY));
 			$targetEiuType->mask()->onEngineReady(function (EiuEngine $eiuEngine) use ($targetOrderEiPropPath) {
 				if ($targetOrderEiPropPath !== null && $eiuEngine->containsScalarEiProperty($targetOrderEiPropPath)) {
-					$this->relationModel->setTragetOrderEiPropPath($targetOrderEiPropPath);
+					$this->relationModel->setTargetOrderEiPropPath($targetOrderEiPropPath);
 				} else {
-					$this->relationModel->setTragetOrderEiPropPath(null);
+					$this->relationModel->setTargetOrderEiPropPath(null);
 				}
 			});
 		}

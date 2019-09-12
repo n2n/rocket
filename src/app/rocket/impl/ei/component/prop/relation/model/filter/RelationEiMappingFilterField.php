@@ -150,7 +150,7 @@ class RelationEiFieldConstraint implements EiFieldConstraint {
 		}
 		
 		$validationResult->addError(Message::createCodeArg($messageKey, array('field' => $this->label,
-				'target_entries' => implode(', ', $this->createTragetIdentityStrings()))));
+				'target_entries' => implode(', ', $this->createTargetIdentityStrings()))));
 	}
 }
 

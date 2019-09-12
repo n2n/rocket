@@ -310,14 +310,14 @@ class RelationModel {
 	/**
 	 * @return EiPropPath|null
 	 */
-	function getTragetOrderEiPropPath() {
+	function getTargetOrderEiPropPath() {
 		return $this->tragetOrderEiPropPath;
 	}
 	
 	/**
 	 * @param EiPropPath|null $tragetOrderEiPropPath
 	 */
-	function setTragetOrderEiPropPath(?EiPropPath $tragetOrderEiPropPath) {
+	function setTargetOrderEiPropPath(?EiPropPath $tragetOrderEiPropPath) {
 		$this->tragetOrderEiPropPath = $tragetOrderEiPropPath;
 	}
 	

@@ -69,9 +69,10 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandle {
 						$this, $this->getValues($eiu), (int) $relationModel->getMin(), $relationModel->getMax())
 				->setReduced($this->relationModel->isReduced())
 				->setNonNewRemovable($this->relationModel->isRemovable())
-				->setSortable($relationModel->getMax() > 1 && $relationModel->getTragetOrderEiPropPath() !== null)
+				->setSortable($relationModel->getMax() > 1 && $relationModel->getTargetOrderEiPropPath() !== null)
 				->setPasteCategory($targetEiuFrame->engine()->type()->supremeType()->getId())
-				->setAllowedTypes(array_map(function (EiuMask $eiuMask) { return $eiuMask->createSiType(); }, 
+				->setAllowedTypes(array_map(
+						function (EiuMask $eiuMask) { return $eiuMask->createSiType(); }, 
 						$targetEiuFrame->engine()->mask()->possibleMasks()));
 	}
 	
@@ -84,13 +85,35 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandle {
 		foreach ($eiu->field()->getValue() as $eiuEntry) {
 			CastUtils::assertTrue($eiuEntry instanceof EiuEntry);
 			$this->currentEiuEntryGuis[] = $eiuEntryGui = $eiuEntry->newEntryGui(true, true);
-			$values[] = new SiEmbeddedEntry(
-					$eiuEntryGui->createBulkyEntrySiContent(false, false),
-					($this->relationModel->isReduced() ?
-							$eiuEntry->newEntryGui(false, false)->createCompactEntrySiContent(false, false) :
-							null));
+			$values[] = $this->createSiEmbeddeEntry($eiuEntryGui);
 		}
 		return $values;
+	}
+	
+	/**
+	 * @param EiuEntryGui $eiuEntryGui
+	 * @return \rocket\si\content\SiEmbeddedEntry
+	 */
+	private function createSiEmbeddeEntry($eiuEntryGui) {
+		return new SiEmbeddedEntry(
+				$eiuEntryGui->createBulkyEntrySiContent(false, false),
+				($this->relationModel->isReduced() ?
+						$eiuEntryGui->entry()->newEntryGui(false, false)->createCompactEntrySiContent(false, false):
+						null));
+	}
+	
+	/**
+	 * @param string $id
+	 * @return \rocket\ei\util\gui\EiuEntryGui|NULL
+	 */
+	function findCurrentEiuEntryGuiById(string $id) {
+		foreach ($this->currentEiuEntryGuis as $eiuEntryGui) {
+			if ($eiuEntryGui->entry()->hasId() && $id == $eiuEntryGui->entry()->getPid()) {
+				return $eiuEntryGui;
+			}
+		}
+
+		return null;
 	}
 	
 	/**
@@ -99,34 +122,46 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandle {
 	 */
 	function handleInput(array $siEntryInputs): array {
 		$newEiuEntryGuis = []; 
-		$siEntries = [];
+		$siEmbededEntries = [];
 		
 		foreach ($siEntryInputs as $siEntryInput) {
 			CastUtils::assertTrue($siEntryInput instanceof SiEntryInput);
 			
 			$eiuEntryGui = null;
-			$id = $siEntryInput->getSiIdentifier()->getId();
-			if ($id !== null && isset($this->eiuEntryGuis[$id])) {
-				$newEiuEntryGuis[] = $eiuEntryGui = $this->eiuEntryGuis[$id]->handleSiEntryInput($siEntryInput);
-				$siEntries[] = $eiuEntryGui->createSiEntry();
+			$id = $siEntryInput->getIdentifier()->getId();
+			
+			if ($id !== null && null !== ($eiuEntryGui = $this->findCurrentEiuEntryGuiById($id))) {
+				$eiuEntryGui->handleSiEntryInput($siEntryInput);
+				$newEiuEntryGuis[] = $eiuEntryGui;
+				$siEmbededEntries[] = $this->createSiEmbeddeEntry($eiuEntryGui);
 				continue;
 			}
 			
 			$eiuEntryGuiMulti = $this->targetEiuFrame->newEntryGuiMulti(true, false)
 					->handleSiEntryInput($siEntryInput);
-			$siEntries[] = $eiuEntryGuiMulti->createSiEntry();
+			$siEmbededEntries[] = $this->createSiEmbeddeEntry($eiuEntryGuiMulti->selectedEntryGui());
 			$newEiuEntryGuis[] = $eiuEntryGuiMulti->selectedEntryGui();
 		}
 		
-		$this->eiuEntryGuis = $newEiuEntryGuis;
-		return $siEntries;
+		$this->currentEiuEntryGuis = $newEiuEntryGuis;
+		return $siEmbededEntries;
 	}
 	
 	function save() {
+		$i = 0;
+		$targetOrderEiPropPath = $this->relationModel->getTargetOrderEiPropPath();
+		
 		$values = [];
-		foreach ($this->siField->getValues() as $siQualifier) {
-			$id = $this->targetEiuFrame->siQualifierToId($siQualifier);
-			$values[] = $this->targetEiuFrame->lookupEntry($id);
+		foreach ($this->currentEiuEntryGuis as $eiuEntryGui) {
+			$eiuEntryGui->save();
+			$values[] = $eiuEntry = $eiuEntryGui->entry();
+			
+			if (null === $targetOrderEiPropPath) {
+				continue;
+			}
+			
+			$i += 10;
+			$eiuEntry->setScalarValue($targetOrderEiPropPath, $i);
 		}
 		
 		$this->eiu->field()->setValue($values);

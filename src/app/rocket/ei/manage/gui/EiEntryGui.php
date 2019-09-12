@@ -433,7 +433,7 @@ class EiEntryGui {
 			try {
 				$guiField->getSiField()->handleInput($siEntryInput->getFieldInput($guiFieldPathStr)->getData());
 			} catch (AttributesException $e) {
-				throw new \InvalidArgumentExcpetion(null, 0, $e);
+				throw new \InvalidArgumentException(null, 0, $e);
 			}
 		}
 	}

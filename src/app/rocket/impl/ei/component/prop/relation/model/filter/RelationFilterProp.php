@@ -211,7 +211,7 @@ class RelationFilterConf {
 		return $this->attributes->getArray(self::TARGET_ID_REPS, false, array(), TypeConstraint::createSimple('string'));
 	}
 	
-	public function setTragetPids(array $targetPids) {
+	public function setTargetPids(array $targetPids) {
 		$this->attributes->set(self::TARGET_ID_REPS, $targetPids);
 	}
 	

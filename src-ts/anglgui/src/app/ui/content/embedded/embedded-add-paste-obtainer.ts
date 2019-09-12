@@ -19,7 +19,7 @@ import { SiValResult } from 'src/app/si/model/api/si-val-result';
 
 export class EmbeddedAddPasteObtainer implements AddPasteObtainer {
 	constructor(private siService: SiService, private apiUrl: string, private siZone: SiZone,
-			private optainSummary: boolean) {
+			private obtainSummary: boolean) {
 	}
 
 	private createBulkyInstruction(comp: BulkyEntrySiComp, siIdentifier: SiIdentifier|null): SiGetInstruction {
@@ -45,7 +45,7 @@ export class EmbeddedAddPasteObtainer implements AddPasteObtainer {
 		request.instructions[0] = this.createBulkyInstruction(comp, siIdentifier);
 
 		let summaryComp: CompactEntrySiComp|null = null;
-		if (this.optainSummary) {
+		if (this.obtainSummary) {
 			summaryComp = new CompactEntrySiComp(undefined, undefined);
 			request.instructions[1] = this.createSummaryInstruction(summaryComp, siIdentifier);
 		}

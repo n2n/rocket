@@ -110,7 +110,7 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	}
 	
 	/**
-	 * @return SiEntry[]
+	 * @return SiEmbeddedEntry[]
 	 */
 	function getValues() {
 		return $this->values;
@@ -266,9 +266,8 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 		foreach ((new DataSet($data))->reqArray('entryInputs', 'array') as $entryInputData) {
 			$siEntryInputs[] = SiEntryInput::parse($entryInputData);
 		}
-		
 		$values = $this->inputHandler->handleInput($siEntryInputs);
-		ArgUtils::valArrayReturn($values, SiEntry::class, $this->inputHandler, 'handleInput');
+		ArgUtils::valArrayReturn($values, $this->inputHandler, 'handleInput', SiEmbeddedEntry::class);
 		$this->values = $values;
 	}
 }
