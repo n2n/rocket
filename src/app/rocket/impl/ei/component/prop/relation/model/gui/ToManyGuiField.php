@@ -68,21 +68,6 @@ class ToManyGuiField implements GuiField {
 			$values[] = $eiuEntry->createSiQualifier();
 		}
 		
-		if ($this->targetOrderEiPropPath === null) {
-			return $values;
-		}
-		
-		uasort($values, function(EiuEntry $a, EiuEntry $b) {
-			$aValue = $a->getScalarValue($this->targetOrderEiPropPath);
-			$bValue = $b->getScalarValue($this->targetOrderEiPropPath);
-			
-			if ($aValue == $bValue) {
-				return 0;
-			}
-			
-			return ($aValue < $bValue) ? -1 : 1;
-		});
-		
 		return $values;
 	}
 	

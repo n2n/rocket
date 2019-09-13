@@ -16,7 +16,6 @@ export class EmbeddedEntryInSiField extends InSiFieldAdapter  {
 	}
 
 	readInput(): object {
-		console.log({ entryInputs: this.content.getValues().map(embeddedEntry => embeddedEntry.entry.readInput() ) });
 		return { entryInputs: this.content.getValues().map(embeddedEntry => embeddedEntry.entry.readInput() ) };
 	}
 

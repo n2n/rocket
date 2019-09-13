@@ -305,7 +305,7 @@ class EiType extends Type {
 	}
 	
 	public function isA(EiType $eiType) {
-		return $eiType->equals($eiType)
+		return $this->equals($eiType)
 				|| $this->entityModel->getClass()->isSubclassOf($eiType->getEntityModel()->getClass());
 	}
 

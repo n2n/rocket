@@ -117,7 +117,7 @@ class Relation {
 	 * @param EiuEntry $eiuEntry
 	 */
 	private function applyTargetModificators(EiuFrame $targetEiuFrame, EiuFrame $eiuFrame, EiuEntry $eiuEntry) {
-		$targetEiFrame = $eiuFrame->getEiFrame();
+		$targetEiFrame = $targetEiuFrame->getEiFrame();
 		$targetPropInfo = $this->relationModel->getTargetPropInfo();
 		
 		if (null !== $targetPropInfo->eiPropPath) {

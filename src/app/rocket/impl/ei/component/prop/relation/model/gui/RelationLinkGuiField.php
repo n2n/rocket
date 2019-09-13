@@ -74,10 +74,10 @@ class RelationLinkGuiField implements GuiField {
 			return SiFields::stringOut(null);
 		}
 		
+		CastUtils::assertTrue($value instanceof EiuEntry);
 		$label = $value->createIdentityString();
 		
-		CastUtils::assertTrue($value instanceof EiuEntry);
-		$targetEiuFrame = $this->eiu->frame()->forkDiscover($this->eiu->prop(), $value);
+		$targetEiuFrame = $this->eiu->frame()->forkDiscover($this->eiu->prop(), $this->eiu->entry());
 		
 		if (null !== ($detailUrl = $targetEiuFrame->getDetailUrl($value, false))) {
 			return SiFields::linkOut($detailUrl, $label);

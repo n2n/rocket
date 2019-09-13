@@ -66,7 +66,7 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandle {
 		
 		$this->siField = SiFields::embeddedEntryIn(
 						$this->targetEiuFrame->getApiUrl($relationModel->getTargetEditEiCommandPath()),
-						$this, $this->getValues($eiu), (int) $relationModel->getMin(), $relationModel->getMax())
+						$this, $this->readValues(), (int) $relationModel->getMin(), $relationModel->getMax())
 				->setReduced($this->relationModel->isReduced())
 				->setNonNewRemovable($this->relationModel->isRemovable())
 				->setSortable($relationModel->getMax() > 1 && $relationModel->getTargetOrderEiPropPath() !== null)
@@ -80,14 +80,30 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandle {
 	 * @param Eiu $eiu
 	 * @return \rocket\si\content\SiEmbeddedEntry[]
 	 */
-	private function getValues(Eiu $eiu) {
-		$values = [];
-		foreach ($eiu->field()->getValue() as $eiuEntry) {
+	private function readValues() {
+		$this->currentEiuEntryGuis = [];
+		
+		foreach ($this->eiu->field()->getValue() as $eiuEntry) {
 			CastUtils::assertTrue($eiuEntry instanceof EiuEntry);
-			$this->currentEiuEntryGuis[] = $eiuEntryGui = $eiuEntry->newEntryGui(true, true);
-			$values[] = $this->createSiEmbeddeEntry($eiuEntryGui);
+			$this->currentEiuEntryGuis[] = $eiuEntry->newEntryGui(true, true);
 		}
-		return $values;
+	
+		if (null !== ($targetOrderEiPropPath = $this->relationModel->getTargetOrderEiPropPath())) {
+			uasort($this->currentEiuEntryGuis, function($a, $b) use ($targetOrderEiPropPath) {
+				$aValue = $a->entry()->getScalarValue($targetOrderEiPropPath);
+				$bValue = $b->entry()->getScalarValue($targetOrderEiPropPath);
+				
+				if ($aValue == $bValue) {
+					return 0;
+				}
+				
+				return ($aValue < $bValue) ? -1 : 1;
+			});
+		}
+		
+		return array_values(array_map(
+				function ($eiuEntryGui) { return $this->createSiEmbeddeEntry($eiuEntryGui); }, 
+				$this->currentEiuEntryGuis));
 	}
 	
 	/**

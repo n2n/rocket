@@ -1097,7 +1097,7 @@ class EiuFrame {
 	 * @param string|EiPropPath $eiPropPath
 	 * @param EiObject|object|null $eiObjectArg
 	 * @return EiuFrame
-	 */
+	 */ 
 	function forkDiscover($eiPropPath, $eiObjectArg = null) {
 		return $this->fork($eiPropPath, EiForkLink::MODE_DISCOVER, $eiObjectArg);
 	}

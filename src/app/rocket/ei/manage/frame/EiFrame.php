@@ -533,6 +533,12 @@ class EiForkLink {
 		ArgUtils::valEnum($mode, self::getModes());
 		$this->mode = $mode;
 		$this->parentEiObject = $parentEiObject;
+		
+		if ($parentEiObject !== null) {
+			ArgUtils::assertTrue($parentEiObject->getEiEntityObj()->getEiType()
+							->isA($parent->getContextEiEngine()->getEiMask()->getEiType()), 
+					'EiForkLink EiObject is not compatible with EiFrame');	
+		}
 	}
 	
 	/**

@@ -682,8 +682,15 @@ class EiuEntry {
 		throw new EiFieldOperationFailedException('There is no ObjectPropertyAccessProxy configured for ' . $eiProp);
 	}
 	
+	/**
+	 * @return boolean
+	 */
+	function isValid() {
+		return $this->getEiEntry()->isValid();
+	}
+	
 	function save() {
-		return $this->eiEntry->save();
+		return $this->getEiEntry()->save();
 	}
 	
 	/**

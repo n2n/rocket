@@ -79,6 +79,7 @@ class EiuAnalyst {
 	const EI_FIELD_TYPES = array(EiProp::class, EiPropPath::class, EiuField::class);
 	
 	protected $n2nContext;
+	protected $eiType;
 	protected $eiFrame;
 	protected $eiObject;
 	protected $eiEntry;
@@ -105,6 +106,7 @@ class EiuAnalyst {
 	protected $eiuGuiField;
 	protected $eiuField;
 	protected $eiuMask;
+	protected $eiuType;
 	protected $eiuProp;
 	protected $eiuCommand;
 	
@@ -204,7 +206,7 @@ class EiuAnalyst {
 			}
 			
 			if ($eiArg instanceof EiType) {
-				$this->assignEiMask($eiArg->getEiMask());
+				$this->assignEiType($eiArg, true);
 				continue;
 			}
 			
@@ -297,6 +299,9 @@ class EiuAnalyst {
 				
 				if ($eiuAnalyst->n2nContext !== null) {
 					$this->n2nContext = $eiuAnalyst->n2nContext;
+				}
+				if ($eiuAnalyst->eiType !== null) {
+					$this->eiType = $eiuAnalyst->eiType;
 				}
 				if ($eiuAnalyst->eiFrame !== null) {
 					$this->eiFrame = $eiuAnalyst->eiFrame;
@@ -428,11 +433,12 @@ class EiuAnalyst {
 			return;
 		}
 		
-		$this->eiuFrame = null;
+		ArgUtils::assertTrue($this->eiFrame === null, 'EiFrame is not compatible.');
+		
 		$this->eiFrame = $eiFrame;
 		$this->n2nContext = $eiFrame->getN2nContext();
-		
-		$this->assignEiEngine($eiFrame->getContextEiEngine());
+				
+		$this->assignEiType($eiFrame->getContextEiEngine()->getEiMask()->getEiType(), true);
 	}
 	
 	/**
@@ -511,9 +517,32 @@ class EiuAnalyst {
 		$this->eiuMask = null;
 		$this->eiMask = $eiMask;
 		
+		$this->assignEiType($eiMask->getEiType(), false);
+		
 		if ($eiMask->hasEiEngine()) {
 			$this->assignEiEngine($eiMask->getEiEngine());
 		}
+	}
+	
+	/**
+	 * @param EiType $eiType
+	 */
+	private function assignEiType($eiType, bool $contextOnly) {
+		if ($this->eiType === $eiType) {
+			return;
+		}
+		
+		if ($this->eiType === null || $eiType->isA($this->eiType)) {
+			$this->eiType = $eiType;
+			return;
+		}
+		
+		if ($contextOnly && $this->eiType->isA($eiType)) {
+			return;
+		}
+		
+		throw new \InvalidArgumentException('Incompatible EiTypes ' . $this->eiType->getId() . ' / ' 
+				. $this->eiType->getId());
 	}
 	
 	/**
@@ -711,6 +740,8 @@ class EiuAnalyst {
 		$this->eiuObject = null;
 		$this->eiuEntry = null;
 		$this->eiObject = $eiObject;
+		
+		$this->assignEiType($eiObject->getEiEntityObj()->getEiType(), false);
 	}
 	
 // 	public function getEiFrame(bool $required) {
@@ -926,6 +957,27 @@ class EiuAnalyst {
 	/**
 	 * @param bool $required
 	 * @throws EiuPerimeterException
+	 * @return \rocket\ei\mask\EiMask|NULL
+	 */
+	function getEiMask(bool $required) {
+		if ($this->eiMask !== null) {
+			return $this->eiMask;
+		}
+		
+		if ($this->eiFrame !== null) {
+			return $this->eiFrame->getContextEiEngine()->getEiMask();
+		}
+		
+		if (!$required) {
+			return null;
+		}
+		
+		throw new EiuPerimeterException('EiMask not avaialble');
+	}
+	
+	/**
+	 * @param bool $required
+	 * @throws EiuPerimeterException
 	 * @return EiuMask
 	 */
 	public function getEiuMask(bool $required) {
@@ -933,8 +985,8 @@ class EiuAnalyst {
 			return $this->eiuMask;
 		}
 		
-		if ($this->eiMask !== null) {
-			return $this->eiuMask = new EiuMask($this->eiMask, $this->eiuEngine, $this);
+		if (null !== ($eiMask = $this->getEiMask(false))) {
+			return $this->eiuMask = new EiuMask($eiMask, $this->eiuEngine, $this);
 		}
 		
 		if (!$required) return null;

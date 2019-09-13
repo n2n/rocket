@@ -103,10 +103,28 @@ class ToManyEiField extends EiFieldAdapter {
 	 * @see \rocket\impl\ei\component\prop\adapter\entry\EiFieldAdapter::isValueValid()
 	 */
 	protected function isValueValid($value) {
+		ArgUtils::assertTrue(is_array($value));
+		
 		$min = $this->relationModel->getMin();
 		$max = $this->relationModel->getMax();
 		
-		return (null === $max || count($value) <= $max) && (null === $min || count($value) >= $min);
+		if (!(null === $max || count($value) <= $max) && (null === $min || count($value) >= $min)) {
+			return false;
+		}
+		
+		if (!$this->relationModel->isEmbedded()) {
+			return true;
+		}
+		
+		foreach ($value as $targetEiuEntry) {
+			ArgUtils::assertTrue($targetEiuEntry instanceof EiuEntry);
+			
+			if (!$targetEiuEntry->isValid()) {
+				return false;
+			}
+		}
+		
+		return true;
 	}
 
 	/**
@@ -122,6 +140,12 @@ class ToManyEiField extends EiFieldAdapter {
 		$max = $this->relationModel->getMax();
 		if ($max !== null && $max < count($value)) {
 			$validationResult->addError(ValidationMessages::maxElements($max, $this->eiu->prop()->getLabel()));
+		}
+		
+		foreach ($value as $targetEiuEntry) {
+			ArgUtils::assertTrue($targetEiuEntry instanceof EiuEntry);
+			$targetEiuEntry->getEiEntry()->validate();
+			$validationResult->addSubEiEntryValidationResult($targetEiuEntry->getEiEntry()->getValidationResult());
 		}
 	}
 
@@ -144,6 +168,10 @@ class ToManyEiField extends EiFieldAdapter {
 		foreach ($values as $value) {
 			ArgUtils::assertTrue($value instanceof EiuEntry);
 			$nativeValues->append($value->getEntityObj());
+			
+			if ($this->relationModel->isEmbedded()) {
+				$value->getEiEntry()->write();
+			}
 		}
 		
 		$this->eiu->object()->writeNativeValue($this->eiProp, $nativeValues);		
