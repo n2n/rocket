@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { SiFieldStructureDeclaration } from "src/app/si/model/structure/si-field-structure-declaration";
-import { SiEntry } from "src/app/si/model/content/si-entry";
-import { SiControl } from "src/app/si/model/control/si-control";
-import { SiContent } from "src/app/si/model/structure/si-content";
-import { SiStructure } from "src/app/si/model/structure/si-structure";
-import { BulkyEntrySiComp } from "src/app/si/model/structure/impl/bulky-entry-si-content";
+import { SiEntry } from 'src/app/si/model/entity/si-entry';
+import { SiControl } from 'src/app/si/model/control/si-control';
+import { BulkyEntrySiComp } from 'src/app/si/model/entity/impl/basic/bulky-entry-si-comp';
 
 @Component({
   selector: 'rocket-bulky-entry',
@@ -18,11 +15,11 @@ export class BulkyEntryComponent implements OnInit {
 
 	ngOnInit() {
 	}
-	
+
 	get siEntry(): SiEntry {
 		return this.siContent.entry;
 	}
-	
+
 	get siControlMap(): SiControl[] {
 		return this.siContent.controls;
 	}

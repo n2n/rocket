@@ -1,5 +1,5 @@
 
-import { SiComp } from 'src/app/si/model/structure/si-zone-content';
+import { SiComp } from 'src/app/si/model/entity/si-comp';
 import { SiZone } from 'src/app/si/model/structure/si-zone';
 import { Extractor } from 'src/app/util/mapping/extractor';
 import { SiGetResponse } from 'src/app/si/model/api/si-get-response';

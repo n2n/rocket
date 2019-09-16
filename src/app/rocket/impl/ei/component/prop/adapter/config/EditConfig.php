@@ -38,6 +38,7 @@ class EditConfig {
 	 */
 	public function setConstant($constant) {
 		$this->constant = (boolean) $constant;
+		return $this;
 	}
 	
 	/**
@@ -52,6 +53,7 @@ class EditConfig {
 	 */
 	public function setReadOnly($readOnly) {
 		$this->readOnly = (boolean) $readOnly;
+		return $this;
 	}
 	
 	/**
@@ -66,5 +68,6 @@ class EditConfig {
 	 */
 	public function setMandatory(bool $mandatory) {
 		$this->mandatory = $mandatory;
+		return $this;
 	}
 }

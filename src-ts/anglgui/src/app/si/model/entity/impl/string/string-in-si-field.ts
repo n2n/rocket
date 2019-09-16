@@ -1,11 +1,11 @@
 
-import { SiField } from 'src/app/si/model/content/si-field';
+import { SiField } from 'src/app/si/model/entity/si-field';
 import { ComponentRef, ComponentFactoryResolver, ViewContainerRef } from '@angular/core';
 import { InputInFieldComponent } from 'src/app/ui/content/field/comp/input-in-field/input-in-field.component';
 import { StringInFieldModel } from 'src/app/ui/content/field/string-in-field-model';
-import { InSiFieldAdapter } from 'src/app/si/model/content/impl/in-si-field-adapter';
+import { InSiFieldAdapter } from 'src/app/si/model/entity/impl/in-si-field-adapter';
 import { SiCommanderService } from 'src/app/si/model/si-commander.service';
-import { SiContent } from '../../structure/si-content';
+import { SiContent } from '../../../structure/si-content';
 
 export class StringInSiField extends InSiFieldAdapter implements StringInFieldModel, SiContent {
 	public mandatory = false;

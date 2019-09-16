@@ -3,12 +3,12 @@ import { SiControl } from 'src/app/si/model/control/si-control';
 import { SiButton } from 'src/app/si/model/control/si-button';
 import { Router } from '@angular/router';
 import { PlatformLocation } from '@angular/common';
-import { SiEntry } from 'src/app/si/model/content/si-entry';
+import { SiEntry } from 'src/app/si/model/entity/si-entry';
 import { SiService } from 'src/app/si/model/si.service';
 import { SiZone } from 'src/app/si/model/structure/si-zone';
 import { SiCommanderService } from 'src/app/si/model/si-commander.service';
 import { IllegalSiStateError } from 'src/app/si/model/illegal-si-state-error';
-import { SiComp } from 'src/app/si/model/structure/si-zone-content';
+import { SiComp } from 'src/app/si/model/entity/si-comp';
 import { Observable } from 'rxjs';
 
 export class ApiCallSiControl implements SiControl {

@@ -42,14 +42,10 @@ class OneToManySelectEiProp extends RelationEiPropAdapter implements FieldEiProp
 	public function __construct() {
 		parent::__construct();
 		
-		$this->displayConfig = new DisplayConfig(ViewMode::all());
-		$this->editConfig = new EditConfig();
-		$this->editConfig->setReadOnly(true);
-		
-		$this->configurator->registerDisplayConfig($this->displayConfig);
-		$this->configurator->registerEditConfig($this->editConfig);
-		$this->setRelationModel(new RelationModel($this, false, true, RelationModel::MODE_SELECT, $this->editConfig));
-		
+		$this->setup(
+				new DisplayConfig(ViewMode::all()),
+				new RelationModel($this, false, true, RelationModel::MODE_SELECT, 
+						(new EditConfig())->setReadOnly(true)));
 	}
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {

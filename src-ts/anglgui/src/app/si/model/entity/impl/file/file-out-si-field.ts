@@ -1,10 +1,10 @@
-import { SiFile } from 'src/app/si/model/content/impl/file-in-si-field';
+import { SiFile } from 'src/app/si/model/entity/impl/file/file-in-si-field';
 import { ViewContainerRef, ComponentFactoryResolver, ComponentRef } from '@angular/core';
-import { OutSiFieldAdapter } from 'src/app/si/model/content/impl/out-si-field-adapter';
+import { OutSiFieldAdapter } from 'src/app/si/model/entity/impl/out-si-field-adapter';
 import { FileFieldModel } from 'src/app/ui/content/field/file-field-model';
 import { SiCommanderService } from 'src/app/si/model/si-commander.service';
 import { SiContent } from 'src/app/si/model/structure/si-content';
-import { SiZone } from '../../structure/si-zone';
+import { SiZone } from '../../../structure/si-zone';
 
 export class FileOutSiField extends OutSiFieldAdapter implements FileFieldModel, SiContent {
 

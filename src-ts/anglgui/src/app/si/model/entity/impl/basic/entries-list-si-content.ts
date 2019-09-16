@@ -1,16 +1,16 @@
 
-import { SiEntry } from 'src/app/si/model/content/si-entry';
-import { SiComp } from 'src/app/si/model/structure/si-zone-content';
+import { SiEntry } from 'src/app/si/model/entity/si-entry';
+import { SiComp } from 'src/app/si/model/entity/si-comp';
 import { ViewContainerRef, ComponentFactoryResolver, ComponentRef } from '@angular/core';
 import { ListZoneContentComponent } from 'src/app/ui/content/zone/comp/list-zone-content/list-zone-content.component';
 import { IllegalSiStateError } from 'src/app/si/model/illegal-si-state-error';
-import { SiEntryDeclaration } from 'src/app/si/model/structure/si-entry-declaration';
+import { SiEntryDeclaration } from 'src/app/si/model/entity/si-entry-declaration';
 import { SiContent } from 'src/app/si/model/structure/si-content';
 import { SiZone } from 'src/app/si/model/structure/si-zone';
 import { SiZoneError } from 'src/app/si/model/structure/si-zone-error';
 import { SiCommanderService } from 'src/app/si/model/si-commander.service';
-import { SiPage } from 'src/app/si/model/structure/impl/si-page';
-import { SiQualifier } from 'src/app/si/model/content/si-qualifier';
+import { SiPage } from 'src/app/si/model/entity/impl/basic/si-page';
+import { SiQualifier } from 'src/app/si/model/entity/si-qualifier';
 import { SiStructureModel } from 'src/app/si/model/structure/si-structure-model';
 
 export class EntriesListSiContent implements SiComp, SiContent {

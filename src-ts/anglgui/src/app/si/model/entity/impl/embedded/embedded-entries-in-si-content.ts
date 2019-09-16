@@ -4,8 +4,8 @@ import { SiStructure } from 'src/app/si/model/structure/si-structure';
 import { SiZone } from 'src/app/si/model/structure/si-zone';
 import { SiZoneError } from 'src/app/si/model/structure/si-zone-error';
 import { EmbeddedEntryInModel } from 'src/app/ui/content/embedded/embedded-entry-in-model';
-import { SiType } from 'src/app/si/model/content/si-type';
-import { SiEmbeddedEntry } from 'src/app/si/model/content/si-embedded-entry';
+import { SiType } from 'src/app/si/model/entity/si-type';
+import { SiEmbeddedEntry } from 'src/app/si/model/entity/si-embedded-entry';
 import { EmbeddedEntriesInComponent } from 'src/app/ui/content/embedded/comp/embedded-entries-in/embedded-entries-in.component';
 import { EmbeddedEntriesSummaryInComponent } from 'src/app/ui/content/embedded/comp/embedded-entries-summary-in/embedded-entries-summary-in.component';
 

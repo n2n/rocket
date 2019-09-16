@@ -1,11 +1,12 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { SiFile } from 'src/app/si/model/content/impl/file-in-si-field';
+import { SiFile } from 'src/app/si/model/entity/impl/file/file-in-si-field';
 import { SiService } from 'src/app/si/model/si.service';
 import { FileInFieldModel } from '../../file-in-field-model';
 import { SiResultFactory } from 'src/app/si/build/si-result-factory';
 import { PopupSiLayer } from 'src/app/si/model/structure/si-layer';
-import { SimpleSiStructureModel, TypeSiContent } from 'src/app/si/model/structure/impl/simple-si-structure-model';
+import { SimpleSiStructureModel } from 'src/app/si/model/structure/impl/simple-si-structure-model';
 import { ImageResizeComponent } from '../../../file/image-resize/image-resize.component';
+import { TypeSiContent } from 'src/app/si/model/structure/impl/type-si-content';
 
 @Component({
   selector: 'rocket-file-in-field',

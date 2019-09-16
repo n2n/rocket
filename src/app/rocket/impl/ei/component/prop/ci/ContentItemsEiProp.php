@@ -23,7 +23,6 @@ namespace rocket\impl\ei\component\prop\ci;
 
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\util\type\ArgUtils;
-use rocket\impl\ei\component\prop\relation\EmbeddedOneToManyEiProp;
 use rocket\impl\ei\component\prop\ci\conf\ContentItemsEiPropConfigurator;
 use rocket\impl\ei\component\prop\ci\model\ContentItem;
 use rocket\impl\ei\component\prop\ci\model\PanelConfig;
@@ -36,21 +35,31 @@ use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\manage\security\InaccessibleEiCommandPathException;
 use rocket\si\structure\SiStructureType;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
+use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
+use rocket\ei\manage\gui\ViewMode;
+use rocket\impl\ei\component\prop\adapter\config\EditConfig;
+use rocket\impl\ei\component\prop\relation\RelationEiPropAdapter;
 
-class ContentItemsEiProp extends EmbeddedOneToManyEiProp {
+class ContentItemsEiProp extends RelationEiPropAdapter {
 	private $panelConfigs = array();
 // 	private $contentItemEiType;
 	
 	public function __construct() {
 		parent::__construct();
-		$this->displayConfig->setListReadModeDefaultDisplayed(false);
-		$this->editConfig->setMandatory(false);
+		
+		$this->setup(
+				(new DisplayConfig(ViewMode::all()))->setListReadModeDefaultDisplayed(false),
+				new RelationModel($this, false, true, RelationModel::MODE_EMBEDDED, 
+						(new EditConfig())->setMandatory(false)),
+				new ContentItemsEiPropConfigurator($this));
+		
+		
 		$this->panelConfigs = array(new PanelConfig('main', 'Main', null, 0));
 		
-		$this->configurator = new ContentItemsEiPropConfigurator($this/*, $this->eiPropRelation*/);
-		$this->configurator->registerDisplayConfig($this->displayConfig);
-		$this->configurator->registerEditConfig($this->editConfig);
-		$this->setRelationModel(new RelationModel($this, false, true, RelationModel::MODE_EMBEDDED, $this->editConfig));
+// 		$this->configurator = new ContentItemsEiPropConfigurator($this/*, $this->eiPropRelation*/);
+// 		$this->configurator->registerDisplayConfig($this->displayConfig);
+// 		$this->configurator->registerEditConfig($this->editConfig);
+// 		$this->configurator->setRelationModel($this->getRelationModel());
 	}
 	
 	protected function getDisplayItemType(): string {

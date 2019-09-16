@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SiQualifier } from 'src/app/si/model/content/si-qualifier';
+import { SiQualifier } from 'src/app/si/model/entity/si-qualifier';
 
 @Injectable({
   providedIn: 'root'

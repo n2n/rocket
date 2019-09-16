@@ -3,10 +3,10 @@ import { Extractor } from 'src/app/util/mapping/extractor';
 import { SiEntryError } from 'src/app/si/model/input/si-entry-error';
 import { SiFieldError } from 'src/app/si/model/input/si-field-error';
 import { SiResult } from 'src/app/si/model/control/si-result';
-import { SiEntryDeclaration } from 'src/app/si/model/structure/si-entry-declaration';
-import { SiFieldStructureDeclaration } from 'src/app/si/model/structure/si-field-structure-declaration';
-import { SiFieldDeclaration } from 'src/app/si/model/structure/si-field-declaration';
-import { SiFile, SiImageDimension } from '../model/content/impl/file-in-si-field';
+import { SiEntryDeclaration } from 'src/app/si/model/entity/si-entry-declaration';
+import { SiFieldStructureDeclaration } from 'src/app/si/model/entity/si-field-structure-declaration';
+import { SiFieldDeclaration } from 'src/app/si/model/entity/si-field-declaration';
+import { SiFile, SiImageDimension } from '../model/entity/impl/file/file-in-si-field';
 
 export class SiResultFactory {
 

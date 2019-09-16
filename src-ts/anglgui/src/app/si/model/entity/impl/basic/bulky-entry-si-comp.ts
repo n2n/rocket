@@ -1,9 +1,9 @@
-import { SiComp } from 'src/app/si/model/structure/si-zone-content';
+import { SiComp } from 'src/app/si/model/entity/si-comp';
 import { ViewContainerRef, ComponentFactoryResolver } from '@angular/core';
-import { SiEntryDeclaration } from 'src/app/si/model/structure/si-entry-declaration';
-import { SiEntry } from 'src/app/si/model/content/si-entry';
+import { SiEntryDeclaration } from 'src/app/si/model/entity/si-entry-declaration';
+import { SiEntry } from 'src/app/si/model/entity/si-entry';
 import { BulkyEntryComponent } from 'src/app/ui/content/zone/comp/bulky-entry/bulky-entry.component';
-import { SiFieldStructureDeclaration } from 'src/app/si/model/structure/si-field-structure-declaration';
+import { SiFieldStructureDeclaration } from 'src/app/si/model/entity/si-field-structure-declaration';
 import { SiContent } from 'src/app/si/model/structure/si-content';
 import { SiStructure } from 'src/app/si/model/structure/si-structure';
 import { SiControl } from 'src/app/si/model/control/si-control';

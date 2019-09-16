@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ElementRef } from '@angular/core';
-import { StringOutSiField } from "src/app/si/model/content/impl/string-out-si-field";
+import { StringOutSiField } from "src/app/si/model/entity/impl/string/string-out-si-field";
 import { StringFieldModel } from "src/app/ui/content/field/string-field-model";
 
 @Component({

@@ -1,5 +1,5 @@
 
-import { SiStructureType } from 'src/app/si/model/structure/si-field-structure-declaration';
+import { SiStructureType } from 'src/app/si/model/entity/si-field-structure-declaration';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { SiZoneError } from 'src/app/si/model/structure/si-zone-error';
 import { SiStructureModel } from 'src/app/si/model/structure/si-structure-model';

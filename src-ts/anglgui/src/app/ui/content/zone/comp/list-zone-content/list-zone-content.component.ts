@@ -1,18 +1,14 @@
-import { Component, OnInit, Input, Inject, Injector, ElementRef, OnDestroy, DoCheck } from '@angular/core';
-import { SiEntry } from 'src/app/si/model/content/si-entry';
-import { SiField } from 'src/app/si/model/content/si-field';
-import { SiFieldDeclaration } from 'src/app/si/model/structure/si-field-declaration';
+import { Component, OnInit, ElementRef, OnDestroy } from '@angular/core';
+import { SiFieldDeclaration } from 'src/app/si/model/entity/si-field-declaration';
 import { SiService } from 'src/app/si/model/si.service';
 import { SiGetRequest } from 'src/app/si/model/api/si-get-request';
 import { SiGetInstruction } from 'src/app/si/model/api/si-get-instruction';
-import { Router } from '@angular/router';
 import { SiGetResponse } from 'src/app/si/model/api/si-get-response';
 import { SiGetResult } from 'src/app/si/model/api/si-get-result';
-import { SiPartialContent } from 'src/app/si/model/content/si-partial-content';
-import { SiPage } from 'src/app/si/model/structure/impl/si-page';
+import { SiPage } from 'src/app/si/model/entity/impl/basic/si-page';
 import { fromEvent, Subscription } from 'rxjs';
-import { SiQualifier } from 'src/app/si/model/content/si-qualifier';
-import { EntriesListSiContent } from 'src/app/si/model/structure/impl/entries-list-si-content';
+import { SiQualifier } from 'src/app/si/model/entity/si-qualifier';
+import { EntriesListSiContent } from 'src/app/si/model/entity/impl/basic/entries-list-si-content';
 
 @Component({
   selector: 'rocket-ui-list-zone-content',
@@ -27,11 +23,11 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 	private subscription: Subscription;
 	private fieldDeclarations: Array<SiFieldDeclaration>|null = null;
 
-	constructor(private elemRef: ElementRef) {
+	constructor() {
 	}
 
 	ngOnInit() {
-		this.subscription = fromEvent<MouseEvent>(window, 'scroll').subscribe((event: MouseEvent) => {
+		this.subscription = fromEvent<MouseEvent>(window, 'scroll').subscribe(() => {
 			this.updateVisiblePages();
 		});
 

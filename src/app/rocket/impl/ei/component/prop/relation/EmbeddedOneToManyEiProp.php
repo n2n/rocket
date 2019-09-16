@@ -45,13 +45,9 @@ class EmbeddedOneToManyEiProp extends RelationEiPropAdapter implements FieldEiPr
 	public function __construct() {	
 		parent::__construct();
 		
-		$this->displayConfig = new DisplayConfig(ViewMode::all());
-		$this->editConfig = new EditConfig();
-		
-		$this->configurator->registerDisplayConfig($this->displayConfig);
-		$this->configurator->registerEditConfig($this->editConfig);
-		$this->setRelationModel(
-				new RelationModel($this, false, true, RelationModel::MODE_EMBEDDED, $this->editConfig));
+		$this->setup(
+				new DisplayConfig(ViewMode::all()),
+				new RelationModel($this, false, true, RelationModel::MODE_EMBEDDED, new EditConfig()));
 	}
 	
 	/**

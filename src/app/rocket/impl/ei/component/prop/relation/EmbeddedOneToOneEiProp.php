@@ -29,6 +29,7 @@ use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\si\structure\SiStructureType;
+use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 
 class EmbeddedOneToOneEiProp extends RelationEiPropAdapter {
 	
@@ -38,11 +39,9 @@ class EmbeddedOneToOneEiProp extends RelationEiPropAdapter {
 	public function __construct() {
 		parent::__construct();
 		
-		$this->configurator->registerDisplayConfig(($this->displayConfig = new DisplayConfig(ViewMode::bulky()))
-				->setDisplayItemType(SiStructureType::SIMPLE_GROUP));
-		
-		$this->configurator->setRelationModel(
-				new RelationModel($this, false, false, RelationModel::MODE_EMBEDDED, $this->editConfig));
+		$this->setup(
+				(new DisplayConfig(ViewMode::bulky()))->setDisplayItemType(SiStructureType::SIMPLE_GROUP),
+				new RelationModel($this, false, false, RelationModel::MODE_EMBEDDED, new EditConfig()));
 	}
 	
 	/**

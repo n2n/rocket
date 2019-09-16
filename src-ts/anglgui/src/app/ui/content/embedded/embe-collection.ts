@@ -1,9 +1,9 @@
 import { Embe } from './embe';
 import { EmbeddedEntryModel } from './embedded-entry-model';
 import { EmbeddedEntryInModel } from './embedded-entry-in-model';
-import { SiEmbeddedEntry } from 'src/app/si/model/content/si-embedded-entry';
+import { SiEmbeddedEntry } from 'src/app/si/model/entity/si-embedded-entry';
 import { SiStructure } from 'src/app/si/model/structure/si-structure';
-import { SiEntry } from 'src/app/si/model/content/si-entry';
+import { SiEntry } from 'src/app/si/model/entity/si-entry';
 
 export class EmbeCollection {
 	public embes: Embe[] = [];

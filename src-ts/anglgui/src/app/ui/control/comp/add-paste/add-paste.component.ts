@@ -1,9 +1,9 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { SiQualifier, SiIdentifier } from 'src/app/si/model/content/si-qualifier';
-import { ClipboardService } from 'src/app/si/model/content/clipboard.service';
-import { SiEmbeddedEntry } from 'src/app/si/model/content/si-embedded-entry';
+import { SiQualifier, SiIdentifier } from 'src/app/si/model/entity/si-qualifier';
+import { ClipboardService } from 'src/app/si/model/entity/clipboard.service';
+import { SiEmbeddedEntry } from 'src/app/si/model/entity/si-embedded-entry';
 import { Observable } from 'rxjs';
-import { SiType } from "src/app/si/model/content/si-type";
+import { SiType } from "src/app/si/model/entity/si-type";
 
 @Component({
   selector: 'rocket-ui-add-past',

@@ -1,12 +1,12 @@
 
-import { SiField } from 'src/app/si/model/content/si-field';
+import { SiField } from 'src/app/si/model/entity/si-field';
 import { ComponentRef, ComponentFactoryResolver, ViewContainerRef } from '@angular/core';
 import { FileInFieldComponent } from 'src/app/ui/content/field/comp/file-in-field/file-in-field.component';
 import { FileInFieldModel } from 'src/app/ui/content/field/file-in-field-model';
-import { InSiFieldAdapter } from 'src/app/si/model/content/impl/in-si-field-adapter';
+import { InSiFieldAdapter } from 'src/app/si/model/entity/impl/in-si-field-adapter';
 import { SiCommanderService } from 'src/app/si/model/si-commander.service';
 import { SiContent } from 'src/app/si/model/structure/si-content';
-import { SiZone } from '../../structure/si-zone';
+import { SiZone } from '../../../structure/si-zone';
 
 export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel, SiContent {
 

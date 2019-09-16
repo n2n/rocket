@@ -5,15 +5,16 @@ import { TranslationService } from 'src/app/util/i18n/translation.service';
 import { EmbedInCollection } from '../../embe-collection';
 import { EmbeddedEntryInModel } from '../../embedded-entry-in-model';
 import { SiService } from 'src/app/si/model/si.service';
-import { SiEmbeddedEntry } from 'src/app/si/model/content/si-embedded-entry';
+import { SiEmbeddedEntry } from 'src/app/si/model/entity/si-embedded-entry';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Embe } from '../../embe';
 import { SimpleSiControl } from 'src/app/si/model/control/impl/simple-si-control';
 import { SiButton } from 'src/app/si/model/control/si-button';
-import { SiEntry } from 'src/app/si/model/content/si-entry';
+import { SiEntry } from 'src/app/si/model/entity/si-entry';
 import { SiControl } from 'src/app/si/model/control/si-control';
-import { SimpleSiStructureModel, TypeSiContent } from 'src/app/si/model/structure/impl/simple-si-structure-model';
+import { SimpleSiStructureModel } from 'src/app/si/model/structure/impl/simple-si-structure-model';
 import { EmbeddedEntriesInComponent } from '../embedded-entries-in/embedded-entries-in.component';
+import { TypeSiContent } from 'src/app/si/model/structure/impl/type-si-content';
 
 @Component({
   selector: 'rocket-embedded-entries-summary-in',

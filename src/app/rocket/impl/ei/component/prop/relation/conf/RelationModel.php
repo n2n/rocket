@@ -64,6 +64,10 @@ class RelationModel {
 	 * @var string
 	 */
 	private $mode;
+	/**
+	 * @var EditConfig
+	 */
+	private $editConfig;
 	
 	// Select
 	
@@ -120,6 +124,13 @@ class RelationModel {
 		$this->mode = $mode;
 		
 		$this->editConfig = $editConfig;
+	}
+	
+	/**
+	 * @return \rocket\impl\ei\component\prop\adapter\config\EditConfig|null
+	 */
+	function getEditConfig() {
+		return $this->editConfig;
 	}
 	
 	/**

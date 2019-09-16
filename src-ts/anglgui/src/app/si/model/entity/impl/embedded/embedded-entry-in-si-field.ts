@@ -1,10 +1,10 @@
 
-import { InSiFieldAdapter } from 'src/app/si/model/content/impl/in-si-field-adapter';
+import { InSiFieldAdapter } from 'src/app/si/model/entity/impl/in-si-field-adapter';
 import { SiZone } from 'src/app/si/model/structure/si-zone';
-import { SiEmbeddedEntry } from 'src/app/si/model/content/si-embedded-entry';
-import { SiField } from '../si-field';
+import { SiEmbeddedEntry } from 'src/app/si/model/entity/si-embedded-entry';
 import { SiContent } from 'src/app/si/model/structure/si-content';
-import { EmbeddedEntriesInSiContent } from 'src/app/si/model/structure/impl/embedded/embedded-entries-in-si-content';
+import { SiField } from '../../si-field';
+import { EmbeddedEntriesInSiContent } from './embedded-entries-in-si-content';
 
 export class EmbeddedEntryInSiField extends InSiFieldAdapter  {
 

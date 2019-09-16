@@ -1,11 +1,11 @@
 
 import { SiContent } from 'src/app/si/model/structure/si-content';
-import { SiEntry } from 'src/app/si/model/content/si-entry';
+import { SiEntry } from 'src/app/si/model/entity/si-entry';
 import { ViewContainerRef, ComponentFactoryResolver, ComponentRef } from '@angular/core';
 import { FieldStructureComponent } from 'src/app/ui/structure/comp/field-structure/field-structure.component';
-import { SiFieldDeclaration } from 'src/app/si/model/structure/si-field-declaration';
+import { SiFieldDeclaration } from 'src/app/si/model/entity/si-field-declaration';
 import { SiZoneError } from 'src/app/si/model/structure/si-zone-error';
-import { SiField } from 'src/app/si/model/content/si-field';
+import { SiField } from 'src/app/si/model/entity/si-field';
 
 export class FieldSiStructureContent implements SiContent {
 

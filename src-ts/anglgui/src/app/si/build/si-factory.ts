@@ -1,33 +1,32 @@
 
 import { RefSiControl } from 'src/app/si/model/control/impl/ref-si-control';
-import { SiComp } from 'src/app/si/model/structure/si-zone-content';
-import { SiPartialContent } from 'src/app/si/model/content/si-partial-content';
-import { StringInSiField } from 'src/app/si/model/content/impl/string-in-si-field';
+import { SiComp } from 'src/app/si/model/entity/si-comp';
+import { SiPartialContent } from 'src/app/si/model/entity/si-partial-content';
+import { StringInSiField } from 'src/app/si/model/entity/impl/string/string-in-si-field';
 import { ApiCallSiControl } from 'src/app/si/model/control/impl/api-call-si-control';
-import { SiTypeBuildup } from 'src/app/si/model/content/si-entry-buildup';
-import { SiFile, FileInSiField } from 'src/app/si/model/content/impl/file-in-si-field';
-import { FileOutSiField } from 'src/app/si/model/content/impl/file-out-si-field';
-import { SiQualifier, SiIdentifier } from 'src/app/si/model/content/si-qualifier';
-import { LinkOutSiField } from 'src/app/si/model/content/impl/link-out-si-field';
-import { QualifierSelectInSiField } from 'src/app/si/model/content/impl/qualifier-select-in-si-field';
+import { SiTypeBuildup } from 'src/app/si/model/entity/si-entry-buildup';
+import { FileInSiField } from 'src/app/si/model/entity/impl/file/file-in-si-field';
+import { FileOutSiField } from 'src/app/si/model/entity/impl/file/file-out-si-field';
+import { SiQualifier, SiIdentifier } from 'src/app/si/model/entity/si-qualifier';
+import { LinkOutSiField } from 'src/app/si/model/entity/impl/string/link-out-si-field';
+import { QualifierSelectInSiField } from 'src/app/si/model/entity/impl/qualifier/qualifier-select-in-si-field';
 import { SiResultFactory } from 'src/app/si/build/si-result-factory';
-import { SiPage } from 'src/app/si/model/structure/impl/si-page';
-import { EntriesListSiContent } from 'src/app/si/model/structure/impl/entries-list-si-content';
-import { BulkyEntrySiComp } from 'src/app/si/model/structure/impl/bulky-entry-si-content';
-import { EmbeddedEntryInSiField } from 'src/app/si/model/content/impl/embedded-entry-in-si-field';
-import { CompactEntrySiComp } from 'src/app/si/model/structure/impl/compact-entry-si-content';
-import { SiEmbeddedEntry } from 'src/app/si/model/content/si-embedded-entry';
+import { SiPage } from 'src/app/si/model/entity/impl/basic/si-page';
+import { EntriesListSiContent } from 'src/app/si/model/entity/impl/basic/entries-list-si-content';
+import { BulkyEntrySiComp } from 'src/app/si/model/entity/impl/basic/bulky-entry-si-comp';
+import { EmbeddedEntryInSiField } from 'src/app/si/model/entity/impl/embedded/embedded-entry-in-si-field';
+import { CompactEntrySiComp } from 'src/app/si/model/entity/impl/basic/compact-entry-si-content';
+import { SiEmbeddedEntry } from 'src/app/si/model/entity/si-embedded-entry';
 import { SiZone } from '../model/structure/si-zone';
 import { Extractor, ObjectMissmatchError } from 'src/app/util/mapping/extractor';
-import { SiEntry } from '../model/content/si-entry';
-import { SiField } from '../model/content/si-field';
-import { StringOutSiField } from '../model/content/impl/string-out-si-field';
+import { SiEntry } from '../model/entity/si-entry';
+import { SiField } from '../model/entity/si-field';
+import { StringOutSiField } from '../model/entity/impl/string/string-out-si-field';
 import { SiControl } from '../model/control/si-control';
 import { SiButton, SiConfirm } from '../model/control/si-button';
 import { SiControlType, SiFieldType, SiContentType } from './si-type';
-import { SiType } from 'src/app/si/model/content/si-type';
-import { SiEntryDeclaration } from '../model/structure/si-entry-declaration';
-import { SiResult } from '../model/control/si-result';
+import { SiType } from 'src/app/si/model/entity/si-type';
+import { SiEntryDeclaration } from '../model/entity/si-entry-declaration';
 
 
 export class SiContentFactory {
@@ -131,7 +130,7 @@ export class SiCompFactory {
 		siEntry.bulky = extr.reqBoolean('bulky');
 		siEntry.readOnly = extr.reqBoolean('readOnly');
 
-		for (const [typeId, buildupData] of extr.reqMap('buildups')) {
+		for (const [, buildupData] of extr.reqMap('buildups')) {
 			siEntry.putTypeBuildup(this.createBuildup(buildupData));
 		}
 
@@ -185,12 +184,12 @@ export class SiCompFactory {
 		const fields = new Map<string, SiField>();
 
 		for (const [fieldId, fieldData] of data) {
-			fields.set(fieldId, this.createField(fieldId, fieldData));
+			fields.set(fieldId, this.createField(fieldData));
 		}
 		return fields;
 	}
 
-	private createField(fieldId: string, data: any): SiField {
+	private createField(data: any): SiField {
 		const extr = new Extractor(data);
 		const dataExtr = extr.reqExtractor('data');
 
@@ -288,13 +287,13 @@ export class SiCompFactory {
 			case SiControlType.REF:
 				return new RefSiControl(
 						dataExtr.reqString('url'),
-						this.createButton(controlId, dataExtr.reqObject('button')),
+						this.createButton(dataExtr.reqObject('button')),
 						this.zone.layer);
 			case SiControlType.API_CALL:
 				const apiControl = new ApiCallSiControl(
 						dataExtr.reqString('apiUrl'),
 						dataExtr.reqObject('apiCallId'),
-						this.createButton(controlId, dataExtr.reqObject('button')),
+						this.createButton(dataExtr.reqObject('button')),
 						this.zoneContent);
 				apiControl.inputSent = dataExtr.reqBoolean('inputHandled');
 				return apiControl;
@@ -303,7 +302,7 @@ export class SiCompFactory {
 		}
 	}
 
-	private createButton(controlId, data: any): SiButton {
+	private createButton(data: any): SiButton {
 		const extr = new Extractor(data);
 		const btn = new SiButton(extr.reqString('name'), extr.reqString('btnClass'), extr.reqString('iconClass'));
 

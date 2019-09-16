@@ -1,9 +1,9 @@
 
-import { SiField } from "src/app/si/model/content/si-field";
+import { SiField } from "src/app/si/model/entity/si-field";
 import { ComponentRef, ComponentFactoryResolver, ViewContainerRef } from "@angular/core";
 import { StringOutFieldComponent } from "src/app/ui/content/field/comp/string-out-field/string-out-field.component";
 import { StringFieldModel } from "src/app/ui/content/field/string-field-model";
-import { OutSiFieldAdapter } from "src/app/si/model/content/impl/out-si-field-adapter";
+import { OutSiFieldAdapter } from "src/app/si/model/entity/impl/out-si-field-adapter";
 import { LinkOutModel } from "src/app/ui/content/field/link-field-model";
 import { LinkOutFieldComponent } from "src/app/ui/content/field/comp/link-out-field/link-out-field.component";
 import { SiCommanderService } from "src/app/si/model/si-commander.service";

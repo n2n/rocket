@@ -1,5 +1,5 @@
-import { SiEntryDeclaration } from 'src/app/si/model/structure/si-entry-declaration';
-import { SiEntry } from 'src/app/si/model/content/si-entry';
+import { SiEntryDeclaration } from 'src/app/si/model/entity/si-entry-declaration';
+import { SiEntry } from 'src/app/si/model/entity/si-entry';
 
 export interface SiValGetResult {
 

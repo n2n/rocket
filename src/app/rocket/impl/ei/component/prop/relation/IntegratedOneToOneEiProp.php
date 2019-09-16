@@ -61,7 +61,7 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiEiPro
 	public function __construct() {
 		parent::__construct();
 		
-		$this->setRelationModel(new RelationModel($this, false, false, RelationModel::MODE_INTEGRATED, null));
+		$this->setup(null, new RelationModel($this, false, false, RelationModel::MODE_INTEGRATED, null));
 	}
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {

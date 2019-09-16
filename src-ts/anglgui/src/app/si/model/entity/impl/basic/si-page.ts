@@ -1,4 +1,4 @@
-import { SiEntry } from 'src/app/si/model/content/si-entry';
+import { SiEntry } from 'src/app/si/model/entity/si-entry';
 import { IllegalSiStateError } from 'src/app/si/model/illegal-si-state-error';
 
 export class SiPage {

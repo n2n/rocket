@@ -1,5 +1,5 @@
 import { Directive, Input } from '@angular/core';
-import { SiEntry } from "src/app/si/model/content/si-entry";
+import { SiEntry } from "src/app/si/model/entity/si-entry";
 import { ElementRef } from "@angular/core";
 
 @Directive({

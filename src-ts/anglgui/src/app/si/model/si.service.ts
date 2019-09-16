@@ -7,7 +7,7 @@ import { SiZone } from 'src/app/si/model/structure/si-zone';
 import { Router } from '@angular/router';
 import { PlatformLocation } from '@angular/common';
 import { IllegalSiStateError } from 'src/app/si/model/illegal-si-state-error';
-import { SiComp } from 'src/app/si/model/structure/si-zone-content';
+import { SiComp } from 'src/app/si/model/entity/si-comp';
 import { SiEntryInput } from 'src/app/si/model/input/si-entry-input';
 import { SiInput } from 'src/app/si/model/input/si-input';
 import { SiResultFactory } from 'src/app/si/build/si-result-factory';

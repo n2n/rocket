@@ -1,12 +1,12 @@
 
-import { SiFieldDeclaration } from "src/app/si/model/structure/si-field-declaration";
+import { SiFieldDeclaration } from 'src/app/si/model/entity/si-field-declaration';
 
 export class SiFieldStructureDeclaration {
-	
-	constructor (public fieldDeclaration: SiFieldDeclaration, public type: SiStructureType,
+
+	constructor(public fieldDeclaration: SiFieldDeclaration, public type: SiStructureType,
 			public children: SiFieldStructureDeclaration[] = []) {
 	}
-} 
+}
 
 export enum SiStructureType {
 	SIMPLE_GROUP = 'simple-group',

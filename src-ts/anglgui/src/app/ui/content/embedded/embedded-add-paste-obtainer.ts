@@ -1,11 +1,11 @@
 import { SiService } from 'src/app/si/model/si.service';
 import { SiZone } from 'src/app/si/model/structure/si-zone';
-import { BulkyEntrySiComp } from 'src/app/si/model/structure/impl/bulky-entry-si-content';
-import { SiIdentifier } from 'src/app/si/model/content/si-qualifier';
+import { BulkyEntrySiComp } from 'src/app/si/model/entity/impl/basic/bulky-entry-si-comp';
+import { SiIdentifier } from 'src/app/si/model/entity/si-qualifier';
 import { SiGetInstruction } from 'src/app/si/model/api/si-get-instruction';
-import { CompactEntrySiComp } from 'src/app/si/model/structure/impl/compact-entry-si-content';
+import { CompactEntrySiComp } from 'src/app/si/model/entity/impl/basic/compact-entry-si-content';
 import { Observable } from 'rxjs';
-import { SiEmbeddedEntry } from 'src/app/si/model/content/si-embedded-entry';
+import { SiEmbeddedEntry } from 'src/app/si/model/entity/si-embedded-entry';
 import { SiGetRequest } from 'src/app/si/model/api/si-get-request';
 import { map } from 'rxjs/operators';
 import { SiGetResponse } from 'src/app/si/model/api/si-get-response';

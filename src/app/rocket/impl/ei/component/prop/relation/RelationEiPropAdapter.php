@@ -74,14 +74,26 @@ abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements Re
 	 */
 	function __construct() {
 		parent::__construct();
-		
-		$this->configurator = new RelationEiPropConfigurator($this);
 	}
+	
+	
 	
 	/**
 	 * @param RelationModel $relationModel
 	 */
-	protected function setRelationModel(RelationModel $relationModel) {
+	protected function setup(?DisplayConfig $displayConfig, RelationModel $relationModel,
+			RelationEiPropConfigurator $configurator = null) {
+		$this->configurator = $configurator ?? new RelationEiPropConfigurator($this);
+				
+		if ($displayConfig !== null) {
+			$this->displayConfig = $displayConfig;
+			$this->configurator->registerDisplayConfig($displayConfig);
+		}
+		
+		if (null !== ($this->editConfig = $relationModel->getEditConfig())) {
+			$this->configurator->registerEditConfig($this->editConfig);
+		}
+		
 		$this->relationModel = $relationModel;
 		$this->configurator->setRelationModel($relationModel);
 	}

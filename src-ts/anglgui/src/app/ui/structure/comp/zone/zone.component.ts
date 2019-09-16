@@ -1,10 +1,7 @@
-import { Component, OnInit, DoCheck, Input, ViewChild, ComponentFactoryResolver, OnDestroy, ElementRef } from '@angular/core';
-import { SiZone } from "src/app/si/model/structure/si-zone";
-import { ListZoneContentComponent } from "src/app/ui/content/zone/comp/list-zone-content/list-zone-content.component";
-import { SiComp } from "src/app/si/model/structure/si-zone-content";
-import { SiContent } from "src/app/si/model/structure/si-content";
-import { SiStructure } from "src/app/si/model/structure/si-structure";
-import { SiZoneError } from "src/app/si/model/structure/si-zone-error";
+import { Component, OnInit, DoCheck, Input, ComponentFactoryResolver, ElementRef } from '@angular/core';
+import { SiZone } from 'src/app/si/model/structure/si-zone';
+import { SiStructure } from 'src/app/si/model/structure/si-structure';
+import { SiZoneError } from 'src/app/si/model/structure/si-zone-error';
 
 @Component({
   selector: 'rocket-ui-zone',
@@ -17,16 +14,11 @@ export class ZoneComponent implements OnInit, DoCheck {
 
 	siZoneErrors: SiZoneError[] = [];
 
-	constructor(private componentFactoryResolver: ComponentFactoryResolver, private elemRef: ElementRef) {
+	constructor(private elemRef: ElementRef) {
 
 	}
 
 	ngOnInit() {
-//		const componentFactory = this.componentFactoryResolver.resolveComponentFactory(ListZoneContentComponent);
-
-//	    const componentRef = this.zoneContentDirective.viewContainerRef.createComponent(componentFactory);
-
-//      (<ZoneComponent> componentRef.instance).data = {};
 	}
 
 	ngDoCheck() {

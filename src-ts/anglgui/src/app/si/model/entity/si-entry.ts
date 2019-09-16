@@ -1,11 +1,10 @@
 
-import { SiField } from 'src/app/si/model/content/si-field';
-import { SiControl } from 'src/app/si/model/control/si-control';
+import { SiField } from 'src/app/si/model/entity/si-field';
 import { SiEntryInput } from 'src/app/si/model/input/si-entry-input';
 import { IllegalSiStateError } from 'src/app/si/model/illegal-si-state-error';
-import { SiTypeBuildup } from 'src/app/si/model/content/si-entry-buildup';
+import { SiTypeBuildup } from 'src/app/si/model/entity/si-entry-buildup';
 import { SiEntryError } from 'src/app/si/model/input/si-entry-error';
-import { SiQualifier, SiIdentifier } from 'src/app/si/model/content/si-qualifier';
+import { SiQualifier, SiIdentifier } from 'src/app/si/model/entity/si-qualifier';
 import { SiType } from './si-type';
 import { SiZoneError } from '../structure/si-zone-error';
 
@@ -103,10 +102,10 @@ export class SiEntry {
 	}
 
 	resetError() {
-		for (const [typeId, buildup] of this._typeBuildupsMap) {
+		for (const [, buildup] of this._typeBuildupsMap) {
 			buildup.messages = [];
 
-			for (const [fieldId, field] of this.selectedTypeBuildup.fieldMap) {
+			for (const [, field] of this.selectedTypeBuildup.fieldMap) {
 				field.resetError();
 			}
 		}

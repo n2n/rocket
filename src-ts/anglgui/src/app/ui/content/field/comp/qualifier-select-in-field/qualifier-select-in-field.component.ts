@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { QualifierSelectInModel } from 'src/app/ui/content/field/qualifier-select-in-model';
-import { SiQualifier } from 'src/app/si/model/content/si-qualifier';
+import { SiQualifier } from 'src/app/si/model/entity/si-qualifier';
 import { SiLayer, PopupSiLayer } from 'src/app/si/model/structure/si-layer';
-import { EntriesListSiContent } from 'src/app/si/model/structure/impl/entries-list-si-content';
+import { EntriesListSiContent } from 'src/app/si/model/entity/impl/basic/entries-list-si-content';
 
 @Component({
   selector: 'rocket-qualifier-select-in-field',

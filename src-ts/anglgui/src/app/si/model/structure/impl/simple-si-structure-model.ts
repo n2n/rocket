@@ -30,26 +30,3 @@ export class SimpleSiStructureModel implements SiStructureModel {
 		return this.zoneErrors;
 	}
 }
-
-
-export class TypeSiContent<T> implements SiContent {
-	public zoneErrors: SiZoneError[] = [];
-
-	constructor(public type: new(...args: any[]) => T, public callback: (cr: ComponentRef<T>) => any) {
-	}
-
-	initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver,
-			commanderService: SiCommanderService): ComponentRef<T> {
-		const componentFactory = componentFactoryResolver.resolveComponentFactory<T>(this.type);
-
-		const componentRef = viewContainerRef.createComponent(componentFactory);
-
-		this.callback(componentRef);
-
-		return componentRef;
-	}
-
-	getZoneErrors(): SiZoneError[] {
-		return this.zoneErrors;
-	}
-}

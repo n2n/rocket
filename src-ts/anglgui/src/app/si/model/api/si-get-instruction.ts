@@ -1,5 +1,5 @@
 
-import { SiComp } from 'src/app/si/model/structure/si-zone-content';
+import { SiComp } from 'src/app/si/model/entity/si-comp';
 
 export class SiGetInstruction {
 

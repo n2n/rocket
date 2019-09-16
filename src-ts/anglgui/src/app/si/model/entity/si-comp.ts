@@ -1,5 +1,5 @@
 
-import { SiEntry } from 'src/app/si/model/content/si-entry';
+import { SiEntry } from 'src/app/si/model/entity/si-entry';
 import { SiStructureModel } from 'src/app/si/model/structure/si-structure-model';
 
 export interface SiComp extends SiStructureModel {

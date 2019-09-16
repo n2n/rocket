@@ -3,7 +3,7 @@ import { EmbeddedEntryInModel } from '../../embedded-entry-in-model';
 import { EmbedInCollection, EmbeCollection } from '../../embe-collection';
 import { EmbeddedAddPasteObtainer } from '../../embedded-add-paste-obtainer';
 import { SiService } from 'src/app/si/model/si.service';
-import { SiEmbeddedEntry } from 'src/app/si/model/content/si-embedded-entry';
+import { SiEmbeddedEntry } from 'src/app/si/model/entity/si-embedded-entry';
 import { Embe } from '../../embe';
 
 @Component({

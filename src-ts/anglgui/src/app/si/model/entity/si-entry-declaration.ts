@@ -1,6 +1,6 @@
 
-import { SiFieldDeclaration } from 'src/app/si/model/structure/si-field-declaration';
-import { SiFieldStructureDeclaration } from 'src/app/si/model/structure/si-field-structure-declaration';
+import { SiFieldDeclaration } from 'src/app/si/model/entity/si-field-declaration';
+import { SiFieldStructureDeclaration } from 'src/app/si/model/entity/si-field-structure-declaration';
 import { IllegalSiStateError } from 'src/app/si/model/illegal-si-state-error';
 
 export class SiEntryDeclaration {

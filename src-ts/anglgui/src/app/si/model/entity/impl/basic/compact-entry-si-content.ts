@@ -1,14 +1,14 @@
-import { SiComp } from 'src/app/si/model/structure/si-zone-content';
+import { SiComp } from 'src/app/si/model/entity/si-comp';
 import { ViewContainerRef, ComponentFactoryResolver } from '@angular/core';
-import { SiEntryDeclaration } from 'src/app/si/model/structure/si-entry-declaration';
-import { SiEntry } from 'src/app/si/model/content/si-entry';
+import { SiEntryDeclaration } from 'src/app/si/model/entity/si-entry-declaration';
+import { SiEntry } from 'src/app/si/model/entity/si-entry';
 import { SiContent } from 'src/app/si/model/structure/si-content';
 import { SiStructure } from 'src/app/si/model/structure/si-structure';
 import { SiControl } from 'src/app/si/model/control/si-control';
 import { SiZone } from 'src/app/si/model/structure/si-zone';
 import { SiZoneError } from 'src/app/si/model/structure/si-zone-error';
 import { CompactEntryComponent } from 'src/app/ui/content/zone/comp/compact-entry/compact-entry.component';
-import { SiFieldDeclaration } from 'src/app/si/model/structure/si-field-declaration';
+import { SiFieldDeclaration } from 'src/app/si/model/entity/si-field-declaration';
 import { SiCommanderService } from 'src/app/si/model/si-commander.service';
 
 export class CompactEntrySiComp implements SiComp, SiContent {

@@ -1,6 +1,6 @@
 
-import { SiField } from 'src/app/si/model/content/si-field';
-import { SiFieldAdapter } from 'src/app/si/model/content/impl/si-field-adapter';
+import { SiField } from 'src/app/si/model/entity/si-field';
+import { SiFieldAdapter } from 'src/app/si/model/entity/impl/si-field-adapter';
 import { SiContent } from 'src/app/si/model/structure/si-content';
 
 export abstract class InSiFieldAdapter extends SiFieldAdapter {

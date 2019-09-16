@@ -1,4 +1,4 @@
-import { SiType } from "src/app/si/model/content/si-type";
+import { SiType } from "src/app/si/model/entity/si-type";
 
 export class SiIdentifier {
 	constructor(public category: string , public id: string|null) {

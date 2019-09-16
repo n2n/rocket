@@ -3,7 +3,7 @@
 
 import { ViewContainerRef, ComponentFactoryResolver, ComponentRef } from '@angular/core';
 import { SiFieldError } from 'src/app/si/model/input/si-field-error';
-import { SiField } from 'src/app/si/model/content/si-field';
+import { SiField } from 'src/app/si/model/entity/si-field';
 import { SiZoneError } from 'src/app/si/model/structure/si-zone-error';
 import { SiCommanderService } from 'src/app/si/model/si-commander.service';
 import { SiContent } from "src/app/si/model/structure/si-content";
