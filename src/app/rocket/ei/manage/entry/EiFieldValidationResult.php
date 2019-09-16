@@ -166,7 +166,7 @@ class EiFieldValidationResult implements ValidationResult {
 		foreach ($this->subEiEntryValidationResults as $key => $valResult) {
 			if ($valResult->isValid()) continue;
 				
-			$err->putSubEiEntryError($key, $valResult->toSiEntryError($n2nLocale));
+			$err->putSubEntryError($key, $valResult->toSiEntryError($n2nLocale));
 		}
 		
 		return $err;
