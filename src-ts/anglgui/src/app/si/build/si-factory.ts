@@ -15,7 +15,7 @@ import { SiPage } from 'src/app/si/model/entity/impl/basic/si-page';
 import { EntriesListSiContent } from 'src/app/si/model/entity/impl/basic/entries-list-si-content';
 import { BulkyEntrySiComp } from 'src/app/si/model/entity/impl/basic/bulky-entry-si-comp';
 import { EmbeddedEntryInSiField } from 'src/app/si/model/entity/impl/embedded/embedded-entry-in-si-field';
-import { CompactEntrySiComp } from 'src/app/si/model/entity/impl/basic/compact-entry-si-content';
+import { CompactEntrySiComp } from 'src/app/si/model/entity/impl/basic/compact-entry-si-comp';
 import { SiEmbeddedEntry } from 'src/app/si/model/entity/si-embedded-entry';
 import { SiZone } from '../model/structure/si-zone';
 import { Extractor, ObjectMissmatchError } from 'src/app/util/mapping/extractor';

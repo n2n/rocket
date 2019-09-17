@@ -1,0 +1,6 @@
+
+<ng-template *ngIf="siContent" rocketUiContent [siStructure]="siStructure" [siContent]="siContent"></ng-template>
+
+<ng-container *ngFor="let child of siStructures">
+	<rocket-ui-structure *ngIf="child.visible" [siStructure]="child"></rocket-ui-structure>
+</ng-container>

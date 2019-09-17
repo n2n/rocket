@@ -15,6 +15,7 @@ import { SiControl } from 'src/app/si/model/control/si-control';
 import { SimpleSiStructureModel } from 'src/app/si/model/structure/impl/simple-si-structure-model';
 import { EmbeddedEntriesInComponent } from '../embedded-entries-in/embedded-entries-in.component';
 import { TypeSiContent } from 'src/app/si/model/structure/impl/type-si-content';
+import { SiStructure } from "src/app/si/model/structure/si-structure";
 
 @Component({
   selector: 'rocket-embedded-entries-summary-in',
@@ -22,7 +23,7 @@ import { TypeSiContent } from 'src/app/si/model/structure/impl/type-si-content';
   styleUrls: ['./embedded-entries-summary-in.component.css']
 })
 export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
-
+    siStructure: SiStructure;
 	model: EmbeddedEntryInModel;
 
 	private embeCol: EmbedInCollection;
@@ -33,7 +34,7 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnInit() {
-		this.embeCol = new EmbedInCollection(this.model);
+		this.embeCol = new EmbedInCollection(this.siStructure, this.model);
 		this.obtainer = new EmbeddedAddPasteObtainer(this.injector.get(SiService), this.model.getApiUrl(),
 				this.model.getSiZone(), this.model.isSummaryRequired());
 
@@ -77,7 +78,8 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 		const siZone = this.model.getSiZone();
 
 		this.popupSiLayer = siZone.layer.container.createLayer();
-		this.popupSiLayer.pushZone(null).structure = embe.siStructure;
+		const siStructure = this.popupSiLayer.pushZone(null).structure;
+		siStructure.model = embe.siEmbeddedEntry.comp;
 
 		let bakEntry = embe.siEmbeddedEntry.entry.copy();
 
@@ -90,7 +92,7 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 			}
 		});
 
-		embe.siStructure.controls = this.createPopupControls(() => { bakEntry = null; });
+		siStructure.controls = this.createPopupControls(() => { bakEntry = null; });
 	}
 
 	openAll() {

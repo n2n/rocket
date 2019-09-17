@@ -11,6 +11,7 @@ import { QualifierSelectInFieldComponent } from 'src/app/ui/content/field/comp/q
 import { SiZone } from 'src/app/si/model/structure/si-zone';
 import { SiCommanderService } from 'src/app/si/model/si-commander.service';
 import { SiContent } from "src/app/si/model/structure/si-content";
+import { TypeSiContent } from "src/app/si/model/structure/impl/type-si-content";
 
 export class QualifierSelectInSiField extends InSiFieldAdapter implements QualifierSelectInModel {
    
@@ -70,20 +71,22 @@ export class QualifierSelectInSiField extends InSiFieldAdapter implements Qualif
 		return copy;
 	}
 	
-	getContent(): SiContent|null {
-        return this;
+    getContent(): SiContent|null {
+        return new TypeSiContent(QualifierSelectInFieldComponent, (ref, structure) => {
+            ref.instance.model = this;
+        });
     }
 	
-	initComponent(viewContainerRef: ViewContainerRef, 
-			componentFactoryResolver: ComponentFactoryResolver,
-			commanderService: SiCommanderService): ComponentRef<any> {
-		const componentFactory = componentFactoryResolver.resolveComponentFactory(QualifierSelectInFieldComponent);
-		
-		const componentRef = viewContainerRef.createComponent(componentFactory);
-		
-		const component = componentRef.instance;
-		component.model = this;
-		
-		return componentRef;
-	}
+//	initComponent(viewContainerRef: ViewContainerRef, 
+//			componentFactoryResolver: ComponentFactoryResolver,
+//			commanderService: SiCommanderService): ComponentRef<any> {
+//		const componentFactory = componentFactoryResolver.resolveComponentFactory(QualifierSelectInFieldComponent);
+//		
+//		const componentRef = viewContainerRef.createComponent(componentFactory);
+//		
+//		const component = componentRef.instance;
+//		component.model = this;
+//		
+//		return componentRef;
+//	}
 }

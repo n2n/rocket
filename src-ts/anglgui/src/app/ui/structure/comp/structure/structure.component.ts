@@ -59,10 +59,6 @@ export class StructureComponent implements OnInit {
 		return controls;
 	}
 
-	get children(): SiStructure[] {
-		return this._siStructure.model.getChildren();
-	}
-
 	getType(): SiStructureType|null {
 		return this.siStructure.type;
 	}

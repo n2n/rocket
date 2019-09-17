@@ -21,11 +21,7 @@
 			</li>
 		</ul>
 		
-		<ng-template *ngIf="siContent" rocketContent [siContent]="siContent"></ng-template>
-	
-		<ng-container *ngFor="let child of children">
-			<rocket-ui-structure *ngIf="child.visible" [siStructure]="child"></rocket-ui-structure>
-		</ng-container>
+		<ng-template *ngIf="siContent" rocketUiContent [siStructure]="siStructure" [siContent]="siContent"></ng-template>
 		
 		<div *ngIf="siControlsVisible && root && siControls.length > 0" class="rocket-zone-commands">
 			<div class="rocket-main-commands">

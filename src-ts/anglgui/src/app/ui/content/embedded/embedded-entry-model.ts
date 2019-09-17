@@ -14,8 +14,4 @@ export interface EmbeddedEntryModel {
 	getMax(): number|null;
 
 	getValues(): SiEmbeddedEntry[];
-
-	registerSiStructure(siStructure: SiStructure): void;
-
-	unregisterSiStructure(siStructure: SiStructure): void;
 }

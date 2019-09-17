@@ -8,8 +8,6 @@ export interface SiStructureModel {
 
 	getContent(): SiContent|null;
 
-	getChildren(): SiStructure[];
-
 	getControls(): SiControl[];
 
 	getZoneErrors(): SiZoneError[];

@@ -10,11 +10,13 @@ import { SiControl } from 'src/app/si/model/control/si-control';
 import { SiZone } from 'src/app/si/model/structure/si-zone';
 import { SiZoneError } from 'src/app/si/model/structure/si-zone-error';
 import { SiStructureModel } from 'src/app/si/model/structure/si-structure-model';
+import { TypeSiContent } from "src/app/si/model/structure/impl/type-si-content";
+import { SimpleSiStructureModel } from "src/app/si/model/structure/impl/simple-si-structure-model";
+import { StructureBranchComponent } from "src/app/ui/content/zone/comp/structure-branch/structure-branch.component";
 
 export class BulkyEntrySiComp implements SiComp {
 
-	constructor(public entryDeclaration: SiEntryDeclaration,
-			public zone: SiZone) {
+	constructor(public entryDeclaration: SiEntryDeclaration, public zone: SiZone) {
 	}
 
 	private _entry: SiEntry|null = null;
@@ -61,33 +63,12 @@ export class BulkyEntrySiComp implements SiComp {
 	recheck() {
 		return this.children = null;
 	}
-
-	getChildren(): SiStructure[] {
-		if (this.children) {
-			return this.children;
-		}
-
-		this.children = [];
-		const declarations = this.getFieldStructureDeclarations();
-		for (const child of declarations) {
-			this.children.push(this.dingsel(this.entry, child));
-		}
-		return this.children;
-	}
-
-	private dingsel(entry: SiEntry, fsd: SiFieldStructureDeclaration): SiStructure {
-		const structure = new SiStructure();
-		structure.label = fsd.fieldDeclaration.label;
-		structure.type = fsd.type;
-
-		const field = entry.selectedTypeBuildup.getFieldById(fsd.fieldDeclaration.fieldId);
-		const model = new FieldSiStructureModel(field ? field.getContent() : null);
-		for (const childFsd of fsd.children) {
-			model.children.push(this.dingsel(entry, childFsd));
-		}
-
-		structure.model = model;
-		return structure;
+	
+	getContents(): SiContent|null {
+	    return new TypeSiContent(BulkyEntryComponent, (ref, structure) => {
+	        ref.instance.model = this;
+	        ref.instance.siStructure = structure;
+	    });
 	}
 
 	getControls(): SiControl[] {
@@ -101,13 +82,15 @@ export class BulkyEntrySiComp implements SiComp {
 		return this.entryDeclaration.getFieldStructureDeclarationsByTypeId(this.entry.selectedTypeId);
 	}
 
-	initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver) {
+	initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver,
+	        siStructure: SiStructure) {
 		const componentFactory = componentFactoryResolver.resolveComponentFactory(BulkyEntryComponent);
 
 		const componentRef = viewContainerRef.createComponent(componentFactory);
 
-		componentRef.instance.siContent = this;
-
+		componentRef.instance.model = this;
+		componentRef.instance.siStructure = siStructure;
+		
 		return componentRef;
 	}
 }

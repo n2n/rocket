@@ -8,32 +8,26 @@ import { SiEntry } from 'src/app/si/model/entity/si-entry';
 export class EmbeCollection {
 	public embes: Embe[] = [];
 
-	constructor(private model: EmbeddedEntryModel) {
-	}
-
-	protected registerEmbe(embe: Embe) {
-		if (embe.siStructure) {
-			this.model.registerSiStructure(embe.siStructure);
-		}
-
-		if (embe.summarySiStructure) {
-			this.model.registerSiStructure(embe.summarySiStructure);
-		}
+	constructor(private parentSiStructure: SiStructure, private model: EmbeddedEntryModel) {
 	}
 
 	protected unregisterEmbe(embe: Embe) {
-		if (embe.siStructure) {
-			this.model.unregisterSiStructure(embe.siStructure);
+	    if (embe.siStructure) {
+			embe.siStructure.dispose();
+			embe.siStructure = null;
 		}
 
 		if (embe.summarySiStructure) {
-			this.model.unregisterSiStructure(embe.summarySiStructure);
+			embe.summarySiStructure.dispose();
+			embe.summarySiStructure = null;
 		}
 	}
 
 	initEmbe(embe: Embe, siEmbeddedEntry: SiEmbeddedEntry) {
-		const siStructure = new SiStructure(null, null, siEmbeddedEntry.comp);
-		const summarySiStructure = (siEmbeddedEntry.summaryComp ? new SiStructure(null, null, siEmbeddedEntry.summaryComp) : null);
+		const siStructure = new SiStructure(this.parentSiStructure, null, null, siEmbeddedEntry.comp);
+		const summarySiStructure = (siEmbeddedEntry.summaryComp 
+		        ? new SiStructure(this.parentSiStructure, null, null, siEmbeddedEntry.summaryComp) 
+		        : null);
 
 		// if (this.reduced) {
 		// 	siEmbeddedEntry.comp.controls = [
@@ -49,8 +43,6 @@ export class EmbeCollection {
 		embe.siEmbeddedEntry = siEmbeddedEntry;
 		embe.siStructure = siStructure;
 		embe.summarySiStructure = summarySiStructure;
-
-		this.registerEmbe(embe);
 
 		return embe;
 	}
@@ -79,8 +71,8 @@ export class EmbeCollection {
 }
 
 export class EmbedInCollection extends EmbeCollection {
-	constructor(private inModel: EmbeddedEntryInModel) {
-		super(inModel);
+	constructor(parentSiStructure: SiStructure, private inModel: EmbeddedEntryInModel) {
+		super(parentSiStructure, inModel);
 	}
 
 	copyEntries(): SiEntry[] {

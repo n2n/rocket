@@ -9,6 +9,7 @@ import { SiPage } from 'src/app/si/model/entity/impl/basic/si-page';
 import { fromEvent, Subscription } from 'rxjs';
 import { SiQualifier } from 'src/app/si/model/entity/si-qualifier';
 import { EntriesListSiContent } from 'src/app/si/model/entity/impl/basic/entries-list-si-content';
+import { SiStructure } from "src/app/si/model/structure/si-structure";
 
 @Component({
   selector: 'rocket-ui-list-zone-content',
@@ -17,13 +18,14 @@ import { EntriesListSiContent } from 'src/app/si/model/entity/impl/basic/entries
 })
 export class ListZoneContentComponent implements OnInit, OnDestroy {
 
+    siStructure: SiStructure;
 	model: EntriesListSiContent;
-	siService: SiService;
+	
 
 	private subscription: Subscription;
 	private fieldDeclarations: Array<SiFieldDeclaration>|null = null;
 
-	constructor() {
+	constructor(private siService: SiService) {
 	}
 
 	ngOnInit() {

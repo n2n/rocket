@@ -5,27 +5,19 @@ import { StringOutFieldComponent } from 'src/app/ui/content/field/comp/string-ou
 import { StringFieldModel } from 'src/app/ui/content/field/string-field-model';
 import { OutSiFieldAdapter } from 'src/app/si/model/entity/impl/out-si-field-adapter';
 import { SiCommanderService } from 'src/app/si/model/si-commander.service';
+import { TypeSiContent } from "src/app/si/model/structure/impl/type-si-content";
+import { SiContent } from "src/app/si/model/structure/si-content";
 
 export class StringOutSiField extends OutSiFieldAdapter implements StringFieldModel {
-
+    
 	constructor(private value: string|null) {
 		super();
 	}
 
-	getContent() {
-		return this;
-	}
-
-	initComponent(viewContainerRef: ViewContainerRef,
-			componentFactoryResolver: ComponentFactoryResolver,
-			commanderService: SiCommanderService): ComponentRef<any> {
-		const componentFactory = componentFactoryResolver.resolveComponentFactory(StringOutFieldComponent);
-
-	    const componentRef = viewContainerRef.createComponent(componentFactory);
-
-	    componentRef.instance.model = this;
-
-	    return componentRef;
+	getContent(): SiContent|null {
+		return new TypeSiContent(StringOutFieldComponent, (ref, structure) => {
+		    ref.instance.model = this;
+		});
 	}
 
 	getValue(): string | null {

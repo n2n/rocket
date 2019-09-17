@@ -26,7 +26,8 @@
 					</ng-container> 
 				</td>
 				<td *ngFor="let siFieldDeclaration of getFieldDeclarations()" (click)="toggleSelection(siEntry.qualifier)">
-					<ng-template rocketContent [siContent]="siEntry.selectedTypeBuildup.getFieldById(siFieldDeclaration.fieldId).getContent()"></ng-template>
+					<ng-template rocketUiContent [siStructure]="siStructure" 
+							[siContent]="siEntry.selectedTypeBuildup.getFieldById(siFieldDeclaration.fieldId).getContent()"></ng-template>
 				</td>
 				<td class="rocket-table-commands rocket-simple-commands">
 					<ng-container *ngFor="let pair of siEntry.selectedTypeBuildup.controlMap | keyvalue">

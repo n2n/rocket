@@ -7,6 +7,7 @@ import { InSiFieldAdapter } from 'src/app/si/model/entity/impl/in-si-field-adapt
 import { SiCommanderService } from 'src/app/si/model/si-commander.service';
 import { SiContent } from 'src/app/si/model/structure/si-content';
 import { SiZone } from '../../../structure/si-zone';
+import { SiStructure } from "src/app/si/model/structure/si-structure";
 
 export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel, SiContent {
 
@@ -75,7 +76,7 @@ export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel,
 
 	initComponent(viewContainerRef: ViewContainerRef,
 			componentFactoryResolver: ComponentFactoryResolver,
-			commanderService: SiCommanderService): ComponentRef<any> {
+			siStructure: SiStructure): ComponentRef<any> {
 		const componentFactory = componentFactoryResolver.resolveComponentFactory(FileInFieldComponent);
 
 		const componentRef = viewContainerRef.createComponent(componentFactory);

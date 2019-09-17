@@ -19,8 +19,6 @@ export class EmbeddedEntriesInSiContent implements SiContent, EmbeddedEntryInMod
 	public pastCategory: string|null = null;
 	public allowedSiTypes: SiType[]|null = null;
 
-	private structures: SiStructure[] = [];
-
 	constructor(public zone: SiZone, public apiUrl: string, public values: SiEmbeddedEntry[] = []) {
 	}
 
@@ -38,17 +36,6 @@ export class EmbeddedEntriesInSiContent implements SiContent, EmbeddedEntryInMod
 
 	setValues(values: SiEmbeddedEntry[]) {
 		this.values = values;
-	}
-
-	registerSiStructure(siStructure: SiStructure) {
-		this.structures.push(siStructure);
-	}
-
-	unregisterSiStructure(siStructure: SiStructure) {
-		const i = this.structures.indexOf(siStructure);
-		if (i > -1) {
-			this.structures.splice(i, 1);
-		}
 	}
 
 	getMin(): number {
@@ -79,33 +66,19 @@ export class EmbeddedEntriesInSiContent implements SiContent, EmbeddedEntryInMod
 		return this.allowedSiTypes;
 	}
 
-	getZoneErrors(): SiZoneError[] {
-		const errors: SiZoneError[] = [];
-
-		for (const structure of this.structures) {
-			if (!structure.model) {
-				continue;
-			}
-
-			const content = structure.model.getContent();
-			if (content) {
-				errors.push(...content.getZoneErrors());
-			}
-		}
-
-		return errors;
-	}
-
-	initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver) {
+	initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver,
+	        siStructure: SiStructure) {
 		if (this.reduced) {
 			const componentFactory = componentFactoryResolver.resolveComponentFactory(EmbeddedEntriesSummaryInComponent);
 			const componentRef = viewContainerRef.createComponent(componentFactory);
 			componentRef.instance.model = this;
+			componentRef.instance.siStructure = siStructure;
 			return componentRef;
 		} else {
 			const componentFactory = componentFactoryResolver.resolveComponentFactory(EmbeddedEntriesInComponent);
 			const componentRef = viewContainerRef.createComponent(componentFactory);
 			componentRef.instance.model = this;
+            componentRef.instance.siStructure = siStructure;
 			return componentRef;
 		}
 	}

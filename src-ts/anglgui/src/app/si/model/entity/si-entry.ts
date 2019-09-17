@@ -114,12 +114,12 @@ export class SiEntry {
 	getZoneErrors(): SiZoneError[] {
 		const zoneErrors: SiZoneError[] = [];
 
-		for (const [, siField] of this.selectedTypeBuildup.fieldMap) {
-			const siContent = siField.getContent();
-			if (siContent) {
-				zoneErrors.push(...siContent.getZoneErrors());
-			}
-		}
+//		for (const [, siField] of this.selectedTypeBuildup.fieldMap) {
+//			const siContent = siField.getContent();
+//			if (siContent) {
+//				zoneErrors.push(...siContent.getZoneErrors());
+//			}
+//		}
 
 		return zoneErrors;
 	}

@@ -1,6 +1,6 @@
 
 import { BulkyEntrySiComp } from 'src/app/si/model/entity/impl/basic/bulky-entry-si-comp';
-import { CompactEntrySiComp } from 'src/app/si/model/entity/impl/basic/compact-entry-si-content';
+import { CompactEntrySiComp } from 'src/app/si/model/entity/impl/basic/compact-entry-si-comp';
 import { SiEntry } from 'src/app/si/model/entity/si-entry';
 
 export class SiEmbeddedEntry {

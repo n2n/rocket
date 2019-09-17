@@ -6,8 +6,9 @@ import { StringInFieldModel } from 'src/app/ui/content/field/string-in-field-mod
 import { InSiFieldAdapter } from 'src/app/si/model/entity/impl/in-si-field-adapter';
 import { SiCommanderService } from 'src/app/si/model/si-commander.service';
 import { SiContent } from '../../../structure/si-content';
+import { TypeSiContent } from "src/app/si/model/structure/impl/type-si-content";
 
-export class StringInSiField extends InSiFieldAdapter implements StringInFieldModel, SiContent {
+export class StringInSiField extends InSiFieldAdapter implements StringInFieldModel {
 	public mandatory = false;
 	public minlength: number|null = null;
 	public maxlength: number|null = null;
@@ -58,20 +59,22 @@ export class StringInSiField extends InSiFieldAdapter implements StringInFieldMo
 		return copy;
 	}
 
-	getContent(): SiContent {
-		return this;
-	}
+	getContent(): SiContent|null {
+        return new TypeSiContent(InputInFieldComponent, (ref, structure) => {
+            ref.instance.model = this;
+        });
+    }
 
-	initComponent(viewContainerRef: ViewContainerRef,
-			componentFactoryResolver: ComponentFactoryResolver,
-			commanderService: SiCommanderService): ComponentRef<any> {
-		const componentFactory = componentFactoryResolver.resolveComponentFactory(InputInFieldComponent);
-
-		const componentRef = viewContainerRef.createComponent(componentFactory);
-
-		const component = componentRef.instance;
-		component.model = this;
-
-		return componentRef;
-	}
+//	initComponent(viewContainerRef: ViewContainerRef,
+//			componentFactoryResolver: ComponentFactoryResolver,
+//			commanderService: SiCommanderService): ComponentRef<any> {
+//		const componentFactory = componentFactoryResolver.resolveComponentFactory(InputInFieldComponent);
+//
+//		const componentRef = viewContainerRef.createComponent(componentFactory);
+//
+//		const component = componentRef.instance;
+//		component.model = this;
+//
+//		return componentRef;
+//	}
 }

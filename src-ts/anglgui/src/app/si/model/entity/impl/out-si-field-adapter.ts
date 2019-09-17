@@ -9,9 +9,6 @@ import { SiCommanderService } from "src/app/si/model/si-commander.service";
 
 export abstract class OutSiFieldAdapter extends SiFieldAdapter {
 	
-	abstract initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver,
-			commanderService: SiCommanderService);
-    
 	hasInput(): boolean {
 		return false;
 	}

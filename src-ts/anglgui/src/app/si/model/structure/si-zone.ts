@@ -4,7 +4,7 @@ import { Subject, Subscription } from 'rxjs';
 import { SiStructure } from 'src/app/si/model/structure/si-structure';
 
 export class SiZone {
-	public structure = new SiStructure();
+	readonly structure = new SiStructure(null);
 	// public content: SiComp|null;
 	private disposeSubject = new Subject<void>();
 
@@ -12,6 +12,7 @@ export class SiZone {
 	}
 
 	dispose() {
+	    this.structure.dispose();
 		this.disposeSubject.next();
 		this.disposeSubject.complete();
 	}

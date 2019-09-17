@@ -3,8 +3,9 @@
 
 <ng-container *ngIf="siContent.entry">
 	<div *ngFor="let siFieldDeclaration of siContent.getFieldDeclarations()">
-		<ng-template rocketContent 
-				[siContent]="siContent.entry.selectedTypeBuildup.getFieldById(siFieldDeclaration.fieldId)">
+		<ng-template rocketUiContent 
+				[siStructure]="siStructure"
+				[siContent]="siContent.entry.selectedTypeBuildup.getFieldById(siFieldDeclaration.fieldId).getContent()">
 		</ng-template>
 	</div>
 </ng-container>

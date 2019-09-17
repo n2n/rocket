@@ -12,6 +12,7 @@ import { SiCommanderService } from 'src/app/si/model/si-commander.service';
 import { SiPage } from 'src/app/si/model/entity/impl/basic/si-page';
 import { SiQualifier } from 'src/app/si/model/entity/si-qualifier';
 import { SiStructureModel } from 'src/app/si/model/structure/si-structure-model';
+import { SiStructure } from "src/app/si/model/structure/si-structure";
 
 export class EntriesListSiContent implements SiComp, SiContent {
 
@@ -200,13 +201,13 @@ export class EntriesListSiContent implements SiComp, SiContent {
 
 	initComponent(viewContainerRef: ViewContainerRef,
 			componentFactoryResolver: ComponentFactoryResolver,
-			commanderService: SiCommanderService): ComponentRef<any> {
+			siStructure: SiStructure): ComponentRef<any> {
 		const componentFactory = componentFactoryResolver.resolveComponentFactory(ListZoneContentComponent);
 
 		const componentRef = viewContainerRef.createComponent(componentFactory);
 
 		componentRef.instance.model = this;
-		componentRef.instance.siService = commanderService.service;
+		componentRef.instance.siStructure = siStructure;
 
 		return componentRef;
 	}

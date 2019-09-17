@@ -5,6 +5,7 @@ import { EmbeddedAddPasteObtainer } from '../../embedded-add-paste-obtainer';
 import { SiService } from 'src/app/si/model/si.service';
 import { SiEmbeddedEntry } from 'src/app/si/model/entity/si-embedded-entry';
 import { Embe } from '../../embe';
+import { SiStructure } from "src/app/si/model/structure/si-structure";
 
 @Component({
   selector: 'rocket-embedded-entries-in',
@@ -12,7 +13,7 @@ import { Embe } from '../../embe';
   styleUrls: ['./embedded-entries-in.component.css']
 })
 export class EmbeddedEntriesInComponent implements OnInit {
-
+    siStructure: SiStructure;
 	model: EmbeddedEntryInModel;
 	private embeCol: EmbedInCollection;
 	obtainer: EmbeddedAddPasteObtainer;
@@ -20,7 +21,7 @@ export class EmbeddedEntriesInComponent implements OnInit {
 	constructor(private injector: Injector) { }
 
 	ngOnInit() {
-		this.embeCol = new EmbedInCollection(this.model);
+		this.embeCol = new EmbedInCollection(this.siStructure, this.model);
 		this.obtainer = new EmbeddedAddPasteObtainer(this.injector.get(SiService), this.model.getApiUrl(),
 				this.model.getSiZone(), this.model.isSummaryRequired());
 

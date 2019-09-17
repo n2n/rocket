@@ -15,8 +15,7 @@ export class CompactEntrySiComp implements SiComp, SiContent {
 	public entry: SiEntry|null = null;
 	public controlMap: Map<string, SiControl> = new Map();
 
-	constructor(public entryDeclaration: SiEntryDeclaration,
-			public zone: SiZone) {
+	constructor(public entryDeclaration: SiEntryDeclaration, public zone: SiZone) {
 	}
 
 	getZone(): SiZone {
@@ -46,10 +45,6 @@ export class CompactEntrySiComp implements SiComp, SiContent {
 		return this;
 	}
 
-	getChildren(): SiStructure[] {
-		return [];
-	}
-
 	getControls(): SiControl[] {
 		const controls: SiControl[] = [];
 		controls.push(...this.controlMap.values());
@@ -62,13 +57,14 @@ export class CompactEntrySiComp implements SiComp, SiContent {
 	}
 
 	initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver,
-			commanderService: SiCommanderService) {
+			siStructure: SiStructure) {
 		const componentFactory = componentFactoryResolver.resolveComponentFactory(CompactEntryComponent);
 
 		const componentRef = viewContainerRef.createComponent(componentFactory);
 
-	 componentRef.instance.siContent = this;
+		componentRef.instance.siContent = this;
+		componentRef.instance.siStructure = siStructure;
 
-	 return componentRef;
+		return componentRef;
 	}
 }

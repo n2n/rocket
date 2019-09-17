@@ -1,7 +1,6 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
 import { SiEntry } from 'src/app/si/model/entity/si-entry';
 import { SiFieldDeclaration } from 'src/app/si/model/entity/si-field-declaration';
-import { FieldSiStructureContent } from 'src/app/si/model/entity/impl/basic/field-si-structure-content';
 
 @Component({
   selector: 'rocket-field-structure',
@@ -9,7 +8,7 @@ import { FieldSiStructureContent } from 'src/app/si/model/entity/impl/basic/fiel
 })
 export class FieldStructureComponent implements OnInit {
 
-	public fieldSiStructureContent: FieldSiStructureContent;
+	public fieldSiStructureContent: any;
 
 	constructor() {
 // 		elemRef.nativeElement.classList.add('rocket-control');
