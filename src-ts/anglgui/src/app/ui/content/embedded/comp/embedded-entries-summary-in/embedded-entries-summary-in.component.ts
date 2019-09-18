@@ -3,7 +3,7 @@ import { PopupSiLayer } from 'src/app/si/model/structure/si-layer';
 import { EmbeddedAddPasteObtainer } from '../../embedded-add-paste-obtainer';
 import { TranslationService } from 'src/app/util/i18n/translation.service';
 import { EmbedInCollection } from '../../embe-collection';
-import { EmbeddedEntryInModel } from '../../embedded-entry-in-model';
+import { EmbeddedEntriesInModel } from '../../embedded-entry-in-model';
 import { SiService } from 'src/app/si/model/si.service';
 import { SiEmbeddedEntry } from 'src/app/si/model/entity/si-embedded-entry';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
@@ -24,7 +24,7 @@ import { SiStructure } from "src/app/si/model/structure/si-structure";
 })
 export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
     siStructure: SiStructure;
-	model: EmbeddedEntryInModel;
+	model: EmbeddedEntriesInModel;
 
 	private embeCol: EmbedInCollection;
 	private popupSiLayer: PopupSiLayer|null = null;

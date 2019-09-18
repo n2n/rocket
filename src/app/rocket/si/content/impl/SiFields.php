@@ -90,4 +90,6 @@ class SiFields {
 		return (new EmbeddedEntryInSiField($apiUrl, $inputHandler, $values))
 				->setMin($min)->setMax($max);
 	}
+	
+// 	static function embeddedEntryPanelsIn(Url $apiUrl, PanelEmbedd)
 }

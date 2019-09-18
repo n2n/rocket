@@ -1,5 +1,5 @@
 import { Component, OnInit, Injector } from '@angular/core';
-import { EmbeddedEntryInModel } from '../../embedded-entry-in-model';
+import { EmbeddedEntriesInModel } from '../../embedded-entry-in-model';
 import { EmbedInCollection, EmbeCollection } from '../../embe-collection';
 import { EmbeddedAddPasteObtainer } from '../../embedded-add-paste-obtainer';
 import { SiService } from 'src/app/si/model/si.service';
@@ -13,8 +13,8 @@ import { SiStructure } from "src/app/si/model/structure/si-structure";
   styleUrls: ['./embedded-entries-in.component.css']
 })
 export class EmbeddedEntriesInComponent implements OnInit {
-    siStructure: SiStructure;
-	model: EmbeddedEntryInModel;
+	siStructure: SiStructure;
+	model: EmbeddedEntriesInModel;
 	private embeCol: EmbedInCollection;
 	obtainer: EmbeddedAddPasteObtainer;
 

@@ -1,6 +1,6 @@
 import { Embe } from './embe';
 import { EmbeddedEntryModel } from './embedded-entry-model';
-import { EmbeddedEntryInModel } from './embedded-entry-in-model';
+import { EmbeddedEntriesInModel } from './embedded-entry-in-model';
 import { SiEmbeddedEntry } from 'src/app/si/model/entity/si-embedded-entry';
 import { SiStructure } from 'src/app/si/model/structure/si-structure';
 import { SiEntry } from 'src/app/si/model/entity/si-entry';
@@ -71,7 +71,7 @@ export class EmbeCollection {
 }
 
 export class EmbedInCollection extends EmbeCollection {
-	constructor(parentSiStructure: SiStructure, private inModel: EmbeddedEntryInModel) {
+	constructor(parentSiStructure: SiStructure, private inModel: EmbeddedEntriesInModel) {
 		super(parentSiStructure, inModel);
 	}
 
