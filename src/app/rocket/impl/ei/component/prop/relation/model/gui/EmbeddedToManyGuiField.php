@@ -133,7 +133,7 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandle {
 	}
 	
 	/**
-	 * @param array $siEntryInputs
+	 * @param SiEntryInput $siEntryInputs
 	 * @throws CorruptedSiInputDataException
 	 */
 	function handleInput(array $siEntryInputs): array {
