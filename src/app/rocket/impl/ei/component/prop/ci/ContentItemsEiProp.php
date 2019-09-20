@@ -39,6 +39,7 @@ use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 use rocket\impl\ei\component\prop\relation\RelationEiPropAdapter;
+use rocket\impl\ei\component\prop\relation\model\gui\RelationLinkGuiField;
 
 class ContentItemsEiProp extends RelationEiPropAdapter {
 	private $panelConfigs = array();
@@ -52,7 +53,6 @@ class ContentItemsEiProp extends RelationEiPropAdapter {
 				new RelationModel($this, false, true, RelationModel::MODE_EMBEDDED, 
 						(new EditConfig())->setMandatory(false)),
 				new ContentItemsEiPropConfigurator($this));
-		
 		
 		$this->panelConfigs = array(new PanelConfig('main', 'Main', null, 0));
 		
@@ -126,37 +126,15 @@ class ContentItemsEiProp extends RelationEiPropAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiProp::buildGuiField()
 	 */
-	public function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		$mapping = $eiu->entry()->getEiEntry();
-	
-		$eiFrame = $eiu->frame()->getEiFrame();
-		$relationEiField = $mapping->getEiField(EiPropPath::from($this));
-		try {
-			$targetReadEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame, $mapping);
-		} catch (InaccessibleEiCommandPathException $e) {
-			return null;
+	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
+		if ($readOnly || $this->editConfig->isReadOnly()) {
+			return new RelationLinkGuiField($eiu, $this->getRelationModel());
 		}
 		
-		$panelConfigs = $this->determinePanelConfigs($eiu);
-	
-		$contentItemEditable = null;
-		if (!$this->eiPropRelation->isReadOnly($mapping, $eiFrame)) {
-			$targetEditEiFrame = $this->eiPropRelation->createTargetEditPseudoEiFrame($eiFrame, $mapping);
-				
-			$contentItemEditable = new ContentItemEditable($this->getLabelLstr(), $relationEiField, $targetReadEiFrame,
-					$targetEditEiFrame, $panelConfigs);
+		$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())
+				->exec($this->getRelationModel()->getTargetEditEiCommandPath());
 			
-			$draftMode = $mapping->getEiObject()->isDraft();
-			$contentItemEditable->setDraftMode($draftMode);
-			$contentItemEditable->setReduced($this->isReduced());
-				
-			if ($targetEditEiFrame->getEiExecution()->isGranted()) {
-				$contentItemEditable->setNewMappingFormUrl($this->eiPropRelation->buildTargetNewEiuEntryFormUrl($mapping,
-						$draftMode, $eiFrame, $eiu->frame()->getHttpContext()));
-			}
-		}
-		
-		return new ContentItemGuiField($this->getLabelLstr(), $this->determinePanelConfigs($eiu), 
-				$relationEiField, $targetReadEiFrame, $eiu->gui()->isCompact(), $contentItemEditable);
+		return new ContentItemGuiField($eiu, $targetEiuFrame, $this->getRelationModel(), 
+				$this->determinePanelConfigs($eiu));
 	}
 }

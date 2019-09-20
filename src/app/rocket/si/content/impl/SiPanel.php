@@ -23,18 +23,137 @@ namespace rocket\si\content\impl;
 
 use n2n\util\type\ArgUtils;
 use rocket\si\content\SiEmbeddedEntry;
+use rocket\si\content\SiType;
 
 class SiPanel implements \JsonSerializable {
+	/**
+	 * @var string
+	 */
 	private $name;
+	/**
+	 * @var string
+	 */
 	private $label;
-	
+	/**
+	 * @var int
+	 */
+	private $min = 0;
+	/**
+	 * @var int|null
+	 */
+	private $max = null;
+	/**
+	 * @var SiType[]
+	 */
+	private $allowedTypes = [];
+	/**
+	 * @var SiGridPos|null
+	 */
+	private $gridPos = null;
+	/**
+	 * @var SiEmbeddedEntry[]
+	 */
+	private $embeddedEntries = [];
+
 	/**
 	 * @param string $name
 	 * @param string $label
 	 */
-	function __construct(string $name, string $label = null) {
+	function __construct(string $name, string $label) {
 		$this->name = $name;
 		$this->label = $label;
+	}
+	
+	/**
+	 * @return string
+	 */
+	function getName() {
+		return $this->name;
+	}
+	
+	/**
+	 * @param string $name
+	 */
+	function setName(string $name) {
+		$this->name = $name;
+	}
+	
+	/**
+	 * @return string
+	 */
+	function getLabel() {
+		return $this->label;
+	}
+	
+	/**
+	 * @param string $label
+	 */
+	function setLabel(string $label) {
+		$this->label = $label;
+	}
+		
+	/**
+	 * @return int
+	 */
+	function getMin() {
+		return $this->min;
+	}
+	
+	/**
+	 * @param int $min
+	 */
+	function setMin(int $min) {
+		$this->min = $min;
+	}
+	
+	/**
+	 * @return int
+	 */
+	function getMax() {
+		return $this->max;
+	}
+	
+	/**
+	 * @param int|null $max
+	 */
+	function setMax(?int $max) {
+		$this->max = $max;
+	}
+	
+	/**
+	 * @return \rocket\si\content\SiType[]
+	 */
+	function getAllowedTypes() {
+		return $this->allowedTypes;
+	}
+	
+	/**
+	 * @param \rocket\si\content\SiType[] $allowedTypes
+	 */
+	function setAllowedTypes(array $allowedTypes) {
+		ArgUtils::valArray($allowedTypes, SiType::class);
+		$this->allowedTypes = $allowedTypes;
+	}
+	
+	/**
+	 * @return \rocket\si\content\impl\SiGridPos|null
+	 */
+	function getGridPos() {
+		return $this->gridPos;
+	}
+	
+	/**
+	 * @param \rocket\si\content\impl\SiGridPos|null $gridPos
+	 */
+	function setGridPos(?SiGridPos $gridPos) {
+		$this->gridPos = $gridPos;
+	}
+	
+	/**
+	 * @return SiEmbeddedEntry[]
+	 */
+	function getEmbedddedEntries() {
+		return $this->embeddedEntries;
 	}
 	
 	/**
@@ -46,10 +165,25 @@ class SiPanel implements \JsonSerializable {
 	}
 	
 	/**
-	 * @return SiEmbeddedEntry[]
+	 * @param SiEmbeddedEntry $embeddedEntry
 	 */
-	function getEmbedddedEntries() {
-		return $this->embeddedEntries;
+	function addEmbeddedEntry(SiEmbeddedEntry $embeddedEntry) {
+		$this->embeddedEntries[] = $embeddedEntry;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \JsonSerializable::jsonSerialize()
+	 */
+	function jsonSerialize() {
+		return [
+			'name' => $this->name,
+			'label' => $this->label,
+			'min' => $this->min,
+			'max' => $this->max,
+			'allowedSiTypes' => $this->allowedSiTypes,
+			'gridPos' => $this->gridPos,
+			'embeddedEntries' => $this->embeddedEntries
+		];
+	}
 }

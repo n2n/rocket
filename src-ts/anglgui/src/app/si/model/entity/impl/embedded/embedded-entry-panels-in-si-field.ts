@@ -1,10 +1,10 @@
 import { InSiFieldAdapter } from '../in-si-field-adapter';
-import { SiEmbeddedEntry } from './si-embedded-entry';
 import { SiType } from '../../si-type';
 import { EmbeddedEntryPanelModel } from 'src/app/ui/content/embedded/embedded-entry-panels-model';
 import { SiField } from '../../si-field';
 import { SiContent } from '../../../structure/si-content';
 import { TypeSiContent } from '../../../structure/impl/type-si-content';
+import { SiPanel } from './si-panel';
 import { EmbeddedEntryPanelsInComponent } from 'src/app/ui/content/embedded/comp/embedded-entry-panels-in/embedded-entry-panels-in.component';
 
 export class EmbeddedEntryPanelsInSiField extends InSiFieldAdapter implements EmbeddedEntryPanelModel {
@@ -47,20 +47,4 @@ export class EmbeddedEntryPanelsInSiField extends InSiFieldAdapter implements Em
 			ref.instance.siStructure = structure;
 		});
 	}
-}
-
-export class SiPanel {
-	label: string;
-	embeddedEntries: SiEmbeddedEntry[] = [];
-	allowedSiTypes: SiType[]|null = null;
-	min = 0;
-	max: number|null = null;
-	gridPos: SiGridPos|null = null;
-}
-
-export interface SiGridPos {
-	colStart: number;
-	colEnd: number;
-	rowStart: number;
-	rowEnd: number;
 }

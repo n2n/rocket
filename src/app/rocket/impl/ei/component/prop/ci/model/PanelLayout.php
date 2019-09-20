@@ -1,48 +1,83 @@
 <?php
 namespace rocket\impl\ei\component\prop\ci\model;
 
+use rocket\si\content\SiEmbeddedEntry;
+use rocket\si\content\impl\SiPanel;
+use rocket\si\content\impl\SiGridPos;
+
 class PanelLayout {
-	private $numGridCols = 0;
-	private $numGridRows = 0;
 	/**
-	 * @var PanelConfig[]
+	 * @var SiPanel[]
 	 */
-	private $panelConfigs;
+	private $siPanels = [];
+	
+	public function __construct() {	
+	}
 	
 	/**
 	 * @param PanelConfig[] $panelConfigs
 	 */
-	public function __construct(array $panelConfigs) {
-		$this->panelConfigs = $panelConfigs;
+	function assignConfigs(array $panelConfigs) {
+		$numGridCols = 0;
+		$numGridRows = 0;
 		
-		$this->dingselGrid();
-	}
-	
-	private function dingselGrid() {
-		foreach ($this->panelConfigs as $panelConfig) {
+		foreach ($panelConfigs as $panelConfig) {
 			$gridPos = $panelConfig->getGridPos();
 			
 			if ($gridPos === null) continue;
 			
 			$colEnd = $gridPos->getColEnd();
-			if ($this->numGridCols < $colEnd) {
-				$this->numGridCols = $colEnd;
+			if ($numGridCols < $colEnd) {
+				$numGridCols = $colEnd;
 			}
 			
 			$rowEnd = $gridPos->getRowEnd();
-			if ($this->numGridRows < $rowEnd) {
-				$this->numGridRows = $rowEnd;
+			if ($numGridRows < $rowEnd) {
+				$numGridRows = $rowEnd;
 			}
 		}
 		
-		if (!$this->hasGrid()) return;
-		
-		foreach ($this->panelConfigs as $panelConfig) {
-			if ($panelConfig->getGridPos() !== null) continue;
+		$this->siPanels = [];
+		foreach ($panelConfigs as $panelConfig) {
+			$this->siPanels[$panelConfig->getName()] = $siPanel = new SiPanel($panelConfig->getName(), 
+					$panelConfig->getLabel());
 			
-			$panelConfig->setGridPos(new GridPos(1, $this->numGridCols, 
-					++$this->numGridRows, $this->numGridRows));
+			if (($gridPos = $panelConfig->getGridPos()) !== null) {
+				$siPanel->setGridPos($gridPos->toSiGridPos());
+				continue;
+			}
+			
+			$siPanel->setGridPos(new SiGridPos(1, $numGridCols,
+					++$numGridRows, $numGridRows));
 		}
+	}
+	
+	/**
+	 * @param string $panelName
+	 * @return boolean
+	 */
+	function containsPanelName(string $panelName) {
+		return isset($this->siPanels[$panelName]);
+	}
+	
+	function clearSiEmbeddedEntries() {
+		foreach ($this->siPanels as $siPanel) {
+			$siPanel->setEmbeddedEntries([]);
+		}
+	}
+	
+	/**
+	 * @param string $panelName
+	 * @param SiEmbeddedEntry $siEmbeddedEntry
+	 * @return boolean
+	 */
+	function addSiEmbeddedEntry(string $panelName, SiEmbeddedEntry $siEmbeddedEntry) {
+		if (!isset($this->siPanels[$panelName])) {
+			return false;
+		}
+		
+		$this->siPanels[$panelName]->addEmbeddedEntry($siEmbeddedEntry);
+		return true;
 	}
 	
 	/**
@@ -61,9 +96,9 @@ class PanelLayout {
 	}
 	
 	/**
-	 * @return PanelConfig[]
+	 * @return SiPanel[]
 	 */
-	public function getPanelConfigs() {
+	public function getSiPanels() {
 		return $this->panelConfigs;
 	}
 }

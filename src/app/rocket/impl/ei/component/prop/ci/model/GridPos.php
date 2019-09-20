@@ -1,6 +1,8 @@
 <?php
 namespace rocket\impl\ei\component\prop\ci\model;
 
+use rocket\si\content\impl\SiGridPos;
+
 class GridPos {
 	private $colStart;
 	private $colEnd;
@@ -90,5 +92,12 @@ class GridPos {
 	 */
 	public function setRowEnd(int $rowEnd) {
 		$this->rowEnd = $rowEnd;
+	}
+	
+	/**
+	 * @return \rocket\si\content\impl\SiGridPos
+	 */
+	function toSiGridPos() {
+		return new SiGridPos($this->colStart, $this->colEnd, $this->rowStart, $this->rowEnd);
 	}
 }

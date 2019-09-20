@@ -47,33 +47,31 @@ class SiEmbeddedEntry implements \JsonSerializable {
 	/**
 	 * @return \rocket\si\structure\impl\BulkyEntrySiContent
 	 */
-	public function getContent() {
+	function getContent() {
 		return $this->content;
 	}
 	
 	/**
 	 * @param \rocket\si\structure\impl\BulkyEntrySiContent $content
 	 */
-	public function setContent(BulkyEntrySiContent $content) {
+	function setContent(BulkyEntrySiContent $content) {
 		$this->content = $content;
 	}
 	
 	/**
 	 * @return \rocket\si\structure\impl\CompactEntrySiContent|null
 	 */
-	public function getSummaryContent() {
+	function getSummaryContent() {
 		return $this->summaryContent;
 	}
 	
 	/**
 	 * @param \rocket\si\structure\impl\CompactEntrySiContent|null $summaryContent
 	 */
-	public function setSummaryContent(CompactEntrySiContent $summaryContent) {
+	function setSummaryContent(CompactEntrySiContent $summaryContent) {
 		$this->summaryContent = $summaryContent;
 	}
 
-	
-	
 	function jsonSerialize() {		
 		return [
 			'content' => SiPayloadFactory::createDataFromContent($this->content),
