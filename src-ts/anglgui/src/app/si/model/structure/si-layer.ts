@@ -1,7 +1,7 @@
 
 import { SiZone } from 'src/app/si/model/structure/si-zone';
 import { SiContainer } from 'src/app/si/model/structure/si-container';
-import { Subject, Observable, Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { IllegalSiStateError } from 'src/app/si/model/illegal-si-state-error';
 
 export interface SiLayer {
@@ -127,5 +127,4 @@ export class PopupSiLayer extends SiLayerAdapter {
 	onDispose(callback: () => any): Subscription {
 		return this.disposeSubject.subscribe(callback);
 	}
-
 }

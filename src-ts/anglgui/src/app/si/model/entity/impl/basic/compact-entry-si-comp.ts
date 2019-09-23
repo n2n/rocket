@@ -5,7 +5,6 @@ import { SiEntry } from 'src/app/si/model/entity/si-entry';
 import { SiContent } from 'src/app/si/model/structure/si-content';
 import { SiStructure } from 'src/app/si/model/structure/si-structure';
 import { SiControl } from 'src/app/si/model/control/si-control';
-import { SiZone } from 'src/app/si/model/structure/si-zone';
 import { SiZoneError } from 'src/app/si/model/structure/si-zone-error';
 import { CompactEntryComponent } from 'src/app/ui/content/zone/comp/compact-entry/compact-entry.component';
 import { SiFieldDeclaration } from 'src/app/si/model/entity/si-field-declaration';
@@ -15,11 +14,7 @@ export class CompactEntrySiComp implements SiComp, SiContent {
 	public entry: SiEntry|null = null;
 	public controlMap: Map<string, SiControl> = new Map();
 
-	constructor(public entryDeclaration: SiEntryDeclaration, public zone: SiZone) {
-	}
-
-	getZone(): SiZone {
-		return this.zone;
+	constructor(public entryDeclaration: SiEntryDeclaration) {
 	}
 
 	getEntries(): SiEntry[] {

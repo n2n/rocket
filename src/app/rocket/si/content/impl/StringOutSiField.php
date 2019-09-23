@@ -88,7 +88,7 @@ class StringOutSiField extends OutSiFieldAdapter {
 	 * @see \rocket\si\content\impl\OutSiFieldAdapter::isReadOnly()
 	 */
 	function isReadOnly(): bool {
-		return false;
+		return true;
 	}
 	
 	/**

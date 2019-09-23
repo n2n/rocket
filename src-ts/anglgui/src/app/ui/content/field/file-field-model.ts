@@ -4,7 +4,5 @@ import { SiZone } from 'src/app/si/model/structure/si-zone';
 
 export interface FileFieldModel extends MessageFieldModel {
 
-	getSiZone(): SiZone;
-
 	getSiFile(): SiFile|null;
 }

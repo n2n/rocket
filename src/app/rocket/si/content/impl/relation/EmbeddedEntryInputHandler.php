@@ -19,12 +19,12 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\si\content\impl;
+namespace rocket\si\content\impl\relation;
 
 use rocket\si\input\SiEntryInput;
 use rocket\si\content\SiEntry;
 
-interface EmbeddedEntryInputHandle {
+interface EmbeddedEntryInputHandler {
 	/**
 	 * @param SiEntryInput[] $siEntryInputs
 	 * @return SiEntry[]

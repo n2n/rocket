@@ -19,15 +19,14 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\si\content\impl;
+namespace rocket\si\content\impl\relation;
 
+use n2n\util\type\ArgUtils;
 use n2n\util\type\attrs\DataSet;
 use n2n\util\uri\Url;
-use n2n\util\type\ArgUtils;
-use rocket\si\content\SiEntry;
-use rocket\si\input\SiEntryInput;
-use rocket\si\content\SiEmbeddedEntry;
 use rocket\si\content\SiType;
+use rocket\si\content\impl\InSiFieldAdapter;
+use rocket\si\input\SiEntryInput;
 
 class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	
@@ -36,7 +35,7 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	 */
 	private $apiUrl;
 	/**
-	 * @var EmbeddedEntryInputHandle
+	 * @var EmbeddedEntryInputHandler
 	 */
 	private $inputHandler;
 	/**
@@ -66,7 +65,7 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	/**
 	 * @var string|null
 	 */
-	private $pastCategory = null;
+	private $pasteCategory = null;
 	/**
 	 * @var SiType[]|null
 	 */
@@ -74,10 +73,10 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param Url $apiUrl
-	 * @param EmbeddedEntryInputHandle $inputHandler
-	 * @param SiEntry[] $values
+	 * @param EmbeddedEntryInputHandler $inputHandler
+	 * @param SiEmbeddedEntry[] $values
 	 */
-	function __construct(Url $apiUrl, EmbeddedEntryInputHandle $inputHandler, array $values = []) {
+	function __construct(Url $apiUrl, EmbeddedEntryInputHandler $inputHandler, array $values = []) {
 		$this->apiUrl = $apiUrl;
 		$this->inputHandler = $inputHandler;
 		$this->setValues($values);
@@ -85,7 +84,7 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param Url $apiUrl
-	 * @return \rocket\si\content\impl\EmbeddedEntryInSiField
+	 * @return \rocket\si\content\impl\relation\EmbeddedEntryInSiField
 	 */
 	function setApiUrl(Url $apiUrl) {
 		$this->apiUrl = $apiUrl;
@@ -101,7 +100,7 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param SiEmbeddedEntry[] $values
-	 * @return \rocket\si\content\impl\EmbeddedEntryInSiField
+	 * @return \rocket\si\content\impl\relation\EmbeddedEntryInSiField
 	 */
 	function setValues(array $values) {
 		ArgUtils::valArray($values, SiEmbeddedEntry::class);
@@ -118,7 +117,7 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param int $min
-	 * @return \rocket\si\content\impl\EmbeddedEntryInSiField
+	 * @return \rocket\si\content\impl\relation\EmbeddedEntryInSiField
 	 */
 	function setMin(int $min) {
 		$this->min = $min;
@@ -134,7 +133,7 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param int|null $max
-	 * @return \rocket\si\content\impl\EmbeddedEntryInSiField
+	 * @return \rocket\si\content\impl\relation\EmbeddedEntryInSiField
 	 */
 	function setMax(?int $max) {
 		$this->max = $max;
@@ -250,7 +249,7 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 			'reduced' => $this->reduced,
 			'nonNewRemovable' => $this->nonNewRemovable,
 			'sortable' => $this->sortable,
-			'pastCategory' => $this->pastCategory,
+			'pasteCategory' => $this->pasteCategory,
 			'allowedSiTypes' => $this->allowedSiTypes
 		];
 	}

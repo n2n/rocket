@@ -21,11 +21,11 @@
  */
 namespace rocket\impl\ei\component\prop\ci\model;
 
-use rocket\ei\manage\gui\field\GuiFieldEditable;
-use rocket\ei\manage\frame\EiFrame;
-use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
 use n2n\util\ex\IllegalStateException;
 use n2n\util\uri\Url;
+use rocket\ei\manage\frame\EiFrame;
+use rocket\ei\manage\gui\field\GuiFieldEditable;
+use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
 use rocket\si\content\SiField;
 
 class ContentItemEditable implements GuiFieldEditable {

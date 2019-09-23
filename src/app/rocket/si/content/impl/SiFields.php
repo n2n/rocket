@@ -23,6 +23,11 @@ namespace rocket\si\content\impl;
 
 use n2n\io\managed\File;
 use n2n\util\uri\Url;
+use rocket\si\content\impl\relation\QualifierSelectInSiField;
+use rocket\si\content\impl\relation\EmbeddedEntryInSiField;
+use rocket\si\content\impl\relation\EmbeddedEntryPanelsInSiField;
+use rocket\si\content\impl\relation\EmbeddedEntryPanelInputHandler;
+use rocket\si\content\impl\relation\EmbeddedEntryInputHandler;
 
 class SiFields {
 	
@@ -85,11 +90,19 @@ class SiFields {
 	 * @param int $max
 	 * @return EmbeddedEntryInSiField
 	 */
-	static function embeddedEntryIn(Url $apiUrl, EmbeddedEntryInputHandle $inputHandler, array $values = [], 
+	static function embeddedEntryIn(Url $apiUrl, EmbeddedEntryInputHandler $inputHandler, array $values = [], 
 			int $min = 0, int $max = null) {
-		return (new EmbeddedEntryInSiField($apiUrl, $inputHandler, $values))
-				->setMin($min)->setMax($max);
+		return (new EmbeddedEntryInSiField($apiUrl, $inputHandler, $values))->setMin($min)->setMax($max);
 	}
 	
-// 	static function embeddedEntryPanelsIn(Url $apiUrl, PanelEmbedd)
+	/**
+	 * @param Url $apiUrl
+	 * @param EmbeddedEntryPanelInputHandler $inputHandler
+	 * @param array $panels
+	 * @return \rocket\si\content\impl\relation\EmbeddedEntryPanelsInSiField
+	 */
+	static function embeddedEntryPanelsIn(Url $apiUrl, EmbeddedEntryPanelInputHandler $inputHandler, 
+			array $panels = []) {
+		return (new EmbeddedEntryPanelsInSiField($apiUrl, $inputHandler, $panels));
+	}
 }

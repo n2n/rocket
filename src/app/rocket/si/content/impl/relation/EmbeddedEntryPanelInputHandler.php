@@ -19,33 +19,12 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\si\content\impl;
+namespace rocket\si\content\impl\relation;
 
-class SiGridPos implements \JsonSerializable {
-	private $colStart;
-	private $colEnd;
-	private $rowStart;
-	private $rowEnd;
-	
+interface EmbeddedEntryPanelInputHandler {
 	/**
-	 * @param int $colStart
-	 * @param int $colEnd
-	 * @param int $rowStart
-	 * @param int $rowEnd
+	 * @param SiPanelInput[] $siPanelInputs
+	 * @return SiPanel[]
 	 */
-	function __construct(int $colStart, int $colEnd, int $rowStart, int $rowEnd) {
-		$this->colStart = $colStart;
-		$this->colEnd = $colEnd;
-		$this->rowStart = $rowStart;
-		$this->rowEnd = $rowEnd;
-	}
-	
-	function jsonSerialize() {
-		return [
-			'colStart' => $this->colStart,
-			'colEnd' => $this->colEnd,
-			'rowStart' => $this->rowStart,
-			'rowEnd' => $this->rowEnd
-		];
-	}
+	function handleInput(array $siPanelInput): array;
 }

@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\si\content;
+namespace rocket\si\content\impl\relation;
 
 use rocket\si\structure\impl\BulkyEntrySiContent;
 use rocket\si\structure\impl\CompactEntrySiContent;

@@ -14,7 +14,7 @@ export class SiStructure {
 
 	private disposed = false;
 
-	constructor(readonly parent: SiStructure|null, readonly _zone: SiZone|null, public type: SiStructureType|null = null,
+	constructor(readonly parent: SiStructure|null, private _zone: SiZone|null, public type: SiStructureType|null = null,
 			public label: string|null = null, private _model: SiStructureModel|null = null) {
 		if (parent) {
 			parent.registerChild(this);

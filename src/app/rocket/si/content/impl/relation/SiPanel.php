@@ -19,10 +19,9 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\si\content\impl;
+namespace rocket\si\content\impl\relation;
 
 use n2n\util\type\ArgUtils;
-use rocket\si\content\SiEmbeddedEntry;
 use rocket\si\content\SiType;
 
 class SiPanel implements \JsonSerializable {
@@ -43,9 +42,25 @@ class SiPanel implements \JsonSerializable {
 	 */
 	private $max = null;
 	/**
-	 * @var SiType[]
+	 * @var bool
 	 */
-	private $allowedTypes = [];
+	private $reduced = false;
+	/**
+	 * @var bool
+	 */
+	private $sortable = false;
+	/**
+	 * @var string|null
+	 */
+	private $pasteCategory = null;
+	/**
+	 * @var SiType[]|null
+	 */
+	private $allowedSiTypes = null;
+	/**
+	 * @var bool
+	 */
+	private $nonNewRemovable = true;
 	/**
 	 * @var SiGridPos|null
 	 */
@@ -53,7 +68,7 @@ class SiPanel implements \JsonSerializable {
 	/**
 	 * @var SiEmbeddedEntry[]
 	 */
-	private $embeddedEntries = [];
+	private $values = [];
 
 	/**
 	 * @param string $name
@@ -121,6 +136,70 @@ class SiPanel implements \JsonSerializable {
 	}
 	
 	/**
+	 * @return boolean
+	 */
+	function isReduced() {
+		return $this->reduced;
+	}
+	
+	/**
+	 * @param boolean $reduced
+	 * @return EmbeddedEntryPanelsInSiField
+	 */
+	function setReduced(bool $reduced) {
+		$this->reduced = $reduced;
+		return $this;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	function isNonNewRemovable() {
+		return $this->nonNewRemovable;
+	}
+	
+	/**
+	 * @param bool $nonNewRemovable
+	 * @return EmbeddedEntryInSiField
+	 */
+	function setNonNewRemovable(bool $nonNewRemovable) {
+		$this->nonNewRemovable = $nonNewRemovable;
+		return $this;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	function isSortable() {
+		return $this->sortable;
+	}
+	
+	/**
+	 * @param bool $sortable
+	 * @return EmbeddedEntryPanelsInSiField
+	 */
+	function setSortable(bool $sortable) {
+		$this->sortable = $sortable;
+		return $this;
+	}
+	
+	/**
+	 * @return string
+	 */
+	function isPasteCategory() {
+		return $this->pasteCategory;
+	}
+	
+	/**
+	 * @param string $pasteCategory
+	 * @return EmbeddedEntryPanelsInSiField
+	 */
+	function setPasteCategory(string $pasteCategory) {
+		$this->pasteCategory = $pasteCategory;
+		return $this;
+	}
+	
+	/**
 	 * @return \rocket\si\content\SiType[]
 	 */
 	function getAllowedTypes() {
@@ -136,24 +215,26 @@ class SiPanel implements \JsonSerializable {
 	}
 	
 	/**
-	 * @return \rocket\si\content\impl\SiGridPos|null
+	 * @return \rocket\si\content\impl\relation\SiGridPos|null
 	 */
 	function getGridPos() {
 		return $this->gridPos;
 	}
 	
 	/**
-	 * @param \rocket\si\content\impl\SiGridPos|null $gridPos
+	 * @param \rocket\si\content\impl\relation\SiGridPos|null $gridPos
+	 * @return SiPanel
 	 */
 	function setGridPos(?SiGridPos $gridPos) {
 		$this->gridPos = $gridPos;
+		return $this;
 	}
 	
 	/**
 	 * @return SiEmbeddedEntry[]
 	 */
 	function getEmbedddedEntries() {
-		return $this->embeddedEntries;
+		return $this->values;
 	}
 	
 	/**
@@ -161,14 +242,14 @@ class SiPanel implements \JsonSerializable {
 	 */
 	function setEmbeddedEntries(array $embeddedEntries) {
 		ArgUtils::valArray($embeddedEntries, SiEmbeddedEntry::class);
-		$this->embeddedEntries = $embeddedEntries;
+		$this->values = $embeddedEntries;
 	}
 	
 	/**
 	 * @param SiEmbeddedEntry $embeddedEntry
 	 */
 	function addEmbeddedEntry(SiEmbeddedEntry $embeddedEntry) {
-		$this->embeddedEntries[] = $embeddedEntry;
+		$this->values[] = $embeddedEntry;
 	}
 	
 	/**
@@ -181,9 +262,13 @@ class SiPanel implements \JsonSerializable {
 			'label' => $this->label,
 			'min' => $this->min,
 			'max' => $this->max,
+			'reduced' => $this->reduced,
+			'nonNewRemovable' => $this->nonNewRemovable,
+			'sortable' => $this->sortable,
+			'pasteCategory' => $this->pasteCategory,
 			'allowedSiTypes' => $this->allowedSiTypes,
 			'gridPos' => $this->gridPos,
-			'embeddedEntries' => $this->embeddedEntries
+			'values' => $this->values
 		];
 	}
 }

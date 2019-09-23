@@ -22,7 +22,7 @@ export class EntriesListSiContent implements SiComp, SiContent {
 	public entryDeclaration: SiEntryDeclaration|null = null;
 	public qualifierSelection: SiQualifierSelection|null = null;
 
-	constructor(public apiUrl: string, public pageSize: number, public zone: SiZone) {
+	constructor(public apiUrl: string, public pageSize: number) {
 // 		this.qualifierSelection = {
 // 			min: 0,
 // 			max: 1,
@@ -32,10 +32,6 @@ export class EntriesListSiContent implements SiComp, SiContent {
 //
 // 			cancel: () => { }
 // 		}
-	}
-
-	getZone(): SiZone {
-		return this.zone;
 	}
 
 	getApiUrl(): string {

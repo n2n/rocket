@@ -29,7 +29,6 @@ use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\si\content\impl\SiFields;
 use n2n\util\type\CastUtils;
 use rocket\ei\util\entry\EiuEntry;
-use rocket\ei\EiPropPath;
 
 class ToManyGuiField implements GuiField {
 	/**

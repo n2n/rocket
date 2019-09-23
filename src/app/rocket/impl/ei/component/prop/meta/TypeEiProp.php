@@ -22,7 +22,6 @@
 namespace rocket\impl\ei\component\prop\meta;
 
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
-use rocket\ei\component\prop\GuiEiProp;
 use n2n\l10n\N2nLocale;
 use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable;
 use rocket\ei\util\Eiu;
@@ -32,13 +31,15 @@ use rocket\impl\ei\component\prop\adapter\DisplayableEiPropAdapter;
 use n2n\impl\web\ui\view\html\HtmlSnippet;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use rocket\si\content\SiField;
+use rocket\si\content\impl\SiFields;
 
 class TypeEiProp extends DisplayableEiPropAdapter implements StatelessGuiFieldDisplayable {
 	
 	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
 // 		$eiu->prop()->getLabel();
 // 		$eiu->prop()->getHelpText();
-		return $this->getDisplayConfig()->toDisplayDefinition($this, $eiu->gui()->getViewMode());
+		return $this->getDisplayConfig()->toDisplayDefinition($eiu->gui()->getViewMode(),
+				$eiu->prop()->getLabel());
 	}
 
 	public function createOutSiField(Eiu $eiu): SiField {
@@ -46,12 +47,14 @@ class TypeEiProp extends DisplayableEiPropAdapter implements StatelessGuiFieldDi
 		$iconType = $eiuMask->getIconType();
 		$label = $eiuMask->getLabel();
 		
-		if (null === $iconType) return $label;
+		if (null === $iconType) {
+			return SiFields::stringOut($label);
+		}
 		
-		return new HtmlSnippet(
+		return SiFields::stringOut((string) new HtmlSnippet(
 				new HtmlElement('i', array('class' => $iconType), ''),
 				' ',
-				new HtmlElement('span', null, $label));
+				new HtmlElement('span', null, $label)));
 	}
 	
 	public function createEiPropConfigurator(): EiPropConfigurator {

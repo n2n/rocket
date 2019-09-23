@@ -19,63 +19,44 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\si\content\impl;
+namespace rocket\si\content\impl\relation;
 
-use n2n\util\type\attrs\DataSet;
-use rocket\si\content\SiQualifier;
-use n2n\util\uri\Url;
 use n2n\util\type\ArgUtils;
+use n2n\util\type\attrs\DataSet;
+use n2n\util\uri\Url;
+use rocket\si\content\impl\InSiFieldAdapter;
 
-class QualifierSelectInSiField extends InSiFieldAdapter {
-	/**
-	 * @var SiQualifier[]
-	 */
-	private $values;
+class EmbeddedEntryPanelsInSiField extends InSiFieldAdapter {
+	
 	/**
 	 * @var Url
 	 */
 	private $apiUrl;
 	/**
-	 * @var int
+	 * @var EmbeddedEntryPanelInputHandler
 	 */
-	private $min = 0;
-	
+	private $inputHandler;
 	/**
-	 * @var int|null
+	 * @var SiPanel[]
 	 */
-	private $max = null;
+	private $panels;
 	
 	/**
 	 * @param Url $apiUrl
-	 * @param SiQualifier[] $values
+	 * @param EmbeddedEntryPanelInputHandler $inputHandler
+	 * @param SiPanel[] $panels
 	 */
-	function __construct(Url $apiUrl, array $values = []) {
-		$this->setValues($values);	
+	function __construct(Url $apiUrl, EmbeddedEntryPanelInputHandler $inputHandler, array $panels = []) {
 		$this->apiUrl = $apiUrl;
+		$this->inputHandler = $inputHandler;
+		$this->setPanels($panels);
 	}
 	
 	/**
-	 * @param SiQualifier[] $values
-	 * @return \rocket\si\content\impl\StringInSiField
+	 * @param Url $apiUrl
+	 * @return EmbeddedEntryPanelsInSiField
 	 */
-	function setValues(array $values) {
-		ArgUtils::valArray($values, SiQualifier::class);
-		$this->values = $values;
-		return $this;
-	}
-	
-	/**
-	 * @return SiQualifier[]
-	 */
-	function getValues() {
-		return $this->values;
-	}
-	
-	/**
-	 * @param Url|null $apiUrl
-	 * @return \rocket\si\content\impl\StringInSiField
-	 */
-	function setApiUrl(?Url $apiUrl) {
+	function setApiUrl(Url $apiUrl) {
 		$this->apiUrl = $apiUrl;
 		return $this;
 	}
@@ -88,35 +69,20 @@ class QualifierSelectInSiField extends InSiFieldAdapter {
 	}
 	
 	/**
-	 * @param int $min
-	 * @return \rocket\si\content\impl\StringInSiField
+	 * @param SiPanel[] $panels
+	 * @return EmbeddedEntryPanelsInSiField
 	 */
-	function setMin(int $min) {
-		$this->min = $min;
+	function setPanels(array $panels) {
+		ArgUtils::valArray($panels, SiPanel::class);
+		$this->panels = $panels;
 		return $this;
 	}
 	
 	/**
-	 * @return int
+	 * @return SiPanel[]
 	 */
-	function getMin() {
-		return $this->min;
-	}
-	
-	/**
-	 * @param int|null $max
-	 * @return \rocket\si\content\impl\StringInSiField
-	 */
-	function setMax(?int $max) {
-		$this->max = $max;
-		return $this;
-	}
-	
-	/**
-	 * @return int|null
-	 */
-	function getMax() {
-		return $this->max;
+	function getPanels() {
+		return $this->panels;
 	}
 	
 	/**
@@ -124,7 +90,7 @@ class QualifierSelectInSiField extends InSiFieldAdapter {
 	 * @see \rocket\si\content\SiField::getType()
 	 */
 	function getType(): string {
-		return 'qualifier-select-in';
+		return 'embedded-entry-panels-in';
 	}
 	
 	/**
@@ -133,23 +99,25 @@ class QualifierSelectInSiField extends InSiFieldAdapter {
 	 */
 	function getData(): array {
 		return [
-			'values' => $this->values,
+			'panels' => $this->panels,
 			'apiUrl' => (string) $this->apiUrl,
-			'min' => $this->min,
-			'max' => $this->max
+			'reduced' => $this->reduced,
+			'sortable' => $this->sortable,
+			'pasteCategory' => $this->pasteCategory,
 		];
 	}
-	 
+
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\si\content\SiField::handleInput()
 	 */
 	function handleInput(array $data) {
-		$siQualifiers = [];
-		foreach ((new DataSet($data))->reqArray('values', 'array') as $data) {
-			$siQualifiers[] = SiQualifier::parse($data);
+		$siPanelInputs = [];
+		foreach ((new DataSet($data))->reqArray('panelInputs', 'array') as $panelInputData) {
+			$siPanelInputs[] = SiPanelInput::parse($panelInputData);
 		}
-		
-		$this->values = $siQualifiers;
+		$panels = $this->inputHandler->handleInput($siPanelInputs);
+		ArgUtils::valArrayReturn($panels, $this->inputHandler, 'handleInput', SiPanelInput::class);
+		$this->panels = $panels;
 	}
 }

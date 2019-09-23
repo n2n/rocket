@@ -1,14 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { EmbeddedEntryPanelModel } from '../../embedded-entry-panels-model';
 import { SiStructure } from 'src/app/si/model/structure/si-structure';
-import { SiPanel } from 'src/app/si/model/entity/impl/embedded/embedded-entry-panels-in-si-field';
-import { EmbeddedEntriesInModel } from '../../embedded-entry-in-model';
-import { SiEmbeddedEntry } from 'src/app/si/model/entity/impl/embedded/si-embedded-entry';
 import { TypeSiContent } from 'src/app/si/model/structure/impl/type-si-content';
 import { SimpleSiStructureModel } from 'src/app/si/model/structure/impl/simple-si-structure-model';
 import { EmbeddedEntriesSummaryInComponent } from '../embedded-entries-summary-in/embedded-entries-summary-in.component';
 import { SiStructureType } from 'src/app/si/model/entity/si-field-structure-declaration';
-import { SiType } from 'src/app/si/model/entity/si-type';
+import { SiPanel } from 'src/app/si/model/entity/impl/embedded/si-panel';
+import { PanelEmbeddedEntryInModel } from './panel-embedded-entry-in-model';
 
 @Component({
 	selector: 'rocket-embedded-entry-panels-in',
@@ -50,52 +48,6 @@ export class EmbeddedEntryPanelsInComponent implements OnInit, OnDestroy {
 	}
 }
 
-class PanelEmbeddedEntryInModel implements EmbeddedEntriesInModel {
-
-	constructor(private panel: SiPanel, private model: EmbeddedEntryPanelModel) {
-
-	}
-
-	isNonNewRemovable(): boolean {
-		return true;
-	}
-
-	isSortable(): boolean {
-		return this.model.isSortable();
-	}
-
-	isSummaryRequired(): boolean {
-		return true;
-	}
-
-	getPastCategory(): string {
-		return this.model.getPastCategory();
-	}
-
-	getAllowedSiTypes(): SiType[] {
-		return this.panel.allowedSiTypes;
-	}
-
-	setValues(values: SiEmbeddedEntry[]): void {
-		this.panel.embeddedEntries = values;
-	}
-
-	getValues(): SiEmbeddedEntry[] {
-		return this.panel.embeddedEntries;
-	}
-
-	getApiUrl(): string {
-		return this.model.getApiUrl();
-	}
-
-	getMin(): number {
-		return this.panel.min;
-	}
-
-	getMax(): number|null {
-		return this.panel.max;
-	}
-}
 
 
 export class PanelLayout {

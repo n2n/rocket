@@ -7,6 +7,7 @@ import { PopupSiLayer } from 'src/app/si/model/structure/si-layer';
 import { SimpleSiStructureModel } from 'src/app/si/model/structure/impl/simple-si-structure-model';
 import { ImageResizeComponent } from '../../../file/image-resize/image-resize.component';
 import { TypeSiContent } from 'src/app/si/model/structure/impl/type-si-content';
+import { SiStructure } from 'src/app/si/model/structure/si-structure';
 
 @Component({
   selector: 'rocket-file-in-field',
@@ -49,10 +50,9 @@ export class FileInFieldComponent implements OnInit {
 		return !this.loading && this.currentSiFile && this.currentSiFile.imageDimensions.length > 0;
 	}
 
-	imgLoaded = false;
-	mandatory = true;
 	model: FileInFieldModel;
-	mimeTypes: string[] = [];
+	siStructure: SiStructure;
+	imgLoaded = false;
 
 	uploadInitiated = false;
 	uploadingFile: File|null = null;
@@ -113,7 +113,7 @@ export class FileInFieldComponent implements OnInit {
 			return;
 		}
 
-		const siZone = this.model.getSiZone();
+		const siZone = this.siStructure.getZone();
 
 		this.popupSiLayer = siZone.layer.container.createLayer();
 		this.popupSiLayer.onDispose(() => {

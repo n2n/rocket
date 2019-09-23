@@ -1,5 +1,4 @@
 import { InSiFieldAdapter } from '../in-si-field-adapter';
-import { SiType } from '../../si-type';
 import { EmbeddedEntryPanelModel } from 'src/app/ui/content/embedded/embedded-entry-panels-model';
 import { SiField } from '../../si-field';
 import { SiContent } from '../../../structure/si-content';
@@ -8,12 +7,8 @@ import { SiPanel } from './si-panel';
 import { EmbeddedEntryPanelsInComponent } from 'src/app/ui/content/embedded/comp/embedded-entry-panels-in/embedded-entry-panels-in.component';
 
 export class EmbeddedEntryPanelsInSiField extends InSiFieldAdapter implements EmbeddedEntryPanelModel {
-	public sortable = true;
-	public panels: SiPanel[];
-	public pastCategory: string|null = null;
-	public allowedSiTypes: SiType[]|null = null;
-
-	constructor(public apiUrl: string) {
+	
+	constructor(public apiUrl: string, public panels: SiPanel[]) {
 		super();
 	}
 
@@ -21,16 +16,8 @@ export class EmbeddedEntryPanelsInSiField extends InSiFieldAdapter implements Em
 		return this.panels;
 	}
 
-	isSortable(): boolean {
-		return this.sortable;
-	}
-
 	getApiUrl(): string {
 		return this.apiUrl;
-	}
-
-	getPastCategory(): string|null {
-		return this.pastCategory;
 	}
 
 	readInput(): object {

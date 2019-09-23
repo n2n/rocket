@@ -16,7 +16,7 @@ import { EntriesListSiContent } from 'src/app/si/model/entity/impl/basic/entries
 import { BulkyEntrySiComp } from 'src/app/si/model/entity/impl/basic/bulky-entry-si-comp';
 import { EmbeddedEntryInSiField } from 'src/app/si/model/entity/impl/embedded/embedded-entry-in-si-field';
 import { CompactEntrySiComp } from 'src/app/si/model/entity/impl/basic/compact-entry-si-comp';
-import { SiEmbeddedEntry } from 'src/app/si/model/entity/si-embedded-entry';
+import { SiEmbeddedEntry } from 'src/app/si/model/entity/impl/embedded/si-embedded-entry';
 import { SiZone } from '../model/structure/si-zone';
 import { Extractor, ObjectMissmatchError } from 'src/app/util/mapping/extractor';
 import { SiEntry } from '../model/entity/si-entry';
@@ -27,6 +27,8 @@ import { SiButton, SiConfirm } from '../model/control/si-button';
 import { SiControlType, SiFieldType, SiContentType } from './si-type';
 import { SiType } from 'src/app/si/model/entity/si-type';
 import { SiEntryDeclaration } from '../model/entity/si-entry-declaration';
+import { EmbeddedEntryPanelsInSiField } from '../model/entity/impl/embedded/embedded-entry-panels-in-si-field';
+import { SiPanel, SiGridPos } from '../model/entity/impl/embedded/si-panel';
 
 
 export class SiContentFactory {
@@ -57,7 +59,7 @@ export class SiContentFactory {
 		switch (type) {
 			case SiContentType.ENTRIES_LIST:
 				const listSiContent = new EntriesListSiContent(dataExtr.reqString('apiUrl'),
-						dataExtr.reqNumber('pageSize'), this.zone);
+						dataExtr.reqNumber('pageSize'));
 
 				compFactory = new SiCompFactory(this.zone, listSiContent);
 				listSiContent.entryDeclaration = SiResultFactory.createEntryDeclaration(dataExtr.reqObject('entryDeclaration'));
@@ -74,7 +76,7 @@ export class SiContentFactory {
 
 			case SiContentType.BULKY_ENTRY:
 				entryDeclaration = SiResultFactory.createEntryDeclaration(dataExtr.reqObject('entryDeclaration'));
-				const bulkyEntrySiContent = new BulkyEntrySiComp(entryDeclaration, this.zone);
+				const bulkyEntrySiContent = new BulkyEntrySiComp(entryDeclaration);
 
 				compFactory = new SiCompFactory(this.zone, bulkyEntrySiContent);
 				bulkyEntrySiContent.controls = Array.from(compFactory.createControlMap(dataExtr.reqMap('controls')).values());
@@ -83,7 +85,7 @@ export class SiContentFactory {
 
 			case SiContentType.COMPACT_ENTRY:
 				entryDeclaration = SiResultFactory.createEntryDeclaration(dataExtr.reqObject('entryDeclaration'));
-				const compactEntrySiContent = new CompactEntrySiComp(entryDeclaration, this.zone);
+				const compactEntrySiContent = new CompactEntrySiComp(entryDeclaration);
 
 				compFactory = new SiCompFactory(this.zone, compactEntrySiContent);
 				compactEntrySiContent.controlMap = compFactory.createControlMap(dataExtr.reqMap('controls'));
@@ -205,10 +207,10 @@ export class SiCompFactory {
 			return stringInSiField;
 
 		case SiFieldType.FILE_OUT:
-			return new FileOutSiField(this.zone, SiResultFactory.buildSiFile(dataExtr.nullaObject('value')));
+			return new FileOutSiField(SiResultFactory.buildSiFile(dataExtr.nullaObject('value')));
 
 		case SiFieldType.FILE_IN:
-			const fileInSiField = new FileInSiField(this.zone, dataExtr.reqString('apiUrl'),
+			const fileInSiField = new FileInSiField(dataExtr.reqString('apiUrl'),
 					dataExtr.reqObject('apiCallId'), SiResultFactory.buildSiFile(dataExtr.nullaObject('value')));
 			fileInSiField.mandatory = dataExtr.reqBoolean('mandatory');
 			fileInSiField.maxSize = dataExtr.reqNumber('maxSize');
@@ -221,21 +223,21 @@ export class SiCompFactory {
 					dataExtr.reqString('label'));
 
 		case SiFieldType.QUALIFIER_SELECT_IN:
-			const qualifierSelectInSiField = new QualifierSelectInSiField(this.zone, dataExtr.reqString('apiUrl'),
+			const qualifierSelectInSiField = new QualifierSelectInSiField(dataExtr.reqString('apiUrl'),
 					this.createQualifiers(dataExtr.reqArray('values')));
 			qualifierSelectInSiField.min = dataExtr.reqNumber('min');
 			qualifierSelectInSiField.max = dataExtr.nullaNumber('max');
 			return qualifierSelectInSiField;
 
 		case SiFieldType.EMBEDDED_ENTRY_IN:
-			const embeddedEntryInSiField = new EmbeddedEntryInSiField(this.zone, dataExtr.reqString('apiUrl'),
+			const embeddedEntryInSiField = new EmbeddedEntryInSiField(dataExtr.reqString('apiUrl'),
 					this.createEmbeddedEntries(dataExtr.reqArray('values')));
 			embeddedEntryInSiField.content.reduced = dataExtr.reqBoolean('reduced');
 			embeddedEntryInSiField.content.min = dataExtr.reqNumber('min');
 			embeddedEntryInSiField.content.max = dataExtr.nullaNumber('max');
 			embeddedEntryInSiField.content.nonNewRemovable = dataExtr.reqBoolean('nonNewRemovable');
 			embeddedEntryInSiField.content.sortable = dataExtr.reqBoolean('sortable');
-			embeddedEntryInSiField.content.pastCategory = dataExtr.nullaString('pastCategory');
+			embeddedEntryInSiField.content.pasteCategory = dataExtr.nullaString('pasteCategory');
 
 			const allowedsiTypesData = dataExtr.nullaArray('allowedSiTypes');
 			if (allowedsiTypesData) {
@@ -246,9 +248,51 @@ export class SiCompFactory {
 
 			return embeddedEntryInSiField;
 
+		case SiFieldType.EMBEDDED_ENTRY_PANELS_IN:
+			return new EmbeddedEntryPanelsInSiField(dataExtr.reqString('apiUrl'),
+					this.createPanels(dataExtr.reqArray('panels')));
+
 		default:
 			throw new ObjectMissmatchError('Invalid si field type: ' + data.type);
 		}
+	}
+
+	private createPanels(data: Array<any>): SiPanel[] {
+		const panels: SiPanel[] = [];
+		for (const panelData of data) {
+			panels.push(this.createPanel(panelData));
+		}
+		return panels;
+	}
+
+	private createPanel(data: any): SiPanel {
+		const extr = new Extractor(data);
+
+		const panel = new SiPanel(extr.reqString('name'), extr.reqString('label'));
+		panel.values = this.createEmbeddedEntries(extr.reqArray('values'));
+		panel.reduced = extr.reqBoolean('reduced');
+		panel.min = extr.reqNumber('min');
+		panel.max = extr.nullaNumber('max');
+		panel.nonNewRemovable = extr.reqBoolean('nonNewRemovable');
+		panel.sortable = extr.reqBoolean('sortable');
+		panel.pasteCategory = extr.nullaString('pasteCategory');
+		panel.gridPos = this.buildGridPos(extr.nullaObject('gridPos'));
+		return panel;
+	}
+
+	private buildGridPos(data: any): SiGridPos|null {
+		if (data === null) {
+			return null;
+		}
+
+		const extr = new Extractor(data);
+
+		return {
+			colStart: extr.reqNumber('colStart'),
+			colEnd: extr.reqNumber('colEnd'),
+			rowStart: extr.reqNumber('rowStart'),
+			rowEnd: extr.reqNumber('rowEnd')
+		};
 	}
 
 	private createEmbeddedEntries(data: Array<any>): SiEmbeddedEntry[] {

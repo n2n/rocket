@@ -1,18 +1,17 @@
 
 import { InSiFieldAdapter } from 'src/app/si/model/entity/impl/in-si-field-adapter';
-import { SiZone } from 'src/app/si/model/structure/si-zone';
-import { SiEmbeddedEntry } from 'src/app/si/model/entity/si-embedded-entry';
 import { SiContent } from 'src/app/si/model/structure/si-content';
 import { SiField } from '../../si-field';
 import { EmbeddedEntriesInSiContent } from './embedded-entries-in-si-content';
+import { SiEmbeddedEntry } from './si-embedded-entry';
 
 export class EmbeddedEntryInSiField extends InSiFieldAdapter  {
 
 	content: EmbeddedEntriesInSiContent;
 
-	constructor(zone: SiZone, apiUrl: string, values: SiEmbeddedEntry[] = []) {
+	constructor(apiUrl: string, values: SiEmbeddedEntry[] = []) {
 		super();
-		this.content = new EmbeddedEntriesInSiContent(zone, apiUrl, values);
+		this.content = new EmbeddedEntriesInSiContent(apiUrl, values);
 	}
 
 	readInput(): object {

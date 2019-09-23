@@ -10,23 +10,19 @@ import { SiControl } from 'src/app/si/model/control/si-control';
 import { SiZone } from 'src/app/si/model/structure/si-zone';
 import { SiZoneError } from 'src/app/si/model/structure/si-zone-error';
 import { SiStructureModel } from 'src/app/si/model/structure/si-structure-model';
-import { TypeSiContent } from "src/app/si/model/structure/impl/type-si-content";
-import { SimpleSiStructureModel } from "src/app/si/model/structure/impl/simple-si-structure-model";
-import { StructureBranchComponent } from "src/app/ui/content/zone/comp/structure-branch/structure-branch.component";
+import { TypeSiContent } from 'src/app/si/model/structure/impl/type-si-content';
+import { SimpleSiStructureModel } from 'src/app/si/model/structure/impl/simple-si-structure-model';
+import { StructureBranchComponent } from 'src/app/ui/content/zone/comp/structure-branch/structure-branch.component';
 
 export class BulkyEntrySiComp implements SiComp {
 
-	constructor(public entryDeclaration: SiEntryDeclaration, public zone: SiZone) {
+	constructor(public entryDeclaration: SiEntryDeclaration) {
 	}
 
 	private _entry: SiEntry|null = null;
 	public controls: Array<SiControl> = [];
 
 	private children: SiStructure[];
-
-	getZone(): SiZone {
-		return this.zone;
-	}
 
 	getEntries(): SiEntry[] {
 		return [this.entry];
@@ -63,12 +59,12 @@ export class BulkyEntrySiComp implements SiComp {
 	recheck() {
 		return this.children = null;
 	}
-	
+
 	getContents(): SiContent|null {
-	    return new TypeSiContent(BulkyEntryComponent, (ref, structure) => {
-	        ref.instance.model = this;
-	        ref.instance.siStructure = structure;
-	    });
+		return new TypeSiContent(BulkyEntryComponent, (ref, structure) => {
+			ref.instance.model = this;
+			ref.instance.siStructure = structure;
+		});
 	}
 
 	getControls(): SiControl[] {
@@ -83,14 +79,14 @@ export class BulkyEntrySiComp implements SiComp {
 	}
 
 	initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver,
-	        siStructure: SiStructure) {
+			siStructure: SiStructure) {
 		const componentFactory = componentFactoryResolver.resolveComponentFactory(BulkyEntryComponent);
 
 		const componentRef = viewContainerRef.createComponent(componentFactory);
 
 		componentRef.instance.model = this;
 		componentRef.instance.siStructure = siStructure;
-		
+
 		return componentRef;
 	}
 }

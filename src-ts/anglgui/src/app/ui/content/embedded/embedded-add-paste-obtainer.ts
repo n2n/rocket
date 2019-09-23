@@ -5,7 +5,7 @@ import { SiIdentifier } from 'src/app/si/model/entity/si-qualifier';
 import { SiGetInstruction } from 'src/app/si/model/api/si-get-instruction';
 import { CompactEntrySiComp } from 'src/app/si/model/entity/impl/basic/compact-entry-si-comp';
 import { Observable } from 'rxjs';
-import { SiEmbeddedEntry } from 'src/app/si/model/entity/si-embedded-entry';
+import { SiEmbeddedEntry } from 'src/app/si/model/entity/impl/embedded/si-embedded-entry';
 import { SiGetRequest } from 'src/app/si/model/api/si-get-request';
 import { map } from 'rxjs/operators';
 import { SiGetResponse } from 'src/app/si/model/api/si-get-response';
@@ -41,12 +41,12 @@ export class EmbeddedAddPasteObtainer implements AddPasteObtainer {
 	obtain(siIdentifier: SiIdentifier|null): Observable<SiEmbeddedEntry> {
 		const request = new SiGetRequest();
 
-		const comp = new BulkyEntrySiComp(undefined, undefined);
+		const comp = new BulkyEntrySiComp(undefined);
 		request.instructions[0] = this.createBulkyInstruction(comp, siIdentifier);
 
 		let summaryComp: CompactEntrySiComp|null = null;
 		if (this.obtainSummary) {
-			summaryComp = new CompactEntrySiComp(undefined, undefined);
+			summaryComp = new CompactEntrySiComp(undefined);
 			request.instructions[1] = this.createSummaryInstruction(summaryComp, siIdentifier);
 		}
 

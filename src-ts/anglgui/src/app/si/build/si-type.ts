@@ -6,7 +6,8 @@ export enum SiFieldType {
 	FILE_IN = 'file-in',
 	LINK_OUT = 'link-out',
 	QUALIFIER_SELECT_IN = 'qualifier-select-in',
-	EMBEDDED_ENTRY_IN = 'embedded-entry-in'
+	EMBEDDED_ENTRY_IN = 'embedded-entry-in',
+	EMBEDDED_ENTRY_PANELS_IN = 'embedded-entry-panels-in'
 }
 
 export enum SiControlType {

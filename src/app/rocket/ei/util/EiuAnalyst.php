@@ -385,7 +385,7 @@ class EiuAnalyst {
 				continue;
 			}
 			
-			$remainingEiArgs[$key  + 1] = $eiArg;
+			$remainingEiArgs[$key + 1] = $eiArg;
 		}
 		
 		if (empty($remainingEiArgs)) return;
@@ -537,12 +537,12 @@ class EiuAnalyst {
 			return;
 		}
 		
-		if ($contextOnly && $this->eiType->isA($eiType)) {
+		if ($this->eiType->isA($eiType)) {
 			return;
 		}
 		
 		throw new \InvalidArgumentException('Incompatible EiTypes ' . $this->eiType->getId() . ' / ' 
-				. $this->eiType->getId());
+				. $eiType->getId());
 	}
 	
 	/**
@@ -570,6 +570,7 @@ class EiuAnalyst {
 		$this->eiGui = $eiGui;
 		
 		$this->assignEiFrame($eiGui->getEiFrame());
+		$this->assignEiMask($eiGui->getEiMask());
 		
 		$eiEntryGuis = $eiGui->getEiEntryGuis();
 		if (count($eiEntryGuis) == 1) {

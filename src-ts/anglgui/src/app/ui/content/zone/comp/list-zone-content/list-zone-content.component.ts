@@ -18,9 +18,9 @@ import { SiStructure } from "src/app/si/model/structure/si-structure";
 })
 export class ListZoneContentComponent implements OnInit, OnDestroy {
 
-    siStructure: SiStructure;
+	siStructure: SiStructure;
 	model: EntriesListSiContent;
-	
+
 
 	private subscription: Subscription;
 	private fieldDeclarations: Array<SiFieldDeclaration>|null = null;
@@ -69,7 +69,7 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 				.setControlsIncluded(true);
 		const getRequest = new SiGetRequest(instruction);
 
-		this.siService.apiGet(this.model.getApiUrl(), getRequest, this.model.getZone())
+		this.siService.apiGet(this.model.getApiUrl(), getRequest, this.siStructure.getZone())
 				.subscribe((getResponse: SiGetResponse) => {
 					this.applyResult(getResponse.results[0], siPage);
 				});
@@ -131,7 +131,7 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 
 	private updateOffsetHeight(siPage: SiPage) {
 		siPage.offsetHeight = window.scrollY + window.innerHeight; /* document.body.offsetHeight - window.innerHeight;*/
-// 		console.log(siPage.number + ' ' + document.body.offsetHeight + ' ' + (window.scrollY + window.innerHeight));
+	// 		console.log(siPage.number + ' ' + document.body.offsetHeight + ' ' + (window.scrollY + window.innerHeight));
 	}
 
 	getFieldDeclarations(): Array<SiFieldDeclaration>|null {
@@ -165,7 +165,7 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 		const page = this.model.getPageByNo(currentPageNo);
 		if (page.visible) {
 			window.scrollTo(window.scrollX, page.offsetHeight);
-// 			this.model.currentPageNo = currentPageNo
+	// 			this.model.currentPageNo = currentPageNo
 			return;
 		}
 
@@ -179,7 +179,7 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 	}
 
 	get singleSelect(): boolean {
-		return this.model.qualifierSelection.max == 1;
+		return this.model.qualifierSelection.max === 1;
 	}
 
 	toggleSelection(qualifier: SiQualifier) {
@@ -192,7 +192,7 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 			return qualifier.equals(selectedQualifier);
 		});
 
-		if (i != -1) {
+		if (i !== -1) {
 			this.model.qualifierSelection.selectedQualfiers.splice(i, 1);
 			return;
 		}

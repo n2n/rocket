@@ -38,6 +38,7 @@ use rocket\ei\manage\gui\ViewMode;
 use n2n\util\StringUtils;
 use n2n\core\N2N;
 use rocket\si\content\SiField;
+use rocket\si\content\impl\SiFields;
 
 class CkeEiProp extends AlphanumericEiProp {
 	const MODE_SIMPLE = 'simple';
@@ -120,15 +121,19 @@ class CkeEiProp extends AlphanumericEiProp {
 	    if ($value === null) return null;
 	    
 		if ($eiu->gui()->isCompact()) {
-			return StringUtils::reduce(html_entity_decode(strip_tags($value), null, N2N::CHARSET), 50, '...');
+			return SiFields::stringOut(StringUtils::reduce(html_entity_decode(strip_tags($value), null, N2N::CHARSET), 50, '...'));
 		}
 
 		$ckeHtmlBuidler = new CkeHtmlBuilder($view);
 
-		return $ckeHtmlBuidler->getIframe((string) $value, $this->ckeCssConfig, (array) $this->ckeLinkProviders);
+// 		return $ckeHtmlBuidler->getIframe((string) $value, $this->ckeCssConfig, (array) $this->ckeLinkProviders);
+
+		return SiFields::stringOut((string) $value);
 	}
 	
 	public function createInSiField(Eiu $eiu): SiField {
+		return SiFields::stringIn($eiu->field()->getValue());
+		
 		$eiEntry = $eiu->entry()->getEiEntry();
 		
 		return new CkeMag($this->getLabelLstr(), null, $this->isMandatory($eiu),

@@ -22,6 +22,7 @@
 namespace rocket\impl\ei\component\prop\ci\model;
 
 use n2n\util\ex\IllegalStateException;
+use rocket\ei\util\spec\EiuMask;
 
 class PanelConfig {
 	private $name;
@@ -100,6 +101,14 @@ class PanelConfig {
 	 */
 	public function setAllowedContentItemIds(array $allowedContentItemIds = null) {
 		$this->allowedContentItemIds = $allowedContentItemIds;
+	}
+	
+	function isEiuMaskAllowed(EiuMask $eiuMask) {
+		if (!$this->isRestricted()) {
+			return true;
+		}
+		
+		return in_array($eiuMask->getEiType()->getId(), $this->allowedContentItemIds);
 	}
 	
 	/**

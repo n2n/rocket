@@ -44,7 +44,6 @@ class GuiFactory {
 		$this->eiMask = $eiMask;
 	}
 	
-	
 	/**
 	 * @param EiFrame $eiFrame
 	 * @param int $viewMode

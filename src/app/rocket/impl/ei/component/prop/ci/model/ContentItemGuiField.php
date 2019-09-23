@@ -25,15 +25,20 @@ use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\util\Eiu;
 use rocket\ei\util\frame\EiuFrame;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
-use rocket\ei\util\spec\EiuMask;
 use rocket\si\content\impl\SiFields;
 use n2n\util\type\CastUtils;
 use rocket\ei\util\entry\EiuEntry;
-use rocket\si\content\SiEmbeddedEntry;
+use rocket\si\content\impl\relation\SiEmbeddedEntry;
 use rocket\ei\util\gui\EiuEntryGui;
 use rocket\si\content\SiField;
+use rocket\si\content\impl\relation\SiPanelInput;
+use rocket\si\input\CorruptedSiInputDataException;
+use rocket\si\content\impl\relation\SiPanel;
+use rocket\impl\ei\component\prop\ci\ContentItemsEiProp;
+use rocket\si\content\impl\relation\EmbeddedEntryPanelInputHandler;
+use rocket\si\content\impl\relation\EmbeddedEntryPanelsInSiField;
 
-class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandle {
+class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler {
 	/**
 	 * @var RelationModel
 	 */
@@ -47,9 +52,17 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandle {
 	 */
 	private $targetEiuFrame;
 	/**
-	 * @var PanelConfig[]
+	 * @var EiuEntryGuiPool
 	 */
-	private $panelConfigs;
+	private $currentPool;
+	/**
+	 * @var PanelLayout
+	 */
+	private $panelLayout;
+	/**
+	 * @var EmbeddedEntryPanelsInSiField
+	 */
+	private $siField;
 	
 	/**
 	 * @param Eiu $eiu
@@ -62,25 +75,20 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandle {
 		$this->eiu = $eiu;
 		$this->targetEiuFrame = $targetEiuFrame;
 		$this->relationModel = $relationModel;
-		$this->panelConfigs = $panelConfigs;
+		$this->panelLayout = new PanelLayout($panelConfigs);
+		$this->panelLayout->assignConfigs($panelConfigs, $targetEiuFrame, $relationModel);
 		
 		$this->siField = SiFields::embeddedEntryPanelsIn(
 						$this->targetEiuFrame->getApiUrl($relationModel->getTargetEditEiCommandPath()),
-						$this, $this->readValues())
-				->setSortable(true)
-				->setReduced($relationModel->isReduced())
-				->setPasteCategory($targetEiuFrame->engine()->type()->supremeType()->getId())
-				->setAllowedTypes(array_map(
-						function (EiuMask $eiuMask) { return $eiuMask->createSiType(); },
-						$targetEiuFrame->engine()->mask()->possibleMasks()));
+						$this, $this->readValues());
 	}
 	
 	/**
 	 * @param Eiu $eiu
-	 * @return \rocket\si\content\SiEmbeddedEntry[]
+	 * @return \rocket\si\content\impl\relation\SiEmbeddedEntry[]
 	 */
 	private function readValues() {
-		$panelLayout = new PanelLayout($this->panelConfigs);
+		$this->panelLayout->clearSiEmbeddedEntries();
 		$this->currentPool = new EiuEntryGuiPool();
 				
 		$currentEiuEntryGuis = [];
@@ -89,9 +97,10 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandle {
 			$currentEiuEntryGuis[] = $eiuEntry->newEntryGui(true, true);
 		}
 		
-		uasort($currentEiuEntryGuis, function($a, $b) {
-			$aValue = $a->entry()->getValue('orderIndex');
-			$bValue = $b->entry()->getValue('orderIndex');
+		$orderPropPath = ContentItemsEiProp::getOrderIndexEiPropPath();
+		uasort($currentEiuEntryGuis, function($a, $b) use ($orderPropPath) {
+			$aValue = $a->entry()->getValue($orderPropPath);
+			$bValue = $b->entry()->getValue($orderPropPath);
 			
 			if ($aValue == $bValue) {
 				return 0;
@@ -102,17 +111,17 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandle {
 		
 		foreach ($currentEiuEntryGuis as $eiuEntryGui) {
 			$panelName = $eiuEntryGui->entry()->getValue('panel');
-			if ($panelLayout->addSiEmbeddedEntry($panelName, $this->createSiEmbeddeEntry($eiuEntryGui))) {
-				$this->addCurrentEiuEntryGui($panelName, $eiuEntryGui);
+			if ($this->panelLayout->addSiEmbeddedEntry($panelName, $this->createSiEmbeddeEntry($eiuEntryGui))) {
+				$this->currentPool->add($panelName, $eiuEntryGui);
 			}
 		}
 		
-		return $panelLayout->toSiPanels();
+		return $this->panelLayout->toSiPanels();
 	}
 
 	/**
 	 * @param EiuEntryGui $eiuEntryGui
-	 * @return \rocket\si\content\SiEmbeddedEntry
+	 * @return \rocket\si\content\impl\relation\SiEmbeddedEntry
 	 */
 	private function createSiEmbeddeEntry($eiuEntryGui) {
 		return new SiEmbeddedEntry(
@@ -130,7 +139,7 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandle {
 	 * @throws CorruptedSiInputDataException
 	 */
 	function handleInput(array $siPanelInputs): array {
-		$panelLayout = new PanelLayout($this->panelConfigs);
+		$this->panelLayout->clearSiEmbeddedEntries();
 		$this->currentPool = new EiuEntryGuiPool();
 		
 		foreach ($siPanelInputs as $siPanelInput) {
@@ -154,7 +163,7 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandle {
 			}
 		}
 		
-		return $this->currentPool->toSiPanels();
+		return $panelLayout->toSiPanels();
 	}
 	
 	function save() {
@@ -167,8 +176,8 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandle {
 				$eiuEntryGui->save();
 				$values[] = $eiuEntry = $eiuEntryGui->entry();
 				
-				$eiuEntry->setValue('orderIndex', $i);
-				$eiuEntry->setValue('panel', $panelName);
+				$eiuEntry->setValue(ContentItemsEiProp::getOrderIndexEiPropPath(), $i);
+				$eiuEntry->setValue(ContentItemsEiProp::getPanelEiPropPath(), $panelName);
 				
 				$i += 10;
 				$eiuEntry->setScalarValue($targetOrderEiPropPath, $i);

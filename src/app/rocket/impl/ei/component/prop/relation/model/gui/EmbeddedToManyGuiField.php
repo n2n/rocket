@@ -26,18 +26,18 @@ use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\util\Eiu;
 use rocket\ei\util\frame\EiuFrame;
 use rocket\si\content\SiField;
-use rocket\si\content\impl\EmbeddedEntryInSiField;
+use rocket\si\content\impl\relation\EmbeddedEntryInSiField;
 use rocket\si\content\impl\SiFields;
 use n2n\util\type\CastUtils;
 use rocket\ei\util\entry\EiuEntry;
 use rocket\si\input\SiEntryInput;
 use rocket\si\input\CorruptedSiInputDataException;
-use rocket\si\content\impl\EmbeddedEntryInputHandle;
-use rocket\si\content\SiEmbeddedEntry;
+use rocket\si\content\impl\relation\EmbeddedEntryInputHandler;
+use rocket\si\content\impl\relation\SiEmbeddedEntry;
 use rocket\ei\util\gui\EiuEntryGui;
 use rocket\ei\util\spec\EiuMask;
 
-class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandle {
+class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandler {
 	/**
 	 * @var RelationModel
 	 */
@@ -78,7 +78,7 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandle {
 	
 	/**
 	 * @param Eiu $eiu
-	 * @return \rocket\si\content\SiEmbeddedEntry[]
+	 * @return \rocket\si\content\impl\relation\SiEmbeddedEntry[]
 	 */
 	private function readValues() {
 		$this->currentEiuEntryGuis = [];
@@ -108,7 +108,7 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandle {
 	
 	/**
 	 * @param EiuEntryGui $eiuEntryGui
-	 * @return \rocket\si\content\SiEmbeddedEntry
+	 * @return \rocket\si\content\impl\relation\SiEmbeddedEntry
 	 */
 	private function createSiEmbeddeEntry($eiuEntryGui) {
 		return new SiEmbeddedEntry(

@@ -28,11 +28,9 @@ use rocket\impl\ei\component\prop\ci\model\ContentItem;
 use rocket\impl\ei\component\prop\ci\model\PanelConfig;
 use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use rocket\impl\ei\component\prop\ci\model\ContentItemGuiField;
-use rocket\impl\ei\component\prop\ci\model\ContentItemEditable;
 use rocket\ei\EiPropPath;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\gui\field\GuiField;
-use rocket\ei\manage\security\InaccessibleEiCommandPathException;
 use rocket\si\structure\SiStructureType;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
@@ -40,8 +38,11 @@ use rocket\ei\manage\gui\ViewMode;
 use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 use rocket\impl\ei\component\prop\relation\RelationEiPropAdapter;
 use rocket\impl\ei\component\prop\relation\model\gui\RelationLinkGuiField;
+use rocket\ei\component\prop\FieldEiProp;
+use rocket\ei\manage\entry\EiField;
+use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
 
-class ContentItemsEiProp extends RelationEiPropAdapter {
+class ContentItemsEiProp extends RelationEiPropAdapter implements FieldEiProp {
 	private $panelConfigs = array();
 // 	private $contentItemEiType;
 	
@@ -103,7 +104,7 @@ class ContentItemsEiProp extends RelationEiPropAdapter {
 // 	}
 	
 	public function hasPanelConfigs() {
-		return !empty($this->getPanelConfigs());
+		return !empty($this->panelConfigs);
 	}
 	
 	public function getPanelConfigs(): array {
@@ -118,8 +119,19 @@ class ContentItemsEiProp extends RelationEiPropAdapter {
 		$this->panelConfigs = $panelConfigs;
 	}
 	
+	/**
+	 * @param Eiu $eiu
+	 * @return \rocket\impl\ei\component\prop\ci\model\PanelConfig[]
+	 */
 	public function determinePanelConfigs(Eiu $eiu) {
 		return $this->panelConfigs;
+	}
+	
+	function buildEiField(Eiu $eiu): ?EiField {
+		$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())
+				->exec($this->getRelationModel()->getTargetReadEiCommandPath());
+		
+		return new ToManyEiField($eiu, $targetEiuFrame, $this, $this->getRelationModel());
 	}
 	
 	/**

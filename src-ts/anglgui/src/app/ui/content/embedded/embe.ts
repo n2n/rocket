@@ -1,4 +1,4 @@
-import { SiEmbeddedEntry } from 'src/app/si/model/entity/si-embedded-entry';
+import { SiEmbeddedEntry } from 'src/app/si/model/entity/impl/embedded/si-embedded-entry';
 import { SiStructure } from 'src/app/si/model/structure/si-structure';
 import { SiEntry } from 'src/app/si/model/entity/si-entry';
 

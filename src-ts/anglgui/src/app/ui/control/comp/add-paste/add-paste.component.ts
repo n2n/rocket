@@ -1,9 +1,17 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { SiQualifier, SiIdentifier } from 'src/app/si/model/entity/si-qualifier';
 import { ClipboardService } from 'src/app/si/model/entity/clipboard.service';
-import { SiEmbeddedEntry } from 'src/app/si/model/entity/si-embedded-entry';
+import { SiEmbeddedEntry } from 'src/app/si/model/entity/impl/embedded/si-embedded-entry';
+import { SiType } from 'src/app/si/model/entity/si-type';
 import { Observable } from 'rxjs';
-import { SiType } from "src/app/si/model/entity/si-type";
+
+
+export enum AddPasteType {
+	REDUCED = 'reduced',
+	BLOCK = 'block',
+	TILES = 'tiles'
+
+}
 
 @Component({
   selector: 'rocket-ui-add-past',
@@ -20,8 +28,7 @@ export class AddPasteComponent implements OnInit {
 	allowedSiTypes: SiType[]|null = null;
 	@Input()
 	type = AddPasteType.BLOCK;
-	
-	
+
 	@Output()
 	newEntry = new EventEmitter<SiEmbeddedEntry>();
 
@@ -37,7 +44,7 @@ export class AddPasteComponent implements OnInit {
 
 	ngOnInit() {
 	}
-	
+
 	get loading(): boolean {
 		return this.addLoading || !!this.addLoadingSiType ||  !!this.pasteLoadingSiQualifier;
 	}
@@ -53,12 +60,12 @@ export class AddPasteComponent implements OnInit {
 			this.handleAddResponse(siEmbeddedEntry);
 		});
 	}
-	
+
 	addBySiType(siType: SiType) {
 		if (this.addLoadingSiType) {
 			return;
 		}
-		
+
 		this.addLoadingSiType = siType;
 		this.obtainer.obtain(null).subscribe((siEmbeddedEntry) => {
 			this.addLoadingSiType = null;
@@ -134,9 +141,9 @@ export class AddPasteComponent implements OnInit {
 	}
 
 	isTypeAllowed(siType: SiType) {
-		return !this.allowedSiTypes || !!this.allowedSiTypes.find(siType => siType.name === siType.name);
+		return !this.allowedSiTypes || !!this.allowedSiTypes.find(allowedSiType => allowedSiType.name === siType.name);
 	}
-	
+
 	isAddLoading(siType: SiType = null): boolean {
 		return this.addLoading || (siType && this.addLoadingSiType && this.addLoadingSiType.equals(siType));
 	}
@@ -151,9 +158,3 @@ export interface AddPasteObtainer {
 	obtain: (siIdentifier: SiIdentifier|null) => Observable<SiEmbeddedEntry>;
 }
 
-export enum AddPasteType {
-	REDUCED = 'reduced',
-	BLOCK = 'block',
-	TILES = 'tiles'
-	
-}

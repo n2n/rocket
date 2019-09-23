@@ -1,7 +1,7 @@
 import { Embe } from './embe';
 import { EmbeddedEntryModel } from './embedded-entry-model';
 import { EmbeddedEntriesInModel } from './embedded-entry-in-model';
-import { SiEmbeddedEntry } from 'src/app/si/model/entity/si-embedded-entry';
+import { SiEmbeddedEntry } from 'src/app/si/model/entity/impl/embedded/si-embedded-entry';
 import { SiStructure } from 'src/app/si/model/structure/si-structure';
 import { SiEntry } from 'src/app/si/model/entity/si-entry';
 
@@ -12,7 +12,7 @@ export class EmbeCollection {
 	}
 
 	protected unregisterEmbe(embe: Embe) {
-	    if (embe.siStructure) {
+		if (embe.siStructure) {
 			embe.siStructure.dispose();
 			embe.siStructure = null;
 		}
@@ -24,10 +24,10 @@ export class EmbeCollection {
 	}
 
 	initEmbe(embe: Embe, siEmbeddedEntry: SiEmbeddedEntry) {
-		const siStructure = new SiStructure(this.parentSiStructure, null, null, siEmbeddedEntry.comp);
-		const summarySiStructure = (siEmbeddedEntry.summaryComp 
-		        ? new SiStructure(this.parentSiStructure, null, null, siEmbeddedEntry.summaryComp) 
-		        : null);
+		const siStructure = this.parentSiStructure.createChild(null, null, siEmbeddedEntry.comp);
+		const summarySiStructure = (siEmbeddedEntry.summaryComp
+				? this.parentSiStructure.createChild(null, null, siEmbeddedEntry.summaryComp)
+				: null);
 
 		// if (this.reduced) {
 		// 	siEmbeddedEntry.comp.controls = [

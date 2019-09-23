@@ -1,11 +1,11 @@
 import { Component, OnInit, Injector } from '@angular/core';
 import { EmbeddedEntriesInModel } from '../../embedded-entry-in-model';
-import { EmbedInCollection, EmbeCollection } from '../../embe-collection';
+import { EmbedInCollection } from '../../embe-collection';
 import { EmbeddedAddPasteObtainer } from '../../embedded-add-paste-obtainer';
 import { SiService } from 'src/app/si/model/si.service';
-import { SiEmbeddedEntry } from 'src/app/si/model/entity/si-embedded-entry';
+import { SiEmbeddedEntry } from 'src/app/si/model/entity/impl/embedded/si-embedded-entry';
 import { Embe } from '../../embe';
-import { SiStructure } from "src/app/si/model/structure/si-structure";
+import { SiStructure } from 'src/app/si/model/structure/si-structure';
 
 @Component({
   selector: 'rocket-embedded-entries-in',
@@ -23,7 +23,7 @@ export class EmbeddedEntriesInComponent implements OnInit {
 	ngOnInit() {
 		this.embeCol = new EmbedInCollection(this.siStructure, this.model);
 		this.obtainer = new EmbeddedAddPasteObtainer(this.injector.get(SiService), this.model.getApiUrl(),
-				this.model.getSiZone(), this.model.isSummaryRequired());
+				this.siStructure.getZone(), this.model.isSummaryRequired());
 
 		this.embeCol.readEmbes();
 		this.embeCol.fillWithPlaceholderEmbes();
@@ -44,11 +44,11 @@ export class EmbeddedEntriesInComponent implements OnInit {
 		this.embeCol.writeEmbes();
 	}
 
-	up(embe: Embe) {
+	up() {
 
 	}
 
-	down(embe: Embe) {
+	down() {
 
 	}
 

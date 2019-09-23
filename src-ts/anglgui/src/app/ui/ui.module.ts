@@ -43,7 +43,8 @@ import { EmbeddedEntryPanelsOutComponent } from './content/embedded/comp/embedde
 	FieldStructureComponent, InputInFieldComponent, TextareaInFieldComponent, StructureComponent, FileInFieldComponent,
 	FileOutFieldComponent, LinkOutFieldComponent, QualifierSelectInFieldComponent,
 	CompactEntryComponent, QualifierComponent, AddPasteComponent, EmbeddedEntriesInComponent, EmbeddedEntriesSummaryInComponent,
-	EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent, StructureBranchComponent, EmbeddedEntryPanelsInComponent, EmbeddedEntryPanelsOutComponent ],
+	EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent, StructureBranchComponent, 
+	EmbeddedEntryPanelsInComponent, EmbeddedEntryPanelsOutComponent ],
   imports: [
 	CommonModule,
 	FormsModule,
@@ -59,7 +60,8 @@ import { EmbeddedEntryPanelsOutComponent } from './content/embedded/comp/embedde
   entryComponents: [ ListZoneContentComponent, BulkyEntryComponent, FieldStructureComponent, StringOutFieldComponent,
 	InputInFieldComponent, TextareaInFieldComponent, FileInFieldComponent, FileOutFieldComponent, QualifierSelectInFieldComponent,
 	LinkOutFieldComponent, CompactEntryComponent, EmbeddedEntriesInComponent, EmbeddedEntriesSummaryInComponent,
-	EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent, StructureBranchComponent
+	EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent, StructureBranchComponent,
+	EmbeddedEntryPanelsInComponent
   ]
 })
 export class UiModule { }
