@@ -7,8 +7,9 @@ import { SiField } from 'src/app/si/model/entity/si-field';
 import { SiZoneError } from 'src/app/si/model/structure/si-zone-error';
 import { SiCommanderService } from 'src/app/si/model/si-commander.service';
 import { SiContent } from "src/app/si/model/structure/si-content";
+import { MessageFieldModel } from "src/app/ui/content/field/message-field-model";
 
-export abstract class SiFieldAdapter implements SiField {
+export abstract class SiFieldAdapter implements SiField, MessageFieldModel {
 	protected messages: string[] = [];
 
 	abstract hasInput(): boolean;

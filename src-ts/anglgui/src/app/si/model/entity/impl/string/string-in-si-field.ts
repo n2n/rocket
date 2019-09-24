@@ -2,13 +2,13 @@
 import { SiField } from 'src/app/si/model/entity/si-field';
 import { ComponentRef, ComponentFactoryResolver, ViewContainerRef } from '@angular/core';
 import { InputInFieldComponent } from 'src/app/ui/content/field/comp/input-in-field/input-in-field.component';
-import { StringInFieldModel } from 'src/app/ui/content/field/string-in-field-model';
 import { InSiFieldAdapter } from 'src/app/si/model/entity/impl/in-si-field-adapter';
 import { SiCommanderService } from 'src/app/si/model/si-commander.service';
 import { SiContent } from '../../../structure/si-content';
 import { TypeSiContent } from "src/app/si/model/structure/impl/type-si-content";
+import { InputInFieldModel } from "src/app/ui/content/field/input-in-field-model";
 
-export class StringInSiField extends InSiFieldAdapter implements StringInFieldModel {
+export class StringInSiField extends InSiFieldAdapter implements InputInFieldModel {
 	public mandatory = false;
 	public minlength: number|null = null;
 	public maxlength: number|null = null;
@@ -17,6 +17,22 @@ export class StringInSiField extends InSiFieldAdapter implements StringInFieldMo
 		super();
 		this.validate();
 	}
+	
+	getType(): string {
+        return 'text';
+    }
+	
+    getMin(): number|null {
+        return null;
+    }
+    
+    getMax(): number|null {
+        return null;
+    }
+    
+    getStep(): number|null {
+        return null;
+    }
 
 	readInput(): object {
 		return { value: this.value };
