@@ -46,6 +46,31 @@ class SiFields {
 	}
 	
 	/**
+	 * @param int|null $value
+	 * @return \rocket\si\content\impl\IntInSiField
+	 */
+	static function intIn(?int $value) {
+		return new IntInSiField($value);
+	}
+	
+	/**
+	 * @param bool $value
+	 * @return \rocket\si\content\impl\BoolInSiField
+	 */
+	static function boolIn(bool $value) {
+		return new BoolInSiField($value);
+	}
+	
+	/**
+	 * @param string[] $options
+	 * @param string $value
+	 * @return \rocket\si\content\impl\EnumInSiField
+	 */
+	static function enumIn(array $options, ?string $value) {
+		return new EnumInSiField($options, $value);
+	}
+	
+	/**
 	 * @param SiFile|null $file
 	 * @return \rocket\si\content\impl\FileInSiField
 	 */

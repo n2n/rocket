@@ -51,7 +51,7 @@ class RelationLinkGuiField implements GuiField {
 	}
 	
 	private function createToManySiField() {
-		$targetEiuFrame = $this->eiu->frame()->forkDiscover($this->eiu->prop());
+		$targetEiuFrame = $this->eiu->frame()->forkDiscover($this->eiu->prop(), $this->eiu->entry());
 		
 		$num = $targetEiuFrame->countEntries();
 		$label = null;

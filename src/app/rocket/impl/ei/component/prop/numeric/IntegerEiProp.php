@@ -34,6 +34,8 @@ use rocket\ei\manage\generic\CommonScalarEiProperty;
 use rocket\ei\manage\generic\ScalarEiProperty;
 use n2n\impl\persistence\orm\property\IntEntityProperty;
 use rocket\si\content\SiField;
+use rocket\si\content\impl\SiFields;
+use n2n\l10n\L10nUtils;
 
 class IntegerEiProp extends NumericEiPropAdapter implements ScalarEiProp {
 	const INT_SIGNED_MIN = -2147483648;
@@ -71,9 +73,22 @@ class IntegerEiProp extends NumericEiPropAdapter implements ScalarEiProp {
 		$this->objectPropertyAccessProxy = $propertyAccessProxy;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\numeric\NumericEiPropAdapter::createOutSiField()
+	 */
+	public function createOutSiField(Eiu $eiu): SiField {
+		return SiFields::stringOut(L10nUtils::formatNumber($eiu->field()->getValue(), $eiu->getN2nLocale()));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldEditable::createInSiField()
+	 */
 	public function createInSiField(Eiu $eiu): SiField {
-		return new NumericMag($this->getLabelLstr(), null,
-				$this->isMandatory($eiu), $this->getMinValue(), $this->getMaxValue(), 
-				0, array('placeholder' => $this->getLabelLstr()));
+		return SiFields::intIn($eiu->field()->getValue())
+				->setMandatory($this->editConfig->isMandatory())
+				->setMin($this->getMinValue())
+				->setMax($this->getMaxValue());
 	}
 }

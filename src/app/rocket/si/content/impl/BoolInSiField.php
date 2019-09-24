@@ -23,79 +23,42 @@ namespace rocket\si\content\impl;
 
 use n2n\util\type\attrs\DataSet;
 
-class StringInSiField extends InSiFieldAdapter {
-	/**
-	 * @var string|null
-	 */
-	private $value;
-	/**
-	 * @var int|null
-	 */
-	private $maxlength;
+class BoolInSiField extends InSiFieldAdapter {
 	/**
 	 * @var bool
 	 */
-	private $multiline = false;
+	private $value;
 	/**
 	 * @var bool
 	 */
 	private $mandatory = false;
 	
-	function __construct(?string $value) {
+	/**
+	 * @param int $value
+	 */
+	function __construct(bool $value) {
 		$this->value = $value;	
 	}
 	
 	/**
-	 * @param string|null $value
-	 * @return \rocket\si\content\impl\StringInSiField
+	 * @param int|null $value
+	 * @return \rocket\si\content\impl\IntInSiField
 	 */
-	function setValue(?string $value) {
+	function setValue(?int $value) {
 		$this->value = $value;
-		return $this;
-	}
-	
-	/**
-	 * @return string|null
-	 */
-	function getValue() {
-		return $this->value;
-	}
-	
-	/**
-	 * @param int|null $maxlength
-	 * @return \rocket\si\content\impl\StringInSiField
-	 */
-	function setMaxlength(?int $maxlength) {
-		$this->maxlength = $maxlength;
 		return $this;
 	}
 	
 	/**
 	 * @return int|null
 	 */
-	function getMaxlength() {
-		return $this->maxlength;
-	}
-	
-	/**
-	 * @param bool $multiline
-	 * @return \rocket\si\content\impl\StringInSiField
-	 */
-	function setMultiline(bool $multiline) {
-		$this->multiline = $multiline;
-		return $this;
-	}
-	
-	/**
-	 * @return bool
-	 */
-	function isMultiline() {
-		return $this->multiline;
+	function getValue() {
+		return $this->value;
 	}
 	
 	/**
 	 * @param bool $mandatory
-	 * @return \rocket\si\content\impl\StringInSiField
+	 * @return \rocket\si\content\impl\IntInSiField
 	 */
 	function setMandatory(bool $mandatory) {
 		$this->mandatory = $mandatory;
@@ -114,7 +77,7 @@ class StringInSiField extends InSiFieldAdapter {
 	 * @see \rocket\si\content\SiField::getType()
 	 */
 	function getType(): string {
-		return 'string-in';
+		return 'bool-in';
 	}
 	
 	/**
@@ -124,17 +87,15 @@ class StringInSiField extends InSiFieldAdapter {
 	function getData(): array {
 		return [
 			'value' => $this->value,
-			'maxlength' => $this->maxlength,
-			'multiline' => $this->multiline,
 			'mandatory' => $this->mandatory
 		];
 	}
-	 
+	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\si\content\SiField::handleInput()
 	 */
 	function handleInput(array $data) {
-		$this->value = (new DataSet($data))->reqString('value', true);
+		$this->value = (new DataSet($data))->reqInt('value', true);
 	}
 }

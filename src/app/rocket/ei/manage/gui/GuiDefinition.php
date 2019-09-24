@@ -245,19 +245,19 @@ class GuiDefinition {
 	public function assembleGuiProps(EiGui $eiGui, array $guiFieldPaths) {
 		ArgUtils::valArray($guiFieldPaths, GuiFieldPath::class);
 		
-		$eiu = new Eiu($eiGui);
+// 		$eiu = new Eiu($eiGui);
 		
 		$guiPropAssemblies = [];
 		
 		foreach ($guiFieldPaths as $guiFieldPath) {
 			$guiProp = $this->getGuiPropByGuiFieldPath($guiFieldPath);
 			
-			$displayDefinition = $guiProp->buildDisplayDefinition($eiu);
+			$displayDefinition = $guiProp->getDisplayDefinition();
 			if ($displayDefinition === null) {
 				continue;
 			} 
 			
-			$guiPropAssemblies[(string) $guiFieldPath] = new GuiPropAssembly($guiProp, $guiFieldPath, 
+			$guiPropAssemblies[(string) $guiFieldPath] = new GuiPropAssembly($guiFieldPath, 
 					$displayDefinition);
 		}
 		

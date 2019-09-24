@@ -36,6 +36,7 @@ import { ImageResizeComponent } from './content/file/image-resize/image-resize.c
 import { StructureBranchComponent } from './content/zone/comp/structure-branch/structure-branch.component';
 import { EmbeddedEntryPanelsInComponent } from './content/embedded/comp/embedded-entry-panels-in/embedded-entry-panels-in.component';
 import { EmbeddedEntryPanelsOutComponent } from './content/embedded/comp/embedded-entry-panels-out/embedded-entry-panels-out.component';
+import { NumberInFieldComponent } from './content/field/comp/number-in-field/number-in-field.component';
 
 @NgModule({
   declarations: [ LayerComponent, ContainerComponent, ZoneComponent, StructureContentDirective, ListZoneContentComponent,
@@ -44,7 +45,7 @@ import { EmbeddedEntryPanelsOutComponent } from './content/embedded/comp/embedde
 	FileOutFieldComponent, LinkOutFieldComponent, QualifierSelectInFieldComponent,
 	CompactEntryComponent, QualifierComponent, AddPasteComponent, EmbeddedEntriesInComponent, EmbeddedEntriesSummaryInComponent,
 	EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent, StructureBranchComponent, 
-	EmbeddedEntryPanelsInComponent, EmbeddedEntryPanelsOutComponent ],
+	EmbeddedEntryPanelsInComponent, EmbeddedEntryPanelsOutComponent, NumberInFieldComponent ],
   imports: [
 	CommonModule,
 	FormsModule,

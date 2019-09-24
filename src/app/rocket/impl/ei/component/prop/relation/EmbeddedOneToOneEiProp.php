@@ -30,8 +30,12 @@ use rocket\ei\manage\gui\ViewMode;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\si\structure\SiStructureType;
 use rocket\impl\ei\component\prop\adapter\config\EditConfig;
+use rocket\ei\component\prop\FieldEiProp;
+use rocket\impl\ei\component\prop\relation\model\ToOneEiField;
+use rocket\ei\util\Eiu;
+use rocket\ei\manage\entry\EiField;
 
-class EmbeddedOneToOneEiProp extends RelationEiPropAdapter {
+class EmbeddedOneToOneEiProp extends RelationEiPropAdapter implements FieldEiProp {
 	
 	/**
 	 * 
@@ -53,5 +57,14 @@ class EmbeddedOneToOneEiProp extends RelationEiPropAdapter {
 				&& $entityProperty->getType() === RelationEntityProperty::TYPE_ONE_TO_ONE);
 	
 		parent::setEntityProperty($entityProperty);
+	}
+	
+	function buildEiField(Eiu $eiu): ?EiField {
+		$targetEiuFrame = $eiu->frame()->forkSelect($this, $eiu->object())
+				->exec($this->getRelationModel()->getTargetReadEiCommandPath());
+		
+		$field = new ToOneEiField($eiu, $targetEiuFrame, $this, $this->getRelationModel());
+		$field->setMandatory($this->editConfig->isMandatory());
+		return $field;
 	}
 }

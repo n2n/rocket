@@ -23,31 +23,47 @@ namespace rocket\si\content\impl;
 
 use n2n\util\type\attrs\DataSet;
 
-class StringInSiField extends InSiFieldAdapter {
-	/**
-	 * @var string|null
-	 */
-	private $value;
+class EnumInSiField extends InSiFieldAdapter {
 	/**
 	 * @var int|null
 	 */
-	private $maxlength;
+	private $value;
 	/**
-	 * @var bool
+	 * @var string[]
 	 */
-	private $multiline = false;
+	private $options = [];
 	/**
 	 * @var bool
 	 */
 	private $mandatory = false;
 	
-	function __construct(?string $value) {
-		$this->value = $value;	
+	/**
+	 * @param int $value
+	 */
+	function __construct(array $options, ?string $value) {
+		$this->setOptions($options);
+		$this->value = $value;
+	}
+	
+	/**
+	 * @param string[] $options
+	 * @return \rocket\si\content\impl\EnumInSiField
+	 */
+	function setOptions(array $options) {
+		$this->options = $options;
+		return $this;
+	}
+	
+	/**
+	 * @return string[]
+	 */
+	function getOptions() {
+		return $this->options;
 	}
 	
 	/**
 	 * @param string|null $value
-	 * @return \rocket\si\content\impl\StringInSiField
+	 * @return \rocket\si\content\impl\EnumInSiField
 	 */
 	function setValue(?string $value) {
 		$this->value = $value;
@@ -62,40 +78,8 @@ class StringInSiField extends InSiFieldAdapter {
 	}
 	
 	/**
-	 * @param int|null $maxlength
-	 * @return \rocket\si\content\impl\StringInSiField
-	 */
-	function setMaxlength(?int $maxlength) {
-		$this->maxlength = $maxlength;
-		return $this;
-	}
-	
-	/**
-	 * @return int|null
-	 */
-	function getMaxlength() {
-		return $this->maxlength;
-	}
-	
-	/**
-	 * @param bool $multiline
-	 * @return \rocket\si\content\impl\StringInSiField
-	 */
-	function setMultiline(bool $multiline) {
-		$this->multiline = $multiline;
-		return $this;
-	}
-	
-	/**
-	 * @return bool
-	 */
-	function isMultiline() {
-		return $this->multiline;
-	}
-	
-	/**
 	 * @param bool $mandatory
-	 * @return \rocket\si\content\impl\StringInSiField
+	 * @return \rocket\si\content\impl\EnumInSiField
 	 */
 	function setMandatory(bool $mandatory) {
 		$this->mandatory = $mandatory;
@@ -114,7 +98,7 @@ class StringInSiField extends InSiFieldAdapter {
 	 * @see \rocket\si\content\SiField::getType()
 	 */
 	function getType(): string {
-		return 'string-in';
+		return 'enum-in';
 	}
 	
 	/**
@@ -124,12 +108,11 @@ class StringInSiField extends InSiFieldAdapter {
 	function getData(): array {
 		return [
 			'value' => $this->value,
-			'maxlength' => $this->maxlength,
-			'multiline' => $this->multiline,
+			'options' => $this->options,
 			'mandatory' => $this->mandatory
 		];
 	}
-	 
+	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\si\content\SiField::handleInput()

@@ -23,79 +23,82 @@ namespace rocket\si\content\impl;
 
 use n2n\util\type\attrs\DataSet;
 
-class StringInSiField extends InSiFieldAdapter {
+class IntInSiField extends InSiFieldAdapter {
 	/**
-	 * @var string|null
+	 * @var int|null
 	 */
 	private $value;
 	/**
 	 * @var int|null
 	 */
-	private $maxlength;
+	private $min = PHP_INT_MIN;
 	/**
 	 * @var bool
 	 */
-	private $multiline = false;
+	private $max = PHP_INT_MAX;
 	/**
 	 * @var bool
 	 */
 	private $mandatory = false;
 	
-	function __construct(?string $value) {
+	/**
+	 * @param int $value
+	 */
+	function __construct(?int $value) {
 		$this->value = $value;	
 	}
 	
 	/**
-	 * @param string|null $value
-	 * @return \rocket\si\content\impl\StringInSiField
+	 * @param int|null $value
+	 * @return \rocket\si\content\impl\IntInSiField
 	 */
-	function setValue(?string $value) {
+	function setValue(?int $value) {
 		$this->value = $value;
-		return $this;
-	}
-	
-	/**
-	 * @return string|null
-	 */
-	function getValue() {
-		return $this->value;
-	}
-	
-	/**
-	 * @param int|null $maxlength
-	 * @return \rocket\si\content\impl\StringInSiField
-	 */
-	function setMaxlength(?int $maxlength) {
-		$this->maxlength = $maxlength;
 		return $this;
 	}
 	
 	/**
 	 * @return int|null
 	 */
-	function getMaxlength() {
-		return $this->maxlength;
+	function getValue() {
+		return $this->value;
 	}
 	
 	/**
-	 * @param bool $multiline
-	 * @return \rocket\si\content\impl\StringInSiField
+	 * @param int $min
+	 * @return \rocket\si\content\impl\IntInSiField
 	 */
-	function setMultiline(bool $multiline) {
-		$this->multiline = $multiline;
+	function setMin(int $min) {
+		$this->min = $min;
 		return $this;
 	}
 	
 	/**
-	 * @return bool
+	 * @return int
 	 */
-	function isMultiline() {
-		return $this->multiline;
+	function getMin() {
+		return $this->min;
+	}
+	
+	/**
+	 * @param int $max
+	 * @return \rocket\si\content\impl\IntInSiField
+	 */
+	function setMax(int $max) {
+		$this->max = $max;
+		return $this;
+	}
+	
+	/**
+	 * @return int
+	 */
+	function getMax() {
+		return $this->max;
 	}
 	
 	/**
 	 * @param bool $mandatory
-	 * @return \rocket\si\content\impl\StringInSiField
+	 * @return \rocket\si\content\impl\IntInSiField
 	 */
 	function setMandatory(bool $mandatory) {
 		$this->mandatory = $mandatory;
@@ -114,7 +117,7 @@ class StringInSiField extends InSiFieldAdapter {
 	 * @see \rocket\si\content\SiField::getType()
 	 */
 	function getType(): string {
-		return 'string-in';
+		return 'int-in';
 	}
 	
 	/**
@@ -124,17 +127,17 @@ class StringInSiField extends InSiFieldAdapter {
 	function getData(): array {
 		return [
 			'value' => $this->value,
-			'maxlength' => $this->maxlength,
-			'multiline' => $this->multiline,
+			'min' => $this->min,
+			'max' => $this->max,
 			'mandatory' => $this->mandatory
 		];
 	}
-	 
+	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\si\content\SiField::handleInput()
 	 */
 	function handleInput(array $data) {
-		$this->value = (new DataSet($data))->reqString('value', true);
+		$this->value = (new DataSet($data))->reqInt('value', true);
 	}
 }

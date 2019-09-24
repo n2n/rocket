@@ -55,6 +55,7 @@ use n2n\util\StringUtils;
 use n2n\util\type\TypeConstraints;
 use n2n\impl\persistence\orm\property\IntEntityProperty;
 use rocket\si\content\SiField;
+use rocket\si\content\impl\SiFields;
 
 class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiProp, SortableEiProp, 
 		QuickSearchableEiProp {
@@ -136,8 +137,8 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 		}
 		
 		if (empty($this->associatedGuiFieldPathMap)) {
-			return new EnumMag($this->getLabelLstr(), $choicesMap, null, 
-					$this->isMandatory($eiu));
+			return SiFields::enumIn($choicesMap, $eiu->field()->getValue())
+					->setMandatory($this->editConfig->isMandatory());
 		}
 		
 		$enablerMag = new EnumTogglerMag($this->getLabelLstr(), $choicesMap, null, 
@@ -166,13 +167,7 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 	}
 	
 	public function createOutSiField(Eiu $eiu): SiField  {
-		$html = $view->getHtmlBuilder();
-		$options = $this->getOptions();
-		$value = $eiu->field()->getValue(EiPropPath::from($this));
-		if (isset($options[$value])) {
-			return $html->getEsc($options[$value]);
-		}
-		return $html->getEsc($value);
+		return SiFields::stringOut($eiu->field()->getValue());
 	}
 	
 	public function buildManagedFilterProp(EiFrame $eiFrame): ?FilterProp  {

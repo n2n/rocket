@@ -25,7 +25,6 @@ use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use rocket\ei\component\prop\SortableEiProp;
 use rocket\ei\component\prop\FilterableEiProp;
-use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
@@ -47,6 +46,7 @@ use rocket\ei\manage\security\filter\SecurityFilterProp;
 use rocket\ei\manage\entry\EiField;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
 use rocket\si\content\SiField;
+use rocket\si\content\impl\SiFields;
 
 class BooleanEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiProp, SortableEiProp, SecurityFilterEiProp {
 
@@ -152,38 +152,37 @@ class BooleanEiProp extends DraftablePropertyEiPropAdapter implements Filterable
 	 */
 	public function createInSiField(Eiu $eiu): SiField {
 		if (empty($this->onAssociatedGuiFieldPaths) && empty($this->offAssociatedGuiFieldPaths)) {
-			return new BoolMag($this->getLabelLstr(), true);
+			return SiFields::boolIn($eiu->field()->getValue())->setMandatory($this->editConfig->isMandatory());
 		}
 		
-		if ($eiu->entryGui()->isReady()) {
-			throw new \Exception();
-		}
 		
-		$enablerMag = new TogglerMag($this->getLabelLstr(), true);
+		return SiFields::boolIn($eiu->field()->getValue())->setMandatory($this->editConfig->isMandatory());
 		
-		$that = $this;
-		$eiu->entryGui()->whenReady(function () use ($eiu, $enablerMag, $that) {
-			$onMagWrappers = array();
-			foreach ($that->getOnAssociatedGuiFieldPaths() as $eiPropPath) {
-				$magWrapper = $eiu->entryGui()->getMagWrapper($eiPropPath, false);
-				if ($magWrapper === null) continue;
+// 		$enablerMag = new TogglerMag($this->getLabelLstr(), true);
+		
+// 		$that = $this;
+// 		$eiu->entryGui()->whenReady(function () use ($eiu, $enablerMag, $that) {
+// 			$onMagWrappers = array();
+// 			foreach ($that->getOnAssociatedGuiFieldPaths() as $eiPropPath) {
+// 				$magWrapper = $eiu->entryGui()->getMagWrapper($eiPropPath, false);
+// 				if ($magWrapper === null) continue;
 				
-				$onMagWrappers[] = $magWrapper;
-			}
-			$enablerMag->setOnAssociatedMagWrappers($onMagWrappers);
+// 				$onMagWrappers[] = $magWrapper;
+// 			}
+// 			$enablerMag->setOnAssociatedMagWrappers($onMagWrappers);
 
-			$offMagWrappers = array();
-			foreach ($that->getOffAssociatedGuiFieldPaths() as $eiPropPath) {
-				$magWrapper = $eiu->entryGui()->getMagWrapper($eiPropPath, false);
-				if ($magWrapper === null) continue;
+// 			$offMagWrappers = array();
+// 			foreach ($that->getOffAssociatedGuiFieldPaths() as $eiPropPath) {
+// 				$magWrapper = $eiu->entryGui()->getMagWrapper($eiPropPath, false);
+// 				if ($magWrapper === null) continue;
 				
-				$offMagWrappers[] = $magWrapper;
-			}
+// 				$offMagWrappers[] = $magWrapper;
+// 			}
 			
-			$enablerMag->setOffAssociatedMagWrappers($offMagWrappers);
-		});
+// 			$enablerMag->setOffAssociatedMagWrappers($offMagWrappers);
+// 		});
 			
-		return $enablerMag;
+// 		return $enablerMag;
 	}
 	
 	public function buildEiField(Eiu $eiu): ?EiField {

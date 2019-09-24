@@ -118,13 +118,15 @@ class CkeEiProp extends AlphanumericEiProp {
 
 	public function createOutSiField(Eiu $eiu): SiField {
 	    $value = $eiu->field()->getValue(EiPropPath::from($this));
-	    if ($value === null) return null;
+	    if ($value === null) {
+	    	return SiFields::stringOut('');
+	    }
 	    
 		if ($eiu->gui()->isCompact()) {
 			return SiFields::stringOut(StringUtils::reduce(html_entity_decode(strip_tags($value), null, N2N::CHARSET), 50, '...'));
 		}
 
-		$ckeHtmlBuidler = new CkeHtmlBuilder($view);
+// 		$ckeHtmlBuidler = new CkeHtmlBuilder($view);
 
 // 		return $ckeHtmlBuidler->getIframe((string) $value, $this->ckeCssConfig, (array) $this->ckeLinkProviders);
 
