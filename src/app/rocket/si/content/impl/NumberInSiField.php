@@ -23,7 +23,7 @@ namespace rocket\si\content\impl;
 
 use n2n\util\type\attrs\DataSet;
 
-class IntInSiField extends InSiFieldAdapter {
+class NumberInSiField extends InSiFieldAdapter {
 	/**
 	 * @var int|null
 	 */
@@ -37,28 +37,40 @@ class IntInSiField extends InSiFieldAdapter {
 	 */
 	private $max = PHP_INT_MAX;
 	/**
+	 * @var float
+	 */
+	private $step = 1;
+	/**
+	 * @var float|null
+	 */
+	private $arrowStep = 1;
+	/**
+	 * @var bool
+	 */
+	private $fixed = false;
+	/**
 	 * @var bool
 	 */
 	private $mandatory = false;
-	
+
 	/**
-	 * @param int $value
+	 * @param float|null $value
 	 */
-	function __construct(?int $value) {
+	function __construct(?float $value) {
 		$this->value = $value;	
 	}
 	
 	/**
-	 * @param int|null $value
-	 * @return \rocket\si\content\impl\IntInSiField
+	 * @param float|null $value
+	 * @return \rocket\si\content\impl\NumberInSiField
 	 */
-	function setValue(?int $value) {
+	function setValue(?float $value) {
 		$this->value = $value;
 		return $this;
 	}
 	
 	/**
-	 * @return int|null
+	 * @return float|null
 	 */
 	function getValue() {
 		return $this->value;
@@ -66,7 +78,7 @@ class IntInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param int $min
-	 * @return \rocket\si\content\impl\IntInSiField
+	 * @return \rocket\si\content\impl\NumberInSiField
 	 */
 	function setMin(int $min) {
 		$this->min = $min;
@@ -82,7 +94,7 @@ class IntInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param int $max
-	 * @return \rocket\si\content\impl\IntInSiField
+	 * @return \rocket\si\content\impl\NumberInSiField
 	 */
 	function setMax(int $max) {
 		$this->max = $max;
@@ -97,8 +109,55 @@ class IntInSiField extends InSiFieldAdapter {
 	}
 	
 	/**
+	 * @return float
+	 */
+	function getStep() {
+		return $this->step;
+	}
+	
+	/**
+	 * @param float $step
+	 */
+	function setStep(float $step) {
+		$this->step = $step;
+		return $this;
+	}
+	
+	/**
+	 * @return float|null
+	 */
+	function getArrowStep() {
+		return $this->arrowStep;
+	}
+	
+	/**
+	 * @param bool $fixed
+	 * @return \rocket\si\content\impl\NumberInSiField
+	 */
+	function setFixed(bool $fixed) {
+		$this->fixed = $fixed;
+		return $this;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	function isFixed() {
+		return $this->fixed;
+	}
+	
+	/**
+	 * @param float|null $arrowStep
+	 * @return \rocket\si\content\impl\NumberInSiField
+	 */
+	function setArrowStep(?float $arrowStep) {
+		$this->arrowStep = $arrowStep;
+		return $this;
+	}
+	
+	/**
 	 * @param bool $mandatory
-	 * @return \rocket\si\content\impl\IntInSiField
+	 * @return \rocket\si\content\impl\NumberInSiField
 	 */
 	function setMandatory(bool $mandatory) {
 		$this->mandatory = $mandatory;
@@ -117,7 +176,7 @@ class IntInSiField extends InSiFieldAdapter {
 	 * @see \rocket\si\content\SiField::getType()
 	 */
 	function getType(): string {
-		return 'int-in';
+		return 'number-in';
 	}
 	
 	/**
@@ -129,7 +188,10 @@ class IntInSiField extends InSiFieldAdapter {
 			'value' => $this->value,
 			'min' => $this->min,
 			'max' => $this->max,
-			'mandatory' => $this->mandatory
+			'mandatory' => $this->mandatory,
+			'step' => $this->step,
+			'arrowStep' => $this->arrowStep,
+			'fixed' => $this->fixed
 		];
 	}
 	

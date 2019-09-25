@@ -86,7 +86,7 @@ class IntegerEiProp extends NumericEiPropAdapter implements ScalarEiProp {
 	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldEditable::createInSiField()
 	 */
 	public function createInSiField(Eiu $eiu): SiField {
-		return SiFields::intIn($eiu->field()->getValue())
+		return SiFields::numberIn($eiu->field()->getValue())
 				->setMandatory($this->editConfig->isMandatory())
 				->setMin($this->getMinValue())
 				->setMax($this->getMaxValue());

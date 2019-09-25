@@ -5,8 +5,8 @@ import { InputInFieldComponent } from 'src/app/ui/content/field/comp/input-in-fi
 import { InSiFieldAdapter } from 'src/app/si/model/entity/impl/in-si-field-adapter';
 import { SiCommanderService } from 'src/app/si/model/si-commander.service';
 import { SiContent } from '../../../structure/si-content';
-import { TypeSiContent } from "src/app/si/model/structure/impl/type-si-content";
-import { InputInFieldModel } from "src/app/ui/content/field/input-in-field-model";
+import { TypeSiContent } from 'src/app/si/model/structure/impl/type-si-content';
+import { InputInFieldModel } from 'src/app/ui/content/field/input-in-field-model';
 
 export class StringInSiField extends InSiFieldAdapter implements InputInFieldModel {
 	public mandatory = false;
@@ -17,22 +17,22 @@ export class StringInSiField extends InSiFieldAdapter implements InputInFieldMod
 		super();
 		this.validate();
 	}
-	
+
 	getType(): string {
-        return 'text';
-    }
-	
-    getMin(): number|null {
-        return null;
-    }
-    
-    getMax(): number|null {
-        return null;
-    }
-    
-    getStep(): number|null {
-        return null;
-    }
+		return 'text';
+	}
+
+	getMin(): number|null {
+		return null;
+	}
+
+	getMax(): number|null {
+		return null;
+	}
+
+	getStep(): number|null {
+		return null;
+	}
 
 	readInput(): object {
 		return { value: this.value };
@@ -76,21 +76,21 @@ export class StringInSiField extends InSiFieldAdapter implements InputInFieldMod
 	}
 
 	getContent(): SiContent|null {
-        return new TypeSiContent(InputInFieldComponent, (ref, structure) => {
-            ref.instance.model = this;
-        });
-    }
+		return new TypeSiContent(InputInFieldComponent, (ref, structure) => {
+			ref.instance.model = this;
+		});
+	}
 
-//	initComponent(viewContainerRef: ViewContainerRef,
-//			componentFactoryResolver: ComponentFactoryResolver,
-//			commanderService: SiCommanderService): ComponentRef<any> {
-//		const componentFactory = componentFactoryResolver.resolveComponentFactory(InputInFieldComponent);
+// 	initComponent(viewContainerRef: ViewContainerRef,
+// 			componentFactoryResolver: ComponentFactoryResolver,
+// 			commanderService: SiCommanderService): ComponentRef<any> {
+// 		const componentFactory = componentFactoryResolver.resolveComponentFactory(InputInFieldComponent);
 //
-//		const componentRef = viewContainerRef.createComponent(componentFactory);
+// 		const componentRef = viewContainerRef.createComponent(componentFactory);
 //
-//		const component = componentRef.instance;
-//		component.model = this;
+// 		const component = componentRef.instance;
+// 		component.model = this;
 //
-//		return componentRef;
-//	}
+// 		return componentRef;
+// 	}
 }

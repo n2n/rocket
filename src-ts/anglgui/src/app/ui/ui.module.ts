@@ -37,6 +37,8 @@ import { StructureBranchComponent } from './content/zone/comp/structure-branch/s
 import { EmbeddedEntryPanelsInComponent } from './content/embedded/comp/embedded-entry-panels-in/embedded-entry-panels-in.component';
 import { EmbeddedEntryPanelsOutComponent } from './content/embedded/comp/embedded-entry-panels-out/embedded-entry-panels-out.component';
 import { NumberInFieldComponent } from './content/field/comp/number-in-field/number-in-field.component';
+import { TogglerInFieldComponent } from './content/field/comp/toggler-in-field/toggler-in-field.component';
+import { SelectInFieldComponent } from './content/field/comp/select-in-field/select-in-field.component';
 
 @NgModule({
   declarations: [ LayerComponent, ContainerComponent, ZoneComponent, StructureContentDirective, ListZoneContentComponent,
@@ -45,7 +47,7 @@ import { NumberInFieldComponent } from './content/field/comp/number-in-field/num
 	FileOutFieldComponent, LinkOutFieldComponent, QualifierSelectInFieldComponent,
 	CompactEntryComponent, QualifierComponent, AddPasteComponent, EmbeddedEntriesInComponent, EmbeddedEntriesSummaryInComponent,
 	EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent, StructureBranchComponent, 
-	EmbeddedEntryPanelsInComponent, EmbeddedEntryPanelsOutComponent, NumberInFieldComponent ],
+	EmbeddedEntryPanelsInComponent, EmbeddedEntryPanelsOutComponent, NumberInFieldComponent, TogglerInFieldComponent, SelectInFieldComponent ],
   imports: [
 	CommonModule,
 	FormsModule,

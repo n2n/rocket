@@ -42,7 +42,7 @@ class BoolInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param int|null $value
-	 * @return \rocket\si\content\impl\IntInSiField
+	 * @return \rocket\si\content\impl\BoolInSiField
 	 */
 	function setValue(?int $value) {
 		$this->value = $value;
@@ -58,7 +58,7 @@ class BoolInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param bool $mandatory
-	 * @return \rocket\si\content\impl\IntInSiField
+	 * @return \rocket\si\content\impl\BoolInSiField
 	 */
 	function setMandatory(bool $mandatory) {
 		$this->mandatory = $mandatory;
@@ -77,7 +77,7 @@ class BoolInSiField extends InSiFieldAdapter {
 	 * @see \rocket\si\content\SiField::getType()
 	 */
 	function getType(): string {
-		return 'bool-in';
+		return 'boolean-in';
 	}
 	
 	/**

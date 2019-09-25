@@ -1,3 +1,12 @@
+export class ObjectMissmatchError extends Error {
+	constructor(m: string) {
+		super(m);
+
+		// Set the prototype explicitly.
+		Object.setPrototypeOf(this, ObjectMissmatchError.prototype);
+	}
+}
+
 export class Extractor {
 	private obj: object;
 
@@ -127,16 +136,20 @@ export class Extractor {
 		return map;
 	}
 
+	reqStringMap(propName: string): Map<string, string> {
+		const map = this.reqMap(propName);
+
+		map.forEach((value, key) => {
+			if (typeof value === 'string') { return; }
+
+			throw new ObjectMissmatchError('Property ' + propName + '[' + key + '] must be of type string. Given: '
+					+ typeof value);
+		});
+
+		return map;
+	}
+
 	reqExtractor(propName: string): Extractor {
 		return new Extractor(this.reqObject(propName));
-	}
-}
-
-export class ObjectMissmatchError extends Error {
-	constructor(m: string) {
-		super(m);
-
-		// Set the prototype explicitly.
-		Object.setPrototypeOf(this, ObjectMissmatchError.prototype);
 	}
 }

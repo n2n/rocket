@@ -29,6 +29,9 @@ import { SiType } from 'src/app/si/model/entity/si-type';
 import { SiEntryDeclaration } from '../model/entity/si-entry-declaration';
 import { EmbeddedEntryPanelsInSiField } from '../model/entity/impl/embedded/embedded-entry-panels-in-si-field';
 import { SiPanel, SiGridPos } from '../model/entity/impl/embedded/si-panel';
+import { NumberInSiField } from '../model/entity/impl/number/number-in-si-field';
+import { BooleanSiField as BooleanInSiField } from '../model/entity/impl/boolean/boolean-in-si-field';
+import { EnumInSiField } from '../model/entity/impl/string/enum-in-si-field';
 
 
 export class SiContentFactory {
@@ -206,6 +209,21 @@ export class SiCompFactory {
 			stringInSiField.mandatory = dataExtr.reqBoolean('mandatory');
 			return stringInSiField;
 
+		case SiFieldType.NUMBER_IN:
+			const numberInSiField = new NumberInSiField();
+			numberInSiField.min = dataExtr.nullaNumber('min');
+			numberInSiField.max = dataExtr.nullaNumber('max');
+			numberInSiField.step = dataExtr.reqNumber('step');
+			numberInSiField.arrowStep = dataExtr.nullaNumber('arrowStep');
+			numberInSiField.fixed = dataExtr.reqBoolean('fixed');
+			numberInSiField.setValue(dataExtr.nullaString('value'));
+			return numberInSiField;
+
+		case SiFieldType.BOOLEAN_IN:
+			const booleanInSiField = new BooleanInSiField();
+			booleanInSiField.value = dataExtr.reqBoolean('value');
+			return booleanInSiField;
+
 		case SiFieldType.FILE_OUT:
 			return new FileOutSiField(SiResultFactory.buildSiFile(dataExtr.nullaObject('value')));
 
@@ -221,6 +239,11 @@ export class SiCompFactory {
 		case SiFieldType.LINK_OUT:
 			return new LinkOutSiField(dataExtr.reqBoolean('href'), dataExtr.reqString('ref'),
 					dataExtr.reqString('label'));
+
+		case SiFieldType.ENUM_IN:
+			const enumInSiField = new EnumInSiField(dataExtr.nullaString('value'), dataExtr.reqStringMap('options'));
+			enumInSiField.mandatory = dataExtr.reqBoolean('mandatory');
+			return enumInSiField;
 
 		case SiFieldType.QUALIFIER_SELECT_IN:
 			const qualifierSelectInSiField = new QualifierSelectInSiField(dataExtr.reqString('apiUrl'),

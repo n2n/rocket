@@ -47,10 +47,10 @@ class SiFields {
 	
 	/**
 	 * @param int|null $value
-	 * @return \rocket\si\content\impl\IntInSiField
+	 * @return \rocket\si\content\impl\NumberInSiField
 	 */
-	static function intIn(?int $value) {
-		return new IntInSiField($value);
+	static function numberIn(?int $value) {
+		return new NumberInSiField($value);
 	}
 	
 	/**
