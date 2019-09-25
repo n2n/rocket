@@ -7,6 +7,7 @@ import { EmbeddedEntriesSummaryInComponent } from '../embedded-entries-summary-i
 import { SiStructureType } from 'src/app/si/model/entity/si-field-structure-declaration';
 import { SiPanel } from 'src/app/si/model/entity/impl/embedded/si-panel';
 import { PanelEmbeddedEntryInModel } from './panel-embedded-entry-in-model';
+import { SafeStyle, DomSanitizer } from '@angular/platform-browser';
 
 @Component({
 	selector: 'rocket-embedded-entry-panels-in',
@@ -21,9 +22,11 @@ export class EmbeddedEntryPanelsInComponent implements OnInit, OnDestroy {
 	panelLayout: PanelLayout;
 	panelDefs: Array<{ panel: SiPanel, structure: SiStructure }>;
 
-	ngOnInit(): void {
-		this.panelLayout = new PanelLayout();
+	constructor(san: DomSanitizer) {
+		this.panelLayout = new PanelLayout(san);
+	}
 
+	ngOnInit(): void {
 		this.panelDefs = [];
 		for (const panel of this.model.getPanels()) {
 			this.panelLayout.registerPanel(panel);
@@ -55,7 +58,7 @@ export class PanelLayout {
 	private numGridRows = 0;
 	private numGridCols = 0;
 
-	constructor() {
+	constructor(private san: DomSanitizer) {
 	}
 
 	registerPanel(panel: SiPanel) {
@@ -79,22 +82,23 @@ export class PanelLayout {
 		return this.numGridRows > 0 || this.numGridCols > 0;
 	}
 
-	style(): string {
+	style(): SafeStyle {
 		if (!this.hasGrid()) {
 			return null;
 		}
 
-		return 'display: grid; grid-template-columns: repeat(' + (this.numGridRows - 1) + ', 1fr';
+		return this.san.bypassSecurityTrustStyle('display: grid; grid-template-columns: repeat('
+				+ (this.numGridRows - 1) + ', 1fr');
 	}
 
-	styleOf(panel: SiPanel): string {
+	styleOf(panel: SiPanel): SafeStyle {
 		if (!panel.gridPos) {
 			return null;
 		}
 
-		return 'grid-column-start: ' + panel.gridPos.colStart
+		return this.san.bypassSecurityTrustStyle('grid-column-start: ' + panel.gridPos.colStart
 				+ '; grid-column-end: ' + panel.gridPos.colEnd
 				+ '; grid-row-start: ' + panel.gridPos.rowStart
-				+ '; grid-row-end: ' + panel.gridPos.rowEnd;
+				+ '; grid-row-end: ' + panel.gridPos.rowEnd);
 	}
 }

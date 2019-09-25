@@ -1,5 +1,5 @@
-<i *ngIf="showIcon" [class]="siQualifier.iconClass"></i>
+<i *ngIf="showIcon" [class]="siQualifier.type.iconClass"></i>
 
-<span *ngIf="showName">{{ siQualifier.name }}</span>
+<span *ngIf="showName">{{ siQualifier.type.name }}</span>
 
 <span *ngIf="showIdName && siQualifier.idName !== null">{{ siQualifier.idName }}</span>

@@ -10,8 +10,8 @@
 		
 		<ul *ngIf="addablesVisible" class="rocket-multi-type-menu">
 			<li *ngFor="let siQualifier of addables">
-				<button type="button" (click)="choose(siQualifier)" [disabled]="loading">
-					<rocket-ui-qualifier siQualifier="siQualifier" [showIdName]="false"></rocket-ui-qualifier>
+				<button type="button" (click)="choose(siQualifier.type)" [disabled]="loading">
+					<rocket-ui-qualifier [siQualifier]="siQualifier" [showIdName]="false"></rocket-ui-qualifier>
 				</button>
 			</li>
 		</ul>

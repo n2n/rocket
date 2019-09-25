@@ -16,7 +16,7 @@ export class QualifierComponent implements OnInit {
 	showName = true;
 	@Input()
 	showIdName = true;
-	
+
 	constructor() { }
 
 	ngOnInit() {
