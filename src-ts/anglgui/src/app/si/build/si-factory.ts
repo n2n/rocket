@@ -262,9 +262,9 @@ export class SiCompFactory {
 			embeddedEntryInSiField.content.sortable = dataExtr.reqBoolean('sortable');
 			embeddedEntryInSiField.content.pasteCategory = dataExtr.nullaString('pasteCategory');
 
-			const allowedsiTypesData = dataExtr.nullaArray('allowedSiTypes');
-			if (allowedsiTypesData) {
-				embeddedEntryInSiField.content.allowedSiTypes = this.createTypes(allowedsiTypesData);
+			const allowedSiTypesData = dataExtr.nullaArray('allowedSiTypes');
+			if (allowedSiTypesData) {
+				embeddedEntryInSiField.content.allowedSiTypes = this.createTypes(allowedSiTypesData);
 			} else {
 				embeddedEntryInSiField.content.allowedSiTypes = null;
 			}
@@ -300,6 +300,14 @@ export class SiCompFactory {
 		panel.sortable = extr.reqBoolean('sortable');
 		panel.pasteCategory = extr.nullaString('pasteCategory');
 		panel.gridPos = this.buildGridPos(extr.nullaObject('gridPos'));
+
+		const allowedSiTypesData = extr.nullaArray('allowedTypes');
+		if (allowedSiTypesData) {
+			panel.allowedSiTypes = this.createTypes(allowedSiTypesData);
+		} else {
+			panel.allowedSiTypes = null;
+		}
+
 		return panel;
 	}
 

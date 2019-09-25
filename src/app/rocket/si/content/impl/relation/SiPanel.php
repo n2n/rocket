@@ -56,7 +56,7 @@ class SiPanel implements \JsonSerializable {
 	/**
 	 * @var SiType[]|null
 	 */
-	private $allowedSiTypes = null;
+	private $allowedTypes = null;
 	/**
 	 * @var bool
 	 */
@@ -266,7 +266,7 @@ class SiPanel implements \JsonSerializable {
 			'nonNewRemovable' => $this->nonNewRemovable,
 			'sortable' => $this->sortable,
 			'pasteCategory' => $this->pasteCategory,
-			'allowedSiTypes' => $this->allowedSiTypes,
+			'allowedTypes' => $this->allowedTypes,
 			'gridPos' => $this->gridPos,
 			'values' => $this->values
 		];

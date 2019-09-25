@@ -93,12 +93,12 @@ class EiuMask  {
 	public function possibleMasks(bool $includeAbstractTypes = false) {
 		$eiuMasks = [];
 		
-		if ($includeAbstractTypes || $this->eiMask->getEiType()->isAbstract()) {
+		if ($includeAbstractTypes || !$this->eiMask->getEiType()->isAbstract()) {
 			$eiuMasks[] = $this;
 		}
 		
 		foreach ($this->eiMask->getEiType()->getAllSubEiTypes() as $subEiType) {
-			if ($includeAbstractTypes || $subEiType->isAbstract()) {
+			if ($includeAbstractTypes || !$subEiType->isAbstract()) {
 				$eiuMasks[] = new EiuMask($this->eiMask->determineEiMask($subEiType), null, $this->eiuAnalyst);
 			}
 		}

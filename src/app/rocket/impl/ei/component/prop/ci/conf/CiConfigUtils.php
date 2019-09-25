@@ -176,7 +176,6 @@ class CiConfigUtils {
 					$gridAttributes->optInt(self::ATTR_GRID_ROW_END_KEY, null, true));
 		}
 		
-		
 		return new PanelConfig($panelName, $panelLabel,
 				empty($allowedCiIds) ? null : $allowedCiIds,
 				$panelAttributes->optInt(self::ATTR_MIN_KEY, 0, true),

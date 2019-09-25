@@ -116,7 +116,6 @@ class ContentItemsEiPropConfigurator extends RelationEiPropConfigurator {
 		
 // 		$this->eiComponent->setContentItemEiType($eiSetupProcess->getEiTypeByClass(
 // 				ReflectionUtils::createReflectionClass('rocket\impl\ei\component\prop\ci\model\ContentItem')));
-		
 		if ($this->attributes->contains(self::ATTR_PANELS_KEY)) {
 			$panelConfigs = array();
 			foreach ((array) $this->attributes->get(self::ATTR_PANELS_KEY) as $panelAttrs) {
