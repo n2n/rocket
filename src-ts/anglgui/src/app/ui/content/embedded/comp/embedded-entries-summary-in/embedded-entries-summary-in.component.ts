@@ -36,7 +36,7 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 	ngOnInit() {
 		this.embeCol = new EmbedInCollection(this.siStructure, this.model);
 		this.obtainer = new EmbeddedAddPasteObtainer(this.injector.get(SiService), this.model.getApiUrl(),
-				this.siStructure.getZone(), this.model.isSummaryRequired());
+				this.model.isSummaryRequired());
 
 		this.embeCol.readEmbes();
 	}

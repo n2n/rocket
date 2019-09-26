@@ -30,7 +30,7 @@ export class SiCommanderService {
 
 		zone.structure.model = null;
 
-		this.service.lookupSiContent(zone, zone.url)
+		this.service.lookupSiComp(zone.url)
 				.subscribe((siZoneContent) => {
 					zone.structure.model = siZoneContent;
 				});

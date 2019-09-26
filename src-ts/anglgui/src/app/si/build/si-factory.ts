@@ -36,7 +36,7 @@ import { EnumInSiField } from '../model/entity/impl/string/enum-in-si-field';
 
 export class SiContentFactory {
 
-	constructor(private zone: SiZone) {
+	constructor() {
 	}
 
 	createContents(dataArr: Array<any>, requiredType: SiContentType|null = null): SiComp[] {
@@ -64,7 +64,7 @@ export class SiContentFactory {
 				const listSiContent = new EntriesListSiContent(dataExtr.reqString('apiUrl'),
 						dataExtr.reqNumber('pageSize'));
 
-				compFactory = new SiCompFactory(this.zone, listSiContent);
+				compFactory = new SiCompFactory(listSiContent);
 				listSiContent.entryDeclaration = SiResultFactory.createEntryDeclaration(dataExtr.reqObject('entryDeclaration'));
 
 				const partialContentData = dataExtr.nullaObject('partialContent');
@@ -81,7 +81,7 @@ export class SiContentFactory {
 				entryDeclaration = SiResultFactory.createEntryDeclaration(dataExtr.reqObject('entryDeclaration'));
 				const bulkyEntrySiContent = new BulkyEntrySiComp(entryDeclaration);
 
-				compFactory = new SiCompFactory(this.zone, bulkyEntrySiContent);
+				compFactory = new SiCompFactory(bulkyEntrySiContent);
 				bulkyEntrySiContent.controls = Array.from(compFactory.createControlMap(dataExtr.reqMap('controls')).values());
 				bulkyEntrySiContent.entry = compFactory.createEntry(dataExtr.reqObject('entry'));
 				return bulkyEntrySiContent;
@@ -90,7 +90,7 @@ export class SiContentFactory {
 				entryDeclaration = SiResultFactory.createEntryDeclaration(dataExtr.reqObject('entryDeclaration'));
 				const compactEntrySiContent = new CompactEntrySiComp(entryDeclaration);
 
-				compFactory = new SiCompFactory(this.zone, compactEntrySiContent);
+				compFactory = new SiCompFactory(compactEntrySiContent);
 				compactEntrySiContent.controlMap = compFactory.createControlMap(dataExtr.reqMap('controls'));
 				compactEntrySiContent.entry = compFactory.createEntry(dataExtr.reqObject('entry'));
 				return compactEntrySiContent;
@@ -106,7 +106,7 @@ export class SiContentFactory {
 
 export class SiCompFactory {
 
-	constructor(private zone: SiZone, private zoneContent: SiComp) {
+	constructor(private zoneContent: SiComp) {
 	}
 
 	createPartialContent(data: any): SiPartialContent {
@@ -336,7 +336,7 @@ export class SiCompFactory {
 
 	private createEmbeddedEntry(data: any): SiEmbeddedEntry {
 		const extr = new Extractor(data);
-		const contentFactory = new SiContentFactory(this.zone);
+		const contentFactory = new SiContentFactory();
 
 		return new SiEmbeddedEntry(
 				contentFactory.createContent(extr.reqObject('content'),
@@ -362,8 +362,7 @@ export class SiCompFactory {
 			case SiControlType.REF:
 				return new RefSiControl(
 						dataExtr.reqString('url'),
-						this.createButton(dataExtr.reqObject('button')),
-						this.zone.layer);
+						this.createButton(dataExtr.reqObject('button')));
 			case SiControlType.API_CALL:
 				const apiControl = new ApiCallSiControl(
 						dataExtr.reqString('apiUrl'),

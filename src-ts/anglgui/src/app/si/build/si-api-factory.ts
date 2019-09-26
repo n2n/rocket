@@ -16,7 +16,7 @@ import { SiValGetResult } from '../model/api/si-val-get-result';
 export class SiApiFactory {
 	private compFactory: SiCompFactory;
 
-	constructor(public zone: SiZone) {
+	constructor() {
 
 	}
 
@@ -38,7 +38,7 @@ export class SiApiFactory {
 	}
 
 	private createGetResult(data: any, zoneContent: SiComp): SiGetResult {
-		const compFactory = new SiCompFactory(this.zone, zoneContent);
+		const compFactory = new SiCompFactory(zoneContent);
 		const extr = new Extractor(data);
 
 		const result: SiGetResult = {
@@ -104,7 +104,7 @@ export class SiApiFactory {
 	}
 
 	private createValGetResult(data: any, zoneContent: SiComp): SiValGetResult {
-		const compFactory = new SiCompFactory(this.zone, zoneContent);
+		const compFactory = new SiCompFactory(zoneContent);
 		const extr = new Extractor(data);
 
 		const result: SiValGetResult = {

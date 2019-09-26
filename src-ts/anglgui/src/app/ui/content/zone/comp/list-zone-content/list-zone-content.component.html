@@ -31,7 +31,7 @@
 				</td>
 				<td class="rocket-table-commands rocket-simple-commands">
 					<ng-container *ngFor="let pair of siEntry.selectedTypeBuildup.controlMap | keyvalue">
-						<rocket-ui-control [siControl]="pair.value"></rocket-ui-control>
+						<rocket-ui-control [siControl]="pair.value" [siStructure]="siStructure"></rocket-ui-control>
 					</ng-container>
 				</td>
 			</tr>

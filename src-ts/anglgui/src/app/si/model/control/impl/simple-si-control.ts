@@ -1,6 +1,7 @@
 import { SiControl } from "src/app/si/model/control/si-control";
 import { SiButton } from "src/app/si/model/control/si-button";
 import { SiCommanderService } from "src/app/si/model/si-commander.service";
+import { SiZone } from "src/app/si/model/structure/si-zone";
 
 export class SimpleSiControl implements SiControl {
 	
@@ -15,7 +16,7 @@ export class SimpleSiControl implements SiControl {
 		return false;
 	}
 	
-	exec(siCommanderService: SiCommanderService) {
+	exec(siZone: SiZone, siCommanderService: SiCommanderService) {
 		this.callback();
 	}
 }

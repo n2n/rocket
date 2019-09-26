@@ -27,15 +27,15 @@ export class SiService {
 	constructor(private httpClient: HttpClient) {
 	}
 
-	lookupSiContent(zone: SiZone, url: string): Observable<SiComp> {
+	lookupSiComp(url: string): Observable<SiComp> {
 		return this.httpClient.get<any>(url)
 				.pipe(map((data: any) => {
-					return this.createSiContent(data, zone);
+					return this.createSiComp(data);
 			}));
 	}
 
-	private createSiContent(data: any, zone: SiZone): SiComp {
-		return new SiContentFactory(zone).createContent(data);
+	private createSiComp(data: any): SiComp {
+		return new SiContentFactory().createContent(data);
 	}
 
 	entryControlCall(apiUrl: string, callId: object, entryId: string, entryInputs: SiEntryInput[]): Observable<any> {
@@ -119,19 +119,19 @@ export class SiService {
 				}));
 	}
 
-	apiGet(apiUrl: string, getRequest: SiGetRequest, zone: SiZone): Observable<SiGetResponse> {
+	apiGet(apiUrl: string, getRequest: SiGetRequest): Observable<SiGetResponse> {
 		return this.httpClient
 				.post<any>(apiUrl + '/get', getRequest)
 				.pipe(map(data => {
-					return new SiApiFactory(zone).createGetResponse(data, getRequest);
+					return new SiApiFactory().createGetResponse(data, getRequest);
 				}));
 	}
 
-	apiVal(apiUrl: string, valRequest: SiValRequest, zone: SiZone): Observable<SiValResponse> {
+	apiVal(apiUrl: string, valRequest: SiValRequest): Observable<SiValResponse> {
 		return this.httpClient
 				.post<any>(apiUrl + '/val', valRequest)
 				.pipe(map(data => {
-					return new SiApiFactory(zone).createValResponse(data, valRequest);
+					return new SiApiFactory().createValResponse(data, valRequest);
 				}));
 	}
 

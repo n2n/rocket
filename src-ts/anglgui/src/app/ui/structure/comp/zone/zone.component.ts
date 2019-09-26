@@ -29,7 +29,6 @@ export class ZoneComponent implements OnInit, DoCheck {
 		} else {
 			this.elemRef.nativeElement.classList.remove('rocket-contains-additional');
 		}
-
 	}
 
 	hasSiZoneErrors() {

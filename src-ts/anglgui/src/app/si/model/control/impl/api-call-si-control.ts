@@ -41,7 +41,7 @@ export class ApiCallSiControl implements SiControl {
 		return !!this.entry || this.entryBoundFlag;
 	}
 
-	exec(commandService: SiCommanderService) {
+	exec(siZone: SiZone, commandService: SiCommanderService) {
 		let obs: Observable<void>;
 
 		if (this.entry) {

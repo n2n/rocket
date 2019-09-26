@@ -5,7 +5,7 @@
 
 <div *ngIf="siControlsVisible && !root && siControls.length > 0" class="rocket-toolbar">
 	<ng-container *ngFor="let siControl of siControls">
-		<rocket-ui-control [siControl]="siControl"></rocket-ui-control>		
+		<rocket-ui-control [siControl]="siControl" [siStructure]="siStructure"></rocket-ui-control>		
 	</ng-container>
 </div>
 
@@ -26,7 +26,7 @@
 		<div *ngIf="siControlsVisible && root && siControls.length > 0" class="rocket-zone-commands">
 			<div class="rocket-main-commands">
 				<ng-container *ngFor="let siControl of siControls">
-					<rocket-ui-control [siControl]="siControl"></rocket-ui-control>		
+					<rocket-ui-control [siControl]="siControl" [siStructure]="siStructure"></rocket-ui-control>		
 				</ng-container>
 			</div>
 		</div>

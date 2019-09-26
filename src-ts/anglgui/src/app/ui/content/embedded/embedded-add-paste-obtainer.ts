@@ -18,8 +18,7 @@ import { SiValResponse } from 'src/app/si/model/api/si-val-response';
 import { SiValResult } from 'src/app/si/model/api/si-val-result';
 
 export class EmbeddedAddPasteObtainer implements AddPasteObtainer {
-	constructor(private siService: SiService, private apiUrl: string, private siZone: SiZone,
-			private obtainSummary: boolean) {
+	constructor(private siService: SiService, private apiUrl: string, private obtainSummary: boolean) {
 	}
 
 	private createBulkyInstruction(comp: BulkyEntrySiComp, siIdentifier: SiIdentifier|null): SiGetInstruction {
@@ -50,7 +49,7 @@ export class EmbeddedAddPasteObtainer implements AddPasteObtainer {
 			request.instructions[1] = this.createSummaryInstruction(summaryComp, siIdentifier);
 		}
 
-		return this.siService.apiGet(this.apiUrl, request, this.siZone).pipe(map((siGetResponse) => {
+		return this.siService.apiGet(this.apiUrl, request).pipe(map((siGetResponse) => {
 			return this.handleResponse(siGetResponse, comp, summaryComp);
 		}));
 	}
@@ -102,7 +101,7 @@ export class EmbeddedAddPasteObtainer implements AddPasteObtainer {
 			siEmbeddedEntry.entry.resetError();
 		});
 
-		this.siService.apiVal(this.apiUrl, request, this.siZone).subscribe((response: SiValResponse) => {
+		this.siService.apiVal(this.apiUrl, request).subscribe((response: SiValResponse) => {
 			siEmbeddedEntries.forEach((siEmbeddedEntry, i) => {
 				this.handleValResult(siEmbeddedEntry, response.results[i]);
 			});
