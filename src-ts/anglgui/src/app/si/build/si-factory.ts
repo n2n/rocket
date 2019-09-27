@@ -33,6 +33,37 @@ import { NumberInSiField } from '../model/entity/impl/number/number-in-si-field'
 import { BooleanSiField as BooleanInSiField } from '../model/entity/impl/boolean/boolean-in-si-field';
 import { EnumInSiField } from '../model/entity/impl/string/enum-in-si-field';
 
+export class SiZoneModelFactory {
+	createZoneModel(data: any): SiZoneModel {
+		const extr = new Extractor(data);
+
+		return {
+			title: extr.reqString('title'),
+			breadcrumbs: this.createBreadcrumbs(extr.reqArray('breadcrumbs')),
+			structureModel: new SiContentFactory().createContent(extr.reqObject('comp'))
+		}
+		
+	}
+
+	createBreadcrumbs(dataArr: Array<any>): SiBreadcrumb[] {
+		const breadcrumbs: SiBreadcrumb[] = [];
+
+		for (const data of dataArr) {
+			breadcrumbs.push(this.createBreadcrumb(data));
+		}
+
+		return breadcrumbs;
+	}
+
+	createBreadcrumb(data: any): SiBreadcrumb {
+		const extr = new Extractor(data);
+
+		return {
+			url: extr.reqString('url'),
+			name: extr.reqString('name')
+		};
+	}
+}
 
 export class SiContentFactory {
 

@@ -1,6 +1,6 @@
 import { SiButton } from 'src/app/si/model/control/si-button';
 import { SiCommanderService } from 'src/app/si/model/si-commander.service';
-import { SiZone } from "src/app/si/model/structure/si-zone";
+import { SiZone } from '../structure/si-zone';
 
 export interface SiControl {
 
@@ -8,5 +8,5 @@ export interface SiControl {
 
 	isLoading(): boolean;
 
-	exec(zone: SiZone, siCommanderService: SiCommanderService);
+	exec(zone: SiZone, siCommanderService: SiCommanderService): void;
 }

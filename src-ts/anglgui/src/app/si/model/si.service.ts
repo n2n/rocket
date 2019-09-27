@@ -15,7 +15,7 @@ import { SiResult } from 'src/app/si/model/control/si-result';
 import { SiGetRequest } from 'src/app/si/model/api/si-get-request';
 import { SiApiFactory } from 'src/app/si/build/si-api-factory';
 import { SiGetResponse } from 'src/app/si/model/api/si-get-response';
-import { SiContentFactory } from 'src/app/si/build/si-factory';
+import { SiCompEssentialsFactory } from 'src/app/si/build/si-factory';
 import { SiValRequest } from './api/si-val-request';
 import { SiValResponse } from './api/si-val-response';
 
@@ -35,7 +35,7 @@ export class SiService {
 	}
 
 	private createSiComp(data: any): SiComp {
-		return new SiContentFactory().createContent(data);
+		return new SiCompEssentialsFactory().createComp(data);
 	}
 
 	entryControlCall(apiUrl: string, callId: object, entryId: string, entryInputs: SiEntryInput[]): Observable<any> {

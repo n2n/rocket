@@ -5,7 +5,7 @@ import { Extractor } from 'src/app/util/mapping/extractor';
 import { SiGetResponse } from 'src/app/si/model/api/si-get-response';
 import { SiGetResult } from 'src/app/si/model/api/si-get-result';
 import { SiResultFactory } from 'src/app/si/build/si-result-factory';
-import { SiCompFactory } from 'src/app/si/build/si-factory';
+import { SiCompEssentialsFactory } from 'src/app/si/build/si-factory';
 import { SiGetRequest } from 'src/app/si/model/api/si-get-request';
 import { SiValRequest } from '../model/api/si-val-request';
 import { SiValResponse } from '../model/api/si-val-response';
@@ -14,7 +14,7 @@ import { SiValResult } from '../model/api/si-val-result';
 import { SiValGetResult } from '../model/api/si-val-get-result';
 
 export class SiApiFactory {
-	private compFactory: SiCompFactory;
+	private compFactory: SiCompEssentialsFactory;
 
 	constructor() {
 
@@ -38,7 +38,7 @@ export class SiApiFactory {
 	}
 
 	private createGetResult(data: any, zoneContent: SiComp): SiGetResult {
-		const compFactory = new SiCompFactory(zoneContent);
+		const compFactory = new SiCompEssentialsFactory(zoneContent);
 		const extr = new Extractor(data);
 
 		const result: SiGetResult = {
@@ -104,7 +104,7 @@ export class SiApiFactory {
 	}
 
 	private createValGetResult(data: any, zoneContent: SiComp): SiValGetResult {
-		const compFactory = new SiCompFactory(zoneContent);
+		const compFactory = new SiCompEssentialsFactory(zoneContent);
 		const extr = new Extractor(data);
 
 		const result: SiValGetResult = {

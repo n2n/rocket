@@ -52,10 +52,10 @@ export class StructureComponent implements OnInit {
 
 	get siControls(): SiControl[] {
 		const controls: SiControl[] = [];
-	
+
 		controls.push(...this._siStructure.controls);
 		controls.push(...this._siStructure.model.getControls());
-		
+
 		return controls;
 	}
 
@@ -68,7 +68,7 @@ export class StructureComponent implements OnInit {
 	}
 
 	isMain() {
-		return this.getType() == SiStructureType.MAIN_GROUP;
+		return this.getType() === SiStructureType.MAIN_GROUP;
 	}
 
 // 	ngDoCheck() {

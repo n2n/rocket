@@ -6,13 +6,11 @@ import { ListZoneContentComponent } from 'src/app/ui/content/zone/comp/list-zone
 import { IllegalSiStateError } from 'src/app/si/model/illegal-si-state-error';
 import { SiEntryDeclaration } from 'src/app/si/model/entity/si-entry-declaration';
 import { SiContent } from 'src/app/si/model/structure/si-content';
-import { SiZone } from 'src/app/si/model/structure/si-zone';
 import { SiZoneError } from 'src/app/si/model/structure/si-zone-error';
-import { SiCommanderService } from 'src/app/si/model/si-commander.service';
 import { SiPage } from 'src/app/si/model/entity/impl/basic/si-page';
 import { SiQualifier } from 'src/app/si/model/entity/si-qualifier';
 import { SiStructureModel } from 'src/app/si/model/structure/si-structure-model';
-import { SiStructure } from "src/app/si/model/structure/si-structure";
+import { SiStructure } from 'src/app/si/model/structure/si-structure';
 
 export class EntriesListSiContent implements SiComp, SiContent {
 
