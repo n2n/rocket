@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { QualifierSelectInModel } from 'src/app/ui/content/field/qualifier-select-in-model';
 import { SiQualifier } from 'src/app/si/model/entity/si-qualifier';
 import { SiLayer, PopupSiLayer } from 'src/app/si/model/structure/si-layer';
-import { EntriesListSiContent } from 'src/app/si/model/entity/impl/basic/entries-list-si-content';
+import { EntriesListSiComp } from 'src/app/si/model/entity/impl/basic/entries-list-si-content';
 import { SiStructure } from 'src/app/si/model/structure/si-structure';
 
 @Component({
@@ -44,17 +44,22 @@ export class QualifierSelectInFieldComponent implements OnInit {
 			this.optionsSiLayer = null;
 		});
 
-		const content = new EntriesListSiContent(this.model.getApiUrl(), 30);
+		const comp = new EntriesListSiComp(this.model.getApiUrl(), 30);
 
-		this.optionsSiLayer.pushZone(null).structure.model = content;
+		this.optionsSiLayer.pushZone(null).model = {
+			title: 'Some Title',
+			breadcrumbs: [],
+			structureModel: comp,
+			controls: []
+		};
 
-		content.qualifierSelection = {
+		comp.qualifierSelection = {
 			min: this.model.getMin(),
 			max: this.model.getMax(),
 			selectedQualfiers: this.model.getValues(),
 
 			done: () => {
-				this.model.setValues(content.qualifierSelection.selectedQualfiers);
+				this.model.setValues(comp.qualifierSelection.selectedQualfiers);
 				this.optionsSiLayer.dispose();
 			},
 

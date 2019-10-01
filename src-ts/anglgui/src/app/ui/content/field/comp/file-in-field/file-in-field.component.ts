@@ -120,8 +120,13 @@ export class FileInFieldComponent implements OnInit {
 			this.popupSiLayer = null;
 		});
 
-		this.popupSiLayer.pushZone(null).structure.model = new SimpleSiStructureModel(
-				new TypeSiContent(ImageResizeComponent, (cr) => cr.instance.model = this.model));
+		this.popupSiLayer.pushZone(null).model = {
+			title: 'Some Title',
+			breadcrumbs: [],
+			structureModel: new SimpleSiStructureModel(
+					new TypeSiContent(ImageResizeComponent, (cr) => cr.instance.model = this.model)),
+			controls: []
+		};
 	}
 
 	getAcceptStr(): string {

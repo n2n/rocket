@@ -21,12 +21,12 @@
  */
 namespace rocket\si\structure\impl;
 
-use rocket\si\structure\SiContent;
 use n2n\util\uri\Url;
 use rocket\si\structure\SiEntryDeclaration;
 use rocket\si\content\SiPartialContent;
+use rocket\si\structure\SiComp;
 
-class EntriesListSiContent implements SiContent {
+class EntriesListSiComp implements SiComp {
 	private $apiUrl;
 	private $pageSize;
 	private $entryDeclaration;
@@ -47,7 +47,7 @@ class EntriesListSiContent implements SiContent {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\si\structure\SiContent::getTypeName()
+	 * @see \rocket\si\structure\SiComp::getTypeName()
 	 */
 	public function getTypeName(): string {
 		return 'entries-list';
@@ -92,7 +92,7 @@ class EntriesListSiContent implements SiContent {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\si\structure\SiContent::getData()
+	 * @see \rocket\si\structure\SiComp::getData()
 	 */
 	public function getData(): array {
 		return [

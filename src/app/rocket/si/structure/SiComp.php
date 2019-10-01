@@ -21,7 +21,7 @@
  */
 namespace rocket\si\structure;
 
-interface SiContent {
+interface SiComp {
 	
 	/**
 	 * @return string

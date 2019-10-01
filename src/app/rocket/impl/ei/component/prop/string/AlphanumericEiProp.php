@@ -46,16 +46,22 @@ use rocket\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\ei\manage\generic\ScalarEiProperty;
 use n2n\impl\persistence\orm\property\StringEntityProperty;
 use rocket\si\content\SiField;
+use rocket\impl\ei\component\prop\meta\config\AddonConfig;
 
 abstract class AlphanumericEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiProp, 
 		SortableEiProp, QuickSearchableEiProp, ScalarEiProp, GenericEiProp {
 	
 	private $maxlength;
+	/**
+	 * @var AddonConfig
+	 */
+	private $addonConfig;
 
 	public  function __construct() {
 		parent::__construct();
 
 		$this->entityPropertyRequired = false;
+		$this->addonConfig = new AddonConfig();
 	}
 
 	public function getMaxlength() {
@@ -64,6 +70,14 @@ abstract class AlphanumericEiProp extends DraftablePropertyEiPropAdapter impleme
 
 	public function setMaxlength(?int $maxlength) {
 		$this->maxlength = $maxlength;
+	}
+	
+	function setAddonConfig(AddonConfig $addonConfig) {
+		$this->addonConfig = $addonConfig;
+	}
+	
+	function getAddonConfig() {
+		return $this->addonConfig;
 	}
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {

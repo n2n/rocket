@@ -8,7 +8,7 @@ import { SiGetResult } from 'src/app/si/model/api/si-get-result';
 import { SiPage } from 'src/app/si/model/entity/impl/basic/si-page';
 import { fromEvent, Subscription } from 'rxjs';
 import { SiQualifier } from 'src/app/si/model/entity/si-qualifier';
-import { EntriesListSiContent } from 'src/app/si/model/entity/impl/basic/entries-list-si-content';
+import { EntriesListSiComp } from 'src/app/si/model/entity/impl/basic/entries-list-si-content';
 import { SiStructure } from "src/app/si/model/structure/si-structure";
 
 @Component({
@@ -19,7 +19,7 @@ import { SiStructure } from "src/app/si/model/structure/si-structure";
 export class ListZoneContentComponent implements OnInit, OnDestroy {
 
 	siStructure: SiStructure;
-	model: EntriesListSiContent;
+	model: EntriesListSiComp;
 
 
 	private subscription: Subscription;

@@ -12,12 +12,12 @@ import { LinkOutSiField } from 'src/app/si/model/entity/impl/string/link-out-si-
 import { QualifierSelectInSiField } from 'src/app/si/model/entity/impl/qualifier/qualifier-select-in-si-field';
 import { SiResultFactory } from 'src/app/si/build/si-result-factory';
 import { SiPage } from 'src/app/si/model/entity/impl/basic/si-page';
-import { EntriesListSiContent } from 'src/app/si/model/entity/impl/basic/entries-list-si-content';
+import { EntriesListSiComp } from 'src/app/si/model/entity/impl/basic/entries-list-si-content';
 import { BulkyEntrySiComp } from 'src/app/si/model/entity/impl/basic/bulky-entry-si-comp';
 import { EmbeddedEntryInSiField } from 'src/app/si/model/entity/impl/embedded/embedded-entry-in-si-field';
 import { CompactEntrySiComp } from 'src/app/si/model/entity/impl/basic/compact-entry-si-comp';
 import { SiEmbeddedEntry } from 'src/app/si/model/entity/impl/embedded/si-embedded-entry';
-import { SiZone } from '../model/structure/si-zone';
+import { SiZone, SiZoneModel, SiBreadcrumb } from '../model/structure/si-zone';
 import { Extractor, ObjectMissmatchError } from 'src/app/util/mapping/extractor';
 import { SiEntry } from '../model/entity/si-entry';
 import { SiField } from '../model/entity/si-field';
@@ -40,9 +40,9 @@ export class SiZoneModelFactory {
 		return {
 			title: extr.reqString('title'),
 			breadcrumbs: this.createBreadcrumbs(extr.reqArray('breadcrumbs')),
-			structureModel: new SiContentFactory().createContent(extr.reqObject('comp'))
+			structureModel: new SiContentFactory().createContent(extr.reqObject('comp')),
+			controls: []
 		}
-		
 	}
 
 	createBreadcrumbs(dataArr: Array<any>): SiBreadcrumb[] {
@@ -81,7 +81,7 @@ export class SiContentFactory {
 	createContent(data: any, requiredType: SiContentType|null = null): SiComp {
 		const extr = new Extractor(data);
 		const dataExtr = extr.reqExtractor('data');
-		let compFactory: SiCompFactory;
+		let compFactory: SiCompEssentialsFactory;
 		let entryDeclaration: SiEntryDeclaration;
 
 		const type = extr.reqString('type');
@@ -92,10 +92,10 @@ export class SiContentFactory {
 
 		switch (type) {
 			case SiContentType.ENTRIES_LIST:
-				const listSiContent = new EntriesListSiContent(dataExtr.reqString('apiUrl'),
+				const listSiContent = new EntriesListSiComp(dataExtr.reqString('apiUrl'),
 						dataExtr.reqNumber('pageSize'));
 
-				compFactory = new SiCompFactory(listSiContent);
+				compFactory = new SiCompEssentialsFactory(listSiContent);
 				listSiContent.entryDeclaration = SiResultFactory.createEntryDeclaration(dataExtr.reqObject('entryDeclaration'));
 
 				const partialContentData = dataExtr.nullaObject('partialContent');
@@ -112,7 +112,7 @@ export class SiContentFactory {
 				entryDeclaration = SiResultFactory.createEntryDeclaration(dataExtr.reqObject('entryDeclaration'));
 				const bulkyEntrySiContent = new BulkyEntrySiComp(entryDeclaration);
 
-				compFactory = new SiCompFactory(bulkyEntrySiContent);
+				compFactory = new SiCompEssentialsFactory(bulkyEntrySiContent);
 				bulkyEntrySiContent.controls = Array.from(compFactory.createControlMap(dataExtr.reqMap('controls')).values());
 				bulkyEntrySiContent.entry = compFactory.createEntry(dataExtr.reqObject('entry'));
 				return bulkyEntrySiContent;
@@ -121,7 +121,7 @@ export class SiContentFactory {
 				entryDeclaration = SiResultFactory.createEntryDeclaration(dataExtr.reqObject('entryDeclaration'));
 				const compactEntrySiContent = new CompactEntrySiComp(entryDeclaration);
 
-				compFactory = new SiCompFactory(compactEntrySiContent);
+				compFactory = new SiCompEssentialsFactory(compactEntrySiContent);
 				compactEntrySiContent.controlMap = compFactory.createControlMap(dataExtr.reqMap('controls'));
 				compactEntrySiContent.entry = compFactory.createEntry(dataExtr.reqObject('entry'));
 				return compactEntrySiContent;
@@ -135,7 +135,7 @@ export class SiContentFactory {
 
 
 
-export class SiCompFactory {
+export class SiCompEssentialsFactory {
 
 	constructor(private zoneContent: SiComp) {
 	}

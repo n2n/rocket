@@ -28,11 +28,11 @@ export class SiCommanderService {
 			throw new SiCommandError('Zone contains no url.');
 		}
 
-		zone.structure.model = null;
+		zone.model = null;
 
-		this.service.lookupSiComp(zone.url)
-				.subscribe((siZoneContent) => {
-					zone.structure.model = siZoneContent;
+		this.service.lookupZoneModel(zone.url)
+				.subscribe((zoneModel) => {
+					zone.model = zoneModel;
 				});
 	}
 
@@ -80,30 +80,31 @@ export class SiCommanderService {
 	}
 
 	execSelectionControl(apiUrl: string, callId: object, zoneContent: SiComp, entries: SiEntry[], includeInput: boolean): Observable<void> {
-		const entryIds: string[] = [];
-		const entryInputs: SiEntryInput[] = [];
+		throw new Error('not yet implemented');
+	// 	const entryIds: string[] = [];
+	// 	const entryInputs: SiEntryInput[] = [];
 
-		for (const entry of entries) {
-			if (!entry.qualifier.id) {
-				throw new IllegalSiStateError('Selection control cannnot be executed on new entry.');
-			}
+	// 	for (const entry of entries) {
+	// 		if (!entry.qualifier.id) {
+	// 			throw new IllegalSiStateError('Selection control cannnot be executed on new entry.');
+	// 		}
 
-			entryIds.push(entry.qualifier.id);
+	// 		entryIds.push(entry.qualifier.id);
 
-			if (includeInput) {
-				entryInputs.push(entry.readInput());
-			}
-		}
+	// 		if (includeInput) {
+	// 			entryInputs.push(entry.readInput());
+	// 		}
+	// 	}
 
-		const obs = this.service.selectionControlCall(apiUrl, callId, entryIds, entryInputs);
+	// 	const obs = this.service.selectionControlCall(apiUrl, callId, entryIds, entryInputs);
 
-		obs.subscribe((result) => {
-			this.handleResult(result, entries);
-		});
+	// 	obs.subscribe((result) => {
+	// 		this.handleResult(result, entries);
+	// 	});
 
-		return obs.pipe(map((result) => {
-			return;
-		}));
+	// 	return obs.pipe(map((result) => {
+	// 		return;
+	// 	}));
 	}
 
 	execControl(apiUrl: string, callId: object, zoneContent: SiComp, includeInput: boolean): Observable<void> {

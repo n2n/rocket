@@ -76,12 +76,15 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 		}
 
 		const siZone = this.siStructure.getZone();
+		let bakEntry = embe.siEmbeddedEntry.entry.copy();
 
 		this.popupSiLayer = siZone.layer.container.createLayer();
-		const siStructure = this.popupSiLayer.pushZone(null).structure;
-		siStructure.model = embe.siEmbeddedEntry.comp;
-
-		let bakEntry = embe.siEmbeddedEntry.entry.copy();
+		this.popupSiLayer.pushZone(null).model = {
+			title: 'Some Title',
+			breadcrumbs: [],
+			structureModel: embe.siEmbeddedEntry.comp,
+			controls: this.createPopupControls(() => { bakEntry = null; })
+		};
 
 		this.popupSiLayer.onDispose(() => {
 			this.popupSiLayer = null;
@@ -91,8 +94,6 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 				this.obtainer.val([embe.siEmbeddedEntry]);
 			}
 		});
-
-		siStructure.controls = this.createPopupControls(() => { bakEntry = null; });
 	}
 
 	openAll() {
@@ -118,14 +119,16 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 			this.embeCol.writeEmbes();
 		});
 
-		const siStructure = this.popupSiLayer.pushZone(null).structure;
-		siStructure.model = new SimpleSiStructureModel(
-				new TypeSiContent(EmbeddedEntriesInComponent, (ref, structure) => {
-					ref.instance.model = this.model;
-					ref.instance.siStructure = structure;
-				}));
-
-		siStructure.controls = this.createPopupControls(() => { bakEmbes = null; });
+		this.popupSiLayer.pushZone(null).model = {
+			title: 'Some Title',
+			breadcrumbs: [],
+			structureModel: new SimpleSiStructureModel(
+					new TypeSiContent(EmbeddedEntriesInComponent, (ref, structure) => {
+						ref.instance.model = this.model;
+						ref.instance.siStructure = structure;
+					})),
+			controls: this.createPopupControls(() => { bakEmbes = null; })
+		};
 	}
 
 	private createPopupControls(applyCallback: () => any): SiControl[] {

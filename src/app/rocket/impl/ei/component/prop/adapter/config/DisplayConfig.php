@@ -25,6 +25,7 @@ use n2n\util\type\ArgUtils;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\si\structure\SiStructureType;
+use rocket\ei\util\Eiu;
 
 class DisplayConfig {
 	private $compatibleViewModes;
@@ -40,7 +41,11 @@ class DisplayConfig {
 		$this->defaultDisplayedViewModes = $this->compatibleViewModes;
 	}
 	
-	public function isViewModeCompatible($viewMode) {
+	/**
+	 * @param int $viewMode
+	 * @return boolean
+	 */
+	public function isViewModeCompatible(int $viewMode) {
 		return (boolean) ($viewMode & $this->compatibleViewModes);
 	}
 	
@@ -58,7 +63,12 @@ class DisplayConfig {
 		return (boolean) (self::BULKY_VIEW_MODES & $this->compatibleViewModes);
 	}
 	
-	public function setDefaultDisplayedViewModes($viewModes) {
+	/**
+	 * @param int $viewModes
+	 * @throws \InvalidArgumentException
+	 * @return \rocket\impl\ei\component\prop\adapter\config\DisplayConfig
+	 */
+	public function setDefaultDisplayedViewModes(int $viewModes) {
 		if ($viewModes & ~$this->compatibleViewModes) {
 			throw new \InvalidArgumentException('View mode not allowed.');
 		}
@@ -68,7 +78,13 @@ class DisplayConfig {
 		return $this;
 	}
 	
-	public function changeDefaultDisplayedViewModes($viewModes, $defaultDisplayed) {
+	/**
+	 * @param int $viewModes
+	 * @param bool $defaultDisplayed
+	 * @throws \InvalidArgumentException
+	 * @return \rocket\impl\ei\component\prop\adapter\config\DisplayConfig
+	 */
+	public function changeDefaultDisplayedViewModes(int $viewModes, bool $defaultDisplayed) {
 	    ArgUtils::assertTrue((boolean) ($viewModes & ViewMode::all()), 'viewMode');
 		
 		if ($defaultDisplayed && ($viewModes & ~$this->compatibleViewModes)) {
@@ -92,22 +108,38 @@ class DisplayConfig {
 		return (boolean) ($viewMode & $this->defaultDisplayedViewModes);
 	}
 	
-	public function setListReadModeDefaultDisplayed($defaultDisplayaed) {
+	/**
+	 * @param bool $defaultDisplayaed
+	 * @return \rocket\impl\ei\component\prop\adapter\config\DisplayConfig
+	 */
+	public function setListReadModeDefaultDisplayed(bool $defaultDisplayaed) {
 		$this->changeDefaultDisplayed(ViewMode::COMPACT_READ, $defaultDisplayaed);
 		return $this;
 	}
 	
-	public function setBulkyModeDefaultDisplayed($defaultDisplayaed) {
+	/**
+	 * @param bool $defaultDisplayaed
+	 * @return \rocket\impl\ei\component\prop\adapter\config\DisplayConfig
+	 */
+	public function setBulkyModeDefaultDisplayed(bool $defaultDisplayaed) {
 		$this->changeDefaultDisplayed(ViewMode::BULKY_READ, $defaultDisplayaed);
 		return $this;
 	}
 	
-	public function setEditModeDefaultDisplayed($defaultDisplayaed) {
+	/**
+	 * @param bool $defaultDisplayaed
+	 * @return \rocket\impl\ei\component\prop\adapter\config\DisplayConfig
+	 */
+	public function setEditModeDefaultDisplayed(bool $defaultDisplayaed) {
 		$this->changeDefaultDisplayed(ViewMode::BULKY_EDIT, $defaultDisplayaed);
 		return $this;
 	}
 	
-	public function setAddModeDefaultDisplayed($defaultDisplayaed) {
+	/**
+	 * @param bool $defaultDisplayaed
+	 * @return \rocket\impl\ei\component\prop\adapter\config\DisplayConfig
+	 */
+	public function setAddModeDefaultDisplayed(bool $defaultDisplayaed) {
 		$this->changeDefaultDisplayed(ViewMode::BULKY_ADD, $defaultDisplayaed);
 		return $this;
 	}
@@ -127,27 +159,22 @@ class DisplayConfig {
 	}
 	
 	/**
-	 * @return string
-	 */
-	public function getHelpText() {
-		return $this->helpText;
-	}
-
-	/**
-	 * @param string $helpText
-	 */
-	public function setHelpText($helpText) {
-		$this->helpText = $helpText;
-	}
-	
-	/**
 	 * @param int $viewMode
 	 * @return DisplayDefinition|null
 	 */
-	public function toDisplayDefinition(int $viewMode, string $label, string $helpText = null) {
+	function toDisplayDefinition(int $viewMode, string $label, string $helpText = null) {
 		if (!$this->isViewModeCompatible($viewMode)) return null;
 		
 		return new DisplayDefinition($this->displayItemType,
 				$this->isViewModeDefaultDisplayed($viewMode), $label, $helpText);
+	}
+	
+	/**
+	 * @param Eiu $eiu
+	 * @return \rocket\ei\manage\gui\DisplayDefinition|NULL
+	 */
+	function buildDisplayDefinitionFromEiu(Eiu $eiu) {
+		return $this->toDisplayDefinition($eiu->gui()->getViewMode(), $eiu->prop()->getLabel(), 
+				$eiu->prop()->getHelpText());
 	}
 }

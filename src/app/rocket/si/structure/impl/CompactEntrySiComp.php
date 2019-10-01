@@ -21,13 +21,13 @@
  */
 namespace rocket\si\structure\impl;
 
-use rocket\si\structure\SiContent;
+use rocket\si\structure\SiComp;
 use rocket\si\structure\SiEntryDeclaration;
 use rocket\si\content\SiEntry;
 use n2n\util\type\ArgUtils;
 use rocket\si\control\SiControl;
 
-class CompactEntrySiContent implements SiContent {
+class CompactEntrySiComp implements SiComp {
 	private $entryDeclaration;
 	private $entry;
 	private $controls;
@@ -40,7 +40,7 @@ class CompactEntrySiContent implements SiContent {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\si\structure\SiContent::getTypeName()
+	 * @see \rocket\si\structure\SiComp::getTypeName()
 	 */
 	function getTypeName(): string {
 		return 'compact-entry';
@@ -48,7 +48,7 @@ class CompactEntrySiContent implements SiContent {
 	
 	/**
 	 * @param SiEntry[] $siEntries
-	 * @return CompactEntrySiContent
+	 * @return CompactEntrySiComp
 	 */
 	function setEntry(?SiEntry $entry) {
 		$this->entry = $entry;
@@ -64,7 +64,7 @@ class CompactEntrySiContent implements SiContent {
 	
 	/**
 	 * @param SiControl[] $controls
-	 * @return CompactEntrySiContent
+	 * @return CompactEntrySiComp
 	 */
 	function setControls(array $controls) {
 		ArgUtils::valArray($controls, SiControl::class);

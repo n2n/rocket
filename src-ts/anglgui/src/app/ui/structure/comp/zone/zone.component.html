@@ -15,7 +15,7 @@
 		<li class="rocket-severity-danger rocket-active">{{ 'errors_txt' | translate }}</li>
 	</ul>
 	<div class="rocket-additional-container">
-		<div class="rocket-additional-content" style="">
+		<div class="rocket-additional-content">
 			<div *ngFor="let siZoneError of siZoneErrors" class="rocket-error-index-entry">
 				<div *ngFor="let message of siZoneError.getMessages()" 
 						class="rocket-error-index-message">{{ message }}</div>

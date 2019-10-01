@@ -31,6 +31,8 @@ use n2n\persistence\meta\structure\Column;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use n2n\util\type\CastUtils;
+use rocket\impl\ei\component\prop\meta\config\AddonConfig;
+
 class StringEiPropConfigurator extends AlphanumericEiPropConfigurator {
 	const OPTION_MULTILINE_KEY = 'multiline';
 	
@@ -57,7 +59,6 @@ class StringEiPropConfigurator extends AlphanumericEiPropConfigurator {
 	}
 	
 	/**
-	 *
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator::testCompatibility()
 	 */
@@ -79,6 +80,7 @@ class StringEiPropConfigurator extends AlphanumericEiPropConfigurator {
 		
 		$magDispatchable->getMagCollection()->addMag(self::OPTION_MULTILINE_KEY, new BoolMag('Multiline',
 				$this->attributes->getBool(self::OPTION_MULTILINE_KEY, false, $eiComponent->isMultiline())));
+	
 		
 		return $magDispatchable;
 	}
@@ -89,5 +91,6 @@ class StringEiPropConfigurator extends AlphanumericEiPropConfigurator {
 		$multilineMag = $magDispatchable->getMagCollection()->getMagByPropertyName(self::OPTION_MULTILINE_KEY);
 
 		$this->attributes->set(self::OPTION_MULTILINE_KEY, $multilineMag->getValue());
+		
 	}
 }

@@ -21,14 +21,14 @@
  */
 namespace rocket\si\structure\impl;
 
-use rocket\si\structure\SiContent;
+use rocket\si\structure\SiComp;
 use rocket\si\structure\SiEntryDeclaration;
 use rocket\si\content\SiEntry;
 use n2n\util\type\ArgUtils;
 use rocket\si\control\SiControl;
 use rocket\si\SiPayloadFactory;
 
-class BulkyEntrySiContent implements SiContent {
+class BulkyEntrySiComp implements SiComp {
 	private $entryDeclaration;
 	private $entry;
 	private $controls;
@@ -41,7 +41,7 @@ class BulkyEntrySiContent implements SiContent {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\si\structure\SiContent::getTypeName()
+	 * @see \rocket\si\structure\SiComp::getTypeName()
 	 */
 	function getTypeName(): string {
 		return 'bulky-entry';
@@ -49,7 +49,7 @@ class BulkyEntrySiContent implements SiContent {
 	
 	/**
 	 * @param SiEntry[] $siEntries
-	 * @return BulkyEntrySiContent
+	 * @return BulkyEntrySiComp
 	 */
 	function setEntry(?SiEntry $entry) {
 		$this->entry = $entry;
@@ -65,7 +65,7 @@ class BulkyEntrySiContent implements SiContent {
 	
 	/**
 	 * @param SiControl[] $controls
-	 * @return BulkyEntrySiContent
+	 * @return BulkyEntrySiComp
 	 */
 	function setControls(array $controls) {
 		ArgUtils::valArray($controls, SiControl::class);

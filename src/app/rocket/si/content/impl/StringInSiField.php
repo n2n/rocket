@@ -22,6 +22,7 @@
 namespace rocket\si\content\impl;
 
 use n2n\util\type\attrs\DataSet;
+use rocket\si\content\impl\meta\SiCrumbGroup;
 
 class StringInSiField extends InSiFieldAdapter {
 	/**
@@ -40,6 +41,14 @@ class StringInSiField extends InSiFieldAdapter {
 	 * @var bool
 	 */
 	private $mandatory = false;
+	/**
+	 * @var SiCrumbGroup[]
+	 */
+	private $prefixAddons = [];
+	/**
+	 * @var SiCrumbGroup[]
+	 */
+	private $suffixAddons = [];
 	
 	function __construct(?string $value) {
 		$this->value = $value;	

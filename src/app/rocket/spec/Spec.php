@@ -749,14 +749,17 @@ class PropIn {
 	private function handleException($e, EiErrorResult $eiErrorResult = null) {
 		$e = $this->createException($e);
 		if (null !== $eiErrorResult) {
-			$eiErrorResult->putEiPropError(EiPropError::fromEiProp(
-					$this->eiPropConfigurator->getEiComponent(), $e));
+			$eiErrorResult->putEiPropError(EiPropError::fromEiProp($this->eiPropConfigurator->getEiComponent(), $e));
 			return;
 		}
 		
-		throw new $e;
+		throw $e;
 	}
 	
+	/**
+	 * @param \Throwable $e
+	 * @return \rocket\ei\component\InvalidEiComponentConfigurationException
+	 */
 	private function createException($e) {
 		$eiComponent = $this->eiPropConfigurator->getEiComponent();
 		

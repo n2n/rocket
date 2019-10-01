@@ -1,4 +1,4 @@
-import { Component, OnInit, DoCheck, Input, ComponentFactoryResolver, ElementRef } from '@angular/core';
+import { Component, OnInit, DoCheck, Input, ComponentFactoryResolver, ElementRef, OnDestroy } from '@angular/core';
 import { SiZone } from 'src/app/si/model/structure/si-zone';
 import { SiStructure } from 'src/app/si/model/structure/si-structure';
 import { SiZoneError } from 'src/app/si/model/structure/si-zone-error';
@@ -8,7 +8,7 @@ import { SiZoneError } from 'src/app/si/model/structure/si-zone-error';
   templateUrl: './zone.component.html',
   styleUrls: ['./zone.component.css']
 })
-export class ZoneComponent implements OnInit, DoCheck {
+export class ZoneComponent implements OnInit, DoCheck, OnDestroy {
 
 	@Input() siZone: SiZone;
 
@@ -16,11 +16,14 @@ export class ZoneComponent implements OnInit, DoCheck {
 	siZoneErrors: SiZoneError[] = [];
 
 	constructor(private elemRef: ElementRef) {
-		this.siStructure = new SiStructure(null, this.siZone, null, this.siZone.model.title,
-				this.siZone.model.structureModel);
 	}
 
 	ngOnInit() {
+		this.siStructure = new SiStructure(null, this.siZone, null);
+	}
+
+	ngOnDestroy() {
+		this.siStructure.dispose();
 	}
 
 	ngDoCheck() {
@@ -30,6 +33,12 @@ export class ZoneComponent implements OnInit, DoCheck {
 			this.elemRef.nativeElement.classList.add('rocket-contains-additional');
 		} else {
 			this.elemRef.nativeElement.classList.remove('rocket-contains-additional');
+		}
+
+		if (this.siZone.model) {
+			this.siStructure.model = this.siZone.model.structureModel;
+		} else {
+			this.siStructure.model = null;
 		}
 	}
 

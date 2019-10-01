@@ -31,6 +31,7 @@ use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\persistence\meta\structure\Column;
 use n2n\persistence\meta\structure\StringColumn;
 use n2n\util\type\attrs\LenientAttributeReader;
+use rocket\impl\ei\component\prop\meta\config\AddonConfig;
 
 class AlphanumericEiPropConfigurator extends AdaptableEiPropConfigurator {
 	const OPTION_MAXLENGTH_KEY = 'maxlength';
@@ -57,6 +58,8 @@ class AlphanumericEiPropConfigurator extends AdaptableEiPropConfigurator {
 		if ($this->attributes->contains(self::OPTION_MAXLENGTH_KEY)) {
 			$this->eiComponent->setMaxlength($this->attributes->optInt(self::OPTION_MAXLENGTH_KEY, null));
 		}
+		
+		$this->eiComponent->setAddonConfig(AddonConfig::setup($this->attributes));
 	}
 	
 	/**
@@ -73,6 +76,9 @@ class AlphanumericEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$magDispatchable->getMagCollection()->addMag(self::OPTION_MAXLENGTH_KEY, new NumericMag('Maxlength', 
 				$lar->getInt(self::OPTION_MAXLENGTH_KEY, $this->eiComponent->getMaxlength())));
 		
+		
+		AddonConfig::mag($magDispatchable->getMagCollection(), $this->attributes);
+		
 		return $magDispatchable;
 	}
 	
@@ -83,6 +89,8 @@ class AlphanumericEiPropConfigurator extends AdaptableEiPropConfigurator {
 		
 		$this->attributes->set(self::OPTION_MAXLENGTH_KEY,
 				$magCollection->getMagByPropertyName(self::OPTION_MAXLENGTH_KEY)->getValue());
+		
+		AddonConfig::save($magDispatchable->getMagCollection(), $this->attributes);
 	}
 	
 }

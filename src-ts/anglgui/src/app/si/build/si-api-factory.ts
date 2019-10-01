@@ -5,13 +5,13 @@ import { Extractor } from 'src/app/util/mapping/extractor';
 import { SiGetResponse } from 'src/app/si/model/api/si-get-response';
 import { SiGetResult } from 'src/app/si/model/api/si-get-result';
 import { SiResultFactory } from 'src/app/si/build/si-result-factory';
-import { SiCompEssentialsFactory } from 'src/app/si/build/si-factory';
 import { SiGetRequest } from 'src/app/si/model/api/si-get-request';
 import { SiValRequest } from '../model/api/si-val-request';
 import { SiValResponse } from '../model/api/si-val-response';
 import { SiValInstruction } from '../model/api/si-val-instruction';
 import { SiValResult } from '../model/api/si-val-result';
 import { SiValGetResult } from '../model/api/si-val-get-result';
+import { SiCompEssentialsFactory } from './si-factory';
 
 export class SiApiFactory {
 	private compFactory: SiCompEssentialsFactory;
@@ -70,13 +70,13 @@ export class SiApiFactory {
 		const response = new SiValResponse();
 
 		const resultsData = extr.reqArray('results');
-		for (const key in request.instructions) {
+		request.instructions.forEach((value, key) => {
 			if (!resultsData[key]) {
 				throw new Error('No result for key: ' + key);
 			}
 
 			response.results[key] = this.createValResult(resultsData[key], request.instructions[key]);
-		}
+		});
 
 		return response;
 	}

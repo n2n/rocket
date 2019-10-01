@@ -75,18 +75,14 @@ class StringDisplayEiProp extends PropertyEiPropAdapter implements ObjectPropert
 		return $this->getObjectPropertyAccessProxy()->getPropertyName();
 	}
 
-// 	public function getObjectPropertyAccessProxy(bool $required = false) {
-// 		if ($this->accessProxy === null && $required) {
-// 			throw new IllegalStateException('No object property AccessProxy assigned to ' . $this);
-// 		}
-		
-// 		return $this->accessProxy;
-// 	}
-
 	public function setObjectPropertyAccessProxy(?AccessProxy $objectPropertyAccessProxy) {
 		ArgUtils::assertTrue($objectPropertyAccessProxy !== null);
 		$objectPropertyAccessProxy->setConstraint(TypeConstraint::createSimple('string', true));
 		parent::setObjectPropertyAccessProxy($objectPropertyAccessProxy);
+	}
+	
+	public function getDisplayDefinition(): ?DisplayDefinition {
+		return null;
 	}
 	
 	/**
@@ -219,13 +215,8 @@ class StringDisplayEiProp extends PropertyEiPropAdapter implements ObjectPropert
 	public function createOutSiField(Eiu $eiu): SiField {
 		return $view->getHtmlBuilder()->getEsc($eiu->field()->getValue());
 	}
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable::getDisplayItemType()
-	 */
-	public function getDisplayItemType(): string {
-		// TODO Auto-generated method stub
-		
-	}
+	
+	
+
 
 }

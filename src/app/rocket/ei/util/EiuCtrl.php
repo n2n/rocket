@@ -31,7 +31,7 @@ use rocket\ei\manage\entry\UnknownEiObjectException;
 use rocket\ei\util\entry\EiuEntry;
 use rocket\ei\manage\gui\ViewMode;
 use n2n\web\http\controller\impl\ControllingUtils;
-use rocket\si\structure\impl\EntriesListSiContent;
+use rocket\si\structure\impl\EntriesListSiComp;
 use rocket\si\SiPayloadFactory;
 use n2n\persistence\orm\criteria\Criteria;
 use n2n\persistence\orm\util\NestedSetUtils;
@@ -40,7 +40,7 @@ use rocket\ei\util\gui\EiuGui;
 use rocket\si\structure\SiEntryDeclaration;
 use rocket\si\content\SiPartialContent;
 use rocket\si\content\SiEntry;
-use rocket\si\structure\impl\BulkyEntrySiContent;
+use rocket\si\structure\impl\BulkyEntrySiComp;
 
 class EiuCtrl {
 	private $eiu;
@@ -287,7 +287,7 @@ class EiuCtrl {
 		$siEntryDeclaration->putFieldDeclarations($this->eiuFrame->getContextEiType()->getId(), 
 				$eiuGui->getEiGui()->getEiGuiSiFactory()->getSiFieldDeclarations());
 		
-		$zone = new EntriesListSiContent($this->eiu->frame()->getApiUrl(), $pageSize, $siEntryDeclaration, 
+		$zone = new EntriesListSiComp($this->eiu->frame()->getApiUrl(), $pageSize, $siEntryDeclaration, 
 				new SiPartialContent($this->eiuFrame->countEntries(), $eiuGui->getEiGui()->createSiEntries()));
 		
 		$this->httpContext->getResponse()->send(SiPayloadFactory::createFromContent($zone));
@@ -342,7 +342,7 @@ class EiuCtrl {
 		$siEntryDeclaration->putFieldStructureDeclarations($eiTypeId, 
 				$eiGui->getEiGuiSiFactory()->getSiFieldStructureDeclarations());
 		
-		$zone = new BulkyEntrySiContent($siEntryDeclaration,
+		$zone = new BulkyEntrySiComp($siEntryDeclaration,
 				$eiuEntryGui->createSiEntry(), $eiGui->createGeneralSiControls());
 		
 		$this->httpContext->getResponse()->send(SiPayloadFactory::createFromContent($zone));
@@ -384,7 +384,7 @@ class EiuCtrl {
 					. ' because this type is abstract and doesn\'t have any sub EiTypes.');
 		}
 		
-		$zone = new BulkyEntrySiContent($this->eiu->frame()->getApiUrl(), $siEntryDeclaration, $siEntry);
+		$zone = new BulkyEntrySiComp($this->eiu->frame()->getApiUrl(), $siEntryDeclaration, $siEntry);
 		
 		$this->httpContext->getResponse()->send(SiPayloadFactory::createFromContent($zone));
 	}

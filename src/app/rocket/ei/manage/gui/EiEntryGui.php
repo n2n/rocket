@@ -33,8 +33,8 @@ use rocket\si\content\SiEntry;
 use rocket\ei\manage\gui\control\GuiControlPath;
 use rocket\ei\manage\api\ApiControlCallId;
 use rocket\si\input\SiEntryInput;
-use rocket\si\structure\impl\BulkyEntrySiContent;
-use rocket\si\structure\impl\CompactEntrySiContent;
+use rocket\si\structure\impl\BulkyEntrySiComp;
+use rocket\si\structure\impl\CompactEntrySiComp;
 use n2n\util\type\attrs\AttributesException;
 use n2n\impl\web\dispatch\ui\IllegalFormStateException;
 
@@ -388,7 +388,7 @@ class EiEntryGui {
 	 */
 	function createCompactEntrySiContent(bool $generalSiControlsIncluded = true,
 			bool $entrySiControlsIncluded = true) {
-		$siContent = new CompactEntrySiContent($this->eiGui->createSiEntryDeclaration(),
+		$siContent = new CompactEntrySiComp($this->eiGui->createSiEntryDeclaration(),
 				$this->createSiEntry($entrySiControlsIncluded));
 		
 		if ($generalSiControlsIncluded) {
@@ -404,7 +404,7 @@ class EiEntryGui {
 	 */
 	function createBulkyEntrySiContent(bool $generalSiControlsIncluded = true,
 			bool $entrySiControlsIncluded = true) {
-		$siContent = new BulkyEntrySiContent($this->eiGui->createSiEntryDeclaration(),
+		$siContent = new BulkyEntrySiComp($this->eiGui->createSiEntryDeclaration(),
 				$this->createSiEntry($entrySiControlsIncluded));
 		
 		if ($generalSiControlsIncluded) {

@@ -12,7 +12,7 @@ import { SiQualifier } from 'src/app/si/model/entity/si-qualifier';
 import { SiStructureModel } from 'src/app/si/model/structure/si-structure-model';
 import { SiStructure } from 'src/app/si/model/structure/si-structure';
 
-export class EntriesListSiContent implements SiComp, SiContent {
+export class EntriesListSiComp implements SiComp, SiContent {
 
 	private pagesMap = new Map<number, SiPage>();
 	private _size = 0;

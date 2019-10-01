@@ -21,8 +21,8 @@
  */
 namespace rocket\si\content\impl\relation;
 
-use rocket\si\structure\impl\BulkyEntrySiContent;
-use rocket\si\structure\impl\CompactEntrySiContent;
+use rocket\si\structure\impl\BulkyEntrySiComp;
+use rocket\si\structure\impl\CompactEntrySiComp;
 use rocket\si\SiPayloadFactory;
 
 class SiEmbeddedEntry implements \JsonSerializable {
@@ -36,10 +36,10 @@ class SiEmbeddedEntry implements \JsonSerializable {
 	private $summaryContent;
 	
 	/**
-	 * @param BulkyEntrySiContent $content
-	 * @param CompactEntrySiContent|null $summaryContent
+	 * @param BulkyEntrySiComp $content
+	 * @param CompactEntrySiComp|null $summaryContent
 	 */
-	function __construct(BulkyEntrySiContent $content, CompactEntrySiContent $summaryContent = null) {
+	function __construct(BulkyEntrySiComp $content, CompactEntrySiComp $summaryContent = null) {
 		$this->content = $content;
 		$this->summaryContent = $summaryContent;
 	}
@@ -54,7 +54,7 @@ class SiEmbeddedEntry implements \JsonSerializable {
 	/**
 	 * @param \rocket\si\structure\impl\BulkyEntrySiContent $content
 	 */
-	function setContent(BulkyEntrySiContent $content) {
+	function setContent(BulkyEntrySiComp $content) {
 		$this->content = $content;
 	}
 	
@@ -68,7 +68,7 @@ class SiEmbeddedEntry implements \JsonSerializable {
 	/**
 	 * @param \rocket\si\structure\impl\CompactEntrySiContent|null $summaryContent
 	 */
-	function setSummaryContent(CompactEntrySiContent $summaryContent) {
+	function setSummaryContent(CompactEntrySiComp $summaryContent) {
 		$this->summaryContent = $summaryContent;
 	}
 
