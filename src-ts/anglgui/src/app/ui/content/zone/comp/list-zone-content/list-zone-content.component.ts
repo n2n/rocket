@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SiFieldDeclaration } from 'src/app/si/model/entity/si-field-declaration';
 import { SiService } from 'src/app/si/model/si.service';
 import { SiGetRequest } from 'src/app/si/model/api/si-get-request';
@@ -9,12 +9,12 @@ import { SiPage } from 'src/app/si/model/entity/impl/basic/si-page';
 import { fromEvent, Subscription } from 'rxjs';
 import { SiQualifier } from 'src/app/si/model/entity/si-qualifier';
 import { EntriesListSiComp } from 'src/app/si/model/entity/impl/basic/entries-list-si-content';
-import { SiStructure } from "src/app/si/model/structure/si-structure";
+import { SiStructure } from 'src/app/si/model/structure/si-structure';
 
 @Component({
-  selector: 'rocket-ui-list-zone-content',
-  templateUrl: './list-zone-content.component.html',
-  styleUrls: ['./list-zone-content.component.css']
+	selector: 'rocket-ui-list-zone-content',
+	templateUrl: './list-zone-content.component.html',
+	styleUrls: ['./list-zone-content.component.css']
 })
 export class ListZoneContentComponent implements OnInit, OnDestroy {
 

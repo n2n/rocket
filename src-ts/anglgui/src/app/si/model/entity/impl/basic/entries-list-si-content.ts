@@ -6,11 +6,11 @@ import { ListZoneContentComponent } from 'src/app/ui/content/zone/comp/list-zone
 import { IllegalSiStateError } from 'src/app/si/model/illegal-si-state-error';
 import { SiEntryDeclaration } from 'src/app/si/model/entity/si-entry-declaration';
 import { SiContent } from 'src/app/si/model/structure/si-content';
-import { SiZoneError } from 'src/app/si/model/structure/si-zone-error';
 import { SiPage } from 'src/app/si/model/entity/impl/basic/si-page';
 import { SiQualifier } from 'src/app/si/model/entity/si-qualifier';
 import { SiStructureModel } from 'src/app/si/model/structure/si-structure-model';
 import { SiStructure } from 'src/app/si/model/structure/si-structure';
+import { Message } from 'src/app/util/i18n/message';
 
 export class EntriesListSiComp implements SiComp, SiContent {
 
@@ -48,14 +48,14 @@ export class EntriesListSiComp implements SiComp, SiContent {
 		throw new Error('Method not implemented.');
 	}
 
-	getZoneErrors(): SiZoneError[] {
-		const zoneErrors: SiZoneError[] = [];
+	getMessages(): Message[] {
+		const messages: Message[] = [];
 
 		for (const entry of this.getEntries()) {
-			zoneErrors.push(...entry.getZoneErrors());
+			messages.push(...entry.getMessages());
 		}
 
-		return zoneErrors;
+		return messages;
 	}
 
 	get pages(): SiPage[] {

@@ -4,9 +4,9 @@ import { SiStructure } from 'src/app/si/model/structure/si-structure';
 import { SiZoneError } from 'src/app/si/model/structure/si-zone-error';
 
 @Component({
-  selector: 'rocket-ui-zone',
-  templateUrl: './zone.component.html',
-  styleUrls: ['./zone.component.css']
+	selector: 'rocket-ui-zone',
+	templateUrl: './zone.component.html',
+	styleUrls: ['./zone.component.css']
 })
 export class ZoneComponent implements OnInit, DoCheck, OnDestroy {
 

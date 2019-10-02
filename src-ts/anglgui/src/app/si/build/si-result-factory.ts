@@ -7,6 +7,7 @@ import { SiEntryDeclaration } from 'src/app/si/model/entity/si-entry-declaration
 import { SiFieldStructureDeclaration } from 'src/app/si/model/entity/si-field-structure-declaration';
 import { SiFieldDeclaration } from 'src/app/si/model/entity/si-field-declaration';
 import { SiFile, SiImageDimension } from '../model/entity/impl/file/file-in-si-field';
+import { Message } from 'src/app/util/i18n/message';
 
 export class SiResultFactory {
 
@@ -45,7 +46,7 @@ export class SiResultFactory {
 	private static createFieldError(data: any): SiFieldError {
 		const extr = new Extractor(data);
 
-		const fieldError = new SiFieldError(extr.reqStringArray('messages'));
+		const fieldError = new SiFieldError(Message.createTexts(extr.reqStringArray('messages')));
 
 		for (const [key, entryData] of extr.reqMap('subEntryErrors')) {
 			fieldError.subEntryErrors.set(key, SiResultFactory.createEntryError(entryData));

@@ -8,9 +8,9 @@ import { Embe } from '../../embe';
 import { SiStructure } from 'src/app/si/model/structure/si-structure';
 
 @Component({
-  selector: 'rocket-embedded-entries-in',
-  templateUrl: './embedded-entries-in.component.html',
-  styleUrls: ['./embedded-entries-in.component.css']
+	selector: 'rocket-embedded-entries-in',
+	templateUrl: './embedded-entries-in.component.html',
+	styleUrls: ['./embedded-entries-in.component.css']
 })
 export class EmbeddedEntriesInComponent implements OnInit {
 	siStructure: SiStructure;

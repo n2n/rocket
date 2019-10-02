@@ -6,7 +6,7 @@ export interface InputInFieldModel extends MessageFieldModel {
 
 	getValue(): string|null;
 
-	setValue(value: string|null);
+	setValue(value: string|null): void;
 
 	getType(): string;
 

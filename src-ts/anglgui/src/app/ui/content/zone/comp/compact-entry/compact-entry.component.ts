@@ -3,9 +3,9 @@ import { CompactEntrySiComp } from 'src/app/si/model/entity/impl/basic/compact-e
 import { SiStructure } from 'src/app/si/model/structure/si-structure';
 
 @Component({
-  selector: 'rocket-compact-entry',
-  templateUrl: './compact-entry.component.html',
-  styleUrls: ['./compact-entry.component.css']
+	selector: 'rocket-compact-entry',
+	templateUrl: './compact-entry.component.html',
+	styleUrls: ['./compact-entry.component.css']
 })
 export class CompactEntryComponent implements OnInit {
 	siStructure: SiStructure;

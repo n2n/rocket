@@ -18,20 +18,20 @@ export class FileOutSiField extends OutSiFieldAdapter implements FileFieldModel 
 
 	getContent(): SiContent|null {
 		return new TypeSiContent(FileOutFieldComponent, () => {
-//            ref.instance.model = this;
+//						ref.instance.model = this;
 		});
 	}
 
 	initComponent(): ComponentRef<any> {
 	// 		const componentFactory = componentFactoryResolver.resolveComponentFactory(StringOutFieldComponent);
-	// 	    const componentRef = viewContainerRef.createComponent(componentFactory);
-	// 	    componentRef.instance.model = {
-	// 	    	getValue() {
-	// 	    		return 'file';
-	// 	    	}
-	// 	    }
+	// 			const componentRef = viewContainerRef.createComponent(componentFactory);
+	// 			componentRef.instance.model = {
+	// 				getValue() {
+	// 					return 'file';
+	// 				}
+	// 			}
 	//
-	// 	    return componentRef;
+	// 			return componentRef;
 		return undefined;
 	}
 }

@@ -18,9 +18,9 @@ import { TypeSiContent } from 'src/app/si/model/structure/impl/type-si-content';
 import { SiStructure } from 'src/app/si/model/structure/si-structure';
 
 @Component({
-  selector: 'rocket-embedded-entries-summary-in',
-  templateUrl: './embedded-entries-summary-in.component.html',
-  styleUrls: ['./embedded-entries-summary-in.component.css']
+	selector: 'rocket-embedded-entries-summary-in',
+	templateUrl: './embedded-entries-summary-in.component.html',
+	styleUrls: ['./embedded-entries-summary-in.component.css']
 })
 export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 	siStructure: SiStructure;

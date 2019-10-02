@@ -23,11 +23,11 @@ export class LinkOutSiField extends OutSiFieldAdapter implements LinkOutModel {
 // 			commanderService: SiCommanderService): ComponentRef<any> {
 // 		const componentFactory = componentFactoryResolver.resolveComponentFactory(LinkOutFieldComponent);
 //
-// 	    const componentRef = viewContainerRef.createComponent(componentFactory);
+// 			const componentRef = viewContainerRef.createComponent(componentFactory);
 //
-// 	    componentRef.instance.model = this;
+// 			componentRef.instance.model = this;
 //
-// 	    return componentRef;
+// 			return componentRef;
 // 	}
 
 	isHref(): boolean {

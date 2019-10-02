@@ -1,11 +1,7 @@
+import { SiStructure } from './si-structure';
+import { Message } from 'src/app/util/i18n/message';
 
 export interface SiZoneError {
-
-	getTitle(): string;
-
-	getMessages(): string[];
-
-	setHighlighted(highlighted): void;
-
-	focus(): void;
+	message: Message;
+	structure: SiStructure;
 }

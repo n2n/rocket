@@ -3,8 +3,8 @@ import { SiEntry } from 'src/app/si/model/entity/si-entry';
 import { SiFieldDeclaration } from 'src/app/si/model/entity/si-field-declaration';
 
 @Component({
-  selector: 'rocket-field-structure',
-  templateUrl: './field-structure.component.html'
+	selector: 'rocket-field-structure',
+	templateUrl: './field-structure.component.html'
 })
 export class FieldStructureComponent implements OnInit {
 
@@ -25,7 +25,7 @@ export class FieldStructureComponent implements OnInit {
 		return this.fieldSiStructureContent.fieldDeclaration;
 	}
 //
-//    get children(): SiStructure[] {
-//    	return this.fieldSiStructureContent.children;
-//    }
+//		get children(): SiStructure[] {
+//			return this.fieldSiStructureContent.children;
+//		}
 }

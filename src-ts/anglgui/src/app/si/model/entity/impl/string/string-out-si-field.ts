@@ -9,14 +9,14 @@ import { TypeSiContent } from "src/app/si/model/structure/impl/type-si-content";
 import { SiContent } from "src/app/si/model/structure/si-content";
 
 export class StringOutSiField extends OutSiFieldAdapter implements StringFieldModel {
-    
+		
 	constructor(private value: string|null) {
 		super();
 	}
 
 	getContent(): SiContent|null {
 		return new TypeSiContent(StringOutFieldComponent, (ref, structure) => {
-		    ref.instance.model = this;
+				ref.instance.model = this;
 		});
 	}
 

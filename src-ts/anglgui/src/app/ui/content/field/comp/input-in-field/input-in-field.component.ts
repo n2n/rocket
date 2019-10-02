@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { InputInFieldModel } from 'src/app/ui/content/field/input-in-field-model';
 
 @Component({
-  selector: 'rocket-input-in-field',
-  templateUrl: './input-in-field.component.html'
+	selector: 'rocket-input-in-field',
+	templateUrl: './input-in-field.component.html'
 })
 export class InputInFieldComponent implements OnInit {
 	model: InputInFieldModel;

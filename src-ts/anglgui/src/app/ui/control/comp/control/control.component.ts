@@ -6,19 +6,19 @@ import { SiCommanderService } from "src/app/si/model/si-commander.service";
 import { SiStructure } from "src/app/si/model/structure/si-structure";
 
 @Component({
-  selector: 'rocket-ui-control',
-  templateUrl: './control.component.html',
-  styleUrls: ['./control.component.css']
+	selector: 'rocket-ui-control',
+	templateUrl: './control.component.html',
+	styleUrls: ['./control.component.css']
 })
 export class ControlComponent implements OnInit {
 
-    @Input() siControl: SiControl;
-    @Input() siStructure: SiStructure;
-    
-    constructor(private siCommanderService: SiCommanderService) {
-    	
-    }
-    
+		@Input() siControl: SiControl;
+		@Input() siStructure: SiStructure;
+		
+		constructor(private siCommanderService: SiCommanderService) {
+			
+		}
+		
 	ngOnInit() {
 	}
 	

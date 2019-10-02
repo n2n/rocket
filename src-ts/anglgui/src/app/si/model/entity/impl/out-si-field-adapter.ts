@@ -14,8 +14,8 @@ export abstract class OutSiFieldAdapter extends SiFieldAdapter {
 	}
 	
 	readInput(): Map<string, string | number | boolean | File | null> {
-        throw new IllegalSiStateError('no input');
-    }
+				throw new IllegalSiStateError('no input');
+		}
 	
 	copy(): SiField {
 		return this;

@@ -1,5 +1,4 @@
 import { SiService } from 'src/app/si/model/si.service';
-import { SiZone } from 'src/app/si/model/structure/si-zone';
 import { BulkyEntrySiComp } from 'src/app/si/model/entity/impl/basic/bulky-entry-si-comp';
 import { SiIdentifier } from 'src/app/si/model/entity/si-qualifier';
 import { SiGetInstruction } from 'src/app/si/model/api/si-get-instruction';
@@ -12,7 +11,6 @@ import { SiGetResponse } from 'src/app/si/model/api/si-get-response';
 import { AddPasteObtainer } from 'src/app/ui/control/comp/add-paste/add-paste.component';
 import { SiValRequest } from 'src/app/si/model/api/si-val-request';
 import { SiValInstruction } from 'src/app/si/model/api/si-val-instruction';
-import { Embe } from './embe';
 import { SiValGetInstruction } from 'src/app/si/model/api/si-val-get-instruction';
 import { SiValResponse } from 'src/app/si/model/api/si-val-response';
 import { SiValResult } from 'src/app/si/model/api/si-val-result';

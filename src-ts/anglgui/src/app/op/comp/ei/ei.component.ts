@@ -9,9 +9,9 @@ import { filter } from "rxjs/operators";
 import { MainSiLayer, PopupSiLayer } from "src/app/si/model/structure/si-layer";
 
 @Component({
-  selector: 'rocket-ei',
-  templateUrl: './ei.component.html',
-  styleUrls: ['./ei.component.css']
+	selector: 'rocket-ei',
+	templateUrl: './ei.component.html',
+	styleUrls: ['./ei.component.css']
 })
 export class EiComponent implements OnInit, OnDestroy {
 

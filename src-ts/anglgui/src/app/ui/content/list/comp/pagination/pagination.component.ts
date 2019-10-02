@@ -1,9 +1,9 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 
 @Component({
-  selector: 'rocket-ui-pagination',
-  templateUrl: './pagination.component.html',
-  styleUrls: ['./pagination.component.css']
+	selector: 'rocket-ui-pagination',
+	templateUrl: './pagination.component.html',
+	styleUrls: ['./pagination.component.css']
 })
 export class PaginationComponent implements OnInit {
 

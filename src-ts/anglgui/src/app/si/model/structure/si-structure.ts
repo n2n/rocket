@@ -120,7 +120,7 @@ export class SiStructure {
 		const errors: SiZoneError[] = [];
 
 		if (this.model) {
-			errors.push(...this.model.getZoneErrors());
+			errors.push(...this.assembleZoneErrors(this));
 		}
 
 		for (const child of this.children) {
@@ -128,5 +128,11 @@ export class SiStructure {
 		}
 
 		return errors;
+	}
+
+	private assembleZoneErrors(structure: SiStructure): SiZoneError[] {
+		return structure.model.getMessages().map((message) => {
+			return { message, structure };
+		});
 	}
 }

@@ -10,9 +10,9 @@ import { TypeSiContent } from 'src/app/si/model/structure/impl/type-si-content';
 import { SiStructure } from 'src/app/si/model/structure/si-structure';
 
 @Component({
-  selector: 'rocket-file-in-field',
-  templateUrl: './file-in-field.component.html',
-  styleUrls: ['./file-in-field.component.css']
+	selector: 'rocket-file-in-field',
+	templateUrl: './file-in-field.component.html',
+	styleUrls: ['./file-in-field.component.css']
 })
 export class FileInFieldComponent implements OnInit {
 

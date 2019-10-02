@@ -1,13 +1,12 @@
 
 import { SiField } from 'src/app/si/model/entity/si-field';
-import { ComponentRef, ComponentFactoryResolver, ViewContainerRef } from '@angular/core';
 import { InputInFieldComponent } from 'src/app/ui/content/field/comp/input-in-field/input-in-field.component';
 import { InSiFieldAdapter } from 'src/app/si/model/entity/impl/in-si-field-adapter';
-import { SiCommanderService } from 'src/app/si/model/si-commander.service';
 import { SiContent } from '../../../structure/si-content';
 import { TypeSiContent } from 'src/app/si/model/structure/impl/type-si-content';
 import { InputInFieldModel } from 'src/app/ui/content/field/input-in-field-model';
 import { SiCrumbGroup } from '../meta/si-crumb';
+import { Message } from 'src/app/util/i18n/message';
 
 export class StringInSiField extends InSiFieldAdapter implements InputInFieldModel {
 	public mandatory = false;
@@ -66,15 +65,15 @@ export class StringInSiField extends InSiFieldAdapter implements InputInFieldMod
 		this.messages = [];
 
 		if (this.mandatory && this.value === null) {
-			this.messages.push('mandatory front err');
+			this.messages.push(Message.createText('mandatory front err'));
 		}
 
 		if (this.minlength && this.value && this.value.length < this.minlength) {
-			this.messages.push('minlength front err');
+			this.messages.push(Message.createText('minlength front err'));
 		}
 
 		if (this.maxlength && this.value && this.value.length > this.maxlength) {
-			this.messages.push('maxlength front err');
+			this.messages.push(Message.createText('maxlength front err'));
 		}
 	}
 
@@ -87,7 +86,7 @@ export class StringInSiField extends InSiFieldAdapter implements InputInFieldMod
 	}
 
 	getContent(): SiContent|null {
-		return new TypeSiContent(InputInFieldComponent, (ref, structure) => {
+		return new TypeSiContent(InputInFieldComponent, (ref) => {
 			ref.instance.model = this;
 		});
 	}

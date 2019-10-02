@@ -1,6 +1,5 @@
 
 import { SiComp } from 'src/app/si/model/entity/si-comp';
-import { SiZone } from 'src/app/si/model/structure/si-zone';
 import { Extractor } from 'src/app/util/mapping/extractor';
 import { SiGetResponse } from 'src/app/si/model/api/si-get-response';
 import { SiGetResult } from 'src/app/si/model/api/si-get-result';
@@ -14,10 +13,8 @@ import { SiValGetResult } from '../model/api/si-val-get-result';
 import { SiCompEssentialsFactory } from './si-factory';
 
 export class SiApiFactory {
-	private compFactory: SiCompEssentialsFactory;
 
 	constructor() {
-
 	}
 
 	createGetResponse(data: any, request: SiGetRequest): SiGetResponse {
@@ -26,7 +23,7 @@ export class SiApiFactory {
 		const response = new SiGetResponse();
 
 		const resultsData = extr.reqArray('results');
-		for (const key in request.instructions) {
+		for (const key of request.instructions.keys()) {
 			if (!resultsData[key]) {
 				throw new Error('No result for key: ' + key);
 			}
@@ -92,7 +89,7 @@ export class SiApiFactory {
 		}
 
 		const resultsData = extr.reqArray('getResults');
-		for (const key in instruction.getInstructions) {
+		for (const key of instruction.getInstructions.keys()) {
 			if (!resultsData[key]) {
 				throw new Error('No result for key: ' + key);
 			}

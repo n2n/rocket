@@ -9,6 +9,7 @@ import { SiZoneError } from 'src/app/si/model/structure/si-zone-error';
 import { CompactEntryComponent } from 'src/app/ui/content/zone/comp/compact-entry/compact-entry.component';
 import { SiFieldDeclaration } from 'src/app/si/model/entity/si-field-declaration';
 import { SiCommanderService } from 'src/app/si/model/si-commander.service';
+import { Message } from 'src/app/util/i18n/message';
 
 export class CompactEntrySiComp implements SiComp, SiContent {
 	public entry: SiEntry|null = null;
@@ -21,12 +22,12 @@ export class CompactEntrySiComp implements SiComp, SiContent {
 		return [this.entry];
 	}
 
-	getZoneErrors(): SiZoneError[] {
+	getMessages(): Message[] {
 		if (!this.entry) {
 			return [];
 		}
 
-		return this.entry.getZoneErrors();
+		return this.entry.getMessages();
 	}
 
 	getSelectedEntries(): SiEntry[] {

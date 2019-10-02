@@ -6,9 +6,9 @@ import { EntriesListSiComp } from 'src/app/si/model/entity/impl/basic/entries-li
 import { SiStructure } from 'src/app/si/model/structure/si-structure';
 
 @Component({
-  selector: 'rocket-qualifier-select-in-field',
-  templateUrl: './qualifier-select-in-field.component.html',
-  styleUrls: ['./qualifier-select-in-field.component.css']
+	selector: 'rocket-qualifier-select-in-field',
+	templateUrl: './qualifier-select-in-field.component.html',
+	styleUrls: ['./qualifier-select-in-field.component.css']
 })
 export class QualifierSelectInFieldComponent implements OnInit {
 

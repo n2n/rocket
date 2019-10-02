@@ -3,7 +3,7 @@ import { SiEntry } from "src/app/si/model/entity/si-entry";
 import { ElementRef } from "@angular/core";
 
 @Directive({
-  selector: '[rocketUiEntry]'
+	selector: '[rocketUiEntry]'
 })
 export class EntryDirective {
 

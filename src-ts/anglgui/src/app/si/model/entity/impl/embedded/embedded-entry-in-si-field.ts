@@ -5,7 +5,7 @@ import { SiField } from '../../si-field';
 import { EmbeddedEntriesInSiContent } from './embedded-entries-in-si-content';
 import { SiEmbeddedEntry } from './si-embedded-entry';
 
-export class EmbeddedEntryInSiField extends InSiFieldAdapter  {
+export class EmbeddedEntryInSiField extends InSiFieldAdapter	{
 
 	content: EmbeddedEntriesInSiContent;
 

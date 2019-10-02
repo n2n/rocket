@@ -68,7 +68,7 @@
 // }
 
 
-// export class MainSiLayer extends SiLayerAdapter  {
+// export class MainSiLayer extends SiLayerAdapter	{
 // 	readonly main = true;
 
 // 	constructor(readonly container: SiContainer) {
@@ -79,22 +79,22 @@
 // 		return this.createZone(id, url);
 // 	}
 
-//     popZone(id: number, verifyUrl: string): boolean {
-//     	const index = this.getZoneIndexById(id);
-//     	if (!index || this.zones[index].url != verifyUrl) {
-//     		// @todo temporary test to monitor angular routing behaviour
-//     		throw new IllegalSiStateError('Zone pop url verify missmatch for id ' + id + ': '
-//     				+ this.zones[<number> index].url + ' != ' + verifyUrl);
-// //    		return false;
-//     	}
+//		 popZone(id: number, verifyUrl: string): boolean {
+//		 	const index = this.getZoneIndexById(id);
+//		 	if (!index || this.zones[index].url != verifyUrl) {
+//		 		// @todo temporary test to monitor angular routing behaviour
+//		 		throw new IllegalSiStateError('Zone pop url verify missmatch for id ' + id + ': '
+//		 				+ this.zones[<number> index].url + ' != ' + verifyUrl);
+// //				return false;
+//		 	}
 
-//     	this.currentZoneIndex = index;
+//		 	this.currentZoneIndex = index;
 // 		return true;
-//     }
+//		 }
 // }
 
 // export class PopupSiLayer extends SiLayerAdapter {
-//     private disposeSubject = new Subject<void>();
+//		 private disposeSubject = new Subject<void>();
 // 	readonly main = false;
 // 	;
 
@@ -102,9 +102,9 @@
 // 		super();
 // 	}
 
-//     pushZone(url: string|null): SiZone {
+//		 pushZone(url: string|null): SiZone {
 // 		return this.createZone(this.zones.length, url);
-//     }
+//		 }
 
 // 	dispose() {
 // 		for (const zone of this.zones) {

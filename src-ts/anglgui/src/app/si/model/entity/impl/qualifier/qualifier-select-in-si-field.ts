@@ -7,6 +7,7 @@ import { QualifierSelectInFieldComponent } from 'src/app/ui/content/field/comp/q
 import { SiZone } from 'src/app/si/model/structure/si-zone';
 import { SiContent } from 'src/app/si/model/structure/si-content';
 import { TypeSiContent } from 'src/app/si/model/structure/impl/type-si-content';
+import { Message } from 'src/app/util/i18n/message';
 
 export class QualifierSelectInSiField extends InSiFieldAdapter implements QualifierSelectInModel {
 
@@ -46,11 +47,11 @@ export class QualifierSelectInSiField extends InSiFieldAdapter implements Qualif
 		this.messages = [];
 
 		if (this.values.length < this.min) {
-			this.messages.push('min front err');
+			this.messages.push(Message.createText('min front err'));
 		}
 
 		if (this.max && this.values.length > this.max) {
-			this.messages.push('max front err');
+			this.messages.push(Message.createText('max front err'));
 		}
 	}
 

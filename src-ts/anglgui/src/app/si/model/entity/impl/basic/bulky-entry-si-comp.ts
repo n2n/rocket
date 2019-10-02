@@ -7,12 +7,8 @@ import { SiFieldStructureDeclaration } from 'src/app/si/model/entity/si-field-st
 import { SiContent } from 'src/app/si/model/structure/si-content';
 import { SiStructure } from 'src/app/si/model/structure/si-structure';
 import { SiControl } from 'src/app/si/model/control/si-control';
-import { SiZone } from 'src/app/si/model/structure/si-zone';
-import { SiZoneError } from 'src/app/si/model/structure/si-zone-error';
-import { SiStructureModel } from 'src/app/si/model/structure/si-structure-model';
 import { TypeSiContent } from 'src/app/si/model/structure/impl/type-si-content';
-import { SimpleSiStructureModel } from 'src/app/si/model/structure/impl/simple-si-structure-model';
-import { StructureBranchComponent } from 'src/app/ui/content/zone/comp/structure-branch/structure-branch.component';
+import { Message } from 'src/app/util/i18n/message';
 
 export class BulkyEntrySiComp implements SiComp {
 
@@ -22,18 +18,12 @@ export class BulkyEntrySiComp implements SiComp {
 	private _entry: SiEntry|null = null;
 	public controls: Array<SiControl> = [];
 
-	private children: SiStructure[];
-
 	getEntries(): SiEntry[] {
 		return [this.entry];
 	}
 
-	getZoneErrors(): SiZoneError[] {
-		if (!this.entry) {
-			return [];
-		}
-
-		return this.entry.getZoneErrors();
+	getMessages(): Message[] {
+		return [];
 	}
 
 	getSelectedEntries(): SiEntry[] {
@@ -53,12 +43,8 @@ export class BulkyEntrySiComp implements SiComp {
 
 	set entry(entry: SiEntry) {
 		this._entry = entry;
-		this.recheck();
 	}
 
-	recheck() {
-		return this.children = null;
-	}
 
 	getContents(): SiContent|null {
 		return new TypeSiContent(BulkyEntryComponent, (ref, structure) => {
@@ -91,25 +77,4 @@ export class BulkyEntrySiComp implements SiComp {
 	}
 }
 
-class FieldSiStructureModel implements SiStructureModel {
-	public children: SiStructure[] = [];
 
-	constructor(public content: SiContent|null) {
-	}
-
-	getContent(): SiContent|null {
-		return this.content;
-	}
-
-	getChildren(): SiStructure[] {
-		return this.children;
-	}
-
-	getControls(): SiControl[] {
-		return [];
-	}
-
-	getZoneErrors(): SiZoneError[] {
-		return [];
-	}
-}

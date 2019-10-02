@@ -2,7 +2,7 @@
 	{{ 'open_all_txt' | translate }}
 </button>
 
-<div  cdkDropList (cdkDropListDropped)="drop($event)" class="rocket-draggable-list">
+<div	cdkDropList (cdkDropListDropped)="drop($event)" class="rocket-draggable-list">
 	<div *ngFor="let embe of embes" cdkDrag class="rocket-draggable">
 		<rocket-ui-add-past [obtainer]="obtainer" [allowedSiTypes]="model.getAllowedSiTypes()" type="reduced"
 				(newEntry)="addBefore($event, embe)"></rocket-ui-add-past>

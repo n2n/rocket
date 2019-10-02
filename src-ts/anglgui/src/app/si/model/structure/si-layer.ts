@@ -91,7 +91,7 @@ export class MainSiLayer extends SiLayerAdapter {
 			// @todo temporary test to monitor angular routing behaviour
 			throw new IllegalSiStateError('Zone pop url verify missmatch for id ' + id + ': '
 					+ this.zones[index as number].url + ' != ' + verifyUrl);
-//    		return false;
+//				return false;
 		}
 
 		this.currentZoneIndex = index;

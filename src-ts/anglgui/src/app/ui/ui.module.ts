@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { DragDropModule  } from '@angular/cdk/drag-drop';
+import { DragDropModule	} from '@angular/cdk/drag-drop';
 import { LayerComponent } from './structure/comp/layer/layer.component';
 import { ContainerComponent } from './structure/comp/container/container.component';
 import { ZoneComponent } from './structure/comp/zone/zone.component';
@@ -40,32 +40,33 @@ import { NumberInFieldComponent } from './content/field/comp/number-in-field/num
 import { TogglerInFieldComponent } from './content/field/comp/toggler-in-field/toggler-in-field.component';
 import { SelectInFieldComponent } from './content/field/comp/select-in-field/select-in-field.component';
 import { CrumbGroupComponent } from './content/meta/comp/crumb-group/crumb-group.component';
+import { MessageComponent } from './util/comp/message/message.component';
 
 @NgModule({
-  declarations: [ LayerComponent, ContainerComponent, ZoneComponent, StructureContentDirective, ListZoneContentComponent,
+	declarations: [ LayerComponent, ContainerComponent, ZoneComponent, StructureContentDirective, ListZoneContentComponent,
 	PaginationComponent, EntryDirective, StringOutFieldComponent, ControlComponent, BulkyEntryComponent,
 	FieldStructureComponent, InputInFieldComponent, TextareaInFieldComponent, StructureComponent, FileInFieldComponent,
 	FileOutFieldComponent, LinkOutFieldComponent, QualifierSelectInFieldComponent,
 	CompactEntryComponent, QualifierComponent, AddPasteComponent, EmbeddedEntriesInComponent, EmbeddedEntriesSummaryInComponent,
 	EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent, StructureBranchComponent, 
-	EmbeddedEntryPanelsInComponent, EmbeddedEntryPanelsOutComponent, NumberInFieldComponent, TogglerInFieldComponent, SelectInFieldComponent, CrumbGroupComponent ],
-  imports: [
+	EmbeddedEntryPanelsInComponent, EmbeddedEntryPanelsOutComponent, NumberInFieldComponent, TogglerInFieldComponent, SelectInFieldComponent, CrumbGroupComponent, MessageComponent ],
+	imports: [
 	CommonModule,
 	FormsModule,
 	UtilModule,
 	RouterModule,
 	DragDropModule
-  ],
-  exports: [
+	],
+	exports: [
 	ContainerComponent,
 	LayerComponent,
 	ControlComponent
-  ],
-  entryComponents: [ ListZoneContentComponent, BulkyEntryComponent, FieldStructureComponent, StringOutFieldComponent,
+	],
+	entryComponents: [ ListZoneContentComponent, BulkyEntryComponent, FieldStructureComponent, StringOutFieldComponent,
 	InputInFieldComponent, TextareaInFieldComponent, FileInFieldComponent, FileOutFieldComponent, QualifierSelectInFieldComponent,
 	LinkOutFieldComponent, CompactEntryComponent, EmbeddedEntriesInComponent, EmbeddedEntriesSummaryInComponent,
 	EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent, StructureBranchComponent,
 	EmbeddedEntryPanelsInComponent
-  ]
+	]
 })
 export class UiModule { }

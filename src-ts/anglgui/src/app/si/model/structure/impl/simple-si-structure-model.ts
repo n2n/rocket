@@ -1,13 +1,11 @@
 import { SiStructureModel } from '../si-structure-model';
 import { SiControl } from '../../control/si-control';
-import { SiStructure } from '../si-structure';
 import { SiContent } from '../si-content';
-import { SiZoneError } from '../si-zone-error';
+import { Message } from 'src/app/util/i18n/message';
 
 export class SimpleSiStructureModel implements SiStructureModel {
 	public controls: SiControl[] = [];
-	public children: SiStructure[] = [];
-	public zoneErrors: SiZoneError[] = [];
+	public messagesCallback: () => Message[] = () => [];
 
 	constructor(public content: SiContent|null = null) {
 	}
@@ -16,15 +14,11 @@ export class SimpleSiStructureModel implements SiStructureModel {
 		return this.content;
 	}
 
-	getChildren(): SiStructure[] {
-		return this.children;
-	}
-
 	getControls(): SiControl[] {
 		return this.controls;
 	}
 
-	getZoneErrors(): SiZoneError[] {
-		return this.zoneErrors;
+	getMessages(): Message[] {
+		return this.messagesCallback();
 	}
 }

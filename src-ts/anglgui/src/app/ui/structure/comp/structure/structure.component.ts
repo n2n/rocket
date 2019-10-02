@@ -6,9 +6,9 @@ import { SiStructure } from 'src/app/si/model/structure/si-structure';
 import { SiControl } from 'src/app/si/model/control/si-control';
 
 @Component({
-  selector: 'rocket-ui-structure',
-  templateUrl: './structure.component.html',
-  styleUrls: ['./structure.component.css']
+	selector: 'rocket-ui-structure',
+	templateUrl: './structure.component.html',
+	styleUrls: ['./structure.component.css']
 })
 export class StructureComponent implements OnInit {
 
@@ -24,7 +24,7 @@ export class StructureComponent implements OnInit {
 
 	readonly controls: SiControl[] = [];
 
-	constructor(private elRef: ElementRef, private componentFactoryResolver: ComponentFactoryResolver) {
+	constructor(private elRef: ElementRef) {
 	}
 
 	ngOnInit() {
@@ -91,7 +91,7 @@ export class StructureComponent implements OnInit {
 // 	}
 
 	private applyCssClass() {
-		const classList = this.elRef.nativeElement.classList
+		const classList = this.elRef.nativeElement.classList;
 
 		classList.remove('rocket-item');
 		classList.remove('rocket-group');
@@ -119,7 +119,6 @@ export class StructureComponent implements OnInit {
 				break;
 			case SiStructureType.PANEL:
 				classList.add('rocket-panel');
-			default:
 				break;
 		}
 	}

@@ -14,6 +14,5 @@ export class SiEmbeddedEntry {
 
 	set entry(entry: SiEntry) {
 		this.comp.entry = entry;
-		this.comp.recheck();
 	}
 }

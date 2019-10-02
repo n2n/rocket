@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { SiQualifier } from 'src/app/si/model/entity/si-qualifier';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root'
 })
 export class ClipboardService {
 

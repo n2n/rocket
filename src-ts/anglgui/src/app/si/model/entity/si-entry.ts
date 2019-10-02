@@ -6,7 +6,7 @@ import { SiTypeBuildup } from 'src/app/si/model/entity/si-entry-buildup';
 import { SiEntryError } from 'src/app/si/model/input/si-entry-error';
 import { SiQualifier, SiIdentifier } from 'src/app/si/model/entity/si-qualifier';
 import { SiType } from './si-type';
-import { SiZoneError } from '../structure/si-zone-error';
+import { Message } from 'src/app/util/i18n/message';
 
 export class SiEntry {
 	public treeLevel: number|null = null;
@@ -111,17 +111,14 @@ export class SiEntry {
 		}
 	}
 
-	getZoneErrors(): SiZoneError[] {
-		const zoneErrors: SiZoneError[] = [];
+	getMessages(): Message[] {
+		const messages: Message[] = [];
 
-//		for (const [, siField] of this.selectedTypeBuildup.fieldMap) {
-//			const siContent = siField.getContent();
-//			if (siContent) {
-//				zoneErrors.push(...siContent.getZoneErrors());
-//			}
-//		}
+		for (const [, siField] of this.selectedTypeBuildup.fieldMap) {
+			messages.push(...siField.getMessages());
+		}
 
-		return zoneErrors;
+		return messages;
 	}
 
 	toString() {

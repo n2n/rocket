@@ -17,7 +17,7 @@ import { SiZoneModel } from './structure/si-zone';
 import { SiEntryInput } from './input/si-entry-input';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root'
 })
 export class SiService {
 
@@ -35,7 +35,7 @@ export class SiService {
 		const formData = new FormData();
 		formData.append('callId', JSON.stringify(callId));
 		formData.append('siEntryId', entryId);
-//        formData.append('inputMap', JSON.stringify(entryInput));
+// 				formData.append('inputMap', JSON.stringify(entryInput));
 
 		const params = new HttpParams();
 
@@ -75,11 +75,11 @@ export class SiService {
 
 		return this.httpClient.post<any>(apiUrl + '/execcontrol', formData, options)
 				.pipe(map(data => {
-// 		            if (data.errors) {
-// 		                throw data.errors;
-// 		            }
+// 								if (data.errors) {
+// 										throw data.errors;
+// 								}
 //
-// 		            return data.expe(data => {
+// 								return data.expe(data => {
 					return SiResultFactory.createResult(data);
 				}));
 	}
@@ -105,8 +105,8 @@ export class SiService {
 		};
 
 		return this.httpClient.post<any>(apiUrl + '/callfield', formData, options)
-		 		.pipe(map(data => {
-					return new Extractor(data).reqObject('data');
+		 		.pipe(map(responseData => {
+					return new Extractor(responseData).reqObject('data');
 				}));
 	}
 

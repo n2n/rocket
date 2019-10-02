@@ -14,9 +14,9 @@ export enum AddPasteType {
 }
 
 @Component({
-  selector: 'rocket-ui-add-past',
-  templateUrl: './add-paste.component.html',
-  styleUrls: ['./add-paste.component.css']
+	selector: 'rocket-ui-add-past',
+	templateUrl: './add-paste.component.html',
+	styleUrls: ['./add-paste.component.css']
 })
 export class AddPasteComponent implements OnInit {
 
@@ -46,7 +46,7 @@ export class AddPasteComponent implements OnInit {
 	}
 
 	get loading(): boolean {
-		return this.addLoading || !!this.addLoadingSiType ||  !!this.pasteLoadingSiQualifier;
+		return this.addLoading || !!this.addLoadingSiType ||	!!this.pasteLoadingSiQualifier;
 	}
 
 	add() {

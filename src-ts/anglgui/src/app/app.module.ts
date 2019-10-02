@@ -6,15 +6,15 @@ import { AppComponent } from './app.component';
 import { OpModule } from 'src/app/op/op.module';
 
 @NgModule({
-  declarations: [
+	declarations: [
 	AppComponent
-  ],
-  imports: [
+	],
+	imports: [
 	BrowserModule,
 	AppRoutingModule,
 	OpModule
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
+	],
+	providers: [],
+	bootstrap: [AppComponent]
 })
 export class AppModule { }

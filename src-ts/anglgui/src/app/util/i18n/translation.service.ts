@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root'
 })
 export class TranslationService {
 	
@@ -10,5 +10,5 @@ export class TranslationService {
 	t(key: string): string {
 		return this.map[key] || key;
 	}
-  
+	
 }

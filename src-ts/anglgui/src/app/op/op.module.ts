@@ -8,12 +8,12 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
-  declarations: [EiComponent, FallbackComponent],
-  imports: [
+	declarations: [EiComponent, FallbackComponent],
+	imports: [
 	CommonModule,
 	OpRoutingModule,
 	UiModule,
 	HttpClientModule
-  ]
+	]
 })
 export class OpModule { }

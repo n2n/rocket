@@ -3,9 +3,10 @@ import { SiField } from 'src/app/si/model/entity/si-field';
 import { SiControl } from 'src/app/si/model/control/si-control';
 import { SiIdentifier, SiQualifier } from 'src/app/si/model/entity/si-qualifier';
 import { SiType } from 'src/app/si/model/entity/si-type';
+import { Message } from 'src/app/util/i18n/message';
 
 export class SiTypeBuildup {
-	public messages: string[] = [];
+	public messages: Message[] = [];
 
 	constructor(public type: SiType, public idName: string|null,
 			public fieldMap: Map<string, SiField> = new Map<string, SiField>(),

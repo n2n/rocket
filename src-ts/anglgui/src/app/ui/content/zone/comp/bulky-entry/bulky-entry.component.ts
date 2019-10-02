@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SiEntry } from 'src/app/si/model/entity/si-entry';
-import { SiControl } from 'src/app/si/model/control/si-control';
 import { BulkyEntrySiComp } from 'src/app/si/model/entity/impl/basic/bulky-entry-si-comp';
 import { SiStructure } from 'src/app/si/model/structure/si-structure';
 import { SiFieldStructureDeclaration } from 'src/app/si/model/entity/si-field-structure-declaration';
@@ -9,8 +8,8 @@ import { TypeSiContent } from 'src/app/si/model/structure/impl/type-si-content';
 import { StructureBranchComponent } from 'src/app/ui/content/zone/comp/structure-branch/structure-branch.component';
 
 @Component({
-  selector: 'rocket-bulky-entry',
-  templateUrl: './bulky-entry.component.html'
+	selector: 'rocket-bulky-entry',
+	templateUrl: './bulky-entry.component.html'
 })
 export class BulkyEntryComponent implements OnInit, OnDestroy {
 
@@ -22,14 +21,14 @@ export class BulkyEntryComponent implements OnInit, OnDestroy {
 	constructor() { }
 
 	ngOnInit() {
-	    this.fieldSiStructures = this.createStructures(this.siStructure, this.model.getFieldStructureDeclarations());
+		this.fieldSiStructures = this.createStructures(this.siStructure, this.model.getFieldStructureDeclarations());
 	}
 
 	ngOnDestroy() {
-	    let siStructure: SiStructure|null = null;
-	    while (siStructure = this.fieldSiStructures.pop()) {
-	        siStructure.dispose();
-	    }
+		let siStructure: SiStructure|null = null;
+		while (siStructure = this.fieldSiStructures.pop()) {
+			siStructure.dispose();
+		}
 	}
 
 	get siEntry(): SiEntry {
@@ -44,18 +43,18 @@ export class BulkyEntryComponent implements OnInit, OnDestroy {
 		return structures;
 	}
 
-//  getChildren(): SiStructure[] {
-//      if (this.children) {
-//          return this.children;
-//      }
+// 	getChildren(): SiStructure[] {
+// 			if (this.children) {
+// 					return this.children;
+// 			}
 //
-//      this.children = [];
-//      const declarations = this.getFieldStructureDeclarations();
-//      for (const child of declarations) {
-//          this.children.push(this.dingsel(this.entry, child));
-//      }
-//      return this.children;
-//  }
+// 			this.children = [];
+// 			const declarations = this.getFieldStructureDeclarations();
+// 			for (const child of declarations) {
+// 					this.children.push(this.dingsel(this.entry, child));
+// 			}
+// 			return this.children;
+// 	}
 
 	private dingsel(parent: SiStructure, fsd: SiFieldStructureDeclaration): SiStructure {
 		const structure = parent.createChild();
@@ -64,11 +63,17 @@ export class BulkyEntryComponent implements OnInit, OnDestroy {
 
 		const field = this.siEntry.selectedTypeBuildup.getFieldById(fsd.fieldDeclaration.fieldId);
 		const model = new SimpleSiStructureModel(
-				new TypeSiContent(StructureBranchComponent, (ref, structure) => {
+				new TypeSiContent(StructureBranchComponent, (ref, cstructure) => {
 					ref.instance.siStructure = structure;
 					ref.instance.siContent = field ? field.getContent() : null;
-					ref.instance.siStructures = this.createStructures(structure, fsd.children);
+					ref.instance.siStructures = this.createStructures(cstructure, fsd.children);
 				}));
+
+		if (field) {
+			model.messagesCallback = () => {
+				return field.getMessages();
+			};
+		}
 		structure.model = model;
 
 		return structure;

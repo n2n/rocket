@@ -6,9 +6,8 @@ export class SiButton {
 	public iconImportant = false;
 	public labelImportant = false;
 	public confirm: SiConfirm|null = null;
-	
+
 	constructor(public name: string, public btnClass: string, public iconClass: string) {
-		
 	}
 }
 

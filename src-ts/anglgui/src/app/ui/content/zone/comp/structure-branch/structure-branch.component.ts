@@ -3,9 +3,9 @@ import { SiContent } from 'src/app/si/model/structure/si-content';
 import { SiStructure } from 'src/app/si/model/structure/si-structure';
 
 @Component({
-  selector: 'rocket-ui-structure-branch',
-  templateUrl: './structure-branch.component.html',
-  styleUrls: ['./structure-branch.component.css']
+	selector: 'rocket-ui-structure-branch',
+	templateUrl: './structure-branch.component.html',
+	styleUrls: ['./structure-branch.component.css']
 })
 export class StructureBranchComponent implements OnInit {
 	@Input()

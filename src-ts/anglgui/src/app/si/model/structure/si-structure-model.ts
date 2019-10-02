@@ -1,8 +1,7 @@
 
-import { SiZoneError } from 'src/app/si/model/structure/si-zone-error';
 import { SiControl } from 'src/app/si/model/control/si-control';
-import { SiStructure } from 'src/app/si/model/structure/si-structure';
 import { SiContent } from 'src/app/si/model/structure/si-content';
+import { Message } from 'src/app/util/i18n/message';
 
 export interface SiStructureModel {
 
@@ -10,5 +9,5 @@ export interface SiStructureModel {
 
 	getControls(): SiControl[];
 
-	getZoneErrors(): SiZoneError[];
+	getMessages(): Message[];
 }

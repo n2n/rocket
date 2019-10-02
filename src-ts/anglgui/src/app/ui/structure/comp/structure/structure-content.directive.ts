@@ -6,11 +6,11 @@ import { SiStructure } from "src/app/si/model/structure/si-structure";
 import { IllegalSiStateError } from "src/app/si/model/illegal-si-state-error";
 
 @Directive({
-  selector: '[rocketUiContent]'
+	selector: '[rocketUiContent]'
 })
 export class StructureContentDirective {
-    @Input()
-    public siStructure: SiStructure;
+		@Input()
+		public siStructure: SiStructure;
 	private _siContent: SiContent|null = null;
 
 	constructor(public viewContainerRef: ViewContainerRef,
@@ -28,11 +28,11 @@ export class StructureContentDirective {
 		this.viewContainerRef.clear();
 
 		if (!this.siStructure) {
-            throw new IllegalSiStateError('Unknown SiStructure for content directive.');
-        }
+						throw new IllegalSiStateError('Unknown SiStructure for content directive.');
+				}
 		
 		if (siContent) {
-		    siContent.initComponent(this.viewContainerRef, this.componentFactoryResolver, this.siStructure);
+				siContent.initComponent(this.viewContainerRef, this.componentFactoryResolver, this.siStructure);
 		}
 	}
 

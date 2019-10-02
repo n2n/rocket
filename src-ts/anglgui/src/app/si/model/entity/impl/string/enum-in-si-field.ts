@@ -35,7 +35,7 @@ export class EnumInSiField extends InSiFieldAdapter implements SelectInFieldMode
 	}
 
 	copy(): SiField {
-		const copy =  new EnumInSiField(this.value, this.options);
+		const copy =	new EnumInSiField(this.value, this.options);
 		copy.mandatory = this.mandatory;
 		return copy;
 	}

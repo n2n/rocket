@@ -43,7 +43,7 @@ export class SiZoneModelFactory {
 			breadcrumbs: this.createBreadcrumbs(extr.reqArray('breadcrumbs')),
 			structureModel: new SiContentFactory().createContent(extr.reqObject('comp')),
 			controls: []
-		}
+		};
 	}
 
 	createBreadcrumbs(dataArr: Array<any>): SiBreadcrumb[] {
@@ -120,12 +120,12 @@ export class SiContentFactory {
 
 			case SiContentType.COMPACT_ENTRY:
 				entryDeclaration = SiResultFactory.createEntryDeclaration(dataExtr.reqObject('entryDeclaration'));
-				const compactEntrySiContent = new CompactEntrySiComp(entryDeclaration);
+				const compactEntrySiComp = new CompactEntrySiComp(entryDeclaration);
 
-				compFactory = new SiCompEssentialsFactory(compactEntrySiContent);
-				compactEntrySiContent.controlMap = compFactory.createControlMap(dataExtr.reqMap('controls'));
-				compactEntrySiContent.entry = compFactory.createEntry(dataExtr.reqObject('entry'));
-				return compactEntrySiContent;
+				compFactory = new SiCompEssentialsFactory(compactEntrySiComp);
+				compactEntrySiComp.controlMap = compFactory.createControlMap(dataExtr.reqMap('controls'));
+				compactEntrySiComp.entry = compFactory.createEntry(dataExtr.reqObject('entry'));
+				return compactEntrySiComp;
 
 			default:
 				throw new ObjectMissmatchError('Invalid si zone type: ' + data.type);

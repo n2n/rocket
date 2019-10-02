@@ -60,6 +60,10 @@ class AlphanumericEiPropConfigurator extends AdaptableEiPropConfigurator {
 			$this->eiComponent->setMaxlength($this->attributes->optInt(self::OPTION_MAXLENGTH_KEY, null));
 		}
 		
+		if ($this->attributes->contains(self::OPTION_MINLENGTH_KEY)) {
+			$this->eiComponent->setMinlength($this->attributes->optInt(self::OPTION_MINLENGTH_KEY, null));
+		}
+		
 		$this->eiComponent->setAddonConfig(AddonConfig::setup($this->attributes));
 	}
 	
