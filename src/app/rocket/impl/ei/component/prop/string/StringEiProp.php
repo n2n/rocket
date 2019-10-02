@@ -50,10 +50,15 @@ class StringEiProp extends AlphanumericEiProp {
 	}
 
 	public function createInSiField(Eiu $eiu): SiField {
+		$addonConfig = $this->getAddonConfig();
+		
 		return SiFields::stringIn($eiu->field()->getValue())
 				->setMandatory($this->isMandatory($eiu))
+				->setMinlength($this->getMinlength())
 				->setMaxlength($this->getMaxlength())
-				->setMultiline($this->isMultiline());
+				->setMultiline($this->isMultiline())
+				->setPrefixAddons($addonConfig->getPrefixSiCrumbGroups())
+				->setSuffixAddons($addonConfig->getSuffixSiCrumbGroups());
 	}
 	
 	public function isStringRepresentable(): bool {

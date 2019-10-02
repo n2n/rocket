@@ -22,8 +22,11 @@
 namespace rocket\si\content\impl;
 
 use n2n\util\type\attrs\DataSet;
+use rocket\si\content\impl\meta\AddonsSiFieldTrait;
 
 class NumberInSiField extends InSiFieldAdapter {
+	use AddonsSiFieldTrait;
+	
 	/**
 	 * @var int|null
 	 */
@@ -191,7 +194,9 @@ class NumberInSiField extends InSiFieldAdapter {
 			'mandatory' => $this->mandatory,
 			'step' => $this->step,
 			'arrowStep' => $this->arrowStep,
-			'fixed' => $this->fixed
+			'fixed' => $this->fixed,
+			'prefixAddons' => $this->prefixAddons,
+			'suffixAddons' => $this->suffixAddons
 		];
 	}
 	

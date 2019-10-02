@@ -53,9 +53,7 @@ class SiCrumbGroup implements \JsonSerializable {
 	 */
 	function jsonSerialize() {
 		return [
-			'type' => $this->type,
-			'label' => $this->label,
-			'iconClass' => $this->iconClass
+			'crumbs' => $this->crumbs
 		];
 	}
 }

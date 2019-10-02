@@ -7,11 +7,14 @@ import { SiCommanderService } from 'src/app/si/model/si-commander.service';
 import { SiContent } from '../../../structure/si-content';
 import { TypeSiContent } from 'src/app/si/model/structure/impl/type-si-content';
 import { InputInFieldModel } from 'src/app/ui/content/field/input-in-field-model';
+import { SiCrumbGroup } from '../meta/si-crumb';
 
 export class StringInSiField extends InSiFieldAdapter implements InputInFieldModel {
 	public mandatory = false;
 	public minlength: number|null = null;
 	public maxlength: number|null = null;
+	public prefixAddons: SiCrumbGroup[] = [];
+	public suffixAddons: SiCrumbGroup[] = [];
 
 	constructor(public value: string|null, public multiline: boolean = false) {
 		super();
@@ -49,6 +52,14 @@ export class StringInSiField extends InSiFieldAdapter implements InputInFieldMod
 	setValue(value: string|null) {
 		this.value = value;
 		this.validate();
+	}
+
+	getPrefixAddons(): SiCrumbGroup[] {
+		return this.prefixAddons;
+	}
+
+	getSuffixAddons(): SiCrumbGroup[] {
+		return this.suffixAddons;
 	}
 
 	private validate() {

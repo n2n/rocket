@@ -39,6 +39,7 @@ import { EmbeddedEntryPanelsOutComponent } from './content/embedded/comp/embedde
 import { NumberInFieldComponent } from './content/field/comp/number-in-field/number-in-field.component';
 import { TogglerInFieldComponent } from './content/field/comp/toggler-in-field/toggler-in-field.component';
 import { SelectInFieldComponent } from './content/field/comp/select-in-field/select-in-field.component';
+import { CrumbGroupComponent } from './content/meta/comp/crumb-group/crumb-group.component';
 
 @NgModule({
   declarations: [ LayerComponent, ContainerComponent, ZoneComponent, StructureContentDirective, ListZoneContentComponent,
@@ -47,7 +48,7 @@ import { SelectInFieldComponent } from './content/field/comp/select-in-field/sel
 	FileOutFieldComponent, LinkOutFieldComponent, QualifierSelectInFieldComponent,
 	CompactEntryComponent, QualifierComponent, AddPasteComponent, EmbeddedEntriesInComponent, EmbeddedEntriesSummaryInComponent,
 	EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent, StructureBranchComponent, 
-	EmbeddedEntryPanelsInComponent, EmbeddedEntryPanelsOutComponent, NumberInFieldComponent, TogglerInFieldComponent, SelectInFieldComponent ],
+	EmbeddedEntryPanelsInComponent, EmbeddedEntryPanelsOutComponent, NumberInFieldComponent, TogglerInFieldComponent, SelectInFieldComponent, CrumbGroupComponent ],
   imports: [
 	CommonModule,
 	FormsModule,

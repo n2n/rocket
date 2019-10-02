@@ -4,17 +4,39 @@ import { TypeSiContent } from '../../../structure/impl/type-si-content';
 import { InputInFieldComponent } from 'src/app/ui/content/field/comp/input-in-field/input-in-field.component';
 import { SiContent } from '../../../structure/si-content';
 import { SiField } from '../../si-field';
+import { SiCrumbGroup } from '../meta/si-crumb';
 
 export class NumberInSiField extends InSiFieldAdapter implements InputInFieldModel {
-
 	public min: number|null = null;
 	public max: number|null = null;
 	public step = 1;
 	public arrowStep: number|null = 1;
 	public fixed = false;
 	public mandatory = false;
+	public prefixAddons: SiCrumbGroup[] = [];
+	public suffixAddons: SiCrumbGroup[] = [];
 
-	private value: number = null;
+	private _value: number|null = null;
+
+	get value(): number|null {
+		return this._value;
+	}
+
+	set value(value: number|null) {
+		if (this.min !== null && this.min >= value) {
+			this._value = this.min;
+		}
+
+		if (this.max !== null && this.max <= value) {
+			this._value = this.max;
+		}
+
+		if (this.step === 1) {
+			this._value = value;
+		}
+
+		this._value = Math.round(value / this.step) * this.step;
+	}
 
 	getValue(): string {
 		if (this.value == null) {
@@ -33,21 +55,7 @@ export class NumberInSiField extends InSiFieldAdapter implements InputInFieldMod
 			this.value = null;
 		}
 
-		const value = parseFloat(valueStr);
-
-		if (this.min !== null && this.min >= value) {
-			this.value = this.min;
-		}
-
-		if (this.max !== null && this.max <= value) {
-			this.value = this.max;
-		}
-
-		if (this.step === 1) {
-			this.value = value;
-		}
-
-		this.value = Math.round(value / this.step) * this.step;
+		this.value = parseFloat(valueStr);
 	}
 
 	getType(): string {
@@ -76,6 +84,14 @@ export class NumberInSiField extends InSiFieldAdapter implements InputInFieldMod
 		}
 
 		return 0;
+	}
+
+	getPrefixAddons(): SiCrumbGroup[] {
+		return this.prefixAddons;
+	}
+
+	getSuffixAddons(): SiCrumbGroup[] {
+		return this.suffixAddons;
 	}
 
 	readInput(): object {

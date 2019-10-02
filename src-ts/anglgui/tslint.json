@@ -84,9 +84,11 @@
     "template-banana-in-box": true,
     "template-no-negated-async": true,
     "use-lifecycle-interface": true,
-	"use-pipe-transform-interface": true,
-	"indent": [true, "tabs", 4],
-	"align": [true, "statements"]
+    "use-pipe-transform-interface": true,
+    "indent": [true, "tabs", 4],
+    "align": [true, "statements"],
+    "no-namespace": false,
+    "variable-name": false
   },
   "rulesDirectory": [
     "codelyzer"

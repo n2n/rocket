@@ -23,12 +23,19 @@ namespace rocket\si\content\impl;
 
 use n2n\util\type\attrs\DataSet;
 use rocket\si\content\impl\meta\SiCrumbGroup;
+use rocket\si\content\impl\meta\AddonsSiFieldTrait;
 
 class StringInSiField extends InSiFieldAdapter {
+	use AddonsSiFieldTrait;
+	
 	/**
 	 * @var string|null
 	 */
 	private $value;
+	/**
+	 * @var int|null
+	 */
+	private $minlength;
 	/**
 	 * @var int|null
 	 */
@@ -68,6 +75,22 @@ class StringInSiField extends InSiFieldAdapter {
 	 */
 	function getValue() {
 		return $this->value;
+	}
+	
+	/**
+	 * @param int|null $minlength
+	 * @return \rocket\si\content\impl\StringInSiField
+	 */
+	function setMinlength(?int $minlength) {
+		$this->minlength = $minlength;
+		return $this;
+	}
+	
+	/**
+	 * @return int|null
+	 */
+	function getMinlength() {
+		return $this->minlength;
 	}
 	
 	/**
@@ -133,9 +156,12 @@ class StringInSiField extends InSiFieldAdapter {
 	function getData(): array {
 		return [
 			'value' => $this->value,
+			'minlength' => $this->minlength,
 			'maxlength' => $this->maxlength,
 			'multiline' => $this->multiline,
-			'mandatory' => $this->mandatory
+			'mandatory' => $this->mandatory,
+			'prefixAddons' => $this->prefixAddons,
+			'suffixAddons' => $this->suffixAddons
 		];
 	}
 	 

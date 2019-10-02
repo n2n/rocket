@@ -1,5 +1,6 @@
 
 import { MessageFieldModel } from 'src/app/ui/content/field/message-field-model';
+import { SiCrumbGroup } from 'src/app/si/model/entity/impl/meta/si-crumb';
 
 export interface InputInFieldModel extends MessageFieldModel {
 
@@ -16,4 +17,8 @@ export interface InputInFieldModel extends MessageFieldModel {
 	getMax(): number|null;
 
 	getStep(): number|null;
+
+	getPrefixAddons(): SiCrumbGroup[];
+
+	getSuffixAddons(): SiCrumbGroup[];
 }

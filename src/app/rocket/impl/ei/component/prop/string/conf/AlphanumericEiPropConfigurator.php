@@ -34,6 +34,7 @@ use n2n\util\type\attrs\LenientAttributeReader;
 use rocket\impl\ei\component\prop\meta\config\AddonConfig;
 
 class AlphanumericEiPropConfigurator extends AdaptableEiPropConfigurator {
+	const OPTION_MINLENGTH_KEY = 'minlength';
 	const OPTION_MAXLENGTH_KEY = 'maxlength';
 	
 	public function __construct(AlphanumericEiProp $alphanumericEiProp) {
@@ -73,9 +74,12 @@ class AlphanumericEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$lar = new LenientAttributeReader($this->attributes);
 		
 		IllegalStateException::assertTrue($this->eiComponent instanceof AlphanumericEiProp);
-		$magDispatchable->getMagCollection()->addMag(self::OPTION_MAXLENGTH_KEY, new NumericMag('Maxlength', 
-				$lar->getInt(self::OPTION_MAXLENGTH_KEY, $this->eiComponent->getMaxlength())));
 		
+		$magDispatchable->getMagCollection()->addMag(self::OPTION_MINLENGTH_KEY, new NumericMag('Minlength', 
+				$lar->getInt(self::OPTION_MINLENGTH_KEY, $this->eiComponent->getMinlength())));
+		
+		$magDispatchable->getMagCollection()->addMag(self::OPTION_MAXLENGTH_KEY, new NumericMag('Maxlength',
+				$lar->getInt(self::OPTION_MAXLENGTH_KEY, $this->eiComponent->getMaxlength())));
 		
 		AddonConfig::mag($magDispatchable->getMagCollection(), $this->attributes);
 		
@@ -86,6 +90,9 @@ class AlphanumericEiPropConfigurator extends AdaptableEiPropConfigurator {
 		parent::saveMagDispatchable($magDispatchable, $n2nContext);
 		
 		$magCollection = $magDispatchable->getMagCollection();
+		
+		$this->attributes->set(self::OPTION_MINLENGTH_KEY,
+				$magCollection->getMagByPropertyName(self::OPTION_MINLENGTH_KEY)->getValue());
 		
 		$this->attributes->set(self::OPTION_MAXLENGTH_KEY,
 				$magCollection->getMagByPropertyName(self::OPTION_MAXLENGTH_KEY)->getValue());

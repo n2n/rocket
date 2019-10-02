@@ -1,0 +1,9 @@
+
+<ng-container *ngFor="let siCrumb of siCrumbGroup.crumbs">
+	<ng-container *ngIf="isLabel(siCrumb)">
+		{{ siCrumb.label }}
+	</ng-container>
+	<ng-container *ngIf="isIcon(siCrumb)">
+		<i [class]="siCrumb.iconClass"></i>
+	</ng-container>
+</ng-container>

@@ -32,6 +32,7 @@ import { SiPanel, SiGridPos } from '../model/entity/impl/embedded/si-panel';
 import { NumberInSiField } from '../model/entity/impl/number/number-in-si-field';
 import { BooleanSiField as BooleanInSiField } from '../model/entity/impl/boolean/boolean-in-si-field';
 import { EnumInSiField } from '../model/entity/impl/string/enum-in-si-field';
+import { SiCrumbGroup, SiCrumb } from '../model/entity/impl/meta/si-crumb';
 
 export class SiZoneModelFactory {
 	createZoneModel(data: any): SiZoneModel {
@@ -236,8 +237,11 @@ export class SiCompEssentialsFactory {
 
 		case SiFieldType.STRING_IN:
 			const stringInSiField = new StringInSiField(dataExtr.nullaString('value'), dataExtr.reqBoolean('multiline'));
+			stringInSiField.minlength = dataExtr.nullaNumber('minlength');
 			stringInSiField.maxlength = dataExtr.nullaNumber('maxlength');
 			stringInSiField.mandatory = dataExtr.reqBoolean('mandatory');
+			stringInSiField.prefixAddons = this.createCrumbGroups(dataExtr.reqArray('prefixAddons'));
+			stringInSiField.suffixAddons = this.createCrumbGroups(dataExtr.reqArray('suffixAddons'));
 			return stringInSiField;
 
 		case SiFieldType.NUMBER_IN:
@@ -247,7 +251,9 @@ export class SiCompEssentialsFactory {
 			numberInSiField.step = dataExtr.reqNumber('step');
 			numberInSiField.arrowStep = dataExtr.nullaNumber('arrowStep');
 			numberInSiField.fixed = dataExtr.reqBoolean('fixed');
-			numberInSiField.setValue(dataExtr.nullaString('value'));
+			numberInSiField.value = dataExtr.nullaNumber('value');
+			numberInSiField.prefixAddons = this.createCrumbGroups(dataExtr.reqArray('prefixAddons'));
+			numberInSiField.suffixAddons = this.createCrumbGroups(dataExtr.reqArray('suffixAddons'));
 			return numberInSiField;
 
 		case SiFieldType.BOOLEAN_IN:
@@ -431,6 +437,40 @@ export class SiCompEssentialsFactory {
 			okLabel: extr.nullaString('okLabel'),
 			cancelLabel: extr.nullaString('cancelLabel')
 		};
+	}
+
+	private createCrumbGroups(dataArr: Array<any>): SiCrumbGroup[] {
+		const crumbGroups: SiCrumbGroup[] = [];
+		for (const data of dataArr) {
+			crumbGroups.push(this.createCrumbGroup(data));
+		}
+		return crumbGroups;
+	}
+
+	private createCrumbGroup(data: any): SiCrumbGroup {
+		const extr = new Extractor(data);
+		return {
+			crumbs: this.createCrumbs(extr.reqArray('crumbs'))
+		};
+	}
+
+	private createCrumbs(dataArr: Array<any>) {
+		const crumbs: SiCrumb[] = [];
+		for (const data of dataArr) {
+			crumbs.push(this.createCrumb(data));
+		}
+		return crumbs;
+	}
+
+	private createCrumb(data: any): SiCrumb {
+		const extr = new Extractor(data);
+
+		switch (extr.reqString('type')) {
+			case SiCrumb.Type.LABEL:
+				return SiCrumb.createLabel(extr.reqString('label'));
+			case SiCrumb.Type.ICON:
+				return SiCrumb.createIcon(extr.reqString('iconClass'));
+		}
 	}
 
 }

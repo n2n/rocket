@@ -38,7 +38,6 @@ use rocket\ei\component\InvalidEiComponentConfigurationException;
 use n2n\persistence\meta\structure\Column;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\web\dispatch\mag\MagDispatchable;
-use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\util\type\attrs\InvalidAttributeException;
 use n2n\util\type\attrs\LenientAttributeReader;
 use rocket\ei\manage\gui\ViewMode;
@@ -67,7 +66,6 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 	private $displayConfig;
 	protected $addDefaultDisplay = true;
 	protected $addDisplayItemType = true;
-	protected $addHelpText = true;
 	
 	private $editConfig;
 	protected $addConstant = true; 
@@ -157,10 +155,9 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 	 * @param bool $addDefaultDisplay
 	 */
 	public function registerDisplayConfig(DisplayConfig $displayConfig, bool $addDisplayItemType = true, 
-			bool $addHelpText = true, bool $addDefaultDisplay = true) {
+			bool $addDefaultDisplay = true) {
 		$this->displayConfig = $displayConfig;
 		$this->addDisplayItemType = $addDisplayItemType;
-		$this->addHelpText = $addHelpText;
 		$this->addDefaultDisplay = $addDefaultDisplay;
 	}	
 	
@@ -350,11 +347,6 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 			$this->displayConfig->setDisplayItemType(
 					$this->attributes->reqEnum(self::ATTR_DISPLAY_ITEM_TYPE, SiStructureType::all()));
 		}
-	
-		if ($this->attributes->contains(self::ATTR_HELPTEXT_KEY)) {
-			$this->displayConfig->setHelpText(
-					$this->attributes->optString(self::ATTR_HELPTEXT_KEY));
-		}
 	}
 	
 	private function assignDisplayMags(MagCollection $magCollection, DynamicTextCollection $dtc) {
@@ -396,11 +388,6 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 			$types = SiStructureType::all();
 			$magCollection->addMag(self::ATTR_DISPLAY_ITEM_TYPE, new EnumMag('Container type', 
 					array_combine($types, $types), $this->displayConfig->getDisplayItemType(), true));
-		}
-		
-		if ($this->addHelpText) {
-			$magCollection->addMag(self::ATTR_HELPTEXT_KEY, new StringMag('Helptext', 
-					$lar->getString(self::ATTR_HELPTEXT_KEY, $this->displayConfig->getHelpText())));
 		}
 	}
 	

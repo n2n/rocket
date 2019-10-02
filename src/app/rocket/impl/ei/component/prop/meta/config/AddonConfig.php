@@ -27,6 +27,7 @@ use n2n\util\type\attrs\DataSet;
 use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\util\StringUtils;
 use rocket\si\content\impl\meta\SiCrumbGroup;
+use rocket\si\content\impl\meta\SiCrumb;
 
 class AddonConfig {
 	
@@ -40,9 +41,30 @@ class AddonConfig {
 	 * @param SiCrumbGroup[] $prefixSiCrumbGroups
 	 * @param SiCrumbGroup[] $suffixSiCrumbGroups
 	 */
-	function __construct(array $prefixSiCrumbGroups = [], array $suffixSiCrumbGroups = []) {
+	private function __construct(array $prefixSiCrumbGroups = [], array $suffixSiCrumbGroups = []) {
 		$this->prefixSiCrumbGroups = $prefixSiCrumbGroups;
 		$this->suffixSiCrumbGroups = $suffixSiCrumbGroups;
+	}
+	
+	/**
+	 * @return \rocket\si\content\impl\meta\SiCrumbGroup[]
+	 */
+	function getPrefixSiCrumbGroups() {
+		return $this->prefixSiCrumbGroups;
+	}
+	
+	/**
+	 * @return \rocket\si\content\impl\meta\SiCrumbGroup[]
+	 */
+	function getSuffixSiCrumbGroups() {
+		return $this->suffixSiCrumbGroups;
+	}
+	
+	/**
+	 * @return \rocket\impl\ei\component\prop\meta\config\AddonConfig
+	 */
+	static function create() {
+		return new AddonConfig();
 	}
 	
 	static function mag(MagCollection $magCollection, DataSet $ds) {
@@ -61,7 +83,7 @@ class AddonConfig {
 				['placeholder' => 'eg. CHF, Notification {icon:fas fa-bell} ...']);
 	}
 	
-	private static function save(MagCollection $magCollection, DataSet $ds) {
+	static function save(MagCollection $magCollection, DataSet $ds) {
 		$ds->set(self::ATTR_PREFIX_ADDONS_KEY, 
 				$magCollection->getMagByPropertyName(self::ATTR_PREFIX_ADDONS_KEY)->getValue());
 		$ds->set(self::ATTR_SUFFIX_ADDONS_KEY,
@@ -92,29 +114,33 @@ class SiCrumbGroupFactory {
 		return $crumbGroups;
 	}
 	
+	/**
+	 * @param string $pattern
+	 * @return SiCrumb[]
+	 */
 	private static function parseCrumbs($pattern) {
 		$crumbs = [];
 		
 		$curStr = '';
 		$bracketOpen = false;
-		foreach (mb_str_split($pattern) as $char) {
-			if ($pattern === '}' && $bracketOpen) {
-				self::addIcon($curStr . $char);
+		foreach (preg_split('//u', $pattern, -1, PREG_SPLIT_NO_EMPTY) as $char) {
+			if ($char === '}' && $bracketOpen) {
+				self::addIcon($crumbs, $curStr . $char);
 				$curStr = '';
 				$bracketOpen = false;
 				continue;
 			}
 			
-			if ($pattern === '{' && !$bracketOpen) {
-				$crumbs[] = self::addLabel($crumbs, $curStr);
-				$bracketOpen = true;
+			if ($char === '{' && !$bracketOpen) {
+				self::addLabel($crumbs, $curStr);
 				$curStr = '';
+				$bracketOpen = true;
 			}
 			
 			$curStr .= $char;
 		}
 		
-		$crumbs[] = self::addLabel($crumbs, $curStr);
+		self::addLabel($crumbs, $curStr);
 		
 		return $crumbs;
 	}

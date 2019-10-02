@@ -50,7 +50,13 @@ use rocket\impl\ei\component\prop\meta\config\AddonConfig;
 
 abstract class AlphanumericEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiProp, 
 		SortableEiProp, QuickSearchableEiProp, ScalarEiProp, GenericEiProp {
-	
+	/**
+	 * @var int|null
+	 */
+	private $minlength;
+	/**
+	 * @var int|null
+	 */
 	private $maxlength;
 	/**
 	 * @var AddonConfig
@@ -61,7 +67,15 @@ abstract class AlphanumericEiProp extends DraftablePropertyEiPropAdapter impleme
 		parent::__construct();
 
 		$this->entityPropertyRequired = false;
-		$this->addonConfig = new AddonConfig();
+		$this->addonConfig = AddonConfig::create();
+	}
+	
+	public function getMinlength() {
+		return $this->minlength;
+	}
+	
+	public function setMinlength(?int $minlength) {
+		$this->minlength = $minlength;
 	}
 
 	public function getMaxlength() {
@@ -76,6 +90,9 @@ abstract class AlphanumericEiProp extends DraftablePropertyEiPropAdapter impleme
 		$this->addonConfig = $addonConfig;
 	}
 	
+	/**
+	 * @return \rocket\impl\ei\component\prop\meta\config\AddonConfig
+	 */
 	function getAddonConfig() {
 		return $this->addonConfig;
 	}
