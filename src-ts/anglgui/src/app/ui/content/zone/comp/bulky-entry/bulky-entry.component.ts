@@ -65,8 +65,8 @@ export class BulkyEntryComponent implements OnInit, OnDestroy {
 		const model = new SimpleSiStructureModel(
 				new TypeSiContent(StructureBranchComponent, (ref, cstructure) => {
 					ref.instance.siStructure = structure;
-					ref.instance.siContent = field ? field.getContent() : null;
-					ref.instance.siStructures = this.createStructures(cstructure, fsd.children);
+					ref.instance.siContent = field ? field.createContent() : null;
+					/*ref.instance.siStructures = */this.createStructures(cstructure, fsd.children);
 				}));
 
 		if (field) {

@@ -13,7 +13,7 @@ export abstract class SiFieldAdapter implements SiField, MessageFieldModel {
 
 	abstract copy(): SiField;
 
-	abstract getContent(): SiContent|null;
+	abstract createContent(): SiContent|null;
 
 	getMessages(): Message[] {
 		return this.messages;

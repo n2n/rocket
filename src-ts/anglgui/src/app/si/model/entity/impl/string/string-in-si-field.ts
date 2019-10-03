@@ -85,7 +85,7 @@ export class StringInSiField extends InSiFieldAdapter implements InputInFieldMod
 		return copy;
 	}
 
-	getContent(): SiContent|null {
+	createContent(): SiContent|null {
 		return new TypeSiContent(InputInFieldComponent, (ref) => {
 			ref.instance.model = this;
 		});

@@ -40,7 +40,7 @@ export class EnumInSiField extends InSiFieldAdapter implements SelectInFieldMode
 		return copy;
 	}
 
-	getContent(): SiContent {
+	createContent(): SiContent {
 		return new TypeSiContent(SelectInFieldComponent, (ref) => {
 			ref.instance.model = this;
 		});

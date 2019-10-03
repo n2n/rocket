@@ -102,7 +102,7 @@ export class NumberInSiField extends InSiFieldAdapter implements InputInFieldMod
 		throw new Error('Method not implemented.');
 	}
 
-	getContent(): SiContent {
+	createContent(): SiContent {
 		return new TypeSiContent(InputInFieldComponent, (cr) => {
 			cr.instance.model = this;
 		});

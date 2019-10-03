@@ -29,7 +29,7 @@ export class BooleanSiField extends InSiFieldAdapter implements TogglerInModel {
 		return new BooleanSiField(this.value);
 	}
 
-	getContent(): SiContent {
+	createContent(): SiContent {
 		return new TypeSiContent(TogglerInFieldComponent, (ref) => {
 			ref.instance.model = this;
 		});

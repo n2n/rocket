@@ -12,8 +12,8 @@ export class StructureBranchComponent implements OnInit {
 	siStructure: SiStructure;
 	@Input()
 	siContent: SiContent|null = null;
-	@Input()
-	siStructures: SiStructure[] = [];
+	// @Input()
+	// siStructures: SiStructure[] = [];
 
 	constructor() { }
 

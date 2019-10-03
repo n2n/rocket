@@ -14,7 +14,7 @@ export class StringOutSiField extends OutSiFieldAdapter implements StringFieldMo
 		super();
 	}
 
-	getContent(): SiContent|null {
+	createContent(): SiContent|null {
 		return new TypeSiContent(StringOutFieldComponent, (ref, structure) => {
 				ref.instance.model = this;
 		});

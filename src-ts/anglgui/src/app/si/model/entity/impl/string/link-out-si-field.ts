@@ -12,7 +12,7 @@ export class LinkOutSiField extends OutSiFieldAdapter implements LinkOutModel {
 		super();
 	}
 
-	getContent(): SiContent|null {
+	createContent(): SiContent|null {
 		return new TypeSiContent(LinkOutFieldComponent, (ref) => {
 			ref.instance.model = this;
 		});

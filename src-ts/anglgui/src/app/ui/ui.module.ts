@@ -15,7 +15,6 @@ import { InputInFieldComponent } from './content/field/comp/input-in-field/input
 import { TextareaInFieldComponent } from './content/field/comp/textarea-in-field/textarea-in-field.component';
 import { StructureComponent } from './structure/comp/structure/structure.component';
 import { StructureContentDirective } from 'src/app/ui/structure/comp/structure/structure-content.directive';
-import { FieldStructureComponent } from 'src/app/ui/structure/comp/field-structure/field-structure.component';
 import { FileInFieldComponent } from './content/field/comp/file-in-field/file-in-field.component';
 import { FileOutFieldComponent } from './content/field/comp/file-out-field/file-out-field.component';
 import { UtilModule } from 'src/app/util/util.module';
@@ -45,7 +44,7 @@ import { MessageComponent } from './util/comp/message/message.component';
 @NgModule({
 	declarations: [ LayerComponent, ContainerComponent, ZoneComponent, StructureContentDirective, ListZoneContentComponent,
 	PaginationComponent, EntryDirective, StringOutFieldComponent, ControlComponent, BulkyEntryComponent,
-	FieldStructureComponent, InputInFieldComponent, TextareaInFieldComponent, StructureComponent, FileInFieldComponent,
+	InputInFieldComponent, TextareaInFieldComponent, StructureComponent, FileInFieldComponent,
 	FileOutFieldComponent, LinkOutFieldComponent, QualifierSelectInFieldComponent,
 	CompactEntryComponent, QualifierComponent, AddPasteComponent, EmbeddedEntriesInComponent, EmbeddedEntriesSummaryInComponent,
 	EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent, StructureBranchComponent, 
@@ -62,7 +61,7 @@ import { MessageComponent } from './util/comp/message/message.component';
 	LayerComponent,
 	ControlComponent
 	],
-	entryComponents: [ ListZoneContentComponent, BulkyEntryComponent, FieldStructureComponent, StringOutFieldComponent,
+	entryComponents: [ ListZoneContentComponent, BulkyEntryComponent, StringOutFieldComponent,
 	InputInFieldComponent, TextareaInFieldComponent, FileInFieldComponent, FileOutFieldComponent, QualifierSelectInFieldComponent,
 	LinkOutFieldComponent, CompactEntryComponent, EmbeddedEntriesInComponent, EmbeddedEntriesSummaryInComponent,
 	EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent, StructureBranchComponent,

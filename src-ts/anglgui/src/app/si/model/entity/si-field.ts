@@ -4,7 +4,7 @@ import { Message } from 'src/app/util/i18n/message';
 
 export interface SiField {
 
-	getContent(): SiContent|null;
+	createContent(): SiContent;
 
 	hasInput(): boolean;
 

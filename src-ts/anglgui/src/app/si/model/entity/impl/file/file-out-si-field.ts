@@ -16,7 +16,7 @@ export class FileOutSiField extends OutSiFieldAdapter implements FileFieldModel 
 		return this.value;
 	}
 
-	getContent(): SiContent|null {
+	createContent(): SiContent|null {
 		return new TypeSiContent(FileOutFieldComponent, () => {
 //						ref.instance.model = this;
 		});

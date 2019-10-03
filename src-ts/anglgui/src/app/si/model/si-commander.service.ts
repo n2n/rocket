@@ -107,7 +107,7 @@ export class SiCommanderService {
 	// 	}));
 	}
 
-	execControl(apiUrl: string, callId: object, zoneContent: SiComp, includeInput: boolean): Observable<void> {
+	execControl(apiUrl: string, callId: object, comp: SiComp, includeInput: boolean): Observable<void> {
 		const input = new SiInput();
 
 		if (!includeInput) {
@@ -115,7 +115,7 @@ export class SiCommanderService {
 		}
 
 		const entries: SiEntry[] = [];
-		for (const entry of zoneContent.getEntries()) {
+		for (const entry of comp.getEntries()) {
 			if (entry.readOnly) {
 				continue;
 			}

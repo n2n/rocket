@@ -62,7 +62,7 @@ export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel,
 		throw new Error('Method not implemented.');
 	}
 
-	getContent(): SiContent|null {
+	createContent(): SiContent|null {
 		return this;
 	}
 

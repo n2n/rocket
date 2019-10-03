@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ComponentFactoryResolver, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 import { SiContent } from 'src/app/si/model/structure/si-content';
 import { StructureContentDirective } from 'src/app/ui/structure/comp/structure/structure-content.directive';
 import { SiStructureType } from 'src/app/si/model/entity/si-field-structure-declaration';

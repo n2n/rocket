@@ -10,7 +10,7 @@ import { SiContainer } from "src/app/si/model/structure/si-container";
 export class ContainerComponent implements OnInit {
 		@Input()
 		siContainer: SiContainer;
-		
+
 		constructor() { }
 
 		ngOnInit() {

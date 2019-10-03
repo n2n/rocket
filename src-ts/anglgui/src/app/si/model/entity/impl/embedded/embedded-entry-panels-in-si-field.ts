@@ -28,7 +28,7 @@ export class EmbeddedEntryPanelsInSiField extends InSiFieldAdapter implements Em
 		throw new Error('Not yet implemented.');
 	}
 
-	getContent(): SiContent {
+	createContent(): SiContent {
 		return new TypeSiContent(EmbeddedEntryPanelsInComponent, (ref, structure) => {
 			ref.instance.model = this;
 			ref.instance.siStructure = structure;

@@ -43,6 +43,5 @@ export class SiTypeBuildup {
 		const copy = new SiTypeBuildup(this.type, this.idName, fieldMapCopy, controlMapCopy);
 		copy.messages = this.messages;
 		return copy;
-
 	}
 }

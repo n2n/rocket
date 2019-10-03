@@ -62,7 +62,7 @@ export class QualifierSelectInSiField extends InSiFieldAdapter implements Qualif
 		return copy;
 	}
 
-	getContent(): SiContent|null {
+	createContent(): SiContent|null {
 		return new TypeSiContent(QualifierSelectInFieldComponent, (ref, structure) => {
 			ref.instance.model = this;
 			ref.instance.siStructure = structure;

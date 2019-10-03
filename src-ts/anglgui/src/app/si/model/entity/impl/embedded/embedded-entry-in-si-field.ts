@@ -18,7 +18,7 @@ export class EmbeddedEntryInSiField extends InSiFieldAdapter	{
 		return { entryInputs: this.content.getValues().map(embeddedEntry => embeddedEntry.entry.readInput() ) };
 	}
 
-	getContent(): SiContent|null {
+	createContent(): SiContent|null {
 		return this.content;
 	}
 

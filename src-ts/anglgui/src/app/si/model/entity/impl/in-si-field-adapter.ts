@@ -13,5 +13,5 @@ export abstract class InSiFieldAdapter extends SiFieldAdapter {
 
 	abstract copy(): SiField;
 
-	abstract getContent(): SiContent|null;
+	abstract createContent(): SiContent|null;
 }
