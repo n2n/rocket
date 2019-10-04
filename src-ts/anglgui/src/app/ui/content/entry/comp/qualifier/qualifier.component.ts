@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { SiQualifier } from "src/app/si/model/entity/si-qualifier";
+import { SiEntryQualifier } from "src/app/si/model/entity/si-qualifier";
 
 @Component({
 	selector: 'rocket-ui-qualifier',
@@ -9,7 +9,7 @@ import { SiQualifier } from "src/app/si/model/entity/si-qualifier";
 export class QualifierComponent implements OnInit {
 
 	@Input()
-	siQualifier: SiQualifier;
+	siQualifier: SiEntryQualifier;
 	@Input()
 	showIcon = true;
 	@Input()

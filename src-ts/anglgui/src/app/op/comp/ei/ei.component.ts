@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, NavigationStart } from '@angular/router';
-import { SiContainer } from 'src/app/si/model/structure/si-container';
-import { SiCommanderService } from 'src/app/si/model/si-commander.service';
+import { UiContainer } from 'src/app/si/model/structure/si-container';
+import { SiUiService } from 'src/app/si/manage/si-ui.service';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { MainSiLayer } from 'src/app/si/model/structure/si-layer';
+import { MainUiLayer } from 'src/app/si/model/structure/ui-layer';
 
 @Component({
 	selector: 'rocket-ei',
@@ -13,12 +13,12 @@ import { MainSiLayer } from 'src/app/si/model/structure/si-layer';
 })
 export class EiComponent implements OnInit, OnDestroy {
 
-	private siContainer: SiContainer;
+	private siContainer: UiContainer;
 	private subscription: Subscription;
 
-	constructor(private route: ActivatedRoute, private siCommanderService: SiCommanderService,
+	constructor(private route: ActivatedRoute, private siUiService: SiUiService,
 			private router: Router/*, platformLocation: PlatformLocation*/) {
-		this.siContainer = new SiContainer();
+		this.siContainer = new UiContainer();
 // 		alert(platformLocation.getBaseHrefFromDOM() + ' ' + route.snapshot.url.join('/'));
 	}
 
@@ -39,8 +39,8 @@ export class EiComponent implements OnInit, OnDestroy {
 			id = curNav.id;
 		}
 
-		const zone = this.mainSiLayer.pushZone(1, this.route.snapshot.url.join('/'));
-		this.siCommanderService.loadZone(zone);
+		const zone = this.mainUiLayer.pushZone(1, this.route.snapshot.url.join('/'));
+		this.siUiService.loadZone(zone);
 
 	}
 
@@ -48,7 +48,7 @@ export class EiComponent implements OnInit, OnDestroy {
 		this.subscription.unsubscribe();
 	}
 
-	get mainSiLayer(): MainSiLayer {
+	get mainUiLayer(): MainUiLayer {
 		return this.siContainer.getMainLayer();
 	}
 
@@ -58,12 +58,12 @@ export class EiComponent implements OnInit, OnDestroy {
 		switch (event.navigationTrigger) {
 		case 'popstate':
 			if (event.restoredState &&
-					this.mainSiLayer.popZone(event.restoredState.navigationId, url)) {
+					this.mainUiLayer.popZone(event.restoredState.navigationId, url)) {
 				break;
 			}
 		case 'imperative':
-			const zone = this.mainSiLayer.pushZone(event.id, url);
-			this.siCommanderService.loadZone(zone);
+			const zone = this.mainUiLayer.pushZone(event.id, url);
+			this.siUiService.loadZone(zone);
 			break;
 		}
 

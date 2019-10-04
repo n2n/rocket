@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { SiContent } from 'src/app/si/model/structure/si-content';
-import { SiStructure } from 'src/app/si/model/structure/si-structure';
+import { UiContent } from 'src/app/si/model/structure/ui-content';
+import { UiStructure } from 'src/app/si/model/structure/ui-structure';
 
 @Component({
 	selector: 'rocket-ui-structure-branch',
@@ -9,9 +9,9 @@ import { SiStructure } from 'src/app/si/model/structure/si-structure';
 })
 export class StructureBranchComponent implements OnInit {
 	@Input()
-	siStructure: SiStructure;
+	siStructure: UiStructure;
 	@Input()
-	siContent: SiContent|null = null;
+	siContent: UiContent|null = null;
 	// @Input()
 	// siStructures: SiStructure[] = [];
 

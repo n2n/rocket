@@ -7,7 +7,7 @@ import { ApiCallSiControl } from 'src/app/si/model/control/impl/api-call-si-cont
 import { SiTypeBuildup } from 'src/app/si/model/entity/si-entry-buildup';
 import { FileInSiField } from 'src/app/si/model/entity/impl/file/file-in-si-field';
 import { FileOutSiField } from 'src/app/si/model/entity/impl/file/file-out-si-field';
-import { SiQualifier, SiIdentifier } from 'src/app/si/model/entity/si-qualifier';
+import { SiEntryQualifier, SiEntryIdentifier } from 'src/app/si/model/entity/si-qualifier';
 import { LinkOutSiField } from 'src/app/si/model/entity/impl/string/link-out-si-field';
 import { QualifierSelectInSiField } from 'src/app/si/model/entity/impl/qualifier/qualifier-select-in-si-field';
 import { SiResultFactory } from 'src/app/si/build/si-result-factory';
@@ -17,13 +17,13 @@ import { BulkyEntrySiComp } from 'src/app/si/model/entity/impl/basic/bulky-entry
 import { EmbeddedEntryInSiField } from 'src/app/si/model/entity/impl/embedded/embedded-entry-in-si-field';
 import { CompactEntrySiComp } from 'src/app/si/model/entity/impl/basic/compact-entry-si-comp';
 import { SiEmbeddedEntry } from 'src/app/si/model/entity/impl/embedded/si-embedded-entry';
-import { SiZone, SiZoneModel, SiBreadcrumb } from '../model/structure/si-zone';
+import { UiZone, UiZoneModel, SiBreadcrumb } from '../model/structure/ui-zone';
 import { Extractor, ObjectMissmatchError } from 'src/app/util/mapping/extractor';
 import { SiEntry } from '../model/entity/si-entry';
 import { SiField } from '../model/entity/si-field';
 import { StringOutSiField } from '../model/entity/impl/string/string-out-si-field';
 import { SiControl } from '../model/control/si-control';
-import { SiButton, SiConfirm } from '../model/control/si-button';
+import { SiButton, SiConfirm } from '../model/control/impl/model/si-button';
 import { SiControlType, SiFieldType, SiContentType } from './si-type';
 import { SiType } from 'src/app/si/model/entity/si-type';
 import { SiEntryDeclaration } from '../model/entity/si-entry-declaration';
@@ -34,8 +34,8 @@ import { BooleanSiField as BooleanInSiField } from '../model/entity/impl/boolean
 import { EnumInSiField } from '../model/entity/impl/string/enum-in-si-field';
 import { SiCrumbGroup, SiCrumb } from '../model/entity/impl/meta/si-crumb';
 
-export class SiZoneModelFactory {
-	createZoneModel(data: any): SiZoneModel {
+export class UiZoneModelFactory {
+	createZoneModel(data: any): UiZoneModel {
 		const extr = new Extractor(data);
 
 		return {
@@ -162,7 +162,7 @@ export class SiCompEssentialsFactory {
 	createEntry(entryData: any): SiEntry {
 		const extr = new Extractor(entryData);
 
-		const siEntry = new SiEntry(this.createIdentifier(extr.reqObject('identifier')));
+		const siEntry = new SiEntry(this.createEntryIdentifier(extr.reqObject('identifier')));
 		siEntry.treeLevel = extr.nullaNumber('treeLevel');
 		siEntry.bulky = extr.reqBoolean('bulky');
 		siEntry.readOnly = extr.reqBoolean('readOnly');
@@ -174,18 +174,18 @@ export class SiCompEssentialsFactory {
 		return siEntry;
 	}
 
-	private createQualifiers(datas: Array<any>): SiQualifier[] {
-		const qualifiers = new Array<SiQualifier>();
+	private createQualifiers(datas: Array<any>): SiEntryQualifier[] {
+		const qualifiers = new Array<SiEntryQualifier>();
 		for (const data of datas) {
 			qualifiers.push(this.createQualifier(data));
 		}
 		return qualifiers;
 	}
 
-	private createQualifier(data: any): SiQualifier {
+	private createQualifier(data: any): SiEntryQualifier {
 		const extr = new Extractor(data);
 
-		return new SiQualifier(extr.reqString('category'), extr.nullaString('id'),
+		return new SiEntryQualifier(extr.reqString('category'), extr.nullaString('id'),
 				this.createType(extr.reqObject('type')), extr.nullaString('idName'));
 	}
 
@@ -203,10 +203,10 @@ export class SiCompEssentialsFactory {
 		return new SiType(extr.reqString('typeId'), extr.reqString('name'), extr.reqString('iconClass'));
 	}
 
-	private createIdentifier(data: any): SiIdentifier {
+	private createEntryIdentifier(data: any): SiEntryIdentifier {
 		const extr = new Extractor(data);
 
-		return new SiIdentifier(extr.reqString('category'), extr.nullaString('id'));
+		return new SiEntryIdentifier(extr.reqString('category'), extr.nullaString('id'));
 	}
 
 	private createBuildup(data: any): SiTypeBuildup {

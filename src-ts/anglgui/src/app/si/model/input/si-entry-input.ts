@@ -1,9 +1,9 @@
 
-import { SiIdentifier } from 'src/app/si/model/entity/si-qualifier';
+import { SiEntryIdentifier } from 'src/app/si/model/entity/si-qualifier';
 
 export class SiEntryInput {
 
-	constructor(public identifier: SiIdentifier, public typeId: string,
+	constructor(public identifier: SiEntryIdentifier, public typeId: string,
 			public bulky: boolean, readonly fieldInputMap: Map<string, object>) {
 
 	}

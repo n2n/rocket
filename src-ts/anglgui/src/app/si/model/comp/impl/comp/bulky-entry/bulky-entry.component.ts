@@ -1,0 +1,82 @@
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { SiEntry } from 'src/app/si/model/entity/si-entry';
+import { BulkyEntrySiComp } from 'src/app/si/model/entity/impl/basic/bulky-entry-si-comp';
+import { UiStructure } from 'src/app/si/model/structure/ui-structure';
+import { SiFieldStructureDeclaration } from 'src/app/si/model/entity/si-field-structure-declaration';
+import { SimpleSiStructureModel } from 'src/app/si/model/structure/impl/simple-ui-structure-model';
+import { TypeSiContent } from 'src/app/si/model/structure/impl/type-si-content';
+import { StructureBranchComponent } from 'src/app/ui/content/zone/comp/structure-branch/structure-branch.component';
+
+@Component({
+	selector: 'rocket-bulky-entry',
+	templateUrl: './bulky-entry.component.html'
+})
+export class BulkyEntryComponent implements OnInit, OnDestroy {
+
+	public model: BulkyEntrySiComp;
+	public siStructure: UiStructure;
+
+	public fieldSiStructures: UiStructure[];
+
+	constructor() { }
+
+	ngOnInit() {
+		this.fieldSiStructures = this.createStructures(this.siStructure, this.model.getFieldStructureDeclarations());
+	}
+
+	ngOnDestroy() {
+		let siStructure: UiStructure|null = null;
+		while (siStructure = this.fieldSiStructures.pop()) {
+			siStructure.dispose();
+		}
+	}
+
+	get siEntry(): SiEntry {
+		return this.model.entry;
+	}
+
+	private createStructures(parent: UiStructure, fieldStructureDeclarations: SiFieldStructureDeclaration[]): UiStructure[] {
+		const structures: UiStructure[] = [];
+		for (const fsd of fieldStructureDeclarations) {
+			structures.push(this.dingsel(parent, fsd));
+		}
+		return structures;
+	}
+
+// 	getChildren(): SiStructure[] {
+// 			if (this.children) {
+// 					return this.children;
+// 			}
+//
+// 			this.children = [];
+// 			const declarations = this.getFieldStructureDeclarations();
+// 			for (const child of declarations) {
+// 					this.children.push(this.dingsel(this.entry, child));
+// 			}
+// 			return this.children;
+// 	}
+
+	private dingsel(parent: UiStructure, fsd: SiFieldStructureDeclaration): UiStructure {
+		const structure = parent.createChild();
+		structure.label = fsd.fieldDeclaration.label;
+		structure.type = fsd.type;
+
+		const field = this.siEntry.selectedTypeBuildup.getFieldById(fsd.fieldDeclaration.fieldId);
+		const model = new SimpleSiStructureModel(
+				new TypeSiContent(StructureBranchComponent, (ref, cstructure) => {
+					ref.instance.siStructure = structure;
+					ref.instance.siContent = field ? field.createContent() : null;
+					/*ref.instance.siStructures = */this.createStructures(cstructure, fsd.children);
+				}));
+
+		if (field) {
+			model.messagesCallback = () => {
+				return field.getMessages();
+			};
+		}
+		structure.model = model;
+
+		return structure;
+	}
+
+}

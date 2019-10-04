@@ -1,12 +1,6 @@
-import { SiButton } from 'src/app/si/model/control/si-button';
-import { SiCommanderService } from 'src/app/si/model/si-commander.service';
-import { SiZone } from '../structure/si-zone';
+import { SiContent as UiContent } from '../structure/ui-content';
 
 export interface SiControl {
 
-	getButton(): SiButton;
-
-	isLoading(): boolean;
-
-	exec(zone: SiZone, siCommanderService: SiCommanderService): void;
+	createUIContent(): UiContent;
 }
