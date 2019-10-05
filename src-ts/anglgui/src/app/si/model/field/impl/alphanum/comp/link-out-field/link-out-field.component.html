@@ -1,8 +1,0 @@
-
-<ng-container *ngIf="model.isHref(); else ref">
-	<a [href]="model.getRef()">{{ model.getLabel() }}</a>
-</ng-container>
-
-<ng-template #ref>
-	<a [routerLink]="model.getRef()">{{ model.getLabel() }}</a>
-</ng-template>
