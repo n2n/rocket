@@ -47,7 +47,7 @@ export class SiApiFactory {
 		let propData: any = null;
 
 		if (null !== (propData = extr.nullaObject('entryDeclaration'))) {
-			result.entryDeclaration = SiResultFactory.createEntryDeclaration(propData);
+			result.entryDeclaration = SiResultFactory.createDeclaration(propData);
 		}
 
 		if (null !== (propData = extr.nullaObject('entry'))) {
@@ -112,7 +112,7 @@ export class SiApiFactory {
 		let propData: any = null;
 
 		if (null !== (propData = extr.nullaObject('entryDeclaration'))) {
-			result.entryDeclaration = SiResultFactory.createEntryDeclaration(propData);
+			result.entryDeclaration = SiResultFactory.createDeclaration(propData);
 		}
 
 		if (null !== (propData = extr.nullaObject('entry'))) {

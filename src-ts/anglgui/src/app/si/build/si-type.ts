@@ -18,8 +18,4 @@ export enum SiControlType {
 	API_CALL = 'api-call'
 }
 
-export enum SiContentType {
-	ENTRIES_LIST = 'entries-list',
-	BULKY_ENTRY = 'bulky-entry',
-	COMPACT_ENTRY = 'compact-entry'
-}
+

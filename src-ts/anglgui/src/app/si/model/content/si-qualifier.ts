@@ -1,19 +1,23 @@
-import { SiType } from 'src/app/si/model/entity/si-type';
+import { SiTypeIdentifier, SiTypeQualifier } from '../meta/si-type-qualifier';
 
 export class SiEntryIdentifier {
-	constructor(public category: string , public id: string|null) {
+	constructor(readonly typeIdentifier: SiTypeIdentifier, readonly id: string|null) {
 
 	}
 
 	equals(obj: any): boolean {
-		return obj instanceof SiEntryIdentifier && this.category === ( obj as SiEntryIdentifier).category
+		return obj instanceof SiEntryIdentifier && this.typeIdentifier.category === ( obj as SiEntryIdentifier).typeIdentifier.category
 				&& this.id === ( obj as SiEntryIdentifier).id;
 	}
 }
 
 export class SiEntryQualifier extends SiEntryIdentifier {
-	constructor(category: string, id: string|null, public type: SiType, public idName: string|null) {
-		super(category, id);
+	constructor(readonly typeQualifier: SiTypeQualifier, id: string|null, public idName: string|null) {
+		super(typeQualifier, id);
+	}
+
+	get typeIdentifier(): SiTypeIdentifier {
+		return this.typeQualifier;
 	}
 
 	equals(obj: any): boolean {

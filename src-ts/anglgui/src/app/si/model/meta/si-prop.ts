@@ -1,6 +1,7 @@
-export class SiFieldDeclaration {
 
-	constructor(public fieldId: string|null, public label: string|null, public helpText: string|null = null) {
+export class SiProp {
+
+	constructor(readonly id: string|null, public label: string, public helpText: string|null = null) {
 
 	}
 }

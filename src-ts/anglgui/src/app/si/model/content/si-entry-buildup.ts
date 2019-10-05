@@ -5,7 +5,7 @@ import { SiEntryIdentifier, SiEntryQualifier } from 'src/app/si/model/entity/si-
 import { SiType } from 'src/app/si/model/entity/si-type';
 import { Message } from 'src/app/util/i18n/message';
 
-export class SiTypeBuildup {
+export class SiEntryBuildup {
 	public messages: Message[] = [];
 
 	constructor(public type: SiType, public idName: string|null,
@@ -29,7 +29,7 @@ export class SiTypeBuildup {
 		return this.fieldMap.get(id) || null;
 	}
 
-	copy(): SiTypeBuildup {
+	copy(): SiEntryBuildup {
 		const fieldMapCopy = new Map<string, SiField>();
 		for (const [key, value] of this.fieldMap) {
 			fieldMapCopy.set(key, value.copy());
@@ -40,7 +40,7 @@ export class SiTypeBuildup {
 			controlMapCopy.set(key, value);
 		}
 
-		const copy = new SiTypeBuildup(this.type, this.idName, fieldMapCopy, controlMapCopy);
+		const copy = new SiEntryBuildup(this.type, this.idName, fieldMapCopy, controlMapCopy);
 		copy.messages = this.messages;
 		return copy;
 	}

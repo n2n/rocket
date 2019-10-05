@@ -2,12 +2,9 @@
 import { Extractor } from 'src/app/util/mapping/extractor';
 import { SiEntryError } from 'src/app/si/model/input/si-entry-error';
 import { SiFieldError } from 'src/app/si/model/input/si-field-error';
-import { SiResult } from 'src/app/si/model/control/si-result';
-import { SiEntryDeclaration } from 'src/app/si/model/entity/si-entry-declaration';
-import { SiFieldStructureDeclaration } from 'src/app/si/model/entity/si-field-structure-declaration';
-import { SiFieldDeclaration } from 'src/app/si/model/entity/si-field-declaration';
-import { SiFile, SiImageDimension } from '../model/entity/impl/file/file-in-si-field';
 import { Message } from 'src/app/util/i18n/message';
+import { SiResult } from '../manage/si-result';
+import { SiDeclaration } from '../model/meta/si-declaration';
 
 export class SiResultFactory {
 
@@ -55,54 +52,7 @@ export class SiResultFactory {
 		return fieldError;
 	}
 
-	static createEntryDeclaration(data: any): SiEntryDeclaration {
-		const extr = new Extractor(data);
-
-		const fieldDeclarationMap = new Map<string, SiFieldDeclaration[]>();
-		for (const [typeId, declarationData] of extr.reqArrayMap('fieldDeclarationsMap')) {
-			fieldDeclarationMap.set(typeId, SiResultFactory.createFieldDeclarations(declarationData));
-		}
-
-		const fieldStructureDeclarationMap = new Map<string, SiFieldStructureDeclaration[]>();
-		for (const [typeId, declarationData] of extr.reqArrayMap('fieldStructureDeclarationsMap')) {
-			fieldStructureDeclarationMap.set(typeId, SiResultFactory.createFieldStructureDeclarations(declarationData));
-		}
-
-		return new SiEntryDeclaration(fieldDeclarationMap, fieldStructureDeclarationMap);
-	}
-
-	private static createFieldStructureDeclarations(data: Array<any>): SiFieldStructureDeclaration[] {
-		const declarations: Array<SiFieldStructureDeclaration> = [];
-		for (const declarationData of data) {
-			declarations.push(SiResultFactory.createFieldStructureDeclaration(declarationData));
-		}
-		return declarations;
-	}
-
-	private static createFieldStructureDeclaration(data: any): SiFieldStructureDeclaration {
-		const extr = new Extractor(data);
-
-		return new SiFieldStructureDeclaration(
-				SiResultFactory.createFieldDeclaration(extr.reqObject('fieldDeclaration')),
-				extr.reqString('structureType') as any,
-				SiResultFactory.createFieldStructureDeclarations(extr.reqArray('children')));
-	}
-
-	private static createFieldDeclarations(data: Array<any>): SiFieldDeclaration[] {
-		const declarations: Array<SiFieldDeclaration> = [];
-		for (const declarationData of data) {
-			declarations.push(SiResultFactory.createFieldDeclaration(declarationData));
-		}
-		return declarations;
-	}
-
-	private static createFieldDeclaration(data: any): SiFieldDeclaration {
-		const extr = new Extractor(data);
-
-		return new SiFieldDeclaration(extr.nullaString('fieldId'),
-				extr.nullaString('label'), extr.nullaString('helpText'));
-	}
-
+	
 	static buildSiFile(data: any): SiFile|null {
 		if (data === null) {
 			return null;

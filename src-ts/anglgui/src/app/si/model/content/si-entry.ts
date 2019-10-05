@@ -60,7 +60,7 @@ export class SiEntry {
 		return qualifiers;
 	}
 
-	putTypeBuildup(buildup: SiTypeBuildup) {
+	addEntryBuildup(buildup: SiTypeBuildup) {
 		this._typeBuildupsMap.set(buildup.type.typeId, buildup);
 		if (!this._selectedTypeId) {
 			this._selectedTypeId = buildup.type.typeId;
@@ -130,7 +130,7 @@ export class SiEntry {
 		entry.treeLevel = this.treeLevel;
 
 		for (const buildup of this._typeBuildupsMap.values()) {
-			entry.putTypeBuildup(buildup.copy());
+			entry.addEntryBuildup(buildup.copy());
 		}
 
 		entry.selectedTypeId = this.selectedTypeId;

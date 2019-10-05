@@ -24,12 +24,12 @@ export class UiZone {
 
 export interface UiZoneModel {
 	title: string;
-	breadcrumbs: SiBreadcrumb[];
+	breadcrumbs: UiBreadcrumb[];
 	structureModel: SiStructureModel;
 	controls: SiControl[];
 }
 
-export interface SiBreadcrumb {
+export interface UiBreadcrumb {
 	url: string;
 	name: string;
 }
