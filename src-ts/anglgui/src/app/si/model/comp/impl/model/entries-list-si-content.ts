@@ -1,23 +1,21 @@
 
-import { SiEntry } from 'src/app/si/model/entity/si-entry';
-import { SiComp } from 'src/app/si/model/entity/si-comp';
-import { ViewContainerRef, ComponentFactoryResolver, ComponentRef } from '@angular/core';
-import { ListZoneContentComponent } from 'src/app/ui/content/zone/comp/list-zone-content/list-zone-content.component';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
-import { SiEntryDeclaration } from 'src/app/si/model/entity/si-entry-declaration';
-import { UiContent } from 'src/app/si/model/structure/ui-content';
-import { SiPage } from 'src/app/si/model/entity/impl/basic/si-page';
-import { SiEntryQualifier } from 'src/app/si/model/entity/si-qualifier';
-import { SiStructureModel } from 'src/app/si/model/structure/ui-structure-model';
-import { UiStructure } from 'src/app/si/model/structure/ui-structure';
 import { Message } from 'src/app/util/i18n/message';
+import { SimpleUiStructureModel } from 'src/app/ui/structure/impl/simple-si-structure-model';
+import { TypeUiContent } from 'src/app/ui/structure/impl/type-si-content';
+import { SiComp } from '../../si-comp';
+import { SiPage } from './si-page';
+import { SiDeclaration } from '../../../meta/si-declaration';
+import { SiEntry } from '../../../content/si-entry';
+import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
+import { ListZoneContentComponent } from '../comp/list-zone-content/list-zone-content.component';
 
-export class EntriesListSiComp implements SiComp, UiContent {
+export class EntriesListSiComp implements SiComp {
 
 	private pagesMap = new Map<number, SiPage>();
 	private _size = 0;
 	private _currentPageNo = 1;
-	public entryDeclaration: SiEntryDeclaration|null = null;
+	public declaration: SiDeclaration|null = null;
 	public qualifierSelection: SiEntryQualifierSelection|null = null;
 
 	constructor(public apiUrl: string, public pageSize: number) {
@@ -46,16 +44,6 @@ export class EntriesListSiComp implements SiComp, UiContent {
 
 	getSelectedEntries(): SiEntry[] {
 		throw new Error('Method not implemented.');
-	}
-
-	getMessages(): Message[] {
-		const messages: Message[] = [];
-
-		for (const entry of this.getEntries()) {
-			messages.push(...entry.getMessages());
-		}
-
-		return messages;
 	}
 
 	get pages(): SiPage[] {
@@ -108,7 +96,7 @@ export class EntriesListSiComp implements SiComp, UiContent {
 	}
 
 	get setup(): boolean {
-		return !!(this.entryDeclaration && this.pagesMap.size > 0);
+		return !!(this.declaration && this.pagesMap.size > 0);
 	}
 
 	private ensureSetup() {
@@ -186,36 +174,23 @@ export class EntriesListSiComp implements SiComp, UiContent {
 		return Math.ceil(this.size as number / this.pageSize) || 1;
 	}
 
-	getStructureModel(): SiStructureModel {
-		return this;
+	createUiStructureModel(): UiStructureModel {
+		const uiStrucuterModel = new SimpleUiStructureModel(new TypeUiContent(ListZoneContentComponent, (ref, uiStructure) => {
+			ref.instance.model = this;
+			ref.instance.uiStructure = uiStructure;
+		}));
+		uiStrucuterModel.messagesCallback = () => this.getMessages();
+		return uiStrucuterModel;
 	}
 
-	reload() {
-	}
+	private getMessages(): Message[] {
+		const messages: Message[] = [];
 
-	initComponent(viewContainerRef: ViewContainerRef,
-			componentFactoryResolver: ComponentFactoryResolver,
-			siStructure: UiStructure): ComponentRef<any> {
-		const componentFactory = componentFactoryResolver.resolveComponentFactory(ListZoneContentComponent);
+		for (const entry of this.getEntries()) {
+			messages.push(...entry.getMessages());
+		}
 
-		const componentRef = viewContainerRef.createComponent(componentFactory);
-
-		componentRef.instance.model = this;
-		componentRef.instance.siStructure = siStructure;
-
-		return componentRef;
-	}
-
-	getContent() {
-		return this;
-	}
-
-	getChildren() {
-		return [];
-	}
-
-	getControls() {
-		return [];
+		return messages;
 	}
 }
 
@@ -223,9 +198,7 @@ interface SiEntryQualifierSelection {
 	min: number;
 	max: number|null;
 	selectedQualfiers: SiEntryQualifier[];
-
 	done: () => any;
-
 	cancel: () => any;
 }
 

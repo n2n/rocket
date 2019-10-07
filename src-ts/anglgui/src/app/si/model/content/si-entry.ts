@@ -1,21 +1,20 @@
 
-import { SiField } from 'src/app/si/model/entity/si-field';
 import { SiEntryInput } from 'src/app/si/model/input/si-entry-input';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
-import { SiTypeBuildup } from 'src/app/si/model/entity/si-entry-buildup';
 import { SiEntryError } from 'src/app/si/model/input/si-entry-error';
-import { SiEntryQualifier, SiEntryIdentifier } from 'src/app/si/model/entity/si-qualifier';
-import { SiType } from './si-type';
 import { Message } from 'src/app/util/i18n/message';
+import { SiEntryIdentifier, SiEntryQualifier } from './si-qualifier';
+import { SiEntryBuildup } from './si-entry-buildup';
+import { SiTypeQualifier } from '../meta/si-type-qualifier';
 
 export class SiEntry {
 	public treeLevel: number|null = null;
 	private _selectedTypeId: string|null = null;
 	public bulky = false;
 	public readOnly = true;
-	private _typeBuildupsMap = new Map<string, SiTypeBuildup>();
+	private _typeBuildupsMap = new Map<string, SiEntryBuildup>();
 
-	constructor(public identifier: SiEntryIdentifier) {
+	constructor(readonly identifier: SiEntryIdentifier) {
 	}
 
 	private ensureBuildups() {
@@ -27,11 +26,11 @@ export class SiEntry {
 	}
 
 	get qualifier(): SiEntryQualifier {
-		return this.selectedTypeBuildup.createQualifier(this.identifier);
+		return this.selectedEntryBuildup.entryQualifier;
 	}
 
-	get selectedTypeBuildup(): SiTypeBuildup {
-		return this._typeBuildupsMap.get(this.selectedTypeId) as SiTypeBuildup;
+	get selectedEntryBuildup(): SiEntryBuildup {
+		return this._typeBuildupsMap.get(this.selectedTypeId) as SiEntryBuildup;
 	}
 
 	get selectedTypeId(): string {
@@ -48,22 +47,22 @@ export class SiEntry {
 		this._selectedTypeId = id;
 	}
 
-	get types(): SiType[] {
-		return Array.from(this._typeBuildupsMap.values()).map(buildup => buildup.type);
+	get typeQualifiers(): SiTypeQualifier[] {
+		return Array.from(this._typeBuildupsMap.values()).map(buildup => buildup.entryQualifier.typeQualifier);
 	}
 
-	get typeQualifiers(): SiEntryQualifier[] {
+	get entryQualifiers(): SiEntryQualifier[] {
 		const qualifiers: SiEntryQualifier[] = [];
 		for (const buildup of this._typeBuildupsMap.values()) {
-			qualifiers.push(buildup.createQualifier(this.identifier));
+			qualifiers.push(buildup.entryQualifier);
 		}
 		return qualifiers;
 	}
 
-	addEntryBuildup(buildup: SiTypeBuildup) {
-		this._typeBuildupsMap.set(buildup.type.typeId, buildup);
+	addEntryBuildup(buildup: SiEntryBuildup) {
+		this._typeBuildupsMap.set(buildup.entryQualifier.typeQualifier.id, buildup);
 		if (!this._selectedTypeId) {
-			this._selectedTypeId = buildup.type.typeId;
+			this._selectedTypeId = buildup.entryQualifier.typeQualifier.id;
 		}
 	}
 
@@ -74,7 +73,7 @@ export class SiEntry {
 	readInput(): SiEntryInput {
 		const fieldInputMap = new Map<string, object>();
 
-		for (const [id, field] of this.selectedTypeBuildup.fieldMap) {
+		for (const [id, field] of this.selectedEntryBuildup.fieldMap) {
 			if (!field.hasInput()) {
 				continue;
 			}
@@ -91,12 +90,12 @@ export class SiEntry {
 
 	handleError(error: SiEntryError) {
 		for (const [fieldId, fieldError] of error.fieldErrors) {
-			if (!this.selectedTypeBuildup.fieldMap.has(fieldId)) {
-				this.selectedTypeBuildup.messages.push(...fieldError.getAllMessages());
+			if (!this.selectedEntryBuildup.fieldMap.has(fieldId)) {
+				this.selectedEntryBuildup.messages.push(...fieldError.getAllMessages());
 				continue;
 			}
 
-			const field = this.selectedTypeBuildup.fieldMap.get(fieldId) as SiField;
+			const field = this.selectedEntryBuildup.getFieldById(fieldId);
 			field.handleError(fieldError);
 		}
 	}
@@ -105,7 +104,7 @@ export class SiEntry {
 		for (const [, buildup] of this._typeBuildupsMap) {
 			buildup.messages = [];
 
-			for (const [, field] of this.selectedTypeBuildup.fieldMap) {
+			for (const [, field] of this.selectedEntryBuildup.fieldMap) {
 				field.resetError();
 			}
 		}
@@ -114,7 +113,7 @@ export class SiEntry {
 	getMessages(): Message[] {
 		const messages: Message[] = [];
 
-		for (const [, siField] of this.selectedTypeBuildup.fieldMap) {
+		for (const [, siField] of this.selectedEntryBuildup.fieldMap) {
 			messages.push(...siField.getMessages());
 		}
 
@@ -122,7 +121,7 @@ export class SiEntry {
 	}
 
 	toString() {
-		return this.qualifier.category + '#' + this.qualifier.id;
+		return this.qualifier.toString();
 	}
 
 	copy(): SiEntry {

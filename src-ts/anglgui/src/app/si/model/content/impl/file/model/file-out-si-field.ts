@@ -1,10 +1,10 @@
-import { SiFile } from 'src/app/si/model/entity/impl/file/file-in-si-field';
-import { ComponentRef } from '@angular/core';
-import { OutSiFieldAdapter } from 'src/app/si/model/entity/impl/out-si-field-adapter';
-import { FileFieldModel } from 'src/app/ui/content/field/file-field-model';
-import { UiContent } from 'src/app/si/model/structure/ui-content';
-import { TypeSiContent } from 'src/app/si/model/structure/impl/type-si-content';
-import { FileOutFieldComponent } from 'src/app/ui/content/field/comp/file-out-field/file-out-field.component';
+import { SiFile } from './file-in-si-field';
+import { FileOutFieldComponent } from '../comp/file-out-field/file-out-field.component';
+import { UiContent } from 'src/app/ui/structure/model/ui-content';
+import { OutSiFieldAdapter } from '../../common/model/out-si-field-adapter';
+import { FileFieldModel } from '../comp/file-field-model';
+import { SiField } from '../../../si-field';
+import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 
 export class FileOutSiField extends OutSiFieldAdapter implements FileFieldModel {
 
@@ -16,22 +16,14 @@ export class FileOutSiField extends OutSiFieldAdapter implements FileFieldModel 
 		return this.value;
 	}
 
-	createContent(): UiContent|null {
-		return new TypeSiContent(FileOutFieldComponent, () => {
-//						ref.instance.model = this;
+	createUiContent(): UiContent|null {
+		return new TypeUiContent(FileOutFieldComponent, () => {
+// 			ref.instance.model = this;
 		});
 	}
 
-	initComponent(): ComponentRef<any> {
-	// 		const componentFactory = componentFactoryResolver.resolveComponentFactory(StringOutFieldComponent);
-	// 			const componentRef = viewContainerRef.createComponent(componentFactory);
-	// 			componentRef.instance.model = {
-	// 				getValue() {
-	// 					return 'file';
-	// 				}
-	// 			}
-	//
-	// 			return componentRef;
-		return undefined;
+	copy(): SiField {
+		throw new Error('Method not implemented.');
 	}
+
 }

@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { SiFile } from 'src/app/si/model/entity/impl/file/file-in-si-field';
+import { SiFile } from 'src/app/si/model/content/impl/file/file-in-si-field';
 import { SiService } from 'src/app/si/model/si.service';
 import { FileInFieldModel } from '../../file-in-field-model';
 import { SiResultFactory } from 'src/app/si/build/si-result-factory';
 import { PopupUiLayer } from 'src/app/si/model/structure/ui-layer';
-import { SimpleSiStructureModel } from 'src/app/si/model/structure/impl/simple-ui-structure-model';
+import { SimpleUiStructureModel } from 'src/app/si/model/structure/impl/simple-ui-structure-model';
 import { ImageResizeComponent } from '../../../file/image-resize/image-resize.component';
-import { TypeSiContent } from 'src/app/si/model/structure/impl/type-si-content';
+import { TypeUiContent } from 'src/app/si/model/structure/impl/type-si-content';
 import { UiStructure } from 'src/app/si/model/structure/ui-structure';
 
 @Component({
@@ -51,7 +51,7 @@ export class FileInFieldComponent implements OnInit {
 	}
 
 	model: FileInFieldModel;
-	siStructure: UiStructure;
+	uiStructure: UiStructure;
 	imgLoaded = false;
 
 	uploadInitiated = false;
@@ -113,7 +113,7 @@ export class FileInFieldComponent implements OnInit {
 			return;
 		}
 
-		const uiZone = this.siStructure.getZone();
+		const uiZone = this.uiStructure.getZone();
 
 		this.popupUiLayer = uiZone.layer.container.createLayer();
 		this.popupUiLayer.onDispose(() => {
@@ -123,8 +123,8 @@ export class FileInFieldComponent implements OnInit {
 		this.popupUiLayer.pushZone(null).model = {
 			title: 'Some Title',
 			breadcrumbs: [],
-			structureModel: new SimpleSiStructureModel(
-					new TypeSiContent(ImageResizeComponent, (cr) => cr.instance.model = this.model)),
+			structureModel: new SimpleUiStructureModel(
+					new TypeUiContent(ImageResizeComponent, (cr) => cr.instance.model = this.model)),
 			controls: []
 		};
 	}

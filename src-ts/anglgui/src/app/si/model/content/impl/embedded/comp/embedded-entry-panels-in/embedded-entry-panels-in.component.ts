@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { EmbeddedEntryPanelModel } from '../../embedded-entry-panels-model';
 import { UiStructure } from 'src/app/si/model/structure/ui-structure';
-import { TypeSiContent } from 'src/app/si/model/structure/impl/type-si-content';
-import { SimpleSiStructureModel } from 'src/app/si/model/structure/impl/simple-ui-structure-model';
+import { TypeUiContent } from 'src/app/si/model/structure/impl/type-si-content';
+import { SimpleUiStructureModel } from 'src/app/si/model/structure/impl/simple-ui-structure-model';
 import { EmbeddedEntriesSummaryInComponent } from '../embedded-entries-summary-in/embedded-entries-summary-in.component';
-import { SiStructureType } from 'src/app/si/model/entity/si-field-structure-declaration';
-import { SiPanel } from 'src/app/si/model/entity/impl/embedded/si-panel';
+import { SiStructureType } from 'src/app/si/model/content/si-field-structure-declaration';
+import { SiPanel } from 'src/app/si/model/content/impl/embedded/si-panel';
 import { PanelEmbeddedEntryInModel } from './panel-embedded-entry-in-model';
 import { SafeStyle, DomSanitizer } from '@angular/platform-browser';
 
@@ -16,7 +16,7 @@ import { SafeStyle, DomSanitizer } from '@angular/platform-browser';
 })
 export class EmbeddedEntryPanelsInComponent implements OnInit, OnDestroy {
 
-	siStructure: UiStructure;
+	uiStructure: UiStructure;
 	model: EmbeddedEntryPanelModel;
 
 	panelLayout: PanelLayout;
@@ -33,11 +33,11 @@ export class EmbeddedEntryPanelsInComponent implements OnInit, OnDestroy {
 
 			const panelModel = new PanelEmbeddedEntryInModel(panel, this.model);
 
-			const structure = this.siStructure.createChild(SiStructureType.SIMPLE_GROUP, panel.label,
-					new SimpleSiStructureModel(
-							new TypeSiContent(EmbeddedEntriesSummaryInComponent, (ref, refStructure) => {
+			const structure = this.uiStructure.createChild(SiStructureType.SIMPLE_GROUP, panel.label,
+					new SimpleUiStructureModel(
+							new TypeUiContent(EmbeddedEntriesSummaryInComponent, (ref, refStructure) => {
 								ref.instance.model = panelModel;
-								ref.instance.siStructure = refStructure;
+								ref.instance.uiStructure = refStructure;
 							})));
 
 			this.panelDefs.push({ panel, structure });

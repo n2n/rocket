@@ -1,9 +1,9 @@
 import { Embe } from './embe';
 import { EmbeddedEntryModel } from './embedded-entry-model';
 import { EmbeddedEntriesInModel } from './embedded-entry-in-model';
-import { SiEmbeddedEntry } from 'src/app/si/model/entity/impl/embedded/si-embedded-entry';
+import { SiEmbeddedEntry } from 'src/app/si/model/content/impl/embedded/si-embedded-entry';
 import { UiStructure } from 'src/app/si/model/structure/ui-structure';
-import { SiEntry } from 'src/app/si/model/entity/si-entry';
+import { SiEntry } from 'src/app/si/model/content/si-entry';
 
 export class EmbeCollection {
 	public embes: Embe[] = [];
@@ -12,9 +12,9 @@ export class EmbeCollection {
 	}
 
 	protected unregisterEmbe(embe: Embe) {
-		if (embe.siStructure) {
-			embe.siStructure.dispose();
-			embe.siStructure = null;
+		if (embe.uiStructure) {
+			embe.uiStructure.dispose();
+			embe.uiStructure = null;
 		}
 
 		if (embe.summarySiStructure) {
@@ -24,7 +24,7 @@ export class EmbeCollection {
 	}
 
 	initEmbe(embe: Embe, siEmbeddedEntry: SiEmbeddedEntry) {
-		const siStructure = this.parentSiStructure.createChild(null, null, siEmbeddedEntry.comp);
+		const uiStructure = this.parentSiStructure.createChild(null, null, siEmbeddedEntry.comp);
 		const summarySiStructure = (siEmbeddedEntry.summaryComp
 				? this.parentSiStructure.createChild(null, null, siEmbeddedEntry.summaryComp)
 				: null);
@@ -41,7 +41,7 @@ export class EmbeCollection {
 		// }
 
 		embe.siEmbeddedEntry = siEmbeddedEntry;
-		embe.siStructure = siStructure;
+		embe.uiStructure = uiStructure;
 		embe.summarySiStructure = summarySiStructure;
 
 		return embe;
@@ -98,7 +98,7 @@ export class EmbedInCollection extends EmbeCollection {
 	}
 
 	fillWithPlaceholderEmbes() {
-		if (!this.inModel.getAllowedSiTypes()) {
+		if (!this.inModel.getAllowedSiTypeQualifiers()) {
 			return;
 		}
 

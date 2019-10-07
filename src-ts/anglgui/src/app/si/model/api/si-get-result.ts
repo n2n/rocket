@@ -1,10 +1,10 @@
-import { SiEntryDeclaration } from 'src/app/si/model/entity/si-entry-declaration';
-import { SiEntry } from 'src/app/si/model/entity/si-entry';
-import { SiPartialContent } from 'src/app/si/model/entity/si-partial-content';
+import { SiEntry } from 'src/app/si/model/content/si-entry';
+import { SiPartialContent } from 'src/app/si/model/content/si-partial-content';
+import { SiDeclaration } from '../meta/si-declaration';
 
 export interface SiGetResult {
 
-	entryDeclaration: SiEntryDeclaration|null;
+	declaration: SiDeclaration|null;
 
 	entry: SiEntry|null;
 

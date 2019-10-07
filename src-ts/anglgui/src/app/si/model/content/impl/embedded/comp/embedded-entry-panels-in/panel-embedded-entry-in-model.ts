@@ -1,7 +1,7 @@
-import { SiEmbeddedEntry } from 'src/app/si/model/entity/impl/embedded/si-embedded-entry';
-import { SiType } from 'src/app/si/model/entity/si-type';
+import { SiEmbeddedEntry } from 'src/app/si/model/content/impl/embedded/si-embedded-entry';
+import { SiType } from 'src/app/si/model/content/si-type';
 import { EmbeddedEntryPanelModel } from '../../embedded-entry-panels-model';
-import { SiPanel } from 'src/app/si/model/entity/impl/embedded/si-panel';
+import { SiPanel } from 'src/app/si/model/content/impl/embedded/si-panel';
 import { EmbeddedEntriesInModel } from '../../embedded-entry-in-model';
 
 export class PanelEmbeddedEntryInModel implements EmbeddedEntriesInModel {

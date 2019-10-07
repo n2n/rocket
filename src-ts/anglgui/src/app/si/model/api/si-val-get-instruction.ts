@@ -1,9 +1,10 @@
 
-import { SiComp } from 'src/app/si/model/entity/si-comp';
+import { SiDeclaration } from '../meta/si-declaration';
+import { SiComp } from '../comp/si-comp';
 
 export class SiValGetInstruction {
 
-	protected declarationRequested = false;
+	protected declaration: SiDeclaration|null = null;
 	protected controlsIncluded = false;
 
 	constructor(public comp: SiComp, public bulky: boolean, public readOnly: boolean) {
@@ -13,8 +14,12 @@ export class SiValGetInstruction {
 		return new SiValGetInstruction(comp, bulky, readOnly);
 	}
 
-	setDeclarationRequested(declarationRequested: boolean): SiValGetInstruction {
-		this.declarationRequested = declarationRequested;
+	getDeclaration(): SiDeclaration|null {
+		return this.declaration;
+	}
+
+	setDeclaration(declaration: SiDeclaration): SiValGetInstruction {
+		this.declaration = declaration;
 		return this;
 	}
 
@@ -27,7 +32,7 @@ export class SiValGetInstruction {
 		return {
 			bulky: this.bulky,
 			readOnly: this.readOnly,
-			declarationRequested: this.declarationRequested,
+			declarationRequested: !this.declaration,
 			controlsIncluded: this.controlsIncluded
 		};
 	}

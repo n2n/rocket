@@ -1,18 +1,8 @@
-import { SiComp } from 'src/app/si/model/entity/si-comp';
 import { ViewContainerRef, ComponentFactoryResolver } from '@angular/core';
-import { SiEntryDeclaration } from 'src/app/si/model/entity/si-entry-declaration';
-import { SiEntry } from 'src/app/si/model/entity/si-entry';
-import { BulkyEntryComponent } from 'src/app/ui/content/zone/comp/bulky-entry/bulky-entry.component';
-import { SiFieldStructureDeclaration } from 'src/app/si/model/entity/si-field-structure-declaration';
-import { UiContent } from 'src/app/si/model/structure/ui-content';
-import { UiStructure } from 'src/app/si/model/structure/ui-structure';
-import { SiControl } from 'src/app/si/model/control/si-control';
-import { TypeSiContent } from 'src/app/si/model/structure/impl/type-si-content';
-import { Message } from 'src/app/util/i18n/message';
 
 export class BulkyEntrySiComp implements SiComp {
 
-	constructor(public entryDeclaration: SiEntryDeclaration) {
+	constructor(public declaration: SiDeclaration) {
 	}
 
 	private _entry: SiEntry|null = null;
@@ -45,12 +35,15 @@ export class BulkyEntrySiComp implements SiComp {
 		this._entry = entry;
 	}
 
-
-	getContents(): UiContent|null {
-		return new TypeSiContent(BulkyEntryComponent, (ref, structure) => {
+	createUiStructureModel(): UiStructureModel {
+		const uiStructureModel = new SimpleUiStructureModel(new TypeUiContent(BulkyEntryComponent, (ref, uiStructure) => {
 			ref.instance.model = this;
-			ref.instance.siStructure = structure;
+			ref.instance.uiStructure = structure;
 		});
+
+		uiStructureModel.controls = this.getControls().map(control => control.createUiContent());
+
+		return uiStructureModel;
 	}
 
 	getControls(): SiControl[] {
@@ -61,20 +54,10 @@ export class BulkyEntrySiComp implements SiComp {
 	}
 
 	getFieldStructureDeclarations(): SiFieldStructureDeclaration[] {
-		return this.entryDeclaration.getFieldStructureDeclarationsByTypeId(this.entry.selectedTypeId);
+		return this.declaration.getFieldStructureDeclarationsByTypeId(this.entry.selectedTypeId);
 	}
 
-	initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver,
-			siStructure: UiStructure) {
-		const componentFactory = componentFactoryResolver.resolveComponentFactory(BulkyEntryComponent);
 
-		const componentRef = viewContainerRef.createComponent(componentFactory);
-
-		componentRef.instance.model = this;
-		componentRef.instance.siStructure = siStructure;
-
-		return componentRef;
-	}
 }
 
 

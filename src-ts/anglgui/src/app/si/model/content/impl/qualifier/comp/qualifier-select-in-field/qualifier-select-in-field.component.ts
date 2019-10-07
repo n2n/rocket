@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { QualifierSelectInModel } from 'src/app/ui/content/field/qualifier-select-in-model';
-import { SiEntryQualifier } from 'src/app/si/model/entity/si-qualifier';
+import { QualifierSelectInModel } from 'src/app/si/content/field/qualifier-select-in-model';
+import { SiEntryQualifier } from 'src/app/si/model/content/si-qualifier';
 import { UiLayer, PopupUiLayer } from 'src/app/si/model/structure/ui-layer';
-import { EntriesListSiComp } from 'src/app/si/model/entity/impl/basic/entries-list-si-content';
+import { EntriesListSiComp } from 'src/app/si/model/content/impl/basic/entries-list-si-content';
 import { UiStructure } from 'src/app/si/model/structure/ui-structure';
 
 @Component({
@@ -13,7 +13,7 @@ import { UiStructure } from 'src/app/si/model/structure/ui-structure';
 export class QualifierSelectInFieldComponent implements OnInit {
 
 	model: QualifierSelectInModel;
-	siStructure: UiStructure;
+	uiStructure: UiStructure;
 
 	private optionsUiLayer: PopupUiLayer|null = null;
 
@@ -37,7 +37,7 @@ export class QualifierSelectInFieldComponent implements OnInit {
 			return;
 		}
 
-		const uiZone = this.siStructure.getZone();
+		const uiZone = this.uiStructure.getZone();
 
 		this.optionsUiLayer = uiZone.layer.container.createLayer();
 		this.optionsUiLayer.onDispose(() => {

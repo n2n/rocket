@@ -1,11 +1,11 @@
 
-<div *ngIf="!siContent.entry" class="rocket-loader"></div>
+<div *ngIf="!uiContent.entry" class="rocket-loader"></div>
 
-<ng-container *ngIf="siContent.entry">
-	<div *ngFor="let siFieldDeclaration of siContent.getFieldDeclarations()">
+<ng-container *ngIf="uiContent.entry">
+	<div *ngFor="let siFieldDeclaration of uiContent.getFieldDeclarations()">
 		<ng-template rocketUiContent 
-				[siStructure]="siStructure"
-				[siContent]="siContent.entry.selectedTypeBuildup.getFieldById(siFieldDeclaration.fieldId).getContent()">
+				[uiStructure]="uiStructure"
+				[uiContent]="uiContent.entry.selectedTypeBuildup.getFieldById(siFieldDeclaration.fieldId).getContent()">
 		</ng-template>
 	</div>
 </ng-container>

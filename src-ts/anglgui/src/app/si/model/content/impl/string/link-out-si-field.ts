@@ -1,9 +1,9 @@
-
-import { OutSiFieldAdapter } from 'src/app/si/model/entity/impl/out-si-field-adapter';
-import { LinkOutModel } from 'src/app/ui/content/field/link-field-model';
-import { LinkOutFieldComponent } from 'src/app/ui/content/field/comp/link-out-field/link-out-field.component';
-import { UiContent } from 'src/app/si/model/structure/ui-content';
-import { TypeSiContent } from 'src/app/si/model/structure/impl/type-si-content';
+import { LinkOutModel } from '../alphanum/comp/link-field-model';
+import { OutSiFieldAdapter } from '../common/model/out-si-field-adapter';
+import { LinkOutFieldComponent } from '../alphanum/comp/link-out-field/link-out-field.component';
+import { UiContent } from 'src/app/ui/structure/model/ui-content';
+import { TypeUiContent } from 'src/app/ui/structure/impl/type-si-content';
+import { SiField } from '../../si-field';
 
 export class LinkOutSiField extends OutSiFieldAdapter implements LinkOutModel {
 
@@ -12,8 +12,8 @@ export class LinkOutSiField extends OutSiFieldAdapter implements LinkOutModel {
 		super();
 	}
 
-	createContent(): UiContent|null {
-		return new TypeSiContent(LinkOutFieldComponent, (ref) => {
+	createUiContent(): UiContent|null {
+		return new TypeUiContent(LinkOutFieldComponent, (ref) => {
 			ref.instance.model = this;
 		});
 	}
@@ -40,5 +40,9 @@ export class LinkOutSiField extends OutSiFieldAdapter implements LinkOutModel {
 
 	getLabel(): string {
 		return this.label;
+	}
+
+	copy(): SiField {
+		return new LinkOutSiField(this.href, this.ref, this.label);
 	}
 }

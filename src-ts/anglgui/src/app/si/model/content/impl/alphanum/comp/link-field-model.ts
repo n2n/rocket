@@ -1,5 +1,5 @@
 
-import { MessageFieldModel } from 'src/app/ui/content/field/message-field-model';
+import { MessageFieldModel } from 'src/app/si/content/field/message-field-model';
 
 export interface LinkOutModel extends MessageFieldModel {
 	isHref(): boolean;

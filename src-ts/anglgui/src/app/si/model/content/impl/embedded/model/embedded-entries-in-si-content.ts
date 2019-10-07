@@ -1,13 +1,12 @@
 import { ViewContainerRef, ComponentFactoryResolver } from '@angular/core';
-import { UiContent } from 'src/app/si/model/structure/ui-content';
-import { UiStructure } from 'src/app/si/model/structure/ui-structure';
-import { EmbeddedEntriesInModel } from 'src/app/ui/content/embedded/embedded-entry-in-model';
-import { SiType } from 'src/app/si/model/entity/si-type';
-import { SiEmbeddedEntry } from 'src/app/si/model/entity/impl/embedded/si-embedded-entry';
-import { EmbeddedEntriesInComponent } from 'src/app/ui/content/embedded/comp/embedded-entries-in/embedded-entries-in.component';
-import { EmbeddedEntriesSummaryInComponent } from 'src/app/ui/content/embedded/comp/embedded-entries-summary-in/embedded-entries-summary-in.component';
+import { EmbeddedEntriesInModel } from '../comp/embedded-entry-in-model';
+import { SiEmbeddedEntry } from './si-embedded-entry';
+import { SiTypeQualifier } from 'src/app/si/model/meta/si-type-qualifier';
+import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
+import { EmbeddedEntriesSummaryInComponent } from '../comp/embedded-entries-summary-in/embedded-entries-summary-in.component';
+import { EmbeddedEntriesInComponent } from '../comp/embedded-entries-in/embedded-entries-in.component';
 
-export class EmbeddedEntriesInSiContent implements UiContent, EmbeddedEntriesInModel {
+export class EmbeddedEntriesInSiContent implements EmbeddedEntriesInModel {
 
 	public min = 0;
 	public max: number|null = null;
@@ -15,7 +14,7 @@ export class EmbeddedEntriesInSiContent implements UiContent, EmbeddedEntriesInM
 	public nonNewRemovable = true;
 	public sortable = false;
 	public pasteCategory: string|null = null;
-	public allowedSiTypes: SiType[]|null = null;
+	public allowedSiTypeQualifiers: SiTypeQualifier[]|null = null;
 
 	constructor(public apiUrl: string, public values: SiEmbeddedEntry[] = []) {
 	}
@@ -56,23 +55,23 @@ export class EmbeddedEntriesInSiContent implements UiContent, EmbeddedEntriesInM
 		return this.pasteCategory;
 	}
 
-	getAllowedSiTypes(): SiType[]|null {
-		return this.allowedSiTypes;
+	getAllowedSiTypeQualifiers(): SiTypeQualifier[]|null {
+		return this.allowedSiTypeQualifiers;
 	}
 
 	initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver,
-			siStructure: UiStructure) {
+			uiStructure: UiStructure) {
 		if (this.reduced) {
 			const componentFactory = componentFactoryResolver.resolveComponentFactory(EmbeddedEntriesSummaryInComponent);
 			const componentRef = viewContainerRef.createComponent(componentFactory);
 			componentRef.instance.model = this;
-			componentRef.instance.siStructure = siStructure;
+			componentRef.instance.uiStructure = uiStructure;
 			return componentRef;
 		} else {
 			const componentFactory = componentFactoryResolver.resolveComponentFactory(EmbeddedEntriesInComponent);
 			const componentRef = viewContainerRef.createComponent(componentFactory);
 			componentRef.instance.model = this;
-			componentRef.instance.siStructure = siStructure;
+			componentRef.instance.uiStructure = uiStructure;
 			return componentRef;
 		}
 	}

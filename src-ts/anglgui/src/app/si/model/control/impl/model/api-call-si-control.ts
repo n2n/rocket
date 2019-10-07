@@ -1,9 +1,9 @@
 
 import { SiControl } from 'src/app/si/model/control/si-control';
 import { SiButton } from 'src/app/si/model/control/impl/model/si-button';
-import { SiEntry } from 'src/app/si/model/entity/si-entry';
+import { SiEntry } from 'src/app/si/model/content/si-entry';
 import { UiZone } from 'src/app/si/model/structure/ui-zone';
-import { SiComp } from 'src/app/si/model/entity/si-comp';
+import { SiComp } from 'src/app/si/model/content/si-comp';
 import { Observable } from 'rxjs';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { SiUiService as SiUiService } from 'src/app/si/manage/si-ui.service';
@@ -59,7 +59,7 @@ export class ApiCallSiControl implements SiControl, ButtonControlModel {
 		});
 	}
 
-	createUIContent(): UiContent {
+	createUiContent(): UiContent {
 		return new ButtonControlUiContent(this);
 	}
 }

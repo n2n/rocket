@@ -1,6 +1,4 @@
-import { UiZoneModel, UiBreadcrumb } from 'src/app/ui/structure/ui-zone';
-import { Extractor } from 'src/app/util/mapping/extractor';
-import { SiContentFactory } from './si-comp-factory';
+import { Extractor } from 'src/app/util/mapsrc/app/ui/structure/model/ui- { SiContentFactory } from './si-content-factory';
 
 export class UiZoneModelFactory {
 	createZoneModel(data: any): UiZoneModel {
@@ -9,7 +7,7 @@ export class UiZoneModelFactory {
 		return {
 			title: extr.reqString('title'),
 			breadcrumbs: this.createBreadcrumbs(extr.reqArray('breadcrumbs')),
-			structureModel: SiContentFactory.createComp(extr.reqObject('comp')),
+			structureModel: SiContentFactory.createComp(extr.reqObject('comp')).createUiStructureModel(),
 			controls: []
 		};
 	}

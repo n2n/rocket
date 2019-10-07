@@ -1,14 +1,13 @@
+import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
+import { SiEntry } from '../content/si-entry';
 
-import { SiEntry } from 'src/app/si/model/entity/si-entry';
-import { SiStructureModel } from 'src/app/si/model/structure/ui-structure-model';
-
-export interface SiComp extends SiStructureModel {
+export interface SiComp {
 
 // 	getZone(): UiZone;
-
-	reload(): void;
 
 	getEntries(): SiEntry[];
 
 	getSelectedEntries(): SiEntry[];
+
+	createUiStructureModel(): UiStructureModel;
 }

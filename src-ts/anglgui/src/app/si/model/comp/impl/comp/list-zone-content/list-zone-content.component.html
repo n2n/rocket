@@ -1,4 +1,4 @@
-<table *ngIf="model.entryDeclaration" class="table table-hover rocket-table">
+<table *ngIf="model.declaration" class="table table-hover rocket-table">
 	<thead>
 		<tr>
 			<th *ngIf="selectable" class="rocket-entry-selector">
@@ -26,12 +26,12 @@
 					</ng-container> 
 				</td>
 				<td *ngFor="let siFieldDeclaration of getFieldDeclarations()" (click)="toggleSelection(siEntry.qualifier)">
-					<ng-template rocketUiContent [siStructure]="siStructure" 
-							[siContent]="siEntry.selectedTypeBuildup.getFieldById(siFieldDeclaration.fieldId).getContent()"></ng-template>
+					<ng-template rocketUiContent [uiStructure]="uiStructure" 
+							[uiContent]="siEntry.selectedTypeBuildup.getFieldById(siFieldDeclaration.fieldId).getContent()"></ng-template>
 				</td>
 				<td class="rocket-table-commands rocket-simple-commands">
 					<ng-container *ngFor="let pair of siEntry.selectedTypeBuildup.controlMap | keyvalue">
-						<rocket-ui-control [siControl]="pair.value" [siStructure]="siStructure"></rocket-ui-control>
+						<rocket-ui-control [siControl]="pair.value" [uiStructure]="uiStructure"></rocket-ui-control>
 					</ng-container>
 				</td>
 			</tr>

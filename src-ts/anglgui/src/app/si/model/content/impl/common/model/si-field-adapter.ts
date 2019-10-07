@@ -1,19 +1,29 @@
 import { SiFieldError } from 'src/app/si/model/input/si-field-error';
-import { SiField } from 'src/app/si/model/entity/si-field';
-import { UiContent } from 'src/app/si/model/structure/ui-content';
-import { MessageFieldModel } from 'src/app/ui/content/field/message-field-model';
 import { Message } from 'src/app/util/i18n/message';
+import { SiEntryBuildup } from '../../../si-entry-buildup';
+import { SiField } from '../../../si-field';
+import { MessageFieldModel } from '../comp/message-field-model';
+import { UiContent } from 'src/app/ui/structure/model/ui-content';
 
 export abstract class SiFieldAdapter implements SiField, MessageFieldModel {
+	protected disabled = false;
 	protected messages: Message[] = [];
 
 	abstract hasInput(): boolean;
 
 	abstract readInput(): object;
 
-	abstract copy(): SiField;
+	isDisabled(): boolean {
+		return this.disabled;
+	}
 
-	abstract createContent(): UiContent|null;
+	setDisabled(disabled: boolean) {
+		this.disabled = disabled;
+	}
+
+	abstract copy(entryBuildUp: SiEntryBuildup): SiField;
+
+	abstract createUiContent(): UiContent|null;
 
 	getMessages(): Message[] {
 		return this.messages;

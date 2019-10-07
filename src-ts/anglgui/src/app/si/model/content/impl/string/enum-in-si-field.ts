@@ -1,9 +1,9 @@
-import { InSiFieldAdapter } from '../in-si-field-adapter';
-import { SelectInFieldModel } from 'src/app/ui/content/field/select-in-field-model';
+import { InSiFieldAdapter } from '../common/model/in-si-field-adapter';
 import { SiField } from '../../si-field';
-import { UiContent } from '../../../structure/ui-content';
-import { TypeSiContent } from '../../../structure/impl/type-si-content';
-import { SelectInFieldComponent } from 'src/app/ui/content/field/comp/select-in-field/select-in-field.component';
+import { UiContent } from 'src/app/ui/structure/model/ui-content';
+import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
+import { SelectInFieldComponent } from '../alphanum/comp/select-in-field/select-in-field.component';
+import { SelectInFieldModel } from '../alphanum/comp/select-in-field-model';
 
 export class EnumInSiField extends InSiFieldAdapter implements SelectInFieldModel {
 	public mandatory = false;
@@ -40,11 +40,9 @@ export class EnumInSiField extends InSiFieldAdapter implements SelectInFieldMode
 		return copy;
 	}
 
-	createContent(): UiContent {
-		return new TypeSiContent(SelectInFieldComponent, (ref) => {
+	createUiContent(): UiContent {
+		return new TypeUiContent(SelectInFieldComponent, (ref) => {
 			ref.instance.model = this;
 		});
 	}
-
-
 }

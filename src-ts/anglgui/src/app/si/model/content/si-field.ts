@@ -1,7 +1,7 @@
 import { SiFieldError } from 'src/app/si/model/input/si-field-error';
-import { UiContent } from 'src/app/si/model/structure/ui-content';
 import { Message } from 'src/app/util/i18n/message';
-import { SiEntry } from '../entity/si-entry';
+import { SiEntryBuildup } from './si-entry-buildup';
+import { UiContent } from 'src/app/ui/structure/model/ui-content';
 
 export interface SiField {
 
@@ -17,5 +17,9 @@ export interface SiField {
 
 	getMessages(): Message[];
 
-	copy(siEntry: SiEntry): SiField;
+	isDisabled(): boolean;
+
+	setDisabled(disabled: boolean);
+
+	copy(entryBuildUp: SiEntryBuildup): SiField;
 }

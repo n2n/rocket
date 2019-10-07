@@ -1,11 +1,11 @@
-import { InSiFieldAdapter } from '../in-si-field-adapter';
-import { TogglerInModel } from 'src/app/ui/content/field/toggler-in-model';
-import { UiContent } from '../../../structure/ui-content';
+import { InSiFieldAdapter } from '../common/model/in-si-field-adapter';
 import { SiField } from '../../si-field';
-import { TogglerInFieldComponent } from 'src/app/ui/content/field/comp/toggler-in-field/toggler-in-field.component';
-import { TypeSiContent } from '../../../structure/impl/type-si-content';
+import { UiContent } from 'src/app/ui/structure/model/ui-content';
+import { TogglerInFieldComponent } from './comp/toggler-in-field/toggler-in-field.component';
+import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
+import { TogglerInModel } from './comp/toggler-in-model';
 
-export class BooleanSiField extends InSiFieldAdapter implements TogglerInModel {
+export class BooleanInSiField extends InSiFieldAdapter implements TogglerInModel {
 
 	constructor(public value = false) {
 		super();
@@ -26,11 +26,11 @@ export class BooleanSiField extends InSiFieldAdapter implements TogglerInModel {
 	}
 
 	copy(): SiField {
-		return new BooleanSiField(this.value);
+		return new BooleanInSiField(this.value);
 	}
 
-	createContent(): UiContent {
-		return new TypeSiContent(TogglerInFieldComponent, (ref) => {
+	createUiContent(): UiContent {
+		return new TypeUiContent(TogglerInFieldComponent, (ref) => {
 			ref.instance.model = this;
 		});
 	}

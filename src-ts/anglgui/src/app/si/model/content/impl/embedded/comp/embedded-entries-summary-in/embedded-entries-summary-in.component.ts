@@ -5,16 +5,16 @@ import { TranslationService } from 'src/app/util/i18n/translation.service';
 import { EmbedInCollection } from '../../embe-collection';
 import { EmbeddedEntriesInModel } from '../../embedded-entry-in-model';
 import { SiService } from 'src/app/si/model/si.service';
-import { SiEmbeddedEntry } from 'src/app/si/model/entity/impl/embedded/si-embedded-entry';
+import { SiEmbeddedEntry } from 'src/app/si/model/content/impl/embedded/si-embedded-entry';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Embe } from '../../embe';
 import { SimpleSiControl } from 'src/app/si/model/control/impl/simple-si-control';
 import { SiButton } from 'src/app/si/model/control/impl/model/si-button';
-import { SiEntry } from 'src/app/si/model/entity/si-entry';
+import { SiEntry } from 'src/app/si/model/content/si-entry';
 import { SiControl } from 'src/app/si/model/control/si-control';
-import { SimpleSiStructureModel } from 'src/app/si/model/structure/impl/simple-ui-structure-model';
+import { SimpleUiStructureModel } from 'src/app/si/model/structure/impl/simple-ui-structure-model';
 import { EmbeddedEntriesInComponent } from '../embedded-entries-in/embedded-entries-in.component';
-import { TypeSiContent } from 'src/app/si/model/structure/impl/type-si-content';
+import { TypeUiContent } from 'src/app/si/model/structure/impl/type-si-content';
 import { UiStructure } from 'src/app/si/model/structure/ui-structure';
 
 @Component({
@@ -23,7 +23,7 @@ import { UiStructure } from 'src/app/si/model/structure/ui-structure';
 	styleUrls: ['./embedded-entries-summary-in.component.css']
 })
 export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
-	siStructure: UiStructure;
+	uiStructure: UiStructure;
 	model: EmbeddedEntriesInModel;
 
 	private embeCol: EmbedInCollection;
@@ -34,7 +34,7 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnInit() {
-		this.embeCol = new EmbedInCollection(this.siStructure, this.model);
+		this.embeCol = new EmbedInCollection(this.uiStructure, this.model);
 		this.obtainer = new EmbeddedAddPasteObtainer(this.injector.get(SiService), this.model.getApiUrl(),
 				this.model.isSummaryRequired());
 
@@ -75,7 +75,7 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 			return;
 		}
 
-		const uiZone = this.siStructure.getZone();
+		const uiZone = this.uiStructure.getZone();
 		let bakEntry = embe.siEmbeddedEntry.entry.copy();
 
 		this.popupUiLayer = uiZone.layer.container.createLayer();
@@ -101,7 +101,7 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 			return;
 		}
 
-		const uiZone = this.siStructure.getZone();
+		const uiZone = this.uiStructure.getZone();
 
 		let bakEmbes: Embe[]|null = [...this.embeCol.embes];
 		const bakEntries = this.embeCol.copyEntries();
@@ -122,10 +122,10 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 		this.popupUiLayer.pushZone(null).model = {
 			title: 'Some Title',
 			breadcrumbs: [],
-			structureModel: new SimpleSiStructureModel(
-					new TypeSiContent(EmbeddedEntriesInComponent, (ref, structure) => {
+			structureModel: new SimpleUiStructureModel(
+					new TypeUiContent(EmbeddedEntriesInComponent, (ref, structure) => {
 						ref.instance.model = this.model;
-						ref.instance.siStructure = structure;
+						ref.instance.uiStructure = structure;
 					})),
 			controls: this.createPopupControls(() => { bakEmbes = null; })
 		};

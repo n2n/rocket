@@ -1,15 +1,12 @@
 
-import { SiField } from 'src/app/si/model/entity/si-field';
-import { ComponentRef, ComponentFactoryResolver, ViewContainerRef } from '@angular/core';
-import { FileInFieldComponent } from 'src/app/ui/content/field/comp/file-in-field/file-in-field.component';
-import { FileInFieldModel } from 'src/app/ui/content/field/file-in-field-model';
-import { InSiFieldAdapter } from 'src/app/si/model/entity/impl/in-si-field-adapter';
-import { SiUiService } from 'src/app/si/manage/si-ui.service';
-import { UiContent } from 'src/app/si/model/structure/ui-content';
-import { UiZone } from '../../../structure/ui-zone';
-import { UiStructure } from 'src/app/si/model/structure/ui-structure';
+import { SiField } from 'src/app/si/model/content/si-field';
+import { InSiFieldAdapter } from '../../common/model/in-si-field-adapter';
+import { FileInFieldModel } from '../comp/file-in-field-model';
+import { FileInFieldComponent } from '../comp/file-in-field/file-in-field.component';
+import { UiContent } from 'src/app/ui/structure/model/ui-content';
+import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 
-export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel, UiContent {
+export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel {
 
 	public maxSize: number;
 	public mandatory = false;
@@ -62,26 +59,15 @@ export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel,
 		throw new Error('Method not implemented.');
 	}
 
-	createContent(): UiContent|null {
-		return this;
+	createUiContent(): UiContent|null {
+		return new TypeUiContent(FileInFieldComponent, (ref, uiStructure) => {
+			ref.instance.model = this;
+			ref.instance.uiStructure = uiStructure;
+		});
 	}
 
 	getMaxSize(): number {
 		return this.maxSize;
-	}
-
-	initComponent(viewContainerRef: ViewContainerRef,
-			componentFactoryResolver: ComponentFactoryResolver,
-			siStructure: UiStructure): ComponentRef<any> {
-		const componentFactory = componentFactoryResolver.resolveComponentFactory(FileInFieldComponent);
-
-		const componentRef = viewContainerRef.createComponent(componentFactory);
-
-		const component = componentRef.instance;
-		component.model = this;
-		component.siStructure = siStructure;
-
-		return componentRef;
 	}
 }
 

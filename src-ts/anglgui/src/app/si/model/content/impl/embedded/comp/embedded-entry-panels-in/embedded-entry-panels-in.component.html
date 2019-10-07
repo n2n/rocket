@@ -2,7 +2,7 @@
 
 <div [class.rocket-impl-grid]="panelLayout.hasGrid()" [style]="panelLayout.style()">
 	<rocket-ui-structure *ngFor="let panelDef of panelDefs"	
-			[siStructure]="panelDef.structure" 
+			[uiStructure]="panelDef.structure" 
 			[style]="panelLayout.styleOf(panelDef.panel)"></rocket-ui-structure>
 	
 </div>

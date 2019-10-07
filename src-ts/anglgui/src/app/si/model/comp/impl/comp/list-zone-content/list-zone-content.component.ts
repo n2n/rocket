@@ -1,14 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { SiFieldDeclaration } from 'src/app/si/model/entity/si-field-declaration';
+import { SiFieldDeclaration } from 'src/app/si/model/content/si-field-declaration';
 import { SiService } from 'src/app/si/model/si.service';
 import { SiGetRequest } from 'src/app/si/model/api/si-get-request';
 import { SiGetInstruction } from 'src/app/si/model/api/si-get-instruction';
 import { SiGetResponse } from 'src/app/si/model/api/si-get-response';
 import { SiGetResult } from 'src/app/si/model/api/si-get-result';
-import { SiPage } from 'src/app/si/model/entity/impl/basic/si-page';
+import { SiPage } from 'src/app/si/model/content/impl/basic/si-page';
 import { fromEvent, Subscription } from 'rxjs';
-import { SiEntryQualifier } from 'src/app/si/model/entity/si-qualifier';
-import { EntriesListSiComp } from 'src/app/si/model/entity/impl/basic/entries-list-si-content';
+import { SiEntryQualifier } from 'src/app/si/model/content/si-qualifier';
+import { EntriesListSiComp } from 'src/app/si/model/content/impl/basic/entries-list-si-content';
 import { UiStructure } from 'src/app/si/model/structure/ui-structure';
 
 @Component({
@@ -18,7 +18,7 @@ import { UiStructure } from 'src/app/si/model/structure/ui-structure';
 })
 export class ListZoneContentComponent implements OnInit, OnDestroy {
 
-	siStructure: UiStructure;
+	uiStructure: UiStructure;
 	model: EntriesListSiComp;
 
 
@@ -65,7 +65,7 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 
 		const instruction = SiGetInstruction.partialContent(this.model, false, true,
 						(pageNo - 1) * this.model.pageSize, this.model.pageSize)
-				.setDeclarationRequested(!this.model.entryDeclaration)
+				.setDeclarationRequested(!this.model.declaration)
 				.setControlsIncluded(true);
 		const getRequest = new SiGetRequest(instruction);
 
@@ -78,8 +78,8 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 	}
 
 	private applyResult(result: SiGetResult, siPage: SiPage) {
-		if (result.entryDeclaration) {
-			this.model.entryDeclaration = result.entryDeclaration;
+		if (result.declaration) {
+			this.model.declaration = result.declaration;
 		}
 
 		this.model.size = result.partialContent.count;
@@ -139,8 +139,8 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 			return this.fieldDeclarations;
 		}
 
-		if (this.model.entryDeclaration) {
-			this.fieldDeclarations = this.model.entryDeclaration.getBasicFieldDeclarations();
+		if (this.model.declaration) {
+			this.fieldDeclarations = this.model.declaration.getBasicFieldDeclarations();
 		}
 
 		return this.fieldDeclarations;

@@ -1,11 +1,11 @@
 import { Component, OnInit, Injector } from '@angular/core';
-import { EmbeddedEntriesInModel } from '../../embedded-entry-in-model';
-import { EmbedInCollection } from '../../embe-collection';
-import { EmbeddedAddPasteObtainer } from '../../embedded-add-paste-obtainer';
-import { SiService } from 'src/app/si/model/si.service';
-import { SiEmbeddedEntry } from 'src/app/si/model/entity/impl/embedded/si-embedded-entry';
-import { Embe } from '../../embe';
-import { UiStructure } from 'src/app/si/model/structure/ui-structure';
+import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
+import { EmbeddedEntriesInModel } from '../embedded-entry-in-model';
+import { EmbedInCollection } from '../embe-collection';
+import { EmbeddedAddPasteObtainer } from '../embedded-add-paste-obtainer';
+import { SiService } from 'src/app/si/manage/si.service';
+import { Embe } from '../embe';
+import { SiEmbeddedEntry } from '../../model/si-embedded-entry';
 
 @Component({
 	selector: 'rocket-embedded-entries-in',
@@ -13,7 +13,7 @@ import { UiStructure } from 'src/app/si/model/structure/ui-structure';
 	styleUrls: ['./embedded-entries-in.component.css']
 })
 export class EmbeddedEntriesInComponent implements OnInit {
-	siStructure: UiStructure;
+	uiStructure: UiStructure;
 	model: EmbeddedEntriesInModel;
 	private embeCol: EmbedInCollection;
 	obtainer: EmbeddedAddPasteObtainer;
@@ -21,8 +21,8 @@ export class EmbeddedEntriesInComponent implements OnInit {
 	constructor(private injector: Injector) { }
 
 	ngOnInit() {
-		this.embeCol = new EmbedInCollection(this.siStructure, this.model);
-		this.obtainer = new EmbeddedAddPasteObtainer(this.injector.get(SiService), this.model.getApiUrl(), 
+		this.embeCol = new EmbedInCollection(this.uiStructure, this.model);
+		this.obtainer = new EmbeddedAddPasteObtainer(this.injector.get(SiService), this.model.getApiUrl(),
 				this.model.isSummaryRequired());
 
 		this.embeCol.readEmbes();
@@ -51,7 +51,4 @@ export class EmbeddedEntriesInComponent implements OnInit {
 	down() {
 
 	}
-
-
-
 }

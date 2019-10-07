@@ -1,7 +1,6 @@
-
-import { SiField } from 'src/app/si/model/entity/si-field';
-import { SiFieldAdapter } from 'src/app/si/model/entity/impl/si-field-adapter';
-import { UiContent } from 'src/app/si/model/structure/ui-content';
+import { UiContent } from 'src/app/ui/structure/model/ui-content';
+import { SiFieldAdapter } from './si-field-adapter';
+import { SiField } from '../../../si-field';
 
 export abstract class InSiFieldAdapter extends SiFieldAdapter {
 
@@ -13,5 +12,5 @@ export abstract class InSiFieldAdapter extends SiFieldAdapter {
 
 	abstract copy(): SiField;
 
-	abstract createContent(): UiContent|null;
+	abstract createUiContent(): UiContent|null;
 }

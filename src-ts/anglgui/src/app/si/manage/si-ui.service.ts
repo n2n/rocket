@@ -7,8 +7,8 @@ import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { UiZone } from 'src/app/si/model/structure/ui-zone';
 import { SiInput } from 'src/app/si/model/input/si-input';
 import { SiEntryInput } from 'src/app/si/model/input/si-entry-input';
-import { SiEntry } from 'src/app/si/model/entity/si-entry';
-import { SiComp } from 'src/app/si/model/entity/si-comp';
+import { SiEntry } from 'src/app/si/model/content/si-entry';
+import { SiComp } from 'src/app/si/model/content/si-comp';
 import { SiEntryError } from 'src/app/si/model/input/si-entry-error';
 import { SiResult } from 'src/app/si/model/control/si-result';
 import { SiCommandError } from 'src/app/si/model/si-command-error';
@@ -79,7 +79,7 @@ export class SiUiService {
 		}));
 	}
 
-	execSelectionControl(apiUrl: string, callId: object, zoneContent: SiComp, entries: SiEntry[], includeInput: boolean): Observable<void> {
+	execSelectionControl(apiUrl: string, callId: object, comp: SiComp, entries: SiEntry[], includeInput: boolean): Observable<void> {
 		throw new Error('not yet implemented');
 	// 	const entryIds: string[] = [];
 	// 	const entryInputs: SiEntryInput[] = [];

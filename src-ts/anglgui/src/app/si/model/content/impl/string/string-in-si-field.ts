@@ -1,12 +1,12 @@
 
-import { SiField } from 'src/app/si/model/entity/si-field';
-import { InputInFieldComponent } from 'src/app/ui/content/field/comp/input-in-field/input-in-field.component';
-import { InSiFieldAdapter } from 'src/app/si/model/entity/impl/in-si-field-adapter';
-import { UiContent } from '../../../structure/ui-content';
-import { TypeSiContent } from 'src/app/si/model/structure/impl/type-si-content';
-import { InputInFieldModel } from 'src/app/ui/content/field/input-in-field-model';
 import { SiCrumbGroup } from '../meta/si-crumb';
 import { Message } from 'src/app/util/i18n/message';
+import { InSiFieldAdapter } from '../common/model/in-si-field-adapter';
+import { InputInFieldModel } from '../alphanum/comp/input-in-field-model';
+import { SiField } from '../../si-field';
+import { TypeUiContent } from 'src/app/ui/structure/impl/type-si-content';
+import { UiContent } from 'src/app/ui/structure/model/ui-content';
+import { InputInFieldComponent } from '../alphanum/comp/input-in-field/input-in-field.component';
 
 export class StringInSiField extends InSiFieldAdapter implements InputInFieldModel {
 	public mandatory = false;
@@ -85,8 +85,8 @@ export class StringInSiField extends InSiFieldAdapter implements InputInFieldMod
 		return copy;
 	}
 
-	createContent(): UiContent|null {
-		return new TypeSiContent(InputInFieldComponent, (ref) => {
+	createUiContent(): UiContent {
+		return new TypeUiContent(InputInFieldComponent, (ref) => {
 			ref.instance.model = this;
 		});
 	}

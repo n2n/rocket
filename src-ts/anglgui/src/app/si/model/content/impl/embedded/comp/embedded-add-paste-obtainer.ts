@@ -1,10 +1,10 @@
 import { SiService } from 'src/app/si/model/si.service';
-import { BulkyEntrySiComp } from 'src/app/si/model/entity/impl/basic/bulky-entry-si-comp';
-import { SiEntryIdentifier } from 'src/app/si/model/entity/si-qualifier';
+import { BulkyEntrySiComp } from 'src/app/si/model/content/impl/basic/bulky-entry-si-comp';
+import { SiEntryIdentifier } from 'src/app/si/model/content/si-qualifier';
 import { SiGetInstruction } from 'src/app/si/model/api/si-get-instruction';
-import { CompactEntrySiComp } from 'src/app/si/model/entity/impl/basic/compact-entry-si-comp';
+import { CompactEntrySiComp } from 'src/app/si/model/content/impl/basic/compact-entry-si-comp';
 import { Observable } from 'rxjs';
-import { SiEmbeddedEntry } from 'src/app/si/model/entity/impl/embedded/si-embedded-entry';
+import { SiEmbeddedEntry } from 'src/app/si/model/content/impl/embedded/si-embedded-entry';
 import { SiGetRequest } from 'src/app/si/model/api/si-get-request';
 import { map } from 'rxjs/operators';
 import { SiGetResponse } from 'src/app/si/model/api/si-get-response';
@@ -55,11 +55,11 @@ export class EmbeddedAddPasteObtainer implements AddPasteObtainer {
 	private handleResponse(response: SiGetResponse, comp: BulkyEntrySiComp,
 			summaryComp: CompactEntrySiComp|null): SiEmbeddedEntry {
 
-		comp.entryDeclaration = response.results[0].entryDeclaration;
+		comp.declaration = response.results[0].declaration;
 		comp.entry = response.results[0].entry;
 
 		if (summaryComp) {
-			summaryComp.entryDeclaration = response.results[1].entryDeclaration;
+			summaryComp.declaration = response.results[1].declaration;
 			summaryComp.entry = response.results[1].entry;
 		}
 

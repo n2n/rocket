@@ -1,21 +1,17 @@
-import { SiComp } from 'src/app/si/model/entity/si-comp';
 import { ViewContainerRef, ComponentFactoryResolver } from '@angular/core';
-import { SiEntryDeclaration } from 'src/app/si/model/entity/si-entry-declaration';
-import { SiEntry } from 'src/app/si/model/entity/si-entry';
-import { UiContent } from 'src/app/si/model/structure/ui-content';
-import { UiStructure } from 'src/app/si/model/structure/ui-structure';
 import { SiControl } from 'src/app/si/model/control/si-control';
-import { UiZoneError } from 'src/app/si/model/structure/ui-zone-error';
-import { CompactEntryComponent } from 'src/app/ui/content/zone/comp/compact-entry/compact-entry.component';
-import { SiFieldDeclaration } from 'src/app/si/model/entity/si-field-declaration';
-import { SiUiService } from 'src/app/si/manage/si-ui.service';
 import { Message } from 'src/app/util/i18n/message';
+import { SiComp } from '../../si-comp';
+import { SiEntry } from '../../../content/si-entry';
+import { SiDeclaration } from '../../../meta/si-declaration';
+import { CompactEntryComponent } from '../comp/compact-entry/compact-entry.component';
+import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
 
-export class CompactEntrySiComp implements SiComp, UiContent {
+export class CompactEntrySiComp implements SiComp {
 	public entry: SiEntry|null = null;
-	public controlMap: Map<string, SiControl> = new Map();
+	public controls: SiControl[] = [];
 
-	constructor(public entryDeclaration: SiEntryDeclaration) {
+	constructor(public declaration: SiDeclaration) {
 	}
 
 	getEntries(): SiEntry[] {
@@ -37,30 +33,26 @@ export class CompactEntrySiComp implements SiComp, UiContent {
 	reload() {
 	}
 
-	getContent() {
-		return this;
+	createUiStructureModel(): UiStructureModel {
+		const uiContent = new TypeUiContent(CompactEntryComponent, (ref, uiStructure) => {
+			ref.instance.uiContent = this;
+			ref.instance.uiStructure = uiStructure;
+		});
+
+		const uiStructureModel =  new SimpleUiStructureModel(uiContent);
+		uiStructureModel.controls = this.getControls().map(siControl => siControl.createUiContent());
+		uiStructureModel.messagesCallback = () => this.getMessages();
+		return uiStructureModel;
 	}
 
 	getControls(): SiControl[] {
 		const controls: SiControl[] = [];
-		controls.push(...this.controlMap.values());
-		controls.push(...this.entry.selectedTypeBuildup.controlMap.values());
+		controls.push(...this.controls);
+		controls.push(...this.entry.selectedEntryBuildup.controls);
 		return controls;
 	}
 
-	getFieldDeclarations(): SiFieldDeclaration[] {
-		return this.entryDeclaration.getFieldDeclarationsByTypeId(this.entry.selectedTypeId);
-	}
-
-	initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver,
-			siStructure: UiStructure) {
-		const componentFactory = componentFactoryResolver.resolveComponentFactory(CompactEntryComponent);
-
-		const componentRef = viewContainerRef.createComponent(componentFactory);
-
-		componentRef.instance.siContent = this;
-		componentRef.instance.siStructure = siStructure;
-
-		return componentRef;
-	}
+	// getFieldDeclarations(): SiFieldDeclaration[] {
+	// 	return this.declaration.getFieldDeclarationsByTypeId(this.entry.selectedTypeId);
+	// }
 }

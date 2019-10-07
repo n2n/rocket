@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { InputInFieldModel } from 'src/app/ui/content/field/input-in-field-model';
+import { InputInFieldModel } from '../input-in-field-model';
 
 @Component({
 	selector: 'rocket-input-in-field',

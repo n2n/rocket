@@ -49,11 +49,19 @@ export class SiMetaFactory {
 		};
 	}
 
-	static createTypeQualifier(data: any) {
+	static createTypeQualifier(data: any): SiTypeQualifier {
 		const extr = new Extractor(data);
 
 		return new SiTypeQualifier(extr.reqString('category'), extr.reqString('id'), extr.reqString('name'),
 				extr.reqString('iconClass'));
+	}
+
+	static createTypeQualifiers(dataArr: any[]): SiTypeQualifier[] {
+		const typeQualifiers = new Array<SiTypeQualifier>();
+		for (const data of dataArr) {
+			typeQualifiers.push(SiMetaFactory.createTypeQualifier(data));
+		}
+		return typeQualifiers;
 	}
 
 	static createProp(probData: any): SiProp {

@@ -1,13 +1,12 @@
-import { InSiFieldAdapter } from '../in-si-field-adapter';
-import { EmbeddedEntryPanelModel } from 'src/app/ui/content/embedded/embedded-entry-panels-model';
-import { SiField } from '../../si-field';
-import { UiContent } from '../../../structure/ui-content';
-import { TypeSiContent } from '../../../structure/impl/type-si-content';
 import { SiPanel } from './si-panel';
-import { EmbeddedEntryPanelsInComponent } from 'src/app/ui/content/embedded/comp/embedded-entry-panels-in/embedded-entry-panels-in.component';
+import { InSiFieldAdapter } from '../../common/model/in-si-field-adapter';
+import { EmbeddedEntryPanelModel } from '../comp/embedded-entry-panels-model';
+import { SiField } from '../../../si-field';
+import { UiContent } from 'src/app/ui/structure/model/ui-content';
+import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
+import { EmbeddedEntryPanelsInComponent } from '../comp/embedded-entry-panels-in/embedded-entry-panels-in.component';
 
 export class EmbeddedEntryPanelsInSiField extends InSiFieldAdapter implements EmbeddedEntryPanelModel {
-	
 	constructor(public apiUrl: string, public panels: SiPanel[]) {
 		super();
 	}
@@ -28,10 +27,10 @@ export class EmbeddedEntryPanelsInSiField extends InSiFieldAdapter implements Em
 		throw new Error('Not yet implemented.');
 	}
 
-	createContent(): UiContent {
-		return new TypeSiContent(EmbeddedEntryPanelsInComponent, (ref, structure) => {
+	createUiContent(): UiContent {
+		return new TypeUiContent(EmbeddedEntryPanelsInComponent, (ref, structure) => {
 			ref.instance.model = this;
-			ref.instance.siStructure = structure;
+			ref.instance.uiStructure = structure;
 		});
 	}
 }

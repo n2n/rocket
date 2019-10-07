@@ -1,6 +1,6 @@
-import { SiContent as UiContent } from '../structure/ui-content';
+import { UiContent } from 'src/app/ui/structure/model/ui-content';
 
 export interface SiControl {
 
-	createUIContent(): UiContent;
+	createUiContent(): UiContent;
 }

@@ -1,4 +1,4 @@
-import { SiPanel } from 'src/app/si/model/entity/impl/embedded/si-panel';
+import { SiPanel } from 'src/app/si/model/content/impl/embedded/si-panel';
 
 export interface EmbeddedEntryPanelModel {
 

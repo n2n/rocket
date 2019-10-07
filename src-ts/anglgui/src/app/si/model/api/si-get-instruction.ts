@@ -1,12 +1,13 @@
 
-import { SiComp } from 'src/app/si/model/entity/si-comp';
+import { SiDeclaration } from '../meta/si-declaration';
+import { SiComp } from '../comp/si-comp';
 
 export class SiGetInstruction {
 
 	constructor(public comp: SiComp, public bulky: boolean, public readOnly: boolean) {
 	}
 
-	protected declarationRequested = true;
+	protected declaration: SiDeclaration|null = null;
 	protected entryId: string|null = null;
 	protected partialContentInstruction: SiPartialContentInstruction|null = null;
 	protected newEntryRequested = false;
@@ -33,8 +34,12 @@ export class SiGetInstruction {
 		return instruction;
 	}
 
-	setDeclarationRequested(declarationRequested: boolean): SiGetInstruction {
-		this.declarationRequested = declarationRequested;
+	getDeclaration(): SiDeclaration|null {
+		return this.declaration;
+	}
+
+	setDeclaration(declaration: SiDeclaration): SiGetInstruction {
+		this.declaration = declaration;
 		return this;
 	}
 
@@ -47,7 +52,7 @@ export class SiGetInstruction {
 		return {
 			bulky: this.bulky,
 			readOnly: this.readOnly,
-			declarationRequested: this.declarationRequested,
+			declarationRequested: !this.declaration,
 			controlsIncluded: this.controlsIncluded,
 			entryId: this.entryId,
 			partialContentInstruction: this.partialContentInstruction,

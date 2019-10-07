@@ -4,7 +4,6 @@ import { SiEntryError } from 'src/app/si/model/input/si-entry-error';
 import { SiFieldError } from 'src/app/si/model/input/si-field-error';
 import { Message } from 'src/app/util/i18n/message';
 import { SiResult } from '../manage/si-result';
-import { SiDeclaration } from '../model/meta/si-declaration';
 
 export class SiResultFactory {
 
@@ -52,36 +51,4 @@ export class SiResultFactory {
 		return fieldError;
 	}
 
-	
-	static buildSiFile(data: any): SiFile|null {
-		if (data === null) {
-			return null;
-		}
-
-		const extr = new Extractor(data);
-
-		const imageDimensions: SiImageDimension[] = [];
-		for (const idData of extr.reqArray('imageDimensions')) {
-			imageDimensions.push(SiResultFactory.createSiImageDimension(idData));
-		}
-
-		return {
-			id: extr.reqObject('id'),
-			name: extr.reqString('name'),
-			url: extr.nullaString('url'),
-			thumbUrl: extr.nullaString('thumbUrl'),
-			imageDimensions
-		};
-	}
-
-	static createSiImageDimension(data: any): SiImageDimension {
-		const extr = new Extractor(data);
-
-		return {
-			id: extr.reqString('id'),
-			name: extr.reqString('name'),
-			width: extr.reqNumber('width'),
-			height: extr.reqNumber('height')
-		};
-	}
 }

@@ -1,9 +1,9 @@
 
-import { InSiFieldAdapter } from 'src/app/si/model/entity/impl/in-si-field-adapter';
-import { UiContent } from 'src/app/si/model/structure/ui-content';
-import { SiField } from '../../si-field';
 import { EmbeddedEntriesInSiContent } from './embedded-entries-in-si-content';
 import { SiEmbeddedEntry } from './si-embedded-entry';
+import { InSiFieldAdapter } from '../../common/model/in-si-field-adapter';
+import { UiContent } from 'src/app/ui/structure/model/ui-content';
+import { SiField } from '../../../si-field';
 
 export class EmbeddedEntryInSiField extends InSiFieldAdapter	{
 
@@ -18,7 +18,7 @@ export class EmbeddedEntryInSiField extends InSiFieldAdapter	{
 		return { entryInputs: this.content.getValues().map(embeddedEntry => embeddedEntry.entry.readInput() ) };
 	}
 
-	createContent(): UiContent|null {
+	createUiContent(): UiContent {
 		return this.content;
 	}
 

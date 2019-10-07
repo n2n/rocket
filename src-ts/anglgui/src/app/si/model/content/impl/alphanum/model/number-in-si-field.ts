@@ -1,10 +1,10 @@
-import { InputInFieldModel } from 'src/app/ui/content/field/input-in-field-model';
-import { InSiFieldAdapter } from '../in-si-field-adapter';
-import { TypeSiContent } from '../../../structure/impl/type-si-content';
-import { InputInFieldComponent } from 'src/app/ui/content/field/comp/input-in-field/input-in-field.component';
-import { UiContent } from '../../../structure/ui-content';
-import { SiField } from '../../si-field';
-import { SiCrumbGroup } from '../meta/si-crumb';
+import { InputInFieldComponent } from '../comp/input-in-field/input-in-field.component';
+import { InputInFieldModel } from '../comp/input-in-field-model';
+import { SiCrumbGroup } from '../../meta/si-crumb';
+import { InSiFieldAdapter } from '../../common/model/in-si-field-adapter';
+import { SiField } from '../../../si-field';
+import { UiContent } from 'src/app/ui/structure/model/ui-content';
+import { TypeUiContent } from 'src/app/ui/structure/impl/type-si-content';
 
 export class NumberInSiField extends InSiFieldAdapter implements InputInFieldModel {
 	public min: number|null = null;
@@ -102,8 +102,8 @@ export class NumberInSiField extends InSiFieldAdapter implements InputInFieldMod
 		throw new Error('Method not implemented.');
 	}
 
-	createContent(): UiContent {
-		return new TypeSiContent(InputInFieldComponent, (cr) => {
+	createUiContent(): UiContent {
+		return new TypeUiContent(InputInFieldComponent, (cr) => {
 			cr.instance.model = this;
 		});
 	}

@@ -1,26 +1,30 @@
 import { SiTypeIdentifier, SiTypeQualifier } from '../meta/si-type-qualifier';
 
 export class SiEntryIdentifier {
-	constructor(readonly typeIdentifier: SiTypeIdentifier, readonly id: string|null) {
+	constructor(readonly typeCategory: string, readonly id: string|null) {
 
 	}
 
 	equals(obj: any): boolean {
-		return obj instanceof SiEntryIdentifier && this.typeIdentifier.category === ( obj as SiEntryIdentifier).typeIdentifier.category
+		return obj instanceof SiEntryIdentifier && this.typeCategory === ( obj as SiEntryIdentifier).typeCategory
 				&& this.id === ( obj as SiEntryIdentifier).id;
 	}
 }
 
 export class SiEntryQualifier extends SiEntryIdentifier {
 	constructor(readonly typeQualifier: SiTypeQualifier, id: string|null, public idName: string|null) {
-		super(typeQualifier, id);
+		super(typeQualifier.category, id);
 	}
 
-	get typeIdentifier(): SiTypeIdentifier {
-		return this.typeQualifier;
+	getBestName(): string {
+		return this.idName || this.typeQualifier.name;
 	}
 
 	equals(obj: any): boolean {
 		return obj instanceof SiEntryQualifier && super.equals(obj);
+	}
+
+	toString(): string {
+		return this.typeQualifier.name + '#' + this.id;
 	}
 }

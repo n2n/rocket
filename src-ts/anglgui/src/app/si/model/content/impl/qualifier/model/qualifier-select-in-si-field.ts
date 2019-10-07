@@ -1,12 +1,11 @@
 
-import { InSiFieldAdapter } from 'src/app/si/model/entity/impl/in-si-field-adapter';
-import { SiEntryQualifier } from 'src/app/si/model/entity/si-qualifier';
-import { QualifierSelectInModel } from 'src/app/ui/content/field/qualifier-select-in-model';
-import { QualifierSelectInFieldComponent } from 'src/app/ui/content/field/comp/qualifier-select-in-field/qualifier-select-in-field.component';
-import { UiZone } from 'src/app/si/model/structure/ui-zone';
-import { UiContent } from 'src/app/si/model/structure/ui-content';
-import { TypeSiContent } from 'src/app/si/model/structure/impl/type-si-content';
 import { Message } from 'src/app/util/i18n/message';
+import { SiEntryQualifier } from '../../../si-qualifier';
+import { QualifierSelectInModel } from '../comp/qualifier-select-in-model';
+import { InSiFieldAdapter } from '../../common/model/in-si-field-adapter';
+import { UiContent } from 'src/app/ui/structure/model/ui-content';
+import { TypeUiContent } from 'src/app/ui/structure/impl/type-si-content';
+import { QualifierSelectInFieldComponent } from '../comp/qualifier-select-in-field/qualifier-select-in-field.component';
 
 export class QualifierSelectInSiField extends InSiFieldAdapter implements QualifierSelectInModel {
 
@@ -61,10 +60,10 @@ export class QualifierSelectInSiField extends InSiFieldAdapter implements Qualif
 		return copy;
 	}
 
-	createContent(): UiContent|null {
-		return new TypeSiContent(QualifierSelectInFieldComponent, (ref, structure) => {
+	createUiContent(): UiContent|null {
+		return new TypeUiContent(QualifierSelectInFieldComponent, (ref, structure) => {
 			ref.instance.model = this;
-			ref.instance.siStructure = structure;
+			ref.instance.uiStructure = structure;
 		});
 	}
 

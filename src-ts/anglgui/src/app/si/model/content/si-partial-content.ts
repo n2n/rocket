@@ -1,5 +1,4 @@
-
-import { SiEntry } from "src/app/si/model/entity/si-entry";
+import { SiEntry } from './si-entry';
 
 export interface SiPartialContent {
 	entries: SiEntry[];

@@ -1,26 +1,27 @@
-
-import { SiField } from 'src/app/si/model/entity/si-field';
-import { ComponentRef, ComponentFactoryResolver, ViewContainerRef } from '@angular/core';
-import { StringOutFieldComponent } from 'src/app/ui/content/field/comp/string-out-field/string-out-field.component';
-import { StringFieldModel } from 'src/app/ui/content/field/string-field-model';
-import { OutSiFieldAdapter } from 'src/app/si/model/entity/impl/out-si-field-adapter';
-import { SiUiService } from 'src/app/si/manage/si-ui.service';
-import { TypeSiContent } from "src/app/si/model/structure/impl/type-si-content";
-import { UiContent } from "src/app/si/model/structure/ui-content";
+import { OutSiFieldAdapter } from '../common/model/out-si-field-adapter';
+import { StringFieldModel } from '../alphanum/comp/string-field-model';
+import { UiContent } from 'src/app/ui/structure/model/ui-content';
+import { TypeUiContent } from 'src/app/ui/structure/impl/type-si-content';
+import { StringOutFieldComponent } from '../alphanum/comp/string-out-field/string-out-field.component';
+import { SiField } from '../../si-field';
 
 export class StringOutSiField extends OutSiFieldAdapter implements StringFieldModel {
-		
+
 	constructor(private value: string|null) {
 		super();
 	}
 
-	createContent(): UiContent|null {
-		return new TypeSiContent(StringOutFieldComponent, (ref, structure) => {
-				ref.instance.model = this;
+	createUiContent(): UiContent|null {
+		return new TypeUiContent(StringOutFieldComponent, (ref) => {
+			ref.instance.model = this;
 		});
 	}
 
 	getValue(): string | null {
 		return this.value;
+	}
+
+	copy(): SiField {
+		return new StringOutSiField(this.value);
 	}
 }

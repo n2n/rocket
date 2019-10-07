@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { SiEntryQualifier, SiEntryIdentifier } from 'src/app/si/model/entity/si-qualifier';
-import { ClipboardService } from 'src/app/si/model/entity/clipboard.service';
-import { SiEmbeddedEntry } from 'src/app/si/model/entity/impl/embedded/si-embedded-entry';
-import { SiType } from 'src/app/si/model/entity/si-type';
+import { SiEntryQualifier, SiEntryIdentifier } from 'src/app/si/model/content/si-qualifier';
+import { ClipboardService } from 'src/app/si/model/content/clipboard.service';
+import { SiEmbeddedEntry } from 'src/app/si/model/content/impl/embedded/si-embedded-entry';
+import { SiType } from 'src/app/si/model/content/si-type';
 import { Observable } from 'rxjs';
 
 
