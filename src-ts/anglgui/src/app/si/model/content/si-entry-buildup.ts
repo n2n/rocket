@@ -15,6 +15,10 @@ export class SiEntryBuildup {
 		this.fieldMap$ = new BehaviorSubject(fieldMap);
 	}
 
+	getTypeId(): string {
+		return this.entryQualifier.typeQualifier.id;
+	}
+
 	set fieldMap(fieldMap: Map<string, SiField>) {
 		this.fieldMap$.next(fieldMap);
 	}

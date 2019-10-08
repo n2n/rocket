@@ -1,7 +1,7 @@
-import { SiEntry } from '../../../content/si-entry';
 import { SiDeclaration } from '../../../meta/si-declaration';
+import { SiEntry } from '../../../content/si-entry';
 
-export interface BulkyEntryModel {
+export interface CompactEntryModel {
 
 	getSiDeclaration(): SiDeclaration;
 

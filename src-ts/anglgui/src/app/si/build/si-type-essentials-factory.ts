@@ -1,5 +1,5 @@
 import { SiType } from '../model/meta/si-type';
-import { SiStructureDeclaration } from '../model/meta/si-structure-declaration';
+import { UiStructureDeclaration } from '../model/meta/si-structure-declaration';
 import { Extractor } from 'src/app/util/mapping/extractor';
 
 
@@ -8,15 +8,15 @@ export class SiTypeEssentialsFactory {
 	constructor(private type: SiType) {
 	}
 
-	createStructureDeclarations(data: Array<any>): SiStructureDeclaration[] {
-		const declarations: Array<SiStructureDeclaration> = [];
+	createStructureDeclarations(data: Array<any>): UiStructureDeclaration[] {
+		const declarations: Array<UiStructureDeclaration> = [];
 		for (const declarationData of data) {
 			declarations.push(this.createStructureDeclaration(declarationData));
 		}
 		return declarations;
 	}
 
-	createStructureDeclaration(data: any): SiStructureDeclaration {
+	createStructureDeclaration(data: any): UiStructureDeclaration {
 		const extr = new Extractor(data);
 
 		const propId = extr.nullaString('propId');
@@ -24,10 +24,10 @@ export class SiTypeEssentialsFactory {
 		const children = this.createStructureDeclarations(extr.reqArray('children'));
 
 		if (propId !== null) {
-			return new SiStructureDeclaration(this.type.getPropById(propId), null,
+			return new UiStructureDeclaration(this.type.getPropById(propId), null,
 					type, children);
 		}
 
-		return new SiStructureDeclaration(null, extr.nullaString('label'), type, children);
+		return new UiStructureDeclaration(null, extr.nullaString('label'), type, children);
 	}
 }

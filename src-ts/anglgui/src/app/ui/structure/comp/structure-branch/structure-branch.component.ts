@@ -13,7 +13,7 @@ export class StructureBranchComponent implements OnInit {
 	@Input()
 	uiContent: UiContent|null = null;
 	// @Input()
-	// uiStructures: SiStructure[] = [];
+	// uiStructures: UiStructure[] = [];
 
 	constructor() { }
 

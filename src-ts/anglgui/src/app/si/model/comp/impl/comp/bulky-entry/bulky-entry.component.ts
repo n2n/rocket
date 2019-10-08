@@ -1,66 +1,73 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { SiEntry } from 'src/app/si/model/content/si-entry';
-import { BulkyEntrySiComp } from 'src/app/si/model/content/impl/basic/bulky-entry-si-comp';
-import { UiStructure } from 'src/app/si/model/structure/ui-structure';
-import { SiFieldStructureDeclaration } from 'src/app/si/model/content/si-field-structure-declaration';
-import { SimpleUiStructureModel } from 'src/app/si/model/structure/impl/simple-ui-structure-model';
-import { TypeUiContent } from 'src/app/si/model/structure/impl/type-si-content';
-import { StructureBranchComponent } from 'src/app/ui/content/zone/comp/structure-branch/structure-branch.component';
+import { Component, OnInit, OnDestroy, DoCheck } from '@angular/core';
 import { BulkyEntryModel } from '../bulky-entry-model';
-import { SiProp } from 'src/app/si/model/meta/si-prop';
-import { SiStructureDeclaration } from 'src/app/si/model/meta/si-structure-declaration';
+import { UiStructureDeclaration } from 'src/app/si/model/meta/si-structure-declaration';
 import { SiUiStructureModelFactory } from '../../model/si-ui-structure-model-factory';
+import { SiEntry } from 'src/app/si/model/content/si-entry';
+import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 
 @Component({
 	selector: 'rocket-bulky-entry',
 	templateUrl: './bulky-entry.component.html'
 })
-export class BulkyEntryComponent implements OnInit, OnDestroy {
-
+export class BulkyEntryComponent implements OnInit, OnDestroy, DoCheck {
 	public model: BulkyEntryModel;
 	public uiStructure: UiStructure;
 
-	public fieldSiStructures: UiStructure[];
+	public siEntry: SiEntry|null = null;
+	public fieldUiStructures: UiStructure[] = [];
 
 	constructor() { }
 
 	ngOnInit() {
-		this.fieldSiStructures = this.createStructures(this.uiStructure, this.model.getSiStructureDeclarations());
+		this.sync();
+	}
+
+	ngDoCheck() {
+		this.sync();
 	}
 
 	ngOnDestroy() {
+		this.clear();
+	}
+
+	private sync() {
+		const siEntry = this.model.getSiEntry();
+		if (this.siEntry === siEntry) {
+			return;
+		}
+
+		this.clear();
+		this.siEntry = siEntry;
+
+		if (siEntry === null) {
+			return;
+		}
+
+		const siTypeDeclaration = this.model.getSiDeclaration().getTypeDeclarationByTypeId(siEntry.selectedTypeId);
+
+		this.fieldUiStructures = this.createStructures(this.uiStructure, siTypeDeclaration.structureDeclarations);
+	}
+
+	private clear() {
+		if (!this.fieldUiStructures) {
+			return;
+		}
+
 		let uiStructure: UiStructure|null = null;
-		while (uiStructure = this.fieldSiStructures.pop()) {
+		while (uiStructure = this.fieldUiStructures.pop()) {
 			uiStructure.dispose();
 		}
 	}
 
-	get siEntry(): SiEntry {
-		return this.model.entry;
-	}
-
-	private createStructures(parent: UiStructure, siStructureDeclarations: SiStructureDeclaration[]): UiStructure[] {
+	private createStructures(parent: UiStructure, uiStructureDeclarations: UiStructureDeclaration[]): UiStructure[] {
 		const structures: UiStructure[] = [];
-		for (const ssd of siStructureDeclarations) {
+		for (const ssd of uiStructureDeclarations) {
 			structures.push(this.dingsel(parent, ssd));
 		}
 		return structures;
 	}
 
-// 	getChildren(): SiStructure[] {
-// 			if (this.children) {
-// 					return this.children;
-// 			}
-//
-// 			this.children = [];
-// 			const declarations = this.getFieldStructureDeclarations();
-// 			for (const child of declarations) {
-// 					this.children.push(this.dingsel(this.entry, child));
-// 			}
-// 			return this.children;
-// 	}
-
-	private dingsel(parent: UiStructure, ssd: SiStructureDeclaration): UiStructure {
+	private dingsel(parent: UiStructure, ssd: UiStructureDeclaration): UiStructure {
 		const structure = parent.createChild();
 		structure.label = ssd.prop ? ssd.prop.label : ssd.label;
 		structure.type = ssd.type;
@@ -68,7 +75,7 @@ export class BulkyEntryComponent implements OnInit, OnDestroy {
 		if (ssd.prop) {
 			structure.label = ssd.prop.label;
 			structure.model = SiUiStructureModelFactory.createBulkyField(
-				this.model.getSiEntryBuildup().getFieldById(ssd.prop.id));
+					this.model.getSiEntry().selectedEntryBuildup.getFieldById(ssd.prop.id));
 		} else {
 			structure.label = ssd.label;
 			structure.model = SiUiStructureModelFactory.createBulkyEmpty();

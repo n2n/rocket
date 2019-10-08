@@ -4,7 +4,7 @@ import { UiStructure } from 'src/app/si/model/structure/ui-structure';
 import { TypeUiContent } from 'src/app/si/model/structure/impl/type-si-content';
 import { SimpleUiStructureModel } from 'src/app/si/model/structure/impl/simple-ui-structure-model';
 import { EmbeddedEntriesSummaryInComponent } from '../embedded-entries-summary-in/embedded-entries-summary-in.component';
-import { SiStructureType } from 'src/app/si/model/content/si-field-structure-declaration';
+import { UiStructureType } from 'src/app/si/model/content/si-field-structure-declaration';
 import { SiPanel } from 'src/app/si/model/content/impl/embedded/si-panel';
 import { PanelEmbeddedEntryInModel } from './panel-embedded-entry-in-model';
 import { SafeStyle, DomSanitizer } from '@angular/platform-browser';
@@ -33,7 +33,7 @@ export class EmbeddedEntryPanelsInComponent implements OnInit, OnDestroy {
 
 			const panelModel = new PanelEmbeddedEntryInModel(panel, this.model);
 
-			const structure = this.uiStructure.createChild(SiStructureType.SIMPLE_GROUP, panel.label,
+			const structure = this.uiStructure.createChild(UiStructureType.SIMPLE_GROUP, panel.label,
 					new SimpleUiStructureModel(
 							new TypeUiContent(EmbeddedEntriesSummaryInComponent, (ref, refStructure) => {
 								ref.instance.model = panelModel;

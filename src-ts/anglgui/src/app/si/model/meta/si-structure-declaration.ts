@@ -2,10 +2,10 @@ import { IllegalSiStateError } from '../../util/illegal-si-state-error';
 import { SiProp } from './si-prop';
 
 
-export class SiStructureDeclaration {
+export class UiStructureDeclaration {
 
-	constructor(readonly prop: SiProp|null, readonly label: string|null, public type: SiStructureType|null,
-			public children: SiStructureDeclaration[] = []) {
+	constructor(readonly prop: SiProp|null, readonly label: string|null, public type: UiStructureType|null,
+			public children: UiStructureDeclaration[] = []) {
 
 		if (!!this.prop && !!this.prop === !!this.label) {
 			throw new IllegalSiStateError('Label and label cannot be set a the same time.');
@@ -13,7 +13,7 @@ export class SiStructureDeclaration {
 	}
 }
 
-export enum SiStructureType {
+export enum UiStructureType {
 	SIMPLE_GROUP = 'simple-group',
 	MAIN_GROUP = 'main-group',
 	AUTONOMIC_GROUP = 'autonomic-group',

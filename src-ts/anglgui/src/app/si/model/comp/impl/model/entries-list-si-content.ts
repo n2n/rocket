@@ -12,7 +12,6 @@ import { ListZoneContentComponent } from '../comp/list-zone-content/list-zone-co
 
 export class EntriesListSiComp implements SiComp {
 
-	private pagesMap = new Map<number, SiPage>();
 	private _size = 0;
 	private _currentPageNo = 1;
 	public declaration: SiDeclaration|null = null;
@@ -95,10 +94,6 @@ export class EntriesListSiComp implements SiComp {
 		}
 	}
 
-	get setup(): boolean {
-		return !!(this.declaration && this.pagesMap.size > 0);
-	}
-
 	private ensureSetup() {
 		if (this.setup) { return; }
 
@@ -111,51 +106,6 @@ export class EntriesListSiComp implements SiComp {
 		}
 
 		this.pagesMap.set(page.num, page);
-	}
-
-	getVisiblePages(): SiPage[] {
-		return this.pages.filter((page: SiPage) => {
-			return page.offsetHeight !== null;
-		});
-	}
-
-	getLastVisiblePage(): SiPage|null {
-		let lastPage: SiPage|null = null;
-		for (const page of this.pagesMap.values()) {
-			if (page.offsetHeight !== null && (lastPage === null || page.num > lastPage.num)) {
-				lastPage = page;
-			}
-		}
-		return lastPage;
-	}
-
-	getBestPageByOffsetHeight(offsetHeight: number): SiPage|null {
-		let prevPage: SiPage|null = null;
-
-		for (const page of this.getVisiblePages()) {
-			if (prevPage === null || (prevPage.offsetHeight < offsetHeight
-					&& prevPage.offsetHeight <= page.offsetHeight)) {
-				prevPage = page;
-				continue;
-			}
-
-			const bestPageDelta = offsetHeight - prevPage.offsetHeight;
-			const pageDelta = page.offsetHeight - offsetHeight;
-
-			if (bestPageDelta < pageDelta) {
-				return prevPage;
-			} else {
-				return page;
-			}
-		}
-
-		return prevPage;
-	}
-
-	hideAllPages() {
-		for (const page of this.pagesMap.values()) {
-			page.offsetHeight = null;
-		}
 	}
 
 	containsPageNo(number: number): boolean {

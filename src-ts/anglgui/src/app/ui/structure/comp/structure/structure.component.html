@@ -1,0 +1,36 @@
+
+<ng-container *ngIf="getLabel()">
+	<label>{{ getLabel() }}</label>
+</ng-container>
+
+<div *ngIf="siControlsVisible && !root && siControls.length > 0" class="rocket-toolbar">
+	<ng-container *ngFor="let siControl of siControls">
+		<rocket-ui-control [siControl]="siControl" [uiStructure]="uiStructure"></rocket-ui-control>		
+	</ng-container>
+</div>
+
+<ng-content select="[pre-content]"></ng-content>
+
+<div class="rocket-structure-content">
+	<div *ngIf="!loaded" class="rocket-loader"></div>
+	
+	<ng-container *ngIf="loaded">
+		<ul *ngIf="isMain()" class="rocket-main-group-nav nav nav-tabs">
+			<li *ngFor="let child of children" [class.active]="child.visible">
+				{{ child.label }}
+			</li>
+		</ul>
+		
+		<ng-template *ngIf="siContent" rocketUiContent [uiStructure]="uiStructure" [siContent]="siContent"></ng-template>
+		
+		<div *ngIf="siControlsVisible && root && siControls.length > 0" class="rocket-zone-commands">
+			<div class="rocket-main-commands">
+				<ng-container *ngFor="let siControl of siControls">
+					<rocket-ui-control [siControl]="siControl" [uiStructure]="uiStructure"></rocket-ui-control>		
+				</ng-container>
+			</div>
+		</div>
+	</ng-container>
+</div>
+
+<ng-content select="[post-content]"></ng-content>

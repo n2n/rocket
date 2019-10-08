@@ -5,11 +5,17 @@ import { SiGetRequest } from 'src/app/si/model/api/si-get-request';
 import { SiGetInstruction } from 'src/app/si/model/api/si-get-instruction';
 import { SiGetResponse } from 'src/app/si/model/api/si-get-response';
 import { SiGetResult } from 'src/app/si/model/api/si-get-result';
-import { SiPage } from 'src/app/si/model/content/impl/basic/si-page';
 import { fromEvent, Subscription } from 'rxjs';
 import { SiEntryQualifier } from 'src/app/si/model/content/si-qualifier';
-import { EntriesListSiComp } from 'src/app/si/model/content/impl/basic/entries-list-si-content';
-import { UiStructure } from 'src/app/si/model/structure/ui-structure';
+import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
+import { SiPage } from '../../model/si-page';
+import { SiTypeDeclaration } from 'src/app/si/model/meta/si-type-declaration';
+import { SiProp } from 'src/app/si/model/meta/si-prop';
+import { EntriesListSiComp } from '../../model/entries-list-si-content';
+import { SiEntry } from 'src/app/si/model/content/si-entry';
+import { SiUiStructureModelFactory } from '../../model/si-ui-structure-model-factory';
+import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
+import { EntriesListModel } from '../entries-list-model';
 
 @Component({
 	selector: 'rocket-ui-list-zone-content',
@@ -19,9 +25,9 @@ import { UiStructure } from 'src/app/si/model/structure/ui-structure';
 export class ListZoneContentComponent implements OnInit, OnDestroy {
 
 	uiStructure: UiStructure;
-	model: EntriesListSiComp;
+	model: EntriesListModel;
 
-
+	public spm: StructurePageManager;
 	private subscription: Subscription;
 	private fieldDeclarations: Array<SiFieldDeclaration>|null = null;
 
@@ -29,11 +35,13 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnInit() {
+		this.spm = new StructurePageManager(this);
+
 		this.subscription = fromEvent<MouseEvent>(window, 'scroll').subscribe(() => {
 			this.updateVisiblePages();
 		});
 
-		if (!this.model.setup) {
+		if (!this.spm.setup) {
 			const loadedPage = this.loadPage(1);
 			loadedPage.offsetHeight = 0;
 			this.model.currentPageNo = 1;
@@ -54,9 +62,13 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 		return !this.model.getLastVisiblePage().loaded;
 	}
 
-	private loadPage(pageNo: number): SiPage {
+	getVisibleStructurePages(): StructurePage[] {
+
+	}
+
+	private loadPage(pageNo: number): StructurePage {
 		let siPage: SiPage;
-		if (this.model.containsPageNo(pageNo)) {
+		if (this.spm.containsPageNo(pageNo)) {
 			siPage = this.model.getPageByNo(pageNo);
 		} else {
 			siPage = new SiPage(pageNo, null, null);
@@ -65,7 +77,7 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 
 		const instruction = SiGetInstruction.partialContent(this.model, false, true,
 						(pageNo - 1) * this.model.pageSize, this.model.pageSize)
-				.setDeclarationRequested(!this.model.declaration)
+				.setDeclaration(this.model.declaration)
 				.setControlsIncluded(true);
 		const getRequest = new SiGetRequest(instruction);
 
@@ -232,4 +244,136 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 //
 // 		return this._radioName;
 // 	}
+}
+
+class StructurePageManager {
+	private	siTypeDeclaration: SiTypeDeclaration;
+	private pagesMap = new Map<number, StructurePage>();
+
+	constructor(private comp: ListZoneContentComponent) {
+		this.siTypeDeclaration = comp.model.getSiDeclaration().getBasicSiTypeDeclaration()
+
+		for (const siPage of comp.model.getSiPages()) {
+			this.setupUiStructures(this.createPage(siPage.num), siPage);
+		}
+	}
+
+	get setup(): boolean {
+		return !!(this.model.getDeclaration() && this.pagesMap.size > 0);
+	}
+
+	getSiProps(): SiProp[] {
+		return this.siTypeDeclaration.getSiProps();
+	}
+
+	private ensureNoFree(no: number) {
+		if (this.pagesMap.has(no)) {
+			throw new IllegalSiStateError('Page no alread exists: ' no);
+		}
+	}
+
+	containsPageNo(pageNo: number): boolean {
+		return this.pagesMap.has(pageNo);
+	}
+
+	createPage(no: number): StructurePage {
+		this.ensureNoFree(no);
+		const sp = new StructurePage(no, null, null);
+		this.pagesMap.set(no, sp);
+		return sp;
+	}
+
+	initPage(structurePage: StructurePage, entries: SiEntry[]) {
+		const siPage = new SiPage(structurePage.no, entries);
+		this.comp.model.addSiPage(siPage);
+		this.setupUiStructures(structurePage, siPage);
+	}
+
+	private setupUiStructures(structurePage: StructurePage, siPage: SiPage) {
+		if (structurePage.uiStructures) {
+			throw new IllegalSiStateError('Page already contains structures: ' + structurePage.siPage.num);
+		}
+
+		structurePage.siPage = siPage;
+
+		const structures = new Array<Array<UiStructure>>();
+		for (const siEntry of siPage.entries) {
+			structures.push(this.createFieldUiStructures(siEntry));
+		}
+		structurePage.uiStructures = structures;
+	}
+
+	private createFieldUiStructures(siEntry: SiEntry): UiStructure[] {
+		const uiStructures = new Array<UiStructure>();
+
+		for (const siProp of this.siTypeDeclaration.getSiProps()) {
+			const uiStructure = this.comp.uiStructure.createChild();
+			uiStructure.model = SiUiStructureModelFactory.createCompactField(siEntry.selectedEntryBuildup.getFieldById(siProp.id));
+			uiStructures.push(uiStructure);
+		}
+
+		return uiStructures;
+	}
+
+	getVisiblePages(): SiPage[] {
+		return this.pagesMap.filter((page: StructurePage) => {
+			return page.offsetHeight !== null;
+		});
+	}
+
+	getLastVisiblePage(): SiPage|null {
+		let lastPage: SiPage|null = null;
+		for (const page of this.pagesMap.values()) {
+			if (page.offsetHeight !== null && (lastPage === null || page.num > lastPage.num)) {
+				lastPage = page;
+			}
+		}
+		return lastPage;
+	}
+
+	getBestPageByOffsetHeight(offsetHeight: number): SiPage|null {
+		let prevPage: SiPage|null = null;
+
+		for (const page of this.getVisiblePages()) {
+			if (prevPage === null || (prevPage.offsetHeight < offsetHeight
+					&& prevPage.offsetHeight <= page.offsetHeight)) {
+				prevPage = page;
+				continue;
+			}
+
+			const bestPageDelta = offsetHeight - prevPage.offsetHeight;
+			const pageDelta = page.offsetHeight - offsetHeight;
+
+			if (bestPageDelta < pageDelta) {
+				return prevPage;
+			} else {
+				return page;
+			}
+		}
+
+		return prevPage;
+	}
+
+	hideAllPages() {
+		for (const page of this.pagesMap.values()) {
+			page.offsetHeight = null;
+		}
+	}
+}
+
+class StructurePage {
+	public uiStructures: Array<Array<UiStructure>>|null = null;
+
+	constructor(readonly no: number, public offsetHeight: number|null) {
+
+	}
+
+	get loaded(): boolean {
+		return !!this.siPage.entries;
+	}
+
+	get visible(): boolean {
+		return this.offsetHeight !== null;
+	}
+
 }

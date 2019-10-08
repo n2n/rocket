@@ -1,5 +1,5 @@
 
-import { SiStructureType } from 'src/app/si/model/content/si-field-structure-declaration';
+import { UiStructureType } from 'src/app/si/model/content/si-field-structure-declaration';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { UiZoneError } from 'src/app/si/model/structure/ui-zone-error';
 import { UiStructureModel } from 'src/app/si/model/structure/ui-structure-model';
@@ -14,7 +14,7 @@ export class UiStructure {
 
 	private disposed = false;
 
-	constructor(readonly parent: UiStructure|null, private _zone: UiZone|null, public type: SiStructureType|null = null,
+	constructor(readonly parent: UiStructure|null, private _zone: UiZone|null, public type: UiStructureType|null = null,
 			public label: string|null = null, private _model: UiStructureModel|null = null) {
 		if (parent) {
 			parent.registerChild(this);
@@ -25,7 +25,7 @@ export class UiStructure {
 		}
 	}
 
-	createChild(type: SiStructureType|null = null, label: string|null = null,
+	createChild(type: UiStructureType|null = null, label: string|null = null,
 			model: UiStructureModel|null = null): UiStructure {
 		return new UiStructure(this, null, type, label, model);
 	}
@@ -39,7 +39,7 @@ export class UiStructure {
 			return;
 		}
 
-		throw new IllegalSiStateError('SiStructure already disposed.');
+		throw new IllegalSiStateError('UiStructure already disposed.');
 	}
 
 	get model(): UiStructureModel|null {

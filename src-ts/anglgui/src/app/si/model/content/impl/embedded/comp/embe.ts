@@ -5,7 +5,7 @@ import { SiEntry } from 'src/app/si/model/content/si-entry';
 export class Embe {
 	constructor(public siEmbeddedEntry: SiEmbeddedEntry|null = null,
 			public uiStructure: UiStructure|null = null,
-			public summarySiStructure: UiStructure|null = null) {
+			public summaryUiStructure: UiStructure|null = null) {
 	}
 
 	isPlaceholder(): boolean {

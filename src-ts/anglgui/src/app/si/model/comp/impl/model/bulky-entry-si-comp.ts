@@ -1,6 +1,15 @@
-import { ViewContainerRef, ComponentFactoryResolver } from '@angular/core';
+import { SiComp } from '../../si-comp';
+import { SiDeclaration } from '../../../meta/si-declaration';
+import { SiEntry } from '../../../content/si-entry';
+import { SiControl } from '../../../control/si-control';
+import { Message } from '@angular/compiler/src/i18n/i18n_ast';
+import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
+import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
+import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
+import { BulkyEntryComponent } from '../comp/bulky-entry/bulky-entry.component';
+import { BulkyEntryModel } from '../comp/bulky-entry-model';
 
-export class BulkyEntrySiComp implements SiComp {
+export class BulkyEntrySiComp implements SiComp, BulkyEntryModel {
 
 	constructor(public declaration: SiDeclaration) {
 	}
@@ -27,19 +36,27 @@ export class BulkyEntrySiComp implements SiComp {
 		return this;
 	}
 
-	get entry(): SiEntry {
+	get entry(): SiEntry|null {
 		return this._entry;
 	}
 
-	set entry(entry: SiEntry) {
+	set entry(entry: SiEntry|null) {
 		this._entry = entry;
+	}
+
+	getSiEntry(): SiEntry {
+		return this._entry;
+	}
+
+	getSiDeclaration(): SiDeclaration {
+		return this.declaration;
 	}
 
 	createUiStructureModel(): UiStructureModel {
 		const uiStructureModel = new SimpleUiStructureModel(new TypeUiContent(BulkyEntryComponent, (ref, uiStructure) => {
 			ref.instance.model = this;
-			ref.instance.uiStructure = structure;
-		});
+			ref.instance.uiStructure = uiStructure;
+		}));
 
 		uiStructureModel.controls = this.getControls().map(control => control.createUiContent());
 
@@ -49,15 +66,7 @@ export class BulkyEntrySiComp implements SiComp {
 	getControls(): SiControl[] {
 		const controls: SiControl[] = [];
 		controls.push(...this.controls);
-		controls.push(...this.entry.selectedTypeBuildup.controlMap.values());
+		controls.push(...this.entry.selectedEntryBuildup.controls);
 		return controls;
 	}
-
-	getFieldStructureDeclarations(): SiFieldStructureDeclaration[] {
-		return this.declaration.getFieldStructureDeclarationsByTypeId(this.entry.selectedTypeId);
-	}
-
-
 }
-
-

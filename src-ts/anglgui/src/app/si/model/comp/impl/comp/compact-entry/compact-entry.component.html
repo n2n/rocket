@@ -2,10 +2,7 @@
 <div *ngIf="!uiContent.entry" class="rocket-loader"></div>
 
 <ng-container *ngIf="uiContent.entry">
-	<div *ngFor="let siFieldDeclaration of uiContent.getFieldDeclarations()">
-		<ng-template rocketUiContent 
-				[uiStructure]="uiStructure"
-				[uiContent]="uiContent.entry.selectedTypeBuildup.getFieldById(siFieldDeclaration.fieldId).getContent()">
-		</ng-template>
-	</div>
+	<ng-container *ngFor="let fieldUiStructure of uiContent.getFieldUiStructures()">
+		<div rocketUiStructure [uiStructure]="fieldUiStructure"></div>
+	</ng-container>
 </ng-container>

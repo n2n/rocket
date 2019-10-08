@@ -8,7 +8,7 @@ import { SiEntry } from 'src/app/si/model/content/si-entry';
 export class EmbeCollection {
 	public embes: Embe[] = [];
 
-	constructor(private parentSiStructure: UiStructure, private model: EmbeddedEntryModel) {
+	constructor(private parentUiStructure: UiStructure, private model: EmbeddedEntryModel) {
 	}
 
 	protected unregisterEmbe(embe: Embe) {
@@ -17,16 +17,16 @@ export class EmbeCollection {
 			embe.uiStructure = null;
 		}
 
-		if (embe.summarySiStructure) {
-			embe.summarySiStructure.dispose();
-			embe.summarySiStructure = null;
+		if (embe.summaryUiStructure) {
+			embe.summaryUiStructure.dispose();
+			embe.summaryUiStructure = null;
 		}
 	}
 
 	initEmbe(embe: Embe, siEmbeddedEntry: SiEmbeddedEntry) {
-		const uiStructure = this.parentSiStructure.createChild(null, null, siEmbeddedEntry.comp);
-		const summarySiStructure = (siEmbeddedEntry.summaryComp
-				? this.parentSiStructure.createChild(null, null, siEmbeddedEntry.summaryComp)
+		const uiStructure = this.parentUiStructure.createChild(null, null, siEmbeddedEntry.comp);
+		const summaryUiStructure = (siEmbeddedEntry.summaryComp
+				? this.parentUiStructure.createChild(null, null, siEmbeddedEntry.summaryComp)
 				: null);
 
 		// if (this.reduced) {
@@ -42,7 +42,7 @@ export class EmbeCollection {
 
 		embe.siEmbeddedEntry = siEmbeddedEntry;
 		embe.uiStructure = uiStructure;
-		embe.summarySiStructure = summarySiStructure;
+		embe.summaryUiStructure = summaryUiStructure;
 
 		return embe;
 	}
@@ -71,8 +71,8 @@ export class EmbeCollection {
 }
 
 export class EmbedInCollection extends EmbeCollection {
-	constructor(parentSiStructure: UiStructure, private inModel: EmbeddedEntriesInModel) {
-		super(parentSiStructure, inModel);
+	constructor(parentUiStructure: UiStructure, private inModel: EmbeddedEntriesInModel) {
+		super(parentUiStructure, inModel);
 	}
 
 	copyEntries(): SiEntry[] {
