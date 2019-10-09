@@ -1,9 +1,9 @@
 import { Embe } from './embe';
 import { EmbeddedEntryModel } from './embedded-entry-model';
 import { EmbeddedEntriesInModel } from './embedded-entry-in-model';
-import { SiEmbeddedEntry } from 'src/app/si/model/content/impl/embedded/si-embedded-entry';
-import { UiStructure } from 'src/app/si/model/structure/ui-structure';
 import { SiEntry } from 'src/app/si/model/content/si-entry';
+import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
+import { SiEmbeddedEntry } from '../model/si-embedded-entry';
 
 export class EmbeCollection {
 	public embes: Embe[] = [];
@@ -24,9 +24,9 @@ export class EmbeCollection {
 	}
 
 	initEmbe(embe: Embe, siEmbeddedEntry: SiEmbeddedEntry) {
-		const uiStructure = this.parentUiStructure.createChild(null, null, siEmbeddedEntry.comp);
+		const uiStructure = this.parentUiStructure.createChild(null, null, siEmbeddedEntry.comp.createUiStructureModel());
 		const summaryUiStructure = (siEmbeddedEntry.summaryComp
-				? this.parentUiStructure.createChild(null, null, siEmbeddedEntry.summaryComp)
+				? this.parentUiStructure.createChild(null, null, siEmbeddedEntry.summaryComp.createUiStructureModel())
 				: null);
 
 		// if (this.reduced) {

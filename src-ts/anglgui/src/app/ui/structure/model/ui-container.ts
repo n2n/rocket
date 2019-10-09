@@ -1,5 +1,4 @@
-
-import { UiLayer, MainUiLayer, PopupUiLayer } from 'src/app/si/model/structure/ui-layer';
+import { UiLayer, MainUiLayer, PopupUiLayer } from './ui-layer';
 
 export class UiContainer {
 	private layers: UiLayer[] = [];

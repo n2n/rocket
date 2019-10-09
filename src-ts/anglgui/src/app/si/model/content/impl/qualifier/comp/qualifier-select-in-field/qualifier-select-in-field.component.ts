@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { QualifierSelectInModel } from 'src/app/si/content/field/qualifier-select-in-model';
 import { SiEntryQualifier } from 'src/app/si/model/content/si-qualifier';
-import { UiLayer, PopupUiLayer } from 'src/app/si/model/structure/ui-layer';
-import { EntriesListSiComp } from 'src/app/si/model/content/impl/basic/entries-list-si-content';
-import { UiStructure } from 'src/app/si/model/structure/ui-structure';
+import { QualifierSelectInModel } from '../qualifier-select-in-model';
+import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
+import { PopupUiLayer } from 'src/app/ui/structure/model/ui-layer';
+import { EntriesListSiComp } from 'src/app/si/model/comp/impl/model/entries-list-si-comp';
+
 
 @Component({
 	selector: 'rocket-qualifier-select-in-field',
@@ -49,7 +50,7 @@ export class QualifierSelectInFieldComponent implements OnInit {
 		this.optionsUiLayer.pushZone(null).model = {
 			title: 'Some Title',
 			breadcrumbs: [],
-			structureModel: comp,
+			structureModel: comp.createUiStructureModel(),
 			controls: []
 		};
 

@@ -1,12 +1,12 @@
 import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
-import { SiContent } from 'src/app/si/model/structure/si-content';
 import { StructureContentDirective } from 'src/app/ui/structure/comp/structure/structure-content.directive';
-import { UiStructureType } from 'src/app/si/model/entity/si-field-structure-declaration';
-import { UiStructure } from 'src/app/si/model/structure/si-structure';
-import { SiControl } from 'src/app/si/model/control/si-control';
+import { UiStructure } from '../../model/ui-structure';
+import { UiContent } from '../../model/ui-content';
+import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
 
 @Component({
-	selector: 'rocket-ui-structure',
+	// tslint:disable-next-line:component-selector
+	selector: '[rocketUiStructure]',
 	templateUrl: './structure.component.html',
 	styleUrls: ['./structure.component.css']
 })
@@ -22,7 +22,7 @@ export class StructureComponent implements OnInit {
 	@ViewChild(StructureContentDirective, { static: true })
 	structureContentDirective: StructureContentDirective;
 
-	readonly controls: SiControl[] = [];
+	readonly controls: UiContent[] = [];
 
 	constructor(private elRef: ElementRef) {
 	}
@@ -46,12 +46,12 @@ export class StructureComponent implements OnInit {
 		return this._uiStructure;
 	}
 
-	get siContent(): SiContent|null {
+	get uiContent(): UiContent|null {
 		return this._uiStructure.model.getContent();
 	}
 
-	get siControls(): SiControl[] {
-		const controls: SiControl[] = [];
+	get controlUiContents(): UiContent[] {
+		const controls: UiContent[] = [];
 
 		controls.push(...this._uiStructure.controls);
 		controls.push(...this._uiStructure.model.getControls());

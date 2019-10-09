@@ -1,8 +1,7 @@
-
-import { UiZone } from 'src/app/si/model/structure/ui-zone';
-import { UiContainer } from 'src/app/si/model/structure/si-container';
 import { Subject, Subscription } from 'rxjs';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
+import { UiContainer } from './ui-container';
+import { UiZone } from './ui-zone';
 
 export interface UiLayer {
 	readonly container: UiContainer;
@@ -91,7 +90,7 @@ export class MainUiLayer extends UiLayerAdapter {
 			// @todo temporary test to monitor angular routing behaviour
 			throw new IllegalSiStateError('Zone pop url verify missmatch for id ' + id + ': '
 					+ this.zones[index as number].url + ' != ' + verifyUrl);
-//				return false;
+// 				return false;
 		}
 
 		this.currentZoneIndex = index;

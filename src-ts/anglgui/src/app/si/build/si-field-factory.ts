@@ -1,19 +1,19 @@
 import { SiEntryBuildup } from '../model/content/si-entry-buildup';
 import { SiField } from '../model/content/si-field';
-import { StringOutSiField } from '../model/content/impl/string/string-out-si-field';
 import { Extractor, ObjectMissmatchError } from 'src/app/util/mapping/extractor';
-import { StringInSiField } from '../model/content/impl/string/string-in-si-field';
 import { NumberInSiField } from '../model/content/impl/alphanum/model/number-in-si-field';
 import { FileOutSiField } from '../model/content/impl/file/model/file-out-si-field';
 import { FileInSiField } from '../model/content/impl/file/model/file-in-si-field';
-import { LinkOutSiField } from '../model/content/impl/string/link-out-si-field';
-import { EnumInSiField } from '../model/content/impl/string/enum-in-si-field';
 import { QualifierSelectInSiField } from '../model/content/impl/qualifier/model/qualifier-select-in-si-field';
 import { EmbeddedEntryInSiField } from '../model/content/impl/embedded/model/embedded-entry-in-si-field';
 import { EmbeddedEntryPanelsInSiField } from '../model/content/impl/embedded/model/embedded-entry-panels-in-si-field';
 import { SiContentFactory } from './si-content-factory';
 import { SiMetaFactory } from './si-meta-factory';
 import { BooleanInSiField } from '../model/content/impl/boolean/boolean-in-si-field';
+import { StringInSiField } from '../model/content/impl/alphanum/model/string-in-si-field';
+import { StringOutSiField } from '../model/content/impl/alphanum/model/string-out-si-field';
+import { LinkOutSiField } from '../model/content/impl/alphanum/model/link-out-si-field';
+import { EnumInSiField } from '../model/content/impl/alphanum/model/enum-in-si-field';
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',

@@ -1,6 +1,4 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { SiFieldDeclaration } from 'src/app/si/model/content/si-field-declaration';
-import { SiService } from 'src/app/si/model/si.service';
 import { SiGetRequest } from 'src/app/si/model/api/si-get-request';
 import { SiGetInstruction } from 'src/app/si/model/api/si-get-instruction';
 import { SiGetResponse } from 'src/app/si/model/api/si-get-response';
@@ -11,11 +9,13 @@ import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiPage } from '../../model/si-page';
 import { SiTypeDeclaration } from 'src/app/si/model/meta/si-type-declaration';
 import { SiProp } from 'src/app/si/model/meta/si-prop';
-import { EntriesListSiComp } from '../../model/entries-list-si-content';
 import { SiEntry } from 'src/app/si/model/content/si-entry';
 import { SiUiStructureModelFactory } from '../../model/si-ui-structure-model-factory';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { EntriesListModel } from '../entries-list-model';
+import { SiPageCollection } from '../../model/si-page-collection';
+import { StructurePage, StructurePageManager } from './structure-page-manager';
+import { SiService } from 'src/app/si/manage/si.service';
 
 @Component({
 	selector: 'rocket-ui-list-zone-content',
@@ -29,26 +29,29 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 
 	public spm: StructurePageManager;
 	private subscription: Subscription;
-	private fieldDeclarations: Array<SiFieldDeclaration>|null = null;
+	siPageCollection: SiPageCollection;
 
 	constructor(private siService: SiService) {
 	}
 
 	ngOnInit() {
+		this.siPageCollection = this.model.getSiPageCollection();
 		this.spm = new StructurePageManager(this);
 
 		this.subscription = fromEvent<MouseEvent>(window, 'scroll').subscribe(() => {
 			this.updateVisiblePages();
 		});
 
-		if (!this.spm.setup) {
+		const pc = this.model.getSiPageCollection();
+
+		if (!pc.setup) {
 			const loadedPage = this.loadPage(1);
 			loadedPage.offsetHeight = 0;
-			this.model.currentPageNo = 1;
+			this.siPageCollection.currentPageNo = 1;
 			return;
 		}
 
-		const page = this.model.currentPage;
+		const page = this.siPageCollection.currentPage;
 		if (!page.visible) {
 			page.offsetHeight = 0;
 		}
@@ -56,28 +59,33 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 
 	ngOnDestroy() {
 		this.subscription.unsubscribe();
+		this.spm.clear();
+	}
+
+	get declared(): boolean {
+		return !!this.siPageCollection.declaration;
 	}
 
 	get loading(): boolean {
-		return !this.model.getLastVisiblePage().loaded;
+		return !this.siPageCollection.getLastVisiblePage().loaded;
 	}
 
 	getVisibleStructurePages(): StructurePage[] {
-
+		return this.spm.map(this.siPageCollection.getVisiblePages());
 	}
 
-	private loadPage(pageNo: number): StructurePage {
+	private loadPage(pageNo: number): SiPage {
 		let siPage: SiPage;
-		if (this.spm.containsPageNo(pageNo)) {
-			siPage = this.model.getPageByNo(pageNo);
+		if (this.siPageCollection.containsPageNo(pageNo)) {
+			siPage = this.siPageCollection.getPageByNo(pageNo);
 		} else {
 			siPage = new SiPage(pageNo, null, null);
-			this.model.putPage(siPage);
+			this.siPageCollection.putPage(siPage);
 		}
 
-		const instruction = SiGetInstruction.partialContent(this.model, false, true,
-						(pageNo - 1) * this.model.pageSize, this.model.pageSize)
-				.setDeclaration(this.model.declaration)
+		const instruction = SiGetInstruction.partialContent(this.model.getSiComp(), false, true,
+						(pageNo - 1) * this.siPageCollection.pageSize, this.siPageCollection.pageSize)
+				.setDeclaration(this.siPageCollection.declaration)
 				.setControlsIncluded(true);
 		const getRequest = new SiGetRequest(instruction);
 
@@ -91,26 +99,26 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 
 	private applyResult(result: SiGetResult, siPage: SiPage) {
 		if (result.declaration) {
-			this.model.declaration = result.declaration;
+			this.siPageCollection.declaration = result.declaration;
 		}
 
-		this.model.size = result.partialContent.count;
+		this.siPageCollection.size = result.partialContent.count;
 		siPage.entries = result.partialContent.entries;
 
 		this.updateCurrentPage();
 	}
 
 	private updateCurrentPage() {
-		let page = this.model.getBestPageByOffsetHeight(window.scrollY);
+		let page = this.siPageCollection.getBestPageByOffsetHeight(window.scrollY);
 		if (page) {
-			this.model.currentPageNo = page.num;
+			this.siPageCollection.currentPageNo = page.num;
 			return;
 		}
 
-		if (this.model.containsPageNo(this.model.currentPageNo)) {
-			page = this.model.getPageByNo(this.model.currentPageNo);
+		if (this.siPageCollection.containsPageNo(this.siPageCollection.currentPageNo)) {
+			page = this.siPageCollection.getPageByNo(this.siPageCollection.currentPageNo);
 		} else {
-			page = this.loadPage(this.model.currentPageNo);
+			page = this.loadPage(this.siPageCollection.currentPageNo);
 		}
 		page.offsetHeight = 0;
 	}
@@ -122,19 +130,19 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 			return;
 		}
 
-		const lastVisiblePage = this.model.getLastVisiblePage();
+		const lastVisiblePage = this.siPageCollection.getLastVisiblePage();
 		if (!lastVisiblePage.loaded) {
 			return;
 		}
 
 		const newPageNo = lastVisiblePage.num + 1;
-		if (newPageNo > this.model.pagesNum) {
+		if (newPageNo > this.siPageCollection.pagesNum) {
 			return;
 		}
 
 		let newSiPage: SiPage;
-		if (this.model.containsPageNo(newPageNo)) {
-			newSiPage = this.model.getPageByNo(newPageNo);
+		if (this.siPageCollection.containsPageNo(newPageNo)) {
+			newSiPage = this.siPageCollection.getPageByNo(newPageNo);
 		} else {
 			newSiPage = this.loadPage(newPageNo);
 		}
@@ -146,91 +154,83 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 	// 		console.log(siPage.number + ' ' + document.body.offsetHeight + ' ' + (window.scrollY + window.innerHeight));
 	}
 
-	getFieldDeclarations(): Array<SiFieldDeclaration>|null {
-		if (this.fieldDeclarations) {
-			return this.fieldDeclarations;
-		}
-
-		if (this.model.declaration) {
-			this.fieldDeclarations = this.model.declaration.getBasicFieldDeclarations();
-		}
-
-		return this.fieldDeclarations;
+	getSiProps(): Array<SiProp>|null {
+		return this.siPageCollection.declaration.getBasicTypeDeclaration().getSiProps();
 	}
 
 	get currentPageNo(): number {
-		return this.model.currentPageNo;
+		return this.siPageCollection.currentPageNo;
 	}
 
 	set currentPageNo(currentPageNo: number) {
-		if (this.model.pagesNum < currentPageNo || 0 > currentPageNo) {
+		if (this.siPageCollection.pagesNum < currentPageNo || 0 > currentPageNo) {
 			return;
 		}
 
-		if (!this.model.containsPageNo(currentPageNo)) {
-			this.model.hideAllPages();
+		if (!this.siPageCollection.containsPageNo(currentPageNo)) {
+			this.siPageCollection.hideAllPages();
 			this.loadPage(currentPageNo).offsetHeight = 0;
-			this.model.currentPageNo = currentPageNo;
+			this.siPageCollection.currentPageNo = currentPageNo;
 			return;
 		}
 
-		const page = this.model.getPageByNo(currentPageNo);
+		const page = this.siPageCollection.getPageByNo(currentPageNo);
 		if (page.visible) {
 			window.scrollTo(window.scrollX, page.offsetHeight);
 	// 			this.model.currentPageNo = currentPageNo
 			return;
 		}
 
-		this.model.hideAllPages();
+		this.siPageCollection.hideAllPages();
 		page.offsetHeight = 0;
-		this.model.currentPageNo = currentPageNo;
+		this.siPageCollection.currentPageNo = currentPageNo;
 	}
 
 	get selectable(): boolean {
-		return !!this.model.qualifierSelection;
+		return !!this.model.getSiEntryQualifierSelection();
 	}
 
 	get singleSelect(): boolean {
-		return this.model.qualifierSelection.max === 1;
+		return this.model.getSiEntryQualifierSelection().max === 1;
 	}
 
 	toggleSelection(qualifier: SiEntryQualifier) {
 		if (this.singleSelect) {
-			this.model.qualifierSelection.selectedQualfiers = [qualifier];
+			this.model.getSiEntryQualifierSelection().selectedQualfiers = [qualifier];
 			return;
 		}
 
-		const i = this.model.qualifierSelection.selectedQualfiers.findIndex((selectedQualifier) => {
+		const i = this.model.getSiEntryQualifierSelection().selectedQualfiers.findIndex((selectedQualifier) => {
 			return qualifier.equals(selectedQualifier);
 		});
 
 		if (i !== -1) {
-			this.model.qualifierSelection.selectedQualfiers.splice(i, 1);
+			this.model.getSiEntryQualifierSelection().selectedQualfiers.splice(i, 1);
 			return;
 		}
 
 		if (this.areMoreSelectable()) {
-			this.model.qualifierSelection.selectedQualfiers.push(qualifier);
+			this.model.getSiEntryQualifierSelection().selectedQualfiers.push(qualifier);
 		}
 	}
 
 	isSelected(qualifier: SiEntryQualifier) {
-		return undefined !== this.model.qualifierSelection.selectedQualfiers.find((selectedQualifier) => {
+		return undefined !== this.model.getSiEntryQualifierSelection().selectedQualfiers.find((selectedQualifier) => {
 			return qualifier.equals(selectedQualifier);
 		});
 	}
 
 	areMoreSelectable(): boolean {
-		return this.model.qualifierSelection.max === null
-				|| this.model.qualifierSelection.selectedQualfiers.length < this.model.qualifierSelection.max;
+		return this.model.getSiEntryQualifierSelection().max === null
+				|| this.model.getSiEntryQualifierSelection().selectedQualfiers.length < this.model.getSiEntryQualifierSelection().max;
 	}
 
 	saveSelection() {
-		this.model.qualifierSelection.done();
+		this.model.getSiEntryQualifierSelection().done();
 	}
 
 	cancelSelection() {
-		this.model.qualifierSelection.cancel();
+		this.model.getSiEntryQualifierSelection().cancel();
 	}
 
 // 	static radioNameIndex = 0;
@@ -244,136 +244,4 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 //
 // 		return this._radioName;
 // 	}
-}
-
-class StructurePageManager {
-	private	siTypeDeclaration: SiTypeDeclaration;
-	private pagesMap = new Map<number, StructurePage>();
-
-	constructor(private comp: ListZoneContentComponent) {
-		this.siTypeDeclaration = comp.model.getSiDeclaration().getBasicSiTypeDeclaration()
-
-		for (const siPage of comp.model.getSiPages()) {
-			this.setupUiStructures(this.createPage(siPage.num), siPage);
-		}
-	}
-
-	get setup(): boolean {
-		return !!(this.model.getDeclaration() && this.pagesMap.size > 0);
-	}
-
-	getSiProps(): SiProp[] {
-		return this.siTypeDeclaration.getSiProps();
-	}
-
-	private ensureNoFree(no: number) {
-		if (this.pagesMap.has(no)) {
-			throw new IllegalSiStateError('Page no alread exists: ' no);
-		}
-	}
-
-	containsPageNo(pageNo: number): boolean {
-		return this.pagesMap.has(pageNo);
-	}
-
-	createPage(no: number): StructurePage {
-		this.ensureNoFree(no);
-		const sp = new StructurePage(no, null, null);
-		this.pagesMap.set(no, sp);
-		return sp;
-	}
-
-	initPage(structurePage: StructurePage, entries: SiEntry[]) {
-		const siPage = new SiPage(structurePage.no, entries);
-		this.comp.model.addSiPage(siPage);
-		this.setupUiStructures(structurePage, siPage);
-	}
-
-	private setupUiStructures(structurePage: StructurePage, siPage: SiPage) {
-		if (structurePage.uiStructures) {
-			throw new IllegalSiStateError('Page already contains structures: ' + structurePage.siPage.num);
-		}
-
-		structurePage.siPage = siPage;
-
-		const structures = new Array<Array<UiStructure>>();
-		for (const siEntry of siPage.entries) {
-			structures.push(this.createFieldUiStructures(siEntry));
-		}
-		structurePage.uiStructures = structures;
-	}
-
-	private createFieldUiStructures(siEntry: SiEntry): UiStructure[] {
-		const uiStructures = new Array<UiStructure>();
-
-		for (const siProp of this.siTypeDeclaration.getSiProps()) {
-			const uiStructure = this.comp.uiStructure.createChild();
-			uiStructure.model = SiUiStructureModelFactory.createCompactField(siEntry.selectedEntryBuildup.getFieldById(siProp.id));
-			uiStructures.push(uiStructure);
-		}
-
-		return uiStructures;
-	}
-
-	getVisiblePages(): SiPage[] {
-		return this.pagesMap.filter((page: StructurePage) => {
-			return page.offsetHeight !== null;
-		});
-	}
-
-	getLastVisiblePage(): SiPage|null {
-		let lastPage: SiPage|null = null;
-		for (const page of this.pagesMap.values()) {
-			if (page.offsetHeight !== null && (lastPage === null || page.num > lastPage.num)) {
-				lastPage = page;
-			}
-		}
-		return lastPage;
-	}
-
-	getBestPageByOffsetHeight(offsetHeight: number): SiPage|null {
-		let prevPage: SiPage|null = null;
-
-		for (const page of this.getVisiblePages()) {
-			if (prevPage === null || (prevPage.offsetHeight < offsetHeight
-					&& prevPage.offsetHeight <= page.offsetHeight)) {
-				prevPage = page;
-				continue;
-			}
-
-			const bestPageDelta = offsetHeight - prevPage.offsetHeight;
-			const pageDelta = page.offsetHeight - offsetHeight;
-
-			if (bestPageDelta < pageDelta) {
-				return prevPage;
-			} else {
-				return page;
-			}
-		}
-
-		return prevPage;
-	}
-
-	hideAllPages() {
-		for (const page of this.pagesMap.values()) {
-			page.offsetHeight = null;
-		}
-	}
-}
-
-class StructurePage {
-	public uiStructures: Array<Array<UiStructure>>|null = null;
-
-	constructor(readonly no: number, public offsetHeight: number|null) {
-
-	}
-
-	get loaded(): boolean {
-		return !!this.siPage.entries;
-	}
-
-	get visible(): boolean {
-		return this.offsetHeight !== null;
-	}
-
 }

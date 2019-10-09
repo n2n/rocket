@@ -6,7 +6,7 @@ import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { EmbeddedEntriesSummaryInComponent } from '../comp/embedded-entries-summary-in/embedded-entries-summary-in.component';
 import { EmbeddedEntriesInComponent } from '../comp/embedded-entries-in/embedded-entries-in.component';
 
-export class EmbeddedEntriesInSiContent implements EmbeddedEntriesInModel {
+export class EmbeddedEntriesInUiContent implements EmbeddedEntriesInModel {
 
 	public min = 0;
 	public max: number|null = null;

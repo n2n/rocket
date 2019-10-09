@@ -1,5 +1,5 @@
 
-// import { UiZone } from 'src/app/si/model/structure/ui-zone';
+// import { UiZone } from 'src/app/ui/model/structure/ui-zone';
 // import { UiContainer } from 'src/app/si/model/structure/si-container';
 // import { Subject, Observable, Subscription } from 'rxjs';
 // import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';

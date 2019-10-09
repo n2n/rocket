@@ -1,9 +1,9 @@
-import { LinkOutModel } from '../alphanum/comp/link-field-model';
-import { OutSiFieldAdapter } from '../common/model/out-si-field-adapter';
-import { LinkOutFieldComponent } from '../alphanum/comp/link-out-field/link-out-field.component';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
-import { TypeUiContent } from 'src/app/ui/structure/impl/type-si-content';
-import { SiField } from '../../si-field';
+import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
+import { OutSiFieldAdapter } from '../../common/model/out-si-field-adapter';
+import { LinkOutModel } from '../comp/link-field-model';
+import { LinkOutFieldComponent } from '../comp/link-out-field/link-out-field.component';
+import { SiField } from '../../../si-field';
 
 export class LinkOutSiField extends OutSiFieldAdapter implements LinkOutModel {
 

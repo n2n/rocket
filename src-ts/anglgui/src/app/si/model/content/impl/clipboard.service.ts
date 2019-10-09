@@ -11,10 +11,10 @@ export class ClipboardService {
 	constructor() { }
 
 	add(qualifier: SiEntryQualifier) {
-		let arr = this.qualifiersMap.get(qualifier.category);
+		let arr = this.qualifiersMap.get(qualifier.typeCategory);
 		if (!arr) {
 			arr = [];
-			this.qualifiersMap.set(qualifier.category, arr);
+			this.qualifiersMap.set(qualifier.typeCategory, arr);
 		}
 
 		arr.push(qualifier);

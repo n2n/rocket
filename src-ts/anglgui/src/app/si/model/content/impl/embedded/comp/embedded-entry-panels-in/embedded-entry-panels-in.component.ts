@@ -1,13 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { EmbeddedEntryPanelModel } from '../../embedded-entry-panels-model';
-import { UiStructure } from 'src/app/si/model/structure/ui-structure';
-import { TypeUiContent } from 'src/app/si/model/structure/impl/type-si-content';
-import { SimpleUiStructureModel } from 'src/app/si/model/structure/impl/simple-ui-structure-model';
 import { EmbeddedEntriesSummaryInComponent } from '../embedded-entries-summary-in/embedded-entries-summary-in.component';
-import { UiStructureType } from 'src/app/si/model/content/si-field-structure-declaration';
-import { SiPanel } from 'src/app/si/model/content/impl/embedded/si-panel';
 import { PanelEmbeddedEntryInModel } from './panel-embedded-entry-in-model';
 import { SafeStyle, DomSanitizer } from '@angular/platform-browser';
+import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
+import { EmbeddedEntryPanelModel } from '../embedded-entry-panels-model';
+import { SiPanel } from '../../model/si-panel';
+import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
+import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
+import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
+import { PanelLayout } from './panel-layout';
 
 @Component({
 	selector: 'rocket-embedded-entry-panels-in',
@@ -51,54 +52,3 @@ export class EmbeddedEntryPanelsInComponent implements OnInit, OnDestroy {
 	}
 }
 
-
-
-export class PanelLayout {
-
-	private numGridRows = 0;
-	private numGridCols = 0;
-
-	constructor(private san: DomSanitizer) {
-	}
-
-	registerPanel(panel: SiPanel) {
-		const gridPos = panel.gridPos;
-		if (gridPos === null) {
-			return;
-		}
-
-		const colEnd = gridPos.colEnd;
-		if (this.numGridCols < colEnd) {
-			this.numGridCols = colEnd;
-		}
-
-		const rowEnd = gridPos.rowEnd;
-		if (this.numGridRows < rowEnd) {
-			this.numGridRows = rowEnd;
-		}
-	}
-
-	hasGrid(): boolean {
-		return this.numGridRows > 0 || this.numGridCols > 0;
-	}
-
-	style(): SafeStyle {
-		if (!this.hasGrid()) {
-			return null;
-		}
-
-		return this.san.bypassSecurityTrustStyle('display: grid; grid-template-columns: repeat('
-				+ (this.numGridRows - 1) + ', 1fr');
-	}
-
-	styleOf(panel: SiPanel): SafeStyle {
-		if (!panel.gridPos) {
-			return null;
-		}
-
-		return this.san.bypassSecurityTrustStyle('grid-column-start: ' + panel.gridPos.colStart
-				+ '; grid-column-end: ' + panel.gridPos.colEnd
-				+ '; grid-row-start: ' + panel.gridPos.rowStart
-				+ '; grid-row-end: ' + panel.gridPos.rowEnd);
-	}
-}

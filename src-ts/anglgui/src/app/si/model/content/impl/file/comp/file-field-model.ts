@@ -1,6 +1,5 @@
-import { SiFile } from 'src/app/si/model/content/impl/file/file-in-si-field';
-import { MessageFieldModel } from 'src/app/si/content/field/message-field-model';
-import { UiZone } from 'src/app/si/model/structure/ui-zone';
+import { MessageFieldModel } from '../../common/comp/message-field-model';
+import { SiFile } from '../model/file-in-si-field';
 
 export interface FileFieldModel extends MessageFieldModel {
 

@@ -3,15 +3,23 @@
 	<label>{{ getLabel() }}</label>
 </ng-container>
 
-<div *ngIf="siControlsVisible && !root && siControls.length > 0" class="rocket-toolbar">
-	<ng-container *ngFor="let siControl of siControls">
-		<rocket-ui-control [siControl]="siControl" [uiStructure]="uiStructure"></rocket-ui-control>		
+<div *ngIf="controlsVisible && !root && controlUiContents.length > 0" class="rocket-toolbar">
+	<ng-container *ngFor="let controlUiContent of controlUiContents">
+		<ng-template rocketUiContent [uiContent]="controlUiContent" [uiStructure]="uiStructure"></ng-template>		
 	</ng-container>
 </div>
 
 <ng-content select="[pre-content]"></ng-content>
 
-<div class="rocket-structure-content">
+<div *ngIf="getType()" class="rocket-structure-content">
+	<ng-template [ngTemplateOutlet]="structureContent"></ng-template>
+</div>
+
+<ng-container *ngIf="!getType()">
+	<ng-template [ngTemplateOutlet]="structureContent"></ng-template>
+</ng-container>
+
+<ng-template #structureContent>
 	<div *ngIf="!loaded" class="rocket-loader"></div>
 	
 	<ng-container *ngIf="loaded">
@@ -21,16 +29,17 @@
 			</li>
 		</ul>
 		
-		<ng-template *ngIf="siContent" rocketUiContent [uiStructure]="uiStructure" [siContent]="siContent"></ng-template>
+		<ng-template *ngIf="uiContent" rocketUiContent [uiStructure]="uiStructure" [uiContent]="uiContent"></ng-template>
 		
-		<div *ngIf="siControlsVisible && root && siControls.length > 0" class="rocket-zone-commands">
+		<div *ngIf="controlsVisible && root && controlUiContents.length > 0" class="rocket-zone-commands">
 			<div class="rocket-main-commands">
-				<ng-container *ngFor="let siControl of siControls">
-					<rocket-ui-control [siControl]="siControl" [uiStructure]="uiStructure"></rocket-ui-control>		
+				<ng-container *ngFor="let controlUiContent of controlUiContents">
+					<ng-template rocketUiContent [uiContent]="controlUiContent" [uiStructure]="uiStructure"></ng-template>		
 				</ng-container>
 			</div>
 		</div>
 	</ng-container>
-</div>
+</ng-template>
+
 
 <ng-content select="[post-content]"></ng-content>

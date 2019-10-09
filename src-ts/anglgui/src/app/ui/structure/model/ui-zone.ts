@@ -1,8 +1,7 @@
-
-import { UiLayer } from 'src/app/si/model/structure/ui-layer';
 import { Subject, Subscription } from 'rxjs';
 import { UiStructureModel } from './ui-structure-model';
-import { SiControl } from '../control/si-control';
+import { SiControl } from 'src/app/si/model/control/si-control';
+import { UiLayer } from './ui-layer';
 
 export class UiZone {
 	// public content: SiComp|null;

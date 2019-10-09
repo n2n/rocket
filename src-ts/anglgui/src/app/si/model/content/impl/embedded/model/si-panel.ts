@@ -1,5 +1,5 @@
 import { SiEmbeddedEntry } from './si-embedded-entry';
-import { SiType } from '../../si-type';
+import { SiTypeQualifier } from 'src/app/si/model/meta/si-type-qualifier';
 
 export class SiPanel {
 
@@ -7,7 +7,7 @@ export class SiPanel {
 	}
 
 	values: SiEmbeddedEntry[] = [];
-	allowedSiTypes: SiType[]|null = null;
+	allowedSiTypeQualifiers: SiTypeQualifier[]|null = null;
 	min = 0;
 	max: number|null = null;
 	gridPos: SiGridPos|null = null;

@@ -1,16 +1,16 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { SiEntryQualifier, SiEntryIdentifier } from 'src/app/si/model/content/si-qualifier';
-import { ClipboardService } from 'src/app/si/model/content/clipboard.service';
-import { SiEmbeddedEntry } from 'src/app/si/model/content/impl/embedded/si-embedded-entry';
-import { SiType } from 'src/app/si/model/content/si-type';
 import { Observable } from 'rxjs';
+import { SiType } from 'src/app/si/model/meta/si-type';
+import { SiEmbeddedEntry } from '../../model/si-embedded-entry';
+import { ClipboardService } from '../../../clipboard.service';
+import { SiTypeQualifier } from 'src/app/si/model/meta/si-type-qualifier';
 
 
 export enum AddPasteType {
 	REDUCED = 'reduced',
 	BLOCK = 'block',
 	TILES = 'tiles'
-
 }
 
 @Component({
@@ -25,7 +25,7 @@ export class AddPasteComponent implements OnInit {
 	@Input()
 	pasteCategory: string|null = null;
 	@Input()
-	allowedSiTypes: SiType[]|null = null;
+	allowedSiTypeQualifiers: SiTypeQualifier[]|null = null;
 	@Input()
 	type = AddPasteType.BLOCK;
 
@@ -34,7 +34,7 @@ export class AddPasteComponent implements OnInit {
 
 	pastablesVisible = false;
 	addLoading = false;
-	addLoadingSiType: SiType|null = null;
+	addLoadingSiTypeQualifier: SiTypeQualifier|null = null;
 	pasteLoadingSiEntryQualifier: SiEntryQualifier|null = null;
 	addableSiEmbeddedEntry: SiEmbeddedEntry|null = null;
 	addables: SiEntryQualifier[]|null = null;
@@ -46,7 +46,7 @@ export class AddPasteComponent implements OnInit {
 	}
 
 	get loading(): boolean {
-		return this.addLoading || !!this.addLoadingSiType ||	!!this.pasteLoadingSiEntryQualifier;
+		return this.addLoading || !!this.addLoadingSiTypeQualifier ||	!!this.pasteLoadingSiEntryQualifier;
 	}
 
 	add() {
@@ -61,16 +61,16 @@ export class AddPasteComponent implements OnInit {
 		});
 	}
 
-	addBySiType(siType: SiType) {
-		if (this.addLoadingSiType) {
+	addBySiType(siTypeQualifier: SiTypeQualifier) {
+		if (this.addLoadingSiTypeQualifier) {
 			return;
 		}
 
-		this.addLoadingSiType = siType;
+		this.addLoadingSiTypeQualifier = siTypeQualifier;
 		this.obtainer.obtain(null).subscribe((siEmbeddedEntry) => {
-			this.addLoadingSiType = null;
+			this.addLoadingSiTypeQualifier = null;
 			this.handleAddResponse(siEmbeddedEntry);
-			this.choose(siType);
+			this.choose(siTypeQualifier);
 		});
 	}
 
@@ -78,12 +78,12 @@ export class AddPasteComponent implements OnInit {
 		this.addableSiEmbeddedEntry = siEmbeddedEntry;
 		this.addables = [];
 
-		for (const siQualifier of siEmbeddedEntry.entry.typeQualifiers) {
-			if (!this.isTypeAllowed(siQualifier.type)) {
+		for (const siEntryQualifier of siEmbeddedEntry.entry.entryQualifiers) {
+			if (!this.isTypeAllowed(siEntryQualifier.typeQualifier)) {
 				continue;
 			}
 
-			this.addables.push(siQualifier);
+			this.addables.push(siEntryQualifier);
 		}
 
 		if (this.addables.length === 0) {
@@ -91,16 +91,16 @@ export class AddPasteComponent implements OnInit {
 		}
 
 		if (this.addables.length === 1) {
-			this.choose(this.addables[0].type);
+			this.choose(this.addables[0].typeQualifier);
 			return;
 		}
 	}
 
-	choose(siType: SiType) {
+	choose(siTypeQualifier: SiTypeQualifier) {
 		this.reset();
-		this.addableSiEmbeddedEntry.comp.entry.selectedTypeId = siType.typeId;
+		this.addableSiEmbeddedEntry.comp.entry.selectedTypeId = siTypeQualifier.id;
 		if (this.addableSiEmbeddedEntry.summaryComp) {
-			this.addableSiEmbeddedEntry.summaryComp.entry.selectedTypeId = siType.typeId;
+			this.addableSiEmbeddedEntry.summaryComp.entry.selectedTypeId = siTypeQualifier.id;
 		}
 		this.newEntry.emit(this.addableSiEmbeddedEntry);
 		this.addableSiEmbeddedEntry = null;
@@ -140,12 +140,13 @@ export class AddPasteComponent implements OnInit {
 		return this.clipboardService.getByCategory(this.pasteCategory);
 	}
 
-	isTypeAllowed(siType: SiType) {
-		return !this.allowedSiTypes || !!this.allowedSiTypes.find(allowedSiType => allowedSiType.name === siType.name);
+	isTypeAllowed(siTypeQualifier: SiTypeQualifier) {
+		return !this.allowedSiTypeQualifiers || !!this.allowedSiTypeQualifiers
+				.find(allowedSiTypeQualifier => allowedSiTypeQualifier.id === siTypeQualifier.id);
 	}
 
-	isAddLoading(siType: SiType = null): boolean {
-		return this.addLoading || (siType && this.addLoadingSiType && this.addLoadingSiType.equals(siType));
+	isAddLoading(siTypeQualifier: SiTypeQualifier = null): boolean {
+		return this.addLoading || (siTypeQualifier && this.addLoadingSiTypeQualifier && this.addLoadingSiTypeQualifier.equals(siTypeQualifier));
 	}
 
 	isPasteLoading(siQualifier: SiEntryQualifier): boolean {

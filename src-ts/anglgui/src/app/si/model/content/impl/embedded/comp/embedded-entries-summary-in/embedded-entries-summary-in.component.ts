@@ -1,21 +1,22 @@
-import { Component, OnInit, Injector, OnDestroy } from '@angular/core';
-import { PopupUiLayer } from 'src/app/si/model/structure/ui-layer';
-import { EmbeddedAddPasteObtainer } from '../../embedded-add-paste-obtainer';
+import { Component, OnInit, OnDestroy, Injector } from '@angular/core';
+import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
+import { EmbeddedEntriesInModel } from '../embedded-entry-in-model';
+import { EmbedInCollection } from '../embe-collection';
+import { PopupUiLayer } from 'src/app/ui/structure/model/ui-layer';
+import { EmbeddedAddPasteObtainer } from '../embedded-add-paste-obtainer';
 import { TranslationService } from 'src/app/util/i18n/translation.service';
-import { EmbedInCollection } from '../../embe-collection';
-import { EmbeddedEntriesInModel } from '../../embedded-entry-in-model';
-import { SiService } from 'src/app/si/model/si.service';
-import { SiEmbeddedEntry } from 'src/app/si/model/content/impl/embedded/si-embedded-entry';
+import { SiService } from 'src/app/si/manage/si.service';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { Embe } from '../../embe';
-import { SimpleSiControl } from 'src/app/si/model/control/impl/simple-si-control';
-import { SiButton } from 'src/app/si/model/control/impl/model/si-button';
-import { SiEntry } from 'src/app/si/model/content/si-entry';
-import { SiControl } from 'src/app/si/model/control/si-control';
-import { SimpleUiStructureModel } from 'src/app/si/model/structure/impl/simple-ui-structure-model';
+import { SiEmbeddedEntry } from '../../model/si-embedded-entry';
+import { Embe } from '../embe';
+import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
+import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { EmbeddedEntriesInComponent } from '../embedded-entries-in/embedded-entries-in.component';
-import { TypeUiContent } from 'src/app/si/model/structure/impl/type-si-content';
-import { UiStructure } from 'src/app/si/model/structure/ui-structure';
+import { SiControl } from 'src/app/si/model/control/si-control';
+import { SimpleSiControl } from 'src/app/si/model/control/impl/model/simple-si-control';
+import { SiButton } from 'src/app/si/model/control/impl/model/si-button';
+import { SiEntry } from '../../../../si-entry';
+
 
 @Component({
 	selector: 'rocket-embedded-entries-summary-in',
@@ -82,7 +83,7 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 		this.popupUiLayer.pushZone(null).model = {
 			title: 'Some Title',
 			breadcrumbs: [],
-			structureModel: embe.siEmbeddedEntry.comp,
+			structureModel: embe.siEmbeddedEntry.comp.createUiStructureModel(),
 			controls: this.createPopupControls(() => { bakEntry = null; })
 		};
 

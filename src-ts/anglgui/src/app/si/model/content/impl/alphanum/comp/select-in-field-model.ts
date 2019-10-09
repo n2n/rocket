@@ -1,5 +1,4 @@
-
-import { MessageFieldModel } from 'src/app/si/content/field/message-field-model';
+import { MessageFieldModel } from '../../common/comp/message-field-model';
 
 export interface SelectInFieldModel extends MessageFieldModel {
 

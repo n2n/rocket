@@ -1,6 +1,6 @@
-import { SiEmbeddedEntry } from 'src/app/si/model/content/impl/embedded/si-embedded-entry';
-import { UiStructure } from 'src/app/si/model/structure/ui-structure';
 import { SiEntry } from 'src/app/si/model/content/si-entry';
+import { SiEmbeddedEntry } from '../model/si-embedded-entry';
+import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 
 export class Embe {
 	constructor(public siEmbeddedEntry: SiEmbeddedEntry|null = null,

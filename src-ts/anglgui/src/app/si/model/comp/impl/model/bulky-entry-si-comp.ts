@@ -2,7 +2,7 @@ import { SiComp } from '../../si-comp';
 import { SiDeclaration } from '../../../meta/si-declaration';
 import { SiEntry } from '../../../content/si-entry';
 import { SiControl } from '../../../control/si-control';
-import { Message } from '@angular/compiler/src/i18n/i18n_ast';
+import { Message } from 'src/app/util/i18n/message';
 import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
 import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';

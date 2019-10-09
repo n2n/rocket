@@ -1,14 +1,14 @@
 
-<div *ngIf="!siLayer.main" class="rocket-layer-toolbar">
-	<button class="btn btn-warning" (click)="siLayer.dispose()">
+<div *ngIf="!uiLayer.main" class="rocket-layer-toolbar">
+	<button class="btn btn-warning" (click)="uiLayer.dispose()">
 		<i class="fa fa-times"></i>
 	</button>
 </div>
 
-<ng-container *ngIf="!siLayer.currentZone; else siZoneContent">
+<ng-container *ngIf="!uiLayer.currentZone; else uiZoneContent">
 	<div class="rocket-loader"></div>
 </ng-container>
 
-<ng-template #siZoneContent>
-	<rocket-ui-zone [siZone]="siLayer.currentZone" class="rocket-zone"></rocket-ui-zone>
+<ng-template #uiZoneContent>
+	<rocket-ui-zone [uiZone]="uiLayer.currentZone" class="rocket-zone"></rocket-ui-zone>
 </ng-template>

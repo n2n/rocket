@@ -1,7 +1,7 @@
 import { Component, OnInit, DoCheck, Input, ComponentFactoryResolver, ElementRef, OnDestroy } from '@angular/core';
-import { SiZone } from 'src/app/si/model/structure/si-zone';
-import { UiStructure } from 'src/app/si/model/structure/si-structure';
-import { SiZoneError } from 'src/app/si/model/structure/si-zone-error';
+import { UiZone } from '../../model/ui-zone';
+import { UiStructure } from '../../model/ui-structure';
+import { UiZoneError } from '../../model/ui-zone-error';
 
 @Component({
 	selector: 'rocket-ui-zone',
@@ -10,16 +10,16 @@ import { SiZoneError } from 'src/app/si/model/structure/si-zone-error';
 })
 export class ZoneComponent implements OnInit, DoCheck, OnDestroy {
 
-	@Input() siZone: SiZone;
+	@Input() uiZone: UiZone;
 
 	uiStructure: UiStructure;
-	siZoneErrors: SiZoneError[] = [];
+	uiZoneErrors: UiZoneError[] = [];
 
 	constructor(private elemRef: ElementRef) {
 	}
 
 	ngOnInit() {
-		this.uiStructure = new UiStructure(null, this.siZone, null);
+		this.uiStructure = new UiStructure(null, this.uiZone, null);
 	}
 
 	ngOnDestroy() {
@@ -27,24 +27,22 @@ export class ZoneComponent implements OnInit, DoCheck, OnDestroy {
 	}
 
 	ngDoCheck() {
-		this.siZoneErrors = this.uiStructure.getZoneErrors();
+		this.uiZoneErrors = this.uiStructure.getZoneErrors();
 
-		if (this.hasSiZoneErrors()) {
+		if (this.hasUiZoneErrors()) {
 			this.elemRef.nativeElement.classList.add('rocket-contains-additional');
 		} else {
 			this.elemRef.nativeElement.classList.remove('rocket-contains-additional');
 		}
 
-		if (this.siZone.model) {
-			this.uiStructure.model = this.siZone.model.structureModel;
+		if (this.uiZone.model) {
+			this.uiStructure.model = this.uiZone.model.structureModel;
 		} else {
 			this.uiStructure.model = null;
 		}
 	}
 
-	hasSiZoneErrors() {
-		return this.siZoneErrors.length > 0;
+	hasUiZoneErrors() {
+		return this.uiZoneErrors.length > 0;
 	}
 }
-
-

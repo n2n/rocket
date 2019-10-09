@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SelectInFieldModel } from '../../select-in-field-model';
+import { SelectInFieldModel } from '../select-in-field-model';
 
 @Component({
 	selector: 'rocket-select-in-field',

@@ -4,6 +4,6 @@
 
 
 
-<rocket-ui-layer *ngFor="let siLayer of siContainer.layers" [siLayer]="siLayer"
-		[class.rocket-main-layer]="siLayer.main"
-		[class.rocket-layer]="!siLayer.main"></rocket-ui-layer>
+<rocket-ui-layer *ngFor="let uiLayer of uiContainer.layers" [uiLayer]="uiLayer"
+		[class.rocket-main-layer]="uiLayer.main"
+		[class.rocket-layer]="!uiLayer.main"></rocket-ui-layer>

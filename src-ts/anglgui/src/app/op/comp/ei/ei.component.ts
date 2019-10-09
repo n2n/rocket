@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, NavigationStart } from '@angular/router';
-import { UiContainer } from 'src/app/si/model/structure/si-container';
 import { SiUiService } from 'src/app/si/manage/si-ui.service';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { MainUiLayer } from 'src/app/si/model/structure/ui-layer';
+import { UiContainer } from 'src/app/ui/structure/model/ui-container';
+import { MainUiLayer } from 'src/app/ui/structure/model/ui-layer';
 
 @Component({
 	selector: 'rocket-ei',
@@ -13,12 +13,12 @@ import { MainUiLayer } from 'src/app/si/model/structure/ui-layer';
 })
 export class EiComponent implements OnInit, OnDestroy {
 
-	private siContainer: UiContainer;
+	private uiContainer: UiContainer;
 	private subscription: Subscription;
 
 	constructor(private route: ActivatedRoute, private siUiService: SiUiService,
 			private router: Router/*, platformLocation: PlatformLocation*/) {
-		this.siContainer = new UiContainer();
+		this.uiContainer = new UiContainer();
 // 		alert(platformLocation.getBaseHrefFromDOM() + ' ' + route.snapshot.url.join('/'));
 	}
 
@@ -49,7 +49,7 @@ export class EiComponent implements OnInit, OnDestroy {
 	}
 
 	get mainUiLayer(): MainUiLayer {
-		return this.siContainer.getMainLayer();
+		return this.uiContainer.getMainLayer();
 	}
 
 	private handleNav(event: NavigationStart) {

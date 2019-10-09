@@ -1,13 +1,15 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { SiFile } from 'src/app/si/model/content/impl/file/file-in-si-field';
-import { SiService } from 'src/app/si/model/si.service';
-import { FileInFieldModel } from '../../file-in-field-model';
+import { SiService } from 'src/app/si/manage/si.service';
+import { SiFile } from '../../model/file-in-si-field';
+import { FileInFieldModel } from '../file-in-field-model';
+import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
+import { PopupUiLayer } from 'src/app/ui/structure/model/ui-layer';
 import { SiResultFactory } from 'src/app/si/build/si-result-factory';
-import { PopupUiLayer } from 'src/app/si/model/structure/ui-layer';
-import { SimpleUiStructureModel } from 'src/app/si/model/structure/impl/simple-ui-structure-model';
-import { ImageResizeComponent } from '../../../file/image-resize/image-resize.component';
-import { TypeUiContent } from 'src/app/si/model/structure/impl/type-si-content';
-import { UiStructure } from 'src/app/si/model/structure/ui-structure';
+import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
+import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
+import { ImageResizeComponent } from '../image-resize/image-resize.component';
+import { SiContentFactory } from 'src/app/si/build/si-content-factory';
+
 
 @Component({
 	selector: 'rocket-file-in-field',
@@ -103,7 +105,7 @@ export class FileInFieldComponent implements OnInit {
 					if (data.error) {
 						this.uploadErrorMessage = data.error;
 					} else {
-						this.model.setSiFile(SiResultFactory.buildSiFile(data.file));
+						this.model.setSiFile(SiContentFactory.buildSiFile(data.file));
 					}
 				});
 	}

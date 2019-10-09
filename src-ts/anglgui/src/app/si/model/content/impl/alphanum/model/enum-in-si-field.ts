@@ -1,9 +1,9 @@
-import { InSiFieldAdapter } from '../common/model/in-si-field-adapter';
-import { SiField } from '../../si-field';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
-import { SelectInFieldComponent } from '../alphanum/comp/select-in-field/select-in-field.component';
-import { SelectInFieldModel } from '../alphanum/comp/select-in-field-model';
+import { InSiFieldAdapter } from '../../common/model/in-si-field-adapter';
+import { SelectInFieldModel } from '../comp/select-in-field-model';
+import { SiField } from '../../../si-field';
+import { SelectInFieldComponent } from '../comp/select-in-field/select-in-field.component';
 
 export class EnumInSiField extends InSiFieldAdapter implements SelectInFieldModel {
 	public mandatory = false;

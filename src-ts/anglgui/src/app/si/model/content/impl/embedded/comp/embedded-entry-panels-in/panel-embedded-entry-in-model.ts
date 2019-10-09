@@ -1,8 +1,9 @@
-import { SiEmbeddedEntry } from 'src/app/si/model/content/impl/embedded/si-embedded-entry';
-import { SiType } from 'src/app/si/model/content/si-type';
-import { EmbeddedEntryPanelModel } from '../../embedded-entry-panels-model';
-import { SiPanel } from 'src/app/si/model/content/impl/embedded/si-panel';
-import { EmbeddedEntriesInModel } from '../../embedded-entry-in-model';
+import { EmbeddedEntriesInModel } from '../embedded-entry-in-model';
+import { SiPanel } from '../../model/si-panel';
+import { EmbeddedEntryPanelModel } from '../embedded-entry-panels-model';
+import { SiType } from 'src/app/si/model/meta/si-type';
+import { SiEmbeddedEntry } from '../../model/si-embedded-entry';
+import { SiTypeQualifier } from 'src/app/si/model/meta/si-type-qualifier';
 
 export class PanelEmbeddedEntryInModel implements EmbeddedEntriesInModel {
 
@@ -26,8 +27,8 @@ export class PanelEmbeddedEntryInModel implements EmbeddedEntriesInModel {
 		return this.panel.pasteCategory;
 	}
 
-	getAllowedSiTypes(): SiType[] {
-		return this.panel.allowedSiTypes;
+	getAllowedSiTypeQualifiers(): SiTypeQualifier[] {
+		return this.panel.allowedSiTypeQualifiers;
 	}
 
 	setValues(values: SiEmbeddedEntry[]): void {

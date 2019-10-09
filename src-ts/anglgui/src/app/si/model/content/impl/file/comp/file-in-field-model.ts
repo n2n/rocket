@@ -1,5 +1,5 @@
-import { FileFieldModel } from 'src/app/si/content/field/file-field-model';
-import { SiFile } from 'src/app/si/model/content/impl/file/file-in-si-field';
+import { FileFieldModel } from './file-field-model';
+import { SiFile } from '../model/file-in-si-field';
 
 export interface FileInFieldModel extends FileFieldModel {
 

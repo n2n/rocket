@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FileInFieldModel } from '../../field/file-in-field-model';
+import { FileInFieldModel } from '../file-in-field-model';
 
 @Component({
 	selector: 'rocket-image-resize',

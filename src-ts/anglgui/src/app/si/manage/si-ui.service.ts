@@ -1,19 +1,19 @@
 import { Injectable } from '@angular/core';
-import { SiService } from 'src/app/si/model/si.service';
 import { PlatformLocation } from '@angular/common';
 import { Router } from '@angular/router';
-import { UiLayer } from 'src/app/si/model/structure/ui-layer';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
-import { UiZone } from 'src/app/si/model/structure/ui-zone';
 import { SiInput } from 'src/app/si/model/input/si-input';
 import { SiEntryInput } from 'src/app/si/model/input/si-entry-input';
 import { SiEntry } from 'src/app/si/model/content/si-entry';
-import { SiComp } from 'src/app/si/model/content/si-comp';
 import { SiEntryError } from 'src/app/si/model/input/si-entry-error';
-import { SiResult } from 'src/app/si/model/control/si-result';
-import { SiCommandError } from 'src/app/si/model/si-command-error';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { SiService } from './si.service';
+import { UiZone } from 'src/app/ui/structure/model/ui-zone';
+import { SiCommandError } from '../util/si-command-error';
+import { UiLayer } from 'src/app/ui/structure/model/ui-layer';
+import { SiComp } from '../model/comp/si-comp';
+import { SiResult } from './si-result';
 
 @Injectable({
 	providedIn: 'root'

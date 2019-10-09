@@ -1,20 +1,20 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { UiZoneModel } from 'src/app/ui/structure/model/ui-zone';
 import { map } from 'rxjs/operators';
+import { UiZoneModelFactory } from '../build/si-factory';
+import { SiEntryInput } from '../model/input/si-entry-input';
+import { HttpParams, HttpClient } from '@angular/common/http';
+import { SiInput } from '../model/input/si-input';
+import { SiResult } from './si-result';
+import { SiResultFactory } from '../build/si-result-factory';
+import { IllegalSiStateError } from '../util/illegal-si-state-error';
+import { SiGetRequest } from '../model/api/si-get-request';
+import { SiGetResponse } from '../model/api/si-get-response';
+import { SiApiFactory } from '../build/si-api-factory';
+import { SiValRequest } from '../model/api/si-val-request';
+import { SiValResponse } from '../model/api/si-val-response';
 import { Extractor } from 'src/app/util/mapping/extractor';
-import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
-import { SiInput } from 'src/app/si/model/input/si-input';
-import { SiResultFactory } from 'src/app/si/build/si-result-factory';
-import { SiResult } from 'src/app/si/model/control/si-result';
-import { SiGetRequest } from 'src/app/si/model/api/si-get-request';
-import { SiApiFactory } from 'src/app/si/build/si-api-factory';
-import { SiGetResponse } from 'src/app/si/model/api/si-get-response';
-import { UiZoneModelFactory } from 'src/app/si/build/si-factory';
-import { SiValRequest } from './api/si-val-request';
-import { SiValResponse } from './api/si-val-response';
-import { UiZoneModel } from './structure/ui-zone';
-import { SiEntryInput } from './input/si-entry-input';
 
 @Injectable({
 	providedIn: 'root'

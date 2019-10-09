@@ -1,10 +1,10 @@
 import { InputInFieldComponent } from '../comp/input-in-field/input-in-field.component';
 import { InputInFieldModel } from '../comp/input-in-field-model';
-import { SiCrumbGroup } from '../../meta/si-crumb';
 import { InSiFieldAdapter } from '../../common/model/in-si-field-adapter';
 import { SiField } from '../../../si-field';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
-import { TypeUiContent } from 'src/app/ui/structure/impl/type-si-content';
+import { SiCrumbGroup } from '../../meta/model/si-crumb';
+import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 
 export class NumberInSiField extends InSiFieldAdapter implements InputInFieldModel {
 	public min: number|null = null;

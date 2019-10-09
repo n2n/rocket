@@ -24,7 +24,7 @@ import {
 import {
 	EmbeddedEntryPanelsInComponent
 } from './model/content/impl/embedded/comp/embedded-entry-panels-in/embedded-entry-panels-in.component';
-import { ImageResizeComponent } from '../ui/content/file/image-resize/image-resize.component';
+import { ImageResizeComponent } from './model/content/impl/file/comp/image-resize/image-resize.component';
 
 @NgModule({
 	declarations: [

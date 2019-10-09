@@ -1,7 +1,7 @@
 
-import { SiEmbeddedEntry } from 'src/app/si/model/content/impl/embedded/si-embedded-entry';
-import { SiType } from 'src/app/si/model/content/si-type';
 import { EmbeddedEntryModel } from './embedded-entry-model';
+import { SiEmbeddedEntry } from '../model/si-embedded-entry';
+import { SiTypeQualifier } from 'src/app/si/model/meta/si-type-qualifier';
 
 export interface EmbeddedEntriesInModel extends EmbeddedEntryModel {
 
@@ -13,7 +13,7 @@ export interface EmbeddedEntriesInModel extends EmbeddedEntryModel {
 
 	getPastCategory(): string|null;
 
-	getAllowedSiTypeQualifiers(): SiType[]|null;
+	getAllowedSiTypeQualifiers(): SiTypeQualifier[]|null;
 
 	setValues(values: SiEmbeddedEntry[]): void;
 }

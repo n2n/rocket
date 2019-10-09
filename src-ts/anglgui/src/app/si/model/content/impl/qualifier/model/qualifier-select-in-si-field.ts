@@ -4,8 +4,8 @@ import { SiEntryQualifier } from '../../../si-qualifier';
 import { QualifierSelectInModel } from '../comp/qualifier-select-in-model';
 import { InSiFieldAdapter } from '../../common/model/in-si-field-adapter';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
-import { TypeUiContent } from 'src/app/ui/structure/impl/type-si-content';
 import { QualifierSelectInFieldComponent } from '../comp/qualifier-select-in-field/qualifier-select-in-field.component';
+import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 
 export class QualifierSelectInSiField extends InSiFieldAdapter implements QualifierSelectInModel {
 

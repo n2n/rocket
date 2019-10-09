@@ -1,6 +1,5 @@
-
-import { MessageFieldModel } from 'src/app/si/content/field/message-field-model';
 import { SiEntryQualifier } from 'src/app/si/model/content/si-qualifier';
+import { MessageFieldModel } from '../../common/comp/message-field-model';
 
 export interface QualifierSelectInModel extends MessageFieldModel {
 

@@ -1,15 +1,14 @@
-import { SiPage } from '../model/si-page';
-import { SiDeclaration } from '../../../meta/si-declaration';
+import { SiPageCollection } from '../model/si-page-collection';
+import { SiComp } from '../../si-comp';
+import { SiEntryQualifierSelection } from '../model/si-entry-qualifier-selection';
 
 export interface EntriesListModel {
 
 	getApiUrl(): string;
 
-	getSiDeclaration(): SiDeclaration|null;
+	getSiPageCollection(): SiPageCollection;
 
-	setSiDeclaration(siDeclaration: SiDeclaration|null): void;
+	getSiComp(): SiComp;
 
-	getSiPages(): SiPage[];
-
-	addSiPage(siPage: SiPage): void;
+	getSiEntryQualifierSelection(): SiEntryQualifierSelection;
 }

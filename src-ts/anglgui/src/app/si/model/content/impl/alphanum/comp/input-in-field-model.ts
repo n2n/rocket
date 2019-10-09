@@ -1,6 +1,6 @@
 
 import { MessageFieldModel } from '../../common/comp/message-field-model';
-import { SiCrumbGroup } from '../../meta/si-crumb';
+import { SiCrumbGroup } from '../../meta/model/si-crumb';
 
 export interface InputInFieldModel extends MessageFieldModel {
 

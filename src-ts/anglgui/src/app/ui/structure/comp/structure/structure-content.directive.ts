@@ -1,42 +1,40 @@
 import { Directive } from '@angular/core';
 import { ViewContainerRef, Input, ComponentFactoryResolver } from '@angular/core';
-import { SiContent } from 'src/app/si/model/structure/si-content';
-import { SiCommanderService } from 'src/app/si/model/si-commander.service';
-import { UiStructure } from "src/app/si/model/structure/si-structure";
-import { IllegalSiStateError } from "src/app/si/model/illegal-si-state-error";
+import { UiStructure } from '../../model/ui-structure';
+import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
+import { UiContent } from '../../model/ui-content';
 
 @Directive({
 	selector: '[rocketUiContent]'
 })
 export class StructureContentDirective {
-		@Input()
-		public uiStructure: UiStructure;
-	private _siContent: SiContent|null = null;
+	@Input()
+	public uiStructure: UiStructure;
+	private _uiContent: UiContent|null = null;
 
 	constructor(public viewContainerRef: ViewContainerRef,
-			private componentFactoryResolver: ComponentFactoryResolver,
-			private siCommanderService: SiCommanderService) {
+			private componentFactoryResolver: ComponentFactoryResolver) {
 // 		viewContainerRef.element.nativeElement.classList.add('rocket-control');
 	}
 
-	@Input() set siContent(siContent: SiContent|null) {
-		if (this._siContent === siContent) {
+	@Input() set uiContent(uiContent: UiContent|null) {
+		if (this._uiContent === uiContent) {
 			return;
 		}
-		
-		this._siContent = siContent;
+
+		this._uiContent = uiContent;
 		this.viewContainerRef.clear();
 
 		if (!this.uiStructure) {
-						throw new IllegalSiStateError('Unknown UiStructure for content directive.');
-				}
-		
-		if (siContent) {
-				siContent.initComponent(this.viewContainerRef, this.componentFactoryResolver, this.uiStructure);
+			throw new IllegalSiStateError('Unknown UiStructure for content directive.');
+		}
+
+		if (uiContent) {
+				uiContent.initComponent(this.viewContainerRef, this.componentFactoryResolver, this.uiStructure);
 		}
 	}
 
-	get siContent(): SiContent|null {
-		return this._siContent;
+	get uiContent(): UiContent|null {
+		return this._uiContent;
 	}
 }

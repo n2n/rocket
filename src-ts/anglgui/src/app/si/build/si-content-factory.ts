@@ -1,7 +1,7 @@
 import { SiCompEssentialsFactory } from './si-comp-essentials-factory';
 import { SiDeclaration } from '../model/meta/si-declaration';
 import { ObjectMissmatchError, Extractor } from 'src/app/util/mapping/extractor';
-import { EntriesListSiComp } from '../model/comp/impl/model/entries-list-si-content';
+import { EntriesListSiComp } from '../model/comp/impl/model/entries-list-si-comp';
 import { SiMetaFactory } from './si-meta-factory';
 import { SiPage } from '../model/comp/impl/model/si-page';
 import { BulkyEntrySiComp } from '../model/comp/impl/model/bulky-entry-si-comp';
@@ -48,26 +48,26 @@ export class SiContentFactory {
 			case SiCompType.ENTRIES_LIST:
 				const listSiComp = new EntriesListSiComp(dataExtr.reqString('apiUrl'), dataExtr.reqNumber('pageSize'));
 
-				listSiComp.declaration = SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'));
+				listSiComp.pageCollection.declaration = SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'));
 
 				const partialContentData = dataExtr.nullaObject('partialContent');
 				if (partialContentData) {
 					const partialContent = new SiEntryFactory(listSiComp, declaration).createPartialContent(partialContentData);
 
-					listSiComp.size = partialContent.count;
-					listSiComp.putPage(new SiPage(1, partialContent.entries, null));
+					listSiComp.pageCollection.size = partialContent.count;
+					listSiComp.pageCollection.putPage(new SiPage(1, partialContent.entries, null));
 				}
 
 				return listSiComp;
 
 			case SiCompType.BULKY_ENTRY:
 				declaration = SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'));
-				const bulkyEntrySiContent = new BulkyEntrySiComp(declaration);
+				const bulkyEntryUiContent = new BulkyEntrySiComp(declaration);
 
-				compEssentialsFactory = new SiCompEssentialsFactory(bulkyEntrySiContent);
-				bulkyEntrySiContent.controls = compEssentialsFactory.createControls(dataExtr.reqArray('controls'));
-				bulkyEntrySiContent.entry = new SiEntryFactory(bulkyEntrySiContent, declaration).createEntry(dataExtr.reqObject('entry'));
-				return bulkyEntrySiContent;
+				compEssentialsFactory = new SiCompEssentialsFactory(bulkyEntryUiContent);
+				bulkyEntryUiContent.controls = compEssentialsFactory.createControls(dataExtr.reqArray('controls'));
+				bulkyEntryUiContent.entry = new SiEntryFactory(bulkyEntryUiContent, declaration).createEntry(dataExtr.reqObject('entry'));
+				return bulkyEntryUiContent;
 
 			case SiCompType.COMPACT_ENTRY:
 				declaration = SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'));
@@ -177,9 +177,9 @@ export class SiContentFactory {
 
 		const allowedSiTypesData = extr.nullaArray('allowedTypeQualifiers');
 		if (allowedSiTypesData) {
-			panel.allowedSiTypes = SiMetaFactory.createTypeQualifiers(allowedSiTypesData);
+			panel.allowedSiTypeQualifiers = SiMetaFactory.createTypeQualifiers(allowedSiTypesData);
 		} else {
-			panel.allowedSiTypes = null;
+			panel.allowedSiTypeQualifiers = null;
 		}
 
 		return panel;

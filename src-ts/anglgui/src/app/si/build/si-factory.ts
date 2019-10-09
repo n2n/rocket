@@ -1,4 +1,6 @@
-import { Extractor } from 'src/app/util/mapsrc/app/ui/structure/model/ui- { SiContentFactory } from './si-content-factory';
+import { UiBreadcrumb, UiZoneModel } from 'src/app/ui/structure/model/ui-zone';
+import { Extractor } from 'src/app/util/mapping/extractor';
+import { SiContentFactory } from './si-content-factory';
 
 export class UiZoneModelFactory {
 	createZoneModel(data: any): UiZoneModel {

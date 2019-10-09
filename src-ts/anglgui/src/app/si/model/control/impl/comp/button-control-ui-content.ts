@@ -1,6 +1,6 @@
 import { ButtonControlModel } from './button-control-model';
-import { TypeUiContent } from '../../../structure/impl/type-si-content';
 import { ButtonControlComponent } from './button-control/button-control.component';
+import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 
 export class ButtonControlUiContent extends TypeUiContent<ButtonControlComponent> {
 	constructor(model: ButtonControlModel) {

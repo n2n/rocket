@@ -1,5 +1,5 @@
 
-import { EmbeddedEntriesInSiContent } from './embedded-entries-in-si-content';
+import { EmbeddedEntriesInUiContent } from './embedded-entries-in-si-content';
 import { SiEmbeddedEntry } from './si-embedded-entry';
 import { InSiFieldAdapter } from '../../common/model/in-si-field-adapter';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
@@ -7,11 +7,11 @@ import { SiField } from '../../../si-field';
 
 export class EmbeddedEntryInSiField extends InSiFieldAdapter	{
 
-	content: EmbeddedEntriesInSiContent;
+	content: EmbeddedEntriesInUiContent;
 
 	constructor(apiUrl: string, values: SiEmbeddedEntry[] = []) {
 		super();
-		this.content = new EmbeddedEntriesInSiContent(apiUrl, values);
+		this.content = new EmbeddedEntriesInUiContent(apiUrl, values);
 	}
 
 	readInput(): object {

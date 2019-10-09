@@ -8,16 +8,16 @@
 	<h1>Kunde</h1>
 </header>
 
-<rocket-ui-structure [uiStructure]="uiStructure" [root]="true" class="rocket-content"></rocket-ui-structure>
+<div rocketUiStructure [uiStructure]="uiStructure" [root]="true" class="rocket-content"></div>
 
-<div *ngIf="hasSiZoneErrors()" class="rocket-additional">
+<div *ngIf="hasUiZoneErrors()" class="rocket-additional">
 	<ul class="rocket-additional-nav">
 		<li class="rocket-severity-danger rocket-active">{{ 'errors_txt' | translate }}</li>
 	</ul>
 	<div class="rocket-additional-container">
 		<div class="rocket-additional-content">
-			<div *ngFor="let siZoneError of siZoneErrors" class="rocket-error-index-entry">
-				<rocket-ui-message [message]="siZoneError.message" class="rocket-error-index-message">
+			<div *ngFor="let uiZoneError of uiZoneErrors" class="rocket-error-index-entry">
+				<rocket-ui-message [message]="uiZoneError.message" class="rocket-error-index-message">
 				</rocket-ui-message>
 				<a href="#">Fehler anzeigen</a>
 			</div>

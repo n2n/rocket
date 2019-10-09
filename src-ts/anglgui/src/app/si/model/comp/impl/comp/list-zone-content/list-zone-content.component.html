@@ -1,18 +1,18 @@
-<table *ngIf="model.declaration" class="table table-hover rocket-table">
+<table *ngIf="declared" class="table table-hover rocket-table">
 	<thead>
 		<tr>
 			<th *ngIf="selectable" class="rocket-entry-selector">
 			</th>
-			<th *ngFor="let siFieldDeclaration of getFieldDeclarations()">
-				{{ siFieldDeclaration.label }}
+			<th *ngFor="let siProp of getSiProps()">
+				{{ siProp.label }}
 			</th>
 			<th>
 			</th>
 		</tr>
 	</thead>
 	<tbody>
-		<ng-container *ngFor="let page of model.getVisiblePages()">
-			<tr *ngFor="let siEntry of page.entries" rocketUiEntry [siEntry]="siEntry">
+		<ng-container *ngFor="let structurePage of getVisibleStructurePages()">
+			<tr *ngFor="let siEntry of structurePage.siPage.entries" rocketUiEntry [siEntry]="siEntry">
 				<td *ngIf="selectable" class="rocket-entry-selector" (click)="toggleSelection(siEntry.qualifier)">
 					<ng-container *ngIf="singleSelect">
 						<input type="radio" 
@@ -25,9 +25,9 @@
 								[disabled]="!areMoreSelectable() && !isSelected(siEntry.qualifier)" />
 					</ng-container> 
 				</td>
-				<td *ngFor="let siFieldDeclaration of getFieldDeclarations()" (click)="toggleSelection(siEntry.qualifier)">
-					<ng-template rocketUiContent [uiStructure]="uiStructure" 
-							[uiContent]="siEntry.selectedTypeBuildup.getFieldById(siFieldDeclaration.fieldId).getContent()"></ng-template>
+				<td *ngFor="let fieldUiStructure of structurePage.fieldUiStructuresOf(siEntry.identifier.id)"
+						rocketUiStructure [uiStructure]="fieldUiStructure" 
+						(click)="toggleSelection(siEntry.qualifier)">
 				</td>
 				<td class="rocket-table-commands rocket-simple-commands">
 					<ng-container *ngFor="let pair of siEntry.selectedTypeBuildup.controlMap | keyvalue">

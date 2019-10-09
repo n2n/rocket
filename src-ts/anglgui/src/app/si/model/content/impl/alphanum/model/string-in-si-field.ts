@@ -1,12 +1,12 @@
-
-import { SiCrumbGroup } from '../meta/si-crumb';
-import { Message } from 'src/app/util/i18n/message';
-import { InSiFieldAdapter } from '../common/model/in-si-field-adapter';
-import { InputInFieldModel } from '../alphanum/comp/input-in-field-model';
-import { SiField } from '../../si-field';
-import { TypeUiContent } from 'src/app/ui/structure/impl/type-si-content';
+import { InSiFieldAdapter } from '../../common/model/in-si-field-adapter';
+import { InputInFieldModel } from '../comp/input-in-field-model';
+import { SiCrumbGroup } from '../../meta/model/si-crumb';
+import { SiField } from '../../../si-field';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
-import { InputInFieldComponent } from '../alphanum/comp/input-in-field/input-in-field.component';
+import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
+import { InputInFieldComponent } from '../comp/input-in-field/input-in-field.component';
+import { Message } from 'src/app/util/i18n/message';
+
 
 export class StringInSiField extends InSiFieldAdapter implements InputInFieldModel {
 	public mandatory = false;

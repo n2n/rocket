@@ -1,8 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ButtonControlModel } from '../button-control-model';
 import { SiUiService } from 'src/app/si/manage/si-ui.service';
-import { UiStructure } from 'src/app/si/model/structure/ui-structure';
 import { SiButton } from '../../model/si-button';
+import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 
 @Component({
 	selector: 'rocket-button-control',

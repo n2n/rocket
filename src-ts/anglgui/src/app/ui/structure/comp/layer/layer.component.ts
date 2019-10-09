@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Input } from "@angular/core";
-import { SiLayer } from "src/app/si/model/structure/si-layer";
+import { Component, OnInit, Input } from '@angular/core';
+import { UiLayer } from '../../model/ui-layer';
 
 @Component({
 	selector: 'rocket-ui-layer',
@@ -9,7 +8,7 @@ import { SiLayer } from "src/app/si/model/structure/si-layer";
 })
 export class LayerComponent implements OnInit {
 		@Input()
-		siLayer: SiLayer;
+		uiLayer: UiLayer;
 
 		constructor() { }
 

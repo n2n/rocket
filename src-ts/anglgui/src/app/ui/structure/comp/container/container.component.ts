@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Input } from "@angular/core";
-import { SiContainer } from "src/app/si/model/structure/si-container";
+import { Component, OnInit, Input } from '@angular/core';
+import { UiContainer } from '../../model/ui-container';
 
 @Component({
 	selector: 'rocket-ui-container',
@@ -8,12 +7,11 @@ import { SiContainer } from "src/app/si/model/structure/si-container";
 	styleUrls: ['./container.component.css']
 })
 export class ContainerComponent implements OnInit {
-		@Input()
-		siContainer: SiContainer;
+	@Input()
+	uiContainer: UiContainer;
 
-		constructor() { }
+	constructor() { }
 
-		ngOnInit() {
-		}
-
+	ngOnInit() {
+	}
 }

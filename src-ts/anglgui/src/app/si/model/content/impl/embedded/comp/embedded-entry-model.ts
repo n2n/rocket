@@ -1,5 +1,5 @@
+import { SiEmbeddedEntry } from '../model/si-embedded-entry';
 
-import { SiEmbeddedEntry } from 'src/app/si/model/content/impl/embedded/si-embedded-entry';
 
 export interface EmbeddedEntryModel {
 

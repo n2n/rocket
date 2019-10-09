@@ -1,16 +1,15 @@
-
-import { UiStructureType } from 'src/app/si/model/content/si-field-structure-declaration';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { UiZoneError } from 'src/app/si/model/structure/ui-zone-error';
-import { UiStructureModel } from 'src/app/si/model/structure/ui-structure-model';
-import { SiControl } from 'src/app/si/model/control/si-control';
 import { UiZone } from './ui-zone';
-import { IllegalSiStateError } from '../../util/illegal-si-state-error';
+import { UiStructureModel } from './ui-structure-model';
+import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
+import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
+import { UiZoneError } from './ui-zone-error';
+import { UiContent } from './ui-content';
 
 export class UiStructure {
 	private children: UiStructure[] = [];
 	private visibleSubject = new BehaviorSubject<boolean>(true);
-	controls: SiControl[] = [];
+	controls: UiContent[] = [];
 
 	private disposed = false;
 

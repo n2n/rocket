@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { TogglerInModel } from '../../toggler-in-model';
+import { TogglerInModel } from '../toggler-in-model';
 
 @Component({
 	selector: 'rocket-toggler-in-field',

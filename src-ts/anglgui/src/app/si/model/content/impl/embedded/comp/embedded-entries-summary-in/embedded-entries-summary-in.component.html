@@ -7,7 +7,7 @@
 		<rocket-ui-add-past [obtainer]="obtainer" [allowedSiTypes]="model.getAllowedSiTypes()" type="reduced"
 				(newEntry)="addBefore($event, embe)"></rocket-ui-add-past>
 
-		<rocket-ui-structure class="rocket-summary" 
+		<div rocketUiStructure class="rocket-summary" 
 					[uiStructure]="embe.summaryUiStructure" [siControlsVisible]="false">
 			<ng-container pre-content>
 				<div [class.d-none]="!model.isSortable()" cdkDragHandle class="rocket-handle">
@@ -35,7 +35,7 @@
 					</button>
 				</div>
 			</ng-container>
-		</rocket-ui-structure>
+		</div>
 	</div>
 
 	<rocket-ui-add-past [obtainer]="obtainer" [allowedSiTypes]="model.getAllowedSiTypes()" 
