@@ -31,16 +31,16 @@ use rocket\ei\manage\entry\UnknownEiObjectException;
 use rocket\ei\util\entry\EiuEntry;
 use rocket\ei\manage\gui\ViewMode;
 use n2n\web\http\controller\impl\ControllingUtils;
-use rocket\si\structure\impl\EntriesListSiComp;
+use rocket\si\content\impl\basic\EntriesListSiComp;
 use rocket\si\SiPayloadFactory;
 use n2n\persistence\orm\criteria\Criteria;
 use n2n\persistence\orm\util\NestedSetUtils;
 use n2n\persistence\orm\util\NestedSetStrategy;
 use rocket\ei\util\gui\EiuGui;
-use rocket\si\structure\SiEntryDeclaration;
+use rocket\si\meta\SiDeclaration;
 use rocket\si\content\SiPartialContent;
 use rocket\si\content\SiEntry;
-use rocket\si\structure\impl\BulkyEntrySiComp;
+use rocket\si\content\impl\basic\BulkyEntrySiComp;
 
 class EiuCtrl {
 	private $eiu;
@@ -283,14 +283,12 @@ class EiuCtrl {
 		
 		$this->composeEiuGuiForList($eiuGui, $pageSize);
 		
-		$siEntryDeclaration = new SiEntryDeclaration();
-		$siEntryDeclaration->putFieldDeclarations($this->eiuFrame->getContextEiType()->getId(), 
-				$eiuGui->getEiGui()->getEiGuiSiFactory()->getSiFieldDeclarations());
+		$siDeclaration = $eiuGui->getEiGui()->createSiDeclaration();
 		
-		$zone = new EntriesListSiComp($this->eiu->frame()->getApiUrl(), $pageSize, $siEntryDeclaration, 
+		$siComp = new EntriesListSiComp($this->eiu->frame()->getApiUrl(), $pageSize, $siDeclaration, 
 				new SiPartialContent($this->eiuFrame->countEntries(), $eiuGui->getEiGui()->createSiEntries()));
 		
-		$this->httpContext->getResponse()->send(SiPayloadFactory::createFromContent($zone));
+		$this->httpContext->getResponse()->send(SiPayloadFactory::createFromContent($siComp));
 	}
 	
 	
@@ -338,11 +336,11 @@ class EiuCtrl {
 		
 		$eiTypeId = $this->eiuFrame->engine()->type()->getId();
 		
-		$siEntryDeclaration = new SiEntryDeclaration([]);
-		$siEntryDeclaration->putFieldStructureDeclarations($eiTypeId, 
-				$eiGui->getEiGuiSiFactory()->getSiFieldStructureDeclarations());
+		$siDeclaration = new SiDeclaration([]);
+		$siDeclaration->putFieldStructureDeclarations($eiTypeId, 
+				$eiGui->getEiGuiSiFactory()->getSiStructureDeclarations());
 		
-		$zone = new BulkyEntrySiComp($siEntryDeclaration,
+		$zone = new BulkyEntrySiComp($siDeclaration,
 				$eiuEntryGui->createSiEntry(), $eiGui->createGeneralSiControls());
 		
 		$this->httpContext->getResponse()->send(SiPayloadFactory::createFromContent($zone));
@@ -353,16 +351,16 @@ class EiuCtrl {
 		
 		$siEntry = new SiEntry($contextEiuType->supremeType()->getId(), !$editable, true);
 		
-		$siEntryDeclaration = new SiEntryDeclaration(
+		$siDeclaration = new SiDeclaration(
 				$this->eiuFrame->newGui(ViewMode::determine(true, !$editable, true)->createGeneralSiControls()));
 		
 		if (!$contextEiuType->isAbstract()) {
 			$typeId = $contextEiuType->getId();
 			$eiEntryGui = $this->eiuFrame->newEntry()->newEntryGui()->getEiEntryGui();
 			
-			$siEntry->putBuildup($typeId, $eiEntryGui->createSiTypeBuildup());
-			$siEntryDeclaration->putFieldStructureDeclarations(
-					$eiEntryGui->getEiEntry()->getEiGuiSiFactory()->getSiFieldStructureDeclaration());
+			$siEntry->putBuildup($typeId, $eiEntryGui->createSiEntryBuildup());
+			$siDeclaration->putFieldStructureDeclarations(
+					$eiEntryGui->getEiEntry()->getEiGuiSiFactory()->getSiStructureDeclaration());
 		}
 		
 		foreach ($contextEiuType->allSubTypes() as $eiuType) {
@@ -375,8 +373,8 @@ class EiuCtrl {
 			$eiEntryGui = $eiuEntryGui->getEiEntryGui();
 			
 			$siEntry->putBuildup($typeId, $eiEntryGui->createSiBuildup());
-			$siEntryDeclaration->putFieldStructureDeclarations($typeId, 
-					$eiEntryGui->getEiGui()->getEiGuiSiFactory()->getSiFieldStructureDeclaration());
+			$siDeclaration->putFieldStructureDeclarations($typeId, 
+					$eiEntryGui->getEiGui()->getEiGuiSiFactory()->getSiStructureDeclaration());
 		}
 		
 		if (!empty($siEntry->getBuildups())) {
@@ -384,7 +382,7 @@ class EiuCtrl {
 					. ' because this type is abstract and doesn\'t have any sub EiTypes.');
 		}
 		
-		$zone = new BulkyEntrySiComp($this->eiu->frame()->getApiUrl(), $siEntryDeclaration, $siEntry);
+		$zone = new BulkyEntrySiComp($this->eiu->frame()->getApiUrl(), $siDeclaration, $siEntry);
 		
 		$this->httpContext->getResponse()->send(SiPayloadFactory::createFromContent($zone));
 	}

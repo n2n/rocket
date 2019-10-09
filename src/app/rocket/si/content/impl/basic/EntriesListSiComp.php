@@ -19,35 +19,35 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\si\structure\impl;
+namespace rocket\si\content\impl\basic;
 
 use n2n\util\uri\Url;
-use rocket\si\structure\SiEntryDeclaration;
+use rocket\si\meta\SiDeclaration;
 use rocket\si\content\SiPartialContent;
-use rocket\si\structure\SiComp;
+use rocket\si\content\SiComp;
 
 class EntriesListSiComp implements SiComp {
 	private $apiUrl;
 	private $pageSize;
-	private $entryDeclaration;
+	private $declaration;
 	private $partialContent;
 	
 	/**
 	 * @param Url $apiUrl
 	 * @param int $pageSize
-	 * @param SiEntryDeclaration $siCompactContent
+	 * @param SiDeclaration $siCompactContent
 	 */
-	public function __construct(Url $apiUrl, int $pageSize, SiEntryDeclaration $entryDeclaration = null,
+	public function __construct(Url $apiUrl, int $pageSize, SiDeclaration $declaration = null,
 			SiPartialContent $partialContent = null) {
 		$this->apiUrl = $apiUrl;
 		$this->pageSize = $pageSize;
-		$this->entryDeclaration = $entryDeclaration;
+		$this->declaration = $declaration;
 		$this->partialContent = $partialContent;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\si\structure\SiComp::getTypeName()
+	 * @see \rocket\si\content\SiComp::getTypeName()
 	 */
 	public function getTypeName(): string {
 		return 'entries-list';
@@ -69,7 +69,7 @@ class EntriesListSiComp implements SiComp {
 	
 	/**
 	 * @param int $pageSize
-	 * @return \rocket\si\structure\impl\EntriesListSiContent
+	 * @return \rocket\si\content\impl\basic\EntriesListSiComp
 	 */
 	public function setPageSize(int $pageSize) {
 		$this->pageSize = $pageSize;
@@ -92,13 +92,13 @@ class EntriesListSiComp implements SiComp {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\si\structure\SiComp::getData()
+	 * @see \rocket\si\content\SiComp::getData()
 	 */
 	public function getData(): array {
 		return [
 			'apiUrl' => (string) $this->apiUrl,
 			'pageSize' => $this->pageSize,
-			'entryDeclaration' => $this->entryDeclaration,
+			'declaration' => $this->declaration,
 			'partialContent' => $this->partialContent
 		];
 	}

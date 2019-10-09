@@ -41,7 +41,7 @@ use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\ei\manage\frame\Boundry;
 use rocket\ei\manage\security\InaccessibleEiCommandPathException;
-use rocket\si\structure\SiStructureType;
+use rocket\si\meta\SiStructureType;
 
 abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 	

@@ -25,7 +25,7 @@ use rocket\ei\manage\gui\field\GuiFieldPath;
 use n2n\util\type\ArgUtils;
 use rocket\ei\manage\gui\EiGui;
 use rocket\ei\manage\gui\GuiException;
-use rocket\si\structure\SiStructureType;
+use rocket\si\meta\SiStructureType;
 
 class DisplayStructure {
 	private $displayItems = array();

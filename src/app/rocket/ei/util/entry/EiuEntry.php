@@ -694,17 +694,17 @@ class EiuEntry {
 	}
 	
 	/**
-	 * @return \rocket\si\content\SiQualifier
+	 * @return \rocket\si\content\SiEntryQualifier
 	 */
-	function createSiQualifier() {
-		$siType = $this->mask()->createSiType();
+	function createSiEntryQualifier() {
+		$siType = $this->mask()->createSiTypeQualifier();
 		$idName = $this->createIdentityString();
 		
 		if ($this->eiuObject !== null) {
-			return $this->eiuObject->getEiObject()->createSiIdentifier()->toQualifier($siType, $idName);
+			return $this->eiuObject->getEiObject()->createSiEntryIdentifier()->toQualifier($siType, $idName);
 		}
 		
-		return $this->eiEntry->getEiObject()->createSiIdentifier()->toQualifier($siType, $idName);
+		return $this->eiEntry->getEiObject()->createSiEntryIdentifier()->toQualifier($siType, $idName);
 	}
 }  
 
@@ -730,11 +730,11 @@ class EiuEntry {
 
 class DummyEiGuiSiFactory implements EiGuiSiFactory {
 	
-	public function getSiFieldStructureDeclarations(): array {
+	public function getSiStructureDeclarations(): array {
 		throw new NotYetImplementedException();
 	}
 
-	public function getSiFieldDeclarations(): array {
+	public function getSiProps(): array {
 		throw new NotYetImplementedException();
 	}
 }

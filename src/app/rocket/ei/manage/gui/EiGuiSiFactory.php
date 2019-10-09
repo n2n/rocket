@@ -2,14 +2,9 @@
 namespace rocket\ei\manage\gui;
 
 interface EiGuiSiFactory {
-
-	/**
-	 * @return \rocket\si\structure\SiFieldDeclaration[]
-	 */
-	public function getSiFieldDeclarations(): array;	
 	
 	/**
-	 * @return \rocket\si\structure\SiFieldStructureDeclaration
+	 * @return \rocket\si\meta\SiStructureDeclaration
 	 */
-	public function getSiFieldStructureDeclarations(): array;
+	public function getSiStructureDeclarations(): array;
 }

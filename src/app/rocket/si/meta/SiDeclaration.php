@@ -19,71 +19,48 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\si\content;
+namespace rocket\si\meta;
 
 use n2n\util\type\ArgUtils;
 
-class SiPartialContent implements \JsonSerializable {
-	private $count;
-	private $offset = 0;
-	private $entries;
-	
-
+class SiDeclaration implements \JsonSerializable {
 	/**
-	 * @param int $count
-	 * @param SiEntry[] $entries
+	 * @var \rocket\si\meta\SiTypeDeclaration[]
 	 */
-	function __construct(int $count, array $entries = []) {
-		$this->count = $count;
-		$this->setEntries($entries);
+	private $typeDeclarations = [];
+	
+	/**
+	 * @param SiTypeDeclaration[] $typedDeclarations
+	 */
+	function __construct(array $typedDeclarations = []) {
+		$this->setTypeDeclarations($typedDeclarations);
 	}
 	
 	/**
-	 * @return int
-	 */
-	public function getOffset() {
-		return $this->offset;
-	}
-	
-	/**
-	 * @param int $offset
-	 */
-	public function setOffset(int $offset) {
-		$this->offset = $offset;
-		return $this;
-	}
-	
-	/**
-	 * @return int
-	 */
-	function getCount() {
-		return $this->count;
-	}
-	
-	/**
-	 * @param int $count
-	 * @return \rocket\si\content\SiPartialContent
-	 */
-	function setCount(int $count) {
-		$this->count = $count;
-		return $this;
-	}
-
-	/**
-	 * @param SiEntry[] $siEntries
+	 * @param SiTypeDeclaration[] $typedDeclarations
 	 * @return \rocket\si\meta\SiDeclaration
 	 */
-	function setEntries(array $entries) {
-		ArgUtils::valArray($entries, SiEntry::class);
-		$this->entries = $entries;
+	function setTypeDeclarations(array $typedDeclarations) {
+		ArgUtils::valArray($typedDeclarations, SiTypeDeclaration::class);
+		$this->siTypeDeclarations = $typedDeclarations;
 		return $this;
 	}
 	
 	/**
-	 * @return SiEntry[]
+	 * @param string $typeId
+	 * @param SiTypeDeclaration $typeDeclaration
+	 * @return SiDeclaration
 	 */
-	function getEntries() {
-		return $this->entries;
+	function addTypeDeclaration(SiTypeDeclaration $typeDeclaration) {
+		$this->siTypeDeclarations[] = $typeDeclaration;
+		return $this;
+	}
+	
+	/**
+	 * @return SiTypeDeclaration[]
+	 */
+	function getTypeDeclarations() {
+		return $this->siTypeDeclarations;
 	}
 	
 	/**
@@ -92,9 +69,8 @@ class SiPartialContent implements \JsonSerializable {
 	 */
 	function jsonSerialize() {
 		return [
-			'entries' => $this->entries,
-			'count' => $this->count,
-			'offset' => $this->offset
+			'typeDeclarations' => $this->siTypeDeclarations,
+			'fieldStructureDeclarationsMap' => $this->fieldStructureDeclarationsMap
 		];
 	}
 }

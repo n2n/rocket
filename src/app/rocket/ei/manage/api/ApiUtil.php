@@ -25,7 +25,7 @@ use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\EiObject;
 use rocket\ei\manage\gui\EiEntryGui;
 use n2n\util\type\ArgUtils;
-use rocket\si\structure\SiEntryDeclaration;
+use rocket\si\meta\SiDeclaration;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\EiEngineUtil;
 use rocket\si\content\SiEntry;
@@ -45,8 +45,8 @@ class ApiUtil {
 	 * @param EiEntryGui[]
 	 * @return \rocket\ei\manage\gui\EiGui
 	 */
-	function createMultiBuildupSiEntryDeclaration(array $eiEntryGuis) {
-		$declaration = new SiEntryDeclaration();
+	function createMultiBuildupSiDeclaration(array $eiEntryGuis) {
+		$declaration = new SiDeclaration();
 		
 		foreach ($eiEntryGuis as $eiEntryGui) {
 			ArgUtils::assertTrue($eiEntryGui instanceof EiEntryGui);
@@ -54,8 +54,8 @@ class ApiUtil {
 			$typeId = $eiEntryGui->getEiEntry()->getEiType()->getId();
 			$factory = $eiEntryGui->getEiGui()->getEiGuiSiFactory();
 			
-			$declaration->putFieldStructureDeclarations($typeId, $factory->getSiFieldStructureDeclarations());
-			$declaration->putFieldDeclarations($typeId, $factory->getSiFieldDeclarations());
+			$declaration->addTypeDeclaration($typeDeclaration)putFieldStructureDeclarations($typeId, $factory->getSiStructureDeclarations());
+			$declaration->putFieldDeclarations($typeId, $factory->getSiProps());
 		}
 		
 		return $declaration;
@@ -64,14 +64,14 @@ class ApiUtil {
 	
 	/**
 	 * @param EiGui $eiGui
-	 * @return SiEntryDeclaration
+	 * @return SiDeclaration
 	 */
-	function createSiEntryDeclaration(EiGui $eiGui) {
+	function createSiDeclaration(EiGui $eiGui) {
 		$typeId = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()->getId();
 		
-		$declaration = new SiEntryDeclaration();
-		$declaration->putFieldDeclarations($typeId, $eiGui->getEiGuiSiFactory()->getSiFieldDeclarations());
-		$declaration->putFieldStructureDeclarations($typeId, $eiGui->getEiGuiSiFactory()->getSiFieldStructureDeclarations());
+		$declaration = new SiDeclaration();
+		$declaration->putFieldDeclarations($typeId, $eiGui->getEiGuiSiFactory()->getSiProps());
+		$declaration->putFieldStructureDeclarations($typeId, $eiGui->getEiGuiSiFactory()->getSiStructureDeclarations());
 		
 		return $declaration;
 	}
@@ -79,10 +79,10 @@ class ApiUtil {
 	
 	/**
 	 * @param EiObject $eiObject
-	 * @return \rocket\si\content\SiQualifier
+	 * @return \rocket\si\content\SiEntryQualifier
 	 */
-	function createSiQualifier(EiObject $eiObject) {
-		return $eiObject->createSiQualifier($this->eiEngineUtil->createIdName(), true);
+	function createSiEntryQualifier(EiObject $eiObject) {
+		return $eiObject->createSiEntryQualifier($this->eiEngineUtil->createIdName(), true);
 	}
 	
 // 	/**
@@ -91,14 +91,14 @@ class ApiUtil {
 // 	 * @return \rocket\si\content\SiEntry
 // 	 */
 // 	function createSiEntry(EiObject $eiObject, array $eiEntryGuis) {
-// 		$siEntry = new SiEntry($eiObject->createSiQualifier($eiObject), 
+// 		$siEntry = new SiEntry($eiObject->createSiEntryQualifier($eiObject), 
 // 				ViewMode::isReadOnly($this->eiGui->getViewMode()));
 		
 // 		foreach ($eiEntryGuis as $eiEntryGui) {
 // 			ArgUtils::assertTrue($eiEntryGui instanceof EiEntryGui);
 // 			$declaration->putFieldStructureDeclarations(
 // 					$eiEntryGui->getEiEntry()->getEiType()->getId(),
-// 					$eiEntryGui->getEiGui()->getEiGuiSiFactory()->getSiFieldStructureDeclarations());
+// 					$eiEntryGui->getEiGui()->getEiGuiSiFactory()->getSiStructureDeclarations());
 // 		}
 		
 // 		return $siEntry;

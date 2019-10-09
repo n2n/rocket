@@ -28,15 +28,14 @@ use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\manage\gui\field\GuiFieldPath;
 use rocket\ei\manage\gui\field\GuiFieldFork;
 use rocket\ei\manage\gui\field\GuiField;
-use rocket\si\content\SiTypeBuildup;
+use rocket\si\content\SiEntryBuildup;
 use rocket\si\content\SiEntry;
 use rocket\ei\manage\gui\control\GuiControlPath;
 use rocket\ei\manage\api\ApiControlCallId;
 use rocket\si\input\SiEntryInput;
-use rocket\si\structure\impl\BulkyEntrySiComp;
-use rocket\si\structure\impl\CompactEntrySiComp;
+use rocket\si\content\impl\basic\BulkyEntrySiComp;
+use rocket\si\content\impl\basic\CompactEntrySiComp;
 use n2n\util\type\attrs\AttributesException;
-use n2n\impl\web\dispatch\ui\IllegalFormStateException;
 
 class EiEntryGui {
 	/**
@@ -334,25 +333,25 @@ class EiEntryGui {
 	 */
 	function createSiEntry(bool $siControlsIncluded = true) {
 		$eiType = $this->eiEntry->getEiType();
-		$siIdentifier = $this->eiEntry->getEiObject()->createSiIdentifier();
+		$siIdentifier = $this->eiEntry->getEiObject()->createSiEntryIdentifier();
 		$viewMode = $this->eiGui->getViewMode();
 
 		$siEntry = new SiEntry($siIdentifier, ViewMode::isReadOnly($viewMode), ViewMode::isBulky($viewMode));
-		$siEntry->putBuildup($eiType->getId(), $this->createSiTypeBuildup($siControlsIncluded));
+		$siEntry->putBuildup($eiType->getId(), $this->createSiEntryBuildup($siControlsIncluded));
 		$siEntry->setSelectedTypeId($eiType->getId());
 
 		return $siEntry;
 	}
 	
 	/**
-	 * @return SiTypeBuildup
+	 * @return SiEntryBuildup
 	 */
-	function createSiTypeBuildup(bool $siControlsIncluded = true) {
+	function createSiEntryBuildup(bool $siControlsIncluded = true) {
 		$eiEntry = $this->eiEntry;
 		$eiFrame = $this->eiGui->getEiFrame();
 		
 		$n2nLocale = $eiFrame->getN2nContext()->getN2nLocale();
-		$type = $eiEntry->getEiMask()->createSiType($n2nLocale);
+		$typeId = $eiEntry->getEiMask()->getEiType()->getId();
 		$idName = null;
 		if (!$eiEntry->isNew()) {
 			$deterIdNameDefinition = $eiFrame->getManageState()->getDef()
@@ -361,7 +360,7 @@ class EiEntryGui {
 					$n2nLocale);
 		}
 		
-		$siEntry = new SiTypeBuildup($type, $idName);
+		$siEntry = new SiEntryBuildup($typeId, $idName);
 		
 		foreach ($this->guiFields as $guiFieldPathStr => $guiField) {
 			$siEntry->putField($guiFieldPathStr, $guiField->getSiField());
@@ -384,11 +383,11 @@ class EiEntryGui {
 		
 	/**
 	 * @param bool $controlsIncluded
-	 * @return \rocket\si\structure\impl\BulkyEntrySiContent
+	 * @return \rocket\si\content\impl\basic\BulkyEntrySiComp
 	 */
-	function createCompactEntrySiContent(bool $generalSiControlsIncluded = true,
+	function createCompactEntrySiComp(bool $generalSiControlsIncluded = true,
 			bool $entrySiControlsIncluded = true) {
-		$siContent = new CompactEntrySiComp($this->eiGui->createSiEntryDeclaration(),
+		$siContent = new CompactEntrySiComp($this->eiGui->createSiDeclaration(),
 				$this->createSiEntry($entrySiControlsIncluded));
 		
 		if ($generalSiControlsIncluded) {
@@ -400,11 +399,11 @@ class EiEntryGui {
 	
 	/**
 	 * @param bool $controlsIncluded
-	 * @return \rocket\si\structure\impl\BulkyEntrySiContent
+	 * @return \rocket\si\content\impl\basic\BulkyEntrySiComp
 	 */
-	function createBulkyEntrySiContent(bool $generalSiControlsIncluded = true,
+	function createBulkyEntrySiComp(bool $generalSiControlsIncluded = true,
 			bool $entrySiControlsIncluded = true) {
-		$siContent = new BulkyEntrySiComp($this->eiGui->createSiEntryDeclaration(),
+		$siContent = new BulkyEntrySiComp($this->eiGui->createSiDeclaration(),
 				$this->createSiEntry($entrySiControlsIncluded));
 		
 		if ($generalSiControlsIncluded) {

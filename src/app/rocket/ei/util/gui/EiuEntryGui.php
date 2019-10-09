@@ -102,21 +102,21 @@ class EiuEntryGui {
 	/**
 	 * @param bool $generalSiControlsIncluded
 	 * @param bool $entrySiControlsIncluded
-	 * @return \rocket\si\structure\impl\BulkyEntrySiContent
+	 * @return \rocket\si\content\impl\basic\BulkyEntrySiComp
 	 */
-	function createCompactEntrySiContent(bool $generalSiControlsIncluded = true,
+	function createCompactEntrySiComp(bool $generalSiControlsIncluded = true,
 			bool $entrySiControlsIncluded = true) {
-		return $this->eiEntryGui->createCompactEntrySiContent($generalSiControlsIncluded, $entrySiControlsIncluded);
+		return $this->eiEntryGui->createCompactEntrySiComp($generalSiControlsIncluded, $entrySiControlsIncluded);
 	}
 	
 	/**
 	 * @param bool $generalSiControlsIncluded
 	 * @param bool $entrySiControlsIncluded
-	 * @return \rocket\si\structure\impl\BulkyEntrySiContent
+	 * @return \rocket\si\content\impl\basic\BulkyEntrySiComp
 	 */
-	function createBulkyEntrySiContent(bool $generalSiControlsIncluded = true,
+	function createBulkyEntrySiComp(bool $generalSiControlsIncluded = true,
 			bool $entrySiControlsIncluded = true) {
-		return $this->eiEntryGui->createBulkyEntrySiContent($generalSiControlsIncluded, $entrySiControlsIncluded);
+		return $this->eiEntryGui->createBulkyEntrySiComp($generalSiControlsIncluded, $entrySiControlsIncluded);
 	}
 	
 	/**

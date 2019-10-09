@@ -19,68 +19,82 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\si\content;
+namespace rocket\si\meta;
 
-use n2n\util\type\attrs\DataSet;
+use n2n\util\type\ArgUtils;
 
 class SiType implements \JsonSerializable {
-    private $typeId;
-	private $name;
-	private $iconClass;
+	/**
+	 * @var SiTypeQualifier
+	 */	
+	private $qualifier;
+	/**
+	 * @var SiProp[]
+	 */
+	private $props;
 	
-	function __construct(string $typeId, string $name, string $iconClass) {
-		$this->typeId = $typeId;
-		$this->name = $name;
-		$this->iconClass = $iconClass;
+	/**
+	 * @param SiProp[] $fieldDeclarations
+	 */
+	function __construct(SiTypeQualifier $qualifier, array $props = []) {
+		$this->qualifier = $qualifier;
+		$this->setProps($props);
 	}
 	
 	/**
-	 * @return string
+	 * @param SiProp[] $props
+	 * @return \rocket\si\meta\SiProp
 	 */
-	function getTypeId() {
-		return $this->typeId;
-	}
-	
-	/**
-	 * @param string $id
-	 * @return \rocket\si\content\SiType
-	 */
-	function setTypeId(string $typeId) {
-		$this->typeId = $typeId;
+	function setProps(array $props) {
+		ArgUtils::valArray($props, SiProp::class);
+		$this->props = $props;
 		return $this;
 	}
 	
 	/**
-	 * @return string
+	 * @param string $typeId
+	 * @param SiProp[] $fieldDeclarations
+	 * @return SiType
 	 */
-	function getName() {
-		return $this->name;
-	}
-	
-	/**
-	 * @param string $name
-	 * @return SiQualifier
-	 */
-	function setName(string $name) {
-		$this->name = $name;
+	function addProp(SiProp $prop) {
+	    $this->props[] = $prop;
 		return $this;
 	}
 	
-	function jsonSerialize() {
-		return [
-		    'typeId' => $this->typeId,
-			'name' => $this->name,
-			'iconClass' => $this->iconClass
-		];
+	/**
+	 * @return SiProp[]
+	 */
+	function getProps() {
+		return $this->props;
 	}
 
-	static function parse(array $data) {
-		$ds = new DataSet($data);
-		
-		try {
-			return new SiType($ds->reqString('typeId'), $ds->reqString('name'), $ds->reqString('iconClass'));
-		} catch (\n2n\util\type\attrs\AttributesException $e) {
-			throw new \InvalidArgumentException(null, null, $e);
-		}
+	
+	/**
+	 * @param SiTypeQualifier $qualifier
+	 * @return SiType
+	 */
+	function setQualifier(SiTypeQualifier $qualifier) {
+		$this->qualifier = $qualifier;
+		return $this;
+	}
+	
+	
+	
+	/**
+	 * @return array
+	 */
+	function getQualifier() {
+		return $this->qualifier;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \JsonSerializable::jsonSerialize()
+	 */
+	function jsonSerialize() {
+		return [
+			'props' => $this->props,
+			'qualifier' => $this->qualifier
+		];
 	}
 }

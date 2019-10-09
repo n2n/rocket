@@ -22,7 +22,7 @@
 namespace rocket\si;
 
 use n2n\web\http\payload\impl\JsonPayload;
-use rocket\si\structure\SiComp;
+use rocket\si\content\SiComp;
 use n2n\util\type\ArgUtils;
 use rocket\si\control\SiControl;
 
@@ -53,14 +53,14 @@ class SiPayloadFactory extends JsonPayload {
 	}
 	
 	/**
-	 * @param array $contents
+	 * @param array $comps
 	 * @return array
 	 */
-	static function createDataFromContents(array $contents) {
-		ArgUtils::valArray($contents, SiContent::class);
+	static function createDataFromContents(array $comps) {
+		ArgUtils::valArray($comps, SiComp::class);
 		
 		$json = [];
-		foreach ($contents as $key => $content) {
+		foreach ($comps as $key => $content) {
 			$json[$key] = self::createDataFromContent($content);
 		}
 		return $json;

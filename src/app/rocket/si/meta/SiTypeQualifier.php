@@ -19,76 +19,69 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\si\content;
+namespace rocket\si\meta;
 
 use n2n\util\type\attrs\DataSet;
 
-class SiIdentifier implements \JsonSerializable {
+class SiTypeQualifier implements \JsonSerializable {
 	private $category;
-	private $id;
+    private $id;
+	private $name;
+	private $iconClass;
 	
-	function __construct(string $category, ?string $id) {
+	function __construct(string $category, string $id, string $name, string $iconClass) {
 		$this->category = $category;
 		$this->id = $id;
+		$this->name = $name;
+		$this->iconClass = $iconClass;
 	}
 	
 	/**
 	 * @return string
-	 */
-	function getCategory() {
-		return $this->category;
-	}
-	
-	/**
-	 * @param string $category
-	 * @return SiQualifier
-	 */
-	function setCategory(string $category) {
-		$this->category = $category;
-		return $this;
-	}
-	
-	/**
-	 * @return string|null
 	 */
 	function getId() {
 		return $this->id;
 	}
 	
 	/**
-	 * @param string|null $id
-	 * @return SiQualifier
+	 * @param string $id
+	 * @return \rocket\si\meta\SiTypeQualifier
 	 */
-	function setId(?string $id) {
+	function setId(string $id) {
 		$this->id = $id;
 		return $this;
 	}
 	
 	/**
-	 * @param string $name
-	 * @return \rocket\si\content\SiQualifier
+	 * @return string
 	 */
-	function toQualifier(SiType $siType, ?string $idName) {
-		return new SiQualifier($this->category, $this->id, $siType, $idName);
+	function getName() {
+		return $this->name;
+	}
+	
+	/**
+	 * @param string $name
+	 * @return \rocket\si\meta\SiTypeQualifier
+	 */
+	function setName(string $name) {
+		$this->name = $name;
+		return $this;
 	}
 	
 	function jsonSerialize() {
 		return [
 			'category' => $this->category,
-			'id' => $this->id,
+		    'id' => $this->id,
+			'name' => $this->name,
+			'iconClass' => $this->iconClass
 		];
 	}
-	
-	/**
-	 * @param array $data
-	 * @throws \InvalidArgumentException
-	 * @return \rocket\si\content\SiIdentifier
-	 */
+
 	static function parse(array $data) {
 		$ds = new DataSet($data);
 		
 		try {
-			return new SiIdentifier($ds->reqString('category'), $ds->optString('id'));
+			return new SiTypeQualifier($ds->reqString('category'), $ds->reqString('typeId'), $ds->reqString('name'), $ds->reqString('iconClass'));
 		} catch (\n2n\util\type\attrs\AttributesException $e) {
 			throw new \InvalidArgumentException(null, null, $e);
 		}

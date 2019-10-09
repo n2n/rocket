@@ -72,7 +72,7 @@ use rocket\ei\manage\frame\EiRelation;
 use rocket\ei\component\prop\EiProp;
 use rocket\ei\manage\frame\EiForkLink;
 use rocket\ei\manage\frame\CriteriaFactory;
-use rocket\si\content\SiQualifier;
+use rocket\si\content\SiEntryQualifier;
 use rocket\ei\util\gui\EiuEntryGuiMulti;
 
 class EiuFrame {
@@ -734,10 +734,10 @@ class EiuFrame {
 	}
 
 	/**
-	 * @param SiQualifier $siQualifier
+	 * @param SiEntryQualifier $siQualifier
 	 * @return mixed|null
 	 */
-	public function siQualifierToId(SiQualifier $siQualifier) {
+	public function siQualifierToId(SiEntryQualifier $siQualifier) {
 		if (null !== ($pid = $siQualifier->getId())) {
 			return $this->pidToId($pid);
 		}

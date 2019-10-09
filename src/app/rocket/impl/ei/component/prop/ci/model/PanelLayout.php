@@ -63,17 +63,17 @@ class PanelLayout {
 	 * @param RelationModel $relationModel
 	 */
 	private function configSiPanel($siPanel, $panelConfig, $targetEiuFrame, $relationModel) {
-		$allowedSiTypes = [];
+		$allowedSiTypeQualifiers = [];
 		foreach ($targetEiuFrame->engine()->mask()->possibleMasks() as $eiuMask) {
 			if ($panelConfig->isEiuMaskAllowed($eiuMask)) {
-				$allowedSiTypes[] = $eiuMask->createSiType();
+				$allowedSiTypeQualifiers[] = $eiuMask->createSiTypeQualifier();
 			} 
 		}
 		
 		$siPanel->setSortable(true)
 				->setReduced($relationModel->isReduced())
 				->setPasteCategory($targetEiuFrame->engine()->type()->supremeType()->getId())
-				->setAllowedTypes($allowedSiTypes);
+				->setAllowedTypeQualifiers($allowedSiTypeQualifiers);
 	}
 	
 	/**

@@ -71,8 +71,8 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandler {
 				->setNonNewRemovable($this->relationModel->isRemovable())
 				->setSortable($relationModel->getMax() > 1 && $relationModel->getTargetOrderEiPropPath() !== null)
 				->setPasteCategory($targetEiuFrame->engine()->type()->supremeType()->getId())
-				->setAllowedTypes(array_map(
-						function (EiuMask $eiuMask) { return $eiuMask->createSiType(); }, 
+				->setAllowedTypeQualifiers(array_map(
+						function (EiuMask $eiuMask) { return $eiuMask->createSiTypeQualifier(); }, 
 						$targetEiuFrame->engine()->mask()->possibleMasks()));
 	}
 	
@@ -112,9 +112,9 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandler {
 	 */
 	private function createSiEmbeddeEntry($eiuEntryGui) {
 		return new SiEmbeddedEntry(
-				$eiuEntryGui->createBulkyEntrySiContent(false, false),
+				$eiuEntryGui->createBulkyEntrySiComp(false, false),
 				($this->relationModel->isReduced() ?
-						$eiuEntryGui->entry()->newEntryGui(false, false)->createCompactEntrySiContent(false, false):
+						$eiuEntryGui->entry()->newEntryGui(false, false)->createCompactEntrySiComp(false, false):
 						null));
 	}
 	

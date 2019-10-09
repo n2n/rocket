@@ -64,7 +64,7 @@ class ToManyGuiField implements GuiField {
 		$values = [];
 		foreach ($this->eiu->field()->getValue() as $eiuEntry) {
 			CastUtils::assertTrue($eiuEntry instanceof EiuEntry);
-			$values[] = $eiuEntry->createSiQualifier();
+			$values[] = $eiuEntry->createSiEntryQualifier();
 		}
 		
 		return $values;

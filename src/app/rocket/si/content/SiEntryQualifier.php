@@ -19,18 +19,38 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\si\structure;
+namespace rocket\si\content;
 
-interface SiComp {
+use n2n\util\type\attrs\DataSet;
+
+class SiEntryQualifier extends SiEntryIdentifier implements \JsonSerializable {
+    private $type;
+	private $idName;
 	
-	/**
-	 * @return string
-	 */
-	function getTypeName(): string;
-	
-	
-	/**
-	 * @return array
-	 */
-	function getData(): array;
+	function __construct(string $typeCategory, ?string $id, string $idName = null) {
+		parent::__construct($typeCategory, $id);
+		$this->idName = $idName;
+	}
+
+	function jsonSerialize() {
+		return [
+			'category' => $this->getCategory(),
+			'id' => $this->getId(),
+		    'typeId' => $this->typeId,
+			'type' => $this->type,
+			'iconClass' => $this->iconClass,
+			'idName' => $this->idName
+		];
+	}
+
+	static function parse(array $data) {
+		$ds = new DataSet($data);
+		
+		try {
+			return new SiEntryQualifier($ds->reqString('typeCategory'), $ds->optString('id'), 
+					$ds->optString('idName'));
+		} catch (\n2n\util\type\attrs\AttributesException $e) {
+			throw new \InvalidArgumentException(null, null, $e);
+		}
+	}
 }

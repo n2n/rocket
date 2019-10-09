@@ -27,7 +27,7 @@ use rocket\ei\util\entry\EiuObject;
 use rocket\user\model\LoginContext;
 use n2n\util\type\CastUtils;
 use rocket\spec\UnknownTypeException;
-use rocket\si\content\SiType;
+use rocket\si\meta\SiTypeQualifier;
 
 class EiuType  {
 	private $eiType;
@@ -200,7 +200,7 @@ class EiuType  {
 	/**
 	 * @return SiType
 	 */
-	function createSiType() {
-		return $this->eiType->createSiType();
+	function createSiTypeQualifier() {
+		return $this->eiType->createSiTypeQualifier();
 	}
 }

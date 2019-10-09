@@ -21,12 +21,12 @@
  */
 namespace rocket\si\input;
 
-use rocket\si\content\SiIdentifier;
+use rocket\si\content\SiEntryIdentifier;
 use n2n\util\type\attrs\DataSet;
 
 class SiEntryInput {
 	/**
-	 * @var SiIdentifier
+	 * @var SiEntryIdentifier
 	 */
 	private $identifier;
 	/**
@@ -43,18 +43,18 @@ class SiEntryInput {
 	private $fieldInputs = [];
 	
 	/**
-	 * @param SiIdentifier $identifier
+	 * @param SiEntryIdentifier $identifier
 	 * @param string $typeId
 	 * @param bool $bulky
 	 */
-	function __construct(SiIdentifier $identifier, string $typeId, bool $bulky) {
+	function __construct(SiEntryIdentifier $identifier, string $typeId, bool $bulky) {
 		$this->identifier = $identifier;
 		$this->typeId = $typeId;
 		$this->bulky = $bulky;
 	}
 	
 	/**
-	 * @return SiIdentifier
+	 * @return SiEntryIdentifier
 	 */
 	function getIdentifier() {
 		return $this->identifier;
@@ -114,7 +114,7 @@ class SiEntryInput {
 		$dataSet = new DataSet($data);
 		
 		try {
-			$siEntryInput = new SiEntryInput(SiIdentifier::parse($dataSet->reqArray('identifier')),
+			$siEntryInput = new SiEntryInput(SiEntryIdentifier::parse($dataSet->reqArray('identifier')),
 					$dataSet->reqString('typeId'), $dataSet->reqBool('bulky'));
 			foreach ($dataSet->reqArray('fieldInputMap', 'array') as $fieldId => $fielData) {
 				$siEntryInput->putFieldInput($fieldId, new SiFieldInput($fielData));

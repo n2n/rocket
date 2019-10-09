@@ -125,9 +125,9 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler {
 	 */
 	private function createSiEmbeddeEntry($eiuEntryGui) {
 		return new SiEmbeddedEntry(
-				$eiuEntryGui->createBulkyEntrySiContent(false, false),
+				$eiuEntryGui->createBulkyEntrySiComp(false, false),
 				($this->relationModel->isReduced() ?
-						$eiuEntryGui->entry()->newEntryGui(false, false)->createCompactEntrySiContent(false, false):
+						$eiuEntryGui->entry()->newEntryGui(false, false)->createCompactEntrySiComp(false, false):
 						null));
 	}
 	

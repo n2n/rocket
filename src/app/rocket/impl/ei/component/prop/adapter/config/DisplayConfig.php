@@ -24,7 +24,7 @@ namespace rocket\impl\ei\component\prop\adapter\config;
 use n2n\util\type\ArgUtils;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\DisplayDefinition;
-use rocket\si\structure\SiStructureType;
+use rocket\si\meta\SiStructureType;
 use rocket\ei\util\Eiu;
 
 class DisplayConfig {

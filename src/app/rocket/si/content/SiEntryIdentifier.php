@@ -23,49 +23,72 @@ namespace rocket\si\content;
 
 use n2n\util\type\attrs\DataSet;
 
-class SiQualifier extends SiIdentifier implements \JsonSerializable {
-    private $type;
-	private $idName;
+class SiEntryIdentifier implements \JsonSerializable {
+	private $typeCategory;
+	private $id;
 	
-	function __construct(string $category, ?string $id, SiType $type, string $idName = null) {
-		parent::__construct($category, $id);
-		$this->type = $type;
-		$this->idName = $idName;
+	function __construct(string $category, ?string $id) {
+		$this->typeCategory = $category;
+		$this->id = $id;
 	}
 	
 	/**
-	 * @return SiType
+	 * @return string
 	 */
-	function getType() {
-		return $this->type;
+	function getCategory() {
+		return $this->typeCategory;
+	}
+	
+	/**
+	 * @param string $category
+	 * @return SiEntryQualifier
+	 */
+	function setCategory(string $category) {
+		$this->typeCategory = $category;
+		return $this;
+	}
+	
+	/**
+	 * @return string|null
+	 */
+	function getId() {
+		return $this->id;
+	}
+	
+	/**
+	 * @param string|null $id
+	 * @return SiEntryQualifier
+	 */
+	function setId(?string $id) {
+		$this->id = $id;
+		return $this;
 	}
 	
 	/**
 	 * @param string $name
-	 * @return SiQualifier
+	 * @return \rocket\si\content\SiEntryQualifier
 	 */
-	function setTypeName(SiType $type) {
-		$this->type = $type;
-		return $this;
+	function toQualifier(?string $idName) {
+		return new SiEntryQualifier($this->typeCategory, $this->id, $idName);
 	}
 	
 	function jsonSerialize() {
 		return [
-			'category' => $this->getCategory(),
-			'id' => $this->getId(),
-		    'typeId' => $this->typeId,
-			'type' => $this->type,
-			'iconClass' => $this->iconClass,
-			'idName' => $this->idName
+			'typeCategory' => $this->typeCategory,
+			'id' => $this->id,
 		];
 	}
-
+	
+	/**
+	 * @param array $data
+	 * @throws \InvalidArgumentException
+	 * @return \rocket\si\content\SiEntryIdentifier
+	 */
 	static function parse(array $data) {
 		$ds = new DataSet($data);
 		
 		try {
-			return new SiQualifier($ds->reqString('category'), $ds->optString('id'), 
-					SiType::parse($ds->reqArray('type')), $ds->optString('idName'));
+			return new SiEntryIdentifier($ds->reqString('typeCategory'), $ds->optString('id'));
 		} catch (\n2n\util\type\attrs\AttributesException $e) {
 			throw new \InvalidArgumentException(null, null, $e);
 		}

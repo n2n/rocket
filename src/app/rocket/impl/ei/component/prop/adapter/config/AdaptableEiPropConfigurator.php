@@ -45,7 +45,7 @@ use n2n\util\ex\IllegalStateException;
 use rocket\impl\ei\component\prop\adapter\EditablePropertyEiPropAdapter;
 use rocket\impl\ei\component\prop\adapter\PropertyDisplayableEiPropAdapter;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
-use rocket\si\structure\SiStructureType;
+use rocket\si\meta\SiStructureType;
 
 class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPropConfigurator {
 	const ATTR_DISPLAY_IN_OVERVIEW_KEY = 'displayInOverview';

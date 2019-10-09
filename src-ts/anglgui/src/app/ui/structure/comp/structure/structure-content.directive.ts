@@ -1,4 +1,4 @@
-import { Directive } from '@angular/core';
+import { Directive, NgModuleFactoryLoader } from '@angular/core';
 import { ViewContainerRef, Input, ComponentFactoryResolver } from '@angular/core';
 import { UiStructure } from '../../model/ui-structure';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
@@ -13,7 +13,8 @@ export class StructureContentDirective {
 	private _uiContent: UiContent|null = null;
 
 	constructor(public viewContainerRef: ViewContainerRef,
-			private componentFactoryResolver: ComponentFactoryResolver) {
+			private componentFactoryResolver: ComponentFactoryResolver,
+			private moduleLoader: NgModuleFactoryLoader) {
 // 		viewContainerRef.element.nativeElement.classList.add('rocket-control');
 	}
 
@@ -21,6 +22,8 @@ export class StructureContentDirective {
 		if (this._uiContent === uiContent) {
 			return;
 		}
+
+		console.log(this.moduleLoader.load('src/app/si/si.module').then(() => { console.log('here') }));
 
 		this._uiContent = uiContent;
 		this.viewContainerRef.clear();

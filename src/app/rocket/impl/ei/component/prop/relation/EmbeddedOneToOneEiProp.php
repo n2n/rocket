@@ -28,7 +28,7 @@ use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
-use rocket\si\structure\SiStructureType;
+use rocket\si\meta\SiStructureType;
 use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 use rocket\ei\component\prop\FieldEiProp;
 use rocket\impl\ei\component\prop\relation\model\ToOneEiField;

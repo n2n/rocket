@@ -23,7 +23,7 @@ namespace rocket\si\content;
 
 class SiEntry implements \JsonSerializable {
 	/**
-	 * @var SiIdentifier
+	 * @var SiEntryIdentifier
 	 */
 	private $identifier;
 	private $selectedTypeId = null;
@@ -37,24 +37,24 @@ class SiEntry implements \JsonSerializable {
 	 * @param string|null $id
 	 * @param string $name
 	 */
-	function __construct(SiIdentifier $identifier, bool $readOnly, bool $bulky) {
+	function __construct(SiEntryIdentifier $identifier, bool $readOnly, bool $bulky) {
 		$this->identifier = $identifier;
 		$this->readOnly = $readOnly;
 		$this->bulky = $bulky;
 	}
 
 	/**
-	 * @return \rocket\si\content\SiIdentifier
+	 * @return \rocket\si\content\SiEntryIdentifier
 	 */
 	function getIdentifier() {
 		return $this->identifier;
 	}
 	
 	/**
-	 * @param SiIdentifier $identifier
+	 * @param SiEntryIdentifier $identifier
 	 * @return \rocket\si\content\SiEntry
 	 */
-	function setIdentifier(SiIdentifier $identifier) {
+	function setIdentifier(SiEntryIdentifier $identifier) {
 		$this->identifier = $identifier;
 		return $this;
 	}
@@ -75,14 +75,14 @@ class SiEntry implements \JsonSerializable {
 	}
 
 	/**
-	 * @return SiTypeBuildup[]
+	 * @return SiEntryBuildup[]
 	 */
 	function getBuildups() {
 		return $this->buildups;
 	}
 
 	/**
-	 * @param SiTypeBuildup[] $buildups 
+	 * @param SiEntryBuildup[] $buildups 
 	 */
 	function setBuildups(array $buildups) {
 		$this->buildups = $buildups;
@@ -94,7 +94,7 @@ class SiEntry implements \JsonSerializable {
 	 * @param SiField $field
 	 * @return \rocket\si\content\SiEntry
 	 */
-	function putBuildup(string $id, SiTypeBuildup $buildup) {
+	function putBuildup(string $id, SiEntryBuildup $buildup) {
 		$this->buildups[$id] = $buildup;
 		return $this;
 	}

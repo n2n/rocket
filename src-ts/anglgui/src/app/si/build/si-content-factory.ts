@@ -48,11 +48,12 @@ export class SiContentFactory {
 			case SiCompType.ENTRIES_LIST:
 				const listSiComp = new EntriesListSiComp(dataExtr.reqString('apiUrl'), dataExtr.reqNumber('pageSize'));
 
-				listSiComp.pageCollection.declaration = SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'));
+				declaration = listSiComp.pageCollection.declaration = SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'));
 
 				const partialContentData = dataExtr.nullaObject('partialContent');
 				if (partialContentData) {
-					const partialContent = new SiEntryFactory(listSiComp, declaration).createPartialContent(partialContentData);
+					const partialContent = new SiEntryFactory(listSiComp, declaration)
+							.createPartialContent(partialContentData);
 
 					listSiComp.pageCollection.size = partialContent.count;
 					listSiComp.pageCollection.putPage(new SiPage(1, partialContent.entries, null));

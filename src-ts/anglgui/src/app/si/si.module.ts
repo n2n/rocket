@@ -25,17 +25,30 @@ import {
 	EmbeddedEntryPanelsInComponent
 } from './model/content/impl/embedded/comp/embedded-entry-panels-in/embedded-entry-panels-in.component';
 import { ImageResizeComponent } from './model/content/impl/file/comp/image-resize/image-resize.component';
+import { EntryDirective } from './model/comp/impl/directive/entry.directive';
+import { FormsModule } from '@angular/forms';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { UiModule } from '../ui/ui.module';
 
 @NgModule({
 	declarations: [
-		ButtonControlComponent, ListZoneContentComponent, StringOutFieldComponent,
+		ButtonControlComponent, ListZoneContentComponent, BulkyEntryComponent, StringOutFieldComponent,
 		InputInFieldComponent, TextareaInFieldComponent, FileInFieldComponent, FileOutFieldComponent,
 		QualifierSelectInFieldComponent, LinkOutFieldComponent, CompactEntryComponent, EmbeddedEntriesInComponent,
 		EmbeddedEntriesSummaryInComponent, EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent,
-		ImageResizeComponent, EmbeddedEntryPanelsInComponent
+		ImageResizeComponent, EmbeddedEntryPanelsInComponent, EntryDirective
 	],
 	imports: [
-		CommonModule
+		CommonModule,
+		FormsModule,
+		DragDropModule,
+		UiModule
+	],
+	exports: [
+		ListZoneContentComponent, BulkyEntryComponent, StringOutFieldComponent,
+		InputInFieldComponent, TextareaInFieldComponent, FileInFieldComponent, FileOutFieldComponent, QualifierSelectInFieldComponent,
+		LinkOutFieldComponent, CompactEntryComponent, EmbeddedEntriesInComponent, EmbeddedEntriesSummaryInComponent,
+		EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent, EmbeddedEntryPanelsInComponent
 	],
 	entryComponents: [
 		ListZoneContentComponent, BulkyEntryComponent, StringOutFieldComponent,
@@ -45,3 +58,4 @@ import { ImageResizeComponent } from './model/content/impl/file/comp/image-resiz
 	]
 })
 export class SiModule { }
+

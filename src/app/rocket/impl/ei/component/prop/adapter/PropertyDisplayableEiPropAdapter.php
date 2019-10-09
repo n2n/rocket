@@ -42,7 +42,7 @@ use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\impl\ei\component\prop\adapter\gui\GuiFieldProxy;
-use rocket\si\structure\SiStructureType;
+use rocket\si\meta\SiStructureType;
 use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiProp;
 use rocket\impl\ei\component\prop\adapter\gui\GuiPropProxy;
 

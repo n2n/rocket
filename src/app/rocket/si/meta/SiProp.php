@@ -19,10 +19,10 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\si\structure;
+namespace rocket\si\meta;
 
-class SiFieldDeclaration implements \JsonSerializable {
-	private $fieldId;
+class SiProp implements \JsonSerializable {
+	private $id;
 	private $label;
 	private $helpText;
 	
@@ -30,8 +30,8 @@ class SiFieldDeclaration implements \JsonSerializable {
 	 * @param string $siFieldId
 	 * @param string $label
 	 */
-	function __construct(?string $fieldId, ?string $label) {
-		$this->fieldId = $fieldId;
+	function __construct(?string $id, ?string $label) {
+		$this->id = $id;
 		$this->label = $label;
 	}
 	
@@ -39,15 +39,15 @@ class SiFieldDeclaration implements \JsonSerializable {
 	 * @return string
 	 */
 	public function getFieldId() {
-		return $this->fieldId;
+		return $this->id;
 	}
 
 	/**
 	 * @param string $siFieldId
-	 * @return \rocket\si\structure\SiFieldDeclaration
+	 * @return \rocket\si\meta\SiProp
 	 */
-	public function setFieldId(string $fieldId) {
-		$this->fieldId = $fieldId;
+	public function setFieldId(string $id) {
+		$this->id = $id;
 		return $this;
 	}
 
@@ -60,7 +60,7 @@ class SiFieldDeclaration implements \JsonSerializable {
 
 	/**
 	 * @param string $label
-	 * @return \rocket\si\structure\SiFieldDeclaration
+	 * @return \rocket\si\meta\SiProp
 	 */
 	public function setLabel(string $label) {
 		$this->label = $label;
@@ -76,7 +76,7 @@ class SiFieldDeclaration implements \JsonSerializable {
 
 	/**
 	 * @param string|null $helpText
-	 * @return \rocket\si\structure\SiFieldDeclaration
+	 * @return \rocket\si\meta\SiProp
 	 */
 	public function setHelpText(?string $helpText) {
 		$this->helpText = $helpText;
@@ -89,7 +89,7 @@ class SiFieldDeclaration implements \JsonSerializable {
 	 */
 	public function jsonSerialize() {
 		return [
-			'fieldId' => $this->fieldId,
+			'id' => $this->id,
 			'label' => $this->label,
 			'helpText' => $this->helpText
 		];

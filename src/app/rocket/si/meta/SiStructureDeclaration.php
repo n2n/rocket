@@ -19,37 +19,37 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\si\structure;
+namespace rocket\si\meta;
 
 use n2n\util\type\ArgUtils;
 
-class SiFieldStructureDeclaration implements \JsonSerializable {
+class SiStructureDeclaration implements \JsonSerializable {
 	private $fieldDeclaration;
 	private $structureType;
 	private $children = [];
 	
 	/**
-	 * @param SiFieldDeclaration $siFieldDeclaration
+	 * @param SiProp $siFieldDeclaration
 	 * @param string $label
 	 */
-	function __construct(string $structureType, SiFieldDeclaration $fieldDeclaration, array $children = []) {
+	function __construct(string $structureType, SiProp $fieldDeclaration, array $children = []) {
 		$this->setStructureType($structureType);
 		$this->fieldDeclaration = $fieldDeclaration;
 		$this->setChildren($children);
 	}
 	
 	/**
-	 * @return SiFieldDeclaration
+	 * @return SiProp
 	 */
 	public function getFieldDeclaration() {
 		return $this->fieldDeclaration;
 	}
 
 	/**
-	 * @param SiFieldDeclaration $siFieldId
-	 * @return \rocket\si\structure\SiFieldDeclaration
+	 * @param SiProp $siFieldId
+	 * @return \rocket\si\meta\SiProp
 	 */
-	public function setFieldDeclaration(SiFieldDeclaration $fieldDeclaration) {
+	public function setFieldDeclaration(SiProp $fieldDeclaration) {
 		$this->fieldDeclaration = $fieldDeclaration;
 		return $this;
 	}
@@ -63,7 +63,7 @@ class SiFieldStructureDeclaration implements \JsonSerializable {
 
 	/**
 	 * @param string $displayType
-	 * @return \rocket\si\structure\SiFieldDeclaration
+	 * @return \rocket\si\meta\SiProp
 	 */
 	public function setStructureType(string $structureType) {
 		ArgUtils::valEnum($structureType, SiStructureType::all());
@@ -72,17 +72,17 @@ class SiFieldStructureDeclaration implements \JsonSerializable {
 	}
 	
 	/**
-	 * @return SiFieldStructureDeclaration[]
+	 * @return SiStructureDeclaration[]
 	 */
 	public function getChildren() {
 		return $this->children;
 	}
 	
 	/**
-	 * @param SiFieldStructureDeclaration[] $children
+	 * @param SiStructureDeclaration[] $children
 	 */
 	public function setChildren(array $children) {
-		ArgUtils::valArray($children, SiFieldStructureDeclaration::class);
+		ArgUtils::valArray($children, SiStructureDeclaration::class);
 		$this->children = $children;
 	}
 	

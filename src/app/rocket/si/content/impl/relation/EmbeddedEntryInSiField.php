@@ -24,9 +24,9 @@ namespace rocket\si\content\impl\relation;
 use n2n\util\type\ArgUtils;
 use n2n\util\type\attrs\DataSet;
 use n2n\util\uri\Url;
-use rocket\si\content\SiType;
 use rocket\si\content\impl\InSiFieldAdapter;
 use rocket\si\input\SiEntryInput;
+use rocket\si\meta\SiTypeQualifier;
 
 class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	
@@ -67,9 +67,9 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	 */
 	private $pasteCategory = null;
 	/**
-	 * @var SiType[]|null
+	 * @var SiTypeQualifier[]|null
 	 */
-	private $allowedSiTypes = null;
+	private $allowedSiTypeQualifiers = null;
 	
 	/**
 	 * @param Url $apiUrl
@@ -212,19 +212,19 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	}
 	
 	/**
-	 * @return SiType[]|null
+	 * @return SiTypeQualifier[]|null
 	 */
-	public function isAllowedTypes() {
-		return $this->allowedTypes;
+	public function isAllowedTypeQualifiers() {
+		return $this->allowedTypeQualifiers;
 	}
 	
 	/**
-	 * @param SiType[]|null $allowedTypes
+	 * @param SiTypeQualifier[]|null $allowedTypeQualifiers
 	 * @return EmbeddedEntryInSiField
 	 */
-	public function setAllowedTypes(?array $allowedTypes) {
-		ArgUtils::valArray($allowedTypes, SiType::class, true);
-		$this->allowedTypes = $allowedTypes;
+	public function setAllowedTypeQualifiers(?array $allowedTypeQualifiers) {
+		ArgUtils::valArray($allowedTypeQualifiers, SiTypeQualifier::class, true);
+		$this->allowedTypeQualifiers = $allowedTypeQualifiers;
 		return $this;
 	}
 	
@@ -250,7 +250,7 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 			'nonNewRemovable' => $this->nonNewRemovable,
 			'sortable' => $this->sortable,
 			'pasteCategory' => $this->pasteCategory,
-			'allowedSiTypes' => $this->allowedSiTypes
+			'allowedSiTypeQualifiers' => $this->allowedSiTypeQualifiers
 		];
 	}
 	 

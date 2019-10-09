@@ -7,7 +7,7 @@ use n2n\util\type\ArgUtils;
 use n2n\l10n\Lstr;
 use rocket\core\model\Rocket;
 use n2n\l10n\N2nLocale;
-use rocket\si\structure\SiStructureType;
+use rocket\si\meta\SiStructureType;
 
 class DisplayItem {
 	

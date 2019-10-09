@@ -27,7 +27,7 @@ use rocket\ei\manage\entry\EiFieldOperationFailedException;
 use rocket\ei\manage\EiObject;
 use rocket\ei\util\EiuAnalyst;
 use rocket\ei\component\prop\EiProp;
-use rocket\si\content\SiQualifier;
+use rocket\si\content\SiEntryQualifier;
 
 class EiuObject {
 	private $eiObject;
@@ -178,15 +178,15 @@ class EiuObject {
 	
 	/**
 	 * @param string $name
-	 * @return SiQualifier
+	 * @return SiEntryQualifier
 	 */
-	function createSiQualifier(string $name = null) {
+	function createSiEntryQualifier(string $name = null) {
 		$name = $name ?? $this->createIdentityString();
 		
 		if ($this->eiuObject !== null) {
-			return $this->eiuObject->getEiObject()->createSiQualifier($name);
+			return $this->eiuObject->getEiObject()->createSiEntryQualifier($name);
 		}
 		
-		return $this->eiEntry->getEiObject()->createSiQualifier($name);
+		return $this->eiEntry->getEiObject()->createSiEntryQualifier($name);
 	}
 }

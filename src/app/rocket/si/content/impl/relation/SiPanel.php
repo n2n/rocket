@@ -22,7 +22,7 @@
 namespace rocket\si\content\impl\relation;
 
 use n2n\util\type\ArgUtils;
-use rocket\si\content\SiType;
+use rocket\si\meta\SiTypeQualifier;
 
 class SiPanel implements \JsonSerializable {
 	/**
@@ -54,9 +54,9 @@ class SiPanel implements \JsonSerializable {
 	 */
 	private $pasteCategory = null;
 	/**
-	 * @var SiType[]|null
+	 * @var SiTypeQualifier[]|null
 	 */
-	private $allowedTypes = null;
+	private $allowedTypeQualifiers = null;
 	/**
 	 * @var bool
 	 */
@@ -200,18 +200,18 @@ class SiPanel implements \JsonSerializable {
 	}
 	
 	/**
-	 * @return \rocket\si\content\SiType[]
+	 * @return \rocket\si\meta\SiTypeQualifier[]
 	 */
-	function getAllowedTypes() {
-		return $this->allowedTypes;
+	function getAllowedTypeQualifiers() {
+		return $this->allowedTypeQualifiers;
 	}
 	
 	/**
-	 * @param \rocket\si\content\SiType[] $allowedTypes
+	 * @param \rocket\si\meta\SiTypeQualifier[] $allowedTypeQualifiers
 	 */
-	function setAllowedTypes(array $allowedTypes) {
-		ArgUtils::valArray($allowedTypes, SiType::class);
-		$this->allowedTypes = $allowedTypes;
+	function setAllowedTypeQualifiers(array $allowedTypeQualifiers) {
+		ArgUtils::valArray($allowedTypeQualifiers, SiTypeQualifier::class);
+		$this->allowedTypeQualifiers = $allowedTypeQualifiers;
 	}
 	
 	/**
@@ -266,7 +266,7 @@ class SiPanel implements \JsonSerializable {
 			'nonNewRemovable' => $this->nonNewRemovable,
 			'sortable' => $this->sortable,
 			'pasteCategory' => $this->pasteCategory,
-			'allowedTypes' => $this->allowedTypes,
+			'allowedTypeQualifiers' => $this->allowedTypeQualifiers,
 			'gridPos' => $this->gridPos,
 			'values' => $this->values
 		];

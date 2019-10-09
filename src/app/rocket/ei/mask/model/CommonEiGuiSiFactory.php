@@ -4,9 +4,8 @@ namespace rocket\ei\mask\model;
 use rocket\ei\manage\gui\EiGuiSiFactory;
 use rocket\ei\manage\gui\EiGui;
 use n2n\util\ex\IllegalStateException;
-use rocket\ei\manage\gui\GuiPropAssembly;
-use rocket\si\structure\SiFieldDeclaration;
-use rocket\si\structure\SiFieldStructureDeclaration;
+use rocket\si\meta\SiProp;
+use rocket\si\meta\SiStructureDeclaration;
 use rocket\ei\manage\gui\ViewMode;
 
 class CommonEiGuiSiFactory implements EiGuiSiFactory {
@@ -28,39 +27,11 @@ class CommonEiGuiSiFactory implements EiGuiSiFactory {
 		$this->displayStructure = $displayStructure;
 	}
 	
-	/**
-	 * @param GuiPropAssembly $guiPropAssembly
-	 * @return SiFieldDeclaration
-	 */
-	private function createSiFieldDeclaration(GuiPropAssembly $guiPropAssembly) {
-		$displayDefinition = $guiPropAssembly->getDisplayDefinition();
-		$label = $displayDefinition->getLabel();
-		$helpText = $displayDefinition->getHelpText();
-		
-		return new SiFieldDeclaration($guiPropAssembly->getGuiFieldPath(),
-				$label, $helpText);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\EiGuiSiFactory::getSiFieldDeclarations()
-	 */
-	function getSiFieldDeclarations(): array {
-		if (ViewMode::isBulky($this->eiGui->getViewMode())) {
-			return [];
-		}
-		
-		$siFieldDeclarations = [];
-		foreach ($this->eiGui->getGuiPropAssemblies() as $guiPropAssembly) {
-			$siFieldDeclarations[] = $this->createSiFieldDeclaration($guiPropAssembly); 
-		}
-		return $siFieldDeclarations;
-	}
 	
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\EiGuiSiFactory::getSiFieldStructureDeclarations()
+	 * @see \rocket\ei\manage\gui\EiGuiSiFactory::getSiStructureDeclarations()
 	 */
 	private function createFieldStructureDeclarations(DisplayStructure $displayStructure) {
 		$fieldStructureDeclarations = [];
@@ -70,28 +41,28 @@ class CommonEiGuiSiFactory implements EiGuiSiFactory {
 			$children = [];
 			if (!$displayItem->hasDisplayStructure()) {
 				$guiPropAssembly = $this->eiGui->getGuiPropAssemblyByGuiFieldPath($displayItem->getGuiFieldPath());
-				$fieldDeclaration = $this->createSiFieldDeclaration($guiPropAssembly);
+				$fieldDeclaration = $this->createSiProp($guiPropAssembly);
 			} else {
 				$label = null;
 				if (null !== ($labelLstr = $displayItem->getLabelLstr())) {
 					$label = $labelLstr->t($this->eiGui->getEiFrame()->getN2nContext()->getN2nLocale());
 				}
-				$fieldDeclaration = new SiFieldDeclaration(null, $label);
+				$fieldDeclaration = new SiProp(null, $label);
 				$children = $this->createFieldStructureDeclarations($displayItem->getDisplayStructure());
 			}
 			
-			$fieldStructureDeclarations[] = new SiFieldStructureDeclaration(
+			$fieldStructureDeclarations[] = new SiStructureDeclaration(
 					$displayItem->getSiStructureType() ?? $guiPropAssembly->getDisplayDefinition()->getDisplayItemType(),
 					$fieldDeclaration, $children);
 		}
 		return $fieldStructureDeclarations;
 	}
-	
+		
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\EiGuiSiFactory::getFieldDeclarationStrutures()
 	 */
-	function getSiFieldStructureDeclarations(): array {
+	function getSiStructureDeclarations(): array {
 		if (ViewMode::isCompact($this->eiGui->getViewMode())) {
 			return [];
 		}

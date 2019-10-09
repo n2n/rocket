@@ -23,11 +23,11 @@ namespace rocket\si\content;
 
 use rocket\si\control\SiControl;
 
-class SiTypeBuildup implements \JsonSerializable {
+class SiEntryBuildup implements \JsonSerializable {
 	/**
-	 * @var SiType
+	 * @var string
 	 */
-	private $type;
+	private $typeId;
 	/**
 	 * @var string|null
 	 */
@@ -42,28 +42,27 @@ class SiTypeBuildup implements \JsonSerializable {
 	private $controls = [];
 	
 	/**
-	 * @param string $category
-	 * @param string|null $id
-	 * @param string $name
+	 * @param string $typeId
+	 * @param string|null $idName
 	 */
-	function __construct(SiType $type, ?string $idName) {
-		$this->type = $type;
+	function __construct(string $typeId, ?string $idName) {
+		$this->typeId = $typeId;
 		$this->idName = $idName;
 	}
 	
 	/**
-	 * @return SiType
+	 * @return string
 	 */
-	function getType() {
-		return $this->type;
+	function getTypeId() {
+		return $this->typeId;
 	}
 	
 	/**
-	 * @param SiType $name
+	 * @param string $name
 	 * @return SiEntry
 	 */
-	function setType(SiType $type) {
-		$this->type = $type;
+	function setTypeId(string $typeId) {
+		$this->typeId = $typeId;
 		return $this;
 	}
 	
@@ -143,16 +142,16 @@ class SiTypeBuildup implements \JsonSerializable {
 		
 		$controlsArr = array();
 		foreach ($this->controls as $id => $control) {
-			$controlsArr[$id] = [
+			$controlsArr[] = [
 				'type' => $control->getType(),
 				'data' => $control->getData()
 			];
 		}
 		
 		return [
-			'type' => $this->type,
+			'typeId' => $this->typeId,
 			'idName' => $this->idName,
-			'fields' => $fieldsArr,
+			'fieldMap' => $fieldsArr,
 			'controls' => $controlsArr
 		];
 	}

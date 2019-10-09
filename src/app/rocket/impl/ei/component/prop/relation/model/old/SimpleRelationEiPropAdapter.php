@@ -46,7 +46,7 @@
 // use rocket\ei\manage\security\InaccessibleEiCommandPathException;
 // use rocket\core\model\Rocket;
 // use n2n\l10n\Lstr;
-// use rocket\si\structure\SiStructureType;
+// use rocket\si\meta\SiStructureType;
 
 // abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter implements GuiProp, DraftableEiProp, 
 // 		DraftProperty, FilterableEiProp {

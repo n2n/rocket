@@ -20,10 +20,8 @@ import { MessageComponent } from './util/comp/message/message.component';
 	],
 	imports: [
 		CommonModule,
-		FormsModule,
 		UtilModule,
-		RouterModule,
-		DragDropModule
+		RouterModule
 	],
 	exports: [
 		ContainerComponent,

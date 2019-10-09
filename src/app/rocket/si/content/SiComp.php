@@ -19,41 +19,18 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage;
+namespace rocket\si\content;
 
-use rocket\ei\manage\draft\Draft;
-use rocket\si\content\SiEntryQualifier;
-use rocket\si\content\SiEntryIdentifier;
-
-interface EiObject {
-    
-	/**
-	 * @return bool
-	 */
-	public function isNew(): bool;
+interface SiComp {
 	
 	/**
-	 * @return EiEntityObj
+	 * @return string
 	 */
-	public function getEiEntityObj(): EiEntityObj;
+	function getTypeName(): string;
+	
 	
 	/**
-	 * @return bool
+	 * @return array
 	 */
-	public function isDraft(): bool;
-	
-	/**
-	 * @return Draft
-	 */
-	public function getDraft(): Draft;
-
-	/**
-	 * @return SiEntryQualifier
-	 */
-	public function createSiEntryIdentifier(): SiEntryIdentifier;
-	
-// 	/**
-// 	 * @return EntryNavPoint
-// 	 */
-// 	public function toEntryNavPoint(): EntryNavPoint;
+	function getData(): array;
 }

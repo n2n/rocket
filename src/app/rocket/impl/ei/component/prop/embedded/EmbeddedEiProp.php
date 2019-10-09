@@ -43,7 +43,7 @@ use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\component\prop\GuiEiProp;
 use rocket\ei\manage\gui\GuiProp;
 use n2n\util\ex\NotYetImplementedException;
-use rocket\si\structure\SiStructureType;
+use rocket\si\meta\SiStructureType;
 
 class EmbeddedEiProp extends PropertyEiPropAdapter implements GuiEiProp, FieldEiProp {
 	private $sed;

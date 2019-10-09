@@ -52,7 +52,7 @@ class ToOneGuiField implements GuiField {
 		$values = [];
 		if (null !== ($eiuEntry = $eiu->field()->getValue())) {
 			CastUtils::assertTrue($eiuEntry instanceof EiuEntry);
-			$values[] = $eiuEntry->createSiQualifier();
+			$values[] = $eiuEntry->createSiEntryQualifier();
 		}
 		
 		$this->siField = SiFields::qualifierSelectIn(

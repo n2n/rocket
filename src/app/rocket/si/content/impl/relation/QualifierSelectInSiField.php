@@ -22,14 +22,14 @@
 namespace rocket\si\content\impl\relation;
 
 use n2n\util\type\attrs\DataSet;
-use rocket\si\content\SiQualifier;
+use rocket\si\content\SiEntryQualifier;
 use n2n\util\uri\Url;
 use n2n\util\type\ArgUtils;
 use rocket\si\content\impl\InSiFieldAdapter;
 
 class QualifierSelectInSiField extends InSiFieldAdapter {
 	/**
-	 * @var SiQualifier[]
+	 * @var SiEntryQualifier[]
 	 */
 	private $values;
 	/**
@@ -48,7 +48,7 @@ class QualifierSelectInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param Url $apiUrl
-	 * @param SiQualifier[] $values
+	 * @param SiEntryQualifier[] $values
 	 */
 	function __construct(Url $apiUrl, array $values = []) {
 		$this->setValues($values);	
@@ -56,17 +56,17 @@ class QualifierSelectInSiField extends InSiFieldAdapter {
 	}
 	
 	/**
-	 * @param SiQualifier[] $values
+	 * @param SiEntryQualifier[] $values
 	 * @return \rocket\si\content\impl\StringInSiField
 	 */
 	function setValues(array $values) {
-		ArgUtils::valArray($values, SiQualifier::class);
+		ArgUtils::valArray($values, SiEntryQualifier::class);
 		$this->values = $values;
 		return $this;
 	}
 	
 	/**
-	 * @return SiQualifier[]
+	 * @return SiEntryQualifier[]
 	 */
 	function getValues() {
 		return $this->values;
@@ -148,7 +148,7 @@ class QualifierSelectInSiField extends InSiFieldAdapter {
 	function handleInput(array $data) {
 		$siQualifiers = [];
 		foreach ((new DataSet($data))->reqArray('values', 'array') as $data) {
-			$siQualifiers[] = SiQualifier::parse($data);
+			$siQualifiers[] = SiEntryQualifier::parse($data);
 		}
 		
 		$this->values = $siQualifiers;

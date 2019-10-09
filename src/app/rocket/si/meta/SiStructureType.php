@@ -1,5 +1,5 @@
 <?php
-namespace rocket\si\structure;
+namespace rocket\si\meta;
 
 class SiStructureType {
 	const SIMPLE_GROUP = 'simple-group';

@@ -31,7 +31,7 @@ use rocket\impl\ei\component\prop\ci\model\ContentItemGuiField;
 use rocket\ei\EiPropPath;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\gui\field\GuiField;
-use rocket\si\structure\SiStructureType;
+use rocket\si\meta\SiStructureType;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\ei\manage\gui\ViewMode;

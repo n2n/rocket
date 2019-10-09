@@ -19,36 +19,37 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\si\structure\impl;
+namespace rocket\si\content\impl\basic;
 
-use rocket\si\structure\SiComp;
-use rocket\si\structure\SiEntryDeclaration;
+use rocket\si\content\SiComp;
+use rocket\si\meta\SiDeclaration;
 use rocket\si\content\SiEntry;
 use n2n\util\type\ArgUtils;
 use rocket\si\control\SiControl;
+use rocket\si\SiPayloadFactory;
 
-class CompactEntrySiComp implements SiComp {
-	private $entryDeclaration;
+class BulkyEntrySiComp implements SiComp {
+	private $declaration;
 	private $entry;
 	private $controls;
 	
-	function __construct(SiEntryDeclaration $entryDeclaration, SiEntry $entry = null, array $controls = []) {
-		$this->entryDeclaration = $entryDeclaration;
+	function __construct(SiDeclaration $declaration, SiEntry $entry = null, array $controls = []) {
+		$this->declaration = $declaration;
 		$this->setEntry($entry);
 		$this->setControls($controls);
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\si\structure\SiComp::getTypeName()
+	 * @see \rocket\si\content\SiComp::getTypeName()
 	 */
 	function getTypeName(): string {
-		return 'compact-entry';
+		return 'bulky-entry';
 	}
 	
 	/**
 	 * @param SiEntry[] $siEntries
-	 * @return CompactEntrySiComp
+	 * @return BulkyEntrySiComp
 	 */
 	function setEntry(?SiEntry $entry) {
 		$this->entry = $entry;
@@ -64,7 +65,7 @@ class CompactEntrySiComp implements SiComp {
 	
 	/**
 	 * @param SiControl[] $controls
-	 * @return CompactEntrySiComp
+	 * @return BulkyEntrySiComp
 	 */
 	function setControls(array $controls) {
 		ArgUtils::valArray($controls, SiControl::class);
@@ -80,18 +81,12 @@ class CompactEntrySiComp implements SiComp {
 	}
 	
 	public function getData(): array {
-		$controlsArr = array();
-		foreach ($this->controls as $id => $control) {
-			$controlsArr[$id] = [
-				'type' => $control->getType(),
-				'data' => $control->getData()
-			];
-		}
+		
 		
 		return [ 
-			'entryDeclaration' => $this->entryDeclaration,
+			'declaration' => $this->declaration,
 			'entry' => $this->entry,
-			'controls' => $controlsArr
+			'controls' => SiPayloadFactory::createDataFromControls($this->controls)
 		];
 	}
 }

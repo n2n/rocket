@@ -21,7 +21,7 @@
  */
 namespace rocket\si\api;
 
-use rocket\si\structure\SiEntryDeclaration;
+use rocket\si\meta\SiDeclaration;
 use rocket\si\content\SiEntry;
 use rocket\si\input\SiEntryError;
 use n2n\util\type\ArgUtils;
@@ -87,9 +87,9 @@ class SiValResult implements \JsonSerializable {
 
 class SiValGetResult implements \JsonSerializable {
 	/**
-	 * @var SiEntryDeclaration|null
+	 * @var SiDeclaration|null
 	 */
-	private $entryDeclaration = null;
+	private $declaration = null;
 	/**
 	 * @var SiEntry|null
 	 */
@@ -99,17 +99,17 @@ class SiValGetResult implements \JsonSerializable {
 	}
 	
 	/**
-	 * @return \rocket\si\structure\SiEntryDeclaration|null
+	 * @return \rocket\si\meta\SiDeclaration|null
 	 */
-	public function getEntryDeclaration() {
-		return $this->entryDeclaration;
+	public function getDeclaration() {
+		return $this->declaration;
 	}
 
 	/**
-	 * @param \rocket\si\structure\SiEntryDeclaration|null $entryDeclaration
+	 * @param \rocket\si\meta\SiDeclaration|null $declaration
 	 */
-	public function setEntryDeclaration(?SiEntryDeclaration $entryDeclaration) {
-		$this->entryDeclaration = $entryDeclaration;
+	public function setDeclaration(?SiDeclaration $declaration) {
+		$this->declaration = $declaration;
 	}
 
 	/**
@@ -132,7 +132,7 @@ class SiValGetResult implements \JsonSerializable {
 	 */
 	public function jsonSerialize() {
 		return [
-			'entryDeclaration' => $this->entryDeclaration,
+			'declaration' => $this->declaration,
 			'entry' => $this->entry,
 			'entryError' => $this->entryError
 		];

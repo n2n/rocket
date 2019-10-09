@@ -101,9 +101,9 @@ class GetInstructionProcess {
 		}
 		
 		if ($this->instruction->isBulky()) {
-			$result->setEntryDeclaration($this->apiUtil->createMultiBuildupSiEntryDeclaration($eiEntryGuis));
+			$result->setDeclaration($this->apiUtil->createMultiBuildupSiDeclaration($eiEntryGuis));
 		} else {
-			$result->setEntryDeclaration($this->apiUtil->createMultiBuildupSiEntryDeclaration($eiEntryGuis));
+			$result->setDeclaration($this->apiUtil->createMultiBuildupSiDeclaration($eiEntryGuis));
 		}
 		
 		return $result;
@@ -121,7 +121,7 @@ class GetInstructionProcess {
 			return $result;
 		}
 		
-		$result->setEntryDeclaration($this->apiUtil->createSiEntryDeclaration($eiGui));
+		$result->setDeclaration($this->apiUtil->createSiDeclaration($eiGui));
 		
 		return $result;
 	}

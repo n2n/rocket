@@ -91,7 +91,7 @@ class ValInstructionProcess {
 		$result->setEntry($eiEntryGui->createSiEntry($getInstruction->areControlsIncluded()));
 		
 		if ($getInstruction->isDeclarationRequested()) {
-			$result->setEntryDeclaration($this->apiUtil->createSiEntryDeclaration($eiEntryGui->getEiGui()));
+			$result->setDeclaration($this->apiUtil->createSiDeclaration($eiEntryGui->getEiGui()));
 		}
 		
 		return $result;
@@ -151,9 +151,9 @@ class ValInstructionProcess {
 		}
 		
 		if ($this->instruction->isBulky()) {
-			$result->setEntryDeclaration($this->apiUtil->createMultiBuildupSiEntryDeclaration($eiEntryGuis));
+			$result->setDeclaration($this->apiUtil->createMultiBuildupSiDeclaration($eiEntryGuis));
 		} else {
-			$result->setEntryDeclaration($this->apiUtil->createMultiBuildupSiEntryDeclaration($eiEntryGuis));
+			$result->setDeclaration($this->apiUtil->createMultiBuildupSiDeclaration($eiEntryGuis));
 		}
 		
 		return $result;
@@ -172,9 +172,9 @@ class ValInstructionProcess {
 		}
 		
 		if ($this->instruction->isBulky()) {
-			$result->setEntryDeclaration($this->apiUtil->createSiEntryDeclaration($eiGui));
+			$result->setDeclaration($this->apiUtil->createSiDeclaration($eiGui));
 		} else {
-			$result->setEntryDeclaration($this->apiUtil->createSiEntryDeclaration($eiGui));
+			$result->setDeclaration($this->apiUtil->createSiDeclaration($eiGui));
 		}
 		
 		return $result;
