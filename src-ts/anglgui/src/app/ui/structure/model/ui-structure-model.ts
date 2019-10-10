@@ -6,7 +6,7 @@ export interface UiStructureModel {
 
 	getContent(): UiContent|null;
 
-	getControls(): UiContent[];
+	getToolbarContents(): UiContent[];
 
 	getMessages(): Message[];
 

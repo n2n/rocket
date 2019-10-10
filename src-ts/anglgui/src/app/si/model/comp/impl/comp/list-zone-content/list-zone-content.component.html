@@ -38,26 +38,3 @@
 </table>
 
 <div *ngIf="loading" class="rocket-loader"></div>
-
- 
-<div class="rocket-zone-commands">
-	<div *ngIf="selectable" class="rocket-partial-commands">
-		<button class="btn btn-primary rocket-important" type="button" (click)="saveSelection()">
-			<i class="fa fa-circle-o"></i>
-			<span>{{ 'common_select_txt' | translate }}</span>
-		</button>
-		
-		<button class="btn btn-secondary" type="button" (click)="cancelSelection()">
-			<i class="fa fa-circle-o"></i>
-			<span>{{ 'common_cancel_txt' | translate }}</span>
-		</button>
-	</div>
-
-	<div class="rocket-main-commands">
-	
-	</div>
-	<div class="rocket-aside-commands">
-		<rocket-si-pagination *ngIf="model.setup" [(currentPageNo)]="currentPageNo" [lastPageNo]="model.pagesNum" 
-				class="rocket-pagination btn-group"></rocket-si-pagination>
-	</div>
-</div>

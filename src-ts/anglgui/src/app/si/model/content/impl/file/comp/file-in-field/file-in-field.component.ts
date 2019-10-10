@@ -4,7 +4,6 @@ import { SiFile } from '../../model/file-in-si-field';
 import { FileInFieldModel } from '../file-in-field-model';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { PopupUiLayer } from 'src/app/ui/structure/model/ui-layer';
-import { SiResultFactory } from 'src/app/si/build/si-result-factory';
 import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { ImageResizeComponent } from '../image-resize/image-resize.component';
@@ -126,8 +125,7 @@ export class FileInFieldComponent implements OnInit {
 			title: 'Some Title',
 			breadcrumbs: [],
 			structureModel: new SimpleUiStructureModel(
-					new TypeUiContent(ImageResizeComponent, (cr) => cr.instance.model = this.model)),
-			controls: []
+					new TypeUiContent(ImageResizeComponent, (cr) => cr.instance.model = this.model))
 		};
 	}
 

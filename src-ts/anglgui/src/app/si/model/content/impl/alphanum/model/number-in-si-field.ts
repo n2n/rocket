@@ -95,7 +95,9 @@ export class NumberInSiField extends InSiFieldAdapter implements InputInFieldMod
 	}
 
 	readInput(): object {
-		throw new Error('Method not implemented.');
+		return {
+			value: this.value
+		};
 	}
 
 	copy(): SiField {

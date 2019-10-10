@@ -288,7 +288,8 @@ class EiuCtrl {
 		$siComp = new EntriesListSiComp($this->eiu->frame()->getApiUrl(), $pageSize, $siDeclaration, 
 				new SiPartialContent($this->eiuFrame->countEntries(), $eiuGui->getEiGui()->createSiEntries()));
 		
-		$this->httpContext->getResponse()->send(SiPayloadFactory::createFromContent($siComp));
+		$this->httpContext->getResponse()->send(
+				SiPayloadFactory::createZoneModel($siComp, $eiuGui->getEiGui()->createGeneralSiControls()));
 	}
 	
 	
@@ -336,10 +337,10 @@ class EiuCtrl {
 		
 		$siDeclaration = $eiGui->createSiDeclaration();
 		
-		$zone = new BulkyEntrySiComp($siDeclaration,
-				$eiuEntryGui->createSiEntry(), $eiGui->createGeneralSiControls());
+		$comp = new BulkyEntrySiComp($siDeclaration, $eiuEntryGui->createSiEntry());
 		
-		$this->httpContext->getResponse()->send(SiPayloadFactory::createFromContent($zone));
+		$this->httpContext->getResponse()->send(
+				SiPayloadFactory::createZoneModel($comp, $eiGui->createGeneralSiControls()));
 	}
 	
 	function forwardNewEntryDlZone(bool $editable = true) {
@@ -347,8 +348,7 @@ class EiuCtrl {
 		
 		$siEntry = new SiEntry($contextEiuType->supremeType()->getId(), !$editable, true);
 		
-		$siDeclaration = new SiDeclaration(
-				$this->eiuFrame->newGui(ViewMode::determine(true, !$editable, true)->createGeneralSiControls()));
+		$siDeclaration = new SiDeclaration();
 		
 		if (!$contextEiuType->isAbstract()) {
 			$typeId = $contextEiuType->getId();
@@ -380,7 +380,9 @@ class EiuCtrl {
 		
 		$zone = new BulkyEntrySiComp($this->eiu->frame()->getApiUrl(), $siDeclaration, $siEntry);
 		
-		$this->httpContext->getResponse()->send(SiPayloadFactory::createFromContent($zone));
+		$contextEiGui = $this->eiuFrame->newGui(ViewMode::determine(true, !$editable, true))->getEiGui();
+		$this->httpContext->getResponse()->send(
+				SiPayloadFactory::createZoneModel($zone, $contextEiGui->createGeneralSiControls()));
 	}
 	
 	

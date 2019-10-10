@@ -74,8 +74,8 @@ class SiEmbeddedEntry implements \JsonSerializable {
 
 	function jsonSerialize() {		
 		return [
-			'content' => SiPayloadFactory::createDataFromContent($this->content),
-			'summaryContent' => SiPayloadFactory::createDataFromContent($this->summaryContent)
+			'content' => SiPayloadFactory::createDataFromComp($this->content),
+			'summaryContent' => SiPayloadFactory::createDataFromComp($this->summaryContent)
 		];
 	}
 

@@ -1,7 +1,5 @@
 import { Component, OnInit, OnDestroy, DoCheck } from '@angular/core';
-import { CompactEntrySiComp } from '../../model/compact-entry-si-comp';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
-import { NgModel } from '@angular/forms';
 import { SiUiStructureModelFactory } from '../../model/si-ui-structure-model-factory';
 import { SiEntry } from 'src/app/si/model/content/si-entry';
 import { CompactEntryModel } from '../compact-entry-model';

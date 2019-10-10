@@ -13,7 +13,7 @@ export class SimpleUiStructureModel implements UiStructureModel {
 		return this.content;
 	}
 
-	getControls(): UiContent[] {
+	getToolbarContents(): UiContent[] {
 		return this.controls;
 	}
 

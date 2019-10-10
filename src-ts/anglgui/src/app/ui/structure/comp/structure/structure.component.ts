@@ -13,9 +13,7 @@ import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration'
 export class StructureComponent implements OnInit {
 
 	@Input()
-	root = false;
-	@Input()
-	siControlsVisible = true;
+	toolbarVisible = true;
 
 	private _uiStructure: UiStructure;
 
@@ -33,7 +31,6 @@ export class StructureComponent implements OnInit {
 // 		const componentRef = this.zoneContentDirective.viewContainerRef.createComponent(componentFactory);
 
 // 		(<ZoneComponent> componentRef.instance).data = {};
-
 	}
 
 	@Input()
@@ -50,11 +47,11 @@ export class StructureComponent implements OnInit {
 		return this._uiStructure.model.getContent();
 	}
 
-	get controlUiContents(): UiContent[] {
+	get toolbarUiContents(): UiContent[] {
 		const controls: UiContent[] = [];
 
-		controls.push(...this._uiStructure.controls);
-		controls.push(...this._uiStructure.model.getControls());
+		controls.push(...this._uiStructure.toolbackUiContents);
+		controls.push(...this._uiStructure.model.getToolbarContents());
 
 		return controls;
 	}

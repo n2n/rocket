@@ -9,7 +9,7 @@ import { UiContent } from './ui-content';
 export class UiStructure {
 	private children: UiStructure[] = [];
 	private visibleSubject = new BehaviorSubject<boolean>(true);
-	controls: UiContent[] = [];
+	toolbackUiContents: UiContent[] = [];
 
 	private disposed = false;
 

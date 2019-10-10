@@ -2,19 +2,19 @@
 	{{ 'open_all_txt' | translate }}
 </button>
 
-<div	cdkDropList (cdkDropListDropped)="drop($event)" class="rocket-draggable-list">
+<div cdkDropList (cdkDropListDropped)="drop($event)" class="rocket-draggable-list">
 	<div *ngFor="let embe of embes" cdkDrag class="rocket-draggable">
-		<rocket-si-add-past [obtainer]="obtainer" [allowedSiTypeQualifiers]="model.getAllowedSiTypes()" type="reduced"
+		<rocket-si-add-past [obtainer]="obtainer" [allowedSiTypeQualifiers]="model.getAllowedSiTypeQualifiers()" type="reduced"
 				(newEntry)="addBefore($event, embe)"></rocket-si-add-past>
 
 		<div rocketUiStructure class="rocket-summary" 
-					[uiStructure]="embe.summaryUiStructure" [siControlsVisible]="false">
+					[uiStructure]="embe.summaryUiStructure" [toolbarVisible]="false">
 			<ng-container pre-content>
 				<div [class.d-none]="!model.isSortable()" cdkDragHandle class="rocket-handle">
 					<i class="fa fa-bars"></i>
 				</div>
 				
-				<rocket-si-qualifier [siTypeQualifier]="embe.siEntry.entryQualifier.typeQualifier"></rocket-si-qualifier>
+				<rocket-si-qualifier [siTypeQualifier]="embe.siEntry.qualifier.typeQualifier"></rocket-si-qualifier>
 			</ng-container>
 			
 			<ng-container post-content>
@@ -38,6 +38,6 @@
 		</div>
 	</div>
 
-	<rocket-si-add-past [obtainer]="obtainer" [allowedSiTypeQualifiers]="model.getAllowedSiTypes()" 
+	<rocket-si-add-past [obtainer]="obtainer" [allowedSiTypeQualifiers]="model.getAllowedSiTypeQualifiers()" 
 			(newEntry)="add($event)"></rocket-si-add-past>
 </div>

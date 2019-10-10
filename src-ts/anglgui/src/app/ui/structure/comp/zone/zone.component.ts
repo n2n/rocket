@@ -1,7 +1,8 @@
 import { Component, OnInit, DoCheck, Input, ComponentFactoryResolver, ElementRef, OnDestroy } from '@angular/core';
-import { UiZone } from '../../model/ui-zone';
+import { UiZone, UiZoneModel } from '../../model/ui-zone';
 import { UiStructure } from '../../model/ui-structure';
 import { UiZoneError } from '../../model/ui-zone-error';
+import { UiContent } from '../../model/ui-content';
 
 @Component({
 	selector: 'rocket-ui-zone',
@@ -14,6 +15,8 @@ export class ZoneComponent implements OnInit, DoCheck, OnDestroy {
 
 	uiStructure: UiStructure;
 	uiZoneErrors: UiZoneError[] = [];
+
+	asideCommandUiContents: UiContent[] = [];
 
 	constructor(private elemRef: ElementRef) {
 	}
@@ -37,12 +40,28 @@ export class ZoneComponent implements OnInit, DoCheck, OnDestroy {
 
 		if (this.uiZone.model) {
 			this.uiStructure.model = this.uiZone.model.structureModel;
+			this.asideCommandUiContents = this.uiZone.model.structureModel.getToolbarContents();
 		} else {
 			this.uiStructure.model = null;
+			this.asideCommandUiContents = [];
 		}
+	}
+
+	get uiZoneModel(): UiZoneModel|null {
+		return this.uiZone.model;
 	}
 
 	hasUiZoneErrors() {
 		return this.uiZoneErrors.length > 0;
 	}
+
+	get partialCommandUiContents(): UiContent[] {
+		return this.uiZone.model.partialCommandContents || [];
+	}
+
+	get mainCommandUiContents(): UiContent[] {
+		return this.uiZone.model.mainCommandContents || [];
+	}
+
+
 }

@@ -4,6 +4,9 @@ import { QualifierSelectInModel } from '../qualifier-select-in-model';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { PopupUiLayer } from 'src/app/ui/structure/model/ui-layer';
 import { EntriesListSiComp } from 'src/app/si/model/comp/impl/model/entries-list-si-comp';
+import { SimpleSiControl } from 'src/app/si/model/control/impl/model/simple-si-control';
+import { SiButton } from 'src/app/si/model/control/impl/model/si-button';
+import { SiComp } from 'src/app/si/model/comp/si-comp';
 
 
 @Component({
@@ -51,22 +54,29 @@ export class QualifierSelectInFieldComponent implements OnInit {
 			title: 'Some Title',
 			breadcrumbs: [],
 			structureModel: comp.createUiStructureModel(),
-			controls: []
+			mainCommandContents: this.createSiControls(comp).map(control => control.createUiContent())
 		};
 
 		comp.qualifierSelection = {
 			min: this.model.getMin(),
 			max: this.model.getMax(),
 			selectedQualfiers: this.model.getValues(),
-
-			done: () => {
-				this.model.setValues(comp.qualifierSelection.selectedQualfiers);
-				this.optionsUiLayer.dispose();
-			},
-
-			cancel: () => {
-				this.optionsUiLayer.dispose();
-			}
 		};
+	}
+
+	private createSiControls(comp: EntriesListSiComp) {
+		return [
+			new SimpleSiControl(
+					new SiButton('common_select_txt', 'btn btn-primary rocket-important', 'fa fa-circle-o'),
+					() => {
+						this.model.setValues(comp.qualifierSelection.selectedQualfiers);
+						this.optionsUiLayer.dispose();
+					}),
+			new SimpleSiControl(
+					new SiButton('common_cancel_txt', 'btn btn-secondary', 'fa fa-circle-o'),
+					() => {
+						this.optionsUiLayer.dispose();
+					})
+		];
 	}
 }

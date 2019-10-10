@@ -35,7 +35,7 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnInit() {
-		this.embeCol = new EmbedInCollection(this.uiStructure, this.model);
+		this.embeCol = new EmbedInCollection(this.uiStructure, this.model, true);
 		this.obtainer = new EmbeddedAddPasteObtainer(this.injector.get(SiService), this.model.getApiUrl(),
 				this.model.isSummaryRequired());
 
@@ -84,7 +84,8 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 			title: 'Some Title',
 			breadcrumbs: [],
 			structureModel: embe.siEmbeddedEntry.comp.createUiStructureModel(),
-			controls: this.createPopupControls(() => { bakEntry = null; })
+			mainCommandContents: this.createPopupControls(() => { bakEntry = null; })
+					.map(siControl => siControl.createUiContent())
 		};
 
 		this.popupUiLayer.onDispose(() => {
@@ -128,7 +129,8 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 						ref.instance.model = this.model;
 						ref.instance.uiStructure = structure;
 					})),
-			controls: this.createPopupControls(() => { bakEmbes = null; })
+			mainCommandContents: this.createPopupControls(() => { bakEmbes = null; })
+					.map(siControl => siControl.createUiContent())
 		};
 	}
 

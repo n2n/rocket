@@ -29,26 +29,27 @@ use rocket\si\control\SiControl;
 class SiPayloadFactory extends JsonPayload {
 	
 	/**
-	 * @param SiComp $siZone
+	 * @param SiComp $comp
+	 * @param SiControl[] $controls
 	 * @return \n2n\web\http\payload\impl\JsonPayload
 	 */
-	static function createFromContent(SiComp $content) {
-		return new JsonPayload(self::createDataFromContent($content));
+	static function createZoneModel(SiComp $comp, array $controls) {
+		return new JsonPayload([
+			'title' => 'Some Title',
+			'breadcrumbs' => [],
+			'comp' => self::createDataFromComp($comp),
+			'controls' => self::createDataFromControls($controls)
+		]);
 	}
 	
 	/**
 	 * @param SiComp $content
 	 * @return array
 	 */
-	static function createDataFromContent(SiComp $content) {
+	static function createDataFromComp(SiComp $content) {
 		return [
-			'title' => 'Some Title',
-			'breadcrumbs' => [],
-			'comp' => [
-				'type' => $content->getTypeName(),
-				'data' => $content->getData()
-			],
-			'controls' => []
+			'type' => $content->getTypeName(),
+			'data' => $content->getData()
 		];
 	}
 	
@@ -61,7 +62,7 @@ class SiPayloadFactory extends JsonPayload {
 		
 		$json = [];
 		foreach ($comps as $key => $content) {
-			$json[$key] = self::createDataFromContent($content);
+			$json[$key] = self::createDataFromComp($content);
 		}
 		return $json;
 	}

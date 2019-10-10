@@ -65,8 +65,6 @@ export class SiContentFactory {
 				declaration = SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'));
 				const bulkyEntryUiContent = new BulkyEntrySiComp(declaration);
 
-				compEssentialsFactory = new SiCompEssentialsFactory(bulkyEntryUiContent);
-				bulkyEntryUiContent.controls = compEssentialsFactory.createControls(dataExtr.reqArray('controls'));
 				bulkyEntryUiContent.entry = new SiEntryFactory(bulkyEntryUiContent, declaration).createEntry(dataExtr.reqObject('entry'));
 				return bulkyEntryUiContent;
 
@@ -101,8 +99,8 @@ export class SiContentFactory {
 	static createEntryQualifier(data: any): SiEntryQualifier {
 		const extr = new Extractor(data);
 
-		return new SiEntryQualifier(SiMetaFactory.createTypeQualifier('typeQualifier'), extr.nullaString('id'),
-				extr.nullaString('idName'));
+		return new SiEntryQualifier(SiMetaFactory.createTypeQualifier(extr.reqObject('typeQualifier')),
+				extr.nullaString('id'), extr.nullaString('idName'));
 	}
 
 	static createCrumbGroups(dataArr: Array<any>): SiCrumbGroup[] {

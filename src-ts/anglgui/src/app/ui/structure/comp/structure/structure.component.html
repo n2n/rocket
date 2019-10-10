@@ -3,8 +3,8 @@
 	<label>{{ getLabel() }}</label>
 </ng-container>
 
-<div *ngIf="controlsVisible && !root && controlUiContents.length > 0" class="rocket-toolbar">
-	<ng-container *ngFor="let controlUiContent of controlUiContents">
+<div *ngIf="toolbarVisible && toolbarUiContents.length > 0" class="rocket-toolbar">
+	<ng-container *ngFor="let controlUiContent of toolbarUiContents">
 		<ng-template rocketUiContent [uiContent]="controlUiContent" [uiStructure]="uiStructure"></ng-template>		
 	</ng-container>
 </div>
@@ -24,22 +24,11 @@
 	
 	<ng-container *ngIf="loaded">
 		<ul *ngIf="isMain()" class="rocket-main-group-nav nav nav-tabs">
-			<li *ngFor="let child of children" [class.active]="child.visible">
-				{{ child.label }}
-			</li>
+			<li *ngFor="let child of children" [class.active]="child.visible">{{ child.label }}</li>
 		</ul>
 		
 		<ng-template *ngIf="uiContent" rocketUiContent [uiStructure]="uiStructure" [uiContent]="uiContent"></ng-template>
-		
-		<div *ngIf="controlsVisible && root && controlUiContents.length > 0" class="rocket-zone-commands">
-			<div class="rocket-main-commands">
-				<ng-container *ngFor="let controlUiContent of controlUiContents">
-					<ng-template rocketUiContent [uiContent]="controlUiContent" [uiStructure]="uiStructure"></ng-template>		
-				</ng-container>
-			</div>
-		</div>
 	</ng-container>
 </ng-template>
-
 
 <ng-content select="[post-content]"></ng-content>

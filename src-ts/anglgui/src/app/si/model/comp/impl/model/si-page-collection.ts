@@ -1,13 +1,14 @@
 import { SiPage } from './si-page';
 import { SiDeclaration } from '../../../meta/si-declaration';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 export class SiPageCollection {
 	public declaration: SiDeclaration|null = null;
 
 	private pagesMap = new Map<number, SiPage>();
 	private _size = 0;
-	private _currentPageNo = 1;
+	private _currentPageNo$ = new BehaviorSubject<number>(1);
 
 	constructor(readonly pageSize: number) {
 	}
@@ -20,25 +21,36 @@ export class SiPageCollection {
 		return Array.from(this.pagesMap.values());
 	}
 
+	get currentPageExists(): boolean {
+		return this.containsPageNo(this.currentPageNo);
+	}
+
 	get currentPage(): SiPage {
-		return this.getPageByNo(this._currentPageNo);
+		return this.getPageByNo(this.currentPageNo);
+	}
+
+	get currentPageNo$(): Observable<number> {
+		return this._currentPageNo$;
 	}
 
 	get currentPageNo(): number {
-		this.ensureSetup();
-		return this._currentPageNo;
+		return this._currentPageNo$.getValue();
 	}
 
 	set currentPageNo(currentPageNo: number) {
+		if (currentPageNo === this.currentPageNo) {
+			return;
+		}
+
 		if (currentPageNo > this.pagesNum) {
 			throw new IllegalSiStateError('CurrentPageNo too large: ' + currentPageNo);
 		}
 
-		if (!this.getPageByNo(currentPageNo).visible) {
-			throw new IllegalSiStateError('Page not visible: ' + currentPageNo);
-		}
+		// if (!this.getPageByNo(currentPageNo).visible) {
+		// 	throw new IllegalSiStateError('Page not visible: ' + currentPageNo);
+		// }
 
-		this._currentPageNo = currentPageNo;
+		this._currentPageNo$.next(currentPageNo);
 	}
 
 	get size(): number {
@@ -54,8 +66,8 @@ export class SiPageCollection {
 
 		const pagesNum = this.pagesNum;
 
-		if (this._currentPageNo > pagesNum) {
-			this._currentPageNo = pagesNum;
+		if (this.currentPageNo > pagesNum) {
+			this.currentPageNo = pagesNum;
 		}
 
 		for (const pageNo of this.pagesMap.keys()) {

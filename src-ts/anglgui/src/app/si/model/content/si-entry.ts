@@ -73,7 +73,7 @@ export class SiEntry {
 	readInput(): SiEntryInput {
 		const fieldInputMap = new Map<string, object>();
 
-		for (const [id, field] of this.selectedEntryBuildup.fieldMap) {
+		for (const [id, field] of this.selectedEntryBuildup.getFieldMap()) {
 			if (!field.hasInput()) {
 				continue;
 			}
@@ -89,13 +89,13 @@ export class SiEntry {
 	}
 
 	handleError(error: SiEntryError) {
-		for (const [fieldId, fieldError] of error.fieldErrors) {
-			if (!this.selectedEntryBuildup.fieldMap.has(fieldId)) {
+		for (const [propId, fieldError] of error.fieldErrors) {
+			if (!this.selectedEntryBuildup.containsPropId(propId)) {
 				this.selectedEntryBuildup.messages.push(...fieldError.getAllMessages());
 				continue;
 			}
 
-			const field = this.selectedEntryBuildup.getFieldById(fieldId);
+			const field = this.selectedEntryBuildup.getFieldById(propId);
 			field.handleError(fieldError);
 		}
 	}
@@ -104,7 +104,7 @@ export class SiEntry {
 		for (const [, buildup] of this._entryBuildupsMap) {
 			buildup.messages = [];
 
-			for (const [, field] of this.selectedEntryBuildup.fieldMap) {
+			for (const [, field] of this.selectedEntryBuildup.getFieldMap()) {
 				field.resetError();
 			}
 		}

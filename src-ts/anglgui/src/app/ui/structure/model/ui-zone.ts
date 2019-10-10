@@ -1,7 +1,7 @@
 import { Subject, Subscription } from 'rxjs';
 import { UiStructureModel } from './ui-structure-model';
-import { SiControl } from 'src/app/si/model/control/si-control';
 import { UiLayer } from './ui-layer';
+import { UiContent } from './ui-content';
 
 export class UiZone {
 	// public content: SiComp|null;
@@ -22,10 +22,11 @@ export class UiZone {
 }
 
 export interface UiZoneModel {
-	title: string;
-	breadcrumbs: UiBreadcrumb[];
+	title?: string;
+	breadcrumbs?: UiBreadcrumb[];
 	structureModel: UiStructureModel;
-	controls: SiControl[];
+	partialCommandContents?: UiContent[];
+	mainCommandContents?: UiContent[];
 }
 
 export interface UiBreadcrumb {

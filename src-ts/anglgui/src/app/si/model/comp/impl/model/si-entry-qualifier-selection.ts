@@ -4,6 +4,4 @@ export interface SiEntryQualifierSelection {
 	min: number;
 	max: number|null;
 	selectedQualfiers: SiEntryQualifier[];
-	done: () => any;
-	cancel: () => any;
 }

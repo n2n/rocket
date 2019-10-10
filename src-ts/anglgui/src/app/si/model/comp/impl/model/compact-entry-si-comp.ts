@@ -33,7 +33,7 @@ export class CompactEntrySiComp implements SiComp, CompactEntryModel {
 		return [];
 	}
 
-	getSiEntry(): SiEntry {
+	getSiEntry(): SiEntry|null {
 		return this.entry;
 	}
 

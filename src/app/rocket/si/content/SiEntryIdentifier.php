@@ -22,6 +22,7 @@
 namespace rocket\si\content;
 
 use n2n\util\type\attrs\DataSet;
+use rocket\si\meta\SiTypeQualifier;
 
 class SiEntryIdentifier implements \JsonSerializable {
 	private $typeCategory;
@@ -68,8 +69,8 @@ class SiEntryIdentifier implements \JsonSerializable {
 	 * @param string $name
 	 * @return \rocket\si\content\SiEntryQualifier
 	 */
-	function toQualifier(?string $idName) {
-		return new SiEntryQualifier($this->typeCategory, $this->id, $idName);
+	function toQualifier(SiTypeQualifier $typeQualifier, ?string $idName) {
+		return new SiEntryQualifier($typeQualifier, $this->id, $idName);
 	}
 	
 	function jsonSerialize() {

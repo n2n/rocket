@@ -7,11 +7,7 @@ import { fromEvent, Subscription } from 'rxjs';
 import { SiEntryQualifier } from 'src/app/si/model/content/si-qualifier';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiPage } from '../../model/si-page';
-import { SiTypeDeclaration } from 'src/app/si/model/meta/si-type-declaration';
 import { SiProp } from 'src/app/si/model/meta/si-prop';
-import { SiEntry } from 'src/app/si/model/content/si-entry';
-import { SiUiStructureModelFactory } from '../../model/si-ui-structure-model-factory';
-import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { EntriesListModel } from '../entries-list-model';
 import { SiPageCollection } from '../../model/si-page-collection';
 import { StructurePage, StructurePageManager } from './structure-page-manager';
@@ -28,7 +24,7 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 	model: EntriesListModel;
 
 	public spm: StructurePageManager;
-	private subscription: Subscription;
+	private subscription = new Subscription();
 	siPageCollection: SiPageCollection;
 
 	constructor(private siService: SiService) {
@@ -38,9 +34,13 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 		this.siPageCollection = this.model.getSiPageCollection();
 		this.spm = new StructurePageManager(this);
 
-		this.subscription = fromEvent<MouseEvent>(window, 'scroll').subscribe(() => {
+		this.subscription.add(fromEvent<MouseEvent>(window, 'scroll').subscribe(() => {
 			this.updateVisiblePages();
-		});
+		}));
+
+		this.subscription.add(this.siPageCollection.currentPageNo$.subscribe((currentPageNo) => {
+			this.valCurrentPageNo(currentPageNo);
+		}));
 
 		const pc = this.model.getSiPageCollection();
 
@@ -158,16 +158,8 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 		return this.siPageCollection.declaration.getBasicTypeDeclaration().type.getProps();
 	}
 
-	get currentPageNo(): number {
-		return this.siPageCollection.currentPageNo;
-	}
-
-	set currentPageNo(currentPageNo: number) {
-		if (this.siPageCollection.pagesNum < currentPageNo || 0 > currentPageNo) {
-			return;
-		}
-
-		if (!this.siPageCollection.containsPageNo(currentPageNo)) {
+	private valCurrentPageNo(currentPageNo: number) {
+		if (!this.siPageCollection.currentPageExists) {
 			this.siPageCollection.hideAllPages();
 			this.loadPage(currentPageNo).offsetHeight = 0;
 			this.siPageCollection.currentPageNo = currentPageNo;
@@ -223,14 +215,6 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 	areMoreSelectable(): boolean {
 		return this.model.getSiEntryQualifierSelection().max === null
 				|| this.model.getSiEntryQualifierSelection().selectedQualfiers.length < this.model.getSiEntryQualifierSelection().max;
-	}
-
-	saveSelection() {
-		this.model.getSiEntryQualifierSelection().done();
-	}
-
-	cancelSelection() {
-		this.model.getSiEntryQualifierSelection().cancel();
 	}
 
 // 	static radioNameIndex = 0;

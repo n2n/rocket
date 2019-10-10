@@ -1,26 +1,45 @@
-<header>
-	<ol class="breadcrumb">
-		<li class="breadcrumb-item active">
-			<a href="/admin-hnm/manage/project-project-customer/overviewEiCommand">Kunden</a>							
-		</li>
-	</ol>
-	
-	<h1>Kunde</h1>
-</header>
+<div *ngIf="!uiZoneModel" class="rocket-loader"></div>
 
-<div rocketUiStructure [uiStructure]="uiStructure" [root]="true" class="rocket-content"></div>
+<ng-container *ngIf="uiZoneModel">
+	<header>
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item active">
+				<a href="/admin-hnm/manage/project-project-customer/overviewEiCommand">Kunden</a>							
+			</li>
+		</ol>
+		
+		<h1>Kunde</h1>
+	</header>
 
-<div *ngIf="hasUiZoneErrors()" class="rocket-additional">
-	<ul class="rocket-additional-nav">
-		<li class="rocket-severity-danger rocket-active">{{ 'errors_txt' | translate }}</li>
-	</ul>
-	<div class="rocket-additional-container">
-		<div class="rocket-additional-content">
-			<div *ngFor="let uiZoneError of uiZoneErrors" class="rocket-error-index-entry">
-				<rocket-ui-message [message]="uiZoneError.message" class="rocket-error-index-message">
-				</rocket-ui-message>
-				<a href="#">Fehler anzeigen</a>
+	<div rocketUiStructure [uiStructure]="uiStructure" [toolbarVisible]="false" class="rocket-content"></div>
+
+	<div *ngIf="hasUiZoneErrors()" class="rocket-additional">
+		<ul class="rocket-additional-nav">
+			<li class="rocket-severity-danger rocket-active">{{ 'errors_txt' | translate }}</li>
+		</ul>
+		<div class="rocket-additional-container">
+			<div class="rocket-additional-content">
+				<div *ngFor="let uiZoneError of uiZoneErrors" class="rocket-error-index-entry">
+					<rocket-ui-message [message]="uiZoneError.message" class="rocket-error-index-message">
+					</rocket-ui-message>
+					<a href="#">Fehler anzeigen</a>
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
+
+	<div class="rocket-zone-commands">
+		<div *ngIf="partialCommandUiContents.length > 0" class="rocket-partial-commands">
+			<ng-template *ngFor="let uiContent of partialCommandUiContents" 
+					rocketUiContent [uiContent]="uiContent" [uiStructure]="uiStructure"></ng-template>
+		</div>
+		<div *ngIf="mainCommandUiContents.length > 0" class="rocket-main-commands">
+			<ng-template *ngFor="let uiContent of mainCommandUiContents" 
+					rocketUiContent [uiContent]="uiContent" [uiStructure]="uiStructure"></ng-template>
+		</div>
+		<div *ngIf="asideCommandUiContents.length > 0" class="rocket-aside-commands">
+			<ng-template *ngFor="let uiContent of asideCommandUiContents" 
+					rocketUiContent [uiContent]="uiContent" [uiStructure]="uiStructure"></ng-template>
+		</div>
+	</div>
+</ng-container>

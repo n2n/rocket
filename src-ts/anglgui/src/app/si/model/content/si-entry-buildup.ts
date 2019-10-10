@@ -39,11 +39,15 @@ export class SiEntryBuildup {
 		return Array.from(this.fieldMap$.getValue().values());
 	}
 
+	getFieldMap(): Map<string, SiField> {
+		return new Map(this.fieldMap$.getValue());
+	}
+
 	copy(): SiEntryBuildup {
 		const copy = new SiEntryBuildup(this.entryQualifier);
 
 		const fieldMapCopy = new Map<string, SiField>();
-		for (const [key, value] of this.fieldMap) {
+		for (const [key, value] of this.fieldMap$.getValue()) {
 			fieldMapCopy.set(key, value.copy(copy));
 		}
 		copy.fieldMap = fieldMapCopy;

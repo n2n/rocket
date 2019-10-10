@@ -5,5 +5,5 @@ export interface CompactEntryModel {
 
 	getSiDeclaration(): SiDeclaration;
 
-	getSiEntry(): SiEntry;
+	getSiEntry(): SiEntry|null;
 }

@@ -121,7 +121,7 @@ class GetInstructionProcess {
 			return $result;
 		}
 		
-		$result->setDeclaration($this->apiUtil->createSiDeclaration($eiGui));
+		$result->setDeclaration($eiGui->createSiDeclaration());
 		
 		return $result;
 	}

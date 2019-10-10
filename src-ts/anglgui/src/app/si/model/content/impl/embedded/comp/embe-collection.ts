@@ -8,7 +8,7 @@ import { SiEmbeddedEntry } from '../model/si-embedded-entry';
 export class EmbeCollection {
 	public embes: Embe[] = [];
 
-	constructor(private parentUiStructure: UiStructure, private model: EmbeddedEntryModel) {
+	constructor(private parentUiStructure: UiStructure, private model: EmbeddedEntryModel, private summary: boolean) {
 	}
 
 	protected unregisterEmbe(embe: Embe) {
@@ -24,10 +24,12 @@ export class EmbeCollection {
 	}
 
 	initEmbe(embe: Embe, siEmbeddedEntry: SiEmbeddedEntry) {
-		const uiStructure = this.parentUiStructure.createChild(null, null, siEmbeddedEntry.comp.createUiStructureModel());
-		const summaryUiStructure = (siEmbeddedEntry.summaryComp
+		const uiStructure = !this.summary
+				? this.parentUiStructure.createChild(null, null, siEmbeddedEntry.comp.createUiStructureModel())
+				: null;
+		const summaryUiStructure = this.summary
 				? this.parentUiStructure.createChild(null, null, siEmbeddedEntry.summaryComp.createUiStructureModel())
-				: null);
+				: null;
 
 		// if (this.reduced) {
 		// 	siEmbeddedEntry.comp.controls = [
@@ -71,8 +73,8 @@ export class EmbeCollection {
 }
 
 export class EmbedInCollection extends EmbeCollection {
-	constructor(parentUiStructure: UiStructure, private inModel: EmbeddedEntriesInModel) {
-		super(parentUiStructure, inModel);
+	constructor(parentUiStructure: UiStructure, private inModel: EmbeddedEntriesInModel, summary: boolean) {
+		super(parentUiStructure, inModel, summary);
 	}
 
 	copyEntries(): SiEntry[] {

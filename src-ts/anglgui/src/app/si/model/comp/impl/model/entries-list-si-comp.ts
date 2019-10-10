@@ -9,6 +9,7 @@ import { EntriesListModel } from '../comp/entries-list-model';
 import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { SiEntryQualifierSelection } from './si-entry-qualifier-selection';
+import { PaginationComponent } from '../comp/pagination/pagination.component';
 
 export class EntriesListSiComp implements SiComp, EntriesListModel {
 
@@ -47,7 +48,9 @@ export class EntriesListSiComp implements SiComp, EntriesListModel {
 	getEntries(): SiEntry[] {
 		const entries = [];
 		for (const page of this.pageCollection.pages) {
-			entries.push(...page.entries);
+			if (page.entries) {
+				entries.push(...page.entries);
+			}
 		}
 		return entries;
 	}
@@ -63,6 +66,9 @@ export class EntriesListSiComp implements SiComp, EntriesListModel {
 					ref.instance.uiStructure = uiStructure;
 				}));
 		uiStrucuterModel.messagesCallback = () => this.getMessages();
+		uiStrucuterModel.controls = [new TypeUiContent(PaginationComponent, (ref, uiStructure) => {
+			ref.instance.siPageCollection = this.pageCollection;
+		})];
 		return uiStrucuterModel;
 	}
 

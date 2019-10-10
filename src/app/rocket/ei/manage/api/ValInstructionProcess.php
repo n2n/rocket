@@ -91,7 +91,7 @@ class ValInstructionProcess {
 		$result->setEntry($eiEntryGui->createSiEntry($getInstruction->areControlsIncluded()));
 		
 		if ($getInstruction->isDeclarationRequested()) {
-			$result->setDeclaration($this->apiUtil->createSiDeclaration($eiEntryGui->getEiGui()));
+			$result->setDeclaration($eiEntryGui->getEiGui()->createSiDeclaration());
 		}
 		
 		return $result;

@@ -1,16 +1,20 @@
 import { UiBreadcrumb, UiZoneModel } from 'src/app/ui/structure/model/ui-zone';
 import { Extractor } from 'src/app/util/mapping/extractor';
 import { SiContentFactory } from './si-content-factory';
+import { SiCompEssentialsFactory } from './si-comp-essentials-factory';
 
 export class UiZoneModelFactory {
 	createZoneModel(data: any): UiZoneModel {
 		const extr = new Extractor(data);
 
+		const comp = SiContentFactory.createComp(extr.reqObject('comp'));
+
 		return {
 			title: extr.reqString('title'),
 			breadcrumbs: this.createBreadcrumbs(extr.reqArray('breadcrumbs')),
-			structureModel: SiContentFactory.createComp(extr.reqObject('comp')).createUiStructureModel(),
-			controls: []
+			structureModel: comp.createUiStructureModel(),
+			mainCommandContents: new SiCompEssentialsFactory(comp).createControls(extr.reqArray('controls'))
+					.map(siControl => siControl.createUiContent())
 		};
 	}
 

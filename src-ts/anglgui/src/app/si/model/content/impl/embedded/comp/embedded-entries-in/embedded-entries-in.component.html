@@ -2,18 +2,18 @@
 	
 	<div *ngFor="let embe of embes">
 		<ng-container *ngIf="embe.isPlaceholder()">
-			<rocket-si-add-past [obtainer]="obtainer" [allowedSiTypeQualifiers]="model.getAllowedSiTypes()" type="tiles" 
+			<rocket-si-add-past [obtainer]="obtainer" [allowedSiTypeQualifiers]="model.getAllowedSiTypeQualifiers()" type="tiles" 
 					(newEntry)="add($event)"></rocket-si-add-past>
 		</ng-container>
 
 		<ng-container *ngIf="!embe.isPlaceholder()">
-			<rocket-si-add-past [obtainer]="obtainer" [allowedSiTypeQualifiers]="model.getAllowedSiTypes()"
+			<rocket-si-add-past [obtainer]="obtainer" [allowedSiTypeQualifiers]="model.getAllowedSiTypeQualifiers()"
 					(newEntry)="addBefore($event, embe)"></rocket-si-add-past>	
 		
 			<div rocketUiStructure [uiStructure]="embe.uiStructure"></div>
 		</ng-container>
 	</div>
 	
-	<rocket-si-add-past [obtainer]="obtainer" [allowedSiTypeQualifiers]="model.getAllowedSiTypes()" 
+	<rocket-si-add-past [obtainer]="obtainer" [allowedSiTypeQualifiers]="model.getAllowedSiTypeQualifiers()" 
 			(newEntry)="add($event)"></rocket-si-add-past>
 </div>

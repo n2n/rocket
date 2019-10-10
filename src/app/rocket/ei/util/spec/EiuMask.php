@@ -223,7 +223,7 @@ class EiuMask  {
 	}
 	
 	/**
-	 * @return SiType
+	 * @return SiTypeQualifier
 	 */
 	public function createSiTypeQualifier(N2nLocale $n2nLocale = null) {
 		return $this->eiMask->createSiTypeQualifier($n2nLocale ?? $this->eiuAnalyst->getN2nContext(true)->getN2nLocale());

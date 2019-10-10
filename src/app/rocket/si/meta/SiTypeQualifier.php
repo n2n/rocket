@@ -36,6 +36,10 @@ class SiTypeQualifier implements \JsonSerializable {
 		$this->iconClass = $iconClass;
 	}
 	
+	function getCategory() {
+		return $this->category;
+	}
+	
 	/**
 	 * @return string
 	 */
@@ -81,7 +85,7 @@ class SiTypeQualifier implements \JsonSerializable {
 		$ds = new DataSet($data);
 		
 		try {
-			return new SiTypeQualifier($ds->reqString('category'), $ds->reqString('typeId'), $ds->reqString('name'), $ds->reqString('iconClass'));
+			return new SiTypeQualifier($ds->reqString('category'), $ds->reqString('id'), $ds->reqString('name'), $ds->reqString('iconClass'));
 		} catch (\n2n\util\type\attrs\AttributesException $e) {
 			throw new \InvalidArgumentException(null, null, $e);
 		}

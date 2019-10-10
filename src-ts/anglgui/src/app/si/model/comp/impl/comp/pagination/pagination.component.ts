@@ -1,4 +1,6 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { SiPageCollection } from '../../model/si-page-collection';
+import { Subscription } from 'rxjs';
 
 @Component({
 	selector: 'rocket-si-pagination',
@@ -8,12 +10,28 @@ import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 export class PaginationComponent implements OnInit {
 
 	private _internalValue = 1;
-	@Output() currentPageNoChange = new EventEmitter<number>();
-	@Input() lastPageNo: number;
+
+	@Input()
+	siPageCollection: SiPageCollection;
+
+	private subscription: Subscription;
 
 	constructor() { }
 
 	ngOnInit() {
+		this._internalValue = this.siPageCollection.currentPageNo;
+		this.subscription = this.siPageCollection.currentPageNo$
+				.subscribe((currentPageNo) => {
+					this._internalValue = currentPageNo;
+				});
+	}
+
+	ngOnDestory() {
+		this.subscription.unsubscribe();
+	}
+
+	get visible() {
+		return this.siPageCollection.setup && this.lastPageNo > 1;
 	}
 
 	get internalValue() {
@@ -26,11 +44,12 @@ export class PaginationComponent implements OnInit {
 		}
 
 		this._internalValue = currentPageNo;
-		this.currentPageNoChange.emit(currentPageNo);
+		this.siPageCollection.currentPageNo = currentPageNo;
 	}
 
-	@Input()
-	set currentPageNo(no: number) {
-		this._internalValue = no;
+	get lastPageNo(): number {
+		return this.siPageCollection.pagesNum;
 	}
+
+
 }

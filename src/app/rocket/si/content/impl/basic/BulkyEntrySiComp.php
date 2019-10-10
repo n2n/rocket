@@ -24,19 +24,14 @@ namespace rocket\si\content\impl\basic;
 use rocket\si\content\SiComp;
 use rocket\si\meta\SiDeclaration;
 use rocket\si\content\SiEntry;
-use n2n\util\type\ArgUtils;
-use rocket\si\control\SiControl;
-use rocket\si\SiPayloadFactory;
 
 class BulkyEntrySiComp implements SiComp {
 	private $declaration;
 	private $entry;
-	private $controls;
 	
-	function __construct(SiDeclaration $declaration, SiEntry $entry = null, array $controls = []) {
+	function __construct(SiDeclaration $declaration, SiEntry $entry = null) {
 		$this->declaration = $declaration;
 		$this->setEntry($entry);
-		$this->setControls($controls);
 	}
 	
 	/**
@@ -63,28 +58,28 @@ class BulkyEntrySiComp implements SiComp {
 		return $this->entry;
 	}
 	
-	/**
-	 * @param SiControl[] $controls
-	 * @return BulkyEntrySiComp
-	 */
-	function setControls(array $controls) {
-		ArgUtils::valArray($controls, SiControl::class);
-		$this->controls = $controls;
-		return $this;
-	}
+// 	/**
+// 	 * @param SiControl[] $controls
+// 	 * @return BulkyEntrySiComp
+// 	 */
+// 	function setControls(array $controls) {
+// 		ArgUtils::valArray($controls, SiControl::class);
+// 		$this->controls = $controls;
+// 		return $this;
+// 	}
 	
-	/**
-	 * @return SiControl[]
-	 */
-	function getControls() {
-		return $this->controls;
-	}
+// 	/**
+// 	 * @return SiControl[]
+// 	 */
+// 	function getControls() {
+// 		return $this->controls;
+// 	}
 	
 	public function getData(): array {
 		return [ 
 			'declaration' => $this->declaration,
 			'entry' => $this->entry,
-			'controls' => SiPayloadFactory::createDataFromControls($this->controls)
+// 			'controls' => SiPayloadFactory::createDataFromControls($this->controls)
 		];
 	}
 }

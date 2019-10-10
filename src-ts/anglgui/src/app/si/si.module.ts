@@ -58,14 +58,14 @@ import { QualifierComponent } from './model/content/impl/qualifier/comp/qualifie
 		TextareaInFieldComponent, FileInFieldComponent, FileOutFieldComponent, QualifierSelectInFieldComponent,
 		LinkOutFieldComponent, CompactEntryComponent, EmbeddedEntriesInComponent, EmbeddedEntriesSummaryInComponent,
 		EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent,
-		EmbeddedEntryPanelsInComponent, ButtonControlComponent
+		EmbeddedEntryPanelsInComponent, ButtonControlComponent, PaginationComponent
 	],
 	entryComponents: [
 		ListZoneContentComponent, BulkyEntryComponent, StringOutFieldComponent,
 		InputInFieldComponent, TextareaInFieldComponent, FileInFieldComponent, FileOutFieldComponent, QualifierSelectInFieldComponent,
 		LinkOutFieldComponent, CompactEntryComponent, EmbeddedEntriesInComponent, EmbeddedEntriesSummaryInComponent,
 		EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent,
-		EmbeddedEntryPanelsInComponent, ButtonControlComponent
+		EmbeddedEntryPanelsInComponent, ButtonControlComponent, PaginationComponent
 	]
 })
 export class SiModule { }

@@ -26,9 +26,7 @@ use rocket\ei\manage\EiObject;
 use rocket\ei\manage\gui\EiEntryGui;
 use n2n\util\type\ArgUtils;
 use rocket\si\meta\SiDeclaration;
-use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\EiEngineUtil;
-use rocket\si\content\SiEntry;
 use rocket\ei\manage\gui\EiGui;
 use rocket\si\content\SiPartialContent;
 
@@ -51,30 +49,26 @@ class ApiUtil {
 		foreach ($eiEntryGuis as $eiEntryGui) {
 			ArgUtils::assertTrue($eiEntryGui instanceof EiEntryGui);
 			
-			$typeId = $eiEntryGui->getEiEntry()->getEiType()->getId();
-			$factory = $eiEntryGui->getEiGui()->getEiGuiSiFactory();
-			
-			$declaration->addTypeDeclaration($typeDeclaration)putFieldStructureDeclarations($typeId, $factory->getSiStructureDeclarations());
-			$declaration->putFieldDeclarations($typeId, $factory->getSiProps());
+			$declaration->addTypeDeclaration($eiEntryGui->getEiGui()->createSiTypDeclaration());
 		}
 		
 		return $declaration;
 	}
 	
 	
-	/**
-	 * @param EiGui $eiGui
-	 * @return SiDeclaration
-	 */
-	function createSiDeclaration(EiGui $eiGui) {
-		$typeId = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()->getId();
+// 	/**
+// 	 * @param EiGui $eiGui
+// 	 * @return SiDeclaration
+// 	 */
+// 	function createSiDeclaration(EiGui $eiGui) {
+// 		$typeId = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()->getId();
 		
-		$declaration = new SiDeclaration();
-		$declaration->putFieldDeclarations($typeId, $eiGui->getEiGuiSiFactory()->getSiProps());
-		$declaration->putFieldStructureDeclarations($typeId, $eiGui->getEiGuiSiFactory()->getSiStructureDeclarations());
+// 		$declaration = new SiDeclaration();
+// 		$declaration->putFieldDeclarations($typeId, $eiGui->getEiGuiSiFactory()->getSiProps());
+// 		$declaration->putFieldStructureDeclarations($typeId, $eiGui->getEiGuiSiFactory()->getSiStructureDeclarations());
 		
-		return $declaration;
-	}
+// 		return $declaration;
+// 	}
 
 	
 	/**

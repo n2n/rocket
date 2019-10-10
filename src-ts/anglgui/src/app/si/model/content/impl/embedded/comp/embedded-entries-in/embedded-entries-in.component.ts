@@ -21,7 +21,7 @@ export class EmbeddedEntriesInComponent implements OnInit {
 	constructor(private injector: Injector) { }
 
 	ngOnInit() {
-		this.embeCol = new EmbedInCollection(this.uiStructure, this.model);
+		this.embeCol = new EmbedInCollection(this.uiStructure, this.model, false);
 		this.obtainer = new EmbeddedAddPasteObtainer(this.injector.get(SiService), this.model.getApiUrl(),
 				this.model.isSummaryRequired());
 
