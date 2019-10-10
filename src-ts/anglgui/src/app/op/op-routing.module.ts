@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes, UrlSegment, UrlMatchResult, UrlSegmentGroup, Route } from '@angular/router';
-import { EiComponent } from "src/app/op/comp/ei/ei.component";
-import { FallbackComponent } from "src/app/op/comp/common/fallback/fallback.component";
+import { EiComponent } from 'src/app/op/comp/ei/ei.component';
+import { FallbackComponent } from 'src/app/op/comp/common/fallback/fallback.component';
 
 const routes: Routes = [
 		{
@@ -21,11 +21,11 @@ export class OpRoutingModule {}
 
 
 export function matchesManageUrl(url: UrlSegment[], group: UrlSegmentGroup, route: Route): UrlMatchResult {
-		if (url.length < 1 || url[0].path != 'manage') {
+		if (url.length < 1 || url[0].path !== 'manage') {
 				alert('not found');
-				return <any> null;
+				return null as any;
 		}
-		
+
 		return { consumed: url };
 }
 

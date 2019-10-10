@@ -334,11 +334,7 @@ class EiuCtrl {
 		
 		$eiGui = $eiuEntryGui->gui()->getEiGui();
 		
-		$eiTypeId = $this->eiuFrame->engine()->type()->getId();
-		
-		$siDeclaration = new SiDeclaration([]);
-		$siDeclaration->putFieldStructureDeclarations($eiTypeId, 
-				$eiGui->getEiGuiSiFactory()->getSiStructureDeclarations());
+		$siDeclaration = $eiGui->createSiDeclaration();
 		
 		$zone = new BulkyEntrySiComp($siDeclaration,
 				$eiuEntryGui->createSiEntry(), $eiGui->createGeneralSiControls());

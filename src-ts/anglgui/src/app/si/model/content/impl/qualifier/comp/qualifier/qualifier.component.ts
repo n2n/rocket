@@ -1,15 +1,18 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { SiEntryQualifier } from "src/app/si/model/content/si-qualifier";
+import { SiTypeQualifier } from 'src/app/si/model/meta/si-type-qualifier';
+import { SiEntryQualifier } from '../../../../si-qualifier';
 
 @Component({
-	selector: 'rocket-ui-qualifier',
+	selector: 'rocket-si-qualifier',
 	templateUrl: './qualifier.component.html',
 	styleUrls: ['./qualifier.component.css']
 })
 export class QualifierComponent implements OnInit {
 
 	@Input()
-	siQualifier: SiEntryQualifier;
+	siEntryQualifier: SiEntryQualifier|null = null;
+	@Input()
+	siTypeQualifier: SiTypeQualifier|null = null;
 	@Input()
 	showIcon = true;
 	@Input()

@@ -3,12 +3,13 @@ import { SiPage } from '../../model/si-page';
 import { ListZoneContentComponent } from './list-zone-content.component';
 import { SiEntry } from 'src/app/si/model/content/si-entry';
 import { SiUiStructureModelFactory } from '../../model/si-ui-structure-model-factory';
+import { UiContent } from 'src/app/ui/structure/model/ui-content';
 
 export class StructurePage {
-	public uiStructuresMap: Map<string, Array<UiStructure>>|null = null;
+	public fieldUiStructuresMap: Map<string, Array<UiStructure>>|null = null;
+	public controlUiStructuresMap: Map<string, Array<UiContent>>|null = null;
 
 	constructor(readonly siPage: SiPage) {
-
 	}
 
 	get loaded(): boolean {
@@ -16,16 +17,20 @@ export class StructurePage {
 	}
 
 	clear() {
-		for (const [, uiStructures] of this.uiStructuresMap) {
+		for (const [, uiStructures] of this.fieldUiStructuresMap) {
 			for (const uiStructure of uiStructures) {
 				uiStructure.dispose();
 			}
 		}
-		this.uiStructuresMap = null;
+		this.fieldUiStructuresMap = null;
 	}
 
 	fieldUiStructuresOf(id: string): UiStructure[] {
-		return this.uiStructuresMap.get(id);
+		return this.fieldUiStructuresMap.get(id);
+	}
+
+	controlUiContentsOf(id: string): UiContent[] {
+		return this.controlUiStructuresMap.get(id);
 	}
 }
 
@@ -68,16 +73,20 @@ export class StructurePageManager {
 	}
 
 	private val(structurePage: StructurePage) {
-		if (structurePage.uiStructuresMap || !this.comp.siPageCollection.declaration
+		if (structurePage.fieldUiStructuresMap || !this.comp.siPageCollection.declaration
 				|| !structurePage.siPage.entries) {
 			return;
 		}
 
-		const structures = new Map<string, Array<UiStructure>>();
+		const fieldUiStructures = new Map<string, Array<UiStructure>>();
+		const controlUiContentMap = new Map<string, Array<UiContent>>();
 		for (const siEntry of structurePage.siPage.entries) {
-			structures.set(siEntry.identifier.id, this.createFieldUiStructures(siEntry));
+			fieldUiStructures.set(siEntry.identifier.id, this.createFieldUiStructures(siEntry));
+			controlUiContentMap.set(siEntry.identifier.id,
+				siEntry.selectedEntryBuildup.controls.map(siControl => siControl.createUiContent()));
 		}
-		structurePage.uiStructuresMap = structures;
+		structurePage.fieldUiStructuresMap = fieldUiStructures;
+		structurePage.controlUiStructuresMap  = controlUiContentMap;
 	}
 
 	private createFieldUiStructures(siEntry: SiEntry): UiStructure[] {

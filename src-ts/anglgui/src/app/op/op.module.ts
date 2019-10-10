@@ -6,6 +6,7 @@ import { UiModule } from 'src/app/ui/ui.module';
 import { FallbackComponent } from 'src/app/op/comp/common/fallback/fallback.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
+import { SiModule } from '../si/si.module';
 
 @NgModule({
 	declarations: [EiComponent, FallbackComponent],
@@ -13,7 +14,8 @@ import { HttpClientModule } from '@angular/common/http';
 	CommonModule,
 	OpRoutingModule,
 	UiModule,
-	HttpClientModule
+	HttpClientModule,
+	SiModule
 	]
 })
 export class OpModule { }

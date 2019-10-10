@@ -29,6 +29,10 @@ export class UiStructure {
 		return new UiStructure(this, null, type, label, model);
 	}
 
+	getChildren(): UiStructure[] {
+		return Array.from(this.children);
+	}
+
 	getZone(): UiZone {
 		return this._zone ? this._zone : this.parent.getZone();
 	}

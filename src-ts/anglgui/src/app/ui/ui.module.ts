@@ -1,7 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { DragDropModule	} from '@angular/cdk/drag-drop';
 import { UtilModule } from 'src/app/util/util.module';
 import { RouterModule } from '@angular/router';
 import { PlainContentComponent } from './structure/comp/plain-content/plain-content.component';
@@ -25,9 +23,12 @@ import { MessageComponent } from './util/comp/message/message.component';
 	],
 	exports: [
 		ContainerComponent,
-		LayerComponent,
-		StructureComponent
+		StructureComponent,
+		StructureContentDirective,
+		StructureBranchComponent,
+		PlainContentComponent,
+		MessageComponent
 	],
-	entryComponents: [ StructureBranchComponent ]
+	entryComponents: [ StructureBranchComponent, PlainContentComponent ]
 })
 export class UiModule { }

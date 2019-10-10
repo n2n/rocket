@@ -12,9 +12,8 @@ export class StructureContentDirective {
 	public uiStructure: UiStructure;
 	private _uiContent: UiContent|null = null;
 
-	constructor(public viewContainerRef: ViewContainerRef,
-			private componentFactoryResolver: ComponentFactoryResolver,
-			private moduleLoader: NgModuleFactoryLoader) {
+	constructor(public viewContainerRef: ViewContainerRef/*,
+			private componentFactoryResolver: ComponentFactoryResolver*/) {
 // 		viewContainerRef.element.nativeElement.classList.add('rocket-control');
 	}
 
@@ -22,8 +21,6 @@ export class StructureContentDirective {
 		if (this._uiContent === uiContent) {
 			return;
 		}
-
-		console.log(this.moduleLoader.load('src/app/si/si.module').then(() => { console.log('here') }));
 
 		this._uiContent = uiContent;
 		this.viewContainerRef.clear();
@@ -33,7 +30,8 @@ export class StructureContentDirective {
 		}
 
 		if (uiContent) {
-				uiContent.initComponent(this.viewContainerRef, this.componentFactoryResolver, this.uiStructure);
+			const cfr = this.uiStructure.getZone().layer.container.componentFactoryResolver;
+			uiContent.initComponent(this.viewContainerRef, cfr, this.uiStructure);
 		}
 	}
 

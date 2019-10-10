@@ -11,7 +11,7 @@
 		<ul *ngIf="addablesVisible" class="rocket-multi-type-menu">
 			<li *ngFor="let siQualifier of addables">
 				<button type="button" (click)="choose(siQualifier.type)" [disabled]="loading">
-					<rocket-ui-qualifier [siQualifier]="siQualifier" [showIdName]="false"></rocket-ui-qualifier>
+					<rocket-si-qualifier [siTypeQualifier]="siEntryQualifier.typeQualifier"></rocket-si-qualifier>
 				</button>
 			</li>
 		</ul>
@@ -29,11 +29,11 @@
 					<span *ngIf="isPasteLoading(siQualifier)" class="spinner-grow spinner-grow-sm" role="status" 
 							aria-hidden="true">[@tomekk: mach da einen loader]</span>
 						
-					<rocket-ui-qualifier siQualifier="siQualifier"></rocket-ui-qualifier>
+					<rocket-si-qualifier siQualifier="siQualifier"></rocket-si-qualifier>
 				</button>
 				
 				<button #disabledPaste type="button" disabled>
-					<rocket-ui-qualifier siQualifier="siQualifier"></rocket-ui-qualifier>
+					<rocket-si-qualifier siQualifier="siQualifier"></rocket-si-qualifier>
 					<i class="fas fa-ban"></i>
 				</button>
 			</li>
@@ -47,7 +47,7 @@
 			<span *ngIf="isAddLoading(siType)" class="spinner-grow spinner-grow-sm" role="status" 
 					aria-hidden="true">[@tomekk: mach da einen loader]</span>
 				
-			<rocket-ui-qualifier siType="siType" [showIdName]="false"></rocket-ui-qualifier>
+			<rocket-si-qualifier siType="siType" [showIdName]="false"></rocket-si-qualifier>
 		</button>
 	</ng-container>
 	
@@ -57,7 +57,7 @@
 			<span *ngIf="isPasteLoading(siQualifier)" class="spinner-grow spinner-grow-sm" role="status" 
 					aria-hidden="true">[@tomekk: mach da einen loader]</span>
 				
-			<rocket-ui-qualifier siQualifier="siQualifier"></rocket-ui-qualifier>
+			<rocket-si-qualifier siQualifier="siQualifier"></rocket-si-qualifier>
 		</button>
 	</ng-container>
 </div>

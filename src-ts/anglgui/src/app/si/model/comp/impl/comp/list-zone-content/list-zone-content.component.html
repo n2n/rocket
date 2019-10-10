@@ -28,8 +28,8 @@
 						(click)="toggleSelection(siEntry.qualifier)">
 				</td>
 				<td class="rocket-table-commands rocket-simple-commands">
-					<ng-container *ngFor="let pair of siEntry.selectedTypeBuildup.controlMap | keyvalue">
-						<rocket-ui-control [siControl]="pair.value" [uiStructure]="uiStructure"></rocket-ui-control>
+					<ng-container *ngFor="let controlUiContent of structurePage.controlUiContentsOf(siEntry.identifier.id)">
+						<ng-template rocketUiContent [uiContent]="controlUiContent" [uiStructure]="uiStructure"></ng-template>
 					</ng-container>
 				</td>
 			</tr>
@@ -57,7 +57,7 @@
 	
 	</div>
 	<div class="rocket-aside-commands">
-		<rocket-ui-pagination *ngIf="model.setup" [(currentPageNo)]="currentPageNo" [lastPageNo]="model.pagesNum" 
-				class="rocket-pagination btn-group"></rocket-ui-pagination>
+		<rocket-si-pagination *ngIf="model.setup" [(currentPageNo)]="currentPageNo" [lastPageNo]="model.pagesNum" 
+				class="rocket-pagination btn-group"></rocket-si-pagination>
 	</div>
 </div>

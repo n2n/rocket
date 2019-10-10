@@ -14,7 +14,7 @@ export enum AddPasteType {
 }
 
 @Component({
-	selector: 'rocket-ui-add-past',
+	selector: 'rocket-si-add-past',
 	templateUrl: './add-paste.component.html',
 	styleUrls: ['./add-paste.component.css']
 })

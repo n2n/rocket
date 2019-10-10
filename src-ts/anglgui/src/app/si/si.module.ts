@@ -29,6 +29,12 @@ import { EntryDirective } from './model/comp/impl/directive/entry.directive';
 import { FormsModule } from '@angular/forms';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { UiModule } from '../ui/ui.module';
+import { UtilModule } from '../util/util.module';
+import { PaginationComponent } from './model/comp/impl/comp/pagination/pagination.component';
+import { CrumbGroupComponent } from './model/content/impl/meta/comp/crumb-group/crumb-group.component';
+import { RouterModule } from '@angular/router';
+import { AddPasteComponent } from './model/content/impl/embedded/comp/add-paste/add-paste.component';
+import { QualifierComponent } from './model/content/impl/qualifier/comp/qualifier/qualifier.component';
 
 @NgModule({
 	declarations: [
@@ -36,26 +42,30 @@ import { UiModule } from '../ui/ui.module';
 		InputInFieldComponent, TextareaInFieldComponent, FileInFieldComponent, FileOutFieldComponent,
 		QualifierSelectInFieldComponent, LinkOutFieldComponent, CompactEntryComponent, EmbeddedEntriesInComponent,
 		EmbeddedEntriesSummaryInComponent, EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent,
-		ImageResizeComponent, EmbeddedEntryPanelsInComponent, EntryDirective
+		ImageResizeComponent, EmbeddedEntryPanelsInComponent, EntryDirective, PaginationComponent, CrumbGroupComponent,
+		AddPasteComponent, QualifierComponent
 	],
 	imports: [
 		CommonModule,
 		FormsModule,
 		DragDropModule,
-		UiModule
+		UiModule,
+		UtilModule,
+		RouterModule
 	],
 	exports: [
-		ListZoneContentComponent, BulkyEntryComponent, StringOutFieldComponent,
-		InputInFieldComponent, TextareaInFieldComponent, FileInFieldComponent, FileOutFieldComponent, QualifierSelectInFieldComponent,
+		ListZoneContentComponent, BulkyEntryComponent, StringOutFieldComponent, InputInFieldComponent,
+		TextareaInFieldComponent, FileInFieldComponent, FileOutFieldComponent, QualifierSelectInFieldComponent,
 		LinkOutFieldComponent, CompactEntryComponent, EmbeddedEntriesInComponent, EmbeddedEntriesSummaryInComponent,
-		EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent, EmbeddedEntryPanelsInComponent
+		EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent,
+		EmbeddedEntryPanelsInComponent, ButtonControlComponent
 	],
 	entryComponents: [
 		ListZoneContentComponent, BulkyEntryComponent, StringOutFieldComponent,
 		InputInFieldComponent, TextareaInFieldComponent, FileInFieldComponent, FileOutFieldComponent, QualifierSelectInFieldComponent,
 		LinkOutFieldComponent, CompactEntryComponent, EmbeddedEntriesInComponent, EmbeddedEntriesSummaryInComponent,
-		EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent, EmbeddedEntryPanelsInComponent
+		EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent,
+		EmbeddedEntryPanelsInComponent, ButtonControlComponent
 	]
 })
 export class SiModule { }
-

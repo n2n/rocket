@@ -81,8 +81,6 @@ class BulkyEntrySiComp implements SiComp {
 	}
 	
 	public function getData(): array {
-		
-		
 		return [ 
 			'declaration' => $this->declaration,
 			'entry' => $this->entry,

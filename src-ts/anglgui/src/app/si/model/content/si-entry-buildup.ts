@@ -23,16 +23,20 @@ export class SiEntryBuildup {
 		this.fieldMap$.next(fieldMap);
 	}
 
-	containsFieldId(id: string) {
+	containsPropId(id: string) {
 		return this.fieldMap$.getValue().has(id);
 	}
 
 	getFieldById(id: string): SiField {
-		if (this.containsFieldId(id)) {
+		if (this.containsPropId(id)) {
 			return this.fieldMap$.getValue().get(id);
 		}
 
 		throw new IllegalSiStateError('Unkown SiField id ' + id);
+	}
+
+	getFields() {
+		return Array.from(this.fieldMap$.getValue().values());
 	}
 
 	copy(): SiEntryBuildup {

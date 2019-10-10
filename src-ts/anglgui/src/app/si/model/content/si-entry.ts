@@ -12,7 +12,7 @@ export class SiEntry {
 	private _selectedTypeId: string|null = null;
 	public bulky = false;
 	public readOnly = true;
-	private _typeBuildupsMap = new Map<string, SiEntryBuildup>();
+	private _entryBuildupsMap = new Map<string, SiEntryBuildup>();
 
 	constructor(readonly identifier: SiEntryIdentifier) {
 	}
@@ -30,7 +30,7 @@ export class SiEntry {
 	}
 
 	get selectedEntryBuildup(): SiEntryBuildup {
-		return this._typeBuildupsMap.get(this.selectedTypeId) as SiEntryBuildup;
+		return this._entryBuildupsMap.get(this.selectedTypeId) as SiEntryBuildup;
 	}
 
 	get selectedTypeId(): string {
@@ -40,7 +40,7 @@ export class SiEntry {
 	}
 
 	set selectedTypeId(id: string) {
-		if (!this._typeBuildupsMap.has(id)) {
+		if (!this._entryBuildupsMap.has(id)) {
 			throw new IllegalSiStateError('Buildup id does not exist on entry: ' + id);
 		}
 
@@ -48,26 +48,26 @@ export class SiEntry {
 	}
 
 	get typeQualifiers(): SiTypeQualifier[] {
-		return Array.from(this._typeBuildupsMap.values()).map(buildup => buildup.entryQualifier.typeQualifier);
+		return Array.from(this._entryBuildupsMap.values()).map(buildup => buildup.entryQualifier.typeQualifier);
 	}
 
 	get entryQualifiers(): SiEntryQualifier[] {
 		const qualifiers: SiEntryQualifier[] = [];
-		for (const buildup of this._typeBuildupsMap.values()) {
+		for (const buildup of this._entryBuildupsMap.values()) {
 			qualifiers.push(buildup.entryQualifier);
 		}
 		return qualifiers;
 	}
 
 	addEntryBuildup(buildup: SiEntryBuildup) {
-		this._typeBuildupsMap.set(buildup.entryQualifier.typeQualifier.id, buildup);
+		this._entryBuildupsMap.set(buildup.entryQualifier.typeQualifier.id, buildup);
 		if (!this._selectedTypeId) {
 			this._selectedTypeId = buildup.entryQualifier.typeQualifier.id;
 		}
 	}
 
 // 	getFieldById(id: string): SiField|null {
-// 		return this.selectedTypeBuildup.getFieldById(id);
+// 		return this.selectedEntryBuildup.getFieldById(id);
 // 	}
 
 	readInput(): SiEntryInput {
@@ -101,7 +101,7 @@ export class SiEntry {
 	}
 
 	resetError() {
-		for (const [, buildup] of this._typeBuildupsMap) {
+		for (const [, buildup] of this._entryBuildupsMap) {
 			buildup.messages = [];
 
 			for (const [, field] of this.selectedEntryBuildup.fieldMap) {
@@ -113,7 +113,7 @@ export class SiEntry {
 	getMessages(): Message[] {
 		const messages: Message[] = [];
 
-		for (const [, siField] of this.selectedEntryBuildup.fieldMap) {
+		for (const siField of this.selectedEntryBuildup.getFields()) {
 			messages.push(...siField.getMessages());
 		}
 
@@ -128,7 +128,7 @@ export class SiEntry {
 		const entry = new SiEntry(this.identifier);
 		entry.treeLevel = this.treeLevel;
 
-		for (const buildup of this._typeBuildupsMap.values()) {
+		for (const buildup of this._entryBuildupsMap.values()) {
 			entry.addEntryBuildup(buildup.copy());
 		}
 

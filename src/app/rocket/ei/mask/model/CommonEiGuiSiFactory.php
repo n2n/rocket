@@ -37,23 +37,22 @@ class CommonEiGuiSiFactory implements EiGuiSiFactory {
 		$fieldStructureDeclarations = [];
 		foreach ($displayStructure->getDisplayItems() as $displayItem) {
 			
-			$fieldDeclaration = null;
+			$propId = null;
+			$label = null;
 			$children = [];
 			if (!$displayItem->hasDisplayStructure()) {
 				$guiPropAssembly = $this->eiGui->getGuiPropAssemblyByGuiFieldPath($displayItem->getGuiFieldPath());
-				$fieldDeclaration = $this->createSiProp($guiPropAssembly);
+				$propId = (string) $guiPropAssembly->getGuiFieldPath();
 			} else {
-				$label = null;
 				if (null !== ($labelLstr = $displayItem->getLabelLstr())) {
 					$label = $labelLstr->t($this->eiGui->getEiFrame()->getN2nContext()->getN2nLocale());
 				}
-				$fieldDeclaration = new SiProp(null, $label);
 				$children = $this->createFieldStructureDeclarations($displayItem->getDisplayStructure());
 			}
 			
 			$fieldStructureDeclarations[] = new SiStructureDeclaration(
 					$displayItem->getSiStructureType() ?? $guiPropAssembly->getDisplayDefinition()->getDisplayItemType(),
-					$fieldDeclaration, $children);
+					$propId, $label, $children);
 		}
 		return $fieldStructureDeclarations;
 	}

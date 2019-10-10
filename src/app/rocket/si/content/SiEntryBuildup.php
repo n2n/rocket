@@ -22,6 +22,7 @@
 namespace rocket\si\content;
 
 use rocket\si\control\SiControl;
+use rocket\si\SiPayloadFactory;
 
 class SiEntryBuildup implements \JsonSerializable {
 	/**
@@ -140,19 +141,11 @@ class SiEntryBuildup implements \JsonSerializable {
 			];
 		}
 		
-		$controlsArr = array();
-		foreach ($this->controls as $id => $control) {
-			$controlsArr[] = [
-				'type' => $control->getType(),
-				'data' => $control->getData()
-			];
-		}
-		
 		return [
 			'typeId' => $this->typeId,
 			'idName' => $this->idName,
 			'fieldMap' => $fieldsArr,
-			'controls' => $controlsArr
+			'controls' => SiPayloadFactory::createDataFromControls($this->controls)
 		];
 	}
 

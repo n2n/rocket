@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ComponentFactoryResolver } from '@angular/core';
 import { ActivatedRoute, Router, NavigationStart } from '@angular/router';
 import { SiUiService } from 'src/app/si/manage/si-ui.service';
 import { Subscription } from 'rxjs';
@@ -17,8 +17,9 @@ export class EiComponent implements OnInit, OnDestroy {
 	private subscription: Subscription;
 
 	constructor(private route: ActivatedRoute, private siUiService: SiUiService,
-			private router: Router/*, platformLocation: PlatformLocation*/) {
-		this.uiContainer = new UiContainer();
+			private router: Router/*, platformLocation: PlatformLocation*/,
+			componentFactoryResolver: ComponentFactoryResolver) {
+		this.uiContainer = new UiContainer(componentFactoryResolver);
 // 		alert(platformLocation.getBaseHrefFromDOM() + ' ' + route.snapshot.url.join('/'));
 	}
 

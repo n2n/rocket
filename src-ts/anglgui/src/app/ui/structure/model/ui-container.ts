@@ -1,9 +1,10 @@
 import { UiLayer, MainUiLayer, PopupUiLayer } from './ui-layer';
+import { ComponentFactoryResolver } from '@angular/core';
 
 export class UiContainer {
 	private layers: UiLayer[] = [];
 
-	constructor() {
+	constructor(public componentFactoryResolver: ComponentFactoryResolver) {
 		this.layers.push(new MainUiLayer(this));
 	}
 

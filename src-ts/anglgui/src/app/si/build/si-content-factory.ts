@@ -176,9 +176,9 @@ export class SiContentFactory {
 		panel.pasteCategory = extr.nullaString('pasteCategory');
 		panel.gridPos = this.buildGridPos(extr.nullaObject('gridPos'));
 
-		const allowedSiTypesData = extr.nullaArray('allowedTypeQualifiers');
-		if (allowedSiTypesData) {
-			panel.allowedSiTypeQualifiers = SiMetaFactory.createTypeQualifiers(allowedSiTypesData);
+		const allowedSiTypeQualifiersData = extr.nullaArray('allowedTypeQualifiers');
+		if (allowedSiTypeQualifiersData) {
+			panel.allowedSiTypeQualifiers = SiMetaFactory.createTypeQualifiers(allowedSiTypeQualifiersData);
 		} else {
 			panel.allowedSiTypeQualifiers = null;
 		}

@@ -21,11 +21,12 @@
  */
 namespace rocket\si\content\impl\basic;
 
-use rocket\si\content\SiComp;
 use rocket\si\meta\SiDeclaration;
 use rocket\si\content\SiEntry;
 use n2n\util\type\ArgUtils;
 use rocket\si\control\SiControl;
+use rocket\si\content\SiComp;
+use rocket\si\SiPayloadFactory;
 
 class CompactEntrySiComp implements SiComp {
 	private $declaration;
@@ -80,18 +81,10 @@ class CompactEntrySiComp implements SiComp {
 	}
 	
 	public function getData(): array {
-		$controlsArr = array();
-		foreach ($this->controls as $id => $control) {
-			$controlsArr[$id] = [
-				'type' => $control->getType(),
-				'data' => $control->getData()
-			];
-		}
-		
 		return [ 
 			'declaration' => $this->declaration,
 			'entry' => $this->entry,
-			'controls' => $controlsArr
+			'controls' => SiPayloadFactory::createDataFromControls($this->controls)
 		];
 	}
 }

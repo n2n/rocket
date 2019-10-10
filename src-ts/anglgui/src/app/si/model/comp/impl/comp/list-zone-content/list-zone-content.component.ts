@@ -155,7 +155,7 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 	}
 
 	getSiProps(): Array<SiProp>|null {
-		return this.siPageCollection.declaration.getBasicTypeDeclaration().getSiProps();
+		return this.siPageCollection.declaration.getBasicTypeDeclaration().type.getProps();
 	}
 
 	get currentPageNo(): number {

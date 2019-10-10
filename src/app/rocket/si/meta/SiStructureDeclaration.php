@@ -24,33 +24,35 @@ namespace rocket\si\meta;
 use n2n\util\type\ArgUtils;
 
 class SiStructureDeclaration implements \JsonSerializable {
-	private $fieldDeclaration;
+	private $propId;
+	private $label;
 	private $structureType;
 	private $children = [];
 	
 	/**
-	 * @param SiProp $siFieldDeclaration
+	 * @param SiProp $siPropId
 	 * @param string $label
 	 */
-	function __construct(string $structureType, SiProp $fieldDeclaration, array $children = []) {
+	function __construct(string $structureType, ?string $propId, ?string $label, array $children = []) {
 		$this->setStructureType($structureType);
-		$this->fieldDeclaration = $fieldDeclaration;
+		$this->label = $label;
+		$this->propId = $propId;
 		$this->setChildren($children);
 	}
 	
 	/**
 	 * @return SiProp
 	 */
-	public function getFieldDeclaration() {
-		return $this->fieldDeclaration;
+	public function getPropId() {
+		return $this->propId;
 	}
 
 	/**
-	 * @param SiProp $siFieldId
+	 * @param string $propId
 	 * @return \rocket\si\meta\SiProp
 	 */
-	public function setFieldDeclaration(SiProp $fieldDeclaration) {
-		$this->fieldDeclaration = $fieldDeclaration;
+	public function setPropId(?string $propId) {
+		$this->propId = $propId;
 		return $this;
 	}
 
@@ -89,7 +91,8 @@ class SiStructureDeclaration implements \JsonSerializable {
 	public function jsonSerialize() {
 		return [
 			'structureType' => $this->structureType,
-			'fieldDeclaration' => $this->fieldDeclaration,
+			'propId' => $this->propId,
+			'label' => $this->label,
 			'children' => $this->children
 		];
 	}

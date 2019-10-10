@@ -16,7 +16,6 @@ export class SiMetaFactory {
 		for (const typeDeclarationData of extr.reqArray('typeDeclarations')) {
 			declaration.addTypeDeclaration(SiMetaFactory.createTypeDeclaration(typeDeclarationData));
 		}
-
 		return declaration;
 	}
 
