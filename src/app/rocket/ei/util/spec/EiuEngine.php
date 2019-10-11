@@ -60,6 +60,9 @@ class EiuEngine {
 		return $this->eiuMask = new EiuMask($this->eiEngine->getEiMask(), $this, $this->eiuAnalyst);
 	}
 	
+	/**
+	 * @return \rocket\ei\util\spec\EiuType
+	 */
 	public function type() {
 		if ($this->eiuType !== null) {
 			return $this->eiuType;

@@ -55,7 +55,6 @@ class SimpleEiField extends CrwvEiField {
 			return $value;
 		}
 		
-		$e = null;
 		try {
 			$this->checkValue($value);
 			return $value;

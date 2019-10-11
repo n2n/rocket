@@ -198,7 +198,7 @@ class EiuType  {
 	}
 	
 	/**
-	 * @return SiType
+	 * @return SiTypeQualifier
 	 */
 	function createSiTypeQualifier() {
 		return $this->eiType->createSiTypeQualifier();

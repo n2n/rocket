@@ -30,6 +30,7 @@ class BooleanEiPropConfigurator extends AdaptableEiPropConfigurator {
 	}
 	
 	private static $booleanNeedles = ['Available', 'Enabled'];
+	
 	public function testCompatibility(PropertyAssignation $propertyAssignation): int {
 		$level = parent::testCompatibility($propertyAssignation);
 		
@@ -37,7 +38,9 @@ class BooleanEiPropConfigurator extends AdaptableEiPropConfigurator {
 		
 		$propertyName = $this->requirePropertyName();
 		foreach (self::$booleanNeedles as $booleanNeedle) {
-			if (StringUtils::endsWith($booleanNeedle, $propertyName)) return CompatibilityLevel::COMMON;
+			if (StringUtils::endsWith($booleanNeedle, $propertyName)) {
+				return CompatibilityLevel::COMMON;
+			}
 		}
 		
 		return $level;
@@ -55,6 +58,7 @@ class BooleanEiPropConfigurator extends AdaptableEiPropConfigurator {
 		
 		$guiProps = null;
 		try {
+			$this->eiu($n2nContext)->mask()->engine()->
 			$guiProps = $this->eiComponent->getEiMask()->getEiEngine()->createGuiDefinition($n2nContext)->getGuiProps();
 		} catch (\Throwable $e) {
 			$guiProps = $this->eiComponent->getEiMask()->getEiEngine()->createGuiDefinition($n2nContext)->getLevelGuiProps();
