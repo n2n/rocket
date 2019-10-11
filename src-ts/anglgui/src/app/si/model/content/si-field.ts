@@ -1,11 +1,11 @@
 import { SiFieldError } from 'src/app/si/model/input/si-field-error';
 import { Message } from 'src/app/util/i18n/message';
 import { SiEntryBuildup } from './si-entry-buildup';
-import { UiContent } from 'src/app/ui/structure/model/ui-content';
+import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
 
 export interface SiField {
 
-	createUiContent(): UiContent;
+	createUiStructureModel(): UiStructureModel;
 
 	hasInput(): boolean;
 
@@ -19,7 +19,7 @@ export interface SiField {
 
 	isDisabled(): boolean;
 
-	setDisabled(disabled: boolean);
+	setDisabled(disabled: boolean): void;
 
 	copy(entryBuildUp: SiEntryBuildup): SiField;
 }

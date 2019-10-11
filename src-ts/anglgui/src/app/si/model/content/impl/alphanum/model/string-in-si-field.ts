@@ -6,6 +6,7 @@ import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { InputInFieldComponent } from '../comp/input-in-field/input-in-field.component';
 import { Message } from 'src/app/util/i18n/message';
+import { SiProp } from 'src/app/si/model/meta/si-prop';
 
 
 export class StringInSiField extends InSiFieldAdapter implements InputInFieldModel {
@@ -15,7 +16,7 @@ export class StringInSiField extends InSiFieldAdapter implements InputInFieldMod
 	public prefixAddons: SiCrumbGroup[] = [];
 	public suffixAddons: SiCrumbGroup[] = [];
 
-	constructor(public value: string|null, public multiline: boolean = false) {
+	constructor(public label: string, public value: string|null, public multiline: boolean = false) {
 		super();
 		this.validate();
 	}
@@ -65,20 +66,20 @@ export class StringInSiField extends InSiFieldAdapter implements InputInFieldMod
 		this.messages = [];
 
 		if (this.mandatory && this.value === null) {
-			this.messages.push(Message.createText('mandatory front err'));
+			this.messages.push(Message.createCode('mandatory_err', new Map([[ '{field}', this.label ]])));
 		}
 
 		if (this.minlength && this.value && this.value.length < this.minlength) {
-			this.messages.push(Message.createText('minlength front err'));
+			this.messages.push(Message.createCode('minlength_err', new Map([[ '{field}', this.label ]])));
 		}
 
 		if (this.maxlength && this.value && this.value.length > this.maxlength) {
-			this.messages.push(Message.createText('maxlength front err'));
+			this.messages.push(Message.createCode('maxlength_err', new Map([[ '{field}', this.label ]])));
 		}
 	}
 
 	copy(): SiField {
-		const copy = new StringInSiField(this.value, this.multiline);
+		const copy = new StringInSiField(this.label, this.value, this.multiline);
 		copy.mandatory = this.mandatory;
 		copy.minlength = this.minlength;
 		copy.maxlength = this.maxlength;

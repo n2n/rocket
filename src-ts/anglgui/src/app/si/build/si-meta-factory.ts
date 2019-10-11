@@ -5,7 +5,6 @@ import { SiType } from '../model/meta/si-type';
 import { SiProp } from '../model/meta/si-prop';
 import { SiTypeQualifier, SiTypeIdentifier } from '../model/meta/si-type-qualifier';
 import { SiTypeEssentialsFactory } from './si-type-essentials-factory';
-import { TestBed } from '@angular/core/testing';
 
 
 export class SiMetaFactory {

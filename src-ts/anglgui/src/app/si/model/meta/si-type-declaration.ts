@@ -1,11 +1,11 @@
 
 import { SiType } from './si-type';
-import { UiStructureDeclaration } from './si-structure-declaration';
+import { SiStructureDeclaration } from './si-structure-declaration';
 import { SiProp } from './si-prop';
 
 export class SiTypeDeclaration {
 
-	constructor(public type: SiType, public structureDeclarations: Array<UiStructureDeclaration>) {
+	constructor(public type: SiType, public structureDeclarations: Array<SiStructureDeclaration>) {
 	}
 
 	getSiProps(): SiProp[] {

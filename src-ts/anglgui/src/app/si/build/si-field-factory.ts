@@ -14,6 +14,8 @@ import { StringInSiField } from '../model/content/impl/alphanum/model/string-in-
 import { StringOutSiField } from '../model/content/impl/alphanum/model/string-out-si-field';
 import { LinkOutSiField } from '../model/content/impl/alphanum/model/link-out-si-field';
 import { EnumInSiField } from '../model/content/impl/alphanum/model/enum-in-si-field';
+import { SiType } from '../model/meta/si-type';
+import { SiProp } from '../model/meta/si-prop';
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',
@@ -30,18 +32,18 @@ enum SiFieldType {
 }
 
 export class SiFieldFactory {
-	constructor(private entryBuildup: SiEntryBuildup) {
+	constructor(private type: SiType, private entryBuildup: SiEntryBuildup) {
 	}
 
 	createFieldMap(data: Map<string, any>): Map<string, SiField> {
 		const fieldMap = new Map<string, SiField>();
-		for (const [fieldId, fieldData] of data) {
-			fieldMap.set(fieldId, this.createField(fieldData));
+		for (const [propId, fieldData] of data) {
+			fieldMap.set(propId, this.createField(this.type.getPropById(propId), fieldData));
 		}
 		return fieldMap;
 	}
 
-	createField(data: any): SiField {
+	createField(prop: SiProp, data: any): SiField {
 		const extr = new Extractor(data);
 		const dataExtr = extr.reqExtractor('data');
 
@@ -51,7 +53,7 @@ export class SiFieldFactory {
 			return new StringOutSiField(dataExtr.nullaString('value'));
 
 		case SiFieldType.STRING_IN:
-			const stringInSiField = new StringInSiField(dataExtr.nullaString('value'), dataExtr.reqBoolean('multiline'));
+			const stringInSiField = new StringInSiField(prop.label, dataExtr.nullaString('value'), dataExtr.reqBoolean('multiline'));
 			stringInSiField.minlength = dataExtr.nullaNumber('minlength');
 			stringInSiField.maxlength = dataExtr.nullaNumber('maxlength');
 			stringInSiField.mandatory = dataExtr.reqBoolean('mandatory');

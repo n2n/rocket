@@ -94,7 +94,7 @@ export class StructurePageManager {
 
 		for (const siProp of this.comp.getSiProps()) {
 			const uiStructure = this.comp.uiStructure.createChild();
-			uiStructure.model = SiUiStructureModelFactory.createCompactField(siEntry.selectedEntryBuildup.getFieldById(siProp.id));
+			uiStructure.model = siEntry.selectedEntryBuildup.getFieldById(siProp.id).createUiStructureModel();
 			uiStructures.push(uiStructure);
 		}
 

@@ -2,10 +2,10 @@ import { IllegalSiStateError } from '../../util/illegal-si-state-error';
 import { SiProp } from './si-prop';
 
 
-export class UiStructureDeclaration {
+export class SiStructureDeclaration {
 
 	constructor(readonly prop: SiProp|null, readonly label: string|null, public type: UiStructureType|null,
-			public children: UiStructureDeclaration[] = []) {
+			public children: SiStructureDeclaration[] = []) {
 
 		if (!!this.prop && !!this.prop === !!this.label) {
 			throw new IllegalSiStateError('Label and label cannot be set a the same time.');

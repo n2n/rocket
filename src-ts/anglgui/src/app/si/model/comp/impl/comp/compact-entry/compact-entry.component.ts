@@ -52,7 +52,7 @@ export class CompactEntryComponent implements OnInit, OnDestroy, DoCheck {
 
 		for (const siProp of siTypeDeclaration.getSiProps()) {
 			const structure = this.uiStructure.createChild();
-			structure.model = SiUiStructureModelFactory.createCompactField(siEntryBuildup.getFieldById(siProp.id));
+			structure.model = siEntryBuildup.getFieldById(siProp.id).createUiStructureModel();
 			this.fieldUiStructures.push(structure);
 		}
 	}

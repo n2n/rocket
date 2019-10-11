@@ -137,13 +137,13 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 	private createPopupControls(applyCallback: () => any): SiControl[] {
 		return [
 			new SimpleSiControl(
-					new SiButton(this.translationService.t('common_apply_label'), 'btn btn-success', 'fas fa-save'),
+					new SiButton(this.translationService.translate('common_apply_label'), 'btn btn-success', 'fas fa-save'),
 					() => {
 						applyCallback();
 						this.popupUiLayer.dispose();
 					}),
 			new SimpleSiControl(
-					new SiButton(this.translationService.t('common_discard_label'), 'btn btn-secondary', 'fas fa-trash'),
+					new SiButton(this.translationService.translate('common_discard_label'), 'btn btn-secondary', 'fas fa-trash'),
 					() => {
 						this.popupUiLayer.dispose();
 					})

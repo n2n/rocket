@@ -1,5 +1,6 @@
 <?php
 	use n2n\impl\web\ui\view\html\HtmlView;
+use rocket\core\model\AnglTemplateModel;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($view);
@@ -46,8 +47,10 @@
 				transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 			}');
 	
+	$anglTemplateModel = $view->lookup(AnglTemplateModel::class);
+	$view->assert($anglTemplateModel instanceof AnglTemplateModel);
 ?>
 
 <div id="rocket-content-container">
-	<rocket-root></rocket-root>
+	<rocket-root data-rocket-angl-data="<?php $html->out(json_encode($anglTemplateModel->getData())) ?>"></rocket-root>
 </div>

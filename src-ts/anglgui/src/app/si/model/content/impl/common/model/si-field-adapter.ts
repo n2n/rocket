@@ -4,6 +4,8 @@ import { SiEntryBuildup } from '../../../si-entry-buildup';
 import { SiField } from '../../../si-field';
 import { MessageFieldModel } from '../comp/message-field-model';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
+import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
+import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
 
 export abstract class SiFieldAdapter implements SiField, MessageFieldModel {
 	protected disabled = false;
@@ -23,7 +25,14 @@ export abstract class SiFieldAdapter implements SiField, MessageFieldModel {
 
 	abstract copy(entryBuildUp: SiEntryBuildup): SiField;
 
-	abstract createUiContent(): UiContent|null;
+	createUiStructureModel(): UiStructureModel {
+		const model = new SimpleUiStructureModel(this.createUiContent());
+		model.messagesCallback = () => this.getMessages();
+		model.disabledCallback = () => this.isDisabled();
+		return model;
+	}
+
+	protected abstract createUiContent(): UiContent;
 
 	getMessages(): Message[] {
 		return this.messages;

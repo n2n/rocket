@@ -22,7 +22,7 @@ export class MessageComponent implements OnInit {
 			return;
 		}
 
-		this.text = this.translationService.t(message.content);
+		this.text = this.translationService.translate(message.content, message.args);
 	}
 
 	get message(): Message {
