@@ -4,38 +4,38 @@ namespace rocket\ei\manage\security\privilege\data;
 use n2n\util\type\ArgUtils;
 use rocket\ei\EiCommandPath;
 use n2n\util\type\attrs\Attributes;
-use n2n\util\type\TypeConstraint;
 use rocket\ei\EiPropPath;
+use n2n\util\type\attrs\DataSet;
 
 class PrivilegeSetting {
-	const ATTR_EI_COMMAND_PATHS = 'eiCommandPaths';
-	const ATTR_EI_PROP_PROPS = 'ePropProps';
+	const ATTR_EXECUTABLE_EI_COMMAND_PATHS_KEY = 'executableEiCommandPaths';
+	const ATTR_WRITABLE_EI_PROP_PATHS_KEY = 'writableEiPropPaths';
 	
-	private $eiCommandPaths = array();
-	private $eiPropAttributes = array();
+	private $writableEiPropPaths = array();
+	private $executableEiCommandPaths = array();
 	
 	/**
-	 * @param EiCommandPath[] $eiCommandPaths
-	 * @param Attributes $eiPropAttributes
+	 * @param EiCommandPath[] $executableEiCommandPaths
+	 * @param EiCommandPath[] $writableEiPropPaths
 	 */
-	function __construct(array $eiCommandPaths = array(), Attributes $eiPropAttributes = null) {
-		$this->setEiCommandPaths($eiCommandPaths);
-		$this->setEiPropAttributes($eiPropAttributes ?? new Attributes());
+	function __construct(array $executableEiCommandPaths = array(), array $writableEiPropPaths = null) {
+		$this->setExecutableEiCommandPaths($executableEiCommandPaths);
+		$this->setWritableEiPropPaths($writableEiPropPaths ?? new Attributes());
 	}
 	
 	/**
 	 * @return EiCommandPath[]
 	 */
-	function getEiCommandPaths() {
-		return $this->eiCommandPaths;
+	function getExecutableEiCommandPaths() {
+		return $this->executableExecutableEiCommandPaths;
 	}
 	
 	/**
-	 * @param EiCommandPath[] $eiCommandPaths
+	 * @param EiCommandPath[] $executableEiCommandPaths
 	 */
-	function setEiCommandPaths(array $eiCommandPaths) {
-		ArgUtils::valArray($eiCommandPaths, EiCommandPath::class);
-		$this->eiCommandPaths = $eiCommandPaths;
+	function setExecutableEiCommandPaths(array $executableEiCommandPaths) {
+		ArgUtils::valArray($executableEiCommandPaths, EiCommandPath::class);
+		$this->executableEiCommandPaths = $executableEiCommandPaths;
 	}
 	
 	/**
@@ -52,19 +52,16 @@ class PrivilegeSetting {
 	/**
 	 * @return \n2n\util\type\attrs\Attributes
 	 */
-	function getEiPropAttributes() {
-		return $this->eiPropAttributes;
+	function getWritableEiPropPaths() {
+		return $this->writableEiPropPaths;
 	}
 	
 	/**
-	 * @param Attributes $attributes
+	 * @param EiPropPath $attributes
 	 */
-	function setEiPropAttributes(Attributes $attributes) {
-		$this->eiPropAttributes = $attributes;
-	}
-	
-	function getAttributesByEiPropPath(EiPropPath $eiPropPath) {
-		return $this->eiPropAttributes->getArray((string) $eiPropPath, false, null);
+	function setWritableEiPropPaths(array $writableEiPropPaths) {
+		ArgUtils::valArray($writableEiPropPaths, EiPropPath::class);
+		$this->writableEiPropPaths = $writableEiPropPaths;
 	}
 	
 	/**
@@ -72,28 +69,35 @@ class PrivilegeSetting {
 	 */
 	function toAttrs() {
 		$eiCommandPathAttrs = array();
-		foreach ($this->eiCommandPaths as $eiCommandPath) {
+		foreach ($this->executableEiCommandPaths as $eiCommandPath) {
 			$eiCommandPathAttrs[] = (string) $eiCommandPath;
 		}
 		
+		$eiPropPathAttrs = array();
+		foreach ($this->writableEiPropPaths as $eiPropPath) {
+			$eiPropPathAttrs[] = (string) $eiPropPath;
+		}
+		
 		return array(
-				self::ATTR_EI_COMMAND_PATHS => $eiCommandPathAttrs,
-				self::ATTR_EI_PROP_PROPS => $this->eiPropAttributes->toArray());
+				self::ATTR_EXECUTABLE_EI_COMMAND_PATHS_KEY => $eiCommandPathAttrs,
+				self::ATTR_WRITABLE_EI_PROP_PATHS_KEY => $eiPropPathAttrs);
 	}
 	
 	/**
 	 * @param Attributes $attributes
 	 * @return \rocket\ei\manage\security\privilege\data\PrivilegeSetting
 	 */
-	static function create(Attributes $attributes) {
-		$eiCommandPaths = array();
-		foreach ($attributes->getScalarArray(self::ATTR_EI_COMMAND_PATHS, false) as $eiCommandPathStr) {
-			$eiCommandPaths[] = EiCommandPath::create($eiCommandPathStr);
+	static function createFromDataSet(DataSet $ds) {
+		$executableEiCommandPaths = [];
+		foreach ($ds->optScalarArray(self::ATTR_EXECUTABLE_EI_COMMAND_PATHS_KEY) as $eiCommandPathStr) {
+			$executableEiCommandPaths[] = EiCommandPath::create($eiCommandPathStr);
 		}
 		
-		$eiPropAttributes = new Attributes($attributes->getArray(self::ATTR_EI_PROP_PROPS, false, array(),
-				TypeConstraint::createArrayLike('array')));
+		$writableEiPropPaths = [];
+		foreach ($ds->optScalarArray(self::ATTR_WRITABLE_EI_PROP_PATHS_KEY) as $eiPropPathStr) {
+			$writableEiPropPaths[] = EiPropPath::create($eiPropPathStr);
+		}
 		
-		return new PrivilegeSetting($eiCommandPaths, $eiPropAttributes);
+		return new PrivilegeSetting($executableEiCommandPaths, $writableEiPropPaths);
 	}
 }

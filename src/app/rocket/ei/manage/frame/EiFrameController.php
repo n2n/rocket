@@ -146,11 +146,11 @@ class EiFrameController extends ControllerAdapter {
 	 * @param EiCommand $eiCommand
 	 * @return EiFrame
 	 */
-	private function pushEiFrame($eiCommandPath, $eiCommand) {
+	private function pushEiFrame($eiCommand) {
 		$eiFrame = null;
 		try {
 			$this->eiFrame->setBaseUrl($this->getUrlToController(null, null, $this->getControllerContext()));
-			$this->eiFrame->exec($eiCommandPath, $eiCommand);
+			$this->eiFrame->exec($eiCommand);
 		} catch (InaccessibleEiCommandPathException $e) {
 			throw new ForbiddenException(null, 0, $e);
 		} catch (UnknownEiComponentException $e) {

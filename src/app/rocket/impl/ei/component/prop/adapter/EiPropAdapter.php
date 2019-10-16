@@ -14,6 +14,14 @@ abstract class EiPropAdapter extends EiComponentAdapter implements EiProp {
 	
 	/**
 	 * {@inheritDoc}
+	 * @see \rocket\ei\component\prop\EiProp::isPrivileged()
+	 */
+	public function isPrivileged(): bool {
+		return true;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @see \rocket\ei\component\prop\EiProp::setWrapper()
 	 */
 	public function setWrapper(EiPropWrapper $wrapper) {

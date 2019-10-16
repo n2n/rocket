@@ -89,8 +89,6 @@ class EiuEngine {
 		return new EiuEngine($this->eiEngine->getSupremeEiEngine(), null, $this->eiuAnalyst);
 	}
 	
-	
-	
 	public function removeGuiProp($guiFieldPath) {
 		$this->getGuiDefinition()->removeGuiPropByPath(GuiFieldPath::create($guiFieldPath));
 	}

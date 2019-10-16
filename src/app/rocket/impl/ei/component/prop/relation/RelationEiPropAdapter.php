@@ -76,7 +76,9 @@ abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements Re
 		parent::__construct();
 	}
 	
-	
+	function isPrivileged(): bool {
+		return true;
+	}
 	
 	/**
 	 * @param RelationModel $relationModel

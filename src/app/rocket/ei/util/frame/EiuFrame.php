@@ -357,7 +357,7 @@ class EiuFrame {
 	/**
 	 * @param EiObject $eiObject
 	 * @return \rocket\ei\manage\entry\EiEntry
-	 * @throws \rocket\ei\security\InaccessibleEntryException
+	 * @throws \rocket\ei\manage\security\InaccessibleEntryException
 	 */
 	private function createEiEntry(EiObject $eiObject, int $ignoreConstraintTypes = 0) {
 		return $this->eiFrame->createEiEntry($eiObject, null, $ignoreConstraintTypes);

@@ -143,6 +143,7 @@ class EmbeddedEiProp extends PropertyEiPropAdapter implements GuiEiProp, FieldEi
 	public function buildEiField(Eiu $eiu): ?EiField {
 		return new EmbeddedEiField($eiu, $this);
 	}
+
 }
 
 class EmbeddedGuiProp implements GuiProp {

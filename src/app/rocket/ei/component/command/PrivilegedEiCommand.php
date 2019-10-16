@@ -26,8 +26,4 @@ use rocket\ei\util\Eiu;
 
 interface PrivilegedEiCommand {
 	
-	/**
-	 * @return EiCommandPrivilege
-	 */
-	public function createEiCommandPrivilege(Eiu $eiu): EiCommandPrivilege;
 }

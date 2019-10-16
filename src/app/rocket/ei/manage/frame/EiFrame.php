@@ -44,6 +44,9 @@ class EiFrame {
 	
 	private $contextEiEngine;
 	private $manageState;
+	/**
+	 * @var Boundry
+	 */
 	private $boundry;
 	private $eiForkLink;
 	private $baseUrl;
@@ -149,6 +152,36 @@ class EiFrame {
 		}
 		
 		return $this->baseUrl;
+	}
+	
+	/**
+	 * @param EiExecution $eiExecution
+	 */
+	public function exec(?EiCommand $eiCommand) {
+		if ($this->eiExecution !== null) {
+			throw new IllegalStateException('EiFrame already executed.');
+		}
+		
+		$this->eiExecution = $this->manageState->getEiPermissionManager()->createEiExecution($this, $eiCommand);
+	}
+	
+	/**
+	 * @throws IllegalStateException
+	 * @return EiExecution
+	 */
+	public function getEiExecution() {
+		if (null === $this->eiExecution) {
+			throw new IllegalStateException('EiFrame contains no EiExecution.');
+		}
+		
+		return $this->eiExecution;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	public function hasEiExecution() {
+		return $this->eiExecution !== null;
 	}
 	
 // 	/**
@@ -269,37 +302,6 @@ class EiFrame {
 		return $eiEntry;
 	}
 	
-	/**
-	 * @param EiExecution $eiExecution
-	 */
-	public function exec(EiCommandPath $eiCommandPath, ?EiCommand $eiCommand) {
-		if ($this->eiExecution !== null) {
-			throw new IllegalStateException('EiFrame already executed.');
-		}
-		
-		$this->eiExecution = $this->manageState->getEiPermissionManager()
-				->createEiExecution($this, $eiCommandPath, $eiCommand);
-	}
-	
-	/**
-	 * @throws IllegalStateException
-	 * @return EiExecution
-	 */
-	public function getEiExecution() {
-		if (null === $this->eiExecution) {
-			throw new IllegalStateException('EiFrame contains no EiExecution.');
-		}
-		
-		return $this->eiExecution;
-	}
-	
-	/**
-	 * @return bool
-	 */
-	public function hasEiExecution() {
-		return $this->eiExecution !== null;
-	}
-	
 	
 	
 	/**
@@ -307,7 +309,7 @@ class EiFrame {
 	 * @return EiEntryAccessFactory
 	 */
 	public function getEiEntryAccessFactory() {
-		return $this->getEiExecution()->getEiEntryAccessFactory();
+		return $this->getEiExecution()->getEiEntryAccessFactory()->createEiEntryAccess($eiEntry);
 	}
 	
 	/**
@@ -521,7 +523,15 @@ class EiFrame {
 }
 
 class EiForkLink {
+	/**
+	 * View only
+	 * @var string
+	 */
 	const MODE_DISCOVER = 'discover';
+	/**
+	 * E. g. OneToMany-, OneToOne- or ManyToManySelection
+	 * @var string
+	 */
 	const MODE_SELECT = 'select';
 	
 	private $parent;

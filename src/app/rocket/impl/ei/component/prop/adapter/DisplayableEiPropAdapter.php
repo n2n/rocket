@@ -52,6 +52,14 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 
 		return $this->displayConfig;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\prop\EiProp::isPrivileged()
+	 */
+	public function isPrivileged(): bool {
+		return false;
+	}
 
 	/**
 	 * {@inheritDoc}

@@ -31,10 +31,8 @@ use rocket\ei\manage\entry\EiField;
 use rocket\impl\ei\component\prop\adapter\entry\SimpleEiField;
 use rocket\ei\manage\EiObject;
 use rocket\ei\component\prop\PrivilegedEiProp;
-use rocket\ei\manage\security\privilege\EiPropPrivilege;
 use n2n\util\type\ArgUtils;
 use rocket\core\model\Rocket;
-use rocket\ei\manage\security\EiFieldAccess;
 use n2n\util\type\attrs\AttributesException;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\entry\EiFieldValidationResult;
@@ -56,6 +54,10 @@ abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAd
 		PrivilegedEiProp, Validatable, Copyable {
 	protected $editConfig;
 
+	function isPrivileged(): bool {
+		return true;
+	}
+	
 	/**
 	 * @return \rocket\impl\ei\component\prop\adapter\config\EditConfig
 	 */
@@ -147,7 +149,7 @@ abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAd
 	 * @return bool
 	 */
 	public function isReadOnly(Eiu $eiu): bool {
-		if (!WritableEiPropPrivilege::checkForWriteAccess($eiu->entry()->access()->getEiFieldAccess($this))) {
+		if ($eiu->field()->isWritable()) {
 			return true;
 		}
 		
@@ -161,10 +163,6 @@ abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAd
 	
 	public function isMandatory(Eiu $eiu): bool {
 		 return $this->getEditConfig()->isMandatory();
-	}
-
-	public function createEiPropPrivilege(Eiu $eiu): EiPropPrivilege {
-		return new WritableEiPropPrivilege($this->getLabelLstr());
 	}
 	
 
@@ -180,53 +178,4 @@ abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAd
 	public function saveSiField(SiField $siField, Eiu $eiu) {
 		$eiu->field()->setValue($siField->getValue());
 	}
-}
-
-class WritableEiPropPrivilege implements EiPropPrivilege {
-	const ACCESS_WRITING_ALLOWED_KEY = 'writingAllowed';
-	const ACCESS_WRITING_ALLOWED_DEFAULT = true;
-	
-	private $label;
-	
-	public function __construct(string $label) {
-		$this->label = $label;
-	}
-	
-	public function getLabel(): string {
-		return $this->label;
-	}
-	
-	public function createMagCollection(Attributes $attributes): MagCollection {
-		$mc = new MagCollection();
-		$mc->addMag(self::ACCESS_WRITING_ALLOWED_KEY, new BoolMag(Rocket::createLstr('ei_impl_field_writable_label', Rocket::NS),
-				$attributes->getBool(self::ACCESS_WRITING_ALLOWED_KEY, false, self::ACCESS_WRITING_ALLOWED_DEFAULT)));
-		return $mc;
-	}
-	
-	public function buildAttributes(MagCollection $magCollection): Attributes {
-		$mag = $magCollection->getMagByPropertyName(self::ACCESS_WRITING_ALLOWED_KEY);
-		ArgUtils::assertTrue($mag instanceof BoolMag);
-		
-		return new Attributes(array(self::ACCESS_WRITING_ALLOWED_KEY => $mag->getValue()));
-	}
-	
-	public static function checkForWriteAccess(EiFieldAccess $eiFieldAccess) {
-		if ($eiFieldAccess->isFullyGranted()) {
-			return true;
-		}
-		
-		try {
-			foreach ($eiFieldAccess->getAttributes() as $attributes) {
-				if ($attributes->getBool(self::ACCESS_WRITING_ALLOWED_KEY, false, 
-						self::ACCESS_WRITING_ALLOWED_DEFAULT)) {
-					return true;
-				}
-			}
-		} catch (AttributesException $e) {
-			return self::ACCESS_WRITING_ALLOWED_DEFAULT;
-		}
-	}
-	public function createMag(Attributes $attributes): Mag {
-	}
-
 }

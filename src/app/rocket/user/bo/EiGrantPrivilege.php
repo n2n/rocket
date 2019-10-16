@@ -63,7 +63,7 @@ class EiGrantPrivilege extends ObjectAdapter {
 	 */
 	public function getPrivilegeSetting() {
 		if ($this->privilegeSetting === null) {
-			$this->privilegeSetting = PrivilegeSetting::create(new Attributes(
+			$this->privilegeSetting = PrivilegeSetting::createFromDs(new Attributes(
 					StringUtils::jsonDecode($this->eiPrivilegeJson, true)));
 		}
 		

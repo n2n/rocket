@@ -23,13 +23,14 @@ namespace rocket\user\model\security;
 
 use rocket\core\model\launch\LaunchPad;
 use rocket\ei\manage\security\EiPermissionManager;
+use rocket\ei\manage\ManageState;
 
 interface SecurityManager {
 	
 	/**
 	 * @return EiPermissionManager
 	 */
-	public function getEiPermissionManager(): EiPermissionManager;
+	public function createEiPermissionManager(ManageState $manageState): EiPermissionManager;
 	
 	/**
 	 * @param LaunchPad $launchPad

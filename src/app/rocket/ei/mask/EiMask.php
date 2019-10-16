@@ -646,6 +646,10 @@ class EiMask {
 				$this->getLabelLstr()->t($n2nLocale), $this->getIconType());
 	}
 	
+	function equals($obj) {
+		return $obj instanceof EiMask && $obj->getEiTypePath()->equals($this->getEiTypePath());
+	}
+	
 	public function __toString(): string {
 		return 'EiMask of ' . ($this->isExtension() ? $this->eiTypeExtension : $this->eiType);
 	}

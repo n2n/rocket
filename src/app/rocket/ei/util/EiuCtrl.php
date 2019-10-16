@@ -22,7 +22,7 @@
 namespace rocket\ei\util;
 
 use n2n\web\http\PageNotFoundException;
-use rocket\ei\security\InaccessibleEntryException;
+use rocket\ei\manage\security\InaccessibleEntryException;
 use n2n\web\http\ForbiddenException;
 use rocket\ei\manage\ManageState;
 use rocket\ei\manage\preview\model\UnavailablePreviewException;

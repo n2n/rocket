@@ -30,10 +30,11 @@ interface EiEntryAccess {
 	 * @param EiCommandPath $eiCommandPath
 	 * @return bool
 	 */
-	function isExecutableBy(EiCommandPath $eiCommandPath): bool;
+	function isEiCommandExecutable(EiCommandPath $eiCommandPath): bool;
 	
 	/**
-	 * @return EiFieldAccess
+	 * @paramEiPropPath $eiPropPath
+	 * @return bool
 	 */
-	function getEiFieldAccess(EiPropPath $eiPropPath): EiFieldAccess;
+	function isEiFieldWritable(EiPropPath $eiPropPath): bool;
 }

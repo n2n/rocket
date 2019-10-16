@@ -31,6 +31,7 @@ use n2n\util\ex\IllegalStateException;
 use rocket\impl\ei\component\command\common\controller\OverviewController;
 use rocket\ei\component\EiConfigurator;
 use n2n\impl\web\dispatch\mag\model\MagForm;
+use n2n\l10n\Lstr;
 use n2n\web\dispatch\mag\MagDispatchable;
 use rocket\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
@@ -70,6 +71,7 @@ class OverviewEiCommand extends IndependentEiCommandAdapter implements GenericOv
 	public function setPageSize($pageSize) {
 		$this->pageSize = $pageSize;
 	}
+
 	
 
 }

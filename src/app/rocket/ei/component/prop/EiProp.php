@@ -39,6 +39,11 @@ interface EiProp extends EiComponent {
 	public function getHelpTextLstr(): ?Lstr;
 	
 	/**
+	 * @return bool
+	 */
+	public function isPrivileged(): bool;
+	
+	/**
 	 * Will be the first called method by rocket
 	 * @param EiPropWrapper $eiPropWrapper
 	 */

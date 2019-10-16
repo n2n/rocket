@@ -48,6 +48,10 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 		$this->eiMask = $eiMask;
 	}
 	
+	/**
+	 * @throws IllegalStateException
+	 * @return \rocket\ei\mask\EiMask
+	 */
 	public function getEiMask() {
 		if ($this->eiMask !== null) {
 			return $this->eiMask;

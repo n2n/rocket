@@ -30,6 +30,8 @@ use n2n\web\http\controller\Controller;
 use n2n\util\ex\UnsupportedOperationException;
 use rocket\ei\component\command\GuiEiCommand;
 use rocket\ei\manage\gui\GuiCommand;
+use n2n\l10n\Lstr;
+use n2n\util\StringUtils;
 
 abstract class EiCommandAdapter extends EiComponentAdapter implements EiCommand, GuiEiCommand {
 	private $wrapper;
@@ -50,6 +52,13 @@ abstract class EiCommandAdapter extends EiComponentAdapter implements EiCommand,
 		return (string) $this->wrapper->getEiCommandPath();
 	}
 	
+	public function getLabelLstr(): Lstr {
+		return StringUtils::pretty($this->getIdBase());
+	}
+	
+	public function isPrivileged(): bool {
+		return true;
+	}
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\component\command\EiCommand::lookupController()

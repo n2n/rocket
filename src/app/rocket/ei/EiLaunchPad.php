@@ -63,8 +63,8 @@ class EiLaunchPad implements LaunchPad {
 		
 		$overviewEiCommand = $this->eiMask->getEiCommandCollection()->determineGenericOverview(true)->getEiCommand();
 		
-		return $loginContext->getSecurityManager()->getEiPermissionManager()
-				->isEiCommandAccessible($overviewEiCommand, $n2nContext->lookup(ManageState::class));
+		return $loginContext->getSecurityManager()->createEiPermissionManager($n2nContext->lookup(ManageState::class))
+				->isEiCommandAccessible($this->eiMask, $overviewEiCommand);
 	}
 	
 	/**
@@ -77,8 +77,8 @@ class EiLaunchPad implements LaunchPad {
 		$loginContext = $n2nContext->lookup(LoginContext::class);
 		CastUtils::assertTrue($loginContext instanceof LoginContext);
 		
-		if ($loginContext->getSecurityManager()->getEiPermissionManager()
-				->isEiCommandAccessible($result->getEiCommand(), $n2nContext->lookup(ManageState::class))) {
+		if ($loginContext->getSecurityManager()->createEiPermissionManager($n2nContext->lookup(ManageState::class))
+				->isEiCommandAccessible($this->eiMask, $result->getEiCommand())) {
 			return $result->getCmdUrlExt();
 		}
 		
@@ -108,7 +108,7 @@ class EiLaunchPad implements LaunchPad {
 		$em = $this->eiMask->getEiType()->lookupEntityManager($n2nContext->lookup(PdoPool::class));
 		$manageState->setEntityManager($em);
 		$manageState->setDraftManager($rocket->getOrCreateDraftManager($em));
-		$manageState->setEiPermissionManager($loginContext->getSecurityManager()->getEiPermissionManager());
+		$manageState->setEiPermissionManager($loginContext->getSecurityManager()->createEiPermissionManager($manageState));
 		
 		$eiLifecycleMonitor = new EiLifecycleMonitor($rocket->getSpec());
 		$eiLifecycleMonitor->initialize($manageState->getEntityManager(), $manageState->getDraftManager(), $n2nContext);

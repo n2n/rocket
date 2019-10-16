@@ -24,11 +24,19 @@ namespace rocket\impl\ei\component\command;
 use rocket\ei\component\command\IndependentEiCommand;
 use rocket\ei\component\EiConfigurator;
 use rocket\impl\ei\component\DefaultEiPropConfigurator;
+use n2n\l10n\Lstr;
+use n2n\util\StringUtils;
 
 abstract class IndependentEiCommandAdapter extends EiCommandAdapter implements IndependentEiCommand {
 	
 	public function __construct() {
 	}
+	
+	public function isPrivileged(): bool {
+		return StringUtils::pretty($this->getIdBase());
+	}
+	
+	
 	
 	public function createEiConfigurator(): EiConfigurator {
 		return new DefaultEiPropConfigurator($this);

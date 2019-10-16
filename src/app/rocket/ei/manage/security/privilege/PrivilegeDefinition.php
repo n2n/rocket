@@ -23,116 +23,111 @@ namespace rocket\ei\manage\security\privilege;
 
 use rocket\ei\EiCommandPath;
 use rocket\ei\EiPropPath;
-use n2n\util\type\attrs\Attributes;
-use n2n\web\dispatch\mag\MagCollection;
-use n2n\util\type\attrs\AttributesException;
-use n2n\impl\web\dispatch\mag\model\MagCollectionMag;
+use rocket\ei\component\command\EiCommand;
+use rocket\ei\component\prop\EiProp;
 
 class PrivilegeDefinition {
-	private $eiCommandPrivileges = array();
+	private $privilegedEiCommands = [];
+	private $unprivilegedEiCommands = [];
+	private $privilegedEiProps = [];
+	private $unprivilegedEiProps = [];
 	
-	public function isEmpty(): bool {
-		return empty($this->eiCommandPrivileges);
-	}
 	
-	/**
-	 * @param EiCommandPath $eiCommandPath
-	 * @return boolean
-	 * @todo add non privileged command paths
-	 */
-	public function isEiCommandPathUnprivileged(EiCommandPath $eiCommandPath) {
-		return !$this->checkEiCommandPathForPrivileges($eiCommandPath);
-	}
-	
-	public function checkEiCommandPathForPrivileges(EiCommandPath $eiCommandPath) {
-		foreach ($this->eiCommandPrivileges as $privilegeEiCommandPathStr => $eiCommandPrivilege) {
-			$privilegeEiCommandPath = EiCommandPath::create($privilegeEiCommandPathStr);
-			
-			if ($privilegeEiCommandPath->startsWith($eiCommandPath) 
-					|| $eiCommandPath->startsWith($privilegeEiCommandPath)) {
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
-	public function putEiCommandPrivilege(EiCommandPath $commandPath, EiCommandPrivilege $eiCommandPrivilege) {
-		$this->eiCommandPrivileges[(string) $commandPath] = $eiCommandPrivilege;
-	}
-	
-	public function getEiCommandPrivileges(): array {
-		return $this->eiCommandPrivileges;
-	}
-	
-	/**
-	 * @var EiPropPrivilege[]
-	 */
-	private $eiPropPrivileges = array();
-	
-	/**
-	 * @return \rocket\ei\manage\security\privilege\EiPropPrivilege[]
-	 */
-	public function getEiPropPrivileges() {
-		return $this->eiPropPrivileges;
-	}
-	
-	/**
-	 * @param EiPropPath $eiPropPath
-	 * @param EiPropPrivilege $eiPropPrivilege
-	 */
-	public function putEiPropPrivilege(EiPropPath $eiPropPath, EiPropPrivilege $eiPropPrivilege) {
-		$this->eiPropPrivileges[(string) $eiPropPath] = $eiPropPrivilege;
-	}
-	
-// 	public function getEiPropPrivilegeByEiPropPath(EiPropPath $eiPropPath): EiPropPrivilege {
-// 		$eiPropPathStr = (string) $eiPropPath;
-// 		if (isset($this->eiPropPrivileges[$eiPropPath])) {
-// 			return $this->eiPropPrivileges[$eiPropPath];
-// 		}
-	
-// 		throw new UnknownEiPropPrivilegeException();
+// 	public function isEmpty(): bool {
+// 		return empty($this->eiCommandPrivileges);
 // 	}
 	
-	public function createEiPropPrivilegeMagCollection(Attributes $attributes): MagCollection {
-		$magCollection = new MagCollection();
-		foreach ($this->eiPropPrivileges as $eiPropPathStr => $eiPropPrivilege) {
-			$itemAttributes = null;
-			try {
-				$itemAttributes = new Attributes($attributes->getArray($eiPropPathStr, false));
-			} catch (AttributesException $e) {
-				$itemAttributes = new Attributes();
-			}
-			
-			$magCollection->addMag($eiPropPathStr, new MagCollectionMag($eiPropPrivilege->getLabel(), 
-					$eiPropPrivilege->createMagCollection($itemAttributes)));
-		}
-		return $magCollection;
-	}
+// 	/**
+// 	 * @param EiCommandPath $eiCommandPath
+// 	 * @return boolean
+// 	 * @todo add non privileged command paths
+// 	 */
+// 	function isEiCommandPathUnprivileged(EiCommandPath $eiCommandPath) {
+// 		return !$this->checkEiCommandPathForPrivileges($eiCommandPath);
+// 	}
 	
-	public function buildEiPropPrivilegeAttributes(MagCollection $magCollection) {
-		$attributes = new Attributes();
-		
-		foreach ($this->eiPropPrivileges as $eiPropPathStr => $eiPropPrivilege) {
-			if (!$magCollection->containsPropertyName($eiPropPathStr)) continue;
+// 	public function checkEiCommandPathForPrivileges(EiCommandPath $eiCommandPath) {
+// 		foreach ($this->privilegedEiCommand as $privilegeEiCommandPathStr => $eiCommandPrivilege) {
+// 			$privilegeEiCommandPath = EiCommandPath::create($privilegeEiCommandPathStr);
 			
-			$attributes->set($eiPropPathStr, $eiPropPrivilege->buildAttributes(
-					$magCollection->getMagByPropertyName($eiPropPathStr)->getMagCollection())->toArray());
-		}
+// 			if ($privilegeEiCommandPath->startsWith($eiCommandPath) 
+// 					|| $eiCommandPath->startsWith($privilegeEiCommandPath)) {
+// 				return true;
+// 			}
+// 		}
+		
+// 		return false;
+// 	}
 
-		return $attributes;
+	/**
+	 * @param EiCommand $eiCommand
+	 * @return bool
+	 */
+	function containsEiCommand(EiCommand $eiCommand) {
+		return $this->containsEiCommandPath(EiCommandPath::from($eiCommand));
+	}
+		
+	/**
+	 * @param EiCommandPath $eiCommandPath
+	 * @return bool
+	 */
+	function containsEiCommandPath(EiCommandPath $eiCommandPath) {
+		return isset($this->privilegedEiCommands[(string) $eiCommandPath]);
 	}
 	
-	public static function extractAttributesOfEiPropPrivilege(EiPropPath $eiPropPath, 
-			Attributes $eiPropPrivilegeAttributes) {
-		
-		$eiPropPathStr = (string) $eiPropPath;
-				
-		if (!$eiPropPrivilegeAttributes->contains($eiPropPathStr)) return null;
-		
-		$attrs = $eiPropPrivilegeAttributes->get($eiPropPathStr);
-		if (is_array($attrs)) return new Attributes($attrs);
-		
-		return null;
+	/**
+	 * @param EiCommand $privilegeEiCommand
+	 */
+	function addPrivilegedEiCommand(EiCommand $privilegeEiCommand) {
+		$this->privilegedEiCommands[(string) EiCommandPath::from($privilegeEiCommand)] = $privilegeEiCommand;
+	}
+	
+	/**
+	 * @return EiCommand[]
+	 */
+	function getPrivilegedEiCommands() {
+		return $this->privilegedEiCommands;
+	}
+	
+	/**
+	 * @return EiCommand[]
+	 */
+	function getUnprivilegedEiCommands() {
+		return $this->unprivilegedEiCommands;
+	}
+	
+	/**
+	 * @param EiCommand $unprivilegedEiCommand
+	 */
+	function addUnprivilegedEiCommand(EiCommand $unprivilegedEiCommand) {
+		$this->unprivilegedEiCommands[(string) EiCommandPath::from($unprivilegedEiCommand)] = $unprivilegedEiCommand;
+	}
+
+	/**
+	 * @return EiProp[]
+	 */
+	function getPrivilegedEiProps() {
+		return $this->privilegedEiProps;
+	}
+	
+	/**
+	 * @param EiProp $eiProp
+	 */
+	function addPrivilegedEiProp(EiProp $eiProp) {
+		$this->privilegedEiProps[(string) EiPropPath::from($eiProp)] = $eiProp;
+	}
+	
+	/**
+	 * @return EiProp[]
+	 */
+	function getUnprivilegedEiProps() {
+		return $this->unprivilegedEiProps;
+	}
+	
+	/**
+	 * @param EiProp $eiProp
+	 */
+	function addUnprivilegedEiProp(EiProp $eiProp) {
+		$this->unprivilegedEiProps[(string) EiPropPath::from($eiProp)] = $eiProp;
 	}
 }
