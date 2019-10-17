@@ -19,23 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\prop\adapter\gui;
+namespace rocket\ei;
 
-use rocket\ei\util\Eiu;
-use rocket\ei\manage\gui\field\GuiField;
-use rocket\ei\manage\gui\DisplayDefinition;
-
-interface StatelessGuiProp {
-
-	/**
-	 * @param Eiu $eiu
-	 * @return DisplayDefinition|NULL
-	 */
-	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition;
-	
-	/**
-	 * @param Eiu $eiu
-	 * @return GuiField|NULL
-	 */
-	public function buildGuiField(Eiu $eiu): ?GuiField;
+class EiException extends \RuntimeException {
 }

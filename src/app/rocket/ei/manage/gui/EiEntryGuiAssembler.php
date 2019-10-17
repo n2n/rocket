@@ -86,8 +86,8 @@ class EiEntryGuiAssembler {
 	private function assembleExlGuiField(EiPropPath $eiPropPath, GuiProp $guiProp, GuiFieldPath $guiFieldPath) {
 		$readOnly = $this->eiEntryGui->getEiGui()->getViewMode() & ViewMode::read();
 		// @todo check accessiblity
-		
-		$guiField = $guiProp->buildGuiField(new Eiu($this->eiu, $eiPropPath, $guiFieldPath), $readOnly);
+				
+		$guiField = $guiProp->buildGuiField(new Eiu($this->eiu, $eiPropPath, $guiFieldPath));
 		ArgUtils::valTypeReturn($guiField, GuiField::class, $guiProp, 'buildGuiField', true);
 		
 		return $guiField;

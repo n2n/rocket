@@ -64,8 +64,6 @@ class EiEntry {
 		$this->constraintSet = new HashSet(EiEntryConstraint::class);
 	}
 	
-	
-	
 	/**
 	 * @return string|null
 	 */
@@ -96,21 +94,21 @@ class EiEntry {
 	/**
 	 * @return EiMask
 	 */
-	public function getEiMask() {
+	function getEiMask() {
 		return $this->eiMask;
 	}
 	
 	/**
 	 * @return \rocket\ei\EiType
 	 */
-	public function getEiType() {
+	function getEiType() {
 		return $this->eiMask->getEiType();
 	}
 	
 	/**
 	 * @return \rocket\ei\manage\entry\EiFieldMap
 	 */
-	public function getEiFieldMap() {
+	function getEiFieldMap() {
 		return $this->eiFieldMap;
 	}
 	

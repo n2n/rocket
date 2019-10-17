@@ -53,7 +53,7 @@ class GuiPropProxy implements GuiProp {
 	 * @param Eiu $eiu
 	 * @return GuiField|NULL
 	 */
-	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		return $this->statelessGuiProp->buildGuiField($eiu, $readOnly);
+	function buildGuiField(Eiu $eiu): ?GuiField {
+		return $this->statelessGuiProp->buildGuiField($eiu);
 	}
 }

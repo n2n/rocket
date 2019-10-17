@@ -113,7 +113,7 @@ class EiFieldMap {
 		foreach ($this->eiFieldWrappers as $eiPropPathStr => $eiFieldWrapper) {
 			if ($eiFieldWrapper->isIgnored()) continue;
 			
-			$eiFieldWrapper->getEiField()->validate($eiEntryValidationResult->getEiFieldValidationResult(
+			$eiFieldWrapper->validate($eiEntryValidationResult->getEiFieldValidationResult(
 					EiPropPath::create($eiPropPathStr)));
 		}
 	}
@@ -122,7 +122,7 @@ class EiFieldMap {
 		foreach ($this->eiFieldWrappers as $eiPropPathStr => $eiFieldWrapper) {
 			if ($eiFieldWrapper->isIgnored()) continue;
 			
-			$eiFieldWrapper->getEiField()->write();
+			$eiFieldWrapper->write();
 		}
 	}
 	

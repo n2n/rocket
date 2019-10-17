@@ -173,7 +173,7 @@ class EmbeddedGuiProp implements GuiProp {
 		return null;
 	}
 
-	public function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
+	public function buildGuiField(Eiu $eiu): ?GuiField {
 		return new EmbeddedGuiField($eiu, $this->eiProp);
 	}
 }

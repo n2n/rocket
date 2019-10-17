@@ -23,6 +23,7 @@ namespace rocket\ei\manage\entry;
 
 use rocket\ei\manage\gui\EiFieldAbstraction;
 use rocket\ei\EiPropPath;
+use rocket\ei\manage\security\InaccessibleEiFieldException;
 
 class EiFieldWrapper implements EiFieldAbstraction {
 	private $eiFieldMap;
@@ -76,6 +77,26 @@ class EiFieldWrapper implements EiFieldAbstraction {
 	 */
 	function getValue() {
 		return $this->eiField->getValue();
+	}
+	
+	/**
+	 * @param bool $regardSecurity
+	 * @return bool
+	 */
+	function isWritable(bool $regardSecurity) {
+		return $this->eiField->isWritable() 
+				&& (!$regardSecurity || $this->getEiFieldMap()->getEiEntry()->getEiEntryAccess()
+						->isEiFieldWritable($this->eiPropPath));
+	}
+	/**
+	 * @param EiFieldValidationResult $eiEiFieldValidationResult
+	 */
+	function validate(EiFieldValidationResult $eiEiFieldValidationResult) {
+		$this->eiField->validate($eiEiFieldValidationResult);
+	}
+	
+	function write() {
+		$this->eiField->write();
 	}
 	
 // 	/**

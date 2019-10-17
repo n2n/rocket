@@ -130,7 +130,7 @@ abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter im
 		return Rocket::createLstr($helpText, $this->getEiMask()->getModuleNamespace());
 	}
 	
-	public function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
+	public function buildGuiField(Eiu $eiu): ?GuiField {
 		return new GuiFieldProxy($eiu, $this);
 	}
 	

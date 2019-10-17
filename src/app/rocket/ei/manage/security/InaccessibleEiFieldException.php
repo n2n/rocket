@@ -21,7 +21,5 @@
  */
 namespace rocket\ei\manage\security;
 
-use rocket\ei\manage\security\SecurityException;
-
 class InaccessibleEiFieldException extends SecurityException {
 }

@@ -140,7 +140,7 @@ abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAd
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\PropertyDisplayableEiPropAdapter::buildGuiField()
 	 */
-	public function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
+	public function buildGuiField(Eiu $eiu): ?GuiField {
 		return new GuiFieldProxy($eiu, $this, $this);
 	}
 	

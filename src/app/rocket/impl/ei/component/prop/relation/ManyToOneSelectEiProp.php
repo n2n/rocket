@@ -68,7 +68,7 @@ class ManyToOneSelectEiProp extends RelationEiPropAdapter implements FieldEiProp
 		return $field;
 	}
 	
-	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
+	function buildGuiField(Eiu $eiu): ?GuiField {
 		if ($readOnly || $this->editConfig->isReadOnly()) {
 			return new RelationLinkGuiField($eiu, $this->getRelationModel());
 		}
@@ -105,7 +105,7 @@ class ManyToOneSelectEiProp extends RelationEiPropAdapter implements FieldEiProp
 // 	 * {@inheritDoc}
 // 	 * @see \rocket\ei\manage\gui\GuiProp::buildGuiField()
 // 	 */
-// 	public function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
+// 	public function buildGuiField(Eiu $eiu): ?GuiField {
 // 		$mapping = $eiu->entry()->getEiEntry();
 // 		$eiFrame = $eiu->frame()->getEiFrame();
 // 		$relationEiField = $mapping->getEiField(EiPropPath::from($this));

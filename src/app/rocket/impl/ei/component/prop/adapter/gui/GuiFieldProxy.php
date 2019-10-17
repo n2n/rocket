@@ -43,7 +43,8 @@ class GuiFieldProxy implements GuiField {
 		$this->statelessGuiFieldDisplayable = $statelessGuiFieldDisplayable;
 		$this->statelessGuiFieldEditable = $statelessGuiFieldEditable;
 		
-		if ($this->statelessGuiFieldEditable === null || $eiu->gui()->isReadOnly()) {
+		if ($this->statelessGuiFieldEditable === null || $eiu->gui()->isReadOnly()
+				|| (null !== $eiu->field(false) && !$eiu->field(false)->isWritable())) {
 			$this->siField = $this->statelessGuiFieldDisplayable->createOutSiField($eiu);
 			return;
 		}
