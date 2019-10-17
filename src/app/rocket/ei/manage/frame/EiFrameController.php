@@ -182,7 +182,7 @@ class EiFrameController extends ControllerAdapter {
 		$eiCommandPath = $this->parseEiCommandPath($eiCommandPathStr);
 		$eiCommand = $this->lookupEiCommand($eiCommandPath);
 		
-		$this->pushEiFrame($eiCommandPath, $eiCommand);
+		$this->pushEiFrame($eiCommand);
 		
 		$this->delegate($apiController);
 	}
@@ -191,7 +191,7 @@ class EiFrameController extends ControllerAdapter {
 		$eiCommandPath = $this->parseEiCommandPath($eiCommandPathStr);
 		$eiCommand = $this->lookupEiCommand($eiCommandPath);
 		
-		$this->pushEiFrame($eiCommandPath, $eiCommand);
+		$this->pushEiFrame($eiCommand);
 		
 		try {
 			$this->delegate($eiCommand->lookupController(new Eiu($this->eiFrame)));

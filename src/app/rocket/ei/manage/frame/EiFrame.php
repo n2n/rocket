@@ -35,7 +35,6 @@ use rocket\ei\EiCommandPath;
 use rocket\ei\EiEngine;
 use rocket\ei\manage\ManageState;
 use rocket\ei\manage\EiObject;
-use rocket\ei\manage\security\EiEntryAccessFactory;
 use rocket\ei\manage\security\EiEntryAccess;
 use rocket\ei\EiPropPath;
 use rocket\ei\component\command\EiCommand;
@@ -117,21 +116,20 @@ class EiFrame {
 	/**
 	 * @param EiForkLink|null $forkLink
 	 */
-	public function setEiFrokLink(?EiForkLink $forkLink) {
+	public function setEiForkLink(?EiForkLink $forkLink) {
 		$this->forkLink = $forkLink;
 	}
 	
 	/**
-	 * @return EiFrame|null
+	 * @return EiForkLink|null
 	 */
 	public function getEiForkLink() {
-		return $this->parent;
+		return $this->forkLink;
 	}
 	
-	public function setEiForkLink(EiForkLink $eiForkLink) {
-		$this->eiForkLink = $eiForkLink;
-	}
-	
+	/**
+	 * @return boolean
+	 */
 	public function hasBaseUrl() {
 		return $this->baseUrl !== null;
 	}
@@ -139,8 +137,8 @@ class EiFrame {
 	/**
 	 * @param Url $url
 	 */
-	public function setBaseUrl(?Url $url) {
-		$this->baseUrl = $url;
+	public function setBaseUrl(?Url $baseUrl) {
+		$this->baseUrl = $baseUrl;
 	}
 	
 	/**
@@ -157,12 +155,13 @@ class EiFrame {
 	/**
 	 * @param EiExecution $eiExecution
 	 */
-	public function exec(?EiCommand $eiCommand) {
+	public function exec(EiCommand $eiCommand) {
 		if ($this->eiExecution !== null) {
 			throw new IllegalStateException('EiFrame already executed.');
 		}
 		
-		$this->eiExecution = $this->manageState->getEiPermissionManager()->createEiExecution($this, $eiCommand);
+		$this->eiExecution = $this->manageState->getEiPermissionManager()
+				->createEiExecution($this->contextEiEngine->getEiMask(), $eiCommand);
 	}
 	
 	/**
@@ -254,6 +253,7 @@ class EiFrame {
 	
 // 		return $this->sortModel = CritmodFactory::createSortModelFromEiFrame($this);
 // 	}
+
 	/**
 	 * @param \n2n\persistence\orm\EntityManager $em
 	 * @param string $entityAlias
@@ -273,6 +273,11 @@ class EiFrame {
 
 		$entityAliasCriteriaProperty = CrIt::p(array($entityAlias));
 		
+		if (!($ignoreConstraintTypes & Boundry::TYPE_SECURITY) 
+				&& null !== ($criteriaConstraint = $this->getEiExecution()->getCriteriaConstraint())) {
+			$criteriaConstraint->applyToCriteria($criteria, $entityAliasCriteriaProperty);
+		}
+		
 		foreach ($this->boundry->filterCriteriaConstraints($ignoreConstraintTypes) as $criteriaConstraint) {
 			$criteriaConstraint->applyToCriteria($criteria, $entityAliasCriteriaProperty);
 		}
@@ -289,11 +294,12 @@ class EiFrame {
 	 * @param EiObject $eiObject
 	 * @param int $ignoreConstraintTypes
 	 * @return EiEntry
-	 * @throws SecurityException
+	 * @throws InaccessibleEiEntry
 	 */
 	public function createEiEntry(EiObject $eiObject, EiEntry $copyFrom = null, int $ignoreConstraintTypes = 0) {
 		$eiEntry = $this->contextEiEngine->getEiMask()->determineEiMask($eiObject->getEiEntityObj()->getEiType())->getEiEngine()
 				->createFramedEiEntry($this, $eiObject, $copyFrom, $this->boundry->filterEiEntryConstraints($ignoreConstraintTypes));
+		$eiEntry->setEiEntryAccess($this->getEiExecution()->createEiEntryAccess($eiEntry));
 		
 		foreach ($this->listeners as $listener) {
 			$listener->onNewEiEntry($eiEntry);

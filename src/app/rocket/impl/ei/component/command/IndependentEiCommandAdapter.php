@@ -32,9 +32,7 @@ abstract class IndependentEiCommandAdapter extends EiCommandAdapter implements I
 	public function __construct() {
 	}
 	
-	public function isPrivileged(): bool {
-		return StringUtils::pretty($this->getIdBase());
-	}
+	
 	
 	
 	

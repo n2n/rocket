@@ -72,5 +72,9 @@ class StaticEiEntryAccess implements EiEntryAccess {
 	public function isEiCommandExecutable(EiCommandPath $eiCommandPath): bool {
 		return $this->granted;
 	}
+	public function getEiEntryConstraint(): ?EiEntryConstraint {
+		return null;
+	}
+
 
 }

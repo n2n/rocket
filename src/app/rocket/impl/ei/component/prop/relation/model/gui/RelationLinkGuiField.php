@@ -36,12 +36,17 @@ class RelationLinkGuiField implements GuiField {
 	 */
 	private $eiu;
 	/**
+	 * @var RelationModel
+	 */
+	private $relationModel;
+	/**
 	 * @var SiField
 	 */
 	private $siField;
 	
 	function __construct(Eiu $eiu, RelationModel $relationModel) {
 		$this->eiu = $eiu;
+		$this->relationModel = $relationModel;
 		
 		if ($relationModel->isTargetMany()) {
 			$this->siField = $this->createToManySiField();
@@ -52,6 +57,7 @@ class RelationLinkGuiField implements GuiField {
 	
 	private function createToManySiField() {
 		$targetEiuFrame = $this->eiu->frame()->forkDiscover($this->eiu->prop(), $this->eiu->entry());
+		$targetEiuFrame->exec($this->relationModel->getTargetReadEiCommandPath());
 		
 		$num = $targetEiuFrame->countEntries();
 		$label = null;

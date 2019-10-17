@@ -408,10 +408,6 @@ class RelationModel {
 		
 	}
 	
-	function getTargetReadCommandPath() {
-		return $this->targetReadEiCommandPath;
-	}
-	
 	/**
 	 * @return \rocket\impl\ei\component\prop\relation\conf\TargetPropInfo
 	 */

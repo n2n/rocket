@@ -45,6 +45,7 @@ use n2n\util\type\ArgUtils;
 use rocket\ei\manage\entry\UnknownEiFieldExcpetion;
 use rocket\ei\component\prop\EiProp;
 use n2n\util\ex\NotYetImplementedException;
+use rocket\ei\component\prop\EiPropWrapper;
 
 class EiuEntry {
 	private $eiEntry;
@@ -95,21 +96,6 @@ class EiuEntry {
 		
 		return $this->eiuMask = new EiuMask($this->eiuObject->getEiType()->getEiMask(), null, $this->eiuAnalyst);
 	}
-	
-	private $eiuEntryAccess;
-	
-	/**
-	 * @return \rocket\ei\util\entry\EiuEntryAccess
-	 */
-	public function access() {
-		if ($this->eiuEntryAccess === null) {
-			$this->eiuEntryAccess = new EiuEntryAccess($this->getEiuFrame()->getEiFrame()
-					->createEiEntryAccess($this->getEiEntry()), $this);
-		}
-		
-		return $this->eiuEntryAccess;
-	}
-	
 	
 	/**
 	 * @return \rocket\ei\util\entry\EiuObject
@@ -397,6 +383,13 @@ class EiuEntry {
 	}
 	
 	
+	/**
+	 * @param string|EiPropPath|EiPropWrapper|EiProp $eiPropArg
+	 * @return boolean
+	 */
+	public function isFieldWritable($eiPropArg) {
+		return $this->eiEntry->getEiEntryAccess()->isEiFieldWritable(EiPropPath::create($eiPropArg));
+	}
 	
 	/**
 	 * @param mixed $eiPropArg

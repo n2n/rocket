@@ -66,6 +66,10 @@ class EiuField {
 		return $this->eiuEntry;
 	}
 	
+	function isWritable() {
+		return $this->getEiuEntry()->isFieldWritable($this->eiPropPath);
+	}
+	
 	public function getValue() {
 		return $this->getEiuEntry()->getValue($this->eiPropPath);
 	}

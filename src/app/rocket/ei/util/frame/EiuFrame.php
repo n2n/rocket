@@ -118,7 +118,7 @@ class EiuFrame {
 	 */
 	public function getApiUrl($eiCommandPath = null) {
 		if ($eiCommandPath === null) {
-			$eiCommandPath = $this->eiFrame->getEiExecution()->getEiCommandPath();
+			$eiCommandPath = EiCommandPath::from($this->eiFrame->getEiExecution()->getEiCommand());
 		} else {
 			$eiCommandPath = EiCommandPath::create($eiCommandPath);
 		}
@@ -592,7 +592,7 @@ class EiuFrame {
 	}
 	
 	public function isExecutedBy($eiCommandPath) {
-		return $this->eiFrame->getEiExecution()->getEiCommandPath()->startsWith(EiCommandPath::create($eiCommandPath));
+		return EiCommandPath::from($this->eiFrame->getEiExecution()->getEiCommand())->equals(EiCommandPath::create($eiCommandPath));
 	}
 	
 	public function isExecutedByType($eiCommandType) {
@@ -1130,7 +1130,7 @@ class EiuFrame {
 		$eiCommand = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiCommandCollection()
 				->getByPath($eiCommandPath);
 		
-		$this->eiFrame->exec($eiCommandPath, $eiCommand);
+		$this->eiFrame->exec($eiCommand);
 		return $this;
 	}
 	

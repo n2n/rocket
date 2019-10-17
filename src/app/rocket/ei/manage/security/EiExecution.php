@@ -24,24 +24,18 @@ namespace rocket\ei\manage\security;
 use rocket\ei\component\command\EiCommand;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\manage\frame\CriteriaConstraint;
-use rocket\ei\manage\entry\EiEntryConstraint;
 
 interface EiExecution {
 	
 	/**
 	 * @return \rocket\ei\component\command\EiCommand
 	 */
-	public function getEiCommand(): EiCommand;
+	function getEiCommand(): EiCommand;
 	
 	/**
 	 * @return CriteriaConstraint|NULL
 	 */
 	function getCriteriaConstraint(): ?CriteriaConstraint;
-	
-	/**
-	 * @return EiEntryConstraint|NULL
-	 */
-	function getEiEntryConstraint(): ?EiEntryConstraint;
 	
 	/**
 	 * @param EiEntry $eiEntry

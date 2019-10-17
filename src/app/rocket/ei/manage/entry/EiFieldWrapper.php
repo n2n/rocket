@@ -29,9 +29,8 @@ class EiFieldWrapper implements EiFieldAbstraction {
 	private $eiPropPath;
 	private $eiField;
 	private $ignored = false;
-	private $validationResult;
 	
-	public function __construct(EiFieldMap $eiFieldMap, EiPropPath $eiPropPath, EiField $eiField) {
+	function __construct(EiFieldMap $eiFieldMap, EiPropPath $eiPropPath, EiField $eiField) {
 		$this->eiFieldMap = $eiFieldMap;
 		$this->eiPropPath = $eiPropPath;
 		$this->eiField = $eiField;
@@ -40,37 +39,59 @@ class EiFieldWrapper implements EiFieldAbstraction {
 	/**
 	 * @param bool $ignored
 	 */
-	public function setIgnored(bool $ignored) {
+	function setIgnored(bool $ignored) {
 		$this->ignored = $ignored;
 	}
 	
 	/**
 	 * @return bool
 	 */
-	public function isIgnored(): bool {
+	function isIgnored(): bool {
 		return $this->ignored;
 	}
 	
 	/**
 	 * @return \rocket\ei\manage\entry\EiFieldMap
 	 */
-	public function getEiFieldMap() {
+	function getEiFieldMap() {
 		return $this->eiFieldMap;
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\entry\EiField
+	 * @param mixed $value
+	 * @param bool $ignoreSecurity
+	 * @throws InaccessibleEiFieldException
 	 */
-	public function getEiField() {
-		return $this->eiField;
+	function setValue($value, bool $regardSecurity = true) {
+		if ($regardSecurity && !$this->getEiFieldMap()->getEiEntry()->getEiEntryAccess()
+				->isEiFieldWritable($this->eiPropPath)) {
+			throw new InaccessibleEiFieldException('User has no write access of on field ' . $this->eiPropPath . '.');
+		}
+		
+		$this->eiField->setValue($value);
 	}
 	
-	public function getValidationResult(): ?ValidationResult {
+	/**
+	 * @return mixed
+	 */
+	function getValue() {
+		return $this->eiField->getValue();
+	}
+	
+// 	/**
+// 	 * @return \rocket\ei\manage\entry\EiField
+// 	 */
+// 	function getEiField() {
+// 		return $this->eiField;
+// 	}
+	
+	function getValidationResult(): ?ValidationResult {
 		$eiEntry = $this->eiFieldMap->getEiEntry();
 		
-		if (!$eiEntry->hasValidationResult()) return null;
+		if (!$eiEntry->hasValidationResult()) {
+			return null;
+		}
 		
-		return $eiEntry->getValidationResult()->getEiFieldValidationResult($this->eiPropPath);	
+		return $eiEntry->getValidationResult()->getEiFieldValidationResult($this->eiPropPath);
 	}
-
 }

@@ -46,5 +46,5 @@ interface EiPermissionManager {
 	 * @throws InaccessibleEiCommandPathException
 	 * @return \rocket\ei\manage\security\EiExecution
 	 */
-	public function createEiExecution(EiMask $contextEiMask, EiCommand $eiCommand);
+	public function createEiExecution(EiMask $contextEiMask, EiCommand $eiCommand): EiExecution;
 }

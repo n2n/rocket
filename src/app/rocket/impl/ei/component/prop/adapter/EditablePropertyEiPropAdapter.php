@@ -98,8 +98,7 @@ abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAd
 		$constraints = $objectPropertyAccessProxy === null ? TypeConstraint::createSimple('mixed') :
 				$this->getObjectPropertyAccessProxy()->getConstraint()->getLenientCopy();
 
-		return new SimpleEiField($eiu, $constraints,
-				$this, $this, $this, ($this->isReadOnly($eiu) ? null : $this));
+		return new SimpleEiField($eiu, $constraints, $this, $this, $this, $this);
 	}
 	
 	public function buildEiFieldFork(EiObject $eiObject, EiField $eiField = null) {

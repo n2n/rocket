@@ -69,19 +69,19 @@ class RestrictedEiExecution implements EiExecution {
 		return $this->comparatorConstraint;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\security\EiExecution::getEiEntryConstraint()
-	 */
-	function getEiEntryConstraint(): ?EiEntryConstraint {
-		return $this->eiEntryConstraint;
-	}
+// 	/**
+// 	 * {@inheritDoc}
+// 	 * @see \rocket\ei\manage\security\EiExecution::getEiEntryConstraint()
+// 	 */
+// 	function getEiEntryConstraint(): ?EiEntryConstraint {
+// 		return $this->eiEntryConstraint;
+// 	}
 
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\security\EiExecution::createEiEntryAccess()
 	 */
 	function createEiEntryAccess(EiEntry $eiEntry): EiEntryAccess {
-		return $this->restrictedEiEntryAccessFactory->createEiEntryAccess( $eiEntry);
+		return $this->restrictedEiEntryAccessFactory->createEiEntryAccess($this->eiEntryConstraint, $eiEntry);
 	}
 }

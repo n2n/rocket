@@ -4,6 +4,7 @@ namespace rocket\user\model\security;
 use rocket\ei\EiCommandPath;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\manage\security\EiEntryAccess;
+use rocket\ei\manage\entry\EiEntryConstraint;
 
 class RestrictedEiEntryAccessFactory {
 	/**
@@ -18,7 +19,7 @@ class RestrictedEiEntryAccessFactory {
 		$this->constraintCaches[(string) $constraintCache->getEiGrant()->getEiTypePath()] = $constraintCache;
 	}
 	
-	function createEiEntryAccess(EiEntry $eiEntry): EiEntryAccess {
+	function createEiEntryAccess(EiEntryConstraint $eiEntryConstraint, EiEntry $eiEntry): EiEntryAccess {
 		$writableEiPropPaths = [];
 		$executableEiCommandPaths = [];
 		
@@ -35,6 +36,6 @@ class RestrictedEiEntryAccessFactory {
 			array_push($executableEiCommandPaths, ...$result->getExecutableEiCommandPaths());
 		}
 		
-		return new RestrictedEiEntryAccess($writableEiPropPaths, $executableEiCommandPaths);	
+		return new RestrictedEiEntryAccess($eiEntryConstraint, $writableEiPropPaths, $executableEiCommandPaths);	
 	}
 }

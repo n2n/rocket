@@ -23,6 +23,7 @@ namespace rocket\ei\manage\security;
 
 use rocket\ei\EiPropPath;
 use rocket\ei\EiCommandPath;
+use rocket\ei\manage\entry\EiEntryConstraint;
 
 interface EiEntryAccess {
 	
@@ -33,8 +34,13 @@ interface EiEntryAccess {
 	function isEiCommandExecutable(EiCommandPath $eiCommandPath): bool;
 	
 	/**
-	 * @paramEiPropPath $eiPropPath
+	 * @param EiPropPath $eiPropPath
 	 * @return bool
 	 */
 	function isEiFieldWritable(EiPropPath $eiPropPath): bool;
+	
+	/**
+	 * @return EiEntryConstraint|NULL
+	 */
+	function getEiEntryConstraint(): ?EiEntryConstraint;
 }

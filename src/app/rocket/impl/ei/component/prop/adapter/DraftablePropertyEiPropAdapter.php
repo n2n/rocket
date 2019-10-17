@@ -66,7 +66,7 @@ abstract class DraftablePropertyEiPropAdapter extends EditablePropertyEiPropAdap
 	
 		return new SimpleEiField($eiu, 
 				$this->getObjectPropertyAccessProxy(true)->getConstraint()->getLenientCopy(), 
-				$this, $this, ($this->isReadOnly($eiu) ? null : $this));
+				$this, $this, $this);
 	}
 	
 	public function isReadOnly(Eiu $eiu): bool {
