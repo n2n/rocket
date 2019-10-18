@@ -58,8 +58,8 @@ class BooleanEiPropConfigurator extends AdaptableEiPropConfigurator {
 		
 		$guiProps = null;
 		try {
-			$this->eiu($n2nContext)->mask()->engine()->
-			$guiProps = $this->eiComponent->getEiMask()->getEiEngine()->createGuiDefinition($n2nContext)->getGuiProps();
+			$this->eiu($n2nContext)->mask()->engine()->guiPropPaths();
+			
 		} catch (\Throwable $e) {
 			$guiProps = $this->eiComponent->getEiMask()->getEiEngine()->createGuiDefinition($n2nContext)->getLevelGuiProps();
 		}

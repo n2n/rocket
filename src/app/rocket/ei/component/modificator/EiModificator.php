@@ -55,11 +55,6 @@ interface EiModificator extends EiComponent {
 	/**
 	 * @param Eiu $eiu
 	 */
-	public function setupGuiDefinition(Eiu $eiu);
-	
-	/**
-	 * @param Eiu $eiu
-	 */
 	public function setupEiGui(Eiu $eiu);
 	
 	/**

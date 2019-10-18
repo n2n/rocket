@@ -24,7 +24,6 @@ namespace rocket\ei\manage\gui;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\util\Eiu;
-use n2n\util\ex\NotYetImplementedException;
 use rocket\core\model\Rocket;
 use n2n\core\container\N2nContext;
 use rocket\ei\manage\entry\UnknownEiFieldExcpetion;
@@ -40,6 +39,7 @@ use rocket\ei\manage\gui\field\GuiFieldPath;
 use rocket\ei\IdPath;
 use n2n\util\StringUtils;
 use rocket\ei\EiCommandPath;
+use n2n\l10n\Lstr;
 
 class GuiDefinition {	
 	private $guiProps = array();
@@ -50,14 +50,13 @@ class GuiDefinition {
 	 */
 	private $guiCommands;
 	
-	
 	/**
 	 * @param string $id
 	 * @param GuiProp $guiProp
 	 * @param EiPropPath $guiFieldPath
 	 * @throws GuiException
 	 */
-	public function putGuiProp(EiPropPath $eiPropPath, GuiProp $guiProp) {
+	function putGuiProp(EiPropPath $eiPropPath, GuiProp $guiProp) {
 		$eiPropPathStr = (string) $eiPropPath;
 		
 		if (isset($this->guiProps[$eiPropPathStr])) {
@@ -71,7 +70,7 @@ class GuiDefinition {
 	/**
 	 * @param EiPropPath $eiPropPath
 	 */
-	public function removeGuiProp(EiPropPath $eiPropPath) {
+	function removeGuiProp(EiPropPath $eiPropPath) {
 		$eiPropPathStr = (string) $eiPropPath;
 		
 		unset($this->guiProps[$eiPropPathStr]);
@@ -81,7 +80,7 @@ class GuiDefinition {
 	/**
 	 * @param GuiFieldPath $guiFieldPath
 	 */
-	public function removeGuiPropByPath(GuiFieldPath $guiFieldPath) {
+	function removeGuiPropByPath(GuiFieldPath $guiFieldPath) {
 		$guiDefinition = $this;
 		$eiPropPaths = $guiFieldPath->toArray();
 		while (null !== ($eiPropPath = array_shift($eiPropPaths))) {
@@ -102,7 +101,7 @@ class GuiDefinition {
 	 * @param string $id
 	 * @return bool
 	 */
-	public function containsEiPropPath(EiPropPath $eiPropPath) {
+	function containsEiPropPath(EiPropPath $eiPropPath) {
 		return isset($this->eiPropPaths[(string) $eiPropPath]);
 	}
 	
@@ -111,7 +110,7 @@ class GuiDefinition {
 	 * @throws GuiException
 	 * @return GuiProp
 	 */
-	public function getGuiProp(EiPropPath $eiPropPath) {
+	function getGuiProp(EiPropPath $eiPropPath) {
 		$eiPropPathStr = (string) $eiPropPath;
 		if (!isset($this->guiProps[$eiPropPathStr])) {
 			throw new GuiException('No GuiProp with id \'' . $eiPropPathStr . '\' registered');
@@ -123,7 +122,7 @@ class GuiDefinition {
 	/**
 	 * @return GuiProp[]
 	 */
-	public function getGuiProps() {
+	function getGuiProps() {
 		return $this->guiProps;
 	}
 	
@@ -131,7 +130,7 @@ class GuiDefinition {
 	 * @param string $eiPropPath
 	 * @param GuiPropFork $guiPropFork
 	 */
-	public function putGuiPropFork(EiPropPath $eiPropPath, GuiPropFork $guiPropFork) {
+	function putGuiPropFork(EiPropPath $eiPropPath, GuiPropFork $guiPropFork) {
 		$eiPropPathStr = (string) $eiPropPath;
 		
 		$this->guiPropForks[$eiPropPathStr] = $guiPropFork;
@@ -142,7 +141,7 @@ class GuiDefinition {
 	 * @param string $id
 	 * @return boolean
 	 */
-	public function containsLevelGuiPropForkId(string $id) {
+	function containsLevelGuiPropForkId(string $id) {
 		return isset($this->guiPropForks[$id]);
 	}
 	
@@ -151,7 +150,7 @@ class GuiDefinition {
 	 * @throws GuiException
 	 * @return GuiPropFork
 	 */
-	public function getGuiPropFork(EiPropPath $eiPropPath) {
+	function getGuiPropFork(EiPropPath $eiPropPath) {
 		$eiPropPathStr = (string) $eiPropPath;
 		if (!isset($this->guiPropForks[$eiPropPathStr])) {
 			throw new GuiException('No GuiPropFork with id \'' . $eiPropPathStr . '\' registered.');
@@ -160,7 +159,7 @@ class GuiDefinition {
 		return $this->guiPropForks[$eiPropPathStr];
 	}
 	
-	public function getAllGuiProps() {
+	function getAllGuiProps() {
 		return $this->buildGuiProps(array());
 	}
 	
@@ -191,7 +190,7 @@ class GuiDefinition {
 	 * @deprecated use {@see GuiDefinition::getGuiFieldPaths()}
 	 * @return \rocket\ei\manage\gui\field\GuiFieldPath[]
 	 */
-	public function getAllGuiFieldPaths() {
+	function getAllGuiFieldPaths() {
 		return $this->getGuiFieldPaths();
 	}
 	
@@ -199,7 +198,7 @@ class GuiDefinition {
 	 * @param GuiFieldPath[] $guiFieldPaths
 	 * @return GuiFieldPath[]
 	 */
-	public function filterGuiFieldPaths(array $guiFieldPaths) {
+	function filterGuiFieldPaths(array $guiFieldPaths) {
 		return array_filter($guiFieldPaths, function (GuiFieldPath $guiFieldPath) {
 			return $this->containsGuiProp($guiFieldPath);
 		});
@@ -208,7 +207,7 @@ class GuiDefinition {
 	/**
 	 * @return \rocket\ei\manage\gui\field\GuiFieldPath[]
 	 */
-	public function getGuiFieldPaths() {
+	function getGuiFieldPaths() {
 		return $this->buildGuiFieldPaths(array());
 	}
 	
@@ -236,13 +235,13 @@ class GuiDefinition {
 		return $guiFieldPaths;
 	}
 	
-	public function assembleDefaultGuiProps() {
+	function assembleDefaultGuiProps() {
 		$guiPropAssemblies = [];
 		$this->composeGuiPropAssemblies($guiPropAssemblies, []);
 		return $guiPropAssemblies;
 	}
 	
-	public function assembleGuiProps(EiGui $eiGui, array $guiFieldPaths) {
+	function assembleGuiProps(EiGui $eiGui, array $guiFieldPaths) {
 		ArgUtils::valArray($guiFieldPaths, GuiFieldPath::class);
 		
 // 		$eiu = new Eiu($eiGui);
@@ -295,7 +294,7 @@ class GuiDefinition {
 		}
 	}
 	
-// 	public function createDefaultDisplayStructure(EiGui $eiGui) {
+// 	function createDefaultDisplayStructure(EiGui $eiGui) {
 // 		$displayStructure = new DisplayStructure();
 // 		$this->composeDisplayStructure($displayStructure, array(), new Eiu($eiGui));
 // 		return $displayStructure;
@@ -309,7 +308,7 @@ class GuiDefinition {
 	 * @return \rocket\ei\manage\gui\GuiProp
 	 * @throws GuiException
 	 */
-	public function getGuiPropByGuiFieldPath(GuiFieldPath $guiFieldPath) {
+	function getGuiPropByGuiFieldPath(GuiFieldPath $guiFieldPath) {
 		$ids = $guiFieldPath->toArray();
 		$guiDefinition = $this;
 		while (null !== ($id = array_shift($ids))) {
@@ -326,7 +325,11 @@ class GuiDefinition {
 		throw new GuiException('GuiFieldPath could not be resolved: ' . $guiFieldPath);
 	}
 	
-	public function containsGuiProp(GuiFieldPath $guiFieldPath) {
+	/**
+	 * @param GuiFieldPath $guiFieldPath
+	 * @return boolean
+	 */
+	function containsGuiProp(GuiFieldPath $guiFieldPath) {
 		$eiPropPaths = $guiFieldPath->toArray();
 		$guiDefinition = $this;
 		while (null !== ($eiPropPath = array_shift($eiPropPaths))) {
@@ -339,25 +342,7 @@ class GuiDefinition {
 		
 		return true;
 	}
-	
-	/**
-	 * @deprecated
-	 * @param EiPropPath $eiPropPath
-	 * @throws NotYetImplementedException
-	 * @return \rocket\ei\manage\gui\field\GuiFieldPath|NULL
-	 */
-	public function eiPropPathToGuiFieldPath(EiPropPath $eiPropPath) {
-		if ($eiPropPath->hasMultipleIds()) {
-			throw new NotYetImplementedException();
-		}
-		
-		$id = $eiPropPath->getFirstId();
-		if (isset($this->guiProps[$id])) {
-			return new GuiFieldPath([EiPropPath::create($id)]);
-		}
-		
-		return null;
-	}
+
 	
 	/**
 	 * @param EiEntry $eiEntry
@@ -365,7 +350,7 @@ class GuiDefinition {
 	 * @throws UnknownEiFieldExcpetion
 	 * @return \rocket\ei\manage\gui\EiFieldAbstraction|null
 	 */
-	public function determineEiFieldAbstraction(N2nContext $n2nContext, EiEntry $eiEntry, GuiFieldPath $guiFieldPath) {
+	function determineEiFieldAbstraction(N2nContext $n2nContext, EiEntry $eiEntry, GuiFieldPath $guiFieldPath) {
 		$eiFieldPaths = $guiFieldPath->toArray();
 		$id = array_shift($eiFieldPaths);
 		if (empty($eiFieldPaths)) {
@@ -376,7 +361,10 @@ class GuiDefinition {
 		return $guiPropFork->determineEiFieldAbstraction(new Eiu($n2nContext, $eiEntry), new GuiFieldPath($eiFieldPaths));
 	}
 	
-	public function getGuiPropForks() {
+	/**
+	 * @return GuiPropFork[]
+	 */
+	function getGuiPropForks() {
 		return $this->guiPropForks;
 	}
 		
@@ -386,7 +374,7 @@ class GuiDefinition {
 	 * @param EiPropPath $guiFieldPath
 	 * @throws GuiException
 	 */
-	public function putGuiCommand(EiCommandPath $eiCommandPath, GuiCommand $guiCommand) {
+	function putGuiCommand(EiCommandPath $eiCommandPath, GuiCommand $guiCommand) {
 		$eiCommandPathStr = (string) $eiCommandPath;
 		
 		if (isset($this->guiCommand[$eiCommandPathStr])) {
@@ -445,6 +433,12 @@ class GuiDefinition {
 		return $guiControls;
 	}
 	
+	/**
+	 * @param GuiCommand $guiCommand
+	 * @param string $guiCommandId
+	 * @param Eiu $eiu
+	 * @return \rocket\ei\manage\gui\control\GuiControl[]
+	 */
 	private function extractEntryGuiControls(GuiCommand $guiCommand, string $guiCommandId, Eiu $eiu) {
 		$entryGuiControls = $guiCommand->createEntryGuiControls($eiu);
 		ArgUtils::valArrayReturn($entryGuiControls, $guiCommand, 'createEntryGuiControls', EntryGuiControl::class);
@@ -600,21 +594,56 @@ class GuiDefinition {
 		return $mappedGuiControls;
 	}
 	
-	
-	private $guiDefinitionListeners = array();
-	
-	public function registerGuiDefinitionListener(GuiDefinitionListener $guiDefinitionListener) {
-		$this->guiDefinitionListeners[spl_object_hash($guiDefinitionListener)] = $guiDefinitionListener;
-	}
-	
-	public function unregisterGuiDefinitionListener(GuiDefinitionListener $guiDefinitionListener) {
-		unset($this->guiDefinitionListeners[spl_object_hash($guiDefinitionListener)]);
+	/**
+	 * @return Lstr[] 
+	 */
+	function getLabelLstrs() {
+		return $this->buildLabelLstrs([]);
 	}
 	
 	/**
-	 * @return GuiDefinitionListener[]
+	 * @param EiPropPath[] $contextEiPropPaths
+	 * @return Lstr[]
 	 */
-	public function getGuiDefinitionListeners() {
-		return $this->guiDefinitionListeners;
+	private function buildLabelLstrs(array $contextEiPropPaths) {
+		$labelLstrs = array();
+		
+		foreach ($this->eiPropPaths as $eiPropPath) {
+			$eiPropPathStr = (string) $eiPropPath;
+			
+			if (isset($this->guiProps[$eiPropPathStr])) {
+				$currentEiPropPaths = $contextEiPropPaths;
+				$currentEiPropPaths[] = $eiPropPath;
+				$labelLstrs[(string) new GuiFieldPath($currentEiPropPaths)] = $this->guiProps[$eiPropPathStr]->getLabelLstr();
+			}
+			
+			if (isset($this->guiPropForks[$eiPropPathStr])) {
+				$currentEiPropPaths = $contextEiPropPaths;
+				$currentEiPropPaths[] = $eiPropPath;
+				
+				$guiFieldPaths = array_merge($labelLstrs, $this->guiPropForks[$eiPropPathStr]
+						->getForkedGuiDefinition()->buildLabelLstrs($currentEiPropPaths));
+			}
+		}
+		
+		return $guiFieldPaths;
 	}
+	
+	
+// 	private $guiDefinitionListeners = array();
+	
+// 	function registerGuiDefinitionListener(GuiDefinitionListener $guiDefinitionListener) {
+// 		$this->guiDefinitionListeners[spl_object_hash($guiDefinitionListener)] = $guiDefinitionListener;
+// 	}
+	
+// 	function unregisterGuiDefinitionListener(GuiDefinitionListener $guiDefinitionListener) {
+// 		unset($this->guiDefinitionListeners[spl_object_hash($guiDefinitionListener)]);
+// 	}
+	
+// 	/**
+// 	 * @return GuiDefinitionListener[]
+// 	 */
+// 	function getGuiDefinitionListeners() {
+// 		return $this->guiDefinitionListeners;
+// 	}
 }

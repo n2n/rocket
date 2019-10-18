@@ -23,8 +23,11 @@ namespace rocket\ei\manage\gui;
 
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\gui\field\GuiField;
+use n2n\l10n\Lstr;
 
 interface GuiProp {
+	
+	function getLabelLstr(): Lstr;
 	
 	/**
 	 * <p>Tests if this GuiProp is compatible with the passed EiGui and returns an {@see DisplayDefinition}

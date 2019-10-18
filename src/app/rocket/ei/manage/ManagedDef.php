@@ -28,6 +28,7 @@ use rocket\ei\manage\security\filter\SecurityFilterDefinition;
 use rocket\ei\manage\security\privilege\PrivilegeDefinition;
 use rocket\ei\manage\draft\DraftDefinition;
 use rocket\ei\manage\idname\IdNameDefinition;
+use rocket\ei\manage\gui\GuiDefinition;
 
 class ManagedDef {
 	
@@ -99,45 +100,45 @@ class ManagedDef {
 	}
 	
 	
-	/**
-	 * @var PrivilegeDefinition[]
-	 */
-	private $privilegeDefinitions = array();
-	
-	/**
-	 * @param EiMask $eiMask
-	 * @return PrivilegeDefinition
-	 */
-	public function getPrivilegeDefinition(EiMask $eiMask) {
-		$eiTypePathStr = (string) $eiMask->getEiTypePath();
-		
-		if (!isset($this->privilegeDefinitions[$eiTypePathStr])) {
-			$this->privilegeDefinitions[$eiTypePathStr] = $eiMask->getEiEngine()
-					->createPrivilegeDefinition($this->manageState->getN2nContext());
-		}
-		
-		return $this->privilegeDefinitions[$eiTypePathStr];
-	}
-	
 // 	/**
-// 	 * @var GuiDefinition[]
+// 	 * @var PrivilegeDefinition[]
 // 	 */
-// 	private $guiDefinitions = array();
+// 	private $privilegeDefinitions = array();
 	
 // 	/**
 // 	 * @param EiMask $eiMask
-// 	 * @return GuiDefinition
+// 	 * @return PrivilegeDefinition
 // 	 */
-// 	public function getGuiDefinition(EiMask $eiMask) {
+// 	public function getPrivilegeDefinition(EiMask $eiMask) {
 // 		$eiTypePathStr = (string) $eiMask->getEiTypePath();
 		
-// 		if (!isset($this->guiDefinitions[$eiTypePathStr])) {
-// 			$eiMask->getEiEngine()
-// 					->createGuiDefinition($this->manageState->getN2nContext(), $this->guiDefinitions[$eiTypePathStr]);
+// 		if (!isset($this->privilegeDefinitions[$eiTypePathStr])) {
+// 			$this->privilegeDefinitions[$eiTypePathStr] = $eiMask->getEiEngine()
+// 					->createPrivilegeDefinition($this->manageState->getN2nContext());
 // 		}
 		
-// 		return $this->guiDefinitions[$eiTypePathStr];
+// 		return $this->privilegeDefinitions[$eiTypePathStr];
 // 	}
+	
+	/**
+	 * @var GuiDefinition[]
+	 */
+	private $guiDefinitions = array();
+	
+	/**
+	 * @param EiMask $eiMask
+	 * @return GuiDefinition
+	 */
+	public function getGuiDefinition(EiMask $eiMask) {
+		$eiTypePathStr = (string) $eiMask->getEiTypePath();
+		
+		if (!isset($this->guiDefinitions[$eiTypePathStr])) {
+			$this->guiDefinitions[$eiTypePathStr] = $eiMask->getEiEngine()
+					->createGuiDefinition($this->manageState->getN2nContext(), $this->guiDefinitions[$eiTypePathStr]);
+		}
+		
+		return $this->guiDefinitions[$eiTypePathStr];
+	}
 	
 	/**
 	 * @var IdNameDefinition[]

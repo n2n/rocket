@@ -49,12 +49,12 @@ class IdNameFactory {
 	 * @param EiFrame $eiFrame
 	 * @param int $viewMode
 	 * @throws \InvalidArgumentException
-	 * @return \rocket\ei\manage\gui\EiGui
+	 * @return IdNameDefinition
 	 */
 	public function createIdNameDefinition(N2nContext $n2nContext) {
 		$idNameDefinition = new IdNameDefinition($this->eiMask->getLabelLstr());
 		
-		foreach ($this->eiMask->getEiPropCollection() as $eiPropPathStr => $eiProp) {
+		foreach ($this->eiMask->getEiPropCollection() as $eiProp) {
 			$eiPropPath = $eiProp->getWrapper()->getEiPropPath();
 			
 			if (($eiProp instanceof IdNameEiProp)

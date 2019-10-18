@@ -36,12 +36,46 @@ use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\GuiEiPropFork;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\component\command\GuiEiCommand;
+use n2n\core\container\N2nContext;
 
 class GuiFactory {
 	private $eiMask;
 	
 	public function __construct(EiMask $eiMask) {
 		$this->eiMask = $eiMask;
+	}
+	
+	/**
+	 * @param N2nContext $n2nContext
+	 * @return \rocket\ei\manage\gui\GuiDefinition
+	 */
+	function createGuiDefinition(N2nContext $n2nContext) {
+		$guiDefinition = new GuiDefinition($this->eiMask);
+		
+		foreach ($this->eiMask->getEiPropCollection() as $eiProp) {
+			$eiPropPath = $eiProp->getWrapper()->getEiPropPath();
+			
+			if (($eiProp instanceof GuiEiProp)
+					&& null !== ($guiProp = $eiProp->buildGuiProp(new Eiu($n2nContext, $this->eiMask, $eiPropPath)))) {
+				$guiDefinition->putGuiProp($eiPropPath, $guiProp, EiPropPath::from($eiProp));
+			}
+					
+			if (($eiProp instanceof GuiEiPropFork)
+					&& null !== ($guiPropFork = $eiProp->buildGuiPropFork(new Eiu($n2nContext, $this->eiMask, $eiPropPath)))) {
+				$guiDefinition->putGuiPropFork($eiPropPath, $guiPropFork);
+			}
+		}
+		
+		foreach ($this->eiMask->getEiCommandCollection() as $eiCommand) {
+			$eiCommandPath = $eiCommand->getWrapper()->getEiCommandPath();
+			
+			if ($eiCommand instanceof GuiEiCommand 
+					&& null !== ($guiCommand = $eiCommand->buildGuiCommand(new Eiu($n2nContext, $this->eiMask, $eiCommandPath)))) {
+				$guiDefinition->putGuiCommand($eiCommandPath, $guiCommand);
+			}
+		}
+		
+		return $guiDefinition;
 	}
 	
 	/**
@@ -55,30 +89,7 @@ class GuiFactory {
 			throw new \InvalidArgumentException('Incompatible EiGui');
 		}
 		
-		$guiDefinition = new GuiDefinition();
-		$eiGui = new EiGui($eiFrame, $this->eiMask, $guiDefinition, $viewMode);
-		
-		foreach ($this->eiMask->getEiPropCollection() as $eiPropPathStr => $eiProp) {
-			$eiPropPath = $eiProp->getWrapper()->getEiPropPath();
-			
-			if (($eiProp instanceof GuiEiProp) 
-					&& null !== ($guiProp = $eiProp->buildGuiProp(new Eiu($eiGui, $eiPropPath)))) {
-				$guiDefinition->putGuiProp($eiPropPath, $guiProp, EiPropPath::from($eiProp));
-			}
-			
-			if (($eiProp instanceof GuiEiPropFork) 
-					&& null !== ($guiPropFork = $eiProp->buildGuiPropFork(new Eiu($eiGui, $eiPropPath)))){
-				$guiDefinition->putGuiPropFork($eiPropPath, $guiPropFork);
-			}
-		}
-		
-		foreach ($this->eiMask->getEiCommandCollection() as $eiCommandPathStr => $eiCommand) {
-			$eiCommandPath = $eiCommand->getWrapper()->getEiCommandPath();
-			
-			if ($eiCommand instanceof GuiEiCommand && null !== ($guiCommand = $eiCommand->buildGuiCommand(new Eiu($eiGui, $eiCommandPath)))) {
-				$guiDefinition->putGuiCommand($eiCommandPath, $guiCommand);
-			}
-		}
+		$eiGui = new EiGui($eiFrame, $this->eiMask, $viewMode);
 		
 		$eiu = new Eiu($eiGui);
 		foreach ($this->eiMask->getEiModificatorCollection() as $eiModificator) {
