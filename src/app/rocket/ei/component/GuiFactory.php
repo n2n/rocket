@@ -84,7 +84,7 @@ class GuiFactory {
 	 * @throws \InvalidArgumentException
 	 * @return \rocket\ei\manage\gui\EiGui
 	 */
-	public function createEiGui(EiFrame $eiFrame, int $viewMode) {
+	function createEiGui(EiFrame $eiFrame, int $viewMode) {
 		if (!$this->eiMask->getEiType()->isA($eiFrame->getContextEiEngine()->getEiMask()->getEiType())) {
 			throw new \InvalidArgumentException('Incompatible EiGui');
 		}
@@ -95,7 +95,6 @@ class GuiFactory {
 		foreach ($this->eiMask->getEiModificatorCollection() as $eiModificator) {
 			$eiModificator->setupEiGui($eiu);
 		}
-		
 		
 // 		if (!$init) {
 // 			$this->noInitCb($eiGui);
@@ -177,7 +176,7 @@ class GuiFactory {
 		$eiEntryGui = new EiEntryGui($eiGui, $eiEntry, $treeLevel);
 		
 		$guiFieldAssembler = new EiEntryGuiAssembler($eiEntryGui);
-				
+		
 		foreach ($guiFieldPaths as $guiFieldPath) {
 			$guiFieldAssembler->assembleGuiField($guiFieldPath);
 		}

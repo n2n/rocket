@@ -174,6 +174,14 @@ class EiMask {
 	}
 	
 	/**
+	 * @param EiMask $eiMask
+	 * @return boolean
+	 */
+	function isA(EiMask $eiMask) {
+		return $this->eiType->isA($eiMask->getEiType());
+	}
+	
+	/**
 	 * @return \rocket\ei\mask\EiMaskDef
 	 */
 	public function getDef() {
@@ -374,26 +382,26 @@ class EiMask {
 // 	}
 	
 	
-	/**
-	 * @param EiGui $eiGui
-	 */
-	private function noInitCb($eiGui) {
+// 	/**
+// 	 * @param EiGui $eiGui
+// 	 */
+// 	private function noInitCb($eiGui) {
 		
-		$eiGui->registerEiGuiListener(new class() implements EiGuiListener {
-			public function onInitialized(EiGui $eiGui) {
-				foreach ($eiGui->getGuiDefinition()->getGuiDefinitionListeners() as $listener) {
-					$listener->onNewEiGui($eiGui);
-				}
-				$eiGui->unregisterEiGuiListener($this);
-			}
+// 		$eiGui->registerEiGuiListener(new class() implements EiGuiListener {
+// 			public function onInitialized(EiGui $eiGui) {
+// 				foreach ($eiGui->getGuiDefinition()->getGuiDefinitionListeners() as $listener) {
+// 					$listener->onNewEiGui($eiGui);
+// 				}
+// 				$eiGui->unregisterEiGuiListener($this);
+// 			}
 			
-			public function onNewEiEntryGui(EiEntryGui $eiEntryGui) {
-			}
+// 			public function onNewEiEntryGui(EiEntryGui $eiEntryGui) {
+// 			}
 			
-			public function onNewView(HtmlView $view) {
-			}
-		});
-	}
+// 			public function onNewView(HtmlView $view) {
+// 			}
+// 		});
+// 	}
 
 	
 	/**

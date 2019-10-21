@@ -40,6 +40,8 @@ use rocket\ei\IdPath;
 use n2n\util\StringUtils;
 use rocket\ei\EiCommandPath;
 use n2n\l10n\Lstr;
+use rocket\ei\mask\model\DisplayStructure;
+use rocket\ei\mask\model\DisplayItem;
 
 class GuiDefinition {	
 	private $guiProps = array();
@@ -168,13 +170,14 @@ class GuiDefinition {
 		
 		foreach ($this->eiPropPaths as $eiPropPath) {
 			$eiPropPathStr = (string) $eiPropPath;
+			
 			if (isset($this->guiProps[$eiPropPathStr])) {
 				$currentEiPropPaths = $baseEiPropPaths;
 				$currentEiPropPaths[] = $eiPropPath;
 				$guiProps[(string) new GuiFieldPath($currentEiPropPaths)] = $this->guiProps[$eiPropPathStr];
 			}
 				
-			if (isset($this->guiPropForks[$eiPropPath])) {
+			if (isset($this->guiPropForks[$eiPropPathStr])) {
 				$currentEiPropPaths = $baseEiPropPaths;
 				$currentEiPropPaths[] = $eiPropPath;
 					
@@ -254,10 +257,9 @@ class GuiDefinition {
 			$displayDefinition = $guiProp->getDisplayDefinition();
 			if ($displayDefinition === null) {
 				continue;
-			} 
+			}
 			
-			$guiPropAssemblies[(string) $guiFieldPath] = new GuiPropAssembly($guiFieldPath, 
-					$displayDefinition);
+			$guiPropAssemblies[(string) $guiFieldPath] = new GuiPropAssembly($guiFieldPath, $displayDefinition);
 		}
 		
 		return $guiPropAssemblies;
@@ -629,6 +631,88 @@ class GuiDefinition {
 		return $guiFieldPaths;
 	}
 	
+	function createEiGui(EiFrame $eiFrame) {
+		ArgUtils::assertTrue($this->eiMask->isA($eiFrame->getContextEiEngine()->getEiMask()));
+		
+		$eiGui = new EiGui($eiFrame, $this->eiMask, $viewMode);
+	}
+	
+	
+	public function initEiGui(EiGui $eiGui, GuiDefinition $guiDefinition) {
+		$displayStructure = null;
+		switch ($eiGui->getViewMode()) {
+			case ViewMode::BULKY_READ:
+				$displayStructure = $this->getDetailDisplayStructure() ?? $this->getBulkyDisplayStructure();
+				break;
+			case ViewMode::BULKY_EDIT:
+				$displayStructure = $this->getEditDisplayStructure() ?? $this->getBulkyDisplayStructure();
+				break;
+			case ViewMode::BULKY_ADD:
+				$displayStructure = $this->getAddDisplayStructure() ?? $this->getBulkyDisplayStructure();
+				break;
+			case ViewMode::COMPACT_READ:
+			case ViewMode::COMPACT_EDIT:
+			case ViewMode::COMPACT_ADD:
+				$displayStructure = $this->getOverviewDisplayStructure();
+				break;
+		}
+		
+		$commonEiGuiSiFactory = new CommonEiGuiSiFactory($eiGui);
+		
+		if ($displayStructure === null) {
+			$eiGui->init($commonEiGuiSiFactory);
+			
+			$displayStructure = DisplayStructure::fromEiGui($eiGui);
+		} else {
+			$eiGui->init($commonEiGuiSiFactory,
+					$guiDefinition->filterGuiFieldPaths($displayStructure->getAllGuiFieldPaths()));
+			$displayStructure = $displayStructure->purified($eiGui);
+		}
+		
+		$commonEiGuiSiFactory->setDisplayStructure($displayStructure->groupedItems());
+	}
+	
+	/**
+	 * @param string $siStructureType
+	 */
+	function dingselAutoGuiStructureDeclarations($siStructureType) {
+		$guiStructureDeclarations = [];
+		foreach ($this->getGuiFieldPaths() as $guiFieldPath) {
+			
+			
+			$guiStructureDeclarations[] = GuiStructureDeclaration::createField($guiFieldPath, $siStructureType, $label)
+		}
+	}
+	
+	/**
+	 * @param DisplayStructure $displayStructure 
+	 */
+	function dingselDisplayStructure($displayStructure) {
+		$guiStructureDeclarations = [];
+		
+		foreach ($displayStructure->getDisplayItems() as $displayItem) {
+			if ($displayItem->hasDisplayStructure()) {
+				$this->dingselDisplayStructure($displayItem->getDisplayStructure());
+				continue;
+			}
+			
+			if (!$this->containsGuiProp($displayItem->getGuiFieldPath())) {
+				continue;
+			}
+			
+			GuiStructureDeclaration::createField($displayItem->getGuiFieldPath(), $displayItem->getSiStructureType(), 
+					$displayItem->getLabel());
+		}
+	}
+	
+	/**
+	 * @param GuiFieldPath $guiFieldPath
+	 * @param DisplayItem|null $displayItem
+	 * @return GuiStructureDeclaration
+	 */
+	private function createFieldDeclaration($guiFieldPath, $eiProp, $displayItem) {
+		$guiProp = $this->getGuiProp($eiPropPath);
+	}
 	
 // 	private $guiDefinitionListeners = array();
 	

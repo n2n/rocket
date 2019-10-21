@@ -26,7 +26,6 @@ use n2n\util\type\ArgUtils;
 use rocket\ei\manage\EiObject;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\component\modificator\EiModificatorCollection;
-use rocket\ei\manage\security\InaccessibleEntryException;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\EiPropPath;
 use rocket\ei\component\prop\FieldEiProp;

@@ -15,7 +15,6 @@ use rocket\ei\mask\EiMask;
 use rocket\si\meta\SiDeclaration;
 use rocket\si\meta\SiProp;
 use rocket\si\meta\SiTypeDeclaration;
-use n2n\l10n\N2nLocale;
 use rocket\si\meta\SiType;
 
 /**
