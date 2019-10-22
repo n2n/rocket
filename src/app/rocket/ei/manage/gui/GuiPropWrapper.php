@@ -24,6 +24,7 @@ namespace rocket\ei\manage\gui;
 use rocket\ei\EiPropPath;
 use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\EiProp;
+use rocket\ei\manage\gui\field\GuiField;
 
 class GuiPropWrapper {
 	
@@ -47,7 +48,7 @@ class GuiPropWrapper {
 	 * @return DisplayDefinition|null
 	 */
 	function buildDisplayDefinition(EiGui $eiGui, bool $defaultDisplayedRequired) {
-		$displayDefinition = $this->guiPropFork->buildDisplayDefinition(new Eiu($eiGui, $this->eiPropPath));
+		$displayDefinition = $this->guiProp->buildDisplayDefinition(new Eiu($eiGui, $this->eiPropPath));
 		
 		if ($displayDefinition === null || ($defaultDisplayedRequired && !$displayDefinition->isDefaultDisplayed())) {
 			return null;
@@ -76,5 +77,13 @@ class GuiPropWrapper {
 	 */
 	private function getEiProp() {
 		return $this->guiDefinition->getEiMask()->getEiPropCollection()->getByPath($this->eiPropPath);
+	}
+	
+	/**
+	 * @param EiEntryGui $eiEntryGui
+	 * @return GuiField|null
+	 */
+	function buildGuiField(EiEntryGui $eiEntryGui) {
+		return $this->guiProp->buildGuiField(new Eiu($eiEntryGui, $this->eiPropPath));
 	}
 }

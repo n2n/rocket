@@ -65,7 +65,7 @@ class ManyToOneGuiField implements GuiField, GuiFieldDisplayable {
 		return array();
 	}
 	
-	public function getDisplayItemType(): string {
+	public function getSiStructureType(): string {
 		return SiStructureType::PANEL;
 	}
 	

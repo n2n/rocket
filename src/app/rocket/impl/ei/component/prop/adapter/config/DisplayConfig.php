@@ -31,7 +31,7 @@ class DisplayConfig {
 	private $compatibleViewModes;
 	private $defaultDisplayedViewModes;
 	
-	private $displayItemType = SiStructureType::ITEM;
+	private $siStructureType = SiStructureType::ITEM;
 	
 	/**
 	 * @param int $compatibleViewModes
@@ -145,17 +145,17 @@ class DisplayConfig {
 	}
 	
 	/**
-	 * @param string $displayItemType
+	 * @param string $siStructureType
 	 * @return \rocket\impl\ei\component\prop\adapter\config\DisplayConfig
 	 */
-	public function setDisplayItemType(string $displayItemType) {
-		ArgUtils::valEnum($displayItemType, SiStructureType::all());
-		$this->dispayItemType = $displayItemType;
+	public function setSiStructureType(string $siStructureType) {
+		ArgUtils::valEnum($siStructureType, SiStructureType::all());
+		$this->dispayItemType = $siStructureType;
 		return $this;
 	}
 	
-	public function getDisplayItemType() {
-		return $this->displayItemType;
+	public function getSiStructureType() {
+		return $this->siStructureType;
 	}
 	
 	/**
@@ -165,7 +165,7 @@ class DisplayConfig {
 	function toDisplayDefinition(int $viewMode, string $label, string $helpText = null) {
 		if (!$this->isViewModeCompatible($viewMode)) return null;
 		
-		return new DisplayDefinition($this->displayItemType,
+		return new DisplayDefinition($this->siStructureType,
 				$this->isViewModeDefaultDisplayed($viewMode), $label, $helpText);
 	}
 	

@@ -313,7 +313,8 @@ class EiuEntry {
 		$viewMode = $this->deterViewMode($bulky, $editable);
 		$eiFrame = $this->getEiuFrame()->getEiFrame();
 		
-		$eiGui = $eiEngine->createFramedEiGui($eiFrame, $viewMode);
+		$eiGui = $eiFrame->getManageState()->getDef()->getGuiDefinition($eiEngine->getEiMask())
+				->createEiGui($eiFrame, $viewMode);
 		
 		return new EiuEntryGui($eiGui->createEiEntryGui($eiEntry, $treeLevel), null, $this->eiuAnalyst);
 	}

@@ -592,7 +592,8 @@ class EiuFrame {
 	}
 	
 	public function isExecutedBy($eiCommandPath) {
-		return EiCommandPath::from($this->eiFrame->getEiExecution()->getEiCommand())->equals(EiCommandPath::create($eiCommandPath));
+		return EiCommandPath::from($this->eiFrame->getEiExecution()->getEiCommand())
+				->equals(EiCommandPath::create($eiCommandPath));
 	}
 	
 	public function isExecutedByType($eiCommandType) {

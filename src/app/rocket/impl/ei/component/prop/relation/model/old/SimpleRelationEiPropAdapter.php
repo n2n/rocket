@@ -99,11 +99,11 @@
 // 			return null;
 // 		}
 		
-// 		return new DisplayDefinition($this->getDisplayItemType(), 
+// 		return new DisplayDefinition($this->getSiStructureType(), 
 // 				$this->displayConfig->isViewModeDefaultDisplayed($viewMode));
 // 	}
 	
-// 	protected function getDisplayItemType(): string {
+// 	protected function getSiStructureType(): string {
 // 		return SiStructureType::SIMPLE_GROUP;
 // 	}
 	

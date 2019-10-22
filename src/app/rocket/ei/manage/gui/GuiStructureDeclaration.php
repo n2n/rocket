@@ -50,7 +50,7 @@ class GuiStructureDeclaration {
 	}
 	
 	/**
-	 * @return string
+	 * @return string|null
 	 */
 	function getSiStructureType() {
 		return $this->siStructureType;

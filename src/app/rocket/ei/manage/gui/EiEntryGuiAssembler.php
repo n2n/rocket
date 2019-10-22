@@ -83,12 +83,9 @@ class EiEntryGuiAssembler {
 	 * @param GuiProp $guiProp
 	 * @return NULL|\rocket\ei\manage\gui\field\GuiField
 	 */
-	private function assembleExlGuiField(EiPropPath $eiPropPath, GuiProp $guiProp, GuiFieldPath $guiFieldPath) {
-		$readOnly = $this->eiEntryGui->getEiGui()->getViewMode() & ViewMode::read();
-		// @todo check accessiblity
+	private function assembleExlGuiField(EiPropPath $eiPropPath, GuiPropWrapper $guiPropWrapper, GuiFieldPath $guiFieldPath) {
 				
-		$guiField = $guiProp->buildGuiField(new Eiu($this->eiu, $eiPropPath, $guiFieldPath));
-		ArgUtils::valTypeReturn($guiField, GuiField::class, $guiProp, 'buildGuiField', true);
+		$guiField = $guiPropWrapper->buildGuiField($this->eiEntryGui);
 		
 		return $guiField;
 	}
@@ -130,7 +127,7 @@ class EiEntryGuiAssembler {
 					$this->guiDefinition->getGuiPropFork($guiFieldPath->getFirstEiPropPath()));
 		} else {
 			$eiPropPath = $guiFieldPath->getFirstEiPropPath();
-			$guiField = $this->assembleExlGuiField($eiPropPath, $this->guiDefinition->getGuiProp($eiPropPath), 
+			$guiField = $this->assembleExlGuiField($eiPropPath, $this->guiDefinition->getGuiPropWrapper($eiPropPath), 
 					$guiFieldPath);
 		}
 		

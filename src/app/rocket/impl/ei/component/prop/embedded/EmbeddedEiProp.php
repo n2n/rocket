@@ -165,7 +165,7 @@ class EmbeddedGuiProp implements GuiProp {
 		return $this->eiProp->getLabelLstr();
 	}
 
-	public function getDisplayDefinition(): ?DisplayDefinition {
+	public function buildDisplayDefinition($eiu): ?DisplayDefinition {
 		return new DisplayDefinition(SiStructureType::ITEM, true);
 	}
 

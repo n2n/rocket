@@ -68,7 +68,7 @@ class EmbeddedOneToOneGuiField implements GuiField, GuiFieldDisplayable {
 		return $this->editable === null;
 	}
 
-	public function getDisplayItemType(): string {
+	public function getSiStructureType(): string {
 		return SiStructureType::SIMPLE_GROUP;
 	}
 	

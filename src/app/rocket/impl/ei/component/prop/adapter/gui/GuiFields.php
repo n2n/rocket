@@ -19,25 +19,8 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\gui;
+namespace rocket\impl\ei\component\prop\adapter\gui;
 
-use rocket\ei\util\Eiu;
-use rocket\ei\manage\gui\field\GuiField;
-
-interface GuiProp {
+class GuiFields {
 	
-	/**
-	 * <p>Tests if this GuiProp is compatible with the passed EiGui and returns an {@see DisplayDefinition}
-	 * if it does. Use <code>$eiu->gui()</code> to access the {@see \rocket\ei\util\gui\EiuGui} 
-	 * object.<p>
-	 * 
-	 * @return DisplayDefinition|null return null if this GuiProp is not compatible with passed EiGui.
-	 */
-	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition;
-		
-	/**
-	 * @param Eiu $eiu
-	 * @return \rocket\ei\manage\gui\field\GuiField|null
-	 */
-	public function buildGuiField(Eiu $eiu): ?GuiField;
 }

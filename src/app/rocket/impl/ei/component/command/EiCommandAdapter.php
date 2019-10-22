@@ -33,7 +33,7 @@ use rocket\ei\manage\gui\GuiCommand;
 use n2n\l10n\Lstr;
 use n2n\util\StringUtils;
 
-abstract class EiCommandAdapter extends EiComponentAdapter implements EiCommand, GuiEiCommand {
+abstract class EiCommandAdapter extends EiComponentAdapter implements EiCommand, GuiEiCommand, GuiCommand {
 	private $wrapper;
 	
 	public function setWrapper(EiCommandWrapper $wrapper) {
@@ -85,11 +85,11 @@ abstract class EiCommandAdapter extends EiComponentAdapter implements EiCommand,
 	}
 	
 	/**
-	 * @param Eiu $eiu
-	 * @return \rocket\impl\ei\component\command\StatelessGuiCommand
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\command\GuiEiCommand::buildGuiCommand()
 	 */
-	public function buildGuiCommand(Eiu $eiu): GuiCommand {
-		return new StatelessGuiCommand($this, $eiu);
+	public function buildGuiCommand(Eiu $eiu): ?GuiCommand {
+		return $this;
 	}
 	
 	
@@ -119,36 +119,36 @@ abstract class EiCommandAdapter extends EiComponentAdapter implements EiCommand,
 }
 
 
-class StatelessGuiCommand implements GuiCommand {
-	private $eiu;
-	private $adapter;
+// class StatelessGuiCommand implements GuiCommand {
+// 	private $eiu;
+// 	private $adapter;
 	
-	function __construct(EiCommandAdapter $adapter, Eiu $eiu) {
-		$this->eiu = $eiu;
-		$this->adapter = $adapter;
-	}
+// 	function __construct(EiCommandAdapter $adapter, Eiu $eiu) {
+// 		$this->eiu = $eiu;
+// 		$this->adapter = $adapter;
+// 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\component\command\EiCommand::createSelectionGuiControls()
-	 */
-	public function createSelectionGuiControls(): array {
-		return $this->adapter->createSelectionGuiControls($this->eiu);
-	}
+// 	/**
+// 	 * {@inheritDoc}
+// 	 * @see \rocket\ei\component\command\EiCommand::createSelectionGuiControls()
+// 	 */
+// 	public function createSelectionGuiControls(): array {
+// 		return $this->adapter->createSelectionGuiControls($this->eiu);
+// 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\component\command\EiCommand::createEntryGuiControls()
-	 */
-	public function createEntryGuiControls(Eiu $eiu): array {
-		return $this->adapter->createEntryGuiControls($eiu);
-	}
+// 	/**
+// 	 * {@inheritDoc}
+// 	 * @see \rocket\ei\component\command\EiCommand::createEntryGuiControls()
+// 	 */
+// 	public function createEntryGuiControls(Eiu $eiu): array {
+// 		return $this->adapter->createEntryGuiControls($eiu);
+// 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\component\command\EiCommand::createOverallControls()
-	 */
-	public function createGeneralGuiControls(): array {
-		return $this->adapter->createGeneralGuiControls($this->eiu);
-	}
-}
+// 	/**
+// 	 * {@inheritDoc}
+// 	 * @see \rocket\ei\component\command\EiCommand::createOverallControls()
+// 	 */
+// 	public function createGeneralGuiControls(): array {
+// 		return $this->adapter->createGeneralGuiControls($this->eiu);
+// 	}
+// }

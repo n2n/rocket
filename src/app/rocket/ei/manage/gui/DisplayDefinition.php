@@ -6,20 +6,20 @@ use n2n\util\type\ArgUtils;
 use rocket\si\meta\SiStructureType;
 
 class DisplayDefinition {
-	private $displayItemType;
+	private $siStructureType;
 	private $defaultDisplayed;
 	private $label;
 	private $helpText;
 	
 	/**
 	 * @param Lstr $labelLstr
-	 * @param string $displayItemType
+	 * @param string $siStructureType
 	 * @param bool $defaultDisplayed
 	 */
-	public function __construct(string $displayItemType, bool $defaultDisplayed, string $label, string $helpText = null) {
-		ArgUtils::valEnum($displayItemType, SiStructureType::all());
+	public function __construct(string $siStructureType, bool $defaultDisplayed, string $label, string $helpText = null) {
+		ArgUtils::valEnum($siStructureType, SiStructureType::all());
 		
-		$this->displayItemType = $displayItemType;
+		$this->siStructureType = $siStructureType;
 		$this->defaultDisplayed = $defaultDisplayed;
 		$this->label = $label;
 		$this->helpText = $helpText;
@@ -28,8 +28,8 @@ class DisplayDefinition {
 	/**
 	 * @return string
 	 */
-	public function getDisplayItemType(): string {
-		return $this->displayItemType;
+	public function getSiStructureType(): string {
+		return $this->siStructureType;
 	}
 	
 	/**

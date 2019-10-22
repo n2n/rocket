@@ -43,11 +43,9 @@ use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\impl\ei\component\prop\adapter\gui\GuiFieldProxy;
 use rocket\si\meta\SiStructureType;
-use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiProp;
-use rocket\impl\ei\component\prop\adapter\gui\GuiPropProxy;
 
 abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter implements StatelessGuiFieldDisplayable, 
-		FieldEiProp, GuiEiProp, StatelessGuiProp, Readable {
+		FieldEiProp, GuiEiProp, GuiProp, Readable {
 	private $displayConfig;
 
 	/**
@@ -65,7 +63,7 @@ abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter im
 	 * @param Eiu $eiu
 	 * @return string
 	 */
-	public function getDisplayItemType(Eiu $eiu): string {
+	public function getSiStructureType(Eiu $eiu): string {
 		return SiStructureType::ITEM;
 	}
 	
@@ -75,7 +73,7 @@ abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter im
 			return null;
 		}
 		
-		$groupType = $this->getDisplayItemType($eiu);
+		$groupType = $this->getSiStructureType($eiu);
 		ArgUtils::valEnumReturn($groupType, SiStructureType::all(), $this, 'getGroupType');
 		
 		return new DisplayDefinition($groupType,

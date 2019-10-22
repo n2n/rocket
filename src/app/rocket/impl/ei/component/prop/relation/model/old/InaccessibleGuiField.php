@@ -38,7 +38,7 @@ class InaccessibleGuiField implements GuiField, GuiFieldDisplayable {
 		return $this->label; 
 	}
 
-	public function getDisplayItemType(): string {
+	public function getSiStructureType(): string {
 		return null;
 	}
 	

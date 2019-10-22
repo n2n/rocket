@@ -41,10 +41,8 @@ use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\ei\component\prop\ForkEiProp;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\frame\EiForkLink;
-use rocket\impl\ei\component\prop\adapter\gui\GuiPropProxy;
-use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiProp;
 
-abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements RelationEiProp, GuiEiProp, StatelessGuiProp, ForkEiProp {
+abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements RelationEiProp, GuiEiProp, GuiProp, ForkEiProp {
 			
 	/**
 	 * @var RelationEiPropConfigurator
@@ -141,7 +139,7 @@ abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements Re
 	 * @see \rocket\ei\component\prop\GuiEiProp::buildGuiProp()
 	 */
 	function buildGuiProp(Eiu $eiu): ?GuiProp {
-		return new GuiPropProxy($eiu, $this);
+		return $this;
 	}
 	
 	function isStringRepresentable(): bool {

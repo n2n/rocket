@@ -303,7 +303,7 @@ class DisplayStructure {
 			}
 			
 			$purifiedDisplayStructure->addGuiFieldPath($displayItem->getGuiFieldPath(),
-					$displayItem->getSiStructureType() ?? $guiPropAssembly->getDisplayDefinition()->getDisplayItemType());
+					$displayItem->getSiStructureType() ?? $guiPropAssembly->getDisplayDefinition()->getSiStructureType());
 		}
 		
 		return $purifiedDisplayStructure;
@@ -318,7 +318,7 @@ class DisplayStructure {
 		
 		foreach ($eiGui->getGuiPropAssemblies() as $guiPropAssembly) {
 			$displayStructure->addGuiFieldPath($guiPropAssembly->getGuiFieldPath(), 
-					$guiPropAssembly->getDisplayDefinition()->getDisplayItemType());
+					$guiPropAssembly->getDisplayDefinition()->getSiStructureType());
 		}
 		
 		return $displayStructure;

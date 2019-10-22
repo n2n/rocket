@@ -51,7 +51,7 @@ class CommonEiGuiSiFactory implements EiGuiSiFactory {
 			}
 			
 			$fieldStructureDeclarations[] = new SiStructureDeclaration(
-					$displayItem->getSiStructureType() ?? $guiPropAssembly->getDisplayDefinition()->getDisplayItemType(),
+					$displayItem->getSiStructureType() ?? $guiPropAssembly->getDisplayDefinition()->getSiStructureType(),
 					$propId, $label, $children);
 		}
 		return $fieldStructureDeclarations;

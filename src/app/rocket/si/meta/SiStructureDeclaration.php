@@ -26,6 +26,7 @@ use n2n\util\type\ArgUtils;
 class SiStructureDeclaration implements \JsonSerializable {
 	private $propId;
 	private $label;
+	private $helpText;
 	private $structureType;
 	private $children = [];
 	
@@ -33,9 +34,10 @@ class SiStructureDeclaration implements \JsonSerializable {
 	 * @param SiProp $siPropId
 	 * @param string $label
 	 */
-	function __construct(string $structureType, ?string $propId, ?string $label, array $children = []) {
+	function __construct(string $structureType, ?string $propId, ?string $label, ?string $helpText, array $children = []) {
 		$this->setStructureType($structureType);
 		$this->label = $label;
+		$this->helpText = $helpText;
 		$this->propId = $propId;
 		$this->setChildren($children);
 	}

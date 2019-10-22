@@ -19,41 +19,41 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\prop\adapter\gui;
+// namespace rocket\impl\ei\component\prop\adapter\gui;
 
-use rocket\ei\util\Eiu;
-use rocket\ei\manage\gui\DisplayDefinition;
-use rocket\ei\manage\gui\GuiProp;
-use rocket\ei\manage\gui\field\GuiField;
+// use rocket\ei\util\Eiu;
+// use rocket\ei\manage\gui\DisplayDefinition;
+// use rocket\ei\manage\gui\GuiProp;
+// use rocket\ei\manage\gui\field\GuiField;
 
-class GuiPropProxy implements GuiProp {
-	private $eiu;
-	private $statelessGuiProp;
+// class GuiPropProxy implements GuiProp {
+// 	private $eiu;
+// 	private $statelessGuiProp;
 	
-	private $displayDefinition;
+// 	private $displayDefinition;
 	
-	/**
-	 * @param Eiu $eiu
-	 * @param StatelessGuiProp $statelessGuiProp
-	 */
-	function __construct(Eiu $eiu, StatelessGuiProp $statelessGuiProp) {
-		$this->eiu = $eiu;
-		$this->statelessGuiProp = $statelessGuiProp;
-		$this->displayDefinition = $statelessGuiProp->buildDisplayDefinition($eiu);
-	}
+// 	/**
+// 	 * @param Eiu $eiu
+// 	 * @param StatelessGuiProp $statelessGuiProp
+// 	 */
+// 	function __construct(Eiu $eiu, StatelessGuiProp $statelessGuiProp) {
+// 		$this->eiu = $eiu;
+// 		$this->statelessGuiProp = $statelessGuiProp;
+// 		$this->displayDefinition = $statelessGuiProp->buildDisplayDefinition($eiu);
+// 	}
 	
-	/**
-	 * @return DisplayDefinition|NULL
-	 */
-	function getDisplayDefinition(): ?DisplayDefinition {
-		return $this->displayDefinition;
-	}
+// 	/**
+// 	 * @return DisplayDefinition|NULL
+// 	 */
+// 	function getDisplayDefinition(): ?DisplayDefinition {
+// 		return $this->displayDefinition;
+// 	}
 
-	/**
-	 * @param Eiu $eiu
-	 * @return GuiField|NULL
-	 */
-	function buildGuiField(Eiu $eiu): ?GuiField {
-		return $this->statelessGuiProp->buildGuiField($eiu);
-	}
-}
+// 	/**
+// 	 * @param Eiu $eiu
+// 	 * @return GuiField|NULL
+// 	 */
+// 	function buildGuiField(Eiu $eiu): ?GuiField {
+// 		return $this->statelessGuiProp->buildGuiField($eiu);
+// 	}
+// }

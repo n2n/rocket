@@ -65,7 +65,7 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 	
 	private $displayConfig;
 	protected $addDefaultDisplay = true;
-	protected $addDisplayItemType = true;
+	protected $addSiStructureType = true;
 	
 	private $editConfig;
 	protected $addConstant = true; 
@@ -150,14 +150,14 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 	
 	/**
 	 * @param DisplayConfig $displayConfig
-	 * @param bool $addDisplayItemType
+	 * @param bool $addSiStructureType
 	 * @param bool $addHelpText
 	 * @param bool $addDefaultDisplay
 	 */
-	public function registerDisplayConfig(DisplayConfig $displayConfig, bool $addDisplayItemType = true, 
+	public function registerDisplayConfig(DisplayConfig $displayConfig, bool $addSiStructureType = true, 
 			bool $addDefaultDisplay = true) {
 		$this->displayConfig = $displayConfig;
-		$this->addDisplayItemType = $addDisplayItemType;
+		$this->addSiStructureType = $addSiStructureType;
 		$this->addDefaultDisplay = $addDefaultDisplay;
 	}	
 	
@@ -344,7 +344,7 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 		}
 		
 		if ($this->attributes->contains(self::ATTR_DISPLAY_ITEM_TYPE)) {
-			$this->displayConfig->setDisplayItemType(
+			$this->displayConfig->setSiStructureType(
 					$this->attributes->reqEnum(self::ATTR_DISPLAY_ITEM_TYPE, SiStructureType::all()));
 		}
 	}
@@ -384,10 +384,10 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 			}
 		}
 		
-		if ($this->addDisplayItemType) {
+		if ($this->addSiStructureType) {
 			$types = SiStructureType::all();
 			$magCollection->addMag(self::ATTR_DISPLAY_ITEM_TYPE, new EnumMag('Container type', 
-					array_combine($types, $types), $this->displayConfig->getDisplayItemType(), true));
+					array_combine($types, $types), $this->displayConfig->getSiStructureType(), true));
 		}
 	}
 	

@@ -657,7 +657,7 @@ class GuiDefinition {
 	function createEiGui(EiFrame $eiFrame, int $viewMode) {
 		ArgUtils::assertTrue($this->eiMask->isA($eiFrame->getContextEiEngine()->getEiMask()));
 		
-		$eiGui = new EiGui($eiFrame, $this->eiMask, $viewMode);
+		$eiGui = new EiGui($eiFrame, $this, $viewMode);
 		
 		$this->initEiGui($eiGui);
 		
@@ -751,9 +751,10 @@ class GuiDefinition {
 	 * @param GuiFieldPath $guiFieldPath
 	 * @param EiGui $eiGui
 	 * @param bool $defaultDisplayedRequired
+	 * @return DisplayDefinition|null
 	 */
 	private function buildDisplayDefinition($guiFieldPath, $eiGui, $defaultDisplayedRequired) {
-		$eiPropPathStr = $guiFieldPath->getFirstEiPropPath();
+		$eiPropPathStr = (string) $guiFieldPath->getFirstEiPropPath();
 		
 		if ($guiFieldPath->hasMultipleEiPropPaths()) {
 			if (!isset($this->guiPropWrappers[$eiPropPathStr])) {
@@ -763,12 +764,12 @@ class GuiDefinition {
 			return $this->guiPropWrappers[$eiPropPathStr]->buildDisplayDefinition($eiGui, $defaultDisplayedRequired);
 		}
 		
-		if (!isset($this->guiPropForkWrappers[$eiPropPathStr])) {
+		if (!isset($this->guiPropWrappers[$eiPropPathStr])) {
 			return null;
 		}
 		
-		return $this->guiPropForkWrappers[$eiPropPathStr]
-				->buildDisplayDefinition($eiGui, $guiFieldPath->getShifted(), $defaultDisplayedRequired);
+		return $this->guiPropWrappers[$eiPropPathStr]
+				->buildDisplayDefinition($eiGui, $defaultDisplayedRequired);
 	}
 	
 	

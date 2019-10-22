@@ -36,10 +36,8 @@ use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\impl\ei\component\prop\adapter\gui\GuiFieldProxy;
-use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiProp;
-use rocket\impl\ei\component\prop\adapter\gui\GuiPropProxy;
 
-abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter implements StatelessGuiFieldDisplayable, GuiEiProp, StatelessGuiProp {
+abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter implements StatelessGuiFieldDisplayable, GuiEiProp, GuiProp {
 	protected $displayConfig;
 
 	/**
@@ -77,7 +75,7 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 	 * @see \rocket\ei\component\prop\GuiEiProp::buildGuiProp()
 	 */
 	public function buildGuiProp(Eiu $eiu): ?GuiProp {
-		return new GuiPropProxy($eiu, $this);
+		return $this;
 	}
 	
 	
@@ -91,12 +89,12 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 			return null;
 		}
 		
-		return new DisplayDefinition($this->getDisplayItemType($eiu),
+		return new DisplayDefinition($this->getSiStructureType($eiu),
 				$this->getDisplayConfig()->isViewModeDefaultDisplayed($viewMode));
 	}
 	
-	protected function getDisplayItemType(Eiu $eiu): string {
-		return $this->displayConfig->getDisplayItemType();
+	protected function getSiStructureType(Eiu $eiu): string {
+		return $this->displayConfig->getSiStructureType();
 	}
 	
 	public function buildGuiField(Eiu $eiu): ?GuiField {

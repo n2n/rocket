@@ -133,7 +133,7 @@ abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAd
 	 * @see \rocket\impl\ei\component\prop\adapter\PropertyDisplayableEiPropAdapter::getGuiProp()
 	 */
 	public function buildGuiProp(Eiu $eiu): ?GuiProp {
-		return new GuiPropProxy($eiu, $this);
+		return $this;
 	}
 	
 	/**

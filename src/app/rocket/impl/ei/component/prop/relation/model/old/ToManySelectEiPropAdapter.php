@@ -45,7 +45,7 @@ use rocket\si\meta\SiStructureType;
 
 abstract class ToManySelectEiPropAdapter extends ToManyEiPropAdapter {
 	
-	protected function getDisplayItemType(): string {
+	protected function getSiStructureType(): string {
 		return SiStructureType::ITEM;
 	}
 	

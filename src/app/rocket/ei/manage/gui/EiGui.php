@@ -16,6 +16,7 @@ use rocket\si\meta\SiDeclaration;
 use rocket\si\meta\SiProp;
 use rocket\si\meta\SiTypeDeclaration;
 use rocket\si\meta\SiType;
+use rocket\si\meta\SiStructureDeclaration;
 
 /**
  * @author andreas
@@ -27,9 +28,9 @@ class EiGui {
 	 */
 	private $eiFrame;
 	/**
-	 * @var EiMask
+	 * @var GuiDefinition
 	 */
-	private $eiMask;
+	private $guiDefinition;
 // 	/**
 // 	 * @var GuiDefinition
 // 	 */
@@ -60,9 +61,9 @@ class EiGui {
 	 * @param GuiDefinition $guiDefinition
 	 * @param int $viewMode Use constants from {@see ViewMode}
 	 */
-	public function __construct(EiFrame $eiFrame, EiMask $eiMask, /*GuiDefinition $guiDefinition, */int $viewMode) {
+	public function __construct(EiFrame $eiFrame, GuiDefinition $guiDefinition, /*GuiDefinition $guiDefinition, */int $viewMode) {
 		$this->eiFrame = $eiFrame;
-		$this->eiMask = $eiMask;
+		$this->guiDefinition = $guiDefinition;
 // 		$this->guiDefinition = $guiDefinition;
 		ArgUtils::valEnum($viewMode, ViewMode::getAll());
 		$this->viewMode = $viewMode;
@@ -74,13 +75,6 @@ class EiGui {
 	 */
 	public function getEiFrame() {
 		return $this->eiFrame;
-	}
-	
-	/**
-	 * @return EiMask
-	 */
-	public function getEiMask() {
-		return $this->eiMask;
 	}
 	
 	/**
@@ -165,23 +159,45 @@ class EiGui {
 	}
 	
 	/**
-	 * @param GuiPropAssembly $guiPropAssembly
+	 * @param GuiStructureDeclaration $guiStructureDeclaration
 	 * @return SiProp
 	 */
-	private function createSiProp(GuiPropAssembly $guiPropAssembly) {
-		$displayDefinition = $guiPropAssembly->getDisplayDefinition();
-		$label = $displayDefinition->getLabel();
-		$helpText = $displayDefinition->getHelpText();
-		
-		return new SiProp($guiPropAssembly->getGuiFieldPath(),
-				$label, $helpText);
+	private function createSiProp(GuiStructureDeclaration $guiStructureDeclaration) {
+		return new SiProp($guiStructureDeclaration->getGuiPropPath(),
+				$guiStructureDeclaration->getLabel(), $guiStructureDeclaration->getHelpText());
 	}
 	
+	/**
+	 * @return \rocket\si\meta\SiTypeDeclaration
+	 */
 	function createSiTypDeclaration() {
-		$siTypeQualifier = $this->eiMask->createSiTypeQualifier($this->eiFrame->getN2nContext()->getN2nLocale());
+		$siTypeQualifier = $this->guiDefinition->getEiMask()->createSiTypeQualifier($this->eiFrame->getN2nContext()->getN2nLocale());
 		$siType = new SiType($siTypeQualifier, $this->getSiProps());
 		
-		return new SiTypeDeclaration($siType, $this->getEiGuiSiFactory()->getSiStructureDeclarations()); 
+		return new SiTypeDeclaration($siType, $this->createSiStructureDeclarations($this->guiStructureDeclarations)); 
+	}
+	
+	/**
+	 * @param GuiStructureDeclaration[] $guiStructureDeclarations
+	 * @return SiStructureDeclaration[]
+	 */
+	private function createSiStructureDeclarations($guiStructureDeclarations) {
+		$guiStructureDeclarations = [];
+		
+		foreach ($guiStructureDeclarations as $guiStructureDeclaration) {
+			if ($guiStructureDeclaration->hasGuiPropPath()) {
+				$guiStructureDeclarations[] = new SiStructureDeclaration($guiStructureDeclaration->getSiStructureType(),
+						$guiStructureDeclaration->getGuiPropPath(), $guiStructureDeclaration->getLabel(), 
+						$guiStructureDeclaration->getHelpText());
+				continue;
+			}
+			
+			$guiStructureDeclarations[] = new SiStructureDeclaration($guiStructureDeclaration->getSiStructureType(),
+					null, $guiStructureDeclaration->getLabel(), $guiStructureDeclaration->getHelpText(),
+					$this->createSiStructureDeclarations($guiStructureDeclaration->getChildren()));
+		}
+			
+		return $guiStructureDeclarations;
 	}
 	
 	/**
@@ -189,10 +205,29 @@ class EiGui {
 	 */
 	private function getSiProps() {
 		$siProps = [];
-		foreach ($this->getGuiPropAssemblies() as $guiPropAssembly) {
-			$siProps[] = $this->createSiProp($guiPropAssembly);
+		foreach ($this->filterFieldGuiStructureDeclarations($this->guiStructureDeclarations) 
+				as $guiStructureDeclaration) {
+			$siProps[] = $this->createSiProp($guiStructureDeclaration);
 		}
 		return $siProps;
+	}
+	
+	/**
+	 * @param GuiStructureDeclaration[] $guiStructureDeclarations
+	 * @return GuiStructureDeclaration[]
+	 */
+	private function filterFieldGuiStructureDeclarations($guiStructureDeclarations) {
+		$filtereds = [];
+		foreach ($guiStructureDeclarations as $guiStructureDeclaration) {
+			if ($guiStructureDeclaration->hasGuiPropPath()) {
+				$filtereds[] = $guiStructureDeclaration;
+				continue;
+			}
+			
+			array_push($filtereds, ...$this->filterFieldGuiStructureDeclarations(
+					$guiStructureDeclaration->getChildren()));
+		}
+		return $filtereds;
 	}
 	
 	/**
@@ -212,7 +247,7 @@ class EiGui {
 	function createEiEntryGui(EiEntry $eiEntry, int $treeLevel = null, bool $append = true): EiEntryGui {
 		$this->ensureInit();
 		
-		$eiEntryGui = GuiFactory::createEiEntryGui($this, $eiEntry, $this->guiFieldPaths, $treeLevel);
+		$eiEntryGui = GuiFactory::createEiEntryGui($this, $eiEntry, $this->getGuiFieldPaths(), $treeLevel);
 		if ($append) {
 			$this->eiEntryGuis[] = $eiEntryGui;
 		}
@@ -231,6 +266,9 @@ class EiGui {
 		return $this->eiEntryGuis;
 	}
 	
+	/**
+	 * @return \rocket\si\control\SiControl[]
+	 */
 	function createSelectionSiControls() {
 		$siControls = [];
 		foreach ($this->guiDefinition->createSelectionGuiControls($this)
@@ -242,12 +280,16 @@ class EiGui {
 		return $siControls;
 	}
 	
+	/**
+	 * @return \rocket\si\control\SiControl[]
+	 */
 	function createGeneralSiControls() {
 		$siControls = [];
 		foreach ($this->guiDefinition->createGeneralGuiControls($this)
 				as $guiControlPathStr => $generalGuiControl) {
 			$siControls[$guiControlPathStr] = $generalGuiControl->toSiControl(
-					new ApiControlCallId(GuiControlPath::create($guiControlPathStr), $this->eiMask->getEiTypePath(),
+					new ApiControlCallId(GuiControlPath::create($guiControlPathStr), 
+							$this->guiDefinition->getEiMask()->getEiTypePath(),
 							$this->viewMode, null));
 		}
 		return $siControls;
@@ -283,12 +325,12 @@ class EiGui {
 		unset($this->eiGuiListeners[spl_object_hash($eiGuiListener)]);
 	}
 	
-	/**
-	 * @return \rocket\ei\manage\gui\EiGuiNature
-	 */
-	public function getEiGuiNature()  {
-		return $this->eiGuiNature;
-	}
+// 	/**
+// 	 * @return \rocket\ei\manage\gui\EiGuiNature
+// 	 */
+// 	public function getEiGuiNature()  {
+// 		return $this->eiGuiNature;
+// 	}
 	
 	/**
 	 * @return \rocket\si\content\SiEntry[]

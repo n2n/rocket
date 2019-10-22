@@ -63,7 +63,7 @@ class ContentItemsEiProp extends RelationEiPropAdapter implements FieldEiProp {
 // 		$this->configurator->setRelationModel($this->getRelationModel());
 	}
 	
-	protected function getDisplayItemType(): string {
+	protected function getSiStructureType(): string {
 		return SiStructureType::LIGHT_GROUP;
 	}
 	

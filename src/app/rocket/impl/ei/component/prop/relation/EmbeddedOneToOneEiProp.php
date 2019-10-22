@@ -44,7 +44,7 @@ class EmbeddedOneToOneEiProp extends RelationEiPropAdapter implements FieldEiPro
 		parent::__construct();
 		
 		$this->setup(
-				(new DisplayConfig(ViewMode::bulky()))->setDisplayItemType(SiStructureType::SIMPLE_GROUP),
+				(new DisplayConfig(ViewMode::bulky()))->setSiStructureType(SiStructureType::SIMPLE_GROUP),
 				new RelationModel($this, false, false, RelationModel::MODE_EMBEDDED, new EditConfig()));
 	}
 	
