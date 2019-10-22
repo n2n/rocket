@@ -717,6 +717,10 @@ class GuiDefinition {
 			
 			$guiPropWrapper = $this->findGuiPropWrapperByGuiPropPath($eiPropPath);
 			
+			if ($guiPropWrapper !== null) {
+				
+			}
+			
 			if (null !== (->buildGuiStructureDeclaration($eiGui, $displayItem->, $displayItem))) {
 				$guiStructureDeclarations[] = $gsd;
 			}
