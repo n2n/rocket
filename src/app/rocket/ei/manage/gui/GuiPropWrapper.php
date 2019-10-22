@@ -23,21 +23,22 @@ namespace rocket\ei\manage\gui;
 
 use rocket\ei\EiPropPath;
 use rocket\ei\util\Eiu;
+use rocket\ei\component\prop\EiProp;
 
 class GuiPropWrapper {
 	
 	private $guiDefinition;
-	private $eiFieldPath;
+	private $eiPropPath;
 	private $guiProp;
 	
 	/**
 	 * @param GuiDefinition $guiDefinition
-	 * @param EiPropPath $eiFieldPath
+	 * @param EiPropPath $eiPropPath
 	 * @param GuiProp $guiProp
 	 */
-	function __construct(GuiDefinition $guiDefinition, EiPropPath $eiFieldPath, GuiProp $guiProp) {
+	function __construct(GuiDefinition $guiDefinition, EiPropPath $eiPropPath, GuiProp $guiProp) {
 		$this->guiDefinition = $guiDefinition;
-		$this->eiFieldPath = $eiFieldPath;
+		$this->eiPropPath = $eiPropPath;
 		$this->guiProp = $guiProp;
 	}
 	
@@ -45,7 +46,35 @@ class GuiPropWrapper {
 	 * @param EiGui $eiGui
 	 * @return DisplayDefinition|null
 	 */
-	function buildDisplayDefinition(EiGui $eiGui) {
-		$displayDefintion = $this->guiProp->buildDisplayDefinition(new Eiu($eiGui, $this->guiDefinition, $this->eiFieldPath));
+	function buildDisplayDefinition(EiGui $eiGui, bool $defaultDisplayedRequired) {
+		$displayDefinition = $this->guiPropFork->buildDisplayDefinition(new Eiu($eiGui, $this->eiPropPath));
+		
+		if ($displayDefinition === null || ($defaultDisplayedRequired && !$displayDefinition->isDefaultDisplayed())) {
+			return null;
+		}
+		
+		if ($displayDefinition->getLabel() !== null && $displayDefinition->getHelpText() !== null) {
+			return $displayDefinition;
+		}
+		
+		$n2nLocale = $eiGui->getEiFrame()->getN2nContext()->getN2nLocale();
+		
+		if ($displayDefinition->getLabel() === null) {
+			$displayDefinition->setLabel($this->getEiProp()->getLabelLstr()->t($n2nLocale));
+		}
+		
+		if ($displayDefinition->getHelpText() === null
+				&& null !== ($helpTextLstr = $this->getEiProp()->getHelpTextLstr())) {
+			$displayDefinition->setHelpText($helpTextLstr->t($n2nLocale));
+		}
+		
+		return $displayDefinition;
+	}
+	
+	/**
+	 * @return EiProp
+	 */
+	private function getEiProp() {
+		return $this->guiDefinition->getEiMask()->getEiPropCollection()->getByPath($this->eiPropPath);
 	}
 }

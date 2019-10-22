@@ -29,6 +29,7 @@ use rocket\ei\util\Eiu;
 use rocket\ei\manage\gui\EiGuiListener;
 use rocket\ei\util\frame\EiuFrame;
 use rocket\ei\manage\frame\EiForkLink;
+use rocket\ei\manage\gui\GuiDefinition;
 
 class EiuEngine {
 	private $eiEngine;
@@ -221,6 +222,13 @@ class EiuEngine {
 	 */
 	public function hasSortProps() {
 		return !$this->getSortDefinition()->isEmpty();
+	}
+	
+	/**
+	 * @return GuiDefinition 
+	 */
+	public function getGuiDefinition() {
+		return $this->getManageState()->getDef()->getGuiDefinition($this->eiEngine->getEiMask());
 	}
 	
 	/**

@@ -56,6 +56,9 @@ class EiEngine {
 	 * @var EiMask
 	 */
 	private $eiMask;
+	
+	private $scalarEiDefinition;
+	private $genericEiDefinition;
 
 	/**
 	 * @param EiMask $eiMask
@@ -129,7 +132,7 @@ class EiEngine {
 	 * @return GuiDefinition
 	 */
 	function createGuiDefinition(N2nContext $n2nContext) {
-		return (new GuiFactory($this->eiMask))->createGuiDefinition();
+		return (new GuiFactory($this->eiMask))->createGuiDefinition($n2nContext);
 	}
 
 	/**
@@ -248,10 +251,10 @@ class EiEngine {
 		$mappingFactory->copyValues($eiFrame, $from, $to, $eiPropPaths);
 	}
 	
-	function createFramedEiGui(EiFrame $eiFrame, int $viewMode) {
-		$guiFactory = new GuiFactory($this->eiMask);
-		return $guiFactory->createEiGui($eiFrame, $viewMode);
-	}
+// 	function createFramedEiGui(EiFrame $eiFrame, int $viewMode) {
+// 		$guiFactory = new GuiFactory($this->eiMask);
+// 		return $guiFactory->createEiGui($eiFrame, $viewMode);
+// 	}
 	
 // 	function createEiGui(int $viewMode, DisplayStructure $displayStructure) {
 // 		$eiMask = $this->eiMask;

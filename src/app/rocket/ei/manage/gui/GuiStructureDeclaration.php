@@ -23,6 +23,7 @@ namespace rocket\ei\manage\gui;
 
 use n2n\util\type\ArgUtils;
 use rocket\ei\manage\gui\field\GuiFieldPath;
+use n2n\util\ex\UnsupportedOperationException;
 
 class GuiStructureDeclaration {
 	private $label;
@@ -31,11 +32,7 @@ class GuiStructureDeclaration {
 	private $guiPropPath;
 	private $children;
 	
-	/**
-	 * @return string
-	 */
-	function getDisplayItemType() {
-		return $this->displayItemType;
+	private function __construct() {
 	}
 	
 	/**
@@ -59,18 +56,43 @@ class GuiStructureDeclaration {
 		return $this->siStructureType;
 	}
 	
+	function hasGuiPropPath() {
+		return $this->guiPropPath !== null;
+	}
+	
 	/**
 	 * @return GuiFieldPath
 	 */
 	function getGuiPropPath() {
+		UnsupportedOperationException::assertTrue($this->guiPropPath !== null);
+		
 		return $this->guiPropPath;
+	}
+	
+	
+	function hasChildrean() {
+		return $this->children !== null;
 	}
 	
 	/**
 	 * @return GuiStructureDeclaration[]
 	 */
 	function getChildren() {
+		UnsupportedOperationException::assertTrue($this->children !== null);
+		
 		return $this->children;
+	}
+	
+	function getAllGuiFieldPaths() {
+		if ($this->guiPropPath !== null) {
+			return [(string) $this->guiPropPath => $this->guiPropPath];
+		}
+		
+		$guiPropPaths = [];
+		foreach ($this->children as $child) {
+			$guiPropPaths = array_merge($guiPropPaths, $child->getAllGuiFieldPaths());
+		}
+		return $guiPropPaths;
 	}
 	
 	/**

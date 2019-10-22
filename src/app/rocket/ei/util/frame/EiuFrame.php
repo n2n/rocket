@@ -642,7 +642,9 @@ class EiuFrame {
 	 * @return EiuGui
 	 */
 	public function newGui(int $viewMode) {
-		$eiGui = $this->eiFrame->getContextEiEngine()->createFramedEiGui($this->eiFrame, $viewMode, true);
+		$eiGui = $this->eiFrame->getManageState()->getDef()
+				->getGuiDefinition($this->eiFrame->getContextEiEngine()->getEiMask())
+				->createEiGui($this->eiFrame, $viewMode, true);
 		
 		return new EiuGui($eiGui, $this, $this->eiuAnalyst);
 	}
