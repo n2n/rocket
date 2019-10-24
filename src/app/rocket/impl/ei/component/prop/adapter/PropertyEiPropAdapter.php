@@ -33,12 +33,14 @@ abstract class PropertyEiPropAdapter extends IndependentEiPropAdapter
 		implements EntityPropertyConfigurable, ObjectPropertyConfigurable {
 	
 	protected $entityProperty;
-	protected $entityPropertyRequired = true;
 	protected $objectPropertyAccessProxy;
-	protected $objectPropertyRequired = true;
 	
-	public function getIdBase(): ?string {
+	function getIdBase(): ?string {
 		return $this->entityProperty !== null ? $this->entityProperty->getName() : null; 
+	}
+	
+	function isEntityPropertyRequired(): bool {
+		return true;
 	}
 	
 	/**
@@ -46,7 +48,7 @@ abstract class PropertyEiPropAdapter extends IndependentEiPropAdapter
 	 * @throws \InvalidArgumentException
 	 */
 	public function setEntityProperty(?EntityProperty $entityProperty) {
-		if ($entityProperty === null && $this->entityPropertyRequired) {
+		if ($entityProperty === null && $this->isEntityPropertyRequired()) {
 			throw new \InvalidArgumentException($this . ' requires an EntityProperty.');
 		}
 		
@@ -71,6 +73,10 @@ abstract class PropertyEiPropAdapter extends IndependentEiPropAdapter
 		}
 		
 		return $this->entityProperty;
+	}
+	
+	protected function isEntityPropertyRequired(): bool {
+		return true;
 	}
 	
 	/**
@@ -100,16 +106,21 @@ abstract class PropertyEiPropAdapter extends IndependentEiPropAdapter
 		
 		$this->objectPropertyAccessProxy = $objectPropertyAccessProxy;
 	}
+	
+	public function isObjectPropertyRequired(): bool {
+		return true;
+	}
 
 	/**
 	 * @return EiPropConfigurator
 	 */
 	public function createEiPropConfigurator(): EiPropConfigurator {
-		$eiPropConfigurator = parent::createEiPropConfigurator();
-		IllegalStateException::assertTrue($eiPropConfigurator instanceof AdaptableEiPropConfigurator);
-		$eiPropConfigurator->registerEntityPropertyConfigurable($this);
-		$eiPropConfigurator->registerObjectPropertyConfigurable($this);
-		return $eiPropConfigurator;
+		$configurator = parent::createEiPropConfigurator();
+		IllegalStateException::assertTrue($configurator instanceof AdaptableEiPropConfigurator);
+		$configurator->setEntityPropertyConfigurable($this);
+		$configurator->setObjectPropertyConfigurable($this);
+		$this->adaptEiPropConfigurator($configurator);
+		return $configurator;
 	}
 	
 }

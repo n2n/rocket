@@ -19,26 +19,40 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\tool\xml;
+namespace rocket\impl\ei\component\prop\adapter\config;
 
-class ItemCountSaxHandler implements SaxHandler {
-	private $level = 0;
-	private $number = 0;
+use rocket\ei\util\Eiu;
+use n2n\util\type\attrs\DataSet;
+use n2n\web\dispatch\mag\MagCollection;
+use n2n\persistence\meta\structure\Column;
+use n2n\web\dispatch\mag\MagDispatchable;
 
-	public function startElement($tagName, array $dataSet) {
-		$this->level++;
-		if ($this->level == 2 && $tagName == 'item') {
-			$this->number++;
-		}
-	}
-
-	public function cdata($cdata) { }
-
-	public function endElement($tag) {
-		$this->level--;
-	}
+interface EiPropConfiguratorAdaption {
 	
-	public function getNumber() {
-		return $this->number;
-	}
+	/**
+	 * @param Eiu $eiu
+	 * @param DataSet $dataSet
+	 * @param Column $column
+	 */
+	function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null);
+	
+	/**
+	 * @param Eiu $eiu
+	 * @param DataSet $dataSet
+	 * @param MagCollection $magCollection
+	 */
+	function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection);
+
+	/**
+	 * @param Eiu $eiu
+	 * @param MagDispatchable $magDispatchable
+	 * @param DataSet $dataSet
+	 */
+	function save(Eiu $eiu, MagDispatchable $magDispatchable, DataSet $dataSet);
+	
+	/**
+	 * @param Eiu $eiu
+	 * @param DataSet $dataSet
+	 */
+	function setup(Eiu $eiu, DataSet $dataSet);
 }

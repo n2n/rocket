@@ -6,7 +6,6 @@ use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\reflection\property\AccessProxy;
 use n2n\util\type\TypeConstraint;
-use n2n\web\dispatch\mag\Mag;
 use n2n\web\ui\UiComponent;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
 use rocket\ei\util\Eiu;
@@ -16,14 +15,16 @@ class StringArrayEiProp extends DraftablePropertyEiPropAdapter {
 
 	public function __construct() {
 		parent::__construct();
-
-		$this->entityPropertyRequired = false;
+	}
+	
+	public function isEntityPropertyRequired(): bool {
+		return false;
 	}
 
 	public function setObjectPropertyAccessProxy(AccessProxy $objectPropertyAccessProxy = null) {
 		parent::setObjectPropertyAccessProxy($objectPropertyAccessProxy);
 
-		$objectPropertyAccessProxy->setConstraint(TypeConstraint::createArrayLike('array',false,
+		$objectPropertyAccessProxy->setConstraint(TypeConstraint::createArrayLike('array', false,
 				TypeConstraint::createSimple('scalar')));
 	}
 

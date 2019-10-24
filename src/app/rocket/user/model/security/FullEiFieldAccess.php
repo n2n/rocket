@@ -35,9 +35,9 @@ class FullEiFieldAccess implements EiFieldAccess {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\security\EiFieldAccess::getAttributes()
+	 * @see \rocket\ei\manage\security\EiFieldAccess::getDataSet()
 	 */
-	public function getAttributes(): array {
+	public function getDataSet(): array {
 		throw new IllegalStateException();
 	}
 }

@@ -33,7 +33,6 @@ use rocket\ei\component\prop\FieldEiProp;
 use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\gui\DisplayDefinition;
-use n2n\util\type\ArgUtils;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\core\model\Rocket;
@@ -51,7 +50,7 @@ abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter im
 	/**
 	 * @return DisplayConfig
 	 */
-	public function getDisplayConfig(): DisplayConfig {
+	protected function getDisplayConfig(): DisplayConfig {
 		if ($this->displayConfig !== null) {
 			return $this->displayConfig;
 		}
@@ -68,24 +67,27 @@ abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter im
 	}
 	
 	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
-		$viewMode = $eiu->gui()->getViewMode();
-		if (!$this->getDisplayConfig()->isViewModeCompatible($viewMode)) {
-			return null;
-		}
+		return $this->getDisplayConfig()->buildDisplayDefinitionFromEiu($eiu);
 		
-		$groupType = $this->getSiStructureType($eiu);
-		ArgUtils::valEnumReturn($groupType, SiStructureType::all(), $this, 'getGroupType');
+// 		$viewMode = $eiu->gui()->getViewMode();
+// 		if (!$this->getDisplayConfig()->isViewModeCompatible($viewMode)) {
+// 			return null;
+// 		}
 		
-		return new DisplayDefinition($groupType,
-				$this->getDisplayConfig()->isViewModeDefaultDisplayed($viewMode),
-				$eiu->prop()->getLabel(), $eiu->prop()->getHelpText());
+// 		$groupType = $this->getSiStructureType($eiu);
+// 		ArgUtils::valEnumReturn($groupType, SiStructureType::all(), $this, 'getGroupType');
+		
+// 		return new DisplayDefinition($groupType,
+// 				$this->getDisplayConfig()->isViewModeDefaultDisplayed($viewMode),
+// 				$eiu->prop()->getLabel(), $eiu->prop()->getHelpText());
 	}
 
 	public function createEiPropConfigurator(): EiPropConfigurator {
-		$eiPropConfigurator = parent::createEiPropConfigurator();
-		IllegalStateException::assertTrue($eiPropConfigurator instanceof AdaptableEiPropConfigurator);
-		$eiPropConfigurator->registerDisplayConfig($this->getDisplayConfig());
-		return $eiPropConfigurator;
+		$configurator = parent::createEiPropConfigurator();
+		IllegalStateException::assertTrue($configurator instanceof AdaptableEiPropConfigurator);
+		$configurator->registerDisplayConfig($this->getDisplayConfig());
+		$this->adaptEiPropConfigurator($configurator);
+		return $configurator;
 	}
 	
 	public function isEiField(): bool {
@@ -104,7 +106,7 @@ abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter im
 	}
 	
 	public function buildGuiProp(Eiu $eiu): ?GuiProp {
-		return new GuiPropProxy($eiu, $this);
+		return $this;
 	}
 	
 	/**

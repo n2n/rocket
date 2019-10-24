@@ -21,6 +21,17 @@
  */
 namespace rocket\impl\ei\component\prop\adapter\gui;
 
+use rocket\ei\util\Eiu;
+
 class GuiFields {
 	
+	/**
+	 * @param Eiu $eiu
+	 * @param StatelessGuiFieldDisplayable $displayable
+	 * @param StatelessGuiFieldEditable $editable
+	 * @return \rocket\impl\ei\component\prop\adapter\gui\GuiFieldProxy
+	 */
+	function stateless(Eiu $eiu, StatelessGuiFieldDisplayable $displayable, StatelessGuiFieldEditable $editable = null) {
+		return new GuiFieldProxy($eiu, $displayable, $editable);
+	}
 }

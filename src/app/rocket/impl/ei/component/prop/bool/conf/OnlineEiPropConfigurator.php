@@ -56,12 +56,12 @@ class OnlineEiPropConfigurator extends AdaptableEiPropConfigurator {
 	}
 	
 	
-	public function initAutoEiPropAttributes(N2nContext $n2nContext, Column $column = null) {
-		parent::initAutoEiPropAttributes($n2nContext, $column);
+	public function initAutoEiPropDataSet(N2nContext $n2nContext, Column $column = null) {
+		parent::initAutoEiPropDataSet($n2nContext, $column);
 		
-		$this->attributes->set(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY, false);
-		$this->attributes->set(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, false);
-		$this->attributes->set(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, false);
+		$this->dataSet->set(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY, false);
+		$this->dataSet->set(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, false);
+		$this->dataSet->set(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, false);
 	}
 	
 	public function setup(EiSetup $setupProcess) {

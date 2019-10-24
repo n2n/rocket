@@ -3,7 +3,7 @@ namespace rocket\ei\manage\security\privilege\data;
 
 use n2n\util\type\ArgUtils;
 use rocket\ei\EiCommandPath;
-use n2n\util\type\attrs\Attributes;
+use n2n\util\type\attrs\DataSet;
 use rocket\ei\EiPropPath;
 use n2n\util\type\attrs\DataSet;
 
@@ -20,7 +20,7 @@ class PrivilegeSetting {
 	 */
 	function __construct(array $executableEiCommandPaths = array(), array $writableEiPropPaths = null) {
 		$this->setExecutableEiCommandPaths($executableEiCommandPaths);
-		$this->setWritableEiPropPaths($writableEiPropPaths ?? new Attributes());
+		$this->setWritableEiPropPaths($writableEiPropPaths ?? new DataSet());
 	}
 	
 	/**
@@ -50,14 +50,14 @@ class PrivilegeSetting {
 	}
 	
 	/**
-	 * @return \n2n\util\type\attrs\Attributes
+	 * @return \n2n\util\type\attrs\DataSet
 	 */
 	function getWritableEiPropPaths() {
 		return $this->writableEiPropPaths;
 	}
 	
 	/**
-	 * @param EiPropPath $attributes
+	 * @param EiPropPath $dataSet
 	 */
 	function setWritableEiPropPaths(array $writableEiPropPaths) {
 		ArgUtils::valArray($writableEiPropPaths, EiPropPath::class);
@@ -84,7 +84,7 @@ class PrivilegeSetting {
 	}
 	
 	/**
-	 * @param Attributes $attributes
+	 * @param DataSet $dataSet
 	 * @return \rocket\ei\manage\security\privilege\data\PrivilegeSetting
 	 */
 	static function createFromDataSet(DataSet $ds) {

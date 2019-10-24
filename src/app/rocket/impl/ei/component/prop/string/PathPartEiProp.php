@@ -52,7 +52,6 @@ class PathPartEiProp extends AlphanumericEiProp  {
 	
 	public function __construct() {
 		$this->getDisplayConfig()->setDefaultDisplayedViewModes(ViewMode::BULKY_EDIT | ViewMode::COMPACT_READ);
-		$this->entityPropertyRequired = true;
 		$this->getEditConfig()->setMandatory(false);
 	}
 	

@@ -97,19 +97,19 @@ class N2nLocaleEiProp extends DraftablePropertyEiPropAdapter implements Filterab
 		}
 	}
 	
-// 	public function optionAttributeValueToPropertyValue(Attributes $attributes, 
+// 	public function optionAttributeValueToPropertyValue(DataSet $dataSet, 
 // 			EiEntry $eiEntry, Eiu $eiu) {
-// 		$eiEntry->setValue($this->id, N2nLocale::create($attributes->get($this->id)));
+// 		$eiEntry->setValue($this->id, N2nLocale::create($dataSet->get($this->id)));
 // 	}
 	
 // 	public function propertyValueToOptionAttributeValue(EiEntry $eiEntry, 
-// 			Attributes $attributes, Eiu $eiu) {
+// 			DataSet $dataSet, Eiu $eiu) {
 // 		$propertyValue = $eiEntry->getValue(EiPropPath::from($this));
 // 		$attributeValue = null;
 // 		if ($propertyValue instanceof N2nLocale) {
 // 			$attributeValue = $propertyValue->getId(); 
 // 		}
-// 		$attributes->set($this->id, $attributeValue);
+// 		$dataSet->set($this->id, $attributeValue);
 // 	}
 
 	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {

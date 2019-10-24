@@ -39,7 +39,7 @@ class DecimalEiPropConfigurator extends NumericEiPropConfigurator {
 	}
 	
 	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
-		$lar = new LenientAttributeReader($this->attributes);
+		$lar = new LenientAttributeReader($this->dataSet);
 		
 		$magDispatchable = parent::createMagDispatchable($n2nContext);
 		$magCollection = $magDispatchable->getMagCollection();
@@ -55,8 +55,8 @@ class DecimalEiPropConfigurator extends NumericEiPropConfigurator {
 			
 		CastUtils::assertTrue($this->eiComponent instanceof DecimalEiProp);
 
-		$this->eiComponent->setDecimalPlaces($this->attributes->optInt(self::OPTION_DECIMAL_PLACES_KEY, 0));
-		$this->eiComponent->setPrefix($this->attributes->getString(self::OPTION_PREFIX_KEY, false));
+		$this->eiComponent->setDecimalPlaces($this->dataSet->optInt(self::OPTION_DECIMAL_PLACES_KEY, 0));
+		$this->eiComponent->setPrefix($this->dataSet->getString(self::OPTION_PREFIX_KEY, false));
 	}
 	
 	public function saveMagDispatchable(MagDispatchable $magDispatchable, N2nContext $n2nContext) {
@@ -64,7 +64,7 @@ class DecimalEiPropConfigurator extends NumericEiPropConfigurator {
 	
 		$magCollection = $magDispatchable->getMagCollection();
 	
-		$this->attributes->appendAll($magCollection->readValues(
+		$this->dataSet->appendAll($magCollection->readValues(
 				array(self::OPTION_DECIMAL_PLACES_KEY, self::OPTION_PREFIX_KEY), true), true);
 	}
 }

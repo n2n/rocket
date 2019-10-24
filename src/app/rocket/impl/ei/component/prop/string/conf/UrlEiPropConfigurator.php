@@ -56,26 +56,26 @@ class UrlEiPropConfigurator extends AlphanumericEiPropConfigurator {
 		return $level;
 	}
 	
-	public function initAutoEiPropAttributes(N2nContext $n2nContext, Column $column = null) {
-		parent::initAutoEiPropAttributes($n2nContext, $column);
+	public function initAutoEiPropDataSet(N2nContext $n2nContext, Column $column = null) {
+		parent::initAutoEiPropDataSet($n2nContext, $column);
 		
-		$this->attributes->set(self::ATTR_AUTO_SCHEME_KEY, 'http');
+		$this->dataSet->set(self::ATTR_AUTO_SCHEME_KEY, 'http');
 	}
 	
 	public function setup(EiSetup $eiSetupProcess) {
 		parent::setup($eiSetupProcess);
 		
-		if ($this->attributes->contains(self::MAG_RELATIVE_ALLOWED_KEY)) {
-			$this->eiComponent->setRelativeAllowed($this->attributes->getBool(self::MAG_RELATIVE_ALLOWED_KEY));
+		if ($this->dataSet->contains(self::MAG_RELATIVE_ALLOWED_KEY)) {
+			$this->eiComponent->setRelativeAllowed($this->dataSet->getBool(self::MAG_RELATIVE_ALLOWED_KEY));
 		}
 		
-		if ($this->attributes->contains(self::MAG_ALLOWED_PROTOCOLS_KEY)) {
-			$this->eiComponent->setAllowedSchemes($this->attributes->getArray(self::MAG_ALLOWED_PROTOCOLS_KEY,
+		if ($this->dataSet->contains(self::MAG_ALLOWED_PROTOCOLS_KEY)) {
+			$this->eiComponent->setAllowedSchemes($this->dataSet->getArray(self::MAG_ALLOWED_PROTOCOLS_KEY,
 					true, array(), TypeConstraint::createSimple('string')));
 		}
 		
-		if ($this->attributes->contains(self::ATTR_AUTO_SCHEME_KEY)) {
-			$this->eiComponent->setAutoScheme($this->attributes->getString(self::ATTR_AUTO_SCHEME_KEY, 
+		if ($this->dataSet->contains(self::ATTR_AUTO_SCHEME_KEY)) {
+			$this->eiComponent->setAutoScheme($this->dataSet->getString(self::ATTR_AUTO_SCHEME_KEY, 
 					false, null, true));
 		}
 	}
@@ -88,7 +88,7 @@ class UrlEiPropConfigurator extends AlphanumericEiPropConfigurator {
 	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
 		$magDispatchable = parent::createMagDispatchable($n2nContext);
 		
-		$lar = new LenientAttributeReader($this->attributes);
+		$lar = new LenientAttributeReader($this->dataSet);
 		$magDispatchable->getMagCollection()->addMag(self::MAG_RELATIVE_ALLOWED_KEY, new BoolMag('Relative allowed',
 				$lar->getBool(self::MAG_RELATIVE_ALLOWED_KEY, $this->eiComponent->isRelativeAllowed())));
 	
@@ -108,13 +108,13 @@ class UrlEiPropConfigurator extends AlphanumericEiPropConfigurator {
 	
 		$magCollection = $magDispatchable->getMagCollection();
 		
-		$this->attributes->set(self::MAG_RELATIVE_ALLOWED_KEY, $magCollection
+		$this->dataSet->set(self::MAG_RELATIVE_ALLOWED_KEY, $magCollection
 				->getMagByPropertyName(self::MAG_RELATIVE_ALLOWED_KEY)->getValue());
 
-		$this->attributes->set(self::MAG_ALLOWED_PROTOCOLS_KEY, $magCollection
+		$this->dataSet->set(self::MAG_ALLOWED_PROTOCOLS_KEY, $magCollection
 				->getMagByPropertyName(self::MAG_ALLOWED_PROTOCOLS_KEY)->getValue());
 		
-		$this->attributes->set(self::ATTR_AUTO_SCHEME_KEY, $magCollection
+		$this->dataSet->set(self::ATTR_AUTO_SCHEME_KEY, $magCollection
 				->getMagByPropertyName(self::ATTR_AUTO_SCHEME_KEY)->getValue());
 	}
 }

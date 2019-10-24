@@ -25,9 +25,9 @@ interface SaxHandler {
 	/**
 	 *
 	 * @param string $tagName
-	 * @param array $attributes
+	 * @param array $dataSet
 	 */
-	public function startElement($tagName, array $attributes);
+	public function startElement($tagName, array $dataSet);
 	/**
 	 *
 	 * @param string $cdata

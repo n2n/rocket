@@ -132,12 +132,12 @@ class EmbeddedEiPropRelation extends EiPropRelation {
 	
 	public function isDraftable() {
 		return false;
-		return $this->relationEiProp->getAttributes()->get(DraftablePropertyEiPropAdapter::ATTR_DRAFTABLE_KEY, 
+		return $this->relationEiProp->getDataSet()->get(DraftablePropertyEiPropAdapter::ATTR_DRAFTABLE_KEY, 
 				self::OPTION_DRAFTABLE_DEFAULT);
 	}
 	
 // 	public function isTranslationEnabled() {
-// 		return $this->relationEiProp->getAttributes()->get(TranslatableEiPropAdapter::OPTION_TRANSLATION_ENABLED_KEY,
+// 		return $this->relationEiProp->getDataSet()->get(TranslatableEiPropAdapter::OPTION_TRANSLATION_ENABLED_KEY,
 // 				self::OPTION_TRANSLATION_ENABLED_DEFAULT);
 // 	}
 	

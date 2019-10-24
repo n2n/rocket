@@ -31,7 +31,6 @@ use n2n\persistence\meta\structure\Column;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use n2n\util\type\CastUtils;
-use rocket\impl\ei\component\prop\meta\config\AddonConfig;
 
 class StringEiPropConfigurator extends AlphanumericEiPropConfigurator {
 	const OPTION_MULTILINE_KEY = 'multiline';
@@ -42,19 +41,19 @@ class StringEiPropConfigurator extends AlphanumericEiPropConfigurator {
 		$eiComponent = $this->eiComponent;
 		CastUtils::assertTrue($eiComponent instanceof StringEiProp);
 		
-		if ($this->attributes->contains(self::OPTION_MULTILINE_KEY)) {
-			$eiComponent->setMultiline($this->attributes->getBool(self::OPTION_MULTILINE_KEY));
+		if ($this->dataSet->contains(self::OPTION_MULTILINE_KEY)) {
+			$eiComponent->setMultiline($this->dataSet->getBool(self::OPTION_MULTILINE_KEY));
 		}
 	}
 	
 	private static $multilineNeedles = array('description', 'lead', 'intro', 'content');
 	
-	public function initAutoEiPropAttributes(N2nContext $n2nContext, Column $column = null) {
-		parent::initAutoEiPropAttributes($n2nContext, $column);
+	public function initAutoEiPropDataSet(N2nContext $n2nContext, Column $column = null) {
+		parent::initAutoEiPropDataSet($n2nContext, $column);
 		
 		if (StringUtils::contains(self::$multilineNeedles, $this->requirePropertyName(), false)) {
-			$this->attributes->set(self::OPTION_MULTILINE_KEY, true);
-			$this->attributes->set(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, false);
+			$this->dataSet->set(self::OPTION_MULTILINE_KEY, true);
+			$this->dataSet->set(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, false);
 		}
 	}
 	
@@ -79,7 +78,7 @@ class StringEiPropConfigurator extends AlphanumericEiPropConfigurator {
 		CastUtils::assertTrue($eiComponent instanceof StringEiProp);
 		
 		$magDispatchable->getMagCollection()->addMag(self::OPTION_MULTILINE_KEY, new BoolMag('Multiline',
-				$this->attributes->getBool(self::OPTION_MULTILINE_KEY, false, $eiComponent->isMultiline())));
+				$this->dataSet->getBool(self::OPTION_MULTILINE_KEY, false, $eiComponent->isMultiline())));
 	
 		
 		return $magDispatchable;
@@ -90,7 +89,7 @@ class StringEiPropConfigurator extends AlphanumericEiPropConfigurator {
 		
 		$multilineMag = $magDispatchable->getMagCollection()->getMagByPropertyName(self::OPTION_MULTILINE_KEY);
 
-		$this->attributes->set(self::OPTION_MULTILINE_KEY, $multilineMag->getValue());
+		$this->dataSet->set(self::OPTION_MULTILINE_KEY, $multilineMag->getValue());
 		
 	}
 }

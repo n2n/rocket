@@ -45,7 +45,7 @@ class FilterPropItemForm implements Dispatchable {
 		
 		$this->filterPropId = $filterItemSetting->getFilterPropId();
 		if ($this->filterPropId !== null && null !== ($filterItem = $filterDefinition->getFilterPropById($this->filterPropId))) {
-			$this->magForm = $filterItem->createMagDispatchable($filterItemSetting->getAttributes());
+			$this->magForm = $filterItem->createMagDispatchable($filterItemSetting->getDataSet());
 		}
 	}
 	
@@ -63,7 +63,7 @@ class FilterPropItemForm implements Dispatchable {
 			return;
 		}
 		
-		$this->magForm = $filterProp->createMagDispatchable($this->filterItemSetting->getAttributes());
+		$this->magForm = $filterProp->createMagDispatchable($this->filterItemSetting->getDataSet());
 // 		$mr->magForm = $dc->getOrCreateMappingResult($magForm, $n2nContext);
 	}
 	
@@ -93,7 +93,7 @@ class FilterPropItemForm implements Dispatchable {
 		}
 		
 		$this->filterItemSetting->setFilterPropId($this->filterPropId);
-		$this->filterItemSetting->setAttributes($filterItem->buildAttributes($this->magForm));
+		$this->filterItemSetting->setDataSet($filterItem->buildDataSet($this->magForm));
 	
 		return $this->filterItemSetting;
 	}

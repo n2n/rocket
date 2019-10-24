@@ -204,20 +204,20 @@ class AddEiConfigurator extends EiConfiguratorAdapter {
 		
 		$magCollection = new MagCollection();
 		$magCollection->addMag(self::OPTION_DUPLICATE_ALLOWED_KEY, new BoolMag('Duplicating Allowed', 
-				$this->getAttributes()->get(
+				$this->getDataSet()->get(
 						self::OPTION_DUPLICATE_ALLOWED_KEY, false, $eiComponent->isDublicatingAllowed())));
 		return new MagForm($magCollection);
 	}
 	
 	public function saveMagDispatchable(MagDispatchable $magDispatchable, N2nContext $n2nContext) {
-		$this->attributes->set(self::OPTION_DUPLICATE_ALLOWED_KEY, $magDispatchable->getPropertyValue(self::OPTION_DUPLICATE_ALLOWED_KEY));
+		$this->dataSet->set(self::OPTION_DUPLICATE_ALLOWED_KEY, $magDispatchable->getPropertyValue(self::OPTION_DUPLICATE_ALLOWED_KEY));
 	}
 	
 	public function setup(EiSetup $eiSetupProcess) {
 		$eiComponent = $this->eiComponent;
 		CastUtils::assertTrue($eiComponent instanceof AddEiCommand);
 		
-		$eiComponent->setDublicatingAllowed($this->attributes->optBool(self::OPTION_DUPLICATE_ALLOWED_KEY,
+		$eiComponent->setDublicatingAllowed($this->dataSet->optBool(self::OPTION_DUPLICATE_ALLOWED_KEY,
 				$eiComponent->isDublicatingAllowed()));
 	}
 }

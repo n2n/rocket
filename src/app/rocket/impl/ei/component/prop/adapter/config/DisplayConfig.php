@@ -26,12 +26,20 @@ use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\si\meta\SiStructureType;
 use rocket\ei\util\Eiu;
+use n2n\util\type\attrs\DataSet;
+use n2n\web\dispatch\mag\MagCollection;
+use n2n\util\type\attrs\LenientAttributeReader;
+use n2n\impl\web\dispatch\mag\model\BoolMag;
+use n2n\impl\web\dispatch\mag\model\EnumMag;
 
-class DisplayConfig {
+class DisplayConfig implements EiPropConfiguratorAdaption {
 	private $compatibleViewModes;
-	private $defaultDisplayedViewModes;
 	
+	private $defaultDisplayedViewModes;
 	private $siStructureType = SiStructureType::ITEM;
+	
+	private $siStructureTypeChoosable = true;
+	private $defaultDisplayChoosable = true;
 	
 	/**
 	 * @param int $compatibleViewModes
@@ -158,6 +166,129 @@ class DisplayConfig {
 		return $this->siStructureType;
 	}
 	
+	/**
+	 * @return bool
+	 */
+	public function isSiStructureTypeChoosable() {
+		return $this->siStructureTypeChoosable;
+	}
+
+	/**
+	 * @param boolean $siStructureTypeChoosable
+	 */
+	public function setSiStructureTypeChoosable(bool $siStructureTypeChoosable) {
+		$this->siStructureTypeChoosable = $siStructureTypeChoosable;
+		return $this;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isDefaultDisplayChoosable() {
+		return $this->defaultDisplayChoosable;
+	}
+
+	/**
+	 * @param boolean $defaultDisplayChoosable
+	 */
+	public function setDefaultDisplayChoosable(bool $defaultDisplayChoosable) {
+		$this->defaultDisplayChoosable = $defaultDisplayChoosable;
+		return $this; 	
+	}
+	
+	const ATTR_DISPLAY_IN_OVERVIEW_KEY = 'displayInOverview';
+	const ATTR_DISPLAY_IN_DETAIL_VIEW_KEY = 'displayInDetailView';
+	const ATTR_DISPLAY_IN_EDIT_VIEW_KEY = 'displayInEditView';
+	const ATTR_DISPLAY_IN_ADD_VIEW_KEY = 'displayInAddView';
+	const ATTR_HELPTEXT_KEY = 'helpText';
+	const ATTR_SI_STRUCTURE_TYPE_KEY = 'containerType';
+	
+	function setup(DataSet $dataSet) {
+		if ($dataSet->contains(self::ATTR_DISPLAY_IN_OVERVIEW_KEY)
+				&& $this->isViewModeCompatible(ViewMode::compact())) {
+			$this->changeDefaultDisplayedViewModes(
+					ViewMode::compact(),
+					$dataSet->reqBool(self::ATTR_DISPLAY_IN_OVERVIEW_KEY));
+		}
+		
+		if ($dataSet->contains(self::ATTR_DISPLAY_IN_DETAIL_VIEW_KEY)
+				&& $this->isViewModeCompatible(ViewMode::BULKY_READ)) {
+			$this->changeDefaultDisplayedViewModes(ViewMode::BULKY_READ,
+					$dataSet->reqBool(self::ATTR_DISPLAY_IN_DETAIL_VIEW_KEY));
+		}
+		
+		if ($dataSet->contains(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY)
+				&& $this->isViewModeCompatible(ViewMode::BULKY_EDIT)) {
+			$this->changeDefaultDisplayedViewModes(ViewMode::BULKY_EDIT,
+					$dataSet->reqBool(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY));
+		}
+		
+		if ($dataSet->contains(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY)
+				&& $this->isViewModeCompatible(ViewMode::BULKY_ADD)) {
+			$this->changeDefaultDisplayedViewModes(ViewMode::BULKY_ADD,
+					$dataSet->reqBool(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY));
+		}
+		
+		if ($dataSet->contains(self::ATTR_SI_STRUCTURE_TYPE_KEY)) {
+			$this->setSiStructureType(
+					$dataSet->reqEnum(self::ATTR_SI_STRUCTURE_TYPE_KEY, SiStructureType::all()));
+		}
+	}
+	
+	
+	function mag(DataSet $dataSet, MagCollection $magCollection) {
+		$lar = new LenientAttributeReader($dataSet);
+		
+		if ($this->defaultDisplayChoosable) {
+			if ($this->isCompactViewCompatible()) {
+				$magCollection->addMag(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, new BoolMag('Show in overview',
+						$lar->getBool(self::ATTR_DISPLAY_IN_OVERVIEW_KEY,
+								$this->isViewModeDefaultDisplayed(ViewMode::BULKY_READ))));
+			}
+			
+			if ($this->isViewModeCompatible(ViewMode::BULKY_READ)) {
+				$magCollection->addMag(self::ATTR_DISPLAY_IN_DETAIL_VIEW_KEY, new BoolMag('Show in detail view',
+						$lar->getBool(self::ATTR_DISPLAY_IN_DETAIL_VIEW_KEY,
+								$this->isViewModeDefaultDisplayed(ViewMode::BULKY_READ))));
+			}
+			
+			if ($this->isViewModeCompatible(ViewMode::BULKY_EDIT)) {
+				$magCollection->addMag(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, new BoolMag('Show in edit view',
+						$lar->getBool(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY,
+								$this->isViewModeDefaultDisplayed(ViewMode::BULKY_EDIT))));
+			}
+			
+			if ($this->isViewModeCompatible(ViewMode::BULKY_ADD)) {
+				$magCollection->addMag(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY, new BoolMag('Show in add view',
+						$lar->getBool(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY,
+								$this->isViewModeDefaultDisplayed(ViewMode::BULKY_ADD))));
+			}
+		}
+		
+		if ($this->addSiStructureType) {
+			$types = SiStructureType::all();
+			$magCollection->addMag(self::ATTR_SI_STRUCTURE_TYPE_KEY, new EnumMag('Container type',
+					array_combine($types, $types), $this->getSiStructureType(), true));
+		}
+	}
+	
+	function save(MagCollection $magCollection, DataSet $dataSet) {
+		if (!$this->defaultDisplayChoosable) {
+			$dataSet->remove(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, self::ATTR_DISPLAY_IN_DETAIL_VIEW_KEY,
+					self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, self::ATTR_DISPLAY_IN_ADD_VIEW_KEY);
+		} else {
+			$this->dataSet->appendAll($magCollection->readValues([self::ATTR_DISPLAY_IN_OVERVIEW_KEY, 
+					self::ATTR_DISPLAY_IN_DETAIL_VIEW_KEY, self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, 
+					self::ATTR_DISPLAY_IN_ADD_VIEW_KEY], true), true);
+		}
+		
+		if (!$this->siStructureTypeChoosable) {
+			$dataSet->remove(self::ATTR_SI_STRUCTURE_TYPE_KEY);
+		} else {
+			$dataSet->set(self::ATTR_SI_STRUCTURE_TYPE_KEY, $magCollection->readValue(self::ATTR_SI_STRUCTURE_TYPE_KEY));
+		}
+	}
+
 	/**
 	 * @param int $viewMode
 	 * @return DisplayDefinition|null

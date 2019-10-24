@@ -269,7 +269,7 @@ class EiuEntryForm implements Dispatchable {
 // 		$this->selectedTypeId = $eiType->getId();
 // 		$this->eiTypes[$this->selectedTypeId] = $eiType;
 				
-// 		$this->MagForm = new MagForm($this->createMagCollection($eiType, false), new Attributes());
+// 		$this->MagForm = new MagForm($this->createMagCollection($eiType, false), new DataSet());
 		
 // 		if ($this->isNew()) {
 // 			$subs = $eiType->getAllSubs();
@@ -280,7 +280,7 @@ class EiuEntryForm implements Dispatchable {
 // 				foreach ($subs as $id => $sub) {
 // 					if ($sub->getEntityModel()->isAbstract()) continue;
 // 					$this->subs[$id] = $sub;
-// 					$this->subMagForms[$id] = new MagForm($this->createMagCollection($sub, true), new Attributes());
+// 					$this->subMagForms[$id] = new MagForm($this->createMagCollection($sub, true), new DataSet());
 // 				}
 // 			}
 // 		} else {
@@ -304,7 +304,7 @@ class EiuEntryForm implements Dispatchable {
 				
 // 				if (isset($this->subs)) { 
 // 					$this->subs[$id] = $sub;
-// 					$this->subMagForms[$id] = new MagForm($this->createMagCollection($sub, true), new Attributes());
+// 					$this->subMagForms[$id] = new MagForm($this->createMagCollection($sub, true), new DataSet());
 // 				}
 // 			}
 				
@@ -395,7 +395,7 @@ class EiuEntryForm implements Dispatchable {
 				
 // 			$accessProxy = $eiProp->getPropertyAccessProxy();
 // 			$accessProxy->setValue($object, $eiProp->optionAttributeValueToPropertyValue(
-// 					$MagForm->getAttributeValue($propertyName), $MagForm->getAttributes(),
+// 					$MagForm->getAttributeValue($propertyName), $MagForm->getDataSet(),
 // 					$object, $this->eiFrame, $this->eiObject));
 // 		}
 // 	}

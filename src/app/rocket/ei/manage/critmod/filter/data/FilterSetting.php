@@ -21,22 +21,22 @@
  */
 namespace rocket\ei\manage\critmod\filter\data;
 
-use n2n\util\type\attrs\Attributes;
+use n2n\util\type\attrs\DataSet;
 
 class FilterSetting {
 	const ATTR_ITEM_ID_KEY = 'prop';
 	const ATTR_ATTRS_KEY = 'attrs';
 
 	private $filterPropId;
-	private $attributes;
+	private $dataSet;
 
 	/**
 	 * @param string|null $filterPropId
-	 * @param Attributes $attributes
+	 * @param DataSet $dataSet
 	 */
-	public function __construct(?string $filterPropId, Attributes $attributes) {
+	public function __construct(?string $filterPropId, DataSet $dataSet) {
 		$this->filterPropId = $filterPropId;
-		$this->attributes = $attributes;
+		$this->dataSet = $dataSet;
 	}
 
 	/**
@@ -53,22 +53,22 @@ class FilterSetting {
 		return $this->filterPropId;
 	}
 
-	public function setAttributes(Attributes $attributes) {
-		$this->attributes = $attributes;
+	public function setDataSet(DataSet $dataSet) {
+		$this->dataSet = $dataSet;
 	}
 
-	public function getAttributes(): Attributes {
-		return $this->attributes;
+	public function getDataSet(): DataSet {
+		return $this->dataSet;
 	}
 
 	public function toAttrs(): array {
 		return array(
 				self::ATTR_ITEM_ID_KEY => $this->filterPropId,
-				self::ATTR_ATTRS_KEY => $this->attributes->toArray());
+				self::ATTR_ATTRS_KEY => $this->dataSet->toArray());
 	}
 
-	public static function create(Attributes $attributes): FilterSetting {
-		return new FilterSetting($attributes->getString(self::ATTR_ITEM_ID_KEY),
-				new Attributes($attributes->getArray(self::ATTR_ATTRS_KEY, false, array())));
+	public static function create(DataSet $dataSet): FilterSetting {
+		return new FilterSetting($dataSet->getString(self::ATTR_ITEM_ID_KEY),
+				new DataSet($dataSet->getArray(self::ATTR_ATTRS_KEY, false, array())));
 	}
 }

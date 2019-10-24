@@ -22,7 +22,7 @@
 namespace rocket\si\api;
 
 use n2n\util\type\attrs\DataSet;
-use n2n\util\type\attrs\AttributesException;
+use n2n\util\type\attrs\DataSetException;
 use n2n\util\ex\IllegalStateException;
 
 class SiGetInstruction {
@@ -169,7 +169,7 @@ class SiGetInstruction {
 			
 			$instruction->setNewEntryRequested($ds->reqBool('newEntryRequested'));
 			return $instruction;
-		} catch (AttributesException $e) {
+		} catch (DataSetException $e) {
 			throw new \InvalidArgumentException(null, 0, $e);
 		}
 	}
@@ -216,7 +216,7 @@ class SiPartialContentInstruction {
 			$instruction->setFrom($ds->reqInt('offset'));
 			$instruction->setNum($ds->reqInt('num'));
 			return $instruction;
-		} catch (AttributesException $e) {
+		} catch (DataSetException $e) {
 			throw new \InvalidArgumentException(null, 0, $e);
 		}
 	}

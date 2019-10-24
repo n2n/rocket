@@ -120,7 +120,7 @@ class SiEntryInput {
 				$siEntryInput->putFieldInput($fieldId, new SiFieldInput($fielData));
 			}
 			return $siEntryInput;
-		} catch (\n2n\util\type\attrs\AttributesException $e) {
+		} catch (\n2n\util\type\attrs\DataSetException $e) {
 			throw new CorruptedSiInputDataException(null, 0, $e);
 		}
 	}

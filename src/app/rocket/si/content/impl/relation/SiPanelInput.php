@@ -82,7 +82,7 @@ class SiPanelInput {
 			}
 			$panelInput->setEntryInputs($entryInputs);
 			return $panelInput;
-		} catch (\n2n\util\type\attrs\AttributesException $e) {
+		} catch (\n2n\util\type\attrs\DataSetException $e) {
 			throw new CorruptedSiInputDataException(null, 0, $e);
 		}
 	}

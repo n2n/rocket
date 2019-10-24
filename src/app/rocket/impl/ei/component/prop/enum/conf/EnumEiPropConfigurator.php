@@ -37,7 +37,7 @@ use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
 use n2n\impl\web\dispatch\mag\model\MultiSelectMag;
 use rocket\ei\manage\gui\field\GuiFieldPath;
 
-// @todo validate if attributes are arrays
+// @todo validate if dataSet are arrays
 
 class EnumEiPropConfigurator extends AdaptableEiPropConfigurator {
 	const OPTION_OPTIONS_KEY = 'options';
@@ -56,7 +56,7 @@ class EnumEiPropConfigurator extends AdaptableEiPropConfigurator {
 	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
 		CastUtils::assertTrue($this->eiComponent instanceof EnumEiProp);
 		
-		$lar = new LenientAttributeReader($this->attributes);
+		$lar = new LenientAttributeReader($this->dataSet);
 		
 		$magDispatchable = parent::createMagDispatchable($n2nContext);
 		
@@ -119,8 +119,8 @@ class EnumEiPropConfigurator extends AdaptableEiPropConfigurator {
 				$eiPropPathMap[$valueLabelMap['value']] = $valueLabelMap['assoicatedGuiFieldPaths'];
 			}
 		}
-		$this->attributes->set(self::OPTION_OPTIONS_KEY, $options);
-		$this->attributes->set(self::ASSOCIATED_GUI_FIELD_KEY, $eiPropPathMap);
+		$this->dataSet->set(self::OPTION_OPTIONS_KEY, $options);
+		$this->dataSet->set(self::ASSOCIATED_GUI_FIELD_KEY, $eiPropPathMap);
 	}
 	
 	public function setup(EiSetup $eiSetupProcess) {
@@ -128,15 +128,15 @@ class EnumEiPropConfigurator extends AdaptableEiPropConfigurator {
 	
 		CastUtils::assertTrue($this->eiComponent instanceof EnumEiProp);
 		
-		if ($this->attributes->contains(self::OPTION_OPTIONS_KEY)) {
-			$options = $this->attributes->getArray(self::OPTION_OPTIONS_KEY, false, array(), 
+		if ($this->dataSet->contains(self::OPTION_OPTIONS_KEY)) {
+			$options = $this->dataSet->getArray(self::OPTION_OPTIONS_KEY, false, array(), 
 					TypeConstraint::createSimple('scalar'));
 			
 			$this->eiComponent->setOptions(array_filter($options));
 		}
 		
-		if ($this->attributes->contains(self::ASSOCIATED_GUI_FIELD_KEY)) {
-			$eiPropPathMap = $this->attributes->getArray(self::ASSOCIATED_GUI_FIELD_KEY, false, array(), 
+		if ($this->dataSet->contains(self::ASSOCIATED_GUI_FIELD_KEY)) {
+			$eiPropPathMap = $this->dataSet->getArray(self::ASSOCIATED_GUI_FIELD_KEY, false, array(), 
 					TypeConstraint::createArrayLike('array', false, TypeConstraint::createSimple('scalar')));
 			foreach ($eiPropPathMap as $value => $eiPropPathStrs) {
 				$eiPropPaths = array();

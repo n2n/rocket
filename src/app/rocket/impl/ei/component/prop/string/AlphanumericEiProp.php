@@ -66,8 +66,7 @@ abstract class AlphanumericEiProp extends DraftablePropertyEiPropAdapter impleme
 	public  function __construct() {
 		parent::__construct();
 
-		$this->entityPropertyRequired = false;
-		$this->addonConfig = AddonConfig::create();
+		$this->addonConfig = new AddonConfig();
 	}
 	
 	public function getMinlength() {
@@ -95,6 +94,10 @@ abstract class AlphanumericEiProp extends DraftablePropertyEiPropAdapter impleme
 	 */
 	function getAddonConfig() {
 		return $this->addonConfig;
+	}
+	
+	protected function isEntityPropertyRequired(): bool {
+		return false;
 	}
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {

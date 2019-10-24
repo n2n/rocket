@@ -27,7 +27,7 @@ use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\manage\entry\EiEntryConstraint;
 use rocket\ei\manage\entry\EiFieldConstraint;
 use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
-use n2n\util\type\attrs\AttributesException;
+use n2n\util\type\attrs\DataSetException;
 
 class SecurityFilterDefinition {
 	/**
@@ -115,8 +115,8 @@ class SecurityFilterDefinition {
 			
 			try {
 				$group->addEiFieldConstraint(EiPropPath::create($id), 
-						$this->props[$id]->createEiFieldConstraint($subFilterSetting->getAttributes()));
-			} catch (AttributesException $e) {}
+						$this->props[$id]->createEiFieldConstraint($subFilterSetting->getDataSet()));
+			} catch (DataSetException $e) {}
 		}
 		
 		foreach ($filterSettingGroup->getFilterSettingGroups() as $subFilterSettingGroup) {
@@ -137,8 +137,8 @@ class SecurityFilterDefinition {
 			
 // 			try {
 // 				$criteriaComparators[] = $this->props[$id]->createComparatorConstraint(
-// 						$subFilterSetting->getAttributes());
-// 			} catch (AttributesException $e) {}
+// 						$subFilterSetting->getDataSet());
+// 			} catch (DataSetException $e) {}
 // 		}
 		
 // 		foreach ($filterSettingGroup->getFilterSettingGroups() as $subFilterSettingGroup) {
@@ -152,7 +152,7 @@ class SecurityFilterDefinition {
 	// 		if ($element instanceof FilterDataUsage) {
 	// 			$itemId = $element->getItemId();
 	// 			if (isset($this->filterProps[$itemId])) {
-	// 				$comparatorConstraint = $this->filterProps[$itemId]->createComparatorConstraint($element->getAttributes());
+	// 				$comparatorConstraint = $this->filterProps[$itemId]->createComparatorConstraint($element->getDataSet());
 	// 				ArgUtils::valTypeReturn($comparatorConstraint,
 	// 						'rocket\ei\manage\critmod\ComparatorConstraint',
 	// 						$this->filterProps[$itemId], 'createComparatorConstraint');

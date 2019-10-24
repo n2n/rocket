@@ -30,10 +30,10 @@ use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\impl\web\dispatch\mag\model\MultiSelectMag;
 use n2n\impl\web\dispatch\mag\model\NumericMag;
 use n2n\util\type\attrs\LenientAttributeReader;
-use n2n\util\type\attrs\Attributes;
+use n2n\util\type\attrs\DataSet;
 use n2n\util\type\TypeConstraint;
 use rocket\impl\ei\component\prop\ci\model\PanelConfig;
-use n2n\util\type\attrs\AttributesException;
+use n2n\util\type\attrs\DataSetException;
 use n2n\util\StringUtils;
 use n2n\impl\web\dispatch\mag\model\MagCollectionMag;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
@@ -104,7 +104,7 @@ class CiConfigUtils {
 	}
 	
 	public function buildPanelConfigMagCollectionValues(array $panelConfigAttrs) {
-		$lar = new LenientAttributeReader(new Attributes($panelConfigAttrs));
+		$lar = new LenientAttributeReader(new DataSet($panelConfigAttrs));
 		$values = array(
 				self::ATTR_PANEL_NAME_KEY => $lar->getString(self::ATTR_PANEL_NAME_KEY),
 				self::ATTR_PANEL_LABEL_KEY => $lar->getString(self::ATTR_PANEL_LABEL_KEY),
@@ -117,7 +117,7 @@ class CiConfigUtils {
 		$gridAttrs = $lar->getArray(self::ATTR_GRID_KEY);
 		$values[self::ATTR_GRID_ENABLED_KEY] = !empty($gridAttrs);
 		
-		$gridLar = new LenientAttributeReader(new Attributes($gridAttrs));
+		$gridLar = new LenientAttributeReader(new DataSet($gridAttrs));
 		
 		$values[self::ATTR_GRID_KEY] = array(
 				self::ATTR_GRID_COL_START_KEY => $gridLar->getInt(self::ATTR_GRID_COL_START_KEY),
@@ -147,39 +147,39 @@ class CiConfigUtils {
 	
 	/**
 	 * @param array $panelAttrs
-	 * @throws AttributesException
+	 * @throws DataSetException
 	 * @return \rocket\impl\ei\component\prop\ci\model\PanelConfig
 	 */
 	public static function createPanelConfig(array $panelAttrs, string $panelName = null) {
-		$panelAttributes = new Attributes($panelAttrs);
+		$panelDataSet = new DataSet($panelAttrs);
 		
 		if ($panelName === null) {
-			$panelName = $panelAttributes->getString(self::ATTR_PANEL_NAME_KEY);
+			$panelName = $panelDataSet->getString(self::ATTR_PANEL_NAME_KEY);
 		}
 		
 		$panelLabel = null;
-		if (null === ($panelLabel = $panelAttributes->getString(self::ATTR_PANEL_LABEL_KEY, false, null, true))) {
+		if (null === ($panelLabel = $panelDataSet->getString(self::ATTR_PANEL_LABEL_KEY, false, null, true))) {
 			$panelLabel = StringUtils::pretty($panelName);
 		}
 		
-		$allowedCiIds = $panelAttributes->getArray(self::ATTR_ALLOWED_CONTENT_ITEM_IDS_KEY, false, null,
+		$allowedCiIds = $panelDataSet->getArray(self::ATTR_ALLOWED_CONTENT_ITEM_IDS_KEY, false, null,
 				TypeConstraint::createSimple('string'), true);
 		
 		$gridPos = null;
-		$gridAttrs = $panelAttributes->getArray(self::ATTR_GRID_KEY, false, null);
+		$gridAttrs = $panelDataSet->getArray(self::ATTR_GRID_KEY, false, null);
 		if ($gridAttrs !== null) {
-			$gridAttributes = new Attributes($gridAttrs);
+			$gridDataSet = new DataSet($gridAttrs);
 			$gridPos = new GridPos(
-					$gridAttributes->reqInt(self::ATTR_GRID_COL_START_KEY),
-					$gridAttributes->optInt(self::ATTR_GRID_COL_END_KEY, null, true),
-					$gridAttributes->reqInt(self::ATTR_GRID_ROW_START_KEY),
-					$gridAttributes->optInt(self::ATTR_GRID_ROW_END_KEY, null, true));
+					$gridDataSet->reqInt(self::ATTR_GRID_COL_START_KEY),
+					$gridDataSet->optInt(self::ATTR_GRID_COL_END_KEY, null, true),
+					$gridDataSet->reqInt(self::ATTR_GRID_ROW_START_KEY),
+					$gridDataSet->optInt(self::ATTR_GRID_ROW_END_KEY, null, true));
 		}
 		
 		return new PanelConfig($panelName, $panelLabel,
 				empty($allowedCiIds) ? null : $allowedCiIds,
-				$panelAttributes->optInt(self::ATTR_MIN_KEY, 0, true),
-				$panelAttributes->optInt(self::ATTR_MAX_KEY, null, true),
+				$panelDataSet->optInt(self::ATTR_MIN_KEY, 0, true),
+				$panelDataSet->optInt(self::ATTR_MAX_KEY, null, true),
 				$gridPos);
 	}
 }

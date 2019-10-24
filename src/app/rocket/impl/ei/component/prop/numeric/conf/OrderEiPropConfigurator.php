@@ -66,9 +66,9 @@ class OrderEiPropConfigurator extends NumericEiPropConfigurator {
 		IllegalStateException::assertTrue($this->eiComponent instanceof OrderEiProp);
 // 		$eiDef = $setupProcess->getEiDef();
 		
-// 		if ($this->attributes->contains(self::OPTION_REFERENCE_FIELD_KEY)) {
+// 		if ($this->dataSet->contains(self::OPTION_REFERENCE_FIELD_KEY)) {
 // 			$this->eiComponent->setReferenceField($eiDef->getEiPropCollection()->getById(
-// 					$this->attributes->get(self::OPTION_REFERENCE_FIELD_KEY)));
+// 					$this->dataSet->get(self::OPTION_REFERENCE_FIELD_KEY)));
 // 		}
 		
 		$orderEiCommand = new OrderEiCommand();
@@ -83,12 +83,12 @@ class OrderEiPropConfigurator extends NumericEiPropConfigurator {
 // 		}
 	}
 	
-	public function initAutoEiPropAttributes(N2nContext $n2nContext, Column $column = null) {
-		parent::initAutoEiPropAttributes($n2nContext, $column);
+	public function initAutoEiPropDataSet(N2nContext $n2nContext, Column $column = null) {
+		parent::initAutoEiPropDataSet($n2nContext, $column);
 		
-		$this->attributes->set(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY, false);
-		$this->attributes->set(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, false);
-		$this->attributes->set(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, false);
+		$this->dataSet->set(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY, false);
+		$this->dataSet->set(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, false);
+		$this->dataSet->set(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, false);
 	}
 	
 	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {

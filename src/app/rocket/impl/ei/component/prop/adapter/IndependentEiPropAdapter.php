@@ -34,21 +34,18 @@ abstract class IndependentEiPropAdapter extends EiPropAdapter implements Indepen
 	
 	public function __construct() {
 	}
-		
-	/**
-	 * @return \rocket\ei\mask\EiMask
-	 * @deprecated
-	 */
-	public function getEiMask() {
-		return $this->getWrapper()->getEiPropCollection()->getEiMask();
-	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\component\prop\indepenent\IndependentEiProp::createEiPropConfigurator()
 	 */
 	public function createEiPropConfigurator(): EiPropConfigurator {
-		return new AdaptableEiPropConfigurator($this);
+		$configurator = new AdaptableEiPropConfigurator($this);
+		$this->adaptEiPropConfigurator($configurator);
+		return $configurator;
+	}
+	
+	protected function adaptEiPropConfigurator(AdaptableEiPropConfigurator $configurator) {
 	}
 	
 	public function getLabelLstr(): Lstr {

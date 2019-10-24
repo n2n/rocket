@@ -66,7 +66,7 @@
 // 		if ($element instanceof FilterDataUsage) {
 // 			$itemId = $element->getItemId();
 // 			if (isset($this->selectorItems[$itemId])) {
-// 				$selectorConstraint = $this->selectorItems[$itemId]->createSelectorConstraint($element->getAttributes());
+// 				$selectorConstraint = $this->selectorItems[$itemId]->createSelectorConstraint($element->getDataSet());
 // 				ArgUtils::valTypeReturn($selectorConstraint,
 // 						'rocket\ei\manage\critmod\SelectorConstraint',
 // 						$this->selectorItems[$itemId], 'createSelectorConstraint');

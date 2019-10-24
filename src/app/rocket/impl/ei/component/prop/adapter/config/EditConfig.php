@@ -21,53 +21,213 @@
  */
 namespace rocket\impl\ei\component\prop\adapter\config;
 
-class EditConfig {
+use n2n\web\dispatch\mag\MagCollection;
+use n2n\util\type\attrs\LenientAttributeReader;
+use n2n\util\type\attrs\DataSet;
+use n2n\impl\web\dispatch\mag\model\BoolMag;
+
+class EditConfig implements EiPropConfiguratorAdaption {
 	protected $constant = false;
 	protected $readOnly = false;
 	protected $mandatory = false;
 	
+	protected $constantChoosable = true;
+	protected $readOnlyChoosable = true;
+	protected $mandatoryChoosable = true;
+	protected $autoMandatoryCheck = true;
+	
 	/**
-	 * @return boolean
+	 * @return bool
 	 */
-	public function isConstant() {
+	function isConstant() {
 		return $this->constant;
 	}
 	
 	/**
 	 * @param bool $constant
+	 * @return \rocket\impl\ei\component\prop\adapter\config\EditConfig
 	 */
-	public function setConstant($constant) {
-		$this->constant = (boolean) $constant;
+	function setConstant(bool $constant) {
+		$this->constant = $constant;
 		return $this;
 	}
 	
 	/**
-	 * @return boolean
+	 * @return bool
 	 */
-	public function isReadOnly(): bool {
+	function isReadOnly(): bool {
 		return $this->readOnly;
 	}
 	
 	/**
 	 * @param bool $readOnly
+	 * @return \rocket\impl\ei\component\prop\adapter\config\EditConfig
 	 */
-	public function setReadOnly($readOnly) {
-		$this->readOnly = (boolean) $readOnly;
+	function setReadOnly(bool $readOnly) {
+		$this->readOnly = (bool) $readOnly;
 		return $this;
 	}
 	
 	/**
-	 * @return boolean
+	 * @return bool
 	 */
-	public function isMandatory(): bool {
+	function isMandatory(): bool {
 		return $this->mandatory;
 	}
 	
 	/**
 	 * @param bool $mandatory
+	 * @return \rocket\impl\ei\component\prop\adapter\config\EditConfig
 	 */
-	public function setMandatory(bool $mandatory) {
+	function setMandatory(bool $mandatory) {
 		$this->mandatory = $mandatory;
+		return $this;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	function isConstantChoosable() {
+		return $this->constantChoosable;
+	}
+
+	/**
+	 * @param bool $constantChoosable
+	 * @return \rocket\impl\ei\component\prop\adapter\config\EditConfig
+	 */
+	function setConstantChoosable(bool $constantChoosable) {
+		$this->constantChoosable = $constantChoosable;
+		return $this;
+	}
+
+	/**
+	 * @return bool
+	 */
+	function isReadOnlyChoosable() {
+		return $this->readOnlyChoosable;
+	}
+
+	/**
+	 * @param bool $readOnlyChoosable
+	 * @return \rocket\impl\ei\component\prop\adapter\config\EditConfig
+	 */
+	function setReadOnlyChoosable(bool $readOnlyChoosable) {
+		$this->readOnlyChoosable = $readOnlyChoosable;
+		return $this;
+	}
+
+	/**
+	 * @return bool
+	 */
+	function isMandatoryChoosable() {
+		return $this->mandatoryChoosable;
+	}
+
+	/**
+	 * @param bool $mandatoryChoosable
+	 * @return \rocket\impl\ei\component\prop\adapter\config\EditConfig
+	 */
+	function setMandatoryChoosable(bool $mandatoryChoosable) {
+		$this->mandatoryChoosable = $mandatoryChoosable;
+		return $this;
+	}
+
+	/**
+	 * @return bool
+	 */
+	function isAutoMandatoryCheck() {
+		return $this->autoMandatoryCheck;
+	}
+
+	/**
+	 * @param bool $autoMandatoryCheck
+	 * @return \rocket\impl\ei\component\prop\adapter\config\EditConfig
+	 */
+	function setAutoMandatoryCheck(bool $autoMandatoryCheck) {
+		$this->autoMandatoryCheck = $autoMandatoryCheck;
+		return $this;
+	}
+	
+	const ATTR_CONSTANT_KEY = 'constant';
+	const ATTR_READ_ONLY_KEY = 'readOnly';
+	const ATTR_MANDATORY_KEY = 'mandatory';
+	
+	/**
+	 * @param DataSet $dataSet
+	 * @throws InvalidAttributeException
+	 * @return \rocket\impl\ei\component\prop\adapter\config\EditConfig
+	 */
+	private function setup(DataSet $dataSet) {
+		if ($this->constantChoosable && $this->dataSet->contains(self::ATTR_CONSTANT_KEY)) {
+			$this->editConfig->setConstant($this->dataSet->getBool(self::ATTR_CONSTANT_KEY));
+		}
+		
+		if ($this->readOnlyChoosable && $this->dataSet->contains(self::ATTR_READ_ONLY_KEY)) {
+			$this->editConfig->setReadOnly($this->dataSet->getBool(self::ATTR_READ_ONLY_KEY));
+		}
+		
+		if ($this->mandatoryChoosable) {
+			if ($this->dataSet->contains(self::ATTR_MANDATORY_KEY)) {
+				$this->editConfig->setMandatory($this->dataSet->getBool(self::ATTR_MANDATORY_KEY));
+			}
+			
+			if (!$this->editConfig->isMandatory() && $this->addMandatory && $this->autoMandatoryCheck
+					&& $this->mandatoryRequired()) {
+				throw new InvalidAttributeException(self::ATTR_MANDATORY_KEY . ' must be true because '
+						. $this->getPropertyAssignation()->getObjectPropertyAccessProxy(true)
+						. ' does not allow null value.');
+			}
+		}
+		
+		return $this;
+	}
+	
+	/**
+	 * @param DataSet $dataSet
+	 * @param MagCollection $magCollection
+	 * @return \rocket\impl\ei\component\prop\adapter\config\EditConfig
+	 */
+	function mag(DataSet $dataSet, MagCollection $magCollection) {
+		$lar = new LenientAttributeReader($dataSet);
+		
+		if ($this->constantChoosable) {
+			$magCollection->addMag(self::ATTR_CONSTANT_KEY, new BoolMag('Constant',
+					$lar->getBool(self::ATTR_CONSTANT_KEY, $this->isConstant())));
+		}
+		
+		if ($this->readOnlyChoosable) {
+			$magCollection->addMag(self::ATTR_READ_ONLY_KEY, new BoolMag('Read only',
+					$lar->getBool(self::ATTR_READ_ONLY_KEY, $this->isReadOnly())));
+		}
+		
+		if ($this->mandatoryChoosable) {
+			$magCollection->addMag(self::ATTR_MANDATORY_KEY, new BoolMag('Mandatory',
+					$lar->getBool(self::ATTR_MANDATORY_KEY, $this->isMandatory())));
+		}
+		
+		return $this;
+	}
+	
+	/**
+	 * @param MagCollection $magCollection
+	 * @param DataSet $dataSet
+	 * @return \rocket\impl\ei\component\prop\adapter\config\EditConfig
+	 */
+	function save(MagCollection $magCollection, DataSet $dataSet) {
+		$dataSet->remove(self::ATTR_CONSTANT_KEY, self::ATTR_READ_ONLY_KEY, self::ATTR_MANDATORY_KEY);
+		
+		if ($this->constantChoosable) {
+			$dataSet->set(self::ATTR_CONSTANT_KEY, $magCollection->readValue(self::ATTR_CONSTANT_KEY));
+		}
+		
+		if ($this->readOnlyChoosable) {
+			$dataSet->set(self::ATTR_READ_ONLY_KEY, $magCollection->readValue(self::ATTR_READ_ONLY_KEY));
+		}
+		
+		if ($this->mandatoryChoosable) {
+			$dataSet->set(self::ATTR_MANDATORY_KEY, $magCollection->readValue(self::ATTR_MANDATORY_KEY));
+		}
+		
 		return $this;
 	}
 }

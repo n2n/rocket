@@ -49,13 +49,13 @@ class MailItemSaxHandler implements SaxHandler {
 		$this->num = $num;
 	}
 
-	public function startElement($tagName, array $attributes) {
+	public function startElement($tagName, array $dataSet) {
 		$this->currentTagName = null;
 		$this->level++;
 		if ($this->level == 2 && $tagName == 'item') {
 			$this->itemCounter++;
 			
-			if (!isset($attributes['datetime'])) return;
+			if (!isset($dataSet['datetime'])) return;
 
 			if (is_numeric($this->num) && $this->num <= sizeof($this->items)) {
 				return;
@@ -64,7 +64,7 @@ class MailItemSaxHandler implements SaxHandler {
 				return;
 			}
 				
-			$this->currentItem = new MailItem(DateUtils::createDateTime($attributes['datetime']));
+			$this->currentItem = new MailItem(DateUtils::createDateTime($dataSet['datetime']));
 		} else if (isset($this->currentItem) && $this->level > 2) {
 			$this->currentTagName = $tagName;
 			if ($tagName == AdminMailCenter::TAG_NAME_ATTACHMENT) {

@@ -67,7 +67,7 @@ class ContentItemsEiPropConfigurator extends RelationEiPropConfigurator {
 		
 		$magCollection->addMag(self::ATTR_PANELS_KEY, $panelConfigMag);
 		
-		$lar = new LenientAttributeReader($this->attributes);
+		$lar = new LenientAttributeReader($this->dataSet);
 // 		if ($lar->contains(self::ATTR_PANELS_KEY)) {
 // 			$magValue = $lar->getArray(self::ATTR_PANELS_KEY, array(), TypeConstraint::createArrayLike('array',
 // 					false, TypeConstraint::createSimple('scalar')));
@@ -105,7 +105,7 @@ class ContentItemsEiPropConfigurator extends RelationEiPropConfigurator {
 		}
 		
 		if (!empty($panelConfigAttrs)) {
-			$this->attributes->set(self::ATTR_PANELS_KEY, $panelConfigAttrs);
+			$this->dataSet->set(self::ATTR_PANELS_KEY, $panelConfigAttrs);
 		}
 	}
 	
@@ -116,9 +116,9 @@ class ContentItemsEiPropConfigurator extends RelationEiPropConfigurator {
 		
 // 		$this->eiComponent->setContentItemEiType($eiSetupProcess->getEiTypeByClass(
 // 				ReflectionUtils::createReflectionClass('rocket\impl\ei\component\prop\ci\model\ContentItem')));
-		if ($this->attributes->contains(self::ATTR_PANELS_KEY)) {
+		if ($this->dataSet->contains(self::ATTR_PANELS_KEY)) {
 			$panelConfigs = array();
-			foreach ((array) $this->attributes->get(self::ATTR_PANELS_KEY) as $panelAttrs) {
+			foreach ((array) $this->dataSet->get(self::ATTR_PANELS_KEY) as $panelAttrs) {
 				$panelConfigs[] = CiConfigUtils::createPanelConfig($panelAttrs);
 			}
 			$this->eiComponent->setPanelConfigs($panelConfigs);

@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\relation\model\filter;
 
 use rocket\ei\manage\security\filter\SecurityFilterProp;
-use n2n\util\type\attrs\Attributes;
+use n2n\util\type\attrs\DataSet;
 use rocket\ei\manage\critmod\filter\ComparatorConstraint;
 use rocket\ei\manage\entry\EiFieldConstraint;
 
@@ -38,9 +38,9 @@ class ToOneSecurityFilterProp extends RelationFilterProp implements SecurityFilt
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\critmod\filter\FilterProp::createComparatorConstraint($attributes)
+	 * @see \rocket\ei\manage\critmod\filter\FilterProp::createComparatorConstraint($dataSet)
 	 */
-	public function createComparatorConstraint(Attributes $attributes): ComparatorConstraint {
+	public function createComparatorConstraint(DataSet $dataSet): ComparatorConstraint {
 		
 	}
 

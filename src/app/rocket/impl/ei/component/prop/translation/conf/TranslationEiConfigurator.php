@@ -77,7 +77,7 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 	
 	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
 		$magDispatchable = parent::createMagDispatchable($n2nContext);
-		$lar = new LenientAttributeReader($this->attributes);
+		$lar = new LenientAttributeReader($this->dataSet);
 		
 		$magCollection = $magDispatchable->getMagCollection();
 		
@@ -115,7 +115,7 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 	public function saveMagDispatchable(MagDispatchable $magDispatchable, N2nContext $n2nContext) {
 		parent::saveMagDispatchable($magDispatchable, $n2nContext);
 		
-		$this->attributes->appendAll($magDispatchable->getMagCollection()->readValues(
+		$this->dataSet->appendAll($magDispatchable->getMagCollection()->readValues(
 				array(self::ATTR_USE_SYSTEM_LOCALES_KEY, self::ATTR_SYSTEM_LOCALE_DEFS_KEY, 
 						self::ATTR_CUSTOM_LOCALE_DEFS_KEY, self::ATTR_MIN_NUM_TRANSLATIONS_KEY)), true);
 	}
@@ -184,16 +184,16 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 			$n2nLocaleDefsAttrs[] = $attrs;
 		}
 		
-		$this->attributes->set($key, $n2nLocaleDefsAttrs);
+		$this->dataSet->set($key, $n2nLocaleDefsAttrs);
 	}
 	
 	public function setup(EiSetup $eiSetupProcess) {
 // 		$eiu = $eiSetupProcess->eiu();
 		
-// 		$lar = new LenientAttributeReader($this->attributes);
+// 		$lar = new LenientAttributeReader($this->dataSet);
 		
 // 		$n2nLocaleDefs = array();
-// 		if ($this->attributes->getBool(self::ATTR_USE_SYSTEM_LOCALES_KEY, false, true)) {
+// 		if ($this->dataSet->getBool(self::ATTR_USE_SYSTEM_LOCALES_KEY, false, true)) {
 // 			$n2nLocaleDefs = $this->readModN2nLocaleDefs(self::ATTR_SYSTEM_LOCALE_DEFS_KEY, $lar, 
 // 					$eiu->lookup(WebConfig::class)->getAllN2nLocales());
 // 		} 
@@ -204,7 +204,7 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 // 		}
 // 		$this->translationEiProp->setN2nLocaleDefs($n2nLocaleDefs);
 		
-// 		$this->translationEiProp->setMinNumTranslations($this->attributes->optInt(self::ATTR_MIN_NUM_TRANSLATIONS_KEY, 0));
+// 		$this->translationEiProp->setMinNumTranslations($this->dataSet->optInt(self::ATTR_MIN_NUM_TRANSLATIONS_KEY, 0));
 		
 // 		$this->addMandatory = true;
 		
@@ -216,7 +216,7 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 // 			$targetEiType = $eiSetupProcess->eiu()->context()->mask($targetEntityClass)->getEiType();
 				
 // 			$targetEiMask = null;
-// // 			if (null !== ($eiMaskId = $this->attributes->get(self::OPTION_TARGET_MASK_KEY))) {
+// // 			if (null !== ($eiMaskId = $this->dataSet->get(self::OPTION_TARGET_MASK_KEY))) {
 // // 				$targetEiMask = $target->getEiTypeExtensionCollection()->getById($eiMaskId);
 // // 			} else {
 // 				$targetEiMask = $targetEiType->getEiMask();

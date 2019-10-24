@@ -33,7 +33,7 @@ use n2n\persistence\meta\structure\StringColumn;
 use n2n\util\type\attrs\LenientAttributeReader;
 use rocket\impl\ei\component\prop\meta\config\AddonConfig;
 
-class AlphanumericEiPropConfigurator extends AdaptableEiPropConfigurator {
+class AlphanumericConfig extends EiPropConfiguratorAdaption {
 	const OPTION_MINLENGTH_KEY = 'minlength';
 	const OPTION_MAXLENGTH_KEY = 'maxlength';
 	
@@ -43,11 +43,11 @@ class AlphanumericEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$this->autoRegister($alphanumericEiProp);
 	}
 	
-	public function initAutoEiPropAttributes(N2nContext $n2nContext, Column $column = null) {
-		parent::initAutoEiPropAttributes($n2nContext, $column);
+	public function initAutoEiPropDataSet(N2nContext $n2nContext, Column $column = null) {
+		parent::initAutoEiPropDataSet($n2nContext, $column);
 		
 		if ($column instanceof StringColumn) {
-			$this->attributes->set(self::OPTION_MAXLENGTH_KEY, $column->getLength());
+			$this->dataSet->set(self::OPTION_MAXLENGTH_KEY, $column->getLength());
 		}
 	}
 	
@@ -56,15 +56,15 @@ class AlphanumericEiPropConfigurator extends AdaptableEiPropConfigurator {
 		
 		IllegalStateException::assertTrue($this->eiComponent instanceof AlphanumericEiProp);
 		
-		if ($this->attributes->contains(self::OPTION_MAXLENGTH_KEY)) {
-			$this->eiComponent->setMaxlength($this->attributes->optInt(self::OPTION_MAXLENGTH_KEY, null));
+		if ($this->dataSet->contains(self::OPTION_MAXLENGTH_KEY)) {
+			$this->eiComponent->setMaxlength($this->dataSet->optInt(self::OPTION_MAXLENGTH_KEY, null));
 		}
 		
-		if ($this->attributes->contains(self::OPTION_MINLENGTH_KEY)) {
-			$this->eiComponent->setMinlength($this->attributes->optInt(self::OPTION_MINLENGTH_KEY, null));
+		if ($this->dataSet->contains(self::OPTION_MINLENGTH_KEY)) {
+			$this->eiComponent->setMinlength($this->dataSet->optInt(self::OPTION_MINLENGTH_KEY, null));
 		}
 		
-		$this->eiComponent->setAddonConfig(AddonConfig::setup($this->attributes));
+		$this->eiComponent->setAddonConfig(AddonConfig::setup($this->dataSet));
 	}
 	
 	/**
@@ -75,7 +75,7 @@ class AlphanumericEiPropConfigurator extends AdaptableEiPropConfigurator {
 	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
 		$magDispatchable = parent::createMagDispatchable($n2nContext);
 
-		$lar = new LenientAttributeReader($this->attributes);
+		$lar = new LenientAttributeReader($this->dataSet);
 		
 		IllegalStateException::assertTrue($this->eiComponent instanceof AlphanumericEiProp);
 		
@@ -85,7 +85,7 @@ class AlphanumericEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$magDispatchable->getMagCollection()->addMag(self::OPTION_MAXLENGTH_KEY, new NumericMag('Maxlength',
 				$lar->getInt(self::OPTION_MAXLENGTH_KEY, $this->eiComponent->getMaxlength())));
 		
-		AddonConfig::mag($magDispatchable->getMagCollection(), $this->attributes);
+		AddonConfig::mag($magDispatchable->getMagCollection(), $this->dataSet);
 		
 		return $magDispatchable;
 	}
@@ -95,13 +95,13 @@ class AlphanumericEiPropConfigurator extends AdaptableEiPropConfigurator {
 		
 		$magCollection = $magDispatchable->getMagCollection();
 		
-		$this->attributes->set(self::OPTION_MINLENGTH_KEY,
+		$this->dataSet->set(self::OPTION_MINLENGTH_KEY,
 				$magCollection->getMagByPropertyName(self::OPTION_MINLENGTH_KEY)->getValue());
 		
-		$this->attributes->set(self::OPTION_MAXLENGTH_KEY,
+		$this->dataSet->set(self::OPTION_MAXLENGTH_KEY,
 				$magCollection->getMagByPropertyName(self::OPTION_MAXLENGTH_KEY)->getValue());
 		
-		AddonConfig::save($magDispatchable->getMagCollection(), $this->attributes);
+		AddonConfig::save($magDispatchable->getMagCollection(), $this->dataSet);
 	}
 	
 }

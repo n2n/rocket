@@ -36,9 +36,9 @@ class PasswordEiPropConfigurator extends AlphanumericEiPropConfigurator {
 
 		$eiComponent = $this->eiComponent;
 		IllegalStateException::assertTrue($eiComponent instanceof PasswordEiProp);
-		if ($this->attributes->contains(self::OPTION_ALGORITHM_KEY)) {
+		if ($this->dataSet->contains(self::OPTION_ALGORITHM_KEY)) {
 			try {
-				$eiComponent->setAlgorithm($this->attributes->get(self::OPTION_ALGORITHM_KEY));
+				$eiComponent->setAlgorithm($this->dataSet->get(self::OPTION_ALGORITHM_KEY));
 			} catch (\InvalidArgumentException $e) {
 				$setupProcess->createException('Invalid algorithm defined for PassworEiProp.', $e);
 				return;

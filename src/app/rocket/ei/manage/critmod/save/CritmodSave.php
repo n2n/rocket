@@ -27,7 +27,7 @@ use n2n\reflection\annotation\AnnoInit;
 use n2n\persistence\orm\annotation\AnnoTable;
 use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
 use n2n\util\JsonDecodeFailedException;
-use n2n\util\type\attrs\Attributes;
+use n2n\util\type\attrs\DataSet;
 use rocket\ei\manage\critmod\sort\SortSettingGroup;
 
 class CritmodSave extends ObjectAdapter {
@@ -66,7 +66,7 @@ class CritmodSave extends ObjectAdapter {
 		try {
 			$data = StringUtils::jsonDecode($this->filterDataJson, true);
 		} catch (JsonDecodeFailedException $e) {}
-		return FilterSettingGroup::create(new Attributes($data));
+		return FilterSettingGroup::create(new DataSet($data));
 	}
 	
 	public function writeFilterData(FilterSettingGroup $filterSettingGroup) {
@@ -78,7 +78,7 @@ class CritmodSave extends ObjectAdapter {
 		try {
 			$data = StringUtils::jsonDecode($this->sortDataJson, true);
 		} catch (JsonDecodeFailedException $e) {}
-		return SortSettingGroup::create(new Attributes($data));
+		return SortSettingGroup::create(new DataSet($data));
 	}
 	
 	public function writeSortSettingGroup(SortSettingGroup $sortData) {

@@ -28,7 +28,7 @@ use n2n\web\dispatch\map\InvalidPropertyExpressionException;
 use n2n\web\dispatch\map\PropertyPath;
 use rocket\ei\util\filter\form\FilterPropItemForm;
 use rocket\ei\manage\critmod\filter\data\FilterSetting;
-use n2n\util\type\attrs\Attributes;
+use n2n\util\type\attrs\DataSet;
 use rocket\ei\util\filter\form\FilterGroupForm;
 use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
 use n2n\util\uri\Url;
@@ -66,7 +66,7 @@ class FramedFilterPropController extends ControllerAdapter  {
 	
 		$filterPropItemForm = null;
 		try {
-			$filterPropItemForm = new FilterPropItemForm(new FilterSetting($filterPropId, new Attributes()),
+			$filterPropItemForm = new FilterPropItemForm(new FilterSetting($filterPropId, new DataSet()),
 					$filterDefinition);
 		} catch (UnknownFilterPropException $e) {
 			throw new PageNotFoundException(null, 0, $e);

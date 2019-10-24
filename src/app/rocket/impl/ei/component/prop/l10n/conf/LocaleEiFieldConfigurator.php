@@ -47,13 +47,13 @@
 // 		$n2nLocaleEiProp = $this->eiComponent;
 // 		IllegalStateException::assertTrue($n2nLocaleEiProp instanceof N2nLocaleEiProp);
 		
-// 		$takeN2nLocalesFromConfig = $this->attributes->get(self::OPTION_TAKE_LOCALES_FROM_CONFIG_KEY, false, true);
+// 		$takeN2nLocalesFromConfig = $this->dataSet->get(self::OPTION_TAKE_LOCALES_FROM_CONFIG_KEY, false, true);
 		
 // 		if ($takeN2nLocalesFromConfig) {
 // 			$n2nLocaleEiProp->setN2nLocales($setupProcess->getN2nContext()->getContextN2nLocales());
 // 		} else {
 // 			$customN2nLocales = array();
-// 			foreach ($this->attributes->get(self::OPTION_CUSTOM_LOCALE_ALIAS_KEY,
+// 			foreach ($this->dataSet->get(self::OPTION_CUSTOM_LOCALE_ALIAS_KEY,
 // 					true, array()) as $n2nLocaleAlias) {
 // 				$customN2nLocales[$n2nLocaleAlias] = $setupProcess->getN2nContext()
 // 						->getContextN2nLocaleByAlias($n2nLocaleAlias);

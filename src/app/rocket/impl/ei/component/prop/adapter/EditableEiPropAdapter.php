@@ -26,7 +26,6 @@ use rocket\ei\component\prop\PrivilegedEiProp;
 use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
-use rocket\ei\manage\security\privilege\EiPropPrivilege;
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldEditable;
 use rocket\impl\ei\component\prop\adapter\config\EditConfig;
@@ -41,7 +40,7 @@ abstract class EditableEiPropAdapter extends DisplayableEiPropAdapter implements
 	/**
 	 * @return \rocket\impl\ei\component\prop\adapter\config\EditConfig
 	 */
-	public function getEditConfig() {
+	protected function getEditConfig() {
 		if ($this->editConfig === null) {
 			$this->editConfig = new EditConfig();
 		}
@@ -50,10 +49,11 @@ abstract class EditableEiPropAdapter extends DisplayableEiPropAdapter implements
 	}
 
 	public function createEiPropConfigurator(): EiPropConfigurator {
-		$eiPropConfigurator = parent::createEiPropConfigurator();
-		IllegalStateException::assertTrue($eiPropConfigurator instanceof AdaptableEiPropConfigurator);
-		$eiPropConfigurator->registerEditConfig($this->getEditConfig());
-		return $eiPropConfigurator;
+		$configurator = parent::createEiPropConfigurator();
+		IllegalStateException::assertTrue($configurator instanceof AdaptableEiPropConfigurator);
+		$configurator->addAdaption($this->getEditConfig());
+		$this->adaptEiPropConfigurator($configurator);
+		return $configurator;
 	}
 
 	public function buildGuiProp(Eiu $eiu): ?GuiProp {
@@ -64,27 +64,27 @@ abstract class EditableEiPropAdapter extends DisplayableEiPropAdapter implements
 		return new GuiFieldProxy($eiu, $this, $this);
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function isReadOnly(Eiu $eiu): bool {
-		if (!WritableEiPropPrivilege::checkForWriteAccess($eiu->entry()->access()->getEiFieldAccess($this))) {
-			return true;
-		}
+// 	/**
+// 	 * @return bool
+// 	 */
+// 	public function isReadOnly(Eiu $eiu): bool {
+// 		if (!WritableEiPropPrivilege::checkForWriteAccess($eiu->entry()->access()->getEiFieldAccess($this))) {
+// 			return true;
+// 		}
 
-		if ($eiu->entry()->isDraft() || (!$eiu->entry()->isNew()
-				&& $this->editConfig->isConstant())) {
-			return true;
-		}
+// 		if ($eiu->entry()->isDraft() || (!$eiu->entry()->isNew()
+// 				&& $this->editConfig->isConstant())) {
+// 			return true;
+// 		}
 
-		return $this->editConfig->isReadOnly();
-	}
+// 		return $this->editConfig->isReadOnly();
+// 	}
 
-	public function isMandatory(Eiu $eiu): bool {
-		return $this->editConfig->isMandatory();
-	}
+// 	public function isMandatory(Eiu $eiu): bool {
+// 		return $this->editConfig->isMandatory();
+// 	}
 
-	public function createEiPropPrivilege(Eiu $eiu): EiPropPrivilege {
-		return new WritableEiPropPrivilege();
-	}
+// 	public function createEiPropPrivilege(Eiu $eiu): EiPropPrivilege {
+// 		return new WritableEiPropPrivilege();
+// 	}
 }

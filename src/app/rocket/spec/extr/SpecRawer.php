@@ -21,17 +21,17 @@
  */
 namespace rocket\spec\extr;
 
-use n2n\util\type\attrs\Attributes;
+use n2n\util\type\attrs\DataSet;
 use n2n\util\type\ArgUtils;
 use rocket\ei\mask\model\DisplayScheme;
 use rocket\ei\mask\model\DisplayStructure;
 use n2n\util\type\CastUtils;
 
 class SpecRawer {
-	private $attributes;
+	private $dataSet;
 	
-	public function __construct(Attributes $attributes) {
-		$this->attributes = $attributes;
+	public function __construct(DataSet $dataSet) {
+		$this->dataSet = $dataSet;
 	}
 	// PUT
 	
@@ -49,7 +49,7 @@ class SpecRawer {
 			$specsRawData[$customTypeExtraction->getId()] = $this->buildCustomTypeExtractionRawData($customTypeExtraction);
 		}
 		
-		$this->attributes->set(RawDef::TYPES_KEY, $specsRawData);
+		$this->dataSet->set(RawDef::TYPES_KEY, $specsRawData);
 	}
 	
 	private function buildCustomTypeExtractionRawData(CustomTypeExtraction $customTypeExtraction) {
@@ -90,7 +90,7 @@ class SpecRawer {
 			$rawData[$eiTypeId] = $eiMasksRawData;
 		}
 		
-		$this->attributes->set(RawDef::EI_TYPE_EXTENSIONS_KEY, $rawData);
+		$this->dataSet->set(RawDef::EI_TYPE_EXTENSIONS_KEY, $rawData);
 	}
 	
 	public function rawEiModificatorExtractionGroups(array $eiModificatorExtractionGroups) {
@@ -113,7 +113,7 @@ class SpecRawer {
 			}
 		}
 		
-		$this->attributes->set(RawDef::EI_MODIFICATORS_KEY, $rawData);
+		$this->dataSet->set(RawDef::EI_MODIFICATORS_KEY, $rawData);
 	}
 	
 	private function buildEiTypeExtensionExtractionRawData(EiTypeExtensionExtraction $eiTypeExtensionExtraction) {
@@ -259,7 +259,7 @@ class SpecRawer {
 			$launchPadsRawData[(string) $launchPadExtraction->getTypePath()] = $this->buildLaunchPadExtractionRawData($launchPadExtraction);
 		}
 	
-		$this->attributes->set(RawDef::LAUNCH_PADS_KEY, $launchPadsRawData);
+		$this->dataSet->set(RawDef::LAUNCH_PADS_KEY, $launchPadsRawData);
 	}
 	
 

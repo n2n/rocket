@@ -8,21 +8,21 @@ use rocket\si\meta\SiStructureType;
 class DisplayDefinition {
 	private $siStructureType;
 	private $defaultDisplayed;
-	private $label;
-	private $helpText;
+	private $overwriteLabel;
+	private $overwriteHelpText;
 	
 	/**
 	 * @param Lstr $labelLstr
 	 * @param string $siStructureType
 	 * @param bool $defaultDisplayed
 	 */
-	public function __construct(string $siStructureType, bool $defaultDisplayed, string $label, string $helpText = null) {
+	public function __construct(string $siStructureType, bool $defaultDisplayed, string $overwriteLabel = null, string $overwriteHelpText = null) {
 		ArgUtils::valEnum($siStructureType, SiStructureType::all());
 		
 		$this->siStructureType = $siStructureType;
 		$this->defaultDisplayed = $defaultDisplayed;
-		$this->label = $label;
-		$this->helpText = $helpText;
+		$this->overwriteLabel = $overwriteLabel;
+		$this->overwriteHelpText = $overwriteHelpText;
 	}
 	
 	/**
@@ -39,12 +39,12 @@ class DisplayDefinition {
 		return $this->defaultDisplayed;
 	}
 	
-	public function getLabel() {
-		return $this->label;
+	public function getOverwriteLabel() {
+		return $this->overwriteLabel;
 	}
 	
-	public function getHelpText() {
-		return $this->helpText;
+	public function getOverwriteHelpText() {
+		return $this->overwriteHelpText;
 	}
 }
 

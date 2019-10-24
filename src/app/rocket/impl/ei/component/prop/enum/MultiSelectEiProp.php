@@ -96,7 +96,7 @@ class MultiSelectEiProp extends DraftablePropertyEiPropAdapter {
 	
 	public function getOptions() {
 		$options = array();
-		foreach ((array) $this->attributes->get(self::OPTION_OPTIONS) as $attrs) {
+		foreach ((array) $this->dataSet->get(self::OPTION_OPTIONS) as $attrs) {
 			if (isset($attrs[self::OPTION_OPTIONS_VALUE]) && isset($attrs[self::OPTION_OPTIONS_LABEL])) {
 				$options[$attrs[self::OPTION_OPTIONS_VALUE]] = $attrs[self::OPTION_OPTIONS_LABEL];
 			}
@@ -105,11 +105,11 @@ class MultiSelectEiProp extends DraftablePropertyEiPropAdapter {
 	}
 	
 	public function getMin() {
-		return $this->attributes->get(self::OPTION_MIN_KEY, 0);
+		return $this->dataSet->get(self::OPTION_MIN_KEY, 0);
 	}
 	
 	public function getMax() {
-		return $this->attributes->get(self::OPTION_MAX_KEY);
+		return $this->dataSet->get(self::OPTION_MAX_KEY);
 	}
 	
 	public function isMandatory(Eiu $eiu) {

@@ -22,7 +22,7 @@
 namespace rocket\ei\manage\critmod\filter\data;
 
 use n2n\util\col\GenericArrayObject;
-use n2n\util\type\attrs\Attributes;
+use n2n\util\type\attrs\DataSet;
 use n2n\util\type\TypeConstraint;
 
 class FilterSettingGroup {
@@ -76,20 +76,20 @@ class FilterSettingGroup {
 				self::ATTR_FILTER_GROUPS_KEY => $filterGroupsAttrs);
 	}
 
-	public static function create(Attributes $attributes): FilterSettingGroup {
+	public static function create(DataSet $dataSet): FilterSettingGroup {
 		$fgd = new FilterSettingGroup();
-		$fgd->setAndUsed($attributes->optBool(self::ATTR_USE_AND_KEY, true));
+		$fgd->setAndUsed($dataSet->optBool(self::ATTR_USE_AND_KEY, true));
 
 		$settings = $fgd->getFilterSettings();
-		foreach ($attributes->optArray(self::ATTR_FILTER_ITEMS_KEY, 
+		foreach ($dataSet->optArray(self::ATTR_FILTER_ITEMS_KEY, 
 				TypeConstraint::createArrayLike('array')) as $filterItemAttrs) {
-			$settings->append(FilterSetting::create(new Attributes($filterItemAttrs)));
+			$settings->append(FilterSetting::create(new DataSet($filterItemAttrs)));
 		}
 		
 		$settingGroups = $fgd->getFilterSettingGroups();
-		foreach ($attributes->optArray(self::ATTR_FILTER_GROUPS_KEY, 
+		foreach ($dataSet->optArray(self::ATTR_FILTER_GROUPS_KEY, 
 				TypeConstraint::createArrayLike('array')) as $filterGroupAttrs) {
-			$settingGroups->append(FilterSettingGroup::create(new Attributes($filterGroupAttrs)));
+			$settingGroups->append(FilterSettingGroup::create(new DataSet($filterGroupAttrs)));
 		}
 
 		return $fgd;

@@ -82,7 +82,7 @@ class EiGrantPrivilegeForm implements Dispatchable {
 		$this->eiuPrivilegeForm = $eiuPrivilegeForm;
 	
 		if ($eiuPrivilegeForm === null) {
-			$this->eiPrivilegesGrant->writeEiPrivilegeAttributes(new PrivilegeSetting());
+			$this->eiPrivilegesGrant->writeEiPrivilegeDataSet(new PrivilegeSetting());
 			return;
 		}
 		

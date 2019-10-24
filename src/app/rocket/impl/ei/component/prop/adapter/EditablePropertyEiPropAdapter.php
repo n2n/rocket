@@ -22,18 +22,13 @@
 namespace rocket\impl\ei\component\prop\adapter;
 
 use n2n\util\type\TypeConstraint;
-use n2n\util\type\attrs\Attributes;
-use n2n\impl\web\dispatch\mag\model\BoolMag;
 use rocket\impl\ei\component\prop\adapter\entry\Writable;
 use n2n\util\ex\IllegalStateException;
-use n2n\web\dispatch\mag\Mag;
 use rocket\ei\manage\entry\EiField;
 use rocket\impl\ei\component\prop\adapter\entry\SimpleEiField;
 use rocket\ei\manage\EiObject;
 use rocket\ei\component\prop\PrivilegedEiProp;
-use n2n\util\type\ArgUtils;
 use rocket\core\model\Rocket;
-use n2n\util\type\attrs\AttributesException;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\entry\EiFieldValidationResult;
 use rocket\impl\ei\component\prop\adapter\entry\Validatable;
@@ -41,18 +36,16 @@ use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\impl\ei\component\prop\adapter\entry\Copyable;
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\manage\gui\GuiProp;
-use n2n\web\dispatch\mag\MagCollection;
 use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldEditable;
 use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use n2n\l10n\Message;
-use rocket\impl\ei\component\prop\adapter\gui\GuiFieldProxy;
 use rocket\si\content\SiField;
-use rocket\impl\ei\component\prop\adapter\gui\GuiPropProxy;
+use rocket\impl\ei\component\prop\adapter\gui\GuiFields;
 
 abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAdapter implements StatelessGuiFieldEditable, Writable, 
 		PrivilegedEiProp, Validatable, Copyable {
-	protected $editConfig;
+	private $editConfig;
 
 	function isPrivileged(): bool {
 		return true;
@@ -61,7 +54,7 @@ abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAd
 	/**
 	 * @return \rocket\impl\ei\component\prop\adapter\config\EditConfig
 	 */
-	public function getEditConfig() {
+	protected function getEditConfig() {
 		if ($this->editConfig === null) {
 			$this->editConfig = new EditConfig();
 		}
@@ -70,10 +63,11 @@ abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAd
 	}
 
 	public function createEiPropConfigurator(): EiPropConfigurator {
-		$eiPropConfigurator = parent::createEiPropConfigurator();
-		IllegalStateException::assertTrue($eiPropConfigurator instanceof AdaptableEiPropConfigurator);
-		$eiPropConfigurator->registerEditConfig($this->getEditConfig());
-		return $eiPropConfigurator;
+		$configurator = parent::createEiPropConfigurator();
+		IllegalStateException::assertTrue($configurator instanceof AdaptableEiPropConfigurator);
+		$configurator->addAdaption($this->getEditConfig());
+		$this->adaptEiPropConfigurator($configurator);
+		return $configurator;
 	}
 		
 // 	protected function checkForWriteAccess(EiEntry $eiEntry) {
@@ -82,7 +76,7 @@ abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAd
 // // 		if ($ssPrivilegeConstraint === null) return true;
 		
 // // 		foreach ($ssPrivilegeConstraint->getAccessGrants() as $accessGrant) {
-// // 			if (!$accessGrant->isRestricted() || $accessGrant->getAttributesById($this->getId())
+// // 			if (!$accessGrant->isRestricted() || $accessGrant->getDataSetById($this->getId())
 // // 					->get(self::ACCESS_WRITING_ALLOWED_KEY, self::ACCESS_WRITING_ALLOWED_DEFAULT)) return true;			
 // // 		}
 		
@@ -141,33 +135,33 @@ abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAd
 	 * @see \rocket\impl\ei\component\prop\adapter\PropertyDisplayableEiPropAdapter::buildGuiField()
 	 */
 	public function buildGuiField(Eiu $eiu): ?GuiField {
-		return new GuiFieldProxy($eiu, $this, $this);
+		return GuiFields::stateless($eiu, $this, $this);
 	}
 	
-	/**
-	 * @return bool
-	 */
-	public function isReadOnly(Eiu $eiu): bool {
-		if ($eiu->field()->isWritable()) {
-			return true;
-		}
+// 	/**
+// 	 * @return bool
+// 	 */
+// 	public function isReadOnly(Eiu $eiu): bool {
+// 		if ($eiu->field()->isWritable()) {
+// 			return true;
+// 		}
 		
-		if ($eiu->entry()->isDraft() || (!$eiu->entry()->isNew() 
-				&& $this->getEditConfig()->isConstant())) {
-			return true;
-		}
+// 		if ($eiu->entry()->isDraft() || (!$eiu->entry()->isNew() 
+// 				&& $this->getEditConfig()->isConstant())) {
+// 			return true;
+// 		}
 		
-		return $this->getEditConfig()->isReadOnly();
-	}
+// 		return $this->getEditConfig()->isReadOnly();
+// 	}
 	
-	public function isMandatory(Eiu $eiu): bool {
-		 return $this->getEditConfig()->isMandatory();
-	}
+// 	public function isMandatory(Eiu $eiu): bool {
+// 		 return $this->getEditConfig()->isMandatory();
+// 	}
 	
 
-// 	public function isWritingAllowed(Attributes $accessAttributes, EiFrame $eiFrame, 
+// 	public function isWritingAllowed(DataSet $accessDataSet, EiFrame $eiFrame, 
 // 			EiObject $eiObject = null) {
-// 		return (boolean) $accessAttributes->get('writingAllowed');
+// 		return (boolean) $accessDataSet->get('writingAllowed');
 // 	}
 	
 	public function loadSiField(Eiu $eiu, SiField $siField) {

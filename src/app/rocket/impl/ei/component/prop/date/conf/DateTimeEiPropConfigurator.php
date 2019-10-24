@@ -54,7 +54,7 @@ class DateTimeEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$magDispatchable = parent::createMagDispatchable($n2nContext);
 		$magCollection = $magDispatchable->getMagCollection();
 		
-		$lar = new LenientAttributeReader($this->attributes);
+		$lar = new LenientAttributeReader($this->dataSet);
 		
 		$magCollection->addMag(self::MAG_DATE_STYLE_KEY, new EnumMag('Date Style', $styleOptions, 
 				$lar->getEnum(self::MAG_DATE_STYLE_KEY, $styles, $this->dateTimeEiProp->getDateStyle()), true));
@@ -68,17 +68,17 @@ class DateTimeEiPropConfigurator extends AdaptableEiPropConfigurator {
 		
 		CastUtils::assertTrue($this->eiComponent instanceof DateTimeEiProp);
 		
-		if ($this->attributes->contains(self::MAG_DATE_STYLE_KEY)) {
+		if ($this->dataSet->contains(self::MAG_DATE_STYLE_KEY)) {
 			try {
-				$this->eiComponent->setDateStyle($this->attributes->get(self::MAG_DATE_STYLE_KEY));
+				$this->eiComponent->setDateStyle($this->dataSet->get(self::MAG_DATE_STYLE_KEY));
 			} catch (\InvalidArgumentException $e) {
 				throw $eiSetupProcess->createException('Invalid date style', $e);
 			}
 		}
 		
-		if ($this->attributes->contains(self::MAG_TIME_STYLE_KEY)) {
+		if ($this->dataSet->contains(self::MAG_TIME_STYLE_KEY)) {
 			try {
-				$this->eiComponent->setTimeStyle($this->attributes->get(self::MAG_TIME_STYLE_KEY));
+				$this->eiComponent->setTimeStyle($this->dataSet->get(self::MAG_TIME_STYLE_KEY));
 			} catch (\InvalidArgumentException $e) {
 				throw $eiSetupProcess->createException('Invalid time style', $e);
 			}
@@ -88,7 +88,7 @@ class DateTimeEiPropConfigurator extends AdaptableEiPropConfigurator {
 	public function saveMagDispatchable(MagDispatchable $magDispatchable, N2nContext $n2nContext) {
 		parent::saveMagDispatchable($magDispatchable, $n2nContext);
 		
-		$this->attributes->appendAll($magDispatchable->getMagCollection()->readValues(
+		$this->dataSet->appendAll($magDispatchable->getMagCollection()->readValues(
 				array(self::MAG_DATE_STYLE_KEY, self::MAG_TIME_STYLE_KEY), true), true);
 	}
 }

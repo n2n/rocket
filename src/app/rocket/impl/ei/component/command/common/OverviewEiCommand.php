@@ -84,20 +84,20 @@ class ListEiConfigurator extends EiConfiguratorAdapter {
 		IllegalStateException::assertTrue($eiComponent instanceof OverviewEiCommand);
 		
 		$magCollection = new MagCollection();
-		$magCollection->addMag(self::OPTION_PAGE_SIZE_KEY, new NumericMag('Num Entries', $this->getAttributes()->get(
+		$magCollection->addMag(self::OPTION_PAGE_SIZE_KEY, new NumericMag('Num Entries', $this->getDataSet()->get(
 						self::OPTION_PAGE_SIZE_KEY, false, $eiComponent->getPageSize())));
 		return new MagForm($magCollection);
 	}
 	
 	public function saveMagDispatchable(MagDispatchable $magDispatchable, N2nContext $n2nContext) {
-		$this->attributes->set(self::OPTION_PAGE_SIZE_KEY, $magDispatchable->getPropertyValue(self::OPTION_PAGE_SIZE_KEY));
+		$this->dataSet->set(self::OPTION_PAGE_SIZE_KEY, $magDispatchable->getPropertyValue(self::OPTION_PAGE_SIZE_KEY));
 	}
 	
 	public function setup(EiSetup $eiSetupProcess) {
 		$eiComponent = $this->eiComponent;
 	    CastUtils::assertTrue($eiComponent instanceof OverviewEiCommand);
 
-	    $eiComponent->setPageSize($this->attributes->optInt(self::OPTION_PAGE_SIZE_KEY,  
+	    $eiComponent->setPageSize($this->dataSet->optInt(self::OPTION_PAGE_SIZE_KEY,  
 	           $eiComponent->getPageSize()));
 	}
 }

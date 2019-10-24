@@ -25,8 +25,6 @@ class BooleanEiPropConfigurator extends AdaptableEiPropConfigurator {
 		parent::__construct($eiComponent);
 		
 		$this->autoRegister();
-		
-		$this->addMandatory = false;
 	}
 	
 	private static $booleanNeedles = ['Available', 'Enabled'];
@@ -51,7 +49,7 @@ class BooleanEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$eiComponent = $this->eiComponent;
 		CastUtils::assertTrue($eiComponent instanceof BooleanEiProp);
 		
-		$lar = new LenientAttributeReader($this->attributes);
+		$lar = new LenientAttributeReader($this->dataSet);
 		
 		$magDispatchable = parent::createMagDispatchable($n2nContext);
 		$magCollection = $magDispatchable->getMagCollection();
@@ -92,8 +90,8 @@ class BooleanEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$onGuiFieldPathStrs = $magDispatchable->getPropertyValue(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY);
 		$offGuiFieldPathsStrs = $magDispatchable->getPropertyValue(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY);
 		
-		$this->attributes->set(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY, $onGuiFieldPathStrs);
-		$this->attributes->set(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY, $offGuiFieldPathsStrs);
+		$this->dataSet->set(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY, $onGuiFieldPathStrs);
+		$this->dataSet->set(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY, $offGuiFieldPathsStrs);
 	}
 	
 	public function setup(EiSetup $eiSetupProcess) {
@@ -102,8 +100,8 @@ class BooleanEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$eiComponent = $this->eiComponent;
 		CastUtils::assertTrue($eiComponent instanceof BooleanEiProp);
 		
-		if ($this->attributes->contains(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY)) {
-			$onGuiFieldPathStrs = $this->attributes->getArray(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY, false, array(), 
+		if ($this->dataSet->contains(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY)) {
+			$onGuiFieldPathStrs = $this->dataSet->getArray(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY, false, array(), 
 					TypeConstraint::createSimple('scalar'));
 			$onGuiFieldPaths = array();
 			foreach ($onGuiFieldPathStrs as $eiPropPathStr) {
@@ -113,8 +111,8 @@ class BooleanEiPropConfigurator extends AdaptableEiPropConfigurator {
 			$eiComponent->setOnAssociatedGuiFieldPaths($onGuiFieldPaths);
 		}
 		
-		if ($this->attributes->contains(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY)) {
-			$offGuiFieldPathStrs = $this->attributes->getArray(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY, false, array(),
+		if ($this->dataSet->contains(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY)) {
+			$offGuiFieldPathStrs = $this->dataSet->getArray(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY, false, array(),
 					TypeConstraint::createSimple('scalar'));
 			$offGuiFieldPaths = array();
 			foreach ($offGuiFieldPathStrs as $eiPropPathStr) {

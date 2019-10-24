@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component;
 
 use rocket\ei\component\EiConfigurator;
-use n2n\util\type\attrs\Attributes;
+use n2n\util\type\attrs\DataSet;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\core\container\N2nContext;
 use rocket\ei\component\EiSetup;
@@ -34,12 +34,12 @@ use n2n\util\type\TypeUtils;
 
 abstract class EiConfiguratorAdapter implements EiConfigurator {
 	protected $eiComponent;
-	protected $attributes;
+	protected $dataSet;
 	protected $reseted = false;
 	
 	public function __construct(EiComponent $eiComponent) {
 		$this->eiComponent = $eiComponent;
-		$this->attributes = new Attributes();
+		$this->dataSet = new DataSet();
 	}
 	
 // 	/* (non-PHPdoc)
@@ -54,14 +54,14 @@ abstract class EiConfiguratorAdapter implements EiConfigurator {
 	}
 	
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\component\EiConfigurator::getAttributes()
+	 * @see \rocket\ei\component\EiConfigurator::getDataSet()
 	 */
-	public function getAttributes(): Attributes {
-		return $this->attributes;
+	public function getDataSet(): DataSet {
+		return $this->dataSet;
 	}
 	
-	public function setAttributes(Attributes $attributes) {
-		$this->attributes = $attributes;
+	public function setDataSet(DataSet $dataSet) {
+		$this->dataSet = $dataSet;
 	}
 
 	/* (non-PHPdoc)
@@ -119,12 +119,12 @@ abstract class EiConfiguratorAdapter implements EiConfigurator {
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * <p>Overwrite this method if you have custom attributes to save. If you call this method it will overwrite 
-	 * the current attributes Properties with a new empty {@see Attributes} object</p
+	 * <p>Overwrite this method if you have custom dataSet to save. If you call this method it will overwrite 
+	 * the current dataSet Properties with a new empty {@see DataSet} object</p
 	 * 
 	 * @see \rocket\ei\component\EiConfigurator::saveMagDispatchable()
 	 */
 	public function saveMagDispatchable(MagDispatchable $magDispatchable, N2nContext $n2nContext) {
-		$this->attributes = new Attributes();
+		$this->dataSet = new DataSet();
 	}
 }

@@ -83,10 +83,10 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 // 		$this->displayInOverViewDefault = $displayInOverViewDefault;
 // 	}
 	
-	public function initAutoEiPropAttributes(N2nContext $n2nContext, Column $column = null) {
-		parent::initAutoEiPropAttributes($n2nContext, $column);
+	public function initAutoEiPropDataSet(N2nContext $n2nContext, Column $column = null) {
+		parent::initAutoEiPropDataSet($n2nContext, $column);
 		
-		$this->attributes->set(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, $this->displayInOverViewDefault);
+		$this->dataSet->set(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, $this->displayInOverViewDefault);
 	}
 	
 	public function saveMagDispatchable(MagDispatchable $magDispatchable, N2nContext $n2nContext) {
@@ -94,7 +94,7 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		
 		$magCollection = $magDispatchable->getMagCollection();
 		
-		$this->attributes->appendAll($magCollection->readValues(array(self::ATTR_TARGET_EXTENSIONS_KEY,
+		$this->dataSet->appendAll($magCollection->readValues(array(self::ATTR_TARGET_EXTENSIONS_KEY,
 				self::ATTR_MIN_KEY, self::ATTR_MAX_KEY, self::ATTR_REMOVABLE_KEY, 
 				self::ATTR_TARGET_REMOVAL_STRATEGY_KEY, self::ATTR_TARGET_ORDER_EI_PROP_PATH_KEY,
 				self::ATTR_ORPHANS_ALLOWED_KEY, self::ATTR_EMBEDDED_ADD_KEY, self::ATTR_FILTERED_KEY, 
@@ -109,7 +109,7 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		
 		$eiu = new Eiu($n2nContext);
 		
-		$lar = new LenientAttributeReader($this->attributes);
+		$lar = new LenientAttributeReader($this->dataSet);
 		
 		$targetClass = $this->relationModel->getRelationEntityProperty()->getTargetEntityModel()->getClass();
 		$targetEiuType = $eiu->context()->type($targetClass);
@@ -176,11 +176,11 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$targetClass = $this->relationModel->getRelationEntityProperty()->getTargetEntityModel()->getClass();
 		$targetEiuType = $eiu->context()->type($targetClass);
 		
-		if (null !== ($teArr = $this->attributes->optScalarArray('targetExtensions', null, true, true))) {
-			$this->attributes->set(self::ATTR_TARGET_EXTENSION_ID_KEY, ArrayUtils::current($teArr));
+		if (null !== ($teArr = $this->dataSet->optScalarArray('targetExtensions', null, true, true))) {
+			$this->dataSet->set(self::ATTR_TARGET_EXTENSION_ID_KEY, ArrayUtils::current($teArr));
 		}
 		
-		$targetExtensionId = $this->attributes->optString(self::ATTR_TARGET_EXTENSION_ID_KEY);
+		$targetExtensionId = $this->dataSet->optString(self::ATTR_TARGET_EXTENSION_ID_KEY);
 		$targetEiuMask = null;
 		if ($targetExtensionId !== null) {
 			$targetEiuMask = $targetEiuType->extensionMask($targetExtensionId, false);
@@ -199,15 +199,15 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		
 				
 		if ($this->relationModel->isTargetMany()) {
-			$this->relationModel->setMin($this->attributes->optInt(self::ATTR_MIN_KEY, 
+			$this->relationModel->setMin($this->dataSet->optInt(self::ATTR_MIN_KEY, 
 					$this->relationModel->getMin(), true));
-			$this->relationModel->setMax($this->attributes->optInt(self::ATTR_MAX_KEY, 
+			$this->relationModel->setMax($this->dataSet->optInt(self::ATTR_MAX_KEY, 
 					$this->relationModel->getMax(), true));
 		}
 		
 		if ($this->relationModel->isEmbedded() && $this->relationModel->isTargetMany()) {
 			$targetOrderEiPropPath = EiPropPath::build(
-					$this->attributes->optString(self::ATTR_TARGET_ORDER_EI_PROP_PATH_KEY));
+					$this->dataSet->optString(self::ATTR_TARGET_ORDER_EI_PROP_PATH_KEY));
 			$targetEiuType->mask()->onEngineReady(function (EiuEngine $eiuEngine) use ($targetOrderEiPropPath) {
 				if ($targetOrderEiPropPath !== null && $eiuEngine->containsScalarEiProperty($targetOrderEiPropPath)) {
 					$this->relationModel->setTargetOrderEiPropPath($targetOrderEiPropPath);
@@ -219,30 +219,30 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 		
 		if ($this->relationModel->isEmbedded()) {
 			$this->relationModel->setOrphansAllowed(
-					$this->attributes->optBool(self::ATTR_ORPHANS_ALLOWED_KEY, 
+					$this->dataSet->optBool(self::ATTR_ORPHANS_ALLOWED_KEY, 
 							$this->relationModel->isOrphansAllowed()));
 			
 			$this->relationModel->setReduced(
-					$this->attributes->optBool(self::ATTR_REDUCED_KEY, $this->relationModel->isReduced()));
+					$this->dataSet->optBool(self::ATTR_REDUCED_KEY, $this->relationModel->isReduced()));
 			
 			
 			$this->relationModel->setRemovable(
-					$this->attributes->optBool(self::ATTR_REMOVABLE_KEY, $this->relationModel->isRemovable()));
+					$this->dataSet->optBool(self::ATTR_REMOVABLE_KEY, $this->relationModel->isRemovable()));
 		}
 		
 // 		if (!$this->relationModel->isSourceMany() && $this->relationModel->isSelect()) {
 // 			$this->relationModel->setFiltered(
-// 					$this->attributes->optBool(self::ATTR_FILTERED_KEY, $this->relationModel->isFiltered()));
+// 					$this->dataSet->optBool(self::ATTR_FILTERED_KEY, $this->relationModel->isFiltered()));
 // 		}
 		
 		if (!$this->relationModel->isEmbedded()) {
 			$this->relationModel->setHiddenIfTargetEmpty(
-					$this->attributes->optBool(self::ATTR_HIDDEN_IF_TARGET_EMPTY_KEY, 
+					$this->dataSet->optBool(self::ATTR_HIDDEN_IF_TARGET_EMPTY_KEY, 
 							$this->relationModel->isHiddenIfTargetEmpty()));
 		}
 		
 		if ($this->relationModel->isMaster()) {
-			$strategy = $this->attributes->optEnum(self::ATTR_TARGET_REMOVAL_STRATEGY_KEY, 
+			$strategy = $this->dataSet->optEnum(self::ATTR_TARGET_REMOVAL_STRATEGY_KEY, 
 					RelationVetoableActionListener::getStrategies(),  
 					RelationVetoableActionListener::STRATEGY_PREVENT, false);
 			

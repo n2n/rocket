@@ -21,11 +21,11 @@
  */
 namespace rocket\core\model\launch;
 
-use n2n\util\type\attrs\Attributes;
+use n2n\util\type\attrs\DataSet;
 use n2n\config\source\WritableConfigSource;
 use n2n\util\type\TypeConstraint;
 use n2n\util\type\ArgUtils;
-use n2n\util\type\attrs\AttributesException;
+use n2n\util\type\attrs\DataSetException;
 use n2n\config\InvalidConfigurationException;
 
 class LayoutExtractionManager {
@@ -33,29 +33,29 @@ class LayoutExtractionManager {
 	const MENU_GROUPS_KEY = 'menuGroups';
 	
 	private $writableConfigSource;
-	private $attributes;
+	private $dataSet;
 	
 	public function __construct(WritableConfigSource $writableConfigSource) {
 		$this->writableConfigSource = $writableConfigSource;
-		$this->attributes = new Attributes();
+		$this->dataSet = new DataSet();
 	}
 	
 	public function load() {
-		$this->attributes = new Attributes($this->writableConfigSource->readArray());
+		$this->dataSet = new DataSet($this->writableConfigSource->readArray());
 	}
 	
 	public function flush() {
-		$this->writableConfigSource->writeArray($this->attributes->toArray());
+		$this->writableConfigSource->writeArray($this->dataSet->toArray());
 	}
 	
 	public function clear() {
-		$this->attributes = new Attributes();
+		$this->dataSet = new DataSet();
 	}
 	
 	public function extractStartLaunchPadId() {
 		try {
-			return $this->attributes->optString(self::START_MENU_ITEM_ID_KEY);
-		} catch (AttributesException $e) {
+			return $this->dataSet->optString(self::START_MENU_ITEM_ID_KEY);
+		} catch (DataSetException $e) {
 			throw $this->createDataSourceException($e);
 		}
 	}
@@ -66,7 +66,7 @@ class LayoutExtractionManager {
 	}
 	
 	public function rawStartLaunchPadId(string $startLaunchPadId = null) {
-		$this->attributes->set(self::START_MENU_ITEM_ID_KEY, $startLaunchPadId);
+		$this->dataSet->set(self::START_MENU_ITEM_ID_KEY, $startLaunchPadId);
 	}
 	
 	/**
@@ -75,9 +75,9 @@ class LayoutExtractionManager {
 	public function extractMenuGroups(): array {
 		$menuGroupsRawData = null;
 		try {
-			$menuGroupsRawData = $this->attributes->getArray(self::MENU_GROUPS_KEY, false, array(), 
+			$menuGroupsRawData = $this->dataSet->getArray(self::MENU_GROUPS_KEY, false, array(), 
 					TypeConstraint::createArrayLike('array', false, TypeConstraint::createSimple('string')));
-		} catch (AttributesException $e) {
+		} catch (DataSetException $e) {
 			throw $this->createDataSourceException($e);
 		}
 	
@@ -105,6 +105,6 @@ class LayoutExtractionManager {
 			}
 		}
 		
-		$this->attributes->set(self::MENU_GROUPS_KEY, $menuGroupsRawData);
+		$this->dataSet->set(self::MENU_GROUPS_KEY, $menuGroupsRawData);
 	}
 }

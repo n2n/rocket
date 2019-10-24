@@ -31,9 +31,9 @@ use n2n\core\container\N2nContext;
 class DefaultEiPropConfigurator extends EiConfiguratorAdapter implements EiPropConfigurator {
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\indepenent\EiPropConfigurator::initAutoEiPropAttributes($column)
+	 * @see \rocket\ei\component\prop\indepenent\EiPropConfigurator::initAutoEiPropDataSet($column)
 	 */
-	public function initAutoEiPropAttributes(N2nContext $n2nContext, Column $column = null) {
+	public function initAutoEiPropDataSet(N2nContext $n2nContext, Column $column = null) {
 	}
 
 	public function getPropertyAssignation(): PropertyAssignation {

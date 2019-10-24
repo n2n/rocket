@@ -38,12 +38,12 @@ use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\impl\ei\component\prop\adapter\gui\GuiFieldProxy;
 
 abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter implements StatelessGuiFieldDisplayable, GuiEiProp, GuiProp {
-	protected $displayConfig;
+	private $displayConfig;
 
 	/**
 	 * @return DisplayConfig
 	 */
-	public function getDisplayConfig(): DisplayConfig {
+	protected function getDisplayConfig() {
 		if ($this->displayConfig === null) {
 			$this->displayConfig = new DisplayConfig(ViewMode::all());
 		}
@@ -64,10 +64,11 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 	 * @see \rocket\impl\ei\component\prop\adapter\IndependentEiPropAdapter::createEiPropConfigurator()
 	 */
 	public function createEiPropConfigurator(): EiPropConfigurator {
-		$eiPropConfigurator = parent::createEiPropConfigurator();
-		IllegalStateException::assertTrue($eiPropConfigurator instanceof AdaptableEiPropConfigurator);
-		$eiPropConfigurator->registerDisplayConfig($this->getDisplayConfig());
-		return $eiPropConfigurator;
+		$configurator = parent::createEiPropConfigurator();
+		IllegalStateException::assertTrue($configurator instanceof AdaptableEiPropConfigurator);
+		$configurator->addAdaption($this->getDisplayConfig());
+		$this->adaptEiPropConfigurator($configurator);
+		return $configurator;
 	}
 	
 	/**

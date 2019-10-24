@@ -45,18 +45,18 @@ class NumericEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$this->autoRegister($numericAdapter);
 	}
 	
-	public function initAutoEiPropAttributes(N2nContext $n2nContext, Column $column = null) {
-		parent::initAutoEiPropAttributes($n2nContext, $column);
+	public function initAutoEiPropDataSet(N2nContext $n2nContext, Column $column = null) {
+		parent::initAutoEiPropDataSet($n2nContext, $column);
 		
 		if ($this->isGeneratedId()) {
-			$this->attributes->set(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, false);
-			$this->attributes->set(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY, false);
-			$this->attributes->set(self::ATTR_READ_ONLY_KEY, true);
+			$this->dataSet->set(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, false);
+			$this->dataSet->set(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY, false);
+			$this->dataSet->set(self::ATTR_READ_ONLY_KEY, true);
 		}
 		
 		if ($column instanceof IntegerColumn) {
-			$this->attributes->set(self::OPTION_MIN_VALUE_KEY, $column->getMinValue());
-			$this->attributes->set(self::OPTION_MAX_VALUE_KEY, $column->getMaxValue());
+			$this->dataSet->set(self::OPTION_MIN_VALUE_KEY, $column->getMinValue());
+			$this->dataSet->set(self::OPTION_MAX_VALUE_KEY, $column->getMaxValue());
 		}
 	}
 	
@@ -77,12 +77,12 @@ class NumericEiPropConfigurator extends AdaptableEiPropConfigurator {
 	
 		IllegalStateException::assertTrue($this->eiComponent instanceof NumericEiPropAdapter);
 		
-		if ($this->attributes->contains(self::OPTION_MIN_VALUE_KEY)) {
-			$this->eiComponent->setMinValue($this->attributes->req(self::OPTION_MIN_VALUE_KEY));
+		if ($this->dataSet->contains(self::OPTION_MIN_VALUE_KEY)) {
+			$this->eiComponent->setMinValue($this->dataSet->req(self::OPTION_MIN_VALUE_KEY));
 		}
 		
-		if ($this->attributes->contains(self::OPTION_MAX_VALUE_KEY)) {
-			$this->eiComponent->setMaxValue($this->attributes->req(self::OPTION_MAX_VALUE_KEY));
+		if ($this->dataSet->contains(self::OPTION_MAX_VALUE_KEY)) {
+			$this->eiComponent->setMaxValue($this->dataSet->req(self::OPTION_MAX_VALUE_KEY));
 		}
 	}
 	
@@ -98,7 +98,7 @@ class NumericEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$magDispatchable = parent::createMagDispatchable($n2nContext);
 		$magCollection = $magDispatchable->getMagCollection();
 		
-		$lar = new LenientAttributeReader($this->attributes);
+		$lar = new LenientAttributeReader($this->dataSet);
 		
 		IllegalStateException::assertTrue($this->eiComponent instanceof NumericEiPropAdapter);
 		$magCollection->addMag(self::OPTION_MIN_VALUE_KEY, new NumericMag('Min Value',
@@ -116,12 +116,12 @@ class NumericEiPropConfigurator extends AdaptableEiPropConfigurator {
 		
 		if (null !== ($minValue = $magCollection->getMagByPropertyName(self::OPTION_MIN_VALUE_KEY)
 				->getValue())) {
-			$this->attributes->set(self::OPTION_MIN_VALUE_KEY, $minValue);
+			$this->dataSet->set(self::OPTION_MIN_VALUE_KEY, $minValue);
 		}
 		
 		if (null !== ($maxValue = $magCollection->getMagByPropertyName(self::OPTION_MAX_VALUE_KEY)
 				->getValue())) {
-			$this->attributes->set(self::OPTION_MAX_VALUE_KEY, $maxValue);
+			$this->dataSet->set(self::OPTION_MAX_VALUE_KEY, $maxValue);
 		}
 	}
 	

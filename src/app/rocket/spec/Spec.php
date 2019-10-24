@@ -30,7 +30,7 @@ use rocket\spec\extr\SpecExtractionManager;
 use rocket\core\model\launch\LaunchPad;
 use rocket\core\model\launch\UnknownLaunchPadException;
 use rocket\spec\extr\CustomTypeExtraction;
-use n2n\util\type\attrs\AttributesException;
+use n2n\util\type\attrs\DataSetException;
 use n2n\reflection\property\PropertiesAnalyzer;
 use n2n\reflection\ReflectionException;
 use rocket\ei\component\InvalidEiComponentConfigurationException;
@@ -592,7 +592,7 @@ class EiSetupQueue {
 		try {
 			try {
 				$eiConfigurator->setup($eiSetup);
-			} catch (AttributesException $e) {
+			} catch (DataSetException $e) {
 				throw $eiSetup->createException(null, $e);
 			} catch (\InvalidArgumentException $e) {
 				throw $eiSetup->createException(null, $e);

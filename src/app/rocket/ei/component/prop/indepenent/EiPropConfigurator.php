@@ -28,7 +28,7 @@ use n2n\core\container\N2nContext;
 interface EiPropConfigurator extends EiConfigurator {
 	
 	/**
-	 * This method assigns proper default attributes to the EiPropConfigurator. It gets called when the developer adds 
+	 * This method assigns proper default dataSet to the EiPropConfigurator. It gets called when the developer adds 
 	 * new EiProp of the particular type.
 	 * 
 	 * EiThing is already assigned when this method gets called.
@@ -37,7 +37,7 @@ interface EiPropConfigurator extends EiConfigurator {
 	 *   
 	 * @param Column $column
 	 */
-	public function initAutoEiPropAttributes(N2nContext $n2nContext, Column $column = null);
+	public function initAutoEiPropDataSet(N2nContext $n2nContext, Column $column = null);
 	
 // 	/**
 // 	 * If the particular EiProp is assigned to entity property this method returns its EntityProperty object 

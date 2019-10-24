@@ -58,8 +58,8 @@ class CkeEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$this->autoRegister($ckeEiProp);
 	}
 
-	public function initAutoEiPropAttributes(N2nContext $n2nContext, Column $column = null) {
-		$this->attributes->set(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, false);	
+	public function initAutoEiPropDataSet(N2nContext $n2nContext, Column $column = null) {
+		$this->dataSet->set(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, false);	
 	}
 	
 	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
@@ -69,7 +69,7 @@ class CkeEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$ckeState = $n2nContext->lookup(CkeState::class);
 		CastUtils::assertTrue($ckeState instanceof CkeState);
 		
-		$lar = new LenientAttributeReader($this->attributes);
+		$lar = new LenientAttributeReader($this->dataSet);
 		
 		$magCollection->addMag(self::PROP_MODE_KEY, new EnumMag('Mode',
 				array_combine(CkeEiProp::getModes(), CkeEiProp::getModes()), 
@@ -95,7 +95,7 @@ class CkeEiPropConfigurator extends AdaptableEiPropConfigurator {
 		parent::saveMagDispatchable($magDispatchable, $n2nContext);
 		$magCollection = $magDispatchable->getMagCollection();
 		
-		$this->attributes->appendAll($magCollection->readValues(array(self::PROP_MODE_KEY, 
+		$this->dataSet->appendAll($magCollection->readValues(array(self::PROP_MODE_KEY, 
 				self::PROP_LINK_PROVIDER_LOOKUP_IDS_KEY, self::PROP_CSS_CONFIG_LOOKUP_ID_KEY, 
 				self::PROP_TABLES_SUPPORTED_KEY, self::PROP_BBCODE_KEY), true), true);
 	}
@@ -116,12 +116,12 @@ class CkeEiPropConfigurator extends AdaptableEiPropConfigurator {
 	public function setup(EiSetup $eiSetupProcess) {
 		parent::setup($eiSetupProcess);
 		
-		$this->ckeEiProp->setMode($this->attributes->optEnum(self::PROP_MODE_KEY, CkeEiProp::getModes(), $this->ckeEiProp->getMode(), false));
+		$this->ckeEiProp->setMode($this->dataSet->optEnum(self::PROP_MODE_KEY, CkeEiProp::getModes(), $this->ckeEiProp->getMode(), false));
 		
 		$ckeState = $eiSetupProcess->getN2nContext()->lookup(CkeState::class);
 		CastUtils::assertTrue($ckeState instanceof CkeState);
 		
-		$ckeLinkProviderLookupIds = $this->attributes->getScalarArray(self::PROP_LINK_PROVIDER_LOOKUP_IDS_KEY, false);
+		$ckeLinkProviderLookupIds = $this->dataSet->getScalarArray(self::PROP_LINK_PROVIDER_LOOKUP_IDS_KEY, false);
 		try {
 			$ckeLinkProviders = CkeUtils::lookupCkeLinkProviders($ckeLinkProviderLookupIds, $eiSetupProcess->getN2nContext());
 			foreach ($ckeLinkProviders as $ckeLinkProvider) {
@@ -132,7 +132,7 @@ class CkeEiPropConfigurator extends AdaptableEiPropConfigurator {
 		}
 		$this->ckeEiProp->setCkeLinkProviders($ckeLinkProviders);
 		
-		$ckeCssConfigLookupId = $this->attributes->getString(self::PROP_CSS_CONFIG_LOOKUP_ID_KEY, false, null, true);
+		$ckeCssConfigLookupId = $this->dataSet->getString(self::PROP_CSS_CONFIG_LOOKUP_ID_KEY, false, null, true);
 		try {
 			$ckeCssConfig = CkeUtils::lookupCkeCssConfig($ckeCssConfigLookupId, $eiSetupProcess->getN2nContext());
 			if (null !== $ckeCssConfig) {
@@ -143,10 +143,10 @@ class CkeEiPropConfigurator extends AdaptableEiPropConfigurator {
 		}
 		$this->ckeEiProp->setCkeCssConfig($ckeCssConfig);
 		
-		$this->ckeEiProp->setTableSupported($this->attributes->getBool(self::PROP_TABLES_SUPPORTED_KEY, false,
+		$this->ckeEiProp->setTableSupported($this->dataSet->getBool(self::PROP_TABLES_SUPPORTED_KEY, false,
 				$this->ckeEiProp->isTableSupported()));
 		
-		$this->ckeEiProp->setBbcode($this->attributes->getBool(self::PROP_BBCODE_KEY, false,
+		$this->ckeEiProp->setBbcode($this->dataSet->getBool(self::PROP_BBCODE_KEY, false,
 				$this->ckeEiProp->isBbcode()));
 	}
 	

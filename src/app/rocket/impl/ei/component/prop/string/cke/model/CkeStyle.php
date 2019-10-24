@@ -72,7 +72,7 @@ class CkeStyle {
 		$ret = array('name' => $this->name, 'element' => $this->element);
 		
 		if (!empty($this->attrs)) {
-			$ret['attributes'] = $this->attrs;
+			$ret['dataSet'] = $this->attrs;
 		}
 		
 		if (!empty($this->styles)) {

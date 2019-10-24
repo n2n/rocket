@@ -19,26 +19,24 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\tool\xml;
+namespace rocket\impl\ei\component\prop\adapter\config;
 
-class ItemCountSaxHandler implements SaxHandler {
-	private $level = 0;
-	private $number = 0;
-
-	public function startElement($tagName, array $dataSet) {
-		$this->level++;
-		if ($this->level == 2 && $tagName == 'item') {
-			$this->number++;
-		}
-	}
-
-	public function cdata($cdata) { }
-
-	public function endElement($tag) {
-		$this->level--;
+class DraftConfig {
+	const ATTR_DRAFTABLE_KEY = 'draftable';	
+	
+	private $dratable = false;
+	
+	private function saveDraftMags(MagCollection $magCollection) {
+		if ($this->confDraftableEiProp === null) return;
+		
+		$this->dataSet->set(self::ATTR_DRAFTABLE_KEY,
+				$magCollection->getMagWrapperByPropertyName(self::ATTR_DRAFTABLE_KEY)->getMag()->getValue());
 	}
 	
-	public function getNumber() {
-		return $this->number;
+	private function setupDraftableAdapter() {
+		if ($this->confDraftableEiProp === null) return;
+		
+		$this->confDraftableEiProp->setDraftable(
+				$this->dataSet->getBool(self::ATTR_DRAFTABLE_KEY, false, false));
 	}
 }

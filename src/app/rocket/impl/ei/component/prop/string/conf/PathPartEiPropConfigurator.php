@@ -72,13 +72,13 @@ class PathPartEiPropConfigurator extends AlphanumericEiPropConfigurator {
 	}
 	
 	
-	public function initAutoEiPropAttributes(N2nContext $n2nContext, Column $column = null) {
-		parent::initAutoEiPropAttributes($n2nContext, $column);
+	public function initAutoEiPropDataSet(N2nContext $n2nContext, Column $column = null) {
+		parent::initAutoEiPropDataSet($n2nContext, $column);
 	
 		$options = $this->getBaseEiPropIdOptions();
 		if (empty($options)) return;
 		
-		$this->attributes->set(self::OPTION_BASE_PROPERTY_FIELD_ID_KEY, key($options));
+		$this->dataSet->set(self::OPTION_BASE_PROPERTY_FIELD_ID_KEY, key($options));
 	}
 	
 	public function setup(EiSetup $setupProcess) {
@@ -92,8 +92,8 @@ class PathPartEiPropConfigurator extends AlphanumericEiPropConfigurator {
 			$that->setupRef($setupProcess, $eiuEngine);
 		});
 		
-		if ($this->attributes->contains(self::OPTION_NULL_ALLOWED_KEY)) {
-			$allowEmpty = $this->attributes->getBool(self::OPTION_NULL_ALLOWED_KEY, false);
+		if ($this->dataSet->contains(self::OPTION_NULL_ALLOWED_KEY)) {
+			$allowEmpty = $this->dataSet->getBool(self::OPTION_NULL_ALLOWED_KEY, false);
 			if ($allowEmpty && $this->mandatoryRequired()) {
 				throw new InvalidAttributeException(self::OPTION_NULL_ALLOWED_KEY 
 						. ' must be false because AccessProxy does not allow null value: '
@@ -102,12 +102,12 @@ class PathPartEiPropConfigurator extends AlphanumericEiPropConfigurator {
 			$pathPartEiProp->setNullAllowed($allowEmpty);
 		}
 		
-		if ($this->attributes->contains(self::OPTION_CRITICAL_KEY)) {
-			$pathPartEiProp->setCritical($this->attributes->get(self::OPTION_CRITICAL_KEY));
+		if ($this->dataSet->contains(self::OPTION_CRITICAL_KEY)) {
+			$pathPartEiProp->setCritical($this->dataSet->get(self::OPTION_CRITICAL_KEY));
 		}
 		
-		if ($this->attributes->contains(self::OPTION_CRITICAL_MESSAGE_KEY)) {
-			$pathPartEiProp->setCriticalMessage($this->attributes->getString(self::OPTION_CRITICAL_MESSAGE_KEY));
+		if ($this->dataSet->contains(self::OPTION_CRITICAL_MESSAGE_KEY)) {
+			$pathPartEiProp->setCriticalMessage($this->dataSet->getString(self::OPTION_CRITICAL_MESSAGE_KEY));
 		}
 
 		$setupProcess->eiu()->mask()->addEiModificator(new PathPartEiModificator($this->eiComponent));
@@ -117,10 +117,10 @@ class PathPartEiPropConfigurator extends AlphanumericEiPropConfigurator {
 		$pathPartEiProp = $this->eiComponent;
 		IllegalStateException::assertTrue($pathPartEiProp instanceof PathPartEiProp);
 		
-		if ($this->attributes->contains(self::OPTION_BASE_PROPERTY_FIELD_ID_KEY)) {
+		if ($this->dataSet->contains(self::OPTION_BASE_PROPERTY_FIELD_ID_KEY)) {
 			try {
 				$pathPartEiProp->setBaseScalarEiProperty($eiuEngine->getScalarEiProperty(
-						$this->attributes->getString(self::OPTION_BASE_PROPERTY_FIELD_ID_KEY)));
+						$this->dataSet->getString(self::OPTION_BASE_PROPERTY_FIELD_ID_KEY)));
 			} catch (\InvalidArgumentException $e) {
 				throw $setupProcess->createException('Invalid base ScalarEiProperty configured.', $e);
 			} catch (UnknownScalarEiPropertyException $e) {
@@ -128,10 +128,10 @@ class PathPartEiPropConfigurator extends AlphanumericEiPropConfigurator {
 			}
 		}
 		
-		if ($this->attributes->contains(self::OPTION_UNIQUE_PER_FIELD_ID_KEY)) {
+		if ($this->dataSet->contains(self::OPTION_UNIQUE_PER_FIELD_ID_KEY)) {
 			try {
 				$pathPartEiProp->setUniquePerGenericEiProperty($eiuEngine->getGenericEiProperty(
-						$this->attributes->getString(self::OPTION_UNIQUE_PER_FIELD_ID_KEY)));
+						$this->dataSet->getString(self::OPTION_UNIQUE_PER_FIELD_ID_KEY)));
 			} catch (\InvalidArgumentException $e) {
 				throw $setupProcess->createException('Invalid unique per GenericEiProperty configured.', $e);
 			} catch (UnknownGenericEiPropertyException $e) {
@@ -150,7 +150,7 @@ class PathPartEiPropConfigurator extends AlphanumericEiPropConfigurator {
 		}
 		
 		$magCollection->addMag(self::OPTION_BASE_PROPERTY_FIELD_ID_KEY, new EnumMag('Base Field', 
-				$this->getBaseEiPropIdOptions(), $this->attributes->getString(self::OPTION_BASE_PROPERTY_FIELD_ID_KEY, 
+				$this->getBaseEiPropIdOptions(), $this->dataSet->getString(self::OPTION_BASE_PROPERTY_FIELD_ID_KEY, 
 						false, $baseScalarEiPropertyId), false));
 		
 		$genericEiPropertyId = null;
@@ -158,18 +158,18 @@ class PathPartEiPropConfigurator extends AlphanumericEiPropConfigurator {
 			$genericEiPropertyId = $genericEiProperty->getId();
 		}
 		$magCollection->addMag(self::OPTION_UNIQUE_PER_FIELD_ID_KEY, new EnumMag('Unique per', 
-				$this->getUniquePerOptions(), $this->attributes->getString(self::OPTION_UNIQUE_PER_FIELD_ID_KEY, 
+				$this->getUniquePerOptions(), $this->dataSet->getString(self::OPTION_UNIQUE_PER_FIELD_ID_KEY, 
 						false, $genericEiPropertyId)));
 		
 		$magCollection->addMag(self::OPTION_NULL_ALLOWED_KEY, new BoolMag('Null value allowed.', 
-				$this->attributes->getBool(self::OPTION_NULL_ALLOWED_KEY, false, 
+				$this->dataSet->getBool(self::OPTION_NULL_ALLOWED_KEY, false, 
 						$this->pathPartEiProp->isNullAllowed())));
 		
 		$magCollection->addMag(self::OPTION_CRITICAL_KEY, new BoolMag('Is critical', 
-				$this->attributes->getBool(self::OPTION_CRITICAL_KEY, false, $this->pathPartEiProp->isCritical())));
+				$this->dataSet->getBool(self::OPTION_CRITICAL_KEY, false, $this->pathPartEiProp->isCritical())));
 		
 		$magCollection->addMag(self::OPTION_CRITICAL_MESSAGE_KEY, new StringMag('Critical message (no message if empty)', 
-				$this->attributes->getString(self::OPTION_CRITICAL_MESSAGE_KEY, false, 
+				$this->dataSet->getString(self::OPTION_CRITICAL_MESSAGE_KEY, false, 
 						$this->pathPartEiProp->getCriticalMessage()), false));
 		return $magDispatchable;
 	}
@@ -199,7 +199,7 @@ class PathPartEiPropConfigurator extends AlphanumericEiPropConfigurator {
 	public function saveMagDispatchable(MagDispatchable $magDispatchable, N2nContext $n2nContext) {
 		parent::saveMagDispatchable($magDispatchable, $n2nContext);
 		
-		$this->attributes->appendAll($magDispatchable->getMagCollection()->readValues(array(
+		$this->dataSet->appendAll($magDispatchable->getMagCollection()->readValues(array(
 				self::OPTION_BASE_PROPERTY_FIELD_ID_KEY, self::OPTION_NULL_ALLOWED_KEY, 
 				self::OPTION_UNIQUE_PER_FIELD_ID_KEY, self::OPTION_CRITICAL_KEY, 
 				self::OPTION_CRITICAL_MESSAGE_KEY)), true);
