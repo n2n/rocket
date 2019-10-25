@@ -21,6 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\adapter\config;
 
+use n2n\persistence\meta\structure\Column;
 use n2n\util\type\ArgUtils;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\DisplayDefinition;
@@ -213,7 +214,11 @@ class DisplayConfig implements EiPropConfiguratorAdaption {
 	const ATTR_HELPTEXT_KEY = 'helpText';
 	const ATTR_SI_STRUCTURE_TYPE_KEY = 'containerType';
 	
-	function setup(DataSet $dataSet) {
+	
+	function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
+	}
+	
+	function setup(Eiu $eiu, DataSet $dataSet) {
 		if ($dataSet->contains(self::ATTR_DISPLAY_IN_OVERVIEW_KEY)
 				&& $this->isViewModeCompatible(ViewMode::compact())) {
 			$this->changeDefaultDisplayedViewModes(
@@ -246,7 +251,7 @@ class DisplayConfig implements EiPropConfiguratorAdaption {
 	}
 	
 	
-	function mag(DataSet $dataSet, MagCollection $magCollection) {
+	function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
 		$lar = new LenientAttributeReader($dataSet);
 		
 		if ($this->defaultDisplayChoosable) {
@@ -282,7 +287,7 @@ class DisplayConfig implements EiPropConfiguratorAdaption {
 		}
 	}
 	
-	function save(MagCollection $magCollection, DataSet $dataSet) {
+	function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {
 		if (!$this->defaultDisplayChoosable) {
 			$dataSet->remove(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, self::ATTR_DISPLAY_IN_DETAIL_VIEW_KEY,
 					self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, self::ATTR_DISPLAY_IN_ADD_VIEW_KEY);
@@ -318,4 +323,5 @@ class DisplayConfig implements EiPropConfiguratorAdaption {
 		return $this->toDisplayDefinition($eiu->gui()->getViewMode(), $eiu->prop()->getLabel(), 
 				$eiu->prop()->getHelpText());
 	}
+
 }

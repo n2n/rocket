@@ -45,10 +45,10 @@ interface EiPropConfiguratorAdaption {
 
 	/**
 	 * @param Eiu $eiu
-	 * @param MagDispatchable $magDispatchable
+	 * @param MagCollection $magCollection
 	 * @param DataSet $dataSet
 	 */
-	function save(Eiu $eiu, MagDispatchable $magDispatchable, DataSet $dataSet);
+	function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet);
 	
 	/**
 	 * @param Eiu $eiu

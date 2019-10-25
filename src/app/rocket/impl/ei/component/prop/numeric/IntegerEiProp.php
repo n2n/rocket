@@ -21,8 +21,6 @@
  */
 namespace rocket\impl\ei\component\prop\numeric;
 
-
-use n2n\impl\web\dispatch\mag\model\NumericMag;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\util\type\ArgUtils;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
@@ -33,7 +31,6 @@ use rocket\ei\component\prop\ScalarEiProp;
 use rocket\ei\manage\generic\CommonScalarEiProperty;
 use rocket\ei\manage\generic\ScalarEiProperty;
 use n2n\impl\persistence\orm\property\IntEntityProperty;
-use rocket\si\content\SiField;
 use rocket\si\content\impl\SiFields;
 use n2n\l10n\L10nUtils;
 
@@ -44,8 +41,9 @@ class IntegerEiProp extends NumericEiPropAdapter implements ScalarEiProp {
 	public function __construct() {
 		parent::__construct();
 		
-		$this->minValue = self::INT_SIGNED_MIN;
-		$this->maxValue = self::INT_SIGNED_MAX;
+		$this->getNumericConfig()
+		      ->setMinValue(self::INT_SIGNED_MIN)
+		      ->setMaxValue(self::INT_SIGNED_MAX);
 	}
 	
 	/**

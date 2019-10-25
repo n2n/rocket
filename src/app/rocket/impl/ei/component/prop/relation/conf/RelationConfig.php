@@ -21,7 +21,6 @@
  */
 namespace rocket\impl\ei\component\prop\relation\conf;
 
-use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use n2n\core\container\N2nContext;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use rocket\ei\component\EiSetup;
@@ -42,7 +41,7 @@ use rocket\ei\EiCommandPath;
 use n2n\l10n\Lstr;
 use rocket\impl\ei\component\prop\relation\command\TargetEditEiCommand;
 
-class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
+class RelationConfig  {
 	const ATTR_TARGET_EXTENSION_ID_KEY = 'targetExtension';
 	const ATTR_MIN_KEY = 'min';	// tm
 	const ATTR_MAX_KEY = 'max'; // tm
@@ -59,21 +58,6 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 	 */
 	private $relationModel;
 	private $displayInOverViewDefault = true;
-	
-	public function __construct(RelationEiProp $relationEiProp) {
-		parent::__construct($relationEiProp);
-
-		$this->autoRegister();
-		
-// 		if ($relationEiProp instanceof SimpleRelationEiPropAdapter) {	
-// 			$this->registerDisplayConfig($relationEiProp->getDisplayConfig());
-// 			$this->registerEditConfig($relationEiProp->getEditConfig());
-// 		}
-		
-// 		if ($relationModel->isTargetMany()) {
-// 			$this->addMandatory = false;
-// 		}
-	}
 	
 	function setRelationModel(RelationModel $relationModel) {
 		$this->relationModel = $relationModel;

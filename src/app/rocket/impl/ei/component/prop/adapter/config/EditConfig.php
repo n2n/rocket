@@ -25,6 +25,8 @@ use n2n\web\dispatch\mag\MagCollection;
 use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\util\type\attrs\DataSet;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
+use rocket\ei\util\Eiu;
+use n2n\persistence\meta\structure\Column;
 
 class EditConfig implements EiPropConfiguratorAdaption {
 	protected $constant = false;
@@ -152,12 +154,15 @@ class EditConfig implements EiPropConfiguratorAdaption {
 	const ATTR_READ_ONLY_KEY = 'readOnly';
 	const ATTR_MANDATORY_KEY = 'mandatory';
 	
+	function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
+	}
+	
 	/**
 	 * @param DataSet $dataSet
 	 * @throws InvalidAttributeException
 	 * @return \rocket\impl\ei\component\prop\adapter\config\EditConfig
 	 */
-	private function setup(DataSet $dataSet) {
+	function setup(Eiu $eiu, DataSet $dataSet) {
 		if ($this->constantChoosable && $this->dataSet->contains(self::ATTR_CONSTANT_KEY)) {
 			$this->editConfig->setConstant($this->dataSet->getBool(self::ATTR_CONSTANT_KEY));
 		}
@@ -187,7 +192,7 @@ class EditConfig implements EiPropConfiguratorAdaption {
 	 * @param MagCollection $magCollection
 	 * @return \rocket\impl\ei\component\prop\adapter\config\EditConfig
 	 */
-	function mag(DataSet $dataSet, MagCollection $magCollection) {
+	function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
 		$lar = new LenientAttributeReader($dataSet);
 		
 		if ($this->constantChoosable) {
@@ -213,7 +218,7 @@ class EditConfig implements EiPropConfiguratorAdaption {
 	 * @param DataSet $dataSet
 	 * @return \rocket\impl\ei\component\prop\adapter\config\EditConfig
 	 */
-	function save(MagCollection $magCollection, DataSet $dataSet) {
+	function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {
 		$dataSet->remove(self::ATTR_CONSTANT_KEY, self::ATTR_READ_ONLY_KEY, self::ATTR_MANDATORY_KEY);
 		
 		if ($this->constantChoosable) {

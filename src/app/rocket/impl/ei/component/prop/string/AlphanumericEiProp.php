@@ -90,7 +90,7 @@ abstract class AlphanumericEiProp extends DraftablePropertyEiPropAdapter impleme
 		return $this->addonConfig;
 	}
 	
-	protected function isEntityPropertyRequired(): bool {
+	public function isEntityPropertyRequired(): bool {
 		return false;
 	}
 	

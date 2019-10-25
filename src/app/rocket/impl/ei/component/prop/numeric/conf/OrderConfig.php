@@ -33,15 +33,14 @@ use rocket\impl\ei\component\prop\numeric\component\OrderEiModificator;
 use n2n\web\dispatch\mag\MagDispatchable;
 use rocket\impl\ei\component\prop\adapter\config\EntityPropertyConfigurable;
 use n2n\persistence\meta\structure\Column;
+use rocket\impl\ei\component\prop\adapter\config\EiPropConfiguratorAdaption;
 
-class OrderEiPropConfigurator extends NumericEiPropConfigurator {
+class OrderConfig implements EiPropConfiguratorAdaption {
 
 	const COMMON_ORDER_INDEX_PROP_NAME = 'orderIndex';
 	const OPTION_REFERENCE_FIELD_KEY = 'referenceField';
 	
-	public function __construct(OrderEiProp $orderEiProp) {
-		parent::__construct($orderEiProp);
-	
+	public function __construct() {
 		$this->autoMandatoryCheck = false;
 	}
 	

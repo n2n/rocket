@@ -22,13 +22,10 @@
 namespace rocket\impl\ei\component\prop\numeric\component;
 
 use n2n\l10n\DynamicTextCollection;
-use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\impl\ei\component\prop\numeric\OrderEiProp;
-use rocket\ei\component\command\control\EntryGuiControlComponent;
 use rocket\si\control\SiButton;
 use rocket\si\control\SiIconType;
 use rocket\impl\ei\component\command\EiCommandAdapter;
-use rocket\ei\manage\gui\control\HrefControl;
 use rocket\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
 use n2n\core\container\N2nContext;

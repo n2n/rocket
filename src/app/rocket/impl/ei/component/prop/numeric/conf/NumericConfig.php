@@ -35,14 +35,28 @@ use n2n\persistence\meta\structure\IntegerColumn;
 use n2n\util\type\attrs\LenientAttributeReader;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 
-class NumericEiPropConfigurator extends AdaptableEiPropConfigurator {
-	const OPTION_MIN_VALUE_KEY = 'minValue';
-	const OPTION_MAX_VALUE_KEY = 'maxValue';
+class NumericConfig implements EiPropConfiguratorAdaption {
+	const ATTR_MIN_VALUE_KEY = 'minValue';
+	const ATTR_MAX_VALUE_KEY = 'maxValue';
 	
-	public function __construct(NumericEiPropAdapter $numericAdapter) {
-		parent::__construct($numericAdapter);
-		
-		$this->autoRegister($numericAdapter);
+	protected $minValue = null;
+	protected $maxValue = null;
+	
+	
+	public function getMinValue() {
+	    return $this->minValue;
+	}
+	
+	public function setMinValue($minValue) {
+	    $this->minValue = $minValue;
+	}
+	
+	public function getMaxValue() {
+	    return $this->maxValue;
+	}
+	
+	public function setMaxValue($maxValue) {
+	    $this->maxValue = $maxValue;
 	}
 	
 	public function initAutoEiPropDataSet(N2nContext $n2nContext, Column $column = null) {
@@ -55,7 +69,7 @@ class NumericEiPropConfigurator extends AdaptableEiPropConfigurator {
 		}
 		
 		if ($column instanceof IntegerColumn) {
-			$this->dataSet->set(self::OPTION_MIN_VALUE_KEY, $column->getMinValue());
+			$this->dataSet->set(self::ATTR_MIN_VALUE_KEY, $column->getMinValue());
 			$this->dataSet->set(self::OPTION_MAX_VALUE_KEY, $column->getMaxValue());
 		}
 	}
@@ -77,8 +91,8 @@ class NumericEiPropConfigurator extends AdaptableEiPropConfigurator {
 	
 		IllegalStateException::assertTrue($this->eiComponent instanceof NumericEiPropAdapter);
 		
-		if ($this->dataSet->contains(self::OPTION_MIN_VALUE_KEY)) {
-			$this->eiComponent->setMinValue($this->dataSet->req(self::OPTION_MIN_VALUE_KEY));
+		if ($this->dataSet->contains(self::ATTR_MIN_VALUE_KEY)) {
+			$this->eiComponent->setMinValue($this->dataSet->req(self::ATTR_MIN_VALUE_KEY));
 		}
 		
 		if ($this->dataSet->contains(self::OPTION_MAX_VALUE_KEY)) {
@@ -101,8 +115,8 @@ class NumericEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$lar = new LenientAttributeReader($this->dataSet);
 		
 		IllegalStateException::assertTrue($this->eiComponent instanceof NumericEiPropAdapter);
-		$magCollection->addMag(self::OPTION_MIN_VALUE_KEY, new NumericMag('Min Value',
-				$lar->getNumeric(self::OPTION_MIN_VALUE_KEY, $this->eiComponent->getMinValue())));
+		$magCollection->addMag(self::ATTR_MIN_VALUE_KEY, new NumericMag('Min Value',
+				$lar->getNumeric(self::ATTR_MIN_VALUE_KEY, $this->eiComponent->getMinValue())));
 		$magCollection->addMag(self::OPTION_MAX_VALUE_KEY, new NumericMag('Max Value',
 				$lar->getNumeric(self::OPTION_MAX_VALUE_KEY, $this->eiComponent->getMaxValue())));
 	
@@ -114,9 +128,9 @@ class NumericEiPropConfigurator extends AdaptableEiPropConfigurator {
 		
 		$magCollection = $magDispatchable->getMagCollection();
 		
-		if (null !== ($minValue = $magCollection->getMagByPropertyName(self::OPTION_MIN_VALUE_KEY)
+		if (null !== ($minValue = $magCollection->getMagByPropertyName(self::ATTR_MIN_VALUE_KEY)
 				->getValue())) {
-			$this->dataSet->set(self::OPTION_MIN_VALUE_KEY, $minValue);
+			$this->dataSet->set(self::ATTR_MIN_VALUE_KEY, $minValue);
 		}
 		
 		if (null !== ($maxValue = $magCollection->getMagByPropertyName(self::OPTION_MAX_VALUE_KEY)

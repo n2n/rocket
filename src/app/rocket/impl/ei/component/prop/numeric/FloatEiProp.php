@@ -27,21 +27,25 @@ use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\reflection\property\AccessProxy;
 use n2n\util\type\TypeConstraint;
 use rocket\ei\util\Eiu;
-use rocket\impl\ei\component\prop\numeric\conf\DecimalEiPropConfigurator;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\impl\persistence\orm\property\FloatEntityProperty;
-use rocket\si\content\SiField;
+use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 
 class FloatEiProp extends NumericEiPropAdapter {
-	protected $decimalPlaces = 0;
-	protected $prefix;
-
+    private $floatConfig;
+    
+    function __construct() {
+        parent::__construct();
+        
+        $this->floatConfig = new FloatConfig();
+    }
+    
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\numeric\NumericEiPropAdapter::createEiPropConfigurator()
 	 */
-	public function createEiPropConfigurator(): EiPropConfigurator {
-		return new DecimalEiPropConfigurator($this);
+	public function adaptConfigurator(AdaptableEiPropConfigurator $configurator) {
+	    parent::adaptConfigurator($configurator);
+		$configurator->addAdaption($this->floatConfig);
 	}
 	
 	/**

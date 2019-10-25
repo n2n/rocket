@@ -39,10 +39,6 @@ abstract class PropertyEiPropAdapter extends IndependentEiPropAdapter
 		return $this->entityProperty !== null ? $this->entityProperty->getName() : null; 
 	}
 	
-	function isEntityPropertyRequired(): bool {
-		return true;
-	}
-	
 	/**
 	 * @param EntityProperty $entityProperty
 	 * @throws \InvalidArgumentException
@@ -75,7 +71,7 @@ abstract class PropertyEiPropAdapter extends IndependentEiPropAdapter
 		return $this->entityProperty;
 	}
 	
-	protected function isEntityPropertyRequired(): bool {
+	public function isEntityPropertyRequired(): bool {
 		return true;
 	}
 	

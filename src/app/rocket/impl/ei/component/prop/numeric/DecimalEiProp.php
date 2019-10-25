@@ -27,28 +27,28 @@ use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\reflection\property\AccessProxy;
 use n2n\util\type\TypeConstraint;
-use n2n\web\dispatch\mag\Mag;
 use rocket\ei\util\Eiu;
-use rocket\impl\ei\component\prop\numeric\conf\DecimalEiPropConfigurator;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\ui\UiComponent;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use n2n\web\dispatch\mag\UiOutfitter;
 use n2n\impl\persistence\orm\property\FloatEntityProperty;
-use rocket\si\content\SiField;
+use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
+use rocket\impl\ei\component\prop\numeric\conf\DecimalConfig;
 
 class DecimalEiProp extends NumericEiPropAdapter {
-	protected $decimalPlaces = 0;
-	protected $prefix;
+    private $decimalConfig;
 
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\numeric\NumericEiPropAdapter::createEiPropConfigurator()
-	 */
-	public function createEiPropConfigurator(): EiPropConfigurator {
-		return new DecimalEiPropConfigurator($this);
+    function __construct() {
+        parent::__construct();
+        
+        $this->decimalConfig = new DecimalConfig();
+    }
+    
+	function adaptConfigurator(AdaptableEiPropConfigurator $configurator) {
+	    parent::adaptConfigurator($configurator);
+	    $configurator->addAdaption($this->decimalConfig);
 	}
 	
 	/**
@@ -70,35 +70,6 @@ class DecimalEiProp extends NumericEiPropAdapter {
 				$propertyAccessProxy->getBaseConstraint()->allowsNull(), true));
 		$this->objectPropertyAccessProxy = $propertyAccessProxy;
 	}
-	
-	/**
-	 * @return int
-	 */
-	public function getDecimalPlaces() {
-		return $this->decimalPlaces;
-	}
-	
-	/**
-	 * @param int $decimalPlaces
-	 */
-	public function setDecimalPlaces(int $decimalPlaces) {
-		$this->decimalPlaces = $decimalPlaces;
-	}
-	
-	/**
-	 * @return string
-	 */
-	public function getPrefix() {
-		return $this->prefix;
-	}
-	
-	/**
-	 * @param string $prefix
-	 */
-	public function setPrefix(string $prefix = null) {
-		$this->prefix = $prefix;
-	}
-	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldEditable::createMag($eiu)

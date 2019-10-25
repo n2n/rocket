@@ -24,10 +24,8 @@ namespace rocket\impl\ei\component\prop\string;
 use n2n\l10n\N2nLocale;
 use rocket\ei\util\Eiu;
 use n2n\util\StringUtils;
-use rocket\si\content\SiField;
 use rocket\si\content\impl\SiFields;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
-use rocket\impl\ei\component\prop\string\conf\StringConfig;
 
 class StringEiProp extends AlphanumericEiProp {
 	

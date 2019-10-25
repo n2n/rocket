@@ -31,7 +31,7 @@ use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 use rocket\impl\ei\component\prop\adapter\config\EiPropConfiguratorAdaption;
 
-class DecimalConfig implements EiPropConfiguratorAdaption {
+class FloatConfig implements EiPropConfiguratorAdaption {
 	const ATTR_DECIMAL_PLACES_KEY = 'decimalPlaces';
 	const ATTR_PREFIX_KEY = 'prefix';
 	

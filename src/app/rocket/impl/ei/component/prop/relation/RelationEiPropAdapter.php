@@ -22,7 +22,6 @@
 namespace rocket\impl\ei\component\prop\relation;
 
 use rocket\ei\component\prop\GuiEiProp;
-use rocket\impl\ei\component\prop\relation\conf\RelationEiPropConfigurator;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\impl\ei\component\prop\adapter\PropertyEiPropAdapter;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
@@ -41,21 +40,23 @@ use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\ei\component\prop\ForkEiProp;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\frame\EiForkLink;
+use rocket\impl\ei\component\prop\relation\conf\RelationConfig;
+use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 
 abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements RelationEiProp, GuiEiProp, GuiProp, ForkEiProp {
 			
 	/**
-	 * @var RelationEiPropConfigurator
+	 * @var RelationConfig
 	 */
-	protected $configurator;
+	private $relationConfig;
 	/**
 	 * @var DisplayConfig
 	 */
-	protected $displayConfig;
+	private $displayConfig;
 	/**
 	 * @var EditConfig
 	 */
-	protected $editConfig;
+	private $editConfig;
 	
 	/**
 	 * @var RelationModel
@@ -82,20 +83,20 @@ abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements Re
 	 * @param RelationModel $relationModel
 	 */
 	protected function setup(?DisplayConfig $displayConfig, RelationModel $relationModel,
-			RelationEiPropConfigurator $configurator = null) {
-		$this->configurator = $configurator ?? new RelationEiPropConfigurator($this);
+			AdaptableEiPropConfigurator $configurator = null) {
+		$this->relationConfig = $configurator ?? new RelationEiPropConfigurator($this);
 				
 		if ($displayConfig !== null) {
 			$this->displayConfig = $displayConfig;
-			$this->configurator->registerDisplayConfig($displayConfig);
+			$this->relationConfig->registerDisplayConfig($displayConfig);
 		}
 		
 		if (null !== ($this->editConfig = $relationModel->getEditConfig())) {
-			$this->configurator->registerEditConfig($this->editConfig);
+			$this->relationConfig->registerEditConfig($this->editConfig);
 		}
 		
 		$this->relationModel = $relationModel;
-		$this->configurator->setRelationModel($relationModel);
+		$this->relationConfig->setRelationModel($relationModel);
 	}
 	
 	/**
@@ -131,7 +132,7 @@ abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements Re
 	 * @see \rocket\impl\ei\component\prop\adapter\PropertyEiPropAdapter::createEiPropConfigurator()
 	 */
 	function createEiPropConfigurator(): EiPropConfigurator {
-		return $this->configurator;
+		return $this->relationConfig;
 	}
 	
 	/**
@@ -139,6 +140,7 @@ abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements Re
 	 * @see \rocket\ei\component\prop\GuiEiProp::buildGuiProp()
 	 */
 	function buildGuiProp(Eiu $eiu): ?GuiProp {
+	    return GuiProp::display($this, $this->displayConfig);
 		return $this;
 	}
 	

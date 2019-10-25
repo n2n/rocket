@@ -21,26 +21,30 @@
  */
 namespace rocket\impl\ei\component\prop\numeric;
 
-use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
 use n2n\impl\web\dispatch\mag\model\NumericMag;
-use rocket\impl\ei\component\prop\numeric\conf\OrderEiPropConfigurator;
-use n2n\web\dispatch\mag\Mag;
 use rocket\ei\util\Eiu;
 use rocket\ei\EiPropPath;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\impl\persistence\orm\property\IntEntityProperty;
-use rocket\si\content\SiField;
+use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
+use rocket\impl\ei\component\prop\numeric\conf\OrderConfig;
 
 class OrderEiProp extends IntegerEiProp {
-	const ORDER_INCREMENT = 10;
+    const ORDER_INCREMENT = 10;
 	
-	public function createEiPropConfigurator(): EiPropConfigurator {
-		$this->getDisplayConfig()->setListReadModeDefaultDisplayed(false);
-		
-		return new OrderEiPropConfigurator($this);
+	private $orderConfig;
+	
+	function __construct() {
+	    parent::__construct();
+	    
+	    $this->orderConfig = new OrderConfig();
+	}
+	
+	function adaptConfigurator(AdaptableEiPropConfigurator $configurator) {
+	    parent::adaptConfigurator($configurator);
+	    $configurator->addAdaption($this->orderConfig);
 	}
 
 	public function isCompatibleWith(EntityProperty $entityProperty) {

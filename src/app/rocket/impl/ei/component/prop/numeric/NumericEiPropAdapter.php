@@ -29,7 +29,6 @@ use n2n\l10n\N2nLocale;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
-use rocket\impl\ei\component\prop\numeric\conf\NumericEiPropConfigurator;
 use n2n\util\type\ArgUtils;
 use n2n\reflection\property\AccessProxy;
 use n2n\util\type\TypeConstraint;
@@ -38,64 +37,61 @@ use rocket\ei\EiPropPath;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\ei\manage\critmod\sort\SortProp;
 use rocket\ei\util\Eiu;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\critmod\quick\impl\LikeQuickSearchProp;
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
-use rocket\si\content\SiField;
+use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
+use rocket\impl\ei\component\prop\numeric\conf\NumericConfig;
 
 abstract class NumericEiPropAdapter extends DraftablePropertyEiPropAdapter 
 		implements FilterableEiProp, SortableEiProp, QuickSearchableEiProp {
-	protected $minValue = null;
-	protected $maxValue = null;
-	
-	public function getMinValue() {
-		return $this->minValue;
-	}
-	
-	public function setMinValue($minValue) {
-		$this->minValue = $minValue;
-	}
-	
-	public function getMaxValue() {
-		return $this->maxValue;
-	}
-	
-	public function setMaxValue($maxValue) {
-		$this->maxValue = $maxValue;
-	}
+    
+	private $numericConfig;
+		    
+    function __construct() {
+        parent::__construct();
+        
+        $this->numericConfig = new NumericConfig();
+    }
 
-	public function setEntityProperty(?EntityProperty $entityProperty) {
+    /**
+     * @return \rocket\impl\ei\component\prop\numeric\conf\NumericConfig
+     */
+    function getNumericConfig() {
+        return $this->numericConfig;
+    }
+    
+	function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty instanceof ScalarEntityProperty);
 		$this->entityProperty = $entityProperty;
 	}
 	
-	public function setObjectPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
+	function setObjectPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
 		ArgUtils::assertTrue($propertyAccessProxy !== null);
 		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('scalar',
 				$propertyAccessProxy->getBaseConstraint()->allowsNull()));
 		$this->objectPropertyAccessProxy = $propertyAccessProxy;
 	}
 
-	public function createEiPropConfigurator(): EiPropConfigurator {
-		return new NumericEiPropConfigurator($this);
+	function adaptConfigurator(AdaptableEiPropConfigurator $configurator) {
+	    $configurator->addAdaption($this->numericConfig);
 	}
 	
-	public function createOutSiField(Eiu $eiu): SiField  {
+	function createOutSiField(Eiu $eiu): SiField  {
 		$html = $view->getHtmlBuilder();
 		return $html->getEsc($eiu->field()->getValue(EiPropPath::from($this)));
 	}
 	
-// 	public function createPreviewUiComponent(EiFrame $eiFrame = null, HtmlView $view, $value) {
+// 	function createPreviewUiComponent(EiFrame $eiFrame = null, HtmlView $view, $value) {
 // 		return $view->getHtmlBuilder()->getEsc($value);
 // 	}
 	
-	public function buildFilterProp(Eiu $eiu): ?FilterProp {
+	function buildFilterProp(Eiu $eiu): ?FilterProp {
 		return new StringFilterProp(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
 	}
 	
-	public function buildSecurityFilterProp(N2nContext $n2nContext) {
+	function buildSecurityFilterProp(N2nContext $n2nContext) {
 		return null;
 	}
 	
@@ -104,7 +100,7 @@ abstract class NumericEiPropAdapter extends DraftablePropertyEiPropAdapter
 	 * @see \rocket\ei\component\prop\SortableEiProp::createGlobalSortProp()
 	 * @return SortProp
 	 */
-	public function buildSortProp(Eiu $eiu): ?SortProp {
+	function buildSortProp(Eiu $eiu): ?SortProp {
 		return new SimpleSortProp(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
 	}
 	
@@ -112,21 +108,21 @@ abstract class NumericEiPropAdapter extends DraftablePropertyEiPropAdapter
 	 * {@inheritDoc}
 	 * @see \rocket\ei\component\prop\QuickSearchableEiProp::buildQuickSearchProp()
 	 */
-	public function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp {
+	function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp {
 		return new LikeQuickSearchProp(CrIt::p($this->getEntityProperty()));
 	}
 
-// 	public function createEditablePreviewUiComponent(PreviewModel $previewModel, PropertyPath $propertyPath,
+// 	function createEditablePreviewUiComponent(PreviewModel $previewModel, PropertyPath $propertyPath,
 // 			HtmlView $view, \Closure $createCustomUiElementCallback = null) {
 // 		return $view->getFormHtmlBuilder()->getInputField($propertyPath, 
 // 				array('class' => 'rocket-preview-inpage-component'));
 // 	}
 
-	public function isStringRepresentable(): bool {
+	function isStringRepresentable(): bool {
 		return true;
 	}
 	
-	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
+	function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
 		return $eiu->object()->readNativValue($this);
 	}
 }
