@@ -30,7 +30,7 @@ use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 
-class DecimalEiPropConfigurator extends NumericEiPropConfigurator {
+class DecimalConfig extends NumericEiPropConfigurator {
 	const OPTION_DECIMAL_PLACES_KEY = 'decimalPlaces';
 	const OPTION_PREFIX_KEY = 'prefix';
 	

@@ -35,16 +35,8 @@ use n2n\util\ex\IllegalStateException;
 use rocket\si\content\SiField;
 
 class PasswordEiProp extends AlphanumericEiProp {
-	const ALGORITHM_SHA1 = 'sha1';
-	const ALGORITHM_MD5 = 'md5';
-	const ALGORITHM_BLOWFISH = 'blowfish';
-	const ALGORITHM_SHA_256 = 'sha-256';
-	
-	private $algorithm = self::ALGORITHM_BLOWFISH;
-	
-	public function isMandatory(Eiu $eiu): bool {
-		return $eiu->entry()->isNew() && parent::isMandatory($eiu);
-	}
+
+
 	
 	public function createEiPropConfigurator(): EiPropConfigurator {
 		return new PasswordEiPropConfigurator($this);
@@ -60,13 +52,6 @@ class PasswordEiProp extends AlphanumericEiProp {
 				array('placeholder' => $this->getLabelLstr()));
 	}
 	
-	public function getAlgorithm() {
-		return $this->algorithm;
-	}
-
-	public function setAlgorithm($algorithm) {
-		$this->algorithm = $algorithm;
-	}
 	
 	public function loadSiField(Eiu $eiu, SiField $siField) { }
 	
@@ -95,9 +80,5 @@ class PasswordEiProp extends AlphanumericEiProp {
 		}
 		
 		$eiu->field()->setValue($fieldValue);
-	}
-	
-	public static function getAlgorithms() {
-		return array(self::ALGORITHM_BLOWFISH, self::ALGORITHM_SHA1, self::ALGORITHM_MD5, self::ALGORITHM_SHA_256);
 	}
 }

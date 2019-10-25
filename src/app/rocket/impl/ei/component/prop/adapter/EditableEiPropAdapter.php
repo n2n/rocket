@@ -52,7 +52,7 @@ abstract class EditableEiPropAdapter extends DisplayableEiPropAdapter implements
 		$configurator = parent::createEiPropConfigurator();
 		IllegalStateException::assertTrue($configurator instanceof AdaptableEiPropConfigurator);
 		$configurator->addAdaption($this->getEditConfig());
-		$this->adaptEiPropConfigurator($configurator);
+		$this->adaptConfigurator($configurator);
 		return $configurator;
 	}
 

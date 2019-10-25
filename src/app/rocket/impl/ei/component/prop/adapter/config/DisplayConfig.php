@@ -50,6 +50,16 @@ class DisplayConfig implements EiPropConfiguratorAdaption {
 	}
 	
 	/**
+	 * @param int $compatibleViewModes
+	 * @return \rocket\impl\ei\component\prop\adapter\config\DisplayConfig
+	 */
+	function setCompatibleViewModes(int $compatibleViewModes) {
+		$this->compatibleViewModes = $compatibleViewModes;
+		$this->defaultDisplayedViewModes &= $compatibleViewModes; 
+		return $this;
+	}
+	
+	/**
 	 * @param int $viewMode
 	 * @return boolean
 	 */

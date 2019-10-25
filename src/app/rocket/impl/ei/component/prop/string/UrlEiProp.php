@@ -22,21 +22,25 @@
 namespace rocket\impl\ei\component\prop\string;
 
 use n2n\web\dispatch\mag\Mag;
-use rocket\impl\ei\component\prop\string\conf\UrlEiPropConfigurator;
 use rocket\ei\util\Eiu;
 use n2n\impl\web\dispatch\mag\model\UrlMag;
 use n2n\util\uri\Url;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\reflection\property\AccessProxy;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\UrlEntityProperty;
 use rocket\si\content\SiField;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
+use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
+use rocket\impl\ei\component\prop\string\conf\UrlConfig;
 
 class UrlEiProp extends AlphanumericEiProp {
-	private $autoScheme;
-	private $allowedSchemes = array();
-	private $relativeAllowed = false;
+	
+	private $urlConfig;
+	
+	function __construct() {
+		parent::__construct();
+		$this->urlConfig = new UrlConfig();
+	}
 	
 	public function getTypeName(): string {
 		return "Link";
@@ -67,33 +71,10 @@ class UrlEiProp extends AlphanumericEiProp {
 		return parent::buildQuickSearchProp($eiu);
 	}
 
-	public function createEiPropConfigurator(): EiPropConfigurator {
-		return new UrlEiPropConfigurator($this);
+	public function adaptConfigurator(AdaptableEiPropConfigurator $configurator) {
+		$configurator->addAdaption($this->urlConfig);
 	}
-	
-	public function setAllowedSchemes(array $allowedSchemes) {
-		$this->allowedSchemes = $allowedSchemes;
-	}
-	
-	public function getAllowedSchemes(): array {
-		return $this->allowedSchemes;
-	}
-	
-	public function isRelativeAllowed(): bool {
-		return $this->relativeAllowed;
-	}
-	
-	public function setRelativeAllowed(bool $relativeAllowed) {
-		$this->relativeAllowed = $relativeAllowed;
-	}
-	
-	public function setAutoScheme(string $autoScheme = null) {
-		$this->autoScheme = $autoScheme;
-	}
-	
-	public function getAutoScheme() {
-		return $this->autoScheme;
-	}
+
 	
 // 	public function createEditablePreviewUiComponent(PreviewModel $previewModel, PropertyPath $propertyPath,
 // 			HtmlView $view, \Closure $createCustomUiElementCallback = null) {

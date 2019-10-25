@@ -41,11 +41,11 @@ abstract class IndependentEiPropAdapter extends EiPropAdapter implements Indepen
 	 */
 	public function createEiPropConfigurator(): EiPropConfigurator {
 		$configurator = new AdaptableEiPropConfigurator($this);
-		$this->adaptEiPropConfigurator($configurator);
+		$this->adaptConfigurator($configurator);
 		return $configurator;
 	}
 	
-	protected function adaptEiPropConfigurator(AdaptableEiPropConfigurator $configurator) {
+	protected function adaptConfigurator(AdaptableEiPropConfigurator $configurator) {
 	}
 	
 	public function getLabelLstr(): Lstr {

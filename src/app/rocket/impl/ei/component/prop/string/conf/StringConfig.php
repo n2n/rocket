@@ -32,10 +32,26 @@ use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use n2n\util\type\CastUtils;
 
-class StringEiPropConfigurator extends AlphanumericEiPropConfigurator {
+class StringConfig {
 	const OPTION_MULTILINE_KEY = 'multiline';
 	
-	public function setup(EiSetup $setupProcess) {
+	private $multiline = false;
+	
+	/**
+	 * @return bool
+	 */
+	function isMultiline() {
+		return $this->multiline;
+	}
+	
+	/**
+	 * @param bool $multiline
+	 */
+	function setMultiline(bool $multiline) {
+		$this->multiline = $multiline;
+	}
+	
+	function setup(EiSetup $setupProcess) {
 		parent::setup($setupProcess);
 	
 		$eiComponent = $this->eiComponent;
@@ -48,7 +64,7 @@ class StringEiPropConfigurator extends AlphanumericEiPropConfigurator {
 	
 	private static $multilineNeedles = array('description', 'lead', 'intro', 'content');
 	
-	public function initAutoEiPropDataSet(N2nContext $n2nContext, Column $column = null) {
+	function initAutoEiPropDataSet(N2nContext $n2nContext, Column $column = null) {
 		parent::initAutoEiPropDataSet($n2nContext, $column);
 		
 		if (StringUtils::contains(self::$multilineNeedles, $this->requirePropertyName(), false)) {
@@ -61,7 +77,7 @@ class StringEiPropConfigurator extends AlphanumericEiPropConfigurator {
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator::testCompatibility()
 	 */
-	public function testCompatibility(PropertyAssignation $propertyAssignation): int {
+	function testCompatibility(PropertyAssignation $propertyAssignation): int {
 		$this->setMaxCompatibilityLevel(CompatibilityLevel::SUITABLE);
 		return parent::testCompatibility($propertyAssignation);
 	}
@@ -71,7 +87,7 @@ class StringEiPropConfigurator extends AlphanumericEiPropConfigurator {
 	 * @see \rocket\impl\ei\component\prop\string\conf\AlphanumericEiPropConfigurator::createMagDispatchable($n2nContext)
 	 * @return MagDispatchable
 	 */
-	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
+	function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
 		$magDispatchable = parent::createMagDispatchable($n2nContext);
 		
 		$eiComponent = $this->eiComponent;
@@ -84,7 +100,7 @@ class StringEiPropConfigurator extends AlphanumericEiPropConfigurator {
 		return $magDispatchable;
 	}
 	
-	public function saveMagDispatchable(MagDispatchable $magDispatchable, N2nContext $n2nContext) {
+	function saveMagDispatchable(MagDispatchable $magDispatchable, N2nContext $n2nContext) {
 		parent::saveMagDispatchable($magDispatchable, $n2nContext);
 		
 		$multilineMag = $magDispatchable->getMagCollection()->getMagByPropertyName(self::OPTION_MULTILINE_KEY);

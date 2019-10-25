@@ -28,17 +28,33 @@ use rocket\impl\ei\component\prop\string\PasswordEiProp;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use n2n\web\dispatch\mag\MagDispatchable;
 
-class PasswordEiPropConfigurator extends AlphanumericEiPropConfigurator {
-	const OPTION_ALGORITHM_KEY = 'algorithm';
+class PasswordEiPropConfig {
+	const ATTR_ALGORITHM_KEY = 'algorithm';
+	
+	const ALGORITHM_SHA1 = 'sha1';
+	const ALGORITHM_MD5 = 'md5';
+	const ALGORITHM_BLOWFISH = 'blowfish';
+	const ALGORITHM_SHA_256 = 'sha-256';
+	
+	private $algorithm = self::ALGORITHM_BLOWFISH;
+	
+	
+	public function getAlgorithm() {
+		return $this->algorithm;
+	}
+	
+	public function setAlgorithm($algorithm) {
+		$this->algorithm = $algorithm;
+	}
 
 	public function setup(EiSetup $setupProcess) {
 		parent::setup($setupProcess);
 
 		$eiComponent = $this->eiComponent;
 		IllegalStateException::assertTrue($eiComponent instanceof PasswordEiProp);
-		if ($this->dataSet->contains(self::OPTION_ALGORITHM_KEY)) {
+		if ($this->dataSet->contains(self::ATTR_ALGORITHM_KEY)) {
 			try {
-				$eiComponent->setAlgorithm($this->dataSet->get(self::OPTION_ALGORITHM_KEY));
+				$eiComponent->setAlgorithm($this->dataSet->get(self::ATTR_ALGORITHM_KEY));
 			} catch (\InvalidArgumentException $e) {
 				$setupProcess->createException('Invalid algorithm defined for PassworEiProp.', $e);
 				return;
@@ -53,8 +69,12 @@ class PasswordEiPropConfigurator extends AlphanumericEiPropConfigurator {
 		IllegalStateException::assertTrue($eiComponent instanceof PasswordEiProp);
 
 		$algorithms = PasswordEiProp::getAlgorithms();
-		$magDispatchable->getMagCollection()->addMag(self::OPTION_ALGORITHM_KEY, new EnumMag('Algortithm', 
+		$magDispatchable->getMagCollection()->addMag(self::ATTR_ALGORITHM_KEY, new EnumMag('Algortithm', 
 				array_combine($algorithms, $algorithms), $eiComponent->getAlgorithm()));
 		return $magDispatchable;
+	}
+	
+	public static function getAlgorithms() {
+		return array(self::ALGORITHM_BLOWFISH, self::ALGORITHM_SHA1, self::ALGORITHM_MD5, self::ALGORITHM_SHA_256);
 	}
 }

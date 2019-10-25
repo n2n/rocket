@@ -22,26 +22,26 @@
 namespace rocket\impl\ei\component\prop\string;
 
 use n2n\l10n\N2nLocale;
-use rocket\impl\ei\component\prop\string\conf\StringEiPropConfigurator;
 use rocket\ei\util\Eiu;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\util\StringUtils;
 use rocket\si\content\SiField;
 use rocket\si\content\impl\SiFields;
+use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
+use rocket\impl\ei\component\prop\string\conf\StringConfig;
 
 class StringEiProp extends AlphanumericEiProp {
-	private $multiline = false;
 	
-	public function isMultiline() {
-		return $this->multiline;
+	private $stringConfig;
+	
+	function __construct() {
+		parent::__construct();
+		
+		$this->stringConfig = new StringConfig();
 	}
 	
-	public function setMultiline($multiline) {
-		$this->multiline = (boolean) $multiline;
-	}
-	
-	public function createEiPropConfigurator(): EiPropConfigurator {
-		return new StringEiPropConfigurator($this);
+	function adaptConfigurator(AdaptableEiPropConfigurator $configurator) {
+		parent::adaptConfigurator($configurator);
+		$configurator->addAdaption($this->stringConfig);
 	}
 	
 	public function createOutSiField(Eiu $eiu): SiField  {

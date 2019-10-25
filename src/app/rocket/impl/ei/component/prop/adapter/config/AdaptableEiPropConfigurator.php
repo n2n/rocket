@@ -246,4 +246,8 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 		if (null === $accessProxy) return false;
 		return !$accessProxy->getConstraint()->allowsNull() && !$accessProxy->getConstraint()->isArrayLike();
 	}
+	
+	function addAdaption(EiPropConfiguratorAdaption $adaption) {
+		$this->adpations[] = $adaption;
+	}
 }

@@ -86,7 +86,7 @@ abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter im
 		$configurator = parent::createEiPropConfigurator();
 		IllegalStateException::assertTrue($configurator instanceof AdaptableEiPropConfigurator);
 		$configurator->registerDisplayConfig($this->getDisplayConfig());
-		$this->adaptEiPropConfigurator($configurator);
+		$this->adaptConfigurator($configurator);
 		return $configurator;
 	}
 	

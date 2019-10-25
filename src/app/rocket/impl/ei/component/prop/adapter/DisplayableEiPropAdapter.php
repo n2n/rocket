@@ -67,7 +67,7 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 		$configurator = parent::createEiPropConfigurator();
 		IllegalStateException::assertTrue($configurator instanceof AdaptableEiPropConfigurator);
 		$configurator->addAdaption($this->getDisplayConfig());
-		$this->adaptEiPropConfigurator($configurator);
+		$this->adaptConfigurator($configurator);
 		return $configurator;
 	}
 	

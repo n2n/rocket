@@ -47,6 +47,8 @@ use rocket\ei\manage\generic\ScalarEiProperty;
 use n2n\impl\persistence\orm\property\StringEntityProperty;
 use rocket\si\content\SiField;
 use rocket\impl\ei\component\prop\meta\config\AddonConfig;
+use rocket\impl\ei\component\prop\string\conf\AlphanumericConfig;
+use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 
 abstract class AlphanumericEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiProp, 
 		SortableEiProp, QuickSearchableEiProp, ScalarEiProp, GenericEiProp {
@@ -59,40 +61,32 @@ abstract class AlphanumericEiProp extends DraftablePropertyEiPropAdapter impleme
 	 */
 	private $maxlength;
 	/**
+	 * @var AlphanumericConfig
+	 */
+	private $alphanumericConfig;
+	/**
 	 * @var AddonConfig
 	 */
 	private $addonConfig;
 
-	public  function __construct() {
+	function __construct() {
 		parent::__construct();
 
+		$this->alphanumericConfig = new AlphanumericConfig();
 		$this->addonConfig = new AddonConfig();
 	}
 	
-	public function getMinlength() {
-		return $this->minlength;
-	}
-	
-	public function setMinlength(?int $minlength) {
-		$this->minlength = $minlength;
-	}
-
-	public function getMaxlength() {
-		return $this->maxlength;
-	}
-
-	public function setMaxlength(?int $maxlength) {
-		$this->maxlength = $maxlength;
-	}
-	
-	function setAddonConfig(AddonConfig $addonConfig) {
-		$this->addonConfig = $addonConfig;
+	/**
+	 * @return \rocket\impl\ei\component\prop\string\conf\AlphanumericConfig
+	 */
+	protected function getAlphanumericConfig() {
+		return $this->alphanumericConfig;
 	}
 	
 	/**
 	 * @return \rocket\impl\ei\component\prop\meta\config\AddonConfig
 	 */
-	function getAddonConfig() {
+	protected function getAddonConfig() {
 		return $this->addonConfig;
 	}
 	
@@ -109,6 +103,11 @@ abstract class AlphanumericEiProp extends DraftablePropertyEiPropAdapter impleme
 		parent::setEntityProperty($entityProperty);
 	}
 
+	protected function adaptConfigurator(AdaptableEiPropConfigurator $configurator) {
+		$configurator->addAdaption($this->alphanumericConfig);
+		$configurator->addAdaption($this->addonConfig);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable::createUiComponent()

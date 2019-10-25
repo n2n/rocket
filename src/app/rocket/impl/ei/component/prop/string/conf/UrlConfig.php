@@ -34,13 +34,42 @@ use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\persistence\meta\structure\Column;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 
-class UrlEiPropConfigurator extends AlphanumericEiPropConfigurator {
-	const MAG_ALLOWED_PROTOCOLS_KEY = 'allowedProtocols';
-	const MAG_RELATIVE_ALLOWED_KEY = 'relativeAllowed'; 
+class UrlConfig {
+	const ATTR_ALLOWED_PROTOCOLS_KEY = 'allowedProtocols';
+	const ATTR_RELATIVE_ALLOWED_KEY = 'relativeAllowed'; 
 	const ATTR_AUTO_SCHEME_KEY = 'autoScheme';
 	
 	private static $commonNeedles = array('url', 'link');
 	private static $commonNotNeedles = array('label', 'title', 'text');
+	
+	private $autoScheme;
+	private $allowedSchemes = array();
+	private $relativeAllowed = false;
+	
+	
+	public function setAllowedSchemes(array $allowedSchemes) {
+		$this->allowedSchemes = $allowedSchemes;
+	}
+	
+	public function getAllowedSchemes(): array {
+		return $this->allowedSchemes;
+	}
+	
+	public function isRelativeAllowed(): bool {
+		return $this->relativeAllowed;
+	}
+	
+	public function setRelativeAllowed(bool $relativeAllowed) {
+		$this->relativeAllowed = $relativeAllowed;
+	}
+	
+	public function setAutoScheme(string $autoScheme = null) {
+		$this->autoScheme = $autoScheme;
+	}
+	
+	public function getAutoScheme() {
+		return $this->autoScheme;
+	}
 	
 	public function testCompatibility(PropertyAssignation $propertyAssignation): int {
 		$level = parent::testCompatibility($propertyAssignation);
@@ -65,12 +94,12 @@ class UrlEiPropConfigurator extends AlphanumericEiPropConfigurator {
 	public function setup(EiSetup $eiSetupProcess) {
 		parent::setup($eiSetupProcess);
 		
-		if ($this->dataSet->contains(self::MAG_RELATIVE_ALLOWED_KEY)) {
-			$this->eiComponent->setRelativeAllowed($this->dataSet->getBool(self::MAG_RELATIVE_ALLOWED_KEY));
+		if ($this->dataSet->contains(self::ATTR_RELATIVE_ALLOWED_KEY)) {
+			$this->eiComponent->setRelativeAllowed($this->dataSet->getBool(self::ATTR_RELATIVE_ALLOWED_KEY));
 		}
 		
-		if ($this->dataSet->contains(self::MAG_ALLOWED_PROTOCOLS_KEY)) {
-			$this->eiComponent->setAllowedSchemes($this->dataSet->getArray(self::MAG_ALLOWED_PROTOCOLS_KEY,
+		if ($this->dataSet->contains(self::ATTR_ALLOWED_PROTOCOLS_KEY)) {
+			$this->eiComponent->setAllowedSchemes($this->dataSet->getArray(self::ATTR_ALLOWED_PROTOCOLS_KEY,
 					true, array(), TypeConstraint::createSimple('string')));
 		}
 		
@@ -89,11 +118,11 @@ class UrlEiPropConfigurator extends AlphanumericEiPropConfigurator {
 		$magDispatchable = parent::createMagDispatchable($n2nContext);
 		
 		$lar = new LenientAttributeReader($this->dataSet);
-		$magDispatchable->getMagCollection()->addMag(self::MAG_RELATIVE_ALLOWED_KEY, new BoolMag('Relative allowed',
-				$lar->getBool(self::MAG_RELATIVE_ALLOWED_KEY, $this->eiComponent->isRelativeAllowed())));
+		$magDispatchable->getMagCollection()->addMag(self::ATTR_RELATIVE_ALLOWED_KEY, new BoolMag('Relative allowed',
+				$lar->getBool(self::ATTR_RELATIVE_ALLOWED_KEY, $this->eiComponent->isRelativeAllowed())));
 	
-		$magDispatchable->getMagCollection()->addMag(self::MAG_ALLOWED_PROTOCOLS_KEY, 
-				new StringArrayMag('Allowed protocols', $lar->getArray(self::MAG_ALLOWED_PROTOCOLS_KEY, 
+		$magDispatchable->getMagCollection()->addMag(self::ATTR_ALLOWED_PROTOCOLS_KEY, 
+				new StringArrayMag('Allowed protocols', $lar->getArray(self::ATTR_ALLOWED_PROTOCOLS_KEY, 
 						TypeConstraint::createSimple('string'), $this->eiComponent->getAllowedSchemes())));
 	
 		$magDispatchable->getMagCollection()->addMag(self::ATTR_AUTO_SCHEME_KEY, 
@@ -108,11 +137,11 @@ class UrlEiPropConfigurator extends AlphanumericEiPropConfigurator {
 	
 		$magCollection = $magDispatchable->getMagCollection();
 		
-		$this->dataSet->set(self::MAG_RELATIVE_ALLOWED_KEY, $magCollection
-				->getMagByPropertyName(self::MAG_RELATIVE_ALLOWED_KEY)->getValue());
+		$this->dataSet->set(self::ATTR_RELATIVE_ALLOWED_KEY, $magCollection
+				->getMagByPropertyName(self::ATTR_RELATIVE_ALLOWED_KEY)->getValue());
 
-		$this->dataSet->set(self::MAG_ALLOWED_PROTOCOLS_KEY, $magCollection
-				->getMagByPropertyName(self::MAG_ALLOWED_PROTOCOLS_KEY)->getValue());
+		$this->dataSet->set(self::ATTR_ALLOWED_PROTOCOLS_KEY, $magCollection
+				->getMagByPropertyName(self::ATTR_ALLOWED_PROTOCOLS_KEY)->getValue());
 		
 		$this->dataSet->set(self::ATTR_AUTO_SCHEME_KEY, $magCollection
 				->getMagByPropertyName(self::ATTR_AUTO_SCHEME_KEY)->getValue());

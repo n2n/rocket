@@ -119,7 +119,7 @@ abstract class PropertyEiPropAdapter extends IndependentEiPropAdapter
 		IllegalStateException::assertTrue($configurator instanceof AdaptableEiPropConfigurator);
 		$configurator->setEntityPropertyConfigurable($this);
 		$configurator->setObjectPropertyConfigurable($this);
-		$this->adaptEiPropConfigurator($configurator);
+		$this->adaptConfigurator($configurator);
 		return $configurator;
 	}
 	

@@ -37,77 +37,24 @@ use rocket\ei\manage\generic\ScalarEiProperty;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\si\content\SiField;
+use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
+use rocket\impl\ei\component\prop\string\conf\PathPartEiPropConfig;
 
 class PathPartEiProp extends AlphanumericEiProp  {
-	const URL_COUNT_SEPERATOR = '-';
-	
-	private $nullAllowed = false;
-	private $baseScalarEiProperty;
-	private $uniquePerGenericEiProperty;
-	private $critical = false;
-	private $criticalMessage;
-	private $criticalMessageCodeDtc;
-	
-	private $urlEiCommand;
-	
-	public function __construct() {
-		$this->getDisplayConfig()->setDefaultDisplayedViewModes(ViewMode::BULKY_EDIT | ViewMode::COMPACT_READ);
-		$this->getEditConfig()->setMandatory(false);
+	function __construct() {
+		parent::__construct();
 	}
 	
-	/* (non-PHPdoc)
-	 * @see \rocket\impl\ei\component\prop\EditablePropertyEiPropAdapter::createEiConfigurator()
-	 */
-	public function createEiPropConfigurator(): EiPropConfigurator {
-		return new PathPartEiPropConfigurator($this);
+	public function adaptConfigurator(AdaptableEiPropConfigurator $configurator) {
+		$this->getDisplayConfig()->setDefaultDisplayedViewModes(ViewMode::BULKY_EDIT | ViewMode::COMPACT_READ);
+		$this->getEditConfig()->setMandatory(false)->setMandatoryChoosable(false);
+		$configurator->addAdaption(new PathPartEiPropConfig());
 	}
 	
 	public function getTypeName(): string {
 		return 'Path Part';
 	}
 	
-	public function isNullAllowed(): bool {
-		return $this->nullAllowed;
-	}
-
-	public function setNullAllowed(bool $nullAllowed) {
-		$this->nullAllowed = $nullAllowed;
-	}
-
-	public function getBaseScalarEiProperty() {
-		return $this->baseScalarEiProperty;
-	}
-
-	public function setBaseScalarEiProperty(ScalarEiProperty $baseScalarEiProperty = null) {
-		$this->baseScalarEiProperty = $baseScalarEiProperty;
-	}
-
-	/**
-	 * @return \rocket\ei\manage\generic\GenericEiProperty
-	 */
-	public function getUniquePerGenericEiProperty() {
-		return $this->uniquePerGenericEiProperty;
-	}
-
-	public function setUniquePerGenericEiProperty(GenericEiProperty $uniquePerCriteriaProperty = null) {
-		$this->uniquePerGenericEiProperty = $uniquePerCriteriaProperty;
-	}
-
-	public function isCritical(): bool {
-		return $this->critical;
-	}
-
-	public function setCritical(bool $critical) {
-		$this->critical = $critical;
-	}
-
-	public function getCriticalMessage() {
-		return $this->criticalMessage;
-	}
-
-	public function setCriticalMessage(string $criticalMessage = null) {
-		$this->criticalMessage = $criticalMessage;
-	}
 
 // 	public function getUrlEiCommand() {
 // 		return $this->urlEiCommand;
