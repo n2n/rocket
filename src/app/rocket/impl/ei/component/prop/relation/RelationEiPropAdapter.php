@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (c) 2012-2016, Hofmänner New Media.
+ * Copyright (c) 2012-2016, HofmÃ¤nner New Media.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This file is part of the n2n module ROCKET.
@@ -16,8 +16,8 @@
  * The following people participated in this project:
  *
  * Andreas von Burg...........:	Architect, Lead Developer, Concept
- * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
- * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
+ * Bert HofmÃ¤nner.............: Idea, Frontend UI, Design, Marketing, Concept
+ * Thomas GÃ¼nther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
 namespace rocket\impl\ei\component\prop\relation;
 
@@ -140,8 +140,7 @@ abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements Re
 	 * @see \rocket\ei\component\prop\GuiEiProp::buildGuiProp()
 	 */
 	function buildGuiProp(Eiu $eiu): ?GuiProp {
-	    return GuiProp::display($this, $this->displayConfig);
-		return $this;
+	    return GuiProps::configAndFieldFactory($this, $this->displayConfig);
 	}
 	
 	function isStringRepresentable(): bool {

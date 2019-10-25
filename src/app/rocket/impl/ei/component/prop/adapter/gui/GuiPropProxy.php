@@ -36,7 +36,7 @@ class GuiPropProxy implements GuiProp {
 	 * @param Eiu $eiu
 	 * @param StatelessGuiProp $statelessGuiProp
 	 */
-	function __construct(Eiu $eiu, StatelessGuiProp $statelessGuiProp) {
+	function __construct(Eiu $eiu, GuiFieldFactory $guiFieldFactory) {
 		$this->eiu = $eiu;
 		$this->statelessGuiProp = $statelessGuiProp;
 		$this->displayDefinition = $statelessGuiProp->buildDisplayDefinition($eiu);
