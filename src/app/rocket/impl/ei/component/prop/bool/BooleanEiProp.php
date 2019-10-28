@@ -21,30 +21,30 @@
  */
 namespace rocket\impl\ei\component\prop\bool;
 
+use n2n\impl\persistence\orm\property\BoolEntityProperty;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
-use n2n\persistence\orm\property\EntityProperty;
-use rocket\ei\component\prop\SortableEiProp;
-use rocket\ei\component\prop\FilterableEiProp;
 use n2n\impl\web\ui\view\html\HtmlElement;
-use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
-use n2n\util\type\ArgUtils;
-use n2n\reflection\property\AccessProxy;
-use n2n\util\type\TypeConstraint;
 use n2n\persistence\orm\criteria\item\CrIt;
-use rocket\ei\util\Eiu;
-use rocket\ei\util\filter\prop\BoolFilterProp;
-use rocket\impl\ei\component\prop\bool\conf\BooleanEiPropConfigurator;
+use n2n\persistence\orm\property\EntityProperty;
+use n2n\reflection\property\AccessProxy;
+use n2n\util\type\ArgUtils;
+use n2n\util\type\TypeConstraint;
+use rocket\ei\component\prop\FilterableEiProp;
+use rocket\ei\component\prop\SecurityFilterEiProp;
+use rocket\ei\component\prop\SortableEiProp;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\sort\SortProp;
-use rocket\ei\manage\gui\field\GuiFieldPath;
-use n2n\impl\persistence\orm\property\BoolEntityProperty;
-use rocket\ei\component\prop\SecurityFilterEiProp;
-use rocket\ei\manage\security\filter\SecurityFilterProp;
+use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
 use rocket\ei\manage\entry\EiField;
+use rocket\ei\manage\gui\field\GuiFieldPath;
+use rocket\ei\manage\security\filter\SecurityFilterProp;
+use rocket\ei\util\Eiu;
+use rocket\ei\util\filter\prop\BoolFilterProp;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
-use rocket\si\content\SiField;
+use rocket\impl\ei\component\prop\bool\conf\BooleanEiPropConfigurator;
 use rocket\si\content\impl\SiFields;
+use rocket\si\content\SiField;
 
 class BooleanEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiProp, SortableEiProp, SecurityFilterEiProp {
 
@@ -244,4 +244,7 @@ class BooleanEiProp extends DraftablePropertyEiPropAdapter implements Filterable
 		
 		return null;
 	}
+	public function saveSiField(SiField $siField, Eiu $eiu) {
+	}
+
 }

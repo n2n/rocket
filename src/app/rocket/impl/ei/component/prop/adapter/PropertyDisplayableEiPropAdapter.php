@@ -32,19 +32,17 @@ use rocket\ei\component\prop\GuiEiProp;
 use rocket\ei\component\prop\FieldEiProp;
 use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
-use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\field\GuiField;
-use rocket\core\model\Rocket;
-use n2n\l10n\Lstr;
 use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\impl\ei\component\prop\adapter\gui\GuiFieldProxy;
-use rocket\si\meta\SiStructureType;
+use rocket\impl\ei\component\prop\adapter\gui\GuiProps;
+use rocket\impl\ei\component\prop\adapter\gui\GuiFieldFactory;
 
 abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter implements StatelessGuiFieldDisplayable, 
-		FieldEiProp, GuiEiProp, GuiProp, Readable {
+		FieldEiProp, GuiEiProp, GuiFieldFactory, Readable {
 	private $displayConfig;
 
 	/**
@@ -56,30 +54,6 @@ abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter im
 		}
 		
 		return $this->displayConfig = new DisplayConfig(ViewMode::all());
-	}
-	
-	/**
-	 * @param Eiu $eiu
-	 * @return string
-	 */
-	public function getSiStructureType(Eiu $eiu): string {
-		return SiStructureType::ITEM;
-	}
-	
-	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
-		return $this->getDisplayConfig()->buildDisplayDefinitionFromEiu($eiu);
-		
-// 		$viewMode = $eiu->gui()->getViewMode();
-// 		if (!$this->getDisplayConfig()->isViewModeCompatible($viewMode)) {
-// 			return null;
-// 		}
-		
-// 		$groupType = $this->getSiStructureType($eiu);
-// 		ArgUtils::valEnumReturn($groupType, SiStructureType::all(), $this, 'getGroupType');
-		
-// 		return new DisplayDefinition($groupType,
-// 				$this->getDisplayConfig()->isViewModeDefaultDisplayed($viewMode),
-// 				$eiu->prop()->getLabel(), $eiu->prop()->getHelpText());
 	}
 
 	public function createEiPropConfigurator(): EiPropConfigurator {
@@ -106,44 +80,11 @@ abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter im
 	}
 	
 	public function buildGuiProp(Eiu $eiu): ?GuiProp {
-		return $this;
+		return GuiProps::configAndFactory($this->getDisplayConfig(), $this);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayLabelLstr()
-	 */
-	public function getDisplayLabelLstr(): Lstr {
-		return $this->getLabelLstr();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayHelpTextLstr()
-	 */
-	public function getDisplayHelpTextLstr(): ?Lstr {
-		$helpText = $this->displayConfig->getHelpText();
-		if ($helpText === null) {
-			return null;
-		}
-		
-		return Rocket::createLstr($helpText, $this->getEiMask()->getModuleNamespace());
-	}
-	
-	public function buildGuiField(Eiu $eiu): ?GuiField {
+	public function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
 		return new GuiFieldProxy($eiu, $this);
-	}
-	
-	public function getUiOutputLabel(Eiu $eiu) {
-		return $this->getLabelLstr();
-	}
-	
-	public function getHtmlContainerAttrs(Eiu $eiu) {
-		$eiTypeExtension = $this->getEiMask()->isExtension() ? $this->getEiMask()->getExtension() : null;
-		return array('class' => 'rocket-ei-spec-' . $this->getEiMask()->getEiType()->getId()
-						. ($eiTypeExtension !== null ? ' rocket-ei-mask-' . $eiTypeExtension->getId() : '') 
-						. ' rocket-ei-field-' . $this->getWrapper()->getEiPropPath(), 
-				'title' => $this->displayConfig->getHelpText());
 	}
 	
 	public function isStringRepresentable(): bool {

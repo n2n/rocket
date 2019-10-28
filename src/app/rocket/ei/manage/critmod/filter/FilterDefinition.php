@@ -22,7 +22,7 @@
 namespace rocket\ei\manage\critmod\filter;
 
 use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
-use n2n\util\type\attrs\DataSetException;
+use n2n\util\type\attrs\AttributesException;
 
 class FilterDefinition {
 	private $filterProps = array();
@@ -63,7 +63,7 @@ class FilterDefinition {
 			try {
 				$comparatorConstraints[] = $this->filterProps[$id]->createComparatorConstraint(
 						$subFilterSetting->getDataSet());
-			} catch (DataSetException $e) {}
+			} catch (AttributesException $e) {}
 		}
 		
 		foreach ($filterSettingGroup->getFilterSettingGroups() as $subFilterSettingGroup) {

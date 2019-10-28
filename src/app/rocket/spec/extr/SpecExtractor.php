@@ -23,7 +23,7 @@ namespace rocket\spec\extr;
 
 use n2n\util\type\attrs\DataSet;
 use rocket\ei\component\InvalidEiComponentConfigurationException;
-use n2n\util\type\attrs\DataSetException;
+use n2n\util\type\attrs\AttributesException;
 use n2n\config\InvalidConfigurationException;
 use rocket\spec\InvalidSpecConfigurationException;
 use rocket\ei\mask\model\DisplayScheme;
@@ -91,7 +91,7 @@ class SpecExtractor {
 				} else {
 					$customTypeExtractions[$typeId] = $this->createCustomTypeExtraction($typeId, $typeDataSet);
 				}
-			} catch (DataSetException $e) {
+			} catch (AttributesException $e) {
 				throw $this->createSpecException($typeId, $e);
 			} catch (InvalidConfigurationException $e) {
 				throw $this->createSpecException($typeId, $e);
@@ -163,7 +163,7 @@ class SpecExtractor {
 		foreach ($eiPropRawDatas as $eiPropId => $fieldRawData) {
 			try {
 				$eiMaskExtraction->addEiPropExtraction($this->createEiPropExtraction($eiPropId, new DataSet($fieldRawData)));
-			} catch (DataSetException $e) {
+			} catch (AttributesException $e) {
 				throw $this->createEiComponentException('EiProp ' . $eiPropId, $e);
 			}
 		}
@@ -173,7 +173,7 @@ class SpecExtractor {
 			try {
 				$eiMaskExtraction->addEiCommandExtraction($this->createEiComponentExtraction($eiCommandId, 
 						new DataSet($eiCommandRawData)));
-			} catch (DataSetException $e) {
+			} catch (AttributesException $e) {
 				throw $this->createEiComponentException('EiCommand ' . $eiCommandId, $e);
 			}
 		}
@@ -229,7 +229,7 @@ class SpecExtractor {
 		foreach ($eiPropRawDatas as $forkedId => $forkedEiPropRawData) {
 			try {
 				$forkedExtractions[] = $this->createEiPropExtraction($forkedId, new DataSet($forkedEiPropRawData), $parentIds);
-			} catch (DataSetException $e) {
+			} catch (AttributesException $e) {
 				throw $this->createEiComponentException('EiProp ' . implode('.' , array_merge($parentIds, [$id])), $e);
 			}
 		}
@@ -294,7 +294,7 @@ class SpecExtractor {
 						= $this->createEiTypeExtensionExtractions($extendedTypePath, $eiTypeExtensionDataSet);
 			} catch (\InvalidArgumentException $e) {
 				throw $this->createSpecEiMaskException($extendedTypePathStr, $e);
-			} catch (DataSetException $e) {
+			} catch (AttributesException $e) {
 				throw $this->createSpecEiMaskException($extendedTypePathStr, $e);
 			} catch (InvalidConfigurationException $e) {
 				throw $this->createSpecEiMaskException($extendedTypePathStr, $e);
@@ -314,7 +314,7 @@ class SpecExtractor {
 						new DataSet($eiMasksDataSet->getArray($eiTypeExtensionId)));
 			} catch (InvalidConfigurationException $e) {
 				throw $this->createEiTypeExtensionException($eiTypeExtensionId, $e);
-			} catch (DataSetException $e) {
+			} catch (AttributesException $e) {
 				throw $this->createEiTypeExtensionException($eiTypeExtensionId, $e);
 			}
 		}
@@ -340,7 +340,7 @@ class SpecExtractor {
 				
 				$eiModificatorsDataSet = new DataSet($dataSet->getArray($typePathStr, false));
 				$eiModificatorGroups[$typePathStr] = $this->createEiModificatorExtractions($eiModificatorsDataSet, $typePath);
-			} catch (DataSetException $e) {
+			} catch (AttributesException $e) {
 				throw $this->createSpecEiMaskException($typePath, $e);
 			} catch (InvalidConfigurationException $e) {
 				throw $this->createSpecEiMaskException($typePath, $e);
@@ -359,7 +359,7 @@ class SpecExtractor {
 						new DataSet($eiModificatorsDataSet->getArray($modificatorId)), $eiTypePath);
 			} catch (InvalidConfigurationException $e) {
 				throw $this->createEiModificatorException($modificatorId, $eiTypePath, $e);
-			} catch (DataSetException $e) {
+			} catch (AttributesException $e) {
 				throw $this->createEiModificatorException($modificatorId, $eiTypePath, $e);
 			}
 		}
@@ -397,7 +397,7 @@ class SpecExtractor {
 		
 		try {
 			return $this->createDisplayStructure($data);
-		} catch (DataSetException $e) {
+		} catch (AttributesException $e) {
 			throw new InvalidEiMaskConfigurationException('Field contains invalid DisplayStructure configuration: ' 
 					. $key, 0, $e);
 		}
@@ -488,7 +488,7 @@ class SpecExtractor {
 			return $launchPadExtraction;
 		} catch (\InvalidArgumentException $e) {
 			throw $this->createLaunchPadException($launchPadId, $e);
-		} catch (DataSetException $e) {
+		} catch (AttributesException $e) {
 			throw $this->createLaunchPadException($launchPadId, $e);
 		} catch (\InvalidArgumentException $e) {
 			throw $this->createLaunchPadException($launchPadId, $e);

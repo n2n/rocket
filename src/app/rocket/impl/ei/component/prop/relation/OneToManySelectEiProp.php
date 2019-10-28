@@ -62,12 +62,11 @@ class OneToManySelectEiProp extends RelationEiPropAdapter implements FieldEiProp
 		return new ToManyEiField($eiu, $targetEiuFrame, $this, $this->getRelationModel());
 	}
 	
-	function buildGuiField(Eiu $eiu): ?GuiField {
+	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
 		if ($readOnly || $this->editConfig->isReadOnly()) {
 			return new RelationLinkGuiField($eiu, $this->getRelationModel());
 		}
 		
 		return new ToManyGuiField($eiu, $this->getRelationModel(), $this->editConfig);
-		
 	}
 }

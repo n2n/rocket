@@ -22,6 +22,7 @@
 namespace rocket\impl\ei\component\prop\adapter\config;
 
 use n2n\web\dispatch\mag\MagCollection;
+use n2n\util\type\attrs\InvalidAttributeException;
 use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\util\type\attrs\DataSet;
 use n2n\impl\web\dispatch\mag\model\BoolMag;

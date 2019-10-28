@@ -1,7 +1,6 @@
 <?php
 namespace rocket\impl\ei\component\prop\bool\conf;
 
-use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\impl\ei\component\prop\bool\BooleanEiProp;
 use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\web\dispatch\mag\MagDispatchable;
@@ -15,17 +14,15 @@ use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use n2n\util\StringUtils;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use n2n\util\type\CastUtils;
+use rocket\impl\ei\component\prop\adapter\config\EiPropConfiguratorAdaption;
+use n2n\web\dispatch\mag\MagCollection;
+use n2n\util\type\attrs\DataSet;
+use rocket\ei\util\Eiu;
 
-class BooleanEiPropConfigurator extends AdaptableEiPropConfigurator {
+class BooleanConfig implements EiPropConfiguratorAdaption {
 	const ATTR_BIND_GUI_PROPS_KEY = 'associatedGuiProps';
 	const ATTR_ON_ASSOCIATED_GUI_PROP_KEY = 'onAssociatedGuiProps';
 	const ATTR_OFF_ASSOCIATED_GUI_PROP_KEY = 'offAssociatedGuiProps';
-	
-	public function __construct(BooleanEiProp $eiComponent) {
-		parent::__construct($eiComponent);
-		
-		$this->autoRegister();
-	}
 	
 	private static $booleanNeedles = ['Available', 'Enabled'];
 	
@@ -45,19 +42,13 @@ class BooleanEiPropConfigurator extends AdaptableEiPropConfigurator {
 	}
 	
 	
-	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
-		$eiComponent = $this->eiComponent;
-		CastUtils::assertTrue($eiComponent instanceof BooleanEiProp);
-		
+	public function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
 		$lar = new LenientAttributeReader($this->dataSet);
 		
-		$magDispatchable = parent::createMagDispatchable($n2nContext);
-		$magCollection = $magDispatchable->getMagCollection();
 		
 		$guiProps = null;
 		try {
-			$this->eiu($n2nContext)->mask()->engine()->guiPropPaths();
-			
+			$eiu->mask()->engine()->guiPropPaths();
 		} catch (\Throwable $e) {
 			$guiProps = $this->eiComponent->getEiMask()->getEiEngine()->createGuiDefinition($n2nContext)->getLevelGuiProps();
 		}
@@ -78,12 +69,9 @@ class BooleanEiPropConfigurator extends AdaptableEiPropConfigurator {
 						new MultiSelectMag('Associated Gui Fields when on', $assoicatedGuiPropOptions, $onGuiFieldPathStrs)),
 				$magCollection->addMag(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY, 
 						new MultiSelectMag('Associated Gui Fields when off', $assoicatedGuiPropOptions, $offGuiFieldPathStrs))));
-		
-		return $magDispatchable;
 	}
 	
-	public function saveMagDispatchable(MagDispatchable $magDispatchable, N2nContext $n2nContext) {
-		parent::saveMagDispatchable($magDispatchable, $n2nContext);
+	function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {
 		
 		if (!$magDispatchable->getPropertyValue(self::ATTR_BIND_GUI_PROPS_KEY)) return;
 		
@@ -94,7 +82,7 @@ class BooleanEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$this->dataSet->set(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY, $offGuiFieldPathsStrs);
 	}
 	
-	public function setup(EiSetup $eiSetupProcess) {
+	function setup(Eiu $eiu, DataSet $dataSet) {
 		parent::setup($eiSetupProcess);
 		
 		$eiComponent = $this->eiComponent;

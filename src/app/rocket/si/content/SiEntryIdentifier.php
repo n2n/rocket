@@ -90,7 +90,7 @@ class SiEntryIdentifier implements \JsonSerializable {
 		
 		try {
 			return new SiEntryIdentifier($ds->reqString('typeCategory'), $ds->optString('id'));
-		} catch (\n2n\util\type\attrs\DataSetException $e) {
+		} catch (\n2n\util\type\attrs\AttributesException $e) {
 			throw new \InvalidArgumentException(null, null, $e);
 		}
 	}

@@ -33,7 +33,7 @@ use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\util\type\attrs\DataSet;
 use n2n\util\type\TypeConstraint;
 use rocket\impl\ei\component\prop\ci\model\PanelConfig;
-use n2n\util\type\attrs\DataSetException;
+use n2n\util\type\attrs\AttributesException;
 use n2n\util\StringUtils;
 use n2n\impl\web\dispatch\mag\model\MagCollectionMag;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
@@ -147,7 +147,7 @@ class CiConfigUtils {
 	
 	/**
 	 * @param array $panelAttrs
-	 * @throws DataSetException
+	 * @throws AttributesException
 	 * @return \rocket\impl\ei\component\prop\ci\model\PanelConfig
 	 */
 	public static function createPanelConfig(array $panelAttrs, string $panelName = null) {

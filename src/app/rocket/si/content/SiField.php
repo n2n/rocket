@@ -22,9 +22,9 @@
 namespace rocket\si\content;
 
 use n2n\util\ex\IllegalStateException;
-use n2n\util\type\attrs\DataSetException;
 use n2n\web\http\UploadDefinition;
 use Doctrine\Instantiator\Exception\InvalidArgumentException;
+use n2n\util\type\attrs\AttributesException;
 
 interface SiField {
 	
@@ -47,7 +47,7 @@ interface SiField {
 	 * @param array $data
 	 * @throws IllegalStateException if readonly ({{@see self::isReadyOnly()}} returns true).
 	 * @throws \InvalidArgumentException if data is corrupt
-	 * @throws DataSetException if data is corrupt
+	 * @throws AttributesException if data is corrupt
 	 */
 	function handleInput(array $data);
 	
@@ -61,7 +61,7 @@ interface SiField {
 	 * @param UploadDefinition[] $uploadDefinitions
 	 * @return array
 	 * @throws \InvalidArgumentException
-	 * @throws DataSetException
+	 * @throws AttributesException
 	 */
 	function handleCall(array $data, array $uploadDefinitions): array;
 }

@@ -22,7 +22,7 @@
 namespace rocket\si\api;
 
 use n2n\util\type\attrs\DataSet;
-use n2n\util\type\attrs\DataSetException;
+use n2n\util\type\attrs\AttributesException;
 use n2n\util\type\ArgUtils;
 
 class SiGetRequest {
@@ -61,7 +61,7 @@ class SiGetRequest {
 			foreach ($ds->reqArray('instructions') as $key => $instructionData) {
 				$getRequest->putInstruction($key, SiGetInstruction::createFromData($instructionData));
 			}
-		} catch (DataSetException $e) {
+		} catch (AttributesException $e) {
 			throw new \InvalidArgumentException(null, 0, $e);
 		}
 		return $getRequest;

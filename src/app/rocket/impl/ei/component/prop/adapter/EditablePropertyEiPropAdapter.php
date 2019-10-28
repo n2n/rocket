@@ -40,7 +40,6 @@ use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldEditable;
 use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use n2n\l10n\Message;
-use rocket\si\content\SiField;
 use rocket\impl\ei\component\prop\adapter\gui\GuiFields;
 
 abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAdapter implements StatelessGuiFieldEditable, Writable, 
@@ -107,10 +106,6 @@ abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAd
 		return $value;
 	}
 	
-	private function checkMandatory(EiObject $eiObject, $eiFieldValue): bool {
-		return $eiFieldValue !== null || $eiObject->isDraft() || !$this->editConfig->isMandatory();
-	}
-	
 	public function testEiFieldValue(Eiu $eiu, $eiFieldValue): bool {
 		return $this->checkMandatory($eiu->object()->getEiObject(), $eiFieldValue);
 	}
@@ -134,41 +129,15 @@ abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAd
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\PropertyDisplayableEiPropAdapter::buildGuiField()
 	 */
-	public function buildGuiField(Eiu $eiu): ?GuiField {
-		return GuiFields::stateless($eiu, $this, $this);
+	public function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
+		return GuiFields::stateless($eiu, $this, ($readOnly ? null : $this));
 	}
-	
-// 	/**
-// 	 * @return bool
-// 	 */
-// 	public function isReadOnly(Eiu $eiu): bool {
-// 		if ($eiu->field()->isWritable()) {
-// 			return true;
-// 		}
-		
-// 		if ($eiu->entry()->isDraft() || (!$eiu->entry()->isNew() 
-// 				&& $this->getEditConfig()->isConstant())) {
-// 			return true;
-// 		}
-		
-// 		return $this->getEditConfig()->isReadOnly();
-// 	}
-	
-// 	public function isMandatory(Eiu $eiu): bool {
-// 		 return $this->getEditConfig()->isMandatory();
-// 	}
-	
 
-// 	public function isWritingAllowed(DataSet $accessDataSet, EiFrame $eiFrame, 
-// 			EiObject $eiObject = null) {
-// 		return (boolean) $accessDataSet->get('writingAllowed');
+// 	public function loadSiField(Eiu $eiu, SiField $siField) {
+// 		$siField->setValue($eiu->field()->getValue());
 // 	}
 	
-	public function loadSiField(Eiu $eiu, SiField $siField) {
-		$siField->setValue($eiu->field()->getValue());
-	}
-	
-	public function saveSiField(SiField $siField, Eiu $eiu) {
-		$eiu->field()->setValue($siField->getValue());
-	}
+// 	public function saveSiField(SiField $siField, Eiu $eiu) {
+// 		$eiu->field()->setValue($siField->getValue());
+// 	}
 }

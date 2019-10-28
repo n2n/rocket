@@ -86,7 +86,7 @@ class SiTypeQualifier implements \JsonSerializable {
 		
 		try {
 			return new SiTypeQualifier($ds->reqString('category'), $ds->reqString('id'), $ds->reqString('name'), $ds->reqString('iconClass'));
-		} catch (\n2n\util\type\attrs\DataSetException $e) {
+		} catch (\n2n\util\type\attrs\AttributesException $e) {
 			throw new \InvalidArgumentException(null, null, $e);
 		}
 	}

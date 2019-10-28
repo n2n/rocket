@@ -33,7 +33,7 @@ use n2n\impl\web\dispatch\mag\model\EnumMag;
 use n2n\util\type\ArgUtils;
 use rocket\ei\manage\entry\UnknownEiObjectException;
 use n2n\util\type\TypeConstraint;
-use n2n\util\type\attrs\DataSetException;
+use n2n\util\type\attrs\AttributesException;
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\filter\FilterDefinition;
 use rocket\ei\util\filter\controller\FilterJhtmlHook;
@@ -219,7 +219,7 @@ class RelationFilterConf {
 		try {
 			return FilterSettingGroup::create(new DataSet($this->dataSet
 					->getArray(self::TARGET_FILTER_GROUP_ATTRS, false)));
-		} catch (DataSetException $e) {
+		} catch (AttributesException $e) {
 			return new FilterSettingGroup();
 		}
 	}

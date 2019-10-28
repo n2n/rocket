@@ -32,7 +32,6 @@ use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use rocket\ei\component\prop\indepenent\IncompatiblePropertyException;
 use n2n\reflection\property\AccessProxy;
 use rocket\ei\component\InvalidEiComponentConfigurationException;
-use n2n\persistence\meta\structure\Column;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\util\ex\IllegalStateException;
@@ -48,18 +47,14 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 	/**
 	 * @var EiPropConfiguratorAdaption[]
 	 */
-	private $adpations = [];
+	private $adapations = [];
 	
 	/**
 	 * @var int
 	 */
 	private $maxCompatibilityLevel = CompatibilityLevel::COMPATIBLE;
 		
-	public function initAutoEiPropDataSet(N2nContext $n2nContext, Column $column = null) {
-		if ($this->addMandatory && $this->autoMandatoryCheck && $this->mandatoryRequired()) {
-			$this->dataSet->set(self::ATTR_MANDATORY_KEY, true);
-		}
-	}
+	
 	
 // 	public function getPropertyAssignation(): PropertyAssignation {
 // 		return new PropertyAssignation($this->getAssignedEntityProperty(), 
@@ -69,7 +64,15 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 	public function testCompatibility(PropertyAssignation $propertyAssignation): int {
 		try {
 			$this->assignProperty($propertyAssignation);
-			return $this->maxCompatibilityLevel;
+			
+			$maxLevel = $this->maxCompatibilityLevel;
+			foreach ($this->adapations as $adaption) {
+				$resultLevel = $adaption->testCompatibility($propertyAssignation);
+				if ($maxLevel < $resultLevel) {
+					$maxLevel = $resultLevel;
+				}
+			}
+			return $maxLevel;
 		} catch (IncompatiblePropertyException $e) {
 			return CompatibilityLevel::NOT_COMPATIBLE;
 		}
@@ -221,7 +224,7 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 	public function setup(EiSetup $eiSetupProcess) {
 		$eiu = $eiSetupProcess->eiu();
 		
-		foreach ($this->adpations as $adaption) {
+		foreach ($this->adapations as $adaption) {
 			$adaption->setup($eiu, $this->dataSet);
 		}
 	}
@@ -234,7 +237,7 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 		$magCollection = new MagCollection();
 		
 		$eiu = new Eiu($n2nContext);
-		foreach ($this->adpations as $adaption) {
+		foreach ($this->adapations as $adaption) {
 			$adaption->mag($eiu, $this->dataSet, $magCollection);
 		}
 		
@@ -248,6 +251,6 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 	}
 	
 	function addAdaption(EiPropConfiguratorAdaption $adaption) {
-		$this->adpations[] = $adaption;
+		$this->adapations[] = $adaption;
 	}
 }

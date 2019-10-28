@@ -35,7 +35,7 @@ use rocket\ei\manage\api\ApiControlCallId;
 use rocket\si\input\SiEntryInput;
 use rocket\si\content\impl\basic\BulkyEntrySiComp;
 use rocket\si\content\impl\basic\CompactEntrySiComp;
-use n2n\util\type\attrs\DataSetException;
+use n2n\util\type\attrs\AttributesException;
 use rocket\ei\EiPropPath;
 
 class EiEntryGui {
@@ -433,7 +433,7 @@ class EiEntryGui {
 			
 			try {
 				$guiField->getSiField()->handleInput($siEntryInput->getFieldInput($guiFieldPathStr)->getData());
-			} catch (DataSetException $e) {
+			} catch (AttributesException $e) {
 				throw new \InvalidArgumentException(null, 0, $e);
 			}
 		}

@@ -21,7 +21,7 @@
  */
 namespace rocket\si\input;
 
-use n2n\util\type\attrs\DataSetException;
+use n2n\util\type\attrs\AttributesException;
 
 class CorruptedSiInputDataException extends \Exception {
 	

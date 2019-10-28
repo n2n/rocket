@@ -27,7 +27,7 @@ use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\manage\entry\EiEntryConstraint;
 use rocket\ei\manage\entry\EiFieldConstraint;
 use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
-use n2n\util\type\attrs\DataSetException;
+use n2n\util\type\attrs\AttributesException;
 
 class SecurityFilterDefinition {
 	/**
@@ -116,7 +116,7 @@ class SecurityFilterDefinition {
 			try {
 				$group->addEiFieldConstraint(EiPropPath::create($id), 
 						$this->props[$id]->createEiFieldConstraint($subFilterSetting->getDataSet()));
-			} catch (DataSetException $e) {}
+			} catch (AttributesException $e) {}
 		}
 		
 		foreach ($filterSettingGroup->getFilterSettingGroups() as $subFilterSettingGroup) {
@@ -138,7 +138,7 @@ class SecurityFilterDefinition {
 // 			try {
 // 				$criteriaComparators[] = $this->props[$id]->createComparatorConstraint(
 // 						$subFilterSetting->getDataSet());
-// 			} catch (DataSetException $e) {}
+// 			} catch (AttributesException $e) {}
 // 		}
 		
 // 		foreach ($filterSettingGroup->getFilterSettingGroups() as $subFilterSettingGroup) {

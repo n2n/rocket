@@ -65,7 +65,7 @@ interface EiConfigurator {
 	/**
 	 * @param EiSetup $eiSetup
 	 * @throws InvalidEiComponentConfigurationException can be created with {@link EiSetup::createExcpetion()}
-	 * @throws \n2n\util\type\attrs\DataSetException will be converted to InvalidEiComponentConfigurationException
+	 * @throws \n2n\util\type\attrs\AttributesException will be converted to InvalidEiComponentConfigurationException
 	 * @throws \InvalidArgumentException will be converted to InvalidEiComponentConfigurationException
 	 */
 	public function setup(EiSetup $eiSetup);

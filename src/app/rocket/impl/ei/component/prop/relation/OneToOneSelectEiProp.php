@@ -26,14 +26,19 @@ use n2n\util\type\ArgUtils;
 use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
+use rocket\impl\ei\component\prop\adapter\config\EditConfig;
+use rocket\ei\manage\gui\ViewMode;
+use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 
 class OneToOneSelectEiProp extends RelationEiPropAdapter {
 	
 	public function __construct() {
 		parent::__construct();
 		
-		$this->initialize();
-		$this->getEditConfig()->setReadOnly(true);
+		$this->setup(
+				new DisplayConfig(ViewMode::all()), 
+				new RelationModel($this, false, false, RelationModel::MODE_SELECT, 
+						(new EditConfig())->setReadOnly(true)));
 	}
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {
@@ -41,7 +46,5 @@ class OneToOneSelectEiProp extends RelationEiPropAdapter {
 				&& $entityProperty->getType() === RelationEntityProperty::TYPE_ONE_TO_MANY);
 	
 		parent::setEntityProperty($entityProperty);
-		
-		$this->setRelationModel(new RelationModel($entityProperty, false, false, RelationModel::MODE_SELECT));
 	}
 }

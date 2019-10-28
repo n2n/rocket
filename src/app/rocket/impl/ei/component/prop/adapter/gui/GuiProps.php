@@ -40,7 +40,7 @@ class GuiProps {
      * @return \rocket\ei\manage\gui\GuiProp
      */
     static function configAndFactory(DisplayConfig $displayConfig, GuiFieldFactory $guiFieldFactory) {
-    	return new GuiPropProxy($eiu, $displayConfig, $guiFieldFactory);
+    	return new GuiPropProxy($displayConfig, $guiFieldFactory);
     }
     
     /**
@@ -49,6 +49,6 @@ class GuiProps {
      * @return \rocket\ei\manage\gui\GuiProp
      */
     static function configAndCallback(DisplayConfig $displayConfig, \Closure $closure) {
-    	return new GuiPropProxy($eiu, $displayConfig, null, $closure);
+    	return new GuiPropProxy($displayConfig, null, $closure);
     }
 }

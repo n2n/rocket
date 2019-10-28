@@ -23,6 +23,7 @@ namespace rocket\impl\ei\component\prop\adapter\config;
 
 use n2n\persistence\meta\structure\Column;
 use n2n\util\type\ArgUtils;
+use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\si\meta\SiStructureType;
@@ -214,8 +215,14 @@ class DisplayConfig implements EiPropConfiguratorAdaption {
 	const ATTR_HELPTEXT_KEY = 'helpText';
 	const ATTR_SI_STRUCTURE_TYPE_KEY = 'containerType';
 	
+	function testCompatibility(PropertyAssignation $propertyAssignation): int {
+		return 0;
+	}
 	
 	function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
+		if ($this->addMandatory && $this->autoMandatoryCheck && $this->mandatoryRequired()) {
+			$this->dataSet->set(self::ATTR_MANDATORY_KEY, true);
+		}
 	}
 	
 	function setup(Eiu $eiu, DataSet $dataSet) {
@@ -323,5 +330,6 @@ class DisplayConfig implements EiPropConfiguratorAdaption {
 		return $this->toDisplayDefinition($eiu->gui()->getViewMode(), $eiu->prop()->getLabel(), 
 				$eiu->prop()->getHelpText());
 	}
+
 
 }

@@ -25,7 +25,7 @@ use n2n\util\type\attrs\DataSet;
 use n2n\config\source\WritableConfigSource;
 use n2n\util\type\TypeConstraint;
 use n2n\util\type\ArgUtils;
-use n2n\util\type\attrs\DataSetException;
+use n2n\util\type\attrs\AttributesException;
 use n2n\config\InvalidConfigurationException;
 
 class LayoutExtractionManager {
@@ -55,7 +55,7 @@ class LayoutExtractionManager {
 	public function extractStartLaunchPadId() {
 		try {
 			return $this->dataSet->optString(self::START_MENU_ITEM_ID_KEY);
-		} catch (DataSetException $e) {
+		} catch (AttributesException $e) {
 			throw $this->createDataSourceException($e);
 		}
 	}
@@ -77,7 +77,7 @@ class LayoutExtractionManager {
 		try {
 			$menuGroupsRawData = $this->dataSet->getArray(self::MENU_GROUPS_KEY, false, array(), 
 					TypeConstraint::createArrayLike('array', false, TypeConstraint::createSimple('string')));
-		} catch (DataSetException $e) {
+		} catch (AttributesException $e) {
 			throw $this->createDataSourceException($e);
 		}
 	

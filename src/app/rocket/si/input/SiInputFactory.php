@@ -21,7 +21,7 @@
  */
 namespace rocket\si\input;
 
-use n2n\util\type\attrs\DataSetException;
+use n2n\util\type\attrs\AttributesException;
 
 class SiInputFactory {
 	
@@ -36,7 +36,7 @@ class SiInputFactory {
 		foreach ($data as $key => $entryData) {
 			try {
 				$input->putEntryInput($key, SiEntryInput::parse($entryData));
-			} catch (DataSetException $e) {
+			} catch (AttributesException $e) {
 				throw new CorruptedSiInputDataException(null, 0, $e);
 			}
 		}

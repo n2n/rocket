@@ -48,7 +48,7 @@ class SiEntryQualifier extends SiEntryIdentifier implements \JsonSerializable {
 		try {
 			return new SiEntryQualifier(SiTypeQualifier::parse($ds->reqArray('typeQualifier')), $ds->optString('id'), 
 					$ds->optString('idName'));
-		} catch (\n2n\util\type\attrs\DataSetException $e) {
+		} catch (\n2n\util\type\attrs\AttributesException $e) {
 			throw new \InvalidArgumentException(null, null, $e);
 		}
 	}

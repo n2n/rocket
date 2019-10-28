@@ -23,7 +23,7 @@ namespace rocket\si\api;
 
 use n2n\util\type\ArgUtils;
 use n2n\util\type\attrs\DataSet;
-use n2n\util\type\attrs\DataSetException;
+use n2n\util\type\attrs\AttributesException;
 use rocket\si\input\SiEntryInput;
 
 class SiValInstruction {
@@ -90,7 +90,7 @@ class SiValInstruction {
 			foreach ($ds->reqArray('getInstructions') as $key => $instructionData) {
 				$valInstruction->putGetInstruction($key, SiValGetInstruction::createFromData($instructionData));
 			}
-		} catch (DataSetException $e) {
+		} catch (AttributesException $e) {
 			throw new \InvalidArgumentException(null, 0, $e);
 		}
 		return $valInstruction;

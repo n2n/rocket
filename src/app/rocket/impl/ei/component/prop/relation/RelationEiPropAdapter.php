@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (c) 2012-2016, HofmÃ¤nner New Media.
+ * Copyright (c) 2012-2016, Hofmänner New Media.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This file is part of the n2n module ROCKET.
@@ -16,8 +16,8 @@
  * The following people participated in this project:
  *
  * Andreas von Burg...........:	Architect, Lead Developer, Concept
- * Bert HofmÃ¤nner.............: Idea, Frontend UI, Design, Marketing, Concept
- * Thomas GÃ¼nther.............: Developer, Frontend UI, Rocket Capability for Hangar
+ * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
+ * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
 namespace rocket\impl\ei\component\prop\relation;
 
@@ -43,13 +43,10 @@ use rocket\ei\manage\frame\EiForkLink;
 use rocket\impl\ei\component\prop\relation\conf\RelationConfig;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\impl\ei\component\prop\adapter\gui\GuiFieldFactory;
+use rocket\impl\ei\component\prop\adapter\gui\GuiProps;
 
 abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements RelationEiProp, GuiEiProp, GuiFieldFactory, ForkEiProp {
 			
-	/**
-	 * @var RelationConfig
-	 */
-	private $relationConfig;
 	/**
 	 * @var DisplayConfig
 	 */
@@ -85,19 +82,8 @@ abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements Re
 	 */
 	protected function setup(?DisplayConfig $displayConfig, RelationModel $relationModel,
 			AdaptableEiPropConfigurator $configurator = null) {
-		$this->relationConfig = $configurator ?? new RelationEiPropConfigurator($this);
-				
-		if ($displayConfig !== null) {
-			$this->displayConfig = $displayConfig;
-			$this->relationConfig->registerDisplayConfig($displayConfig);
-		}
-		
-		if (null !== ($this->editConfig = $relationModel->getEditConfig())) {
-			$this->relationConfig->registerEditConfig($this->editConfig);
-		}
-		
+		$this->displayConfig = $displayConfig;
 		$this->relationModel = $relationModel;
-		$this->relationConfig->setRelationModel($relationModel);
 	}
 	
 	function adaptConfigurator(AdaptableEiPropConfigurator $configurator) {
@@ -146,18 +132,10 @@ abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements Re
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\PropertyEiPropAdapter::createEiPropConfigurator()
-	 */
-	function createEiPropConfigurator(): EiPropConfigurator {
-		return $this->relationConfig;
-	}
-	
-	/**
-	 * {@inheritDoc}
 	 * @see \rocket\ei\component\prop\GuiEiProp::buildGuiProp()
 	 */
 	function buildGuiProp(Eiu $eiu): ?GuiProp {
-	    return GuiProps::configAndFieldFactory($this, $this->displayConfig, $this);
+	    return GuiProps::configAndFactory($this, $this->displayConfig, $this);
 	}
 	
 	function isStringRepresentable(): bool {
@@ -180,13 +158,13 @@ abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements Re
 				$eiu->prop()->getHelpText());
 	}
 	
-	function buildGuiField(Eiu $eiu): ?GuiField {
-		if (!$this->getRelationModel()->isTargetMany()) {
-			return new ToOneGuiField($eiu, $this->getRelationModel());
-		}
+// 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
+// 		if (!$this->getRelationModel()->isTargetMany()) {
+// 			return new ToOneGuiField($eiu, $this->getRelationModel());
+// 		}
 		
-		return new ToManyGuiField($eiu, $this->getRelationModel());
-	}
+// 		return new ToManyGuiField($eiu, $this->getRelationModel());
+// 	}
 	
 	function createForkedEiFrame(Eiu $eiu, EiForkLink $eiForkLink): EiFrame {
 		return $this->getRelation()->createForkEiFrame($eiu, $eiForkLink);

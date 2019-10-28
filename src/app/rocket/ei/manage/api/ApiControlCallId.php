@@ -95,7 +95,7 @@ class ApiControlCallId implements \JsonSerializable {
 					GuiControlPath::create($ds->reqString('guiControlPath')),
 					TypePath::create($ds->reqString('eiTypePath')),
 					$ds->reqInt('viewMode'), $ds->optString('pid'));
-		} catch (\n2n\util\type\attrs\DataSetException $e) {
+		} catch (\n2n\util\type\attrs\AttributesException $e) {
 			throw new \InvalidArgumentException(null, null, $e);
 		}
 	}

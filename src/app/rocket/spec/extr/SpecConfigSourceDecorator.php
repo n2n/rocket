@@ -24,7 +24,7 @@ namespace rocket\spec\extr;
 use n2n\config\source\WritableConfigSource;
 use n2n\util\type\attrs\DataSet;
 use n2n\config\InvalidConfigurationException;
-use n2n\util\type\attrs\DataSetException;
+use n2n\util\type\attrs\AttributesException;
 use rocket\spec\InvalidSpecConfigurationException;
 use rocket\spec\InvalidEiMaskConfigurationException;
 use n2n\util\type\ArgUtils;
@@ -87,7 +87,7 @@ class SpecConfigSourceDecorator {
 			$this->eiTypeExtensionExtractionGroups = $specExtractor->extractEiTypeExtensionGroups();
 			$this->eiModificatorExtractionGroups = $specExtractor->extractEiModificatorGroups();
 			$this->launchPadExtractions = $specExtractor->extractLaunchPads();
-		} catch (DataSetException $e) {
+		} catch (AttributesException $e) {
 			throw $this->createDataSourceException($e);
 		} catch (InvalidSpecConfigurationException $e) {
 			throw $this->createDataSourceException($e);

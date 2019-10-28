@@ -25,7 +25,7 @@ use rocket\ei\util\Eiu;
 use n2n\util\type\attrs\DataSet;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\persistence\meta\structure\Column;
-use n2n\web\dispatch\mag\MagDispatchable;
+use rocket\ei\component\prop\indepenent\PropertyAssignation;
 
 interface EiPropConfiguratorAdaption {
 	
@@ -35,6 +35,12 @@ interface EiPropConfiguratorAdaption {
 	 * @param Column $column
 	 */
 	function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null);
+	
+	/**
+	 * @param PropertyAssignation $propertyAssignation
+	 * @return int
+	 */
+	function testCompatibility(PropertyAssignation $propertyAssignation): int;
 	
 	/**
 	 * @param Eiu $eiu

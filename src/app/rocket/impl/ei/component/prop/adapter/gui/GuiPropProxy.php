@@ -33,7 +33,6 @@ use n2n\util\type\TypeConstraints;
  * Don't use this class directly. Use factory methods of {@see GuiFields}.  
  */
 class GuiPropProxy implements GuiProp {
-	private $eiu;
 	private $displayConfig;
 	private $guiFieldFactory;
 	private $guiFieldClosure;
@@ -43,8 +42,7 @@ class GuiPropProxy implements GuiProp {
 	 * @param DisplayConfig $displayConfig
 	 * @param GuiFieldFactory $guiFieldFactory
 	 */
-	function __construct(Eiu $eiu, DisplayConfig $displayConfig, ?GuiFieldFactory $guiFieldFactory, ?\Closure $guiFieldClosure) {
-		$this->eiu = $eiu;
+	function __construct(DisplayConfig $displayConfig, ?GuiFieldFactory $guiFieldFactory, ?\Closure $guiFieldClosure) {
 		$this->displayConfig = $displayConfig;
 		$this->guiFieldFactory = $guiFieldFactory;
 		$this->guiFieldClosure = $guiFieldClosure;
@@ -62,14 +60,15 @@ class GuiPropProxy implements GuiProp {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiProp::buildGuiField()
 	 */
-	function buildGuiField(Eiu $eiu): ?GuiField {
+	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
 		if ($this->guiFieldFactory !== null) {
 			return $this->guiFieldFactory->buildGuiField($eiu);
 		}
 		
 		if ($this->guiFieldClosure !== null) {
-			$mmi = new MagicMethodInvoker($this->eiu->getN2nContext());
-			$mmi->setClassParamObject(Eiu::class, $this->eiu);
+			$mmi = new MagicMethodInvoker($eiu->getN2nContext());
+			$mmi->setClassParamObject(Eiu::class, $eiu);
+			$mmi->setParamValue('readOnly', $readOnly);
 			$mmi->setReturnTypeConstraint(TypeConstraints::type(GuiField::class, true));
 			return $mmi->invoke(null, $this->guiFieldClosure);
 		}
