@@ -84,6 +84,9 @@ class GuiPropWrapper {
 	 * @return GuiField|null
 	 */
 	function buildGuiField(EiEntryGui $eiEntryGui) {
-		return $this->guiProp->buildGuiField(new Eiu($eiEntryGui, $this->eiPropPath));
+		$readOnly = ViewMode::isReadOnly($eiEntryGui->getEiGui()->getViewMode()) 
+				|| $eiEntryGui->getEiEntry()->getEiEntryAccess()->isEiPropWritable($this->eiPropPath);
+		
+		return $this->guiProp->buildGuiField(new Eiu($eiEntryGui, $this->eiPropPath), $readOnly);
 	}
 }

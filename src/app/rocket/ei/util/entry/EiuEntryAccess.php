@@ -14,12 +14,16 @@ class EiuEntryAccess {
 		$this->eiuEntry = $eiuEntry;
 	}
 	
+	/**
+	 * @param string|EiCommandPath|EiCommand $eiCommandPath
+	 * @return boolean
+	 */
 	function isExecutableBy($eiCommandPath) {
-		return $this->eiEntryAccess->isExecutableBy(EiCommandPath::create($eiCommandPath));
+		return $this->eiEntryAccess->isEiCommandExecutable(EiCommandPath::create($eiCommandPath));
 	}
 	
-	function getEiFieldAccess($eiPropPath) {
-		return $this->eiEntryAccess->getEiFieldAccess(EiPropPath::create($eiPropPath));
+	function isPropWritable($eiPropPath) {
+		return $this->eiEntryAccess->isEiPropWritable(EiPropPath::create($eiPropPath));
 	}
 }
 

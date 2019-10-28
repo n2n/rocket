@@ -42,8 +42,9 @@ use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\frame\EiForkLink;
 use rocket\impl\ei\component\prop\relation\conf\RelationConfig;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
+use rocket\impl\ei\component\prop\adapter\gui\GuiFieldFactory;
 
-abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements RelationEiProp, GuiEiProp, GuiProp, ForkEiProp {
+abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements RelationEiProp, GuiEiProp, GuiFieldFactory, ForkEiProp {
 			
 	/**
 	 * @var RelationConfig
@@ -99,6 +100,22 @@ abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements Re
 		$this->relationConfig->setRelationModel($relationModel);
 	}
 	
+	function adaptConfigurator(AdaptableEiPropConfigurator $configurator) {
+		parent::adaptConfigurator($configurator);
+		
+		$relationModel = $this->getRelationModel();
+		
+		if (null !== $this->displayConfig) {
+			$configurator->addAdaption($this->displayConfig);
+		}
+		
+		if (null !== ($editConfig = $relationModel->getEditConfig())) {
+			$configurator->addAdaption($editConfig);
+		}
+		
+		$configurator->addAdaption(new RelationConfig($relationModel));
+	}
+	
 	/**
 	 * @return \rocket\impl\ei\component\prop\relation\conf\RelationModel
 	 */
@@ -140,7 +157,7 @@ abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements Re
 	 * @see \rocket\ei\component\prop\GuiEiProp::buildGuiProp()
 	 */
 	function buildGuiProp(Eiu $eiu): ?GuiProp {
-	    return GuiProps::configAndFieldFactory($this, $this->displayConfig);
+	    return GuiProps::configAndFieldFactory($this, $this->displayConfig, $this);
 	}
 	
 	function isStringRepresentable(): bool {

@@ -25,35 +25,55 @@ use rocket\ei\util\Eiu;
 use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\manage\gui\field\GuiField;
+use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
+use n2n\reflection\magic\MagicMethodInvoker;
+use n2n\util\type\TypeConstraints;
 
+/**
+ * Don't use this class directly. Use factory methods of {@see GuiFields}.  
+ */
 class GuiPropProxy implements GuiProp {
 	private $eiu;
-	private $statelessGuiProp;
-	
-	private $displayDefinition;
+	private $displayConfig;
+	private $guiFieldFactory;
+	private $guiFieldClosure;
 	
 	/**
 	 * @param Eiu $eiu
-	 * @param StatelessGuiProp $statelessGuiProp
+	 * @param DisplayConfig $displayConfig
+	 * @param GuiFieldFactory $guiFieldFactory
 	 */
-	function __construct(Eiu $eiu, GuiFieldFactory $guiFieldFactory) {
+	function __construct(Eiu $eiu, DisplayConfig $displayConfig, ?GuiFieldFactory $guiFieldFactory, ?\Closure $guiFieldClosure) {
 		$this->eiu = $eiu;
-		$this->statelessGuiProp = $statelessGuiProp;
-		$this->displayDefinition = $statelessGuiProp->buildDisplayDefinition($eiu);
+		$this->displayConfig = $displayConfig;
+		$this->guiFieldFactory = $guiFieldFactory;
+		$this->guiFieldClosure = $guiFieldClosure;
 	}
 	
 	/**
-	 * @return DisplayDefinition|NULL
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\gui\GuiProp::buildDisplayDefinition()
 	 */
-	function getDisplayDefinition(): ?DisplayDefinition {
-		return $this->displayDefinition;
+	function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
+		return $this->displayConfig->buildDisplayDefinitionFromEiu($eiu);
 	}
 
 	/**
-	 * @param Eiu $eiu
-	 * @return GuiField|NULL
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\gui\GuiProp::buildGuiField()
 	 */
 	function buildGuiField(Eiu $eiu): ?GuiField {
-		return $this->statelessGuiProp->buildGuiField($eiu);
+		if ($this->guiFieldFactory !== null) {
+			return $this->guiFieldFactory->buildGuiField($eiu);
+		}
+		
+		if ($this->guiFieldClosure !== null) {
+			$mmi = new MagicMethodInvoker($this->eiu->getN2nContext());
+			$mmi->setClassParamObject(Eiu::class, $this->eiu);
+			$mmi->setReturnTypeConstraint(TypeConstraints::type(GuiField::class, true));
+			return $mmi->invoke(null, $this->guiFieldClosure);
+		}
+		
+		return null;
 	}
 }

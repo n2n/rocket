@@ -34,7 +34,21 @@ class GuiProps {
         return $guiProp;
     }
     
-    static function configAndFactory(DisplayConfig $displayConfig, GuiPropFactory $guiPropFactory) {
-        
+    /**
+     * @param DisplayConfig $displayConfig
+     * @param GuiFieldFactory $guiFieldFactory
+     * @return \rocket\ei\manage\gui\GuiProp
+     */
+    static function configAndFactory(DisplayConfig $displayConfig, GuiFieldFactory $guiFieldFactory) {
+    	return new GuiPropProxy($eiu, $displayConfig, $guiFieldFactory);
+    }
+    
+    /**
+     * @param DisplayConfig $displayConfig
+     * @param \Closure $closure
+     * @return \rocket\ei\manage\gui\GuiProp
+     */
+    static function configAndCallback(DisplayConfig $displayConfig, \Closure $closure) {
+    	return new GuiPropProxy($eiu, $displayConfig, null, $closure);
     }
 }

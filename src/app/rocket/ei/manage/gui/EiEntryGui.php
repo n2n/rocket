@@ -36,6 +36,7 @@ use rocket\si\input\SiEntryInput;
 use rocket\si\content\impl\basic\BulkyEntrySiComp;
 use rocket\si\content\impl\basic\CompactEntrySiComp;
 use n2n\util\type\attrs\DataSetException;
+use rocket\ei\EiPropPath;
 
 class EiEntryGui {
 	/**
@@ -266,8 +267,9 @@ class EiEntryGui {
 			$eiEntryGuiListener->onSave($this);
 		}
 		
-		foreach ($this->guiFields as $guiField) {
-			if (!$guiField->getSiField()->isReadOnly()) {
+		foreach ($this->guiFields as $guiFieldPathStr => $guiField) {
+			if (!$guiField->getSiField()->isReadOnly() 
+					&& $this->eiEntry->getEiEntryAccess()->isEiPropWritable(EiPropPath::create($eiPropPathStr))) {
 				$guiField->save();
 			}
 		}

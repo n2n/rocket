@@ -84,7 +84,6 @@ class EiEntryGuiAssembler {
 	 * @return NULL|\rocket\ei\manage\gui\field\GuiField
 	 */
 	private function assembleExlGuiField(EiPropPath $eiPropPath, GuiPropWrapper $guiPropWrapper, GuiFieldPath $guiFieldPath) {
-				
 		$guiField = $guiPropWrapper->buildGuiField($this->eiEntryGui);
 		
 		return $guiField;

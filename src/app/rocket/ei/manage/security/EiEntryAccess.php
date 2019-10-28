@@ -37,7 +37,7 @@ interface EiEntryAccess {
 	 * @param EiPropPath $eiPropPath
 	 * @return bool
 	 */
-	function isEiFieldWritable(EiPropPath $eiPropPath): bool;
+	function isEiPropWritable(EiPropPath $eiPropPath): bool;
 	
 	/**
 	 * @return EiEntryConstraint|NULL

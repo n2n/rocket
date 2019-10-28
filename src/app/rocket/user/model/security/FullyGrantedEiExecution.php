@@ -65,7 +65,7 @@ class StaticEiEntryAccess implements EiEntryAccess {
 		$this->granted = $granted;
 	}
 	
-	public function isEiFieldWritable(EiPropPath $eiPropPath): bool {
+	public function isEiPropWritable(EiPropPath $eiPropPath): bool {
 		return $this->granted;
 	}
 

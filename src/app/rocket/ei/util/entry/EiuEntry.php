@@ -389,7 +389,7 @@ class EiuEntry {
 	 * @return boolean
 	 */
 	public function isFieldWritable($eiPropArg) {
-		return $this->eiEntry->getEiEntryAccess()->isEiFieldWritable(EiPropPath::create($eiPropArg));
+		return $this->eiEntry->getEiEntryAccess()->isEiPropWritable(EiPropPath::create($eiPropArg));
 	}
 	
 	/**

@@ -36,8 +36,10 @@ use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\impl\ei\component\prop\adapter\gui\GuiFieldProxy;
+use rocket\impl\ei\component\prop\adapter\gui\GuiFieldFactory;
+use rocket\impl\ei\component\prop\adapter\gui\GuiProps;
 
-abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter implements StatelessGuiFieldDisplayable, GuiEiProp, GuiProp {
+abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter implements StatelessGuiFieldDisplayable, GuiEiProp, GuiFieldFactory {
 	private $displayConfig;
 
 	/**
@@ -76,27 +78,27 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 	 * @see \rocket\ei\component\prop\GuiEiProp::buildGuiProp()
 	 */
 	public function buildGuiProp(Eiu $eiu): ?GuiProp {
-		return $this;
+		return GuiProps::configAndFactory($this->displayConfig, $this);
 	}
 	
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiProp::buildDisplayDefinition()
-	 */
-	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
-		$viewMode = $this->eiu->gui()->getViewMode();
-		if (!$this->getDisplayConfig()->isViewModeCompatible($viewMode)) {
-			return null;
-		}
+// 	/**
+// 	 * {@inheritDoc}
+// 	 * @see \rocket\ei\manage\gui\GuiProp::buildDisplayDefinition()
+// 	 */
+// 	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
+// 		$viewMode = $this->eiu->gui()->getViewMode();
+// 		if (!$this->getDisplayConfig()->isViewModeCompatible($viewMode)) {
+// 			return null;
+// 		}
 		
-		return new DisplayDefinition($this->getSiStructureType($eiu),
-				$this->getDisplayConfig()->isViewModeDefaultDisplayed($viewMode));
-	}
+// 		return new DisplayDefinition($this->getSiStructureType($eiu),
+// 				$this->getDisplayConfig()->isViewModeDefaultDisplayed($viewMode));
+// 	}
 	
-	protected function getSiStructureType(Eiu $eiu): string {
-		return $this->displayConfig->getSiStructureType();
-	}
+// 	protected function getSiStructureType(Eiu $eiu): string {
+// 		return $this->displayConfig->getSiStructureType();
+// 	}
 	
 	public function buildGuiField(Eiu $eiu): ?GuiField {
 		return new GuiFieldProxy($eiu, $this);

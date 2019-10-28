@@ -65,7 +65,7 @@ class EiFieldWrapper implements EiFieldAbstraction {
 	 */
 	function setValue($value, bool $regardSecurity = true) {
 		if ($regardSecurity && !$this->getEiFieldMap()->getEiEntry()->getEiEntryAccess()
-				->isEiFieldWritable($this->eiPropPath)) {
+				->isEiPropWritable($this->eiPropPath)) {
 			throw new InaccessibleEiFieldException('User has no write access of on field ' . $this->eiPropPath . '.');
 		}
 		
@@ -86,7 +86,7 @@ class EiFieldWrapper implements EiFieldAbstraction {
 	function isWritable(bool $regardSecurity) {
 		return $this->eiField->isWritable() 
 				&& (!$regardSecurity || $this->getEiFieldMap()->getEiEntry()->getEiEntryAccess()
-						->isEiFieldWritable($this->eiPropPath));
+						->isEiPropWritable($this->eiPropPath));
 	}
 	/**
 	 * @param EiFieldValidationResult $eiEiFieldValidationResult

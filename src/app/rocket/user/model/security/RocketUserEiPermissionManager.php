@@ -247,7 +247,7 @@ class RestrictedEiEntryAccess implements EiEntryAccess {
 		return $this->eiEntryConstraint;
 	}
 	
-	function isEiFieldWritable(EiPropPath $eiPropPath): bool {
+	function isEiPropWritable(EiPropPath $eiPropPath): bool {
 		return isset($this->writableEiPropPaths[(string) $eiPropPath]);
 	}
 
