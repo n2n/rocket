@@ -28,7 +28,7 @@ use rocket\ei\util\Eiu;
 use n2n\util\type\attrs\DataSet;
 use n2n\web\dispatch\mag\MagCollection;
 
-class PasswordEiPropConfig {
+class PasswordConfig {
 	const ATTR_ALGORITHM_KEY = 'algorithm';
 	
 	const ALGORITHM_SHA1 = 'sha1';
