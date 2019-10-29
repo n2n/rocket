@@ -21,7 +21,6 @@
  */
 namespace rocket\impl\ei\component\prop\string\cke\conf;
 
-use n2n\core\container\N2nContext;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use n2n\impl\web\dispatch\mag\model\StringArrayMag;
@@ -30,7 +29,6 @@ use rocket\ei\component\EiSetup;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use n2n\util\StringUtils;
-use n2n\web\dispatch\mag\MagDispatchable;
 use rocket\impl\ei\component\prop\string\cke\CkeEiProp;
 use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\util\magic\MagicObjectUnavailableException;

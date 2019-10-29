@@ -21,29 +21,23 @@
  */
 namespace rocket\impl\ei\component\prop\relation;
 
-use rocket\ei\component\prop\GuiEiProp;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
-use rocket\impl\ei\component\prop\adapter\PropertyEiPropAdapter;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
-use rocket\impl\ei\component\prop\relation\conf\RelationModel;
-use rocket\ei\util\Eiu;
-use rocket\ei\manage\gui\GuiProp;
 use n2n\l10n\N2nLocale;
-use rocket\ei\manage\gui\DisplayDefinition;
-use rocket\impl\ei\component\prop\relation\model\gui\ToOneGuiField;
-use rocket\impl\ei\component\prop\relation\model\gui\ToManyGuiField;
-use rocket\ei\manage\gui\field\GuiField;
-use rocket\impl\ei\component\prop\relation\model\Relation;
 use n2n\util\ex\IllegalStateException;
-use rocket\impl\ei\component\prop\adapter\config\EditConfig;
-use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\ei\component\prop\ForkEiProp;
-use rocket\ei\manage\frame\EiFrame;
+use rocket\ei\component\prop\GuiEiProp;
 use rocket\ei\manage\frame\EiForkLink;
-use rocket\impl\ei\component\prop\relation\conf\RelationConfig;
-use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
+use rocket\ei\manage\frame\EiFrame;
+use rocket\ei\manage\gui\GuiProp;
+use rocket\ei\manage\gui\field\GuiField;
+use rocket\ei\util\Eiu;
+use rocket\impl\ei\component\prop\adapter\PropertyEiPropAdapter;
+use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\impl\ei\component\prop\adapter\gui\GuiFieldFactory;
 use rocket\impl\ei\component\prop\adapter\gui\GuiProps;
+use rocket\impl\ei\component\prop\relation\conf\RelationConfig;
+use rocket\impl\ei\component\prop\relation\conf\RelationModel;
+use rocket\impl\ei\component\prop\relation\model\Relation;
 
 abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements RelationEiProp, GuiEiProp, GuiFieldFactory, ForkEiProp {
 			
@@ -51,10 +45,6 @@ abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements Re
 	 * @var DisplayConfig
 	 */
 	private $displayConfig;
-	/**
-	 * @var EditConfig
-	 */
-	private $editConfig;
 	
 	/**
 	 * @var RelationModel

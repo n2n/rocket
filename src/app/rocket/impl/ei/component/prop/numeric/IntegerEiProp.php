@@ -21,21 +21,20 @@
  */
 namespace rocket\impl\ei\component\prop\numeric;
 
-use n2n\persistence\orm\property\EntityProperty;
-use n2n\util\type\ArgUtils;
+use n2n\impl\persistence\orm\property\IntEntityProperty;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
+use n2n\l10n\L10nUtils;
+use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\property\AccessProxy;
+use n2n\util\type\ArgUtils;
 use n2n\util\type\TypeConstraint;
-use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\ScalarEiProp;
 use rocket\ei\manage\generic\CommonScalarEiProperty;
 use rocket\ei\manage\generic\ScalarEiProperty;
-use n2n\impl\persistence\orm\property\IntEntityProperty;
-use rocket\si\content\impl\SiFields;
-use n2n\l10n\L10nUtils;
-use rocket\si\content\SiField;
+use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\numeric\conf\IntegerConfig;
-use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
+use rocket\si\content\SiField;
+use rocket\si\content\impl\SiFields;
 
 class IntegerEiProp extends NumericEiPropAdapter implements ScalarEiProp {
 	const INT_SIGNED_MIN = -2147483648;

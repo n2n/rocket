@@ -21,14 +21,11 @@
  */
 namespace rocket\impl\ei\component\prop\string\conf;
 
-use rocket\ei\component\EiSetup;
-use rocket\impl\ei\component\prop\string\StringEiProp;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
 use n2n\util\StringUtils;
 use n2n\persistence\meta\structure\Column;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
-use n2n\util\type\CastUtils;
 use rocket\impl\ei\component\prop\adapter\config\ConfigAdaption;
 use rocket\ei\util\Eiu;
 use n2n\util\type\attrs\DataSet;

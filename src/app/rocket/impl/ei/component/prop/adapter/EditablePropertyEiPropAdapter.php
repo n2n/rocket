@@ -23,7 +23,6 @@ namespace rocket\impl\ei\component\prop\adapter;
 
 use n2n\util\type\TypeConstraint;
 use rocket\impl\ei\component\prop\adapter\entry\Writable;
-use n2n\util\ex\IllegalStateException;
 use rocket\ei\manage\entry\EiField;
 use rocket\impl\ei\component\prop\adapter\entry\SimpleEiField;
 use rocket\ei\manage\EiObject;
@@ -32,7 +31,6 @@ use rocket\core\model\Rocket;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\entry\EiFieldValidationResult;
 use rocket\impl\ei\component\prop\adapter\entry\Validatable;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\impl\ei\component\prop\adapter\entry\Copyable;
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\manage\gui\GuiProp;

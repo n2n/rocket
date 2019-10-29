@@ -21,12 +21,12 @@
  */
 namespace rocket\impl\ei\component\prop\string\conf;
 
-use rocket\ei\component\EiSetup;
 use n2n\util\ex\IllegalStateException;
-use n2n\core\container\N2nContext;
 use rocket\impl\ei\component\prop\string\PasswordEiProp;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
-use n2n\web\dispatch\mag\MagDispatchable;
+use rocket\ei\util\Eiu;
+use n2n\util\type\attrs\DataSet;
+use n2n\web\dispatch\mag\MagCollection;
 
 class PasswordEiPropConfig {
 	const ATTR_ALGORITHM_KEY = 'algorithm';

@@ -30,7 +30,6 @@ use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\UrlEntityProperty;
 use rocket\si\content\SiField;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
-use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\impl\ei\component\prop\string\conf\UrlConfig;
 
 class UrlEiProp extends AlphanumericEiProp {

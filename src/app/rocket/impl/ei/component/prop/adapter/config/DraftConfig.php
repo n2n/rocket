@@ -21,6 +21,8 @@
  */
 namespace rocket\impl\ei\component\prop\adapter\config;
 
+use n2n\web\dispatch\mag\MagCollection;
+
 class DraftConfig {
 	const ATTR_DRAFTABLE_KEY = 'draftable';	
 	

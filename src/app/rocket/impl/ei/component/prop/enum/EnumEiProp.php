@@ -31,17 +31,13 @@ use n2n\l10n\N2nLocale;
 use n2n\core\container\N2nContext;
 use rocket\ei\util\filter\prop\EnumFilterProp;
 use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
-
 use n2n\util\type\ArgUtils;
 use n2n\util\type\TypeConstraint;
 use n2n\reflection\property\AccessProxy;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\ei\util\Eiu;
-use rocket\impl\ei\component\prop\enum\conf\EnumEiPropConfigurator;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\critmod\quick\impl\LikeQuickSearchProp;
-use rocket\ei\manage\gui\field\GuiFieldPath;
 use n2n\impl\web\dispatch\mag\model\group\EnumTogglerMag;
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\sort\SortProp;

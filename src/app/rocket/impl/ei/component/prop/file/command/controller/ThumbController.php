@@ -21,27 +21,22 @@
  */
 namespace rocket\impl\ei\component\prop\file\command\controller;
 
-use rocket\core\model\Breadcrumb;
-use n2n\l10n\DynamicTextCollection;
-use n2n\io\managed\img\ImageFile;
-use n2n\web\http\PageNotFoundException;
-use rocket\impl\ei\component\prop\file\FileEiProp;
-use n2n\web\http\controller\ControllerAdapter;
-use rocket\impl\ei\component\command\common\controller\PathUtils;
-use rocket\impl\ei\component\prop\file\command\model\ThumbModel;
-use n2n\web\http\controller\ParamQuery;
-use n2n\util\type\CastUtils;
-use n2n\io\managed\File;
-use rocket\ei\manage\EiObject;
-use rocket\ei\util\EiuCtrl;
-use n2n\util\type\ArgUtils;
-use n2n\io\managed\ThumbManager;
-use n2n\io\managed\img\ImageDimension;
 use Doctrine\Instantiator\Exception\InvalidArgumentException;
-use page\model\PageErrorException;
-use rocket\impl\ei\component\prop\file\conf\ThumbResolver;
+use n2n\io\managed\img\ImageDimension;
+use n2n\io\managed\img\ImageFile;
 use n2n\io\managed\impl\TmpFileManager;
 use n2n\io\managed\impl\engine\QualifiedNameFormatException;
+use n2n\l10n\DynamicTextCollection;
+use n2n\web\http\BadRequestException;
+use n2n\web\http\PageNotFoundException;
+use n2n\web\http\controller\ControllerAdapter;
+use n2n\web\http\controller\ParamQuery;
+use rocket\core\model\Breadcrumb;
+use rocket\ei\manage\EiObject;
+use rocket\ei\util\EiuCtrl;
+use rocket\impl\ei\component\command\common\controller\PathUtils;
+use rocket\impl\ei\component\prop\file\conf\ThumbResolver;
+use n2n\io\managed\File;
 
 class ThumbController extends ControllerAdapter {	
 	/**

@@ -35,6 +35,9 @@ use rocket\si\content\impl\SiFields;
 
 class TypeEiProp extends DisplayableEiPropAdapter implements StatelessGuiFieldDisplayable {
 	
+	protected function prepare() {
+	}
+	
 	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
 // 		$eiu->prop()->getLabel();
 // 		$eiu->prop()->getHelpText();
@@ -82,4 +85,5 @@ class TypeEiProp extends DisplayableEiPropAdapter implements StatelessGuiFieldDi
 		return $eiMask;
 		
 	}
+
 }

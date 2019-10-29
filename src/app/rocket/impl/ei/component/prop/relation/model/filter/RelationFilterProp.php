@@ -37,7 +37,6 @@ use n2n\util\type\attrs\AttributesException;
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\filter\FilterDefinition;
 use rocket\ei\util\filter\controller\FilterJhtmlHook;
-use rocket\impl\ei\component\prop\relation\TargetFilterDef;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\ei\manage\critmod\filter\ComparatorConstraintGroup;

@@ -21,15 +21,12 @@
  */
 namespace rocket\impl\ei\component\prop\string\conf;
 
-use rocket\ei\component\EiSetup;
 use n2n\util\ex\IllegalStateException;
-use n2n\core\container\N2nContext;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
 use rocket\impl\ei\component\prop\string\PathPartEiProp;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use rocket\impl\ei\component\prop\string\modificator\PathPartEiModificator;
 use n2n\impl\web\dispatch\mag\model\StringMag;
-use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\util\type\attrs\InvalidAttributeException;
 use n2n\util\StringUtils;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;

@@ -39,7 +39,6 @@ use rocket\ei\EiPropPath;
 use n2n\l10n\N2nLocale;
 use rocket\impl\ei\component\prop\relation\model\RelationEntry;
 use rocket\impl\ei\component\prop\relation\EmbeddedOneToManyEiProp;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\util\col\ArrayUtils;
 use rocket\ei\manage\critmod\sort\SortPropFork;
 use n2n\persistence\orm\criteria\item\CriteriaProperty;
@@ -64,7 +63,6 @@ use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\manage\gui\field\GuiFieldPath;
 use rocket\ei\manage\gui\EiFieldAbstraction;
 use rocket\ei\manage\LiveEiObject;
-use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\impl\ei\component\prop\translation\conf\TranslationConfig;
 
 class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiPropFork, FieldEiProp, RelationEiProp, QuickSearchableEiProp {

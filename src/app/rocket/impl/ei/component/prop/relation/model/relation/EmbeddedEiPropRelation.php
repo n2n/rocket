@@ -28,7 +28,7 @@ use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\EiType;
 use rocket\ei\mask\EiMask;
 use rocket\ei\component\InvalidEiComponentConfigurationException;
-use rocket\impl\ei\component\prop\relation\conf\RelationEiPropConfigurator;
+use rocket\impl\ei\component\prop\relation\conf\RelationConfig;
 use rocket\ei\util\Eiu;
 use n2n\util\type\TypeUtils;
 
@@ -70,7 +70,7 @@ class EmbeddedEiPropRelation extends EiPropRelation {
 				throw new InvalidEiComponentConfigurationException('EiProp requires an EntityProperty '
 						. TypeUtils::prettyClassPropName($entityProperty->getEntityModel()->getClass(), $entityProperty->getName())
 						. ' which removes orphans or an EiProp configuration with ' 
-						. RelationEiPropConfigurator::ATTR_ORPHANS_ALLOWED_KEY . '=true.');
+						. RelationConfig::ATTR_ORPHANS_ALLOWED_KEY . '=true.');
 			}
 			
 			if (!$this->getRelationEntityProperty()->isMaster() && !$this->isSourceMany()

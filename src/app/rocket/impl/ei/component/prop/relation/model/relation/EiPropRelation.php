@@ -40,7 +40,6 @@ use rocket\impl\ei\component\prop\relation\command\RelationAjahEiCommand;
 use rocket\impl\ei\component\prop\relation\command\RelationJhtmlController;
 use rocket\ei\EiCommandPath;
 use rocket\ei\manage\security\InaccessibleEiCommandPathException;
-use rocket\impl\ei\component\prop\relation\command\EmbeddedEditPseudoCommand;
 use n2n\util\uri\Url;
 use rocket\ei\EiPropPath;
 use n2n\util\type\CastUtils;

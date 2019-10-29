@@ -25,9 +25,7 @@ use rocket\impl\ei\component\prop\string\AlphanumericEiProp;
 use n2n\util\type\ArgUtils;
 use rocket\ei\EiPropPath;
 use rocket\ei\util\Eiu;
-use n2n\util\col\GenericArrayObject;
 use rocket\impl\ei\component\prop\string\cke\model\CkeCssConfig;
-use rocket\impl\ei\component\prop\string\cke\model\CkeLinkProvider;
 use rocket\ei\manage\gui\ViewMode;
 use n2n\util\StringUtils;
 use n2n\core\N2N;
@@ -36,7 +34,6 @@ use rocket\si\content\impl\SiFields;
 use n2n\util\type\CastUtils;
 use rocket\si\content\impl\StringInSiField;
 use rocket\impl\ei\component\prop\string\cke\conf\CkeConfig;
-use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 
 class CkeEiProp extends AlphanumericEiProp {
 	
