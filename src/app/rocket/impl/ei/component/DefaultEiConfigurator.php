@@ -31,9 +31,9 @@ use n2n\core\container\N2nContext;
 class DefaultEiConfigurator extends EiConfiguratorAdapter implements EiPropConfigurator {
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\indepenent\EiPropConfigurator::initAutoEiPropDataSet($column)
+	 * @see \rocket\ei\component\prop\indepenent\EiPropConfigurator::initAutoEiPropAttributes($column)
 	 */
-	public function initAutoEiPropDataSet(N2nContext $n2nContext, Column $column = null) {
+	public function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
 	}
 
 	/**

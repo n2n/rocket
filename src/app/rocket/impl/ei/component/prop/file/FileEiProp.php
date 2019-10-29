@@ -53,6 +53,8 @@ use rocket\si\content\impl\FileInSiField;
 use rocket\ei\manage\entry\EiFieldValidationResult;
 use rocket\impl\ei\component\prop\file\conf\FileVerificator;
 use n2n\util\type\TypeConstraints;
+use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
+use rocket\impl\ei\component\prop\file\conf\FileConfig;
 
 class FileEiProp extends DraftablePropertyEiPropAdapter {
 	
@@ -81,8 +83,8 @@ class FileEiProp extends DraftablePropertyEiPropAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter::createEiPropConfigurator()
 	 */
-	public function createEiPropConfigurator(): EiPropConfigurator {
-		return new FileEiPropConfigurator($this);
+	public function prepare() {
+		$this->getConfigurator()->addAdaption(new FileConfig($this->fileVerificator));
 	}
 	
 	/**
@@ -141,9 +143,9 @@ class FileEiProp extends DraftablePropertyEiPropAdapter {
 		$this->entityProperty = $entityProperty;
 	}
 	
-	protected function isEntityProperty(?EntityProperty $entityProperty) {
-		$entityProperty instanceof FileEntityProperty 
-	}
+// 	protected function isEntityProperty(?EntityProperty $entityProperty) {
+// 		$entityProperty instanceof FileEntityProperty;
+// 	}
 	
 
 	protected function isObjectPropertyAccessProxyCompatible(?AccessProxy $accessProxy) {

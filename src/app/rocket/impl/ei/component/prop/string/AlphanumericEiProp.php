@@ -103,9 +103,10 @@ abstract class AlphanumericEiProp extends DraftablePropertyEiPropAdapter impleme
 		parent::setEntityProperty($entityProperty);
 	}
 
-	protected function adaptConfigurator(AdaptableEiPropConfigurator $configurator) {
-		$configurator->addAdaption($this->alphanumericConfig);
-		$configurator->addAdaption($this->addonConfig);
+	protected function prepare() {
+		$this->getConfigurator()
+				->addAdaption($this->alphanumericConfig)
+				->addAdaption($this->addonConfig);
 	}
 	
 	/**

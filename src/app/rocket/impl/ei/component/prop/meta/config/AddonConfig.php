@@ -28,9 +28,10 @@ use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\util\StringUtils;
 use rocket\si\content\impl\meta\SiCrumbGroup;
 use rocket\si\content\impl\meta\SiCrumb;
-use rocket\impl\ei\component\prop\adapter\config\EiPropConfiguratorAdaption;
+use rocket\impl\ei\component\prop\adapter\config\ConfigAdaption;
+use rocket\ei\util\Eiu;
 
-class AddonConfig implements EiPropConfiguratorAdaption {
+class AddonConfig extends ConfigAdaption {
 	
 	const ATTR_PREFIX_ADDONS_KEY = 'prefixAddons';
 	const ATTR_SUFFIX_ADDONS_KEY = 'suffixAddons';
@@ -42,7 +43,7 @@ class AddonConfig implements EiPropConfiguratorAdaption {
 	 * @param SiCrumbGroup[] $prefixSiCrumbGroups
 	 * @param SiCrumbGroup[] $suffixSiCrumbGroups
 	 */
-	private function __construct(array $prefixSiCrumbGroups = [], array $suffixSiCrumbGroups = []) {
+	function __construct(array $prefixSiCrumbGroups = [], array $suffixSiCrumbGroups = []) {
 		$this->prefixSiCrumbGroups = $prefixSiCrumbGroups;
 		$this->suffixSiCrumbGroups = $suffixSiCrumbGroups;
 	}
@@ -68,7 +69,7 @@ class AddonConfig implements EiPropConfiguratorAdaption {
 		return new AddonConfig();
 	}
 	
-	static function mag(MagCollection $magCollection, DataSet $ds) {
+	function mag(Eiu $eiu, DataSet $ds, MagCollection $magCollection) {
 		$lar = new LenientAttributeReader($ds);
 		
 		$magCollection->addMag(self::ATTR_PREFIX_ADDONS_KEY, 
@@ -84,7 +85,7 @@ class AddonConfig implements EiPropConfiguratorAdaption {
 				['placeholder' => 'eg. CHF, Notification {icon:fas fa-bell} ...']);
 	}
 	
-	static function save(MagCollection $magCollection, DataSet $ds) {
+	function save(Eiu $eiu, MagCollection $magCollection, DataSet $ds) {
 		$ds->set(self::ATTR_PREFIX_ADDONS_KEY, 
 				$magCollection->getMagByPropertyName(self::ATTR_PREFIX_ADDONS_KEY)->getValue());
 		$ds->set(self::ATTR_SUFFIX_ADDONS_KEY,
@@ -95,7 +96,7 @@ class AddonConfig implements EiPropConfiguratorAdaption {
 	 * @param DataSet $ds
 	 * @return \rocket\impl\ei\component\prop\meta\config\AddonConfig
 	 */
-	static function setup(DataSet $ds) {
+	function setup(Eiu $eiu, DataSet $ds) {
 		return new AddonConfig(
 				SiCrumbGroupFactory::parseCrumbGroups($ds->optScalarArray(self::ATTR_PREFIX_ADDONS_KEY)),
 				SiCrumbGroupFactory::parseCrumbGroups($ds->optScalarArray(self::ATTR_SUFFIX_ADDONS_KEY)));

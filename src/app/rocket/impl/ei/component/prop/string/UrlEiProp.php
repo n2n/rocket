@@ -71,8 +71,9 @@ class UrlEiProp extends AlphanumericEiProp {
 		return parent::buildQuickSearchProp($eiu);
 	}
 
-	public function adaptConfigurator(AdaptableEiPropConfigurator $configurator) {
-		$configurator->addAdaption($this->urlConfig);
+	public function prepare() {
+		parent::prepare();
+		$this->getConfigurator()->addAdaption($this->urlConfig);
 	}
 
 	
@@ -102,7 +103,7 @@ class UrlEiProp extends AlphanumericEiProp {
 		$mag->setValue($value);
 	}
 	
-	public function saveMagValue(Mag $mag, Eiu $eiu) {
+	public function saveSiField(SiField $mag, Eiu $eiu) {
 		$value = $mag->getValue();
 		if ($value !== null) {
 			$value = /*(string)*/ $value;

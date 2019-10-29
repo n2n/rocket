@@ -3,23 +3,20 @@ namespace rocket\impl\ei\component\prop\bool\conf;
 
 use rocket\impl\ei\component\prop\bool\BooleanEiProp;
 use n2n\util\type\attrs\LenientAttributeReader;
-use n2n\web\dispatch\mag\MagDispatchable;
-use n2n\core\container\N2nContext;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
 use n2n\impl\web\dispatch\mag\model\MultiSelectMag;
-use rocket\ei\component\EiSetup;
 use n2n\util\type\TypeConstraint;
 use rocket\ei\manage\gui\field\GuiFieldPath;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use n2n\util\StringUtils;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use n2n\util\type\CastUtils;
-use rocket\impl\ei\component\prop\adapter\config\EiPropConfiguratorAdaption;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\util\type\attrs\DataSet;
 use rocket\ei\util\Eiu;
+use rocket\impl\ei\component\prop\adapter\config\ConfigAdaption;
 
-class BooleanConfig implements EiPropConfiguratorAdaption {
+class BooleanConfig extends ConfigAdaption {
 	const ATTR_BIND_GUI_PROPS_KEY = 'associatedGuiProps';
 	const ATTR_ON_ASSOCIATED_GUI_PROP_KEY = 'onAssociatedGuiProps';
 	const ATTR_OFF_ASSOCIATED_GUI_PROP_KEY = 'offAssociatedGuiProps';
@@ -72,11 +69,12 @@ class BooleanConfig implements EiPropConfiguratorAdaption {
 	}
 	
 	function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {
+		if (!$magCollection->readValue(self::ATTR_BIND_GUI_PROPS_KEY)) {
+			return;
+		}
 		
-		if (!$magDispatchable->getPropertyValue(self::ATTR_BIND_GUI_PROPS_KEY)) return;
-		
-		$onGuiFieldPathStrs = $magDispatchable->getPropertyValue(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY);
-		$offGuiFieldPathsStrs = $magDispatchable->getPropertyValue(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY);
+		$onGuiFieldPathStrs = $magCollection->readValue(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY);
+		$offGuiFieldPathsStrs = $magCollection->readValue(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY);
 		
 		$this->dataSet->set(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY, $onGuiFieldPathStrs);
 		$this->dataSet->set(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY, $offGuiFieldPathsStrs);

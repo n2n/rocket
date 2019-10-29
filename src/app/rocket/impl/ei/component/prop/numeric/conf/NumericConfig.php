@@ -21,47 +21,55 @@
  */
 namespace rocket\impl\ei\component\prop\numeric\conf;
 
-use n2n\core\container\N2nContext;
-use rocket\ei\component\EiSetup;
-use n2n\util\ex\IllegalStateException;
 use n2n\impl\web\dispatch\mag\model\NumericMag;
-use rocket\impl\ei\component\prop\numeric\NumericEiPropAdapter;
-use n2n\web\dispatch\mag\MagDispatchable;
-use rocket\ei\component\prop\indepenent\PropertyAssignation;
-use rocket\impl\ei\component\prop\numeric\IntegerEiProp;
-use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use n2n\persistence\meta\structure\Column;
 use n2n\persistence\meta\structure\IntegerColumn;
 use n2n\util\type\attrs\LenientAttributeReader;
-use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
+use rocket\impl\ei\component\prop\adapter\config\ConfigAdaption;
+use n2n\util\type\attrs\DataSet;
+use rocket\ei\util\Eiu;
+use n2n\web\dispatch\mag\MagCollection;
 
-class NumericConfig implements EiPropConfiguratorAdaption {
+class NumericConfig extends ConfigAdaption {
 	const ATTR_MIN_VALUE_KEY = 'minValue';
 	const ATTR_MAX_VALUE_KEY = 'maxValue';
 	
 	protected $minValue = null;
 	protected $maxValue = null;
 	
-	
-	public function getMinValue() {
+	/**
+	 * @return int
+	 */
+	function getMinValue() {
 	    return $this->minValue;
 	}
 	
-	public function setMinValue($minValue) {
+	/**
+	 * @param int $minValue
+	 * @return \rocket\impl\ei\component\prop\numeric\conf\NumericConfig
+	 */
+	function setMinValue(int $minValue) {
 	    $this->minValue = $minValue;
+	    return $this;
 	}
 	
-	public function getMaxValue() {
+	/**
+	 * @return int
+	 */
+	function getMaxValue() {
 	    return $this->maxValue;
 	}
 	
-	public function setMaxValue($maxValue) {
+	/**
+	 * @param int $maxValue
+	 * @return \rocket\impl\ei\component\prop\numeric\conf\NumericConfig
+	 */
+	function setMaxValue(int $maxValue) {
 	    $this->maxValue = $maxValue;
+	    return $this;
 	}
 	
-	public function initAutoEiPropDataSet(N2nContext $n2nContext, Column $column = null) {
-		parent::initAutoEiPropDataSet($n2nContext, $column);
-		
+	function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
 		if ($this->isGeneratedId()) {
 			$this->dataSet->set(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, false);
 			$this->dataSet->set(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY, false);
@@ -70,33 +78,17 @@ class NumericConfig implements EiPropConfiguratorAdaption {
 		
 		if ($column instanceof IntegerColumn) {
 			$this->dataSet->set(self::ATTR_MIN_VALUE_KEY, $column->getMinValue());
-			$this->dataSet->set(self::OPTION_MAX_VALUE_KEY, $column->getMaxValue());
+			$this->dataSet->set(self::ATTR_MAX_VALUE_KEY, $column->getMaxValue());
 		}
 	}
 	
-	public function testCompatibility(PropertyAssignation $propertyAssignation): int {
-		$comptibilityLevel = parent::testCompatibility($propertyAssignation);
-		
-		$entityProperty = $propertyAssignation->getEntityProperty(false);
-		if ($this->eiComponent instanceof IntegerEiProp
-				&& $entityProperty !== null && $entityProperty->getName() === 'id') {
-			return CompatibilityLevel::COMMON;
+	function setup(Eiu $eiu, DataSet $dataSet) {
+		if ($dataSet->contains(self::ATTR_MIN_VALUE_KEY)) {
+			$this->setMinValue($this->dataSet->req(self::ATTR_MIN_VALUE_KEY));
 		}
 		
-		return $comptibilityLevel;
-	}
-	
-	public function setup(EiSetup $eiSetupProcess) {
-		parent::setup($eiSetupProcess);
-	
-		IllegalStateException::assertTrue($this->eiComponent instanceof NumericEiPropAdapter);
-		
-		if ($this->dataSet->contains(self::ATTR_MIN_VALUE_KEY)) {
-			$this->eiComponent->setMinValue($this->dataSet->req(self::ATTR_MIN_VALUE_KEY));
-		}
-		
-		if ($this->dataSet->contains(self::OPTION_MAX_VALUE_KEY)) {
-			$this->eiComponent->setMaxValue($this->dataSet->req(self::OPTION_MAX_VALUE_KEY));
+		if ($dataSet->contains(self::ATTR_MAX_VALUE_KEY)) {
+			$this->setMaxValue($this->dataSet->req(self::ATTR_MAX_VALUE_KEY));
 		}
 	}
 	
@@ -108,35 +100,22 @@ class NumericConfig implements EiPropConfiguratorAdaption {
 		return $idDef->isGenerated() && $idDef->getEntityProperty() === $entityProperty;
 	}
 	
-	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
-		$magDispatchable = parent::createMagDispatchable($n2nContext);
-		$magCollection = $magDispatchable->getMagCollection();
+	function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
+		$lar = new LenientAttributeReader($dataSet);
 		
-		$lar = new LenientAttributeReader($this->dataSet);
-		
-		IllegalStateException::assertTrue($this->eiComponent instanceof NumericEiPropAdapter);
 		$magCollection->addMag(self::ATTR_MIN_VALUE_KEY, new NumericMag('Min Value',
-				$lar->getNumeric(self::ATTR_MIN_VALUE_KEY, $this->eiComponent->getMinValue())));
-		$magCollection->addMag(self::OPTION_MAX_VALUE_KEY, new NumericMag('Max Value',
-				$lar->getNumeric(self::OPTION_MAX_VALUE_KEY, $this->eiComponent->getMaxValue())));
-	
-		return $magDispatchable;
+				$lar->getNumeric(self::ATTR_MIN_VALUE_KEY, $this->getMinValue())));
+		$magCollection->addMag(self::ATTR_MAX_VALUE_KEY, new NumericMag('Max Value',
+				$lar->getNumeric(self::ATTR_MAX_VALUE_KEY, $this->getMaxValue())));
 	}
 	
-	public function saveMagDispatchable(MagDispatchable $magDispatchable, N2nContext $n2nContext) {
-		parent::saveMagDispatchable($magDispatchable, $n2nContext);
-		
-		$magCollection = $magDispatchable->getMagCollection();
-		
-		if (null !== ($minValue = $magCollection->getMagByPropertyName(self::ATTR_MIN_VALUE_KEY)
-				->getValue())) {
-			$this->dataSet->set(self::ATTR_MIN_VALUE_KEY, $minValue);
+	function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {
+		if (null !== ($minValue = $magCollection->readValue(self::ATTR_MIN_VALUE_KEY))) {
+			$dataSet->set(self::ATTR_MIN_VALUE_KEY, $minValue);
 		}
 		
-		if (null !== ($maxValue = $magCollection->getMagByPropertyName(self::OPTION_MAX_VALUE_KEY)
-				->getValue())) {
-			$this->dataSet->set(self::OPTION_MAX_VALUE_KEY, $maxValue);
+		if (null !== ($maxValue = $magCollection->readValue(self::ATTR_MAX_VALUE_KEY))) {
+			$dataSet->set(self::ATTR_MAX_VALUE_KEY, $maxValue);
 		}
 	}
-	
 }

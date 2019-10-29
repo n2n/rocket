@@ -19,22 +19,33 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\prop\embedded;
+namespace rocket\impl\ei\component\prop\numeric\conf;
 
-use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
-use rocket\impl\ei\component\prop\adapter\config\EditConfig;
+use n2n\util\type\attrs\DataSet;
+use n2n\web\dispatch\mag\MagCollection;
+use rocket\ei\component\prop\indepenent\PropertyAssignation;
+use rocket\ei\component\prop\indepenent\CompatibilityLevel;
+use rocket\ei\util\Eiu;
+use rocket\impl\ei\component\prop\adapter\config\ConfigAdaption;
 
-class EmbeddedEiPropConfigurator extends AdaptableEiPropConfigurator {
-	private $eiProp;
+class IntegerConfig extends ConfigAdaption {
 	
-	public function __construct(EmbeddedEiProp $eiProp) {
-		parent::__construct($eiProp);
+	function testCompatibility(PropertyAssignation $propertyAssignation): int {
+		$entityProperty = $propertyAssignation->getEntityProperty(false);
+		if ($entityProperty !== null && $entityProperty->getName() === 'id') {
+			return CompatibilityLevel::COMMON;
+		}
 		
-		$this->autoRegister();
-		$this->registerEditConfig($this->editDef = new EditConfig());
+		return 0;
 	}
 	
-	
-	
-	
+	public function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
+	}
+
+	public function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {
+	}
+
+	public function setup(Eiu $eiu, DataSet $dataSet) {
+	}
+
 }

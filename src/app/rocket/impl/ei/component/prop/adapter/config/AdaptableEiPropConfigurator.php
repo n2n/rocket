@@ -36,6 +36,7 @@ use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\util\Eiu;
+use n2n\persistence\meta\structure\Column;
 
 class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPropConfigurator {
 
@@ -53,28 +54,37 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 	 * @var int
 	 */
 	private $maxCompatibilityLevel = CompatibilityLevel::COMPATIBLE;
-		
-	
 	
 // 	public function getPropertyAssignation(): PropertyAssignation {
 // 		return new PropertyAssignation($this->getAssignedEntityProperty(), 
 // 				$this->getAssignedObjectPropertyAccessProxy());
 // 	}
 	
-	public function testCompatibility(PropertyAssignation $propertyAssignation): int {
+	function testCompatibility(PropertyAssignation $propertyAssignation): int {
 		try {
 			$this->assignProperty($propertyAssignation);
-			
-			$maxLevel = $this->maxCompatibilityLevel;
-			foreach ($this->adapations as $adaption) {
-				$resultLevel = $adaption->testCompatibility($propertyAssignation);
-				if ($maxLevel < $resultLevel) {
-					$maxLevel = $resultLevel;
-				}
-			}
-			return $maxLevel;
 		} catch (IncompatiblePropertyException $e) {
 			return CompatibilityLevel::NOT_COMPATIBLE;
+		}
+		
+		$maxLevel = $this->maxCompatibilityLevel;
+		foreach ($this->adapations as $adaption) {
+			$resultLevel = $adaption->testCompatibility($propertyAssignation);
+			if ($maxLevel < $resultLevel) {
+				$maxLevel = $resultLevel;
+			}
+		}
+		return $maxLevel;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\prop\indepenent\EiPropConfigurator::initAutoEiPropAttributes()
+	 */
+	function initAutoEiPropAttributes(N2nContext $n2nContext, Column $column = null) {
+		$eiu = new Eiu($n2nContext);
+		foreach ($this->adapations as $adaption) {
+			$adaption->autoAttributes($eiu, $this->dataSet, $column);
 		}
 	}
 	
@@ -121,14 +131,24 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 	
 	private $entityPropertyConfigurable;
 	
+	/**
+	 * @param EntityPropertyConfigurable $entityPropertyConfigurable
+	 * @return \rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator
+	 */
 	public function setEntityPropertyConfigurable(EntityPropertyConfigurable $entityPropertyConfigurable) {
 		$this->entityPropertyConfigurable = $entityPropertyConfigurable;
+		return $this;
 	}
 	
 	private $objectPropertyConfigurable;
 	
+	/**
+	 * @param ObjectPropertyConfigurable $objectPropertyConfigurable
+	 * @return \rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator
+	 */
 	public function setObjectPropertyConfigurable(ObjectPropertyConfigurable $objectPropertyConfigurable) {
 		$this->objectPropertyConfigurable = $objectPropertyConfigurable;
+		return $this;
 	}
 	
 
@@ -250,7 +270,21 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 		return !$accessProxy->getConstraint()->allowsNull() && !$accessProxy->getConstraint()->isArrayLike();
 	}
 	
+	/**
+	 * @param EiPropConfiguratorAdaption $adaption
+	 * @return \rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator
+	 */
 	function addAdaption(EiPropConfiguratorAdaption $adaption) {
-		$this->adapations[] = $adaption;
+		$this->adapations[spl_object_hash($adaption)] = $adaption;
+		return $this;
+	}
+	
+	/**
+	 * @param EiPropConfiguratorAdaption $adaption
+	 * @return \rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator
+	 */
+	function removeAdaption(EiPropConfiguratorAdaption $adaption) {
+		unset($this->adapations[spl_object_hash($adaption)]);
+		return $this;
 	}
 }

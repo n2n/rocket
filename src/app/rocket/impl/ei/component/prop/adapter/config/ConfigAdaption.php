@@ -19,26 +19,27 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\prop\meta;
+namespace rocket\impl\ei\component\prop\adapter\config;
 
 use rocket\ei\util\Eiu;
-use rocket\impl\ei\component\prop\adapter\DisplayableEiPropAdapter;
-use rocket\si\content\SiField;
+use n2n\util\type\attrs\DataSet;
+use n2n\persistence\meta\structure\Column;
+use rocket\ei\component\prop\indepenent\PropertyAssignation;
 
-class IdentityStringEiProp extends DisplayableEiPropAdapter {
+abstract class ConfigAdaption implements EiPropConfiguratorAdaption {
 	
-	protected function prepare() {
-		$this->getDisplayConfig()
-				->setAddModeDefaultDisplayed(false)
-				->setEditModeDefaultDisplayed(false);
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\adapter\config\EiPropConfiguratorAdaption::autoAttributes()
+	 */
+	function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable::createUiComponent()
+	 * @see \rocket\impl\ei\component\prop\adapter\config\EiPropConfiguratorAdaption::testCompatibility()
 	 */
-	public function createOutSiField(Eiu $eiu): SiField {
-		return $eiu->entry()->createIdentityString();
+	function testCompatibility(PropertyAssignation $propertyAssignation): int {
+		return 0;
 	}
-
 }

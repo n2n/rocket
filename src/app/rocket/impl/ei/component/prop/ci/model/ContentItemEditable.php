@@ -33,18 +33,18 @@ class ContentItemEditable implements GuiFieldEditable {
 	private $toManyEiField;
 	private $targetReadEiFrame;
 	private $targetEditEiFrame;
-	private $panelConfigs;
+	private $panelDeclarations;
 	private $newMappingFormUrl;
 	private $draftMode = false;
 	private $reduced = true;
 
 	public function __construct(string $label, ToManyEiField $toManyEiField,
-			EiFrame $targetReadEiFrame, EiFrame $targetEditEiFrame, array $panelConfigs) {
+			EiFrame $targetReadEiFrame, EiFrame $targetEditEiFrame, array $panelDeclarations) {
 		$this->label = $label;
 		$this->toManyEiField = $toManyEiField;
 		$this->targetReadEiFrame = $targetReadEiFrame;
 		$this->targetEditEiFrame = $targetEditEiFrame;
-		$this->panelConfigs = $panelConfigs;
+		$this->panelDeclarations = $panelDeclarations;
 	}
 
 	public function setNewMappingFormUrl(Url $newMappingFormUrl = null) {
@@ -64,8 +64,8 @@ class ContentItemEditable implements GuiFieldEditable {
 	 * @see \rocket\ei\manage\gui\field\GuiFieldEditable::isMandatory()
 	 */
 	public function isMandatory(): bool {
-		foreach ($this->panelConfigs as $panelConfig) {
-			if ($panelConfig->getMin() > 0) return true;
+		foreach ($this->panelDeclarations as $panelDeclaration) {
+			if ($panelDeclaration->getMin() > 0) return true;
 		}
 
 		return false;
@@ -78,7 +78,7 @@ class ContentItemEditable implements GuiFieldEditable {
 	 * @see \rocket\ei\manage\gui\field\GuiFieldEditable::createMag($propertyName)
 	 */
 	public function getSiField(): SiField {
-		$this->contentItemMag = new ContentItemMag($this->label, $this->panelConfigs,
+		$this->contentItemMag = new ContentItemMag($this->label, $this->panelDeclarations,
 				$this->targetReadEiFrame, $this->targetEditEiFrame);
 		$this->contentItemMag->setNewMappingFormUrl($this->newMappingFormUrl);
 		$this->contentItemMag->setValue($this->toManyEiField->getValue());

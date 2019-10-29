@@ -32,7 +32,7 @@ use n2n\impl\web\dispatch\mag\model\NumericMag;
 use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\util\type\attrs\DataSet;
 use n2n\util\type\TypeConstraint;
-use rocket\impl\ei\component\prop\ci\model\PanelConfig;
+use rocket\impl\ei\component\prop\ci\model\PanelDeclaration;
 use n2n\util\type\attrs\AttributesException;
 use n2n\util\StringUtils;
 use n2n\impl\web\dispatch\mag\model\MagCollectionMag;
@@ -77,7 +77,7 @@ class CiConfigUtils {
 		return $this->allowedContentItemOptions;
 	}
 
-	public function createPanelConfigMagCollection(bool $includePanelName) {
+	public function createPanelDeclarationMagCollection(bool $includePanelName) {
 // 		$allowedContentItemOptions = $this->getAllowedContentItemOptions();
 		
 		$magCollection = new MagCollection();
@@ -103,8 +103,8 @@ class CiConfigUtils {
 		return $magCollection;
 	}
 	
-	public function buildPanelConfigMagCollectionValues(array $panelConfigAttrs) {
-		$lar = new LenientAttributeReader(new DataSet($panelConfigAttrs));
+	public function buildPanelDeclarationMagCollectionValues(array $panelDeclarationAttrs) {
+		$lar = new LenientAttributeReader(new DataSet($panelDeclarationAttrs));
 		$values = array(
 				self::ATTR_PANEL_NAME_KEY => $lar->getString(self::ATTR_PANEL_NAME_KEY),
 				self::ATTR_PANEL_LABEL_KEY => $lar->getString(self::ATTR_PANEL_LABEL_KEY),
@@ -128,29 +128,29 @@ class CiConfigUtils {
 		return $values;
 	}
 	
-	public static function buildPanelConfigAttrs(array $panelConfigMagCollectionValues) {
-		if (empty($panelConfigMagCollectionValues[self::ATTR_ALLOWED_CONTENT_ITEM_IDS_KEY])) {
-			unset($panelConfigMagCollectionValues[self::ATTR_ALLOWED_CONTENT_ITEM_IDS_KEY]);
+	public static function buildPanelDeclarationAttrs(array $panelDeclarationMagCollectionValues) {
+		if (empty($panelDeclarationMagCollectionValues[self::ATTR_ALLOWED_CONTENT_ITEM_IDS_KEY])) {
+			unset($panelDeclarationMagCollectionValues[self::ATTR_ALLOWED_CONTENT_ITEM_IDS_KEY]);
 		}
 			
-		if (!isset($panelConfigMagCollectionValues[self::ATTR_MAX_KEY])) {
-			unset($panelConfigMagCollectionValues[self::ATTR_MAX_KEY]);
+		if (!isset($panelDeclarationMagCollectionValues[self::ATTR_MAX_KEY])) {
+			unset($panelDeclarationMagCollectionValues[self::ATTR_MAX_KEY]);
 		}
 		
-		if (!$panelConfigMagCollectionValues[self::ATTR_GRID_ENABLED_KEY]) {
-			unset($panelConfigMagCollectionValues[self::ATTR_GRID_KEY]);
+		if (!$panelDeclarationMagCollectionValues[self::ATTR_GRID_ENABLED_KEY]) {
+			unset($panelDeclarationMagCollectionValues[self::ATTR_GRID_KEY]);
 		}
-		unset($panelConfigMagCollectionValues[self::ATTR_GRID_ENABLED_KEY]);
+		unset($panelDeclarationMagCollectionValues[self::ATTR_GRID_ENABLED_KEY]);
 		
-		return $panelConfigMagCollectionValues;
+		return $panelDeclarationMagCollectionValues;
 	}
 	
 	/**
 	 * @param array $panelAttrs
 	 * @throws AttributesException
-	 * @return \rocket\impl\ei\component\prop\ci\model\PanelConfig
+	 * @return \rocket\impl\ei\component\prop\ci\model\PanelDeclaration
 	 */
-	public static function createPanelConfig(array $panelAttrs, string $panelName = null) {
+	public static function createPanelDeclaration(array $panelAttrs, string $panelName = null) {
 		$panelDataSet = new DataSet($panelAttrs);
 		
 		if ($panelName === null) {
@@ -176,7 +176,7 @@ class CiConfigUtils {
 					$gridDataSet->optInt(self::ATTR_GRID_ROW_END_KEY, null, true));
 		}
 		
-		return new PanelConfig($panelName, $panelLabel,
+		return new PanelDeclaration($panelName, $panelLabel,
 				empty($allowedCiIds) ? null : $allowedCiIds,
 				$panelDataSet->optInt(self::ATTR_MIN_KEY, 0, true),
 				$panelDataSet->optInt(self::ATTR_MAX_KEY, null, true),

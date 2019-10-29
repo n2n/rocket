@@ -23,15 +23,13 @@ namespace rocket\impl\ei\component\prop\ci;
 
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\util\type\ArgUtils;
-use rocket\impl\ei\component\prop\ci\conf\ContentItemsEiPropConfigurator;
 use rocket\impl\ei\component\prop\ci\model\ContentItem;
-use rocket\impl\ei\component\prop\ci\model\PanelConfig;
+use rocket\impl\ei\component\prop\ci\model\PanelDeclaration;
 use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use rocket\impl\ei\component\prop\ci\model\ContentItemGuiField;
 use rocket\ei\EiPropPath;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\gui\field\GuiField;
-use rocket\si\meta\SiStructureType;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\ei\manage\gui\ViewMode;
@@ -41,10 +39,12 @@ use rocket\impl\ei\component\prop\relation\model\gui\RelationLinkGuiField;
 use rocket\ei\component\prop\FieldEiProp;
 use rocket\ei\manage\entry\EiField;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
+use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
+use rocket\impl\ei\component\prop\ci\conf\ContentItemsConfig;
 
 class ContentItemsEiProp extends RelationEiPropAdapter implements FieldEiProp {
-	private $panelConfigs = array();
-// 	private $contentItemEiType;
+	
+	private $contentItemsConfig;
 	
 	public function __construct() {
 		parent::__construct();
@@ -52,10 +52,10 @@ class ContentItemsEiProp extends RelationEiPropAdapter implements FieldEiProp {
 		$this->setup(
 				(new DisplayConfig(ViewMode::all()))->setListReadModeDefaultDisplayed(false),
 				new RelationModel($this, false, true, RelationModel::MODE_EMBEDDED, 
-						(new EditConfig())->setMandatory(false)),
-				new ContentItemsEiPropConfigurator($this));
+						(new EditConfig())->setMandatory(false)));
 		
-		$this->panelConfigs = array(new PanelConfig('main', 'Main', null, 0));
+		$this->contentItemsConfig = new ContentItemsConfig();
+		
 		
 // 		$this->configurator = new ContentItemsEiPropConfigurator($this/*, $this->eiPropRelation*/);
 // 		$this->configurator->registerDisplayConfig($this->displayConfig);
@@ -63,8 +63,8 @@ class ContentItemsEiProp extends RelationEiPropAdapter implements FieldEiProp {
 // 		$this->configurator->setRelationModel($this->getRelationModel());
 	}
 	
-	protected function getSiStructureType(): string {
-		return SiStructureType::LIGHT_GROUP;
+	function prepare() {
+		$this->getConfigurator()->addAdaption($this->contentItemsConfig);
 	}
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {
@@ -103,28 +103,28 @@ class ContentItemsEiProp extends RelationEiPropAdapter implements FieldEiProp {
 // 		throw new IllegalStateException('Undefined ContentItem EiType.');
 // 	}
 	
-	public function hasPanelConfigs() {
-		return !empty($this->panelConfigs);
+	public function hasPanelDeclarations() {
+		return !empty($this->panelDeclarations);
 	}
 	
-	public function getPanelConfigs(): array {
-		return $this->panelConfigs;
+	public function getPanelDeclarations(): array {
+		return $this->panelDeclarations;
 	}
 	
 	/**
-	 * @param PanelConfig[] $panelConfigs
+	 * @param PanelDeclaration[] $panelDeclarations
 	 */
-	public function setPanelConfigs(array $panelConfigs) {
-		ArgUtils::valArray($panelConfigs, PanelConfig::class);
-		$this->panelConfigs = $panelConfigs;
+	public function setPanelDeclarations(array $panelDeclarations) {
+		ArgUtils::valArray($panelDeclarations, PanelDeclaration::class);
+		$this->panelDeclarations = $panelDeclarations;
 	}
 	
 	/**
 	 * @param Eiu $eiu
-	 * @return \rocket\impl\ei\component\prop\ci\model\PanelConfig[]
+	 * @return \rocket\impl\ei\component\prop\ci\model\PanelDeclaration[]
 	 */
-	public function determinePanelConfigs(Eiu $eiu) {
-		return $this->panelConfigs;
+	public function determinePanelDeclarations(Eiu $eiu) {
+		return $this->panelDeclarations;
 	}
 	
 	function buildEiField(Eiu $eiu): ?EiField {
@@ -138,7 +138,7 @@ class ContentItemsEiProp extends RelationEiPropAdapter implements FieldEiProp {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiProp::buildGuiField()
 	 */
-	function buildGuiField(Eiu $eiu): ?GuiField {
+	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
 		if ($readOnly || $this->editConfig->isReadOnly()) {
 			return new RelationLinkGuiField($eiu, $this->getRelationModel());
 		}
@@ -147,6 +147,6 @@ class ContentItemsEiProp extends RelationEiPropAdapter implements FieldEiProp {
 				->exec($this->getRelationModel()->getTargetEditEiCommandPath());
 			
 		return new ContentItemGuiField($eiu, $targetEiuFrame, $this->getRelationModel(), 
-				$this->determinePanelConfigs($eiu));
+				$this->determinePanelDeclarations($eiu));
 	}
 }

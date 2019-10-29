@@ -21,13 +21,10 @@
  */
 namespace rocket\impl\ei\component\prop\relation\conf;
 
-use n2n\core\container\N2nContext;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
-use rocket\ei\component\EiSetup;
 use n2n\impl\web\dispatch\mag\model\NumericMag;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
 use n2n\web\dispatch\mag\MagCollection;
-use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\util\type\attrs\DataSet;
 use n2n\util\type\attrs\LenientAttributeReader;
 use rocket\impl\ei\component\prop\relation\model\RelationVetoableActionListener;
@@ -41,9 +38,10 @@ use rocket\impl\ei\component\prop\relation\command\TargetReadEiCommand;
 use rocket\ei\EiCommandPath;
 use n2n\l10n\Lstr;
 use rocket\impl\ei\component\prop\relation\command\TargetEditEiCommand;
-use rocket\impl\ei\component\prop\adapter\config\EiPropConfiguratorAdaption;
+use rocket\impl\ei\component\prop\adapter\config\ConfigAdaption;
+use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 
-class RelationConfig implements EiPropConfiguratorAdaption {
+class RelationConfig extends ConfigAdaption {
 	const ATTR_TARGET_EXTENSION_ID_KEY = 'targetExtension';
 	const ATTR_MIN_KEY = 'min';	// tm
 	const ATTR_MAX_KEY = 'max'; // tm
@@ -66,7 +64,7 @@ class RelationConfig implements EiPropConfiguratorAdaption {
 	}
 	
 	function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
-		$dataSet->set(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, $this->displayInOverViewDefault);
+		$dataSet->set(DisplayConfig::ATTR_DISPLAY_IN_OVERVIEW_KEY, $this->displayInOverViewDefault);
 	}
 	
 	function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {

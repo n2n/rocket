@@ -110,13 +110,9 @@ abstract class PropertyEiPropAdapter extends IndependentEiPropAdapter
 	/**
 	 * @return EiPropConfigurator
 	 */
-	public function createEiPropConfigurator(): EiPropConfigurator {
-		$configurator = parent::createEiPropConfigurator();
-		IllegalStateException::assertTrue($configurator instanceof AdaptableEiPropConfigurator);
-		$configurator->setEntityPropertyConfigurable($this);
-		$configurator->setObjectPropertyConfigurable($this);
-		$this->adaptConfigurator($configurator);
-		return $configurator;
+	public function createConfigurator(): AdaptableEiPropConfigurator {
+		return parent::createConfigurator()->setEntityPropertyConfigurable($this)
+				->setObjectPropertyConfigurable($this);
 	}
 	
 }

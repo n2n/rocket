@@ -27,21 +27,21 @@
 // use n2n\l10n\Message;
 
 // class ValContentItemOption extends SimplePropertyValidator {
-// 	private $panelConfigs;
+// 	private $panelDeclarations;
 	
-// 	public function __construct(array $panelConfigs) {
-// 		$this->panelConfigs = $panelConfigs;
+// 	public function __construct(array $panelDeclarations) {
+// 		$this->panelDeclarations = $panelDeclarations;
 // 	}
 // 	/* (non-PHPdoc)
 // 	 * @see \n2n\impl\web\dispatch\map\val\SimplePropertyValidator::validateValue()
 // 	 */
 // 	protected function validateValue($mapValue) {
 // 		return;	
-// 		foreach ($this->panelConfigs as $panelConfig) {
-// 			if (!$panelConfig->isRestricted()) continue;
+// 		foreach ($this->panelDeclarations as $panelDeclaration) {
+// 			if (!$panelDeclaration->isRestricted()) continue;
 
-// 			$panelName = $panelConfig->getName();
-// 			$allowedContentItemIds = $panelConfig->getAllowedContentItemIds();
+// 			$panelName = $panelDeclaration->getName();
+// 			$allowedContentItemIds = $panelDeclaration->getAllowedContentItemIds();
 // 			$propertyPath = new PropertyPath(array($pathPart));
 // 			foreach ($mapValue->currentMappingForms as $key => $eiuEntryFormMappingResult) {
 // 				if (!$eiuEntryFormMappingResult->mainEiuEntryFormPart->MagForm->has('panel')

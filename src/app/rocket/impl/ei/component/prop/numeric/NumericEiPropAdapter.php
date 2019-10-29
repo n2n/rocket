@@ -43,6 +43,7 @@ use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\impl\ei\component\prop\numeric\conf\NumericConfig;
+use rocket\si\content\SiField;
 
 abstract class NumericEiPropAdapter extends DraftablePropertyEiPropAdapter 
 		implements FilterableEiProp, SortableEiProp, QuickSearchableEiProp {
@@ -74,8 +75,8 @@ abstract class NumericEiPropAdapter extends DraftablePropertyEiPropAdapter
 		$this->objectPropertyAccessProxy = $propertyAccessProxy;
 	}
 
-	function adaptConfigurator(AdaptableEiPropConfigurator $configurator) {
-	    $configurator->addAdaption($this->numericConfig);
+	function prepare() {
+		$this->getConfigurator()->addAdaption($this->numericConfig);
 	}
 	
 	function createOutSiField(Eiu $eiu): SiField  {

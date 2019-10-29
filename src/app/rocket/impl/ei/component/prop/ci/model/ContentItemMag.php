@@ -41,7 +41,7 @@ use n2n\web\dispatch\mag\UiOutfitter;
 use rocket\ei\util\Eiu;
 
 class ContentItemMag extends MagAdapter {
-	private $panelConfigs = array();
+	private $panelDeclarations = array();
 	private $targetReadEiFrame;
 	private $targetEditEiFrame;
 	
@@ -54,15 +54,15 @@ class ContentItemMag extends MagAdapter {
 	/**
 	 * @param string $propertyName
 	 * @param string $label
-	 * @param PanelConfig[] $panelConfigs
+	 * @param PanelDeclaration[] $panelDeclarations
 	 * @param EiFrame $targetReadEiFrame
 	 * @param EiFrame $targetEditEiFrame
 	 */
-	public function __construct(string $label, array $panelConfigs, 
+	public function __construct(string $label, array $panelDeclarations, 
 			EiFrame $targetReadEiFrame, EiFrame $targetEditEiFrame) {
 		parent::__construct($label);
 	
-		$this->panelConfigs = $panelConfigs;
+		$this->panelDeclarations = $panelDeclarations;
 		$this->targetReadEiFrame = $targetReadEiFrame;
 		$this->targetEditEiFrame = $targetEditEiFrame;
 	}
@@ -115,16 +115,16 @@ class ContentItemMag extends MagAdapter {
 		$groupedTargetRelationEntries = $this->groupRelationEntries($this->targetRelationEntries);
 		
 		$orderEiPropPath = ContentItemsEiProp::getOrderIndexEiPropPath();
-		foreach ($this->panelConfigs as $panelConfig) {
-			$panelName = $panelConfig->getName();
+		foreach ($this->panelDeclarations as $panelDeclaration) {
+			$panelName = $panelDeclaration->getName();
 			
-			$panelMag = new ToManyMag($panelConfig->getLabel(), $this->targetReadEiFrame,
-					$this->targetEditEiFrame, $panelConfig->getMin(), $panelConfig->getMax());
+			$panelMag = new ToManyMag($panelDeclaration->getLabel(), $this->targetReadEiFrame,
+					$this->targetEditEiFrame, $panelDeclaration->getMin(), $panelDeclaration->getMax());
 			$panelMag->setTargetOrderEiPropPath($orderEiPropPath);
 			$panelMag->setDraftMode($this->draftMode);
 			$panelMag->setReduced($this->reduced);
 			
-			$allowedEiTypeIds = $panelConfig->isRestricted() ? $panelConfig->getAllowedContentItemIds() : null;
+			$allowedEiTypeIds = $panelDeclaration->isRestricted() ? $panelDeclaration->getAllowedContentItemIds() : null;
 			$panelMag->setNewMappingFormUrl($this->newMappingFormUrl->queryExt(array('chooseableEiTypeIds' => $allowedEiTypeIds)));
 			$panelMag->setAllowedNewEiTypeIds($allowedEiTypeIds);
 			
@@ -144,8 +144,8 @@ class ContentItemMag extends MagAdapter {
 		
 		$panelEiPropPath = ContentItemsEiProp::getPanelEiPropPath();
 		$this->targetRelationEntries = array();
-		foreach ($this->panelConfigs as $panelConfig) {
-			$panelName = $panelConfig->getName();
+		foreach ($this->panelDeclarations as $panelDeclaration) {
+			$panelName = $panelDeclaration->getName();
 			$panelMag = $formValue->getMagCollection()->getMagByPropertyName($panelName);
 			foreach ($panelMag->getValue() as $targetRelationEntry) {
 				$targetRelationEntry->getEiEntry()->setValue($panelEiPropPath, $panelName, true);
@@ -185,7 +185,7 @@ class ContentItemMag extends MagAdapter {
 		}
 		
 		return $view->getImport('\rocket\impl\ei\component\prop\ci\view\contentItemsForm.html',
-				array('panelLayout' => new PanelLayout($this->panelConfigs), 'propertyPath' => $propertyPath,
+				array('panelLayout' => new PanelLayout($this->panelDeclarations), 'propertyPath' => $propertyPath,
 						'ciEiTypeLabels' => $ciEiTypeLabels));
 	}
 }

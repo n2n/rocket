@@ -41,7 +41,7 @@
 // 		$this->autoRegister($n2nLocaleEiProp);
 // 	}
 	
-// 	public function setup(EiSetup $setupProcess) {
+// 	public function setup(Eiu $eiu, DataSet $dataSet) {
 // 		parent::setup($setupProcess);
 		
 // 		$n2nLocaleEiProp = $this->eiComponent;

@@ -21,51 +21,43 @@
  */
 namespace rocket\impl\ei\component\prop\ci\conf;
 
-use rocket\impl\ei\component\prop\ci\ContentItemsEiProp;
-use n2n\util\ex\IllegalStateException;
 use rocket\impl\ei\component\prop\ci\model\ContentItem;
-use rocket\ei\component\EiSetup;
-use n2n\core\container\N2nContext;
 use n2n\util\type\CastUtils;
 use n2n\impl\web\dispatch\mag\model\MagCollectionArrayMag;
-use rocket\impl\ei\component\prop\relation\conf\RelationEiPropConfigurator;
-use n2n\web\dispatch\mag\MagDispatchable;
 use rocket\spec\UnknownTypeException;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\util\type\attrs\LenientAttributeReader;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
+use rocket\impl\ei\component\prop\adapter\config\ConfigAdaption;
+use rocket\impl\ei\component\prop\ci\model\PanelDeclaration;
+use n2n\util\type\attrs\DataSet;
+use rocket\ei\util\Eiu;
+use n2n\web\dispatch\mag\MagCollection;
 
-class ContentItemsEiPropConfigurator extends RelationEiPropConfigurator {
+class ContentItemsConfig extends ConfigAdaption {
 	const ATTR_PANELS_KEY = 'panels';
 	
-	private $contentItemsEiProp;
+	private $panelDeclarations = array();
 	
-	public function __construct(ContentItemsEiProp $contentItemsEiProp) {
-		parent::__construct($contentItemsEiProp);
-		
-		$this->contentItemsEiProp = $contentItemsEiProp;
+	function __construct() {
+		$this->panelDeclarations = array(new PanelDeclaration('main', 'Main', null, 0));
 	}
 	
-	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
-		$magDispatchable = parent::createMagDispatchable($n2nContext);
-		$magCollection = $magDispatchable->getMagCollection();
-	
-		CastUtils::assertTrue($this->eiComponent instanceof ContentItemsEiProp);
-		
+	function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
 		$ciConfigUtils = null;
 		try {
-			$ciConfigUtils = CiConfigUtils::createFromN2nContext($n2nContext);
+			$ciConfigUtils = CiConfigUtils::createFromN2nContext($eiu->getN2nContext());
 		} catch (UnknownTypeException $e) {
-			return $magDispatchable;
+			return;
 		}
 		
-		$panelConfigMag = new MagCollectionArrayMag('Panels',
+		$panelDeclarationMag = new MagCollectionArrayMag('Panels',
 				function() use ($ciConfigUtils) {
-					return new MagForm($ciConfigUtils->createPanelConfigMagCollection(true));
+					return new MagForm($ciConfigUtils->createPanelDeclarationMagCollection(true));
 				});
 		
-		$magCollection->addMag(self::ATTR_PANELS_KEY, $panelConfigMag);
+		$magCollection->addMag(self::ATTR_PANELS_KEY, $panelDeclarationMag);
 		
 		$lar = new LenientAttributeReader($this->dataSet);
 // 		if ($lar->contains(self::ATTR_PANELS_KEY)) {
@@ -77,51 +69,43 @@ class ContentItemsEiPropConfigurator extends RelationEiPropConfigurator {
 // 			}
 			
 // 			if (!empty($magValue)) {
-// 				$panelConfigMag->setValue($magValue);
+// 				$panelDeclarationMag->setValue($magValue);
 // 				return $magDispatchable;
 // 			}
 // 		}
 		
 		$magValue = array();
 		foreach ($lar->getArray(self::ATTR_PANELS_KEY) as $panelAttrs) {
-			$magValue[] = $ciConfigUtils->buildPanelConfigMagCollectionValues($panelAttrs);
+			$magValue[] = $ciConfigUtils->buildPanelDeclarationMagCollectionValues($panelAttrs);
 		}
-		$panelConfigMag->setValue($magValue);
-		
-		return $magDispatchable;
+		$panelDeclarationMag->setValue($magValue);
 	}
 	
 	
 		
-	public function saveMagDispatchable(MagDispatchable $magDispatchable, N2nContext $n2nContext) {
-		parent::saveMagDispatchable($magDispatchable, $n2nContext);
-		
-		$mag = $magDispatchable->getMagCollection()->getMagByPropertyName(self::ATTR_PANELS_KEY);
+	function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {
+		$mag = $magCollection->getMagByPropertyName(self::ATTR_PANELS_KEY);
 		CastUtils::assertTrue($mag instanceof MagCollectionArrayMag);
 		
-		$panelConfigAttrs = array();
+		$panelDeclarationAttrs = array();
 		foreach ($mag->getValue() as $panelValues) {
-			$panelConfigAttrs[] = CiConfigUtils::buildPanelConfigAttrs($panelValues);
+			$panelDeclarationAttrs[] = CiConfigUtils::buildPanelDeclarationAttrs($panelValues);
 		}
 		
-		if (!empty($panelConfigAttrs)) {
-			$this->dataSet->set(self::ATTR_PANELS_KEY, $panelConfigAttrs);
+		if (!empty($panelDeclarationAttrs)) {
+			$this->dataSet->set(self::ATTR_PANELS_KEY, $panelDeclarationAttrs);
 		}
 	}
 	
-	public function setup(EiSetup $eiSetupProcess) {
-		parent::setup($eiSetupProcess);
-	
-		IllegalStateException::assertTrue($this->eiComponent instanceof ContentItemsEiProp);
-		
+	function setup(Eiu $eiu, DataSet $dataSet) {
 // 		$this->eiComponent->setContentItemEiType($eiSetupProcess->getEiTypeByClass(
 // 				ReflectionUtils::createReflectionClass('rocket\impl\ei\component\prop\ci\model\ContentItem')));
-		if ($this->dataSet->contains(self::ATTR_PANELS_KEY)) {
-			$panelConfigs = array();
-			foreach ((array) $this->dataSet->get(self::ATTR_PANELS_KEY) as $panelAttrs) {
-				$panelConfigs[] = CiConfigUtils::createPanelConfig($panelAttrs);
+		if ($dataSet->contains(self::ATTR_PANELS_KEY)) {
+			$panelDeclarations = array();
+			foreach ((array) $dataSet->optArray(self::ATTR_PANELS_KEY) as $panelAttrs) {
+				$panelDeclarations[] = CiConfigUtils::createPanelDeclaration($panelAttrs);
 			}
-			$this->eiComponent->setPanelConfigs($panelConfigs);
+			$this->eiComponent->setPanelDeclarations($panelDeclarations);
 		}
 	}
 

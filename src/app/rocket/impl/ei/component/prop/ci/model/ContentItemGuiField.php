@@ -68,15 +68,15 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler {
 	 * @param Eiu $eiu
 	 * @param EiuFrame $targetEiuFrame
 	 * @param RelationModel $relationModel
-	 * @param PanelConfig[] $panelConfigs
+	 * @param PanelDeclaration[] $panelDeclarations
 	 */
 	public function __construct(Eiu $eiu, EiuFrame $targetEiuFrame, RelationModel $relationModel,
-			array $panelConfigs) {
+			array $panelDeclarations) {
 		$this->eiu = $eiu;
 		$this->targetEiuFrame = $targetEiuFrame;
 		$this->relationModel = $relationModel;
-		$this->panelLayout = new PanelLayout($panelConfigs);
-		$this->panelLayout->assignConfigs($panelConfigs, $targetEiuFrame, $relationModel);
+		$this->panelLayout = new PanelLayout($panelDeclarations);
+		$this->panelLayout->assignConfigs($panelDeclarations, $targetEiuFrame, $relationModel);
 		
 		$this->siField = SiFields::embeddedEntryPanelsIn(
 						$this->targetEiuFrame->getApiUrl($relationModel->getTargetEditEiCommandPath()),

@@ -25,7 +25,8 @@ use n2n\l10n\N2nLocale;
 use rocket\ei\util\Eiu;
 use n2n\util\StringUtils;
 use rocket\si\content\impl\SiFields;
-use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
+use rocket\impl\ei\component\prop\string\conf\StringConfig;
+use rocket\si\content\SiField;
 
 class StringEiProp extends AlphanumericEiProp {
 	
@@ -37,17 +38,17 @@ class StringEiProp extends AlphanumericEiProp {
 		$this->stringConfig = new StringConfig();
 	}
 	
-	function adaptConfigurator(AdaptableEiPropConfigurator $configurator) {
-		parent::adaptConfigurator($configurator);
-		$configurator->addAdaption($this->stringConfig);
+	function prepare() {
+		parent::prepare();
+		$this->getConfigurator()->addAdaption($this->stringConfig);
 	}
 	
-	public function createOutSiField(Eiu $eiu): SiField  {
+	function createOutSiField(Eiu $eiu): SiField  {
 		return SiFields::stringOut($eiu->field()->getValue())
 				->setMultiline($this->isMultiline());
 	}
 
-	public function createInSiField(Eiu $eiu): SiField {
+	function createInSiField(Eiu $eiu): SiField {
 		$addonConfig = $this->getAddonConfig();
 		
 		return SiFields::stringIn($eiu->field()->getValue())
@@ -59,11 +60,15 @@ class StringEiProp extends AlphanumericEiProp {
 				->setSuffixAddons($addonConfig->getSuffixSiCrumbGroups());
 	}
 	
-	public function isStringRepresentable(): bool {
+	function saveSiField(SiField $siField, Eiu $eiu) {
+	}
+	
+	function isStringRepresentable(): bool {
 		return true;
 	}
 
-	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
+	function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
 		return StringUtils::strOf($eiu->object()->readNativValue($this), true);
 	}
+
 }

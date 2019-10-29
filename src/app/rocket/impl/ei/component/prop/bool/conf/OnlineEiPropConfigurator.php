@@ -30,8 +30,11 @@ use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use n2n\core\container\N2nContext;
 use n2n\persistence\meta\structure\Column;
+use rocket\ei\util\Eiu;
+use n2n\util\type\attrs\DataSet;
+use rocket\impl\ei\component\prop\adapter\config\ConfigAdaption;
 
-class OnlineEiPropConfigurator extends AdaptableEiPropConfigurator {
+class OnlineEiPropConfigurator extends ConfigAdaption {
 	const COMMON_ONLINE_PROP_NAME = 'online';
 	
 	public function __construct(OnlineEiProp $onlineEiProp) {
@@ -56,15 +59,15 @@ class OnlineEiPropConfigurator extends AdaptableEiPropConfigurator {
 	}
 	
 	
-	public function initAutoEiPropDataSet(N2nContext $n2nContext, Column $column = null) {
-		parent::initAutoEiPropDataSet($n2nContext, $column);
+	public function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
+		parent::initAutoEiPropAttributes($n2nContext, $column);
 		
 		$this->dataSet->set(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY, false);
 		$this->dataSet->set(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, false);
 		$this->dataSet->set(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, false);
 	}
 	
-	public function setup(EiSetup $setupProcess) {
+	public function setup(Eiu $eiu, DataSet $dataSet) {
 		parent::setup($setupProcess);
 		
 		$onlineEiProp = $this->eiComponent;

@@ -41,8 +41,12 @@ use n2n\util\type\CastUtils;
 use rocket\ei\manage\generic\ScalarEiProperty;
 use rocket\ei\manage\generic\GenericEiProperty;
 use rocket\ei\util\spec\EiuEngine;
+use rocket\impl\ei\component\prop\adapter\config\ConfigAdaption;
+use rocket\ei\util\Eiu;
+use n2n\util\type\attrs\DataSet;
+use n2n\web\dispatch\mag\MagCollection;
 
-class PathPartEiPropConfig {
+class PathPartEiPropConfig extends ConfigAdaption {
 	const ATTR_BASE_PROPERTY_FIELD_ID_KEY = 'basePropertyFieldId';
 	const ATTR_NULL_ALLOWED_KEY = 'allowEmpty';
 	const ATTR_UNIQUE_PER_FIELD_ID_KEY = 'uniquePerFieldId';
@@ -105,41 +109,30 @@ class PathPartEiPropConfig {
 		$this->criticalMessage = $criticalMessage;
 	}
 	
-	public function testCompatibility(PropertyAssignation $propertyAssignation) {
-		$level = parent::testCompatibility($propertyAssignation);
-		if (!$level) return $level;
-	
+	public function testCompatibility(PropertyAssignation $propertyAssignation): int {
 		if (StringUtils::contains(self::$commonNeedles, $propertyAssignation->getObjectPropertyAccessProxy()
 				->getPropertyName())) {
 			return CompatibilityLevel::COMMON;
 		}
 	
-		return $level;
+		return 0;
 	}
 	
 	
-	public function initAutoEiPropDataSet(N2nContext $n2nContext, Column $column = null) {
-		parent::initAutoEiPropDataSet($n2nContext, $column);
-	
+	public function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
 		$options = $this->getBaseEiPropIdOptions();
 		if (empty($options)) return;
 		
-		$this->dataSet->set(self::ATTR_BASE_PROPERTY_FIELD_ID_KEY, key($options));
+		$dataSet->set(self::ATTR_BASE_PROPERTY_FIELD_ID_KEY, key($options));
 	}
 	
-	public function setup(EiSetup $setupProcess) {
-		parent::setup($setupProcess);
-		
-		$pathPartEiProp = $this->eiComponent;
-		IllegalStateException::assertTrue($pathPartEiProp instanceof PathPartEiProp);
-		
-		$that = $this;
-		$setupProcess->eiu()->mask()->onEngineReady(function (EiuEngine $eiuEngine) use ($setupProcess, $that) {
-			$that->setupRef($setupProcess, $eiuEngine);
+	public function setup(Eiu $eiu, DataSet $dataSet) {
+		$eiu->mask()->onEngineReady(function (EiuEngine $eiuEngine) use ($eiu) {
+			$this->setupRef($eiu, $dataSet);
 		});
 		
-		if ($this->dataSet->contains(self::ATTR_NULL_ALLOWED_KEY)) {
-			$allowEmpty = $this->dataSet->getBool(self::ATTR_NULL_ALLOWED_KEY, false);
+		if ($dataSet->contains(self::ATTR_NULL_ALLOWED_KEY)) {
+			$allowEmpty = $dataSet->getBool(self::ATTR_NULL_ALLOWED_KEY, false);
 			if ($allowEmpty && $this->mandatoryRequired()) {
 				throw new InvalidAttributeException(self::ATTR_NULL_ALLOWED_KEY 
 						. ' must be false because AccessProxy does not allow null value: '
@@ -148,25 +141,25 @@ class PathPartEiPropConfig {
 			$pathPartEiProp->setNullAllowed($allowEmpty);
 		}
 		
-		if ($this->dataSet->contains(self::ATTR_CRITICAL_KEY)) {
-			$pathPartEiProp->setCritical($this->dataSet->get(self::ATTR_CRITICAL_KEY));
+		if ($dataSet->contains(self::ATTR_CRITICAL_KEY)) {
+			$pathPartEiProp->setCritical($dataSet->get(self::ATTR_CRITICAL_KEY));
 		}
 		
-		if ($this->dataSet->contains(self::ATTR_CRITICAL_MESSAGE_KEY)) {
-			$pathPartEiProp->setCriticalMessage($this->dataSet->getString(self::ATTR_CRITICAL_MESSAGE_KEY));
+		if ($dataSet->contains(self::ATTR_CRITICAL_MESSAGE_KEY)) {
+			$pathPartEiProp->setCriticalMessage($dataSet->getString(self::ATTR_CRITICAL_MESSAGE_KEY));
 		}
 
 		$setupProcess->eiu()->mask()->addEiModificator(new PathPartEiModificator($this->eiComponent));
 	}
 	
-	private function setupRef(EiSetup $setupProcess, EiuEngine $eiuEngine) {
+	private function setupRef(Eiu $eiu, DataSet $dataSet) {
 		$pathPartEiProp = $this->eiComponent;
 		IllegalStateException::assertTrue($pathPartEiProp instanceof PathPartEiProp);
 		
-		if ($this->dataSet->contains(self::ATTR_BASE_PROPERTY_FIELD_ID_KEY)) {
+		if ($dataSet->contains(self::ATTR_BASE_PROPERTY_FIELD_ID_KEY)) {
 			try {
 				$pathPartEiProp->setBaseScalarEiProperty($eiuEngine->getScalarEiProperty(
-						$this->dataSet->getString(self::ATTR_BASE_PROPERTY_FIELD_ID_KEY)));
+						$dataSet->getString(self::ATTR_BASE_PROPERTY_FIELD_ID_KEY)));
 			} catch (\InvalidArgumentException $e) {
 				throw $setupProcess->createException('Invalid base ScalarEiProperty configured.', $e);
 			} catch (UnknownScalarEiPropertyException $e) {
@@ -174,10 +167,10 @@ class PathPartEiPropConfig {
 			}
 		}
 		
-		if ($this->dataSet->contains(self::ATTR_UNIQUE_PER_FIELD_ID_KEY)) {
+		if ($dataSet->contains(self::ATTR_UNIQUE_PER_FIELD_ID_KEY)) {
 			try {
 				$pathPartEiProp->setUniquePerGenericEiProperty($eiuEngine->getGenericEiProperty(
-						$this->dataSet->getString(self::ATTR_UNIQUE_PER_FIELD_ID_KEY)));
+						$dataSet->getString(self::ATTR_UNIQUE_PER_FIELD_ID_KEY)));
 			} catch (\InvalidArgumentException $e) {
 				throw $setupProcess->createException('Invalid unique per GenericEiProperty configured.', $e);
 			} catch (UnknownGenericEiPropertyException $e) {
@@ -186,17 +179,14 @@ class PathPartEiPropConfig {
 		}
 	}
 
-	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
-		$magDispatchable = parent::createMagDispatchable($n2nContext);
-		$magCollection = $magDispatchable->getMagCollection();
-
+	public function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
 		$baseScalarEiPropertyId = null;
 		if (null !== ($baseScalarEiProperty = $this->pathPartEiProp->getBaseScalarEiProperty())) {
 			$baseScalarEiPropertyId = $baseScalarEiProperty->getId();
 		}
 		
 		$magCollection->addMag(self::ATTR_BASE_PROPERTY_FIELD_ID_KEY, new EnumMag('Base Field', 
-				$this->getBaseEiPropIdOptions(), $this->dataSet->getString(self::ATTR_BASE_PROPERTY_FIELD_ID_KEY, 
+				$this->getBaseEiPropIdOptions(), $dataSet->getString(self::ATTR_BASE_PROPERTY_FIELD_ID_KEY, 
 						false, $baseScalarEiPropertyId), false));
 		
 		$genericEiPropertyId = null;
@@ -204,18 +194,18 @@ class PathPartEiPropConfig {
 			$genericEiPropertyId = $genericEiProperty->getId();
 		}
 		$magCollection->addMag(self::ATTR_UNIQUE_PER_FIELD_ID_KEY, new EnumMag('Unique per', 
-				$this->getUniquePerOptions(), $this->dataSet->getString(self::ATTR_UNIQUE_PER_FIELD_ID_KEY, 
+				$this->getUniquePerOptions(), $dataSet->getString(self::ATTR_UNIQUE_PER_FIELD_ID_KEY, 
 						false, $genericEiPropertyId)));
 		
 		$magCollection->addMag(self::ATTR_NULL_ALLOWED_KEY, new BoolMag('Null value allowed.', 
-				$this->dataSet->getBool(self::ATTR_NULL_ALLOWED_KEY, false, 
+				$dataSet->getBool(self::ATTR_NULL_ALLOWED_KEY, false, 
 						$this->pathPartEiProp->isNullAllowed())));
 		
 		$magCollection->addMag(self::ATTR_CRITICAL_KEY, new BoolMag('Is critical', 
-				$this->dataSet->getBool(self::ATTR_CRITICAL_KEY, false, $this->pathPartEiProp->isCritical())));
+				$dataSet->getBool(self::ATTR_CRITICAL_KEY, false, $this->pathPartEiProp->isCritical())));
 		
 		$magCollection->addMag(self::ATTR_CRITICAL_MESSAGE_KEY, new StringMag('Critical message (no message if empty)', 
-				$this->dataSet->getString(self::ATTR_CRITICAL_MESSAGE_KEY, false, 
+				$dataSet->getString(self::ATTR_CRITICAL_MESSAGE_KEY, false, 
 						$this->pathPartEiProp->getCriticalMessage()), false));
 		return $magDispatchable;
 	}
@@ -242,10 +232,8 @@ class PathPartEiPropConfig {
 		return $options;
 	}
 	
-	public function saveMagDispatchable(MagDispatchable $magDispatchable, N2nContext $n2nContext) {
-		parent::saveMagDispatchable($magDispatchable, $n2nContext);
-		
-		$this->dataSet->appendAll($magDispatchable->getMagCollection()->readValues(array(
+	public function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {
+		$dataSet->appendAll($magCollection->readValues(array(
 				self::ATTR_BASE_PROPERTY_FIELD_ID_KEY, self::ATTR_NULL_ALLOWED_KEY, 
 				self::ATTR_UNIQUE_PER_FIELD_ID_KEY, self::ATTR_CRITICAL_KEY, 
 				self::ATTR_CRITICAL_MESSAGE_KEY)), true);

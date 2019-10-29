@@ -27,14 +27,16 @@ use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
 use n2n\impl\web\dispatch\mag\model\StringArrayMag;
 use n2n\util\type\TypeConstraint;
-use n2n\core\container\N2nContext;
 use n2n\web\dispatch\mag\MagDispatchable;
-use rocket\ei\component\EiSetup;
 use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\persistence\meta\structure\Column;
 use n2n\impl\web\dispatch\mag\model\StringMag;
+use rocket\impl\ei\component\prop\adapter\config\ConfigAdaption;
+use rocket\ei\util\Eiu;
+use n2n\util\type\attrs\DataSet;
+use n2n\web\dispatch\mag\MagCollection;
 
-class UrlConfig {
+class UrlConfig extends ConfigAdaption {
 	const ATTR_ALLOWED_PROTOCOLS_KEY = 'allowedProtocols';
 	const ATTR_RELATIVE_ALLOWED_KEY = 'relativeAllowed'; 
 	const ATTR_AUTO_SCHEME_KEY = 'autoScheme';
@@ -85,65 +87,49 @@ class UrlConfig {
 		return $level;
 	}
 	
-	public function initAutoEiPropDataSet(N2nContext $n2nContext, Column $column = null) {
-		parent::initAutoEiPropDataSet($n2nContext, $column);
-		
-		$this->dataSet->set(self::ATTR_AUTO_SCHEME_KEY, 'http');
+	public function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
+		$dataSet->set(self::ATTR_AUTO_SCHEME_KEY, 'http');
 	}
 	
-	public function setup(EiSetup $eiSetupProcess) {
-		parent::setup($eiSetupProcess);
-		
-		if ($this->dataSet->contains(self::ATTR_RELATIVE_ALLOWED_KEY)) {
-			$this->eiComponent->setRelativeAllowed($this->dataSet->getBool(self::ATTR_RELATIVE_ALLOWED_KEY));
+	public function setup(Eiu $eiu, DataSet $dataSet) {
+		if ($dataSet->contains(self::ATTR_RELATIVE_ALLOWED_KEY)) {
+			$this->eiComponent->setRelativeAllowed($dataSet->getBool(self::ATTR_RELATIVE_ALLOWED_KEY));
 		}
 		
-		if ($this->dataSet->contains(self::ATTR_ALLOWED_PROTOCOLS_KEY)) {
-			$this->eiComponent->setAllowedSchemes($this->dataSet->getArray(self::ATTR_ALLOWED_PROTOCOLS_KEY,
+		if ($dataSet->contains(self::ATTR_ALLOWED_PROTOCOLS_KEY)) {
+			$this->eiComponent->setAllowedSchemes($dataSet->getArray(self::ATTR_ALLOWED_PROTOCOLS_KEY,
 					true, array(), TypeConstraint::createSimple('string')));
 		}
 		
-		if ($this->dataSet->contains(self::ATTR_AUTO_SCHEME_KEY)) {
-			$this->eiComponent->setAutoScheme($this->dataSet->getString(self::ATTR_AUTO_SCHEME_KEY, 
+		if ($dataSet->contains(self::ATTR_AUTO_SCHEME_KEY)) {
+			$this->eiComponent->setAutoScheme($dataSet->getString(self::ATTR_AUTO_SCHEME_KEY, 
 					false, null, true));
 		}
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\string\conf\AlphanumericEiPropConfigurator::createMagDispatchable($n2nContext)
-	 * @return MagDispatchable
-	 */
-	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
-		$magDispatchable = parent::createMagDispatchable($n2nContext);
-		
-		$lar = new LenientAttributeReader($this->dataSet);
-		$magDispatchable->getMagCollection()->addMag(self::ATTR_RELATIVE_ALLOWED_KEY, new BoolMag('Relative allowed',
+	
+	public function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection): MagDispatchable {
+		$lar = new LenientAttributeReader($dataSet);
+		$magCollection->addMag(self::ATTR_RELATIVE_ALLOWED_KEY, new BoolMag('Relative allowed',
 				$lar->getBool(self::ATTR_RELATIVE_ALLOWED_KEY, $this->eiComponent->isRelativeAllowed())));
 	
-		$magDispatchable->getMagCollection()->addMag(self::ATTR_ALLOWED_PROTOCOLS_KEY, 
+		$magCollection->addMag(self::ATTR_ALLOWED_PROTOCOLS_KEY, 
 				new StringArrayMag('Allowed protocols', $lar->getArray(self::ATTR_ALLOWED_PROTOCOLS_KEY, 
 						TypeConstraint::createSimple('string'), $this->eiComponent->getAllowedSchemes())));
 	
-		$magDispatchable->getMagCollection()->addMag(self::ATTR_AUTO_SCHEME_KEY, 
+		$magCollection->addMag(self::ATTR_AUTO_SCHEME_KEY, 
 				new StringMag('Auto scheme', $lar->getString(self::ATTR_AUTO_SCHEME_KEY, 
 						$this->eiComponent->getAutoScheme())));
-		
-		return $magDispatchable;
 	}
 	
-	public function saveMagDispatchable(MagDispatchable $magDispatchable, N2nContext $n2nContext) {
-		parent::saveMagDispatchable($magDispatchable, $n2nContext);
-	
-		$magCollection = $magDispatchable->getMagCollection();
-		
-		$this->dataSet->set(self::ATTR_RELATIVE_ALLOWED_KEY, $magCollection
+	public function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {
+		$dataSet->set(self::ATTR_RELATIVE_ALLOWED_KEY, $magCollection
 				->getMagByPropertyName(self::ATTR_RELATIVE_ALLOWED_KEY)->getValue());
 
-		$this->dataSet->set(self::ATTR_ALLOWED_PROTOCOLS_KEY, $magCollection
+		$dataSet->set(self::ATTR_ALLOWED_PROTOCOLS_KEY, $magCollection
 				->getMagByPropertyName(self::ATTR_ALLOWED_PROTOCOLS_KEY)->getValue());
 		
-		$this->dataSet->set(self::ATTR_AUTO_SCHEME_KEY, $magCollection
+		$dataSet->set(self::ATTR_AUTO_SCHEME_KEY, $magCollection
 				->getMagByPropertyName(self::ATTR_AUTO_SCHEME_KEY)->getValue());
 	}
 }

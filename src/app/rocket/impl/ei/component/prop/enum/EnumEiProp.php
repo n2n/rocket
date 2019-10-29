@@ -21,8 +21,6 @@
  */
 namespace rocket\impl\ei\component\prop\enum;
 
-use n2n\impl\web\dispatch\mag\model\EnumMag;
-use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\component\prop\FilterableEiProp;
 use rocket\ei\component\prop\SortableEiProp;
 use rocket\ei\component\prop\QuickSearchableEiProp;
@@ -39,9 +37,7 @@ use n2n\util\type\TypeConstraint;
 use n2n\reflection\property\AccessProxy;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
 use n2n\persistence\orm\criteria\item\CrIt;
-use n2n\web\dispatch\mag\Mag;
 use rocket\ei\util\Eiu;
-use rocket\ei\EiPropPath;
 use rocket\impl\ei\component\prop\enum\conf\EnumEiPropConfigurator;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\critmod\quick\impl\LikeQuickSearchProp;
@@ -56,12 +52,12 @@ use n2n\util\type\TypeConstraints;
 use n2n\impl\persistence\orm\property\IntEntityProperty;
 use rocket\si\content\SiField;
 use rocket\si\content\impl\SiFields;
+use rocket\impl\ei\component\prop\enum\conf\EnumConfig;
 
 class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiProp, SortableEiProp, 
 		QuickSearchableEiProp {
 	
-	private $options = array();
-	private $associatedGuiFieldPathMap = array();
+	private $enumConfig;
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty === null || $entityProperty instanceof ScalarEntityProperty
@@ -86,17 +82,9 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 		$this->objectPropertyAccessProxy = $propertyAccessProxy;
 	}
 	
-	public function setOptions(array $options) {
-		ArgUtils::valArray($options, 'scalar');
-		$this->options = $options;
-	}
-	
-	public function getOptions() {
-		return $this->options;
-	}
-	
-	public function createEiPropConfigurator() : EiPropConfigurator {
-		return new EnumEiPropConfigurator($this);
+	public function prepare() {
+		$this->enumConfig = new EnumConfig();
+		$this->getConfigurator()->addAdaption($this->enumConfig);
 	}
 	
 	public function buildEiField(Eiu $eiu): ?EiField {
@@ -166,6 +154,11 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 		return $enablerMag;
 	}
 	
+	function saveSiField(SiField $siField, Eiu $eiu) {
+		ArgUtils::assertTrue($siField instanceof EnumEiProp);
+		$eiu->field()->setValue($siField->getValue());
+	}
+	
 	public function createOutSiField(Eiu $eiu): SiField  {
 		return SiFields::stringOut($eiu->field()->getValue());
 	}
@@ -213,17 +206,5 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
 		return StringUtils::strOf($eiu->object()->readNativValue($this));
 	}
-	
-	public function setAssociatedGuiFieldPathMap(array $associatedGuiFieldPathMap) {
-		ArgUtils::valArray($associatedGuiFieldPathMap, 
-				TypeConstraint::createArrayLike('array', false, TypeConstraint::createSimple(GuiFieldPath::class)));
-		$this->associatedGuiFieldPathMap = $associatedGuiFieldPathMap;
-	}
-	
-	/**
-	 * @return array
-	 */
-	public function getAssociatedGuiFieldPathMap() {
-		return $this->associatedGuiFieldPathMap;
-	}
+
 }

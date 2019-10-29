@@ -33,24 +33,37 @@ use rocket\ei\manage\generic\ScalarEiProperty;
 use n2n\impl\persistence\orm\property\IntEntityProperty;
 use rocket\si\content\impl\SiFields;
 use n2n\l10n\L10nUtils;
+use rocket\si\content\SiField;
+use rocket\impl\ei\component\prop\numeric\conf\IntegerConfig;
+use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 
 class IntegerEiProp extends NumericEiPropAdapter implements ScalarEiProp {
 	const INT_SIGNED_MIN = -2147483648;
 	const INT_SIGNED_MAX = 2147483647;
 	
-	public function __construct() {
+	function __construct() {
 		parent::__construct();
 		
 		$this->getNumericConfig()
-		      ->setMinValue(self::INT_SIGNED_MIN)
-		      ->setMaxValue(self::INT_SIGNED_MAX);
+				->setMinValue(self::INT_SIGNED_MIN)
+				->setMaxValue(self::INT_SIGNED_MAX);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\numeric\NumericEiPropAdapter::adaptConfigurator()
+	 */
+	function prepare() {
+		parent::prepare();
+		
+		$this->getConfigurator()->addAdaption(new IntegerConfig());
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\component\prop\ScalarEiProp::buildScalarValue()
 	 */
-	public function getScalarEiProperty(): ?ScalarEiProperty {
+	function getScalarEiProperty(): ?ScalarEiProperty {
 		return new CommonScalarEiProperty($this, null, function ($value) {
 			ArgUtils::valScalar($value, true);
 			if ($value === null) return null;
@@ -58,13 +71,13 @@ class IntegerEiProp extends NumericEiPropAdapter implements ScalarEiProp {
 		});
 	}
 	
-	public function setEntityProperty(?EntityProperty $entityProperty) {
+	function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty instanceof IntEntityProperty 
 				|| $entityProperty instanceof ScalarEntityProperty);
 		$this->entityProperty = $entityProperty;
 	}
 	
-	public function setObjectPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
+	function setObjectPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
 		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('int',
 				$propertyAccessProxy->getBaseConstraint()->allowsNull(), true));
 		
@@ -75,7 +88,7 @@ class IntegerEiProp extends NumericEiPropAdapter implements ScalarEiProp {
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\numeric\NumericEiPropAdapter::createOutSiField()
 	 */
-	public function createOutSiField(Eiu $eiu): SiField {
+	function createOutSiField(Eiu $eiu): SiField {
 		return SiFields::stringOut(L10nUtils::formatNumber($eiu->field()->getValue(), $eiu->getN2nLocale()));
 	}
 	
@@ -83,10 +96,14 @@ class IntegerEiProp extends NumericEiPropAdapter implements ScalarEiProp {
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldEditable::createInSiField()
 	 */
-	public function createInSiField(Eiu $eiu): SiField {
+	function createInSiField(Eiu $eiu): SiField {
 		return SiFields::numberIn($eiu->field()->getValue())
 				->setMandatory($this->editConfig->isMandatory())
 				->setMin($this->getMinValue())
 				->setMax($this->getMaxValue());
 	}
+	
+	function saveSiField(SiField $siField, Eiu $eiu) {
+	}
+
 }

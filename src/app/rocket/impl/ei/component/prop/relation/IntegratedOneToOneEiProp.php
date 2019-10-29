@@ -156,6 +156,8 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiEiPro
 	public function buildGuiProp(Eiu $eiu): ?GuiProp {
 		return null;	
 	}
+	
+	
 
 	/**
 	 * {@inheritDoc}
@@ -164,6 +166,7 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiEiPro
 	public function getDraftProperty() {
 		throw new NotYetImplementedException();
 	}
+
 }
 
 class OneToOneGuiFieldFork implements GuiFieldFork {

@@ -23,21 +23,14 @@ namespace rocket\impl\ei\component\prop\string;
 
 use n2n\l10n\N2nLocale;
 use n2n\impl\web\dispatch\mag\model\StringMag;
-use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\l10n\DynamicTextCollection;
-use rocket\impl\ei\component\prop\string\conf\PathPartEiPropConfigurator;
-use n2n\web\dispatch\mag\Mag;
 use n2n\util\type\ArgUtils;
 use rocket\ei\EiPropPath;
 use rocket\ei\util\Eiu;
-use rocket\ei\manage\generic\GenericEiProperty;
-use rocket\ei\manage\generic\ScalarEiProperty;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\si\content\SiField;
-use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\impl\ei\component\prop\string\conf\PathPartEiPropConfig;
 
 class PathPartEiProp extends AlphanumericEiProp  {
@@ -45,10 +38,10 @@ class PathPartEiProp extends AlphanumericEiProp  {
 		parent::__construct();
 	}
 	
-	public function adaptConfigurator(AdaptableEiPropConfigurator $configurator) {
+	public function prepare() {
 		$this->getDisplayConfig()->setDefaultDisplayedViewModes(ViewMode::BULKY_EDIT | ViewMode::COMPACT_READ);
 		$this->getEditConfig()->setMandatory(false)->setMandatoryChoosable(false);
-		$configurator->addAdaption(new PathPartEiPropConfig());
+		$this->getConfigurator()->addAdaption(new PathPartEiPropConfig());
 	}
 	
 	public function getTypeName(): string {
@@ -97,6 +90,10 @@ class PathPartEiProp extends AlphanumericEiProp  {
 		
 		return new StringMag($this->getLabelLstr(), null,
 				$this->isMandatory($eiu), $this->getMaxlength(), false, null, $attrs);
+	}
+	
+	function saveSiField(SiField $siField, Eiu $eiu) {
+		$eiu->field()->setValue($siField->getValue());
 	}
 	
 	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): string {

@@ -47,7 +47,7 @@ class PasswordEiPropConfig {
 		$this->algorithm = $algorithm;
 	}
 
-	public function setup(EiSetup $setupProcess) {
+	public function setup(Eiu $eiu, DataSet $dataSet) {
 		parent::setup($setupProcess);
 
 		$eiComponent = $this->eiComponent;
@@ -62,7 +62,7 @@ class PasswordEiPropConfig {
 		}
 	}
 
-	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
+	public function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
 		$magDispatchable = parent::createMagDispatchable($n2nContext);
 
 		$eiComponent = $this->eiComponent;

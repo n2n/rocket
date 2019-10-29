@@ -102,6 +102,19 @@ class EiuEngine {
 		return $this->eiEngine->getDraftDefinition()->containsEiPropPath(EiPropPath::create($eiPropArg));
 	}
 	
+	public function getGuiPropOptions(N2nLocale $n2nLocale = null) {
+		/**
+		 * @var ManageState $ms
+		 */
+		$ms = $this->eiuAnalyst->getN2nContext(true)->lookup(ManageState::class);
+		
+		$n2nLocale = $n2nLocale ?? $this->eiuAnalyst->getN2nContext(true)->getN2nLocale();
+		
+		return array_map(
+				function ($labelLstr) use ($n2nLocale) { return $labelLstr->t($n2nLocale); },
+				$ms->getDef()->getGuiDefinition($this->eiEngine->getEiMask())->getLabelLstrs());
+	}
+	
 	/**
 	 * @param mixed $eiPropArg See {@see EiPropPath::create()}
 	 * @return bool

@@ -28,12 +28,10 @@ use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\impl\ei\component\prop\relation\RelationEiProp;
 use rocket\impl\ei\component\prop\translation\model\TranslationGuiFieldFork;
 use rocket\ei\manage\gui\GuiPropFork;
-use rocket\impl\ei\component\prop\translation\conf\TranslationEiConfigurator;
 use rocket\ei\manage\entry\EiField;
 use rocket\ei\component\prop\FieldEiProp;
 use rocket\ei\manage\gui\field\GuiFieldFork;
 use rocket\ei\manage\EiObject;
-use rocket\impl\ei\component\prop\relation\model\relation\EiPropRelation;
 use n2n\core\container\N2nContext;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
@@ -66,14 +64,16 @@ use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\manage\gui\field\GuiFieldPath;
 use rocket\ei\manage\gui\EiFieldAbstraction;
 use rocket\ei\manage\LiveEiObject;
+use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
+use rocket\impl\ei\component\prop\translation\conf\TranslationConfig;
 
 class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiPropFork, FieldEiProp, RelationEiProp, QuickSearchableEiProp {
 	private $n2nLocaleDefs = array();
 	private $minNumTranslations = 0;
 	private $copyCommand;
 	
-	public function createEiPropConfigurator(): EiPropConfigurator {
-		return new TranslationEiConfigurator($this);
+	public function prepare() {
+		return new TranslationConfig($this);
 	}
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {

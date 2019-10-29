@@ -44,12 +44,17 @@ use rocket\ei\manage\entry\EiField;
 use n2n\util\StringUtils;
 use rocket\si\content\SiField;
 use rocket\impl\ei\component\prop\adapter\DisplayableEiPropAdapter;
+use rocket\impl\ei\component\prop\adapter\PropertyDisplayableEiPropAdapter;
 
-class StringDisplayEiProp extends DisplayableEiPropAdapter implements ObjectPropertyConfigurable, GuiEiProp, GuiProp, 
+class StringDisplayEiProp extends PropertyDisplayableEiPropAdapter implements ObjectPropertyConfigurable, 
 		FieldEiProp, Readable, StatelessGuiFieldDisplayable {
 	
-	function adaptConfigurator(AdaptableEiPropConfigurator $configurator) {
+	function prepare() {
 		$this->getDisplayConfig()->setCompatibleViewModes(ViewMode::read());
+	}
+	
+	function isEntityPropertyRequired() {
+		return false;
 	}
 
 	function setObjectPropertyAccessProxy(?AccessProxy $objectPropertyAccessProxy) {
@@ -149,7 +154,7 @@ class StringDisplayEiProp extends DisplayableEiPropAdapter implements ObjectProp
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiProp::buildGuiField($eiu)
 	 */
-	function buildGuiField(Eiu $eiu): ?GuiField {
+	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
 		return new GuiFieldProxy($this, $eiu);
 	}
 
@@ -191,8 +196,6 @@ class StringDisplayEiProp extends DisplayableEiPropAdapter implements ObjectProp
 	 */
 	function createOutSiField(Eiu $eiu): SiField {
 		return $view->getHtmlBuilder()->getEsc($eiu->field()->getValue());
-	}
-	public function isObjectPropertyRequired(): bool {
 	}
 
 	

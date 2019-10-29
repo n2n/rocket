@@ -21,33 +21,26 @@
  */
 namespace rocket\impl\ei\component\prop\translation\conf;
 
-use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\ei\component\EiSetup;
 use n2n\l10n\N2nLocale;
-use rocket\spec\UnknownTypeException;
-use rocket\ei\UnknownEiTypeExtensionException;
-use rocket\ei\component\UnknownEiComponentException;
 use rocket\impl\ei\component\prop\translation\TranslationEiProp;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
-use rocket\ei\component\InvalidEiComponentConfigurationException;
-use n2n\persistence\orm\CascadeType;
-use n2n\core\container\N2nContext;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
 use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\impl\web\dispatch\mag\model\MagCollectionArrayMag;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\impl\web\dispatch\mag\model\MagForm;
-use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\l10n\IllegalN2nLocaleFormatException;
 use n2n\util\type\TypeConstraint;
 use n2n\core\config\WebConfig;
-use rocket\impl\ei\component\prop\translation\command\TranslationCopyCommand;
 use n2n\impl\web\dispatch\mag\model\NumericMag;
-use n2n\util\type\TypeUtils;
+use rocket\impl\ei\component\prop\adapter\config\ConfigAdaption;
+use rocket\ei\util\Eiu;
+use n2n\util\type\attrs\DataSet;
 
-class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
+class TranslationConfig extends ConfigAdaption {
 	const ATTR_USE_SYSTEM_LOCALES_KEY = 'useSystemN2nLocales';
 	const ATTR_SYSTEM_LOCALE_DEFS_KEY = 'systenN2nLocaleDefs';
 	const ATTR_CUSTOM_LOCALE_DEFS_KEY = 'customN2nLocaleDefs';
@@ -59,10 +52,6 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 	private $translationEiProp;
 	
 	public function __construct(TranslationEiProp $translationEiProp) {
-		parent::__construct($translationEiProp);
-				
-		$this->autoRegister($translationEiProp);
-		
 		$this->translationEiProp = $translationEiProp;
 	}
 	
@@ -75,11 +64,8 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 		return CompatibilityLevel::EXTREMELY_COMMON;
 	}
 	
-	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
-		$magDispatchable = parent::createMagDispatchable($n2nContext);
+	public function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
 		$lar = new LenientAttributeReader($this->dataSet);
-		
-		$magCollection = $magDispatchable->getMagCollection();
 		
 		$magCollection->addMag(self::ATTR_USE_SYSTEM_LOCALES_KEY, new BoolMag('Use system locales',
 				$lar->getBool(self::ATTR_USE_SYSTEM_LOCALES_KEY, true)));
@@ -87,7 +73,7 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 		$systemN2nLocaleDefsMag = new MagCollectionArrayMag('System locales',
 				$this->createN2nLocaleDefMagClosure());
 		$systemN2nLocaleDefsMag->setValue($this->n2nLocaleDefsToMagValue($this->readModN2nLocaleDefs(
-				self::ATTR_SYSTEM_LOCALE_DEFS_KEY, $lar, $n2nContext->lookup(WebConfig::class)->getSupersystem()->getN2nLocales())));
+				self::ATTR_SYSTEM_LOCALE_DEFS_KEY, $lar, $eiu->lookup(WebConfig::class)->getSupersystem()->getN2nLocales())));
 		$magCollection->addMag(self::ATTR_SYSTEM_LOCALE_DEFS_KEY, $systemN2nLocaleDefsMag);
 		
 		$customN2nLocaleDefsMag = new MagCollectionArrayMag('Custom locales',
@@ -98,8 +84,6 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 		
 		$magCollection->addMag(self::ATTR_MIN_NUM_TRANSLATIONS_KEY, new NumericMag('Min translations number',
 				$lar->getNumeric(self::ATTR_MIN_NUM_TRANSLATIONS_KEY, 0)));
-		
-		return $magDispatchable;
 	}
 	
 	private function createN2nLocaleDefMagClosure() {
@@ -112,10 +96,8 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 		};
 	}
 	
-	public function saveMagDispatchable(MagDispatchable $magDispatchable, N2nContext $n2nContext) {
-		parent::saveMagDispatchable($magDispatchable, $n2nContext);
-		
-		$this->dataSet->appendAll($magDispatchable->getMagCollection()->readValues(
+	public function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {
+		$dataSet->appendAll($magCollection->readValues(
 				array(self::ATTR_USE_SYSTEM_LOCALES_KEY, self::ATTR_SYSTEM_LOCALE_DEFS_KEY, 
 						self::ATTR_CUSTOM_LOCALE_DEFS_KEY, self::ATTR_MIN_NUM_TRANSLATIONS_KEY)), true);
 	}
@@ -179,7 +161,7 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 				$attrs[self::ATTR_LOCALE_MANDATORY_KEY] = $n2nLocaleDef->isMandatory();
 			}
 			if (null !== ($label = $n2nLocaleDef->getLabel())) {
-				$attrs[self::ATTR_LOCALE_LABEL_KEY] = $n2nLocaleDef->getLabel();
+				$attrs[self::ATTR_LOCALE_LABEL_KEY] = $label;
 			}
 			$n2nLocaleDefsAttrs[] = $attrs;
 		}
@@ -187,7 +169,7 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 		$this->dataSet->set($key, $n2nLocaleDefsAttrs);
 	}
 	
-	public function setup(EiSetup $eiSetupProcess) {
+	public function setup(Eiu $eiu, DataSet $dataSet) {
 // 		$eiu = $eiSetupProcess->eiu();
 		
 // 		$lar = new LenientAttributeReader($this->dataSet);

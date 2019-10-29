@@ -36,41 +36,51 @@ use n2n\util\type\TypeConstraint;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
 use n2n\impl\web\dispatch\mag\model\MultiSelectMag;
 use rocket\ei\manage\gui\field\GuiFieldPath;
+use rocket\impl\ei\component\prop\adapter\config\ConfigAdaption;
+use rocket\ei\util\Eiu;
+use n2n\util\type\attrs\DataSet;
+use n2n\util\type\ArgUtils;
+use n2n\util\type\TypeConstraints;
 
 // @todo validate if dataSet are arrays
 
-class EnumEiPropConfigurator extends AdaptableEiPropConfigurator {
-	const OPTION_OPTIONS_KEY = 'options';
+class EnumConfig extends ConfigAdaption {
+	const ATTR_OPTIONS_KEY = 'options';
 	const ASSOCIATED_GUI_FIELD_KEY = 'associatedGuiProps';
 	
-	private $enumEiProp;
+	private $options = array();
+	private $associatedGuiFieldPathMap = array();
 	
-	public function __construct(EnumEiProp $enumEiProp) {
-		parent::__construct($enumEiProp);
-		
-		$this->enumEiProp = $enumEiProp;
-		
-		$this->autoRegister();
+	
+	
+	public function setOptions(array $options) {
+		ArgUtils::valArray($options, 'scalar');
+		$this->options = $options;
 	}
 	
-	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
-		CastUtils::assertTrue($this->eiComponent instanceof EnumEiProp);
+	public function getOptions() {
+		return $this->options;
+	}
+	
+	
+	
+	public function setAssociatedGuiFieldPathMap(array $associatedGuiFieldPathMap) {
+		ArgUtils::valArray($associatedGuiFieldPathMap,
+				TypeConstraint::createArrayLike('array', false, TypeConstraint::createSimple(GuiFieldPath::class)));
+		$this->associatedGuiFieldPathMap = $associatedGuiFieldPathMap;
+	}
+	
+	/**
+	 * @return array
+	 */
+	public function getAssociatedGuiFieldPathMap() {
+		return $this->associatedGuiFieldPathMap;
+	}
+	
+	public function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection): MagDispatchable {
+		$lar = new LenientAttributeReader($dataSet);
 		
-		$lar = new LenientAttributeReader($this->dataSet);
-		
-		$magDispatchable = parent::createMagDispatchable($n2nContext);
-		
-		$guiProps = null;
-		try {
-			$guiProps = $this->eiComponent->getEiMask()->getEiEngine()->createGuiDefinition($n2nContext)->getGuiProps();
-		} catch (\Throwable $e) {
-			$guiProps = $this->eiComponent->getEiMask()->getEiEngine()->createGuiDefinition($n2nContext)->getLevelGuiProps();
-		}
-		
-		$assoicatedGuiPropOptions = array();
-		foreach ($guiProps as $eiPropPathStr => $guiProp) {
-			$assoicatedGuiPropOptions[$eiPropPathStr] = $guiProp->getDisplayLabelLstr()->t($n2nContext->getN2nLocale());
-		}
+		$assoicatedGuiPropOptions = $eiu->engine()->getGuiPropOptions();
 		
 		$optionsMag = new MagCollectionArrayMag('Options',
 				function() use ($assoicatedGuiPropOptions) {
@@ -86,7 +96,7 @@ class EnumEiPropConfigurator extends AdaptableEiPropConfigurator {
 				});
 		
 		$valueLabelMap = array();
-		foreach ($lar->getArray(self::OPTION_OPTIONS_KEY, TypeConstraint::createSimple('scalar')) 
+		foreach ($lar->getArray(self::ATTR_OPTIONS_KEY, TypeConstraint::createSimple('scalar')) 
 				as $value => $label) {
 			$valueLabelMap[$value] = array('value' => $value, 'label' => $label, 'bindGuiPropsToValue' => false);
 		}
@@ -102,16 +112,13 @@ class EnumEiPropConfigurator extends AdaptableEiPropConfigurator {
 		
 		$optionsMag->setValue($valueLabelMap);
 		
-		$magDispatchable->getMagCollection()->addMag(self::OPTION_OPTIONS_KEY, $optionsMag);
-		return $magDispatchable;
+		$magCollection->addMag(self::ATTR_OPTIONS_KEY, $optionsMag);
 	}
 	
-	public function saveMagDispatchable(MagDispatchable $magDispatchable, N2nContext $n2nContext) {
-		parent::saveMagDispatchable($magDispatchable, $n2nContext);
-		
+	public function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {
 		$options = array();
 		$eiPropPathMap = array();
-		foreach ($magDispatchable->getMagCollection()->getMagByPropertyName(self::OPTION_OPTIONS_KEY)->getValue() 
+		foreach ($magCollection->getMagByPropertyName(self::ATTR_OPTIONS_KEY)->getValue() 
 				as $valueLabelMap) {
 			$options[$valueLabelMap['value']] = $valueLabelMap['label'];
 			
@@ -119,25 +126,20 @@ class EnumEiPropConfigurator extends AdaptableEiPropConfigurator {
 				$eiPropPathMap[$valueLabelMap['value']] = $valueLabelMap['assoicatedGuiFieldPaths'];
 			}
 		}
-		$this->dataSet->set(self::OPTION_OPTIONS_KEY, $options);
-		$this->dataSet->set(self::ASSOCIATED_GUI_FIELD_KEY, $eiPropPathMap);
+		$dataSet->set(self::ATTR_OPTIONS_KEY, $options);
+		$dataSet->set(self::ASSOCIATED_GUI_FIELD_KEY, $eiPropPathMap);
 	}
 	
-	public function setup(EiSetup $eiSetupProcess) {
-		parent::setup($eiSetupProcess);
-	
-		CastUtils::assertTrue($this->eiComponent instanceof EnumEiProp);
-		
-		if ($this->dataSet->contains(self::OPTION_OPTIONS_KEY)) {
-			$options = $this->dataSet->getArray(self::OPTION_OPTIONS_KEY, false, array(), 
-					TypeConstraint::createSimple('scalar'));
+	public function setup(Eiu $eiu, DataSet $dataSet) {
+		if ($dataSet->contains(self::ATTR_OPTIONS_KEY)) {
+			$options = $dataSet->optArray(self::ATTR_OPTIONS_KEY, TypeConstraints::scalar());
 			
 			$this->eiComponent->setOptions(array_filter($options));
 		}
 		
-		if ($this->dataSet->contains(self::ASSOCIATED_GUI_FIELD_KEY)) {
-			$eiPropPathMap = $this->dataSet->getArray(self::ASSOCIATED_GUI_FIELD_KEY, false, array(), 
-					TypeConstraint::createArrayLike('array', false, TypeConstraint::createSimple('scalar')));
+		if ($dataSet->contains(self::ASSOCIATED_GUI_FIELD_KEY)) {
+			$eiPropPathMap = $dataSet->optArray(self::ASSOCIATED_GUI_FIELD_KEY,  
+					TypeConstraints::array(false, TypeConstraints::scalar()));
 			foreach ($eiPropPathMap as $value => $eiPropPathStrs) {
 				$eiPropPaths = array();
 				foreach ($eiPropPathStrs as $eiPropPathStr) {

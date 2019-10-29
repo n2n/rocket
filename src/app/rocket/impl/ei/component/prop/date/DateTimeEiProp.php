@@ -25,7 +25,6 @@ use n2n\impl\persistence\orm\property\DateTimeEntityProperty;
 use n2n\l10n\L10nUtils;
 use n2n\l10n\DateTimeFormat;
 use n2n\l10n\N2nLocale;
-use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\persistence\orm\property\EntityProperty;
 use rocket\ei\component\prop\SortableEiProp;
 use n2n\core\container\N2nContext;
@@ -35,7 +34,6 @@ use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
 use n2n\util\type\ArgUtils;
 use n2n\reflection\property\AccessProxy;
 use n2n\util\type\TypeConstraint;
-use rocket\impl\ei\component\prop\date\conf\DateTimeEiPropConfigurator;
 use rocket\ei\manage\draft\stmt\PersistDraftStmtBuilder;
 use rocket\ei\manage\draft\stmt\FetchDraftStmtBuilder;
 use rocket\ei\manage\draft\SimpleDraftValueSelection;
@@ -45,20 +43,26 @@ use rocket\ei\manage\draft\DraftValueSelection;
 use rocket\ei\manage\draft\PersistDraftAction;
 use rocket\ei\EiPropPath;
 use n2n\persistence\orm\criteria\item\CrIt;
-use n2n\web\dispatch\mag\Mag;
 use rocket\ei\util\Eiu;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2nutil\jquery\datepicker\mag\DateTimePickerMag;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use rocket\ei\manage\critmod\sort\SortProp;
 use rocket\si\content\SiField;
+use rocket\impl\ei\component\prop\date\conf\DateTimeConfig;
 
 class DateTimeEiProp extends DraftablePropertyEiPropAdapter implements SortableEiProp {
-	private $dateStyle = DateTimeFormat::STYLE_MEDIUM;
-	private $timeStyle = DateTimeFormat::STYLE_NONE;
 
-	public function createEiPropConfigurator(): EiPropConfigurator {
-		return new DateTimeEiPropConfigurator($this);
+	/**
+	 * @var DateTimeConfig
+	 */
+	private $dataTimeConfig;
+	
+	function __construct() {
+		$this->dateTimeConfig = new DateTimeConfig();
+	}
+	
+	function prepare() {
+		$this->getConfigurator()->addAdaption($this->dateTimeConfig);
 	}
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {
@@ -138,6 +142,9 @@ class DateTimeEiProp extends DraftablePropertyEiPropAdapter implements SortableE
 	public function buildSortProp(Eiu $eiu): ?SortProp {
 		return new SimpleSortProp(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
 	}
+	public function saveSiField(SiField $siField, Eiu $eiu) {
+	}
+
 }
 
 class DateTimeDraftValueSelection extends SimpleDraftValueSelection {

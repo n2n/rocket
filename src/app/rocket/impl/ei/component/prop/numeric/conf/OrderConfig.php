@@ -21,19 +21,17 @@
  */
 namespace rocket\impl\ei\component\prop\numeric\conf;
 
-use rocket\ei\component\EiSetup;
-use n2n\core\container\N2nContext;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
-use rocket\impl\ei\component\prop\numeric\OrderEiProp;
-use n2n\util\ex\IllegalStateException;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use rocket\impl\ei\component\prop\numeric\component\OrderEiCommand;
 use rocket\impl\ei\component\prop\numeric\component\OrderEiModificator;
-use n2n\web\dispatch\mag\MagDispatchable;
 use rocket\impl\ei\component\prop\adapter\config\EntityPropertyConfigurable;
 use n2n\persistence\meta\structure\Column;
 use rocket\impl\ei\component\prop\adapter\config\EiPropConfiguratorAdaption;
+use n2n\util\type\attrs\DataSet;
+use rocket\ei\util\Eiu;
+use n2n\web\dispatch\mag\MagCollection;
 
 class OrderConfig implements EiPropConfiguratorAdaption {
 
@@ -59,10 +57,7 @@ class OrderConfig implements EiPropConfiguratorAdaption {
 	}
 	
 	
-	public function setup(EiSetup $setupProcess) {
-		parent::setup($setupProcess);
-		
-		IllegalStateException::assertTrue($this->eiComponent instanceof OrderEiProp);
+	public function setup(Eiu $eiu, DataSet $dataSet) {
 // 		$eiDef = $setupProcess->getEiDef();
 		
 // 		if ($this->dataSet->contains(self::OPTION_REFERENCE_FIELD_KEY)) {
@@ -73,7 +68,7 @@ class OrderConfig implements EiPropConfiguratorAdaption {
 		$orderEiCommand = new OrderEiCommand();
 		$orderEiCommand->setOrderEiProp($this->eiComponent);
 		
-		$eiuMask = $setupProcess->eiu()->mask();
+		$eiuMask = $eiu->mask();
 		$eiuMask->addEiCommand($orderEiCommand);
 		$eiuMask->addEiModificator(new OrderEiModificator($this->eiComponent));
 		
@@ -82,15 +77,13 @@ class OrderConfig implements EiPropConfiguratorAdaption {
 // 		}
 	}
 	
-	public function initAutoEiPropDataSet(N2nContext $n2nContext, Column $column = null) {
-		parent::initAutoEiPropDataSet($n2nContext, $column);
-		
+	public function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
 		$this->dataSet->set(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY, false);
 		$this->dataSet->set(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, false);
 		$this->dataSet->set(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, false);
 	}
 	
-	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
+	public function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
 		$magDispatchable = parent::createMagDispatchable($n2nContext);
 		return $magDispatchable;
 		
@@ -108,4 +101,8 @@ class OrderConfig implements EiPropConfiguratorAdaption {
 		}
 		return $referenceFields;
 	}
+	
+	public function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {
+	}
+
 }

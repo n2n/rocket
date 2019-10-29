@@ -32,7 +32,6 @@ use n2n\util\type\TypeConstraint;
 use rocket\ei\component\prop\FilterableEiProp;
 use rocket\ei\component\prop\SecurityFilterEiProp;
 use rocket\ei\component\prop\SortableEiProp;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\sort\SortProp;
 use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
@@ -42,18 +41,23 @@ use rocket\ei\manage\security\filter\SecurityFilterProp;
 use rocket\ei\util\Eiu;
 use rocket\ei\util\filter\prop\BoolFilterProp;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
-use rocket\impl\ei\component\prop\bool\conf\BooleanEiPropConfigurator;
 use rocket\si\content\impl\SiFields;
 use rocket\si\content\SiField;
+use rocket\impl\ei\component\prop\bool\conf\BooleanConfig;
 
 class BooleanEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiProp, SortableEiProp, SecurityFilterEiProp {
-
+	private $booleanConfig;
+	
+	function __construct() {
+		$this->booleanConfig = new BooleanConfig();
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter::createEiPropConfigurator()
 	 */
-	public function createEiPropConfigurator(): EiPropConfigurator {
-		return new BooleanEiPropConfigurator($this);
+	function prepare() {
+		$this->getConfigurator()->addAdaption($this->booleanConfig);
 	}
 	
 	/**

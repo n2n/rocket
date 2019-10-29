@@ -66,13 +66,7 @@ abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements Re
 	 */
 	private $relation;
 			
-	/**
-	 * 
-	 */
-	function __construct() {
-		parent::__construct();
-	}
-	
+		
 	function isPrivileged(): bool {
 		return true;
 	}
@@ -80,16 +74,14 @@ abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements Re
 	/**
 	 * @param RelationModel $relationModel
 	 */
-	protected function setup(?DisplayConfig $displayConfig, RelationModel $relationModel,
-			AdaptableEiPropConfigurator $configurator = null) {
+	protected function setup(?DisplayConfig $displayConfig, RelationModel $relationModel) {
 		$this->displayConfig = $displayConfig;
 		$this->relationModel = $relationModel;
 	}
 	
-	function adaptConfigurator(AdaptableEiPropConfigurator $configurator) {
-		parent::adaptConfigurator($configurator);
-		
+	function prepare() {
 		$relationModel = $this->getRelationModel();
+		$configurator = $this->getConfigurator();
 		
 		if (null !== $this->displayConfig) {
 			$configurator->addAdaption($this->displayConfig);
@@ -153,10 +145,14 @@ abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements Re
 		return $targetEiuEngine->createIdentityString($targetEntityObj);
 	}
 	
-	function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
-		return $this->displayConfig->toDisplayDefinition($eiu->gui()->getViewMode(), $eiu->prop()->getLabel(),
-				$eiu->prop()->getHelpText());
+	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
+		return null;
 	}
+	
+// 	function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
+// 		return $this->displayConfig->toDisplayDefinition($eiu->gui()->getViewMode(), $eiu->prop()->getLabel(),
+// 				$eiu->prop()->getHelpText());
+// 	}
 	
 // 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
 // 		if (!$this->getRelationModel()->isTargetMany()) {

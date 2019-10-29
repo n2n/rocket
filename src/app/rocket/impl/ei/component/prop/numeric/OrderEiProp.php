@@ -30,6 +30,7 @@ use rocket\ei\EiPropPath;
 use n2n\impl\persistence\orm\property\IntEntityProperty;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\impl\ei\component\prop\numeric\conf\OrderConfig;
+use rocket\si\content\SiField;
 
 class OrderEiProp extends IntegerEiProp {
     const ORDER_INCREMENT = 10;
@@ -42,9 +43,9 @@ class OrderEiProp extends IntegerEiProp {
 	    $this->orderConfig = new OrderConfig();
 	}
 	
-	function adaptConfigurator(AdaptableEiPropConfigurator $configurator) {
-	    parent::adaptConfigurator($configurator);
-	    $configurator->addAdaption($this->orderConfig);
+	function prepare() {
+	    parent::prepare();
+	    $this->getConfigurator()->addAdaption($this->orderConfig);
 	}
 
 	public function isCompatibleWith(EntityProperty $entityProperty) {

@@ -34,8 +34,8 @@ use n2n\web\ui\UiComponent;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use n2n\web\dispatch\mag\UiOutfitter;
 use n2n\impl\persistence\orm\property\FloatEntityProperty;
-use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\impl\ei\component\prop\numeric\conf\DecimalConfig;
+use rocket\si\content\SiField;
 
 class DecimalEiProp extends NumericEiPropAdapter {
     private $decimalConfig;
@@ -46,9 +46,10 @@ class DecimalEiProp extends NumericEiPropAdapter {
         $this->decimalConfig = new DecimalConfig();
     }
     
-	function adaptConfigurator(AdaptableEiPropConfigurator $configurator) {
-	    parent::adaptConfigurator($configurator);
-	    $configurator->addAdaption($this->decimalConfig);
+	function prepare() {
+		parent::prepare();
+		
+	    $this->getConfigurator()->addAdaption($this->decimalConfig);
 	}
 	
 	/**
@@ -81,6 +82,9 @@ class DecimalEiProp extends NumericEiPropAdapter {
 		$numericMag->setInputPrefix($this->prefix);
 		return $numericMag;
 	}
+	public function saveSiField(SiField $siField, Eiu $eiu) {
+	}
+
 }
 
 

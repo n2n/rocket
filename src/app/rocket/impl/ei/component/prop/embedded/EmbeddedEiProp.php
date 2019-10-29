@@ -37,7 +37,6 @@ use n2n\l10n\Lstr;
 use n2n\l10n\N2nLocale;
 use n2n\reflection\property\AccessProxy;
 use n2n\util\type\TypeConstraint;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\component\prop\GuiEiProp;
@@ -53,6 +52,10 @@ class EmbeddedEiProp extends PropertyEiPropAdapter implements GuiEiProp, FieldEi
 	 */
 	private function getEditConfig() {
 		return $this->sed ?? $this->sed = new EditConfig();
+	}
+	
+	function prepare() {
+		$this->getConfigurator()->addAdaption($this->getEditConfig());
 	}
 	
 	/**
@@ -79,16 +82,7 @@ class EmbeddedEiProp extends PropertyEiPropAdapter implements GuiEiProp, FieldEi
 		parent::setObjectPropertyAccessProxy($accessProxy);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\PropertyEiPropAdapter::createEiPropConfigurator()
-	 */
-	public function createEiPropConfigurator(): EiPropConfigurator {
-		$eepc = new EmbeddedEiPropConfigurator($this);
-		$eepc->registerEditConfig($this->getEditConfig());
-		return $eepc;
-	}
-	
+
 	/**
 	 * @return boolean
 	 */
@@ -173,7 +167,7 @@ class EmbeddedGuiProp implements GuiProp {
 		return null;
 	}
 
-	public function buildGuiField(Eiu $eiu): ?GuiField {
+	public function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
 		return new EmbeddedGuiField($eiu, $this->eiProp);
 	}
 }

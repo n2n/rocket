@@ -34,20 +34,20 @@
 	$view->assert(is_array($groupedEiuEntries));
 ?>
 <div<?php $view->out($panelLayout->hasGrid() ? ' style="display: grid; grid-template-columns: repeat(' . ($panelLayout->getNumGridCols() - 1). ', 1fr)" class="rocket-impl-grid"' : null) ?>>
-	<?php foreach ($panelLayout->getPanelConfigs() as $panelConfig): ?>
-		<?php $gridPos = $panelConfig->getGridPos() ?>
+	<?php foreach ($panelLayout->getPanelDeclarations() as $panelDeclaration): ?>
+		<?php $gridPos = $panelDeclaration->getGridPos() ?>
 		
 		<div class="rocket-impl-content-items rocket-group rocket-simple-group" <?php $view->out($gridPos === null ? null : ' style="grid-column-start: ' . $gridPos->getColStart() 
 				. '; grid-column-end: ' . $gridPos->getColEnd() . '; grid-row-start: ' . $gridPos->getRowStart() 
 				. '; grid-row-end: ' . $gridPos->getRowEnd() . '"') ?>>
 				
-			<label><?php $html->out($panelConfig->getLabel()) ?></label>
+			<label><?php $html->out($panelDeclaration->getLabel()) ?></label>
 			<div class="rocket-structure-content">
-				<?php if (!isset($groupedEiuEntries[$panelConfig->getName()])): ?>
+				<?php if (!isset($groupedEiuEntries[$panelDeclaration->getName()])): ?>
 					<?php $html->text('common_empty_label') ?>
 				<?php else: ?>
 					<?php $view->import('..\..\relation\view\embeddedOneToMany.html', 
-							array('eiuEntries' => $groupedEiuEntries[$panelConfig->getName()], 'reduced' => true)) ?>
+							array('eiuEntries' => $groupedEiuEntries[$panelDeclaration->getName()], 'reduced' => true)) ?>
 				<?php endif ?>
 			</div>
 		</div>

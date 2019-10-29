@@ -21,17 +21,16 @@
  */
 namespace rocket\impl\ei\component\prop\numeric\conf;
 
-use n2n\core\container\N2nContext;
 use n2n\impl\web\dispatch\mag\model\NumericMag;
-use rocket\ei\component\EiSetup;
+use rocket\ei\util\Eiu;
 use n2n\util\type\CastUtils;
 use rocket\impl\ei\component\prop\numeric\DecimalEiProp;
-use n2n\web\dispatch\mag\MagDispatchable;
+use n2n\util\type\attrs\DataSet;
 use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\impl\web\dispatch\mag\model\StringMag;
-use rocket\impl\ei\component\prop\adapter\config\EiPropConfiguratorAdaption;
+use rocket\impl\ei\component\prop\adapter\config\ConfigAdaption;
 
-class FloatConfig implements EiPropConfiguratorAdaption {
+class FloatConfig extends ConfigAdaption {
 	const ATTR_DECIMAL_PLACES_KEY = 'decimalPlaces';
 	const ATTR_PREFIX_KEY = 'prefix';
 	
@@ -71,7 +70,7 @@ class FloatConfig implements EiPropConfiguratorAdaption {
 		return 'Decimal';
 	}
 	
-	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
+	public function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
 		$lar = new LenientAttributeReader($this->dataSet);
 		
 		$magDispatchable = parent::createMagDispatchable($n2nContext);
@@ -83,7 +82,7 @@ class FloatConfig implements EiPropConfiguratorAdaption {
 		return $magDispatchable;
 	}
 	
-	public function setup(EiSetup $eiSetupProcess) {
+	public function setup(Eiu $eiu, DataSet $dataSet) {
 		parent::setup($eiSetupProcess);
 			
 		CastUtils::assertTrue($this->eiComponent instanceof DecimalEiProp);
@@ -92,7 +91,7 @@ class FloatConfig implements EiPropConfiguratorAdaption {
 		$this->eiComponent->setPrefix($this->dataSet->getString(self::ATTR_PREFIX_KEY, false));
 	}
 	
-	public function saveMagDispatchable(MagDispatchable $magDispatchable, N2nContext $n2nContext) {
+	public function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {
 		parent::saveMagDispatchable($magDispatchable, $n2nContext);
 	
 		$magCollection = $magDispatchable->getMagCollection();
@@ -100,4 +99,6 @@ class FloatConfig implements EiPropConfiguratorAdaption {
 		$this->dataSet->appendAll($magCollection->readValues(
 				array(self::ATTR_DECIMAL_PLACES_KEY, self::ATTR_PREFIX_KEY), true), true);
 	}
+	
+
 }

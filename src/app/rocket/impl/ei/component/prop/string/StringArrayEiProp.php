@@ -13,8 +13,8 @@ use rocket\si\content\SiField;
 
 class StringArrayEiProp extends DraftablePropertyEiPropAdapter {
 
-	public function __construct() {
-		parent::__construct();
+	
+	protected function prepare() {
 	}
 	
 	public function isEntityPropertyRequired(): bool {
@@ -43,4 +43,8 @@ class StringArrayEiProp extends DraftablePropertyEiPropAdapter {
 		});
 		//return new StringArrayMag($this->getDisplayLabelLstr(), $eiu->field()->getValue());
 	}
+
+	public function saveSiField(SiField $siField, Eiu $eiu) {
+	}
+
 }

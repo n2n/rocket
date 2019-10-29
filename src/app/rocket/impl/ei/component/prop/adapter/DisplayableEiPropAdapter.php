@@ -65,12 +65,8 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\IndependentEiPropAdapter::createEiPropConfigurator()
 	 */
-	public function createEiPropConfigurator(): EiPropConfigurator {
-		$configurator = parent::createEiPropConfigurator();
-		IllegalStateException::assertTrue($configurator instanceof AdaptableEiPropConfigurator);
-		$configurator->addAdaption($this->getDisplayConfig());
-		$this->adaptConfigurator($configurator);
-		return $configurator;
+	public function createConfigurator(): AdaptableEiPropConfigurator {
+		return parent::createConfigurator()->addAdaption($this->getDisplayConfig());
 	}
 	
 	/**
@@ -100,7 +96,7 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 // 		return $this->displayConfig->getSiStructureType();
 // 	}
 	
-	public function buildGuiField(Eiu $eiu): ?GuiField {
+	public function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
 		return new GuiFieldProxy($eiu, $this);
 	}
 	

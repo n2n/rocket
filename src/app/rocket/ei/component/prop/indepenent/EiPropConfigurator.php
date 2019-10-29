@@ -37,7 +37,7 @@ interface EiPropConfigurator extends EiConfigurator {
 	 *   
 	 * @param Column $column
 	 */
-	public function initAutoEiPropDataSet(N2nContext $n2nContext, Column $column = null);
+	public function initAutoEiPropAttributes(N2nContext $n2nContext, Column $column = null);
 	
 // 	/**
 // 	 * If the particular EiProp is assigned to entity property this method returns its EntityProperty object 

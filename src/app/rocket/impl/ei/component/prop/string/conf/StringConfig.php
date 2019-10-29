@@ -22,18 +22,20 @@
 namespace rocket\impl\ei\component\prop\string\conf;
 
 use rocket\ei\component\EiSetup;
-use n2n\core\container\N2nContext;
 use rocket\impl\ei\component\prop\string\StringEiProp;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
 use n2n\util\StringUtils;
-use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\persistence\meta\structure\Column;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use n2n\util\type\CastUtils;
+use rocket\impl\ei\component\prop\adapter\config\ConfigAdaption;
+use rocket\ei\util\Eiu;
+use n2n\util\type\attrs\DataSet;
+use n2n\web\dispatch\mag\MagCollection;
 
-class StringConfig {
-	const OPTION_MULTILINE_KEY = 'multiline';
+class StringConfig extends ConfigAdaption {
+	const ATTR_MULTILINE_KEY = 'multiline';
 	
 	private $multiline = false;
 	
@@ -51,24 +53,17 @@ class StringConfig {
 		$this->multiline = $multiline;
 	}
 	
-	function setup(EiSetup $setupProcess) {
-		parent::setup($setupProcess);
-	
-		$eiComponent = $this->eiComponent;
-		CastUtils::assertTrue($eiComponent instanceof StringEiProp);
-		
-		if ($this->dataSet->contains(self::OPTION_MULTILINE_KEY)) {
-			$eiComponent->setMultiline($this->dataSet->getBool(self::OPTION_MULTILINE_KEY));
+	function setup(Eiu $eiu, DataSet $dataSet) {
+		if ($dataSet->contains(self::ATTR_MULTILINE_KEY)) {
+			$this->setMultiline($dataSet->reqBool(self::ATTR_MULTILINE_KEY));
 		}
 	}
 	
 	private static $multilineNeedles = array('description', 'lead', 'intro', 'content');
 	
-	function initAutoEiPropDataSet(N2nContext $n2nContext, Column $column = null) {
-		parent::initAutoEiPropDataSet($n2nContext, $column);
-		
+	function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
 		if (StringUtils::contains(self::$multilineNeedles, $this->requirePropertyName(), false)) {
-			$this->dataSet->set(self::OPTION_MULTILINE_KEY, true);
+			$this->dataSet->set(self::ATTR_MULTILINE_KEY, true);
 			$this->dataSet->set(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, false);
 		}
 	}
@@ -82,30 +77,14 @@ class StringConfig {
 		return parent::testCompatibility($propertyAssignation);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\string\conf\AlphanumericEiPropConfigurator::createMagDispatchable($n2nContext)
-	 * @return MagDispatchable
-	 */
-	function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
-		$magDispatchable = parent::createMagDispatchable($n2nContext);
-		
-		$eiComponent = $this->eiComponent;
-		CastUtils::assertTrue($eiComponent instanceof StringEiProp);
-		
-		$magDispatchable->getMagCollection()->addMag(self::OPTION_MULTILINE_KEY, new BoolMag('Multiline',
-				$this->dataSet->getBool(self::OPTION_MULTILINE_KEY, false, $eiComponent->isMultiline())));
-	
-		
-		return $magDispatchable;
+	function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
+		$magCollection->addMag(self::ATTR_MULTILINE_KEY, new BoolMag('Multiline',
+				$dataSet->optBool(self::ATTR_MULTILINE_KEY, $this->isMultiline())));
 	}
 	
-	function saveMagDispatchable(MagDispatchable $magDispatchable, N2nContext $n2nContext) {
-		parent::saveMagDispatchable($magDispatchable, $n2nContext);
-		
-		$multilineMag = $magDispatchable->getMagCollection()->getMagByPropertyName(self::OPTION_MULTILINE_KEY);
+	function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {
+		$multilineMag = $magCollection->getMagByPropertyName(self::ATTR_MULTILINE_KEY);
 
-		$this->dataSet->set(self::OPTION_MULTILINE_KEY, $multilineMag->getValue());
-		
+		$dataSet->set(self::ATTR_MULTILINE_KEY, $multilineMag->getValue());
 	}
 }

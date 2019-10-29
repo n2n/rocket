@@ -29,6 +29,8 @@ use n2n\util\type\TypeConstraint;
 use rocket\ei\util\Eiu;
 use n2n\impl\persistence\orm\property\FloatEntityProperty;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
+use rocket\impl\ei\component\prop\numeric\conf\FloatConfig;
+use rocket\si\content\SiField;
 
 class FloatEiProp extends NumericEiPropAdapter {
     private $floatConfig;
@@ -43,9 +45,10 @@ class FloatEiProp extends NumericEiPropAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\numeric\NumericEiPropAdapter::createEiPropConfigurator()
 	 */
-	public function adaptConfigurator(AdaptableEiPropConfigurator $configurator) {
-	    parent::adaptConfigurator($configurator);
-		$configurator->addAdaption($this->floatConfig);
+	public function prepare() {
+	    parent::prepare();
+	    
+	    $this->getConfigurator()->addAdaption($this->floatConfig);
 	}
 	
 	/**
@@ -107,4 +110,7 @@ class FloatEiProp extends NumericEiPropAdapter {
 		$numericMag->setInputPrefix($this->prefix);
 		return $numericMag;
 	}
+	public function saveSiField(SiField $siField, Eiu $eiu) {
+	}
+
 }

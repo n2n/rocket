@@ -59,7 +59,7 @@ class MultiSelectEiProp extends DraftablePropertyEiPropAdapter {
 		$this->objectPropertyAccessProxy = $propertyAccessProxy;
 	}
 	
-	public function setup(EiSetup $setupProcess) {
+	public function setup(Eiu $eiu, DataSet $dataSet) {
 		try {
 			$this->objectPropertyAccessProxy->setConstraints(TypeConstraint::createSimple(null, true));
 		} catch (ConstraintsConflictException $e) {

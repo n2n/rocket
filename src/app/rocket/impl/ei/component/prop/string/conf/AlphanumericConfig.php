@@ -21,22 +21,18 @@
  */
 namespace rocket\impl\ei\component\prop\string\conf;
 
-use n2n\core\container\N2nContext;
 use n2n\impl\web\dispatch\mag\model\NumericMag;
-use n2n\util\ex\IllegalStateException;
-use rocket\impl\ei\component\prop\string\AlphanumericEiProp;
-use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\persistence\meta\structure\Column;
 use n2n\persistence\meta\structure\StringColumn;
 use n2n\util\type\attrs\LenientAttributeReader;
-use rocket\impl\ei\component\prop\meta\config\AddonConfig;
 use n2n\util\type\attrs\DataSet;
 use rocket\ei\util\Eiu;
 use n2n\web\dispatch\mag\MagCollection;
+use rocket\impl\ei\component\prop\adapter\config\ConfigAdaption;
 
-class AlphanumericConfig {
-	const OPTION_MINLENGTH_KEY = 'minlength';
-	const OPTION_MAXLENGTH_KEY = 'maxlength';
+class AlphanumericConfig extends ConfigAdaption {
+	const ATTR_MINLENGTH_KEY = 'minlength';
+	const ATTR_MAXLENGTH_KEY = 'maxlength';
 	
 	/**
 	 * @var int|null
@@ -79,9 +75,9 @@ class AlphanumericConfig {
 	 * @param Eiu $eiu
 	 * @param Column $column
 	 */
-	function autoAttributes(Eiu $eiu, Column $column = null) {
+	function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
 		if ($column instanceof StringColumn) {
-			$this->attributes->set(self::OPTION_MAXLENGTH_KEY, $column->getLength());
+			$dataSet->set(self::ATTR_MAXLENGTH_KEY, $column->getLength());
 		}
 	}
 	
@@ -90,48 +86,30 @@ class AlphanumericConfig {
 	 * @param DataSet $dataSet
 	 */
 	function setup(Eiu $eiu, DataSet $dataSet) {
-		parent::setup($eiSetupProcess);
-		
-		if ($this->attributes->contains(self::OPTION_MAXLENGTH_KEY)) {
-			$this->eiComponent->setMaxlength($this->attributes->optInt(self::OPTION_MAXLENGTH_KEY, null));
+		if ($this->attributes->contains(self::ATTR_MAXLENGTH_KEY)) {
+			$this->setMaxlength($this->attributes->optInt(self::ATTR_MAXLENGTH_KEY, null));
 		}
 		
-		if ($this->attributes->contains(self::OPTION_MINLENGTH_KEY)) {
-			$this->eiComponent->setMinlength($this->attributes->optInt(self::OPTION_MINLENGTH_KEY, null));
+		if ($this->attributes->contains(self::ATTR_MINLENGTH_KEY)) {
+			$this->setMinlength($this->attributes->optInt(self::ATTR_MINLENGTH_KEY, null));
 		}
-		
-		$this->eiComponent->setAddonConfig(AddonConfig::setup($this->attributes));
 	}
 	
 	function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
-		$magDispatchable = parent::createMagDispatchable($n2nContext);
-
 		$lar = new LenientAttributeReader($this->attributes);
 		
-		IllegalStateException::assertTrue($this->eiComponent instanceof AlphanumericEiProp);
+		$magCollection->addMag(self::ATTR_MINLENGTH_KEY, new NumericMag('Minlength', 
+				$lar->getInt(self::ATTR_MINLENGTH_KEY, $this->eiComponent->getMinlength())));
 		
-		$magDispatchable->getMagCollection()->addMag(self::OPTION_MINLENGTH_KEY, new NumericMag('Minlength', 
-				$lar->getInt(self::OPTION_MINLENGTH_KEY, $this->eiComponent->getMinlength())));
-		
-		$magDispatchable->getMagCollection()->addMag(self::OPTION_MAXLENGTH_KEY, new NumericMag('Maxlength',
-				$lar->getInt(self::OPTION_MAXLENGTH_KEY, $this->eiComponent->getMaxlength())));
-		
-		AddonConfig::mag($magDispatchable->getMagCollection(), $this->attributes);
-		
-		return $magDispatchable;
+		$magCollection->addMag(self::ATTR_MAXLENGTH_KEY, new NumericMag('Maxlength',
+				$lar->getInt(self::ATTR_MAXLENGTH_KEY, $this->eiComponent->getMaxlength())));
 	}
 	
 	function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {
+		$this->attributes->set(self::ATTR_MINLENGTH_KEY,
+				$magCollection->getMagByPropertyName(self::ATTR_MINLENGTH_KEY)->getValue());
 		
-		$magCollection = $magDispatchable->getMagCollection();
-		
-		$this->attributes->set(self::OPTION_MINLENGTH_KEY,
-				$magCollection->getMagByPropertyName(self::OPTION_MINLENGTH_KEY)->getValue());
-		
-		$this->attributes->set(self::OPTION_MAXLENGTH_KEY,
-				$magCollection->getMagByPropertyName(self::OPTION_MAXLENGTH_KEY)->getValue());
-		
-		AddonConfig::save($magDispatchable->getMagCollection(), $this->attributes);
+		$this->attributes->set(self::ATTR_MAXLENGTH_KEY,
+				$magCollection->getMagByPropertyName(self::ATTR_MAXLENGTH_KEY)->getValue());
 	}
-	
 }

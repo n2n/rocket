@@ -22,7 +22,7 @@
 
 	use n2n\web\dispatch\map\PropertyPath;
 	use n2n\impl\web\ui\view\html\HtmlView;
-	use rocket\impl\ei\component\prop\ci\model\PanelConfig;
+	use rocket\impl\ei\component\prop\ci\model\PanelDeclaration;
 	use rocket\impl\ei\component\prop\ci\model\PanelLayout;
 
 	$view = HtmlView::view($view);
@@ -42,12 +42,12 @@
 ?>
 
 <div class="<?php $view->out($divClass) ?>"<?php $view->out($panelLayout->hasGrid() ? ' style="grid-template-columns: repeat(' . ($panelLayout->getNumGridCols() - 1). ', 1fr)"' : null) ?>>
-	<?php foreach ($panelLayout->getPanelConfigs() as $panelConfig): $view->assert($panelConfig instanceof PanelConfig) ?>
-		<?php $gridPos = $panelConfig->getGridPos() ?>
+	<?php foreach ($panelLayout->getPanelDeclarations() as $panelDeclaration): $view->assert($panelDeclaration instanceof PanelDeclaration) ?>
+		<?php $gridPos = $panelDeclaration->getGridPos() ?>
 	
-		<?php $formHtml->magOpen('div', $propertyPath->ext($panelConfig->getName()),
+		<?php $formHtml->magOpen('div', $propertyPath->ext($panelDeclaration->getName()),
 				array('class' => 'rocket-impl-content-item-panel rocket-group rocket-simple-group',
-						'data-name' => $panelConfig->getName(),
+						'data-name' => $panelDeclaration->getName(),
 						'style' => ($gridPos === null ? null : 'grid-column-start: ' . $gridPos->getColStart() . '; grid-column-end: ' . $gridPos->getColEnd() 
 								. '; grid-row-start: ' . $gridPos->getRowStart() . '; grid-row-end: ' . $gridPos->getRowEnd()))) ?>
 			<?php $formHtml->magLabel() ?>

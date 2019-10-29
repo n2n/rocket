@@ -21,45 +21,34 @@
  */
 namespace rocket\impl\ei\component\prop\string\cke;
 
-use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\impl\ei\component\prop\string\AlphanumericEiProp;
 use n2n\util\type\ArgUtils;
 use rocket\ei\EiPropPath;
-use n2n\web\dispatch\mag\Mag;
 use rocket\ei\util\Eiu;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\util\col\GenericArrayObject;
 use rocket\impl\ei\component\prop\string\cke\model\CkeCssConfig;
-use rocket\impl\ei\component\prop\string\cke\conf\CkeEiPropConfigurator;
-use rocket\impl\ei\component\prop\string\cke\model\CkeMag;
 use rocket\impl\ei\component\prop\string\cke\model\CkeLinkProvider;
-use rocket\impl\ei\component\prop\string\cke\ui\CkeHtmlBuilder;
 use rocket\ei\manage\gui\ViewMode;
 use n2n\util\StringUtils;
 use n2n\core\N2N;
 use rocket\si\content\SiField;
 use rocket\si\content\impl\SiFields;
+use n2n\util\type\CastUtils;
+use rocket\si\content\impl\StringInSiField;
+use rocket\impl\ei\component\prop\string\cke\conf\CkeConfig;
+use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 
 class CkeEiProp extends AlphanumericEiProp {
-	const MODE_SIMPLE = 'simple';
-	const MODE_NORMAL = 'normal';
-	const MODE_ADVANCED = 'advanced';
 	
-	private $mode = self::MODE_SIMPLE;
-	private $ckeLinkProviders;
-	private $ckeCssConfig = null;
-	private $tableSupported = false;
-	private $bbcode = false;
 	
 	public function __construct() {
 		$this->getDisplayConfig()->setDefaultDisplayedViewModes(ViewMode::bulky());
 		$this->getEditConfig()->setMandatory(false);
 		
-		$this->ckeLinkProviders = new GenericArrayObject(null, CkeLinkProvider::class);
 	}
 	
-	public function createEiPropConfigurator(): EiPropConfigurator {
-	    return new CkeEiPropConfigurator($this);
+	public function prepare() {
+		$this->getConfigurator()->addAdaption(new CkeConfig());
 	}
 	
 	public function getMode() {
@@ -136,11 +125,16 @@ class CkeEiProp extends AlphanumericEiProp {
 	public function createInSiField(Eiu $eiu): SiField {
 		return SiFields::stringIn($eiu->field()->getValue());
 		
-		$eiEntry = $eiu->entry()->getEiEntry();
+// 		$eiu->entry()->getEiEntry();
 		
-		return new CkeMag($this->getLabelLstr(), null, $this->isMandatory($eiu),
-				null, $this->getMaxlength(), $this->getMode(), $this->bbcode,
-				$this->isTableSupported(), (array) $this->getCkeLinkProviders(), $this->getCkeCssConfig());
+// 		return new CkeMag($this->getLabelLstr(), null, $this->isMandatory($eiu),
+// 				null, $this->getMaxlength(), $this->getMode(), $this->bbcode,
+// 				$this->isTableSupported(), (array) $this->getCkeLinkProviders(), $this->getCkeCssConfig());
+	}
+	
+	function saveSiField(SiField $siField, Eiu $eiu) {
+		CastUtils::assertTrue($siField instanceof StringInSiField);
+		$eiu->field()->save($siField->getValue());
 	}
 	
 // 	/**

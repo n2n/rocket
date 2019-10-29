@@ -48,19 +48,15 @@ abstract class EditableEiPropAdapter extends DisplayableEiPropAdapter implements
 		return $this->editConfig;
 	}
 
-	public function createEiPropConfigurator(): EiPropConfigurator {
-		$configurator = parent::createEiPropConfigurator();
-		IllegalStateException::assertTrue($configurator instanceof AdaptableEiPropConfigurator);
-		$configurator->addAdaption($this->getEditConfig());
-		$this->adaptConfigurator($configurator);
-		return $configurator;
+	protected function createConfigurator(): AdaptableEiPropConfigurator {
+		return parent::createConfigurator()->addAdaption($this->getEditConfig());
 	}
 
 	public function buildGuiProp(Eiu $eiu): ?GuiProp {
 		return $this;
 	}
 
-	public function buildGuiField(Eiu $eiu): ?GuiField {
+	public function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
 		return new GuiFieldProxy($eiu, $this, $this);
 	}
 

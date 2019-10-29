@@ -17,14 +17,14 @@ class PanelLayout {
 	}
 	
 	/**
-	 * @param PanelConfig[] $panelConfigs
+	 * @param PanelDeclaration[] $panelDeclarations
 	 */
-	function assignConfigs(array $panelConfigs, EiuFrame $targetEiuFrame, RelationModel $relationModel) {
+	function assignConfigs(array $panelDeclarations, EiuFrame $targetEiuFrame, RelationModel $relationModel) {
 		$numGridCols = 0;
 		$numGridRows = 0;
 		
-		foreach ($panelConfigs as $panelConfig) {
-			$gridPos = $panelConfig->getGridPos();
+		foreach ($panelDeclarations as $panelDeclaration) {
+			$gridPos = $panelDeclaration->getGridPos();
 			
 			if ($gridPos === null) continue;
 			
@@ -40,13 +40,13 @@ class PanelLayout {
 		}
 		
 		$this->siPanels = [];
-		foreach ($panelConfigs as $panelConfig) {
-			$this->siPanels[$panelConfig->getName()] = $siPanel = new SiPanel($panelConfig->getName(), 
-					$panelConfig->getLabel());
+		foreach ($panelDeclarations as $panelDeclaration) {
+			$this->siPanels[$panelDeclaration->getName()] = $siPanel = new SiPanel($panelDeclaration->getName(), 
+					$panelDeclaration->getLabel());
 			
-			$this->configSiPanel($siPanel, $panelConfig, $targetEiuFrame, $relationModel);
+			$this->configSiPanel($siPanel, $panelDeclaration, $targetEiuFrame, $relationModel);
 			
-			if (($gridPos = $panelConfig->getGridPos()) !== null) {
+			if (($gridPos = $panelDeclaration->getGridPos()) !== null) {
 				$siPanel->setGridPos($gridPos->toSiGridPos());
 				continue;
 			}
@@ -58,14 +58,14 @@ class PanelLayout {
 	
 	/**
 	 * @param SiPanel $siPanel
-	 * @param PanelConfig $panelConfig
+	 * @param PanelDeclaration $panelDeclaration
 	 * @param EiuFrame $targetEiuFrame
 	 * @param RelationModel $relationModel
 	 */
-	private function configSiPanel($siPanel, $panelConfig, $targetEiuFrame, $relationModel) {
+	private function configSiPanel($siPanel, $panelDeclaration, $targetEiuFrame, $relationModel) {
 		$allowedSiTypeQualifiers = [];
 		foreach ($targetEiuFrame->engine()->mask()->possibleMasks() as $eiuMask) {
-			if ($panelConfig->isEiuMaskAllowed($eiuMask)) {
+			if ($panelDeclaration->isEiuMaskAllowed($eiuMask)) {
 				$allowedSiTypeQualifiers[] = $eiuMask->createSiTypeQualifier();
 			} 
 		}

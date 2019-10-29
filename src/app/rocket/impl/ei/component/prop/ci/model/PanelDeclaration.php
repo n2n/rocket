@@ -24,7 +24,7 @@ namespace rocket\impl\ei\component\prop\ci\model;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\util\spec\EiuMask;
 
-class PanelConfig {
+class PanelDeclaration {
 	private $name;
 	private $label;
 	private $allowedContentItemIds;

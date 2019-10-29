@@ -79,15 +79,12 @@ abstract class DraftablePropertyEiPropAdapter extends EditablePropertyEiPropAdap
 		return $this->editConfig->isReadOnly() || !$this->isDraftable();
 	}
 	
-	/* (non-PHPdoc)
-	 * @see \rocket\impl\ei\component\prop\EditablePropertyEiPropAdapter::createEiConfigurator()
-	 */
-	public function createEiPropConfigurator(): EiPropConfigurator {
-		$eiPropConfigurator = parent::createEiPropConfigurator();
-		IllegalStateException::assertTrue($eiPropConfigurator instanceof AdaptableEiPropConfigurator);
-// 		$eiPropConfigurator->registerDraftConfigurable($this);
-		return $eiPropConfigurator;
-	}
+// 	/* (non-PHPdoc)
+// 	 * @see \rocket\impl\ei\component\prop\EditablePropertyEiPropAdapter::createEiConfigurator()
+// 	 */
+// 	public function createConfigurator(): AdaptableEiPropConfigurator {
+// 		return parent::createConfigurator();
+// 	}
 	
 		
 	public function getDraftProperty() {

@@ -26,8 +26,8 @@
 	$html = HtmlView::html($this);
 	$formHtml = HtmlView::formHtml($this);
 
-	$panelConfigs = $view->getParam('panelConfigs');
-	$view->assert(is_array($panelConfigs));
+	$panelDeclarations = $view->getParam('panelDeclarations');
+	$view->assert(is_array($panelDeclarations));
 
 	$groupedUiComponents = $view->getParam('groupedUiComponents');
 	$view->assert(is_array($groupedUiComponents));
@@ -35,15 +35,15 @@
 	$i = 0;
 ?>
 <div class="rocket-content-nested rocket-content-item-composer">
-	<?php foreach ($panelConfigs as $panelConfig): ?>
+	<?php foreach ($panelDeclarations as $panelDeclaration): ?>
 		<div>
-			<?php if (!isset($groupedUiComponents[$panelConfig->getName()])): ?>
+			<?php if (!isset($groupedUiComponents[$panelDeclaration->getName()])): ?>
 				<div class="rocket-impl-content-type rocket-impl-content-type-empty">
 					<span class="fa fa-rocket-empty" title="<?php $html->text('common_empty_label') ?>"></span>
 				</div>
 			<?php else: ?>
 				<ul class="list-inline rocket-content-item">
-					<?php foreach ($groupedUiComponents[$panelConfig->getName()] as $uiComponent): ?>
+					<?php foreach ($groupedUiComponents[$panelDeclaration->getName()] as $uiComponent): ?>
 						<?php $view->out($uiComponent) ?>
 					<?php endforeach ?>
 				</ul>
