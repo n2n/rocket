@@ -38,10 +38,7 @@ use n2n\reflection\property\AccessProxy;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\ei\util\Eiu;
-use rocket\impl\ei\component\prop\enum\conf\EnumEiPropConfigurator;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\critmod\quick\impl\LikeQuickSearchProp;
-use rocket\ei\manage\gui\field\GuiFieldPath;
 use n2n\impl\web\dispatch\mag\model\group\EnumTogglerMag;
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\sort\SortProp;
@@ -58,6 +55,10 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 		QuickSearchableEiProp {
 	
 	private $enumConfig;
+	
+	function isEntityPropertyRequired(): bool {
+		return false;
+	}
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty === null || $entityProperty instanceof ScalarEntityProperty
@@ -82,9 +83,16 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 		$this->objectPropertyAccessProxy = $propertyAccessProxy;
 	}
 	
+	function getEnumConfig() {
+		if ($this->enumConfig === null) {
+			$this->enumConfig = new EnumConfig();
+		}
+		
+		return $this->enumConfig;
+	}
+	
 	public function prepare() {
-		$this->enumConfig = new EnumConfig();
-		$this->getConfigurator()->addAdaption($this->enumConfig);
+		$this->getConfigurator()->addAdaption($this->getEditConfig());
 	}
 	
 	public function buildEiField(Eiu $eiu): ?EiField {

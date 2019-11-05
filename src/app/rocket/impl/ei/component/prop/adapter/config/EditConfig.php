@@ -164,20 +164,20 @@ class EditConfig extends  ConfigAdaption {
 	 * @return \rocket\impl\ei\component\prop\adapter\config\EditConfig
 	 */
 	function setup(Eiu $eiu, DataSet $dataSet) {
-		if ($this->constantChoosable && $this->dataSet->contains(self::ATTR_CONSTANT_KEY)) {
-			$this->editConfig->setConstant($this->dataSet->getBool(self::ATTR_CONSTANT_KEY));
+		if ($this->constantChoosable && $dataSet->contains(self::ATTR_CONSTANT_KEY)) {
+			$this->setConstant($dataSet->getBool(self::ATTR_CONSTANT_KEY));
 		}
 		
-		if ($this->readOnlyChoosable && $this->dataSet->contains(self::ATTR_READ_ONLY_KEY)) {
-			$this->editConfig->setReadOnly($this->dataSet->getBool(self::ATTR_READ_ONLY_KEY));
+		if ($this->readOnlyChoosable && $dataSet->contains(self::ATTR_READ_ONLY_KEY)) {
+			$this->setReadOnly($dataSet->getBool(self::ATTR_READ_ONLY_KEY));
 		}
 		
 		if ($this->mandatoryChoosable) {
-			if ($this->dataSet->contains(self::ATTR_MANDATORY_KEY)) {
-				$this->editConfig->setMandatory($this->dataSet->getBool(self::ATTR_MANDATORY_KEY));
+			if ($dataSet->contains(self::ATTR_MANDATORY_KEY)) {
+				$this->setMandatory($dataSet->getBool(self::ATTR_MANDATORY_KEY));
 			}
 			
-			if (!$this->editConfig->isMandatory() && $this->addMandatory && $this->autoMandatoryCheck
+			if (!$this->isMandatory() && $this->addMandatory && $this->autoMandatoryCheck
 					&& $this->mandatoryRequired()) {
 				throw new InvalidAttributeException(self::ATTR_MANDATORY_KEY . ' must be true because '
 						. $this->getPropertyAssignation()->getObjectPropertyAccessProxy(true)

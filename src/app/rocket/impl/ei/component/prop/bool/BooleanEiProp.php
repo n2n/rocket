@@ -60,6 +60,10 @@ class BooleanEiProp extends DraftablePropertyEiPropAdapter implements Filterable
 		$this->getConfigurator()->addAdaption($this->booleanConfig);
 	}
 	
+	function isEntityPropertyRequired(): bool {
+		return false;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\PropertyEiPropAdapter::setEntityProperty()

@@ -21,32 +21,26 @@
  */
 namespace rocket\impl\ei\component\prop\bool\conf;
 
-use rocket\ei\component\EiSetup;
 use n2n\util\ex\IllegalStateException;
-use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\impl\ei\component\prop\bool\OnlineEiProp;
 use rocket\impl\ei\component\prop\bool\command\OnlineEiCommand;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
-use n2n\core\container\N2nContext;
 use n2n\persistence\meta\structure\Column;
 use rocket\ei\util\Eiu;
 use n2n\util\type\attrs\DataSet;
+use n2n\web\dispatch\mag\MagCollection;
 use rocket\impl\ei\component\prop\adapter\config\ConfigAdaption;
 
-class OnlineEiPropConfigurator extends ConfigAdaption {
+class OnlineConfig extends ConfigAdaption {
 	const COMMON_ONLINE_PROP_NAME = 'online';
 	
-	public function __construct(OnlineEiProp $onlineEiProp) {
-		parent::__construct($onlineEiProp);
-
-		$this->autoRegister($onlineEiProp);
-		
+	function __construct() {
 		$this->addMandatory = false;
 		$this->addConstant = false;
 	}
 	
-	public function testCompatibility(PropertyAssignation $propertyAssignation): int {
+	function testCompatibility(PropertyAssignation $propertyAssignation): int {
 		$level = parent::testCompatibility($propertyAssignation);
 		
 		if (!$level) return $level;
@@ -58,24 +52,26 @@ class OnlineEiPropConfigurator extends ConfigAdaption {
 		return $level;
 	}
 	
-	
-	public function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
-		parent::initAutoEiPropAttributes($n2nContext, $column);
-		
+	function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
 		$this->dataSet->set(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY, false);
 		$this->dataSet->set(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, false);
 		$this->dataSet->set(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, false);
 	}
 	
-	public function setup(Eiu $eiu, DataSet $dataSet) {
-		parent::setup($setupProcess);
-		
+	function setup(Eiu $eiu, DataSet $dataSet) {
 		$onlineEiProp = $this->eiComponent;
 		IllegalStateException::assertTrue($onlineEiProp instanceof OnlineEiProp);
 		
 		$onlineEiCommand = new OnlineEiCommand();
 		$onlineEiCommand->setOnlineEiProp($onlineEiProp);
 		
-		$setupProcess->eiu()->mask()->addEiCommand($onlineEiCommand, true);
+		$eiu->mask()->addEiCommand($onlineEiCommand, true);
 	}
+	
+	function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
+	}
+
+	function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {
+	}
+
 }

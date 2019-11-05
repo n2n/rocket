@@ -28,7 +28,7 @@ use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use rocket\ei\component\prop\indepenent\IncompatiblePropertyException;
 use n2n\core\container\N2nContext;
 
-class DefaultEiConfigurator extends EiConfiguratorAdapter implements EiPropConfigurator {
+class DefaultEiConfigurator extends EiConfiguratorAdapter {
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\component\prop\indepenent\EiPropConfigurator::initAutoEiPropAttributes($column)

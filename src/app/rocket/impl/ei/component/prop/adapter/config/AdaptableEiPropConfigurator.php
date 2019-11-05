@@ -51,6 +51,11 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 	private $adapations = [];
 	
 	/**
+	 * @var \Closure[]
+	 */
+	private $setupCallbacks = [];
+	
+	/**
 	 * @var int
 	 */
 	private $maxCompatibilityLevel = CompatibilityLevel::COMPATIBLE;
@@ -100,7 +105,7 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 			try {
 				$this->entityPropertyConfigurable->setEntityProperty(
 						$propertyAssignation->getEntityProperty(
-								$this->confEntityProperty->isEntityPropertyRequired()));
+								$this->entityPropertyConfigurable->isEntityPropertyRequired()));
 			} catch (\InvalidArgumentException $e) {
 				throw $propertyAssignation->createEntityPropertyException(null, $e);
 			}
@@ -247,6 +252,10 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 		foreach ($this->adapations as $adaption) {
 			$adaption->setup($eiu, $this->dataSet);
 		}
+		
+		foreach ($this->setupCallbacks as $setupCallback) {
+			$setupCallback($eiu, $this->dataSet);
+		}
 	}
 	
 	/**
@@ -285,6 +294,24 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 	 */
 	function removeAdaption(EiPropConfiguratorAdaption $adaption) {
 		unset($this->adapations[spl_object_hash($adaption)]);
+		return $this;
+	}
+	
+	/**
+	 * @param \Closure $setupCallback
+	 * @return \rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator
+	 */
+	function addSetupCallback(\Closure $setupCallback) {
+		$this->adapations[spl_object_hash($setupCallback)] = $setupCallback;
+		return $this;
+	}
+	
+	/**
+	 * @param \Closure $setupCallback
+	 * @return \rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator
+	 */
+	function removeSetupCallback(\Closure $setupCallback) {
+		unset($this->adapations[spl_object_hash($setupCallback)]);
 		return $this;
 	}
 }

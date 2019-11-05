@@ -135,9 +135,7 @@ class VetoCheck {
 		foreach ($this->findAll() as $entityObj) {
 			if ($queue->isEntityObjRemoved($entityObj)) continue;
 				
-			
-			$that = $this;
-			$this->vetoableRemoveAction->executeWhenApproved(function () use ($that, $queue, $entityObj) {
+			$this->vetoableRemoveAction->executeWhenApproved(function () use ($queue, $entityObj) {
 				
 				$queue->getEntityManager()->remove($entityObj);
 // 				$queue->getEntityManager()->getActionQueue()->getOrCreateRemoveAction($entityObj);

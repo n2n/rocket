@@ -135,7 +135,7 @@ class RelationConfig extends ConfigAdaption {
 	
 	function setup(Eiu $eiu, DataSet $dataSet) {
 		IllegalStateException::assertTrue($this->relationModel !== null, self::class . ' misses RelationModel for ' 
-				. $this->eiComponent . '.');
+				. $this->relationModel->getRelationEntityProperty() . '.');
 		
 		$targetClass = $this->relationModel->getRelationEntityProperty()->getTargetEntityModel()->getClass();
 		$targetEiuType = $eiu->context()->type($targetClass);

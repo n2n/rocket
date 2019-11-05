@@ -23,7 +23,6 @@ namespace rocket\impl\ei\component\prop\l10n;
 
 use n2n\l10n\IllegalN2nLocaleFormatException;
 use n2n\l10n\N2nLocale;
-use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\util\type\ValueIncompatibleWithConstraintsException;
 use rocket\ei\component\prop\FilterableEiProp;
@@ -190,4 +189,10 @@ class N2nLocaleEiProp extends DraftablePropertyEiPropAdapter implements Filterab
 					}
 				});
 	}
+	protected function prepare() {
+	}
+
+	public function saveSiField(SiField $siField, Eiu $eiu) {
+	}
+
 }

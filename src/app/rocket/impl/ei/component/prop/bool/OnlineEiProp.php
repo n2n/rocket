@@ -21,19 +21,15 @@
  */
 namespace rocket\impl\ei\component\prop\bool;
 
-use rocket\impl\ei\component\prop\bool\conf\OnlineEiPropConfigurator;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
+use rocket\impl\ei\component\prop\bool\conf\OnlineConfig;
 
 class OnlineEiProp extends BooleanEiProp {
-	private $onlineEiCommand;
 	
-	public function __construct() {
-		parent::__construct();
-		
+	function __construct() {
 		$this->getDisplayConfig()->setListReadModeDefaultDisplayed(false);
 	}
 	
-	public function createEiPropConfigurator(): EiPropConfigurator {
-		return new OnlineEiPropConfigurator($this);
+	function prepare() {
+		$this->getConfigurator()->addAdaption(new OnlineConfig());
 	}
 }
