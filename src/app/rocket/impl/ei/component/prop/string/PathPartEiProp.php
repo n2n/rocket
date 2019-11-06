@@ -31,7 +31,7 @@ use rocket\ei\EiPropPath;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\si\content\SiField;
-use rocket\impl\ei\component\prop\string\conf\PathPartEiPropConfig;
+use rocket\impl\ei\component\prop\string\conf\PathPartConfig;
 
 class PathPartEiProp extends AlphanumericEiProp  {
 	function __construct() {
@@ -41,7 +41,7 @@ class PathPartEiProp extends AlphanumericEiProp  {
 	public function prepare() {
 		$this->getDisplayConfig()->setDefaultDisplayedViewModes(ViewMode::BULKY_EDIT | ViewMode::COMPACT_READ);
 		$this->getEditConfig()->setMandatory(false)->setMandatoryChoosable(false);
-		$this->getConfigurator()->addAdaption(new PathPartEiPropConfig());
+		$this->getConfigurator()->addAdaption(new PathPartConfig());
 	}
 	
 	public function getTypeName(): string {

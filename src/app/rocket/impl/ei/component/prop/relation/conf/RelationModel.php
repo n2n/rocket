@@ -172,6 +172,13 @@ class RelationModel {
 	}
 	
 	/**
+	 * @return \n2n\l10n\Lstr
+	 */
+	function getLabelLstr() {
+		return $this->relationEiProp->getLabelLstr();
+	}
+	
+	/**
 	 * @return boolean
 	 */
 	function isSourceMany() {

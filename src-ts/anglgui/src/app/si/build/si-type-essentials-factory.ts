@@ -20,7 +20,7 @@ export class SiTypeEssentialsFactory {
 		const extr = new Extractor(data);
 
 		const propId = extr.nullaString('propId');
-		const type = extr.reqString('structureType') as any;
+		const type = extr.nullaString('structureType') as any;
 		const children = this.createStructureDeclarations(extr.reqArray('children'));
 
 		if (propId !== null) {

@@ -302,7 +302,7 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 	 * @return \rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator
 	 */
 	function addSetupCallback(\Closure $setupCallback) {
-		$this->adapations[spl_object_hash($setupCallback)] = $setupCallback;
+		$this->setupCallbacks[spl_object_hash($setupCallback)] = $setupCallback;
 		return $this;
 	}
 	
@@ -311,7 +311,7 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 	 * @return \rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator
 	 */
 	function removeSetupCallback(\Closure $setupCallback) {
-		unset($this->adapations[spl_object_hash($setupCallback)]);
+		unset($this->setupCallbacks[spl_object_hash($setupCallback)]);
 		return $this;
 	}
 }

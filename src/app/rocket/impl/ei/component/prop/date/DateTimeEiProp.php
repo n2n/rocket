@@ -75,24 +75,6 @@ class DateTimeEiProp extends DraftablePropertyEiPropAdapter implements SortableE
 				$propertyAccessProxy->getBaseConstraint()->allowsNull()));
 		$this->objectPropertyAccessProxy = $propertyAccessProxy;
 	}
-		
-	public function getDateStyle() {
-		return $this->dateStyle;
-	}
-	
-	public function setDateStyle($dateStyle) {
-		ArgUtils::valEnum($dateStyle, DateTimeFormat::getStyles());
-		$this->dateStyle = $dateStyle;
-	}
-	
-	public function getTimeStyle() {
-		return $this->timeStyle;
-	}
-	
-	public function setTimeStyle($timeStyle) {
-		ArgUtils::valEnum($timeStyle, DateTimeFormat::getStyles());
-		$this->timeStyle = $timeStyle;
-	}
 	
 	public function createOutSiField(Eiu $eiu): SiField  {
 		return $view->getHtmlBuilder()->getL10nDateTime($eiu->field()->getValue(EiPropPath::from($this)), 

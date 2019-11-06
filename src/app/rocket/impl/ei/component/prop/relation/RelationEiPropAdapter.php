@@ -85,6 +85,13 @@ abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements Re
 	}
 	
 	/**
+	 * @return \rocket\impl\ei\component\prop\adapter\config\EditConfig|NULL
+	 */
+	protected function getEditConfig() {
+		return $this->getRelationModel()->getEditConfig();
+	}
+	
+	/**
 	 * @return \rocket\impl\ei\component\prop\relation\conf\RelationModel
 	 */
 	protected function getRelationModel() {
@@ -117,7 +124,7 @@ abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements Re
 	 * @see \rocket\ei\component\prop\GuiEiProp::buildGuiProp()
 	 */
 	function buildGuiProp(Eiu $eiu): ?GuiProp {
-	    return GuiProps::configAndFactory($this, $this->displayConfig, $this);
+	    return GuiProps::configAndFactory($this->displayConfig, $this);
 	}
 	
 	function isStringRepresentable(): bool {

@@ -45,17 +45,17 @@ class StringEiProp extends AlphanumericEiProp {
 	
 	function createOutSiField(Eiu $eiu): SiField  {
 		return SiFields::stringOut($eiu->field()->getValue())
-				->setMultiline($this->isMultiline());
+				->setMultiline($this->stringConfig->isMultiline());
 	}
 
 	function createInSiField(Eiu $eiu): SiField {
 		$addonConfig = $this->getAddonConfig();
 		
 		return SiFields::stringIn($eiu->field()->getValue())
-				->setMandatory($this->isMandatory($eiu))
-				->setMinlength($this->getMinlength())
-				->setMaxlength($this->getMaxlength())
-				->setMultiline($this->isMultiline())
+				->setMandatory($this->getEditConfig()->isMandatory())
+				->setMinlength($this->getAlphanumericConfig()->getMinlength())
+				->setMaxlength($this->getAlphanumericConfig()->getMaxlength())
+				->setMultiline($this->stringConfig->isMultiline())
 				->setPrefixAddons($addonConfig->getPrefixSiCrumbGroups())
 				->setSuffixAddons($addonConfig->getSuffixSiCrumbGroups());
 	}

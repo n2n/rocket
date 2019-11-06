@@ -41,6 +41,13 @@ abstract class EiPropAdapter extends EiComponentAdapter implements EiProp {
 	}
 	
 	/**
+	 * @return \rocket\ei\mask\EiMask
+	 */
+	function getEiMask() {
+		return $this->getWrapper()->getEiPropCollection()->getEiMask();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\EiComponentAdapter::getIdBase()
 	 */

@@ -34,7 +34,7 @@ class SiStructureDeclaration implements \JsonSerializable {
 	 * @param SiProp $siPropId
 	 * @param string $label
 	 */
-	function __construct(string $structureType, ?string $propId, ?string $label, ?string $helpText, array $children = []) {
+	function __construct(?string $structureType, ?string $propId, ?string $label, ?string $helpText, array $children = []) {
 		$this->setStructureType($structureType);
 		$this->label = $label;
 		$this->helpText = $helpText;
@@ -69,8 +69,8 @@ class SiStructureDeclaration implements \JsonSerializable {
 	 * @param string $displayType
 	 * @return \rocket\si\meta\SiProp
 	 */
-	public function setStructureType(string $structureType) {
-		ArgUtils::valEnum($structureType, SiStructureType::all());
+	public function setStructureType(?string $structureType) {
+		ArgUtils::valEnum($structureType, SiStructureType::all(), null, true);
 		$this->structureType = $structureType;
 		return $this;
 	}

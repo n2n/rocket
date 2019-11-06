@@ -36,7 +36,6 @@ use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\sort\SortProp;
 use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
 use rocket\ei\manage\entry\EiField;
-use rocket\ei\manage\gui\field\GuiFieldPath;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
 use rocket\ei\util\Eiu;
 use rocket\ei\util\filter\prop\BoolFilterProp;
@@ -106,38 +105,7 @@ class BooleanEiProp extends DraftablePropertyEiPropAdapter implements Filterable
 		return (bool) parent::read($eiu);
 	}
 	
-	private $onAssociatedGuiFieldPaths = array();
-	private $offAssociatedGuiFieldPaths = array();
 	
-	/**
-	 * @param GuiFieldPath[] $onAssociatedGuiFieldPaths
-	 */
-	public function setOnAssociatedGuiFieldPaths(array $onAssociatedGuiFieldPaths) {
-		ArgUtils::valArray($onAssociatedGuiFieldPaths, GuiFieldPath::class);
-		$this->onAssociatedGuiFieldPaths = $onAssociatedGuiFieldPaths;
-	}
-	
-	/**
-	 * @return GuiFieldPath[]
-	 */
-	public function getOnAssociatedGuiFieldPaths() {
-		return $this->onAssociatedGuiFieldPaths;
-	}
-	
-	/**
-	 * @param GuiFieldPath[] $offAssociatedGuiFieldPaths
-	 */
-	public function setOffAssociatedGuiFieldPaths(array $offAssociatedGuiFieldPaths) {
-		ArgUtils::valArray($offAssociatedGuiFieldPaths, GuiFieldPath::class);
-		$this->offAssociatedGuiFieldPaths = $offAssociatedGuiFieldPaths;
-	}
-	
-	/**
-	 * @return GuiFieldPath[]
-	 */
-	public function getOffAssociatedGuiFieldPaths() {
-		return $this->offAssociatedGuiFieldPaths;
-	}
 	
 	/**
 	 * {@inheritDoc}

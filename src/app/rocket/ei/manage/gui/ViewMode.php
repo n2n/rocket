@@ -70,7 +70,7 @@ class ViewMode {
 	 * @return boolean
 	 */
 	static function isReadOnly(int $viewMode) {
-		return $viewMode & self::read();
+		return (bool) ($viewMode & self::read());
 	}
 	
 	/**

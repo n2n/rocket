@@ -72,27 +72,21 @@ class DecimalConfig extends ConfigAdaption {
 	}
 	
 	public function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
-		$lar = new LenientAttributeReader($this->dataSet);
+		$lar = new LenientAttributeReader($dataSet);
 		
-		$magDispatchable = parent::createMagDispatchable($n2nContext);
-		$magCollection = $magDispatchable->getMagCollection();
 		$magCollection->addMag(self::ATTR_DECIMAL_PLACES_KEY, new NumericMag(
 				'Positions after decimal point', $lar->getNumeric(self::ATTR_DECIMAL_PLACES_KEY, 0), true, 0));
 		$magCollection->addMag(self::ATTR_PREFIX_KEY, new StringMag('Prefix',
 				$lar->getString(self::ATTR_PREFIX_KEY, false)));
-		return $magDispatchable;
 	}
 	
 	public function setup(Eiu $eiu, DataSet $dataSet) {
-			
-		CastUtils::assertTrue($this->eiComponent instanceof DecimalEiProp);
-
-		$this->eiComponent->setDecimalPlaces($this->dataSet->optInt(self::ATTR_DECIMAL_PLACES_KEY, 0));
-		$this->eiComponent->setPrefix($this->dataSet->getString(self::ATTR_PREFIX_KEY, false));
+		$this->setDecimalPlaces($dataSet->optInt(self::ATTR_DECIMAL_PLACES_KEY, 0));
+		$this->setPrefix($dataSet->getString(self::ATTR_PREFIX_KEY, false));
 	}
 	
 	public function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {
-		$this->dataSet->appendAll($magCollection->readValues(
+		$dataSet->appendAll($magCollection->readValues(
 				array(self::ATTR_DECIMAL_PLACES_KEY, self::ATTR_PREFIX_KEY), true), true);
 	}
 }

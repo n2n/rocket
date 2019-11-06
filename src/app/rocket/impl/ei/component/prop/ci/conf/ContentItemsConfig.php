@@ -34,14 +34,40 @@ use rocket\impl\ei\component\prop\ci\model\PanelDeclaration;
 use n2n\util\type\attrs\DataSet;
 use rocket\ei\util\Eiu;
 use n2n\web\dispatch\mag\MagCollection;
+use n2n\util\type\ArgUtils;
 
 class ContentItemsConfig extends ConfigAdaption {
 	const ATTR_PANELS_KEY = 'panels';
 	
+	/**
+	 * @var PanelDeclaration[]
+	 */
 	private $panelDeclarations = array();
 	
 	function __construct() {
 		$this->panelDeclarations = array(new PanelDeclaration('main', 'Main', null, 0));
+	}
+	
+	/**
+	 * @return bool
+	 */
+	function hasPanelDeclarations() {
+		return !empty($this->panelDeclarations);
+	}
+	
+	/**
+	 * @return PanelDeclaration[]
+	 */
+	function getPanelDeclarations() {
+		return $this->panelDeclarations;
+	}
+	
+	/**
+	 * @param PanelDeclaration[] $panelDeclarations
+	 */
+	function setPanelDeclarations(array $panelDeclarations) {
+		ArgUtils::valArray($panelDeclarations, PanelDeclaration::class);
+		$this->panelDeclarations = $panelDeclarations;
 	}
 	
 	function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
@@ -105,7 +131,7 @@ class ContentItemsConfig extends ConfigAdaption {
 			foreach ((array) $dataSet->optArray(self::ATTR_PANELS_KEY) as $panelAttrs) {
 				$panelDeclarations[] = CiConfigUtils::createPanelDeclaration($panelAttrs);
 			}
-			$this->eiComponent->setPanelDeclarations($panelDeclarations);
+			$this->panelDeclarations = $panelDeclarations;
 		}
 	}
 

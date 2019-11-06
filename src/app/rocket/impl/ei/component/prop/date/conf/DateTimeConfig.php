@@ -23,12 +23,8 @@ namespace rocket\impl\ei\component\prop\date\conf;
 
 use n2n\l10n\DateTimeFormat;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
-use n2n\core\container\N2nContext;
 use rocket\impl\ei\component\prop\date\DateTimeEiProp;
 use n2n\util\type\CastUtils;
-use rocket\ei\component\EiSetup;
-use n2n\web\dispatch\mag\MagDispatchable;
-use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\util\type\attrs\LenientAttributeReader;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use rocket\impl\ei\component\prop\adapter\config\ConfigAdaption;
@@ -37,6 +33,7 @@ use n2n\web\dispatch\mag\MagCollection;
 use rocket\ei\util\Eiu;
 use n2n\util\type\attrs\DataSet;
 use n2n\config\InvalidConfigurationException;
+use n2n\util\type\ArgUtils;
  
 class DateTimeConfig extends ConfigAdaption {
 	const ATTR_DATE_STYLE_KEY = 'dateStyle';
@@ -45,11 +42,29 @@ class DateTimeConfig extends ConfigAdaption {
 	private $dateStyle = DateTimeFormat::STYLE_MEDIUM;
 	private $timeStyle = DateTimeFormat::STYLE_NONE;
 	
+	function getDateStyle() {
+		return $this->dateStyle;
+	}
+	
+	function setDateStyle($dateStyle) {
+		ArgUtils::valEnum($dateStyle, DateTimeFormat::getStyles());
+		$this->dateStyle = $dateStyle;
+	}
+	
+	function getTimeStyle() {
+		return $this->timeStyle;
+	}
+	
+	function setTimeStyle($timeStyle) {
+		ArgUtils::valEnum($timeStyle, DateTimeFormat::getStyles());
+		$this->timeStyle = $timeStyle;
+	}
+	
 	function testCompatibility(PropertyAssignation $propertyAssignation): int {
 		return CompatibilityLevel::SUITABLE;
 	}
 	
-	public function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
+	function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
 		$styles = DateTimeFormat::getStyles();
 		$styleOptions = array_combine($styles, $styles);
 		
@@ -61,12 +76,10 @@ class DateTimeConfig extends ConfigAdaption {
 				$lar->getEnum(self::ATTR_TIME_STYLE_KEY, $styles, $this->dateTimeEiProp->getTimeStyle()), true));
 	}
 	
-	public function setup(Eiu $eiu, DataSet $dataSet) {
-		CastUtils::assertTrue($this->eiComponent instanceof DateTimeEiProp);
-		
+	function setup(Eiu $eiu, DataSet $dataSet) {
 		if ($dataSet->contains(self::ATTR_DATE_STYLE_KEY)) {
 			try {
-				$this->eiComponent->setDateStyle($dataSet->get(self::ATTR_DATE_STYLE_KEY));
+				$this->setDateStyle($dataSet->get(self::ATTR_DATE_STYLE_KEY));
 			} catch (\InvalidArgumentException $e) {
 				throw new InvalidConfigurationException('Invalid date style', $e);
 			}
@@ -74,14 +87,14 @@ class DateTimeConfig extends ConfigAdaption {
 		
 		if ($dataSet->contains(self::ATTR_TIME_STYLE_KEY)) {
 			try {
-				$this->eiComponent->setTimeStyle($dataSet->get(self::ATTR_TIME_STYLE_KEY));
+				$this->setTimeStyle($dataSet->get(self::ATTR_TIME_STYLE_KEY));
 			} catch (\InvalidArgumentException $e) {
 				throw new InvalidConfigurationException('Invalid time style', $e);
 			}
 		}
 	}
 	
-	public function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {
+	function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {
 		$dataSet->appendAll($magCollection->readValues(
 				array(self::ATTR_DATE_STYLE_KEY, self::ATTR_TIME_STYLE_KEY), true), true);
 	}

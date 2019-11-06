@@ -165,24 +165,24 @@ class EditConfig extends  ConfigAdaption {
 	 */
 	function setup(Eiu $eiu, DataSet $dataSet) {
 		if ($this->constantChoosable && $dataSet->contains(self::ATTR_CONSTANT_KEY)) {
-			$this->setConstant($dataSet->getBool(self::ATTR_CONSTANT_KEY));
+			$this->setConstant($dataSet->reqBool(self::ATTR_CONSTANT_KEY));
 		}
 		
 		if ($this->readOnlyChoosable && $dataSet->contains(self::ATTR_READ_ONLY_KEY)) {
-			$this->setReadOnly($dataSet->getBool(self::ATTR_READ_ONLY_KEY));
+			$this->setReadOnly($dataSet->reqBool(self::ATTR_READ_ONLY_KEY));
 		}
 		
 		if ($this->mandatoryChoosable) {
 			if ($dataSet->contains(self::ATTR_MANDATORY_KEY)) {
-				$this->setMandatory($dataSet->getBool(self::ATTR_MANDATORY_KEY));
+				$this->setMandatory($dataSet->reqBool(self::ATTR_MANDATORY_KEY));
 			}
 			
-			if (!$this->isMandatory() && $this->addMandatory && $this->autoMandatoryCheck
-					&& $this->mandatoryRequired()) {
-				throw new InvalidAttributeException(self::ATTR_MANDATORY_KEY . ' must be true because '
-						. $this->getPropertyAssignation()->getObjectPropertyAccessProxy(true)
-						. ' does not allow null value.');
-			}
+// 			if (!$this->isMandatory() && $this->mandatoryChoosable && $this->autoMandatoryCheck
+// 					&& $this->mandatoryRequired()) {
+// 				throw new InvalidAttributeException(self::ATTR_MANDATORY_KEY . ' must be true because '
+// 						. $this->getPropertyAssignation()->getObjectPropertyAccessProxy(true)
+// 						. ' does not allow null value.');
+// 			}
 		}
 		
 		return $this;

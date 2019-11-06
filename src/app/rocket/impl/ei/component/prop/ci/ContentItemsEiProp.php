@@ -24,7 +24,6 @@ namespace rocket\impl\ei\component\prop\ci;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\util\type\ArgUtils;
 use rocket\impl\ei\component\prop\ci\model\ContentItem;
-use rocket\impl\ei\component\prop\ci\model\PanelDeclaration;
 use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use rocket\impl\ei\component\prop\ci\model\ContentItemGuiField;
 use rocket\ei\EiPropPath;
@@ -102,21 +101,6 @@ class ContentItemsEiProp extends RelationEiPropAdapter implements FieldEiProp {
 // 		throw new IllegalStateException('Undefined ContentItem EiType.');
 // 	}
 	
-	public function hasPanelDeclarations() {
-		return !empty($this->panelDeclarations);
-	}
-	
-	public function getPanelDeclarations(): array {
-		return $this->panelDeclarations;
-	}
-	
-	/**
-	 * @param PanelDeclaration[] $panelDeclarations
-	 */
-	public function setPanelDeclarations(array $panelDeclarations) {
-		ArgUtils::valArray($panelDeclarations, PanelDeclaration::class);
-		$this->panelDeclarations = $panelDeclarations;
-	}
 	
 	/**
 	 * @param Eiu $eiu

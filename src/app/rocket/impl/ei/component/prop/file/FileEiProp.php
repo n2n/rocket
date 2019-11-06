@@ -52,6 +52,7 @@ use rocket\si\content\impl\SiFields;
 use rocket\si\content\impl\SiFile;
 use rocket\si\content\impl\SiFileHandler;
 use rocket\si\content\impl\SiUploadResult;
+use rocket\impl\ei\component\prop\file\conf\FileModel;
 
 class FileEiProp extends DraftablePropertyEiPropAdapter {
 	
@@ -81,7 +82,8 @@ class FileEiProp extends DraftablePropertyEiPropAdapter {
 	 * @see \rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter::createEiPropConfigurator()
 	 */
 	public function prepare() {
-		$this->getConfigurator()->addAdaption(new FileConfig($this->fileVerificator));
+		$this->getConfigurator()->addAdaption(
+				new FileConfig(new FileModel($this), $this->thumbResolver, $this->fileVerificator));
 	}
 	
 	/**
@@ -112,20 +114,7 @@ class FileEiProp extends DraftablePropertyEiPropAdapter {
 		$this->fileVerificator = $fileVerificator;
 	}
 		
-	/**
-	 * @param EiPropPath $eiPropPath
-	 */
-	public function setNamingEiPropPath(?EiPropPath $eiPropPath) {
-		$this->namingEiPropPath = $eiPropPath;
-	}
-	
-	/**
-	 * @return \rocket\ei\EiPropPath|null
-	 */
-	public function getNamingEiPropPath() {
-		return $this->namingEiPropPath;
-	}
-	
+
 // 	public function setMultiUploadEiCommand(MultiUploadEiCommand $multiUploadEiCommand) {
 // 		$this->multiUploadEiCommand = $multiUploadEiCommand;
 // 	}

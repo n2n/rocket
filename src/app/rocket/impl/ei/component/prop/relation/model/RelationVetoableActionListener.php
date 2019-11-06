@@ -34,17 +34,18 @@ use rocket\ei\manage\veto\VetoableLifecycleAction;
 use n2n\core\container\N2nContext;
 use rocket\ei\EiLifecycleListener;
 use n2n\l10n\Message;
+use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 
 class RelationVetoableActionListener implements EiLifecycleListener {
 	const STRATEGY_PREVENT = 'prevent';
 	const STRATEGY_UNSET = 'unset';
 	const STRATEGY_SELF_REMOVE = 'selfRemove';
 	
-	private $relationEiProp;
+	private $relationModel;
 	private $strategy = true;
 	
-	public function __construct(RelationEiProp $relationEiProp, string $strategy) {
-		$this->relationEiProp = $relationEiProp;
+	public function __construct(RelationModel $relationModel, string $strategy) {
+		$this->relationModel = $relationModel;
 		$this->strategy = $strategy;
 	}
 	
@@ -52,7 +53,7 @@ class RelationVetoableActionListener implements EiLifecycleListener {
 		$eiObject = $vetoableRemoveAction->getEiObject();
 		if ($eiObject->isDraft()) return;
 				
-		$vetoCheck = new VetoCheck($this->relationEiProp, $eiObject->getEiEntityObj(), $vetoableRemoveAction, 
+		$vetoCheck = new VetoCheck($this->relationModel, $eiObject->getEiEntityObj(), $vetoableRemoveAction, 
 				$n2nContext);
 		
 		switch ($this->strategy) {

@@ -34,10 +34,11 @@ use rocket\impl\ei\component\prop\adapter\config\ConfigAdaption;
 
 class OnlineConfig extends ConfigAdaption {
 	const COMMON_ONLINE_PROP_NAME = 'online';
+
+	private $onlineEiProp;
 	
-	function __construct() {
-		$this->addMandatory = false;
-		$this->addConstant = false;
+	function __construct(OnlineEiProp $onlineEiProp) {
+		$this->onlineEiProp = $onlineEiProp;
 	}
 	
 	function testCompatibility(PropertyAssignation $propertyAssignation): int {
@@ -59,11 +60,8 @@ class OnlineConfig extends ConfigAdaption {
 	}
 	
 	function setup(Eiu $eiu, DataSet $dataSet) {
-		$onlineEiProp = $this->eiComponent;
-		IllegalStateException::assertTrue($onlineEiProp instanceof OnlineEiProp);
-		
 		$onlineEiCommand = new OnlineEiCommand();
-		$onlineEiCommand->setOnlineEiProp($onlineEiProp);
+		$onlineEiCommand->setOnlineEiProp($this->onlineEiProp);
 		
 		$eiu->mask()->addEiCommand($onlineEiCommand, true);
 	}

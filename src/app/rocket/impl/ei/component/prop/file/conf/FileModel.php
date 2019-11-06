@@ -19,21 +19,47 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\prop\bool;
+namespace rocket\impl\ei\component\prop\file\conf;
 
-use rocket\impl\ei\component\prop\bool\conf\OnlineConfig;
+use rocket\ei\EiPropPath;
+use rocket\impl\ei\component\prop\file\FileEiProp;
 
-class OnlineEiProp extends BooleanEiProp {
+class FileModel {
+	/**
+	 * @var EiPropPath
+	 */
+	private $fileEiProp;
 	
-	function __construct() {
-		$this->getDisplayConfig()
-				->setListReadModeDefaultDisplayed(false);
-		$this->getEditConfig()
-				->setMandatory(false)
-				->setConstant(false);
+	/**
+	 * @var EiPropPath|null
+	 */
+	private $namingEiPropPath;
+	
+	/**
+	 * @param EiPropPath $eiPropPath
+	 */
+	function __construct(FileEiProp $fileEiProp) {
+		$this->fileEiProp = $fileEiProp;
 	}
 	
-	function prepare() {
-		$this->getConfigurator()->addAdaption(new OnlineConfig($this));
+	/**
+	 * @return \rocket\ei\EiPropPath
+	 */
+	function getEiPropPath() {
+		return EiPropPath::from($this->fileEiProp);
+	}
+	
+	/**
+	 * @param EiPropPath $eiPropPath
+	 */
+	function setNamingEiPropPath(?EiPropPath $eiPropPath) {
+		$this->namingEiPropPath = $eiPropPath;
+	}
+	
+	/**
+	 * @return \rocket\ei\EiPropPath|null
+	 */
+	function getNamingEiPropPath() {
+		return $this->namingEiPropPath;
 	}
 }

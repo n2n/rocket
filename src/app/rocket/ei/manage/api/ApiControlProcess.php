@@ -83,7 +83,7 @@ class ApiControlProcess {
 	function setupEiGui(int $viewMode, TypePath $eiTypePath) {
 		try {
 			$eiMask = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()->determineEiMask($eiTypePath);
-			$this->eiGui = $eiMask->getEiEngine()->createFramedEiGui($this->eiFrame, $viewMode, true);
+			$this->eiGui = $this->eiFrame->getManageState()->getDef()->getGuiDefinition($eiMask)->createEiGui($this->eiFrame, $viewMode);
 		} catch (\rocket\ei\EiException $e) {
 			throw new BadRequestException(null, 0, $e);
 		}

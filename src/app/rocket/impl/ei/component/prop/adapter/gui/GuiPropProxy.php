@@ -62,7 +62,7 @@ class GuiPropProxy implements GuiProp {
 	 */
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
 		if ($this->guiFieldFactory !== null) {
-			return $this->guiFieldFactory->buildGuiField($eiu);
+			return $this->guiFieldFactory->buildGuiField($eiu, $readOnly);
 		}
 		
 		if ($this->guiFieldClosure !== null) {

@@ -32,14 +32,17 @@ use rocket\impl\ei\component\prop\adapter\config\EiPropConfiguratorAdaption;
 use n2n\util\type\attrs\DataSet;
 use rocket\ei\util\Eiu;
 use n2n\web\dispatch\mag\MagCollection;
+use rocket\impl\ei\component\prop\numeric\OrderEiProp;
 
 class OrderConfig implements EiPropConfiguratorAdaption {
 
 	const COMMON_ORDER_INDEX_PROP_NAME = 'orderIndex';
 	const OPTION_REFERENCE_FIELD_KEY = 'referenceField';
 	
-	public function __construct() {
-		$this->autoMandatoryCheck = false;
+	private $orderEiProp;
+	
+	public function __construct(OrderEiProp $orderEiProp) {
+		$this->orderEiProp = $orderEiProp;
 	}
 	
 	public function testCompatibility(PropertyAssignation $propertyAssignation): int {
@@ -66,11 +69,11 @@ class OrderConfig implements EiPropConfiguratorAdaption {
 // 		}
 		
 		$orderEiCommand = new OrderEiCommand();
-		$orderEiCommand->setOrderEiProp($this->eiComponent);
+		$orderEiCommand->setOrderEiProp($this->orderEiProp);
 		
 		$eiuMask = $eiu->mask();
 		$eiuMask->addEiCommand($orderEiCommand);
-		$eiuMask->addEiModificator(new OrderEiModificator($this->eiComponent));
+		$eiuMask->addEiModificator(new OrderEiModificator($this->orderEiProp));
 		
 // 		if (count($eiDef->getDefaultSortSettingGroup()) === 0) {
 // 		    $eiDef->setDefaultSortSettingGroup(array($this->eiComponent->getEntityProperty()->getName() => Criteria::ORDER_DIRECTION_ASC));

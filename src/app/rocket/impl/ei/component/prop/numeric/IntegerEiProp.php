@@ -97,9 +97,9 @@ class IntegerEiProp extends NumericEiPropAdapter implements ScalarEiProp {
 	 */
 	function createInSiField(Eiu $eiu): SiField {
 		return SiFields::numberIn($eiu->field()->getValue())
-				->setMandatory($this->editConfig->isMandatory())
-				->setMin($this->getMinValue())
-				->setMax($this->getMaxValue());
+				->setMandatory($this->getEditConfig()->isMandatory())
+				->setMin($this->getNumericConfig()->getMinValue())
+				->setMax($this->getNumericConfig()->getMaxValue());
 	}
 	
 	function saveSiField(SiField $siField, Eiu $eiu) {

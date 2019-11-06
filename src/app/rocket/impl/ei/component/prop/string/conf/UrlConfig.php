@@ -93,16 +93,16 @@ class UrlConfig extends ConfigAdaption {
 	
 	public function setup(Eiu $eiu, DataSet $dataSet) {
 		if ($dataSet->contains(self::ATTR_RELATIVE_ALLOWED_KEY)) {
-			$this->eiComponent->setRelativeAllowed($dataSet->getBool(self::ATTR_RELATIVE_ALLOWED_KEY));
+			$this->setRelativeAllowed($dataSet->getBool(self::ATTR_RELATIVE_ALLOWED_KEY));
 		}
 		
 		if ($dataSet->contains(self::ATTR_ALLOWED_PROTOCOLS_KEY)) {
-			$this->eiComponent->setAllowedSchemes($dataSet->getArray(self::ATTR_ALLOWED_PROTOCOLS_KEY,
+			$this->setAllowedSchemes($dataSet->getArray(self::ATTR_ALLOWED_PROTOCOLS_KEY,
 					true, array(), TypeConstraint::createSimple('string')));
 		}
 		
 		if ($dataSet->contains(self::ATTR_AUTO_SCHEME_KEY)) {
-			$this->eiComponent->setAutoScheme($dataSet->getString(self::ATTR_AUTO_SCHEME_KEY, 
+			$this->setAutoScheme($dataSet->getString(self::ATTR_AUTO_SCHEME_KEY, 
 					false, null, true));
 		}
 	}
@@ -111,15 +111,15 @@ class UrlConfig extends ConfigAdaption {
 	public function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection): MagDispatchable {
 		$lar = new LenientAttributeReader($dataSet);
 		$magCollection->addMag(self::ATTR_RELATIVE_ALLOWED_KEY, new BoolMag('Relative allowed',
-				$lar->getBool(self::ATTR_RELATIVE_ALLOWED_KEY, $this->eiComponent->isRelativeAllowed())));
+				$lar->getBool(self::ATTR_RELATIVE_ALLOWED_KEY, $this->isRelativeAllowed())));
 	
 		$magCollection->addMag(self::ATTR_ALLOWED_PROTOCOLS_KEY, 
 				new StringArrayMag('Allowed protocols', $lar->getArray(self::ATTR_ALLOWED_PROTOCOLS_KEY, 
-						TypeConstraint::createSimple('string'), $this->eiComponent->getAllowedSchemes())));
+						TypeConstraint::createSimple('string'), $this->getAllowedSchemes())));
 	
 		$magCollection->addMag(self::ATTR_AUTO_SCHEME_KEY, 
 				new StringMag('Auto scheme', $lar->getString(self::ATTR_AUTO_SCHEME_KEY, 
-						$this->eiComponent->getAutoScheme())));
+						$this->getAutoScheme())));
 	}
 	
 	public function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {

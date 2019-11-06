@@ -48,59 +48,7 @@ class CkeEiProp extends AlphanumericEiProp {
 		$this->getConfigurator()->addAdaption(new CkeConfig());
 	}
 	
-	public function getMode() {
-		return $this->mode;
-	}
-	
-	public function setMode($mode) {
-		ArgUtils::valEnum($mode, self::getModes());
-		$this->mode = $mode;
-	}
-	
-	public static function getModes() {
-		return array(self::MODE_SIMPLE, self::MODE_NORMAL, self::MODE_ADVANCED);
-	}
-		
-	/**
-	 * @return \ArrayObject 
-	 */
-	public function getCkeLinkProviders() {
-		return $this->ckeLinkProviders;
-	}
-	
-	public function setCkeLinkProviders(array $ckeLinkProviders) {
-		$this->ckeLinkProviders->exchangeArray($ckeLinkProviders);
-	}
-		
-	/**
-	 * @return CkeCssConfig
-	 */
-	public function getCkeCssConfig() {
-		return $this->ckeCssConfig;
-	}
-	
-	public function setCkeCssConfig(CkeCssConfig $ckeCssConfig = null) {
-		$this->ckeCssConfig = $ckeCssConfig;
-	}
-	
-	/**
-	 * @return bool
-	 */
-	public function isTableSupported() {
-		return $this->tableSupported;
-	}
-	
-	public function setTableSupported(bool $tableSupported) {
-		$this->tableSupported = $tableSupported;
-	}
-	
-	public function isBbcode() {
-		return $this->bbcode;
-	}
-	
-	public function setBbcode(bool $bbcode) {
-		$this->bbcode = $bbcode;
-	}
+
 
 	public function createOutSiField(Eiu $eiu): SiField {
 	    $value = $eiu->field()->getValue(EiPropPath::from($this));

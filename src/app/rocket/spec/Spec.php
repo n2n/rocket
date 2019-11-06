@@ -586,8 +586,7 @@ class EiSetupQueue {
 	 * @throws InvalidEiMaskConfigurationException
 	 */
 	private function setup($n2nContext, $eiConfigurator) {
-		$eiSetup = new EiSetup($this->spec, $n2nContext, 
-				$eiConfigurator->getEiComponent());
+		$eiSetup = new EiSetup($this->spec, $n2nContext, $eiConfigurator->getEiComponent());
 		
 		try {
 			try {
@@ -598,7 +597,7 @@ class EiSetupQueue {
 				throw $eiSetup->createException(null, $e);
 			}
 		} catch (InvalidConfigurationException $e) {
-			throw new InvalidEiMaskConfigurationException('Failed to setup EiMask ' 
+			throw new InvalidEiMaskConfigurationException('Failed to setup EiMask for: ' 
 					. $eiConfigurator->getEiComponent()->getEiMask() . '.', 0, $e);
 		}
 	}

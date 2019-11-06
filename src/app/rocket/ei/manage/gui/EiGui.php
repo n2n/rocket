@@ -182,22 +182,22 @@ class EiGui {
 	 * @return SiStructureDeclaration[]
 	 */
 	private function createSiStructureDeclarations($guiStructureDeclarations) {
-		$guiStructureDeclarations = [];
+		$siStructureDeclarations = [];
 		
 		foreach ($guiStructureDeclarations as $guiStructureDeclaration) {
 			if ($guiStructureDeclaration->hasGuiPropPath()) {
-				$guiStructureDeclarations[] = new SiStructureDeclaration($guiStructureDeclaration->getSiStructureType(),
+				$siStructureDeclarations[] = new SiStructureDeclaration($guiStructureDeclaration->getSiStructureType(),
 						$guiStructureDeclaration->getGuiPropPath(), $guiStructureDeclaration->getLabel(), 
 						$guiStructureDeclaration->getHelpText());
 				continue;
 			}
 			
-			$guiStructureDeclarations[] = new SiStructureDeclaration($guiStructureDeclaration->getSiStructureType(),
+			$siStructureDeclarations[] = new SiStructureDeclaration($guiStructureDeclaration->getSiStructureType(),
 					null, $guiStructureDeclaration->getLabel(), $guiStructureDeclaration->getHelpText(),
 					$this->createSiStructureDeclarations($guiStructureDeclaration->getChildren()));
 		}
 			
-		return $guiStructureDeclarations;
+		return $siStructureDeclarations;
 	}
 	
 	/**

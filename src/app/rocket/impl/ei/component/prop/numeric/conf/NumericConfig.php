@@ -48,7 +48,7 @@ class NumericConfig extends ConfigAdaption {
 	 * @param int $minValue
 	 * @return \rocket\impl\ei\component\prop\numeric\conf\NumericConfig
 	 */
-	function setMinValue(int $minValue) {
+	function setMinValue(?float $minValue) {
 	    $this->minValue = $minValue;
 	    return $this;
 	}
@@ -64,31 +64,31 @@ class NumericConfig extends ConfigAdaption {
 	 * @param int $maxValue
 	 * @return \rocket\impl\ei\component\prop\numeric\conf\NumericConfig
 	 */
-	function setMaxValue(int $maxValue) {
+	function setMaxValue(?float $maxValue) {
 	    $this->maxValue = $maxValue;
 	    return $this;
 	}
 	
 	function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
 		if ($this->isGeneratedId()) {
-			$this->dataSet->set(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, false);
-			$this->dataSet->set(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY, false);
-			$this->dataSet->set(self::ATTR_READ_ONLY_KEY, true);
+			$dataSet->set(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, false);
+			$dataSet->set(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY, false);
+			$dataSet->set(self::ATTR_READ_ONLY_KEY, true);
 		}
 		
 		if ($column instanceof IntegerColumn) {
-			$this->dataSet->set(self::ATTR_MIN_VALUE_KEY, $column->getMinValue());
-			$this->dataSet->set(self::ATTR_MAX_VALUE_KEY, $column->getMaxValue());
+			$dataSet->set(self::ATTR_MIN_VALUE_KEY, $column->getMinValue());
+			$dataSet->set(self::ATTR_MAX_VALUE_KEY, $column->getMaxValue());
 		}
 	}
 	
 	function setup(Eiu $eiu, DataSet $dataSet) {
-		if ($dataSet->contains(self::ATTR_MIN_VALUE_KEY)) {
-			$this->setMinValue($this->dataSet->req(self::ATTR_MIN_VALUE_KEY));
+		if (null !== ($minValue = $dataSet->optNumeric(self::ATTR_MIN_VALUE_KEY))) {
+			$this->setMinValue($minValue);
 		}
 		
-		if ($dataSet->contains(self::ATTR_MAX_VALUE_KEY)) {
-			$this->setMaxValue($this->dataSet->req(self::ATTR_MAX_VALUE_KEY));
+		if (null !== ($maxValue = $dataSet->optNumeric(self::ATTR_MAX_VALUE_KEY))) {
+			$this->setMaxValue($maxValue);
 		}
 	}
 	

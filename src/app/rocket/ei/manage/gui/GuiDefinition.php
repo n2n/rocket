@@ -713,7 +713,7 @@ class GuiDefinition {
 			$siStructureType = !$siStructureTypeRequired ? null : ($displayDefinition->getSiStructureType() ?? SiStructureType::ITEM);
 			
 			$guiStructureDeclarations[] = GuiStructureDeclaration::createField($guiFieldPath, $siStructureType, 
-					$displayDefinition->getLabel(), $displayDefinition->getHelpText());
+					$displayDefinition->getOverwriteLabel(), $displayDefinition->getOverwriteHelpText());
 		}
 			
 		return $guiStructureDeclarations;

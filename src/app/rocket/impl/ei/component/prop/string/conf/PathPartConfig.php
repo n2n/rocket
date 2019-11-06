@@ -43,7 +43,7 @@ use rocket\ei\util\Eiu;
 use n2n\util\type\attrs\DataSet;
 use n2n\web\dispatch\mag\MagCollection;
 
-class PathPartEiPropConfig extends ConfigAdaption {
+class PathPartConfig extends ConfigAdaption {
 	const ATTR_BASE_PROPERTY_FIELD_ID_KEY = 'basePropertyFieldId';
 	const ATTR_NULL_ALLOWED_KEY = 'allowEmpty';
 	const ATTR_UNIQUE_PER_FIELD_ID_KEY = 'uniquePerFieldId';
@@ -124,7 +124,7 @@ class PathPartEiPropConfig extends ConfigAdaption {
 	}
 	
 	public function setup(Eiu $eiu, DataSet $dataSet) {
-		$eiu->mask()->onEngineReady(function (EiuEngine $eiuEngine) use ($eiu) {
+		$eiu->mask()->onEngineReady(function (EiuEngine $eiuEngine) use ($eiu, $dataSet) {
 			$this->setupRef($eiu, $dataSet);
 		});
 		
@@ -135,27 +135,26 @@ class PathPartEiPropConfig extends ConfigAdaption {
 						. ' must be false because AccessProxy does not allow null value: '
 						. $this->getAssignedObjectPropertyAccessProxy());
 			}
-			$pathPartEiProp->setNullAllowed($allowEmpty);
+			$this->setNullAllowed($allowEmpty);
 		}
 		
 		if ($dataSet->contains(self::ATTR_CRITICAL_KEY)) {
-			$pathPartEiProp->setCritical($dataSet->get(self::ATTR_CRITICAL_KEY));
+			$this->setCritical($dataSet->get(self::ATTR_CRITICAL_KEY));
 		}
 		
 		if ($dataSet->contains(self::ATTR_CRITICAL_MESSAGE_KEY)) {
-			$pathPartEiProp->setCriticalMessage($dataSet->getString(self::ATTR_CRITICAL_MESSAGE_KEY));
+			$this->setCriticalMessage($dataSet->getString(self::ATTR_CRITICAL_MESSAGE_KEY));
 		}
 
-		$setupProcess->eiu()->mask()->addEiModificator(new PathPartEiModificator($this->eiComponent));
+		$eiu->mask()->addEiModificator(new PathPartEiModificator($this));
 	}
 	
 	private function setupRef(Eiu $eiu, DataSet $dataSet) {
-		$pathPartEiProp = $this->eiComponent;
-		IllegalStateException::assertTrue($pathPartEiProp instanceof PathPartEiProp);
+		$eiuEngine = $eiu->engine();
 		
 		if ($dataSet->contains(self::ATTR_BASE_PROPERTY_FIELD_ID_KEY)) {
 			try {
-				$pathPartEiProp->setBaseScalarEiProperty($eiuEngine->getScalarEiProperty(
+				$this->setBaseScalarEiProperty($eiuEngine->getScalarEiProperty(
 						$dataSet->getString(self::ATTR_BASE_PROPERTY_FIELD_ID_KEY)));
 			} catch (\InvalidArgumentException $e) {
 				throw $setupProcess->createException('Invalid base ScalarEiProperty configured.', $e);
@@ -166,7 +165,7 @@ class PathPartEiPropConfig extends ConfigAdaption {
 		
 		if ($dataSet->contains(self::ATTR_UNIQUE_PER_FIELD_ID_KEY)) {
 			try {
-				$pathPartEiProp->setUniquePerGenericEiProperty($eiuEngine->getGenericEiProperty(
+				$this->setUniquePerGenericEiProperty($eiuEngine->getGenericEiProperty(
 						$dataSet->getString(self::ATTR_UNIQUE_PER_FIELD_ID_KEY)));
 			} catch (\InvalidArgumentException $e) {
 				throw $setupProcess->createException('Invalid unique per GenericEiProperty configured.', $e);

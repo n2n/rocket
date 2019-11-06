@@ -39,7 +39,7 @@ class OrderEiProp extends IntegerEiProp {
 	function __construct() {
 	    parent::__construct();
 	    
-	    $this->orderConfig = new OrderConfig();
+	    $this->orderConfig = new OrderConfig($this);
 	}
 	
 	function prepare() {

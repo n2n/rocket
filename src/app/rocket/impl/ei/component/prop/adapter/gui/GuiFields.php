@@ -31,7 +31,7 @@ class GuiFields {
 	 * @param StatelessGuiFieldEditable $editable
 	 * @return \rocket\impl\ei\component\prop\adapter\gui\GuiFieldProxy
 	 */
-	function stateless(Eiu $eiu, StatelessGuiFieldDisplayable $displayable, StatelessGuiFieldEditable $editable = null) {
+	static function stateless(Eiu $eiu, StatelessGuiFieldDisplayable $displayable, StatelessGuiFieldEditable $editable = null) {
 		return new GuiFieldProxy($eiu, $displayable, $editable);
 	}
 }

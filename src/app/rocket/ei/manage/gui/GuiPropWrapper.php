@@ -54,7 +54,7 @@ class GuiPropWrapper {
 			return null;
 		}
 		
-		if ($displayDefinition->getLabel() !== null && $displayDefinition->getHelpText() !== null) {
+		if ($displayDefinition->getOverwriteLabel() !== null && $displayDefinition->getOverwriteLabel() !== null) {
 			return $displayDefinition;
 		}
 		
@@ -85,8 +85,8 @@ class GuiPropWrapper {
 	 */
 	function buildGuiField(EiEntryGui $eiEntryGui) {
 		$readOnly = ViewMode::isReadOnly($eiEntryGui->getEiGui()->getViewMode()) 
-				|| $eiEntryGui->getEiEntry()->getEiEntryAccess()->isEiPropWritable($this->eiPropPath);
-		
+				|| !$eiEntryGui->getEiEntry()->getEiEntryAccess()->isEiPropWritable($this->eiPropPath);
+				
 		return $this->guiProp->buildGuiField(new Eiu($eiEntryGui, $this->eiPropPath), $readOnly);
 	}
 }

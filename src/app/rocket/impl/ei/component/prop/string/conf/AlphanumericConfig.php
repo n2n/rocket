@@ -86,17 +86,17 @@ class AlphanumericConfig extends ConfigAdaption {
 	 * @param DataSet $dataSet
 	 */
 	function setup(Eiu $eiu, DataSet $dataSet) {
-		if ($this->attributes->contains(self::ATTR_MAXLENGTH_KEY)) {
-			$this->setMaxlength($this->attributes->optInt(self::ATTR_MAXLENGTH_KEY, null));
+		if ($dataSet->contains(self::ATTR_MAXLENGTH_KEY)) {
+			$this->setMaxlength($dataSet->optInt(self::ATTR_MAXLENGTH_KEY, null));
 		}
 		
-		if ($this->attributes->contains(self::ATTR_MINLENGTH_KEY)) {
-			$this->setMinlength($this->attributes->optInt(self::ATTR_MINLENGTH_KEY, null));
+		if ($dataSet->contains(self::ATTR_MINLENGTH_KEY)) {
+			$this->setMinlength($dataSet->optInt(self::ATTR_MINLENGTH_KEY, null));
 		}
 	}
 	
 	function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
-		$lar = new LenientAttributeReader($this->attributes);
+		$lar = new LenientAttributeReader($dataSet);
 		
 		$magCollection->addMag(self::ATTR_MINLENGTH_KEY, new NumericMag('Minlength', 
 				$lar->getInt(self::ATTR_MINLENGTH_KEY, $this->eiComponent->getMinlength())));
@@ -106,10 +106,10 @@ class AlphanumericConfig extends ConfigAdaption {
 	}
 	
 	function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {
-		$this->attributes->set(self::ATTR_MINLENGTH_KEY,
+		$dataSet->set(self::ATTR_MINLENGTH_KEY,
 				$magCollection->getMagByPropertyName(self::ATTR_MINLENGTH_KEY)->getValue());
 		
-		$this->attributes->set(self::ATTR_MAXLENGTH_KEY,
+		$dataSet->set(self::ATTR_MAXLENGTH_KEY,
 				$magCollection->getMagByPropertyName(self::ATTR_MAXLENGTH_KEY)->getValue());
 	}
 }

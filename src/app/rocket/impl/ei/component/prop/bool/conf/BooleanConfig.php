@@ -15,6 +15,7 @@ use n2n\web\dispatch\mag\MagCollection;
 use n2n\util\type\attrs\DataSet;
 use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\adapter\config\ConfigAdaption;
+use n2n\util\type\ArgUtils;
 
 class BooleanConfig extends ConfigAdaption {
 	const ATTR_BIND_GUI_PROPS_KEY = 'associatedGuiProps';
@@ -22,6 +23,41 @@ class BooleanConfig extends ConfigAdaption {
 	const ATTR_OFF_ASSOCIATED_GUI_PROP_KEY = 'offAssociatedGuiProps';
 	
 	private static $booleanNeedles = ['Available', 'Enabled'];
+	
+	
+	private $onAssociatedGuiFieldPaths = array();
+	private $offAssociatedGuiFieldPaths = array();
+	
+	/**
+	 * @param GuiFieldPath[] $onAssociatedGuiFieldPaths
+	 */
+	public function setOnAssociatedGuiFieldPaths(array $onAssociatedGuiFieldPaths) {
+		ArgUtils::valArray($onAssociatedGuiFieldPaths, GuiFieldPath::class);
+		$this->onAssociatedGuiFieldPaths = $onAssociatedGuiFieldPaths;
+	}
+	
+	/**
+	 * @return GuiFieldPath[]
+	 */
+	public function getOnAssociatedGuiFieldPaths() {
+		return $this->onAssociatedGuiFieldPaths;
+	}
+	
+	/**
+	 * @param GuiFieldPath[] $offAssociatedGuiFieldPaths
+	 */
+	public function setOffAssociatedGuiFieldPaths(array $offAssociatedGuiFieldPaths) {
+		ArgUtils::valArray($offAssociatedGuiFieldPaths, GuiFieldPath::class);
+		$this->offAssociatedGuiFieldPaths = $offAssociatedGuiFieldPaths;
+	}
+	
+	/**
+	 * @return GuiFieldPath[]
+	 */
+	public function getOffAssociatedGuiFieldPaths() {
+		return $this->offAssociatedGuiFieldPaths;
+	}
+	
 	
 	public function testCompatibility(PropertyAssignation $propertyAssignation): int {
 		$level = parent::testCompatibility($propertyAssignation);
@@ -40,7 +76,7 @@ class BooleanConfig extends ConfigAdaption {
 	
 	
 	public function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
-		$lar = new LenientAttributeReader($this->dataSet);
+		$lar = new LenientAttributeReader($dataSet);
 		
 		
 		$guiProps = null;
@@ -76,36 +112,31 @@ class BooleanConfig extends ConfigAdaption {
 		$onGuiFieldPathStrs = $magCollection->readValue(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY);
 		$offGuiFieldPathsStrs = $magCollection->readValue(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY);
 		
-		$this->dataSet->set(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY, $onGuiFieldPathStrs);
-		$this->dataSet->set(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY, $offGuiFieldPathsStrs);
+		$dataSet->set(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY, $onGuiFieldPathStrs);
+		$dataSet->set(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY, $offGuiFieldPathsStrs);
 	}
 	
 	function setup(Eiu $eiu, DataSet $dataSet) {
-		parent::setup($eiSetupProcess);
-		
-		$eiComponent = $this->eiComponent;
-		CastUtils::assertTrue($eiComponent instanceof BooleanEiProp);
-		
-		if ($this->dataSet->contains(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY)) {
-			$onGuiFieldPathStrs = $this->dataSet->getArray(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY, false, array(), 
+		if ($dataSet->contains(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY)) {
+			$onGuiFieldPathStrs = $dataSet->getArray(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY, false, array(), 
 					TypeConstraint::createSimple('scalar'));
 			$onGuiFieldPaths = array();
 			foreach ($onGuiFieldPathStrs as $eiPropPathStr) {
 				$onGuiFieldPaths[] = GuiFieldPath::create($eiPropPathStr);
 			}
 			
-			$eiComponent->setOnAssociatedGuiFieldPaths($onGuiFieldPaths);
+			$this->setOnAssociatedGuiFieldPaths($onGuiFieldPaths);
 		}
 		
-		if ($this->dataSet->contains(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY)) {
-			$offGuiFieldPathStrs = $this->dataSet->getArray(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY, false, array(),
+		if ($dataSet->contains(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY)) {
+			$offGuiFieldPathStrs = $dataSet->getArray(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY, false, array(),
 					TypeConstraint::createSimple('scalar'));
 			$offGuiFieldPaths = array();
 			foreach ($offGuiFieldPathStrs as $eiPropPathStr) {
 				$offGuiFieldPaths[] = GuiFieldPath::create($eiPropPathStr);
 			}
 			
-			$eiComponent->setOffAssociatedGuiFieldPaths($offGuiFieldPaths);
+			$this->setOffAssociatedGuiFieldPaths($offGuiFieldPaths);
 		}
 	}
 }

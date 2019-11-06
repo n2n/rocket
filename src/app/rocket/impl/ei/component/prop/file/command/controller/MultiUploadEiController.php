@@ -35,14 +35,14 @@ class MultiUploadEiController extends ControllerAdapter {
 	const ORDER_FILE_NAME_ASC = 'file-name-asc';
 	const ORDER_FILE_NAME_DESC = 'file-name-desc';
 	
-	private $fileEiProp;
+	private $fileModel;
 	private $order;
 
 	/**
 	 * @param FileEiProp $fileEiProp
 	 */
 	public function setFileEiProp(FileEiProp $fileEiProp) {
-		$this->fileEiProp = $fileEiProp;
+		$this->fileModel = $fileEiProp;
 	}
 	
 	public function setOrder(string $order = null) {
@@ -68,9 +68,9 @@ class MultiUploadEiController extends ControllerAdapter {
 		$eiuFrame = $eiuCtrl->frame();
 		$eiuEntry = $eiuFrame->entry($eiuFrame->createNewEiObject());
 
-		$eiuEntry->setValue($this->fileEiProp, $file);
+		$eiuEntry->setValue($this->fileModel, $file);
 		
-		$namingEiPropPath = $this->fileEiProp->getNamingEiPropPath();
+		$namingEiPropPath = $this->fileModel->getNamingEiPropPath();
 		if (null !== $namingEiPropPath) {
 			$prettyNameParts = preg_split('/(\.|-|_)/', $file->getOriginalName());
 			array_pop($prettyNameParts);

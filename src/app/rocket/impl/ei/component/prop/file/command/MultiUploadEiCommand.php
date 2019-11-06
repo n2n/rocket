@@ -30,26 +30,26 @@ use rocket\si\control\SiIconType;
 use rocket\impl\ei\component\prop\file\command\controller\MultiUploadEiController;
 use rocket\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
-use rocket\impl\ei\component\prop\file\FileEiProp;
 use rocket\ei\EiPropPath;
+use rocket\impl\ei\component\prop\file\conf\FileModel;
 
 class MultiUploadEiCommand extends EiCommandAdapter {
 	const MULTI_UPLOAD_KEY = 'multi-upload';
 	/**
 	 * @var \rocket\impl\ei\component\prop\file\FileEiProp
 	 */
-	private $fileEiProp;
+	private $fileModel;
 	private $namingEiPropPath;
 	
-	public function __construct(FileEiProp $fileEiProp, EiPropPath $namingEiPropPath = null, string $order = null) {
-		$this->fileEiProp = $fileEiProp;
+	public function __construct(FileModel $fileModel, EiPropPath $namingEiPropPath = null, string $order = null) {
+		$this->fileModel = $fileModel;
 		$this->namingEiPropPath = $namingEiPropPath;
 		$this->order = $order;
 	}
 
 	public function lookupController(Eiu $eiu): Controller {
 		$controller = new MultiUploadEiController();
-		$controller->setFileEiProp($this->fileEiProp);
+		$controller->setFileModel($this->fileModel);
 		$controller->setOrder($this->order);
 		return $controller;
 	}

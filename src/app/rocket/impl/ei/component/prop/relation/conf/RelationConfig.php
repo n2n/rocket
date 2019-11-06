@@ -183,8 +183,7 @@ class RelationConfig extends ConfigAdaption {
 		
 		if ($this->relationModel->isEmbedded()) {
 			$this->relationModel->setOrphansAllowed(
-					$dataSet->optBool(self::ATTR_ORPHANS_ALLOWED_KEY, 
-							$this->relationModel->isOrphansAllowed()));
+					$dataSet->optBool(self::ATTR_ORPHANS_ALLOWED_KEY, $this->relationModel->isOrphansAllowed()));
 			
 			$this->relationModel->setReduced(
 					$dataSet->optBool(self::ATTR_REDUCED_KEY, $this->relationModel->isReduced()));
@@ -211,7 +210,7 @@ class RelationConfig extends ConfigAdaption {
 					RelationVetoableActionListener::STRATEGY_PREVENT, false);
 			
 			$targetEiuType->getEiType()->registerVetoableActionListener(
-					new RelationVetoableActionListener($this->eiComponent, $strategy));		
+					new RelationVetoableActionListener($this->relationModel, $strategy));		
 		}
 		
 		$this->relationModel->prepare($eiu->mask(), $targetEiuMask);

@@ -59,12 +59,19 @@ class FileConfig extends ConfigAdaption {
 	
 	const ATTR_MULTI_UPLOAD_ORDER_KEY = 'multiUploadOrder'; 
 	
+	private $fileModel;
+	/**
+	 * @var ThumbResolver
+	 */
+	private $thumbResolver;
 	/**
 	 * @var FileVerificator
 	 */
 	private $fileVerificator;
 	
-	public function __construct(FileVerificator $fileVerificator) {
+	public function __construct(FileModel $fileModel, ThumbResolver $thumbResolver, FileVerificator $fileVerificator) {
+		$this->fileModel = $fileModel;
+		$this->thumbResolver = $thumbResolver;
 		$this->fileVerificator = $fileVerificator;
 	}
 	
@@ -78,7 +85,7 @@ class FileConfig extends ConfigAdaption {
 		$this->fileVerificator->setImageRecognized(
 				$dataSet->optBool(self::ATTR_IMAGE_RECOGNIZED_KEY, true));
 		
-		$this->fileEiProp->getThumbResolver()->setImageDimensionImportMode(
+		$this->thumbResolver->setImageDimensionImportMode(
 				$dataSet->optEnum(self::ATTR_DIMENSION_IMPORT_MODE_KEY, 
 						ThumbResolver::getImageDimensionImportModes()));
 		
@@ -86,9 +93,9 @@ class FileConfig extends ConfigAdaption {
 			$this->setupExtraImageDimensions($dataSet);
 		}
 		
-		$thumbEiCommand = new ThumbEiCommand($this->fileEiProp);
+		$thumbEiCommand = new ThumbEiCommand();
 		$eiu->mask()->supremeMask()->addEiCommand($thumbEiCommand);
-		$this->fileEiProp->getThumbResolver()->setThumbEiCommand($thumbEiCommand);
+		$this->thumbResolver->setThumbEiCommand($thumbEiCommand);
 		
 		if ($dataSet->optBool(self::ATTR_MULTI_UPLOAD_AVAILABLE_KEY, false)) {
 			$this->setupMulti($eiu, $dataSet);
@@ -106,21 +113,21 @@ class FileConfig extends ConfigAdaption {
 			}
 		}
 		
-		$this->fileEiProp->getThumbResolver()->setExtraImageDimensions($extraImageDimensions);
+		$this->thumbResolver->setExtraImageDimensions($extraImageDimensions);
 	}
 	
 	private function setupMulti(Eiu $eiu, DataSet $dataSet) {
 		$eiuMask = $eiu->mask();
 		
-		$multiUploadEiCommand = new MultiUploadEiCommand($this->fileEiProp, null,
+		$multiUploadEiCommand = new MultiUploadEiCommand($this->fileModel, null,
 				$dataSet->getString(self::ATTR_MULTI_UPLOAD_ORDER_KEY, false, MultiUploadEiController::ORDER_NONE, true));
 		$eiuMask->addEiCommand($multiUploadEiCommand);
 		
 		if ($dataSet->contains(self::ATTR_MULTI_UPLOAD_NAMING_EI_PROP_PATH_KEY)) {
-			$fileEiProp = $this->fileEiProp;
-			$eiuMask->onEngineReady(function (EiuEngine $eiuEngine) use ($fileEiProp, $dataSet) {
+			$fileModel = $this->fileModel;
+			$eiuMask->onEngineReady(function (EiuEngine $eiuEngine) use ($fileModel, $dataSet) {
 				try {
-					$fileEiProp->setNamingEiPropPath($eiuEngine
+					$fileModel->setNamingEiPropPath($eiuEngine
 							->getScalarEiProperty($dataSet->reqString(self::ATTR_MULTI_UPLOAD_NAMING_EI_PROP_PATH_KEY))
 							->getEiPropPath());
 				} catch (\InvalidArgumentException $e) {
@@ -154,7 +161,7 @@ class FileConfig extends ConfigAdaption {
 				array(FileEiProp::DIM_IMPORT_MODE_ALL => 'All possible dimensions',
 						FileEiProp::DIM_IMPORT_MODE_USED_ONLY => 'Only for current image used dimensions'),
 				$lar->getString(self::ATTR_DIMENSION_IMPORT_MODE_KEY, 
-						$this->fileEiProp->getThumbResolver()->getImageDimensionImportMode())));
+						$this->thumbResolver->getImageDimensionImportMode())));
 		
 		$extraImageDimensionStrs = array();
 		if ($lar->contains(self::ATTR_EXTRA_THUMB_DIMENSIONS_KEY)) {

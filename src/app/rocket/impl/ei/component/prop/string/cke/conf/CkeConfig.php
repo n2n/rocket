@@ -43,6 +43,7 @@ use n2n\util\type\attrs\DataSet;
 use rocket\ei\util\Eiu;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\util\col\GenericArrayObject;
+use n2n\util\type\ArgUtils;
 
 class CkeConfig extends ConfigAdaption {
 	const ATTR_MODE_KEY = 'mode';
@@ -65,19 +66,73 @@ class CkeConfig extends ConfigAdaption {
 		$this->ckeLinkProviders = new GenericArrayObject(null, CkeLinkProvider::class);
 	}
 	
-	public function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
-		$this->dataSet->set(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, false);	
+	function getMode() {
+		return $this->mode;
 	}
 	
-	public function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
+	function setMode($mode) {
+		ArgUtils::valEnum($mode, self::getModes());
+		$this->mode = $mode;
+	}
+	
+	public static function getModes() {
+		return array(self::MODE_SIMPLE, self::MODE_NORMAL, self::MODE_ADVANCED);
+	}
+	
+	/**
+	 * @return \ArrayObject
+	 */
+	function getCkeLinkProviders() {
+		return $this->ckeLinkProviders;
+	}
+	
+	function setCkeLinkProviders(array $ckeLinkProviders) {
+		$this->ckeLinkProviders->exchangeArray($ckeLinkProviders);
+	}
+	
+	/**
+	 * @return CkeCssConfig
+	 */
+	function getCkeCssConfig() {
+		return $this->ckeCssConfig;
+	}
+	
+	function setCkeCssConfig(CkeCssConfig $ckeCssConfig = null) {
+		$this->ckeCssConfig = $ckeCssConfig;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	function isTableSupported() {
+		return $this->tableSupported;
+	}
+	
+	function setTableSupported(bool $tableSupported) {
+		$this->tableSupported = $tableSupported;
+	}
+	
+	function isBbcode() {
+		return $this->bbcode;
+	}
+	
+	function setBbcode(bool $bbcode) {
+		$this->bbcode = $bbcode;
+	}
+	
+	function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
+		$dataSet->set(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, false);	
+	}
+	
+	function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
 		$ckeState = $eiu->lookup(CkeState::class);
 		CastUtils::assertTrue($ckeState instanceof CkeState);
 		
-		$lar = new LenientAttributeReader($this->dataSet);
+		$lar = new LenientAttributeReader($dataSet);
 		
 		$magCollection->addMag(self::ATTR_MODE_KEY, new EnumMag('Mode',
 				array_combine(CkeEiProp::getModes(), CkeEiProp::getModes()), 
-				$lar->getEnum(self::ATTR_MODE_KEY, CkeEiProp::getModes(), $this->ckeEiProp->getMode())));
+				$lar->getEnum(self::ATTR_MODE_KEY, CkeEiProp::getModes(), $this->getMode())));
 		
 		$magCollection->addMag(self::ATTR_LINK_PROVIDER_LOOKUP_IDS_KEY, 
 				new StringArrayMag('Link Provider Lookup Ids', $lar->getScalarArray(self::ATTR_LINK_PROVIDER_LOOKUP_IDS_KEY), false,
@@ -88,18 +143,18 @@ class CkeConfig extends ConfigAdaption {
 				['class' => 'hangar-autocompletion', 'data-suggestions' => StringUtils::jsonEncode($ckeState->getRegisteredCkeCssConfigLookupIds())]));
 		
 		$magCollection->addMag(self::ATTR_TABLES_SUPPORTED_KEY, new BoolMag('Table Editing',
-				$lar->getBool(self::ATTR_TABLES_SUPPORTED_KEY, $this->ckeEiProp->isTableSupported())));
+				$lar->getBool(self::ATTR_TABLES_SUPPORTED_KEY, $this->isTableSupported())));
 		$magCollection->addMag(self::ATTR_BBCODE_KEY, new BoolMag('BBcode',
-				$lar->getBool(self::ATTR_BBCODE_KEY, $this->ckeEiProp->isBbcode())));
+				$lar->getBool(self::ATTR_BBCODE_KEY, $this->isBbcode())));
 	}
 	
-	public function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {
-		$this->dataSet->appendAll($magCollection->readValues(array(self::ATTR_MODE_KEY, 
+	function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {
+		$dataSet->appendAll($magCollection->readValues(array(self::ATTR_MODE_KEY, 
 				self::ATTR_LINK_PROVIDER_LOOKUP_IDS_KEY, self::ATTR_CSS_CONFIG_LOOKUP_ID_KEY, 
 				self::ATTR_TABLES_SUPPORTED_KEY, self::ATTR_BBCODE_KEY), true), true);
 	}
 	
-	public function testCompatibility(PropertyAssignation $propertyAssignation): int {
+	function testCompatibility(PropertyAssignation $propertyAssignation): int {
 		$level = parent::testCompatibility($propertyAssignation);
 		if (CompatibilityLevel::NOT_COMPATIBLE === $level) {
 			return $level;
@@ -112,39 +167,38 @@ class CkeConfig extends ConfigAdaption {
 		return $level;
 	}
 	
-	public function setup(Eiu $eiu, DataSet $dataSet) {
-		$this->ckeEiProp->setMode($this->dataSet->optEnum(self::ATTR_MODE_KEY, CkeEiProp::getModes(), $this->ckeEiProp->getMode(), false));
+	function setup(Eiu $eiu, DataSet $dataSet) {
+		$this->setMode($dataSet->optEnum(self::ATTR_MODE_KEY, self::getModes(), $this->getMode(), false));
 		
 		$ckeState = $eiu->lookup(CkeState::class);
 		CastUtils::assertTrue($ckeState instanceof CkeState);
 		
-		$ckeLinkProviderLookupIds = $this->dataSet->getScalarArray(self::ATTR_LINK_PROVIDER_LOOKUP_IDS_KEY, false);
+		$ckeLinkProviderLookupIds = $dataSet->getScalarArray(self::ATTR_LINK_PROVIDER_LOOKUP_IDS_KEY, false);
 		try {
-			$ckeLinkProviders = CkeUtils::lookupCkeLinkProviders($ckeLinkProviderLookupIds, $eiSetupProcess->getN2nContext());
+			$ckeLinkProviders = CkeUtils::lookupCkeLinkProviders($ckeLinkProviderLookupIds, $eiu->getN2nContext());
 			foreach ($ckeLinkProviders as $ckeLinkProvider) {
 				$ckeState->registerCkeLinkProvider($ckeLinkProvider);
 			}
 		} catch (\InvalidArgumentException $e) {
 			throw $eiSetupProcess->createException('Invalid css config', $e);
 		}
-		$this->ckeEiProp->setCkeLinkProviders($ckeLinkProviders);
+		$this->setCkeLinkProviders($ckeLinkProviders);
 		
-		$ckeCssConfigLookupId = $this->dataSet->getString(self::ATTR_CSS_CONFIG_LOOKUP_ID_KEY, false, null, true);
+		$ckeCssConfigLookupId = $dataSet->getString(self::ATTR_CSS_CONFIG_LOOKUP_ID_KEY, false, null, true);
 		try {
-			$ckeCssConfig = CkeUtils::lookupCkeCssConfig($ckeCssConfigLookupId, $eiSetupProcess->getN2nContext());
+			$ckeCssConfig = CkeUtils::lookupCkeCssConfig($ckeCssConfigLookupId, $eiu->getN2nContext());
 			if (null !== $ckeCssConfig) {
 				$ckeState->registerCkeCssConfig($ckeCssConfig);
 			}
 		} catch (\InvalidArgumentException $e) {
 			throw $eiSetupProcess->createException('Invalid css config', $e);
 		}
-		$this->ckeEiProp->setCkeCssConfig($ckeCssConfig);
+		$this->setCkeCssConfig($ckeCssConfig);
 		
-		$this->ckeEiProp->setTableSupported($this->dataSet->getBool(self::ATTR_TABLES_SUPPORTED_KEY, false,
-				$this->ckeEiProp->isTableSupported()));
+		$this->setTableSupported($dataSet->getBool(self::ATTR_TABLES_SUPPORTED_KEY, false, 
+				$this->isTableSupported()));
 		
-		$this->ckeEiProp->setBbcode($this->dataSet->getBool(self::ATTR_BBCODE_KEY, false,
-				$this->ckeEiProp->isBbcode()));
+		$this->setBbcode($dataSet->getBool(self::ATTR_BBCODE_KEY, false, $this->isBbcode()));
 	}
 	
 	private function lookupCssConfig($lookupId, EiSetup $eiSetupProcess) {

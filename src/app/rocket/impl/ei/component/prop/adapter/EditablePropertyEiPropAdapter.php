@@ -39,6 +39,7 @@ use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use n2n\l10n\Message;
 use rocket\impl\ei\component\prop\adapter\gui\GuiFields;
+use rocket\impl\ei\component\prop\adapter\gui\GuiProps;
 
 abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAdapter implements StatelessGuiFieldEditable, Writable, 
 		PrivilegedEiProp, Validatable, Copyable {
@@ -109,14 +110,6 @@ abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAd
 			$validationResult->addError(Message::createCodeArg('ei_impl_mandatory_err', 
 					array('field' => $this->labelLstr), null, Rocket::NS));
 		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\PropertyDisplayableEiPropAdapter::getGuiProp()
-	 */
-	public function buildGuiProp(Eiu $eiu): ?GuiProp {
-		return $this;
 	}
 	
 	/**
