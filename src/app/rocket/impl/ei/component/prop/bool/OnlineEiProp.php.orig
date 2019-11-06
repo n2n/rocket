@@ -19,26 +19,17 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\prop\adapter\config;
+namespace rocket\impl\ei\component\prop\bool;
 
-use n2n\web\dispatch\mag\MagCollection;
+use rocket\impl\ei\component\prop\bool\conf\OnlineConfig;
 
-class DraftConfig {
-	const ATTR_DRAFTABLE_KEY = 'draftable';	
+class OnlineEiProp extends BooleanEiProp {
 	
-	private $dratable = false;
-	
-	private function saveDraftMags(MagCollection $magCollection) {
-		if ($this->confDraftableEiProp === null) return;
-		
-		$this->dataSet->set(self::ATTR_DRAFTABLE_KEY,
-				$magCollection->getMagWrapperByPropertyName(self::ATTR_DRAFTABLE_KEY)->getMag()->getValue());
+	function __construct() {
+		$this->getDisplayConfig()->setListReadModeDefaultDisplayed(false);
 	}
 	
-	private function setupDraftableAdapter() {
-		if ($this->confDraftableEiProp === null) return;
-		
-		$this->confDraftableEiProp->setDraftable(
-				$this->dataSet->getBool(self::ATTR_DRAFTABLE_KEY, false, false));
+	function prepare() {
+		$this->getConfigurator()->addAdaption(new OnlineConfig());
 	}
 }

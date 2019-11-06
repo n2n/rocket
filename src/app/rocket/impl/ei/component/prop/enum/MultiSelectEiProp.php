@@ -21,29 +21,28 @@
  */
 namespace rocket\impl\ei\component\prop\enum;
 
-use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
-use n2n\util\type\TypeConstraint;
+use n2n\impl\web\dispatch\mag\model\MagCollectionArrayMag;
+use n2n\impl\web\dispatch\mag\model\MultiSelectMag;
+use n2n\impl\web\dispatch\mag\model\NumericMag;
 use n2n\impl\web\dispatch\mag\model\StringMag;
-use n2n\web\dispatch\mag\MagCollection;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\ei\component\EiSetup;
+use n2n\persistence\orm\property\EntityProperty;
+use n2n\reflection\property\AccessProxy;
 use n2n\reflection\property\ConstraintsConflictException;
 use n2n\util\type\ArgUtils;
-use n2n\reflection\property\AccessProxy;
-use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
-use rocket\ei\util\Eiu;
-use n2n\impl\web\dispatch\mag\model\MagCollectionArrayMag;
-use n2n\impl\web\dispatch\mag\model\NumericMag;
-use n2n\web\dispatch\mag\Mag;
-use n2n\impl\web\dispatch\mag\model\MultiSelectMag;
+use n2n\util\type\TypeConstraint;
+use n2n\util\type\attrs\DataSet;
+use n2n\web\dispatch\mag\MagCollection;
 use rocket\ei\EiPropPath;
+use rocket\ei\util\Eiu;
+use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
 use rocket\si\content\SiField;
 
 class MultiSelectEiProp extends DraftablePropertyEiPropAdapter {
-	const OPTION_OPTIONS = 'options';
-	const OPTION_OPTIONS_LABEL = 'label';
-	const OPTION_OPTIONS_VALUE = 'value';
+	const ATTR_OPTIONS_KEY = 'options';
+	const ATTR_OPTIONS_LABEL_KEY = 'label';
+	const ATTR_OPTIONS_VALUE_KEY = 'value';
 	const OUTPUT_SEPARATOR = ', ';
 	const ATTR_MIN_KEY = 'min';
 	const ATTR_MAX_KEY = 'max';
@@ -57,6 +56,9 @@ class MultiSelectEiProp extends DraftablePropertyEiPropAdapter {
 		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('scalar', 
 				$propertyAccessProxy->getBaseConstraint()->allowsNull()));
 		$this->objectPropertyAccessProxy = $propertyAccessProxy;
+	}
+
+	function prepare() {
 	}
 	
 	public function setup(Eiu $eiu, DataSet $dataSet) {
@@ -83,10 +85,10 @@ class MultiSelectEiProp extends DraftablePropertyEiPropAdapter {
 	
 	public function createMagCollection() {
 		$magCollection = parent::createMagCollection();
-		$magCollection->addMag(self::OPTION_OPTIONS, new MagCollectionArrayMag('Options', function() {
+		$magCollection->addMag(self::ATTR_OPTIONS_KEY, new MagCollectionArrayMag('Options', function() {
 			$magCollection = new MagCollection();
-			$magCollection->addMag(self::OPTION_OPTIONS_LABEL, new StringMag('Label'));
-			$magCollection->addMag(self::OPTION_OPTIONS_VALUE, new StringMag('Value'));
+			$magCollection->addMag(self::ATTR_OPTIONS_LABEL_KEY, new StringMag('Label'));
+			$magCollection->addMag(self::ATTR_OPTIONS_VALUE_KEY, new StringMag('Value'));
 			return $magCollection;
 		}));
 		$magCollection->addMag(self::OPTION_MIN_KEY, new NumericMag('Min'));
@@ -96,9 +98,9 @@ class MultiSelectEiProp extends DraftablePropertyEiPropAdapter {
 	
 	public function getOptions() {
 		$options = array();
-		foreach ((array) $this->dataSet->get(self::OPTION_OPTIONS) as $attrs) {
-			if (isset($attrs[self::OPTION_OPTIONS_VALUE]) && isset($attrs[self::OPTION_OPTIONS_LABEL])) {
-				$options[$attrs[self::OPTION_OPTIONS_VALUE]] = $attrs[self::OPTION_OPTIONS_LABEL];
+		foreach ((array) $this->dataSet->get(self::ATTR_OPTIONS_KEY) as $attrs) {
+			if (isset($attrs[self::ATTR_OPTIONS_VALUE_KEY]) && isset($attrs[self::ATTR_OPTIONS_LABEL_KEY])) {
+				$options[$attrs[self::ATTR_OPTIONS_VALUE_KEY]] = $attrs[self::ATTR_OPTIONS_LABEL_KEY];
 			}
 		}
 		return $options;
@@ -136,5 +138,11 @@ class MultiSelectEiProp extends DraftablePropertyEiPropAdapter {
 		return $view->getHtmlBuilder()->getEsc(
 				implode(self::OUTPUT_SEPARATOR, (array)$eiEntry->getValue(EiPropPath::from($this))));
 	}
+	public function saveSiField(SiField $siField, Eiu $eiu) {
+	}
+
+	public function createOutSiField(Eiu $eiu): SiField {
+	}
+
 	
 }

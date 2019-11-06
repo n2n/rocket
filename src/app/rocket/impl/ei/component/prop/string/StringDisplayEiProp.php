@@ -23,8 +23,6 @@ namespace rocket\impl\ei\component\prop\string;
 
 use n2n\reflection\property\AccessProxy;
 use n2n\util\type\TypeConstraint;
-use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
-use rocket\ei\component\prop\GuiEiProp;
 use rocket\ei\component\prop\FieldEiProp;
 use rocket\impl\ei\component\prop\adapter\entry\SimpleEiField;
 use rocket\impl\ei\component\prop\adapter\entry\Readable;
@@ -43,7 +41,6 @@ use n2n\l10n\Lstr;
 use rocket\ei\manage\entry\EiField;
 use n2n\util\StringUtils;
 use rocket\si\content\SiField;
-use rocket\impl\ei\component\prop\adapter\DisplayableEiPropAdapter;
 use rocket\impl\ei\component\prop\adapter\PropertyDisplayableEiPropAdapter;
 
 class StringDisplayEiProp extends PropertyDisplayableEiPropAdapter implements ObjectPropertyConfigurable, 

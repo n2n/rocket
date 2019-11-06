@@ -21,15 +21,11 @@
  */
 namespace rocket\impl\ei\component\prop\numeric\conf;
 
-use n2n\core\container\N2nContext;
 use n2n\impl\web\dispatch\mag\model\NumericMag;
-use rocket\ei\component\EiSetup;
 use n2n\util\type\CastUtils;
 use rocket\impl\ei\component\prop\numeric\DecimalEiProp;
-use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\impl\web\dispatch\mag\model\StringMag;
-use rocket\impl\ei\component\prop\adapter\config\EiPropConfiguratorAdaption;
 use rocket\impl\ei\component\prop\adapter\config\ConfigAdaption;
 use rocket\ei\util\Eiu;
 use n2n\util\type\attrs\DataSet;

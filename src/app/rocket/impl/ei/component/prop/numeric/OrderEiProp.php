@@ -21,14 +21,13 @@
  */
 namespace rocket\impl\ei\component\prop\numeric;
 
-use n2n\impl\persistence\orm\property\ScalarEntityProperty;
-use n2n\persistence\orm\property\EntityProperty;
-use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
-use n2n\impl\web\dispatch\mag\model\NumericMag;
-use rocket\ei\util\Eiu;
-use rocket\ei\EiPropPath;
 use n2n\impl\persistence\orm\property\IntEntityProperty;
-use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
+use n2n\impl\persistence\orm\property\ScalarEntityProperty;
+use n2n\impl\web\dispatch\mag\model\NumericMag;
+use n2n\persistence\orm\property\EntityProperty;
+use rocket\ei\EiPropPath;
+use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
+use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\numeric\conf\OrderConfig;
 use rocket\si\content\SiField;
 

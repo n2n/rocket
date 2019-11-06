@@ -34,6 +34,9 @@ class EnumGuiGroupEiProp extends PropertyDisplayableEiPropAdapter {
 	public function createOutSiField(Eiu $eiu): SiField {
 		
 	}
+	protected function prepare() {
+	}
+
 
 
 }

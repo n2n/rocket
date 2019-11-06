@@ -21,25 +21,27 @@
  */
 namespace rocket\impl\ei\component\prop\string;
 
-use n2n\impl\web\ui\view\html\HtmlView;
-use n2n\util\crypt\hash\algorithm\BlowfishAlgorithm;
-
 use n2n\impl\web\dispatch\mag\model\SecretStringMag;
-use n2n\util\crypt\hash\algorithm\Sha256Algorithm;
 use n2n\util\crypt\hash\HashUtils;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
-use rocket\impl\ei\component\prop\string\conf\PasswordEiPropConfigurator;
-use rocket\ei\util\Eiu;
-use n2n\web\dispatch\mag\Mag;
+use n2n\util\crypt\hash\algorithm\BlowfishAlgorithm;
+use n2n\util\crypt\hash\algorithm\Sha256Algorithm;
 use n2n\util\ex\IllegalStateException;
+use rocket\ei\component\prop\indepenent\EiPropConfigurator;
+use rocket\ei\util\Eiu;
 use rocket\si\content\SiField;
+use rocket\impl\ei\component\prop\string\conf\PasswordConfig;
 
 class PasswordEiProp extends AlphanumericEiProp {
+	private $passwordConfig;
 
-
+	function __construct() {
+		parent::__construct();
+		
+		$this->passwordConfig = new PasswordConfig();
+	}
 	
-	public function createEiPropConfigurator(): EiPropConfigurator {
-		return new PasswordEiPropConfigurator($this);
+	public function prepare(): EiPropConfigurator {
+		$this->getConfigurator()->addAdaption($this->passwordConfig);
 	}
 	
 	public function createOutSiField(Eiu $eiu): SiField  {

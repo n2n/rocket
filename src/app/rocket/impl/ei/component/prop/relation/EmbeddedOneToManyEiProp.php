@@ -36,7 +36,6 @@ use rocket\ei\manage\gui\field\GuiField;
 use rocket\impl\ei\component\prop\relation\model\gui\EmbeddedToManyGuiField;
 use rocket\impl\ei\component\prop\relation\model\gui\RelationLinkGuiField;
 use rocket\ei\component\prop\FieldEiProp;
-use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 
 class EmbeddedOneToManyEiProp extends RelationEiPropAdapter implements FieldEiProp {
 

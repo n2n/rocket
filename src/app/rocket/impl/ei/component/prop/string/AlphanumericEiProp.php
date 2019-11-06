@@ -48,7 +48,6 @@ use n2n\impl\persistence\orm\property\StringEntityProperty;
 use rocket\si\content\SiField;
 use rocket\impl\ei\component\prop\meta\config\AddonConfig;
 use rocket\impl\ei\component\prop\string\conf\AlphanumericConfig;
-use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 
 abstract class AlphanumericEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiProp, 
 		SortableEiProp, QuickSearchableEiProp, ScalarEiProp, GenericEiProp {

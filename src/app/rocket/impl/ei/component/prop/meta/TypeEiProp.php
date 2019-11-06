@@ -79,4 +79,5 @@ class TypeEiProp extends DisplayableEiPropAdapter implements StatelessGuiFieldDi
 		return $eiMask;
 		
 	}
+
 }

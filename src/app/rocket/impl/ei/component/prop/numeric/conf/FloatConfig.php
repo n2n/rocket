@@ -29,6 +29,7 @@ use n2n\util\type\attrs\DataSet;
 use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 use rocket\impl\ei\component\prop\adapter\config\ConfigAdaption;
+use n2n\web\dispatch\mag\MagCollection;
 
 class FloatConfig extends ConfigAdaption {
 	const ATTR_DECIMAL_PLACES_KEY = 'decimalPlaces';

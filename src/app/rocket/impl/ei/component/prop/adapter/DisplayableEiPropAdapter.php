@@ -21,14 +21,11 @@
  */
 namespace rocket\impl\ei\component\prop\adapter;
 
-use n2n\util\ex\IllegalStateException;
 use rocket\ei\manage\gui\GuiProp;
 use n2n\l10n\N2nLocale;
 use n2n\util\ex\UnsupportedOperationException;
 use rocket\ei\component\prop\GuiEiProp;
 use rocket\ei\util\Eiu;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
-use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\core\model\Rocket;

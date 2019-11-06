@@ -21,17 +21,15 @@
  */
 namespace rocket\impl\ei\component\prop\adapter;
 
-use n2n\util\ex\IllegalStateException;
 use rocket\ei\component\prop\PrivilegedEiProp;
 use rocket\ei\manage\gui\GuiProp;
-use rocket\ei\util\Eiu;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\gui\field\GuiField;
-use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldEditable;
-use rocket\impl\ei\component\prop\adapter\config\EditConfig;
+use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
-use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable;
+use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 use rocket\impl\ei\component\prop\adapter\gui\GuiFieldProxy;
+use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable;
+use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldEditable;
 
 abstract class EditableEiPropAdapter extends DisplayableEiPropAdapter implements StatelessGuiFieldDisplayable, 
 		StatelessGuiFieldEditable, PrivilegedEiProp {

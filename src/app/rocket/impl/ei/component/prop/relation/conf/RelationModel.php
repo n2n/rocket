@@ -541,7 +541,7 @@ class RelationFinalizer {
 			throw new InvalidEiComponentConfigurationException('EiProp requires an EntityProperty '
 					. TypeUtils::prettyClassPropName($entityProperty->getEntityModel()->getClass(), $entityProperty->getName())
 					. ' which removes orphans or an EiProp configuration with '
-					. RelationEiPropConfigurator::ATTR_ORPHANS_ALLOWED_KEY . '=true.');
+					. RelationConfig::ATTR_ORPHANS_ALLOWED_KEY . '=true.');
 		} 
 		
 		if (!$entityProperty->isMaster() && !$this->relationModel->isSourceMany()

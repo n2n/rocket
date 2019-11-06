@@ -21,14 +21,13 @@
  */
 namespace rocket\impl\ei\component\prop\numeric;
 
-use n2n\util\type\ArgUtils;
-use n2n\persistence\orm\property\EntityProperty;
+use n2n\impl\persistence\orm\property\FloatEntityProperty;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
+use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\property\AccessProxy;
+use n2n\util\type\ArgUtils;
 use n2n\util\type\TypeConstraint;
 use rocket\ei\util\Eiu;
-use n2n\impl\persistence\orm\property\FloatEntityProperty;
-use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\impl\ei\component\prop\numeric\conf\FloatConfig;
 use rocket\si\content\SiField;
 
@@ -110,6 +109,7 @@ class FloatEiProp extends NumericEiPropAdapter {
 		$numericMag->setInputPrefix($this->prefix);
 		return $numericMag;
 	}
+	
 	public function saveSiField(SiField $siField, Eiu $eiu) {
 	}
 
