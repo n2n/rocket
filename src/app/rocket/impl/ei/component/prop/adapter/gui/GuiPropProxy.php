@@ -28,6 +28,7 @@ use rocket\ei\manage\gui\field\GuiField;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use n2n\reflection\magic\MagicMethodInvoker;
 use n2n\util\type\TypeConstraints;
+use rocket\ei\manage\gui\GuiDefinition;
 
 /**
  * Don't use this class directly. Use factory methods of {@see GuiFields}.  
@@ -73,6 +74,10 @@ class GuiPropProxy implements GuiProp {
 			return $mmi->invoke(null, $this->guiFieldClosure);
 		}
 		
+		return null;
+	}
+	
+	function getForkGuiDefinition(): ?GuiDefinition {
 		return null;
 	}
 }

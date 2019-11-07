@@ -32,12 +32,14 @@ abstract class EiFieldAdapter implements EiField {
 	protected $typeConstraint;
 	protected $valueLoaded = false;
 	protected $value;
-	protected $orgValueLoaded = false;
-	protected $orgValue;
 
 	public function __construct(TypeConstraint $typeConstraint = null) {
 		$this->typeConstraint = $typeConstraint;
 // 		$this->eiFieldConstraintSet = new HashSet(EiFieldConstraint::class);
+	}
+	
+	function getTypeConstraint(): ?TypeConstraint {
+		return $this->typeConstraint;
 	}
 	
 	private function assetConstraints($value) {
@@ -75,31 +77,12 @@ abstract class EiFieldAdapter implements EiField {
 		if ($this->valueLoaded) {
 			return $this->value;
 		}
+		
+		$this->value = $this->readValue();
+		$this->valueLoaded = true;
 
-		return $this->getOrgValue();
+		return $this->value;
 	}
-
-	/**
-	 * @return boolean
-	 */
-	public final function isOrgValueLoaded() {
-		return $this->orgValueLoaded;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\entry\EiField::getOrgValue()
-	 */
-	public final function getOrgValue() {
-		if ($this->orgValueLoaded) {
-			return $this->orgValue;
-		}
-
-		$this->orgValue = $this->readValue();
-		$this->orgValueLoaded = true;
-		return $this->orgValue;
-	}
-
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\entry\EiField::setValue()
@@ -109,15 +92,6 @@ abstract class EiFieldAdapter implements EiField {
 
 		$this->value = $value;
 		$this->valueLoaded = true;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\entry\EiField::resetValue()
-	 */
-	public final function resetValue() {
-		$this->value = null;
-		$this->valueLoaded = false;
 	}
 
 // 	/**

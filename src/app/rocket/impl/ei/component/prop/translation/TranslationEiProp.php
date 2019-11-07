@@ -125,93 +125,14 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiPropFork
 				($readOnly ? null : $this), $this);
 	}
 	
-	public function buildEiFieldFork(EiObject $eiObject, EiField $eiField = null) {
-		return null;
-	}
-	
-	public function isEiEntryFilterable(): bool {
-		return false;
-	}
-	
-	public function createSecurityFilterProp(N2nContext $n2nContext): SecurityFilterProp {
-		throw new IllegalStateException();
-	}
-
+		
 	public function buildGuiProp(Eiu $eiu): ?GuiProp {
-		return null;
-	}
-	
-	private $forkedGuiDefinition;
-	
-	/* (non-PHPdoc)
-	 * @see \rocket\ei\component\prop\EiProp::getGuiPropFork()
-	 */
-	public function buildGuiPropFork(Eiu $eiu): ?GuiPropFork {
-		$this->forkedGuiDefinition = $eiu->context()->engine($this->eiPropRelation->getTargetEiMask())->getGuiDefinition();
-		return $this;
-	}
-
-	public function getForkedGuiDefinition(): GuiDefinition {
-		return $this->forkedGuiDefinition;
+		return new TranslationGuiProp($eiu->context()
+				->engine($this->eiPropRelation->getTargetEiMask())->getGuiDefinition());
 	}
 	
 	public function createGuiFieldFork(Eiu $eiu): GuiFieldFork {
-		$eiFrame = $eiu->frame()->getEiFrame();
-		$eiEntry = $eiu->entry()->getEiEntry();
-		$eiObject = $eiEntry->getEiObject();
-		$targetEiFrame = null;
-		if ($eiu->entryGui()->isReadOnly()) {
-			$targetEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame);
-		} else {
-			$targetEiFrame = $this->eiPropRelation->createTargetEditPseudoEiFrame($eiFrame, $eiEntry);
-		}
-		$targetEiuFrame = (new Eiu($targetEiFrame))->frame();
-		$toManyEiField = $eiEntry->getEiField(EiPropPath::from($this));
 		
-		$targetRelationEntries = array();
-		foreach ($toManyEiField->getValue() as $targetRelationEntry) {
-			$targetEntityObj = $targetRelationEntry->getEiObject()->getLiveObject();
-			$n2nLocale = $targetEntityObj->getN2nLocale();
-			ArgUtils::valTypeReturn($n2nLocale, N2nLocale::class, $targetEntityObj, 'getN2nLocale');
-			if (!$targetRelationEntry->hasEiEntry()) {
-				$targetRelationEntry = RelationEntry::fromM(
-						$targetEiuFrame->entry($targetRelationEntry->getEiObject())->getEiEntry());
-			}
-			$targetRelationEntries[(string) $n2nLocale] = $targetRelationEntry;
-		}
-		
-		$targetGuiDefinition = $targetEiuFrame->getContextEiuEngine()->getGuiDefinition();
-		$translationGuiField = new TranslationGuiFieldFork($toManyEiField, $targetGuiDefinition, 
-				$this->labelLstr->t($eiFrame->getN2nContext()->getN2nLocale()), $this->minNumTranslations);
-		if ($this->copyCommand !== null) {
-			$translationGuiField->setCopyUrl($targetEiuFrame->getUrlToCommand($this->copyCommand)
-					->extR(null, array('bulky' => $eiu->gui()->isBulky())));
-		}
-
-		foreach ($this->n2nLocaleDefs as $n2nLocaleDef) {
-			$n2nLocaleId = $n2nLocaleDef->getN2nLocaleId();
-			
-			$viewMode = null;
-			$targetRelationEntry = null;
-			if (isset($targetRelationEntries[$n2nLocaleId])) {
-				$targetRelationEntry = $targetRelationEntries[$n2nLocaleId];
-			} else {
-				$eiObject = $targetEiuFrame->createNewEiObject();
-				$eiObject->getLiveObject()->setN2nLocale($n2nLocaleDef->getN2nLocale());
-				$targetRelationEntry = RelationEntry::fromM($targetEiuFrame->entry($eiObject)->getEiEntry());
-			}
-			
-			$viewMode = ViewMode::determine($eiu->gui()->isBulky(), $eiu->gui()->isReadOnly(), 
-					$targetRelationEntry->getEiEntry()->isNew());
-			$targetEiuEntryGuiAssembler = $targetEiuFrame->entry($targetRelationEntry->getEiEntry())
-					->newEntryGuiAssembler($eiu->gui()->getViewMode());
-			
-			$translationGuiField->registerN2nLocale($n2nLocaleDef, $targetRelationEntry, 
-					$targetEiuEntryGuiAssembler, $n2nLocaleDef->isMandatory(), 
-					isset($targetRelationEntries[$n2nLocaleId]));
-		}
-		
-		return $translationGuiField;
 	}
 	
 	public function determineForkedEiObject(Eiu $eiu): ?EiObject {

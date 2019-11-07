@@ -91,21 +91,11 @@ class BooleanEiProp extends DraftablePropertyEiPropAdapter implements Filterable
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\EditablePropertyEiPropAdapter::isMandatory()
-	 */
-	public function isMandatory(Eiu $eiu): bool {
-		return false;
-	}
-	
-	/**
-	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter::read()
 	 */
-	public function read(Eiu $eiu) {
-		return (bool) parent::read($eiu);
+	public function readEiFieldValue(Eiu $eiu) {
+		return (bool) parent::readEiFieldValue($eiu);
 	}
-	
-	
 	
 	/**
 	 * {@inheritDoc}
@@ -125,43 +115,21 @@ class BooleanEiProp extends DraftablePropertyEiPropAdapter implements Filterable
 	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldEditable::createMag()
 	 */
 	public function createInSiField(Eiu $eiu): SiField {
-		if (empty($this->onAssociatedGuiFieldPaths) && empty($this->offAssociatedGuiFieldPaths)) {
-			return SiFields::boolIn($eiu->field()->getValue())->setMandatory($this->editConfig->isMandatory());
-		}
+		$mapCb = function ($guiFieldPath) { return (string) $guiFieldPath; };
 		
-		
-		return SiFields::boolIn($eiu->field()->getValue())->setMandatory($this->editConfig->isMandatory());
-		
-// 		$enablerMag = new TogglerMag($this->getLabelLstr(), true);
-		
-// 		$that = $this;
-// 		$eiu->entryGui()->whenReady(function () use ($eiu, $enablerMag, $that) {
-// 			$onMagWrappers = array();
-// 			foreach ($that->getOnAssociatedGuiFieldPaths() as $eiPropPath) {
-// 				$magWrapper = $eiu->entryGui()->getMagWrapper($eiPropPath, false);
-// 				if ($magWrapper === null) continue;
-				
-// 				$onMagWrappers[] = $magWrapper;
-// 			}
-// 			$enablerMag->setOnAssociatedMagWrappers($onMagWrappers);
-
-// 			$offMagWrappers = array();
-// 			foreach ($that->getOffAssociatedGuiFieldPaths() as $eiPropPath) {
-// 				$magWrapper = $eiu->entryGui()->getMagWrapper($eiPropPath, false);
-// 				if ($magWrapper === null) continue;
-				
-// 				$offMagWrappers[] = $magWrapper;
-// 			}
-			
-// 			$enablerMag->setOffAssociatedMagWrappers($offMagWrappers);
-// 		});
-			
-// 		return $enablerMag;
+		return SiFields::boolIn($eiu->field()->getValue())
+				->setMandatory($this->editConfig->isMandatory())
+				->setOnAssociatedFieldIds(array_map($mapCb, $this->booleanConfig->getOnAssociatedGuiFieldPaths()))
+				->setOffAssociatedFieldIds(array_map($mapCb, $this->booleanConfig->getOffAssociatedGuiFieldPaths()));
+	}
+	
+	
+	public function saveSiField(SiField $siField, Eiu $eiu) {
+		$eiu->field()->setValue($siField->getValue());
 	}
 	
 	public function buildEiField(Eiu $eiu): ?EiField {
-		$that = $this;
-		$eiu->entry()->onValidate(function () use ($eiu, $that) {
+		$eiu->entry()->onValidate(function () use ($eiu) {
 			$activeGuiFieldPaths = array();
 			$notactiveGuiFieldPaths = array();
 			
@@ -173,7 +141,7 @@ class BooleanEiProp extends DraftablePropertyEiPropAdapter implements Filterable
 				$notactiveGuiFieldPaths = $this->getOnAssociatedGuiFieldPaths();
 			}
 			
-			foreach ($notactiveGuiFieldPaths as $key => $eiPropPath) {
+			foreach ($notactiveGuiFieldPaths as $eiPropPath) {
 				if (null !== ($eiFieldWrapper = $eiu->entry()->getEiFieldAbstraction($eiPropPath))) {
 					$eiFieldWrapper->setIgnored(true);
 				}
@@ -220,7 +188,4 @@ class BooleanEiProp extends DraftablePropertyEiPropAdapter implements Filterable
 		
 		return null;
 	}
-	public function saveSiField(SiField $siField, Eiu $eiu) {
-	}
-
 }

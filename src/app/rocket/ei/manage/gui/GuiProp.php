@@ -33,12 +33,17 @@ interface GuiProp {
 	 * 
 	 * @return DisplayDefinition|null return null if this GuiProp is not compatible with passed EiGui.
 	 */
-	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition;
+	function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition;
 		
 	/**
 	 * @param Eiu $eiu
 	 * @param bool $readOnly No access or read only view.
 	 * @return \rocket\ei\manage\gui\field\GuiField|null
 	 */
-	public function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField;
+	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField;
+	
+	/**
+	 * @return GuiDefinition|NULL
+	 */
+	function getForkGuiDefinition(): ?GuiDefinition;
 }

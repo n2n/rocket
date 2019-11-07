@@ -22,6 +22,7 @@
 namespace rocket\si\content\impl;
 
 use n2n\util\type\attrs\DataSet;
+use n2n\util\type\ArgUtils;
 
 class BoolInSiField extends InSiFieldAdapter {
 	/**
@@ -32,6 +33,14 @@ class BoolInSiField extends InSiFieldAdapter {
 	 * @var bool
 	 */
 	private $mandatory = false;
+	/**
+	 * @var string[]
+	 */
+	private $onAssociatedFieldIds = [];
+	/**
+	 * @var string[]
+	 */
+	private $offAssociatedFieldIds = [];
 	
 	/**
 	 * @param int $value
@@ -72,6 +81,37 @@ class BoolInSiField extends InSiFieldAdapter {
 		return $this->mandatory;
 	}
 	
+	function getOnAssociatedFieldIds() {
+		return $this->onAssociatedFieldIds;
+	}
+
+	/**
+	 * @param string[] $onAssociatedFieldIds
+	 * @return \rocket\si\content\impl\BoolInSiField
+	 */
+	function setOnAssociatedFieldIds(array $onAssociatedFieldIds) {
+		ArgUtils::valArray($onAssociatedFieldIds, 'string');
+		$this->onAssociatedFieldIds = $onAssociatedFieldIds;
+		return $this;
+	}
+
+	/**
+	 * @return string[]
+	 */
+	function getOffAssociatedFieldIds() {
+		return $this->offAssociatedFieldIds;
+	}
+
+	/**
+	 * @param string[] $offAssociatedFieldIds
+	 * @return \rocket\si\content\impl\BoolInSiField
+	 */
+	function setOffAssociatedFieldIds(array $offAssociatedFieldIds) {
+		ArgUtils::valArray($offAssociatedFieldIds, 'string');
+		$this->offAssociatedFieldIds = $offAssociatedFieldIds;
+		return $this;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\si\content\SiField::getType()
@@ -87,7 +127,9 @@ class BoolInSiField extends InSiFieldAdapter {
 	function getData(): array {
 		return [
 			'value' => $this->value,
-			'mandatory' => $this->mandatory
+			'mandatory' => $this->mandatory,
+			'onAssociatedFieldIds' => $this->onAssociatedFieldIds,
+			'offAssociatedFieldIds' => $this->offAssociatedFieldIds
 		];
 	}
 	

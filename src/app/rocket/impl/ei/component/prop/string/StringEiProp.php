@@ -27,6 +27,8 @@ use n2n\util\StringUtils;
 use rocket\si\content\impl\SiFields;
 use rocket\impl\ei\component\prop\string\conf\StringConfig;
 use rocket\si\content\SiField;
+use n2n\util\type\ArgUtils;
+use rocket\si\content\impl\StringInSiField;
 
 class StringEiProp extends AlphanumericEiProp {
 	
@@ -61,6 +63,8 @@ class StringEiProp extends AlphanumericEiProp {
 	}
 	
 	function saveSiField(SiField $siField, Eiu $eiu) {
+		ArgUtils::assertTrue($siField instanceof StringInSiField);
+		$eiu->field()->setValue($siField->getValue());
 	}
 	
 	function isStringRepresentable(): bool {

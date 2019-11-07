@@ -269,7 +269,7 @@ class EiEntryGui {
 		
 		foreach ($this->guiFields as $guiFieldPathStr => $guiField) {
 			if (!$guiField->getSiField()->isReadOnly() 
-					&& $this->eiEntry->getEiEntryAccess()->isEiPropWritable(EiPropPath::create($eiPropPathStr))) {
+					/*&& $this->eiEntry->getEiEntryAccess()->isEiPropWritable(EiPropPath::create($eiPropPathStr))*/) {
 				$guiField->save();
 			}
 		}

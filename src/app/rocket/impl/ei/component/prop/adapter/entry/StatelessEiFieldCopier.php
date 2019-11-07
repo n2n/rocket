@@ -21,12 +21,17 @@
  */
 namespace rocket\impl\ei\component\prop\adapter\entry;
 
-use rocket\ei\manage\entry\EiFieldValidationResult;
 use rocket\ei\util\Eiu;
+use rocket\ei\manage\EiObject;
 
-interface Validatable {
+interface StatelessEiFieldCopier {
 	
-	public function testEiFieldValue(Eiu $eiu, $eiFieldValue): bool;
-	
-	public function validateEiFieldValue(Eiu $eiu, $eiFieldValue, EiFieldValidationResult $validationResult);
+	/**
+	 * @param EiObject $eiObject
+	 * @param mixed $value
+	 * @param Eiu $copyEiu
+	 * @return mixed
+	 */
+	public function copyEiFieldValue(Eiu $eiu, $value, Eiu $copyEiu);
 }
+

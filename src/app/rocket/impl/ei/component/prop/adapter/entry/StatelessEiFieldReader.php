@@ -19,36 +19,10 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\gui\field;
+namespace rocket\impl\ei\component\prop\adapter\entry;
 
-use rocket\si\content\SiField;
+use rocket\ei\util\Eiu;
 
-interface GuiField {
-	
-// 	/**
-// 	 * @return GuiFieldDisplayable
-// 	 */
-// 	public function getDisplayable(): GuiFieldDisplayable;
-
-// 	/**
-// 	 * @return boolean 
-// 	 */
-// 	public function isReadOnly(): bool;
-	
-	/**
-	 * @return SiField 
-	 */
-	function getSiField(): SiField;
-	
-	/**
-	 * @throws \n2n\util\ex\IllegalStateException if {@link self::getSiField()::isReadOnly()} returns true.
-	 */
-	function save();
-	
-	/**
-	 * @return SiField[]
-	 */
-	function getContextSiFields(): array;
-	
-	function getForkGuiFieldMap(): ?GuiFieldMap;
+interface StatelessEiFieldReader {
+	public function readEiFieldValue(Eiu $eiu);
 }

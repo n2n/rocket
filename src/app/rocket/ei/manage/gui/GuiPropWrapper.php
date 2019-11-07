@@ -87,6 +87,12 @@ class GuiPropWrapper {
 		$readOnly = ViewMode::isReadOnly($eiEntryGui->getEiGui()->getViewMode()) 
 				|| !$eiEntryGui->getEiEntry()->getEiEntryAccess()->isEiPropWritable($this->eiPropPath);
 				
-		return $this->guiProp->buildGuiField(new Eiu($eiEntryGui, $this->eiPropPath), $readOnly);
+		$guiField = $this->guiProp->buildGuiField(new Eiu($eiEntryGui, $this->eiPropPath), $readOnly);
+		
+		if (!$readOnly || $guiField->getSiField()->isReadOnly()) {
+			return $guiField;
+		}
+		
+		throw new GuiException('GuiField of ' . $this->getEiProp() . ' must have a read-only SiField.');
 	}
 }

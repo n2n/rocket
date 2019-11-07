@@ -1,7 +1,6 @@
 <?php
 namespace rocket\impl\ei\component\prop\bool\conf;
 
-use rocket\impl\ei\component\prop\bool\BooleanEiProp;
 use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
 use n2n\impl\web\dispatch\mag\model\MultiSelectMag;
@@ -10,7 +9,6 @@ use rocket\ei\manage\gui\field\GuiFieldPath;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use n2n\util\StringUtils;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
-use n2n\util\type\CastUtils;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\util\type\attrs\DataSet;
 use rocket\ei\util\Eiu;

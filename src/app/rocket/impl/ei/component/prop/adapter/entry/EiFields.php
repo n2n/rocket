@@ -22,16 +22,15 @@
 namespace rocket\impl\ei\component\prop\adapter\entry;
 
 use rocket\ei\util\Eiu;
-use rocket\ei\manage\EiObject;
+use n2n\util\type\TypeConstraint;
 
-interface Copyable {
+class EiFields {
 	
-	/**
-	 * @param EiObject $eiObject
-	 * @param mixed $value
-	 * @param Eiu $copyEiu
-	 * @return mixed
-	 */
-	public function copy(Eiu $eiu, $value, Eiu $copyEiu);
+	static function statless(Eiu $eiu, ?TypeConstraint $typeConstraint, StatelessEiFieldReader $reader, 
+			StatelessEiFieldWriter $writer = null, StatelessEiFieldValidator $validator = null, 
+			StatelessEiFieldCopier $copier = null) {
+		return new RwvcEiField($eiu, $typeConstraint, $reader, $writer, $validator, $copier);
+	}
+	
 }
 

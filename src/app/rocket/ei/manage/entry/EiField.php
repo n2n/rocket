@@ -26,6 +26,7 @@ use rocket\ei\util\Eiu;
 
 interface EiField {
 	
+	
 	/**
 	 * @return mixed 
 	 */
@@ -36,16 +37,6 @@ interface EiField {
 	 * @throws \InvalidArgumentException
 	 */
 	public function setValue($value);
-	
-	/**
-	 * @return mixed 
-	 */
-	public function getOrgValue();
-	
-	/**
-	 *  
-	 */
-	public function resetValue();
 	
 	/**
 	 * @param mixed $value
@@ -82,7 +73,7 @@ interface EiField {
 	/**
 	 * Security can be ignored
 	 * @param EiObject $eiObject
-	 * @return EiField
+	 * @return mixed
 	 */
 	public function copyValue(Eiu $copyEiu);
 	

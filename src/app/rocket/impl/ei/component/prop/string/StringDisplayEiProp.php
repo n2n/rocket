@@ -37,14 +37,15 @@ use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\core\model\Rocket;
-use n2n\l10n\Lstr;
 use rocket\ei\manage\entry\EiField;
 use n2n\util\StringUtils;
 use rocket\si\content\SiField;
 use rocket\impl\ei\component\prop\adapter\PropertyDisplayableEiPropAdapter;
+use rocket\impl\ei\component\prop\adapter\gui\GuiProps;
+use rocket\impl\ei\component\prop\adapter\gui\GuiFieldFactory;
 
 class StringDisplayEiProp extends PropertyDisplayableEiPropAdapter implements ObjectPropertyConfigurable, 
-		FieldEiProp, Readable, StatelessGuiFieldDisplayable {
+		FieldEiProp, Readable, GuiFieldFactory, StatelessGuiFieldDisplayable {
 	
 	function prepare() {
 		$this->getDisplayConfig()->setCompatibleViewModes(ViewMode::read());
@@ -64,33 +65,33 @@ class StringDisplayEiProp extends PropertyDisplayableEiPropAdapter implements Ob
 		return null;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayLabelLstr()
-	 */
-	function getDisplayLabelLstr(): Lstr {
-		return $this->getLabelLstr()->t($n2nLocale);
-	}
+// 	/**
+// 	 * {@inheritDoc}
+// 	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayLabelLstr()
+// 	 */
+// 	function getDisplayLabelLstr(): Lstr {
+// 		return $this->getLabelLstr()->t($n2nLocale);
+// 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayHelpTextLstr()
-	 */
-	function getDisplayHelpTextLstr(): ?Lstr {
-		$helpText = $this->displayConfig->getHelpText();
-		if ($helpText === null) {
-			return null;
-		}
+// 	/**
+// 	 * {@inheritDoc}
+// 	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayHelpTextLstr()
+// 	 */
+// 	function getDisplayHelpTextLstr(): ?Lstr {
+// 		$helpText = $this->displayConfig->getHelpText();
+// 		if ($helpText === null) {
+// 			return null;
+// 		}
 		
-		return Rocket::createLstr($helpText, $this->getEiMask()->getModuleNamespace())->t($n2nLocale);
-	}
+// 		return Rocket::createLstr($helpText, $this->getEiMask()->getModuleNamespace())->t($n2nLocale);
+// 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\component\prop\GuiEiProp::getGuiProp()
 	 */
 	function buildGuiProp(Eiu $eiu): ?GuiProp {
-		return $this;
+		return GuiProps::configAndFactory($this->getDisplayConfig(), $this);
 	}
 
 	/**

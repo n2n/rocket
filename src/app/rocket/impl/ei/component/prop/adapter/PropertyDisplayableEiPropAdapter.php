@@ -32,15 +32,16 @@ use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
-use rocket\impl\ei\component\prop\adapter\entry\Readable;
-use rocket\impl\ei\component\prop\adapter\entry\SimpleEiField;
 use rocket\impl\ei\component\prop\adapter\gui\GuiFieldFactory;
 use rocket\impl\ei\component\prop\adapter\gui\GuiFieldProxy;
 use rocket\impl\ei\component\prop\adapter\gui\GuiProps;
 use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable;
+use rocket\impl\ei\component\prop\adapter\entry\EiFields;
+use rocket\impl\ei\component\prop\adapter\entry\StatelessEiFieldReader;
+use n2n\util\type\TypeConstraint;
 
-abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter implements StatelessGuiFieldDisplayable, 
-		FieldEiProp, GuiEiProp, GuiFieldFactory, Readable {
+abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter 
+		implements FieldEiProp, StatelessEiFieldReader, StatelessGuiFieldDisplayable, GuiEiProp, GuiFieldFactory {
 	private $displayConfig;
 
 	/**
@@ -58,20 +59,25 @@ abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter im
 		return parent::createConfigurator()->addAdaption($this->getDisplayConfig());
 	}
 	
-	public function isEiField(): bool {
-		return true;
-	}
+	// EiField
 	
 	public function buildEiField(Eiu $eiu): ?EiField {
-		return new SimpleEiField($eiu, 
-				$this->getObjectPropertyAccessProxy()->getConstraint()->getLenientCopy(), 
-				$this);
+		return EiFields::statless($eiu, $this->getEiFieldTypeConstraint(), $this);
+	}
+
+	public function getEiFieldTypeConstraint(): ?TypeConstraint {
+		if (null !== ($accessProxy = $this->getObjectPropertyAccessProxy())) {
+			return $accessProxy->getConstraint()->getLenientCopy();
+		}
+		
+		return null;
 	}
 	
-	
-	public function read(Eiu $eiu) {
+	public function readEiFieldValue(Eiu $eiu) {
 		return $eiu->entry()->readNativValue($this);
 	}
+	
+	// GuiProp
 	
 	public function buildGuiProp(Eiu $eiu): ?GuiProp {
 		return GuiProps::configAndFactory($this->getDisplayConfig(), $this);

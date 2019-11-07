@@ -23,6 +23,6 @@ namespace rocket\impl\ei\component\prop\adapter\entry;
 
 use rocket\ei\util\Eiu;
 
-interface Writable {
-	public function write(Eiu $eiu, $value);
+interface StatelessEiFieldWriter {
+	public function writeEiFieldValue(Eiu $eiu, $value);
 }

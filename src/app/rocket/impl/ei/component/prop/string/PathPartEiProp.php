@@ -27,7 +27,6 @@ use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\l10n\DynamicTextCollection;
 use n2n\util\type\ArgUtils;
-use rocket\ei\EiPropPath;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\si\content\SiField;
@@ -38,45 +37,46 @@ class PathPartEiProp extends AlphanumericEiProp  {
 		parent::__construct();
 	}
 	
-	public function prepare() {
+	function prepare() {
 		$this->getDisplayConfig()->setDefaultDisplayedViewModes(ViewMode::BULKY_EDIT | ViewMode::COMPACT_READ);
 		$this->getEditConfig()->setMandatory(false)->setMandatoryChoosable(false);
 		$this->getConfigurator()->addAdaption(new PathPartConfig());
 	}
 	
-	public function getTypeName(): string {
+	function getTypeName(): string {
 		return 'Path Part';
 	}
 	
-
-// 	public function getUrlEiCommand() {
+// 	function getUrlEiCommand() {
 // 		return $this->urlEiCommand;
 // 	}
 
-// 	public function setUrlEiCommand($urlEiCommand) {
+// 	function setUrlEiCommand($urlEiCommand) {
 // 		$this->urlEiCommand = $urlEiCommand;
 // 	}
 
-	public function setEntityProperty(?EntityProperty $entityProperty) {
+	function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty instanceof ScalarEntityProperty);
 		
 		parent::setEntityProperty($entityProperty);
 	}
 	
-	public function createOutSiField(Eiu $eiu): SiField  {
-		return $view->getHtmlBuilder()->getEsc($eiu->field()->getValue(EiPropPath::from($this)));
+	function createOutSiField(Eiu $eiu): SiField  {
+		return $view->getHtmlBuilder()->getEsc($eiu->field()->getValue());
 	}
 
 	
 	private function buildMagInputAttrs(Eiu $eiu): array {
 		$attrs = array('placeholder' => $this->getLabelLstr(), 'class' => 'form-control');
 		
-		if ($eiu->entry()->isNew() || $eiu->entry()->isDraft() || !$this->critical) return $attrs;
+		if ($eiu->entry()->isNew() || $eiu->entry()->isDraft() || !$this->critical) {
+			return $attrs;
+		}
 	
 		$attrs['class'] = 'rocket-critical-input';
 		
 		if (null !== $this->criticalMessage) {
-			$dtc = new DynamicTextCollection('rocket', $eiu->getRequest()->getN2nLocale());
+			$dtc = new DynamicTextCollection('rocket', $eiu->getN2nLocale());
 			$attrs['data-confirm-message'] = $this->criticalMessage;
 			$attrs['data-edit-label'] =  $dtc->translate('common_edit_label');
 			$attrs['data-cancel-label'] =  $dtc->translate('common_cancel_label');
@@ -85,7 +85,7 @@ class PathPartEiProp extends AlphanumericEiProp  {
 		return $attrs;
 	}
 	
-	public function createInSiField(Eiu $eiu): SiField {
+	function createInSiField(Eiu $eiu): SiField {
 		$attrs = $this->buildMagInputAttrs($eiu);
 		
 		return new StringMag($this->getLabelLstr(), null,
@@ -96,7 +96,7 @@ class PathPartEiProp extends AlphanumericEiProp  {
 		$eiu->field()->setValue($siField->getValue());
 	}
 	
-	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): string {
+	function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): string {
 		return $eiu->object()->readNativValue($this);
 	}
 }

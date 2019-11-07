@@ -21,28 +21,27 @@
  */
 namespace rocket\impl\ei\component\prop\adapter;
 
-use n2n\util\type\TypeConstraint;
-use rocket\impl\ei\component\prop\adapter\entry\Writable;
 use rocket\ei\manage\entry\EiField;
-use rocket\impl\ei\component\prop\adapter\entry\SimpleEiField;
-use rocket\ei\manage\EiObject;
 use rocket\ei\component\prop\PrivilegedEiProp;
 use rocket\core\model\Rocket;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\entry\EiFieldValidationResult;
-use rocket\impl\ei\component\prop\adapter\entry\Validatable;
-use rocket\impl\ei\component\prop\adapter\entry\Copyable;
 use rocket\ei\manage\gui\field\GuiField;
-use rocket\ei\manage\gui\GuiProp;
 use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldEditable;
 use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
-use n2n\l10n\Message;
 use rocket\impl\ei\component\prop\adapter\gui\GuiFields;
-use rocket\impl\ei\component\prop\adapter\gui\GuiProps;
+use n2n\validation\impl\ValidationMessages;
+use rocket\impl\ei\component\prop\adapter\entry\EiFields;
+use rocket\ei\component\prop\FieldEiProp;
+use rocket\impl\ei\component\prop\adapter\entry\StatelessEiFieldCopier;
+use rocket\impl\ei\component\prop\adapter\entry\StatelessEiFieldValidator;
+use rocket\impl\ei\component\prop\adapter\entry\StatelessEiFieldWriter;
 
-abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAdapter implements StatelessGuiFieldEditable, Writable, 
-		PrivilegedEiProp, Validatable, Copyable {
+abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAdapter 
+		implements PrivilegedEiProp, 
+				FieldEiProp, StatelessEiFieldWriter, StatelessEiFieldValidator, StatelessEiFieldCopier,
+				StatelessGuiFieldEditable {
 	private $editConfig;
 
 	function isPrivileged(): bool {
@@ -63,52 +62,38 @@ abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAd
 	public function createConfigurator(): AdaptableEiPropConfigurator {
 		return parent::createConfigurator()->addAdaption($this->getEditConfig());
 	}
-		
-// 	protected function checkForWriteAccess(EiEntry $eiEntry) {
-// 		return true;
-// // 		$ssPrivilegeConstraint = $eiEntry->getSelectionPrivilegeConstraint();
-// // 		if ($ssPrivilegeConstraint === null) return true;
-		
-// // 		foreach ($ssPrivilegeConstraint->getAccessGrants() as $accessGrant) {
-// // 			if (!$accessGrant->isRestricted() || $accessGrant->getDataSetById($this->getId())
-// // 					->get(self::ACCESS_WRITING_ALLOWED_KEY, self::ACCESS_WRITING_ALLOWED_DEFAULT)) return true;			
-// // 		}
-		
-// // 		return false;
-// 	}
 	
 	public function buildEiField(Eiu $eiu): ?EiField {
-		if ($eiu->entry()->isDraft()) {
-			return parent::buildEiField($eiu);
-		}
-
-		$objectPropertyAccessProxy = $this->getObjectPropertyAccessProxy();
-		$constraints = $objectPropertyAccessProxy === null ? TypeConstraint::createSimple('mixed') :
-				$this->getObjectPropertyAccessProxy()->getConstraint()->getLenientCopy();
-
-		return new SimpleEiField($eiu, $constraints, $this, $this, $this, $this);
+		return EiFields::statless($eiu, $this->getEiFieldTypeConstraint(), $this, $this, $this, $this);
 	}
 	
-	public function buildEiFieldFork(EiObject $eiObject, EiField $eiField = null) {
-		return null;
-	}
-
-	public function write(Eiu $eiu, $value) {
+	public function writeEiFieldValue(Eiu $eiu, $value) {
 		$eiu->entry()->writeNativeValue($this, $value);
 	}
 	
-	public function copy(Eiu $eiu, $value, Eiu $copyEiu) {
+	public function copyEiFieldValue(Eiu $eiu, $value, Eiu $copyEiu) {
 		return $value;
 	}
 	
-	public function testEiFieldValue(Eiu $eiu, $eiFieldValue): bool {
-		return $this->checkMandatory($eiu->object()->getEiObject(), $eiFieldValue);
+	private function checkMandatory($eiFieldValue) {
+		if (!$this->getEditConfig()->isMandatory() /*|| $eiObject->isDraft()*/) {
+			return true;
+		}
+		
+		if (is_array($eiFieldValue)) {
+			return !empty($eiFieldValue);
+		}
+		
+		return $eiFieldValue !== null; 
+	}
+	
+	public function acceptsEiFieldValue(Eiu $eiu, $eiFieldValue): bool {
+		return $this->checkMandatory($eiFieldValue);
 	}
 	
 	public function validateEiFieldValue(Eiu $eiu, $eiFieldValue, EiFieldValidationResult $validationResult) {
-		if (!$this->checkMandatory($eiu->object()->getEiObject(), $eiFieldValue)) {
-			$validationResult->addError(Message::createCodeArg('ei_impl_mandatory_err', 
-					array('field' => $this->labelLstr), null, Rocket::NS));
+		if (!$this->checkMandatory($eiFieldValue)) {
+			$validationResult->addError(ValidationMessages::mandatory($eiu->prop()->getLabel()));
 		}
 	}
 	

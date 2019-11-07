@@ -21,8 +21,12 @@
  */
 namespace rocket\impl\ei\component\prop\adapter\entry;
 
+use rocket\ei\manage\entry\EiFieldValidationResult;
 use rocket\ei\util\Eiu;
 
-interface Readable {
-	public function read(Eiu $eiu);
+interface StatelessEiFieldValidator {
+	
+	public function acceptsEiFieldValue(Eiu $eiu, $eiFieldValue): bool;
+	
+	public function validateEiFieldValue(Eiu $eiu, $eiFieldValue, EiFieldValidationResult $validationResult);
 }

@@ -31,6 +31,9 @@ class EiFieldWrapper implements EiFieldAbstraction {
 	private $eiField;
 	private $ignored = false;
 	
+	private $orgValueLoaded = false;
+	private $orgValue;
+	
 	function __construct(EiFieldMap $eiFieldMap, EiPropPath $eiPropPath, EiField $eiField) {
 		$this->eiFieldMap = $eiFieldMap;
 		$this->eiPropPath = $eiPropPath;
@@ -59,6 +62,39 @@ class EiFieldWrapper implements EiFieldAbstraction {
 	}
 	
 	/**
+	 * @return boolean
+	 */
+	final function isOrgValueLoaded() {
+		return $this->orgValueLoaded;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\entry\EiField::getOrgValue()
+	 */
+	final function getOrgValue() {
+		$this->ensureOrgLoaded();
+		return $this->orgValue;
+	}
+	
+	final function resetValue() {
+		if (!$this->orgValueLoaded) {
+			return;
+		}
+		
+		$this->eiField->setValue($this->orgValue);
+	}
+	
+	private function ensureOrgLoaded() {
+		if ($this->orgValueLoaded) {
+			return;
+		}
+		
+		$this->orgValue = $this->eiField->getValue();
+		$this->orgValueLoaded = true;
+	}
+	
+	/**
 	 * @param mixed $value
 	 * @param bool $ignoreSecurity
 	 * @throws InaccessibleEiFieldException
@@ -69,6 +105,8 @@ class EiFieldWrapper implements EiFieldAbstraction {
 			throw new InaccessibleEiFieldException('User has no write access of on field ' . $this->eiPropPath . '.');
 		}
 		
+		$this->ensureOrgLoaded();
+		
 		$this->eiField->setValue($value);
 	}
 	
@@ -76,6 +114,8 @@ class EiFieldWrapper implements EiFieldAbstraction {
 	 * @return mixed
 	 */
 	function getValue() {
+		$this->ensureOrgLoaded();
+		
 		return $this->eiField->getValue();
 	}
 	
