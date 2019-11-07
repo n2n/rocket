@@ -74,7 +74,7 @@ class TranslationGuiProp implements GuiProp {
 			
 		$targetEiuEntries = $eiu->field()->getValue();
 		
-		$translationGuiField = new TranslationGuiFieldFork($toManyEiField, $targetGuiDefinition,
+		$translationGuiField = new TranslationGuiField($toManyEiField, $targetGuiDefinition,
 				$this->labelLstr->t($eiFrame->getN2nContext()->getN2nLocale()), $this->minNumTranslations);
 		if ($this->copyCommand !== null) {
 			$translationGuiField->setCopyUrl($targetEiuFrame->getUrlToCommand($this->copyCommand)
