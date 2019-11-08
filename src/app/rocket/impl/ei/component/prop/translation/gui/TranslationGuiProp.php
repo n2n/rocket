@@ -28,6 +28,8 @@ use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\relation\conf\RelationConfig;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
+use rocket\ei\util\entry\EiuEntry;
+use rocket\ei\manage\gui\GuiFieldMap;
 
 class TranslationGuiProp implements GuiProp {
 	/**
@@ -72,7 +74,7 @@ class TranslationGuiProp implements GuiProp {
 			$forkEiuFrame->exec($this->relationModel->getTargetEditEiCommandPath());
 		}
 			
-		$targetEiuEntries = $eiu->field()->getValue();
+		
 		
 		$translationGuiField = new TranslationGuiField($toManyEiField, $targetGuiDefinition,
 				$this->labelLstr->t($eiFrame->getN2nContext()->getN2nLocale()), $this->minNumTranslations);
@@ -81,9 +83,13 @@ class TranslationGuiProp implements GuiProp {
 					->extR(null, array('bulky' => $eiu->gui()->isBulky())));
 		}
 		
+		$forkGuiPropPaths = $eiu->gui()->getForkGuiFieldPaths($eiu->prop()->getPath());
+		$eiuGui = $forkEiuFrame->newGui($eiu->gui()->getViewMode(), $forkGuiPropPaths);
+		
 		foreach ($this->translationConfig->getN2nLocaleDefs() as $n2nLocaleDef) {
 			$n2nLocaleId = $n2nLocaleDef->getN2nLocaleId();
 			
+			$eiuGui->$tragetEiuEntries[$n2nLocaleId] 
 			$viewMode = null;
 			$targetRelationEntry = null;
 			if (isset($targetRelationEntries[$n2nLocaleId])) {
@@ -97,14 +103,37 @@ class TranslationGuiProp implements GuiProp {
 			$viewMode = ViewMode::determine($eiu->gui()->isBulky(), $eiu->gui()->isReadOnly(),
 					$targetRelationEntry->getEiEntry()->isNew());
 			$targetEiuEntryGuiAssembler = $targetEiuFrame->entry($targetRelationEntry->getEiEntry())
-			->newEntryGuiAssembler($eiu->gui()->getViewMode());
+					->newEntryGuiAssembler($eiu->gui()->getViewMode());
 			
 			$translationGuiField->registerN2nLocale($n2nLocaleDef, $targetRelationEntry,
 					$targetEiuEntryGuiAssembler, $n2nLocaleDef->isMandatory(),
 					isset($targetRelationEntries[$n2nLocaleId]));
 		}
 		
+		$translationGuiField = new TranslationGuiField();
+		
+		$translationGuiFieldMap = new GuiFieldMap($forkGuiFieldPath);
+		foreach ($forkEiPropPaths as $eiPropPath) {
+			$splitGuiField = new SplitGuiField();
+			foreach ($this->translationConfig->getN2nLocaleDefs() as $n2nLocaleDef) {
+				$n2nLocaleId = $n2nLocaleDef->getN2nLocaleId();
+				$splitGuiField->putGuiField($n2nLocaleDef->getN2nLocale(), 
+						$targetEiuEntryGuis[$n2nLocaleId]->getGuiFieldByEiPropPath($eiPropPath));
+			}
+			
+			$translationGuiFieldMap->putGuiField($translationGuiField, $splitGuiField);
+		}
+		
 		return $translationGuiField;
+	}
+	
+	/**
+	 * @return EiuEntry[] 
+	 */
+	private function determineEiuEntries() {
+		foreach ($eiu->field()->getValue() as $targetEiuEntry) {
+			$target
+		}
 	}
 	
 }

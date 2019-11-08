@@ -11,12 +11,12 @@ use rocket\ei\manage\gui\control\GuiControlPath;
 use rocket\ei\manage\gui\control\UnknownGuiControlException;
 use rocket\ei\manage\gui\control\GeneralGuiControl;
 use rocket\ei\manage\api\ApiControlCallId;
-use rocket\ei\mask\EiMask;
 use rocket\si\meta\SiDeclaration;
 use rocket\si\meta\SiProp;
 use rocket\si\meta\SiTypeDeclaration;
 use rocket\si\meta\SiType;
 use rocket\si\meta\SiStructureDeclaration;
+use rocket\ei\EiPropPath;
 
 /**
  * @author andreas
@@ -142,11 +142,27 @@ class EiGui {
 		}
 	}
 	
+	private function initAsFork(array $guiPropPaths) {
+		$this->guiPropPaths = $guiPropPaths;
+	}
+	
 	/**
 	 * @return boolean
 	 */
 	public function isInit() {
 		return $this->guiStructureDeclarations !== null;
+	}
+	
+	/**
+	 * @param EiPropPath $eiPropPath
+	 * @param EiFrame $eiFrame
+	 * @param GuiDefinition $guiDefinition
+	 * @return \rocket\ei\manage\gui\EiGui
+	 */
+	function createFork(EiPropPath $eiPropPath, EiFrame $eiFrame, GuiDefinition $guiDefinition) {
+		$eiGui = new EiGui($eiFrame, $guiDefinition, $viewMode);
+		$eiGui->initAsFork($this->getGuiFieldPaths());
+		return $eiGui;
 	}
 	
 	/**
@@ -201,6 +217,22 @@ class EiGui {
 	}
 	
 	/**
+	 * @param EiPropPath $forkEiPropPath
+	 * @return GuiFieldPath[]
+	 */
+	function getForkGuiFieldPaths(EiPropPath $forkEiPropPath) {
+		$forkGuiFieldPaths = [];
+		foreach ($this->getGuiFieldPaths() as $guiFieldPath) {
+			if ($guiFieldPath->getFirstEiPropPath()->equals($eiPropPath)) {
+				continue;
+			}
+			
+			$forkGuiFieldPaths[] = $guiFieldPath->getShifted();
+		}
+		return $forkGuiFieldPaths;
+	}
+	
+	/**
 	 * @return SiProp[]
 	 */
 	private function getSiProps() {
@@ -211,6 +243,8 @@ class EiGui {
 		}
 		return $siProps;
 	}
+	
+	
 	
 	/**
 	 * @param GuiStructureDeclaration[] $guiStructureDeclarations

@@ -145,7 +145,7 @@ class GuiDefinition {
 	/**
 	 * @return GuiPropWrapper[]
 	 */
-	function getGuiProps() {
+	function getGuiPropWrappers() {
 		return $this->guiPropWrappers;
 	}
 	

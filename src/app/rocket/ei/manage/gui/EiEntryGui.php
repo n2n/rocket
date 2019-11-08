@@ -52,10 +52,6 @@ class EiEntryGui {
 	 */
 	private $treeLevel;
 	/**
-	 * @var GuiField[]
-	 */
-	private $guiFields = array();
-	/**
 	 * @var GuiFieldFork[]
 	 */
 	private $guiFieldForks = array();
@@ -121,21 +117,7 @@ class EiEntryGui {
 				|| isset($this->guiFieldForks[(string) $guiFieldPath]);
 	}
 	
-	/**
-	 * @param GuiFieldPath $guiFieldPath
-	 * @param GuiField $guiField
-	 */
-	public function putGuiField(GuiFieldPath $guiFieldPath, GuiField $guiField) {
-		$this->ensureNotInitialized();
-		
-		$key = (string) $guiFieldPath;
-		
-		if (isset($this->guiFields[$key])) {
-			throw new IllegalStateException('GuiFieldPath already initialized: ' . $guiFieldPath);
-		}
-		
-		$this->guiFields[$key] = $guiField;
-	}
+	
 	
 	/**
 	 * @param GuiFieldPath $guiFieldPath
@@ -202,82 +184,69 @@ class EiEntryGui {
 	}
 	
 	
-	/**
-	 * @param GuiFieldPath $guiFieldPath
-	 * @param GuiFieldFork $guiFieldForkAssembly
-	 */
-	public function putGuiFieldFork(GuiFieldPath $guiFieldPath, GuiFieldFork $guiFieldFork) {
-		$this->ensureNotInitialized();
+// 	/**
+// 	 * @param GuiFieldPath $guiFieldPath
+// 	 * @param GuiFieldFork $guiFieldForkAssembly
+// 	 */
+// 	public function putGuiFieldFork(GuiFieldPath $guiFieldPath, GuiFieldFork $guiFieldFork) {
+// 		$this->ensureNotInitialized();
 		
-		$key = (string) $guiFieldPath;
+// 		$key = (string) $guiFieldPath;
 		
-		if (isset($this->guiFieldForks[$key])) {
-			throw new IllegalStateException('GuiFieldPath already initialized: ' . $guiFieldPath);
-		}
+// 		if (isset($this->guiFieldForks[$key])) {
+// 			throw new IllegalStateException('GuiFieldPath already initialized: ' . $guiFieldPath);
+// 		}
 		
-		$this->guiFieldForks[$key] = $guiFieldFork;
-	}
+// 		$this->guiFieldForks[$key] = $guiFieldFork;
+// 	}
 	
 	
-	/**
-	 * @param GuiFieldPath $guiFieldPath
-	 * @return bool
-	 */
-	public function containsGuiFieldForkGuiFieldPath(GuiFieldPath $guiFieldPath) {
-		return isset($this->guiFieldForks[(string) $guiFieldPath]);
-	}
+// 	/**
+// 	 * @param GuiFieldPath $guiFieldPath
+// 	 * @return bool
+// 	 */
+// 	public function containsGuiFieldForkGuiFieldPath(GuiFieldPath $guiFieldPath) {
+// 		return isset($this->guiFieldForks[(string) $guiFieldPath]);
+// 	}
 	
-	/**
-	 * @return \rocket\ei\manage\gui\field\GuiFieldPath[]
-	 */
-	public function getGuiFieldForkGuiFieldPaths() {
-		$eiPropPaths = array();
-		foreach (array_keys($this->guiFieldForks) as $eiPropPathStr) {
-			$eiPropPaths[] = GuiFieldPath::create($eiPropPathStr);
-		}
-		return $eiPropPaths;
-	}
+// 	/**
+// 	 * @return \rocket\ei\manage\gui\field\GuiFieldPath[]
+// 	 */
+// 	public function getGuiFieldForkGuiFieldPaths() {
+// 		$eiPropPaths = array();
+// 		foreach (array_keys($this->guiFieldForks) as $eiPropPathStr) {
+// 			$eiPropPaths[] = GuiFieldPath::create($eiPropPathStr);
+// 		}
+// 		return $eiPropPaths;
+// 	}
 	
 	
-	/**
-	 * @param GuiFieldPath $guiFieldPath
-	 * @throws GuiException
-	 * @return GuiFieldFork
-	 */
-	public function getGuiFieldForkAssembly(GuiFieldPath $guiFieldPath) {
-		$eiPropPathStr = (string) $guiFieldPath;
-		if (!isset($this->guiFieldForks[$eiPropPathStr])) {
-			throw new GuiException('No GuiFieldFork with GuiFieldPath \'' . $eiPropPathStr . '\' for \'' . $this . '\' registered');
-		}
+// 	/**
+// 	 * @param GuiFieldPath $guiFieldPath
+// 	 * @throws GuiException
+// 	 * @return GuiFieldFork
+// 	 */
+// 	public function getGuiFieldForkAssembly(GuiFieldPath $guiFieldPath) {
+// 		$eiPropPathStr = (string) $guiFieldPath;
+// 		if (!isset($this->guiFieldForks[$eiPropPathStr])) {
+// 			throw new GuiException('No GuiFieldFork with GuiFieldPath \'' . $eiPropPathStr . '\' for \'' . $this . '\' registered');
+// 		}
 		
-		return $this->guiFieldForks[$eiPropPathStr];
-	}
+// 		return $this->guiFieldForks[$eiPropPathStr];
+// 	}
 	
-	/**
-	 * @return GuiFieldFork[]
-	 */
-	public function getGuiFieldForks() {
-		return $this->guiFieldForks;
-	}
+// 	/**
+// 	 * @return GuiFieldFork[]
+// 	 */
+// 	public function getGuiFieldForks() {
+// 		return $this->guiFieldForks;
+// 	}
 
 	public function save() {
 		$this->ensureInitialized();
 		
 		foreach ($this->eiEntryGuiListeners as $eiEntryGuiListener) {
 			$eiEntryGuiListener->onSave($this);
-		}
-		
-		foreach ($this->guiFields as $guiFieldPathStr => $guiField) {
-			if (!$guiField->getSiField()->isReadOnly() 
-					/*&& $this->eiEntry->getEiEntryAccess()->isEiPropWritable(EiPropPath::create($eiPropPathStr))*/) {
-				$guiField->save();
-			}
-		}
-		
-		foreach ($this->guiFieldForks as $guiFieldForkAssembly) {
-			if (null !== ($guiField = $guiFieldForkAssembly->getEditable())) {
-				$savable->save();
-			}
 		}
 		
 		foreach ($this->eiEntryGuiListeners as $eiEntryGuiListener) {
