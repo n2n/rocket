@@ -28,19 +28,7 @@ use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\relation\conf\RelationConfig;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
-<<<<<<< HEAD
-use n2n\util\type\CastUtils;
-use rocket\ei\util\entry\EiuEntry;
-use rocket\ei\util\frame\EiuFrame;
-use rocket\impl\ei\component\prop\translation\conf\TranslationConfig;
-use rocket\impl\ei\component\prop\translation\conf\N2nLocaleDef;
-use rocket\ei\util\gui\EiuEntryGui;
-use rocket\ei\manage\gui\field\GuiFieldPath;
-use rocket\ei\EiPropPath;
-=======
-use rocket\ei\util\entry\EiuEntry;
 use rocket\ei\manage\gui\GuiFieldMap;
->>>>>>> branch '3.0.x' of git@github.com:n2n/rocket.git
 
 class TranslationGuiProp implements GuiProp {
 	/**
@@ -84,103 +72,29 @@ class TranslationGuiProp implements GuiProp {
 		} else {
 			$forkEiuFrame->exec($this->relationModel->getTargetEditEiCommandPath());
 		}
-			
-<<<<<<< HEAD
-		$tef = new TranslationEssentialsFactory($eiu, $forkEiuFrame, $this->translationConfig);
-=======
-		
->>>>>>> branch '3.0.x' of git@github.com:n2n/rocket.git
-		
-		$translationGuiField = new TranslationGuiField($toManyEiField, $targetGuiDefinition,
-				$this->labelLstr->t($eiFrame->getN2nContext()->getN2nLocale()), $this->minNumTranslations);
-		if ($this->copyCommand !== null) {
-			$translationGuiField->setCopyUrl($targetEiuFrame->getUrlToCommand($this->copyCommand)
-					->extR(null, array('bulky' => $eiu->gui()->isBulky())));
-		}
-		
-<<<<<<< HEAD
-		
-		$targetEiuEntries = $tef->deterTargetEiuEntries();
-		
-		$tef->initTargetGui();
-		
-		
-		foreach ($this->translationConfig->getN2nLocaleDefs() as $n2nLocaleDef) {
-			
-		}
-=======
+
+		$tef = new TranslationEssentialsFactory($eiu, $forkEiuFrame, $this->translationConfig->getN2nLocaleDefs());
+
 		$forkGuiPropPaths = $eiu->gui()->getForkGuiFieldPaths($eiu->prop()->getPath());
-		$eiuGui = $forkEiuFrame->newGui($eiu->gui()->getViewMode(), $forkGuiPropPaths);
->>>>>>> branch '3.0.x' of git@github.com:n2n/rocket.git
+		$tef->init($forkGuiPropPaths);
 		
-		foreach ($this->translationConfig->getN2nLocaleDefs() as $n2nLocaleDef) {
-			$n2nLocaleId = $n2nLocaleDef->getN2nLocaleId();
-<<<<<<< HEAD
-		
-			$
-		
-=======
-			
-			$eiuGui->$tragetEiuEntries[$n2nLocaleId] 
-			$viewMode = null;
-			$targetRelationEntry = null;
-			if (isset($targetRelationEntries[$n2nLocaleId])) {
-				$targetRelationEntry = $targetRelationEntries[$n2nLocaleId];
-			} else {
-				$eiObject = $targetEiuFrame->createNewEiObject();
-				$eiObject->getLiveObject()->setN2nLocale($n2nLocaleDef->getN2nLocale());
-				$targetRelationEntry = RelationEntry::fromM($targetEiuFrame->entry($eiObject)->getEiEntry());
-			}
->>>>>>> branch '3.0.x' of git@github.com:n2n/rocket.git
-			
-			$viewMode = ViewMode::determine($eiu->gui()->isBulky(), $eiu->gui()->isReadOnly(),
-					$targetRelationEntry->getEiEntry()->isNew());
-			$targetEiuEntryGuiAssembler = $targetEiuFrame->entry($targetRelationEntry->getEiEntry())
-					->newEntryGuiAssembler($eiu->gui()->getViewMode());
-			
-			$translationGuiField->registerN2nLocale($n2nLocaleDef, $targetRelationEntry,
-					$targetEiuEntryGuiAssembler, $n2nLocaleDef->isMandatory(),
-					isset($targetRelationEntries[$n2nLocaleId]));
+		$guiFieldMap = new GuiFieldMap();
+		foreach ($tef->getEiuGui()->getEiPropPaths() as $eiPropPath) {
+			$guiFieldMap->putGuiField($eiPropPath, $tef->createSplitGuiField($eiPropPath));
 		}
 		
-		$translationGuiField = new TranslationGuiField();
+		return new TranslationGuiField($this->translationConfig->getMinNumTranslations(),
+				$this->translationConfig->getN2nLocaleDefs(), $guiFieldMap);
 		
-		$translationGuiFieldMap = new GuiFieldMap($forkGuiFieldPath);
-		foreach ($forkEiPropPaths as $eiPropPath) {
-			$splitGuiField = new SplitGuiField();
-			foreach ($this->translationConfig->getN2nLocaleDefs() as $n2nLocaleDef) {
-				$n2nLocaleId = $n2nLocaleDef->getN2nLocaleId();
-				$splitGuiField->putGuiField($n2nLocaleDef->getN2nLocale(), 
-						$targetEiuEntryGuis[$n2nLocaleId]->getGuiFieldByEiPropPath($eiPropPath));
-			}
-			
-			$translationGuiFieldMap->putGuiField($translationGuiField, $splitGuiField);
-		}
-		
-		return $translationGuiField;
+		// 		if ($this->copyCommand !== null) {
+		// 			$translationGuiField->setCopyUrl($targetEiuFrame->getUrlToCommand($this->copyCommand)
+		// 					->extR(null, array('bulky' => $eiu->gui()->isBulky())));
+		// 		}
 	}
-	private function buildEiEntryGuis() {
-		$translationGuiField = new TranslationGuiField()
-		
-		$targetEiuEntries = $translationGuiField->deterTargetEiuEntries();
-		
-		foreach ($targetEiuEntries as $targetEiuEntry) {
-			$targetEiuEntry->
-		}
-		
-		$this->
-		
-		
-	}
-	
-	
-	
-	/**
-	 * @return EiuEntry[] 
-	 */
-	private function determineEiuEntries() {
-		foreach ($eiu->field()->getValue() as $targetEiuEntry) {
-			$target
+
+	private function filterForkGuiPropPaths(array $guiPropPaths) {
+		foreach ($eiPropPaths as $eiPropPath) {
+			
 		}
 	}
 	
@@ -249,13 +163,13 @@ class TranslationEssentialsFactory {
 	 * @param EiPropPath $eiFieldPath
 	 * @return EiuEntryGui[] 
 	 */
-	function createSplitGuiField(EiPropPath $eiFieldPath) {
+	function createSplitGuiField(EiPropPath $eiPropPath) {
 		$splitGuiField = new SplitGuiField();
 		foreach ($this->translationConfig->getN2nLocaleDefs() as $n2nLocaleDef) {
 			$n2nLocaleId = $n2nLocaleDef->getN2nLocaleId();
 			
 			$splitGuiField->putGuiField($n2nLocaleId, 
-					$this->targetEiuEntryGuis[$n2nLocaleId]->getGuiFieldByEiFieldPath($eiFieldPath));
+					$this->targetEiuEntryGuis[$n2nLocaleId]->getGuiFieldByEiFieldPath($eiPropPath));
 		}
 		return $splitGuiField;
 	}

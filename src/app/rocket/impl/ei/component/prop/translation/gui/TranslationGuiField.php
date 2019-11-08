@@ -24,9 +24,14 @@ namespace rocket\impl\ei\component\prop\translation;
 
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\si\content\SiField;
+use rocket\ei\manage\gui\GuiFieldMap;
 
 class TranslationGuiField implements GuiField {
 
+	function __construct(GuiFieldMap $forkGuiFieldMap) {
+		
+	}
+	
 	public function getSiField(): ?SiField {
 		return null;
 	}

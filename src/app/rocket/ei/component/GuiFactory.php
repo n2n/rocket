@@ -174,22 +174,23 @@ class GuiFactory {
 		
 		$eiEntryGui = new EiEntryGui($eiGui, $eiEntry, $treeLevel);
 		
-		$guiFieldAssembler = new EiEntryGuiAssembler($eiEntryGui);
+		$guiDefinition = $eiGui->getGuiDefinition();
 		
-		foreach ($eiGui->getGuiFieldPaths() as $guiFieldPath) {
-			$guiFieldAssembler->assembleGuiField($guiFieldPath);
+		foreach ($eiGui->getEiFieldPaths() as $eiFieldPath) {
+			$guiField = $guiDefinition->getGuiPropWrapper($eiFieldPath)->buildGuiField($eiEntryGui);
+			if ($guiField !== null) {
+				$eiEntryGui->getGuiFieldMap()->putGuiField($eiFieldPath, $guiField);	
+			}
 		}
 		
-		
-		
-		$guiFieldAssembler->finalize();
+		$eiEntryGui->markInitialized();
 				
 		return $eiEntryGui;
 	}
 	
-	static function createGuiFieldMap(EiEntryGui $eiEntryGui, GuiFieldPath $baseGuiFieldPath) {
-		new GuiFieldMap($eiEntryGui, $forkGuiFieldPath);
-	}
+// 	static function createGuiFieldMap(EiEntryGui $eiEntryGui, GuiFieldPath $baseGuiFieldPath) {
+// 		new GuiFieldMap($eiEntryGui, $forkGuiFieldPath);
+// 	}
 }
 
 
