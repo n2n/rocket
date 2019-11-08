@@ -71,6 +71,7 @@ class TypeEiProp extends DisplayableEiPropAdapter implements StatelessGuiFieldDi
 	 */
 	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
 		$eiMask = $this->getEiMask();
+		$eiObject = $eiu->object()->getEiObject();
 		if (!$eiMask->getEiType()->equals($eiObject->getEiEntityObj()->getEiType())) {
 			$eiMask = $eiObject->getEiEntityObj()->getEiType()->getEiMask();
 		}
