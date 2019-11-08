@@ -27,8 +27,7 @@ use rocket\si\content\SiField;
 
 class TranslationGuiField implements GuiField {
 
-	public function getSiField(): ?SiField {
-		return null;
+	public function getSiField(): SiField {
 	}
 	
 	public function save() {

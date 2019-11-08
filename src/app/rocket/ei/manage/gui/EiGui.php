@@ -44,6 +44,10 @@ class EiGui {
 	 */
 	private $guiStructureDeclarations = null;
 	/**
+	 * @var GuiFieldPath[]|null
+	 */
+	private $guiFieldPaths = null;
+	/**
 	 * @var EiGuiListener[]
 	 */
 	private $eiGuiListeners = array();
@@ -70,12 +74,12 @@ class EiGui {
 // 		$this->eiGuiNature = new EiGuiNature();
 	}
 	
-	/**
-	 * @return \rocket\ei\manage\frame\EiFrame
-	 */
-	public function getEiFrame() {
-		return $this->eiFrame;
-	}
+// 	/**
+// 	 * @return \rocket\ei\manage\frame\EiFrame
+// 	 */
+// 	public function getEiFrame() {
+// 		return $this->eiFrame;
+// 	}
 	
 	/**
 	 * @return \rocket\ei\manage\gui\GuiDefinition
@@ -128,14 +132,21 @@ class EiGui {
 // 	}
 	
 	/**
-	 * @param GuiStructureDeclaration[] $guiStructureDeclarations
+	 * @param GuiStructureDeclaration[]|null $guiStructureDeclarations
+	 * @param GuiFieldPath[]|null $guiFieldPaths
 	 */
-	public function init(array $guiStructureDeclarations) {
-		if ($this->guiStructureDeclarations !== null) {
+	public function init(?array $guiStructureDeclarations, array $guiFieldPaths = null) {
+		ArgUtils::assertTrue($guiStructureDeclarations !== null || $guiFieldPaths !== null);
+		
+		if ($this->isInit()) {
 			throw new IllegalStateException('EiGui already initialized.');
 		}
 		
-		$this->guiStructureDeclarations = $guiStructureDeclarations;
+		if ($guiFieldPaths === null) {
+			$this->guiStructureDeclarations = $guiStructureDeclarations;
+		} else {
+			$this->guiFieldPaths = $guiFieldPaths;
+		}
 		
 		foreach ($this->eiGuiListeners as $listener) {
 			$listener->onInitialized($this);
@@ -146,7 +157,7 @@ class EiGui {
 	 * @return boolean
 	 */
 	public function isInit() {
-		return $this->guiStructureDeclarations !== null;
+		return $this->guiStructureDeclarations !== null || $this->guiFieldPaths !== null;
 	}
 	
 	/**
@@ -204,6 +215,9 @@ class EiGui {
 	 * @return SiProp[]
 	 */
 	private function getSiProps() {
+		IllegalStateException::assertTrue($this->guiStructureDeclarations !== null,
+				'EiGui is forked.');
+		
 		$siProps = [];
 		foreach ($this->filterFieldGuiStructureDeclarations($this->guiStructureDeclarations) 
 				as $guiStructureDeclaration) {

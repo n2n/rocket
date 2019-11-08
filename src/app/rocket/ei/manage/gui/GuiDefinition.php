@@ -654,20 +654,24 @@ class GuiDefinition {
 		return $guiFieldPaths;
 	}
 	
-	function createEiGui(EiFrame $eiFrame, int $viewMode) {
+	function createEiGui(EiFrame $eiFrame, int $viewMode, array $guiFieldPaths = null) {
 		ArgUtils::assertTrue($this->eiMask->isA($eiFrame->getContextEiEngine()->getEiMask()));
 		
 		$eiGui = new EiGui($eiFrame, $this, $viewMode);
 		
-		$this->initEiGui($eiGui);
+		$this->initEiGui($eiGui, $guiFieldPaths);
 		
 		$this->eiMask->getEiModificatorCollection()->setupEiGui($eiGui);
 		
 		return $eiGui;
 	}
 	
-	
-	private function initEiGui(EiGui $eiGui) {
+	private function initEiGui(EiGui $eiGui, array $guiFieldPaths = null) {
+		if ($guiFieldPaths !== null) {
+			$eiGui->init(null, $guiFieldPaths);
+			return;
+		}
+		
 		$displayScheme = $this->eiMask->getDisplayScheme();
 		
 		$displayStructure = null;
