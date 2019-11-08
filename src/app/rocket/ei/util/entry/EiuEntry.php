@@ -576,7 +576,7 @@ class EiuEntry {
 	public function isTypeOf($eiTypeArg) {
 		$eiType = EiuAnalyst::buildEiTypeFromEiArg($eiTypeArg, 'eiTypeArg');
 		
-		return $this->getEiType()->equals($eiType);
+		return $this->getEiType()->isA($eiType);
 	}
 	
 	
