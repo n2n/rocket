@@ -37,6 +37,7 @@ use rocket\ei\component\prop\GuiEiPropFork;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\component\command\GuiEiCommand;
 use n2n\core\container\N2nContext;
+use rocket\ei\manage\gui\GuiFieldMap;
 
 class GuiFactory {
 	private $eiMask;
@@ -179,9 +180,15 @@ class GuiFactory {
 			$guiFieldAssembler->assembleGuiField($guiFieldPath);
 		}
 		
+		
+		
 		$guiFieldAssembler->finalize();
 				
 		return $eiEntryGui;
+	}
+	
+	static function createGuiFieldMap(EiEntryGui $eiEntryGui, GuiFieldPath $baseGuiFieldPath) {
+		new GuiFieldMap($eiEntryGui, $forkGuiFieldPath);
 	}
 }
 

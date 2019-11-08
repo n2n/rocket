@@ -28,6 +28,7 @@ use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\relation\conf\RelationConfig;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
+<<<<<<< HEAD
 use n2n\util\type\CastUtils;
 use rocket\ei\util\entry\EiuEntry;
 use rocket\ei\util\frame\EiuFrame;
@@ -36,6 +37,10 @@ use rocket\impl\ei\component\prop\translation\conf\N2nLocaleDef;
 use rocket\ei\util\gui\EiuEntryGui;
 use rocket\ei\manage\gui\field\GuiFieldPath;
 use rocket\ei\EiPropPath;
+=======
+use rocket\ei\util\entry\EiuEntry;
+use rocket\ei\manage\gui\GuiFieldMap;
+>>>>>>> branch '3.0.x' of git@github.com:n2n/rocket.git
 
 class TranslationGuiProp implements GuiProp {
 	/**
@@ -80,7 +85,11 @@ class TranslationGuiProp implements GuiProp {
 			$forkEiuFrame->exec($this->relationModel->getTargetEditEiCommandPath());
 		}
 			
+<<<<<<< HEAD
 		$tef = new TranslationEssentialsFactory($eiu, $forkEiuFrame, $this->translationConfig);
+=======
+		
+>>>>>>> branch '3.0.x' of git@github.com:n2n/rocket.git
 		
 		$translationGuiField = new TranslationGuiField($toManyEiField, $targetGuiDefinition,
 				$this->labelLstr->t($eiFrame->getN2nContext()->getN2nLocale()), $this->minNumTranslations);
@@ -89,6 +98,7 @@ class TranslationGuiProp implements GuiProp {
 					->extR(null, array('bulky' => $eiu->gui()->isBulky())));
 		}
 		
+<<<<<<< HEAD
 		
 		$targetEiuEntries = $tef->deterTargetEiuEntries();
 		
@@ -98,21 +108,53 @@ class TranslationGuiProp implements GuiProp {
 		foreach ($this->translationConfig->getN2nLocaleDefs() as $n2nLocaleDef) {
 			
 		}
+=======
+		$forkGuiPropPaths = $eiu->gui()->getForkGuiFieldPaths($eiu->prop()->getPath());
+		$eiuGui = $forkEiuFrame->newGui($eiu->gui()->getViewMode(), $forkGuiPropPaths);
+>>>>>>> branch '3.0.x' of git@github.com:n2n/rocket.git
 		
 		foreach ($this->translationConfig->getN2nLocaleDefs() as $n2nLocaleDef) {
 			$n2nLocaleId = $n2nLocaleDef->getN2nLocaleId();
+<<<<<<< HEAD
 		
 			$
 		
+=======
+			
+			$eiuGui->$tragetEiuEntries[$n2nLocaleId] 
+			$viewMode = null;
+			$targetRelationEntry = null;
+			if (isset($targetRelationEntries[$n2nLocaleId])) {
+				$targetRelationEntry = $targetRelationEntries[$n2nLocaleId];
+			} else {
+				$eiObject = $targetEiuFrame->createNewEiObject();
+				$eiObject->getLiveObject()->setN2nLocale($n2nLocaleDef->getN2nLocale());
+				$targetRelationEntry = RelationEntry::fromM($targetEiuFrame->entry($eiObject)->getEiEntry());
+			}
+>>>>>>> branch '3.0.x' of git@github.com:n2n/rocket.git
 			
 			$viewMode = ViewMode::determine($eiu->gui()->isBulky(), $eiu->gui()->isReadOnly(),
 					$targetRelationEntry->getEiEntry()->isNew());
 			$targetEiuEntryGuiAssembler = $targetEiuFrame->entry($targetRelationEntry->getEiEntry())
-			->newEntryGuiAssembler($eiu->gui()->getViewMode());
+					->newEntryGuiAssembler($eiu->gui()->getViewMode());
 			
 			$translationGuiField->registerN2nLocale($n2nLocaleDef, $targetRelationEntry,
 					$targetEiuEntryGuiAssembler, $n2nLocaleDef->isMandatory(),
 					isset($targetRelationEntries[$n2nLocaleId]));
+		}
+		
+		$translationGuiField = new TranslationGuiField();
+		
+		$translationGuiFieldMap = new GuiFieldMap($forkGuiFieldPath);
+		foreach ($forkEiPropPaths as $eiPropPath) {
+			$splitGuiField = new SplitGuiField();
+			foreach ($this->translationConfig->getN2nLocaleDefs() as $n2nLocaleDef) {
+				$n2nLocaleId = $n2nLocaleDef->getN2nLocaleId();
+				$splitGuiField->putGuiField($n2nLocaleDef->getN2nLocale(), 
+						$targetEiuEntryGuis[$n2nLocaleId]->getGuiFieldByEiPropPath($eiPropPath));
+			}
+			
+			$translationGuiFieldMap->putGuiField($translationGuiField, $splitGuiField);
 		}
 		
 		return $translationGuiField;
@@ -132,6 +174,15 @@ class TranslationGuiProp implements GuiProp {
 	}
 	
 	
+	
+	/**
+	 * @return EiuEntry[] 
+	 */
+	private function determineEiuEntries() {
+		foreach ($eiu->field()->getValue() as $targetEiuEntry) {
+			$target
+		}
+	}
 	
 }
 
