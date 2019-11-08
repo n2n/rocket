@@ -4,19 +4,12 @@ namespace rocket\ei\manage\gui;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\entry\EiEntry;
 use n2n\util\type\ArgUtils;
-use n2n\util\ex\IllegalStateException;
 use rocket\ei\component\GuiFactory;
 use rocket\ei\manage\gui\field\GuiFieldPath;
 use rocket\ei\manage\gui\control\GuiControlPath;
 use rocket\ei\manage\gui\control\UnknownGuiControlException;
 use rocket\ei\manage\gui\control\GeneralGuiControl;
 use rocket\ei\manage\api\ApiControlCallId;
-use rocket\si\meta\SiDeclaration;
-use rocket\si\meta\SiProp;
-use rocket\si\meta\SiTypeDeclaration;
-use rocket\si\meta\SiType;
-use rocket\si\meta\SiStructureDeclaration;
-use rocket\ei\EiPropPath;
 
 /**
  * @author andreas
@@ -55,10 +48,6 @@ class EiGui {
 	 * @var EiEntryGui[]
 	 */
 	private $eiEntryGuis = array();
-// 	/**
-// 	 * @var EiGuiNature
-// 	 */
-// 	private $eiGuiNature;
 	
 	/**
 	 * @param EiFrame $eiFrame
@@ -75,15 +64,15 @@ class EiGui {
 // 		$this->eiGuiNature = new EiGuiNature();
 	}
 	
-// 	/**
-// 	 * @return \rocket\ei\manage\frame\EiFrame
-// 	 */
-// 	public function getEiFrame() {
-// 		return $this->eiFrame;
-// 	}
+	/**
+	 * @return \rocket\ei\manage\frame\EiFrame
+	 */
+	public function getEiFrame() {
+		return $this->eiFrame;
+	}
 	
 	/**
-	 * @return \rocket\ei\manage\gui\GuiDefinition
+	 * @return \rocket\ei\manage\gui$\GuiDefinition
 	 */
 	public function getGuiDefinition() {
 		return $this->guiDefinition;
@@ -96,60 +85,20 @@ class EiGui {
 		return $this->viewMode;
 	}
 	
+	private $rootEiPropPaths = [];
 	
-
-	
-// 	/**
-// 	 * @param GuiFieldPath $guiFieldPath
-// 	 * @throws GuiException
-// 	 * @return \rocket\ei\manage\gui\GuiPropAssembly
-// 	 */
-// 	public function getGuiPropAssemblyByGuiFieldPath(GuiFieldPath $guiFieldPath) {
-// 		$guiFieldPathStr = (string) $guiFieldPath;
-		
-// 		if (isset($this->guiPropAssemblies[$guiFieldPathStr])) {
-// 			return $this->guiPropAssemblies[$guiFieldPathStr];
-// 		}
-		
-// 		throw new GuiException('No GuiPropAssembly for GuiFieldPath available: ' . $guiFieldPathStr);
-// 	}
-	
-	/**
-	 * @return boolean
-	 */
-	public function isInit() {
-		return $this->guiStructureDeclarations !== null || $this->guiFieldPaths !== null;
-	}
-	
-	/**
-	 * @throws IllegalStateException
-	 */
-	private function ensureInit() {
-		if ($this->guiStructureDeclarations !== null) return;
-		
-		throw new IllegalStateException('EiGui not yet initialized.');
-	}
-	
-	/**
-	 * @param EiPropPath $forkEiPropPath
-	 * @return GuiFieldPath[]
-	 */
-	function getForkGuiFieldPaths(EiPropPath $forkEiPropPath) {
-		$forkGuiFieldPaths = [];
-		foreach ($this->getGuiFieldPaths() as $guiFieldPath) {
-			if ($guiFieldPath->getFirstEiPropPath()->equals($eiPropPath)) {
-				continue;
-			}
-			
-			$forkGuiFieldPaths[] = $guiFieldPath->getShifted();
+	function getRootEiPropPaths() {
+		if ($this->rootEiPropPaths !== null) {
+			return $this->rootEiPropPaths;
 		}
-		return $forkGuiFieldPaths;
-	}
-	
-	function createForkGuiFieldMap(GuiFieldPath $forkGuiFieldPath) {
 		
+		$this->rootEiPropPaths = [];
+		foreach ($this->guiFieldPaths as $guiFieldPath) {
+			$eiPropPath = $guiFieldPath->getFirstEiPropPath();
+			$this->rootEiPropPaths[(string) $eiPropPath] = $eiPropPath;
+		}
+		return $this->rootEiPropPaths;
 	}
-	
 	
 	
 	/**

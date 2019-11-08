@@ -29,6 +29,12 @@ use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\relation\conf\RelationConfig;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\ei\manage\gui\GuiFieldMap;
+use rocket\ei\util\entry\EiuEntry;
+use n2n\util\type\CastUtils;
+use rocket\ei\util\gui\EiuEntryGui;
+use rocket\impl\ei\component\prop\translation\conf\N2nLocaleDef;
+use n2n\l10n\N2nLocale;
+use rocket\ei\EiPropPath;
 
 class TranslationGuiProp implements GuiProp {
 	/**
@@ -66,17 +72,17 @@ class TranslationGuiProp implements GuiProp {
 	}
 	
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		$forkEiuFrame = $eiu->frame()->forkDiscover($eiu->prop()->getPath());
+		$forkEiuFrame = $eiu->frame()->forkDiscover($eiu->prop()->getPath(), $eiu->entry());
 		if ($eiu->gui()->isReadOnly()) {
 			$forkEiuFrame->exec($this->relationModel->getTargetReadEiCommandPath());
 		} else {
 			$forkEiuFrame->exec($this->relationModel->getTargetEditEiCommandPath());
 		}
-
+		
 		$tef = new TranslationEssentialsFactory($eiu, $forkEiuFrame, $this->translationConfig->getN2nLocaleDefs());
 
 		$forkGuiPropPaths = $eiu->gui()->getForkGuiFieldPaths($eiu->prop()->getPath());
-		$tef->init($forkGuiPropPaths);
+		$targetEiuEntries = $tef->init($forkGuiPropPaths);
 		
 		$guiFieldMap = new GuiFieldMap();
 		foreach ($tef->getEiuGui()->getEiPropPaths() as $eiPropPath) {
@@ -84,7 +90,7 @@ class TranslationGuiProp implements GuiProp {
 		}
 		
 		return new TranslationGuiField($this->translationConfig->getMinNumTranslations(),
-				$this->translationConfig->getN2nLocaleDefs(), $guiFieldMap);
+				$this->translationConfig->getN2nLocaleDefs(), $targetEiuEntries, $guiFieldMap);
 		
 		// 		if ($this->copyCommand !== null) {
 		// 			$translationGuiField->setCopyUrl($targetEiuFrame->getUrlToCommand($this->copyCommand)
@@ -98,6 +104,7 @@ class TranslationEssentialsFactory {
 	private $forkEiuFrame;
 	private $translationConfig;
 	
+	private $targetEiuEntries;
 	private $targetEiuGui;
 	private $targetEiuEntryGuis;
 	
@@ -118,14 +125,14 @@ class TranslationEssentialsFactory {
 			$mappedValues[(string) $targetEiuEntry->getEntityObj()->getN2nLocale()] = $targetEiuEntry;
 		}
 		
-		$targetEiuEntries = [];
+		$this->targetEiuEntries = [];
 		foreach ($this->translationConfig->getN2nLocaleDefs() as $n2nLocaleDef) {
 			$n2nLocaleId = $n2nLocaleDef->getN2nLocaleId();
 			
-			$targetEiuEntries[$n2nLocaleId] = $mappedValues[$n2nLocaleId] 
+			$this->targetEiuEntries[$n2nLocaleId] = $mappedValues[$n2nLocaleId] 
 					?? $this->createTargetEiuEntry($n2nLocaleDef);
 		}
-		return $targetEiuEntries;
+		return $this->targetEiuEntries;
 	}
 	
 	/**
@@ -133,28 +140,41 @@ class TranslationEssentialsFactory {
 	 */
 	function init(array $forkGuiFieldPaths) {
 		$this->targetEiuGui = $this->forkEiuFrame->newGui($this->eiu->gui()->getViewMode(), $forkGuiFieldPaths);
-		$targetEiuEntries = $this->deterTargetEiuEntries();
+		$this->deterTargetEiuEntries();
 		
 		$this->targetEiEntryGuis = [];
-		foreach ($targetEiuEntries as $n2nLocaleId => $targetEiuEntry) {
+		foreach ($this->targetEiuEntries as $n2nLocaleId => $targetEiuEntry) {
 			$this->targetEiEntryGuis[$n2nLocaleId] = $this->targetEiuGui->appendNewEntryGui($targetEiuEntry);
 		}
-		return $targetEiuEntries;
 	}
 	
 	/**
-	 * @param N2nLocaleDef $n2nLocaleDef
+	 * @return EiuEntry[]
+	 */
+	function getTargetEiuEntries() {
+		return $this->targetEiuEntries;
+	}
+	
+	/**
+	 * @return EiuEntryGui[]
+	 */
+	function getTargetEiuEntryGuis() {
+		return $this->targetEiuEntryGuis;
+	}
+	
+	/**
+	 * @param N2nLocale $n2nLocale
 	 * @return EiuEntry
 	 */
-	private function createTargetEiuEntry($n2nLocaleDef) {
+	private function createTargetEiuEntry($n2nLocale) {
 		$targetEiuEntry = $this->forkEiuFrame->newEntry();
-		$targetEiuEntry->getEntityObj()->setN2nLocale($n2nLocaleDef->getN2nLocale());
+		$targetEiuEntry->getEntityObj()->setN2nLocale($n2nLocale);
 		return $targetEiuEntry;
 	}
 	
 	/**
 	 * @param EiPropPath $eiFieldPath
-	 * @return EiuEntryGui[] 
+	 * @return SplitGuiField
 	 */
 	function createSplitGuiField(EiPropPath $eiPropPath) {
 		$splitGuiField = new SplitGuiField();

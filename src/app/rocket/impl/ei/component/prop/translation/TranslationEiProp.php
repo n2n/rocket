@@ -58,20 +58,16 @@ use rocket\ei\manage\gui\ViewMode;
 use rocket\impl\ei\component\prop\translation\command\TranslationCopyCommand;
 use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
-use rocket\ei\component\prop\GuiEiPropFork;
 use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\manage\gui\field\GuiFieldPath;
 use rocket\ei\manage\gui\EiFieldAbstraction;
 use rocket\ei\manage\LiveEiObject;
 use rocket\impl\ei\component\prop\translation\conf\TranslationConfig;
 
-class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiPropFork, FieldEiProp, RelationEiProp, QuickSearchableEiProp {
-	private $n2nLocaleDefs = array();
-	private $minNumTranslations = 0;
-	private $copyCommand;
-	
+class TranslationEiProp extends EmbeddedOneToManyEiProp implements FieldEiProp, RelationEiProp, QuickSearchableEiProp {
+
 	public function prepare() {
-		return new TranslationConfig($this);
+		$this->getConfigurator()->addAdaption(new TranslationConfig($this));
 	}
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {
@@ -88,44 +84,6 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiPropFork
 		$this->entityProperty = $entityProperty;
 	}
 	
-	public function setN2nLocaleDefs(array $n2nLocaleDefs) {
-		ArgUtils::valArray($n2nLocaleDefs, N2nLocaleDef::class);
-		$this->n2nLocaleDefs = $n2nLocaleDefs;
-	}
-	
-	public function getN2nLocaleDefs() {
-		return $this->n2nLocaleDefs;
-	}
-	
-	public function setCopyCommand(TranslationCopyCommand $translationCopyCommand = null) {
-		$this->copyCommand = $translationCopyCommand;
-	}
-	
-	/**
-	 * @param int $minNumTranslations
-	 */
-	public function setMinNumTranslations(int $minNumTranslations) {
-		$this->minNumTranslations = $minNumTranslations;
-	}
-	
-	/**
-	 * @return int
-	 */
-	public function getMinNumTranslations() {
-		return $this->minNumTranslations;
-	}
-	
-	/* (non-PHPdoc)
-	 * @see \rocket\ei\component\prop\EiProp::getEiField()
-	 */
-	public function buildEiField(Eiu $eiu): ?EiField {
-		$readOnly = $this->eiPropRelation->isReadOnly($eiu->entry()->getEiEntry(), $eiu->frame()->getEiFrame());
-		
-		return new TranslationEiField($eiu, $this,
-				($readOnly ? null : $this), $this);
-	}
-	
-		
 	public function buildGuiProp(Eiu $eiu): ?GuiProp {
 		return new TranslationGuiProp($eiu->context()
 				->engine($this->eiPropRelation->getTargetEiMask())->getGuiDefinition());

@@ -28,6 +28,8 @@ use n2n\impl\persistence\orm\property\EmbeddedEntityProperty;
 use n2n\util\type\ArgUtils;
 use rocket\ei\manage\entry\EiField;
 use rocket\ei\manage\gui\DisplayDefinition;
+use rocket\ei\manage\gui\GuiDefinition;
+use rocket\ei\manage\gui\GuiFieldMap;
 use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\FieldEiProp;
 use n2n\reflection\ReflectionUtils;
@@ -108,10 +110,6 @@ class EmbeddedEiProp extends PropertyEiPropAdapter implements GuiEiProp, FieldEi
 						->getEmbeddedEntityPropertyCollection()->getClass());
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\GuiEiPropFork::buildGuiPropFork()
-	 */
 	public function buildGuiProp(Eiu $eiu): ?GuiProp {
 		if (!$this->isMandatory()) {
 			return new EmbeddedGuiProp($this);
@@ -147,29 +145,34 @@ class EmbeddedGuiProp implements GuiProp {
 		$this->eiProp = $eiProp;
 	}
 	
-	public function isStringRepresentable(): bool {
-		return false;
-	}
+// 	public function isStringRepresentable(): bool {
+// 		return false;
+// 	}
 
-	public function getDisplayHelpTextLstr(): ?Lstr {
-		return null;
-	}
+// 	public function getDisplayHelpTextLstr(): ?Lstr {
+// 		return null;
+// 	}
 
-	public function getDisplayLabelLstr(): Lstr {
-		return $this->eiProp->getLabelLstr();
-	}
+// 	public function getDisplayLabelLstr(): Lstr {
+// 		return $this->eiProp->getLabelLstr();
+// 	}
 
 	public function buildDisplayDefinition($eiu): ?DisplayDefinition {
 		return new DisplayDefinition(SiStructureType::ITEM, true);
 	}
 
-	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
-		return null;
-	}
+// 	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
+// 		return null;
+// 	}
 
 	public function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
 		return new EmbeddedGuiField($eiu, $this->eiProp);
 	}
+	
+	public function getForkGuiDefinition(): ?GuiDefinition {
+		return null;
+	}
+
 }
 
 
@@ -190,10 +193,6 @@ class EmbeddedGuiField implements GuiField {
 		}
 		
 		$this->eiu->field()->setValue($this->eiu->entry()->fieldMap($this->embeddedEiProp));
-	}
-
-	public function getHtmlContainerAttrs(): array {
-		return [];
 	}
 
 	public function isReadOnly(): bool {
@@ -227,6 +226,15 @@ class EmbeddedGuiField implements GuiField {
 	public function getSiField(): SiField {
 		throw new NotYetImplementedException();
 	}
+	
+	public function getContextSiFields(): array {
+		return [];
+	}
+
+	public function getForkGuiFieldMap(): ?GuiFieldMap {
+		return null;
+	}
+
 
 
 

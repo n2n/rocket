@@ -25,7 +25,7 @@ namespace rocket\impl\ei\component\prop\translation;
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\si\content\SiField;
 
-class TranslationGuiField implements GuiField {
+class SplitGuiField implements GuiField {
 
 	public function getSiField(): SiField {
 	}

@@ -38,6 +38,8 @@ use n2n\impl\web\dispatch\mag\model\NumericMag;
 use rocket\impl\ei\component\prop\adapter\config\ConfigAdaption;
 use rocket\ei\util\Eiu;
 use n2n\util\type\attrs\DataSet;
+use n2n\util\type\ArgUtils;
+use rocket\impl\ei\component\prop\translation\command\TranslationCopyCommand;
 
 class TranslationConfig extends ConfigAdaption {
 	const ATTR_USE_SYSTEM_LOCALES_KEY = 'useSystemN2nLocales';
@@ -50,8 +52,42 @@ class TranslationConfig extends ConfigAdaption {
 	
 	private $translationEiProp;
 	
+	private $n2nLocaleDefs = array();
+	private $minNumTranslations = 0;
+	private $copyCommand;
+	
+	
 	public function __construct(TranslationEiProp $translationEiProp) {
 		$this->translationEiProp = $translationEiProp;
+	}
+	
+	
+	
+	public function setN2nLocaleDefs(array $n2nLocaleDefs) {
+		ArgUtils::valArray($n2nLocaleDefs, N2nLocaleDef::class);
+		$this->n2nLocaleDefs = $n2nLocaleDefs;
+	}
+	
+	public function getN2nLocaleDefs() {
+		return $this->n2nLocaleDefs;
+	}
+	
+// 	public function setCopyCommand(TranslationCopyCommand $translationCopyCommand = null) {
+// 		$this->copyCommand = $translationCopyCommand;
+// 	}
+	
+	/**
+	 * @param int $minNumTranslations
+	 */
+	public function setMinNumTranslations(int $minNumTranslations) {
+		$this->minNumTranslations = $minNumTranslations;
+	}
+	
+	/**
+	 * @return int
+	 */
+	public function getMinNumTranslations() {
+		return $this->minNumTranslations;
 	}
 	
 	public function testCompatibility(PropertyAssignation $propertyAssignation): int {

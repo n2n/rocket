@@ -22,6 +22,7 @@
 namespace rocket\ei\manage\gui\field;
 
 use rocket\si\content\SiField;
+use rocket\ei\manage\gui\GuiFieldMap;
 
 interface GuiField {
 	
@@ -38,7 +39,7 @@ interface GuiField {
 	/**
 	 * @return SiField 
 	 */
-	function getSiField(): SiField;
+	function getSiField(): ?SiField;
 	
 	/**
 	 * @throws \n2n\util\ex\IllegalStateException if {@link self::getSiField()::isReadOnly()} returns true.
@@ -50,5 +51,8 @@ interface GuiField {
 	 */
 	function getContextSiFields(): array;
 	
+	/**
+	 * @return GuiFieldMap|NULL
+	 */
 	function getForkGuiFieldMap(): ?GuiFieldMap;
 }

@@ -49,14 +49,13 @@ use n2n\web\dispatch\mag\Mag;
 use rocket\ei\manage\gui\field\GuiFieldForkEditable;
 use rocket\ei\util\gui\EiuEntryGuiAssembler;
 use rocket\ei\manage\gui\GuiDefinition;
-use rocket\ei\component\prop\GuiEiPropFork;
 use rocket\ei\manage\entry\EiField;
 use rocket\ei\manage\gui\EiFieldAbstraction;
 use rocket\impl\ei\component\prop\adapter\entry\EiFieldWrapperCollection;
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 
-class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiEiPropFork, GuiPropFork {
+class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropFork {
 	
 	public function __construct() {
 		parent::__construct();

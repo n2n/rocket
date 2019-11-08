@@ -33,11 +33,8 @@ use rocket\ei\manage\gui\field\GuiFieldPath;
 use rocket\ei\manage\gui\EiGui;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\util\Eiu;
-use rocket\ei\component\prop\GuiEiPropFork;
-use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\component\command\GuiEiCommand;
 use n2n\core\container\N2nContext;
-use rocket\ei\manage\gui\GuiFieldMap;
 
 class GuiFactory {
 	private $eiMask;
@@ -59,11 +56,6 @@ class GuiFactory {
 			if (($eiProp instanceof GuiEiProp)
 					&& null !== ($guiProp = $eiProp->buildGuiProp(new Eiu($n2nContext, $this->eiMask, $eiPropPath)))) {
 				$guiDefinition->putGuiProp($eiPropPath, $guiProp, EiPropPath::from($eiProp));
-			}
-					
-			if (($eiProp instanceof GuiEiPropFork)
-					&& null !== ($guiPropFork = $eiProp->buildGuiPropFork(new Eiu($n2nContext, $this->eiMask, $eiPropPath)))) {
-				$guiDefinition->putGuiPropFork($eiPropPath, $guiPropFork);
 			}
 		}
 		
