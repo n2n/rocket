@@ -54,7 +54,7 @@ class EiEntryGui {
 	/**
 	 * @var GuiFieldFork[]
 	 */
-	private $guiFieldForks = array();
+	private $guiFieldMap
 	/**
 	 * @var EiEntryGuiListener[]
 	 */

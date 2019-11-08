@@ -91,13 +91,6 @@ class TranslationGuiProp implements GuiProp {
 		// 					->extR(null, array('bulky' => $eiu->gui()->isBulky())));
 		// 		}
 	}
-
-	private function filterForkGuiPropPaths(array $guiPropPaths) {
-		foreach ($eiPropPaths as $eiPropPath) {
-			
-		}
-	}
-	
 }
 
 class TranslationEssentialsFactory {
