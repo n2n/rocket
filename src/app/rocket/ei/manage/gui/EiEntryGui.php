@@ -21,13 +21,10 @@
  */
 namespace rocket\ei\manage\gui;
 
-use n2n\web\dispatch\map\PropertyPath;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\mask\EiMask;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\manage\gui\field\GuiFieldPath;
-use rocket\ei\manage\gui\field\GuiFieldFork;
-use rocket\ei\manage\gui\field\GuiField;
 use rocket\si\content\SiEntryBuildup;
 use rocket\si\content\SiEntry;
 use rocket\ei\manage\gui\control\GuiControlPath;
@@ -36,7 +33,6 @@ use rocket\si\input\SiEntryInput;
 use rocket\si\content\impl\basic\BulkyEntrySiComp;
 use rocket\si\content\impl\basic\CompactEntrySiComp;
 use n2n\util\type\attrs\AttributesException;
-use rocket\ei\EiPropPath;
 
 class EiEntryGui {
 	/**
@@ -52,9 +48,9 @@ class EiEntryGui {
 	 */
 	private $treeLevel;
 	/**
-	 * @var GuiFieldFork[]
+	 * @var GuiFieldMap
 	 */
-	private $guiFieldMap
+	private $guiFieldMap;
 	/**
 	 * @var EiEntryGuiListener[]
 	 */
@@ -95,62 +91,8 @@ class EiEntryGui {
 	public function getTreeLevel() {
 		return $this->treeLevel;
 	}
-		
-	/**
-	 * @param GuiFieldPath $guiFieldPath
-	 * @return \n2n\web\dispatch\map\PropertyPath
-	 */
-	public function createPropertyPath(GuiFieldPath $guiFieldPath) {
-		if ($this->contextPropertyPath !== null) {
-			return $this->contextPropertyPath->ext((string) $guiFieldPath);
-		}
-		
-		return new PropertyPath(array((string) $guiFieldPath));
-	}
-	
-	/**
-	 * @param GuiFieldPath $guiFieldPath
-	 * @return bool
-	 */
-	public function containsGuiFieldPath(GuiFieldPath $guiFieldPath) {
-		return isset($this->guiFields[(string) $guiFieldPath])
-				|| isset($this->guiFieldForks[(string) $guiFieldPath]);
-	}
 	
 	
-	
-	/**
-	 * @param GuiFieldPath $guiFieldPath
-	 * @return bool
-	 */
-	public function containsGuiFieldGuiFieldPath(GuiFieldPath $guiFieldPath) {
-		return isset($this->guiFields[(string) $guiFieldPath]);
-	}
-	
-	/**
-	 * @return \rocket\ei\manage\gui\field\GuiFieldPath[]
-	 */
-	public function getGuiFieldGuiFieldPaths() {
-		$guiFieldPaths = array();
-		foreach (array_keys($this->guiFields) as $eiPropPathStr) {
-			$guiFieldPaths[] = GuiFieldPath::create($eiPropPathStr);
-		}
-		return $guiFieldPaths;
-	}
-	
-	/**
-	 * @param GuiFieldPath $guiFieldPath
-	 * @throws GuiException
-	 * @return GuiField
-	 */
-	public function getGuiField(GuiFieldPath $guiFieldPath) {
-		$guiFieldPathStr = (string) $guiFieldPath;
-		if (!isset($this->guiFields[$guiFieldPathStr])) {
-			throw new GuiException('No GuiField with GuiFieldPath \'' . $guiFieldPathStr . '\' for \'' . $this . '\' registered');
-		}
-		
-		return $this->guiFields[$guiFieldPathStr];
-	}
 	
 	/**
 	 * @return \rocket\ei\manage\gui\field\GuiField[]
@@ -235,6 +177,16 @@ class EiEntryGui {
 // 		return $this->guiFieldForks[$eiPropPathStr];
 // 	}
 	
+	function init(GuiFieldMap $guiFieldMap) {
+		$this->ensureNotInitialized();
+		
+		$this->guiFieldMap = $guiFieldMap;
+		
+		foreach ($this->eiEntryGuiListeners as $eiEntryGuiListener) {
+			$eiEntryGuiListener->finalized($this);
+		}
+	}
+	
 // 	/**
 // 	 * @return GuiFieldFork[]
 // 	 */
@@ -259,30 +211,21 @@ class EiEntryGui {
 	 * @return boolean
 	 */
 	public function isInitialized() {
-		return $this->initialized;
+		return $this->guiFieldMap !== null;
 	}
 	
 	private function ensureInitialized() {
-		if ($this->initialized) return;
+		if ($this->isInitialized()) return;
 		
 		throw new IllegalStateException('EiEntryGui not yet initlized.');
 	}
 	
 	private function ensureNotInitialized() {
-		if (!$this->initialized) return;
+		if (!$this->isInitialized()) return;
 		
 		throw new IllegalStateException('EiEntryGui already initialized.');
 	}
 	
-	public function markInitialized() {
-		$this->ensureNotInitialized();
-		
-		$this->initialized = true;
-		
-		foreach ($this->eiEntryGuiListeners as $eiEntryGuiListener) {
-			$eiEntryGuiListener->finalized($this);
-		}
-	}
 	
 	public function registerEiEntryGuiListener(EiEntryGuiListener $eiEntryGuiListener) {
 		$this->eiEntryGuiListeners[spl_object_hash($eiEntryGuiListener)] = $eiEntryGuiListener;
@@ -333,7 +276,7 @@ class EiEntryGui {
 		
 		$siEntry = new SiEntryBuildup($typeId, $idName);
 		
-		foreach ($this->guiFields as $guiFieldPathStr => $guiField) {
+		foreach ($this->guiFieldMap->getGuiFields() as $guiFieldPathStr => $guiField) {
 			$siEntry->putField($guiFieldPathStr, $guiField->getSiField());
 		}
 		

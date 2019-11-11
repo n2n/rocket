@@ -31,6 +31,14 @@ class EiGuiLayout {
 		$this->guiStructureDeclarations = $guiStructureDeclarations;
 		$this->eiGui = $eiGui;
 	}
+	
+	/**
+	 * @return \rocket\ei\manage\gui\EiGui
+	 */
+	function getEiGui() {
+		return $this->eiGui;
+	}
+	
 	/**
 	 * @return GuiFieldPath[]
 	 */
@@ -61,16 +69,17 @@ class EiGuiLayout {
 		$siProps = [];
 		foreach ($this->filterFieldGuiStructureDeclarations($this->guiStructureDeclarations)
 				as $guiStructureDeclaration) {
-					$siProps[] = $this->createSiProp($guiStructureDeclaration);
-				}
-				return $siProps;
+			$siProps[] = $this->createSiProp($guiStructureDeclaration);
+		}
+		return $siProps;
 	}
 	
 	/**
 	 * @return \rocket\si\meta\SiTypeDeclaration
 	 */
 	function createSiTypDeclaration() {
-		$siTypeQualifier = $this->guiDefinition->getEiMask()->createSiTypeQualifier($this->eiFrame->getN2nContext()->getN2nLocale());
+		$siTypeQualifier = $this->eiGui->getGuiDefinition()->getEiMask()
+				->createSiTypeQualifier($this->eiGui->getEiFrame()->getN2nContext()->getN2nLocale());
 		$siType = new SiType($siTypeQualifier, $this->getSiProps());
 		
 		return new SiTypeDeclaration($siType, $this->createSiStructureDeclarations($this->guiStructureDeclarations));

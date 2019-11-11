@@ -22,7 +22,6 @@
 namespace rocket\ei\util;
 
 use n2n\web\http\PageNotFoundException;
-use rocket\ei\manage\security\InaccessibleEntryException;
 use n2n\web\http\ForbiddenException;
 use rocket\ei\manage\ManageState;
 use rocket\ei\manage\preview\model\UnavailablePreviewException;
@@ -41,6 +40,10 @@ use rocket\si\meta\SiDeclaration;
 use rocket\si\content\SiPartialContent;
 use rocket\si\content\SiEntry;
 use rocket\si\content\impl\basic\BulkyEntrySiComp;
+use rocket\ei\manage\security\InaccessibleEiEntryException;
+use rocket\ei\manage\gui\EiGui;
+use rocket\ei\manage\frame\EiFrameUtil;
+use rocket\ei\manage\LiveEiObject;
 
 class EiuCtrl {
 	private $eiu;
@@ -98,7 +101,7 @@ class EiuCtrl {
 			throw new PageNotFoundException(null, 0, $e);
 		} catch (\InvalidArgumentException $e) {
 			throw new PageNotFoundException(null, 0, $e);
-		} catch (InaccessibleEntryException $e) {
+		} catch (InaccessibleEiEntryException $e) {
 			throw new ForbiddenException(null, 0, $e);
 		}
 		
@@ -279,21 +282,22 @@ class EiuCtrl {
 			return;
 		}
 		
-		$eiuGui = $this->eiuFrame->newGui(ViewMode::COMPACT_READ);
+		$eiuGuiLayout = $this->eiuFrame->newGuiLayout(ViewMode::COMPACT_READ);
+		$eiGui = $eiuGuiLayout->getEiGuiLayout()->getEiGui();
 		
-		$this->composeEiuGuiForList($eiuGui, $pageSize);
+		$this->composeEiuGuiForList($eiGui, $pageSize);
 		
-		$siDeclaration = $eiuGui->getEiGui()->createSiDeclaration();
+		$siDeclaration = $eiuGuiLayout->getEiGuiLayout()->createSiDeclaration();
 		
 		$siComp = new EntriesListSiComp($this->eiu->frame()->getApiUrl(), $pageSize, $siDeclaration, 
-				new SiPartialContent($this->eiuFrame->countEntries(), $eiuGui->getEiGui()->createSiEntries()));
+				new SiPartialContent($this->eiuFrame->countEntries(), $eiuGuiLayout->getEiGuiLayout()->getEiGui()->createSiEntries()));
 		
 		$this->httpContext->getResponse()->send(
-				SiPayloadFactory::createZoneModel($siComp, $eiuGui->getEiGui()->createGeneralSiControls()));
+				SiPayloadFactory::createZoneModel($siComp, $eiuGuiLayout->getEiGui()->createGeneralSiControls()));
 	}
 	
 	
-	private function composeEiuGuiForList(EiuGui $eiuGui, int $limit) {
+	private function composeEiuGuiForList(EiGui $eiGui, int $limit) {
 		$eiType = $this->eiuFrame->getEiFrame()->getContextEiEngine()->getEiMask()->getEiType();
 		
 		$criteria = $this->eiuFrame->getEiFrame()->createCriteria(NestedSetUtils::NODE_ALIAS, false);
@@ -303,25 +307,31 @@ class EiuCtrl {
 		
 		
 		if (null !== ($nestedSetStrategy = $eiType->getNestedSetStrategy())) {
-			$this->treeLookup($eiuGui, $criteria, $nestedSetStrategy);
+			$this->treeLookup($eiGui, $criteria, $nestedSetStrategy);
 		} else {
-			$this->simpleLookup($eiuGui, $criteria);
+			$this->simpleLookup($eiGui, $criteria);
 		}
 	}
 	
-	private function simpleLookup(EiuGui $eiuGui, Criteria $criteria) {
+	private function simpleLookup(EiGui $eiGui, Criteria $criteria) {
+		$eiFrame = $eiGui->getEiFrame();
+		$eiFrameUtil = new EiFrameUtil($eiFrame);
 		foreach ($criteria->toQuery()->fetchArray() as $entityObj) {
-			$eiuGui->appendNewEntryGui($entityObj);
+			$eiObject = new LiveEiObject($eiFrameUtil->createEiEntityObj($entityObj));
+			$eiGui->createEiEntryGui($eiFrame->createEiEntry($eiObject));
 		}
 	}
 	
-	private function treeLookup(EiuGui $eiuGui, Criteria $criteria, NestedSetStrategy $nestedSetStrategy) {
+	private function treeLookup(EiGui $eiGui, Criteria $criteria, NestedSetStrategy $nestedSetStrategy) {
 		$nestedSetUtils = new NestedSetUtils($this->eiuFrame->em(), $this->eiuFrame->getContextEiType()->getEntityModel()->getClass(), $nestedSetStrategy);
 		
-		$eiuGui = $this->eiuFrame->newGui(ViewMode::COMPACT_READ)->renderEntryGuiControls();
+// 		$eiuGui = $this->eiuFrame->newGui(ViewMode::COMPACT_READ)->renderEntryGuiControls();
 		
+		$eiFrame = $eiGui->getEiFrame();
+		$eiFrameUtil = new EiFrameUtil($eiFrame);
 		foreach ($nestedSetUtils->fetch(null, false, $criteria) as $nestedSetItem) {
-			$eiuGui->appendNewEntryGui($nestedSetItem->getEntityObj(), $nestedSetItem->getLevel());
+			$eiObject = new LiveEiObject($eiFrameUtil->createEiEntityObj($nestedSetItem->getEntityObj()));
+			$eiGui->createEiEntryGui($eiFrame->createEiEntry($eiObject), $nestedSetItem->getLevel());
 		}
 	}
 	

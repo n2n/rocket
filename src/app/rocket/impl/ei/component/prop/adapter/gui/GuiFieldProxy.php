@@ -25,6 +25,7 @@ use n2n\util\ex\IllegalStateException;
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\util\Eiu;
 use rocket\si\content\SiField;
+use rocket\ei\manage\gui\GuiFieldMap;
 
 class GuiFieldProxy implements GuiField {
 	private $eiu;
@@ -100,5 +101,11 @@ class GuiFieldProxy implements GuiField {
 		$this->statelessGuiFieldEditable->saveSiField($this->siField, $this->eiu);
 	}
 	
-
+	function getContextSiFields(): array {
+		return [];
+	}
+	
+	function getForkGuiFieldMap(): ?GuiFieldMap {
+		return null;
+	}
 }

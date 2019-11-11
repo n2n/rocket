@@ -99,6 +99,14 @@ class EiFrameUtil {
 				$this->getContextEiType()->getEntityModel(), $id));
 	}
 	
+	/**
+	 * @param object $entityObj
+	 * @return \rocket\ei\manage\EiEntityObj
+	 */
+	function createEiEntityObj(object $entityObj) {
+		return EiEntityObj::createFrom($this->eiFrame->getContextEiEngine()->getEiMask()->getEiType(), $entityObj);
+	}
+	
 	private function applyIdComparison(CriteriaComparator $criteriaComparator, $id) {
 		$criteriaComparator->match(CrIt::p('e', $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()
 				->getEntityModel()->getIdDef()->getEntityProperty()), CriteriaComparator::OPERATOR_EQUAL, $id);

@@ -40,27 +40,106 @@ class GuiFieldMap {
 	}
 	
 	private function ensureNotInitialized() {
-		if (!$this->eiEntryGui->isInitialized()) {
-			return;
-		}
+// 		if (!$this->eiEntryGui->isInitialized()) {
+// 			return;
+// 		}
 		
-		throw new IllegalStateException('EiEntryGui already initialized.');
+// 		throw new IllegalStateException('EiEntryGui already initialized.');
 	}
+	
+	function getGuiFields() {
+		return $this->guiFields;
+	}
+	
+	function getAllGuiFields() {
+		$guiFields = [];
+		foreach ($this->guiFields as $eiPropPathStr => $guiField) {
+			$guiFieldPath = GuiFieldPath::create([$eiPropPathStr]);
+			$guiFields[] = $guiField;
+		}
+	}
+	
+	private 
 	
 	/**
 	 * @param GuiFieldPath $guiFieldPath
 	 * @param GuiField $guiField
 	 */
-	function putGuiField(EiPropPath $eiFieldPath, GuiField $guiField) {
+	function putGuiField(EiPropPath $eiPropPath, GuiField $guiField) {
 		$this->ensureNotInitialized();
 		
-		$key = (string) $guiFieldPath;
+		$key = (string) $eiPropPath;
 		
 		if (isset($this->guiFields[$key])) {
-			throw new IllegalStateException('GuiFieldPath already initialized: ' . $guiFieldPath);
+			throw new IllegalStateException('EiPropPath already initialized: ' . $key);
 		}
 		
 		$this->guiFields[$key] = $guiField;
+	}
+	
+	/**
+	 * @param GuiFieldPath $guiFieldPath
+	 * @return bool
+	 */
+	function containsEiPropPath(EiPropPath $eiPropPath) {
+		return isset($this->guiFields[(string) $eiPropPath]);
+	}
+	
+	/**
+	 * @param GuiFieldPath $guiFieldPath
+	 * @return bool
+	 */
+	function containsGuiFieldPath(GuiFieldPath $guiFieldPath) {
+		return $this->rContainsGuiFieldPath($guiFieldPath->toArray(), $this->guiFields);
+	}
+	
+	/**
+	 * @param EiPropPath[] $eiPropPaths
+	 * @param GuiFieldMap $guiFieldMap
+	 * @return bool
+	 */
+	private function rContainsGuiFieldPath($eiPropPaths, $guiFieldMap) {
+		$eiPropPathStr = (string) array_shift($eiPropPaths);
+		
+		if (!isset($this->guiFields[$eiPropPathStr])) {
+			return false;
+		}
+		
+		if (empty($eiPropPaths)) {
+			return true;
+		}
+		
+		$forkGuiFieldMap = $this->guiFields[$eiPropPathStr]->getForkGuiFieldMap();
+		if ($forkGuiFieldMap === null) {
+			return false;
+		}
+		
+		return $this->rContainsGuiFieldPath($eiPropPaths, $forkGuiFieldMap);
+	}
+	
+	/**
+	 * @return \rocket\ei\manage\gui\field\GuiFieldPath[]
+	 */
+	function getGuiFieldGuiFieldPaths() {
+		$guiFieldPaths = array();
+		foreach (array_keys($this->guiFields) as $eiPropPathStr) {
+			$guiFieldPaths[] = GuiFieldPath::create($eiPropPathStr);
+		}
+		return $guiFieldPaths;
+	}
+	
+	/**
+	 * @param GuiFieldPath $guiFieldPath
+	 * @throws GuiException
+	 * @return GuiField
+	 */
+	function getGuiField(GuiFieldPath $guiFieldPath) {
+		$guiFieldPathStr = (string) $guiFieldPath;
+		if (!isset($this->guiFields[$guiFieldPathStr])) {
+			throw new GuiException('No GuiField with GuiFieldPath \'' . $guiFieldPathStr . '\' for \'' . $this . '\' registered');
+		}
+		
+		return $this->guiFields[$guiFieldPathStr];
 	}
 	
 	function save() {
@@ -71,5 +150,7 @@ class GuiFieldMap {
 			}
 		}
 	}
+	
+	
 	
 }

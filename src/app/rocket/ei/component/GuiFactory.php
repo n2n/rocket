@@ -35,6 +35,7 @@ use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\util\Eiu;
 use rocket\ei\component\command\GuiEiCommand;
 use n2n\core\container\N2nContext;
+use rocket\ei\manage\gui\GuiFieldMap;
 
 class GuiFactory {
 	private $eiMask;
@@ -168,14 +169,14 @@ class GuiFactory {
 		
 		$guiDefinition = $eiGui->getGuiDefinition();
 		
-		foreach ($eiGui->getEiFieldPaths() as $eiFieldPath) {
-			$guiField = $guiDefinition->getGuiPropWrapper($eiFieldPath)->buildGuiField($eiEntryGui);
+		$guiFieldMap = new GuiFieldMap();
+		foreach ($eiGui->getRootEiPropPaths() as $eiPropPath) {
+			$guiField = $guiDefinition->getGuiPropWrapper($eiPropPath)->buildGuiField($eiEntryGui);
 			if ($guiField !== null) {
-				$eiEntryGui->getGuiFieldMap()->putGuiField($eiFieldPath, $guiField);	
+				$guiFieldMap->putGuiField($eiPropPath, $guiField);	
 			}
 		}
-		
-		$eiEntryGui->markInitialized();
+		$eiEntryGui->init($guiFieldMap);
 				
 		return $eiEntryGui;
 	}

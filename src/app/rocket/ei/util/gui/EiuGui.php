@@ -268,13 +268,7 @@ class EiuGui {
 // 		$this->eiGuiConfig->setForkControlsRendered($renderForkControls);
 // 		return $this;
 // 	}
-	
-	/**
-	 * @return \rocket\ei\manage\gui\EiGuiNature
-	 */
-	function getEiGuiNature() {
-		return $this->eiGui->getEiGuiNature();
-	}
+
 	
 	/**
 	 * @return HtmlView|null $contextView

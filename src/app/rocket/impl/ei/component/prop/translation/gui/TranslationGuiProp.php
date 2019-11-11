@@ -173,7 +173,7 @@ class TranslationEssentialsFactory {
 	}
 	
 	/**
-	 * @param EiPropPath $eiFieldPath
+	 * @param EiPropPath $eiPropPath
 	 * @return SplitGuiField
 	 */
 	function createSplitGuiField(EiPropPath $eiPropPath) {
@@ -182,7 +182,7 @@ class TranslationEssentialsFactory {
 			$n2nLocaleId = $n2nLocaleDef->getN2nLocaleId();
 			
 			$splitGuiField->putGuiField($n2nLocaleId, 
-					$this->targetEiuEntryGuis[$n2nLocaleId]->getGuiFieldByEiFieldPath($eiPropPath));
+					$this->targetEiuEntryGuis[$n2nLocaleId]->getGuiFieldByEiPropPath($eiPropPath));
 		}
 		return $splitGuiField;
 	}

@@ -654,24 +654,75 @@ class GuiDefinition {
 		return $guiFieldPaths;
 	}
 	
-	function createEiGui(EiFrame $eiFrame, int $viewMode, array $guiFieldPaths = null) {
+	/**
+	 * @param EiFrame $eiFrame
+	 * @param int $viewMode
+	 * @return \rocket\ei\manage\gui\EiGuiLayout
+	 */
+	function createEiGuiLayout(EiFrame $eiFrame, int $viewMode) {
 		ArgUtils::assertTrue($this->eiMask->isA($eiFrame->getContextEiEngine()->getEiMask()));
 		
 		$eiGui = new EiGui($eiFrame, $this, $viewMode);
 		
+		$guiStructureDeclarations = $this->determineGuiStructureDeclarations($eiGui);
+		$guiFieldPaths = [];
+		foreach ($guiStructureDeclarations as $guiStructureDeclaration) {
+			$guiFieldPaths = array_merge($guiFieldPaths, $guiStructureDeclaration->getAllGuiFieldPaths());
+		}
+		
 		$this->initEiGui($eiGui, $guiFieldPaths);
 		
-		$this->eiMask->getEiModificatorCollection()->setupEiGui($eiGui);
+		return new EiGuiLayout($guiStructureDeclarations, $eiGui);
+	}
+	
+	/**
+	 * @param EiFrame $eiFrame
+	 * @param int $viewMode
+	 * @param array $guiFieldPaths
+	 * @return \rocket\ei\manage\gui\EiGui
+	 */
+	function createEiGui(EiFrame $eiFrame, int $viewMode, array $guiFieldPaths) {
+		ArgUtils::assertTrue($this->eiMask->isA($eiFrame->getContextEiEngine()->getEiMask()));
+		
+		$eiGui = new EiGui($eiFrame, $this, $viewMode);
+		
+		$this->filterGuiFieldPaths($eiGui, $guiFieldPaths);
+		
+		$this->initEiGui($eiGui, $guiFieldPaths);
 		
 		return $eiGui;
 	}
 	
-	private function initEiGui(EiGui $eiGui, array $guiFieldPaths = null) {
-		if ($guiFieldPaths !== null) {
-			$eiGui->init(null, $guiFieldPaths);
-			return;
+	/**
+	 * @param EiGui $eiGui
+	 * @param GuiFieldPath[] $guiFieldPaths
+	 * @return GuiFieldPath[]
+	 */
+	private function filterGuiFieldPaths($eiGui, $guiFieldPaths) {
+		$filteredGuiFieldPaths = [];
+		foreach ($guiFieldPaths as $key => $guiFieldPath) {
+			if ($this->containsGuiProp($guiFieldPath)) {
+				$filteredGuiFieldPaths[$key] = $guiFieldPath;
+			}
 		}
+		return $filteredGuiFieldPaths;
+	}
+	
+	/**
+	 * @param EiGui $eiGui
+	 * @param GuiFieldPath[] $guiFieldPaths
+	 */
+	private function initEiGui($eiGui, $guiFieldPaths) {
+		$eiGui->init($guiFieldPaths);
 		
+		$this->eiMask->getEiModificatorCollection()->setupEiGui($eiGui);
+	}
+	
+	/**
+	 * @param EiGui $eiGui
+	 * @return GuiStructureDeclaration[]
+	 */
+	private function determineGuiStructureDeclarations(EiGui $eiGui) {
 		$displayScheme = $this->eiMask->getDisplayScheme();
 		
 		$displayStructure = null;
@@ -693,10 +744,10 @@ class GuiDefinition {
 		}
 		
 		if ($displayStructure === null) {
-			$eiGui->init($this->assembleAutoGuiStructureDeclarations($eiGui, ViewMode::isBulky($eiGui->getViewMode())));
-		} else {
-			$eiGui->init($this->assembleDisplayStructure($eiGui, $displayStructure->purified($eiGui)));
-		}
+			return $this->assembleAutoGuiStructureDeclarations($eiGui, ViewMode::isBulky($eiGui->getViewMode()));
+		} 
+		
+		return $this->assembleDisplayStructure($eiGui, $displayStructure->purified($eiGui));
 	}
 	
 	/**

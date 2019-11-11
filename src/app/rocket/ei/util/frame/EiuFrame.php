@@ -74,6 +74,8 @@ use rocket\ei\manage\frame\EiForkLink;
 use rocket\ei\manage\frame\CriteriaFactory;
 use rocket\si\content\SiEntryQualifier;
 use rocket\ei\util\gui\EiuEntryGuiMulti;
+use rocket\ei\manage\gui\EiGuiLayout;
+use rocket\ei\util\gui\EiuGuiLayout;
 
 class EiuFrame {
 	private $eiFrame;
@@ -357,7 +359,7 @@ class EiuFrame {
 	/**
 	 * @param EiObject $eiObject
 	 * @return \rocket\ei\manage\entry\EiEntry
-	 * @throws \rocket\ei\manage\security\InaccessibleEntryException
+	 * @throws \rocket\ei\manage\security\InaccessibleEiEntryException
 	 */
 	private function createEiEntry(EiObject $eiObject, int $ignoreConstraintTypes = 0) {
 		return $this->eiFrame->createEiEntry($eiObject, null, $ignoreConstraintTypes);
@@ -640,12 +642,25 @@ class EiuFrame {
 	}
 	
 	/**
+	 * @param int $viewMode
+	 * @param array $guiFieldPaths
+	 * @return \rocket\ei\util\gui\EiuGuiLayout
+	 */
+	public function newGuiLayout(int $viewMode) {
+		$eiGuiLayout = $this->eiFrame->getManageState()->getDef()
+				->getGuiDefinition($this->eiFrame->getContextEiEngine()->getEiMask())
+				->createEiGuiLayout($this->eiFrame, $viewMode);
+		
+		return new EiuGuiLayout($eiGuiLayout, $this->eiuAnalyst);
+	}
+	
+	/**
 	 * @return EiuGui
 	 */
-	public function newGui(int $viewMode, array $guiFieldPaths = null) {
+	public function newGui(int $viewMode, array $guiFieldPaths) {
 		$eiGui = $this->eiFrame->getManageState()->getDef()
 				->getGuiDefinition($this->eiFrame->getContextEiEngine()->getEiMask())
-				->createEiGui($this->eiFrame, $viewMode, true);
+				->createEiGui($this->eiFrame, $viewMode, $guiFieldPaths);
 		
 		return new EiuGui($eiGui, $this, $this->eiuAnalyst);
 	}
