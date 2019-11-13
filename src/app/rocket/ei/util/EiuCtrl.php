@@ -293,7 +293,7 @@ class EiuCtrl {
 				new SiPartialContent($this->eiuFrame->countEntries(), $eiuGuiLayout->getEiGuiLayout()->getEiGui()->createSiEntries()));
 		
 		$this->httpContext->getResponse()->send(
-				SiPayloadFactory::createZoneModel($siComp, $eiuGuiLayout->getEiGui()->createGeneralSiControls()));
+				SiPayloadFactory::createZoneModel($siComp, $eiuGuiLayout->getEiGuiLayout()->getEiGui()->createGeneralSiControls()));
 	}
 	
 	

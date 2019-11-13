@@ -152,6 +152,16 @@ class GuiFieldPath implements Hashable {
 	}
 	
 	/**
+	 * @param EiPropPath|string $eiPropPath
+	 * @return EiPropPath
+	 */
+	function ext($eiPropPath) {
+		$guiFieldPath = new GuiFieldPath($this->eiPropPaths);
+		$guiFieldPath->eiPropPaths[] = EiPropPath::create($eiPropPath);
+		return $guiFieldPath;
+	}
+	
+	/**
 	 * @param mixed $expression
 	 * @return \rocket\ei\manage\gui\field\GuiFieldPath
 	 */

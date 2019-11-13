@@ -33,7 +33,7 @@ class SiPayloadFactory extends JsonPayload {
 	 * @param SiControl[] $controls
 	 * @return \n2n\web\http\payload\impl\JsonPayload
 	 */
-	static function createZoneModel(SiComp $comp, array $controls) {
+	static function create(SiComp $comp, array $controls) {
 		return new JsonPayload([
 			'title' => 'Some Title',
 			'breadcrumbs' => [],

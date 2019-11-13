@@ -276,7 +276,7 @@ class EiEntryGui {
 		
 		$siEntry = new SiEntryBuildup($typeId, $idName);
 		
-		foreach ($this->guiFieldMap->getGuiFields() as $guiFieldPathStr => $guiField) {
+		foreach ($this->guiFieldMap->getAllGuiFields() as $guiFieldPathStr => $guiField) {
 			$siEntry->putField($guiFieldPathStr, $guiField->getSiField());
 		}
 		

@@ -302,7 +302,7 @@ class EiuEntry {
 	 */
 	public function newEntryGui(bool $bulky = true, bool $editable = false, int $treeLevel = null, 
 			bool $determineEiMask = true) {
-		$eiEntry = $eiMask = $this->getEiEntry(true);
+		$eiEntry = $this->getEiEntry(true);
 		$eiEngine = null;
 		if ($determineEiMask) {
 			$eiEngine = $eiEntry->getEiMask()->getEiEngine();

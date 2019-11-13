@@ -47,19 +47,38 @@ class GuiFieldMap {
 // 		throw new IllegalStateException('EiEntryGui already initialized.');
 	}
 	
+	/**
+	 * @return GuiField[]
+	 */
 	function getGuiFields() {
 		return $this->guiFields;
 	}
 	
+	/**
+	 * @return GuiField[]
+	 */
 	function getAllGuiFields() {
 		$guiFields = [];
-		foreach ($this->guiFields as $eiPropPathStr => $guiField) {
-			$guiFieldPath = GuiFieldPath::create([$eiPropPathStr]);
-			$guiFields[] = $guiField;
-		}
+		$this->rAllGuiFields($guiFields, $this, new GuiFieldPath([]));
+		return $guiFields;
 	}
 	
-	private 
+	/**
+	 * @param GuiField[] $guiFields
+	 * @param GuiFieldMap $guiFieldMap
+	 * @param GuiFieldPath $parentGuiFieldPath
+	 */
+	private function rAllGuiFields(&$guiFields, $guiFieldMap, $parentGuiFieldPath) {
+		foreach ($guiFieldMap->getGuiFields() as $eiPropPathStr => $guiField) {
+			$guiFieldPath = $parentGuiFieldPath->ext($eiPropPathStr);
+			
+			$guiFields[(string) $guiFieldPath] = $guiField;
+			
+			if (null !== ($forkGuiFieldMap = $guiField->getForkGuiFieldMap())) {
+				$this->rAllGuiFields($guiFields, $forkGuiFieldMap, $guiFieldPath);
+			}
+		}
+	}
 	
 	/**
 	 * @param GuiFieldPath $guiFieldPath
