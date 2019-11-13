@@ -29,7 +29,6 @@ use rocket\impl\ei\component\command\common\controller\EditController;
 use rocket\impl\ei\component\command\IndependentEiCommandAdapter;
 use rocket\ei\component\command\PrivilegedEiCommand;
 use n2n\core\container\N2nContext;
-use rocket\ei\manage\security\privilege\EiCommandPrivilege;
 use rocket\core\model\Rocket;
 use n2n\util\uri\Path;
 use rocket\ei\util\Eiu;

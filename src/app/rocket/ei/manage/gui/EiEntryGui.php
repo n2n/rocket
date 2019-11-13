@@ -97,10 +97,10 @@ class EiEntryGui {
 	/**
 	 * @return \rocket\ei\manage\gui\field\GuiField[]
 	 */
-	public function getGuiFields() {
+	public function getGuiFieldMap() {
 		$this->ensureInitialized();
 		
-		return $this->guiFields;
+		return $this->guiFieldMap;
 	}
 	
 	/**
@@ -337,14 +337,17 @@ class EiEntryGui {
 			throw new IllegalStateException('EiType missmatch.');
 		}
 		
-		foreach ($this->getGuiFields() as $guiFieldPathStr => $guiField) {
-			if ($guiField->getSiField()->isReadOnly()
+		
+		foreach ($this->guiFieldMap->getAllGuiFields() as $guiFieldPathStr => $guiField) {
+			$siField = $guiField->getSiField();
+			
+			if ($siField == null || $siField->isReadOnly()
 					|| !$siEntryInput->containsFieldName($guiFieldPathStr)) {
 				continue;
 			}
 			
 			try {
-				$guiField->getSiField()->handleInput($siEntryInput->getFieldInput($guiFieldPathStr)->getData());
+				$siField->handleInput($siEntryInput->getFieldInput($guiFieldPathStr)->getData());
 			} catch (AttributesException $e) {
 				throw new \InvalidArgumentException(null, 0, $e);
 			}
