@@ -572,10 +572,10 @@ class EiuAnalyst {
 		$this->assignEiFrame($eiGui->getEiFrame());
 		$this->assignEiMask($eiGui->getGuiDefinition()->getEiMask());
 		
-		$eiEntryGuis = $eiGui->getEiEntryGuis();
-		if (count($eiEntryGuis) == 1) {
-			$this->assignEiEntryGui(current($eiEntryGuis));
-		}
+// 		$eiEntryGuis = $eiGui->getEiEntryGuis();
+// 		if (count($eiEntryGuis) == 1) {
+// 			$this->assignEiEntryGui(current($eiEntryGuis));
+// 		}
 	}
 	
 	/**

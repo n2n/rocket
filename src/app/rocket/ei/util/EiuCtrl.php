@@ -44,6 +44,7 @@ use rocket\ei\manage\security\InaccessibleEiEntryException;
 use rocket\ei\manage\gui\EiGui;
 use rocket\ei\manage\frame\EiFrameUtil;
 use rocket\ei\manage\LiveEiObject;
+use rocket\ei\manage\gui\EiGuiLayout;
 
 class EiuCtrl {
 	private $eiu;
@@ -285,44 +286,41 @@ class EiuCtrl {
 		$eiuGuiLayout = $this->eiuFrame->newGuiLayout(ViewMode::COMPACT_READ);
 		$eiGui = $eiuGuiLayout->getEiGuiLayout()->getEiGui();
 		
-		$this->composeEiuGuiForList($eiGui, $pageSize);
+		$this->composeEiuGuiForList($eiuGuiLayout->getEiGuiLayout(), $eiGui, $pageSize);
 		
 		$siDeclaration = $eiuGuiLayout->getEiGuiLayout()->createSiDeclaration();
 		
 		$siComp = new EntriesListSiComp($this->eiu->frame()->getApiUrl(), $pageSize, $siDeclaration, 
-				new SiPartialContent($this->eiuFrame->countEntries(), $eiuGuiLayout->getEiGuiLayout()->getEiGui()->createSiEntries()));
+				new SiPartialContent($this->eiuFrame->countEntries(), $eiuGuiLayout->getEiGuiLayout()->createSiEntries()));
 		
 		$this->httpContext->getResponse()->send(
-				SiPayloadFactory::createZoneModel($siComp, $eiuGuiLayout->getEiGuiLayout()->getEiGui()->createGeneralSiControls()));
+				SiPayloadFactory::create($siComp, $eiuGuiLayout->getEiGuiLayout()->getEiGui()->createGeneralSiControls()));
 	}
 	
 	
-	private function composeEiuGuiForList(EiGui $eiGui, int $limit) {
+	private function composeEiuGuiForList($eiGuiLayout, EiGui $eiGui, int $limit) {
 		$eiType = $this->eiuFrame->getEiFrame()->getContextEiEngine()->getEiMask()->getEiType();
 		
 		$criteria = $this->eiuFrame->getEiFrame()->createCriteria(NestedSetUtils::NODE_ALIAS, false);
 		$criteria->select(NestedSetUtils::NODE_ALIAS)->limit($limit);
 		
-		$criteria->limit($limit);
-		
-		
 		if (null !== ($nestedSetStrategy = $eiType->getNestedSetStrategy())) {
-			$this->treeLookup($eiGui, $criteria, $nestedSetStrategy);
+			$this->treeLookup($eiGuiLayout, $eiGui, $criteria, $nestedSetStrategy);
 		} else {
-			$this->simpleLookup($eiGui, $criteria);
+			$this->simpleLookup($eiGuiLayout, $eiGui, $criteria);
 		}
 	}
 	
-	private function simpleLookup(EiGui $eiGui, Criteria $criteria) {
+	private function simpleLookup(EiGuiLayout $eiGuiLayout, EiGui $eiGui, Criteria $criteria) {
 		$eiFrame = $eiGui->getEiFrame();
 		$eiFrameUtil = new EiFrameUtil($eiFrame);
 		foreach ($criteria->toQuery()->fetchArray() as $entityObj) {
 			$eiObject = new LiveEiObject($eiFrameUtil->createEiEntityObj($entityObj));
-			$eiGui->createEiEntryGui($eiFrame->createEiEntry($eiObject));
+			$eiGuiLayout->addEiEntryGui($eiGui->createEiEntryGui($eiFrame->createEiEntry($eiObject)));
 		}
 	}
 	
-	private function treeLookup(EiGui $eiGui, Criteria $criteria, NestedSetStrategy $nestedSetStrategy) {
+	private function treeLookup(EiGuiLayout $eiGuiLayout, EiGui $eiGui, Criteria $criteria, NestedSetStrategy $nestedSetStrategy) {
 		$nestedSetUtils = new NestedSetUtils($this->eiuFrame->em(), $this->eiuFrame->getContextEiType()->getEntityModel()->getClass(), $nestedSetStrategy);
 		
 // 		$eiuGui = $this->eiuFrame->newGui(ViewMode::COMPACT_READ)->renderEntryGuiControls();
@@ -331,7 +329,7 @@ class EiuCtrl {
 		$eiFrameUtil = new EiFrameUtil($eiFrame);
 		foreach ($nestedSetUtils->fetch(null, false, $criteria) as $nestedSetItem) {
 			$eiObject = new LiveEiObject($eiFrameUtil->createEiEntityObj($nestedSetItem->getEntityObj()));
-			$eiGui->createEiEntryGui($eiFrame->createEiEntry($eiObject), $nestedSetItem->getLevel());
+			$eiGuiLayout->addEiEntryGui($eiGui->createEiEntryGui($eiFrame->createEiEntry($eiObject), $nestedSetItem->getLevel()));
 		}
 	}
 	
@@ -341,16 +339,15 @@ class EiuCtrl {
 		}
 
 		$eiuEntry = EiuAnalyst::buildEiuEntryFromEiArg($eiEntry, $this->eiuFrame, 'eiEntry', true);
-		$eiuEntryGui = $eiuEntry->newEntryGui(true, $editable);
+		$eiuGuiLayout = $eiuEntry->newGuiLayout(true, $editable);
+		$eiGuiLayout = $eiuGuiLayout->getEiGuiLayout();
 		
-		$eiGui = $eiuEntryGui->gui()->getEiGui();
+		$siDeclaration = $eiGuiLayout->createSiDeclaration();
 		
-		$siDeclaration = $eiGui->createSiDeclaration();
-		
-		$comp = new BulkyEntrySiComp($siDeclaration, $eiuEntryGui->createSiEntry());
+		$comp = new BulkyEntrySiComp($siDeclaration, current($eiGuiLayout->createSiEntries()));
 		
 		$this->httpContext->getResponse()->send(
-				SiPayloadFactory::createZoneModel($comp, $eiGui->createGeneralSiControls()));
+				SiPayloadFactory::create($comp, $eiGuiLayout->getEiGui()->createGeneralSiControls()));
 	}
 	
 	function forwardNewEntryDlZone(bool $editable = true) {

@@ -20,6 +20,10 @@ class EiGuiLayout {
 	 * @var EiGui
 	 */
 	private $eiGui;
+	/**
+	 * @var EiEntryGui[]
+	 */
+	private $eiEntryGuis;
 	
 	/**
 	 * @param GuiStructureDeclaration[]|null $guiStructureDeclarations
@@ -37,6 +41,14 @@ class EiGuiLayout {
 	 */
 	function getEiGui() {
 		return $this->eiGui;
+	}
+	
+	
+	/**
+	 * @return boolean
+	 */
+	function hasMultipleEiEntryGuis() {
+		return count($this->eiEntryGuis) > 1;
 	}
 	
 	/**
@@ -135,5 +147,23 @@ class EiGuiLayout {
 					$guiStructureDeclaration->getChildren()));
 		}
 		return $filtereds;
+	}
+	
+	/**
+	 * @param EiEntryGui $eiEntryGui
+	 */
+	function addEiEntryGui(EiEntryGui $eiEntryGui) {
+		$this->eiEntryGuis[] = $eiEntryGui;
+	}
+		
+	/**
+	 * @return \rocket\si\content\SiEntry[]
+	 */
+	function createSiEntries() {
+		$siEntries = [];
+		foreach ($this->eiEntryGuis as $eiEntryGui) {
+			$siEntries[] = $eiEntryGui->createSiEntry();
+		}
+		return $siEntries;
 	}
 }

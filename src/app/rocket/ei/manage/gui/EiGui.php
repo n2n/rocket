@@ -53,7 +53,7 @@ class EiGui {
 	 * @param GuiDefinition $guiDefinition
 	 * @param int $viewMode Use constants from {@see ViewMode}
 	 */
-	public function __construct(EiFrame $eiFrame, GuiDefinition $guiDefinition, int $viewMode) {
+	function __construct(EiFrame $eiFrame, GuiDefinition $guiDefinition, int $viewMode) {
 		$this->eiFrame = $eiFrame;
 		$this->guiDefinition = $guiDefinition;
 		ArgUtils::valEnum($viewMode, ViewMode::getAll());
@@ -63,28 +63,28 @@ class EiGui {
 	/**
 	 * @return \rocket\ei\manage\frame\EiFrame
 	 */
-	public function getEiFrame() {
+	function getEiFrame() {
 		return $this->eiFrame;
 	}
 	
 	/**
 	 * @return \rocket\ei\manage\gui\GuiDefinition
 	 */
-	public function getGuiDefinition() {
+	function getGuiDefinition() {
 		return $this->guiDefinition;
 	}
 	
 	/**
 	 * @return int
 	 */
-	public function getViewMode() {
+	function getViewMode() {
 		return $this->viewMode;
 	}
 	
 	/**
 	 * @return GuiFieldPath[]
 	 */
-	public function getGuiFieldPaths() {
+	function getGuiFieldPaths() {
 		$this->ensureInit();
 		
 		return $this->guiFieldPaths;
@@ -94,7 +94,7 @@ class EiGui {
 	 * @param GuiFieldPath $guiFieldPath
 	 * @return bool
 	 */
-	public function containsGuiFieldPath(GuiFieldPath $guiFieldPath) {
+	function containsGuiFieldPath(GuiFieldPath $guiFieldPath) {
 		return isset($this->guiFieldPaths[(string) $guiFieldPath]);
 	}
 	
@@ -113,7 +113,7 @@ class EiGui {
 // 	 * @throws GuiException
 // 	 * @return \rocket\ei\manage\gui\GuiPropAssembly
 // 	 */
-// 	public function getGuiPropAssemblyByGuiFieldPath(GuiFieldPath $guiFieldPath) {
+// 	function getGuiPropAssemblyByGuiFieldPath(GuiFieldPath $guiFieldPath) {
 // 		$guiFieldPathStr = (string) $guiFieldPath;
 		
 // 		if (isset($this->guiPropAssemblies[$guiFieldPathStr])) {
@@ -127,7 +127,7 @@ class EiGui {
 	 * @param GuiStructureDeclaration[]|null $guiStructureDeclarations
 	 * @param GuiFieldPath[]|null $guiFieldPaths
 	 */
-	public function init(array $guiFieldPaths) {
+	function init(array $guiFieldPaths) {
 		if ($this->isInit()) {
 			throw new IllegalStateException('EiGui already initialized.');
 		}
@@ -142,7 +142,7 @@ class EiGui {
 	/**
 	 * @return boolean
 	 */
-	public function isInit() {
+	function isInit() {
 		return $this->guiFieldPaths !== null;
 	}
 	
@@ -214,74 +214,22 @@ class EiGui {
 // 	}
 	
 	/**
-	 * @return SiProp[]
-	 */
-	private function getSiProps() {
-		IllegalStateException::assertTrue($this->guiStructureDeclarations !== null,
-				'EiGui is forked.');
-		
-		$siProps = [];
-		foreach ($this->filterFieldGuiStructureDeclarations($this->guiStructureDeclarations) 
-				as $guiStructureDeclaration) {
-			$siProps[] = $this->createSiProp($guiStructureDeclaration);
-		}
-		return $siProps;
-	}
-	
-	
-	
-	/**
-	 * @param GuiStructureDeclaration[] $guiStructureDeclarations
-	 * @return GuiStructureDeclaration[]
-	 */
-	private function filterFieldGuiStructureDeclarations($guiStructureDeclarations) {
-		$filtereds = [];
-		foreach ($guiStructureDeclarations as $guiStructureDeclaration) {
-			if ($guiStructureDeclaration->hasGuiPropPath()) {
-				$filtereds[] = $guiStructureDeclaration;
-				continue;
-			}
-			
-			array_push($filtereds, ...$this->filterFieldGuiStructureDeclarations(
-					$guiStructureDeclaration->getChildren()));
-		}
-		return $filtereds;
-	}
-	
-	/**
-	 * @return boolean
-	 */
-	function hasMultipleEiEntryGuis() {
-		return count($this->eiEntryGuis) > 1;
-	}
-	
-	/**
 	 * @param EiEntry $eiEntry
 	 * @param bool $makeEditable
 	 * @param int $treeLevel
 	 * @param bool $append
 	 * @return EiEntryGui
 	 */
-	function createEiEntryGui(EiEntry $eiEntry, int $treeLevel = null, bool $append = true): EiEntryGui {
+	function createEiEntryGui(EiEntry $eiEntry, int $treeLevel = null): EiEntryGui {
 		$this->ensureInit();
 		
 		$eiEntryGui = GuiFactory::createEiEntryGui($this, $eiEntry, $this->getGuiFieldPaths(), $treeLevel);
-		if ($append) {
-			$this->eiEntryGuis[] = $eiEntryGui;
-		}
 		
 		foreach ($this->eiGuiListeners as $eiGuiListener) {
 			$eiGuiListener->onNewEiEntryGui($eiEntryGui);
 		}
 		
 		return $eiEntryGui;
-	}
-	
-	/**
-	 * @return EiEntryGui[]
-	 */
-	function getEiEntryGuis() {
-		return $this->eiEntryGuis;
 	}
 	
 	/**
@@ -318,28 +266,21 @@ class EiGui {
 	 * @return GeneralGuiControl
 	 * @throws UnknownGuiControlException
 	 */
-	public function createGeneralGuiControl(GuiControlPath $guiControlPath) {
+	function createGeneralGuiControl(GuiControlPath $guiControlPath) {
 		return $this->guiDefinition->createGeneralGuiControl($this, $guiControlPath);
-	}
-	
-	/**
-	 * @return \rocket\si\meta\SiDeclaration
-	 */
-	public function createSiDeclaration() {
-		return new SiDeclaration([$this->createSiTypDeclaration()]);
 	}
 	
 	/**
 	 * @param EiGuiListener $eiGuiListener
 	 */
-	public function registerEiGuiListener(EiGuiListener $eiGuiListener) {
+	function registerEiGuiListener(EiGuiListener $eiGuiListener) {
 		$this->eiGuiListeners[spl_object_hash($eiGuiListener)] = $eiGuiListener;
 	}
 	
 	/**
 	 * @param EiGuiListener $eiGuiListener
 	 */
-	public function unregisterEiGuiListener(EiGuiListener $eiGuiListener) {
+	function unregisterEiGuiListener(EiGuiListener $eiGuiListener) {
 		unset($this->eiGuiListeners[spl_object_hash($eiGuiListener)]);
 	}
 	
@@ -347,20 +288,11 @@ class EiGui {
 // 	/**
 // 	 * @return \rocket\ei\manage\gui\EiGuiNature
 // 	 */
-// 	public function getEiGuiNature()  {
+// 	function getEiGuiNature()  {
 // 		return $this->eiGuiNature;
 // 	}
 	
-	/**
-	 * @return \rocket\si\content\SiEntry[]
-	 */
-	public function createSiEntries() {
-		$siEntries = [];
-		foreach ($this->eiEntryGuis as $eiEntryGui) {
-			$siEntries[] = $eiEntryGui->createSiEntry();
-		}
-		return $siEntries;
-	}
+	
 }
 
 // class GuiPropAssembly {
@@ -372,7 +304,7 @@ class EiGui {
 // 	 * @param GuiFieldPath $guiFieldPath
 // 	 * @param DisplayDefinition $displayDefinition
 // 	 */
-// 	public function __construct(GuiFieldPath $guiFieldPath, DisplayDefinition $displayDefinition) {
+// 	function __construct(GuiFieldPath $guiFieldPath, DisplayDefinition $displayDefinition) {
 // 		$this->guiFieldPath = $guiFieldPath;
 // 		$this->displayDefinition = $displayDefinition;
 // 	}
@@ -380,7 +312,7 @@ class EiGui {
 // // 	/**
 // // 	 * @return \rocket\ei\manage\gui\GuiProp
 // // 	 */
-// // 	public function getGuiProp() {
+// // 	function getGuiProp() {
 // // 		return $this->guiProp;
 // // 	}
 	
@@ -389,7 +321,7 @@ class EiGui {
 // 	/**
 // 	 * @return \rocket\ei\manage\gui\DisplayDefinition
 // 	 */
-// 	public function getDisplayDefinition() {
+// 	function getDisplayDefinition() {
 // 		return $this->displayDefinition;
 // 	}
 // }
