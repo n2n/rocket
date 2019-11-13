@@ -21,7 +21,7 @@ use rocket\ei\manage\critmod\sort\SortSettingGroup;
 use rocket\ei\manage\ManageState;
 use rocket\ei\manage\gui\EiEntryGui;
 use rocket\ei\manage\gui\EiGui;
-use rocket\ei\manage\gui\field\GuiFieldPath;
+use rocket\ei\manage\gui\field\GuiPropPath;
 use rocket\ei\manage\gui\GuiException;
 use rocket\ei\util\EiuAnalyst;
 use rocket\ei\manage\gui\GuiDefinitionListener;
@@ -90,8 +90,8 @@ class EiuEngine {
 		return new EiuEngine($this->eiEngine->getSupremeEiEngine(), null, $this->eiuAnalyst);
 	}
 	
-	public function removeGuiProp($guiFieldPath) {
-		$this->getGuiDefinition()->removeGuiPropByPath(GuiFieldPath::create($guiFieldPath));
+	public function removeGuiProp($guiPropPath) {
+		$this->getGuiDefinition()->removeGuiPropByPath(GuiPropPath::create($guiPropPath));
 	}
 	
 	/**
@@ -300,7 +300,7 @@ class EiuEngine {
 	 * @return boolean
 	 */
 	public function containsGuiProp($eiPropPath) {
-		return $this->getGuiDefinition()->containsGuiProp(GuiFieldPath::create($eiPropPath));
+		return $this->getGuiDefinition()->containsGuiProp(GuiPropPath::create($eiPropPath));
 	}
 
 	/**
@@ -310,7 +310,7 @@ class EiuEngine {
 	 * @return EiPropPath
 	 */
 	public function eiPropPathToEiPropPath($eiPropPath) {
-		return $this->getGuiDefinition()->eiPropPathToEiPropPath(GuiFieldPath::create($eiPropPath));
+		return $this->getGuiDefinition()->eiPropPathToEiPropPath(GuiPropPath::create($eiPropPath));
 	}
 	
 	

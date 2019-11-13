@@ -6,7 +6,7 @@ use rocket\si\meta\SiProp;
 use rocket\si\meta\SiStructureDeclaration;
 use rocket\si\meta\SiType;
 use rocket\si\meta\SiTypeDeclaration;
-use rocket\ei\manage\gui\field\GuiFieldPath;
+use rocket\ei\manage\gui\field\GuiPropPath;
 use n2n\util\ex\IllegalStateException;
 use rocket\si\meta\SiDeclaration;
 
@@ -23,7 +23,7 @@ class EiGuiLayout {
 	/**
 	 * @var EiEntryGui[]
 	 */
-	private $eiEntryGuis;
+	private $eiEntryGuis = [];
 	
 	/**
 	 * @param GuiStructureDeclaration[]|null $guiStructureDeclarations
@@ -52,16 +52,23 @@ class EiGuiLayout {
 	}
 	
 	/**
-	 * @return GuiFieldPath[]
+	 * @return boolean
 	 */
-	public function getGuiFieldPaths() {
+	function hasSingleEiEntryGui() {
+		return count($this->eiEntryGuis) === 1;
+	}
+	
+	/**
+	 * @return GuiPropPath[]
+	 */
+	public function getGuiPropPaths() {
 		$this->ensureInit();
 		
-		$guiFieldPaths = [];
+		$guiPropPaths = [];
 		foreach ($this->guiStructureDeclarations as $guiStructureDeclaration) {
-			$guiFieldPaths = array_merge($guiFieldPaths, $guiStructureDeclaration->getAllGuiFieldPaths());
+			$guiPropPaths = array_merge($guiPropPaths, $guiStructureDeclaration->getAllGuiPropPaths());
 		}
-		return $guiFieldPaths;
+		return $guiPropPaths;
 	}
 	
 	/**
@@ -155,14 +162,29 @@ class EiGuiLayout {
 	function addEiEntryGui(EiEntryGui $eiEntryGui) {
 		$this->eiEntryGuis[] = $eiEntryGui;
 	}
+	
+	/**
+	 * @return \rocket\ei\manage\gui\EiEntryGui[]
+	 */
+	function getEiEntryGuis() {
+		return $this->eiEntryGuis;
+	}
+	
+	function createSiEntry(bool $siControlsIncluded = true) {
+		if ($this->hasSingleEiEntryGui()) {
+			return $this->eiGui->createSiEntry(current($this->eiEntryGuis), $siControlsIncluded);
+		}
+		
+		throw new IllegalStateException('EiGuiLayout has none or multiple EiEntryGuis');
+	}
 		
 	/**
 	 * @return \rocket\si\content\SiEntry[]
 	 */
-	function createSiEntries() {
+	function createSiEntries(bool $siControlsIncluded = true) {
 		$siEntries = [];
 		foreach ($this->eiEntryGuis as $eiEntryGui) {
-			$siEntries[] = $eiEntryGui->createSiEntry();
+			$siEntries[] = $this->eiGui->createSiEntry($eiEntryGui, $siControlsIncluded);
 		}
 		return $siEntries;
 	}

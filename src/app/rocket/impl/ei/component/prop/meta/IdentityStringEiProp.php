@@ -24,6 +24,7 @@ namespace rocket\impl\ei\component\prop\meta;
 use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\adapter\DisplayableEiPropAdapter;
 use rocket\si\content\SiField;
+use rocket\si\content\impl\SiFields;
 
 class IdentityStringEiProp extends DisplayableEiPropAdapter {
 	
@@ -38,7 +39,7 @@ class IdentityStringEiProp extends DisplayableEiPropAdapter {
 	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable::createUiComponent()
 	 */
 	public function createOutSiField(Eiu $eiu): SiField {
-		return $eiu->entry()->createIdentityString();
+		return SiFields::stringOut($eiu->entry()->createIdentityString());
 	}
 
 }

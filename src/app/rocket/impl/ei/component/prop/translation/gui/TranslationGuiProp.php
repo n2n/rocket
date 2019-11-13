@@ -81,7 +81,7 @@ class TranslationGuiProp implements GuiProp {
 		
 		$tef = new TranslationEssentialsFactory($eiu, $forkEiuFrame, $this->translationConfig->getN2nLocaleDefs());
 
-		$forkGuiPropPaths = $eiu->gui()->getForkGuiFieldPaths($eiu->prop()->getPath());
+		$forkGuiPropPaths = $eiu->gui()->getForkGuiPropPaths($eiu->prop()->getPath());
 		$targetEiuEntries = $tef->init($forkGuiPropPaths);
 		
 		$guiFieldMap = new GuiFieldMap();
@@ -138,8 +138,8 @@ class TranslationEssentialsFactory {
 	/**
 	 * @return EiuEntry[]
 	 */
-	function init(array $forkGuiFieldPaths) {
-		$this->targetEiuGui = $this->forkEiuFrame->newGui($this->eiu->gui()->getViewMode(), $forkGuiFieldPaths);
+	function init(array $forkGuiPropPaths) {
+		$this->targetEiuGui = $this->forkEiuFrame->newGui($this->eiu->gui()->getViewMode(), $forkGuiPropPaths);
 		$this->deterTargetEiuEntries();
 		
 		$this->targetEiEntryGuis = [];

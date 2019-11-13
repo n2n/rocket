@@ -23,13 +23,12 @@ namespace rocket\ei\component;
 
 use n2n\util\type\ArgUtils;
 use rocket\ei\manage\gui\GuiDefinition;
-use rocket\ei\manage\gui\EiEntryGuiAssembler;
 use rocket\ei\manage\gui\EiEntryGui;
 use rocket\ei\component\prop\GuiEiProp;
 use rocket\ei\EiPropPath;
 use rocket\ei\util\entry\EiuEntry;
 use rocket\ei\mask\EiMask;
-use rocket\ei\manage\gui\field\GuiFieldPath;
+use rocket\ei\manage\gui\field\GuiPropPath;
 use rocket\ei\manage\gui\EiGui;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\util\Eiu;
@@ -162,16 +161,16 @@ class GuiFactory {
 	 * @param array $eiPropPaths
 	 * @return EiEntryGui
 	 */
-	public static function createEiEntryGui(EiGui $eiGui, EiEntry $eiEntry, array $guiFieldPaths, int $treeLevel = null) {
-		ArgUtils::valArrayLike($guiFieldPaths, GuiFieldPath::class);
+	public static function createEiEntryGui(EiGui $eiGui, EiEntry $eiEntry, array $guiPropPaths, int $treeLevel = null) {
+		ArgUtils::valArrayLike($guiPropPaths, GuiPropPath::class);
 		
-		$eiEntryGui = new EiEntryGui($eiGui, $eiEntry, $treeLevel);
+		$eiEntryGui = new EiEntryGui($eiEntry, $treeLevel);
 		
 		$guiDefinition = $eiGui->getGuiDefinition();
 		
 		$guiFieldMap = new GuiFieldMap();
 		foreach ($eiGui->getRootEiPropPaths() as $eiPropPath) {
-			$guiField = $guiDefinition->getGuiPropWrapper($eiPropPath)->buildGuiField($eiEntryGui);
+			$guiField = $guiDefinition->getGuiPropWrapper($eiPropPath)->buildGuiField($eiGui, $eiEntryGui);
 			if ($guiField !== null) {
 				$guiFieldMap->putGuiField($eiPropPath, $guiField);	
 			}
@@ -181,8 +180,8 @@ class GuiFactory {
 		return $eiEntryGui;
 	}
 	
-// 	static function createGuiFieldMap(EiEntryGui $eiEntryGui, GuiFieldPath $baseGuiFieldPath) {
-// 		new GuiFieldMap($eiEntryGui, $forkGuiFieldPath);
+// 	static function createGuiFieldMap(EiEntryGui $eiEntryGui, GuiPropPath $baseGuiPropPath) {
+// 		new GuiFieldMap($eiEntryGui, $forkGuiPropPath);
 // 	}
 }
 

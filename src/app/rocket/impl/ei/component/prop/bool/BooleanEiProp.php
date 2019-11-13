@@ -115,12 +115,12 @@ class BooleanEiProp extends DraftablePropertyEiPropAdapter implements Filterable
 	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldEditable::createMag()
 	 */
 	public function createInSiField(Eiu $eiu): SiField {
-		$mapCb = function ($guiFieldPath) { return (string) $guiFieldPath; };
+		$mapCb = function ($guiPropPath) { return (string) $guiPropPath; };
 		
 		return SiFields::boolIn($eiu->field()->getValue())
 				->setMandatory($this->editConfig->isMandatory())
-				->setOnAssociatedFieldIds(array_map($mapCb, $this->booleanConfig->getOnAssociatedGuiFieldPaths()))
-				->setOffAssociatedFieldIds(array_map($mapCb, $this->booleanConfig->getOffAssociatedGuiFieldPaths()));
+				->setOnAssociatedFieldIds(array_map($mapCb, $this->booleanConfig->getOnAssociatedGuiPropPaths()))
+				->setOffAssociatedFieldIds(array_map($mapCb, $this->booleanConfig->getOffAssociatedGuiPropPaths()));
 	}
 	
 	
@@ -130,24 +130,24 @@ class BooleanEiProp extends DraftablePropertyEiPropAdapter implements Filterable
 	
 	public function buildEiField(Eiu $eiu): ?EiField {
 		$eiu->entry()->onValidate(function () use ($eiu) {
-			$activeGuiFieldPaths = array();
-			$notactiveGuiFieldPaths = array();
+			$activeGuiPropPaths = array();
+			$notactiveGuiPropPaths = array();
 			
 			if ($eiu->field()->getValue()) {
-				$activeGuiFieldPaths = $this->getOnAssociatedGuiFieldPaths();
-				$notactiveGuiFieldPaths = $this->getOffAssociatedGuiFieldPaths();
+				$activeGuiPropPaths = $this->getOnAssociatedGuiPropPaths();
+				$notactiveGuiPropPaths = $this->getOffAssociatedGuiPropPaths();
 			} else {
-				$activeGuiFieldPaths = $this->getOffAssociatedGuiFieldPaths();
-				$notactiveGuiFieldPaths = $this->getOnAssociatedGuiFieldPaths();
+				$activeGuiPropPaths = $this->getOffAssociatedGuiPropPaths();
+				$notactiveGuiPropPaths = $this->getOnAssociatedGuiPropPaths();
 			}
 			
-			foreach ($notactiveGuiFieldPaths as $eiPropPath) {
+			foreach ($notactiveGuiPropPaths as $eiPropPath) {
 				if (null !== ($eiFieldWrapper = $eiu->entry()->getEiFieldAbstraction($eiPropPath))) {
 					$eiFieldWrapper->setIgnored(true);
 				}
 			}
 			
-			foreach ($activeGuiFieldPaths as $eiPropPath) {
+			foreach ($activeGuiPropPaths as $eiPropPath) {
 				if (null !== ($eiFieldWrapper = $eiu->entry()->getEiFieldAbstraction($eiPropPath))) {
 					$eiFieldWrapper->setIgnored(false);
 				}

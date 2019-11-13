@@ -38,6 +38,7 @@ use rocket\ei\manage\EiObject;
 use rocket\ei\manage\security\EiEntryAccess;
 use rocket\ei\EiPropPath;
 use rocket\ei\component\command\EiCommand;
+use rocket\ei\manage\security\InaccessibleEiEntryException;
 
 class EiFrame {
 	
@@ -294,7 +295,7 @@ class EiFrame {
 	 * @param EiObject $eiObject
 	 * @param int $ignoreConstraintTypes
 	 * @return EiEntry
-	 * @throws InaccessibleEiEntry
+	 * @throws InaccessibleEiEntryException
 	 */
 	public function createEiEntry(EiObject $eiObject, EiEntry $copyFrom = null, int $ignoreConstraintTypes = 0) {
 		$eiEntry = $this->contextEiEngine->getEiMask()->determineEiMask($eiObject->getEiEntityObj()->getEiType())->getEiEngine()
@@ -310,13 +311,13 @@ class EiFrame {
 	
 	
 	
-	/**
-	 * @throws IllegalStateException
-	 * @return EiEntryAccessFactory
-	 */
-	public function getEiEntryAccessFactory() {
-		return $this->getEiExecution()->getEiEntryAccessFactory()->createEiEntryAccess($eiEntry);
-	}
+// 	/**
+// 	 * @throws IllegalStateException
+// 	 * @return EiEntryAccessFactory
+// 	 */
+// 	public function getEiEntryAccessFactory() {
+// 		return $this->getEiExecution()->getEiEntryAccessFactory()->createEiEntryAccess($eiEntry);
+// 	}
 	
 	/**
 	 * @return bool

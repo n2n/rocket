@@ -284,9 +284,8 @@ class EiuCtrl {
 		}
 		
 		$eiuGuiLayout = $this->eiuFrame->newGuiLayout(ViewMode::COMPACT_READ);
-		$eiGui = $eiuGuiLayout->getEiGuiLayout()->getEiGui();
 		
-		$this->composeEiuGuiForList($eiuGuiLayout->getEiGuiLayout(), $eiGui, $pageSize);
+		$this->composeEiuGuiForList($eiuGuiLayout->getEiGuiLayout(), $pageSize);
 		
 		$siDeclaration = $eiuGuiLayout->getEiGuiLayout()->createSiDeclaration();
 		
@@ -298,20 +297,21 @@ class EiuCtrl {
 	}
 	
 	
-	private function composeEiuGuiForList($eiGuiLayout, EiGui $eiGui, int $limit) {
+	private function composeEiuGuiForList($eiGuiLayout, $limit) {
 		$eiType = $this->eiuFrame->getEiFrame()->getContextEiEngine()->getEiMask()->getEiType();
 		
 		$criteria = $this->eiuFrame->getEiFrame()->createCriteria(NestedSetUtils::NODE_ALIAS, false);
 		$criteria->select(NestedSetUtils::NODE_ALIAS)->limit($limit);
 		
 		if (null !== ($nestedSetStrategy = $eiType->getNestedSetStrategy())) {
-			$this->treeLookup($eiGuiLayout, $eiGui, $criteria, $nestedSetStrategy);
+			$this->treeLookup($eiGuiLayout, $criteria, $nestedSetStrategy);
 		} else {
-			$this->simpleLookup($eiGuiLayout, $eiGui, $criteria);
+			$this->simpleLookup($eiGuiLayout, $criteria);
 		}
 	}
 	
-	private function simpleLookup(EiGuiLayout $eiGuiLayout, EiGui $eiGui, Criteria $criteria) {
+	private function simpleLookup(EiGuiLayout $eiGuiLayout, Criteria $criteria) {
+		$eiGui = $eiGuiLayout->getEiGui();
 		$eiFrame = $eiGui->getEiFrame();
 		$eiFrameUtil = new EiFrameUtil($eiFrame);
 		foreach ($criteria->toQuery()->fetchArray() as $entityObj) {
@@ -320,11 +320,10 @@ class EiuCtrl {
 		}
 	}
 	
-	private function treeLookup(EiGuiLayout $eiGuiLayout, EiGui $eiGui, Criteria $criteria, NestedSetStrategy $nestedSetStrategy) {
+	private function treeLookup(EiGuiLayout $eiGuiLayout, Criteria $criteria, NestedSetStrategy $nestedSetStrategy) {
 		$nestedSetUtils = new NestedSetUtils($this->eiuFrame->em(), $this->eiuFrame->getContextEiType()->getEntityModel()->getClass(), $nestedSetStrategy);
 		
-// 		$eiuGui = $this->eiuFrame->newGui(ViewMode::COMPACT_READ)->renderEntryGuiControls();
-		
+		$eiGui = $eiGuiLayout->getEiGui();
 		$eiFrame = $eiGui->getEiFrame();
 		$eiFrameUtil = new EiFrameUtil($eiFrame);
 		foreach ($nestedSetUtils->fetch(null, false, $criteria) as $nestedSetItem) {
@@ -344,7 +343,7 @@ class EiuCtrl {
 		
 		$siDeclaration = $eiGuiLayout->createSiDeclaration();
 		
-		$comp = new BulkyEntrySiComp($siDeclaration, current($eiGuiLayout->createSiEntries()));
+		$comp = new BulkyEntrySiComp($siDeclaration, $eiGuiLayout->createSiEntry());
 		
 		$this->httpContext->getResponse()->send(
 				SiPayloadFactory::create($comp, $eiGuiLayout->getEiGui()->createGeneralSiControls()));

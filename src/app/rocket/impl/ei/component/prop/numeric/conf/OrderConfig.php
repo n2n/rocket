@@ -28,13 +28,13 @@ use rocket\impl\ei\component\prop\numeric\component\OrderEiCommand;
 use rocket\impl\ei\component\prop\numeric\component\OrderEiModificator;
 use rocket\impl\ei\component\prop\adapter\config\EntityPropertyConfigurable;
 use n2n\persistence\meta\structure\Column;
-use rocket\impl\ei\component\prop\adapter\config\EiPropConfiguratorAdaption;
 use n2n\util\type\attrs\DataSet;
 use rocket\ei\util\Eiu;
 use n2n\web\dispatch\mag\MagCollection;
 use rocket\impl\ei\component\prop\numeric\OrderEiProp;
+use rocket\impl\ei\component\prop\adapter\config\ConfigAdaption;
 
-class OrderConfig implements EiPropConfiguratorAdaption {
+class OrderConfig extends ConfigAdaption {
 
 	const COMMON_ORDER_INDEX_PROP_NAME = 'orderIndex';
 	const OPTION_REFERENCE_FIELD_KEY = 'referenceField';

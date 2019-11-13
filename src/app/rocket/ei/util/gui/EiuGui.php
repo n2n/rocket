@@ -3,16 +3,13 @@ namespace rocket\ei\util\gui;
 
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\gui\ViewMode;
-use rocket\ei\manage\gui\field\GuiFieldPath;
+use rocket\ei\manage\gui\field\GuiPropPath;
 use rocket\ei\manage\gui\EiGuiSiFactory;
 use rocket\ei\manage\gui\GuiException;
 use rocket\ei\manage\gui\EiGui;
 use rocket\ei\util\frame\EiuFrame;
 use rocket\ei\util\EiuAnalyst;
-use rocket\ei\util\EiuPerimeterException;
-use rocket\ei\util\entry\EiuEntry;
 use n2n\l10n\N2nLocale;
-use rocket\ei\util\entry\EiuObject;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\ei\component\command\EiCommand;
 use rocket\ei\util\control\EiuControlFactory;
@@ -67,21 +64,21 @@ class EiuGui {
 	}
 	
 	/**
-	 * @param GuiFieldPath|string $eiPropPath
+	 * @param GuiPropPath|string $eiPropPath
 	 * @param bool $required
 	 * @return string|null
 	 */
-	public function getPropLabel($guiFieldPath, N2nLocale $n2nLocale = null, bool $required = false) {
-		$guiFieldPath = GuiFieldPath::create($guiFieldPath);
+	public function getPropLabel($guiPropPath, N2nLocale $n2nLocale = null, bool $required = false) {
+		$guiPropPath = GuiPropPath::create($guiPropPath);
 		if ($n2nLocale === null) {
 			$n2nLocale = $this->eiGui->getEiFrame()->getN2nContext()->getN2nLocale();
 		}
 		
-// 		if (null !== ($displayItem = $this->getDisplayItemByGuiFieldPath($eiPropPath))) {
+// 		if (null !== ($displayItem = $this->getDisplayItemByGuiPropPath($eiPropPath))) {
 // 			return $displayItem->translateLabel($n2nLocale);
 // 		}
 		
-		if (null !== ($guiProp = $this->getGuiPropByGuiFieldPath($guiFieldPath, $required))) {
+		if (null !== ($guiProp = $this->getGuiPropByGuiPropPath($guiPropPath, $required))) {
 			return $guiProp->getDisplayLabel();
 		}
 		
@@ -89,17 +86,17 @@ class EiuGui {
 	}
 	
 	/**
-	 * @param GuiFieldPath|string $eiPropPath
+	 * @param GuiPropPath|string $eiPropPath
 	 * @param bool $required
 	 * @throws \InvalidArgumentException
 	 * @throws GuiException
 	 * @return \rocket\ei\manage\gui\GuiProp|null
 	 */
-	public function getGuiPropByGuiFieldPath($eiPropPath, bool $required = false) {
-		$eiPropPath = GuiFieldPath::create($eiPropPath);
+	public function getGuiPropByGuiPropPath($eiPropPath, bool $required = false) {
+		$eiPropPath = GuiPropPath::create($eiPropPath);
 		
 		try {
-			return $this->eiGui->getEiGuiSiFactory()->getGuiDefinition()->getGuiPropByGuiFieldPath($eiPropPath);
+			return $this->eiGui->getEiGuiSiFactory()->getGuiDefinition()->getGuiPropByGuiPropPath($eiPropPath);
 		} catch (GuiException $e) {
 			if (!$required) return null;
 			throw $e;
@@ -107,17 +104,17 @@ class EiuGui {
 	}
 		
 // 	/**
-// 	 * @param GuiFieldPath|string $eiPropPath
+// 	 * @param GuiPropPath|string $eiPropPath
 // 	 * @param bool $required
 // 	 * @throws \InvalidArgumentException
 // 	 * @return \rocket\ei\mask\model\DisplayItem
 // 	 */
-// 	public function getDisplayItemByGuiFieldPath($eiPropPath) {
-// 		$eiPropPath = GuiFieldPath::create($eiPropPath);
+// 	public function getDisplayItemByGuiPropPath($eiPropPath) {
+// 		$eiPropPath = GuiPropPath::create($eiPropPath);
 		
 // 		$displayStructure = $this->eiGui->getEiGuiSiFactory()->getDisplayStructure();
 // 		if ($displayStructure !== null) {
-// 			return $displayStructure->getDisplayItemByGuiFieldPath($eiPropPath);
+// 			return $displayStructure->getDisplayItemByGuiPropPath($eiPropPath);
 // 		}
 // 		return null;
 // 	}
@@ -144,13 +141,6 @@ class EiuGui {
 	}
 	
 	/**
-	 * @return bool
-	 */
-	public function isSingle() {
-		return 1 == count($this->eiGui->getEiEntryGuis());
-	}
-	
-	/**
 	 * @param EiCommand $eiCommand
 	 * @return \rocket\ei\util\control\EiuControlFactory
 	 */
@@ -158,125 +148,11 @@ class EiuGui {
 		return new EiuControlFactory($this, $eiCommand);
 	}
 	
-	/**
-	 * 
-	 * @param bool $required
-	 * @return EiuEntryGui|null
-	 */
-	public function entryGui(bool $required = true) {
-		$eiEntryGuis = $this->eiGui->getEiEntryGuis();
-		$eiEntryGui = null;
-		if (count($eiEntryGuis) == 1) {
-			return new EiuEntryGui(current($eiEntryGuis), $this, $this->eiuAnalyst);
-		}
+// 	public function initWithUiCallback(\Closure $viewFactory, array $guiPropPaths) {
+// 		$guiPropPaths = GuiPropPath::createArray($guiPropPaths);
 		
-		if (!$required) return null;
-		
-		throw new EiuPerimeterException('No single EiuEntryGui is available.');
-	}
-	
-	public function entryGuis() {
-		$eiuEntryGuis = array();
-		
-		foreach ($this->eiGui->getEiEntryGuis() as $eiEntryGui) {
-			$eiuEntryGuis[] = new EiuEntryGui($eiEntryGui, $this, $this->eiuAnalyst);
-		}
-		
-		return $eiuEntryGuis;
-	}
-	
-	public function initWithUiCallback(\Closure $viewFactory, array $guiFieldPaths) {
-		$guiFieldPaths = GuiFieldPath::createArray($guiFieldPaths);
-		
-		$this->eiGui->init(new CustomGuiViewFactory($viewFactory), $guiFieldPaths);
-	}
-// 	/**
-// 	 * @param bool $required
-// 	 * @throws EiuPerimeterException
-// 	 * @return EiuEntryGui|null
-// 	 */
-// 	public function entryGui(bool $required = true) {
-// 		if ($this->singleEiuEntryGui !== null || !$required) return $this->singleEiuEntryGui;
-		
-// 		throw new EiuPerimeterException('EiuEntryGui is unavailable.');
+// 		$this->eiGui->init(new CustomGuiViewFactory($viewFactory), $guiPropPaths);
 // 	}
-	
-	/**
-	 * 
-	 * @param mixed $eiEntryArg
-	 * @param bool $makeEditable
-	 * @param int $treeLevel
-	 * @return EiuEntryGui
-	 */
-	public function appendNewEntryGui($eiEntryArg, int $treeLevel = null) {
-		$eiEntry = null;
-		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiEntryArg, 'eiEntryArg', $this->eiuFrame->getContextEiType(), true, 
-				$eiEntry);
-		
-		if ($eiEntry === null) {
-			$eiEntry = (new EiuEntry(null, new EiuObject($eiObject, $this->eiuAnalyst), 
-					null, $this->eiuAnalyst))->getEiEntry(true);
-		}
-		
-		return new EiuEntryGui($this->eiGui->createEiEntryGui($eiEntry, $treeLevel, true), $this, $this->eiuAnalyst);
-	}
-	
-// 	public function addDisplayContainer(string $type, string $label, array $attrs = null) {
-// 		$egvf = $this->eiGui->getEiGuiSiFactory();
-// 		$egvf->setDisplayStructure($egvf->getDisplayStructure()->withContainer($type, $label, $attrs));
-// 		return $this;
-// 	}
-	
-// 	/**
-// 	 * @return \rocket\ei\util\gui\EiuGui
-// 	 */
-// 	public function removeSubStructures() {
-// 		$egvf = $this->eiGui->getEiGuiSiFactory();
-// 		$egvf->setDisplayStructure($egvf->getDisplayStructure()->withoutSubStructures());
-// 		return $this;
-// 	}
-	
-// 	/**
-// 	 * @return \rocket\ei\util\gui\EiuGui
-// 	 */
-// 	public function forceRootGroups() {
-// 		$egvf = $this->eiGui->getEiGuiSiFactory();
-// 		$egvf->setDisplayStructure($egvf->getDisplayStructure()->groupedItems());
-// 		return $this;
-// 	}
-	
-	/**
-	 * @return \rocket\ei\util\gui\EiuGui
-	 */
-	public function renderEntryGuiControls(bool $renderEntryGuiControls = true) {
-		$this->eiGui->getEiGuiNature()->setEntryGuiControlsRendered($renderEntryGuiControls);
-		return $this;
-	}
-	
-	/**
-	 * @return \rocket\ei\util\gui\EiuGui
-	 */
-	public function forceCollection(bool $collectionForced = true) {
-		$this->eiGui->getEiGuiNature()->setCollectionForced($collectionForced);
-		return $this;
-	}	
-		
-// 	/**
-// 	 * @return \rocket\ei\util\gui\EiuGui
-// 	 */
-// 	public function renderForkControls(bool $renderForkControls = true) {
-// 		$this->eiGuiConfig->setForkControlsRendered($renderForkControls);
-// 		return $this;
-// 	}
-
-	
-	/**
-	 * @return HtmlView|null $contextView
-	 * @return \n2n\impl\web\ui\view\html\HtmlView
-	 */
-	public function createView(HtmlView $contextView = null) {
-		return $this->eiGui->createUiComponent($contextView);
-	}
 }
 
 class CustomGuiViewFactory implements EiGuiSiFactory {

@@ -30,12 +30,12 @@ use rocket\ei\manage\gui\control\SelectionGuiControl;
 use rocket\si\control\impl\ApiCallSiControl;
 use rocket\si\control\SiButton;
 use rocket\ei\manage\api\ApiControlCallId;
-use rocket\ei\manage\gui\EiGui;
 use n2n\reflection\magic\MagicMethodInvoker;
 use rocket\ei\util\Eiu;
 use n2n\util\type\TypeConstraints;
 use rocket\ei\manage\ManageState;
 use n2n\util\uri\Url;
+use rocket\ei\manage\gui\EiGuiLayout;
 
 class EiuCallbackGuiControl implements GeneralGuiControl, EntryGuiControl, SelectionGuiControl {
 	private $id;
@@ -113,23 +113,22 @@ class EiuCallbackGuiControl implements GeneralGuiControl, EntryGuiControl, Selec
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\control\GeneralGuiControl::handle()
 	 */
-	function handle(EiGui $eiGui): SiResult {
-		return $this->execCall(new Eiu($eiGui));
+	function handle(EiGuiLayout $eiGuiLayout): SiResult {
+		return $this->execCall(new Eiu($eiGuiLayout));
 	}
 
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\control\EntryGuiControl::handleEntry()
 	 */
-	function handleEntry(EiGui $eiGui, EiEntry $eiEntry): SiResult {
-		return $this->execCall(new Eiu($eiGui, $eiEntry));
+	function handleEntry(EiGuiLayout $eiGuiLayout, EiEntry $eiEntry): SiResult {
+		return $this->execCall(new Eiu($eiGuiLayout, $eiEntry));
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\control\SelectionGuiControl::handleEntries()
 	 */
-	function handleEntries(EiGui $eiGui, array $eiEntries): SiResult {
-		
+	function handleEntries(EiGuiLayout $eiGuiLayout, array $eiEntries): SiResult {
 	}
 }

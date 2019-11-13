@@ -26,7 +26,7 @@ use n2n\web\dispatch\mag\MagCollection;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use rocket\ei\util\Eiu;
 use rocket\ei\EiPropPath;
-use rocket\ei\manage\gui\field\GuiFieldPath;
+use rocket\ei\manage\gui\field\GuiPropPath;
 use rocket\ei\manage\gui\field\GuiField;
 
 class EiEntryGuiAssembler {
@@ -83,23 +83,23 @@ class EiEntryGuiAssembler {
 	 * @param GuiProp $guiProp
 	 * @return NULL|\rocket\ei\manage\gui\field\GuiField
 	 */
-	private function assembleExlGuiField(EiPropPath $eiPropPath, GuiPropWrapper $guiPropWrapper, GuiFieldPath $guiFieldPath) {
+	private function assembleExlGuiField(EiPropPath $eiPropPath, GuiPropWrapper $guiPropWrapper, GuiPropPath $guiPropPath) {
 		$guiField = $guiPropWrapper->buildGuiField($this->eiEntryGui);
 		
 		return $guiField;
 	}
 	
 	/**
-	 * @param GuiFieldPath $guiFieldPath
+	 * @param GuiPropPath $guiPropPath
 	 * @param GuiPropFork $guiPropFork
-	 * @param EiPropPath $guiFieldPath
+	 * @param EiPropPath $guiPropPath
 	 * @return NULL|\rocket\ei\manage\gui\field\GuiField
 	 */
-	private function assembleGuiPropFork(GuiFieldPath $guiFieldPath, GuiPropFork $guiPropFork) {
-		$eiPropPath = $guiFieldPath->getFirstEiPropPath();
+	private function assembleGuiPropFork(GuiPropPath $guiPropPath, GuiPropFork $guiPropFork) {
+		$eiPropPath = $guiPropPath->getFirstEiPropPath();
 		$eiPropPathStr = (string) $eiPropPath;
 		
-		$relativeGuiFieldPath = $guiFieldPath->getShifted();
+		$relativeGuiPropPath = $guiPropPath->getShifted();
 		$guiFieldFork = null;
 		if (isset($this->guiFieldForks[$eiPropPathStr])) {
 			$guiFieldFork = $this->guiFieldForks[$eiPropPathStr];
@@ -108,30 +108,30 @@ class EiEntryGuiAssembler {
 					new Eiu($this->eiu, $eiPropPath));
 		} 
 		
-		return $guiFieldFork->assembleGuiField($relativeGuiFieldPath);
+		return $guiFieldFork->assembleGuiField($relativeGuiPropPath);
 	}
 	
 	/**
-	 * @param GuiFieldPath $guiFieldPath
+	 * @param GuiPropPath $guiPropPath
 	 * @return \rocket\ei\manage\gui\field\GuiField
 	 */
-	public function assembleGuiField(GuiFieldPath $guiFieldPath) {
-		if ($this->eiEntryGui->containsGuiFieldGuiFieldPath($guiFieldPath)) {
-			return $this->eiEntryGui->getGuiFieldAssembly($guiFieldPath);
+	public function assembleGuiField(GuiPropPath $guiPropPath) {
+		if ($this->eiEntryGui->containsGuiFieldGuiPropPath($guiPropPath)) {
+			return $this->eiEntryGui->getGuiFieldAssembly($guiPropPath);
 		}
 		
 		$guiField = null;
-		if ($guiFieldPath->hasMultipleEiPropPaths()) {
-			$guiField = $this->assembleGuiPropFork($guiFieldPath,
-					$this->guiDefinition->getGuiPropFork($guiFieldPath->getFirstEiPropPath()));
+		if ($guiPropPath->hasMultipleEiPropPaths()) {
+			$guiField = $this->assembleGuiPropFork($guiPropPath,
+					$this->guiDefinition->getGuiPropFork($guiPropPath->getFirstEiPropPath()));
 		} else {
-			$eiPropPath = $guiFieldPath->getFirstEiPropPath();
+			$eiPropPath = $guiPropPath->getFirstEiPropPath();
 			$guiField = $this->assembleExlGuiField($eiPropPath, $this->guiDefinition->getGuiPropWrapper($eiPropPath), 
-					$guiFieldPath);
+					$guiPropPath);
 		}
 		
 		if ($guiField !== null) {
-			$this->eiEntryGui->putGuiField($guiFieldPath, $guiField);
+			$this->eiEntryGui->putGuiField($guiPropPath, $guiField);
 		}
 		
 		return $guiField;
@@ -143,7 +143,7 @@ class EiEntryGuiAssembler {
 	
 	public function finalize() {
 		foreach ($this->guiFieldForks as $id => $guiFieldFork) {
-			$this->eiEntryGui->putGuiFieldFork(new GuiFieldPath([EiPropPath::create($id)]), $guiFieldFork);
+			$this->eiEntryGui->putGuiFieldFork(new GuiPropPath([EiPropPath::create($id)]), $guiFieldFork);
 		}
 		
 		$this->eiEntryGui->markInitialized();

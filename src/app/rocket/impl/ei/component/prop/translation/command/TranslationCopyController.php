@@ -4,7 +4,7 @@ namespace rocket\impl\ei\component\prop\translation\command;
 use n2n\web\http\controller\ControllerAdapter;
 use rocket\ei\util\EiuCtrl;
 use n2n\web\http\controller\ParamQuery;
-use rocket\ei\manage\gui\field\GuiFieldPath;
+use rocket\ei\manage\gui\field\GuiPropPath;
 use n2n\web\http\BadRequestException;
 use n2n\impl\web\ui\view\jhtml\JhtmlResponse;
 use n2n\util\ex\UnsupportedOperationException;
@@ -14,10 +14,10 @@ use n2n\l10n\IllegalN2nLocaleFormatException;
 
 class TranslationCopyController extends ControllerAdapter {
 	
-	public function doLive(EiuCtrl $eiuCtrl, ParamQuery $guiFieldPaths, ParamQuery $propertyPath, ParamQuery $bulky,
+	public function doLive(EiuCtrl $eiuCtrl, ParamQuery $guiPropPaths, ParamQuery $propertyPath, ParamQuery $bulky,
 			ParamQuery $n2nLocale, ParamQuery $pid = null) {
 		try {
-			$guiFieldPaths = $this->parseGuiFieldPaths($guiFieldPaths);
+			$guiPropPaths = $this->parseGuiPropPaths($guiPropPaths);
 			$propertyPath = PropertyPath::createFromPropertyExpression((string) $propertyPath);
 			$n2nLocale = N2nLocale::create((string) $n2nLocale);
 		} catch (\InvalidArgumentException $e) {
@@ -34,7 +34,7 @@ class TranslationCopyController extends ControllerAdapter {
 			$eiuEntry->getEntityObj()->setN2nLocale($n2nLocale);
 		}
 		
-		foreach ($guiFieldPaths as $guitFieldPath) {
+		foreach ($guiPropPaths as $guitFieldPath) {
 			if ($eiuEntry->mask()->engine()->containsGuiProp($guitFieldPath)) continue;
 			
 			throw new BadRequestException('Unknown eiPropPath: ' . $guitFieldPath);
@@ -42,17 +42,17 @@ class TranslationCopyController extends ControllerAdapter {
 		
 		$eiuEntryGui = $eiuEntry->newCustomEntryGui(function () {
 			throw new UnsupportedOperationException();
-		}, $guiFieldPaths, $bulky->toBool(), true);
+		}, $guiPropPaths, $bulky->toBool(), true);
 		
 		$this->send(JhtmlResponse::view($this->createView('jhtmlTranslation.html',
 				array('eiuEntryGui' => $eiuEntryGui, 'propertyPath' => $propertyPath,
-						'n2nLocale' => $n2nLocale, 'guiFieldPaths' => $guiFieldPaths))));
+						'n2nLocale' => $n2nLocale, 'guiPropPaths' => $guiPropPaths))));
 	}
 	
-	private function parseGuiFieldPaths(ParamQuery $param) {
+	private function parseGuiPropPaths(ParamQuery $param) {
 		$eiPropPaths = [];
 		foreach ($param->toStringArrayOrReject() as $eiPropPathStr) {
-			$eiPropPaths[] = GuiFieldPath::create((string) $eiPropPathStr);
+			$eiPropPaths[] = GuiPropPath::create((string) $eiPropPathStr);
 		}
 		if (empty($eiPropPaths)) {
 			throw new \InvalidArgumentException('No HuiIdPaths given.');
@@ -60,11 +60,11 @@ class TranslationCopyController extends ControllerAdapter {
 		return $eiPropPaths;
 	}
 	
-	public function doLiveCopy(EiuCtrl $eiuCtrl, ParamQuery $guiFieldPaths, ParamQuery $propertyPath, ParamQuery $bulky,
+	public function doLiveCopy(EiuCtrl $eiuCtrl, ParamQuery $guiPropPaths, ParamQuery $propertyPath, ParamQuery $bulky,
 			ParamQuery $toN2nLocale, ParamQuery $fromPid, ParamQuery $toPid = null) {
 				
 		try {
-			$guiFieldPath = current($this->parseGuiFieldPaths($guiFieldPaths));
+			$guiPropPath = current($this->parseGuiPropPaths($guiPropPaths));
 			$propertyPath = PropertyPath::createFromPropertyExpression((string) $propertyPath);
 			$toN2nLocale = N2nLocale::create((string) $toN2nLocale);
 		} catch (\InvalidArgumentException $e) {
@@ -83,19 +83,19 @@ class TranslationCopyController extends ControllerAdapter {
 			$toEiuEntry->getEntityObj()->setN2nLocale($toN2nLocale);
 		}
 		
-		if (!$fromEiuEntry->mask()->engine()->containsGuiProp($guiFieldPath)) {
-			throw new BadRequestException('Unknown guiFieldPath: ' . $guiFieldPath);
+		if (!$fromEiuEntry->mask()->engine()->containsGuiProp($guiPropPath)) {
+			throw new BadRequestException('Unknown guiPropPath: ' . $guiPropPath);
 		}
 		
-		$eiPropPath = $guiFieldPath->getFirstEiPropPath();
+		$eiPropPath = $guiPropPath->getFirstEiPropPath();
 		$fromEiuEntry->copyValuesTo($toEiuEntry, [$eiPropPath]);
 		
 		$eiuEntryGui = $toEiuEntry->newCustomEntryGui(function () {
 			throw new UnsupportedOperationException();
-		}, array($guiFieldPath), $bulky->toBool(), true);
+		}, array($guiPropPath), $bulky->toBool(), true);
 		
 		$this->send(JhtmlResponse::view($this->createView('jhtmlTranslation.html', 
 				array('eiuEntryGui' => $eiuEntryGui, 'propertyPath' => $propertyPath,
-						'n2nLocale' => $toN2nLocale, 'guiFieldPaths' => [$guiFieldPath]))));
+						'n2nLocale' => $toN2nLocale, 'guiPropPaths' => [$guiPropPath]))));
 	}
 }

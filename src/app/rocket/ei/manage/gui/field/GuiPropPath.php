@@ -28,7 +28,7 @@ use rocket\ei\component\prop\EiProp;
 use n2n\util\col\Hashable;
 use n2n\util\type\TypeUtils;
 
-class GuiFieldPath implements Hashable {
+class GuiPropPath implements Hashable {
 	const EI_PROP_PATH_SEPARATOR = '.';
 	
 	/**
@@ -58,7 +58,7 @@ class GuiFieldPath implements Hashable {
 	protected function ensureNotEmpty() {
 		if (!$this->isEmpty()) return;
 		
-		throw new IllegalStateException('GuiFieldPath is empty.');
+		throw new IllegalStateException('GuiPropPath is empty.');
 	}
 	
 	/**
@@ -78,7 +78,7 @@ class GuiFieldPath implements Hashable {
 	
 	/**
 	 * @throws IllegalStateException
-	 * @return \rocket\ei\manage\gui\field\GuiFieldPath
+	 * @return \rocket\ei\manage\gui\field\GuiPropPath
 	 */
 	public function getShifted() {
 		$eiPropPaths = $this->eiPropPaths;
@@ -86,12 +86,12 @@ class GuiFieldPath implements Hashable {
 		if (empty($eiPropPaths)) {
 			throw new IllegalStateException();
 		}
-		return new GuiFieldPath($eiPropPaths);
+		return new GuiPropPath($eiPropPaths);
 	}
 	
 	/**
 	 * @throws IllegalStateException
-	 * @return \rocket\ei\manage\gui\field\GuiFieldPath
+	 * @return \rocket\ei\manage\gui\field\GuiPropPath
 	 */
 	public function getPoped() {
 		$eiPropPaths = $this->eiPropPaths;
@@ -99,17 +99,17 @@ class GuiFieldPath implements Hashable {
 		if (empty($eiPropPaths)) {
 			throw new IllegalStateException();
 		}
-		return new GuiFieldPath($eiPropPaths);
+		return new GuiPropPath($eiPropPaths);
 	}
 	
-	public function startsWith(GuiFieldPath $guiFieldPath, bool $checkOnEiPropPathLevel) {
+	public function startsWith(GuiPropPath $guiPropPath, bool $checkOnEiPropPathLevel) {
 		$size = $this->size();
 		
-		if ($guiFieldPath->size() > $size) {
+		if ($guiPropPath->size() > $size) {
 			return false;
 		}
 		
-		foreach ($guiFieldPath->eiPropPaths as $key => $eiPropPath) {
+		foreach ($guiPropPath->eiPropPaths as $key => $eiPropPath) {
 			if (!isset($this->eiPropPaths[$key])) return false;
 			
 			if ($this->eiPropPaths[$key]->equals($eiPropPath)) {
@@ -122,12 +122,12 @@ class GuiFieldPath implements Hashable {
 		return true;
 	}
 	
-	public function equals($guiFieldPath) {
-		if (!($guiFieldPath instanceof GuiFieldPath) || $guiFieldPath->size() != $this->size()) {
+	public function equals($guiPropPath) {
+		if (!($guiPropPath instanceof GuiPropPath) || $guiPropPath->size() != $this->size()) {
 			return false;
 		}
 		
-		foreach ($guiFieldPath->eiPropPaths as $key => $eiPropPath) {
+		foreach ($guiPropPath->eiPropPaths as $key => $eiPropPath) {
 			if (!$eiPropPath->equals($this->eiPropPaths[$key])) {
 				return false;
 			}
@@ -156,17 +156,17 @@ class GuiFieldPath implements Hashable {
 	 * @return EiPropPath
 	 */
 	function ext($eiPropPath) {
-		$guiFieldPath = new GuiFieldPath($this->eiPropPaths);
-		$guiFieldPath->eiPropPaths[] = EiPropPath::create($eiPropPath);
-		return $guiFieldPath;
+		$guiPropPath = new GuiPropPath($this->eiPropPaths);
+		$guiPropPath->eiPropPaths[] = EiPropPath::create($eiPropPath);
+		return $guiPropPath;
 	}
 	
 	/**
 	 * @param mixed $expression
-	 * @return \rocket\ei\manage\gui\field\GuiFieldPath
+	 * @return \rocket\ei\manage\gui\field\GuiPropPath
 	 */
 	public static function create($expression) {
-		if ($expression instanceof GuiFieldPath) {
+		if ($expression instanceof GuiPropPath) {
 			return $expression;
 		}
 	
@@ -174,24 +174,24 @@ class GuiFieldPath implements Hashable {
 		if (is_array($expression)) {
 			$parts = $expression;
 		} else if ($expression instanceof EiProp) {
-			return new GuiFieldPath([EiPropPath::from($expression)]);
+			return new GuiPropPath([EiPropPath::from($expression)]);
 		} else if ($expression instanceof EiPropPath) {
-			return new GuiFieldPath([$expression]);
+			return new GuiPropPath([$expression]);
 		} else if (is_scalar($expression)) {
 			$parts = explode(self::EI_PROP_PATH_SEPARATOR, (string) $expression);
 		} else if ($expression === null) {
 			$parts = [];
 		} else {
-			throw new \InvalidArgumentException('Passed value type can not be converted to a GuiFieldPath: ' 
+			throw new \InvalidArgumentException('Passed value type can not be converted to a GuiPropPath: ' 
 					. TypeUtils::getTypeInfo($expression));
 		}
 		
-		$guiFieldPath = new GuiFieldPath([]);
-		$guiFieldPath->eiPropPaths = [];
+		$guiPropPath = new GuiPropPath([]);
+		$guiPropPath->eiPropPaths = [];
 		foreach ($parts as $part) {
-			$guiFieldPath->eiPropPaths[] = EiPropPath::create($part);
+			$guiPropPath->eiPropPaths[] = EiPropPath::create($part);
 		}
-		return $guiFieldPath;
+		return $guiPropPath;
 	}
 	
 	public static function createArray(array $expressions) {

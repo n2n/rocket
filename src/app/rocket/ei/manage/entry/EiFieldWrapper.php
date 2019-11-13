@@ -106,7 +106,6 @@ class EiFieldWrapper implements EiFieldAbstraction {
 		}
 		
 		$this->ensureOrgLoaded();
-		
 		$this->eiField->setValue($value);
 	}
 	

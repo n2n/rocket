@@ -65,14 +65,14 @@ class StringConfig extends ConfigAdaption {
 		}
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator::testCompatibility()
-	 */
-	function testCompatibility(PropertyAssignation $propertyAssignation): int {
-		$this->setMaxCompatibilityLevel(CompatibilityLevel::SUITABLE);
-		return parent::testCompatibility($propertyAssignation);
-	}
+// 	/**
+// 	 * {@inheritDoc}
+// 	 * @see \rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator::testCompatibility()
+// 	 */
+// 	function testCompatibility(PropertyAssignation $propertyAssignation): int {
+// 		$this->setMaxCompatibilityLevel(CompatibilityLevel::SUITABLE);
+// 		return parent::testCompatibility($propertyAssignation);
+// 	}
 	
 	function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
 		$magCollection->addMag(self::ATTR_MULTILINE_KEY, new BoolMag('Multiline',

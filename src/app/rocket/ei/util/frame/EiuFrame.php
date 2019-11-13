@@ -643,7 +643,7 @@ class EiuFrame {
 	
 	/**
 	 * @param int $viewMode
-	 * @param array $guiFieldPaths
+	 * @param array $guiPropPaths
 	 * @return \rocket\ei\util\gui\EiuGuiLayout
 	 */
 	public function newGuiLayout(int $viewMode) {
@@ -651,16 +651,16 @@ class EiuFrame {
 				->getGuiDefinition($this->eiFrame->getContextEiEngine()->getEiMask())
 				->createEiGuiLayout($this->eiFrame, $viewMode);
 		
-		return new EiuGuiLayout($eiGuiLayout, $this->eiuAnalyst);
+		return new EiuGuiLayout($eiGuiLayout, null, $this->eiuAnalyst);
 	}
 	
 	/**
 	 * @return EiuGui
 	 */
-	public function newGui(int $viewMode, array $guiFieldPaths) {
+	public function newGui(int $viewMode, array $guiPropPaths) {
 		$eiGui = $this->eiFrame->getManageState()->getDef()
 				->getGuiDefinition($this->eiFrame->getContextEiEngine()->getEiMask())
-				->createEiGui($this->eiFrame, $viewMode, $guiFieldPaths);
+				->createEiGui($this->eiFrame, $viewMode, $guiPropPaths);
 		
 		return new EiuGui($eiGui, $this, $this->eiuAnalyst);
 	}
@@ -679,14 +679,14 @@ class EiuFrame {
 	/**
 	 * @param int $viewMode
 	 * @param \Closure $uiFactory
-	 * @param array $guiFieldPaths
+	 * @param array $guiPropPaths
 	 * @return \rocket\ei\util\gui\EiuGui
 	 */
-	public function newCustomGui(int $viewMode, \Closure $uiFactory, array $guiFieldPaths) {
+	public function newCustomGui(int $viewMode, \Closure $uiFactory, array $guiPropPaths) {
 		$eiGui = $this->eiFrame->getContextEiEngine()->getEiMask()->createEiGui($this->eiFrame, $viewMode, false);
 		
 		$eiuGui = new EiuGui($eiGui, $this, $this->eiuAnalyst);
-		$eiuGui->initWithUiCallback($uiFactory, $guiFieldPaths);
+		$eiuGui->initWithUiCallback($uiFactory, $guiPropPaths);
 		return $eiuGui;
 	}
 	

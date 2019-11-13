@@ -1,7 +1,7 @@
 <?php
 namespace rocket\ei\mask\model;
 
-use rocket\ei\manage\gui\field\GuiFieldPath;
+use rocket\ei\manage\gui\field\GuiPropPath;
 use n2n\util\ex\IllegalStateException;
 use n2n\util\type\ArgUtils;
 use n2n\l10n\Lstr;
@@ -14,7 +14,7 @@ class DisplayItem {
 	protected $label;
 	protected $moduleNamespace;
 	protected $siStructureType;
-	protected $guiFieldPath;
+	protected $guiPropPath;
 	protected $attrs;
 	protected $displayStructure;
 
@@ -22,27 +22,27 @@ class DisplayItem {
 	}
 
 	/**
-	 * @param GuiFieldPath $guiFieldPath
+	 * @param GuiPropPath $guiPropPath
 	 * @return DisplayItem
 	 */
-	public static function create(GuiFieldPath $guiFieldPath, string $siStructureType = null) {
+	public static function create(GuiPropPath $guiPropPath, string $siStructureType = null) {
 		$orderItem = new DisplayItem();
 		ArgUtils::valEnum($siStructureType, SiStructureType::all(), null, true);
 		$orderItem->siStructureType = $siStructureType;
-		$orderItem->guiFieldPath = $guiFieldPath;
+		$orderItem->guiPropPath = $guiPropPath;
 		return $orderItem;
 	}
 	
 	/**
-	 * @param GuiFieldPath $guiFieldPath
+	 * @param GuiPropPath $guiPropPath
 	 * @return DisplayItem
 	 * @deprecated
 	 */
-	public static function createFromGuiFieldPath(GuiFieldPath $guiFieldPath, string $siStructureType = null) {
+	public static function createFromGuiPropPath(GuiPropPath $guiPropPath, string $siStructureType = null) {
 		$orderItem = new DisplayItem();
 		ArgUtils::valEnum($siStructureType, SiStructureType::all(), null, true);
 		$orderItem->siStructureType = $siStructureType;
-		$orderItem->guiFieldPath = $guiFieldPath;
+		$orderItem->guiPropPath = $guiPropPath;
 		return $orderItem;
 	}
 
@@ -69,7 +69,7 @@ class DisplayItem {
 	public function copy(string $siStructureType = null, array $attrs = null/*, Lstr $labelLstr = null*/) {
 		$displayItem = new DisplayItem();
 		$displayItem->displayStructure = $this->displayStructure;
-		$displayItem->guiFieldPath = $this->guiFieldPath;
+		$displayItem->guiPropPath = $this->guiPropPath;
 		ArgUtils::valEnum($siStructureType, SiStructureType::all(), null, true);
 		$displayItem->siStructureType = $siStructureType ?? $this->siStructureType;
 // 		$displayItem->labelLstr = $labelLstr ?? $this->labelLstr;
@@ -82,7 +82,7 @@ class DisplayItem {
 	 */
 	public function getLabelLstr() {
 		if (!$this->hasDisplayStructure()) {
-			throw new IllegalStateException('No labels for GuiFieldPath DisplayItem.');
+			throw new IllegalStateException('No labels for GuiPropPath DisplayItem.');
 		}
 		
 		if ($this->label === null) return null;
@@ -173,11 +173,11 @@ class DisplayItem {
 
 	/**
 	 * @throws IllegalStateException
-	 * @return GuiFieldPath
+	 * @return GuiPropPath
 	 */
-	public function getGuiFieldPath() {
-		if ($this->guiFieldPath !== null) {
-			return $this->guiFieldPath;
+	public function getGuiPropPath() {
+		if ($this->guiPropPath !== null) {
+			return $this->guiPropPath;
 		}
 
 		throw new IllegalStateException();

@@ -44,14 +44,14 @@ abstract class EiFieldAdapter implements EiField {
 	
 	private function assetConstraints($value) {
 		try {
-			if ($this->checkValue($value)) return;
+			$this->checkValue($value);
 		} catch (\InvalidArgumentException $e) {
 			throw new ValueIncompatibleWithConstraintsException('EiField can not adopt passed value.', 0, $e);
 		} catch (ValueIncompatibleWithConstraintsException $e) {
 			throw new ValueIncompatibleWithConstraintsException('EiField can not adopt passed value.', 0, $e);
 		}
 		
-		throw new ValueIncompatibleWithConstraintsException('EiField can not adopt passed value.');
+// 		throw new ValueIncompatibleWithConstraintsException('EiField can not adopt passed value.');
 	}
 	
 	/**

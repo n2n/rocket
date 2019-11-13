@@ -27,7 +27,7 @@ use rocket\ei\manage\gui\EiEntryGui;
 use rocket\ei\EiPropPath;
 use rocket\ei\util\entry\EiuEntry;
 use rocket\ei\mask\EiMask;
-use rocket\ei\manage\gui\field\GuiFieldPath;
+use rocket\ei\manage\gui\field\GuiPropPath;
 use rocket\ei\manage\gui\EiGui;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\util\Eiu;
@@ -82,15 +82,15 @@ class IdNameFactory {
 	 * @param array $eiPropPaths
 	 * @return EiEntryGui
 	 */
-	public static function createEiEntryGui(EiGui $eiGui, EiEntry $eiEntry, array $guiFieldPaths, int $treeLevel = null) {
-		ArgUtils::valArrayLike($guiFieldPaths, GuiFieldPath::class);
+	public static function createEiEntryGui(EiGui $eiGui, EiEntry $eiEntry, array $guiPropPaths, int $treeLevel = null) {
+		ArgUtils::valArrayLike($guiPropPaths, GuiPropPath::class);
 		
 		$eiEntryGui = new EiEntryGui($eiGui, $eiEntry, $treeLevel);
 		
 		$guiFieldAssembler = new EiEntryGuiAssembler($eiEntryGui);
 		
-		foreach ($guiFieldPaths as $guiFieldPath) {
-			$guiFieldAssembler->assembleGuiField($guiFieldPath);
+		foreach ($guiPropPaths as $guiPropPath) {
+			$guiFieldAssembler->assembleGuiField($guiPropPath);
 		}
 		
 		$guiFieldAssembler->finalize();

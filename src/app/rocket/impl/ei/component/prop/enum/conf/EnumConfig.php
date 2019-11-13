@@ -30,7 +30,7 @@ use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\util\type\TypeConstraint;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
 use n2n\impl\web\dispatch\mag\model\MultiSelectMag;
-use rocket\ei\manage\gui\field\GuiFieldPath;
+use rocket\ei\manage\gui\field\GuiPropPath;
 use rocket\impl\ei\component\prop\adapter\config\ConfigAdaption;
 use rocket\ei\util\Eiu;
 use n2n\util\type\attrs\DataSet;
@@ -44,7 +44,7 @@ class EnumConfig extends ConfigAdaption {
 	const ASSOCIATED_GUI_FIELD_KEY = 'associatedGuiProps';
 	
 	private $options = array();
-	private $associatedGuiFieldPathMap = array();
+	private $associatedGuiPropPathMap = array();
 	
 	
 	
@@ -59,17 +59,17 @@ class EnumConfig extends ConfigAdaption {
 	
 	
 	
-	public function setAssociatedGuiFieldPathMap(array $associatedGuiFieldPathMap) {
-		ArgUtils::valArray($associatedGuiFieldPathMap,
-				TypeConstraint::createArrayLike('array', false, TypeConstraint::createSimple(GuiFieldPath::class)));
-		$this->associatedGuiFieldPathMap = $associatedGuiFieldPathMap;
+	public function setAssociatedGuiPropPathMap(array $associatedGuiPropPathMap) {
+		ArgUtils::valArray($associatedGuiPropPathMap,
+				TypeConstraint::createArrayLike('array', false, TypeConstraint::createSimple(GuiPropPath::class)));
+		$this->associatedGuiPropPathMap = $associatedGuiPropPathMap;
 	}
 	
 	/**
 	 * @return array
 	 */
-	public function getAssociatedGuiFieldPathMap() {
-		return $this->associatedGuiFieldPathMap;
+	public function getAssociatedGuiPropPathMap() {
+		return $this->associatedGuiPropPathMap;
 	}
 	
 	public function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection): MagDispatchable {
@@ -86,7 +86,7 @@ class EnumConfig extends ConfigAdaption {
 					$eMag = new TogglerMag('Bind GuiProps to value', false);
 					$magCollection->addMag('bindGuiPropsToValue', $eMag);
 					$eMag->setOnAssociatedMagWrappers(array(
-							$magCollection->addMag('assoicatedGuiFieldPaths', new MultiSelectMag('Associated Gui Fields', $assoicatedGuiPropOptions))));
+							$magCollection->addMag('assoicatedGuiPropPaths', new MultiSelectMag('Associated Gui Fields', $assoicatedGuiPropOptions))));
 					return new MagForm($magCollection);
 				});
 		
@@ -98,10 +98,10 @@ class EnumConfig extends ConfigAdaption {
 		
 		foreach ($lar->getArray(self::ASSOCIATED_GUI_FIELD_KEY,  
 				TypeConstraint::createArrayLike('array', false, TypeConstraint::createSimple('scalar'))) 
-						as $value => $assoicatedGuiFieldPaths) {
+						as $value => $assoicatedGuiPropPaths) {
 			if (array_key_exists($value, $valueLabelMap)) {
 				$valueLabelMap[$value]['bindGuiPropsToValue'] = true;
-				$valueLabelMap[$value]['assoicatedGuiFieldPaths'] = $assoicatedGuiFieldPaths;
+				$valueLabelMap[$value]['assoicatedGuiPropPaths'] = $assoicatedGuiPropPaths;
 			}
 		}
 		
@@ -118,7 +118,7 @@ class EnumConfig extends ConfigAdaption {
 			$options[$valueLabelMap['value']] = $valueLabelMap['label'];
 			
 			if ($valueLabelMap['bindGuiPropsToValue']) {
-				$eiPropPathMap[$valueLabelMap['value']] = $valueLabelMap['assoicatedGuiFieldPaths'];
+				$eiPropPathMap[$valueLabelMap['value']] = $valueLabelMap['assoicatedGuiPropPaths'];
 			}
 		}
 		$dataSet->set(self::ATTR_OPTIONS_KEY, $options);
@@ -138,12 +138,12 @@ class EnumConfig extends ConfigAdaption {
 			foreach ($eiPropPathMap as $value => $eiPropPathStrs) {
 				$eiPropPaths = array();
 				foreach ($eiPropPathStrs as $eiPropPathStr) {
-					$eiPropPaths[] = GuiFieldPath::create($eiPropPathStr);
+					$eiPropPaths[] = GuiPropPath::create($eiPropPathStr);
 				}
 				$eiPropPathMap[$value] = $eiPropPaths;
 			}
 			
-			$this->enumEiProp->setAssociatedGuiFieldPathMap($eiPropPathMap);
+			$this->enumEiProp->setAssociatedGuiPropPathMap($eiPropPathMap);
 		}
 	}
 }

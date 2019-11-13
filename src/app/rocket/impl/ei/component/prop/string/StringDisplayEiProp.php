@@ -24,8 +24,6 @@ namespace rocket\impl\ei\component\prop\string;
 use n2n\reflection\property\AccessProxy;
 use n2n\util\type\TypeConstraint;
 use rocket\ei\component\prop\FieldEiProp;
-use rocket\impl\ei\component\prop\adapter\entry\SimpleEiField;
-use rocket\impl\ei\component\prop\adapter\entry\Readable;
 use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable;
 use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\util\Eiu;
@@ -45,13 +43,13 @@ use rocket\impl\ei\component\prop\adapter\gui\GuiProps;
 use rocket\impl\ei\component\prop\adapter\gui\GuiFieldFactory;
 
 class StringDisplayEiProp extends PropertyDisplayableEiPropAdapter implements ObjectPropertyConfigurable, 
-		FieldEiProp, Readable, GuiFieldFactory, StatelessGuiFieldDisplayable {
+		FieldEiProp, GuiFieldFactory, StatelessGuiFieldDisplayable {
 	
 	function prepare() {
 		$this->getDisplayConfig()->setCompatibleViewModes(ViewMode::read());
 	}
 	
-	function isEntityPropertyRequired() {
+	function isEntityPropertyRequired(): bool {
 		return false;
 	}
 

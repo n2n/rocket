@@ -37,6 +37,7 @@ use rocket\ei\manage\gui\EiEntryGuiMulti;
 use rocket\ei\EiException;
 use rocket\ei\UnknownEiTypeException;
 use rocket\ei\manage\entry\EiEntry;
+use rocket\ei\manage\security\SecurityException;
 
 class EiFrameUtil {
 	private $eiFrame;

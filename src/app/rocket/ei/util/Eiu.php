@@ -18,6 +18,7 @@ class Eiu implements Lookupable {
 	private $eiuEntry;
 	private $eiuField;
 	private $eiuFieldMap;
+	private $eiuGuiLayout;
 	private $eiuGui;
 	private $eiuEntryGui;
 	private $eiuGuiField;
@@ -123,6 +124,20 @@ class Eiu implements Lookupable {
 		}
 		
 		return $this->eiuFieldMap = $this->eiuAnalyst->getEiuFieldMap($required);
+	}
+	
+	/**
+	 *
+	 * @param bool $required
+	 * @throws EiuPerimeterException
+	 * @return \rocket\ei\util\gui\EiuGuiLayout
+	 */
+	public function guiLayout(bool $required = true) {
+		if ($this->eiuGuiLayout !== null) {
+			return $this->eiuGuiLayout;
+		}
+		
+		return $this->eiuGuiLayout = $this->eiuAnalyst->getEiuGuiLayout($required);
 	}
 	
 	/**

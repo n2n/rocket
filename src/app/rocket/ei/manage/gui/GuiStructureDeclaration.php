@@ -22,7 +22,7 @@
 namespace rocket\ei\manage\gui;
 
 use n2n\util\type\ArgUtils;
-use rocket\ei\manage\gui\field\GuiFieldPath;
+use rocket\ei\manage\gui\field\GuiPropPath;
 use n2n\util\ex\UnsupportedOperationException;
 
 class GuiStructureDeclaration {
@@ -61,7 +61,7 @@ class GuiStructureDeclaration {
 	}
 	
 	/**
-	 * @return GuiFieldPath
+	 * @return GuiPropPath
 	 */
 	function getGuiPropPath() {
 		UnsupportedOperationException::assertTrue($this->guiPropPath !== null);
@@ -83,32 +83,32 @@ class GuiStructureDeclaration {
 		return $this->children;
 	}
 	
-	function getAllGuiFieldPaths() {
+	function getAllGuiPropPaths() {
 		if ($this->guiPropPath !== null) {
 			return [(string) $this->guiPropPath => $this->guiPropPath];
 		}
 		
 		$guiPropPaths = [];
 		foreach ($this->children as $child) {
-			$guiPropPaths = array_merge($guiPropPaths, $child->getAllGuiFieldPaths());
+			$guiPropPaths = array_merge($guiPropPaths, $child->getAllGuiPropPaths());
 		}
 		return $guiPropPaths;
 	}
 	
 	/**
 	 * @param string $siStructureType
-	 * @param GuiFieldPath $guiFieldPath
+	 * @param GuiPropPath $guiPropPath
 	 * @param string|null $label
 	 * @param string|null $helpText
 	 * @return GuiStructureDeclaration
 	 */
-	static function createField(GuiFieldPath $guiFieldPath, ?string $siStructureType, ?string $label, 
+	static function createField(GuiPropPath $guiPropPath, ?string $siStructureType, ?string $label, 
 			string $helpText = null) {
 		$gsd = new GuiStructureDeclaration();
 		$gsd->label = $label;
 		$gsd->helpText = $helpText;
 		$gsd->siStructureType = $siStructureType;
-		$gsd->guiPropPath = $guiFieldPath;
+		$gsd->guiPropPath = $guiPropPath;
 		return $gsd;
 	}
 	

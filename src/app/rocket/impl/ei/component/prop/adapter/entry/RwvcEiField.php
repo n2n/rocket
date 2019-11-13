@@ -57,12 +57,12 @@ class RwvcEiField extends EiFieldAdapter {
 	
 	
 	public function isWritable(): bool {
-		return $this->writable !== null;
+		return $this->writer !== null;
 	}
 	
 	protected function writeValue($value) {
-		if (null !== $this->writable) {
-			$this->writable->write($this->eiu, $value);
+		if (null !== $this->writer) {
+			$this->writer->writeEiFieldValue($this->eiu, $value);
 			return;
 		}
 		
