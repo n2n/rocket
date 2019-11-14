@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\prop\translation;
+namespace rocket\impl\ei\component\prop\translation\gui;
 
 use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\ei\manage\gui\GuiDefinition;
@@ -32,9 +32,12 @@ use rocket\ei\manage\gui\GuiFieldMap;
 use rocket\ei\util\entry\EiuEntry;
 use n2n\util\type\CastUtils;
 use rocket\ei\util\gui\EiuEntryGui;
-use rocket\impl\ei\component\prop\translation\conf\N2nLocaleDef;
 use n2n\l10n\N2nLocale;
 use rocket\ei\EiPropPath;
+use rocket\impl\ei\component\prop\translation\TranslationGuiField;
+use rocket\ei\util\frame\EiuFrame;
+use rocket\impl\ei\component\prop\translation\conf\TranslationConfig;
+use rocket\impl\ei\component\prop\translation\SplitGuiField;
 
 class TranslationGuiProp implements GuiProp {
 	/**
@@ -50,8 +53,8 @@ class TranslationGuiProp implements GuiProp {
 	/**
 	 * @param GuiDefinition $guiDefinition
 	 */
-	function __construct(GuiDefinition $forkGuiDefinition, RelationConfig $relationModel) {
-		$this->forkGuiDefinition = $forkGuiDefinition;
+	function __construct(RelationModel $relationModel) {
+		$this->forkGuiDefinition = $relationModel->getTargetEiuEngine()->getGuiDefinition();
 		$this->relationModel = $relationModel;
 	}
 	

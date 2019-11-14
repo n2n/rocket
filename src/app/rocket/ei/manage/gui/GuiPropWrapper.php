@@ -25,6 +25,7 @@ use rocket\ei\EiPropPath;
 use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\EiProp;
 use rocket\ei\manage\gui\field\GuiField;
+use rocket\ei\manage\gui\field\GuiPropPath;
 
 class GuiPropWrapper {
 	
@@ -70,6 +71,28 @@ class GuiPropWrapper {
 		}
 		
 		return $displayDefinition;
+	}
+	
+	function buildForkDisplayDefinition(GuiPropPath $forkedGuiPropPath, EiGui $eiGui, bool $defaultDisplayedRequired) {
+		return $this->guiProp->getForkGuiDefinition()->getGuiPropWrapperByGuiPropPath($forkedGuiPropPath)
+				->buildDisplayDefinition($eiGui, $defaultDisplayedRequired);
+	}
+	
+	/**
+	 * @return GuiPropPath[]
+	 */
+	function getForkedGuiPropPaths() {
+		$forkGuiDefinition = $this->guiProp->getForkGuiDefinition();
+		
+		if ($forkGuiDefinition === null) {
+			return [];
+		}
+		
+		return $forkGuiDefinition->getGuiPropPaths();
+	}
+	
+	function buildForkedDisplayDefinitions() {
+		
 	}
 	
 	/**

@@ -25,20 +25,12 @@ use n2n\persistence\orm\property\EntityProperty;
 use n2n\util\type\ArgUtils;
 use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
-use rocket\impl\ei\component\prop\relation\RelationEiProp;
-use rocket\impl\ei\component\prop\translation\model\TranslationGuiFieldFork;
-use rocket\ei\manage\gui\GuiPropFork;
-use rocket\ei\manage\entry\EiField;
 use rocket\ei\component\prop\FieldEiProp;
+use rocket\ei\manage\entry\EiField;
 use rocket\ei\manage\gui\field\GuiFieldFork;
 use rocket\ei\manage\EiObject;
-use n2n\core\container\N2nContext;
-use n2n\util\ex\IllegalStateException;
-use rocket\ei\manage\security\filter\SecurityFilterProp;
 use rocket\ei\EiPropPath;
 use n2n\l10n\N2nLocale;
-use rocket\impl\ei\component\prop\relation\model\RelationEntry;
-use rocket\impl\ei\component\prop\relation\EmbeddedOneToManyEiProp;
 use n2n\util\col\ArrayUtils;
 use rocket\ei\manage\critmod\sort\SortPropFork;
 use n2n\persistence\orm\criteria\item\CriteriaProperty;
@@ -48,25 +40,35 @@ use rocket\ei\manage\critmod\sort\SortDefinition;
 use n2n\persistence\orm\criteria\JoinType;
 use rocket\ei\manage\critmod\sort\SortConstraint;
 use rocket\ei\manage\critmod\sort\CriteriaAssemblyState;
-use rocket\impl\ei\component\prop\translation\conf\N2nLocaleDef;
 use rocket\ei\util\Eiu;
-use rocket\impl\ei\component\prop\translation\model\TranslationEiField;
 use rocket\ei\component\prop\QuickSearchableEiProp;
 use rocket\impl\ei\component\prop\translation\model\TranslationQuickSearchProp;
 use rocket\impl\ei\component\prop\adapter\entry\EiFieldWrapperCollection;
-use rocket\ei\manage\gui\ViewMode;
-use rocket\impl\ei\component\prop\translation\command\TranslationCopyCommand;
-use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\manage\gui\field\GuiPropPath;
 use rocket\ei\manage\gui\EiFieldAbstraction;
 use rocket\ei\manage\LiveEiObject;
 use rocket\impl\ei\component\prop\translation\conf\TranslationConfig;
+use rocket\impl\ei\component\prop\translation\gui\TranslationGuiProp;
+use rocket\impl\ei\component\prop\relation\RelationEiPropAdapter;
+use rocket\impl\ei\component\prop\relation\conf\RelationModel;
+use rocket\ei\manage\gui\ViewMode;
+use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
+use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
 
-class TranslationEiProp extends EmbeddedOneToManyEiProp implements FieldEiProp, RelationEiProp, QuickSearchableEiProp {
+class TranslationEiProp extends RelationEiPropAdapter implements FieldEiProp, QuickSearchableEiProp {
 
+	public function __construct() {
+		parent::__construct();
+		
+		$this->setup(
+				new DisplayConfig(ViewMode::all()),
+				new RelationModel($this, false, true, RelationModel::MODE_INTEGRATED, null));
+	}
+	
 	public function prepare() {
+		parent::prepare();
 		$this->getConfigurator()->addAdaption(new TranslationConfig($this));
 	}
 	
@@ -85,13 +87,9 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements FieldEiProp, 
 	}
 	
 	public function buildGuiProp(Eiu $eiu): ?GuiProp {
-		return new TranslationGuiProp($eiu->context()
-				->engine($this->eiPropRelation->getTargetEiMask())->getGuiDefinition());
+		return new TranslationGuiProp($this->getRelationModel());
 	}
-	
-	public function createGuiFieldFork(Eiu $eiu): GuiFieldFork {
-		
-	}
+
 	
 	public function determineForkedEiObject(Eiu $eiu): ?EiObject {
 		// @todo access locale and use EiObject with admin locale.
@@ -162,6 +160,14 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements FieldEiProp, 
 				$this->eiPropRelation->getTargetEiType()->getEntityModel()->getClass(), 
 				$targetEiFrame->getContextEiEngine()->createFramedQuickSearchDefinition($targetEiFrame));
 	}
+	
+	public function buildEiField(Eiu $eiu): ?EiField {
+		$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())
+				->exec($this->getRelationModel()->getTargetReadEiCommandPath());
+		
+		return new ToManyEiField($eiu, $targetEiuFrame, $this, $this->getRelationModel());
+	}
+
 }
 
 class TranslationSortPropFork implements SortPropFork {

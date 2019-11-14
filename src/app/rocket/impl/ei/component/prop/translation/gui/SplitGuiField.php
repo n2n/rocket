@@ -22,6 +22,7 @@
 namespace rocket\impl\ei\component\prop\translation;
 
 
+use rocket\ei\manage\gui\GuiFieldMap;
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\si\content\SiField;
 
@@ -32,4 +33,11 @@ class SplitGuiField implements GuiField {
 	
 	public function save() {
 	}
+	
+	public function getContextSiFields(): array {
+	}
+
+	public function getForkGuiFieldMap(): ?GuiFieldMap {
+	}
+
 }

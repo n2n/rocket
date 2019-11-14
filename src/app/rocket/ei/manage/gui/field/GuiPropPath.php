@@ -152,12 +152,18 @@ class GuiPropPath implements Hashable {
 	}
 	
 	/**
-	 * @param EiPropPath|string $eiPropPath
-	 * @return EiPropPath
+	 * @param EiPropPath|GuiPropPath|string $ext
+	 * @return GuiPropPath
 	 */
-	function ext($eiPropPath) {
+	function ext($ext) {
 		$guiPropPath = new GuiPropPath($this->eiPropPaths);
-		$guiPropPath->eiPropPaths[] = EiPropPath::create($eiPropPath);
+		
+		if ($ext instanceof GuiPropPath) {
+			array_push($ext->eiPropPaths, ...$ext->eiPropPaths);
+			return $guiPropPath;
+		}
+		
+		$guiPropPath->eiPropPaths[] = EiPropPath::create($ext);
 		return $guiPropPath;
 	}
 	
