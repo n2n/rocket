@@ -16,6 +16,7 @@ use rocket\si\meta\SiProp;
 use rocket\si\content\SiEntry;
 use rocket\si\content\SiEntryBuildup;
 use rocket\si\content\impl\basic\CompactEntrySiComp;
+use rocket\ei\EiPropPath;
 
 /**
  * @author andreas
@@ -38,6 +39,10 @@ class EiGui {
 	 * @var int
 	 */
 	private $viewMode;
+	/**
+	 * @var GuiFieldAssembler[]
+	 */
+	private $guiFieldAssemblers = [];
 	/**
 	 * @var GuiPropPath[]|null
 	 */
@@ -78,6 +83,33 @@ class EiGui {
 	 */
 	function getViewMode() {
 		return $this->viewMode;
+	}
+	
+	/**
+	 * @param EiPropPath $eiPropPath
+	 * @throws GuiException
+	 * @return GuiFieldAssembler
+	 */
+	function getGuiFieldAssembler(EiPropPath $eiPropPath) {
+		$eiPropPathStr = (string) $eiPropPath;
+		if (isset($this->guiFieldAssemblers[$eiPropPathStr])) {
+			return $this->guiFieldAssemblers[$eiPropPathStr];
+		}
+		
+		throw new GuiException('Unknown GuiFieldAssembler for ' . $eiPropPath);
+	}
+	
+	function putGuiFieldAssembler(EiPropPath $eiPropPath) {
+		$this->ensureNoInit();
+		return $this->guiFieldAssemblers[(string) $eiPropPath] = $eiPropPath;
+	}
+	
+	/**
+	 * @param EiPropPath $eiPropPath
+	 * @return bool
+	 */
+	function containsGuiFieldAssembler(EiPropPath $eiPropPath) {
+		return isset($this->guiFieldAssemblers[(string) $eiPropPath]);
 	}
 	
 	/**
@@ -152,6 +184,15 @@ class EiGui {
 		if ($this->guiPropPaths !== null) return;
 		
 		throw new IllegalStateException('EiGui not yet initialized.');
+	}
+	
+	/**
+	 * @throws IllegalStateException
+	 */
+	private function ensureNotInit() {
+		if ($this->guiPropPaths !== null) return;
+		
+		throw new IllegalStateException('EiGui is already initialized.');
 	}
 	
 // 	/**

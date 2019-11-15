@@ -657,10 +657,16 @@ class EiuFrame {
 	/**
 	 * @return EiuGui
 	 */
-	public function newGui(int $viewMode, array $guiPropPaths) {
-		$eiGui = $this->eiFrame->getManageState()->getDef()
+	public function newGui(int $viewMode, ?array $guiPropPaths) {
+		$guiDefinition = $this->eiFrame->getManageState()->getDef()
 				->getGuiDefinition($this->eiFrame->getContextEiEngine()->getEiMask())
-				->createEiGui($this->eiFrame, $viewMode, $guiPropPaths);
+		
+		$eiGui = null;
+		if ($guiPropPaths === null) {
+			$eiGui = $guiDefinition->createEiGuiLayout($this->eiFrame, $viewMode)->getEiGui();
+		} else {
+			$eiGui = $guiDefinition->createEiGui($this->eiFrame, $viewMode, $guiPropPaths);
+		}
 		
 		return new EiuGui($eiGui, $this, $this->eiuAnalyst);
 	}
