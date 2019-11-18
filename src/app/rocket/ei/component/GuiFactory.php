@@ -35,6 +35,9 @@ use rocket\ei\util\Eiu;
 use rocket\ei\component\command\GuiEiCommand;
 use n2n\core\container\N2nContext;
 use rocket\ei\manage\gui\GuiFieldMap;
+use rocket\ei\manage\gui\GuiException;
+use rocket\ei\manage\gui\ViewMode;
+use rocket\ei\manage\gui\field\GuiField;
 
 class GuiFactory {
 	private $eiMask;
@@ -166,11 +169,10 @@ class GuiFactory {
 		
 		$eiEntryGui = new EiEntryGui($eiEntry, $treeLevel);
 		
-		$guiDefinition = $eiGui->getGuiDefinition();
-		
 		$guiFieldMap = new GuiFieldMap();
-		foreach ($eiGui->getRootEiPropPaths() as $eiPropPath) {
-			$guiField = $guiDefinition->getGuiPropWrapper($eiPropPath)->buildGuiField($eiGui, $eiEntryGui);
+		foreach ($eiGui->getEiPropPaths() as $eiPropPath) {
+			$guiField = self::buildGuiField($eiGui, $eiEntryGui, $eiPropPath);
+			
 			if ($guiField !== null) {
 				$guiFieldMap->putGuiField($eiPropPath, $guiField);	
 			}
@@ -178,6 +180,26 @@ class GuiFactory {
 		$eiEntryGui->init($guiFieldMap);
 				
 		return $eiEntryGui;
+	}
+	
+	/**
+	 * @param EiGui $eiGui
+	 * @param EiEntryGui $eiEntryGui
+	 * @param EiPropPath $eiPropPath
+	 * @return GuiField|null
+	 */
+	private static function buildGuiField($eiGui, $eiEntryGui, $eiPropPath) {
+		$readOnly = ViewMode::isReadOnly($eiGui->getViewMode())
+				|| !$eiEntryGui->getEiEntry()->getEiEntryAccess()->isEiPropWritable($eiPropPath);
+		
+		$guiField = $eiGui->getGuiFieldAssembler($eiPropPath)
+				->buildGuiField(new Eiu($eiGui, $eiEntryGui, $eiPropPath), $readOnly);
+		
+		if (!$readOnly || $guiField->getSiField()->isReadOnly()) {
+			return $guiField;
+		}
+		
+		throw new GuiException('GuiField of ' . $eiPropPath . ' must have a read-only SiField.');
 	}
 	
 // 	static function createGuiFieldMap(EiEntryGui $eiEntryGui, GuiPropPath $baseGuiPropPath) {

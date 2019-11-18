@@ -13,12 +13,12 @@ export class SiType {
 		this.propMap.set(prop.id, prop);
 	}
 
-	containsPropid(propId: string): boolean {
+	containsPropId(propId: string): boolean {
 		return this.propMap.has(propId);
 	}
 
 	getPropById(propId: string): SiProp {
-		if (this.containsPropid(propId)) {
+		if (this.containsPropId(propId)) {
 			return this.propMap.get(propId);
 		}
 

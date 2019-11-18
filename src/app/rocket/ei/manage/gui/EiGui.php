@@ -11,8 +11,6 @@ use rocket\ei\manage\gui\control\GuiControlPath;
 use rocket\ei\manage\gui\control\UnknownGuiControlException;
 use rocket\ei\manage\gui\control\GeneralGuiControl;
 use rocket\ei\manage\api\ApiControlCallId;
-use rocket\si\meta\SiDeclaration;
-use rocket\si\meta\SiProp;
 use rocket\si\content\SiEntry;
 use rocket\si\content\SiEntryBuildup;
 use rocket\si\content\impl\basic\CompactEntrySiComp;
@@ -40,17 +38,29 @@ class EiGui {
 	 */
 	private $viewMode;
 	/**
+	 * @var EiPropPath[]
+	 */
+	private $eiPropPaths = [];
+	/**
 	 * @var GuiFieldAssembler[]
 	 */
 	private $guiFieldAssemblers = [];
 	/**
-	 * @var GuiPropPath[]|null
+	 * @var GuiPropPath[]
 	 */
-	private $guiPropPaths = null;
+	private $guiPropPaths = [];
+	/**
+	 * @var DisplayDefinition[]
+	 */
+	private $displayDefinitions = [];
 	/**
 	 * @var EiGuiListener[]
 	 */
 	private $eiGuiListeners = array();
+	/**
+	 * @var bool
+	 */
+	private $init = false;
 	
 	/**
 	 * @param EiFrame $eiFrame
@@ -99,9 +109,12 @@ class EiGui {
 		throw new GuiException('Unknown GuiFieldAssembler for ' . $eiPropPath);
 	}
 	
-	function putGuiFieldAssembler(EiPropPath $eiPropPath) {
-		$this->ensureNoInit();
-		return $this->guiFieldAssemblers[(string) $eiPropPath] = $eiPropPath;
+	function putGuiFieldAssembler(EiPropPath $eiPropPath, GuiFieldAssembler $guiFieldAssembler) {
+		$this->ensureNotInit();
+		
+		$eiPropPathStr = (string) $eiPropPath;
+		$this->eiPropPaths[$eiPropPathStr] = $eiPropPath;
+		$this->guiFieldAssemblers[$eiPropPathStr] = $guiFieldAssembler;
 	}
 	
 	/**
@@ -113,11 +126,46 @@ class EiGui {
 	}
 	
 	/**
+	 * @return \rocket\ei\EiPropPath[]
+	 */
+	function getEiPropPaths() {
+		return $this->eiPropPaths;
+	}
+	
+	function putDisplayDefintion(GuiPropPath $guiPropPath, DisplayDefinition $displayDefinition) {
+		$this->ensureNotInit();
+		
+		$guiPropPathStr = (string) $guiPropPath;
+		$this->guiPropPaths[$guiPropPathStr] = $guiPropPath;
+		$this->displayDefinitions[$guiPropPathStr] = $displayDefinition;
+	}
+	
+	/**
+	 * @param EiPropPath $eiPropPath
+	 * @return bool
+	 */
+	function containsDisplayDefintion(DisplayDefinition $guiPropPath) {
+		return isset($this->displayDefinition[(string) $guiPropPath]);
+	}
+	
+	/**
+	 * @param GuiPropPath $guiPropPath
+	 * @throws GuiException
+	 * @return DisplayDefinition
+	 */
+	function getDisplayDefintion(GuiPropPath $guiPropPath) {
+		$guiPropPathStr = (string) $guiPropPath;
+		if (isset($this->displayDefinitions[$guiPropPathStr])) {
+			return $this->displayDefinitions[$guiPropPathStr];
+		}
+		
+		throw new GuiException('Unknown GuiPropPath for ' . $guiPropPath);
+	}
+	
+	/**
 	 * @return GuiPropPath[]
 	 */
 	function getGuiPropPaths() {
-		$this->ensureInit();
-		
 		return $this->guiPropPaths;
 	}
 	
@@ -130,14 +178,14 @@ class EiGui {
 	}
 	
 	
-	function getRootEiPropPaths() {
-		$eiPropPaths = [];
-		foreach ($this->getGuiPropPaths() as $guiPropPath) {
-			$eiPropPath = $guiPropPath->getFirstEiPropPath();
-			$eiPropPaths[(string) $eiPropPath] = $eiPropPath;
-		}
-		return $eiPropPaths;
-	}
+// 	function getRootEiPropPaths() {
+// 		$eiPropPaths = [];
+// 		foreach ($this->getGuiPropPaths() as $guiPropPath) {
+// 			$eiPropPath = $guiPropPath->getFirstEiPropPath();
+// 			$eiPropPaths[(string) $eiPropPath] = $eiPropPath;
+// 		}
+// 		return $eiPropPaths;
+// 	}
 	
 // 	/**
 // 	 * @param GuiPropPath $guiPropPath
@@ -155,15 +203,14 @@ class EiGui {
 // 	}
 	
 	/**
-	 * @param GuiStructureDeclaration[]|null $guiStructureDeclarations
-	 * @param GuiPropPath[]|null $guiPropPaths
+	 * @throws IllegalStateException
 	 */
-	function init(array $guiPropPaths) {
+	function markInitialized() {
 		if ($this->isInit()) {
 			throw new IllegalStateException('EiGui already initialized.');
 		}
 		
-		$this->guiPropPaths = $guiPropPaths;
+		$this->init = true;
 		
 		foreach ($this->eiGuiListeners as $listener) {
 			$listener->onInitialized($this);
@@ -174,14 +221,14 @@ class EiGui {
 	 * @return boolean
 	 */
 	function isInit() {
-		return $this->guiPropPaths !== null;
+		return $this->init;
 	}
 	
 	/**
 	 * @throws IllegalStateException
 	 */
 	private function ensureInit() {
-		if ($this->guiPropPaths !== null) return;
+		if ($this->init) return;
 		
 		throw new IllegalStateException('EiGui not yet initialized.');
 	}
@@ -190,7 +237,7 @@ class EiGui {
 	 * @throws IllegalStateException
 	 */
 	private function ensureNotInit() {
-		if ($this->guiPropPaths !== null) return;
+		if (!$this->init) return;
 		
 		throw new IllegalStateException('EiGui is already initialized.');
 	}

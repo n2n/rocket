@@ -659,7 +659,7 @@ class EiuFrame {
 	 */
 	public function newGui(int $viewMode, ?array $guiPropPaths) {
 		$guiDefinition = $this->eiFrame->getManageState()->getDef()
-				->getGuiDefinition($this->eiFrame->getContextEiEngine()->getEiMask())
+				->getGuiDefinition($this->eiFrame->getContextEiEngine()->getEiMask());
 		
 		$eiGui = null;
 		if ($guiPropPaths === null) {

@@ -21,23 +21,23 @@
  */
 namespace rocket\ei\manage\gui;
 
-use rocket\ei\util\Eiu;
+use rocket\ei\manage\gui\field\GuiPropPath;
 
-interface GuiProp {
+interface GuiPropSetup {
 	
 	/**
-	 * <p>Tests if this GuiProp is compatible with the passed EiGui and returns an {@see DisplayDefinition}
-	 * if it does. Use <code>$eiu->gui()</code> to access the {@see \rocket\ei\util\gui\EiuGui} 
-	 * object.<p>
-	 * 
-	 * @return DisplayDefinition|null return null if this GuiProp is not compatible with passed EiGui.
+	 * @return GuiFieldAssembler
 	 */
-	function buildGuiPropSetup(Eiu $eiu, ?array $guiPropPaths): ?GuiPropSetup;
-		
-	
+	function getGuiFieldAssembler(): GuiFieldAssembler;
 	
 	/**
-	 * @return GuiDefinition|NULL
+	 * @return DisplayDefinition|NULL
 	 */
-	function getForkGuiDefinition(): ?GuiDefinition;
+	function getDisplayDefinition(): ?DisplayDefinition;
+	
+	/**
+	 * @param GuiPropPath $guiPropPath
+	 * @return DisplayDefinition|NULL
+	 */
+	function getForkedDisplayDefinition(GuiPropPath $guiPropPath): ?DisplayDefinition; 
 }

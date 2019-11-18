@@ -45,6 +45,13 @@ class GuiPropWrapper {
 	}
 	
 	/**
+	 * @return \rocket\ei\EiPropPath
+	 */
+	function getEiPropPath() {
+		return $this->eiPropPath;
+	}
+	
+	/**
 	 * @param EiGui $eiGui
 	 * @return DisplayDefinition|null
 	 */
@@ -91,31 +98,21 @@ class GuiPropWrapper {
 		return $forkGuiDefinition->getGuiPropPaths();
 	}
 	
-	function buildForkedDisplayDefinitions() {
-		
+	/**
+	 * @param EiGui $eiGui
+	 * @param array $fokredGuiPropPaths
+	 * @return \rocket\ei\manage\gui\GuiPropSetup
+	 */
+	function buildGuiPropSetup(EiGui $eiGui, ?array $forkedGuiPropPaths) {
+		return $this->guiProp->buildGuiPropSetup(new Eiu($eiGui, $this->eiPropPath), $forkedGuiPropPaths);
 	}
 	
 	/**
 	 * @return EiProp
 	 */
-	private function getEiProp() {
+	function getEiProp() {
 		return $this->guiDefinition->getEiMask()->getEiPropCollection()->getByPath($this->eiPropPath);
 	}
 	
-	/**
-	 * @param EiEntryGui $eiEntryGui
-	 * @return GuiField|null
-	 */
-	function buildGuiField(EiGui $eiGui, EiEntryGui $eiEntryGui) {
-		$readOnly = ViewMode::isReadOnly($eiGui->getViewMode()) 
-				|| !$eiEntryGui->getEiEntry()->getEiEntryAccess()->isEiPropWritable($this->eiPropPath);
-				
-		$guiField = $this->guiProp->buildGuiField(new Eiu($eiGui, $eiEntryGui, $this->eiPropPath), $readOnly);
-		
-		if (!$readOnly || $guiField->getSiField()->isReadOnly()) {
-			return $guiField;
-		}
-		
-		throw new GuiException('GuiField of ' . $this->getEiProp() . ' must have a read-only SiField.');
-	}
+	
 }

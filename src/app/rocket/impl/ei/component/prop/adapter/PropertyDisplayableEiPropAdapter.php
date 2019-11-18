@@ -39,9 +39,10 @@ use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable;
 use rocket\impl\ei\component\prop\adapter\entry\EiFields;
 use rocket\impl\ei\component\prop\adapter\entry\StatelessEiFieldReader;
 use n2n\util\type\TypeConstraint;
+use rocket\ei\manage\gui\GuiFieldAssembler;
 
 abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter 
-		implements FieldEiProp, StatelessEiFieldReader, StatelessGuiFieldDisplayable, GuiEiProp, GuiFieldFactory {
+		implements FieldEiProp, StatelessEiFieldReader, StatelessGuiFieldDisplayable, GuiEiProp, GuiFieldAssembler {
 	private $displayConfig;
 
 	/**
@@ -80,7 +81,7 @@ abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter
 	// GuiProp
 	
 	public function buildGuiProp(Eiu $eiu): ?GuiProp {
-		return GuiProps::configAndFactory($this->getDisplayConfig(), $this);
+		return GuiProps::configAndAssembler($this->getDisplayConfig(), $this);
 	}
 	
 	public function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {

@@ -30,6 +30,7 @@ use rocket\ei\manage\entry\EiField;
 use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\manage\gui\GuiFieldMap;
+use rocket\ei\manage\gui\GuiPropSetup;
 use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\FieldEiProp;
 use n2n\reflection\ReflectionUtils;
@@ -172,6 +173,10 @@ class EmbeddedGuiProp implements GuiProp {
 	public function getForkGuiDefinition(): ?GuiDefinition {
 		return null;
 	}
+	public function buildGuiPropSetup(Eiu $eiu, ?array $guiPropPaths): ?GuiPropSetup {
+		return null;
+	}
+
 
 }
 

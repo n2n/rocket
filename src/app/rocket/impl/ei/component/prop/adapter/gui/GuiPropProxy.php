@@ -29,13 +29,16 @@ use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use n2n\reflection\magic\MagicMethodInvoker;
 use n2n\util\type\TypeConstraints;
 use rocket\ei\manage\gui\GuiDefinition;
+use rocket\ei\manage\gui\GuiFieldAssembler;
+use rocket\ei\manage\gui\GuiPropSetups;
+use rocket\ei\manage\gui\GuiPropSetup;
 
 /**
  * Don't use this class directly. Use factory methods of {@see GuiFields}.  
  */
 class GuiPropProxy implements GuiProp {
 	private $displayConfig;
-	private $guiFieldFactory;
+	private $guiFieldAssembler;
 	private $guiFieldClosure;
 	
 	/**
@@ -43,35 +46,54 @@ class GuiPropProxy implements GuiProp {
 	 * @param DisplayConfig $displayConfig
 	 * @param GuiFieldFactory $guiFieldFactory
 	 */
-	function __construct(DisplayConfig $displayConfig, ?GuiFieldFactory $guiFieldFactory, ?\Closure $guiFieldClosure) {
+	function __construct(DisplayConfig $displayConfig, ?GuiFieldAssembler $guiFieldAssembler, ?\Closure $guiFieldClosure) {
 		$this->displayConfig = $displayConfig;
-		$this->guiFieldFactory = $guiFieldFactory;
-		$this->guiFieldClosure = $guiFieldClosure;
+		$this->guiFieldAssembler = $guiFieldAssembler;
+		
+		if ($guiFieldClosure !== null) {
+			$this->guiFieldAssembler = $this->createAssemblerFromClosure($guiFieldClosure);
+		}
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiProp::buildDisplayDefinition()
+	 * @param \Closure $guiFieldClosure
+	 * @return GuiFieldAssembler
 	 */
-	function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
-		return $this->displayConfig->buildDisplayDefinitionFromEiu($eiu);
+	private function createAssemblerFromClosure($guiFieldClosure) {
+		return new class($guiFieldClosure) implements GuiFieldAssembler {
+			private $guiFieldClosure;
+			
+			function __construct($guiFieldClosure) {
+				$this->guiFieldClosure = $guiFieldClosure;
+			}
+			
+			function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
+				$mmi = new MagicMethodInvoker($eiu->getN2nContext());
+				$mmi->setClassParamObject(Eiu::class, $eiu);
+				$mmi->setParamValue('readOnly', $readOnly);
+				$mmi->setReturnTypeConstraint(TypeConstraints::type(GuiField::class, true));
+				return $mmi->invoke(null, $this->guiFieldClosure);
+			}
+		};
 	}
 
+	function buildGuiPropSetup($eiu, $guiPropPaths): ?GuiPropSetup {
+		$displayDefinition = $this->displayConfig->buildDisplayDefinitionFromEiu($eiu);;
+		
+		return GuiPropSetups::simple($this->guiFieldAssembler, $displayDefinition);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiProp::buildGuiField()
 	 */
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		if ($this->guiFieldFactory !== null) {
-			return $this->guiFieldFactory->buildGuiField($eiu, $readOnly);
+		if ($this->guiFieldAssembler !== null) {
+			return $this->guiFieldAssembler->buildGuiField($eiu, $readOnly);
 		}
 		
 		if ($this->guiFieldClosure !== null) {
-			$mmi = new MagicMethodInvoker($eiu->getN2nContext());
-			$mmi->setClassParamObject(Eiu::class, $eiu);
-			$mmi->setParamValue('readOnly', $readOnly);
-			$mmi->setReturnTypeConstraint(TypeConstraints::type(GuiField::class, true));
-			return $mmi->invoke(null, $this->guiFieldClosure);
+			
 		}
 		
 		return null;

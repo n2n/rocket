@@ -21,23 +21,15 @@
  */
 namespace rocket\ei\manage\gui;
 
+use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\util\Eiu;
 
-interface GuiProp {
+interface GuiFieldAssembler {
 	
 	/**
-	 * <p>Tests if this GuiProp is compatible with the passed EiGui and returns an {@see DisplayDefinition}
-	 * if it does. Use <code>$eiu->gui()</code> to access the {@see \rocket\ei\util\gui\EiuGui} 
-	 * object.<p>
-	 * 
-	 * @return DisplayDefinition|null return null if this GuiProp is not compatible with passed EiGui.
+	 * @param Eiu $eiu
+	 * @param bool $readOnly No access or read only view.
+	 * @return \rocket\ei\manage\gui\field\GuiField|null
 	 */
-	function buildGuiPropSetup(Eiu $eiu, ?array $guiPropPaths): ?GuiPropSetup;
-		
-	
-	
-	/**
-	 * @return GuiDefinition|NULL
-	 */
-	function getForkGuiDefinition(): ?GuiDefinition;
+	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField;
 }
