@@ -90,11 +90,11 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 // 		$siButton->setAttrs(array('class' => 'rocket-impl-remove'));
 		
 // 		$query = array();
-// 		if ($eiu->gui()->isCompact()) {
+// 		if ($eiu->guiFrame()->isCompact()) {
 // 			$query['refPath'] = (string) $eiuFrame->getEiFrame()->getCurrentUrl($view->getHttpContext());
 // 		}
 		
-// 		$hrefControl = $eiu->gui()->controlFactory($this)->createJhtml($siButton, $pathExt->toUrl($query))
+// 		$hrefControl = $eiu->guiFrame()->controlFactory($this)->createJhtml($siButton, $pathExt->toUrl($query))
 // 		      ->setPushToHistory(false)->setForceReload(true);
 		
 // 		return array(self::CONTROL_BUTTON_KEY => $hrefControl);

@@ -52,11 +52,11 @@ class GuiPropWrapper {
 	}
 	
 	/**
-	 * @param EiGui $eiGui
+	 * @param EiGuiFrame $eiGuiFrame
 	 * @return DisplayDefinition|null
 	 */
-	function buildDisplayDefinition(EiGui $eiGui, bool $defaultDisplayedRequired) {
-		$displayDefinition = $this->guiProp->buildDisplayDefinition(new Eiu($eiGui, $this->eiPropPath));
+	function buildDisplayDefinition(EiGuiFrame $eiGuiFrame, bool $defaultDisplayedRequired) {
+		$displayDefinition = $this->guiProp->buildDisplayDefinition(new Eiu($eiGuiFrame, $this->eiPropPath));
 		
 		if ($displayDefinition === null || ($defaultDisplayedRequired && !$displayDefinition->isDefaultDisplayed())) {
 			return null;
@@ -66,7 +66,7 @@ class GuiPropWrapper {
 			return $displayDefinition;
 		}
 		
-		$n2nLocale = $eiGui->getEiFrame()->getN2nContext()->getN2nLocale();
+		$n2nLocale = $eiGuiFrame->getEiFrame()->getN2nContext()->getN2nLocale();
 		
 		if ($displayDefinition->getLabel() === null) {
 			$displayDefinition->setLabel($this->getEiProp()->getLabelLstr()->t($n2nLocale));
@@ -80,9 +80,9 @@ class GuiPropWrapper {
 		return $displayDefinition;
 	}
 	
-	function buildForkDisplayDefinition(GuiPropPath $forkedGuiPropPath, EiGui $eiGui, bool $defaultDisplayedRequired) {
+	function buildForkDisplayDefinition(GuiPropPath $forkedGuiPropPath, EiGuiFrame $eiGuiFrame, bool $defaultDisplayedRequired) {
 		return $this->guiProp->getForkGuiDefinition()->getGuiPropWrapperByGuiPropPath($forkedGuiPropPath)
-				->buildDisplayDefinition($eiGui, $defaultDisplayedRequired);
+				->buildDisplayDefinition($eiGuiFrame, $defaultDisplayedRequired);
 	}
 	
 	/**
@@ -99,12 +99,12 @@ class GuiPropWrapper {
 	}
 	
 	/**
-	 * @param EiGui $eiGui
+	 * @param EiGuiFrame $eiGuiFrame
 	 * @param array $fokredGuiPropPaths
 	 * @return \rocket\ei\manage\gui\GuiPropSetup
 	 */
-	function buildGuiPropSetup(EiGui $eiGui, ?array $forkedGuiPropPaths) {
-		return $this->guiProp->buildGuiPropSetup(new Eiu($eiGui, $this->eiPropPath), $forkedGuiPropPaths);
+	function buildGuiPropSetup(EiGuiFrame $eiGuiFrame, ?array $forkedGuiPropPaths) {
+		return $this->guiProp->buildGuiPropSetup(new Eiu($eiGuiFrame, $this->eiPropPath), $forkedGuiPropPaths);
 	}
 	
 	/**

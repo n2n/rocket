@@ -28,7 +28,7 @@ use rocket\ei\manage\entry\UnknownEiObjectException;
 use n2n\web\http\BadRequestException;
 use rocket\ei\manage\EiObject;
 use rocket\ei\mask\EiMask;
-use rocket\ei\manage\gui\EiGui;
+use rocket\ei\manage\gui\EiGuiFrame;
 use rocket\ei\manage\gui\EiEntryGui;
 use rocket\si\input\SiEntryInput;
 use rocket\ei\manage\security\SecurityException;
@@ -149,18 +149,18 @@ class ProcessUtil {
 	/**
 	 * @param EiMask $eiMask
 	 * @param int $viewMode
-	 * @return \rocket\ei\manage\gui\EiGui
+	 * @return \rocket\ei\manage\gui\EiGuiFrame
 	 */
-	function createEiGui(EiMask $eiMask, int $viewMode) {
-		return $eiMask->getEiEngine()->createFramedEiGui($this->eiFrame, $viewMode);
+	function createEiGuiFrame(EiMask $eiMask, int $viewMode) {
+		return $eiMask->getEiEngine()->createFramedEiGuiFrame($this->eiFrame, $viewMode);
 	}
 	
 	/**
 	 * @param EiObject $eiObject
-	 * @param EiGui $eiGui
+	 * @param EiGuiFrame $eiGuiFrame
 	 * @return EiEntryGui
 	 */
-	function createEiEntryGui(EiObject $eiObject, EiGui $eiGui) {
-		return $eiGui->createEiEntryGui($this->eiFrame->createEiEntry($eiObject));
+	function createEiEntryGui(EiObject $eiObject, EiGuiFrame $eiGuiFrame) {
+		return $eiGuiFrame->createEiEntryGui($this->eiFrame->createEiEntry($eiObject));
 	}
 }

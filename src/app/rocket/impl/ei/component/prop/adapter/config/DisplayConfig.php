@@ -327,7 +327,7 @@ class DisplayConfig implements EiPropConfiguratorAdaption {
 	 * @return \rocket\ei\manage\gui\DisplayDefinition|NULL
 	 */
 	function buildDisplayDefinitionFromEiu(Eiu $eiu) {
-		return $this->toDisplayDefinition($eiu->gui()->getViewMode(), $eiu->prop()->getLabel(), 
+		return $this->toDisplayDefinition($eiu->guiFrame()->getViewMode(), $eiu->prop()->getLabel(), 
 				$eiu->prop()->getHelpText());
 	}
 

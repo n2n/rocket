@@ -117,7 +117,7 @@ class ApiController extends ControllerAdapter {
 		if (null !== ($pid = $siApiCallId->getPid())) {
 			$callProcess->determineEiEntry($pid);
 		}
-		$callProcess->setupEiGui($siApiCallId->getViewMode(), $siApiCallId->getEiTypePath());
+		$callProcess->setupEiGuiFrame($siApiCallId->getViewMode(), $siApiCallId->getEiTypePath());
 		$callProcess->determineGuiControl($siApiCallId->getGuiControlPath());
 		
 		if ($entryInputMaps !== null
@@ -134,7 +134,7 @@ class ApiController extends ControllerAdapter {
 		
 		$callProcess = new ApiControlProcess($this->eiFrame);
 		$callProcess->determineEiEntry($siApiCallId->getPid());
-		$callProcess->setupEiGui($siApiCallId->getViewMode(), $siApiCallId->getEiTypePath());
+		$callProcess->setupEiGuiFrame($siApiCallId->getViewMode(), $siApiCallId->getEiTypePath());
 		$callProcess->determineGuiField($siApiCallId->getGuiPropPath());
 		
 		$this->sendJson(['data' => $callProcess->callSiField($data->parseJson(), $this->getRequest()->getUploadDefinitions()) ]);

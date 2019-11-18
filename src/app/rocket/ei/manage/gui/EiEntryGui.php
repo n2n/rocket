@@ -25,13 +25,7 @@ use n2n\util\ex\IllegalStateException;
 use rocket\ei\mask\EiMask;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\manage\gui\field\GuiPropPath;
-use rocket\si\content\SiEntryBuildup;
-use rocket\si\content\SiEntry;
-use rocket\ei\manage\gui\control\GuiControlPath;
-use rocket\ei\manage\api\ApiControlCallId;
 use rocket\si\input\SiEntryInput;
-use rocket\si\content\impl\basic\BulkyEntrySiComp;
-use rocket\si\content\impl\basic\CompactEntrySiComp;
 use n2n\util\type\attrs\AttributesException;
 
 class EiEntryGui {

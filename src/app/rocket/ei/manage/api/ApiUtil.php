@@ -27,7 +27,7 @@ use rocket\ei\manage\gui\EiEntryGui;
 use n2n\util\type\ArgUtils;
 use rocket\si\meta\SiDeclaration;
 use rocket\ei\EiEngineUtil;
-use rocket\ei\manage\gui\EiGui;
+use rocket\ei\manage\gui\EiGuiFrame;
 use rocket\si\content\SiPartialContent;
 
 class ApiUtil {
@@ -41,7 +41,7 @@ class ApiUtil {
 	
 	/**
 	 * @param EiEntryGui[]
-	 * @return \rocket\ei\manage\gui\EiGui
+	 * @return \rocket\ei\manage\gui\EiGuiFrame
 	 */
 	function createMultiBuildupSiDeclaration(array $eiEntryGuis) {
 		$declaration = new SiDeclaration();
@@ -49,7 +49,7 @@ class ApiUtil {
 		foreach ($eiEntryGuis as $eiEntryGui) {
 			ArgUtils::assertTrue($eiEntryGui instanceof EiEntryGui);
 			
-			$declaration->addTypeDeclaration($eiEntryGui->getEiGui()->createSiTypDeclaration());
+			$declaration->addTypeDeclaration($eiEntryGui->getEiGuiFrame()->createSiTypDeclaration());
 		}
 		
 		return $declaration;
@@ -57,15 +57,15 @@ class ApiUtil {
 	
 	
 // 	/**
-// 	 * @param EiGui $eiGui
+// 	 * @param EiGuiFrame $eiGuiFrame
 // 	 * @return SiDeclaration
 // 	 */
-// 	function createSiDeclaration(EiGui $eiGui) {
+// 	function createSiDeclaration(EiGuiFrame $eiGuiFrame) {
 // 		$typeId = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()->getId();
 		
 // 		$declaration = new SiDeclaration();
-// 		$declaration->putFieldDeclarations($typeId, $eiGui->getEiGuiSiFactory()->getSiProps());
-// 		$declaration->putFieldStructureDeclarations($typeId, $eiGui->getEiGuiSiFactory()->getSiStructureDeclarations());
+// 		$declaration->putFieldDeclarations($typeId, $eiGuiFrame->getEiGuiSiFactory()->getSiProps());
+// 		$declaration->putFieldStructureDeclarations($typeId, $eiGuiFrame->getEiGuiSiFactory()->getSiStructureDeclarations());
 		
 // 		return $declaration;
 // 	}
@@ -86,13 +86,13 @@ class ApiUtil {
 // 	 */
 // 	function createSiEntry(EiObject $eiObject, array $eiEntryGuis) {
 // 		$siEntry = new SiEntry($eiObject->createSiEntryQualifier($eiObject), 
-// 				ViewMode::isReadOnly($this->eiGui->getViewMode()));
+// 				ViewMode::isReadOnly($this->eiGuiFrame->getViewMode()));
 		
 // 		foreach ($eiEntryGuis as $eiEntryGui) {
 // 			ArgUtils::assertTrue($eiEntryGui instanceof EiEntryGui);
 // 			$declaration->putFieldStructureDeclarations(
 // 					$eiEntryGui->getEiEntry()->getEiType()->getId(),
-// 					$eiEntryGui->getEiGui()->getEiGuiSiFactory()->getSiStructureDeclarations());
+// 					$eiEntryGui->getEiGuiFrame()->getEiGuiSiFactory()->getSiStructureDeclarations());
 // 		}
 		
 // 		return $siEntry;
@@ -101,13 +101,13 @@ class ApiUtil {
 	/**
 	 * @param int $offset
 	 * @param int $count
-	 * @param EiGui $eiGui
+	 * @param EiGuiFrame $eiGuiFrame
 	 * @return \rocket\si\content\SiPartialContent
 	 */
-	function createSiPartialContent(int $offset, int $count, EiGui $eiGui) {
+	function createSiPartialContent(int $offset, int $count, EiGuiFrame $eiGuiFrame) {
 		$content = new SiPartialContent($count);
 		$content->setOffset($offset);
-		$content->setEntries($eiGui->createSiEntries());
+		$content->setEntries($eiGuiFrame->createSiEntries());
 		return $content;
 	}
 	

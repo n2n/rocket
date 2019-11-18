@@ -5,7 +5,7 @@ use rocket\ei\util\EiuAnalyst;
 use rocket\ei\manage\gui\field\GuiPropPath;
 use rocket\ei\manage\api\ApiFieldCallId;
 
-class EiuGuiField {
+class EiuGuiFrameField {
 	private $guiPropPath;
 	private $eiuEntryGui;
 	private $eiuAnalyst;
@@ -33,7 +33,7 @@ class EiuGuiField {
 		
 		return new ApiFieldCallId($this->guiPropPath, 
 				$eiEntryGui->getEiEntry()->getEiMask()->getEiTypePath(),
-				$eiEntryGui->getEiGui()->getViewMode(),
+				$eiEntryGui->getEiGuiFrame()->getViewMode(),
 				$eiEntryGui->getEiEntry()->getPid());
 	}
 }

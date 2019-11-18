@@ -4,9 +4,9 @@ namespace rocket\ei\manage\gui;
 interface EiGuiListener {
 	
 	/**
-	 * @param EiGui $eiGui
+	 * @param EiGuiFrame $eiGuiFrame
 	 */
-	public function onInitialized(EiGui $eiGui);
+	public function onInitialized(EiGuiFrame $eiGuiFrame);
 
 	/**
 	 * @param EiEntryGui $eiEntryGui
@@ -16,5 +16,5 @@ interface EiGuiListener {
 	/**
 	 * 
 	 */
-	public function onGiBuild(EiGui $eiGui);
+	public function onGiBuild(EiGuiFrame $eiGuiFrame);
 }

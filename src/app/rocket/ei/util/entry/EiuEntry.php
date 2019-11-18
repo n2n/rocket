@@ -46,7 +46,7 @@ use rocket\ei\manage\entry\UnknownEiFieldExcpetion;
 use rocket\ei\component\prop\EiProp;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\ei\component\prop\EiPropWrapper;
-use rocket\ei\util\gui\EiuGuiLayout;
+use rocket\ei\util\gui\EiuGui;
 
 class EiuEntry {
 	private $eiEntry;
@@ -301,7 +301,7 @@ class EiuEntry {
 	 * @throws EiuPerimeterException
 	 * @return \rocket\ei\util\gui\EiuEntryGui
 	 */
-	public function newGuiLayout(bool $bulky = true, bool $editable = false, int $treeLevel = null,
+	public function newGui(bool $bulky = true, bool $editable = false, int $treeLevel = null,
 			bool $determineEiMask = true) {
 		$eiEntry = $this->getEiEntry(true);
 		$eiEngine = null;
@@ -314,12 +314,12 @@ class EiuEntry {
 		$viewMode = $this->deterViewMode($bulky, $editable);
 		$eiFrame = $this->getEiuFrame()->getEiFrame();
 
-		$eiGuiLayout = $eiFrame->getManageState()->getDef()->getGuiDefinition($eiEngine->getEiMask())
-				->createEiGuiLayout($eiFrame, $viewMode);
+		$eiGui = $eiFrame->getManageState()->getDef()->getGuiDefinition($eiEngine->getEiMask())
+				->createEiGui($eiFrame, $viewMode);
 
-		$eiGuiLayout->addEiEntryGui($eiGuiLayout->getEiGui()->createEiEntryGui($eiEntry, $treeLevel));
+		$eiGui->addEiEntryGui($eiGui->getEiGuiFrame()->createEiEntryGui($eiEntry, $treeLevel));
 				
-		return new EiuGuiLayout($eiGuiLayout, null, $this->eiuAnalyst);
+		return new EiuGui($eiGui, null, $this->eiuAnalyst);
 	}
 	
 // 	/**
@@ -341,10 +341,10 @@ class EiuEntry {
 // 		$viewMode = $this->deterViewMode($bulky, $editable);
 // 		$eiFrame = $this->getEiuFrame()->getEiFrame();
 		
-// 		$eiGui = $eiFrame->getManageState()->getDef()->getGuiDefinition($eiEngine->getEiMask())
-// 				->createEiGui($eiFrame, $viewMode);
+// 		$eiGuiFrame = $eiFrame->getManageState()->getDef()->getGuiDefinition($eiEngine->getEiMask())
+// 				->createEiGuiFrame($eiFrame, $viewMode);
 		
-// 		return new EiuEntryGui($eiGui->createEiEntryGui($eiEntry, $treeLevel), null, $this->eiuAnalyst);
+// 		return new EiuEntryGui($eiGuiFrame->createEiEntryGui($eiEntry, $treeLevel), null, $this->eiuAnalyst);
 // 	}
 	
 	public function newCustomEntryGui(\Closure $uiFactory, array $guiPropPaths, bool $bulky = true, 
@@ -357,8 +357,8 @@ class EiuEntry {
 // 		}
 		
 		$viewMode = $this->deterViewMode($bulky, $editable);
-		$eiuGui = $this->getEiuFrame()->newCustomGui($viewMode, $uiFactory, $guiPropPaths);
-		return $eiuGui->appendNewEntryGui($this, $treeLevel);
+		$eiuGuiFrame = $this->getEiuFrame()->newCustomGui($viewMode, $uiFactory, $guiPropPaths);
+		return $eiuGuiFrame->appendNewEntryGui($this, $treeLevel);
 	}
 	
 	/**
@@ -375,10 +375,10 @@ class EiuEntry {
 			$eiMask = $eiFrame->getContextEiEngine()->getEiMask();
 		}
 		
-		$eiGui = $eiMask->createEiGui($eiFrame, $viewMode, false);
-		$eiGui->init(new DummyEiGuiSiFactory(), $eiGui->getGuiDefinition()->getGuiPropPaths());
+		$eiGuiFrame = $eiMask->createEiGuiFrame($eiFrame, $viewMode, false);
+		$eiGuiFrame->init(new DummyEiGuiSiFactory(), $eiGuiFrame->getGuiDefinition()->getGuiPropPaths());
 		
-		$eiEntryGuiAssembler = new EiEntryGuiAssembler(new EiEntryGui($eiGui, $this->eiEntry));
+		$eiEntryGuiAssembler = new EiEntryGuiAssembler(new EiEntryGui($eiGuiFrame, $this->eiEntry));
 		
 // 		if ($parentEiEntryGui->isInitialized()) {
 // 			throw new \InvalidArgumentException('Parent EiEntryGui already initialized.');

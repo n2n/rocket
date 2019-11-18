@@ -23,14 +23,14 @@ namespace rocket\ei\manage\gui\control;
 
 use rocket\ei\manage\entry\EiEntry;
 use rocket\si\control\SiResult;
-use rocket\ei\manage\gui\EiGuiLayout;
+use rocket\ei\manage\gui\EiGui;
 
 interface SelectionGuiControl extends GuiControl {
 	
 	/**
-	 * @param EiGuiLayout $eiGuiLayout
+	 * @param EiGui $eiGui
 	 * @param EiEntry[] $eiEntries
 	 * @return SiResult
 	 */
-	function handleEntries(EiGuiLayout $eiGuiLayout, array $eiEntries): SiResult;
+	function handleEntries(EiGui $eiGui, array $eiEntries): SiResult;
 }

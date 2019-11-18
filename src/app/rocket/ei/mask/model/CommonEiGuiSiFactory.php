@@ -2,19 +2,19 @@
 namespace rocket\ei\mask\model;
 
 use rocket\ei\manage\gui\EiGuiSiFactory;
-use rocket\ei\manage\gui\EiGui;
+use rocket\ei\manage\gui\EiGuiFrame;
 use n2n\util\ex\IllegalStateException;
 use rocket\si\meta\SiProp;
 use rocket\si\meta\SiStructureDeclaration;
 use rocket\ei\manage\gui\ViewMode;
 
 class CommonEiGuiSiFactory implements EiGuiSiFactory {
-	private $eiGui;
+	private $eiGuiFrame;
 	private $guiDefinition;
 	private $displayStructure;
 	
-	public function __construct(EiGui $eiGui, DisplayStructure $displayStructure = null) {
-		$this->eiGui = $eiGui;
+	public function __construct(EiGuiFrame $eiGuiFrame, DisplayStructure $displayStructure = null) {
+		$this->eiGuiFrame = $eiGuiFrame;
 		$this->displayStructure = $displayStructure;
 	}
 	
@@ -41,11 +41,11 @@ class CommonEiGuiSiFactory implements EiGuiSiFactory {
 			$label = null;
 			$children = [];
 			if (!$displayItem->hasDisplayStructure()) {
-				$guiPropAssembly = $this->eiGui->getGuiPropAssemblyByGuiPropPath($displayItem->getGuiPropPath());
+				$guiPropAssembly = $this->eiGuiFrame->getGuiPropAssemblyByGuiPropPath($displayItem->getGuiPropPath());
 				$propId = (string) $guiPropAssembly->getGuiPropPath();
 			} else {
 				if (null !== ($labelLstr = $displayItem->getLabelLstr())) {
-					$label = $labelLstr->t($this->eiGui->getEiFrame()->getN2nContext()->getN2nLocale());
+					$label = $labelLstr->t($this->eiGuiFrame->getEiFrame()->getN2nContext()->getN2nLocale());
 				}
 				$children = $this->createFieldStructureDeclarations($displayItem->getDisplayStructure());
 			}
@@ -62,7 +62,7 @@ class CommonEiGuiSiFactory implements EiGuiSiFactory {
 	 * @see \rocket\ei\manage\gui\EiGuiSiFactory::getFieldDeclarationStrutures()
 	 */
 	function getSiStructureDeclarations(): array {
-		if (ViewMode::isCompact($this->eiGui->getViewMode())) {
+		if (ViewMode::isCompact($this->eiGuiFrame->getViewMode())) {
 			return [];
 		}
 		
@@ -109,7 +109,7 @@ class CommonEiGuiSiFactory implements EiGuiSiFactory {
 	
 // 	private function createDefaultDisplayStructure($viewMode) {
 // 		$displayStructure = new DisplayStructure();
-// 		foreach ($this->eiGui->getGuiDefinition()->filterGuiPropPaths($viewMode) as $eiPropPath) {
+// 		foreach ($this->eiGuiFrame->getGuiDefinition()->filterGuiPropPaths($viewMode) as $eiPropPath) {
 // 			$displayStructure->addGuiPropPath($eiPropPath);
 // 		}
 // 		return $displayStructure;
@@ -118,20 +118,20 @@ class CommonEiGuiSiFactory implements EiGuiSiFactory {
 	
 	
 // 	public function createUiComponent(array $eiEntryGuis, ?HtmlView $contextView): UiComponent {
-// 		$viewFactory = $this->eiGui->getEiFrame()->getN2nContext()->lookup(ViewFactory::class);
+// 		$viewFactory = $this->eiGuiFrame->getEiFrame()->getN2nContext()->lookup(ViewFactory::class);
 // 		CastUtils::assertTrue($viewFactory instanceof ViewFactory);
 		
 // 		$displayStructure = $this->displayStructure;
 // 		$viewName = null;
 		
-// 		if ($this->eiGui->getViewMode() & ViewMode::bulky()) {
+// 		if ($this->eiGuiFrame->getViewMode() & ViewMode::bulky()) {
 // 			$viewName = 'rocket\ei\mask\view\bulky.html';
 // 		} else {
 // 			$viewName = 'rocket\ei\mask\view\compact.html';
 // 			$displayStructure = $displayStructure->withoutSubStructures();
 // 		}
 		
-// 		$params = array('displayStructure' => $displayStructure, 'eiu' => new Eiu($this->eiGui));
+// 		$params = array('displayStructure' => $displayStructure, 'eiu' => new Eiu($this->eiGuiFrame));
 		
 // 		if ($contextView !== null) {
 // 			return $contextView->getImport('\\' . $viewName, $params);

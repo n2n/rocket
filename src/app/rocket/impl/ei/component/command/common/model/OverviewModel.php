@@ -36,7 +36,7 @@ class OverviewModel implements Dispatchable {
 	private $numPages;
 	private $numEntries;
 	
-	private $eiuGui;
+	private $eiuGuiFrame;
 		
 	private $critmodForm;
 	private $quickSearchForm;
@@ -150,10 +150,10 @@ class OverviewModel implements Dispatchable {
 		
 	/**
 	 * 
-	 * @return \rocket\ei\util\gui\EiuGui
+	 * @return \rocket\ei\util\gui\EiuGuiFrame
 	 */
-	public function getEiuGui() {
-		return $this->eiuGui;
+	public function getEiuGuiFrame() {
+		return $this->eiuGuiFrame;
 	}
 	
 	protected $selectedObjectIds = array();

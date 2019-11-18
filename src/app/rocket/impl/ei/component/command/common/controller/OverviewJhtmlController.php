@@ -141,7 +141,7 @@ class OverviewJhtmlController extends ControllerAdapter {
 		
 		$attrs = array('pageNo' => $pageNo, 'numEntries' => $listModel->getNumEntries(), 'numPages' => $listModel->getNumPages());
 
-		$this->send(JhtmlResponse::view($listModel->getEiuGui()->createView(), $attrs));
+		$this->send(JhtmlResponse::view($listModel->getEiuGuiFrame()->createView(), $attrs));
 	}
 	
 	public function doFilter(array $delegateCmds = array(), FramedFilterPropController $filterPropController) {

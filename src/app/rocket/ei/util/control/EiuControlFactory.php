@@ -23,14 +23,14 @@ namespace rocket\ei\util\control;
 
 use rocket\ei\component\command\EiCommand;
 use rocket\si\control\SiButton;
-use rocket\ei\util\gui\EiuGui;
+use rocket\ei\util\gui\EiuGuiFrame;
 
 class EiuControlFactory {
-	private $eiuGui;
+	private $eiuGuiFrame;
 	private $eiCommand;
 	
-	public function __construct(EiuGui $eiuGui, EiCommand $eiCommand) {
-		$this->eiuGui = $eiuGui;
+	public function __construct(EiuGuiFrame $eiuGuiFrame, EiCommand $eiCommand) {
+		$this->eiuGuiFrame = $eiuGuiFrame;
 		$this->eiCommand = $eiCommand;
 	}
 	
@@ -39,14 +39,14 @@ class EiuControlFactory {
 	 * @return \n2n\util\uri\Url
 	 */
 	private function createCmdUrl($urlExt) {
-		return $this->eiuGui->getEiuFrame()->getCmdUrl($this->eiCommand)->ext($urlExt);
+		return $this->eiuGuiFrame->getEiuFrame()->getCmdUrl($this->eiCommand)->ext($urlExt);
 	}
 	
 	/**
 	 * @return \n2n\util\uri\Url
 	 */
 	private function getApiUrl() {
-		return $this->eiuGui->getEiuFrame()->getApiUrl($this->eiCommand);
+		return $this->eiuGuiFrame->getEiuFrame()->getApiUrl($this->eiCommand);
 	}
 	
 	/**
@@ -76,7 +76,7 @@ class EiuControlFactory {
 	 * @return \rocket\ei\util\control\EiuCallbackGuiControl
 	 */
 	public function createCallback(string $id, SiButton $siButton, \Closure $callback) {
-		return new EiuCallbackGuiControl($id, $this->getApiUrl(), $this->eiuGui->getViewMode(), $callback, $siButton);
+		return new EiuCallbackGuiControl($id, $this->getApiUrl(), $this->eiuGuiFrame->getViewMode(), $callback, $siButton);
 	}
 	
 // 	public function createGroup(ControlButton $siButton): GroupControl {

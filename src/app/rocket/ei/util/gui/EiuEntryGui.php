@@ -38,32 +38,32 @@ use rocket\si\input\SiEntryInput;
 
 class EiuEntryGui {
 	private $eiEntryGui;
-	private $eiuGui;
+	private $eiuGuiFrame;
 	private $eiuEntry;
 	private $eiuAnalyst;
 	
-	function __construct(EiEntryGui $eiEntryGui, ?EiuGui $eiuGui, EiuAnalyst $eiuAnalyst) {
+	function __construct(EiEntryGui $eiEntryGui, ?EiuGuiFrame $eiuGuiFrame, EiuAnalyst $eiuAnalyst) {
 		$this->eiEntryGui = $eiEntryGui;
-		$this->eiuGui = $eiuGui;
+		$this->eiuGuiFrame = $eiuGuiFrame;
 		$this->eiuAnalyst = $eiuAnalyst;
 	}
 	
 	/**
-	 * @return EiuGui 
+	 * @return EiuGuiFrame 
 	 */
-	function gui() {
-		if ($this->eiuGui !== null) {
-			return $this->eiuGui;
+	function guiFrame() {
+		if ($this->eiuGuiFrame !== null) {
+			return $this->eiuGuiFrame;
 		}
 		
-		return $this->eiuGui = new EiuGui($this->eiEntryGui->getEiGui(), null, $this->eiuAnalyst);
+		return $this->eiuGuiFrame = new EiuGuiFrame($this->eiEntryGui->getEiGuiFrame(), null, $this->eiuAnalyst);
 	}
 	
 	/**
 	 * @return int
 	 */
 	function getViewMode() {
-		return $this->eiEntryGui->getEiGui()->getViewMode();
+		return $this->eiEntryGui->getEiGuiFrame()->getViewMode();
 	}
 	
 	/**
@@ -89,7 +89,7 @@ class EiuEntryGui {
 	 * @return string|null
 	 */
 	function getFieldLabel($eiPropPath, N2nLocale $n2nLocale = null, bool $required = false) {
-		return $this->gui()->getPropLabel($eiPropPath, $n2nLocale, $required);
+		return $this->guiFrame()->getPropLabel($eiPropPath, $n2nLocale, $required);
 	}
 	
 	/**
@@ -285,7 +285,7 @@ class EiuEntryGui {
 	 */
 	function entry() {
 		if ($this->eiuEntry === null) {
-			$this->eiuEntry = $this->gui()->getEiuFrame()->entry($this->getEiEntryGui()->getEiEntry());
+			$this->eiuEntry = $this->guiFrame()->getEiuFrame()->entry($this->getEiEntryGui()->getEiEntry());
 		}
 		
 		return $this->eiuEntry;
@@ -296,7 +296,7 @@ class EiuEntryGui {
 	 * @return \rocket\ei\util\entry\EiuField
 	 */
 	function field($guiPropPath) {
-		return new EiuGuiField(GuiPropPath::create($guiPropPath), $this, $this->eiuAnalyst);
+		return new EiuGuiFrameField(GuiPropPath::create($guiPropPath), $this, $this->eiuAnalyst);
 	}
 	
 	function handleSiEntryInput(SiEntryInput $siEntryInput) {

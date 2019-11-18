@@ -29,7 +29,7 @@ use rocket\ei\EiPropPath;
 use rocket\ei\util\entry\EiuEntry;
 use rocket\ei\mask\EiMask;
 use rocket\ei\manage\gui\field\GuiPropPath;
-use rocket\ei\manage\gui\EiGui;
+use rocket\ei\manage\gui\EiGuiFrame;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\util\Eiu;
 use rocket\ei\component\command\GuiEiCommand;
@@ -78,41 +78,41 @@ class GuiFactory {
 // 	 * @param EiFrame $eiFrame
 // 	 * @param int $viewMode
 // 	 * @throws \InvalidArgumentException
-// 	 * @return \rocket\ei\manage\gui\EiGui
+// 	 * @return \rocket\ei\manage\gui\EiGuiFrame
 // 	 */
-// 	function createEiGui(EiFrame $eiFrame, int $viewMode) {
+// 	function createEiGuiFrame(EiFrame $eiFrame, int $viewMode) {
 // 		if (!$this->eiMask->getEiType()->isA($eiFrame->getContextEiEngine()->getEiMask()->getEiType())) {
-// 			throw new \InvalidArgumentException('Incompatible EiGui');
+// 			throw new \InvalidArgumentException('Incompatible EiGuiFrame');
 // 		}
 		
-// 		$eiGui = new EiGui($eiFrame, $this->eiMask, $viewMode);
+// 		$eiGuiFrame = new EiGuiFrame($eiFrame, $this->eiMask, $viewMode);
 		
-// 		$this->eiMask->getEiModificatorCollection()->setupEiGui($eiGui);
+// 		$this->eiMask->getEiModificatorCollection()->setupEiGuiFrame($eiGuiFrame);
 		
 		
 // // 		if (!$init) {
-// // 			$this->noInitCb($eiGui);
-// // 			return $eiGui;
+// // 			$this->noInitCb($eiGuiFrame);
+// // 			return $eiGuiFrame;
 // // 		}
 		
 // // 		foreach ($guiDefinition->getGuiDefinitionListeners() as $listener) {
-// // 			$listener->onNewEiGui($eiGui);
+// // 			$listener->onNewEiGuiFrame($eiGuiFrame);
 // // 		}
 		
-// // 		if (!$eiGui->isInit()) {
-// // 			$this->eiMask->getDisplayScheme()->initEiGui($eiGui, $guiDefinition);
+// // 		if (!$eiGuiFrame->isInit()) {
+// // 			$this->eiMask->getDisplayScheme()->initEiGuiFrame($eiGuiFrame, $guiDefinition);
 // // 		}
 		
-// 		return $eiGui;
+// 		return $eiGuiFrame;
 // 	}
 	
 // 	/**
-// 	 * @param EiGui $eiGui
+// 	 * @param EiGuiFrame $eiGuiFrame
 // 	 * @param HtmlView $view
 // 	 * @return Control[]
 // 	 */
-// 	public function createOverallControls(EiGui $eiGui, HtmlView $view) {
-// 		$eiu = new Eiu($eiGui);
+// 	public function createOverallControls(EiGuiFrame $eiGuiFrame, HtmlView $view) {
+// 		$eiu = new Eiu($eiGuiFrame);
 		
 // 		$controls = array();
 		
@@ -164,14 +164,14 @@ class GuiFactory {
 	 * @param array $eiPropPaths
 	 * @return EiEntryGui
 	 */
-	public static function createEiEntryGui(EiGui $eiGui, EiEntry $eiEntry, array $guiPropPaths, int $treeLevel = null) {
+	public static function createEiEntryGui(EiGuiFrame $eiGuiFrame, EiEntry $eiEntry, array $guiPropPaths, int $treeLevel = null) {
 		ArgUtils::valArrayLike($guiPropPaths, GuiPropPath::class);
 		
 		$eiEntryGui = new EiEntryGui($eiEntry, $treeLevel);
 		
 		$guiFieldMap = new GuiFieldMap();
-		foreach ($eiGui->getEiPropPaths() as $eiPropPath) {
-			$guiField = self::buildGuiField($eiGui, $eiEntryGui, $eiPropPath);
+		foreach ($eiGuiFrame->getEiPropPaths() as $eiPropPath) {
+			$guiField = self::buildGuiField($eiGuiFrame, $eiEntryGui, $eiPropPath);
 			
 			if ($guiField !== null) {
 				$guiFieldMap->putGuiField($eiPropPath, $guiField);	
@@ -183,17 +183,17 @@ class GuiFactory {
 	}
 	
 	/**
-	 * @param EiGui $eiGui
+	 * @param EiGuiFrame $eiGuiFrame
 	 * @param EiEntryGui $eiEntryGui
 	 * @param EiPropPath $eiPropPath
 	 * @return GuiField|null
 	 */
-	private static function buildGuiField($eiGui, $eiEntryGui, $eiPropPath) {
-		$readOnly = ViewMode::isReadOnly($eiGui->getViewMode())
+	private static function buildGuiField($eiGuiFrame, $eiEntryGui, $eiPropPath) {
+		$readOnly = ViewMode::isReadOnly($eiGuiFrame->getViewMode())
 				|| !$eiEntryGui->getEiEntry()->getEiEntryAccess()->isEiPropWritable($eiPropPath);
 		
-		$guiField = $eiGui->getGuiFieldAssembler($eiPropPath)
-				->buildGuiField(new Eiu($eiGui, $eiEntryGui, $eiPropPath), $readOnly);
+		$guiField = $eiGuiFrame->getGuiFieldAssembler($eiPropPath)
+				->buildGuiField(new Eiu($eiGuiFrame, $eiEntryGui, $eiPropPath), $readOnly);
 		
 		if (!$readOnly || $guiField->getSiField()->isReadOnly()) {
 			return $guiField;
@@ -215,9 +215,9 @@ class GuiFactory {
 // 		$this->eiModificatorCollection = $eiModificatorCollection;
 // 	}
 	
-// 	public function onInitialized(EiGui $eiGui) {
+// 	public function onInitialized(EiGuiFrame $eiGuiFrame) {
 // 		foreach ($this->eiModificatorCollection as $eiModificator) {
-// 			$eiModificator->onEiGuiInitialized($eiGui);
+// 			$eiModificator->onEiGuiFrameInitialized($eiGuiFrame);
 // 		}
 // 	}
 	

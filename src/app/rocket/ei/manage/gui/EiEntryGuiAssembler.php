@@ -42,7 +42,7 @@ class EiEntryGuiAssembler {
 	private $forkedPropertyPaths = array();
 	
 	public function __construct(EiEntryGui $eiEntryGui) {
-		$this->guiDefinition = $eiEntryGui->getEiGui()->getGuiDefinition();
+		$this->guiDefinition = $eiEntryGui->getEiGuiFrame()->getGuiDefinition();
 		$this->eiEntryGui = $eiEntryGui;
 		$this->eiu = new Eiu($eiEntryGui);
 	}

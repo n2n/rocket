@@ -1,32 +1,27 @@
 <?php
 namespace rocket\ei\util\gui;
 
-use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\ei\manage\gui\ViewMode;
-use rocket\ei\manage\gui\field\GuiPropPath;
-use rocket\ei\manage\gui\EiGuiSiFactory;
-use rocket\ei\manage\gui\GuiException;
-use rocket\ei\manage\gui\EiGui;
+use rocket\ei\manage\gui\EiGuiFrame;
 use rocket\ei\util\frame\EiuFrame;
 use rocket\ei\util\EiuAnalyst;
-use n2n\l10n\N2nLocale;
-use n2n\util\ex\NotYetImplementedException;
-use rocket\ei\component\command\EiCommand;
-use rocket\ei\util\control\EiuControlFactory;
+use rocket\ei\manage\gui\EiGui;
+use rocket\ei\util\entry\EiuObject;
+use rocket\ei\util\entry\EiuEntry;
+use rocket\ei\util\EiuPerimeterException;
 
 class EiuGui {
 	private $eiGui;
-	private $eiuFrame;
+	private $eiuGuiFrame;
 	private $eiuAnalyst;
 	
 	/**
-	 * @param EiGui $eiGui
+	 * @param EiGuiFrame $eiGuiFrame
 	 * @param EiuFrame $eiuFrame
 	 * @param EiuAnalyst $eiuAnalyst
 	 */
-	public function __construct(EiGui $eiGui, ?EiuFrame $eiuFrame, EiuAnalyst $eiuAnalyst) {
+	public function __construct(EiGui $eiGui, ?EiuGuiFrame $eiuGuiFrame, EiuAnalyst $eiuAnalyst) {
 		$this->eiGui = $eiGui;
-		$this->eiuFrame = $eiuFrame;
+		$this->eiuGuiFrame = $eiuGuiFrame;
 		$this->eiuAnalyst = $eiuAnalyst;
 	}
 	
@@ -43,7 +38,7 @@ class EiuGui {
 		}
 		
 		if ($this->eiuFrame === null) {
-			$this->eiuFrame = new EiuFrame($this->eiGui->getEiFrame(), $this->eiuAnalyst);
+			$this->eiuFrame = new EiuFrame($this->eiGuiFrame->getEiFrame(), $this->eiuAnalyst);
 		}
 		
 		return $this->eiuFrame;
@@ -57,133 +52,58 @@ class EiuGui {
 	}
 	
 	/**
-	 * @return number
-	 */
-	public function getViewMode() {
-		return $this->eiGui->getViewMode();
-	}
-	
-	/**
-	 * @param GuiPropPath|string $eiPropPath
-	 * @param bool $required
-	 * @return string|null
-	 */
-	public function getPropLabel($guiPropPath, N2nLocale $n2nLocale = null, bool $required = false) {
-		$guiPropPath = GuiPropPath::create($guiPropPath);
-		if ($n2nLocale === null) {
-			$n2nLocale = $this->eiGui->getEiFrame()->getN2nContext()->getN2nLocale();
-		}
-		
-// 		if (null !== ($displayItem = $this->getDisplayItemByGuiPropPath($eiPropPath))) {
-// 			return $displayItem->translateLabel($n2nLocale);
-// 		}
-		
-		if (null !== ($guiProp = $this->getGuiPropByGuiPropPath($guiPropPath, $required))) {
-			return $guiProp->getDisplayLabel();
-		}
-		
-		return null;
-	}
-	
-	/**
-	 * @param GuiPropPath|string $eiPropPath
-	 * @param bool $required
-	 * @throws \InvalidArgumentException
-	 * @throws GuiException
-	 * @return \rocket\ei\manage\gui\GuiProp|null
-	 */
-	public function getGuiPropByGuiPropPath($eiPropPath, bool $required = false) {
-		$eiPropPath = GuiPropPath::create($eiPropPath);
-		
-		try {
-			return $this->eiGui->getEiGuiSiFactory()->getGuiDefinition()->getGuiPropByGuiPropPath($eiPropPath);
-		} catch (GuiException $e) {
-			if (!$required) return null;
-			throw $e;
-		}
-	}
-		
-// 	/**
-// 	 * @param GuiPropPath|string $eiPropPath
-// 	 * @param bool $required
-// 	 * @throws \InvalidArgumentException
-// 	 * @return \rocket\ei\mask\model\DisplayItem
-// 	 */
-// 	public function getDisplayItemByGuiPropPath($eiPropPath) {
-// 		$eiPropPath = GuiPropPath::create($eiPropPath);
-		
-// 		$displayStructure = $this->eiGui->getEiGuiSiFactory()->getDisplayStructure();
-// 		if ($displayStructure !== null) {
-// 			return $displayStructure->getDisplayItemByGuiPropPath($eiPropPath);
-// 		}
-// 		return null;
-// 	}
-	
-	/**
 	 * @return bool
 	 */
-	public function isBulky() {
-		return (bool) ($this->getViewMode() & ViewMode::bulky());	
+	public function isSingle() {
+		return 1 == count($this->eiGuiFrame->getEiEntryGuis());
+	}
+	
+	
+	/**
+	 *
+	 * @param bool $required
+	 * @return EiuEntryGui|null
+	 */
+	public function entryGui(bool $required = true) {
+		$eiEntryGuis = $this->eiGuiFrame->getEiEntryGuis();
+		$eiEntryGui = null;
+		if (count($eiEntryGuis) == 1) {
+			return new EiuEntryGui(current($eiEntryGuis), $this, $this->eiuAnalyst);
+		}
+		
+		if (!$required) return null;
+		
+		throw new EiuPerimeterException('No single EiuEntryGui is available.');
+	}
+	
+	public function entryGuis() {
+		$eiuEntryGuis = array();
+		
+		foreach ($this->eiGuiFrame->getEiEntryGuis() as $eiEntryGui) {
+			$eiuEntryGuis[] = new EiuEntryGui($eiEntryGui, $this, $this->eiuAnalyst);
+		}
+		
+		return $eiuEntryGuis;
 	}
 	
 	/**
-	 * @return bool
+	 *
+	 * @param mixed $eiEntryArg
+	 * @param bool $makeEditable
+	 * @param int $treeLevel
+	 * @return EiuEntryGui
 	 */
-	public function isCompact() {
-		return (bool) ($this->getViewMode() & ViewMode::compact());
-	}
-	
-	/**
-	 * @return boolean
-	 */
-	public function isReadOnly() {
-		return (bool) ($this->getViewMode() & ViewMode::read());
-	}
-	
-	/**
-	 * @param EiCommand $eiCommand
-	 * @return \rocket\ei\util\control\EiuControlFactory
-	 */
-	public function controlFactory(EiCommand $eiCommand) {
-		return new EiuControlFactory($this, $eiCommand);
-	}
-	
-// 	public function initWithUiCallback(\Closure $viewFactory, array $guiPropPaths) {
-// 		$guiPropPaths = GuiPropPath::createArray($guiPropPaths);
+	public function appendNewEntryGui($eiEntryArg, int $treeLevel = null) {
+		$eiEntry = null;
+		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiEntryArg, 'eiEntryArg', $this->eiuFrame->getContextEiType(), true,
+				$eiEntry);
 		
-// 		$this->eiGui->init(new CustomGuiViewFactory($viewFactory), $guiPropPaths);
-// 	}
-}
-
-class CustomGuiViewFactory implements EiGuiSiFactory {
-	private $factory;
-	
-	public function __construct(\Closure $factory) {
-		$this->factory = $factory;
-	}
-	
-// 	public function createUiComponent(array $eiEntryGuis, ?HtmlView $contextView): UiComponent {
-// 		$uiComponent = $this->factory->call(null, $eiEntryGuis, $contextView);
-// 		ArgUtils::valTypeReturn($uiComponent, [UiComponent::class, 'scalar'], null, $this->factory);
+		if ($eiEntry === null) {
+			$eiEntry = (new EiuEntry(null, new EiuObject($eiObject, $this->eiuAnalyst),
+					null, $this->eiuAnalyst))->getEiEntry(true);
+		}
 		
-// 		if (is_scalar($uiComponent)) {
-// 			$uiComponent = new HtmlSnippet($uiComponent);
-// 		}
-		
-// 		return $uiComponent;
-// 	}
-	
-// 	public function createSiDeclaration(): SiDeclaration {
-// 		throw new NotYetImplementedException();
-// 	}
-	
-	public function getSiStructureDeclarations(): array {
-		throw new NotYetImplementedException();
+		return new EiuEntryGui($this->eiuAnalyst->getEiGuiFrame(true)
+				->createEiEntryGui($eiEntry, $treeLevel, true), $this, $this->eiuAnalyst);
 	}
-
-	public function getSiProps(): array {
-		throw new NotYetImplementedException();
-	}
-
-
 }

@@ -23,7 +23,7 @@ namespace rocket\ei\mask\model;
 
 use rocket\ei\manage\gui\field\GuiPropPath;
 use n2n\util\type\ArgUtils;
-use rocket\ei\manage\gui\EiGui;
+use rocket\ei\manage\gui\EiGuiFrame;
 use rocket\ei\manage\gui\GuiException;
 use rocket\si\meta\SiStructureType;
 
@@ -275,29 +275,29 @@ class DisplayStructure {
 		return false;
 	}
 	
-	public function purified(EiGui $eiGui) {
-		return $this->rPurifyDisplayStructure($this, $eiGui);
+	public function purified(EiGuiFrame $eiGuiFrame) {
+		return $this->rPurifyDisplayStructure($this, $eiGuiFrame);
 	}
 	
 	/**
 	 * @param DisplayStructure $displayStructure
-	 * @param EiGui $eiGui
+	 * @param EiGuiFrame $eiGuiFrame
 	 * @return \rocket\ei\mask\model\DisplayStructure
 	 */
-	private function rPurifyDisplayStructure($displayStructure, $eiGui) {
+	private function rPurifyDisplayStructure($displayStructure, $eiGuiFrame) {
 		$purifiedDisplayStructure = new DisplayStructure();
 		
 		foreach ($displayStructure->getDisplayItems() as $displayItem) {
 			if ($displayItem->hasDisplayStructure()) {
 				$purifiedDisplayStructure->addDisplayStructure(
-						$this->rPurifyDisplayStructure($displayItem->getDisplayStructure(), $eiGui),
+						$this->rPurifyDisplayStructure($displayItem->getDisplayStructure(), $eiGuiFrame),
 						$displayItem->getSiStructureType(), $displayItem->getLabel(), $displayItem->getModuleNamespace());
 				continue;
 			}
 			
 			$guiPropAssembly = null;
 			try {
-				$guiPropAssembly = $eiGui->getGuiPropAssemblyByGuiPropPath($displayItem->getGuiPropPath());
+				$guiPropAssembly = $eiGuiFrame->getGuiPropAssemblyByGuiPropPath($displayItem->getGuiPropPath());
 			} catch (GuiException $e) {
 				continue;
 			}
@@ -310,13 +310,13 @@ class DisplayStructure {
 	}
 	
 	/**
-	 * @param EiGui $eiGui
+	 * @param EiGuiFrame $eiGuiFrame
 	 * @return DisplayStructure
 	 */
-	public static function fromEiGui(EiGui $eiGui) {
+	public static function fromEiGuiFrame(EiGuiFrame $eiGuiFrame) {
 		$displayStructure = new DisplayStructure();
 		
-		foreach ($eiGui->getGuiPropAssemblies() as $guiPropAssembly) {
+		foreach ($eiGuiFrame->getGuiPropAssemblies() as $guiPropAssembly) {
 			$displayStructure->addGuiPropPath($guiPropAssembly->getGuiPropPath(), 
 					$guiPropAssembly->getDisplayDefinition()->getSiStructureType());
 		}

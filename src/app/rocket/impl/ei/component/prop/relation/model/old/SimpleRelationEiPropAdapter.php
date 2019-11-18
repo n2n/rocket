@@ -93,7 +93,7 @@
 // 	}
 	
 // 	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
-// 		$viewMode = $eiu->gui()->getViewMode();
+// 		$viewMode = $eiu->guiFrame()->getViewMode();
 		
 // 		if (!$this->displayConfig->isViewModeCompatible($viewMode)) {
 // 			return null;

@@ -118,7 +118,7 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropF
 		}
 				
 		$targetEiuEntryGuiAssembler = $targetEiuFrame->entry($targetRelationEntry->getEiEntry())
-				->newEntryGuiAssembler($eiu->gui()->getViewMode());
+				->newEntryGuiAssembler($eiu->guiFrame()->getViewMode());
 				
 		return new OneToOneGuiFieldFork($eiuField->getEiField(), $targetRelationEntry, $targetEiuEntryGuiAssembler);
 	}

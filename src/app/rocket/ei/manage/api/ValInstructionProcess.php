@@ -91,7 +91,7 @@ class ValInstructionProcess {
 		$result->setEntry($eiEntryGui->createSiEntry($getInstruction->areControlsIncluded()));
 		
 		if ($getInstruction->isDeclarationRequested()) {
-			$result->setDeclaration($eiEntryGui->getEiGui()->createSiDeclaration());
+			$result->setDeclaration($eiEntryGui->getEiGuiFrame()->createSiDeclaration());
 		}
 		
 		return $result;
@@ -101,7 +101,7 @@ class ValInstructionProcess {
 	 * @param EiEntryGui $eiEntryGui
 	 */
 	private function registerEiEntryGui($eiEntryGui) {
-		$this->eiEntryGuis[$eiEntryGui->getEiGui()->getViewMode()] = $eiEntryGui;
+		$this->eiEntryGuis[$eiEntryGui->getEiGuiFrame()->getViewMode()] = $eiEntryGui;
 	}
 	
 	/**
@@ -161,20 +161,20 @@ class ValInstructionProcess {
 	
 	private function handlePartialContent(SiPartialContentInstruction $spci) {
 		$num = $this->eiFrameUtil->count();
-		$eiGui = $this->eiFrameUtil->lookupEiGuiFromRange($spci->getFrom(), $spci->getNum(),
+		$eiGuiFrame = $this->eiFrameUtil->lookupEiGuiFrameFromRange($spci->getFrom(), $spci->getNum(),
 				$this->instruction->isBulky(), $this->instruction->isReadOnly());
 		
 		$result = new SiValResult();
-		$result->setPartialContent($this->apiUtil->createSiPartialContent($spci->getFrom(), $num, $eiGui));
+		$result->setPartialContent($this->apiUtil->createSiPartialContent($spci->getFrom(), $num, $eiGuiFrame));
 		
 		if (!$this->instruction->isDeclarationRequested()) {
 			return $result;
 		}
 		
 		if ($this->instruction->isBulky()) {
-			$result->setDeclaration($this->apiUtil->createSiDeclaration($eiGui));
+			$result->setDeclaration($this->apiUtil->createSiDeclaration($eiGuiFrame));
 		} else {
-			$result->setDeclaration($this->apiUtil->createSiDeclaration($eiGui));
+			$result->setDeclaration($this->apiUtil->createSiDeclaration($eiGuiFrame));
 		}
 		
 		return $result;

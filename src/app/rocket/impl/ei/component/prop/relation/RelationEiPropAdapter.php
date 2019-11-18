@@ -147,7 +147,7 @@ abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements Re
 	}
 	
 // 	function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
-// 		return $this->displayConfig->toDisplayDefinition($eiu->gui()->getViewMode(), $eiu->prop()->getLabel(),
+// 		return $this->displayConfig->toDisplayDefinition($eiu->guiFrame()->getViewMode(), $eiu->prop()->getLabel(),
 // 				$eiu->prop()->getHelpText());
 // 	}
 	

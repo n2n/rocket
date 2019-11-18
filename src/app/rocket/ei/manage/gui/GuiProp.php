@@ -26,11 +26,11 @@ use rocket\ei\util\Eiu;
 interface GuiProp {
 	
 	/**
-	 * <p>Tests if this GuiProp is compatible with the passed EiGui and returns an {@see DisplayDefinition}
-	 * if it does. Use <code>$eiu->gui()</code> to access the {@see \rocket\ei\util\gui\EiuGui} 
+	 * <p>Tests if this GuiProp is compatible with the passed EiGuiFrame and returns an {@see DisplayDefinition}
+	 * if it does. Use <code>$eiu->guiFrame()</code> to access the {@see \rocket\ei\util\gui\EiuGuiFrame} 
 	 * object.<p>
 	 * 
-	 * @return DisplayDefinition|null return null if this GuiProp is not compatible with passed EiGui.
+	 * @return DisplayDefinition|null return null if this GuiProp is not compatible with passed EiGuiFrame.
 	 */
 	function buildGuiPropSetup(Eiu $eiu, ?array $guiPropPaths): ?GuiPropSetup;
 		

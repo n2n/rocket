@@ -18,10 +18,10 @@ class Eiu implements Lookupable {
 	private $eiuEntry;
 	private $eiuField;
 	private $eiuFieldMap;
-	private $eiuGuiLayout;
-	private $eiuGui;
+	private $eiuGuiFrameLayout;
+	private $eiuGuiFrame;
 	private $eiuEntryGui;
-	private $eiuGuiField;
+	private $eiuGuiFrameField;
 	private $eiuFactory;
 	
 	public function __construct(...$eiArgs) {
@@ -130,28 +130,28 @@ class Eiu implements Lookupable {
 	 *
 	 * @param bool $required
 	 * @throws EiuPerimeterException
-	 * @return \rocket\ei\util\gui\EiuGuiLayout
+	 * @return \rocket\ei\util\gui\EiuGui
 	 */
-	public function guiLayout(bool $required = true) {
-		if ($this->eiuGuiLayout !== null) {
-			return $this->eiuGuiLayout;
+	public function gui(bool $required = true) {
+		if ($this->eiuGuiFrameLayout !== null) {
+			return $this->eiuGuiFrameLayout;
 		}
 		
-		return $this->eiuGuiLayout = $this->eiuAnalyst->getEiuGuiLayout($required);
+		return $this->eiuGuiFrameLayout = $this->eiuAnalyst->getEiuGui($required);
 	}
 	
 	/**
 	 * 
 	 * @param bool $required
 	 * @throws EiuPerimeterException
-	 * @return \rocket\ei\util\gui\EiuGui
+	 * @return \rocket\ei\util\gui\EiuGuiFrame
 	 */
-	public function gui(bool $required = true) {
-		if ($this->eiuGui !== null) {
-			return $this->eiuGui;
+	public function guiFrame(bool $required = true) {
+		if ($this->eiuGuiFrame !== null) {
+			return $this->eiuGuiFrame;
 		}
 		
-		return $this->eiuGui = $this->eiuAnalyst->getEiuGui($required);
+		return $this->eiuGuiFrame = $this->eiuAnalyst->getEiuGuiFrame($required);
 	}
 	
 	
@@ -183,14 +183,14 @@ class Eiu implements Lookupable {
 	
 	/**
 	 * @param bool $required
-	 * @return \rocket\ei\util\gui\EiuGuiField|null
+	 * @return \rocket\ei\util\gui\EiuGuiFrameField|null
 	 */
 	public function guiField(bool $required = true) {
-		if ($this->eiuGuiField !== null) {
-			return $this->eiuGuiField;
+		if ($this->eiuGuiFrameField !== null) {
+			return $this->eiuGuiFrameField;
 		}
 		
-		return $this->eiuGuiField = $this->eiuAnalyst->getEiuGuiField($required);
+		return $this->eiuGuiFrameField = $this->eiuAnalyst->getEiuGuiFrameField($required);
 	}
 	
 	/**

@@ -80,7 +80,7 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 // 	 * @see \rocket\ei\manage\gui\GuiProp::buildDisplayDefinition()
 // 	 */
 // 	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
-// 		$viewMode = $this->eiu->gui()->getViewMode();
+// 		$viewMode = $this->eiu->guiFrame()->getViewMode();
 // 		if (!$this->getDisplayConfig()->isViewModeCompatible($viewMode)) {
 // 			return null;
 // 		}

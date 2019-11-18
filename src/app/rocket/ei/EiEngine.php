@@ -137,7 +137,7 @@ class EiEngine {
 
 	/**
 	 * @param N2nContext $n2nContext
-	 * @return \rocket\ei\manage\gui\EiGui
+	 * @return \rocket\ei\manage\gui\EiGuiFrame
 	 */
 	function createIdNameDefinition(N2nContext $n2nContext) {
 		$idNameFactory = new IdNameFactory($this->eiMask);
@@ -251,12 +251,12 @@ class EiEngine {
 		$mappingFactory->copyValues($eiFrame, $from, $to, $eiPropPaths);
 	}
 	
-// 	function createFramedEiGui(EiFrame $eiFrame, int $viewMode) {
+// 	function createFramedEiGuiFrame(EiFrame $eiFrame, int $viewMode) {
 // 		$guiFactory = new GuiFactory($this->eiMask);
-// 		return $guiFactory->createEiGui($eiFrame, $viewMode);
+// 		return $guiFactory->createEiGuiFrame($eiFrame, $viewMode);
 // 	}
 	
-// 	function createEiGui(int $viewMode, DisplayStructure $displayStructure) {
+// 	function createEiGuiFrame(int $viewMode, DisplayStructure $displayStructure) {
 // 		$eiMask = $this->eiMask;
 // 		if ($this->eiType === null) {
 // 			$eiMask = $this->eiType->getEiTypeExtensionCollection()->getOrCreateDefault();

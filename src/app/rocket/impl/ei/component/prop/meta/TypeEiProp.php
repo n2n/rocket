@@ -41,7 +41,7 @@ class TypeEiProp extends DisplayableEiPropAdapter implements StatelessGuiFieldDi
 	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
 // 		$eiu->prop()->getLabel();
 // 		$eiu->prop()->getHelpText();
-		return $this->getDisplayConfig()->toDisplayDefinition($eiu->gui()->getViewMode(),
+		return $this->getDisplayConfig()->toDisplayDefinition($eiu->guiFrame()->getViewMode(),
 				$eiu->prop()->getLabel());
 	}
 

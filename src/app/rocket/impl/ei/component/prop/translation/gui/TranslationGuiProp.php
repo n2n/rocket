@@ -76,7 +76,7 @@ class TranslationGuiProp implements GuiProp {
 	
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
 		$forkEiuFrame = $eiu->frame()->forkDiscover($eiu->prop()->getPath(), $eiu->entry());
-		if ($eiu->gui()->isReadOnly()) {
+		if ($eiu->guiFrame()->isReadOnly()) {
 			$forkEiuFrame->exec($this->relationModel->getTargetReadEiCommandPath());
 		} else {
 			$forkEiuFrame->exec($this->relationModel->getTargetEditEiCommandPath());
@@ -84,11 +84,11 @@ class TranslationGuiProp implements GuiProp {
 		
 		$tef = new TranslationEssentialsFactory($eiu, $forkEiuFrame, $this->translationConfig->getN2nLocaleDefs());
 
-		$forkGuiPropPaths = $eiu->gui()->getForkGuiPropPaths($eiu->prop()->getPath());
+		$forkGuiPropPaths = $eiu->guiFrame()->getForkGuiPropPaths($eiu->prop()->getPath());
 		$targetEiuEntries = $tef->init($forkGuiPropPaths);
 		
 		$guiFieldMap = new GuiFieldMap();
-		foreach ($tef->getEiuGui()->getEiPropPaths() as $eiPropPath) {
+		foreach ($tef->getEiuGuiFrame()->getEiPropPaths() as $eiPropPath) {
 			$guiFieldMap->putGuiField($eiPropPath, $tef->createSplitGuiField($eiPropPath));
 		}
 		
@@ -97,7 +97,7 @@ class TranslationGuiProp implements GuiProp {
 		
 		// 		if ($this->copyCommand !== null) {
 		// 			$translationGuiField->setCopyUrl($targetEiuFrame->getUrlToCommand($this->copyCommand)
-		// 					->extR(null, array('bulky' => $eiu->gui()->isBulky())));
+		// 					->extR(null, array('bulky' => $eiu->guiFrame()->isBulky())));
 		// 		}
 	}
 }
@@ -108,7 +108,7 @@ class TranslationEssentialsFactory {
 	private $translationConfig;
 	
 	private $targetEiuEntries;
-	private $targetEiuGui;
+	private $targetEiuGuiFrame;
 	private $targetEiuEntryGuis;
 	
 	function __construct(Eiu $eiu, EiuFrame $forkEiuFrame, TranslationConfig $translationConfig) {
@@ -142,12 +142,12 @@ class TranslationEssentialsFactory {
 	 * @return EiuEntry[]
 	 */
 	function init(array $forkGuiPropPaths) {
-		$this->targetEiuGui = $this->forkEiuFrame->newGui($this->eiu->gui()->getViewMode(), $forkGuiPropPaths);
+		$this->targetEiuGuiFrame = $this->forkEiuFrame->newGuiFrame($this->eiu->guiFrame()->getViewMode(), $forkGuiPropPaths);
 		$this->deterTargetEiuEntries();
 		
 		$this->targetEiEntryGuis = [];
 		foreach ($this->targetEiuEntries as $n2nLocaleId => $targetEiuEntry) {
-			$this->targetEiEntryGuis[$n2nLocaleId] = $this->targetEiuGui->appendNewEntryGui($targetEiuEntry);
+			$this->targetEiEntryGuis[$n2nLocaleId] = $this->targetEiuGuiFrame->appendNewEntryGui($targetEiuEntry);
 		}
 	}
 	

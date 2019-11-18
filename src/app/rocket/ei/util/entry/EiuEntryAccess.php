@@ -4,6 +4,7 @@ namespace rocket\ei\util\entry;
 use rocket\ei\manage\security\EiEntryAccess;
 use rocket\ei\EiPropPath;
 use rocket\ei\EiCommandPath;
+use rocket\ei\component\command\EiCommand;
 
 class EiuEntryAccess {
 	private $eiEntryAccess;

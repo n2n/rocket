@@ -58,7 +58,7 @@ class OnlineEiCommand extends EiCommandAdapter {
 	}
 	
 	public function createEntryGuiControl(Eiu $eiu): array {
-		$eiuControlFactory = $eiu->gui()->controlFactory($this);
+		$eiuControlFactory = $eiu->guiFrame()->controlFactory($this);
 		
 		$eiuEntry = $eiu->entry();
 		$eiuFrame = $eiu->frame();

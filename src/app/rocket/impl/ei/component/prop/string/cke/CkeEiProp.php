@@ -56,7 +56,7 @@ class CkeEiProp extends AlphanumericEiProp {
 	    	return SiFields::stringOut('');
 	    }
 	    
-		if ($eiu->gui()->isCompact()) {
+		if ($eiu->guiFrame()->isCompact()) {
 			return SiFields::stringOut(StringUtils::reduce(html_entity_decode(strip_tags($value), null, N2N::CHARSET), 50, '...'));
 		}
 

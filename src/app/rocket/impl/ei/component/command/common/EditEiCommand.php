@@ -72,7 +72,7 @@ class EditEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiC
 			return [];
 		}
 		
-		$eiuControlFactory = $eiu->gui()->controlFactory($this);
+		$eiuControlFactory = $eiu->guiFrame()->controlFactory($this);
 		$dtc = $eiu->dtc(Rocket::NS);
 		
 		$siButton = SiButton::primary($dtc->t('common_save_label'), SiIconType::ICON_SAVE);
@@ -98,7 +98,7 @@ class EditEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiC
 			return [];
 		}
 		
-		$eiuControlFactory = $eiu->gui()->controlFactory($this);
+		$eiuControlFactory = $eiu->guiFrame()->controlFactory($this);
 		$dtc = $eiu->dtc(Rocket::NS);
 			
 		$siButton = new SiButton($dtc->t('common_edit_label'), 

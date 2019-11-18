@@ -22,13 +22,13 @@
 namespace rocket\ei\manage\gui\control;
 
 use rocket\si\control\SiResult;
-use rocket\ei\manage\gui\EiGuiLayout;
+use rocket\ei\manage\gui\EiGui;
 
 interface GeneralGuiControl extends GuiControl {
 	
 	/**
-	 * @param EiGuiLayout $eiGuiLayout
+	 * @param EiGui $eiGui
 	 * @return SiResult
 	 */
-	function handle(EiGuiLayout $eiGuiLayout): SiResult;
+	function handle(EiGui $eiGui): SiResult;
 }

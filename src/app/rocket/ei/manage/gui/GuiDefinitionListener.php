@@ -3,9 +3,9 @@ namespace rocket\ei\manage\gui;
 
 interface GuiDefinitionListener {
 	/**
-	 * @param EiGui $eiGui
+	 * @param EiGuiFrame $eiGuiFrame
 	 */
-	public function onNewEiGui(EiGui $eiGui);
+	public function onNewEiGuiFrame(EiGuiFrame $eiGuiFrame);
 	
 	
 // 	/**

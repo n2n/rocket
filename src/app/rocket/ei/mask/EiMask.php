@@ -50,7 +50,7 @@ use n2n\util\type\ArgUtils;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\Lstr;
 use rocket\ei\manage\gui\EiEntryGui;
-use rocket\ei\manage\gui\EiGui;
+use rocket\ei\manage\gui\EiGuiFrame;
 use rocket\ei\manage\gui\EiGuiListener;
 use rocket\si\meta\SiTypeQualifier;
 use n2n\l10n\N2nLocale;
@@ -357,42 +357,42 @@ class EiMask {
 		return $this->displayScheme ?? $this->displayScheme = new DisplayScheme();
 	}
 	
-// 	public function createEiGui(EiFrame $eiFrame, int $viewMode, bool $init) {
+// 	public function createEiGuiFrame(EiFrame $eiFrame, int $viewMode, bool $init) {
 // 		if (!$this->getEiType()->isA($eiFrame->getContextEiEngine()->getEiMask()->getEiType())) {
-// 			throw new \InvalidArgumentException('Incompatible EiGui');
+// 			throw new \InvalidArgumentException('Incompatible EiGuiFrame');
 // 		}
 		
 // 		$guiDefinition = $eiFrame->getManageState()->getDef()->getGuiDefinition($this);
-// 		$eiGui = new EiGui($eiFrame, $guiDefinition, $viewMode);
+// 		$eiGuiFrame = new EiGuiFrame($eiFrame, $guiDefinition, $viewMode);
 		
 // 		if (!$init) {
-// 			$this->noInitCb($eiGui);
-// 			return $eiGui;
+// 			$this->noInitCb($eiGuiFrame);
+// 			return $eiGuiFrame;
 // 		}
 		
 // 		foreach ($guiDefinition->getGuiDefinitionListeners() as $listener) {
-// 			$listener->onNewEiGui($eiGui);
+// 			$listener->onNewEiGuiFrame($eiGuiFrame);
 // 		}
 		
-// 		if (!$eiGui->isInit()) {
-// 			$this->getDisplayScheme()->initEiGui($eiGui, $guiDefinition);
+// 		if (!$eiGuiFrame->isInit()) {
+// 			$this->getDisplayScheme()->initEiGuiFrame($eiGuiFrame, $guiDefinition);
 // 		}
 		
-// 		return $eiGui;
+// 		return $eiGuiFrame;
 // 	}
 	
 	
 // 	/**
-// 	 * @param EiGui $eiGui
+// 	 * @param EiGuiFrame $eiGuiFrame
 // 	 */
-// 	private function noInitCb($eiGui) {
+// 	private function noInitCb($eiGuiFrame) {
 		
-// 		$eiGui->registerEiGuiListener(new class() implements EiGuiListener {
-// 			public function onInitialized(EiGui $eiGui) {
-// 				foreach ($eiGui->getGuiDefinition()->getGuiDefinitionListeners() as $listener) {
-// 					$listener->onNewEiGui($eiGui);
+// 		$eiGuiFrame->registerEiGuiListener(new class() implements EiGuiListener {
+// 			public function onInitialized(EiGuiFrame $eiGuiFrame) {
+// 				foreach ($eiGuiFrame->getGuiDefinition()->getGuiDefinitionListeners() as $listener) {
+// 					$listener->onNewEiGuiFrame($eiGuiFrame);
 // 				}
-// 				$eiGui->unregisterEiGuiListener($this);
+// 				$eiGuiFrame->unregisterEiGuiListener($this);
 // 			}
 			
 // 			public function onNewEiEntryGui(EiEntryGui $eiEntryGui) {
@@ -422,12 +422,12 @@ class EiMask {
 	
 // 	/**
 // 	 * @param array $controls
-// 	 * @param EiGui $eiGui
+// 	 * @param EiGuiFrame $eiGuiFrame
 // 	 * @param HtmlView $view
 // 	 * @return array
 // 	 */
-// 	public function sortOverallControls(array $controls, EiGui $eiGui, HtmlView $view): array {
-// // 		$eiu = new Eiu($eiGui);
+// 	public function sortOverallControls(array $controls, EiGuiFrame $eiGuiFrame, HtmlView $view): array {
+// // 		$eiu = new Eiu($eiGuiFrame);
 // // 		$eiPermissionManager = $eiu->frame()->getEiFrame()->getManageState()->getEiPermissionManager();
 		
 // // 		$controls = array();

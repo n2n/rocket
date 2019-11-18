@@ -20,7 +20,7 @@ use rocket\ei\util\sort\EiuSortForm;
 use rocket\ei\manage\critmod\sort\SortSettingGroup;
 use rocket\ei\manage\ManageState;
 use rocket\ei\manage\gui\EiEntryGui;
-use rocket\ei\manage\gui\EiGui;
+use rocket\ei\manage\gui\EiGuiFrame;
 use rocket\ei\manage\gui\field\GuiPropPath;
 use rocket\ei\manage\gui\GuiException;
 use rocket\ei\util\EiuAnalyst;
@@ -413,12 +413,12 @@ class ClosureGuiDefinitionListener implements GuiDefinitionListener {
 		$this->callback = $callback;
 	}
 	
-	public function onNewEiGui(EiGui $eiGui) {
+	public function onNewEiGuiFrame(EiGuiFrame $eiGuiFrame) {
 		$c = $this->callback;
-		$c(new Eiu($eiGui));
+		$c(new Eiu($eiGuiFrame));
 	}
 	
-	public function onEiGuiInitialized(EiGui $eiGui) {
+	public function onEiGuiFrameInitialized(EiGuiFrame $eiGuiFrame) {
 	}
 
 }
@@ -435,15 +435,15 @@ class ClosureEiGuiListener implements EiGuiListener, GuiDefinitionListener {
 		$c(new Eiu($eiEntryGui));
 	}
 	
-	public function onInitialized(EiGui $eiGui) {
+	public function onInitialized(EiGuiFrame $eiGuiFrame) {
 		
 	}
 
-	public function onNewEiGui(EiGui $eiGui) {
-		$eiGui->registerEiGuiListener($this);
+	public function onNewEiGuiFrame(EiGuiFrame $eiGuiFrame) {
+		$eiGuiFrame->registerEiGuiListener($this);
 	}
 	
-	public function onGiBuild(EiGui $eiGui) {
+	public function onGiBuild(EiGuiFrame $eiGuiFrame) {
 		
 	}
 

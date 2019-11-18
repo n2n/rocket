@@ -32,7 +32,7 @@
 // use rocket\ei\util\entry\EiuEntry;
 // use rocket\ei\mask\EiMask;
 // use rocket\ei\manage\gui\field\GuiPropPath;
-// use rocket\ei\manage\gui\EiGui;
+// use rocket\ei\manage\gui\EiGuiFrame;
 // use n2n\impl\web\ui\view\html\HtmlView;
 // use rocket\ei\manage\entry\EiEntry;
 // use rocket\ei\util\Eiu;
@@ -133,12 +133,12 @@
 // 	}
 	
 // // 	/**
-// // 	 * @param EiGui $eiGui
+// // 	 * @param EiGuiFrame $eiGuiFrame
 // // 	 * @param HtmlView $view
 // // 	 * @return Control[]
 // // 	 */
-// // 	public function createOverallControls(EiGui $eiGui, HtmlView $view) {
-// // 		$eiu = new Eiu($eiGui);
+// // 	public function createOverallControls(EiGuiFrame $eiGuiFrame, HtmlView $view) {
+// // 		$eiu = new Eiu($eiGuiFrame);
 		
 // // 		$controls = array();
 		
@@ -190,10 +190,10 @@
 // 	 * @param array $eiPropPaths
 // 	 * @return EiEntryGui
 // 	 */
-// 	public static function createEiEntryGui(EiGui $eiGui, EiEntry $eiEntry, array $guiPropPaths, int $treeLevel = null) {
+// 	public static function createEiEntryGui(EiGuiFrame $eiGuiFrame, EiEntry $eiEntry, array $guiPropPaths, int $treeLevel = null) {
 // 		ArgUtils::valArrayLike($guiPropPaths, GuiPropPath::class);
 		
-// 		$eiEntryGui = new EiEntryGui($eiGui, $eiEntry, $treeLevel);
+// 		$eiEntryGui = new EiEntryGui($eiGuiFrame, $eiEntry, $treeLevel);
 		
 // 		$guiFieldAssembler = new EiEntryGuiAssembler($eiEntryGui);
 		
@@ -215,9 +215,9 @@
 // // 		$this->eiModificatorCollection = $eiModificatorCollection;
 // // 	}
 
-// // 	public function onInitialized(EiGui $eiGui) {
+// // 	public function onInitialized(EiGuiFrame $eiGuiFrame) {
 // // 		foreach ($this->eiModificatorCollection as $eiModificator) {
-// // 			$eiModificator->onEiGuiInitialized($eiGui);
+// // 			$eiModificator->onEiGuiFrameInitialized($eiGuiFrame);
 // // 		}
 // // 	}
 

@@ -60,7 +60,7 @@ use rocket\ei\manage\entry\EiEntryManageException;
 use rocket\ei\util\entry\form\EiuEntryForm;
 use rocket\ei\util\entry\form\EiuEntryTypeForm;
 use rocket\ei\util\gui\EiuEntryGui;
-use rocket\ei\util\gui\EiuGui;
+use rocket\ei\util\gui\EiuGuiFrame;
 use rocket\ei\manage\frame\CriteriaConstraint;
 use rocket\ei\manage\frame\Boundry;
 use rocket\ei\manage\entry\EiEntryConstraint;
@@ -74,8 +74,8 @@ use rocket\ei\manage\frame\EiForkLink;
 use rocket\ei\manage\frame\CriteriaFactory;
 use rocket\si\content\SiEntryQualifier;
 use rocket\ei\util\gui\EiuEntryGuiMulti;
-use rocket\ei\manage\gui\EiGuiLayout;
-use rocket\ei\util\gui\EiuGuiLayout;
+use rocket\ei\manage\gui\EiGui;
+use rocket\ei\util\gui\EiuGui;
 
 class EiuFrame {
 	private $eiFrame;
@@ -429,7 +429,7 @@ class EiuFrame {
 		$contextEiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
 		
 		$guiDefinition = $this->eiFrame->getManageState()->getDef()->getGuiDefinition($contextEiMask);
-		$eiGui = $contextEiMask->createEiGui($this->eiFrame, ViewMode::BULKY_ADD, true);
+		$eiGuiFrame = $contextEiMask->createEiGuiFrame($this->eiFrame, ViewMode::BULKY_ADD, true);
 		
 		ArgUtils::valArray($eiEntries, EiEntry::class);
 		foreach ($eiEntries as $eiEntry) {
@@ -511,9 +511,9 @@ class EiuFrame {
 	
 	private function createEiuEntryTypeForm(EiType $eiType, EiEntry $eiEntry, PropertyPath $contextPropertyPath = null) {
 		$eiMask = $this->getEiFrame()->determineEiMask($eiType);
-		$eiGui = $eiMask->createEiGui($this->eiFrame, $eiEntry->isNew() ? ViewMode::BULKY_ADD : ViewMode::BULKY_EDIT, true);
+		$eiGuiFrame = $eiMask->createEiGuiFrame($this->eiFrame, $eiEntry->isNew() ? ViewMode::BULKY_ADD : ViewMode::BULKY_EDIT, true);
 		
-		$eiEntryGui = $eiGui->createEiEntryGui($eiEntry);
+		$eiEntryGui = $eiGuiFrame->createEiEntryGui($eiEntry);
 		
 		if ($contextPropertyPath === null) {
 			$contextPropertyPath = new PropertyPath(array());
@@ -644,31 +644,31 @@ class EiuFrame {
 	/**
 	 * @param int $viewMode
 	 * @param array $guiPropPaths
-	 * @return \rocket\ei\util\gui\EiuGuiLayout
+	 * @return \rocket\ei\util\gui\EiuGui
 	 */
-	public function newGuiLayout(int $viewMode) {
-		$eiGuiLayout = $this->eiFrame->getManageState()->getDef()
+	public function newGui(int $viewMode) {
+		$eiGui = $this->eiFrame->getManageState()->getDef()
 				->getGuiDefinition($this->eiFrame->getContextEiEngine()->getEiMask())
-				->createEiGuiLayout($this->eiFrame, $viewMode);
+				->createEiGui($this->eiFrame, $viewMode);
 		
-		return new EiuGuiLayout($eiGuiLayout, null, $this->eiuAnalyst);
+		return new EiuGui($eiGui, null, $this->eiuAnalyst);
 	}
 	
 	/**
-	 * @return EiuGui
+	 * @return EiuGuiFrame
 	 */
-	public function newGui(int $viewMode, ?array $guiPropPaths) {
+	public function newGuiFrame(int $viewMode, ?array $guiPropPaths) {
 		$guiDefinition = $this->eiFrame->getManageState()->getDef()
 				->getGuiDefinition($this->eiFrame->getContextEiEngine()->getEiMask());
 		
-		$eiGui = null;
+		$eiGuiFrame = null;
 		if ($guiPropPaths === null) {
-			$eiGui = $guiDefinition->createEiGuiLayout($this->eiFrame, $viewMode)->getEiGui();
+			$eiGuiFrame = $guiDefinition->createEiGui($this->eiFrame, $viewMode)->getEiGuiFrame();
 		} else {
-			$eiGui = $guiDefinition->createEiGui($this->eiFrame, $viewMode, $guiPropPaths);
+			$eiGuiFrame = $guiDefinition->createEiGuiFrame($this->eiFrame, $viewMode, $guiPropPaths);
 		}
 		
-		return new EiuGui($eiGui, $this, $this->eiuAnalyst);
+		return new EiuGuiFrame($eiGuiFrame, $this, $this->eiuAnalyst);
 	}
 	
 	/**
@@ -686,14 +686,14 @@ class EiuFrame {
 	 * @param int $viewMode
 	 * @param \Closure $uiFactory
 	 * @param array $guiPropPaths
-	 * @return \rocket\ei\util\gui\EiuGui
+	 * @return \rocket\ei\util\gui\EiuGuiFrame
 	 */
 	public function newCustomGui(int $viewMode, \Closure $uiFactory, array $guiPropPaths) {
-		$eiGui = $this->eiFrame->getContextEiEngine()->getEiMask()->createEiGui($this->eiFrame, $viewMode, false);
+		$eiGuiFrame = $this->eiFrame->getContextEiEngine()->getEiMask()->createEiGuiFrame($this->eiFrame, $viewMode, false);
 		
-		$eiuGui = new EiuGui($eiGui, $this, $this->eiuAnalyst);
-		$eiuGui->initWithUiCallback($uiFactory, $guiPropPaths);
-		return $eiuGui;
+		$eiuGuiFrame = new EiuGuiFrame($eiGuiFrame, $this, $this->eiuAnalyst);
+		$eiuGuiFrame->initWithUiCallback($uiFactory, $guiPropPaths);
+		return $eiuGuiFrame;
 	}
 	
 	
