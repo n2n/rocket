@@ -195,7 +195,8 @@ class GuiFactory {
 		$guiField = $eiGuiFrame->getGuiFieldAssembler($eiPropPath)
 				->buildGuiField(new Eiu($eiGuiFrame, $eiEntryGui, $eiPropPath), $readOnly);
 		
-		if (!$readOnly || $guiField->getSiField()->isReadOnly()) {
+		$siField = $guiField->getSiField();
+		if ($siField === null || !$readOnly || $guiField->getSiField()->isReadOnly()) {
 			return $guiField;
 		}
 		

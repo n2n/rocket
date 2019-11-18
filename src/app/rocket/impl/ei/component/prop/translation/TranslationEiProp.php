@@ -27,7 +27,6 @@ use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\ei\component\prop\FieldEiProp;
 use rocket\ei\manage\entry\EiField;
-use rocket\ei\manage\gui\field\GuiFieldFork;
 use rocket\ei\manage\EiObject;
 use rocket\ei\EiPropPath;
 use n2n\l10n\N2nLocale;
@@ -58,18 +57,24 @@ use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
 
 class TranslationEiProp extends RelationEiPropAdapter implements FieldEiProp, QuickSearchableEiProp {
-
+	/**
+	 * @var TranslationConfig
+	 */
+	private $translationConfig;
+	
 	public function __construct() {
 		parent::__construct();
 		
 		$this->setup(
 				new DisplayConfig(ViewMode::all()),
 				new RelationModel($this, false, true, RelationModel::MODE_INTEGRATED, null));
+		
+		$this->translationConfig = new TranslationConfig($this);
 	}
 	
 	public function prepare() {
 		parent::prepare();
-		$this->getConfigurator()->addAdaption(new TranslationConfig($this));
+		$this->getConfigurator()->addAdaption($this->translationConfig);
 	}
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {
@@ -87,7 +92,7 @@ class TranslationEiProp extends RelationEiPropAdapter implements FieldEiProp, Qu
 	}
 	
 	public function buildGuiProp(Eiu $eiu): ?GuiProp {
-		return new TranslationGuiProp($this->getRelationModel());
+		return new TranslationGuiProp($this->getRelationModel(), $this->translationConfig);
 	}
 
 	

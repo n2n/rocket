@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\prop\translation;
+namespace rocket\impl\ei\component\prop\translation\gui;
 
 
 use rocket\ei\manage\gui\GuiFieldMap;
@@ -28,16 +28,19 @@ use rocket\si\content\SiField;
 
 class SplitGuiField implements GuiField {
 
-	public function getSiField(): SiField {
+	public function getSiField(): ?SiField {
+		return null;
 	}
 	
 	public function save() {
 	}
 	
 	public function getContextSiFields(): array {
+		return [];
 	}
 
 	public function getForkGuiFieldMap(): ?GuiFieldMap {
+		return null;
 	}
 
 }

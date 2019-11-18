@@ -53,7 +53,7 @@ class TranslationConfig extends ConfigAdaption {
 	private $translationEiProp;
 	
 	private $n2nLocaleDefs = array();
-	private $minNumTranslations = 0;
+	private $translationsMinNum = 0;
 	private $copyCommand;
 	
 	
@@ -79,15 +79,15 @@ class TranslationConfig extends ConfigAdaption {
 	/**
 	 * @param int $minNumTranslations
 	 */
-	public function setMinNumTranslations(int $minNumTranslations) {
-		$this->minNumTranslations = $minNumTranslations;
+	public function setTranslationsMinNum(int $minNumTranslations) {
+		$this->translationsMinNum = $minNumTranslations;
 	}
 	
 	/**
 	 * @return int
 	 */
-	public function getMinNumTranslations() {
-		return $this->minNumTranslations;
+	public function getTranslationsMinNum() {
+		return $this->translationsMinNum;
 	}
 	
 	public function testCompatibility(PropertyAssignation $propertyAssignation): int {

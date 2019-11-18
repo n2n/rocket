@@ -85,6 +85,13 @@ class EiuGuiFrame {
 	}
 	
 	/**
+	 * @return \rocket\ei\EiPropPath[]
+	 */
+	function getEiPropPaths() {
+		return $this->eiGuiFrame->getEiPropPaths();
+	}
+	
+	/**
 	 * @param GuiPropPath|string $eiPropPath
 	 * @param bool $required
 	 * @throws \InvalidArgumentException

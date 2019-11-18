@@ -19,15 +19,21 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\prop\translation;
+namespace rocket\impl\ei\component\prop\translation\gui;
 
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\si\content\SiField;
 use rocket\ei\manage\gui\GuiFieldMap;
 
 class TranslationGuiField implements GuiField {
-
-	function __construct(GuiFieldMap $forkGuiFieldMap) {
+	private $translationMinNum = [];
+	private $n2nLocaleDefs = [];
+	private $forkGuiFieldMap;
+	
+	function __construct(int $translationMinNum, array $n2nLocaleDefs, array $tragetEiuEntries, GuiFieldMap $forkGuiFieldMap) {
+		$this->translationMinNum = $translationMinNum;
+		$this->n2nLocaleDefs = $n2nLocaleDefs;
+		$this->forkGuiFieldMap = $forkGuiFieldMap;
 	}
 	
 	public function getSiField(): ?SiField {

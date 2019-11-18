@@ -395,7 +395,9 @@ class EiGuiFrame {
 		$siEntry = new SiEntryBuildup($typeId, $idName);
 		
 		foreach ($eiEntryGui->getGuiFieldMap()->getAllGuiFields() as $guiPropPathStr => $guiField) {
-			$siEntry->putField($guiPropPathStr, $guiField->getSiField());
+			if (null !== ($siField = $guiField->getSiField())) {
+				$siEntry->putField($guiPropPathStr, $siField);
+			}
 		}
 		
 		if (!$siControlsIncluded) {
