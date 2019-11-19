@@ -74,5 +74,4 @@ class StringEiProp extends AlphanumericEiProp {
 	function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
 		return StringUtils::strOf($eiu->object()->readNativValue($this), true);
 	}
-
 }

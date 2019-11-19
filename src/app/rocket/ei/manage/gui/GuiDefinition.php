@@ -624,19 +624,19 @@ class GuiDefinition {
 			if (isset($this->guiPropWrappers[$eiPropPathStr])) {
 				$currentEiPropPaths = $contextEiPropPaths;
 				$currentEiPropPaths[] = $eiPropPath;
-				$labelLstrs[(string) new GuiPropPath($currentEiPropPaths)] = $this->guiPropWrappers[$eiPropPathStr]->getLabelLstr();
+				$labelLstrs[(string) new GuiPropPath($currentEiPropPaths)] = $this->guiPropWrappers[$eiPropPathStr]->getEiProp()->getLabelLstr();
 			}
 			
 			if (isset($this->guiPropForkWrappers[$eiPropPathStr])) {
 				$currentEiPropPaths = $contextEiPropPaths;
 				$currentEiPropPaths[] = $eiPropPath;
 				
-				$guiPropPaths = array_merge($labelLstrs, $this->guiPropForkWrappers[$eiPropPathStr]
+				$labelLstrs = array_merge($labelLstrs, $this->guiPropForkWrappers[$eiPropPathStr]
 						->getForkedGuiDefinition()->buildLabelLstrs($currentEiPropPaths));
 			}
 		}
 		
-		return $guiPropPaths;
+		return $labelLstrs;
 	}
 	
 	/**

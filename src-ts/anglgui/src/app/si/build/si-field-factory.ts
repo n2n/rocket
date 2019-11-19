@@ -16,6 +16,8 @@ import { LinkOutSiField } from '../model/content/impl/alphanum/model/link-out-si
 import { EnumInSiField } from '../model/content/impl/alphanum/model/enum-in-si-field';
 import { SiType } from '../model/meta/si-type';
 import { SiProp } from '../model/meta/si-prop';
+import { Subject, Observable } from 'rxjs';
+import { stringify } from '@angular/compiler/src/util';
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',
@@ -36,14 +38,19 @@ export class SiFieldFactory {
 	}
 
 	createFieldMap(data: Map<string, any>): Map<string, SiField> {
+		const fieldMap$ = new Subject<Map<string, SiField>>();
+
 		const fieldMap = new Map<string, SiField>();
 		for (const [propId, fieldData] of data) {
-			fieldMap.set(propId, this.createField(this.type.getPropById(propId), fieldData));
+			fieldMap.set(propId, this.createField(this.type.getPropById(propId), fieldData, fieldMap$));
 		}
+
+		fieldMap$.next(fieldMap);
+		fieldMap$.complete();
 		return fieldMap;
 	}
 
-	createField(prop: SiProp, data: any): SiField {
+	private createField(prop: SiProp, data: any, fieldMap$: Observable<Map<string, SiField>>): SiField {
 		const extr = new Extractor(data);
 		const dataExtr = extr.reqExtractor('data');
 
@@ -76,6 +83,11 @@ export class SiFieldFactory {
 		case SiFieldType.BOOLEAN_IN:
 			const booleanInSiField = new BooleanInSiField();
 			booleanInSiField.value = dataExtr.reqBoolean('value');
+
+			fieldMap$.subscribe((fieldMap) => {
+				this.finalizeBool(booleanInSiField, dataExtr.reqStringArray('onAssociatedFieldIds'),
+						dataExtr.reqStringArray('offAssociatedFieldIds'), fieldMap);
+			});
 			return booleanInSiField;
 
 		case SiFieldType.FILE_OUT:
@@ -131,6 +143,23 @@ export class SiFieldFactory {
 
 		default:
 			throw new ObjectMissmatchError('Invalid si field type: ' + data.type);
+		}
+	}
+
+	private finalizeBool(booleanInSiField: BooleanInSiField, onAssociatedFieldIds: string[],
+			offAssociatedFieldIds: string[], fieldMap: Map<string, SiField>) {
+		let field: SiField;
+
+		for (const fieldId of onAssociatedFieldIds) {
+			if (field = fieldMap.get(fieldId)) {
+				booleanInSiField.addOnAssociatedField(field);
+			}
+		}
+
+		for (const fieldId of offAssociatedFieldIds) {
+			if (field = fieldMap.get(fieldId)) {
+				booleanInSiField.addOffAssociatedField(field);
+			}
 		}
 	}
 }

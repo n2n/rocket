@@ -23,7 +23,6 @@ namespace rocket\impl\ei\component\prop\bool;
 
 use n2n\impl\persistence\orm\property\BoolEntityProperty;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
-use n2n\impl\web\ui\view\html\HtmlElement;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\property\AccessProxy;
@@ -102,12 +101,13 @@ class BooleanEiProp extends DraftablePropertyEiPropAdapter implements Filterable
 	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable::createUiComponent()
 	 */
 	public function createOutSiField(Eiu $eiu): SiField  {
-		$value = $this->getObjectPropertyAccessProxy()->getValue(
-				$eiu->entry()->getEiEntry()->getEiObject()->getLiveObject());
-		if ($value) {
-			return new HtmlElement('i', array('class' => 'fa fa-check'), '');
-		}
-		return new HtmlElement('i', array('class' => 'fa fa-check-empty'), '');
+		return SiFields::stringOut($eiu->field()->getValue());
+// 		$value = $this->getObjectPropertyAccessProxy()->getValue(
+// 				$eiu->entry()->getEiEntry()->getEiObject()->getLiveObject());
+// 		if ($value) {
+// 			return new HtmlElement('i', array('class' => 'fa fa-check'), '');
+// 		}
+// 		return new HtmlElement('i', array('class' => 'fa fa-check-empty'), '');
 	}
 	
 	/**
@@ -118,7 +118,7 @@ class BooleanEiProp extends DraftablePropertyEiPropAdapter implements Filterable
 		$mapCb = function ($guiPropPath) { return (string) $guiPropPath; };
 		
 		return SiFields::boolIn($eiu->field()->getValue())
-				->setMandatory($this->editConfig->isMandatory())
+				->setMandatory($this->getEditConfig()->isMandatory())
 				->setOnAssociatedFieldIds(array_map($mapCb, $this->booleanConfig->getOnAssociatedGuiPropPaths()))
 				->setOffAssociatedFieldIds(array_map($mapCb, $this->booleanConfig->getOffAssociatedGuiPropPaths()));
 	}

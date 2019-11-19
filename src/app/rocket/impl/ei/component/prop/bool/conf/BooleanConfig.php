@@ -76,18 +76,7 @@ class BooleanConfig extends ConfigAdaption {
 	public function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
 		$lar = new LenientAttributeReader($dataSet);
 		
-		
-		$guiProps = null;
-		try {
-			$eiu->mask()->engine()->guiPropPaths();
-		} catch (\Throwable $e) {
-			$guiProps = $this->eiComponent->getEiMask()->getEiEngine()->createGuiDefinition($n2nContext)->getLevelGuiProps();
-		}
-		
-		$assoicatedGuiPropOptions = array();
-		foreach ($guiProps as $eiPropPathStr => $guiProp) {
-			$assoicatedGuiPropOptions[$eiPropPathStr] = $guiProp->getDisplayLabelLstr()->t($n2nContext->getN2nLocale());
-		}
+		$assoicatedGuiPropOptions = $eiu->mask()->engine()->getGuiPropOptions();
 		
 		$onGuiPropPathStrs = $lar->getScalarArray(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY);
 		$offGuiPropPathStrs = $lar->getScalarArray(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY);

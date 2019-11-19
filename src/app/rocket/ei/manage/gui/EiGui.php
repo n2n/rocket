@@ -43,7 +43,6 @@ class EiGui {
 		return $this->eiGuiFrame;
 	}
 	
-	
 	/**
 	 * @return boolean
 	 */
@@ -170,6 +169,11 @@ class EiGui {
 		return $this->eiEntryGuis;
 	}
 	
+	/**
+	 * @param bool $siControlsIncluded
+	 * @throws IllegalStateException
+	 * @return \rocket\si\content\SiEntry
+	 */
 	function createSiEntry(bool $siControlsIncluded = true) {
 		if ($this->hasSingleEiEntryGui()) {
 			return $this->eiGuiFrame->createSiEntry(current($this->eiEntryGuis), $siControlsIncluded);

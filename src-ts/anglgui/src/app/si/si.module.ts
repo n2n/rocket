@@ -35,6 +35,7 @@ import { CrumbGroupComponent } from './model/content/impl/meta/comp/crumb-group/
 import { RouterModule } from '@angular/router';
 import { AddPasteComponent } from './model/content/impl/embedded/comp/add-paste/add-paste.component';
 import { QualifierComponent } from './model/content/impl/qualifier/comp/qualifier/qualifier.component';
+import { TogglerInFieldComponent } from './model/content/impl/boolean/comp/toggler-in-field/toggler-in-field.component';
 
 @NgModule({
 	declarations: [
@@ -43,7 +44,7 @@ import { QualifierComponent } from './model/content/impl/qualifier/comp/qualifie
 		QualifierSelectInFieldComponent, LinkOutFieldComponent, CompactEntryComponent, EmbeddedEntriesInComponent,
 		EmbeddedEntriesSummaryInComponent, EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent,
 		ImageResizeComponent, EmbeddedEntryPanelsInComponent, EntryDirective, PaginationComponent, CrumbGroupComponent,
-		AddPasteComponent, QualifierComponent
+		AddPasteComponent, QualifierComponent, TogglerInFieldComponent
 	],
 	imports: [
 		CommonModule,
@@ -65,7 +66,7 @@ import { QualifierComponent } from './model/content/impl/qualifier/comp/qualifie
 		InputInFieldComponent, TextareaInFieldComponent, FileInFieldComponent, FileOutFieldComponent, QualifierSelectInFieldComponent,
 		LinkOutFieldComponent, CompactEntryComponent, EmbeddedEntriesInComponent, EmbeddedEntriesSummaryInComponent,
 		EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent,
-		EmbeddedEntryPanelsInComponent, ButtonControlComponent, PaginationComponent
+		EmbeddedEntryPanelsInComponent, ButtonControlComponent, PaginationComponent, TogglerInFieldComponent
 	]
 })
 export class SiModule { }

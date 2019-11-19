@@ -24,12 +24,11 @@ namespace rocket\impl\ei\component\prop\string\conf;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
 use n2n\util\StringUtils;
 use n2n\persistence\meta\structure\Column;
-use rocket\ei\component\prop\indepenent\PropertyAssignation;
-use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use rocket\impl\ei\component\prop\adapter\config\ConfigAdaption;
 use rocket\ei\util\Eiu;
 use n2n\util\type\attrs\DataSet;
 use n2n\web\dispatch\mag\MagCollection;
+use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 
 class StringConfig extends ConfigAdaption {
 	const ATTR_MULTILINE_KEY = 'multiline';
@@ -59,10 +58,10 @@ class StringConfig extends ConfigAdaption {
 	private static $multilineNeedles = array('description', 'lead', 'intro', 'content');
 	
 	function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
-		if (StringUtils::contains(self::$multilineNeedles, $this->requirePropertyName(), false)) {
-			$this->dataSet->set(self::ATTR_MULTILINE_KEY, true);
-			$this->dataSet->set(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, false);
-		}
+// 		if (StringUtils::contains(self::$multilineNeedles, $this->requirePropertyName(), false)) {
+// 			$dataSet->set(self::ATTR_MULTILINE_KEY, true);
+// 			$dataSet->set(DisplayConfig::ATTR_DISPLAY_IN_OVERVIEW_KEY, false);
+// 		}
 	}
 	
 // 	/**

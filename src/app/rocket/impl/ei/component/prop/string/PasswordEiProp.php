@@ -40,7 +40,7 @@ class PasswordEiProp extends AlphanumericEiProp {
 		$this->passwordConfig = new PasswordConfig();
 	}
 	
-	public function prepare(): EiPropConfigurator {
+	public function prepare() {
 		$this->getConfigurator()->addAdaption($this->passwordConfig);
 	}
 	

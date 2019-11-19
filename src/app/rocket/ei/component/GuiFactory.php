@@ -191,12 +191,12 @@ class GuiFactory {
 	private static function buildGuiField($eiGuiFrame, $eiEntryGui, $eiPropPath) {
 		$readOnly = ViewMode::isReadOnly($eiGuiFrame->getViewMode())
 				|| !$eiEntryGui->getEiEntry()->getEiEntryAccess()->isEiPropWritable($eiPropPath);
-		
+				
 		$guiField = $eiGuiFrame->getGuiFieldAssembler($eiPropPath)
 				->buildGuiField(new Eiu($eiGuiFrame, $eiEntryGui, $eiPropPath), $readOnly);
 		
 		$siField = $guiField->getSiField();
-		if ($siField === null || !$readOnly || $guiField->getSiField()->isReadOnly()) {
+		if ($siField === null || !$readOnly || $siField->isReadOnly()) {
 			return $guiField;
 		}
 		

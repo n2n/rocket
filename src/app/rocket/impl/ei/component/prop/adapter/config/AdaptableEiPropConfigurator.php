@@ -37,6 +37,7 @@ use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\util\Eiu;
 use n2n\persistence\meta\structure\Column;
+use rocket\ei\component\prop\EiProp;
 
 class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPropConfigurator {
 
@@ -59,6 +60,7 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 	 * @var int
 	 */
 	private $maxCompatibilityLevel = CompatibilityLevel::COMPATIBLE;
+	
 	
 // 	public function getPropertyAssignation(): PropertyAssignation {
 // 		return new PropertyAssignation($this->getAssignedEntityProperty(), 
@@ -162,6 +164,10 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 // 		$this->confDraftableEiProp = $confDraftableEiProp;		
 // 	}
 	
+	/**
+	 * @throws IllegalStateException
+	 * @return \rocket\ei\component\prop\indepenent\PropertyAssignation
+	 */
 	protected function getPropertyAssignation() {
 		if ($this->propertyAssignation === null) {
 			throw new IllegalStateException('No PropertyAssignation available.');
@@ -265,7 +271,7 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
 		$magCollection = new MagCollection();
 		
-		$eiu = new Eiu($n2nContext);
+		$eiu = new Eiu($n2nContext, $this->eiComponent);
 		foreach ($this->adapations as $adaption) {
 			$adaption->mag($eiu, $this->dataSet, $magCollection);
 		}

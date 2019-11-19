@@ -21,14 +21,18 @@
  */
 namespace rocket\impl\ei\component\prop\string\conf;
 
+use n2n\persistence\meta\structure\Column;
 use n2n\util\ex\IllegalStateException;
 use rocket\impl\ei\component\prop\string\PasswordEiProp;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
+use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\util\Eiu;
 use n2n\util\type\attrs\DataSet;
 use n2n\web\dispatch\mag\MagCollection;
+use rocket\impl\ei\component\prop\adapter\config\EiPropConfiguratorAdaption;
+use n2n\config\InvalidConfigurationException;
 
-class PasswordConfig {
+class PasswordConfig implements EiPropConfiguratorAdaption {
 	const ATTR_ALGORITHM_KEY = 'algorithm';
 	
 	const ALGORITHM_SHA1 = 'sha1';
@@ -46,35 +50,37 @@ class PasswordConfig {
 	public function setAlgorithm($algorithm) {
 		$this->algorithm = $algorithm;
 	}
+	
+	public function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
+	}
 
 	public function setup(Eiu $eiu, DataSet $dataSet) {
-		parent::setup($setupProcess);
-
 		$eiComponent = $this->eiComponent;
 		IllegalStateException::assertTrue($eiComponent instanceof PasswordEiProp);
 		if ($this->dataSet->contains(self::ATTR_ALGORITHM_KEY)) {
 			try {
 				$eiComponent->setAlgorithm($this->dataSet->get(self::ATTR_ALGORITHM_KEY));
 			} catch (\InvalidArgumentException $e) {
-				$setupProcess->createException('Invalid algorithm defined for PassworEiProp.', $e);
-				return;
+				throw new InvalidConfigurationException('Invalid algorithm defined for PassworEiProp.', null, $e);
 			}
 		}
 	}
 
 	public function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
-		$magDispatchable = parent::createMagDispatchable($n2nContext);
-
-		$eiComponent = $this->eiComponent;
-		IllegalStateException::assertTrue($eiComponent instanceof PasswordEiProp);
-
 		$algorithms = PasswordEiProp::getAlgorithms();
-		$magDispatchable->getMagCollection()->addMag(self::ATTR_ALGORITHM_KEY, new EnumMag('Algortithm', 
-				array_combine($algorithms, $algorithms), $eiComponent->getAlgorithm()));
-		return $magDispatchable;
+		$magCollection->addMag(self::ATTR_ALGORITHM_KEY, new EnumMag('Algortithm', 
+				array_combine($algorithms, $algorithms), $this->getAlgorithm()));
 	}
 	
 	public static function getAlgorithms() {
 		return array(self::ALGORITHM_BLOWFISH, self::ALGORITHM_SHA1, self::ALGORITHM_MD5, self::ALGORITHM_SHA_256);
 	}
+
+	public function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {
+	}
+
+	public function testCompatibility(PropertyAssignation $propertyAssignation): int {
+		return 0;
+	}
+
 }

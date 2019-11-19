@@ -1,7 +1,7 @@
 
 export interface TogglerInModel {
 
-	setValue(value: boolean);
+	setValue(value: boolean): void;
 
 	getValue(): boolean;
 }

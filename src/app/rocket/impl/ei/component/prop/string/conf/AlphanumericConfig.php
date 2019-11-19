@@ -99,10 +99,10 @@ class AlphanumericConfig extends ConfigAdaption {
 		$lar = new LenientAttributeReader($dataSet);
 		
 		$magCollection->addMag(self::ATTR_MINLENGTH_KEY, new NumericMag('Minlength', 
-				$lar->getInt(self::ATTR_MINLENGTH_KEY, $this->eiComponent->getMinlength())));
+				$lar->getInt(self::ATTR_MINLENGTH_KEY, $this->getMinlength())));
 		
 		$magCollection->addMag(self::ATTR_MAXLENGTH_KEY, new NumericMag('Maxlength',
-				$lar->getInt(self::ATTR_MAXLENGTH_KEY, $this->eiComponent->getMaxlength())));
+				$lar->getInt(self::ATTR_MAXLENGTH_KEY, $this->getMaxlength())));
 	}
 	
 	function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {

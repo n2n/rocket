@@ -25,6 +25,7 @@ use n2n\web\http\payload\impl\JsonPayload;
 use rocket\si\content\SiComp;
 use n2n\util\type\ArgUtils;
 use rocket\si\control\SiControl;
+use rocket\si\content\SiField;
 
 class SiPayloadFactory extends JsonPayload {
 	
@@ -68,6 +69,23 @@ class SiPayloadFactory extends JsonPayload {
 	}
 	
 	/**
+	 * @param SiControl[] $fields
+	 * @return array
+	 */
+	static function createDataFromFields(array $fields) {
+		ArgUtils::valArray($fields, SiField::class);
+		
+		$fieldsArr = array();
+		foreach ($fields as $key => $field) {
+			$fieldsArr[$key] = [
+				'type' => $field->getType(),
+				'data' => $field->getData()
+			];
+		}
+		return $fieldsArr;
+	}
+	
+	/**
 	 * @param SiControl[] $controls
 	 * @return array
 	 */
@@ -77,8 +95,8 @@ class SiPayloadFactory extends JsonPayload {
 		$controlsArr = array();
 		foreach ($controls as $control) {
 			$controlsArr[] = [
-				'type' => $control->getType(),
-				'data' => $control->getData()
+					'type' => $control->getType(),
+					'data' => $control->getData()
 			];
 		}
 		return $controlsArr;

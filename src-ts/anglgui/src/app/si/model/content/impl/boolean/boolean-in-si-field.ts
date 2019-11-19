@@ -7,16 +7,47 @@ import { TogglerInModel } from './comp/toggler-in-model';
 
 export class BooleanInSiField extends InSiFieldAdapter implements TogglerInModel {
 
-	constructor(public value = false) {
+	private onAsscoiatedFields: SiField[] = [];
+	private offAsscoiatedFields: SiField[] = [];
+
+	constructor(public _value = false) {
 		super();
+	}
+
+	get value(): boolean {
+		return this._value;
+	}
+
+	set value(value: boolean) {
+		this._value = value;
+	}
+
+	addOnAssociatedField(field: SiField) {
+		this.onAsscoiatedFields.push(field);
+		field.setDisabled(!this.value);
+	}
+
+	addOffAssociatedField(field: SiField) {
+		this.offAsscoiatedFields.push(field);
+		field.setDisabled(this.value);
 	}
 
 	setValue(value: boolean) {
 		this.value = value;
+		this.updateAssociates();
 	}
 
 	getValue(): boolean {
 		return this.value;
+	}
+
+	private updateAssociates() {
+		for (const field of this.onAsscoiatedFields) {
+			field.setDisabled(!this._value);
+		}
+		for (const field of this.offAsscoiatedFields) {
+			field.setDisabled(this._value);
+		}
 	}
 
 	readInput(): object {

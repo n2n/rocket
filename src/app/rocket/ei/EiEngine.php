@@ -50,6 +50,7 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\frame\EiForkLink;
 use rocket\ei\component\IdNameFactory;
 use rocket\ei\manage\gui\GuiDefinition;
+use rocket\ei\manage\idname\IdNameDefinition;
 
 class EiEngine {
 	/**
@@ -137,7 +138,7 @@ class EiEngine {
 
 	/**
 	 * @param N2nContext $n2nContext
-	 * @return \rocket\ei\manage\gui\EiGuiFrame
+	 * @return IdNameDefinition
 	 */
 	function createIdNameDefinition(N2nContext $n2nContext) {
 		$idNameFactory = new IdNameFactory($this->eiMask);

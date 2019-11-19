@@ -220,9 +220,7 @@ class DisplayConfig implements EiPropConfiguratorAdaption {
 	}
 	
 	function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
-		if ($this->addMandatory && $this->autoMandatoryCheck && $this->mandatoryRequired()) {
-			$this->dataSet->set(self::ATTR_MANDATORY_KEY, true);
-		}
+		
 	}
 	
 	function setup(Eiu $eiu, DataSet $dataSet) {
@@ -287,7 +285,7 @@ class DisplayConfig implements EiPropConfiguratorAdaption {
 			}
 		}
 		
-		if ($this->addSiStructureType) {
+		if ($this->siStructureTypeChoosable) {
 			$types = SiStructureType::all();
 			$magCollection->addMag(self::ATTR_SI_STRUCTURE_TYPE_KEY, new EnumMag('Container type',
 					array_combine($types, $types), $this->getSiStructureType(), true));

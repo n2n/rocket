@@ -23,6 +23,7 @@ namespace rocket\si\content;
 
 use rocket\si\control\SiControl;
 use rocket\si\SiPayloadFactory;
+use n2n\util\type\ArgUtils;
 
 class SiEntryBuildup implements \JsonSerializable {
 	/**
@@ -37,6 +38,10 @@ class SiEntryBuildup implements \JsonSerializable {
 	 * @var SiField[] $fields
 	 */
 	private $fields = [];
+	/**
+	 * @var SiField[] $contextFields
+	 */
+	private $contextFields = [];
 	/**
 	 * @var SiControl[] $controls
 	 */	
@@ -107,6 +112,17 @@ class SiEntryBuildup implements \JsonSerializable {
 	}
 	
 	/**
+	 * @param string $id
+	 * @param SiField $siField
+	 * @return \rocket\si\content\SiEntryBuildup
+	 */
+	function putContextFields(string $id, array $contextSiFields) {
+		ArgUtils::valArray($contextSiFields, SiField::class);
+		$this->contextFields[$id] = $contextSiFields;
+		return $this;
+	}
+	
+	/**
 	 * @return SiControl[] 
 	 */
 	function getControls() {
@@ -133,18 +149,18 @@ class SiEntryBuildup implements \JsonSerializable {
 	}
 	
 	function jsonSerialize() {
-		$fieldsArr = array();
-		foreach ($this->fields as $id => $field) {
-			$fieldsArr[$id] = [
-				'type' => $field->getType(),
-				'data' => $field->getData()
-			];
+		$fieldsArr = SiPayloadFactory::createDataFromFields($this->fields);
+		
+		$contextFieldsArr = [];
+		foreach ($this->contextFields as $id => $fields) {
+			$contextFieldsArr[$id] = SiPayloadFactory::createDataFromFields($fields);
 		}
 		
 		return [
 			'typeId' => $this->typeId,
 			'idName' => $this->idName,
 			'fieldMap' => $fieldsArr,
+			'contextFieldMap' => $contextFieldsArr,
 			'controls' => SiPayloadFactory::createDataFromControls($this->controls)
 		];
 	}

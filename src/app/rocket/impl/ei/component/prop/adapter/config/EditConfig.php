@@ -156,6 +156,9 @@ class EditConfig extends  ConfigAdaption {
 	const ATTR_MANDATORY_KEY = 'mandatory';
 	
 	function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
+		if ($this->mandatoryChoosable && $this->autoMandatoryCheck /*&& $this->mandatoryRequired()*/) {
+			$dataSet->set(self::ATTR_MANDATORY_KEY, true);
+		}
 	}
 	
 	/**
