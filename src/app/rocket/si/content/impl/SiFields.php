@@ -130,4 +130,11 @@ class SiFields {
 			array $panels = []) {
 		return (new EmbeddedEntryPanelsInSiField($apiUrl, $inputHandler, $panels));
 	}
+	
+	/**
+	 * 
+	 */
+	static function split() {
+		
+	}
 }
