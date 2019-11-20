@@ -29,6 +29,7 @@ use rocket\impl\ei\component\prop\string\conf\StringConfig;
 use rocket\si\content\SiField;
 use n2n\util\type\ArgUtils;
 use rocket\si\content\impl\StringInSiField;
+use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 
 class StringEiProp extends AlphanumericEiProp {
 	
@@ -42,7 +43,9 @@ class StringEiProp extends AlphanumericEiProp {
 	
 	function prepare() {
 		parent::prepare();
-		$this->getConfigurator()->addAdaption($this->stringConfig);
+		$this->getConfigurator()
+				->setDefaultCompatibilityLevel(CompatibilityLevel::SUITABLE)
+				->addAdaption($this->stringConfig);
 	}
 	
 	function createOutSiField(Eiu $eiu): SiField  {

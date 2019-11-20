@@ -29,10 +29,10 @@ use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\util\Eiu;
 use n2n\util\type\attrs\DataSet;
 use n2n\web\dispatch\mag\MagCollection;
-use rocket\impl\ei\component\prop\adapter\config\EiPropConfiguratorAdaption;
 use n2n\config\InvalidConfigurationException;
+use rocket\impl\ei\component\prop\adapter\config\ConfigAdaption;
 
-class PasswordConfig implements EiPropConfiguratorAdaption {
+class PasswordConfig extends ConfigAdaption {
 	const ATTR_ALGORITHM_KEY = 'algorithm';
 	
 	const ALGORITHM_SHA1 = 'sha1';

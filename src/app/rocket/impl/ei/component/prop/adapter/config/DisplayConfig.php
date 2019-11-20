@@ -34,7 +34,7 @@ use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 
-class DisplayConfig implements EiPropConfiguratorAdaption {
+class DisplayConfig extends ConfigAdaption {
 	private $compatibleViewModes;
 	
 	private $defaultDisplayedViewModes;
@@ -220,7 +220,6 @@ class DisplayConfig implements EiPropConfiguratorAdaption {
 	}
 	
 	function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
-		
 	}
 	
 	function setup(Eiu $eiu, DataSet $dataSet) {
@@ -297,7 +296,7 @@ class DisplayConfig implements EiPropConfiguratorAdaption {
 			$dataSet->remove(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, self::ATTR_DISPLAY_IN_DETAIL_VIEW_KEY,
 					self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, self::ATTR_DISPLAY_IN_ADD_VIEW_KEY);
 		} else {
-			$this->dataSet->appendAll($magCollection->readValues([self::ATTR_DISPLAY_IN_OVERVIEW_KEY, 
+			$dataSet->appendAll($magCollection->readValues([self::ATTR_DISPLAY_IN_OVERVIEW_KEY, 
 					self::ATTR_DISPLAY_IN_DETAIL_VIEW_KEY, self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, 
 					self::ATTR_DISPLAY_IN_ADD_VIEW_KEY], true), true);
 		}
@@ -328,6 +327,7 @@ class DisplayConfig implements EiPropConfiguratorAdaption {
 		return $this->toDisplayDefinition($eiu->guiFrame()->getViewMode(), $eiu->prop()->getLabel(), 
 				$eiu->prop()->getHelpText());
 	}
+
 
 
 }

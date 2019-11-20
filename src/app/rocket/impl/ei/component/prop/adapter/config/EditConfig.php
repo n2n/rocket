@@ -29,7 +29,7 @@ use n2n\impl\web\dispatch\mag\model\BoolMag;
 use rocket\ei\util\Eiu;
 use n2n\persistence\meta\structure\Column;
 
-class EditConfig extends  ConfigAdaption {
+class EditConfig extends ConfigAdaption {
 	protected $constant = false;
 	protected $readOnly = false;
 	protected $mandatory = false;

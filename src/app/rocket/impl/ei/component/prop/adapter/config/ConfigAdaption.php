@@ -25,8 +25,32 @@ use rocket\ei\util\Eiu;
 use n2n\util\type\attrs\DataSet;
 use n2n\persistence\meta\structure\Column;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
+use rocket\ei\component\InvalidEiComponentConfigurationException;
+use n2n\reflection\property\AccessProxy;
 
 abstract class ConfigAdaption implements EiPropConfiguratorAdaption {
+	
+	/**
+	 * @var PropertyAssignation
+	 */
+	private $propertyAssignation;
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\adapter\config\EiPropConfiguratorAdaption::testCompatibility()
+	 */
+	function testCompatibility(PropertyAssignation $propertyAssignation): ?int {
+		return null;
+	}
+	
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\adapter\config\EiPropConfiguratorAdaption::assignProperty()
+	 */
+	function assignProperty(PropertyAssignation $propertyAssignation) {
+		$this->propertyAssignation = $propertyAssignation;
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -35,11 +59,59 @@ abstract class ConfigAdaption implements EiPropConfiguratorAdaption {
 	function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
 	}
 	
+	protected function mandatoryRequired() {
+		$accessProxy = $this->getPropertyAssignation()->getObjectPropertyAccessProxy(false);
+		if (null === $accessProxy) return false;
+		return !$accessProxy->getConstraint()->allowsNull() && !$accessProxy->getConstraint()->isArrayLike();
+	}
+	
+	protected function getAssignedEntityProperty() {
+		if ($this->entityPropertyConfigurable === null) return null;
+		
+		return $this->entityPropertyConfigurable->getEntityProperty();
+	}
+	
+	// 	protected function getAssignedObjectPropertyAccessProxy() {
+	// 		if ($this->objectPropertyConfigurable === null) return null;
+	
+	// 		return $this->objectPropertyConfigurable->getObjectPropertyAccessProxy();
+	// 	}
+	
+	// 	protected function requireEntityProperty(): EntityProperty {
+	// 		if (null !== ($entityProperty = $this->getAssignedEntityProperty())) {
+	// 			return $entityProperty;
+	// 		}
+	
+	// 		throw new InvalidEiComponentConfigurationException('No EntityProperty assigned to EiProp: ' . $this->eiComponent);
+	// 	}
+	
 	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\config\EiPropConfiguratorAdaption::testCompatibility()
+	 * @throws InvalidEiComponentConfigurationException
+	 * @return AccessProxy
 	 */
-	function testCompatibility(PropertyAssignation $propertyAssignation): int {
-		return 0;
+	protected function requireObjectPropertyAccessProxy()  {
+		if (null !== ($accessProxy = $this->getAssignedObjectPropertyAccessProxy())) {
+			return $accessProxy;
+		}
+		
+		throw new InvalidEiComponentConfigurationException('No ObjectProperty assigned to EiProp: ' . $this->eiComponent);
+	}
+	
+	/**
+	 * @throws InvalidEiComponentConfigurationException
+	 * @return string
+	 */
+	protected function requirePropertyName() {
+		$propertyAssignation = $this->getPropertyAssignation();
+		
+		if (null !== ($entityProperty = $propertyAssignation->getEntityProperty())) {
+			return $entityProperty->getName();
+		}
+		
+		if (null !== ($accessProxy = $propertyAssignation->getObjectPropertyAccessProxy())) {
+			return $accessProxy->getPropertyName();
+		}
+		
+		throw new InvalidEiComponentConfigurationException('No property assigned to EiProp: ' . $this->eiComponent);
 	}
 }

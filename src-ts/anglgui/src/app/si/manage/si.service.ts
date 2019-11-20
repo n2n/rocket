@@ -125,6 +125,4 @@ export class SiService {
 					return new SiApiFactory().createValResponse(data, valRequest);
 				}));
 	}
-
-
 }

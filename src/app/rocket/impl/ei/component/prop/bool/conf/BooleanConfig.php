@@ -22,7 +22,6 @@ class BooleanConfig extends ConfigAdaption {
 	
 	private static $booleanNeedles = ['Available', 'Enabled'];
 	
-	
 	private $onAssociatedGuiPropPaths = array();
 	private $offAssociatedGuiPropPaths = array();
 	
@@ -57,11 +56,7 @@ class BooleanConfig extends ConfigAdaption {
 	}
 	
 	
-	public function testCompatibility(PropertyAssignation $propertyAssignation): int {
-		$level = parent::testCompatibility($propertyAssignation);
-		
-		if (!$level) return $level;
-		
+	public function testCompatibility(PropertyAssignation $propertyAssignation): ?int {
 		$propertyName = $this->requirePropertyName();
 		foreach (self::$booleanNeedles as $booleanNeedle) {
 			if (StringUtils::endsWith($booleanNeedle, $propertyName)) {
@@ -69,7 +64,7 @@ class BooleanConfig extends ConfigAdaption {
 			}
 		}
 		
-		return $level;
+		return null;
 	}
 	
 	

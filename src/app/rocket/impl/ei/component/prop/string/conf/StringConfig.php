@@ -58,20 +58,11 @@ class StringConfig extends ConfigAdaption {
 	private static $multilineNeedles = array('description', 'lead', 'intro', 'content');
 	
 	function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
-// 		if (StringUtils::contains(self::$multilineNeedles, $this->requirePropertyName(), false)) {
-// 			$dataSet->set(self::ATTR_MULTILINE_KEY, true);
-// 			$dataSet->set(DisplayConfig::ATTR_DISPLAY_IN_OVERVIEW_KEY, false);
-// 		}
+		if (StringUtils::contains(self::$multilineNeedles, $this->requirePropertyName(), false)) {
+			$dataSet->set(self::ATTR_MULTILINE_KEY, true);
+			$dataSet->set(DisplayConfig::ATTR_DISPLAY_IN_OVERVIEW_KEY, false);
+		}
 	}
-	
-// 	/**
-// 	 * {@inheritDoc}
-// 	 * @see \rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator::testCompatibility()
-// 	 */
-// 	function testCompatibility(PropertyAssignation $propertyAssignation): int {
-// 		$this->setMaxCompatibilityLevel(CompatibilityLevel::SUITABLE);
-// 		return parent::testCompatibility($propertyAssignation);
-// 	}
 	
 	function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
 		$magCollection->addMag(self::ATTR_MULTILINE_KEY, new BoolMag('Multiline',

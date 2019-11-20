@@ -117,6 +117,14 @@ export class UiStructure {
 		return this.visibleSubject;
 	}
 
+	get disabled(): boolean {
+		if (!this.model) {
+			return false;
+		}
+
+		return this.model.isDisabled();
+	}
+
 	getZoneErrors(): UiZoneError[] {
 		this.ensureNotDisposed();
 

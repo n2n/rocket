@@ -6,7 +6,6 @@ import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { InputInFieldComponent } from '../comp/input-in-field/input-in-field.component';
 import { Message } from 'src/app/util/i18n/message';
-import { SiProp } from 'src/app/si/model/meta/si-prop';
 
 
 export class StringInSiField extends InSiFieldAdapter implements InputInFieldModel {

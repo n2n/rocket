@@ -26,8 +26,21 @@ use n2n\util\type\attrs\DataSet;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\persistence\meta\structure\Column;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
+use rocket\ei\component\prop\indepenent\IncompatiblePropertyException;
 
 interface EiPropConfiguratorAdaption {
+	
+	/**
+	 * @param PropertyAssignation $propertyAssignation
+	 * @return int
+	 */
+	function testCompatibility(PropertyAssignation $propertyAssignation): ?int;
+	
+	/**
+	 * @param PropertyAssignation $propertyAssignation
+	 * @throws IncompatiblePropertyException
+	 */
+	function assignProperty(PropertyAssignation $propertyAssignation);
 	
 	/**
 	 * @param Eiu $eiu
@@ -35,12 +48,6 @@ interface EiPropConfiguratorAdaption {
 	 * @param Column $column
 	 */
 	function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null);
-	
-	/**
-	 * @param PropertyAssignation $propertyAssignation
-	 * @return int
-	 */
-	function testCompatibility(PropertyAssignation $propertyAssignation): int;
 	
 	/**
 	 * @param Eiu $eiu

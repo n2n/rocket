@@ -30,14 +30,11 @@ use rocket\ei\component\EiSetup;
 use n2n\reflection\property\ConstraintsConflictException;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use rocket\ei\component\prop\indepenent\IncompatiblePropertyException;
-use n2n\reflection\property\AccessProxy;
-use rocket\ei\component\InvalidEiComponentConfigurationException;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\util\Eiu;
 use n2n\persistence\meta\structure\Column;
-use rocket\ei\component\prop\EiProp;
 
 class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPropConfigurator {
 
@@ -59,13 +56,29 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 	/**
 	 * @var int
 	 */
-	private $maxCompatibilityLevel = CompatibilityLevel::COMPATIBLE;
+	private $defaultCompatibilityLevel = CompatibilityLevel::COMPATIBLE;
 	
 	
 // 	public function getPropertyAssignation(): PropertyAssignation {
 // 		return new PropertyAssignation($this->getAssignedEntityProperty(), 
 // 				$this->getAssignedObjectPropertyAccessProxy());
 // 	}
+
+	/**
+	 * @param int $defaultCompatibilityLevel
+	 * @return \rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator
+	 */
+	function setDefaultCompatibilityLevel(int $defaultCompatibilityLevel) {
+		$this->defaultCompatibilityLevel = $defaultCompatibilityLevel;
+		return $this;
+	}
+	
+	/**
+	 * @return int
+	 */
+	function getDefaultCompatibilityLevel() {
+		return $this->defaultCompatibilityLevel;
+	}
 	
 	function testCompatibility(PropertyAssignation $propertyAssignation): int {
 		try {
@@ -74,14 +87,22 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 			return CompatibilityLevel::NOT_COMPATIBLE;
 		}
 		
-		$maxLevel = $this->maxCompatibilityLevel;
+		$curLevel = null;
 		foreach ($this->adapations as $adaption) {
 			$resultLevel = $adaption->testCompatibility($propertyAssignation);
-			if ($maxLevel < $resultLevel) {
-				$maxLevel = $resultLevel;
+			if ($resultLevel === null) {
+				continue;
+			}
+			
+			if ($resultLevel === CompatibilityLevel::NOT_COMPATIBLE) {
+				return $resultLevel;
+			}
+			
+			if ($curLevel === null || $curLevel > $resultLevel) {
+				$curLevel = $resultLevel;
 			}
 		}
-		return $maxLevel;
+		return $curLevel ?? $this->defaultCompatibilityLevel;
 	}
 	
 	/**
@@ -125,6 +146,10 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 			}
 		}
 		
+		foreach ($this->adapations as $adaption) {
+			$adaption->assignProperty($propertyAssignation);
+		}
+		
 		$this->propertyAssignation = $propertyAssignation;
 	}
 	
@@ -133,7 +158,7 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 	}
 	
 	public function setMaxCompatibilityLevel(int $maxCompatibilityLevel) {
-		$this->maxCompatibilityLevel = $maxCompatibilityLevel;
+		$this->defaultCompatibilityLevel = $maxCompatibilityLevel;
 	}
 	
 	private $entityPropertyConfigurable;
@@ -193,48 +218,6 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 	protected function isAssignableToObjectProperty(): bool {
 		return $this->objectPropertyConfigurable != null;
 	}
-
-	protected function getAssignedEntityProperty() {
-		if ($this->entityPropertyConfigurable === null) return null;
-		
-		return $this->entityPropertyConfigurable->getEntityProperty();
-	}
-	
-// 	protected function getAssignedObjectPropertyAccessProxy() {
-// 		if ($this->objectPropertyConfigurable === null) return null;
-		
-// 		return $this->objectPropertyConfigurable->getObjectPropertyAccessProxy();
-// 	}
-	
-// 	protected function requireEntityProperty(): EntityProperty {
-// 		if (null !== ($entityProperty = $this->getAssignedEntityProperty())) {
-// 			return $entityProperty;
-// 		}
-	
-// 		throw new InvalidEiComponentConfigurationException('No EntityProperty assigned to EiProp: ' . $this->eiComponent);
-// 	}
-	
-	protected function requireObjectPropertyAccessProxy(): AccessProxy  {
-		if (null !== ($accessProxy = $this->getAssignedObjectPropertyAccessProxy())) {
-			return $accessProxy;
-		}
-	
-		throw new InvalidEiComponentConfigurationException('No ObjectProperty assigned to EiProp: ' . $this->eiComponent);
-	}
-	
-	protected function requirePropertyName(): string {
-		$propertyAssignation = $this->getPropertyAssignation();
-		
-		if (null !== ($entityProperty = $propertyAssignation->getEntityProperty())) {
-			return $entityProperty->getName();
-		}
-	
-		if (null !== ($accessProxy = $propertyAssignation->getObjectPropertyAccessProxy())) {
-			return $accessProxy->getPropertyName();
-		}
-	
-		throw new InvalidEiComponentConfigurationException('No property assigned to EiProp: ' . $this->eiComponent);
-	}
 	
 	public function getEntityPropertyName() {
 		if ($this->entityPropertyConfigurable === null) {
@@ -278,11 +261,15 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 		
 		return new MagForm($magCollection);
 	}
-
-	protected function mandatoryRequired() {
-		$accessProxy = $this->getPropertyAssignation()->getObjectPropertyAccessProxy(false);
-		if (null === $accessProxy) return false;
-		return !$accessProxy->getConstraint()->allowsNull() && !$accessProxy->getConstraint()->isArrayLike();
+	
+	function saveMagDispatchable(MagDispatchable $magDispatchable, N2nContext $n2nContext) {
+		parent::saveMagDispatchable($magDispatchable, $n2nContext);
+		
+		$eiu = new Eiu($n2nContext, $this->eiComponent);
+		$magCollection = $magDispatchable->getMagCollection();
+		foreach ($this->adapations as $adaption) {
+			$adaption->save($eiu, $magCollection, $this->dataSet);
+		}
 	}
 	
 	/**

@@ -2,5 +2,5 @@
 <ng-template *ngIf="uiContent" rocketUiContent [uiStructure]="uiStructure" [uiContent]="uiContent"></ng-template>
 
 <ng-container *ngFor="let child of uiStructure.getChildren()">
-	<div *ngIf="child.visible" rocketUiStructure [uiStructure]="child"></div>
+	<div *ngIf="child.visible && !child.disabled" rocketUiStructure [uiStructure]="child"></div>
 </ng-container>

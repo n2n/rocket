@@ -21,7 +21,6 @@
  */
 namespace rocket\impl\ei\component\prop\bool\conf;
 
-use n2n\util\ex\IllegalStateException;
 use rocket\impl\ei\component\prop\bool\OnlineEiProp;
 use rocket\impl\ei\component\prop\bool\command\OnlineEiCommand;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;

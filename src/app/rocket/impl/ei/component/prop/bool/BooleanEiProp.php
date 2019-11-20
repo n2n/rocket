@@ -66,7 +66,7 @@ class BooleanEiProp extends DraftablePropertyEiPropAdapter implements Filterable
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\PropertyEiPropAdapter::setEntityProperty()
 	 */
-	public function setEntityProperty(?EntityProperty $entityProperty) {
+	function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty instanceof BoolEntityProperty 
 				|| $entityProperty instanceof ScalarEntityProperty || $entityProperty === null);
 		
@@ -77,7 +77,7 @@ class BooleanEiProp extends DraftablePropertyEiPropAdapter implements Filterable
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\PropertyEiPropAdapter::setObjectPropertyAccessProxy()
 	 */
-	public function setObjectPropertyAccessProxy(?AccessProxy $propertyAccessProxy) {
+	function setObjectPropertyAccessProxy(?AccessProxy $propertyAccessProxy) {
 // 		if ($propertyAccessProxy === null) {
 // 			return;
 // 		}
@@ -92,7 +92,7 @@ class BooleanEiProp extends DraftablePropertyEiPropAdapter implements Filterable
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter::read()
 	 */
-	public function readEiFieldValue(Eiu $eiu) {
+	function readEiFieldValue(Eiu $eiu) {
 		return (bool) parent::readEiFieldValue($eiu);
 	}
 	
@@ -100,7 +100,7 @@ class BooleanEiProp extends DraftablePropertyEiPropAdapter implements Filterable
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable::createUiComponent()
 	 */
-	public function createOutSiField(Eiu $eiu): SiField  {
+	function createOutSiField(Eiu $eiu): SiField  {
 		return SiFields::stringOut($eiu->field()->getValue());
 // 		$value = $this->getObjectPropertyAccessProxy()->getValue(
 // 				$eiu->entry()->getEiEntry()->getEiObject()->getLiveObject());
@@ -114,7 +114,7 @@ class BooleanEiProp extends DraftablePropertyEiPropAdapter implements Filterable
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldEditable::createMag()
 	 */
-	public function createInSiField(Eiu $eiu): SiField {
+	function createInSiField(Eiu $eiu): SiField {
 		$mapCb = function ($guiPropPath) { return (string) $guiPropPath; };
 		
 		return SiFields::boolIn($eiu->field()->getValue())
@@ -124,11 +124,11 @@ class BooleanEiProp extends DraftablePropertyEiPropAdapter implements Filterable
 	}
 	
 	
-	public function saveSiField(SiField $siField, Eiu $eiu) {
+	function saveSiField(SiField $siField, Eiu $eiu) {
 		$eiu->field()->setValue($siField->getValue());
 	}
 	
-	public function buildEiField(Eiu $eiu): ?EiField {
+	function buildEiField(Eiu $eiu): ?EiField {
 		$eiu->entry()->onValidate(function () use ($eiu) {
 			$activeGuiPropPaths = array();
 			$notactiveGuiPropPaths = array();
@@ -161,7 +161,7 @@ class BooleanEiProp extends DraftablePropertyEiPropAdapter implements Filterable
 	 * {@inheritDoc}
 	 * @see \rocket\ei\component\prop\FilterableEiProp::buildFilterProp()
 	 */
-	public function buildFilterProp(Eiu $eiu): ?FilterProp {
+	function buildFilterProp(Eiu $eiu): ?FilterProp {
 		return $this->buildSecurityFilterProp($eiu);
 	}
 	
@@ -169,7 +169,7 @@ class BooleanEiProp extends DraftablePropertyEiPropAdapter implements Filterable
 	 * {@inheritDoc}
 	 * @see \rocket\ei\component\prop\FilterableEiProp::buildFilterProp()
 	 */
-	public function buildSecurityFilterProp(Eiu $eiu): ?SecurityFilterProp {
+	function buildSecurityFilterProp(Eiu $eiu): ?SecurityFilterProp {
 		if (null !== ($entityProperty = $this->getEntityProperty())) {
 			return new BoolFilterProp(CrIt::p($entityProperty), $this->getLabelLstr());
 		}
@@ -181,7 +181,7 @@ class BooleanEiProp extends DraftablePropertyEiPropAdapter implements Filterable
 	 * {@inheritDoc}
 	 * @see \rocket\ei\component\prop\SortableEiProp::buildSortProp()
 	 */
-	public function buildSortProp(Eiu $eiu): ?SortProp {
+	function buildSortProp(Eiu $eiu): ?SortProp {
 		if (null !== ($entityProperty = $this->getEntityProperty())) {
 			return new SimpleSortProp(CrIt::p($entityProperty), $this->getLabelLstr());
 		}
