@@ -69,14 +69,6 @@ class SplitOutSiField extends OutSiFieldAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\si\content\impl\OutSiFieldAdapter::isReadOnly()
-	 */
-	function isReadOnly(): bool {
-		return true;
-	}
-	
-	/**
-	 * {@inheritDoc}
 	 * @see \rocket\si\content\impl\OutSiFieldAdapter::handleInput()
 	 */
 	function handleInput(array $data): array {
