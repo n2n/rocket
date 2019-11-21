@@ -26,7 +26,7 @@ use rocket\si\content\impl\OutSiFieldAdapter;
 use rocket\si\content\SiField;
 use rocket\si\SiPayloadFactory;
 
-class SplitOutSiField extends OutSiFieldAdapter {
+class LazySplitOutSiField extends OutSiFieldAdapter {
 	private $subFields = [];
 	
 	function __construct() {
@@ -55,7 +55,6 @@ class SplitOutSiField extends OutSiFieldAdapter {
 	function getType(): string {
 		return 'split-out';
 	}
-	
 	
 	/**
 	 * {@inheritDoc}

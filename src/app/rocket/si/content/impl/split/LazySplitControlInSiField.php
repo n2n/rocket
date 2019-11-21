@@ -25,7 +25,7 @@ use n2n\util\type\attrs\DataSet;
 use n2n\util\type\ArgUtils;
 use rocket\si\content\impl\InSiFieldAdapter;
 
-class SplitInSiField extends InSiFieldAdapter {
+class LazySplitInControlSiField extends InSiFieldAdapter {
 	/**
 	 * @var bool
 	 */
