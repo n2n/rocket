@@ -34,7 +34,8 @@ class LazySplitInSiField extends InSiFieldAdapter {
 	 * @var bool
 	 */
 	private $mandatory = false;
-
+	
+	private $fieldId
 	/**
 	 * @var unknown
 	 */
