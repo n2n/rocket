@@ -46,7 +46,7 @@ class ReadOnlyGuiField implements GuiField {
 		return [];
 	}
 
-	public function getForkGuiFieldMap(): ?GuiFieldMap {
+	function getForkGuiFieldMap(): ?GuiFieldMap {
 		return null;
 	}
 
