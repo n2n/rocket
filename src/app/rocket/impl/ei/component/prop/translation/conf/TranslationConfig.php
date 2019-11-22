@@ -68,6 +68,9 @@ class TranslationConfig extends ConfigAdaption {
 		$this->n2nLocaleDefs = $n2nLocaleDefs;
 	}
 	
+	/**
+	 * @return N2nLocaleDef[]
+	 */
 	public function getN2nLocaleDefs() {
 		return $this->n2nLocaleDefs;
 	}

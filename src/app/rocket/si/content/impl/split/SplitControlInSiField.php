@@ -25,99 +25,69 @@ use n2n\util\type\attrs\DataSet;
 use n2n\util\type\ArgUtils;
 use rocket\si\content\impl\InSiFieldAdapter;
 
-class LazySplitInSiField extends InSiFieldAdapter {
+class SplitControlInSiField extends InSiFieldAdapter {
 	/**
-	 * @var bool
+	 * @var string[]
 	 */
-	private $value;
+	private $options;
 	/**
-	 * @var bool
+	 * @var string[]
 	 */
-	private $mandatory = false;
-	
-	private $fieldId
+	private $activatedKeys = [];
 	/**
-	 * @var unknown
+	 * @var string[]
 	 */
-	private $fieldId;
+	private $associatedFieldIds = [];
 	
 	/**
-	 * @param int $value
+	 * 
 	 */
-	function __construct(bool $value) {
-		$this->value = $value;	
+	function __construct(array $options) {
+		ArgUtils::valArray($options, 'string');
+		$this->options = $options;
 	}
 	
 	/**
-	 * @param int|null $value
-	 * @return \rocket\si\content\impl\BoolInSiField
+	 * {@inheritDoc}
+	 * @see \rocket\si\content\SiField::getType()
 	 */
-	function setValue(?int $value) {
-		$this->value = $value;
+	function getType(): string {
+		return 'split-control-in';
+	}
+	
+	/**
+	 * @return string[]
+	 */
+	function getActivatedKeys() {
+		return $this->activatedKeys;
+	}
+	
+	/**
+	 * @param array $activatedKeys
+	 * @return \rocket\si\content\impl\split\SplitControlInSiField
+	 */
+	function setActivatedKeys(array $activatedKeys) {
+		$this->activatedKeys = $activatedKeys;
 		return $this;
 	}
 	
 	/**
-	 * @return int|null
+	 * @return string[]
 	 */
-	function getValue() {
-		return $this->value;
-	}
-	
-	/**
-	 * @param bool $mandatory
-	 * @return \rocket\si\content\impl\BoolInSiField
-	 */
-	function setMandatory(bool $mandatory) {
-		$this->mandatory = $mandatory;
-		return $this;
-	}
-	
-	/**
-	 * @return bool
-	 */
-	function isMandatory() {
-		return $this->mandatory;
-	}
-	
-	function getOnAssociatedFieldIds() {
-		return $this->onAssociatedFieldIds;
+	function getAssociatedFieldIds() {
+		return $this->associatedFieldIds;
 	}
 
 	/**
 	 * @param string[] $onAssociatedFieldIds
 	 * @return \rocket\si\content\impl\BoolInSiField
 	 */
-	function setOnAssociatedFieldIds(array $onAssociatedFieldIds) {
-		ArgUtils::valArray($onAssociatedFieldIds, 'string');
-		$this->onAssociatedFieldIds = $onAssociatedFieldIds;
+	function setAssociatedFieldIds(array $associatedFieldIds) {
+		ArgUtils::valArray($associatedFieldIds, 'string');
+		$this->associatedFieldIds = $associatedFieldIds;
 		return $this;
 	}
 
-	/**
-	 * @return string[]
-	 */
-	function getOffAssociatedFieldIds() {
-		return $this->offAssociatedFieldIds;
-	}
-
-	/**
-	 * @param string[] $offAssociatedFieldIds
-	 * @return \rocket\si\content\impl\BoolInSiField
-	 */
-	function setOffAssociatedFieldIds(array $offAssociatedFieldIds) {
-		ArgUtils::valArray($offAssociatedFieldIds, 'string');
-		$this->offAssociatedFieldIds = $offAssociatedFieldIds;
-		return $this;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\si\content\SiField::getType()
-	 */
-	function getType(): string {
-		return 'split-in';
-	}
 	
 	/**
 	 * {@inheritDoc}
@@ -127,7 +97,7 @@ class LazySplitInSiField extends InSiFieldAdapter {
 		return [
 			'value' => $this->value,
 			'mandatory' => $this->mandatory,
-			'onAssociatedFieldIds' => $this->onAssociatedFieldIds,
+			'onAssociatedFieldIds' => $this->associatedFieldIds,
 			'offAssociatedFieldIds' => $this->offAssociatedFieldIds
 		];
 	}

@@ -25,27 +25,21 @@ use n2n\util\ex\IllegalStateException;
 use rocket\si\content\impl\OutSiFieldAdapter;
 use rocket\si\content\SiField;
 use rocket\si\SiPayloadFactory;
+use n2n\util\uri\Url;
 
-class LazySplitOutSiField extends OutSiFieldAdapter {
+class SplitOutSiField extends OutSiFieldAdapter {
 	private $subFields = [];
 	
 	function __construct() {
 	}
 	
-	/**
-	 * @return SiField[]
-	 */
-	function getSubFields() {
-		return $this->subFields;
-	}
+		
+	private $splitContents = [];
 	
 	/**
-	 * @param string|null $value
-	 * @return \rocket\si\content\impl\StringOutSiField
+	 * @param int $value
 	 */
-	function putSubField(string $key, SiField $subField) {
-		$this->subFields[$key] = $subField;
-		return $this;
+	function __construct() {
 	}
 	
 	/**
@@ -57,12 +51,47 @@ class LazySplitOutSiField extends OutSiFieldAdapter {
 	}
 	
 	/**
+	 * @param string $key
+	 * @param string $label
+	 * @param SiField $field
+	 * @return \rocket\si\content\impl\split\SplitInSiField
+	 */
+	function putField(string $key, string $label, SiField $field) {
+		$this->splitContents[$key] = SiSplitContent::createField($label, $field);
+		return $this;
+	}
+	
+	/**
+	 * @param string $key
+	 * @param string $label
+	 * @param Url $apiUrl
+	 * @param string $entryId
+	 * @param string $fieldId
+	 * @param bool $bulky
+	 * @return \rocket\si\content\impl\split\SplitInSiField
+	 */
+	function putLazy(string $key, string $label, Url $apiUrl, string $entryId, string $fieldId, bool $bulky) {
+		$this->splitContents[$key] = SiSplitContent::createLazy($label, $apiUrl, $entryId, $fieldId, $bulky);
+		return $this;
+	}
+	
+	/**
+	 * @param string $key
+	 * @param string $label
+	 * @return \rocket\si\content\impl\split\SplitInSiField
+	 */
+	function putUnavailable(string $key, string $label) {
+		$this->splitContents[$key] = SiSplitContent::createUnavaialble($label);
+		return $this;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @see \rocket\si\content\SiField::getData()
 	 */
 	function getData(): array {
 		return [
-			'subFields' => SiPayloadFactory::createDataFromFields($this->subFields)
+			'splitContentsMap' => $this->splitContents
 		];
 	}
 	

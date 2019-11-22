@@ -77,7 +77,7 @@ class EiEntryGui {
 	
 	
 	/**
-	 * @return \rocket\ei\manage\gui\field\GuiField[]
+	 * @return GuiFieldMap
 	 */
 	public function getGuiFieldMap() {
 		$this->ensureInitialized();
