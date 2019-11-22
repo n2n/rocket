@@ -24,7 +24,6 @@ namespace rocket\si\content\impl\split;
 use n2n\util\ex\IllegalStateException;
 use rocket\si\content\impl\OutSiFieldAdapter;
 use rocket\si\content\SiField;
-use rocket\si\SiPayloadFactory;
 use n2n\util\uri\Url;
 
 class SplitOutSiField extends OutSiFieldAdapter {

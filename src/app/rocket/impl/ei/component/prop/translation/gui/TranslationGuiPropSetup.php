@@ -35,6 +35,7 @@ use n2n\util\type\CastUtils;
 use rocket\ei\util\gui\EiuEntryGui;
 use n2n\l10n\N2nLocale;
 use rocket\ei\EiPropPath;
+use rocket\si\content\impl\SiFields;
 
 class TranslationGuiPropSetup implements GuiPropSetup, GuiFieldAssembler {
 	private $targetEiuGuiFrame;
@@ -59,7 +60,6 @@ class TranslationGuiPropSetup implements GuiPropSetup, GuiFieldAssembler {
 	
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
 		$tef = new TranslationEssentialsFactory($eiu, $this->targetEiuGuiFrame, $this->translationConfig, $readOnly);
-		$tef->init();
 		
 		$targetEiuEntries = $tef->getTargetEiuEntries();
 		
@@ -86,8 +86,8 @@ class TranslationEssentialsFactory {
 	private $translationConfig;
 	private $readOnly;
 	
-	private $targetEiuEntries;
-	private $targetEiuEntryGuis;
+	private $availableTargetEiuEntries = null;
+	private $availableTargetEiuEntryGuis = null;
 	
 	function __construct(Eiu $eiu, EiuGuiFrame $targetEiuGuiFrame, TranslationConfig $translationConfig, bool $readOnly) {
 		$this->eiu = $eiu;
@@ -99,7 +99,11 @@ class TranslationEssentialsFactory {
 	/**
 	 * @return EiuEntry[]
 	 */
-	private function deterTargetEiuEntries() {
+	private function ensureAvailableTargetEiuEntries() {
+		if ($this->availableTargetEiuEntries !== null) {
+			return;
+		}
+		
 		$mappedValues = [];
 		foreach ($this->eiu->field()->getValue() as $targetEiuEntry) {
 			CastUtils::assertTrue($targetEiuEntry instanceof EiuEntry);
@@ -107,38 +111,41 @@ class TranslationEssentialsFactory {
 			$mappedValues[(string) $targetEiuEntry->getEntityObj()->getN2nLocale()] = $targetEiuEntry;
 		}
 		
-		$this->targetEiuEntries = [];
+		$this->availableTargetEiuEntries = [];
 		foreach ($this->translationConfig->getN2nLocaleDefs() as $n2nLocaleDef) {
 			$n2nLocaleId = $n2nLocaleDef->getN2nLocaleId();
 			
-			$this->targetEiuEntries[$n2nLocaleId] = $mappedValues[$n2nLocaleId]
+			$this->availableTargetEiuEntries[$n2nLocaleId] = $mappedValues[$n2nLocaleId]
 					?? null; // $this->createTargetEiuEntry($n2nLocaleDef);
 		}
-		return $this->targetEiuEntries;
 	}
 	
-	function init() {
-		$this->deterTargetEiuEntries();
+	private function ensureAvailableTargetEiEntryGuis() {
+		$this->ensureAvailableTargetEiuEntries();
 		
-		$this->targetEiEntryGuis = [];
-		foreach ($this->targetEiuEntries as $n2nLocaleId => $targetEiuEntry) {
-			$this->targetEiEntryGuis[$n2nLocaleId] = $this->targetEiuGuiFrame->newEntryGui($targetEiuEntry);
+		if ($this->availableTargetEiuEntryGuis !== null) {
+			return;
+		}
+		
+		$this->availableTargetEiuEntryGuis = [];
+		foreach ($this->availableTargetEiuEntries as $n2nLocaleId => $targetEiuEntry) {
+			$this->availableTargetEiuEntryGuis[$n2nLocaleId] = $this->targetEiuGuiFrame->newEntryGui($targetEiuEntry);
 		}
 	}
 	
-	/**
-	 * @return EiuEntry[]
-	 */
-	function getTargetEiuEntries() {
-		return $this->targetEiuEntries;
-	}
+// 	/**
+// 	 * @return EiuEntry[]
+// 	 */
+// 	function getTargetEiuEntries() {
+// 		return $this->availableTargetEiuEntries;
+// 	}
 	
-	/**
-	 * @return EiuEntryGui[]
-	 */
-	function getTargetEiuEntryGuis() {
-		return $this->targetEiuEntryGuis;
-	}
+// 	/**
+// 	 * @return EiuEntryGui[]
+// 	 */
+// 	function getTargetEiuEntryGuis() {
+// 		return $this->availableTargetEiuEntryGuis;
+// 	}
 	
 	/**
 	 * @param N2nLocale $n2nLocale
@@ -155,19 +162,50 @@ class TranslationEssentialsFactory {
 	 * @return SplitGuiField
 	 */
 	function createSplitGuiField(EiPropPath $eiPropPath) {
-		$splitGuiField = new SplitGuiField();
+		if ($this->readOnly) {
+			return $this->createReadOnlyGuiField($eiPropPath);
+		}
+		
+		$this->ensureAvailableTargetEiuEntries();
+		
+		
+		
 		foreach ($this->translationConfig->getN2nLocaleDefs() as $n2nLocaleDef) {
 			$n2nLocaleId = $n2nLocaleDef->getN2nLocaleId();
+			$label = $n2nLocaleDef->buildLabel($n2nLocale);
 			
-			if (!isset($this->targetEiuEntryGuis[$n2nLocaleId])) {
-				$splitGuiField->putInactive($n2nLocaleId);
+			$splitInGuiField->putGuiField($n2nLocaleId);
+		}
+		$siField->putLazy($n2nLocaleId, $label, $this->targetEiuGuiFrame->getEiuFrame()->getApiUrl(),
+				$targetEiuEntryGui->entry()->getPid(),
+				$this->targetEiuEntryGuis[$n2nLocaleId]->getGuiFieldByEiPropPath($eiPropPath)->getSiField(),
+				$this->targetEiuGuiFrame->isBulky());
+		
+	}
+	
+	private function createReadOnlyGuiField(EiPropPath $eiPropPath) {
+		$this->ensureAvailableTargetEiEntryGuis();
+		
+		$siField = SiFields::splitOut();
+		$splitGuiField = new SplitGuiField($siField);
+		foreach ($this->translationConfig->getN2nLocaleDefs() as $n2nLocaleDef) {
+			$n2nLocaleId = $n2nLocaleDef->getN2nLocaleId();
+			$label = $n2nLocaleDef->buildLabel($n2nLocale);
+			
+			if (!isset($this->availableTargetEiuEntryGuis[$n2nLocaleId])) {
+				$siField->putUnavailable($n2nLocaleId, $label);
 				continue;
 			}
 			
-			$splitGuiField->putGuiField($n2nLocaleId, $n2nLocaleDef->buildLabel($n2nLocale)
-					$this->targetEiuEntryGuis[$n2nLocaleId]->getGuiFieldByEiPropPath($eiPropPath));
+			$targetEiuEntryGui = $this->availableTargetEiuEntryGuis[$n2nLocaleId];
+			$siField->putField($n2nLocaleId, $label, 
+					$this->targetEiuEntryGuis[$n2nLocaleId]->getGuiFieldByEiPropPath($eiPropPath)->getSiField());
 		}
 		return $splitGuiField;
+	}
+	
+	private function createForkedGuiFieldmap() {
+		
 	}
 }
 
