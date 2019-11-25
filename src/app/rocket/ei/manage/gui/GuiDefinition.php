@@ -848,18 +848,18 @@ class GuiDefinition {
 			}
 			
 			foreach ($guiPropWrapper->getForkedGuiPropPaths() as $forkedGuiPropPath) {
-				$rGuiPropPath = $guiPropPath->ext($forkedGuiPropPath);
-				$displayDefinition = $guiPropSetup->getForkedDisplayDefinition($rGuiPropPath);
+				$absGuiPropPath = $guiPropPath->ext($forkedGuiPropPath);
+				$displayDefinition = $guiPropSetup->getForkedDisplayDefinition($absGuiPropPath);
 				
 				if ($displayDefinition === null) {
 					continue;
 				}
 				
-				$eiGuiFrame->putDisplayDefintion($rGuiPropPath, $displayDefinition);
+				$eiGuiFrame->putDisplayDefintion($absGuiPropPath, $displayDefinition);
 				
-				$guiStructureDeclarations[(string) $rGuiPropPath] = $this->createGuiStructureDeclaration(
+				$guiStructureDeclarations[(string) $absGuiPropPath] = $this->createGuiStructureDeclaration(
 						$guiPropPath,
-						$guiPropWrapper->getForkedGuiPropWrapper($rGuiPropPath), 
+						$guiPropWrapper->getForkedGuiPropWrapper($absGuiPropPath), 
 						$displayDefinition, $n2nLocale);
 				
 			}

@@ -201,10 +201,13 @@ class TranslationEssentialsFactory {
 			$siField->putField($n2nLocaleId, $label, 
 					$this->targetEiuEntryGuis[$n2nLocaleId]->getGuiFieldByEiPropPath($eiPropPath)->getSiField());
 		}
+		
+		$this->targetEiuGuiFrame->getFork
+		
 		return $splitGuiField;
 	}
 	
-	private function createForkedGuiFieldmap() {
+	private function createForkGuiFieldMap() {
 		
 	}
 }
