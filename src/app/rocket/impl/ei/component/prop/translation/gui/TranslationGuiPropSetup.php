@@ -59,14 +59,14 @@ class TranslationGuiPropSetup implements GuiPropSetup, GuiFieldAssembler {
 	}
 	
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		$tef = new TranslationGuiFieldFactory(
+		$tgff = new TranslationGuiFieldFactory(
 				new LazyTranslationEssentialsDeterminer($eiu, $this->targetEiuGuiFrame, $this->translationConfig, $readOnly));
 		
-		$targetEiuEntries = $tef->getTargetEiuEntries();
+		$targetEiuEntries = $tgff->getTargetEiuEntries();
 		
 		$guiFieldMap = new GuiFieldMap();
 		foreach ($this->targetEiuGuiFrame->getEiPropPaths() as $eiPropPath) {
-			$guiFieldMap->putGuiField($eiPropPath, $tef->createSplitGuiField($eiPropPath));
+			$guiFieldMap->putGuiField($eiPropPath, $tgff->createSplitGuiField($eiPropPath));
 		}
 		
 		return new TranslationGuiField($this->translationConfig->getTranslationsMinNum(),

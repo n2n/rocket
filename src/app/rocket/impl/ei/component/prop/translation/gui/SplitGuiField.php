@@ -35,12 +35,18 @@ class SplitGuiField implements GuiField {
 	function __construct(LazyTranslationEssentialsDeterminer $lted, GuiPropPath $guiPropPath) {
 		$this->lted = $lted;
 		$this->guiPropPath = $guiPropPath;
-		$this->siField = SiFields::splitIn();
+		$this->splitIn =  SiFields::splitIn();
 	}
 	
 	function getSiField(): ?SiField {
 		return null;
 	}
+	
+	function putLazy() {
+		
+	}
+	
+	
 	
 	function save() {
 	}
