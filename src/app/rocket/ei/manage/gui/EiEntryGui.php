@@ -85,27 +85,27 @@ class EiEntryGui {
 		return $this->guiFieldMap;
 	}
 	
-	/**
-	 * @param GuiPropPath $prefixGuiPropPath
-	 * @return \rocket\ei\manage\gui\field\GuiField[]
-	 */
-	public function filterGuiFields(GuiPropPath $prefixGuiPropPath, bool $checkOnEiPropPathLevel) {
-		$this->ensureInitialized();
+// 	/**
+// 	 * @param GuiPropPath $prefixGuiPropPath
+// 	 * @return \rocket\ei\manage\gui\field\GuiField[]
+// 	 */
+// 	public function filterGuiFields(GuiPropPath $prefixGuiPropPath, bool $checkOnEiPropPathLevel) {
+// 		$this->ensureInitialized();
 		
-		$guiFields = [];
+// 		$guiFields = [];
 		
-		foreach ($this->guiFields as $guiPropPathStr => $guiField) {
-			$guiPropPath = GuiPropPath::create($guiPropPathStr);
-			if ($guiPropPath->equals($prefixGuiPropPath) 
-					|| !$guiPropPath->startsWith($prefixGuiPropPath, $checkOnEiPropPathLevel)) {
-				continue;
-			}
+// 		foreach ($this->guiFields as $guiPropPathStr => $guiField) {
+// 			$guiPropPath = GuiPropPath::create($guiPropPathStr);
+// 			if ($guiPropPath->equals($prefixGuiPropPath) 
+// 					|| !$guiPropPath->startsWith($prefixGuiPropPath, $checkOnEiPropPathLevel)) {
+// 				continue;
+// 			}
 				
-			$guiFields[] = $guiField;
-		}
+// 			$guiFields[] = $guiField;
+// 		}
 		
-		return $guiFields;
-	}
+// 		return $guiFields;
+// 	}
 	
 	
 // 	/**

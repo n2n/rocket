@@ -162,32 +162,65 @@ class TranslationEssentialsFactory {
 	 * @return SplitGuiField
 	 */
 	function createSplitGuiField(EiPropPath $eiPropPath) {
+		$guiPropPath = new GuiPropPath([$eiPropPath]);
+		
 		if ($this->readOnly) {
-			return $this->createReadOnlyGuiField($eiPropPath);
+			$this->ensureAvailableTargetEiEntryGuis();
+			return $this->createReadOnlyGuiField($guiPropPath);
 		}
 		
 		$this->ensureAvailableTargetEiuEntries();
-		
-		
+		return $this->createEditableGuiField($guiPropPath);
+	}
+	
+	private function createEditableGuiField($guiPropPath) {
+		$siField = SiFields::splitIn();
+		$splitGuiField = new SplitGuiField($siField);
 		
 		foreach ($this->translationConfig->getN2nLocaleDefs() as $n2nLocaleDef) {
 			$n2nLocaleId = $n2nLocaleDef->getN2nLocaleId();
 			$label = $n2nLocaleDef->buildLabel($n2nLocale);
 			
-			$splitInGuiField->putGuiField($n2nLocaleId);
+			$pid = null;
+			if (isset($this->availableTargetEiuEntries[$n2nLocaleId])) {
+				$pid = $this->availableTargetEiuEntries[$n2nLocaleId]->entry()->getPid();
+			}
+			
+			$siField->putLazy($n2nLocaleId, $label, $this->targetEiuGuiFrame->getEiuFrame()->getApiUrl(), $pid,
+					(string) $guiPropPath, $this->targetEiuGuiFrame->isBulky());
 		}
-		$siField->putLazy($n2nLocaleId, $label, $this->targetEiuGuiFrame->getEiuFrame()->getApiUrl(),
-				$targetEiuEntryGui->entry()->getPid(),
-				$this->targetEiuEntryGuis[$n2nLocaleId]->getGuiFieldByEiPropPath($eiPropPath)->getSiField(),
-				$this->targetEiuGuiFrame->isBulky());
 		
+		$forkedEiPropPaths = $this->targetEiuGuiFrame->getForkedEiPropPaths($guiPropPath);
+		
+		if (empty($forkedEiPropPaths)) {
+			return $splitGuiField;
+		}
+		
+		$splitGuiField->setForkedGuiFieldMap($this->createEditableForkGuiFieldMap($guiPropPath));
+		
+		return $splitGuiField;
 	}
 	
-	private function createReadOnlyGuiField(EiPropPath $eiPropPath) {
-		$this->ensureAvailableTargetEiEntryGuis();
-		
+	/**
+	 * @param GuiPropPath $guiPropPath
+	 * @return \rocket\ei\manage\gui\GuiFieldMap
+	 */
+	private function createEditableGuiFieldMap($guiPropPath) {
+		$guiFieldMap = new GuiFieldMap();
+		foreach ($this->targetEiuGuiFrame->getForkedEiPropPaths($guiPropPath) as $forkedEiPropPath) {
+			$guiFieldMap->putGuiField($forkedEiPropPath, 
+					$this->createEditableGuiField($guiPropPath->ext($forkedEiPropPath)));
+		}
+		return $guiFieldMap;
+	}
+	
+	/**
+	 * @param GuiPropPath $guiPropPath
+	 * @return \rocket\impl\ei\component\prop\translation\gui\SplitGuiField
+	 */
+	private function createReadOnlyGuiField($guiPropPath) {
 		$siField = SiFields::splitOut();
-		$splitGuiField = new SplitGuiField($siField);
+		$readOnlyGuiField = new ReadOnlyGuiField($siField);
 		foreach ($this->translationConfig->getN2nLocaleDefs() as $n2nLocaleDef) {
 			$n2nLocaleId = $n2nLocaleDef->getN2nLocaleId();
 			$label = $n2nLocaleDef->buildLabel($n2nLocale);
@@ -198,17 +231,28 @@ class TranslationEssentialsFactory {
 			}
 			
 			$targetEiuEntryGui = $this->availableTargetEiuEntryGuis[$n2nLocaleId];
-			$siField->putField($n2nLocaleId, $label, 
-					$this->targetEiuEntryGuis[$n2nLocaleId]->getGuiFieldByEiPropPath($eiPropPath)->getSiField());
+			$guiFieldWrapper = $targetEiuEntryGui->getGuiFieldWrapperByGuiPropPath($guiPropPath);
+			$siField->putField($n2nLocaleId, $label, $guiFieldWrapper->getSiField(), $guiFieldWrapper->getContextSiFields());
 		}
 		
-		$this->targetEiuGuiFrame->getFork
+		$forkedEiPropPaths = $this->targetEiuGuiFrame->getForkedEiPropPaths($guiPropPath);
 		
-		return $splitGuiField;
+		if (empty($forkedEiPropPaths)) {
+			return $readOnlyGuiField;
+		}
+		
+		$readOnlyGuiField->setForkedGuiFieldMap($this->createReadOnlyForkGuiFieldMap($guiPropPath));
+		
+		return $readOnlyGuiField;
 	}
 	
-	private function createForkGuiFieldMap() {
-		
+	private function createReadOnlyForkGuiFieldMap($guiPropPath) {
+		$guiFieldMap = new GuiFieldMap();
+		foreach ($this->targetEiuGuiFrame->getForkedEiPropPaths($guiPropPath) as $forkedEiPropPath) {
+			$guiFieldMap->putGuiField($forkedEiPropPath, 
+					$this->createReadOnlyGuiField($guiPropPath->ext($forkedEiPropPath)));
+		}
+		return $guiFieldMap;
 	}
 }
 
