@@ -34,6 +34,11 @@ class SplitInSiField extends InSiFieldAdapter {
 	private $splitContents = [];
 	
 	/**
+	 * @var \Closure|null
+	 */
+	private $saveCallback = null;
+	
+	/**
 	 * @param int $value
 	 */
 	function __construct() {
@@ -67,8 +72,10 @@ class SplitInSiField extends InSiFieldAdapter {
 	 * @param bool $bulky
 	 * @return \rocket\si\content\impl\split\SplitInSiField
 	 */
-	function putLazy(string $key, string $label, Url $apiUrl, string $entryId, string $fieldId, bool $bulky) {
-		$this->splitContents[$key] = SiSplitContent::createLazy($label, $apiUrl, $entryId, $fieldId, $bulky);
+	function putLazy(string $key, string $label, Url $apiUrl, string $entryId, string $fieldId, bool $bulky,
+			\Closure $handleInputCallback) {
+		$this->splitContents[$key] = SiSplitContent::createLazy($label, $apiUrl, $entryId, $fieldId, $bulky,
+				$handleInputCallback);
 		return $this;
 	}
 	
@@ -96,7 +103,13 @@ class SplitInSiField extends InSiFieldAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\si\content\SiField::handleInput()
 	 */
-	function handleInput(array $data) {
-		$this->value = (new DataSet($data))->reqInt('value', true);
+	function handleInput(array $data, array $uploadDefinitions) {
+		$dataMap = (new DataSet($data))->reqArray('value', 'array');
+		
+		foreach ($this->splitContents as $key => $splitContent) {
+			if (!$splitContent->isReadOnly() && isset($dataMap[$key])) {
+				$splitContent->handleInput($dataMap[$key], $uploadDefinitions);
+			}
+		}
 	}
 }

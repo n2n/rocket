@@ -21,25 +21,12 @@
  */
 namespace rocket\impl\ei\component\prop\translation\gui;
 
-use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\ei\manage\gui\GuiDefinition;
-use rocket\ei\manage\gui\GuiFieldAssembler;
 use rocket\ei\manage\gui\GuiProp;
-use rocket\ei\manage\gui\field\GuiField;
-use rocket\ei\manage\gui\field\GuiPropPath;
 use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
-use rocket\ei\manage\gui\GuiFieldMap;
-use rocket\ei\util\entry\EiuEntry;
-use n2n\util\type\CastUtils;
-use rocket\ei\util\gui\EiuEntryGui;
-use n2n\l10n\N2nLocale;
-use rocket\ei\EiPropPath;
-use rocket\impl\ei\component\prop\translation\TranslationGuiField;
 use rocket\impl\ei\component\prop\translation\conf\TranslationConfig;
-use rocket\impl\ei\component\prop\translation\SplitGuiField;
 use rocket\ei\manage\gui\GuiPropSetup;
-use rocket\ei\util\gui\EiuGuiFrame;
 
 class TranslationGuiProp implements GuiProp {
 	/**

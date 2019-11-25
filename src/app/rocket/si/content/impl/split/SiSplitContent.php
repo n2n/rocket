@@ -24,6 +24,8 @@ namespace rocket\si\content\impl\split;
 use rocket\si\SiPayloadFactory;
 use n2n\util\uri\Url;
 use rocket\si\content\SiField;
+use n2n\util\ex\IllegalStateException;
+use n2n\web\http\UploadDefinition;
 
 class SiSplitContent implements \JsonSerializable {
 	private $label;
@@ -32,27 +34,61 @@ class SiSplitContent implements \JsonSerializable {
 	private $entryId;
 	private $fieldId;
 	private $bulky;
-	
+	/**
+	 * @var \Closure|null
+	 */
+	private $handleInputCallback;
+	/**
+	 * @var SiField|null
+	 */
 	private $field;
 	
 	private function __construct() {
-		
 	}
 	
 	function jsonSerialize() {
-		$data = [
-			'label' => $this->label,
-			'apiUrl' => $this->apiUrl,
-			'entryId' => $this->entryId,
-			'fieldId' => $this->fieldId,
-			'bulky' => $this->bulky
-		];
+		$data = [ 'label' => $this->label ];
+		
+		if ($this->apiUrl !== null) {
+			$data['apiUrl'] = $this->apiUrl;
+			$data['entryId'] = $this->entryId;
+			$data['fieldId'] = $this->fieldId;
+			$data['bulky'] = $this->bulky;
+			$data['readOnly'] = $this->handleInputCallback === null;
+		}
 		
 		if ($this->field !== null) {
-			$this->field = SiPayloadFactory::createDataFromField($this->field);
+			$data['field'] = SiPayloadFactory::createDataFromField($this->field);
 		}
 		
 		return $data;
+	}
+	
+	function isReadOnly() {
+		if ($this->apiUrl !== null) {
+			return $this->handleInputCallback === null;
+		}
+		
+		if ($this->field !== null) {
+			return $this->field->isReadOnly();
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * @param array $data
+	 * @param UploadDefinition[] $uploadDefinitions
+	 * @return array
+	 */
+	function handleInput(array $data, array $uploadDefinitions) {
+		if ($this->handleInputCallback !== null) {
+			return $this->handleInputCallback($data);
+		}
+		
+		if ($this->field !== null) {
+			$this->field->handleCall($data, $uploadDefinitions);
+		}
 	}
 	
 	static function createUnavaialble(string $label) {
@@ -61,13 +97,15 @@ class SiSplitContent implements \JsonSerializable {
 		return $split;
 	}
 	
-	static function createLazy(string $label, Url $apiUrl, string $entryId, string $fieldId, bool $bulky) {
+	static function createLazy(string $label, Url $apiUrl, string $entryId, string $fieldId, bool $bulky,
+			\Closure $handleInputCallback = null) {
 		$split = new SiSplitContent();
 		$split->label = $label;
 		$split->apiUrl = $apiUrl;
 		$split->entryId = $entryId;
 		$split->fieldId = $fieldId;
 		$split->bulky = $bulky;
+		$split->handleInputCallback = $handleInputCallback;
 		return $split;
 	}
 	

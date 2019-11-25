@@ -25,21 +25,31 @@ namespace rocket\impl\ei\component\prop\translation\gui;
 use rocket\ei\manage\gui\GuiFieldMap;
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\si\content\SiField;
+use rocket\ei\manage\gui\field\GuiPropPath;
+use rocket\si\content\impl\SiFields;
 
 class SplitGuiField implements GuiField {
-
-	public function getSiField(): ?SiField {
+	private $lted;
+	private $guiPropPath;
+	
+	function __construct(LazyTranslationEssentialsDeterminer $lted, GuiPropPath $guiPropPath) {
+		$this->lted = $lted;
+		$this->guiPropPath = $guiPropPath;
+		$this->siField = SiFields::splitIn();
+	}
+	
+	function getSiField(): ?SiField {
 		return null;
 	}
 	
-	public function save() {
+	function save() {
 	}
 	
-	public function getContextSiFields(): array {
+	function getContextSiFields(): array {
 		return [];
 	}
 
-	public function getForkGuiFieldMap(): ?GuiFieldMap {
+	function getForkGuiFieldMap(): ?GuiFieldMap {
 		return null;
 	}
 

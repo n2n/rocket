@@ -41,6 +41,7 @@ class TranslationGuiField implements GuiField {
 	}
 	
 	public function save() {
+		$this->forkGuiFieldMap->save();
 	}
 	
 	public function getContextSiFields(): array {
