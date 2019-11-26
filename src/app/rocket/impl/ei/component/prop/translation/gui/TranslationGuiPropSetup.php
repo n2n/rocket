@@ -30,12 +30,6 @@ use rocket\ei\util\Eiu;
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\manage\gui\field\GuiPropPath;
 use rocket\ei\manage\gui\GuiFieldMap;
-use rocket\ei\util\entry\EiuEntry;
-use n2n\util\type\CastUtils;
-use rocket\ei\util\gui\EiuEntryGui;
-use n2n\l10n\N2nLocale;
-use rocket\ei\EiPropPath;
-use rocket\si\content\impl\SiFields;
 
 class TranslationGuiPropSetup implements GuiPropSetup, GuiFieldAssembler {
 	private $targetEiuGuiFrame;

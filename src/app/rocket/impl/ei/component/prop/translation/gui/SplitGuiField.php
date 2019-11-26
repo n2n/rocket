@@ -39,24 +39,25 @@ class SplitGuiField implements GuiField {
 	}
 	
 	function getSiField(): ?SiField {
-		return null;
+		return splitIn;
 	}
-	
-	function putLazy() {
-		
-	}
-	
-	
 	
 	function save() {
+		$this->forkGuiFieldMap->save();
+		
+		$this->lted->save();
 	}
 	
 	function getContextSiFields(): array {
 		return [];
 	}
 
+	function setForkGuiFieldMap(?GuiFieldMap $forkGuiFieldMap) {
+		$this->forkGuiFieldMap = $forkGuiFieldMap;
+	}
+	
 	function getForkGuiFieldMap(): ?GuiFieldMap {
-		return null;
+		return $this->forkGuiFieldMap;
 	}
 
 }

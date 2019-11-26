@@ -24,16 +24,24 @@ namespace rocket\impl\ei\component\prop\translation\gui;
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\si\content\SiField;
 use rocket\ei\manage\gui\GuiFieldMap;
+use rocket\si\content\impl\SiFields;
 
 class TranslationGuiField implements GuiField {
 	private $translationMinNum = [];
-	private $n2nLocaleDefs = [];
+	private $lted;
 	private $forkGuiFieldMap;
+	private $contextSiField;
 	
-	function __construct(int $translationMinNum, array $n2nLocaleDefs, array $tragetEiuEntries, GuiFieldMap $forkGuiFieldMap) {
+	function __construct(int $translationMinNum, LazyTranslationEssentialsDeterminer $lted, GuiFieldMap $forkGuiFieldMap) {
 		$this->translationMinNum = $translationMinNum;
-		$this->n2nLocaleDefs = $n2nLocaleDefs;
+		$this->lted = $lted;
 		$this->forkGuiFieldMap = $forkGuiFieldMap;
+		$this->contextSiField = SiFields::splitInControl($lted->getN2nLocaleOptions())
+				->setMin($this->translationMinNum)
+				->setValue($lted->getActiveN2nLocaleIds())
+				->setAssociatedFieldIds(array_map(
+						function ($guiPropPath) { return (string) $guiPropPath; }, 
+						$lted->getGuiPropPaths()));
 	}
 	
 	public function getSiField(): ?SiField {
@@ -41,11 +49,15 @@ class TranslationGuiField implements GuiField {
 	}
 	
 	public function save() {
+		$this->lted->activateTranslations($this->contextSiField->getValue());
+		
 		$this->forkGuiFieldMap->save();
+		
+		$this->lted->save();
 	}
 	
 	public function getContextSiFields(): array {
-		return [];
+		return [ $this->contextSiField ];
 	}
 
 	public function getForkGuiFieldMap(): ?GuiFieldMap {

@@ -25,6 +25,8 @@ use rocket\ei\EiPropPath;
 use rocket\ei\manage\gui\field\GuiPropPath;
 use rocket\si\content\impl\SiFields;
 use rocket\ei\manage\gui\GuiFieldMap;
+use n2n\l10n\N2nLocale;
+use n2n\util\ex\IllegalStateException;
 
 class TranslationGuiFieldFactory {
 	private $led;
@@ -59,6 +61,7 @@ class TranslationGuiFieldFactory {
 		
 		foreach ($this->lef->getN2nLocaleDefs() as $n2nLocaleDef) {
 			$n2nLocaleId = $n2nLocaleDef->getN2nLocaleId();
+			$n2nLocale = $n2nLocaleDef->getN2nLocale();
 			$label = $n2nLocaleDef->buildLabel($n2nLocale);
 			
 			$pid = null;
@@ -67,7 +70,8 @@ class TranslationGuiFieldFactory {
 			}
 			
 			$siField->putLazy($n2nLocaleId, $label, $targetEiuGuiFrame->getEiuFrame()->getApiUrl(), $pid,
-					(string) $guiPropPath, $targetEiuGuiFrame->isBulky());
+					(string) $guiPropPath, $targetEiuGuiFrame->isBulky(), 
+					new TranslationSiLazyInputHandler($this->led, $n2nLocale, $guiPropPath));
 		}
 		
 		$forkedEiPropPaths = $this->targetEiuGuiFrame->getForkedEiPropPaths($guiPropPath);
@@ -80,6 +84,7 @@ class TranslationGuiFieldFactory {
 		
 		return $splitGuiField;
 	}
+	
 	
 	/**
 	 * @param GuiPropPath $guiPropPath
@@ -140,3 +145,41 @@ class TranslationGuiFieldFactory {
 	}
 }
 
+
+class TranslationSiLazyInputHandler implements SiLazyInputHandler {
+	private $lted;
+	private $n2nLocale;
+	private $guiPropPath;
+	
+	function __construct(LazyTranslationEssentialsDeterminer $lted, N2nLocale $n2nLocale, GuiPropPath $guiPropPath) {
+		$this->lted = $lted;
+		$this->n2nLocale = $n2nLocale;
+		$this->guiPropPath = $guiPropPath;
+	}
+	
+	private function getGuiField() {
+		return $this->ltef->getTargetEiuEntryGui($this->n2nLocale)->getGuiFieldByGuiPropPath($this->guiPropPath);
+	}
+	
+	function handlInput(array $data, array $uploadDefinitions) {
+		$siField = $this->getGuiField()->getSiField();
+		
+		if ($siField === null || $siField->isReadOnly()) {
+			throw new IllegalStateException('SiField of ' . $this->guiPropPath . ' / ' . $this->n2nLocale 
+					. 'not writable.');
+		}
+		
+		$siField->handleInput($data);
+	}
+		
+	function handleContextInput(string $key, array $data, array $uploadDefinitions) {
+		$contextSiFields = $this->getGuiField()->getContextSiFields(); 
+		
+		if (isset($contextSiFields[$key]) || $contextSiFields[$key]->isReadOnly()) {
+			throw new IllegalStateException('Context ' . $key . ' SiField ' . $this->guiPropPath . ' / ' . $this->n2nLocale
+					. 'not writable.');
+		}
+		
+		$contextSiFields[$key]->handleInput($data);
+	}
+}

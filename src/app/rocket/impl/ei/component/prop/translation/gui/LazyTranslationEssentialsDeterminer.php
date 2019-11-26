@@ -35,8 +35,8 @@ class LazyTranslationEssentialsDeterminer {
 	private $translationConfig;
 	private $readOnly;
 	
-	private $availableTargetEiuEntries = null;
-	private $availableTargetEiuEntryGuis = null;
+	private $activeTargetEiuEntries = null;
+	private $activeTargetEiuEntryGuis = null;
 	
 	function __construct(Eiu $eiu, EiuGuiFrame $targetEiuGuiFrame, TranslationConfig $translationConfig, bool $readOnly) {
 		$this->eiu = $eiu;
@@ -45,11 +45,8 @@ class LazyTranslationEssentialsDeterminer {
 		$this->readOnly = $readOnly;
 	}
 	
-	/**
-	 * @return EiuEntry[]
-	 */
-	private function ensureAvailableTargetEiuEntries() {
-		if ($this->availableTargetEiuEntries !== null) {
+	private function ensureActiveTargetEiuEntries() {
+		if ($this->activeTargetEiuEntries !== null) {
 			return;
 		}
 		
@@ -60,42 +57,63 @@ class LazyTranslationEssentialsDeterminer {
 			$mappedValues[(string) $targetEiuEntry->getEntityObj()->getN2nLocale()] = $targetEiuEntry;
 		}
 		
-		$this->availableTargetEiuEntries = [];
+		$this->activeTargetEiuEntries = [];
 		foreach ($this->translationConfig->getN2nLocaleDefs() as $n2nLocaleDef) {
 			$n2nLocaleId = $n2nLocaleDef->getN2nLocaleId();
 			
-			$this->availableTargetEiuEntries[$n2nLocaleId] = $mappedValues[$n2nLocaleId]
-			?? null; // $this->createTargetEiuEntry($n2nLocaleDef);
+			$this->activeTargetEiuEntries[$n2nLocaleId] = $mappedValues[$n2nLocaleId] ?? null; // $this->createTargetEiuEntry($n2nLocaleDef);
+		}
+	}
+	
+	function activateTranslations(array $newN2nLocaleIds) {
+		$this->ensureActiveTargetEiuEntries();
+		
+		foreach ($this->translationConfig->getN2nLocaleDefs() as $n2nLocaleDef) {
+			$n2nLocaleId = $n2nLocaleDef->getN2nLocaleId();
+			
+			if (!in_array($n2nLocaleId, $newN2nLocaleIds)) {
+				unset($this->activeTargetEiuEntries[$n2nLocaleId]);
+				unset($this->activeTargetEiuEntryGuis[$n2nLocaleId]);
+				continue;
+			}
+			
+			if (isset($this->activeTargetEiuEntries[$n2nLocaleId])) {
+				continue;
+			}
+			
+			$n2nLocale = $n2nLocaleDef->getN2nLocale();
+			$targetEiuEntry = $this->activeTargetEiuEntries[$n2nLocaleId] = $this->createTargetEiuEntry($n2nLocale);
+			$this->activeTargetEiuEntryGuis[$n2nLocaleId] = $this->targetEiuGuiFrame->newEntryGui($targetEiuEntry);
 		}
 	}
 	
 	private function ensureAvailableTargetEiEntryGuis() {
-		$this->ensureAvailableTargetEiuEntries();
+		$this->ensureActiveTargetEiuEntries();
 		
-		if ($this->availableTargetEiuEntryGuis !== null) {
+		if ($this->activeTargetEiuEntryGuis !== null) {
 			return;
 		}
 		
-		$this->availableTargetEiuEntryGuis = [];
-		foreach ($this->availableTargetEiuEntries as $n2nLocaleId => $targetEiuEntry) {
-			$this->availableTargetEiuEntryGuis[$n2nLocaleId] = $this->targetEiuGuiFrame->newEntryGui($targetEiuEntry);
+		$this->activeTargetEiuEntryGuis = [];
+		foreach ($this->activeTargetEiuEntries as $n2nLocaleId => $targetEiuEntry) {
+			$this->activeTargetEiuEntryGuis[$n2nLocaleId] = $this->targetEiuGuiFrame->newEntryGui($targetEiuEntry);
 		}
 	}
 	
 	/**
 	 * @return EiuEntry[]
 	 */
-	function getAvailableTargetEiuEntries() {
-		$this->availableTargetEiuEntry();
-		return $this->availableTargetEiuEntries;
+	function getActiveTargetEiuEntries() {
+		$this->ensureActiveTargetEiuEntry();
+		return $this->activeTargetEiuEntries;
 	}
 
 	/**
 	 * @return EiuEntryGui[]
 	 */
-	function getAvailableTargetEiuEntryGuis() {
-		$this->availableTargetEiuEntryGuis();
-		return $this->availableTargetEiuEntryGuis;
+	function getActiveTargetEiuEntryGuis() {
+		$this->ensureActiveTargetEiuEntryGuis();
+		return $this->activeTargetEiuEntryGuis;
 	}
 	
 	/**

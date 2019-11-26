@@ -56,10 +56,11 @@ class SplitInSiField extends InSiFieldAdapter {
 	 * @param string $key
 	 * @param string $label
 	 * @param SiField $field
+	 * @param SiField[] $contextFields
 	 * @return \rocket\si\content\impl\split\SplitInSiField
 	 */
-	function putField(string $key, string $label, SiField $field) {
-		$this->splitContents[$key] = SiSplitContent::createField($label, $field);
+	function putField(string $key, string $label, SiField $field, array $contextFields) {
+		$this->splitContents[$key] = SiSplitContent::createField($label, $field, $contextFields);
 		return $this;
 	}
 	
