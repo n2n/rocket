@@ -91,6 +91,39 @@ class EiuGuiFrame {
 		return $this->eiGuiFrame->getEiPropPaths();
 	}
 	
+	function getGuiPropPaths() {
+		return $this->eiGuiFrame->getGuiPropPaths();
+	}
+	
+	/**
+	 * @param GuiPropPath|string $prefixGuiPropPath
+	 * @return GuiPropPath[]
+	 */
+	function getForkedGuiPropPaths($prefixGuiPropPath) {
+		$prefixGuiPropPath = GuiPropPath::create($prefixGuiPropPath);
+		$size = $prefixGuiPropPath->size();
+		
+		$forkedGuiPropPaths = [];
+		foreach ($this->eiGuiFrame->filterGuiPropPaths($prefixGuiPropPath) as $guiPropPath) {
+			$forkedGuiPropPaths[] = $guiPropPath->subGuiPropPath($size);
+		}
+		return $forkedGuiPropPaths;
+	}
+	
+	/**
+	 * @param GuiPropPath|string $prefixGuiPropPath
+	 * @return \rocket\ei\EiPropPath[]
+	 */
+	function getForkedEiPropPaths($prefixGuiPropPath) {
+		$prefixGuiPropPath = GuiPropPath::create($prefixGuiPropPath);
+		
+		$forkedEiPropPaths = [];
+		foreach ($this->getForkedGuiPropPaths($prefixGuiPropPath) as $guiPropPath) {
+			$forkedEiPropPaths[] = $guiPropPath->getFirstEiPropPath();
+		}
+		return $forkedEiPropPaths;
+	}
+	
 	/**
 	 * @param GuiPropPath|string $eiPropPath
 	 * @param bool $required
@@ -98,11 +131,11 @@ class EiuGuiFrame {
 	 * @throws GuiException
 	 * @return \rocket\ei\manage\gui\GuiProp|null
 	 */
-	public function getGuiPropByGuiPropPath($eiPropPath, bool $required = false) {
-		$eiPropPath = GuiPropPath::create($eiPropPath);
+	public function getGuiPropByGuiPropPath($guiPropPath, bool $required = false) {
+		$guiPropPath = GuiPropPath::create($guiPropPath);
 		
 		try {
-			return $this->eiGuiFrame->getEiGuiSiFactory()->getGuiDefinition()->getGuiPropByGuiPropPath($eiPropPath);
+			return $this->eiGuiFrame->getEiGuiSiFactory()->getGuiDefinition()->getGuiPropByGuiPropPath($guiPropPath);
 		} catch (GuiException $e) {
 			if (!$required) return null;
 			throw $e;

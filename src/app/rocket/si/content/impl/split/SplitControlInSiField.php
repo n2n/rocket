@@ -31,9 +31,13 @@ class SplitControlInSiField extends InSiFieldAdapter {
 	 */
 	private $options;
 	/**
+	 * @var int
+	 */
+	private $min;
+	/**
 	 * @var string[]
 	 */
-	private $activatedKeys = [];
+	private $activeKeys = [];
 	/**
 	 * @var string[]
 	 */
@@ -48,6 +52,21 @@ class SplitControlInSiField extends InSiFieldAdapter {
 	}
 	
 	/**
+	 * @return int
+	 */
+	function getMin() {
+		return $this->min;
+	}
+	
+	/**
+	 * @param int $min
+	 * @return \rocket\si\content\impl\split\SplitControlInSiField
+	 */
+	function setMin(int $min) {
+		$this->min = $min;
+		return $this;
+	}
+	/**
 	 * {@inheritDoc}
 	 * @see \rocket\si\content\SiField::getType()
 	 */
@@ -58,16 +77,16 @@ class SplitControlInSiField extends InSiFieldAdapter {
 	/**
 	 * @return string[]
 	 */
-	function getActivatedKeys() {
-		return $this->activatedKeys;
+	function getActiveKeys() {
+		return $this->activeKeys;
 	}
 	
 	/**
-	 * @param array $activatedKeys
+	 * @param array $activeKeys
 	 * @return \rocket\si\content\impl\split\SplitControlInSiField
 	 */
-	function setActivatedKeys(array $activatedKeys) {
-		$this->activatedKeys = $activatedKeys;
+	function setActiveKeys(array $activeKeys) {
+		$this->activeKeys = $activeKeys;
 		return $this;
 	}
 	

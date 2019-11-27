@@ -74,9 +74,9 @@ class SplitInSiField extends InSiFieldAdapter {
 	 * @return \rocket\si\content\impl\split\SplitInSiField
 	 */
 	function putLazy(string $key, string $label, Url $apiUrl, string $entryId, string $fieldId, bool $bulky,
-			\Closure $handleInputCallback) {
+			SiLazyInputHandler $inputHandler = null) {
 		$this->splitContents[$key] = SiSplitContent::createLazy($label, $apiUrl, $entryId, $fieldId, $bulky,
-				$handleInputCallback);
+				$inputHandler);
 		return $this;
 	}
 	

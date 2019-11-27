@@ -51,6 +51,15 @@ class GuiPropPath implements Hashable {
 		return count($this->eiPropPaths);
 	}
 	
+	/**
+	 * @param int $offset
+	 * @param int|null $length
+	 * @return \rocket\ei\manage\gui\field\GuiPropPath
+	 */
+	public function subGuiPropPath(int $offset, int $length = null) {
+		return new GuiPropPath(array_slice($this->eiPropPaths, $offset, $length));
+	}
+	
 	public function isEmpty() {
 		return empty($this->eiPropPaths);
 	}

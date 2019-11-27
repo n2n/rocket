@@ -38,10 +38,10 @@ class TranslationGuiField implements GuiField {
 		$this->forkGuiFieldMap = $forkGuiFieldMap;
 		$this->contextSiField = SiFields::splitInControl($lted->getN2nLocaleOptions())
 				->setMin($this->translationMinNum)
-				->setValue($lted->getActiveN2nLocaleIds())
+				->setActiveKeys($lted->getActiveN2nLocaleIds())
 				->setAssociatedFieldIds(array_map(
 						function ($guiPropPath) { return (string) $guiPropPath; }, 
-						$lted->getGuiPropPaths()));
+						$lted->getTargetEiuGuiFrame()->getGuiPropPaths()));
 	}
 	
 	public function getSiField(): ?SiField {

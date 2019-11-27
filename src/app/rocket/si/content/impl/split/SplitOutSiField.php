@@ -28,16 +28,8 @@ use n2n\util\uri\Url;
 
 class SplitOutSiField extends OutSiFieldAdapter {
 	private $subFields = [];
-	
-	function __construct() {
-	}
-	
-		
 	private $splitContents = [];
 	
-	/**
-	 * @param int $value
-	 */
 	function __construct() {
 	}
 	

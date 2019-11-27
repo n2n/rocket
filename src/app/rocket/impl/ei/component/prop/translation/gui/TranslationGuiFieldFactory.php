@@ -27,12 +27,15 @@ use rocket\si\content\impl\SiFields;
 use rocket\ei\manage\gui\GuiFieldMap;
 use n2n\l10n\N2nLocale;
 use n2n\util\ex\IllegalStateException;
+use rocket\si\content\impl\split\SiLazyInputHandler;
 
 class TranslationGuiFieldFactory {
-	private $led;
+	private $lted;
+	private $readOnly;
 	
-	function __construct(LazyTranslationEssentialsDeterminer $led) {
-		$this->led = $led;
+	function __construct(LazyTranslationEssentialsDeterminer $lted, bool $readOnly) {
+		$this->lted = $lted;
+		$this->readOnly = $readOnly;
 	}
 	
 	/**
@@ -57,21 +60,21 @@ class TranslationGuiFieldFactory {
 		$siField = SiFields::splitIn();
 		$splitGuiField = new SplitGuiField($siField);
 		
-		$targetEiuGuiFrame = $this->lef->getTargetEiuGuiFrame();
+		$targetEiuGuiFrame = $this->lted->getTargetEiuGuiFrame();
 		
-		foreach ($this->lef->getN2nLocaleDefs() as $n2nLocaleDef) {
+		foreach ($this->lted->getN2nLocaleDefs() as $n2nLocaleDef) {
 			$n2nLocaleId = $n2nLocaleDef->getN2nLocaleId();
 			$n2nLocale = $n2nLocaleDef->getN2nLocale();
 			$label = $n2nLocaleDef->buildLabel($n2nLocale);
 			
 			$pid = null;
-			if (null !== ($availableTargetEiuEntry = $this->led->getAvailableTargetEiuEntry($n2nLocaleId))) {
+			if (null !== ($availableTargetEiuEntry = $this->lted->getAvailableTargetEiuEntry($n2nLocaleId))) {
 				$pid = $availableTargetEiuEntry->entry()->getPid();
 			}
 			
 			$siField->putLazy($n2nLocaleId, $label, $targetEiuGuiFrame->getEiuFrame()->getApiUrl(), $pid,
 					(string) $guiPropPath, $targetEiuGuiFrame->isBulky(), 
-					new TranslationSiLazyInputHandler($this->led, $n2nLocale, $guiPropPath));
+					new TranslationSiLazyInputHandler($this->lted, $n2nLocale, $guiPropPath));
 		}
 		
 		$forkedEiPropPaths = $this->targetEiuGuiFrame->getForkedEiPropPaths($guiPropPath);
@@ -99,6 +102,10 @@ class TranslationGuiFieldFactory {
 		return $guiFieldMap;
 	}
 	
+	function getForkedGuiPropPaths() {
+		return $this->targetEiuGuiFrame->getForkedGuiPropPaths();
+	}
+	
 	/**
 	 * @param GuiPropPath $guiPropPath
 	 * @return \rocket\impl\ei\component\prop\translation\gui\SplitGuiField
@@ -106,10 +113,7 @@ class TranslationGuiFieldFactory {
 	private function createReadOnlyGuiField($guiPropPath) {
 		$siField = SiFields::splitOut();
 		$readOnlyGuiField = new ReadOnlyGuiField($siField);
-		foreach ($this->translationConfig->getN2nLocaleDefs() as $n2nLocaleDef) {
-			$n2nLocaleId = $n2nLocaleDef->getN2nLocaleId();
-			$label = $n2nLocaleDef->buildLabel($n2nLocale);
-			
+		foreach ($this->lted->getN2nLocaleOptions() as $n2nLocaleId => $label) {
 			if (!isset($this->availableTargetEiuEntryGuis[$n2nLocaleId])) {
 				$siField->putUnavailable($n2nLocaleId, $label);
 				continue;
@@ -120,7 +124,7 @@ class TranslationGuiFieldFactory {
 			$siField->putField($n2nLocaleId, $label, $guiFieldWrapper->getSiField(), $guiFieldWrapper->getContextSiFields());
 		}
 		
-		$forkedEiPropPaths = $this->targetEiuGuiFrame->getForkedEiPropPaths($guiPropPath);
+		$forkedEiPropPaths = $this->lted->getTargetEiuGuiFrame()->getForkedEiPropPaths($guiPropPath);
 		
 		if (empty($forkedEiPropPaths)) {
 			return $readOnlyGuiField;

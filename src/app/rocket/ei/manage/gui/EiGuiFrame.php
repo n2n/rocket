@@ -289,7 +289,7 @@ class EiGuiFrame {
 // 	 * @param EiPropPath $forkEiPropPath
 // 	 * @return GuiPropPath[]
 // 	 */
-// 	function getForkGuiPropPaths(EiPropPath $forkEiPropPath) {
+// 	function getForkedGuiPropPathsByEiPropPath(EiPropPath $forkEiPropPath) {
 // 		$forkGuiPropPaths = [];
 // 		foreach ($this->getGuiPropPaths() as $guiPropPath) {
 // 			if ($guiPropPath->getFirstEiPropPath()->equals($eiPropPath)) {
@@ -447,6 +447,26 @@ class EiGuiFrame {
 		}
 		
 		return $siContent;
+	}
+	
+	/**
+	 * @param GuiPropPath $prefixGuiPropPath
+	 * @return \rocket\ei\manage\gui\field\GuiPropPath[]
+	 */
+	function filterGuiPropPaths(GuiPropPath $prefixGuiPropPath) {
+		$guiPropPaths = [];
+
+		foreach ($this->guiPropPaths as $guiPropPathStr => $guiPropPath) {
+			$guiPropPath = GuiPropPath::create($guiPropPathStr);
+			if ($guiPropPath->equals($prefixGuiPropPath)
+					|| !$guiPropPath->startsWith($prefixGuiPropPath, false)) {
+				continue;
+			}
+
+			$guiPropPaths[] = $guiPropPath;
+		}
+
+		return $guiPropPaths;
 	}
 	
 	/**

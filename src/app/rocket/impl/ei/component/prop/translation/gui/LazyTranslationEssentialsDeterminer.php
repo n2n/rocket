@@ -35,14 +35,42 @@ class LazyTranslationEssentialsDeterminer {
 	private $translationConfig;
 	private $readOnly;
 	
+	private $n2nLocaleOptions = null;
 	private $activeTargetEiuEntries = null;
 	private $activeTargetEiuEntryGuis = null;
 	
-	function __construct(Eiu $eiu, EiuGuiFrame $targetEiuGuiFrame, TranslationConfig $translationConfig, bool $readOnly) {
+	function __construct(Eiu $eiu, EiuGuiFrame $targetEiuGuiFrame, TranslationConfig $translationConfig) {
 		$this->eiu = $eiu;
 		$this->targetEiuGuiFrame = $targetEiuGuiFrame;
 		$this->translationConfig = $translationConfig;
-		$this->readOnly = $readOnly;
+	}
+	
+	function getN2nLocaleOptions() {
+		if ($this->n2nLocaleOptions !== null) {
+			return $this->n2nLocaleOptions;
+		}
+		
+		$this->n2nLocaleOptions = [];
+		foreach ($this->translationConfig->getN2nLocaleDefs() as $n2nLocaleDef) {
+			$this->n2nLocaleOptions[$n2nLocaleDef->getN2nLocaleId()] = $n2nLocaleDef->getN2nLocale()
+					->getName($this->eiu->getN2nLocale());
+		}
+		return $this->n2nLocaleOptions;
+	}
+	
+	/**
+	 * @return \rocket\ei\util\gui\EiuGuiFrame
+	 */
+	function getTargetEiuGuiFrame() {
+		return $this->targetEiuGuiFrame;
+	}
+	
+	/**
+	 * @return string[]
+	 */
+	function getActiveN2nLocaleIds() {
+		$this->ensureActiveTargetEiuEntries();
+		return array_keys($this->activeTargetEiuEntries);
 	}
 	
 	private function ensureActiveTargetEiuEntries() {

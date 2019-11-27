@@ -24,7 +24,6 @@ namespace rocket\si\content\impl\split;
 use rocket\si\SiPayloadFactory;
 use n2n\util\uri\Url;
 use rocket\si\content\SiField;
-use n2n\util\ex\IllegalStateException;
 use n2n\web\http\UploadDefinition;
 
 class SiSplitContent implements \JsonSerializable {
@@ -37,7 +36,7 @@ class SiSplitContent implements \JsonSerializable {
 	/**
 	 * @var \Closure|null
 	 */
-	private $handleInputCallback;
+	private $inputHandler;
 	/**
 	 * @var SiField|null
 	 */
@@ -54,7 +53,7 @@ class SiSplitContent implements \JsonSerializable {
 			$data['entryId'] = $this->entryId;
 			$data['fieldId'] = $this->fieldId;
 			$data['bulky'] = $this->bulky;
-			$data['readOnly'] = $this->handleInputCallback === null;
+			$data['readOnly'] = $this->inputHandler === null;
 		}
 		
 		if ($this->field !== null) {
@@ -66,7 +65,7 @@ class SiSplitContent implements \JsonSerializable {
 	
 	function isReadOnly() {
 		if ($this->apiUrl !== null) {
-			return $this->handleInputCallback === null;
+			return $this->inputHandler === null;
 		}
 		
 		if ($this->field !== null) {
@@ -82,7 +81,7 @@ class SiSplitContent implements \JsonSerializable {
 	 * @return array
 	 */
 	function handleInput(array $data, array $uploadDefinitions) {
-		if ($this->handleInputCallback !== null) {
+		if ($this->inputHandler !== null) {
 			return $this->handleInputCallback($data);
 		}
 		
@@ -98,14 +97,14 @@ class SiSplitContent implements \JsonSerializable {
 	}
 	
 	static function createLazy(string $label, Url $apiUrl, string $entryId, string $fieldId, bool $bulky,
-			\Closure $handleInputCallback = null) {
+			SiLazyInputHandler $inputHandler = null) {
 		$split = new SiSplitContent();
 		$split->label = $label;
 		$split->apiUrl = $apiUrl;
 		$split->entryId = $entryId;
 		$split->fieldId = $fieldId;
 		$split->bulky = $bulky;
-		$split->handleInputCallback = $handleInputCallback;
+		$split->inputHandler = $inputHandler;
 		return $split;
 	}
 	
