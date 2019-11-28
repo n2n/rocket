@@ -122,7 +122,7 @@ class SplitGuiFieldFactory {
 				continue;
 			}
 			
-			$siField->putField($n2nLocaleId, $n2nLocale->toPrettyId(), $fieldId);
+			$siField->putField($n2nLocaleId, $n2nLocale->toPrettyId(), (string) $guiPropPath);
 		}
 		
 		$forkedEiPropPaths = $this->lted->getTargetEiuGuiFrame()->getForkedEiPropPaths($guiPropPath);
