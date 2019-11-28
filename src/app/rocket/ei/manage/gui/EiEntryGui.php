@@ -24,9 +24,9 @@ namespace rocket\ei\manage\gui;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\mask\EiMask;
 use rocket\ei\manage\entry\EiEntry;
-use rocket\ei\manage\gui\field\GuiPropPath;
 use rocket\si\input\SiEntryInput;
 use n2n\util\type\attrs\AttributesException;
+use rocket\ei\manage\gui\field\GuiPropPath;
 
 class EiEntryGui {
 	/**
@@ -83,6 +83,33 @@ class EiEntryGui {
 		$this->ensureInitialized();
 		
 		return $this->guiFieldMap;
+	}
+	
+	function getGuiFieldByGuiPropPath(GuiPropPath $guiPropPath) {
+		$guiFieldMap = $this->guiFieldMap;
+		
+		$eiPropPaths = $guiPropPath->toArray();
+		
+		while (null !== ($eiPropPath = array_shift($eiPropPaths))) {
+			try {
+				$guiField = $guiFieldMap->getGuiField($eiPropPath);
+			} catch (GuiException $e) { }
+			
+			if (empty($eiPropPaths)) {
+				return $guiField;
+			}
+			
+			$guiFieldMap = $guiField->getForkGuiFieldMap();
+			if ($guiFieldMap === null) {
+				break;
+			}
+		}
+		
+		throw new GuiException('No GuiField with EiPropPath \'' . $guiPropPath . '\' for \'' . $this . '\' registered');
+	}
+	
+	private function rGuiPropPaths() {
+		
 	}
 	
 // 	/**

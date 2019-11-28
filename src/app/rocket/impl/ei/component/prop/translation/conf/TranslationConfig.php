@@ -50,16 +50,16 @@ class TranslationConfig extends ConfigAdaption {
 	const ATTR_LOCALE_MANDATORY_KEY = 'mandatory';
 	const ATTR_MIN_NUM_TRANSLATIONS_KEY = 'min';
 	
-	private $translationEiProp;
+// 	private $translationEiProp;
 	
 	private $n2nLocaleDefs = array();
 	private $translationsMinNum = 0;
 	private $copyCommand;
 	
 	
-	public function __construct(TranslationEiProp $translationEiProp) {
-		$this->translationEiProp = $translationEiProp;
-	}
+// 	public function __construct(TranslationEiProp $translationEiProp) {
+// 		$this->translationEiProp = $translationEiProp;
+// 	}
 	
 	
 	
@@ -208,23 +208,20 @@ class TranslationConfig extends ConfigAdaption {
 	}
 	
 	public function setup(Eiu $eiu, DataSet $dataSet) {
-// 		$eiu = $eiSetupProcess->eiu();
+		$lar = new LenientAttributeReader($dataSet);
 		
-// 		$lar = new LenientAttributeReader($this->dataSet);
+		$this->n2nLocaleDefs = array();
+		if ($dataSet->optBool(self::ATTR_USE_SYSTEM_LOCALES_KEY, false, true)) {
+			$this->n2nLocaleDefs = $this->readModN2nLocaleDefs(self::ATTR_SYSTEM_LOCALE_DEFS_KEY, $lar, 
+					$eiu->lookup(WebConfig::class)->getAllN2nLocales());
+		} 
 		
-// 		$n2nLocaleDefs = array();
-// 		if ($this->dataSet->getBool(self::ATTR_USE_SYSTEM_LOCALES_KEY, false, true)) {
-// 			$n2nLocaleDefs = $this->readModN2nLocaleDefs(self::ATTR_SYSTEM_LOCALE_DEFS_KEY, $lar, 
-// 					$eiu->lookup(WebConfig::class)->getAllN2nLocales());
-// 		} 
+		$this->n2nLocaleDefs = array_merge($this->n2nLocaleDefs, $this->readN2nLocaleDefs(self::ATTR_CUSTOM_LOCALE_DEFS_KEY, $lar));
+		if (empty($this->n2nLocaleDefs)) {
+			$this->n2nLocaleDefs = array(N2nLocale::getDefault()->getId() => new N2nLocaleDef(N2nLocale::getDefault(), false));
+		}
 		
-// 		$n2nLocaleDefs = array_merge($n2nLocaleDefs, $this->readN2nLocaleDefs(self::ATTR_CUSTOM_LOCALE_DEFS_KEY, $lar));
-// 		if (empty($n2nLocaleDefs)) {
-// 			$n2nLocaleDefs = array(N2nLocale::getDefault()->getId() => new N2nLocaleDef(N2nLocale::getDefault(), false));
-// 		}
-// 		$this->translationEiProp->setN2nLocaleDefs($n2nLocaleDefs);
-		
-// 		$this->translationEiProp->setMinNumTranslations($this->dataSet->optInt(self::ATTR_MIN_NUM_TRANSLATIONS_KEY, 0));
+		$this->translationsMinNum = $dataSet->optInt(self::ATTR_MIN_NUM_TRANSLATIONS_KEY, 0);
 		
 // 		$this->addMandatory = true;
 		

@@ -139,12 +139,12 @@ class GuiFieldMap {
 	/**
 	 * @return \rocket\ei\manage\gui\field\GuiPropPath[]
 	 */
-	function getGuiFieldGuiPropPaths() {
-		$guiPropPaths = array();
+	function getEiPropPaths() {
+		$eiPropPaths = array();
 		foreach (array_keys($this->guiFields) as $eiPropPathStr) {
-			$guiPropPaths[] = GuiPropPath::create($eiPropPathStr);
+			$eiPropPaths[] = EiPropPath::create($eiPropPathStr);
 		}
-		return $guiPropPaths;
+		return $eiPropPaths;
 	}
 	
 	/**
@@ -152,13 +152,13 @@ class GuiFieldMap {
 	 * @throws GuiException
 	 * @return GuiField
 	 */
-	function getGuiField(GuiPropPath $guiPropPath) {
-		$guiPropPathStr = (string) $guiPropPath;
-		if (!isset($this->guiFields[$guiPropPathStr])) {
-			throw new GuiException('No GuiField with GuiPropPath \'' . $guiPropPathStr . '\' for \'' . $this . '\' registered');
+	function getGuiField(EiPropPath $eiPropPath) {
+		$eiPropPathStr = (string) $eiPropPath;
+		if (!isset($this->guiFields[$eiPropPathStr])) {
+			throw new GuiException('No GuiField with EiPropPath \'' . $eiPropPathStr . '\' for \'' . $this . '\' registered');
 		}
 		
-		return $this->guiFields[$guiPropPathStr];
+		return $this->guiFields[$eiPropPathStr];
 	}
 	
 	function save() {

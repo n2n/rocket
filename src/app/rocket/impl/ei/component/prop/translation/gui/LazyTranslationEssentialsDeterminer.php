@@ -35,6 +35,7 @@ class LazyTranslationEssentialsDeterminer {
 	private $translationConfig;
 	private $readOnly;
 	
+	private $n2nLocales = null;
 	private $n2nLocaleOptions = null;
 	private $activeTargetEiuEntries = null;
 	private $activeTargetEiuEntryGuis = null;
@@ -45,6 +46,24 @@ class LazyTranslationEssentialsDeterminer {
 		$this->translationConfig = $translationConfig;
 	}
 	
+	/**
+	 * @return N2nLocale[]
+	 */
+	function getN2nLocales() {
+		if ($this->n2nLocales !== null) {
+			return $this->n2nLocales;
+		}
+		
+		$this->n2nLocales = [];
+		foreach ($this->translationConfig->getN2nLocaleDefs() as $n2nLocaleDef) {
+			$this->n2nLocales[$n2nLocaleDef->getN2nLocaleId()] = $n2nLocaleDef->getN2nLocale();
+		}
+		return $this->n2nLocales;
+	}
+	
+	/**
+	 * @return string[]
+	 */
 	function getN2nLocaleOptions() {
 		if ($this->n2nLocaleOptions !== null) {
 			return $this->n2nLocaleOptions;
@@ -115,7 +134,7 @@ class LazyTranslationEssentialsDeterminer {
 		}
 	}
 	
-	private function ensureAvailableTargetEiEntryGuis() {
+	private function ensureActiveTargetEiEntryGuis() {
 		$this->ensureActiveTargetEiuEntries();
 		
 		if ($this->activeTargetEiuEntryGuis !== null) {
@@ -142,6 +161,16 @@ class LazyTranslationEssentialsDeterminer {
 	function getActiveTargetEiuEntryGuis() {
 		$this->ensureActiveTargetEiuEntryGuis();
 		return $this->activeTargetEiuEntryGuis;
+	}
+	
+	/**
+	 * @param string $n2nLocaleId
+	 * @return EiuEntryGui|null
+	 */
+	function getActiveTargetEiuEntryGui(string $n2nLocaleId) {
+		$this->ensureActiveTargetEiEntryGuis();
+		
+		return $this->activeTargetEiuEntryGuis[$n2nLocaleId] ?? null;
 	}
 	
 	/**

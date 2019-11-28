@@ -29,7 +29,7 @@ use n2n\l10n\N2nLocale;
 use n2n\util\ex\IllegalStateException;
 use rocket\si\content\impl\split\SiLazyInputHandler;
 
-class TranslationGuiFieldFactory {
+class SplitGuiFieldFactory {
 	private $lted;
 	private $readOnly;
 	
@@ -40,7 +40,7 @@ class TranslationGuiFieldFactory {
 	
 	/**
 	 * @param EiPropPath $eiPropPath
-	 * @return SplitGuiField
+	 * @return EditableGuiField
 	 */
 	function createGuiField(EiPropPath $eiPropPath) {
 		$guiPropPath = new GuiPropPath([$eiPropPath]);
@@ -54,11 +54,11 @@ class TranslationGuiFieldFactory {
 	
 	/**
 	 * @param GuiPropPath $guiPropPath
-	 * @return \rocket\impl\ei\component\prop\translation\gui\SplitGuiField
+	 * @return \rocket\impl\ei\component\prop\translation\gui\EditableGuiField
 	 */
 	private function createEditableGuiField($guiPropPath) {
 		$siField = SiFields::splitIn();
-		$splitGuiField = new SplitGuiField($siField);
+		$splitGuiField = new EditableGuiField($siField);
 		
 		$targetEiuGuiFrame = $this->lted->getTargetEiuGuiFrame();
 		
@@ -108,20 +108,21 @@ class TranslationGuiFieldFactory {
 	
 	/**
 	 * @param GuiPropPath $guiPropPath
-	 * @return \rocket\impl\ei\component\prop\translation\gui\SplitGuiField
+	 * @return \rocket\impl\ei\component\prop\translation\gui\EditableGuiField
 	 */
 	private function createReadOnlyGuiField($guiPropPath) {
 		$siField = SiFields::splitOut();
 		$readOnlyGuiField = new ReadOnlyGuiField($siField);
-		foreach ($this->lted->getN2nLocaleOptions() as $n2nLocaleId => $label) {
-			if (!isset($this->availableTargetEiuEntryGuis[$n2nLocaleId])) {
-				$siField->putUnavailable($n2nLocaleId, $label);
+
+		foreach ($this->lted->getN2nLocales() as $n2nLocaleId => $n2nLocale) {
+			$targetEiuEntryGui = $this->lted->getActiveTargetEiuEntryGui($n2nLocaleId);
+			
+			if ($targetEiuEntryGui === null) {
+				$siField->putUnavailable($n2nLocaleId, $n2nLocale->toPrettyId());
 				continue;
 			}
 			
-			$targetEiuEntryGui = $this->availableTargetEiuEntryGuis[$n2nLocaleId];
-			$guiFieldWrapper = $targetEiuEntryGui->getGuiFieldWrapperByGuiPropPath($guiPropPath);
-			$siField->putField($n2nLocaleId, $label, $guiFieldWrapper->getSiField(), $guiFieldWrapper->getContextSiFields());
+			$siField->putField($n2nLocaleId, $n2nLocale->toPrettyId(), $fieldId);
 		}
 		
 		$forkedEiPropPaths = $this->lted->getTargetEiuGuiFrame()->getForkedEiPropPaths($guiPropPath);

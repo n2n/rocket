@@ -28,7 +28,7 @@ use rocket\si\content\SiField;
 use rocket\ei\manage\gui\field\GuiPropPath;
 use rocket\si\content\impl\SiFields;
 
-class SplitGuiField implements GuiField {
+class EditableGuiField implements GuiField {
 	private $lted;
 	private $guiPropPath;
 	

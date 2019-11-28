@@ -69,7 +69,7 @@ class TranslationEiProp extends RelationEiPropAdapter implements FieldEiProp, Qu
 				new DisplayConfig(ViewMode::all()),
 				new RelationModel($this, false, true, RelationModel::MODE_INTEGRATED, null));
 		
-		$this->translationConfig = new TranslationConfig($this);
+		$this->translationConfig = new TranslationConfig();
 	}
 	
 	public function prepare() {

@@ -113,10 +113,15 @@ class SiEntryBuildup implements \JsonSerializable {
 	
 	/**
 	 * @param string $id
-	 * @param SiField $siField
+	 * @param SiField[] $contextSiFields
 	 * @return \rocket\si\content\SiEntryBuildup
 	 */
 	function putContextFields(string $id, array $contextSiFields) {
+		if (empty($contextSiFields)) {
+			unset($this->contextFields[$id]);
+			return;
+		}
+		
 		ArgUtils::valArray($contextSiFields, SiField::class);
 		$this->contextFields[$id] = $contextSiFields;
 		return $this;

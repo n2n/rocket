@@ -380,7 +380,6 @@ class RelationModel {
 		if (!$this->getRelationEntityProperty()->isMaster()) {
 			$eiuMask->addEiModificator(new TargetMasterRelationEiModificator($this));
 		}
-		
 		$targetEiuMask->onEngineReady(function ($eiuEngine) {
 			try {
 				$this->finalize($eiuEngine);

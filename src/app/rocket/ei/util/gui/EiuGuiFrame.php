@@ -95,6 +95,14 @@ class EiuGuiFrame {
 		return $this->eiGuiFrame->getGuiPropPaths();
 	}
 	
+	function newEntryGui($eiEntryArg) {
+		$eiEntry = EiuAnalyst::buildEiEntryFromEiArg($eiEntryArg, 'eiEntryArg');
+		
+		$eiEntryGui = $this->eiGuiFrame->createEiEntryGui($eiEntry);
+		
+		return new EiuEntryGui($eiEntryGui, null, $this->eiuAnalyst);
+	}
+	
 	/**
 	 * @param GuiPropPath|string $prefixGuiPropPath
 	 * @return GuiPropPath[]

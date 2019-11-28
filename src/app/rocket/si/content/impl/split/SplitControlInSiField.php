@@ -116,8 +116,7 @@ class SplitControlInSiField extends InSiFieldAdapter {
 		return [
 			'value' => $this->value,
 			'mandatory' => $this->mandatory,
-			'onAssociatedFieldIds' => $this->associatedFieldIds,
-			'offAssociatedFieldIds' => $this->offAssociatedFieldIds
+			'associatedFieldIds' => $this->associatedFieldIds
 		];
 	}
 	

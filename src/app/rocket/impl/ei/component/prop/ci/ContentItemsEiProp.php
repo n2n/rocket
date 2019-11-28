@@ -62,6 +62,7 @@ class ContentItemsEiProp extends RelationEiPropAdapter implements FieldEiProp {
 	}
 	
 	function prepare() {
+		parent::prepare();
 		$this->getConfigurator()->addAdaption($this->contentItemsConfig);
 	}
 	

@@ -35,6 +35,7 @@ use rocket\ei\util\EiuPerimeterException;
 use rocket\ei\util\EiuAnalyst;
 use n2n\l10n\N2nLocale;
 use rocket\si\input\SiEntryInput;
+use rocket\si\content\SiField;
 
 class EiuEntryGui {
 	private $eiEntryGui;
@@ -148,12 +149,23 @@ class EiuEntryGui {
 		return $this->eiEntryGui;
 	}
 	
-	/**
-	 * @return \n2n\web\dispatch\Dispatchable|null
-	 */
-	function getDispatchable() {
-		return $this->eiEntryGui->getDispatchable();
-	}
+// 	/**
+// 	 * @param GuiPropPath|string $guiPropPath
+// 	 * @return SiField[]
+// 	 */
+// 	function getSiField($guiPropPath) {
+// 		$guiPropPath = GuiPropPath::create($guiPropPath);
+// 		return $this->eiEntryGui->getGuiFieldByGuiPropPath($guiPropPath)->getSiField();
+// 	}
+	
+// 	/**
+// 	 * @param GuiPropPath|string $guiPropPath
+// 	 * @return SiField[]
+// 	 */
+// 	function getContextSiFields($guiPropPath) {
+// 		$guiPropPath = GuiPropPath::create($guiPropPath);
+// 		return $this->eiEntryGui->getGuiFieldByGuiPropPath($guiPropPath)->getContextSiFields();
+// 	}
 	
 	/**
 	 * @return boolean
