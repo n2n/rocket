@@ -22,7 +22,6 @@
 namespace rocket\impl\ei\component\prop\translation\conf;
 
 use n2n\l10n\N2nLocale;
-use rocket\impl\ei\component\prop\translation\TranslationEiProp;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
@@ -39,7 +38,6 @@ use rocket\impl\ei\component\prop\adapter\config\ConfigAdaption;
 use rocket\ei\util\Eiu;
 use n2n\util\type\attrs\DataSet;
 use n2n\util\type\ArgUtils;
-use rocket\impl\ei\component\prop\translation\command\TranslationCopyCommand;
 
 class TranslationConfig extends ConfigAdaption {
 	const ATTR_USE_SYSTEM_LOCALES_KEY = 'useSystemN2nLocales';

@@ -27,21 +27,21 @@ use rocket\ei\manage\gui\GuiFieldMap;
 use rocket\si\content\impl\SiFields;
 
 class TranslationGuiField implements GuiField {
-	private $translationMinNum = [];
 	private $lted;
 	private $forkGuiFieldMap;
 	private $contextSiField;
 	
-	function __construct(int $translationMinNum, LazyTranslationEssentialsDeterminer $lted, GuiFieldMap $forkGuiFieldMap) {
-		$this->translationMinNum = $translationMinNum;
+	function __construct(LazyTranslationEssentialsDeterminer $lted, GuiFieldMap $forkGuiFieldMap) {
 		$this->lted = $lted;
 		$this->forkGuiFieldMap = $forkGuiFieldMap;
 		$this->contextSiField = SiFields::splitInControl($lted->getN2nLocaleOptions())
-				->setMin($this->translationMinNum)
+				->setMin($lted->getMinNum())
 				->setActiveKeys($lted->getActiveN2nLocaleIds())
 				->setAssociatedFieldIds(array_map(
 						function ($guiPropPath) { return (string) $guiPropPath; }, 
 						$lted->getTargetEiuGuiFrame()->getGuiPropPaths()));
+				
+		SiFields::splitInContext()
 	}
 	
 	public function getSiField(): ?SiField {
@@ -49,7 +49,7 @@ class TranslationGuiField implements GuiField {
 	}
 	
 	public function save() {
-		$this->lted->activateTranslations($this->contextSiField->getValue());
+		$this->lted->activateTranslations($this->contextSiField->getActiveKeys());
 		
 		$this->forkGuiFieldMap->save();
 		

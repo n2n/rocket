@@ -61,7 +61,7 @@ class TranslationGuiPropSetup implements GuiPropSetup, GuiFieldAssembler {
 			$guiFieldMap->putGuiField($eiPropPath, $tgff->createGuiField($eiPropPath));
 		}
 		
-		return new TranslationGuiField($this->translationConfig->getTranslationsMinNum(), $lted, $guiFieldMap);
+		return new TranslationGuiField($lted, $guiFieldMap);
 		
 		// 		if ($this->copyCommand !== null) {
 		// 			$translationGuiField->setCopyUrl($targetEiuFrame->getUrlToCommand($this->copyCommand)

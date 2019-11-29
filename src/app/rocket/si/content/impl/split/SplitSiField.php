@@ -22,11 +22,11 @@
 namespace rocket\si\content\impl\split;
 
 use n2n\util\type\attrs\DataSet;
-use rocket\si\content\impl\InSiFieldAdapter;
 use rocket\si\content\SiField;
 use n2n\util\uri\Url;
+use rocket\si\content\impl\SiFieldAdapter;
 
-class SplitInSiField extends InSiFieldAdapter {
+class SplitSiField extends SiFieldAdapter {
 	
 	/**
 	 * @var SiSplitContent[]
@@ -57,7 +57,7 @@ class SplitInSiField extends InSiFieldAdapter {
 	 * @param string $label
 	 * @param SiField $field
 	 * @param SiField[] $contextFields
-	 * @return \rocket\si\content\impl\split\SplitInSiField
+	 * @return \rocket\si\content\impl\split\SplitSiField
 	 */
 	function putField(string $key, string $label, SiField $field, array $contextFields) {
 		$this->splitContents[$key] = SiSplitContent::createField($label, $field, $contextFields);
@@ -71,7 +71,7 @@ class SplitInSiField extends InSiFieldAdapter {
 	 * @param string $entryId
 	 * @param string $fieldId
 	 * @param bool $bulky
-	 * @return \rocket\si\content\impl\split\SplitInSiField
+	 * @return \rocket\si\content\impl\split\SplitSiField
 	 */
 	function putLazy(string $key, string $label, Url $apiUrl, string $entryId, string $fieldId, bool $bulky,
 			SiLazyInputHandler $inputHandler = null) {
@@ -83,7 +83,7 @@ class SplitInSiField extends InSiFieldAdapter {
 	/**
 	 * @param string $key
 	 * @param string $label
-	 * @return \rocket\si\content\impl\split\SplitInSiField
+	 * @return \rocket\si\content\impl\split\SplitSiField
 	 */
 	function putUnavailable(string $key, string $label) {
 		$this->splitContents[$key] = SiSplitContent::createUnavaialble($label);
@@ -98,6 +98,20 @@ class SplitInSiField extends InSiFieldAdapter {
 		return [
 			'splitContentsMap' => $this->splitContents
 		];
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\si\content\SiField::isReadOnly()
+	 */
+	function isReadOnly(): bool {
+		foreach ($this->splitContents as $splitContent) {
+			if (!$splitContent->isReadOnly()) {
+				return false;
+			}
+		}
+		
+		return true;
 	}
 	
 	/**
