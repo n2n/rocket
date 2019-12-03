@@ -107,7 +107,6 @@ class SplitControlInSiField extends InSiFieldAdapter {
 		return $this;
 	}
 
-	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\si\content\SiField::getData()

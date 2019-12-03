@@ -34,18 +34,16 @@ class TranslationGuiField implements GuiField {
 	function __construct(LazyTranslationEssentialsDeterminer $lted, GuiFieldMap $forkGuiFieldMap) {
 		$this->lted = $lted;
 		$this->forkGuiFieldMap = $forkGuiFieldMap;
-		$this->contextSiField = SiFields::splitInControl($lted->getN2nLocaleOptions())
+		$this->siField = SiFields::splitInControl($lted->getN2nLocaleOptions())
 				->setMin($lted->getMinNum())
 				->setActiveKeys($lted->getActiveN2nLocaleIds())
 				->setAssociatedFieldIds(array_map(
 						function ($guiPropPath) { return (string) $guiPropPath; }, 
 						$lted->getTargetEiuGuiFrame()->getGuiPropPaths()));
-				
-		SiFields::splitInContext()
 	}
 	
 	public function getSiField(): ?SiField {
-		return null;
+		return $this->siField;
 	}
 	
 	public function save() {

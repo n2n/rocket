@@ -26,12 +26,17 @@ use rocket\si\content\SiField;
 use n2n\util\uri\Url;
 use rocket\si\content\impl\SiFieldAdapter;
 
-class SplitSiField extends SiFieldAdapter {
+class SplitPlaceholderSiField extends SiFieldAdapter {
 	
 	/**
-	 * @var SiSplitContent[]
+	 * @var string
 	 */
-	private $splitContents = [];
+	private $refFieldId;
+	
+	/**
+	 * @var SiLazyInputHandler[]
+	 */
+	private $inputHandlers = [];
 	
 	/**
 	 * @var \Closure|null
@@ -41,7 +46,8 @@ class SplitSiField extends SiFieldAdapter {
 	/**
 	 * @param int $value
 	 */
-	function __construct() {
+	function __construct(string $refFieldId) {
+		$this->refFieldId = $refFieldId;
 	}
 
 	/**
@@ -49,18 +55,16 @@ class SplitSiField extends SiFieldAdapter {
 	 * @see \rocket\si\content\SiField::getType()
 	 */
 	function getType(): string {
-		return 'split-in';
+		return 'split-placeholder';
 	}
 	
 	/**
 	 * @param string $key
-	 * @param string $label
 	 * @param SiField $field
-	 * @param SiField[] $contextFields
-	 * @return \rocket\si\content\impl\split\SplitSiField
+	 * @return \rocket\si\content\impl\split\SplitPlaceholderSiField
 	 */
-	function putField(string $key, string $label, SiField $field, array $contextFields) {
-		$this->splitContents[$key] = SiSplitContent::createField($label, $field, $contextFields);
+	function putInputHandler(string $key, SiLazyInputHandler $inputHandler) {
+		$this->inputHandlers[$key] = $inputHandler;
 		return $this;
 	}
 	
@@ -71,7 +75,7 @@ class SplitSiField extends SiFieldAdapter {
 	 * @param string $entryId
 	 * @param string $fieldId
 	 * @param bool $bulky
-	 * @return \rocket\si\content\impl\split\SplitSiField
+	 * @return \rocket\si\content\impl\split\SplitPlaceholderSiField
 	 */
 	function putLazy(string $key, string $label, Url $apiUrl, string $entryId, string $fieldId, bool $bulky,
 			SiLazyInputHandler $inputHandler = null) {
@@ -105,13 +109,7 @@ class SplitSiField extends SiFieldAdapter {
 	 * @see \rocket\si\content\SiField::isReadOnly()
 	 */
 	function isReadOnly(): bool {
-		foreach ($this->splitContents as $splitContent) {
-			if (!$splitContent->isReadOnly()) {
-				return false;
-			}
-		}
-		
-		return true;
+		return empty($this->inputHandlers);
 	}
 	
 	/**
@@ -121,9 +119,9 @@ class SplitSiField extends SiFieldAdapter {
 	function handleInput(array $data, array $uploadDefinitions) {
 		$dataMap = (new DataSet($data))->reqArray('value', 'array');
 		
-		foreach ($this->splitContents as $key => $splitContent) {
-			if (!$splitContent->isReadOnly() && isset($dataMap[$key])) {
-				$splitContent->handleInput($dataMap[$key], $uploadDefinitions);
+		foreach ($this->inputHandlers as $key => $inputHandler) {
+			if (isset($dataMap[$key])) {
+				$inputHandler->handleInput($dataMap[$key], $uploadDefinitions);
 			}
 		}
 	}

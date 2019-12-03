@@ -28,6 +28,7 @@ use rocket\ei\manage\gui\GuiFieldMap;
 use n2n\l10n\N2nLocale;
 use n2n\util\ex\IllegalStateException;
 use rocket\si\content\impl\split\SiLazyInputHandler;
+use rocket\ei\manage\gui\field\GuiField;
 
 class SplitGuiFieldFactory {
 	private $lted;
@@ -156,22 +157,27 @@ class TranslationSiLazyInputHandler implements SiLazyInputHandler {
 	private $n2nLocale;
 	private $guiPropPath;
 	
-	function __construct(LazyTranslationEssentialsDeterminer $lted, N2nLocale $n2nLocale, GuiPropPath $guiPropPath) {
+	function __construct(LazyTranslationEssentialsDeterminer $lted, GuiPropPath $guiPropPath) {
 		$this->lted = $lted;
 		$this->n2nLocale = $n2nLocale;
 		$this->guiPropPath = $guiPropPath;
 	}
 	
-	private function getGuiField() {
-		return $this->ltef->getTargetEiuEntryGui($this->n2nLocale)->getGuiFieldByGuiPropPath($this->guiPropPath);
+	/**
+	 * @return GuiField
+	 */
+	private function getGuiField(string $key) {
+		return $this->ltef->getTargetEiuEntryGui($key)->getGuiFieldByGuiPropPath($this->guiPropPath);
 	}
 	
-	function handlInput(array $data, array $uploadDefinitions) {
+	function handlInput(string $key, array $data, array $uploadDefinitions) {
+		
+		
 		$siField = $this->getGuiField()->getSiField();
 		
 		if ($siField === null || $siField->isReadOnly()) {
 			throw new IllegalStateException('SiField of ' . $this->guiPropPath . ' / ' . $this->n2nLocale 
-					. 'not writable.');
+					. ' not writable.');
 		}
 		
 		$siField->handleInput($data);

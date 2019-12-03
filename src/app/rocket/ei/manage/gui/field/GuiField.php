@@ -47,11 +47,6 @@ interface GuiField {
 	function save();
 	
 	/**
-	 * @return SiField[]
-	 */
-	function getContextSiFields(): array;
-	
-	/**
 	 * @return GuiFieldMap|NULL
 	 */
 	function getForkGuiFieldMap(): ?GuiFieldMap;

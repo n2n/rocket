@@ -23,24 +23,19 @@ namespace rocket\si\content\impl\split;
 
 use rocket\si\SiPayloadFactory;
 use n2n\util\uri\Url;
-use rocket\si\content\SiField;
 use n2n\web\http\UploadDefinition;
+use rocket\si\content\SiEntry;
 
 class SiSplitContent implements \JsonSerializable {
 	private $label;
 	
 	private $apiUrl;
 	private $entryId;
-	private $fieldId;
 	private $bulky;
 	/**
 	 * @var \Closure|null
 	 */
 	private $inputHandler;
-	/**
-	 * @var SiField|null
-	 */
-	private $field;
 	
 	private function __construct() {
 	}
@@ -51,7 +46,6 @@ class SiSplitContent implements \JsonSerializable {
 		if ($this->apiUrl !== null) {
 			$data['apiUrl'] = $this->apiUrl;
 			$data['entryId'] = $this->entryId;
-			$data['fieldId'] = $this->fieldId;
 			$data['bulky'] = $this->bulky;
 			$data['readOnly'] = $this->inputHandler === null;
 		}
@@ -96,22 +90,34 @@ class SiSplitContent implements \JsonSerializable {
 		return $split;
 	}
 	
-	static function createLazy(string $label, Url $apiUrl, string $entryId, string $fieldId, bool $bulky,
+	/**
+	 * @param string $label
+	 * @param Url $apiUrl
+	 * @param string $entryId
+	 * @param bool $bulky
+	 * @param SiLazyInputHandler $inputHandler
+	 * @return \rocket\si\content\impl\split\SiSplitContent
+	 */
+	static function createLazy(string $label, Url $apiUrl, string $entryId, bool $bulky,
 			SiLazyInputHandler $inputHandler = null) {
 		$split = new SiSplitContent();
 		$split->label = $label;
 		$split->apiUrl = $apiUrl;
 		$split->entryId = $entryId;
-		$split->fieldId = $fieldId;
 		$split->bulky = $bulky;
 		$split->inputHandler = $inputHandler;
 		return $split;
 	}
 	
-	static function createField(string $label, SiField $field) {
+	/**
+	 * @param string $label
+	 * @param SiEntry $entry
+	 * @return \rocket\si\content\impl\split\SiSplitContent
+	 */
+	static function createEntry(string $label, SiEntry $entry) {
 		$split = new SiSplitContent();
 		$split->label = $label;
-		$split->field = $field;
+		$split->entry = $entry;
 		return $split;
 	}
 }
