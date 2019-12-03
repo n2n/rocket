@@ -24,8 +24,10 @@ namespace rocket\si\content\impl\split;
 use n2n\util\type\attrs\DataSet;
 use n2n\util\type\ArgUtils;
 use rocket\si\content\impl\InSiFieldAdapter;
+use n2n\util\uri\Url;
+use rocket\si\content\SiEntry;
 
-class SplitControlInSiField extends InSiFieldAdapter {
+class SplitContextInSiField extends InSiFieldAdapter {
 	/**
 	 * @var string[]
 	 */
@@ -60,7 +62,7 @@ class SplitControlInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param int $min
-	 * @return \rocket\si\content\impl\split\SplitControlInSiField
+	 * @return \rocket\si\content\impl\split\SplitContextInSiField
 	 */
 	function setMin(int $min) {
 		$this->min = $min;
@@ -83,7 +85,7 @@ class SplitControlInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param array $activeKeys
-	 * @return \rocket\si\content\impl\split\SplitControlInSiField
+	 * @return \rocket\si\content\impl\split\SplitContextInSiField
 	 */
 	function setActiveKeys(array $activeKeys) {
 		$this->activeKeys = $activeKeys;
@@ -91,19 +93,38 @@ class SplitControlInSiField extends InSiFieldAdapter {
 	}
 	
 	/**
-	 * @return string[]
+	 * @param string $key
+	 * @param string $label
+	 * @param SiEntry $entry
+	 * @return \rocket\si\content\impl\split\SplitContextInSiField
 	 */
-	function getAssociatedFieldIds() {
-		return $this->associatedFieldIds;
+	function putEntry(string $key, string $label, SiEntry $entry) {
+		ArgUtils::assertTrue(isset($this->options[$key]), 'Unknown key: ' . $key);
+		$this->splitContents[$key] = SiSplitContent::createEntry($label, $entry);
+		return $this;
 	}
-
+	
 	/**
-	 * @param string[] $onAssociatedFieldIds
-	 * @return \rocket\si\content\impl\BoolInSiField
+	 * @param string $key
+	 * @param string $label
+	 * @param Url $apiUrl
+	 * @param string $entryId
+	 * @param string $fieldId
+	 * @param bool $bulky
+	 * @return \rocket\si\content\impl\split\SplitContextInSiField
 	 */
-	function setAssociatedFieldIds(array $associatedFieldIds) {
-		ArgUtils::valArray($associatedFieldIds, 'string');
-		$this->associatedFieldIds = $associatedFieldIds;
+	function putLazy(string $key, string $label, Url $apiUrl, string $entryId, bool $bulky) {
+		$this->splitContents[$key] = SiSplitContent::createLazy($label, $apiUrl, $entryId, $bulky);
+		return $this;
+	}
+	
+	/**
+	 * @param string $key
+	 * @param string $label
+	 * @return \rocket\si\content\impl\split\SplitContextInSiField
+	 */
+	function putUnavailable(string $key, string $label) {
+		$this->splitContents[$key] = SiSplitContent::createUnavaialble($label);
 		return $this;
 	}
 

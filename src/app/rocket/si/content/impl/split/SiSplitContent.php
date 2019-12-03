@@ -21,9 +21,7 @@
  */
 namespace rocket\si\content\impl\split;
 
-use rocket\si\SiPayloadFactory;
 use n2n\util\uri\Url;
-use n2n\web\http\UploadDefinition;
 use rocket\si\content\SiEntry;
 
 class SiSplitContent implements \JsonSerializable {
@@ -33,9 +31,9 @@ class SiSplitContent implements \JsonSerializable {
 	private $entryId;
 	private $bulky;
 	/**
-	 * @var \Closure|null
+	 * @var SiEntry
 	 */
-	private $inputHandler;
+	private $entry;
 	
 	private function __construct() {
 	}
@@ -50,38 +48,11 @@ class SiSplitContent implements \JsonSerializable {
 			$data['readOnly'] = $this->inputHandler === null;
 		}
 		
-		if ($this->field !== null) {
-			$data['field'] = SiPayloadFactory::createDataFromField($this->field);
+		if ($this->entry !== null) {
+			$data['entry'] = $this->entry;
 		}
 		
 		return $data;
-	}
-	
-	function isReadOnly() {
-		if ($this->apiUrl !== null) {
-			return $this->inputHandler === null;
-		}
-		
-		if ($this->field !== null) {
-			return $this->field->isReadOnly();
-		}
-		
-		return false;
-	}
-	
-	/**
-	 * @param array $data
-	 * @param UploadDefinition[] $uploadDefinitions
-	 * @return array
-	 */
-	function handleInput(array $data, array $uploadDefinitions) {
-		if ($this->inputHandler !== null) {
-			return $this->handleInputCallback($data);
-		}
-		
-		if ($this->field !== null) {
-			$this->field->handleCall($data, $uploadDefinitions);
-		}
 	}
 	
 	static function createUnavaialble(string $label) {

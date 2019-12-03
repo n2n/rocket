@@ -41,40 +41,7 @@ class SplitOutSiField extends OutSiFieldAdapter {
 		return 'split-out';
 	}
 	
-	/**
-	 * @param string $key
-	 * @param string $label
-	 * @param SiField $field
-	 * @return \rocket\si\content\impl\split\SplitInSiField
-	 */
-	function putField(string $key, string $label, SiField $field) {
-		$this->splitContents[$key] = SiSplitContent::createField($label, $field);
-		return $this;
-	}
 	
-	/**
-	 * @param string $key
-	 * @param string $label
-	 * @param Url $apiUrl
-	 * @param string $entryId
-	 * @param string $fieldId
-	 * @param bool $bulky
-	 * @return \rocket\si\content\impl\split\SplitInSiField
-	 */
-	function putLazy(string $key, string $label, Url $apiUrl, string $entryId, string $fieldId, bool $bulky) {
-		$this->splitContents[$key] = SiSplitContent::createLazy($label, $apiUrl, $entryId, $fieldId, $bulky);
-		return $this;
-	}
-	
-	/**
-	 * @param string $key
-	 * @param string $label
-	 * @return \rocket\si\content\impl\split\SplitInSiField
-	 */
-	function putUnavailable(string $key, string $label) {
-		$this->splitContents[$key] = SiSplitContent::createUnavaialble($label);
-		return $this;
-	}
 	
 	/**
 	 * {@inheritDoc}

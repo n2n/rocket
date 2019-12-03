@@ -23,7 +23,6 @@ namespace rocket\si\content\impl\split;
 
 use n2n\util\type\attrs\DataSet;
 use rocket\si\content\SiField;
-use n2n\util\uri\Url;
 use rocket\si\content\impl\SiFieldAdapter;
 
 class SplitPlaceholderSiField extends SiFieldAdapter {
@@ -38,10 +37,10 @@ class SplitPlaceholderSiField extends SiFieldAdapter {
 	 */
 	private $inputHandlers = [];
 	
-	/**
-	 * @var \Closure|null
-	 */
-	private $saveCallback = null;
+// 	/**
+// 	 * @var \Closure|null
+// 	 */
+// 	private $saveCallback = null;
 	
 	/**
 	 * @param int $value
@@ -69,38 +68,12 @@ class SplitPlaceholderSiField extends SiFieldAdapter {
 	}
 	
 	/**
-	 * @param string $key
-	 * @param string $label
-	 * @param Url $apiUrl
-	 * @param string $entryId
-	 * @param string $fieldId
-	 * @param bool $bulky
-	 * @return \rocket\si\content\impl\split\SplitPlaceholderSiField
-	 */
-	function putLazy(string $key, string $label, Url $apiUrl, string $entryId, string $fieldId, bool $bulky,
-			SiLazyInputHandler $inputHandler = null) {
-		$this->splitContents[$key] = SiSplitContent::createLazy($label, $apiUrl, $entryId, $fieldId, $bulky,
-				$inputHandler);
-		return $this;
-	}
-	
-	/**
-	 * @param string $key
-	 * @param string $label
-	 * @return \rocket\si\content\impl\split\SplitSiField
-	 */
-	function putUnavailable(string $key, string $label) {
-		$this->splitContents[$key] = SiSplitContent::createUnavaialble($label);
-		return $this;
-	}
-	
-	/**
 	 * {@inheritDoc}
 	 * @see \rocket\si\content\SiField::getData()
 	 */
 	function getData(): array {
 		return [
-			'splitContentsMap' => $this->splitContents
+			'refFieldId' => $this->refFieldId
 		];
 	}
 	

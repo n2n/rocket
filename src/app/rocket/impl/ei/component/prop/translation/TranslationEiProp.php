@@ -84,8 +84,8 @@ class TranslationEiProp extends RelationEiPropAdapter implements FieldEiProp, Qu
 		if (!$entityProperty->getRelation()->getTargetEntityModel()->getClass()
 				->implementsInterface(Translatable::class)) {
 			throw new \InvalidArgumentException('Target entity ('
-					. $entityProperty->getTargetEntityModel()->getClass()->getName() . ') must implement '
-					. Translatable::class);
+					. $entityProperty->getTargetEntityModel()->getClass()->getName() 
+					. ') must implement ' . Translatable::class);
 		}
 
 		$this->entityProperty = $entityProperty;

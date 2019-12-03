@@ -24,6 +24,4 @@ namespace rocket\si\content\impl\split;
 interface SiLazyInputHandler {
 	
 	function handlInput(array $data, array $uploadDefinitions);
-	
-	function handleContextInput(string $key, array $data, array $uploadDefinitions);
 }

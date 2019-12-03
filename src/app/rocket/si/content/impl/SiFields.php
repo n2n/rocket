@@ -144,7 +144,7 @@ class SiFields {
 	/**
 	 * @return \rocket\si\content\impl\split\SplitSiField
 	 */
-	static function split() {
+	static function splitPlaceholder() {
 		return new SplitContextInSiField();
 	}
 
