@@ -29,9 +29,11 @@ use n2n\util\ex\UnsupportedOperationException;
 
 class ReadOnlyGuiField implements GuiField {
 	private $siField;
+	private $forkGuiFieldMap;
 	
-	function __construct(SiField $siField) {
+	function __construct(SiField $siField, ?GuiFieldMap $forkGuiFieldMap) {
 		$this->siField = $siField;
+		$this->forkGuiFieldMap = $forkGuiFieldMap;
 	}
 	
 	function getSiField(): ?SiField {
@@ -42,12 +44,7 @@ class ReadOnlyGuiField implements GuiField {
 		throw new UnsupportedOperationException();
 	}
 	
-	function getContextSiFields(): array {
-		return [];
-	}
-
 	function getForkGuiFieldMap(): ?GuiFieldMap {
-		return null;
+		return $this->forkGuiFieldMap;
 	}
-
 }

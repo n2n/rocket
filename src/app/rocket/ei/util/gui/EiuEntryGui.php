@@ -57,7 +57,7 @@ class EiuEntryGui {
 			return $this->eiuGuiFrame;
 		}
 		
-		return $this->eiuGuiFrame = new EiuGuiFrame($this->eiEntryGui->getEiGuiFrame(), null, $this->eiuAnalyst);
+		return $this->eiuGuiFrame = new EiuGuiFrame($this->eiuAnalyst->getEiGuiFrame(true), null, $this->eiuAnalyst);
 	}
 	
 	/**
@@ -97,7 +97,7 @@ class EiuEntryGui {
 	 * @return \rocket\si\content\SiEntry
 	 */
 	function createSiEntry() {
-		return $this->eiEntryGui->createSiEntry();
+		return $this->guiFrame()->getEiGuiFrame()->createSiEntry($this->eiEntryGui);
 	}
 	
 	/**

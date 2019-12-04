@@ -21,7 +21,6 @@
  */
 namespace rocket\impl\ei\component\prop\translation\gui;
 
-use rocket\ei\EiPropPath;
 use rocket\ei\manage\gui\field\GuiPropPath;
 use rocket\si\content\impl\SiFields;
 use rocket\ei\manage\gui\GuiFieldMap;
@@ -40,28 +39,40 @@ class SplitGuiFieldFactory {
 	}
 	
 	/**
-	 * @param EiPropPath $eiPropPath
-	 * @return EditableGuiField
+	 * @return GuiField
 	 */
-	function createGuiField(EiPropPath $eiPropPath) {
-		$guiPropPath = new GuiPropPath([$eiPropPath]);
-		
+	function createGuiField() {
 		if ($this->readOnly) {
-			return $this->createReadOnlyGuiField($guiPropPath);
+			return $this->createReadOnlyGuiField();
 		}
 		
-		return $this->createEditableGuiField($guiPropPath);
+		return $this->createEditableGuiField();
 	}
 	
-	/**
-	 * @param GuiPropPath $guiPropPath
-	 * @return \rocket\impl\ei\component\prop\translation\gui\EditableGuiField
-	 */
-	private function createEditableGuiField($guiPropPath) {
-		$siField = SiFields::splitIn();
-		$splitGuiField = new EditableGuiField($siField);
+	
+	private function createReadOnlyGuiField() {
+		$siField = SiFields::splitOutContext();
 		
+		foreach ($this->lted->getN2nLocales() as $n2nLocale) {
+			$n2nLocaleId = $n2nLocale->getId();
+			$label = $n2nLocale->toPrettyId();
+			
+			if (null !== ($activeTargetEiuEntryGui = $this->lted->getActiveTargetEiuEntryGui($n2nLocaleId))) {
+				$siField->putEntry($n2nLocaleId, $label, $activeTargetEiuEntryGui->createSiEntry());
+			} else {
+				$siField->putUnavailable($n2nLocaleId, $label);
+			}
+		}
+		
+		return new ReadOnlyGuiField($siField, $this->buildPlaceholderGuiFieldMap(new GuiPropPath([])));
+	}
+	
+	private function createEditableGuiField() {
+		$siField = SiFields::splitInContext($this->lted->getN2nLocaleOptions())
+				->setMin($this->lted->getMinNum())
+				->setActiveKeys($this->lted->getActiveN2nLocaleIds());
 		$targetEiuGuiFrame = $this->lted->getTargetEiuGuiFrame();
+		$apiUrl = $targetEiuGuiFrame->getEiuFrame()->getApiUrl();
 		
 		foreach ($this->lted->getN2nLocaleDefs() as $n2nLocaleDef) {
 			$n2nLocaleId = $n2nLocaleDef->getN2nLocaleId();
@@ -69,36 +80,66 @@ class SplitGuiFieldFactory {
 			$label = $n2nLocaleDef->buildLabel($n2nLocale);
 			
 			$pid = null;
-			if (null !== ($availableTargetEiuEntry = $this->lted->getAvailableTargetEiuEntry($n2nLocaleId))) {
-				$pid = $availableTargetEiuEntry->entry()->getPid();
+			if (null !== ($activeTargetEiuEntry = $this->lted->getActiveTargetEiuEntry($n2nLocaleId))) {
+				$pid = $activeTargetEiuEntry->entry()->getPid();
 			}
 			
-			$siField->putLazy($n2nLocaleId, $label, $targetEiuGuiFrame->getEiuFrame()->getApiUrl(), $pid,
-					(string) $guiPropPath, $targetEiuGuiFrame->isBulky(), 
-					new TranslationSiLazyInputHandler($this->lted, $n2nLocale, $guiPropPath));
+			$siField->putLazy($n2nLocaleId, $label, $apiUrl, $pid, $targetEiuGuiFrame->isBulky());
 		}
 		
-		$forkedEiPropPaths = $this->targetEiuGuiFrame->getForkedEiPropPaths($guiPropPath);
-		
-		if (empty($forkedEiPropPaths)) {
-			return $splitGuiField;
+		$guiFieldMap = new GuiFieldMap();
+		foreach ($this->targetEiuGuiFrame->getEiPropPaths() as $eiPropPath) {
+			$guiFieldMap->putGuiField($eiPropPath, $this->createPlaceholderGuiField(new GuiPropPath([$eiPropPath])));
 		}
 		
-		$splitGuiField->setForkedGuiFieldMap($this->createEditableForkGuiFieldMap($guiPropPath));
+		return new EditableGuiField($this->lted, $siField, 
+				$this->buildPlaceholderGuiFieldMap(new GuiPropPath([])));
+	}
+	
+	/**
+	 * @param GuiPropPath $guiPropPath
+	 * @return \rocket\impl\ei\component\prop\translation\gui\EditableGuiField
+	 */
+	private function createPlaceholderGuiField($guiPropPath) {
+		$siField = SiFields::splitPlaceholder($guiPropPath);
 		
-		return $splitGuiField;
+		$placeholderGuiField = new PlaceholderGuiField($siField);
+		
+		if (!$this->readOnly) {
+			foreach ($this->lted->getN2nLocaleDefs() as $n2nLocaleDef) {
+				$n2nLocaleId = $n2nLocaleDef->getN2nLocaleId();
+				$n2nLocale = $n2nLocaleDef->getN2nLocale();
+				
+				$siField->putInputHandler($n2nLocaleId, new TranslationSiLazyInputHandler($this->lted, $n2nLocale, $guiPropPath));
+			}
+		}
+		
+		$placeholderGuiField->setForkGuiFieldMap($this->buildPlaceholderGuiFieldMap($guiPropPath));
+		
+		return $placeholderGuiField;
 	}
 	
 	
 	/**
 	 * @param GuiPropPath $guiPropPath
-	 * @return \rocket\ei\manage\gui\GuiFieldMap
+	 * @return \rocket\ei\manage\gui\GuiFieldMap|null
 	 */
-	private function createEditableForkGuiFieldMap($guiPropPath) {
+	private function buildPlaceholderGuiFieldMap($forkGuiPropPath) {
+		$eiPropPaths = [];
+		if ($forkGuiPropPath->isEmpty()) {
+			$eiPropPaths = $this->lted->getTargetEiuGuiFrame()->getEiPropPaths();
+		} else {
+			$eiPropPaths = $this->lted->getTargetEiuGuiFrame()->getForkedEiPropPaths($forkGuiPropPath);
+		}
+		
+		if (empty($eiPropPaths)) {
+			return null;
+		}
+		
 		$guiFieldMap = new GuiFieldMap();
-		foreach ($this->targetEiuGuiFrame->getForkedEiPropPaths($guiPropPath) as $forkedEiPropPath) {
-			$guiFieldMap->putGuiField($forkedEiPropPath,
-					$this->createEditableGuiField($guiPropPath->ext($forkedEiPropPath)));
+		foreach ($eiPropPaths as $eiPropPath) {
+			$guiFieldMap->putGuiField($eiPropPath,
+					$this->createPlaceholderGuiField($forkGuiPropPath->ext($eiPropPath)));
 		}
 		return $guiFieldMap;
 	}
@@ -107,35 +148,35 @@ class SplitGuiFieldFactory {
 		return $this->targetEiuGuiFrame->getForkedGuiPropPaths();
 	}
 	
-	/**
-	 * @param GuiPropPath $guiPropPath
-	 * @return \rocket\impl\ei\component\prop\translation\gui\EditableGuiField
-	 */
-	private function createReadOnlyGuiField($guiPropPath) {
-		$siField = SiFields::splitOut();
-		$readOnlyGuiField = new ReadOnlyGuiField($siField);
+// 	/**
+// 	 * @param GuiPropPath $guiPropPath
+// 	 * @return \rocket\impl\ei\component\prop\translation\gui\EditableGuiField
+// 	 */
+// 	private function createReadOnlyGuiField($guiPropPath) {
+// 		$siField = SiFields::splitOut();
+// 		$readOnlyGuiField = new ReadOnlyGuiField($siField);
 
-		foreach ($this->lted->getN2nLocales() as $n2nLocaleId => $n2nLocale) {
-			$targetEiuEntryGui = $this->lted->getActiveTargetEiuEntryGui($n2nLocaleId);
+// 		foreach ($this->lted->getN2nLocales() as $n2nLocaleId => $n2nLocale) {
+// 			$targetEiuEntryGui = $this->lted->getActiveTargetEiuEntryGui($n2nLocaleId);
 			
-			if ($targetEiuEntryGui === null) {
-				$siField->putUnavailable($n2nLocaleId, $n2nLocale->toPrettyId());
-				continue;
-			}
+// 			if ($targetEiuEntryGui === null) {
+// 				$siField->putUnavailable($n2nLocaleId, $n2nLocale->toPrettyId());
+// 				continue;
+// 			}
 			
-			$siField->putField($n2nLocaleId, $n2nLocale->toPrettyId(), (string) $guiPropPath);
-		}
+// 			$siField->putField($n2nLocaleId, $n2nLocale->toPrettyId(), (string) $guiPropPath);
+// 		}
 		
-		$forkedEiPropPaths = $this->lted->getTargetEiuGuiFrame()->getForkedEiPropPaths($guiPropPath);
+// 		$forkedEiPropPaths = $this->lted->getTargetEiuGuiFrame()->getForkedEiPropPaths($guiPropPath);
 		
-		if (empty($forkedEiPropPaths)) {
-			return $readOnlyGuiField;
-		}
+// 		if (empty($forkedEiPropPaths)) {
+// 			return $readOnlyGuiField;
+// 		}
 		
-		$readOnlyGuiField->setForkedGuiFieldMap($this->createReadOnlyForkGuiFieldMap($guiPropPath));
+// 		$readOnlyGuiField->setForkedGuiFieldMap($this->createReadOnlyForkGuiFieldMap($guiPropPath));
 		
-		return $readOnlyGuiField;
-	}
+// 		return $readOnlyGuiField;
+// 	}
 	
 	/**
 	 * @param GuiPropPath $guiPropPath
@@ -157,7 +198,7 @@ class TranslationSiLazyInputHandler implements SiLazyInputHandler {
 	private $n2nLocale;
 	private $guiPropPath;
 	
-	function __construct(LazyTranslationEssentialsDeterminer $lted, GuiPropPath $guiPropPath) {
+	function __construct(LazyTranslationEssentialsDeterminer $lted, N2nLocale $n2nLocale, GuiPropPath $guiPropPath) {
 		$this->lted = $lted;
 		$this->n2nLocale = $n2nLocale;
 		$this->guiPropPath = $guiPropPath;
@@ -170,9 +211,7 @@ class TranslationSiLazyInputHandler implements SiLazyInputHandler {
 		return $this->ltef->getTargetEiuEntryGui($key)->getGuiFieldByGuiPropPath($this->guiPropPath);
 	}
 	
-	function handlInput(string $key, array $data, array $uploadDefinitions) {
-		
-		
+	function handlInput(array $data, array $uploadDefinitions) {
 		$siField = $this->getGuiField()->getSiField();
 		
 		if ($siField === null || $siField->isReadOnly()) {

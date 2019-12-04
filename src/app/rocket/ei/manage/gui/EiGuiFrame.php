@@ -399,7 +399,7 @@ class EiGuiFrame {
 				$siEntry->putField($guiPropPathStr, $siField);
 			}
 			
-			$siEntry->putContextFields($guiPropPathStr, $guiField->getContextSiFields());
+// 			$siEntry->putContextFields($guiPropPathStr, $guiField->getContextSiFields());
 		}
 		
 		if (!$siControlsIncluded) {

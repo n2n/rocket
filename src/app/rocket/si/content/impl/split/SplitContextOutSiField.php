@@ -21,25 +21,12 @@
  */
 namespace rocket\si\content\impl\split;
 
-use n2n\util\type\attrs\DataSet;
-use n2n\util\type\ArgUtils;
-use rocket\si\content\impl\InSiFieldAdapter;
 use n2n\util\uri\Url;
 use rocket\si\content\SiEntry;
+use rocket\si\content\impl\OutSiFieldAdapter;
 
-class SplitContextOutSiField extends InSiFieldAdapter {
-	/**
-	 * @var string[]
-	 */
-	private $options;
-	/**
-	 * @var int
-	 */
-	private $min;
-	/**
-	 * @var string[]
-	 */
-	private $activeKeys = [];
+class SplitContextOutSiField extends OutSiFieldAdapter {
+
 	/**
 	 * @var SiSplitContent[]
 	 */
@@ -48,50 +35,17 @@ class SplitContextOutSiField extends InSiFieldAdapter {
 	/**
 	 * 
 	 */
-	function __construct(array $options) {
-		ArgUtils::valArray($options, 'string');
-		$this->options = $options;
+	function __construct() {
 	}
 	
-	/**
-	 * @return int
-	 */
-	function getMin() {
-		return $this->min;
-	}
-	
-	/**
-	 * @param int $min
-	 * @return \rocket\si\content\impl\split\SplitContextOutSiField
-	 */
-	function setMin(int $min) {
-		$this->min = $min;
-		return $this;
-	}
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\si\content\SiField::getType()
 	 */
 	function getType(): string {
-		return 'split-control-in';
+		return 'split-context-out';
 	}
-	
-	/**
-	 * @return string[]
-	 */
-	function getActiveKeys() {
-		return $this->activeKeys;
-	}
-	
-	/**
-	 * @param array $activeKeys
-	 * @return \rocket\si\content\impl\split\SplitContextOutSiField
-	 */
-	function setActiveKeys(array $activeKeys) {
-		$this->activeKeys = $activeKeys;
-		return $this;
-	}
-	
+		
 	/**
 	 * @param string $key
 	 * @param string $label
@@ -99,7 +53,6 @@ class SplitContextOutSiField extends InSiFieldAdapter {
 	 * @return \rocket\si\content\impl\split\SplitContextOutSiField
 	 */
 	function putEntry(string $key, string $label, SiEntry $entry) {
-		ArgUtils::assertTrue(isset($this->options[$key]), 'Unknown key: ' . $key);
 		$this->splitContents[$key] = SiSplitContent::createEntry($label, $entry);
 		return $this;
 	}
@@ -109,7 +62,6 @@ class SplitContextOutSiField extends InSiFieldAdapter {
 	 * @param string $label
 	 * @param Url $apiUrl
 	 * @param string $entryId
-	 * @param string $fieldId
 	 * @param bool $bulky
 	 * @return \rocket\si\content\impl\split\SplitContextOutSiField
 	 */
@@ -134,17 +86,7 @@ class SplitContextOutSiField extends InSiFieldAdapter {
 	 */
 	function getData(): array {
 		return [
-			'activeKeys' => $this->activeKeys,
-			'min' => $this->min,
 			'splitContents' => $this->splitContents
 		];
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\si\content\SiField::handleInput()
-	 */
-	function handleInput(array $data) {
-		$this->value = (new DataSet($data))->reqInt('value', true);
 	}
 }

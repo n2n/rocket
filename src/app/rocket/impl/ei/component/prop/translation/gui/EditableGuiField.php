@@ -21,42 +21,40 @@
  */
 namespace rocket\impl\ei\component\prop\translation\gui;
 
-
-use rocket\ei\manage\gui\GuiFieldMap;
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\si\content\SiField;
-use rocket\ei\manage\gui\field\GuiPropPath;
-use rocket\si\content\impl\SiFields;
+use rocket\ei\manage\gui\GuiFieldMap;
+use rocket\si\content\impl\split\SplitContextInSiField;
 
 class EditableGuiField implements GuiField {
 	private $lted;
-	private $guiPropPath;
+	private $forkGuiFieldMap;
+	/**
+	 * @var SplitContextInSiField
+	 */
+	private $siField;
 	
-	function __construct(LazyTranslationEssentialsDeterminer $lted, GuiPropPath $guiPropPath) {
+	function __construct(LazyTranslationEssentialsDeterminer $lted, SplitContextInSiField $siField, ?GuiFieldMap $forkGuiFieldMap) {
 		$this->lted = $lted;
-		$this->guiPropPath = $guiPropPath;
-		$this->splitIn =  SiFields::splitIn();
+		$this->siField = $siField;
+		$this->forkGuiFieldMap = $forkGuiFieldMap;
 	}
 	
-	function getSiField(): ?SiField {
-		return splitIn;
+	public function getSiField(): ?SiField {
+		return $this->siField;
 	}
 	
-	function save() {
-		$this->forkGuiFieldMap->save();
+	public function save() {
+		$this->lted->activateTranslations($this->contextSiField->getActiveKeys());
+		
+		if ($this->forkGuiFieldMap !== null) {
+			$this->forkGuiFieldMap->save();
+		}
 		
 		$this->lted->save();
 	}
 	
-	function getContextSiFields(): array {
-		return [];
-	}
-
-	function setForkGuiFieldMap(?GuiFieldMap $forkGuiFieldMap) {
-		$this->forkGuiFieldMap = $forkGuiFieldMap;
-	}
-	
-	function getForkGuiFieldMap(): ?GuiFieldMap {
+	public function getForkGuiFieldMap(): ?GuiFieldMap {
 		return $this->forkGuiFieldMap;
 	}
 

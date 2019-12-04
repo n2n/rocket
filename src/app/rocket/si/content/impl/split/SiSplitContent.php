@@ -66,17 +66,14 @@ class SiSplitContent implements \JsonSerializable {
 	 * @param Url $apiUrl
 	 * @param string $entryId
 	 * @param bool $bulky
-	 * @param SiLazyInputHandler $inputHandler
 	 * @return \rocket\si\content\impl\split\SiSplitContent
 	 */
-	static function createLazy(string $label, Url $apiUrl, string $entryId, bool $bulky,
-			SiLazyInputHandler $inputHandler = null) {
+	static function createLazy(string $label, Url $apiUrl, string $entryId, bool $bulky) {
 		$split = new SiSplitContent();
 		$split->label = $label;
 		$split->apiUrl = $apiUrl;
 		$split->entryId = $entryId;
 		$split->bulky = $bulky;
-		$split->inputHandler = $inputHandler;
 		return $split;
 	}
 	

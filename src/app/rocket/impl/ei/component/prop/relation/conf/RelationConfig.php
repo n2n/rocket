@@ -134,7 +134,6 @@ class RelationConfig extends ConfigAdaption {
 	}
 	
 	function setup(Eiu $eiu, DataSet $dataSet) {
-		test('setup ' . spl_object_hash($this->relationModel));
 		IllegalStateException::assertTrue($this->relationModel !== null, self::class . ' misses RelationModel for ' 
 				. $this->relationModel->getRelationEntityProperty() . '.');
 		

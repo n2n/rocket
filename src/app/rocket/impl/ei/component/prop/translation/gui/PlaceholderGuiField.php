@@ -21,44 +21,45 @@
  */
 namespace rocket\impl\ei\component\prop\translation\gui;
 
+
+use rocket\ei\manage\gui\GuiFieldMap;
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\si\content\SiField;
-use rocket\ei\manage\gui\GuiFieldMap;
-use rocket\si\content\impl\SiFields;
+use rocket\si\content\impl\split\SplitPlaceholderSiField;
 
-class TranslationGuiField implements GuiField {
-	private $lted;
+class PlaceholderGuiField implements GuiField {
+// 	private $lted;
+// 	private $guiPropPath;
+	private $siField;
 	private $forkGuiFieldMap;
-	private $contextSiField;
 	
-	function __construct(LazyTranslationEssentialsDeterminer $lted, GuiFieldMap $forkGuiFieldMap) {
-		$this->lted = $lted;
+	function __construct(/*LazyTranslationEssentialsDeterminer $lted, GuiPropPath $guiPropPath, */ 
+			SplitPlaceholderSiField $siField, GuiFieldMap $forkGuiFieldMap = null) {
+// 		$this->lted = $lted;
+// 		$this->guiPropPath = $guiPropPath;
+		$this->siField =  $siField;
 		$this->forkGuiFieldMap = $forkGuiFieldMap;
-		$this->siField = SiFields::splitInControl($lted->getN2nLocaleOptions())
-				->setMin($lted->getMinNum())
-				->setActiveKeys($lted->getActiveN2nLocaleIds())
-				->setAssociatedFieldIds(array_map(
-						function ($guiPropPath) { return (string) $guiPropPath; }, 
-						$lted->getTargetEiuGuiFrame()->getGuiPropPaths()));
 	}
 	
-	public function getSiField(): ?SiField {
+	function getSiField(): ?SiField {
 		return $this->siField;
 	}
 	
-	public function save() {
-		$this->lted->activateTranslations($this->contextSiField->getActiveKeys());
+	function save() {
+// 		if ($this->siField->isReadOnly()) {
+// 			throw new IllegalStateException('Can not save ready only GuiField');
+// 		}
 		
-		$this->forkGuiFieldMap->save();
+// 		$this->forkGuiFieldMap->save();
 		
-		$this->lted->save();
-	}
-	
-	public function getContextSiFields(): array {
-		return [ $this->contextSiField ];
+// 		$this->lted->save();
 	}
 
-	public function getForkGuiFieldMap(): ?GuiFieldMap {
+	function setForkGuiFieldMap(?GuiFieldMap $forkGuiFieldMap) {
+		$this->forkGuiFieldMap = $forkGuiFieldMap;
+	}
+	
+	function getForkGuiFieldMap(): ?GuiFieldMap {
 		return $this->forkGuiFieldMap;
 	}
 

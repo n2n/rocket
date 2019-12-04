@@ -29,7 +29,6 @@ use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\manage\gui\field\GuiPropPath;
-use rocket\ei\manage\gui\GuiFieldMap;
 
 class TranslationGuiPropSetup implements GuiPropSetup, GuiFieldAssembler {
 	private $targetEiuGuiFrame;
@@ -56,12 +55,14 @@ class TranslationGuiPropSetup implements GuiPropSetup, GuiFieldAssembler {
 		$lted = new LazyTranslationEssentialsDeterminer($eiu, $this->targetEiuGuiFrame, $this->translationConfig);
 		$tgff = new SplitGuiFieldFactory($lted, $readOnly);
 		
-		$guiFieldMap = new GuiFieldMap();
-		foreach ($this->targetEiuGuiFrame->getEiPropPaths() as $eiPropPath) {
-			$guiFieldMap->putGuiField($eiPropPath, $tgff->createGuiField($eiPropPath));
-		}
+		return $tgff->createGuiField();
 		
-		return new TranslationGuiField($lted, $guiFieldMap);
+// 		$guiFieldMap = new GuiFieldMap();
+// 		foreach ($this->targetEiuGuiFrame->getEiPropPaths() as $eiPropPath) {
+// 			$guiFieldMap->putGuiField($eiPropPath, $tgff->createGuiField($eiPropPath));
+// 		}
+		
+// 		return new TranslationGuiField($lted, $guiFieldMap);
 		
 		// 		if ($this->copyCommand !== null) {
 		// 			$translationGuiField->setCopyUrl($targetEiuFrame->getUrlToCommand($this->copyCommand)

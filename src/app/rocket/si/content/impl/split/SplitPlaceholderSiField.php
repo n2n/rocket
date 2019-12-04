@@ -89,12 +89,12 @@ class SplitPlaceholderSiField extends SiFieldAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\si\content\SiField::handleInput()
 	 */
-	function handleInput(array $data, array $uploadDefinitions) {
+	function handleInput(array $data) {
 		$dataMap = (new DataSet($data))->reqArray('value', 'array');
 		
 		foreach ($this->inputHandlers as $key => $inputHandler) {
 			if (isset($dataMap[$key])) {
-				$inputHandler->handleInput($dataMap[$key], $uploadDefinitions);
+				$inputHandler->handleInput($dataMap[$key]);
 			}
 		}
 	}

@@ -28,8 +28,10 @@ use rocket\si\content\impl\relation\EmbeddedEntryInSiField;
 use rocket\si\content\impl\relation\EmbeddedEntryPanelsInSiField;
 use rocket\si\content\impl\relation\EmbeddedEntryPanelInputHandler;
 use rocket\si\content\impl\relation\EmbeddedEntryInputHandler;
-use rocket\si\content\impl\split\SplitControlInSiField;
+use rocket\si\content\impl\split\SplitContextInSiField;
 use rocket\si\content\impl\split\SplitOutSiField;
+use rocket\si\content\impl\split\SplitContextOutSiField;
+use rocket\si\content\impl\split\SplitPlaceholderSiField;
 
 class SiFields {
 	
@@ -135,23 +137,25 @@ class SiFields {
 	
 	/**
 	 * @param array $options
-	 * @return \rocket\si\content\impl\split\SplitControlInSiField
+	 * @return \rocket\si\content\impl\split\SplitContextInSiField
 	 */
-	static function splitInControl(array $options) {
-		return new SplitControlInSiField($options);
+	static function splitInContext(array $options) {
+		return new SplitContextInSiField($options);
 	}
 	
 	/**
-	 * @return \rocket\si\content\impl\split\SplitSiField
+	 * @return \rocket\si\content\impl\split\SplitContextOutSiField
 	 */
-	static function splitPlaceholder() {
-		return new SplitContextInSiField();
+	static function splitOutContext() {
+		return new SplitContextOutSiField();
+	}
+	
+	/**
+	 * @return \rocket\si\content\impl\split\SplitPlaceholderSiField
+	 */
+	static function splitPlaceholder(string $refFieldId) {
+		return new SplitPlaceholderSiField($refFieldId);
 	}
 
-	/**
-	 * @return \rocket\si\content\impl\split\SplitOutSiField
-	 */
-	static function splitOut() {
-		return new SplitOutSiField();
-	}
+	
 }
