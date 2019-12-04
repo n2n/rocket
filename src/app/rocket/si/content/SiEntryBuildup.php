@@ -155,11 +155,6 @@ class SiEntryBuildup implements \JsonSerializable {
 	function jsonSerialize() {
 		$fieldsArr = SiPayloadFactory::createDataFromFields($this->fields);
 		
-		$contextFieldsArr = [];
-		foreach ($this->contextFields as $id => $fields) {
-			$contextFieldsArr[$id] = SiPayloadFactory::createDataFromFields($fields);
-		}
-		
 		return [
 			'typeId' => $this->typeId,
 			'idName' => $this->idName,

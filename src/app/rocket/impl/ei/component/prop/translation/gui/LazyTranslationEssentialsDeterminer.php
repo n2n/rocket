@@ -46,6 +46,10 @@ class LazyTranslationEssentialsDeterminer {
 		$this->translationConfig = $translationConfig;
 	}
 	
+	function getGuiPropPath() {
+		return $this->eiu->guiField()->getPath();
+	}
+	
 	/**
 	 * @return N2nLocale[]
 	 */

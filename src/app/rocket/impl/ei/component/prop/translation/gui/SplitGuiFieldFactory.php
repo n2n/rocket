@@ -103,6 +103,8 @@ class SplitGuiFieldFactory {
 	private function createPlaceholderGuiField($guiPropPath) {
 		$siField = SiFields::splitPlaceholder($guiPropPath);
 		
+		$this->lted->getGuiPropPath();
+		
 		$placeholderGuiField = new PlaceholderGuiField($siField);
 		
 		if (!$this->readOnly) {
