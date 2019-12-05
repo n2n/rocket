@@ -18,6 +18,9 @@ import { SiType } from '../model/meta/si-type';
 import { SiProp } from '../model/meta/si-prop';
 import { Subject, Observable } from 'rxjs';
 import { stringify } from '@angular/compiler/src/util';
+import { SplitContextInSiField } from '../model/content/impl/split/model/split-context-in-si-field';
+import { SplitContextOutSiField } from '../model/content/impl/split/model/split-context-out-si-field';
+import { SplitPlaceholderSiField } from '../model/content/impl/split/model/split-placeholder-si-field';
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',
@@ -30,7 +33,10 @@ enum SiFieldType {
 	ENUM_IN = 'enum-in',
 	QUALIFIER_SELECT_IN = 'qualifier-select-in',
 	EMBEDDED_ENTRY_IN = 'embedded-entry-in',
-	EMBEDDED_ENTRY_PANELS_IN = 'embedded-entry-panels-in'
+	EMBEDDED_ENTRY_PANELS_IN = 'embedded-entry-panels-in',
+	SPLIT_CONTEXT_IN = 'split-context-in',
+	SPLIT_CONTEXT_OUT = 'split-context-out',
+	SPLIT_PLACEHOLDER = 'split-placeholder'
 }
 
 export class SiFieldFactory {
@@ -140,6 +146,15 @@ export class SiFieldFactory {
 		case SiFieldType.EMBEDDED_ENTRY_PANELS_IN:
 			return new EmbeddedEntryPanelsInSiField(dataExtr.reqString('apiUrl'),
 					SiContentFactory.createPanels(dataExtr.reqArray('panels')));
+
+		case SiFieldType.SPLIT_CONTEXT_IN:
+			return new SplitContextInSiField();
+
+		case SiFieldType.SPLIT_CONTEXT_OUT:
+			return new SplitContextOutSiField();
+
+		case SiFieldType.SPLIT_PLACEHOLDER:
+			return new SplitPlaceholderSiField();
 
 		default:
 			throw new ObjectMissmatchError('Invalid si field type: ' + data.type);

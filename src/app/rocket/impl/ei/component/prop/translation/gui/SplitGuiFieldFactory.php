@@ -101,9 +101,7 @@ class SplitGuiFieldFactory {
 	 * @return \rocket\impl\ei\component\prop\translation\gui\EditableGuiField
 	 */
 	private function createPlaceholderGuiField($guiPropPath) {
-		$siField = SiFields::splitPlaceholder($guiPropPath);
-		
-		$this->lted->getGuiPropPath();
+		$siField = SiFields::splitPlaceholder((string) $this->lted->getGuiPropPath(), $guiPropPath);
 		
 		$placeholderGuiField = new PlaceholderGuiField($siField);
 		

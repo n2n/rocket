@@ -26,12 +26,14 @@ use rocket\si\content\SiField;
 use rocket\si\content\impl\SiFieldAdapter;
 
 class SplitPlaceholderSiField extends SiFieldAdapter {
-	
+	/**
+	 * @var string
+	 */
+	private $contextFieldId;
 	/**
 	 * @var string
 	 */
 	private $refFieldId;
-	
 	/**
 	 * @var SiLazyInputHandler[]
 	 */
@@ -43,9 +45,11 @@ class SplitPlaceholderSiField extends SiFieldAdapter {
 // 	private $saveCallback = null;
 	
 	/**
-	 * @param int $value
+	 * @param string $contextFieldId
+	 * @param string $refFieldId
 	 */
-	function __construct(string $refFieldId) {
+	function __construct(string $contextFieldId, string $refFieldId) {
+		$this->contextFieldId = $contextFieldId;
 		$this->refFieldId = $refFieldId;
 	}
 
@@ -73,6 +77,7 @@ class SplitPlaceholderSiField extends SiFieldAdapter {
 	 */
 	function getData(): array {
 		return [
+			'contextFieldId' => $this->contextFieldId,
 			'refFieldId' => $this->refFieldId
 		];
 	}

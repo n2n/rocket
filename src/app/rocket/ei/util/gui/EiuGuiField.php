@@ -5,7 +5,7 @@ use rocket\ei\util\EiuAnalyst;
 use rocket\ei\manage\gui\field\GuiPropPath;
 use rocket\ei\manage\api\ApiFieldCallId;
 
-class EiuGuiFrameField {
+class EiuGuiField {
 	private $guiPropPath;
 	private $eiuEntryGui;
 	private $eiuAnalyst;

@@ -60,7 +60,7 @@ class EiGui {
 	/**
 	 * @return GuiPropPath[]
 	 */
-	public function getGuiPropPaths() {
+	function getGuiPropPaths() {
 		$this->ensureInit();
 		
 		$guiPropPaths = [];

@@ -65,7 +65,7 @@ use n2n\util\type\TypeUtils;
 use rocket\ei\manage\gui\field\GuiPropPath;
 use rocket\spec\UnknownTypeException;
 use n2n\util\ex\IllegalStateException;
-use rocket\ei\util\gui\EiuGuiFrameField;
+use rocket\ei\util\gui\EiuGuiField;
 use rocket\ei\util\gui\EiuGui;
 use rocket\ei\manage\gui\EiGui;
 
@@ -194,8 +194,8 @@ class EiuAnalyst {
 				continue;
 			}
 			
-			if ($eiArg instanceof EiuGuiFrameField) {
-				$this->assignEiuGuiFrameField($eiArg);
+			if ($eiArg instanceof EiuGuiField) {
+				$this->assignEiuGuiField($eiArg);
 				continue;
 			}
 			
@@ -690,9 +690,9 @@ class EiuAnalyst {
 	}
 	
 	/**
-	 * @param EiuGuiFrameField $eiuGuiFrameField
+	 * @param EiuGuiField $eiuGuiFrameField
 	 */
-	private function assignEiuGuiFrameField($eiuGuiFrameField) {
+	private function assignEiuGuiField($eiuGuiFrameField) {
 		if ($this->eiuGuiFrameField === $eiuGuiFrameField) {
 			return;
 		}
@@ -1194,7 +1194,7 @@ class EiuAnalyst {
 						. implode(', ', self::EI_FIELD_TYPES));
 	}
 	
-	public function getEiuGuiFrameField(bool $required) {
+	public function getEiuGuiField(bool $required) {
 		if ($this->eiuGuiFrameField !== null) {
 			return $this->eiuGuiFrameField;
 		}

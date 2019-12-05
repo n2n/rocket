@@ -183,14 +183,14 @@ class Eiu implements Lookupable {
 	
 	/**
 	 * @param bool $required
-	 * @return \rocket\ei\util\gui\EiuGuiFrameField|null
+	 * @return \rocket\ei\util\gui\EiuGuiField|null
 	 */
 	public function guiField(bool $required = true) {
 		if ($this->eiuGuiFrameField !== null) {
 			return $this->eiuGuiFrameField;
 		}
 		
-		return $this->eiuGuiFrameField = $this->eiuAnalyst->getEiuGuiFrameField($required);
+		return $this->eiuGuiFrameField = $this->eiuAnalyst->getEiuGuiField($required);
 	}
 	
 	/**

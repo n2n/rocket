@@ -308,7 +308,7 @@ class EiuEntryGui {
 	 * @return \rocket\ei\util\entry\EiuField
 	 */
 	function field($guiPropPath) {
-		return new EiuGuiFrameField(GuiPropPath::create($guiPropPath), $this, $this->eiuAnalyst);
+		return new EiuGuiField(GuiPropPath::create($guiPropPath), $this, $this->eiuAnalyst);
 	}
 	
 	function handleSiEntryInput(SiEntryInput $siEntryInput) {

@@ -76,7 +76,7 @@ class SiTypeDeclaration implements \JsonSerializable {
 	 * @return SiTypeDeclaration
 	 */
 	function addStructureDeclaration(SiStructureDeclaration $structureDeclaration) {
-		$this->structureDeclaration[] = $structureDeclaration;
+		$this->structureDeclarations[] = $structureDeclaration;
 		return $this;
 	}
 	

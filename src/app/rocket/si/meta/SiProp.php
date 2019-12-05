@@ -25,6 +25,7 @@ class SiProp implements \JsonSerializable {
 	private $id;
 	private $label;
 	private $helpText;
+	private $descendantPropIds = null;
 	
 	/**
 	 * @param string $siFieldId
@@ -70,7 +71,7 @@ class SiProp implements \JsonSerializable {
 	/**
 	 * @return string|null
 	 */
-	public function getHelpText() {
+	function getHelpText() {
 		return $this->helpText;
 	}
 
@@ -78,16 +79,24 @@ class SiProp implements \JsonSerializable {
 	 * @param string|null $helpText
 	 * @return \rocket\si\meta\SiProp
 	 */
-	public function setHelpText(?string $helpText) {
+	function setHelpText(?string $helpText) {
 		$this->helpText = $helpText;
 		return $this;
+	}
+	
+	function getDescendantPropIds() {
+		return $this->descendantPropIds;
+	}
+	
+	function setDescendantPropIds(?array $descendantPropIds) {
+		$this->descendantPropIds = $descendantPropIds;
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @see \JsonSerializable::jsonSerialize()
 	 */
-	public function jsonSerialize() {
+	function jsonSerialize() {
 		return [
 			'id' => $this->id,
 			'label' => $this->label,

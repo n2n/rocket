@@ -153,8 +153,8 @@ class SiFields {
 	/**
 	 * @return \rocket\si\content\impl\split\SplitPlaceholderSiField
 	 */
-	static function splitPlaceholder(string $refFieldId) {
-		return new SplitPlaceholderSiField($refFieldId);
+	static function splitPlaceholder(string $contextFieldId, string $refFieldId) {
+		return new SplitPlaceholderSiField($contextFieldId, $refFieldId);
 	}
 
 	
