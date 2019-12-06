@@ -84,19 +84,20 @@ class EiGui {
 		IllegalStateException::assertTrue($this->guiStructureDeclarations !== null,
 				'EiGuiFrame is forked.');
 		
+		
+		$deter = new ContextSiFieldDeterminer();
+		
 		$siProps = [];
 		foreach ($this->filterFieldGuiStructureDeclarations($this->guiStructureDeclarations) 
 				as $guiStructureDeclaration) {
 			$guiPropPath = $guiStructureDeclaration->getGuiPropPath();
-			$siProps[(string) $guiPropPath] = $this->createSiProp($guiStructureDeclaration);
 			
-			if (!$guiPropPath->hasMultipleEiPropPaths()) {
-				continue;
-			}
+			$siProps[] = $this->createSiProp($guiStructureDeclaration);
 			
-			$guiPropPath->getPoped()
+			$deter->reportGuiPropPath($guiPropPath);
 		}
-		return $siProps;
+		
+		return array_merge($deter->createContextSiProps($this->eiGuiFrame), $siProps);
 	}
 	
 	/**
@@ -202,15 +203,72 @@ class EiGui {
 }
 
 class ContextSiFieldDeterminer {
+	private $guiPropPaths = [];
 	private $forkGuiPropPaths = [];
 	private $forkedGuiPropPaths = []; 
 	
+	/**
+	 * @param GuiPropPath $guiPropPath
+	 */
 	function reportGuiPropPath(GuiPropPath $guiPropPath) {
-		$forkedGuiPropPath = $guiPropPath;
-		while ($forkedGuiPropPath->hasMultipleEiPropPaths()) {
-			$forkedGuiPropPath = $forkedGuiPropPath->getPoped();
+		$guiPropPathStr = (string) $guiPropPath;
+		
+		$this->guiPropPaths[$guiPropPathStr] = $guiPropPath;
+		unset($this->forkGuiPropPaths[$guiPropPathStr]);
+		unset($this->forkedGuiPropPaths[$guiPropPathStr]);
+		
+		$forkGuiPropPath = $guiPropPath;
+		while ($forkGuiPropPath->hasMultipleEiPropPaths()) {
+			$forkGuiPropPath = $forkGuiPropPath->getPoped();
+			$this->reportFork($forkGuiPropPath, $guiPropPath);
 		}
-		$popedGuiPropPath = $guiPropPath->getPoped();
 	}
 	
+	/**
+	 * @param GuiPropPath $forkGuiPropPath
+	 * @param GuiPropPath $guiPropPath
+	 */
+	private function reportFork(GuiPropPath $forkGuiPropPath, GuiPropPath $guiPropPath) {
+		$forkGuiPropPathStr = (string) $forkGuiPropPath;
+		
+		if (isset($this->guiPropPaths[$forkGuiPropPathStr])) {
+			return;
+		}
+		
+		if (!isset($this->forkGuiPropPaths[$forkGuiPropPathStr])) {
+			$this->forkGuiPropPaths[$forkGuiPropPathStr] = [];
+		}
+		$this->forkedGuiPropPaths[$forkGuiPropPathStr][] = $guiPropPath;
+		$this->forkGuiPropPaths[$forkGuiPropPathStr] = $forkGuiPropPath;
+		
+		if ($forkGuiPropPath->hasMultipleEiPropPaths()) {
+			$this->reportFork($forkGuiPropPath->getPoped(), $forkGuiPropPath);
+		}
+	}
+	
+	/**
+	 * @return SiProp[]
+	 */
+	function createContextSiProps(EiGuiFrame $eiGuiFrame) {
+		$n2nLocale = $eiGuiFrame->getEiFrame()->getN2nContext()->getN2nLocale();
+		
+		$siProps = [];
+		
+		foreach ($this->forkGuiPropPaths as $forkGuiPropPath) {
+			$eiProp = $eiGuiFrame->getGuiDefinition()->getGuiPropWrapperByGuiPropPath($forkGuiPropPath)->getEiProp();
+			
+			$siProp = (new SiProp((string) $forkGuiPropPath, $eiProp->getLabelLstr()->t($n2nLocale)))
+					->setDescendantPropIds(array_map(
+							function ($guiPropPath) { return (string) $guiPropPath; }, 
+							$this->forkedGuiPropPaths[(string) $forkGuiPropPath]));
+					
+			if (null !== ($helpTextLstr = $eiProp->getHelpTextLstr())) {
+				$siProp->setHelpText($helpTextLstr);	
+			}
+			
+			$siProps[] = $siProp;
+		}
+		
+		return $siProps;
+	}
 }

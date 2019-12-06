@@ -9,7 +9,7 @@ export abstract class OutSiFieldAdapter extends SiFieldAdapter {
 		return false;
 	}
 
-	readInput(): Map<string, string | number | boolean | File | null> {
+	readInput(): object {
 		throw new IllegalSiStateError('no input');
 	}
 

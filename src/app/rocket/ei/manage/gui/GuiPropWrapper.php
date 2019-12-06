@@ -99,6 +99,19 @@ class GuiPropWrapper {
 	}
 	
 	/**
+	 * @param GuiPropPath $guiPropPath
+	 * @throws GuiException
+	 * @return \rocket\ei\manage\gui\GuiPropWrapper
+	 */
+	function getForkedGuiPropWrapper(GuiPropPath $guiPropPath) {
+		if (null !== ($forkGuiDefinition = $this->guiProp->getForkGuiDefinition())) {
+			return $forkGuiDefinition->getGuiPropWrapperByGuiPropPath($guiPropPath);
+		}
+		
+		throw new GuiException('GuiProp ' . $guiPropPath . ' not found.');
+	}
+	
+	/**
 	 * @param EiGuiFrame $eiGuiFrame
 	 * @param array $fokredGuiPropPaths
 	 * @return \rocket\ei\manage\gui\GuiPropSetup

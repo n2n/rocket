@@ -46,7 +46,6 @@ class SiTypeDeclaration implements \JsonSerializable {
 	 * @return SiTypeDeclaration
 	 */
 	function setType(SiType $type) {
-		ArgUtils::valArray($type, SiProp::class);
 		$this->type = $type;
 		return $this;
 	}

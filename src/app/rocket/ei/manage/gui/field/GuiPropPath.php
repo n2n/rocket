@@ -168,7 +168,7 @@ class GuiPropPath implements Hashable {
 		$guiPropPath = new GuiPropPath($this->eiPropPaths);
 		
 		if ($ext instanceof GuiPropPath) {
-			array_push($ext->eiPropPaths, ...$ext->eiPropPaths);
+			array_push($guiPropPath->eiPropPaths, ...$ext->eiPropPaths);
 			return $guiPropPath;
 		}
 		

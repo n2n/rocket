@@ -12,6 +12,7 @@ use n2n\l10n\N2nLocale;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\ei\component\command\EiCommand;
 use rocket\ei\util\control\EiuControlFactory;
+use rocket\ei\util\spec\EiuProp;
 
 class EiuGuiFrame {
 	private $eiGuiFrame;
@@ -77,11 +78,20 @@ class EiuGuiFrame {
 // 			return $displayItem->translateLabel($n2nLocale);
 // 		}
 		
-		if (null !== ($guiProp = $this->getGuiPropByGuiPropPath($guiPropPath, $required))) {
+		if (null !== ($guiProp = $this->getGuiPropWrapperByGuiPropPath($guiPropPath, $required))) {
 			return $guiProp->getDisplayLabel();
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * @param GuiPropPath|string $guiPropPath
+	 * @param bool $required
+	 * @return \rocket\ei\util\spec\EiuProp
+	 */
+	function getProp($guiPropPath, bool $required = true) {
+		return new EiuProp($this->getGuiPropWrapperByGuiPropPath($guiPropPath, $required), null, $this->eiuAnalyst);
 	}
 	
 	/**
@@ -139,15 +149,23 @@ class EiuGuiFrame {
 	 * @throws GuiException
 	 * @return \rocket\ei\manage\gui\GuiProp|null
 	 */
-	public function getGuiPropByGuiPropPath($guiPropPath, bool $required = false) {
+	private function getGuiPropWrapperByGuiPropPath($guiPropPath, bool $required = false) {
 		$guiPropPath = GuiPropPath::create($guiPropPath);
 		
 		try {
-			return $this->eiGuiFrame->getEiGuiSiFactory()->getGuiDefinition()->getGuiPropByGuiPropPath($guiPropPath);
+			return $this->eiGuiFrame->getGuiDefinition()->getGuiPropWrapperByGuiPropPath($guiPropPath);
 		} catch (GuiException $e) {
 			if (!$required) return null;
 			throw $e;
 		}
+	}
+	
+	/**
+	 * @param GuiPropPath|string $guiPropPath
+	 * @return \rocket\ei\manage\gui\DisplayDefinition
+	 */
+	function getDisplayDefinition($guiPropPath) {
+		return $this->eiGuiFrame->getDisplayDefintion(GuiPropPath::create($guiPropPath));
 	}
 		
 // 	/**

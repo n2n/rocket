@@ -48,7 +48,7 @@ class TranslationGuiPropSetup implements GuiPropSetup, GuiFieldAssembler {
 	}
 	
 	function getForkedDisplayDefinition(GuiPropPath $guiPropPath): ?DisplayDefinition {
-		return null;
+		return $this->targetEiuGuiFrame->getDisplayDefinition($guiPropPath);
 	}
 	
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {

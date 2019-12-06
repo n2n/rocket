@@ -43,7 +43,6 @@ use n2n\l10n\Lstr;
 use rocket\ei\mask\model\DisplayStructure;
 use rocket\si\meta\SiStructureType;
 use rocket\ei\mask\EiMask;
-use rocket\ei\component\prop\EiPropWrapper;
 
 class GuiDefinition {
 	/**
@@ -849,7 +848,7 @@ class GuiDefinition {
 			
 			foreach ($guiPropWrapper->getForkedGuiPropPaths() as $forkedGuiPropPath) {
 				$absGuiPropPath = $guiPropPath->ext($forkedGuiPropPath);
-				$displayDefinition = $guiPropSetup->getForkedDisplayDefinition($absGuiPropPath);
+				$displayDefinition = $guiPropSetup->getForkedDisplayDefinition($forkedGuiPropPath);
 				
 				if ($displayDefinition === null) {
 					continue;
@@ -858,8 +857,8 @@ class GuiDefinition {
 				$eiGuiFrame->putDisplayDefintion($absGuiPropPath, $displayDefinition);
 				
 				$guiStructureDeclarations[(string) $absGuiPropPath] = $this->createGuiStructureDeclaration(
-						$guiPropPath,
-						$guiPropWrapper->getForkedGuiPropWrapper($absGuiPropPath), 
+						$absGuiPropPath,
+						$guiPropWrapper->getForkedGuiPropWrapper($forkedGuiPropPath), 
 						$displayDefinition, $n2nLocale);
 				
 			}
