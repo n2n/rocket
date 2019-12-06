@@ -104,10 +104,10 @@ class GuiPropPath implements Hashable {
 	 */
 	public function getPoped() {
 		$eiPropPaths = $this->eiPropPaths;
-		array_pop($eiPropPaths);
 		if (empty($eiPropPaths)) {
 			throw new IllegalStateException();
 		}
+		array_pop($eiPropPaths);
 		return new GuiPropPath($eiPropPaths);
 	}
 	

@@ -85,9 +85,16 @@ class EiGui {
 				'EiGuiFrame is forked.');
 		
 		$siProps = [];
-		foreach ($this->filterFieldGuiStructureDeclarations($this->guiStructureDeclarations)
+		foreach ($this->filterFieldGuiStructureDeclarations($this->guiStructureDeclarations) 
 				as $guiStructureDeclaration) {
-			$siProps[] = $this->createSiProp($guiStructureDeclaration);
+			$guiPropPath = $guiStructureDeclaration->getGuiPropPath();
+			$siProps[(string) $guiPropPath] = $this->createSiProp($guiStructureDeclaration);
+			
+			if (!$guiPropPath->hasMultipleEiPropPaths()) {
+				continue;
+			}
+			
+			$guiPropPath->getPoped()
 		}
 		return $siProps;
 	}
@@ -192,4 +199,18 @@ class EiGui {
 		}
 		return $siEntries;
 	}
+}
+
+class ContextSiFieldDeterminer {
+	private $forkGuiPropPaths = [];
+	private $forkedGuiPropPaths = []; 
+	
+	function reportGuiPropPath(GuiPropPath $guiPropPath) {
+		$forkedGuiPropPath = $guiPropPath;
+		while ($forkedGuiPropPath->hasMultipleEiPropPaths()) {
+			$forkedGuiPropPath = $forkedGuiPropPath->getPoped();
+		}
+		$popedGuiPropPath = $guiPropPath->getPoped();
+	}
+	
 }
