@@ -45,7 +45,6 @@ class SiSplitContent implements \JsonSerializable {
 			$data['apiUrl'] = $this->apiUrl;
 			$data['entryId'] = $this->entryId;
 			$data['bulky'] = $this->bulky;
-			$data['readOnly'] = $this->inputHandler === null;
 		}
 		
 		if ($this->entry !== null) {

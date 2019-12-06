@@ -154,7 +154,12 @@ export class SiFieldFactory {
 			return new SplitContextOutSiField();
 
 		case SiFieldType.SPLIT_PLACEHOLDER:
-			return new SplitPlaceholderSiField();
+			const splitPlacehoderSiField = new SplitPlaceholderSiField(dataExtr.reqString('relFieldId'));
+
+			fieldMap$.subscribe((fieldMap) => {
+				const field = fieldMap.get(dataExtr.reqString('contextFieldId'));
+				splitPlacehoderSiField.contextSiField = ;
+			});
 
 		default:
 			throw new ObjectMissmatchError('Invalid si field type: ' + data.type);

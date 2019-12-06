@@ -1,14 +1,10 @@
-import { SiField } from '../../../si-field';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { OutSiFieldAdapter } from '../../common/model/out-si-field-adapter';
+import { SiEntryBuildup } from '../../../si-entry-buildup';
 
 export class SplitContextOutSiField extends OutSiFieldAdapter {
 
-	readInput(): object {
-		throw new Error('Method not implemented.');
-	}
-
-	copy(): SiField {
+	copy(entryBuildUp: SiEntryBuildup) {
 		throw new Error('Method not implemented.');
 	}
 

@@ -4,6 +4,12 @@ import { SiFieldAdapter } from '../../common/model/si-field-adapter';
 
 export class SplitPlaceholderSiField extends SiFieldAdapter {
 
+	contextSiField: SiField|null;
+
+	constructor(public relFieldId: string) {
+		super();
+	}
+
 	hasInput(): boolean {
 		throw new Error('Method not implemented.');
 	}
