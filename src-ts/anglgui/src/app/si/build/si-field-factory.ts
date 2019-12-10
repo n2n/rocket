@@ -155,7 +155,7 @@ export class SiFieldFactory {
 			const splitSiField = new SplitSiField(dataExtr.reqString('relFieldId'));
 
 			fieldMap$.subscribe((fieldMap) => {
-				splitSiField.contextSiField = fieldMap.get();
+				splitSiField.contextSiField = f;
 			});
 
 		default:
