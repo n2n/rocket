@@ -2,7 +2,7 @@ import { SiField } from '../../../si-field';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { SiFieldAdapter } from '../../common/model/si-field-adapter';
 
-export class SplitPlaceholderSiField extends SiFieldAdapter {
+export class SplitSiField extends SiFieldAdapter {
 
 	contextSiField: SiField|null;
 

@@ -36,6 +36,7 @@ import { RouterModule } from '@angular/router';
 import { AddPasteComponent } from './model/content/impl/embedded/comp/add-paste/add-paste.component';
 import { QualifierComponent } from './model/content/impl/qualifier/comp/qualifier/qualifier.component';
 import { TogglerInFieldComponent } from './model/content/impl/boolean/comp/toggler-in-field/toggler-in-field.component';
+import { SplitComponent } from './model/content/impl/split/comp/split/split.component';
 
 @NgModule({
 	declarations: [
@@ -44,7 +45,7 @@ import { TogglerInFieldComponent } from './model/content/impl/boolean/comp/toggl
 		QualifierSelectInFieldComponent, LinkOutFieldComponent, CompactEntryComponent, EmbeddedEntriesInComponent,
 		EmbeddedEntriesSummaryInComponent, EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent,
 		ImageResizeComponent, EmbeddedEntryPanelsInComponent, EntryDirective, PaginationComponent, CrumbGroupComponent,
-		AddPasteComponent, QualifierComponent, TogglerInFieldComponent
+		AddPasteComponent, QualifierComponent, TogglerInFieldComponent, SplitComponent
 	],
 	imports: [
 		CommonModule,
