@@ -1,4 +1,3 @@
-import { SiEntryBuildup } from '../model/content/si-entry-buildup';
 import { SiField } from '../model/content/si-field';
 import { Extractor, ObjectMissmatchError } from 'src/app/util/mapping/extractor';
 import { NumberInSiField } from '../model/content/impl/alphanum/model/number-in-si-field';
@@ -17,10 +16,9 @@ import { EnumInSiField } from '../model/content/impl/alphanum/model/enum-in-si-f
 import { SiType } from '../model/meta/si-type';
 import { SiProp } from '../model/meta/si-prop';
 import { Subject, Observable } from 'rxjs';
-import { stringify } from '@angular/compiler/src/util';
 import { SplitContextInSiField } from '../model/content/impl/split/model/split-context-in-si-field';
 import { SplitContextOutSiField } from '../model/content/impl/split/model/split-context-out-si-field';
-import { SplitPlaceholderSiField } from '../model/content/impl/split/model/split-placeholder-si-field';
+import { SplitSiField } from '../model/content/impl/split/model/split-si-field';
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',
@@ -40,7 +38,7 @@ enum SiFieldType {
 }
 
 export class SiFieldFactory {
-	constructor(private type: SiType, private entryBuildup: SiEntryBuildup) {
+	constructor(private type: SiType) {
 	}
 
 	createFieldMap(data: Map<string, any>): Map<string, SiField> {
@@ -154,11 +152,10 @@ export class SiFieldFactory {
 			return new SplitContextOutSiField();
 
 		case SiFieldType.SPLIT_PLACEHOLDER:
-			const splitPlacehoderSiField = new SplitPlaceholderSiField(dataExtr.reqString('relFieldId'));
+			const splitSiField = new SplitSiField(dataExtr.reqString('relFieldId'));
 
 			fieldMap$.subscribe((fieldMap) => {
-				const field = fieldMap.get(dataExtr.reqString('contextFieldId'));
-				splitPlacehoderSiField.contextSiField = ;
+				splitSiField.contextSiField = fieldMap.get();
 			});
 
 		default:

@@ -27,7 +27,7 @@ export class SiMetaFactory {
 				new SiTypeEssentialsFactory(type).createStructureDeclarations(extr.reqArray('structureDeclarations')));
 	}
 
-	static createType(data: any) {
+	static createType(data: any): SiType {
 		const extr = new Extractor(data);
 
 		const type = new SiType(SiMetaFactory.createTypeQualifier(extr.reqObject('qualifier')));

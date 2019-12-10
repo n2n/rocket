@@ -15,7 +15,6 @@ export class SiCompEssentialsFactory {
 	constructor(private comp: SiComp) {
 	}
 
-
 	createControls(dataArr: any[]): SiControl[] {
 		const controls = new Array<SiControl>();
 

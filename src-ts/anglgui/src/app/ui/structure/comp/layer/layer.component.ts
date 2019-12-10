@@ -10,7 +10,7 @@ export class LayerComponent implements OnInit {
 		@Input()
 		uiLayer: UiLayer;
 
-		constructor() { }
+		constructor(sr: ServiceResolver) { }
 
 		ngOnInit() {
 		}

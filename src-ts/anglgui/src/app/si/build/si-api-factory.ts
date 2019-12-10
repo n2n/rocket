@@ -9,7 +9,6 @@ import { SiValInstruction } from '../model/api/si-val-instruction';
 import { SiValResult } from '../model/api/si-val-result';
 import { SiValGetResult } from '../model/api/si-val-get-result';
 import { SiComp } from '../model/comp/si-comp';
-import { SiCompEssentialsFactory } from './si-comp-essentials-factory';
 import { SiMetaFactory } from './si-meta-factory';
 import { SiEntryFactory } from './si-entry-factory';
 import { SiDeclaration } from '../model/meta/si-declaration';
@@ -105,7 +104,6 @@ export class SiApiFactory {
 	}
 
 	private createValGetResult(data: any, comp: SiComp, declaration: SiDeclaration|null): SiValGetResult {
-		const compFactory = new SiCompEssentialsFactory(comp);
 		const extr = new Extractor(data);
 
 		const result: SiValGetResult = {
