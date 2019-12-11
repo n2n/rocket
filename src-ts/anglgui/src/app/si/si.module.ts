@@ -37,6 +37,7 @@ import { AddPasteComponent } from './model/content/impl/embedded/comp/add-paste/
 import { QualifierComponent } from './model/content/impl/qualifier/comp/qualifier/qualifier.component';
 import { TogglerInFieldComponent } from './model/content/impl/boolean/comp/toggler-in-field/toggler-in-field.component';
 import { SplitComponent } from './model/content/impl/split/comp/split/split.component';
+import { SplitViewMenuComponent } from './model/content/impl/split/comp/split-view-menu/split-view-menu.component';
 
 @NgModule({
 	declarations: [
@@ -45,7 +46,7 @@ import { SplitComponent } from './model/content/impl/split/comp/split/split.comp
 		QualifierSelectInFieldComponent, LinkOutFieldComponent, CompactEntryComponent, EmbeddedEntriesInComponent,
 		EmbeddedEntriesSummaryInComponent, EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent,
 		ImageResizeComponent, EmbeddedEntryPanelsInComponent, EntryDirective, PaginationComponent, CrumbGroupComponent,
-		AddPasteComponent, QualifierComponent, TogglerInFieldComponent, SplitComponent
+		AddPasteComponent, QualifierComponent, TogglerInFieldComponent, SplitComponent, SplitViewMenuComponent
 	],
 	imports: [
 		CommonModule,

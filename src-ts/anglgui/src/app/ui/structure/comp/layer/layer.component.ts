@@ -7,12 +7,11 @@ import { UiLayer } from '../../model/ui-layer';
 	styleUrls: ['./layer.component.css']
 })
 export class LayerComponent implements OnInit {
-		@Input()
-		uiLayer: UiLayer;
+	@Input()
+	uiLayer: UiLayer;
 
-		constructor(sr: ServiceResolver) { }
+	constructor() { }
 
-		ngOnInit() {
-		}
-
+	ngOnInit() {
+	}
 }

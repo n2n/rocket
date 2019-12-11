@@ -1,0 +1,22 @@
+<div class="rocket-split-view-control">
+	<div class="rocket-split-view-status">
+		<label><i [class]="iconClass"></i>{{ 'visible_label' | translate }}</label>
+		<span>DE (CH), FR (CH)</span>
+	</div>
+	
+	<button class="btn btn-secondary" [title]="tooltip" type="button" (click)="toggleMenuVisibility()">
+		<i class="fa fa-cog"></i>&nbsp;<span>Sprachen</span>
+	</button>
+
+	<div *ngIf="menuVisible" class="rocket-split-view-status-menu">
+		<ul>
+			<li *ngFor="let item of model.getOptions() | keyvalue">
+				<a class="btn rocket-active" (click)="toggleKeyVisibility(item.key)">
+					{{ item.value }} <i class="fa fa-toggle-on"></i>
+				</a>
+			</li>
+		</ul>
+		
+		<div class="rocket-tooltip">{{ tooltip }}</div>
+	</div>
+</div>
