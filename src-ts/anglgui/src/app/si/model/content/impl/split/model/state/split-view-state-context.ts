@@ -9,6 +9,7 @@ export class SplitViewStateContext implements SplitViewMenuModel {
 	private toolbarUiContent: UiContent;
 	private subscriptions: Array<SplitViewStateSubscription>;
 	private optionMap = new Map<string, string>();
+	private visibleKeys: string[] = [];
 
 	constructor(readonly uiStructure: UiStructure) {
 		this.toolbarUiContent = new TypeUiContent(SplitViewMenuComponent, (ref) => {
@@ -19,6 +20,7 @@ export class SplitViewStateContext implements SplitViewMenuModel {
 	createSubscription(options: Map<string, string>): SplitViewStateSubscription {
 		const subscription = new SplitViewStateSubscription(this, options);
 		this.subscriptions.push(subscription);
+		this.updateStructure();
 		return subscription;
 	}
 
@@ -29,6 +31,7 @@ export class SplitViewStateContext implements SplitViewMenuModel {
 		}
 
 		this.subscriptions.splice(i, 1);
+		this.updateStructure();
 	}
 
 	getOptionMap(): Map<string, string> {
@@ -44,14 +47,16 @@ export class SplitViewStateContext implements SplitViewMenuModel {
 	}
 
 	getVisibleKeys(): string[] {
-		throw new Error('Method not implemented.');
+		return this.visibleKeys;
 	}
 
 	setVisibleKeys(visibleKeys: string[]): void {
-		throw new Error('Method not implemented.');
+		this.visibleKeys = visibleKeys;
 	}
 
 	private updateStructure() {
+		const assigned = this.optionMap.size > 0;
+
 		this.optionMap.clear();
 		for (const subscription of this.subscriptions) {
 			for (const [key, label] of subscription.optionMap) {
@@ -59,9 +64,21 @@ export class SplitViewStateContext implements SplitViewMenuModel {
 			}
 		}
 
-		const i = this.uiStructure.toolbackUiContents.indexOf(this.toolbarUiContent);
+		if (this.optionMap.size > 0) {
+			if (!assigned) {
+				this.uiStructure.toolbackUiContents.push(this.toolbarUiContent);
+			}
 
-		
-		
+			return;
+		}
+
+		if (!assigned) {
+			return;
+		}
+
+		const i = this.uiStructure.toolbackUiContents.indexOf(this.toolbarUiContent);
+		if (i > -1) {
+			this.uiStructure.toolbackUiContents.splice(i, 1);
+		}
 	}
 }

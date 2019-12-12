@@ -24,6 +24,16 @@ export class UiStructure {
 		}
 	}
 
+	getRoot(): UiStructure {
+		let root: UiStructure = this;
+
+		while (root.parent) {
+			root = root.parent;
+		}
+
+		return root;
+	}
+
 	createChild(type: UiStructureType|null = null, label: string|null = null,
 			model: UiStructureModel|null = null): UiStructure {
 		return new UiStructure(this, null, type, label, model);

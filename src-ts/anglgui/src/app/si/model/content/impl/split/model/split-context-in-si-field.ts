@@ -15,5 +15,4 @@ export class SplitContextInSiField extends InSiFieldAdapter {
 	protected createUiContent(): UiContent {
 		throw new Error('Method not implemented.');
 	}
-
 }
