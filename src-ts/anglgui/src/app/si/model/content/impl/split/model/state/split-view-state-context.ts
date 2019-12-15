@@ -4,6 +4,7 @@ import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { SplitViewMenuComponent } from '../../comp/split-view-menu/split-view-menu.component';
 import { SplitViewMenuModel } from '../../comp/split-view-menu-model';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
+import { SplitOption } from '../split-option';
 
 export class SplitViewStateContext implements SplitViewMenuModel {
 	private toolbarUiContent: UiContent;
@@ -17,7 +18,7 @@ export class SplitViewStateContext implements SplitViewMenuModel {
 		});
 	}
 
-	createSubscription(options: Map<string, string>): SplitViewStateSubscription {
+	createSubscription(options: SplitOption[]): SplitViewStateSubscription {
 		const subscription = new SplitViewStateSubscription(this, options);
 		this.subscriptions.push(subscription);
 		this.updateStructure();

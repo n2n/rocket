@@ -1,10 +1,12 @@
+import { SplitOption } from '../model/split-option';
+
 export interface SplitViewMenuModel {
 
-	getOptionMap(): Map<string, string>;
+	getSplitOptions(): SplitOption[];
 
-	getIconClass(): string;
+	getIconClass(): string|null;
 
-	getTooltip(): string;
+	getTooltip(): string|null;
 
 	getVisibleKeys(): string[];
 
