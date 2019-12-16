@@ -19,8 +19,8 @@ export class SplitViewStateService {
 	}
 
 	private getOrCreateContext(uiStructure: UiStructure): SplitViewStateContext {
-		let context = this.contexts.find((context) => {
-			return context.uiStructure === uiStructure;
+		let context = this.contexts.find((iContext) => {
+			return iContext.uiStructure === uiStructure;
 		});
 
 		if (context) {

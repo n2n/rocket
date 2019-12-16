@@ -26,6 +26,7 @@ use rocket\si\content\SiEntry;
 
 class SiSplitContent implements \JsonSerializable {
 	private $label;
+	private $shortLabel;
 	
 	private $apiUrl;
 	private $entryId;
@@ -36,6 +37,17 @@ class SiSplitContent implements \JsonSerializable {
 	private $entry;
 	
 	private function __construct() {
+	}
+	
+	/**
+	 * @return string
+	 */
+	function getShortLabel() {
+		return $this->shortLabel;
+	}
+	
+	function setShortLabel(?string $shortLabel) {
+		$this->shortLabel = $shortLabel;
 	}
 	
 	function jsonSerialize() {

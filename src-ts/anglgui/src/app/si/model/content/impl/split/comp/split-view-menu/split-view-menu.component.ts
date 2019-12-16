@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { SplitViewMenuModel } from '../split-view-menu-model';
-import { NgModel } from '@angular/forms';
 
 @Component({
 	selector: 'rocket-split-view-menu',
@@ -34,5 +33,16 @@ export class SplitViewMenuComponent implements OnInit {
 			visibleKeys.push(key);
 		}
 		this.model.setVisibleKeys(visibleKeys);
+	}
+
+	get activeShortLabel() {
+		const visibleKeys = this.model.getVisibleKeys();
+		const shortLabels = [];
+		for (const splitOption of this.model.getSplitOptions()) {
+			if (-1 < visibleKeys.indexOf(splitOption.key)) {
+				shortLabels.push(splitOption.shortLabel);
+			}
+		}
+		return shortLabels.join(', ');
 	}
 }

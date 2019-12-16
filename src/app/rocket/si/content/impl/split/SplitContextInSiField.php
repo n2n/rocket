@@ -29,10 +29,6 @@ use rocket\si\content\SiEntry;
 
 class SplitContextInSiField extends InSiFieldAdapter {
 	/**
-	 * @var string[]
-	 */
-	private $options;
-	/**
 	 * @var int
 	 */
 	private $min;
@@ -40,17 +36,11 @@ class SplitContextInSiField extends InSiFieldAdapter {
 	 * @var string[]
 	 */
 	private $activeKeys = [];
-	/**
-	 * @var string[]
-	 */
-	private $associatedFieldIds = [];
 	
 	/**
 	 * 
 	 */
-	function __construct(array $options) {
-		ArgUtils::valArray($options, 'string');
-		$this->options = $options;
+	function __construct() {
 	}
 	
 	/**
@@ -85,7 +75,7 @@ class SplitContextInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param array $activeKeys
-	 * @return \rocket\si\content\impl\split\SplitContextInSiField
+	 * @return \rocket\si\content\impl\split\SiSplitContent
 	 */
 	function setActiveKeys(array $activeKeys) {
 		$this->activeKeys = $activeKeys;
@@ -96,7 +86,7 @@ class SplitContextInSiField extends InSiFieldAdapter {
 	 * @param string $key
 	 * @param string $label
 	 * @param SiEntry $entry
-	 * @return \rocket\si\content\impl\split\SplitContextInSiField
+	 * @return \rocket\si\content\impl\split\SiSplitContent
 	 */
 	function putEntry(string $key, string $label, SiEntry $entry) {
 		ArgUtils::assertTrue(isset($this->options[$key]), 'Unknown key: ' . $key);
@@ -111,7 +101,7 @@ class SplitContextInSiField extends InSiFieldAdapter {
 	 * @param string $entryId
 	 * @param string $fieldId
 	 * @param bool $bulky
-	 * @return \rocket\si\content\impl\split\SplitContextInSiField
+	 * @return \rocket\si\content\impl\split\SiSplitContent
 	 */
 	function putLazy(string $key, string $label, Url $apiUrl, string $entryId, bool $bulky) {
 		$this->splitContents[$key] = SiSplitContent::createLazy($label, $apiUrl, $entryId, $bulky);
@@ -134,9 +124,9 @@ class SplitContextInSiField extends InSiFieldAdapter {
 	 */
 	function getData(): array {
 		return [
-			'value' => $this->value,
-			'mandatory' => $this->mandatory,
-			'associatedFieldIds' => $this->associatedFieldIds
+			'min' => $this->min,
+			'activeKeys' => $this->activeKeys,
+			'splitContents' => $this->splitContents
 		];
 	}
 	

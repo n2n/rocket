@@ -55,12 +55,13 @@ class SplitGuiFieldFactory {
 		
 		foreach ($this->lted->getN2nLocales() as $n2nLocale) {
 			$n2nLocaleId = $n2nLocale->getId();
-			$label = $n2nLocale->toPrettyId();
+			$label = $n2nLocale->getName($this->lted->getN2nLocale());
 			
 			if (null !== ($activeTargetEiuEntryGui = $this->lted->getActiveTargetEiuEntryGui($n2nLocaleId))) {
-				$siField->putEntry($n2nLocaleId, $label, $activeTargetEiuEntryGui->createSiEntry());
+				$siField->putEntry($n2nLocaleId, $label, $activeTargetEiuEntryGui->createSiEntry())
+						->setShortLabel($n2nLocale->toPrettyId());
 			} else {
-				$siField->putUnavailable($n2nLocaleId, $label);
+				$siField->putUnavailable($n2nLocaleId, $label)->setShortLabel($n2nLocale->toPrettyId());
 			}
 		}
 		
@@ -84,7 +85,8 @@ class SplitGuiFieldFactory {
 				$pid = $activeTargetEiuEntry->entry()->getPid();
 			}
 			
-			$siField->putLazy($n2nLocaleId, $label, $apiUrl, $pid, $targetEiuGuiFrame->isBulky());
+			$siField->putLazy($n2nLocaleId, $label, $apiUrl, $pid, $targetEiuGuiFrame->isBulky())
+					->setShortLabel($n2nLocale->toPrettyId());
 		}
 		
 		$guiFieldMap = new GuiFieldMap();

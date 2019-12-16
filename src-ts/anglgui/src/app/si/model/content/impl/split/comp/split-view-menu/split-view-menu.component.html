@@ -1,22 +1,27 @@
 <div class="rocket-split-view-control">
 	<div class="rocket-split-view-status">
-		<label><i [class]="iconClass"></i>{{ 'visible_label' | translate }}</label>
-		<span>DE (CH), FR (CH)</span>
+		<label>
+			<i *ngIf="model.getIconClass()" [class]="model.getIconClass()"></i>
+			{{ 'visible_label' | translate }}
+		</label>
+		<span>{{ activeShortLabel }}</span>
 	</div>
 	
-	<button class="btn btn-secondary" [title]="tooltip" type="button" (click)="toggleMenuVisibility()">
-		<i class="fa fa-cog"></i>&nbsp;<span>Sprachen</span>
+	<button class="btn btn-secondary" [title]="model.getTooltip()" type="button" (click)="toggleMenuVisibility()">
+		<i class="fa fa-cog"></i>&nbsp;<span>{{ 'languages_txt' | translate }}}</span>
 	</button>
 
 	<div *ngIf="menuVisible" class="rocket-split-view-status-menu">
 		<ul>
-			<li *ngFor="let item of model.getOptions() | keyvalue">
-				<a class="btn rocket-active" (click)="toggleKeyVisibility(item.key)">
-					{{ item.value }} <i class="fa fa-toggle-on"></i>
+			<li *ngFor="let splitOption of model.getSplitOptions()">
+				<a class="btn rocket-active" (click)="toggleKeyVisibility(splitOption.key)">
+					{{ splitOption.label }} <i class="fa fa-toggle-on"></i>
 				</a>
 			</li>
 		</ul>
 		
-		<div class="rocket-tooltip">{{ tooltip }}</div>
+		<div *ngIf="model.getTooltip()" class="rocket-tooltip">
+			{{ model.getTooltip() }}
+		</div>
 	</div>
 </div>

@@ -50,11 +50,10 @@ class SplitContextOutSiField extends OutSiFieldAdapter {
 	 * @param string $key
 	 * @param string $label
 	 * @param SiEntry $entry
-	 * @return \rocket\si\content\impl\split\SplitContextOutSiField
+	 * @return \rocket\si\content\impl\split\SiSplitContent
 	 */
 	function putEntry(string $key, string $label, SiEntry $entry) {
-		$this->splitContents[$key] = SiSplitContent::createEntry($label, $entry);
-		return $this;
+		return $this->splitContents[$key] = SiSplitContent::createEntry($label, $entry);
 	}
 	
 	/**
@@ -63,21 +62,19 @@ class SplitContextOutSiField extends OutSiFieldAdapter {
 	 * @param Url $apiUrl
 	 * @param string $entryId
 	 * @param bool $bulky
-	 * @return \rocket\si\content\impl\split\SplitContextOutSiField
+	 * @return \rocket\si\content\impl\split\SiSplitContent
 	 */
 	function putLazy(string $key, string $label, Url $apiUrl, string $entryId, bool $bulky) {
-		$this->splitContents[$key] = SiSplitContent::createLazy($label, $apiUrl, $entryId, $bulky);
-		return $this;
+		return $this->splitContents[$key] = SiSplitContent::createLazy($label, $apiUrl, $entryId, $bulky);
 	}
 	
 	/**
 	 * @param string $key
 	 * @param string $label
-	 * @return \rocket\si\content\impl\split\SplitContextOutSiField
+	 * @return \rocket\si\content\impl\split\SiSplitContent
 	 */
 	function putUnavailable(string $key, string $label) {
-		$this->splitContents[$key] = SiSplitContent::createUnavaialble($label);
-		return $this;
+		return $this->splitContents[$key] = SiSplitContent::createUnavaialble($label);
 	}
 
 	/**

@@ -65,20 +65,27 @@ class LazyTranslationEssentialsDeterminer {
 		return $this->n2nLocales;
 	}
 	
-	/**
-	 * @return string[]
-	 */
-	function getN2nLocaleOptions() {
-		if ($this->n2nLocaleOptions !== null) {
-			return $this->n2nLocaleOptions;
-		}
+// 	/**
+// 	 * @return string[]
+// 	 */
+// 	function getN2nLocaleOptions() {
+// 		if ($this->n2nLocaleOptions !== null) {
+// 			return $this->n2nLocaleOptions;
+// 		}
 		
-		$this->n2nLocaleOptions = [];
-		foreach ($this->translationConfig->getN2nLocaleDefs() as $n2nLocaleDef) {
-			$this->n2nLocaleOptions[$n2nLocaleDef->getN2nLocaleId()] = $n2nLocaleDef->getN2nLocale()
-					->getName($this->eiu->getN2nLocale());
-		}
-		return $this->n2nLocaleOptions;
+// 		$this->n2nLocaleOptions = [];
+// 		foreach ($this->translationConfig->getN2nLocaleDefs() as $n2nLocaleDef) {
+// 			$this->n2nLocaleOptions[$n2nLocaleDef->getN2nLocaleId()] = $n2nLocaleDef->getN2nLocale()
+// 					->getName($this->eiu->getN2nLocale());
+// 		}
+// 		return $this->n2nLocaleOptions;
+// 	}
+	
+	/**
+	 * @return \n2n\l10n\N2nLocale
+	 */
+	function getDisplayN2nLocale() {
+		return $this->eiu->getN2nLocale();
 	}
 	
 	/**

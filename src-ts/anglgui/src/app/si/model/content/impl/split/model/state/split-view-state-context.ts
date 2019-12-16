@@ -9,7 +9,7 @@ import { SplitOption } from '../split-option';
 export class SplitViewStateContext implements SplitViewMenuModel {
 	private toolbarUiContent: UiContent;
 	private subscriptions: Array<SplitViewStateSubscription>;
-	private optionMap = new Map<string, string>();
+	private optionMap = new Map<string, SplitOption>();
 	private visibleKeys: string[] = [];
 
 	constructor(readonly uiStructure: UiStructure) {
@@ -35,8 +35,8 @@ export class SplitViewStateContext implements SplitViewMenuModel {
 		this.updateStructure();
 	}
 
-	getOptionMap(): Map<string, string> {
-		return this.optionMap;
+	getSplitOptions(): SplitOption[] {
+		return Array.from(this.optionMap.values());
 	}
 
 	getIconClass(): string {
@@ -60,8 +60,8 @@ export class SplitViewStateContext implements SplitViewMenuModel {
 
 		this.optionMap.clear();
 		for (const subscription of this.subscriptions) {
-			for (const [key, label] of subscription.optionMap) {
-				this.optionMap.set(key, label);
+			for (const splitOption of subscription.splitOptions) {
+				this.optionMap.set(splitOption.key, splitOption);
 			}
 		}
 
