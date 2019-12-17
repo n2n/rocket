@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SplitViewStateContext } from './split-view-state-context';
 import { SplitViewStateSubscription } from './split-view-state-subscription';
+import { SplitOption } from '../split-option';
 
 @Injectable({
 	providedIn: 'root'
@@ -12,10 +13,10 @@ export class SplitViewStateService {
 	constructor() {
 	}
 
-	subscribe(uiStructure: UiStructure, optionsMap: Map<string, string>): SplitViewStateSubscription {
-		const context = this.getOrCreateContext(uiStructure);
+	subscribe(uiStructure: UiStructure, splitOptions: SplitOption[]): SplitViewStateSubscription {
+		const context = this.getOrCreateContext(uiStructure.getRoot());
 
-		return context.createSubscription(optionsMap);
+		return context.createSubscription(splitOptions);
 	}
 
 	private getOrCreateContext(uiStructure: UiStructure): SplitViewStateContext {
