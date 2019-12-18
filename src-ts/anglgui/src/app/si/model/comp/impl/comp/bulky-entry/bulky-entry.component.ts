@@ -7,6 +7,8 @@ import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { StructureBranchComponent } from 'src/app/ui/structure/comp/structure-branch/structure-branch.component';
+import { SiField } from 'src/app/si/model/content/si-field';
+import { SiFieldAdapter } from 'src/app/si/model/content/impl/common/model/si-field-adapter';
 
 @Component({
 	selector: 'rocket-bulky-entry',
@@ -64,8 +66,8 @@ export class BulkyEntryComponent implements OnInit, OnDestroy, DoCheck {
 
 	private createStructures(parent: UiStructure, uiStructureDeclarations: SiStructureDeclaration[]): UiStructure[] {
 		const structures: UiStructure[] = [];
-		for (const ssd of uiStructureDeclarations) {
-			structures.push(this.dingsel(parent, ssd));
+		for (const usd of uiStructureDeclarations) {
+			structures.push(this.dingsel(parent, usd));
 		}
 		return structures;
 	}
@@ -93,4 +95,52 @@ export class BulkyEntryComponent implements OnInit, OnDestroy, DoCheck {
 		return uiStructure;
 	}
 
+}
+
+class ToolbarResolver {
+	private uiStructuresMap = new Map<string, { siField: SiField, uiStructure: UiStructure } | null>();
+
+	register(propId, siField: SiField, uiStructure: UiStructure) {
+		this.uiStructuresMap.set(propId, null);
+
+		for (const relatedSiField of siField.getRelatedSiFields()) {
+			this.addContextSiField(relatedSiField, uiStructure);
+		}
+	}
+
+	private addContextSiField(propId: string, siField: SiField, uiStructure: UiStructure) {
+		if (!this.uiStructuresMap.has(propId)) {
+			this.uiStructuresMap.set(propId, { siField, uiStructure });
+			return;
+		}
+
+		const item = this.uiStructuresMap.get(propId);
+		if (item === null) {
+			return item;
+		}
+
+		item.uiStructure = this.deterOuter(item.uiStructure, uiStructure);
+	}
+
+	private deterOuter(uiStructure1: UiStructure, uiStructure2: UiStructure): UiStructure {
+		if (uiStructure1 === uiStructure2) {
+			return uiStructure1;
+		}
+		
+		if (uiStructure1.containsDescendant(uiStructure2)) {
+			return uiStructure1;
+		}
+
+		if (uiStructure2.containsDescendant(uiStructure1)) {
+			return uiStructure2;
+		}
+
+		throw new Error('Impossible');
+	}
+
+	fillToolbar() {
+		for (const [, item] of this.uiStructuresMap) {
+			item.uiStructure.toolbackUiContents.push(item.siField.createUiStructureModel().getContent())
+		}
+	}
 }
