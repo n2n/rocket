@@ -8,10 +8,9 @@ export class SplitContextInSiField extends InSiFieldAdapter {
 		const entryInputObj = {};
 		for (const splitOption of this.getSplitOptions()) {
 			if (entry = splitOption.getLoadedSiEntry()) {
-				entryInputObj[splitOption.key] = entry.readInput()
+				entryInputObj[splitOption.key] = entry.readInput();
 			}
 		}
-		throw new Error('Method not implemented.');
 	}
 
 	copy(): SiField {
