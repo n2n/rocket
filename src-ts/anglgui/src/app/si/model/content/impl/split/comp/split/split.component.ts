@@ -25,11 +25,10 @@ export class SplitComponent implements OnInit, OnDestroy {
 	ngOnInit() {
 		this.subscription = this.viewStateService.subscribe(this.uiStructure, this.model.getSplitOptions());
 
-		for (const splitOption of model.getSplitOptions()) {
+		for (const splitOption of this.model.getSplitOptions()) {
 			this.childUiStructureMap.set(splitOption.key,
 					this.uiStructure.createChild(UiStructureType.ITEM, splitOption.shortLabel));
 		}
-		
 	}
 
 	ngOnDestroy() {

@@ -5,6 +5,12 @@ import { UiContent } from 'src/app/ui/structure/model/ui-content';
 export class SplitContextInSiField extends InSiFieldAdapter {
 
 	readInput(): object {
+		const entryInputObj = {};
+		for (const splitOption of this.getSplitOptions()) {
+			if (entry = splitOption.getLoadedSiEntry()) {
+				entryInputObj[splitOption.key] = entry.readInput()
+			}
+		}
 		throw new Error('Method not implemented.');
 	}
 
