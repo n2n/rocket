@@ -7,15 +7,16 @@ import { SiGetInstruction } from 'src/app/si/model/api/si-get-instruction';
 import { SiComp } from 'src/app/si/model/comp/si-comp';
 import { SiGetResponse } from 'src/app/si/model/api/si-get-response';
 import { map } from 'rxjs/operators';
+import { SiField } from '../../../si-field';
+import { SiFieldAdapter } from '../../common/model/si-field-adapter';
+import { UiContent } from 'src/app/ui/structure/model/ui-content';
+import { SiEntryBuildup } from '../../../si-entry-buildup';
 
-export interface SplitContext {
-	getEntry$(key: string): Observable<SiEntry>;
 
-	getSplitOptions(): SplitOption[];
-}
 
-export class SplitContextAdapter implements SplitContext {
-	private splitContentMap: Map<string, SplitContent>;
+export abstract class SplitContextSiField extends SiFieldAdapter {
+
+	protected splitContentMap: Map<string, SplitContent>;
 
 	putSplitContent(splitContent: SplitContent) {
 		this.splitContentMap.set(splitContent.key, splitContent);
@@ -27,16 +28,25 @@ export class SplitContextAdapter implements SplitContext {
 
 	getEntry$(key: string): Observable<SiEntry> {
 		if (this.splitContentMap.has(key)) {
-			return this.splitContentMap.get(key).getEntry();
+			return this.splitContentMap.get(key).getSiEntry$();
 		}
 
 		throw new Error('Unknown key.');
 	}
+
+	abstract hasInput(): boolean;
+
+	abstract readInput(): object;
+
+	abstract copy(entryBuildUp: SiEntryBuildup): SiField;
+
+	protected abstract createUiContent(): UiContent;
 }
 
 export class SplitContent implements SplitOption {
 	private entry$: Observable<SiEntry>|null = null;
 	private lazyDef: LazyDef|null = null;
+	private loadedEntry: SiEntry|null = null;
 
 	constructor(readonly key: string, public label: string, public shortLabel: string) {
 	}
@@ -54,10 +64,15 @@ export class SplitContent implements SplitOption {
 	static createEntry(key: string, label: string, shortLabel: string, entry: SiEntry): SplitContent {
 		const splitContent = new SplitContent(key, label, shortLabel);
 		splitContent.entry$ = of(entry);
+		splitContent.loadedEntry = entry;
 		return splitContent;
 	}
 
-	getEntry(): Observable<SiEntry> {
+	getLoadedSiEntry(): SiEntry|null {
+		return this.loadedEntry;
+	}
+
+	getSiEntry$(): Observable<SiEntry> {
 		if (this.entry$) {
 			return this.entry$;
 		}
@@ -69,7 +84,7 @@ export class SplitContent implements SplitOption {
 		this.entry$ = this.lazyDef.siService.apiGet(this.lazyDef.apiUrl, new SiGetRequest(SiGetInstruction.entry(
 						this.lazyDef.siComp, this.lazyDef.bulky, this.lazyDef.readOnly, this.lazyDef.entryId)))
 				.pipe(map((response: SiGetResponse) => {
-					return response.results[0].entry;
+					return this.loadedEntry = response.results[0].entry;
 				}));
 	}
 }

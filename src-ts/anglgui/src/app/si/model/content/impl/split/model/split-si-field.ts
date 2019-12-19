@@ -5,13 +5,13 @@ import { SplitModel } from '../comp/split-model';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { SplitOption } from './split-option';
 import { Observable } from 'rxjs';
-import { SplitContext } from './split-context';
+import { SplitContextSiField } from './split-context';
 import { SiEntry } from '../../../si-entry';
 import { map } from 'rxjs/operators';
 import { SplitComponent } from '../comp/split/split.component';
 
 export class SplitSiField extends SiFieldAdapter implements SplitModel {
-	splitContext: SplitContext|null;
+	splitContext: SplitContextSiField|null;
 
 	constructor(public relFieldId: string) {
 		super();

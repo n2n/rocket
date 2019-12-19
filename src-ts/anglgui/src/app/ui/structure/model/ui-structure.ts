@@ -9,7 +9,7 @@ import { UiContent } from './ui-content';
 export class UiStructure {
 	private children: UiStructure[] = [];
 	private visibleSubject = new BehaviorSubject<boolean>(true);
-	toolbackUiContents: UiContent[] = [];
+	toolbarUiContents: UiContent[] = [];
 
 	private disposed = false;
 
@@ -32,6 +32,19 @@ export class UiStructure {
 		}
 
 		return root;
+	}
+
+	containsDescendant(uiStructure: UiStructure): boolean {
+		let curUiStructure = uiStructure;
+		while (curUiStructure.parent) {
+			if (curUiStructure.parent === this) {
+				return true;
+			}
+
+			curUiStructure = curUiStructure.parent;
+		}
+
+		return false;
 	}
 
 	createChild(type: UiStructureType|null = null, label: string|null = null,

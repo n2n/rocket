@@ -22,4 +22,6 @@ export interface SiField {
 	setDisabled(disabled: boolean): void;
 
 	copy(entryBuildUp: SiEntryBuildup): SiField;
+
+	getContextSiFields(): SiField[];
 }

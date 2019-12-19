@@ -15,7 +15,7 @@ export class SplitComponent implements OnInit, OnDestroy {
 	model: SplitModel;
 	uiStructure: UiStructure;
 
-	private childUiStructureMap = new Map<string, UiStructure>();
+	readonly childUiStructureMap = new Map<string, UiStructure>();
 
 	private subscription: SplitViewStateSubscription;
 
@@ -33,10 +33,14 @@ export class SplitComponent implements OnInit, OnDestroy {
 
 	ngOnDestroy() {
 		this.subscription.cancel();
+
+		for (const childUiStructure of this.childUiStructureMap.values()) {
+			childUiStructure.dispose();
+		}
 	}
 
-	sfd(key: string) {
-		this.subscription.;
+	isKeyVisible(key: string): boolean {
+		return this.subscription.isKeyVisible(key);
 	}
 
 }

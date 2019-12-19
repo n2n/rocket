@@ -67,7 +67,7 @@ export class SplitViewStateContext implements SplitViewMenuModel {
 
 		if (this.optionMap.size > 0) {
 			if (!assigned) {
-				this.uiStructure.toolbackUiContents.push(this.toolbarUiContent);
+				this.uiStructure.toolbarUiContents.push(this.toolbarUiContent);
 			}
 
 			return;
@@ -77,9 +77,9 @@ export class SplitViewStateContext implements SplitViewMenuModel {
 			return;
 		}
 
-		const i = this.uiStructure.toolbackUiContents.indexOf(this.toolbarUiContent);
+		const i = this.uiStructure.toolbarUiContents.indexOf(this.toolbarUiContent);
 		if (i > -1) {
-			this.uiStructure.toolbackUiContents.splice(i, 1);
+			this.uiStructure.toolbarUiContents.splice(i, 1);
 		}
 	}
 }

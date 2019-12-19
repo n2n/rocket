@@ -100,11 +100,11 @@ export class BulkyEntryComponent implements OnInit, OnDestroy, DoCheck {
 class ToolbarResolver {
 	private uiStructuresMap = new Map<string, { siField: SiField, uiStructure: UiStructure } | null>();
 
-	register(propId, siField: SiField, uiStructure: UiStructure) {
+	register(propId: string, siField: SiField, uiStructure: UiStructure) {
 		this.uiStructuresMap.set(propId, null);
 
-		for (const relatedSiField of siField.getRelatedSiFields()) {
-			this.addContextSiField(relatedSiField, uiStructure);
+		for (const contextSiField of siField.getContextSiFields()) {
+			this.addContextSiField(propId, contextSiField, uiStructure);
 		}
 	}
 
@@ -126,7 +126,7 @@ class ToolbarResolver {
 		if (uiStructure1 === uiStructure2) {
 			return uiStructure1;
 		}
-		
+
 		if (uiStructure1.containsDescendant(uiStructure2)) {
 			return uiStructure1;
 		}
@@ -135,12 +135,12 @@ class ToolbarResolver {
 			return uiStructure2;
 		}
 
-		throw new Error('Impossible');
+		throw new Error('Impossible!');
 	}
 
 	fillToolbar() {
 		for (const [, item] of this.uiStructuresMap) {
-			item.uiStructure.toolbackUiContents.push(item.siField.createUiStructureModel().getContent())
+			item.uiStructure.toolbarUiContents.push(item.siField.createUiStructureModel().getContent());
 		}
 	}
 }

@@ -19,7 +19,7 @@ import { Subject, Observable } from 'rxjs';
 import { SplitContextInSiField } from '../model/content/impl/split/model/split-context-in-si-field';
 import { SplitContextOutSiField } from '../model/content/impl/split/model/split-context-out-si-field';
 import { SplitSiField } from '../model/content/impl/split/model/split-si-field';
-import { SplitContext } from '../model/content/impl/split/model/split-context';
+import { SplitContextSiField } from '../model/content/impl/split/model/split-context';
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',
@@ -157,8 +157,8 @@ export class SiFieldFactory {
 
 			fieldMap$.subscribe((fieldMap) => {
 				const splitContext = fieldMap.get(dataExtr.reqString('contextFieldId'));
-				if (splitContext instanceof SplitContextInSiField || splitContext instanceof SplitContextOutSiField) {
-					splitSiField.splitContext = splitContext as SplitContext;
+				if (splitContext instanceof SplitContextSiField) {
+					splitSiField.splitContext = splitContext as SplitContextSiField;
 				}
 			});
 

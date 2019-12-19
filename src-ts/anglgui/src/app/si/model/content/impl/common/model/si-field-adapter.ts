@@ -25,6 +25,10 @@ export abstract class SiFieldAdapter implements SiField, MessageFieldModel {
 
 	abstract copy(entryBuildUp: SiEntryBuildup): SiField;
 
+	getContextSiFields(): SiField[] {
+		return [];
+	}
+
 	createUiStructureModel(): UiStructureModel {
 		const model = new SimpleUiStructureModel(this.createUiContent());
 		model.messagesCallback = () => this.getMessages();
