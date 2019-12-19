@@ -6,7 +6,6 @@ import { FileInSiField } from '../model/content/impl/file/model/file-in-si-field
 import { QualifierSelectInSiField } from '../model/content/impl/qualifier/model/qualifier-select-in-si-field';
 import { EmbeddedEntryInSiField } from '../model/content/impl/embedded/model/embedded-entry-in-si-field';
 import { EmbeddedEntryPanelsInSiField } from '../model/content/impl/embedded/model/embedded-entry-panels-in-si-field';
-import { SiContentFactory } from './si-content-factory';
 import { SiMetaFactory } from './si-meta-factory';
 import { BooleanInSiField } from '../model/content/impl/boolean/boolean-in-si-field';
 import { StringInSiField } from '../model/content/impl/alphanum/model/string-in-si-field';
@@ -20,6 +19,8 @@ import { SplitContextInSiField } from '../model/content/impl/split/model/split-c
 import { SplitContextOutSiField } from '../model/content/impl/split/model/split-context-out-si-field';
 import { SplitSiField } from '../model/content/impl/split/model/split-si-field';
 import { SplitContextSiField } from '../model/content/impl/split/model/split-context';
+import { Injector } from '@angular/core';
+import { SiCompFactory } from './si-comp-factory';
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',
@@ -39,7 +40,7 @@ enum SiFieldType {
 }
 
 export class SiFieldFactory {
-	constructor(private type: SiType) {
+	constructor(private type: SiType, private injector: Injector) {
 	}
 
 	createFieldMap(data: Map<string, any>): Map<string, SiField> {
@@ -69,8 +70,8 @@ export class SiFieldFactory {
 			stringInSiField.minlength = dataExtr.nullaNumber('minlength');
 			stringInSiField.maxlength = dataExtr.nullaNumber('maxlength');
 			stringInSiField.mandatory = dataExtr.reqBoolean('mandatory');
-			stringInSiField.prefixAddons = SiContentFactory.createCrumbGroups(dataExtr.reqArray('prefixAddons'));
-			stringInSiField.suffixAddons = SiContentFactory.createCrumbGroups(dataExtr.reqArray('suffixAddons'));
+			stringInSiField.prefixAddons = SiCompFactory.createCrumbGroups(dataExtr.reqArray('prefixAddons'));
+			stringInSiField.suffixAddons = SiCompFactory.createCrumbGroups(dataExtr.reqArray('suffixAddons'));
 			return stringInSiField;
 
 		case SiFieldType.NUMBER_IN:
@@ -81,8 +82,8 @@ export class SiFieldFactory {
 			numberInSiField.arrowStep = dataExtr.nullaNumber('arrowStep');
 			numberInSiField.fixed = dataExtr.reqBoolean('fixed');
 			numberInSiField.value = dataExtr.nullaNumber('value');
-			numberInSiField.prefixAddons = SiContentFactory.createCrumbGroups(dataExtr.reqArray('prefixAddons'));
-			numberInSiField.suffixAddons = SiContentFactory.createCrumbGroups(dataExtr.reqArray('suffixAddons'));
+			numberInSiField.prefixAddons = SiCompFactory.createCrumbGroups(dataExtr.reqArray('prefixAddons'));
+			numberInSiField.suffixAddons = SiCompFactory.createCrumbGroups(dataExtr.reqArray('suffixAddons'));
 			return numberInSiField;
 
 		case SiFieldType.BOOLEAN_IN:
@@ -96,11 +97,11 @@ export class SiFieldFactory {
 			return booleanInSiField;
 
 		case SiFieldType.FILE_OUT:
-			return new FileOutSiField(SiContentFactory.buildSiFile(dataExtr.nullaObject('value')));
+			return new FileOutSiField(SiCompFactory.buildSiFile(dataExtr.nullaObject('value')));
 
 		case SiFieldType.FILE_IN:
 			const fileInSiField = new FileInSiField(dataExtr.reqString('apiUrl'),
-					dataExtr.reqObject('apiCallId'), SiContentFactory.buildSiFile(dataExtr.nullaObject('value')));
+					dataExtr.reqObject('apiCallId'), SiCompFactory.buildSiFile(dataExtr.nullaObject('value')));
 			fileInSiField.mandatory = dataExtr.reqBoolean('mandatory');
 			fileInSiField.maxSize = dataExtr.reqNumber('maxSize');
 			fileInSiField.acceptedMimeTypes = dataExtr.reqStringArray('acceptedMimeTypes');
@@ -118,14 +119,14 @@ export class SiFieldFactory {
 
 		case SiFieldType.QUALIFIER_SELECT_IN:
 			const qualifierSelectInSiField = new QualifierSelectInSiField(dataExtr.reqString('apiUrl'),
-					SiContentFactory.createEntryQualifiers(dataExtr.reqArray('values')));
+					SiCompFactory.createEntryQualifiers(dataExtr.reqArray('values')));
 			qualifierSelectInSiField.min = dataExtr.reqNumber('min');
 			qualifierSelectInSiField.max = dataExtr.nullaNumber('max');
 			return qualifierSelectInSiField;
 
 		case SiFieldType.EMBEDDED_ENTRY_IN:
 			const embeddedEntryInSiField = new EmbeddedEntryInSiField(dataExtr.reqString('apiUrl'),
-					SiContentFactory.createEmbeddedEntries(dataExtr.reqArray('values')));
+					new SiCompFactory(this.injector).createEmbeddedEntries(dataExtr.reqArray('values')));
 			embeddedEntryInSiField.content.reduced = dataExtr.reqBoolean('reduced');
 			embeddedEntryInSiField.content.min = dataExtr.reqNumber('min');
 			embeddedEntryInSiField.content.max = dataExtr.nullaNumber('max');
@@ -144,7 +145,7 @@ export class SiFieldFactory {
 
 		case SiFieldType.EMBEDDED_ENTRY_PANELS_IN:
 			return new EmbeddedEntryPanelsInSiField(dataExtr.reqString('apiUrl'),
-					SiContentFactory.createPanels(dataExtr.reqArray('panels')));
+					new SiCompFactory(this.injector).createPanels(dataExtr.reqArray('panels')));
 
 		case SiFieldType.SPLIT_CONTEXT_IN:
 			return new SplitContextInSiField();

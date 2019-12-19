@@ -13,10 +13,11 @@ import { SiMetaFactory } from './si-meta-factory';
 import { SiEntryFactory } from './si-entry-factory';
 import { SiDeclaration } from '../model/meta/si-declaration';
 import { Extractor } from 'src/app/util/mapping/extractor';
+import { Injector } from '@angular/core';
 
 export class SiApiFactory {
 
-	constructor() {
+	constructor(private injector: Injector) {
 	}
 
 	createGetResponse(data: any, request: SiGetRequest): SiGetResponse {
@@ -53,11 +54,12 @@ export class SiApiFactory {
 		}
 
 		if (null !== (propData = extr.nullaObject('entry'))) {
-			result.entry = new SiEntryFactory(comp, declaration).createEntry(propData);
+			result.entry = new SiEntryFactory(comp, declaration, this.injector).createEntry(propData);
 		}
 
 		if (null !== (propData = extr.nullaObject('partialContent'))) {
-			result.partialContent = new SiEntryFactory(comp, declaration).createPartialContent(propData);
+			result.partialContent = new SiEntryFactory(comp, declaration, this.injector)
+					.createPartialContent(propData);
 		}
 
 		return result;
@@ -118,7 +120,7 @@ export class SiApiFactory {
 		}
 
 		if (null !== (propData = extr.nullaObject('entry'))) {
-			result.entry = new SiEntryFactory(comp, declaration).createEntry(propData);
+			result.entry = new SiEntryFactory(comp, declaration, this.injector).createEntry(propData);
 		}
 
 		return result;

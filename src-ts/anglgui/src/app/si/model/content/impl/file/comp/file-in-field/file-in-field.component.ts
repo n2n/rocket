@@ -7,7 +7,7 @@ import { PopupUiLayer } from 'src/app/ui/structure/model/ui-layer';
 import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { ImageResizeComponent } from '../image-resize/image-resize.component';
-import { SiContentFactory } from 'src/app/si/build/si-content-factory';
+import { SiCompFactory } from 'src/app/si/build/si-comp-factory';
 
 
 @Component({
@@ -104,7 +104,7 @@ export class FileInFieldComponent implements OnInit {
 					if (data.error) {
 						this.uploadErrorMessage = data.error;
 					} else {
-						this.model.setSiFile(SiContentFactory.buildSiFile(data.file));
+						this.model.setSiFile(SiCompFactory.buildSiFile(data.file));
 					}
 				});
 	}

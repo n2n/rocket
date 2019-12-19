@@ -1,13 +1,17 @@
 import { UiBreadcrumb, UiZoneModel } from 'src/app/ui/structure/model/ui-zone';
 import { Extractor } from 'src/app/util/mapping/extractor';
-import { SiContentFactory } from './si-content-factory';
 import { SiCompEssentialsFactory } from './si-comp-essentials-factory';
+import { Injector } from '@angular/core';
+import { SiCompFactory } from './si-comp-factory';
 
 export class UiZoneModelFactory {
+	constructor(private injector: Injector) {
+	}
+
 	createZoneModel(data: any): UiZoneModel {
 		const extr = new Extractor(data);
 
-		const comp = SiContentFactory.createComp(extr.reqObject('comp'));
+		const comp = new SiCompFactory(this.injector).createComp(extr.reqObject('comp'));
 
 		return {
 			title: extr.reqString('title'),

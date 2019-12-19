@@ -4,13 +4,14 @@ import { SiEntry } from '../model/content/si-entry';
 import { SiEntryIdentifier, SiEntryQualifier } from '../model/content/si-qualifier';
 import { SiEntryBuildup } from '../model/content/si-entry-buildup';
 import { Extractor } from 'src/app/util/mapping/extractor';
-import { SiContentFactory } from './si-content-factory';
 import { SiComp } from '../model/comp/si-comp';
 import { SiCompEssentialsFactory } from './si-comp-essentials-factory';
 import { SiFieldFactory } from './si-field-factory';
+import { Injector } from '@angular/core';
+import { SiCompFactory } from './si-comp-factory';
 
 export class SiEntryFactory {
-	constructor(private comp: SiComp, private declaration: SiDeclaration) {
+	constructor(private comp: SiComp, private declaration: SiDeclaration, private injector: Injector) {
 	}
 
 	createPartialContent(data: any): SiPartialContent {
@@ -34,7 +35,7 @@ export class SiEntryFactory {
 	createEntry(entryData: any): SiEntry {
 		const extr = new Extractor(entryData);
 
-		const siEntry = new SiEntry(SiContentFactory.createEntryIdentifier(extr.reqObject('identifier')));
+		const siEntry = new SiEntry(SiCompFactory.createEntryIdentifier(extr.reqObject('identifier')));
 		siEntry.treeLevel = extr.nullaNumber('treeLevel');
 		siEntry.bulky = extr.reqBoolean('bulky');
 		siEntry.readOnly = extr.reqBoolean('readOnly');
@@ -53,7 +54,7 @@ export class SiEntryFactory {
 		const entryQualifier = new SiEntryQualifier(typeDeclaration.type.qualifier, identifier.id, extr.nullaString('idName'));
 
 		const entryBuildup = new SiEntryBuildup(entryQualifier);
-		entryBuildup.fieldMap = new SiFieldFactory(typeDeclaration.type).createFieldMap(extr.reqMap('fieldMap'));
+		entryBuildup.fieldMap = new SiFieldFactory(typeDeclaration.type, this.injector).createFieldMap(extr.reqMap('fieldMap'));
 		entryBuildup.controls = new SiCompEssentialsFactory(this.comp).createControls(extr.reqArray('controls'));
 
 		return entryBuildup;

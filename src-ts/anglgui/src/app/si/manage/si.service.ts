@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { Observable } from 'rxjs';
 import { UiZoneModel } from 'src/app/ui/structure/model/ui-zone';
 import { map } from 'rxjs/operators';
@@ -21,13 +21,13 @@ import { Extractor } from 'src/app/util/mapping/extractor';
 })
 export class SiService {
 
-	constructor(private httpClient: HttpClient) {
+	constructor(private httpClient: HttpClient, private injector: Injector) {
 	}
 
 	lookupZoneModel(url: string): Observable<UiZoneModel> {
 		return this.httpClient.get<any>(url)
 				.pipe(map((data: any) => {
-					return new UiZoneModelFactory().createZoneModel(data);
+					return new UiZoneModelFactory(this.injector).createZoneModel(data);
 				}));
 	}
 
@@ -114,7 +114,7 @@ export class SiService {
 		return this.httpClient
 				.post<any>(apiUrl + '/get', getRequest)
 				.pipe(map(data => {
-					return new SiApiFactory().createGetResponse(data, getRequest);
+					return new SiApiFactory(this.injector).createGetResponse(data, getRequest);
 				}));
 	}
 
@@ -122,7 +122,7 @@ export class SiService {
 		return this.httpClient
 				.post<any>(apiUrl + '/val', valRequest)
 				.pipe(map(data => {
-					return new SiApiFactory().createValResponse(data, valRequest);
+					return new SiApiFactory(this.injector).createValResponse(data, valRequest);
 				}));
 	}
 }

@@ -1,4 +1,3 @@
-import { ViewContainerRef, ComponentFactoryResolver } from '@angular/core';
 import { SiControl } from 'src/app/si/model/control/si-control';
 import { Message } from 'src/app/util/i18n/message';
 import { SiComp } from '../../si-comp';

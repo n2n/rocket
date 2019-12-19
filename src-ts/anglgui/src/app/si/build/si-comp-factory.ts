@@ -13,6 +13,7 @@ import { SiEmbeddedEntry } from '../model/content/impl/embedded/model/si-embedde
 import { SiPanel, SiGridPos } from '../model/content/impl/embedded/model/si-panel';
 import { SiFile, SiImageDimension } from '../model/content/impl/file/model/file-in-si-field';
 import { SiCrumbGroup, SiCrumb } from '../model/content/impl/meta/model/si-crumb';
+import { Injector } from '@angular/core';
 
 
 enum SiCompType {
@@ -21,8 +22,10 @@ enum SiCompType {
 	COMPACT_ENTRY = 'compact-entry'
 }
 
-export class SiContentFactory {
+export class SiCompFactory {
 
+	constructor(private injector: Injector) {
+	}
 
 	// createComps(dataArr: Array<any>, requiredType: SiCompType|null = null): SiComp[] {
 	// 	const contents = [];
@@ -32,7 +35,7 @@ export class SiContentFactory {
 	// 	return contents;
 	// }
 
-	static createComp(data: any, requiredType: SiCompType|null = null): SiComp {
+	createComp(data: any, requiredType: SiCompType|null = null): SiComp {
 		const extr = new Extractor(data);
 		const dataExtr = extr.reqExtractor('data');
 		let compEssentialsFactory: SiCompEssentialsFactory;
@@ -52,7 +55,7 @@ export class SiContentFactory {
 
 				const partialContentData = dataExtr.nullaObject('partialContent');
 				if (partialContentData) {
-					const partialContent = new SiEntryFactory(listSiComp, declaration)
+					const partialContent = new SiEntryFactory(listSiComp, declaration, this.injector)
 							.createPartialContent(partialContentData);
 
 					listSiComp.pageCollection.size = partialContent.count;
@@ -65,7 +68,8 @@ export class SiContentFactory {
 				declaration = SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'));
 				const bulkyEntryUiContent = new BulkyEntrySiComp(declaration);
 
-				bulkyEntryUiContent.entry = new SiEntryFactory(bulkyEntryUiContent, declaration).createEntry(dataExtr.reqObject('entry'));
+				bulkyEntryUiContent.entry = new SiEntryFactory(bulkyEntryUiContent, declaration, this.injector)
+						.createEntry(dataExtr.reqObject('entry'));
 				return bulkyEntryUiContent;
 
 			case SiCompType.COMPACT_ENTRY:
@@ -74,7 +78,8 @@ export class SiContentFactory {
 
 				compEssentialsFactory = new SiCompEssentialsFactory(compactEntrySiComp);
 				compactEntrySiComp.controls = compEssentialsFactory.createControls(dataExtr.reqArray('controls'));
-				compactEntrySiComp.entry = new SiEntryFactory(compactEntrySiComp, declaration).createEntry(dataExtr.reqObject('entry'));
+				compactEntrySiComp.entry = new SiEntryFactory(compactEntrySiComp, declaration, this.injector)
+						.createEntry(dataExtr.reqObject('entry'));
 				return compactEntrySiComp;
 
 			default:
@@ -91,7 +96,7 @@ export class SiContentFactory {
 	static createEntryQualifiers(dataArr: any[]): SiEntryQualifier[] {
 		const entryQualifiers: SiEntryQualifier[] = [];
 		for (const data of dataArr) {
-			entryQualifiers.push(SiContentFactory.createEntryQualifier(data));
+			entryQualifiers.push(SiCompFactory.createEntryQualifier(data));
 		}
 		return entryQualifiers;
 	}
@@ -137,7 +142,7 @@ export class SiContentFactory {
 		}
 	}
 
-	static createEmbeddedEntries(data: Array<any>): SiEmbeddedEntry[] {
+	createEmbeddedEntries(data: Array<any>): SiEmbeddedEntry[] {
 		const entries: SiEmbeddedEntry[] = [];
 		for (const entryData of data) {
 			entries.push(this.createEmbeddedEntry(entryData));
@@ -145,15 +150,15 @@ export class SiContentFactory {
 		return entries;
 	}
 
-	static createEmbeddedEntry(data: any): SiEmbeddedEntry {
+	createEmbeddedEntry(data: any): SiEmbeddedEntry {
 		const extr = new Extractor(data);
 
 		return new SiEmbeddedEntry(
-				SiContentFactory.createComp(extr.reqObject('content'), SiCompType.BULKY_ENTRY) as BulkyEntrySiComp,
-				SiContentFactory.createComp(extr.reqObject('summaryContent'), SiCompType.COMPACT_ENTRY) as CompactEntrySiComp);
+				this.createComp(extr.reqObject('content'), SiCompType.BULKY_ENTRY) as BulkyEntrySiComp,
+				this.createComp(extr.reqObject('summaryContent'), SiCompType.COMPACT_ENTRY) as CompactEntrySiComp);
 	}
 
-	static createPanels(data: Array<any>): SiPanel[] {
+	createPanels(data: Array<any>): SiPanel[] {
 		const entries: SiPanel[] = [];
 		for (const entryData of data) {
 			entries.push(this.createPanel(entryData));
@@ -161,7 +166,7 @@ export class SiContentFactory {
 		return entries;
 	}
 
-	static createPanel(data: any): SiPanel {
+	createPanel(data: any): SiPanel {
 		const extr = new Extractor(data);
 
 		const panel = new SiPanel(extr.reqString('name'), extr.reqString('label'));
@@ -172,7 +177,7 @@ export class SiContentFactory {
 		panel.nonNewRemovable = extr.reqBoolean('nonNewRemovable');
 		panel.sortable = extr.reqBoolean('sortable');
 		panel.pasteCategory = extr.nullaString('pasteCategory');
-		panel.gridPos = this.buildGridPos(extr.nullaObject('gridPos'));
+		panel.gridPos = SiCompFactory.buildGridPos(extr.nullaObject('gridPos'));
 
 		const allowedSiTypeQualifiersData = extr.nullaArray('allowedTypeQualifiers');
 		if (allowedSiTypeQualifiersData) {
@@ -208,7 +213,7 @@ export class SiContentFactory {
 
 		const imageDimensions: SiImageDimension[] = [];
 		for (const idData of extr.reqArray('imageDimensions')) {
-			imageDimensions.push(SiContentFactory.createSiImageDimension(idData));
+			imageDimensions.push(SiCompFactory.createSiImageDimension(idData));
 		}
 
 		return {
