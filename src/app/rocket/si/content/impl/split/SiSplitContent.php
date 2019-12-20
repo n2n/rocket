@@ -23,6 +23,7 @@ namespace rocket\si\content\impl\split;
 
 use n2n\util\uri\Url;
 use rocket\si\content\SiEntry;
+use rocket\si\meta\SiDeclaration;
 
 class SiSplitContent implements \JsonSerializable {
 	private $label;
@@ -31,6 +32,10 @@ class SiSplitContent implements \JsonSerializable {
 	private $apiUrl;
 	private $entryId;
 	private $bulky;
+	/**
+	 * @var SiDeclaration
+	 */
+	private $declaration;
 	/**
 	 * @var SiEntry
 	 */
@@ -51,7 +56,7 @@ class SiSplitContent implements \JsonSerializable {
 	}
 	
 	function jsonSerialize() {
-		$data = [ 'label' => $this->label ];
+		$data = [ 'label' => $this->label, 'shotLabel' => $this->shortLabel ?? $this->label ];
 		
 		if ($this->apiUrl !== null) {
 			$data['apiUrl'] = $this->apiUrl;
@@ -60,6 +65,7 @@ class SiSplitContent implements \JsonSerializable {
 		}
 		
 		if ($this->entry !== null) {
+			$data['declaration'] = $this->declaration;
 			$data['entry'] = $this->entry;
 		}
 		
@@ -90,12 +96,14 @@ class SiSplitContent implements \JsonSerializable {
 	
 	/**
 	 * @param string $label
+	 * @param SiDeclaration $declaration
 	 * @param SiEntry $entry
 	 * @return \rocket\si\content\impl\split\SiSplitContent
 	 */
-	static function createEntry(string $label, SiEntry $entry) {
+	static function createEntry(string $label, SiDeclaration $declaration, SiEntry $entry) {
 		$split = new SiSplitContent();
 		$split->label = $label;
+		$split->declaration = $declaration;
 		$split->entry = $entry;
 		return $split;
 	}

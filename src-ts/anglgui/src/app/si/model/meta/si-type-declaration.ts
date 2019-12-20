@@ -9,7 +9,7 @@ export class SiTypeDeclaration {
 	}
 
 	getSiProps(): SiProp[] {
-		return this.type.getProps();
-		// return this.structureDeclarations.filter(sd => !!sd.prop).map(sd => sd.prop);
+		// return this.type.getProps();
+		return this.structureDeclarations.filter(sd => !!sd.prop).map(sd => sd.prop);
 	}
 }

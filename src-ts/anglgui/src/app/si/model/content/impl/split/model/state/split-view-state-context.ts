@@ -8,7 +8,7 @@ import { SplitOption } from '../split-option';
 
 export class SplitViewStateContext implements SplitViewMenuModel {
 	private toolbarUiContent: UiContent;
-	private subscriptions: Array<SplitViewStateSubscription>;
+	private subscriptions: Array<SplitViewStateSubscription> = [];
 	private optionMap = new Map<string, SplitOption>();
 	private visibleKeys: string[] = [];
 

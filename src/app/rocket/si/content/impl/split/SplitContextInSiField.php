@@ -36,6 +36,10 @@ class SplitContextInSiField extends InSiFieldAdapter {
 	 * @var string[]
 	 */
 	private $activeKeys = [];
+	/**
+	 * @var SiSplitContent[]
+	 */
+	private $splitContents = [];
 	
 	/**
 	 * 

@@ -18,7 +18,7 @@ export class SplitContextOutSiField extends SplitContextSiField {
 		throw new IllegalSiStateError('No input available.');
 	}
 
-	copy(entryBuildUp: SiEntryBuildup): SiField {
+	copy(entryBuildup: SiEntryBuildup): SiField {
 		throw new Error('Method not implemented.');
 	}
 }

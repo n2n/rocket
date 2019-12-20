@@ -155,7 +155,7 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 	}
 
 	getSiProps(): Array<SiProp>|null {
-		return this.siPageCollection.declaration.getBasicTypeDeclaration().type.getProps();
+		return this.siPageCollection.declaration.getBasicTypeDeclaration().getSiProps();
 	}
 
 	private valCurrentPageNo(currentPageNo: number) {
@@ -187,6 +187,10 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 	}
 
 	toggleSelection(qualifier: SiEntryQualifier) {
+		if (!this.selectable) {
+			return;
+		}
+
 		if (this.singleSelect) {
 			this.model.getSiEntryQualifierSelection().selectedQualfiers = [qualifier];
 			return;

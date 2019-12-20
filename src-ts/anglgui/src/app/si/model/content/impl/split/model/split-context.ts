@@ -16,7 +16,7 @@ import { SiEntryBuildup } from '../../../si-entry-buildup';
 
 export abstract class SplitContextSiField extends SiFieldAdapter {
 
-	protected splitContentMap: Map<string, SplitContent>;
+	protected splitContentMap = new Map<string, SplitContent>();
 
 	putSplitContent(splitContent: SplitContent) {
 		this.splitContentMap.set(splitContent.key, splitContent);

@@ -18,9 +18,13 @@ import { Subject, Observable } from 'rxjs';
 import { SplitContextInSiField } from '../model/content/impl/split/model/split-context-in-si-field';
 import { SplitContextOutSiField } from '../model/content/impl/split/model/split-context-out-si-field';
 import { SplitSiField } from '../model/content/impl/split/model/split-si-field';
-import { SplitContextSiField } from '../model/content/impl/split/model/split-context';
+import { SplitContextSiField, SplitContent } from '../model/content/impl/split/model/split-context';
 import { Injector } from '@angular/core';
 import { SiCompFactory } from './si-comp-factory';
+import { SiEntryFactory } from './si-entry-factory';
+import { SiDeclaration } from '../model/meta/si-declaration';
+import { SiComp } from '../model/comp/si-comp';
+import { SiService } from '../manage/si.service';
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',
@@ -40,7 +44,8 @@ enum SiFieldType {
 }
 
 export class SiFieldFactory {
-	constructor(private type: SiType, private injector: Injector) {
+	constructor(private comp: SiComp, private declaration: SiDeclaration, private type: SiType,
+			private injector: Injector) {
 	}
 
 	createFieldMap(data: Map<string, any>): Map<string, SiField> {
@@ -148,13 +153,17 @@ export class SiFieldFactory {
 					new SiCompFactory(this.injector).createPanels(dataExtr.reqArray('panels')));
 
 		case SiFieldType.SPLIT_CONTEXT_IN:
-			return new SplitContextInSiField();
+			const splitContextInSiField = new SplitContextInSiField();
+			this.compileSplitContents(splitContextInSiField, dataExtr.reqMap('splitContents'));
+			return splitContextInSiField;
 
 		case SiFieldType.SPLIT_CONTEXT_OUT:
-			return new SplitContextOutSiField();
+			const splitContextOutSiField = new SplitContextOutSiField();
+			this.compileSplitContents(splitContextOutSiField, dataExtr.reqMap('splitContents'));
+			return splitContextOutSiField;
 
 		case SiFieldType.SPLIT_PLACEHOLDER:
-			const splitSiField = new SplitSiField(dataExtr.reqString('relFieldId'));
+			const splitSiField = new SplitSiField(dataExtr.reqString('refFieldId'));
 
 			fieldMap$.subscribe((fieldMap) => {
 				const splitContext = fieldMap.get(dataExtr.reqString('contextFieldId'));
@@ -163,8 +172,41 @@ export class SiFieldFactory {
 				}
 			});
 
+			return splitSiField;
 		default:
 			throw new ObjectMissmatchError('Invalid si field type: ' + data.type);
+		}
+	}
+
+	private compileSplitContents(splitContextSiField: SplitContextSiField, dataMap: Map<string, any>) {
+		for (const [key, data] of dataMap) {
+			const extr = new Extractor(data);
+
+			const label = extr.reqString('label');
+			const shortLabel = extr.reqString('label');
+
+			const entryData = extr.nullaObject('entry');
+			if (entryData) {
+				const entryFactory = new SiEntryFactory(this.comp, this.declaration, this.injector);
+				splitContextSiField.putSplitContent(SplitContent.createEntry(key, label, shortLabel,
+						entryFactory.createEntry(entryData)));
+				return;
+			}
+
+			const apiUrl = extr.reqString('apiUrl');
+			if (apiUrl) {
+				splitContextSiField.putSplitContent(SplitContent.createLazy(key, label, shortLabel, {
+					apiUrl,
+					entryId: extr.nullaString('entryId'),
+					bulky: extr.reqBoolean('bulky'),
+					readOnly: extr.reqBoolean('readOnly'),
+					siComp: this.comp,
+					siService: this.injector.get(SiService)
+				}));
+				return;
+			}
+
+			splitContextSiField.putSplitContent(SplitContent.createUnavaialble(key, label, shortLabel));
 		}
 	}
 

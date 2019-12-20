@@ -2,7 +2,6 @@ import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiPage } from '../../model/si-page';
 import { ListZoneContentComponent } from './list-zone-content.component';
 import { SiEntry } from 'src/app/si/model/content/si-entry';
-import { SiUiStructureModelFactory } from '../../model/si-ui-structure-model-factory';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
 
 export class StructurePage {
