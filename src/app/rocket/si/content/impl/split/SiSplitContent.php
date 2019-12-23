@@ -96,14 +96,12 @@ class SiSplitContent implements \JsonSerializable {
 	
 	/**
 	 * @param string $label
-	 * @param SiDeclaration $declaration
 	 * @param SiEntry $entry
 	 * @return \rocket\si\content\impl\split\SiSplitContent
 	 */
-	static function createEntry(string $label, SiDeclaration $declaration, SiEntry $entry) {
+	static function createEntry(string $label, SiEntry $entry) {
 		$split = new SiSplitContent();
 		$split->label = $label;
-		$split->declaration = $declaration;
 		$split->entry = $entry;
 		return $split;
 	}

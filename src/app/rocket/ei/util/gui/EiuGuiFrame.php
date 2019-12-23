@@ -13,6 +13,8 @@ use n2n\util\ex\NotYetImplementedException;
 use rocket\ei\component\command\EiCommand;
 use rocket\ei\util\control\EiuControlFactory;
 use rocket\ei\util\spec\EiuProp;
+use rocket\si\meta\SiDeclaration;
+use rocket\si\meta\SiTypeDeclaration;
 
 class EiuGuiFrame {
 	private $eiGuiFrame;
@@ -218,6 +220,13 @@ class EiuGuiFrame {
 		
 // 		$this->eiGuiFrame->init(new CustomGuiViewFactory($viewFactory), $guiPropPaths);
 // 	}
+
+	/**
+	 * @return \rocket\si\meta\SiDeclaration
+	 */
+	function createSiDeclaration() {
+		return new SiDeclaration([new SiTypeDeclaration($this->eiGuiFrame->createSiType())]);
+	}
 }
 
 class CustomGuiViewFactory implements EiGuiSiFactory {

@@ -19,43 +19,9 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\si\content\impl\split;
+namespace rocket\ei\manage\gui;
 
-use n2n\util\ex\IllegalStateException;
-use rocket\si\content\impl\OutSiFieldAdapter;
+use rocket\ei\manage\gui\field\GuiPropPath;
 
-class SplitOutSiField extends OutSiFieldAdapter {
-	private $subFields = [];
-	private $splitContents = [];
-	
-	function __construct() {
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\si\content\SiField::getType()
-	 */
-	function getType(): string {
-		return 'split-out';
-	}
-	
-	
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\si\content\SiField::getData()
-	 */
-	function getData(): array {
-		return [
-			'splitContentsMap' => $this->splitContents
-		];
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\si\content\impl\OutSiFieldAdapter::handleInput()
-	 */
-	function handleInput(array $data): array {
-		throw new IllegalStateException();
-	}
+class CouldNotResolveGuiPropPathException extends GuiPropPath {
 }

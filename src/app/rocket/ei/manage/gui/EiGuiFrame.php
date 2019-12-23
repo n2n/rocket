@@ -16,6 +16,8 @@ use rocket\si\content\SiEntryBuildup;
 use rocket\si\content\impl\basic\CompactEntrySiComp;
 use rocket\ei\EiPropPath;
 use rocket\si\content\impl\basic\BulkyEntrySiComp;
+use rocket\si\meta\SiProp;
+use rocket\si\meta\SiType;
 
 /**
  * @author andreas
@@ -176,6 +178,40 @@ class EiGuiFrame {
 	 */
 	function containsGuiPropPath(GuiPropPath $guiPropPath) {
 		return isset($this->guiPropPaths[(string) $guiPropPath]);
+	}
+	
+	
+	/**
+	 * @return \rocket\si\meta\SiType
+	 */
+	function createSiType() {
+		$siTypeQualifier = $this->getGuiDefinition()->getEiMask()
+				->createSiTypeQualifier($this->getEiFrame()->getN2nContext()->getN2nLocale());
+		return new SiType($siTypeQualifier, $this->getSiProps());
+	}
+	
+	/**
+	 * @return SiProp[]
+	 */
+	private function getSiProps() {
+		$n2nLocale = $this->eiFrame->getN2nContext()->getN2nLocale();
+		$deter = new ContextSiFieldDeterminer();
+		
+		$siProps = [];
+		foreach ($this->guiPropPaths as $guiPropPath) {
+			$eiProp = $this->guiDefinition->getGuiPropWrapperByGuiPropPath($guiPropPath)->getEiProp();
+			$label = $eiProp->getLabelLstr()->t($n2nLocale);
+			$helpText = null;
+			if (null !== ($helpTextLstr = $eiProp->getHelpTextLstr())) {
+				$helpText = $helpTextLstr->t($n2nLocale);
+			}
+			
+			$siProps[] = (new SiProp((string) $guiPropPath, $label))->setHelpText($helpText);
+			
+			$deter->reportGuiPropPath($guiPropPath);
+		}
+				
+		return array_merge($deter->createContextSiProps($this), $siProps);
 	}
 	
 	
@@ -482,98 +518,75 @@ class EiGuiFrame {
 	function unregisterEiGuiListener(EiGuiListener $eiGuiFrameListener) {
 		unset($this->eiGuiFrameListeners[spl_object_hash($eiGuiFrameListener)]);
 	}
-	
-	
-// 	/**
-// 	 * @return \rocket\ei\manage\gui\EiGuiFrameNature
-// 	 */
-// 	function getEiGuiFrameNature()  {
-// 		return $this->eiGuiFrameNature;
-// 	}
-	
-	
 }
 
-// class GuiPropAssembly {
-// 	private $guiPropPath;
-// 	private $displayDefinition;
+class ContextSiFieldDeterminer {
+	private $guiPropPaths = [];
+	private $forkGuiPropPaths = [];
+	private $forkedGuiPropPaths = [];
 	
-// 	/**
-// 	 * @param GuiProp $guiProp
-// 	 * @param GuiPropPath $guiPropPath
-// 	 * @param DisplayDefinition $displayDefinition
-// 	 */
-// 	function __construct(GuiPropPath $guiPropPath, DisplayDefinition $displayDefinition) {
-// 		$this->guiPropPath = $guiPropPath;
-// 		$this->displayDefinition = $displayDefinition;
-// 	}
+	/**
+	 * @param GuiPropPath $guiPropPath
+	 */
+	function reportGuiPropPath(GuiPropPath $guiPropPath) {
+		$guiPropPathStr = (string) $guiPropPath;
+		
+		$this->guiPropPaths[$guiPropPathStr] = $guiPropPath;
+		unset($this->forkGuiPropPaths[$guiPropPathStr]);
+		unset($this->forkedGuiPropPaths[$guiPropPathStr]);
+		
+		$forkGuiPropPath = $guiPropPath;
+		while ($forkGuiPropPath->hasMultipleEiPropPaths()) {
+			$forkGuiPropPath = $forkGuiPropPath->getPoped();
+			$this->reportFork($forkGuiPropPath, $guiPropPath);
+		}
+	}
 	
-// // 	/**
-// // 	 * @return \rocket\ei\manage\gui\GuiProp
-// // 	 */
-// // 	function getGuiProp() {
-// // 		return $this->guiProp;
-// // 	}
+	/**
+	 * @param GuiPropPath $forkGuiPropPath
+	 * @param GuiPropPath $guiPropPath
+	 */
+	private function reportFork(GuiPropPath $forkGuiPropPath, GuiPropPath $guiPropPath) {
+		$forkGuiPropPathStr = (string) $forkGuiPropPath;
+		
+		if (isset($this->guiPropPaths[$forkGuiPropPathStr])) {
+			return;
+		}
+		
+		if (!isset($this->forkGuiPropPaths[$forkGuiPropPathStr])) {
+			$this->forkGuiPropPaths[$forkGuiPropPathStr] = [];
+		}
+		$this->forkedGuiPropPaths[$forkGuiPropPathStr][] = $guiPropPath;
+		$this->forkGuiPropPaths[$forkGuiPropPathStr] = $forkGuiPropPath;
+		
+		if ($forkGuiPropPath->hasMultipleEiPropPaths()) {
+			$this->reportFork($forkGuiPropPath->getPoped(), $forkGuiPropPath);
+		}
+	}
 	
-
-	
-// 	/**
-// 	 * @return \rocket\ei\manage\gui\DisplayDefinition
-// 	 */
-// 	function getDisplayDefinition() {
-// 		return $this->displayDefinition;
-// 	}
-// }
-
-
-// class EiGuiFrameNature {
-// 	private $entryControlsRendered = false;
-// 	private $collectionForced = false;
-// // 	private $forkControlsRendered = true;
-	
-// 	/**
-// 	 * @return bool
-// 	 */
-// 	function areEntryGuiControlsRendered() {
-// 		return $this->entryControlsRendered;
-// 	}
-	
-// 	/**
-// 	 * @param bool $entryControlsRendered
-// 	 * @return \rocket\ei\manage\gui\EiGuiFrameNature
-// 	 */
-// 	function setEntryGuiControlsRendered(bool $entryControlsRendered) {
-// 		$this->entryControlsRendered = $entryControlsRendered;
-// 		return $this;
-// 	}
-// 	/**
-//  	 * @return bool
-//  	 */
-// 	function isCollectionForced() {
-// 		return $this->collectionForced;
-// 	}
-
-// 	/**
-// 	 * @param bool $forkControlsRedenered
-// 	 * @return \rocket\ei\manage\gui\EiGuiFrameNature
-// 	 */
-// 	function setCollectionForced(bool $collectionForced) {
-// 		$this->collectionForced = $collectionForced;
-// 		return $this;
-// 	}
-// // 	/**
-// // 	 * @return bool
-// // 	 */
-// // 	function areForkControlsRendered() {
-// // 		return $this->forkControlsRendered;
-// // 	}
-	
-// // 	/**
-// // 	 * @param bool $forkControlsRedenered
-// // 	 * @return \rocket\ei\manage\gui\EiGuiFrameNature
-// // 	 */
-// // 	function setForkControlsRendered(bool $forkControlsRedenered) {
-// // 		$this->forkControlsRendered = $forkControlsRedenered;
-// // 		return $this;
-// // 	}
-// }
+	/**
+	 * @return SiProp[]
+	 */
+	function createContextSiProps(EiGuiFrame $eiGuiFrame) {
+		$n2nLocale = $eiGuiFrame->getEiFrame()->getN2nContext()->getN2nLocale();
+		
+		$siProps = [];
+		
+		foreach ($this->forkGuiPropPaths as $forkGuiPropPath) {
+			$eiProp = $eiGuiFrame->getGuiDefinition()->getGuiPropWrapperByGuiPropPath($forkGuiPropPath)->getEiProp();
+			
+			$siProp = (new SiProp((string) $forkGuiPropPath, $eiProp->getLabelLstr()->t($n2nLocale)))
+			->setDescendantPropIds(array_map(
+					function ($guiPropPath) { return (string) $guiPropPath; },
+					$this->forkedGuiPropPaths[(string) $forkGuiPropPath]));
+			
+			if (null !== ($helpTextLstr = $eiProp->getHelpTextLstr())) {
+				$siProp->setHelpText($helpTextLstr);
+			}
+			
+			$siProps[] = $siProp;
+		}
+		
+		return $siProps;
+	}
+}

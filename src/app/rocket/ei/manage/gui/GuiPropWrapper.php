@@ -24,7 +24,6 @@ namespace rocket\ei\manage\gui;
 use rocket\ei\EiPropPath;
 use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\EiProp;
-use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\manage\gui\field\GuiPropPath;
 
 class GuiPropWrapper {

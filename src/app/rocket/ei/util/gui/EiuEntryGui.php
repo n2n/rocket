@@ -100,10 +100,6 @@ class EiuEntryGui {
 		return $this->guiFrame()->getEiGuiFrame()->createSiEntry($this->eiEntryGui);
 	}
 	
-	function createSiDeclaration() {
-		return $this->eiEntryGui->c
-	}
-	
 	/**
 	 * @param bool $generalSiControlsIncluded
 	 * @param bool $entrySiControlsIncluded

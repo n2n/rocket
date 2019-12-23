@@ -58,6 +58,9 @@ class EiuGui {
 		return 1 == count($this->eiGuiFrame->getEiEntryGuis());
 	}
 	
+	function createSiDeclaration() {
+		return $this->eiGui->createSiDeclaration();
+	}
 	
 	/**
 	 *
@@ -66,7 +69,7 @@ class EiuGui {
 	 */
 	public function entryGui(bool $required = true) {
 		$eiEntryGuis = $this->eiGuiFrame->getEiEntryGuis();
-		$eiEntryGui = null;
+		
 		if (count($eiEntryGuis) == 1) {
 			return new EiuEntryGui(current($eiEntryGuis), $this, $this->eiuAnalyst);
 		}

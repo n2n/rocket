@@ -35,8 +35,9 @@ class LazyTranslationEssentialsDeterminer {
 	private $translationConfig;
 	private $readOnly;
 	
+	private $targetSiDeclaration = null;
 	private $n2nLocales = null;
-	private $n2nLocaleOptions = null;
+// 	private $n2nLocaleOptions = null;
 	private $activeTargetEiuEntries = null;
 	private $activeTargetEiuEntryGuis = null;
 	
@@ -48,6 +49,17 @@ class LazyTranslationEssentialsDeterminer {
 	
 	function getGuiPropPath() {
 		return $this->eiu->guiField()->getPath();
+	}
+	
+	/**
+	 * @return \rocket\si\meta\SiDeclaration
+	 */
+	function getTargetSiDeclaration() {
+		if ($this->targetSiDeclaration === null) {
+			$this->targetSiDeclaration = $this->targetEiuGuiFrame->createSiDeclaration();
+		}
+		
+		return $this->targetSiDeclaration;
 	}
 	
 	/**

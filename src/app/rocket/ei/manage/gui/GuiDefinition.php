@@ -161,38 +161,38 @@ class GuiDefinition {
 		return true;
 	}
 	
-	/**
-	 * @param string $eiPropPath
-	 * @param GuiPropFork $guiPropFork
-	 */
-	function putGuiPropFork(EiPropPath $eiPropPath, GuiPropFork $guiPropFork) {
-		$eiPropPathStr = (string) $eiPropPath;
+// 	/**
+// 	 * @param string $eiPropPath
+// 	 * @param GuiPropFork $guiPropFork
+// 	 */
+// 	function putGuiPropFork(EiPropPath $eiPropPath, GuiPropFork $guiPropFork) {
+// 		$eiPropPathStr = (string) $eiPropPath;
 		
-		$this->guiPropForkWrappers[$eiPropPathStr] = new GuiPropForkWrapper($this, $eiPropPath, $guiPropFork);
-		$this->eiPropPaths[$eiPropPathStr] = $eiPropPath;
-	}
+// 		$this->guiPropForkWrappers[$eiPropPathStr] = new GuiPropForkWrapper($this, $eiPropPath, $guiPropFork);
+// 		$this->eiPropPaths[$eiPropPathStr] = $eiPropPath;
+// 	}
 	
-	/**
-	 * @param string $id
-	 * @return boolean
-	 */
-	function containsLevelGuiPropForkId(string $id) {
-		return isset($this->guiPropForkWrappers[$id]);
-	}
+// 	/**
+// 	 * @param string $id
+// 	 * @return boolean
+// 	 */
+// 	function containsLevelGuiPropForkId(string $id) {
+// 		return isset($this->guiPropForkWrappers[$id]);
+// 	}
 	
-	/**
-	 * @param string $id
-	 * @throws GuiException
-	 * @return GuiPropFork
-	 */
-	function getGuiPropFork(EiPropPath $eiPropPath) {
-		$eiPropPathStr = (string) $eiPropPath;
-		if (!isset($this->guiPropForkWrappers[$eiPropPathStr])) {
-			throw new GuiException('No GuiPropFork with id \'' . $eiPropPathStr . '\' registered.');
-		}
+// 	/**
+// 	 * @param string $id
+// 	 * @throws GuiException
+// 	 * @return GuiPropFork
+// 	 */
+// 	function getGuiPropFork(EiPropPath $eiPropPath) {
+// 		$eiPropPathStr = (string) $eiPropPath;
+// 		if (!isset($this->guiPropForkWrappers[$eiPropPathStr])) {
+// 			throw new GuiException('No GuiPropFork with id \'' . $eiPropPathStr . '\' registered.');
+// 		}
 		
-		return $this->guiPropForkWrappers[$eiPropPathStr];
-	}
+// 		return $this->guiPropForkWrappers[$eiPropPathStr];
+// 	}
 	
 // 	function getAllGuiProps() {
 // 		return $this->buildGuiProps(array());
@@ -334,20 +334,18 @@ class GuiDefinition {
 	 * @throws GuiException
 	 */
 	function getGuiPropWrapperByGuiPropPath(GuiPropPath $guiPropPath) {
-		$ids = $guiPropPath->toArray();
-		$guiDefinition = $this;
-		while (null !== ($id = array_shift($ids))) {
-			if (empty($ids)) {
-				return $guiDefinition->getGuiPropWrapper($id);
-			}
-			
-			$guiDefinition = $guiDefinition->getGuiPropFork($id)->getForkedGuiDefinition();
-			if ($guiDefinition === null) {
-				break;
-			}
-		}	
+		$guiPropWrapper = $this->getGuiPropWrapper($guiPropPath->getFirstEiPropPath());
 		
-		throw new GuiException('GuiPropPath could not be resolved: ' . $guiPropPath);
+		if (!$guiPropPath->hasMultipleEiPropPaths()) {
+			return $guiPropWrapper;
+		}
+		
+		try {
+			return $guiPropWrapper->getForkedGuiPropWrapper($guiPropPath->getShifted());
+		} catch (CouldNotResolveGuiPropPathException $e) {
+			throw new CouldNotResolveGuiPropPathException('GuiPropPath could not be resolved: ' . $guiPropPath);
+		}
+
 	}
 	
 	
@@ -811,8 +809,7 @@ class GuiDefinition {
 				continue;
 			}
 			
-			$guiPropWrapper = $eiGuiFrame->getGuiDefinition()->getGuiPropWrapperByGuiPropPath($guiPropPath);
-			$guiStructureDeclarations[] = $this->createGuiStructureDeclaration($guiPropPath, $guiPropWrapper, $displayDefinition, $n2nLocale);
+			$guiStructureDeclarations[] = $this->createGuiStructureDeclaration($guiPropPath, $displayDefinition);
 		}
 		
 		return $guiStructureDeclarations;
@@ -843,7 +840,7 @@ class GuiDefinition {
 				$eiGuiFrame->putDisplayDefintion($guiPropPath, $displayDefinition);
 				
 				$guiStructureDeclarations[(string) $guiPropPath] = $this->createGuiStructureDeclaration(
-						$guiPropPath, $guiPropWrapper, $displayDefinition, $n2nLocale);
+						$guiPropPath, $displayDefinition);
 			}
 			
 			foreach ($guiPropWrapper->getForkedGuiPropPaths() as $forkedGuiPropPath) {
@@ -857,9 +854,7 @@ class GuiDefinition {
 				$eiGuiFrame->putDisplayDefintion($absGuiPropPath, $displayDefinition);
 				
 				$guiStructureDeclarations[(string) $absGuiPropPath] = $this->createGuiStructureDeclaration(
-						$absGuiPropPath,
-						$guiPropWrapper->getForkedGuiPropWrapper($forkedGuiPropPath), 
-						$displayDefinition, $n2nLocale);
+						$absGuiPropPath, $displayDefinition);
 				
 			}
 		}
@@ -871,20 +866,11 @@ class GuiDefinition {
 	
 	/**
 	 * @param GuiPropPath $guiPropPath
-	 * @param GuiPropWrapper $guiPropWrapper
 	 * @param DisplayDefinition $displayDefinition
 	 */
-	private function createGuiStructureDeclaration($guiPropPath, $guiPropWrapper, $displayDefinition, $n2nLocale) {
-		$eiProp = $guiPropWrapper->getEiProp();
-		$label = $eiProp->getLabelLstr()->t($n2nLocale);
-		$helpText = null;
-		if (null !== ($helpTextLstr = $eiProp->getHelpTextLstr())) {
-			$helpText = $helpTextLstr->t($n2nLocale);
-		}
+	private function createGuiStructureDeclaration($guiPropPath, $displayDefinition) {
 		return GuiStructureDeclaration::createField($guiPropPath,
-				$displayDefinition->getSiStructureType() ?? SiStructureType::ITEM,
-				$displayDefinition->getOverwriteLabel() ?? $label,
-				$displayDefinition->getOverwriteHelpText() ?? $helpText);
+				$displayDefinition->getSiStructureType() ?? SiStructureType::ITEM);
 	}
 	
 	

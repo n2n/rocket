@@ -51,7 +51,7 @@ class SplitGuiFieldFactory {
 	
 	
 	private function createReadOnlyGuiField() {
-		$siField = SiFields::splitOutContext();
+		$siField = SiFields::splitOutContext($this->lted->getTargetSiDeclaration());
 		
 		foreach ($this->lted->getN2nLocales() as $n2nLocale) {
 			$n2nLocaleId = $n2nLocale->getId();
@@ -69,7 +69,7 @@ class SplitGuiFieldFactory {
 	}
 	
 	private function createEditableGuiField() {
-		$siField = SiFields::splitInContext($this->lted->getN2nLocaleOptions())
+		$siField = SiFields::splitInContext($this->lted->getTargetSiDeclaration())
 				->setMin($this->lted->getMinNum())
 				->setActiveKeys($this->lted->getActiveN2nLocaleIds());
 		$targetEiuGuiFrame = $this->lted->getTargetEiuGuiFrame();

@@ -39,6 +39,8 @@ class GuiStructureDeclaration {
 	 * @return string|null
 	 */
 	function getLabel() {
+		UnsupportedOperationException::assertTrue($this->guiPropPath === null);
+		
 		return $this->label;
 	}
 	
@@ -46,6 +48,8 @@ class GuiStructureDeclaration {
 	 * @return string|null
 	 */
 	function getHelpText() {
+		UnsupportedOperationException::assertTrue($this->guiPropPath === null);
+		
 		return $this->helpText;
 	}
 	
@@ -102,11 +106,8 @@ class GuiStructureDeclaration {
 	 * @param string|null $helpText
 	 * @return GuiStructureDeclaration
 	 */
-	static function createField(GuiPropPath $guiPropPath, ?string $siStructureType, ?string $label, 
-			string $helpText = null) {
+	static function createField(GuiPropPath $guiPropPath, ?string $siStructureType) {
 		$gsd = new GuiStructureDeclaration();
-		$gsd->label = $label;
-		$gsd->helpText = $helpText;
 		$gsd->siStructureType = $siStructureType;
 		$gsd->guiPropPath = $guiPropPath;
 		return $gsd;

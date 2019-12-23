@@ -54,10 +54,9 @@ interface EiCommand extends EiComponent {
 	
 	/**
 	 * @param Eiu $eiu
-	 * @return Controller
-	 * @throws UnsupportedOperationException if this command does not provide a controller.
+	 * @return Controller|null
 	 */
-	function lookupController(Eiu $eiu): Controller;
+	function lookupController(Eiu $eiu): ?Controller;
 	
 	/**
 	 * @param mixed $obj

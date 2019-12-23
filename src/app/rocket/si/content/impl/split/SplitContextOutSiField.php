@@ -24,9 +24,15 @@ namespace rocket\si\content\impl\split;
 use n2n\util\uri\Url;
 use rocket\si\content\SiEntry;
 use rocket\si\content\impl\OutSiFieldAdapter;
+use rocket\si\meta\SiDeclaration;
+use n2n\util\ex\IllegalStateException;
 
 class SplitContextOutSiField extends OutSiFieldAdapter {
 
+	/**
+	 * @var SiDeclaration
+	 */
+	private $declaration;
 	/**
 	 * @var SiSplitContent[]
 	 */
@@ -35,7 +41,8 @@ class SplitContextOutSiField extends OutSiFieldAdapter {
 	/**
 	 * 
 	 */
-	function __construct() {
+	function __construct(?SiDeclaration $declaration) {
+		$this->declaration = $declaration;
 	}
 	
 	/**
@@ -53,6 +60,7 @@ class SplitContextOutSiField extends OutSiFieldAdapter {
 	 * @return \rocket\si\content\impl\split\SiSplitContent
 	 */
 	function putEntry(string $key, string $label, SiEntry $entry) {
+		IllegalStateException::assertTrue($this->declaration !== null, 'No SiDeclaration defined.');
 		return $this->splitContents[$key] = SiSplitContent::createEntry($label, $entry);
 	}
 	
@@ -65,6 +73,7 @@ class SplitContextOutSiField extends OutSiFieldAdapter {
 	 * @return \rocket\si\content\impl\split\SiSplitContent
 	 */
 	function putLazy(string $key, string $label, Url $apiUrl, string $entryId, bool $bulky) {
+		IllegalStateException::assertTrue($this->declaration !== null, 'No SiDeclaration defined.');
 		return $this->splitContents[$key] = SiSplitContent::createLazy($label, $apiUrl, $entryId, $bulky);
 	}
 	

@@ -29,9 +29,9 @@ use rocket\si\content\impl\relation\EmbeddedEntryPanelsInSiField;
 use rocket\si\content\impl\relation\EmbeddedEntryPanelInputHandler;
 use rocket\si\content\impl\relation\EmbeddedEntryInputHandler;
 use rocket\si\content\impl\split\SplitContextInSiField;
-use rocket\si\content\impl\split\SplitOutSiField;
 use rocket\si\content\impl\split\SplitContextOutSiField;
 use rocket\si\content\impl\split\SplitPlaceholderSiField;
+use rocket\si\meta\SiDeclaration;
 
 class SiFields {
 	
@@ -139,15 +139,15 @@ class SiFields {
 	 * @param array $options
 	 * @return \rocket\si\content\impl\split\SplitContextInSiField
 	 */
-	static function splitInContext(array $options) {
-		return new SplitContextInSiField($options);
+	static function splitInContext(?SiDeclaration $declaration) {
+		return new SplitContextInSiField($declaration);
 	}
 	
 	/**
 	 * @return \rocket\si\content\impl\split\SplitContextOutSiField
 	 */
-	static function splitOutContext() {
-		return new SplitContextOutSiField();
+	static function splitOutContext(?SiDeclaration $declaration) {
+		return new SplitContextOutSiField($declaration);
 	}
 	
 	/**

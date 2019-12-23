@@ -63,8 +63,8 @@ abstract class EiCommandAdapter extends EiComponentAdapter implements EiCommand,
 	 * {@inheritDoc}
 	 * @see \rocket\ei\component\command\EiCommand::lookupController()
 	 */
-	public function lookupController(Eiu $eiu): Controller {
-		throw new UnsupportedOperationException();
+	public function lookupController(Eiu $eiu): ?Controller {
+		return null;
 	}
 	
 	/**

@@ -193,11 +193,13 @@ class EiFrameController extends ControllerAdapter {
 		
 		$this->pushEiFrame($eiCommand);
 		
-		try {
-			$this->delegate($eiCommand->lookupController(new Eiu($this->eiFrame)));
-		} catch (UnsupportedOperationException $e) {
-			throw new PageNotFoundException(null, 0, $e);
+		$controller = $eiCommand->lookupController(new Eiu($this->eiFrame));
+		if ($controller !== null) {
+			$this->delegate($controller);
+			return;
 		}
+		
+		throw new PageNotFoundException(null, 0);		
 	}
 	
 	public function doField($eiPropPathStr, array $delegateCmds) {
