@@ -92,6 +92,7 @@ class SplitContextOutSiField extends OutSiFieldAdapter {
 	 */
 	function getData(): array {
 		return [
+			'declaration' => $this->declaration,
 			'splitContents' => $this->splitContents
 		];
 	}

@@ -137,6 +137,7 @@ class SplitContextInSiField extends InSiFieldAdapter {
 		return [
 			'min' => $this->min,
 			'activeKeys' => $this->activeKeys,
+			'declaration' => $this->declaration,
 			'splitContents' => $this->splitContents
 		];
 	}
