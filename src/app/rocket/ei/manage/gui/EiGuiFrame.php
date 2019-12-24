@@ -576,9 +576,9 @@ class ContextSiFieldDeterminer {
 			$eiProp = $eiGuiFrame->getGuiDefinition()->getGuiPropWrapperByGuiPropPath($forkGuiPropPath)->getEiProp();
 			
 			$siProp = (new SiProp((string) $forkGuiPropPath, $eiProp->getLabelLstr()->t($n2nLocale)))
-			->setDescendantPropIds(array_map(
-					function ($guiPropPath) { return (string) $guiPropPath; },
-					$this->forkedGuiPropPaths[(string) $forkGuiPropPath]));
+					->setDescendantPropIds(array_map(
+							function ($guiPropPath) { return (string) $guiPropPath; },
+							$this->forkedGuiPropPaths[(string) $forkGuiPropPath]));
 			
 			if (null !== ($helpTextLstr = $eiProp->getHelpTextLstr())) {
 				$siProp->setHelpText($helpTextLstr);
