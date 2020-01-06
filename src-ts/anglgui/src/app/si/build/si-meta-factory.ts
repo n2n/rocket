@@ -66,6 +66,7 @@ export class SiMetaFactory {
 	static createProp(probData: any): SiProp {
 		const extr = new Extractor(probData);
 
-		return new SiProp(extr.nullaString('id'), extr.nullaString('label'), extr.nullaString('helpText'));
+		return new SiProp(extr.nullaString('id'), extr.nullaString('label'), extr.nullaString('helpText'),
+				extr.reqStringArray('descendantPropIds'));
 	}
 }

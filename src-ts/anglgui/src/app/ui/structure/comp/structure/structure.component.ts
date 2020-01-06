@@ -50,7 +50,7 @@ export class StructureComponent implements OnInit {
 	get toolbarUiContents(): UiContent[] {
 		const controls: UiContent[] = [];
 
-		controls.push(...this._uiStructure.toolbarUiContents);
+		controls.push(...this._uiStructure.toolbarUiStructureModels);
 		controls.push(...this._uiStructure.model.getToolbarContents());
 
 		return controls;

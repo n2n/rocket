@@ -73,7 +73,7 @@ export class BulkyEntryComponent implements OnInit, OnDestroy, DoCheck {
 	}
 
 	private dingsel(parent: UiStructure, ssd: SiStructureDeclaration): UiStructure {
-		const uiStructure = parent.createChild();
+		const uiStructure = parent.createContentChild();
 		uiStructure.label = ssd.prop ? ssd.prop.label : ssd.label;
 		uiStructure.type = ssd.type;
 
@@ -140,7 +140,7 @@ class ToolbarResolver {
 
 	fillToolbar() {
 		for (const [, item] of this.uiStructuresMap) {
-			item.uiStructure.toolbarUiContents.push(item.siField.createUiStructureModel().getContent());
+			item.uiStructure.createToolbarChild(item.siField.createUiStructureModel());
 		}
 	}
 }

@@ -35,58 +35,6 @@ export class SiCompFactory {
 	// 	return contents;
 	// }
 
-	createComp(data: any, requiredType: SiCompType|null = null): SiComp {
-		const extr = new Extractor(data);
-		const dataExtr = extr.reqExtractor('data');
-		let compEssentialsFactory: SiCompEssentialsFactory;
-		let declaration: SiDeclaration;
-
-		const type = extr.reqString('type');
-
-		if (!!requiredType && requiredType !== type) {
-			throw new ObjectMissmatchError('Type ' + requiredType + ' required. Given: ' + type);
-		}
-
-		switch (type) {
-			case SiCompType.ENTRIES_LIST:
-				const listSiComp = new EntriesListSiComp(dataExtr.reqString('apiUrl'), dataExtr.reqNumber('pageSize'));
-
-				declaration = listSiComp.pageCollection.declaration = SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'));
-
-				const partialContentData = dataExtr.nullaObject('partialContent');
-				if (partialContentData) {
-					const partialContent = new SiEntryFactory(listSiComp, declaration, this.injector)
-							.createPartialContent(partialContentData);
-
-					listSiComp.pageCollection.size = partialContent.count;
-					listSiComp.pageCollection.putPage(new SiPage(1, partialContent.entries, null));
-				}
-
-				return listSiComp;
-
-			case SiCompType.BULKY_ENTRY:
-				declaration = SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'));
-				const bulkyEntryUiContent = new BulkyEntrySiComp(declaration);
-
-				bulkyEntryUiContent.entry = new SiEntryFactory(bulkyEntryUiContent, declaration, this.injector)
-						.createEntry(dataExtr.reqObject('entry'));
-				return bulkyEntryUiContent;
-
-			case SiCompType.COMPACT_ENTRY:
-				declaration = SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'));
-				const compactEntrySiComp = new CompactEntrySiComp(declaration);
-
-				compEssentialsFactory = new SiCompEssentialsFactory(compactEntrySiComp);
-				compactEntrySiComp.controls = compEssentialsFactory.createControls(dataExtr.reqArray('controls'));
-				compactEntrySiComp.entry = new SiEntryFactory(compactEntrySiComp, declaration, this.injector)
-						.createEntry(dataExtr.reqObject('entry'));
-				return compactEntrySiComp;
-
-			default:
-				throw new ObjectMissmatchError('Invalid si zone type: ' + data.type);
-		}
-	}
-
 	static createEntryIdentifier(data: any): SiEntryIdentifier {
 		const extr = new Extractor(data);
 
@@ -142,53 +90,6 @@ export class SiCompFactory {
 		}
 	}
 
-	createEmbeddedEntries(data: Array<any>): SiEmbeddedEntry[] {
-		const entries: SiEmbeddedEntry[] = [];
-		for (const entryData of data) {
-			entries.push(this.createEmbeddedEntry(entryData));
-		}
-		return entries;
-	}
-
-	createEmbeddedEntry(data: any): SiEmbeddedEntry {
-		const extr = new Extractor(data);
-
-		return new SiEmbeddedEntry(
-				this.createComp(extr.reqObject('content'), SiCompType.BULKY_ENTRY) as BulkyEntrySiComp,
-				this.createComp(extr.reqObject('summaryContent'), SiCompType.COMPACT_ENTRY) as CompactEntrySiComp);
-	}
-
-	createPanels(data: Array<any>): SiPanel[] {
-		const entries: SiPanel[] = [];
-		for (const entryData of data) {
-			entries.push(this.createPanel(entryData));
-		}
-		return entries;
-	}
-
-	createPanel(data: any): SiPanel {
-		const extr = new Extractor(data);
-
-		const panel = new SiPanel(extr.reqString('name'), extr.reqString('label'));
-		panel.values = this.createEmbeddedEntries(extr.reqArray('values'));
-		panel.reduced = extr.reqBoolean('reduced');
-		panel.min = extr.reqNumber('min');
-		panel.max = extr.nullaNumber('max');
-		panel.nonNewRemovable = extr.reqBoolean('nonNewRemovable');
-		panel.sortable = extr.reqBoolean('sortable');
-		panel.pasteCategory = extr.nullaString('pasteCategory');
-		panel.gridPos = SiCompFactory.buildGridPos(extr.nullaObject('gridPos'));
-
-		const allowedSiTypeQualifiersData = extr.nullaArray('allowedTypeQualifiers');
-		if (allowedSiTypeQualifiersData) {
-			panel.allowedSiTypeQualifiers = SiMetaFactory.createTypeQualifiers(allowedSiTypeQualifiersData);
-		} else {
-			panel.allowedSiTypeQualifiers = null;
-		}
-
-		return panel;
-	}
-
 	static buildGridPos(data: any): SiGridPos|null {
 		if (data === null) {
 			return null;
@@ -234,5 +135,104 @@ export class SiCompFactory {
 			width: extr.reqNumber('width'),
 			height: extr.reqNumber('height')
 		};
+	}
+
+	createComp(data: any, requiredType: SiCompType|null = null): SiComp {
+		const extr = new Extractor(data);
+		const dataExtr = extr.reqExtractor('data');
+		let compEssentialsFactory: SiCompEssentialsFactory;
+		let declaration: SiDeclaration;
+
+		const type = extr.reqString('type');
+
+		if (!!requiredType && requiredType !== type) {
+			throw new ObjectMissmatchError('Type ' + requiredType + ' required. Given: ' + type);
+		}
+
+		switch (type) {
+			case SiCompType.ENTRIES_LIST:
+				const listSiComp = new EntriesListSiComp(dataExtr.reqString('apiUrl'), dataExtr.reqNumber('pageSize'));
+
+				declaration = listSiComp.pageCollection.declaration = SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'));
+
+				const partialContentData = dataExtr.nullaObject('partialContent');
+				if (partialContentData) {
+					const partialContent = new SiEntryFactory(listSiComp, declaration, this.injector)
+							.createPartialContent(partialContentData);
+
+					listSiComp.pageCollection.size = partialContent.count;
+					listSiComp.pageCollection.putPage(new SiPage(1, partialContent.entries, null));
+				}
+
+				return listSiComp;
+
+			case SiCompType.BULKY_ENTRY:
+				declaration = SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'));
+				const bulkyEntryUiContent = new BulkyEntrySiComp(declaration);
+
+				bulkyEntryUiContent.entry = new SiEntryFactory(bulkyEntryUiContent, declaration, this.injector)
+						.createEntry(dataExtr.reqObject('entry'));
+				return bulkyEntryUiContent;
+
+			case SiCompType.COMPACT_ENTRY:
+				declaration = SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'));
+				const compactEntrySiComp = new CompactEntrySiComp(declaration);
+
+				compEssentialsFactory = new SiCompEssentialsFactory(compactEntrySiComp);
+				compactEntrySiComp.controls = compEssentialsFactory.createControls(dataExtr.reqArray('controls'));
+				compactEntrySiComp.entry = new SiEntryFactory(compactEntrySiComp, declaration, this.injector)
+						.createEntry(dataExtr.reqObject('entry'));
+				return compactEntrySiComp;
+
+			default:
+				throw new ObjectMissmatchError('Invalid si zone type: ' + data.type);
+		}
+	}
+
+	createEmbeddedEntries(data: Array<any>): SiEmbeddedEntry[] {
+		const entries: SiEmbeddedEntry[] = [];
+		for (const entryData of data) {
+			entries.push(this.createEmbeddedEntry(entryData));
+		}
+		return entries;
+	}
+
+	createEmbeddedEntry(data: any): SiEmbeddedEntry {
+		const extr = new Extractor(data);
+
+		return new SiEmbeddedEntry(
+				this.createComp(extr.reqObject('content'), SiCompType.BULKY_ENTRY) as BulkyEntrySiComp,
+				this.createComp(extr.reqObject('summaryContent'), SiCompType.COMPACT_ENTRY) as CompactEntrySiComp);
+	}
+
+	createPanels(data: Array<any>): SiPanel[] {
+		const entries: SiPanel[] = [];
+		for (const entryData of data) {
+			entries.push(this.createPanel(entryData));
+		}
+		return entries;
+	}
+
+	createPanel(data: any): SiPanel {
+		const extr = new Extractor(data);
+
+		const panel = new SiPanel(extr.reqString('name'), extr.reqString('label'));
+		panel.values = this.createEmbeddedEntries(extr.reqArray('values'));
+		panel.reduced = extr.reqBoolean('reduced');
+		panel.min = extr.reqNumber('min');
+		panel.max = extr.nullaNumber('max');
+		panel.nonNewRemovable = extr.reqBoolean('nonNewRemovable');
+		panel.sortable = extr.reqBoolean('sortable');
+		panel.pasteCategory = extr.nullaString('pasteCategory');
+		panel.gridPos = SiCompFactory.buildGridPos(extr.nullaObject('gridPos'));
+
+		const allowedSiTypeQualifiersData = extr.nullaArray('allowedTypeQualifiers');
+		if (allowedSiTypeQualifiersData) {
+			panel.allowedSiTypeQualifiers = SiMetaFactory.createTypeQualifiers(allowedSiTypeQualifiersData);
+		} else {
+			panel.allowedSiTypeQualifiers = null;
+		}
+
+		return panel;
 	}
 }

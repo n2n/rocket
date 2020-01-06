@@ -154,23 +154,22 @@ export class SiFieldFactory {
 
 		case SiFieldType.SPLIT_CONTEXT_IN:
 			const splitContextInSiField = new SplitContextInSiField();
-			this.compileSplitContents(splitContextInSiField, dataExtr.reqMap('splitContents'));
+			this.compileSplitContents(splitContextInSiField,
+					SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration')),
+					dataExtr.reqMap('splitContents'));
+			this.completeSplitContextSiField(splitContextInSiField, prop.dependantPropIds, fieldMap$);
 			return splitContextInSiField;
 
 		case SiFieldType.SPLIT_CONTEXT_OUT:
 			const splitContextOutSiField = new SplitContextOutSiField();
-			this.compileSplitContents(splitContextOutSiField, dataExtr.reqMap('splitContents'));
+			this.compileSplitContents(splitContextOutSiField,
+					SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration')),
+					dataExtr.reqMap('splitContents'));
+			this.completeSplitContextSiField(splitContextOutSiField, prop.dependantPropIds, fieldMap$);
 			return splitContextOutSiField;
 
 		case SiFieldType.SPLIT_PLACEHOLDER:
 			const splitSiField = new SplitSiField(dataExtr.reqString('refFieldId'));
-
-			fieldMap$.subscribe((fieldMap) => {
-				const splitContext = fieldMap.get(dataExtr.reqString('contextFieldId'));
-				if (splitContext instanceof SplitContextSiField) {
-					splitSiField.splitContext = splitContext as SplitContextSiField;
-				}
-			});
 
 			return splitSiField;
 		default:
@@ -178,7 +177,7 @@ export class SiFieldFactory {
 		}
 	}
 
-	private compileSplitContents(splitContextSiField: SplitContextSiField, dataMap: Map<string, any>) {
+	private compileSplitContents(splitContextSiField: SplitContextSiField, declaration: SiDeclaration, dataMap: Map<string, any>) {
 		for (const [key, data] of dataMap) {
 			const extr = new Extractor(data);
 
@@ -187,7 +186,7 @@ export class SiFieldFactory {
 
 			const entryData = extr.nullaObject('entry');
 			if (entryData) {
-				const entryFactory = new SiEntryFactory(this.comp, this.declaration, this.injector);
+				const entryFactory = new SiEntryFactory(this.comp, declaration, this.injector);
 				splitContextSiField.putSplitContent(SplitContent.createEntry(key, label, shortLabel,
 						entryFactory.createEntry(entryData)));
 				return;
@@ -208,6 +207,18 @@ export class SiFieldFactory {
 
 			splitContextSiField.putSplitContent(SplitContent.createUnavaialble(key, label, shortLabel));
 		}
+	}
+
+	private completeSplitContextSiField(splitContextSiField: SplitContextSiField, dependantPropIds: Array<string>,
+			fieldMap$: Observable<Map<string, SiField>>) {
+		fieldMap$.subscribe((fieldMap) => {
+			for (const dependantPropId of dependantPropIds) {
+				const siField = fieldMap.get(dependantPropId);
+				if (siField instanceof SplitSiField) {
+					siField.splitContext = splitContextSiField;
+				}
+			}
+		});
 	}
 
 	private finalizeBool(booleanInSiField: BooleanInSiField, onAssociatedFieldIds: string[],

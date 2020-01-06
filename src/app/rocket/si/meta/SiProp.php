@@ -25,7 +25,7 @@ class SiProp implements \JsonSerializable {
 	private $id;
 	private $label;
 	private $helpText;
-	private $descendantPropIds = null;
+	private $descendantPropIds = [];
 	
 	/**
 	 * @param string $siFieldId
@@ -92,7 +92,7 @@ class SiProp implements \JsonSerializable {
 	 * @param array $descendantPropIds
 	 * @return \rocket\si\meta\SiProp
 	 */
-	function setDescendantPropIds(?array $descendantPropIds) {
+	function setDescendantPropIds(array $descendantPropIds) {
 		$this->descendantPropIds = $descendantPropIds;
 		return $this;
 	}

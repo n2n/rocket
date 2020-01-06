@@ -4,12 +4,12 @@ import { UiStructureModel } from './ui-structure-model';
 import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { UiZoneError } from './ui-zone-error';
-import { UiContent } from './ui-content';
 
 export class UiStructure {
 	private children: UiStructure[] = [];
 	private visibleSubject = new BehaviorSubject<boolean>(true);
-	toolbarUiContents: UiContent[] = [];
+	private toolbarChildren: UiStructure[] = [];
+	private contentChildren: UiStructure[] = [];
 
 	private disposed = false;
 
@@ -47,9 +47,25 @@ export class UiStructure {
 		return false;
 	}
 
-	createChild(type: UiStructureType|null = null, label: string|null = null,
+	createToolbarChild(model: UiStructureModel): UiStructure {
+		const toolbarChild = new UiStructure(this, null, null, null, model);
+		this.toolbarChildren.push(toolbarChild);
+		return toolbarChild;
+	}
+
+	createContentChild(type: UiStructureType|null = null, label: string|null = null,
 			model: UiStructureModel|null = null): UiStructure {
-		return new UiStructure(this, null, type, label, model);
+		const contentChild = new UiStructure(this, null, type, label, model);
+		this.contentChildren.push(contentChild);
+		return contentChild;
+	}
+
+	getToolbarChildren(): UiStructure[] {
+		return Array.from(this.toolbarChildren);
+	}
+
+	getContentChildren(): UiStructure[] {
+		return Array.from(this.contentChildren);
 	}
 
 	getChildren(): UiStructure[] {
@@ -120,12 +136,22 @@ export class UiStructure {
 	}
 
 	protected unregisterChild(child: UiStructure) {
-		const i = this.children.indexOf(child);
+		let i = this.children.indexOf(child);
 		if (i === -1) {
 			throw new IllegalSiStateError('Unknown child.');
 		}
 
 		this.children.splice(i, 1);
+
+		i = this.toolbarChildren.indexOf(child);
+		if (i > -1) {
+			this.toolbarChildren.splice(i, 1);
+		}
+
+		i = this.contentChildren.indexOf(child);
+		if (i > -1) {
+			this.contentChildren.splice(i, 1);
+		}
 	}
 
 	get visible(): boolean {

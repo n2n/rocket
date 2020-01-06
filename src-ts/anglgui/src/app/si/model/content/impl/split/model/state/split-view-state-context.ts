@@ -3,19 +3,17 @@ import { SplitViewStateSubscription } from './split-view-state-subscription';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { SplitViewMenuComponent } from '../../comp/split-view-menu/split-view-menu.component';
 import { SplitViewMenuModel } from '../../comp/split-view-menu-model';
-import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { SplitOption } from '../split-option';
+import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
 
 export class SplitViewStateContext implements SplitViewMenuModel {
-	private toolbarUiContent: UiContent;
+	private toolbarUiStructure: UiStructure|null = null;
 	private subscriptions: Array<SplitViewStateSubscription> = [];
 	private optionMap = new Map<string, SplitOption>();
 	private visibleKeys: string[] = [];
 
 	constructor(readonly uiStructure: UiStructure) {
-		this.toolbarUiContent = new TypeUiContent(SplitViewMenuComponent, (ref) => {
-			ref.instance.model = this;
-		});
+		
 	}
 
 	createSubscription(options: SplitOption[]): SplitViewStateSubscription {
@@ -67,7 +65,10 @@ export class SplitViewStateContext implements SplitViewMenuModel {
 
 		if (this.optionMap.size > 0) {
 			if (!assigned) {
-				this.uiStructure.toolbarUiContents.push(this.toolbarUiContent);
+				this.toolbarUiStructure = this.uiStructure.createToolbarChild(new SimpleUiStructureModel(
+						new TypeUiContent(SplitViewMenuComponent, (ref) => {
+							ref.instance.model = this;
+						})));
 			}
 
 			return;
@@ -77,9 +78,6 @@ export class SplitViewStateContext implements SplitViewMenuModel {
 			return;
 		}
 
-		const i = this.uiStructure.toolbarUiContents.indexOf(this.toolbarUiContent);
-		if (i > -1) {
-			this.uiStructure.toolbarUiContents.splice(i, 1);
-		}
+		this.toolbarUiStructure.dispose();
 	}
 }

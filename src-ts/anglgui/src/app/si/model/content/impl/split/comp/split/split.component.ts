@@ -27,7 +27,7 @@ export class SplitComponent implements OnInit, OnDestroy {
 
 		for (const splitOption of this.model.getSplitOptions()) {
 			this.childUiStructureMap.set(splitOption.key,
-					this.uiStructure.createChild(UiStructureType.ITEM, splitOption.shortLabel));
+					this.uiStructure.createContentChild(UiStructureType.ITEM, splitOption.shortLabel));
 		}
 	}
 
@@ -42,5 +42,4 @@ export class SplitComponent implements OnInit, OnDestroy {
 	isKeyVisible(key: string): boolean {
 		return this.subscription.isKeyVisible(key);
 	}
-
 }
