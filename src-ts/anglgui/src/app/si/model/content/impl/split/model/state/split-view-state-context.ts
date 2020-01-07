@@ -13,7 +13,6 @@ export class SplitViewStateContext implements SplitViewMenuModel {
 	private visibleKeys: string[] = [];
 
 	constructor(readonly uiStructure: UiStructure) {
-		
 	}
 
 	createSubscription(options: SplitOption[]): SplitViewStateSubscription {
@@ -38,11 +37,11 @@ export class SplitViewStateContext implements SplitViewMenuModel {
 	}
 
 	getIconClass(): string {
-		throw new Error('Method not implemented.');
+		return 'fa fa-beer';
 	}
 
-	getTooltip(): string {
-		throw new Error('Method not implemented.');
+	getTooltip(): string|null {
+		return null;
 	}
 
 	getVisibleKeys(): string[] {
@@ -60,6 +59,10 @@ export class SplitViewStateContext implements SplitViewMenuModel {
 		for (const subscription of this.subscriptions) {
 			for (const splitOption of subscription.splitOptions) {
 				this.optionMap.set(splitOption.key, splitOption);
+
+				if (this.visibleKeys.length === 0) {
+					this.visibleKeys.push(splitOption.key);
+				}
 			}
 		}
 

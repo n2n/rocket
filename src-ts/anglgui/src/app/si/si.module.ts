@@ -68,7 +68,8 @@ import { SplitViewMenuComponent } from './model/content/impl/split/comp/split-vi
 		InputInFieldComponent, TextareaInFieldComponent, FileInFieldComponent, FileOutFieldComponent, QualifierSelectInFieldComponent,
 		LinkOutFieldComponent, CompactEntryComponent, EmbeddedEntriesInComponent, EmbeddedEntriesSummaryInComponent,
 		EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent,
-		EmbeddedEntryPanelsInComponent, ButtonControlComponent, PaginationComponent, TogglerInFieldComponent, SplitComponent
+		EmbeddedEntryPanelsInComponent, ButtonControlComponent, PaginationComponent, TogglerInFieldComponent, SplitComponent,
+		SplitViewMenuComponent
 	]
 })
 export class SiModule { }

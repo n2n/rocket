@@ -1,8 +1,9 @@
-import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { StructureContentDirective } from 'src/app/ui/structure/comp/structure/structure-content.directive';
 import { UiStructure } from '../../model/ui-structure';
 import { UiContent } from '../../model/ui-content';
 import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
+import { Subscription } from 'rxjs';
 
 @Component({
 	// tslint:disable-next-line:component-selector
@@ -10,19 +11,22 @@ import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration'
 	templateUrl: './structure.component.html',
 	styleUrls: ['./structure.component.css']
 })
-export class StructureComponent implements OnInit {
+export class StructureComponent implements OnInit, OnDestroy {
 
 	@Input()
 	toolbarVisible = true;
-	
+	@Input()
+	asideVisible = true;
+
 	private _uiStructure: UiStructure;
 
 	@ViewChild(StructureContentDirective, { static: true })
 	structureContentDirective: StructureContentDirective;
-	
-	readonly controls: UiContent[] = [];
 
-	constructor(private elRef: ElementRef) {
+	toolbarUiStructures: UiStructure[] = [];
+	private toolbarSubscription: Subscription|null = null;
+
+	constructor(private elRef: ElementRef, private cdRef: ChangeDetectorRef) {
 	}
 
 	ngOnInit() {
@@ -33,10 +37,30 @@ export class StructureComponent implements OnInit {
 // 		(<ZoneComponent> componentRef.instance).data = {};
 	}
 
+	ngOnDestroy() {
+		this.clear();
+	}
+
+	private clear() {
+		this._uiStructure = null;
+
+		if (this.toolbarSubscription) {
+			this.toolbarSubscription.unsubscribe();
+			this.toolbarSubscription = null;
+		}
+	}
+
 	@Input()
 	set uiStructure(uiStructure: UiStructure) {
+		this.clear();
+
 		this._uiStructure = uiStructure;
 		this.applyCssClass();
+
+		this.toolbarSubscription = uiStructure.getToolbarChildren$().subscribe((toolbarUiStructures) => {
+			this.toolbarUiStructures = toolbarUiStructures;
+			this.cdRef.detectChanges();
+		});
 	}
 
 	get uiStructure(): UiStructure {
@@ -44,15 +68,23 @@ export class StructureComponent implements OnInit {
 	}
 
 	get uiContent(): UiContent|null {
-		return this._uiStructure.model.getContent();
+		if (this._uiStructure.model) {
+			return this._uiStructure.model.getContent();
+		}
+
+		return null;
 	}
-	
-	get toolbarUiStructures(): UiStructure[] {
-		return this._uiStructure.getToolbarChildren();
+
+	get asideUiContents(): UiContent[] {
+		if (this._uiStructure.model) {
+			return this._uiStructure.model.getAsideContents();
+		}
+
+		return [];
 	}
-	
-	get toolbarUiContents(): UiContent[] {
-		return this._uiStructure.model.getToolbarContents();
+
+	get contentUiStructures(): UiStructure[] {
+		return this._uiStructure.getContentChildren();
 	}
 
 	getType(): UiStructureType|null {

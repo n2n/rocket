@@ -3,13 +3,15 @@
 	<label>{{ getLabel() }}</label>
 </ng-container>
 
-<div *ngIf="toolbarVisible && toolbarUiContents.length > 0" class="rocket-toolbar">
+<div *ngIf="toolbarVisible && (toolbarUiStructures.length > 0 || (asideVisible && asideUiContents.length > 0))" class="rocket-toolbar">
 	<ng-container *ngFor="let toolbarUiStructure of toolbarUiStructures">
-		<ng-template rocketUiStructure [uiStructure]="toolbarUiStructure"></ng-template>		
+		<div rocketUiStructure [uiStructure]="toolbarUiStructure"></div>		
 	</ng-container>
 	
-	<ng-container *ngFor="let toolbarUiContent of toolbarUiContents">
-		<ng-template rocketUiContent [uiContent]="toolbarUiContent" [uiStructure]="uiStructure"></ng-template>		
+	<ng-container *ngIf="asideVisible">
+		<ng-container *ngFor="let asideUiContent of asideUiContents">
+			<ng-template rocketUiContent [uiContent]="asideUiContent" [uiStructure]="uiStructure"></ng-template>		
+		</ng-container>
 	</ng-container>
 </div>
 
@@ -28,7 +30,7 @@
 	
 	<ng-container *ngIf="loaded">
 		<ul *ngIf="isMain()" class="rocket-main-group-nav nav nav-tabs">
-			<li *ngFor="let child of children" [class.active]="child.visible">{{ child.label }}</li>
+			<li *ngFor="let child of contentUiStructures" [class.active]="child.visible">{{ child.label }}</li>
 		</ul>
 		
 		<ng-template *ngIf="uiContent" rocketUiContent [uiStructure]="uiStructure" [uiContent]="uiContent"></ng-template>

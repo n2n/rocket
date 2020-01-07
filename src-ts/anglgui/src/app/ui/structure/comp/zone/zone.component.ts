@@ -40,7 +40,7 @@ export class ZoneComponent implements OnInit, DoCheck, OnDestroy {
 
 		if (this.uiZone.model) {
 			this.uiStructure.model = this.uiZone.model.structureModel;
-			this.asideCommandUiContents = this.uiZone.model.structureModel.getToolbarContents();
+			this.asideCommandUiContents = this.uiZone.model.structureModel.getAsideContents();
 		} else {
 			this.uiStructure.model = null;
 			this.asideCommandUiContents = [];

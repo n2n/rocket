@@ -8,10 +8,12 @@ import { UiZoneError } from './ui-zone-error';
 export class UiStructure {
 	private children: UiStructure[] = [];
 	private visibleSubject = new BehaviorSubject<boolean>(true);
-	private toolbarChildren: UiStructure[] = [];
+	private toolbarChildren$ = new BehaviorSubject<UiStructure[]>([]);
 	private contentChildren: UiStructure[] = [];
 
 	private disposed = false;
+
+	public asdfObservable = new BehaviorSubject<boolean>(true);
 
 	constructor(readonly parent: UiStructure|null, private _zone: UiZone|null, public type: UiStructureType|null = null,
 			public label: string|null = null, private _model: UiStructureModel|null = null) {
@@ -49,7 +51,11 @@ export class UiStructure {
 
 	createToolbarChild(model: UiStructureModel): UiStructure {
 		const toolbarChild = new UiStructure(this, null, null, null, model);
-		this.toolbarChildren.push(toolbarChild);
+
+		const toolbarChildrean = this.toolbarChildren$.getValue();
+		toolbarChildrean.push(toolbarChild);
+		this.toolbarChildren$.next(toolbarChildrean);
+
 		return toolbarChild;
 	}
 
@@ -61,7 +67,11 @@ export class UiStructure {
 	}
 
 	getToolbarChildren(): UiStructure[] {
-		return Array.from(this.toolbarChildren);
+		return Array.from(this.toolbarChildren$.getValue());
+	}
+
+	getToolbarChildren$(): Observable<UiStructure[]> {
+		return this.toolbarChildren$;
 	}
 
 	getContentChildren(): UiStructure[] {
@@ -98,6 +108,7 @@ export class UiStructure {
 
 		this.clear();
 		this._model = model;
+		// model.prepare(this);
 	}
 
 	private clear() {
@@ -107,6 +118,11 @@ export class UiStructure {
 
 		if (this.children.length !== 0) {
 			throw new IllegalSiStateError('Leftover children!');
+		}
+
+		if (this._model) {
+			// this._model.dispose();
+			this._model = null;
 		}
 	}
 
@@ -143,10 +159,12 @@ export class UiStructure {
 
 		this.children.splice(i, 1);
 
-		i = this.toolbarChildren.indexOf(child);
+		const toolbarChildren = this.toolbarChildren$.getValue();
+		i = toolbarChildren.indexOf(child);
 		if (i > -1) {
-			this.toolbarChildren.splice(i, 1);
+			toolbarChildren.splice(i, 1);
 		}
+		this.toolbarChildren$.next(toolbarChildren);
 
 		i = this.contentChildren.indexOf(child);
 		if (i > -1) {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { SplitViewMenuModel } from '../split-view-menu-model';
 
 @Component({
@@ -10,7 +10,7 @@ export class SplitViewMenuComponent implements OnInit {
 	model: SplitViewMenuModel;
 	menuVisible = false;
 
-	constructor() {
+	constructor(private cdRef: ChangeDetectorRef) {
 	}
 
 	ngOnInit() {
@@ -22,6 +22,10 @@ export class SplitViewMenuComponent implements OnInit {
 
 	isKeyVisible(key: string): boolean {
 		return -1 < this.model.getVisibleKeys().indexOf(key);
+	}
+
+	isKeyMandatory(key: string): boolean {
+		return this.isKeyVisible(key) && this.model.getVisibleKeys().length === 1;
 	}
 
 	toggleKeyVisibility(key: string) {

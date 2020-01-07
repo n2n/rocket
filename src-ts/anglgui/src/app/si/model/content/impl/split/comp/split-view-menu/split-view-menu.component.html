@@ -14,8 +14,12 @@
 	<div *ngIf="menuVisible" class="rocket-split-view-status-menu">
 		<ul>
 			<li *ngFor="let splitOption of model.getSplitOptions()">
-				<a class="btn rocket-active" (click)="toggleKeyVisibility(splitOption.key)">
-					{{ splitOption.label }} <i class="fa fa-toggle-on"></i>
+				<a class="btn" [class.rocket-active]="isKeyVisible(splitOption.key)" 
+						[class.disabled]="isKeyMandatory(splitOption.key)" 
+						(click)="toggleKeyVisibility(splitOption.key)">
+					{{ splitOption.label }} 
+					<i class="fa" [class.fa-toggle-on]="isKeyVisible(splitOption.key)" 
+							[class.fa-toggle-off]="!isKeyVisible(splitOption.key)"></i>
 				</a>
 			</li>
 		</ul>
