@@ -14,12 +14,12 @@ export class StructureComponent implements OnInit {
 
 	@Input()
 	toolbarVisible = true;
-
+	
 	private _uiStructure: UiStructure;
 
 	@ViewChild(StructureContentDirective, { static: true })
 	structureContentDirective: StructureContentDirective;
-
+	
 	readonly controls: UiContent[] = [];
 
 	constructor(private elRef: ElementRef) {
@@ -46,14 +46,13 @@ export class StructureComponent implements OnInit {
 	get uiContent(): UiContent|null {
 		return this._uiStructure.model.getContent();
 	}
-
+	
+	get toolbarUiStructures(): UiStructure[] {
+		return this._uiStructure.getToolbarChildren();
+	}
+	
 	get toolbarUiContents(): UiContent[] {
-		const controls: UiContent[] = [];
-
-		controls.push(...this._uiStructure.toolbarUiStructureModels);
-		controls.push(...this._uiStructure.model.getToolbarContents());
-
-		return controls;
+		return this._uiStructure.model.getToolbarContents();
 	}
 
 	getType(): UiStructureType|null {

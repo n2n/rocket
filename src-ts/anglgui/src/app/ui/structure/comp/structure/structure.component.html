@@ -4,8 +4,12 @@
 </ng-container>
 
 <div *ngIf="toolbarVisible && toolbarUiContents.length > 0" class="rocket-toolbar">
-	<ng-container *ngFor="let controlUiContent of toolbarUiContents">
-		<ng-template rocketUiContent [uiContent]="controlUiContent" [uiStructure]="uiStructure"></ng-template>		
+	<ng-container *ngFor="let toolbarUiStructure of toolbarUiStructures">
+		<ng-template rocketUiStructure [uiStructure]="toolbarUiStructure"></ng-template>		
+	</ng-container>
+	
+	<ng-container *ngFor="let toolbarUiContent of toolbarUiContents">
+		<ng-template rocketUiContent [uiContent]="toolbarUiContent" [uiStructure]="uiStructure"></ng-template>		
 	</ng-container>
 </div>
 
