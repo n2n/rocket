@@ -131,7 +131,9 @@ class LazyTranslationEssentialsDeterminer {
 		foreach ($this->translationConfig->getN2nLocaleDefs() as $n2nLocaleDef) {
 			$n2nLocaleId = $n2nLocaleDef->getN2nLocaleId();
 			
-			$this->activeTargetEiuEntries[$n2nLocaleId] = $mappedValues[$n2nLocaleId] ?? null; // $this->createTargetEiuEntry($n2nLocaleDef);
+			if (isset($mappedValues[$n2nLocaleId])) {
+				$this->activeTargetEiuEntries[$n2nLocaleId] = $mappedValues[$n2nLocaleId];
+			}
 		}
 	}
 	

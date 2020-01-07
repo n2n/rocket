@@ -189,10 +189,10 @@ export class SiFieldFactory {
 				const entryFactory = new SiEntryFactory(this.comp, declaration, this.injector);
 				splitContextSiField.putSplitContent(SplitContent.createEntry(key, label, shortLabel,
 						entryFactory.createEntry(entryData)));
-				return;
+				continue;
 			}
 
-			const apiUrl = extr.reqString('apiUrl');
+			const apiUrl = extr.nullaString('apiUrl');
 			if (apiUrl) {
 				splitContextSiField.putSplitContent(SplitContent.createLazy(key, label, shortLabel, {
 					apiUrl,
@@ -202,7 +202,7 @@ export class SiFieldFactory {
 					siComp: this.comp,
 					siService: this.injector.get(SiService)
 				}));
-				return;
+				continue;
 			}
 
 			splitContextSiField.putSplitContent(SplitContent.createUnavaialble(key, label, shortLabel));

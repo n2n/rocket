@@ -209,7 +209,7 @@ class TranslationConfig extends ConfigAdaption {
 		$lar = new LenientAttributeReader($dataSet);
 		
 		$this->n2nLocaleDefs = array();
-		if ($dataSet->optBool(self::ATTR_USE_SYSTEM_LOCALES_KEY, false, true)) {
+		if ($dataSet->optBool(self::ATTR_USE_SYSTEM_LOCALES_KEY, true)) {
 			$this->n2nLocaleDefs = $this->readModN2nLocaleDefs(self::ATTR_SYSTEM_LOCALE_DEFS_KEY, $lar, 
 					$eiu->lookup(WebConfig::class)->getAllN2nLocales());
 		} 
