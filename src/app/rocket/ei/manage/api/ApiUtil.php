@@ -29,6 +29,7 @@ use rocket\si\meta\SiDeclaration;
 use rocket\ei\EiEngineUtil;
 use rocket\ei\manage\gui\EiGuiFrame;
 use rocket\si\content\SiPartialContent;
+use rocket\ei\manage\gui\EiGui;
 
 class ApiUtil {
 	private $eiFrame;
@@ -104,10 +105,10 @@ class ApiUtil {
 	 * @param EiGuiFrame $eiGuiFrame
 	 * @return \rocket\si\content\SiPartialContent
 	 */
-	function createSiPartialContent(int $offset, int $count, EiGuiFrame $eiGuiFrame) {
+	function createSiPartialContent(int $offset, int $count, EiGui $eiGui) {
 		$content = new SiPartialContent($count);
 		$content->setOffset($offset);
-		$content->setEntries($eiGuiFrame->createSiEntries());
+		$content->setEntries($eiGui->createSiEntries());
 		return $content;
 	}
 	

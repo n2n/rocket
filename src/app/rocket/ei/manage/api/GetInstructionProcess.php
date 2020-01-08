@@ -111,7 +111,7 @@ class GetInstructionProcess {
 	
 	private function handlePartialContent(SiPartialContentInstruction $spci) {
 		$num = $this->eiFrameUtil->count();
-		$eiGui = $this->eiFrameUtil->lookupEiGuiFrameFromRange($spci->getFrom(), $spci->getNum(),
+		$eiGui = $this->eiFrameUtil->lookupEiGuiFromRange($spci->getFrom(), $spci->getNum(),
 				$this->instruction->isBulky(), $this->instruction->isReadOnly());
 		
 		$result = new SiGetResult();

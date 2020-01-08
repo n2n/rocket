@@ -56,7 +56,7 @@ class SiSplitContent implements \JsonSerializable {
 	}
 	
 	function jsonSerialize() {
-		$data = [ 'label' => $this->label, 'shotLabel' => $this->shortLabel ?? $this->label ];
+		$data = [ 'label' => $this->label, 'shortLabel' => $this->shortLabel ?? $this->label ];
 		
 // 		if ($this->apiUrl !== null) {
 			$data['apiUrl'] = $this->apiUrl;

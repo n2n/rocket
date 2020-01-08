@@ -4,6 +4,11 @@ import { SplitModel } from '../split-model';
 import { SplitViewStateSubscription } from '../../model/state/split-view-state-subscription';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
+import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
+import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
+import { CrumbGroupComponent } from '../../../meta/comp/crumb-group/crumb-group.component';
+import { SiCrumb } from '../../../meta/model/si-crumb';
+import { TranslationService } from 'src/app/util/i18n/translation.service';
 
 @Component({
 	selector: 'rocket-split',
@@ -20,7 +25,7 @@ export class SplitComponent implements OnInit, OnDestroy, DoCheck {
 	private subscription: SplitViewStateSubscription;
 	private loadedKeys = new Array<string>();
 
-	constructor(private viewStateService: SplitViewStateService) {
+	constructor(private viewStateService: SplitViewStateService, private translationService: TranslationService) {
 	}
 
 	ngOnInit() {
@@ -54,7 +59,7 @@ export class SplitComponent implements OnInit, OnDestroy, DoCheck {
 
 			this.loadedKeys.push(key);
 			this.model.getSiField$(key).subscribe((siField) => {
-				childUiStructure.model = siField.createUiStructureModel();
+				childUiStructure.model = siField ? siField.createUiStructureModel() : this.createNotActiveUism();
 			});
 		}
 	}
@@ -63,5 +68,12 @@ export class SplitComponent implements OnInit, OnDestroy, DoCheck {
 		return this.subscription.isKeyVisible(key);
 	}
 
+	createNotActiveUism() {
+		return new SimpleUiStructureModel(new TypeUiContent(CrumbGroupComponent, (ref) => {
+			ref.instance.siCrumbGroup = { crumbs: [
+				SiCrumb.createLabel(this.translationService.translate('ei_impl_locale_not_active_label'))
+			] };
+		}));
+	}
 
 }

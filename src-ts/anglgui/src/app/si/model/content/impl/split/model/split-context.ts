@@ -52,7 +52,9 @@ export class SplitContent implements SplitOption {
 	}
 
 	static createUnavaialble(key: string, label: string, shortLabel: string): SplitContent {
-		return new SplitContent(key, label, shortLabel);
+		const splitContent = new SplitContent(key, label, shortLabel);
+		splitContent.entry$ = of(null);
+		return splitContent;
 	}
 
 	static createLazy(key: string, label: string, shortLabel: string, lazyDef: LazyDef): SplitContent {
@@ -72,16 +74,12 @@ export class SplitContent implements SplitOption {
 		return this.loadedEntry;
 	}
 
-	getSiEntry$(): Observable<SiEntry> {
+	getSiEntry$(): Observable<SiEntry|null> {
 		if (this.entry$) {
 			return this.entry$;
 		}
 
-		if (!this.lazyDef) {
-			throw new Error('SplitContent unavailable.');
-		}
-
-		this.entry$ = this.lazyDef.siService.apiGet(this.lazyDef.apiUrl, new SiGetRequest(SiGetInstruction.entry(
+		return this.entry$ = this.lazyDef.siService.apiGet(this.lazyDef.apiUrl, new SiGetRequest(SiGetInstruction.entry(
 						this.lazyDef.siComp, this.lazyDef.bulky, this.lazyDef.readOnly, this.lazyDef.entryId)))
 				.pipe(map((response: SiGetResponse) => {
 					return this.loadedEntry = response.results[0].entry;

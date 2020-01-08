@@ -193,7 +193,7 @@ export class SiFieldFactory {
 			const extr = new Extractor(data);
 
 			const label = extr.reqString('label');
-			const shortLabel = extr.reqString('label');
+			const shortLabel = extr.reqString('shortLabel');
 
 			const entryData = extr.nullaObject('entry');
 			if (entryData) {

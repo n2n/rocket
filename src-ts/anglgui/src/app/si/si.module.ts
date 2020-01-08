@@ -69,7 +69,7 @@ import { SplitViewMenuComponent } from './model/content/impl/split/comp/split-vi
 		LinkOutFieldComponent, CompactEntryComponent, EmbeddedEntriesInComponent, EmbeddedEntriesSummaryInComponent,
 		EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent,
 		EmbeddedEntryPanelsInComponent, ButtonControlComponent, PaginationComponent, TogglerInFieldComponent, SplitComponent,
-		SplitViewMenuComponent
+		SplitViewMenuComponent, CrumbGroupComponent
 	]
 })
 export class SiModule { }
