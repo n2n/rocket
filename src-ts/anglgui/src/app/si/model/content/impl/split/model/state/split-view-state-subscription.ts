@@ -6,7 +6,15 @@ export class SplitViewStateSubscription {
 	}
 
 	isKeyVisible(key: string): boolean {
-		return -1 < this.splitViewStateContext.getVisibleKeys().indexOf(key);
+		return this.splitViewStateContext.containsVisibleKey(key);
+	}
+
+	requestKeyVisibilityChange(key: string, visible: boolean) {
+		if (visible) {
+			this.splitViewStateContext.addVisibleKey(key);
+		} else {
+			this.splitViewStateContext.removeVisibleKey(key);
+		}
 	}
 
 	cancel() {

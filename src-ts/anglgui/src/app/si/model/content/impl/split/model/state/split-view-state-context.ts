@@ -5,6 +5,7 @@ import { SplitViewMenuComponent } from '../../comp/split-view-menu/split-view-me
 import { SplitViewMenuModel } from '../../comp/split-view-menu-model';
 import { SplitOption } from '../split-option';
 import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
+import { SplitStyle } from '../split-context';
 
 export class SplitViewStateContext implements SplitViewMenuModel {
 	private toolbarUiStructure: UiStructure|null = null;
@@ -12,7 +13,7 @@ export class SplitViewStateContext implements SplitViewMenuModel {
 	private optionMap = new Map<string, SplitOption>();
 	private visibleKeys: string[] = [];
 
-	constructor(readonly uiStructure: UiStructure) {
+	constructor(readonly uiStructure: UiStructure, public splitStyle: SplitStyle) {
 	}
 
 	createSubscription(options: SplitOption[]): SplitViewStateSubscription {
@@ -36,20 +37,50 @@ export class SplitViewStateContext implements SplitViewMenuModel {
 		return Array.from(this.optionMap.values());
 	}
 
-	getIconClass(): string {
-		return 'fa fa-beer';
+	getIconClass(): string|null {
+		return this.splitStyle.iconClass;
 	}
 
 	getTooltip(): string|null {
-		return null;
+		return this.splitStyle.tooltip;
 	}
 
-	getVisibleKeys(): string[] {
-		return this.visibleKeys;
+	// getVisibleKeys(): string[] {
+	// 	return this.visibleKeys;
+	// }
+
+	getVisibleKeysNum(): number {
+		return this.visibleKeys.length;
 	}
 
-	setVisibleKeys(visibleKeys: string[]): void {
-		this.visibleKeys = visibleKeys;
+	containsVisibleKey(key: string) {
+		return -1 < this.visibleKeys.indexOf(key);
+	}
+
+	addVisibleKey(key: string): void {
+		const i = this.visibleKeys.indexOf(key);
+		if (i > -1) {
+			return;
+		}
+
+		this.visibleKeys.push(key);
+		this.validateVisibleKeys();
+	}
+
+	removeVisibleKey(key: string): void {
+		const i = this.visibleKeys.indexOf(key);
+		if (i === -1) {
+			return;
+		}
+
+		this.visibleKeys.splice(i, 1);
+		this.validateVisibleKeys();
+	}
+
+	private validateVisibleKeys() {
+		if (this.visibleKeys.length === 0 && this.optionMap.size > 0) {
+			this.visibleKeys.push(this.optionMap.keys().next().value);
+		}
 	}
 
 	private updateStructure() {
@@ -59,12 +90,10 @@ export class SplitViewStateContext implements SplitViewMenuModel {
 		for (const subscription of this.subscriptions) {
 			for (const splitOption of subscription.splitOptions) {
 				this.optionMap.set(splitOption.key, splitOption);
-
-				if (this.visibleKeys.length === 0) {
-					this.visibleKeys.push(splitOption.key);
-				}
 			}
 		}
+
+		this.validateVisibleKeys();
 
 		if (this.optionMap.size > 0) {
 			if (!assigned) {
@@ -82,5 +111,6 @@ export class SplitViewStateContext implements SplitViewMenuModel {
 		}
 
 		this.toolbarUiStructure.dispose();
+		this.toolbarUiStructure = null;
 	}
 }

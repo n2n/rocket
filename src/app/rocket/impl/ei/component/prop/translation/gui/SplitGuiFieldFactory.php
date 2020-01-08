@@ -28,6 +28,8 @@ use n2n\l10n\N2nLocale;
 use n2n\util\ex\IllegalStateException;
 use rocket\si\content\impl\split\SiLazyInputHandler;
 use rocket\ei\manage\gui\field\GuiField;
+use rocket\si\content\impl\split\SplitStyle;
+use rocket\si\control\SiIconType;
 
 class SplitGuiFieldFactory {
 	private $lted;
@@ -51,7 +53,8 @@ class SplitGuiFieldFactory {
 	
 	
 	private function createReadOnlyGuiField() {
-		$siField = SiFields::splitOutContext($this->lted->getTargetSiDeclaration());
+		$siField = SiFields::splitOutContext($this->lted->getTargetSiDeclaration())
+				->setStyle(new SplitStyle(SiIconType::ICON_LANGUAGE, $this->lted->getViewMenuTooltip()));
 		
 		foreach ($this->lted->getN2nLocales() as $n2nLocale) {
 			$n2nLocaleId = $n2nLocale->getId();
@@ -70,6 +73,7 @@ class SplitGuiFieldFactory {
 	
 	private function createEditableGuiField() {
 		$siField = SiFields::splitInContext($this->lted->getTargetSiDeclaration())
+				->setStyle(new SplitStyle(SiIconType::ICON_LANGUAGE, $this->lted->getViewMenuTooltip()))
 				->setMin($this->lted->getMinNum())
 				->setActiveKeys($this->lted->getActiveN2nLocaleIds());
 		$targetEiuGuiFrame = $this->lted->getTargetEiuGuiFrame();

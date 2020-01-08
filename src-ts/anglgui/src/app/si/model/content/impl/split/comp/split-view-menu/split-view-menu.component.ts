@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, DoCheck } from '@angular/core';
 import { SplitViewMenuModel } from '../split-view-menu-model';
 
 @Component({
@@ -21,29 +21,25 @@ export class SplitViewMenuComponent implements OnInit {
 	}
 
 	isKeyVisible(key: string): boolean {
-		return -1 < this.model.getVisibleKeys().indexOf(key);
+		return this.model.containsVisibleKey(key);
 	}
 
 	isKeyMandatory(key: string): boolean {
-		return this.isKeyVisible(key) && this.model.getVisibleKeys().length === 1;
+		return this.isKeyVisible(key) && this.model.getVisibleKeysNum() === 1;
 	}
 
 	toggleKeyVisibility(key: string) {
-		const visibleKeys = this.model.getVisibleKeys();
-		const i = visibleKeys.indexOf(key);
-		if (i > -1) {
-			visibleKeys.splice(i, 1);
+		if (this.isKeyVisible(key)) {
+			this.model.removeVisibleKey(key);
 		} else {
-			visibleKeys.push(key);
+			this.model.addVisibleKey(key);
 		}
-		this.model.setVisibleKeys(visibleKeys);
 	}
 
 	get activeShortLabel() {
-		const visibleKeys = this.model.getVisibleKeys();
 		const shortLabels = [];
 		for (const splitOption of this.model.getSplitOptions()) {
-			if (-1 < visibleKeys.indexOf(splitOption.key)) {
+			if (this.isKeyVisible(splitOption.key)) {
 				shortLabels.push(splitOption.shortLabel);
 			}
 		}

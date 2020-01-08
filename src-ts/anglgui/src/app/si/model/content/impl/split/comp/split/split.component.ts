@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, DoCheck } from '@angular/core';
 import { SplitViewStateService } from '../../model/state/split-view-state.service';
 import { SplitModel } from '../split-model';
 import { SplitViewStateSubscription } from '../../model/state/split-view-state-subscription';
@@ -10,7 +10,7 @@ import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration'
 	templateUrl: './split.component.html',
 	styleUrls: ['./split.component.css']
 })
-export class SplitComponent implements OnInit, OnDestroy {
+export class SplitComponent implements OnInit, OnDestroy, DoCheck {
 
 	model: SplitModel;
 	uiStructure: UiStructure;
@@ -18,16 +18,21 @@ export class SplitComponent implements OnInit, OnDestroy {
 	readonly childUiStructureMap = new Map<string, UiStructure>();
 
 	private subscription: SplitViewStateSubscription;
+	private loadedKeys = new Array<string>();
 
 	constructor(private viewStateService: SplitViewStateService) {
 	}
 
 	ngOnInit() {
-		this.subscription = this.viewStateService.subscribe(this.uiStructure, this.model.getSplitOptions());
+		this.subscription = this.viewStateService.subscribe(this.uiStructure, this.model.getSplitOptions(), this.model.getSplitStyle());
 
 		for (const splitOption of this.model.getSplitOptions()) {
-			this.childUiStructureMap.set(splitOption.key,
-					this.uiStructure.createContentChild(UiStructureType.ITEM, splitOption.shortLabel));
+			const child = this.uiStructure.createContentChild(UiStructureType.ITEM, splitOption.shortLabel);
+			this.childUiStructureMap.set(splitOption.key, child);
+			child.visible = false;
+			child.visible$.subscribe(() => {
+				this.subscription.requestKeyVisibilityChange(splitOption.key, child.visible);
+			});
 		}
 	}
 
@@ -39,7 +44,24 @@ export class SplitComponent implements OnInit, OnDestroy {
 		}
 	}
 
+	ngDoCheck() {
+		for (const [key, childUiStructure] of this.childUiStructureMap) {
+			childUiStructure.visible = this.subscription.isKeyVisible(key);
+
+			if (!childUiStructure.visible || -1 < this.loadedKeys.indexOf(key)) {
+				continue;
+			}
+
+			this.loadedKeys.push(key);
+			this.model.getSiField$(key).subscribe((siField) => {
+				childUiStructure.model = siField.createUiStructureModel();
+			});
+		}
+	}
+
 	isKeyVisible(key: string): boolean {
 		return this.subscription.isKeyVisible(key);
 	}
+
+
 }

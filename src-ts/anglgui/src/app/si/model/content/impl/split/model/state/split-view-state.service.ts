@@ -3,6 +3,7 @@ import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SplitViewStateContext } from './split-view-state-context';
 import { SplitViewStateSubscription } from './split-view-state-subscription';
 import { SplitOption } from '../split-option';
+import { SplitStyle } from '../split-context';
 
 @Injectable({
 	providedIn: 'root'
@@ -13,13 +14,13 @@ export class SplitViewStateService {
 	constructor() {
 	}
 
-	subscribe(uiStructure: UiStructure, splitOptions: SplitOption[]): SplitViewStateSubscription {
-		const context = this.getOrCreateContext(uiStructure.getRoot());
+	subscribe(uiStructure: UiStructure, splitOptions: SplitOption[], splitStyle): SplitViewStateSubscription {
+		const context = this.getOrCreateContext(uiStructure.getRoot(), splitStyle);
 
 		return context.createSubscription(splitOptions);
 	}
 
-	private getOrCreateContext(uiStructure: UiStructure): SplitViewStateContext {
+	private getOrCreateContext(uiStructure: UiStructure, splitStyle: SplitStyle): SplitViewStateContext {
 		let context = this.contexts.find((iContext) => {
 			return iContext.uiStructure === uiStructure;
 		});
@@ -28,8 +29,24 @@ export class SplitViewStateService {
 			return context;
 		}
 
-		context = new SplitViewStateContext(uiStructure);
+		context = new SplitViewStateContext(uiStructure, splitStyle);
 		this.contexts.push(context);
+
+		uiStructure.disposed$.subscribe(() => {
+			if (uiStructure.disposed) {
+				this.removeContext(context);
+			}
+		});
+
 		return context;
+	}
+
+	private removeContext(context: SplitViewStateContext) {
+		const i = this.contexts.indexOf(context);
+		if (i === -1) {
+			throw new Error('Unknown SplitViewStateContext.');
+		}
+
+		this.contexts.splice(i, 1);
 	}
 }

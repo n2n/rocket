@@ -5,7 +5,7 @@ import { SplitModel } from '../comp/split-model';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { SplitOption } from './split-option';
 import { Observable } from 'rxjs';
-import { SplitContextSiField } from './split-context';
+import { SplitContextSiField, SplitStyle } from './split-context';
 import { SiEntry } from '../../../si-entry';
 import { map } from 'rxjs/operators';
 import { SplitComponent } from '../comp/split/split.component';
@@ -36,6 +36,10 @@ export class SplitSiField extends SiFieldAdapter implements SplitModel {
 		});
 	}
 
+	getSplitStyle(): SplitStyle {
+		return this.splitContext ? this.splitContext.style : { iconClass: null, tooltip: null };
+	}
+
 	getSplitOptions(): SplitOption[] {
 		if (this.splitContext) {
 			return this.splitContext.getSplitOptions();
@@ -46,7 +50,7 @@ export class SplitSiField extends SiFieldAdapter implements SplitModel {
 
 	getSiField$(key: string): Observable<SiField> {
 		if (!this.splitContext) {
-			throw new Error('Method not implemented.');
+			throw new Error('No SplitContext assigned.');
 		}
 
 		return this.splitContext.getEntry$(key).pipe(map((entry: SiEntry) => {

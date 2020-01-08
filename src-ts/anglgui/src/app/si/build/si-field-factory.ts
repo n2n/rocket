@@ -18,7 +18,7 @@ import { Subject, Observable } from 'rxjs';
 import { SplitContextInSiField } from '../model/content/impl/split/model/split-context-in-si-field';
 import { SplitContextOutSiField } from '../model/content/impl/split/model/split-context-out-si-field';
 import { SplitSiField } from '../model/content/impl/split/model/split-si-field';
-import { SplitContextSiField, SplitContent } from '../model/content/impl/split/model/split-context';
+import { SplitContextSiField, SplitContent, SplitStyle } from '../model/content/impl/split/model/split-context';
 import { Injector } from '@angular/core';
 import { SiCompFactory } from './si-comp-factory';
 import { SiEntryFactory } from './si-entry-factory';
@@ -154,6 +154,7 @@ export class SiFieldFactory {
 
 		case SiFieldType.SPLIT_CONTEXT_IN:
 			const splitContextInSiField = new SplitContextInSiField();
+			splitContextInSiField.style = this.createSplitStyle(dataExtr.reqObject('style'));
 			this.compileSplitContents(splitContextInSiField,
 					SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration')),
 					dataExtr.reqMap('splitContents'));
@@ -162,6 +163,7 @@ export class SiFieldFactory {
 
 		case SiFieldType.SPLIT_CONTEXT_OUT:
 			const splitContextOutSiField = new SplitContextOutSiField();
+			splitContextOutSiField.style = this.createSplitStyle(dataExtr.reqObject('style'));
 			this.compileSplitContents(splitContextOutSiField,
 					SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration')),
 					dataExtr.reqMap('splitContents'));
@@ -175,6 +177,15 @@ export class SiFieldFactory {
 		default:
 			throw new ObjectMissmatchError('Invalid si field type: ' + data.type);
 		}
+	}
+
+	private createSplitStyle(data: any): SplitStyle {
+		const extr = new Extractor(data);
+
+		return {
+			iconClass: extr.nullaString('iconClass'),
+			tooltip: extr.nullaString('tooltip')
+		};
 	}
 
 	private compileSplitContents(splitContextSiField: SplitContextSiField, declaration: SiDeclaration, dataMap: Map<string, any>) {

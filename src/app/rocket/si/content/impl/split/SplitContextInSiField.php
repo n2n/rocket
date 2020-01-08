@@ -30,6 +30,10 @@ use rocket\si\meta\SiDeclaration;
 
 class SplitContextInSiField extends InSiFieldAdapter {
 	/**
+	 * @var SplitStyle
+	 */
+	private $style;
+	/**
 	 * @var int
 	 */
 	private $min;
@@ -51,6 +55,31 @@ class SplitContextInSiField extends InSiFieldAdapter {
 	 */
 	function __construct(?SiDeclaration $declaration) {
 		$this->declaration = $declaration;
+		$this->style = new SplitStyle(null, null);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\si\content\SiField::getType()
+	 */
+	function getType(): string {
+		return 'split-control-in';
+	}
+	
+	/**
+	 * @param SplitStyle $splitStyle
+	 * @return SplitContextInSiField
+	 */
+	function setStyle(SplitStyle $splitStyle) {
+		$this->style = $splitStyle;
+		return $this;
+	}
+	
+	/**
+	 * @return \rocket\si\content\impl\split\SplitStyle
+	 */
+	function getStyle() {
+		return $this->style;
 	}
 	
 	/**
@@ -67,13 +96,6 @@ class SplitContextInSiField extends InSiFieldAdapter {
 	function setMin(int $min) {
 		$this->min = $min;
 		return $this;
-	}
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\si\content\SiField::getType()
-	 */
-	function getType(): string {
-		return 'split-control-in';
 	}
 	
 	/**
@@ -135,6 +157,9 @@ class SplitContextInSiField extends InSiFieldAdapter {
 	 */
 	function getData(): array {
 		return [
+			'style' => $this->style,
+			'iconClass' => $this->iconClass,
+			'tooltip' => $this->tooltip,
 			'min' => $this->min,
 			'activeKeys' => $this->activeKeys,
 			'declaration' => $this->declaration,

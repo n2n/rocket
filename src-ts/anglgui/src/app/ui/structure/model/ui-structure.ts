@@ -11,9 +11,7 @@ export class UiStructure {
 	private toolbarChildren$ = new BehaviorSubject<UiStructure[]>([]);
 	private contentChildren: UiStructure[] = [];
 
-	private disposed = false;
-
-	public asdfObservable = new BehaviorSubject<boolean>(true);
+	private disposedSubject = new BehaviorSubject<boolean>(false);
 
 	constructor(readonly parent: UiStructure|null, private _zone: UiZone|null, public type: UiStructureType|null = null,
 			public label: string|null = null, private _model: UiStructureModel|null = null) {
@@ -86,6 +84,10 @@ export class UiStructure {
 		return this._zone ? this._zone : this.parent.getZone();
 	}
 
+	get disposed(): boolean {
+		return this.disposedSubject.getValue();
+	}
+
 	private ensureNotDisposed() {
 		if (!this.disposed) {
 			return;
@@ -126,12 +128,17 @@ export class UiStructure {
 		}
 	}
 
+	get disposed$(): Observable<boolean> {
+		return this.disposedSubject;
+	}
+
 	dispose() {
 		if (this.disposed) {
 			return;
 		}
 
-		this.disposed = true;
+		this.disposedSubject.next(true);
+		this.disposedSubject.complete();
 
 		this.clear();
 

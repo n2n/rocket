@@ -1,5 +1,5 @@
 
 
 <ng-container *ngFor="let item of childUiStructureMap | keyvalue">
-	<div *ngIf="isKeyVisible(item.key)" rocketUiStructure [uiStructure]="item.value"></div>
+	<div *ngIf="item.value.visible" rocketUiStructure [uiStructure]="item.value"></div>
 </ng-container>

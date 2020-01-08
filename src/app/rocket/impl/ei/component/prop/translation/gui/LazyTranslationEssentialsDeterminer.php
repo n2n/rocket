@@ -52,6 +52,13 @@ class LazyTranslationEssentialsDeterminer {
 	}
 	
 	/**
+	 * @return string|NULL
+	 */
+	function getViewMenuTooltip() {
+		return $this->eiu->dtc('rocket')->t('ei_impl_languages_view_tooltip');
+	}
+	
+	/**
 	 * @return \rocket\si\meta\SiDeclaration
 	 */
 	function getTargetSiDeclaration() {

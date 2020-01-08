@@ -15,7 +15,7 @@ import { SiEntryBuildup } from '../../../si-entry-buildup';
 
 
 export abstract class SplitContextSiField extends SiFieldAdapter {
-
+	public style: SplitStyle = { iconClass: null, tooltip: null };
 	protected splitContentMap = new Map<string, SplitContent>();
 
 	putSplitContent(splitContent: SplitContent) {
@@ -96,4 +96,9 @@ export interface LazyDef {
 	readOnly: boolean;
 	siService: SiService;
 	siComp: SiComp;
+}
+
+export interface SplitStyle {
+	iconClass: string|null;
+	tooltip: string|null;
 }

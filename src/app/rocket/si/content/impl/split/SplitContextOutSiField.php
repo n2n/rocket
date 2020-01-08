@@ -28,7 +28,10 @@ use rocket\si\meta\SiDeclaration;
 use n2n\util\ex\IllegalStateException;
 
 class SplitContextOutSiField extends OutSiFieldAdapter {
-
+	/**
+	 * @var SplitStyle|null
+	 */
+	private $style;
 	/**
 	 * @var SiDeclaration
 	 */
@@ -43,6 +46,7 @@ class SplitContextOutSiField extends OutSiFieldAdapter {
 	 */
 	function __construct(?SiDeclaration $declaration) {
 		$this->declaration = $declaration;
+		$this->style = new SplitStyle(null, null);
 	}
 	
 	/**
@@ -51,6 +55,22 @@ class SplitContextOutSiField extends OutSiFieldAdapter {
 	 */
 	function getType(): string {
 		return 'split-context-out';
+	}
+	
+	/**
+	 * @param SplitStyle $splitStyle
+	 * @return SplitContextOutSiField
+	 */
+	function setStyle(SplitStyle $splitStyle) {
+		$this->style = $splitStyle;
+		return $this;
+	}
+	
+	/**
+	 * @return \rocket\si\content\impl\split\SplitStyle
+	 */
+	function getStyle() {
+		return $this->style;
 	}
 		
 	/**
@@ -92,6 +112,7 @@ class SplitContextOutSiField extends OutSiFieldAdapter {
 	 */
 	function getData(): array {
 		return [
+			'style' => $this->style,
 			'declaration' => $this->declaration,
 			'splitContents' => $this->splitContents
 		];

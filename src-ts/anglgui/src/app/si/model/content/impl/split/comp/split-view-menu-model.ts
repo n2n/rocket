@@ -8,7 +8,11 @@ export interface SplitViewMenuModel {
 
 	getTooltip(): string|null;
 
-	getVisibleKeys(): string[];
+	containsVisibleKey(key: string): boolean;
 
-	setVisibleKeys(visibleKeys: string[]): void;
+	addVisibleKey(key: string): void;
+
+	removeVisibleKey(key: string): void;
+
+	getVisibleKeysNum(): number;
 }
