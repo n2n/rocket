@@ -12,6 +12,7 @@ use rocket\si\meta\SiStructureType;
 class DisplayItem {
 	
 	protected $label;
+	protected $helpText;
 	protected $moduleNamespace;
 	protected $siStructureType;
 	protected $guiPropPath;
@@ -51,12 +52,13 @@ class DisplayItem {
 	 * @return DisplayItem
 	 */
 	public static function createFromDisplayStructure(DisplayStructure $displayStructure, string $siStructureType, 
-			string $label = null, string $moduleNamespace = null) {
+			string $label = null, string $helpText = null, string $moduleNamespace = null) {
 		$displayItem = new DisplayItem();
 		$displayItem->displayStructure = $displayStructure;
 		ArgUtils::valEnum($siStructureType, SiStructureType::all());
 		$displayItem->siStructureType = $siStructureType;
 		$displayItem->label = $label;
+		$displayItem->helpText = $helpText;
 		$displayItem->moduleNamespace = $moduleNamespace;
 		return $displayItem;
 	}
@@ -99,6 +101,30 @@ class DisplayItem {
 	 */
 	public function getLabel() {
 		return $this->label;
+	}
+	
+	/**
+	 * @return Lstr|null
+	 */
+	public function getHelpTextLstr() {
+		if (!$this->hasDisplayStructure()) {
+			throw new IllegalStateException('No helpTexts for GuiPropPath DisplayItem.');
+		}
+		
+		if ($this->helpText === null) return null;
+		
+		if ($this->moduleNamespace === null) {
+			return Lstr::create($this->helpText);
+		}
+		
+		return Rocket::createLstr($this->helpText, $this->moduleNamespace);
+	}
+	
+	/**
+	 * @return string|null
+	 */
+	public function getHelpText() {
+		return $this->helpText;
 	}
 	
 	/**

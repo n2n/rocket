@@ -125,6 +125,9 @@ class IdNameDefinition {
 		return $builder->__toString();
 	}
 	
+	/**
+	 * @return \rocket\ei\manage\idname\IdNameProp[]
+	 */
 	public function getStringRepresentableIdNameProps() {
 		return $this->filterStringRepresentableIdNameProps($this, array());
 	}

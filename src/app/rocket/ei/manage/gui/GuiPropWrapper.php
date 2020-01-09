@@ -99,7 +99,7 @@ class GuiPropWrapper {
 	
 	/**
 	 * @param GuiPropPath $guiPropPath
-	 * @throws GuiException
+	 * @throws UnresolvableGuiPropPathException
 	 * @return \rocket\ei\manage\gui\GuiPropWrapper
 	 */
 	function getForkedGuiPropWrapper(GuiPropPath $guiPropPath) {
@@ -107,7 +107,7 @@ class GuiPropWrapper {
 			return $forkGuiDefinition->getGuiPropWrapperByGuiPropPath($guiPropPath);
 		}
 		
-		throw new GuiException('GuiProp ' . $guiPropPath . ' not found.');
+		throw new UnresolvableGuiPropPathException('GuiProp ' . $guiPropPath . ' not found.');
 	}
 	
 	/**

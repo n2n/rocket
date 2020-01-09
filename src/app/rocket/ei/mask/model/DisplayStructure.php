@@ -26,6 +26,7 @@ use n2n\util\type\ArgUtils;
 use rocket\ei\manage\gui\EiGuiFrame;
 use rocket\ei\manage\gui\GuiException;
 use rocket\si\meta\SiStructureType;
+use rocket\ei\manage\gui\UnresolvableGuiPropPathException;
 
 class DisplayStructure {
 	private $displayItems = array();
@@ -47,8 +48,8 @@ class DisplayStructure {
 	 * @param string $moduleNamespace
 	 */
 	public function addDisplayStructure(DisplayStructure $displayStructure, string $type, string $label = null, 
-			string $moduleNamespace = null) {
-		$this->displayItems[] = DisplayItem::createFromDisplayStructure($displayStructure, $type, $label, $moduleNamespace);
+			string $helpText = null, string $moduleNamespace = null) {
+		$this->displayItems[] = DisplayItem::createFromDisplayStructure($displayStructure, $type, $label, $helpText, $moduleNamespace);
 	}
 	
 	/**
@@ -185,29 +186,30 @@ class DisplayStructure {
 			
 			if ($displayItem->getSiStructureType() == SiStructureType::AUTONOMIC_GROUP) {
 				$autonomicDs->addDisplayStructure($newDisplayStructure, SiStructureType::SIMPLE_GROUP, 
-						$displayItem->getLabel(), $displayItem->getModuleNamespace());	
+						$displayItem->getLabel(), $displayItem->getHelpText(), $displayItem->getModuleNamespace());	
 			} else {
 				$ds->addDisplayStructure($newDisplayStructure, $displayItem->getSiStructureType(), $displayItem->getLabel(), 
-						$displayItem->getModuleNamespace());
+						$displayItem->getHelpText(), $displayItem->getModuleNamespace());
 			}
 		}
 	}
 	
-	public function withContainer(string $type, string $label, array $attrs = null) {
+	public function withContainer(string $type, string $label, string $helpText = null,  array $attrs = null) {
 		if (count($this->displayItems) != 1 
 				|| $this->displayItems[0]->getType() != $type) {
 			$ds = new DisplayStructure();
-			$ds->addDisplayStructure($this, $type, $label, $attrs);
+			$ds->addDisplayStructure($this, $type, $label, $helpText, $attrs);
 			return $ds;
 		}
 		
 		if ($this->displayItems[0]->getLabel() == $label 
+				&& $this->displayItems[0]->getHelpText() == $helpText 
 				&& $this->displayItems[0]->getAttrs() === $attrs) {
 			return $this;
 		}
 		
 		$ds = new DisplayStructure();
-		$ds->addDisplayItem($this->displayItems[0]->copy($type, $label, $attrs));
+		$ds->addDisplayItem($this->displayItems[0]->copy($type, $label, $helpText, $attrs));
 		return $ds;
 	}
 
@@ -291,14 +293,15 @@ class DisplayStructure {
 			if ($displayItem->hasDisplayStructure()) {
 				$purifiedDisplayStructure->addDisplayStructure(
 						$this->rPurifyDisplayStructure($displayItem->getDisplayStructure(), $eiGuiFrame),
-						$displayItem->getSiStructureType(), $displayItem->getLabel(), $displayItem->getModuleNamespace());
+						$displayItem->getSiStructureType(), $displayItem->getLabel(), $displayItem->getHelpText(), 
+						$displayItem->getModuleNamespace());
 				continue;
 			}
 			
 			$guiPropAssembly = null;
 			try {
-				$guiPropAssembly = $eiGuiFrame->getGuiPropAssemblyByGuiPropPath($displayItem->getGuiPropPath());
-			} catch (GuiException $e) {
+				$guiPropAssembly = $eiGuiFrame->getDisplayDefintion($displayItem->getGuiPropPath());
+			} catch (UnresolvableGuiPropPathException $e) {
 				continue;
 			}
 			

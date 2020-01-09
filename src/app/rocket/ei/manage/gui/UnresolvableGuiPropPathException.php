@@ -21,7 +21,5 @@
  */
 namespace rocket\ei\manage\gui;
 
-use rocket\ei\manage\gui\field\GuiPropPath;
-
-class CouldNotResolveGuiPropPathException extends GuiPropPath {
+class UnresolvableGuiPropPathException extends GuiException {
 }

@@ -9,6 +9,7 @@ import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { CrumbGroupComponent } from '../../../meta/comp/crumb-group/crumb-group.component';
 import { SiCrumb } from '../../../meta/model/si-crumb';
 import { TranslationService } from 'src/app/util/i18n/translation.service';
+import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
 
 @Component({
 	selector: 'rocket-split',
@@ -68,11 +69,13 @@ export class SplitComponent implements OnInit, OnDestroy, DoCheck {
 		return this.subscription.isKeyVisible(key);
 	}
 
-	createNotActiveUism() {
+	private createNotActiveUism(): UiStructureModel {
 		return new SimpleUiStructureModel(new TypeUiContent(CrumbGroupComponent, (ref) => {
-			ref.instance.siCrumbGroup = { crumbs: [
-				SiCrumb.createLabel(this.translationService.translate('ei_impl_locale_not_active_label'))
-			] };
+			ref.instance.siCrumbGroup = {
+				crumbs: [
+					SiCrumb.createLabel(this.translationService.translate('ei_impl_locale_not_active_label'))
+				]
+			};
 		}));
 	}
 

@@ -153,7 +153,7 @@ class EiGuiFrame {
 	
 	/**
 	 * @param GuiPropPath $guiPropPath
-	 * @throws GuiException
+	 * @throws UnresolvableGuiPropPathException
 	 * @return DisplayDefinition
 	 */
 	function getDisplayDefintion(GuiPropPath $guiPropPath) {
@@ -162,7 +162,7 @@ class EiGuiFrame {
 			return $this->displayDefinitions[$guiPropPathStr];
 		}
 		
-		throw new GuiException('Unknown GuiPropPath for ' . $guiPropPath);
+		throw new UnresolvableGuiPropPathException('Unknown GuiPropPath for ' . $guiPropPath);
 	}
 	
 	/**
