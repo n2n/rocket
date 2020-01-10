@@ -12,7 +12,8 @@ import { Subscription } from 'rxjs';
 	styleUrls: ['./structure.component.css']
 })
 export class StructureComponent implements OnInit, OnDestroy {
-
+	@Input()
+	labelVisible = true;
 	@Input()
 	toolbarVisible = true;
 	@Input()

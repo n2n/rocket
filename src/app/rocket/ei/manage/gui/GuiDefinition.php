@@ -43,6 +43,7 @@ use n2n\l10n\Lstr;
 use rocket\ei\mask\model\DisplayStructure;
 use rocket\si\meta\SiStructureType;
 use rocket\ei\mask\EiMask;
+use rocket\ei\mask\model\DisplayItem;
 
 class GuiDefinition {
 	/**
@@ -823,7 +824,8 @@ class GuiDefinition {
 				continue;
 			}
 			
-			$guiStructureDeclarations[] = $this->createGuiStructureDeclaration($guiPropPath, $displayDefinition);
+			$guiStructureDeclarations[] = GuiStructureDeclaration::createField($guiPropPath,
+					$displayItem->getSiStructureType() ?? $displayDefinition->getSiStructureType() ?? SiStructureType::ITEM);
 		}
 		
 		return $guiStructureDeclarations;
@@ -853,8 +855,8 @@ class GuiDefinition {
 			if (null !== ($displayDefinition = $guiPropSetup->getDisplayDefinition())) {
 				$eiGuiFrame->putDisplayDefintion($guiPropPath, $displayDefinition);
 				
-				$guiStructureDeclarations[(string) $guiPropPath] = $this->createGuiStructureDeclaration(
-						$guiPropPath, $displayDefinition);
+				$guiStructureDeclarations[(string) $guiPropPath] = GuiStructureDeclaration
+						::createField($guiPropPath, $displayDefinition);
 			}
 			
 			foreach ($guiPropWrapper->getForkedGuiPropPaths() as $forkedGuiPropPath) {
@@ -867,8 +869,8 @@ class GuiDefinition {
 				
 				$eiGuiFrame->putDisplayDefintion($absGuiPropPath, $displayDefinition);
 				
-				$guiStructureDeclarations[(string) $absGuiPropPath] = $this->createGuiStructureDeclaration(
-						$absGuiPropPath, $displayDefinition);
+				$guiStructureDeclarations[(string) $absGuiPropPath] = GuiStructureDeclaration
+						::createField($absGuiPropPath, $displayDefinition);
 				
 			}
 		}
@@ -881,8 +883,13 @@ class GuiDefinition {
 	/**
 	 * @param GuiPropPath $guiPropPath
 	 * @param DisplayDefinition $displayDefinition
+	 * @param DisplayItem $displayItem
 	 */
-	private function createGuiStructureDeclaration($guiPropPath, $displayDefinition) {
+	private function createGuiStructureDeclaration($guiPropPath, $displayDefinition, $displayItem) {
+		if ($displayItem === null) {
+			
+		}
+		
 		return GuiStructureDeclaration::createField($guiPropPath,
 				$displayDefinition->getSiStructureType() ?? SiStructureType::ITEM);
 	}
