@@ -169,7 +169,4 @@ class GuiFieldMap {
 			}
 		}
 	}
-	
-	
-	
 }

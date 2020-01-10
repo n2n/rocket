@@ -4,3 +4,23 @@
 <ng-container *ngFor="let child of uiStructure.getContentChildren()">
 	<div *ngIf="child.visible && !child.disabled" rocketUiStructure [uiStructure]="child"></div>
 </ng-container>
+
+
+<ng-container *ngFor="let childNode of childNodes">
+	<ng-container *ngIf="childNode.uiStructure">
+		<div *ngIf="childNode.uiStructure.visible && !childNode.uiStructure.disabled" 
+				rocketUiStructure [uiStructure]="childNode.uiStructure"></div>
+	</ng-container>
+
+	<ng-container *ngIf="childNode.tabContainer">
+		<ul class="rocket-main-group-nav nav nav-tabs">
+			<ng-container *ngFor="let tab of childNode.tabContainer.availableTabs">
+				<li *ngIf="tab.disabled" [class.active]="childNode.tabContainer.activeTab === tab">
+					{{ tab.label }}
+				</li>
+			</ng-container>
+		</ul>
+
+		<div *ngIf="childNode.tabContainer.activeTab" rocketUiStructure [uiStructure]="childNode.tabContainer.activeTab"></div>
+	</ng-container>
+</ng-container>
