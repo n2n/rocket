@@ -3,7 +3,7 @@ import { StructureContentDirective } from 'src/app/ui/structure/comp/structure/s
 import { UiStructure } from '../../model/ui-structure';
 import { UiContent } from '../../model/ui-content';
 import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
-import { Subscription } from 'rxjs';
+import { Subscription, BehaviorSubject, Subject } from 'rxjs';
 
 @Component({
 	// tslint:disable-next-line:component-selector

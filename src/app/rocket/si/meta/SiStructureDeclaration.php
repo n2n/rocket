@@ -57,7 +57,7 @@ class SiStructureDeclaration implements \JsonSerializable {
 	 * @param string $helpText
 	 * @return \rocket\si\meta\SiStructureDeclaration
 	 */
-	static function createGroup(string $structureType, string $label, ?string $helpText) {
+	static function createGroup(string $structureType, ?string $label, ?string $helpText) {
 		return new SiStructureDeclaration($structureType, null, $label, $helpText);
 	}
 	

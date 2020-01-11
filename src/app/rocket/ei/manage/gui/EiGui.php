@@ -125,7 +125,7 @@ class EiGui {
 			}
 			
 			$siStructureDeclarations[] = SiStructureDeclaration
-					::createGroup($guiStructureDeclaration->getSiStructureType(),$guiStructureDeclaration->getLabel(), 
+					::createGroup($guiStructureDeclaration->getSiStructureType(), $guiStructureDeclaration->getLabel(), 
 							$guiStructureDeclaration->getHelpText())
 					->setChildren($this->createSiStructureDeclarations($guiStructureDeclaration->getChildren()));
 		}

@@ -87,6 +87,15 @@ class GuiStructureDeclaration {
 		return $this->children;
 	}
 	
+	/**
+	 * @param GuiStructureDeclaration $child
+	 */
+	function addChild(GuiStructureDeclaration $child) {
+		UnsupportedOperationException::assertTrue($this->children !== null);
+		
+		$this->children[] = $child;
+	}
+	
 	function getAllGuiPropPaths() {
 		if ($this->guiPropPath !== null) {
 			return [(string) $this->guiPropPath => $this->guiPropPath];
@@ -106,7 +115,7 @@ class GuiStructureDeclaration {
 	 * @param string|null $helpText
 	 * @return GuiStructureDeclaration
 	 */
-	static function createField(GuiPropPath $guiPropPath, ?string $siStructureType) {
+	static function createField(GuiPropPath $guiPropPath, string $siStructureType) {
 		$gsd = new GuiStructureDeclaration();
 		$gsd->siStructureType = $siStructureType;
 		$gsd->guiPropPath = $guiPropPath;

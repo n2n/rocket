@@ -6,9 +6,10 @@ import { MessageFieldModel } from '../comp/message-field-model';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
 import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 export abstract class SiFieldAdapter implements SiField, MessageFieldModel {
-	protected disabled = false;
+	private disabledSubject = new BehaviorSubject<boolean>(false);
 	protected messages: Message[] = [];
 
 	abstract hasInput(): boolean;
@@ -16,11 +17,15 @@ export abstract class SiFieldAdapter implements SiField, MessageFieldModel {
 	abstract readInput(): object;
 
 	isDisabled(): boolean {
-		return this.disabled;
+		return this.disabledSubject.getValue();
 	}
 
 	setDisabled(disabled: boolean) {
-		this.disabled = disabled;
+		this.disabledSubject.next(disabled);
+	}
+
+	getDisabled$(): Observable<boolean> {
+		return this.disabledSubject;
 	}
 
 	abstract copy(entryBuildUp: SiEntryBuildup): SiField;
@@ -32,7 +37,7 @@ export abstract class SiFieldAdapter implements SiField, MessageFieldModel {
 	createUiStructureModel(): UiStructureModel {
 		const model = new SimpleUiStructureModel(this.createUiContent());
 		model.messagesCallback = () => this.getMessages();
-		model.disabledCallback = () => this.isDisabled();
+		model.disabled$ = this.disabledSubject;
 		return model;
 	}
 

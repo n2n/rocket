@@ -1,4 +1,4 @@
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, Subscription } from 'rxjs';
 import { UiZone } from './ui-zone';
 import { UiStructureModel } from './ui-structure-model';
 import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
@@ -10,6 +10,8 @@ export class UiStructure {
 	private visibleSubject = new BehaviorSubject<boolean>(true);
 	private toolbarChildren$ = new BehaviorSubject<UiStructure[]>([]);
 	private contentChildren: UiStructure[] = [];
+	private disabledSubject = new BehaviorSubject<boolean>(false);
+	private disabledSubscription: Subscription;
 
 	private disposedSubject = new BehaviorSubject<boolean>(false);
 
@@ -111,6 +113,10 @@ export class UiStructure {
 		this.clear();
 		this._model = model;
 		// model.prepare(this);
+		this.disabledSubscription = model.getDisabled$().subscribe(this.disabledSubject);
+		if (this.disabledSubject.getValue()) {
+			this.disabledSubject.next(false);
+		}
 	}
 
 	private clear() {
@@ -125,6 +131,8 @@ export class UiStructure {
 		if (this._model) {
 			// this._model.dispose();
 			this._model = null;
+			this.disabledSubscription.unsubscribe();
+			this.disabledSubscription = null;
 		}
 	}
 
@@ -192,11 +200,11 @@ export class UiStructure {
 	}
 
 	get disabled(): boolean {
-		if (!this.model) {
-			return false;
-		}
+		return this.disabledSubject.getValue();
+	}
 
-		return this.model.isDisabled();
+	get disabled$(): Observable<boolean> {
+		return this.disabledSubject;
 	}
 
 	getZoneErrors(): UiZoneError[] {

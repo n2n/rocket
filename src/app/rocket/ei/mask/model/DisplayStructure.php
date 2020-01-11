@@ -24,7 +24,6 @@ namespace rocket\ei\mask\model;
 use rocket\ei\manage\gui\field\GuiPropPath;
 use n2n\util\type\ArgUtils;
 use rocket\ei\manage\gui\EiGuiFrame;
-use rocket\ei\manage\gui\GuiException;
 use rocket\si\meta\SiStructureType;
 use rocket\ei\manage\gui\UnresolvableGuiPropPathException;
 

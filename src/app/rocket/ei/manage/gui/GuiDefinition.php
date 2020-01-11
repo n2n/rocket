@@ -649,6 +649,10 @@ class GuiDefinition {
 		
 		$guiStructureDeclarations = $this->initEiGuiFrameFromDisplayScheme($eiGuiFrame);
 		
+		if (ViewMode::isBulky($viewMode)) {
+			$guiStructureDeclarations = $this->groupGsds($guiStructureDeclarations);
+		}
+		
 		return new EiGui($guiStructureDeclarations, $eiGuiFrame);
 	}
 	
@@ -735,6 +739,43 @@ class GuiDefinition {
 		$guiStructureDeclarations = $this->assembleDisplayStructure($assemblerCache, $eiGuiFrame, $displayStructure);
 		$this->initEiGuiFrame($eiGuiFrame, $assemblerCache->getGuiPropPaths());
 		return $guiStructureDeclarations;
+	}
+	
+	/**
+	 * @param GuiStructureDeclaration[] $guiStructureDeclarations
+	 */
+	private function groupGsds(array $guiStructureDeclarations) {
+		$groupedGsds = [];
+		
+		$curUngroupedGsds = [];
+		
+		foreach ($guiStructureDeclarations as $guiStructureDeclaration) {
+			if (SiStructureType::isGroup($guiStructureDeclaration->getSiStructureType())) {
+				$this->appendToGoupedGsds($curUngroupedGsds, $groupedGsds);
+				$curUngroupedGsds = [];
+				
+				$groupedGsds[] = $guiStructureDeclaration;
+				continue;
+			}
+			
+			$curUngroupedGsds[] = $guiStructureDeclaration;
+		}
+		
+		$this->appendToGoupedGsds($curUngroupedGsds, $groupedGsds);
+		
+		return $groupedGsds;
+	}
+	
+	/**
+	 * @param GuiStructureDeclaration[] $curNonGroups
+	 * @param GuiStructureDeclaration[] $groupedGsds
+	 */
+	function appendToGoupedGsds($curUngroupedGsds, &$groupedGsds) {
+		if (empty($curUngroupedGsds)) {
+			return;
+		}
+		
+		$groupedGsds[] = GuiStructureDeclaration::createGroup($curUngroupedGsds, SiStructureType::SIMPLE_GROUP, null);
 	}
 	
 	/**
@@ -856,7 +897,7 @@ class GuiDefinition {
 				$eiGuiFrame->putDisplayDefintion($guiPropPath, $displayDefinition);
 				
 				$guiStructureDeclarations[(string) $guiPropPath] = GuiStructureDeclaration
-						::createField($guiPropPath, $displayDefinition);
+						::createField($guiPropPath, $displayDefinition->getSiStructureType() ?? SiStructureType::ITEM);
 			}
 			
 			foreach ($guiPropWrapper->getForkedGuiPropPaths() as $forkedGuiPropPath) {
@@ -870,7 +911,7 @@ class GuiDefinition {
 				$eiGuiFrame->putDisplayDefintion($absGuiPropPath, $displayDefinition);
 				
 				$guiStructureDeclarations[(string) $absGuiPropPath] = GuiStructureDeclaration
-						::createField($absGuiPropPath, $displayDefinition);
+						::createField($absGuiPropPath, $displayDefinition->getSiStructureType() ?? SiStructureType::ITEM);
 				
 			}
 		}

@@ -16,7 +16,7 @@ export class StructureBranchComponent implements OnInit {
 	// @Input()
 	childUiStructures: UiStructure[] = [];
 
-	childNodes = new Array<{ uiStructure?: UiStructure, tabContainer?: TabContainer; }>();
+	childNodes = new Array<{ uiStructure?: UiStructure, tabContainer?: TabContainer }>();
 
 	constructor() { }
 
@@ -45,10 +45,15 @@ export class StructureBranchComponent implements OnInit {
 
 class TabContainer {
 	private tabs: UiStructure[] = [];
-	activeTab: UiStructure|null = null;
+	private _availableTabs: UiStructure[] = [];
+	private _activeTab: UiStructure|null = null;
 
 	get availableTabs(): UiStructure[] {
-		return this.tabs.filter(child => !child.disabled);
+		return this._availableTabs;
+	}
+
+	get activeTab(): UiStructure {
+		return this._activeTab;
 	}
 
 	registerTab(uiStructure: UiStructure) {
@@ -62,24 +67,29 @@ class TabContainer {
 						.forEach((child) => { child.visible = false });
 			}
 
-			this.val();
+			this.valActiveTab();
+		});
+
+		uiStructure.disabled$.subscribe(() => {
+			this.valActiveTab();
+			this._availableTabs = this.tabs.filter(child => !child.disabled);
 		});
 
 	}
 
-	private val() {
-		this.activeTab = null;
+	private valActiveTab() {
+		this._activeTab = null;
 
 		for (const child of this.tabs) {
 			if (child.visible && !child.disabled) {
-				this.activeTab = child;
+				this._activeTab = child;
 				return;
 			}
 		}
 
 		for (const child of this.tabs) {
 			if (!child.disabled) {
-				this.activeTab = child;
+				this._activeTab = child;
 				return;
 			}
 		}

@@ -18,6 +18,14 @@ class SiStructureType {
 	}
 	
 	/**
+	 * @param string $type
+	 * @return boolean
+	 */
+	static function isGroup(string $type) {
+		return in_array($type, self::groups());
+	}
+	
+	/**
 	 * @return string[]
 	 */
 	static function all() {
