@@ -28,8 +28,9 @@ use rocket\ei\util\Eiu;
 interface GenericOverviewEiCommand extends EiCommand {
 	
 	/**
+	 * @param Eiu $eiu
 	 * @return \n2n\util\uri\Url
 	 * @throws IllegalStateException
 	 */
-	public function buildOverviewUrlExt(Eiu $eiu): ?Url;
+	public function buildOverviewNavPoint(Eiu $eiu): ?Url;
 }

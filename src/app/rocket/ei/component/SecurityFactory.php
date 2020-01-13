@@ -31,7 +31,6 @@ use rocket\ei\manage\security\privilege\PrivilegeDefinition;
 use rocket\ei\component\command\PrivilegedEiCommand;
 use rocket\ei\EiCommandPath;
 use n2n\util\type\ArgUtils;
-use rocket\ei\manage\security\privilege\EiPropPrivilege;
 use rocket\ei\manage\security\filter\SecurityFilterDefinition;
 use rocket\ei\component\prop\SecurityFilterEiProp;
 use rocket\ei\manage\security\filter\SecurityFilterProp;

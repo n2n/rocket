@@ -39,6 +39,7 @@ use rocket\ei\UnknownEiTypeException;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\manage\security\SecurityException;
 use rocket\ei\manage\gui\EiGui;
+use n2n\l10n\N2nLocale;
 
 class EiFrameUtil {
 	private $eiFrame;
@@ -281,5 +282,22 @@ class EiFrameUtil {
 		}
 		
 		return $contextEiType->getSubEiTypeById($eiTypeId, true)->createNewEiObject(false);
+	}
+	
+	/**
+	 * @param EiObject $eiObject
+	 * @param bool $determineEiMask
+	 * @param N2nLocale $n2nLocale
+	 * @return string
+	 */
+	function createIdentityString(EiObject $eiObject, bool $determineEiMask = true, N2nLocale $n2nLocale = null) {
+		$eiMask = $this->eiFrame->getEiEngine()->getEiMask();
+		if ($determineEiMask) {
+			$eiMask = $eiMask->determineEiMask($eiObject->getEiEntityObj()->getEiType());
+		}
+		
+		$n2nContext = $this->eiuAnalyst->getN2nContext(true);
+		return $this->getManageState()->getDef()->getIdNameDefinition($eiMask)
+				->createIdentityString($eiObject, $n2nContext, $n2nLocale ?? $this->eiFrame->getN2nContext()->getN2nLocale());
 	}
 }

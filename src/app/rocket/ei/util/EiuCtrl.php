@@ -35,20 +35,25 @@ use rocket\si\SiPayloadFactory;
 use n2n\persistence\orm\criteria\Criteria;
 use n2n\persistence\orm\util\NestedSetUtils;
 use n2n\persistence\orm\util\NestedSetStrategy;
-use rocket\ei\util\gui\EiuGuiFrame;
 use rocket\si\meta\SiDeclaration;
 use rocket\si\content\SiPartialContent;
 use rocket\si\content\SiEntry;
 use rocket\si\content\impl\basic\BulkyEntrySiComp;
 use rocket\ei\manage\security\InaccessibleEiEntryException;
-use rocket\ei\manage\gui\EiGuiFrame;
 use rocket\ei\manage\frame\EiFrameUtil;
 use rocket\ei\manage\LiveEiObject;
 use rocket\ei\manage\gui\EiGui;
+use n2n\web\http\HttpContext;
+use gallery\core\model\Breadcrumb;
+use rocket\ei\manage\frame\NavPoint;
+use rocket\ei\manage\EiObject;
 
 class EiuCtrl {
 	private $eiu;
 	private $eiuFrame;	
+	/**
+	 * @var HttpContext
+	 */
 	private $httpContext;
 	private $cu;
 	
@@ -390,6 +395,28 @@ class EiuCtrl {
 		$this->httpContext->getResponse()->send(
 				SiPayloadFactory::createZoneModel($zone, $contextEiGuiFrame->createGeneralSiControls()));
 	}
+	
+	/**
+	 * @param string $label
+	 * @param bool $includeOverview
+	 * @param mixed $detailEiEntryArg
+	 * @return EiuCtrl
+	 */
+	function pushCurrentAsSirefBreadcrumb(string $label, bool $includeOverview = false, $detailEiEntryArg = null) {
+		if ($includeOverview) {
+			$this->eiuFrame->pushOverviewBreadcrumb();
+		}
+		
+		if ($detailEiEntryArg !== null) {
+			$this->eiuFrame->pushDetailBreadcrumb($detailEiEntryArg);
+		}
+		
+		$this->eiuFrame->pushSirefBreadcrumb($this->httpContext->getRequest()->getUrl(), $label);
+		
+		return $this;
+	}
+	
+	
 	
 	
 	

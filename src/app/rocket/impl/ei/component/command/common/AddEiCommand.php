@@ -30,7 +30,6 @@ use rocket\ei\component\command\PrivilegedEiCommand;
 use n2n\core\container\N2nContext;
 use rocket\core\model\Rocket;
 use rocket\ei\util\Eiu;
-use rocket\ei\manage\security\privilege\EiCommandPrivilege;
 use n2n\web\http\controller\Controller;
 use rocket\impl\ei\component\command\common\controller\AddController;
 use n2n\web\dispatch\mag\MagDispatchable;
@@ -74,26 +73,26 @@ class AddEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiCo
 		return $dtc->translate('common_new_entry_label');
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\component\command\PrivilegedEiCommand::createEiCommandPrivilege()
-	 */
-	public function createEiCommandPrivilege(Eiu $eiu): EiCommandPrivilege {
-		$dtc = $eiu->dtc(Rocket::NS);
-		$eiuCommandPrivilege = $eiu->factory()->newCommandPrivilege($dtc->t('common_new_entry_label'));
+// 	/**
+// 	 * {@inheritDoc}
+// 	 * @see \rocket\ei\component\command\PrivilegedEiCommand::createEiCommandPrivilege()
+// 	 */
+// 	public function createEiCommandPrivilege(Eiu $eiu): EiCommandPrivilege {
+// 		$dtc = $eiu->dtc(Rocket::NS);
+// 		$eiuCommandPrivilege = $eiu->factory()->newCommandPrivilege($dtc->t('common_new_entry_label'));
 		
-		$eiuCommandPrivilege->newSub(self::PRIVILEGE_LIVE_ENTRY_KEY, $dtc->t('ei_impl_add_live_entry_label'));
-		$eiuCommandPrivilege->newSub(self::PRIVILEGE_DRAFT_KEY, $dtc->t('ei_impl_add_draft_label'));
+// 		$eiuCommandPrivilege->newSub(self::PRIVILEGE_LIVE_ENTRY_KEY, $dtc->t('ei_impl_add_live_entry_label'));
+// 		$eiuCommandPrivilege->newSub(self::PRIVILEGE_DRAFT_KEY, $dtc->t('ei_impl_add_draft_label'));
 		
-		return $eiuCommandPrivilege;
+// 		return $eiuCommandPrivilege;
 		
-// 		$pi = new CommonEiCommandPrivilege(Rocket::createLstr('common_new_entry_label', Rocket::NS));
-// 		$pi->putSubEiCommandPrivilege(self::PRIVILEGE_LIVE_ENTRY_KEY,
-// 				new CommonEiCommandPrivilege(Rocket::createLstr('ei_impl_add_live_entry_label', Rocket::NS)));
-// 		$pi->putSubEiCommandPrivilege(self::PRIVILEGE_DRAFT_KEY,
-// 				new CommonEiCommandPrivilege(Rocket::createLstr('ei_impl_add_draft_label', Rocket::NS)));
-// 		return $pi;
-	}
+// // 		$pi = new CommonEiCommandPrivilege(Rocket::createLstr('common_new_entry_label', Rocket::NS));
+// // 		$pi->putSubEiCommandPrivilege(self::PRIVILEGE_LIVE_ENTRY_KEY,
+// // 				new CommonEiCommandPrivilege(Rocket::createLstr('ei_impl_add_live_entry_label', Rocket::NS)));
+// // 		$pi->putSubEiCommandPrivilege(self::PRIVILEGE_DRAFT_KEY,
+// // 				new CommonEiCommandPrivilege(Rocket::createLstr('ei_impl_add_draft_label', Rocket::NS)));
+// // 		return $pi;
+// 	}
 
 	public function lookupController(Eiu $eiu): Controller {
 		return $eiu->lookup(AddController::class);

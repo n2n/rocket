@@ -29,7 +29,6 @@ use rocket\ei\component\UnknownEiComponentException;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\security\InaccessibleEiCommandPathException;
 use n2n\web\http\BadRequestException;
-use n2n\util\ex\UnsupportedOperationException;
 use rocket\ei\EiCommandPath;
 use rocket\ei\component\command\EiCommand;
 use rocket\ei\EiPropPath;

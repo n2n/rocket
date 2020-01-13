@@ -24,12 +24,11 @@ namespace rocket\ei\component\command;
 use rocket\ei\component\EiComponentCollection;
 use rocket\ei\component\UnknownEiComponentException;
 use n2n\util\type\ArgUtils;
-use n2n\util\uri\Url;
 use rocket\ei\mask\EiMask;
 use rocket\ei\EiCommandPath;
 use rocket\ei\util\Eiu;
-use rocket\ei\manage\frame\EiFrameController;
 use rocket\ei\manage\EiObject;
+use rocket\ei\manage\frame\NavPoint;
 
 class EiCommandCollection extends EiComponentCollection {
 	
@@ -100,15 +99,15 @@ class EiCommandCollection extends EiComponentCollection {
 				continue;
 			}
 			
-			$urlExt = $eiCommand->buildOverviewUrlExt(new Eiu($this->eiMask, $eiCommand));
-			if ($urlExt == null) {
+			$navPoint = $eiCommand->buildOverviewNavPoint(new Eiu($this->eiMask, $eiCommand));
+			if ($navPoint == null) {
 				continue;
 			}
 			
-			ArgUtils::assertTrueReturn($urlExt->isRelative(), $eiCommand,
-					'getOverviewUrlExt', 'Returned Url must be relative.');
+			ArgUtils::assertTrueReturn($navPoint->isRelative(), $eiCommand, 'getOverviewUrlExt', 
+					'Returned Url must be relative.');
 			
-			return new GenericResult($eiCommand, $urlExt);
+			return new GenericResult($eiCommand, $navPoint);
 		}
 		
 		if (!$required) return null;
@@ -131,17 +130,17 @@ class EiCommandCollection extends EiComponentCollection {
 	 * @return GenericResult
 	 */
 	public function determineGenericDetail(EiObject $eiObject, bool $required = false) {
-		foreach ($this->eiMask->getEiCommandCollection() as $eiPropPathStr => $eiCommand) {
+		foreach ($this->eiMask->getEiCommandCollection() as $eiCommand) {
 			if (!($eiCommand instanceof GenericDetailEiCommand)) {
 				continue;
 			}
 			
-			$urlExt = $genericDetailEiCommand->buildDetailUrlExt(new Eiu($this->eiMask, $eiObject, $eiCommand));
+			$urlExt = $eiCommand->buildDetailUrlExt(new Eiu($this->eiMask, $eiObject, $eiCommand));
 			if ($urlExt == null) {
 				continue;
 			}
 			
-			ArgUtils::assertTrueReturn($urlExt->isRelative(), $genericDetailEiCommand,
+			ArgUtils::assertTrueReturn($urlExt->isRelative(), $eiCommand,
 					'getDetailUrlExt', 'Returned Url must be relative.');
 			
 			return new GenericResult($eiCommand, $urlExt);
@@ -167,17 +166,17 @@ class EiCommandCollection extends EiComponentCollection {
 	 * @return GenericResult
 	 */
 	public function determineGenericEdit(EiObject $eiObject, bool $required = false) {
-		foreach ($this->eiMask->getEiCommandCollection() as $eiPropPathStr => $eiCommand) {
+		foreach ($this->eiMask->getEiCommandCollection() as $eiCommand) {
 			if (!($eiCommand instanceof GenericEditEiCommand)) {
 				continue;
 			}
 			
-			$urlExt = $genericEditEiCommand->buildEditUrlExt(new Eiu($this->eiMask, $eiObject, $eiCommand));
+			$urlExt = $eiCommand->buildEditUrlExt(new Eiu($this->eiMask, $eiObject, $eiCommand));
 			if ($urlExt == null) {
 				continue;
 			}
 			
-			ArgUtils::assertTrueReturn($urlExt->isRelative(), $genericEditEiCommand,
+			ArgUtils::assertTrueReturn($urlExt->isRelative(), $eiCommand,
 					'getEditUrlExt', 'Returned Url must be relative.');
 			
 			return new GenericResult($eiCommand, $urlExt);
@@ -212,7 +211,7 @@ class EiCommandCollection extends EiComponentCollection {
 				continue;
 			}
 			
-			ArgUtils::assertTrueReturn($urlExt->isRelative(), $genericAddEiCommand,
+			ArgUtils::assertTrueReturn($urlExt->isRelative(), $eiCommand,
 					'getAddUrlExt', 'Returned Url must be relative.');
 			
 			return new GenericResult($eiCommand, $urlExt);
@@ -228,12 +227,12 @@ class EiCommandCollection extends EiComponentCollection {
 class GenericResult {
 	private $eiCommand;
 	private $eiCommandPath;
-	private $urlExt;
+	private $navPoint;
 	
-	function __construct(EiCommand $eiCommand, Url $urlExt) {
+	function __construct(EiCommand $eiCommand, NavPoint $navPoint) {
 		$this->eiCommand = $eiCommand;
 		$this->eiCommandPath = EiCommandPath::from($eiCommand);
-		$this->urlExt = $urlExt;
+		$this->navPoint = $navPoint;
 	}
 	
 	function getEiCommand() {
@@ -248,10 +247,10 @@ class GenericResult {
 	}
 	
 	/**
-	 * @return Url
+	 * @return NavPoint
 	 */
-	function getCmdUrlExt() {
-		return EiFrameController::createCmdUrlExt($this->eiCommandPath);
+	function getNavPoint() {
+		return $this->navPoint;
 	}
 	
 }

@@ -22,7 +22,6 @@
 namespace rocket\ei\manage\frame;
 
 use n2n\util\ex\IllegalStateException;
-use rocket\core\model\Breadcrumb;
 use rocket\ei\mask\EiMask;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\core\container\N2nContext;
@@ -39,6 +38,8 @@ use rocket\ei\manage\security\EiEntryAccess;
 use rocket\ei\EiPropPath;
 use rocket\ei\component\command\EiCommand;
 use rocket\ei\manage\security\InaccessibleEiEntryException;
+use rocket\ei\component\command\GenericResult;
+use gallery\core\model\Breadcrumb;
 
 class EiFrame {
 	
@@ -59,10 +60,9 @@ class EiFrame {
 	private $filterModel;
 	private $sortModel;
 	
-	private $eiTypeConstraint;
+// 	private $eiTypeConstraint;
 	
-	private $overviewDisabled = false;
-	private $overviewBreadcrumbLabelOverride;
+	private $breadcrumbs = [];
 	
 	private $listeners = array();
 
@@ -183,38 +183,6 @@ class EiFrame {
 	public function hasEiExecution() {
 		return $this->eiExecution !== null;
 	}
-	
-// 	/**
-// 	 * @param EiTypeExtension[] $subEiTypeExtensions
-// 	 */
-// 	public function setSubEiTypeExtensions(array $subEiTypeExtensions) {
-// 		ArgUtils::valArray($subEiTypeExtensions, EiTypeExtension::class);
-// 		$this->subEiTypeExtensions = $subEiTypeExtensions;
-// 	}
-	
-// 	/**
-// 	 * @param EiType $eiType
-// 	 * @throws \InvalidArgumentException
-// 	 * @return \rocket\ei\mask\EiMask
-// 	 */
-// 	public function determineEiMask(EiType $eiType) {
-// 		$contextEiMask = $this->contextEiEngine->getEiMask();
-// 		$contextEiType = $contextEiMask->getEiType();
-// 		if ($eiType->equals($contextEiType)) {
-// 			return $contextEiMask;
-// 		}
-		
-// 		if (!$contextEiType->containsSubEiTypeId($eiType->getId(), true)) {
-// 			throw new \InvalidArgumentException('Passed EiType ' . $eiType->getId() 
-// 					. ' is not compatible with EiFrame with context EiType ' . $contextEiType->getId() . '.');
-// 		}
-		
-// 		if (isset($this->subEiTypeExtensions[$eiType->getId()])) {
-// 			return $this->subEiTypeExtensions[$eiType->getId()]->getEiMask();
-// 		}
-		
-// 		return $eiType->getEiMask();
-// 	}
 	
 	public function setEiRelation(EiPropPath $eiPropPath, EiRelation $scriptRelation) {
 		$this->eiRelations[(string) $eiPropPath] = $scriptRelation;
@@ -342,69 +310,102 @@ class EiFrame {
 		return $this->getEiEntryAccessFactory()->createEiEntryAccess($eiEntry);
 	}
 	
-	public function setOverviewDisabled(bool $overviewDisabled) {
-		$this->overviewDisabled = $overviewDisabled;
+	/**
+	 * @return boolean
+	 */
+	public function isOverviewAvailable() {
+		return $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()->hasGenericOverview();
 	}
 	
-	public function isOverviewDisabled() {
-		return $this->overviewDisabled;
-	}
-	
-	private function ensureOverviewEnabled() {
-		if ($this->overviewDisabled) {
-			throw new IllegalStateException('Overview is disabled');
-		}
-	}
-	
-	public function setOverviewBreadcrumbLabelOverride(string $overviewBreadcrumbLabel = null) {
-		$this->overviewBreadcrumbLabelOverride = $overviewBreadcrumbLabel;
-	}
-	
-	public function getOverviewBreadcrumbLabelOverride() {
-		return $this->overviewBreadcrumbLabelOverride;
-	}
-	
-	public function getOverviewBreadcrumbLabel() {
-		if (null !== $this->overviewBreadcrumbLabelOverride) {
-			return $this->overviewBreadcrumbLabelOverride; 
-		}
-		
-		$this->ensureOverviewEnabled();
-		
-		return $this->getContextEiEngine()->getEiMask()->getPluralLabelLstr();
-	}
-
-	public function isOverviewUrlAvailable() {
-		return (!$this->overviewDisabled
-				&& $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()->hasGenericOverview());
-	}
-	
-	public function getOverviewUrl(bool $required = true) {
+	/**
+	 * @param bool $required
+	 * @return NavPoint|null
+	 */
+	public function getOverviewNavPoint(bool $required = true) {
 		$result = $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()
 				->determineGenericOverview($required);
+				
+		return $this->compleNavPoint($result);
+	}
+	
+	/**
+	 * @param EiObject $eiObject
+	 * @return boolean
+	 */
+	public function isDetailAvailable(EiObject $eiObject) {
+		return $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()->hasGenericDetail($eiObject);
+	}
+	
+	/**
+	 * @param EiObject $eiObject
+	 * @param bool $required
+	 * @return NavPoint|null
+	 */
+	public function getDetailNavPoint(EiObject $eiObject, bool $required = true) {
+		$result = $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()
+				->determineGenericDetail($eiObject, $required);
 		
-		if ($result === null) return null;
+		return $this->compleNavPoint($result);
+	}
+	
+	/**
+	 * @param EiObject $eiObject
+	 * @return boolean
+	 */
+	public function isEditAvailable(EiObject $eiObject) {
+		return $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()->hasGenericEdit($eiObject);
+	}
+	
+	/**
+	 * @param EiObject $eiObject
+	 * @param bool $required
+	 * @return NavPoint|null
+	 */
+	public function getEditNavPoint(EiObject $eiObject, bool $required = true) {
+		$result = $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()
+				->determineGenericEdit($eiObject, $required);
 		
-		$this->ensureOverviewEnabled();
+		return $this->compleNavPoint($result);
+	}
+	
+	/**
+	 * @param EiObject $eiObject
+	 * @return boolean
+	 */
+	public function isAddAvailable(EiObject $eiObject) {
+		return $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()->hasGenericAdd();
+	}
+	
+	/**
+	 * @param bool $required
+	 * @return NavPoint|null
+	 */
+	public function getAddNavPoint(bool $required = true) {
+		$result = $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()
+				->determineGenericAdd($required);
+				
+		return $this->compleNavPoint($result);
+	}
+	
+	/**
+	 * @param GenericResult|null $result
+	 * @return NavPoint|null
+	 */
+	private function completNavPoint($result) {
+		if ($result === null) {
+			return null;
+		}
 		
-		return $this->getBaseUrl()->ext($result->getCmdUrlExt());
+		$navPoint = $result->getNavPoint();
+		if ($navPoint->isUrlComplete()) {
+			return $navPoint;
+		}
+		
+		return $navPoint->complete($this->getBaseUrl()
+				->ext(EiFrameController::createCmdUrlExt($result->getEiCommandPath())));
 	}
 
-	public function createOverviewBreadcrumb(HttpContext $httpContext) {
-		return new Breadcrumb($this->getOverviewUrl($httpContext), $this->getOverviewBreadcrumbLabel());
-	}
 	
-	private function ensureDetailEnabled() {
-		if ($this->detailDisabled) {
-			throw new IllegalStateException('Detail is disabled');
-		}
-	}
-	
-	public function createDetailBreadcrumb(HttpContext $httpContext, EiObject $eiObject) {
-		return new Breadcrumb(
-				$this->getDetailUrl($httpContext, $eiObject->toEntryNavPoint($this->getContextEiEngine()->getEiMask()->getEiType())),
-				$this->getDetailBreadcrumbLabel($eiObject));
-	}
 	
 	public function getApiUrl(EiCommandPath $eiCommandPath) {
 		return $this->getBaseUrl()->ext([EiFrameController::API_PATH_PART, (string) $eiCommandPath]);
@@ -434,72 +435,8 @@ class EiFrame {
 				(string) $eiPropPath, $mode]);
 	}
 	
-	public function setDetailDisabled($detailDisabled) {
-		$this->detailDisabled = (boolean) $detailDisabled;
-	}
 	
-	public function isDetailDisabled() {
-		return $this->detailDisabled;
-	}
 	
-	public function setDetailBreadcrumbLabelOverride(string $detailBreadcrumbLabelOverride = null) {
-		$this->detailBreadcrumbLabelOverride = $detailBreadcrumbLabelOverride;
-	}
-	
-	/**
-	 * @return string
-	 */
-	public function getDetailBreadcrumbLabelOverride() {
-		return $this->detailBreadcrumbLabelOverride;
-	}
-		
-	/**
-	 * @param EiObject $eiObject
-	 * @return string
-	 */
-	public function getDetailBreadcrumbLabel(EiObject $eiObject): string {		
-		if ($this->detailBreadcrumbLabelOverride !== null) {
-			return $this->detailBreadcrumbLabelOverride;
-		}
-	
-		$this->ensureDetailEnabled();
-		
-		return $this->manageState->getDef()->getGuiDefinition($this->contextEiEngine->getEiMask())
-				->createIdentityString($eiObject, $this->getN2nContext(), $this->getN2nContext()->getN2nLocale());
-	}
-	
-	public function isDetailUrlAvailable(EiObject $eiObject) {
-		return $this->detailUrlExt !== null || 
-				(!$this->detailDisabled && $this->getContextEiEngine()->getEiMask()
-						->getEiCommandCollection()->hasGenericDetail($entryNavPoint));
-	}
-	
-	public function getDetailUrl(EiObject $eiObject, bool $required = true) {
-		$result = $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()
-				->determineGenericDetail($eiObject, $required);
-		
-		if ($result === null) return null;
-		
-		return $this->getBaseUrl()->ext($result->getCmdUrlExt());
-	}
-	
-	public function getEditUrl(EiObject $eiObject, bool $required = true) {
-		$result = $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()
-		->determineGenericEdit($eiObject, $required);
-		
-		if ($result === null) return null;
-		
-		return $this->getBaseUrl()->ext($result->getCmdUrlExt());
-	}
-	
-	public function getAddUrl(bool $required = true) {
-		$result = $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()
-				->determineGenericAdd($required);
-		
-		if ($result === null) return null;
-		
-		return $this->getBaseUrl()->ext($result->getCmdUrlExt());
-	}
 	
 	private $currentUrlExt;
 	
@@ -518,6 +455,29 @@ class EiFrame {
 		}
 		
 		return $httpContext->getRequest()->getRelativeUrl();
+	}
+	
+	/**
+	 * @param Breadcrumb[] $breadcrumbs
+	 */
+	public function setBreadcrumbs(array $breadcrumbs) {
+		ArgUtils::valArray($breadcrumbs, Breadcrumb::class);
+		
+		$this->breadcrumbs[] = $breadcrumbs;
+	}
+	
+	/**
+	 * @return Breadcrumb[]
+	 */
+	public function getBreadcrumbs() {
+		return $this->breadcrumbs;
+	}
+	
+	/**
+	 * @param Breadcrumb $breadcrumb
+	 */
+	public function addBreadcrumb(Breadcrumb $breadcrumb) {
+		$this->breadcrumbs[] = $breadcrumb;
 	}
 	
 	public function registerListener(EiFrameListener $listener) {

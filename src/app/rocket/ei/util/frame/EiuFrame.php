@@ -34,10 +34,7 @@ use rocket\ei\manage\preview\model\PreviewModel;
 use n2n\util\ex\NotYetImplementedException;
 use n2n\core\container\N2nContext;
 use rocket\ei\EiCommandPath;
-use n2n\web\dispatch\map\PropertyPath;
-use n2n\web\dispatch\map\PropertyPathPart;
 use rocket\ei\component\command\EiCommand;
-use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\LiveEiObject;
 use rocket\ei\manage\DraftEiObject;
 use n2n\reflection\ReflectionUtils;
@@ -56,10 +53,6 @@ use rocket\ei\util\spec\EiuMask;
 use rocket\ei\util\EiuPerimeterException;
 use rocket\ei\util\entry\EiuEntry;
 use rocket\ei\manage\entry\UnknownEiObjectException;
-use rocket\ei\manage\entry\EiEntryManageException;
-use rocket\ei\util\entry\form\EiuEntryForm;
-use rocket\ei\util\entry\form\EiuEntryTypeForm;
-use rocket\ei\util\gui\EiuEntryGui;
 use rocket\ei\util\gui\EiuGuiFrame;
 use rocket\ei\manage\frame\CriteriaConstraint;
 use rocket\ei\manage\frame\Boundry;
@@ -74,8 +67,11 @@ use rocket\ei\manage\frame\EiForkLink;
 use rocket\ei\manage\frame\CriteriaFactory;
 use rocket\si\content\SiEntryQualifier;
 use rocket\ei\util\gui\EiuEntryGuiMulti;
-use rocket\ei\manage\gui\EiGui;
 use rocket\ei\util\gui\EiuGui;
+use n2n\l10n\DynamicTextCollection;
+use rocket\ei\manage\frame\NavPoint;
+use rocket\ei\manage\frame\Breadcrumb;
+use n2n\util\uri\Url;
 
 class EiuFrame {
 	private $eiFrame;
@@ -141,25 +137,128 @@ class EiuFrame {
 		return $this->eiFrame->getCmdUrl($eiCommandPath);
 	}
 	
-	public function getOverviewUrl(bool $required = true) {
-		return $this->eiFrame->getOverviewUrl($required);
+	public function getOverviewNavPoint(bool $required = true) {
+		return $this->eiFrame->getOverviewNavPoint($required);
 	}
 	
-	public function getDetailUrl($eiObjectArg, bool $required = true) {
+	public function getDetailNavPoint($eiObjectArg, bool $required = true) {
 		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectArg, '$eiObjectArg', 
 				$this->eiFrame->getContextEiEngine()->getEiMask()->getEiType());
-		return $this->eiFrame->getDetailUrl($eiObject, $required);
+		return $this->eiFrame->getDetailNavPoint($eiObject, $required);
 	}
 	
-	public function getEditUrl($eiObjectArg, bool $required = true) {
+	public function getEditNavPoint($eiObjectArg, bool $required = true) {
 		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectArg, '$eiObjectArg',
 				$this->eiFrame->getContextEiEngine()->getEiMask()->getEiType());
-		return $this->eiFrame->getEditUrl($eiObject, $required);
+		return $this->eiFrame->getEditNavPoint($eiObject, $required);
 	}
 	
-	public function getAddUrl(bool $required = true) {
-		return $this->eiFrame->getAddUrl($required);
+	public function getAddNavPoint(bool $required = true) {
+		return $this->eiFrame->getAddNavPoint($required);
 	}
+	
+	public function pushBreadcrumb(NavPoint $navPoint, string $label) {
+		$this->eiFrame->addBreadcrumb(new Breadcrumb($navPoint, $label));
+		return $this;
+	}
+	
+	public function pushSirefBreadcrumb(Url $url, string $label) {
+		$this->eiFrame->addBreadcrumb(new Breadcrumb(NavPoint::siref($url), $label));
+		return $this;
+	}
+	
+	/**
+	 * @param string $label
+	 * @param bool $required
+	 * @return \rocket\ei\util\frame\EiuFrame
+	 */
+	public function pushOverviewBreadcrumb(string $label = null, bool $required = false) {
+		$navPoint = $this->getOverviewNavPoint($required);
+		
+		if ($navPoint === null) {
+			return $this;
+		}
+		
+		if ($label === null) {
+			$label = $this->eiFrame->getContextEiEngine()->getEiMask()->getPluralLabelLstr()->t($this->getN2nLocale());
+		}
+		
+		$this->eiFrame->addBreadcrumb(new Breadcrumb($navPoint, $label));
+		
+		return $this;
+	}
+	
+	/**
+	 * @param string $label
+	 * @param bool $required
+	 * @return \rocket\ei\util\frame\EiuFrame
+	 */
+	public function pushDetailBreadcrumb($eiObjectArg, string $label = null, bool $required = false) {
+		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectArg, '$eiObjectArg',
+				$this->eiFrame->getContextEiEngine()->getEiMask()->getEiType());
+		
+		$navPoint = $this->eiFrame->getDetailNavPoint($eiObject, $required);
+		
+		if ($navPoint === null) {
+			return $this;
+		}
+		
+		if ($label === null) {
+			$label = (new EiFrameUtil($this->eiFrame))->createIdentityString();
+		}
+		
+		$this->eiFrame->addBreadcrumb(new Breadcrumb($navPoint, $label));
+		
+		return $this;
+	}
+	
+	
+	/**
+	 * @param string $label
+	 * @param bool $required
+	 * @return \rocket\ei\util\frame\EiuFrame
+	 */
+	public function pushEditBreadcrumb($eiObjectArg, string $label = null, bool $required = false) {
+		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectArg, '$eiObjectArg',
+				$this->eiFrame->getContextEiEngine()->getEiMask()->getEiType());
+		
+		$navPoint = $this->eiFrame->getEditNavPoint($eiObject, $required);
+		
+		if ($navPoint === null) {
+			return $this;
+		}
+		
+		if ($label === null) {
+			$label = (new DynamicTextCollection('rocket', $this->getN2nContext()->getN2nLocale()))
+					->t('common_edit_label');
+		}
+		
+		$this->eiFrame->addBreadcrumb(new Breadcrumb($navPoint, $label));
+		
+		return $this;
+	}
+	/**
+	 * @param string $label
+	 * @param bool $required
+	 * @return \rocket\ei\util\frame\EiuFrame
+	 */
+	public function pushAddBreadcrumb(string $label = null, bool $required = false) {
+		$navPoint = $this->getAddNavPoint($required);
+		
+		if ($navPoint === null) {
+			return $this;
+		}
+		
+		if ($label === null) {
+			$label = (new DynamicTextCollection('rocket', $this->getN2nContext()->getN2nLocale()))
+					->t('common_add_label');
+		}
+		
+		$this->eiFrame->addBreadcrumb(new Breadcrumb($navPoint, $label));
+		
+		return $this;
+	}
+	
 	
 	/**
 	 * @return EntityManager
@@ -410,120 +509,120 @@ class EiuFrame {
 		return $this->eiFrame->createEiEntry($to, $fromEiuEntry->getEiEntry());
 	}
 	
-	/**
-	 * 
-	 * @param bool $draft
-	 * @param mixed $copyFromEiObjectObj
-	 * @param PropertyPath $contextPropertyPath
-	 * @param array $allowedEiTypeIds
-	 * @throws EiEntryManageException
-	 * @return EiuEntryForm
-	 */
-	public function newEntryForm(bool $draft = false, $copyFromEiObjectObj = null, 
-			PropertyPath $contextPropertyPath = null, array $allowedEiTypeIds = null,
-			array $eiEntries = array()) {
-		$eiuEntryTypeForms = array();
-		$labels = array();
+// 	/**
+// 	 * 
+// 	 * @param bool $draft
+// 	 * @param mixed $copyFromEiObjectObj
+// 	 * @param PropertyPath $contextPropertyPath
+// 	 * @param array $allowedEiTypeIds
+// 	 * @throws EiEntryManageException
+// 	 * @return EiuEntryForm
+// 	 */
+// 	public function newEntryForm(bool $draft = false, $copyFromEiObjectObj = null, 
+// 			PropertyPath $contextPropertyPath = null, array $allowedEiTypeIds = null,
+// 			array $eiEntries = array()) {
+// 		$eiuEntryTypeForms = array();
+// 		$labels = array();
 		
-		$contextEiType = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType();
-		$contextEiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
-		
-		$guiDefinition = $this->eiFrame->getManageState()->getDef()->getGuiDefinition($contextEiMask);
-		$eiGuiFrame = $contextEiMask->createEiGuiFrame($this->eiFrame, ViewMode::BULKY_ADD, true);
-		
-		ArgUtils::valArray($eiEntries, EiEntry::class);
-		foreach ($eiEntries as $eiEntry) {
-			$eiEntries[$eiEntry->getEiType()->getId()] = $eiEntry;
-		}
-		
-		$eiTypes = array_merge(array($contextEiType->getId() => $contextEiType), $contextEiType->getAllSubEiTypes());
-		if ($allowedEiTypeIds !== null) {
-			foreach (array_keys($eiTypes) as $eiTypeId) {
-				if (in_array($eiTypeId, $allowedEiTypeIds)) continue;
-					
-				unset($eiTypes[$eiTypeId]);
-			}
-		}
-		
-		if (empty($eiTypes)) {
-			throw new \InvalidArgumentException('Param allowedEiTypeIds caused an empty EiuEntryForm.');
-		}
-		
-		$chosenId = null;
-		foreach ($eiTypes as $subEiTypeId => $subEiType) {
-			if ($subEiType->getEntityModel()->getClass()->isAbstract()) {
-				continue;
-			}
-				
-			$subEiEntry = null;
-			if (isset($eiEntries[$subEiType->getId()])) {
-				$subEiEntry = $eiEntries[$subEiType->getId()];
-				$chosenId = $subEiType->getId();
-			} else {
-				$eiObject = $this->createNewEiObject($draft, $subEiType);
-				
-				if ($copyFromEiObjectObj !== null) {
-					$subEiEntry = $this->createEiEntryCopy($copyFromEiObjectObj, $eiObject);
-				} else {
-					$subEiEntry = $this->createEiEntry($eiObject);
-				}
-				
-			}
-						
-			$eiuEntryTypeForms[$subEiTypeId] = $this->createEiuEntryTypeForm($subEiType, $subEiEntry, $contextPropertyPath);
-			$labels[$subEiTypeId] = $this->eiFrame->determineEiMask($subEiType)->getLabelLstr()
-					->t($this->eiFrame->getN2nContext()->getN2nLocale());
-		}
-		
-		$eiuEntryForm = new EiuEntryForm($this);
-		$eiuEntryForm->setEiuEntryTypeForms($eiuEntryTypeForms);
-		$eiuEntryForm->setChoicesMap($labels);
-		$eiuEntryForm->setChosenId($chosenId ?? key($eiuEntryTypeForms));
-		$eiuEntryForm->setContextPropertyPath($contextPropertyPath);
-		$eiuEntryForm->setChoosable(count($eiuEntryTypeForms) > 1);
-		
-		if (empty($eiuEntryTypeForms)) {
-			throw new EiEntryManageException('Can not create EiuEntryForm of ' . $contextEiType
-					. ' because its class is abstract an has no s of non-abstract subtypes.');
-		}
-		
-		return $eiuEntryForm;
-	}
-	
-	/**
-	 * @param EiEntry $eiEntry
-	 * @param PropertyPath $contextPropertyPath
-	 * @return \rocket\ei\util\entry\form\EiuEntryForm
-	 */
-	public function entryForm($eiEntryArg, PropertyPath $contextPropertyPath = null) {
-		$eiEntry = EiuAnalyst::buildEiEntryFromEiArg($eiEntryArg);
+// 		$contextEiType = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType();
 // 		$contextEiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
-		$eiuEntryForm = new EiuEntryForm($this);
-		$eiType = $eiEntry->getEiObject()->getEiEntityObj()->getEiType();
-
-		$eiuEntryForm->setEiuEntryTypeForms(array($eiType->getId() => $this->createEiuEntryTypeForm($eiType, $eiEntry, $contextPropertyPath)));
-		$eiuEntryForm->setChosenId($eiType->getId());
-		// @todo remove hack when ContentItemEiProp gets updated.
-		$eiuEntryForm->setChoicesMap(array($eiType->getId() => $this->eiFrame->determineEiMask($eiType)->getLabelLstr()
-				->t($this->eiFrame->getN2nContext()->getN2nLocale())));
-		return $eiuEntryForm;
-	}
+		
+// 		$guiDefinition = $this->eiFrame->getManageState()->getDef()->getGuiDefinition($contextEiMask);
+// 		$eiGuiFrame = $contextEiMask->createEiGuiFrame($this->eiFrame, ViewMode::BULKY_ADD, true);
+		
+// 		ArgUtils::valArray($eiEntries, EiEntry::class);
+// 		foreach ($eiEntries as $eiEntry) {
+// 			$eiEntries[$eiEntry->getEiType()->getId()] = $eiEntry;
+// 		}
+		
+// 		$eiTypes = array_merge(array($contextEiType->getId() => $contextEiType), $contextEiType->getAllSubEiTypes());
+// 		if ($allowedEiTypeIds !== null) {
+// 			foreach (array_keys($eiTypes) as $eiTypeId) {
+// 				if (in_array($eiTypeId, $allowedEiTypeIds)) continue;
+					
+// 				unset($eiTypes[$eiTypeId]);
+// 			}
+// 		}
+		
+// 		if (empty($eiTypes)) {
+// 			throw new \InvalidArgumentException('Param allowedEiTypeIds caused an empty EiuEntryForm.');
+// 		}
+		
+// 		$chosenId = null;
+// 		foreach ($eiTypes as $subEiTypeId => $subEiType) {
+// 			if ($subEiType->getEntityModel()->getClass()->isAbstract()) {
+// 				continue;
+// 			}
+				
+// 			$subEiEntry = null;
+// 			if (isset($eiEntries[$subEiType->getId()])) {
+// 				$subEiEntry = $eiEntries[$subEiType->getId()];
+// 				$chosenId = $subEiType->getId();
+// 			} else {
+// 				$eiObject = $this->createNewEiObject($draft, $subEiType);
+				
+// 				if ($copyFromEiObjectObj !== null) {
+// 					$subEiEntry = $this->createEiEntryCopy($copyFromEiObjectObj, $eiObject);
+// 				} else {
+// 					$subEiEntry = $this->createEiEntry($eiObject);
+// 				}
+				
+// 			}
+						
+// 			$eiuEntryTypeForms[$subEiTypeId] = $this->createEiuEntryTypeForm($subEiType, $subEiEntry, $contextPropertyPath);
+// 			$labels[$subEiTypeId] = $this->eiFrame->determineEiMask($subEiType)->getLabelLstr()
+// 					->t($this->eiFrame->getN2nContext()->getN2nLocale());
+// 		}
+		
+// 		$eiuEntryForm = new EiuEntryForm($this);
+// 		$eiuEntryForm->setEiuEntryTypeForms($eiuEntryTypeForms);
+// 		$eiuEntryForm->setChoicesMap($labels);
+// 		$eiuEntryForm->setChosenId($chosenId ?? key($eiuEntryTypeForms));
+// 		$eiuEntryForm->setContextPropertyPath($contextPropertyPath);
+// 		$eiuEntryForm->setChoosable(count($eiuEntryTypeForms) > 1);
+		
+// 		if (empty($eiuEntryTypeForms)) {
+// 			throw new EiEntryManageException('Can not create EiuEntryForm of ' . $contextEiType
+// 					. ' because its class is abstract an has no s of non-abstract subtypes.');
+// 		}
+		
+// 		return $eiuEntryForm;
+// 	}
 	
-	private function createEiuEntryTypeForm(EiType $eiType, EiEntry $eiEntry, PropertyPath $contextPropertyPath = null) {
-		$eiMask = $this->getEiFrame()->determineEiMask($eiType);
-		$eiGuiFrame = $eiMask->createEiGuiFrame($this->eiFrame, $eiEntry->isNew() ? ViewMode::BULKY_ADD : ViewMode::BULKY_EDIT, true);
+// 	/**
+// 	 * @param EiEntry $eiEntry
+// 	 * @param PropertyPath $contextPropertyPath
+// 	 * @return \rocket\ei\util\entry\form\EiuEntryForm
+// 	 */
+// 	public function entryForm($eiEntryArg, PropertyPath $contextPropertyPath = null) {
+// 		$eiEntry = EiuAnalyst::buildEiEntryFromEiArg($eiEntryArg);
+// // 		$contextEiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
+// 		$eiuEntryForm = new EiuEntryForm($this);
+// 		$eiType = $eiEntry->getEiObject()->getEiEntityObj()->getEiType();
+
+// 		$eiuEntryForm->setEiuEntryTypeForms(array($eiType->getId() => $this->createEiuEntryTypeForm($eiType, $eiEntry, $contextPropertyPath)));
+// 		$eiuEntryForm->setChosenId($eiType->getId());
+// 		// @todo remove hack when ContentItemEiProp gets updated.
+// 		$eiuEntryForm->setChoicesMap(array($eiType->getId() => $this->eiFrame->determineEiMask($eiType)->getLabelLstr()
+// 				->t($this->eiFrame->getN2nContext()->getN2nLocale())));
+// 		return $eiuEntryForm;
+// 	}
+	
+// 	private function createEiuEntryTypeForm(EiType $eiType, EiEntry $eiEntry, PropertyPath $contextPropertyPath = null) {
+// 		$eiMask = $this->getEiFrame()->determineEiMask($eiType);
+// 		$eiGuiFrame = $eiMask->createEiGuiFrame($this->eiFrame, $eiEntry->isNew() ? ViewMode::BULKY_ADD : ViewMode::BULKY_EDIT, true);
 		
-		$eiEntryGui = $eiGuiFrame->createEiEntryGui($eiEntry);
+// 		$eiEntryGui = $eiGuiFrame->createEiEntryGui($eiEntry);
 		
-		if ($contextPropertyPath === null) {
-			$contextPropertyPath = new PropertyPath(array());
-		}
+// 		if ($contextPropertyPath === null) {
+// 			$contextPropertyPath = new PropertyPath(array());
+// 		}
 		
-		$eiEntryGui->setContextPropertyPath($contextPropertyPath->ext(
-				new PropertyPathPart('eiuEntryTypeForms', true, $eiType->getId()))->ext('dispatchable'));
+// 		$eiEntryGui->setContextPropertyPath($contextPropertyPath->ext(
+// 				new PropertyPathPart('eiuEntryTypeForms', true, $eiType->getId()))->ext('dispatchable'));
 		
-		return new EiuEntryTypeForm(new EiuEntryGui($eiEntryGui, null, $this->eiuAnalyst));
-	}
+// 		return new EiuEntryTypeForm(new EiuEntryGui($eiEntryGui, null, $this->eiuAnalyst));
+// 	}
 	
 	public function remove(EiObject $eiObject) {
 		if ($eiObject->isDraft()) {

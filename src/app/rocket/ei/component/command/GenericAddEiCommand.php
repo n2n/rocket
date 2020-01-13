@@ -21,14 +21,13 @@
  */
 namespace rocket\ei\component\command;
 
-use n2n\util\uri\Url;
 use rocket\ei\util\Eiu;
 
 interface GenericAddEiCommand {
 	
 	/**
 	 * @param Eiu $eiu
-	 * @return Url|null
+	 * @return NavPoint|null
 	 */
-	public function buildAddUrlExt(Eiu $eiu): ?Url;
+	public function buildAddNavPoint(Eiu $eiu): ?NavPoint;
 }
