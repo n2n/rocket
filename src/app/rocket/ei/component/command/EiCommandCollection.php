@@ -104,8 +104,8 @@ class EiCommandCollection extends EiComponentCollection {
 				continue;
 			}
 			
-			ArgUtils::assertTrueReturn($navPoint->isRelative(), $eiCommand, 'getOverviewUrlExt', 
-					'Returned Url must be relative.');
+// 			ArgUtils::assertTrueReturn($navPoint->getUrl()->isRelative(), $eiCommand, 'buildOverviewNavPoint', 
+// 					'Returned Url must be relative.');
 			
 			return new GenericResult($eiCommand, $navPoint);
 		}

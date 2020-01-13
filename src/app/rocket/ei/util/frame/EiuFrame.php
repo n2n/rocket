@@ -1265,7 +1265,6 @@ class EiuFrame {
 		$this->eiFrame->getBoundry()->setCriteriaFactory($criteriaFactory);
 		return $this;
 	}
-	
 }
 
 // class EiCascadeOperation implements CascadeOperation {

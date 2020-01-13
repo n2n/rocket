@@ -480,6 +480,13 @@ class EiFrame {
 		$this->breadcrumbs[] = $breadcrumb;
 	}
 	
+	function createSiBreadcrumbs() {
+		$eiFrame = $this;
+		do {
+			
+		} while ($eiFrame);
+	}
+	
 	public function registerListener(EiFrameListener $listener) {
 		$this->listeners[spl_object_hash($listener)] = $listener;
 	}

@@ -22,6 +22,7 @@
 namespace rocket\ei\component\command;
 
 use rocket\ei\util\Eiu;
+use rocket\ei\manage\frame\NavPoint;
 
 interface GenericDetailEiCommand {
 	/**
