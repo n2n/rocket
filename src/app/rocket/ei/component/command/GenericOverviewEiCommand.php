@@ -22,8 +22,8 @@
 namespace rocket\ei\component\command;
 
 use n2n\util\ex\IllegalStateException;
-use n2n\util\uri\Url;
 use rocket\ei\util\Eiu;
+use rocket\ei\manage\frame\NavPoint;
 
 interface GenericOverviewEiCommand extends EiCommand {
 	
@@ -32,5 +32,5 @@ interface GenericOverviewEiCommand extends EiCommand {
 	 * @return \n2n\util\uri\Url
 	 * @throws IllegalStateException
 	 */
-	public function buildOverviewNavPoint(Eiu $eiu): ?Url;
+	public function buildOverviewNavPoint(Eiu $eiu): ?NavPoint;
 }
