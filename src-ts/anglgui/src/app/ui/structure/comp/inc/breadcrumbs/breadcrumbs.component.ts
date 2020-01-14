@@ -19,6 +19,10 @@ export class BreadcrumbsComponent implements OnInit {
 	ngOnInit() {
 	}
 
+	isLast(uiBreadcrumb: UiBreadcrumb): boolean {
+		return this.uiBreadcrumbs.length > 0 && this.uiBreadcrumbs[this.uiBreadcrumbs.length - 1] === uiBreadcrumb;
+	}
+	
 	exec(url: string) {
 		this.siUiService.navigate(url, this.uiZone.layer);
 	}

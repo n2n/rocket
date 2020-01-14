@@ -1,3 +1,6 @@
+<ng-container *ngIf="uiStructure.disposed">
+	 disposed!!!
+</ng-container>
 
 <ng-container *ngIf="labelVisible && getLabel()">
 	<label>{{ getLabel() }}</label>
@@ -29,10 +32,6 @@
 	<div *ngIf="!loaded" class="rocket-loader"></div>
 	
 	<ng-container *ngIf="loaded">
-		<ul *ngIf="isMain()" class="rocket-main-group-nav nav nav-tabs">
-			<li *ngFor="let child of contentUiStructures" [class.active]="child.visible">{{ child.label }}</li>
-		</ul>
-		
 		<ng-template *ngIf="uiContent" rocketUiContent [uiStructure]="uiStructure" [uiContent]="uiContent"></ng-template>
 	</ng-container>
 </ng-template>

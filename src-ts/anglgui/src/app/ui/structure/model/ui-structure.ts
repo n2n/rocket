@@ -94,18 +94,17 @@ export class UiStructure {
 		if (!this.disposed) {
 			return;
 		}
-
 		throw new IllegalSiStateError('UiStructure already disposed.');
 	}
 
 	get model(): UiStructureModel|null {
-		this.ensureNotDisposed();
+//		this.ensureNotDisposed();
 		return this._model;
 	}
 
 	set model(model: UiStructureModel|null) {
 		this.ensureNotDisposed();
-
+		
 		if (this._model === model) {
 			return;
 		}
@@ -115,16 +114,18 @@ export class UiStructure {
 		if (!model) {
 			return;
 		}
-
+		
 		this._model = model;
 		// model.prepare(this);
 		this.disabledSubscription = model.getDisabled$().subscribe(this.disabledSubject);
-		if (this.disabledSubject.getValue()) {
-			this.disabledSubject.next(false);
-		}
+//		if (this.disabledSubject.getValue()) {
+//			this.disabledSubject.next(false);
+//		}
 	}
 
 	private clear() {
+		this.toolbarChildren$.next([]);
+		
 		for (const child of [...this.children]) {
 			child.dispose();
 		}
@@ -154,6 +155,8 @@ export class UiStructure {
 		this.disposedSubject.complete();
 
 		this.clear();
+		
+		this.toolbarChildren$.complete();
 
 		if (this.parent) {
 			this.parent.unregisterChild(this);

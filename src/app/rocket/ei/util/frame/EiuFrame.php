@@ -189,11 +189,11 @@ class EiuFrame {
 	
 	/**
 	 * @param mixed $eiObjectObj {@see EiuAnalyst::buildEiObjectFromEiArg()}
-	 * @return \rocket\ei\util\spec\EiuEngine
+	 * @return \rocket\ei\util\spec\EiuMask
 	 */
 	public function mask($eiObjectObj = null) {
 		if ($eiObjectObj === null) {
-			return $this->getContextEiuEngine()->getEiuMask();
+			return $this->getContextEiuEngine()->mask();
 		}
 		
 		$contextEiType = $this->getContextEiType();
@@ -201,7 +201,7 @@ class EiuFrame {
 		$eiType = $eiObject->getEiEntityObj()->getEiType();
 		
 		if ($contextEiType->equals($eiType)) {
-			return $this->getContextEiuEngine()->getEiuMask();
+			return $this->getContextEiuEngine()->mask();
 		}
 		
 		return new EiuMask($this->getContextEiMask()->determineEiMask($eiType), null, $this->eiuAnalyst);

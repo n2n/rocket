@@ -1,9 +1,12 @@
 <ol *ngIf="uiBreadcrumbs.length > 0" class="breadcrumb">
-	<li *ngFor="let uiBreadcrumb of uiBreadcrumbs" class="breadcrumb-item">
-		<a *ngIf="uiBreadcrumb.siref" [href]="uiBreadcrumb.url" (click)="$event.preventDefault(); exec(uiBreadcrumb.url)">
+	<li *ngFor="let uiBreadcrumb of uiBreadcrumbs" class="breadcrumb-item" [class.active]="isLast(uiBreadcrumb)">
+		<a *ngIf="uiBreadcrumb.siref" [href]="uiBreadcrumb.url"
+				(click)="$event.preventDefault(); exec(uiBreadcrumb.url)">
 			{{ uiBreadcrumb.name }}
 		</a>
 		
-		<a *ngIf="!uiBreadcrumb.siref" [href]="uiBreadcrumb.url">{{ uiBreadcrumb.name }}</a>
+		<a *ngIf="!uiBreadcrumb.siref" [href]="uiBreadcrumb.url">
+			{{ uiBreadcrumb.name }}
+		</a>
 	</li>
 </ol>

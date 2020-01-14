@@ -60,7 +60,9 @@ export class StructureComponent implements OnInit, OnDestroy {
 
 		this.toolbarSubscription = uiStructure.getToolbarChildren$().subscribe((toolbarUiStructures) => {
 			this.toolbarUiStructures = toolbarUiStructures;
-			this.cdRef.detectChanges();
+			if (!uiStructure.disposed) {
+				this.cdRef.detectChanges();
+			}
 		});
 	}
 
@@ -94,10 +96,6 @@ export class StructureComponent implements OnInit, OnDestroy {
 
 	getLabel(): string|null {
 		return this.uiStructure.label;
-	}
-
-	isMain() {
-		return this.getType() === UiStructureType.MAIN_GROUP;
 	}
 
 // 	ngDoCheck() {
