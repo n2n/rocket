@@ -111,6 +111,11 @@ export class UiStructure {
 		}
 
 		this.clear();
+
+		if (!model) {
+			return;
+		}
+
 		this._model = model;
 		// model.prepare(this);
 		this.disabledSubscription = model.getDisabled$().subscribe(this.disabledSubject);

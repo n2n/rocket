@@ -40,6 +40,7 @@ use rocket\ei\component\command\EiCommand;
 use rocket\ei\manage\security\InaccessibleEiEntryException;
 use rocket\ei\component\command\GenericResult;
 use gallery\core\model\Breadcrumb;
+use rocket\core\model\NavPoint;
 
 class EiFrame {
 	
@@ -391,7 +392,7 @@ class EiFrame {
 	 * @param GenericResult|null $result
 	 * @return NavPoint|null
 	 */
-	private function completNavPoint($result) {
+	private function compleNavPoint($result) {
 		if ($result === null) {
 			return null;
 		}

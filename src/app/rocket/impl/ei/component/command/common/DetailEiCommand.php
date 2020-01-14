@@ -30,12 +30,13 @@ use rocket\impl\ei\component\command\IndependentEiCommandAdapter;
 use rocket\ei\component\command\PrivilegedEiCommand;
 use n2n\util\uri\Path;
 use n2n\core\container\N2nContext;
+use rocket\core\model\NavPoint;
 use rocket\core\model\Rocket;
-use rocket\ei\manage\security\privilege\EiCommandPrivilege;
 use rocket\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
+use rocket\ei\component\command\GenericDetailEiCommand;
 
-class DetailEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiCommand {
+class DetailEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiCommand, GenericDetailEiCommand {
 	const ID_BASE = 'detail';
 	const CONTROL_DETAIL_KEY = 'detail'; 
 	const CONTROL_PREVIEW_KEY = 'preview';
@@ -132,6 +133,11 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 		$dtc = $eiu->dtc(Rocket::NS);
 		return $eiu->factory()->newCommandPrivilege($dtc->t('ei_impl_detail_label'));
 	}
+	
+	public function buildDetailNavPoint(Eiu $eiu): ?NavPoint {
+		return NavPoint::siref((new Path(['live', $eiu->object()->getPid()]))->toUrl());
+	}
+
 	
 // 	/**
 // 	 * {@inheritDoc}

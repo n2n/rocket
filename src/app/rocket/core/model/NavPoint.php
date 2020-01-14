@@ -25,11 +25,15 @@ use n2n\util\uri\Url;
 
 class NavPoint {
 	private $url;
-	private $ref;
+	private $siref;
 	
 	function __construct(Url $url = null, bool $siref = true) {
 		$this->url = $url;
-		$this->ref = $siref;
+		$this->siref = $siref;
+	}
+	
+	function isSiRef(): bool {
+		return $this->siref;
 	}
 	
 	/**

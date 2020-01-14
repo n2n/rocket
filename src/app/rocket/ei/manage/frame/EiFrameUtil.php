@@ -291,13 +291,13 @@ class EiFrameUtil {
 	 * @return string
 	 */
 	function createIdentityString(EiObject $eiObject, bool $determineEiMask = true, N2nLocale $n2nLocale = null) {
-		$eiMask = $this->eiFrame->getEiEngine()->getEiMask();
+		$eiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
 		if ($determineEiMask) {
 			$eiMask = $eiMask->determineEiMask($eiObject->getEiEntityObj()->getEiType());
 		}
 		
-		$n2nContext = $this->eiuAnalyst->getN2nContext(true);
-		return $this->getManageState()->getDef()->getIdNameDefinition($eiMask)
+		$n2nContext = $this->eiFrame->getN2nContext();
+		return $this->eiFrame->getManageState()->getDef()->getIdNameDefinition($eiMask)
 				->createIdentityString($eiObject, $n2nContext, $n2nLocale ?? $this->eiFrame->getN2nContext()->getN2nLocale());
 	}
 }

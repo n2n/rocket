@@ -36,6 +36,7 @@ export class UiZoneModelFactory {
 		const extr = new Extractor(data);
 
 		return {
+			siref: extr.reqBoolean('siref'),
 			url: extr.reqString('url'),
 			name: extr.reqString('name')
 		};

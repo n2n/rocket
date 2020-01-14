@@ -10,11 +10,12 @@ import { ZoneComponent } from './structure/comp/zone/zone.component';
 import { LayerComponent } from './structure/comp/layer/layer.component';
 import { StructureComponent } from './structure/comp/structure/structure.component';
 import { MessageComponent } from './util/comp/message/message.component';
+import { BreadcrumbsComponent } from './structure/comp/inc/breadcrumbs/breadcrumbs.component';
 
 @NgModule({
 	declarations: [
 		LayerComponent, ContainerComponent, ZoneComponent, StructureComponent, StructureContentDirective,
-		StructureBranchComponent, PlainContentComponent, MessageComponent
+		StructureBranchComponent, PlainContentComponent, MessageComponent, BreadcrumbsComponent
 	],
 	imports: [
 		CommonModule,

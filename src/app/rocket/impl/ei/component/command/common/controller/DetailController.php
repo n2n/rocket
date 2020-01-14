@@ -34,9 +34,9 @@ class DetailController extends ControllerAdapter {
 	private $dtc;
 	private $eiuCtrl;
 	
-	public function prepare(DynamicTextCollection $dtc, EiuCtrl $eiCtrl) {
+	public function prepare(DynamicTextCollection $dtc) {
 		$this->dtc = $dtc;
-		$this->eiuCtrl = $eiCtrl;
+		$this->eiuCtrl = EiuCtrl::from($this->cu());
 	}
 		
 	public function doLive($pid) {

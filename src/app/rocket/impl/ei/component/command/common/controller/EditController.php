@@ -42,6 +42,12 @@ class EditController extends ControllerAdapter {
 	public function index($pid) {
 		$eiuEntry = $this->eiuCtrl->lookupEntry($pid);
 		
+		$this->eiuCtrl->pushOverviewBreadcrumb()
+				->pushDetailBreadcrumb($eiuEntry)
+				->pushCurrentAsSirefBreadcrumb($this->dtc->t('common_add_label'));
+		
+// 		$this->eiuCtrl->pushCurrentAsSirefBreadcrumb($this->dtc->t('common_add_label'), true, $eiuEntry);
+		
 		$this->eiuCtrl->forwardDlZone($eiuEntry, true);
 	}
 	

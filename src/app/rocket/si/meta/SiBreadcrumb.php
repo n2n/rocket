@@ -19,18 +19,35 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\component\command;
+namespace rocket\si\meta;
 
-use n2n\util\ex\IllegalStateException;
-use rocket\ei\util\Eiu;
-use rocket\core\model\NavPoint;
+use n2n\util\uri\Url;
 
-interface GenericOverviewEiCommand extends EiCommand {
+class SiBreadcrumb implements \JsonSerializable {
+	private $siref;
+	private $url;
+	private $name;
 	
 	/**
-	 * @param Eiu $eiu
-	 * @return \n2n\util\uri\Url
-	 * @throws IllegalStateException
+	 * @param bool $siref
+	 * @param Url $url
+	 * @param string $label
 	 */
-	public function buildOverviewNavPoint(Eiu $eiu): ?NavPoint;
+	function __construct(bool $siref, string $url, string $label) {
+		$this->siref = $siref;
+		$this->url = $url;
+		$this->name = $label;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \JsonSerializable::jsonSerialize()
+	 */
+	function jsonSerialize() {
+		return [
+			'siref' => $this->siref,
+			'url' => $this->url,
+			'name' => $this->name
+		];
+	}
 }

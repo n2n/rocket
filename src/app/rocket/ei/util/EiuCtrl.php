@@ -44,9 +44,11 @@ use rocket\ei\manage\frame\EiFrameUtil;
 use rocket\ei\manage\LiveEiObject;
 use rocket\ei\manage\gui\EiGui;
 use n2n\web\http\HttpContext;
-use gallery\core\model\Breadcrumb;
 use rocket\core\model\NavPoint;
-use rocket\ei\manage\EiObject;
+use n2n\l10n\DynamicTextCollection;
+use n2n\util\uri\Url;
+use rocket\core\model\RocketState;
+use rocket\core\model\Breadcrumb;
 
 class EiuCtrl {
 	private $eiu;
@@ -55,6 +57,10 @@ class EiuCtrl {
 	 * @var HttpContext
 	 */
 	private $httpContext;
+	/**
+	 * @var RocketState
+	 */
+	private $rocketState;
 	private $cu;
 	
 	/**
@@ -67,6 +73,7 @@ class EiuCtrl {
 		$this->eiu = new Eiu($manageState->peakEiFrame());
 		$this->eiuFrame = $this->eiu->frame();
 		$this->httpContext = $manageState->getN2nContext()->getHttpContext();
+		$this->rocketState = $cu->getN2nContext()->lookup(RocketState::class);
 	}
 	
 	/**
@@ -283,7 +290,7 @@ class EiuCtrl {
 		return false;
 	}
 	
-	function forwardListZone(int $pageSize = 30) {
+	function forwardListZone(int $pageSize = 30, string $title = null) {
 		if ($this->forwardHtml()) {
 			return;
 		}
@@ -298,7 +305,10 @@ class EiuCtrl {
 				new SiPartialContent($this->eiuFrame->countEntries(), $eiuGuiFrameLayout->getEiGui()->createSiEntries()));
 		
 		$this->httpContext->getResponse()->send(
-				SiPayloadFactory::create($siComp, $eiuGuiFrameLayout->getEiGui()->getEiGuiFrame()->createGeneralSiControls()));
+				SiPayloadFactory::create($siComp, 
+						$eiuGuiFrameLayout->getEiGui()->getEiGuiFrame()->createGeneralSiControls(),
+						$this->rocketState->createSiBreadcrumbs(),
+						$title ?? $this->eiuFrame->getContextEiuEngine()->mask()->getPluralLabel()));
 	}
 	
 	
@@ -351,7 +361,9 @@ class EiuCtrl {
 		$comp = new BulkyEntrySiComp($siDeclaration, $eiGui->createSiEntry());
 		
 		$this->httpContext->getResponse()->send(
-				SiPayloadFactory::create($comp, $eiGui->getEiGuiFrame()->createGeneralSiControls()));
+				SiPayloadFactory::create($comp, $eiGui->getEiGuiFrame()->createGeneralSiControls(),
+						$this->rocketState->createSiBreadcrumbs(),
+						$eiuEntry->createIdentityString()));
 	}
 	
 	function forwardNewEntryDlZone(bool $editable = true) {
@@ -393,7 +405,124 @@ class EiuCtrl {
 		
 		$contextEiGuiFrame = $this->eiuFrame->newGuiFrame(ViewMode::determine(true, !$editable, true))->getEiGuiFrame();
 		$this->httpContext->getResponse()->send(
-				SiPayloadFactory::createZoneModel($zone, $contextEiGuiFrame->createGeneralSiControls()));
+				SiPayloadFactory::createZoneModel($zone, $contextEiGuiFrame->createGeneralSiControls(),
+						$this->rocketState->createSiBreadcrumbs(),
+						$this->eiu->dtc('rocket')->t('common_new_entry_label')));
+	}
+	
+	/**
+	 * @param NavPoint $navPoint
+	 * @param string $label
+	 * @return \rocket\ei\util\EiuCtrl
+	 */
+	public function pushBreadcrumb(NavPoint $navPoint, string $label) {
+		$this->rocketState->addBreadcrumb(new Breadcrumb($navPoint, $label));
+		return $this;
+	}
+	
+	/**
+	 * @param Url $url
+	 * @param string $label
+	 * @return \rocket\ei\util\EiuCtrl
+	 */
+	public function pushSirefBreadcrumb(Url $url, string $label) {
+		$this->rocketState->addBreadcrumb(new Breadcrumb(NavPoint::siref($url), $label));
+		return $this;
+	}
+	
+	/**
+	 * @param string $label
+	 * @param bool $required
+	 * @return \rocket\ei\util\EiuCtrl
+	 */
+	public function pushOverviewBreadcrumb(string $label = null, bool $required = false) {
+		$navPoint = $this->eiuFrame->getOverviewNavPoint($required);
+		
+		if ($navPoint === null) {
+			return $this;
+		}
+		
+		if ($label === null) {
+			$label = $this->eiuFrame->getEiFrame()->getContextEiEngine()->getEiMask()->getPluralLabelLstr()
+					->t($this->eiu->getN2nLocale());
+		}
+		
+		$this->rocketState->addBreadcrumb(new Breadcrumb($navPoint, $label));
+		
+		return $this;
+	}
+	
+	/**
+	 * @param string $label
+	 * @param bool $required
+	 * @return \rocket\ei\util\EiuCtrl
+	 */
+	public function pushDetailBreadcrumb($eiObjectArg, string $label = null, bool $required = false) {
+		$eiFrame = $this->eiuFrame->getEiFrame();
+		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectArg, '$eiObjectArg',
+				$eiFrame->getContextEiEngine()->getEiMask()->getEiType());
+		
+		$navPoint = $eiFrame->getDetailNavPoint($eiObject, $required);
+		
+		if ($navPoint === null) {
+			return $this;
+		}
+		
+		if ($label === null) {
+			$label = (new EiFrameUtil($eiFrame))->createIdentityString($eiObject);
+		}
+		
+		$this->rocketState->addBreadcrumb(new Breadcrumb($navPoint, $label));
+		
+		return $this;
+	}
+	
+	
+	/**
+	 * @param string $label
+	 * @param bool $required
+	 * @return \rocket\ei\util\EiuCtrl
+	 */
+	public function pushEditBreadcrumb($eiObjectArg, string $label = null, bool $required = false) {
+		$eiFrame = $this->eiuFrame->getEiFrame();
+		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectArg, '$eiObjectArg',
+				$eiFrame->getContextEiEngine()->getEiMask()->getEiType());
+		
+		$navPoint = $eiFrame->getEditNavPoint($eiObject, $required);
+		
+		if ($navPoint === null) {
+			return $this;
+		}
+		
+		if ($label === null) {
+			$label = (new DynamicTextCollection('rocket', $this->getN2nContext()->getN2nLocale()))
+					->t('common_edit_label');
+		}
+		
+		$this->rocketState->addBreadcrumb(new Breadcrumb($navPoint, $label));
+		
+		return $this;
+	}
+	/**
+	 * @param string $label
+	 * @param bool $required
+	 * @return \rocket\ei\util\EiuCtrl
+	 */
+	public function pushAddBreadcrumb(string $label = null, bool $required = false) {
+		$navPoint = $this->eiuFrame->getAddNavPoint($required);
+		
+		if ($navPoint === null) {
+			return $this;
+		}
+		
+		if ($label === null) {
+			$label = (new DynamicTextCollection('rocket', $this->getN2nContext()->getN2nLocale()))
+					->t('common_add_label');
+		}
+		
+		$this->rocketState->addBreadcrumb(new Breadcrumb($navPoint, $label));
+		
+		return $this;
 	}
 	
 	/**
@@ -404,14 +533,14 @@ class EiuCtrl {
 	 */
 	function pushCurrentAsSirefBreadcrumb(string $label, bool $includeOverview = false, $detailEiEntryArg = null) {
 		if ($includeOverview) {
-			$this->eiuFrame->pushOverviewBreadcrumb();
+			$this->pushOverviewBreadcrumb();
 		}
 		
 		if ($detailEiEntryArg !== null) {
-			$this->eiuFrame->pushDetailBreadcrumb($detailEiEntryArg);
+			$this->pushDetailBreadcrumb($detailEiEntryArg);
 		}
 		
-		$this->eiuFrame->pushSirefBreadcrumb($this->httpContext->getRequest()->getUrl(), $label);
+		$this->pushSirefBreadcrumb($this->httpContext->getRequest()->getUrl(), $label);
 		
 		return $this;
 	}

@@ -21,6 +21,8 @@
  */
 namespace rocket\core\model;
 
+use rocket\si\meta\SiBreadcrumb;
+
 class Breadcrumb {
 	private $navPoint;
 	private $label;
@@ -65,5 +67,10 @@ class Breadcrumb {
 	public function setLabel(string $label) {
 		$this->label = $label;
 		return $this;
+	}
+	
+	function toSiBreadcrumb() {
+		return new SiBreadcrumb($this->navPoint->isSiref(), $this->navPoint->getUrl(), 
+				$this->label);
 	}
 }

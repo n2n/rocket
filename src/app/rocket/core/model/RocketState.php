@@ -24,6 +24,7 @@ namespace rocket\core\model;
 use n2n\context\RequestScoped;
 use rocket\core\model\launch\LaunchPad;
 use n2n\util\type\ArgUtils;
+use rocket\si\meta\SiBreadcrumb;
 
 class RocketState implements RequestScoped {
 	private $breadcrumbs = array();
@@ -52,7 +53,7 @@ class RocketState implements RequestScoped {
 	public function setBreadcrumbs(array $breadcrumbs) {
 		ArgUtils::valArray($breadcrumbs, Breadcrumb::class);
 		
-		$this->breadcrumbs[] = $breadcrumbs;
+		$this->breadcrumbs = $breadcrumbs;
 	}
 	
 	/**
@@ -67,5 +68,14 @@ class RocketState implements RequestScoped {
 	 */
 	public function addBreadcrumb(Breadcrumb $breadcrumb) {
 		$this->breadcrumbs[] = $breadcrumb;
+	}
+	
+	/**
+	 * @return SiBreadcrumb[]
+	 */
+	function createSiBreadcrumbs() {
+		return array_map(function ($breadcrumb) {
+			return $breadcrumb->toSiBreadcrumb();
+		}, $this->breadcrumbs);
 	}
 }

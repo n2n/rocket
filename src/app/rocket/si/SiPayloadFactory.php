@@ -26,6 +26,7 @@ use rocket\si\content\SiComp;
 use n2n\util\type\ArgUtils;
 use rocket\si\control\SiControl;
 use rocket\si\content\SiField;
+use rocket\si\meta\SiBreadcrumb;
 
 class SiPayloadFactory extends JsonPayload {
 	
@@ -34,10 +35,12 @@ class SiPayloadFactory extends JsonPayload {
 	 * @param SiControl[] $controls
 	 * @return \n2n\web\http\payload\impl\JsonPayload
 	 */
-	static function create(SiComp $comp, array $controls) {
+	static function create(SiComp $comp, array $controls, array $breadcrumbs, string $title) {
+		ArgUtils::valArray($breadcrumbs, SiBreadcrumb::class);
+		
 		return new JsonPayload([
-			'title' => 'Some Title',
-			'breadcrumbs' => [],
+			'title' => $title,
+			'breadcrumbs' => $breadcrumbs,
 			'comp' => self::createDataFromComp($comp),
 			'controls' => self::createDataFromControls($controls)
 		]);

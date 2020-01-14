@@ -22,14 +22,15 @@ export class UiZone {
 }
 
 export interface UiZoneModel {
-	title?: string;
-	breadcrumbs?: UiBreadcrumb[];
+	title: string;
+	breadcrumbs: UiBreadcrumb[];
 	structureModel: UiStructureModel;
 	partialCommandContents?: UiContent[];
 	mainCommandContents?: UiContent[];
 }
 
 export interface UiBreadcrumb {
+	siref: boolean;
 	url: string;
 	name: string;
 }

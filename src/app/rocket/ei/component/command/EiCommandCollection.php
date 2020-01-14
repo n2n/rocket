@@ -28,7 +28,7 @@ use rocket\ei\mask\EiMask;
 use rocket\ei\EiCommandPath;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\EiObject;
-use rocket\ei\manage\frame\NavPoint;
+use rocket\core\model\NavPoint;
 
 class EiCommandCollection extends EiComponentCollection {
 	
@@ -135,15 +135,15 @@ class EiCommandCollection extends EiComponentCollection {
 				continue;
 			}
 			
-			$urlExt = $eiCommand->buildDetailUrlExt(new Eiu($this->eiMask, $eiObject, $eiCommand));
-			if ($urlExt == null) {
+			$navPoint = $eiCommand->buildDetailNavPoint(new Eiu($this->eiMask, $eiObject, $eiCommand));
+			if ($navPoint == null) {
 				continue;
 			}
 			
-			ArgUtils::assertTrueReturn($urlExt->isRelative(), $eiCommand,
-					'getDetailUrlExt', 'Returned Url must be relative.');
+// 			ArgUtils::assertTrueReturn($navPoint->getUrl()->isRelative(), $eiCommand,
+// 					'getDetailUrlExt', 'Returned Url must be relative.');
 			
-			return new GenericResult($eiCommand, $urlExt);
+			return new GenericResult($eiCommand, $navPoint);
 		}
 		
 		if (!$required) return null;
@@ -171,15 +171,15 @@ class EiCommandCollection extends EiComponentCollection {
 				continue;
 			}
 			
-			$urlExt = $eiCommand->buildEditUrlExt(new Eiu($this->eiMask, $eiObject, $eiCommand));
-			if ($urlExt == null) {
+			$navPoint = $eiCommand->buildEditNavPoint(new Eiu($this->eiMask, $eiObject, $eiCommand));
+			if ($navPoint == null) {
 				continue;
 			}
 			
-			ArgUtils::assertTrueReturn($urlExt->isRelative(), $eiCommand,
-					'getEditUrlExt', 'Returned Url must be relative.');
+// 			ArgUtils::assertTrueReturn($urlExt->isRelative(), $eiCommand,
+// 					'getEditUrlExt', 'Returned Url must be relative.');
 			
-			return new GenericResult($eiCommand, $urlExt);
+			return new GenericResult($eiCommand, $navPoint);
 		}
 		
 		if (!$required) return null;
@@ -206,15 +206,15 @@ class EiCommandCollection extends EiComponentCollection {
 				continue;
 			}
 			
-			$urlExt = $eiCommand->buildAddUrlExt(new Eiu($this->eiMask, $eiCommand));
-			if ($urlExt == null) {
+			$navPoint = $eiCommand->buildAddNavPoint(new Eiu($this->eiMask, $eiCommand));
+			if ($navPoint == null) {
 				continue;
 			}
 			
-			ArgUtils::assertTrueReturn($urlExt->isRelative(), $eiCommand,
-					'getAddUrlExt', 'Returned Url must be relative.');
+// 			ArgUtils::assertTrueReturn($navPoint->getUrl()->isRelative(), $eiCommand,
+// 					'buildAddNavPoint', 'Returned Url must be relative.');
 			
-			return new GenericResult($eiCommand, $urlExt);
+			return new GenericResult($eiCommand, $navPoint);
 		}
 		
 		if (!$required) return null;
