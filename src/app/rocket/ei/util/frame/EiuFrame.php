@@ -69,8 +69,8 @@ use rocket\si\content\SiEntryQualifier;
 use rocket\ei\util\gui\EiuEntryGuiMulti;
 use rocket\ei\util\gui\EiuGui;
 use n2n\l10n\DynamicTextCollection;
-use rocket\ei\manage\frame\NavPoint;
-use rocket\ei\manage\frame\Breadcrumb;
+use rocket\core\model\NavPoint;
+use rocket\core\model\Breadcrumb;
 use n2n\util\uri\Url;
 
 class EiuFrame {

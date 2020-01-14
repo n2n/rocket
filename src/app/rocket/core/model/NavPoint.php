@@ -21,51 +21,57 @@
  */
 namespace rocket\core\model;
 
-use n2n\context\RequestScoped;
-use rocket\core\model\launch\LaunchPad;
-use n2n\util\type\ArgUtils;
+use n2n\util\uri\Url;
 
-class RocketState implements RequestScoped {
-	private $breadcrumbs = array();
-	private $activeLaunchPad;
+class NavPoint {
+	private $url;
+	private $ref;
 	
-	public function __construct() {
-	}
-
-	/**
-	 * @param LaunchPad $activeLaunchPad
-	 */
-	public function setActiveLaunchPad(LaunchPad $activeLaunchPad = null) {
-		$this->activeLaunchPad = $activeLaunchPad;
+	function __construct(Url $url = null, bool $siref = true) {
+		$this->url = $url;
+		$this->ref = $siref;
 	}
 	
 	/**
-	 * @return LaunchPad
+	 * @return boolean
 	 */
-	public function getActiveLaunchPad() {
-		return $this->activeLaunchPad;
+	function isUrlComplete() {
+		return $this->url !== null && (!$this->url->isRelative() || $this->url->getPath()->hasLeadingDelimiter());
 	}
 	
 	/**
-	 * @param Breadcrumb[] $breadcrumbs
+	 * @param Url $contextUrl
+	 * @return NavPoint
 	 */
-	public function setBreadcrumbs(array $breadcrumbs) {
-		ArgUtils::valArray($breadcrumbs, Breadcrumb::class);
-		
-		$this->breadcrumbs[] = $breadcrumbs;
+	function complete(Url $contextUrl) {
+		$this->url = $contextUrl->ext($this->url);
+		return $this;
 	}
 	
 	/**
-	 * @return Breadcrumb[]
+	 * @return Url 
 	 */
-	public function getBreadcrumbs() {
-		return $this->breadcrumbs;
+	function getUrl() {
+		if ($this->isUrlComplete()) {
+			return $this->url;
+		}
+	
+		throw new IncompleteNavPointException('Incomplete url: ' . $this->url);
 	}
 	
 	/**
-	 * @param Breadcrumb $breadcrumb
+	 * @param Url $urlExt
+	 * @return \rocket\core\model\NavPoint
 	 */
-	public function addBreadcrumb(Breadcrumb $breadcrumb) {
-		$this->breadcrumbs[] = $breadcrumb;
+	static function href(Url $url = null) {
+		return new NavPoint($url, false);
+	}
+	
+	/**
+	 * @param Url $urlExt
+	 * @return \rocket\core\model\NavPoint
+	 */
+	static function siref(Url $url = null) {
+		return new NavPoint($url, true);
 	}
 }

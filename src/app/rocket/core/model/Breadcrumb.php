@@ -21,51 +21,49 @@
  */
 namespace rocket\core\model;
 
-use n2n\context\RequestScoped;
-use rocket\core\model\launch\LaunchPad;
-use n2n\util\type\ArgUtils;
-
-class RocketState implements RequestScoped {
-	private $breadcrumbs = array();
-	private $activeLaunchPad;
+class Breadcrumb {
+	private $navPoint;
+	private $label;
 	
-	public function __construct() {
-	}
-
 	/**
-	 * @param LaunchPad $activeLaunchPad
+	 * @param NavPoint $navPoint
+	 * @param string $label
+	 * @param bool $ref
 	 */
-	public function setActiveLaunchPad(LaunchPad $activeLaunchPad = null) {
-		$this->activeLaunchPad = $activeLaunchPad;
+	public function __construct(NavPoint $navPoint, string $label) {
+		$this->navPoint = $navPoint;
+		$this->label = $label;
 	}
 	
 	/**
-	 * @return LaunchPad
+	 * @return \rocket\core\model\NavPoint
 	 */
-	public function getActiveLaunchPad() {
-		return $this->activeLaunchPad;
+	public function getNavPoint() {
+		return $this->navPoint;
 	}
 	
 	/**
-	 * @param Breadcrumb[] $breadcrumbs
+	 * @param NavPoint $navPoint
+	 * @return Breadcrumb
 	 */
-	public function setBreadcrumbs(array $breadcrumbs) {
-		ArgUtils::valArray($breadcrumbs, Breadcrumb::class);
-		
-		$this->breadcrumbs[] = $breadcrumbs;
+	public function setNavPoint(NavPoint $navPoint) {
+		$this->navPoint = $navPoint;
+		return $this;
 	}
 	
 	/**
-	 * @return Breadcrumb[]
+	 * @return string
 	 */
-	public function getBreadcrumbs() {
-		return $this->breadcrumbs;
+	public function getLabel() {
+		return $this->label;
 	}
 	
 	/**
-	 * @param Breadcrumb $breadcrumb
+	 * @param string $label
+	 * @return Breadcrumb
 	 */
-	public function addBreadcrumb(Breadcrumb $breadcrumb) {
-		$this->breadcrumbs[] = $breadcrumb;
+	public function setLabel(string $label) {
+		$this->label = $label;
+		return $this;
 	}
 }

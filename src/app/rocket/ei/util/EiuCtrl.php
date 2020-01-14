@@ -45,7 +45,7 @@ use rocket\ei\manage\LiveEiObject;
 use rocket\ei\manage\gui\EiGui;
 use n2n\web\http\HttpContext;
 use gallery\core\model\Breadcrumb;
-use rocket\ei\manage\frame\NavPoint;
+use rocket\core\model\NavPoint;
 use rocket\ei\manage\EiObject;
 
 class EiuCtrl {

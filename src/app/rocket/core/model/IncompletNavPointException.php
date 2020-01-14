@@ -19,51 +19,10 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\frame;
+namespace rocket\core\model;
 
-class Breadcrumb {
-	private $navPoint;
-	private $label;
+use rocket\ei\manage\ManageException;
+
+class IncompleteNavPointException extends ManageException {
 	
-	/**
-	 * @param NavPoint $navPoint
-	 * @param string $label
-	 * @param bool $ref
-	 */
-	public function __construct(NavPoint $navPoint, string $label) {
-		$this->navPoint = $navPoint;
-		$this->label = $label;
-	}
-	
-	/**
-	 * @return \rocket\ei\manage\frame\NavPoint
-	 */
-	public function getNavPoint() {
-		return $this->navPoint;
-	}
-	
-	/**
-	 * @param NavPoint $navPoint
-	 * @return \rocket\ei\manage\frame\Breadcrumb
-	 */
-	public function setNavPoint(NavPoint $navPoint) {
-		$this->navPoint = $navPoint;
-		return $this;
-	}
-	
-	/**
-	 * @return string
-	 */
-	public function getLabel() {
-		return $this->label;
-	}
-	
-	/**
-	 * @param string $label
-	 * @return \rocket\ei\manage\frame\Breadcrumb
-	 */
-	public function setLabel(string $label) {
-		$this->label = $label;
-		return $this;
-	}
 }

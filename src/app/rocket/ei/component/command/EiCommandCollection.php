@@ -28,7 +28,7 @@ use rocket\ei\mask\EiMask;
 use rocket\ei\EiCommandPath;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\EiObject;
-use rocket\ei\manage\frame\NavPoint;
+use rocket\core\model\NavPoint;
 
 class EiCommandCollection extends EiComponentCollection {
 	
@@ -104,7 +104,7 @@ class EiCommandCollection extends EiComponentCollection {
 				continue;
 			}
 			
-			ArgUtils::assertTrueReturn($navPoint->isRelative(), $eiCommand, 'getOverviewUrlExt', 
+			ArgUtils::assertTrueReturn($navPoint->isRelative(), $eiCommand, 'buildOverviewNavPoint', 
 					'Returned Url must be relative.');
 			
 			return new GenericResult($eiCommand, $navPoint);

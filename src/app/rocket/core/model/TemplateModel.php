@@ -42,7 +42,7 @@ class TemplateModel implements Lookupable {
 			$this->activeLaunchPadId = $activeLaunchPad->getId();
 		}
 		
-		$this->breadcrumbs = $rocketState->getBreadcrumbs()->getArrayCopy();
+		$this->breadcrumbs = $rocketState->getBreadcrumbs();
 		if (sizeof($this->breadcrumbs)) {
 			$this->activeBreadcrumb = array_pop($this->breadcrumbs);
 		}

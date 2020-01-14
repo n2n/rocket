@@ -457,29 +457,6 @@ class EiFrame {
 		return $httpContext->getRequest()->getRelativeUrl();
 	}
 	
-	/**
-	 * @param Breadcrumb[] $breadcrumbs
-	 */
-	public function setBreadcrumbs(array $breadcrumbs) {
-		ArgUtils::valArray($breadcrumbs, Breadcrumb::class);
-		
-		$this->breadcrumbs[] = $breadcrumbs;
-	}
-	
-	/**
-	 * @return Breadcrumb[]
-	 */
-	public function getBreadcrumbs() {
-		return $this->breadcrumbs;
-	}
-	
-	/**
-	 * @param Breadcrumb $breadcrumb
-	 */
-	public function addBreadcrumb(Breadcrumb $breadcrumb) {
-		$this->breadcrumbs[] = $breadcrumb;
-	}
-	
 	public function registerListener(EiFrameListener $listener) {
 		$this->listeners[spl_object_hash($listener)] = $listener;
 	}
