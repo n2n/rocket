@@ -24,6 +24,7 @@ namespace rocket\si\api;
 use n2n\util\type\attrs\DataSet;
 use n2n\util\type\attrs\AttributesException;
 use n2n\util\ex\IllegalStateException;
+use n2n\util\type\ArgUtils;
 
 class SiGetInstruction {
 	private $bulky;
@@ -33,6 +34,7 @@ class SiGetInstruction {
 	private $entryId = null;
 	private $partialContentInstruction = null;
 	private $newEntryRequested = false;
+	private $fieldIds = null;
 	
 	/**
 	 * @param bool $bulky
@@ -147,6 +149,18 @@ class SiGetInstruction {
 		return $this->entryId;
 	}
 	
+	function setFieldIds(?array $fieldIds) {
+		ArgUtils::valArray($fieldIds, 'string', true);
+		$this->fieldIds = $fieldIds;
+	}
+	
+	/**
+	 * @return string[]|null
+	 */
+	function getFieldIds() {
+		return $this->fieldIds;
+	}
+	
 	/**
 	 * @param array $data
 	 * @throws \InvalidArgumentException
@@ -168,6 +182,7 @@ class SiGetInstruction {
 			}
 			
 			$instruction->setNewEntryRequested($ds->reqBool('newEntryRequested'));
+			$instruction->setFieldIds($ds->reqScalarArray('fieldIds', true));
 			return $instruction;
 		} catch (AttributesException $e) {
 			throw new \InvalidArgumentException(null, 0, $e);

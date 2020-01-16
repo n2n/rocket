@@ -39,8 +39,6 @@ use rocket\ei\EiPropPath;
 use rocket\ei\component\command\EiCommand;
 use rocket\ei\manage\security\InaccessibleEiEntryException;
 use rocket\ei\component\command\GenericResult;
-use gallery\core\model\Breadcrumb;
-use rocket\si\NavPoint;
 
 class EiFrame {
 	
@@ -406,8 +404,6 @@ class EiFrame {
 				->ext(EiFrameController::createCmdUrlExt($result->getEiCommandPath())));
 	}
 
-	
-	
 	public function getApiUrl(EiCommandPath $eiCommandPath) {
 		return $this->getBaseUrl()->ext([EiFrameController::API_PATH_PART, (string) $eiCommandPath]);
 	}

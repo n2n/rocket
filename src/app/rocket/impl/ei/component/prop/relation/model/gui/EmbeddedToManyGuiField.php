@@ -185,5 +185,9 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandler {
 	
 	function getSiField(): SiField {
 		return $this->siField;
-	}	
+	}
+	
+	function getForkGuiFieldMap(): ?GuiFieldMap {
+		return null;
+	}
 }

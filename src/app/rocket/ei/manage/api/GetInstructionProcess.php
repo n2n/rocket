@@ -29,6 +29,7 @@ use rocket\ei\manage\frame\EiFrameUtil;
 use rocket\ei\manage\gui\EiEntryGui;
 use rocket\si\api\SiPartialContentInstruction;
 use rocket\si\content\SiEntry;
+use rocket\ei\manage\gui\field\GuiPropPath;
 
 class GetInstructionProcess {
 	private $instruction;
@@ -61,14 +62,31 @@ class GetInstructionProcess {
 	}
 	
 	/**
+	 * @param string[]|null $fieldIds
+	 * @return NULL|GuiPropPath[]
+	 */
+	private function parseGuiPropPaths() {
+		$fieldIds = $this->instruction->getFieldIds();
+		
+		if ($fieldIds === null) {
+			return null;
+		}
+		
+		return array_map(function ($fieldId) {
+			return GuiPropPath::create($fieldId);
+		}, $fieldIds);
+	}
+	
+	/**
 	 * @param string $entryId
 	 * @return \rocket\si\api\SiGetResult
 	 */
-	private function handleEntryId(string $entryId) {
+	private function handleEntryId(string $entryId, ?array $fieldIds) {
 		$eiObject = $this->util->lookupEiObject($entryId);
+		$guiPropPaths = $this->parseGuiPropPaths();
 		
 		$eiEntryGui = $this->eiFrameUtil->createEiEntryGuiFromEiObject($eiObject, 
-				$this->instruction->isBulky(), $this->instruction->isReadOnly());
+				$this->instruction->isBulky(), $this->instruction->isReadOnly(), $guiPropPaths);
 		
 		return $this->createEntryResult(
 				$eiEntryGui->createSiEntry($this->instruction->areControlsIncluded()), 
@@ -79,8 +97,10 @@ class GetInstructionProcess {
 	 * @return \rocket\si\api\SiGetResult
 	 */
 	private function handleNewEntry() {
+		$guiPropPaths = $this->parseGuiPropPaths();
+		
 		$eiEntryGuiMulti = $this->eiFrameUtil->createNewEiEntryGuiMulti(
-				$this->instruction->isBulky(), $this->instruction->isReadOnly());
+				$this->instruction->isBulky(), $this->instruction->isReadOnly(), $guiPropPaths);
 				
 		return $this->createEntryResult(
 				$eiEntryGuiMulti->createSiEntry($this->instruction->areControlsIncluded()), 
@@ -112,7 +132,7 @@ class GetInstructionProcess {
 	private function handlePartialContent(SiPartialContentInstruction $spci) {
 		$num = $this->eiFrameUtil->count();
 		$eiGui = $this->eiFrameUtil->lookupEiGuiFromRange($spci->getFrom(), $spci->getNum(),
-				$this->instruction->isBulky(), $this->instruction->isReadOnly());
+				$this->instruction->isBulky(), $this->instruction->isReadOnly(), $this->parseGuiPropPaths());
 		
 		$result = new SiGetResult();
 		$result->setPartialContent($this->apiUtil->createSiPartialContent($spci->getFrom(), $num, $eiGui));

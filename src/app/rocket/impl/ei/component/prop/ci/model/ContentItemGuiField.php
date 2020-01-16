@@ -37,6 +37,7 @@ use rocket\si\content\impl\relation\SiPanel;
 use rocket\impl\ei\component\prop\ci\ContentItemsEiProp;
 use rocket\si\content\impl\relation\EmbeddedEntryPanelInputHandler;
 use rocket\si\content\impl\relation\EmbeddedEntryPanelsInSiField;
+use rocket\ei\manage\gui\GuiFieldMap;
 
 class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler {
 	/**
@@ -190,6 +191,11 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler {
 	function getSiField(): SiField {
 		return $this->siField;
 	}
+	
+	function getForkGuiFieldMap(): ?GuiFieldMap {
+		return null;
+	}
+
 }
 
 
@@ -240,6 +246,10 @@ class EiuEntryGuiPool {
 			}
 		}
 		
+		return null;
+	}
+	
+	function getForkGuiFieldMap(): ?GuiFieldMap {
 		return null;
 	}
 }

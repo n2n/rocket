@@ -640,14 +640,19 @@ class GuiDefinition {
 	/**
 	 * @param EiFrame $eiFrame
 	 * @param int $viewMode
+	 * @param GuiPropPath[]|null $guiPropPaths
 	 * @return \rocket\ei\manage\gui\EiGui
 	 */
-	function createEiGui(EiFrame $eiFrame, int $viewMode) {
+	function createEiGui(EiFrame $eiFrame, int $viewMode, array $guiPropPaths = null) {
 		ArgUtils::assertTrue($this->eiMask->isA($eiFrame->getContextEiEngine()->getEiMask()));
 		
 		$eiGuiFrame = new EiGuiFrame($eiFrame, $this, $viewMode);
-		
-		$guiStructureDeclarations = $this->initEiGuiFrameFromDisplayScheme($eiGuiFrame);
+		$guiStructureDeclarations = null;
+		if ($guiPropPaths === null) {
+			$guiStructureDeclarations = $this->initEiGuiFrameFromDisplayScheme($eiGuiFrame);
+		} else {
+			$guiStructureDeclarations = $this->semiAutoInitEiGuiFrame($eiGuiFrame, $guiPropPaths);
+		}
 		
 		if (ViewMode::isBulky($viewMode)) {
 			$guiStructureDeclarations = $this->groupGsds($guiStructureDeclarations);

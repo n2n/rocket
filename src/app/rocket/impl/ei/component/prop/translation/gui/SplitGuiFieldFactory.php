@@ -80,6 +80,10 @@ class SplitGuiFieldFactory {
 		$targetEiuGuiFrame = $this->lted->getTargetEiuGuiFrame();
 		$apiUrl = $targetEiuGuiFrame->getEiuFrame()->getApiUrl();
 		
+		$fieldIds = array_map(
+				function ($guiPropPath) { return (string) $guiPropPath; }, 
+				$targetEiuGuiFrame->getGuiPropPaths());
+		
 		foreach ($this->lted->getN2nLocales() as $n2nLocale) {
 			$n2nLocaleId = $n2nLocale->getId();
 			$label = $n2nLocale->getName($this->lted->getDisplayN2nLocale());
@@ -90,7 +94,8 @@ class SplitGuiFieldFactory {
 			}
 			
 			$siField->putLazy($n2nLocaleId, $label, $apiUrl, $pid, $targetEiuGuiFrame->isBulky(), false)
-					->setShortLabel($n2nLocale->toPrettyId());
+					->setShortLabel($n2nLocale->toPrettyId())
+					->setFieldIds($fieldIds);
 		}
 		
 // 		$guiFieldMap = new GuiFieldMap();

@@ -21,6 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model\gui;
 
+use rocket\ei\manage\gui\GuiFieldMap;
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\si\content\SiField;
 use rocket\ei\util\Eiu;
@@ -75,5 +76,10 @@ class ToOneGuiField implements GuiField {
 
 	function getSiField(): SiField {
 		return $this->siField;
-	}	
+	}
+	
+	function getForkGuiFieldMap(): ?GuiFieldMap {
+		return null;
+	}
+	
 }

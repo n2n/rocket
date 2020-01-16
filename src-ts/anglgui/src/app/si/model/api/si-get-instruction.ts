@@ -12,6 +12,7 @@ export class SiGetInstruction {
 	protected partialContentInstruction: SiPartialContentInstruction|null = null;
 	protected newEntryRequested = false;
 	protected controlsIncluded = false;
+	protected fieldIds: string[]|null = null;
 
 	static partialContent(comp: SiComp, bulky: boolean, readOnly: boolean, offset: number, num: number): SiGetInstruction {
 		const instruction = new SiGetInstruction(comp, bulky, readOnly);
@@ -48,6 +49,11 @@ export class SiGetInstruction {
 		return this;
 	}
 
+	setFieldIds(fieldIds: string[]|null): SiGetInstruction {
+		this.fieldIds = fieldIds;
+		return this;
+	}
+
 	toJSON() {
 		return {
 			bulky: this.bulky,
@@ -56,7 +62,8 @@ export class SiGetInstruction {
 			controlsIncluded: this.controlsIncluded,
 			entryId: this.entryId,
 			partialContentInstruction: this.partialContentInstruction,
-			newEntryRequested: this.newEntryRequested
+			newEntryRequested: this.newEntryRequested,
+			fieldIds: this.fieldIds
 		};
 	}
 }

@@ -18,6 +18,10 @@ export abstract class SplitContextSiField extends SiFieldAdapter {
 	public style: SplitStyle = { iconClass: null, tooltip: null };
 	protected splitContentMap = new Map<string, SplitContent>();
 
+	constructor(public propIds: string[]) {
+		super();
+	}
+
 	putSplitContent(splitContent: SplitContent) {
 		this.splitContentMap.set(splitContent.key, splitContent);
 	}

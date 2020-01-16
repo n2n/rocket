@@ -108,7 +108,7 @@ class ContentItemsEiProp extends RelationEiPropAdapter implements FieldEiProp {
 	 * @return \rocket\impl\ei\component\prop\ci\model\PanelDeclaration[]
 	 */
 	public function determinePanelDeclarations(Eiu $eiu) {
-		return $this->panelDeclarations;
+		return $this->contentItemsConfig->getPanelDeclarations();
 	}
 	
 	function buildEiField(Eiu $eiu): ?EiField {
@@ -123,7 +123,7 @@ class ContentItemsEiProp extends RelationEiPropAdapter implements FieldEiProp {
 	 * @see \rocket\ei\manage\gui\GuiProp::buildGuiField()
 	 */
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		if ($readOnly || $this->editConfig->isReadOnly()) {
+		if ($readOnly || $this->getEditConfig()->isReadOnly()) {
 			return new RelationLinkGuiField($eiu, $this->getRelationModel());
 		}
 		

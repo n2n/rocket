@@ -40,6 +40,7 @@ use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\manage\security\SecurityException;
 use rocket\ei\manage\gui\EiGui;
 use n2n\l10n\N2nLocale;
+use rocket\ei\mask\EiMask;
 
 class EiFrameUtil {
 	private $eiFrame;
@@ -146,13 +147,14 @@ class EiFrameUtil {
 	 * @return \rocket\ei\manage\gui\EiEntryGuiMulti
 	 * @throws EiException
 	 */
-	function createNewEiEntryGuiMulti(bool $bulky, bool $readOnly) {
-		$viewMode = ViewMode::determine($bulky, $readOnly, true);
+	function createNewEiEntryGuiMulti(bool $bulky, bool $readOnly, array $guiPropPaths = null) {
+// 		$viewMode = ViewMode::determine($bulky, $readOnly, true);
 		
 		$newEiEntryGuis = [];
 		
 		foreach ($this->createPossibleNewEiEntries() as $eiTypeId => $newEiEntry) {
-			$newEiGuiFrame = $newEiEntry->getEiMask()->getEiEngine()->createFramedEiGuiFrame($this->eiFrame, $viewMode);
+			$newEiGuiFrame = $this->createEiGuiFrame($newEiEntry->getEiMask(), $bulky, $readOnly, $guiPropPaths);
+			
 			$newEiEntryGuis[$eiTypeId] = $newEiGuiFrame->createEiEntryGui($newEiEntry);
 		}
 		
@@ -167,16 +169,35 @@ class EiFrameUtil {
 	}
 	
 	/**
+	 * @param EiMask $eiMask
+	 * @param bool $bulky
+	 * @param bool $readOnly
+	 * @param array $guiPropPaths
+	 * @return \rocket\ei\manage\gui\EiGuiFrame
+	 */
+	private function createEiGuiFrame(EiMask $eiMask, int $viewMode, array $guiPropPaths = null) {
+		$guiDefinition = $this->eiFrame->getManageState()->getDef()->getGuiDefinition($eiMask);
+		
+		
+		if ($guiPropPaths === null) {
+			return $guiDefinition->createEiGui($this->eiFrame, $viewMode)->getEiGuiFrame();
+		} else {
+			return $guiDefinition->createEiGuiFrame($this->eiFrame, $viewMode, $guiPropPaths);
+		}
+	}
+	
+	/**
 	 * @param EiObject $eiObject
 	 * @param bool $bulky
 	 * @param bool $readOnly
 	 * @throws SecurityException
 	 * @return \rocket\ei\manage\gui\EiEntryGui
 	 */
-	function createEiEntryGuiFromEiObject(EiObject $eiObject, bool $bulky, bool $readOnly) {
+	function createEiEntryGuiFromEiObject(EiObject $eiObject, bool $bulky, bool $readOnly, array $guiPropPaths = null) {
 		$eiEntry = $this->eiFrame->createEiEntry($eiObject);
-		$eiGuiFrame = $eiEntry->getEiMask()->getEiEngine()->createFramedEiGuiFrame($this->eiFrame, 
-				ViewMode::determine($bulky, $readOnly, $eiObject->isNew()));
+		$viewMode =  ViewMode::determine($bulky, $readOnly, $eiObject->isNew());
+		$eiGuiFrame = $this->createEiGuiFrame($eiEntry->getEiMask(), $viewMode, $guiPropPaths);
+		
 		return $eiGuiFrame->createEiEntryGui($eiEntry);
 	}
 	
@@ -186,9 +207,9 @@ class EiFrameUtil {
 	 * @param bool $readOnly
 	 * @return \rocket\ei\manage\gui\EiEntryGui
 	 */
-	function createEiEntryGui(EiEntry $eiEntry, bool $bulky, bool $readOnly) {
-		$eiGuiFrame = $eiEntry->getEiMask()->getEiEngine()->createFramedEiGuiFrame($this->eiFrame,
-				ViewMode::determine($bulky, $readOnly, $eiEntry->isNew()));
+	function createEiEntryGui(EiEntry $eiEntry, bool $bulky, bool $readOnly, array $guiPropPaths = null) {
+		$viewMode = ViewMode::determine($bulky, $readOnly, $eiEntry->isNew());
+		$eiGuiFrame = $this->createEiGuiFrame($eiEntry->getEiMask(), $viewMode, $guiPropPaths);
 		return $eiGuiFrame->createEiEntryGui($eiEntry);
 	}
 	
@@ -208,10 +229,10 @@ class EiFrameUtil {
 	 * @param bool $readOnly
 	 * @return \rocket\ei\manage\gui\EiGui
 	 */
-	function lookupEiGuiFromRange(int $offset, int $num, bool $bulky, bool $readOnly) {
+	function lookupEiGuiFromRange(int $offset, int $num, bool $bulky, bool $readOnly, array $guiPropPaths = null) {
 		$guiDefinition = $this->eiFrame->getManageState()->getDef()->getGuiDefinition(
 				$this->eiFrame->getContextEiEngine()->getEiMask());
-		$eiGui = $guiDefinition->createEiGui($this->eiFrame, ViewMode::determine($bulky, $readOnly, false));
+		$eiGui = $guiDefinition->createEiGui($this->eiFrame, ViewMode::determine($bulky, $readOnly, false), $guiPropPaths);
 			
 		$criteria = $this->eiFrame->createCriteria(NestedSetUtils::NODE_ALIAS, false);
 		$criteria->select(NestedSetUtils::NODE_ALIAS);

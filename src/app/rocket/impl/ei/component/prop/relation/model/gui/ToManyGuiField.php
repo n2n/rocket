@@ -90,5 +90,9 @@ class ToManyGuiField implements GuiField {
 	 */
 	function getSiField(): SiField {
 		return $this->siField;
-	}	
+	}
+	
+	function getForkGuiFieldMap(): ?GuiFieldMap {
+		return null;
+	}
 }

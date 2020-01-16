@@ -111,7 +111,7 @@ class SplitContextInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param array $activeKeys
-	 * @return \rocket\si\content\impl\split\SiSplitContent
+	 * @return \rocket\si\content\impl\split\SplitContextInSiField
 	 */
 	function setActiveKeys(array $activeKeys) {
 		$this->activeKeys = $activeKeys;
