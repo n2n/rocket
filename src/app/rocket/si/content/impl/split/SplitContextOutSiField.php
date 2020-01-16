@@ -92,9 +92,9 @@ class SplitContextOutSiField extends OutSiFieldAdapter {
 	 * @param bool $bulky
 	 * @return \rocket\si\content\impl\split\SiSplitContent
 	 */
-	function putLazy(string $key, string $label, Url $apiUrl, string $entryId, bool $bulky) {
+	function putLazy(string $key, string $label, Url $apiUrl, string $entryId, bool $bulky, bool $readOnly) {
 		IllegalStateException::assertTrue($this->declaration !== null, 'No SiDeclaration defined.');
-		return $this->splitContents[$key] = SiSplitContent::createLazy($label, $apiUrl, $entryId, $bulky);
+		return $this->splitContents[$key] = SiSplitContent::createLazy($label, $apiUrl, $entryId, $bulky, $readOnly);
 	}
 	
 	/**

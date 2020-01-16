@@ -40,6 +40,10 @@ class SplitContextInSiField extends InSiFieldAdapter {
 	/**
 	 * @var string[]
 	 */
+	private $mandatoryKeys = [];
+	/**
+	 * @var string[]
+	 */
 	private $activeKeys = [];
 	/**
 	 * @var SiDeclaration
@@ -63,7 +67,7 @@ class SplitContextInSiField extends InSiFieldAdapter {
 	 * @see \rocket\si\content\SiField::getType()
 	 */
 	function getType(): string {
-		return 'split-control-in';
+		return 'split-context-in';
 	}
 	
 	/**
@@ -115,15 +119,30 @@ class SplitContextInSiField extends InSiFieldAdapter {
 	}
 	
 	/**
+	 * @return string[]
+	 */
+	function getMandatoryKeys() {
+		return $this->mandatoryKeys;
+	}
+	
+	/**
+	 * @param string[] $mandatoryKeys
+	 * @return \rocket\si\content\impl\split\SplitContextInSiField
+	 */
+	function setMandatoryKeys(array $mandatoryKeys) {
+		$this->mandatoryKeys = $mandatoryKeys;
+		return $this;
+	}
+	
+	/**
 	 * @param string $key
 	 * @param string $label
 	 * @param SiEntry $entry
 	 * @return \rocket\si\content\impl\split\SiSplitContent
 	 */
 	function putEntry(string $key, string $label, SiEntry $entry) {
-		IllegalStateException::assertTrue($this->siDeclaration !== null, 'No SiDeclaration defined.');
-		$this->splitContents[$key] = SiSplitContent::createEntry($label, $entry);
-		return $this;
+		IllegalStateException::assertTrue($this->declaration !== null, 'No SiDeclaration defined.');
+		return $this->splitContents[$key] = SiSplitContent::createEntry($label, $entry);
 	}
 	
 	/**
@@ -135,10 +154,9 @@ class SplitContextInSiField extends InSiFieldAdapter {
 	 * @param bool $bulky
 	 * @return \rocket\si\content\impl\split\SiSplitContent
 	 */
-	function putLazy(string $key, string $label, Url $apiUrl, string $entryId, bool $bulky) {
-		IllegalStateException::assertTrue($this->siDeclaration !== null, 'No SiDeclaration defined.');
-		$this->splitContents[$key] = SiSplitContent::createLazy($label, $apiUrl, $entryId, $bulky);
-		return $this;
+	function putLazy(string $key, string $label, Url $apiUrl, ?string $entryId, bool $bulky, bool $readOnly) {
+		IllegalStateException::assertTrue($this->declaration !== null, 'No SiDeclaration defined.');
+		return $this->splitContents[$key] = SiSplitContent::createLazy($label, $apiUrl, $entryId, $bulky, $readOnly);
 	}
 	
 	/**
@@ -147,8 +165,7 @@ class SplitContextInSiField extends InSiFieldAdapter {
 	 * @return \rocket\si\content\impl\split\SplitContextInSiField
 	 */
 	function putUnavailable(string $key, string $label) {
-		$this->splitContents[$key] = SiSplitContent::createUnavaialble($label);
-		return $this;
+		return $this->splitContents[$key] = SiSplitContent::createUnavaialble($label);
 	}
 
 	/**
@@ -162,6 +179,7 @@ class SplitContextInSiField extends InSiFieldAdapter {
 			'tooltip' => $this->tooltip,
 			'min' => $this->min,
 			'activeKeys' => $this->activeKeys,
+			'mandatoryKeys' => $this->mandatoryKeys,
 			'declaration' => $this->declaration,
 			'splitContents' => $this->splitContents
 		];

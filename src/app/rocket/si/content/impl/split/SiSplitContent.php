@@ -32,6 +32,7 @@ class SiSplitContent implements \JsonSerializable {
 	private $apiUrl;
 	private $entryId;
 	private $bulky;
+	private $readOnly;
 	/**
 	 * @var SiDeclaration
 	 */
@@ -51,17 +52,23 @@ class SiSplitContent implements \JsonSerializable {
 		return $this->shortLabel;
 	}
 	
+	/**
+	 * @param string $shortLabel
+	 * @return \rocket\si\content\impl\split\SiSplitContent
+	 */
 	function setShortLabel(?string $shortLabel) {
 		$this->shortLabel = $shortLabel;
+		return $this;
 	}
 	
 	function jsonSerialize() {
 		$data = [ 'label' => $this->label, 'shortLabel' => $this->shortLabel ?? $this->label ];
 		
 // 		if ($this->apiUrl !== null) {
-			$data['apiUrl'] = $this->apiUrl;
+			$data['apiUrl'] = (string) $this->apiUrl;
 			$data['entryId'] = $this->entryId;
 			$data['bulky'] = $this->bulky;
+			$data['readOnly'] = $this->readOnly;
 // 		}
 		
 // 		if ($this->entry !== null) {
@@ -85,12 +92,13 @@ class SiSplitContent implements \JsonSerializable {
 	 * @param bool $bulky
 	 * @return \rocket\si\content\impl\split\SiSplitContent
 	 */
-	static function createLazy(string $label, Url $apiUrl, string $entryId, bool $bulky) {
+	static function createLazy(string $label, Url $apiUrl, ?string $entryId, bool $bulky, bool $readOnly) {
 		$split = new SiSplitContent();
 		$split->label = $label;
 		$split->apiUrl = $apiUrl;
 		$split->entryId = $entryId;
 		$split->bulky = $bulky;
+		$split->readOnly = $readOnly;
 		return $split;
 	}
 	

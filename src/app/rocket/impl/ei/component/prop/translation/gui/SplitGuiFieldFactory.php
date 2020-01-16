@@ -75,28 +75,28 @@ class SplitGuiFieldFactory {
 		$siField = SiFields::splitInContext($this->lted->getTargetSiDeclaration())
 				->setStyle(new SplitStyle(SiIconType::ICON_LANGUAGE, $this->lted->getViewMenuTooltip()))
 				->setMin($this->lted->getMinNum())
-				->setActiveKeys($this->lted->getActiveN2nLocaleIds());
+				->setActiveKeys($this->lted->getActiveN2nLocaleIds())
+				->setMandatoryKeys($this->lted->getMandatoryN2nLocaleIds());
 		$targetEiuGuiFrame = $this->lted->getTargetEiuGuiFrame();
 		$apiUrl = $targetEiuGuiFrame->getEiuFrame()->getApiUrl();
 		
-		foreach ($this->lted->getN2nLocaleDefs() as $n2nLocaleDef) {
-			$n2nLocaleId = $n2nLocaleDef->getN2nLocaleId();
-			$n2nLocale = $n2nLocaleDef->getN2nLocale();
-			$label = $n2nLocaleDef->buildLabel($n2nLocale);
+		foreach ($this->lted->getN2nLocales() as $n2nLocale) {
+			$n2nLocaleId = $n2nLocale->getId();
+			$label = $n2nLocale->getName($this->lted->getDisplayN2nLocale());
 			
 			$pid = null;
 			if (null !== ($activeTargetEiuEntry = $this->lted->getActiveTargetEiuEntry($n2nLocaleId))) {
-				$pid = $activeTargetEiuEntry->entry()->getPid();
+				$pid = $activeTargetEiuEntry->getPid();
 			}
 			
-			$siField->putLazy($n2nLocaleId, $label, $apiUrl, $pid, $targetEiuGuiFrame->isBulky())
+			$siField->putLazy($n2nLocaleId, $label, $apiUrl, $pid, $targetEiuGuiFrame->isBulky(), false)
 					->setShortLabel($n2nLocale->toPrettyId());
 		}
 		
-		$guiFieldMap = new GuiFieldMap();
-		foreach ($this->targetEiuGuiFrame->getEiPropPaths() as $eiPropPath) {
-			$guiFieldMap->putGuiField($eiPropPath, $this->createPlaceholderGuiField(new GuiPropPath([$eiPropPath])));
-		}
+// 		$guiFieldMap = new GuiFieldMap();
+// 		foreach ($this->targetEiuGuiFrame->getEiPropPaths() as $eiPropPath) {
+// 			$guiFieldMap->putGuiField($eiPropPath, $this->createPlaceholderGuiField(new GuiPropPath([$eiPropPath])));
+// 		}
 		
 		return new EditableGuiField($this->lted, $siField, 
 				$this->buildPlaceholderGuiFieldMap(new GuiPropPath([])));
@@ -112,9 +112,9 @@ class SplitGuiFieldFactory {
 		$placeholderGuiField = new PlaceholderGuiField($siField);
 		
 		if (!$this->readOnly) {
-			foreach ($this->lted->getN2nLocaleDefs() as $n2nLocaleDef) {
-				$n2nLocaleId = $n2nLocaleDef->getN2nLocaleId();
-				$n2nLocale = $n2nLocaleDef->getN2nLocale();
+			
+			foreach ($this->lted->getN2nLocales() as $n2nLocale) {
+				$n2nLocaleId = $n2nLocale->getId();
 				
 				$siField->putInputHandler($n2nLocaleId, new TranslationSiLazyInputHandler($this->lted, $n2nLocale, $guiPropPath));
 			}
