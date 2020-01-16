@@ -22,7 +22,7 @@
 namespace rocket\ei\component\command;
 
 use rocket\ei\util\Eiu;
-use rocket\core\model\NavPoint;
+use rocket\si\NavPoint;
 
 interface GenericAddEiCommand {
 	

@@ -1,9 +1,9 @@
 import { MessageFieldModel } from '../../common/comp/message-field-model';
+import { UiNavPoint } from 'src/app/ui/util/model/ui-nav-point';
 
 export interface LinkOutModel extends MessageFieldModel {
-	isHref(): boolean;
 
-	getRef(): string;
+	getUiNavPoint(): UiNavPoint;
 
 	getLabel(): string;
 }

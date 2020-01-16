@@ -40,7 +40,7 @@ use rocket\ei\component\command\EiCommand;
 use rocket\ei\manage\security\InaccessibleEiEntryException;
 use rocket\ei\component\command\GenericResult;
 use gallery\core\model\Breadcrumb;
-use rocket\core\model\NavPoint;
+use rocket\si\NavPoint;
 
 class EiFrame {
 	

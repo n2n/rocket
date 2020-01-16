@@ -36,7 +36,7 @@ use rocket\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
 use rocket\ei\component\EiSetup;
 use n2n\util\type\CastUtils;
-use rocket\core\model\NavPoint;
+use rocket\si\NavPoint;
 
 class OverviewEiCommand extends IndependentEiCommandAdapter implements GenericOverviewEiCommand {
 	const ID_BASE = 'overview';

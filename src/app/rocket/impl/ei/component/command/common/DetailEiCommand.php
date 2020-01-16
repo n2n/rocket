@@ -30,7 +30,7 @@ use rocket\impl\ei\component\command\IndependentEiCommandAdapter;
 use rocket\ei\component\command\PrivilegedEiCommand;
 use n2n\util\uri\Path;
 use n2n\core\container\N2nContext;
-use rocket\core\model\NavPoint;
+use rocket\si\NavPoint;
 use rocket\core\model\Rocket;
 use rocket\ei\util\Eiu;
 use n2n\web\http\controller\Controller;

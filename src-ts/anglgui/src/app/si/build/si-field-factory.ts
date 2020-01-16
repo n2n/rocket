@@ -25,6 +25,7 @@ import { SiEntryFactory } from './si-entry-factory';
 import { SiDeclaration } from '../model/meta/si-declaration';
 import { SiComp } from '../model/comp/si-comp';
 import { SiService } from '../manage/si.service';
+import { UiFactory } from './ui-factory';
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',
@@ -114,7 +115,7 @@ export class SiFieldFactory {
 			return fileInSiField;
 
 		case SiFieldType.LINK_OUT:
-			return new LinkOutSiField(dataExtr.reqBoolean('href'), dataExtr.reqString('ref'),
+			return new LinkOutSiField(UiFactory.createNavPoint(dataExtr.reqObject('navPoint')),
 					dataExtr.reqString('label'));
 
 		case SiFieldType.ENUM_IN:

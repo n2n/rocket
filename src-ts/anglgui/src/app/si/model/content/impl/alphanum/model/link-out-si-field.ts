@@ -4,17 +4,19 @@ import { OutSiFieldAdapter } from '../../common/model/out-si-field-adapter';
 import { LinkOutModel } from '../comp/link-field-model';
 import { LinkOutFieldComponent } from '../comp/link-out-field/link-out-field.component';
 import { SiField } from '../../../si-field';
+import { UiNavPoint } from 'src/app/ui/util/model/ui-nav-point';
 
 export class LinkOutSiField extends OutSiFieldAdapter implements LinkOutModel {
 
 
-	constructor(private href: boolean, private ref: string, private label: string) {
+	constructor(private navPoint: UiNavPoint, private label: string) {
 		super();
 	}
 
-	createUiContent(): UiContent|null {
-		return new TypeUiContent(LinkOutFieldComponent, (ref) => {
+	createUiContent(): UiContent {
+		return new TypeUiContent(LinkOutFieldComponent, (ref, uiStructure) => {
 			ref.instance.model = this;
+			ref.instance.uiZone = uiStructure.getZone();
 		});
 	}
 
@@ -30,12 +32,8 @@ export class LinkOutSiField extends OutSiFieldAdapter implements LinkOutModel {
 // 			return componentRef;
 // 	}
 
-	isHref(): boolean {
-		return this.href;
-	}
-
-	getRef(): string {
-		return this.ref;
+	getUiNavPoint(): UiNavPoint {
+		return this.navPoint;
 	}
 
 	getLabel(): string {
@@ -43,6 +41,6 @@ export class LinkOutSiField extends OutSiFieldAdapter implements LinkOutModel {
 	}
 
 	copy(): SiField {
-		return new LinkOutSiField(this.href, this.ref, this.label);
+		return new LinkOutSiField(this.navPoint, this.label);
 	}
 }

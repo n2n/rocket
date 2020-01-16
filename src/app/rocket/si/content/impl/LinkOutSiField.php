@@ -21,18 +21,15 @@
  */
 namespace rocket\si\content\impl;
 
-use n2n\util\ex\IllegalStateException;
-use n2n\util\uri\Url;
+use rocket\si\NavPoint;
 
 class LinkOutSiField extends OutSiFieldAdapter {
-	private $url;
+	private $navPoint;
 	private $label;
-	private $href = false;
 	
-	function __construct(Url $url, string $label, bool $href) {
-		$this->url = $url;
+	function __construct(NavPoint $navPoint, string $label) {
+		$this->navPoint = $navPoint;
 		$this->label = $label;
-		$this->href = $href;
 	}
 	
 	/**
@@ -82,25 +79,8 @@ class LinkOutSiField extends OutSiFieldAdapter {
 	 */
 	function getData(): array {
 		return [
-			'ref' => (string) $this->ref,
-			'label' => $this->label,
-			'href' => $this->href
+			'navPoint' => $this->navPoint,
+			'label' => $this->label
 		];
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\si\content\impl\OutSiFieldAdapter::isReadOnly()
-	 */
-	function isReadOnly(): bool {
-		return false;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\si\content\impl\OutSiFieldAdapter::handleInput()
-	 */
-	function handleInput(array $data): array {
-		throw new IllegalStateException();
 	}
 }

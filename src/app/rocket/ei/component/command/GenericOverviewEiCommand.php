@@ -23,7 +23,7 @@ namespace rocket\ei\component\command;
 
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\util\Eiu;
-use rocket\core\model\NavPoint;
+use rocket\si\NavPoint;
 
 interface GenericOverviewEiCommand extends EiCommand {
 	

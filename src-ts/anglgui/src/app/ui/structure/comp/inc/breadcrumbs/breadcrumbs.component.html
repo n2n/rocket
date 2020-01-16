@@ -1,11 +1,6 @@
 <ol *ngIf="uiBreadcrumbs.length > 0" class="breadcrumb">
 	<li *ngFor="let uiBreadcrumb of uiBreadcrumbs" class="breadcrumb-item" [class.active]="isLast(uiBreadcrumb)">
-		<a *ngIf="uiBreadcrumb.siref" [href]="uiBreadcrumb.url"
-				(click)="$event.preventDefault(); exec(uiBreadcrumb.url)">
-			{{ uiBreadcrumb.name }}
-		</a>
-		
-		<a *ngIf="!uiBreadcrumb.siref" [href]="uiBreadcrumb.url">
+		<a rocketUiNavPoint [uiNavPoint]="uiBreadcrumb.navPoint" [uiZone]="uiZone">
 			{{ uiBreadcrumb.name }}
 		</a>
 	</li>

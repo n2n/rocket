@@ -48,34 +48,25 @@ class RocketState implements RequestScoped {
 	}
 	
 	/**
-	 * @param Breadcrumb[] $breadcrumbs
+	 * @param SiBreadcrumb[] $breadcrumbs
 	 */
 	public function setBreadcrumbs(array $breadcrumbs) {
-		ArgUtils::valArray($breadcrumbs, Breadcrumb::class);
+		ArgUtils::valArray($breadcrumbs, SiBreadcrumb::class);
 		
 		$this->breadcrumbs = $breadcrumbs;
 	}
 	
 	/**
-	 * @return Breadcrumb[]
+	 * @return SiBreadcrumb[]
 	 */
 	public function getBreadcrumbs() {
 		return $this->breadcrumbs;
 	}
 	
 	/**
-	 * @param Breadcrumb $breadcrumb
+	 * @param SiBreadcrumb $breadcrumb
 	 */
-	public function addBreadcrumb(Breadcrumb $breadcrumb) {
+	public function addBreadcrumb(SiBreadcrumb $breadcrumb) {
 		$this->breadcrumbs[] = $breadcrumb;
-	}
-	
-	/**
-	 * @return SiBreadcrumb[]
-	 */
-	function createSiBreadcrumbs() {
-		return array_map(function ($breadcrumb) {
-			return $breadcrumb->toSiBreadcrumb();
-		}, $this->breadcrumbs);
 	}
 }

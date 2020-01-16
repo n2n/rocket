@@ -28,7 +28,7 @@ use rocket\ei\mask\EiMask;
 use rocket\ei\EiCommandPath;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\EiObject;
-use rocket\core\model\NavPoint;
+use rocket\si\NavPoint;
 
 class EiCommandCollection extends EiComponentCollection {
 	

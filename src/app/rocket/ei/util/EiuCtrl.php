@@ -44,11 +44,11 @@ use rocket\ei\manage\frame\EiFrameUtil;
 use rocket\ei\manage\LiveEiObject;
 use rocket\ei\manage\gui\EiGui;
 use n2n\web\http\HttpContext;
-use rocket\core\model\NavPoint;
+use rocket\si\NavPoint;
 use n2n\l10n\DynamicTextCollection;
 use n2n\util\uri\Url;
 use rocket\core\model\RocketState;
-use rocket\core\model\Breadcrumb;
+use rocket\si\meta\SiBreadcrumb;
 
 class EiuCtrl {
 	private $eiu;
@@ -307,7 +307,7 @@ class EiuCtrl {
 		$this->httpContext->getResponse()->send(
 				SiPayloadFactory::create($siComp, 
 						$eiuGuiFrameLayout->getEiGui()->getEiGuiFrame()->createGeneralSiControls(),
-						$this->rocketState->createSiBreadcrumbs(),
+						$this->rocketState->getBreadcrumbs(),
 						$title ?? $this->eiuFrame->getContextEiuEngine()->mask()->getPluralLabel()));
 	}
 	
@@ -362,7 +362,7 @@ class EiuCtrl {
 		
 		$this->httpContext->getResponse()->send(
 				SiPayloadFactory::create($comp, $eiGui->getEiGuiFrame()->createGeneralSiControls(),
-						$this->rocketState->createSiBreadcrumbs(),
+						$this->rocketState->getBreadcrumbs(),
 						$eiuEntry->createIdentityString()));
 	}
 	
@@ -406,7 +406,7 @@ class EiuCtrl {
 		$contextEiGuiFrame = $this->eiuFrame->newGuiFrame(ViewMode::determine(true, !$editable, true))->getEiGuiFrame();
 		$this->httpContext->getResponse()->send(
 				SiPayloadFactory::createZoneModel($zone, $contextEiGuiFrame->createGeneralSiControls(),
-						$this->rocketState->createSiBreadcrumbs(),
+						$this->rocketState->getBreadcrumbs(),
 						$this->eiu->dtc('rocket')->t('common_new_entry_label')));
 	}
 	
@@ -416,7 +416,7 @@ class EiuCtrl {
 	 * @return \rocket\ei\util\EiuCtrl
 	 */
 	public function pushBreadcrumb(NavPoint $navPoint, string $label) {
-		$this->rocketState->addBreadcrumb(new Breadcrumb($navPoint, $label));
+		$this->rocketState->addBreadcrumb(new SiBreadcrumb($navPoint, $label));
 		return $this;
 	}
 	
@@ -426,7 +426,7 @@ class EiuCtrl {
 	 * @return \rocket\ei\util\EiuCtrl
 	 */
 	public function pushSirefBreadcrumb(Url $url, string $label) {
-		$this->rocketState->addBreadcrumb(new Breadcrumb(NavPoint::siref($url), $label));
+		$this->rocketState->addBreadcrumb(new SiBreadcrumb(NavPoint::siref($url), $label));
 		return $this;
 	}
 	
@@ -447,7 +447,7 @@ class EiuCtrl {
 					->t($this->eiu->getN2nLocale());
 		}
 		
-		$this->rocketState->addBreadcrumb(new Breadcrumb($navPoint, $label));
+		$this->rocketState->addBreadcrumb(new SiBreadcrumb($navPoint, $label));
 		
 		return $this;
 	}
@@ -472,7 +472,7 @@ class EiuCtrl {
 			$label = (new EiFrameUtil($eiFrame))->createIdentityString($eiObject);
 		}
 		
-		$this->rocketState->addBreadcrumb(new Breadcrumb($navPoint, $label));
+		$this->rocketState->addBreadcrumb(new SiBreadcrumb($navPoint, $label));
 		
 		return $this;
 	}
@@ -499,7 +499,7 @@ class EiuCtrl {
 					->t('common_edit_label');
 		}
 		
-		$this->rocketState->addBreadcrumb(new Breadcrumb($navPoint, $label));
+		$this->rocketState->addBreadcrumb(new SiBreadcrumb($navPoint, $label));
 		
 		return $this;
 	}
@@ -520,7 +520,7 @@ class EiuCtrl {
 					->t('common_add_label');
 		}
 		
-		$this->rocketState->addBreadcrumb(new Breadcrumb($navPoint, $label));
+		$this->rocketState->addBreadcrumb(new SiBreadcrumb($navPoint, $label));
 		
 		return $this;
 	}

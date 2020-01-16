@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { UiBreadcrumb, UiZone } from '../../../model/ui-zone';
-import { SiUiService } from 'src/app/si/manage/si-ui.service';
 
 @Component({
 	selector: 'rocket-ui-breadcrumbs',
@@ -14,7 +13,7 @@ export class BreadcrumbsComponent implements OnInit {
 	@Input()
 	uiBreadcrumbs: UiBreadcrumb[];
 
-	constructor(private siUiService: SiUiService) { }
+	constructor() { }
 
 	ngOnInit() {
 	}
@@ -22,9 +21,4 @@ export class BreadcrumbsComponent implements OnInit {
 	isLast(uiBreadcrumb: UiBreadcrumb): boolean {
 		return this.uiBreadcrumbs.length > 0 && this.uiBreadcrumbs[this.uiBreadcrumbs.length - 1] === uiBreadcrumb;
 	}
-	
-	exec(url: string) {
-		this.siUiService.navigate(url, this.uiZone.layer);
-	}
-
 }

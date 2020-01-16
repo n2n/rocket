@@ -11,11 +11,12 @@ import { LayerComponent } from './structure/comp/layer/layer.component';
 import { StructureComponent } from './structure/comp/structure/structure.component';
 import { MessageComponent } from './util/comp/message/message.component';
 import { BreadcrumbsComponent } from './structure/comp/inc/breadcrumbs/breadcrumbs.component';
+import { NavPointDirective } from './util/directive/nav-point.directive';
 
 @NgModule({
 	declarations: [
 		LayerComponent, ContainerComponent, ZoneComponent, StructureComponent, StructureContentDirective,
-		StructureBranchComponent, PlainContentComponent, MessageComponent, BreadcrumbsComponent
+		StructureBranchComponent, PlainContentComponent, MessageComponent, BreadcrumbsComponent, NavPointDirective
 	],
 	imports: [
 		CommonModule,
@@ -28,7 +29,8 @@ import { BreadcrumbsComponent } from './structure/comp/inc/breadcrumbs/breadcrum
 		StructureContentDirective,
 		StructureBranchComponent,
 		PlainContentComponent,
-		MessageComponent
+		MessageComponent,
+		NavPointDirective
 	],
 	entryComponents: [ StructureBranchComponent, PlainContentComponent ]
 })

@@ -68,8 +68,8 @@ class RelationLinkGuiField implements GuiField {
 			$label = $num . ' ' . $targetEiuFrame->engine()->mask()->getPluralLabel();
 		}
 		
-		if (null !== ($overviewUrl = $targetEiuFrame->getOverviewUrl(false))) {
-			return SiFields::linkOut($overviewUrl, $label, false);
+		if (null !== ($overviewNavPoint = $targetEiuFrame->getOverviewNavPoint(false))) {
+			return SiFields::linkOut($overviewNavPoint, $label, false);
 		}
 		
 		return SiFields::stringOut($label);
@@ -86,8 +86,8 @@ class RelationLinkGuiField implements GuiField {
 		
 		$targetEiuFrame = $this->eiu->frame()->forkDiscover($this->eiu->prop(), $this->eiu->entry());
 		
-		if (null !== ($detailUrl = $targetEiuFrame->getDetailUrl($value, false))) {
-			return SiFields::linkOut($detailUrl, $label);
+		if (null !== ($detailNavPoint = $targetEiuFrame->getDetailNavPoint($value, false))) {
+			return SiFields::linkOut($detailNavPoint, $label);
 		}
 		
 		return SiFields::stringOut($label);

@@ -22,13 +22,13 @@
 namespace rocket\impl\ei\component\command\common\controller;
 
 use n2n\l10n\DynamicTextCollection;
-use rocket\core\model\Breadcrumb;
 use n2n\web\http\controller\ControllerAdapter;
 use n2n\l10n\DateTimeFormat;
 use n2n\web\http\PageNotFoundException;
 use rocket\impl\ei\component\command\common\model\EntryCommandViewModel;
 use rocket\ei\manage\EiObject;
 use rocket\ei\util\EiuCtrl;
+use gallery\core\model\Breadcrumb;
 
 class DetailController extends ControllerAdapter {
 	private $dtc;

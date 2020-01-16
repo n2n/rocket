@@ -2,6 +2,7 @@ import { Subject, Subscription } from 'rxjs';
 import { UiStructureModel } from './ui-structure-model';
 import { UiLayer } from './ui-layer';
 import { UiContent } from './ui-content';
+import { UiNavPoint } from '../../util/model/ui-nav-point';
 
 export class UiZone {
 	// public content: SiComp|null;
@@ -30,7 +31,6 @@ export interface UiZoneModel {
 }
 
 export interface UiBreadcrumb {
-	siref: boolean;
-	url: string;
+	navPoint: UiNavPoint;
 	name: string;
 }
