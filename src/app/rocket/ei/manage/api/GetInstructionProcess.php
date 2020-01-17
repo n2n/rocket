@@ -62,26 +62,25 @@ class GetInstructionProcess {
 	}
 	
 	/**
-	 * @param string[]|null $fieldIds
 	 * @return NULL|GuiPropPath[]
 	 */
 	private function parseGuiPropPaths() {
-		$fieldIds = $this->instruction->getFieldIds();
+		$propIds = $this->instruction->getPropIds();
 		
-		if ($fieldIds === null) {
+		if ($propIds === null) {
 			return null;
 		}
 		
-		return array_map(function ($fieldId) {
-			return GuiPropPath::create($fieldId);
-		}, $fieldIds);
+		return array_map(function ($propId) {
+			return GuiPropPath::create($propId);
+		}, $propIds);
 	}
 	
 	/**
 	 * @param string $entryId
 	 * @return \rocket\si\api\SiGetResult
 	 */
-	private function handleEntryId(string $entryId, ?array $fieldIds) {
+	private function handleEntryId(string $entryId) {
 		$eiObject = $this->util->lookupEiObject($entryId);
 		$guiPropPaths = $this->parseGuiPropPaths();
 		

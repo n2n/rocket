@@ -75,7 +75,7 @@ class SiEntryInput {
 	}
 	
 	/**
-	 * @param string $fieldId
+	 * @param string $fieldName
 	 * @param SiFieldInput $fieldInput
 	 */
 	function putFieldInput(string $fieldName, SiFieldInput $fieldInput) {
@@ -116,8 +116,8 @@ class SiEntryInput {
 		try {
 			$siEntryInput = new SiEntryInput(SiEntryIdentifier::parse($dataSet->reqArray('identifier')),
 					$dataSet->reqString('typeId'), $dataSet->reqBool('bulky'));
-			foreach ($dataSet->reqArray('fieldInputMap', 'array') as $fieldId => $fielData) {
-				$siEntryInput->putFieldInput($fieldId, new SiFieldInput($fielData));
+			foreach ($dataSet->reqArray('fieldInputMap', 'array') as $propId => $fielData) {
+				$siEntryInput->putFieldInput($propId, new SiFieldInput($fielData));
 			}
 			return $siEntryInput;
 		} catch (\n2n\util\type\attrs\AttributesException $e) {

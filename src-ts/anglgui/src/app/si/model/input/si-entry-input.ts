@@ -10,8 +10,8 @@ export class SiEntryInput {
 
 	toJSON() {
 		const fieldInputObj = {};
-		for (const [fieldId, inputObj] of this.fieldInputMap) {
-			fieldInputObj[fieldId] = inputObj;
+		for (const [propId, inputObj] of this.fieldInputMap) {
+			fieldInputObj[propId] = inputObj;
 		}
 
 		return {

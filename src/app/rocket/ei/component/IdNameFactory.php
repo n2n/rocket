@@ -75,28 +75,28 @@ class IdNameFactory {
 		return $idNameDefinition;
 	}
 	
-	/**
-	 * @param EiMask $eiMask
-	 * @param EiuEntry $eiuEntry
-	 * @param int $viewMode
-	 * @param array $eiPropPaths
-	 * @return EiEntryGui
-	 */
-	public static function createEiEntryGui(EiGuiFrame $eiGuiFrame, EiEntry $eiEntry, array $guiPropPaths, int $treeLevel = null) {
-		ArgUtils::valArrayLike($guiPropPaths, GuiPropPath::class);
+// 	/**
+// 	 * @param EiMask $eiMask
+// 	 * @param EiuEntry $eiuEntry
+// 	 * @param int $viewMode
+// 	 * @param array $eiPropPaths
+// 	 * @return EiEntryGui
+// 	 */
+// 	public static function createEiEntryGui(EiGuiFrame $eiGuiFrame, EiEntry $eiEntry, array $guiPropPaths, int $treeLevel = null) {
+// 		ArgUtils::valArrayLike($guiPropPaths, GuiPropPath::class);
 		
-		$eiEntryGui = new EiEntryGui($eiGuiFrame, $eiEntry, $treeLevel);
+// 		$eiEntryGui = new EiEntryGui($eiGuiFrame, $eiEntry, $treeLevel);
 		
-		$guiFieldAssembler = new EiEntryGuiAssembler($eiEntryGui);
+// 		$guiFieldAssembler = new EiEntryGuiAssembler($eiEntryGui);
 		
-		foreach ($guiPropPaths as $guiPropPath) {
-			$guiFieldAssembler->assembleGuiField($guiPropPath);
-		}
+// 		foreach ($guiPropPaths as $guiPropPath) {
+// 			$guiFieldAssembler->assembleGuiField($guiPropPath);
+// 		}
 		
-		$guiFieldAssembler->finalize();
+// 		$guiFieldAssembler->finalize();
 		
-		return $eiEntryGui;
-	}
+// 		return $eiEntryGui;
+// 	}
 }
 
 

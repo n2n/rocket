@@ -97,8 +97,8 @@ export class SiFieldFactory {
 			booleanInSiField.value = dataExtr.reqBoolean('value');
 
 			fieldMap$.subscribe((fieldMap) => {
-				this.finalizeBool(booleanInSiField, dataExtr.reqStringArray('onAssociatedFieldIds'),
-						dataExtr.reqStringArray('offAssociatedFieldIds'), fieldMap);
+				this.finalizeBool(booleanInSiField, dataExtr.reqStringArray('onAssociatedPropIds'),
+						dataExtr.reqStringArray('offAssociatedPropIds'), fieldMap);
 			});
 			return booleanInSiField;
 
@@ -172,7 +172,7 @@ export class SiFieldFactory {
 			return splitContextOutSiField;
 
 		case SiFieldType.SPLIT_PLACEHOLDER:
-			const splitSiField = new SplitSiField(dataExtr.reqString('refFieldId'));
+			const splitSiField = new SplitSiField(dataExtr.reqString('refPropId'));
 
 			return splitSiField;
 		default:
@@ -209,6 +209,7 @@ export class SiFieldFactory {
 				splitContextSiField.putSplitContent(SplitContent.createLazy(key, label, shortLabel, {
 					apiUrl,
 					entryId: extr.nullaString('entryId'),
+					propIds: extr.nullaStringArray('propIds'),
 					bulky: extr.reqBoolean('bulky'),
 					readOnly: extr.reqBoolean('readOnly'),
 					siComp: this.comp,
@@ -224,6 +225,7 @@ export class SiFieldFactory {
 	private completeSplitContextSiField(splitContextSiField: SplitContextSiField, dependantPropIds: Array<string>,
 			fieldMap$: Observable<Map<string, SiField>>) {
 		fieldMap$.subscribe((fieldMap) => {
+
 			for (const dependantPropId of dependantPropIds) {
 				const siField = fieldMap.get(dependantPropId);
 				if (siField instanceof SplitSiField) {
@@ -233,18 +235,18 @@ export class SiFieldFactory {
 		});
 	}
 
-	private finalizeBool(booleanInSiField: BooleanInSiField, onAssociatedFieldIds: string[],
-			offAssociatedFieldIds: string[], fieldMap: Map<string, SiField>) {
+	private finalizeBool(booleanInSiField: BooleanInSiField, onAssociatedPropIds: string[],
+			offAssociatedPropIds: string[], fieldMap: Map<string, SiField>) {
 		let field: SiField;
 
-		for (const fieldId of onAssociatedFieldIds) {
-			if (field = fieldMap.get(fieldId)) {
+		for (const propId of onAssociatedPropIds) {
+			if (field = fieldMap.get(propId)) {
 				booleanInSiField.addOnAssociatedField(field);
 			}
 		}
 
-		for (const fieldId of offAssociatedFieldIds) {
-			if (field = fieldMap.get(fieldId)) {
+		for (const propId of offAssociatedPropIds) {
+			if (field = fieldMap.get(propId)) {
 				booleanInSiField.addOffAssociatedField(field);
 			}
 		}

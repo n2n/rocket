@@ -360,33 +360,33 @@ class EiuEntry {
 		return $eiuGuiFrame->appendNewEntryGui($this, $treeLevel);
 	}
 	
-	/**
-	 * @param int $viewMode
-	 * @param bool $determineEiMask
-	 * @return \rocket\ei\util\gui\EiuEntryGuiAssembler
-	 */
-	public function newEntryGuiAssembler(int $viewMode, bool $determineEiMask = true) {
-		$eiFrame = $this->getEiuFrame()->getEiFrame();
-		$eiMask = null;
-		if ($determineEiMask) {
-			$eiMask = $eiFrame->determineEiMask($this->eiEntry->getEiObject()->getEiEntityObj()->getEiType());
-		} else {
-			$eiMask = $eiFrame->getContextEiEngine()->getEiMask();
-		}
-		
-		$eiGuiFrame = $eiMask->createEiGuiFrame($eiFrame, $viewMode, false);
-		$eiGuiFrame->init(new DummyEiGuiSiFactory(), $eiGuiFrame->getGuiDefinition()->getGuiPropPaths());
-		
-		$eiEntryGuiAssembler = new EiEntryGuiAssembler(new EiEntryGui($eiGuiFrame, $this->eiEntry));
-		
-// 		if ($parentEiEntryGui->isInitialized()) {
-// 			throw new \InvalidArgumentException('Parent EiEntryGui already initialized.');
+// 	/**
+// 	 * @param int $viewMode
+// 	 * @param bool $determineEiMask
+// 	 * @return \rocket\ei\util\gui\EiuEntryGuiAssembler
+// 	 */
+// 	public function newEntryGuiAssembler(int $viewMode, bool $determineEiMask = true) {
+// 		$eiFrame = $this->getEiuFrame()->getEiFrame();
+// 		$eiMask = null;
+// 		if ($determineEiMask) {
+// 			$eiMask = $eiFrame->determineEiMask($this->eiEntry->getEiObject()->getEiEntityObj()->getEiType());
+// 		} else {
+// 			$eiMask = $eiFrame->getContextEiEngine()->getEiMask();
 // 		}
 		
-// 		$parentEiEntryGui->registerEiEntryGuiListener(new InitListener($eiEntryGuiAssembler));
+// 		$eiGuiFrame = $eiMask->createEiGuiFrame($eiFrame, $viewMode, false);
+// 		$eiGuiFrame->init(new DummyEiGuiSiFactory(), $eiGuiFrame->getGuiDefinition()->getGuiPropPaths());
 		
-		return new EiuEntryGuiAssembler($eiEntryGuiAssembler, null, $this->eiuAnalyst);
-	}
+// 		$eiEntryGuiAssembler = new EiEntryGuiAssembler(new EiEntryGui($eiGuiFrame, $this->eiEntry));
+		
+// // 		if ($parentEiEntryGui->isInitialized()) {
+// // 			throw new \InvalidArgumentException('Parent EiEntryGui already initialized.');
+// // 		}
+		
+// // 		$parentEiEntryGui->registerEiEntryGuiListener(new InitListener($eiEntryGuiAssembler));
+		
+// 		return new EiuEntryGuiAssembler($eiEntryGuiAssembler, null, $this->eiuAnalyst);
+// 	}
 	
 // 	/**
 // 	 * @return \rocket\ei\mask\EiMask

@@ -164,10 +164,16 @@ class EiuGuiFrame {
 	
 	/**
 	 * @param GuiPropPath|string $guiPropPath
-	 * @return \rocket\ei\manage\gui\DisplayDefinition
+	 * @return \rocket\ei\manage\gui\DisplayDefinition|null
 	 */
-	function getDisplayDefinition($guiPropPath) {
-		return $this->eiGuiFrame->getDisplayDefintion(GuiPropPath::create($guiPropPath));
+	function getDisplayDefinition($guiPropPath, bool $required = false) {
+		$guiPropPath = GuiPropPath::create($guiPropPath);
+		
+		if (!$required && !$this->eiGuiFrame->containsDisplayDefintion($guiPropPath)) {
+			return null;
+		}
+		
+		return $this->eiGuiFrame->getDisplayDefintion($guiPropPath);
 	}
 		
 // 	/**

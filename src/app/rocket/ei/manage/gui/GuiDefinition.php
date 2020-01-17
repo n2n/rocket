@@ -694,9 +694,8 @@ class GuiDefinition {
 	
 	/**
 	 * @param EiGuiFrame $eiGuiFrame
-	 * @param GuiPropPath[] $guiPropPaths
 	 */
-	private function initEiGuiFrame($eiGuiFrame, $guiPropPaths) {
+	private function initEiGuiFrame($eiGuiFrame) {
 		$this->eiMask->getEiModificatorCollection()->setupEiGuiFrame($eiGuiFrame);
 		
 		$eiGuiFrame->markInitialized();
@@ -742,7 +741,7 @@ class GuiDefinition {
 	private function nonAutoInitEiGuiFrame($eiGuiFrame, $displayStructure) {
 		$assemblerCache = new EiFieldAssemblerCache($eiGuiFrame, $displayStructure->getAllGuiPropPaths());
 		$guiStructureDeclarations = $this->assembleDisplayStructure($assemblerCache, $eiGuiFrame, $displayStructure);
-		$this->initEiGuiFrame($eiGuiFrame, $assemblerCache->getGuiPropPaths());
+		$this->initEiGuiFrame($eiGuiFrame);
 		return $guiStructureDeclarations;
 	}
 	
@@ -791,7 +790,7 @@ class GuiDefinition {
 	private function semiAutoInitEiGuiFrame($eiGuiFrame, $possibleGuiPropPaths) {
 		$assemblerCache = new EiFieldAssemblerCache($eiGuiFrame, $possibleGuiPropPaths);
 		$guiStructureDeclarations = $this->assembleSemiAutoGuiStructureDeclarations($assemblerCache, $eiGuiFrame, $this->getGuiPropPaths(), true);
-		$this->initEiGuiFrame($eiGuiFrame, $assemblerCache->getGuiPropPaths());
+		$this->initEiGuiFrame($eiGuiFrame);
 		return $guiStructureDeclarations;
 	}
 	
@@ -881,11 +880,9 @@ class GuiDefinition {
 	 * @param EiGuiFrame $eiGuiFrame
 	 */
 	private function autoInitEiGuiFrame($eiGuiFrame) {
-		$n2nLocale = $eiGuiFrame->getEiFrame()->getN2nContext()->getN2nLocale();
+// 		$n2nLocale = $eiGuiFrame->getEiFrame()->getN2nContext()->getN2nLocale();
 		
-		$guiPropPaths = [];
 		$guiStructureDeclarations = [];
-		
 		foreach ($this->guiPropWrappers as $guiPropWrapper) {
 			$eiPropPath = $guiPropWrapper->getEiPropPath();
 			$guiPropSetup = $guiPropWrapper->buildGuiPropSetup($eiGuiFrame, null);
@@ -898,9 +895,9 @@ class GuiDefinition {
 			
 			$guiPropPath = new GuiPropPath([$eiPropPath]);
 			
-			if (null !== ($displayDefinition = $guiPropSetup->getDisplayDefinition())) {
+			$displayDefinition = $guiPropSetup->getDisplayDefinition();
+			if (null !== $displayDefinition && $displayDefinition->isDefaultDisplayed()) {
 				$eiGuiFrame->putDisplayDefintion($guiPropPath, $displayDefinition);
-				
 				$guiStructureDeclarations[(string) $guiPropPath] = GuiStructureDeclaration
 						::createField($guiPropPath, $displayDefinition->getSiStructureType() ?? SiStructureType::ITEM);
 			}
@@ -909,19 +906,17 @@ class GuiDefinition {
 				$absGuiPropPath = $guiPropPath->ext($forkedGuiPropPath);
 				$displayDefinition = $guiPropSetup->getForkedDisplayDefinition($forkedGuiPropPath);
 				
-				if ($displayDefinition === null) {
+				if ($displayDefinition === null/* || !$displayDefinition->isDefaultDisplayed()*/) {
 					continue;
 				}
-				
 				$eiGuiFrame->putDisplayDefintion($absGuiPropPath, $displayDefinition);
 				
 				$guiStructureDeclarations[(string) $absGuiPropPath] = GuiStructureDeclaration
 						::createField($absGuiPropPath, $displayDefinition->getSiStructureType() ?? SiStructureType::ITEM);
-				
 			}
 		}
 		
-		$this->initEiGuiFrame($eiGuiFrame, $guiPropPaths);
+		$this->initEiGuiFrame($eiGuiFrame);
 		
 		return $guiStructureDeclarations;
 	}

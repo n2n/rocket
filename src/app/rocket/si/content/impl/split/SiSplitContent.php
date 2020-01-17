@@ -33,6 +33,7 @@ class SiSplitContent implements \JsonSerializable {
 	private $entryId;
 	private $bulky;
 	private $readOnly;
+	private $propIds = null;
 	/**
 	 * @var SiDeclaration
 	 */
@@ -61,12 +62,29 @@ class SiSplitContent implements \JsonSerializable {
 		return $this;
 	}
 	
+	/**
+	 * @return string[]
+	 */
+	function getPropIds() {
+		return $this->propIds;
+	}
+	
+	/**
+	 * @param string[] $propIds
+	 * @return \rocket\si\content\impl\split\SiSplitContent
+	 */
+	function setPropIds(array $propIds) {
+		$this->propIds = array_values($propIds);
+		return $this;
+	}
+	
 	function jsonSerialize() {
 		$data = [ 'label' => $this->label, 'shortLabel' => $this->shortLabel ?? $this->label ];
 		
 // 		if ($this->apiUrl !== null) {
 			$data['apiUrl'] = (string) $this->apiUrl;
 			$data['entryId'] = $this->entryId;
+			$data['propIds'] = $this->propIds;
 			$data['bulky'] = $this->bulky;
 			$data['readOnly'] = $this->readOnly;
 // 		}

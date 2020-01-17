@@ -18,7 +18,7 @@ class Eiu implements Lookupable {
 	private $eiuEntry;
 	private $eiuField;
 	private $eiuFieldMap;
-	private $eiuGuiFrameLayout;
+	private $eiuGui;
 	private $eiuGuiFrame;
 	private $eiuEntryGui;
 	private $eiuGuiFrameField;
@@ -133,11 +133,11 @@ class Eiu implements Lookupable {
 	 * @return \rocket\ei\util\gui\EiuGui
 	 */
 	public function gui(bool $required = true) {
-		if ($this->eiuGuiFrameLayout !== null) {
-			return $this->eiuGuiFrameLayout;
+		if ($this->eiuGui !== null) {
+			return $this->eiuGui;
 		}
 		
-		return $this->eiuGuiFrameLayout = $this->eiuAnalyst->getEiuGui($required);
+		return $this->eiuGui = $this->eiuAnalyst->getEiuGui($required);
 	}
 	
 	/**

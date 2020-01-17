@@ -13,7 +13,7 @@ import { SplitComponent } from '../comp/split/split.component';
 export class SplitSiField extends SiFieldAdapter implements SplitModel {
 	splitContext: SplitContextSiField|null;
 
-	constructor(public refFieldId: string) {
+	constructor(public refPropId: string) {
 		super();
 	}
 
@@ -58,7 +58,7 @@ export class SplitSiField extends SiFieldAdapter implements SplitModel {
 				return null;
 			}
 
-			return entry.selectedEntryBuildup.getFieldById(this.refFieldId);
+			return entry.selectedEntryBuildup.getFieldById(this.refPropId);
 		}));
 	}
 }

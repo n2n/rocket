@@ -93,7 +93,7 @@ class SiEntryBuildup implements \JsonSerializable {
 	}
 
 	/**
-	 * @param SiField[] $fields key is fieldId 
+	 * @param SiField[] $fields key is propId 
 	 */
 	function setFields(array $fields) {
 		$this->fields = $fields;

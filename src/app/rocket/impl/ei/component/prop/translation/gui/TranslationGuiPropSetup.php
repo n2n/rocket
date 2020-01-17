@@ -47,6 +47,10 @@ class TranslationGuiPropSetup implements GuiPropSetup, GuiFieldAssembler {
 		return $this;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\gui\GuiPropSetup::getForkedDisplayDefinition()
+	 */
 	function getForkedDisplayDefinition(GuiPropPath $guiPropPath): ?DisplayDefinition {
 		return $this->targetEiuGuiFrame->getDisplayDefinition($guiPropPath);
 	}

@@ -87,6 +87,14 @@ export class Extractor {
 				+ typeof this.obj[propName]);
 	}
 
+	nullaStringArray(propName: string): Array<string> {
+		if (this.obj[propName] === null) {
+			return null;
+		}
+
+		return this.reqStringArray(propName);
+	}
+
 	reqStringArray(propName: string): Array<string> {
 		const arr = this.reqArray(propName);
 		for (const value of arr) {

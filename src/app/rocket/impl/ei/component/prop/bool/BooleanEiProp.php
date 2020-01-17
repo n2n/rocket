@@ -119,8 +119,8 @@ class BooleanEiProp extends DraftablePropertyEiPropAdapter implements Filterable
 		
 		return SiFields::boolIn($eiu->field()->getValue())
 				->setMandatory($this->getEditConfig()->isMandatory())
-				->setOnAssociatedFieldIds(array_map($mapCb, $this->booleanConfig->getOnAssociatedGuiPropPaths()))
-				->setOffAssociatedFieldIds(array_map($mapCb, $this->booleanConfig->getOffAssociatedGuiPropPaths()));
+				->setOnAssociatedPropIds(array_map($mapCb, $this->booleanConfig->getOnAssociatedGuiPropPaths()))
+				->setOffAssociatedPropIds(array_map($mapCb, $this->booleanConfig->getOffAssociatedGuiPropPaths()));
 	}
 	
 	

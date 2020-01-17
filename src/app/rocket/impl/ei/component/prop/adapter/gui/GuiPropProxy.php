@@ -22,7 +22,6 @@
 namespace rocket\impl\ei\component\prop\adapter\gui;
 
 use rocket\ei\util\Eiu;
-use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
@@ -77,8 +76,12 @@ class GuiPropProxy implements GuiProp {
 		};
 	}
 
-	function buildGuiPropSetup($eiu, $guiPropPaths): ?GuiPropSetup {
-		$displayDefinition = $this->displayConfig->buildDisplayDefinitionFromEiu($eiu);;
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\gui\GuiProp::buildGuiPropSetup()
+	 */
+	function buildGuiPropSetup(Eiu $eiu, ?array $guiPropPaths): ?GuiPropSetup {
+		$displayDefinition = $this->displayConfig->buildDisplayDefinitionFromEiu($eiu);
 		
 		return GuiPropSetups::simple($this->guiFieldAssembler, $displayDefinition);
 	}

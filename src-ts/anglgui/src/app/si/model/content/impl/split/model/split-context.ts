@@ -18,7 +18,7 @@ export abstract class SplitContextSiField extends SiFieldAdapter {
 	public style: SplitStyle = { iconClass: null, tooltip: null };
 	protected splitContentMap = new Map<string, SplitContent>();
 
-	constructor(public propIds: string[]) {
+	constructor() {
 		super();
 	}
 
@@ -83,8 +83,10 @@ export class SplitContent implements SplitOption {
 			return this.entry$;
 		}
 
-		return this.entry$ = this.lazyDef.siService.apiGet(this.lazyDef.apiUrl, new SiGetRequest(SiGetInstruction.entry(
-						this.lazyDef.siComp, this.lazyDef.bulky, this.lazyDef.readOnly, this.lazyDef.entryId)))
+		const instruction = SiGetInstruction
+				.entry(this.lazyDef.siComp, this.lazyDef.bulky, this.lazyDef.readOnly, this.lazyDef.entryId)
+				.setPropIds(this.lazyDef.propIds);
+		return this.entry$ = this.lazyDef.siService.apiGet(this.lazyDef.apiUrl, new SiGetRequest(instruction))
 				.pipe(map((response: SiGetResponse) => {
 					return this.loadedEntry = response.results[0].entry;
 				}));
@@ -94,6 +96,7 @@ export class SplitContent implements SplitOption {
 export interface LazyDef {
 	apiUrl: string;
 	entryId: string|null;
+	propIds: string[]|null;
 	bulky: boolean;
 	readOnly: boolean;
 	siService: SiService;

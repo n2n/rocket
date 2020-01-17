@@ -150,7 +150,6 @@ class SplitContextInSiField extends InSiFieldAdapter {
 	 * @param string $label
 	 * @param Url $apiUrl
 	 * @param string $entryId
-	 * @param string $fieldId
 	 * @param bool $bulky
 	 * @return \rocket\si\content\impl\split\SiSplitContent
 	 */

@@ -249,13 +249,13 @@ class EiEntry {
 		}
 	}
 	
-	public function getFieldRelatedListeners($fieldId) {
-		if (isset($this->listenerBindings[$fieldId])) {
-			return $this->listenerBindings[$fieldId];
-		}
+// 	public function getFieldRelatedListeners($fieldId) {
+// 		if (isset($this->listenerBindings[$fieldId])) {
+// 			return $this->listenerBindings[$fieldId];
+// 		}
 	
-		return array();
-	}
+// 		return array();
+// 	}
 	
 	public function unregisterListener(EiEntryListener $listener) {
 		$objectHash = spl_object_hash($listener);
@@ -265,9 +265,9 @@ class EiEntry {
 		}
 	}
 	
-	public function unregisterFieldRelatedListeners($fieldId) {
-		unset($this->listenerBindings[$fieldId]);
-	}
+// 	public function unregisterFieldRelatedListeners($fieldId) {
+// 		unset($this->listenerBindings[$fieldId]);
+// 	}
 		
 	public function write() {
 		foreach ($this->listeners as $listener) {

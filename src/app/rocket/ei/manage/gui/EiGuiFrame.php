@@ -144,11 +144,11 @@ class EiGuiFrame {
 	}
 	
 	/**
-	 * @param EiPropPath $eiPropPath
+	 * @param GuiPropPath $guiPropPath
 	 * @return bool
 	 */
-	function containsDisplayDefintion(DisplayDefinition $guiPropPath) {
-		return isset($this->displayDefinition[(string) $guiPropPath]);
+	function containsDisplayDefintion(GuiPropPath $guiPropPath) {
+		return isset($this->displayDefinitions[(string) $guiPropPath]);
 	}
 	
 	/**

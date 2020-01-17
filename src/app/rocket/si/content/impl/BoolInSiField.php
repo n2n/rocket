@@ -36,11 +36,11 @@ class BoolInSiField extends InSiFieldAdapter {
 	/**
 	 * @var string[]
 	 */
-	private $onAssociatedFieldIds = [];
+	private $onAssociatedPropIds = [];
 	/**
 	 * @var string[]
 	 */
-	private $offAssociatedFieldIds = [];
+	private $offAssociatedPropIds = [];
 	
 	/**
 	 * @param int $value
@@ -81,34 +81,34 @@ class BoolInSiField extends InSiFieldAdapter {
 		return $this->mandatory;
 	}
 	
-	function getOnAssociatedFieldIds() {
-		return $this->onAssociatedFieldIds;
+	function getOnAssociatedPropIds() {
+		return $this->onAssociatedPropIds;
 	}
 
 	/**
-	 * @param string[] $onAssociatedFieldIds
+	 * @param string[] $onAssociatedPropIds
 	 * @return \rocket\si\content\impl\BoolInSiField
 	 */
-	function setOnAssociatedFieldIds(array $onAssociatedFieldIds) {
-		ArgUtils::valArray($onAssociatedFieldIds, 'string');
-		$this->onAssociatedFieldIds = $onAssociatedFieldIds;
+	function setOnAssociatedPropIds(array $onAssociatedPropIds) {
+		ArgUtils::valArray($onAssociatedPropIds, 'string');
+		$this->onAssociatedPropIds = $onAssociatedPropIds;
 		return $this;
 	}
 
 	/**
 	 * @return string[]
 	 */
-	function getOffAssociatedFieldIds() {
-		return $this->offAssociatedFieldIds;
+	function getOffAssociatedPropIds() {
+		return $this->offAssociatedPropIds;
 	}
 
 	/**
-	 * @param string[] $offAssociatedFieldIds
+	 * @param string[] $offAssociatedPropIds
 	 * @return \rocket\si\content\impl\BoolInSiField
 	 */
-	function setOffAssociatedFieldIds(array $offAssociatedFieldIds) {
-		ArgUtils::valArray($offAssociatedFieldIds, 'string');
-		$this->offAssociatedFieldIds = $offAssociatedFieldIds;
+	function setOffAssociatedPropIds(array $offAssociatedPropIds) {
+		ArgUtils::valArray($offAssociatedPropIds, 'string');
+		$this->offAssociatedPropIds = $offAssociatedPropIds;
 		return $this;
 	}
 
@@ -128,8 +128,8 @@ class BoolInSiField extends InSiFieldAdapter {
 		return [
 			'value' => $this->value,
 			'mandatory' => $this->mandatory,
-			'onAssociatedFieldIds' => $this->onAssociatedFieldIds,
-			'offAssociatedFieldIds' => $this->offAssociatedFieldIds
+			'onAssociatedPropIds' => $this->onAssociatedPropIds,
+			'offAssociatedPropIds' => $this->offAssociatedPropIds
 		];
 	}
 	

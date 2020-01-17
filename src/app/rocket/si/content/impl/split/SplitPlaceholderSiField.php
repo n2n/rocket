@@ -29,11 +29,11 @@ class SplitPlaceholderSiField extends SiFieldAdapter {
 	/**
 	 * @var string
 	 */
-	private $contextFieldId;
+	private $contextPropId;
 	/**
 	 * @var string
 	 */
-	private $refFieldId;
+	private $refPropId;
 	/**
 	 * @var SiLazyInputHandler[]
 	 */
@@ -45,12 +45,12 @@ class SplitPlaceholderSiField extends SiFieldAdapter {
 // 	private $saveCallback = null;
 	
 	/**
-	 * @param string $contextFieldId
-	 * @param string $refFieldId
+	 * @param string $contextPropId
+	 * @param string $refPropId
 	 */
-	function __construct(string $contextFieldId, string $refFieldId) {
-		$this->contextFieldId = $contextFieldId;
-		$this->refFieldId = $refFieldId;
+	function __construct(string $contextPropId, string $refPropId) {
+		$this->contextPropId = $contextPropId;
+		$this->refPropId = $refPropId;
 	}
 
 	/**
@@ -77,8 +77,8 @@ class SplitPlaceholderSiField extends SiFieldAdapter {
 	 */
 	function getData(): array {
 		return [
-			'contextFieldId' => $this->contextFieldId,
-			'refFieldId' => $this->refFieldId
+			'contextPropId' => $this->contextPropId,
+			'refPropId' => $this->refPropId
 		];
 	}
 	

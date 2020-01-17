@@ -34,7 +34,7 @@ class SiGetInstruction {
 	private $entryId = null;
 	private $partialContentInstruction = null;
 	private $newEntryRequested = false;
-	private $fieldIds = null;
+	private $propIds = null;
 	
 	/**
 	 * @param bool $bulky
@@ -149,16 +149,16 @@ class SiGetInstruction {
 		return $this->entryId;
 	}
 	
-	function setFieldIds(?array $fieldIds) {
-		ArgUtils::valArray($fieldIds, 'string', true);
-		$this->fieldIds = $fieldIds;
+	function setPropIds(?array $propIds) {
+		ArgUtils::valArray($propIds, 'string', true);
+		$this->propIds = $propIds;
 	}
 	
 	/**
 	 * @return string[]|null
 	 */
-	function getFieldIds() {
-		return $this->fieldIds;
+	function getPropIds() {
+		return $this->propIds;
 	}
 	
 	/**
@@ -182,7 +182,7 @@ class SiGetInstruction {
 			}
 			
 			$instruction->setNewEntryRequested($ds->reqBool('newEntryRequested'));
-			$instruction->setFieldIds($ds->reqScalarArray('fieldIds', true));
+			$instruction->setPropIds($ds->reqScalarArray('propIds', true));
 			return $instruction;
 		} catch (AttributesException $e) {
 			throw new \InvalidArgumentException(null, 0, $e);

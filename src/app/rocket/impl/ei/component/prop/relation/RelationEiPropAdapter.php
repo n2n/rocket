@@ -38,6 +38,7 @@ use rocket\impl\ei\component\prop\relation\conf\RelationConfig;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\impl\ei\component\prop\relation\model\Relation;
 use rocket\ei\manage\gui\GuiFieldAssembler;
+use rocket\ei\manage\gui\ViewMode;
 
 abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements RelationEiProp, GuiEiProp, GuiFieldAssembler, ForkEiProp {
 			
@@ -124,7 +125,7 @@ abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements Re
 	 * @see \rocket\ei\component\prop\GuiEiProp::buildGuiProp()
 	 */
 	function buildGuiProp(Eiu $eiu): ?GuiProp {
-	    return GuiProps::configAndAssembler($this->displayConfig, $this);
+		return GuiProps::configAndAssembler($this->displayConfig, $this);
 	}
 	
 	function isStringRepresentable(): bool {

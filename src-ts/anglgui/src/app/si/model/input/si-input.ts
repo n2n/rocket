@@ -18,8 +18,8 @@ export class SiInput {
 		for (const entryInput of this.entryInputs) {
 			const fieldInputObj = {};
 
-			for (const [fieldId, inputObj] of entryInput.fieldInputMap) {
-				fieldInputObj[fieldId] = inputObj;
+			for (const [propId, inputObj] of entryInput.fieldInputMap) {
+				fieldInputObj[propId] = inputObj;
 			}
 
 			entryInputMaps.push(entryInput.toJSON());
