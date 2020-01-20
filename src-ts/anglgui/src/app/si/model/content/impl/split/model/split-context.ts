@@ -83,9 +83,14 @@ export class SplitContent implements SplitOption {
 			return this.entry$;
 		}
 
-		const instruction = SiGetInstruction
-				.entry(this.lazyDef.siComp, this.lazyDef.bulky, this.lazyDef.readOnly, this.lazyDef.entryId)
-				.setPropIds(this.lazyDef.propIds);
+		let instruction: SiGetInstruction|null = null;
+		if (this.lazyDef.entryId) {
+			instruction = SiGetInstruction.entry(this.lazyDef.siComp, this.lazyDef.bulky, this.lazyDef.readOnly, this.lazyDef.entryId);
+		} else {
+			instruction = SiGetInstruction.newEntry(this.lazyDef.siComp, this.lazyDef.bulky, this.lazyDef.readOnly);
+		}
+		instruction.setPropIds(this.lazyDef.propIds);
+
 		return this.entry$ = this.lazyDef.siService.apiGet(this.lazyDef.apiUrl, new SiGetRequest(instruction))
 				.pipe(map((response: SiGetResponse) => {
 					return this.loadedEntry = response.results[0].entry;

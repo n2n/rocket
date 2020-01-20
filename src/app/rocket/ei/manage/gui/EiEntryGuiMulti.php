@@ -57,6 +57,13 @@ class EiEntryGuiMulti {
 	}
 	
 	/**
+	 * @return \rocket\ei\EiType
+	 */
+	function getContextEiType() {
+		return $this->contextEiType;
+	}
+	
+	/**
 	 * @param EiEntryGui[] $eiEntryGuis
 	 */
 	function setEiEntryGuis(array $eiEntryGuis) {
@@ -106,21 +113,5 @@ class EiEntryGuiMulti {
 		}
 		
 		return $this->eiEntryGuis[$this->selectedEiTypeId];
-	}
-	
-	function createSiEntry() {
-		$siEntry = new SiEntry(new SiEntryIdentifier($this->contextEiType->getSupremeEiType()->getId(), null),
-		    ViewMode::isReadOnly($this->viewMode), ViewMode::isBulky($this->viewMode));
-		
-		foreach ($this->eiEntryGuis as $eiEntryGui) {
-			$siEntry->putBuildup($eiEntryGui->getEiEntry()->getEiType()->getId(), 
-					$eiEntryGui->createSiEntryBuildup());
-		}
-		
-		if (count($this->eiEntryGuis) == 1) {
-			$siEntry->setSelectedTypeId(current($this->eiEntryGuis)->getEiEntry()->getEiType()->getId());
-		}
-		
-		return $siEntry;
 	}
 }

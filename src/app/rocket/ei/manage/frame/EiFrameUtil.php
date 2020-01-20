@@ -45,6 +45,7 @@ use rocket\ei\manage\gui\EiEntryGui;
 use rocket\si\content\SiEntry;
 use rocket\si\meta\SiDeclaration;
 use n2n\util\ex\IllegalStateException;
+use rocket\si\content\SiEntryIdentifier;
 
 class EiFrameUtil {
 	private $eiFrame;
@@ -394,6 +395,75 @@ class EiEntryGuiResult {
 	
 	/**
 	 * @param EiEntryGui[]
+	 * @return SiDeclaration
+	 */
+	function createSiDeclaration() {
+		IllegalStateException::assertTrue($this->eiGui !== null);
+		
+		return $this->eiGui->createSiDeclaration();
+	}
+}
+
+
+class EiEntryGuiMultiResult {
+	private $eiEntryGuiMulti;
+	private $eiGuiFrame;
+	private $eiGui;
+	
+	/**
+	 * @param EiEntryGui $eiEntryGui
+	 * @param EiGuiFrame $eiGuiFrame
+	 */
+	function __construct(EiEntryGuiMulti $eiEntryGuiMulti, EiGuiFrame $eiGuiFrame, ?EiGui $eiGui) {
+		$this->eiEntryGuiMulti = $eiEntryGuiMulti;
+		$this->eiGuiFrame = $eiGuiFrame;
+		$this->eiGui = $eiGui;
+	}
+	
+	/**
+	 * @return \rocket\ei\manage\gui\EiEntryGuiMulti
+	 */
+	function getEiEntryGuiMulti() {
+		return $this->eiEntryGuiMulti;
+	}
+	
+	/**
+	 * @return \rocket\ei\manage\gui\EiGuiFrame
+	 */
+	function getEiGuiFrame() {
+		return $this->eiGuiFrame;
+	}
+	
+	/**
+	 * @return \rocket\ei\manage\gui\EiGui|null
+	 */
+	function getEiGui() {
+		return $this->eiGui;
+	}
+	
+	/**
+	 * @param bool $controlsIncluded
+	 * @return SiEntry
+	 */
+	function createSiEntry(bool $controlsIncluded) {
+		
+		$siEntry = new SiEntry(new SiEntryIdentifier($this->eiEntryGuiMulti->getContextEiType()->getSupremeEiType()->getId(), null),
+				ViewMode::isReadOnly($this->viewMode), ViewMode::isBulky($this->eiEntryGuiMulti->viewMode));
+		
+		foreach ($this->eiEntryGuiMulti->getEiEntryGuis() as $eiEntryGui) {
+			
+			$siEntry->putBuildup($eiEntryGui->getEiEntry()->getEiType()->getId(),
+					$eiEntryGui->createSiEntryBuildup());
+		}
+		
+		if (count($this->eiEntryGuis) == 1) {
+			$siEntry->setSelectedTypeId(current($this->eiEntryGuis)->getEiEntry()->getEiType()->getId());
+		}
+		
+		return $siEntry;
+	}
+	
+	/**
 	 * @return SiDeclaration
 	 */
 	function createSiDeclaration() {

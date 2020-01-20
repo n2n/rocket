@@ -30,6 +30,7 @@ use rocket\ei\manage\gui\EiEntryGui;
 use rocket\si\api\SiPartialContentInstruction;
 use rocket\si\content\SiEntry;
 use rocket\ei\manage\gui\field\GuiPropPath;
+use n2n\util\ex\IllegalStateException;
 
 class GetInstructionProcess {
 	private $instruction;
@@ -59,6 +60,8 @@ class GetInstructionProcess {
 		if (null !== ($spci = $this->instruction->getPartialContentInstruction())) {
 			return $this->handlePartialContent($spci);
 		}
+		
+		throw new IllegalStateException();
 	}
 	
 	/**
