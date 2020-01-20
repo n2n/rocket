@@ -41,6 +41,10 @@ use rocket\ei\manage\security\SecurityException;
 use rocket\ei\manage\gui\EiGui;
 use n2n\l10n\N2nLocale;
 use rocket\ei\mask\EiMask;
+use rocket\ei\manage\gui\EiEntryGui;
+use rocket\si\content\SiEntry;
+use rocket\si\meta\SiDeclaration;
+use n2n\util\ex\IllegalStateException;
 
 class EiFrameUtil {
 	private $eiFrame;
@@ -148,12 +152,12 @@ class EiFrameUtil {
 	 * @throws EiException
 	 */
 	function createNewEiEntryGuiMulti(bool $bulky, bool $readOnly, array $guiPropPaths = null) {
-// 		$viewMode = ViewMode::determine($bulky, $readOnly, true);
+		$viewMode = ViewMode::determine($bulky, $readOnly, true);
 		
 		$newEiEntryGuis = [];
 		
 		foreach ($this->createPossibleNewEiEntries() as $eiTypeId => $newEiEntry) {
-			$newEiGuiFrame = $this->createEiGuiFrame($newEiEntry->getEiMask(), $bulky, $readOnly, $guiPropPaths);
+			$newEiGuiFrame = $this->createEiGuiFrame($newEiEntry->getEiMask(), $viewMode, $guiPropPaths);
 			
 			$newEiEntryGuis[$eiTypeId] = $newEiGuiFrame->createEiEntryGui($newEiEntry);
 		}
@@ -165,7 +169,7 @@ class EiFrameUtil {
 		}
 		
 		return new EiEntryGuiMulti($this->eiFrame->getContextEiEngine()->getEiMask()->getEiType(), 
-				ViewMode::determine($bulky, $readOnly, true), $newEiEntryGuis);
+				$viewMode, $newEiEntryGuis);
 	}
 	
 	/**
@@ -187,18 +191,38 @@ class EiFrameUtil {
 	}
 	
 	/**
+	 * @param EiMask $eiMask
+	 * @param int $viewMode
+	 * @param array $guiPropPaths
+	 * @return \rocket\ei\manage\gui\EiGui
+	 */
+	private function createEiGui(EiMask $eiMask, int $viewMode, array $guiPropPaths = null) {
+		$guiDefinition = $this->eiFrame->getManageState()->getDef()->getGuiDefinition($eiMask);
+		
+		return $guiDefinition->createEiGui($this->eiFrame, $viewMode);
+	}
+	
+	/**
 	 * @param EiObject $eiObject
 	 * @param bool $bulky
 	 * @param bool $readOnly
 	 * @throws SecurityException
-	 * @return \rocket\ei\manage\gui\EiEntryGui
+	 * @return EiEntryGuiResult
 	 */
-	function createEiEntryGuiFromEiObject(EiObject $eiObject, bool $bulky, bool $readOnly, array $guiPropPaths = null) {
+	function createEiEntryGuiFromEiObject(EiObject $eiObject, bool $bulky, bool $readOnly, ?array $guiPropPaths, 
+			bool $eiGuiRequired) {
 		$eiEntry = $this->eiFrame->createEiEntry($eiObject);
-		$viewMode =  ViewMode::determine($bulky, $readOnly, $eiObject->isNew());
-		$eiGuiFrame = $this->createEiGuiFrame($eiEntry->getEiMask(), $viewMode, $guiPropPaths);
+		$viewMode = ViewMode::determine($bulky, $readOnly, $eiObject->isNew());
+		$eiGui = null;
+		$eiGuiFrame = null;
+		if (!$eiGuiRequired) {
+			$eiGuiFrame = $this->createEiGuiFrame($eiEntry->getEiMask(), $viewMode, $guiPropPaths);
+		} else {
+			$eiGui = $this->createEiGui($eiEntry->getEiMask(), $viewMode, $guiPropPaths);
+			$eiGuiFrame = $eiGui->getEiGuiFrame();
+		}
 		
-		return $eiGuiFrame->createEiEntryGui($eiEntry);
+		return new EiEntryGuiResult($eiGuiFrame->createEiEntryGui($eiEntry), $eiGuiFrame, $eiGui);
 	}
 	
 	/**
@@ -320,5 +344,61 @@ class EiFrameUtil {
 		$n2nContext = $this->eiFrame->getN2nContext();
 		return $this->eiFrame->getManageState()->getDef()->getIdNameDefinition($eiMask)
 				->createIdentityString($eiObject, $n2nContext, $n2nLocale ?? $this->eiFrame->getN2nContext()->getN2nLocale());
+	}
+}
+
+
+class EiEntryGuiResult {
+	private $eiEntryGui;
+	private $eiGuiFrame;
+	private $eiGui;
+	
+	/**
+	 * @param EiEntryGui $eiEntryGui
+	 * @param EiGuiFrame $eiGuiFrame
+	 */
+	function __construct(EiEntryGui $eiEntryGui, EiGuiFrame $eiGuiFrame, ?EiGui $eiGui) {
+		$this->eiEntryGui = $eiEntryGui;
+		$this->eiGuiFrame = $eiGuiFrame;
+		$this->eiGui = $eiGui;
+	}
+	
+	/**
+	 * @return \rocket\ei\manage\gui\EiEntryGui
+	 */
+	function getEiEntryGui() {
+		return $this->eiEntryGui;
+	}
+	
+	/**
+	 * @return \rocket\ei\manage\gui\EiGuiFrame
+	 */
+	function getEiGuiFrame() {
+		return $this->eiGuiFrame;
+	}
+	
+	/**
+	 * @return \rocket\ei\manage\gui\EiGui|null
+	 */
+	function getEiGui() {
+		return $this->eiGui;
+	}
+	
+	/**
+	 * @param bool $controlsIncluded
+	 * @return SiEntry
+	 */
+	function createSiEntry(bool $controlsIncluded) {
+		return $this->eiGuiFrame->createSiEntry($this->eiEntryGui);
+	}
+	
+	/**
+	 * @param EiEntryGui[]
+	 * @return SiDeclaration
+	 */
+	function createSiDeclaration() {
+		IllegalStateException::assertTrue($this->eiGui !== null);
+		
+		return $this->eiGui->createSiDeclaration();
 	}
 }

@@ -30,7 +30,7 @@ export abstract class SplitContextSiField extends SiFieldAdapter {
 		return Array.from(this.splitContentMap.values());
 	}
 
-	getEntry$(key: string): Observable<SiEntry> {
+	getEntry$(key: string): Promise<SiEntry> {
 		if (this.splitContentMap.has(key)) {
 			return this.splitContentMap.get(key).getSiEntry$();
 		}
@@ -48,7 +48,7 @@ export abstract class SplitContextSiField extends SiFieldAdapter {
 }
 
 export class SplitContent implements SplitOption {
-	private entry$: Observable<SiEntry>|null = null;
+	private entry$: Promise<SiEntry>|null = null;
 	private lazyDef: LazyDef|null = null;
 	private loadedEntry: SiEntry|null = null;
 
@@ -57,7 +57,7 @@ export class SplitContent implements SplitOption {
 
 	static createUnavaialble(key: string, label: string, shortLabel: string): SplitContent {
 		const splitContent = new SplitContent(key, label, shortLabel);
-		splitContent.entry$ = of(null);
+		splitContent.entry$ = Promise.resolve(null);
 		return splitContent;
 	}
 
@@ -69,7 +69,7 @@ export class SplitContent implements SplitOption {
 
 	static createEntry(key: string, label: string, shortLabel: string, entry: SiEntry): SplitContent {
 		const splitContent = new SplitContent(key, label, shortLabel);
-		splitContent.entry$ = of(entry);
+		splitContent.entry$ = Promise.resolve(entry);
 		splitContent.loadedEntry = entry;
 		return splitContent;
 	}
@@ -78,7 +78,7 @@ export class SplitContent implements SplitOption {
 		return this.loadedEntry;
 	}
 
-	getSiEntry$(): Observable<SiEntry|null> {
+	getSiEntry$(): Promise<SiEntry|null> {
 		if (this.entry$) {
 			return this.entry$;
 		}
@@ -89,7 +89,8 @@ export class SplitContent implements SplitOption {
 		return this.entry$ = this.lazyDef.siService.apiGet(this.lazyDef.apiUrl, new SiGetRequest(instruction))
 				.pipe(map((response: SiGetResponse) => {
 					return this.loadedEntry = response.results[0].entry;
-				}));
+				}))
+				.toPromise();
 	}
 }
 

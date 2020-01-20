@@ -1,5 +1,4 @@
 import { SplitOption } from '../model/split-option';
-import { Observable } from 'rxjs';
 import { SiField } from '../../../si-field';
 import { SplitStyle } from '../model/split-context';
 
@@ -9,5 +8,5 @@ export interface SplitModel {
 
 	getSplitStyle(): SplitStyle;
 
-	getSiField$(key: string): Observable<SiField>;
+	getSiField$(key: string): Promise<SiField>;
 }

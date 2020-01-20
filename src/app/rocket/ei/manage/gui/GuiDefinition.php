@@ -789,7 +789,7 @@ class GuiDefinition {
 	 */
 	private function semiAutoInitEiGuiFrame($eiGuiFrame, $possibleGuiPropPaths) {
 		$assemblerCache = new EiFieldAssemblerCache($eiGuiFrame, $possibleGuiPropPaths);
-		$guiStructureDeclarations = $this->assembleSemiAutoGuiStructureDeclarations($assemblerCache, $eiGuiFrame, $this->getGuiPropPaths(), true);
+		$guiStructureDeclarations = $this->assembleSemiAutoGuiStructureDeclarations($assemblerCache, $eiGuiFrame, $possibleGuiPropPaths, true);
 		$this->initEiGuiFrame($eiGuiFrame);
 		return $guiStructureDeclarations;
 	}

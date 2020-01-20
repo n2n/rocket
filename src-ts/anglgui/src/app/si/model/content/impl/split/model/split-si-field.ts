@@ -48,17 +48,17 @@ export class SplitSiField extends SiFieldAdapter implements SplitModel {
 		return [];
 	}
 
-	getSiField$(key: string): Observable<SiField|null> {
+	getSiField$(key: string): Promise<SiField|null> {
 		if (!this.splitContext) {
 			throw new Error('No SplitContext assigned.');
 		}
 
-		return this.splitContext.getEntry$(key).pipe(map((entry: SiEntry|null) => {
+		return this.splitContext.getEntry$(key).then((entry: SiEntry|null) => {
 			if (entry === null) {
 				return null;
 			}
 
 			return entry.selectedEntryBuildup.getFieldById(this.refPropId);
-		}));
+		});
 	}
 }

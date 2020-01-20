@@ -115,9 +115,7 @@ class EiGuiFrame {
 	function putGuiFieldAssembler(EiPropPath $eiPropPath, GuiFieldAssembler $guiFieldAssembler) {
 		$this->ensureNotInit();
 		
-		$eiPropPathStr = (string) $eiPropPath;
-		$this->eiPropPaths[$eiPropPathStr] = $eiPropPath;
-		$this->guiFieldAssemblers[$eiPropPathStr] = $guiFieldAssembler;
+		$this->guiFieldAssemblers[(string) $eiPropPath] = $guiFieldAssembler;
 	}
 	
 	/**
@@ -137,6 +135,9 @@ class EiGuiFrame {
 	
 	function putDisplayDefintion(GuiPropPath $guiPropPath, DisplayDefinition $displayDefinition) {
 		$this->ensureNotInit();
+
+		$eiPropPath = $guiPropPath->getFirstEiPropPath();
+		$this->eiPropPaths[(string) $eiPropPath] = $eiPropPath;
 		
 		$guiPropPathStr = (string) $guiPropPath;
 		$this->guiPropPaths[$guiPropPathStr] = $guiPropPath;
@@ -428,29 +429,29 @@ class EiGuiFrame {
 					$this->eiFrame->getN2nContext(), $n2nLocale);
 		}
 		
-		$siEntry = new SiEntryBuildup($typeId, $idName);
+		$siEntryBuildup = new SiEntryBuildup($typeId, $idName);
 		
 		foreach ($eiEntryGui->getGuiFieldMap()->getAllGuiFields() as $guiPropPathStr => $guiField) {
 			if (null !== ($siField = $guiField->getSiField())) {
-				$siEntry->putField($guiPropPathStr, $siField);
+				$siEntryBuildup->putField($guiPropPathStr, $siField);
 			}
 			
 // 			$siEntry->putContextFields($guiPropPathStr, $guiField->getContextSiFields());
 		}
 		
 		if (!$siControlsIncluded) {
-			return $siEntry;
+			return $siEntryBuildup;
 		}
 		
 		foreach ($this->guiDefinition->createEntryGuiControls($this, $eiEntry)
 				as $guiControlPathStr => $entryGuiControl) {
-			$siEntry->putControl($guiControlPathStr, $entryGuiControl->toSiControl(
+			$siEntryBuildup->putControl($guiControlPathStr, $entryGuiControl->toSiControl(
 					new ApiControlCallId(GuiControlPath::create($guiControlPathStr),
 							$this->guiDefinition->getEiMask()->getEiTypePath(),
 							$this->viewMode, $eiEntry->getPid())));
 		}
 		
-		return $siEntry;
+		return $siEntryBuildup;
 	}
 	
 	/**

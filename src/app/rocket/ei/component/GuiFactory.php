@@ -171,10 +171,6 @@ class GuiFactory {
 		
 		$guiFieldMap = new GuiFieldMap();
 		foreach ($eiGuiFrame->getEiPropPaths() as $eiPropPath) {
-			if (!$eiGuiFrame->containsDisplayDefintion(new GuiPropPath([$eiPropPath]))) {
-				continue;
-			}
-			
 			$guiField = self::buildGuiField($eiGuiFrame, $eiEntryGui, $eiPropPath);
 			
 			if ($guiField !== null) {

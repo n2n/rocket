@@ -59,7 +59,7 @@ export class SplitComponent implements OnInit, OnDestroy, DoCheck {
 			}
 
 			this.loadedKeys.push(key);
-			this.model.getSiField$(key).subscribe((siField) => {
+			this.model.getSiField$(key).then((siField) => {
 				childUiStructure.model = siField ? siField.createUiStructureModel() : this.createNotActiveUism();
 			});
 		}

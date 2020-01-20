@@ -84,12 +84,18 @@ class GetInstructionProcess {
 		$eiObject = $this->util->lookupEiObject($entryId);
 		$guiPropPaths = $this->parseGuiPropPaths();
 		
-		$eiEntryGui = $this->eiFrameUtil->createEiEntryGuiFromEiObject($eiObject, 
-				$this->instruction->isBulky(), $this->instruction->isReadOnly(), $guiPropPaths);
+		$result = $this->eiFrameUtil->createEiEntryGuiFromEiObject($eiObject, 
+				$this->instruction->isBulky(), $this->instruction->isReadOnly(), $guiPropPaths,
+				$this->instruction->isDeclarationRequested());
 		
-		return $this->createEntryResult(
-				$eiEntryGui->createSiEntry($this->instruction->areControlsIncluded()), 
-				[$eiEntryGui]);
+		$getResult = new SiGetResult();
+		$getResult->setEntry($result->createSiEntry($this->instruction->areControlsIncluded()));
+		
+		if ($this->instruction->isDeclarationRequested()) {
+			$getResult->setDeclaration($result->createSiDeclaration());
+		}
+		
+		return $getResult;
 	}
 	
 	/**
