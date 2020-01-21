@@ -40,21 +40,21 @@ class ApiUtil {
 		$this->eiEngineUtil = new EiEngineUtil($eiFrame->getContextEiEngine(), $eiFrame->getManageState());
 	}
 	
-	/**
-	 * @param EiEntryGui[]
-	 * @return \rocket\ei\manage\gui\EiGuiFrame
-	 */
-	function createMultiBuildupSiDeclaration(array $eiEntryGuis) {
-		$declaration = new SiDeclaration();
+// 	/**
+// 	 * @param EiEntryGui[]
+// 	 * @return \rocket\ei\manage\gui\EiGuiFrame
+// 	 */
+// 	function createMultiBuildupSiDeclaration(array $eiEntryGuis) {
+// 		$declaration = new SiDeclaration();
 		
-		foreach ($eiEntryGuis as $eiEntryGui) {
-			ArgUtils::assertTrue($eiEntryGui instanceof EiEntryGui);
+// 		foreach ($eiEntryGuis as $eiEntryGui) {
+// 			ArgUtils::assertTrue($eiEntryGui instanceof EiEntryGui);
 			
-			$declaration->addTypeDeclaration($eiEntryGui->getEiGuiFrame()->createSiTypDeclaration());
-		}
+// 			$declaration->addTypeDeclaration($eiEntryGui->getEiGuiFrame()->createSiTypDeclaration());
+// 		}
 		
-		return $declaration;
-	}
+// 		return $declaration;
+// 	}
 	
 	
 // 	/**

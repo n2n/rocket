@@ -107,12 +107,18 @@ class GetInstructionProcess {
 	private function handleNewEntry() {
 		$guiPropPaths = $this->parseGuiPropPaths();
 		
-		$eiEntryGuiMulti = $this->eiFrameUtil->createNewEiEntryGuiMulti(
-				$this->instruction->isBulky(), $this->instruction->isReadOnly(), $guiPropPaths);
+		$eiEntryGuiMultiResult = $this->eiFrameUtil->createNewEiEntryGuiMulti(
+				$this->instruction->isBulky(), $this->instruction->isReadOnly(), $guiPropPaths,
+				$this->instruction->isDeclarationRequested());
 				
-		return $this->createEntryResult(
-				$eiEntryGuiMulti->createSiEntry($this->instruction->areControlsIncluded()), 
-				$eiEntryGuiMulti->getEiEntryGuis());	
+		$getResult = new SiGetResult();
+		$getResult->setEntry($eiEntryGuiMultiResult->createSiEntry($this->instruction->areControlsIncluded()));
+		
+		if ($this->instruction->isDeclarationRequested()) {
+			$getResult->setDeclaration($eiEntryGuiMultiResult->createSiDeclaration());
+		}
+		
+		return $getResult;
 	}
 	
 	/**

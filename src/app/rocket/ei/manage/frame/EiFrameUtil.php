@@ -46,6 +46,7 @@ use rocket\si\content\SiEntry;
 use rocket\si\meta\SiDeclaration;
 use n2n\util\ex\IllegalStateException;
 use rocket\si\content\SiEntryIdentifier;
+use n2n\util\type\ArgUtils;
 
 class EiFrameUtil {
 	private $eiFrame;
@@ -149,16 +150,24 @@ class EiFrameUtil {
 	/**
 	 * @param bool $bulky
 	 * @param bool $readOnly
-	 * @return \rocket\ei\manage\gui\EiEntryGuiMulti
+	 * @return EiEntryGuiMultiResult
 	 * @throws EiException
 	 */
-	function createNewEiEntryGuiMulti(bool $bulky, bool $readOnly, array $guiPropPaths = null) {
+	function createNewEiEntryGuiMulti(bool $bulky, bool $readOnly, ?array $guiPropPaths, bool $eiGuiRequired) {
 		$viewMode = ViewMode::determine($bulky, $readOnly, true);
 		
 		$newEiEntryGuis = [];
+		$eiGuiFrames = [];
+		$eiGuis = $eiGuiRequired ? [] : null;
 		
 		foreach ($this->createPossibleNewEiEntries() as $eiTypeId => $newEiEntry) {
-			$newEiGuiFrame = $this->createEiGuiFrame($newEiEntry->getEiMask(), $viewMode, $guiPropPaths);
+			$newEiGuiFrame = null;
+			if (!$eiGuiRequired) {
+				$eiGuiFrames[$eiTypeId] = $newEiGuiFrame = $this->createEiGuiFrame($newEiEntry->getEiMask(), $viewMode, $guiPropPaths);
+			} else {
+				$eiGuis[$eiTypeId] = $eiGui = $this->createEiGui($newEiEntry->getEiMask(), $viewMode, $guiPropPaths);
+				$eiGuiFrames[$eiTypeId] = $newEiGuiFrame = $eiGui->getEiGuiFrame();
+			}
 			
 			$newEiEntryGuis[$eiTypeId] = $newEiGuiFrame->createEiEntryGui($newEiEntry);
 		}
@@ -169,8 +178,10 @@ class EiFrameUtil {
 					. ' because this type is abstract and doesn\'t have any sub EiTypes.');
 		}
 		
-		return new EiEntryGuiMulti($this->eiFrame->getContextEiEngine()->getEiMask()->getEiType(), 
+		$eiEntryGuiMulti = new EiEntryGuiMulti($this->eiFrame->getContextEiEngine()->getEiMask()->getEiType(), 
 				$viewMode, $newEiEntryGuis);
+		
+		return new EiEntryGuiMultiResult($eiEntryGuiMulti, $eiGuiFrames, $eiGuis);
 	}
 	
 	/**
@@ -407,17 +418,19 @@ class EiEntryGuiResult {
 
 class EiEntryGuiMultiResult {
 	private $eiEntryGuiMulti;
-	private $eiGuiFrame;
-	private $eiGui;
+	private $eiGuiFrames;
+	private $eiGuis;
 	
 	/**
 	 * @param EiEntryGui $eiEntryGui
-	 * @param EiGuiFrame $eiGuiFrame
+	 * @param EiGuiFrame[] $eiGuiFrames
+	 * @param EiGui[] $eiGuis
 	 */
-	function __construct(EiEntryGuiMulti $eiEntryGuiMulti, EiGuiFrame $eiGuiFrame, ?EiGui $eiGui) {
+	function __construct(EiEntryGuiMulti $eiEntryGuiMulti, array $eiGuiFrames, ?array $eiGuis) {
+		ArgUtils::valArray($eiGuis, EiGui::class, true);
 		$this->eiEntryGuiMulti = $eiEntryGuiMulti;
-		$this->eiGuiFrame = $eiGuiFrame;
-		$this->eiGui = $eiGui;
+		$this->eiGuiFrames = $eiGuiFrames;
+		$this->eiGuis = $eiGuis;
 	}
 	
 	/**
@@ -431,14 +444,14 @@ class EiEntryGuiMultiResult {
 	 * @return \rocket\ei\manage\gui\EiGuiFrame
 	 */
 	function getEiGuiFrame() {
-		return $this->eiGuiFrame;
+		return $this->eiGuiFrames;
 	}
 	
 	/**
 	 * @return \rocket\ei\manage\gui\EiGui|null
 	 */
 	function getEiGui() {
-		return $this->eiGui;
+		return $this->eiGuis;
 	}
 	
 	/**
@@ -448,27 +461,34 @@ class EiEntryGuiMultiResult {
 	function createSiEntry(bool $controlsIncluded) {
 		
 		$siEntry = new SiEntry(new SiEntryIdentifier($this->eiEntryGuiMulti->getContextEiType()->getSupremeEiType()->getId(), null),
-				ViewMode::isReadOnly($this->viewMode), ViewMode::isBulky($this->eiEntryGuiMulti->viewMode));
+				ViewMode::isReadOnly($this->eiEntryGuiMulti->getViewMode()), ViewMode::isBulky($this->eiEntryGuiMulti->getViewMode()));
 		
-		foreach ($this->eiEntryGuiMulti->getEiEntryGuis() as $eiEntryGui) {
-			
+		$eiEntryGuis = $this->eiEntryGuiMulti->getEiEntryGuis();
+		foreach ($eiEntryGuis as $key => $eiEntryGui) {
 			$siEntry->putBuildup($eiEntryGui->getEiEntry()->getEiType()->getId(),
-					$eiEntryGui->createSiEntryBuildup());
+					$this->eiGuiFrames[$key]->createSiEntryBuildup($eiEntryGui, $controlsIncluded));
 		}
 		
-		if (count($this->eiEntryGuis) == 1) {
-			$siEntry->setSelectedTypeId(current($this->eiEntryGuis)->getEiEntry()->getEiType()->getId());
+		if (count($eiEntryGuis) == 1) {
+			$siEntry->setSelectedTypeId(current($eiEntryGuis)->getEiEntry()->getEiType()->getId());
 		}
 		
 		return $siEntry;
 	}
 	
 	/**
+	 * @param EiEntryGui[]
 	 * @return SiDeclaration
 	 */
 	function createSiDeclaration() {
-		IllegalStateException::assertTrue($this->eiGui !== null);
+		IllegalStateException::assertTrue($this->eiGuis !== null);
 		
-		return $this->eiGui->createSiDeclaration();
+		$declaration = new SiDeclaration();
+		
+		foreach ($this->eiGuis as $eiGui) {
+			$declaration->addTypeDeclaration($eiGui->createSiTypeDeclaration());
+		}
+		
+		return $declaration;
 	}
 }

@@ -25,8 +25,6 @@ use n2n\util\type\ArgUtils;
 use rocket\si\input\SiEntryInput;
 use rocket\si\input\CorruptedSiInputDataException;
 use n2n\util\ex\IllegalStateException;
-use rocket\si\content\SiEntryIdentifier;
-use rocket\si\content\SiEntry;
 use rocket\ei\EiType;
 
 class EiEntryGuiMulti {
@@ -61,6 +59,13 @@ class EiEntryGuiMulti {
 	 */
 	function getContextEiType() {
 		return $this->contextEiType;
+	}
+	
+	/**
+	 * @return int
+	 */
+	function getViewMode() {
+		return $this->viewMode;
 	}
 	
 	/**
