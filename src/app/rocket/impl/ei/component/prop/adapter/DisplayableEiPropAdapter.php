@@ -62,7 +62,7 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\IndependentEiPropAdapter::createEiPropConfigurator()
 	 */
-	public function createConfigurator(): AdaptableEiPropConfigurator {
+	protected function createConfigurator(): AdaptableEiPropConfigurator {
 		return parent::createConfigurator()->addAdaption($this->getDisplayConfig());
 	}
 	

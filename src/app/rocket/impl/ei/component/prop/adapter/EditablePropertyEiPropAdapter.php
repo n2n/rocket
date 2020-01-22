@@ -59,7 +59,7 @@ abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAd
 		return $this->editConfig;
 	}
 
-	public function createConfigurator(): AdaptableEiPropConfigurator {
+	protected function createConfigurator(): AdaptableEiPropConfigurator {
 		return parent::createConfigurator()->addAdaption($this->getEditConfig());
 	}
 	

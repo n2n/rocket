@@ -56,7 +56,7 @@ abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter
 		return $this->displayConfig = new DisplayConfig(ViewMode::all());
 	}
 
-	public function createConfigurator(): AdaptableEiPropConfigurator {
+	protected function createConfigurator(): AdaptableEiPropConfigurator {
 		return parent::createConfigurator()->addAdaption($this->getDisplayConfig());
 	}
 	
