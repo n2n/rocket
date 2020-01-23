@@ -70,7 +70,7 @@ import { SplitManagerComponent } from './model/content/impl/split/comp/split-man
 		LinkOutFieldComponent, CompactEntryComponent, EmbeddedEntriesInComponent, EmbeddedEntriesSummaryInComponent,
 		EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent,
 		EmbeddedEntryPanelsInComponent, ButtonControlComponent, PaginationComponent, TogglerInFieldComponent, SplitComponent,
-		SplitViewMenuComponent, CrumbGroupComponent
+		SplitViewMenuComponent, CrumbGroupComponent, SplitManagerComponent
 	]
 })
 export class SiModule { }
