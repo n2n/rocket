@@ -2,6 +2,8 @@ import { SiField } from '../../../si-field';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { SiEntry } from '../../../si-entry';
 import { SplitContextSiField } from './split-context';
+import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
+import { SplitManagerComponent } from '../comp/split-manager/split-manager.component';
 
 export class SplitContextInSiField extends SplitContextSiField {
 
@@ -25,6 +27,8 @@ export class SplitContextInSiField extends SplitContextSiField {
 	}
 
 	protected createUiContent(): UiContent {
-		throw new Error('Method not implemented.');
+		throw new TypeUiContent(SplitManagerComponent, (ref) => {
+
+		});
 	}
 }

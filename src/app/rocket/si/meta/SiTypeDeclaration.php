@@ -34,7 +34,8 @@ class SiTypeDeclaration implements \JsonSerializable {
 	private $structureDeclarations;
 	
 	/**
-	 * @param SiType $fieldDeclarations
+	 * @param SiType $type
+	 * @param SiStructureDeclaration[] $structureDeclarations
 	 */
 	function __construct(SiType $type, array $structureDeclarations = []) {
 		$this->type = $type;
@@ -50,7 +51,6 @@ class SiTypeDeclaration implements \JsonSerializable {
 		return $this;
 	}
 	
-	
 	/**
 	 * @return SiType
 	 */
@@ -58,7 +58,6 @@ class SiTypeDeclaration implements \JsonSerializable {
 		return $this->type;
 	}
 
-	
 	/**
 	 * @param SiStructureDeclaration[] $structureDeclarations
 	 * @return SiTypeDeclaration

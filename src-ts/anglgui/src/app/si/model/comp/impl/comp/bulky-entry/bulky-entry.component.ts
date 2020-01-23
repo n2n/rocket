@@ -9,6 +9,8 @@ import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { StructureBranchComponent } from 'src/app/ui/structure/comp/structure-branch/structure-branch.component';
 import { SiField } from 'src/app/si/model/content/si-field';
 import { SiFieldAdapter } from 'src/app/si/model/content/impl/common/model/si-field-adapter';
+import { SiType } from 'src/app/si/model/meta/si-type';
+import { SiProp } from 'src/app/si/model/meta/si-prop';
 
 @Component({
 	selector: 'rocket-bulky-entry',
@@ -49,8 +51,15 @@ export class BulkyEntryComponent implements OnInit, OnDestroy, DoCheck {
 		}
 
 		const siTypeDeclaration = this.model.getSiDeclaration().getTypeDeclarationByTypeId(siEntry.selectedTypeId);
+		const toolbarResolver = new ToolbarResolver();
 
-		this.fieldUiStructures = this.createStructures(this.uiStructure, siTypeDeclaration.structureDeclarations);
+		this.fieldUiStructures = this.createStructures(this.uiStructure, siTypeDeclaration.structureDeclarations, toolbarResolver);
+
+		for (const prop of siTypeDeclaration.type.getProps()) {
+			if (prop.dependantPropIds.length > 0 && siEntry.selectedEntryBuildup.containsPropId(prop.id)) {
+				toolbarResolver.fillContext(prop, siEntry.selectedEntryBuildup.getFieldById(prop.id));
+			}
+		}
 	}
 
 	private clear() {
@@ -64,23 +73,25 @@ export class BulkyEntryComponent implements OnInit, OnDestroy, DoCheck {
 		}
 	}
 
-	private createStructures(parent: UiStructure, uiStructureDeclarations: SiStructureDeclaration[]): UiStructure[] {
+	private createStructures(parent: UiStructure, uiStructureDeclarations: SiStructureDeclaration[],
+			toolbarResolver: ToolbarResolver): UiStructure[] {
 		const structures: UiStructure[] = [];
 		for (const usd of uiStructureDeclarations) {
-			structures.push(this.dingsel(parent, usd));
+			structures.push(this.dingsel(parent, usd, toolbarResolver));
 		}
 		return structures;
 	}
 
-	private dingsel(parent: UiStructure, ssd: SiStructureDeclaration): UiStructure {
+	private dingsel(parent: UiStructure, ssd: SiStructureDeclaration, toolbarResolver: ToolbarResolver): UiStructure {
 		const uiStructure = parent.createContentChild();
 		uiStructure.label = ssd.prop ? ssd.prop.label : ssd.label;
 		uiStructure.type = ssd.type;
 
 		if (ssd.prop) {
 			uiStructure.label = ssd.prop.label;
-			uiStructure.model = this.model.getSiEntry().selectedEntryBuildup.getFieldById(ssd.prop.id)
-					.createUiStructureModel();
+			const siField = this.model.getSiEntry().selectedEntryBuildup.getFieldById(ssd.prop.id);
+			uiStructure.model = siField.createUiStructureModel();
+			toolbarResolver.register(ssd.prop.id, uiStructure);
 			return uiStructure;
 		}
 
@@ -90,36 +101,39 @@ export class BulkyEntryComponent implements OnInit, OnDestroy, DoCheck {
 					ref.instance.uiStructure = uiStructure;
 				}));
 
-		this.createStructures(uiStructure, ssd.children);
+		this.createStructures(uiStructure, ssd.children, toolbarResolver);
 
 		return uiStructure;
 	}
-
 }
 
 class ToolbarResolver {
-	private uiStructuresMap = new Map<string, { siField: SiField, uiStructure: UiStructure } | null>();
+	private uiStructuresMap = new Map<string, UiStructure>();
 
-	register(propId: string, siField: SiField, uiStructure: UiStructure) {
-		this.uiStructuresMap.set(propId, null);
-
-		for (const contextSiField of siField.getContextSiFields()) {
-			this.addContextSiField(propId, contextSiField, uiStructure);
-		}
+	register(propId: string, uiStructure: UiStructure) {
+		this.uiStructuresMap.set(propId, uiStructure);
 	}
 
-	private addContextSiField(propId: string, siField: SiField, uiStructure: UiStructure) {
-		if (!this.uiStructuresMap.has(propId)) {
-			this.uiStructuresMap.set(propId, { siField, uiStructure });
-			return;
+	fillContext(conextSiProp: SiProp, contextSiField: SiField) {
+		let contextUiStructure: UiStructure|null = null;
+
+		for (const dependantPropId of conextSiProp.dependantPropIds) {
+			const uiStructure = this.uiStructuresMap.get(dependantPropId);
+
+			if (!uiStructure) {
+				continue;
+			}
+
+			if (!contextUiStructure) {
+				contextUiStructure = uiStructure;
+			}
+
+			contextUiStructure = this.deterOuter(contextUiStructure, uiStructure);
 		}
 
-		const item = this.uiStructuresMap.get(propId);
-		if (item === null) {
-			return item;
+		if (contextUiStructure) {
+			contextUiStructure.createToolbarChild(contextSiField.createUiStructureModel());
 		}
-
-		item.uiStructure = this.deterOuter(item.uiStructure, uiStructure);
 	}
 
 	private deterOuter(uiStructure1: UiStructure, uiStructure2: UiStructure): UiStructure {
@@ -135,12 +149,7 @@ class ToolbarResolver {
 			return uiStructure2;
 		}
 
-		throw new Error('Impossible!');
+		return this.deterOuter(uiStructure1.parent, uiStructure2.parent);
 	}
 
-	fillToolbar() {
-		for (const [, item] of this.uiStructuresMap) {
-			item.uiStructure.createToolbarChild(item.siField.createUiStructureModel());
-		}
-	}
 }

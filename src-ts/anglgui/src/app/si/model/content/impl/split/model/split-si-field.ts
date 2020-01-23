@@ -61,4 +61,8 @@ export class SplitSiField extends SiFieldAdapter implements SplitModel {
 			return entry.selectedEntryBuildup.getFieldById(this.refPropId);
 		});
 	}
+
+	getContextSiFields(): SiField[] {
+		return this.splitContext ? [this.splitContext] : [];
+	}
 }
