@@ -20,20 +20,22 @@
 
 <ng-content select="[pre-content]"></ng-content>
 
-<div *ngIf="getType()" class="rocket-structure-content">
-	<ng-template [ngTemplateOutlet]="structureContent"></ng-template>
-</div>
-
-<ng-container *ngIf="!getType()">
-	<ng-template [ngTemplateOutlet]="structureContent"></ng-template>
-</ng-container>
-
-<ng-template #structureContent>
-	<div *ngIf="!loaded" class="rocket-loader"></div>
+<ng-container *ngIf="contentVisible">
+	<div *ngIf="getType()" class="rocket-structure-content">
+		<ng-template [ngTemplateOutlet]="structureContent"></ng-template>
+	</div>
 	
-	<ng-container *ngIf="loaded">
-		<ng-template *ngIf="uiContent" rocketUiContent [uiStructure]="uiStructure" [uiContent]="uiContent"></ng-template>
+	<ng-container *ngIf="!getType()">
+		<ng-template [ngTemplateOutlet]="structureContent"></ng-template>
 	</ng-container>
-</ng-template>
+	
+	<ng-template #structureContent>
+		<div *ngIf="!loaded" class="rocket-loader"></div>
+		
+		<ng-container *ngIf="loaded">
+			<ng-template *ngIf="uiContent" rocketUiContent [uiStructure]="uiStructure" [uiContent]="uiContent"></ng-template>
+		</ng-container>
+	</ng-template>
+</ng-container>
 
 <ng-content select="[post-content]"></ng-content>

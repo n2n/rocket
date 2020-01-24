@@ -38,6 +38,10 @@ export abstract class SplitContextSiField extends SiFieldAdapter {
 		throw new Error('Unknown key.');
 	}
 
+	abstract isKeyActive(key: string): boolean;
+	
+	abstract activateKey(key: string): void;
+	
 	abstract hasInput(): boolean;
 
 	abstract readInput(): object;

@@ -45,7 +45,15 @@ export class SplitSiField extends SiFieldAdapter implements SplitModel {
 
 		return [];
 	}
-
+	
+	isKeyActive(key: string): boolean {
+		return this.splitContext.isKeyActive(key);
+	}
+	
+	activateKey(key: string) {
+		this.splitContext.activateKey(key);
+	}
+	
 	getSiField$(key: string): Promise<SiField|null> {
 		if (!this.splitContext) {
 			throw new Error('No SplitContext assigned.');
@@ -58,9 +66,5 @@ export class SplitSiField extends SiFieldAdapter implements SplitModel {
 
 			return entry.selectedEntryBuildup.getFieldById(this.refPropId);
 		});
-	}
-
-	getContextSiFields(): SiField[] {
-		return this.splitContext ? [this.splitContext] : [];
 	}
 }

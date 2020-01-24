@@ -21,4 +21,14 @@ export class SplitContextOutSiField extends SplitContextSiField {
 	copy(entryBuildup: SiEntryBuildup): SiField {
 		throw new Error('Method not implemented.');
 	}
+	
+
+	isKeyActive(key: string): boolean{
+		return true;
+	}
+	
+	activateKey(key: string) {
+		throw new IllegalSiStateError('SplitContextOutSiField can not activate any keys.');
+	}
+	
 }

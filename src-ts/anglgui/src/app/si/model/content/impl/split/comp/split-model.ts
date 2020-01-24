@@ -7,6 +7,10 @@ export interface SplitModel {
 	getSplitOptions(): SplitOption[];
 
 	getSplitStyle(): SplitStyle;
+	
+	isKeyActive(key: string): boolean;
+	
+	activateKey(key: string);
 
 	getSiField$(key: string): Promise<SiField>;
 }
