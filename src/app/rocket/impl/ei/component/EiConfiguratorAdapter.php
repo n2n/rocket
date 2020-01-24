@@ -78,7 +78,7 @@ abstract class EiConfiguratorAdapter implements EiConfigurator {
 	 */
 	public static function createAutoTypeName(EiComponent $eiComponent, array $suffixes) { 
 		return self::shortenTypeName(TypeUtils::prettyName((new \ReflectionClass($eiComponent))->getShortName()),
-				$suffices);
+				$suffixes);
 	}
 	
 	/**

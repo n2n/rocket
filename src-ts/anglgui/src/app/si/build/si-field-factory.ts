@@ -156,6 +156,7 @@ export class SiFieldFactory {
 		case SiFieldType.SPLIT_CONTEXT_IN:
 			const splitContextInSiField = new SplitContextInSiField();
 			splitContextInSiField.style = this.createSplitStyle(dataExtr.reqObject('style'));
+			splitContextInSiField.managerStyle = this.createSplitStyle(dataExtr.reqObject('managerStyle'));
 			splitContextInSiField.activeKeys = dataExtr.reqStringArray('activeKeys');
 			splitContextInSiField.mandatoryKeys = dataExtr.reqStringArray('mandatoryKeys');
 			splitContextInSiField.min = dataExtr.reqNumber('min');

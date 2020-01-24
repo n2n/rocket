@@ -4,7 +4,7 @@ export interface SplitViewMenuModel {
 
 	getSplitOptions(): SplitOption[];
 
-	getIconClass(): string|null;
+	getIconClass(): string;
 
 	getTooltip(): string|null;
 
