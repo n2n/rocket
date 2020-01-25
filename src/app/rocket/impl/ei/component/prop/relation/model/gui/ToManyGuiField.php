@@ -23,12 +23,13 @@ namespace rocket\impl\ei\component\prop\relation\model\gui;
 
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\si\content\SiField;
-use rocket\si\content\impl\QualifierSelectInSiField;
 use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\si\content\impl\SiFields;
 use n2n\util\type\CastUtils;
 use rocket\ei\util\entry\EiuEntry;
+use rocket\si\content\impl\relation\QualifierSelectInSiField;
+use rocket\ei\manage\gui\GuiFieldMap;
 
 class ToManyGuiField implements GuiField {
 	/**

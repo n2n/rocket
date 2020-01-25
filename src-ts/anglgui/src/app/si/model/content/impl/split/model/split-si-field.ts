@@ -4,7 +4,7 @@ import { SiFieldAdapter } from '../../common/model/si-field-adapter';
 import { SplitModel } from '../comp/split-model';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { SplitOption } from './split-option';
-import { SplitContextSiField, SplitStyle } from './split-context';
+import { SplitContextSiField, SplitStyle } from './split-context-si-field';
 import { SiEntry } from '../../../si-entry';
 import { SplitComponent } from '../comp/split/split.component';
 
@@ -16,7 +16,7 @@ export class SplitSiField extends SiFieldAdapter implements SplitModel {
 	}
 
 	hasInput(): boolean {
-		throw new Error('Method not implemented.');
+		return false;
 	}
 
 	readInput(): object {

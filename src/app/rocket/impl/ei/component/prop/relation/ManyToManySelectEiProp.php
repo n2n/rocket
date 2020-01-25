@@ -61,7 +61,7 @@ class ManyToManySelectEiProp extends RelationEiPropAdapter implements FieldEiPro
 	}
 	
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		if ($readOnly || $this->editConfig->isReadOnly()) {
+		if ($readOnly || $this->getEditConfig()->isReadOnly()) {
 			return new RelationLinkGuiField($eiu, $this->getRelationModel());
 		}
 		

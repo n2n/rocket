@@ -10,7 +10,9 @@
 			<div rocketUiStructure [uiStructure]="item.value" [contentVisible]="false">
 				<ng-container pre-content>	
 					<button class="rocket-enabler" type="button" (click)="activateKey(item.key)">
-						<i class="fa fa-language"></i> Feld Name in Französisch (Schweiz) übersetzen.
+						<i class="fa fa-language"></i> 
+						<span>{{ getLabelByKey(item.key) }}</span> 
+						{{ 'common_activate_label' | translate }}.
 					</button>
 				</ng-container>
 			</div>

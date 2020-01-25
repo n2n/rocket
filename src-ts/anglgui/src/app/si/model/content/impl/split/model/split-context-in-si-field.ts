@@ -1,7 +1,7 @@
 import { SiField } from '../../../si-field';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { SiEntry } from '../../../si-entry';
-import { SplitContextSiField, SplitStyle } from './split-context';
+import { SplitContextSiField, SplitStyle } from './split-context-si-field';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { SplitManagerComponent } from '../comp/split-manager/split-manager.component';
 import { SplitManagerModel } from '../comp/split-manager-model';

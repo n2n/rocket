@@ -125,7 +125,7 @@ export class UiStructure {
 
 	private clear() {
 		this.toolbarChildren$.next([]);
-		
+
 		for (const child of [...this.children]) {
 			child.dispose();
 		}

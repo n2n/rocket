@@ -28,7 +28,7 @@ use rocket\si\content\SiEntry;
 use n2n\util\ex\IllegalStateException;
 use rocket\si\meta\SiDeclaration;
 
-class SplitContextInSiField extends InSiFieldAdapter {
+class SplitContextInSiField extends InSiFieldAdapter  {
 	/**
 	 * @var SplitStyle
 	 */
