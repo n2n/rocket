@@ -5,7 +5,7 @@ import { SplitViewMenuComponent } from '../../comp/split-view-menu/split-view-me
 import { SplitViewMenuModel } from '../../comp/split-view-menu-model';
 import { SplitOption } from '../split-option';
 import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
-import { SplitStyle } from '../split-context';
+import { SplitStyle } from '../split-context-si-field';
 
 export class SplitViewStateContext implements SplitViewMenuModel {
 	private toolbarUiStructure: UiStructure|null = null;
