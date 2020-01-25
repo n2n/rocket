@@ -3,7 +3,7 @@ import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SplitViewStateContext } from './split-view-state-context';
 import { SplitViewStateSubscription } from './split-view-state-subscription';
 import { SplitOption } from '../split-option';
-import { SplitStyle } from '../split-context';
+import { SplitStyle } from '../split-context-si-field';
 
 @Injectable({
 	providedIn: 'root'
