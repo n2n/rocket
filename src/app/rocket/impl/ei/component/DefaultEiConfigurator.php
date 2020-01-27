@@ -21,7 +21,6 @@
  */
 namespace rocket\impl\ei\component;
 
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\persistence\meta\structure\Column;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;

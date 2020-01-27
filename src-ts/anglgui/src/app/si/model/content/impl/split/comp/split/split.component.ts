@@ -50,14 +50,27 @@ export class SplitComponent implements OnInit, OnDestroy, DoCheck {
 		}
 	}
 
+	isKeyActive(key: string): boolean {
+		return this.model.isKeyActive(key);
+	}
+
+	activateKey(key: string) {
+		this.model.activateKey(key);
+	}
+
+	getLabelByKey(key: string) {
+		return this.model.getSplitOptions().find(splitOption => splitOption.key === key).label;
+	}
+	
 	ngDoCheck() {
 		for (const [key, childUiStructure] of this.childUiStructureMap) {
 			childUiStructure.visible = this.subscription.isKeyVisible(key);
 
-			if (!childUiStructure.visible || -1 < this.loadedKeys.indexOf(key)) {
+			if (!childUiStructure.visible || -1 < this.loadedKeys.indexOf(key) || !this.isKeyActive(key)) {
 				continue;
 			}
-
+			
+			
 			this.loadedKeys.push(key);
 			this.model.getSiField$(key).then((siField) => {
 				childUiStructure.model = siField ? siField.createUiStructureModel() : this.createNotActiveUism();

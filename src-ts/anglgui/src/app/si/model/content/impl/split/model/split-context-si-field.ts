@@ -1,6 +1,5 @@
 import { SplitOption } from './split-option';
 import { SiEntry } from '../../../si-entry';
-import { of, Observable } from 'rxjs';
 import { SiService } from 'src/app/si/manage/si.service';
 import { SiGetRequest } from 'src/app/si/model/api/si-get-request';
 import { SiGetInstruction } from 'src/app/si/model/api/si-get-instruction';
@@ -37,6 +36,10 @@ export abstract class SplitContextSiField extends SiFieldAdapter {
 
 		throw new Error('Unknown key.');
 	}
+
+	abstract isKeyActive(key: string): boolean;
+
+	abstract activateKey(key: string): void;
 
 	abstract hasInput(): boolean;
 

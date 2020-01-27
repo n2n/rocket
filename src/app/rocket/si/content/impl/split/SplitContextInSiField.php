@@ -28,11 +28,15 @@ use rocket\si\content\SiEntry;
 use n2n\util\ex\IllegalStateException;
 use rocket\si\meta\SiDeclaration;
 
-class SplitContextInSiField extends InSiFieldAdapter {
+class SplitContextInSiField extends InSiFieldAdapter  {
 	/**
 	 * @var SplitStyle
 	 */
 	private $style;
+	/**
+	 * @var SplitStyle
+	 */
+	private $managerStyle;
 	/**
 	 * @var int
 	 */
@@ -60,6 +64,7 @@ class SplitContextInSiField extends InSiFieldAdapter {
 	function __construct(?SiDeclaration $declaration) {
 		$this->declaration = $declaration;
 		$this->style = new SplitStyle(null, null);
+		$this->managerStyle = new SplitStyle(null, null);
 	}
 	
 	/**
@@ -84,6 +89,22 @@ class SplitContextInSiField extends InSiFieldAdapter {
 	 */
 	function getStyle() {
 		return $this->style;
+	}
+	
+	/**
+	 * @param SplitStyle $splitStyle
+	 * @return SplitContextInSiField
+	 */
+	function setManagerStyle(SplitStyle $splitStyle) {
+		$this->managerStyle = $splitStyle;
+		return $this;
+	}
+	
+	/**
+	 * @return \rocket\si\content\impl\split\SplitStyle
+	 */
+	function getManagerStyle() {
+		return $this->managerStyle;
 	}
 	
 	/**
@@ -174,8 +195,7 @@ class SplitContextInSiField extends InSiFieldAdapter {
 	function getData(): array {
 		return [
 			'style' => $this->style,
-			'iconClass' => $this->iconClass,
-			'tooltip' => $this->tooltip,
+			'managerStyle' => $this->managerStyle,
 			'min' => $this->min,
 			'activeKeys' => $this->activeKeys,
 			'mandatoryKeys' => $this->mandatoryKeys,

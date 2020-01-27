@@ -18,7 +18,7 @@ import { Subject, Observable } from 'rxjs';
 import { SplitContextInSiField } from '../model/content/impl/split/model/split-context-in-si-field';
 import { SplitContextOutSiField } from '../model/content/impl/split/model/split-context-out-si-field';
 import { SplitSiField } from '../model/content/impl/split/model/split-si-field';
-import { SplitContextSiField, SplitContent, SplitStyle } from '../model/content/impl/split/model/split-context';
+import { SplitContextSiField, SplitContent, SplitStyle } from '../model/content/impl/split/model/split-context-si-field';
 import { Injector } from '@angular/core';
 import { SiCompFactory } from './si-comp-factory';
 import { SiEntryFactory } from './si-entry-factory';
@@ -156,6 +156,10 @@ export class SiFieldFactory {
 		case SiFieldType.SPLIT_CONTEXT_IN:
 			const splitContextInSiField = new SplitContextInSiField();
 			splitContextInSiField.style = this.createSplitStyle(dataExtr.reqObject('style'));
+			splitContextInSiField.managerStyle = this.createSplitStyle(dataExtr.reqObject('managerStyle'));
+			splitContextInSiField.activeKeys = dataExtr.reqStringArray('activeKeys');
+			splitContextInSiField.mandatoryKeys = dataExtr.reqStringArray('mandatoryKeys');
+			splitContextInSiField.min = dataExtr.reqNumber('min');
 			this.compileSplitContents(splitContextInSiField,
 					SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration')),
 					dataExtr.reqMap('splitContents'));

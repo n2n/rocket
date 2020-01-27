@@ -63,6 +63,13 @@ class LazyTranslationEssentialsDeterminer {
 	}
 	
 	/**
+	 * @return string|NULL
+	 */
+	function getManagerTooltip() {
+		return $this->eiu->dtc('rocket')->t('ei_impl_translation_manager_tooltip');
+	}
+	
+	/**
 	 * @return \rocket\si\meta\SiDeclaration
 	 */
 	function getTargetSiDeclaration() {

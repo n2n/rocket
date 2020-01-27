@@ -4,10 +4,8 @@ import { SiFieldAdapter } from '../../common/model/si-field-adapter';
 import { SplitModel } from '../comp/split-model';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { SplitOption } from './split-option';
-import { Observable } from 'rxjs';
-import { SplitContextSiField, SplitStyle } from './split-context';
+import { SplitContextSiField, SplitStyle } from './split-context-si-field';
 import { SiEntry } from '../../../si-entry';
-import { map } from 'rxjs/operators';
 import { SplitComponent } from '../comp/split/split.component';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 
@@ -19,7 +17,7 @@ export class SplitSiField extends SiFieldAdapter implements SplitModel {
 	}
 
 	hasInput(): boolean {
-		throw new Error('Method not implemented.');
+		return false;
 	}
 
 	readInput(): object {
@@ -48,7 +46,15 @@ export class SplitSiField extends SiFieldAdapter implements SplitModel {
 
 		return [];
 	}
-
+	
+	isKeyActive(key: string): boolean {
+		return this.splitContext.isKeyActive(key);
+	}
+	
+	activateKey(key: string) {
+		this.splitContext.activateKey(key);
+	}
+	
 	getSiField$(key: string): Promise<SiField|null> {
 		if (!this.splitContext) {
 			throw new Error('No SplitContext assigned.');
@@ -61,9 +67,5 @@ export class SplitSiField extends SiFieldAdapter implements SplitModel {
 
 			return entry.selectedEntryBuildup.getFieldById(this.refPropId);
 		});
-	}
-
-	getContextSiFields(): SiField[] {
-		return this.splitContext ? [this.splitContext] : [];
 	}
 }

@@ -74,6 +74,7 @@ class SplitGuiFieldFactory {
 	private function createEditableGuiField() {
 		$siField = SiFields::splitInContext($this->lted->getTargetSiDeclaration())
 				->setStyle(new SplitStyle(SiIconType::ICON_LANGUAGE, $this->lted->getViewMenuTooltip()))
+				->setManagerStyle(new SplitStyle(SiIconType::ICON_LANGUAGE, $this->lted->getManagerTooltip()))
 				->setMin($this->lted->getMinNum())
 				->setActiveKeys($this->lted->getActiveN2nLocaleIds())
 				->setMandatoryKeys($this->lted->getMandatoryN2nLocaleIds());

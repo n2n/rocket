@@ -18,6 +18,8 @@ export class StructureComponent implements OnInit, OnDestroy {
 	toolbarVisible = true;
 	@Input()
 	asideVisible = true;
+	@Input()
+	contentVisible = true;
 
 	private _uiStructure: UiStructure;
 
