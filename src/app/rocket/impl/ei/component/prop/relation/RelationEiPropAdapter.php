@@ -38,7 +38,6 @@ use rocket\impl\ei\component\prop\relation\conf\RelationConfig;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\impl\ei\component\prop\relation\model\Relation;
 use rocket\ei\manage\gui\GuiFieldAssembler;
-use rocket\ei\manage\gui\ViewMode;
 
 abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements RelationEiProp, GuiEiProp, GuiFieldAssembler, ForkEiProp {
 			
