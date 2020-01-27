@@ -5,6 +5,7 @@ import { LinkOutModel } from '../comp/link-field-model';
 import { LinkOutFieldComponent } from '../comp/link-out-field/link-out-field.component';
 import { SiField } from '../../../si-field';
 import { UiNavPoint } from 'src/app/ui/util/model/ui-nav-point';
+import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 
 export class LinkOutSiField extends OutSiFieldAdapter implements LinkOutModel {
 
@@ -13,8 +14,8 @@ export class LinkOutSiField extends OutSiFieldAdapter implements LinkOutModel {
 		super();
 	}
 
-	createUiContent(): UiContent {
-		return new TypeUiContent(LinkOutFieldComponent, (ref, uiStructure) => {
+	createUiContent(uiStructure: UiStructure): UiContent {
+		return new TypeUiContent(LinkOutFieldComponent, (ref) => {
 			ref.instance.model = this;
 			ref.instance.uiZone = uiStructure.getZone();
 		});

@@ -16,7 +16,7 @@ export class EmbeddedEntriesInUiContent implements EmbeddedEntriesInModel {
 	public pasteCategory: string|null = null;
 	public allowedSiTypeQualifiers: SiTypeQualifier[]|null = null;
 
-	constructor(public apiUrl: string, public values: SiEmbeddedEntry[] = []) {
+	constructor(public apiUrl: string, public values: SiEmbeddedEntry[] = [], private uiStructure: UiStructure) {
 	}
 
 	getApiUrl(): string {
@@ -59,19 +59,19 @@ export class EmbeddedEntriesInUiContent implements EmbeddedEntriesInModel {
 		return this.allowedSiTypeQualifiers;
 	}
 
-	initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver,
-			uiStructure: UiStructure) {
+	initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver/*,
+			uiStructure: UiStructure*/) {
 		if (this.reduced) {
 			const componentFactory = componentFactoryResolver.resolveComponentFactory(EmbeddedEntriesSummaryInComponent);
 			const componentRef = viewContainerRef.createComponent(componentFactory);
 			componentRef.instance.model = this;
-			componentRef.instance.uiStructure = uiStructure;
+			componentRef.instance.uiStructure = this.uiStructure;
 			return componentRef;
 		} else {
 			const componentFactory = componentFactoryResolver.resolveComponentFactory(EmbeddedEntriesInComponent);
 			const componentRef = viewContainerRef.createComponent(componentFactory);
 			componentRef.instance.model = this;
-			componentRef.instance.uiStructure = uiStructure;
+			componentRef.instance.uiStructure = this.uiStructure;
 			return componentRef;
 		}
 	}

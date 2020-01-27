@@ -82,7 +82,7 @@ export class StructurePageManager {
 		for (const siEntry of structurePage.siPage.entries) {
 			fieldUiStructures.set(siEntry.identifier.id, this.createFieldUiStructures(siEntry));
 			controlUiContentMap.set(siEntry.identifier.id,
-				siEntry.selectedEntryBuildup.controls.map(siControl => siControl.createUiContent()));
+					siEntry.selectedEntryBuildup.controls.map(siControl => siControl.createUiContent(this.comp.uiStructure.getZone())));
 		}
 		structurePage.fieldUiStructuresMap = fieldUiStructures;
 		structurePage.controlUiStructuresMap  = controlUiContentMap;

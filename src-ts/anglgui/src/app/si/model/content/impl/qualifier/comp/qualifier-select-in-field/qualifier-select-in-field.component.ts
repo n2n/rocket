@@ -50,11 +50,13 @@ export class QualifierSelectInFieldComponent implements OnInit {
 
 		const comp = new EntriesListSiComp(this.model.getApiUrl(), 30);
 
-		this.optionsUiLayer.pushZone(null).model = {
+		const popupUiZone = this.optionsUiLayer.pushZone(null);
+
+		popupUiZone.model = {
 			title: 'Some Title',
 			breadcrumbs: [],
 			structureModel: comp.createUiStructureModel(),
-			mainCommandContents: this.createSiControls(comp).map(control => control.createUiContent())
+			mainCommandContents: this.createSiControls(comp).map(control => control.createUiContent(popupUiZone))
 		};
 
 		comp.qualifierSelection = {

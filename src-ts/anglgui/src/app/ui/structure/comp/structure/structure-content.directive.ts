@@ -31,7 +31,7 @@ export class StructureContentDirective {
 
 		if (uiContent) {
 			const cfr = this.uiStructure.getZone().layer.container.componentFactoryResolver;
-			uiContent.initComponent(this.viewContainerRef, cfr, this.uiStructure);
+			uiContent.initComponent(this.viewContainerRef, cfr/*, this.uiStructure*/);
 		}
 	}
 

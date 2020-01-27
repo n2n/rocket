@@ -7,6 +7,7 @@ import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
 import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
 import { Observable, BehaviorSubject } from 'rxjs';
+import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 
 export abstract class SiFieldAdapter implements SiField, MessageFieldModel {
 	private disabledSubject = new BehaviorSubject<boolean>(false);
@@ -35,13 +36,14 @@ export abstract class SiFieldAdapter implements SiField, MessageFieldModel {
 	}
 
 	createUiStructureModel(): UiStructureModel {
-		const model = new SimpleUiStructureModel(this.createUiContent());
+		const model = new SimpleUiStructureModel(null);
+		model.initCallback = (uiStructure) => { model.content = this.createUiContent(uiStructure); };
 		model.messagesCallback = () => this.getMessages();
 		model.disabled$ = this.disabledSubject;
 		return model;
 	}
 
-	protected abstract createUiContent(): UiContent;
+	protected abstract createUiContent(uiStructure: UiStructure): UiContent;
 
 	getMessages(): Message[] {
 		return this.messages;

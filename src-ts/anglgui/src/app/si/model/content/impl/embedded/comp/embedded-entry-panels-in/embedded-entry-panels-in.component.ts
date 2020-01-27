@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { EmbeddedEntriesSummaryInComponent } from '../embedded-entries-summary-in/embedded-entries-summary-in.component';
 import { PanelEmbeddedEntryInModel } from './panel-embedded-entry-in-model';
-import { SafeStyle, DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer } from '@angular/platform-browser';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { EmbeddedEntryPanelModel } from '../embedded-entry-panels-model';
 import { SiPanel } from '../../model/si-panel';
@@ -36,9 +36,9 @@ export class EmbeddedEntryPanelsInComponent implements OnInit, OnDestroy {
 
 			const structure = this.uiStructure.createContentChild(UiStructureType.SIMPLE_GROUP, panel.label,
 					new SimpleUiStructureModel(
-							new TypeUiContent(EmbeddedEntriesSummaryInComponent, (ref, refStructure) => {
+							new TypeUiContent(EmbeddedEntriesSummaryInComponent, (ref) => {
 								ref.instance.model = panelModel;
-								ref.instance.uiStructure = refStructure;
+								ref.instance.uiStructure = structure;
 							})));
 
 			this.panelDefs.push({ panel, structure });

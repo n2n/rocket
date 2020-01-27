@@ -98,13 +98,13 @@ export class UiStructure {
 	}
 
 	get model(): UiStructureModel|null {
-//		this.ensureNotDisposed();
+// 		this.ensureNotDisposed();
 		return this._model;
 	}
 
 	set model(model: UiStructureModel|null) {
 		this.ensureNotDisposed();
-		
+
 		if (this._model === model) {
 			return;
 		}
@@ -114,18 +114,19 @@ export class UiStructure {
 		if (!model) {
 			return;
 		}
-		
+
 		this._model = model;
-		// model.prepare(this);
 		this.disabledSubscription = model.getDisabled$().subscribe(this.disabledSubject);
-//		if (this.disabledSubject.getValue()) {
-//			this.disabledSubject.next(false);
-//		}
+		model.init(this);
+
+// 		if (this.disabledSubject.getValue()) {
+// 			this.disabledSubject.next(false);
+// 		}
 	}
 
 	private clear() {
 		this.toolbarChildren$.next([]);
-		
+
 		for (const child of [...this.children]) {
 			child.dispose();
 		}
@@ -135,7 +136,7 @@ export class UiStructure {
 		}
 
 		if (this._model) {
-			// this._model.dispose();
+			this._model.destroy();
 			this._model = null;
 			this.disabledSubscription.unsubscribe();
 			this.disabledSubscription = null;
@@ -155,7 +156,7 @@ export class UiStructure {
 		this.disposedSubject.complete();
 
 		this.clear();
-		
+
 		this.toolbarChildren$.complete();
 
 		if (this.parent) {

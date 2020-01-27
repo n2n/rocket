@@ -1,6 +1,6 @@
 import { Injectable, Injector } from '@angular/core';
 import { Observable } from 'rxjs';
-import { UiZoneModel } from 'src/app/ui/structure/model/ui-zone';
+import { UiZoneModel, UiZone } from 'src/app/ui/structure/model/ui-zone';
 import { map } from 'rxjs/operators';
 import { UiZoneModelFactory } from '../build/si-factory';
 import { SiEntryInput } from '../model/input/si-entry-input';
@@ -24,10 +24,10 @@ export class SiService {
 	constructor(private httpClient: HttpClient, private injector: Injector) {
 	}
 
-	lookupZoneModel(url: string): Observable<UiZoneModel> {
+	lookupZoneModel(url: string, uiZone: UiZone): Observable<UiZoneModel> {
 		return this.httpClient.get<any>(url)
 				.pipe(map((data: any) => {
-					return new UiZoneModelFactory(this.injector).createZoneModel(data);
+					return new UiZoneModelFactory(this.injector).createZoneModel(data, uiZone);
 				}));
 	}
 
@@ -35,7 +35,7 @@ export class SiService {
 		const formData = new FormData();
 		formData.append('callId', JSON.stringify(callId));
 		formData.append('siEntryId', entryId);
-// 				formData.append('inputMap', JSON.stringify(entryInput));
+// 		formData.append('inputMap', JSON.stringify(entryInput));
 
 		const params = new HttpParams();
 

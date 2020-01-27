@@ -4,22 +4,22 @@ import { SiEmbeddedEntry } from './si-embedded-entry';
 import { InSiFieldAdapter } from '../../common/model/in-si-field-adapter';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { SiField } from '../../../si-field';
+import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 
 export class EmbeddedEntryInSiField extends InSiFieldAdapter	{
 
 	content: EmbeddedEntriesInUiContent;
 
-	constructor(apiUrl: string, values: SiEmbeddedEntry[] = []) {
+	constructor(private apiUrl: string, private values: SiEmbeddedEntry[] = []) {
 		super();
-		this.content = new EmbeddedEntriesInUiContent(apiUrl, values);
 	}
 
 	readInput(): object {
 		return { entryInputs: this.content.getValues().map(embeddedEntry => embeddedEntry.entry.readInput() ) };
 	}
 
-	createUiContent(): UiContent {
-		return this.content;
+	createUiContent(uiStructure: UiStructure): UiContent {
+		return new EmbeddedEntriesInUiContent(this.apiUrl, this.values, uiStructure);
 	}
 
 	copy(): SiField {

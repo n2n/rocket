@@ -80,12 +80,14 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 		let bakEntry = embe.siEmbeddedEntry.entry.copy();
 
 		this.popupUiLayer = uiZone.layer.container.createLayer();
-		this.popupUiLayer.pushZone(null).model = {
+		const zone = this.popupUiLayer.pushZone(null);
+
+		zone.model = {
 			title: 'Some Title',
 			breadcrumbs: [],
 			structureModel: embe.siEmbeddedEntry.comp.createUiStructureModel(),
 			mainCommandContents: this.createPopupControls(() => { bakEntry = null; })
-					.map(siControl => siControl.createUiContent())
+					.map(siControl => siControl.createUiContent(zone))
 		};
 
 		this.popupUiLayer.onDispose(() => {
@@ -121,16 +123,23 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 			this.embeCol.writeEmbes();
 		});
 
-		this.popupUiLayer.pushZone(null).model = {
+		const zone = this.popupUiLayer.pushZone(null);
+
+		const popupUiStructure = new SimpleUiStructureModel();
+
+		popupUiStructure.initCallback = (uiStructure) => {
+			popupUiStructure.content = new TypeUiContent(EmbeddedEntriesInComponent, (ref) => {
+				ref.instance.model = this.model;
+				ref.instance.uiStructure = uiStructure;
+			});
+		};
+
+		zone.model = {
 			title: 'Some Title',
 			breadcrumbs: [],
-			structureModel: new SimpleUiStructureModel(
-					new TypeUiContent(EmbeddedEntriesInComponent, (ref, structure) => {
-						ref.instance.model = this.model;
-						ref.instance.uiStructure = structure;
-					})),
+			structureModel: popupUiStructure,
 			mainCommandContents: this.createPopupControls(() => { bakEmbes = null; })
-					.map(siControl => siControl.createUiContent())
+					.map(siControl => siControl.createUiContent(zone))
 		};
 	}
 

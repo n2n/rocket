@@ -60,15 +60,21 @@ export class EntriesListSiComp implements SiComp, EntriesListModel {
 	}
 
 	createUiStructureModel(): UiStructureModel {
-		const uiStrucuterModel = new SimpleUiStructureModel(
-				new TypeUiContent(ListZoneContentComponent, (ref, uiStructure) => {
-					ref.instance.model = this;
-					ref.instance.uiStructure = uiStructure;
-				}));
-		uiStrucuterModel.messagesCallback = () => this.getMessages();
-		uiStrucuterModel.controls = [new TypeUiContent(PaginationComponent, (ref, uiStructure) => {
+		const uiStrucuterModel = new SimpleUiStructureModel();
+
+		uiStrucuterModel.initCallback = (uiStructure) => {
+			uiStrucuterModel.content = new TypeUiContent(ListZoneContentComponent, (ref) => {
+				ref.instance.model = this;
+				ref.instance.uiStructure = uiStructure;
+			});
+		};
+
+		uiStrucuterModel.controls = [new TypeUiContent(PaginationComponent, (ref) => {
 			ref.instance.siPageCollection = this.pageCollection;
 		})];
+
+		uiStrucuterModel.messagesCallback = () => this.getMessages();
+
 		return uiStrucuterModel;
 	}
 

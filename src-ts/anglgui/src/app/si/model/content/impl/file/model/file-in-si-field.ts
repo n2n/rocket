@@ -5,6 +5,7 @@ import { FileInFieldModel } from '../comp/file-in-field-model';
 import { FileInFieldComponent } from '../comp/file-in-field/file-in-field.component';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
+import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 
 export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel {
 
@@ -59,8 +60,8 @@ export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel 
 		throw new Error('Method not implemented.');
 	}
 
-	createUiContent(): UiContent|null {
-		return new TypeUiContent(FileInFieldComponent, (ref, uiStructure) => {
+	createUiContent(uiStructure: UiStructure): UiContent {
+		return new TypeUiContent(FileInFieldComponent, (ref) => {
 			ref.instance.model = this;
 			ref.instance.uiStructure = uiStructure;
 		});

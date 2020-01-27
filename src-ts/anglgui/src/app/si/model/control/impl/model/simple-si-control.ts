@@ -23,7 +23,7 @@ export class SimpleSiControl implements SiControl, ButtonControlModel {
 		this.callback();
 	}
 
-	createUiContent(): UiContent {
-		return new ButtonControlUiContent(this);
+	createUiContent(uiZone: UiZone): UiContent {
+		return new ButtonControlUiContent(this, uiZone);
 	}
 }

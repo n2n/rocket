@@ -53,12 +53,17 @@ export class BulkyEntrySiComp implements SiComp, BulkyEntryModel {
 	}
 
 	createUiStructureModel(): UiStructureModel {
-		const uiStructureModel = new SimpleUiStructureModel(new TypeUiContent(BulkyEntryComponent, (ref, uiStructure) => {
-			ref.instance.model = this;
-			ref.instance.uiStructure = uiStructure;
-		}));
+		const uiStructureModel = new SimpleUiStructureModel();
 
-		uiStructureModel.controls = this.getControls().map(control => control.createUiContent());
+		uiStructureModel.initCallback = (uiStructure) => {
+			uiStructureModel.content = new TypeUiContent(BulkyEntryComponent, (ref) => {
+				ref.instance.model = this;
+				ref.instance.uiStructure = uiStructure;
+			});
+
+			uiStructureModel.controls = this.getControls()
+					.map(control => control.createUiContent(uiStructure.getZone()));
+		};
 
 		return uiStructureModel;
 	}

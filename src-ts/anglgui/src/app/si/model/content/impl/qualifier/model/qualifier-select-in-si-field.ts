@@ -6,6 +6,7 @@ import { InSiFieldAdapter } from '../../common/model/in-si-field-adapter';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { QualifierSelectInFieldComponent } from '../comp/qualifier-select-in-field/qualifier-select-in-field.component';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
+import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 
 export class QualifierSelectInSiField extends InSiFieldAdapter implements QualifierSelectInModel {
 
@@ -60,10 +61,10 @@ export class QualifierSelectInSiField extends InSiFieldAdapter implements Qualif
 		return copy;
 	}
 
-	createUiContent(): UiContent|null {
-		return new TypeUiContent(QualifierSelectInFieldComponent, (ref, structure) => {
+	createUiContent(uiStructure: UiStructure): UiContent {
+		return new TypeUiContent(QualifierSelectInFieldComponent, (ref) => {
 			ref.instance.model = this;
-			ref.instance.uiStructure = structure;
+			ref.instance.uiStructure = uiStructure;
 		});
 	}
 

@@ -30,7 +30,7 @@ export class SiUiService {
 
 		zone.model = null;
 
-		this.service.lookupZoneModel(zone.url)
+		this.service.lookupZoneModel(zone.url, zone)
 				.subscribe((zoneModel) => {
 					zone.model = zoneModel;
 				});

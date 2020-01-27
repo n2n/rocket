@@ -9,6 +9,7 @@ import { ButtonControlModel } from '../comp/button-control-model';
 import { ButtonControlUiContent } from '../comp/button-control-ui-content';
 import { SiComp } from '../../../comp/si-comp';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
+import { UiZone } from 'src/app/ui/structure/model/ui-zone';
 
 export class ApiCallSiControl implements SiControl, ButtonControlModel {
 
@@ -58,7 +59,7 @@ export class ApiCallSiControl implements SiControl, ButtonControlModel {
 		});
 	}
 
-	createUiContent(): UiContent {
-		return new ButtonControlUiContent(this);
+	createUiContent(uiZone: UiZone): UiContent {
+		return new ButtonControlUiContent(this, uiZone);
 	}
 }

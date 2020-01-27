@@ -13,7 +13,6 @@ export class ZoneComponent implements OnInit, DoCheck, OnDestroy {
 
 	@Input() uiZone: UiZone;
 
-	uiStructure: UiStructure;
 	uiZoneErrors: UiZoneError[] = [];
 
 	asideCommandUiContents: UiContent[] = [];
@@ -22,28 +21,24 @@ export class ZoneComponent implements OnInit, DoCheck, OnDestroy {
 	}
 
 	ngOnInit() {
-		this.uiStructure = new UiStructure(null, this.uiZone, null);
 	}
 
 	ngOnDestroy() {
-		this.uiStructure.dispose();
 	}
 
 	ngDoCheck() {
-		this.uiZoneErrors = this.uiStructure.getZoneErrors();
+		if (this.uiZone.model) {
+			this.uiZoneErrors = this.uiZone.uiStructure.getZoneErrors();
+			this.asideCommandUiContents = this.uiZone.uiStructure.model.getAsideContents();
+		} else {
+			this.uiZoneErrors = [];
+			this.asideCommandUiContents = [];
+		}
 
 		if (this.hasUiZoneErrors()) {
 			this.elemRef.nativeElement.classList.add('rocket-contains-additional');
 		} else {
 			this.elemRef.nativeElement.classList.remove('rocket-contains-additional');
-		}
-
-		if (this.uiZone.model) {
-			this.uiStructure.model = this.uiZone.model.structureModel;
-			this.asideCommandUiContents = this.uiZone.model.structureModel.getAsideContents();
-		} else {
-			this.uiStructure.model = null;
-			this.asideCommandUiContents = [];
 		}
 	}
 

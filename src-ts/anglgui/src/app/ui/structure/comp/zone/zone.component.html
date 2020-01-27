@@ -1,13 +1,13 @@
-<div *ngIf="!uiZoneModel" class="rocket-loader"></div>
+<div *ngIf="!uiZone.model" class="rocket-loader"></div>
 
-<ng-container *ngIf="uiZoneModel">
+<ng-container *ngIf="uiZone.model">
 	<header>
 		<rocket-ui-breadcrumbs [uiZone]="uiZone" [uiBreadcrumbs]="uiZone.model.breadcrumbs"></rocket-ui-breadcrumbs>
 		
 		<h1>{{ uiZone.model.title }}</h1>
 	</header>
 
-	<div rocketUiStructure [uiStructure]="uiStructure" [asideVisible]="false" class="rocket-content"></div>
+	<div rocketUiStructure [uiStructure]="uiZone.uiStructure" [asideVisible]="false" class="rocket-content"></div>
 
 	<div *ngIf="hasUiZoneErrors()" class="rocket-additional">
 		<ul class="rocket-additional-nav">
@@ -26,15 +26,15 @@
 	<div class="rocket-zone-commands">
 		<div *ngIf="partialCommandUiContents.length > 0" class="rocket-partial-commands">
 			<ng-template *ngFor="let uiContent of partialCommandUiContents" 
-					rocketUiContent [uiContent]="uiContent" [uiStructure]="uiStructure"></ng-template>
+					rocketUiContent [uiContent]="uiContent" [uiStructure]="uiZone.uiStructure"></ng-template>
 		</div>
 		<div *ngIf="mainCommandUiContents.length > 0" class="rocket-main-commands">
 			<ng-template *ngFor="let uiContent of mainCommandUiContents" 
-					rocketUiContent [uiContent]="uiContent" [uiStructure]="uiStructure"></ng-template>
+					rocketUiContent [uiContent]="uiContent" [uiStructure]="uiZone.uiStructure"></ng-template>
 		</div>
 		<div *ngIf="asideCommandUiContents.length > 0" class="rocket-aside-commands">
 			<ng-template *ngFor="let uiContent of asideCommandUiContents" 
-					rocketUiContent [uiContent]="uiContent" [uiStructure]="uiStructure"></ng-template>
+					rocketUiContent [uiContent]="uiContent" [uiStructure]="uiZone.uiStructure"></ng-template>
 		</div>
 	</div>
 </ng-container>

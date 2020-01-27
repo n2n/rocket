@@ -4,8 +4,8 @@ import { UiStructure } from './ui-structure';
 
 export interface UiContent {
 
-	initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver,
-			uiStructure: UiStructure): ComponentRef<any>;
+	initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver/*,
+			uiStructure: UiStructure*/): ComponentRef<any>;
 
 // 	getZoneErrors(): UiZoneError[];
 

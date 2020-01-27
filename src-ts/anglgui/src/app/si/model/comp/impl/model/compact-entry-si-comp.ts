@@ -41,14 +41,19 @@ export class CompactEntrySiComp implements SiComp, CompactEntryModel {
 	}
 
 	createUiStructureModel(): UiStructureModel {
-		const uiContent = new TypeUiContent(CompactEntryComponent, (ref, uiStructure) => {
-			ref.instance.model = this;
-			ref.instance.uiStructure = uiStructure;
-		});
+		const uiStructureModel =  new SimpleUiStructureModel();
 
-		const uiStructureModel =  new SimpleUiStructureModel(uiContent);
-		uiStructureModel.controls = this.getControls().map(siControl => siControl.createUiContent());
+		uiStructureModel.initCallback = (uiStructure) => {
+			uiStructureModel.content = new TypeUiContent(CompactEntryComponent, (ref) => {
+				ref.instance.model = this;
+				ref.instance.uiStructure = uiStructure;
+			});
+
+			uiStructureModel.controls = this.getControls().map(siControl => siControl.createUiContent(uiStructure.getZone()));
+		};
+
 		uiStructureModel.messagesCallback = () => this.getMessages();
+
 		return uiStructureModel;
 	}
 

@@ -1,6 +1,7 @@
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { SiFieldAdapter } from './si-field-adapter';
 import { SiField } from '../../../si-field';
+import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 
 export abstract class InSiFieldAdapter extends SiFieldAdapter {
 
@@ -12,5 +13,5 @@ export abstract class InSiFieldAdapter extends SiFieldAdapter {
 
 	abstract copy(): SiField;
 
-	protected abstract createUiContent(): UiContent;
+	protected abstract createUiContent(uiStructure: UiStructure): UiContent;
 }

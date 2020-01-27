@@ -3,6 +3,7 @@ import { ButtonControlModel } from '../button-control-model';
 import { SiUiService } from 'src/app/si/manage/si-ui.service';
 import { SiButton } from '../../model/si-button';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
+import { UiZone } from 'src/app/ui/structure/model/ui-zone';
 
 @Component({
 	selector: 'rocket-button-control',
@@ -14,7 +15,7 @@ export class ButtonControlComponent implements OnInit {
 	@Input()
 	model: ButtonControlModel;
 	@Input()
-	uiStructue: UiStructure;
+	uiZone: UiZone;
 
 	constructor(private siUiService: SiUiService) {
 
@@ -32,7 +33,7 @@ export class ButtonControlComponent implements OnInit {
 	}
 
 	exec() {
-		this.model.exec(this.siUiService, this.uiStructue.getZone());
+		this.model.exec(this.siUiService, this.uiZone);
 	}
 
 }
