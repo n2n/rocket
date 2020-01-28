@@ -70,7 +70,7 @@ class EmbeddedOneToManyEiProp extends RelationEiPropAdapter implements FieldEiPr
 	}
 	
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		if ($readOnly || $this->editConfig->isReadOnly()) {
+		if ($readOnly || $this->getEditConfig()->isReadOnly()) {
 			return new RelationLinkGuiField($eiu, $this->getRelationModel());
 		}
 		

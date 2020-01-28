@@ -13,7 +13,7 @@
 	
 	<ng-container *ngIf="asideVisible">
 		<ng-container *ngFor="let asideUiContent of asideUiContents">
-			<ng-template rocketUiContent [uiContent]="asideUiContent" [uiStructure]="uiStructure"></ng-template>		
+			<ng-template rocketUiContent [uiContent]="asideUiContent"></ng-template>		
 		</ng-container>
 	</ng-container>
 </div>
@@ -33,7 +33,7 @@
 		<div *ngIf="!loaded" class="rocket-loader"></div>
 		
 		<ng-container *ngIf="loaded">
-			<ng-template *ngIf="uiContent" rocketUiContent [uiStructure]="uiStructure" [uiContent]="uiContent"></ng-template>
+			<ng-template *ngIf="uiContent" rocketUiContent [uiContent]="uiContent"></ng-template>
 		</ng-container>
 	</ng-template>
 </ng-container>

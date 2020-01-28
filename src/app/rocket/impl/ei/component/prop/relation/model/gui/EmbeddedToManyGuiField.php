@@ -36,6 +36,7 @@ use rocket\si\content\impl\relation\EmbeddedEntryInputHandler;
 use rocket\si\content\impl\relation\SiEmbeddedEntry;
 use rocket\ei\util\gui\EiuEntryGui;
 use rocket\ei\util\spec\EiuMask;
+use rocket\ei\manage\gui\GuiFieldMap;
 
 class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandler {
 	/**

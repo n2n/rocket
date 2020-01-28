@@ -16,7 +16,7 @@ export class UiStructure {
 	private disposedSubject = new BehaviorSubject<boolean>(false);
 
 	constructor(readonly parent: UiStructure|null, private _zone: UiZone|null, public type: UiStructureType|null = null,
-			public label: string|null = null, private _model: UiStructureModel|null = null) {
+			public label: string|null = null, model: UiStructureModel|null = null) {
 		if (parent) {
 			parent.registerChild(this);
 		}
@@ -24,6 +24,8 @@ export class UiStructure {
 		if (!!this._zone === !!parent) {
 			throw new IllegalSiStateError('Either zone or parent must be given but not both.');
 		}
+		
+		this.model = model;
 	}
 
 	getRoot(): UiStructure {

@@ -26,15 +26,15 @@
 	<div class="rocket-zone-commands">
 		<div *ngIf="partialCommandUiContents.length > 0" class="rocket-partial-commands">
 			<ng-template *ngFor="let uiContent of partialCommandUiContents" 
-					rocketUiContent [uiContent]="uiContent" [uiStructure]="uiZone.uiStructure"></ng-template>
+					rocketUiContent [uiContent]="uiContent"></ng-template>
 		</div>
 		<div *ngIf="mainCommandUiContents.length > 0" class="rocket-main-commands">
 			<ng-template *ngFor="let uiContent of mainCommandUiContents" 
-					rocketUiContent [uiContent]="uiContent" [uiStructure]="uiZone.uiStructure"></ng-template>
+					rocketUiContent [uiContent]="uiContent"></ng-template>
 		</div>
 		<div *ngIf="asideCommandUiContents.length > 0" class="rocket-aside-commands">
 			<ng-template *ngFor="let uiContent of asideCommandUiContents" 
-					rocketUiContent [uiContent]="uiContent" [uiStructure]="uiZone.uiStructure"></ng-template>
+					rocketUiContent [uiContent]="uiContent"></ng-template>
 		</div>
 	</div>
 </ng-container>

@@ -8,12 +8,12 @@ import { UiContent } from '../../model/ui-content';
 	selector: '[rocketUiContent]'
 })
 export class StructureContentDirective {
-	@Input()
-	public uiStructure: UiStructure;
+//	@Input()
+//	public uiStructure: UiStructure;
 	private _uiContent: UiContent|null = null;
 
-	constructor(public viewContainerRef: ViewContainerRef/*,
-			private componentFactoryResolver: ComponentFactoryResolver*/) {
+	constructor(public viewContainerRef: ViewContainerRef,
+			private componentFactoryResolver: ComponentFactoryResolver) {
 // 		viewContainerRef.element.nativeElement.classList.add('rocket-control');
 	}
 
@@ -25,13 +25,13 @@ export class StructureContentDirective {
 		this._uiContent = uiContent;
 		this.viewContainerRef.clear();
 
-		if (!this.uiStructure) {
-			throw new IllegalSiStateError('Unknown UiStructure for content directive.');
-		}
+//		if (!this.uiStructure) {
+//			throw new IllegalSiStateError('Unknown UiStructure for content directive.');
+//		}
 
 		if (uiContent) {
-			const cfr = this.uiStructure.getZone().layer.container.componentFactoryResolver;
-			uiContent.initComponent(this.viewContainerRef, cfr/*, this.uiStructure*/);
+//			const cfr = this.uiStructure.getZone().layer.container.componentFactoryResolver;
+			uiContent.initComponent(this.viewContainerRef, this.componentFactoryResolver/*, this.uiStructure*/);
 		}
 	}
 
