@@ -21,6 +21,12 @@
  */
 namespace rocket\si\content;
 
+use rocket\si\input\SiEntryInput;
+use rocket\si\input\CorruptedSiInputDataException;
+use n2n\util\ex\IllegalStateException;
+use n2n\util\type\ArgUtils;
+use n2n\util\type\attrs\AttributesException;
+
 class SiEntry implements \JsonSerializable {
 	/**
 	 * @var SiEntryIdentifier
@@ -81,13 +87,13 @@ class SiEntry implements \JsonSerializable {
 		return $this->buildups;
 	}
 
-	/**
-	 * @param SiEntryBuildup[] $buildups 
-	 */
-	function setBuildups(array $buildups) {
-		$this->buildups = $buildups;
-		return $this;
-	}
+// 	/**
+// 	 * @param SiEntryBuildup[] $buildups 
+// 	 */
+// 	function setBuildups(array $buildups) {
+// 		$this->buildups = $buildups;
+// 		return $this;
+// 	}
 	
 	/**
 	 * @param string $id
@@ -96,22 +102,38 @@ class SiEntry implements \JsonSerializable {
 	 */
 	function putBuildup(string $id, SiEntryBuildup $buildup) {
 		$this->buildups[$id] = $buildup;
+		
+		if ($this->selectedTypeId === null) {
+			$this->selectedTypeId = $id;
+		}
+		
 		return $this;
+	}
+	
+	/**
+	 * @return SiEntryBuildup
+	 */
+	function getSelectedBuildup() {
+		return $this->buildups[$this->getSelectTypeId()];
 	}
 	
 	/**
 	 * @param string $id
 	 * @return \rocket\si\content\SiEntry
 	 */
-	function setSelectedTypeId(?string $id) {
+	function setSelectedTypeId(string $id) {
+		ArgUtils::valEnum($id, array_keys($this->buildups));
 		$this->selectedTypeId = $id;
 		return $this;
 	}
 	
 	/**
 	 * @return string
+	 * @throws IllegalStateException
 	 */
 	function getSelectTypeId() {
+		IllegalStateException::assertTrue($this->selectedTypeId !== null);
+		
 		return $this->selectedTypeId;
 	}
 	
@@ -130,4 +152,34 @@ class SiEntry implements \JsonSerializable {
 		];
 	}
 
+	/**
+	 * @param SiEntryInput $entryInput
+	 * @throws CorruptedSiInputDataException
+	 */
+	function handleInput(SiEntryInput $entryInput) {
+		$typeId = $entryInput->getTypeId();
+		
+		try {
+			$this->setSelectedTypeId($typeId);
+		} catch (\InvalidArgumentException $e) {
+			throw new CorruptedSiInputDataException('Invalid type id: ' . $typeId, 0, $e);
+		}
+		
+		$buildup = $this->getSelectedBuildup();
+		
+		foreach ($buildup->getFields() as $propId => $field) {
+			if (!$entryInput->containsFieldName($propId)) {
+				continue;
+			}
+			
+			try {
+				$field->handleInput($entryInput->getFieldInput($propId)->getData());
+			} catch (\InvalidArgumentException $e) {
+				throw new CorruptedSiInputDataException(null, 0, $e);
+			} catch (AttributesException $e) {
+				throw new CorruptedSiInputDataException(null, 0, $e);
+			}
+		}
+	}
+	
 }

@@ -263,7 +263,6 @@ class EiEntryGui {
 			throw new IllegalStateException('EiType missmatch.');
 		}
 		
-		
 		foreach ($this->guiFieldMap->getAllGuiFields() as $guiPropPathStr => $guiField) {
 			$siField = $guiField->getSiField();
 			

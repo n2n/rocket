@@ -27,6 +27,7 @@ use n2n\util\uri\Url;
 use rocket\si\content\SiEntry;
 use n2n\util\ex\IllegalStateException;
 use rocket\si\meta\SiDeclaration;
+use rocket\si\input\SiEntryInput;
 
 class SplitContextInSiField extends InSiFieldAdapter  {
 	/**
@@ -209,6 +210,11 @@ class SplitContextInSiField extends InSiFieldAdapter  {
 	 * @see \rocket\si\content\SiField::handleInput()
 	 */
 	function handleInput(array $data) {
-		$this->value = (new DataSet($data))->reqInt('value', true);
+		$entryInputsData = (new DataSet($data))->reqArray('entryInputs', 'array');
+		
+		
+		foreach ($entryInputsData as $entryInputData) {
+			SiEntryInput::parse($entryInputData);
+		}
 	}
 }

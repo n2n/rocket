@@ -40,11 +40,11 @@ class EditableGuiField implements GuiField {
 		$this->forkGuiFieldMap = $forkGuiFieldMap;
 	}
 	
-	public function getSiField(): ?SiField {
+	function getSiField(): ?SiField {
 		return $this->siField;
 	}
 	
-	public function save() {
+	function save() {
 		$this->lted->activateTranslations($this->contextSiField->getActiveKeys());
 		
 		if ($this->forkGuiFieldMap !== null) {
@@ -54,7 +54,7 @@ class EditableGuiField implements GuiField {
 		$this->lted->save();
 	}
 	
-	public function getForkGuiFieldMap(): ?GuiFieldMap {
+	function getForkGuiFieldMap(): ?GuiFieldMap {
 		return $this->forkGuiFieldMap;
 	}
 

@@ -220,7 +220,7 @@ class TranslationSiLazyInputHandler implements SiLazyInputHandler {
 	 * @return GuiField
 	 */
 	private function getGuiField(string $key) {
-		return $this->ltef->getTargetEiuEntryGui($key)->getGuiFieldByGuiPropPath($this->guiPropPath);
+		return $this->lted->getTargetEiuEntryGui($key)->getGuiFieldByGuiPropPath($this->guiPropPath);
 	}
 	
 	function handlInput(array $data, array $uploadDefinitions) {

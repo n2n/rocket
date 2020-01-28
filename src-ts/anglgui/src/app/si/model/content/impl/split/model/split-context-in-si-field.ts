@@ -25,7 +25,9 @@ export class SplitContextInSiField extends SplitContextSiField implements SplitM
 				entryInputObj[splitContent.key] = entry.readInput();
 			}
 		}
-		return entryInputObj;
+		return {
+			entryInputs: entryInputObj
+		};
 	}
 
 	copy(): SiField {

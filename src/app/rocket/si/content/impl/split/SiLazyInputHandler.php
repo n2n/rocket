@@ -21,7 +21,12 @@
  */
 namespace rocket\si\content\impl\split;
 
+use rocket\si\input\SiEntryInput;
+use rocket\si\content\SiEntry;
+
 interface SiLazyInputHandler {
 	
-	function handlInput(array $data, array $uploadDefinitions);
+	function activateKey(string $key): SiEntry;
 }
+
+// array $data, array $uploadDefinitions

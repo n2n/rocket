@@ -6,6 +6,7 @@ import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { UiZoneError } from './ui-zone-error';
 
 export class UiStructure {
+	private _model: UiStructureModel|null;
 	private children: UiStructure[] = [];
 	private visibleSubject = new BehaviorSubject<boolean>(true);
 	private toolbarChildren$ = new BehaviorSubject<UiStructure[]>([]);
@@ -24,7 +25,7 @@ export class UiStructure {
 		if (!!this._zone === !!parent) {
 			throw new IllegalSiStateError('Either zone or parent must be given but not both.');
 		}
-		
+
 		this.model = model;
 	}
 
