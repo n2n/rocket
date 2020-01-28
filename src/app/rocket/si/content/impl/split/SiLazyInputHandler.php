@@ -26,6 +26,8 @@ use rocket\si\content\SiEntry;
 
 interface SiLazyInputHandler {
 	
+	function activateKeys(array $keys)
+	
 	function activateKey(string $key): SiEntry;
 }
 

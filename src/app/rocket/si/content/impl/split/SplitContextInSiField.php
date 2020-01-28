@@ -212,9 +212,10 @@ class SplitContextInSiField extends InSiFieldAdapter  {
 	function handleInput(array $data) {
 		$entryInputsData = (new DataSet($data))->reqArray('entryInputs', 'array');
 		
-		
 		foreach ($entryInputsData as $entryInputData) {
 			SiEntryInput::parse($entryInputData);
+			
+			$siEntry->
 		}
 	}
 }
