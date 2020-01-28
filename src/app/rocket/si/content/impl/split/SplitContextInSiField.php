@@ -28,6 +28,8 @@ use rocket\si\content\SiEntry;
 use n2n\util\ex\IllegalStateException;
 use rocket\si\meta\SiDeclaration;
 use rocket\si\input\SiEntryInput;
+use hangar\entity\model\ex\SpecCreationException;
+use rocket\si\input\CorruptedSiInputDataException;
 
 class SplitContextInSiField extends InSiFieldAdapter  {
 	/**
@@ -212,10 +214,16 @@ class SplitContextInSiField extends InSiFieldAdapter  {
 	function handleInput(array $data) {
 		$entryInputsData = (new DataSet($data))->reqArray('entryInputs', 'array');
 		
-		foreach ($entryInputsData as $entryInputData) {
-			SiEntryInput::parse($entryInputData);
+		foreach ($entryInputsData as $key => $entryInputData) {
+			if (!isset($this->splitContents[$key]) || $this->splitContents[$key]->isUnavailable()) {
+				throw new CorruptedSiInputDataException('Unknown or unavailable key: ' . $key);
+			}
 			
-			$siEntry->
+			$entryInput = SiEntryInput::parse($entryInputData);
+			$siEntry = $this->splitContents[$key]->getSiEntry();
+			
+			
+			
 		}
 	}
 }
