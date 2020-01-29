@@ -211,7 +211,7 @@ class EiFrameUtil {
 	private function createEiGui(EiMask $eiMask, int $viewMode, array $guiPropPaths = null) {
 		$guiDefinition = $this->eiFrame->getManageState()->getDef()->getGuiDefinition($eiMask);
 		
-		return $guiDefinition->createEiGui($this->eiFrame, $viewMode);
+		return $guiDefinition->createEiGui($this->eiFrame, $viewMode, $guiPropPaths);
 	}
 	
 	/**

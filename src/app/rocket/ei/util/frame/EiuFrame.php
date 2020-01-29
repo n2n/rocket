@@ -257,7 +257,13 @@ class EiuFrame {
 		return new EiuEntry(null, $eiuObject, null, $this->eiuAnalyst);
 	}
 	
-	
+	private function createNewEiObject(bool $draft, ?EiType $eiType) {
+		if ($eiType === null) {
+			$eiType = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType();
+		}
+		
+		return $eiType->createNewEiObject($draft);
+	}
 	/**
 	 * @param EiEntry|object $eiEntryArg
 	 * @param EiPropPath|null $forkEiPropPath

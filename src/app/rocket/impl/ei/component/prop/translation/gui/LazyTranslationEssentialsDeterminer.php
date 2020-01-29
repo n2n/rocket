@@ -250,7 +250,7 @@ class LazyTranslationEssentialsDeterminer {
 	 * @param string $n2nLocaleId
 	 * @return EiuEntry
 	 */
-	function getTargetEiuEntry(string $n2nLocaleId) {
+	private function getTargetEiuEntry(string $n2nLocaleId) {
 		if (isset($this->targetEiuEntries[$n2nLocaleId])) {
 			return $this->targetEiuEntries[$n2nLocaleId];
 		}
@@ -285,7 +285,7 @@ class LazyTranslationEssentialsDeterminer {
 	 * @return EiuEntry
 	 */
 	private function createTargetEiuEntry($n2nLocale) {
-		$targetEiuEntry = $this->forkEiuFrame->newEntry();
+		$targetEiuEntry = $this->targetEiuGuiFrame->getEiuFrame()->newEntry();
 		$targetEiuEntry->getEntityObj()->setN2nLocale($n2nLocale);
 		return $targetEiuEntry;
 	}
