@@ -28,8 +28,8 @@ use rocket\si\content\SiEntry;
 use n2n\util\ex\IllegalStateException;
 use rocket\si\meta\SiDeclaration;
 use rocket\si\input\SiEntryInput;
-use hangar\entity\model\ex\SpecCreationException;
 use rocket\si\input\CorruptedSiInputDataException;
+use n2n\util\type\ArgUtils;
 
 class SplitContextInSiField extends InSiFieldAdapter  {
 	/**
@@ -60,6 +60,11 @@ class SplitContextInSiField extends InSiFieldAdapter  {
 	 * @var SiSplitContent[]
 	 */
 	private $splitContents = [];
+	
+	/**
+	 * @var \Closure[]
+	 */
+	private $siEntryCallbacks = [];
 	
 	/**
 	 *
@@ -177,8 +182,9 @@ class SplitContextInSiField extends InSiFieldAdapter  {
 	 * @param bool $bulky
 	 * @return \rocket\si\content\impl\split\SiSplitContent
 	 */
-	function putLazy(string $key, string $label, Url $apiUrl, ?string $entryId, bool $bulky, bool $readOnly) {
+	function putLazy(string $key, string $label, Url $apiUrl, ?string $entryId, bool $bulky, bool $readOnly, \Closure $siEntryCallback) {
 		IllegalStateException::assertTrue($this->declaration !== null, 'No SiDeclaration defined.');
+		$this->siEntryCallbacks[$key] = $siEntryCallback;
 		return $this->splitContents[$key] = SiSplitContent::createLazy($label, $apiUrl, $entryId, $bulky, $readOnly);
 	}
 	
@@ -219,11 +225,18 @@ class SplitContextInSiField extends InSiFieldAdapter  {
 				throw new CorruptedSiInputDataException('Unknown or unavailable key: ' . $key);
 			}
 			
-			$entryInput = SiEntryInput::parse($entryInputData);
-			$siEntry = $this->splitContents[$key]->getSiEntry();
+			$siEntry = $this->splitContents[$key]->getEntry(); 
+			if ($siEntry === null && isset($this->siEntryCallbacks[$key])) {
+				$siEntry = $this->siEntryCallbacks[$key]();
+				ArgUtils::valTypeReturn($siEntry, SiEntry::class, null, $siEntry->siEntryCallbacks[$key]);
+				unset($this->siEntryCallbacks[$key]);
+			}
 			
+			if ($siEntry !== null) {
+				$siEntry->handleInput(SiEntryInput::parse($entryInputData));
+			}
 			
-			
+			throw new CorruptedSiInputDataException('No SiEntry available for key: ' . $key);
 		}
 	}
 }

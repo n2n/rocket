@@ -94,7 +94,10 @@ class SplitGuiFieldFactory {
 				$pid = $activeTargetEiuEntry->getPid();
 			}
 			
-			$siField->putLazy($n2nLocaleId, $label, $apiUrl, $pid, $targetEiuGuiFrame->isBulky(), false)
+			$siField->putLazy($n2nLocaleId, $label, $apiUrl, $pid, $targetEiuGuiFrame->isBulky(), false,
+							function () use ($n2nLocaleId) {
+								return $this->lted->getTargetEiuEntryGui($n2nLocaleId)->createSiEntry();
+							})
 					->setShortLabel($n2nLocale->toPrettyId())
 					->setPropIds($propIds);
 		}

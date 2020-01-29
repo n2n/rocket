@@ -34,10 +34,10 @@ class SiSplitContent implements \JsonSerializable {
 	private $bulky;
 	private $readOnly;
 	private $propIds = null;
-	/**
-	 * @var SiDeclaration
-	 */
-	private $declaration;
+// 	/**
+// 	 * @var SiDeclaration
+// 	 */
+// 	private $declaration;
 	/**
 	 * @var SiEntry
 	 */
@@ -78,6 +78,13 @@ class SiSplitContent implements \JsonSerializable {
 		return $this;
 	}
 	
+	/**
+	 * @return \rocket\si\content\SiEntry|null
+	 */
+	function getEntry() {
+		return $this->entry;
+	}
+	
 	function jsonSerialize() {
 		$data = [ 'label' => $this->label, 'shortLabel' => $this->shortLabel ?? $this->label ];
 		
@@ -90,7 +97,7 @@ class SiSplitContent implements \JsonSerializable {
 // 		}
 		
 // 		if ($this->entry !== null) {
-			$data['declaration'] = $this->declaration;
+// 			$data['declaration'] = $this->declaration;
 			$data['entry'] = $this->entry;
 // 		}
 		
