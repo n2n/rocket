@@ -22,22 +22,13 @@
 namespace rocket\si\content\impl\split;
 
 use n2n\util\type\attrs\DataSet;
-use rocket\si\content\SiField;
 use rocket\si\content\impl\SiFieldAdapter;
 
 class SplitPlaceholderSiField extends SiFieldAdapter {
 	/**
 	 * @var string
 	 */
-	private $contextPropId;
-	/**
-	 * @var string
-	 */
 	private $refPropId;
-	/**
-	 * @var SiLazyInputHandler[]
-	 */
-	private $inputHandlers = [];
 	
 // 	/**
 // 	 * @var \Closure|null
@@ -45,11 +36,9 @@ class SplitPlaceholderSiField extends SiFieldAdapter {
 // 	private $saveCallback = null;
 	
 	/**
-	 * @param string $contextPropId
 	 * @param string $refPropId
 	 */
-	function __construct(string $contextPropId, string $refPropId) {
-		$this->contextPropId = $contextPropId;
+	function __construct(string $refPropId) {
 		$this->refPropId = $refPropId;
 	}
 
@@ -61,15 +50,15 @@ class SplitPlaceholderSiField extends SiFieldAdapter {
 		return 'split-placeholder';
 	}
 	
-	/**
-	 * @param string $key
-	 * @param SiField $field
-	 * @return \rocket\si\content\impl\split\SplitPlaceholderSiField
-	 */
-	function putInputHandler(string $key, SiLazyInputHandler $inputHandler) {
-		$this->inputHandlers[$key] = $inputHandler;
-		return $this;
-	}
+// 	/**
+// 	 * @param string $key
+// 	 * @param SiField $field
+// 	 * @return \rocket\si\content\impl\split\SplitPlaceholderSiField
+// 	 */
+// 	function putInputHandler(string $key, SiLazyInputHandler $inputHandler) {
+// 		$this->inputHandlers[$key] = $inputHandler;
+// 		return $this;
+// 	}
 	
 	/**
 	 * {@inheritDoc}
@@ -77,7 +66,6 @@ class SplitPlaceholderSiField extends SiFieldAdapter {
 	 */
 	function getData(): array {
 		return [
-			'contextPropId' => $this->contextPropId,
 			'refPropId' => $this->refPropId
 		];
 	}

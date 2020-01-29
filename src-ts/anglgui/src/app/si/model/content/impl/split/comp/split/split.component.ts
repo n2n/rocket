@@ -61,7 +61,7 @@ export class SplitComponent implements OnInit, OnDestroy, DoCheck {
 	getLabelByKey(key: string) {
 		return this.model.getSplitOptions().find(splitOption => splitOption.key === key).label;
 	}
-	
+
 	ngDoCheck() {
 		for (const [key, childUiStructure] of this.childUiStructureMap) {
 			childUiStructure.visible = this.subscription.isKeyVisible(key);
@@ -69,11 +69,12 @@ export class SplitComponent implements OnInit, OnDestroy, DoCheck {
 			if (!childUiStructure.visible || -1 < this.loadedKeys.indexOf(key) || !this.isKeyActive(key)) {
 				continue;
 			}
-			
-			
+
 			this.loadedKeys.push(key);
 			this.model.getSiField$(key).then((siField) => {
 				childUiStructure.model = siField ? siField.createUiStructureModel() : this.createNotActiveUism();
+			}).catch(() => {
+				childUiStructure.model = this.createNotActiveUism();
 			});
 		}
 	}

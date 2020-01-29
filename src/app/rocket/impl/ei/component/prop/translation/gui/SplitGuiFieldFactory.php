@@ -24,9 +24,6 @@ namespace rocket\impl\ei\component\prop\translation\gui;
 use rocket\ei\manage\gui\field\GuiPropPath;
 use rocket\si\content\impl\SiFields;
 use rocket\ei\manage\gui\GuiFieldMap;
-use n2n\l10n\N2nLocale;
-use n2n\util\ex\IllegalStateException;
-use rocket\si\content\impl\split\SiLazyInputHandler;
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\si\content\impl\split\SplitStyle;
 use rocket\si\control\SiIconType;
@@ -116,18 +113,18 @@ class SplitGuiFieldFactory {
 	 * @return \rocket\impl\ei\component\prop\translation\gui\EditableGuiField
 	 */
 	private function createPlaceholderGuiField($guiPropPath) {
-		$siField = SiFields::splitPlaceholder((string) $this->lted->getGuiPropPath(), $guiPropPath);
+		$siField = SiFields::splitPlaceholder($guiPropPath);
 		
 		$placeholderGuiField = new PlaceholderGuiField($siField);
 		
-		if (!$this->readOnly) {
+// 		if (!$this->readOnly) {
 			
-			foreach ($this->lted->getN2nLocales() as $n2nLocale) {
-				$n2nLocaleId = $n2nLocale->getId();
+// 			foreach ($this->lted->getN2nLocales() as $n2nLocale) {
+// 				$n2nLocaleId = $n2nLocale->getId();
 				
-				$siField->putInputHandler($n2nLocaleId, new TranslationSiLazyInputHandler($this->lted, $n2nLocale, $guiPropPath));
-			}
-		}
+// 				$siField->putInputHandler($n2nLocaleId, new TranslationSiLazyInputHandler($this->lted, $n2nLocale, $guiPropPath));
+// 			}
+// 		}
 		
 		$placeholderGuiField->setForkGuiFieldMap($this->buildPlaceholderGuiFieldMap($guiPropPath));
 		
@@ -208,43 +205,43 @@ class SplitGuiFieldFactory {
 }
 
 
-class TranslationSiLazyInputHandler implements SiLazyInputHandler {
-	private $lted;
-	private $n2nLocale;
-	private $guiPropPath;
+// class TranslationSiLazyInputHandler implements SiLazyInputHandler {
+// 	private $lted;
+// 	private $n2nLocale;
+// 	private $guiPropPath;
 	
-	function __construct(LazyTranslationEssentialsDeterminer $lted, N2nLocale $n2nLocale, GuiPropPath $guiPropPath) {
-		$this->lted = $lted;
-		$this->n2nLocale = $n2nLocale;
-		$this->guiPropPath = $guiPropPath;
-	}
+// 	function __construct(LazyTranslationEssentialsDeterminer $lted, N2nLocale $n2nLocale, GuiPropPath $guiPropPath) {
+// 		$this->lted = $lted;
+// 		$this->n2nLocale = $n2nLocale;
+// 		$this->guiPropPath = $guiPropPath;
+// 	}
 	
-	/**
-	 * @return GuiField
-	 */
-	private function getGuiField(string $key) {
-		return $this->lted->getTargetEiuEntryGui($key)->getGuiFieldByGuiPropPath($this->guiPropPath);
-	}
+// 	/**
+// 	 * @return GuiField
+// 	 */
+// 	private function getGuiField(string $key) {
+// 		return $this->lted->getTargetEiuEntryGui($key)->getGuiFieldByGuiPropPath($this->guiPropPath);
+// 	}
 	
-	function handlInput(array $data, array $uploadDefinitions) {
-		$siField = $this->getGuiField()->getSiField();
+// 	function handlInput(array $data, array $uploadDefinitions) {
+// 		$siField = $this->getGuiField()->getSiField();
 		
-		if ($siField === null || $siField->isReadOnly()) {
-			throw new IllegalStateException('SiField of ' . $this->guiPropPath . ' / ' . $this->n2nLocale 
-					. ' not writable.');
-		}
+// 		if ($siField === null || $siField->isReadOnly()) {
+// 			throw new IllegalStateException('SiField of ' . $this->guiPropPath . ' / ' . $this->n2nLocale 
+// 					. ' not writable.');
+// 		}
 		
-		$siField->handleInput($data);
-	}
+// 		$siField->handleInput($data);
+// 	}
 		
-	function handleContextInput(string $key, array $data, array $uploadDefinitions) {
-		$contextSiFields = $this->getGuiField()->getContextSiFields(); 
+// 	function handleContextInput(string $key, array $data, array $uploadDefinitions) {
+// 		$contextSiFields = $this->getGuiField()->getContextSiFields(); 
 		
-		if (isset($contextSiFields[$key]) || $contextSiFields[$key]->isReadOnly()) {
-			throw new IllegalStateException('Context ' . $key . ' SiField ' . $this->guiPropPath . ' / ' . $this->n2nLocale
-					. 'not writable.');
-		}
+// 		if (isset($contextSiFields[$key]) || $contextSiFields[$key]->isReadOnly()) {
+// 			throw new IllegalStateException('Context ' . $key . ' SiField ' . $this->guiPropPath . ' / ' . $this->n2nLocale
+// 					. 'not writable.');
+// 		}
 		
-		$contextSiFields[$key]->handleInput($data);
-	}
-}
+// 		$contextSiFields[$key]->handleInput($data);
+// 	}
+// }

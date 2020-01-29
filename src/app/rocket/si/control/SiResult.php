@@ -25,6 +25,7 @@ use n2n\l10n\Message;
 use n2n\util\type\ArgUtils;
 use n2n\l10n\N2nLocale;
 use rocket\si\input\SiError;
+use rocket\si\NavPoint;
 
 class SiResult implements \JsonSerializable {
 	const DIRECTIVE_REDIRECT_BACK = 'redirectBack';
@@ -35,7 +36,7 @@ class SiResult implements \JsonSerializable {
 	const EVENT_TYPE_ADDED = 'added';
 	
 	private $directive;
-	private $ref;
+	private $navPoint;
 	private $href;
 	/**
 	 * @var array
@@ -69,20 +70,11 @@ class SiResult implements \JsonSerializable {
 	}
 	
 	/**
-	 * @param string|null $ref
+	 * @param NavPoint|null $navPoint
 	 * @return \rocket\si\control\SiResult
 	 */
-	function setRef(?string $ref) {
-		$this->ref = $ref;
-		return $this;
-	}
-	
-	/**
-	 * @param string|null $href
-	 * @return \rocket\si\control\SiResult
-	 */
-	function setHref(?string $href) {
-		$this->href = $href;
+	function setNavPoint(?NavPoint $navPoint) {
+		$this->navPoint = $navPoint;
 		return $this;
 	}
 	
@@ -164,8 +156,7 @@ class SiResult implements \JsonSerializable {
 	function jsonSerialize() {
 		return [
 			'directive' => $this->directive,
-			'ref' => $this->ref,
-			'href' => $this->href,
+			'navPoint' => $this->navPoint,
 			'messages' => $this->messageArr,
 			'newButton' => $this->newButton,
 			'highlightMap' => $this->highlightMap,

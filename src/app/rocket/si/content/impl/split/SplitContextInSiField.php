@@ -220,23 +220,27 @@ class SplitContextInSiField extends InSiFieldAdapter  {
 	function handleInput(array $data) {
 		$entryInputsData = (new DataSet($data))->reqArray('entryInputs', 'array');
 		
+		$this->activeKeys = [];
+		
 		foreach ($entryInputsData as $key => $entryInputData) {
-			if (!isset($this->splitContents[$key]) || $this->splitContents[$key]->isUnavailable()) {
+			if (!isset($this->splitContents[$key])) {
 				throw new CorruptedSiInputDataException('Unknown or unavailable key: ' . $key);
 			}
+			
+			$this->activeKeys[] = $key;
 			
 			$siEntry = $this->splitContents[$key]->getEntry(); 
 			if ($siEntry === null && isset($this->siEntryCallbacks[$key])) {
 				$siEntry = $this->siEntryCallbacks[$key]();
-				ArgUtils::valTypeReturn($siEntry, SiEntry::class, null, $siEntry->siEntryCallbacks[$key]);
+				ArgUtils::valTypeReturn($siEntry, SiEntry::class, null, $this->siEntryCallbacks[$key]);
 				unset($this->siEntryCallbacks[$key]);
 			}
 			
-			if ($siEntry !== null) {
-				$siEntry->handleInput(SiEntryInput::parse($entryInputData));
+			if ($siEntry === null) {
+				throw new CorruptedSiInputDataException('No SiEntry available for key: ' . $key);	
 			}
 			
-			throw new CorruptedSiInputDataException('No SiEntry available for key: ' . $key);
+			$siEntry->handleInput(SiEntryInput::parse($entryInputData));
 		}
 	}
 }

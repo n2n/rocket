@@ -51,14 +51,14 @@ use rocket\impl\ei\component\prop\string\conf\AlphanumericConfig;
 
 abstract class AlphanumericEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiProp, 
 		SortableEiProp, QuickSearchableEiProp, ScalarEiProp, GenericEiProp {
-	/**
-	 * @var int|null
-	 */
-	private $minlength;
-	/**
-	 * @var int|null
-	 */
-	private $maxlength;
+// 	/**
+// 	 * @var int|null
+// 	 */
+// 	private $minlength;
+// 	/**
+// 	 * @var int|null
+// 	 */
+// 	private $maxlength;
 	/**
 	 * @var AlphanumericConfig
 	 */

@@ -140,7 +140,8 @@ class ToOneEiField extends EiFieldAdapter {
 		
 		if ($targetEiuEntry === null) return null;
 		
-		if ($this->relationModel->isSourceMany() && !$this->relationModel->isEmbedded()) {
+		if ($this->relationModel->isSourceMany() && !$this->relationModel->isEmbedded() 
+				&& !$this->relationModel->isIntegrated()) {
 			return $targetEiuEntry;
 		}
 		

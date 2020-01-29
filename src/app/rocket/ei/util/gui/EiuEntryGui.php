@@ -35,8 +35,6 @@ use rocket\ei\util\EiuPerimeterException;
 use rocket\ei\util\EiuAnalyst;
 use n2n\l10n\N2nLocale;
 use rocket\si\input\SiEntryInput;
-use rocket\si\content\SiField;
-use n2n\util\ex\IllegalStateException;
 
 class EiuEntryGui {
 	private $eiEntryGui;
@@ -330,14 +328,14 @@ class EiuEntryGui {
 		return new EiuEntryGuiMulti($this->eiEntryGui->toMulti(), $this->eiuAnalyst);
 	}
 	
-	/**
-	 * @param SiEntryInput $siEntryInput
-	 * @throws IllegalStateException
-	 * @throws \InvalidArgumentException
-	 */
-	function handleSiEntryInput(SiEntryInput $siEntryInput) {
-		$this->eiEntryGui->handleSiEntryInput($siEntryInput);
-	}
+// 	/**
+// 	 * @param SiEntryInput $siEntryInput
+// 	 * @throws IllegalStateException
+// 	 * @throws \InvalidArgumentException
+// 	 */
+// 	function handleSiEntryInput(SiEntryInput $siEntryInput) {
+// 		$this->eiEntryGui->handleSiEntryInput($siEntryInput);
+// 	}
 	
 // 	function getEiMask() {
 // 		if ($this->eiMask !== null) {

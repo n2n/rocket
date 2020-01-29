@@ -55,6 +55,8 @@ use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
+use rocket\ei\manage\entry\EiFieldValidationResult;
+use n2n\validation\impl\ValidationMessages;
 
 class TranslationEiProp extends RelationEiPropAdapter implements FieldEiProp, QuickSearchableEiProp {
 	/**
@@ -172,7 +174,6 @@ class TranslationEiProp extends RelationEiPropAdapter implements FieldEiProp, Qu
 		
 		return new ToManyEiField($eiu, $targetEiuFrame, $this, $this->getRelationModel());
 	}
-
 }
 
 class TranslationSortPropFork implements SortPropFork {

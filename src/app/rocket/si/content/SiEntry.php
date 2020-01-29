@@ -168,7 +168,7 @@ class SiEntry implements \JsonSerializable {
 		$buildup = $this->getSelectedBuildup();
 		
 		foreach ($buildup->getFields() as $propId => $field) {
-			if (!$entryInput->containsFieldName($propId)) {
+			if ($field->isReadOnly() || !$entryInput->containsFieldName($propId)) {
 				continue;
 			}
 			

@@ -112,7 +112,7 @@ class ToManyEiField extends EiFieldAdapter {
 			return false;
 		}
 		
-		if (!$this->relationModel->isEmbedded()) {
+		if (!$this->relationModel->isEmbedded() && !$this->relationModel->isIntegrated()) {
 			return true;
 		}
 		
@@ -169,7 +169,7 @@ class ToManyEiField extends EiFieldAdapter {
 			ArgUtils::assertTrue($value instanceof EiuEntry);
 			$nativeValues->append($value->getEntityObj());
 			
-			if ($this->relationModel->isEmbedded()) {
+			if ($this->relationModel->isEmbedded() || $this->relationModel->isIntegrated()) {
 				$value->getEiEntry()->write();
 			}
 		}
@@ -194,7 +194,8 @@ class ToManyEiField extends EiFieldAdapter {
 		
 		if (empty($targetEiuEntries)) return [];
 		
-		if ($this->relationModel->isSourceMany() && !$this->relationModel->isEmbedded()) {
+		if ($this->relationModel->isSourceMany() && !$this->relationModel->isEmbedded() 
+				&& !$this->relationModel->isIntegrated()) {
 			return $targetEiuEntries;
 		}
 		

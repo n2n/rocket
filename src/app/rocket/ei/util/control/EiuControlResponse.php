@@ -35,8 +35,8 @@ class EiuControlResponse {
 		
 		$eiFrame = $this->eiuAnalyst->getEiFrame(true);
 		
-		if (null !== ($overviewUrl = $eiFrame->getOverviewUrl(false))) {
-			$this->siResult->setRef($overviewUrl);
+		if (null !== ($overviewNavPoint = $eiFrame->getOverviewNavPoint(false))) {
+			$this->siResult->setNavPoint($overviewNavPoint);
 		}
 		
 		return $this;
