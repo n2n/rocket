@@ -58,7 +58,7 @@
 	$htmlMeta->addMeta(array('name' => 'robots', 'content' => 'noindex, nofollow'));
 	
 	// new design (not ready yet):
-	$htmlMeta->addCss('css/rocket-20.css');
+	$htmlMeta->addCss('css/rocket-30.css');
 	// old design:
 	//	$htmlMeta->addCss('css/rocket.css');
 	$htmlMeta->addCss('css/font-awesome.css');
