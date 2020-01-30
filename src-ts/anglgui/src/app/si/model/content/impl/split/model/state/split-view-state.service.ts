@@ -14,7 +14,7 @@ export class SplitViewStateService {
 	constructor() {
 	}
 
-	subscribe(uiStructure: UiStructure, splitOptions: SplitOption[], splitStyle): SplitViewStateSubscription {
+	subscribe(uiStructure: UiStructure, splitOptions: SplitOption[], splitStyle: SplitStyle): SplitViewStateSubscription {
 		const context = this.getOrCreateContext(uiStructure.getRoot(), splitStyle);
 
 		return context.createSubscription(splitOptions);
