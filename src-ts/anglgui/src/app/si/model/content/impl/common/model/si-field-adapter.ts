@@ -16,7 +16,7 @@ export abstract class SiFieldAdapter implements SiField, MessageFieldModel {
 	abstract hasInput(): boolean;
 
 	abstract readInput(): object;
-
+	
 	isDisabled(): boolean {
 		return this.disabledSubject.getValue();
 	}

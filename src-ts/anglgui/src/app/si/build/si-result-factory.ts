@@ -4,6 +4,7 @@ import { SiEntryError } from 'src/app/si/model/input/si-entry-error';
 import { SiFieldError } from 'src/app/si/model/input/si-field-error';
 import { Message } from 'src/app/util/i18n/message';
 import { SiResult } from '../manage/si-result';
+import { UiFactory } from "src/app/si/build/ui-factory";
 
 export class SiResultFactory {
 
@@ -13,8 +14,10 @@ export class SiResultFactory {
 		const result = new SiResult();
 
 		result.directive = extr.nullaString('directive');
-		result.ref = extr.nullaString('ref');
-		result.href = extr.nullaString('href');
+		let navPointData;
+		if (navPointData = extr.nullaObject('navPoint')) {
+			result.navPoint = UiFactory.createNavPoint(navPointData);
+		}
 
 		const inputErrorData = extr.nullaObject('inputError');
 

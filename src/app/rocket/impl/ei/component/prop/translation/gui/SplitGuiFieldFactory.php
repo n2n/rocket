@@ -57,8 +57,8 @@ class SplitGuiFieldFactory {
 			$n2nLocaleId = $n2nLocale->getId();
 			$label = $n2nLocale->getName($this->lted->getDisplayN2nLocale());
 			
-			if (null !== ($activeTargetEiuEntryGui = $this->lted->getActiveTargetEiuEntryGui($n2nLocaleId))) {
-				$siField->putEntry($n2nLocaleId, $label, $activeTargetEiuEntryGui->createSiEntry())
+			if ($this->lted->isN2nLocaleIdActive($n2nLocaleId)) {
+				$siField->putEntry($n2nLocaleId, $label, $this->lted->getTargetEiuEntryGui($n2nLocaleId)->createSiEntry())
 						->setShortLabel($n2nLocale->toPrettyId());
 			} else {
 				$siField->putUnavailable($n2nLocaleId, $label)->setShortLabel($n2nLocale->toPrettyId());

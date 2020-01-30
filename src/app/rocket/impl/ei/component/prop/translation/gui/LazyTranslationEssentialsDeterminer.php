@@ -179,7 +179,9 @@ class LazyTranslationEssentialsDeterminer {
 	 * @return boolean
 	 */
 	function isN2nLocaleIdActive(string $n2nLocaleId) {
-		return isset($this->targetEiuEntryGuis[$n2nLocaleId]);
+		$this->ensureActiveTargetEiuEntries();
+		
+		return isset($this->activeTargetEiuEntries[$n2nLocaleId]);
 	}
 	
 	function save() {

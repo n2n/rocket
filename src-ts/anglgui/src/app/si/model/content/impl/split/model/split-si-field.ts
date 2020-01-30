@@ -8,6 +8,7 @@ import { SplitContextSiField, SplitStyle } from './split-context-si-field';
 import { SiEntry } from '../../../si-entry';
 import { SplitComponent } from '../comp/split/split.component';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
+import { SiFieldError } from "src/app/si/model/input/si-field-error";
 
 export class SplitSiField extends SiFieldAdapter implements SplitModel {
 	splitContext: SplitContextSiField|null;
@@ -15,6 +16,11 @@ export class SplitSiField extends SiFieldAdapter implements SplitModel {
 	constructor(public refPropId: string) {
 		super();
 	}
+	
+
+//	handleError(error: SiFieldError): void {
+//		console.log(error);
+//	}
 
 	hasInput(): boolean {
 		return false;
