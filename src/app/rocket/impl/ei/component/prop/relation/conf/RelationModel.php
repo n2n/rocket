@@ -398,9 +398,9 @@ class RelationModel {
 		
 		$this->targetPropInfo = $rf->deterTargetPropInfo($targetEiuEngine);
 		if ($this->isEmbedded() || $this->isIntegrated()) {
-			$rf->validateEmbedded($targetEiuEngine);
+			$rf->validateEmbeddedOrIntegrated($targetEiuEngine);
 		} else {
-			$rf->validateNonEmbedded();
+			$rf->validateNonEmbeddedOrIntegrated();
 		}
 		$this->targetEiuEngine = $targetEiuEngine;
 		
@@ -508,7 +508,7 @@ class RelationFinalizer {
 		}
 	}
 	
-	function validateNonEmbedded() {
+	function validateNonEmbeddedOrIntegrated() {
 		$entityProperty = $this->relationModel->getRelationEntityProperty();
 		
 		if ($this->relationModel->isReadOnly() || $this->relationModel->isMaster() 
@@ -523,7 +523,7 @@ class RelationFinalizer {
 	}
 		
 	
-	function validateEmbedded() {
+	function validateEmbeddedOrIntegrated() {
 		$entityProperty = $this->relationModel->getRelationEntityProperty();
 		
 		if (!($entityProperty->getRelation()->getCascadeType() & CascadeType::PERSIST)) {
