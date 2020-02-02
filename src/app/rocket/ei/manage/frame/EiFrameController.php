@@ -205,21 +205,36 @@ class EiFrameController extends ControllerAdapter {
 		$eiPropPath = $this->parseEiPropPath($eiPropPathStr);
 	}
 	
-	public function doFork($eiPropPathStr, $mode, array $delegateCmds) {
+	public function doFork($eiCommandPathStr, $eiPropPathStr, $mode, array $delegateCmds) {
+		$eiCommandPath = $this->parseEiCommandPath($eiCommandPathStr);
+		$eiCommand = $this->lookupEiCommand($eiCommandPath);
+		
+		$this->pushEiFrame($eiCommand);
+		
 		$eiPropPath = $this->parseEiPropPath($eiPropPathStr);
 		$eiForkLink = $this->createEiForkLink($mode, null);
 		
 		$this->delegate(new EiFrameController($this->createForked($eiPropPath, $eiForkLink)));
 	}
 	
-	public function doForkEntry($pid, $eiPropPathStr, $mode, array $deleteCmds) {
+	public function doForkEntry($eiCommandPathStr, $pid, $eiPropPathStr, $mode, array $deleteCmds) {
+		$eiCommandPath = $this->parseEiCommandPath($eiCommandPathStr);
+		$eiCommand = $this->lookupEiCommand($eiCommandPath);
+		
+		$this->pushEiFrame($eiCommand);
+		
 		$eiPropPath = $this->parseEiPropPath($eiPropPathStr);
 		$eiForkLink = $this->createEiForkLink($mode, $this->lookupEiObject($pid));
 		
 		$this->delegate(new EiFrameController($this->createForked($eiPropPath, $eiForkLink)));
 	}
 	
-	public function doForkNewEntry($eiTypeId, $eiPropPathStr, $mode, array $deleteCmds) {
+	public function doForkNewEntry($eiCommandPathStr, $eiTypeId, $eiPropPathStr, $mode, array $deleteCmds) {
+		$eiCommandPath = $this->parseEiCommandPath($eiCommandPathStr);
+		$eiCommand = $this->lookupEiCommand($eiCommandPath);
+		
+		$this->pushEiFrame($eiCommand);
+		
 		$eiPropPath = $this->parseEiPropPath($eiPropPathStr);
 		$eiForkLink = $this->createEiForkLink($mode, $this->createEiObject($eiTypeId));
 		

@@ -418,18 +418,18 @@ class EiFrame {
 	 * @param EiEntry|null $eiEntry
 	 * @return \n2n\util\uri\Url
 	 */
-	public function getForkUrl(EiPropPath $eiPropPath, string $mode, EiObject $eiObject = null) {
+	public function getForkUrl(EiCommandPath $eiCommandPath, EiPropPath $eiPropPath, string $mode, EiObject $eiObject = null) {
 		if ($eiObject === null) {
-			return $this->getBaseUrl()->ext([EiFrameController::FORK_PATH, (string) $eiPropPath, $mode]);
+			return $this->getBaseUrl()->ext([EiFrameController::FORK_PATH, (string) $eiCommandPath, (string) $eiPropPath, $mode]);
 		}
 		
 		if ($eiObject->isNew()) {
 			return $this->getBaseUrl()->ext([EiFrameController::FORK_NEW_ENTRY_PATH, 
-					$eiObject->getEiEntityObj()->getEiType()->getId(), $eiPropPath, $mode]);
+					$eiObject->getEiEntityObj()->getEiType()->getId(), (string) $eiCommandPath, (string) $eiPropPath, $mode]);
 		}
 		
-		return $this->getBaseUrl()->ext([EiFrameController::FORK_ENTRY_PATH, $eiObject->getEiEntityObj()->getPid(), 
-				(string) $eiPropPath, $mode]);
+		return $this->getBaseUrl()->ext([EiFrameController::FORK_ENTRY_PATH, (string) $eiCommandPath, 
+				$eiObject->getEiEntityObj()->getPid(), (string) $eiPropPath, $mode]);
 	}
 	
 	
