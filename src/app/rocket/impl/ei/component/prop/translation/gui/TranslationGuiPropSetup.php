@@ -60,10 +60,10 @@ class TranslationGuiPropSetup implements GuiPropSetup, GuiFieldAssembler {
 	}
 	
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		$forkEiu = $eiu->frame()->forkDiscover($eiu->prop()->getPath(), $eiu->object(), $this->targetEiuGuiFrame);
-		$forkEiu->frame()->exec($this->eiCommandPath);
+		$targetEiu = $eiu->frame()->forkDiscover($eiu->prop()->getPath(), $eiu->object(), $this->targetEiuGuiFrame);
+		$targetEiu->frame()->exec($this->eiCommandPath);
 		
-		$lted = new LazyTranslationEssentialsDeterminer($eiu, $forkEiu, $this->translationConfig);
+		$lted = new LazyTranslationEssentialsDeterminer($eiu, $targetEiu, $this->translationConfig);
 		$tgff = new SplitGuiFieldFactory($lted, $readOnly);
 		
 		return $tgff->createGuiField();
