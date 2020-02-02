@@ -24,6 +24,7 @@ namespace rocket\impl\ei\component\prop\relation\model\relation;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\frame\EiFrameListener;
+use rocket\ei\manage\security\EiExecution;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\util\entry\EiuEntry;
 
@@ -58,5 +59,8 @@ class MappedRelationEiModificator implements EiFrameListener {
 		}
 		$value[] = $this->relationEiuObj;
 		$eiEntry->setValue($this->targetEiPropPath, $value);
+	}
+	
+	public function whenExecuted(EiExecution $eiExecution) {
 	}
 }

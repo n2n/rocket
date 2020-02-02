@@ -162,6 +162,10 @@ class EiFrame {
 		
 		$this->eiExecution = $this->manageState->getEiPermissionManager()
 				->createEiExecution($this->contextEiEngine->getEiMask(), $eiCommand);
+		
+		foreach ($this->listeners as $listener) {
+			$listener->whenExecuted($this->eiExecution);
+		}
 	}
 	
 	/**
@@ -519,9 +523,4 @@ class EiForkLink {
 	static function getModes() {
 		return [self::MODE_DISCOVER, self::MODE_SELECT];
 	}
-}
-
-interface EiFrameListener {
-	
-	public function onNewEiEntry(EiEntry $eiEntry);
 }

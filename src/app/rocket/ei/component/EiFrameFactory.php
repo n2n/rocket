@@ -35,6 +35,9 @@ use rocket\ei\EiException;
 use rocket\ei\EiPropPath;
 use n2n\util\type\TypeUtils;
 use rocket\ei\manage\frame\EiForkLink;
+use rocket\ei\manage\frame\EiFrameListener;
+use rocket\ei\manage\entry\EiEntry;
+use rocket\ei\manage\security\EiExecution;
 
 class EiFrameFactory {
 	private $eiEngine;
@@ -114,12 +117,41 @@ class EiFrameFactory {
 		
 		$forkedEiFrame->setEiForkLink($eiForkLink);
 		
-		$eiCommandPath = EiCommandPath::from($forkedEiFrame->getEiExecution()->getEiCommand());
-		$forkedEiFrame->setBaseUrl($parentEiFrame->getForkUrl($eiCommandPath, $eiPropPath, $eiForkLink->getMode(), 
-				$eiForkLink->getParentEiObject()));
+		$forkedEiFrame->registerListener(new ForkBaseLinkProvider($parentEiFrame, $forkedEiFrame, $eiPropPath, 
+				$eiForkLink));
 		
 		return $forkedEiFrame;
 	}
 	
 	
+}
+
+class ForkBaseLinkProvider implements EiFrameListener {
+	private $parentEiFrame;
+	private $forkedEiFrame;
+	private $eiPropPath;
+	private $eiForkLink;
+	
+	function __construct(EiFrame $parentEiFrame, EiFrame $forkedEiFrame, EiPropPath $eiPropPath, 
+			EiForkLink $eiForkLink) {
+		$this->parentEiFrame = $parentEiFrame;
+		$this->forkedEiFrame = $forkedEiFrame;
+		$this->eiPropPath = $eiPropPath;
+		$this->eiForkLink = $eiForkLink;
+	}
+	
+	function onNewEiEntry(EiEntry $eiEntry) {
+	}
+	
+	function whenExecuted(EiExecution $eiExecution) {
+		if ($this->forkedEiFrame->hasBaseUrl()) {
+			test('shouldnt happen');
+			return;
+		}
+		
+		$eiCommandPath = EiCommandPath::from($eiExecution->getEiCommand());
+		
+		$this->forkedEiFrame->setBaseUrl($this->parentEiFrame->getForkUrl($eiCommandPath, $this->eiPropPath, 
+				$this->eiForkLink->getMode(), $this->eiForkLink->getParentEiObject()));
+	}
 }

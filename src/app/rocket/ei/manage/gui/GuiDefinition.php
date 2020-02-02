@@ -967,6 +967,7 @@ class GuiDefinition {
 
 
 class EiFieldAssemblerCache {
+	private $n2nContext;
 	private $eiGuiFrame;
 	private $displayStructure;
 	/**
@@ -988,6 +989,7 @@ class EiFieldAssemblerCache {
 	 * @param array $possibleGuiPropPaths
 	 */
 	function __construct(N2nContext $n2nContext, EiGuiFrame $eiGuiFrame, array $possibleGuiPropPaths) {
+		$this->n2nContext = $n2nContext;
 		$this->eiGuiFrame = $eiGuiFrame;
 		$this->possibleGuiPropPaths = $possibleGuiPropPaths;
 	}

@@ -26,6 +26,7 @@ use n2n\reflection\property\AccessProxy;
 use rocket\ei\manage\entry\WrittenMappingListener;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\manage\frame\EiFrameListener;
+use rocket\ei\manage\security\EiExecution;
 
 class MasterRelationEiModificator implements EiFrameListener {
 	private $targetEiFrame;
@@ -65,4 +66,8 @@ class MasterRelationEiModificator implements EiFrameListener {
 					$that->propertyAccessProxy->setValue($that->entityObj, $targetEntities);
 				}));
 	}
+	
+	public function whenExecuted(EiExecution $eiExecution) {
+	}
+
 }

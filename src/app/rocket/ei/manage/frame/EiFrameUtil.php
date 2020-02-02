@@ -211,7 +211,7 @@ class EiFrameUtil {
 	private function createEiGui(EiMask $eiMask, int $viewMode, array $guiPropPaths = null) {
 		$guiDefinition = $this->eiFrame->getManageState()->getDef()->getGuiDefinition($eiMask);
 		
-		return $guiDefinition->createEiGui($this->eiFrame, $viewMode, $guiPropPaths);
+		return $guiDefinition->createEiGui($this->eiFrame->getN2nContext(), $viewMode, $guiPropPaths);
 	}
 	
 	/**
@@ -234,7 +234,7 @@ class EiFrameUtil {
 			$eiGuiFrame = $eiGui->getEiGuiFrame();
 		}
 		
-		return new EiEntryGuiResult($eiGuiFrame->createEiEntryGui($eiEntry), $eiGuiFrame, $eiGui);
+		return new EiEntryGuiResult($this->eiFrame, $eiGuiFrame->createEiEntryGui($this->eiFrame, $eiEntry), $eiGuiFrame, $eiGui);
 	}
 	
 	/**
@@ -401,7 +401,7 @@ class EiEntryGuiResult {
 	 * @return SiEntry
 	 */
 	function createSiEntry(bool $controlsIncluded) {
-		return $this->eiGuiFrame->createSiEntry($this->eiEntryGui);
+		return $this->eiGuiFrame->createSiEntry($this->eiFrame, $this->eiEntryGui);
 	}
 	
 	/**
