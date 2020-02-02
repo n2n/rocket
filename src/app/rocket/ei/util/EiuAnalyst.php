@@ -133,7 +133,7 @@ class EiuAnalyst {
 			}
 			
 			if ($eiArg instanceof EiuFrame) {
-				$this->assignEiuFrame($eiArg);
+				$this->assignEiFrame($eiArg->getEiFrame());
 				continue;
 			}
 			
@@ -255,54 +255,54 @@ class EiuAnalyst {
 			}
 			
 			if ($eiArg instanceof EiuEntryGui) {
-				$this->assignEiuEntryGui($eiArg);
+				$this->assignEiEntryGui($eiArg->getEiEntryGui());
 				continue;
 			}
 			
 			if ($eiArg instanceof EiuGuiFrame) {
-				$this->assignEiuGuiFrame($eiArg);
+				$this->assignEiGuiFrame($eiArg->getEiGuiFrame());
 				continue;
 			}
 			
 			if ($eiArg instanceof EiuGui) {
-				$this->assignEiuGui($eiArg);
+				$this->assignEiGui($eiArg->getEiGui());
 				continue;
 			}
 			
 			if ($eiArg instanceof EiuObject) {
-				$this->assignEiuObject($eiArg);
+				$this->assignEiObject($eiArg->getEiObject());
 				continue;
 			}
 			
 			if ($eiArg instanceof EiuEntry) {
-				$this->assignEiuEntry($eiArg);
+				$this->assignEiEntry($eiArg->getEiEntry());
 				continue;
 			}
 			
 			if ($eiArg instanceof EiuFieldMap) {
-				$this->assignEiuFieldMap($eiArg);
+				$this->assignEiFieldMap($eiArg->getEiFieldMap());
 				continue;
 			}
 			
 			if ($eiArg instanceof EiuProp) {
-				$this->assignEiuProp($eiArg);
+				$this->assignEiProp($eiArg->getEiProp());
 				continue;
 			}
 			
 			if ($eiArg instanceof EiuCommand) {
-				$this->assignEiuCommand($eiArg);
+				$this->assignEiCommand($eiArg->getEiCommand());
 				continue;
 			}
 			
 			if ($eiArg instanceof EiuEngine) {
-				$this->assignEiuEngine($eiArg);
+				$this->assignEiEngine($eiArg->getEiEngine());
 				continue;
 			}
 			
-			if ($eiArg instanceof EiuContext) {
-				$this->assignEiuContext($eiArg);
-				continue;
-			}
+// 			if ($eiArg instanceof EiuContext) {
+// 				$this->assignEiuContext($eiArg);
+// 				continue;
+// 			}
 			
 			if ($eiArg instanceof EiuCtrl) {
 				$eiArg = $eiArg->eiu();
@@ -414,7 +414,7 @@ class EiuAnalyst {
 		}
 		
 		foreach ($remainingEiArgs as $argNo => $eiArg) {
-			if ($eiType !== null) {
+			if ($eiType !== null && is_object($eiArg)) {
 				try {
 					$this->eiObject = LiveEiObject::create($eiType, $eiArg);
 					continue;
@@ -455,17 +455,17 @@ class EiuAnalyst {
 		$this->assignEiType($eiFrame->getContextEiEngine()->getEiMask()->getEiType(), true);
 	}
 	
-	/**
-	 * @param EiuEngine $eiuEngine
-	 */
-	private function assignEiuEngine($eiuEngine) {
-		if ($this->eiuEngine === $eiuEngine) {
-			return;
-		}
+// 	/**
+// 	 * @param EiuEngine $eiuEngine
+// 	 */
+// 	private function assignEiuEngine($eiuEngine) {
+// 		if ($this->eiuEngine === $eiuEngine) {
+// 			return;
+// 		}
 		
-		$this->assignEiEngine($eiuEngine->getEiEngine());
-		$this->eiuEngine = $eiuEngine;
-	}
+// 		$this->assignEiEngine($eiuEngine->getEiEngine());
+// 		$this->eiuEngine = $eiuEngine;
+// 	}
 	
 	/**
 	 * @param EiEngine $eiEngine
@@ -481,44 +481,44 @@ class EiuAnalyst {
 		$this->assignEiMask($eiEngine->getEiMask());
 	}
 	
-	/**
-	 * @param EiuProp $eiuProp
-	 */
-	private function assignEiuProp($eiuProp) {
-		if ($this->eiuProp === $eiuProp) {
-			return;
-		}
+// 	/**
+// 	 * @param EiuProp $eiuProp
+// 	 */
+// 	private function assignEiuProp($eiuProp) {
+// 		if ($this->eiuProp === $eiuProp) {
+// 			return;
+// 		}
 		
-		$this->assignEiuEngine($eiuProp->getEiuEngine());
-		$this->eiPropPath = $eiuProp->getEiPropPath();
-		$this->eiuProp = $eiuProp;
-	}
+// 		$this->assignEiuEngine($eiuProp->getEiuEngine());
+// 		$this->eiPropPath = $eiuProp->getEiPropPath();
+// 		$this->eiuProp = $eiuProp;
+// 	}
 		
-	/**
-	 * @param EiuCommand $eiuCommand
-	 */
-	private function assignEiuCommand($eiuCommand) {
-		if ($this->eiuCommand === $eiuCommand) {
-			return;
-		}
+// 	/**
+// 	 * @param EiuCommand $eiuCommand
+// 	 */
+// 	private function assignEiuCommand($eiuCommand) {
+// 		if ($this->eiuCommand === $eiuCommand) {
+// 			return;
+// 		}
 		
-		$this->assignEiuEngine($eiuCommand->getEiuEngine());
-		$this->eiCommandPath = $eiuProp->getEiCommandPath();
-		$this->eiuCommand = $eiuCommand;
-	}
+// 		$this->assignEiuEngine($eiuCommand->getEiuEngine());
+// 		$this->eiCommandPath = $eiuProp->getEiCommandPath();
+// 		$this->eiuCommand = $eiuCommand;
+// 	}
 	
 	
-	/**
-	 * @param EiuMask $eiuMask
-	 */
-	private function assignEiuMask($eiuMask) {
-		if ($this->eiuMask === $eiuMask) {
-			return;
-		}
+// 	/**
+// 	 * @param EiuMask $eiuMask
+// 	 */
+// 	private function assignEiuMask($eiuMask) {
+// 		if ($this->eiuMask === $eiuMask) {
+// 			return;
+// 		}
 		
-		$this->assignEiMask($eiuMask->getEiMask());
-		$this->eiuMask = $eiuMask;
-	}
+// 		$this->assignEiMask($eiuMask->getEiMask());
+// 		$this->eiuMask = $eiuMask;
+// 	}
 	
 	/**
 	 * @param EiMask $eiMask
@@ -559,17 +559,17 @@ class EiuAnalyst {
 				. $eiType->getId());
 	}
 	
-	/**
-	 * @param EiuGuiFrame $eiuGuiFrameLayout
-	 */
-	private function assignEiuGui($eiuGuiFrameLayout) {
-		if ($this->eiuGuiFrameLayout === $eiuGuiFrameLayout) {
-			return;
-		}
+// 	/**
+// 	 * @param EiuGuiFrame $eiuGuiFrameLayout
+// 	 */
+// 	private function assignEiuGui($eiuGuiFrameLayout) {
+// 		if ($this->eiuGuiFrameLayout === $eiuGuiFrameLayout) {
+// 			return;
+// 		}
 		
-		$this->assignEiGui($eiGui);
-		$this->eiuGuiFrameLayout = $eiuGuiFrameLayout;
-	}
+// 		$this->assignEiGui($eiGui);
+// 		$this->eiuGuiFrameLayout = $eiuGuiFrameLayout;
+// 	}
 	
 	/**
 	 * @param EiGui $eiGui
@@ -588,18 +588,17 @@ class EiuAnalyst {
 		}
 	}
 	
-	/**
-	 * @param EiuGuiFrame $eiuGuiFrame
-	 */
-	private function assignEiuGuiFrame($eiuGuiFrame) {
-		if ($this->eiuGuiFrame === $eiuGuiFrame) {
-			return;
-		}
+// 	/**
+// 	 * @param EiuGuiFrame $eiuGuiFrame
+// 	 */
+// 	private function assignEiuGuiFrame($eiuGuiFrame) {
+// 		if ($this->eiuGuiFrame === $eiuGuiFrame) {
+// 			return;
+// 		}
 		
-		$this->assignEiGuiFrame($eiuGuiFrame->getEiGuiFrame());
-		$this->assignEiuFrame($eiuGuiFrame->getEiuFrame());
-		$this->eiuGuiFrame = $eiuGuiFrame;
-	}
+// 		$this->assignEiGuiFrame($eiuGuiFrame->getEiGuiFrame());
+// 		$this->eiuGuiFrame = $eiuGuiFrame;
+// 	}
 	
 	/**
 	 * @param EiGuiFrame $eiGuiFrame
@@ -612,7 +611,6 @@ class EiuAnalyst {
 		$this->eiuGuiFrame = null;
 		$this->eiGuiFrame = $eiGuiFrame;
 		
-		$this->assignEiFrame($eiGuiFrame->getEiFrame());
 		$this->assignEiMask($eiGuiFrame->getGuiDefinition()->getEiMask());
 		
 // 		$eiEntryGuis = $eiGuiFrame->getEiEntryGuis();
@@ -621,18 +619,18 @@ class EiuAnalyst {
 // 		}
 	}
 	
-	/**
-	 * @param EiuEntryGui $eiuEntryGui
-	 */
-	private function assignEiuEntryGui($eiuEntryGui) {
-		if ($this->eiuEntryGui === $eiuEntryGui) {
-			return;
-		}
+// 	/**
+// 	 * @param EiuEntryGui $eiuEntryGui
+// 	 */
+// 	private function assignEiuEntryGui($eiuEntryGui) {
+// 		if ($this->eiuEntryGui === $eiuEntryGui) {
+// 			return;
+// 		}
 		
-		$this->assignEiuGuiFrame($eiuEntryGui->guiFrame());
-		$this->assignEiEntryGui($eiuEntryGui->getEiEntryGui());
-		$this->eiuEntryGui = $eiuEntryGui;
-	}
+// 		$this->assignEiuGuiFrame($eiuEntryGui->guiFrame());
+// 		$this->assignEiEntryGui($eiuEntryGui->getEiEntryGui());
+// 		$this->eiuEntryGui = $eiuEntryGui;
+// 	}
 	
 	/**
 	 * @param EiEntryGui $eiEntryGui
@@ -648,18 +646,18 @@ class EiuAnalyst {
 		$this->assignEiEntry($eiEntryGui->getEiEntry());
 	}
 	
-	/**
-	 * @param EiuEntryGuiAssembler $eiuEntryGuiAssembler
-	 */
-	private function assignEiuGuiFrameAssembler($eiuEntryGuiAssembler) {
-		if ($this->eiuEntryGuiAssembler === $eiuEntryGuiAssembler) {
-			return;
-		}
+// 	/**
+// 	 * @param EiuEntryGuiAssembler $eiuEntryGuiAssembler
+// 	 */
+// 	private function assignEiuGuiFrameAssembler($eiuEntryGuiAssembler) {
+// 		if ($this->eiuEntryGuiAssembler === $eiuEntryGuiAssembler) {
+// 			return;
+// 		}
 		
-		$this->assignEiEntryGuiAssembler($eiuEntryGuiAssembler->getEiEntryGuiAssembler());
-// 		$this->assignEiuEntryGui($eiuEntryGuiAssembler->getEiuEntryGui());
-		$this->eiuEntryGuiAssembler = $eiuEntryGuiAssembler;
-	}
+// 		$this->assignEiEntryGuiAssembler($eiuEntryGuiAssembler->getEiEntryGuiAssembler());
+// // 		$this->assignEiuEntryGui($eiuEntryGuiAssembler->getEiuEntryGui());
+// 		$this->eiuEntryGuiAssembler = $eiuEntryGuiAssembler;
+// 	}
 	
 	/**
 	 * @param EiEntryGuiAssembler $eiEntryGuiAssembler
@@ -675,77 +673,77 @@ class EiuAnalyst {
 		$this->assignEiEntryGui($eiEntryGuiAssembler->getEiEntryGui());
 	}
 	
-	/**
-	 * @param EiuField $eiuField
-	 */
-	private function assignEiuField($eiuField) {
-		if ($this->eiuField === $eiuField) {
-			return;
-		}
+// 	/**
+// 	 * @param EiuField $eiuField
+// 	 */
+// 	private function assignEiuField($eiuField) {
+// 		if ($this->eiuField === $eiuField) {
+// 			return;
+// 		}
 		
-		$this->assignEiuEntry($eiuField->getEiuEntry());
+// 		$this->assignEiuEntry($eiuField->getEiuEntry());
 		
-		$this->eiuField = $eiuField;
-		$this->eiPropPath = $eiuField->getEiPropPath();
-	}
+// 		$this->eiuField = $eiuField;
+// 		$this->eiPropPath = $eiuField->getEiPropPath();
+// 	}
 	
-	/**
-	 * @param EiuGuiField $eiuGuiFrameField
-	 */
-	private function assignEiuGuiField($eiuGuiFrameField) {
-		if ($this->eiuGuiFrameField === $eiuGuiFrameField) {
-			return;
-		}
+// 	/**
+// 	 * @param EiuGuiField $eiuGuiFrameField
+// 	 */
+// 	private function assignEiuGuiField($eiuGuiFrameField) {
+// 		if ($this->eiuGuiFrameField === $eiuGuiFrameField) {
+// 			return;
+// 		}
 		
-		$this->assignEiuEntryGui($eiuGuiFrameField->getEiuEntryGui());
+// 		$this->assignEiuEntryGui($eiuGuiFrameField->getEiuEntryGui());
 		
-		$this->eiuField = $eiuField;
-		$this->eiPropPath = $eiuField->getEiPropPath();
-	}
+// 		$this->eiuField = $eiuField;
+// 		$this->eiPropPath = $eiuField->getEiPropPath();
+// 	}
 	
-	/**
-	 * @param EiuEntry $eiuEntry
-	 */
-	private function assignEiuObject($eiuObject) {
-		if ($this->eiuObject === $eiuObject) {
-			return;
-		}
+// 	/**
+// 	 * @param EiuEntry $eiuEntry
+// 	 */
+// 	private function assignEiuObject($eiuObject) {
+// 		if ($this->eiuObject === $eiuObject) {
+// 			return;
+// 		}
 		
-		$this->assignEiObject($eiuObject->getEiObject());
+// 		$this->assignEiObject($eiuObject->getEiObject());
 		
-		$this->eiuObject = $eiuObject;
-	}
+// 		$this->eiuObject = $eiuObject;
+// 	}
 	
-	/**
-	 * @param EiuEntry $eiuEntry
-	 */
-	private function assignEiuEntry($eiuEntry) {
-		if ($this->eiuEntry === $eiuEntry) {
-			return;
-		}
+// 	/**
+// 	 * @param EiuEntry $eiuEntry
+// 	 */
+// 	private function assignEiuEntry($eiuEntry) {
+// 		if ($this->eiuEntry === $eiuEntry) {
+// 			return;
+// 		}
 		
-		if (null !== ($eiEntry = $eiuEntry->getEiEntry(false))) {
-			$this->assignEiEntry($eiEntry);
-		} else {
-			$this->assignEiObject($eiuEntry->object()->getEiObject());
-		}
+// 		if (null !== ($eiEntry = $eiuEntry->getEiEntry(false))) {
+// 			$this->assignEiEntry($eiEntry);
+// 		} else {
+// 			$this->assignEiObject($eiuEntry->object()->getEiObject());
+// 		}
 		
-		if (null !== ($eiuFrame = $eiuEntry->getEiuFrame(false))) {
-			$this->assignEiuFrame($eiuFrame);
-		}
+// 		if (null !== ($eiuFrame = $eiuEntry->getEiuFrame(false))) {
+// 			$this->assignEiuFrame($eiuFrame);
+// 		}
 		
-		$this->eiuEntry = $eiuEntry;
-	}
+// 		$this->eiuEntry = $eiuEntry;
+// 	}
 	
-	private function assignEiuFieldMap($eiuFieldMap) {
-		if ($this->eiuFieldMap === $eiuFieldMap) {
-			return;
-		}
+// 	private function assignEiuFieldMap($eiuFieldMap) {
+// 		if ($this->eiuFieldMap === $eiuFieldMap) {
+// 			return;
+// 		}
 		
-		$this->assignEiFieldMap($eiuFieldMap->getEiFieldMap());
+// 		$this->assignEiFieldMap($eiuFieldMap->getEiFieldMap());
 		
-		$this->eiuFieldMap = $eiuFieldMap;
-	}
+// 		$this->eiuFieldMap = $eiuFieldMap;
+// 	}
 	
 	/**
 	 * @param EiEntry $eiObject
@@ -1161,7 +1159,7 @@ class EiuAnalyst {
 		}
 	
 		if ($this->eiGuiFrame !== null) {
-			return $this->eiuGuiFrame = new EiuGuiFrame($this->eiGuiFrame, $this->getEiuFrame(true), $this);
+			return $this->eiuGuiFrame = new EiuGuiFrame($this->eiGuiFrame, $this);
 		}
 	
 		if (!$required) return null;

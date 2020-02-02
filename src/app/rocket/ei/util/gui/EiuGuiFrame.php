@@ -18,7 +18,6 @@ use rocket\si\meta\SiTypeDeclaration;
 
 class EiuGuiFrame {
 	private $eiGuiFrame;
-	private $eiuFrame;
 	private $eiuAnalyst;
 	
 	/**
@@ -26,9 +25,8 @@ class EiuGuiFrame {
 	 * @param EiuFrame $eiuFrame
 	 * @param EiuAnalyst $eiuAnalyst
 	 */
-	public function __construct(EiGuiFrame $eiGuiFrame, ?EiuFrame $eiuFrame, EiuAnalyst $eiuAnalyst) {
+	public function __construct(EiGuiFrame $eiGuiFrame, EiuAnalyst $eiuAnalyst) {
 		$this->eiGuiFrame = $eiGuiFrame;
-		$this->eiuFrame = $eiuFrame;
 		$this->eiuAnalyst = $eiuAnalyst;
 	}
 	
@@ -110,7 +108,7 @@ class EiuGuiFrame {
 	function newEntryGui($eiEntryArg) {
 		$eiEntry = EiuAnalyst::buildEiEntryFromEiArg($eiEntryArg, 'eiEntryArg');
 		
-		$eiEntryGui = $this->eiGuiFrame->createEiEntryGui($eiEntry);
+		$eiEntryGui = $this->eiGuiFrame->createEiEntryGui($this->eiuAnalyst->getEiFrame(true), $eiEntry);
 		
 		return new EiuEntryGui($eiEntryGui, $this, $this->eiuAnalyst);
 	}
@@ -218,7 +216,7 @@ class EiuGuiFrame {
 	 * @return \rocket\ei\util\control\EiuControlFactory
 	 */
 	public function controlFactory(EiCommand $eiCommand) {
-		return new EiuControlFactory($this, $eiCommand);
+		return new EiuControlFactory($this, $eiCommand, $this->eiuAnalyst);
 	}
 	
 // 	public function initWithUiCallback(\Closure $viewFactory, array $guiPropPaths) {
@@ -231,7 +229,7 @@ class EiuGuiFrame {
 	 * @return \rocket\si\meta\SiDeclaration
 	 */
 	function createSiDeclaration() {
-		return new SiDeclaration([new SiTypeDeclaration($this->eiGuiFrame->createSiType())]);
+		return new SiDeclaration([new SiTypeDeclaration($this->eiGuiFrame->createSiType($this->eiuAnalyst->getEiFrame(true)))]);
 	}
 }
 

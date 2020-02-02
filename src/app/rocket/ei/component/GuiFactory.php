@@ -38,6 +38,7 @@ use rocket\ei\manage\gui\GuiFieldMap;
 use rocket\ei\manage\gui\GuiException;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\field\GuiField;
+use rocket\ei\manage\frame\EiFrame;
 
 class GuiFactory {
 	private $eiMask;
@@ -164,14 +165,14 @@ class GuiFactory {
 	 * @param array $eiPropPaths
 	 * @return EiEntryGui
 	 */
-	public static function createEiEntryGui(EiGuiFrame $eiGuiFrame, EiEntry $eiEntry, array $guiPropPaths, int $treeLevel = null) {
+	public static function createEiEntryGui(EiFrame $eiFrame, EiGuiFrame $eiGuiFrame, EiEntry $eiEntry, array $guiPropPaths, int $treeLevel = null) {
 		ArgUtils::valArrayLike($guiPropPaths, GuiPropPath::class);
 		
 		$eiEntryGui = new EiEntryGui($eiEntry, $treeLevel);
 		
 		$guiFieldMap = new GuiFieldMap();
 		foreach ($eiGuiFrame->getEiPropPaths() as $eiPropPath) {
-			$guiField = self::buildGuiField($eiGuiFrame, $eiEntryGui, $eiPropPath);
+			$guiField = self::buildGuiField($eiFrame, $eiGuiFrame, $eiEntryGui, $eiPropPath);
 			
 			if ($guiField !== null) {
 				$guiFieldMap->putGuiField($eiPropPath, $guiField);	
@@ -183,17 +184,18 @@ class GuiFactory {
 	}
 	
 	/**
+	 * @param EiFrame $eiFrame
 	 * @param EiGuiFrame $eiGuiFrame
 	 * @param EiEntryGui $eiEntryGui
 	 * @param EiPropPath $eiPropPath
 	 * @return GuiField|null
 	 */
-	private static function buildGuiField($eiGuiFrame, $eiEntryGui, $eiPropPath) {
+	private static function buildGuiField($eiFrame, $eiGuiFrame, $eiEntryGui, $eiPropPath) {
 		$readOnly = ViewMode::isReadOnly($eiGuiFrame->getViewMode())
 				|| !$eiEntryGui->getEiEntry()->getEiEntryAccess()->isEiPropWritable($eiPropPath);
 				
 		$guiField = $eiGuiFrame->getGuiFieldAssembler($eiPropPath)
-				->buildGuiField(new Eiu($eiGuiFrame, $eiEntryGui, $eiPropPath, new GuiPropPath([$eiPropPath])), $readOnly);
+				->buildGuiField(new Eiu($eiFrame, $eiGuiFrame, $eiEntryGui, $eiPropPath, new GuiPropPath([$eiPropPath])), $readOnly);
 		
 		$siField = $guiField->getSiField();
 		if ($siField === null || !$readOnly || $siField->isReadOnly()) {

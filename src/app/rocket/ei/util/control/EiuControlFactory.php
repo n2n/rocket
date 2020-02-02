@@ -24,14 +24,17 @@ namespace rocket\ei\util\control;
 use rocket\ei\component\command\EiCommand;
 use rocket\si\control\SiButton;
 use rocket\ei\util\gui\EiuGuiFrame;
+use rocket\ei\util\EiuAnalyst;
 
 class EiuControlFactory {
 	private $eiuGuiFrame;
 	private $eiCommand;
+	private $eiuAnalyst;
 	
-	public function __construct(EiuGuiFrame $eiuGuiFrame, EiCommand $eiCommand) {
+	public function __construct(EiuGuiFrame $eiuGuiFrame, EiCommand $eiCommand, EiuAnalyst $eiuAnalyst) {
 		$this->eiuGuiFrame = $eiuGuiFrame;
 		$this->eiCommand = $eiCommand;
+		$this->eiuAnalyst = $eiuAnalyst;
 	}
 	
 	/**
@@ -39,14 +42,14 @@ class EiuControlFactory {
 	 * @return \n2n\util\uri\Url
 	 */
 	private function createCmdUrl($urlExt) {
-		return $this->eiuGuiFrame->getEiuFrame()->getCmdUrl($this->eiCommand)->ext($urlExt);
+		return $this->eiuAnalyst->getEiuFrame(true)->getCmdUrl($this->eiCommand)->ext($urlExt);
 	}
 	
 	/**
 	 * @return \n2n\util\uri\Url
 	 */
 	private function getApiUrl() {
-		return $this->eiuGuiFrame->getEiuFrame()->getApiUrl($this->eiCommand);
+		return $this->eiuAnalyst->getEiuFrame(true)->getApiUrl($this->eiCommand);
 	}
 	
 	/**

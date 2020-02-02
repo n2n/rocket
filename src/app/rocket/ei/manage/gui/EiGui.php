@@ -7,6 +7,7 @@ use rocket\si\meta\SiTypeDeclaration;
 use rocket\ei\manage\gui\field\GuiPropPath;
 use n2n\util\ex\IllegalStateException;
 use rocket\si\meta\SiDeclaration;
+use rocket\ei\manage\frame\EiFrame;
 
 class EiGui {
 	
@@ -71,16 +72,16 @@ class EiGui {
 	/**
 	 * @return \rocket\si\meta\SiDeclaration
 	 */
-	public function createSiDeclaration() {
-		return new SiDeclaration([$this->createSiTypeDeclaration()]);
+	public function createSiDeclaration(EiFrame $eiFrame) {
+		return new SiDeclaration([$this->createSiTypeDeclaration($eiFrame)]);
 	}
 	
 	/**
 	 * @return \rocket\si\meta\SiTypeDeclaration
 	 */
-	function createSiTypeDeclaration() {
+	function createSiTypeDeclaration(EiFrame $eiFrame) {
 		return new SiTypeDeclaration(
-				$this->eiGuiFrame->createSiType(), 
+				$this->eiGuiFrame->createSiType($eiFrame), 
 				$this->createSiStructureDeclarations($this->guiStructureDeclarations));
 	}
 	
@@ -181,9 +182,9 @@ class EiGui {
 	 * @throws IllegalStateException
 	 * @return \rocket\si\content\SiEntry
 	 */
-	function createSiEntry(bool $siControlsIncluded = true) {
+	function createSiEntry(EiFrame $eiFrame, bool $siControlsIncluded = true) {
 		if ($this->hasSingleEiEntryGui()) {
-			return $this->eiGuiFrame->createSiEntry(current($this->eiEntryGuis), $siControlsIncluded);
+			return $this->eiGuiFrame->createSiEntry($eiFrame, current($this->eiEntryGuis), $siControlsIncluded);
 		}
 		
 		throw new IllegalStateException('EiGui has none or multiple EiEntryGuis');
@@ -192,10 +193,10 @@ class EiGui {
 	/**
 	 * @return \rocket\si\content\SiEntry[]
 	 */
-	function createSiEntries(bool $siControlsIncluded = true) {
+	function createSiEntries(EiFrame $eiFrame, bool $siControlsIncluded = true) {
 		$siEntries = [];
 		foreach ($this->eiEntryGuis as $eiEntryGui) {
-			$siEntries[] = $this->eiGuiFrame->createSiEntry($eiEntryGui, $siControlsIncluded);
+			$siEntries[] = $this->eiGuiFrame->createSiEntry($eiFrame, $eiEntryGui, $siControlsIncluded);
 		}
 		return $siEntries;
 	}

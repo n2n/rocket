@@ -113,7 +113,7 @@ class ContentItemsEiProp extends RelationEiPropAdapter implements FieldEiProp {
 	
 	function buildEiField(Eiu $eiu): ?EiField {
 		$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())
-				->exec($this->getRelationModel()->getTargetReadEiCommandPath());
+				->frame()->exec($this->getRelationModel()->getTargetReadEiCommandPath());
 		
 		return new ToManyEiField($eiu, $targetEiuFrame, $this, $this->getRelationModel());
 	}

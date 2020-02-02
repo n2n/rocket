@@ -96,7 +96,8 @@ class EiuEntryGui {
 	 * @return \rocket\si\content\SiEntry
 	 */
 	function createSiEntry() {
-		return $this->guiFrame()->getEiGuiFrame()->createSiEntry($this->eiEntryGui);
+		return $this->guiFrame()->getEiGuiFrame()
+				->createSiEntry($this->eiuAnalyst->getEiFrame(true), $this->eiEntryGui);
 	}
 	
 	/**

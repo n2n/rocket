@@ -29,13 +29,17 @@ use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\manage\gui\field\GuiPropPath;
+use rocket\ei\EiCommandPath;
 
 class TranslationGuiPropSetup implements GuiPropSetup, GuiFieldAssembler {
 	private $targetEiuGuiFrame;
+	private $eiCommandPath;
 	private $translationConfig;
 	
-	function __construct(EiuGuiFrame $targetEiuGuiFrame, TranslationConfig $translationConfig) {
+	function __construct(EiuGuiFrame $targetEiuGuiFrame, EiCommandPath $eiCommandPath, 
+			TranslationConfig $translationConfig) {
 		$this->targetEiuGuiFrame = $targetEiuGuiFrame;
+		$this->eiCommandPath = $eiCommandPath;
 		$this->translationConfig = $translationConfig;
 	}
 	
@@ -56,7 +60,10 @@ class TranslationGuiPropSetup implements GuiPropSetup, GuiFieldAssembler {
 	}
 	
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		$lted = new LazyTranslationEssentialsDeterminer($eiu, $this->targetEiuGuiFrame, $this->translationConfig);
+		$forkEiu = $eiu->frame()->forkDiscover($eiu->prop()->getPath(), $eiu->object(), $this->targetEiuGuiFrame);
+		$forkEiu->frame()->exec($this->eiCommandPath);
+		
+		$lted = new LazyTranslationEssentialsDeterminer($eiu, $forkEiu, $this->translationConfig);
 		$tgff = new SplitGuiFieldFactory($lted, $readOnly);
 		
 		return $tgff->createGuiField();

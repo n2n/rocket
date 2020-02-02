@@ -30,6 +30,8 @@ use rocket\ei\manage\gui\EiGuiListener;
 use rocket\ei\util\frame\EiuFrame;
 use rocket\ei\manage\frame\EiForkLink;
 use rocket\ei\manage\gui\GuiDefinition;
+use rocket\ei\util\gui\EiuGuiFrame;
+use rocket\ei\util\gui\EiuGui;
 
 class EiuEngine {
 	private $eiEngine;
@@ -403,6 +405,37 @@ class EiuEngine {
 		$newEiuAnalyst->applyEiArgs($n2nContext);
 		
 		return new EiuFrame($newEiFrame, $newEiuAnalyst);
+	}
+	
+	/**
+	 * @param int $viewMode
+	 * @param array $guiPropPaths
+	 * @return \rocket\ei\util\gui\EiuGui
+	 */
+	public function newGui(int $viewMode) {
+		$eiGui = $this->getManageState()->getDef()
+				->getGuiDefinition($this->eiEngine->getEiMask())
+				->createEiGui($this->eiuAnalyst->getN2nContext(true), $viewMode);
+		
+		return new EiuGui($eiGui, null, $this->eiuAnalyst);
+	}
+	
+	/**
+	 * @return EiuGuiFrame
+	 */
+	public function newGuiFrame(int $viewMode, ?array $guiPropPaths) {
+		$guiDefinition = $this->getManageState()->getDef()
+				->getGuiDefinition($this->eiEngine->getEiMask());
+		
+		$n2nContext = $this->eiuAnalyst->getN2nContext(true);
+		$eiGuiFrame = null;
+		if ($guiPropPaths === null) {
+			$eiGuiFrame = $guiDefinition->createEiGui($n2nContext, $viewMode)->getEiGuiFrame();
+		} else {
+			$eiGuiFrame = $guiDefinition->createEiGuiFrame($n2nContext, $viewMode, $guiPropPaths);
+		}
+		
+		return new EiuGuiFrame($eiGuiFrame, $this->eiuAnalyst);
 	}
 }
 

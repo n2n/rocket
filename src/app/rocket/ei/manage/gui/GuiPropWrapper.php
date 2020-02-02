@@ -25,6 +25,7 @@ use rocket\ei\EiPropPath;
 use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\EiProp;
 use rocket\ei\manage\gui\field\GuiPropPath;
+use n2n\core\container\N2nContext;
 
 class GuiPropWrapper {
 	
@@ -115,8 +116,8 @@ class GuiPropWrapper {
 	 * @param array $fokredGuiPropPaths
 	 * @return \rocket\ei\manage\gui\GuiPropSetup
 	 */
-	function buildGuiPropSetup(EiGuiFrame $eiGuiFrame, ?array $forkedGuiPropPaths) {
-		return $this->guiProp->buildGuiPropSetup(new Eiu($eiGuiFrame, $this->eiPropPath), $forkedGuiPropPaths);
+	function buildGuiPropSetup(N2nContext $n2nContext, EiGuiFrame $eiGuiFrame, ?array $forkedGuiPropPaths) {
+		return $this->guiProp->buildGuiPropSetup(new Eiu($n2nContext, $eiGuiFrame, $this->eiPropPath), $forkedGuiPropPaths);
 	}
 	
 	/**

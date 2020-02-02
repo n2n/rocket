@@ -170,7 +170,7 @@ class TranslationEiProp extends RelationEiPropAdapter implements FieldEiProp, Qu
 	
 	public function buildEiField(Eiu $eiu): ?EiField {
 		$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())
-				->exec($this->getRelationModel()->getTargetReadEiCommandPath());
+				->frame()->exec($this->getRelationModel()->getTargetReadEiCommandPath());
 		
 		return new ToManyEiField($eiu, $targetEiuFrame, $this, $this->getRelationModel());
 	}

@@ -18,16 +18,13 @@ use rocket\ei\EiPropPath;
 use rocket\si\content\impl\basic\BulkyEntrySiComp;
 use rocket\si\meta\SiProp;
 use rocket\si\meta\SiType;
+use rocket\ei\manage\EiUtil;
 
 /**
  * @author andreas
  *
  */
 class EiGuiFrame {
-	/**
-	 * @var EiFrame
-	 */
-	private $eiFrame;
 	/**
 	 * @var GuiDefinition
 	 */
@@ -70,19 +67,18 @@ class EiGuiFrame {
 	 * @param GuiDefinition $guiDefinition
 	 * @param int $viewMode Use constants from {@see ViewMode}
 	 */
-	function __construct(EiFrame $eiFrame, GuiDefinition $guiDefinition, int $viewMode) {
-		$this->eiFrame = $eiFrame;
+	function __construct(GuiDefinition $guiDefinition, int $viewMode) {
 		$this->guiDefinition = $guiDefinition;
 		ArgUtils::valEnum($viewMode, ViewMode::getAll());
 		$this->viewMode = $viewMode;
 	}
 	
-	/**
-	 * @return \rocket\ei\manage\frame\EiFrame
-	 */
-	function getEiFrame() {
-		return $this->eiFrame;
-	}
+// 	/**
+// 	 * @return \rocket\ei\manage\frame\EiFrame
+// 	 */
+// 	function getEiFrame() {
+// 		return $this->eiFrame;
+// 	}
 	
 	/**
 	 * @return \rocket\ei\manage\gui\GuiDefinition
@@ -185,17 +181,20 @@ class EiGuiFrame {
 	/**
 	 * @return \rocket\si\meta\SiType
 	 */
-	function createSiType() {
+	function createSiType(EiFrame $eiFrame) {
+		EiUtil::assertEiFrameArgMatch($this->getGuiDefinition()->getEiMask(), $eiFrame);
+		
 		$siTypeQualifier = $this->getGuiDefinition()->getEiMask()
-				->createSiTypeQualifier($this->getEiFrame()->getN2nContext()->getN2nLocale());
-		return new SiType($siTypeQualifier, $this->getSiProps());
+				->createSiTypeQualifier($eiFrame->getN2nContext()->getN2nLocale());
+		return new SiType($siTypeQualifier, $this->createSiProps($eiFrame));
 	}
 	
 	/**
+	 * @param EiFrame $eiFrame
 	 * @return SiProp[]
 	 */
-	private function getSiProps() {
-		$n2nLocale = $this->eiFrame->getN2nContext()->getN2nLocale();
+	private function createSiProps($eiFrame) {
+		$n2nLocale = $eiFrame->getN2nContext()->getN2nLocale();
 		$deter = new ContextSiFieldDeterminer();
 		
 		$siProps = [];
@@ -212,7 +211,7 @@ class EiGuiFrame {
 			$deter->reportGuiPropPath($guiPropPath);
 		}
 				
-		return array_merge($deter->createContextSiProps($this), $siProps);
+		return array_merge($deter->createContextSiProps($eiFrame, $this), $siProps);
 	}
 	
 	
@@ -345,10 +344,10 @@ class EiGuiFrame {
 	 * @param bool $append
 	 * @return EiEntryGui
 	 */
-	function createEiEntryGui(EiEntry $eiEntry, int $treeLevel = null): EiEntryGui {
+	function createEiEntryGui(EiFrame $eiFrame, EiEntry $eiEntry, int $treeLevel = null): EiEntryGui {
 		$this->ensureInit();
 		
-		$eiEntryGui = GuiFactory::createEiEntryGui($this, $eiEntry, $this->getGuiPropPaths(), $treeLevel);
+		$eiEntryGui = GuiFactory::createEiEntryGui($eiFrame, $this, $eiEntry, $this->getGuiPropPaths(), $treeLevel);
 		
 		foreach ($this->eiGuiFrameListeners as $eiGuiFrameListener) {
 			$eiGuiFrameListener->onNewEiEntryGui($eiEntryGui);
@@ -360,9 +359,9 @@ class EiGuiFrame {
 	/**
 	 * @return \rocket\si\control\SiControl[]
 	 */
-	function createSelectionSiControls() {
+	function createSelectionSiControls(EiFrame $eiFrame) {
 		$siControls = [];
-		foreach ($this->guiDefinition->createSelectionGuiControls($this)
+		foreach ($this->guiDefinition->createSelectionGuiControls($eiFrame, $this)
 				as $guiControlPathStr => $selectionGuiControl) {
 			$siControls[$guiControlPathStr] = $selectionGuiControl->toSiControl(
 					new ApiControlCallId(GuiControlPath::create($guiControlPathStr), $this->eiMask->getEiTypePath(),
@@ -374,9 +373,9 @@ class EiGuiFrame {
 	/**
 	 * @return \rocket\si\control\SiControl[]
 	 */
-	function createGeneralSiControls() {
+	function createGeneralSiControls(EiFrame $eiFrame) {
 		$siControls = [];
-		foreach ($this->guiDefinition->createGeneralGuiControls($this)
+		foreach ($this->guiDefinition->createGeneralGuiControls($eiFrame, $this)
 				as $guiControlPathStr => $generalGuiControl) {
 			$siControls[$guiControlPathStr] = $generalGuiControl->toSiControl(
 					new ApiControlCallId(GuiControlPath::create($guiControlPathStr), 
@@ -400,14 +399,14 @@ class EiGuiFrame {
 	/**
 	 * @return \rocket\si\content\SiEntry
 	 */
-	function createSiEntry(EiEntryGui $eiEntryGui, bool $siControlsIncluded = true) {
+	function createSiEntry(EiFrame $eiFrame, EiEntryGui $eiEntryGui, bool $siControlsIncluded = true) {
 		$eiEntry = $eiEntryGui->getEiEntry();
 		$eiType = $eiEntry->getEiType();
 		$siIdentifier = $eiEntry->getEiObject()->createSiEntryIdentifier();
 		$viewMode = $this->getViewMode();
 		
 		$siEntry = new SiEntry($siIdentifier, ViewMode::isReadOnly($viewMode), ViewMode::isBulky($viewMode));
-		$siEntry->putBuildup($eiType->getId(), $this->createSiEntryBuildup($eiEntryGui, $siControlsIncluded));
+		$siEntry->putBuildup($eiType->getId(), $this->createSiEntryBuildup($eiFrame, $eiEntryGui, $siControlsIncluded));
 		$siEntry->setSelectedTypeId($eiType->getId());
 		
 		return $siEntry;
@@ -416,17 +415,17 @@ class EiGuiFrame {
 	/**
 	 * @return SiEntryBuildup
 	 */
-	function createSiEntryBuildup(EiEntryGui $eiEntryGui, bool $siControlsIncluded = true) {
+	function createSiEntryBuildup(EiFrame $eiFrame, EiEntryGui $eiEntryGui, bool $siControlsIncluded = true) {
 		$eiEntry = $eiEntryGui->getEiEntry();
 		
-		$n2nLocale = $this->eiFrame->getN2nContext()->getN2nLocale();
+		$n2nLocale = $eiFrame->getN2nContext()->getN2nLocale();
 		$typeId = $eiEntry->getEiMask()->getEiType()->getId();
 		$idName = null;
 		if (!$eiEntry->isNew()) {
-			$deterIdNameDefinition = $this->eiFrame->getManageState()->getDef()
+			$deterIdNameDefinition = $eiFrame->getManageState()->getDef()
 					->getIdNameDefinition($eiEntry->getEiMask());
 			$idName = $deterIdNameDefinition->createIdentityString($eiEntry->getEiObject(), 
-					$this->eiFrame->getN2nContext(), $n2nLocale);
+					$eiFrame->getN2nContext(), $n2nLocale);
 		}
 		
 		$siEntryBuildup = new SiEntryBuildup($typeId, $idName);
@@ -443,7 +442,7 @@ class EiGuiFrame {
 			return $siEntryBuildup;
 		}
 		
-		foreach ($this->guiDefinition->createEntryGuiControls($this, $eiEntry)
+		foreach ($this->guiDefinition->createEntryGuiControls($eiFrame, $this, $eiEntry)
 				as $guiControlPathStr => $entryGuiControl) {
 			$siEntryBuildup->putControl($guiControlPathStr, $entryGuiControl->toSiControl(
 					new ApiControlCallId(GuiControlPath::create($guiControlPathStr),
@@ -568,8 +567,8 @@ class ContextSiFieldDeterminer {
 	/**
 	 * @return SiProp[]
 	 */
-	function createContextSiProps(EiGuiFrame $eiGuiFrame) {
-		$n2nLocale = $eiGuiFrame->getEiFrame()->getN2nContext()->getN2nLocale();
+	function createContextSiProps(EiFrame $eiFrame, EiGuiFrame $eiGuiFrame) {
+		$n2nLocale = $eiFrame->getN2nContext()->getN2nLocale();
 		
 		$siProps = [];
 		

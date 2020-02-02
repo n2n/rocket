@@ -314,9 +314,9 @@ class EiuEntry {
 		$eiFrame = $this->getEiuFrame()->getEiFrame();
 
 		$eiGui = $eiFrame->getManageState()->getDef()->getGuiDefinition($eiEngine->getEiMask())
-				->createEiGui($eiFrame, $viewMode);
+				->createEiGui($this->eiuAnalyst->getN2nContext(true), $viewMode);
 
-		$eiGui->addEiEntryGui($eiGui->getEiGuiFrame()->createEiEntryGui($eiEntry, $treeLevel));
+		$eiGui->addEiEntryGui($eiGui->getEiGuiFrame()->createEiEntryGui($eiFrame, $eiEntry, $treeLevel));
 				
 		return new EiuGui($eiGui, null, $this->eiuAnalyst);
 	}

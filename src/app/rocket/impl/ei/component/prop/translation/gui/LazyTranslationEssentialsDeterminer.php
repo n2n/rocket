@@ -22,7 +22,6 @@
 namespace rocket\impl\ei\component\prop\translation\gui;
 
 use rocket\ei\util\Eiu;
-use rocket\ei\util\gui\EiuGuiFrame;
 use rocket\impl\ei\component\prop\translation\conf\TranslationConfig;
 use rocket\ei\util\entry\EiuEntry;
 use n2n\util\type\CastUtils;
@@ -32,6 +31,7 @@ use rocket\ei\util\gui\EiuEntryGui;
 
 class LazyTranslationEssentialsDeterminer {
 	private $eiu;
+	private $targetEiuFrame;
 	private $targetEiuGuiFrame;
 	private $translationConfig;
 	private $readOnly;
@@ -46,9 +46,10 @@ class LazyTranslationEssentialsDeterminer {
 	 */
 	private $targetEiuEntryGuis = [];
 	
-	function __construct(Eiu $eiu, EiuGuiFrame $targetEiuGuiFrame, TranslationConfig $translationConfig) {
+	function __construct(Eiu $eiu, Eiu $targetEiu, TranslationConfig $translationConfig) {
 		$this->eiu = $eiu;
-		$this->targetEiuGuiFrame = $targetEiuGuiFrame;
+		$this->targetEiuFrame = $targetEiu->frame();
+		$this->targetEiuGuiFrame = $targetEiu->guiFrame();
 		$this->translationConfig = $translationConfig;
 	}
 	
@@ -128,6 +129,13 @@ class LazyTranslationEssentialsDeterminer {
 	 */
 	function getTargetEiuGuiFrame() {
 		return $this->targetEiuGuiFrame;
+	}
+	
+	/**
+	 * @return \rocket\ei\util\frame\EiuFrame
+	 */
+	function getTargetEiuFrame() {
+		return $this->targetEiuFrame;
 	}
 	
 	/**

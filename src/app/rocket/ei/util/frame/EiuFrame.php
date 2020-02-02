@@ -68,6 +68,7 @@ use rocket\ei\manage\frame\CriteriaFactory;
 use rocket\si\content\SiEntryQualifier;
 use rocket\ei\util\gui\EiuEntryGuiMulti;
 use rocket\ei\util\gui\EiuGui;
+use rocket\ei\util\Eiu;
 
 class EiuFrame {
 	private $eiFrame;
@@ -641,35 +642,7 @@ class EiuFrame {
 		return $this->getHttpContext()->getControllerContextPath($this->getEiFrame()->getControllerContext())->toUrl();
 	}
 	
-	/**
-	 * @param int $viewMode
-	 * @param array $guiPropPaths
-	 * @return \rocket\ei\util\gui\EiuGui
-	 */
-	public function newGui(int $viewMode) {
-		$eiGui = $this->eiFrame->getManageState()->getDef()
-				->getGuiDefinition($this->eiFrame->getContextEiEngine()->getEiMask())
-				->createEiGui($this->eiFrame, $viewMode);
-		
-		return new EiuGui($eiGui, null, $this->eiuAnalyst);
-	}
 	
-	/**
-	 * @return EiuGuiFrame
-	 */
-	public function newGuiFrame(int $viewMode, ?array $guiPropPaths) {
-		$guiDefinition = $this->eiFrame->getManageState()->getDef()
-				->getGuiDefinition($this->eiFrame->getContextEiEngine()->getEiMask());
-		
-		$eiGuiFrame = null;
-		if ($guiPropPaths === null) {
-			$eiGuiFrame = $guiDefinition->createEiGui($this->eiFrame, $viewMode)->getEiGuiFrame();
-		} else {
-			$eiGuiFrame = $guiDefinition->createEiGuiFrame($this->eiFrame, $viewMode, $guiPropPaths);
-		}
-		
-		return new EiuGuiFrame($eiGuiFrame, $this, $this->eiuAnalyst);
-	}
 	
 	/**
 	 * @param bool $bulky
@@ -682,19 +655,19 @@ class EiuFrame {
 		return new EiuEntryGuiMulti($eiEntryGuiMulti, $this->eiuAnalyst);
 	}
 	
-	/**
-	 * @param int $viewMode
-	 * @param \Closure $uiFactory
-	 * @param array $guiPropPaths
-	 * @return \rocket\ei\util\gui\EiuGuiFrame
-	 */
-	public function newCustomGui(int $viewMode, \Closure $uiFactory, array $guiPropPaths) {
-		$eiGuiFrame = $this->eiFrame->getContextEiEngine()->getEiMask()->createEiGuiFrame($this->eiFrame, $viewMode, false);
+// 	/**
+// 	 * @param int $viewMode
+// 	 * @param \Closure $uiFactory
+// 	 * @param array $guiPropPaths
+// 	 * @return \rocket\ei\util\gui\EiuGuiFrame
+// 	 */
+// 	public function newCustomGui(int $viewMode, \Closure $uiFactory, array $guiPropPaths) {
+// 		$eiGuiFrame = $this->eiFrame->getContextEiEngine()->getEiMask()->createEiGuiFrame($this->eiFrame, $viewMode, false);
 		
-		$eiuGuiFrame = new EiuGuiFrame($eiGuiFrame, $this, $this->eiuAnalyst);
-		$eiuGuiFrame->initWithUiCallback($uiFactory, $guiPropPaths);
-		return $eiuGuiFrame;
-	}
+// 		$eiuGuiFrame = new EiuGuiFrame($eiGuiFrame, $this, $this->eiuAnalyst);
+// 		$eiuGuiFrame->initWithUiCallback($uiFactory, $guiPropPaths);
+// 		return $eiuGuiFrame;
+// 	}
 	
 	
 	
@@ -1111,38 +1084,35 @@ class EiuFrame {
 	/**
 	 * @param string|EiPropPath $eiPropPath
 	 * @param EiObject|object|null $eiObjectArg
-	 * @return EiuFrame
+	 * @return Eiu
 	 */
-	function forkSelect($eiPropPath, $eiObjectArg = null) {
-		return $this->fork($eiPropPath, EiForkLink::MODE_SELECT, $eiObjectArg);
+	function forkSelect($eiPropPath, $eiObjectArg = null, ...$eiArgs) {
+		return $this->fork($eiPropPath, EiForkLink::MODE_SELECT, $eiObjectArg, ...$eiArgs);
 	}
 	
 	/**
 	 * @param string|EiPropPath $eiPropPath
 	 * @param EiObject|object|null $eiObjectArg
-	 * @return EiuFrame
+	 * @return Eiu
 	 */ 
-	function forkDiscover($eiPropPath, $eiObjectArg = null) {
-		return $this->fork($eiPropPath, EiForkLink::MODE_DISCOVER, $eiObjectArg);
+	function forkDiscover($eiPropPath, $eiObjectArg = null, ...$eiArgs) {
+		return $this->fork($eiPropPath, EiForkLink::MODE_DISCOVER, $eiObjectArg, ...$eiArgs);
 	}
 	
 	/**
 	 * @param string|EiPropPath $eiPropPath
 	 * @param string $mode
 	 * @param EiObject|object|null $eiObjectArg
-	 * @return EiuFrame
+	 * @return Eiu
 	 */
-	function fork($eiPropPath, string $mode, $eiObjectArg = null) {
+	function fork($eiPropPath, string $mode, $eiObjectArg = null, ...$eiArgs) {
 		$eiPropPath = EiPropPath::create($eiPropPath);
 		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectArg, 'eiObjectArg', 
 				$this->eiFrame->getContextEiEngine()->getEiMask()->getEiType(), false);
 		$eiForkLink = new EiForkLink($this->eiFrame, $mode, $eiObject);
 		
 		$newEiFrame = $this->determineEiEngine($eiObject)->createForkedEiFrame($eiPropPath, $eiForkLink);
-		$newEiuAnalyst = new EiuAnalyst();
-		$newEiuFrame = new EiuFrame($newEiFrame, $newEiuAnalyst);
-		$newEiuAnalyst->applyEiArgs($this->getN2nContext(), $newEiuFrame);
-		return $newEiuFrame;
+		return new Eiu($this->getN2nContext(), $newEiFrame, ...$eiArgs);
 	}
 	
 	/**

@@ -29,6 +29,10 @@ class Eiu implements Lookupable {
 		$this->eiuAnalyst->applyEiArgs(...$eiArgs);
 	}
 	
+	static function fromAnalyst(EiuAnalyst $eiuAnalyst) {
+		
+	}
+	
 	private function _init(N2nContext $n2nContext) {
 		$this->eiuAnalyst->applyEiArgs($n2nContext);
 	}
