@@ -56,7 +56,8 @@ export class SiEntryFactory {
 		const entryBuildup = new SiEntryBuildup(entryQualifier);
 		entryBuildup.fieldMap = new SiFieldFactory(this.comp, this.declaration, typeDeclaration.type, this.injector)
 				.createFieldMap(extr.reqMap('fieldMap'));
-		entryBuildup.controls = new SiCompEssentialsFactory(this.comp).createControls(extr.reqArray('controls'));
+		entryBuildup.controls = new SiCompEssentialsFactory(this.comp, this.injector)
+				.createControls(extr.reqArray('controls'));
 
 		return entryBuildup;
 	}

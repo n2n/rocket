@@ -17,8 +17,8 @@ export class ApiCallSiControl implements SiControl, ButtonControlModel {
 	private loading = false;
 	private entryBoundFlag: boolean;
 
-	constructor(public apiUrl: string, public apiCallId: object, public button: SiButton,
-			public comp: SiComp, public entry: SiEntry|null = null) {
+	constructor(public siUiService: SiUiService, public apiUrl: string, public apiCallId: object, 
+			public button: SiButton, public comp: SiComp, public entry: SiEntry|null = null) {
 	}
 
 	getSiButton(): SiButton {
@@ -41,16 +41,16 @@ export class ApiCallSiControl implements SiControl, ButtonControlModel {
 		return !!this.entry || this.entryBoundFlag;
 	}
 
-	exec(commandService: SiUiService) {
+	exec() {
 		let obs: Observable<void>;
 
 		if (this.entry) {
-			obs = commandService.execEntryControl(this.apiUrl, this.apiCallId, this.entry, this.inputSent);
+			obs = this.siUiService.execEntryControl(this.apiUrl, this.apiCallId, this.entry, this.inputSent);
 		} else if (this.entryBound) {
-			obs = commandService.execSelectionControl(this.apiUrl, this.apiCallId, this.comp, this.comp.getSelectedEntries(),
+			obs = this.siUiService.execSelectionControl(this.apiUrl, this.apiCallId, this.comp, this.comp.getSelectedEntries(),
 					this.inputSent);
 		} else {
-			obs = commandService.execControl(this.apiUrl, this.apiCallId, this.comp, this.inputSent);
+			obs = this.siUiService.execControl(this.apiUrl, this.apiCallId, this.comp, this.inputSent);
 		}
 
 		this.loading = true;

@@ -9,7 +9,7 @@ import { UiContent } from 'src/app/ui/structure/model/ui-content';
 
 export class RefSiControl implements SiControl, ButtonControlModel {
 
-	constructor(public url: string, public siButton: SiButton) {
+	constructor(public siUiService: SiUiService, public url: string, public siButton: SiButton) {
 	}
 
 	isLoading(): boolean {
@@ -20,8 +20,8 @@ export class RefSiControl implements SiControl, ButtonControlModel {
 		return this.siButton;
 	}
 
-	exec(siUiService: SiUiService, uiZone: UiZone) {
-		siUiService.navigate(this.url, uiZone.layer);
+	exec(uiZone: UiZone, _subKey: string|null) {
+		this.siUiService.navigate(this.url, uiZone.layer);
 	}
 
 	createUiContent(uiZone: UiZone): UiContent {

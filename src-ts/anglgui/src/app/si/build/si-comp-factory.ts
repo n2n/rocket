@@ -178,7 +178,7 @@ export class SiCompFactory {
 				declaration = SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'));
 				const compactEntrySiComp = new CompactEntrySiComp(declaration);
 
-				compEssentialsFactory = new SiCompEssentialsFactory(compactEntrySiComp);
+				compEssentialsFactory = new SiCompEssentialsFactory(compactEntrySiComp, this.injector);
 				compactEntrySiComp.controls = compEssentialsFactory.createControls(dataExtr.reqArray('controls'));
 				compactEntrySiComp.entry = new SiEntryFactory(compactEntrySiComp, declaration, this.injector)
 						.createEntry(dataExtr.reqObject('entry'));

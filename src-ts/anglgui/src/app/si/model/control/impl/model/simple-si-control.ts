@@ -19,7 +19,7 @@ export class SimpleSiControl implements SiControl, ButtonControlModel {
 		return false;
 	}
 
-	exec(siUiService: SiUiService, uiZone: UiZone) {
+	exec(): void {
 		this.callback();
 	}
 

@@ -17,8 +17,9 @@ export class ButtonControlComponent implements OnInit {
 	@Input()
 	uiZone: UiZone;
 
-	constructor(private siUiService: SiUiService) {
+	private _subVisible = false;
 
+	constructor() {
 	}
 
 	ngOnInit() {
@@ -32,8 +33,29 @@ export class ButtonControlComponent implements OnInit {
 		return this.model.isLoading();
 	}
 
-	exec() {
-		this.model.exec(this.siUiService, this.uiZone);
+	hasSubSiButtons() {
+		return !!this.model.getSubSiButtonMap;
 	}
 
+	get subSiButtonMap() {
+		return this.model.getSubSiButtonMap();
+	}
+
+	get subVisible(): boolean {
+		return this._subVisible && !this.loading && this.hasSubSiButtons();
+	}
+
+	exec() {
+		if (this.hasSubSiButtons()) {
+			this._subVisible = !this._subVisible;
+			return;
+		}
+
+		this.model.exec(this.uiZone, null);
+	}
+
+	subExec(key: string) {
+		this._subVisible = false;
+		this.model.exec(this.uiZone, key);
+	}
 }

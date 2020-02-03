@@ -4,6 +4,8 @@ import { SiControl } from '../model/control/si-control';
 import { ApiCallSiControl } from '../model/control/impl/model/api-call-si-control';
 import { RefSiControl } from '../model/control/impl/model/ref-si-control';
 import { SiButton, SiConfirm } from '../model/control/impl/model/si-button';
+import { Injector } from '@angular/core';
+import { SiUiService } from '../manage/si-ui.service';
 
 enum SiControlType {
 	REF = 'ref',
@@ -12,7 +14,7 @@ enum SiControlType {
 
 export class SiCompEssentialsFactory {
 
-	constructor(private comp: SiComp) {
+	constructor(private comp: SiComp, private injector: Injector) {
 	}
 
 	createControls(dataArr: any[]): SiControl[] {
@@ -31,10 +33,12 @@ export class SiCompEssentialsFactory {
 		switch (extr.reqString('type')) {
 			case SiControlType.REF:
 				return new RefSiControl(
+						this.injector.get(SiUiService),
 						dataExtr.reqString('url'),
 						this.createButton(dataExtr.reqObject('button')));
 			case SiControlType.API_CALL:
 				const apiControl = new ApiCallSiControl(
+						this.injector.get(SiUiService),
 						dataExtr.reqString('apiUrl'),
 						dataExtr.reqObject('apiCallId'),
 						this.createButton(dataExtr.reqObject('button')),

@@ -10,6 +10,7 @@ import { CrumbGroupComponent } from '../../../meta/comp/crumb-group/crumb-group.
 import { SiCrumb } from '../../../meta/model/si-crumb';
 import { TranslationService } from 'src/app/util/i18n/translation.service';
 import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
+import { ChildrenOutletContexts } from '@angular/router';
 
 @Component({
 	selector: 'rocket-split',
@@ -39,6 +40,8 @@ export class SplitComponent implements OnInit, OnDestroy, DoCheck {
 			child.visible$.subscribe(() => {
 				this.subscription.requestKeyVisibilityChange(splitOption.key, child.visible);
 			});
+
+			// child.createToolbarChild(new SimpleUiStructureModel());
 		}
 	}
 
