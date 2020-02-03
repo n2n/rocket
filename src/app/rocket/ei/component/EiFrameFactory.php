@@ -145,7 +145,6 @@ class ForkBaseLinkProvider implements EiFrameListener {
 	
 	function whenExecuted(EiExecution $eiExecution) {
 		if ($this->forkedEiFrame->hasBaseUrl()) {
-			test('shouldnt happen');
 			return;
 		}
 		

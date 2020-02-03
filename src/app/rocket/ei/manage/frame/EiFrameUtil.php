@@ -169,7 +169,7 @@ class EiFrameUtil {
 				$eiGuiFrames[$eiTypeId] = $newEiGuiFrame = $eiGui->getEiGuiFrame();
 			}
 			
-			$newEiEntryGuis[$eiTypeId] = $newEiGuiFrame->createEiEntryGui($newEiEntry);
+			$newEiEntryGuis[$eiTypeId] = $newEiGuiFrame->createEiEntryGui($this->eiFrame, $newEiEntry);
 		}
 		
 		if (empty($newEiEntryGuis)) {
@@ -181,7 +181,7 @@ class EiFrameUtil {
 		$eiEntryGuiMulti = new EiEntryGuiMulti($this->eiFrame->getContextEiEngine()->getEiMask()->getEiType(), 
 				$viewMode, $newEiEntryGuis);
 		
-		return new EiEntryGuiMultiResult($eiEntryGuiMulti, $eiGuiFrames, $eiGuis);
+		return new EiEntryGuiMultiResult($eiEntryGuiMulti, $this->eiFrame, $eiGuiFrames, $eiGuis);
 	}
 	
 	/**
@@ -234,7 +234,8 @@ class EiFrameUtil {
 			$eiGuiFrame = $eiGui->getEiGuiFrame();
 		}
 		
-		return new EiEntryGuiResult($this->eiFrame, $eiGuiFrame->createEiEntryGui($this->eiFrame, $eiEntry), $eiGuiFrame, $eiGui);
+		return new EiEntryGuiResult($eiGuiFrame->createEiEntryGui($this->eiFrame, $eiEntry), $this->eiFrame, 
+				$eiGuiFrame, $eiGui);
 	}
 	
 	/**
@@ -362,6 +363,7 @@ class EiFrameUtil {
 
 class EiEntryGuiResult {
 	private $eiEntryGui;
+	private $eiFrame;
 	private $eiGuiFrame;
 	private $eiGui;
 	
@@ -369,8 +371,9 @@ class EiEntryGuiResult {
 	 * @param EiEntryGui $eiEntryGui
 	 * @param EiGuiFrame $eiGuiFrame
 	 */
-	function __construct(EiEntryGui $eiEntryGui, EiGuiFrame $eiGuiFrame, ?EiGui $eiGui) {
+	function __construct(EiEntryGui $eiEntryGui, EiFrame $eiFrame, EiGuiFrame $eiGuiFrame, ?EiGui $eiGui) {
 		$this->eiEntryGui = $eiEntryGui;
+		$this->eiFrame = $eiFrame;
 		$this->eiGuiFrame = $eiGuiFrame;
 		$this->eiGui = $eiGui;
 	}
@@ -411,13 +414,14 @@ class EiEntryGuiResult {
 	function createSiDeclaration() {
 		IllegalStateException::assertTrue($this->eiGui !== null);
 		
-		return $this->eiGui->createSiDeclaration();
+		return $this->eiGui->createSiDeclaration($this->eiFrame);
 	}
 }
 
 
 class EiEntryGuiMultiResult {
 	private $eiEntryGuiMulti;
+	private $eiFrame;
 	private $eiGuiFrames;
 	private $eiGuis;
 	
@@ -426,9 +430,10 @@ class EiEntryGuiMultiResult {
 	 * @param EiGuiFrame[] $eiGuiFrames
 	 * @param EiGui[] $eiGuis
 	 */
-	function __construct(EiEntryGuiMulti $eiEntryGuiMulti, array $eiGuiFrames, ?array $eiGuis) {
+	function __construct(EiEntryGuiMulti $eiEntryGuiMulti, EiFrame $eiFrame, array $eiGuiFrames, ?array $eiGuis) {
 		ArgUtils::valArray($eiGuis, EiGui::class, true);
 		$this->eiEntryGuiMulti = $eiEntryGuiMulti;
+		$this->eiFrame = $eiFrame;
 		$this->eiGuiFrames = $eiGuiFrames;
 		$this->eiGuis = $eiGuis;
 	}
@@ -443,7 +448,7 @@ class EiEntryGuiMultiResult {
 	/**
 	 * @return \rocket\ei\manage\gui\EiGuiFrame
 	 */
-	function getEiGuiFrame() {
+	function getEiGuiFrames() {
 		return $this->eiGuiFrames;
 	}
 	
@@ -466,7 +471,7 @@ class EiEntryGuiMultiResult {
 		$eiEntryGuis = $this->eiEntryGuiMulti->getEiEntryGuis();
 		foreach ($eiEntryGuis as $key => $eiEntryGui) {
 			$siEntry->putBuildup($eiEntryGui->getEiEntry()->getEiType()->getId(),
-					$this->eiGuiFrames[$key]->createSiEntryBuildup($eiEntryGui, $controlsIncluded));
+					$this->eiGuiFrames[$key]->createSiEntryBuildup($this->eiFrame, $eiEntryGui, $controlsIncluded));
 		}
 		
 		if (count($eiEntryGuis) == 1) {
@@ -486,7 +491,7 @@ class EiEntryGuiMultiResult {
 		$declaration = new SiDeclaration();
 		
 		foreach ($this->eiGuis as $eiGui) {
-			$declaration->addTypeDeclaration($eiGui->createSiTypeDeclaration());
+			$declaration->addTypeDeclaration($eiGui->createSiTypeDeclaration($this->eiFrame));
 		}
 		
 		return $declaration;

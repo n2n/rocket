@@ -24,6 +24,7 @@ namespace rocket\ei\manage\gui\control;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\si\control\SiResult;
 use rocket\ei\manage\gui\EiGui;
+use rocket\ei\manage\frame\EiFrame;
 
 interface SelectionGuiControl extends GuiControl {
 	
@@ -32,5 +33,5 @@ interface SelectionGuiControl extends GuiControl {
 	 * @param EiEntry[] $eiEntries
 	 * @return SiResult
 	 */
-	function handleEntries(EiGui $eiGui, array $eiEntries): SiResult;
+	function handleEntries(EiFrame $eiFrame, EiGui $eiGui, array $eiEntries): SiResult;
 }

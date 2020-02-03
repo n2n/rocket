@@ -32,16 +32,15 @@ use n2n\web\dispatch\map\PropertyPath;
 
 class AddController extends ControllerAdapter {
 	private $dtc;
-	private $rocketState;
 	private $eiuCtrl;
 	
 	private $parentEiObject;
 	private $beforeEiObject;
 	private $afterEiObject;
 	
-	public function prepare(DynamicTextCollection $dtc, EiuCtrl $eiCtrl, RocketState $rocketState) {
+	public function prepare(DynamicTextCollection $dtc, RocketState $rocketState) {
 		$this->dtc = $dtc;
-		$this->eiuCtrl = $eiCtrl;
+		$this->eiuCtrl = EiuCtrl::from($this->cu());
 	}
 		
 	public function index($copyPid = null, ParamGet $refPath = null) {	
@@ -63,45 +62,45 @@ class AddController extends ControllerAdapter {
 		$this->live($refPath, $copyPid);
 	}
 	
-	private function live(ParamGet $refPath = null, $copyPid = null) {
-		$redirectUrl = $this->eiuCtrl->parseRefUrl($refPath);
-		$eiuFrame = $this->eiuCtrl->frame();
+	private function live($copyPid = null) {
+// 		$eiuFrame = $this->eiuCtrl->frame();
 		
-		$copyFrom = null;
-		if ($copyPid !== null) {
-			$copyFrom = $this->eiuCtrl->lookupEntry($copyPid);
-		}
+// 		$copyFrom = null;
+// 		if ($copyPid !== null) {
+// 			$copyFrom = $this->eiuCtrl->lookupEntry($copyPid);
+// 		}
 		
-		$eiuEntryForm = $eiuFrame->newEntryForm(false, $copyFrom, new PropertyPath(array('eiuEntryForm')));
+// 		$eiuEntryForm = $eiuFrame->newEntryForm(false, $copyFrom, new PropertyPath(array('eiuEntryForm')));
 		
-		$eiFrame = $this->eiuCtrl->frame()->getEiFrame();
-		$addModel = new AddModel($eiFrame, $eiuEntryForm, $eiuFrame->getNestedSetStrategy());
-		if ($this->parentEiObject !== null) {
-			$addModel->setParentEntityObj($this->parentEiObject->getLiveObject());
-		} else if ($this->beforeEiObject !== null) {
-			$addModel->setBeforeEntityObj($this->beforeEiObject->getLiveObject());
-		} else if ($this->afterEiObject !== null) {
-			$addModel->setAfterEntityObj($this->afterEiObject->getLiveObject());
-		}
+// 		$eiFrame = $this->eiuCtrl->frame()->getEiFrame();
+// 		$addModel = new AddModel($eiFrame, $eiuEntryForm, $eiuFrame->getNestedSetStrategy());
+// 		if ($this->parentEiObject !== null) {
+// 			$addModel->setParentEntityObj($this->parentEiObject->getLiveObject());
+// 		} else if ($this->beforeEiObject !== null) {
+// 			$addModel->setBeforeEntityObj($this->beforeEiObject->getLiveObject());
+// 		} else if ($this->afterEiObject !== null) {
+// 			$addModel->setAfterEntityObj($this->afterEiObject->getLiveObject());
+// 		}
 		
-		if (is_object($eiObject = $this->dispatch($addModel, 'create'))) {
-			$this->eiuCtrl->redirectBack($this->eiuCtrl->buildRefRedirectUrl($redirectUrl, $eiObject));
-			return;
-		} else if ($this->dispatch($addModel, 'createAndRepeate')) {
-			$this->refresh();
-			return;
-		}
+// 		if (is_object($eiObject = $this->dispatch($addModel, 'create'))) {
+// 			$this->eiuCtrl->redirectBack($this->eiuCtrl->buildRefRedirectUrl($redirectUrl, $eiObject));
+// 			return;
+// 		} else if ($this->dispatch($addModel, 'createAndRepeate')) {
+// 			$this->refresh();
+// 			return;
+// 		}
 		
-		$this->eiuCtrl->applyCommonBreadcrumbs(null, $this->getBreadcrumbLabel());
+// 		$this->eiuCtrl->applyCommonBreadcrumbs(null, $this->getBreadcrumbLabel());
 		
-		$viewModel = new EntryCommandViewModel($this->eiuCtrl->frame(), $redirectUrl);
-		$viewModel->setTitle($this->dtc->translate('ei_impl_add_title', array(
-				'type' => $this->eiuCtrl->frame()->getEiFrame()->getContextEiEngine()->getEiMask()->getLabelLstr()
-						->t($this->getN2nContext()->getN2nLocale()))));
+// 		$viewModel = new EntryCommandViewModel($this->eiuCtrl->frame(), $redirectUrl);
+// 		$viewModel->setTitle($this->dtc->translate('ei_impl_add_title', array(
+// 				'type' => $this->eiuCtrl->frame()->getEiFrame()->getContextEiEngine()->getEiMask()->getLabelLstr()
+// 						->t($this->getN2nContext()->getN2nLocale()))));
+
+		$this->eiuCtrl->pushOverviewBreadcrumb()
+				->pushCurrentAsSirefBreadcrumb($this->dtc->t('common_add_label'));
 		
-		$view = $this->createView('..\view\add.html',
-				array('addModel' => $addModel, 'entryViewInfo' => $viewModel));
-		$this->eiuCtrl->forwardView($view);
+		$this->eiuCtrl->forwardNewEntryDlZone();
 	}
 	
 	public function doDraft(ParamGet $refPath = null) {

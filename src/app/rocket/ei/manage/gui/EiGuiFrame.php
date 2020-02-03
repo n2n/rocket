@@ -386,12 +386,13 @@ class EiGuiFrame {
 	}
 	
 	/**
+	 * @param EiFrame $eiFrame
 	 * @param GuiControlPath $guiControlPath
 	 * @return GeneralGuiControl
 	 * @throws UnknownGuiControlException
 	 */
-	function createGeneralGuiControl(GuiControlPath $guiControlPath) {
-		return $this->guiDefinition->createGeneralGuiControl($this, $guiControlPath);
+	function createGeneralGuiControl(EiFrame $eiFrame, GuiControlPath $guiControlPath) {
+		return $this->guiDefinition->createGeneralGuiControl($eiFrame, $this, $guiControlPath);
 	}
 	
 	

@@ -113,8 +113,12 @@ class AddEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiCo
 		
 		return $options;
 	}
-
-	public function createOverallControls(Eiu $eiu): array {
+	
+	public function createGeneralGuiControls(Eiu $eiu): array {
+		if ($eiu->frame()->isExecutedBy($this)) {
+			return [];
+		}
+		
 		$eiuControlFactory = $eiu->guiFrame()->controlFactory($this);
 		$dtc = $eiu->dtc(Rocket::NS);
 		
@@ -123,17 +127,9 @@ class AddEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiCo
 		$controls = array();
 		
 		$key = $nestedSet ? self::CONTROL_ADD_ROOT_BRANCH_KEY : self::CONTROL_ADD_KEY;
-		$controls[$key] = $eiuControlFactory->createJhtml(new SiButton(
-				$dtc->t($nestedSet ? 'ei_impl_add_root_branch_label' : 'common_new_entry_label'),
-				null, true, SiButton::TYPE_SUCCESS, SiIconType::ICON_PLUS_CIRCLE));
-		
-		if ($eiu->frame()->isDraftingEnabled()) {
-			$controls[self::CONTROL_ADD_DRAFT_KEY] = $eiuControlFactory->createJhtml(new SiButton(
-					$dtc->translate('ei_impl_add_draft_label'),
-					null, true, SiButton::TYPE_SUCCESS, SiIconType::ICON_PLUS_CIRCLE));
-		}
-		
-		return $controls;
+		$siButton = new SiButton($dtc->t($nestedSet ? 'ei_impl_add_root_branch_label' : 'common_new_entry_label'),
+				null, true, SiButton::TYPE_SUCCESS, SiIconType::ICON_PLUS_CIRCLE);
+		return [$eiuControlFactory->createCmdRef($key, $siButton)];
 	}
 
 	public function getEntryGuiControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {

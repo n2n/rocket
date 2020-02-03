@@ -370,46 +370,56 @@ class EiuCtrl {
 	}
 	
 	function forwardNewEntryDlZone(bool $editable = true) {
-		$contextEiuType = $this->eiuFrame->engine()->type();
-		
-		$siEntry = new SiEntry($contextEiuType->supremeType()->getId(), !$editable, true);
-		
-		$siDeclaration = new SiDeclaration();
-		
-		if (!$contextEiuType->isAbstract()) {
-			$typeId = $contextEiuType->getId();
-			$eiEntryGui = $this->eiuFrame->newEntry()->newEntryGui()->getEiEntryGui();
-			
-			$siEntry->putBuildup($typeId, $eiEntryGui->createSiEntryBuildup());
-			$siDeclaration->putFieldStructureDeclarations(
-					$eiEntryGui->getEiEntry()->getEiGuiSiFactory()->getSiStructureDeclaration());
+		if ($this->forwardHtml()) {
+			return;
 		}
 		
-		foreach ($contextEiuType->allSubTypes() as $eiuType) {
-			if ($eiuType->isAbstract()) {
-				continue;
-			}
+// 		$contextEiuType = $this->eiuFrame->engine()->type();
+		
+// 		$siEntry = new SiEntry($contextEiuType->supremeType()->getId(), !$editable, true);
+		
+// 		$siDeclaration = new SiDeclaration();
+		
+// 		if (!$contextEiuType->isAbstract()) {
+// 			$typeId = $contextEiuType->getId();
+// 			$eiEntryGui = $this->eiuFrame->newEntry()->newEntryGui()->getEiEntryGui();
 			
-			$typeId = $eiuType->getId();
-			$eiuEntryGui = $this->eiuFrame->entry($eiuType->newObject())->newEntryGui(true, $editable);
-			$eiEntryGui = $eiuEntryGui->getEiEntryGui();
+// 			$siEntry->putBuildup($typeId, $eiEntryGui->createSiEntryBuildup());
+// 			$siDeclaration->putFieldStructureDeclarations(
+// 					$eiEntryGui->getEiEntry()->getEiGuiSiFactory()->getSiStructureDeclaration());
+// 		}
+		
+// 		foreach ($contextEiuType->allSubTypes() as $eiuType) {
+// 			if ($eiuType->isAbstract()) {
+// 				continue;
+// 			}
 			
-			$siEntry->putBuildup($typeId, $eiEntryGui->createSiBuildup());
-			$siDeclaration->putFieldStructureDeclarations($typeId, 
-					$eiEntryGui->getEiGuiFrame()->getEiGuiSiFactory()->getSiStructureDeclaration());
-		}
+// 			$typeId = $eiuType->getId();
+// 			$eiuEntryGui = $this->eiuFrame->entry($eiuType->newObject())->newEntryGui(true, $editable);
+// 			$eiEntryGui = $eiuEntryGui->getEiEntryGui();
+			
+// 			$siEntry->putBuildup($typeId, $eiEntryGui->createSiBuildup());
+// 			$siDeclaration->putFieldStructureDeclarations($typeId, 
+// 					$eiEntryGui->getEiGuiFrame()->getEiGuiSiFactory()->getSiStructureDeclaration());
+// 		}
 		
-		if (!empty($siEntry->getBuildups())) {
-			throw new EiuPerimeterException('Can not create a new EiEntryGui of ' . $contextEiuType->getEiType()
-					. ' because this type is abstract and doesn\'t have any sub EiTypes.');
-		}
+// 		if (!empty($siEntry->getBuildups())) {
+// 			throw new EiuPerimeterException('Can not create a new EiEntryGui of ' . $contextEiuType->getEiType()
+// 					. ' because this type is abstract and doesn\'t have any sub EiTypes.');
+// 		}
+
+		$eiFrame = $this->eiuFrame->getEiFrame();
+		$eiFrameUtil = new EiFrameUtil($eiFrame);
 		
-		$zone = new BulkyEntrySiComp($this->eiu->frame()->getApiUrl(), $siDeclaration, $siEntry);
+		$eiEntryGuiMultiResult = $eiFrameUtil->createNewEiEntryGuiMulti(true, !$editable, null, true);
 		
-		$contextEiGuiFrame = $this->eiuFrame->newGuiFrame(ViewMode::determine(true, !$editable, true))->getEiGuiFrame();
+		$siComp = new BulkyEntrySiComp($eiEntryGuiMultiResult->createSiDeclaration(), 
+				$eiEntryGuiMultiResult->createSiEntry(false));
+		
+		$generalSiControls = current($eiEntryGuiMultiResult->getEiGuiFrames())->createGeneralSiControls($eiFrame);
+		
 		$this->httpContext->getResponse()->send(
-				SiPayloadFactory::createZoneModel($zone, $contextEiGuiFrame->createGeneralSiControls(),
-						$this->rocketState->getBreadcrumbs(),
+				SiPayloadFactory::create($siComp, $generalSiControls, $this->rocketState->getBreadcrumbs(),
 						$this->eiu->dtc('rocket')->t('common_new_entry_label')));
 	}
 	

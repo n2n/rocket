@@ -36,6 +36,7 @@ use n2n\util\type\TypeConstraints;
 use rocket\ei\manage\ManageState;
 use n2n\util\uri\Url;
 use rocket\ei\manage\gui\EiGui;
+use rocket\ei\manage\frame\EiFrame;
 
 class EiuCallbackGuiControl implements GeneralGuiControl, EntryGuiControl, SelectionGuiControl {
 	private $id;
@@ -113,22 +114,22 @@ class EiuCallbackGuiControl implements GeneralGuiControl, EntryGuiControl, Selec
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\control\GeneralGuiControl::handle()
 	 */
-	function handle(EiGui $eiGui): SiResult {
-		return $this->execCall(new Eiu($eiGui));
+	function handle(EiFrame $eiFrame, EiGui $eiGui): SiResult {
+		return $this->execCall(new Eiu($eiFrame, $eiGui));
 	}
 
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\control\EntryGuiControl::handleEntry()
 	 */
-	function handleEntry(EiGui $eiGui, EiEntry $eiEntry): SiResult {
-		return $this->execCall(new Eiu($eiGui, $eiEntry));
+	function handleEntry(EiFrame $eiFrame, EiGui $eiGui, EiEntry $eiEntry): SiResult {
+		return $this->execCall(new Eiu($eiFrame, $eiGui, $eiEntry));
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\control\SelectionGuiControl::handleEntries()
 	 */
-	function handleEntries(EiGui $eiGui, array $eiEntries): SiResult {
+	function handleEntries(EiFrame $eiFrame, EiGui $eiGui, array $eiEntries): SiResult {
 	}
 }

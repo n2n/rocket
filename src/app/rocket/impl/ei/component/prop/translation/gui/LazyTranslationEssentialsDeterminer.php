@@ -295,7 +295,7 @@ class LazyTranslationEssentialsDeterminer {
 	 * @return EiuEntry
 	 */
 	private function createTargetEiuEntry($n2nLocale) {
-		$targetEiuEntry = $this->targetEiuGuiFrame->getEiuFrame()->newEntry();
+		$targetEiuEntry = $this->targetEiuFrame->newEntry();
 		$targetEiuEntry->getEntityObj()->setN2nLocale($n2nLocale);
 		return $targetEiuEntry;
 	}

@@ -129,12 +129,12 @@ class EiLifecycleMonitor implements LifecycleListener {
 		$action = null;
 		while (null !== ($action = array_pop($this->uninitializedActions))) {
 			$eiEntityObj = $action->getEiObject()->getEiEntityObj();
-			if (!$eiEntityObj->hasId()) {
-				$eiEntityObj->refreshId();
-				if ($eiEntityObj->hasId()) {
-					$eiEntityObj->setPersistent(true);
-				}
-			}
+// 			if (!$eiEntityObj->hasId()) {
+// 				$eiEntityObj->refreshId();
+// 				if ($eiEntityObj->hasId()) {
+// 					$eiEntityObj->setPersistent(true);
+// 				}
+// 			}
 			$eiEntityObj->getEiType()->validateLifecycleAction($action, $this->n2nContext);
 			
 			if (!$action->hasVeto()) {
@@ -189,6 +189,9 @@ class EiLifecycleMonitor implements LifecycleListener {
 			case LifecycleEvent::PRE_UPDATE:
 				$this->update($eiType, $e->getEntityObj());
 				break;
+			case LifecycleEvent::POST_PERSIST:
+				$this->postPersist($eiType, $e->getEntityObj());
+				break;
 		}
 	}
 	
@@ -200,8 +203,7 @@ class EiLifecycleMonitor implements LifecycleListener {
 		$objHash = spl_object_hash($eiObject->getEiEntityObj()->getEntityObj());
 		if (isset($this->removeActions[$objHash])) return;
 		
-		$vla = new VetoableLifecycleAction($eiObject, $this,
-				VetoableLifecycleAction::TYPE_REMOVE);
+		$vla = new VetoableLifecycleAction($eiObject, $this, VetoableLifecycleAction::TYPE_REMOVE);
 		$this->removeActions[$objHash] = $vla;
 		$this->uninitializedActions[$objHash] = $vla;
 		
@@ -225,6 +227,22 @@ class EiLifecycleMonitor implements LifecycleListener {
 		
 		unset($this->removeActions[$objHash]);
 		IllegalStateException::assertTrue(!isset($this->updateActions[$objHash]));
+	}
+	
+	private function postPersist(EiType $eiType, $entityObj) {
+		$objHash = spl_object_hash($entityObj);
+		
+		if (!isset($this->persistActions[$objHash])) {
+			return;
+		}
+		
+		$eiEntityObj = $this->persistActions[$objHash]->getEiObject()->getEiEntityObj();
+		if (!$eiEntityObj->hasId()) {
+			$eiEntityObj->refreshId();
+			if ($eiEntityObj->hasId()) {
+				$eiEntityObj->setPersistent(true);
+			}
+		}
 	}
 	
 	private function update(EiType $eiType, $entityObj) {
