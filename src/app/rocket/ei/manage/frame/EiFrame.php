@@ -39,6 +39,7 @@ use rocket\ei\EiPropPath;
 use rocket\ei\component\command\EiCommand;
 use rocket\ei\manage\security\InaccessibleEiEntryException;
 use rocket\ei\component\command\GenericResult;
+use n2n\reflection\ReflectionUtils;
 
 class EiFrame {
 	

@@ -34,6 +34,7 @@ use rocket\ei\manage\gui\control\SelectionGuiControl;
 use rocket\ei\manage\gui\EiGuiFrame;
 use rocket\ei\manage\api\ApiControlCallId;
 use rocket\ei\manage\gui\EiGui;
+use rocket\ei\manage\frame\EiFrame;
 
 class EiuRefGuiControl implements GeneralGuiControl, EntryGuiControl, SelectionGuiControl {
 	private $id;
@@ -62,15 +63,15 @@ class EiuRefGuiControl implements GeneralGuiControl, EntryGuiControl, SelectionG
 		return new RefSiControl($this->url, $this->siButton);
 	}
 	
-	public function handleEntries(EiGui $eiGui, array $eiEntries): SiResult {
+	public function handleEntries(EiFrame $eiFrame, EiGui $eiGui, array $eiEntries): SiResult {
 		throw new NotYetImplementedException();
 	}
 
-	public function handle(EiGui $eiGui): SiResult {
+	public function handle(EiFrame $eiFrame, EiGui $eiGui): SiResult {
 		throw new NotYetImplementedException();
 	}
 
-	public function handleEntry(EiGui $eiGui, EiEntry $eiEntry): SiResult {
+	public function handleEntry(EiFrame $eiFrame, EiGui $eiGui, EiEntry $eiEntry): SiResult {
 		throw new NotYetImplementedException();
 	}
 }

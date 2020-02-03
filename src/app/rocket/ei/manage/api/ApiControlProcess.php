@@ -85,7 +85,7 @@ class ApiControlProcess {
 		try {
 			$eiMask = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()->determineEiMask($eiTypePath);
 			$eiGui = $this->eiFrame->getManageState()->getDef()->getGuiDefinition($eiMask)
-					->createEiGui($this->eiFrame, $viewMode);
+					->createEiGui($this->eiFrame->getN2nContext(), $viewMode);
 			$this->eiGui = $eiGui;
 			$this->eiGuiFrame = $eiGui->getEiGuiFrame();
 		} catch (\rocket\ei\EiException $e) {
@@ -116,9 +116,9 @@ class ApiControlProcess {
 		
 		try {
 			if ($this->eiEntry !== null) {
-				$this->entryGuiControl = $this->guiControl = $this->eiGuiFrame->createEntryGuiControl($guiControlPath);
+				$this->entryGuiControl = $this->guiControl = $this->eiGuiFrame->createEntryGuiControl($this->eiFrame, $guiControlPath);
 			} else {
-				$this->generalGuiControl = $this->guiControl = $this->eiGuiFrame->createGeneralGuiControl($guiControlPath);
+				$this->generalGuiControl = $this->guiControl = $this->eiGuiFrame->createGeneralGuiControl($this->eiFrame, $guiControlPath);
 			}
 		} catch (UnknownGuiControlException $e) {
 			throw new BadRequestException($e->getMessage(), null, $e);
@@ -167,7 +167,7 @@ class ApiControlProcess {
 			
 			$eiEntry = $this->eiFrame->createEiEntry($eiObject);
 			
-			$eiEntryGui = $this->eiGuiFrame->createEiEntryGui($eiEntry);
+			$eiEntryGui = $this->eiGuiFrame->createEiEntryGui($this->eiFrame, $eiEntry);
 			$this->eiGui->addEiEntryGui($eiEntryGui);
 			
 			$this->applyEntryInput($entryInput, $eiEntryGui);
@@ -202,11 +202,11 @@ class ApiControlProcess {
 	
 	function callGuiControl() {
 		if ($this->generalGuiControl !== null) {
-			return $this->generalGuiControl->handle($this->eiGui);
+			return $this->generalGuiControl->handle($this->eiFrame, $this->eiGui);
 		}
 		
 		if ($this->entryGuiControl !== null) {
-			return $this->entryGuiControl->handleEntry($this->eiGui, $this->eiEntry);
+			return $this->entryGuiControl->handleEntry($this->eiFrame, $this->eiGui, $this->eiEntry);
 		}
 		
 		throw new IllegalStateException();
