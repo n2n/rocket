@@ -448,7 +448,7 @@ class EiEntryGuiMultiResult {
 	/**
 	 * @return \rocket\ei\manage\gui\EiGuiFrame
 	 */
-	function getEiGuiFrame() {
+	function getEiGuiFrames() {
 		return $this->eiGuiFrames;
 	}
 	

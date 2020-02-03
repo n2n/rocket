@@ -496,7 +496,6 @@ class GuiDefinition {
 		foreach ($this->guiCommands as $id => $guiCommand) {
 			foreach ($this->extractGeneralGuiControls($guiCommand, $id, $eiu) as $generalGuiControl) {
 				$guiControlPath = new GuiControlPath([$id, $generalGuiControl->getId()]);
-				
 				$siControls[(string) $guiControlPath] = $generalGuiControl;
 			}
 		}

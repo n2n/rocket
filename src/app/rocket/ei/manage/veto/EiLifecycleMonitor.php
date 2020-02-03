@@ -203,8 +203,7 @@ class EiLifecycleMonitor implements LifecycleListener {
 		$objHash = spl_object_hash($eiObject->getEiEntityObj()->getEntityObj());
 		if (isset($this->removeActions[$objHash])) return;
 		
-		$vla = new VetoableLifecycleAction($eiObject, $this,
-				VetoableLifecycleAction::TYPE_REMOVE);
+		$vla = new VetoableLifecycleAction($eiObject, $this, VetoableLifecycleAction::TYPE_REMOVE);
 		$this->removeActions[$objHash] = $vla;
 		$this->uninitializedActions[$objHash] = $vla;
 		
