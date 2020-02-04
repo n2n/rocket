@@ -5,9 +5,7 @@
 .rocket-simple-commands {
     // drop down button in simple-commands
     > rocket-button-control > .dropdown > button, 
-    > rocket-button-control > .btn,
-    > .dropdown > button, 
-    > .btn { 
+    > rocket-button-control > .btn { 
         min-width: 2.25rem;
         text-align: center;
         background: transparent;
@@ -54,10 +52,8 @@
 }
 
 // simple commands in table are bigger
-td.rocket-simple-commands,
-td .rocket-simple-commands {
-    > rocket-button-control > .btn,
-    > .btn {
+td.rocket-simple-commands {
+    > rocket-button-control .btn {
         > i {
             font-size: $font-size-lg;
         }

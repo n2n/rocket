@@ -4824,6 +4824,75 @@ a.close.disabled {
   pointer-events: none;
 }
 
+@-webkit-keyframes spinner-border {
+  to {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+
+@keyframes spinner-border {
+  to {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+
+.spinner-border {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  vertical-align: text-bottom;
+  border: 0.25em solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  -webkit-animation: spinner-border .75s linear infinite;
+          animation: spinner-border .75s linear infinite;
+}
+
+.spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+  border-width: 0.2em;
+}
+
+@-webkit-keyframes spinner-grow {
+  0% {
+    -webkit-transform: scale(0);
+            transform: scale(0);
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes spinner-grow {
+  0% {
+    -webkit-transform: scale(0);
+            transform: scale(0);
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.spinner-grow {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  vertical-align: text-bottom;
+  background-color: currentColor;
+  border-radius: 50%;
+  opacity: 0;
+  -webkit-animation: spinner-grow .75s linear infinite;
+          animation: spinner-grow .75s linear infinite;
+}
+
+.spinner-grow-sm {
+  width: 1rem;
+  height: 1rem;
+}
+
 html {
   height: 100%;
   font-size: 15px;
@@ -6344,9 +6413,7 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
  * The small Buttons (without text)
  */
 .rocket-simple-commands > rocket-button-control > .dropdown > button,
-.rocket-simple-commands > rocket-button-control > .btn,
-.rocket-simple-commands > .dropdown > button,
-.rocket-simple-commands > .btn {
+.rocket-simple-commands > rocket-button-control > .btn {
   min-width: 2.25rem;
   text-align: center;
   background: transparent;
@@ -6358,51 +6425,35 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
 }
 
 .rocket-simple-commands > rocket-button-control > .dropdown > button:hover,
-.rocket-simple-commands > rocket-button-control > .btn:hover,
-.rocket-simple-commands > .dropdown > button:hover,
-.rocket-simple-commands > .btn:hover {
+.rocket-simple-commands > rocket-button-control > .btn:hover {
   background: transparent;
 }
 
 .rocket-simple-commands > rocket-button-control > .dropdown > button:focus, .rocket-simple-commands > rocket-button-control > .dropdown > button:visited, .rocket-simple-commands > rocket-button-control > .dropdown > button:active,
 .rocket-simple-commands > rocket-button-control > .btn:focus,
 .rocket-simple-commands > rocket-button-control > .btn:visited,
-.rocket-simple-commands > rocket-button-control > .btn:active,
-.rocket-simple-commands > .dropdown > button:focus,
-.rocket-simple-commands > .dropdown > button:visited,
-.rocket-simple-commands > .dropdown > button:active,
-.rocket-simple-commands > .btn:focus,
-.rocket-simple-commands > .btn:visited,
-.rocket-simple-commands > .btn:active {
+.rocket-simple-commands > rocket-button-control > .btn:active {
   -webkit-box-shadow: none;
           box-shadow: none;
 }
 
 .rocket-simple-commands > rocket-button-control > .dropdown > button.btn-danger:hover,
-.rocket-simple-commands > rocket-button-control > .btn.btn-danger:hover,
-.rocket-simple-commands > .dropdown > button.btn-danger:hover,
-.rocket-simple-commands > .btn.btn-danger:hover {
+.rocket-simple-commands > rocket-button-control > .btn.btn-danger:hover {
   color: #b90f00;
 }
 
 .rocket-simple-commands > rocket-button-control > .dropdown > button.btn-warning:hover,
-.rocket-simple-commands > rocket-button-control > .btn.btn-warning:hover,
-.rocket-simple-commands > .dropdown > button.btn-warning:hover,
-.rocket-simple-commands > .btn.btn-warning:hover {
+.rocket-simple-commands > rocket-button-control > .btn.btn-warning:hover {
   color: #F6A723;
 }
 
 .rocket-simple-commands > rocket-button-control > .dropdown > button.btn-success:hover,
-.rocket-simple-commands > rocket-button-control > .btn.btn-success:hover,
-.rocket-simple-commands > .dropdown > button.btn-success:hover,
-.rocket-simple-commands > .btn.btn-success:hover {
+.rocket-simple-commands > rocket-button-control > .btn.btn-success:hover {
   color: #2D7F00;
 }
 
 .rocket-simple-commands > rocket-button-control > .dropdown > button:not(.rocket-important) > span,
-.rocket-simple-commands > rocket-button-control > .btn:not(.rocket-important) > span,
-.rocket-simple-commands > .dropdown > button:not(.rocket-important) > span,
-.rocket-simple-commands > .btn:not(.rocket-important) > span {
+.rocket-simple-commands > rocket-button-control > .btn:not(.rocket-important) > span {
   display: none;
 }
 
@@ -6422,10 +6473,7 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   color: #F6A723;
 }
 
-td.rocket-simple-commands > rocket-button-control > .btn > i,
-td.rocket-simple-commands > .btn > i,
-td .rocket-simple-commands > rocket-button-control > .btn > i,
-td .rocket-simple-commands > .btn > i {
+td.rocket-simple-commands > rocket-button-control .btn > i {
   font-size: 1.25rem;
 }
 

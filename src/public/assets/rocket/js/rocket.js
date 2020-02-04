@@ -267,7 +267,7 @@ var Rocket;
                             "bottom": 0
                         }
                     })
-                        .append($("<div />", { "class": "rocket-loading" }))
+                        .append($("<div />", { "class": "rocket-loader" }))
                         .appendTo(this.jqContainer);
             }
         }
@@ -1683,7 +1683,7 @@ var Rocket;
             }
             clear(showLoader = false) {
                 if (showLoader) {
-                    this.jqZone.addClass("rocket-loading");
+                    this.jqZone.addClass("rocket-loader");
                 }
                 else {
                     this.endLoading();
@@ -1709,10 +1709,10 @@ var Rocket;
                 this.trigger(Zone.EventType.CONTENT_CHANGED);
             }
             isLoading() {
-                return this.jqZone.hasClass("rocket-loading");
+                return this.jqZone.hasClass("rocket-loader");
             }
             endLoading() {
-                this.jqZone.removeClass("rocket-loading");
+                this.jqZone.removeClass("rocket-loader");
             }
             applyContent(jqContent) {
                 this.endLoading();
@@ -7951,7 +7951,7 @@ var Rocket;
                         return;
                     this.loaderJq = $("<div />", {
                         class: "rocket-load-blocker"
-                    }).append($("<div></div>", { class: "rocket-loading" })).appendTo(this.elemJq);
+                    }).append($("<div></div>", { class: "rocket-loader" })).appendTo(this.elemJq);
                 }
                 triggerChanged() {
                     for (let callback of this.changedCallbacks) {
