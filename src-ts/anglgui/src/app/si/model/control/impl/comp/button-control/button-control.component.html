@@ -1,11 +1,7 @@
 
-<ng-template [ngIf]="hasSubSiButtons" [ngIfElse]="simpleButton">
-	<div [class.dropdown]="hasSubSiButtons">
-		<button class="{{ siButton.btnClass }}" (click)="exec()" [disabled]="loading">
-			<span *ngIf="loading" class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>	
-			<i class="{{ siButton.iconClass }}"></i>
-			<span>{{ siButton.name }}</span>
-		</button>
+<ng-template *ngIf="hasSubSiButtons(); else simpleButton">
+	<div class="dropdown">
+		<ng-template [ngTemplateOutlet]="simpleButton"></ng-template>
 	
 		<div *ngIf="subVisible" class="dropdown-menu">
 			<button *ngFor="let item of subSiButtonMap | keyvalue">

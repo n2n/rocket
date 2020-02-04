@@ -34,7 +34,7 @@ export class ButtonControlComponent implements OnInit {
 	}
 
 	hasSubSiButtons() {
-		return !!this.model.getSubSiButtonMap;
+		return !!this.model.getSubSiButtonMap && this.model.getSubSiButtonMap().size > 0;
 	}
 
 	get subSiButtonMap() {
