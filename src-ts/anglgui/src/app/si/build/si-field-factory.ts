@@ -177,7 +177,7 @@ export class SiFieldFactory {
 
 		case SiFieldType.SPLIT_PLACEHOLDER:
 			const splitSiField = new SplitSiField(dataExtr.reqString('refPropId'));
-
+			splitSiField.copyStyle = this.createSplitStyle(dataExtr.reqObject('copyStyle'));
 			return splitSiField;
 		default:
 			throw new ObjectMissmatchError('Invalid si field type: ' + data.type);

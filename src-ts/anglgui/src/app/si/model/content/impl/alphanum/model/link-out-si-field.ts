@@ -6,6 +6,7 @@ import { LinkOutFieldComponent } from '../comp/link-out-field/link-out-field.com
 import { SiField } from '../../../si-field';
 import { UiNavPoint } from 'src/app/ui/util/model/ui-nav-point';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
+import { SiGenericValue } from '../../../si-generic-value';
 
 export class LinkOutSiField extends OutSiFieldAdapter implements LinkOutModel {
 

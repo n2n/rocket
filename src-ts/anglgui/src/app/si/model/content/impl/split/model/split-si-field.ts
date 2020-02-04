@@ -10,12 +10,17 @@ import { SplitComponent } from '../comp/split/split.component';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 
 export class SplitSiField extends SiFieldAdapter implements SplitModel {
+
 	splitContext: SplitContextSiField|null;
+	copyStyle: SplitStyle = { iconClass: null, tooltip: null };
 
 	constructor(public refPropId: string) {
 		super();
 	}
 
+	getCopyTooltip(): string|null {
+		return this.copyStyle.tooltip;
+	}
 
 // 	handleError(error: SiFieldError): void {
 // 		console.log(error);

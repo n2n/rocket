@@ -10,7 +10,11 @@ import { CrumbGroupComponent } from '../../../meta/comp/crumb-group/crumb-group.
 import { SiCrumb } from '../../../meta/model/si-crumb';
 import { TranslationService } from 'src/app/util/i18n/translation.service';
 import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
-import { ChildrenOutletContexts } from '@angular/router';
+import { ButtonControlUiContent } from 'src/app/si/model/control/impl/comp/button-control-ui-content';
+import { ButtonControlModel } from 'src/app/si/model/control/impl/comp/button-control-model';
+import { SiButton } from 'src/app/si/model/control/impl/model/si-button';
+import { UiZone } from 'src/app/ui/structure/model/ui-zone';
+import { SiField } from '../../../../si-field';
 
 @Component({
 	selector: 'rocket-split',
@@ -40,8 +44,6 @@ export class SplitComponent implements OnInit, OnDestroy, DoCheck {
 			child.visible$.subscribe(() => {
 				this.subscription.requestKeyVisibilityChange(splitOption.key, child.visible);
 			});
-
-			// child.createToolbarChild(new SimpleUiStructureModel());
 		}
 	}
 
@@ -75,12 +77,23 @@ export class SplitComponent implements OnInit, OnDestroy, DoCheck {
 
 			this.loadedKeys.push(key);
 			this.model.getSiField$(key).then((siField) => {
-				childUiStructure.model = siField ? siField.createUiStructureModel() : this.createNotActiveUism();
+				if (!siField) {
+					childUiStructure.model = this.createNotActiveUism();
+					return;
+				}
+
+				childUiStructure.model = siField.createUiStructureModel() ;
+
+				if (siField.hasInput() && siField.isGeneric()) {
+					childUiStructure.createToolbarChild(new SimpleUiStructureModel(new ButtonControlUiContent(
+							new SplitButtonControlModel(key, siField, this.model), childUiStructure.getZone())))
+				}
 			}).catch(() => {
 				childUiStructure.model = this.createNotActiveUism();
 			});
 		}
 	}
+
 
 	isKeyVisible(key: string): boolean {
 		return this.subscription.isKeyVisible(key);
@@ -96,4 +109,55 @@ export class SplitComponent implements OnInit, OnDestroy, DoCheck {
 		}));
 	}
 
+}
+
+class SplitButtonControlModel implements ButtonControlModel {
+	private loading = false;
+
+	private siButton: SiButton;
+	private subSiButtons = new Map<string, SiButton>();
+
+	constructor(key: string, private siField: SiField, private model: SplitModel) {
+		this.siButton = new SiButton(this.model.getCopyTooltip(), 'btn btn-secondary', 'fa fa-reply-all');
+
+		for (const splitOption of this.model.getSplitOptions()) {
+			if (splitOption.key === key) {
+				continue;
+			}
+
+			this.subSiButtons.set(splitOption.key, new SiButton(splitOption.shortLabel, 'btn btn-secondary', 'fa fa-reply'));
+		}
+	}
+
+	getSiButton(): SiButton {
+		return this.siButton;
+	}
+
+	isLoading(): boolean {
+		return this.loading;
+	}
+
+	exec(uiZone: UiZone, subKey: string|null): void {
+		if (this.loading || !subKey) {
+			return;
+		}
+
+		this.loading = true;
+
+		this.model.getSiField$(subKey)
+				.then((subSiField) => {
+					if (this.siField.isGeneric() && subSiField.isGeneric()) {
+						this.siField.writeGenericValue(subSiField.readGenericValue());
+					}
+				})
+				.finally(() => { this.loading = false});
+	}
+
+	getSubTooltip(): string|null {
+		return this.model.getCopyTooltip();
+	}
+
+	getSubSiButtonMap(): Map<string, SiButton> {
+		return this.subSiButtons;
+	}
 }

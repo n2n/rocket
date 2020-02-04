@@ -55,6 +55,7 @@ export class ButtonControlComponent implements OnInit {
 	}
 
 	subExec(key: string) {
+		console.log('subex');
 		this._subVisible = false;
 		this.model.exec(this.uiZone, key);
 	}

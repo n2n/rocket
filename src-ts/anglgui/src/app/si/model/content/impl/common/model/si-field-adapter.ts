@@ -8,6 +8,8 @@ import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model'
 import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
+import { SiGenericValue } from '../../../si-generic-value';
+import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 
 export abstract class SiFieldAdapter implements SiField, MessageFieldModel {
 	private disabledSubject = new BehaviorSubject<boolean>(false);
@@ -16,7 +18,7 @@ export abstract class SiFieldAdapter implements SiField, MessageFieldModel {
 	abstract hasInput(): boolean;
 
 	abstract readInput(): object;
-	
+
 	isDisabled(): boolean {
 		return this.disabledSubject.getValue();
 	}
@@ -31,8 +33,16 @@ export abstract class SiFieldAdapter implements SiField, MessageFieldModel {
 
 	abstract copy(entryBuildUp: SiEntryBuildup): SiField;
 
-	getContextSiFields(): SiField[] {
-		return [];
+	isGeneric(): boolean {
+		return false;
+	}
+
+	readGenericValue(): SiGenericValue {
+		throw new IllegalSiStateError('SiField not generic.');
+	}
+
+	writeGenericValue(_genericValue: SiGenericValue): boolean {
+		return false;
 	}
 
 	createUiStructureModel(): UiStructureModel {

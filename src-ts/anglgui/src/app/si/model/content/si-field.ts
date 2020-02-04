@@ -3,6 +3,7 @@ import { Message } from 'src/app/util/i18n/message';
 import { SiEntryBuildup } from './si-entry-buildup';
 import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
 import { Observable } from 'rxjs';
+import { SiGenericValue } from './si-generic-value';
 
 export interface SiField {
 
@@ -26,5 +27,9 @@ export interface SiField {
 
 	copy(entryBuildUp: SiEntryBuildup): SiField;
 
-	getContextSiFields(): SiField[];
+	isGeneric(): boolean;
+
+	readGenericValue(): SiGenericValue;
+
+	writeGenericValue(genericValue: SiGenericValue): boolean;
 }

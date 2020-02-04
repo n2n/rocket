@@ -13,4 +13,6 @@ export interface SplitModel {
 	activateKey(key: string): void;
 
 	getSiField$(key: string): Promise<SiField>;
+
+	getCopyTooltip(): string|null;
 }

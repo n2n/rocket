@@ -29,6 +29,10 @@ class SplitPlaceholderSiField extends SiFieldAdapter {
 	 * @var string
 	 */
 	private $refPropId;
+	/**
+	 * @var SplitStyle
+	 */
+	private $copyStyle;
 	
 // 	/**
 // 	 * @var \Closure|null
@@ -40,6 +44,7 @@ class SplitPlaceholderSiField extends SiFieldAdapter {
 	 */
 	function __construct(string $refPropId) {
 		$this->refPropId = $refPropId;
+		$this->copyStyle = new SplitStyle(null, null);
 	}
 
 	/**
@@ -48,6 +53,22 @@ class SplitPlaceholderSiField extends SiFieldAdapter {
 	 */
 	function getType(): string {
 		return 'split-placeholder';
+	}
+	
+	/**
+	 * @param SplitStyle $splitStyle
+	 * @return SplitContextInSiField
+	 */
+	function setCopyStyle(SplitStyle $splitStyle) {
+		$this->copyStyle = $splitStyle;
+		return $this;
+	}
+	
+	/**
+	 * @return \rocket\si\content\impl\split\SplitStyle
+	 */
+	function getCopyStyle() {
+		return $this->copyStyle;
 	}
 	
 // 	/**
@@ -66,7 +87,8 @@ class SplitPlaceholderSiField extends SiFieldAdapter {
 	 */
 	function getData(): array {
 		return [
-			'refPropId' => $this->refPropId
+			'refPropId' => $this->refPropId,
+			'copyStyle' => $this->copyStyle
 		];
 	}
 	

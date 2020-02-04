@@ -5,6 +5,7 @@ import { SiField } from '../../../si-field';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { SiCrumbGroup } from '../../meta/model/si-crumb';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
+import { SiGenericValue } from '../../../si-generic-value';
 
 export class NumberInSiField extends InSiFieldAdapter implements InputInFieldModel {
 	public min: number|null = null;
@@ -102,6 +103,28 @@ export class NumberInSiField extends InSiFieldAdapter implements InputInFieldMod
 
 	copy(): SiField {
 		throw new Error('Method not implemented.');
+	}
+
+	isGeneric() {
+		return true;
+	}
+
+	readGenericValue(): SiGenericValue {
+		return new SiGenericValue(this.value === null ? null : new Number(this.value));
+	}
+
+	writeGenericValue(genericValue: SiGenericValue): boolean {
+		if (genericValue.isNull()) {
+			this.value = null;
+			return true;
+		}
+
+		if (genericValue.isInstanceOf(Number)) {
+			this.value = genericValue.readInstance(Number).valueOf();
+			return true;
+		}
+
+		return false;
 	}
 
 	createUiContent(): UiContent {

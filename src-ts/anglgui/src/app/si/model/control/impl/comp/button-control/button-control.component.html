@@ -3,8 +3,10 @@
 	<div class="dropdown">
 		<ng-template [ngTemplateOutlet]="simpleButton"></ng-template>
 	
-		<div *ngIf="subVisible" class="dropdown-menu">
-			<button *ngFor="let item of subSiButtonMap | keyvalue">
+		<div *ngIf="subVisible">
+			(Tomekk: class dropdown-menu macht display none)
+
+			<button *ngFor="let item of subSiButtonMap | keyvalue"
 					[class]="item.value.btnClass" (click)="subExec(item.key)" [disabled]="loading">
 				<i [class]="item.value.iconClass"></i>
 				<span>{{ item.value.name }}</span>
