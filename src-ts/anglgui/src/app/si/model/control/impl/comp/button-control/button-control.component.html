@@ -5,8 +5,8 @@
 	
 		<div *ngIf="subVisible" class="dropdown-menu">
 			<button *ngFor="let item of subSiButtonMap | keyvalue">
-					class="{{ item.value.btnClass }}" (click)="subExec(item.key)" [disabled]="loading">
-				<i class="{{ item.value.iconClass }}"></i>
+					[class]="item.value.btnClass" (click)="subExec(item.key)" [disabled]="loading">
+				<i [class]="item.value.iconClass"></i>
 				<span>{{ item.value.name }}</span>
 			</button>
 		</div>
@@ -14,9 +14,9 @@
 </ng-template>
 
 <ng-template #simpleButton>
-	<button class="{{ siButton.btnClass }}" (click)="exec()" [disabled]="loading">
+	<button [class]="siButton.btnClass" (click)="exec()" [disabled]="loading">
 		<span *ngIf="loading" class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>	
-		<i class="{{ siButton.iconClass }}"></i>
+		<i [class]="siButton.iconClass"></i>
 		<span>{{ siButton.name }}</span>
 	</button>
 </ng-template>
