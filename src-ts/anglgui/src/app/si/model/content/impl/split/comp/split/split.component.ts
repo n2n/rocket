@@ -35,7 +35,8 @@ export class SplitComponent implements OnInit, OnDestroy, DoCheck {
 	}
 
 	ngOnInit() {
-		this.subscription = this.viewStateService.subscribe(this.uiStructure, this.model.getSplitOptions(), this.model.getSplitStyle());
+		this.subscription = this.viewStateService.subscribe(this.uiStructure, this.model.getSplitOptions(),
+				this.model.getSplitStyle());
 
 		for (const splitOption of this.model.getSplitOptions()) {
 			const child = this.uiStructure.createContentChild(UiStructureType.ITEM, splitOption.shortLabel);
@@ -45,26 +46,6 @@ export class SplitComponent implements OnInit, OnDestroy, DoCheck {
 				this.subscription.requestKeyVisibilityChange(splitOption.key, child.visible);
 			});
 		}
-	}
-
-	ngOnDestroy() {
-		this.subscription.cancel();
-
-		for (const childUiStructure of this.childUiStructureMap.values()) {
-			childUiStructure.dispose();
-		}
-	}
-
-	isKeyActive(key: string): boolean {
-		return this.model.isKeyActive(key);
-	}
-
-	activateKey(key: string) {
-		this.model.activateKey(key);
-	}
-
-	getLabelByKey(key: string) {
-		return this.model.getSplitOptions().find(splitOption => splitOption.key === key).label;
 	}
 
 	ngDoCheck() {
@@ -94,6 +75,25 @@ export class SplitComponent implements OnInit, OnDestroy, DoCheck {
 		}
 	}
 
+	ngOnDestroy() {
+		this.subscription.cancel();
+
+		for (const childUiStructure of this.childUiStructureMap.values()) {
+			childUiStructure.dispose();
+		}
+	}
+
+	isKeyActive(key: string): boolean {
+		return this.model.isKeyActive(key);
+	}
+
+	activateKey(key: string) {
+		this.model.activateKey(key);
+	}
+
+	getLabelByKey(key: string) {
+		return this.model.getSplitOptions().find(splitOption => splitOption.key === key).label;
+	}
 
 	isKeyVisible(key: string): boolean {
 		return this.subscription.isKeyVisible(key);
@@ -117,16 +117,24 @@ class SplitButtonControlModel implements ButtonControlModel {
 	private siButton: SiButton;
 	private subSiButtons = new Map<string, SiButton>();
 
-	constructor(key: string, private siField: SiField, private model: SplitModel) {
+	constructor(private key: string, private siField: SiField, private model: SplitModel) {
 		this.siButton = new SiButton(this.model.getCopyTooltip(), 'btn btn-secondary', 'fa fa-reply-all');
 
+		this.update();
+	}
+
+	update() {
 		for (const splitOption of this.model.getSplitOptions()) {
-			if (splitOption.key === key) {
+			if (splitOption.key === this.key || this.subSiButtons.has(splitOption.key) || !this.model.isKeyActive(splitOption.key)) {
 				continue;
 			}
 
 			this.subSiButtons.set(splitOption.key, new SiButton(splitOption.shortLabel, 'btn btn-secondary', 'fa fa-reply'));
 		}
+	}
+
+	isEmpty(): boolean {
+		return this.subSiButtons.size === 0;
 	}
 
 	getSiButton(): SiButton {
@@ -158,6 +166,8 @@ class SplitButtonControlModel implements ButtonControlModel {
 	}
 
 	getSubSiButtonMap(): Map<string, SiButton> {
+		this.update();
+
 		return this.subSiButtons;
 	}
 }
