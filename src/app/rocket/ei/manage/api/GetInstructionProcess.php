@@ -155,7 +155,7 @@ class GetInstructionProcess {
 			return $result;
 		}
 		
-		$result->setDeclaration($eiGui->createSiDeclaration());
+		$result->setDeclaration($eiGui->createSiDeclaration($this->eiFrameUtil->getEiFrame()));
 		
 		return $result;
 	}

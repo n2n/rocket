@@ -57,7 +57,7 @@ class RelationLinkGuiField implements GuiField {
 	}
 	
 	private function createToManySiField() {
-		$targetEiuFrame = $this->eiu->frame()->forkDiscover($this->eiu->prop(), $this->eiu->entry());
+		$targetEiuFrame = $this->eiu->frame()->forkDiscover($this->eiu->prop(), $this->eiu->entry())->frame();
 		$targetEiuFrame->exec($this->relationModel->getTargetReadEiCommandPath());
 		
 		$num = $targetEiuFrame->countEntries();
@@ -84,7 +84,8 @@ class RelationLinkGuiField implements GuiField {
 		CastUtils::assertTrue($value instanceof EiuEntry);
 		$label = $value->createIdentityString();
 		
-		$targetEiuFrame = $this->eiu->frame()->forkDiscover($this->eiu->prop(), $this->eiu->entry());
+		$targetEiuFrame = $this->eiu->frame()->forkDiscover($this->eiu->prop(), $this->eiu->entry())->frame();
+		$targetEiuFrame->exec($this->relationModel->getTargetReadEiCommandPath());
 		
 		if (null !== ($detailNavPoint = $targetEiuFrame->getDetailNavPoint($value, false))) {
 			return SiFields::linkOut($detailNavPoint, $label);

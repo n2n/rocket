@@ -59,6 +59,13 @@ class EiFrameUtil {
 	}
 	
 	/**
+	 * @return \rocket\ei\manage\frame\EiFrame
+	 */
+	function getEiFrame() {
+		return $this->eiFrame;
+	}
+	
+	/**
 	 * @param string $pid
 	 * @return mixed
 	 * @throws \InvalidArgumentException
@@ -269,7 +276,7 @@ class EiFrameUtil {
 	function lookupEiGuiFromRange(int $offset, int $num, bool $bulky, bool $readOnly, array $guiPropPaths = null) {
 		$guiDefinition = $this->eiFrame->getManageState()->getDef()->getGuiDefinition(
 				$this->eiFrame->getContextEiEngine()->getEiMask());
-		$eiGui = $guiDefinition->createEiGui($this->eiFrame, ViewMode::determine($bulky, $readOnly, false), $guiPropPaths);
+		$eiGui = $guiDefinition->createEiGui($this->eiFrame->getN2nContext(), ViewMode::determine($bulky, $readOnly, false), $guiPropPaths);
 			
 		$criteria = $this->eiFrame->createCriteria(NestedSetUtils::NODE_ALIAS, false);
 		$criteria->select(NestedSetUtils::NODE_ALIAS);
@@ -302,7 +309,7 @@ class EiFrameUtil {
 	private function simpleLookup(EiGui $eiGui, Criteria $criteria) {
 		$eiGuiFrame = $eiGui->getEiGuiFrame();
 		foreach ($criteria->toQuery()->fetchArray() as $entityObj) {
-			$eiGui->addEiEntryGui($eiGuiFrame->createEiEntryGui(
+			$eiGui->addEiEntryGui($eiGuiFrame->createEiEntryGui($this->eiFrame,
 					$this->eiFrame->createEiEntry($this->createEiObject($entityObj))));
 		}
 	}

@@ -40,6 +40,7 @@ use rocket\ei\component\command\EiCommand;
 use rocket\ei\manage\security\InaccessibleEiEntryException;
 use rocket\ei\component\command\GenericResult;
 use n2n\reflection\ReflectionUtils;
+use rocket\si\NavPoint;
 
 class EiFrame {
 	
@@ -423,7 +424,11 @@ class EiFrame {
 	 * @param EiEntry|null $eiEntry
 	 * @return \n2n\util\uri\Url
 	 */
-	public function getForkUrl(EiCommandPath $eiCommandPath, EiPropPath $eiPropPath, string $mode, EiObject $eiObject = null) {
+	public function getForkUrl(?EiCommandPath $eiCommandPath, EiPropPath $eiPropPath, string $mode, EiObject $eiObject = null) {
+		if ($eiCommandPath === null) {
+			$eiCommandPath = EiCommandPath::from($this->eiExecution->getEiCommand());
+		}
+		
 		if ($eiObject === null) {
 			return $this->getBaseUrl()->ext([EiFrameController::FORK_PATH, (string) $eiCommandPath, (string) $eiPropPath, $mode]);
 		}

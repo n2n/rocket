@@ -48,7 +48,7 @@ class ToOneGuiField implements GuiField {
 	function __construct(Eiu $eiu, RelationModel $relationModel) {
 		$this->eiu = $eiu;
 		
-		$this->targetEiuFrame = $eiu->frame()->forkSelect($eiu->prop()->getPath(), $eiu->entry());
+		$this->targetEiu = $eiu->frame()->forkSelect($eiu->prop()->getPath(), $eiu->entry());
 		
 		$values = [];
 		if (null !== ($eiuEntry = $eiu->field()->getValue())) {
@@ -57,7 +57,7 @@ class ToOneGuiField implements GuiField {
 		}
 		
 		$this->siField = SiFields::qualifierSelectIn(
-				$this->targetEiuFrame->getApiUrl($relationModel->getTargetReadEiCommandPath()),
+				$this->targetEiu->frame()->getApiUrl($relationModel->getTargetReadEiCommandPath()),
 				$values, ($relationModel->isMandatory() ? 1 : 0), 1);
 	}
 	

@@ -117,40 +117,40 @@ class EiFrameFactory {
 		
 		$forkedEiFrame->setEiForkLink($eiForkLink);
 		
-		$forkedEiFrame->registerListener(new ForkBaseLinkProvider($parentEiFrame, $forkedEiFrame, $eiPropPath, 
-				$eiForkLink));
+		$forkedEiFrame->setBaseUrl($parentEiFrame->getForkUrl(null, $eiPropPath,
+				$eiForkLink->getMode(), $eiForkLink->getParentEiObject()));
+		
+		
 		
 		return $forkedEiFrame;
 	}
-	
-	
 }
 
-class ForkBaseLinkProvider implements EiFrameListener {
-	private $parentEiFrame;
-	private $forkedEiFrame;
-	private $eiPropPath;
-	private $eiForkLink;
+// class ForkBaseLinkProvider implements EiFrameListener {
+// 	private $parentEiFrame;
+// 	private $forkedEiFrame;
+// 	private $eiPropPath;
+// 	private $eiForkLink;
 	
-	function __construct(EiFrame $parentEiFrame, EiFrame $forkedEiFrame, EiPropPath $eiPropPath, 
-			EiForkLink $eiForkLink) {
-		$this->parentEiFrame = $parentEiFrame;
-		$this->forkedEiFrame = $forkedEiFrame;
-		$this->eiPropPath = $eiPropPath;
-		$this->eiForkLink = $eiForkLink;
-	}
+// 	function __construct(EiFrame $parentEiFrame, EiFrame $forkedEiFrame, EiPropPath $eiPropPath, 
+// 			EiForkLink $eiForkLink) {
+// 		$this->parentEiFrame = $parentEiFrame;
+// 		$this->forkedEiFrame = $forkedEiFrame;
+// 		$this->eiPropPath = $eiPropPath;
+// 		$this->eiForkLink = $eiForkLink;
+// 	}
 	
-	function onNewEiEntry(EiEntry $eiEntry) {
-	}
+// 	function onNewEiEntry(EiEntry $eiEntry) {
+// 	}
 	
-	function whenExecuted(EiExecution $eiExecution) {
-		if ($this->forkedEiFrame->hasBaseUrl()) {
-			return;
-		}
+// 	function whenExecuted(EiExecution $eiExecution) {
+// 		if ($this->forkedEiFrame->hasBaseUrl()) {
+// 			return;
+// 		}
 		
-		$eiCommandPath = EiCommandPath::from($eiExecution->getEiCommand());
+// 		$eiCommandPath = EiCommandPath::from($eiExecution->getEiCommand());
 		
-		$this->forkedEiFrame->setBaseUrl($this->parentEiFrame->getForkUrl($eiCommandPath, $this->eiPropPath, 
-				$this->eiForkLink->getMode(), $this->eiForkLink->getParentEiObject()));
-	}
-}
+// 		$this->forkedEiFrame->setBaseUrl($this->parentEiFrame->getForkUrl($eiCommandPath, $this->eiPropPath, 
+// 				$this->eiForkLink->getMode(), $this->eiForkLink->getParentEiObject()));
+// 	}
+// }

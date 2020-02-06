@@ -108,7 +108,7 @@ class ApiUtil {
 	function createSiPartialContent(int $offset, int $count, EiGui $eiGui) {
 		$content = new SiPartialContent($count);
 		$content->setOffset($offset);
-		$content->setEntries($eiGui->createSiEntries());
+		$content->setEntries($eiGui->createSiEntries($this->eiFrame));
 		return $content;
 	}
 	
