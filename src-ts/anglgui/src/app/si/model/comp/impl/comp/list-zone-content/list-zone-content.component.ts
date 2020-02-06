@@ -12,6 +12,7 @@ import { EntriesListModel } from '../entries-list-model';
 import { SiPageCollection } from '../../model/si-page-collection';
 import { StructurePage, StructurePageManager } from './structure-page-manager';
 import { SiService } from 'src/app/si/manage/si.service';
+import { skip } from 'rxjs/operators';
 
 @Component({
 	selector: 'rocket-ui-list-zone-content',
@@ -38,11 +39,11 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 			this.updateVisiblePages();
 		}));
 
-		this.subscription.add(this.siPageCollection.currentPageNo$.subscribe((currentPageNo) => {
+		const pc = this.model.getSiPageCollection();
+
+		this.subscription.add(this.siPageCollection.currentPageNo$.pipe(skip(1)).subscribe((currentPageNo) => {
 			this.valCurrentPageNo(currentPageNo);
 		}));
-
-		const pc = this.model.getSiPageCollection();
 
 		if (!pc.setup) {
 			const loadedPage = this.loadPage(1);

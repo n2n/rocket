@@ -22,6 +22,7 @@ export class SiPageCollection {
 	}
 
 	get currentPageExists(): boolean {
+		throw new Error('exi');
 		return this.containsPageNo(this.currentPageNo);
 	}
 
@@ -84,6 +85,7 @@ export class SiPageCollection {
 	}
 
 	putPage(page: SiPage) {
+		console.log(page.num);
 		if (page.num > this.pagesNum) {
 			throw new IllegalSiStateError('Page num to high.');
 		}
