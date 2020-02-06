@@ -5,18 +5,12 @@ import { SiTypeQualifier } from 'src/app/si/model/meta/si-type-qualifier';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { EmbeddedEntriesSummaryInComponent } from '../comp/embedded-entries-summary-in/embedded-entries-summary-in.component';
 import { EmbeddedEntriesInComponent } from '../comp/embedded-entries-in/embedded-entries-in.component';
+import { EmbeddedEntriesConfig } from './embedded-entries-config';
 
 export class EmbeddedEntriesInUiContent implements EmbeddedEntriesInModel {
 
-	public min = 0;
-	public max: number|null = null;
-	public reduced = false;
-	public nonNewRemovable = true;
-	public sortable = false;
-	public pasteCategory: string|null = null;
-	public allowedSiTypeQualifiers: SiTypeQualifier[]|null = null;
-
-	constructor(public apiUrl: string, public values: SiEmbeddedEntry[] = [], private uiStructure: UiStructure) {
+	constructor(public apiUrl: string, public values: SiEmbeddedEntry[] = [], private uiStructure: UiStructure,
+			private config: EmbeddedEntriesConfig) {
 	}
 
 	getApiUrl(): string {
@@ -28,40 +22,45 @@ export class EmbeddedEntriesInUiContent implements EmbeddedEntriesInModel {
 	}
 
 	setValues(values: SiEmbeddedEntry[]) {
-		this.values = values;
+		if (this.values === values) {
+			return;
+		}
+
+		this.values.splice(0, this.values.length);
+		this.values.push(...values);
 	}
 
 	getMin(): number {
-		return this.min;
+		return this.config.min;
 	}
 
 	getMax(): number|null {
-		return this.max;
+		return this.config.max;
 	}
 
 	isSummaryRequired(): boolean {
-		return this.reduced;
+		return this.config.reduced;
 	}
 
 	isNonNewRemovable(): boolean {
-		return this.nonNewRemovable;
+		return this.config.nonNewRemovable;
 	}
 
 	isSortable(): boolean {
-		return this.sortable;
+		return this.config.sortable;
 	}
 
 	getPastCategory(): string|null {
-		return this.pasteCategory;
+		return this.config.pasteCategory;
 	}
 
 	getAllowedSiTypeQualifiers(): SiTypeQualifier[]|null {
-		return this.allowedSiTypeQualifiers;
+		return this.config.allowedSiTypeQualifiers;
 	}
 
 	initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver/*,
 			uiStructure: UiStructure*/) {
-		if (this.reduced) {
+		if (this.config.reduced) {
 			const componentFactory = componentFactoryResolver.resolveComponentFactory(EmbeddedEntriesSummaryInComponent);
 			const componentRef = viewContainerRef.createComponent(componentFactory);
 			componentRef.instance.model = this;
@@ -76,5 +75,3 @@ export class EmbeddedEntriesInUiContent implements EmbeddedEntriesInModel {
 		}
 	}
 }
-
-

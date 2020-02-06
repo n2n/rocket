@@ -71,7 +71,7 @@ class EiuGuiFrame {
 	public function getPropLabel($guiPropPath, N2nLocale $n2nLocale = null, bool $required = false) {
 		$guiPropPath = GuiPropPath::create($guiPropPath);
 		if ($n2nLocale === null) {
-			$n2nLocale = $this->eiGuiFrame->getEiFrame()->getN2nContext()->getN2nLocale();
+			$n2nLocale = $this->eiuAnalyst->getN2nContext()->getN2nLocale();
 		}
 		
 // 		if (null !== ($displayItem = $this->getDisplayItemByGuiPropPath($eiPropPath))) {

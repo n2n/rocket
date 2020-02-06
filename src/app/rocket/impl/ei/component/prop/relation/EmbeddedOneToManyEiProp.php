@@ -63,7 +63,7 @@ class EmbeddedOneToManyEiProp extends RelationEiPropAdapter implements FieldEiPr
 	}
 	
 	function buildEiField(Eiu $eiu): ?EiField {
-		$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())
+		$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())->frame()
 				->exec($this->getRelationModel()->getTargetReadEiCommandPath());
 		
 		return new ToManyEiField($eiu, $targetEiuFrame, $this, $this->getRelationModel());
@@ -74,7 +74,7 @@ class EmbeddedOneToManyEiProp extends RelationEiPropAdapter implements FieldEiPr
 			return new RelationLinkGuiField($eiu, $this->getRelationModel());
 		}
 		
-		$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())
+		$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())->frame()
 				->exec($this->getRelationModel()->getTargetEditEiCommandPath());
 		
 		return new EmbeddedToManyGuiField($eiu, $targetEiuFrame, $this->getRelationModel());

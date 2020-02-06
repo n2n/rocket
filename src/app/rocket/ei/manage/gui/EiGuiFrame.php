@@ -454,37 +454,7 @@ class EiGuiFrame {
 		return $siEntryBuildup;
 	}
 	
-	/**
-	 * @param bool $controlsIncluded
-	 * @return \rocket\si\content\impl\basic\BulkyEntrySiComp
-	 */
-	function createCompactEntrySiComp(EiEntryGui $eiEntryGui, bool $generalSiControlsIncluded = true,
-			bool $entrySiControlsIncluded = true) {
-		$siContent = new CompactEntrySiComp($this->eiGuiFrame->createSiDeclaration(),
-				$this->createSiEntry($entrySiControlsIncluded));
-		
-		if ($generalSiControlsIncluded) {
-			$siContent->setControls($this->eiGuiFrame->createGeneralSiControls());
-		}
-		
-		return $siContent;
-	}
 	
-	/**
-	 * @param bool $controlsIncluded
-	 * @return \rocket\si\content\impl\basic\BulkyEntrySiComp
-	 */
-	function createBulkyEntrySiComp(EiEntryGui $eiEntryGui, bool $generalSiControlsIncluded = true,
-			bool $entrySiControlsIncluded = true) {
-		$siContent = new BulkyEntrySiComp($this->eiGuiFrame->createSiDeclaration(),
-				$this->createSiEntry($entrySiControlsIncluded));
-		
-		if ($generalSiControlsIncluded) {
-			$siContent->setControls($this->eiGuiFrame->createGeneralSiControls());
-		}
-		
-		return $siContent;
-	}
 	
 	/**
 	 * @param GuiPropPath $prefixGuiPropPath

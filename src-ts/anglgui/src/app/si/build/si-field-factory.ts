@@ -133,18 +133,18 @@ export class SiFieldFactory {
 		case SiFieldType.EMBEDDED_ENTRY_IN:
 			const embeddedEntryInSiField = new EmbeddedEntryInSiField(dataExtr.reqString('apiUrl'),
 					new SiCompFactory(this.injector).createEmbeddedEntries(dataExtr.reqArray('values')));
-			embeddedEntryInSiField.content.reduced = dataExtr.reqBoolean('reduced');
-			embeddedEntryInSiField.content.min = dataExtr.reqNumber('min');
-			embeddedEntryInSiField.content.max = dataExtr.nullaNumber('max');
-			embeddedEntryInSiField.content.nonNewRemovable = dataExtr.reqBoolean('nonNewRemovable');
-			embeddedEntryInSiField.content.sortable = dataExtr.reqBoolean('sortable');
-			embeddedEntryInSiField.content.pasteCategory = dataExtr.nullaString('pasteCategory');
+			embeddedEntryInSiField.config.reduced = dataExtr.reqBoolean('reduced');
+			embeddedEntryInSiField.config.min = dataExtr.reqNumber('min');
+			embeddedEntryInSiField.config.max = dataExtr.nullaNumber('max');
+			embeddedEntryInSiField.config.nonNewRemovable = dataExtr.reqBoolean('nonNewRemovable');
+			embeddedEntryInSiField.config.sortable = dataExtr.reqBoolean('sortable');
+			embeddedEntryInSiField.config.pasteCategory = dataExtr.nullaString('pasteCategory');
 
 			const allowedSiTypeQualifiersData = dataExtr.nullaArray('allowedSiTypeQualifiers');
 			if (allowedSiTypeQualifiersData) {
-				embeddedEntryInSiField.content.allowedSiTypeQualifiers = SiMetaFactory.createTypeQualifiers(allowedSiTypeQualifiersData);
+				embeddedEntryInSiField.config.allowedSiTypeQualifiers = SiMetaFactory.createTypeQualifiers(allowedSiTypeQualifiersData);
 			} else {
-				embeddedEntryInSiField.content.allowedSiTypeQualifiers = null;
+				embeddedEntryInSiField.config.allowedSiTypeQualifiers = null;
 			}
 
 			return embeddedEntryInSiField;

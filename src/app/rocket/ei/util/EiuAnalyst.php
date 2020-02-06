@@ -837,15 +837,15 @@ class EiuAnalyst {
 	/**
 	 * @param bool $required
 	 * @throws EiuPerimeterException
-	 * @return \rocket\ei\manage\gui\EiGuiFrame
+	 * @return \rocket\ei\manage\gui\EiGui
 	 */
-	public function getEiGuiFrame(bool $required) {
-		if (!$required || $this->eiGuiFrame !== null) {
-			return $this->eiGuiFrame;
+	public function getEiGui(bool $required) {
+		if (!$required || $this->eiGui !== null) {
+			return $this->eiGui;
 		}
 	
 		throw new EiuPerimeterException(
-				'Could not determine EiGuiFrame because non of the following types were provided as eiArgs: '
+				'Could not determine EiGui because non of the following types were provided as eiArgs: '
 						. implode(', ', self::EI_GUI_TYPES));
 	}
 	

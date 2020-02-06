@@ -35,29 +35,34 @@ use rocket\ei\util\EiuPerimeterException;
 use rocket\ei\util\EiuAnalyst;
 use n2n\l10n\N2nLocale;
 use rocket\si\input\SiEntryInput;
+use rocket\ei\manage\gui\EiGuiUtil;
 
 class EiuEntryGui {
 	private $eiEntryGui;
-	private $eiuGuiFrame;
+	private $eiuGui;
 	private $eiuEntry;
 	private $eiuAnalyst;
 	
-	function __construct(EiEntryGui $eiEntryGui, ?EiuGuiFrame $eiuGuiFrame, EiuAnalyst $eiuAnalyst) {
+	function __construct(EiEntryGui $eiEntryGui, ?EiuGui $eiuGui, EiuAnalyst $eiuAnalyst) {
 		$this->eiEntryGui = $eiEntryGui;
-		$this->eiuGuiFrame = $eiuGuiFrame;
+		$this->eiuGui = $eiuGui;
 		$this->eiuAnalyst = $eiuAnalyst;
 	}
 	
-	/**
-	 * @return EiuGuiFrame 
-	 */
-	function guiFrame() {
-		if ($this->eiuGuiFrame !== null) {
-			return $this->eiuGuiFrame;
-		}
-		
-		return $this->eiuGuiFrame = new EiuGuiFrame($this->eiuAnalyst->getEiGuiFrame(true), null, $this->eiuAnalyst);
+	private function getEiGui() {
+		return $this->eiuGui->getEiGui() ?? $this->eiuAnalyst->getEiGui(true);
 	}
+	
+// 	/**
+// 	 * @return EiuGuiFrame 
+// 	 */
+// 	function guiFrame() {
+// 		if ($this->eiuGuiFrame !== null) {
+// 			return $this->eiuGuiFrame;
+// 		}
+		
+// 		return $this->eiuGuiFrame = new EiuGuiFrame($this->eiuAnalyst->getEiGuiFrame(true), null, $this->eiuAnalyst);
+// 	}
 	
 	/**
 	 * @return int
@@ -103,11 +108,11 @@ class EiuEntryGui {
 	/**
 	 * @param bool $generalSiControlsIncluded
 	 * @param bool $entrySiControlsIncluded
-	 * @return \rocket\si\content\impl\basic\BulkyEntrySiComp
+	 * @return \rocket\si\content\impl\basic\CompactEntrySiComp
 	 */
-	function createCompactEntrySiComp(bool $generalSiControlsIncluded = true,
-			bool $entrySiControlsIncluded = true) {
-		return $this->eiEntryGui->createCompactEntrySiComp($generalSiControlsIncluded, $entrySiControlsIncluded);
+	function createCompactEntrySiComp(bool $generalSiControlsIncluded = true, bool $entrySiControlsIncluded = true) {
+		return (new EiGuiUtil($this->getEiGui(), $this->eiuAnalyst->getEiFrame(true)))
+				->createCompactEntrySiComp($this->eiEntryGui, $generalSiControlsIncluded, $entrySiControlsIncluded);
 	}
 	
 	/**
@@ -115,9 +120,9 @@ class EiuEntryGui {
 	 * @param bool $entrySiControlsIncluded
 	 * @return \rocket\si\content\impl\basic\BulkyEntrySiComp
 	 */
-	function createBulkyEntrySiComp(bool $generalSiControlsIncluded = true,
-			bool $entrySiControlsIncluded = true) {
-		return $this->eiEntryGui->createBulkyEntrySiComp($generalSiControlsIncluded, $entrySiControlsIncluded);
+	function createBulkyEntrySiComp(bool $generalSiControlsIncluded = true, bool $entrySiControlsIncluded = true) {
+		return (new EiGuiUtil($this->getEiGui(), $this->eiuAnalyst->getEiFrame(true)))
+				->createBulkyEntrySiComp($this->eiEntryGui, $generalSiControlsIncluded, $entrySiControlsIncluded);
 	}
 	
 	/**
@@ -297,7 +302,7 @@ class EiuEntryGui {
 	 */
 	function entry() {
 		if ($this->eiuEntry === null) {
-			$this->eiuEntry = $this->guiFrame()->getEiuFrame()->entry($this->getEiEntryGui()->getEiEntry());
+			$this->eiuEntry = $this->eiuAnalyst->getEiuFrame(true)->entry($this->getEiEntryGui()->getEiEntry());
 		}
 		
 		return $this->eiuEntry;

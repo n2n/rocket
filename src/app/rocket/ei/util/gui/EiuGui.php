@@ -25,24 +25,24 @@ class EiuGui {
 		$this->eiuAnalyst = $eiuAnalyst;
 	}
 	
-	/**
-	 * @return \rocket\ei\util\frame\EiuFrame
-	 */
-	public function getEiuFrame() {
-		if ($this->eiuFrame !== null) {
-			return $this->eiuFrame;
-		}
+// 	/**
+// 	 * @return \rocket\ei\util\frame\EiuFrame
+// 	 */
+// 	public function getEiuFrame() {
+// 		if ($this->eiuFrame !== null) {
+// 			return $this->eiuFrame;
+// 		}
 		
-		if ($this->eiuAnalyst !== null) {
-			$this->eiuFrame = $this->eiuAnalyst->getEiuFrame(false);
-		}
+// 		if ($this->eiuAnalyst !== null) {
+// 			$this->eiuFrame = $this->eiuAnalyst->getEiuFrame(false);
+// 		}
 		
-		if ($this->eiuFrame === null) {
-			$this->eiuFrame = new EiuFrame($this->eiGuiFrame->getEiFrame(), $this->eiuAnalyst);
-		}
+// 		if ($this->eiuFrame === null) {
+// 			$this->eiuFrame = new EiuFrame($this->eiGuiFrame->getEiFrame(), $this->eiuAnalyst);
+// 		}
 		
-		return $this->eiuFrame;
-	}
+// 		return $this->eiuFrame;
+// 	}
 	
 	/**
 	 * @return \rocket\ei\manage\gui\EiGui
@@ -68,7 +68,7 @@ class EiuGui {
 	 * @return EiuEntryGui|null
 	 */
 	public function entryGui(bool $required = true) {
-		$eiEntryGuis = $this->eiGuiFrame->getEiEntryGuis();
+		$eiEntryGuis = $this->eiGui->getEiEntryGuis();
 		
 		if (count($eiEntryGuis) == 1) {
 			return new EiuEntryGui(current($eiEntryGuis), $this, $this->eiuAnalyst);

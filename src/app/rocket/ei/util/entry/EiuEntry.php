@@ -71,7 +71,7 @@ class EiuEntry {
 	 * @param bool $required
 	 * @return \rocket\ei\util\frame\EiuFrame
 	 */
-	public function getEiuFrame(bool $required = true) {
+	private function getEiuFrame(bool $required = true) {
 		return $this->eiuAnalyst->getEiuFrame($required);
 	}
 	
@@ -298,7 +298,7 @@ class EiuEntry {
 	 * @param bool $eiObjectObj
 	 * @param bool $editable
 	 * @throws EiuPerimeterException
-	 * @return \rocket\ei\util\gui\EiuEntryGui
+	 * @return \rocket\ei\util\gui\EiuGui
 	 */
 	public function newGui(bool $bulky = true, bool $editable = false, int $treeLevel = null,
 			bool $determineEiMask = true) {

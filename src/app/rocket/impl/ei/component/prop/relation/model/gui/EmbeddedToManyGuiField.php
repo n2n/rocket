@@ -86,7 +86,7 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandler {
 		
 		foreach ($this->eiu->field()->getValue() as $eiuEntry) {
 			CastUtils::assertTrue($eiuEntry instanceof EiuEntry);
-			$this->currentEiuEntryGuis[] = $eiuEntry->newEntryGui(true, true);
+			$this->currentEiuEntryGuis[] = $eiuEntry->newGui(true, true)->entryGui();
 		}
 	
 		if (null !== ($targetOrderEiPropPath = $this->relationModel->getTargetOrderEiPropPath())) {
@@ -115,7 +115,7 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandler {
 		return new SiEmbeddedEntry(
 				$eiuEntryGui->createBulkyEntrySiComp(false, false),
 				($this->relationModel->isReduced() ?
-						$eiuEntryGui->entry()->newEntryGui(false, false)->createCompactEntrySiComp(false, false):
+						$eiuEntryGui->entry()->newGui(false, false)->entryGui()->createCompactEntrySiComp(false, false):
 						null));
 	}
 	
