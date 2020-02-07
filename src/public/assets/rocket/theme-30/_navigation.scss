@@ -31,14 +31,24 @@
     margin: 0;
     padding: 0.75rem 2rem 0.75rem $spacer;
     font-weight: 600;
-    > a:hover {
-        color: $primary;
+    > a {
+        color: inherit;
     }
     > i.fa {
         position: absolute;
         top: 0.875rem;
         right: 1rem;
         color: $gray-400;
+    }
+
+    &:hover {
+        background: $primary;
+        color: $white;
+        cursor: pointer;
+
+        > i.fa {
+            color: $white;
+        }
     }
 }
 

@@ -4978,7 +4978,7 @@ body {
  * Global navigation
  */
 #rocket-global-nav {
-  background: url(../img/nav-body-bg.png) repeat #4F4A46 4px 11px;
+  background: url(../img/nav-body-bg.png) repeat #66615C 4px 11px;
   color: white;
 }
 
@@ -5284,17 +5284,20 @@ body {
   z-index: 60;
 }
 
+.rocket-split-view-status,
 .rocket-impl-translation-status {
   display: inline-block;
   padding-right: 1rem;
   font-size: 0.875rem;
 }
 
+.rocket-split-view-status > label,
 .rocket-impl-translation-status > label {
   padding-right: 0.5rem;
   font-weight: bold;
 }
 
+.rocket-split-view-status > label > i,
 .rocket-impl-translation-status > label > i {
   padding-right: 0.5rem;
   font-weight: normal;
@@ -5303,6 +5306,7 @@ body {
 /**
  * common language menu 
  */
+.rocket-split-view-status-menu,
 .rocket-impl-translation-status-menu,
 .rocket-impl-translation-menu {
   position: absolute;
@@ -5314,6 +5318,7 @@ body {
           box-shadow: 2px 1px 4px 0 rgba(0, 0, 0, 0.2);
 }
 
+.rocket-split-view-status-menu > ul,
 .rocket-impl-translation-status-menu > ul,
 .rocket-impl-translation-menu > ul {
   padding: 0;
@@ -5322,21 +5327,25 @@ body {
   width: 100%;
 }
 
+.rocket-split-view-status-menu > ul > li,
 .rocket-impl-translation-status-menu > ul > li,
 .rocket-impl-translation-menu > ul > li {
   border-bottom: 1px solid #DAD7D3;
 }
 
+.rocket-split-view-status-menu > ul > li:last-child,
 .rocket-impl-translation-status-menu > ul > li:last-child,
 .rocket-impl-translation-menu > ul > li:last-child {
   border-bottom: none;
 }
 
+.rocket-split-view-status-menu,
 .rocket-impl-translation-status-menu {
   border-bottom: 3px solid #ed8207;
   z-index: 60;
 }
 
+.rocket-split-view-status-menu > ul > li > a.btn,
 .rocket-impl-translation-status-menu > ul > li > a.btn {
   display: block;
   position: relative;
@@ -5347,6 +5356,7 @@ body {
   font-weight: bold;
 }
 
+.rocket-split-view-status-menu > ul > li > a.btn i,
 .rocket-impl-translation-status-menu > ul > li > a.btn i {
   position: absolute;
   top: 0.25rem;
@@ -5354,6 +5364,7 @@ body {
   font-size: 1.25rem;
 }
 
+.rocket-split-view-status-menu > ul > li:last-child,
 .rocket-impl-translation-status-menu > ul > li:last-child {
   border-bottom: none;
 }
@@ -5615,8 +5626,8 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   font-weight: 600;
 }
 
-.rocket-global-nav-group-title > a:hover {
-  color: #ed8207;
+.rocket-global-nav-group-title > a {
+  color: inherit;
 }
 
 .rocket-global-nav-group-title > i.fa {
@@ -5624,6 +5635,16 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   top: 0.875rem;
   right: 1rem;
   color: #DAD7D3;
+}
+
+.rocket-global-nav-group-title:hover {
+  background: #ed8207;
+  color: #fff;
+  cursor: pointer;
+}
+
+.rocket-global-nav-group-title:hover > i.fa {
+  color: #fff;
 }
 
 #rocket-conf-nav .nav-link {
