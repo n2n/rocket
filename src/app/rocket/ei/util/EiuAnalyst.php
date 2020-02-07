@@ -1138,7 +1138,8 @@ class EiuAnalyst {
 		}
 		
 		if ($this->eiEntryGui !== null) {
-			return $this->eiuEntryGui = new EiuEntryGui($this->eiEntryGui, $this->getEiuGuiFrame(true), $this);
+			return $this->eiuEntryGui = new EiuEntryGui($this->eiEntryGui, $this->getEiuGui(false),
+					$this->getEiuGuiFrame(false), $this);
 		}
 		
 		if (!$required) return null;

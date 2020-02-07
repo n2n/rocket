@@ -30,7 +30,7 @@ use rocket\ei\manage\entry\UnknownEiObjectException;
 use rocket\ei\util\entry\EiuEntry;
 use rocket\ei\manage\gui\ViewMode;
 use n2n\web\http\controller\impl\ControllingUtils;
-use rocket\si\content\impl\basic\EntriesListSiComp;
+use rocket\si\content\impl\basic\CompactExplorerSiComp;
 use rocket\si\SiPayloadFactory;
 use n2n\persistence\orm\criteria\Criteria;
 use n2n\persistence\orm\util\NestedSetUtils;
@@ -302,7 +302,7 @@ class EiuCtrl {
 		
 		$siDeclaration = $eiuGuiFrameLayout->getEiGui()->createSiDeclaration($this->eiuFrame->getEiFrame());
 		
-		$siComp = new EntriesListSiComp($this->eiu->frame()->getApiUrl(), $pageSize, $siDeclaration, 
+		$siComp = new CompactExplorerSiComp($this->eiu->frame()->getApiUrl(), $pageSize, $siDeclaration, 
 				new SiPartialContent($this->eiuFrame->countEntries(), $eiuGuiFrameLayout->getEiGui()->createSiEntries($eiFrame)));
 		
 		$this->httpContext->getResponse()->send(

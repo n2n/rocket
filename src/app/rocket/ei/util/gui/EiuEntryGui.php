@@ -36,16 +36,19 @@ use rocket\ei\util\EiuAnalyst;
 use n2n\l10n\N2nLocale;
 use rocket\si\input\SiEntryInput;
 use rocket\ei\manage\gui\EiGuiUtil;
+use rocket\ei\manage\gui\EiGuiFrame;
 
 class EiuEntryGui {
 	private $eiEntryGui;
 	private $eiuGui;
+	private $eiuGuiFrame;
 	private $eiuEntry;
 	private $eiuAnalyst;
 	
-	function __construct(EiEntryGui $eiEntryGui, ?EiuGui $eiuGui, EiuAnalyst $eiuAnalyst) {
+	function __construct(EiEntryGui $eiEntryGui, ?EiuGui $eiuGui, ?EiuGuiFrame $eiuGuiFrame, EiuAnalyst $eiuAnalyst) {
 		$this->eiEntryGui = $eiEntryGui;
 		$this->eiuGui = $eiuGui;
+		$this->eiuGuiFrame = $eiuGuiFrame;
 		$this->eiuAnalyst = $eiuAnalyst;
 	}
 	
@@ -53,16 +56,20 @@ class EiuEntryGui {
 		return $this->eiuGui->getEiGui() ?? $this->eiuAnalyst->getEiGui(true);
 	}
 	
-// 	/**
-// 	 * @return EiuGuiFrame 
-// 	 */
-// 	function guiFrame() {
-// 		if ($this->eiuGuiFrame !== null) {
-// 			return $this->eiuGuiFrame;
-// 		}
+	/**
+	 * @return EiGuiFrame 
+	 */
+	private function getEiGuiFrame() {
+		if ($this->eiuGuiFrame !== null) {
+			return $this->eiuGuiFrame->getEiGuiFrame();
+		}
 		
-// 		return $this->eiuGuiFrame = new EiuGuiFrame($this->eiuAnalyst->getEiGuiFrame(true), null, $this->eiuAnalyst);
-// 	}
+		if ($this->eiuGui !== null) {
+			return $this->eiuGui->getEiGui()->getEiGuiFrame();
+		}
+		
+		return $this->eiuAnalyst->getEiuGuiFrame(true);
+	}
 	
 	/**
 	 * @return int
@@ -101,8 +108,7 @@ class EiuEntryGui {
 	 * @return \rocket\si\content\SiEntry
 	 */
 	function createSiEntry() {
-		return $this->guiFrame()->getEiGuiFrame()
-				->createSiEntry($this->eiuAnalyst->getEiFrame(true), $this->eiEntryGui);
+		return $this->getEiGuiFrame()->createSiEntry($this->eiuAnalyst->getEiFrame(true), $this->eiEntryGui);
 	}
 	
 	/**

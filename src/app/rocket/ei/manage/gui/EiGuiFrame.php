@@ -19,6 +19,7 @@ use rocket\si\content\impl\basic\BulkyEntrySiComp;
 use rocket\si\meta\SiProp;
 use rocket\si\meta\SiType;
 use rocket\ei\manage\EiUtil;
+use n2n\l10n\N2nLocale;
 
 /**
  * @author andreas
@@ -181,20 +182,17 @@ class EiGuiFrame {
 	/**
 	 * @return \rocket\si\meta\SiType
 	 */
-	function createSiType(EiFrame $eiFrame) {
-		EiUtil::assertEiFrameArgMatch($this->getGuiDefinition()->getEiMask(), $eiFrame);
-		
+	function createSiType(N2nLocale $n2nLocale) {
 		$siTypeQualifier = $this->getGuiDefinition()->getEiMask()
-				->createSiTypeQualifier($eiFrame->getN2nContext()->getN2nLocale());
-		return new SiType($siTypeQualifier, $this->createSiProps($eiFrame));
+				->createSiTypeQualifier($n2nLocale);
+		return new SiType($siTypeQualifier, $this->createSiProps($n2nLocale));
 	}
 	
 	/**
 	 * @param EiFrame $eiFrame
 	 * @return SiProp[]
 	 */
-	private function createSiProps($eiFrame) {
-		$n2nLocale = $eiFrame->getN2nContext()->getN2nLocale();
+	private function createSiProps(N2nLocale $n2nLocale) {
 		$deter = new ContextSiFieldDeterminer();
 		
 		$siProps = [];
@@ -211,7 +209,7 @@ class EiGuiFrame {
 			$deter->reportGuiPropPath($guiPropPath);
 		}
 				
-		return array_merge($deter->createContextSiProps($eiFrame, $this), $siProps);
+		return array_merge($deter->createContextSiProps($n2nLocale, $this), $siProps);
 	}
 	
 	
@@ -538,8 +536,7 @@ class ContextSiFieldDeterminer {
 	/**
 	 * @return SiProp[]
 	 */
-	function createContextSiProps(EiFrame $eiFrame, EiGuiFrame $eiGuiFrame) {
-		$n2nLocale = $eiFrame->getN2nContext()->getN2nLocale();
+	function createContextSiProps(N2nLocale $n2nLocale, EiGuiFrame $eiGuiFrame) {
 		
 		$siProps = [];
 		

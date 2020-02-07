@@ -39,6 +39,7 @@ import { TogglerInFieldComponent } from './model/content/impl/boolean/comp/toggl
 import { SplitComponent } from './model/content/impl/split/comp/split/split.component';
 import { SplitViewMenuComponent } from './model/content/impl/split/comp/split-view-menu/split-view-menu.component';
 import { SplitManagerComponent } from './model/content/impl/split/comp/split-manager/split-manager.component';
+import { EnumInComponent } from './model/content/impl/enum/comp/enum-in/enum-in.component';
 
 @NgModule({
 	declarations: [
@@ -47,7 +48,7 @@ import { SplitManagerComponent } from './model/content/impl/split/comp/split-man
 		QualifierSelectInFieldComponent, LinkOutFieldComponent, CompactEntryComponent, EmbeddedEntriesInComponent,
 		EmbeddedEntriesSummaryInComponent, EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent,
 		ImageResizeComponent, EmbeddedEntryPanelsInComponent, EntryDirective, PaginationComponent, CrumbGroupComponent,
-		AddPasteComponent, QualifierComponent, TogglerInFieldComponent, SplitComponent, SplitViewMenuComponent, SplitManagerComponent
+		AddPasteComponent, QualifierComponent, TogglerInFieldComponent, SplitComponent, SplitViewMenuComponent, SplitManagerComponent, EnumInComponent
 	],
 	imports: [
 		CommonModule,

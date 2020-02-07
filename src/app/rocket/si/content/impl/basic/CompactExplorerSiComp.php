@@ -26,7 +26,7 @@ use rocket\si\meta\SiDeclaration;
 use rocket\si\content\SiPartialContent;
 use rocket\si\content\SiComp;
 
-class EntriesListSiComp implements SiComp {
+class CompactExplorerSiComp implements SiComp {
 	private $apiUrl;
 	private $pageSize;
 	private $declaration;
@@ -69,7 +69,7 @@ class EntriesListSiComp implements SiComp {
 	
 	/**
 	 * @param int $pageSize
-	 * @return \rocket\si\content\impl\basic\EntriesListSiComp
+	 * @return \rocket\si\content\impl\basic\CompactExplorerSiComp
 	 */
 	public function setPageSize(int $pageSize) {
 		$this->pageSize = $pageSize;

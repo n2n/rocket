@@ -109,4 +109,11 @@ class EiuGui {
 		return new EiuEntryGui($this->eiuAnalyst->getEiGuiFrame(true)
 				->createEiEntryGui($eiEntry, $treeLevel, true), $this, $this->eiuAnalyst);
 	}
+	
+	function createCompactExplorerSiComp() {
+		
+		$siDeclaration = $this->eiGui->createContextSiDeclaration($eiFrame);
+		
+		$this->
+	}
 }

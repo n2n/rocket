@@ -69,10 +69,14 @@ class EiGui {
 		return $guiPropPaths;
 	}
 	
+	function createContextSiDeclaration(EiFrame $eiFrame) {
+		
+	}
+	
 	/**
 	 * @return \rocket\si\meta\SiDeclaration
 	 */
-	public function createSiDeclaration(EiFrame $eiFrame) {
+	function createSiDeclaration(EiFrame $eiFrame) {
 		return new SiDeclaration([$this->createSiTypeDeclaration($eiFrame)]);
 	}
 	

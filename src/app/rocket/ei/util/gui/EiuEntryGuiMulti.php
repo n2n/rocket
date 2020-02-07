@@ -66,7 +66,7 @@ class EiuEntryGuiMulti {
 	function entryGuis() {
 		$eiuEntryGuis = [];
 		foreach ($this->eiEntryGuiMulti->getEiEntryGuis() as $eiTypeId => $eiEntryGui) {
-			$eiuEntryGuis[$eiTypeId] = new EiuEntryGui($eiEntryGui, null, $this->eiuAnalyst);
+			$eiuEntryGuis[$eiTypeId] = new EiuEntryGui($eiEntryGui, null, null, $this->eiuAnalyst);
 		}
 		return $eiuEntryGuis;
 	}

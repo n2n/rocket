@@ -10,12 +10,11 @@ import { BulkyEntryComponent } from '../comp/bulky-entry/bulky-entry.component';
 import { BulkyEntryModel } from '../comp/bulky-entry-model';
 
 export class BulkyEntrySiComp implements SiComp, BulkyEntryModel {
+	private _entry: SiEntry|null = null;
+	public controls: Array<SiControl> = [];
 
 	constructor(public declaration: SiDeclaration) {
 	}
-
-	private _entry: SiEntry|null = null;
-	public controls: Array<SiControl> = [];
 
 	getEntries(): SiEntry[] {
 		return [this.entry];

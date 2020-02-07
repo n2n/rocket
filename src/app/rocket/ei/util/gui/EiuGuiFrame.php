@@ -110,7 +110,7 @@ class EiuGuiFrame {
 		
 		$eiEntryGui = $this->eiGuiFrame->createEiEntryGui($this->eiuAnalyst->getEiFrame(true), $eiEntry);
 		
-		return new EiuEntryGui($eiEntryGui, $this, $this->eiuAnalyst);
+		return new EiuEntryGui($eiEntryGui, null, $this, $this->eiuAnalyst);
 	}
 	
 	/**
