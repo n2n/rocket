@@ -29,7 +29,7 @@ class SiTypeDeclaration implements \JsonSerializable {
 	 */
 	private $type;
 	/**
-	 * @var SiStructureDeclaration[]
+	 * @var SiStructureDeclaration[]|null
 	 */
 	private $structureDeclarations;
 	
@@ -37,7 +37,7 @@ class SiTypeDeclaration implements \JsonSerializable {
 	 * @param SiType $type
 	 * @param SiStructureDeclaration[] $structureDeclarations
 	 */
-	function __construct(SiType $type, array $structureDeclarations = []) {
+	function __construct(SiType $type, ?array $structureDeclarations = []) {
 		$this->type = $type;
 		$this->setStructureDeclarations($structureDeclarations);
 	}
@@ -62,8 +62,8 @@ class SiTypeDeclaration implements \JsonSerializable {
 	 * @param SiStructureDeclaration[] $structureDeclarations
 	 * @return SiTypeDeclaration
 	 */
-	function setStructureDeclarations(array $structureDeclarations) {
-		ArgUtils::valArray($structureDeclarations, SiStructureDeclaration::class);
+	function setStructureDeclarations(?array $structureDeclarations) {
+		ArgUtils::valArray($structureDeclarations, SiStructureDeclaration::class, true);
 		$this->structureDeclarations = $structureDeclarations;
 		return $this;
 	}
@@ -78,8 +78,12 @@ class SiTypeDeclaration implements \JsonSerializable {
 		return $this;
 	}
 	
+	function hasStructureDeclarations() {
+		return $this->structureDeclarations !== null;
+	}
+	
 	/**
-	 * @return array
+	 * @return array|null
 	 */
 	function getStructureDeclarations() {
 		return $this->structureDeclarations;

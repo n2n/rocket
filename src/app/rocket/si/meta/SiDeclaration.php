@@ -25,6 +25,10 @@ use n2n\util\type\ArgUtils;
 
 class SiDeclaration implements \JsonSerializable {
 	/**
+	 * @var SiStructureDeclaration[]|null
+	 */
+	private $generalStructureDeclarations = null;
+	/**
 	 * @var \rocket\si\meta\SiTypeDeclaration[]
 	 */
 	private $typeDeclarations = [];
@@ -32,7 +36,7 @@ class SiDeclaration implements \JsonSerializable {
 	/**
 	 * @param SiTypeDeclaration[] $typedDeclarations
 	 */
-	function __construct(array $typedDeclarations = []) {
+	function __construct(array $typedDeclarations = [], ?array $generalStructureDeclarations) {
 		$this->setTypeDeclarations($typedDeclarations);
 	}
 	
@@ -40,9 +44,13 @@ class SiDeclaration implements \JsonSerializable {
 	 * @param SiTypeDeclaration[] $typedDeclarations
 	 * @return \rocket\si\meta\SiDeclaration
 	 */
-	function setTypeDeclarations(array $typedDeclarations) {
-		ArgUtils::valArray($typedDeclarations, SiTypeDeclaration::class);
-		$this->siTypeDeclarations = $typedDeclarations;
+	function setTypeDeclarations(array $typeDeclarations) {
+		ArgUtils::valArray($typeDeclarations, SiTypeDeclaration::class);
+		$this->siTypeDeclarations = [];
+		
+		foreach ($typeDeclarations as $typeDeclaration) {
+			$this->addTypeDeclaration($typeDeclaration);
+		}
 		return $this;
 	}
 	
@@ -52,6 +60,14 @@ class SiDeclaration implements \JsonSerializable {
 	 * @return SiDeclaration
 	 */
 	function addTypeDeclaration(SiTypeDeclaration $typeDeclaration) {
+		if ($this->generalStructureDeclarations === null || !$typeDeclaration->hasStructureDeclarations()) {
+			throw new \InvalidArgumentException('TypeDeclaration need StructureDeclarations');
+		}
+		
+		if (empty($this->siTypeDeclarations) && !$typeDeclaration->getType()->hasProps()) {
+			throw new \InvalidArgumentException('First TypeDeclaration needs to have SiProps.');
+		}
+		
 		$this->siTypeDeclarations[] = $typeDeclaration;
 		return $this;
 	}
@@ -69,6 +85,7 @@ class SiDeclaration implements \JsonSerializable {
 	 */
 	function jsonSerialize() {
 		return [
+			'$generalStructureDeclarations' => $this->generalStructureDeclarations,
 			'typeDeclarations' => $this->siTypeDeclarations
 		];
 	}

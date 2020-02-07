@@ -29,14 +29,14 @@ class SiType implements \JsonSerializable {
 	 */	
 	private $qualifier;
 	/**
-	 * @var SiProp[]
+	 * @var SiProp[]|null
 	 */
-	private $props;
+	private $props = null;
 	
 	/**
 	 * @param SiProp[] $fieldDeclarations
 	 */
-	function __construct(SiTypeQualifier $qualifier, array $props = []) {
+	function __construct(SiTypeQualifier $qualifier, ?array $props = []) {
 		$this->qualifier = $qualifier;
 		$this->setProps($props);
 	}
@@ -45,10 +45,14 @@ class SiType implements \JsonSerializable {
 	 * @param SiProp[] $props
 	 * @return \rocket\si\meta\SiProp
 	 */
-	function setProps(array $props) {
-		ArgUtils::valArray($props, SiProp::class);
+	function setProps(?array $props) {
+		ArgUtils::valArray($props, SiProp::class, true);
 		$this->props = $props;
 		return $this;
+	}
+	
+	function hasProps() {
+		return $this->props !== null;
 	}
 	
 	/**

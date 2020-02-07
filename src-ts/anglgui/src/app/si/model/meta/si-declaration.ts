@@ -3,10 +3,9 @@ import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { SiTypeDeclaration } from './si-type-declaration';
 
 export class SiDeclaration {
-
 	private typeDeclarationMap = new Map<string, SiTypeDeclaration>();
 
-	constructor() {
+	constructor(private basicSiTypeDeclaration: SiTypeDeclaration|null) {
 	}
 
 	constainsTypeId(typeId: string) {
@@ -18,10 +17,14 @@ export class SiDeclaration {
 	}
 
 	getBasicTypeDeclaration(): SiTypeDeclaration {
-		const value = this.typeDeclarationMap.values().next();
-		if (value) {
-			return value.value;
+		if (this.basicSiTypeDeclaration) {
+			return this.basicSiTypeDeclaration;
 		}
+
+		// const value = this.typeDeclarationMap.values().next();
+		// if (value) {
+		// 	return value.value;
+		// }
 
 		throw new IllegalSiStateError('SiDeclaration contains no SiTypeDeclaration.');
 	}
