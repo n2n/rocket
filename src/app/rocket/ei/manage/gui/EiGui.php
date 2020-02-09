@@ -8,6 +8,7 @@ use rocket\ei\manage\gui\field\GuiPropPath;
 use n2n\util\ex\IllegalStateException;
 use rocket\si\meta\SiDeclaration;
 use rocket\ei\manage\frame\EiFrame;
+use rocket\si\meta\SiType;
 
 class EiGui {
 	
@@ -69,15 +70,21 @@ class EiGui {
 		return $guiPropPaths;
 	}
 	
-	function createContextSiDeclaration(EiFrame $eiFrame) {
-		
-	}
-	
 	/**
 	 * @return \rocket\si\meta\SiDeclaration
 	 */
 	function createSiDeclaration(EiFrame $eiFrame) {
-		return new SiDeclaration([$this->createSiTypeDeclaration($eiFrame)]);
+		$siDeclaration = new SiDeclaration([$this->createSiTypeDeclaration($eiFrame)], 
+				$this->createSiStructureDeclarations($this->guiStructureDeclarations));
+		$n2nLocale = $eiFrame->getN2nContext()->getN2nLocale();
+		
+		$contextEiMask = $eiFrame->getContextEiEngine()->getEiMask();
+		foreach ($contextEiMask->getEiType()->getAllSubEiTypes() as $subEiType) {
+			$siTypeIdentifier = $contextEiMask->determineEiMask($subEiType)->createSiTypeQualifier($n2nLocale);
+			$siDeclaration->addTypeDeclaration(new SiTypeDeclaration(new SiType($siTypeIdentifier, null)));
+		}
+		
+		return $siDeclaration;
 	}
 	
 	/**

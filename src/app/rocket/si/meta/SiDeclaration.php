@@ -85,7 +85,7 @@ class SiDeclaration implements \JsonSerializable {
 	 */
 	function jsonSerialize() {
 		return [
-			'$generalStructureDeclarations' => $this->generalStructureDeclarations,
+			'generalStructureDeclarations' => $this->generalStructureDeclarations,
 			'typeDeclarations' => $this->siTypeDeclarations
 		];
 	}

@@ -410,7 +410,11 @@ class EiFrame {
 				->ext(EiFrameController::createCmdUrlExt($result->getEiCommandPath())));
 	}
 
-	public function getApiUrl(EiCommandPath $eiCommandPath) {
+	public function getApiUrl(EiCommandPath $eiCommandPath = null) {
+		if ($eiCommandPath === null) {
+			$eiCommandPath = EiCommandPath::from($this->getEiExecution()->getEiCommand());
+		}
+		
 		return $this->getBaseUrl()->ext([EiFrameController::API_PATH_PART, (string) $eiCommandPath]);
 	}
 	
