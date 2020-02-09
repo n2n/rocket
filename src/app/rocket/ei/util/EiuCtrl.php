@@ -295,19 +295,19 @@ class EiuCtrl {
 			return;
 		}
 		
-		$eiuGuiFrameLayout = $this->eiuFrame->engine()->newGui(ViewMode::COMPACT_READ);
+		$eiuGui = $this->eiuFrame->engine()->newGui(ViewMode::COMPACT_READ);
 		$eiFrame = $this->eiuFrame->getEiFrame();
 		
-		$this->composeEiuGuiFrameForList($eiuGuiFrameLayout->getEiGui(), $pageSize);
+		$this->composeEiuGuiFrameForList($eiuGui->getEiGui(), $pageSize);
 		
-		$siDeclaration = $eiuGuiFrameLayout->getEiGui()->createSiDeclaration($this->eiuFrame->getEiFrame());
+		$siDeclaration = $eiuGui->getEiGui()->createSiDeclaration($this->eiuFrame->getEiFrame());
 		
 		$siComp = new CompactExplorerSiComp($this->eiu->frame()->getApiUrl(), $pageSize, $siDeclaration, 
-				new SiPartialContent($this->eiuFrame->countEntries(), $eiuGuiFrameLayout->getEiGui()->createSiEntries($eiFrame)));
+				new SiPartialContent($this->eiuFrame->countEntries(), $eiuGui->getEiGui()->createSiEntries($eiFrame)));
 		
 		$this->httpContext->getResponse()->send(
 				SiPayloadFactory::create($siComp, 
-						$eiuGuiFrameLayout->getEiGui()->getEiGuiFrame()->createGeneralSiControls($eiFrame),
+						$eiuGui->getEiGui()->getEiGuiFrame()->createGeneralSiControls($eiFrame),
 						$this->rocketState->getBreadcrumbs(),
 						$title ?? $this->eiuFrame->getContextEiuEngine()->mask()->getPluralLabel()));
 	}

@@ -11,7 +11,7 @@ export class SiMetaFactory {
 	static createDeclaration(data: any): SiDeclaration {
 		const extr = new Extractor(data);
 
-		const declaration = new SiDeclaration();
+		const declaration = new SiDeclaration(e);
 
 		for (const typeDeclarationData of extr.reqArray('typeDeclarations')) {
 			declaration.addTypeDeclaration(SiMetaFactory.createTypeDeclaration(typeDeclarationData));
