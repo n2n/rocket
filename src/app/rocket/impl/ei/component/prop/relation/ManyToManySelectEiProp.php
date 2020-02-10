@@ -54,7 +54,7 @@ class ManyToManySelectEiProp extends RelationEiPropAdapter implements FieldEiPro
 	}
 	
 	function buildEiField(Eiu $eiu): ?EiField {
-		$targetEiuFrame = $eiu->frame()->forkSelect($this, $eiu->object())
+		$targetEiuFrame = $eiu->frame()->forkSelect($this, $eiu->object())->frame()
 				->exec($this->getRelationModel()->getTargetReadEiCommandPath());
 		
 		return new ToManyEiField($eiu, $targetEiuFrame, $this, $this->getRelationModel());
