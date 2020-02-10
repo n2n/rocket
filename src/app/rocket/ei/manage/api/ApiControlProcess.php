@@ -99,11 +99,11 @@ class ApiControlProcess {
 	}
 	
 	function determineGuiField(GuiPropPath $guiPropPath) {
-		$eiEntryGui = $this->eiGuiFrame->createEiEntryGui($this->eiEntry, 0);
+		$eiEntryGui = $this->eiGuiFrame->createEiEntryGui($this->eiFrame, $this->eiEntry, 0);
 		$this->eiGui->addEiEntryGui($eiEntryGui);
 		
 		try {
-			$this->guiField = $eiEntryGui->getGuiField($guiPropPath);
+			$this->guiField = $eiEntryGui->getGuiFieldByGuiPropPath($guiPropPath);
 		} catch (GuiException $e) {
 			throw new BadRequestException($e->getMessage(), null, $e);
 		}

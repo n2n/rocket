@@ -237,7 +237,7 @@ class FileEiProp extends DraftablePropertyEiPropAdapter {
 		
 		return SiFields::fileIn($siFile, $eiu->frame()->getApiUrl(), $eiu->guiField()->createCallId(), 
 						new SiFileHanlderImpl($eiu, $this->thumbResolver, $this->fileVerificator))
-				->setMandatory($this->isMandatory($eiu))
+				->setMandatory($this->getEditConfig()->isMandatory())
 				->setMaxSize($this->fileVerificator->getMaxSize())
 				->setAcceptedExtensions($this->fileVerificator->getAllowedExtensions())
 				->setAcceptedMimeTypes($this->fileVerificator->getAllowedMimeTypes());

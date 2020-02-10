@@ -33,7 +33,7 @@ class EiuGuiField {
 		
 		return new ApiFieldCallId($this->guiPropPath, 
 				$eiEntryGui->getEiEntry()->getEiMask()->getEiTypePath(),
-				$eiEntryGui->getEiGuiFrame()->getViewMode(),
+				$this->eiuAnalyst->getEiuGuiFrame(true)->getViewMode(),
 				$eiEntryGui->getEiEntry()->getPid());
 	}
 }

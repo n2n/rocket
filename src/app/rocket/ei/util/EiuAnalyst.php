@@ -56,7 +56,6 @@ use rocket\ei\util\gui\EiuGuiFrame;
 use rocket\ei\util\entry\EiuField;
 use rocket\ei\util\spec\EiuCommand;
 use rocket\ei\util\spec\EiuProp;
-use rocket\ei\util\gui\EiuEntryGuiAssembler;
 use rocket\ei\manage\entry\EiFieldMap;
 use rocket\ei\util\entry\EiuFieldMap;
 use rocket\ei\util\entry\EiuObject;
@@ -103,8 +102,8 @@ class EiuAnalyst {
 	protected $eiuEntry;
 	protected $eiuFieldMap;
 	protected $eiFieldMap;
+	protected $eiuGui;
 	protected $eiuGuiFrame;
-	protected $eiuGuiFrameLayout;
 	protected $eiuEntryGui;
 	protected $eiuEntryGuiAssembler;
 	protected $eiuGuiFrameField;
@@ -581,7 +580,7 @@ class EiuAnalyst {
 		
 		$this->assignEiGuiFrame($eiGui->getEiGuiFrame());
 		
-		$this->eiuGuiFrameLayout = null;
+		$this->eiuGui = null;
 		$eiEntryGuis = $eiGui->getEiEntryGuis();
 		if (count($eiEntryGuis) == 1) {
 			$this->assignEiEntryGui(current($eiEntryGuis));
@@ -1147,6 +1146,27 @@ class EiuAnalyst {
 		throw new EiuPerimeterException(
 				'Can not create EiuEntryGui because non of the following types were provided as eiArgs: '
 						. implode(', ', self::EI_ENTRY_GUI_TYPES));
+	}
+	
+	/**
+	 * @param bool $required
+	 * @throws EiuPerimeterException
+	 * @return \rocket\ei\util\gui\EiuGuiFrame
+	 */
+	public function getEiuGui(bool $required) {
+		if ($this->eiuGui !== null) {
+			return $this->eiuGui;
+		}
+		
+		if ($this->eiGui !== null) {
+			return $this->eiuGui = new EiuGui($this->eiGui, $this->eiuGuiFrame, $this);
+		}
+		
+		if (!$required) return null;
+		
+		throw new EiuPerimeterException(
+				'Can not create EiuGui because non of the following types were provided as eiArgs: '
+				. implode(', ', self::EI_GUI_TYPES));
 	}
 	
 	/**
