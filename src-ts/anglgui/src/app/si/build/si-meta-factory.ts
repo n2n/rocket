@@ -32,7 +32,7 @@ export class SiMetaFactory {
 		let contextSiProps: SiProp[]|null = null;
 		let structureDeclarationsData: SiStructureDeclaration[]|null;
 
-		if (contextSiProps) {
+		if (contextTypeDeclaration) {
 			contextSiProps = contextTypeDeclaration.type.getProps();
 			structureDeclarationsData = extr.nullaArray('structureDeclarations');
 		} else {

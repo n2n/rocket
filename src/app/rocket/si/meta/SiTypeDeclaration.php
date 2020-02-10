@@ -37,7 +37,7 @@ class SiTypeDeclaration implements \JsonSerializable {
 	 * @param SiType $type
 	 * @param SiStructureDeclaration[] $structureDeclarations
 	 */
-	function __construct(SiType $type, ?array $structureDeclarations = []) {
+	function __construct(SiType $type, ?array $structureDeclarations) {
 		$this->type = $type;
 		$this->setStructureDeclarations($structureDeclarations);
 	}

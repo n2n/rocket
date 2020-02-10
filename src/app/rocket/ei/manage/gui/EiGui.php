@@ -81,7 +81,7 @@ class EiGui {
 		$contextEiMask = $eiFrame->getContextEiEngine()->getEiMask();
 		foreach ($contextEiMask->getEiType()->getAllSubEiTypes() as $subEiType) {
 			$siTypeIdentifier = $contextEiMask->determineEiMask($subEiType)->createSiTypeQualifier($n2nLocale);
-			$siDeclaration->addTypeDeclaration(new SiTypeDeclaration(new SiType($siTypeIdentifier, null)));
+			$siDeclaration->addTypeDeclaration(new SiTypeDeclaration(new SiType($siTypeIdentifier, null), null));
 		}
 		
 		return $siDeclaration;
