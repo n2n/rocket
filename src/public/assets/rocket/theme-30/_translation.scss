@@ -46,17 +46,17 @@
 	z-index: 60;
     > ul > li {
         > a.btn {
-			display: block;
+			display: flex;
+			justify-content: space-between;
+			align-items: baseline;
 			position: relative;
             color: $body-color;
             text-align: left;
             padding-left: 0;
-            padding-right: 2rem;
+            padding-right: 0;
             font-weight: bold;
             i {
-				position: absolute;
-				top: 0.25rem;
-				right: 0;
+				margin-left: .5rem;
                 font-size: $font-size-lg;
             }
         }
@@ -109,9 +109,9 @@
 }
 
 
-.rocket-impl-tooltip {
+.rocket-tooltip {
 	text-align: left;
-	padding-top:1rem;
+	padding-top: 1rem;
 	font-size: $font-size-sm;
 }
 
@@ -191,8 +191,8 @@
 	}
 }
 
-.rocket-impl-enabler {
-	position: absolute;
+.rocket-enabler {
+	// position: absolute;
 	width: 100%;
 	top: 0;
 	left: 0;

@@ -5142,7 +5142,7 @@ body {
   }
   .rocket-zone.rocket-contains-additional > .rocket-additional {
     position: fixed;
-    top: 7.825rem;
+    top: 8.725rem;
     bottom: 4.5rem;
     right: 1rem;
     width: 19rem;
@@ -5347,20 +5347,26 @@ rocket-ui-layer {
 
 .rocket-split-view-status-menu > ul > li > a.btn,
 .rocket-impl-translation-status-menu > ul > li > a.btn {
-  display: block;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: baseline;
+      -ms-flex-align: baseline;
+          align-items: baseline;
   position: relative;
   color: #373431;
   text-align: left;
   padding-left: 0;
-  padding-right: 2rem;
+  padding-right: 0;
   font-weight: bold;
 }
 
 .rocket-split-view-status-menu > ul > li > a.btn i,
 .rocket-impl-translation-status-menu > ul > li > a.btn i {
-  position: absolute;
-  top: 0.25rem;
-  right: 0;
+  margin-left: .5rem;
   font-size: 1.25rem;
 }
 
@@ -5415,7 +5421,7 @@ rocket-ui-layer {
   content: "\f023";
 }
 
-.rocket-impl-tooltip {
+.rocket-tooltip {
   text-align: left;
   padding-top: 1rem;
   font-size: 0.875rem;
@@ -5493,8 +5499,7 @@ rocket-ui-layer {
   right: 0;
 }
 
-.rocket-impl-enabler {
-  position: absolute;
+.rocket-enabler {
   width: 100%;
   top: 0;
   left: 0;
