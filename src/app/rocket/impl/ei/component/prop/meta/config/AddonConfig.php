@@ -77,7 +77,7 @@ class AddonConfig extends ConfigAdaption {
 						$lar->getScalarArray(self::ATTR_PREFIX_ADDONS_KEY)));
 		$magCollection->addMag(self::ATTR_SUFFIX_ADDONS_KEY,
 				self::createMag('Suffix Addons', self::ATTR_SUFFIX_ADDONS_KEY,
-						$lar->getScalarArray(self::ATTR_PREFIX_ADDONS_KEY)));
+						$lar->getScalarArray(self::ATTR_SUFFIX_ADDONS_KEY)));
 	}
 	
 	private static function createMag($label, $key, $values) {
@@ -97,9 +97,8 @@ class AddonConfig extends ConfigAdaption {
 	 * @return \rocket\impl\ei\component\prop\meta\config\AddonConfig
 	 */
 	function setup(Eiu $eiu, DataSet $ds) {
-		return new AddonConfig(
-				SiCrumbGroupFactory::parseCrumbGroups($ds->optScalarArray(self::ATTR_PREFIX_ADDONS_KEY)),
-				SiCrumbGroupFactory::parseCrumbGroups($ds->optScalarArray(self::ATTR_SUFFIX_ADDONS_KEY)));
+		$this->prefixSiCrumbGroups = SiCrumbGroupFactory::parseCrumbGroups($ds->optScalarArray(self::ATTR_PREFIX_ADDONS_KEY));
+		$this->suffixSiCrumbGroups = SiCrumbGroupFactory::parseCrumbGroups($ds->optScalarArray(self::ATTR_SUFFIX_ADDONS_KEY));
 	}
 		
 		
