@@ -11,7 +11,6 @@ export class StringOutFieldComponent implements OnInit {
 	model: StringFieldModel;
 
 	constructor(elRef: ElementRef) {
-		elRef.nativeElement.classList.add('form-control-plaintext');
 	}
 
 	ngOnInit() {

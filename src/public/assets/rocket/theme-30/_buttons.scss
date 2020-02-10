@@ -56,7 +56,7 @@
 }
 
 // simple commands in table are bigger
-td.rocket-simple-commands {
+.rocket-simple-commands {
     > rocket-button-control .btn {
         > i {
             font-size: $font-size-lg;
