@@ -30,23 +30,20 @@ export class SiMetaFactory {
 		const extr = new Extractor(data);
 
 		let contextSiProps: SiProp[]|null = null;
-		let structureDeclarationsData: SiStructureDeclaration[]|null;
-
+		let contextStructureDeclarations: SiStructureDeclaration[]|null = null;
 		if (contextTypeDeclaration) {
 			contextSiProps = contextTypeDeclaration.type.getProps();
-			structureDeclarationsData = extr.nullaArray('structureDeclarations');
-		} else {
-			structureDeclarationsData = extr.reqArray('structureDeclarations');
+			contextStructureDeclarations = contextTypeDeclaration.structureDeclarations;
 		}
 
 		const type = SiMetaFactory.createType(extr.reqObject('type'), contextSiProps);
-
+		const structureDeclarationsData = extr.nullaArray('structureDeclarations');
 		if (structureDeclarationsData) {
 			return new SiTypeDeclaration(type,
 					new SiTypeEssentialsFactory(type).createStructureDeclarations(structureDeclarationsData));
 		}
 
-		return new SiTypeDeclaration(type, contextTypeDeclaration.structureDeclarations);
+		return new SiTypeDeclaration(type, contextStructureDeclarations);
 	}
 
 	static createType(data: any, siProps: SiProp[]|null): SiType {

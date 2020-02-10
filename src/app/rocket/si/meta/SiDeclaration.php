@@ -56,9 +56,9 @@ class SiDeclaration implements \JsonSerializable {
 	 * @return SiDeclaration
 	 */
 	function addTypeDeclaration(SiTypeDeclaration $typeDeclaration) {
-		if (empty($this->typeDeclarations) && !$typeDeclaration->hasStructureDeclarations()) {
-			throw new \InvalidArgumentException('First TypeDeclaration need StructureDeclarations');
-		}
+// 		if (empty($this->typeDeclarations) && !$typeDeclaration->hasStructureDeclarations()) {
+// 			throw new \InvalidArgumentException('First TypeDeclaration need StructureDeclarations');
+// 		}
 		
 		if (empty($this->typeDeclarations) && !$typeDeclaration->getType()->hasProps()) {
 			throw new \InvalidArgumentException('First TypeDeclaration needs to have SiProps.');

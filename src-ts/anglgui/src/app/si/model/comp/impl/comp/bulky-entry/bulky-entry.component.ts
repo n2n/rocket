@@ -47,6 +47,8 @@ export class BulkyEntryComponent implements OnInit, OnDestroy, DoCheck {
 			return;
 		}
 
+		// new TypeSelect(siEntry.typeQualifiers);
+
 		const siTypeDeclaration = this.model.getSiDeclaration().getTypeDeclarationByTypeId(siEntry.selectedTypeId);
 		const toolbarResolver = new ToolbarResolver();
 

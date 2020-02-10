@@ -5,7 +5,7 @@ import { SiProp } from './si-prop';
 
 export class SiTypeDeclaration {
 
-	constructor(public type: SiType, public structureDeclarations: Array<SiStructureDeclaration>) {
+	constructor(public type: SiType, public structureDeclarations: Array<SiStructureDeclaration>|null) {
 	}
 
 	getSiProps(): SiProp[] {
