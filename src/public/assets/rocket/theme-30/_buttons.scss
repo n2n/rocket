@@ -2,6 +2,10 @@
  * The small Buttons (without text)
  */
 
+ .btn-warning {
+     color: $white;
+ }
+
 .rocket-simple-commands {
     // drop down button in simple-commands
     > rocket-button-control > .dropdown > button, 
