@@ -42,7 +42,7 @@ class SiDeclaration implements \JsonSerializable {
 	 */
 	function setTypeDeclarations(array $typeDeclarations) {
 		ArgUtils::valArray($typeDeclarations, SiTypeDeclaration::class);
-		$this->siTypeDeclarations = [];
+		$this->typeDeclarations = [];
 		
 		foreach ($typeDeclarations as $typeDeclaration) {
 			$this->addTypeDeclaration($typeDeclaration);
@@ -64,7 +64,7 @@ class SiDeclaration implements \JsonSerializable {
 			throw new \InvalidArgumentException('First TypeDeclaration needs to have SiProps.');
 		}
 		
-		$this->siTypeDeclarations[] = $typeDeclaration;
+		$this->typeDeclarations[] = $typeDeclaration;
 		return $this;
 	}
 	
@@ -72,7 +72,7 @@ class SiDeclaration implements \JsonSerializable {
 	 * @return SiTypeDeclaration[]
 	 */
 	function getTypeDeclarations() {
-		return $this->siTypeDeclarations;
+		return $this->typeDeclarations;
 	}
 	
 	/**
@@ -81,7 +81,7 @@ class SiDeclaration implements \JsonSerializable {
 	 */
 	function jsonSerialize() {
 		return [
-			'typeDeclarations' => $this->siTypeDeclarations
+			'typeDeclarations' => $this->typeDeclarations
 		];
 	}
 }
