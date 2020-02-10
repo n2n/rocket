@@ -3,7 +3,7 @@ import { SiPageCollection } from '../../model/si-page-collection';
 import { Subscription } from 'rxjs';
 
 @Component({
-	selector: 'rocket-si-pagination',
+	selector: 'rocket-si-pagination.rocket-pagination',
 	templateUrl: './pagination.component.html',
 	styleUrls: ['./pagination.component.css']
 })

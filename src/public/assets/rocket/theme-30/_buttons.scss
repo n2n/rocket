@@ -2,6 +2,10 @@
  * The small Buttons (without text)
  */
 
+ .btn-warning {
+     color: $white;
+ }
+
 .rocket-simple-commands {
     // drop down button in simple-commands
     > rocket-button-control > .dropdown > button, 
@@ -52,7 +56,7 @@
 }
 
 // simple commands in table are bigger
-td.rocket-simple-commands {
+.rocket-simple-commands {
     > rocket-button-control .btn {
         > i {
             font-size: $font-size-lg;

@@ -27,10 +27,12 @@
 						rocketUiStructure [uiStructure]="fieldUiStructure" 
 						(click)="toggleSelection(siEntry.qualifier)">
 				</td>
-				<td class="rocket-table-commands rocket-simple-commands">
-					<ng-container *ngFor="let controlUiContent of structurePage.controlUiContentsOf(siEntry.identifier.id)">
-						<ng-template rocketUiContent [uiContent]="controlUiContent"></ng-template>
-					</ng-container>
+				<td class="rocket-table-commands">
+					<div class="rocket-simple-commands">
+						<ng-container *ngFor="let controlUiContent of structurePage.controlUiContentsOf(siEntry.identifier.id)">
+							<ng-template rocketUiContent [uiContent]="controlUiContent"></ng-template>
+						</ng-container>
+					</div>
 				</td>
 			</tr>
 		</ng-container>
