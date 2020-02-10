@@ -1,20 +1,16 @@
 <ng-container *ngIf="visible">
 	<button type="button" class="btn btn-secondary"	(click)="internalValue = 1">
-		<span>1</span> <i class="fa fa-step-backward"></i>
+		<span>1</span>&nbsp;<i class="fa fa-step-backward"></i>
 	</button>
-
 	<button type="button" class="btn btn-secondary" (click)="internalValue = internalValue -1">
 		<i class="fa fa-chevron-left"></i>
 	</button>
-
 	<input class="rocket-pagination-no form-control" type="text" value="1"
 			[(ngModel)]="internalValue">
-
 	<button type="button" class="btn btn-secondary" (click)="internalValue = internalValue + 1">
 		<i class="fa fa-chevron-right"></i>
 	</button>
-
 	<button type="button" class="btn btn-secondary" (click)="internalValue = lastPageNo">
-		<i class="fa fa-step-forward"></i> <span>{{ lastPageNo }}</span>
+		<i class="fa fa-step-forward"></i>&nbsp;<span>{{ lastPageNo }}</span>
 	</button>
 </ng-container>

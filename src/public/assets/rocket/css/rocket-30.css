@@ -5892,6 +5892,12 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
 /*
  * Footer
  */
+.rocket-pagination {
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+}
+
 .rocket-pagination .rocket-pagination-no {
   width: 5rem;
   text-align: center;

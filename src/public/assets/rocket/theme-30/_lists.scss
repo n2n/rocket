@@ -164,6 +164,7 @@ $rocket-tree-level-line-string:         '';
  */
 
 .rocket-pagination {
+    display: inline-flex;
     .rocket-pagination-no  {
         width: 5rem;
         text-align: center;
