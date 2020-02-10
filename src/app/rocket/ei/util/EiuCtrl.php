@@ -300,7 +300,7 @@ class EiuCtrl {
 		
 		$this->composeEiuGuiFrameForList($eiuGui->getEiGui(), $pageSize);
 		
-		$siDeclaration = $eiuGui->getEiGui()->createSiDeclaration($this->eiuFrame->getEiFrame());
+		$siDeclaration = $eiuGui->getEiGui()->createSiDeclaration($eiFrame);
 		
 		$siComp = new CompactExplorerSiComp($this->eiu->frame()->getApiUrl(), $pageSize, $siDeclaration, 
 				new SiPartialContent($this->eiuFrame->countEntries(), $eiuGui->getEiGui()->createSiEntries($eiFrame)));

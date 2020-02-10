@@ -9,6 +9,7 @@ use n2n\util\ex\IllegalStateException;
 use rocket\si\meta\SiDeclaration;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\si\meta\SiType;
+use n2n\l10n\N2nLocale;
 
 class EiGui {
 	
@@ -74,9 +75,8 @@ class EiGui {
 	 * @return \rocket\si\meta\SiDeclaration
 	 */
 	function createSiDeclaration(EiFrame $eiFrame) {
-		$siDeclaration = new SiDeclaration([$this->createSiTypeDeclaration($eiFrame)], 
-				$this->createSiStructureDeclarations($this->guiStructureDeclarations));
 		$n2nLocale = $eiFrame->getN2nContext()->getN2nLocale();
+		$siDeclaration = new SiDeclaration([$this->createSiTypeDeclaration($n2nLocale)]);
 		
 		$contextEiMask = $eiFrame->getContextEiEngine()->getEiMask();
 		foreach ($contextEiMask->getEiType()->getAllSubEiTypes() as $subEiType) {
@@ -90,9 +90,9 @@ class EiGui {
 	/**
 	 * @return \rocket\si\meta\SiTypeDeclaration
 	 */
-	function createSiTypeDeclaration(EiFrame $eiFrame) {
+	function createSiTypeDeclaration(N2nLocale $n2nLocale) {
 		return new SiTypeDeclaration(
-				$this->eiGuiFrame->createSiType($eiFrame), 
+				$this->eiGuiFrame->createSiType($n2nLocale), 
 				$this->createSiStructureDeclarations($this->guiStructureDeclarations));
 	}
 	

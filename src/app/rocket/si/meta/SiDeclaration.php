@@ -25,10 +25,6 @@ use n2n\util\type\ArgUtils;
 
 class SiDeclaration implements \JsonSerializable {
 	/**
-	 * @var SiStructureDeclaration[]|null
-	 */
-	private $generalStructureDeclarations = null;
-	/**
 	 * @var \rocket\si\meta\SiTypeDeclaration[]
 	 */
 	private $typeDeclarations = [];
@@ -36,7 +32,7 @@ class SiDeclaration implements \JsonSerializable {
 	/**
 	 * @param SiTypeDeclaration[] $typedDeclarations
 	 */
-	function __construct(array $typedDeclarations = [], ?array $generalStructureDeclarations) {
+	function __construct(array $typedDeclarations = []) {
 		$this->setTypeDeclarations($typedDeclarations);
 	}
 	
@@ -60,11 +56,11 @@ class SiDeclaration implements \JsonSerializable {
 	 * @return SiDeclaration
 	 */
 	function addTypeDeclaration(SiTypeDeclaration $typeDeclaration) {
-		if ($this->generalStructureDeclarations === null || !$typeDeclaration->hasStructureDeclarations()) {
-			throw new \InvalidArgumentException('TypeDeclaration need StructureDeclarations');
+		if (empty($this->typeDeclarations) && !$typeDeclaration->hasStructureDeclarations()) {
+			throw new \InvalidArgumentException('First TypeDeclaration need StructureDeclarations');
 		}
 		
-		if (empty($this->siTypeDeclarations) && !$typeDeclaration->getType()->hasProps()) {
+		if (empty($this->typeDeclarations) && !$typeDeclaration->getType()->hasProps()) {
 			throw new \InvalidArgumentException('First TypeDeclaration needs to have SiProps.');
 		}
 		
@@ -85,7 +81,6 @@ class SiDeclaration implements \JsonSerializable {
 	 */
 	function jsonSerialize() {
 		return [
-			'generalStructureDeclarations' => $this->generalStructureDeclarations,
 			'typeDeclarations' => $this->siTypeDeclarations
 		];
 	}

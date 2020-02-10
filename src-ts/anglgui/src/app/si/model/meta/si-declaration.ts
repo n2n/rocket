@@ -5,7 +5,7 @@ import { SiTypeDeclaration } from './si-type-declaration';
 export class SiDeclaration {
 	private typeDeclarationMap = new Map<string, SiTypeDeclaration>();
 
-	constructor(private basicSiTypeDeclaration: SiTypeDeclaration|null) {
+	constructor() {
 	}
 
 	constainsTypeId(typeId: string) {
@@ -17,14 +17,14 @@ export class SiDeclaration {
 	}
 
 	getBasicTypeDeclaration(): SiTypeDeclaration {
-		if (this.basicSiTypeDeclaration) {
-			return this.basicSiTypeDeclaration;
-		}
-
-		// const value = this.typeDeclarationMap.values().next();
-		// if (value) {
-		// 	return value.value;
+		// if (this.basicSiTypeDeclaration) {
+		// 	return this.basicSiTypeDeclaration;
 		// }
+
+		const value = this.typeDeclarationMap.values().next();
+		if (value) {
+			return value.value;
+		}
 
 		throw new IllegalSiStateError('SiDeclaration contains no SiTypeDeclaration.');
 	}

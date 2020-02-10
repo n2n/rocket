@@ -5,35 +5,72 @@ import { SiType } from '../model/meta/si-type';
 import { SiProp } from '../model/meta/si-prop';
 import { SiTypeQualifier, SiTypeIdentifier } from '../model/meta/si-type-qualifier';
 import { SiTypeEssentialsFactory } from './si-type-essentials-factory';
+import { SiStructureDeclaration } from '../model/meta/si-structure-declaration';
 
 
 export class SiMetaFactory {
 	static createDeclaration(data: any): SiDeclaration {
 		const extr = new Extractor(data);
 
-		const declaration = new SiDeclaration(e);
+		const declaration = new SiDeclaration();
 
+		let contextTypeDeclaration: SiTypeDeclaration|null = null ;
 		for (const typeDeclarationData of extr.reqArray('typeDeclarations')) {
-			declaration.addTypeDeclaration(SiMetaFactory.createTypeDeclaration(typeDeclarationData));
+			const typeDeclaration = SiMetaFactory.createTypeDeclaration(typeDeclarationData, contextTypeDeclaration);
+			if (!contextTypeDeclaration) {
+				contextTypeDeclaration = typeDeclaration;
+			}
+
+			declaration.addTypeDeclaration(typeDeclaration);
 		}
 		return declaration;
 	}
 
-	private static createTypeDeclaration(data: any): SiTypeDeclaration {
+	private static createTypeDeclaration(data: any, contextTypeDeclaration: SiTypeDeclaration|null): SiTypeDeclaration {
 		const extr = new Extractor(data);
 
-		const type = SiMetaFactory.createType(extr.reqObject('type'));
-		return new SiTypeDeclaration(type,
-				new SiTypeEssentialsFactory(type).createStructureDeclarations(extr.reqArray('structureDeclarations')));
+		let contextSiProps: SiProp[]|null = null;
+		let structureDeclarationsData: SiStructureDeclaration[]|null;
+
+		if (contextSiProps) {
+			contextSiProps = contextTypeDeclaration.type.getProps();
+			structureDeclarationsData = extr.nullaArray('structureDeclarations');
+		} else {
+			structureDeclarationsData = extr.reqArray('structureDeclarations');
+		}
+
+		const type = SiMetaFactory.createType(extr.reqObject('type'), contextSiProps);
+
+		if (structureDeclarationsData) {
+			return new SiTypeDeclaration(type,
+					new SiTypeEssentialsFactory(type).createStructureDeclarations(structureDeclarationsData));
+		}
+
+		return new SiTypeDeclaration(type, contextTypeDeclaration.structureDeclarations);
 	}
 
-	static createType(data: any): SiType {
+	static createType(data: any, siProps: SiProp[]|null): SiType {
 		const extr = new Extractor(data);
 
 		const type = new SiType(SiMetaFactory.createTypeQualifier(extr.reqObject('qualifier')));
 
-		for (const propData of extr.reqArray('props')) {
-			type.addProp(this.createProp(propData));
+		let propDatas: Array<any>|null;
+		if (!siProps) {
+			propDatas = extr.reqArray('props');
+		} else {
+			propDatas = extr.nullaArray('props');
+		}
+
+		if (propDatas) {
+			for (const propData of propDatas) {
+				type.addProp(this.createProp(propData));
+			}
+
+			return type;
+		}
+
+		for (const siProp of siProps) {
+			type.addProp(siProp);
 		}
 
 		return type;
