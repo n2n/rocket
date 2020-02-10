@@ -118,8 +118,8 @@ class RelationConfig extends ConfigAdaption {
 // 		}
 		
 		if (!$this->relationModel->isEmbedded()) {
-			$magCollection->addMag(self::ATTR_HIDDEN_IF_TARGET_EMPTY_KEY, new BoolMag('Hide if target empty',
-					$lar->getBool(self::ATTR_HIDDEN_IF_TARGET_EMPTY_KEY, $eiPropRelation->isHiddenIfTargetEmpty())));
+			$magCollection->addMag(self::ATTR_HIDDEN_IF_TARGET_EMPTY_KEY, 
+					new BoolMag('Hide if target empty', $lar->getBool(self::ATTR_HIDDEN_IF_TARGET_EMPTY_KEY, true)));
 		}
 
 		if ($this->relationModel->isMaster()) {

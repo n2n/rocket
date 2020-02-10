@@ -101,7 +101,7 @@ class TranslationConfig extends ConfigAdaption {
 	}
 	
 	public function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
-		$lar = new LenientAttributeReader($this->dataSet);
+		$lar = new LenientAttributeReader($dataSet);
 		
 		$magCollection->addMag(self::ATTR_USE_SYSTEM_LOCALES_KEY, new BoolMag('Use system locales',
 				$lar->getBool(self::ATTR_USE_SYSTEM_LOCALES_KEY, true)));

@@ -24,8 +24,7 @@ export class SiTypeEssentialsFactory {
 		const children = this.createStructureDeclarations(extr.reqArray('children'));
 
 		if (propId !== null) {
-			return new SiStructureDeclaration(this.type.getPropById(propId), null,
-					type, children);
+			return new SiStructureDeclaration(this.type.getPropById(propId), null, type, children);
 		}
 
 		return new SiStructureDeclaration(null, extr.nullaString('label'), type, children);
