@@ -79,7 +79,7 @@
 }
 
 
-// @deprecated - no need for targeting two classes
+// @deprecated - no need for targeting two classes - rocket layers get replaced
 // .rocket-main-layer.rocket-active, 
 // .rocket-layer.rocket-active {
 // 	min-height: calc(100vh - 6.75rem);
@@ -88,13 +88,13 @@
 // }
 
 
-// rocket layers are always stacking -> last child is visible and should get the min-height;
+// rocket zone also min-height?
 .rocket-zone,
 rocket-ui-layer {
 	min-height: calc(100vh - 6.75rem);
 	display: block;
 
-	// mit bert besprechen
+	// rocket-loader mit Bert besprechen
 	position: relative;
 	> .rocket-loader {
 		position: absolute;

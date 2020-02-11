@@ -6245,6 +6245,17 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
 /**
  * Relation Selectors
  */
+.rocket-to-many > div {
+  max-height: 19.7rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.rocket-to-many > div:not(:empty) {
+  margin-bottom: 0.5rem;
+  border: 1px solid #DAD7D3;
+}
+
 .rocket-to-many .rocket-selector {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -6255,20 +6266,12 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   -webkit-box-align: baseline;
       -ms-flex-align: baseline;
           align-items: baseline;
-  border: 1px solid #DAD7D3;
+  border-bottom: 1px solid #EDEBE9;
   padding: 0 0 0 0.625rem;
 }
 
-.rocket-to-many .rocket-selector:not(:first-child) {
-  border-top: none;
-}
-
-.rocket-to-many .rocket-selector:not(:last-child) {
-  border-bottom-color: #EDEBE9;
-}
-
 .rocket-to-many .rocket-selector:last-child {
-  margin-bottom: 0.5rem;
+  border-bottom: none;
 }
 
 .rocket-to-many .rocket-selector:hover {

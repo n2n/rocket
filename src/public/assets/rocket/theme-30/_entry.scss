@@ -334,25 +334,25 @@
 //     }
 // }
 
-
 .rocket-to-many {
+    > div {
+        max-height: 19.7rem; // to be default with last item on parents bottom-line; was 20rem before
+        overflow-y: auto;
+        overflow-x: hidden;
+        &:not(:empty) {
+            margin-bottom: 0.5rem;
+            border: 1px solid $input-border-color;
+        }
+    }
     .rocket-selector {
         display: flex;
         justify-content: space-between;
         align-items: baseline;
-        border: 1px solid $input-border-color;
+        border-bottom: 1px solid #EDEBE9;
         padding: 0 0 0 0.625rem;
-       
-        &:not(:first-child) {
-            border-top: none; 
-        }
-
-        &:not(:last-child) {
-            border-bottom-color: #EDEBE9; 
-        }
 
         &:last-child {
-            margin-bottom: 0.5rem;
+            border-bottom: none;
         }
 
         &:hover {
@@ -371,11 +371,13 @@
 .rocket-to-one {
     display: inline-flex;
     align-items: baseline;
+
     .rocket-selector {
         display: inline-flex;
         align-items: baseline;
     }
 }
+
 
 .rocket-impl-entry-placeholder {
     background: $gray-200 !important;
