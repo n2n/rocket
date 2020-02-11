@@ -10,6 +10,10 @@
 				<i [class]="item.value.iconClass"></i>
 				<span>{{ item.value.name }}</span>
 			</button>
+			
+			<div *ngIf="model.getSubTooltip()" class="rocket-impl-tooltip">
+					{{ model.getSubTooltip() }}
+			</div>
 		</div>
 	</div>
 </ng-container>

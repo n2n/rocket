@@ -117,6 +117,10 @@ class SplitGuiFieldFactory {
 		
 		$placeholderGuiField = new PlaceholderGuiField($siField);
 		
+		if (!$this->readOnly) {
+			$siField->setCopyStyle(new SplitStyle(null, $this->lted->getCopyTooltip()));
+		}
+		
 // 		if (!$this->readOnly) {
 			
 // 			foreach ($this->lted->getN2nLocales() as $n2nLocale) {

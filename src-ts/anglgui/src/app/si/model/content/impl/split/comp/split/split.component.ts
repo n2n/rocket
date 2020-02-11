@@ -118,7 +118,8 @@ class SplitButtonControlModel implements ButtonControlModel {
 	private subSiButtons = new Map<string, SiButton>();
 
 	constructor(private key: string, private siField: SiField, private model: SplitModel) {
-		this.siButton = new SiButton(this.model.getCopyTooltip(), 'btn btn-secondary', 'fa fa-reply-all');
+		this.siButton = new SiButton(null, 'btn btn-secondary', 'fa fa-reply-all');
+		this.siButton.tooltip = this.model.getCopyTooltip();
 
 		this.update();
 	}
