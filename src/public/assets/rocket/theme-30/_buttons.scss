@@ -72,7 +72,7 @@
 
 
 .rocket-zone-commands {
-    .btn:not(:last-child) {
+    rocket-button-control:not(:last-child) .btn {
         margin-right: 0.5rem;
     }
 

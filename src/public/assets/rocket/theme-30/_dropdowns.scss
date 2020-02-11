@@ -1,0 +1,40 @@
+
+
+rocket-button-control {
+	.dropdown > div {
+		position: absolute;
+		right: 0;
+		width: 300px;
+		background:	$white;
+		padding: 1rem;
+		-webkit-box-shadow: 2px 1px 4px 0 rgba(0, 0, 0, 0.2);
+		box-shadow: 2px 1px 4px 0 rgba(0, 0, 0, 0.2);
+		z-index: 5;
+
+		div {
+			&:not(:last-child) {
+				border-bottom: 1px solid $input-border-color;
+			}
+			> .btn {
+				display: flex;
+				width: 100%;
+				background: $white;
+				border: none;
+				justify-content: space-between;
+				align-items: baseline;
+				color: $body-color;
+				text-align: left;
+				padding-left: 0;
+				padding-right: 0;
+				font-weight: bold;
+				> i {
+					margin-left: .5rem;
+				}
+				&:hover,
+				&:focus {
+					background: $gray-200;
+				}
+			}
+		}
+	}
+}

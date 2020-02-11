@@ -130,7 +130,7 @@ class SplitButtonControlModel implements ButtonControlModel {
 				continue;
 			}
 
-			this.subSiButtons.set(splitOption.key, new SiButton(splitOption.shortLabel, 'btn btn-secondary', 'fa fa-reply'));
+			this.subSiButtons.set(splitOption.key, new SiButton(splitOption.shortLabel, 'btn btn-secondary', 'fa fa-mail-forward'));
 		}
 	}
 

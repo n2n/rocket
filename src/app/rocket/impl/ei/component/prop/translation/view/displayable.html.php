@@ -37,16 +37,16 @@
 ?>
 
 <div class="rocket-impl-translatable" 
-		data-rocket-impl-languages-label="<?php $html->text('ei_impl_languages_label') ?>"
+		data-rocket-impl-languages-label="<?php $html->text('languages_txt') ?>"
 		data-rocket-impl-languages-view-tooltip="<?php $html->text('ei_impl_languages_view_tooltip') ?>"
-		data-rocket-impl-visible-label="<?php $html->text('ei_impl_visible_label') ?>">
+		data-rocket-impl-visible-label="<?php $html->text('visible_label') ?>">
 	<?php foreach ($displayables as $n2nLocaleId => $displayable): ?>
 		<?php $n2nLocale = N2nLocale::create($n2nLocaleId) ?>
 				
 		<?php $fieldEiHtml->openOutputField('div', $displayable, new EiFieldValidationResult(null),  array(
 				'class' => 'rocket-impl-translation', 
 				'data-rocket-impl-locale-id' => $n2nLocaleId,
-				'data-rocket-impl-activate-label' => $view->getL10nText('ei_impl_activate_translation', array(
+				'data-rocket-impl-activate-label' => $view->getL10nText('activate_txt', array(
 						'locale' => $localeDefs[(string) $n2nLocale]->buildLabel($request->getN2nLocale()),
 						'field' => $label)))) ?>
 			<?php $fieldEiHtml->label(

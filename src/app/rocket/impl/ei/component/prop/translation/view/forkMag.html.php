@@ -36,7 +36,7 @@
 ?>
 
 <div class="rocket-impl-translation-menu"
-		data-rocket-impl-locale-labels="<?php $html->text('ei_impl_languages_label') ?>"
+		data-rocket-impl-locale-labels="<?php $html->text('languages_txt') ?>"
 		data-active-locales-label="<?php $html->text('ei_impl_active_locales_label') ?>"
 		data-standard-label="<?php $html->text('ei_impl_standard_label') ?>"
 		data-translations-only-label="<?php $html->text('ei_impl_translations_only_label') ?>">

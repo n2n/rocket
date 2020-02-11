@@ -46,9 +46,9 @@
 ?>
 
 <div class="rocket-impl-translatable rocket-impl-translatable-<?php $html->out($view->getParam('markClassKey')) ?>"
-		data-rocket-impl-languages-label="<?php $html->text('ei_impl_languages_label') ?>"
+		data-rocket-impl-languages-label="<?php $html->text('languages_txt') ?>"
 		data-rocket-impl-languages-view-tooltip="<?php $html->text('ei_impl_languages_view_tooltip') ?>"
-		data-rocket-impl-visible-label="<?php $html->text('ei_impl_visible_label') ?>"
+		data-rocket-impl-visible-label="<?php $html->text('visible_label') ?>"
 		data-rocket-impl-src-load-config="<?php $html->out(json_encode($view->getParam('srcLoadConfig'))) ?>">
 	
 	<?php foreach ($tPropertyPaths as $n2nLocaleId => $tPropertyPath): ?>
@@ -57,7 +57,7 @@
 	
 		<div class="rocket-impl-translation"
 				data-rocket-impl-locale-id="<?php $html->out($n2nLocaleId) ?>"
-				data-rocket-impl-activate-label="<?php $html->text('ei_impl_activate_translation', array(
+				data-rocket-impl-activate-label="<?php $html->text('activate_txt', array(
 						'locale' => $n2nLocale->getName($view->getN2nLocale()),
 						'field' => $view->getParam('label'))) ?>"
 				data-rocket-impl-ei-id="<?php $html->out(isset($eiuEntries[$n2nLocaleId]) ? $eiuEntries[$n2nLocaleId]->getPid(false) : null) ?>"

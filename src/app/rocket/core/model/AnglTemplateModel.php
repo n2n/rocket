@@ -47,7 +47,10 @@ class AnglTemplateModel implements Lookupable {
 		
 		
 		return [
+			'languages_txt' => $dtc->t('languages_txt'),
+			'visible_label' => $dtc->t('visible_label'),
 			'errors_txt' => $dtc->t('errors_txt'),
+			'activate_txt' => $dtc->t('activate_txt'),
 			'mandatory_err' => ValidationMessages::mandatory('{field}')->t($n2nLocale),
 			'minlength_err' => ValidationMessages::minlength('{minlength}', '{field}')->t($n2nLocale),
 			'maxlength_err' => ValidationMessages::maxlength('{maxlength}', '{field}')->t($n2nLocale)
