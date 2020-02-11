@@ -495,10 +495,11 @@ class EiEntryGuiMultiResult {
 	function createSiDeclaration() {
 		IllegalStateException::assertTrue($this->eiGuis !== null);
 		
+		$n2nLocale = $this->eiFrame->getN2nContext()->getN2nLocale();
 		$declaration = new SiDeclaration();
 		
 		foreach ($this->eiGuis as $eiGui) {
-			$declaration->addTypeDeclaration($eiGui->createSiTypeDeclaration($this->eiFrame));
+			$declaration->addTypeDeclaration($eiGui->createSiTypeDeclaration($n2nLocale));
 		}
 		
 		return $declaration;
