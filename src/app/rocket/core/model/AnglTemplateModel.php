@@ -24,6 +24,7 @@ namespace rocket\core\model;
 use n2n\context\Lookupable;
 use n2n\core\container\N2nContext;
 use n2n\validation\impl\ValidationMessages;
+use n2n\l10n\DynamicTextCollection;
 
 class AnglTemplateModel implements Lookupable {
 	private $n2nContext;
@@ -41,7 +42,12 @@ class AnglTemplateModel implements Lookupable {
 	function createTranslationMap() {
 		$n2nLocale = $this->n2nContext->getN2nLocale();
 		
+		$dtc = new DynamicTextCollection('rocket', $n2nLocale);
+		
+		
+		
 		return [
+			'errors_txt' => $dtc->t('errors_txt'),
 			'mandatory_err' => ValidationMessages::mandatory('{field}')->t($n2nLocale),
 			'minlength_err' => ValidationMessages::minlength('{minlength}', '{field}')->t($n2nLocale),
 			'maxlength_err' => ValidationMessages::maxlength('{maxlength}', '{field}')->t($n2nLocale)
