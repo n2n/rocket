@@ -23,8 +23,8 @@ use rocket\core\model\AnglTemplateModel;
 			}
 			
 			@keyframes layertransform {
-			    from { transform: translateX(100vw); }
-			    to { transform: translateX(0); }
+			    0% { transform: translateX(100vw);}
+				100% { transform: translateX(0); }
 			}
 
 			.cdk-drag-preview {

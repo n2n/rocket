@@ -46,11 +46,11 @@
 
 }
 
-.rocket-main-layer, 
-.rocket-layer {
-	max-height: calc(100vh - 7.75rem);
-	overflow-y: hidden;
-}
+// .rocket-main-layer, 
+// .rocket-layer {
+// 	max-height: calc(100vh - 7.75rem);
+// 	overflow-y: hidden;
+// }
 
 .rocket-layer {
 	position: absolute;
@@ -89,11 +89,20 @@
 
 
 // rocket layers are always stacking -> last child is visible and should get the min-height;
+.rocket-zone,
 rocket-ui-layer {
 	min-height: calc(100vh - 6.75rem);
-	max-height: none;
-	overflow-y: visible;
+	display: block;
+
+	// mit bert besprechen
+	position: relative;
+	> .rocket-loader {
+		position: absolute;
+		top: calc(40vh - 25px);
+		left: calc(50% - 25px)
+	}
 }
+
 
 .rocket-zone > .rocket-content > .rocket-toolbar {
 	position: absolute;

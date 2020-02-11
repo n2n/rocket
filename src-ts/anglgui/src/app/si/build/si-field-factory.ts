@@ -81,7 +81,7 @@ export class SiFieldFactory {
 			return stringInSiField;
 
 		case SiFieldType.NUMBER_IN:
-			const numberInSiField = new NumberInSiField();
+			const numberInSiField = new NumberInSiField(prop.label);
 			numberInSiField.min = dataExtr.nullaNumber('min');
 			numberInSiField.max = dataExtr.nullaNumber('max');
 			numberInSiField.step = dataExtr.reqNumber('step');

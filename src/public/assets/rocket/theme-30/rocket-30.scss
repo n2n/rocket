@@ -6,10 +6,10 @@
  */
 
 // Core variables and mixins
-@import "custom";
 
 @import "bootstrap/functions";
-@import "bootstrap/variables";
+@import "custom";
+// @import "bootstrap/variables";
 @import "bootstrap/mixins";
 
 
@@ -74,6 +74,7 @@
 @import "dialog";
 @import "login";
 @import "tools_mailcenter";
+// @import "datepicker";
 
 @import "corrections";
 

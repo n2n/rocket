@@ -8,7 +8,6 @@
 <ng-container *ngIf="!uiLayer.currentZone; else uiZoneContent">
 	<div class="rocket-loader"></div>
 </ng-container>
-
 <ng-template #uiZoneContent>
 	<rocket-ui-zone [uiZone]="uiLayer.currentZone" class="rocket-zone"></rocket-ui-zone>
 </ng-template>

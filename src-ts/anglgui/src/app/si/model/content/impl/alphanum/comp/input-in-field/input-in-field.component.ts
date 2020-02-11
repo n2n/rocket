@@ -19,6 +19,7 @@ export class InputInFieldComponent implements OnInit {
 	}
 
 	get value() {
+		console.log(this.model.getValue());
 		return this.model.getValue();
 	}
 

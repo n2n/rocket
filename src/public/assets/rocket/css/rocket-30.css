@@ -5237,12 +5237,6 @@ body {
   margin-top: 0.5rem;
 }
 
-.rocket-main-layer,
-.rocket-layer {
-  max-height: calc(100vh - 7.75rem);
-  overflow-y: hidden;
-}
-
 .rocket-layer {
   position: absolute;
   z-index: 50;
@@ -5272,10 +5266,18 @@ body {
   background-color: #ECEBE9;
 }
 
+.rocket-zone,
 rocket-ui-layer {
   min-height: calc(100vh - 6.75rem);
-  max-height: none;
-  overflow-y: visible;
+  display: block;
+  position: relative;
+}
+
+.rocket-zone > .rocket-loader,
+rocket-ui-layer > .rocket-loader {
+  position: absolute;
+  top: calc(40vh - 25px);
+  left: calc(50% - 25px);
 }
 
 .rocket-zone > .rocket-content > .rocket-toolbar {
@@ -6243,46 +6245,60 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
 /**
  * Relation Selectors
  */
-.rocket-impl-selector > ul {
-  margin: 0 0 0.5rem 0;
-  padding: 0;
-  list-style: none;
+.rocket-to-many .rocket-selector {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: baseline;
+      -ms-flex-align: baseline;
+          align-items: baseline;
   border: 1px solid #DAD7D3;
-  max-height: 20rem;
-  overflow-y: auto;
-  overflow-x: hidden;
+  padding: 0 0 0 0.625rem;
 }
 
-.rocket-impl-selector > ul > li {
-  border-bottom: 1px solid #DAD7D3;
-  clear: both;
+.rocket-to-many .rocket-selector:not(:first-child) {
+  border-top: none;
 }
 
-.rocket-impl-selector > ul > li > span {
-  padding: 0.375rem 0.625rem;
-  display: inline-block;
+.rocket-to-many .rocket-selector:not(:last-child) {
+  border-bottom-color: #EDEBE9;
 }
 
-.rocket-impl-selector > ul > li > div {
-  float: right;
+.rocket-to-many .rocket-selector:last-child {
+  margin-bottom: 0.5rem;
 }
 
-.rocket-impl-selector > div > span {
-  display: inline-block;
-  padding: calc(0.375rem + 1px) 0;
-  padding-right: 0.5rem;
+.rocket-to-many .rocket-selector:hover {
+  background: #FBFAFA;
 }
 
-.rocket-impl-selector > div > .rocket-simple-commands {
-  display: inline-block;
+.rocket-to-many .rocket-selector > .btn {
+  margin-left: .5rem;
 }
 
-.rocket-impl-selector .btn {
-  margin-right: 0.5rem;
+.rocket-to-many .rocket-selector > .btn:not(:hover):not(:focus) {
+  color: #373431;
 }
 
-.rocket-impl-selector .btn i + span {
-  margin-left: 0.375rem;
+.rocket-to-one {
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-align: baseline;
+      -ms-flex-align: baseline;
+          align-items: baseline;
+}
+
+.rocket-to-one .rocket-selector {
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-align: baseline;
+      -ms-flex-align: baseline;
+          align-items: baseline;
 }
 
 .rocket-impl-entry-placeholder {

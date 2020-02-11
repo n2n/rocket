@@ -1,20 +1,17 @@
-
-
-<div *ngFor="let siQualifier of model.getValues()" class="rocket-impl-selector">
-	{{ siQualifier.idName }}
-	
-	<button class="btn btn-secondary" (click)="remove(siQualifier)">
-		<i class="fa fa-trash-o"></i>
-	</button>
-</div>
-
-
 <div>
-	<button class="btn btn-secondary" (click)="openOptions()">{{ 'select_txt' | translate }}</button>
+	<div *ngFor="let siQualifier of model.getValues()" class="rocket-selector">
+		{{ siQualifier.idName }}
+		
+		<button class="btn btn-link" (click)="remove(siQualifier)">
+			<i class="fa fa-trash-o"></i>
+		</button>
+	</div>
 </div>
+
+<button class="btn btn-secondary" (click)="openOptions()"><i class="fa fa-circle-o"></i> {{ 'select_txt' | translate }}</button>
 
 <div *ngIf="model.getMessages().length > 0" class="rocket-message-error">
 	<div *ngFor="let message of model.getMessages()">
-		{{ message }}
+		<rocket-ui-message *ngFor="let message of model.getMessages()" [message]="message"></rocket-ui-message>
 	</div>
 </div>

@@ -6,6 +6,7 @@ import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { SiCrumbGroup } from '../../meta/model/si-crumb';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { SiGenericValue } from '../../../si-generic-value';
+import { Message } from 'src/app/util/i18n/message';
 
 export class NumberInSiField extends InSiFieldAdapter implements InputInFieldModel {
 	public min: number|null = null;
@@ -18,12 +19,23 @@ export class NumberInSiField extends InSiFieldAdapter implements InputInFieldMod
 	public suffixAddons: SiCrumbGroup[] = [];
 
 	private _value: number|null = null;
+	
+	constructor(public label: string) {
+		super();
+		this.validate();
+	}
 
 	get value(): number|null {
 		return this._value;
 	}
 
 	set value(value: number|null) {
+		if (value === null) {
+			this._value = value;
+			this.validate();
+			return;
+		}
+		
 		if (this.min !== null && this.min >= value) {
 			this._value = this.min;
 		}
@@ -37,6 +49,7 @@ export class NumberInSiField extends InSiFieldAdapter implements InputInFieldMod
 		}
 
 		this._value = Math.round(value / this.step) * this.step;
+		this.validate();
 	}
 
 	getValue(): string {
@@ -54,9 +67,14 @@ export class NumberInSiField extends InSiFieldAdapter implements InputInFieldMod
 	setValue(valueStr: string|null) {
 		if (valueStr === null) {
 			this.value = null;
+			return;
 		}
-
-		this.value = parseFloat(valueStr);
+		
+		let value = parseFloat(valueStr)
+		if (isNaN(value)) {
+			value = null;
+		}
+		this.value = value;
 	}
 
 	getType(): string {
@@ -131,5 +149,21 @@ export class NumberInSiField extends InSiFieldAdapter implements InputInFieldMod
 		return new TypeUiContent(InputInFieldComponent, (cr) => {
 			cr.instance.model = this;
 		});
+	}
+	
+	private validate() {
+		this.messages = [];
+
+		if (this.mandatory && this.value === null) {
+			this.messages.push(Message.createCode('mandatory_err', new Map([['{field}', this.label]])));
+		}
+
+		if (this.min !== null && this.value !== null && this.value < this.min) {
+			this.messages.push(Message.createCode('min_err', new Map([['{field}', this.label], ['{min}', this.min.toString()]])));
+		}
+
+		if (this.max !== null && this.value !== null && this.value > this.max) {
+			this.messages.push(Message.createCode('max_err', new Map([['{field}', this.label], ['{max}', this.max.toString()]])));
+		}
 	}
 }

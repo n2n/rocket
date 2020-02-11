@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef } from '@angular/core';
 import { SiEntryQualifier } from 'src/app/si/model/content/si-qualifier';
 import { QualifierSelectInModel } from '../qualifier-select-in-model';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
@@ -21,9 +21,14 @@ export class QualifierSelectInFieldComponent implements OnInit {
 
 	private optionsUiLayer: PopupUiLayer|null = null;
 
-	constructor() { }
+	constructor(private elemRef: ElementRef) { }
 
 	ngOnInit() {
+		if (1 === this.model.getMax()) {
+			this.elemRef.nativeElement.classList.add('rocket-to-one');
+		} else {
+			this.elemRef.nativeElement.classList.add('rocket-to-many');
+		}
 	}
 
 	remove(siQualifier: SiEntryQualifier) {
