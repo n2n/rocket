@@ -66,6 +66,9 @@ export class StructureComponent implements OnInit, OnDestroy {
 				this.cdRef.detectChanges();
 			}
 		});
+		
+		const classList = this.elRef.nativeElement.classList;
+		classList.add('rocket-level-' + uiStructure.level);
 	}
 
 	get uiStructure(): UiStructure {

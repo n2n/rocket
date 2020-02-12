@@ -192,7 +192,6 @@
 }
 
 .rocket-enabler {
-	// position: absolute;
 	width: 100%;
 	top: 0;
 	left: 0;
@@ -202,6 +201,8 @@
 	text-align: left;
 	vertical-align: top;
 	background-color: $gray-200;
+	min-height: $input-height;
+	align-self: start,
 }
 
 

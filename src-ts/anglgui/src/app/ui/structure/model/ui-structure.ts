@@ -15,6 +15,7 @@ export class UiStructure {
 	private disabledSubscription: Subscription;
 
 	private disposedSubject = new BehaviorSubject<boolean>(false);
+	private _level: number|null = null;
 
 	constructor(readonly parent: UiStructure|null, private _zone: UiZone|null, public type: UiStructureType|null = null,
 			public label: string|null = null, model: UiStructureModel|null = null) {
@@ -37,6 +38,22 @@ export class UiStructure {
 		}
 
 		return root;
+	}
+	
+	get level(): number {
+		if (this._level !== null) {
+			return this._level;
+		}
+		
+		this._level = 0;
+		
+		let cur: UiStructure = this;
+		while (cur.parent) {
+			cur = cur.parent;
+			this._level++;
+		}
+		
+		return this._level;
 	}
 
 	containsDescendant(uiStructure: UiStructure): boolean {

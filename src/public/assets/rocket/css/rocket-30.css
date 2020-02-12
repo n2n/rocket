@@ -5079,11 +5079,18 @@ body {
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  border: solid 10px rgba(0, 0, 0, 0.1);
+  border: solid 6px rgba(0, 0, 0, 0.1);
   border-top-color: #ed8207;
   -webkit-animation: spin 1s infinite linear;
           animation: spin 1s infinite linear;
   cursor: wait;
+}
+
+.rocket-item .rocket-loader {
+  margin: 0 auto 0;
+  width: 18px;
+  height: 18px;
+  border-width: 3px;
 }
 
 .rocket-zone.rocket-loader {
@@ -5512,6 +5519,10 @@ rocket-ui-layer > .rocket-loader {
   text-align: left;
   vertical-align: top;
   background-color: #F7F5F5;
+  min-height: calc(1.5em + 0.75rem + 2px);
+  -ms-flex-item-align: start;
+      -ms-grid-row-align: start;
+      align-self: start;
 }
 
 .rocket-impl-translation-copy-control > .rocket-impl-translation-copy-menu {
@@ -5971,6 +5982,50 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
         grid-column-start: 3;
     grid-column-end: 4;
     padding: 0;
+  }
+  .rocket-item.rocket-level-2 > label {
+    padding-right: 5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .rocket-item.rocket-level-3 {
+    position: relative;
+  }
+  .rocket-item.rocket-level-3:first-child {
+    padding-top: 0;
+  }
+  .rocket-item.rocket-level-3 > label {
+    position: relative;
+    left: 0;
+    -webkit-transform: translateX(-100%);
+            transform: translateX(-100%);
+    max-width: 5rem;
+    -ms-grid-column: 1;
+        grid-column-start: 1;
+  }
+  .rocket-item.rocket-level-3 > label,
+  .rocket-item.rocket-level-3 .rocket-item > label {
+    color: #C2BDB6;
+    font-size: 0.875rem;
+    padding-right: 10px;
+  }
+  .rocket-item.rocket-level-3 > *:nth-child(2),
+  .rocket-item.rocket-level-3 > .rocket-structure-content {
+    -ms-grid-row: 1;
+        grid-row-start: 1;
+    -ms-grid-column: 1;
+        grid-column-start: 1;
+    grid-column-end: 3;
+  }
+  .rocket-item.rocket-level-4 {
+    -ms-grid-columns: 6rem 1fr auto;
+        grid-template-columns: 6rem 1fr auto;
+  }
+  .rocket-item.rocket-level-4:first-child {
+    padding-top: 0;
+  }
+  rocket-split > .rocket-item:first-child {
+    padding-top: 0;
   }
   .rocket-group:not(.rocket-light-group) .rocket-group:not(.rocket-light-group) .rocket-structure-content > .rocket-item {
     -ms-grid-columns: 14rem 1fr auto;

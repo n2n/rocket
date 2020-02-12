@@ -46,12 +46,6 @@
 
 }
 
-// .rocket-main-layer, 
-// .rocket-layer {
-// 	max-height: calc(100vh - 7.75rem);
-// 	overflow-y: hidden;
-// }
-
 .rocket-layer {
 	position: absolute;
 	z-index: 50;
@@ -78,6 +72,11 @@
 	}
 }
 
+// .rocket-main-layer, 
+// .rocket-layer {
+	// max-height: calc(100vh - 7.75rem);
+// 	overflow-y: hidden;
+// }
 
 // @deprecated - no need for targeting two classes - rocket layers get replaced
 // .rocket-main-layer.rocket-active, 
@@ -89,6 +88,7 @@
 
 
 // rocket zone also min-height?
+// rocket content also min-height?
 .rocket-zone,
 rocket-ui-layer {
 	min-height: calc(100vh - 6.75rem);
