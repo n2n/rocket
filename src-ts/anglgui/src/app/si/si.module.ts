@@ -71,7 +71,7 @@ import { EnumInComponent } from './model/content/impl/enum/comp/enum-in/enum-in.
 		LinkOutFieldComponent, CompactEntryComponent, EmbeddedEntriesInComponent, EmbeddedEntriesSummaryInComponent,
 		EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent,
 		EmbeddedEntryPanelsInComponent, ButtonControlComponent, PaginationComponent, TogglerInFieldComponent, SplitComponent,
-		SplitViewMenuComponent, CrumbGroupComponent, SplitManagerComponent
+		SplitViewMenuComponent, CrumbGroupComponent, SplitManagerComponent, EnumInComponent
 	]
 })
 export class SiModule { }

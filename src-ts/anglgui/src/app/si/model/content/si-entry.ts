@@ -6,10 +6,11 @@ import { Message } from 'src/app/util/i18n/message';
 import { SiEntryIdentifier, SiEntryQualifier } from './si-qualifier';
 import { SiEntryBuildup } from './si-entry-buildup';
 import { SiTypeQualifier } from '../meta/si-type-qualifier';
+import { Subject, BehaviorSubject, Observable } from 'rxjs';
 
 export class SiEntry {
 	public treeLevel: number|null = null;
-	private _selectedTypeId: string|null = null;
+	private selectedTypeIdSubject = new BehaviorSubject<string|null>(null);
 	public bulky = false;
 	public readOnly = true;
 	private _entryBuildupsMap = new Map<string, SiEntryBuildup>();
@@ -18,7 +19,7 @@ export class SiEntry {
 	}
 
 	private ensureBuildups() {
-		if (this._selectedTypeId) {
+		if (this._entryBuildupsMap.size > 0) {
 			return;
 		}
 
@@ -36,7 +37,7 @@ export class SiEntry {
 	get selectedTypeId(): string {
 		this.ensureBuildups();
 
-		return this._selectedTypeId;
+		return this.selectedTypeIdSubject.getValue();
 	}
 
 	set selectedTypeId(id: string) {
@@ -44,7 +45,17 @@ export class SiEntry {
 			throw new IllegalSiStateError('Buildup id does not exist on entry: ' + id);
 		}
 
-		this._selectedTypeId = id;
+		this.selectedTypeIdSubject.next(id);
+	}
+
+	get selectedTypeId$(): Observable<string> {
+		this.ensureBuildups();
+
+		return this.selectedTypeIdSubject;
+	}
+
+	isMultiType(): boolean {
+		return this._entryBuildupsMap.size > 1;
 	}
 
 	get typeQualifiers(): SiTypeQualifier[] {
@@ -61,8 +72,8 @@ export class SiEntry {
 
 	addEntryBuildup(buildup: SiEntryBuildup) {
 		this._entryBuildupsMap.set(buildup.entryQualifier.typeQualifier.id, buildup);
-		if (!this._selectedTypeId) {
-			this._selectedTypeId = buildup.entryQualifier.typeQualifier.id;
+		if (!this.selectedTypeIdSubject.getValue()) {
+			this.selectedTypeIdSubject.next(buildup.entryQualifier.typeQualifier.id);
 		}
 	}
 
@@ -85,7 +96,7 @@ export class SiEntry {
 			throw new IllegalSiStateError('No input available.');
 		}
 
-		return new SiEntryInput(this.qualifier, this._selectedTypeId, this.bulky, fieldInputMap);
+		return new SiEntryInput(this.qualifier, this.selectedTypeId, this.bulky, fieldInputMap);
 	}
 
 	handleError(error: SiEntryError) {

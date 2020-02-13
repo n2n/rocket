@@ -1,1 +1,3 @@
-<p>enum-in works!</p>
+<select [(ngModel)]="value">
+	<option *ngFor="let item of options | keyvalue" [value]="item.key">{{ item.value }}</option>
+</select>

@@ -69,7 +69,7 @@ export class EntriesListSiComp implements SiComp, EntriesListModel {
 			});
 		};
 
-		uiStrucuterModel.controls = [new TypeUiContent(PaginationComponent, (ref) => {
+		uiStrucuterModel.asideContents = [new TypeUiContent(PaginationComponent, (ref) => {
 			ref.instance.siPageCollection = this.pageCollection;
 		})];
 

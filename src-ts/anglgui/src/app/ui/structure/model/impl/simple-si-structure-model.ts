@@ -10,7 +10,7 @@ export class SimpleUiStructureModel implements UiStructureModel {
 	public destroyCallback: () => void = () => {};
 	public messagesCallback: () => Message[] = () => [];
 
-	constructor(public content: UiContent|null = null, public controls: UiContent[] = []) {
+	constructor(public content: UiContent|null = null, public asideContents: UiContent[] = []) {
 	}
 
 	init(uiStructure: UiStructure) {
@@ -26,7 +26,7 @@ export class SimpleUiStructureModel implements UiStructureModel {
 	}
 
 	getAsideContents(): UiContent[] {
-		return this.controls;
+		return this.asideContents;
 	}
 
 	getMessages(): Message[] {
