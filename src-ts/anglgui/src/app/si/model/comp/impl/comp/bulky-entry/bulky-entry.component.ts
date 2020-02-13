@@ -1,13 +1,7 @@
 import { Component, OnInit, OnDestroy, DoCheck } from '@angular/core';
 import { BulkyEntryModel } from '../bulky-entry-model';
-import { SiStructureDeclaration } from 'src/app/si/model/meta/si-structure-declaration';
 import { SiEntry } from 'src/app/si/model/content/si-entry';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
-import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
-import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
-import { StructureBranchComponent } from 'src/app/ui/structure/comp/structure-branch/structure-branch.component';
-import { SiField } from 'src/app/si/model/content/si-field';
-import { SiProp } from 'src/app/si/model/meta/si-prop';
 
 @Component({
 	selector: 'rocket-bulky-entry',

@@ -25,10 +25,10 @@ export class EmbeCollection {
 
 	initEmbe(embe: Embe, siEmbeddedEntry: SiEmbeddedEntry) {
 		const uiStructure = !this.summary
-				? this.parentUiStructure.createContentChild(null, null, siEmbeddedEntry.comp.createUiStructureModel())
+				? this.parentUiStructure.createChild(null, null, siEmbeddedEntry.comp.createUiStructureModel())
 				: null;
 		const summaryUiStructure = this.summary
-				? this.parentUiStructure.createContentChild(null, null, siEmbeddedEntry.summaryComp.createUiStructureModel())
+				? this.parentUiStructure.createChild(null, null, siEmbeddedEntry.summaryComp.createUiStructureModel())
 				: null;
 
 		// if (this.reduced) {

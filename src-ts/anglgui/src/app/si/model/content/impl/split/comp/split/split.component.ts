@@ -39,7 +39,7 @@ export class SplitComponent implements OnInit, OnDestroy, DoCheck {
 				this.model.getSplitStyle());
 
 		for (const splitOption of this.model.getSplitOptions()) {
-			const child = this.uiStructure.createContentChild(UiStructureType.ITEM, splitOption.shortLabel);
+			const child = this.uiStructure.createChild(UiStructureType.ITEM, splitOption.shortLabel);
 			this.childUiStructureMap.set(splitOption.key, child);
 			child.visible = false;
 			child.visible$.subscribe(() => {

@@ -32,6 +32,6 @@ import { NavPointDirective } from './util/directive/nav-point.directive';
 		MessageComponent,
 		NavPointDirective
 	],
-	entryComponents: [ StructureBranchComponent, PlainContentComponent ]
+	entryComponents: [ PlainContentComponent ]
 })
 export class UiModule { }

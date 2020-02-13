@@ -8,19 +8,15 @@ import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-s
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { BulkyEntryComponent } from '../comp/bulky-entry/bulky-entry.component';
 import { BulkyEntryModel } from '../comp/bulky-entry-model';
-import { SiUiStructureModelFactory } from './si-ui-structure-model-factory';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiProp } from '../../../meta/si-prop';
 import { SiField } from '../../../content/si-field';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
-import { Subscription, Observable } from 'rxjs';
-import { UiContent } from 'src/app/ui/structure/model/ui-content';
+import { Subscription } from 'rxjs';
 import { SiStructureDeclaration } from '../../../meta/si-structure-declaration';
 import { UiStructureModelAdapter } from 'src/app/ui/structure/model/impl/ui-structure-model-adapter';
-import { StructureBranchComponent } from 'src/app/ui/structure/comp/structure-branch/structure-branch.component';
 import { EnumInComponent } from '../../../content/impl/enum/comp/enum-in/enum-in.component';
 import { EnumInModel } from '../../../content/impl/enum/comp/enum-in-model';
-import { createOptional } from '@angular/compiler/src/core';
 
 export class BulkyEntrySiComp implements SiComp {
 	private _entry: SiEntry|null = null;
@@ -104,10 +100,10 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 			uiStructure.createToolbarChild(this.createTypeSwitchUiStructureModel());
 		}
 
-		this.content = new TypeUiContent(BulkyEntryComponent, (ref) => {
-			ref.instance.model = this;
-			ref.instance.uiStructure = uiStructure;
-		});
+		// this.content = new TypeUiContent(BulkyEntryComponent, (ref) => {
+		// 	ref.instance.model = this;
+		// 	ref.instance.uiStructure = uiStructure;
+		// });
 	}
 
 	private createTypeSwitchUiStructureModel() {
@@ -172,10 +168,7 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 		}
 
 		uiStructure.label = ssd.label;
-		uiStructure.model = new SimpleUiStructureModel(
-				new TypeUiContent(StructureBranchComponent, (ref) => {
-					ref.instance.uiStructure = uiStructure;
-				}));
+		uiStructure.model = new SimpleUiStructureModel();
 
 		this.createStructures(uiStructure, ssd.children, toolbarResolver);
 

@@ -17,12 +17,8 @@ export abstract class UiStructureModelAdapter implements UiStructureModel {
 
 	abstract destroy(): void;
 
-	getContent(): UiContent {
-		if (this.content) {
-			return this.content;
-		}
-
-		throw new Error('No UiContent available.');
+	getContent(): UiContent|null {
+		return this.content;
 	}
 
 	getAsideContents(): UiContent[] {

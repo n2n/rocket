@@ -33,7 +33,12 @@
 		<div *ngIf="!loaded" class="rocket-loader"></div>
 		
 		<ng-container *ngIf="loaded">
+			
 			<ng-template *ngIf="uiContent" rocketUiContent [uiContent]="uiContent"></ng-template>
+			
+			<rocket-ui-structure-branch *ngIf="uiStructure.hasContentChildren()" [uiStructure]="uiStructure">
+			</rocket-ui-structure-branch>
+			
 		</ng-container>
 	</ng-template>
 </ng-container>

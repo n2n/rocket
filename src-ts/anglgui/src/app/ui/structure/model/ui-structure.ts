@@ -10,7 +10,7 @@ export class UiStructure {
 	private children: UiStructure[] = [];
 	private visibleSubject = new BehaviorSubject<boolean>(true);
 	private toolbarChildren$ = new BehaviorSubject<UiStructure[]>([]);
-	private contentChildren: UiStructure[] = [];
+	private contentChildren$ = new BehaviorSubject<UiStructure[]>([]);
 	private disabledSubject = new BehaviorSubject<boolean>(false);
 	private disabledSubscription: Subscription;
 
@@ -82,8 +82,21 @@ export class UiStructure {
 	createContentChild(type: UiStructureType|null = null, label: string|null = null,
 			model: UiStructureModel|null = null): UiStructure {
 		const contentChild = new UiStructure(this, null, type, label, model);
-		this.contentChildren.push(contentChild);
+
+		const contentChildrean = this.contentChildren$.getValue();
+		contentChildrean.push(contentChild);
+		this.contentChildren$.next(contentChildrean);
+
 		return contentChild;
+	}
+
+	createChild(type: UiStructureType|null = null, label: string|null = null,
+			model: UiStructureModel|null = null): UiStructure {
+		return new UiStructure(this, null, type, label, model);
+	}
+
+	hasToolbarChildren(): boolean {
+		return this.getToolbarChildren().length > 0;
 	}
 
 	getToolbarChildren(): UiStructure[] {
@@ -94,8 +107,16 @@ export class UiStructure {
 		return this.toolbarChildren$;
 	}
 
+	hasContentChildren(): boolean {
+		return this.getContentChildren().length > 0;
+	}
+
 	getContentChildren(): UiStructure[] {
-		return Array.from(this.contentChildren);
+		return Array.from(this.contentChildren$.getValue());
+	}
+
+	getContentChildren$(): Observable<UiStructure[]> {
+		return this.contentChildren$;
 	}
 
 	getChildren(): UiStructure[] {
@@ -210,10 +231,12 @@ export class UiStructure {
 		}
 		this.toolbarChildren$.next(toolbarChildren);
 
-		i = this.contentChildren.indexOf(child);
+		const contentChildren = this.contentChildren$.getValue();
+		i = contentChildren.indexOf(child);
 		if (i > -1) {
-			this.contentChildren.splice(i, 1);
+			contentChildren.splice(i, 1);
 		}
+		this.contentChildren$.next(contentChildren);
 	}
 
 	get visible(): boolean {

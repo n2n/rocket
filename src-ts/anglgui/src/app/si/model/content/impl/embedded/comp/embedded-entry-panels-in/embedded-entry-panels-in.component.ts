@@ -34,7 +34,7 @@ export class EmbeddedEntryPanelsInComponent implements OnInit, OnDestroy {
 
 			const panelModel = new PanelEmbeddedEntryInModel(panel, this.model);
 
-			const structure = this.uiStructure.createContentChild(UiStructureType.SIMPLE_GROUP, panel.label,
+			const structure = this.uiStructure.createChild(UiStructureType.SIMPLE_GROUP, panel.label,
 					new SimpleUiStructureModel(
 							new TypeUiContent(EmbeddedEntriesSummaryInComponent, (ref) => {
 								ref.instance.model = panelModel;

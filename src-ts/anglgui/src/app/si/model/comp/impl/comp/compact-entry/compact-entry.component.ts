@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy, DoCheck } from '@angular/core';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
-import { SiUiStructureModelFactory } from '../../model/si-ui-structure-model-factory';
 import { SiEntry } from 'src/app/si/model/content/si-entry';
 import { CompactEntryModel } from '../compact-entry-model';
 
@@ -51,7 +50,7 @@ export class CompactEntryComponent implements OnInit, OnDestroy, DoCheck {
 		const siTypeDeclaration = this.model.getSiDeclaration().getTypeDeclarationByTypeId(siEntry.selectedTypeId);
 
 		for (const siProp of siTypeDeclaration.getSiProps()) {
-			const structure = this.uiStructure.createContentChild();
+			const structure = this.uiStructure.createChild();
 			structure.model = siEntryBuildup.getFieldById(siProp.id).createUiStructureModel();
 			this.fieldUiStructures.push(structure);
 		}
