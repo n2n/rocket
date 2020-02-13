@@ -50,6 +50,7 @@ class AddEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiCo
 	const CONTROL_DUPLICATE_DRAFT_KEY = 'duplicateDraft';
 	const CONTROL_ADD_ROOT_BRANCH_KEY = 'addRootBranch';
 	const CONTROL_INSERT_BRANCH_KEY = 'insertBranch';
+	const CONTROL_SAVE_KEY = 'save';
 
 	const PRIVILEGE_LIVE_ENTRY_KEY = 'eiEntityObj';
 	const PRIVILEGE_DRAFT_KEY = 'draft';
@@ -116,20 +117,44 @@ class AddEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiCo
 	
 	public function createGeneralGuiControls(Eiu $eiu): array {
 		if ($eiu->frame()->isExecutedBy($this)) {
-			return [];
+			return [$this->createSaveControl($eiu)];
 		}
 		
+		return  [$this->createAddControl($eiu)];
+	}
+	
+	/**
+	 * @param Eiu $eiu
+	 * @return \rocket\ei\util\control\EiuRefGuiControl
+	 */
+	private function createAddControl(Eiu $eiu) {
 		$eiuControlFactory = $eiu->guiFrame()->controlFactory($this);
 		$dtc = $eiu->dtc(Rocket::NS);
 		
 		$nestedSet = null !== $this->getWrapper()->getEiCommandCollection()->getEiMask()->getEiType()->getNestedSetStrategy();
 		
-		$controls = array();
-		
 		$key = $nestedSet ? self::CONTROL_ADD_ROOT_BRANCH_KEY : self::CONTROL_ADD_KEY;
 		$siButton = new SiButton($dtc->t($nestedSet ? 'ei_impl_add_root_branch_label' : 'common_new_entry_label'),
 				null, true, SiButton::TYPE_SUCCESS, SiIconType::ICON_PLUS_CIRCLE);
-		return [$eiuControlFactory->createCmdRef($key, $siButton)];
+		return $eiuControlFactory->createCmdRef($key, $siButton);
+	}
+	
+	/**
+	 * @param Eiu $eiu
+	 * @return \rocket\ei\util\control\EiuCallbackGuiControl
+	 */
+	private function createSaveControl(Eiu $eiu) {
+		$eiuControlFactory = $eiu->guiFrame()->controlFactory($this);
+		$dtc = $eiu->dtc(Rocket::NS);
+		
+		$siButton = SiButton::primary($dtc->t('common_save_label'), SiIconType::ICON_SAVE);
+		$callback = function (Eiu $eiu) {
+			$eiu->entry()->save();
+			
+			return $eiu->factory()->newControlResponse()->redirectBack()->highlight($eiu->entry());
+		};
+		
+		return $eiuControlFactory->createCallback(self::CONTROL_SAVE_KEY, $siButton, $callback)->setInputHandled(true);
 	}
 
 	public function getEntryGuiControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {

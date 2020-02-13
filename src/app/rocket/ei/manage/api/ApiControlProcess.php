@@ -41,6 +41,10 @@ use rocket\spec\TypePath;
 use rocket\ei\manage\frame\EiFrameUtil;
 use rocket\si\input\SiInputFactory;
 use rocket\ei\EiCommandPath;
+use rocket\ei\manage\entry\UnknownEiObjectException;
+use rocket\ei\UnknownEiTypeException;
+use rocket\ei\manage\security\InaccessibleEiEntryException;
+use n2n\web\http\ForbiddenException;
 
 class ApiControlProcess {
 	private $eiFrame;
@@ -147,12 +151,21 @@ class ApiControlProcess {
 			throw new BadRequestException(null, null, $e);
 		} catch (\InvalidArgumentException $e) {
 			throw new BadRequestException(null, null, $e);
+		} catch (UnknownEiObjectException $e) {
+			throw new BadRequestException(null, null, $e);
+		} catch (UnknownEiTypeException $e) {
+			throw new BadRequestException(null, null, $e);
+		} catch (InaccessibleEiEntryException $e) {
+			throw new ForbiddenException(null, null, $e);
 		}
 	}
 	
 	/**
 	 * @param SiInput $siInput
 	 * @return SiError|null
+	 * @throws UnknownEiObjectException
+	 * @throws UnknownEiTypeException
+	 * @throws InaccessibleEiEntryException
 	 */
 	private function applyInput($siInput) {
 		$entryErrors = [];
@@ -162,7 +175,7 @@ class ApiControlProcess {
 			if (null !== $entryInput->getIdentifier()->getId()) {
 				$eiObject = $this->eiFrameUtil->lookupEiObject($entryInput->getIdentifier()->getId());
 			} else {
-				$eiObject = $this->createEiObject($entryInput->getTypeId());
+				$eiObject = $this->eiFrameUtil->createNewEiObject($entryInput->getTypeId());
 			}
 			
 			$eiEntry = $this->eiFrame->createEiEntry($eiObject);
@@ -189,6 +202,7 @@ class ApiControlProcess {
 	/**
 	 * @param SiEntryInput $entryInput
 	 * @param EiEntryGui $eiEntryGui
+	 * @param \InvalidArgumentException
 	 */
 	private function applyEntryInput($entryInput, $eiEntryGui) {
 		$eiEntryGui->handleSiEntryInput($entryInput);
