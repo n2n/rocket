@@ -117,7 +117,7 @@ class ApiControlProcess {
 		if (!$guiControlPath->startsWith(EiCommandPath::from($this->eiFrame->getEiExecution()->getEiCommand()))) {
 			throw new BadRequestException();
 		}
-		
+		createEiEntryGuiFromEiObject
 		try {
 			if ($this->eiEntry !== null) {
 				$this->entryGuiControl = $this->guiControl = $this->eiGuiFrame->createEntryGuiControl($this->eiFrame, $guiControlPath);
@@ -177,6 +177,7 @@ class ApiControlProcess {
 			} else {
 				$eiObject = $this->eiFrameUtil->createNewEiObject($entryInput->getTypeId());
 			}
+			
 			
 			$eiEntry = $this->eiFrame->createEiEntry($eiObject);
 			

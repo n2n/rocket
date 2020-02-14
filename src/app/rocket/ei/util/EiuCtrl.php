@@ -348,7 +348,7 @@ class EiuCtrl {
 		}
 	}
 	
-	function forwardDlZone($eiEntry, bool $editable) {
+	function forwardDlZone($eiEntry, bool $editable, bool $siControlsIncluded = true) {
 		if ($this->forwardHtml()) {
 			return;
 		}
@@ -361,7 +361,7 @@ class EiuCtrl {
 		
 		$siDeclaration = $eiGui->createSiDeclaration($eiFrame);
 		
-		$comp = new BulkyEntrySiComp($siDeclaration, $eiGui->createSiEntry($eiFrame));
+		$comp = new BulkyEntrySiComp($siDeclaration, $eiGui->createSiEntry($eiFrame, $siControlsIncluded));
 		
 		$this->httpContext->getResponse()->send(
 				SiPayloadFactory::create($comp, $eiGui->getEiGuiFrame()->createGeneralSiControls($eiFrame),
@@ -369,7 +369,7 @@ class EiuCtrl {
 						$eiuEntry->createIdentityString()));
 	}
 	
-	function forwardNewEntryDlZone(bool $editable = true) {
+	function forwardNewEntryDlZone(bool $editable = true, bool $siControlsIncluded = true) {
 		if ($this->forwardHtml()) {
 			return;
 		}
@@ -414,7 +414,7 @@ class EiuCtrl {
 		$eiEntryGuiMultiResult = $eiFrameUtil->createNewEiEntryGuiMulti(true, !$editable, null, true);
 		
 		$siComp = new BulkyEntrySiComp($eiEntryGuiMultiResult->createSiDeclaration(), 
-				$eiEntryGuiMultiResult->createSiEntry(false));
+				$eiEntryGuiMultiResult->createSiEntry($siControlsIncluded));
 		
 		$generalSiControls = current($eiEntryGuiMultiResult->getEiGuiFrames())->createGeneralSiControls($eiFrame);
 		
