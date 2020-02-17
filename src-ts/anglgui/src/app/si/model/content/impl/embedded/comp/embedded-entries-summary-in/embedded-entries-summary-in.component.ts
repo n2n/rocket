@@ -1,11 +1,9 @@
-import { Component, OnInit, OnDestroy, Injector } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { EmbeddedEntriesInModel } from '../embedded-entry-in-model';
 import { EmbedInCollection } from '../embe-collection';
 import { PopupUiLayer } from 'src/app/ui/structure/model/ui-layer';
-import { EmbeddedAddPasteObtainer } from '../embedded-add-paste-obtainer';
 import { TranslationService } from 'src/app/util/i18n/translation.service';
-import { SiService } from 'src/app/si/manage/si.service';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { SiEmbeddedEntry } from '../../model/si-embedded-entry';
 import { Embe } from '../embe';
@@ -16,6 +14,7 @@ import { SiControl } from 'src/app/si/model/control/si-control';
 import { SimpleSiControl } from 'src/app/si/model/control/impl/model/simple-si-control';
 import { SiButton } from 'src/app/si/model/control/impl/model/si-button';
 import { SiEntry } from '../../../../si-entry';
+import { AddPasteObtainer } from '../add-paste-obtainer';
 
 
 @Component({
@@ -29,15 +28,14 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 
 	private embeCol: EmbedInCollection;
 	private popupUiLayer: PopupUiLayer|null = null;
-	obtainer: EmbeddedAddPasteObtainer;
+	obtainer: AddPasteObtainer;
 
-	constructor(private translationService: TranslationService, private injector: Injector) {
+	constructor(private translationService: TranslationService) {
 	}
 
 	ngOnInit() {
 		this.embeCol = new EmbedInCollection(this.uiStructure, this.model, true);
-		this.obtainer = new EmbeddedAddPasteObtainer(this.injector.get(SiService), this.model.getApiUrl(),
-				this.model.isSummaryRequired());
+		this.obtainer = this.model.getObtainer();
 
 		this.embeCol.readEmbes();
 	}
@@ -98,6 +96,10 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 				this.obtainer.val([embe.siEmbeddedEntry]);
 			}
 		});
+	}
+
+	copy(embe: Embe) {
+
 	}
 
 	openAll() {

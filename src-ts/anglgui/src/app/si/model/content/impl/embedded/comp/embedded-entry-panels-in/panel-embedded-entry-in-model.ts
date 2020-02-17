@@ -1,13 +1,13 @@
-import { EmbeddedEntriesInModel } from '../embedded-entry-in-model';
-import { SiPanel } from '../../model/si-panel';
-import { EmbeddedEntryPanelModel } from '../embedded-entry-panels-model';
-import { SiType } from 'src/app/si/model/meta/si-type';
-import { SiEmbeddedEntry } from '../../model/si-embedded-entry';
 import { SiTypeQualifier } from 'src/app/si/model/meta/si-type-qualifier';
+import { SiEmbeddedEntry } from '../../model/si-embedded-entry';
+import { EmbeddedEntryPanelInModel } from '../embedded-entry-panels-in-model';
+import { SiPanel } from '../../model/si-panel';
+import { EmbeddedEntriesInModel } from '../embedded-entry-in-model';
+import { AddPasteObtainer } from '../add-paste-obtainer';
 
 export class PanelEmbeddedEntryInModel implements EmbeddedEntriesInModel {
 
-	constructor(private panel: SiPanel, private model: EmbeddedEntryPanelModel) {
+	constructor(private panel: SiPanel, private model: EmbeddedEntryPanelInModel) {
 
 	}
 
@@ -39,15 +39,15 @@ export class PanelEmbeddedEntryInModel implements EmbeddedEntriesInModel {
 		return this.panel.values;
 	}
 
-	getApiUrl(): string {
-		return this.model.getApiUrl();
-	}
-
 	getMin(): number {
 		return this.panel.min;
 	}
 
 	getMax(): number|null {
 		return this.panel.max;
+	}
+
+	getObtainer(): AddPasteObtainer {
+		return this.model.getObtainer();
 	}
 }

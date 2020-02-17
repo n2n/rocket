@@ -124,7 +124,7 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 	}
 	
 	public function createInSiField(Eiu $eiu): SiField {
-		$choicesMap = $this->getOptions();
+		$choicesMap = $this->getEnumConfig()->getOptions();
 		foreach (array_values($choicesMap) as $value) {
 			if (!$eiu->entry()->acceptsValue($this, $value)) {
 				unset($choicesMap[$value]);
@@ -133,7 +133,7 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 		
 		if (empty($this->associatedGuiPropPathMap)) {
 			return SiFields::enumIn($choicesMap, $eiu->field()->getValue())
-					->setMandatory($this->editConfig->isMandatory());
+					->setMandatory($this->getEditConfig()->isMandatory());
 		}
 		
 		$enablerMag = new EnumTogglerMag($this->getLabelLstr(), $choicesMap, null, 

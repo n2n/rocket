@@ -61,10 +61,10 @@ class EmbeddedOneToOneEiProp extends RelationEiPropAdapter implements FieldEiPro
 	
 	function buildEiField(Eiu $eiu): ?EiField {
 		$targetEiuFrame = $eiu->frame()->forkSelect($this, $eiu->object())
-				->exec($this->getRelationModel()->getTargetReadEiCommandPath());
+				->frame()->exec($this->getRelationModel()->getTargetReadEiCommandPath());
 		
 		$field = new ToOneEiField($eiu, $targetEiuFrame, $this, $this->getRelationModel());
-		$field->setMandatory($this->editConfig->isMandatory());
+		$field->setMandatory($this->getEditConfig()->isMandatory());
 		return $field;
 	}
 }

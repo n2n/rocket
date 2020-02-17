@@ -6,12 +6,13 @@ import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { SiField } from '../../../si-field';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { EmbeddedEntriesConfig } from './embedded-entries-config';
+import { SiService } from 'src/app/si/manage/si.service';
 
 export class EmbeddedEntryInSiField extends InSiFieldAdapter	{
 
 	config = new EmbeddedEntriesConfig();
 
-	constructor(private apiUrl: string, private values: SiEmbeddedEntry[] = []) {
+	constructor(private siService: SiService, private apiUrl: string, private values: SiEmbeddedEntry[] = []) {
 		super();
 	}
 
@@ -20,10 +21,11 @@ export class EmbeddedEntryInSiField extends InSiFieldAdapter	{
 	}
 
 	createUiContent(uiStructure: UiStructure): UiContent {
-		return new EmbeddedEntriesInUiContent(this.apiUrl, this.values, uiStructure, this.config);
+		return new EmbeddedEntriesInUiContent(this.siService, this.apiUrl, this.values, uiStructure, this.config);
 	}
 
 	copy(): SiField {
 		throw new Error('not yet implemented');
 	}
+
 }

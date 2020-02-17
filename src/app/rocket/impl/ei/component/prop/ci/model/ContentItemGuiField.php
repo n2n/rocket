@@ -95,7 +95,7 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler {
 		$currentEiuEntryGuis = [];
 		foreach ($this->eiu->field()->getValue() as $eiuEntry) {
 			CastUtils::assertTrue($eiuEntry instanceof EiuEntry);
-			$currentEiuEntryGuis[] = $eiuEntry->newEntryGui(true, true);
+			$currentEiuEntryGuis[] = $eiuEntry->newGui(true, true)->entryGui();
 		}
 		
 		$orderPropPath = ContentItemsEiProp::getOrderIndexEiPropPath();
@@ -128,7 +128,7 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler {
 		return new SiEmbeddedEntry(
 				$eiuEntryGui->createBulkyEntrySiComp(false, false),
 				($this->relationModel->isReduced() ?
-						$eiuEntryGui->entry()->newEntryGui(false, false)->createCompactEntrySiComp(false, false):
+						$eiuEntryGui->entry()->newGui(false, false)->entryGui()->createCompactEntrySiComp(false, false):
 						null));
 	}
 	

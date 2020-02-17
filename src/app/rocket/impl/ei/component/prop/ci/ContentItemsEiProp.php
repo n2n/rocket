@@ -127,7 +127,7 @@ class ContentItemsEiProp extends RelationEiPropAdapter implements FieldEiProp {
 			return new RelationLinkGuiField($eiu, $this->getRelationModel());
 		}
 		
-		$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())
+		$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())->frame()
 				->exec($this->getRelationModel()->getTargetEditEiCommandPath());
 			
 		return new ContentItemGuiField($eiu, $targetEiuFrame, $this->getRelationModel(), 

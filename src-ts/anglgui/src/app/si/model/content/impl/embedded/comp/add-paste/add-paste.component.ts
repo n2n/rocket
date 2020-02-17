@@ -5,6 +5,7 @@ import { SiType } from 'src/app/si/model/meta/si-type';
 import { SiEmbeddedEntry } from '../../model/si-embedded-entry';
 import { ClipboardService } from '../../../clipboard.service';
 import { SiTypeQualifier } from 'src/app/si/model/meta/si-type-qualifier';
+import { AddPasteObtainer } from '../add-paste-obtainer';
 
 
 export enum AddPasteType {
@@ -154,8 +155,4 @@ export class AddPasteComponent implements OnInit {
 	}
 }
 
-export interface AddPasteObtainer {
-
-	obtain: (siEntryIdentifier: SiEntryIdentifier|null) => Observable<SiEmbeddedEntry>;
-}
 

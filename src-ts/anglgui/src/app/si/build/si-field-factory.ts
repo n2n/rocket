@@ -131,7 +131,8 @@ export class SiFieldFactory {
 			return qualifierSelectInSiField;
 
 		case SiFieldType.EMBEDDED_ENTRY_IN:
-			const embeddedEntryInSiField = new EmbeddedEntryInSiField(dataExtr.reqString('apiUrl'),
+			const embeddedEntryInSiField = new EmbeddedEntryInSiField(this.injector.get(SiService),
+					dataExtr.reqString('apiUrl'),
 					new SiCompFactory(this.injector).createEmbeddedEntries(dataExtr.reqArray('values')));
 			embeddedEntryInSiField.config.reduced = dataExtr.reqBoolean('reduced');
 			embeddedEntryInSiField.config.min = dataExtr.reqNumber('min');
@@ -150,7 +151,7 @@ export class SiFieldFactory {
 			return embeddedEntryInSiField;
 
 		case SiFieldType.EMBEDDED_ENTRY_PANELS_IN:
-			return new EmbeddedEntryPanelsInSiField(dataExtr.reqString('apiUrl'),
+			return new EmbeddedEntryPanelsInSiField(this.injector.get(SiService), dataExtr.reqString('apiUrl'),
 					new SiCompFactory(this.injector).createPanels(dataExtr.reqArray('panels')));
 
 		case SiFieldType.SPLIT_CONTEXT_IN:

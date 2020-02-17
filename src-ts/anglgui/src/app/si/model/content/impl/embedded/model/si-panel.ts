@@ -15,7 +15,6 @@ export class SiPanel {
 	sortable = false;
 	reduced = true;
 	pasteCategory: string|null = null;
-
 }
 
 export interface SiGridPos {

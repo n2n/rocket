@@ -2,10 +2,9 @@ import { Component, OnInit, Injector } from '@angular/core';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { EmbeddedEntriesInModel } from '../embedded-entry-in-model';
 import { EmbedInCollection } from '../embe-collection';
-import { EmbeddedAddPasteObtainer } from '../embedded-add-paste-obtainer';
-import { SiService } from 'src/app/si/manage/si.service';
 import { Embe } from '../embe';
 import { SiEmbeddedEntry } from '../../model/si-embedded-entry';
+import { AddPasteObtainer } from '../add-paste-obtainer';
 
 @Component({
 	selector: 'rocket-embedded-entries-in',
@@ -16,14 +15,13 @@ export class EmbeddedEntriesInComponent implements OnInit {
 	uiStructure: UiStructure;
 	model: EmbeddedEntriesInModel;
 	private embeCol: EmbedInCollection;
-	obtainer: EmbeddedAddPasteObtainer;
+	obtainer: AddPasteObtainer;
 
-	constructor(private injector: Injector) { }
+	constructor() { }
 
 	ngOnInit() {
 		this.embeCol = new EmbedInCollection(this.uiStructure, this.model, false);
-		this.obtainer = new EmbeddedAddPasteObtainer(this.injector.get(SiService), this.model.getApiUrl(),
-				this.model.isSummaryRequired());
+		this.obtainer = this.model.getObtainer();
 
 		this.embeCol.readEmbes();
 		this.embeCol.fillWithPlaceholderEmbes();

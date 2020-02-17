@@ -35,8 +35,10 @@ use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\impl\ei\component\prop\adapter\gui\GuiFieldProxy;
 use rocket\impl\ei\component\prop\adapter\gui\GuiFieldFactory;
 use rocket\impl\ei\component\prop\adapter\gui\GuiProps;
+use rocket\ei\manage\gui\GuiFieldAssembler;
 
-abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter implements StatelessGuiFieldDisplayable, GuiEiProp, GuiFieldFactory {
+abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter implements StatelessGuiFieldDisplayable, GuiEiProp, GuiFieldFactory,
+		GuiFieldAssembler {
 	private $displayConfig;
 
 	/**
@@ -71,7 +73,7 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 	 * @see \rocket\ei\component\prop\GuiEiProp::buildGuiProp()
 	 */
 	public function buildGuiProp(Eiu $eiu): ?GuiProp {
-		return GuiProps::configAndFactory($this->displayConfig, $this);
+		return GuiProps::configAndAssembler($this->displayConfig, $this);
 	}
 	
 	

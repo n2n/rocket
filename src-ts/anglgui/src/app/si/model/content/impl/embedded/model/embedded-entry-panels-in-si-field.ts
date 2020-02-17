@@ -1,15 +1,22 @@
 import { SiPanel } from './si-panel';
 import { InSiFieldAdapter } from '../../common/model/in-si-field-adapter';
-import { EmbeddedEntryPanelModel } from '../comp/embedded-entry-panels-model';
 import { SiField } from '../../../si-field';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { EmbeddedEntryPanelsInComponent } from '../comp/embedded-entry-panels-in/embedded-entry-panels-in.component';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
+import { SiService } from 'src/app/si/manage/si.service';
+import { EmbeddedEntryPanelInModel } from '../comp/embedded-entry-panels-in-model';
+import { EmbeddedAddPasteObtainer } from './embedded-add-paste-obtainer';
+import { AddPasteObtainer } from '../comp/add-paste-obtainer';
 
-export class EmbeddedEntryPanelsInSiField extends InSiFieldAdapter implements EmbeddedEntryPanelModel {
-	constructor(public apiUrl: string, public panels: SiPanel[]) {
+export class EmbeddedEntryPanelsInSiField extends InSiFieldAdapter implements EmbeddedEntryPanelInModel {
+	constructor(public siService: SiService, public apiUrl: string, public panels: SiPanel[]) {
 		super();
+	}
+
+	getObtainer(): AddPasteObtainer {
+		return new EmbeddedAddPasteObtainer(this.siService, this.apiUrl, true);
 	}
 
 	getPanels(): SiPanel[] {

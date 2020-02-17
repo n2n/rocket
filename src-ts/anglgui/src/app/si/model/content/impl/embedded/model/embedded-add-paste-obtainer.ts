@@ -9,11 +9,11 @@ import { SiValInstruction } from 'src/app/si/model/api/si-val-instruction';
 import { SiValGetInstruction } from 'src/app/si/model/api/si-val-get-instruction';
 import { SiValResponse } from 'src/app/si/model/api/si-val-response';
 import { SiValResult } from 'src/app/si/model/api/si-val-result';
-import { AddPasteObtainer } from './add-paste/add-paste.component';
 import { SiService } from 'src/app/si/manage/si.service';
 import { BulkyEntrySiComp } from 'src/app/si/model/comp/impl/model/bulky-entry-si-comp';
 import { CompactEntrySiComp } from 'src/app/si/model/comp/impl/model/compact-entry-si-comp';
 import { SiEmbeddedEntry } from '../model/si-embedded-entry';
+import { AddPasteObtainer } from '../comp/add-paste-obtainer';
 
 export class EmbeddedAddPasteObtainer implements AddPasteObtainer {
 	constructor(private siService: SiService, private apiUrl: string, private obtainSummary: boolean) {

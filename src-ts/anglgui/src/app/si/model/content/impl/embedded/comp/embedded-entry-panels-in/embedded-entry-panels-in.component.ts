@@ -3,12 +3,12 @@ import { EmbeddedEntriesSummaryInComponent } from '../embedded-entries-summary-i
 import { PanelEmbeddedEntryInModel } from './panel-embedded-entry-in-model';
 import { DomSanitizer } from '@angular/platform-browser';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
-import { EmbeddedEntryPanelModel } from '../embedded-entry-panels-model';
 import { SiPanel } from '../../model/si-panel';
 import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
 import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { PanelLayout } from './panel-layout';
+import { EmbeddedEntryPanelInModel } from '../embedded-entry-panels-in-model';
 
 @Component({
 	selector: 'rocket-embedded-entry-panels-in',
@@ -18,7 +18,7 @@ import { PanelLayout } from './panel-layout';
 export class EmbeddedEntryPanelsInComponent implements OnInit, OnDestroy {
 
 	uiStructure: UiStructure;
-	model: EmbeddedEntryPanelModel;
+	model: EmbeddedEntryPanelInModel;
 
 	panelLayout: PanelLayout;
 	panelDefs: Array<{ panel: SiPanel, structure: UiStructure }>;

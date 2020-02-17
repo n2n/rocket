@@ -6,11 +6,14 @@ import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { EmbeddedEntriesSummaryInComponent } from '../comp/embedded-entries-summary-in/embedded-entries-summary-in.component';
 import { EmbeddedEntriesInComponent } from '../comp/embedded-entries-in/embedded-entries-in.component';
 import { EmbeddedEntriesConfig } from './embedded-entries-config';
+import { SiService } from 'src/app/si/manage/si.service';
+import { EmbeddedAddPasteObtainer } from './embedded-add-paste-obtainer';
+import { AddPasteObtainer } from '../comp/add-paste-obtainer';
 
 export class EmbeddedEntriesInUiContent implements EmbeddedEntriesInModel {
 
-	constructor(public apiUrl: string, public values: SiEmbeddedEntry[] = [], private uiStructure: UiStructure,
-			private config: EmbeddedEntriesConfig) {
+	constructor(public siService: SiService, public apiUrl: string, public values: SiEmbeddedEntry[] = [],
+			private uiStructure: UiStructure, private config: EmbeddedEntriesConfig) {
 	}
 
 	getApiUrl(): string {
@@ -56,6 +59,10 @@ export class EmbeddedEntriesInUiContent implements EmbeddedEntriesInModel {
 
 	getAllowedSiTypeQualifiers(): SiTypeQualifier[]|null {
 		return this.config.allowedSiTypeQualifiers;
+	}
+
+	getObtainer(): AddPasteObtainer {
+		return new EmbeddedAddPasteObtainer(this.siService, this.apiUrl, this.config.reduced);
 	}
 
 	initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver/*,
