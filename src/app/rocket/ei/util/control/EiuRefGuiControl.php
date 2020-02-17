@@ -67,7 +67,7 @@ class EiuRefGuiControl implements GeneralGuiControl, EntryGuiControl, SelectionG
 		throw new NotYetImplementedException();
 	}
 
-	public function handle(EiFrame $eiFrame, EiGui $eiGui): SiResult {
+	public function handle(EiFrame $eiFrame, EiGui $eiGui, array $inputEiEntries): SiResult {
 		throw new NotYetImplementedException();
 	}
 

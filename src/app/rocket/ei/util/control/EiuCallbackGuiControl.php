@@ -37,6 +37,7 @@ use rocket\ei\manage\ManageState;
 use n2n\util\uri\Url;
 use rocket\ei\manage\gui\EiGui;
 use rocket\ei\manage\frame\EiFrame;
+use n2n\util\type\ArgUtils;
 
 class EiuCallbackGuiControl implements GeneralGuiControl, EntryGuiControl, SelectionGuiControl {
 	private $id;
@@ -96,13 +97,23 @@ class EiuCallbackGuiControl implements GeneralGuiControl, EntryGuiControl, Selec
 	 * @param Eiu $eiu
 	 * @return SiResult
 	 */
-	private function execCall(Eiu $eiu) {
-		$mmi = new MagicMethodInvoker($eiu->getN2nContext());
-		$mmi->setMethod(new \ReflectionFunction($this->callback));
-		$mmi->setClassParamObject(Eiu::class, $eiu);
-		$mmi->setReturnTypeConstraint(TypeConstraints::type(EiuControlResponse::class, true));
+	private function execCall(Eiu $eiu, ?array $inputEius) {
+		$eiuControlResponse = null;
+		$callback = $this->callback;
+		if ($inputEius === null) {
+			$eiuControlResponse = $callback($eiu);
+		} else {
+			$eiuControlResponse = $callback($eiu, $inputEius);
+		}
+		ArgUtils::valTypeReturn($eiuControlResponse, EiuControlResponse::class, null, $eiuControlResponse);
 		
-		$eiuControlResponse = $mmi->invoke();
+// 		$mmi = new MagicMethodInvoker($eiu->getN2nContext());
+// 		$mmi->setMethod(new \ReflectionFunction($this->callback));
+// 		$mmi->setClassParamObject(Eiu::class, $eiu);
+// 		$mmi->setClassParamObject($className, $obj)
+// 		$mmi->setReturnTypeConstraint(TypeConstraints::type(EiuControlResponse::class, true));
+		
+// 		$eiuControlResponse = $mmi->invoke();
 		if ($eiuControlResponse === null) {
 			$eiuControlResponse = $eiu->factory()->newControlResponse();
 		}
@@ -114,8 +125,14 @@ class EiuCallbackGuiControl implements GeneralGuiControl, EntryGuiControl, Selec
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\control\GeneralGuiControl::handle()
 	 */
-	function handle(EiFrame $eiFrame, EiGui $eiGui): SiResult {
-		return $this->execCall(new Eiu($eiFrame, $eiGui));
+	function handle(EiFrame $eiFrame, EiGui $eiGui, array $inputEiEntries): SiResult {
+		ArgUtils::valArray($inputEiEntries, EiEntry::class);
+		
+		$inputEius = array_map(function ($inputEiEntry) use ($eiFrame) { 
+			return new Eiu($eiFrame, $inputEiEntry); 
+		}, $inputEiEntries);
+		
+		return $this->execCall(new Eiu($eiFrame, $eiGui), $inputEius);
 	}
 
 	/**

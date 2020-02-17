@@ -13,12 +13,9 @@ use rocket\ei\manage\gui\control\GeneralGuiControl;
 use rocket\ei\manage\api\ApiControlCallId;
 use rocket\si\content\SiEntry;
 use rocket\si\content\SiEntryBuildup;
-use rocket\si\content\impl\basic\CompactEntrySiComp;
 use rocket\ei\EiPropPath;
-use rocket\si\content\impl\basic\BulkyEntrySiComp;
 use rocket\si\meta\SiProp;
 use rocket\si\meta\SiType;
-use rocket\ei\manage\EiUtil;
 use n2n\l10n\N2nLocale;
 
 /**
@@ -378,7 +375,7 @@ class EiGuiFrame {
 			$siControls[$guiControlPathStr] = $generalGuiControl->toSiControl(
 					new ApiControlCallId(GuiControlPath::create($guiControlPathStr), 
 							$this->guiDefinition->getEiMask()->getEiTypePath(),
-							$this->viewMode, null));
+							$this->viewMode, null, null));
 		}
 		return $siControls;
 	}
@@ -392,8 +389,6 @@ class EiGuiFrame {
 	function createGeneralGuiControl(EiFrame $eiFrame, GuiControlPath $guiControlPath) {
 		return $this->guiDefinition->createGeneralGuiControl($eiFrame, $this, $guiControlPath);
 	}
-	
-	
 	
 	/**
 	 * @return \rocket\si\content\SiEntry

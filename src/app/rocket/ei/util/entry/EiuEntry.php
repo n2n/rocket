@@ -710,8 +710,39 @@ class EiuEntry {
 		return $this->getEiEntry()->isValid();
 	}
 	
+	/**
+	 * @return boolean
+	 */
 	function save() {
-		return $this->getEiEntry()->save();
+		if (!$this->eiEntry->save()) {
+			return false;
+		}
+		
+		if (!$this->eiEntry->isNew()) {
+			return true;
+		}
+		
+		$nestedSetStrategy = $this->eiEntry->getEiType()->getNestedSetStrategy();
+		$em = $this->eiuAnalyst->getEiFrame(true)->getManageState()->getEntityManager();
+		if ($nestedSetStrategy === null) {
+			$em->persist($this->eiEntry->getEiObject()->getEiEntityObj()->getEntityObj());
+			$em->flush();
+			return true;
+		}
+		
+		throw new NotYetImplementedException();
+// 		$nsu = new NestedSetUtils($em, $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()->getEntityModel()->getClass(),
+// 				$this->nestedSetStrategy);
+		
+// 		if ($this->beforeEntityObj !== null) {
+// 			$nsu->insertBefore($entityObj, $this->beforeEntityObj);
+// 		} else if ($this->afterEntityObj !== null) {
+// 			$nsu->insertAfter($entityObj, $this->afterEntityObj);
+// 		} else {
+// 			$nsu->insert($entityObj, $this->parentEntityObj);
+// 		}
+		
+		return true;
 	}
 	
 	/**

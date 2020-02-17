@@ -31,5 +31,5 @@ interface GeneralGuiControl extends GuiControl {
 	 * @param EiGui $eiGui
 	 * @return SiResult
 	 */
-	function handle(EiFrame $eiFrame, EiGui $eiGui): SiResult;
+	function handle(EiFrame $eiFrame, EiGui $eiGui, array $inputEiEntries): SiResult;
 }

@@ -7,6 +7,7 @@ use rocket\ei\EiType;
 use n2n\l10n\Message;
 use n2n\util\uri\Url;
 use rocket\ei\manage\veto\EiLifecycleMonitor;
+use rocket\ei\manage\EiObject;
 
 class EiuControlResponse {
 	private $eiuAnalyst;
@@ -18,6 +19,11 @@ class EiuControlResponse {
 	 * @var bool
 	 */
 	private $noAutoEvents = false;
+	
+	/**
+	 * @var EiObject
+	 */
+	private $pendingHighlightEiObjects = [];
 	
 	/**
 	 * @param EiuAnalyst $eiuAnalyst
@@ -109,6 +115,11 @@ class EiuControlResponse {
 		foreach ($eiObjectArgs as $eiObjectArg) {
 			$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectArg, 'eiObjectArg', null, true);
 			
+			if (!$eiObject->getEiEntityObj()->hasId()) {
+				$this->pendingHighlightEiObjects[] = $eiObject;
+				continue;
+			}
+			
 			$this->siResult->addHighlight(
 					self::buildCategory($eiObject->getEiEntityObj()->getEiType()), 
 					$eiObject->getEiEntityObj()->getPid());
@@ -195,6 +206,11 @@ class EiuControlResponse {
 			$this->message(...$taa->getReasonMessages());
 			return;
 		}
+		
+		foreach ($this->pendingHighlightEiObjects as $eiObject) {
+			$this->highlight($eiObject);
+		}
+		$this->pendingHighlightEiObjects = [];
 		
 		foreach ($elm->getUpdateActions() as $action) {
 			$this->eiObjectMod($action->getEiObject(), SiResult::EVENT_TYPE_CHANGED);

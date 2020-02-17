@@ -148,10 +148,15 @@ class AddEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiCo
 		$dtc = $eiu->dtc(Rocket::NS);
 		
 		$siButton = SiButton::primary($dtc->t('common_save_label'), SiIconType::ICON_SAVE);
-		$callback = function (Eiu $eiu) {
-			$eiu->entry()->save();
+		$callback = function (Eiu $eiu, $inputEius) {
+			$eiuResponse = $eiu->factory()->newControlResponse()->redirectBack();
 			
-			return $eiu->factory()->newControlResponse()->redirectBack()->highlight($eiu->entry());
+			foreach ($inputEius as $inputEiu) {
+				$inputEiu->entry()->save();
+				$eiuResponse->highlight($inputEiu->entry());
+			}
+			
+			return $eiuResponse; 
 		};
 		
 		return $eiuControlFactory->createCallback(self::CONTROL_SAVE_KEY, $siButton, $callback)->setInputHandled(true);

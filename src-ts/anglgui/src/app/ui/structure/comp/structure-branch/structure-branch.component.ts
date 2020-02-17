@@ -24,7 +24,7 @@ export class StructureBranchComponent implements OnInit, OnDestroy {
 	ngOnInit() {
 		this.subscription = this.uiStructure.getContentChildren$().subscribe((contentUiStructures) => {
 			this.buildChildNodes(contentUiStructures);
-		});	
+		});
 	}
 
 	ngOnDestroy() {
