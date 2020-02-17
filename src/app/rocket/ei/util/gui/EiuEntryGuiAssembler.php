@@ -50,7 +50,7 @@ class EiuEntryGuiAssembler {
 	 */
 	public function getEiuEntryGui() {
 		if ($this->eiuEntryGui === null) {
-			$this->eiuEntryGui = new EiuEntryGui($this->eiEntryGuiAssembler->getEiEntryGui(), null, $this->eiuAnalyst);
+			$this->eiuEntryGui = new EiuEntryGui($this->eiEntryGuiAssembler->getEiEntryGui(), null, null, $this->eiuAnalyst);
 		}
 		
 		return $this->eiuEntryGui;

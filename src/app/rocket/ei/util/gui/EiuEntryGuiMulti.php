@@ -75,6 +75,6 @@ class EiuEntryGuiMulti {
 	 * @return \rocket\ei\util\gui\EiuEntryGui
 	 */
 	function selectedEntryGui() {
-		return new EiuEntryGui($this->eiEntryGuiMulti->getSelectedEiEntryGui(), null, $this->eiuAnalyst);
+		return new EiuEntryGui($this->eiEntryGuiMulti->getSelectedEiEntryGui(), null, null, $this->eiuAnalyst);
 	}
 }

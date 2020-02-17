@@ -73,7 +73,7 @@ class EiuGui {
 		$eiEntryGuis = $this->eiGui->getEiEntryGuis();
 		
 		if (count($eiEntryGuis) == 1) {
-			return new EiuEntryGui(current($eiEntryGuis), $this, $this->eiuAnalyst);
+			return new EiuEntryGui(current($eiEntryGuis), $this, null, $this->eiuAnalyst);
 		}
 		
 		if (!$required) return null;
@@ -85,7 +85,7 @@ class EiuGui {
 		$eiuEntryGuis = array();
 		
 		foreach ($this->eiGuiFrame->getEiEntryGuis() as $eiEntryGui) {
-			$eiuEntryGuis[] = new EiuEntryGui($eiEntryGui, $this, $this->eiuAnalyst);
+			$eiuEntryGuis[] = new EiuEntryGui($eiEntryGui, $this, null, $this->eiuAnalyst);
 		}
 		
 		return $eiuEntryGuis;
@@ -109,7 +109,7 @@ class EiuGui {
 		}
 		
 		return new EiuEntryGui($this->eiuAnalyst->getEiGuiFrame(true)
-				->createEiEntryGui($eiEntry, $treeLevel, true), $this, $this->eiuAnalyst);
+				->createEiEntryGui($eiEntry, $treeLevel, true), $this, null, $this->eiuAnalyst);
 	}
 	
 // 	function createCompactExplorerSiComp(int $pageSize = 30) {
