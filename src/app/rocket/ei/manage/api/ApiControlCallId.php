@@ -32,13 +32,20 @@ class ApiControlCallId implements \JsonSerializable {
 	private $eiTypePath;
 	private $viewMode;
 	private $pid;
+	private $newEiTypeId;
 	
-	function __construct(GuiControlPath $guiControlPath, TypePath $eiTypePath, int $viewMode, ?string $pid) {
+	function __construct(GuiControlPath $guiControlPath, TypePath $eiTypePath, int $viewMode, ?string $pid, 
+			?string $newEiTypeId) {
 		$this->guiControlPath = $guiControlPath;
 		ArgUtils::valEnum($viewMode, ViewMode::getAll());
 		$this->eiTypePath = $eiTypePath;
 		$this->viewMode = $viewMode;
 		$this->pid = $pid;
+		$this->newEiTypeId = $newEiTypeId;
+		
+		if ($pid !== null && $newEiTypeId !== null) {
+			throw new \InvalidArgumentException('Pid and newEiTypeId cannot be set at same time.');
+		}
 	}
 	
 	/**
@@ -69,6 +76,10 @@ class ApiControlCallId implements \JsonSerializable {
 		return $this->pid;
 	}
 	
+	function getNewEiTypeId() {
+		return $this->newEiTypeId;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @see \JsonSerializable::jsonSerialize()
@@ -94,7 +105,8 @@ class ApiControlCallId implements \JsonSerializable {
 			return new ApiControlCallId(
 					GuiControlPath::create($ds->reqString('guiControlPath')),
 					TypePath::create($ds->reqString('eiTypePath')),
-					$ds->reqInt('viewMode'), $ds->optString('pid'));
+					$ds->reqInt('viewMode'), $ds->optString('pid'),
+					$ds->optString('newEiTypeId'));
 		} catch (\n2n\util\type\attrs\AttributesException $e) {
 			throw new \InvalidArgumentException(null, null, $e);
 		}

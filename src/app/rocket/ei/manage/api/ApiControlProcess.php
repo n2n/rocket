@@ -97,8 +97,21 @@ class ApiControlProcess {
 		}
 	}
 	
+	/**
+	 * @param string $pid
+	 * @throws UnknownEiObjectException
+	 */
 	function determineEiEntry(string $pid) {
 		$eiObject = $this->eiFrameUtil->lookupEiObject($pid);
+		$this->eiEntry = $this->eiFrame->createEiEntry($eiObject);
+	}
+	
+	/**
+	 * @param string $eiTypeId
+	 * @throws UnknownEiTypeException
+	 */
+	function determineNewEiEntry(string $eiTypeId) {
+		$eiObject = $this->eiFrameUtil->createNewEiObject($eiTypeId);
 		$this->eiEntry = $this->eiFrame->createEiEntry($eiObject);
 	}
 	
@@ -117,7 +130,7 @@ class ApiControlProcess {
 		if (!$guiControlPath->startsWith(EiCommandPath::from($this->eiFrame->getEiExecution()->getEiCommand()))) {
 			throw new BadRequestException();
 		}
-		createEiEntryGuiFromEiObject
+		
 		try {
 			if ($this->eiEntry !== null) {
 				$this->entryGuiControl = $this->guiControl = $this->eiGuiFrame->createEntryGuiControl($this->eiFrame, $guiControlPath);
@@ -166,11 +179,20 @@ class ApiControlProcess {
 	 * @throws UnknownEiObjectException
 	 * @throws UnknownEiTypeException
 	 * @throws InaccessibleEiEntryException
+	 * @throws \InvalidArgumentException
 	 */
 	private function applyInput($siInput) {
 		$entryErrors = [];
 		
 		foreach ($siInput->getEntryInputs() as $key => $entryInput) {
+			$eiEntryGui = null;
+			if ($this->eiEntry !== null) {
+				if ($this->eiEntry->getPid() !== $entryInput->getIdentifier()->getId()) {
+					throw new \InvalidArgumentException('EntryInput id missmatch. Id: ' + $this->eiEntry->getPid() 
+							. ' Entry Input Id: ' . $entryInput->getIdentifier()->getId());
+				}
+			}
+			
 			$eiObject = null;
 			if (null !== $entryInput->getIdentifier()->getId()) {
 				$eiObject = $this->eiFrameUtil->lookupEiObject($entryInput->getIdentifier()->getId());
