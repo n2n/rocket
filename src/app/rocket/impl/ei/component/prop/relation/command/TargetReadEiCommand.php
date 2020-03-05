@@ -23,8 +23,6 @@ namespace rocket\impl\ei\component\prop\relation\command;
 
 use rocket\impl\ei\component\command\EiCommandAdapter;
 use rocket\ei\component\command\PrivilegedEiCommand;
-use rocket\ei\manage\security\privilege\EiCommandPrivilege;
-use rocket\ei\util\Eiu;
 use n2n\l10n\Lstr;
 
 class TargetReadEiCommand extends EiCommandAdapter implements PrivilegedEiCommand {
@@ -40,7 +38,7 @@ class TargetReadEiCommand extends EiCommandAdapter implements PrivilegedEiComman
 		return $this->idBase;
 	}
 	
-	public function createEiCommandPrivilege(Eiu $eiu): EiCommandPrivilege {
-		return $eiu->factory()->newCommandPrivilege($this->privilegeLabelLstr);
-	}
+// 	public function createEiCommandPrivilege(Eiu $eiu): EiCommandPrivilege {
+// 		return $eiu->factory()->newCommandPrivilege($this->privilegeLabelLstr);
+// 	}
 }

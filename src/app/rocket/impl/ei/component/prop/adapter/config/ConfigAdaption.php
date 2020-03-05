@@ -27,6 +27,7 @@ use n2n\persistence\meta\structure\Column;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\component\InvalidEiComponentConfigurationException;
 use n2n\reflection\property\AccessProxy;
+use n2n\util\ex\IllegalStateException;
 
 abstract class ConfigAdaption implements EiPropConfiguratorAdaption {
 	
@@ -50,6 +51,15 @@ abstract class ConfigAdaption implements EiPropConfiguratorAdaption {
 	 */
 	function assignProperty(PropertyAssignation $propertyAssignation) {
 		$this->propertyAssignation = $propertyAssignation;
+	}
+	
+	protected function getPropertyAssignation() {
+		if ($this->propertyAssignation !== null) {
+			return $this->propertyAssignation;
+		}
+		
+		throw new IllegalStateException('PropertyAssignation not available.');
+		
 	}
 	
 	/**

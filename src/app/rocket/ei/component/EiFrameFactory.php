@@ -120,8 +120,6 @@ class EiFrameFactory {
 		$forkedEiFrame->setBaseUrl($parentEiFrame->getForkUrl(null, $eiPropPath,
 				$eiForkLink->getMode(), $eiForkLink->getParentEiObject()));
 		
-		
-		
 		return $forkedEiFrame;
 	}
 }

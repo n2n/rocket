@@ -26,11 +26,17 @@ use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use n2n\util\type\ArgUtils;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
+use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
+use rocket\ei\manage\gui\ViewMode;
+use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 
-class ManyToManySelectEiProp extends RelationEiPropAdapter {
+class ManyToManyPickEiProp extends RelationEiPropAdapter {
 	
 	public function __construct() {
 		parent::__construct();
+		
+		$this->setup(new DisplayConfig(ViewMode::all()),
+				new RelationModel($this, true, true, RelationModel::MODE_PICK, new EditConfig()));
 	}
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {
@@ -38,7 +44,5 @@ class ManyToManySelectEiProp extends RelationEiPropAdapter {
 				&& $entityProperty->getType() === RelationEntityProperty::TYPE_MANY_TO_MANY);
 	
 		parent::setEntityProperty($entityProperty);
-		
-		$this->setRelationModel(new RelationModel($entityProperty, true, true, RelationModel::MODE_PICK, $this->editConfig));
 	}
 }
