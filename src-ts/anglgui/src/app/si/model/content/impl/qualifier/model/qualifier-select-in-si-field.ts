@@ -13,7 +13,7 @@ export class QualifierSelectInSiField extends InSiFieldAdapter implements Qualif
 	public min = 0;
 	public max: number|null = null;
 
-	constructor(public apiUrl: string, public values: SiEntryQualifier[] = []) {
+	constructor(public apiUrl: string, public label: string, public values: SiEntryQualifier[] = []) {
 		super();
 	}
 
@@ -46,16 +46,22 @@ export class QualifierSelectInSiField extends InSiFieldAdapter implements Qualif
 		this.messages = [];
 
 		if (this.values.length < this.min) {
-			this.messages.push(Message.createText('min front err'));
+			if (this.max === 1 || this.min === 1) {
+				this.messages.push(Message.createCode('mandatory_err', new Map([['{field}', this.label]])));
+			} else {
+				this.messages.push(Message.createCode('min_elements_err',
+						new Map([['{min}', this.min.toString()], ['{field}', this.label]])));
+			}
 		}
 
 		if (this.max && this.values.length > this.max) {
-			this.messages.push(Message.createText('max front err'));
+			this.messages.push(Message.createCode('max_elements_err',
+						new Map([['{max}', this.max.toString()], ['{field}', this.label]])));
 		}
 	}
 
 	copy() {
-		const copy = new QualifierSelectInSiField(this.apiUrl, this.values);
+		const copy = new QualifierSelectInSiField(this.apiUrl, this.label, this.values);
 		copy.min = this.min;
 		copy.max = this.max;
 		return copy;

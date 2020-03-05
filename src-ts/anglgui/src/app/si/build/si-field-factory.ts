@@ -124,7 +124,7 @@ export class SiFieldFactory {
 			return enumInSiField;
 
 		case SiFieldType.QUALIFIER_SELECT_IN:
-			const qualifierSelectInSiField = new QualifierSelectInSiField(dataExtr.reqString('apiUrl'),
+			const qualifierSelectInSiField = new QualifierSelectInSiField(dataExtr.reqString('apiUrl'), prop.label,
 					SiCompFactory.createEntryQualifiers(dataExtr.reqArray('values')));
 			qualifierSelectInSiField.min = dataExtr.reqNumber('min');
 			qualifierSelectInSiField.max = dataExtr.nullaNumber('max');

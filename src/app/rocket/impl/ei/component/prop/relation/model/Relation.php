@@ -61,7 +61,7 @@ class Relation {
 		
 		if ($eiForkLink->getMode() == EiForkLink::MODE_SELECT && !$this->relationModel->isSourceMany()
 				&& null !== ($eiuEntry = $eiu->entry(false)) && $this->relationModel->isFiltered()) {
-					$this->applyOneToTargetSelectConstraints($targetEiuFrame, $eiuEntry);
+			$this->applyOneToTargetSelectConstraints($targetEiuFrame, $eiuEntry);
 		} else if (null !== ($eiuObject = $eiu->object(false))) {
 			$this->applyTargetCriteriaFactory($targetEiuFrame, $eiuObject);
 		}
@@ -69,8 +69,6 @@ class Relation {
 		if ($eiForkLink->getMode() != EiForkLink::MODE_SELECT && null !== ($eiuEntry = $eiu->entry(false))) {
 			$this->applyTargetModificators($targetEiuFrame, $eiu->frame(), $eiuEntry);
 		}
-		
-		
 		
 		return $targetEiuFrame->getEiFrame();
 	}
