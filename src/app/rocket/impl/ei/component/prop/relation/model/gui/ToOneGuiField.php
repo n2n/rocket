@@ -49,6 +49,7 @@ class ToOneGuiField implements GuiField {
 		$this->eiu = $eiu;
 		
 		$this->targetEiu = $eiu->frame()->forkSelect($eiu->prop()->getPath(), $eiu->entry());
+		$this->targetEiu->frame()->exec($relationModel->getTargetReadEiCommandPath());
 		
 		$values = [];
 		if (null !== ($eiuEntry = $eiu->field()->getValue())) {
@@ -69,8 +70,8 @@ class ToOneGuiField implements GuiField {
 			return;
 		}
 		
-		$id = $this->targetEiuFrame->siQualifierToId(current($siQualifiers));
-		$value = $this->targetEiuFrame->lookupEntry($id);
+		$id = $this->targetEiu->frame()->siQualifierToId(current($siQualifiers));
+		$value = $this->targetEiu->frame()->lookupEntry($id);
 		$this->eiu->field()->setValue($value);
 	}
 

@@ -58,7 +58,11 @@ class Relation {
 	function createForkEiFrame(Eiu $eiu, EiForkLink $eiForkLink) {
 		$targetEiuFrame = $this->relationModel->getTargetEiuEngine()->newFrame($eiForkLink);
 		
-		if (null !== ($eiuObject = $eiu->object(false))) {
+		
+		if ($eiForkLink->getMode() == EiForkLink::MODE_SELECT && !$this->relationModel->isSourceMany()
+				&& null !== ($eiuEntry = $eiu->entry(false)) && $this->relationModel->isFiltered()) {
+					$this->applyOneToTargetSelectConstraints($targetEiuFrame, $eiuEntry);
+		} else if (null !== ($eiuObject = $eiu->object(false))) {
 			$this->applyTargetCriteriaFactory($targetEiuFrame, $eiuObject);
 		}
 		
@@ -66,10 +70,7 @@ class Relation {
 			$this->applyTargetModificators($targetEiuFrame, $eiu->frame(), $eiuEntry);
 		}
 		
-		if ($eiForkLink->getMode() == EiForkLink::MODE_SELECT && !$this->relationModel->isSourceMany()
-				&& null !== ($eiuEntry = $eiu->entry(false)) && $this->relationModel->isFiltered()) {
-			$this->applyOneToTargetSelectConstraints($targetEiuFrame, $eiuEntry);
-		}
+		
 		
 		return $targetEiuFrame->getEiFrame();
 	}
