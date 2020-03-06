@@ -3,7 +3,9 @@ import { Message } from 'src/app/util/i18n/message';
 import { SiEntryBuildup } from './si-entry-buildup';
 import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
 import { Observable } from 'rxjs';
-import { SiGenericValue } from './si-generic-value';
+import { SiGenericValue } from '../generic/si-generic-value';
+import { GenericMissmatchError } from '../generic/generic-missmatch-error';
+import { Fresult } from 'src/app/util/err/fresult';
 
 export interface SiField {
 
@@ -25,11 +27,11 @@ export interface SiField {
 
 	getDisabled$(): Observable<boolean>;
 
-	copy(entryBuildUp: SiEntryBuildup): SiField;
+	// copy(entryBuildUp: SiEntryBuildup): SiField;
 
 	isGeneric(): boolean;
 
 	readGenericValue(): SiGenericValue;
 
-	writeGenericValue(genericValue: SiGenericValue): boolean;
+	writeGenericValue(genericValue: SiGenericValue): Fresult<GenericMissmatchError>;
 }

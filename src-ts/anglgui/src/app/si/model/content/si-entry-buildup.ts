@@ -5,6 +5,11 @@ import { SiField } from './si-field';
 import { BehaviorSubject } from 'rxjs';
 import { SiEntryQualifier } from './si-qualifier';
 import { IllegalSiStateError } from '../../util/illegal-si-state-error';
+import { SiGenericEntry } from '../generic/si-generic-entry';
+import { SiGenericEntryBuildup } from '../generic/si-generic-entry-buildup';
+import { GenericMissmatchError } from '../generic/generic-missmatch-error';
+import { Fresult } from 'src/app/util/err/fresult';
+import { SiGenericValue } from '../generic/si-generic-value';
 
 export class SiEntryBuildup {
 	public messages: Message[] = [];
@@ -43,23 +48,50 @@ export class SiEntryBuildup {
 		return new Map(this.fieldMap$.getValue());
 	}
 
-	copy(): SiEntryBuildup {
-		const copy = new SiEntryBuildup(this.entryQualifier);
+	// copy(): SiEntryBuildup {
+	// 	const copy = new SiEntryBuildup(this.entryQualifier);
 
-		const fieldMapCopy = new Map<string, SiField>();
-		for (const [key, value] of this.fieldMap$.getValue()) {
-			fieldMapCopy.set(key, value.copy(copy));
+	// 	const fieldMapCopy = new Map<string, SiField>();
+	// 	for (const [key, value] of this.fieldMap$.getValue()) {
+	// 		fieldMapCopy.set(key, value.copy(copy));
+	// 	}
+	// 	copy.fieldMap = fieldMapCopy;
+
+	// 	const controlsCopy = new Array<SiControl>();
+	// 	for (const value of this.controls) {
+	// 		controlsCopy.push(value);
+	// 	}
+
+	// 	copy.controls = controlsCopy;
+	// 	copy.messages = this.messages;
+
+	// 	return copy;
+	// }
+
+	readGeneric(): SiGenericEntryBuildup {
+		const fieldValuesMap = new Map<string, SiGenericValue>();
+		for (const [fieldId, field] of this.fieldMap$.getValue()) {
+			fieldValuesMap.set(fieldId, field.readGenericValue());
 		}
-		copy.fieldMap = fieldMapCopy;
 
-		const controlsCopy = new Array<SiControl>();
-		for (const value of this.controls) {
-			controlsCopy.push(value);
+		return new SiGenericEntryBuildup(this.entryQualifier, fieldValuesMap);
+	}
+
+	writeGeneric(genericEntryBuildup: SiGenericEntryBuildup): Fresult<GenericMissmatchError> {
+		if (!genericEntryBuildup.entryQualifier.equals(this.entryQualifier)) {
+			throw new GenericMissmatchError('SiEntryBuildup missmacht: '
+					+ genericEntryBuildup.entryQualifier.toString() + ' != ' + this.entryQualifier.toString());
 		}
 
-		copy.controls = controlsCopy;
-		copy.messages = this.messages;
+		for (const [fieldId, genericValue] of genericEntryBuildup.fieldValuesMap) {
+			if (this.fieldMap.has(fieldId)) {
+				const fresult = this.fieldMap.get(fieldId).writeGenericValue(genericValue);
+				if (!fresult.isValid()) {
+					return fresult;
+				}
+			}
+		}
 
-		return copy;
+		return Fresult.success();
 	}
 }

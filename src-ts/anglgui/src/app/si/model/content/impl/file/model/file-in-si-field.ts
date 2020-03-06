@@ -6,6 +6,9 @@ import { FileInFieldComponent } from '../comp/file-in-field/file-in-field.compon
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
+import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
+import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
+import { Fresult } from 'src/app/util/err/fresult';
 
 export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel {
 
@@ -69,6 +72,14 @@ export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel 
 
 	getMaxSize(): number {
 		return this.maxSize;
+	}
+
+	readGenericValue(): SiGenericValue {
+		throw new Error('Not yet implemented');
+	}
+
+	writeGenericValue(genericValue: SiGenericValue): Fresult<GenericMissmatchError> {
+		throw new Error('Not yet implemented');
 	}
 }
 

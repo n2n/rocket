@@ -4,6 +4,9 @@ import { InSiFieldAdapter } from '../../common/model/in-si-field-adapter';
 import { SelectInFieldModel } from '../comp/select-in-field-model';
 import { SiField } from '../../../si-field';
 import { SelectInFieldComponent } from '../comp/select-in-field/select-in-field.component';
+import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
+import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
+import { Fresult } from 'src/app/util/err/fresult';
 
 export class EnumInSiField extends InSiFieldAdapter implements SelectInFieldModel {
 	public mandatory = false;
@@ -44,5 +47,13 @@ export class EnumInSiField extends InSiFieldAdapter implements SelectInFieldMode
 		return new TypeUiContent(SelectInFieldComponent, (ref) => {
 			ref.instance.model = this;
 		});
+	}
+
+	readGenericValue(): SiGenericValue {
+		throw new Error('Not yet implemented');
+	}
+
+	writeGenericValue(genericValue: SiGenericValue): Fresult<GenericMissmatchError> {
+		throw new Error('Not yet implemented');
 	}
 }

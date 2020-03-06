@@ -9,6 +9,9 @@ import { SiService } from 'src/app/si/manage/si.service';
 import { EmbeddedEntryPanelInModel } from '../comp/embedded-entry-panels-in-model';
 import { EmbeddedAddPasteObtainer } from './embedded-add-paste-obtainer';
 import { AddPasteObtainer } from '../comp/add-paste-obtainer';
+import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
+import { Fresult } from 'src/app/util/err/fresult';
+import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
 
 export class EmbeddedEntryPanelsInSiField extends InSiFieldAdapter implements EmbeddedEntryPanelInModel {
 	constructor(public siService: SiService, public apiUrl: string, public panels: SiPanel[]) {
@@ -40,5 +43,13 @@ export class EmbeddedEntryPanelsInSiField extends InSiFieldAdapter implements Em
 			ref.instance.model = this;
 			ref.instance.uiStructure = uiStructure;
 		});
+	}
+
+	readGenericValue(): SiGenericValue {
+		throw new Error('Not yet implemented.');
+	}
+
+	writeGenericValue(genericValue: SiGenericValue): Fresult<GenericMissmatchError> {
+		throw new Error('Not yet implemented.');
 	}
 }

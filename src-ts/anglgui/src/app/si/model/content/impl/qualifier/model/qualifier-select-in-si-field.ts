@@ -7,6 +7,9 @@ import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { QualifierSelectInFieldComponent } from '../comp/qualifier-select-in-field/qualifier-select-in-field.component';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
+import { Fresult } from 'src/app/util/err/fresult';
+import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
+import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
 
 export class QualifierSelectInSiField extends InSiFieldAdapter implements QualifierSelectInModel {
 
@@ -74,16 +77,11 @@ export class QualifierSelectInSiField extends InSiFieldAdapter implements Qualif
 		});
 	}
 
-// 	initComponent(viewContainerRef: ViewContainerRef,
-// 			componentFactoryResolver: ComponentFactoryResolver,
-// 			commanderService: SiUiService): ComponentRef<any> {
-// 		const componentFactory = componentFactoryResolver.resolveComponentFactory(QualifierSelectInFieldComponent);
-//
-// 		const componentRef = viewContainerRef.createComponent(componentFactory);
-//
-// 		const component = componentRef.instance;
-// 		component.model = this;
-//
-// 		return componentRef;
-// 	}
+	readGenericValue(): SiGenericValue {
+		throw new Error('Not yet implemented');
+	}
+
+	writeGenericValue(genericValue: SiGenericValue): Fresult<GenericMissmatchError> {
+		throw new Error('Not yet implemented');
+	}
 }

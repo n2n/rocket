@@ -4,6 +4,9 @@ import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { TogglerInFieldComponent } from './comp/toggler-in-field/toggler-in-field.component';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { TogglerInModel } from './comp/toggler-in-model';
+import { SiGenericValue } from '../../../generic/si-generic-value';
+import { Fresult } from 'src/app/util/err/fresult';
+import { GenericMissmatchError } from '../../../generic/generic-missmatch-error';
 
 export class BooleanInSiField extends InSiFieldAdapter implements TogglerInModel {
 
@@ -64,5 +67,18 @@ export class BooleanInSiField extends InSiFieldAdapter implements TogglerInModel
 		return new TypeUiContent(TogglerInFieldComponent, (ref) => {
 			ref.instance.model = this;
 		});
+	}
+
+	readGenericValue(): SiGenericValue {
+		return new SiGenericValue(new Boolean(this.value));
+	}
+
+	writeGenericValue(genericValue: SiGenericValue): Fresult<GenericMissmatchError> {
+		if (genericValue.isInstanceOf(Boolean)) {
+			this.setValue(genericValue.readInstance(Boolean).valueOf());
+			return Fresult.success();
+		}
+
+		return Fresult.error(new GenericMissmatchError('Boolean expected.'));
 	}
 }

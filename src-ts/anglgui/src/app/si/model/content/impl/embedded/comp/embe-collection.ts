@@ -4,6 +4,7 @@ import { EmbeddedEntriesInModel } from './embedded-entry-in-model';
 import { SiEntry } from 'src/app/si/model/content/si-entry';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiEmbeddedEntry } from '../model/si-embedded-entry';
+import { SiGenericEntry } from 'src/app/si/model/generic/si-generic-entry';
 
 export class EmbeCollection {
 	public embes: Embe[] = [];
@@ -77,10 +78,10 @@ export class EmbedInCollection extends EmbeCollection {
 		super(parentUiStructure, inModel, summary);
 	}
 
-	copyEntries(): SiEntry[] {
-		const entries: SiEntry[] = [];
+	copyEntries(): SiGenericEntry[] {
+		const entries: SiGenericEntry[] = [];
 		for (const embe of this.embes) {
-			entries.push(embe.siEntry.copy());
+			entries.push(embe.siEntry.readGeneric());
 		}
 		return entries;
 	}

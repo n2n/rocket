@@ -5,8 +5,10 @@ import { SiField } from '../../../si-field';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { SiCrumbGroup } from '../../meta/model/si-crumb';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
-import { SiGenericValue } from '../../../si-generic-value';
 import { Message } from 'src/app/util/i18n/message';
+import { Fresult } from 'src/app/util/err/fresult';
+import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
+import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
 
 export class NumberInSiField extends InSiFieldAdapter implements InputInFieldModel {
 	public min: number|null = null;
@@ -131,18 +133,18 @@ export class NumberInSiField extends InSiFieldAdapter implements InputInFieldMod
 		return new SiGenericValue(this.value === null ? null : new Number(this.value));
 	}
 
-	writeGenericValue(genericValue: SiGenericValue): boolean {
+	writeGenericValue(genericValue: SiGenericValue): Fresult<GenericMissmatchError> {
 		if (genericValue.isNull()) {
 			this.value = null;
-			return true;
+			return Fresult.success();
 		}
 
 		if (genericValue.isInstanceOf(Number)) {
 			this.value = genericValue.readInstance(Number).valueOf();
-			return true;
+			return Fresult.success();
 		}
 
-		return false;
+		return Fresult.error(new GenericMissmatchError('Number expected.'));
 	}
 
 	createUiContent(): UiContent {

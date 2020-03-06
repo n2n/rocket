@@ -6,7 +6,9 @@ import { LinkOutFieldComponent } from '../comp/link-out-field/link-out-field.com
 import { SiField } from '../../../si-field';
 import { UiNavPoint } from 'src/app/ui/util/model/ui-nav-point';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
-import { SiGenericValue } from '../../../si-generic-value';
+import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
+import { Fresult } from 'src/app/util/err/fresult';
+import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
 
 export class LinkOutSiField extends OutSiFieldAdapter implements LinkOutModel {
 
@@ -44,5 +46,13 @@ export class LinkOutSiField extends OutSiFieldAdapter implements LinkOutModel {
 
 	copy(): SiField {
 		return new LinkOutSiField(this.navPoint, this.label);
+	}
+
+	readGenericValue(): SiGenericValue {
+		throw new Error('Not yet implemented');
+	}
+
+	writeGenericValue(genericValue: SiGenericValue): Fresult<GenericMissmatchError> {
+		throw new Error('Not yet implemented');
 	}
 }

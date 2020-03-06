@@ -7,6 +7,9 @@ import { SiField } from '../../../si-field';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { EmbeddedEntriesConfig } from './embedded-entries-config';
 import { SiService } from 'src/app/si/manage/si.service';
+import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
+import { Fresult } from 'src/app/util/err/fresult';
+import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
 
 export class EmbeddedEntryInSiField extends InSiFieldAdapter	{
 
@@ -24,8 +27,15 @@ export class EmbeddedEntryInSiField extends InSiFieldAdapter	{
 		return new EmbeddedEntriesInUiContent(this.siService, this.apiUrl, this.values, uiStructure, this.config);
 	}
 
-	copy(): SiField {
-		throw new Error('not yet implemented');
+	// copy(): SiField {
+	// 	throw new Error('not yet implemented');
+	// }
+
+	readGenericValue(): SiGenericValue {
+		return new SiGenericValue(this.values.map(embeddedEntry => embeddedEntry.readGeneric()));
 	}
 
+	writeGenericValue(genericValue: SiGenericValue): Fresult<GenericMissmatchError> {
+		throw new Error('Not yet implemented.');
+	}
 }

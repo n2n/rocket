@@ -8,6 +8,9 @@ import { SplitContextSiField, SplitStyle } from './split-context-si-field';
 import { SiEntry } from '../../../si-entry';
 import { SplitComponent } from '../comp/split/split.component';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
+import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
+import { Fresult } from 'src/app/util/err/fresult';
+import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
 
 export class SplitSiField extends SiFieldAdapter implements SplitModel {
 
@@ -77,5 +80,13 @@ export class SplitSiField extends SiFieldAdapter implements SplitModel {
 
 			return entry.selectedEntryBuildup.getFieldById(this.refPropId);
 		});
+	}
+
+	readGenericValue(): SiGenericValue {
+		throw new Error('Not yet implemented');
+	}
+
+	writeGenericValue(genericValue: SiGenericValue): Fresult<GenericMissmatchError, void> {
+		throw new Error('Not yet implemented');
 	}
 }

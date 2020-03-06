@@ -15,6 +15,7 @@ import { SimpleSiControl } from 'src/app/si/model/control/impl/model/simple-si-c
 import { SiButton } from 'src/app/si/model/control/impl/model/si-button';
 import { SiEntry } from '../../../../si-entry';
 import { AddPasteObtainer } from '../add-paste-obtainer';
+import { SiGenericEntry } from 'src/app/si/model/generic/si-generic-entry';
 
 
 @Component({
@@ -75,7 +76,7 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 		}
 
 		const uiZone = this.uiStructure.getZone();
-		let bakEntry = embe.siEmbeddedEntry.entry.copy();
+		let bakEntry = embe.siEmbeddedEntry.entry.readGeneric();
 
 		this.popupUiLayer = uiZone.layer.container.createLayer();
 		const zone = this.popupUiLayer.pushZone(null);
@@ -91,7 +92,7 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 		this.popupUiLayer.onDispose(() => {
 			this.popupUiLayer = null;
 			if (bakEntry) {
-				embe.siEmbeddedEntry.entry = bakEntry;
+				embe.siEmbeddedEntry.entry.writeGeneric(bakEntry).throwIfError();
 			} else {
 				this.obtainer.val([embe.siEmbeddedEntry]);
 			}
@@ -161,11 +162,11 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 		];
 	}
 
-	private resetEmbeCol(bakEmbes: Embe[], bakEntries: SiEntry[]) {
+	private resetEmbeCol(bakEmbes: Embe[], bakEntries: SiGenericEntry[]) {
 		this.embeCol.clearEmbes();
 
 		bakEmbes.forEach((embe, i) => {
-			embe.siEmbeddedEntry.entry = bakEntries[i];
+			embe.siEmbeddedEntry.entry.writeGeneric(bakEntries[i]).throwIfError();
 
 			this.embeCol.initEmbe(this.embeCol.createEmbe(), embe.siEmbeddedEntry);
 		});

@@ -7,6 +7,10 @@ import { SiEntryIdentifier, SiEntryQualifier } from './si-qualifier';
 import { SiEntryBuildup } from './si-entry-buildup';
 import { SiTypeQualifier } from '../meta/si-type-qualifier';
 import { Subject, BehaviorSubject, Observable } from 'rxjs';
+import { SiGenericEntry } from '../generic/si-generic-entry';
+import { SiGenericEntryBuildup } from '../generic/si-generic-entry-buildup';
+import { GenericMissmatchError } from '../generic/generic-missmatch-error';
+import { Fresult } from 'src/app/util/err/fresult';
 
 export class SiEntry {
 	public treeLevel: number|null = null;
@@ -135,15 +139,46 @@ export class SiEntry {
 		return this.qualifier.toString();
 	}
 
-	copy(): SiEntry {
-		const entry = new SiEntry(this.identifier);
-		entry.treeLevel = this.treeLevel;
+	// copy(): SiEntry {
+	// 	const entry = new SiEntry(this.identifier);
+	// 	entry.treeLevel = this.treeLevel;
 
-		for (const buildup of this._entryBuildupsMap.values()) {
-			entry.addEntryBuildup(buildup.copy());
+	// 	for (const buildup of this._entryBuildupsMap.values()) {
+	// 		entry.addEntryBuildup(buildup.copy());
+	// 	}
+
+	// 	entry.selectedTypeId = this.selectedTypeId;
+	// 	return entry;
+	// }
+
+	readGeneric(): SiGenericEntry|null {
+		const genericBuildupsMap = new Map<string, SiGenericEntryBuildup>();
+		for (const [typeId, entryBuildup] of this._entryBuildupsMap) {
+			genericBuildupsMap.set(typeId, entryBuildup.readGeneric());
 		}
 
-		entry.selectedTypeId = this.selectedTypeId;
-		return entry;
+		return new SiGenericEntry(this.identifier, this.selectedTypeId, genericBuildupsMap);
+	}
+
+	writeGeneric(genericEntry: SiGenericEntry): Fresult<GenericMissmatchError> {
+		if (!genericEntry.identifier.equals(this.identifier)) {
+			throw new GenericMissmatchError('SiEntry missmacht: '
+					+ genericEntry.identifier.toString() + ' != ' + this.identifier.toString());
+		}
+
+		if (genericEntry.bulky !== this.bulky || genericEntry.readOnly !== this.readOnly) {
+			throw new GenericMissmatchError('SiEntry missmatch.');
+		}
+
+		for (const [typeId, genericEntryBuildup] of genericEntry.entryBuildupsMap) {
+			if (this._entryBuildupsMap.has(typeId)) {
+				const fresult = this._entryBuildupsMap.get(typeId).writeGeneric(genericEntryBuildup);
+				if (!fresult.isValid()) {
+					return fresult;
+				}
+			}
+		}
+
+		return Fresult.success();
 	}
 }

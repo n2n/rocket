@@ -8,8 +8,9 @@ import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model'
 import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
-import { SiGenericValue } from '../../../si-generic-value';
-import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
+import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
+import { Fresult } from 'src/app/util/err/fresult';
+import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
 
 export abstract class SiFieldAdapter implements SiField, MessageFieldModel {
 	private disabledSubject = new BehaviorSubject<boolean>(false);
@@ -31,17 +32,9 @@ export abstract class SiFieldAdapter implements SiField, MessageFieldModel {
 		return this.disabledSubject;
 	}
 
-	abstract copy(entryBuildUp: SiEntryBuildup): SiField;
+	// abstract copy(entryBuildUp: SiEntryBuildup): SiField;
 
 	isGeneric(): boolean {
-		return false;
-	}
-
-	readGenericValue(): SiGenericValue {
-		throw new IllegalSiStateError('SiField not generic.');
-	}
-
-	writeGenericValue(_genericValue: SiGenericValue): boolean {
 		return false;
 	}
 
@@ -66,4 +59,8 @@ export abstract class SiFieldAdapter implements SiField, MessageFieldModel {
 	resetError(): void {
 		this.messages = [];
 	}
+
+	abstract readGenericValue(): SiGenericValue;
+
+	abstract writeGenericValue(genericValue: SiGenericValue): Fresult<GenericMissmatchError, void>;
 }

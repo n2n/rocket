@@ -11,7 +11,7 @@ export abstract class InSiFieldAdapter extends SiFieldAdapter {
 
 	abstract readInput(): object;
 
-	abstract copy(): SiField;
+	// abstract copy(): SiField;
 
 	protected abstract createUiContent(uiStructure: UiStructure): UiContent;
 }
