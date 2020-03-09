@@ -195,7 +195,7 @@ class VetoCheck {
 		
 		IllegalStateException::assertTrue($currentTargetEntityObjs instanceof \ArrayObject);
 		
-		$targetEntityObj = $this->targetEiEntityObj->getLiveObject();
+		$targetEntityObj = $this->targetEiEntityObj->getEntityObj();
 		foreach ($currentTargetEntityObjs as $key => $currentTargetEntityObj) {
 			if ($currentTargetEntityObj === $targetEntityObj) {
 				$currentTargetEntityObjs->offsetUnset($key);
