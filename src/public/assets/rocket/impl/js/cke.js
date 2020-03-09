@@ -171,7 +171,7 @@
 			additionalStyles = configOptions["additionalStyles"] || [],
 			bodyId = configOptions["bodyId"] || null,
 			bodyClass = configOptions["bodyClass"] || null,
-			formatTags = configOptions["formatTags"],
+			formatTags = configOptions["formatTags"] || [],
 			options = new Object();
 		
 		options.toolbar = this.getToolbar(configOptions['mode'], configOptions['tableEditing'] || false, bbcode, 
@@ -193,7 +193,7 @@
 			options.bodyId = bodyId;
 		}
 		
-		if (formatTags) {
+		if (formatTags.length > 0) {
 			options.format_tags = formatTags;
 		}
 		
