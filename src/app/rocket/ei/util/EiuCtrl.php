@@ -35,9 +35,7 @@ use rocket\si\SiPayloadFactory;
 use n2n\persistence\orm\criteria\Criteria;
 use n2n\persistence\orm\util\NestedSetUtils;
 use n2n\persistence\orm\util\NestedSetStrategy;
-use rocket\si\meta\SiDeclaration;
 use rocket\si\content\SiPartialContent;
-use rocket\si\content\SiEntry;
 use rocket\si\content\impl\basic\BulkyEntrySiComp;
 use rocket\ei\manage\security\InaccessibleEiEntryException;
 use rocket\ei\manage\frame\EiFrameUtil;
@@ -303,7 +301,7 @@ class EiuCtrl {
 		$siDeclaration = $eiuGui->getEiGui()->createSiDeclaration($eiFrame);
 		
 		$siComp = new CompactExplorerSiComp($this->eiu->frame()->getApiUrl(), $pageSize, $siDeclaration, 
-				new SiPartialContent($this->eiuFrame->countEntries(), $eiuGui->getEiGui()->createSiEntries($eiFrame)));
+				new SiPartialContent($this->eiuFrame->count(), $eiuGui->getEiGui()->createSiEntries($eiFrame)));
 		
 		$this->httpContext->getResponse()->send(
 				SiPayloadFactory::create($siComp, 
@@ -557,10 +555,6 @@ class EiuCtrl {
 		
 		return $this;
 	}
-	
-	
-	
-	
 	
 	public static function from(ControllingUtils $cu) {
 		return new EiuCtrl($cu);

@@ -60,7 +60,7 @@ class RelationLinkGuiField implements GuiField {
 		$targetEiuFrame = $this->eiu->frame()->forkDiscover($this->eiu->prop(), $this->eiu->entry())->frame();
 		$targetEiuFrame->exec($this->relationModel->getTargetReadEiCommandPath());
 		
-		$num = $targetEiuFrame->countEntries();
+		$num = $targetEiuFrame->count();
 		$label = null;
 		if ($num == 1) {
 			$label = $num . ' ' . $targetEiuFrame->engine()->mask()->getLabel();

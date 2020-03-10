@@ -52,6 +52,7 @@ class RelationConfig extends ConfigAdaption {
 	const ATTR_ORPHANS_ALLOWED_KEY = 'orphansAllowed';
 	const ATTR_FILTERED_KEY = 'filtered';
 	const ATTR_HIDDEN_IF_TARGET_EMPTY_KEY = 'hiddenIfTargetEmpty';
+	const ATTR_MAX_PICKS_NUM_KEY = 'maxPicksNum'; // select
 	
 	/**
 	 * @var RelationModel
@@ -72,7 +73,8 @@ class RelationConfig extends ConfigAdaption {
 				self::ATTR_MIN_KEY, self::ATTR_MAX_KEY, self::ATTR_REMOVABLE_KEY, 
 				self::ATTR_TARGET_REMOVAL_STRATEGY_KEY, self::ATTR_TARGET_ORDER_EI_PROP_PATH_KEY,
 				self::ATTR_ORPHANS_ALLOWED_KEY, self::ATTR_EMBEDDED_ADD_KEY, self::ATTR_FILTERED_KEY, 
-				self::ATTR_HIDDEN_IF_TARGET_EMPTY_KEY, self::ATTR_REDUCED_KEY), true), true);
+				self::ATTR_HIDDEN_IF_TARGET_EMPTY_KEY, self::ATTR_MAX_PICKS_NUM_KEY, 
+				self::ATTR_REDUCED_KEY), true), true);
 	}
 	
 	function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
@@ -91,7 +93,7 @@ class RelationConfig extends ConfigAdaption {
 			$magCollection->addMag(self::ATTR_MIN_KEY, new NumericMag('Min', $lar->getInt(self::ATTR_MIN_KEY, null)));
 			$magCollection->addMag(self::ATTR_MAX_KEY, new NumericMag('Max', $lar->getInt(self::ATTR_MAX_KEY, null)));
 		}
-		
+
 		if ($this->relationModel->isEmbedded() && $this->relationModel->isTargetMany()
 				&& $targetEiuType->mask()->isEngineReady()) {
 			$options = $targetEiuType->mask()->engine()->getScalarEiPropertyOptions();
@@ -117,9 +119,13 @@ class RelationConfig extends ConfigAdaption {
 // 					$lar->getBool(self::ATTR_FILTERED_KEY, true)));
 // 		}
 		
-		if (!$this->relationModel->isEmbedded()) {
+		if ($this->relationModel->isSelect()) {
 			$magCollection->addMag(self::ATTR_HIDDEN_IF_TARGET_EMPTY_KEY, 
 					new BoolMag('Hide if target empty', $lar->getBool(self::ATTR_HIDDEN_IF_TARGET_EMPTY_KEY, true)));
+
+			$magCollection->addMag(self::ATTR_MAX_PICKS_NUM_KEY, 
+					new NumericMag('Max Picks', $lar->getInt(self::ATTR_MAX_PICKS_NUM_KEY, 
+							$this->relationModel->getMaxPicksNum())));
 		}
 
 		if ($this->relationModel->isMaster()) {
@@ -168,7 +174,7 @@ class RelationConfig extends ConfigAdaption {
 			$this->relationModel->setMax($dataSet->optInt(self::ATTR_MAX_KEY, 
 					$this->relationModel->getMax(), true));
 		}
-		
+
 		if ($this->relationModel->isEmbedded() && $this->relationModel->isTargetMany()) {
 			$targetOrderEiPropPath = EiPropPath::build(
 					$dataSet->optString(self::ATTR_TARGET_ORDER_EI_PROP_PATH_KEY));
@@ -198,10 +204,13 @@ class RelationConfig extends ConfigAdaption {
 // 					$dataSet->optBool(self::ATTR_FILTERED_KEY, $this->relationModel->isFiltered()));
 // 		}
 		
-		if (!$this->relationModel->isEmbedded()) {
+		if ($this->relationModel->isSelect()) {
 			$this->relationModel->setHiddenIfTargetEmpty(
 					$dataSet->optBool(self::ATTR_HIDDEN_IF_TARGET_EMPTY_KEY, 
 							$this->relationModel->isHiddenIfTargetEmpty()));
+
+			$this->relationModel->setMaxPicksNum($dataSet->optInt(self::ATTR_MAX_PICKS_NUM_KEY,
+					$this->relationModel->getMaxPicksNum()));
 		}
 		
 		if ($this->relationModel->isMaster()) {

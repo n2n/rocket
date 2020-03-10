@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
+import { Component, OnInit, ElementRef, DoCheck } from '@angular/core';
 import { SiEntryQualifier } from 'src/app/si/model/content/si-qualifier';
 import { QualifierSelectInModel } from '../qualifier-select-in-model';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
@@ -14,10 +14,11 @@ import { SiComp } from 'src/app/si/model/comp/si-comp';
 	templateUrl: './qualifier-select-in-field.component.html',
 	styleUrls: ['./qualifier-select-in-field.component.css']
 })
-export class QualifierSelectInFieldComponent implements OnInit {
+export class QualifierSelectInFieldComponent implements OnInit, DoCheck {
 
 	model: QualifierSelectInModel;
 	uiStructure: UiStructure;
+	pickables: Array<SiEntryQualifier>|null;
 
 	private optionsUiLayer: PopupUiLayer|null = null;
 
@@ -31,6 +32,16 @@ export class QualifierSelectInFieldComponent implements OnInit {
 		}
 	}
 
+	ngDoCheck() {
+		const pickables = this.model.getPickables();
+		if (!pickables) {
+			this.pickables = null;
+			return;
+		}
+
+		this.pickables = pickables.filter(pickable => -1 === this.findValIndex(pickable));
+	}
+
 	remove(siQualifier: SiEntryQualifier) {
 		const values = this.model.getValues();
 
@@ -38,6 +49,30 @@ export class QualifierSelectInFieldComponent implements OnInit {
 		if (index > -1) {
 			values.splice(index, 1);
 		}
+		this.model.setValues(values);
+	}
+
+	private findValIndex(siEntryQualifier: SiEntryQualifier): number {
+		return this.model.getValues().findIndex(qual => qual.equals(siEntryQualifier));
+	}
+
+	get pickingAllowed(): boolean {
+		const max = this.model.getMax();
+
+		return max === null || this.toOne ||  this.model.getValues().length < max;
+	}
+
+	get toOne(): boolean {
+		return this.model.getMax() === 1;
+	}
+
+	pick(siEntryQualifier: SiEntryQualifier) {
+		if (-1 !== this.findValIndex(siEntryQualifier)) {
+			return;
+		}
+
+		const values = this.toOne ? [] : this.model.getValues();
+		values.push(siEntryQualifier);
 		this.model.setValues(values);
 	}
 

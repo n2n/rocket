@@ -125,9 +125,10 @@ export class SiFieldFactory {
 
 		case SiFieldType.QUALIFIER_SELECT_IN:
 			const qualifierSelectInSiField = new QualifierSelectInSiField(dataExtr.reqString('apiUrl'), prop.label,
-					SiCompFactory.createEntryQualifiers(dataExtr.reqArray('values')));
+					SiCompFactory.buildEntryQualifiers(dataExtr.reqArray('values')));
 			qualifierSelectInSiField.min = dataExtr.reqNumber('min');
 			qualifierSelectInSiField.max = dataExtr.nullaNumber('max');
+			qualifierSelectInSiField.pickables = SiCompFactory.buildEntryQualifiers(dataExtr.nullaArray('pickables'));
 			return qualifierSelectInSiField;
 
 		case SiFieldType.EMBEDDED_ENTRY_IN:

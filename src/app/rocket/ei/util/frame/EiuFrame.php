@@ -327,10 +327,39 @@ class EiuFrame {
 	}
 	
 	/**
+	 * @return \rocket\ei\util\entry\EiuObject[] 
+	 */
+	function lookupObjects(int $ignoreConstraintTypes = 0, int $limit = null, int $num = null) {
+		$eiEntityObjs = $this->lookupEiEntityObjs($ignoreConstraintTypes, $limit, $num);
+		
+		$eiuObjects = [];
+		foreach ($eiEntityObjs as $eiEntityObj) {
+			$eiuObjects[] = new EiuObject(new LiveEiObject($eiEntityObj), $this->eiuAnalyst);
+		}
+		return $eiuObjects;
+	}
+	
+	
+	/**
+	 * @return EiEntityObj[]
+	 */
+	private function lookupEiEntityObjs(int $ignoreConstraintTypes = 0, int $limit = null, int $num = null) {
+		$criteria = $this->eiFrame->createCriteria('e', $ignoreConstraintTypes)->select('e')->limit($limit, $num);
+		$contextEiType = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType();
+		
+		$eiEntityObjs = [];
+		foreach ($criteria->toQuery()->fetchArray() as $entityObj) {
+			$eiEntityObjs[] = EiEntityObj::createFrom($contextEiType, $entityObj);
+		}
+		
+		return $eiEntityObjs;
+	}
+	
+	/**
 	 * @param int $ignoreConstraintTypes
 	 * @return int
 	 */
-	public function countEntries(int $ignoreConstraintTypes = 0) {
+	public function count(int $ignoreConstraintTypes = 0) {
 		return (int) $this->createCountCriteria('e', $ignoreConstraintTypes)->toQuery()->fetchSingle();
 	}
 	

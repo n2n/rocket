@@ -41,7 +41,11 @@ export class SiCompFactory {
 		return new SiEntryIdentifier(extr.reqString('typeCategory'), extr.nullaString('id'));
 	}
 
-	static createEntryQualifiers(dataArr: any[]): SiEntryQualifier[] {
+	static buildEntryQualifiers(dataArr: any[]|null): SiEntryQualifier[] {
+		if (dataArr === null) {
+			return null;
+		}
+
 		const entryQualifiers: SiEntryQualifier[] = [];
 		for (const data of dataArr) {
 			entryQualifiers.push(SiCompFactory.createEntryQualifier(data));

@@ -10,6 +10,13 @@
 
 <button class="btn btn-secondary" (click)="openOptions()"><i class="fa fa-circle-o"></i> {{ 'select_txt' | translate }}</button>
 
+<div *ngIf="pickables">
+	<button *ngFor="let pickable of pickables" [disabled]="!pickingAllowed" (click)="pick(pickable)">
+		{{ pickable.idName }}
+	</button>
+
+</div>
+
 <div *ngIf="model.getMessages().length > 0" class="rocket-message-error">
 	<div *ngFor="let message of model.getMessages()">
 		<rocket-ui-message *ngFor="let message of model.getMessages()" [message]="message"></rocket-ui-message>

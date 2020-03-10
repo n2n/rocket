@@ -45,9 +45,10 @@ use n2n\config\InvalidConfigurationException;
 class RelationModel {
 	const MODE_SELECT = 'select';
 	const MODE_EMBEDDED = 'embedded';
-	const MODE_PICK = 'pick';
 	const MODE_INTEGRATED = 'integrated';
 	
+	const DEFAULT_MAX_PICKS_NUM = 20;
+
 	/**
 	 * @var RelationEiProp
 	 */
@@ -73,6 +74,7 @@ class RelationModel {
 	
 	private $filtered = true;
 	private $hiddenIfTargetEmpty = false;
+	private $maxPicksNum = self::DEFAULT_MAX_PICKS_NUM;
 	
 	// Embedded
 	
@@ -155,7 +157,7 @@ class RelationModel {
 	 * @return string[]
 	 */
 	static function getModes() {
-		return [self::MODE_SELECT, self::MODE_EMBEDDED, self::MODE_PICK, self::MODE_INTEGRATED];
+		return [self::MODE_SELECT, self::MODE_EMBEDDED, self::MODE_INTEGRATED];
 	}
 	
 	/**
@@ -223,13 +225,6 @@ class RelationModel {
 	/**
 	 * @return boolean
 	 */
-	function isPick() {
-		return $this->mode == self::MODE_PICK;
-	}
-	
-	/**
-	 * @return boolean
-	 */
 	function isFiltered() {
 		return $this->filtered;
 	}
@@ -253,6 +248,20 @@ class RelationModel {
 	 */
 	function setHiddenIfTargetEmpty($hiddenIfTargetEmpty) {
 		$this->hiddenIfTargetEmpty = $hiddenIfTargetEmpty;
+	}
+
+	/**
+	 * @return int
+	 */
+	function getMaxPicksNum() {
+		return $this->maxPicksNum;
+	}
+	
+	/**
+	 * @param int|null $max
+	 */
+	function setMaxPicksNum(int $maxPicksNum) {
+		$this->maxPicksNum = $maxPicksNum;
 	}
 	
 	/**

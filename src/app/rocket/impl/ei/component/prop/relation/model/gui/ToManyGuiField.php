@@ -30,6 +30,7 @@ use n2n\util\type\CastUtils;
 use rocket\ei\util\entry\EiuEntry;
 use rocket\si\content\impl\relation\QualifierSelectInSiField;
 use rocket\ei\manage\gui\GuiFieldMap;
+use rocket\ei\util\frame\EiuFrame;
 
 class ToManyGuiField implements GuiField {
 	/**
@@ -37,9 +38,9 @@ class ToManyGuiField implements GuiField {
 	 */
 	private $eiu;
 	/**
-	 * @var Eiu
+	 * @var EiuFrame
 	 */
-	private $targetEiu;
+	private $targetEiuFrame;
 	/**
 	 * @var QualifierSelectInSiField
 	 */
@@ -53,14 +54,33 @@ class ToManyGuiField implements GuiField {
 		$this->eiu = $eiu;
 		
 		$this->targetEiuFrame = $eiu->frame()->forkSelect($eiu->prop()->getPath())->frame();
+		$this->targetEiuFrame->exec($relationModel->getTargetReadEiCommandPath());
 		
 		$values = $this->readValues();
 		
 		$this->siField = SiFields::qualifierSelectIn(
 				$this->targetEiuFrame->getApiUrl($relationModel->getTargetReadEiCommandPath()),
-				$values, (int) $relationModel->getMin(), $relationModel->getMax());
+				$values, (int) $relationModel->getMin(), $relationModel->getMax(),
+				$this->readPickableQualifiers($relationModel->getMaxPicksNum()));
 	}
 	
+	private function readPickableQualifiers(int $maxNum) {
+		if ($maxNum <= 0) {
+			return null;
+		}
+		
+		$num = $this->targetEiuFrame->count();
+		if ($num > $maxNum) {
+			return null;
+		}
+		
+		$siEntryQualifiers = [];
+		foreach ($this->targetEiuFrame->lookupObjects() as $eiuObject) {
+			$siEntryQualifiers[] = $eiuObject->createSiEntryQualifier();
+		}
+		return $siEntryQualifiers;
+	}
+
 	private function readValues() {
 		$values = [];
 		foreach ($this->eiu->field()->getValue() as $eiuEntry) {

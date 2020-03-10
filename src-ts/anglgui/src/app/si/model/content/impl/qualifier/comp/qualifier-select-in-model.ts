@@ -9,6 +9,8 @@ export interface QualifierSelectInModel extends MessageFieldModel {
 
 	getMax(): number|null;
 
+	getPickables(): SiEntryQualifier[]|null;
+
 	getValues(): SiEntryQualifier[];
 
 	setValues(values: SiEntryQualifier[]): void;

@@ -62,7 +62,7 @@ class Relation {
 		if ($eiForkLink->getMode() == EiForkLink::MODE_SELECT && !$this->relationModel->isSourceMany()
 				&& null !== ($eiuEntry = $eiu->entry(false)) && $this->relationModel->isFiltered()) {
 			$this->applyOneToTargetSelectConstraints($targetEiuFrame, $eiuEntry);
-		} else if (null !== ($eiuObject = $eiu->object(false))) {
+		} else if ($eiForkLink->getMode() == EiForkLink::MODE_DISCOVER && null !== ($eiuObject = $eiu->object(false))) {
 			$this->applyTargetCriteriaFactory($targetEiuFrame, $eiuObject);
 		}
 		
