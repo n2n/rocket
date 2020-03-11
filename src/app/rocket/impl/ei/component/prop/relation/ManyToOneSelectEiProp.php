@@ -93,7 +93,7 @@ class ManyToOneSelectEiProp extends RelationEiPropAdapter implements FieldEiProp
 // 		CastUtils::assertTrue($eiPropRelation instanceof SelectEiPropRelation);
 		
 // 		if ($eiPropRelation->isHiddenIfTargetEmpty()
-// 				&& 0 == $targetEiu->frame()->countEntries(Boundry::NON_SECURITY_TYPES)) {
+// 				&& 0 == $targetEiu->frame()->count(Boundry::NON_SECURITY_TYPES)) {
 // 			return null;
 // 		}
 		

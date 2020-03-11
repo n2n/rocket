@@ -38,4 +38,33 @@ export class EmbeddedEntryInSiField extends InSiFieldAdapter	{
 	writeGenericValue(genericValue: SiGenericValue): Fresult<GenericMissmatchError> {
 		throw new Error('Not yet implemented.');
 	}
+
+	// writeGenericValue(genericValue: SiGenericValue): Promise<void> {
+
+	// 	const collection = genericValue.readInstance(SiGenericEmbeddedEntryCollection);
+
+	// 	const promises = new Array<Promise<SiEmbeddedEntry>>();
+
+	// 	if (collection.origSiField === this) {
+	// 		for (const siGenericEmbedddedEntry of collection.siGenericEmbeddedEntries) {
+	// 			promises.push(siGenericEmbedddedEntry.origSiEntry)
+	// 		}
+	// 	}
+	// }
+
+	// asfd(siEntryIdentifiers: SiEntryIdentifier[]) {
+	// 	const getInstructions = new Array<SiGetInstruction>();
+
+	// 	const obtainer = new EmbeddedAddPasteObtainer(this.siService, this.apiUrl, this.config.reduced);
+
+	// 	for (const siEntryIdentifier of siEntryIdentifiers) {
+	// 		if (siEntryIdentifier.id === null) {
+	// 			getInstructions.push(SiGetInstruction.newEntry(siEntryIdentifier.id))
+	// 		} else {
+	// 			obtainer.
+	// 		}
+	// 	}
+
+	// 	this.siService.apiGet(this.apiUrl, new SiGetRequest(SiGetInstruction.))
+	// }
 }

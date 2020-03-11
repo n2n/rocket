@@ -47,6 +47,11 @@ class QualifierSelectInSiField extends InSiFieldAdapter {
 	private $max = null;
 	
 	/**
+	 * @var SiEntryQualifier[]
+	 */
+	private $pickables = null;
+	
+	/**
 	 * @param Url $apiUrl
 	 * @param SiEntryQualifier[] $values
 	 */
@@ -57,7 +62,7 @@ class QualifierSelectInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param SiEntryQualifier[] $values
-	 * @return \rocket\si\content\impl\StringInSiField
+	 * @return QualifierSelectInSiField
 	 */
 	function setValues(array $values) {
 		ArgUtils::valArray($values, SiEntryQualifier::class);
@@ -74,7 +79,7 @@ class QualifierSelectInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param Url|null $apiUrl
-	 * @return \rocket\si\content\impl\StringInSiField
+	 * @return QualifierSelectInSiField
 	 */
 	function setApiUrl(?Url $apiUrl) {
 		$this->apiUrl = $apiUrl;
@@ -90,7 +95,7 @@ class QualifierSelectInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param int $min
-	 * @return \rocket\si\content\impl\StringInSiField
+	 * @return \rocket\si\content\impl\QualifierSelectInSiField
 	 */
 	function setMin(int $min) {
 		$this->min = $min;
@@ -106,7 +111,7 @@ class QualifierSelectInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param int|null $max
-	 * @return \rocket\si\content\impl\StringInSiField
+	 * @return QualifierSelectInSiField
 	 */
 	function setMax(?int $max) {
 		$this->max = $max;
@@ -118,6 +123,23 @@ class QualifierSelectInSiField extends InSiFieldAdapter {
 	 */
 	function getMax() {
 		return $this->max;
+	}
+	
+	/**
+	 * @param SiEntryQualifier[] $pickables
+	 * @return QualifierSelectInSiField
+	 */
+	function setPickables(?array $pickables) {
+		ArgUtils::valArray($pickables, SiEntryQualifier::class);
+		$this->pickables = $pickables;
+		return $this;
+	}
+	
+	/**
+	 * @return SiEntryQualifier[]
+	 */
+	function getPickables() {
+		return $this->pickables;
 	}
 	
 	/**
@@ -137,7 +159,8 @@ class QualifierSelectInSiField extends InSiFieldAdapter {
 			'values' => $this->values,
 			'apiUrl' => (string) $this->apiUrl,
 			'min' => $this->min,
-			'max' => $this->max
+			'max' => $this->max,
+			'pickables' => $this->pickables
 		];
 	}
 	 

@@ -59,7 +59,25 @@ class ToOneGuiField implements GuiField {
 		
 		$this->siField = SiFields::qualifierSelectIn(
 				$this->targetEiu->frame()->getApiUrl($relationModel->getTargetReadEiCommandPath()),
-				$values, ($relationModel->isMandatory() ? 1 : 0), 1);
+				$values, ($relationModel->isMandatory() ? 1 : 0), 1, 
+				$this->readPickableQualifiers($relationModel->getMaxPicksNum()));
+	}
+	
+	private function readPickableQualifiers(int $maxNum) {
+		if ($maxNum <= 0) {
+			return null;
+		}
+		
+		$num = $this->targetEiu->frame()->count();
+		if ($num > $maxNum) {
+			return null;
+		}
+		
+		$siEntryQualifiers = [];
+		foreach ($this->targetEiu->frame()->lookupObjects() as $eiuObject) {
+			$siEntryQualifiers[] = $eiuObject->createSiEntryQualifier();
+		}
+		return $siEntryQualifiers;
 	}
 	
 	function save() {

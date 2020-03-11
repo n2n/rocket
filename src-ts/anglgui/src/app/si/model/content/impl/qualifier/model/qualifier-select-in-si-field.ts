@@ -15,6 +15,7 @@ export class QualifierSelectInSiField extends InSiFieldAdapter implements Qualif
 
 	public min = 0;
 	public max: number|null = null;
+	public pickables: SiEntryQualifier[]|null = null;
 
 	constructor(public apiUrl: string, public label: string, public values: SiEntryQualifier[] = []) {
 		super();
@@ -45,6 +46,10 @@ export class QualifierSelectInSiField extends InSiFieldAdapter implements Qualif
 		return this.max;
 	}
 
+	getPickables(): SiEntryQualifier[]|null {
+		return this.pickables;
+	}
+
 	private validate() {
 		this.messages = [];
 
@@ -57,7 +62,7 @@ export class QualifierSelectInSiField extends InSiFieldAdapter implements Qualif
 			}
 		}
 
-		if (this.max && this.values.length > this.max) {
+		if (this.max !== null && this.values.length > this.max) {
 			this.messages.push(Message.createCode('max_elements_err',
 						new Map([['{max}', this.max.toString()], ['{field}', this.label]])));
 		}

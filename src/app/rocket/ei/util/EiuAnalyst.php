@@ -1481,8 +1481,7 @@ class EiuAnalyst {
 		}
 		
 		throw new EiuPerimeterException('Can not determine EiEntryGui of passed argument ' . $argName
-				. '. Following types are allowed: '
-				. implode(', ', array_merge(self::EI_ENTRY_GUI_TYPES)) . '; '
+				. '. Following types are allowed: ' . implode(', ', array_merge(self::EI_ENTRY_GUI_TYPES)) . '; '
 				. TypeUtils::getTypeInfo($eiEntryGuiArg) . ' given.');
 	}
 	

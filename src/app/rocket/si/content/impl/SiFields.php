@@ -33,6 +33,7 @@ use rocket\si\content\impl\split\SplitContextOutSiField;
 use rocket\si\content\impl\split\SplitPlaceholderSiField;
 use rocket\si\meta\SiDeclaration;
 use rocket\si\NavPoint;
+use rocket\si\content\SiEntryQualifier;
 
 class SiFields {
 	
@@ -106,10 +107,11 @@ class SiFields {
 	 * @param array $values
 	 * @param int $min
 	 * @param int|null $max
+	 * @param SiEntryQualifier[]|null $pickables
 	 * @return QualifierSelectInSiField
 	 */
-	static function qualifierSelectIn(Url $apiUrl, array $values = [], int $min = 0, int $max = null) {
-		return (new QualifierSelectInSiField($apiUrl, $values))->setMin($min)->setMax($max);
+	static function qualifierSelectIn(Url $apiUrl, array $values = [], int $min = 0, int $max = null, array $pickables = null) {
+		return (new QualifierSelectInSiField($apiUrl, $values))->setMin($min)->setMax($max)->setPickables($pickables);
 	}
 	
 	/**

@@ -172,8 +172,8 @@ class EiuObject {
 	/**
 	 * @return string
 	 */
-	function createIndetityString() {
-		return $this->eiuAnalyst->getEiuFrame(true)->mask()->createIdentityString($this->eiObject);
+	function createIdentityString() {
+		return $this->eiuAnalyst->getEiuFrame(true)->engine()->createIdentityString($this->eiObject);
 	}
 	
 	/**
@@ -183,10 +183,8 @@ class EiuObject {
 	function createSiEntryQualifier(string $name = null) {
 		$name = $name ?? $this->createIdentityString();
 		
-		if ($this->eiuObject !== null) {
-			return $this->eiuObject->getEiObject()->createSiEntryQualifier($name);
-		}
+		$siTypeQualifier = $this->eiuAnalyst->getEiuFrame(true)->mask($this->eiObject)->createSiTypeQualifier();
 		
-		return $this->eiEntry->getEiObject()->createSiEntryQualifier($name);
+		return $this->eiObject->createSiEntryIdentifier()->toQualifier($siTypeQualifier, $name);
 	}
 }
