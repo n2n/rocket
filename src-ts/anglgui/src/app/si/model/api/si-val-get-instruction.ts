@@ -1,17 +1,16 @@
 
 import { SiDeclaration } from '../meta/si-declaration';
-import { SiComp } from '../comp/si-comp';
 
 export class SiValGetInstruction {
 
 	protected declaration: SiDeclaration|null = null;
 	protected controlsIncluded = false;
 
-	constructor(public comp: SiComp, public bulky: boolean, public readOnly: boolean) {
+	constructor(public bulky: boolean, public readOnly: boolean) {
 	}
 
-	static create(comp: SiComp, bulky: boolean, readOnly: boolean): SiValGetInstruction {
-		return new SiValGetInstruction(comp, bulky, readOnly);
+	static create(bulky: boolean, readOnly: boolean): SiValGetInstruction {
+		return new SiValGetInstruction(bulky, readOnly);
 	}
 
 	getDeclaration(): SiDeclaration|null {

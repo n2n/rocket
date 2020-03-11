@@ -1,4 +1,4 @@
-import { SiCompEssentialsFactory } from './si-comp-essentials-factory';
+import { SiControlFactory } from './si-control-factory';
 import { SiDeclaration } from '../model/meta/si-declaration';
 import { ObjectMissmatchError, Extractor } from 'src/app/util/mapping/extractor';
 import { EntriesListSiComp } from '../model/comp/impl/model/entries-list-si-comp';
@@ -140,7 +140,7 @@ export class SiCompFactory {
 	createComp(data: any, requiredType: SiCompType|null = null): SiComp {
 		const extr = new Extractor(data);
 		const dataExtr = extr.reqExtractor('data');
-		let compEssentialsFactory: SiCompEssentialsFactory;
+		let compEssentialsFactory: SiControlFactory;
 		let declaration: SiDeclaration;
 
 		const type = extr.reqString('type');
@@ -157,7 +157,7 @@ export class SiCompFactory {
 
 				const partialContentData = dataExtr.nullaObject('partialContent');
 				if (partialContentData) {
-					const partialContent = new SiEntryFactory(listSiComp, declaration, this.injector)
+					const partialContent = new SiEntryFactory(declaration, this.injector)
 							.createPartialContent(partialContentData);
 
 					listSiComp.pageCollection.size = partialContent.count;
@@ -170,7 +170,7 @@ export class SiCompFactory {
 				declaration = SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'));
 				const bulkyEntryUiContent = new BulkyEntrySiComp(declaration);
 
-				bulkyEntryUiContent.entry = new SiEntryFactory(bulkyEntryUiContent, declaration, this.injector)
+				bulkyEntryUiContent.entry = new SiEntryFactory(declaration, this.injector)
 						.createEntry(dataExtr.reqObject('entry'));
 				return bulkyEntryUiContent;
 
@@ -178,9 +178,9 @@ export class SiCompFactory {
 				declaration = SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'));
 				const compactEntrySiComp = new CompactEntrySiComp(declaration);
 
-				compEssentialsFactory = new SiCompEssentialsFactory(compactEntrySiComp, this.injector);
+				compEssentialsFactory = new SiControlFactory(compactEntrySiComp, this.injector);
 				compactEntrySiComp.controls = compEssentialsFactory.createControls(dataExtr.reqArray('controls'));
-				compactEntrySiComp.entry = new SiEntryFactory(compactEntrySiComp, declaration, this.injector)
+				compactEntrySiComp.entry = new SiEntryFactory(declaration, this.injector)
 						.createEntry(dataExtr.reqObject('entry'));
 				return compactEntrySiComp;
 

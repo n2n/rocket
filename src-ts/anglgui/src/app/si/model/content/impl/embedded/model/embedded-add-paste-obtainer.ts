@@ -19,32 +19,32 @@ export class EmbeddedAddPasteObtainer implements AddPasteObtainer {
 	constructor(private siService: SiService, private apiUrl: string, private obtainSummary: boolean) {
 	}
 
-	private createBulkyInstruction(comp: BulkyEntrySiComp, siEntryIdentifier: SiEntryIdentifier|null): SiGetInstruction {
+	private createBulkyInstruction(siEntryIdentifier: SiEntryIdentifier|null): SiGetInstruction {
 		if (siEntryIdentifier) {
-			return SiGetInstruction.entry(comp, true, false, siEntryIdentifier.id);
+			return SiGetInstruction.entry(true, false, siEntryIdentifier.id);
 		}
 
-		return SiGetInstruction.newEntry(comp, true, false);
+		return SiGetInstruction.newEntry(true, false);
 	}
 
-	private createSummaryInstruction(comp: CompactEntrySiComp, siEntryIdentifier: SiEntryIdentifier|null): SiGetInstruction {
+	private createSummaryInstruction(siEntryIdentifier: SiEntryIdentifier|null): SiGetInstruction {
 		if (siEntryIdentifier) {
-			return SiGetInstruction.entry(comp, false, true, siEntryIdentifier.id);
+			return SiGetInstruction.entry(false, true, siEntryIdentifier.id);
 		}
 
-		return SiGetInstruction.newEntry(comp, false, true);
+		return SiGetInstruction.newEntry(false, true);
 	}
 
 	obtain(siEntryIdentifier: SiEntryIdentifier|null): Observable<SiEmbeddedEntry> {
 		const request = new SiGetRequest();
 
 		const comp = new BulkyEntrySiComp(undefined);
-		request.instructions[0] = this.createBulkyInstruction(comp, siEntryIdentifier);
+		request.instructions[0] = this.createBulkyInstruction(siEntryIdentifier);
 
 		let summaryComp: CompactEntrySiComp|null = null;
 		if (this.obtainSummary) {
 			summaryComp = new CompactEntrySiComp(undefined);
-			request.instructions[1] = this.createSummaryInstruction(summaryComp, siEntryIdentifier);
+			request.instructions[1] = this.createSummaryInstruction(siEntryIdentifier);
 		}
 
 		return this.siService.apiGet(this.apiUrl, request).pipe(map((siGetResponse) => {
@@ -121,7 +121,7 @@ export class EmbeddedAddPasteObtainer implements AddPasteObtainer {
 
 		if (siEmbeddedEntry.summaryComp) {
 			siEmbeddedEntry.summaryComp.entry = null;
-			instruction.getInstructions[0] = SiValGetInstruction.create(siEmbeddedEntry.summaryComp, false, true);
+			instruction.getInstructions[0] = SiValGetInstruction.create(false, true);
 		}
 
 		return instruction;

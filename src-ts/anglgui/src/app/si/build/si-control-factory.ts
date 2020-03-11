@@ -1,4 +1,3 @@
-import { SiComp } from '../model/comp/si-comp';
 import { Extractor, ObjectMissmatchError } from 'src/app/util/mapping/extractor';
 import { SiControl } from '../model/control/si-control';
 import { ApiCallSiControl } from '../model/control/impl/model/api-call-si-control';
@@ -6,15 +5,16 @@ import { RefSiControl } from '../model/control/impl/model/ref-si-control';
 import { SiButton, SiConfirm } from '../model/control/impl/model/si-button';
 import { Injector } from '@angular/core';
 import { SiUiService } from '../manage/si-ui.service';
+import { SiControlBoundry } from '../model/control/si-control-bountry';
 
 enum SiControlType {
 	REF = 'ref',
 	API_CALL = 'api-call'
 }
 
-export class SiCompEssentialsFactory {
+export class SiControlFactory {
 
-	constructor(private comp: SiComp, private injector: Injector) {
+	constructor(private controlBoundry: SiControlBoundry, private injector: Injector) {
 	}
 
 	createControls(dataArr: any[]): SiControl[] {
@@ -42,7 +42,7 @@ export class SiCompEssentialsFactory {
 						dataExtr.reqString('apiUrl'),
 						dataExtr.reqObject('apiCallId'),
 						this.createButton(dataExtr.reqObject('button')),
-						this.comp);
+						this.controlBoundry);
 				apiControl.inputSent = dataExtr.reqBoolean('inputHandled');
 				return apiControl;
 			default:

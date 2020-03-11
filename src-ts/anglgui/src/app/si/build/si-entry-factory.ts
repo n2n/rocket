@@ -4,14 +4,15 @@ import { SiEntry } from '../model/content/si-entry';
 import { SiEntryIdentifier, SiEntryQualifier } from '../model/content/si-qualifier';
 import { SiEntryBuildup } from '../model/content/si-entry-buildup';
 import { Extractor } from 'src/app/util/mapping/extractor';
-import { SiComp } from '../model/comp/si-comp';
-import { SiCompEssentialsFactory } from './si-comp-essentials-factory';
+import { SiControlFactory } from './si-control-factory';
 import { SiFieldFactory } from './si-field-factory';
 import { Injector } from '@angular/core';
 import { SiCompFactory } from './si-comp-factory';
+import { SiControlBoundry } from '../model/control/si-control-bountry';
+import { SimpleSiControlBoundry } from '../model/control/impl/model/simple-si-control-boundry';
 
 export class SiEntryFactory {
-	constructor(private comp: SiComp, private declaration: SiDeclaration, private injector: Injector) {
+	constructor(private declaration: SiDeclaration, private injector: Injector) {
 	}
 
 	createPartialContent(data: any): SiPartialContent {
@@ -40,23 +41,24 @@ export class SiEntryFactory {
 		siEntry.bulky = extr.reqBoolean('bulky');
 		siEntry.readOnly = extr.reqBoolean('readOnly');
 
+		const controlBoundry = new SimpleSiControlBoundry([siEntry]);
 		for (const [, buildupData] of extr.reqMap('buildups')) {
-			siEntry.addEntryBuildup(this.createEntryBuildup(buildupData, siEntry.identifier));
+			siEntry.addEntryBuildup(this.createEntryBuildup(buildupData, siEntry.identifier, controlBoundry));
 		}
 
 		return siEntry;
 	}
 
-	private createEntryBuildup(data: any, identifier: SiEntryIdentifier): SiEntryBuildup {
+	private createEntryBuildup(data: any, identifier: SiEntryIdentifier, controlBoundry: SiControlBoundry): SiEntryBuildup {
 		const extr = new Extractor(data);
 
 		const typeDeclaration = this.declaration.getTypeDeclarationByTypeId(extr.reqString('typeId'));
 		const entryQualifier = new SiEntryQualifier(typeDeclaration.type.qualifier, identifier.id, extr.nullaString('idName'));
 
 		const entryBuildup = new SiEntryBuildup(entryQualifier);
-		entryBuildup.fieldMap = new SiFieldFactory(this.comp, this.declaration, typeDeclaration.type, this.injector)
+		entryBuildup.fieldMap = new SiFieldFactory(controlBoundry, this.declaration, typeDeclaration.type, this.injector)
 				.createFieldMap(extr.reqMap('fieldMap'));
-		entryBuildup.controls = new SiCompEssentialsFactory(this.comp, this.injector)
+		entryBuildup.controls = new SiControlFactory(controlBoundry, this.injector)
 				.createControls(extr.reqArray('controls'));
 
 		return entryBuildup;

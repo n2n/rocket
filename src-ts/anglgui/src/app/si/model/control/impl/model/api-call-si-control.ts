@@ -7,9 +7,9 @@ import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { SiUiService as SiUiService } from 'src/app/si/manage/si-ui.service';
 import { ButtonControlModel } from '../comp/button-control-model';
 import { ButtonControlUiContent } from '../comp/button-control-ui-content';
-import { SiComp } from '../../../comp/si-comp';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { UiZone } from 'src/app/ui/structure/model/ui-zone';
+import { SiControlBoundry } from '../../si-control-bountry';
 
 export class ApiCallSiControl implements SiControl, ButtonControlModel {
 
@@ -18,7 +18,7 @@ export class ApiCallSiControl implements SiControl, ButtonControlModel {
 	private entryBoundFlag: boolean;
 
 	constructor(public siUiService: SiUiService, public apiUrl: string, public apiCallId: object, 
-			public button: SiButton, public comp: SiComp, public entry: SiEntry|null = null) {
+			public button: SiButton, public controlBoundry: SiControlBoundry, public entry: SiEntry|null = null) {
 	}
 
 	getSiButton(): SiButton {
@@ -47,10 +47,10 @@ export class ApiCallSiControl implements SiControl, ButtonControlModel {
 		if (this.entry) {
 			obs = this.siUiService.execEntryControl(this.apiUrl, this.apiCallId, this.entry, this.inputSent);
 		} else if (this.entryBound) {
-			obs = this.siUiService.execSelectionControl(this.apiUrl, this.apiCallId, this.comp, this.comp.getSelectedEntries(),
+			obs = this.siUiService.execSelectionControl(this.apiUrl, this.apiCallId, this.controlBoundry, this.controlBoundry.getSelectedEntries(),
 					this.inputSent);
 		} else {
-			obs = this.siUiService.execControl(this.apiUrl, this.apiCallId, this.comp, this.inputSent);
+			obs = this.siUiService.execControl(this.apiUrl, this.apiCallId, this.controlBoundry, this.inputSent);
 		}
 
 		this.loading = true;

@@ -84,7 +84,7 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 			this.siPageCollection.putPage(siPage);
 		}
 
-		const instruction = SiGetInstruction.partialContent(this.model.getSiComp(), false, true,
+		const instruction = SiGetInstruction.partialContent(false, true,
 						(pageNo - 1) * this.siPageCollection.pageSize, this.siPageCollection.pageSize)
 				.setDeclaration(this.siPageCollection.declaration)
 				.setControlsIncluded(true);

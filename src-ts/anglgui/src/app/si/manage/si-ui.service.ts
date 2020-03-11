@@ -14,6 +14,7 @@ import { SiCommandError } from '../util/si-command-error';
 import { UiLayer } from 'src/app/ui/structure/model/ui-layer';
 import { SiComp } from '../model/comp/si-comp';
 import { SiResult } from './si-result';
+import { SiControlBoundry } from '../model/control/si-control-bountry';
 
 @Injectable({
 	providedIn: 'root'
@@ -79,7 +80,7 @@ export class SiUiService {
 		}));
 	}
 
-	execSelectionControl(apiUrl: string, callId: object, comp: SiComp, entries: SiEntry[], includeInput: boolean): Observable<void> {
+	execSelectionControl(apiUrl: string, callId: object, controlBoundry: SiControlBoundry, entries: SiEntry[], includeInput: boolean): Observable<void> {
 		throw new Error('not yet implemented');
 	// 	const entryIds: string[] = [];
 	// 	const entryInputs: SiEntryInput[] = [];
@@ -107,7 +108,7 @@ export class SiUiService {
 	// 	}));
 	}
 
-	execControl(apiUrl: string, callId: object, comp: SiComp, includeInput: boolean): Observable<void> {
+	execControl(apiUrl: string, callId: object, controlBoundry: SiControlBoundry, includeInput: boolean): Observable<void> {
 		const input = new SiInput();
 
 		if (!includeInput) {
@@ -115,7 +116,7 @@ export class SiUiService {
 		}
 
 		const entries: SiEntry[] = [];
-		for (const entry of comp.getEntries()) {
+		for (const entry of controlBoundry.getEntries()) {
 			if (entry.readOnly) {
 				continue;
 			}

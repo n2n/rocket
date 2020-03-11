@@ -1,10 +1,9 @@
 
 import { SiDeclaration } from '../meta/si-declaration';
-import { SiComp } from '../comp/si-comp';
 
 export class SiGetInstruction {
 
-	constructor(public comp: SiComp, public bulky: boolean, public readOnly: boolean) {
+	constructor(public bulky: boolean, public readOnly: boolean) {
 	}
 
 	protected declaration: SiDeclaration|null = null;
@@ -14,8 +13,8 @@ export class SiGetInstruction {
 	protected controlsIncluded = false;
 	protected propIds: string[]|null = null;
 
-	static partialContent(comp: SiComp, bulky: boolean, readOnly: boolean, offset: number, num: number): SiGetInstruction {
-		const instruction = new SiGetInstruction(comp, bulky, readOnly);
+	static partialContent(bulky: boolean, readOnly: boolean, offset: number, num: number): SiGetInstruction {
+		const instruction = new SiGetInstruction(bulky, readOnly);
 		instruction.partialContentInstruction = {
 			offset,
 			num
@@ -23,14 +22,14 @@ export class SiGetInstruction {
 		return instruction;
 	}
 
-	static entry(comp: SiComp, bulky: boolean, readOnly: boolean, entryId: string): SiGetInstruction {
-		const instruction = new SiGetInstruction(comp, bulky, readOnly);
+	static entry(bulky: boolean, readOnly: boolean, entryId: string): SiGetInstruction {
+		const instruction = new SiGetInstruction(bulky, readOnly);
 		instruction.entryId = entryId;
 		return instruction;
 	}
 
-	static newEntry(comp: SiComp, bulky: boolean, readOnly: boolean): SiGetInstruction {
-		const instruction = new SiGetInstruction(comp, bulky, readOnly);
+	static newEntry(bulky: boolean, readOnly: boolean): SiGetInstruction {
+		const instruction = new SiGetInstruction(bulky, readOnly);
 		instruction.newEntryRequested = true;
 		return instruction;
 	}

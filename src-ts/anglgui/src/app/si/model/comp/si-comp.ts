@@ -1,13 +1,9 @@
 import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
-import { SiEntry } from '../content/si-entry';
+import { SiControlBoundry } from '../control/si-control-bountry';
 
-export interface SiComp {
+export interface SiComp extends SiControlBoundry {
 
 // 	getZone(): UiZone;
-
-	getEntries(): SiEntry[];
-
-	getSelectedEntries(): SiEntry[];
 
 	createUiStructureModel(): UiStructureModel;
 }

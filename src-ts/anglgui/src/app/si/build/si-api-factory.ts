@@ -14,6 +14,7 @@ import { SiEntryFactory } from './si-entry-factory';
 import { SiDeclaration } from '../model/meta/si-declaration';
 import { Extractor } from 'src/app/util/mapping/extractor';
 import { Injector } from '@angular/core';
+import { SiControlBoundry } from '../model/control/si-control-bountry';
 
 export class SiApiFactory {
 
@@ -31,14 +32,13 @@ export class SiApiFactory {
 				throw new Error('No result for key: ' + key);
 			}
 
-			response.results[key] = this.createGetResult(resultsData[key], request.instructions[key].comp,
-					request.instructions[key].getDeclaration());
+			response.results[key] = this.createGetResult(resultsData[key], request.instructions[key].getDeclaration());
 		}
 
 		return response;
 	}
 
-	private createGetResult(data: any, comp: SiComp, declaration: SiDeclaration|null): SiGetResult {
+	private createGetResult(data: any, declaration: SiDeclaration|null): SiGetResult {
 		const extr = new Extractor(data);
 
 		const result: SiGetResult = {
@@ -54,11 +54,11 @@ export class SiApiFactory {
 		}
 
 		if (null !== (propData = extr.nullaObject('entry'))) {
-			result.entry = new SiEntryFactory(comp, declaration, this.injector).createEntry(propData);
+			result.entry = new SiEntryFactory(declaration, this.injector).createEntry(propData);
 		}
 
 		if (null !== (propData = extr.nullaObject('partialContent'))) {
-			result.partialContent = new SiEntryFactory(comp, declaration, this.injector)
+			result.partialContent = new SiEntryFactory(declaration, this.injector)
 					.createPartialContent(propData);
 		}
 
@@ -99,13 +99,13 @@ export class SiApiFactory {
 			}
 
 			const getInstruction = instruction.getInstructions[key];
-			result.getResults[key] = this.createValGetResult(resultsData[key], getInstruction.comp, getInstruction.getDeclaration());
+			result.getResults[key] = this.createValGetResult(resultsData[key], getInstruction.getDeclaration());
 		}
 
 		return result;
 	}
 
-	private createValGetResult(data: any, comp: SiComp, declaration: SiDeclaration|null): SiValGetResult {
+	private createValGetResult(data: any, declaration: SiDeclaration|null): SiValGetResult {
 		const extr = new Extractor(data);
 
 		const result: SiValGetResult = {
@@ -120,7 +120,7 @@ export class SiApiFactory {
 		}
 
 		if (null !== (propData = extr.nullaObject('entry'))) {
-			result.entry = new SiEntryFactory(comp, declaration, this.injector).createEntry(propData);
+			result.entry = new SiEntryFactory(declaration, this.injector).createEntry(propData);
 		}
 
 		return result;

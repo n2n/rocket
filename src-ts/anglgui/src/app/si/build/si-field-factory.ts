@@ -26,6 +26,7 @@ import { SiDeclaration } from '../model/meta/si-declaration';
 import { SiComp } from '../model/comp/si-comp';
 import { SiService } from '../manage/si.service';
 import { UiFactory } from './ui-factory';
+import { SiControlBoundry } from '../model/control/si-control-bountry';
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',
@@ -45,7 +46,7 @@ enum SiFieldType {
 }
 
 export class SiFieldFactory {
-	constructor(private comp: SiComp, private declaration: SiDeclaration, private type: SiType,
+	constructor(private controlBoundry: SiControlBoundry, private declaration: SiDeclaration, private type: SiType,
 			private injector: Injector) {
 	}
 
@@ -203,7 +204,7 @@ export class SiFieldFactory {
 
 			const entryData = extr.nullaObject('entry');
 			if (entryData) {
-				const entryFactory = new SiEntryFactory(this.comp, declaration, this.injector);
+				const entryFactory = new SiEntryFactory(declaration, this.injector);
 				splitContextSiField.putSplitContent(SplitContent.createEntry(key, label, shortLabel,
 						entryFactory.createEntry(entryData)));
 				continue;
@@ -217,7 +218,7 @@ export class SiFieldFactory {
 					propIds: extr.nullaStringArray('propIds'),
 					bulky: extr.reqBoolean('bulky'),
 					readOnly: extr.reqBoolean('readOnly'),
-					siComp: this.comp,
+					siControlBoundy: this.controlBoundry,
 					siService: this.injector.get(SiService)
 				}));
 				continue;

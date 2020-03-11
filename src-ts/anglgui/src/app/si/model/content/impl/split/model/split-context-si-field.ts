@@ -10,6 +10,7 @@ import { SiField } from '../../../si-field';
 import { SiFieldAdapter } from '../../common/model/si-field-adapter';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { SiEntryBuildup } from '../../../si-entry-buildup';
+import { SiControlBoundry } from 'src/app/si/model/control/si-control-bountry';
 
 
 
@@ -88,9 +89,9 @@ export class SplitContent implements SplitOption {
 
 		let instruction: SiGetInstruction|null = null;
 		if (this.lazyDef.entryId) {
-			instruction = SiGetInstruction.entry(this.lazyDef.siComp, this.lazyDef.bulky, this.lazyDef.readOnly, this.lazyDef.entryId);
+			instruction = SiGetInstruction.entry(this.lazyDef.bulky, this.lazyDef.readOnly, this.lazyDef.entryId);
 		} else {
-			instruction = SiGetInstruction.newEntry(this.lazyDef.siComp, this.lazyDef.bulky, this.lazyDef.readOnly);
+			instruction = SiGetInstruction.newEntry(this.lazyDef.bulky, this.lazyDef.readOnly);
 		}
 		instruction.setPropIds(this.lazyDef.propIds);
 
@@ -109,7 +110,7 @@ export interface LazyDef {
 	bulky: boolean;
 	readOnly: boolean;
 	siService: SiService;
-	siComp: SiComp;
+	siControlBoundy: SiControlBoundry;
 }
 
 export interface SplitStyle {
