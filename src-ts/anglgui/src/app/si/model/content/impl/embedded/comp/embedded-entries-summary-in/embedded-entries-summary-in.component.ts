@@ -13,7 +13,6 @@ import { EmbeddedEntriesInComponent } from '../embedded-entries-in/embedded-entr
 import { SiControl } from 'src/app/si/model/control/si-control';
 import { SimpleSiControl } from 'src/app/si/model/control/impl/model/simple-si-control';
 import { SiButton } from 'src/app/si/model/control/impl/model/si-button';
-import { SiEntry } from '../../../../si-entry';
 import { AddPasteObtainer } from '../add-paste-obtainer';
 import { SiGenericEntry } from 'src/app/si/model/generic/si-generic-entry';
 
@@ -76,7 +75,7 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 		}
 
 		const uiZone = this.uiStructure.getZone();
-		let bakEntry = embe.siEmbeddedEntry.entry.readGeneric();
+		let bakEntry = embe.siEmbeddedEntry.entry.createResetPoint();
 
 		this.popupUiLayer = uiZone.layer.container.createLayer();
 		const zone = this.popupUiLayer.pushZone(null);
@@ -92,7 +91,7 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 		this.popupUiLayer.onDispose(() => {
 			this.popupUiLayer = null;
 			if (bakEntry) {
-				embe.siEmbeddedEntry.entry.writeGeneric(bakEntry).throwIfError();
+				embe.siEmbeddedEntry.entry.resetToPoint(bakEntry);
 			} else {
 				this.obtainer.val([embe.siEmbeddedEntry]);
 			}
@@ -111,7 +110,7 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 		const uiZone = this.uiStructure.getZone();
 
 		let bakEmbes: Embe[]|null = [...this.embeCol.embes];
-		const bakEntries = this.embeCol.copyEntries();
+		const bakEntries = this.embeCol.createEntriesResetPoints();
 
 		this.popupUiLayer = uiZone.layer.container.createLayer();
 		this.popupUiLayer.onDispose(() => {
@@ -166,7 +165,7 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 		this.embeCol.clearEmbes();
 
 		bakEmbes.forEach((embe, i) => {
-			embe.siEmbeddedEntry.entry.writeGeneric(bakEntries[i]).throwIfError();
+			embe.siEmbeddedEntry.entry.resetToPoint(bakEntries[i]);
 
 			this.embeCol.initEmbe(this.embeCol.createEmbe(), embe.siEmbeddedEntry);
 		});

@@ -82,11 +82,11 @@ export class SplitSiField extends SiFieldAdapter implements SplitModel {
 		});
 	}
 
-	readGenericValue(): SiGenericValue {
+	copyValue(): SiGenericValue {
 		throw new Error('Not yet implemented');
 	}
 
-	writeGenericValue(genericValue: SiGenericValue): Fresult<GenericMissmatchError, void> {
+	pasteValue(genericValue: SiGenericValue): Promise<void> {
 		throw new Error('Not yet implemented');
 	}
 }

@@ -74,11 +74,11 @@ export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel 
 		return this.maxSize;
 	}
 
-	readGenericValue(): SiGenericValue {
+	copyValue(): SiGenericValue {
 		throw new Error('Not yet implemented');
 	}
 
-	writeGenericValue(genericValue: SiGenericValue): Fresult<GenericMissmatchError> {
+	pasteValue(genericValue: SiGenericValue): Promise<void> {
 		throw new Error('Not yet implemented');
 	}
 }

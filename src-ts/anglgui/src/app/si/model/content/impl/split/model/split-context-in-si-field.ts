@@ -87,11 +87,11 @@ export class SplitContextInSiField extends SplitContextSiField implements SplitM
 		return this.managerStyle.tooltip;
 	}
 
-	readGenericValue(): SiGenericValue {
+	copyValue(): SiGenericValue {
 		throw new Error('Not yet implemented');
 	}
 
-	writeGenericValue(genericValue: SiGenericValue): Fresult<GenericMissmatchError> {
+	pasteValue(genericValue: SiGenericValue): Promise<void> {
 		throw new Error('Not yet implemented');
 	}
 }

@@ -3,13 +3,16 @@ import { EmbeddedEntriesInUiContent } from './embedded-entries-in-si-content';
 import { SiEmbeddedEntry } from './si-embedded-entry';
 import { InSiFieldAdapter } from '../../common/model/in-si-field-adapter';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
-import { SiField } from '../../../si-field';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { EmbeddedEntriesConfig } from './embedded-entries-config';
 import { SiService } from 'src/app/si/manage/si.service';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
-import { Fresult } from 'src/app/util/err/fresult';
 import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
+import { SiEntryIdentifier } from '../../../si-qualifier';
+import { EmbeddedEntryObtainer } from './embedded-entry-obtainer';
+import {
+	SiGenericEmbeddedEntryCollection, SiGenericEmbeddedEntry, SiEntryResetPointCollection as SiEmbeddedEntryResetPointCollection
+} from './generic-embedded';
 
 export class EmbeddedEntryInSiField extends InSiFieldAdapter	{
 
@@ -31,26 +34,86 @@ export class EmbeddedEntryInSiField extends InSiFieldAdapter	{
 	// 	throw new Error('not yet implemented');
 	// }
 
-	readGenericValue(): SiGenericValue {
-		return new SiGenericValue(this.values.map(embeddedEntry => embeddedEntry.readGeneric()));
+	private findCurrentValue(entryIdentifier: SiEntryIdentifier): SiEmbeddedEntry|null {
+		return this.values.find(embeddedEntry => embeddedEntry.entry.identifier.equals(entryIdentifier)) || null;
 	}
 
-	writeGenericValue(genericValue: SiGenericValue): Fresult<GenericMissmatchError> {
-		throw new Error('Not yet implemented.');
+	copyValue(): SiGenericValue {
+		return new SiGenericValue(new SiGenericEmbeddedEntryCollection(
+				this.values.map(embeddedEntry => embeddedEntry.copy())));
 	}
 
-	// writeGenericValue(genericValue: SiGenericValue): Promise<void> {
+	pasteValue(genericValue: SiGenericValue): Promise<void> {
+		const newEmbeInds = new Array<EmbeInd>();
 
-	// 	const collection = genericValue.readInstance(SiGenericEmbeddedEntryCollection);
+		const collection = genericValue.readInstance(SiGenericEmbeddedEntryCollection);
+		for (const genericEmbedddedEntry of collection.siGenericEmbeddedEntries) {
+			const entryIdentifier = genericEmbedddedEntry.genericEntry.identifier;
+			this.valEntryIdentifier(entryIdentifier);
 
-	// 	const promises = new Array<Promise<SiEmbeddedEntry>>();
+			newEmbeInds.push({
+				embeddedEntry: this.findCurrentValue(entryIdentifier),
+				genericEmbeddedEntry: genericEmbedddedEntry
+			});
+		}
 
-	// 	if (collection.origSiField === this) {
-	// 		for (const siGenericEmbedddedEntry of collection.siGenericEmbeddedEntries) {
-	// 			promises.push(siGenericEmbedddedEntry.origSiEntry)
-	// 		}
-	// 	}
-	// }
+		const newEntryIdentifiers = newEmbeInds.filter(embeInd => embeInd.embeddedEntry === null).map(() => null);
+		if (newEntryIdentifiers.length === 0) {
+			return this.handlePaste(newEmbeInds, []);
+		}
+
+		const obtainer = new EmbeddedEntryObtainer(this.siService, this.apiUrl, this.config.reduced);
+		return obtainer.obtain(newEntryIdentifiers).toPromise()
+				.then((embeddedEntries) => {
+					return this.handlePaste(newEmbeInds, embeddedEntries);
+				});
+	}
+
+	private handlePaste(embeInds: Array<EmbeInd>, newEmbeddedEntries: SiEmbeddedEntry[]): Promise<void> {
+		const pastePromises: Array<Promise<void>> = [];
+
+		const values = new Array<SiEmbeddedEntry>();
+		for (const inf of embeInds) {
+			let embeddedEntry = inf.embeddedEntry;
+			if (!embeddedEntry) {
+				embeddedEntry = newEmbeddedEntries.shift();
+			}
+
+			pastePromises.push(embeddedEntry.paste(inf.genericEmbeddedEntry));
+			values.push(embeddedEntry);
+		}
+		this.values = values;
+
+		return Promise.all(pastePromises).then(() => { return; });
+	}
+
+	createResetPoint(): SiGenericValue {
+		return new SiGenericValue(new SiEmbeddedEntryResetPointCollection(this,
+				this.values.map(embeddedEntry => embeddedEntry.createResetPoint())));
+	}
+
+	resetToPoint(genericValue: SiGenericValue): void {
+		const collection = genericValue.readInstance(SiEmbeddedEntryResetPointCollection);
+		if (collection.origSiField !== this) {
+			throw new GenericMissmatchError('Reset point belongs to diffrent field.');
+		}
+
+		const values = new Array<SiEmbeddedEntry>();
+		for (const resetPoint of collection.genercEntryResetPoints) {
+			this.valEntryIdentifier(resetPoint.origSiEmbeddedEntry.entry.identifier);
+
+			resetPoint.origSiEmbeddedEntry.resetToPoint(resetPoint.genericEmbeddedEntry);
+			values.push(resetPoint.origSiEmbeddedEntry);
+		}
+		this.values = values;
+	}
+
+	private valEntryIdentifier(entryIdentifier: SiEntryIdentifier) {
+		if (entryIdentifier.typeCategory !== this.config.pasteCategory) {
+			throw new GenericMissmatchError('Categories dont match: '
+					+ entryIdentifier.typeCategory + ' != ' + this.config.pasteCategory);
+		}
+	}
 
 	// asfd(siEntryIdentifiers: SiEntryIdentifier[]) {
 	// 	const getInstructions = new Array<SiGetInstruction>();
@@ -67,4 +130,9 @@ export class EmbeddedEntryInSiField extends InSiFieldAdapter	{
 
 	// 	this.siService.apiGet(this.apiUrl, new SiGetRequest(SiGetInstruction.))
 	// }
+}
+
+interface EmbeInd {
+	embeddedEntry: SiEmbeddedEntry|null;
+	genericEmbeddedEntry: SiGenericEmbeddedEntry;
 }

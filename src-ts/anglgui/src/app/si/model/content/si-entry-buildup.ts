@@ -68,30 +68,50 @@ export class SiEntryBuildup {
 	// 	return copy;
 	// }
 
-	readGeneric(): SiGenericEntryBuildup {
+	copy(): SiGenericEntryBuildup {
 		const fieldValuesMap = new Map<string, SiGenericValue>();
 		for (const [fieldId, field] of this.fieldMap$.getValue()) {
-			fieldValuesMap.set(fieldId, field.readGenericValue());
+			fieldValuesMap.set(fieldId, field.copyValue());
 		}
 
 		return new SiGenericEntryBuildup(this.entryQualifier, fieldValuesMap);
 	}
 
-	writeGeneric(genericEntryBuildup: SiGenericEntryBuildup): Fresult<GenericMissmatchError> {
-		if (!genericEntryBuildup.entryQualifier.equals(this.entryQualifier)) {
-			throw new GenericMissmatchError('SiEntryBuildup missmacht: '
-					+ genericEntryBuildup.entryQualifier.toString() + ' != ' + this.entryQualifier.toString());
+	paste(genericEntryBuildup: SiGenericEntryBuildup): Promise<void> {
+		this.valGenericEntryBuildup(genericEntryBuildup);
+
+		const promises = new Array<Promise<void>>();
+		for (const [fieldId, genericValue] of genericEntryBuildup.fieldValuesMap) {
+			if (this.fieldMap.has(fieldId)) {
+				promises.push(this.fieldMap.get(fieldId).pasteValue(genericValue));
+			}
 		}
+		return Promise.all(promises).then(() => {});
+	}
+
+	createResetPoint(): SiGenericEntryBuildup {
+		const fieldValuesMap = new Map<string, SiGenericValue>();
+		for (const [fieldId, field] of this.fieldMap$.getValue()) {
+			fieldValuesMap.set(fieldId, field.createResetPoint());
+		}
+
+		return new SiGenericEntryBuildup(this.entryQualifier, fieldValuesMap);
+	}
+
+	resetToPoint(genericEntryBuildup: SiGenericEntryBuildup): void {
+		this.valGenericEntryBuildup(genericEntryBuildup);
 
 		for (const [fieldId, genericValue] of genericEntryBuildup.fieldValuesMap) {
 			if (this.fieldMap.has(fieldId)) {
-				const fresult = this.fieldMap.get(fieldId).writeGenericValue(genericValue);
-				if (!fresult.isValid()) {
-					return fresult;
-				}
+				this.fieldMap.get(fieldId).resetToPoint(genericValue);
 			}
 		}
+	}
 
-		return Fresult.success();
+	private valGenericEntryBuildup(genericEntryBuildup: SiGenericEntryBuildup) {
+		if (!genericEntryBuildup.entryQualifier.equals(this.entryQualifier)) {
+			throw new GenericMissmatchError('SiEntryBuildup missmatch: '
+					+ genericEntryBuildup.entryQualifier.toString() + ' != ' + this.entryQualifier.toString());
+		}
 	}
 }

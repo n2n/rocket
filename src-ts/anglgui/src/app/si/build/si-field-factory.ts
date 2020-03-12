@@ -23,7 +23,6 @@ import { Injector } from '@angular/core';
 import { SiCompFactory } from './si-comp-factory';
 import { SiEntryFactory } from './si-entry-factory';
 import { SiDeclaration } from '../model/meta/si-declaration';
-import { SiComp } from '../model/comp/si-comp';
 import { SiService } from '../manage/si.service';
 import { UiFactory } from './ui-factory';
 import { SiControlBoundry } from '../model/control/si-control-bountry';

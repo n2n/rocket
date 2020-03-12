@@ -69,16 +69,16 @@ export class BooleanInSiField extends InSiFieldAdapter implements TogglerInModel
 		});
 	}
 
-	readGenericValue(): SiGenericValue {
+	copyValue(): SiGenericValue {
 		return new SiGenericValue(new Boolean(this.value));
 	}
 
-	writeGenericValue(genericValue: SiGenericValue): Fresult<GenericMissmatchError> {
+	pasteValue(genericValue: SiGenericValue): Promise<void> {
 		if (genericValue.isInstanceOf(Boolean)) {
 			this.setValue(genericValue.readInstance(Boolean).valueOf());
-			return Fresult.success();
+			return Promise.resolve();
 		}
 
-		return Fresult.error(new GenericMissmatchError('Boolean expected.'));
+		throw new GenericMissmatchError('Boolean expected.');
 	}
 }

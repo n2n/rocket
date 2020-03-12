@@ -6,11 +6,10 @@ import { Message } from 'src/app/util/i18n/message';
 import { SiEntryIdentifier, SiEntryQualifier } from './si-qualifier';
 import { SiEntryBuildup } from './si-entry-buildup';
 import { SiTypeQualifier } from '../meta/si-type-qualifier';
-import { Subject, BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { SiGenericEntry } from '../generic/si-generic-entry';
 import { SiGenericEntryBuildup } from '../generic/si-generic-entry-buildup';
 import { GenericMissmatchError } from '../generic/generic-missmatch-error';
-import { Fresult } from 'src/app/util/err/fresult';
 
 export class SiEntry {
 	public treeLevel: number|null = null;
@@ -151,34 +150,56 @@ export class SiEntry {
 	// 	return entry;
 	// }
 
-	readGeneric(): SiGenericEntry|null {
+	copy(): SiGenericEntry {
 		const genericBuildupsMap = new Map<string, SiGenericEntryBuildup>();
 		for (const [typeId, entryBuildup] of this._entryBuildupsMap) {
-			genericBuildupsMap.set(typeId, entryBuildup.readGeneric());
+			genericBuildupsMap.set(typeId, entryBuildup.copy());
 		}
-
 		return new SiGenericEntry(this.identifier, this.selectedTypeId, genericBuildupsMap);
 	}
 
-	writeGeneric(genericEntry: SiGenericEntry): Fresult<GenericMissmatchError> {
+	paste(genericEntry: SiGenericEntry): Promise<void> {
+		this.valGenericEntry(genericEntry);
+
+		if (this._entryBuildupsMap.has(genericEntry.selectedTypeId)) {
+			this.selectedTypeId = genericEntry.selectedTypeId;
+		}
+
+		const promises = new Array<Promise<void>>();
+		for (const [typeId, genericEntryBuildup] of genericEntry.entryBuildupsMap) {
+			if (this._entryBuildupsMap.has(typeId)) {
+				promises.push(this._entryBuildupsMap.get(typeId).paste(genericEntryBuildup));
+			}
+		}
+		return Promise.all(promises).then(() => {});
+	}
+
+	createResetPoint(): SiGenericEntry {
+		const genericBuildupsMap = new Map<string, SiGenericEntryBuildup>();
+		for (const [typeId, entryBuildup] of this._entryBuildupsMap) {
+			genericBuildupsMap.set(typeId, entryBuildup.createResetPoint());
+		}
+		return new SiGenericEntry(this.identifier, this.selectedTypeId, genericBuildupsMap);
+	}
+
+	resetToPoint(genericEntry: SiGenericEntry): void {
+		this.valGenericEntry(genericEntry);
+
+		for (const [typeId, genericEntryBuildup] of genericEntry.entryBuildupsMap) {
+			if (this._entryBuildupsMap.has(typeId)) {
+				this._entryBuildupsMap.get(typeId).resetToPoint(genericEntryBuildup);
+			}
+		}
+	}
+
+	private valGenericEntry(genericEntry: SiGenericEntry) {
 		if (!genericEntry.identifier.equals(this.identifier)) {
-			throw new GenericMissmatchError('SiEntry missmacht: '
+			throw new GenericMissmatchError('SiEntry missmatch: '
 					+ genericEntry.identifier.toString() + ' != ' + this.identifier.toString());
 		}
 
 		if (genericEntry.bulky !== this.bulky || genericEntry.readOnly !== this.readOnly) {
 			throw new GenericMissmatchError('SiEntry missmatch.');
 		}
-
-		for (const [typeId, genericEntryBuildup] of genericEntry.entryBuildupsMap) {
-			if (this._entryBuildupsMap.has(typeId)) {
-				const fresult = this._entryBuildupsMap.get(typeId).writeGeneric(genericEntryBuildup);
-				if (!fresult.isValid()) {
-					return fresult;
-				}
-			}
-		}
-
-		return Fresult.success();
 	}
 }

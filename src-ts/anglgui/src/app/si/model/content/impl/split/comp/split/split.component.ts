@@ -156,7 +156,7 @@ class SplitButtonControlModel implements ButtonControlModel {
 		this.model.getSiField$(subKey)
 				.then((subSiField) => {
 					if (this.siField.isGeneric() && subSiField.isGeneric()) {
-						this.siField.writeGenericValue(subSiField.readGenericValue());
+						this.siField.pasteValue(subSiField.copyValue());
 					}
 				})
 				.finally(() => { this.loading = false});

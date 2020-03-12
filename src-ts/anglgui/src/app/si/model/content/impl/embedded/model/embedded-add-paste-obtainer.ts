@@ -14,42 +14,14 @@ import { BulkyEntrySiComp } from 'src/app/si/model/comp/impl/model/bulky-entry-s
 import { CompactEntrySiComp } from 'src/app/si/model/comp/impl/model/compact-entry-si-comp';
 import { SiEmbeddedEntry } from '../model/si-embedded-entry';
 import { AddPasteObtainer } from '../comp/add-paste-obtainer';
+import { EmbeddedEntryObtainer } from './embedded-entry-obtainer';
 
 export class EmbeddedAddPasteObtainer implements AddPasteObtainer {
-	constructor(private siService: SiService, private apiUrl: string, private obtainSummary: boolean) {
-	}
-
-	private createBulkyInstruction(siEntryIdentifier: SiEntryIdentifier|null): SiGetInstruction {
-		if (siEntryIdentifier) {
-			return SiGetInstruction.entry(true, false, siEntryIdentifier.id);
-		}
-
-		return SiGetInstruction.newEntry(true, false);
-	}
-
-	private createSummaryInstruction(siEntryIdentifier: SiEntryIdentifier|null): SiGetInstruction {
-		if (siEntryIdentifier) {
-			return SiGetInstruction.entry(false, true, siEntryIdentifier.id);
-		}
-
-		return SiGetInstruction.newEntry(false, true);
+	constructor(private obtainer: EmbeddedEntryObtainer) {
 	}
 
 	obtain(siEntryIdentifier: SiEntryIdentifier|null): Observable<SiEmbeddedEntry> {
-		const request = new SiGetRequest();
-
-		const comp = new BulkyEntrySiComp(undefined);
-		request.instructions[0] = this.createBulkyInstruction(siEntryIdentifier);
-
-		let summaryComp: CompactEntrySiComp|null = null;
-		if (this.obtainSummary) {
-			summaryComp = new CompactEntrySiComp(undefined);
-			request.instructions[1] = this.createSummaryInstruction(siEntryIdentifier);
-		}
-
-		return this.siService.apiGet(this.apiUrl, request).pipe(map((siGetResponse) => {
-			return this.handleResponse(siGetResponse, comp, summaryComp);
-		}));
+		return this.obtainer.obtain([siEntryIdentifier]).pipe(map(siEmbeddedEntries => siEmbeddedEntries[0]));
 	}
 
 	private handleResponse(response: SiGetResponse, comp: BulkyEntrySiComp,
@@ -99,7 +71,7 @@ export class EmbeddedAddPasteObtainer implements AddPasteObtainer {
 			siEmbeddedEntry.entry.resetError();
 		});
 
-		this.siService.apiVal(this.apiUrl, request).subscribe((response: SiValResponse) => {
+		this.obtainer.siService.apiVal(this.obtainer.apiUrl, request).subscribe((response: SiValResponse) => {
 			siEmbeddedEntries.forEach((siEmbeddedEntry, i) => {
 				this.handleValResult(siEmbeddedEntry, response.results[i]);
 			});

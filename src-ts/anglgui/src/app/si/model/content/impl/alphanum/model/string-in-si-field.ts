@@ -91,22 +91,22 @@ export class StringInSiField extends InSiFieldAdapter implements InputInFieldMod
 		return true;
 	}
 
-	readGenericValue(): SiGenericValue {
+	copyValue(): SiGenericValue {
 		return new SiGenericValue(this.value === null ? null : new String(this.value));
 	}
 
-	writeGenericValue(genericValue: SiGenericValue): Fresult<GenericMissmatchError> {
+	pasteValue(genericValue: SiGenericValue): Promise<void> {
 		if (genericValue.isNull()) {
 			this.value = null;
-			return Fresult.success();
+			return Promise.resolve();
 		}
 
 		if (genericValue.isInstanceOf(String)) {
 			this.value = genericValue.readInstance(String).valueOf();
-			return Fresult.success();
+			return Promise.resolve();
 		}
 
-		return Fresult.error(new GenericMissmatchError('String expected.'));
+		throw new GenericMissmatchError('String expected.');
 	}
 
 	createUiContent(): UiContent {

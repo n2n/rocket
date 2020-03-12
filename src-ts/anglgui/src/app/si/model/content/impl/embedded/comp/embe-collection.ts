@@ -78,10 +78,10 @@ export class EmbedInCollection extends EmbeCollection {
 		super(parentUiStructure, inModel, summary);
 	}
 
-	copyEntries(): SiGenericEntry[] {
+	createEntriesResetPoints(): SiGenericEntry[] {
 		const entries: SiGenericEntry[] = [];
 		for (const embe of this.embes) {
-			entries.push(embe.siEntry.readGeneric());
+			entries.push(embe.siEntry.createResetPoint());
 		}
 		return entries;
 	}

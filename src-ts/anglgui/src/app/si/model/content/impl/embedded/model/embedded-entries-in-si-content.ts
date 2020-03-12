@@ -9,6 +9,7 @@ import { EmbeddedEntriesConfig } from './embedded-entries-config';
 import { SiService } from 'src/app/si/manage/si.service';
 import { EmbeddedAddPasteObtainer } from './embedded-add-paste-obtainer';
 import { AddPasteObtainer } from '../comp/add-paste-obtainer';
+import { EmbeddedEntryObtainer } from './embedded-entry-obtainer';
 
 export class EmbeddedEntriesInUiContent implements EmbeddedEntriesInModel {
 
@@ -62,7 +63,7 @@ export class EmbeddedEntriesInUiContent implements EmbeddedEntriesInModel {
 	}
 
 	getObtainer(): AddPasteObtainer {
-		return new EmbeddedAddPasteObtainer(this.siService, this.apiUrl, this.config.reduced);
+		return new EmbeddedAddPasteObtainer(new EmbeddedEntryObtainer(this.siService, this.apiUrl, this.config.reduced));
 	}
 
 	initComponent(viewContainerRef: ViewContainerRef, componentFactoryResolver: ComponentFactoryResolver/*,

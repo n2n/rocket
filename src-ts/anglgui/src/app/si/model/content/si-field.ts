@@ -1,6 +1,5 @@
 import { SiFieldError } from 'src/app/si/model/input/si-field-error';
 import { Message } from 'src/app/util/i18n/message';
-import { SiEntryBuildup } from './si-entry-buildup';
 import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
 import { Observable } from 'rxjs';
 import { SiGenericValue } from '../generic/si-generic-value';
@@ -31,7 +30,12 @@ export interface SiField {
 
 	isGeneric(): boolean;
 
-	readGenericValue(): SiGenericValue;
+	copyValue(): SiGenericValue;
 
-	writeGenericValue(genericValue: SiGenericValue): Fresult<GenericMissmatchError>;
+	pasteValue(genericValue: SiGenericValue): Promise<void>;
+
+	createResetPoint(): SiGenericValue;
+
+	resetToPoint(genericValue: SiGenericValue): void;
 }
+

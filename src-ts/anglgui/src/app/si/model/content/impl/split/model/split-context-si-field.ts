@@ -3,7 +3,6 @@ import { SiEntry } from '../../../si-entry';
 import { SiService } from 'src/app/si/manage/si.service';
 import { SiGetRequest } from 'src/app/si/model/api/si-get-request';
 import { SiGetInstruction } from 'src/app/si/model/api/si-get-instruction';
-import { SiComp } from 'src/app/si/model/comp/si-comp';
 import { SiGetResponse } from 'src/app/si/model/api/si-get-response';
 import { map } from 'rxjs/operators';
 import { SiField } from '../../../si-field';
@@ -11,8 +10,6 @@ import { SiFieldAdapter } from '../../common/model/si-field-adapter';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { SiEntryBuildup } from '../../../si-entry-buildup';
 import { SiControlBoundry } from 'src/app/si/model/control/si-control-bountry';
-
-
 
 export abstract class SplitContextSiField extends SiFieldAdapter {
 	public style: SplitStyle = { iconClass: null, tooltip: null };

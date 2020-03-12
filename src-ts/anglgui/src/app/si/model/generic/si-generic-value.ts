@@ -20,5 +20,4 @@ export class SiGenericValue {
 
 		throw new IllegalSiStateError('Value is not instanceof ' + type.name);
 	}
-
 }
