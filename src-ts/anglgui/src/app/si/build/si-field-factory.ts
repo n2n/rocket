@@ -124,7 +124,8 @@ export class SiFieldFactory {
 			return enumInSiField;
 
 		case SiFieldType.QUALIFIER_SELECT_IN:
-			const qualifierSelectInSiField = new QualifierSelectInSiField(dataExtr.reqString('apiUrl'), prop.label,
+			const qualifierSelectInSiField = new QualifierSelectInSiField(dataExtr.reqString('typeCategory'),
+					dataExtr.reqString('apiUrl'), prop.label,
 					SiCompFactory.buildEntryQualifiers(dataExtr.reqArray('values')));
 			qualifierSelectInSiField.min = dataExtr.reqNumber('min');
 			qualifierSelectInSiField.max = dataExtr.nullaNumber('max');
@@ -133,14 +134,13 @@ export class SiFieldFactory {
 
 		case SiFieldType.EMBEDDED_ENTRY_IN:
 			const embeddedEntryInSiField = new EmbeddedEntryInSiField(this.injector.get(SiService),
-					dataExtr.reqString('apiUrl'),
+					dataExtr.reqString('typeCategory'), dataExtr.reqString('apiUrl'),
 					new SiCompFactory(this.injector).createEmbeddedEntries(dataExtr.reqArray('values')));
 			embeddedEntryInSiField.config.reduced = dataExtr.reqBoolean('reduced');
 			embeddedEntryInSiField.config.min = dataExtr.reqNumber('min');
 			embeddedEntryInSiField.config.max = dataExtr.nullaNumber('max');
 			embeddedEntryInSiField.config.nonNewRemovable = dataExtr.reqBoolean('nonNewRemovable');
 			embeddedEntryInSiField.config.sortable = dataExtr.reqBoolean('sortable');
-			embeddedEntryInSiField.config.pasteCategory = dataExtr.nullaString('pasteCategory');
 
 			const allowedSiTypeQualifiersData = dataExtr.nullaArray('allowedSiTypeQualifiers');
 			if (allowedSiTypeQualifiersData) {

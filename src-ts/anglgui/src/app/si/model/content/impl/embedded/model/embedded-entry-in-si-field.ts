@@ -18,7 +18,7 @@ export class EmbeddedEntryInSiField extends InSiFieldAdapter	{
 
 	config = new EmbeddedEntriesConfig();
 
-	constructor(private siService: SiService, private apiUrl: string, private values: SiEmbeddedEntry[] = []) {
+	constructor(private siService: SiService, private typeCategory: string, private apiUrl: string, private values: SiEmbeddedEntry[] = []) {
 		super();
 	}
 
@@ -27,7 +27,7 @@ export class EmbeddedEntryInSiField extends InSiFieldAdapter	{
 	}
 
 	createUiContent(uiStructure: UiStructure): UiContent {
-		return new EmbeddedEntriesInUiContent(this.siService, this.apiUrl, this.values, uiStructure, this.config);
+		return new EmbeddedEntriesInUiContent(this.siService, this.typeCategory, this.apiUrl, this.values, uiStructure, this.config);
 	}
 
 	// copy(): SiField {
@@ -109,9 +109,9 @@ export class EmbeddedEntryInSiField extends InSiFieldAdapter	{
 	}
 
 	private valEntryIdentifier(entryIdentifier: SiEntryIdentifier) {
-		if (entryIdentifier.typeCategory !== this.config.pasteCategory) {
+		if (entryIdentifier.typeCategory !== this.typeCategory) {
 			throw new GenericMissmatchError('Categories dont match: '
-					+ entryIdentifier.typeCategory + ' != ' + this.config.pasteCategory);
+					+ entryIdentifier.typeCategory + ' != ' + this.typeCategory);
 		}
 	}
 

@@ -155,7 +155,7 @@ export class SiEntry {
 		for (const [typeId, entryBuildup] of this._entryBuildupsMap) {
 			genericBuildupsMap.set(typeId, entryBuildup.copy());
 		}
-		return new SiGenericEntry(this.identifier, this.selectedTypeId, genericBuildupsMap);
+		return this.createGenericEntry(genericBuildupsMap);
 	}
 
 	paste(genericEntry: SiGenericEntry): Promise<void> {
@@ -179,7 +179,14 @@ export class SiEntry {
 		for (const [typeId, entryBuildup] of this._entryBuildupsMap) {
 			genericBuildupsMap.set(typeId, entryBuildup.createResetPoint());
 		}
-		return new SiGenericEntry(this.identifier, this.selectedTypeId, genericBuildupsMap);
+		return this.createGenericEntry(genericBuildupsMap);
+	}
+
+	private createGenericEntry(genericBuildupsMap: Map<string, SiGenericEntryBuildup>): SiGenericEntry {
+		const genericEntry = new SiGenericEntry(this.identifier, this.selectedTypeId, genericBuildupsMap);
+		genericEntry.bulky = this.bulky;
+		genericEntry.readOnly = this.readOnly;
+		return genericEntry;
 	}
 
 	resetToPoint(genericEntry: SiGenericEntry): void {

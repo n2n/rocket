@@ -203,9 +203,9 @@ class EiFrameUtil {
 		
 		
 		if ($guiPropPaths === null) {
-			return $guiDefinition->createEiGui($this->eiFrame, $viewMode)->getEiGuiFrame();
+			return $guiDefinition->createEiGui($this->eiFrame->getN2nContext(), $viewMode)->getEiGuiFrame();
 		} else {
-			return $guiDefinition->createEiGuiFrame($this->eiFrame, $viewMode, $guiPropPaths);
+			return $guiDefinition->createEiGuiFrame($this->eiFrame->getN2nContext(), $viewMode, $guiPropPaths);
 		}
 	}
 	
@@ -249,12 +249,21 @@ class EiFrameUtil {
 	 * @param EiEntry $eiEntry
 	 * @param bool $bulky
 	 * @param bool $readOnly
-	 * @return \rocket\ei\manage\gui\EiEntryGui
+	 * @return EiEntryGuiResult
 	 */
-	function createEiEntryGui(EiEntry $eiEntry, bool $bulky, bool $readOnly, array $guiPropPaths = null) {
+	function createEiEntryGui(EiEntry $eiEntry, bool $bulky, bool $readOnly, ?array $guiPropPaths,
+			bool $eiGuiRequired) {
 		$viewMode = ViewMode::determine($bulky, $readOnly, $eiEntry->isNew());
-		$eiGuiFrame = $this->createEiGuiFrame($eiEntry->getEiMask(), $viewMode, $guiPropPaths);
-		return $eiGuiFrame->createEiEntryGui($eiEntry);
+		$eiGui = null;
+		$eiGuiFrame = null;
+		if (!$eiGuiRequired) {
+			$eiGuiFrame = $this->createEiGuiFrame($eiEntry->getEiMask(), $viewMode, $guiPropPaths);
+		} else {
+			$eiGui = $this->createEiGui($eiEntry->getEiMask(), $viewMode, $guiPropPaths);
+			$eiGuiFrame = $eiGui->getEiGuiFrame();
+		}
+		return new EiEntryGuiResult($eiGuiFrame->createEiEntryGui($this->eiFrame, $eiEntry), $this->eiFrame,
+				$eiGuiFrame, $eiGui);
 	}
 	
 	/**

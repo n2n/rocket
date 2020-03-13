@@ -169,12 +169,19 @@ class EiuFrame {
 	/**
 	 * @return \rocket\ei\util\spec\EiuEngine
 	 */
-	public function getContextEiuEngine() {
+	public function contextEngine() {
 		if (null !== $this->eiuEngine) {
 			return $this->eiuEngine;		
 		}
 		
 		return $this->eiuEngine = new EiuEngine($this->eiFrame->getContextEiEngine(), null, $this->eiuAnalyst);
+	}
+	
+	/**
+	 * @return string
+	 */
+	function getSiTypeCategory() {
+		return $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()->getSupremeEiType()->getId();
 	}
 	
 	/**
@@ -190,7 +197,7 @@ class EiuFrame {
 	 */
 	public function mask($eiObjectObj = null) {
 		if ($eiObjectObj === null) {
-			return $this->getContextEiuEngine()->mask();
+			return $this->contextEngine()->mask();
 		}
 		
 		$contextEiType = $this->getContextEiType();
@@ -198,7 +205,7 @@ class EiuFrame {
 		$eiType = $eiObject->getEiEntityObj()->getEiType();
 		
 		if ($contextEiType->equals($eiType)) {
-			return $this->getContextEiuEngine()->mask();
+			return $this->contextEngine()->mask();
 		}
 		
 		return new EiuMask($this->getContextEiMask()->determineEiMask($eiType), null, $this->eiuAnalyst);
@@ -211,7 +218,7 @@ class EiuFrame {
 	 */
 	public function engine($eiObjectObj = null) {
 		if ($eiObjectObj === null) {
-			return $this->getContextEiuEngine();
+			return $this->contextEngine();
 		}
 		
 		$contextEiType = $this->getContextEiType();
@@ -219,7 +226,7 @@ class EiuFrame {
 		$eiType = $eiObject->getEiEntityObj()->getEiType();
 		
 		if ($contextEiType->equals($eiType)) {
-			return $this->getContextEiuEngine();
+			return $this->contextEngine();
 		}
 		
 		return new EiuEngine($this->eiFrame->determineEiMask($eiType)->getEiEngine(), null, $this->eiuAnalyst);
@@ -717,7 +724,6 @@ class EiuFrame {
 	public function addEiEntryConstraint(EiEntryConstraint $eiEntryConstraint, int $type = Boundry::TYPE_MANAGE) {
 		$this->eiFrame->getBoundry()->addEiEntryConstraint($type, $eiEntryConstraint);
 	}
-	
 	
 	//////////////////////////
 	

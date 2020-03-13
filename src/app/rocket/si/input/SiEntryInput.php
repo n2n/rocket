@@ -60,6 +60,10 @@ class SiEntryInput {
 		return $this->identifier;
 	}
 	
+	function isNew() {
+		return $this->identifier->getId() === null;
+	}
+	
 	/**
 	 * @return string
 	 */
@@ -96,6 +100,13 @@ class SiEntryInput {
 		}
 		
 		throw new \OutOfBoundsException('Unknown field name: ' . $fieldName);
+	}
+	
+	/**
+	 * @return string[] 
+	 */
+	function getFieldIds(): array {
+		return array_keys($this->fieldInputs);
 	}
 	
 	/**

@@ -36,7 +36,7 @@ class SiEntryIdentifier implements \JsonSerializable {
 	/**
 	 * @return string
 	 */
-	function getCategory() {
+	function getTypeCategory() {
 		return $this->typeCategory;
 	}
 	

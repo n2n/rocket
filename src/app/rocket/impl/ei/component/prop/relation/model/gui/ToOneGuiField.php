@@ -57,7 +57,7 @@ class ToOneGuiField implements GuiField {
 			$values[] = $eiuEntry->createSiEntryQualifier();
 		}
 		
-		$this->siField = SiFields::qualifierSelectIn(
+		$this->siField = SiFields::qualifierSelectIn($this->targetEiu->frame()->getSiTypeCategory(),
 				$this->targetEiu->frame()->getApiUrl($relationModel->getTargetReadEiCommandPath()),
 				$values, ($relationModel->isMandatory() ? 1 : 0), 1, 
 				$this->readPickableQualifiers($relationModel->getMaxPicksNum()));

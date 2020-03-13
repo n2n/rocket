@@ -198,9 +198,13 @@ class EiuType  {
 	}
 	
 	/**
-	 * @return SiTypeQualifier
+	 * @return string
 	 */
-	function createSiTypeQualifier() {
-		return $this->eiType->createSiTypeQualifier();
+	function createSiTypeCategory() {
+		return $this->eiType->getSuperEiType()->getId();
+	}
+	
+	function createSiTypeIdentifier() {
+		return $this->eiType->crea;
 	}
 }

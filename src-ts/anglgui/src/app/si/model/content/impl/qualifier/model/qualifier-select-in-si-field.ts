@@ -8,6 +8,12 @@ import { QualifierSelectInFieldComponent } from '../comp/qualifier-select-in-fie
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
+import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
+
+class SiEntryQualifierCollection {
+	constructor(public siEntryQualifiers: SiEntryQualifier[]) {
+	}
+}
 
 export class QualifierSelectInSiField extends InSiFieldAdapter implements QualifierSelectInModel {
 
@@ -15,7 +21,8 @@ export class QualifierSelectInSiField extends InSiFieldAdapter implements Qualif
 	public max: number|null = null;
 	public pickables: SiEntryQualifier[]|null = null;
 
-	constructor(public apiUrl: string, public label: string, public values: SiEntryQualifier[] = []) {
+	constructor(public typeCategory: string, public apiUrl: string, public label: string,
+			public values: SiEntryQualifier[] = []) {
 		super();
 	}
 
@@ -66,13 +73,6 @@ export class QualifierSelectInSiField extends InSiFieldAdapter implements Qualif
 		}
 	}
 
-	copy() {
-		const copy = new QualifierSelectInSiField(this.apiUrl, this.label, this.values);
-		copy.min = this.min;
-		copy.max = this.max;
-		return copy;
-	}
-
 	createUiContent(uiStructure: UiStructure): UiContent {
 		return new TypeUiContent(QualifierSelectInFieldComponent, (ref) => {
 			ref.instance.model = this;
@@ -81,10 +81,22 @@ export class QualifierSelectInSiField extends InSiFieldAdapter implements Qualif
 	}
 
 	copyValue(): SiGenericValue {
-		throw new Error('Not yet implemented');
+		return new SiGenericValue(new SiEntryQualifierCollection(this.values));
 	}
 
 	pasteValue(genericValue: SiGenericValue): Promise<void> {
-		throw new Error('Not yet implemented');
+		const siEntryQualifiers = genericValue.readInstance(SiEntryQualifierCollection).siEntryQualifiers;
+
+		this.values = [];
+		for (const siEntryQualifier of siEntryQualifiers) {
+			if (this.max !== null && this.values.length >= this.max) {
+				break;
+			}
+
+			GenericMissmatchError.assertTrue(siEntryQualifier.typeCategory === this.typeCategory, 'TypeCategory does not match.');
+			this.values.push(siEntryQualifier);
+		}
+
+		return Promise.resolve();
 	}
 }

@@ -32,6 +32,7 @@ use rocket\ei\manage\gui\EiGuiFrame;
 use rocket\ei\manage\gui\EiEntryGui;
 use rocket\si\input\SiEntryInput;
 use rocket\ei\manage\security\SecurityException;
+use rocket\ei\manage\gui\field\GuiPropPath;
 
 class ProcessUtil {
 	private $eiFrame;
@@ -100,15 +101,18 @@ class ProcessUtil {
 	/**
 	 * @param SiEntryInput $siEntryInput
 	 * @throws BadRequestException
-	 * @return \rocket\ei\manage\gui\EiEntryGui
+	 * @return \rocket\ei\manage\frame\EiEntryGuiResult
 	 */
 	function determineEiEntryGuiOfInput(SiEntryInput $siEntryInput) {
 		$eiObject = $this->determineEiObjectOfInput($siEntryInput);
 		
 		try {
 			$efu = new EiFrameUtil($this->eiFrame);
-			return $efu->createEiEntryGuiFromEiObject($eiObject, $siEntryInput->isBulky(), false);
+// 			$guiPropPaths = GuiPropPath::createArray($siEntryInput->getFieldInputs());
+			return $efu->createEiEntryGuiFromEiObject($eiObject, $siEntryInput->isBulky(), false, null /*$guiPropPaths*/, true);
 		} catch (SecurityException $e) {
+			throw new BadRequestException(null, 0, $e);
+		} catch (\InvalidArgumentException $e) {
 			throw new BadRequestException(null, 0, $e);
 		}
 	}

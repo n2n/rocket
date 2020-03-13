@@ -6,6 +6,5 @@ export class EmbeddedEntriesConfig {
 	public reduced = false;
 	public nonNewRemovable = true;
 	public sortable = false;
-	public pasteCategory: string|null = null;
 	public allowedSiTypeQualifiers: SiTypeQualifier[]|null = null;
 }

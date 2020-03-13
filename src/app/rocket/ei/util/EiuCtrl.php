@@ -307,7 +307,7 @@ class EiuCtrl {
 				SiPayloadFactory::create($siComp, 
 						$eiuGui->getEiGui()->getEiGuiFrame()->createGeneralSiControls($eiFrame),
 						$this->rocketState->getBreadcrumbs(),
-						$title ?? $this->eiuFrame->getContextEiuEngine()->mask()->getPluralLabel()));
+						$title ?? $this->eiuFrame->contextEngine()->mask()->getPluralLabel()));
 	}
 	
 	

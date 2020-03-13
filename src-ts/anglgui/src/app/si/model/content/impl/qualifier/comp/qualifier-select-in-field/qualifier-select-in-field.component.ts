@@ -6,7 +6,6 @@ import { PopupUiLayer } from 'src/app/ui/structure/model/ui-layer';
 import { EntriesListSiComp } from 'src/app/si/model/comp/impl/model/entries-list-si-comp';
 import { SimpleSiControl } from 'src/app/si/model/control/impl/model/simple-si-control';
 import { SiButton } from 'src/app/si/model/control/impl/model/si-button';
-import { SiComp } from 'src/app/si/model/comp/si-comp';
 
 
 @Component({

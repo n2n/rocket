@@ -13,8 +13,9 @@ import { EmbeddedEntryObtainer } from './embedded-entry-obtainer';
 
 export class EmbeddedEntriesInUiContent implements EmbeddedEntriesInModel {
 
-	constructor(public siService: SiService, public apiUrl: string, public values: SiEmbeddedEntry[] = [],
-			private uiStructure: UiStructure, private config: EmbeddedEntriesConfig) {
+	constructor(public siService: SiService, public typeCategory: string, public apiUrl: string, 
+			public values: SiEmbeddedEntry[] = [], private uiStructure: UiStructure, 
+			private config: EmbeddedEntriesConfig) {
 	}
 
 	getApiUrl(): string {
@@ -54,8 +55,8 @@ export class EmbeddedEntriesInUiContent implements EmbeddedEntriesInModel {
 		return this.config.sortable;
 	}
 
-	getPastCategory(): string|null {
-		return this.config.pasteCategory;
+	getTypeCategory(): string {
+		return this.typeCategory;
 	}
 
 	getAllowedSiTypeQualifiers(): SiTypeQualifier[]|null {

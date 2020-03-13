@@ -23,7 +23,7 @@ export class PanelEmbeddedEntryInModel implements EmbeddedEntriesInModel {
 		return true;
 	}
 
-	getPastCategory(): string {
+	getTypeCategory(): string {
 		return this.panel.pasteCategory;
 	}
 

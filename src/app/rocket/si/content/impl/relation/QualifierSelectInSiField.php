@@ -29,6 +29,10 @@ use rocket\si\content\impl\InSiFieldAdapter;
 
 class QualifierSelectInSiField extends InSiFieldAdapter {
 	/**
+	 * @var string
+	 */
+	private $typeCategory;
+	/**
 	 * @var SiEntryQualifier[]
 	 */
 	private $values;
@@ -55,7 +59,8 @@ class QualifierSelectInSiField extends InSiFieldAdapter {
 	 * @param Url $apiUrl
 	 * @param SiEntryQualifier[] $values
 	 */
-	function __construct(Url $apiUrl, array $values = []) {
+	function __construct(string $typeCategory, Url $apiUrl, array $values = []) {
+		$this->typeCategory = $typeCategory;
 		$this->setValues($values);	
 		$this->apiUrl = $apiUrl;
 	}
@@ -65,7 +70,9 @@ class QualifierSelectInSiField extends InSiFieldAdapter {
 	 * @return QualifierSelectInSiField
 	 */
 	function setValues(array $values) {
-		ArgUtils::valArray($values, SiEntryQualifier::class);
+		foreach ($values as $value) {
+			ArgUtils::assertTrue($value instanceof SiEntryQualifier && $value->getTypeCategory() === $this->typeCategory);
+		}
 		$this->values = $values;
 		return $this;
 	}
@@ -95,7 +102,7 @@ class QualifierSelectInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param int $min
-	 * @return \rocket\si\content\impl\QualifierSelectInSiField
+	 * @return QualifierSelectInSiField
 	 */
 	function setMin(int $min) {
 		$this->min = $min;
@@ -130,7 +137,10 @@ class QualifierSelectInSiField extends InSiFieldAdapter {
 	 * @return QualifierSelectInSiField
 	 */
 	function setPickables(?array $pickables) {
-		ArgUtils::valArray($pickables, SiEntryQualifier::class);
+		foreach ($pickables as $pickable) {
+			ArgUtils::assertTrue($pickable instanceof SiEntryQualifier 
+					&& $pickable->getTypeCategory() === $this->typeCategory);
+		}
 		$this->pickables = $pickables;
 		return $this;
 	}
@@ -156,6 +166,7 @@ class QualifierSelectInSiField extends InSiFieldAdapter {
 	 */
 	function getData(): array {
 		return [
+			'typeCategory' => $this->typeCategory,
 			'values' => $this->values,
 			'apiUrl' => (string) $this->apiUrl,
 			'min' => $this->min,

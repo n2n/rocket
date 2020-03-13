@@ -12,7 +12,7 @@ export interface EmbeddedEntriesInModel extends EmbeddedEntryModel {
 
 	isSummaryRequired(): boolean;
 
-	getPastCategory(): string|null;
+	getTypeCategory(): string;
 
 	getAllowedSiTypeQualifiers(): SiTypeQualifier[]|null;
 

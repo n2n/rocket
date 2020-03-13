@@ -82,8 +82,8 @@ export class SiEntryBuildup {
 
 		const promises = new Array<Promise<void>>();
 		for (const [fieldId, genericValue] of genericEntryBuildup.fieldValuesMap) {
-			if (this.fieldMap.has(fieldId)) {
-				promises.push(this.fieldMap.get(fieldId).pasteValue(genericValue));
+			if (this.containsPropId(fieldId)) {
+				promises.push(this.getFieldById(fieldId).pasteValue(genericValue));
 			}
 		}
 		return Promise.all(promises).then(() => {});
@@ -102,8 +102,8 @@ export class SiEntryBuildup {
 		this.valGenericEntryBuildup(genericEntryBuildup);
 
 		for (const [fieldId, genericValue] of genericEntryBuildup.fieldValuesMap) {
-			if (this.fieldMap.has(fieldId)) {
-				this.fieldMap.get(fieldId).resetToPoint(genericValue);
+			if (this.containsPropId(fieldId)) {
+				this.getFieldById(fieldId).resetToPoint(genericValue);
 			}
 		}
 	}

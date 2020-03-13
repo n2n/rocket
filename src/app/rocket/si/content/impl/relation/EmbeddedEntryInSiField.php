@@ -29,7 +29,10 @@ use rocket\si\input\SiEntryInput;
 use rocket\si\meta\SiTypeQualifier;
 
 class EmbeddedEntryInSiField extends InSiFieldAdapter {
-	
+	/**
+	 * @var string
+	 */
+	private $typeCategory;
 	/**
 	 * @var Url
 	 */
@@ -72,11 +75,13 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	private $allowedSiTypeQualifiers = null;
 	
 	/**
+	 * @param string $typeCateogry
 	 * @param Url $apiUrl
 	 * @param EmbeddedEntryInputHandler $inputHandler
 	 * @param SiEmbeddedEntry[] $values
 	 */
-	function __construct(Url $apiUrl, EmbeddedEntryInputHandler $inputHandler, array $values = []) {
+	function __construct(string $typeCateogry, Url $apiUrl, EmbeddedEntryInputHandler $inputHandler, array $values = []) {
+		$this->typeCategory = $typeCateogry;
 		$this->apiUrl = $apiUrl;
 		$this->inputHandler = $inputHandler;
 		$this->setValues($values);
@@ -243,6 +248,7 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	function getData(): array {
 		return [
 			'values' => $this->values,
+			'typeCategory' => $this->typeCategory,
 			'apiUrl' => (string) $this->apiUrl,
 			'min' => $this->min,
 			'max' => $this->max,

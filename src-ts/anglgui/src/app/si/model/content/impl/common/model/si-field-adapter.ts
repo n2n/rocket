@@ -69,21 +69,6 @@ export abstract class SiFieldAdapter implements SiField, MessageFieldModel {
 	}
 
 	resetToPoint(genericValue: SiGenericValue): void {
-		let fullfilled = false;
-		let rejectE = null;
-		this.pasteValue(genericValue)
-				.then(() => { fullfilled = true; })
-				.catch(e => { rejectE = e });
-
-
-		if (fullfilled) {
-			return;
-		}
-
-		if (rejectE) {
-			throw rejectE;
-		}
-
-		throw new GenericMissmatchError('Paste promise not instantly fullfilled.');
+		this.pasteValue(genericValue);
 	}
 }

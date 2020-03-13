@@ -110,8 +110,8 @@ class SiFields {
 	 * @param SiEntryQualifier[]|null $pickables
 	 * @return QualifierSelectInSiField
 	 */
-	static function qualifierSelectIn(Url $apiUrl, array $values = [], int $min = 0, int $max = null, array $pickables = null) {
-		return (new QualifierSelectInSiField($apiUrl, $values))->setMin($min)->setMax($max)->setPickables($pickables);
+	static function qualifierSelectIn(string $typeCategory, Url $apiUrl, array $values = [], int $min = 0, int $max = null, array $pickables = null) {
+		return (new QualifierSelectInSiField($typeCategory, $apiUrl, $values))->setMin($min)->setMax($max)->setPickables($pickables);
 	}
 	
 	/**
@@ -122,9 +122,9 @@ class SiFields {
 	 * @param int $max
 	 * @return EmbeddedEntryInSiField
 	 */
-	static function embeddedEntryIn(Url $apiUrl, EmbeddedEntryInputHandler $inputHandler, array $values = [], 
+	static function embeddedEntryIn(string $typeCategory, Url $apiUrl, EmbeddedEntryInputHandler $inputHandler, array $values = [], 
 			int $min = 0, int $max = null) {
-		return (new EmbeddedEntryInSiField($apiUrl, $inputHandler, $values))->setMin($min)->setMax($max);
+		return (new EmbeddedEntryInSiField($typeCategory, $apiUrl, $inputHandler, $values))->setMin($min)->setMax($max);
 	}
 	
 	/**

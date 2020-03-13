@@ -179,6 +179,7 @@ class GuiPropPath implements Hashable {
 	/**
 	 * @param mixed $expression
 	 * @return \rocket\ei\manage\gui\field\GuiPropPath
+	 * @throws \InvalidArgumentException
 	 */
 	public static function create($expression) {
 		if ($expression instanceof GuiPropPath) {
@@ -209,6 +210,11 @@ class GuiPropPath implements Hashable {
 		return $guiPropPath;
 	}
 	
+	/**
+	 * @param array $expressions
+	 * @return \rocket\ei\manage\gui\field\GuiPropPath[]
+	 * @throws \InvalidArgumentException
+	 */
 	public static function createArray(array $expressions) {
 		$eiPropPaths = array();
 		foreach ($expressions as $key => $expression) {
