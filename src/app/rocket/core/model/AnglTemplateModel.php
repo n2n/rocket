@@ -48,11 +48,12 @@ class AnglTemplateModel implements Lookupable {
 		
 		return [
 			'languages_txt' => $dtc->t('languages_txt'),
-			'select_txt' => $dtc->t('select_txt'),
 			'visible_label' => $dtc->t('visible_label'),
 			'errors_txt' => $dtc->t('errors_txt'),
 			'activate_txt' => $dtc->t('activate_txt'),
+			'common_select_label' => $dtc->t('common_select_label'),
 			'common_apply_label' => $dtc->t('common_apply_label'),
+			'common_cancel_label' => $dtc->t('common_cancel_label'),
 			'common_discard_label' => $dtc->t('common_discard_label'),
 			'common_edit_label' => $dtc->t('common_edit_label'),
 			'common_delete_label' => $dtc->t('common_delete_label'),

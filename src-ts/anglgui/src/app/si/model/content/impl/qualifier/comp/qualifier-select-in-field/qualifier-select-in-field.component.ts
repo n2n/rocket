@@ -3,6 +3,7 @@ import { SiEntryQualifier } from 'src/app/si/model/content/si-qualifier';
 import { QualifierSelectInModel } from '../qualifier-select-in-model';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { PopupUiLayer } from 'src/app/ui/structure/model/ui-layer';
+import { TranslationService } from 'src/app/util/i18n/translation.service';
 import { EntriesListSiComp } from 'src/app/si/model/comp/impl/model/entries-list-si-comp';
 import { SimpleSiControl } from 'src/app/si/model/control/impl/model/simple-si-control';
 import { SiButton } from 'src/app/si/model/control/impl/model/si-button';
@@ -21,8 +22,8 @@ export class QualifierSelectInFieldComponent implements OnInit, DoCheck {
 
 	private optionsUiLayer: PopupUiLayer|null = null;
 
-	constructor(private elemRef: ElementRef) { }
-
+	constructor(private elemRef: ElementRef, private translationService: TranslationService) { }
+	
 	ngOnInit() {
 		if (1 === this.model.getMax()) {
 			this.elemRef.nativeElement.classList.add('rocket-to-one');
@@ -108,13 +109,13 @@ export class QualifierSelectInFieldComponent implements OnInit, DoCheck {
 	private createSiControls(comp: EntriesListSiComp) {
 		return [
 			new SimpleSiControl(
-					new SiButton('common_select_txt', 'btn btn-primary rocket-important', 'fa fa-circle-o'),
+					new SiButton(this.translationService.translate('common_select_label'), 'btn btn-primary rocket-important', 'fa fa-circle-o'),
 					() => {
 						this.model.setValues(comp.qualifierSelection.selectedQualfiers);
 						this.optionsUiLayer.dispose();
 					}),
 			new SimpleSiControl(
-					new SiButton('common_cancel_txt', 'btn btn-secondary', 'fa fa-circle-o'),
+					new SiButton(this.translationService.translate('common_cancel_label'), 'btn btn-secondary', 'fa fa-circle-o'),
 					() => {
 						this.optionsUiLayer.dispose();
 					})
