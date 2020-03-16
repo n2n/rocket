@@ -11,7 +11,7 @@ import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatc
 import { SiEntryIdentifier } from '../../../si-qualifier';
 import { EmbeddedEntryObtainer } from './embedded-entry-obtainer';
 import {
-	SiGenericEmbeddedEntryCollection, SiGenericEmbeddedEntry, SiEntryResetPointCollection as SiEmbeddedEntryResetPointCollection
+	SiGenericEmbeddedEntryCollection, SiGenericEmbeddedEntry, SiEmbeddedEntryResetPointCollection
 } from './generic-embedded';
 
 export class EmbeddedEntryInSiField extends InSiFieldAdapter	{

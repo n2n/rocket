@@ -14,7 +14,7 @@ import { EmbeddedEntryObtainer } from './embedded-entry-obtainer';
 export class EmbeddedEntriesInUiContent implements EmbeddedEntriesInModel {
 
 	constructor(public siService: SiService, public typeCategory: string, public apiUrl: string, 
-			public values: SiEmbeddedEntry[] = [], private uiStructure: UiStructure, 
+			public values: SiEmbeddedEntry[] = [], private uiStructure: UiStructure,
 			private config: EmbeddedEntriesConfig) {
 	}
 

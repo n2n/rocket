@@ -12,7 +12,7 @@ export class SiGenericEmbeddedEntry {
 	}
 }
 
-export class SiEntryResetPointCollection {
+export class SiEmbeddedEntryResetPointCollection {
 	constructor(public origSiField: SiField,
 			public genercEntryResetPoints: SiEmbeddedEntryResetPoint[]) {
 	}

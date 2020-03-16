@@ -12,7 +12,7 @@ import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
 import { Fresult } from 'src/app/util/err/fresult';
 import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
 
-export abstract class SiFieldAdapter implements SiField, MessageFieldModel {
+export abstract class SiFieldAdapter implements SiField/*, MessageFieldModel*/ {
 	private disabledSubject = new BehaviorSubject<boolean>(false);
 	protected messages: Message[] = [];
 
