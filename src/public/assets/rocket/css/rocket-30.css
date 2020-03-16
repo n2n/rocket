@@ -6538,6 +6538,7 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
 .rocket-simple-commands > rocket-button-control > .dropdown > button:hover,
 .rocket-simple-commands > rocket-button-control > .btn:hover {
   background: transparent;
+  color: #373431;
 }
 
 .rocket-simple-commands > rocket-button-control > .dropdown > button:focus, .rocket-simple-commands > rocket-button-control > .dropdown > button:visited, .rocket-simple-commands > rocket-button-control > .dropdown > button:active,
@@ -6586,6 +6587,10 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
 
 .rocket-simple-commands > rocket-button-control .btn > i {
   font-size: 1.25rem;
+}
+
+.rocket-simple-controls .btn:not(:last-child) {
+  margin-right: 0.5rem;
 }
 
 /*
