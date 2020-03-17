@@ -1,10 +1,11 @@
 import { Component, OnInit, Injector } from '@angular/core';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { EmbeddedEntriesInModel } from '../embedded-entry-in-model';
-import { EmbedInCollection } from '../embe-collection';
-import { Embe } from '../embe';
 import { SiEmbeddedEntry } from '../../model/si-embedded-entry';
 import { AddPasteObtainer } from '../add-paste-obtainer';
+import { Embe } from '../../model/embe';
+import { SiEmbeddedEntryResetPointCollection } from '../../model/generic-embedded';
+import { EmbeInCollection } from '../../model/embe-collection';
 
 @Component({
 	selector: 'rocket-embedded-entries-in',
@@ -12,19 +13,15 @@ import { AddPasteObtainer } from '../add-paste-obtainer';
 	styleUrls: ['./embedded-entries-in.component.css']
 })
 export class EmbeddedEntriesInComponent implements OnInit {
-	uiStructure: UiStructure;
 	model: EmbeddedEntriesInModel;
-	private embeCol: EmbedInCollection;
+	private embeCol: EmbeInCollection;
 	obtainer: AddPasteObtainer;
 
 	constructor() { }
 
 	ngOnInit() {
-		this.embeCol = new EmbedInCollection(this.uiStructure, this.model, false);
-		this.obtainer = this.model.getObtainer();
-
-		this.embeCol.readEmbes();
-		this.embeCol.fillWithPlaceholderEmbes();
+		this.obtainer = this.model.getAddPasteObtainer();
+		this.embeCol = this.model.getEmbeInCollection();
 	}
 
 	get embes(): Embe[] {
@@ -32,12 +29,12 @@ export class EmbeddedEntriesInComponent implements OnInit {
 	}
 
 	add(siEmbeddedEntry: SiEmbeddedEntry) {
-		this.embeCol.initEmbe(this.embeCol.createEmbe(), siEmbeddedEntry);
+		this.embeCol.createEmbe(siEmbeddedEntry);
 		this.embeCol.writeEmbes();
 	}
 
 	addBefore(embe: Embe, siEmbeddedEntry: SiEmbeddedEntry) {
-		this.embeCol.initEmbe(this.embeCol.createEmbe(), siEmbeddedEntry);
+		this.embeCol.createEmbe(siEmbeddedEntry);
 		this.embeCol.changeEmbePosition(this.embeCol.embes.length - 1, this.embeCol.embes.indexOf(embe));
 		this.embeCol.writeEmbes();
 	}

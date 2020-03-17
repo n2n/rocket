@@ -227,7 +227,6 @@ export class SiCompFactory {
 		panel.max = extr.nullaNumber('max');
 		panel.nonNewRemovable = extr.reqBoolean('nonNewRemovable');
 		panel.sortable = extr.reqBoolean('sortable');
-		panel.pasteCategory = extr.nullaString('pasteCategory');
 		panel.gridPos = SiCompFactory.buildGridPos(extr.nullaObject('gridPos'));
 
 		const allowedSiTypeQualifiersData = extr.nullaArray('allowedTypeQualifiers');

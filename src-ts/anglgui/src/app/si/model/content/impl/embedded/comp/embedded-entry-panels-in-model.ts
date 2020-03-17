@@ -1,9 +1,12 @@
 import { SiPanel } from '../model/si-panel';
-import { AddPasteObtainer } from './add-paste-obtainer';
+import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
+
+export interface PanelDef {
+	siPanel: SiPanel;
+	uiStructure: UiStructure;
+}
 
 export interface EmbeddedEntryPanelInModel {
 
-	getObtainer(): AddPasteObtainer;
-
-	getPanels(): SiPanel[];
+	getPanelDefs(): PanelDef[];
 }

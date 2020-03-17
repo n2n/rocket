@@ -129,7 +129,7 @@ export class AddPasteComponent implements OnInit {
 		this.newEntry.emit(siEmbeddedEntry);
 	}
 
-	get addablesVisible() {
+	get addablesVisible(): boolean {
 		return !!this.addables;
 	}
 
@@ -147,7 +147,8 @@ export class AddPasteComponent implements OnInit {
 	}
 
 	isAddLoading(siTypeQualifier: SiTypeQualifier = null): boolean {
-		return this.addLoading || (siTypeQualifier && this.addLoadingSiTypeQualifier && this.addLoadingSiTypeQualifier.equals(siTypeQualifier));
+		return this.addLoading || (siTypeQualifier && this.addLoadingSiTypeQualifier
+				&& this.addLoadingSiTypeQualifier.equals(siTypeQualifier));
 	}
 
 	isPasteLoading(siQualifier: SiEntryQualifier): boolean {

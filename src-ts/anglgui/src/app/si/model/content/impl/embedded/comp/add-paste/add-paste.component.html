@@ -10,8 +10,8 @@
 		
 		<ul *ngIf="addablesVisible" class="rocket-multi-type-menu">
 			<li *ngFor="let siQualifier of addables">
-				<button type="button" (click)="choose(siQualifier.type)" [disabled]="loading">
-					<rocket-si-qualifier [siTypeQualifier]="siEntryQualifier.typeQualifier"></rocket-si-qualifier>
+				<button type="button" (click)="choose(siQualifier.typeQualifier)" [disabled]="loading">
+					<rocket-si-qualifier [siTypeQualifier]="siQualifier.typeQualifier"></rocket-si-qualifier>
 				</button>
 			</li>
 		</ul>
@@ -24,7 +24,7 @@
 		
 		<ul *ngIf="pastablesVisible" class="rocket-multi-type-menu">
 			<li *ngFor="let siQualifier of pastables">
-				<button *ngIf="isSiTypeAllowed(siQualifier.type); else disabledPaste" type="button" (click)="paste(siQualifier)"
+				<button *ngIf="isTypeAllowed(siQualifier.typeQualifier); else disabledPaste" type="button" (click)="paste(siQualifier)"
 						[disabled]="loading">
 					<span *ngIf="isPasteLoading(siQualifier)" class="spinner-grow spinner-grow-sm" role="status" 
 							aria-hidden="true">[@tomekk: mach da einen loader]</span>
@@ -42,9 +42,9 @@
 </div>
 
 <div *ngIf="type == 'tiles'" class="rocket-add-paste rocket-tiles">
-	<ng-container *ngFor="let siType of allowedSiType">
-		<button type="button" (click)="addBySiType(siType)" [disabled]="loading">
-			<span *ngIf="isAddLoading(siType)" class="spinner-grow spinner-grow-sm" role="status" 
+	<ng-container *ngFor="let siTypeQualifier of allowedSiTypeQualifiers">
+		<button type="button" (click)="addBySiType(siTypeQualifier)" [disabled]="loading">
+			<span *ngIf="isAddLoading(siTypeQualifier)" class="spinner-grow spinner-grow-sm" role="status" 
 					aria-hidden="true">[@tomekk: mach da einen loader]</span>
 				
 			<rocket-si-qualifier siType="siType" [showIdName]="false"></rocket-si-qualifier>
@@ -52,7 +52,7 @@
 	</ng-container>
 	
 	<ng-container *ngFor="let siQualifier of pastables">
-		<button *ngIf="isSiTypeAllowed(siQualifier.type)" type="button" (click)="paste(siQualifier)"
+		<button *ngIf="isTypeAllowed(siQualifier.typeQualifier)" type="button" (click)="paste(siQualifier)"
 				[disabled]="loading">
 			<span *ngIf="isPasteLoading(siQualifier)" class="spinner-grow spinner-grow-sm" role="status" 
 					aria-hidden="true">[@tomekk: mach da einen loader]</span>

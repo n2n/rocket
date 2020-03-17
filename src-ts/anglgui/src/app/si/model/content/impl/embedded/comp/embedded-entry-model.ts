@@ -1,4 +1,3 @@
-import { SiEmbeddedEntry } from '../model/si-embedded-entry';
 
 
 export interface EmbeddedEntryModel {
@@ -7,5 +6,4 @@ export interface EmbeddedEntryModel {
 
 	getMax(): number|null;
 
-	getValues(): SiEmbeddedEntry[];
 }

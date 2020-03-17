@@ -1,9 +1,7 @@
-import { SiFieldAdapter } from './si-field-adapter';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
-import { UiContent } from 'src/app/ui/structure/model/ui-content';
-import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
+import { SimpleSiFieldAdapter } from './simple-si-field-adapter';
 
-export abstract class OutSiFieldAdapter extends SiFieldAdapter {
+export abstract class OutSiFieldAdapter extends SimpleSiFieldAdapter {
 
 	hasInput(): boolean {
 		return false;
@@ -15,5 +13,4 @@ export abstract class OutSiFieldAdapter extends SiFieldAdapter {
 
 	// abstract copy(entryBuildUp: SiEntryBuildup): SiField;
 
-	protected abstract createUiContent(uiStructure: UiStructure): UiContent;
 }

@@ -1,35 +1,46 @@
 import { UiStructureModel } from '../ui-structure-model';
-import { UiStructure } from '../ui-structure';
 import { UiContent } from '../ui-content';
-import { Message } from 'src/app/util/i18n/message';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
+import { UiStructure } from '../ui-structure';
+import { UiZoneError } from '../ui-zone-error';
+import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 
 export abstract class UiStructureModelAdapter implements UiStructureModel {
-	protected content: UiContent|null = null;
-	protected asideContents: UiContent[] =  [];
-	protected messages: Message[] = [];
-	private disabled$: Observable<boolean> = of(false);
+	protected boundUiStructure: UiStructure|null = null;
+	protected uiContent: UiContent|null = null;
+	protected asideUiContents: UiContent[] = [];
+	protected disabled$: Observable<boolean>;
 
-	constructor() {
+	bind(uiStructure: UiStructure): void {
+		IllegalStateError.assertTrue(!this.boundUiStructure, 'UiStructureModel already bound.');
+		this.boundUiStructure = uiStructure;
 	}
 
-	abstract init(uiStructure: UiStructure): void;
+	unbind(): void {
+		IllegalStateError.assertTrue(!!this.boundUiStructure, 'UiStructureModel not bound.');
+		this.boundUiStructure = null;
+	}
 
-	abstract destroy(): void;
+	protected reqBoundUiStructure(): UiStructure {
+		IllegalStateError.assertTrue(!!this.boundUiStructure, 'UiStructureModel not bound.');
+		return this.boundUiStructure;
+	}
 
 	getContent(): UiContent|null {
-		return this.content;
+		return this.uiContent;
 	}
 
 	getAsideContents(): UiContent[] {
-		return this.asideContents;
+		return this.asideUiContents;
 	}
 
-	getMessages(): Message[] {
-		return this.messages;
-	}
+	abstract getZoneErrors(): UiZoneError[];
 
 	getDisabled$(): Observable<boolean> {
+		if (!this.disabled$) {
+			this.disabled$ = of(false);
+		}
+
 		return this.disabled$;
 	}
 }

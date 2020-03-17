@@ -6,7 +6,6 @@ import { Message } from 'src/app/util/i18n/message';
 import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
 import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
-import { BulkyEntryComponent } from '../comp/bulky-entry/bulky-entry.component';
 import { BulkyEntryModel } from '../comp/bulky-entry-model';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiProp } from '../../../meta/si-prop';
@@ -17,6 +16,7 @@ import { SiStructureDeclaration } from '../../../meta/si-structure-declaration';
 import { UiStructureModelAdapter } from 'src/app/ui/structure/model/impl/ui-structure-model-adapter';
 import { EnumInComponent } from '../../../content/impl/enum/comp/enum-in/enum-in.component';
 import { EnumInModel } from '../../../content/impl/enum/comp/enum-in-model';
+import { UiZoneError } from 'src/app/ui/structure/model/ui-zone-error';
 
 export class BulkyEntrySiComp implements SiComp {
 	private _entry: SiEntry|null = null;
@@ -68,6 +68,7 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 
 	private contentUiStructures: UiStructure[] = [];
 	private subscription: Subscription|null = null;
+	private uiStructureModelCache = new UiStructureModelCache();
 
 	constructor(private siEntry: SiEntry, private siDeclaration: SiDeclaration) {
 		super();
@@ -81,14 +82,21 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 		return this.siDeclaration;
 	}
 
+	getZoneErrors(): UiZoneError[] {
+		const zoneErrors = new Array<UiZoneError>();
+		const typeId = this.siEntry.selectedTypeId;
+		for (const [fieldId, field] of this.siEntry.selectedEntryBuildup.getFieldMap()) {
+			this.uiStructureModelCache.obtain(typeId, fieldId, field).getZoneErrors();
+		}
+		return zoneErrors;
+	}
+
 	// getContentUiStructures(): UiStructure[] {
 	// 	return this.contentUiStructures;
 	// }
 
-	init(uiStructure: UiStructure): void {
-		if (this.content) {
-			throw new IllegalSiStateError('Already initialized.');
-		}
+	bind(uiStructure: UiStructure): void {
+		super.bind(uiStructure);
 
 		if (!this.siEntry.isMultiType()) {
 			this.rebuildStructures(uiStructure);
@@ -112,7 +120,9 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 		}));
 	}
 
-	destroy(): void {
+	unbind(): void {
+		super.unbind();
+
 		this.clear();
 
 		if (this.subscription) {
@@ -130,7 +140,7 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 	private rebuildStructures(uiStructure: UiStructure) {
 		this.clear();
 
-		this.asideContents = this.siEntry.selectedEntryBuildup.controls
+		this.asideUiContents = this.siEntry.selectedEntryBuildup.controls
 					.map(control => control.createUiContent(uiStructure.getZone()));
 
 		const siTypeDeclaration = this.siDeclaration.getTypeDeclarationByTypeId(this.siEntry.selectedTypeId);
@@ -162,7 +172,7 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 		if (ssd.prop) {
 			uiStructure.label = ssd.prop.label;
 			const siField = this.siEntry.selectedEntryBuildup.getFieldById(ssd.prop.id);
-			uiStructure.model = siField.createUiStructureModel();
+			uiStructure.model = this.uiStructureModelCache.obtain(this.siEntry.selectedTypeId, ssd.prop.id, siField);
 			toolbarResolver.register(ssd.prop.id, uiStructure);
 			return uiStructure;
 		}
@@ -173,6 +183,23 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 		this.createStructures(uiStructure, ssd.children, toolbarResolver);
 
 		return uiStructure;
+	}
+}
+
+class UiStructureModelCache {
+	private map = new Map<string, Map<string, UiStructureModel>>();
+
+	obtain(siTypeId: string, siFieldId: string, siField: SiField): UiStructureModel {
+		if (!this.map.has(siTypeId)) {
+			this.map.set(siTypeId, new Map());
+		}
+
+		const map = this.map.get(siTypeId);
+		if (!map.has(siFieldId)) {
+			map.set(siFieldId, siField.createUiStructureModel());
+		}
+
+		return map.get(siFieldId);
 	}
 }
 

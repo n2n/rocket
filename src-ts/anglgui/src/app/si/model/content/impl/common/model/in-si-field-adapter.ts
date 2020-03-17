@@ -1,9 +1,10 @@
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
-import { SiFieldAdapter } from './si-field-adapter';
-import { SiField } from '../../../si-field';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
+import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
+import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
+import { SimpleSiFieldAdapter } from './simple-si-field-adapter';
 
-export abstract class InSiFieldAdapter extends SiFieldAdapter {
+export abstract class InSiFieldAdapter extends SimpleSiFieldAdapter {
 
 	hasInput(): boolean {
 		return true;
@@ -13,5 +14,5 @@ export abstract class InSiFieldAdapter extends SiFieldAdapter {
 
 	// abstract copy(): SiField;
 
-	protected abstract createUiContent(uiStructure: UiStructure): UiContent;
+	// protected abstract createUiContent(uiStructure: UiStructure): UiContent;
 }

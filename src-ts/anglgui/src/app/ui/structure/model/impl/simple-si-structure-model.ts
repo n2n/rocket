@@ -1,24 +1,31 @@
-import { UiStructureModel } from '../ui-structure-model';
 import { Message } from 'src/app/util/i18n/message';
 import { UiContent } from '../ui-content';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { UiStructure } from '../ui-structure';
+import { UiZoneError } from '../ui-zone-error';
+import { UiStructureModelAdapter } from './ui-structure-model-adapter';
 
-export class SimpleUiStructureModel implements UiStructureModel {
-	public disabled$: Observable<boolean>;
+export class SimpleUiStructureModel extends UiStructureModelAdapter {
 	public initCallback: (uiStructure: UiStructure) => void = () => {};
 	public destroyCallback: () => void = () => {};
 	public messagesCallback: () => Message[] = () => [];
 
 	constructor(public content: UiContent|null = null, public asideContents: UiContent[] = []) {
+		super();
 	}
 
-	init(uiStructure: UiStructure) {
+	bind(uiStructure: UiStructure) {
+		super.bind(uiStructure);
 		this.initCallback(uiStructure);
 	}
 
-	destroy() {
+	unbind() {
+		super.unbind();
 		this.destroyCallback();
+	}
+
+	setDisabled$(disabled$: Observable<boolean>) {
+		this.disabled$ = disabled$;
 	}
 
 	getContent(): UiContent|null {
@@ -29,15 +36,15 @@ export class SimpleUiStructureModel implements UiStructureModel {
 		return this.asideContents;
 	}
 
-	getMessages(): Message[] {
-		return this.messagesCallback();
-	}
-
-	getDisabled$(): Observable<boolean> {
-		if (!this.disabled$) {
-			this.disabled$ = of(false);
-		}
-
-		return this.disabled$;
+	getZoneErrors(): UiZoneError[] {
+		return this.messagesCallback().map(message => ({
+			message,
+			marked: (marked) => {
+				this.reqBoundUiStructure().marked = marked;
+			},
+			focus: () => {
+				this.reqBoundUiStructure().visible = true;
+			}
+		}));
 	}
 }

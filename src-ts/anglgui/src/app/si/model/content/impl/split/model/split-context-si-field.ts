@@ -6,12 +6,12 @@ import { SiGetInstruction } from 'src/app/si/model/api/si-get-instruction';
 import { SiGetResponse } from 'src/app/si/model/api/si-get-response';
 import { map } from 'rxjs/operators';
 import { SiField } from '../../../si-field';
-import { SiFieldAdapter } from '../../common/model/si-field-adapter';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { SiEntryBuildup } from '../../../si-entry-buildup';
 import { SiControlBoundry } from 'src/app/si/model/control/si-control-bountry';
+import { SimpleSiFieldAdapter } from '../../common/model/simple-si-field-adapter';
 
-export abstract class SplitContextSiField extends SiFieldAdapter {
+export abstract class SplitContextSiField extends SimpleSiFieldAdapter {
 	public style: SplitStyle = { iconClass: null, tooltip: null };
 	protected splitContentMap = new Map<string, SplitContent>();
 

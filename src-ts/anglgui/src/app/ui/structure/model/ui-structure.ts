@@ -9,6 +9,7 @@ export class UiStructure {
 	private _model: UiStructureModel|null;
 	private children: UiStructure[] = [];
 	private visibleSubject = new BehaviorSubject<boolean>(true);
+	private markedSubject = new BehaviorSubject<boolean>(false);
 	private toolbarChildren$ = new BehaviorSubject<UiStructure[]>([]);
 	private contentChildren$ = new BehaviorSubject<UiStructure[]>([]);
 	private disabledSubject = new BehaviorSubject<boolean>(false);
@@ -158,7 +159,7 @@ export class UiStructure {
 
 		this._model = model;
 		this.disabledSubscription = model.getDisabled$().subscribe(this.disabledSubject);
-		model.init(this);
+		model.bind(this);
 
 // 		if (this.disabledSubject.getValue()) {
 // 			this.disabledSubject.next(false);
@@ -177,7 +178,7 @@ export class UiStructure {
 		}
 
 		if (this._model) {
-			this._model.destroy();
+			this._model.unbind();
 			this._model = null;
 			this.disabledSubscription.unsubscribe();
 			this.disabledSubscription = null;
@@ -198,6 +199,8 @@ export class UiStructure {
 
 		this.clear();
 
+		this.visibleSubject.complete();
+		this.markedSubject.complete();
 		this.toolbarChildren$.complete();
 
 		if (this.parent) {
@@ -239,6 +242,14 @@ export class UiStructure {
 		this.contentChildren$.next(contentChildren);
 	}
 
+	get marked(): boolean {
+		return this.markedSubject.getValue();
+	}
+
+	set marked(marked: boolean) {
+		this.visibleSubject.next(marked);
+	}
+
 	get visible(): boolean {
 		return this.visibleSubject.getValue();
 	}
@@ -276,8 +287,16 @@ export class UiStructure {
 	}
 
 	private assembleZoneErrors(structure: UiStructure): UiZoneError[] {
-		return structure.model.getMessages().map((message) => {
-			return { message, structure };
+		return structure.model.getZoneErrors().map((zoneError) => {
+			return {
+				message: zoneError.message,
+				marked: zoneError.marked || ((marked) => {
+					this.marked = marked;
+				}),
+				focus: zoneError.focus || (() => {
+					this.visible = true;
+				})
+			}
 		});
 	}
 }

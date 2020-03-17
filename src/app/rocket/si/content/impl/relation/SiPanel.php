@@ -50,10 +50,6 @@ class SiPanel implements \JsonSerializable {
 	 */
 	private $sortable = false;
 	/**
-	 * @var string|null
-	 */
-	private $pasteCategory = null;
-	/**
 	 * @var SiTypeQualifier[]|null
 	 */
 	private $allowedTypeQualifiers = null;
@@ -184,22 +180,6 @@ class SiPanel implements \JsonSerializable {
 	}
 	
 	/**
-	 * @return string
-	 */
-	function isPasteCategory() {
-		return $this->pasteCategory;
-	}
-	
-	/**
-	 * @param string $pasteCategory
-	 * @return EmbeddedEntryPanelsInSiField
-	 */
-	function setPasteCategory(string $pasteCategory) {
-		$this->pasteCategory = $pasteCategory;
-		return $this;
-	}
-	
-	/**
 	 * @return \rocket\si\meta\SiTypeQualifier[]
 	 */
 	function getAllowedTypeQualifiers() {
@@ -265,7 +245,6 @@ class SiPanel implements \JsonSerializable {
 			'reduced' => $this->reduced,
 			'nonNewRemovable' => $this->nonNewRemovable,
 			'sortable' => $this->sortable,
-			'pasteCategory' => $this->pasteCategory,
 			'allowedTypeQualifiers' => $this->allowedTypeQualifiers,
 			'gridPos' => $this->gridPos,
 			'values' => $this->values

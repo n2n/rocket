@@ -133,9 +133,9 @@ class SiFields {
 	 * @param array $panels
 	 * @return \rocket\si\content\impl\relation\EmbeddedEntryPanelsInSiField
 	 */
-	static function embeddedEntryPanelsIn(Url $apiUrl, EmbeddedEntryPanelInputHandler $inputHandler, 
+	static function embeddedEntryPanelsIn(string $typeCategory, Url $apiUrl, EmbeddedEntryPanelInputHandler $inputHandler, 
 			array $panels = []) {
-		return (new EmbeddedEntryPanelsInSiField($apiUrl, $inputHandler, $panels));
+		return (new EmbeddedEntryPanelsInSiField($typeCategory, $apiUrl, $inputHandler, $panels));
 	}
 	
 	/**

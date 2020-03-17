@@ -4,7 +4,7 @@ import { NumberInSiField } from '../model/content/impl/alphanum/model/number-in-
 import { FileOutSiField } from '../model/content/impl/file/model/file-out-si-field';
 import { FileInSiField } from '../model/content/impl/file/model/file-in-si-field';
 import { QualifierSelectInSiField } from '../model/content/impl/qualifier/model/qualifier-select-in-si-field';
-import { EmbeddedEntryInSiField } from '../model/content/impl/embedded/model/embedded-entry-in-si-field';
+import { EmbeddedEntriesInSiField } from '../model/content/impl/embedded/model/embedded-entry-in-si-field';
 import { EmbeddedEntryPanelsInSiField } from '../model/content/impl/embedded/model/embedded-entry-panels-in-si-field';
 import { SiMetaFactory } from './si-meta-factory';
 import { BooleanInSiField } from '../model/content/impl/boolean/boolean-in-si-field';
@@ -26,6 +26,7 @@ import { SiDeclaration } from '../model/meta/si-declaration';
 import { SiService } from '../manage/si.service';
 import { UiFactory } from './ui-factory';
 import { SiControlBoundry } from '../model/control/si-control-bountry';
+import { TranslationService } from 'src/app/util/i18n/translation.service';
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',
@@ -133,8 +134,9 @@ export class SiFieldFactory {
 			return qualifierSelectInSiField;
 
 		case SiFieldType.EMBEDDED_ENTRY_IN:
-			const embeddedEntryInSiField = new EmbeddedEntryInSiField(this.injector.get(SiService),
-					dataExtr.reqString('typeCategory'), dataExtr.reqString('apiUrl'),
+			const embeddedEntryInSiField = new EmbeddedEntriesInSiField(this.injector.get(SiService),
+					dataExtr.reqString('typeCategory'), dataExtr.reqString('apiUrl'), 
+					this.injector.get(TranslationService),
 					new SiCompFactory(this.injector).createEmbeddedEntries(dataExtr.reqArray('values')));
 			embeddedEntryInSiField.config.reduced = dataExtr.reqBoolean('reduced');
 			embeddedEntryInSiField.config.min = dataExtr.reqNumber('min');
@@ -152,7 +154,8 @@ export class SiFieldFactory {
 			return embeddedEntryInSiField;
 
 		case SiFieldType.EMBEDDED_ENTRY_PANELS_IN:
-			return new EmbeddedEntryPanelsInSiField(this.injector.get(SiService), dataExtr.reqString('apiUrl'),
+			return new EmbeddedEntryPanelsInSiField(this.injector.get(SiService), dataExtr.reqString('typeCategory'),
+					dataExtr.reqString('apiUrl'), this.injector.get(TranslationService),
 					new SiCompFactory(this.injector).createPanels(dataExtr.reqArray('panels')));
 
 		case SiFieldType.SPLIT_CONTEXT_IN:

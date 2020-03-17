@@ -1,10 +1,10 @@
 import { SiTypeQualifier } from 'src/app/si/model/meta/si-type-qualifier';
 
-export class EmbeddedEntriesConfig {
-	public min = 0;
-	public max: number|null = null;
-	public reduced = false;
-	public nonNewRemovable = true;
-	public sortable = false;
-	public allowedSiTypeQualifiers: SiTypeQualifier[]|null = null;
+export interface EmbeddedEntriesConfig {
+	min: number;
+	max: number|null;
+	reduced: boolean;
+	nonNewRemovable: boolean;
+	sortable: boolean;
+	allowedSiTypeQualifiers: SiTypeQualifier[]|null;
 }

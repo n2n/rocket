@@ -1,9 +1,5 @@
 
-import { EmbeddedEntriesInUiContent } from './embedded-entries-in-si-content';
 import { SiEmbeddedEntry } from './si-embedded-entry';
-import { InSiFieldAdapter } from '../../common/model/in-si-field-adapter';
-import { UiContent } from 'src/app/ui/structure/model/ui-content';
-import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { EmbeddedEntriesConfig } from './embedded-entries-config';
 import { SiService } from 'src/app/si/manage/si.service';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
@@ -13,21 +9,41 @@ import { EmbeddedEntryObtainer } from './embedded-entry-obtainer';
 import {
 	SiGenericEmbeddedEntryCollection, SiGenericEmbeddedEntry, SiEmbeddedEntryResetPointCollection
 } from './generic-embedded';
+import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
+import { EmbeddedEntriesInUiStructureModel } from './embedded-entries-in-ui-structure-model';
+import { TranslationService } from 'src/app/util/i18n/translation.service';
+import { SiFieldAdapter } from '../../common/model/si-field-adapter';
 
-export class EmbeddedEntryInSiField extends InSiFieldAdapter	{
+export class EmbeddedEntriesInSiField extends SiFieldAdapter {
 
-	config = new EmbeddedEntriesConfig();
+	config: EmbeddedEntriesConfig = {
+		min: 0,
+		max: null,
+		reduced: false,
+		nonNewRemovable: true,
+		sortable: false,
+		allowedSiTypeQualifiers: null
+	};
 
-	constructor(private siService: SiService, private typeCategory: string, private apiUrl: string, private values: SiEmbeddedEntry[] = []) {
+	constructor(private siService: SiService, private typeCategory: string, private apiUrl: string,
+			private translationService: TranslationService, private values: SiEmbeddedEntry[] = []) {
 		super();
+	}
+
+	hasInput(): boolean {
+		return true;
 	}
 
 	readInput(): object {
 		return { entryInputs: this.values.map(embeddedEntry => embeddedEntry.entry.readInput() ) };
 	}
 
-	createUiContent(uiStructure: UiStructure): UiContent {
-		return new EmbeddedEntriesInUiContent(this.siService, this.typeCategory, this.apiUrl, this.values, uiStructure, this.config);
+
+	createUiStructureModel(): UiStructureModel {
+		return new EmbeddedEntriesInUiStructureModel(
+				new EmbeddedEntryObtainer(this.siService, this.apiUrl, this.config.reduced), 
+				this.typeCategory, this.values, this.config, this.translationService,
+				this.disabledSubject);
 	}
 
 	// copy(): SiField {

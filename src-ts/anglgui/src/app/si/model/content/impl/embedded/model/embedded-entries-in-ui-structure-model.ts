@@ -1,0 +1,285 @@
+import { EmbeddedEntriesInModel } from '../comp/embedded-entry-in-model';
+import { SiEmbeddedEntry } from './si-embedded-entry';
+import { SiTypeQualifier } from 'src/app/si/model/meta/si-type-qualifier';
+import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
+import { EmbeddedEntriesSummaryInComponent } from '../comp/embedded-entries-summary-in/embedded-entries-summary-in.component';
+import { EmbeddedEntriesInComponent } from '../comp/embedded-entries-in/embedded-entries-in.component';
+import { EmbeddedEntriesConfig } from './embedded-entries-config';
+import { EmbeddedAddPasteObtainer } from './embedded-add-paste-obtainer';
+import { AddPasteObtainer } from '../comp/add-paste-obtainer';
+import { EmbeddedEntryObtainer } from './embedded-entry-obtainer';
+import { UiContent } from 'src/app/ui/structure/model/ui-content';
+import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
+import { EmbeInCollection } from './embe-collection';
+import { UiZoneError } from 'src/app/ui/structure/model/ui-zone-error';
+import { SiControl } from 'src/app/si/model/control/si-control';
+import { SimpleSiControl } from 'src/app/si/model/control/impl/model/simple-si-control';
+import { TranslationService } from 'src/app/util/i18n/translation.service';
+
+import { PopupUiLayer } from 'src/app/ui/structure/model/ui-layer';
+import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
+import { Embe } from './embe';
+import { SiGenericEntry } from 'src/app/si/model/generic/si-generic-entry';
+import { SiButton } from 'src/app/si/model/control/impl/model/si-button';
+import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
+import { Observable } from 'rxjs';
+import { UiStructureModelAdapter } from 'src/app/ui/structure/model/impl/ui-structure-model-adapter';
+
+export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter implements EmbeddedEntriesInModel {
+
+	private embeInCol: EmbeInCollection;
+	private embeInUiStructureManager: EmbeInUiStructureManager|null = null;
+
+	constructor(private obtainer: EmbeddedEntryObtainer, public typeCategory: string,
+			values: SiEmbeddedEntry[] = [], private config: EmbeddedEntriesConfig,
+			private translationService: TranslationService, disabledSubject: Observable<boolean>|null = null) {
+		super();
+
+		this.disabled$ = disabledSubject;
+
+		const getUiStucture = () => {
+			return this.reqBoundUiStructure();
+		};
+		this.embeInCol = new EmbeInCollection(values, getUiStucture, config);
+		this.embeInCol.readEmbes();
+		this.embeInCol.fillWithPlaceholderEmbes();
+	}
+
+	// getValues(): SiEmbeddedEntry[] {
+	// 	return this.values;
+	// }
+
+	// setValues(values: SiEmbeddedEntry[]) {
+	// 	if (this.values === values) {
+	// 		return;
+	// 	}
+
+	// 	this.values.splice(0, this.values.length);
+	// 	this.values.push(...values);
+
+	// 	this.embeCol.readEmbes();
+	// }
+
+	getEmbeInCollection(): EmbeInCollection {
+		return this.embeInCol;
+	}
+
+	getMin(): number {
+		return this.config.min;
+	}
+
+	getMax(): number|null {
+		return this.config.max;
+	}
+
+	isSummaryRequired(): boolean {
+		return this.config.reduced;
+	}
+
+	isNonNewRemovable(): boolean {
+		return this.config.nonNewRemovable;
+	}
+
+	isSortable(): boolean {
+		return this.config.sortable;
+	}
+
+	getTypeCategory(): string {
+		return this.typeCategory;
+	}
+
+	getAllowedSiTypeQualifiers(): SiTypeQualifier[]|null {
+		return this.config.allowedSiTypeQualifiers;
+	}
+
+	getAddPasteObtainer(): AddPasteObtainer {
+		return new EmbeddedAddPasteObtainer(this.obtainer);
+	}
+
+	private getEmbeInUiStructureManager(): EmbeInUiStructureManager {
+		IllegalStateError.assertTrue(!!this.embeInUiStructureManager);
+		return this.embeInUiStructureManager;
+	}
+
+	open(embe: Embe) {
+		this.getEmbeInUiStructureManager().open(embe);
+	}
+
+	openAll() {
+		this.getEmbeInUiStructureManager().openAll();
+	}
+
+	bind(uiStructure: UiStructure): void {
+		super.bind(uiStructure);
+
+		this.embeInCol.readEmbes();
+		if (this.config.reduced) {
+			this.embeInUiStructureManager = new EmbeInUiStructureManager(uiStructure, this.embeInCol, this, this.obtainer, 
+					this.translationService);
+			this.uiContent = new TypeUiContent(EmbeddedEntriesSummaryInComponent, (ref) => {
+				ref.instance.model = this;
+			});
+		} else {
+			this.uiContent = new TypeUiContent(EmbeddedEntriesInComponent, (ref) => {
+				ref.instance.model = this;
+			});
+		}
+	}
+
+	getAsideContents(): UiContent[] {
+		return [];
+	}
+
+	getZoneErrors(): UiZoneError[] {
+		const errors = new Array<UiZoneError>();
+
+		for (const embe of this.embeInCol.embes) {
+			if (!embe.uiStructureModel) {
+				continue;
+			}
+
+			if (!this.config.reduced) {
+				errors.push(...embe.uiStructureModel.getZoneErrors());
+				continue;
+			}
+
+			for (const zoneError of embe.uiStructureModel.getZoneErrors()) {
+				errors.push({
+					message: zoneError.message,
+					marked: (marked) => {
+						this.reqBoundUiStructure().marked = marked;
+					},
+					focus: () => {
+						IllegalStateError.assertTrue(!!this.embeInUiStructureManager);
+
+						this.embeInUiStructureManager.open(embe);
+
+						if (zoneError.focus) {
+							zoneError.focus();
+						}
+					}
+				});
+			}
+		}
+
+		return errors;
+	}
+}
+
+class EmbeInUiStructureManager {
+
+	private popupUiLayer: PopupUiLayer|null = null;
+
+	constructor(private uiStructure: UiStructure, private embeCol: EmbeInCollection, 
+			private model: EmbeddedEntriesInModel, private obtainer: EmbeddedEntryObtainer, 
+			private translationService: TranslationService) {
+
+	}
+
+	open(embe: Embe) {
+		if (this.popupUiLayer) {
+			return;
+		}
+
+		const uiZone = this.uiStructure.getZone();
+		let bakEntry = embe.siEmbeddedEntry.entry.createResetPoint();
+
+		this.popupUiLayer = uiZone.layer.container.createLayer();
+		const zone = this.popupUiLayer.pushZone(null);
+
+		zone.model = {
+			title: 'Some Title',
+			breadcrumbs: [],
+			structureModel: embe.siEmbeddedEntry.comp.createUiStructureModel(),
+			mainCommandContents: this.createPopupControls(() => { bakEntry = null; })
+					.map(siControl => siControl.createUiContent(zone))
+		};
+
+		this.popupUiLayer.onDispose(() => {
+			this.popupUiLayer = null;
+			if (bakEntry) {
+				embe.siEmbeddedEntry.entry.resetToPoint(bakEntry);
+			} else {
+				this.obtainer.val([embe.siEmbeddedEntry]);
+			}
+		});
+	}
+
+	openAll() {
+		if (this.popupUiLayer) {
+			return;
+		}
+
+		const uiZone = this.uiStructure.getZone();
+
+		let bakEmbes: Embe[]|null = [...this.embeCol.embes];
+		const bakEntries = this.embeCol.createEntriesResetPoints();
+
+		this.popupUiLayer = uiZone.layer.container.createLayer();
+		this.popupUiLayer.onDispose(() => {
+			this.popupUiLayer = null;
+
+			if (bakEmbes) {
+				this.resetEmbeCol(bakEmbes, bakEntries);
+				return;
+			}
+
+			this.obtainer.val(this.embeCol.embes.map(embe => embe.siEmbeddedEntry));
+			this.embeCol.writeEmbes();
+		});
+
+		const zone = this.popupUiLayer.pushZone(null);
+
+		const popupUiStructureModel = new SimpleUiStructureModel();
+
+		popupUiStructureModel.initCallback = () => {
+			popupUiStructureModel.content = new TypeUiContent(EmbeddedEntriesInComponent, (ref) => {
+				ref.instance.model = this.model;
+			});
+		};
+
+		zone.model = {
+			title: 'Some Title',
+			breadcrumbs: [],
+			structureModel: popupUiStructureModel,
+			mainCommandContents: this.createPopupControls(() => { bakEmbes = null; })
+					.map(siControl => siControl.createUiContent(zone))
+		};
+	}
+
+	private createPopupControls(applyCallback: () => any): SiControl[] {
+		return [
+			new SimpleSiControl(
+					new SiButton(this.translationService.translate('common_apply_label'), 'btn btn-success', 'fas fa-save'),
+					() => {
+						applyCallback();
+						this.popupUiLayer.dispose();
+					}),
+			new SimpleSiControl(
+					new SiButton(this.translationService.translate('common_discard_label'), 'btn btn-secondary', 'fas fa-trash'),
+					() => {
+						this.popupUiLayer.dispose();
+					})
+		];
+	}
+
+	private resetEmbeCol(bakEmbes: Embe[], bakEntries: SiGenericEntry[]) {
+		this.embeCol.clearEmbes();
+
+		bakEmbes.forEach((embe, i) => {
+			embe.siEmbeddedEntry.entry.resetToPoint(bakEntries[i]);
+
+			this.embeCol.createEmbe(embe.siEmbeddedEntry);
+		});
+	}
+
+	apply() {
+		if (this.popupUiLayer) {
+			this.popupUiLayer.dispose();
+		}
+	}
+
+	cancel() {
+
+	}
+}

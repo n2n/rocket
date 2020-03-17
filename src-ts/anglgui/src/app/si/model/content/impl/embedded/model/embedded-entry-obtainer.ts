@@ -72,27 +72,40 @@ export class EmbeddedEntryObtainer  {
 		return siEmbeddedEntries;
 	}
 
-	// val(siEmbeddedEntry: SiEmbeddedEntry) {
-	// 	const request = new SiValRequest();
-	// 	const instruction = request.instructions[0] = new SiValInstruction(siEmbeddedEntry.entry.readInput());
+	val(siEmbeddedEntries: SiEmbeddedEntry[]) {
+		const request = new SiValRequest();
 
-	// 	if (siEmbeddedEntry.summaryComp) {
-	// 		siEmbeddedEntry.summaryComp.entry = null;
-	// 		instruction.getInstructions[0] = SiValGetInstruction.create(siEmbeddedEntry.summaryComp, false, true);
-	// 	}
+		siEmbeddedEntries.forEach((siEmbeddedEntry, i) => {
+			request.instructions[i] = this.createValInstruction(siEmbeddedEntry);
 
-	// 	siEmbeddedEntry.entry.resetError();
+			siEmbeddedEntry.entry.resetError();
+		});
 
-	// 	this.siService.apiVal(this.apiUrl, request, this.uiZone).subscribe((response: SiValResponse) => {
-	// 		const result = response.results[0];
+		this.siService.apiVal(this.apiUrl, request).subscribe((response: SiValResponse) => {
+			siEmbeddedEntries.forEach((siEmbeddedEntry, i) => {
+				this.handleValResult(siEmbeddedEntry, response.results[i]);
+			});
+		});
+	}
 
-	// 		if (result.entryError) {
-	// 			siEmbeddedEntry.entry.handleError(result.entryError);
-	// 		}
+	private handleValResult(siEmbeddedEntry: SiEmbeddedEntry, siValResult: SiValResult) {
+		if (siValResult.entryError) {
+			siEmbeddedEntry.entry.handleError(siValResult.entryError);
+		}
 
-	// 		if (siEmbeddedEntry.summaryComp) {
-	// 			siEmbeddedEntry.summaryComp.entry = result.getResults[0].entry;
-	// 		}
-	// 	});
-	// }
+		if (siEmbeddedEntry.summaryComp) {
+			siEmbeddedEntry.summaryComp.entry = siValResult.getResults[0].entry;
+		}
+	}
+
+	private createValInstruction(siEmbeddedEntry: SiEmbeddedEntry): SiValInstruction {
+		const instruction = new SiValInstruction(siEmbeddedEntry.entry.readInput());
+
+		if (siEmbeddedEntry.summaryComp) {
+			siEmbeddedEntry.summaryComp.entry = null;
+			instruction.getInstructions[0] = SiValGetInstruction.create(false, true);
+		}
+
+		return instruction;
+	}
 }

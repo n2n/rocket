@@ -1,22 +1,28 @@
 
 import { EmbeddedEntryModel } from './embedded-entry-model';
-import { SiEmbeddedEntry } from '../model/si-embedded-entry';
 import { SiTypeQualifier } from 'src/app/si/model/meta/si-type-qualifier';
 import { AddPasteObtainer } from './add-paste-obtainer';
+import { EmbeInCollection } from '../model/embe-collection';
+import { Embe } from '../model/embe';
+import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 
 export interface EmbeddedEntriesInModel extends EmbeddedEntryModel {
 
-	isNonNewRemovable(): boolean;
+	// isNonNewRemovable(): boolean;
 
 	isSortable(): boolean;
 
-	isSummaryRequired(): boolean;
+	// isSummaryRequired(): boolean;
 
-	getTypeCategory(): string;
+	// getTypeCategory(): string;
 
 	getAllowedSiTypeQualifiers(): SiTypeQualifier[]|null;
 
-	setValues(values: SiEmbeddedEntry[]): void;
+	getAddPasteObtainer(): AddPasteObtainer;
 
-	getObtainer(): AddPasteObtainer;
+	getEmbeInCollection(): EmbeInCollection;
+
+	open(embe: Embe): void;
+
+	openAll(): void;
 }

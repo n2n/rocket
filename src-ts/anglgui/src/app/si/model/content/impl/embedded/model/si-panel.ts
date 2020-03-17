@@ -1,7 +1,8 @@
 import { SiEmbeddedEntry } from './si-embedded-entry';
 import { SiTypeQualifier } from 'src/app/si/model/meta/si-type-qualifier';
+import { EmbeddedEntriesConfig } from './embedded-entries-config';
 
-export class SiPanel {
+export class SiPanel implements EmbeddedEntriesConfig {
 
 	constructor(public name: string, public label: string) {
 	}
@@ -14,7 +15,6 @@ export class SiPanel {
 	nonNewRemovable = true;
 	sortable = false;
 	reduced = true;
-	pasteCategory: string|null = null;
 }
 
 export interface SiGridPos {

@@ -1,6 +1,5 @@
 import { SiField } from '../../../si-field';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
-import { SiFieldAdapter } from '../../common/model/si-field-adapter';
 import { SplitModel } from '../comp/split-model';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { SplitOption } from './split-option';
@@ -9,10 +8,9 @@ import { SiEntry } from '../../../si-entry';
 import { SplitComponent } from '../comp/split/split.component';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
-import { Fresult } from 'src/app/util/err/fresult';
-import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
+import { SimpleSiFieldAdapter } from '../../common/model/simple-si-field-adapter';
 
-export class SplitSiField extends SiFieldAdapter implements SplitModel {
+export class SplitSiField extends SimpleSiFieldAdapter implements SplitModel {
 
 	splitContext: SplitContextSiField|null;
 	copyStyle: SplitStyle = { iconClass: null, tooltip: null };

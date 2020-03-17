@@ -27,7 +27,10 @@ use n2n\util\uri\Url;
 use rocket\si\content\impl\InSiFieldAdapter;
 
 class EmbeddedEntryPanelsInSiField extends InSiFieldAdapter {
-	
+	/**
+	 * @var string
+	 */
+	private $typeCategory;
 	/**
 	 * @var Url
 	 */
@@ -46,7 +49,8 @@ class EmbeddedEntryPanelsInSiField extends InSiFieldAdapter {
 	 * @param EmbeddedEntryPanelInputHandler $inputHandler
 	 * @param SiPanel[] $panels
 	 */
-	function __construct(Url $apiUrl, EmbeddedEntryPanelInputHandler $inputHandler, array $panels = []) {
+	function __construct(string $typeCateogry, Url $apiUrl, EmbeddedEntryPanelInputHandler $inputHandler, array $panels = []) {
+		$this->typeCategory = $typeCateogry;
 		$this->apiUrl = $apiUrl;
 		$this->inputHandler = $inputHandler;
 		$this->setPanels($panels);
@@ -100,6 +104,7 @@ class EmbeddedEntryPanelsInSiField extends InSiFieldAdapter {
 	function getData(): array {
 		return [
 			'panels' => $this->panels,
+			'typeCategory' => $this->typeCategory,
 			'apiUrl' => (string) $this->apiUrl,
 			'reduced' => $this->reduced,
 			'sortable' => $this->sortable,
