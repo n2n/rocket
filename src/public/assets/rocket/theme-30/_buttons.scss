@@ -85,6 +85,7 @@
     }
 
     // icons of normal buttons are not displayed
+    .btn:not(.rocket-icon-important) > i.fas,
     .btn:not(.rocket-icon-important) > i.fa {
         display: none;
     }

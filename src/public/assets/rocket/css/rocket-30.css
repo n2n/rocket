@@ -5988,13 +5988,13 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .rocket-item.rocket-level-3 {
+  .rocket-item.rocket-level-2 .rocket-item.rocket-level-3 {
     position: relative;
   }
-  .rocket-item.rocket-level-3:first-child {
+  .rocket-item.rocket-level-2 .rocket-item.rocket-level-3:first-child {
     padding-top: 0;
   }
-  .rocket-item.rocket-level-3 > label {
+  .rocket-item.rocket-level-2 .rocket-item.rocket-level-3 > label {
     position: relative;
     left: 0;
     -webkit-transform: translateX(-100%);
@@ -6003,14 +6003,14 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
     -ms-grid-column: 1;
         grid-column-start: 1;
   }
-  .rocket-item.rocket-level-3 > label,
-  .rocket-item.rocket-level-3 .rocket-item > label {
+  .rocket-item.rocket-level-2 .rocket-item.rocket-level-3 > label,
+  .rocket-item.rocket-level-2 .rocket-item.rocket-level-3 .rocket-item > label {
     color: #C2BDB6;
     font-size: 0.875rem;
     padding-right: 10px;
   }
-  .rocket-item.rocket-level-3 > *:nth-child(2),
-  .rocket-item.rocket-level-3 > .rocket-structure-content {
+  .rocket-item.rocket-level-2 .rocket-item.rocket-level-3 > *:nth-child(2),
+  .rocket-item.rocket-level-2 .rocket-item.rocket-level-3 > .rocket-structure-content {
     -ms-grid-row: 1;
         grid-row-start: 1;
     -ms-grid-column: 1;
@@ -6600,6 +6600,7 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   margin-right: 0.5rem;
 }
 
+.rocket-zone-commands .btn:not(.rocket-icon-important) > i.fas,
 .rocket-zone-commands .btn:not(.rocket-icon-important) > i.fa {
   display: none;
 }
