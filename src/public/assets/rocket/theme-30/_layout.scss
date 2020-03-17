@@ -1,6 +1,7 @@
 $rocket-header-height: 2.75rem;
 $rocket-global-nav-width: 14rem;
 $rocket-global-nav-spacer: 4rem;
+$rocket-content-margin-right: 3rem;
 $rocket-content-margin-left: $rocket-global-nav-width + $rocket-global-nav-spacer;
 
 
@@ -11,8 +12,9 @@ html {
 
 body {
     overflow-y: scroll;
+    overflow-x: hidden;
     background: $gray-200; /* Old browsers */
-    background: $gray-200 linear-gradient(to bottom, #ffffff 0%,#ffffff 124px,$gray-200 124px,$gray-200 100%) repeat-x; 
+    background: $gray-200 linear-gradient(to bottom, #ffffff 0%,#ffffff 124px,$gray-200 124px,$gray-200 100%) repeat-x;
     min-height: calc(100% - #{$rocket-header-height});
 }
 
@@ -126,7 +128,7 @@ body {
 @include media-breakpoint-up(lg) {
     #rocket-content-container {
         margin-left: $rocket-content-margin-left;
-        margin-right: 3rem;
+        margin-right: $rocket-content-margin-right;
         margin-top: $rocket-header-height;
         padding: 0 0 5rem 0;
         position: relative;

@@ -450,3 +450,13 @@
         flex-wrap: wrap;
     }
 }
+
+// Pickables
+// =========================
+
+.rocket-pickables {
+    padding: 0.15rem $input-btn-padding-x;
+    > .btn:not(:last-child) {
+        margin-right: 0.25rem;
+    }
+}

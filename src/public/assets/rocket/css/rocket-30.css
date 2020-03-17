@@ -4900,6 +4900,7 @@ html {
 
 body {
   overflow-y: scroll;
+  overflow-x: hidden;
   background: #F7F5F5;
   /* Old browsers */
   background: #F7F5F5 linear-gradient(to bottom, #ffffff 0%, #ffffff 124px, #F7F5F5 124px, #F7F5F5 100%) repeat-x;
@@ -6374,6 +6375,14 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   display: flex;
   -ms-flex-wrap: wrap;
       flex-wrap: wrap;
+}
+
+.rocket-pickables {
+  padding: 0.15rem 0.625rem;
+}
+
+.rocket-pickables > .btn:not(:last-child) {
+  margin-right: 0.25rem;
 }
 
 .rocket-panel,
