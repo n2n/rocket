@@ -33,13 +33,10 @@ use rocket\ei\manage\gui\EiGuiSiFactory;
 use rocket\ei\manage\gui\field\GuiPropPath;
 use rocket\ei\manage\gui\GuiException;
 use rocket\ei\manage\gui\ViewMode;
-use rocket\ei\manage\gui\EiEntryGui;
-use rocket\ei\manage\gui\EiEntryGuiAssembler;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\util\EiuAnalyst;
 use rocket\ei\util\EiuPerimeterException;
 use rocket\ei\util\spec\EiuMask;
-use rocket\ei\util\gui\EiuEntryGuiAssembler;
 use n2n\util\type\ArgUtils;
 use rocket\ei\manage\entry\UnknownEiFieldExcpetion;
 use rocket\ei\component\prop\EiProp;
@@ -451,13 +448,13 @@ class EiuEntry {
 	 */
 	public function setScalarValue($eiPropPath, $scalarValue) {
 		$eiPropPath = EiPropPath::create($eiPropPath);
-		$scalarEiProperty = $this->getEiuFrame()->getContextEiuEngine()->getScalarEiProperty($eiPropPath);
+		$scalarEiProperty = $this->getEiuFrame()->contextEngine()->getScalarEiProperty($eiPropPath);
 		$this->setValue($eiPropPath, $scalarEiProperty->scalarValueToEiFieldValue($scalarValue));
 	}
 	
 	public function getScalarValue($eiPropPath) {
 		$eiPropPath = EiPropPath::create($eiPropPath);
-		$scalarEiProperty = $this->getEiuFrame()->getContextEiuEngine()->getScalarEiProperty($eiPropPath);
+		$scalarEiProperty = $this->getEiuFrame()->contextEngine()->getScalarEiProperty($eiPropPath);
 		return $scalarEiProperty->eiFieldValueToScalarValue($this->getValue($eiPropPath));
 	}
 	
