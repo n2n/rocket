@@ -5785,7 +5785,6 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
 
 .rocket-handle {
   display: inline-block;
-  padding-left: 1rem;
 }
 
 /*
@@ -5834,6 +5833,7 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   padding: 0;
 }
 
+.rocket-table .rocket-simple-commands .btn > span,
 .rocket-table .rocket-simple-commands > rocket-button-control > .btn > span {
   display: none;
 }
@@ -5984,18 +5984,18 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
     grid-column-end: 4;
     padding: 0;
   }
-  .rocket-item.rocket-level-2 > label {
+  .rocket-item.rocket-item-collection > label {
     padding-right: 5rem;
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .rocket-item.rocket-level-2 .rocket-item.rocket-level-3 {
+  .rocket-item.rocket-double-item {
     position: relative;
   }
-  .rocket-item.rocket-level-2 .rocket-item.rocket-level-3:first-child {
+  .rocket-item.rocket-double-item:first-child {
     padding-top: 0;
   }
-  .rocket-item.rocket-level-2 .rocket-item.rocket-level-3 > label {
+  .rocket-item.rocket-double-item > label {
     position: relative;
     left: 0;
     -webkit-transform: translateX(-100%);
@@ -6004,14 +6004,14 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
     -ms-grid-column: 1;
         grid-column-start: 1;
   }
-  .rocket-item.rocket-level-2 .rocket-item.rocket-level-3 > label,
-  .rocket-item.rocket-level-2 .rocket-item.rocket-level-3 .rocket-item > label {
+  .rocket-item.rocket-double-item > label,
+  .rocket-item.rocket-double-item .rocket-item > label {
     color: #C2BDB6;
     font-size: 0.875rem;
     padding-right: 10px;
   }
-  .rocket-item.rocket-level-2 .rocket-item.rocket-level-3 > *:nth-child(2),
-  .rocket-item.rocket-level-2 .rocket-item.rocket-level-3 > .rocket-structure-content {
+  .rocket-item.rocket-double-item > *:nth-child(2),
+  .rocket-item.rocket-double-item > .rocket-structure-content {
     -ms-grid-row: 1;
         grid-row-start: 1;
     -ms-grid-column: 1;
@@ -6064,7 +6064,7 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   display: grid;
 }
 
-.rocket-impl-entry > .rocket-summary {
+.rocket-summary {
   display: -ms-grid;
   display: grid;
   -ms-grid-columns: minmax(min-content, max-content) 10rem 1fr auto;
@@ -6075,7 +6075,7 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   background: #fff;
 }
 
-.rocket-impl-entry > .rocket-summary > .rocket-handle {
+.rocket-summary > .rocket-handle {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -6087,7 +6087,7 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   width: 3.5rem;
 }
 
-.rocket-impl-entry > .rocket-summary > .rocket-handle.rocket-not-sortable {
+.rocket-summary > .rocket-handle.rocket-not-sortable {
   width: 0;
   border: 0;
   padding: 0;
@@ -6095,19 +6095,20 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   visibility: hidden;
 }
 
-.rocket-impl-entry > .rocket-summary > .rocket-handle:after {
+.rocket-summary > .rocket-handle:after {
   content: "";
   display: table;
   padding-bottom: 100%;
   padding-bottom: calc(100% + 1px);
 }
 
-.rocket-impl-entry > .rocket-summary > .rocket-handle > .fa {
+.rocket-summary > .rocket-handle > .fa {
   padding-top: 1.2rem;
   padding-bottom: 1.2rem;
 }
 
-.rocket-impl-entry > .rocket-summary .rocket-impl-content-type {
+.rocket-summary rocket-si-qualifier,
+.rocket-summary .rocket-impl-content-type {
   min-width: 10rem;
   padding: 1rem 0 1rem 0.5rem;
   border-right: 1px solid #C2BDB6;
@@ -6116,14 +6117,15 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   overflow: hidden;
 }
 
-.rocket-impl-entry > .rocket-summary .rocket-content-nested .rocket-impl-content-type {
+.rocket-summary .rocket-content-nested .rocket-impl-content-type {
   padding: 1rem 0 1rem 0;
   min-width: 0;
   margin: -1rem 0;
   border-right: none;
 }
 
-.rocket-impl-entry > .rocket-summary .rocket-impl-content {
+.rocket-summary rocket-compact-entry,
+.rocket-summary .rocket-impl-content {
   position: relative;
   z-index: 0;
   padding: 1rem 1rem 1rem 0.5rem;
@@ -6136,7 +6138,8 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   overflow: hidden;
 }
 
-.rocket-impl-entry > .rocket-summary .rocket-impl-content:before {
+.rocket-summary rocket-compact-entry:before,
+.rocket-summary .rocket-impl-content:before {
   content: "";
   z-index: 1;
   width: 1rem;
@@ -6148,27 +6151,30 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   background-image: linear-gradient(to right, rgba(255, 255, 255, 0), white 50%);
 }
 
-.rocket-impl-entry > .rocket-summary .rocket-impl-content > div {
+.rocket-summary rocket-compact-entry > div,
+.rocket-summary .rocket-impl-content > div {
   white-space: nowrap;
   -ms-flex-negative: 0;
       flex-shrink: 0;
 }
 
-.rocket-impl-entry > .rocket-summary .rocket-impl-content > div:not(:last-child):not(:empty) {
+.rocket-summary rocket-compact-entry > div:not(:last-child):not(:empty),
+.rocket-summary .rocket-impl-content > div:not(:last-child):not(:empty) {
   margin-right: 1.5rem;
 }
 
-.rocket-impl-entry > .rocket-summary .rocket-impl-content > div.rocket-gui-field-fileImage {
+.rocket-summary rocket-compact-entry > div.rocket-gui-field-fileImage,
+.rocket-summary .rocket-impl-content > div.rocket-gui-field-fileImage {
   margin-top: -0.35rem;
   margin-bottom: -0.41rem;
 }
 
-.rocket-impl-entry > .rocket-summary > .rocket-simple-commands {
+.rocket-summary > .rocket-simple-commands {
   padding: 0.62rem 0.75rem 0.62rem 0;
   text-align: right;
 }
 
-.rocket-impl-entry > .rocket-summary .rocket-impl-status {
+.rocket-summary .rocket-impl-status {
   color: #b90f00;
 }
 
@@ -6212,17 +6218,20 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   margin-right: .15rem;
 }
 
+rocket-si-qualifier > .fa,
 .rocket-impl-content-type > .fa {
   position: relative;
   padding: 0 .75rem;
   z-index: 0;
 }
 
+rocket-si-qualifier > .fa::before,
 .rocket-impl-content-type > .fa::before {
   position: relative;
   color: white;
 }
 
+rocket-si-qualifier > .fa::after,
 .rocket-impl-content-type > .fa::after {
   content: " ";
   position: absolute;
@@ -6255,7 +6264,7 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   border: 1px solid #DAD7D3;
 }
 
-.rocket-add-paste {
+rocket-add-past {
   margin: 0.5rem 0;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -6265,16 +6274,16 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
           justify-content: space-between;
 }
 
-.rocket-add-paste > div {
+rocket-add-past > div {
   width: 100%;
   margin: 0;
 }
 
-.rocket-add-paste > .rocket-impl-paste {
+rocket-add-past > .rocket-impl-paste {
   margin-left: 1rem;
 }
 
-.rocket-add-paste > button {
+rocket-add-past > button {
   text-align: left;
   font-weight: bold;
   font-size: 1rem;
@@ -6284,7 +6293,7 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   position: relative;
 }
 
-.rocket-add-paste > button::after {
+rocket-add-past > button::after {
   font-family: fontawesome;
   content: '\f067';
   position: absolute;
@@ -6532,6 +6541,8 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   color: #fff;
 }
 
+.rocket-simple-commands > .dropdown > button,
+.rocket-simple-commands > .btn,
 .rocket-simple-commands > rocket-button-control > .dropdown > button,
 .rocket-simple-commands > rocket-button-control > .btn {
   min-width: 2.25rem;
@@ -6544,13 +6555,21 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   padding: 0.375rem 0.5rem;
 }
 
+.rocket-simple-commands > .dropdown > button:hover,
+.rocket-simple-commands > .btn:hover,
 .rocket-simple-commands > rocket-button-control > .dropdown > button:hover,
 .rocket-simple-commands > rocket-button-control > .btn:hover {
   background: transparent;
   color: #373431;
 }
 
-.rocket-simple-commands > rocket-button-control > .dropdown > button:focus, .rocket-simple-commands > rocket-button-control > .dropdown > button:visited, .rocket-simple-commands > rocket-button-control > .dropdown > button:active,
+.rocket-simple-commands > .dropdown > button:focus, .rocket-simple-commands > .dropdown > button:visited, .rocket-simple-commands > .dropdown > button:active,
+.rocket-simple-commands > .btn:focus,
+.rocket-simple-commands > .btn:visited,
+.rocket-simple-commands > .btn:active,
+.rocket-simple-commands > rocket-button-control > .dropdown > button:focus,
+.rocket-simple-commands > rocket-button-control > .dropdown > button:visited,
+.rocket-simple-commands > rocket-button-control > .dropdown > button:active,
 .rocket-simple-commands > rocket-button-control > .btn:focus,
 .rocket-simple-commands > rocket-button-control > .btn:visited,
 .rocket-simple-commands > rocket-button-control > .btn:active {
@@ -6558,21 +6577,29 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
           box-shadow: none;
 }
 
+.rocket-simple-commands > .dropdown > button.btn-danger:hover,
+.rocket-simple-commands > .btn.btn-danger:hover,
 .rocket-simple-commands > rocket-button-control > .dropdown > button.btn-danger:hover,
 .rocket-simple-commands > rocket-button-control > .btn.btn-danger:hover {
   color: #b90f00;
 }
 
+.rocket-simple-commands > .dropdown > button.btn-warning:hover,
+.rocket-simple-commands > .btn.btn-warning:hover,
 .rocket-simple-commands > rocket-button-control > .dropdown > button.btn-warning:hover,
 .rocket-simple-commands > rocket-button-control > .btn.btn-warning:hover {
   color: #F6A723;
 }
 
+.rocket-simple-commands > .dropdown > button.btn-success:hover,
+.rocket-simple-commands > .btn.btn-success:hover,
 .rocket-simple-commands > rocket-button-control > .dropdown > button.btn-success:hover,
 .rocket-simple-commands > rocket-button-control > .btn.btn-success:hover {
   color: #2D7F00;
 }
 
+.rocket-simple-commands > .dropdown > button:not(.rocket-important) > span,
+.rocket-simple-commands > .btn:not(.rocket-important) > span,
 .rocket-simple-commands > rocket-button-control > .dropdown > button:not(.rocket-important) > span,
 .rocket-simple-commands > rocket-button-control > .btn:not(.rocket-important) > span {
   display: none;
@@ -6594,12 +6621,9 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   color: #F6A723;
 }
 
+.rocket-simple-commands > .btn > i,
 .rocket-simple-commands > rocket-button-control .btn > i {
   font-size: 1.25rem;
-}
-
-.rocket-simple-controls .btn:not(:last-child) {
-  margin-right: 0.5rem;
 }
 
 /*

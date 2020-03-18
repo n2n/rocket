@@ -8,6 +8,8 @@
 
 .rocket-simple-commands {
     // drop down button in simple-commands
+    > .dropdown > button,
+    > .btn,
     > rocket-button-control > .dropdown > button, 
     > rocket-button-control > .btn { 
         min-width: 2.25rem;
@@ -58,20 +60,13 @@
 
 // simple commands in table are bigger
 .rocket-simple-commands {
+    > .btn,
     > rocket-button-control .btn {
         > i {
             font-size: $font-size-lg;
         }
     }
 }
-
-// simple controls
-.rocket-simple-controls {
-    .btn:not(:last-child) {
-        margin-right: $rocket-btn-group-spacing;
-    }
-}
-
 
 
 /*
