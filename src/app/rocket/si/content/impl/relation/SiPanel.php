@@ -44,7 +44,7 @@ class SiPanel implements \JsonSerializable {
 	/**
 	 * @var bool
 	 */
-	private $reduced = false;
+	private $reduced = true;
 	/**
 	 * @var bool
 	 */

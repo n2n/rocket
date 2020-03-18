@@ -29,6 +29,8 @@ export class AddPasteComponent implements OnInit {
 	allowedSiTypeQualifiers: SiTypeQualifier[]|null = null;
 	@Input()
 	type = AddPasteType.BLOCK;
+	@Input()
+	disabled = false;
 
 	@Output()
 	newEntry = new EventEmitter<SiEmbeddedEntry>();

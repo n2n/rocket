@@ -3,7 +3,7 @@
 </ng-container>
 
 <ng-container *ngIf="labelVisible && getLabel()">
-	<label>{{ getLabel() }}</label>
+	<label [class.rocket-double-label]="isDoubleLabel()">{{ getLabel() }}</label>
 </ng-container>
 
 <div *ngIf="toolbarVisible && (toolbarUiStructures.length > 0 || (asideVisible && asideUiContents.length > 0))" class="rocket-toolbar">

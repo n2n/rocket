@@ -107,6 +107,14 @@ export class StructureComponent implements OnInit, OnDestroy {
 		return this.uiStructure.label;
 	}
 
+	isDoubleLabel(): boolean {
+		if (this.uiStructure.type !== UiStructureType.ITEM) {
+			return false;
+		}
+
+		return !!this.uiStructure.getChildren().find(child => child.type === UiStructureType.ITEM);
+	}
+
 // 	ngDoCheck() {
 // 		if (this.currentUiStructure &&
 // 				(this.currentUiStructure !== this.uiStructure)) {

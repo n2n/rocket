@@ -71,7 +71,6 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandler {
 				->setReduced($this->relationModel->isReduced())
 				->setNonNewRemovable($this->relationModel->isRemovable())
 				->setSortable($relationModel->getMax() > 1 && $relationModel->getTargetOrderEiPropPath() !== null)
-				->setPasteCategory($targetEiuFrame->engine()->type()->supremeType()->getId())
 				->setAllowedTypeQualifiers(array_map(
 						function (EiuMask $eiuMask) { return $eiuMask->createSiTypeQualifier(); }, 
 						$targetEiuFrame->engine()->mask()->possibleMasks()));

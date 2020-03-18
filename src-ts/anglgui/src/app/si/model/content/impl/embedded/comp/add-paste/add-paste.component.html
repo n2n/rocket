@@ -1,6 +1,6 @@
 <div *ngIf="type != 'reduced'" class="rocket-add-paste" [class.rocket-reduced]="type == 'reduced'">
 	<div>
-		<button type="button" class="btn btn-block btn-secondary" [disabled]="loading" (click)="add()">
+		<button type="button" class="btn btn-block btn-secondary" [disabled]="loading || disabled" (click)="add()">
 			<span *ngIf="isAddLoading()" class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true">
 				[@tomekk: mach da einen loader]
 			</span>	
@@ -10,7 +10,7 @@
 		
 		<ul *ngIf="addablesVisible" class="rocket-multi-type-menu">
 			<li *ngFor="let siQualifier of addables">
-				<button type="button" (click)="choose(siQualifier.typeQualifier)" [disabled]="loading">
+				<button type="button" (click)="choose(siQualifier.typeQualifier)" [disabled]="loading || disabled">
 					<rocket-si-qualifier [siTypeQualifier]="siQualifier.typeQualifier"></rocket-si-qualifier>
 				</button>
 			</li>
@@ -25,7 +25,7 @@
 		<ul *ngIf="pastablesVisible" class="rocket-multi-type-menu">
 			<li *ngFor="let siQualifier of pastables">
 				<button *ngIf="isTypeAllowed(siQualifier.typeQualifier); else disabledPaste" type="button" (click)="paste(siQualifier)"
-						[disabled]="loading">
+						[disabled]="loading || disabled">
 					<span *ngIf="isPasteLoading(siQualifier)" class="spinner-grow spinner-grow-sm" role="status" 
 							aria-hidden="true">[@tomekk: mach da einen loader]</span>
 						
@@ -43,7 +43,7 @@
 
 <div *ngIf="type == 'tiles'" class="rocket-add-paste rocket-tiles">
 	<ng-container *ngFor="let siTypeQualifier of allowedSiTypeQualifiers">
-		<button type="button" (click)="addBySiType(siTypeQualifier)" [disabled]="loading">
+		<button type="button" (click)="addBySiType(siTypeQualifier)" [disabled]="loading || disabled">
 			<span *ngIf="isAddLoading(siTypeQualifier)" class="spinner-grow spinner-grow-sm" role="status" 
 					aria-hidden="true">[@tomekk: mach da einen loader]</span>
 				

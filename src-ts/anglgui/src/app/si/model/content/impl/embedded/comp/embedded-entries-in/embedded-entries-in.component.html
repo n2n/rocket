@@ -8,7 +8,7 @@
 
 		<ng-container *ngIf="!embe.isPlaceholder()">
 			<rocket-si-add-past [obtainer]="obtainer" [allowedSiTypeQualifiers]="model.getAllowedSiTypeQualifiers()"
-					(newEntry)="addBefore($event, embe)"></rocket-si-add-past>	
+					(newEntry)="addBefore(embe, $event)"></rocket-si-add-past>	
 		
 			<div rocketUiStructure [uiStructure]="embe.uiStructure"></div>
 		</ng-container>
