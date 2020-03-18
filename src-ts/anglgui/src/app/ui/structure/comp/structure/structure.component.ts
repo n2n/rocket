@@ -1,9 +1,9 @@
-import { Component, OnInit, Input, ViewChild, ElementRef, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef, ChangeDetectorRef, OnDestroy, DoCheck } from '@angular/core';
 import { StructureContentDirective } from 'src/app/ui/structure/comp/structure/structure-content.directive';
 import { UiStructure } from '../../model/ui-structure';
 import { UiContent } from '../../model/ui-content';
 import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
-import { Subscription, BehaviorSubject, Subject } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 @Component({
 	// tslint:disable-next-line:component-selector
@@ -11,7 +11,7 @@ import { Subscription, BehaviorSubject, Subject } from 'rxjs';
 	templateUrl: './structure.component.html',
 	styleUrls: ['./structure.component.css']
 })
-export class StructureComponent implements OnInit, OnDestroy {
+export class StructureComponent implements OnInit, OnDestroy, DoCheck {
 	@Input()
 	labelVisible = true;
 	@Input()
@@ -42,6 +42,34 @@ export class StructureComponent implements OnInit, OnDestroy {
 
 	ngOnDestroy() {
 		this.clear();
+	}
+
+	ngDoCheck() {
+		if (!this.uiStructure) {
+			return;
+		}
+
+		const classList = this.elRef.nativeElement.classList;
+
+		if (this.uiStructure.isItemCollection()) {
+			if (!classList.contains('rocket-item-collection')) {
+				classList.add('rocket-item-collection');
+			}
+		} else {
+			if (classList.contains('rocket-item-collection')) {
+				classList.remove('rocket-item-collection');
+			}
+		}
+
+		if (this.uiStructure.isDoubleItem()) {
+			if (!classList.contains('rocket-double-item')) {
+				classList.add('rocket-double-item');
+			}
+		} else {
+			if (classList.contains('rocket-double-item')) {
+				classList.remove('rocket-double-item');
+			}
+		}
 	}
 
 	private clear() {
@@ -107,7 +135,7 @@ export class StructureComponent implements OnInit, OnDestroy {
 		return this.uiStructure.label;
 	}
 
-	isDoubleLabel(): boolean {
+	isItemContext(): boolean {
 		if (this.uiStructure.type !== UiStructureType.ITEM) {
 			return false;
 		}

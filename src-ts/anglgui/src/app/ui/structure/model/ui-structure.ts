@@ -1,6 +1,6 @@
 import { Observable, BehaviorSubject, Subscription } from 'rxjs';
 import { UiZone } from './ui-zone';
-import { UiStructureModel } from './ui-structure-model';
+import { UiStructureModel, UiStructureModelMode } from './ui-structure-model';
 import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { UiZoneError } from './ui-zone-error';
@@ -68,6 +68,16 @@ export class UiStructure {
 		}
 
 		return false;
+	}
+
+	isItemCollection(): boolean {
+		return this.type === UiStructureType.ITEM && this.model
+				&& this.model.getMode() === UiStructureModelMode.ITEM_COLLECTION;
+
+	}
+
+	isDoubleItem(): boolean {
+		return this.type === UiStructureType.ITEM && this.parent.isItemCollection();
 	}
 
 	createToolbarChild(model: UiStructureModel): UiStructure {

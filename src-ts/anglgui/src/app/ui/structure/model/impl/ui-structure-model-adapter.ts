@@ -1,6 +1,6 @@
-import { UiStructureModel } from '../ui-structure-model';
+import { UiStructureModel, UiStructureModelMode } from '../ui-structure-model';
 import { UiContent } from '../ui-content';
-import { Observable, of, Subject } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { UiStructure } from '../ui-structure';
 import { UiZoneError } from '../ui-zone-error';
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
@@ -42,5 +42,9 @@ export abstract class UiStructureModelAdapter implements UiStructureModel {
 		}
 
 		return this.disabled$;
+	}
+
+	getMode(): UiStructureModelMode {
+		return UiStructureModelMode.NONE;
 	}
 }

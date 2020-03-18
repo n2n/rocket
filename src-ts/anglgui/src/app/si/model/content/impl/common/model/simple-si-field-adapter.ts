@@ -2,7 +2,7 @@ import { SiFieldAdapter } from './si-field-adapter';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
-import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
+import { UiStructureModel, UiStructureModelMode } from 'src/app/ui/structure/model/ui-structure-model';
 import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
 
 export abstract class SimpleSiFieldAdapter extends SiFieldAdapter {
@@ -22,7 +22,12 @@ export abstract class SimpleSiFieldAdapter extends SiFieldAdapter {
 		model.initCallback = (uiStructure) => { model.content = this.createUiContent(uiStructure); };
 		model.messagesCallback = () => this.getMessages();
 		model.setDisabled$(this.disabledSubject);
+		model.mode = this.getMode();
 		return model;
+	}
+
+	protected getMode(): UiStructureModelMode {
+		return UiStructureModelMode.NONE;
 	}
 
 	protected abstract createUiContent(uiStructure: UiStructure): UiContent;

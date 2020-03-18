@@ -4,8 +4,11 @@ import { Observable } from 'rxjs';
 import { UiStructure } from '../ui-structure';
 import { UiZoneError } from '../ui-zone-error';
 import { UiStructureModelAdapter } from './ui-structure-model-adapter';
+import { UiStructureModelMode } from '../ui-structure-model';
 
 export class SimpleUiStructureModel extends UiStructureModelAdapter {
+
+	public mode = UiStructureModelMode.NONE;
 	public initCallback: (uiStructure: UiStructure) => void = () => {};
 	public destroyCallback: () => void = () => {};
 	public messagesCallback: () => Message[] = () => [];
@@ -46,5 +49,9 @@ export class SimpleUiStructureModel extends UiStructureModelAdapter {
 				this.reqBoundUiStructure().visible = true;
 			}
 		}));
+	}
+
+	getMode(): UiStructureModelMode {
+		return this.mode;
 	}
 }

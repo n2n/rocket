@@ -9,6 +9,7 @@ import { SplitComponent } from '../comp/split/split.component';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
 import { SimpleSiFieldAdapter } from '../../common/model/simple-si-field-adapter';
+import { UiStructureModelMode } from 'src/app/ui/structure/model/ui-structure-model';
 
 export class SplitSiField extends SimpleSiFieldAdapter implements SplitModel {
 
@@ -37,6 +38,10 @@ export class SplitSiField extends SimpleSiFieldAdapter implements SplitModel {
 
 	copy(): SiField {
 		throw new Error('Method not implemented.');
+	}
+
+	protected getMode(): UiStructureModelMode {
+		return UiStructureModelMode.ITEM_COLLECTION;
 	}
 
 	protected createUiContent(uiStructure: UiStructure): UiContent {
