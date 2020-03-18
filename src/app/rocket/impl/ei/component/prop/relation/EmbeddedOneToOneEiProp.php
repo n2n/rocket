@@ -34,6 +34,9 @@ use rocket\ei\component\prop\FieldEiProp;
 use rocket\impl\ei\component\prop\relation\model\ToOneEiField;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\entry\EiField;
+use rocket\impl\ei\component\prop\relation\model\gui\RelationLinkGuiField;
+use rocket\ei\manage\gui\field\GuiField;
+use rocket\impl\ei\component\prop\relation\model\gui\EmbeddedToOneGuiField;
 
 class EmbeddedOneToOneEiProp extends RelationEiPropAdapter implements FieldEiProp {
 	
@@ -66,5 +69,17 @@ class EmbeddedOneToOneEiProp extends RelationEiPropAdapter implements FieldEiPro
 		$field = new ToOneEiField($eiu, $targetEiuFrame, $this, $this->getRelationModel());
 		$field->setMandatory($this->getEditConfig()->isMandatory());
 		return $field;
+	}
+	
+	
+	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
+		if ($readOnly || $this->getEditConfig()->isReadOnly()) {
+			return new RelationLinkGuiField($eiu, $this->getRelationModel());
+		}
+		
+		$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())->frame()
+				->exec($this->getRelationModel()->getTargetEditEiCommandPath());
+		
+		return new EmbeddedToOneGuiField($eiu, $targetEiuFrame, $this->getRelationModel());
 	}
 }

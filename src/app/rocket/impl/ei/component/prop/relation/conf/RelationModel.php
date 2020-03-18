@@ -82,9 +82,9 @@ class RelationModel {
 	private $reduced = true;
 	private $removable = true;
 	
-	// ToMany
+	// ToMany / ToOne
 	
-	private $min = null;
+	private $min = 1;
 	private $max = null;
 	
 	// EmbeddedToMany
@@ -307,16 +307,20 @@ class RelationModel {
 	}
 	
 	/**
-	 * @return int|null
+	 * @return int
 	 */
 	function getMin() {
+		if ($this->min < 1 && $this->editConfig->isMandatory()) {
+			return 1;
+		}
+		
 		return $this->min;
 	}
 	
 	/**
-	 * @param int|null $min
+	 * @param int $min
 	 */
-	function setMin(?int $min) {
+	function setMin(int $min) {
 		$this->min = $min;
 	}
 	
@@ -324,6 +328,10 @@ class RelationModel {
 	 * @return int|null
 	 */
 	function getMax() {
+		if (!$this->isTargetMany()) {
+			return 1;
+		}
+		
 		return $this->max;
 	}
 	

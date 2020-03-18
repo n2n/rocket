@@ -170,7 +170,7 @@ class RelationConfig extends ConfigAdaption {
 				
 		if ($this->relationModel->isTargetMany()) {
 			$this->relationModel->setMin($dataSet->optInt(self::ATTR_MIN_KEY, 
-					$this->relationModel->getMin(), true));
+					$this->relationModel->getMin(), false));
 			$this->relationModel->setMax($dataSet->optInt(self::ATTR_MAX_KEY, 
 					$this->relationModel->getMax(), true));
 		}

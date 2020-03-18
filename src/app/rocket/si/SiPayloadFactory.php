@@ -41,16 +41,20 @@ class SiPayloadFactory extends JsonPayload {
 		return new JsonPayload([
 			'title' => $title,
 			'breadcrumbs' => $breadcrumbs,
-			'comp' => self::createDataFromComp($comp),
+			'comp' => self::buildDataFromComp($comp),
 			'controls' => self::createDataFromControls($controls)
 		]);
 	}
 	
 	/**
-	 * @param SiComp $content
+	 * @param SiComp|null $content
 	 * @return array
 	 */
-	static function createDataFromComp(SiComp $content) {
+	static function buildDataFromComp(?SiComp $content) {
+		if ($content === null) {
+			return null;
+		}
+		
 		return [
 			'type' => $content->getTypeName(),
 			'data' => $content->getData()
@@ -66,7 +70,7 @@ class SiPayloadFactory extends JsonPayload {
 		
 		$json = [];
 		foreach ($comps as $key => $content) {
-			$json[$key] = self::createDataFromComp($content);
+			$json[$key] = self::buildDataFromComp($content);
 		}
 		return $json;
 	}

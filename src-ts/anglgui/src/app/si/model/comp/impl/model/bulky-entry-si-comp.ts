@@ -17,6 +17,7 @@ import { UiStructureModelAdapter } from 'src/app/ui/structure/model/impl/ui-stru
 import { EnumInComponent } from '../../../content/impl/enum/comp/enum-in/enum-in.component';
 import { EnumInModel } from '../../../content/impl/enum/comp/enum-in-model';
 import { UiZoneError } from 'src/app/ui/structure/model/ui-zone-error';
+import { PlainContentComponent } from 'src/app/ui/structure/comp/plain-content/plain-content.component';
 
 export class BulkyEntrySiComp implements SiComp {
 	private _entry: SiEntry|null = null;
@@ -171,8 +172,9 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 
 		if (ssd.prop) {
 			uiStructure.label = ssd.prop.label;
-			const siField = this.siEntry.selectedEntryBuildup.getFieldById(ssd.prop.id);
-			uiStructure.model = this.uiStructureModelCache.obtain(this.siEntry.selectedTypeId, ssd.prop.id, siField);
+			if (this.siEntry.selectedEntryBuildup.containsPropId(ssd.prop.id)) {
+				uiStructure.model = this.createUiStructureModel(ssd.prop);
+			}
 			toolbarResolver.register(ssd.prop.id, uiStructure);
 			return uiStructure;
 		}
@@ -183,6 +185,15 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 		this.createStructures(uiStructure, ssd.children, toolbarResolver);
 
 		return uiStructure;
+	}
+
+	private createUiStructureModel(siProp: SiProp): UiStructureModel {
+		if (this.siEntry.selectedEntryBuildup.containsPropId(siProp.id)) { 
+			const siField = this.siEntry.selectedEntryBuildup.getFieldById(siProp.id);
+			return this.uiStructureModelCache.obtain(this.siEntry.selectedTypeId, siProp.id, siField);
+		}
+
+		return new SimpleUiStructureModel(new TypeUiContent(PlainContentComponent, () => {}));
 	}
 }
 

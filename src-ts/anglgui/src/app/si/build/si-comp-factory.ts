@@ -141,7 +141,11 @@ export class SiCompFactory {
 		};
 	}
 
-	createComp(data: any, requiredType: SiCompType|null = null): SiComp {
+	buildComp(data: any, requiredType: SiCompType|null = null): SiComp|null {
+		if (!data) {
+			return null;
+		}
+
 		const extr = new Extractor(data);
 		const dataExtr = extr.reqExtractor('data');
 		let compEssentialsFactory: SiControlFactory;
@@ -205,8 +209,8 @@ export class SiCompFactory {
 		const extr = new Extractor(data);
 
 		return new SiEmbeddedEntry(
-				this.createComp(extr.reqObject('content'), SiCompType.BULKY_ENTRY) as BulkyEntrySiComp,
-				this.createComp(extr.reqObject('summaryContent'), SiCompType.COMPACT_ENTRY) as CompactEntrySiComp);
+				this.buildComp(extr.reqObject('content'), SiCompType.BULKY_ENTRY) as BulkyEntrySiComp,
+				this.buildComp(extr.nullaObject('summaryContent'), SiCompType.COMPACT_ENTRY) as CompactEntrySiComp);
 	}
 
 	createPanels(data: Array<any>): SiPanel[] {

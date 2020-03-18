@@ -66,10 +66,6 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	 */
 	private $sortable = false;
 	/**
-	 * @var string|null
-	 */
-	private $pasteCategory = null;
-	/**
 	 * @var SiTypeQualifier[]|null
 	 */
 	private $allowedSiTypeQualifiers = null;
@@ -201,22 +197,6 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	}
 	
 	/**
-	 * @return string
-	 */
-	public function isPasteCategory() {
-		return $this->pasteCategory;
-	}
-	
-	/**
-	 * @param string $pasteCategory
-	 * @return EmbeddedEntryInSiField
-	 */
-	public function setPasteCategory(string $pasteCategory) {
-		$this->pasteCategory = $pasteCategory;
-		return $this;
-	}
-	
-	/**
 	 * @return SiTypeQualifier[]|null
 	 */
 	public function isAllowedTypeQualifiers() {
@@ -255,7 +235,6 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 			'reduced' => $this->reduced,
 			'nonNewRemovable' => $this->nonNewRemovable,
 			'sortable' => $this->sortable,
-			'pasteCategory' => $this->pasteCategory,
 			'allowedSiTypeQualifiers' => $this->allowedSiTypeQualifiers
 		];
 	}

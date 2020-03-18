@@ -106,7 +106,7 @@ export class SiService {
 
 		return this.httpClient.post<any>(apiUrl + '/callfield', formData, options)
 		 		.pipe(map(responseData => {
-					return new Extractor(responseData).reqObject('data');
+					return new Extractor(responseData).nullaObject('data');
 				}));
 	}
 
