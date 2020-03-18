@@ -71,7 +71,7 @@ class PanelLayout {
 		}
 		
 		$siPanel->setSortable(true)
-// 				->setReduced($relationModel->isReduced())
+				->setReduced($relationModel->isReduced())
 				->setAllowedTypeQualifiers($allowedSiTypeQualifiers);
 	}
 	
