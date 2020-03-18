@@ -79,7 +79,7 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler {
 		$this->panelLayout = new PanelLayout($panelDeclarations);
 		$this->panelLayout->assignConfigs($panelDeclarations, $targetEiuFrame, $relationModel);
 		
-		$this->siField = SiFields::embeddedEntryPanelsIn(
+		$this->siField = SiFields::embeddedEntryPanelsIn($this->targetEiuFrame->getSiTypeCategory(),
 				$this->targetEiuFrame->getApiUrl($relationModel->getTargetEditEiCommandPath()),
 				$this, $this->readValues());
 	}

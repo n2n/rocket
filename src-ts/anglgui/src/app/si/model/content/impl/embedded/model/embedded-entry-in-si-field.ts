@@ -38,10 +38,9 @@ export class EmbeddedEntriesInSiField extends SiFieldAdapter {
 		return { entryInputs: this.values.map(embeddedEntry => embeddedEntry.entry.readInput() ) };
 	}
 
-
 	createUiStructureModel(): UiStructureModel {
 		return new EmbeddedEntriesInUiStructureModel(
-				new EmbeddedEntryObtainer(this.siService, this.apiUrl, this.config.reduced), 
+				new EmbeddedEntryObtainer(this.siService, this.apiUrl, this.config.reduced),
 				this.typeCategory, this.values, this.config, this.translationService,
 				this.disabledSubject);
 	}

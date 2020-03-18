@@ -71,8 +71,7 @@ class PanelLayout {
 		}
 		
 		$siPanel->setSortable(true)
-				->setReduced($relationModel->isReduced())
-				->setPasteCategory($targetEiuFrame->engine()->type()->supremeType()->getId())
+// 				->setReduced($relationModel->isReduced())
 				->setAllowedTypeQualifiers($allowedSiTypeQualifiers);
 	}
 	
