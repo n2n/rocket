@@ -38,7 +38,7 @@ class EiGuiUtil {
 	 * @param bool $controlsIncluded
 	 * @return \rocket\si\content\impl\basic\BulkyEntrySiComp
 	 */
-	function createCompactEntrySiComp(EiEntryGui $eiEntryGui, bool $generalSiControlsIncluded = true,
+	function createCompactEntrySiComp(bool $generalSiControlsIncluded = true,
 			bool $entrySiControlsIncluded = true) {
 		$siComp = new CompactEntrySiComp($this->eiGui->createSiDeclaration($this->eiFrame),
 				$this->eiGui->createSiEntry($this->eiFrame, $entrySiControlsIncluded));
@@ -54,7 +54,7 @@ class EiGuiUtil {
 	 * @param bool $controlsIncluded
 	 * @return \rocket\si\content\impl\basic\BulkyEntrySiComp
 	 */
-	function createBulkyEntrySiComp(EiEntryGui $eiEntryGui, bool $generalSiControlsIncluded = true,
+	function createBulkyEntrySiComp(bool $generalSiControlsIncluded = true,
 			bool $entrySiControlsIncluded = true) {
 		$siComp = new BulkyEntrySiComp($this->eiGui->createSiDeclaration($this->eiFrame),
 				$this->eiGui->createSiEntry($this->eiFrame, $entrySiControlsIncluded));

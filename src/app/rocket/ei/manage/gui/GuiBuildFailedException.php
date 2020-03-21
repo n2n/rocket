@@ -21,37 +21,5 @@
  */
 namespace rocket\ei\manage\gui;
 
-use n2n\util\type\ArgUtils;
-use rocket\si\input\SiEntryInput;
-use rocket\si\input\CorruptedSiInputDataException;
-use n2n\util\ex\IllegalStateException;
-use rocket\ei\EiType;
-use rocket\si\content\impl\basic\BulkyEntrySiComp;
-
-class EiEntryGuiMulti {
-	
-	/**
-	 * @param EiEntryGui[]
-	 */
-	function __construct(EiType $contextEiType, int $viewMode, array $eiEntryGuis) {
-		$this->contextEiType = $contextEiType;
-		$this->viewMode = $viewMode;
-		$this->setEiEntryGuis($eiEntryGuis);
-	}
-	
-	/**
-	 * @return \rocket\ei\EiType
-	 */
-	function getContextEiType() {
-		return $this->contextEiType;
-	}
-	
-	/**
-	 * @return int
-	 */
-	function getViewMode() {
-		return $this->viewMode;
-	}
-	
-		
+class UnresolvableGuiPropPathException extends GuiException {
 }

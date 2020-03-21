@@ -10,7 +10,7 @@ import { AddPasteObtainer } from '../comp/add-paste-obtainer';
 import { EmbeddedEntryObtainer } from './embedded-entry-obtainer';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
-import { EmbeInCollection } from './embe-collection';
+import { EmbeInCollection, EmbeInSource } from './embe-collection';
 import { UiZoneError } from 'src/app/ui/structure/model/ui-zone-error';
 import { SiControl } from 'src/app/si/model/control/si-control';
 import { SimpleSiControl } from 'src/app/si/model/control/impl/model/simple-si-control';
@@ -26,12 +26,11 @@ import { Observable } from 'rxjs';
 import { UiStructureModelAdapter } from 'src/app/ui/structure/model/impl/ui-structure-model-adapter';
 
 export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter implements EmbeddedEntriesInModel {
-
 	private embeInCol: EmbeInCollection;
 	private embeInUiStructureManager: EmbeInUiStructureManager|null = null;
 
 	constructor(private obtainer: EmbeddedEntryObtainer, public typeCategory: string,
-			values: SiEmbeddedEntry[] = [], private config: EmbeddedEntriesConfig,
+			embeInSource: EmbeInSource, private config: EmbeddedEntriesConfig,
 			private translationService: TranslationService, disabledSubject: Observable<boolean>|null = null) {
 		super();
 
@@ -40,7 +39,7 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 		const getUiStucture = () => {
 			return this.reqBoundUiStructure();
 		};
-		this.embeInCol = new EmbeInCollection(values, getUiStucture, config);
+		this.embeInCol = new EmbeInCollection(embeInSource, getUiStucture, config);
 		this.embeInCol.readEmbes();
 		this.embeInCol.fillWithPlaceholderEmbes();
 	}
@@ -50,14 +49,7 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 	// }
 
 	// setValues(values: SiEmbeddedEntry[]) {
-	// 	if (this.values === values) {
-	// 		return;
-	// 	}
-
-	// 	this.values.splice(0, this.values.length);
-	// 	this.values.push(...values);
-
-	// 	this.embeCol.readEmbes();
+	// 	this.values = values;
 	// }
 
 	getEmbeInCollection(): EmbeInCollection {

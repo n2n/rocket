@@ -60,7 +60,7 @@ class EiuGuiFrame {
 	 * @return number
 	 */
 	public function getViewMode() {
-		return $this->eiGuiFrame->getViewMode();
+		return $this->eiGuiFrame->getEiGui()->getViewMode();
 	}
 	
 	/**
@@ -108,7 +108,7 @@ class EiuGuiFrame {
 	function newEntryGui($eiEntryArg) {
 		$eiEntry = EiuAnalyst::buildEiEntryFromEiArg($eiEntryArg, 'eiEntryArg');
 		
-		$eiEntryGui = $this->eiGuiFrame->createEiEntryGui($this->eiuAnalyst->getEiFrame(true), $eiEntry);
+		$eiEntryGui = $this->eiGuiFrame->createEiEntryGuiVariation($this->eiuAnalyst->getEiFrame(true), $eiEntry);
 		
 		return new EiuEntryGui($eiEntryGui, null, $this, $this->eiuAnalyst);
 	}

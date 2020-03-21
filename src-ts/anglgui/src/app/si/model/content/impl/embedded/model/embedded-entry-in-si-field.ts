@@ -13,8 +13,10 @@ import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model'
 import { EmbeddedEntriesInUiStructureModel } from './embedded-entries-in-ui-structure-model';
 import { TranslationService } from 'src/app/util/i18n/translation.service';
 import { SiFieldAdapter } from '../../common/model/si-field-adapter';
+import { Message } from 'src/app/util/i18n/message';
+import { EmbeInSource } from './embe-collection';
 
-export class EmbeddedEntriesInSiField extends SiFieldAdapter {
+export class EmbeddedEntriesInSiField extends SiFieldAdapter implements EmbeInSource {
 
 	config: EmbeddedEntriesConfig = {
 		min: 0,
@@ -25,9 +27,32 @@ export class EmbeddedEntriesInSiField extends SiFieldAdapter {
 		allowedSiTypeQualifiers: null
 	};
 
-	constructor(private siService: SiService, private typeCategory: string, private apiUrl: string,
+	constructor(private label: string, private siService: SiService, private typeCategory: string, private apiUrl: string,
 			private translationService: TranslationService, private values: SiEmbeddedEntry[] = []) {
 		super();
+	}
+
+	setValues(values: SiEmbeddedEntry[]) {
+		this.values = values;
+		this.validate();
+	}
+
+	getValues(): SiEmbeddedEntry[] {
+		return this.values;
+	}
+
+	private validate() {
+		this.messages = [];
+
+		if (this.values.length < this.config.min) {
+			this.messages.push(Message.createCode('min_elements_err',
+					new Map([['{field}', this.label], ['{min}', this.config.min.toString()]])));
+		}
+
+		if (this.config.max !== null && this.values.length > this.config.max) {
+			this.messages.push(Message.createCode('max_elements_err',
+					new Map([['{field}', this.label], ['{max}', this.config.max.toString()]])));
+		}
 	}
 
 	hasInput(): boolean {
@@ -41,7 +66,7 @@ export class EmbeddedEntriesInSiField extends SiFieldAdapter {
 	createUiStructureModel(): UiStructureModel {
 		return new EmbeddedEntriesInUiStructureModel(
 				new EmbeddedEntryObtainer(this.siService, this.apiUrl, this.config.reduced),
-				this.typeCategory, this.values, this.config, this.translationService,
+				this.typeCategory, this, this.config, this.translationService,
 				this.disabledSubject);
 	}
 

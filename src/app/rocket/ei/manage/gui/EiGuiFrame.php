@@ -17,6 +17,7 @@ use rocket\ei\EiPropPath;
 use rocket\si\meta\SiProp;
 use rocket\si\meta\SiType;
 use n2n\l10n\N2nLocale;
+use rocket\si\meta\SiTypeDeclaration;
 
 /**
  * @author andreas
@@ -24,17 +25,17 @@ use n2n\l10n\N2nLocale;
  */
 class EiGuiFrame {
 	/**
+	 * @var EiGui
+	 */
+	private $eiGui;
+	/**
 	 * @var GuiDefinition
 	 */
 	private $guiDefinition;
-// 	/**
-// 	 * @var GuiDefinition
-// 	 */
-// 	private $guiDefinition;
 	/**
-	 * @var int
+	 * @var GuiDefinition
 	 */
-	private $viewMode;
+	private $guiStructureDeclarations;
 	/**
 	 * @var EiPropPath[]
 	 */
@@ -65,10 +66,11 @@ class EiGuiFrame {
 	 * @param GuiDefinition $guiDefinition
 	 * @param int $viewMode Use constants from {@see ViewMode}
 	 */
-	function __construct(GuiDefinition $guiDefinition, int $viewMode) {
+	function __construct(EiGui $eiGui, GuiDefinition $guiDefinition, ?array $guiStructureDeclarations) {
+		$this->eiGui = $eiGui;
 		$this->guiDefinition = $guiDefinition;
-		ArgUtils::valEnum($viewMode, ViewMode::getAll());
-		$this->viewMode = $viewMode;
+		
+		$this->setGuiStructureDeclarations($guiStructureDeclarations);
 	}
 	
 // 	/**
@@ -86,10 +88,25 @@ class EiGuiFrame {
 	}
 	
 	/**
-	 * @return int
+	 * @return EiGui
 	 */
-	function getViewMode() {
-		return $this->viewMode;
+	function getEiGui() {
+		return $this->eiGui;
+	}
+	
+	/**
+	 * @param GuiStructureDeclaration[]|null $guiStructureDeclarations
+	 */
+	function setGuiStructureDeclarations(?array $guiStructureDeclarations) {
+		ArgUtils::valArray($guiStructureDeclarations, GuiStructureDeclaration::class, true);
+		$this->guiStructureDeclarations = $guiStructureDeclarations;
+	}
+	
+	/**
+	 * @return GuiStructureDeclaration[]|null
+	 */
+	function getGuiStructureDeclarations() {
+		return $this->guiStructureDeclarations;
 	}
 	
 	/**
@@ -175,6 +192,17 @@ class EiGuiFrame {
 		return isset($this->guiPropPaths[(string) $guiPropPath]);
 	}
 	
+	/**
+	 * @return \rocket\si\meta\SiTypeDeclaration
+	 */
+	function createSiTypeDeclaration(N2nLocale $n2nLocale) {
+		IllegalStateException::assertTrue($this->guiStructureDeclarations !== null, 
+				'EiGuiFrame has no GuiStructureDeclarations.');
+		
+		return new SiTypeDeclaration(
+				$this->createSiType($n2nLocale),
+				$this->createSiStructureDeclarations($this->guiStructureDeclarations));
+	}
 	
 	/**
 	 * @return \rocket\si\meta\SiType
@@ -331,24 +359,41 @@ class EiGuiFrame {
 // 		}
 // 		return $forkGuiPropPaths;
 // 	}
-	
+
 	/**
 	 * @param EiEntry $eiEntry
 	 * @param bool $makeEditable
 	 * @param int $treeLevel
 	 * @param bool $append
-	 * @return EiEntryGui
+	 * @return EiEntryGuiTypeDef
 	 */
-	function createEiEntryGui(EiFrame $eiFrame, EiEntry $eiEntry, int $treeLevel = null): EiEntryGui {
+	function applyEiEntryGuiTypeDef(EiFrame $eiFrame, EiEntryGui $eiEntryGui, EiEntry $eiEntry): EiEntryGui {
 		$this->ensureInit();
 		
-		$eiEntryGui = GuiFactory::createEiEntryGui($eiFrame, $this, $eiEntry, $this->getGuiPropPaths(), $treeLevel);
+		$eiEntryGuiTypeDef = GuiFactory::createEiEntryGuiTypeDef($eiFrame, $this, $eiEntryGui, $eiEntry);
+		$eiEntryGui->putTypeDef($eiEntryGuiTypeDef);
 		
 		foreach ($this->eiGuiFrameListeners as $eiGuiFrameListener) {
-			$eiGuiFrameListener->onNewEiEntryGui($eiEntryGui);
+			$eiGuiFrameListener->onNewEiEntryGui($eiEntryGuiTypeDef);
 		}
 		
-		return $eiEntryGui;
+		return $eiEntryGuiTypeDef;
+	}
+	
+	function applyNewEiEntryGuiTypeDef(EiFrame $eiFrame, EiEntryGui $eiEntryGui) {
+		$this->ensureInit();
+		
+		$eiObject = $this->getGuiDefinition()->getEiMask()->getEiType()->createNewEiObject();
+		$eiEntry = $eiFrame->createEiEntry($eiObject);
+		
+		$eiEntryGuiTypeDef = GuiFactory::createEiEntryGuiTypeDef($eiFrame, $this, $eiEntryGui, $eiEntry);
+		$eiEntryGui->putTypeDef($eiEntryGuiTypeDef);
+		
+		foreach ($this->eiGuiFrameListeners as $eiGuiFrameListener) {
+			$eiGuiFrameListener->onNewEiEntryGui($eiEntryGuiTypeDef);
+		}
+		
+		return $eiEntryGuiTypeDef;
 	}
 	
 	/**

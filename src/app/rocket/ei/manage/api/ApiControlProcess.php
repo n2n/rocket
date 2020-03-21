@@ -132,7 +132,7 @@ class ApiControlProcess {
 	}
 	
 	function determineGuiField(GuiPropPath $guiPropPath) {
-		$eiEntryGui = $this->eiGuiFrame->createEiEntryGui($this->eiFrame, $this->eiEntry, 0);
+		$eiEntryGui = $this->eiGuiFrame->createEiEntryGuiVariation($this->eiFrame, $this->eiEntry, 0);
 		$this->eiGui->addEiEntryGui($eiEntryGui);
 		
 		try {
@@ -210,7 +210,7 @@ class ApiControlProcess {
 							. ' Entry Input Id: ' . $entryInput->getIdentifier()->getId());
 				}
 				
-				$eiEntryGui = $this->eiGuiFrame->createEiEntryGui($this->eiFrame, $this->eiEntry);
+				$eiEntryGui = $this->eiGuiFrame->createEiEntryGuiVariation($this->eiFrame, $this->eiEntry);
 				$this->eiGui->addEiEntryGui($eiEntryGui);
 			} else {
 				$eiObject = null;

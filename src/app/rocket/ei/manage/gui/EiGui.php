@@ -3,45 +3,76 @@ namespace rocket\ei\manage\gui;
 
 use n2n\util\type\ArgUtils;
 use rocket\si\meta\SiStructureDeclaration;
-use rocket\si\meta\SiTypeDeclaration;
 use rocket\ei\manage\gui\field\GuiPropPath;
 use n2n\util\ex\IllegalStateException;
 use rocket\si\meta\SiDeclaration;
 use rocket\ei\manage\frame\EiFrame;
-use rocket\si\meta\SiType;
-use n2n\l10n\N2nLocale;
+use rocket\ei\mask\EiMask;
+use rocket\ei\manage\security\InaccessibleEiEntryException;
+use rocket\ei\manage\entry\EiEntry;
 
 class EiGui {
-	
 	/**
-	 * @var GuiStructureDeclaration[]
+	 * @var EiMask
 	 */
-	private $guiStructureDeclarations;
+	private $contextEiMask;
+	/**
+	 * @var int
+	 */
+	private $viewMode;
 	/**
 	 * @var EiGuiFrame
 	 */
-	private $eiGuiFrame;
+	private $eiGuiFrames = [];
 	/**
 	 * @var EiEntryGui[]
 	 */
 	private $eiEntryGuis = [];
 	
 	/**
-	 * @param GuiStructureDeclaration[]|null $guiStructureDeclarations
+	 * @param EiMask $eiMask
 	 * @param EiGuiFrame $eiGuiFrame
 	 */
-	function __construct(?array $guiStructureDeclarations, EiGuiFrame $eiGuiFrame) {
-		ArgUtils::assertTrue($guiStructureDeclarations !== null);
-		
-		$this->guiStructureDeclarations = $guiStructureDeclarations;
-		$this->eiGuiFrame = $eiGuiFrame;
+	function __construct(EiMask $contextEiMask, int $viewMode) {
+		$this->contextEiMask = $contextEiMask;
+		ArgUtils::valEnum($viewMode, ViewMode::getAll());
+		$this->viewMode = $viewMode;
+	}
+	
+	/**
+	 * @return \rocket\ei\mask\EiMask
+	 */
+	function getContextEiMask() {
+		return $this->contextEiMask;
+	}
+	
+	/**
+	 * @return int
+	 */
+	function getViewMode() {
+		return $this->viewMode;
 	}
 	
 	/**
 	 * @return \rocket\ei\manage\gui\EiGuiFrame
 	 */
-	function getEiGuiFrame() {
-		return $this->eiGuiFrame;
+	function getEiGuiFrames() {
+		return $this->eiGuiFrames;
+	}
+	
+	
+	
+	/**
+	 * @param EiGuiFrame $eiGuiFrame
+	 * @return \rocket\ei\manage\gui\EiGui
+	 */
+	function putEiGuiFrame(EiGuiFrame $eiGuiFrame) {
+		$eiType = $eiGuiFrame->getGuiDefinition()->getEiMask()->getEiType();
+		
+		ArgUtils::assertTrue($eiType->isA($eiGuiFrame->getGuiDefinition()->getEiMask()->getEiType()));
+		
+		$this->eiGuiFrames[$eiType->getId()] = $eiGuiFrame;
+		return $this;
 	}
 	
 	/**
@@ -76,25 +107,15 @@ class EiGui {
 	 */
 	function createSiDeclaration(EiFrame $eiFrame) {
 		$n2nLocale = $eiFrame->getN2nContext()->getN2nLocale();
-		$siDeclaration = new SiDeclaration([$this->createSiTypeDeclaration($n2nLocale)]);
+		$siDeclaration = new SiDeclaration();
 		
-		$contextEiMask = $eiFrame->getContextEiEngine()->getEiMask();
-		foreach ($contextEiMask->getEiType()->getAllSubEiTypes() as $subEiType) {
-			$siTypeIdentifier = $contextEiMask->determineEiMask($subEiType)->createSiTypeQualifier($n2nLocale);
-			$siDeclaration->addTypeDeclaration(new SiTypeDeclaration(new SiType($siTypeIdentifier, null), null));
+		foreach ($this->eiGuiFrames as $eiGuiFrame) {
+			$siDeclaration->addTypeDeclaration($eiGuiFrame->createSiTypeDeclaration($n2nLocale));
 		}
 		
 		return $siDeclaration;
 	}
 	
-	/**
-	 * @return \rocket\si\meta\SiTypeDeclaration
-	 */
-	function createSiTypeDeclaration(N2nLocale $n2nLocale) {
-		return new SiTypeDeclaration(
-				$this->eiGuiFrame->createSiType($n2nLocale), 
-				$this->createSiStructureDeclarations($this->guiStructureDeclarations));
-	}
 	
 // 	/**
 // 	 * @return SiProp[]
@@ -172,6 +193,35 @@ class EiGui {
 					$guiStructureDeclaration->getChildren()));
 		}
 		return $filtereds;
+	}
+	
+	function appendEiEntryGui(EiFrame $eiFrame, EiEntry $eiEntry, int $treeLevel = null) {
+		$eiEntryGui = new EiEntryGui($this->contextEiMask->getEiType(), $treeLevel);
+		
+		foreach ($this->eiGuiFrames as $eiGuiFrame) {
+			$eiGuiFrame->applyEiEntryGuiTypeDef($eiFrame, $eiEntryGui, $eiEntry);
+		}
+	
+		$this->eiEntryGuis[] = $eiEntryGui;
+		
+		return $eiEntryGui;
+	}
+	
+	/**
+	 * @param EiFrame $eiFrame
+	 * @param int $treeLevel
+	 * @throws InaccessibleEiEntryException
+	 */
+	function appendNewEiEntryGui(EiFrame $eiFrame, int $treeLevel = null) {
+		$eiEntryGui = new EiEntryGui($this->contextEiMask->getEiType(), $treeLevel);
+		
+		foreach ($this->eiGuiFrames as $eiGuiFrame) {
+			$eiGuiFrame->applyNewEiEntryGuiTypeDef($eiFrame, $eiEntryGui);
+		}
+		
+		$this->eiEntryGuis[] = $eiEntryGui;
+		
+		return $eiEntryGui;
 	}
 	
 	/**

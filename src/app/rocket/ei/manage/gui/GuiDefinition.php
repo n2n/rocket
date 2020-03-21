@@ -636,27 +636,20 @@ class GuiDefinition {
 		return $labelLstrs;
 	}
 	
-	/**
-	 * @param EiFrame $eiFrame
-	 * @param int $viewMode
-	 * @param GuiPropPath[]|null $guiPropPaths
-	 * @return \rocket\ei\manage\gui\EiGui
-	 */
-	function createEiGui(N2nContext $n2nContext, int $viewMode, array $guiPropPaths = null) {
-		$eiGuiFrame = new EiGuiFrame($this, $viewMode);
-		$guiStructureDeclarations = null;
-		if ($guiPropPaths === null) {
-			$guiStructureDeclarations = $this->initEiGuiFrameFromDisplayScheme($n2nContext, $eiGuiFrame);
-		} else {
-			$guiStructureDeclarations = $this->semiAutoInitEiGuiFrame($n2nContext, $eiGuiFrame, $guiPropPaths);
-		}
+// 	/**
+// 	 * @param EiFrame $eiFrame
+// 	 * @param int $viewMode
+// 	 * @param GuiPropPath[]|null $guiPropPaths
+// 	 * @return \rocket\ei\manage\gui\EiGui
+// 	 */
+// 	function createEiGui(N2nContext $n2nContext, int $viewMode, array $guiPropPaths = null) {
+// 		$eiGuiFrame = new EiGuiFrame($this, $viewMode);
 		
-		if (ViewMode::isBulky($viewMode)) {
-			$guiStructureDeclarations = $this->groupGsds($guiStructureDeclarations);
-		}
 		
-		return new EiGui($guiStructureDeclarations, $eiGuiFrame);
-	}
+		
+		
+// 		return new EiGui($guiStructureDeclarations, $eiGuiFrame);
+// 	}
 	
 	/**
 	 * @param EiFrame $eiFrame
@@ -664,13 +657,36 @@ class GuiDefinition {
 	 * @param array $guiPropPaths
 	 * @return \rocket\ei\manage\gui\EiGuiFrame
 	 */
-	function createEiGuiFrame(N2nContext $n2nContext, int $viewMode, array $guiPropPaths) {
-		ArgUtils::assertTrue($this->eiMask->isA($eiFrame->getContextEiEngine()->getEiMask()));
+	function createEiGuiFrame(N2nContext $n2nContext, EiGui $eiGui, ?array $guiPropPaths, 
+			bool $guiStructureDeclarationsRequired) {
+		ArgUtils::assertTrue($this->eiMask->isA($eiGui->getContextEiMask()));
 		
-		$eiGuiFrame = new EiGuiFrame($this, $viewMode);
+		$eiGuiFrame = new EiGuiFrame($eiGui, $this, null);
 		
-		$this->semiAutoInitEiGuiFrame($n2nContext, $eiGuiFrame, $guiPropPaths);
+		$eiGui->putEiGuiFrame($eiGuiFrame);
 		
+		if ($guiPropPaths !== null && $guiStructureDeclarationsRequired) {
+			$this->semiAutoInitEiGuiFrame($n2nContext, $eiGuiFrame, $guiPropPaths);
+			return $eiGuiFrame;
+		} 
+		
+		$guiStructureDeclarations = null;
+		
+		if ($guiPropPaths === null) {
+			$guiStructureDeclarations = $this->initEiGuiFrameFromDisplayScheme($n2nContext, $eiGuiFrame);
+		} else {
+			$guiStructureDeclarations = $this->semiAutoInitEiGuiFrame($n2nContext, $eiGuiFrame, $guiPropPaths);
+		}
+		
+		if (!$guiStructureDeclarationsRequired) {
+			return $eiGuiFrame;
+		}
+		
+		if (ViewMode::isBulky($eiGui->getViewMode())) {
+			$guiStructureDeclarations = $this->groupGsds($guiStructureDeclarations);
+		}
+		
+		$eiGuiFrame->setGuiStructureDeclarations($guiStructureDeclarations);
 		return $eiGuiFrame;
 	}
 	
@@ -706,7 +722,7 @@ class GuiDefinition {
 		$displayScheme = $this->eiMask->getDisplayScheme();
 		
 		$displayStructure = null;
-		switch ($eiGuiFrame->getViewMode()) {
+		switch ($eiGuiFrame->getEiGui()->getViewMode()) {
 			case ViewMode::BULKY_READ:
 				$displayStructure = $displayScheme->getDetailDisplayStructure() ?? $displayScheme->getBulkyDisplayStructure();
 				break;

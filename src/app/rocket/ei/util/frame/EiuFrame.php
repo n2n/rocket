@@ -66,7 +66,7 @@ use rocket\ei\component\prop\EiProp;
 use rocket\ei\manage\frame\EiForkLink;
 use rocket\ei\manage\frame\CriteriaFactory;
 use rocket\si\content\SiEntryQualifier;
-use rocket\ei\util\gui\EiuEntryGuiMulti;
+use rocket\ei\util\gui\EiuEntryGuiTypeDef;
 use rocket\ei\util\gui\EiuGui;
 use rocket\ei\util\Eiu;
 
@@ -683,12 +683,12 @@ class EiuFrame {
 	/**
 	 * @param bool $bulky
 	 * @param bool $readOnly
-	 * @return \rocket\ei\util\gui\EiuEntryGuiMulti
+	 * @return \rocket\ei\util\gui\EiuEntryGuiTypeDef
 	 */
-	function newEntryGuiMulti(bool $bulky, bool $readOnly) {
-		$eiEntryGuiMulti = (new EiFrameUtil($this->eiFrame))->createNewEiEntryGuiMulti($bulky, $readOnly);
+	function newEntryGuiMulti(bool $bulky, bool $readOnly, ?array $guiPropPaths = null) {
+		$eiEntryGuiMultiResult = (new EiFrameUtil($this->eiFrame))->createNewEiEntryGuiMulti($bulky, $readOnly, null, true);
 		
-		return new EiuEntryGuiMulti($eiEntryGuiMulti, $this->eiuAnalyst);
+		return new EiuEntryGuiTypeDef($eiEntryGuiMultiResult, $this->eiuAnalyst);
 	}
 	
 // 	/**

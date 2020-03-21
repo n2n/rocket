@@ -132,18 +132,18 @@ class EiFrameUtil {
 	/**
 	 * @return \rocket\ei\manage\entry\EiEntry[]
 	 */
-	function createPossibleNewEiEntries() {
+	function createPossibleNewEiEntries(array $eiTypeIds = null) {
 		$contextEiType = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType(); 
 		
 		$newEiEntries = [];
 		
-		if (!$contextEiType->isAbstract()) {
+		if (!$contextEiType->isAbstract() && ($eiTypeIds === null || in_array($contextEiType->getId(), $eiTypeIds))) {
 			$newEiEntries[$contextEiType->getId()] = $this->eiFrame
 					->createEiEntry($contextEiType->createNewEiObject());
 		}
 		
 		foreach ($contextEiType->getAllSubEiTypes() as $eiType) {
-			if ($eiType->isAbstract()) {
+			if ($eiType->isAbstract() && ($eiTypeIds === null || in_array($eiType->getId(), $eiTypeIds))) {
 				continue;
 			}
 			
@@ -160,14 +160,14 @@ class EiFrameUtil {
 	 * @return EiEntryGuiMultiResult
 	 * @throws EiException
 	 */
-	function createNewEiEntryGuiMulti(bool $bulky, bool $readOnly, ?array $guiPropPaths, bool $eiGuiRequired) {
+	function createNewEiEntryGuiMulti(bool $bulky, bool $readOnly, ?array $guiPropPaths, ?array $eiTypeIds, bool $eiGuiRequired) {
 		$viewMode = ViewMode::determine($bulky, $readOnly, true);
 		
 		$newEiEntryGuis = [];
 		$eiGuiFrames = [];
 		$eiGuis = $eiGuiRequired ? [] : null;
 		
-		foreach ($this->createPossibleNewEiEntries() as $eiTypeId => $newEiEntry) {
+		foreach ($this->createPossibleNewEiEntries($eiTypeIds) as $eiTypeId => $newEiEntry) {
 			$newEiGuiFrame = null;
 			if (!$eiGuiRequired) {
 				$eiGuiFrames[$eiTypeId] = $newEiGuiFrame = $this->createEiGuiFrame($newEiEntry->getEiMask(), $viewMode, $guiPropPaths);
@@ -176,7 +176,7 @@ class EiFrameUtil {
 				$eiGuiFrames[$eiTypeId] = $newEiGuiFrame = $eiGui->getEiGuiFrame();
 			}
 			
-			$newEiEntryGuis[$eiTypeId] = $newEiGuiFrame->createEiEntryGui($this->eiFrame, $newEiEntry);
+			$newEiEntryGuis[$eiTypeId] = $newEiGuiFrame->createEiEntryGuiVariation($this->eiFrame, $newEiEntry);
 		}
 		
 		if (empty($newEiEntryGuis)) {
@@ -469,9 +469,9 @@ class EiEntryGuiMultiResult {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\gui\EiGui|null
+	 * @return \rocket\ei\manage\gui\EiGui[]
 	 */
-	function getEiGui() {
+	function getEiGuis() {
 		return $this->eiGuis;
 	}
 	

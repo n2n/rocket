@@ -5,11 +5,17 @@ import { EmbeddedEntriesConfig } from './embedded-entries-config';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 
 
+export interface EmbeSource {
+	getValues(): SiEmbeddedEntry[];
+}
+export interface EmbeInSource extends EmbeSource {
+	setValues(values: SiEmbeddedEntry[]): void;
+}
 
 export class EmbeCollection {
 	public embes: Embe[] = [];
 
-	constructor(protected values: SiEmbeddedEntry[], protected getUiStructure: () => UiStructure) {
+	constructor(private source: EmbeSource, protected getUiStructure: () => UiStructure) {
 	}
 
 	// protected unregisterEmbe(embe: Embe) {
@@ -38,15 +44,15 @@ export class EmbeCollection {
 	readEmbes() {
 		this.clearEmbes();
 
-		for (const siEmbeddedEntry of this.values) {
+		for (const siEmbeddedEntry of this.source.getValues()) {
 			this.createEmbe(siEmbeddedEntry);
 		}
 	}
 }
 
 export class EmbeInCollection extends EmbeCollection {
-	constructor(values: SiEmbeddedEntry[], getUiStructure: () => UiStructure, private config: EmbeddedEntriesConfig) {
-		super(values, getUiStructure);
+	constructor(private inSource: EmbeInSource, getUiStructure: () => UiStructure, private config: EmbeddedEntriesConfig) {
+		super(inSource, getUiStructure);
 	}
 
 	createEntriesResetPoints(): SiGenericEntry[] {
@@ -58,15 +64,17 @@ export class EmbeInCollection extends EmbeCollection {
 	}
 
 	writeEmbes() {
-		this.values.splice(0, this.values.length);
+		const values = new Array<SiEmbeddedEntry>();
 
 		for (const embe of this.embes) {
 			if (embe.isPlaceholder()) {
 				continue;
 			}
 
-			this.values.push(embe.siEmbeddedEntry);
+			values.push(embe.siEmbeddedEntry);
 		}
+
+		this.inSource.setValues(values);
 	}
 
 	fillWithPlaceholderEmbes() {

@@ -83,7 +83,13 @@ export class SiEntryBuildup {
 		const promises = new Array<Promise<void>>();
 		for (const [fieldId, genericValue] of genericEntryBuildup.fieldValuesMap) {
 			if (this.containsPropId(fieldId)) {
-				promises.push(this.getFieldById(fieldId).pasteValue(genericValue));
+				try {
+					promises.push(this.getFieldById(fieldId).pasteValue(genericValue));
+				} catch (e) {
+					if ((e instanceof GenericMissmatchError)) {
+						throw e;
+					}
+				}
 			}
 		}
 		return Promise.all(promises).then(() => {});

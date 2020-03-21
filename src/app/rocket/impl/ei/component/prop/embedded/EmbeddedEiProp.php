@@ -36,8 +36,6 @@ use rocket\ei\component\prop\FieldEiProp;
 use n2n\reflection\ReflectionUtils;
 use n2n\web\dispatch\mag\Mag;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
-use n2n\l10n\Lstr;
-use n2n\l10n\N2nLocale;
 use n2n\reflection\property\AccessProxy;
 use n2n\util\type\TypeConstraint;
 use rocket\impl\ei\component\prop\adapter\config\EditConfig;
@@ -176,8 +174,6 @@ class EmbeddedGuiProp implements GuiProp {
 	public function buildGuiPropSetup(Eiu $eiu, ?array $guiPropPaths): ?GuiPropSetup {
 		return null;
 	}
-
-
 }
 
 

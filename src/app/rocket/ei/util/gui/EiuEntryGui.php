@@ -37,6 +37,7 @@ use n2n\l10n\N2nLocale;
 use rocket\si\input\SiEntryInput;
 use rocket\ei\manage\gui\EiGuiUtil;
 use rocket\ei\manage\gui\EiGuiFrame;
+use rocket\ei\manage\frame\EiEntryGuiMultiResult;
 
 class EiuEntryGui {
 	private $eiEntryGui;
@@ -54,6 +55,18 @@ class EiuEntryGui {
 	
 	private function getEiGui() {
 		return $this->eiuGui->getEiGui() ?? $this->eiuAnalyst->getEiGui(true);
+	}
+	
+	/**
+	 * @throws EiuPerimeterException
+	 * @return \rocket\ei\util\gui\EiuGui
+	 */
+	function gui() {
+		if ($this->eiuGui !== null) {
+			return $this->eiuGui;
+		}
+		
+		throw new EiuPerimeterException('EiuGui not available to EiuEntryGui.');
 	}
 	
 	/**
@@ -117,8 +130,12 @@ class EiuEntryGui {
 	 * @return \rocket\si\content\impl\basic\CompactEntrySiComp
 	 */
 	function createCompactEntrySiComp(bool $generalSiControlsIncluded = true, bool $entrySiControlsIncluded = true) {
+		if (!ViewMode::isBulky($this->getEiGui()->getEiGuiFrame()->getViewMode())) {
+			throw new EiuPerimeterException('EiEntryGuiMulti is not bulky.');
+		}
+		
 		return (new EiGuiUtil($this->getEiGui(), $this->eiuAnalyst->getEiFrame(true)))
-				->createCompactEntrySiComp($this->eiEntryGui, $generalSiControlsIncluded, $entrySiControlsIncluded);
+				->createCompactEntrySiComp($generalSiControlsIncluded, $entrySiControlsIncluded);
 	}
 	
 	/**
@@ -127,8 +144,12 @@ class EiuEntryGui {
 	 * @return \rocket\si\content\impl\basic\BulkyEntrySiComp
 	 */
 	function createBulkyEntrySiComp(bool $generalSiControlsIncluded = true, bool $entrySiControlsIncluded = true) {
+		if (!ViewMode::isCompact($this->getEiGui()->getEiGuiFrame()->getViewMode())) {
+			throw new EiuPerimeterException('EiEntryGuiMulti is not compact.');
+		}
+		
 		return (new EiGuiUtil($this->getEiGui(), $this->eiuAnalyst->getEiFrame(true)))
-				->createBulkyEntrySiComp($this->eiEntryGui, $generalSiControlsIncluded, $entrySiControlsIncluded);
+				->createBulkyEntrySiComp($generalSiControlsIncluded, $entrySiControlsIncluded);
 	}
 	
 	/**
@@ -334,10 +355,11 @@ class EiuEntryGui {
 	}
 	
 	/**
-	 * @return \rocket\ei\util\gui\EiuEntryGuiMulti
+	 * @return \rocket\ei\util\gui\EiuEntryGuiTypeDef
 	 */
 	function toMulti() {
-		return new EiuEntryGuiMulti($this->eiEntryGui->toMulti(), $this->eiuAnalyst);
+		return new EiuEntryGuiTypeDef(new EiEntryGuiMultiResult($this->eiEntryGui->toMulti(), $this->eiuAnalyst->getEiFrame(true),
+					[$this->getEiGui()], [$this->getEiGuiFrame()]), $this->eiuAnalyst);
 	}
 	
 // 	/**

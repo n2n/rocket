@@ -134,7 +134,7 @@ export class SiFieldFactory {
 			return qualifierSelectInSiField;
 
 		case SiFieldType.EMBEDDED_ENTRY_IN:
-			const embeddedEntryInSiField = new EmbeddedEntriesInSiField(this.injector.get(SiService),
+			const embeddedEntryInSiField = new EmbeddedEntriesInSiField(prop.label, this.injector.get(SiService),
 					dataExtr.reqString('typeCategory'), dataExtr.reqString('apiUrl'), 
 					this.injector.get(TranslationService),
 					new SiCompFactory(this.injector).createEmbeddedEntries(dataExtr.reqArray('values')));

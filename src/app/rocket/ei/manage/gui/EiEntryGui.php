@@ -22,49 +22,37 @@
 namespace rocket\ei\manage\gui;
 
 use n2n\util\ex\IllegalStateException;
-use rocket\ei\mask\EiMask;
-use rocket\ei\manage\entry\EiEntry;
-use rocket\si\input\SiEntryInput;
 use n2n\util\type\attrs\AttributesException;
-use rocket\ei\manage\gui\field\GuiPropPath;
+use rocket\si\input\SiEntryInput;
+use rocket\ei\EiType;
+use n2n\util\type\ArgUtils;
+use rocket\si\input\CorruptedSiInputDataException;
 
 class EiEntryGui {
+	
 	/**
-	 * @var EiEntry
+	 * @var EiType
 	 */
-	private $eiEntry;
+	private $contextEiType;
+	/**
+	 * @var string|null
+	 */
+	private $selectedEiTypeId = null;
+	/**
+	 * @var EiEntryGuiTypeDef[]
+	 */
+	private $typeDefs;
 	/**
 	 * @var int|null
 	 */
 	private $treeLevel;
-	/**
-	 * @var GuiFieldMap
-	 */
-	private $guiFieldMap;
-	/**
-	 * @var EiEntryGuiListener[]
-	 */
-	private $eiEntryGuiListeners = array();
-	/**
-	 * @var bool
-	 */
-	private $initialized = false;
 	
 	/**
-	 * @param EiMask $eiMask
-	 * @param int $viewMode
 	 * @param int|null $treeLevel
 	 */
-	public function __construct(EiEntry $eiEntry, int $treeLevel = null) {
-		$this->eiEntry = $eiEntry;
+	public function __construct(EiType $contextEiType, int $treeLevel = null) {
+		$this->contextEiType = $contextEiType;
 		$this->treeLevel = $treeLevel;
-	}
-
-	/**
-	 * @return \rocket\ei\manage\entry\EiEntry
-	 */
-	public function getEiEntry() {
-		return $this->eiEntry;
 	}
 	
 	/**
@@ -74,211 +62,79 @@ class EiEntryGui {
 		return $this->treeLevel;
 	}
 	
-	
-	
-	/**
-	 * @return GuiFieldMap
-	 */
-	public function getGuiFieldMap() {
-		$this->ensureInitialized();
-		
-		return $this->guiFieldMap;
-	}
-	
-	function getGuiFieldByGuiPropPath(GuiPropPath $guiPropPath) {
-		$guiFieldMap = $this->guiFieldMap;
-		
-		$eiPropPaths = $guiPropPath->toArray();
-		
-		while (null !== ($eiPropPath = array_shift($eiPropPaths))) {
-			try {
-				$guiField = $guiFieldMap->getGuiField($eiPropPath);
-			} catch (GuiException $e) { }
-			
-			if (empty($eiPropPaths)) {
-				return $guiField;
-			}
-			
-			$guiFieldMap = $guiField->getForkGuiFieldMap();
-			if ($guiFieldMap === null) {
-				break;
-			}
-		}
-		
-		throw new GuiException('No GuiField with EiPropPath \'' . $guiPropPath . '\' for \'' . $this . '\' registered');
-	}
-	
-	private function rGuiPropPaths() {
-		
-	}
-	
-// 	/**
-// 	 * @param GuiPropPath $prefixGuiPropPath
-// 	 * @return \rocket\ei\manage\gui\field\GuiField[]
-// 	 */
-// 	public function filterGuiFields(GuiPropPath $prefixGuiPropPath, bool $checkOnEiPropPathLevel) {
-// 		$this->ensureInitialized();
-		
-// 		$guiFields = [];
-		
-// 		foreach ($this->guiFields as $guiPropPathStr => $guiField) {
-// 			$guiPropPath = GuiPropPath::create($guiPropPathStr);
-// 			if ($guiPropPath->equals($prefixGuiPropPath) 
-// 					|| !$guiPropPath->startsWith($prefixGuiPropPath, $checkOnEiPropPathLevel)) {
-// 				continue;
-// 			}
-				
-// 			$guiFields[] = $guiField;
-// 		}
-		
-// 		return $guiFields;
-// 	}
-	
-	
-// 	/**
-// 	 * @param GuiPropPath $guiPropPath
-// 	 * @param GuiFieldFork $guiFieldForkAssembly
-// 	 */
-// 	public function putGuiFieldFork(GuiPropPath $guiPropPath, GuiFieldFork $guiFieldFork) {
-// 		$this->ensureNotInitialized();
-		
-// 		$key = (string) $guiPropPath;
-		
-// 		if (isset($this->guiFieldForks[$key])) {
-// 			throw new IllegalStateException('GuiPropPath already initialized: ' . $guiPropPath);
-// 		}
-		
-// 		$this->guiFieldForks[$key] = $guiFieldFork;
-// 	}
-	
-	
-// 	/**
-// 	 * @param GuiPropPath $guiPropPath
-// 	 * @return bool
-// 	 */
-// 	public function containsGuiFieldForkGuiPropPath(GuiPropPath $guiPropPath) {
-// 		return isset($this->guiFieldForks[(string) $guiPropPath]);
-// 	}
-	
-// 	/**
-// 	 * @return \rocket\ei\manage\gui\field\GuiPropPath[]
-// 	 */
-// 	public function getGuiFieldForkGuiPropPaths() {
-// 		$eiPropPaths = array();
-// 		foreach (array_keys($this->guiFieldForks) as $eiPropPathStr) {
-// 			$eiPropPaths[] = GuiPropPath::create($eiPropPathStr);
-// 		}
-// 		return $eiPropPaths;
-// 	}
-	
-	
-// 	/**
-// 	 * @param GuiPropPath $guiPropPath
-// 	 * @throws GuiException
-// 	 * @return GuiFieldFork
-// 	 */
-// 	public function getGuiFieldForkAssembly(GuiPropPath $guiPropPath) {
-// 		$eiPropPathStr = (string) $guiPropPath;
-// 		if (!isset($this->guiFieldForks[$eiPropPathStr])) {
-// 			throw new GuiException('No GuiFieldFork with GuiPropPath \'' . $eiPropPathStr . '\' for \'' . $this . '\' registered');
-// 		}
-		
-// 		return $this->guiFieldForks[$eiPropPathStr];
-// 	}
-	
-	function init(GuiFieldMap $guiFieldMap) {
-		$this->ensureNotInitialized();
-		
-		$this->guiFieldMap = $guiFieldMap;
-		
-		foreach ($this->eiEntryGuiListeners as $eiEntryGuiListener) {
-			$eiEntryGuiListener->finalized($this);
-		}
-	}
-	
-// 	/**
-// 	 * @return GuiFieldFork[]
-// 	 */
-// 	public function getGuiFieldForks() {
-// 		return $this->guiFieldForks;
-// 	}
 
-	public function save() {
-		$this->ensureInitialized();
-		
-		foreach ($this->eiEntryGuiListeners as $eiEntryGuiListener) {
-			$eiEntryGuiListener->onSave($this);
-		}
-		
-		$this->getGuiFieldMap()->save();
-		
-		foreach ($this->eiEntryGuiListeners as $eiEntryGuiListener) {
-			$eiEntryGuiListener->saved($this);
+	/**
+	 * @param EiEntryGuiTypeDef[] $eiEntryGuiTypeDefs
+	 */
+	function putTypeDefs(array $eiEntryGuiTypeDefs) {
+		foreach ($eiEntryGuiTypeDefs as $eiEntryGuiTypeDef) {
+			ArgUtils::assertTrue($eiEntryGuiTypeDef instanceof EiEntryGui);
+			$this->putTypeDef($eiEntryGuiTypeDef);
 		}
 	}
 	
-	
 	/**
-	 * @return boolean
+	 * @param EiEntryGuiTypeDef $eiEntryGuiTypeDef
 	 */
-	public function isInitialized() {
-		return $this->guiFieldMap !== null;
-	}
-	
-	private function ensureInitialized() {
-		if ($this->isInitialized()) return;
+	function putTypeDef(EiEntryGuiTypeDef $eiEntryGuiTypeDef) {
+		$eiType = $eiEntryGuiTypeDef->getEiType();
 		
-		throw new IllegalStateException('EiEntryGui not yet initlized.');
-	}
-	
-	private function ensureNotInitialized() {
-		if (!$this->isInitialized()) return;
+		ArgUtils::assertTrue($eiType->isA($this->contextEiType));
 		
-		throw new IllegalStateException('EiEntryGui already initialized.');
-	}
-	
-	
-	public function registerEiEntryGuiListener(EiEntryGuiListener $eiEntryGuiListener) {
-		$this->eiEntryGuiListeners[spl_object_hash($eiEntryGuiListener)] = $eiEntryGuiListener;
-	}
-	
-	public function unregisterEiEntryGuiListener(EiEntryGuiListener $eiEntryGuiListener) {
-		unset($this->eiEntryGuiListeners[spl_object_hash($eiEntryGuiListener)]);
+		$this->typeDefs[$eiType->getId()] = $eiEntryGuiTypeDef;
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\gui\EiEntryGuiMulti
+	 * @return \rocket\ei\manage\gui\EiEntryGuiTypeDef[]
 	 */
-	function toMulti() {
-		return new EiEntryGuiMulti($this->eiEntry->getEiType(), [$this]);
+	function getEiEntryGuiTypeDefs() {
+		return $this->typeDefs;
 	}
 	
 	/**
 	 * @param SiEntryInput $siEntryInput
-	 * @throws IllegalStateException
-	 * @throws \InvalidArgumentException
 	 */
 	function handleSiEntryInput(SiEntryInput $siEntryInput) {
-		if ($this->eiEntry->getEiType()->getId() != $siEntryInput->getTypeId()) {
-			throw new IllegalStateException('EiType missmatch.');
+		$eiTypeId = $siEntryInput->getTypeId();
+		
+		if (!isset($this->typeDefs[$eiTypeId])) {
+			throw new CorruptedSiInputDataException('EiType not available: ' . $eiTypeId);
 		}
 		
-		foreach ($this->guiFieldMap->getAllGuiFields() as $guiPropPathStr => $guiField) {
-			$siField = $guiField->getSiField();
-			
-			if ($siField == null || $siField->isReadOnly()
-					|| !$siEntryInput->containsFieldName($guiPropPathStr)) {
-				continue;
-			}
-			
-			try {
-				$siField->handleInput($siEntryInput->getFieldInput($guiPropPathStr)->getData());
-			} catch (AttributesException $e) {
-				throw new \InvalidArgumentException(null, 0, $e);
-			}
-		}
+		$this->selectedEiTypeId = $eiTypeId;
+		$this->typeDefs[$eiTypeId]->handleSiEntryInput($siEntryInput);
 	}
 	
+	function isTypeDefSelected(): bool {
+		return $this->selectedEiTypeId !== null;
+	}
+	
+	/**
+	 * @param string $eiTypeId
+	 * @throws \InvalidArgumentException
+	 * @return \rocket\ei\manage\gui\EiEntryGui
+	 */
+	function selectedTypeDef(string $eiTypeId) {
+		if (isset($this->typeDefs[$eiTypeId])) {
+			$this->selectedEiTypeId = $eiTypeId;
+		}
+		
+		throw new \InvalidArgumentException('Unknown EiType id: ' . $eiTypeId);
+		return $this;
+	}
+	
+	/**
+	 * @throws IllegalStateException
+	 * @return \rocket\ei\manage\gui\EiEntryGuiTypeDef
+	 */
+	function getSelectedTypeDef() {
+		if (!isset($this->eiEntryGuis[$this->selectedEiTypeId])) {
+			throw new IllegalStateException('No selection');
+		}
+		
+		return $this->eiEntryGuis[$this->selectedEiTypeId];
+	}	
+
 	public function __toString() {
 		return 'EiEntryGui of ' . $this->eiEntry;
 	}

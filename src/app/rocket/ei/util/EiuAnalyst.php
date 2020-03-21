@@ -1413,6 +1413,19 @@ class EiuAnalyst {
 		}
 	}
 	
+	
+	public static function buildEiTypesFromEiArg(?array $eiTypeArg, string $argName = null, bool $required = true) {
+		if ($eiTypeArg === null) {
+			return null;
+		}
+		
+		return array_map(
+				function ($eiTypeArg) use ($argName) { 
+					return self::buildEiEntryFromEiArg($eiEntryArg, $argName, true); 
+				}, 
+				$eiTypeArg);
+	}
+	
 	public static function buildEiTypeFromEiArg($eiTypeArg, string $argName = null, bool $required = true) {
 		if ($eiTypeArg === null && !$required) {
 			return null;

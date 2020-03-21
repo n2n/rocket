@@ -32,6 +32,9 @@ use rocket\ei\manage\frame\EiForkLink;
 use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\util\gui\EiuGuiFrame;
 use rocket\ei\util\gui\EiuGui;
+use rocket\ei\manage\gui\EiGui;
+use rocket\ei\component\GuiFactory;
+use rocket\ei\manage\gui\EiGuiFactory;
 
 class EiuEngine {
 	private $eiEngine;
@@ -410,32 +413,39 @@ class EiuEngine {
 	/**
 	 * @param int $viewMode
 	 * @param array $guiPropPaths
+	 * @param bool $guiStructureDeclarationsRequired
 	 * @return \rocket\ei\util\gui\EiuGui
 	 */
-	public function newGui(int $viewMode) {
-		$eiGui = $this->getManageState()->getDef()
-				->getGuiDefinition($this->eiEngine->getEiMask())
-				->createEiGui($this->eiuAnalyst->getN2nContext(true), $viewMode);
+	function newGui(int $viewMode, array $guiPropPathsArg = null, bool $guiStructureDeclarationsRequired = true) {
+		$factory = new EiGuiFactory($this->eiuAnalyst->getN2nContext(true));
+		$guiPropPaths = GuiPropPath::buildArray($guiPropPathsArg);
 		
-		return new EiuGui($eiGui, null, $this->eiuAnalyst);
+		$eiGui =  $factory->createEiGui($this->eiEngine->getEiMask(), $viewMode, $guiPropPaths, $guiStructureDeclarationsRequired);
+		return new EiuGui($eiGui, $this->eiuAnalyst);
 	}
 	
 	/**
+	 * @param int $viewMode
+	 * @param array $guiPropPaths
+	 * @param bool $guiStructureDeclarationsRequired
 	 * @return EiuGuiFrame
 	 */
-	public function newGuiFrame(int $viewMode, ?array $guiPropPaths) {
-		$guiDefinition = $this->getManageState()->getDef()
-				->getGuiDefinition($this->eiEngine->getEiMask());
+	function newGuiFrame(int $viewMode, array $guiPropPaths = null, bool $guiStructureDeclarationsRequired = true) {
+		$eiuGui = $this->newGui($viewMode, $guiPropPaths, $guiStructureDeclarationsRequired);
 		
-		$n2nContext = $this->eiuAnalyst->getN2nContext(true);
-		$eiGuiFrame = null;
-		if ($guiPropPaths === null) {
-			$eiGuiFrame = $guiDefinition->createEiGui($n2nContext, $viewMode)->getEiGuiFrame();
-		} else {
-			$eiGuiFrame = $guiDefinition->createEiGuiFrame($n2nContext, $viewMode, $guiPropPaths);
-		}
+		return $eiuGui->guiFrames()[0];
+	}
+	
+	/**
+	 * @return EiuGui 
+	 */
+	function newForgeMultiGui(int $viewMode, array $allowedEiTypesArg, array $guiPropPathsArg = null, bool $guiStructureDeclarationsRequired = true) {
+		$factory = new EiGuiFactory($this->eiuAnalyst->getN2nContext(true));
+		$allowedEiTypes = EiuAnalyst::buildEiTypesFromEiArg($allowedEiTypesArg);
+		$guiPropPaths = GuiPropPath::buildArray($guiPropPathsArg);
 		
-		return new EiuGuiFrame($eiGuiFrame, $this->eiuAnalyst);
+		$eiGui =  $factory->createForgeMultiEiGui($this->eiEngine->getEiMask(), $viewMode, $allowedEiTypes, $guiPropPaths, $guiStructureDeclarationsRequired);
+		return new EiuGui($eiGui, $this->eiuAnalyst);
 	}
 }
 

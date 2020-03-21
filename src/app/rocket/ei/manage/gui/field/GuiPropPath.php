@@ -222,4 +222,17 @@ class GuiPropPath implements Hashable {
 		}
 		return $eiPropPaths;
 	}
+	
+	/**
+	 * @param array $expressions
+	 * @return \rocket\ei\manage\gui\field\GuiPropPath[]|null
+	 * @throws \InvalidArgumentException
+	 */
+	public static function buildArray(?array $expressions) {
+		if ($expressions === null) {
+			return null;
+		}
+		
+		return self::createArray($expressions);
+	}
 }

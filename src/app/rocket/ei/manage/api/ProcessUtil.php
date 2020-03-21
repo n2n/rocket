@@ -165,6 +165,6 @@ class ProcessUtil {
 	 * @return EiEntryGui
 	 */
 	function createEiEntryGui(EiObject $eiObject, EiGuiFrame $eiGuiFrame) {
-		return $eiGuiFrame->createEiEntryGui($this->eiFrame->createEiEntry($eiObject));
+		return $eiGuiFrame->createEiEntryGuiVariation($this->eiFrame->createEiEntry($eiObject));
 	}
 }

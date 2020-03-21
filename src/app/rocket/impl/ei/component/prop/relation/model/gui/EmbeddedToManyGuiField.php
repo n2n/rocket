@@ -37,6 +37,7 @@ use rocket\si\content\impl\relation\SiEmbeddedEntry;
 use rocket\ei\util\gui\EiuEntryGui;
 use rocket\ei\util\spec\EiuMask;
 use rocket\ei\manage\gui\GuiFieldMap;
+use rocket\ei\util\gui\EiuEntryGuiTypeDef;
 
 class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandler {
 	/**
@@ -101,6 +102,11 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandler {
 			});
 		}
 		
+		$max = $this->relationModel->getMax();
+		while ($max !== null || $max > count($this->currentEiuEntryGuis)) {
+			$eiuEntryGuiMulti = $this->targetEiuFrame->newEntryGuiMulti(true, false)->entryGuis()
+		}
+		
 		return array_values(array_map(
 				function ($eiuEntryGui) { return $this->createSiEmbeddeEntry($eiuEntryGui); }, 
 				$this->currentEiuEntryGuis));
@@ -112,9 +118,21 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandler {
 	 */
 	private function createSiEmbeddeEntry($eiuEntryGui) {
 		return new SiEmbeddedEntry(
-				$eiuEntryGui->createBulkyEntrySiComp(false, false),
+				$eiuEntryGui->gui()->createBulkyEntrySiComp(false, false),
 				($this->relationModel->isReduced() ?
-						$eiuEntryGui->entry()->newGui(false, false)->entryGui()->createCompactEntrySiComp(false, false):
+						$eiuEntryGui->entry()->newGui(false, false)->createCompactEntrySiComp(false, false):
+						null));
+	}
+	
+	/**
+	 * @param EiuEntryGuiTypeDef $eiuEntryGuiMulti
+	 * @return \rocket\si\content\impl\relation\SiEmbeddedEntry
+	 */
+	private function createSiEmbeddeEntryFromMulti($eiuEntryGuiMulti) {
+		return new SiEmbeddedEntry(
+				$eiuEntryGuiMulti->createBulkyEntrySiComp(false, false),
+				($this->relationModel->isReduced() ?
+						$eiuEntryGuiMulti->entry()->newGui(false, false)->createCompactEntrySiComp(false, false):
 						null));
 	}
 	
