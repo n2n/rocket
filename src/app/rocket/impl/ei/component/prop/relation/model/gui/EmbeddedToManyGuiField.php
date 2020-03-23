@@ -87,7 +87,6 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandler {
 		foreach ($this->eiu->field()->getValue() as $eiuEntry) {
 			CastUtils::assertTrue($eiuEntry instanceof EiuEntry);
 			$this->currentEiuEntryGuis[] = $eiuEntry->newGui(true, true)->entryGui();
-			break;
 		}
 	
 		if (null !== ($targetOrderEiPropPath = $this->relationModel->getTargetOrderEiPropPath())) {
@@ -103,10 +102,10 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandler {
 			});
 		}
 		
-// 		$max = $this->relationModel->getMax();
-// 		while ($max !== null && $max > count($this->currentEiuEntryGuis)) {
-// 			$this->currentEiuEntryGuis[] = $this->targetEiuFrame->newForgeMultiEntryGui(true, false);
-// 		}
+		$max = $this->relationModel->getMax();
+		while ($max !== null && $max > count($this->currentEiuEntryGuis)) {
+			$this->currentEiuEntryGuis[] = $this->targetEiuFrame->newForgeMultiEntryGui(true, false);
+		}
 		
 		return array_values(array_map(
 				function ($eiuEntryGui) { return $this->createSiEmbeddeEntry($eiuEntryGui); }, 

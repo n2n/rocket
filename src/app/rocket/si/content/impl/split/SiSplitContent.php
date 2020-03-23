@@ -23,7 +23,6 @@ namespace rocket\si\content\impl\split;
 
 use n2n\util\uri\Url;
 use rocket\si\content\SiEntry;
-use rocket\si\meta\SiDeclaration;
 
 class SiSplitContent implements \JsonSerializable {
 	private $label;
