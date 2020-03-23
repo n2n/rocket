@@ -11,13 +11,13 @@ use rocket\ei\manage\gui\control\GuiControlPath;
 use rocket\ei\manage\gui\control\UnknownGuiControlException;
 use rocket\ei\manage\gui\control\GeneralGuiControl;
 use rocket\ei\manage\api\ApiControlCallId;
-use rocket\si\content\SiEntry;
 use rocket\si\content\SiEntryBuildup;
 use rocket\ei\EiPropPath;
 use rocket\si\meta\SiProp;
 use rocket\si\meta\SiType;
 use n2n\l10n\N2nLocale;
 use rocket\si\meta\SiTypeDeclaration;
+use rocket\si\meta\SiStructureDeclaration;
 
 /**
  * @author andreas
@@ -71,6 +71,10 @@ class EiGuiFrame {
 		$this->guiDefinition = $guiDefinition;
 		
 		$this->setGuiStructureDeclarations($guiStructureDeclarations);
+	}
+	
+	function getEiType() {
+		return $this->guiDefinition->getEiMask()->getEiType();
 	}
 	
 // 	/**
@@ -202,6 +206,30 @@ class EiGuiFrame {
 		return new SiTypeDeclaration(
 				$this->createSiType($n2nLocale),
 				$this->createSiStructureDeclarations($this->guiStructureDeclarations));
+	}
+	
+	/**
+	 * @param GuiStructureDeclaration[] $guiStructureDeclarations
+	 * @return SiStructureDeclaration[]
+	 */
+	private function createSiStructureDeclarations($guiStructureDeclarations) {
+		$siStructureDeclarations = [];
+		
+		foreach ($guiStructureDeclarations as $guiStructureDeclaration) {
+			if ($guiStructureDeclaration->hasGuiPropPath()) {
+				$siStructureDeclarations[] = SiStructureDeclaration::createProp(
+						$guiStructureDeclaration->getSiStructureType(),
+						$guiStructureDeclaration->getGuiPropPath());
+				continue;
+			}
+			
+			$siStructureDeclarations[] = SiStructureDeclaration
+					::createGroup($guiStructureDeclaration->getSiStructureType(), $guiStructureDeclaration->getLabel(),
+							$guiStructureDeclaration->getHelpText())
+							->setChildren($this->createSiStructureDeclarations($guiStructureDeclaration->getChildren()));
+		}
+		
+		return $siStructureDeclarations;
 	}
 	
 	/**
@@ -367,7 +395,7 @@ class EiGuiFrame {
 	 * @param bool $append
 	 * @return EiEntryGuiTypeDef
 	 */
-	function applyEiEntryGuiTypeDef(EiFrame $eiFrame, EiEntryGui $eiEntryGui, EiEntry $eiEntry): EiEntryGui {
+	function applyEiEntryGuiTypeDef(EiFrame $eiFrame, EiEntryGui $eiEntryGui, EiEntry $eiEntry) {
 		$this->ensureInit();
 		
 		$eiEntryGuiTypeDef = GuiFactory::createEiEntryGuiTypeDef($eiFrame, $this, $eiEntryGui, $eiEntry);
@@ -404,8 +432,9 @@ class EiGuiFrame {
 		foreach ($this->guiDefinition->createSelectionGuiControls($eiFrame, $this)
 				as $guiControlPathStr => $selectionGuiControl) {
 			$siControls[$guiControlPathStr] = $selectionGuiControl->toSiControl(
-					new ApiControlCallId(GuiControlPath::create($guiControlPathStr), $this->eiMask->getEiTypePath(),
-							$this->viewMode, null));
+					new ApiControlCallId(GuiControlPath::create($guiControlPathStr), 
+							$this->guiDefinition->getEiMask()->getEiTypePath(),
+							$this->eiGui->getViewMode(), null));
 		}
 		return $siControls;
 	}
@@ -420,7 +449,7 @@ class EiGuiFrame {
 			$siControls[$guiControlPathStr] = $generalGuiControl->toSiControl(
 					new ApiControlCallId(GuiControlPath::create($guiControlPathStr), 
 							$this->guiDefinition->getEiMask()->getEiTypePath(),
-							$this->viewMode, null, null));
+							$this->eiGui->getViewMode(), null, null));
 		}
 		return $siControls;
 	}
@@ -435,30 +464,30 @@ class EiGuiFrame {
 		return $this->guiDefinition->createGeneralGuiControl($eiFrame, $this, $guiControlPath);
 	}
 	
-	/**
-	 * @return \rocket\si\content\SiEntry
-	 */
-	function createSiEntry(EiFrame $eiFrame, EiEntryGui $eiEntryGui, bool $siControlsIncluded = true) {
-		$eiEntry = $eiEntryGui->getEiEntry();
-		$eiType = $eiEntry->getEiType();
-		$siIdentifier = $eiEntry->getEiObject()->createSiEntryIdentifier();
-		$viewMode = $this->getViewMode();
+// 	/**
+// 	 * @return \rocket\si\content\SiEntry
+// 	 */
+// 	function createSiEntry(EiFrame $eiFrame, EiEntryGui $eiEntryGui, bool $siControlsIncluded = true) {
+// 		$eiEntry = $eiEntryGui->getEiEntry();
+// 		$eiType = $eiEntry->getEiType();
+// 		$siIdentifier = $eiEntry->getEiObject()->createSiEntryIdentifier();
+// 		$viewMode = $this->getViewMode();
 		
-		$siEntry = new SiEntry($siIdentifier, ViewMode::isReadOnly($viewMode), ViewMode::isBulky($viewMode));
-		$siEntry->putBuildup($eiType->getId(), $this->createSiEntryBuildup($eiFrame, $eiEntryGui, $siControlsIncluded));
-		$siEntry->setSelectedTypeId($eiType->getId());
+// 		$siEntry = new SiEntry($siIdentifier, ViewMode::isReadOnly($viewMode), ViewMode::isBulky($viewMode));
+// 		$siEntry->putBuildup($eiType->getId(), $this->createSiEntryBuildup($eiFrame, $eiEntryGui, $siControlsIncluded));
+// 		$siEntry->setSelectedTypeId($eiType->getId());
 		
-		return $siEntry;
-	}
+// 		return $siEntry;
+// 	}
 	
 	/**
 	 * @return SiEntryBuildup
 	 */
-	function createSiEntryBuildup(EiFrame $eiFrame, EiEntryGui $eiEntryGui, bool $siControlsIncluded = true) {
-		$eiEntry = $eiEntryGui->getEiEntry();
+	function createSiEntryBuildup(EiFrame $eiFrame, EiEntryGuiTypeDef $eiEntryGuiTypeDef, bool $siControlsIncluded = true) {
+		$eiEntry = $eiEntryGuiTypeDef->getEiEntry();
 		
 		$n2nLocale = $eiFrame->getN2nContext()->getN2nLocale();
-		$typeId = $eiEntry->getEiMask()->getEiType()->getId();
+		$typeId = $eiEntryGuiTypeDef->getEiType()->getId();
 		$idName = null;
 		if (!$eiEntry->isNew()) {
 			$deterIdNameDefinition = $eiFrame->getManageState()->getDef()
@@ -469,7 +498,7 @@ class EiGuiFrame {
 		
 		$siEntryBuildup = new SiEntryBuildup($typeId, $idName);
 		
-		foreach ($eiEntryGui->getGuiFieldMap()->getAllGuiFields() as $guiPropPathStr => $guiField) {
+		foreach ($eiEntryGuiTypeDef->getGuiFieldMap()->getAllGuiFields() as $guiPropPathStr => $guiField) {
 			if (null !== ($siField = $guiField->getSiField())) {
 				$siEntryBuildup->putField($guiPropPathStr, $siField);
 			}
@@ -486,7 +515,7 @@ class EiGuiFrame {
 			$siEntryBuildup->putControl($guiControlPathStr, $entryGuiControl->toSiControl(
 					new ApiControlCallId(GuiControlPath::create($guiControlPathStr),
 							$this->guiDefinition->getEiMask()->getEiTypePath(),
-							$this->viewMode, $eiEntry->getPid(),
+							$this->eiGui->getViewMode(), $eiEntry->getPid(),
 							($eiEntry->isNew() ? $eiEntry->getEiType()->getId() : null))));
 		}
 		

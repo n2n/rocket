@@ -2,7 +2,6 @@
 namespace rocket\ei\manage\gui;
 
 use n2n\util\type\ArgUtils;
-use rocket\si\meta\SiStructureDeclaration;
 use rocket\ei\manage\gui\field\GuiPropPath;
 use n2n\util\ex\IllegalStateException;
 use rocket\si\meta\SiDeclaration;
@@ -10,6 +9,8 @@ use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\mask\EiMask;
 use rocket\ei\manage\security\InaccessibleEiEntryException;
 use rocket\ei\manage\entry\EiEntry;
+use rocket\si\content\SiEntry;
+use rocket\ei\EiType;
 
 class EiGui {
 	/**
@@ -60,7 +61,21 @@ class EiGui {
 		return $this->eiGuiFrames;
 	}
 	
+	/**
+	 * @return boolean
+	 */
+	function hasEiGuiFrames() {
+		return !empty($this->eiGuiFrames);
+	}
 	
+	/**
+	 * @return EiType[]
+	 */
+	function getEiTypes() {
+		return array_map(
+				function ($arg) { return $arg->getGuiDefinition()->getEiMask()->getEiType(); }, 
+				$this->eiGuiFrames);
+	}
 	
 	/**
 	 * @param EiGuiFrame $eiGuiFrame
@@ -87,6 +102,10 @@ class EiGui {
 	 */
 	function hasSingleEiEntryGui() {
 		return count($this->eiEntryGuis) === 1;
+	}
+	
+	function isEmpty() {
+		return empty($this->eiEntryGuis);
 	}
 	
 	/**
@@ -142,29 +161,7 @@ class EiGui {
 	
 	
 	
-	/**
-	 * @param GuiStructureDeclaration[] $guiStructureDeclarations
-	 * @return SiStructureDeclaration[]
-	 */
-	private function createSiStructureDeclarations($guiStructureDeclarations) {
-		$siStructureDeclarations = [];
-		
-		foreach ($guiStructureDeclarations as $guiStructureDeclaration) {
-			if ($guiStructureDeclaration->hasGuiPropPath()) {
-				$siStructureDeclarations[] = SiStructureDeclaration::createProp(
-						$guiStructureDeclaration->getSiStructureType(),
-						$guiStructureDeclaration->getGuiPropPath());
-				continue;
-			}
-			
-			$siStructureDeclarations[] = SiStructureDeclaration
-					::createGroup($guiStructureDeclaration->getSiStructureType(), $guiStructureDeclaration->getLabel(), 
-							$guiStructureDeclaration->getHelpText())
-					->setChildren($this->createSiStructureDeclarations($guiStructureDeclaration->getChildren()));
-		}
-		
-		return $siStructureDeclarations;
-	}
+	
 	
 // 	/**
 // 	 * @param GuiStructureDeclaration $guiStructureDeclaration
@@ -195,16 +192,39 @@ class EiGui {
 		return $filtereds;
 	}
 	
-	function appendEiEntryGui(EiFrame $eiFrame, EiEntry $eiEntry, int $treeLevel = null) {
+	function appendEiEntryGui(EiFrame $eiFrame, array $eiEntries, int $treeLevel = null) {
+		ArgUtils::valArray($eiEntries, EiEntry::class);
+		
 		$eiEntryGui = new EiEntryGui($this->contextEiMask->getEiType(), $treeLevel);
 		
+		$eiEntries = $this->catEiEntries($eiEntries);
+		
 		foreach ($this->eiGuiFrames as $eiGuiFrame) {
-			$eiGuiFrame->applyEiEntryGuiTypeDef($eiFrame, $eiEntryGui, $eiEntry);
+			$eiType = $eiGuiFrame->getEiType();
+			
+			if (isset($eiEntries[$eiType->getId()])) {
+				$eiGuiFrame->applyEiEntryGuiTypeDef($eiFrame, $eiEntryGui, $eiEntries[$eiType->getId()]);
+				continue;
+			}
+			
+			throw new \InvalidArgumentException('No EiEntry provieded for ' . $eiType);
 		}
 	
-		$this->eiEntryGuis[] = $eiEntryGui;
+		$this->finalizeEiEntryGui($eiEntryGui);
 		
 		return $eiEntryGui;
+	}
+	
+	/**
+	 * @param EiEntry[] $eiEntries
+	 * @return EiEntry[]
+	 */
+	private function catEiEntries($eiEntries) {
+		$catEiEntries = [];
+		foreach ($eiEntries as $eiEntry) {
+			$catEiEntries[$eiEntry->getEiMask()->getEiType()->getId()] = $eiEntry;
+		}
+		return $catEiEntries;
 	}
 	
 	/**
@@ -219,7 +239,7 @@ class EiGui {
 			$eiGuiFrame->applyNewEiEntryGuiTypeDef($eiFrame, $eiEntryGui);
 		}
 		
-		$this->eiEntryGuis[] = $eiEntryGui;
+		$this->finalizeEiEntryGui($eiEntryGui);
 		
 		return $eiEntryGui;
 	}
@@ -227,9 +247,34 @@ class EiGui {
 	/**
 	 * @param EiEntryGui $eiEntryGui
 	 */
-	function addEiEntryGui(EiEntryGui $eiEntryGui) {
+	private function finalizeEiEntryGui($eiEntryGui) {
+		if ($this->hasSingleEiGuiFrame()) {
+			$eiEntryGui->selectedTypeDef(key($this->eiGuiFrames));
+		}
+		
 		$this->eiEntryGuis[] = $eiEntryGui;
 	}
+	
+	/**
+	 * @return boolean
+	 */
+	function hasSingleEiGuiFrame() {
+		return count($this->eiGuiFrames) > 1;
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	function hasMulitpleEiGuiFrames() {
+		return count($this->eiGuiFrames) > 1;
+	}
+	
+// 	/**
+// 	 * @param EiEntryGui $eiEntryGui
+// 	 */
+// 	function addEiEntryGui(EiEntryGui $eiEntryGui) {
+// 		$this->eiEntryGuis[] = $eiEntryGui;
+// 	}
 	
 	/**
 	 * @return \rocket\ei\manage\gui\EiEntryGui[]
@@ -245,7 +290,7 @@ class EiGui {
 	 */
 	function createSiEntry(EiFrame $eiFrame, bool $siControlsIncluded = true) {
 		if ($this->hasSingleEiEntryGui()) {
-			return $this->eiGuiFrame->createSiEntry($eiFrame, current($this->eiEntryGuis), $siControlsIncluded);
+			return $this->assemblySiEntry($eiFrame, current($this->eiEntryGuis), $siControlsIncluded);
 		}
 		
 		throw new IllegalStateException('EiGui has none or multiple EiEntryGuis');
@@ -257,9 +302,50 @@ class EiGui {
 	function createSiEntries(EiFrame $eiFrame, bool $siControlsIncluded = true) {
 		$siEntries = [];
 		foreach ($this->eiEntryGuis as $eiEntryGui) {
-			$siEntries[] = $this->eiGuiFrame->createSiEntry($eiFrame, $eiEntryGui, $siControlsIncluded);
+			$siEntries[] = $this->assemblySiEntry($eiFrame, $eiEntryGui, $siControlsIncluded);
 		}
 		return $siEntries;
+	}
+	
+	/**
+	 * @param EiFrame $eiFrame
+	 * @param EiEntryGui $eiEntryGui
+	 * @param bool $siControlsIncluded
+	 * @return \rocket\si\content\SiEntry
+	 */
+	private function assemblySiEntry($eiFrame, $eiEntryGui, $siControlsIncluded = true) {
+		$siEntry = new SiEntry($eiEntryGui->createSiEntryIdentifier(), ViewMode::isReadOnly($this->viewMode), 
+				ViewMode::isBulky($this->viewMode));
+		
+		$typeDefs = $eiEntryGui->getTypeDefs();
+		
+		foreach ($this->eiGuiFrames as $key => $eiGuiFrame) {
+			IllegalStateException::assertTrue(isset($typeDefs[$key]));
+			$eiEntryGuiTypeDef = $typeDefs[$key];	
+			
+			$siEntry->putBuildup($eiEntryGuiTypeDef->getEiType()->getId(),
+					$eiGuiFrame->createSiEntryBuildup($eiFrame, $eiEntryGuiTypeDef, $siControlsIncluded));
+		}
+		
+		if ($eiEntryGui->isTypeDefSelected()) {
+			$siEntry->setSelectedTypeId($eiEntryGui->getSelectedTypeDef()->getEiType()->getId());
+		}
+		
+		return $siEntry;
+	}
+	
+	/**
+	 * @param EiFrame $eiFrame
+	 * @return \rocket\si\control\SiControl[]
+	 */
+	function createGeneralSiControls(EiFrame $eiFrame) {
+		$contextEiTypeId = $this->contextEiMask->getEiType()->getId();
+		
+		if (isset($this->eiGuiFrames[$contextEiTypeId])) {
+			return $this->eiGuiFrames[$contextEiTypeId]->createGeneralSiControls($eiFrame);
+		}
+		
+		return [];
 	}
 }
 

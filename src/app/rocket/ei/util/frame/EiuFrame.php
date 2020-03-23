@@ -69,6 +69,10 @@ use rocket\si\content\SiEntryQualifier;
 use rocket\ei\util\gui\EiuEntryGuiTypeDef;
 use rocket\ei\util\gui\EiuGui;
 use rocket\ei\util\Eiu;
+use rocket\ei\util\gui\EiuEntryGui;
+use rocket\ei\manage\gui\field\GuiPropPath;
+use rocket\ei\manage\gui\EiGuiFactory;
+use rocket\ei\manage\gui\ViewMode;
 
 class EiuFrame {
 	private $eiFrame;
@@ -678,17 +682,22 @@ class EiuFrame {
 		return $this->getHttpContext()->getControllerContextPath($this->getEiFrame()->getControllerContext())->toUrl();
 	}
 	
-	
-	
 	/**
-	 * @param bool $bulky
-	 * @param bool $readOnly
-	 * @return \rocket\ei\util\gui\EiuEntryGuiTypeDef
+	 * @return EiuEntryGui 
 	 */
-	function newEntryGuiMulti(bool $bulky, bool $readOnly, ?array $guiPropPaths = null) {
-		$eiEntryGuiMultiResult = (new EiFrameUtil($this->eiFrame))->createNewEiEntryGuiMulti($bulky, $readOnly, null, true);
+	function newForgeMultiEntryGui(bool $bulky = true, bool $readOnly = false, array $allowedEiTypesArg = null, array $guiPropPathsArg = null, 
+			bool $guiStructureDeclarationsRequired = true) {
+		$viewMode = ViewMode::determine($bulky, $readOnly, true);
+		$allowedEiTypes = EiuAnalyst::buildEiTypesFromEiArg($allowedEiTypesArg);
+		$guiPropPaths = GuiPropPath::buildArray($guiPropPathsArg);
 		
-		return new EiuEntryGuiTypeDef($eiEntryGuiMultiResult, $this->eiuAnalyst);
+		$factory = new EiGuiFactory($this->eiuAnalyst->getN2nContext(true));
+		$eiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
+		$eiGui =  $factory->createForgeMultiEiGui($eiMask, $viewMode, $allowedEiTypes, $guiPropPaths, $guiStructureDeclarationsRequired);
+		$eiGui->appendNewEiEntryGui($this->eiFrame);
+		
+		$eiuGui = new EiuGui($eiGui, $this->eiuAnalyst);
+		return $eiuGui->entryGui();
 	}
 	
 // 	/**

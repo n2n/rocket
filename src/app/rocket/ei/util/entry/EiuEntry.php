@@ -43,6 +43,7 @@ use rocket\ei\component\prop\EiProp;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\ei\component\prop\EiPropWrapper;
 use rocket\ei\util\gui\EiuGui;
+use rocket\ei\manage\gui\EiGuiFactory;
 
 class EiuEntry {
 	private $eiEntry;
@@ -287,35 +288,31 @@ class EiuEntry {
 		$this->accessible = true;
 	}
 	
-	public function newEntryForm() {
-		return $this->getEiuFrame()->entryForm($this);
-	}
 	
 	/**
-	 * @param bool $eiObjectObj
-	 * @param bool $editable
-	 * @throws EiuPerimeterException
+	 * @param int $viewMode
+	 * @param array $guiPropPaths
+	 * @param bool $guiStructureDeclarationsRequired
 	 * @return \rocket\ei\util\gui\EiuGui
 	 */
-	public function newGui(bool $bulky = true, bool $editable = false, int $treeLevel = null,
-			bool $determineEiMask = true) {
-		$eiEntry = $this->getEiEntry(true);
-		$eiEngine = null;
-		if ($determineEiMask) {
-			$eiEngine = $eiEntry->getEiMask()->getEiEngine();
-		} else {
-			$eiEngine = $this->getEiFrame()->getContextEiEngine();
-		}
-
+	function newGui(bool $bulky = true, bool $editable = false, array $guiPropPathsArg = null, 
+			bool $guiStructureDeclarationsRequired = true, bool $determineEiMask = true) {
 		$viewMode = $this->deterViewMode($bulky, $editable);
-		$eiFrame = $this->getEiuFrame()->getEiFrame();
-
-		$eiGui = $eiFrame->getManageState()->getDef()->getGuiDefinition($eiEngine->getEiMask())
-				->createEiGui($this->eiuAnalyst->getN2nContext(true), $viewMode);
-
-		$eiGui->addEiEntryGui($eiGui->getEiGuiFrame()->createEiEntryGui($eiFrame, $eiEntry, $treeLevel));
-				
-		return new EiuGui($eiGui, null, $this->eiuAnalyst);
+		$guiPropPaths = GuiPropPath::buildArray($guiPropPathsArg);
+		
+		$eiEntry = $this->getEiEntry(true);
+		$eiMask = null;
+		if ($determineEiMask) {
+			$eiMask = $eiEntry->getEiMask();
+		} else {
+			$eiMask = $this->eiuAnalyst->getEiFrame(true)->getContextEiEngine()->getEiMask();
+		}
+		
+		$factory = new EiGuiFactory($this->eiuAnalyst->getN2nContext(true));
+		$eiGui =  $factory->createEiGui($eiMask, $viewMode, $guiPropPaths, $guiStructureDeclarationsRequired);
+		$eiGui->appendEiEntryGui($this->eiuAnalyst->getEiFrame(true), [$eiEntry]);
+		
+		return new EiuGui($eiGui, $this->eiuAnalyst);
 	}
 	
 // 	/**

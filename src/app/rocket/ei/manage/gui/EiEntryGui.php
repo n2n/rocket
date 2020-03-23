@@ -22,11 +22,12 @@
 namespace rocket\ei\manage\gui;
 
 use n2n\util\ex\IllegalStateException;
-use n2n\util\type\attrs\AttributesException;
 use rocket\si\input\SiEntryInput;
 use rocket\ei\EiType;
 use n2n\util\type\ArgUtils;
 use rocket\si\input\CorruptedSiInputDataException;
+use rocket\si\content\SiEntryIdentifier;
+use rocket\ei\manage\entry\EiEntry;
 
 class EiEntryGui {
 	
@@ -41,7 +42,7 @@ class EiEntryGui {
 	/**
 	 * @var EiEntryGuiTypeDef[]
 	 */
-	private $typeDefs;
+	private $typeDefs = [];
 	/**
 	 * @var int|null
 	 */
@@ -62,6 +63,12 @@ class EiEntryGui {
 		return $this->treeLevel;
 	}
 	
+	/**
+	 * @return EiEntry[] 
+	 */
+	function getEiEntries() {
+		return array_map(function ($arg) { return $arg->getEiEntry(); }, $this->typeDefs);
+	}
 
 	/**
 	 * @param EiEntryGuiTypeDef[] $eiEntryGuiTypeDefs
@@ -87,8 +94,22 @@ class EiEntryGui {
 	/**
 	 * @return \rocket\ei\manage\gui\EiEntryGuiTypeDef[]
 	 */
-	function getEiEntryGuiTypeDefs() {
+	function getTypeDefs() {
 		return $this->typeDefs;
+	}
+	
+	/**
+	 * @param EiType $eiType
+	 * @throws \OutOfBoundsException
+	 * @return \rocket\ei\manage\gui\EiEntryGuiTypeDef
+	 */
+	function getTypeDefByEiType(EiType $eiType) {
+		$eiTypeId = $eiType->getId();
+		if (isset($this->typeDefs[$eiTypeId])) {
+			return $this->typeDefs[$eiTypeId];
+		}
+		
+		throw new \OutOfBoundsException('No EiEntryGuiTypeDef for passed EiType available: ' . $eiType);
 	}
 	
 	/**
@@ -133,7 +154,21 @@ class EiEntryGui {
 		}
 		
 		return $this->eiEntryGuis[$this->selectedEiTypeId];
-	}	
+	}
+	
+	/**
+	 * @return \rocket\si\content\SiEntryIdentifier
+	 */
+	function createSiEntryIdentifier() {
+		$typeCategory = $this->contextEiType->getSupremeEiType()->getId();
+		$id = null;
+		if ($this->isTypeDefSelected()) {
+			$id = $this->getSelectedTypeDef()->getEiEntry()->getPid();
+		}
+		
+		return new SiEntryIdentifier($typeCategory, $id);
+	}
+	
 
 	public function __toString() {
 		return 'EiEntryGui of ' . $this->eiEntry;

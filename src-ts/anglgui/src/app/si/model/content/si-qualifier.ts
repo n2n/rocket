@@ -9,6 +9,10 @@ export class SiEntryIdentifier {
 		return obj instanceof SiEntryIdentifier && this.typeCategory === ( obj as SiEntryIdentifier).typeCategory
 				&& this.id === ( obj as SiEntryIdentifier).id;
 	}
+
+	toString(): string {
+		return this.typeCategory + '#' + this.id;
+	}
 }
 
 export class SiEntryQualifier extends SiEntryIdentifier {

@@ -12,6 +12,8 @@ use rocket\si\content\impl\basic\CompactExplorerSiComp;
 use rocket\si\content\SiPartialContent;
 use rocket\ei\manage\gui\EiGuiUtil;
 use rocket\ei\manage\gui\ViewMode;
+use rocket\ei\manage\gui\EiGuiFactory;
+use rocket\ei\manage\gui\field\GuiPropPath;
 
 class EiuGui {
 	private $eiGui;
@@ -119,7 +121,7 @@ class EiuGui {
 	 * @return \rocket\si\content\impl\basic\CompactEntrySiComp
 	 */
 	function createCompactEntrySiComp(bool $generalSiControlsIncluded = true, bool $entrySiControlsIncluded = true) {
-		if (!ViewMode::isCompact($this->getEiGui()->getEiGuiFrame()->getViewMode())) {
+		if (!ViewMode::isCompact($this->eiGui->getViewMode())) {
 			throw new EiuPerimeterException('EiEntryGuiMulti is not compact.');
 		}
 		
@@ -133,12 +135,34 @@ class EiuGui {
 	 * @return \rocket\si\content\impl\basic\BulkyEntrySiComp
 	 */
 	function createBulkyEntrySiComp(bool $generalSiControlsIncluded = true, bool $entrySiControlsIncluded = true) {
-		if (!ViewMode::isBulky($this->getEiGui()->getEiGuiFrame()->getViewMode())) {
+		if (!ViewMode::isBulky($this->eiGui->getViewMode())) {
 			throw new EiuPerimeterException('EiEntryGuiMulti is not bulky.');
 		}
 		
 		return (new EiGuiUtil($this->getEiGui(), $this->eiuAnalyst->getEiFrame(true)))
 				->createBulkyEntrySiComp($generalSiControlsIncluded, $entrySiControlsIncluded);
+	}
+	
+	/**
+	 * @return \rocket\ei\util\gui\EiuGui
+	 */
+	function copy(bool $bulky, bool $readOnly, array $guiPropPathsArg = null, bool $guiStructureDeclarationsRequired = true) {
+		$viewMode = ViewMode::determine($bulky, $readOnly, ViewMode::isAdd($this->eiGui->getViewMode()));
+		$factory = new EiGuiFactory($this->eiuAnalyst->getN2nContext(true));
+		$guiPropPaths = GuiPropPath::buildArray($guiPropPathsArg);
+		
+		$factory = new EiGuiFactory($this->eiuAnalyst->getN2nContext(true));
+		$factory->createMultiEiGui($this->eiGui->getContextEiMask(), $viewMode, $this->eiGui->getEiTypes(), $guiPropPaths, 
+				$guiStructureDeclarationsRequired);
+		
+		$eiGui = new EiGui($this->eiGui->getContextEiMask(), $viewMode);
+		$eiFrame = $this->eiuAnalyst->getEiFrame(true);
+
+		foreach ($this->eiGui->getEiEntryGuis() as $eiEntryGui) {
+			$eiGui->appendEiEntryGui($eiFrame, $eiEntryGui->getEiEntries(), $eiEntryGui->getTreeLevel());
+		}
+		
+		return new EiuGui($eiGui, $this->eiuAnalyst);
 	}
 	
 }

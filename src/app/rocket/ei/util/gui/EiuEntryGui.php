@@ -38,6 +38,7 @@ use rocket\si\input\SiEntryInput;
 use rocket\ei\manage\gui\EiGuiUtil;
 use rocket\ei\manage\gui\EiGuiFrame;
 use rocket\ei\manage\frame\EiEntryGuiMultiResult;
+use rocket\ei\util\entry\EiuEntry;
 
 class EiuEntryGui {
 	private $eiEntryGui;
@@ -329,7 +330,8 @@ class EiuEntryGui {
 	 */
 	function entry() {
 		if ($this->eiuEntry === null) {
-			$this->eiuEntry = $this->eiuAnalyst->getEiuFrame(true)->entry($this->getEiEntryGui()->getEiEntry());
+			$eiEntryTypeDef = $this->getEiEntryGui()->getSelectedTypeDef();
+			$this->eiuEntry = new EiuEntry($eiEntryTypeDef->getEiEntry(), null, null, $eiuAnalyst);
 		}
 		
 		return $this->eiuEntry;
@@ -354,13 +356,7 @@ class EiuEntryGui {
 		$this->eiEntryGui->save();
 	}
 	
-	/**
-	 * @return \rocket\ei\util\gui\EiuEntryGuiTypeDef
-	 */
-	function toMulti() {
-		return new EiuEntryGuiTypeDef(new EiEntryGuiMultiResult($this->eiEntryGui->toMulti(), $this->eiuAnalyst->getEiFrame(true),
-					[$this->getEiGui()], [$this->getEiGuiFrame()]), $this->eiuAnalyst);
-	}
+	
 	
 // 	/**
 // 	 * @param SiEntryInput $siEntryInput

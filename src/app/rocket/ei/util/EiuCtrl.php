@@ -305,7 +305,7 @@ class EiuCtrl {
 		
 		$this->httpContext->getResponse()->send(
 				SiPayloadFactory::create($siComp, 
-						$eiuGui->getEiGui()->getEiGuiFrame()->createGeneralSiControls($eiFrame),
+						$eiuGui->getEiGui()->createGeneralSiControls($eiFrame),
 						$this->rocketState->getBreadcrumbs(),
 						$title ?? $this->eiuFrame->contextEngine()->mask()->getPluralLabel()));
 	}
@@ -360,7 +360,7 @@ class EiuCtrl {
 		$comp = new BulkyEntrySiComp($siDeclaration, $eiGui->createSiEntry($eiFrame, $siControlsIncluded));
 		
 		$this->httpContext->getResponse()->send(
-				SiPayloadFactory::create($comp, $eiGui->getEiGuiFrame()->createGeneralSiControls($eiFrame),
+				SiPayloadFactory::create($comp, $eiGui->createGeneralSiControls($eiFrame),
 						$this->rocketState->getBreadcrumbs(),
 						$eiuEntry->createIdentityString()));
 	}

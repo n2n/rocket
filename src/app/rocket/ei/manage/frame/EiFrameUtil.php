@@ -481,20 +481,7 @@ class EiEntryGuiMultiResult {
 	 */
 	function createSiEntry(bool $controlsIncluded) {
 		
-		$siEntry = new SiEntry(new SiEntryIdentifier($this->eiEntryGuiMulti->getContextEiType()->getSupremeEiType()->getId(), null),
-				ViewMode::isReadOnly($this->eiEntryGuiMulti->getViewMode()), ViewMode::isBulky($this->eiEntryGuiMulti->getViewMode()));
 		
-		$eiEntryGuis = $this->eiEntryGuiMulti->getEiEntryGuis();
-		foreach ($eiEntryGuis as $key => $eiEntryGui) {
-			$siEntry->putBuildup($eiEntryGui->getEiEntry()->getEiType()->getId(),
-					$this->eiGuiFrames[$key]->createSiEntryBuildup($this->eiFrame, $eiEntryGui, $controlsIncluded));
-		}
-		
-		if (count($eiEntryGuis) == 1) {
-			$siEntry->setSelectedTypeId(current($eiEntryGuis)->getEiEntry()->getEiType()->getId());
-		}
-		
-		return $siEntry;
 	}
 	
 	/**

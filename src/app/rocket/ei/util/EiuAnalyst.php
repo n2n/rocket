@@ -67,6 +67,8 @@ use n2n\util\ex\IllegalStateException;
 use rocket\ei\util\gui\EiuGuiField;
 use rocket\ei\util\gui\EiuGui;
 use rocket\ei\manage\gui\EiGui;
+use rocket\ei\manage\gui\EiEntryGuiTypeDef;
+use rocket\ei\util\gui\EiuEntryGuiTypeDef;
 
 class EiuAnalyst {
 	const EI_FRAME_TYPES = array(EiFrame::class, EiuFrame::class, N2nContext::class);
@@ -86,6 +88,7 @@ class EiuAnalyst {
 	protected $eiEntry;
 	protected $eiGuiFrame;
 	protected $eiGui;
+	protected $eiEntryGuiTypeDef;
 	protected $eiEntryGui;
 	protected $eiEntryGuiAssembler;
 	protected $eiPropPath;
@@ -105,6 +108,7 @@ class EiuAnalyst {
 	protected $eiuGui;
 	protected $eiuGuiFrame;
 	protected $eiuEntryGui;
+	protected $eiuEntryGuiTypeDef;
 	protected $eiuEntryGuiAssembler;
 	protected $eiuGuiFrameField;
 	protected $eiuField;
@@ -183,6 +187,11 @@ class EiuAnalyst {
 				continue;
 			}
 			
+			if ($eiArg instanceof EiEntryGuiTypeDef) {
+				$this->assignEiEntryGuiTypeDef($eiArg);
+				continue;
+			}
+			
 			if ($eiArg instanceof EiEntryGui) {
 				$this->assignEiEntryGui($eiArg);
 				continue;
@@ -255,6 +264,11 @@ class EiuAnalyst {
 			
 			if ($eiArg instanceof EiuEntryGui) {
 				$this->assignEiEntryGui($eiArg->getEiEntryGui());
+				continue;
+			}
+			
+			if ($eiArg instanceof EiuEntryGuiTypeDef) {
+				$this->assignEiEntryGuiTypeDef($eiArg->getEiEntryGuiTypeDef());
 				continue;
 			}
 			
@@ -630,6 +644,21 @@ class EiuAnalyst {
 // 		$this->assignEiEntryGui($eiuEntryGui->getEiEntryGui());
 // 		$this->eiuEntryGui = $eiuEntryGui;
 // 	}
+
+	/**
+	 * @param EiEntryGuiTypeDef $eiEntryGuiTypeDef
+	 */
+	private function assignEiEntryGuiTypeDef($eiEntryGuiTypeDef) {
+		if ($this->eiEntryGuiTypeDef === $eiEntryGuiTypeDef) {
+			return;
+		}
+		
+		$this->eiuEntryGuiTypeDef = null;
+		$this->eiEntryGuiTypeDef = $eiEntryGuiTypeDef;
+		
+		$this->assignEiEntry($eiEntryGuiTypeDef->getEiEntry());
+		$this->assignEiEntryGui($eiEntryGuiTypeDef->getEiEntryGui());
+	}
 	
 	/**
 	 * @param EiEntryGui $eiEntryGui
@@ -642,7 +671,9 @@ class EiuAnalyst {
 		$this->eiuEntryGui = null;
 		$this->eiEntryGui = $eiEntryGui;
 		
-		$this->assignEiEntry($eiEntryGui->getEiEntry());
+		if ($eiEntryGui->isTypeDefSelected()) {
+			$this->assignEiEntryGuiTypeDef($eiEntryGui->getSelectedTypeDef());
+		}
 	}
 	
 // 	/**

@@ -8,13 +8,11 @@ import { SiValResponse } from '../model/api/si-val-response';
 import { SiValInstruction } from '../model/api/si-val-instruction';
 import { SiValResult } from '../model/api/si-val-result';
 import { SiValGetResult } from '../model/api/si-val-get-result';
-import { SiComp } from '../model/comp/si-comp';
 import { SiMetaFactory } from './si-meta-factory';
 import { SiEntryFactory } from './si-entry-factory';
 import { SiDeclaration } from '../model/meta/si-declaration';
 import { Extractor } from 'src/app/util/mapping/extractor';
 import { Injector } from '@angular/core';
-import { SiControlBoundry } from '../model/control/si-control-bountry';
 
 export class SiApiFactory {
 

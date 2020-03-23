@@ -103,8 +103,8 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandler {
 		}
 		
 		$max = $this->relationModel->getMax();
-		while ($max !== null || $max > count($this->currentEiuEntryGuis)) {
-			$eiuEntryGuiMulti = $this->targetEiuFrame->newEntryGuiMulti(true, false)->entryGuis()
+		while ($max !== null && $max > count($this->currentEiuEntryGuis)) {
+			$this->currentEiuEntryGuis[] = $this->targetEiuFrame->newForgeMultiEntryGui(true, false);
 		}
 		
 		return array_values(array_map(
@@ -119,8 +119,8 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandler {
 	private function createSiEmbeddeEntry($eiuEntryGui) {
 		return new SiEmbeddedEntry(
 				$eiuEntryGui->gui()->createBulkyEntrySiComp(false, false),
-				($this->relationModel->isReduced() ?
-						$eiuEntryGui->entry()->newGui(false, false)->createCompactEntrySiComp(false, false):
+				($this->relationModel->isReduced() ? 
+						$eiuEntryGui->gui()->copy(false, true)->createCompactEntrySiComp(false, false):
 						null));
 	}
 	

@@ -46,6 +46,8 @@ export class SiEntryFactory {
 			siEntry.addEntryBuildup(this.createEntryBuildup(buildupData, siEntry.identifier, controlBoundry));
 		}
 
+		siEntry.selectedTypeId = extr.nullaString('selectedTypeId');
+
 		return siEntry;
 	}
 

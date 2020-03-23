@@ -148,7 +148,8 @@ class SiEntry implements \JsonSerializable {
 			'treeLevel' => $this->treeLevel,
 			'readOnly' => $this->readOnly,
 		    'bulky' => $this->bulky,
-			'buildups' => $buildups
+			'buildups' => $buildups,
+			'selectedTypeId' => $this->selectedTypeId
 		];
 	}
 

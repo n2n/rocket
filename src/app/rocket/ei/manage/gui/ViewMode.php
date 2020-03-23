@@ -38,6 +38,13 @@ class ViewMode {
 		return self::COMPACT_EDIT | self::BULKY_EDIT;
 	}
 	
+	/**
+	 * @return int
+	 */
+	public static function add() {
+		return self::COMPACT_ADD | self::BULKY_ADD;
+	}
+	
 	public static function all() {
 		return self::COMPACT_READ | self::COMPACT_EDIT | self::COMPACT_ADD 
 				| self::BULKY_READ | self::BULKY_EDIT | self::BULKY_ADD;
@@ -87,5 +94,13 @@ class ViewMode {
 	 */
 	static function isCompact(int $viewMode) {
 		return $viewMode & self::compact();
+	}
+		
+	/**
+	 * @param int $viewMode
+	 * @return boolean
+	 */
+	static function isAdd(int $viewMode) {
+		return $viewMode & self::add();
 	}
 }

@@ -52,7 +52,7 @@ class EiGuiFactory {
 		
 		$this->applyEiGuiFrame($eiGui, true, $guiPropPaths, $guiStructureDeclarationsRequired);
 		
-		if ($eiGui->isEmpty()) {
+		if (!$eiGui->hasEiGuiFrames()) {
 			throw new GuiBuildFailedException('Can not build forge EiGui based on ' . $eiGui->getContextEiMask() 
 					. ' because its type is abstract.');
 		}
@@ -75,7 +75,7 @@ class EiGuiFactory {
 		
 		$this->applyPossibleEiGuiFrames($eiGui, false, $allowedEiTypes, $guiPropPaths, $guiStructureDeclarationsRequired);
 		
-		if ($eiGui->isEmpty()) {
+		if (!$eiGui->hasEiGuiFrames()) {
 			throw new GuiBuildFailedException('Can not build forge EiGui based on ' . $eiGui->getContextEiMask()
 					. ' because its type and sub types do not match the allowed EiTypes: ' . implode(', ', $allowedEiTypes));
 		}
@@ -99,10 +99,10 @@ class EiGuiFactory {
 		
 		$this->applyPossibleEiGuiFrames($eiGui, false, $allowedEiType, $guiPropPaths, $guiStructureDeclarationsRequired);
 		
-		if ($eiGui->isEmpty()) {
+		if (!$eiGui->hasEiGuiFrames()) {
 			throw new GuiBuildFailedException('Can not build forge EiGui based on ' . $eiGui->getContextEiMask()
 					. ' because its type and sub types are either abstract or do not match the allowed EiTypes: ' 
-					. implode(', ', $allowedEiType));
+					. implode(', ', array_map(function ($arg) { return (string) $arg; }, (array) $allowedEiType)));
 		}
 		
 		return $eiGui;

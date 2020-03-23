@@ -21,8 +21,8 @@ export class SiEntry {
 	constructor(readonly identifier: SiEntryIdentifier) {
 	}
 
-	private ensureBuildups() {
-		if (this._entryBuildupsMap.size > 0) {
+	private ensureBuildupSelected() {
+		if (this.selectedTypeId !== null) {
 			return;
 		}
 
@@ -34,26 +34,24 @@ export class SiEntry {
 	}
 
 	get selectedEntryBuildup(): SiEntryBuildup {
+		this.ensureBuildupSelected();
+
 		return this._entryBuildupsMap.get(this.selectedTypeId) as SiEntryBuildup;
 	}
 
-	get selectedTypeId(): string {
-		this.ensureBuildups();
-
+	get selectedTypeId(): string|null {
 		return this.selectedTypeIdSubject.getValue();
 	}
 
-	set selectedTypeId(id: string) {
-		if (!this._entryBuildupsMap.has(id)) {
+	set selectedTypeId(id: string|null) {
+		if (id !== null && !this._entryBuildupsMap.has(id)) {
 			throw new IllegalSiStateError('Buildup id does not exist on entry: ' + id);
 		}
 
 		this.selectedTypeIdSubject.next(id);
 	}
 
-	get selectedTypeId$(): Observable<string> {
-		this.ensureBuildups();
-
+	get selectedTypeId$(): Observable<string|null> {
 		return this.selectedTypeIdSubject;
 	}
 
@@ -75,9 +73,6 @@ export class SiEntry {
 
 	addEntryBuildup(buildup: SiEntryBuildup) {
 		this._entryBuildupsMap.set(buildup.entryQualifier.typeQualifier.id, buildup);
-		if (!this.selectedTypeIdSubject.getValue()) {
-			this.selectedTypeIdSubject.next(buildup.entryQualifier.typeQualifier.id);
-		}
 	}
 
 // 	getFieldById(id: string): SiField|null {
@@ -127,6 +122,10 @@ export class SiEntry {
 	getMessages(): Message[] {
 		const messages: Message[] = [];
 
+		if (!this.selectedTypeId) {
+			return messages;
+		}
+
 		for (const siField of this.selectedEntryBuildup.getFields()) {
 			messages.push(...siField.getMessages());
 		}
@@ -135,7 +134,7 @@ export class SiEntry {
 	}
 
 	toString() {
-		return this.qualifier.toString();
+		return this.identifier.toString();
 	}
 
 	// copy(): SiEntry {
