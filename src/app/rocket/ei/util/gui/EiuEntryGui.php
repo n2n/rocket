@@ -47,42 +47,22 @@ class EiuEntryGui {
 	private $eiuEntry;
 	private $eiuAnalyst;
 	
-	function __construct(EiEntryGui $eiEntryGui, ?EiuGui $eiuGui, ?EiuGuiFrame $eiuGuiFrame, EiuAnalyst $eiuAnalyst) {
+	function __construct(EiEntryGui $eiEntryGui, EiuGui $eiuGui, EiuAnalyst $eiuAnalyst) {
 		$this->eiEntryGui = $eiEntryGui;
 		$this->eiuGui = $eiuGui;
-		$this->eiuGuiFrame = $eiuGuiFrame;
 		$this->eiuAnalyst = $eiuAnalyst;
 	}
 	
-	private function getEiGui() {
-		return $this->eiuGui->getEiGui() ?? $this->eiuAnalyst->getEiGui(true);
-	}
+// 	private function getEiGuiModel() {
+// 		return $this->eiuGui->getEiGuiModel() ?? $this->eiuAnalyst->getEiGuiModel(true);
+// 	}
 	
 	/**
 	 * @throws EiuPerimeterException
 	 * @return \rocket\ei\util\gui\EiuGui
 	 */
 	function gui() {
-		if ($this->eiuGui !== null) {
-			return $this->eiuGui;
-		}
-		
-		throw new EiuPerimeterException('EiuGui not available to EiuEntryGui.');
-	}
-	
-	/**
-	 * @return EiGuiFrame 
-	 */
-	private function getEiGuiFrame() {
-		if ($this->eiuGuiFrame !== null) {
-			return $this->eiuGuiFrame->getEiGuiFrame();
-		}
-		
-		if ($this->eiuGui !== null) {
-			return $this->eiuGui->getEiGui()->getEiGuiFrame();
-		}
-		
-		return $this->eiuAnalyst->getEiuGuiFrame(true);
+		return $this->eiuGui;
 	}
 	
 	/**
@@ -116,41 +96,6 @@ class EiuEntryGui {
 	 */
 	function getFieldLabel($eiPropPath, N2nLocale $n2nLocale = null, bool $required = false) {
 		return $this->guiFrame()->getPropLabel($eiPropPath, $n2nLocale, $required);
-	}
-	
-	/**
-	 * @return \rocket\si\content\SiEntry
-	 */
-	function createSiEntry() {
-		return $this->getEiGuiFrame()->createSiEntry($this->eiuAnalyst->getEiFrame(true), $this->eiEntryGui);
-	}
-	
-	/**
-	 * @param bool $generalSiControlsIncluded
-	 * @param bool $entrySiControlsIncluded
-	 * @return \rocket\si\content\impl\basic\CompactEntrySiComp
-	 */
-	function createCompactEntrySiComp(bool $generalSiControlsIncluded = true, bool $entrySiControlsIncluded = true) {
-		if (!ViewMode::isBulky($this->getEiGui()->getEiGuiFrame()->getViewMode())) {
-			throw new EiuPerimeterException('EiEntryGuiMulti is not bulky.');
-		}
-		
-		return (new EiGuiUtil($this->getEiGui(), $this->eiuAnalyst->getEiFrame(true)))
-				->createCompactEntrySiComp($generalSiControlsIncluded, $entrySiControlsIncluded);
-	}
-	
-	/**
-	 * @param bool $generalSiControlsIncluded
-	 * @param bool $entrySiControlsIncluded
-	 * @return \rocket\si\content\impl\basic\BulkyEntrySiComp
-	 */
-	function createBulkyEntrySiComp(bool $generalSiControlsIncluded = true, bool $entrySiControlsIncluded = true) {
-		if (!ViewMode::isCompact($this->getEiGui()->getEiGuiFrame()->getViewMode())) {
-			throw new EiuPerimeterException('EiEntryGuiMulti is not compact.');
-		}
-		
-		return (new EiGuiUtil($this->getEiGui(), $this->eiuAnalyst->getEiFrame(true)))
-				->createBulkyEntrySiComp($generalSiControlsIncluded, $entrySiControlsIncluded);
 	}
 	
 	/**

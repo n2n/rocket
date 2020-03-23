@@ -24,6 +24,9 @@ namespace rocket\ei\manage\gui;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\si\content\impl\basic\CompactEntrySiComp;
 use rocket\si\content\impl\basic\BulkyEntrySiComp;
+use rocket\si\content\impl\basic\CompactExplorerSiComp;
+use rocket\ei\manage\frame\EiFrameUtil;
+use rocket\si\content\SiPartialContent;
 
 class EiGuiUtil {
 	private $eiGui;
@@ -38,14 +41,13 @@ class EiGuiUtil {
 	 * @param bool $controlsIncluded
 	 * @return \rocket\si\content\impl\basic\BulkyEntrySiComp
 	 */
-	function createCompactEntrySiComp(bool $generalSiControlsIncluded = true,
-			bool $entrySiControlsIncluded = true) {
+	function createCompactEntrySiComp(bool $entrySiControlsIncluded = true) {
 		$siComp = new CompactEntrySiComp($this->eiGui->createSiDeclaration($this->eiFrame),
 				$this->eiGui->createSiEntry($this->eiFrame, $entrySiControlsIncluded));
 		
-		if ($generalSiControlsIncluded) {
-			$siComp->setControls($this->eiGui->getEiGuiFrame()->createGeneralSiControls($this->eiFrame));
-		}
+// 		if ($generalSiControlsIncluded) {
+// 			$siComp->setControls($this->eiGui->getEiGuiFrame()->createGeneralSiControls($this->eiFrame));
+// 		}
 		
 		return $siComp;
 	}
@@ -62,6 +64,17 @@ class EiGuiUtil {
 		if ($generalSiControlsIncluded) {
 			$siComp->setControls($this->eiGui->getEiGuiFrame()->createGeneralSiControls($this->eiFrame));
 		}
+		
+		return $siComp;
+	}
+	
+	function createCompactExplorerSiComp(int $pageSize, bool $entrySiControlsIncluded) {
+		$eiFrameUtil = new EiFrameUtil($this->eiFrame);
+				
+		$siDeclaration = $this->eiGui->getEiGuiModel()->createSiDeclaration($this->eiFrame);
+		$siPartialContent = new SiPartialContent($eiFrameUtil->count(), 
+				$this->eiGui->createSiEntries($this->eiFrame, $generalSiControlsIncluded));
+		$siComp = new CompactExplorerSiComp($this->eiFrame->getApiUrl(), $pageSize, $siDeclaration, $siPartialContent);
 		
 		return $siComp;
 	}

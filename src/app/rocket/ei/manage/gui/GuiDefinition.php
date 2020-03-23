@@ -640,15 +640,15 @@ class GuiDefinition {
 // 	 * @param EiFrame $eiFrame
 // 	 * @param int $viewMode
 // 	 * @param GuiPropPath[]|null $guiPropPaths
-// 	 * @return \rocket\ei\manage\gui\EiGui
+// 	 * @return \rocket\ei\manage\gui\EiGuiModel
 // 	 */
-// 	function createEiGui(N2nContext $n2nContext, int $viewMode, array $guiPropPaths = null) {
+// 	function createEiGuiModel(N2nContext $n2nContext, int $viewMode, array $guiPropPaths = null) {
 // 		$eiGuiFrame = new EiGuiFrame($this, $viewMode);
 		
 		
 		
 		
-// 		return new EiGui($guiStructureDeclarations, $eiGuiFrame);
+// 		return new EiGuiModel($guiStructureDeclarations, $eiGuiFrame);
 // 	}
 	
 	/**
@@ -657,13 +657,13 @@ class GuiDefinition {
 	 * @param array $guiPropPaths
 	 * @return \rocket\ei\manage\gui\EiGuiFrame
 	 */
-	function createEiGuiFrame(N2nContext $n2nContext, EiGui $eiGui, ?array $guiPropPaths, 
+	function createEiGuiFrame(N2nContext $n2nContext, EiGuiModel $eiGuiModel, ?array $guiPropPaths, 
 			bool $guiStructureDeclarationsRequired) {
-		ArgUtils::assertTrue($this->eiMask->isA($eiGui->getContextEiMask()));
+		ArgUtils::assertTrue($this->eiMask->isA($eiGuiModel->getContextEiMask()));
 		
-		$eiGuiFrame = new EiGuiFrame($eiGui, $this, null);
+		$eiGuiFrame = new EiGuiFrame($eiGuiModel, $this, null);
 		
-		$eiGui->putEiGuiFrame($eiGuiFrame);
+		$eiGuiModel->putEiGuiFrame($eiGuiFrame);
 		
 		if ($guiPropPaths !== null && $guiStructureDeclarationsRequired) {
 			$this->semiAutoInitEiGuiFrame($n2nContext, $eiGuiFrame, $guiPropPaths);
@@ -682,7 +682,7 @@ class GuiDefinition {
 			return $eiGuiFrame;
 		}
 		
-		if (ViewMode::isBulky($eiGui->getViewMode())) {
+		if (ViewMode::isBulky($eiGuiModel->getViewMode())) {
 			$guiStructureDeclarations = $this->groupGsds($guiStructureDeclarations);
 		}
 		
@@ -722,7 +722,7 @@ class GuiDefinition {
 		$displayScheme = $this->eiMask->getDisplayScheme();
 		
 		$displayStructure = null;
-		switch ($eiGuiFrame->getEiGui()->getViewMode()) {
+		switch ($eiGuiFrame->getEiGuiModel()->getViewMode()) {
 			case ViewMode::BULKY_READ:
 				$displayStructure = $displayScheme->getDetailDisplayStructure() ?? $displayScheme->getBulkyDisplayStructure();
 				break;

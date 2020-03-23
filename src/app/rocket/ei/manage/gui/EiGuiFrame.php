@@ -25,9 +25,9 @@ use rocket\si\meta\SiStructureDeclaration;
  */
 class EiGuiFrame {
 	/**
-	 * @var EiGui
+	 * @var EiGuiModel
 	 */
-	private $eiGui;
+	private $eiGuiModel;
 	/**
 	 * @var GuiDefinition
 	 */
@@ -66,8 +66,8 @@ class EiGuiFrame {
 	 * @param GuiDefinition $guiDefinition
 	 * @param int $viewMode Use constants from {@see ViewMode}
 	 */
-	function __construct(EiGui $eiGui, GuiDefinition $guiDefinition, ?array $guiStructureDeclarations) {
-		$this->eiGui = $eiGui;
+	function __construct(EiGuiModel $eiGuiModel, GuiDefinition $guiDefinition, ?array $guiStructureDeclarations) {
+		$this->eiGuiModel = $eiGuiModel;
 		$this->guiDefinition = $guiDefinition;
 		
 		$this->setGuiStructureDeclarations($guiStructureDeclarations);
@@ -92,10 +92,10 @@ class EiGuiFrame {
 	}
 	
 	/**
-	 * @return EiGui
+	 * @return EiGuiModel
 	 */
-	function getEiGui() {
-		return $this->eiGui;
+	function getEiGuiModel() {
+		return $this->eiGuiModel;
 	}
 	
 	/**
@@ -408,6 +408,11 @@ class EiGuiFrame {
 		return $eiEntryGuiTypeDef;
 	}
 	
+	/**
+	 * @param EiFrame $eiFrame
+	 * @param EiEntryGui $eiEntryGui
+	 * @return \rocket\ei\manage\gui\EiEntryGui
+	 */
 	function applyNewEiEntryGuiTypeDef(EiFrame $eiFrame, EiEntryGui $eiEntryGui) {
 		$this->ensureInit();
 		
@@ -434,7 +439,7 @@ class EiGuiFrame {
 			$siControls[$guiControlPathStr] = $selectionGuiControl->toSiControl(
 					new ApiControlCallId(GuiControlPath::create($guiControlPathStr), 
 							$this->guiDefinition->getEiMask()->getEiTypePath(),
-							$this->eiGui->getViewMode(), null));
+							$this->eiGuiModel->getViewMode(), null));
 		}
 		return $siControls;
 	}
@@ -449,7 +454,7 @@ class EiGuiFrame {
 			$siControls[$guiControlPathStr] = $generalGuiControl->toSiControl(
 					new ApiControlCallId(GuiControlPath::create($guiControlPathStr), 
 							$this->guiDefinition->getEiMask()->getEiTypePath(),
-							$this->eiGui->getViewMode(), null, null));
+							$this->eiGuiModel->getViewMode(), null, null));
 		}
 		return $siControls;
 	}
@@ -515,7 +520,7 @@ class EiGuiFrame {
 			$siEntryBuildup->putControl($guiControlPathStr, $entryGuiControl->toSiControl(
 					new ApiControlCallId(GuiControlPath::create($guiControlPathStr),
 							$this->guiDefinition->getEiMask()->getEiTypePath(),
-							$this->eiGui->getViewMode(), $eiEntry->getPid(),
+							$this->eiGuiModel->getViewMode(), $eiEntry->getPid(),
 							($eiEntry->isNew() ? $eiEntry->getEiType()->getId() : null))));
 		}
 		

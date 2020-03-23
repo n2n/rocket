@@ -39,7 +39,7 @@ use rocket\ei\manage\gui\GuiException;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\manage\frame\EiFrame;
-use rocket\ei\manage\gui\EiGui;
+use rocket\ei\manage\gui\EiGuiModel;
 use rocket\ei\manage\ManageState;
 use n2n\util\type\CastUtils;
 use rocket\ei\manage\gui\EiEntryGuiTypeDef;
@@ -198,7 +198,7 @@ class GuiFactory {
 	 * @return GuiField|null
 	 */
 	private static function buildGuiField($eiFrame, $eiGuiFrame, $eiEntryGuiTypeDef, $eiPropPath) {
-		$readOnly = ViewMode::isReadOnly($eiGuiFrame->getEiGui()->getViewMode())
+		$readOnly = ViewMode::isReadOnly($eiGuiFrame->getEiGuiModel()->getViewMode())
 				|| !$eiEntryGuiTypeDef->getEiEntry()->getEiEntryAccess()->isEiPropWritable($eiPropPath);
 		
 		$guiField = $eiGuiFrame->getGuiFieldAssembler($eiPropPath)

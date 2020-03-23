@@ -23,15 +23,15 @@ namespace rocket\ei\manage\gui\control;
 
 use rocket\ei\manage\entry\EiEntry;
 use rocket\si\control\SiResult;
-use rocket\ei\manage\gui\EiGui;
+use rocket\ei\manage\gui\EiGuiModel;
 use rocket\ei\manage\frame\EiFrame;
 
 interface EntryGuiControl extends GuiControl {
 	
 	/**
-	 * @param EiGui $eiGui
+	 * @param EiGuiModel $eiGuiModel
 	 * @param EiEntry $eiEntry
 	 * @return SiResult
 	 */
-	function handleEntry(EiFrame $eiFrame, EiGui $eiGui, EiEntry $eiEntry): SiResult;
+	function handleEntry(EiFrame $eiFrame, EiGuiModel $eiGuiModel, EiEntry $eiEntry): SiResult;
 }

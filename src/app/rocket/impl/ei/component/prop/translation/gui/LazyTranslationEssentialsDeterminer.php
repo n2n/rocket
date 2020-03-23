@@ -241,7 +241,7 @@ class LazyTranslationEssentialsDeterminer {
 			return $this->targetEiuEntryGuis[$n2nLocaleId];
 		}
 		
-		return $this->targetEiuEntryGuis[$n2nLocaleId] = $this->targetEiuGuiFrame->newEntryGui(
+		return $this->targetEiuEntryGuis[$n2nLocaleId] = $this->targetEiuGuiFrame->guiModel()->newEntryGui(
 				$this->getTargetEiuEntry($n2nLocaleId));
 	}
 	

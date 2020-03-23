@@ -40,13 +40,16 @@ use rocket\si\content\impl\basic\BulkyEntrySiComp;
 use rocket\ei\manage\security\InaccessibleEiEntryException;
 use rocket\ei\manage\frame\EiFrameUtil;
 use rocket\ei\manage\LiveEiObject;
-use rocket\ei\manage\gui\EiGui;
+use rocket\ei\manage\gui\EiGuiModel;
 use n2n\web\http\HttpContext;
 use rocket\si\NavPoint;
 use n2n\l10n\DynamicTextCollection;
 use n2n\util\uri\Url;
 use rocket\core\model\RocketState;
 use rocket\si\meta\SiBreadcrumb;
+use rocket\ei\manage\gui\EiGuiModelFactory;
+use rocket\ei\manage\gui\EiGui;
+use rocket\ei\manage\gui\EiGuiUtil;
 
 class EiuCtrl {
 	private $eiu;
@@ -293,25 +296,25 @@ class EiuCtrl {
 			return;
 		}
 		
-		$eiuGui = $this->eiuFrame->engine()->newGui(ViewMode::COMPACT_READ);
 		$eiFrame = $this->eiuFrame->getEiFrame();
+		$factory = new EiGuiModelFactory($this->eiu->getN2nContext());
+		$eiGuiModel =  $factory->createEiGuiModel($eiFrame->getContextEiEngine()->getEiMask(), ViewMode::COMPACT_READ, null, true);
+		$eiGui = new EiGui($eiGuiModel);
 		
-		$this->composeEiuGuiFrameForList($eiuGui->getEiGui(), $pageSize);
+		$this->composeEiuGuiForList($eiGui, $pageSize);
 		
-		$siDeclaration = $eiuGui->getEiGui()->createSiDeclaration($eiFrame);
-		
-		$siComp = new CompactExplorerSiComp($this->eiu->frame()->getApiUrl(), $pageSize, $siDeclaration, 
-				new SiPartialContent($this->eiuFrame->count(), $eiuGui->getEiGui()->createSiEntries($eiFrame)));
+		$siComp = (new EiGuiUtil($eiGui, $eiFrame))->createCompactExplorerSiComp($pageSize, true);
 		
 		$this->httpContext->getResponse()->send(
 				SiPayloadFactory::create($siComp, 
-						$eiuGui->getEiGui()->createGeneralSiControls($eiFrame),
+						$eiGuiModel->createGeneralSiControls($eiFrame),
 						$this->rocketState->getBreadcrumbs(),
 						$title ?? $this->eiuFrame->contextEngine()->mask()->getPluralLabel()));
 	}
 	
 	
-	private function composeEiuGuiFrameForList($eiGui, $limit) {
+	private function composeEiuGuiForList($eiGui, $limit) {
+		
 		$eiType = $this->eiuFrame->getEiFrame()->getContextEiEngine()->getEiMask()->getEiType();
 		
 		$criteria = $this->eiuFrame->getEiFrame()->createCriteria(NestedSetUtils::NODE_ALIAS, false);
@@ -329,7 +332,7 @@ class EiuCtrl {
 		$eiFrameUtil = new EiFrameUtil($eiFrame);
 		foreach ($criteria->toQuery()->fetchArray() as $entityObj) {
 			$eiObject = new LiveEiObject($eiFrameUtil->createEiEntityObj($entityObj));
-			$eiGui->appendEiEntryGui($eiFrame, $eiFrame->createEiEntry($eiObject));
+			$eiGui->appendEiEntryGui($eiFrame, [$eiFrame->createEiEntry($eiObject)]);
 		}
 	}
 	
@@ -340,7 +343,7 @@ class EiuCtrl {
 		$eiFrameUtil = new EiFrameUtil($eiFrame);
 		foreach ($nestedSetUtils->fetch(null, false, $criteria) as $nestedSetItem) {
 			$eiObject = new LiveEiObject($eiFrameUtil->createEiEntityObj($nestedSetItem->getEntityObj()));
-			$eiGui->appendEiEntryGui($eiFrame, $eiFrame->createEiEntry($eiObject), $nestedSetItem->getLevel());
+			$eiGui->appendEiEntryGui($eiFrame, [$eiFrame->createEiEntry($eiObject)], $nestedSetItem->getLevel());
 		}
 	}
 	
@@ -351,16 +354,16 @@ class EiuCtrl {
 
 		$eiuEntry = EiuAnalyst::buildEiuEntryFromEiArg($eiEntry, $this->eiuFrame, 'eiEntry', true);
 		$eiuGuiFrameLayout = $eiuEntry->newGui(true, $editable);
-		$eiGui = $eiuGuiFrameLayout->getEiGui();
+		$eiGuiModel = $eiuGuiFrameLayout->getEiGuiModel();
 		
 		$eiFrame = $this->eiuFrame->getEiFrame();
 		
-		$siDeclaration = $eiGui->createSiDeclaration($eiFrame);
+		$siDeclaration = $eiGuiModel->createSiDeclaration($eiFrame);
 		
-		$comp = new BulkyEntrySiComp($siDeclaration, $eiGui->createSiEntry($eiFrame, $siControlsIncluded));
+		$comp = new BulkyEntrySiComp($siDeclaration, $eiGuiModel->createSiEntry($eiFrame, $siControlsIncluded));
 		
 		$this->httpContext->getResponse()->send(
-				SiPayloadFactory::create($comp, $eiGui->createGeneralSiControls($eiFrame),
+				SiPayloadFactory::create($comp, $eiGuiModel->createGeneralSiControls($eiFrame),
 						$this->rocketState->getBreadcrumbs(),
 						$eiuEntry->createIdentityString()));
 	}

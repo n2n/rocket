@@ -18,6 +18,7 @@ use rocket\si\meta\SiTypeDeclaration;
 
 class EiuGuiFrame {
 	private $eiGuiFrame;
+	private $eiuGuiModel;
 	private $eiuAnalyst;
 	
 	/**
@@ -25,42 +26,54 @@ class EiuGuiFrame {
 	 * @param EiuFrame $eiuFrame
 	 * @param EiuAnalyst $eiuAnalyst
 	 */
-	public function __construct(EiGuiFrame $eiGuiFrame, EiuAnalyst $eiuAnalyst) {
+	public function __construct(EiGuiFrame $eiGuiFrame, ?EiuGuiModel $eiuGuiModel, EiuAnalyst $eiuAnalyst) {
 		$this->eiGuiFrame = $eiGuiFrame;
+		$this->eiuGuiModel = $eiuGuiModel;
 		$this->eiuAnalyst = $eiuAnalyst;
-	}
-	
-	/**
-	 * @return \rocket\ei\util\frame\EiuFrame
-	 */
-	public function getEiuFrame() {
-		if ($this->eiuFrame !== null) {
-			return $this->eiuFrame;
-		}
-		
-		if ($this->eiuAnalyst !== null) {
-			$this->eiuFrame = $this->eiuAnalyst->getEiuFrame(false);
-		}
-		
-		if ($this->eiuFrame === null) {
-			$this->eiuFrame = new EiuFrame($this->eiGuiFrame->getEiFrame(), $this->eiuAnalyst);
-		}
-		
-		return $this->eiuFrame;
 	}
 	
 	/**
 	 * @return \rocket\ei\manage\gui\EiGuiFrame
 	 */
-	public function getEiGuiFrame() {
+	function getEiGuiFrame() {
 		return $this->eiGuiFrame;
 	}
+	
+	/**
+	 * @return \rocket\ei\util\gui\EiuGuiModel
+	 */
+	function guiModel() {
+		if ($this->eiuGuiModel === null) {
+			$this->eiuGuiModel = new EiuGuiModel($this->eiGuiFrame->getEiGuiModel(), $this->eiuAnalyst);
+		}
+		
+		return $this->eiuGuiModel;
+	}
+	
+// 	/**
+// 	 * @return \rocket\ei\util\frame\EiuFrame
+// 	 */
+// 	private function getEiuFrame() {
+// 		if ($this->eiuFrame !== null) {
+// 			return $this->eiuFrame;
+// 		}
+		
+// 		if ($this->eiuAnalyst !== null) {
+// 			$this->eiuFrame = $this->eiuAnalyst->getEiuFrame(false);
+// 		}
+		
+// 		if ($this->eiuFrame === null) {
+// 			$this->eiuFrame = new EiuFrame($this->eiGuiFrame->getEiFrame(), $this->eiuAnalyst);
+// 		}
+		
+// 		return $this->eiuFrame;
+// 	}
 	
 	/**
 	 * @return number
 	 */
 	public function getViewMode() {
-		return $this->eiGuiFrame->getEiGui()->getViewMode();
+		return $this->eiGuiFrame->getEiGuiModel()->getViewMode();
 	}
 	
 	/**
@@ -105,13 +118,13 @@ class EiuGuiFrame {
 		return $this->eiGuiFrame->getGuiPropPaths();
 	}
 	
-	function newEntryGui($eiEntryArg) {
-		$eiEntry = EiuAnalyst::buildEiEntryFromEiArg($eiEntryArg, 'eiEntryArg');
+// 	function newEntryGui($eiEntryArg) {
+// 		$eiEntry = EiuAnalyst::buildEiEntryFromEiArg($eiEntryArg, 'eiEntryArg');
 		
-		$eiEntryGui = $this->eiGuiFrame->createEiEntryGuiVariation($this->eiuAnalyst->getEiFrame(true), $eiEntry);
+// 		$eiEntryGui = $this->eiGuiFrame->createEiEntryGuiVariation($this->eiuAnalyst->getEiFrame(true), $eiEntry);
 		
-		return new EiuEntryGui($eiEntryGui, null, $this, $this->eiuAnalyst);
-	}
+// 		return new EiuEntryGui($eiEntryGui, null, $this, $this->eiuAnalyst);
+// 	}
 	
 	/**
 	 * @param GuiPropPath|string $prefixGuiPropPath

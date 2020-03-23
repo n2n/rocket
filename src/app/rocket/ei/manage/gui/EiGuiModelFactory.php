@@ -7,7 +7,7 @@ use rocket\ei\manage\ManagedDef;
 use rocket\ei\EiType;
 use rocket\ei\mask\EiMask;
 
-class EiGuiFactory {
+class EiGuiModelFactory {
 	/**
 	 * @var N2nContext
 	 */
@@ -27,15 +27,15 @@ class EiGuiFactory {
 	 * @param int $viewMode
 	 * @param array $guiPropPaths
 	 * @param bool $guiStructureDeclarationsRequired
-	 * @return \rocket\ei\manage\gui\EiGui
+	 * @return \rocket\ei\manage\gui\EiGuiModel
 	 */
-	function createEiGui(EiMask $contextEiMask, int $viewMode, ?array $guiPropPaths, 
+	function createEiGuiModel(EiMask $contextEiMask, int $viewMode, ?array $guiPropPaths, 
 			bool $guiStructureDeclarationsRequired) {
-		$eiGui = new EiGui($contextEiMask, $viewMode);
+		$eiGuiModel = new EiGuiModel($contextEiMask, $viewMode);
 		
-		$this->applyEiGuiFrame($eiGui, false, $guiPropPaths, $guiStructureDeclarationsRequired);
+		$this->applyEiGuiFrame($eiGuiModel, false, $guiPropPaths, $guiStructureDeclarationsRequired);
 		
-		return $eiGui;
+		return $eiGuiModel;
 	}
 	
 	/**
@@ -44,20 +44,20 @@ class EiGuiFactory {
 	 * @param array $guiPropPaths
 	 * @param bool $guiStructureDeclarationsRequired
 	 * @throws GuiBuildFailedException
-	 * @return \rocket\ei\manage\gui\EiGui
+	 * @return \rocket\ei\manage\gui\EiGuiModel
 	 */
-	function createForgeEiGui(EiMask $contextEiMask, int $viewMode, ?array $guiPropPaths, 
+	function createForgeEiGuiModel(EiMask $contextEiMask, int $viewMode, ?array $guiPropPaths, 
 			bool $guiStructureDeclarationsRequired) {
-		$eiGui = new EiGui($contextEiMask, $viewMode);
+		$eiGuiModel = new EiGuiModel($contextEiMask, $viewMode);
 		
-		$this->applyEiGuiFrame($eiGui, true, $guiPropPaths, $guiStructureDeclarationsRequired);
+		$this->applyEiGuiFrame($eiGuiModel, true, $guiPropPaths, $guiStructureDeclarationsRequired);
 		
-		if (!$eiGui->hasEiGuiFrames()) {
-			throw new GuiBuildFailedException('Can not build forge EiGui based on ' . $eiGui->getContextEiMask() 
+		if (!$eiGuiModel->hasEiGuiFrames()) {
+			throw new GuiBuildFailedException('Can not build forge EiGuiModel based on ' . $eiGuiModel->getContextEiMask() 
 					. ' because its type is abstract.');
 		}
 		
-		return $eiGui;
+		return $eiGuiModel;
 	}
 	
 	/**
@@ -67,20 +67,20 @@ class EiGuiFactory {
 	 * @param array $guiPropPaths
 	 * @param bool $guiStructureDeclarationsRequired
 	 * @throws GuiBuildFailedException
-	 * @return \rocket\ei\manage\gui\EiGui
+	 * @return \rocket\ei\manage\gui\EiGuiModel
 	 */
-	function createMultiEiGui(EiMask $contextEiMask, int $viewMode, ?array $allowedEiTypes, 
+	function createMultiEiGuiModel(EiMask $contextEiMask, int $viewMode, ?array $allowedEiTypes, 
 			?array $guiPropPaths, bool $guiStructureDeclarationsRequired) {
-		$eiGui = new EiGui($contextEiMask, $viewMode);
+		$eiGuiModel = new EiGuiModel($contextEiMask, $viewMode);
 		
-		$this->applyPossibleEiGuiFrames($eiGui, false, $allowedEiTypes, $guiPropPaths, $guiStructureDeclarationsRequired);
+		$this->applyPossibleEiGuiFrames($eiGuiModel, false, $allowedEiTypes, $guiPropPaths, $guiStructureDeclarationsRequired);
 		
-		if (!$eiGui->hasEiGuiFrames()) {
-			throw new GuiBuildFailedException('Can not build forge EiGui based on ' . $eiGui->getContextEiMask()
+		if (!$eiGuiModel->hasEiGuiFrames()) {
+			throw new GuiBuildFailedException('Can not build forge EiGuiModel based on ' . $eiGuiModel->getContextEiMask()
 					. ' because its type and sub types do not match the allowed EiTypes: ' . implode(', ', $allowedEiTypes));
 		}
 		
-		return $eiGui;
+		return $eiGuiModel;
 		
 	}
 	
@@ -91,61 +91,61 @@ class EiGuiFactory {
 	 * @param array $guiPropPaths
 	 * @param bool $guiStructureDeclarationsRequired
 	 * @throws GuiBuildFailedException
-	 * @return \rocket\ei\manage\gui\EiGui
+	 * @return \rocket\ei\manage\gui\EiGuiModel
 	 */
-	function createForgeMultiEiGui(EiMask $contextEiMask, int $viewMode, ?array $allowedEiType,
+	function createForgeMultiEiGuiModel(EiMask $contextEiMask, int $viewMode, ?array $allowedEiType,
 			?array $guiPropPaths, bool $guiStructureDeclarationsRequired) {
-		$eiGui = new EiGui($contextEiMask, $viewMode);
+		$eiGuiModel = new EiGuiModel($contextEiMask, $viewMode);
 		
-		$this->applyPossibleEiGuiFrames($eiGui, false, $allowedEiType, $guiPropPaths, $guiStructureDeclarationsRequired);
+		$this->applyPossibleEiGuiFrames($eiGuiModel, false, $allowedEiType, $guiPropPaths, $guiStructureDeclarationsRequired);
 		
-		if (!$eiGui->hasEiGuiFrames()) {
-			throw new GuiBuildFailedException('Can not build forge EiGui based on ' . $eiGui->getContextEiMask()
+		if (!$eiGuiModel->hasEiGuiFrames()) {
+			throw new GuiBuildFailedException('Can not build forge EiGuiModel based on ' . $eiGuiModel->getContextEiMask()
 					. ' because its type and sub types are either abstract or do not match the allowed EiTypes: ' 
 					. implode(', ', array_map(function ($arg) { return (string) $arg; }, (array) $allowedEiType)));
 		}
 		
-		return $eiGui;
+		return $eiGuiModel;
 	}
 	
 	/**
 	 * @param N2nContext $n2nContext
-	 * @param EiGui $eiGui
+	 * @param EiGuiModel $eiGuiModel
 	 * @param array $guiPropPaths
 	 * @param bool $guiStructureDeclarationsRequired
 	 * @return \rocket\ei\manage\gui\EiGuiFrame
 	 */
-	private function applyEiGuiFrame(EiGui $eiGui, bool $nonAbstractOnly, array $guiPropPaths = null,
+	private function applyEiGuiFrame(EiGuiModel $eiGuiModel, bool $nonAbstractOnly, array $guiPropPaths = null,
 			bool $guiStructureDeclarationsRequired = true) {
-		$contextEiMask = $eiGui->getContextEiMask();
+		$contextEiMask = $eiGuiModel->getContextEiMask();
 				
 		if (!$this->testIfAllowed($contextEiMask->getEiType(), $nonAbstractOnly, null)) {
 			return;
 		}
 		
 		$guiDefinition = $this->def->getGuiDefinition($contextEiMask);
-		$guiDefinition->createEiGuiFrame($this->n2nContext, $eiGui, $guiPropPaths,
+		$guiDefinition->createEiGuiFrame($this->n2nContext, $eiGuiModel, $guiPropPaths,
 				$guiStructureDeclarationsRequired);
 	}
 	
 	/**
 	 * @param N2nContext $n2nContext
-	 * @param EiGui $eiGui
+	 * @param EiGuiModel $eiGuiModel
 	 * @param array $allowedTypeIds
 	 * @param array $guiPropPaths
 	 * @param bool $guiStructureDeclarationsRequired
 	 * @return \rocket\ei\manage\gui\EiGuiFrame[]
 	 */
-	private function applyPossibleEiGuiFrames(EiGui $eiGui, bool $creatablesOnly, array $allowedTypes = null,
+	private function applyPossibleEiGuiFrames(EiGuiModel $eiGuiModel, bool $creatablesOnly, array $allowedTypes = null,
 			array $guiPropPaths = null, bool $guiStructureDeclarationsRequired = true) {
-		$contextEiMask = $eiGui->getContextEiMask();
+		$contextEiMask = $eiGuiModel->getContextEiMask();
 		$contextEiType = $contextEiMask->getEiType();
 		
 		if ($this->testIfAllowed($contextEiType, $creatablesOnly, $allowedTypes)) {
 			$guiDefinition = $this->def->getGuiDefinition($contextEiMask->determineEiMask($contextEiType));
-			$eiGuiFrame = $guiDefinition->createEiGuiFrame($this->n2nContext, $eiGui, $guiPropPaths,
+			$eiGuiFrame = $guiDefinition->createEiGuiFrame($this->n2nContext, $eiGuiModel, $guiPropPaths,
 					$guiStructureDeclarationsRequired);
-			$eiGui->putEiGuiFrame($eiGuiFrame);
+			$eiGuiModel->putEiGuiFrame($eiGuiFrame);
 		}
 		
 		foreach ($contextEiType->getAllSubEiTypes() as $eiType) {
@@ -154,9 +154,9 @@ class EiGuiFactory {
 			}
 			
 			$guiDefinition = $this->def->getGuiDefinition($contextEiMask->determineEiMask($contextEiType));
-			$eiGuiFrame = $guiDefinition->createEiGuiFrame($this->n2nContext, $eiGui, $guiPropPaths,
+			$eiGuiFrame = $guiDefinition->createEiGuiFrame($this->n2nContext, $eiGuiModel, $guiPropPaths,
 					$guiStructureDeclarationsRequired);
-			$eiGui->putEiGuiFrame($eiGuiFrame);
+			$eiGuiModel->putEiGuiFrame($eiGuiFrame);
 		}
 	}
 	

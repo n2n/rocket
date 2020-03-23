@@ -43,7 +43,7 @@ use rocket\ei\component\prop\EiProp;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\ei\component\prop\EiPropWrapper;
 use rocket\ei\util\gui\EiuGui;
-use rocket\ei\manage\gui\EiGuiFactory;
+use rocket\ei\manage\gui\EiGuiModelFactory;
 
 class EiuEntry {
 	private $eiEntry;
@@ -308,11 +308,11 @@ class EiuEntry {
 			$eiMask = $this->eiuAnalyst->getEiFrame(true)->getContextEiEngine()->getEiMask();
 		}
 		
-		$factory = new EiGuiFactory($this->eiuAnalyst->getN2nContext(true));
-		$eiGui =  $factory->createEiGui($eiMask, $viewMode, $guiPropPaths, $guiStructureDeclarationsRequired);
-		$eiGui->appendEiEntryGui($this->eiuAnalyst->getEiFrame(true), [$eiEntry]);
+		$factory = new EiGuiModelFactory($this->eiuAnalyst->getN2nContext(true));
+		$eiGuiModel =  $factory->createEiGuiModel($eiMask, $viewMode, $guiPropPaths, $guiStructureDeclarationsRequired);
+		$eiGuiModel->appendEiEntryGui($this->eiuAnalyst->getEiFrame(true), [$eiEntry]);
 		
-		return new EiuGui($eiGui, $this->eiuAnalyst);
+		return new EiuGui($eiGuiModel, $this->eiuAnalyst);
 	}
 	
 // 	/**

@@ -93,7 +93,7 @@ class ValInstructionProcess {
 		$result->setEntry($eiEntryGuiResult->createSiEntry($getInstruction->areControlsIncluded()));
 		
 		if ($getInstruction->isDeclarationRequested()) {
-			$result->setDeclaration($eiEntryGuiResult->getEiGui()->createSiDeclaration($this->eiFrameUtil->getEiFrame()));
+			$result->setDeclaration($eiEntryGuiResult->getEiGuiModel()->createSiDeclaration($this->eiFrameUtil->getEiFrame()));
 		}
 		
 		return $result;
