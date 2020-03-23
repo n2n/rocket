@@ -1,5 +1,4 @@
 import { EmbeddedEntriesInModel } from '../comp/embedded-entry-in-model';
-import { SiEmbeddedEntry } from './si-embedded-entry';
 import { SiTypeQualifier } from 'src/app/si/model/meta/si-type-qualifier';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { EmbeddedEntriesSummaryInComponent } from '../comp/embedded-entries-summary-in/embedded-entries-summary-in.component';
@@ -33,15 +32,14 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 			embeInSource: EmbeInSource, private config: EmbeddedEntriesConfig,
 			private translationService: TranslationService, disabledSubject: Observable<boolean>|null = null) {
 		super();
-
 		this.disabled$ = disabledSubject;
 
 		const getUiStucture = () => {
 			return this.reqBoundUiStructure();
 		};
+
 		this.embeInCol = new EmbeInCollection(embeInSource, getUiStucture, config);
 		this.embeInCol.readEmbes();
-		this.embeInCol.fillWithPlaceholderEmbes();
 	}
 
 	// getValues(): SiEmbeddedEntry[] {
@@ -104,7 +102,6 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 	bind(uiStructure: UiStructure): void {
 		super.bind(uiStructure);
 
-		this.embeInCol.readEmbes();
 		if (this.config.reduced) {
 			this.embeInUiStructureManager = new EmbeInUiStructureManager(uiStructure, this.embeInCol, this, this.obtainer, 
 					this.translationService);
@@ -125,34 +122,34 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 	getZoneErrors(): UiZoneError[] {
 		const errors = new Array<UiZoneError>();
 
-		for (const embe of this.embeInCol.embes) {
-			if (!embe.uiStructureModel) {
-				continue;
-			}
+		// for (const embe of this.embeInCol.embes) {
+		// 	if (!embe.uiStructureModel) {
+		// 		continue;
+		// 	}
 
-			if (!this.config.reduced) {
-				errors.push(...embe.uiStructureModel.getZoneErrors());
-				continue;
-			}
+		// 	if (!this.config.reduced) {
+		// 		errors.push(...embe.uiStructureModel.getZoneErrors());
+		// 		continue;
+		// 	}
 
-			for (const zoneError of embe.uiStructureModel.getZoneErrors()) {
-				errors.push({
-					message: zoneError.message,
-					marked: (marked) => {
-						this.reqBoundUiStructure().marked = marked;
-					},
-					focus: () => {
-						IllegalStateError.assertTrue(!!this.embeInUiStructureManager);
+		// 	for (const zoneError of embe.uiStructureModel.getZoneErrors()) {
+		// 		errors.push({
+		// 			message: zoneError.message,
+		// 			marked: (marked) => {
+		// 				this.reqBoundUiStructure().marked = marked;
+		// 			},
+		// 			focus: () => {
+		// 				IllegalStateError.assertTrue(!!this.embeInUiStructureManager);
 
-						this.embeInUiStructureManager.open(embe);
+		// 				this.embeInUiStructureManager.open(embe);
 
-						if (zoneError.focus) {
-							zoneError.focus();
-						}
-					}
-				});
-			}
-		}
+		// 				if (zoneError.focus) {
+		// 					zoneError.focus();
+		// 				}
+		// 			}
+		// 		});
+		// 	}
+		// }
 
 		return errors;
 	}
@@ -256,7 +253,7 @@ class EmbeInUiStructureManager {
 	}
 
 	private resetEmbeCol(bakEmbes: Embe[], bakEntries: SiGenericEntry[]) {
-		this.embeCol.clearEmbes();
+		this.embeCol.removeEmbes();
 
 		bakEmbes.forEach((embe, i) => {
 			embe.siEmbeddedEntry.entry.resetToPoint(bakEntries[i]);

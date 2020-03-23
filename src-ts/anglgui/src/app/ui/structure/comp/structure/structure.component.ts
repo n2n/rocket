@@ -90,9 +90,9 @@ export class StructureComponent implements OnInit, OnDestroy, DoCheck {
 
 		this.toolbarSubscription = uiStructure.getToolbarChildren$().subscribe((toolbarUiStructures) => {
 			this.toolbarUiStructures = toolbarUiStructures;
-			if (!uiStructure.disposed) {
-				this.cdRef.detectChanges();
-			}
+			// if (!uiStructure.disposed) {
+			// 	this.cdRef.detectChanges();
+			// }
 		});
 
 		const classList = this.elRef.nativeElement.classList;

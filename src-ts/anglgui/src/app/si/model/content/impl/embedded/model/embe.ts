@@ -8,8 +8,8 @@ import { skip } from 'rxjs/operators';
 
 export class Embe {
 	private _siEmbeddedEntry: SiEmbeddedEntry;
-	uiStructureModel: UiStructureModel|null = null;
-	summaryUiStructureModel: UiStructureModel|null = null;
+	public uiStructureModel: UiStructureModel|null = null;
+	public summaryUiStructureModel: UiStructureModel|null = null;
 
 	private _uiStructure: UiStructure|null = null;
 	private _summaryUiStructure: UiStructure|null = null;
@@ -24,7 +24,11 @@ export class Embe {
 		return this._siEmbeddedEntry;
 	}
 
-	set siEmbeddedEntry(siEmbeddedEntry: SiEmbeddedEntry) {
+	set siEmbeddedEntry(siEmbeddedEntry: SiEmbeddedEntry|null) {
+		if (!siEmbeddedEntry) {
+			this.clear();
+			return;
+		}
 		IllegalStateError.assertTrue(!this._siEmbeddedEntry);
 
 		this._siEmbeddedEntry = siEmbeddedEntry;
@@ -34,8 +38,30 @@ export class Embe {
 		}
 	}
 
+	clear() {
+		this._siEmbeddedEntry = null;
+		this.uiStructureModel = null;
+		this.summaryUiStructureModel = null;
+
+		if (this._uiStructure) {
+			this._uiStructure.dispose();
+			this._uiStructure = null;
+		}
+
+		if (this._summaryUiStructure) {
+			this._summaryUiStructure.dispose();
+			this._summaryUiStructure = null;
+		}
+	}
+
 	isPlaceholder(): boolean {
 		return !this._siEmbeddedEntry;
+	}
+
+	isTypeSelected(): boolean {
+		console.log(this._siEmbeddedEntry.comp.entry.selectedTypeId);
+		console.log(this._siEmbeddedEntry.summaryComp.entry.selectedTypeId);
+		return !!this._siEmbeddedEntry.entry.selectedTypeId;
 	}
 
 	get siEntry(): SiEntry {
@@ -50,6 +76,7 @@ export class Embe {
 		}
 
 		this._uiStructure = this.getUiStructure().createChild(null, null, this.uiStructureModel);
+		this._uiStructure.model = this.uiStructureModel;
 
 		this._uiStructure.disposed$.pipe(skip(1)).subscribe(() => {
 			this._uiStructure = null;
@@ -59,12 +86,15 @@ export class Embe {
 	}
 
 	get summaryUiStructure(): UiStructure {
+		IllegalStateError.assertTrue(!!this.summaryUiStructureModel);
+
 		if (this._summaryUiStructure) {
 			IllegalStateError.assertTrue(this._summaryUiStructure.parent === this.getUiStructure());
 			return this._summaryUiStructure;
 		}
 
-		this._summaryUiStructure = this.getUiStructure().createChild(null, null, this.summaryUiStructureModel);
+		this._summaryUiStructure = this.getUiStructure().createChild();
+		this._summaryUiStructure.model = this.summaryUiStructureModel;
 
 		this._summaryUiStructure.disposed$.pipe(skip(1)).subscribe(() => {
 			this._summaryUiStructure = null;

@@ -4,7 +4,6 @@ import { SiTypeQualifier } from 'src/app/si/model/meta/si-type-qualifier';
 import { AddPasteObtainer } from './add-paste-obtainer';
 import { EmbeInCollection } from '../model/embe-collection';
 import { Embe } from '../model/embe';
-import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 
 export interface EmbeddedEntriesInModel extends EmbeddedEntryModel {
 

@@ -4,6 +4,7 @@ import { SplitViewStateContext } from './split-view-state-context';
 import { SplitViewStateSubscription } from './split-view-state-subscription';
 import { SplitOption } from '../split-option';
 import { SplitStyle } from '../split-context-si-field';
+import { skip } from 'rxjs/operators';
 
 @Injectable({
 	providedIn: 'root'
@@ -32,7 +33,7 @@ export class SplitViewStateService {
 		context = new SplitViewStateContext(uiStructure, splitStyle);
 		this.contexts.push(context);
 
-		uiStructure.disposed$.subscribe(() => {
+		uiStructure.disposed$.pipe(skip(1)).subscribe(() => {
 			if (uiStructure.disposed) {
 				this.removeContext(context);
 			}

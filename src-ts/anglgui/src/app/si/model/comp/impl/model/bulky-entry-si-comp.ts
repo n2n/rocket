@@ -38,12 +38,12 @@ export class BulkyEntrySiComp implements SiComp {
 		return [];
 	}
 
-	reload() {
-	}
+	// reload() {
+	// }
 
-	getContent() {
-		return this;
-	}
+	// getContent() {
+	// 	return this;
+	// }
 
 	get entry(): SiEntry|null {
 		return this._entry;

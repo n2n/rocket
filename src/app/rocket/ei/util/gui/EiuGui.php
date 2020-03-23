@@ -8,8 +8,6 @@ use rocket\ei\manage\gui\EiGui;
 use rocket\ei\util\entry\EiuObject;
 use rocket\ei\util\entry\EiuEntry;
 use rocket\ei\util\EiuPerimeterException;
-use rocket\si\content\impl\basic\CompactExplorerSiComp;
-use rocket\si\content\SiPartialContent;
 use rocket\ei\manage\gui\EiGuiUtil;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\EiGuiFactory;
@@ -152,17 +150,18 @@ class EiuGui {
 		$guiPropPaths = GuiPropPath::buildArray($guiPropPathsArg);
 		
 		$factory = new EiGuiFactory($this->eiuAnalyst->getN2nContext(true));
-		$factory->createMultiEiGui($this->eiGui->getContextEiMask(), $viewMode, $this->eiGui->getEiTypes(), $guiPropPaths, 
+		$newEiGui = $factory->createMultiEiGui($this->eiGui->getContextEiMask(), $viewMode, $this->eiGui->getEiTypes(), $guiPropPaths, 
 				$guiStructureDeclarationsRequired);
 		
-		$eiGui = new EiGui($this->eiGui->getContextEiMask(), $viewMode);
 		$eiFrame = $this->eiuAnalyst->getEiFrame(true);
-
 		foreach ($this->eiGui->getEiEntryGuis() as $eiEntryGui) {
-			$eiGui->appendEiEntryGui($eiFrame, $eiEntryGui->getEiEntries(), $eiEntryGui->getTreeLevel());
+			$newEiEntryGui = $newEiGui->appendEiEntryGui($eiFrame, $eiEntryGui->getEiEntries(), $eiEntryGui->getTreeLevel());
+			if ($eiEntryGui->isTypeDefSelected()) {
+				$newEiEntryGui->selectTypeDefByEiTypeId($eiEntryGui->getSelectedTypeDef()->getEiType()->getId());
+			}
 		}
 		
-		return new EiuGui($eiGui, $this->eiuAnalyst);
+		return new EiuGui($newEiGui, $this->eiuAnalyst);
 	}
 	
 }

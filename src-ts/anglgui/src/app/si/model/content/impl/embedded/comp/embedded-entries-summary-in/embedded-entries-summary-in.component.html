@@ -4,36 +4,70 @@
 
 <div cdkDropList (cdkDropListDropped)="drop($event)" class="rocket-draggable-list">
 	<div *ngFor="let embe of embes" cdkDrag class="rocket-draggable">
-		<rocket-si-add-past [obtainer]="obtainer" [allowedSiTypeQualifiers]="model.getAllowedSiTypeQualifiers()" type="reduced"
-				(newEntry)="addBefore($event, embe)"></rocket-si-add-past>
+		<div *ngIf="embe.isPlaceholder()">
+			<div [class.d-none]="!model.isSortable()" cdkDragHandle class="rocket-handle">
+				<i class="fa fa-bars"></i>
+			</div>
 
-		<div rocketUiStructure class="rocket-summary" 
-					[uiStructure]="embe.summaryUiStructure" [toolbarVisible]="false">
-			<ng-container pre-content>
+			<div class="rocket-loader"></div>
+
+			<div>
+				<button class="btn btn-danger">
+					<span>{{ 'common_delete_label' | translate }}</span>&nbsp;
+					<i class="fa fa-trash-o"></i>
+				</button>
+			</div>
+		</div>
+		
+		<ng-container *ngIf="!embe.isPlaceholder() && !embe.isTypeSelected()">
+			<div class="rocket-simple-commands">
 				<div [class.d-none]="!model.isSortable()" cdkDragHandle class="rocket-handle">
 					<i class="fa fa-bars"></i>
 				</div>
+
+				<button class="btn btn-warning" (click)="open(embe)">
+					<span>{{ 'common_edit_label' | translate }}</span>&nbsp;
+					<i class="fa fa-pencil"></i>
+				</button>
+				<button class="btn btn-danger">
+					<span>{{ 'common_delete_label' | translate }}</span>&nbsp;
+					<i class="fa fa-trash-o"></i>
+				</button>
+			</div>
+		</ng-container>
+
+		<ng-container *ngIf="!embe.isPlaceholder() && embe.isTypeSelected()">
+			<rocket-si-add-past [obtainer]="obtainer" [allowedSiTypeQualifiers]="model.getAllowedSiTypeQualifiers()" type="reduced"
+					(newEntry)="addBefore($event, embe)"></rocket-si-add-past>
+
+			<div rocketUiStructure class="rocket-summary" 
+						[uiStructure]="embe.summaryUiStructure" [toolbarVisible]="false">
+				<ng-container pre-content>
+					<div [class.d-none]="!model.isSortable()" cdkDragHandle class="rocket-handle">
+						<i class="fa fa-bars"></i>
+					</div>
+					
+					<rocket-si-qualifier [siTypeQualifier]="embe.siEntry.qualifier.typeQualifier"></rocket-si-qualifier>
+				</ng-container>
 				
-				<rocket-si-qualifier [siTypeQualifier]="embe.siEntry.qualifier.typeQualifier"></rocket-si-qualifier>
-			</ng-container>
-			
-			<ng-container post-content>
-				<div class="rocket-simple-commands">
-					<button class="btn btn-warning" (click)="open(embe)">
-						<span>{{ 'common_edit_label' | translate }}</span>&nbsp;
-						<i class="fa fa-pencil"></i>
-					</button>
-					<button class="btn btn-danger">
-						<span>{{ 'common_delete_label' | translate }}</span>&nbsp;
-						<i class="fa fa-trash-o"></i>
-					</button>
-					<button class="btn btn-success" (click)="copy(embe)">	
-						<span>{{ 'common_copy_label' | translate }}</span>&nbsp;
-						<i class="fa fa-copy"></i>
-					</button>
-				</div>
-			</ng-container>
-		</div>
+				<ng-container post-content>
+					<div class="rocket-simple-commands">
+						<button class="btn btn-warning" (click)="open(embe)">
+							<span>{{ 'common_edit_label' | translate }}</span>&nbsp;
+							<i class="fa fa-pencil"></i>
+						</button>
+						<button class="btn btn-danger">
+							<span>{{ 'common_delete_label' | translate }}</span>&nbsp;
+							<i class="fa fa-trash-o"></i>
+						</button>
+						<button class="btn btn-success" (click)="copy(embe)">	
+							<span>{{ 'common_copy_label' | translate }}</span>&nbsp;
+							<i class="fa fa-copy"></i>
+						</button>
+					</div>
+				</ng-container>
+			</div>
+		</ng-container>
 	</div>
 
 	<rocket-si-add-past [obtainer]="obtainer" [allowedSiTypeQualifiers]="model.getAllowedSiTypeQualifiers()" 

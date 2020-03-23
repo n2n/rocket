@@ -12,7 +12,7 @@ export abstract class UiStructureModelAdapter implements UiStructureModel {
 	protected disabled$: Observable<boolean>;
 
 	bind(uiStructure: UiStructure): void {
-		IllegalStateError.assertTrue(!this.boundUiStructure, 'UiStructureModel already bound.');
+		IllegalStateError.assertTrue(!this.boundUiStructure, 'UiStructureModel already bound. ');
 		this.boundUiStructure = uiStructure;
 	}
 

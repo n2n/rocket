@@ -135,13 +135,17 @@ class EiEntryGui {
 	 * @throws \InvalidArgumentException
 	 * @return \rocket\ei\manage\gui\EiEntryGui
 	 */
-	function selectedTypeDef(string $eiTypeId) {
+	function selectTypeDefByEiTypeId(string $eiTypeId) {
 		if (isset($this->typeDefs[$eiTypeId])) {
 			$this->selectedEiTypeId = $eiTypeId;
+			return $this;
 		}
 		
 		throw new \InvalidArgumentException('Unknown EiType id: ' . $eiTypeId);
-		return $this;
+	}
+	
+	function unselectTypeDef() {
+		$this->selectedEiTypeId = null;
 	}
 	
 	/**

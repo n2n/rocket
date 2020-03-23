@@ -27,10 +27,11 @@ export class EmbeCollection {
 	// 	return embe;
 	// }
 
-	clearEmbes() {
+	removeEmbes() {
 		let embe: Embe;
 		// tslint:disable-next-line: no-conditional-assignment
 		while (undefined !== (embe = this.embes.pop())) {
+			embe.clear();
 			// this.unregisterEmbe(embe);
 		}
 	}
@@ -42,7 +43,7 @@ export class EmbeCollection {
 	}
 
 	readEmbes() {
-		this.clearEmbes();
+		this.removeEmbes();
 
 		for (const siEmbeddedEntry of this.source.getValues()) {
 			this.createEmbe(siEmbeddedEntry);
@@ -77,16 +78,16 @@ export class EmbeInCollection extends EmbeCollection {
 		this.inSource.setValues(values);
 	}
 
-	fillWithPlaceholderEmbes() {
-		if (!this.config.allowedSiTypeQualifiers) {
-			return;
-		}
+	// fillWithPlaceholderEmbes() {
+	// 	if (!this.config.allowedSiTypeQualifiers) {
+	// 		return;
+	// 	}
 
-		const min = this.config.min;
-		while (this.embes.length < min) {
-			this.createEmbe();
-		}
-	}
+	// 	const min = this.config.min;
+	// 	while (this.embes.length < min) {
+	// 		this.createEmbe();
+	// 	}
+	// }
 
 	removeEmbe(embe: Embe) {
 		const i = this.embes.indexOf(embe);
@@ -95,6 +96,7 @@ export class EmbeInCollection extends EmbeCollection {
 		}
 
 		this.embes.splice(i, 1);
+		embe.clear();
 		// this.unregisterEmbe(embe);
 	}
 
