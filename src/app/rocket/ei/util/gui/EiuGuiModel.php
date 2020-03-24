@@ -63,6 +63,13 @@ class EiuGuiModel {
 		return $this->eiGuiModel->createSiDeclaration();
 	}
 	
+	/**
+	 * @return \rocket\si\control\SiControl[]
+	 */
+	function createGeneralSiControls() {
+		return $this->eiGuiModel->createGeneralSiControls($this->eiuAnalyst->getEiFrame(true));
+	}
+	
 	function guiFrames() {
 		if ($this->eiuGuiFrames !== null) {
 			return $this->eiuGuiFrames;

@@ -128,6 +128,32 @@ class EiGuiModel {
 		return $siDeclaration;
 	}
 	
+	/**
+	 * @param EiFrame $eiFrame
+	 * @param EiEntryGui $eiEntryGui
+	 * @param bool $siControlsIncluded
+	 * @return \rocket\si\content\SiEntry
+	 */
+	function createSiEntry(EiFrame $eiFrame, EiEntryGui $eiEntryGui, bool $siControlsIncluded) {
+		$siEntry = new SiEntry($eiEntryGui->createSiEntryIdentifier(), 
+				ViewMode::isReadOnly($this->viewMode), ViewMode::isBulky($this->viewMode));
+		
+		$typeDefs = $eiEntryGui->getTypeDefs();
+		
+		foreach ($this->eiGuiFrames as $key => $eiGuiFrame) {
+			ArgUtils::assertTrue(isset($typeDefs[$key]));
+			$eiEntryGuiTypeDef = $typeDefs[$key];
+			
+			$siEntry->putBuildup($eiEntryGuiTypeDef->getEiType()->getId(),
+					$eiGuiFrame->createSiEntryBuildup($eiFrame, $eiEntryGuiTypeDef, $siControlsIncluded));
+		}
+		
+		if ($eiEntryGui->isTypeDefSelected()) {
+			$siEntry->setSelectedTypeId($eiEntryGui->getSelectedTypeDef()->getEiType()->getId());
+		}
+		
+		return $siEntry;
+	}
 	
 // 	/**
 // 	 * @return SiProp[]

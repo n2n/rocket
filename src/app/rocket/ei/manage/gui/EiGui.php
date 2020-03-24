@@ -30,7 +30,7 @@ class EiGui {
 	/**
 	 * @return EiGuiModel
 	 */
-	function EiGuiModel() {
+	function getEiGuiModel() {
 		return $this->eiGuiModel;
 	}
 	
@@ -83,7 +83,7 @@ class EiGui {
 	 */
 	function createSiEntry(EiFrame $eiFrame, bool $siControlsIncluded = true) {
 		if ($this->hasSingleEiEntryGui()) {
-			return $this->assemblySiEntry($eiFrame, current($this->eiEntryGuis), $siControlsIncluded);
+			return $this->eiGuiModel->createSiEntry($eiFrame, current($this->eiEntryGuis), $siControlsIncluded);
 		}
 		
 		throw new IllegalStateException('EiGuiModel has none or multiple EiEntryGuis');
@@ -95,35 +95,10 @@ class EiGui {
 	function createSiEntries(EiFrame $eiFrame, bool $siControlsIncluded = true) {
 		$siEntries = [];
 		foreach ($this->eiEntryGuis as $eiEntryGui) {
-			$siEntries[] = $this->assemblySiEntry($eiFrame, $eiEntryGui, $siControlsIncluded);
+			$siEntries[] = $this->eiGuiModel->createSiEntry($eiFrame, $eiEntryGui, $siControlsIncluded);
 		}
 		return $siEntries;
 	}
 	
-	/**
-	 * @param EiFrame $eiFrame
-	 * @param EiEntryGui $eiEntryGui
-	 * @param bool $siControlsIncluded
-	 * @return \rocket\si\content\SiEntry
-	 */
-	private function assemblySiEntry($eiFrame, $eiEntryGui, $siControlsIncluded = true) {
-		$siEntry = new SiEntry($eiEntryGui->createSiEntryIdentifier(), ViewMode::isReadOnly($this->viewMode),
-				ViewMode::isBulky($this->viewMode));
-		
-		$typeDefs = $eiEntryGui->getTypeDefs();
-		
-		foreach ($this->eiGuiFrames as $key => $eiGuiFrame) {
-			IllegalStateException::assertTrue(isset($typeDefs[$key]));
-			$eiEntryGuiTypeDef = $typeDefs[$key];
-			
-			$siEntry->putBuildup($eiEntryGuiTypeDef->getEiType()->getId(),
-					$eiGuiFrame->createSiEntryBuildup($eiFrame, $eiEntryGuiTypeDef, $siControlsIncluded));
-		}
-		
-		if ($eiEntryGui->isTypeDefSelected()) {
-			$siEntry->setSelectedTypeId($eiEntryGui->getSelectedTypeDef()->getEiType()->getId());
-		}
-		
-		return $siEntry;
-	}
+	
 }

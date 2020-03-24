@@ -73,6 +73,7 @@ use rocket\ei\util\gui\EiuEntryGui;
 use rocket\ei\manage\gui\field\GuiPropPath;
 use rocket\ei\manage\gui\EiGuiModelFactory;
 use rocket\ei\manage\gui\ViewMode;
+use rocket\ei\manage\gui\EiGui;
 
 class EiuFrame {
 	private $eiFrame;
@@ -693,10 +694,10 @@ class EiuFrame {
 		
 		$factory = new EiGuiModelFactory($this->eiuAnalyst->getN2nContext(true));
 		$eiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
-		$eiGuiModel =  $factory->createForgeMultiEiGuiModel($eiMask, $viewMode, $allowedEiTypes, $guiPropPaths, $guiStructureDeclarationsRequired);
-		$eiGuiModel->appendNewEiEntryGui($this->eiFrame);
+		$eiGui =  new EiGui($factory->createForgeMultiEiGuiModel($eiMask, $viewMode, $allowedEiTypes, $guiPropPaths, $guiStructureDeclarationsRequired));
+		$eiGui->appendNewEiEntryGui($this->eiFrame);
 		
-		$eiuGui = new EiuGui($eiGuiModel, $this->eiuAnalyst);
+		$eiuGui = new EiuGui($eiGui, null, $this->eiuAnalyst);
 		return $eiuGui->entryGui();
 	}
 	

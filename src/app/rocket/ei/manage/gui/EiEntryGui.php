@@ -153,11 +153,11 @@ class EiEntryGui {
 	 * @return \rocket\ei\manage\gui\EiEntryGuiTypeDef
 	 */
 	function getSelectedTypeDef() {
-		if (!isset($this->eiEntryGuis[$this->selectedEiTypeId])) {
-			throw new IllegalStateException('No selection');
+		if (!isset($this->typeDefs[$this->selectedEiTypeId])) {
+			throw new IllegalStateException('No selection ');
 		}
 		
-		return $this->eiEntryGuis[$this->selectedEiTypeId];
+		return $this->typeDefs[$this->selectedEiTypeId];
 	}
 	
 	/**

@@ -276,7 +276,7 @@ class EiuEntryGui {
 	function entry() {
 		if ($this->eiuEntry === null) {
 			$eiEntryTypeDef = $this->getEiEntryGui()->getSelectedTypeDef();
-			$this->eiuEntry = new EiuEntry($eiEntryTypeDef->getEiEntry(), null, null, $eiuAnalyst);
+			$this->eiuEntry = new EiuEntry($eiEntryTypeDef->getEiEntry(), null, null, $this->eiuAnalyst);
 		}
 		
 		return $this->eiuEntry;

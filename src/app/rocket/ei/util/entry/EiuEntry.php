@@ -44,6 +44,7 @@ use n2n\util\ex\NotYetImplementedException;
 use rocket\ei\component\prop\EiPropWrapper;
 use rocket\ei\util\gui\EiuGui;
 use rocket\ei\manage\gui\EiGuiModelFactory;
+use rocket\ei\manage\gui\EiGui;
 
 class EiuEntry {
 	private $eiEntry;
@@ -295,9 +296,9 @@ class EiuEntry {
 	 * @param bool $guiStructureDeclarationsRequired
 	 * @return \rocket\ei\util\gui\EiuGui
 	 */
-	function newGui(bool $bulky = true, bool $editable = false, array $guiPropPathsArg = null, 
+	function newGui(bool $bulky = true, bool $readOnly = true, array $guiPropPathsArg = null, 
 			bool $guiStructureDeclarationsRequired = true, bool $determineEiMask = true) {
-		$viewMode = $this->deterViewMode($bulky, $editable);
+		$viewMode = ViewMode::determine($bulky, $readOnly, $this->isNew());
 		$guiPropPaths = GuiPropPath::buildArray($guiPropPathsArg);
 		
 		$eiEntry = $this->getEiEntry(true);
@@ -309,10 +310,11 @@ class EiuEntry {
 		}
 		
 		$factory = new EiGuiModelFactory($this->eiuAnalyst->getN2nContext(true));
-		$eiGuiModel =  $factory->createEiGuiModel($eiMask, $viewMode, $guiPropPaths, $guiStructureDeclarationsRequired);
-		$eiGuiModel->appendEiEntryGui($this->eiuAnalyst->getEiFrame(true), [$eiEntry]);
+		$eiGui = new EiGui($factory->createEiGuiModel($eiMask, $viewMode, $guiPropPaths, 
+				$guiStructureDeclarationsRequired));
+		$eiGui->appendEiEntryGui($this->eiuAnalyst->getEiFrame(true), [$eiEntry]);
 		
-		return new EiuGui($eiGuiModel, $this->eiuAnalyst);
+		return new EiuGui($eiGui, null, $this->eiuAnalyst);
 	}
 	
 // 	/**

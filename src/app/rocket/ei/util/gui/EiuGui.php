@@ -40,9 +40,9 @@ class EiuGui {
 	/**
 	 * @return \rocket\ei\util\gui\EiuGuiModel
 	 */
-	function model() {
+	function guiModel() {
 		if ($this->eiuGuiModel === null) {
-			$this->eiuGuiModel = new EiuGuiModel($this->eiGuiModel, $this->eiuAnalyst);
+			$this->eiuGuiModel = new EiuGuiModel($this->eiGui->getEiGuiModel(), $this->eiuAnalyst);
 		}
 		
 		return $this->eiuGuiModel;
@@ -110,11 +110,11 @@ class EiuGui {
 	 * @return \rocket\si\content\impl\basic\CompactEntrySiComp
 	 */
 	function createCompactEntrySiComp(/*bool $generalSiControlsIncluded = true,*/ bool $entrySiControlsIncluded = true) {
-		if (!ViewMode::isCompact($this->eiGui->getViewMode())) {
+		if (!ViewMode::isCompact($this->eiGui->getEiGuiModel()->getViewMode())) {
 			throw new EiuPerimeterException('EiEntryGuiMulti is not compact.');
 		}
 		
-		return (new EiGuiUtil($this->getEiGuiModel(), $this->eiuAnalyst->getEiFrame(true)))
+		return (new EiGuiUtil($this->eiGui, $this->eiuAnalyst->getEiFrame(true)))
 				->createCompactEntrySiComp(/*$generalSiControlsIncluded, */$entrySiControlsIncluded);
 	}
 	
@@ -124,11 +124,11 @@ class EiuGui {
 	 * @return \rocket\si\content\impl\basic\BulkyEntrySiComp
 	 */
 	function createBulkyEntrySiComp(/*bool $generalSiControlsIncluded = true,*/ bool $entrySiControlsIncluded = true) {
-		if (!ViewMode::isBulky($this->eiGui->getViewMode())) {
+		if (!ViewMode::isBulky($this->eiGui->getEiGuiModel()->getViewMode())) {
 			throw new EiuPerimeterException('EiEntryGuiMulti is not bulky.');
 		}
 		
-		return (new EiGuiUtil($this->getEiGuiModel(), $this->eiuAnalyst->getEiFrame(true)))
+		return (new EiGuiUtil($this->eiGui, $this->eiuAnalyst->getEiFrame(true)))
 				->createBulkyEntrySiComp(/*$generalSiControlsIncluded,*/ $entrySiControlsIncluded);
 	}
 	
@@ -136,23 +136,24 @@ class EiuGui {
 	 * @return \rocket\ei\util\gui\EiuGui
 	 */
 	function copy(bool $bulky, bool $readOnly, array $guiPropPathsArg = null, bool $guiStructureDeclarationsRequired = true) {
-		$viewMode = ViewMode::determine($bulky, $readOnly, ViewMode::isAdd($this->eiGui->getViewMode()));
+		$eiGuiModel = $this->eiGui->getEiGuiModel();
+		$viewMode = ViewMode::determine($bulky, $readOnly, ViewMode::isAdd($eiGuiModel->getViewMode()));
 		$factory = new EiGuiModelFactory($this->eiuAnalyst->getN2nContext(true));
 		$guiPropPaths = GuiPropPath::buildArray($guiPropPathsArg);
 		
 		$factory = new EiGuiModelFactory($this->eiuAnalyst->getN2nContext(true));
-		$newEiGuiModel = $factory->createMultiEiGuiModel($this->eiGui->getContextEiMask(), $viewMode, $this->eiGui->getEiTypes(), $guiPropPaths, 
-				$guiStructureDeclarationsRequired);
+		$newEiGui = new EiGui($factory->createMultiEiGuiModel($eiGuiModel->getContextEiMask(), $viewMode, 
+				$eiGuiModel->getEiTypes(), $guiPropPaths, $guiStructureDeclarationsRequired));
 		
 		$eiFrame = $this->eiuAnalyst->getEiFrame(true);
 		foreach ($this->eiGui->getEiEntryGuis() as $eiEntryGui) {
-			$newEiEntryGui = $newEiGuiModel->appendEiEntryGui($eiFrame, $eiEntryGui->getEiEntries(), $eiEntryGui->getTreeLevel());
+			$newEiEntryGui = $newEiGui->appendEiEntryGui($eiFrame, $eiEntryGui->getEiEntries(), $eiEntryGui->getTreeLevel());
 			if ($eiEntryGui->isTypeDefSelected()) {
 				$newEiEntryGui->selectTypeDefByEiTypeId($eiEntryGui->getSelectedTypeDef()->getEiType()->getId());
 			}
 		}
 		
-		return new EiuGui($newEiGuiModel, $this->eiuAnalyst);
+		return new EiuGui($newEiGui, null, $this->eiuAnalyst);
 	}
 	
 }

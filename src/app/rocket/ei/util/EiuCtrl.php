@@ -50,10 +50,15 @@ use rocket\si\meta\SiBreadcrumb;
 use rocket\ei\manage\gui\EiGuiModelFactory;
 use rocket\ei\manage\gui\EiGui;
 use rocket\ei\manage\gui\EiGuiUtil;
+use rocket\ei\manage\frame\EiFrame;
 
 class EiuCtrl {
 	private $eiu;
 	private $eiuFrame;	
+	/**
+	 * @var EiFrame
+	 */
+	private $eiFrame;
 	/**
 	 * @var HttpContext
 	 */
@@ -71,6 +76,7 @@ class EiuCtrl {
 	private function __construct(ControllingUtils $cu) {
 		$this->cu = $cu;
 		$manageState = $cu->getN2nContext()->lookup(ManageState::class);
+		$this->eiFrame = $manageState->peakEiFrame();
 		$this->eiu = new Eiu($manageState->peakEiFrame());
 		$this->eiuFrame = $this->eiu->frame();
 		$this->httpContext = $manageState->getN2nContext()->getHttpContext();
@@ -347,23 +353,17 @@ class EiuCtrl {
 		}
 	}
 	
-	function forwardDlZone($eiEntry, bool $editable, bool $siControlsIncluded = true) {
+	function forwardDlZone($eiEntryArg, bool $readOnly, bool $siControlsIncluded = true) {
 		if ($this->forwardHtml()) {
 			return;
 		}
 
-		$eiuEntry = EiuAnalyst::buildEiuEntryFromEiArg($eiEntry, $this->eiuFrame, 'eiEntry', true);
-		$eiuGuiFrameLayout = $eiuEntry->newGui(true, $editable);
-		$eiGuiModel = $eiuGuiFrameLayout->getEiGuiModel();
-		
-		$eiFrame = $this->eiuFrame->getEiFrame();
-		
-		$siDeclaration = $eiGuiModel->createSiDeclaration($eiFrame);
-		
-		$comp = new BulkyEntrySiComp($siDeclaration, $eiGuiModel->createSiEntry($eiFrame, $siControlsIncluded));
+		$eiuEntry = EiuAnalyst::buildEiuEntryFromEiArg($eiEntryArg, $this->eiuFrame, 'eiEntryArg', true);
+		$eiuGui = $eiuEntry->newGui(true, $readOnly);
+		$siComp = $eiuGui->createBulkyEntrySiComp($siControlsIncluded);
 		
 		$this->httpContext->getResponse()->send(
-				SiPayloadFactory::create($comp, $eiGuiModel->createGeneralSiControls($eiFrame),
+				SiPayloadFactory::create($siComp, $eiuGui->guiModel()->createGeneralSiControls(),
 						$this->rocketState->getBreadcrumbs(),
 						$eiuEntry->createIdentityString()));
 	}
