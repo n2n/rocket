@@ -35,7 +35,6 @@ use rocket\ei\manage\gui\GuiException;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\util\EiuAnalyst;
-use rocket\ei\util\EiuPerimeterException;
 use rocket\ei\util\spec\EiuMask;
 use n2n\util\type\ArgUtils;
 use rocket\ei\manage\entry\UnknownEiFieldExcpetion;
@@ -43,7 +42,6 @@ use rocket\ei\component\prop\EiProp;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\ei\component\prop\EiPropWrapper;
 use rocket\ei\util\gui\EiuGui;
-use rocket\ei\manage\gui\EiGuiModelFactory;
 use rocket\ei\manage\gui\EiGui;
 
 class EiuEntry {
@@ -309,8 +307,8 @@ class EiuEntry {
 			$eiMask = $this->eiuAnalyst->getEiFrame(true)->getContextEiEngine()->getEiMask();
 		}
 		
-		$factory = new EiGuiModelFactory($this->eiuAnalyst->getN2nContext(true));
-		$eiGui = new EiGui($factory->createEiGuiModel($eiMask, $viewMode, $guiPropPaths, 
+		$obtainer = $this->eiuAnalyst->getManageState()->getEiGuiModelCache();
+		$eiGui = new EiGui($obtainer->obtainEiGuiModel($eiMask, $viewMode, $guiPropPaths, 
 				$guiStructureDeclarationsRequired));
 		$eiGui->appendEiEntryGui($this->eiuAnalyst->getEiFrame(true), [$eiEntry]);
 		

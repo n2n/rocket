@@ -17,9 +17,12 @@ class EiGuiModelFactory {
 	 */
 	private $def;
 	
-	function __construct(N2nContext $n2nContext) {
-		$this->n2nContext = $n2nContext;
-		$this->def = $n2nContext->lookup(ManageState::class)->getDef();
+	/**
+	 * @param ManageState $manageState
+	 */
+	function __construct(ManageState $manageState) {
+		$this->n2nContext = $manageState->getN2nContext();
+		$this->def = $manageState->getDef();
 	}
 	
 	/**

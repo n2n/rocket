@@ -45,9 +45,7 @@ use rocket\ei\manage\gui\EiEntryGui;
 use rocket\si\content\SiEntry;
 use rocket\si\meta\SiDeclaration;
 use n2n\util\ex\IllegalStateException;
-use rocket\si\content\SiEntryIdentifier;
 use n2n\util\type\ArgUtils;
-use rocket\ei\manage\gui\EiGuiModelFactory;
 use rocket\ei\manage\gui\EiGui;
 
 class EiFrameUtil {
@@ -285,8 +283,8 @@ class EiFrameUtil {
 	 * @return \rocket\ei\manage\gui\EiGui
 	 */
 	function lookupEiGuiFromRange(int $offset, int $num, bool $bulky, bool $readOnly, array $guiPropPaths = null) {
-		$factory = new EiGuiModelFactory($this->eiFrame->getN2nContext());
-		$eiGuiModel = $factory->createEiGuiModel($this->eiFrame->getContextEiEngine()->getEiMask(), 
+		$eiGuiModelCache = $this->eiFrame->getManageState()->getEiGuiModelCache();
+		$eiGuiModel = $eiGuiModelCache->obtainEiGuiModel($this->eiFrame->getContextEiEngine()->getEiMask(), 
 				ViewMode::determine($bulky, $readOnly, false), $guiPropPaths, true);
 		$eiGui = new EiGui($eiGuiModel);
 			

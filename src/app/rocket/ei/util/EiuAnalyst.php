@@ -71,6 +71,7 @@ use rocket\ei\manage\gui\EiEntryGuiTypeDef;
 use rocket\ei\util\gui\EiuEntryGuiTypeDef;
 use rocket\ei\manage\gui\EiGuiModel;
 use rocket\ei\util\gui\EiuGuiModel;
+use rocket\ei\manage\gui\EiGuiModelCache;
 
 class EiuAnalyst {
 	const EI_FRAME_TYPES = array(EiFrame::class, EiuFrame::class, N2nContext::class);
@@ -981,6 +982,13 @@ class EiuAnalyst {
 		throw new EiuPerimeterException('Could not determine N2nContext.');
 	}
 	
+	/**
+	 * @return ManageState
+	 */
+	function getManageState() {
+		return $this->getN2nContext(true)->lookup(ManageState::class);
+	}
+	
 	public function getEiuContext(bool $required) {
 		if ($this->eiuContext !== null) {
 			return $this->eiuContext;
@@ -1193,6 +1201,27 @@ class EiuAnalyst {
 		
 		throw new EiuPerimeterException(
 				'Can not create EiuGui because non of the following types were provided as eiArgs: '
+				. implode(', ', self::EI_GUI_TYPES));
+	}
+	
+	/**
+	 * @param bool $required
+	 * @throws EiuPerimeterException
+	 * @return \rocket\ei\util\gui\EiuGuiModel
+	 */
+	public function getEiuGuiModel(bool $required) {
+		if ($this->eiuGuiModel !== null) {
+			return $this->eiuGuiModel;
+		}
+		
+		if ($this->eiGuiModel !== null) {
+			return $this->eiGuiModel = new EiuGuiModel($this->eiGuiModel, $this);
+		}
+		
+		if (!$required) return null;
+		
+		throw new EiuPerimeterException(
+				'Can not create EiuGuiModel because non of the following types were provided as eiArgs: '
 				. implode(', ', self::EI_GUI_TYPES));
 	}
 	

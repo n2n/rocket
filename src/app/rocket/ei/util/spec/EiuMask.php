@@ -53,6 +53,13 @@ class EiuMask  {
 	}
 	
 	/**
+	 * @return \rocket\spec\TypePath
+	 */
+	function getEiTypePath() {
+		return $this->eiMask->getEiTypePath();
+	}
+	
+	/**
 	 * @return \rocket\ei\EiType
 	 */
 	public function getEiType() {

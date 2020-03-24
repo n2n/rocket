@@ -31,8 +31,6 @@ use rocket\ei\util\frame\EiuFrame;
 use rocket\ei\manage\frame\EiForkLink;
 use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\util\gui\EiuGuiFrame;
-use rocket\ei\util\gui\EiuGui;
-use rocket\ei\manage\gui\EiGuiModelFactory;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\util\gui\EiuGuiModel;
 
@@ -419,7 +417,7 @@ class EiuEngine {
 	function newGuiModel(int $viewMode, array $guiPropPathsArg = null, bool $guiStructureDeclarationsRequired = true) {
 		$guiPropPaths = GuiPropPath::buildArray($guiPropPathsArg);
 		
-		$factory = new EiGuiModelFactory($this->eiuAnalyst->getN2nContext(true));
+		$cache = $this->eiuAnalyst->getManageState()->getEiGuiModelCache();
 		$eiGuiModel =  $factory->createEiGuiModel($this->eiEngine->getEiMask(), $viewMode, $guiPropPaths, $guiStructureDeclarationsRequired);
 		
 		return new EiuGuiModel($eiGuiModel, $this->eiuAnalyst);
@@ -440,13 +438,13 @@ class EiuEngine {
 	/**
 	 * @return EiuGuiModel 
 	 */
-	function newForgeMultiGuiModel(bool $bulky = true, bool $readOnly = false, array $allowedEiTypesArg, array $guiPropPathsArg = null, bool $guiStructureDeclarationsRequired = true) {
+	function newForgeMultiGuiModel(bool $bulky = true, bool $readOnly = false, array $allowedEiTypesArg = null, 
+			array $guiPropPathsArg = null) {
 		$viewMode = ViewMode::determine($bulky, $readOnly, true);
-		$factory = new EiGuiModelFactory($this->eiuAnalyst->getN2nContext(true));
+		$cache = $this->eiuAnalyst->getManageState()->getEiGuiModelCache();
 		$allowedEiTypes = EiuAnalyst::buildEiTypesFromEiArg($allowedEiTypesArg);
 		$guiPropPaths = GuiPropPath::buildArray($guiPropPathsArg);
-		
-		$eiGuiModel =  $factory->createForgeMultiEiGuiModel($this->eiEngine->getEiMask(), $viewMode, $allowedEiTypes, $guiPropPaths, $guiStructureDeclarationsRequired);
+		$eiGuiModel =  $cache->obtainForgeMultiEiGuiModel($this->eiEngine->getEiMask(), $viewMode, $allowedEiTypes, $guiPropPaths);
 		return new EiuGuiModel($eiGuiModel, $this->eiuAnalyst);
 	}
 }

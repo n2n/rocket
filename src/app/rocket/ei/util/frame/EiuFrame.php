@@ -66,12 +66,10 @@ use rocket\ei\component\prop\EiProp;
 use rocket\ei\manage\frame\EiForkLink;
 use rocket\ei\manage\frame\CriteriaFactory;
 use rocket\si\content\SiEntryQualifier;
-use rocket\ei\util\gui\EiuEntryGuiTypeDef;
 use rocket\ei\util\gui\EiuGui;
 use rocket\ei\util\Eiu;
 use rocket\ei\util\gui\EiuEntryGui;
 use rocket\ei\manage\gui\field\GuiPropPath;
-use rocket\ei\manage\gui\EiGuiModelFactory;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\EiGui;
 
@@ -692,9 +690,9 @@ class EiuFrame {
 		$allowedEiTypes = EiuAnalyst::buildEiTypesFromEiArg($allowedEiTypesArg);
 		$guiPropPaths = GuiPropPath::buildArray($guiPropPathsArg);
 		
-		$factory = new EiGuiModelFactory($this->eiuAnalyst->getN2nContext(true));
+		$obtainer = $this->eiuAnalyst->getManageState()->getEiGuiModelCache();
 		$eiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
-		$eiGui =  new EiGui($factory->createForgeMultiEiGuiModel($eiMask, $viewMode, $allowedEiTypes, $guiPropPaths, $guiStructureDeclarationsRequired));
+		$eiGui =  new EiGui($obtainer->obtainForgeMultiEiGuiModel($eiMask, $viewMode, $allowedEiTypes, $guiPropPaths, $guiStructureDeclarationsRequired));
 		$eiGui->appendNewEiEntryGui($this->eiFrame);
 		
 		$eiuGui = new EiuGui($eiGui, null, $this->eiuAnalyst);

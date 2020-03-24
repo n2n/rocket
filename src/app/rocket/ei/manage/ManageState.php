@@ -33,6 +33,7 @@ use rocket\ei\manage\draft\DraftManager;
 use rocket\ei\manage\security\EiPermissionManager;
 use rocket\ei\manage\veto\EiLifecycleMonitor;
 use rocket\ei\manage\frame\EiFrame;
+use rocket\ei\manage\gui\EiGuiModelCache;
 
 class ManageState implements RequestScoped {
 	private $n2nContext;
@@ -43,6 +44,10 @@ class ManageState implements RequestScoped {
 	private $eiFrames = array();
 	private $entityManager;
 	private $draftManager;
+	/**
+	 * @var EiGuiModelCache
+	 */
+	private $eiGuiModelCache;
 	private $eiLifecycleMonitor;
 	
 	function __construct() {
@@ -55,6 +60,8 @@ class ManageState implements RequestScoped {
 		if (null !== ($user = $loginContext->getCurrentUser())) {
 			$this->setUser($user);
 		}
+		
+		$this->eiGuiModelCache = new EiGuiModelCache($this);
 	}
 		
 	/**
@@ -151,6 +158,18 @@ class ManageState implements RequestScoped {
 	
 	public function setEiLifecycleMonitor(EiLifecycleMonitor $eiLifecycleMonitor) {
 		$this->eiLifecycleMonitor = $eiLifecycleMonitor;
+	}
+	
+	/**
+	 * @throws IllegalStateException
+	 * @return \rocket\ei\manage\gui\EiGuiModelCache
+	 */
+	function getEiGuiModelCache() {
+		if ($this->eiGuiModelCache === null) {
+			throw new IllegalStateException('No EiGuiModelCache available.');
+		}
+		
+		return $this->eiGuiModelCache;
 	}
 	
 // 	public function createEiFrame(EiEngine $contextEiEngine, ControllerContext $controllerContext, EiCommandPath $eiCommandPath) {

@@ -40,14 +40,12 @@ use rocket\si\content\impl\basic\BulkyEntrySiComp;
 use rocket\ei\manage\security\InaccessibleEiEntryException;
 use rocket\ei\manage\frame\EiFrameUtil;
 use rocket\ei\manage\LiveEiObject;
-use rocket\ei\manage\gui\EiGuiModel;
 use n2n\web\http\HttpContext;
 use rocket\si\NavPoint;
 use n2n\l10n\DynamicTextCollection;
 use n2n\util\uri\Url;
 use rocket\core\model\RocketState;
 use rocket\si\meta\SiBreadcrumb;
-use rocket\ei\manage\gui\EiGuiModelFactory;
 use rocket\ei\manage\gui\EiGui;
 use rocket\ei\manage\gui\EiGuiUtil;
 use rocket\ei\manage\frame\EiFrame;
@@ -303,8 +301,8 @@ class EiuCtrl {
 		}
 		
 		$eiFrame = $this->eiuFrame->getEiFrame();
-		$factory = new EiGuiModelFactory($this->eiu->getN2nContext());
-		$eiGuiModel =  $factory->createEiGuiModel($eiFrame->getContextEiEngine()->getEiMask(), ViewMode::COMPACT_READ, null, true);
+		$obtainer = $eiFrame->getManageState()->getEiGuiModelCache();
+		$eiGuiModel =  $obtainer->obtainEiGuiModel($eiFrame->getContextEiEngine()->getEiMask(), ViewMode::COMPACT_READ, null, true);
 		$eiGui = new EiGui($eiGuiModel);
 		
 		$this->composeEiuGuiForList($eiGui, $pageSize);
