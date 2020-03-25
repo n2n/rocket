@@ -117,7 +117,7 @@ class EiGuiModelCache {
 	 */
 	function obtainForgeMultiEiGuiModel(EiMask $contextEiMask, int $viewMode, ?array $allowedEiTypes,
 			?array $guiPropPaths) {
-		$key = $this->createCacheKey($contextEiMask, $viewMode, null, $guiPropPaths);
+		$key = $this->createCacheKey($contextEiMask, $viewMode, $allowedEiTypes, $guiPropPaths);
 		
 		if (isset($this->forgeMultiEiGuiModels[$key])) {
 			return $this->forgeMultiEiGuiModels[$key];

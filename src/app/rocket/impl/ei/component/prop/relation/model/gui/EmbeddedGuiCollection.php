@@ -25,10 +25,18 @@ use rocket\ei\util\gui\EiuEntryGui;
 use rocket\ei\util\entry\EiuEntry;
 use rocket\ei\EiPropPath;
 use rocket\ei\util\frame\EiuFrame;
-use rocket\ei\manage\gui\ViewMode;
 use rocket\si\content\impl\relation\SiEmbeddedEntry;
+use n2n\util\ex\IllegalStateException;
+use rocket\ei\manage\entry\EiEntry;
+use rocket\ei\util\spec\EiuMask;
+use n2n\util\type\CastUtils;
+use rocket\si\input\SiEntryInput;
 
 class EmbeddedGuiCollection {
+	/**
+	 * @param EiuFrame
+	 */
+	private $eiuFrame;
 	/**
 	 * @var bool
 	 */
@@ -37,14 +45,27 @@ class EmbeddedGuiCollection {
 	 * @var bool
 	 */
 	private $summaryRequired;
+	/**
+	 * @var int
+	 */
+	private $min;
 	/** 
 	 * @var EiuEntryGui[]
 	 */
 	private $eiuEntryGuis = [];
+	/**
+	 * 
+	 * @var EiuMask[]
+	 */
+	private $allowedEiuMasks = [];
 
-	function __construct(bool $readOnly, bool $summaryRequired) {
+	function __construct(bool $readOnly, bool $summaryRequired, int $min, ?EiuFrame $eiuFrame, ?array $allowedEiuMasks) {
 		$this->readOnly = $readOnly;
 		$this->summaryRequired = $summaryRequired;
+		$this->min = $min;
+		$this->eiuFrame = $eiuFrame;
+		$this->allowedEiuMasks = $allowedEiuMasks;
+	
 	}
 
 	function clear() {
@@ -59,15 +80,23 @@ class EmbeddedGuiCollection {
 		return $this->eiuEntryGuis[] = $eiuEntry->newGui(true, $this->readOnly)->entryGui();
 	}
 	
-	function addNews(EiuFrame $eiuFrame, int $num) {
-		$eiuGuiModel = $eiuFrame->contextEngine()->newForgeMultiGuiModel(true, false);
+	function fillUp() {
+		$num = $this->min - count($this->eiuEntryGuis);
+		
+		if ($num <= 0) {
+			return;
+		}
+		
+		IllegalStateException::assertTrue($this->eiuFrame !== null);
+		$eiuGuiModel = $this->eiuFrame->contextEngine()->newForgeMultiGuiModel(true, false, $this->allowedEiuMasks);
 		for ($i = 0; $i < $num; $i++) {
 			$this->eiuEntryGuis[] = $eiuGuiModel->newEntryGui();
 		}
 	}
 	
-	function addNew(EiuFrame $eiuFrame) {
-		return $this->eiuEntryGuis[] = $eiuFrame->newForgeMultiEntryGui(true, $this->readOnly);
+	function addNew() {
+		IllegalStateException::assertTrue($this->eiuFrame !== null);
+		return $this->eiuEntryGuis[] = $this->eiuFrame->newForgeMultiEntryGui(true, $this->readOnly);
 	}
 	
 	function sort(EiPropPath $orderEiPropPath) {
@@ -88,6 +117,21 @@ class EmbeddedGuiCollection {
 	 */
 	function count() {
 		return count($this->eiuEntryGuis);
+	}
+	
+	/**
+	 * @return NULL|\rocket\si\meta\SiTypeQualifier[]
+	 */      
+	function buildAllowedSiTypeQualifiers() {
+		if ($this->allowedEiuMasks === null) {
+			return null;
+		}
+		
+		$allowedSiTypeQualifiers = [];
+		foreach ($this->allowedEiuMasks as $eiuMask) {
+			$allowedSiTypeQualifiers[] = $eiuMask->createSiTypeQualifier();
+		}
+		return $allowedSiTypeQualifiers;
 	}
 	
 	function createSiEmbeddedEntries() {
@@ -120,5 +164,51 @@ class EmbeddedGuiCollection {
 		}
 		
 		return null;
+	}
+	
+	function handleSiEntryInputs(array $siEntryInputs) {
+		$newEiuEntryGuis = [];
+		
+		foreach ($siEntryInputs as $siEntryInput) {
+			CastUtils::assertTrue($siEntryInput instanceof SiEntryInput);
+			
+			$eiuEntryGui = null;
+			$id = $siEntryInput->getIdentifier()->getId();
+			
+			if ($id !== null && null !== ($eiuEntryGui = $this->find($id))) {
+				$eiuEntryGui->handleSiEntryInput($siEntryInput);
+				$newEiuEntryGuis[] = $eiuEntryGui;
+				continue;
+			}
+			
+			$newEiuEntryGuis[] = $this->embeddedGuiCollection->addNew()->handleSiEntryInput($siEntryInput);
+		}
+		
+		$this->eiuEntryGuis = $newEiuEntryGuis;
+	}
+	
+	/**
+	 * @param EiPropPath $orderEiPropPath
+	 * @return EiEntry[]
+	 */
+	function save(?EiPropPath $orderEiPropPath) {
+		$values = [];
+		$i = 0;
+		foreach ($this->embeddedGuiCollection->getEiuEntryGuis() as $eiuEntryGui) {
+			if (!$eiuEntryGui->isTypeSelected()) {
+				continue;
+			}
+			
+			$eiuEntryGui->save();
+			$values[] = $eiuEntry = $eiuEntryGui->entry();
+			
+			if (null === $orderEiPropPath) {
+				continue;
+			}
+			
+			$i += 10;
+			$eiuEntry->setScalarValue($orderEiPropPath, $i);
+		}
+		return $values;
 	}
 }

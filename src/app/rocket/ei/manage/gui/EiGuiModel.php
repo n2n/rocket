@@ -3,7 +3,6 @@ namespace rocket\ei\manage\gui;
 
 use n2n\util\type\ArgUtils;
 use rocket\ei\manage\gui\field\GuiPropPath;
-use n2n\util\ex\IllegalStateException;
 use rocket\si\meta\SiDeclaration;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\mask\EiMask;
@@ -318,5 +317,3 @@ class EiGuiModel {
 		return [];
 	}
 }
-
-

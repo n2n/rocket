@@ -84,9 +84,11 @@ class SiPanel implements \JsonSerializable {
 	
 	/**
 	 * @param string $name
+	 * @return SiPanel
 	 */
 	function setName(string $name) {
 		$this->name = $name;
+		return $this;
 	}
 	
 	/**
@@ -98,9 +100,11 @@ class SiPanel implements \JsonSerializable {
 	
 	/**
 	 * @param string $label
+	 * @return SiPanel
 	 */
 	function setLabel(string $label) {
 		$this->label = $label;
+		return $this;
 	}
 		
 	/**
@@ -112,9 +116,11 @@ class SiPanel implements \JsonSerializable {
 	
 	/**
 	 * @param int $min
+	 * @return SiPanel
 	 */
 	function setMin(int $min) {
 		$this->min = $min;
+		return $this;
 	}
 	
 	/**
@@ -126,9 +132,11 @@ class SiPanel implements \JsonSerializable {
 	
 	/**
 	 * @param int|null $max
+	 * @return SiPanel
 	 */
 	function setMax(?int $max) {
 		$this->max = $max;
+		return $this;
 	}
 	
 	/**
@@ -187,11 +195,13 @@ class SiPanel implements \JsonSerializable {
 	}
 	
 	/**
-	 * @param \rocket\si\meta\SiTypeQualifier[] $allowedTypeQualifiers
+	 * @param \rocket\si\meta\SiTypeQualifier[]|null $allowedTypeQualifiers
+	 * @return SiPanel
 	 */
-	function setAllowedTypeQualifiers(array $allowedTypeQualifiers) {
-		ArgUtils::valArray($allowedTypeQualifiers, SiTypeQualifier::class);
+	function setAllowedTypeQualifiers(?array $allowedTypeQualifiers) {
+		ArgUtils::valArray($allowedTypeQualifiers, SiTypeQualifier::class, true);
 		$this->allowedTypeQualifiers = $allowedTypeQualifiers;
+		return $this;
 	}
 	
 	/**
@@ -219,17 +229,21 @@ class SiPanel implements \JsonSerializable {
 	
 	/**
 	 * @param SiEmbeddedEntry[] $embeddedEntries
+	 * @return SiPanel
 	 */
 	function setEmbeddedEntries(array $embeddedEntries) {
 		ArgUtils::valArray($embeddedEntries, SiEmbeddedEntry::class);
 		$this->values = $embeddedEntries;
+		return $this;
 	}
 	
 	/**
 	 * @param SiEmbeddedEntry $embeddedEntry
+	 * @return SiPanel
 	 */
 	function addEmbeddedEntry(SiEmbeddedEntry $embeddedEntry) {
 		$this->values[] = $embeddedEntry;
+		return $this;
 	}
 	
 	/**

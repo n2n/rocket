@@ -28,16 +28,17 @@ use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\si\content\impl\SiFields;
 use n2n\util\type\CastUtils;
 use rocket\ei\util\entry\EiuEntry;
-use rocket\si\content\impl\relation\SiEmbeddedEntry;
 use rocket\ei\util\gui\EiuEntryGui;
 use rocket\si\content\SiField;
 use rocket\si\content\impl\relation\SiPanelInput;
 use rocket\si\input\CorruptedSiInputDataException;
 use rocket\si\content\impl\relation\SiPanel;
-use rocket\impl\ei\component\prop\ci\ContentItemsEiProp;
 use rocket\si\content\impl\relation\EmbeddedEntryPanelInputHandler;
 use rocket\si\content\impl\relation\EmbeddedEntryPanelsInSiField;
 use rocket\ei\manage\gui\GuiFieldMap;
+use rocket\impl\ei\component\prop\relation\model\gui\EmbeddedGuiCollection;
+use rocket\ei\EiPropPath;
+use n2n\util\type\ArgUtils;
 
 class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler {
 	/**
@@ -57,10 +58,6 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler {
 	 */
 	private $currentPool;
 	/**
-	 * @var PanelLayout
-	 */
-	private $panelLayout;
-	/**
 	 * @var EmbeddedEntryPanelsInSiField
 	 */
 	private $siField;
@@ -76,8 +73,8 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler {
 		$this->eiu = $eiu;
 		$this->targetEiuFrame = $targetEiuFrame;
 		$this->relationModel = $relationModel;
-		$this->panelLayout = new PanelLayout($panelDeclarations);
-		$this->panelLayout->assignConfigs($panelDeclarations, $targetEiuFrame, $relationModel);
+		
+		$this->currentPool = new EiuEntryGuiPool($panelDeclarations, false, $relationModel->isReduced(), $targetEiuFrame);
 		
 		$this->siField = SiFields::embeddedEntryPanelsIn($this->targetEiuFrame->getSiTypeCategory(),
 				$this->targetEiuFrame->getApiUrl($relationModel->getTargetEditEiCommandPath()),
@@ -89,101 +86,33 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler {
 	 * @return \rocket\si\content\impl\relation\SiEmbeddedEntry[]
 	 */
 	private function readValues() {
-		$this->panelLayout->clearSiEmbeddedEntries();
-		$this->currentPool = new EiuEntryGuiPool();
+		$this->currentPool->clear();
 				
-		$currentEiuEntryGuis = [];
 		foreach ($this->eiu->field()->getValue() as $eiuEntry) {
 			CastUtils::assertTrue($eiuEntry instanceof EiuEntry);
-			$currentEiuEntryGuis[] = $eiuEntry->newGui(true, true)->entryGui();
+			$this->currentPool->add($eiuEntry);
 		}
 		
-		$orderPropPath = ContentItemsEiProp::getOrderIndexEiPropPath();
-		uasort($currentEiuEntryGuis, function($a, $b) use ($orderPropPath) {
-			$aValue = $a->entry()->getValue($orderPropPath);
-			$bValue = $b->entry()->getValue($orderPropPath);
-			
-			if ($aValue == $bValue) {
-				return 0;
-			}
-			
-			return ($aValue < $bValue) ? -1 : 1;
-		});
+		$this->currentPool->sort();
 		
-		foreach ($currentEiuEntryGuis as $eiuEntryGui) {
-			$panelName = $eiuEntryGui->entry()->getValue('panel');
-			if ($this->panelLayout->addSiEmbeddedEntry($panelName, $this->createSiEmbeddeEntry($eiuEntryGui))) {
-				$this->currentPool->add($panelName, $eiuEntryGui);
-			}
-		}
+		$this->currentPool->fillUp();
 		
-		return $this->panelLayout->toSiPanels();
+		return $this->currentPool->createSiPanels();
 	}
 
-	/**
-	 * @param EiuEntryGui $eiuEntryGui
-	 * @return \rocket\si\content\impl\relation\SiEmbeddedEntry
-	 */
-	private function createSiEmbeddeEntry($eiuEntryGui) {
-		return new SiEmbeddedEntry(
-				$eiuEntryGui->createBulkyEntrySiComp(false, false),
-				($this->relationModel->isReduced() ?
-						$eiuEntryGui->entry()->newGui(false, false)->entryGui()->createCompactEntrySiComp(false, false):
-						null));
-	}
-	
-	
-	
 	/**
 	 * @param SiPanelInput[] $siPanelInputs
 	 * @return SiPanel[]
 	 * @throws CorruptedSiInputDataException
 	 */
 	function handleInput(array $siPanelInputs): array {
-		$this->panelLayout->clearSiEmbeddedEntries();
-		$this->currentPool = new EiuEntryGuiPool();
-		
-		foreach ($siPanelInputs as $siPanelInput) {
-			CastUtils::assertTrue($siPanelInput instanceof SiPanelInput);
-			
-			foreach ($siPanelInput->getEntryInputs() as $siEntryInput) {
-				$eiuEntryGui = null;
-				$id = $siEntryInput->getIdentifier()->getId();
-				
-				if ($id !== null && null !== ($eiuEntryGui = $this->currentPool->findById($id))) {
-					$eiuEntryGui->handleSiEntryInput($siEntryInput);
-				} else {
-					$eiuEntryGui = $this->targetEiuFrame->newEntryGuiMulti(true, false)
-							->handleSiEntryInput($siEntryInput)->selectedEntryGui();;
-				}
-				
-				$panelName = $siPanelInput->getName();
-				if ($panelLayout->addSiEmbeddedEntry($panelName, $this->createSiEmbeddeEntry($eiuEntryGui))) {
-					$this->currentPool->add($panelName, $eiuEntryGui);
-				}
-			}
-		}
-		
-		return $panelLayout->toSiPanels();
+		$this->currentPool->handleInput($siPanelInputs);
+		$this->currentPool->fillUp();
+		return $this->currentPool->createSiPanels();
 	}
 	
 	function save() {
-		$i = 0;
-		$targetOrderEiPropPath = $this->relationModel->getTargetOrderEiPropPath();
-		
-		$values = [];
-		foreach ($this->panelLayout->getPanelNames() as $panelName) {
-			foreach ($this->panelPool->getByPanelName($panelName) as $eiuEntryGui) {
-				$eiuEntryGui->save();
-				$values[] = $eiuEntry = $eiuEntryGui->entry();
-				
-				$eiuEntry->setValue(ContentItemsEiProp::getOrderIndexEiPropPath(), $i);
-				$eiuEntry->setValue(ContentItemsEiProp::getPanelEiPropPath(), $panelName);
-				
-				$i += 10;
-				$eiuEntry->setScalarValue($targetOrderEiPropPath, $i);
-			}
-		}
+		$values = $this->currentPool->save();
 		
 		$this->eiu->field()->setValue($values);
 	}
@@ -200,56 +129,124 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler {
 
 
 class EiuEntryGuiPool {
+	/**
+	 * @var PanelDeclaration[]
+	 */
+	private $panelDeclarations;
+	private $reduced;
+	/**
+	 * @var EmbeddedGuiCollection[]
+	 */
+	private $embeddedGuiCollections = [];
+	private $orderEiPropPath;
+	private $panelLayout;
+	/**
+	 * @param PanelDeclaration[] $panelDeclarations
+	 */
+	function __construct(array $panelDeclarations, bool $readOnly, bool $reduced, EiuFrame $eiuFrame) {
+		$this->orderEiPropPath = new EiPropPath(['orderIndex']);
+		$this->reduced = $reduced;
+		
+		$this->panelLayout = new PanelLayout();
+		$this->panelLayout->assignConfigs($panelDeclarations);
+		
+		foreach ($panelDeclarations as $panelDeclaration) {
+			$panelName = $panelDeclaration->getName();
+			$this->panelDeclarations[$panelName] = $panelDeclaration;
+			
+			$allowedEiuMasks = null;
+			if ($panelDeclaration->isRestricted()) {
+				$allowedEiuMasks = $eiuFrame->contextEngine()->mask()
+						->possibleMasks($panelDeclaration->getAllowedContentItemIds());
+			}
+			$this->embeddedGuiCollections[$panelName] = new EmbeddedGuiCollection(
+					$readOnly, $reduced, $panelDeclaration->getMin(), $eiuFrame, $allowedEiuMasks);
+		}
+	}
 	
-	private $eiuEntryGuis = [];
-	
-	private function clearCurrentEiuEntryGuis() {
-		$this->currentEiuEntryGuis = [];
+	/**
+	 * 
+	 */
+	function clear() {
+		foreach ($this->embeddedGuiCollections as $collection) {
+			$collection->clear();
+		}
 	}
 	
 	/**
 	 * @param string $panelName
 	 * @param EiuEntryGui $eiuEntryGui
 	 */
-	function add(string $panelName, EiuEntryGui $eiuEntryGui) {
-		if (!isset($this->eiuEntryGuis[$panelName])) {
-			$this->eiuEntryGuis[$panelName] = [];
-		}
+	function add(EiuEntry $eiuEntry) {
+		$panelName = $eiuEntry->getScalarValue('panel');
 		
-		$this->eiuEntryGuis[$panelName][] = $eiuEntryGui;
-	}
-	
-	function sort() {
-		foreach (array_keys($this->eiuEntryGuis) as $panelName) {
-			uasort($this->currentEiuEntryGuis[$panelName], function($a, $b) {
-				$aValue = $a->entry()->getValue('orderIndex');
-				$bValue = $b->entry()->getValue('orderIndex');
-				
-				if ($aValue == $bValue) {
-					return 0;
-				}
-				
-				return ($aValue < $bValue) ? -1 : 1;
-			});
+		if (isset($this->embeddedGuiCollections[$panelName])) {
+			$this->embeddedGuiCollections[$panelName]->add($eiuEntry);
 		}
 		
 	}
 	
 	/**
-	 * @param string $id
-	 * @return \rocket\ei\util\gui\EiuEntryGui|NULL
+	 * 
 	 */
-	private function findById(string $panelName, string $id) {
-		foreach ($this->currentEiuEntryGuis as $eiuEntryGui) {
-			if ($eiuEntryGui->entry()->hasId() && $id == $eiuEntryGui->entry()->getPid()) {
-				return $eiuEntryGui;
-			}
-		}
-		
-		return null;
+	function sort() {
+		foreach ($this->embeddedGuiCollections as $collection) {
+			$collection->sort($this->orderEiPropPath);
+		}	
 	}
 	
-	function getForkGuiFieldMap(): ?GuiFieldMap {
-		return null;
+	/**
+	 * 
+	 */
+	function fillUp() {
+		foreach ($this->embeddedGuiCollections as $collection) {
+			$collection->fillUp();
+		}
+	}
+	
+	/**
+	 * @return SiPanel[] 
+	 */
+	function createSiPanels() {
+		$siPanels = [];
+		
+		foreach ($this->embeddedGuiCollections as $panelName => $collection) {
+			$panelDeclaration = $this->panelDeclarations[$panelName];
+			
+			$siPanels[] = $siPanel = new SiPanel($panelName, $panelDeclaration->getLabel());
+			$siPanel->setEmbeddedEntries($collection->createSiEmbeddedEntries())
+					->setAllowedTypeQualifiers($collection->buildAllowedSiTypeQualifiers())
+					->setGridPos($this->panelLayout->getSiGridPos($panelName))
+					->setMin($panelDeclaration->getMin())
+					->setMax($panelDeclaration->getMax())
+					->setReduced($this->reduced);
+		}
+		
+		return $siPanels;
+	}
+	
+	/**
+	 * @param array $siPanelInputs
+	 * @return array
+	 */
+	function handleInput(array $siPanelInputs) {
+		foreach ($siPanelInputs as $siPanelInput) {
+			ArgUtils::assertTrue($siPanelInput instanceof SiPanelInput);
+			
+			$panelName = $siPanelInput->getName();
+			if (isset($this->embeddedGuiCollections[$panelName])) {
+				$this->embeddedGuiCollections[$panelName]->handleSiEntryInputs($siPanelInput->getEntryInputs());
+			}
+		}
+	}
+	
+	function save() {
+		$eiuEntries = [];
+		
+		foreach ($this->embeddedGuiCollections as $collection) {
+			array_push($eiuEntries, ...$collection->save($this->orderEiPropPath));
+		}
+		
+		return $eiuEntries;
 	}
 }

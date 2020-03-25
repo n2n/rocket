@@ -33,6 +33,7 @@ use rocket\ei\EiPropPath;
 use n2n\l10n\N2nLocale;
 use rocket\ei\component\UnknownEiComponentException;
 use rocket\si\meta\SiTypeQualifier;
+use rocket\ei\EiType;
 
 class EiuMask  {
 	private $eiMask;
@@ -97,20 +98,36 @@ class EiuMask  {
 				null, $this->eiuAnalyst);
 	}
 	
-	public function possibleMasks(bool $includeAbstractTypes = false) {
+	/**
+	 * @param string[]|null $allowedSubEiTypeIds
+	 * @param bool $includeAbstractTypes
+	 * @return \rocket\ei\util\spec\EiuMask[]
+	 */
+	public function possibleMasks(array $allowedSubEiTypeIds = null, bool $includeAbstractTypes = false) {
 		$eiuMasks = [];
 		
-		if ($includeAbstractTypes || !$this->eiMask->getEiType()->isAbstract()) {
+		if ($this->eiTypeMatches($this->eiMask->getEiType(), $allowedSubEiTypeIds, $includeAbstractTypes)) {
 			$eiuMasks[] = $this;
 		}
 		
 		foreach ($this->eiMask->getEiType()->getAllSubEiTypes() as $subEiType) {
-			if ($includeAbstractTypes || !$subEiType->isAbstract()) {
+			if ($this->eiTypeMatches($subEiType, $allowedSubEiTypeIds, $includeAbstractTypes)) {
 				$eiuMasks[] = new EiuMask($this->eiMask->determineEiMask($subEiType), null, $this->eiuAnalyst);
 			}
 		}
 		
 		return $eiuMasks;
+	}
+	
+	/**
+	 * @param EiType $eiType
+	 * @param string[]|null $allowedSubEiTypeIds
+	 * @param bool $includeAbstractTypes
+	 * @return boolean
+	 */
+	private function eiTypeMatches($eiType, $allowedSubEiTypeIds, $includeAbstractTypes) {
+		return ($includeAbstractTypes || !$eiType->isAbstract())
+				&& ($allowedSubEiTypeIds === null || in_array($eiType->getId(), $allowedSubEiTypeIds));
 	}
 	
 // 	public function extensionMasks() {

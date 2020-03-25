@@ -34,7 +34,6 @@ use rocket\si\input\SiEntryInput;
 use rocket\si\input\CorruptedSiInputDataException;
 use rocket\si\content\impl\relation\EmbeddedEntryInputHandler;
 use rocket\si\content\impl\relation\SiEmbeddedEntry;
-use rocket\ei\util\gui\EiuEntryGui;
 use rocket\ei\util\spec\EiuMask;
 use rocket\ei\manage\gui\GuiFieldMap;
 use rocket\ei\util\gui\EiuEntryGuiTypeDef;
@@ -65,7 +64,8 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandler {
 		$this->eiu = $eiu;
 		$this->targetEiuFrame = $targetEiuFrame;
 		$this->relationModel = $relationModel;
-		$this->embeddedGuiCollection = new EmbeddedGuiCollection(false, $relationModel->isReduced());
+		$this->embeddedGuiCollection = new EmbeddedGuiCollection(false, $relationModel->isReduced(), 
+				$relationModel->getMin(), $targetEiuFrame);
 		
 		$this->siField = SiFields::embeddedEntryIn($this->targetEiuFrame->getSiTypeCategory(),
 						$this->targetEiuFrame->getApiUrl($relationModel->getTargetEditEiCommandPath()),
@@ -95,11 +95,7 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandler {
 			$this->embeddedGuiCollection->sort($targetOrderEiPropPath);
 		}
 		
-		$max = $this->relationModel->getMax();
-		$num = $this->embeddedGuiCollection->count();
-		if ($max !== null && $max > $num) {
-			$this->embeddedGuiCollection->addNews($this->targetEiuFrame, $max - $num);
-		}
+		$this->embeddedGuiCollection->fillUp();
 		
 		return $this->embeddedGuiCollection->createSiEmbeddedEntries(); 
 	}
@@ -125,47 +121,17 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandler {
 	 * @throws CorruptedSiInputDataException
 	 */
 	function handleInput(array $siEntryInputs): array {
-		$newEiuEntryGuis = []; 
-		
-		foreach ($siEntryInputs as $siEntryInput) {
-			CastUtils::assertTrue($siEntryInput instanceof SiEntryInput);
-			
-			$eiuEntryGui = null;
-			$id = $siEntryInput->getIdentifier()->getId();
-			
-			if ($id !== null && null !== ($eiuEntryGui = $this->embeddedGuiCollection->find($id))) {
-				$eiuEntryGui->handleSiEntryInput($siEntryInput);
-				$newEiuEntryGuis[] = $eiuEntryGui;
-				continue;
-			}
-			
-			$eiuEntryGuiMulti = $this->targetEiuFrame->newEntryGuiMulti(true, false)
-					->handleSiEntryInput($siEntryInput);
-			$newEiuEntryGuis[] = $eiuEntryGuiMulti->selectedEntryGui();
-		}
-		
-		$this->embeddedGuiCollection->exchange($newEiuEntryGuis);
+		$this->embeddedGuiCollection->handleSiEntryInputs($siEntryInputs);
+		$this->embeddedGuiCollection->fillUp();
 		return $this->embeddedGuiCollection->createSiEmbeddedEntries();
 	}
 	
 	function save() {
-		$i = 0;
 		$targetOrderEiPropPath = $this->relationModel->getTargetOrderEiPropPath();
 		
-		$values = [];
-		foreach ($this->currentEiuEntryGuis as $eiuEntryGui) {
-			$eiuEntryGui->save();
-			$values[] = $eiuEntry = $eiuEntryGui->entry();
-			
-			if (null === $targetOrderEiPropPath) {
-				continue;
-			}
-			
-			$i += 10;
-			$eiuEntry->setScalarValue($targetOrderEiPropPath, $i);
-		}
+		$eiuEntries = $this->embeddedGuiCollection->save($targetOrderEiPropPath);
 		
-		$this->eiu->field()->setValue($values);
+		$this->eiu->field()->setValue($eiuEntries);
 	}
 	
 	function getSiField(): SiField {

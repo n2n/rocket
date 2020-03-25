@@ -39,6 +39,7 @@ use rocket\ei\manage\gui\EiGuiUtil;
 use rocket\ei\manage\gui\EiGuiFrame;
 use rocket\ei\manage\frame\EiEntryGuiMultiResult;
 use rocket\ei\util\entry\EiuEntry;
+use rocket\si\input\CorruptedSiInputDataException;
 
 class EiuEntryGui {
 	private $eiEntryGui;
@@ -290,8 +291,14 @@ class EiuEntryGui {
 		return new EiuGuiField(GuiPropPath::create($guiPropPath), $this, $this->eiuAnalyst);
 	}
 	
+	/**
+	 * @param SiEntryInput $siEntryInput
+	 * @throws CorruptedSiInputDataException
+	 * @return \rocket\ei\util\gui\EiuEntryGui
+	 */
 	function handleSiEntryInput(SiEntryInput $siEntryInput) {
 		$this->eiEntryGui->handleSiEntryInput($siEntryInput);
+		return $this;
 	}
 	
 	/**

@@ -1477,7 +1477,7 @@ class EiuAnalyst {
 		
 		return array_map(
 				function ($eiTypeArg) use ($argName) { 
-					return self::buildEiEntryFromEiArg($eiEntryArg, $argName, true); 
+					return self::buildEiTypeFromEiArg($eiEntryArg, $argName, true); 
 				}, 
 				$eiTypeArg);
 	}
