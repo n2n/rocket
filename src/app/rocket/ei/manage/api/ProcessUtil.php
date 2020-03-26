@@ -32,7 +32,10 @@ use rocket\ei\manage\gui\EiGuiFrame;
 use rocket\ei\manage\gui\EiEntryGui;
 use rocket\si\input\SiEntryInput;
 use rocket\ei\manage\security\SecurityException;
+use rocket\ei\manage\gui\EiGui;
 use rocket\ei\manage\gui\field\GuiPropPath;
+use rocket\ei\EiException;
+use rocket\ei\manage\entry\EiEntry;
 
 class ProcessUtil {
 	private $eiFrame;
@@ -101,16 +104,40 @@ class ProcessUtil {
 	/**
 	 * @param SiEntryInput $siEntryInput
 	 * @throws BadRequestException
-	 * @return \rocket\ei\manage\frame\EiEntryGuiResult
+	 * @return EiGui
 	 */
-	function determineEiEntryGuiOfInput(SiEntryInput $siEntryInput) {
+	function determineEiGuiOfInput(SiEntryInput $siEntryInput) {
 		$eiObject = $this->determineEiObjectOfInput($siEntryInput);
-		
+			
 		try {
 			$efu = new EiFrameUtil($this->eiFrame);
-// 			$guiPropPaths = GuiPropPath::createArray($siEntryInput->getFieldInputs());
-			return $efu->createEiEntryGuiFromEiObject($eiObject, $siEntryInput->isBulky(), false, null /*$guiPropPaths*/, true);
+			$guiPropPaths = GuiPropPath::createArray($siEntryInput->getFieldIds());
+			
+			return $efu->createEiGuiFromEiObject($eiObject, $siEntryInput->isBulky(), false, $siEntryInput->getTypeId(), $guiPropPaths, true);
 		} catch (SecurityException $e) {
+			throw new BadRequestException(null, 0, $e);
+		} catch (EiException $e) {
+			throw new BadRequestException(null, 0, $e);
+		} catch (\InvalidArgumentException $e) {
+			throw new BadRequestException(null, 0, $e);
+		}
+	}
+	
+	/**
+	 * @param EiEntry $eiEntry
+	 * @param string $eiTypeId
+	 * @param bool $bulky
+	 * @param bool $readOnly
+	 * @throws BadRequestException
+	 * @return \rocket\ei\manage\gui\EiGui
+	 */
+	function determineEiGuiOfEiEntry(EiEntry $eiEntry, string $eiTypeId, bool $bulky, bool $readOnly) {
+		try {
+			$efu = new EiFrameUtil($this->eiFrame);
+			return $efu->createEiGuiFromEiEntry($eiEntry, $bulky, $readOnly, $eiTypeId, null);
+		} catch (SecurityException $e) {
+			throw new BadRequestException(null, 0, $e);
+		} catch (EiException $e) {
 			throw new BadRequestException(null, 0, $e);
 		} catch (\InvalidArgumentException $e) {
 			throw new BadRequestException(null, 0, $e);
@@ -132,7 +159,7 @@ class ProcessUtil {
 		
 		$eiEntryGui->save();
 		
-		$eiEntry = $eiEntryGui->getEiEntry();
+		$eiEntry = $eiEntryGui->getSelectedEiEntry();
 		
 		if ($eiEntry->validate()) {
 			return null;

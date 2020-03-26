@@ -31,7 +31,6 @@ export class EmbeCollection {
 		let embe: Embe;
 		// tslint:disable-next-line: no-conditional-assignment
 		while (undefined !== (embe = this.embes.pop())) {
-			embe.clear();
 			// this.unregisterEmbe(embe);
 		}
 	}

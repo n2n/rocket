@@ -155,40 +155,44 @@ class EiFrameUtil {
 	}
 	
 	/**
+	 * @param string[]|null $eiTypeIds
+	 * @return \rocket\ei\EiType[]|null
+	 */
+	function determineEiTypes(?array $eiTypeIds) {
+		if ($eiTypeIds === null) {
+			return null;
+		}
+		
+		$eiTypes[] = [];
+		foreach ($eiTypeIds as $eiTypeId) {
+			ArgUtils::valType($eiTypeId, 'string');
+			$eiTypes[] = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()->determineEiTypeById($eiTypeId);
+		}
+		return $eiTypes;
+	}
+	
+	/**
 	 * @param bool $bulky
 	 * @param bool $readOnly
-	 * @return EiEntryGuiMultiResult
+	 * @return EiGui
 	 * @throws EiException
 	 */
-	function createNewEiEntryGuiMulti(bool $bulky, bool $readOnly, ?array $guiPropPaths, ?array $eiTypeIds, bool $eiGuiModelRequired) {
+	function createNewEiGui(bool $bulky, bool $readOnly, ?array $guiPropPaths, ?array $allowedEiTypeIds, bool $eiGuiModelRequired) {
 		$viewMode = ViewMode::determine($bulky, $readOnly, true);
+		$allowedEiTypes = $this->determineEiTypes($allowedEiTypeIds);
 		
-		$newEiEntryGuis = [];
-		$eiGuiFrames = [];
-		$eiGuiModels = $eiGuiModelRequired ? [] : null;
+		$eiGui = new EiGui($this->eiFrame->getManageState()->getEiGuiModelCache()->obtainForgeMultiEiGuiModel(
+				$this->eiFrame->getContextEiEngine()->getEiMask(), $viewMode, $allowedEiTypes, $guiPropPaths));
 		
-		foreach ($this->createPossibleNewEiEntries($eiTypeIds) as $eiTypeId => $newEiEntry) {
-			$newEiGuiFrame = null;
-			if (!$eiGuiModelRequired) {
-				$eiGuiFrames[$eiTypeId] = $newEiGuiFrame = $this->createEiGuiFrame($newEiEntry->getEiMask(), $viewMode, $guiPropPaths);
-			} else {
-				$eiGuiModels[$eiTypeId] = $eiGuiModel = $this->createEiGuiModel($newEiEntry->getEiMask(), $viewMode, $guiPropPaths);
-				$eiGuiFrames[$eiTypeId] = $newEiGuiFrame = $eiGuiModel->getEiGuiFrame();
-			}
-			
-			$newEiEntryGuis[$eiTypeId] = $newEiGuiFrame->createEiEntryGuiVariation($this->eiFrame, $newEiEntry);
-		}
+		$eiGui->appendNewEiEntryGui($this->eiFrame, 0);
 		
-		if (empty($newEiEntryGuis)) {
-			throw new EiException('Can not create a new EiEntryGui of ' 
-					. $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()
-					. ' because this type is abstract and doesn\'t have any sub EiTypes.');
-		}
+		return $eiGui;
 		
-		$eiEntryGuiMulti = new EiEntryGuiMulti($this->eiFrame->getContextEiEngine()->getEiMask()->getEiType(), 
-				$viewMode, $newEiEntryGuis);
-		
-		return new EiEntryGuiMultiResult($eiEntryGuiMulti, $this->eiFrame, $eiGuiFrames, $eiGuiModels);
+// 		if (empty($newEiEntryGuis)) {
+// 			throw new EiException('Can not create a new EiEntryGui of ' 
+// 					. $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()
+// 					. ' because this type is abstract and doesn\'t have any sub EiTypes.');
+// 		}
 	}
 	
 	/**
@@ -216,9 +220,7 @@ class EiFrameUtil {
 	 * @return \rocket\ei\manage\gui\EiGuiModel
 	 */
 	private function createEiGuiModel(EiMask $eiMask, int $viewMode, array $guiPropPaths = null) {
-		$guiDefinition = $this->eiFrame->getManageState()->getDef()->getGuiDefinition($eiMask);
-		
-		return $guiDefinition->createEiGuiModel($this->eiFrame->getN2nContext(), $viewMode, $guiPropPaths);
+		return $this->eiFrame->getManageState()->getEiGuiModelCache()->obtainEiGuiModel($eiMask, $viewMode, $guiPropPaths);
 	}
 	
 	/**
@@ -226,23 +228,38 @@ class EiFrameUtil {
 	 * @param bool $bulky
 	 * @param bool $readOnly
 	 * @throws SecurityException
-	 * @return EiEntryGuiResult
+	 * @throws EiException
+	 * @return EiGui
 	 */
-	function createEiEntryGuiFromEiObject(EiObject $eiObject, bool $bulky, bool $readOnly, ?array $guiPropPaths, 
-			bool $eiGuiModelRequired) {
-		$eiEntry = $this->eiFrame->createEiEntry($eiObject);
-		$viewMode = ViewMode::determine($bulky, $readOnly, $eiObject->isNew());
-		$eiGuiModel = null;
-		$eiGuiFrame = null;
-		if (!$eiGuiModelRequired) {
-			$eiGuiFrame = $this->createEiGuiFrame($eiEntry->getEiMask(), $viewMode, $guiPropPaths);
+	function createEiGuiFromEiObject(EiObject $eiObject, bool $bulky, bool $readOnly, ?string $eiTypeId, ?array $guiPropPaths) {
+		return $this->createEiGuiFromEiEntry($this->eiFrame->createEiEntry($eiObject), $bulky, $readOnly, $eiTypeId, $guiPropPaths);
+	}
+	
+	/**
+	 * @param EiObject $eiObject
+	 * @param bool $bulky
+	 * @param bool $readOnly
+	 * @throws SecurityException
+	 * @throws EiException
+	 * @return EiGui
+	 */
+	function createEiGuiFromEiEntry(EiEntry $eiEntry, bool $bulky, bool $readOnly, ?string $eiTypeId, ?array $guiPropPaths) {
+		$viewMode = ViewMode::determine($bulky, $readOnly, $eiEntry->isNew());
+		
+		$eiMask = null;
+		if ($eiTypeId === null) {
+			$eiMask = $eiEntry->getEiMask();
 		} else {
-			$eiGuiModel = $this->createEiGuiModel($eiEntry->getEiMask(), $viewMode, $guiPropPaths);
-			$eiGuiFrame = $eiGuiModel->getEiGuiFrame();
+			$eiMask = $this->eiFrame->getContextEiEngine()->getEiMask()->determineEiMask(
+					$this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()->determineEiTypeById($eiTypeId));
 		}
 		
-		return new EiEntryGuiResult($eiGuiFrame->createEiEntryGui($this->eiFrame, $eiEntry), $this->eiFrame, 
-				$eiGuiFrame, $eiGuiModel);
+		$eiGui = new EiGui($this->eiFrame->getManageState()->getEiGuiModelCache()
+				->obtainEiGuiModel($eiMask, $viewMode, $guiPropPaths));
+		
+		$eiGui->appendEiEntryGui($this->eiFrame, [$eiEntry]);
+		
+		return $eiGui;
 	}
 	
 	/**

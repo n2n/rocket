@@ -87,15 +87,16 @@ class GetInstructionProcess {
 		$eiObject = $this->util->lookupEiObject($entryId);
 		$guiPropPaths = $this->parseGuiPropPaths();
 		
-		$result = $this->eiFrameUtil->createEiEntryGuiFromEiObject($eiObject, 
+		$result = $this->eiFrameUtil->createEiGuiFromEiObject($eiObject, 
 				$this->instruction->isBulky(), $this->instruction->isReadOnly(), $guiPropPaths,
 				$this->instruction->isDeclarationRequested());
+		$eiFrame = $this->eiFrameUtil->getEiFrame();
 		
 		$getResult = new SiGetResult();
-		$getResult->setEntry($result->createSiEntry($this->instruction->areControlsIncluded()));
+		$getResult->setEntry($result->createSiEntry($eiFrame, $this->instruction->areControlsIncluded()));
 		
 		if ($this->instruction->isDeclarationRequested()) {
-			$getResult->setDeclaration($result->createSiDeclaration());
+			$getResult->setDeclaration($result->createSiDeclaration($eiFrame));
 		}
 		
 		return $getResult;
@@ -107,15 +108,16 @@ class GetInstructionProcess {
 	private function handleNewEntry() {
 		$guiPropPaths = $this->parseGuiPropPaths();
 		
-		$eiEntryGuiMultiResult = $this->eiFrameUtil->createNewEiEntryGuiMulti(
+		$eiGui = $this->eiFrameUtil->createNewEiGui(
 				$this->instruction->isBulky(), $this->instruction->isReadOnly(), $guiPropPaths,
-				$this->instruction->isDeclarationRequested());
-				
+				$this->instruction->getTypeIds(), $this->instruction->isDeclarationRequested());
+		$eiFrame = $this->eiFrameUtil->getEiFrame();
+		
 		$getResult = new SiGetResult();
-		$getResult->setEntry($eiEntryGuiMultiResult->createSiEntry($this->instruction->areControlsIncluded()));
+		$getResult->setEntry($eiGui->createSiEntry($eiFrame, $this->instruction->areControlsIncluded()));
 		
 		if ($this->instruction->isDeclarationRequested()) {
-			$getResult->setDeclaration($eiEntryGuiMultiResult->createSiDeclaration());
+			$getResult->setDeclaration($eiGui->getEiGuiModel()->createSiDeclaration($eiFrame));
 		}
 		
 		return $getResult;

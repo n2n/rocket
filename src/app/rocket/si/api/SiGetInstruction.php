@@ -73,6 +73,15 @@ class SiGetInstruction {
 		$this->readOnly = $readOnly;
 	}
 
+	function getTypeIds() {
+		return $this->typeIds;
+	}
+	
+	function setTypeIds(?array $typeIds) {
+		ArgUtils::valArray($typeIds, 'string', true);
+		$this->typeIds = $typeIds;
+	}
+	
 	/**
 	 * @return bool
 	 */
@@ -173,6 +182,7 @@ class SiGetInstruction {
 			$instruction = new SiGetInstruction($ds->reqBool('bulky'), $ds->reqBool('readOnly'));
 			$instruction->setDeclarationRequested($ds->reqBool('declarationRequested'));
 			$instruction->setEntryId($ds->optInt('entryId'));
+			$instruction->setTypeIds($ds->optArray('typeIds', 'string', null));
 			
 			$pcData = $ds->optArray('partialContentInstruction', null, null, true);
 			if ($pcData == null) {

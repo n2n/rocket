@@ -173,6 +173,16 @@ class EiEntryGui {
 		return new SiEntryIdentifier($typeCategory, $id);
 	}
 	
+	/**
+	 * @return \rocket\ei\manage\entry\EiEntry
+	 */
+	function getSelectedEiEntry() {
+		return $this->getSelectedTypeDef()->getEiEntry();
+	}
+	
+	function save() {
+		$this->getSelectedTypeDef()->save();
+	}
 
 	public function __toString() {
 		return 'EiEntryGui of ' . $this->eiEntry;

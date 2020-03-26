@@ -174,6 +174,18 @@ class EiType extends Type {
 	
 	/**
 	 * @param string $eiTypeId
+	 * @throws UnknownEiTypeException
+	 */
+	function determineEiTypeById(string $eiTypeId) {
+		if ($this->getId() === $eiTypeId) {
+			return $this;
+		}
+		
+		return $this->getSubEiTypeById($eiTypeId, true);
+	}
+	
+	/**
+	 * @param string $eiTypeId
 	 * @param bool $deepCheck
 	 * @throws UnknownEiTypeException
 	 * @return EiType

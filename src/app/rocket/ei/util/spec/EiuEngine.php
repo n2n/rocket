@@ -414,11 +414,11 @@ class EiuEngine {
 	 * @param bool $guiStructureDeclarationsRequired
 	 * @return \rocket\ei\util\gui\EiuGuiModel
 	 */
-	function newGuiModel(int $viewMode, array $guiPropPathsArg = null, bool $guiStructureDeclarationsRequired = true) {
+	function newGuiModel(int $viewMode, array $guiPropPathsArg = null) {
 		$guiPropPaths = GuiPropPath::buildArray($guiPropPathsArg);
 		
 		$cache = $this->eiuAnalyst->getManageState()->getEiGuiModelCache();
-		$eiGuiModel =  $factory->createEiGuiModel($this->eiEngine->getEiMask(), $viewMode, $guiPropPaths, $guiStructureDeclarationsRequired);
+		$eiGuiModel =  $cache->obtainEiGuiModel($this->eiEngine->getEiMask(), $viewMode, $guiPropPaths);
 		
 		return new EiuGuiModel($eiGuiModel, $this->eiuAnalyst);
 	}

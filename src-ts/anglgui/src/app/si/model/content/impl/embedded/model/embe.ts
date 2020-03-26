@@ -59,8 +59,6 @@ export class Embe {
 	}
 
 	isTypeSelected(): boolean {
-		console.log(this._siEmbeddedEntry.comp.entry.selectedTypeId);
-		console.log(this._siEmbeddedEntry.summaryComp.entry.selectedTypeId);
 		return !!this._siEmbeddedEntry.entry.selectedTypeId;
 	}
 

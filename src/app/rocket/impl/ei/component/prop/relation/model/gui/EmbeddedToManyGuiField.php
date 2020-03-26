@@ -65,7 +65,7 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandler {
 		$this->targetEiuFrame = $targetEiuFrame;
 		$this->relationModel = $relationModel;
 		$this->embeddedGuiCollection = new EmbeddedGuiCollection(false, $relationModel->isReduced(), 
-				$relationModel->getMin(), $targetEiuFrame);
+				$relationModel->getMin(), $targetEiuFrame, null);
 		
 		$this->siField = SiFields::embeddedEntryIn($this->targetEiuFrame->getSiTypeCategory(),
 						$this->targetEiuFrame->getApiUrl($relationModel->getTargetEditEiCommandPath()),

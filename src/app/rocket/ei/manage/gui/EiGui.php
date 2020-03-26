@@ -52,6 +52,21 @@ class EiGui {
 		return empty($this->eiEntryGuis);
 	}
 	
+	/**
+	 * @return null|EiEntryGui
+	 */
+	function getEiEntryGui() {
+		if ($this->isEmpty()) {
+			return null;
+		}
+		
+		if ($this->hasSingleEiEntryGui()) {
+			return current($this->eiEntryGuis);
+		}
+		
+		throw new IllegalStateException('EiGui contains multiple EiEntryGuis.');
+	}
+	
 	function getEiEntryGuis() {
 		return $this->eiEntryGuis;
 	}

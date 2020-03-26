@@ -35,6 +35,7 @@ use rocket\ei\manage\gui\ViewMode;
 use rocket\si\api\SiValGetResult;
 use rocket\si\api\SiValGetInstruction;
 use rocket\ei\manage\frame\EiEntryGuiResult;
+use rocket\ei\manage\gui\EiGui;
 
 class ValInstructionProcess {
 	private $instruction;
@@ -65,13 +66,11 @@ class ValInstructionProcess {
 		
 		$entryInput = $this->instruction->getEntryInput();
 		
-		$eiEntryGuiResult = $this->util->determineEiEntryGuiOfInput($entryInput);
-		$this->eiEntry = $eiEntryGuiResult->getEiEntryGui()->getEiEntry();
+		$eiGui = $this->util->determineEiGuiOfInput($entryInput);
+		$this->eiEntry = $eiGui->getEiEntryGui()->getSelectedTypeDef()->getEiEntry();
 
-		$this->registerEiEntryGuiResult($eiEntryGuiResult);
-		
 		$result = new SiValResult();
-		$result->setEntryError($this->util->handleEntryInput($entryInput, $eiEntryGuiResult->getEiEntryGui()));
+		$result->setEntryError($this->util->handleEntryInput($entryInput, $eiGui->getEiEntryGui()));
 		
 		foreach ($this->instruction->getGetInstructions() as $key => $getInstruction) {
 			$result->putGetResult($key, $this->handleGetInstruction($getInstruction));
@@ -87,23 +86,25 @@ class ValInstructionProcess {
 	 * @return SiValGetResult
 	 */
 	private function handleGetInstruction($getInstruction) {
-		$eiEntryGuiResult = $this->obtainEiEntryGuiResult($getInstruction->isBulky(), $getInstruction->isReadOnly());
+		$eiGui = $this->util->determineEiGuiOfEiEntry($this->eiEntry, $this->instruction->getEntryInput()->getTypeId(), 
+					$getInstruction->isBulky(), $getInstruction->isReadOnly());
+		$eiFrame = $this->eiFrameUtil->getEiFrame();
 		
 		$result = new SiValGetResult();
-		$result->setEntry($eiEntryGuiResult->createSiEntry($getInstruction->areControlsIncluded()));
+		$result->setEntry($eiGui->createSiEntry($eiFrame, $getInstruction->areControlsIncluded()));
 		
 		if ($getInstruction->isDeclarationRequested()) {
-			$result->setDeclaration($eiEntryGuiResult->getEiGuiModel()->createSiDeclaration($this->eiFrameUtil->getEiFrame()));
+			$result->setDeclaration($eiGui->getEiGuiModel()->createSiDeclaration($eiFrame));
 		}
 		
 		return $result;
 	}
 	
 	/**
-	 * @param EiEntryGuiResult $eiEntryGuiResult
+	 * @param EiGui $eiGui
 	 */
-	private function registerEiEntryGuiResult($eiEntryGuiResult) {
-		$this->eiEntryGuiResults[$eiEntryGuiResult->getEiGuiFrame()->getViewMode()] = $eiEntryGuiResult;
+	private function registerEiGui($eiGui) {
+		$this->eiEntryGuiResults[$eiGui->getEiGuiModel()->getViewMode()] = $eiGui;
 	}
 	
 	/**
@@ -118,7 +119,7 @@ class ValInstructionProcess {
 		}
 		
 		$eiEntryGuiResult = $this->eiFrameUtil->createEiEntryGui($this->eiEntry, $bulky, $readOnly, null, true);
-		$this->registerEiEntryGuiResult($eiEntryGuiResult);
+		$this->registerEiGui($eiEntryGuiResult);
 		return $eiEntryGuiResult;
 	}
 	

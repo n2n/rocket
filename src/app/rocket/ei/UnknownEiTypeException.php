@@ -21,7 +21,5 @@
  */
 namespace rocket\ei;
 
-use rocket\spec\UnknownTypeException;
-
-class UnknownEiTypeException extends UnknownTypeException {
+class UnknownEiTypeException extends EiException {
 }
