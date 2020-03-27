@@ -22,21 +22,21 @@
 namespace rocket\si\content;
 
 use n2n\util\type\attrs\DataSet;
-use rocket\si\meta\SiTypeQualifier;
+use rocket\si\meta\SiMaskQualifier;
 
 class SiEntryQualifier extends SiEntryIdentifier implements \JsonSerializable {
-	private $typeQualifier;
+	private $maskQualifier;
 	private $idName;
 	
-	function __construct(SiTypeQualifier $typeQualifier, ?string $id, string $idName = null) {
-		parent::__construct($typeQualifier->getCategory(), $id);
-		$this->typeQualifier = $typeQualifier;
+	function __construct(SiMaskQualifier $maskQualifier, ?string $id, string $idName = null) {
+		parent::__construct($maskQualifier->getId(), $id);
+		$this->maskQualifier = $maskQualifier;
 		$this->idName = $idName;
 	}
 
 	function jsonSerialize() {
 		return [
-			'typeQualifier' => $this->typeQualifier,
+			'maskQualifier' => $this->maskQualifier,
 			'id' => $this->getId(),
 			'idName' => $this->idName
 		];
@@ -46,7 +46,7 @@ class SiEntryQualifier extends SiEntryIdentifier implements \JsonSerializable {
 		$ds = new DataSet($data);
 		
 		try {
-			return new SiEntryQualifier(SiTypeQualifier::parse($ds->reqArray('typeQualifier')), $ds->optString('id'), 
+			return new SiEntryQualifier(SiMaskQualifier::parse($ds->reqArray('maskQualifier')), $ds->optString('id'), 
 					$ds->optString('idName'));
 		} catch (\n2n\util\type\attrs\AttributesException $e) {
 			throw new \InvalidArgumentException(null, null, $e);

@@ -1,5 +1,4 @@
 import { EmbeddedEntriesInModel } from '../comp/embedded-entry-in-model';
-import { SiTypeQualifier, SiTypeIdentifier } from 'src/app/si/model/meta/si-type-qualifier';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { EmbeddedEntriesSummaryInComponent } from '../comp/embedded-entries-summary-in/embedded-entries-summary-in.component';
 import { EmbeddedEntriesInComponent } from '../comp/embedded-entries-in/embedded-entries-in.component';
@@ -23,12 +22,13 @@ import { SiButton } from 'src/app/si/model/control/impl/model/si-button';
 import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
 import { Observable } from 'rxjs';
 import { UiStructureModelAdapter } from 'src/app/ui/structure/model/impl/ui-structure-model-adapter';
+import { SiFrame } from 'src/app/si/model/meta/si-frame';
 
 export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter implements EmbeddedEntriesInModel {
 	private embeInCol: EmbeInCollection;
 	private embeInUiStructureManager: EmbeInUiStructureManager|null = null;
 
-	constructor(private obtainer: EmbeddedEntryObtainer, public typeCategory: string,
+	constructor(private obtainer: EmbeddedEntryObtainer, public frame: SiFrame,
 			embeInSource: EmbeInSource, private config: EmbeddedEntriesConfig,
 			private translationService: TranslationService, disabledSubject: Observable<boolean>|null = null) {
 		super();
@@ -74,12 +74,12 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 		return this.config.sortable;
 	}
 
-	getTypeCategory(): string {
-		return this.typeCategory;
-	}
+	// getFrame(): SiFrame {
+	// 	return this.frame;
+	// }
 
-	getAllowedSiTypeIdentifier(): SiTypeIdentifier[]|null {
-		return this.config.allowedSiTypeIdentifiers;
+	getAllowedSiTypeIds(): string[]|null {
+		return this.config.allowedSiTypeIds;
 	}
 
 	getAddPasteObtainer(): AddPasteObtainer {
@@ -122,34 +122,34 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 	getZoneErrors(): UiZoneError[] {
 		const errors = new Array<UiZoneError>();
 
-		// for (const embe of this.embeInCol.embes) {
-		// 	if (!embe.uiStructureModel) {
-		// 		continue;
-		// 	}
+		for (const embe of this.embeInCol.embes) {
+			if (!embe.uiStructureModel) {
+				continue;
+			}
 
-		// 	if (!this.config.reduced) {
-		// 		errors.push(...embe.uiStructureModel.getZoneErrors());
-		// 		continue;
-		// 	}
+			if (!this.config.reduced) {
+				errors.push(...embe.uiStructureModel.getZoneErrors());
+				continue;
+			}
 
-		// 	for (const zoneError of embe.uiStructureModel.getZoneErrors()) {
-		// 		errors.push({
-		// 			message: zoneError.message,
-		// 			marked: (marked) => {
-		// 				this.reqBoundUiStructure().marked = marked;
-		// 			},
-		// 			focus: () => {
-		// 				IllegalStateError.assertTrue(!!this.embeInUiStructureManager);
+			for (const zoneError of embe.uiStructureModel.getZoneErrors()) {
+				errors.push({
+					message: zoneError.message,
+					marked: (marked) => {
+						this.reqBoundUiStructure().marked = marked;
+					},
+					focus: () => {
+						IllegalStateError.assertTrue(!!this.embeInUiStructureManager);
 
-		// 				this.embeInUiStructureManager.open(embe);
+						this.embeInUiStructureManager.open(embe);
 
-		// 				if (zoneError.focus) {
-		// 					zoneError.focus();
-		// 				}
-		// 			}
-		// 		});
-		// 	}
-		// }
+						if (zoneError.focus) {
+							zoneError.focus();
+						}
+					}
+				});
+			}
+		}
 
 		return errors;
 	}

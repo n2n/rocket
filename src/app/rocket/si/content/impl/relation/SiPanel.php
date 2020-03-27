@@ -22,7 +22,6 @@
 namespace rocket\si\content\impl\relation;
 
 use n2n\util\type\ArgUtils;
-use rocket\si\meta\SiTypeQualifier;
 
 class SiPanel implements \JsonSerializable {
 	/**
@@ -50,7 +49,7 @@ class SiPanel implements \JsonSerializable {
 	 */
 	private $sortable = false;
 	/**
-	 * @var SiTypeQualifier[]|null
+	 * @var string[]|null
 	 */
 	private $allowedTypeIds = null;
 	/**
@@ -199,7 +198,7 @@ class SiPanel implements \JsonSerializable {
 	 * @return SiPanel
 	 */
 	function setAllowedTypeIds(?array $allowedTypeIds) {
-		ArgUtils::valArray($allowedTypeIds, SiTypeQualifier::class, true);
+		ArgUtils::valArray($allowedTypeIds, string::class, true);
 		$this->allowedTypeIds = $allowedTypeIds;
 		return $this;
 	}
@@ -259,7 +258,7 @@ class SiPanel implements \JsonSerializable {
 			'reduced' => $this->reduced,
 			'nonNewRemovable' => $this->nonNewRemovable,
 			'sortable' => $this->sortable,
-			'allowedTypeIds' => $this->allowedTypeIds,
+			'allowedSiTypeIds ' => $this->allowedTypeIds,
 			'gridPos' => $this->gridPos,
 			'values' => $this->values
 		];

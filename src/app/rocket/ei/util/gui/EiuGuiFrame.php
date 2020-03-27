@@ -14,7 +14,7 @@ use rocket\ei\component\command\EiCommand;
 use rocket\ei\util\control\EiuControlFactory;
 use rocket\ei\util\spec\EiuProp;
 use rocket\si\meta\SiDeclaration;
-use rocket\si\meta\SiTypeDeclaration;
+use rocket\si\meta\SiMaskDeclaration;
 
 class EiuGuiFrame {
 	private $eiGuiFrame;
@@ -242,8 +242,8 @@ class EiuGuiFrame {
 	 * @return \rocket\si\meta\SiDeclaration
 	 */
 	function createSiDeclaration() {
-		return new SiDeclaration([new SiTypeDeclaration(
-				$this->eiGuiFrame->createSiType($this->eiuAnalyst->getN2nContext(true)->getN2nLocale()),
+		return new SiDeclaration([new SiMaskDeclaration(
+				$this->eiGuiFrame->createSiMask($this->eiuAnalyst->getN2nContext(true)->getN2nLocale()),
 				null)]);
 	}
 }

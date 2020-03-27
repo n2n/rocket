@@ -154,13 +154,13 @@ class EiuEntryGuiPool {
 			$panelName = $panelDeclaration->getName();
 			$this->panelDeclarations[$panelName] = $panelDeclaration;
 			
-			$allowedEiuMasks = null;
+			$allowedEiuTypes = null;
 			if ($panelDeclaration->isRestricted()) {
-				$allowedEiuMasks = $eiuFrame->contextEngine()->mask()
-						->possibleMasks($panelDeclaration->getAllowedContentItemIds());
+				$allowedEiuTypes = $eiuFrame->contextEngine()->mask()->type()
+						->possibleTypes($panelDeclaration->getAllowedContentItemIds());
 			}
-			$this->embeddedGuiCollections[$panelName] = new EmbeddedGuiCollection(
-					$readOnly, $reduced, $panelDeclaration->getMin(), $eiuFrame, $allowedEiuMasks);
+			$this->embeddedGuiCollections[$panelName] = new EmbeddedGuiCollection($readOnly, $reduced, 
+					$panelDeclaration->getMin(), $eiuFrame, $allowedEiuTypes);
 		}
 	}
 	

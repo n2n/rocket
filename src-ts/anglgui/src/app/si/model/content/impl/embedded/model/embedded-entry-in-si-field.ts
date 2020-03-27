@@ -15,6 +15,7 @@ import { TranslationService } from 'src/app/util/i18n/translation.service';
 import { SiFieldAdapter } from '../../common/model/si-field-adapter';
 import { Message } from 'src/app/util/i18n/message';
 import { EmbeInSource } from './embe-collection';
+import { SiFrame } from 'src/app/si/model/meta/si-frame';
 
 export class EmbeddedEntriesInSiField extends SiFieldAdapter implements EmbeInSource {
 
@@ -24,10 +25,10 @@ export class EmbeddedEntriesInSiField extends SiFieldAdapter implements EmbeInSo
 		reduced: false,
 		nonNewRemovable: true,
 		sortable: false,
-		allowedSiTypeIdentifiers: null
+		allowedSiTypeIds: null
 	};
 
-	constructor(private label: string, private siService: SiService, private typeCategory: string, private apiUrl: string,
+	constructor(private label: string, private siService: SiService, private frame: SiFrame,
 			private translationService: TranslationService, private values: SiEmbeddedEntry[] = []) {
 		super();
 	}
@@ -65,9 +66,8 @@ export class EmbeddedEntriesInSiField extends SiFieldAdapter implements EmbeInSo
 
 	createUiStructureModel(): UiStructureModel {
 		return new EmbeddedEntriesInUiStructureModel(
-				new EmbeddedEntryObtainer(this.siService, this.apiUrl, this.config.reduced,
-						this.config.allowedSiTypeIdentifiers.map(qual => qual.id)),
-				this.typeCategory, this, this.config, this.translationService,
+				new EmbeddedEntryObtainer(this.siService, this.frame.apiUrl, this.config.reduced, this.config.allowedSiTypeIds),
+				this.frame, this, this.config, this.translationService,
 				this.disabledSubject);
 	}
 
@@ -103,8 +103,7 @@ export class EmbeddedEntriesInSiField extends SiFieldAdapter implements EmbeInSo
 			return this.handlePaste(newEmbeInds, []);
 		}
 
-		const obtainer = new EmbeddedEntryObtainer(this.siService, this.apiUrl, this.config.reduced, 
-				this.config.allowedSiTypeIdentifiers.map(sti => sti.id));
+		const obtainer = new EmbeddedEntryObtainer(this.siService, this.frame.apiUrl, this.config.reduced, this.config.allowedSiTypeIds);
 		return obtainer.obtain(newEntryIdentifiers).toPromise()
 				.then((embeddedEntries) => {
 					return this.handlePaste(newEmbeInds, embeddedEntries);
@@ -151,9 +150,9 @@ export class EmbeddedEntriesInSiField extends SiFieldAdapter implements EmbeInSo
 	}
 
 	private valEntryIdentifier(entryIdentifier: SiEntryIdentifier) {
-		if (entryIdentifier.typeCategory !== this.typeCategory) {
-			throw new GenericMissmatchError('Categories dont match: '
-					+ entryIdentifier.typeCategory + ' != ' + this.typeCategory);
+		if (!this.frame.typeContext.containsTypeId(entryIdentifier.typeId)) {
+			throw new GenericMissmatchError('Types dont match: '
+					+ entryIdentifier.typeId + ' != ' + this.frame);
 		}
 	}
 

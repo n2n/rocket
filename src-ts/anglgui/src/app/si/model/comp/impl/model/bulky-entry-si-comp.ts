@@ -143,12 +143,12 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 		this.asideUiContents = this.siEntry.selectedEntryBuildup.controls
 					.map(control => control.createUiContent(uiStructure.getZone()));
 
-		const siTypeDeclaration = this.siDeclaration.getTypeDeclarationByTypeId(this.siEntry.selectedTypeId);
+		const siMaskDeclaration = this.siDeclaration.getTypeDeclarationByTypeId(this.siEntry.selectedTypeId);
 		const toolbarResolver = new ToolbarResolver();
 
-		this.contentUiStructures = this.createStructures(uiStructure, siTypeDeclaration.structureDeclarations, toolbarResolver);
+		this.contentUiStructures = this.createStructures(uiStructure, siMaskDeclaration.structureDeclarations, toolbarResolver);
 
-		for (const prop of siTypeDeclaration.type.getProps()) {
+		for (const prop of siMaskDeclaration.type.getProps()) {
 			if (prop.dependantPropIds.length > 0 && this.siEntry.selectedEntryBuildup.containsPropId(prop.id)) {
 				toolbarResolver.fillContext(prop, this.siEntry.selectedEntryBuildup.getFieldById(prop.id));
 			}
@@ -217,8 +217,8 @@ class TypeSelectInModel implements EnumInModel {
 	private options = new Map<string, string>();
 
 	constructor(private siEntry: SiEntry) {
-		for (const tq of siEntry.typeQualifiers) {
-			this.options.set(tq.id, tq.name);
+		for (const mq of siEntry.maskQualifiers) {
+			this.options.set(mq.identifier.typeId, mq.name);
 		}
 	}
 

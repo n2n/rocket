@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, EventEmitter, Output, HostListener } from '@angular/core';
 import { SiEntryQualifier } from 'src/app/si/model/content/si-qualifier';
 import { SiEmbeddedEntry } from '../../model/si-embedded-entry';
-import { SiTypeQualifier } from 'src/app/si/model/meta/si-type-qualifier';
+import { SiMaskQualifier } from 'src/app/si/model/meta/si-mask-qualifier';
 import { AddPasteObtainer } from '../add-paste-obtainer';
 import { ClipboardService } from 'src/app/si/model/generic/clipboard.service';
 import { SiGenericEmbeddedEntry } from '../../model/generic-embedded';
@@ -33,7 +33,7 @@ export class AddPasteComponent implements OnInit {
 	popupOpen = false;
 	siEmbeddedEntry: SiEmbeddedEntry|null = null;
 
-	addables: SiTypeQualifier[] = [];
+	addables: SiMaskQualifier[] = [];
 	pastables: SiEntryQualifier[] = [];
 	illegalPastables: SiEntryQualifier[] = [];
 
@@ -96,7 +96,7 @@ export class AddPasteComponent implements OnInit {
 	}
 
 	private update() {
-		this.addables = this.siEmbeddedEntry.typeQualifiers;
+		this.addables = this.siEmbeddedEntry.maskQualifiers;
 
 		this.pastables = [];
 		this.illegalPastables = [];
@@ -119,9 +119,9 @@ export class AddPasteComponent implements OnInit {
 		return (this.addables.length + this.pastables.length + this.illegalPastables.length) > 10;
 	}
 
-	chooseAddable(siTypeQualifier: SiTypeQualifier) {
+	chooseAddable(siMaskQualifier: SiMaskQualifier) {
 		this.popupOpen = false;
-		this.siEmbeddedEntry.selectedTypeId = siTypeQualifier.id;
+		this.siEmbeddedEntry.selectedTypeId = siMaskQualifier.identifier.typeId;
 		this.newEntry.emit(this.siEmbeddedEntry);
 		this.reset();
 	}
@@ -142,16 +142,16 @@ export class AddPasteComponent implements OnInit {
 	}
 
 
-	// addBySiType(siTypeQualifier: SiTypeQualifier) {
-	// 	if (this.addLoadingSiTypeQualifier) {
+	// addBySiType(siMaskQualifier: SiMaskQualifier) {
+	// 	if (this.addLoadingSiMaskQualifier) {
 	// 		return;
 	// 	}
 
-	// 	this.addLoadingSiTypeQualifier = siTypeQualifier;
+	// 	this.addLoadingSiMaskQualifier = siMaskQualifier;
 	// 	this.obtainer.obtain(null).subscribe((siEmbeddedEntry) => {
-	// 		this.addLoadingSiTypeQualifier = null;
+	// 		this.addLoadingSiMaskQualifier = null;
 	// 		this.handleAddResponse(siEmbeddedEntry);
-	// 		this.choose(siTypeQualifier);
+	// 		this.choose(siMaskQualifier);
 	// 	});
 	// }
 

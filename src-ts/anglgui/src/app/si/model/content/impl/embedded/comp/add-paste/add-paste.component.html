@@ -10,7 +10,7 @@
 	<div *ngIf="popupOpen && !loading" class="rocket-multi-type-menu">
 		<input *ngIf="searchable" type="search" />
 
-		<rocket-qualifier-tiling [siTypeQualifiers]="addables" [siEntryQualifiers]="pastables">
+		<rocket-qualifier-tiling [siMaskQualifiers]="addables" [siEntryQualifiers]="pastables">
 		</rocket-qualifier-tiling>
 	</div>
 

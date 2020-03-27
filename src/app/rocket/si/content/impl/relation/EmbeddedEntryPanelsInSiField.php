@@ -25,12 +25,13 @@ use n2n\util\type\ArgUtils;
 use n2n\util\type\attrs\DataSet;
 use n2n\util\uri\Url;
 use rocket\si\content\impl\InSiFieldAdapter;
+use rocket\si\meta\SiFrame;
 
 class EmbeddedEntryPanelsInSiField extends InSiFieldAdapter {
 	/**
-	 * @var string
+	 * @var SiFrame
 	 */
-	private $typeCategory;
+	private $frame;
 	/**
 	 * @var Url
 	 */
@@ -49,29 +50,12 @@ class EmbeddedEntryPanelsInSiField extends InSiFieldAdapter {
 	 * @param EmbeddedEntryPanelInputHandler $inputHandler
 	 * @param SiPanel[] $panels
 	 */
-	function __construct(string $typeCateogry, Url $apiUrl, EmbeddedEntryPanelInputHandler $inputHandler, array $panels = []) {
-		$this->typeCategory = $typeCateogry;
-		$this->apiUrl = $apiUrl;
+	function __construct(SiFrame $frame, EmbeddedEntryPanelInputHandler $inputHandler, array $panels = []) {
+		$this->frame = $frame;
 		$this->inputHandler = $inputHandler;
 		$this->setPanels($panels);
 	}
-	
-	/**
-	 * @param Url $apiUrl
-	 * @return EmbeddedEntryPanelsInSiField
-	 */
-	function setApiUrl(Url $apiUrl) {
-		$this->apiUrl = $apiUrl;
-		return $this;
-	}
-	
-	/**
-	 * @return Url|null
-	 */
-	function getApiUrl() {
-		return $this->apiUrl;
-	}
-	
+
 	/**
 	 * @param SiPanel[] $panels
 	 * @return EmbeddedEntryPanelsInSiField
@@ -104,8 +88,7 @@ class EmbeddedEntryPanelsInSiField extends InSiFieldAdapter {
 	function getData(): array {
 		return [
 			'panels' => $this->panels,
-			'typeCategory' => $this->typeCategory,
-			'apiUrl' => (string) $this->apiUrl,
+			'frame' => $this->frame,
 			'reduced' => $this->reduced,
 			'sortable' => $this->sortable,
 			'pasteCategory' => $this->pasteCategory,

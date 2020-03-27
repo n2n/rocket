@@ -1,7 +1,7 @@
 
-<div *ngFor="let siTypeQualifier of siTypeQualifiers">
-	<button type="button" (click)="chooseSiType(siTypeQualifier)" [disabled]="disabled">
-		<rocket-si-qualifier [siTypeQualifier]="siTypeQualifier"></rocket-si-qualifier>
+<div *ngFor="let siMaskQualifier of siMaskQualifiers">
+	<button type="button" (click)="chooseSiType(siMaskQualifier)" [disabled]="disabled">
+		<rocket-si-qualifier [siMaskQualifier]="siMaskQualifier"></rocket-si-qualifier>
 	</button>
 </div>
 

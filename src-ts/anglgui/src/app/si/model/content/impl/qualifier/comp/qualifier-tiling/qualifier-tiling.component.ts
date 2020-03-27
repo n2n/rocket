@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { SiTypeQualifier } from 'src/app/si/model/meta/si-type-qualifier';
+import { SiMaskQualifier } from 'src/app/si/model/meta/si-mask-qualifier';
 import { SiEntryQualifier } from '../../../../si-qualifier';
 
 @Component({
@@ -10,13 +10,13 @@ import { SiEntryQualifier } from '../../../../si-qualifier';
 export class QualifierTilingComponent implements OnInit {
 
 	@Input()
-	siTypeQualifiers: Array<SiTypeQualifier> = [];
+	siMaskQualifiers: Array<SiMaskQualifier> = [];
 	@Input()
 	siEntryQualifiers: Array<SiEntryQualifier> = [];
 	@Input()
 	disabled = false;
 	@Output()
-	sTypeSelected: EventEmitter<SiTypeQualifier>;
+	sTypeSelected: EventEmitter<SiMaskQualifier>;
 	@Output()
 	sEntrySelected: EventEmitter<SiEntryQualifier>;
 
@@ -25,8 +25,8 @@ export class QualifierTilingComponent implements OnInit {
 	ngOnInit() {
 	}
 
-	chooseSiType(siTypeQualifier: SiTypeQualifier) {
-		this.sTypeSelected.emit(siTypeQualifier);
+	chooseSiType(siMaskQualifier: SiMaskQualifier) {
+		this.sTypeSelected.emit(siMaskQualifier);
 	}
 
 	chooseSiEntry(siEntryQualifier: SiEntryQualifier) {

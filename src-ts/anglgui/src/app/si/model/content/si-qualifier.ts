@@ -1,34 +1,36 @@
-import { SiTypeIdentifier, SiTypeQualifier } from '../meta/si-type-qualifier';
+import { SiMaskQualifier } from '../meta/si-mask-qualifier';
 
 export class SiEntryIdentifier {
-	constructor(readonly typeCategory: string, readonly id: string|null) {
+	constructor(readonly typeId: string, readonly id: string|null) {
 
 	}
 
 	equals(obj: any): boolean {
-		return obj instanceof SiEntryIdentifier && this.typeCategory === ( obj as SiEntryIdentifier).typeCategory
+		return obj instanceof SiEntryIdentifier && this.typeId === ( obj as SiEntryIdentifier).typeId
 				&& this.id === ( obj as SiEntryIdentifier).id;
 	}
 
 	toString(): string {
-		return this.typeCategory + '#' + this.id;
+		return this.typeId + '#' + this.id;
 	}
 }
 
-export class SiEntryQualifier extends SiEntryIdentifier {
-	constructor(readonly typeQualifier: SiTypeQualifier, id: string|null, public idName: string|null) {
-		super(typeQualifier.category, id);
+export class SiEntryQualifier {
+	readonly identifier: SiEntryIdentifier;
+
+	constructor(readonly maskQualifier: SiMaskQualifier, id: string|null, public idName: string|null) {
+		this.identifier = new SiEntryIdentifier(maskQualifier.identifier.typeId, id);
 	}
 
 	getBestName(): string {
-		return this.idName || this.typeQualifier.name;
+		return this.idName || this.maskQualifier.name;
 	}
 
 	equals(obj: any): boolean {
-		return obj instanceof SiEntryQualifier && super.equals(obj);
+		return obj instanceof SiEntryQualifier && this.maskQualifier.identifier.matches(obj.maskQualifier.identifier);
 	}
 
 	toString(): string {
-		return this.typeQualifier.name + '#' + this.id;
+		return this.idName + ' (' + this.identifier.toString() + ')';
 	}
 }

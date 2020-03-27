@@ -23,9 +23,9 @@ namespace rocket\si\meta;
 
 use n2n\util\type\ArgUtils;
 
-class SiType implements \JsonSerializable {
+class SiMask implements \JsonSerializable {
 	/**
-	 * @var SiTypeQualifier
+	 * @var SiMaskQualifier
 	 */	
 	private $qualifier;
 	/**
@@ -36,7 +36,7 @@ class SiType implements \JsonSerializable {
 	/**
 	 * @param SiProp[] $fieldDeclarations
 	 */
-	function __construct(SiTypeQualifier $qualifier, ?array $props = []) {
+	function __construct(SiMaskQualifier $qualifier, ?array $props = []) {
 		$this->qualifier = $qualifier;
 		$this->setProps($props);
 	}
@@ -58,7 +58,7 @@ class SiType implements \JsonSerializable {
 	/**
 	 * @param string $typeId
 	 * @param SiProp[] $fieldDeclarations
-	 * @return SiType
+	 * @return SiMask
 	 */
 	function addProp(SiProp $prop) {
 	    $this->props[] = $prop;
@@ -74,10 +74,10 @@ class SiType implements \JsonSerializable {
 
 	
 	/**
-	 * @param SiTypeQualifier $qualifier
-	 * @return SiType
+	 * @param SiMaskQualifier $qualifier
+	 * @return SiMask
 	 */
-	function setQualifier(SiTypeQualifier $qualifier) {
+	function setQualifier(SiMaskQualifier $qualifier) {
 		$this->qualifier = $qualifier;
 		return $this;
 	}

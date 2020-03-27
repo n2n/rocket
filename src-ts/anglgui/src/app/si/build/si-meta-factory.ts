@@ -1,11 +1,13 @@
 import { SiDeclaration } from '../model/meta/si-declaration';
 import { Extractor } from 'src/app/util/mapping/extractor';
-import { SiTypeDeclaration } from '../model/meta/si-type-declaration';
-import { SiType } from '../model/meta/si-type';
+import { SiMaskDeclaration } from '../model/meta/si-mask-declaration';
+import { SiMask } from '../model/meta/si-type';
 import { SiProp } from '../model/meta/si-prop';
-import { SiTypeQualifier, SiTypeIdentifier } from '../model/meta/si-type-qualifier';
-import { SiTypeEssentialsFactory } from './si-type-essentials-factory';
+import { SiMaskQualifier, SiMaskIdentifier } from '../model/meta/si-mask-qualifier';
+import { SiTypeEssentialsFactory as SiMaskEssentialsFactory } from './si-type-essentials-factory';
 import { SiStructureDeclaration } from '../model/meta/si-structure-declaration';
+import { SiFrame } from '../model/meta/si-frame';
+import { SiTypeContext } from '../model/meta/si-type-context';
 
 
 export class SiMetaFactory {
@@ -14,19 +16,19 @@ export class SiMetaFactory {
 
 		const declaration = new SiDeclaration();
 
-		let contextTypeDeclaration: SiTypeDeclaration|null = null ;
-		for (const typeDeclarationData of extr.reqArray('typeDeclarations')) {
-			const typeDeclaration = SiMetaFactory.createTypeDeclaration(typeDeclarationData, contextTypeDeclaration);
+		let contextTypeDeclaration: SiMaskDeclaration|null = null ;
+		for (const maskDeclarationData of extr.reqArray('maskDeclarations')) {
+			const maskDeclaration = SiMetaFactory.createTypeDeclaration(maskDeclarationData, contextTypeDeclaration);
 			if (!contextTypeDeclaration) {
-				contextTypeDeclaration = typeDeclaration;
+				contextTypeDeclaration = maskDeclaration;
 			}
 
-			declaration.addTypeDeclaration(typeDeclaration);
+			declaration.addTypeDeclaration(maskDeclaration);
 		}
 		return declaration;
 	}
 
-	private static createTypeDeclaration(data: any, contextTypeDeclaration: SiTypeDeclaration|null): SiTypeDeclaration {
+	private static createTypeDeclaration(data: any, contextTypeDeclaration: SiMaskDeclaration|null): SiMaskDeclaration {
 		const extr = new Extractor(data);
 
 		let contextSiProps: SiProp[]|null = null;
@@ -36,20 +38,20 @@ export class SiMetaFactory {
 			contextStructureDeclarations = contextTypeDeclaration.structureDeclarations;
 		}
 
-		const type = SiMetaFactory.createType(extr.reqObject('type'), contextSiProps);
+		const mask = SiMetaFactory.createMask(extr.reqObject('mask'), contextSiProps);
 		const structureDeclarationsData = extr.nullaArray('structureDeclarations');
 		if (structureDeclarationsData) {
-			return new SiTypeDeclaration(type,
-					new SiTypeEssentialsFactory(type).createStructureDeclarations(structureDeclarationsData));
+			return new SiMaskDeclaration(mask,
+					new SiMaskEssentialsFactory(mask).createStructureDeclarations(structureDeclarationsData));
 		}
 
-		return new SiTypeDeclaration(type, contextStructureDeclarations);
+		return new SiMaskDeclaration(mask, contextStructureDeclarations);
 	}
 
-	static createType(data: any, siProps: SiProp[]|null): SiType {
+	static createMask(data: any, siProps: SiProp[]|null): SiMask {
 		const extr = new Extractor(data);
 
-		const type = new SiType(SiMetaFactory.createTypeQualifier(extr.reqObject('qualifier')));
+		const type = new SiMask(SiMetaFactory.createTypeQualifier(extr.reqObject('qualifier')));
 
 		let propDatas: Array<any>|null;
 		if (!siProps) {
@@ -73,36 +75,19 @@ export class SiMetaFactory {
 		return type;
 	}
 
-	static buildTypeIdentifiers(datas: any[]|null): SiTypeIdentifier[]|null {
-		if (!datas) {
-			return null;
-		}
-
-		return datas.map(data => this.createTypeIdentifier(data));
-	}
-
-	static createTypeIdentifier(data: any): SiTypeIdentifier {
+	static createTypeQualifier(data: any): SiMaskQualifier {
 		const extr = new Extractor(data);
 
-		return  {
-			category: extr.reqString('category'),
-			id: extr.reqString('id')
-		};
+		return new SiMaskQualifier(new SiMaskIdentifier(extr.reqString('id'), extr.reqString('typeId')),
+				 extr.reqString('name'), extr.reqString('iconClass'));
 	}
 
-	static createTypeQualifier(data: any): SiTypeQualifier {
-		const extr = new Extractor(data);
-
-		return new SiTypeQualifier(extr.reqString('category'), extr.reqString('id'), extr.reqString('name'),
-				extr.reqString('iconClass'));
-	}
-
-	static createTypeQualifiers(dataArr: any[]): SiTypeQualifier[] {
-		const typeQualifiers = new Array<SiTypeQualifier>();
+	static createTypeQualifiers(dataArr: any[]): SiMaskQualifier[] {
+		const maskQualifiers = new Array<SiMaskQualifier>();
 		for (const data of dataArr) {
-			typeQualifiers.push(SiMetaFactory.createTypeQualifier(data));
+			maskQualifiers.push(SiMetaFactory.createTypeQualifier(data));
 		}
-		return typeQualifiers;
+		return maskQualifiers;
 	}
 
 	static createProp(probData: any): SiProp {
@@ -111,4 +96,18 @@ export class SiMetaFactory {
 		return new SiProp(extr.nullaString('id'), extr.nullaString('label'), extr.nullaString('helpText'),
 				extr.reqStringArray('descendantPropIds'));
 	}
+
+	static createFrame(data: any): SiFrame {
+		const extr = new Extractor(data);
+
+		return new SiFrame(extr.reqString('apiUrl'), this.createTypeContext(extr.reqObject('typeContext')));
+	}
+
+	static createTypeContext(data: any): SiTypeContext {
+		const extr = new Extractor(data);
+
+		return new SiTypeContext(extr.reqString('contextTypeId'), extr.reqStringArray('subTypeIds'));
+	}
+
+
 }

@@ -52,7 +52,7 @@ use n2n\l10n\Lstr;
 use rocket\ei\manage\gui\EiEntryGui;
 use rocket\ei\manage\gui\EiGuiFrame;
 use rocket\ei\manage\gui\EiGuiListener;
-use rocket\si\meta\SiTypeQualifier;
+use rocket\si\meta\SiMaskQualifier;
 use n2n\l10n\N2nLocale;
 
 /**
@@ -647,10 +647,10 @@ class EiMask {
 	
 	/**
 	 * @param N2nLocale $n2nLocale
-	 * @return \rocket\si\meta\SiTypeQualifier
+	 * @return \rocket\si\meta\SiMaskQualifier
 	 */
-	public function createSiTypeQualifier(N2nLocale $n2nLocale) {
-		return new SiTypeQualifier($this->getEiType()->getSupremeEiType()->getId(), $this->getEiType()->getId(), 
+	public function createSiMaskQualifier(N2nLocale $n2nLocale) {
+		return new SiMaskQualifier((string) $this->getEiTypePath(), $this->getEiType()->getId(), 
 				$this->getLabelLstr()->t($n2nLocale), $this->getIconType());
 	}
 	

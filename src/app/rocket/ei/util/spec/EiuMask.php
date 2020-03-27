@@ -32,7 +32,7 @@ use rocket\ei\util\Eiu;
 use rocket\ei\EiPropPath;
 use n2n\l10n\N2nLocale;
 use rocket\ei\component\UnknownEiComponentException;
-use rocket\si\meta\SiTypeQualifier;
+use rocket\si\meta\SiMaskQualifier;
 use rocket\ei\EiType;
 
 class EiuMask  {
@@ -252,9 +252,9 @@ class EiuMask  {
 	}
 	
 	/**
-	 * @return SiTypeQualifier
+	 * @return SiMaskQualifier
 	 */
-	public function createSiTypeQualifier(N2nLocale $n2nLocale = null) {
-		return $this->eiMask->createSiTypeQualifier($n2nLocale ?? $this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
+	public function createSiMaskQualifier(N2nLocale $n2nLocale = null) {
+		return $this->eiMask->createSiMaskQualifier($n2nLocale ?? $this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
 	}
 }

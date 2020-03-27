@@ -28,9 +28,9 @@ use rocket\ei\util\frame\EiuFrame;
 use rocket\si\content\impl\relation\SiEmbeddedEntry;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\manage\entry\EiEntry;
-use rocket\ei\util\spec\EiuMask;
 use n2n\util\type\CastUtils;
 use rocket\si\input\SiEntryInput;
+use rocket\ei\util\spec\EiuType;
 
 class EmbeddedGuiCollection {
 	/**
@@ -55,16 +55,16 @@ class EmbeddedGuiCollection {
 	private $eiuEntryGuis = [];
 	/**
 	 * 
-	 * @var EiuMask[]
+	 * @var EiuType[]
 	 */
-	private $allowedEiuMasks = [];
+	private $allowedEiuTypes = [];
 
-	function __construct(bool $readOnly, bool $summaryRequired, int $min, ?EiuFrame $eiuFrame, ?array $allowedEiuMasks) {
+	function __construct(bool $readOnly, bool $summaryRequired, int $min, ?EiuFrame $eiuFrame, ?array $allowedEiuTypes) {
 		$this->readOnly = $readOnly;
 		$this->summaryRequired = $summaryRequired;
 		$this->min = $min;
 		$this->eiuFrame = $eiuFrame;
-		$this->allowedEiuMasks = $allowedEiuMasks;
+		$this->allowedEiuTypes = $allowedEiuTypes;
 	
 	}
 
@@ -88,7 +88,7 @@ class EmbeddedGuiCollection {
 		}
 		
 		IllegalStateException::assertTrue($this->eiuFrame !== null);
-		$eiuGuiModel = $this->eiuFrame->contextEngine()->newForgeMultiGuiModel(true, false, $this->allowedEiuMasks);
+		$eiuGuiModel = $this->eiuFrame->contextEngine()->newForgeMultiGuiModel(true, false, $this->allowedEiuTypes);
 		for ($i = 0; $i < $num; $i++) {
 			$this->eiuEntryGuis[] = $eiuGuiModel->newEntryGui();
 		}

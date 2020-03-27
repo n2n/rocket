@@ -743,14 +743,14 @@ class EiuEntry {
 	 * @return \rocket\si\content\SiEntryQualifier
 	 */
 	function createSiEntryQualifier() {
-		$siTypeQualifier = $this->mask()->createSiTypeQualifier();
+		$siMaskQualifier = $this->mask()->createSiMaskQualifier();
 		$idName = $this->createIdentityString();
 		
 		if ($this->eiuObject !== null) {
-			return $this->eiuObject->getEiObject()->createSiEntryIdentifier()->toQualifier($siTypeQualifier, $idName);
+			return $this->eiuObject->getEiObject()->createSiEntryIdentifier()->toQualifier($siMaskQualifier, $idName);
 		}
 		
-		return $this->eiEntry->getEiObject()->createSiEntryIdentifier()->toQualifier($siTypeQualifier, $idName);
+		return $this->eiEntry->getEiObject()->createSiEntryIdentifier()->toQualifier($siMaskQualifier, $idName);
 	}
 }  
 

@@ -1,12 +1,12 @@
 
-import { SiTypeQualifier } from 'src/app/si/model/meta/si-type-qualifier';
+import { SiMaskQualifier } from 'src/app/si/model/meta/si-mask-qualifier';
 import { SiProp } from './si-prop';
 import { IllegalSiStateError } from '../../util/illegal-si-state-error';
 
-export class SiType {
+export class SiMask {
 	private propMap = new Map<string, SiProp>();
 
-	constructor(readonly qualifier: SiTypeQualifier) {
+	constructor(readonly qualifier: SiMaskQualifier) {
 	}
 
 	addProp(prop: SiProp) {

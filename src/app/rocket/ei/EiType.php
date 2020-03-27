@@ -40,6 +40,7 @@ use rocket\ei\manage\EiEntityObj;
 use rocket\ei\manage\DraftEiObject;
 use rocket\ei\manage\draft\Draft;
 use rocket\spec\TypePath;
+use rocket\si\meta\SiTypeContext;
 
 class EiType extends Type {
 	private $entityModel;
@@ -458,5 +459,14 @@ class EiType extends Type {
 				$eiLifecycleListener->onRemove($vetoableLifecycleAction, $n2nContext);
 			}
 		}
+	}
+	
+	/**
+	 * @return \rocket\si\meta\SiTypeContext
+	 */
+	function createSiTypeContext() {
+		return new SiTypeContext($this->getId(), array_map(
+				function ($subEiType) { return $subEiType->getId(); },
+				$this->getAllSubEiTypes()));
 	}
 }

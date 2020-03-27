@@ -23,44 +23,44 @@ namespace rocket\si\meta;
 
 use n2n\util\type\ArgUtils;
 
-class SiTypeDeclaration implements \JsonSerializable {
+class SiMaskDeclaration implements \JsonSerializable {
 	/**
-	 * @var SiType
+	 * @var SiMask
 	 */
-	private $type;
+	private $mask;
 	/**
 	 * @var SiStructureDeclaration[]|null
 	 */
 	private $structureDeclarations;
 	
 	/**
-	 * @param SiType $type
+	 * @param SiMask $type
 	 * @param SiStructureDeclaration[] $structureDeclarations
 	 */
-	function __construct(SiType $type, ?array $structureDeclarations) {
-		$this->type = $type;
+	function __construct(SiMask $mask, ?array $structureDeclarations) {
+		$this->mask = $mask;
 		$this->setStructureDeclarations($structureDeclarations);
 	}
 	
 	/**
-	 * @param SiType $type
-	 * @return SiTypeDeclaration
+	 * @param SiMask $type
+	 * @return SiMaskDeclaration
 	 */
-	function setType(SiType $type) {
-		$this->type = $type;
+	function setType(SiMask $type) {
+		$this->mask = $type;
 		return $this;
 	}
 	
 	/**
-	 * @return SiType
+	 * @return SiMask
 	 */
 	function getType() {
-		return $this->type;
+		return $this->mask;
 	}
 
 	/**
 	 * @param SiStructureDeclaration[] $structureDeclarations
-	 * @return SiTypeDeclaration
+	 * @return SiMaskDeclaration
 	 */
 	function setStructureDeclarations(?array $structureDeclarations) {
 		ArgUtils::valArray($structureDeclarations, SiStructureDeclaration::class, true);
@@ -71,7 +71,7 @@ class SiTypeDeclaration implements \JsonSerializable {
 	/**
 	 * @param string $typeId
 	 * @param SiStructureDeclaration[] $structureDeclaration
-	 * @return SiTypeDeclaration
+	 * @return SiMaskDeclaration
 	 */
 	function addStructureDeclaration(SiStructureDeclaration $structureDeclaration) {
 		$this->structureDeclarations[] = $structureDeclaration;
@@ -95,7 +95,7 @@ class SiTypeDeclaration implements \JsonSerializable {
 	 */
 	function jsonSerialize() {
 		return [
-			'type' => $this->type,
+			'mask' => $this->mask,
 			'structureDeclarations' => $this->structureDeclarations
 		];
 	}

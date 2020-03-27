@@ -40,6 +40,7 @@ use rocket\ei\component\command\EiCommand;
 use rocket\ei\manage\security\InaccessibleEiEntryException;
 use rocket\ei\component\command\GenericResult;
 use rocket\si\NavPoint;
+use rocket\si\meta\SiFrame;
 
 class EiFrame {
 	
@@ -473,6 +474,13 @@ class EiFrame {
 	
 	public function unregisterListener(EiFrameListener $listener) {
 		unset($this->listeners[spl_object_hash($listener)]);		
+	}
+	
+	/**
+	 * @return \rocket\si\meta\SiFrame
+	 */
+	function createSiFrame() {
+		return new SiFrame($this->getApiUrl(), $this->contextEiEngine->getEiMask()->getEiType()->createSiTypeContext());
 	}
 }
 

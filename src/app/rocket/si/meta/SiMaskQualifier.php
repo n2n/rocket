@@ -23,37 +23,14 @@ namespace rocket\si\meta;
 
 use n2n\util\type\attrs\DataSet;
 
-class SiTypeQualifier implements \JsonSerializable {
-	private $category;
-    private $id;
+class SiMaskQualifier extends SiMaskIdentifier {
 	private $name;
 	private $iconClass;
 	
-	function __construct(string $category, string $id, string $name, string $iconClass) {
-		$this->category = $category;
-		$this->id = $id;
+	function __construct(string $id, string $typeId, string $name, string $iconClass) {
+		parent::__construct($id, $typeId);
 		$this->name = $name;
 		$this->iconClass = $iconClass;
-	}
-	
-	function getCategory() {
-		return $this->category;
-	}
-	
-	/**
-	 * @return string
-	 */
-	function getId() {
-		return $this->id;
-	}
-	
-	/**
-	 * @param string $id
-	 * @return \rocket\si\meta\SiTypeQualifier
-	 */
-	function setId(string $id) {
-		$this->id = $id;
-		return $this;
 	}
 	
 	/**
@@ -65,7 +42,7 @@ class SiTypeQualifier implements \JsonSerializable {
 	
 	/**
 	 * @param string $name
-	 * @return \rocket\si\meta\SiTypeQualifier
+	 * @return \rocket\si\meta\SiMaskQualifier
 	 */
 	function setName(string $name) {
 		$this->name = $name;
@@ -74,18 +51,24 @@ class SiTypeQualifier implements \JsonSerializable {
 	
 	function jsonSerialize() {
 		return [
-			'category' => $this->category,
 		    'id' => $this->id,
+			'typeId' => $this->typeId,
 			'name' => $this->name,
 			'iconClass' => $this->iconClass
 		];
 	}
 
+	/**
+	 * @param array $data
+	 * @throws \InvalidArgumentException
+	 * @return \rocket\si\meta\SiMaskQualifier
+	 */
 	static function parse(array $data) {
 		$ds = new DataSet($data);
 		
 		try {
-			return new SiTypeQualifier($ds->reqString('category'), $ds->reqString('id'), $ds->reqString('name'), $ds->reqString('iconClass'));
+			return new SiMaskQualifier($ds->reqString('id'), $ds->reqString('typeId'),
+					$ds->reqString('name'), $ds->reqString('iconClass'));
 		} catch (\n2n\util\type\attrs\AttributesException $e) {
 			throw new \InvalidArgumentException(null, null, $e);
 		}

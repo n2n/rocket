@@ -78,7 +78,7 @@ export class EmbeInCollection extends EmbeCollection {
 	}
 
 	// fillWithPlaceholderEmbes() {
-	// 	if (!this.config.allowedSiTypeQualifiers) {
+	// 	if (!this.config.allowedSiMaskQualifiers) {
 	// 		return;
 	// 	}
 

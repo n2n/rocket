@@ -14,7 +14,7 @@ export interface EmbeddedEntriesInModel extends EmbeddedEntryModel {
 
 	// getTypeCategory(): string;
 
-	// getAllowedSiTypeQualifiers(): SiTypeQualifier[]|null;
+	// getAllowedSiMaskQualifiers(): SiMaskQualifier[]|null;
 
 	getAddPasteObtainer(): AddPasteObtainer;
 

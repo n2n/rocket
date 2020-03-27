@@ -9,6 +9,7 @@ import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
 import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
+import { SiFrame } from 'src/app/si/model/meta/si-frame';
 
 class SiEntryQualifierCollection {
 	constructor(public siEntryQualifiers: SiEntryQualifier[]) {
@@ -21,7 +22,7 @@ export class QualifierSelectInSiField extends InSiFieldAdapter implements Qualif
 	public max: number|null = null;
 	public pickables: SiEntryQualifier[]|null = null;
 
-	constructor(public typeCategory: string, public apiUrl: string, public label: string,
+	constructor(public frame: SiFrame, public label: string,
 			public values: SiEntryQualifier[] = []) {
 		super();
 	}
@@ -31,7 +32,7 @@ export class QualifierSelectInSiField extends InSiFieldAdapter implements Qualif
 	}
 
 	getApiUrl(): string {
-		return this.apiUrl;
+		return this.frame.apiUrl;
 	}
 
 	getValues(): SiEntryQualifier[] {
@@ -93,7 +94,8 @@ export class QualifierSelectInSiField extends InSiFieldAdapter implements Qualif
 				break;
 			}
 
-			GenericMissmatchError.assertTrue(siEntryQualifier.typeCategory === this.typeCategory, 'TypeCategory does not match.');
+			GenericMissmatchError.assertTrue(this.frame.typeContext.containsTypeId(siEntryQualifier.identifier.typeId),
+					'TypeCategory does not match.');
 			this.values.push(siEntryQualifier);
 		}
 

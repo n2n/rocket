@@ -5,7 +5,7 @@ import { SiEntryError } from 'src/app/si/model/input/si-entry-error';
 import { Message } from 'src/app/util/i18n/message';
 import { SiEntryIdentifier, SiEntryQualifier } from './si-qualifier';
 import { SiEntryBuildup } from './si-entry-buildup';
-import { SiTypeQualifier } from '../meta/si-type-qualifier';
+import { SiMaskQualifier } from '../meta/si-mask-qualifier';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { SiGenericEntry } from '../generic/si-generic-entry';
 import { SiGenericEntryBuildup } from '../generic/si-generic-entry-buildup';
@@ -63,8 +63,8 @@ export class SiEntry {
 		return this._entryBuildupsMap.size > 1;
 	}
 
-	get typeQualifiers(): SiTypeQualifier[] {
-		return Array.from(this._entryBuildupsMap.values()).map(buildup => buildup.entryQualifier.typeQualifier);
+	get maskQualifiers(): SiMaskQualifier[] {
+		return Array.from(this._entryBuildupsMap.values()).map(buildup => buildup.entryQualifier.maskQualifier);
 	}
 
 	get entryQualifiers(): SiEntryQualifier[] {
@@ -76,7 +76,7 @@ export class SiEntry {
 	}
 
 	addEntryBuildup(buildup: SiEntryBuildup) {
-		this._entryBuildupsMap.set(buildup.entryQualifier.typeQualifier.id, buildup);
+		this._entryBuildupsMap.set(buildup.entryQualifier.maskQualifier.identifier.typeId, buildup);
 	}
 
 // 	getFieldById(id: string): SiField|null {
@@ -98,7 +98,7 @@ export class SiEntry {
 			throw new IllegalSiStateError('No input available.');
 		}
 
-		return new SiEntryInput(this.qualifier, this.selectedTypeId, this.bulky, fieldInputMap);
+		return new SiEntryInput(this.qualifier.identifier, this.selectedTypeId, this.bulky, fieldInputMap);
 	}
 
 	handleError(error: SiEntryError) {

@@ -21,7 +21,7 @@ export class SiEntryBuildup {
 	}
 
 	getTypeId(): string {
-		return this.entryQualifier.typeQualifier.id;
+		return this.entryQualifier.maskQualifier.identifier.id;
 	}
 
 	set fieldMap(fieldMap: Map<string, SiField>) {

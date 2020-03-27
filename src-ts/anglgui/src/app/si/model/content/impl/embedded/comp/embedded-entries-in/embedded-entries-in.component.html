@@ -1,11 +1,5 @@
 <div>
-	
 	<div *ngFor="let embe of embes">
-		<ng-container *ngIf="embe.isPlaceholder()">
-			<rocket-si-add-past [obtainer]="obtainer" [allowedSiTypeQualifiers]="model.getAllowedSiTypeQualifiers()" 
-					type="tiles" (newEntry)="add($event)"></rocket-si-add-past>
-		</ng-container>
-
 		<ng-container *ngIf="!embe.isPlaceholder()">
 			<rocket-si-add-past *ngIf="!toOne" [disabled]="maxReached" [obtainer]="obtainer"
 					(newEntry)="addBefore(embe, $event)"></rocket-si-add-past>	

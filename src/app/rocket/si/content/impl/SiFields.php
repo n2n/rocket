@@ -34,6 +34,7 @@ use rocket\si\content\impl\split\SplitPlaceholderSiField;
 use rocket\si\meta\SiDeclaration;
 use rocket\si\NavPoint;
 use rocket\si\content\SiEntryQualifier;
+use rocket\si\meta\SiFrame;
 
 class SiFields {
 	
@@ -110,8 +111,8 @@ class SiFields {
 	 * @param SiEntryQualifier[]|null $pickables
 	 * @return QualifierSelectInSiField
 	 */
-	static function qualifierSelectIn(string $typeCategory, Url $apiUrl, array $values = [], int $min = 0, int $max = null, array $pickables = null) {
-		return (new QualifierSelectInSiField($typeCategory, $apiUrl, $values))->setMin($min)->setMax($max)->setPickables($pickables);
+	static function qualifierSelectIn(SiFrame $frame, array $values = [], int $min = 0, int $max = null, array $pickables = null) {
+		return (new QualifierSelectInSiField($frame, $values))->setMin($min)->setMax($max)->setPickables($pickables);
 	}
 	
 	/**
@@ -122,9 +123,9 @@ class SiFields {
 	 * @param int $max
 	 * @return EmbeddedEntryInSiField
 	 */
-	static function embeddedEntryIn(string $typeCategory, Url $apiUrl, EmbeddedEntryInputHandler $inputHandler, array $values = [], 
+	static function embeddedEntryIn(SiFrame $frame, EmbeddedEntryInputHandler $inputHandler, array $values = [], 
 			int $min = 0, int $max = null) {
-		return (new EmbeddedEntryInSiField($typeCategory, $apiUrl, $inputHandler, $values))->setMin($min)->setMax($max);
+		return (new EmbeddedEntryInSiField($frame, $inputHandler, $values))->setMin($min)->setMax($max);
 	}
 	
 	/**
@@ -133,9 +134,9 @@ class SiFields {
 	 * @param array $panels
 	 * @return \rocket\si\content\impl\relation\EmbeddedEntryPanelsInSiField
 	 */
-	static function embeddedEntryPanelsIn(string $typeCategory, Url $apiUrl, EmbeddedEntryPanelInputHandler $inputHandler, 
+	static function embeddedEntryPanelsIn(SiFrame $frame, EmbeddedEntryPanelInputHandler $inputHandler, 
 			array $panels = []) {
-		return (new EmbeddedEntryPanelsInSiField($typeCategory, $apiUrl, $inputHandler, $panels));
+		return (new EmbeddedEntryPanelsInSiField($frame, $inputHandler, $panels));
 	}
 	
 	/**

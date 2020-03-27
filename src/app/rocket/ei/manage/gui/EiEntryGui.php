@@ -164,13 +164,15 @@ class EiEntryGui {
 	 * @return \rocket\si\content\SiEntryIdentifier
 	 */
 	function createSiEntryIdentifier() {
-		$typeCategory = $this->contextEiType->getSupremeEiType()->getId();
+		$typeId = $this->contextEiType->getId();
 		$id = null;
 		if ($this->isTypeDefSelected()) {
-			$id = $this->getSelectedTypeDef()->getEiEntry()->getPid();
+			$eiEntry = $this->getSelectedTypeDef()->getEiEntry();
+			$typeId = $eiEntry->getEiType()->getId();
+			$id = $eiEntry->getPid();
 		}
 		
-		return new SiEntryIdentifier($typeCategory, $id);
+		return new SiEntryIdentifier($typeId, $id);
 	}
 	
 	/**

@@ -26,13 +26,13 @@ use n2n\util\type\attrs\DataSet;
 use n2n\util\uri\Url;
 use rocket\si\content\impl\InSiFieldAdapter;
 use rocket\si\input\SiEntryInput;
-use rocket\si\meta\SiTypeQualifier;
+use rocket\si\meta\SiFrame;
 
 class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	/**
-	 * @var string
+	 * @var SiFrame
 	 */
-	private $typeCategory;
+	private $frame;
 	/**
 	 * @var Url
 	 */
@@ -66,9 +66,9 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	 */
 	private $sortable = false;
 	/**
-	 * @var SiTypeQualifier[]|null
+	 * @var string[]|null
 	 */
-	private $allowedSiTypeQualifiers = null;
+	private $allowedSiTypeIds = null;
 	
 	/**
 	 * @param string $typeCateogry
@@ -76,27 +76,10 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	 * @param EmbeddedEntryInputHandler $inputHandler
 	 * @param SiEmbeddedEntry[] $values
 	 */
-	function __construct(string $typeCateogry, Url $apiUrl, EmbeddedEntryInputHandler $inputHandler, array $values = []) {
-		$this->typeCategory = $typeCateogry;
-		$this->apiUrl = $apiUrl;
+	function __construct(SiFrame $frame, EmbeddedEntryInputHandler $inputHandler, array $values = []) {
+		$this->frame = $frame;
 		$this->inputHandler = $inputHandler;
 		$this->setValues($values);
-	}
-	
-	/**
-	 * @param Url $apiUrl
-	 * @return \rocket\si\content\impl\relation\EmbeddedEntryInSiField
-	 */
-	function setApiUrl(Url $apiUrl) {
-		$this->apiUrl = $apiUrl;
-		return $this;
-	}
-	
-	/**
-	 * @return Url|null
-	 */
-	function getApiUrl() {
-		return $this->apiUrl;
 	}
 	
 	/**
@@ -197,19 +180,19 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	}
 	
 	/**
-	 * @return SiTypeQualifier[]|null
+	 * @return string[]|null
 	 */
-	public function isAllowedTypeQualifiers() {
-		return $this->allowedTypeQualifiers;
+	public function isAllowedTypeIds() {
+		return $this->allowedTypeIds;
 	}
 	
 	/**
-	 * @param SiTypeQualifier[]|null $allowedTypeQualifiers
+	 * @param string[]|null $allowedTypeQualifiers
 	 * @return EmbeddedEntryInSiField
 	 */
-	public function setAllowedTypeQualifiers(?array $allowedTypeQualifiers) {
-		ArgUtils::valArray($allowedTypeQualifiers, SiTypeQualifier::class, true);
-		$this->allowedTypeQualifiers = $allowedTypeQualifiers;
+	public function setAllowedTypeIds(?array $allowedTypeIds) {
+		ArgUtils::valArray($allowedTypeIds, string::class, true);
+		$this->allowedTypeIds = $allowedTypeIds;
 		return $this;
 	}
 	
@@ -228,14 +211,13 @@ class EmbeddedEntryInSiField extends InSiFieldAdapter {
 	function getData(): array {
 		return [
 			'values' => $this->values,
-			'typeCategory' => $this->typeCategory,
-			'apiUrl' => (string) $this->apiUrl,
+			'frame' => $this->frame,
 			'min' => $this->min,
 			'max' => $this->max,
 			'reduced' => $this->reduced,
 			'nonNewRemovable' => $this->nonNewRemovable,
 			'sortable' => $this->sortable,
-			'allowedSiTypeQualifiers' => $this->allowedSiTypeQualifiers
+			'allowedSiTypeIds' => $this->allowedSiTypeIds
 		];
 	}
 	 

@@ -40,14 +40,14 @@ export class BulkyEntryComponent implements OnInit, OnDestroy, DoCheck {
 	// 		return;
 	// 	}
 
-	// 	// new TypeSelect(siEntry.typeQualifiers);
+	// 	// new TypeSelect(siEntry.maskQualifiers);
 
-	// 	const siTypeDeclaration = this.model.getSiDeclaration().getTypeDeclarationByTypeId(siEntry.selectedTypeId);
+	// 	const siMaskDeclaration = this.model.getSiDeclaration().getTypeDeclarationByTypeId(siEntry.selectedTypeId);
 	// 	const toolbarResolver = new ToolbarResolver();
 
-	// 	this.contentUiStructures = this.createStructures(this.uiStructure, siTypeDeclaration.structureDeclarations, toolbarResolver);
+	// 	this.contentUiStructures = this.createStructures(this.uiStructure, siMaskDeclaration.structureDeclarations, toolbarResolver);
 
-	// 	for (const prop of siTypeDeclaration.type.getProps()) {
+	// 	for (const prop of siMaskDeclaration.type.getProps()) {
 	// 		if (prop.dependantPropIds.length > 0 && siEntry.selectedEntryBuildup.containsPropId(prop.id)) {
 	// 			toolbarResolver.fillContext(prop, siEntry.selectedEntryBuildup.getFieldById(prop.id));
 	// 		}

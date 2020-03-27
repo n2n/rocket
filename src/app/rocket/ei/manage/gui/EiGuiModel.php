@@ -118,10 +118,11 @@ class EiGuiModel {
 	 */
 	function createSiDeclaration(EiFrame $eiFrame) {
 		$n2nLocale = $eiFrame->getN2nContext()->getN2nLocale();
-		$siDeclaration = new SiDeclaration();
+		$siDeclaration = new SiDeclaration(ViewMode::isBulky($this->viewMode), ViewMode::isReadOnly($this->viewMode), 
+				ViewMode::isAdd($this->viewMode));
 		
 		foreach ($this->eiGuiFrames as $eiGuiFrame) {
-			$siDeclaration->addTypeDeclaration($eiGuiFrame->createSiTypeDeclaration($n2nLocale));
+			$siDeclaration->addTypeDeclaration($eiGuiFrame->createSiMaskDeclaration($n2nLocale));
 		}
 		
 		return $siDeclaration;

@@ -26,20 +26,17 @@ use rocket\si\content\SiEntryQualifier;
 use n2n\util\uri\Url;
 use n2n\util\type\ArgUtils;
 use rocket\si\content\impl\InSiFieldAdapter;
+use rocket\si\meta\SiFrame;
 
 class QualifierSelectInSiField extends InSiFieldAdapter {
 	/**
-	 * @var string
+	 * @var SiFrame
 	 */
-	private $typeCategory;
+	private $frame;
 	/**
 	 * @var SiEntryQualifier[]
 	 */
 	private $values;
-	/**
-	 * @var Url
-	 */
-	private $apiUrl;
 	/**
 	 * @var int
 	 */
@@ -59,10 +56,9 @@ class QualifierSelectInSiField extends InSiFieldAdapter {
 	 * @param Url $apiUrl
 	 * @param SiEntryQualifier[] $values
 	 */
-	function __construct(string $typeCategory, Url $apiUrl, array $values = []) {
-		$this->typeCategory = $typeCategory;
+	function __construct(SiFrame $frame, array $values = []) {
+		$this->frame = $frame;
 		$this->setValues($values);	
-		$this->apiUrl = $apiUrl;
 	}
 	
 	/**
@@ -70,8 +66,9 @@ class QualifierSelectInSiField extends InSiFieldAdapter {
 	 * @return QualifierSelectInSiField
 	 */
 	function setValues(array $values) {
+		$typeContext = $this->frame->getTypeContext();
 		foreach ($values as $value) {
-			ArgUtils::assertTrue($value instanceof SiEntryQualifier && $value->getTypeCategory() === $this->typeCategory);
+			ArgUtils::assertTrue($typeContext->containsTypeId($value->getTypeId()));
 		}
 		$this->values = $values;
 		return $this;
@@ -82,22 +79,6 @@ class QualifierSelectInSiField extends InSiFieldAdapter {
 	 */
 	function getValues() {
 		return $this->values;
-	}
-	
-	/**
-	 * @param Url|null $apiUrl
-	 * @return QualifierSelectInSiField
-	 */
-	function setApiUrl(?Url $apiUrl) {
-		$this->apiUrl = $apiUrl;
-		return $this;
-	}
-	
-	/**
-	 * @return Url|null
-	 */
-	function getApiUrl() {
-		return $this->apiUrl;
 	}
 	
 	/**
@@ -137,9 +118,10 @@ class QualifierSelectInSiField extends InSiFieldAdapter {
 	 * @return QualifierSelectInSiField
 	 */
 	function setPickables(?array $pickables) {
+		$typeContext = $this->frame->getTypeContext();
 		foreach ($pickables as $pickable) {
 			ArgUtils::assertTrue($pickable instanceof SiEntryQualifier 
-					&& $pickable->getTypeCategory() === $this->typeCategory);
+					&& $typeContext->containsTypeId($pickable->getTypeId()));
 		}
 		$this->pickables = $pickables;
 		return $this;
@@ -166,9 +148,8 @@ class QualifierSelectInSiField extends InSiFieldAdapter {
 	 */
 	function getData(): array {
 		return [
-			'typeCategory' => $this->typeCategory,
+			'frame' => $this->frame,
 			'values' => $this->values,
-			'apiUrl' => (string) $this->apiUrl,
 			'min' => $this->min,
 			'max' => $this->max,
 			'pickables' => $this->pickables

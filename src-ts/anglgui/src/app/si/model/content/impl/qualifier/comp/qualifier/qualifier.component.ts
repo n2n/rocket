@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { SiTypeQualifier } from 'src/app/si/model/meta/si-type-qualifier';
+import { SiMaskQualifier } from 'src/app/si/model/meta/si-mask-qualifier';
 import { SiEntryQualifier } from '../../../../si-qualifier';
 
 @Component({
@@ -12,7 +12,7 @@ export class QualifierComponent implements OnInit {
 	@Input()
 	siEntryQualifier: SiEntryQualifier|null = null;
 	@Input()
-	siTypeQualifier: SiTypeQualifier|null = null;
+	siMaskQualifier: SiMaskQualifier|null = null;
 	@Input()
 	showIcon = true;
 	@Input()

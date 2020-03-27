@@ -12,7 +12,7 @@ import { StringInSiField } from '../model/content/impl/alphanum/model/string-in-
 import { StringOutSiField } from '../model/content/impl/alphanum/model/string-out-si-field';
 import { LinkOutSiField } from '../model/content/impl/alphanum/model/link-out-si-field';
 import { EnumInSiField } from '../model/content/impl/alphanum/model/enum-in-si-field';
-import { SiType } from '../model/meta/si-type';
+import { SiMask } from '../model/meta/si-type';
 import { SiProp } from '../model/meta/si-prop';
 import { Subject, Observable } from 'rxjs';
 import { SplitContextInSiField } from '../model/content/impl/split/model/split-context-in-si-field';
@@ -46,7 +46,7 @@ enum SiFieldType {
 }
 
 export class SiFieldFactory {
-	constructor(private controlBoundry: SiControlBoundry, private declaration: SiDeclaration, private type: SiType,
+	constructor(private controlBoundry: SiControlBoundry, private declaration: SiDeclaration, private type: SiMask,
 			private injector: Injector) {
 	}
 
@@ -125,8 +125,8 @@ export class SiFieldFactory {
 			return enumInSiField;
 
 		case SiFieldType.QUALIFIER_SELECT_IN:
-			const qualifierSelectInSiField = new QualifierSelectInSiField(dataExtr.reqString('typeCategory'),
-					dataExtr.reqString('apiUrl'), prop.label,
+			const qualifierSelectInSiField = new QualifierSelectInSiField(
+					SiMetaFactory.createFrame(dataExtr.reqObject('frame')), prop.label,
 					SiCompFactory.buildEntryQualifiers(dataExtr.reqArray('values')));
 			qualifierSelectInSiField.min = dataExtr.reqNumber('min');
 			qualifierSelectInSiField.max = dataExtr.nullaNumber('max');
@@ -135,7 +135,7 @@ export class SiFieldFactory {
 
 		case SiFieldType.EMBEDDED_ENTRY_IN:
 			const embeddedEntryInSiField = new EmbeddedEntriesInSiField(prop.label, this.injector.get(SiService),
-					dataExtr.reqString('typeCategory'), dataExtr.reqString('apiUrl'),
+					SiMetaFactory.createFrame(dataExtr.reqObject('frame')), 
 					this.injector.get(TranslationService),
 					new SiCompFactory(this.injector).createEmbeddedEntries(dataExtr.reqArray('values')));
 			embeddedEntryInSiField.config.reduced = dataExtr.reqBoolean('reduced');
@@ -143,15 +143,13 @@ export class SiFieldFactory {
 			embeddedEntryInSiField.config.max = dataExtr.nullaNumber('max');
 			embeddedEntryInSiField.config.nonNewRemovable = dataExtr.reqBoolean('nonNewRemovable');
 			embeddedEntryInSiField.config.sortable = dataExtr.reqBoolean('sortable');
-
-			const allowedSiTypeIdentifiersData = dataExtr.nullaStringArray('allowedSiTypeIdentifiers');
-			embeddedEntryInSiField.config.allowedSiTypeIdentifiers = SiMetaFactory.buildTypeIdentifiers(allowedSiTypeIdentifiersData);
+			embeddedEntryInSiField.config.allowedSiTypeIds = dataExtr.nullaArray('allowedSiTypeIds');
 
 			return embeddedEntryInSiField;
 
 		case SiFieldType.EMBEDDED_ENTRY_PANELS_IN:
-			return new EmbeddedEntryPanelsInSiField(this.injector.get(SiService), dataExtr.reqString('typeCategory'),
-					dataExtr.reqString('apiUrl'), this.injector.get(TranslationService),
+			return new EmbeddedEntryPanelsInSiField(this.injector.get(SiService),
+					SiMetaFactory.createFrame(dataExtr.reqObject('frame')), this.injector.get(TranslationService),
 					new SiCompFactory(this.injector).createPanels(dataExtr.reqArray('panels')));
 
 		case SiFieldType.SPLIT_CONTEXT_IN:

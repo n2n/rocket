@@ -1,41 +1,41 @@
 
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
-import { SiTypeDeclaration } from './si-type-declaration';
+import { SiMaskDeclaration } from './si-mask-declaration';
 
 export class SiDeclaration {
-	private typeDeclarationMap = new Map<string, SiTypeDeclaration>();
+	private maskDeclarationMap = new Map<string, SiMaskDeclaration>();
 
 	constructor() {
 	}
 
 	constainsTypeId(typeId: string) {
-		return this.typeDeclarationMap.has(typeId);
+		return this.maskDeclarationMap.has(typeId);
 	}
 
-	addTypeDeclaration(typeDeclaration: SiTypeDeclaration) {
-		this.typeDeclarationMap.set(typeDeclaration.type.qualifier.id, typeDeclaration);
+	addTypeDeclaration(maskDeclaration: SiMaskDeclaration) {
+		this.maskDeclarationMap.set(maskDeclaration.type.qualifier.identifier.id, maskDeclaration);
 	}
 
-	getBasicTypeDeclaration(): SiTypeDeclaration {
-		// if (this.basicSiTypeDeclaration) {
-		// 	return this.basicSiTypeDeclaration;
+	getBasicTypeDeclaration(): SiMaskDeclaration {
+		// if (this.basicSiMaskDeclaration) {
+		// 	return this.basicSiMaskDeclaration;
 		// }
 
-		const value = this.typeDeclarationMap.values().next();
+		const value = this.maskDeclarationMap.values().next();
 		if (value) {
 			return value.value;
 		}
 
-		throw new IllegalSiStateError('SiDeclaration contains no SiTypeDeclaration.');
+		throw new IllegalSiStateError('SiDeclaration contains no SiMaskDeclaration.');
 	}
 
 	containsTypeId(typeId: string): boolean {
-		return this.typeDeclarationMap.has(typeId);
+		return this.maskDeclarationMap.has(typeId);
 	}
 
-	getTypeDeclarationByTypeId(typeId: string): SiTypeDeclaration {
-		if (this.typeDeclarationMap.has(typeId)) {
-			return this.typeDeclarationMap.get(typeId);
+	getTypeDeclarationByTypeId(typeId: string): SiMaskDeclaration {
+		if (this.maskDeclarationMap.has(typeId)) {
+			return this.maskDeclarationMap.get(typeId);
 		}
 
 		throw new IllegalSiStateError('Unkown typeId: ' + typeId);

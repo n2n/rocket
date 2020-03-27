@@ -34,7 +34,6 @@ use rocket\si\input\SiEntryInput;
 use rocket\si\input\CorruptedSiInputDataException;
 use rocket\si\content\impl\relation\EmbeddedEntryInputHandler;
 use rocket\si\content\impl\relation\SiEmbeddedEntry;
-use rocket\ei\util\spec\EiuMask;
 use rocket\ei\manage\gui\GuiFieldMap;
 use rocket\ei\util\gui\EiuEntryGuiTypeDef;
 
@@ -67,15 +66,11 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandler {
 		$this->embeddedGuiCollection = new EmbeddedGuiCollection(false, $relationModel->isReduced(), 
 				$relationModel->getMin(), $targetEiuFrame, null);
 		
-		$this->siField = SiFields::embeddedEntryIn($this->targetEiuFrame->getSiTypeCategory(),
-						$this->targetEiuFrame->getApiUrl($relationModel->getTargetEditEiCommandPath()),
+		$this->siField = SiFields::embeddedEntryIn($this->targetEiuFrame->createSiFrame(),
 						$this, $this->readValues(), (int) $relationModel->getMin(), $relationModel->getMax())
 				->setReduced($this->relationModel->isReduced())
 				->setNonNewRemovable($this->relationModel->isRemovable())
-				->setSortable($relationModel->getMax() > 1 && $relationModel->getTargetOrderEiPropPath() !== null)
-				->setAllowedTypeQualifiers(array_map(
-						function (EiuMask $eiuMask) { return $eiuMask->createSiTypeQualifier(); }, 
-						$targetEiuFrame->engine()->mask()->possibleMasks()));
+				->setSortable($relationModel->getMax() > 1 && $relationModel->getTargetOrderEiPropPath() !== null);
 				
 	}
 	

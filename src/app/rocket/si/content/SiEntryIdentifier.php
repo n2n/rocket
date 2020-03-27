@@ -22,30 +22,30 @@
 namespace rocket\si\content;
 
 use n2n\util\type\attrs\DataSet;
-use rocket\si\meta\SiTypeQualifier;
+use rocket\si\meta\SiMaskQualifier;
 
 class SiEntryIdentifier implements \JsonSerializable {
-	private $typeCategory;
+	private $typeId;
 	private $id;
 	
-	function __construct(string $category, ?string $id) {
-		$this->typeCategory = $category;
+	function __construct(string $typeId, ?string $id) {
+		$this->typeId = $typeId;
 		$this->id = $id;
 	}
 	
 	/**
 	 * @return string
 	 */
-	function getTypeCategory() {
-		return $this->typeCategory;
+	function getTypeId() {
+		return $this->typeId;
 	}
 	
 	/**
 	 * @param string $category
 	 * @return SiEntryQualifier
 	 */
-	function setCategory(string $category) {
-		$this->typeCategory = $category;
+	function setTypeId(string $typeId) {
+		$this->typeId = $typeId;
 		return $this;
 	}
 	
@@ -69,13 +69,13 @@ class SiEntryIdentifier implements \JsonSerializable {
 	 * @param string $name
 	 * @return \rocket\si\content\SiEntryQualifier
 	 */
-	function toQualifier(SiTypeQualifier $typeQualifier, ?string $idName) {
-		return new SiEntryQualifier($typeQualifier, $this->id, $idName);
+	function toQualifier(SiMaskQualifier $maskQualifier, ?string $idName) {
+		return new SiEntryQualifier($maskQualifier, $this->id, $idName);
 	}
 	
 	function jsonSerialize() {
 		return [
-			'typeCategory' => $this->typeCategory,
+			'typeId' => $this->typeId,
 			'id' => $this->id,
 		];
 	}
@@ -89,7 +89,7 @@ class SiEntryIdentifier implements \JsonSerializable {
 		$ds = new DataSet($data);
 		
 		try {
-			return new SiEntryIdentifier($ds->reqString('typeCategory'), $ds->optString('id'));
+			return new SiEntryIdentifier($ds->reqString('typeId'), $ds->optString('id'));
 		} catch (\n2n\util\type\attrs\AttributesException $e) {
 			throw new \InvalidArgumentException(null, null, $e);
 		}

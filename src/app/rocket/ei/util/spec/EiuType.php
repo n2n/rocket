@@ -27,7 +27,7 @@ use rocket\ei\util\entry\EiuObject;
 use rocket\user\model\LoginContext;
 use n2n\util\type\CastUtils;
 use rocket\spec\UnknownTypeException;
-use rocket\si\meta\SiTypeQualifier;
+use rocket\si\meta\SiMaskQualifier;
 
 class EiuType  {
 	private $eiType;
@@ -161,23 +161,35 @@ class EiuType  {
 	}
 	
 	/**
+	 * @param string[]|null $allowedSubEiTypeIds
 	 * @param bool $includeAbstracts
 	 * @return \rocket\ei\util\spec\EiuType[]
 	 */
-	function possibleTypes(bool $includeAbstracts = false) {
+	function possibleTypes(array $allowedSubEiTypeIds = null, bool $includeAbstracts = false) {
 		$eiuTypes = [];
 		
-		if ($includeAbstracts || !$this->isAbstract()) {
+		if ($this->eiTypeMatches($this->eiType, $allowedSubEiTypeIds, $includeAbstracts)) {
 			$eiuTypes[] = $this; 
 		}
 		
 		foreach ($this->allSubTypes() as $subEiuType) {
-			if ($includeAbstracts || !$subEiuType->isAbstract()) {
+			if ($this->eiTypeMatches($subEiType, $allowedSubEiTypeIds, $includeAbstracts)) {
 				$eiuTypes[] = $subEiuType;
 			}
 		}
 		
 		return $eiuTypes;
+	}
+	
+	/**
+	 * @param EiType $eiType
+	 * @param string[]|null $allowedSubEiTypeIds
+	 * @param bool $includeAbstractTypes
+	 * @return boolean
+	 */
+	private function eiTypeMatches($eiType, $allowedSubEiTypeIds, $includeAbstractTypes) {
+		return ($includeAbstractTypes || !$eiType->isAbstract())
+				&& ($allowedSubEiTypeIds === null || in_array($eiType->getId(), $allowedSubEiTypeIds));
 	}
 	
 	/**
@@ -202,16 +214,5 @@ class EiuType  {
 	function matches($object) {
 		$eiType = EiuAnalyst::determineEiType($object, true);
 		return $this->eiType->isA($eiType);
-	}
-	
-	/**
-	 * @return string
-	 */
-	function createSiTypeCategory() {
-		return $this->eiType->getSuperEiType()->getId();
-	}
-	
-	function createSiTypeIdentifier() {
-		return $this->eiType->crea;
 	}
 }

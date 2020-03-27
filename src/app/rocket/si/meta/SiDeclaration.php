@@ -24,55 +24,61 @@ namespace rocket\si\meta;
 use n2n\util\type\ArgUtils;
 
 class SiDeclaration implements \JsonSerializable {
+	private $bulky;
+	private $readOnly;
+	private $new;
 	/**
-	 * @var \rocket\si\meta\SiTypeDeclaration[]
+	 * @var \rocket\si\meta\SiMaskDeclaration[]
 	 */
-	private $typeDeclarations = [];
+	private $maskDeclarations = [];
 	
 	/**
-	 * @param SiTypeDeclaration[] $typedDeclarations
+	 * @param SiMaskDeclaration[] $typedDeclarations
 	 */
-	function __construct(array $typedDeclarations = []) {
-		$this->setTypeDeclarations($typedDeclarations);
+	function __construct(bool $bulky, bool $readOnly, bool $new, array $maskDeclarations = []) {
+		$this->bulky = $bulky;
+		$this->readOnly = $readOnly;
+		$this->new = $new;
+		$this->setTypeDeclarations($maskDeclarations);
 	}
 	
 	/**
-	 * @param SiTypeDeclaration[] $typedDeclarations
+	 * @param SiMaskDeclaration[] $typedDeclarations
 	 * @return \rocket\si\meta\SiDeclaration
 	 */
-	function setTypeDeclarations(array $typeDeclarations) {
-		ArgUtils::valArray($typeDeclarations, SiTypeDeclaration::class);
-		$this->typeDeclarations = [];
+	function setTypeDeclarations(array $maskDeclarations) {
+		ArgUtils::valArray($maskDeclarations, SiMaskDeclaration::class);
+		$this->maskDeclarations = [];
 		
-		foreach ($typeDeclarations as $typeDeclaration) {
-			$this->addTypeDeclaration($typeDeclaration);
+		foreach ($maskDeclarations as $maskDeclaration) {
+			$this->addTypeDeclaration($maskDeclaration);
 		}
 		return $this;
 	}
 	
 	/**
 	 * @param string $typeId
-	 * @param SiTypeDeclaration $typeDeclaration
+	 * @param SiMaskDeclaration $maskDeclaration
 	 * @return SiDeclaration
 	 */
-	function addTypeDeclaration(SiTypeDeclaration $typeDeclaration) {
-// 		if (empty($this->typeDeclarations) && !$typeDeclaration->hasStructureDeclarations()) {
+	function addTypeDeclaration(SiMaskDeclaration $maskDeclaration) {
+// 		if (empty($this->maskDeclarations) && !$maskDeclaration->hasStructureDeclarations()) {
 // 			throw new \InvalidArgumentException('First TypeDeclaration need StructureDeclarations');
 // 		}
 		
-		if (empty($this->typeDeclarations) && !$typeDeclaration->getType()->hasProps()) {
+		if (empty($this->maskDeclarations) && !$maskDeclaration->getType()->hasProps()) {
 			throw new \InvalidArgumentException('First TypeDeclaration needs to have SiProps.');
 		}
 		
-		$this->typeDeclarations[] = $typeDeclaration;
+		$this->maskDeclarations[] = $maskDeclaration;
 		return $this;
 	}
 	
 	/**
-	 * @return SiTypeDeclaration[]
+	 * @return SiMaskDeclaration[]
 	 */
 	function getTypeDeclarations() {
-		return $this->typeDeclarations;
+		return $this->maskDeclarations;
 	}
 	
 	/**
@@ -81,7 +87,10 @@ class SiDeclaration implements \JsonSerializable {
 	 */
 	function jsonSerialize() {
 		return [
-			'typeDeclarations' => $this->typeDeclarations
+			'bulky' => $this->bulky,
+			'readOnly' => $this->readOnly,
+			'new' => $this->new,
+			'maskDeclarations' => $this->maskDeclarations
 		];
 	}
 }

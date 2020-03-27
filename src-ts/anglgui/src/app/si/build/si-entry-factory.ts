@@ -54,11 +54,11 @@ export class SiEntryFactory {
 	private createEntryBuildup(data: any, identifier: SiEntryIdentifier, controlBoundry: SiControlBoundry): SiEntryBuildup {
 		const extr = new Extractor(data);
 
-		const typeDeclaration = this.declaration.getTypeDeclarationByTypeId(extr.reqString('typeId'));
-		const entryQualifier = new SiEntryQualifier(typeDeclaration.type.qualifier, identifier.id, extr.nullaString('idName'));
+		const maskDeclaration = this.declaration.getTypeDeclarationByTypeId(extr.reqString('typeId'));
+		const entryQualifier = new SiEntryQualifier(maskDeclaration.type.qualifier, identifier.id, extr.nullaString('idName'));
 
 		const entryBuildup = new SiEntryBuildup(entryQualifier);
-		entryBuildup.fieldMap = new SiFieldFactory(controlBoundry, this.declaration, typeDeclaration.type, this.injector)
+		entryBuildup.fieldMap = new SiFieldFactory(controlBoundry, this.declaration, maskDeclaration.type, this.injector)
 				.createFieldMap(extr.reqMap('fieldMap'));
 		entryBuildup.controls = new SiControlFactory(controlBoundry, this.injector)
 				.createControls(extr.reqArray('controls'));

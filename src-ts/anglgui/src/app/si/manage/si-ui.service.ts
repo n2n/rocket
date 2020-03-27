@@ -60,7 +60,7 @@ export class SiUiService {
 	}
 
 	execEntryControl(apiUrl: string, callId: object, entry: SiEntry, includeInput: boolean): Observable<void> {
-		if (!entry.qualifier.id) {
+		if (!entry.qualifier.identifier.id) {
 			throw new IllegalSiStateError('Entry control cannnot be executed on new entry.');
 		}
 
@@ -69,7 +69,7 @@ export class SiUiService {
 			entryInputs.push(entry.readInput());
 		}
 
-		const obs = this.service.entryControlCall(apiUrl, callId, entry.qualifier.id, entryInputs);
+		const obs = this.service.entryControlCall(apiUrl, callId, entry.qualifier.identifier.id, entryInputs);
 
 		obs.subscribe((result) => {
 // 			this.handleResult(result);

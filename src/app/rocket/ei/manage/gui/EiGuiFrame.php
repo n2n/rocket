@@ -14,9 +14,9 @@ use rocket\ei\manage\api\ApiControlCallId;
 use rocket\si\content\SiEntryBuildup;
 use rocket\ei\EiPropPath;
 use rocket\si\meta\SiProp;
-use rocket\si\meta\SiType;
+use rocket\si\meta\SiMask;
 use n2n\l10n\N2nLocale;
-use rocket\si\meta\SiTypeDeclaration;
+use rocket\si\meta\SiMaskDeclaration;
 use rocket\si\meta\SiStructureDeclaration;
 
 /**
@@ -197,14 +197,14 @@ class EiGuiFrame {
 	}
 	
 	/**
-	 * @return \rocket\si\meta\SiTypeDeclaration
+	 * @return \rocket\si\meta\SiMaskDeclaration
 	 */
-	function createSiTypeDeclaration(N2nLocale $n2nLocale) {
+	function createSiMaskDeclaration(N2nLocale $n2nLocale) {
 		IllegalStateException::assertTrue($this->guiStructureDeclarations !== null, 
 				'EiGuiFrame has no GuiStructureDeclarations.');
 		
-		return new SiTypeDeclaration(
-				$this->createSiType($n2nLocale),
+		return new SiMaskDeclaration(
+				$this->createSiMask($n2nLocale),
 				$this->createSiStructureDeclarations($this->guiStructureDeclarations));
 	}
 	
@@ -233,12 +233,11 @@ class EiGuiFrame {
 	}
 	
 	/**
-	 * @return \rocket\si\meta\SiType
+	 * @return \rocket\si\meta\SiMask
 	 */
-	function createSiType(N2nLocale $n2nLocale) {
-		$siTypeQualifier = $this->getGuiDefinition()->getEiMask()
-				->createSiTypeQualifier($n2nLocale);
-		return new SiType($siTypeQualifier, $this->createSiProps($n2nLocale));
+	function createSiMask(N2nLocale $n2nLocale) {
+		$siMaskQualifier = $this->getGuiDefinition()->getEiMask()->createSiMaskQualifier($n2nLocale);
+		return new SiMask($siMaskQualifier, $this->createSiProps($n2nLocale));
 	}
 	
 	/**
@@ -340,13 +339,13 @@ class EiGuiFrame {
 // 	}
 	
 // 	/**
-// 	 * @return \rocket\si\meta\SiTypeDeclaration
+// 	 * @return \rocket\si\meta\SiMaskDeclaration
 // 	 */
 // 	function createSiTypDeclaration() {
-// 		$siTypeQualifier = $this->guiDefinition->getEiMask()->createSiTypeQualifier($this->eiFrame->getN2nContext()->getN2nLocale());
-// 		$siType = new SiType($siTypeQualifier, $this->getSiProps());
+// 		$siMaskQualifier = $this->guiDefinition->getEiMask()->createSiMaskQualifier($this->eiFrame->getN2nContext()->getN2nLocale());
+// 		$siType = new SiType($siMaskQualifier, $this->getSiProps());
 		
-// 		return new SiTypeDeclaration($siType, $this->createSiStructureDeclarations($this->guiStructureDeclarations)); 
+// 		return new SiMaskDeclaration($siType, $this->createSiStructureDeclarations($this->guiStructureDeclarations)); 
 // 	}
 	
 // 	/**

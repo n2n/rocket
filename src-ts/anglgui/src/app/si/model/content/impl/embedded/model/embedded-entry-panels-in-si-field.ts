@@ -13,10 +13,11 @@ import { UiStructureModelAdapter } from 'src/app/ui/structure/model/impl/ui-stru
 import { TranslationService } from 'src/app/util/i18n/translation.service';
 import { UiZoneError } from 'src/app/ui/structure/model/ui-zone-error';
 import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
+import { SiFrame } from 'src/app/si/model/meta/si-frame';
 
 export class EmbeddedEntryPanelsInSiField extends SiFieldAdapter  {
 
-	constructor(public siService: SiService, public typeCatgory: string, public apiUrl: string,
+	constructor(public siService: SiService, public frame: SiFrame,
 			public translationService: TranslationService, public panels: SiPanel[]) {
 		super();
 	}
@@ -26,7 +27,7 @@ export class EmbeddedEntryPanelsInSiField extends SiFieldAdapter  {
 	}
 
 	getApiUrl(): string {
-		return this.apiUrl;
+		return this.frame.apiUrl;
 	}
 
 	hasInput(): boolean {
@@ -39,12 +40,11 @@ export class EmbeddedEntryPanelsInSiField extends SiFieldAdapter  {
 
 	createUiStructureModel(): UiStructureModel {
 		const panelAssemblies = this.panels.map((panel) => {
-			const typeIds = panel.allowedSiTypeIdentifiers.map(qual => qual.id);
-			const obtainer = new EmbeddedEntryObtainer(this.siService, this.apiUrl, panel.reduced, typeIds);
+			const obtainer = new EmbeddedEntryObtainer(this.siService, this.frame.apiUrl, panel.reduced, panel.allowedSiTypeIds);
 
 			return {
 				panel,
-				structureModel: new EmbeddedEntriesInUiStructureModel(obtainer, this.typeCatgory, panel,
+				structureModel: new EmbeddedEntriesInUiStructureModel(obtainer, this.frame, panel,
 						panel, this.translationService)
 			};
 		});

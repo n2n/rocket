@@ -3,7 +3,7 @@ import { SiEntry } from 'src/app/si/model/content/si-entry';
 import { BulkyEntrySiComp } from 'src/app/si/model/comp/impl/model/bulky-entry-si-comp';
 import { CompactEntrySiComp } from 'src/app/si/model/comp/impl/model/compact-entry-si-comp';
 import { SiGenericEmbeddedEntry, SiEmbeddedEntryResetPoint } from './generic-embedded';
-import { SiTypeQualifier } from 'src/app/si/model/meta/si-type-qualifier';
+import { SiMaskQualifier } from 'src/app/si/model/meta/si-mask-qualifier';
 
 export class SiEmbeddedEntry {
 	
@@ -45,8 +45,8 @@ export class SiEmbeddedEntry {
 		};
 	}
 
-	get typeQualifiers(): SiTypeQualifier[] {
-		return this.typeQualifiers;
+	get maskQualifiers(): SiMaskQualifier[] {
+		return this.maskQualifiers;
 	}
 
 	get selectedTypeId(): string|null {

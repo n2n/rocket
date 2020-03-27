@@ -38,7 +38,7 @@ export class SiCompFactory {
 	static createEntryIdentifier(data: any): SiEntryIdentifier {
 		const extr = new Extractor(data);
 
-		return new SiEntryIdentifier(extr.reqString('typeCategory'), extr.nullaString('id'));
+		return new SiEntryIdentifier(extr.reqString('typeId'), extr.nullaString('id'));
 	}
 
 	static buildEntryQualifiers(dataArr: any[]|null): SiEntryQualifier[] {
@@ -56,7 +56,7 @@ export class SiCompFactory {
 	static createEntryQualifier(data: any): SiEntryQualifier {
 		const extr = new Extractor(data);
 
-		return new SiEntryQualifier(SiMetaFactory.createTypeQualifier(extr.reqObject('typeQualifier')),
+		return new SiEntryQualifier(SiMetaFactory.createTypeQualifier(extr.reqObject('maskQualifier')),
 				extr.nullaString('id'), extr.nullaString('idName'));
 	}
 
@@ -232,13 +232,7 @@ export class SiCompFactory {
 		panel.nonNewRemovable = extr.reqBoolean('nonNewRemovable');
 		panel.sortable = extr.reqBoolean('sortable');
 		panel.gridPos = SiCompFactory.buildGridPos(extr.nullaObject('gridPos'));
-
-		const allowedSiTypeQualifiersData = extr.nullaArray('allowedTypeQualifiers');
-		if (allowedSiTypeQualifiersData) {
-			panel.allowedSiTypeIdentifiers = SiMetaFactory.createTypeQualifiers(allowedSiTypeQualifiersData);
-		} else {
-			panel.allowedSiTypeIdentifiers = null;
-		}
+		panel.allowedSiTypeIds = extr.nullaArray('allowedTypeIds');
 
 		return panel;
 	}

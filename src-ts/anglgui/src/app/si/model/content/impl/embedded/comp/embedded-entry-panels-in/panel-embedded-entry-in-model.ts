@@ -1,4 +1,4 @@
-// import { SiTypeQualifier } from 'src/app/si/model/meta/si-type-qualifier';
+// import { SiMaskQualifier } from 'src/app/si/model/meta/si-mask-qualifier';
 // import { SiEmbeddedEntry } from '../../model/si-embedded-entry';
 // import { EmbeddedEntryPanelInModel } from '../embedded-entry-panels-in-model';
 // import { SiPanel } from '../../model/si-panel';
@@ -28,8 +28,8 @@
 // 		return this.panel.pasteCategory;
 // 	}
 
-// 	getAllowedSiTypeQualifiers(): SiTypeQualifier[] {
-// 		return this.panel.allowedSiTypeQualifiers;
+// 	getAllowedSiMaskQualifiers(): SiMaskQualifier[] {
+// 		return this.panel.allowedSiMaskQualifiers;
 // 	}
 
 // 	setValues(values: SiEmbeddedEntry[]): void {

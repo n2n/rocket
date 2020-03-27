@@ -72,6 +72,7 @@ use rocket\ei\util\gui\EiuEntryGui;
 use rocket\ei\manage\gui\field\GuiPropPath;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\EiGui;
+use rocket\si\meta\SiFrame;
 
 class EiuFrame {
 	private $eiFrame;
@@ -1178,6 +1179,10 @@ class EiuFrame {
 	function setCriteriaFactory(?CriteriaFactory $criteriaFactory) {
 		$this->eiFrame->getBoundry()->setCriteriaFactory($criteriaFactory);
 		return $this;
+	}
+	
+	function createSiFrame() {
+		return $this->eiFrame->createSiFrame();
 	}
 }
 
