@@ -56,6 +56,13 @@ class EiuType  {
 	/**
 	 * @return string
 	 */
+	function getSiTypeId() {
+		return $this->getId();
+	}
+	
+	/**
+	 * @return string
+	 */
 	function getId() {
 		return $this->eiType->getId();
 	}

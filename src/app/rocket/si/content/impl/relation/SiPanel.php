@@ -52,7 +52,7 @@ class SiPanel implements \JsonSerializable {
 	/**
 	 * @var SiTypeQualifier[]|null
 	 */
-	private $allowedTypeQualifiers = null;
+	private $allowedTypeIds = null;
 	/**
 	 * @var bool
 	 */
@@ -188,19 +188,19 @@ class SiPanel implements \JsonSerializable {
 	}
 	
 	/**
-	 * @return \rocket\si\meta\SiTypeQualifier[]
+	 * @return string[]|null
 	 */
-	function getAllowedTypeQualifiers() {
-		return $this->allowedTypeQualifiers;
+	function getAllowedTypeIds() {
+		return $this->allowedTypeIds;
 	}
 	
 	/**
-	 * @param \rocket\si\meta\SiTypeQualifier[]|null $allowedTypeQualifiers
+	 * @param string[]|null $allowedTypeIds
 	 * @return SiPanel
 	 */
-	function setAllowedTypeQualifiers(?array $allowedTypeQualifiers) {
-		ArgUtils::valArray($allowedTypeQualifiers, SiTypeQualifier::class, true);
-		$this->allowedTypeQualifiers = $allowedTypeQualifiers;
+	function setAllowedTypeIds(?array $allowedTypeIds) {
+		ArgUtils::valArray($allowedTypeIds, SiTypeQualifier::class, true);
+		$this->allowedTypeIds = $allowedTypeIds;
 		return $this;
 	}
 	
@@ -259,7 +259,7 @@ class SiPanel implements \JsonSerializable {
 			'reduced' => $this->reduced,
 			'nonNewRemovable' => $this->nonNewRemovable,
 			'sortable' => $this->sortable,
-			'allowedTypeQualifiers' => $this->allowedTypeQualifiers,
+			'allowedTypeIds' => $this->allowedTypeIds,
 			'gridPos' => $this->gridPos,
 			'values' => $this->values
 		];

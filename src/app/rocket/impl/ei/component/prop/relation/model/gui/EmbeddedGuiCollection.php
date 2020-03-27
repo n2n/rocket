@@ -120,18 +120,18 @@ class EmbeddedGuiCollection {
 	}
 	
 	/**
-	 * @return NULL|\rocket\si\meta\SiTypeQualifier[]
+	 * @return NULL|string[]
 	 */      
-	function buildAllowedSiTypeQualifiers() {
+	function buildAllowedSiTypeIds() {
 		if ($this->allowedEiuMasks === null) {
 			return null;
 		}
 		
-		$allowedSiTypeQualifiers = [];
+		$allowedSiTypeIds = [];
 		foreach ($this->allowedEiuMasks as $eiuMask) {
-			$allowedSiTypeQualifiers[] = $eiuMask->createSiTypeQualifier();
+			$allowedSiTypeIds[] = $eiuMask->type()->getSiTypeId();
 		}
-		return $allowedSiTypeQualifiers;
+		return $allowedSiTypeIds;
 	}
 	
 	function createSiEmbeddedEntries() {

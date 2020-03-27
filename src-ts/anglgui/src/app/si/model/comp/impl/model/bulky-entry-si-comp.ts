@@ -10,7 +10,6 @@ import { BulkyEntryModel } from '../comp/bulky-entry-model';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiProp } from '../../../meta/si-prop';
 import { SiField } from '../../../content/si-field';
-import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { Subscription } from 'rxjs';
 import { SiStructureDeclaration } from '../../../meta/si-structure-declaration';
 import { UiStructureModelAdapter } from 'src/app/ui/structure/model/impl/ui-structure-model-adapter';

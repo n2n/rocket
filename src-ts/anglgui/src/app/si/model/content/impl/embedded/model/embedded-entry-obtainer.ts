@@ -16,15 +16,19 @@ import { SiEmbeddedEntry } from '../model/si-embedded-entry';
 import { SiGetResult } from 'src/app/si/model/api/si-get-result';
 
 export class EmbeddedEntryObtainer  {
-	constructor(public siService: SiService, public apiUrl: string, public obtainSummary: boolean) {
+
+	constructor(public siService: SiService, public apiUrl: string, public obtainSummary: boolean,
+			public typeIds: Array<string>|null) {
 	}
+
+	private preloadedNew$: Observable<SiEmbeddedEntry>|null = null;
 
 	private createBulkyInstruction(siEntryIdentifier: SiEntryIdentifier|null): SiGetInstruction {
 		if (siEntryIdentifier) {
 			return SiGetInstruction.entry(true, false, siEntryIdentifier.id);
 		}
 
-		return SiGetInstruction.newEntry(true, false);
+		return SiGetInstruction.newEntry(true, false).setTypeIds(this.typeIds);
 	}
 
 	private createSummaryInstruction(siEntryIdentifier: SiEntryIdentifier|null): SiGetInstruction {
@@ -32,7 +36,23 @@ export class EmbeddedEntryObtainer  {
 			return SiGetInstruction.entry(false, true, siEntryIdentifier.id);
 		}
 
-		return SiGetInstruction.newEntry(false, true);
+		return SiGetInstruction.newEntry(false, true).setTypeIds(this.typeIds);
+	}
+
+	preloadNew(): void {
+		if (this.preloadedNew$) {
+			return;
+		}
+
+		this.preloadedNew$ = this.obtain([null]).pipe(map(siEmbeddedEntries => siEmbeddedEntries[0]));
+	}
+
+	obtainNew(): Observable<SiEmbeddedEntry> {
+		this.preloadNew();
+		const siEmbeddedEntry$ = this.preloadedNew$;
+		this.preloadedNew$ = null;
+		this.preloadNew();
+		return siEmbeddedEntry$;
 	}
 
 	obtain(siEntryIdentifiers: Array<SiEntryIdentifier|null>): Observable<SiEmbeddedEntry[]> {

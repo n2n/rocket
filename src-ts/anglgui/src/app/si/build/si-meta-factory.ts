@@ -73,6 +73,14 @@ export class SiMetaFactory {
 		return type;
 	}
 
+	static buildTypeIdentifiers(datas: any[]|null): SiTypeIdentifier[]|null {
+		if (!datas) {
+			return null;
+		}
+
+		return datas.map(data => this.createTypeIdentifier(data));
+	}
+
 	static createTypeIdentifier(data: any): SiTypeIdentifier {
 		const extr = new Extractor(data);
 

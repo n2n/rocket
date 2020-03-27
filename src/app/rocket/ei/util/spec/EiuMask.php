@@ -37,6 +37,7 @@ use rocket\ei\EiType;
 
 class EiuMask  {
 	private $eiMask;
+	private $eiuType;
 	private $eiuEngine;
 	private $eiuAnalyst;
 	
@@ -61,10 +62,14 @@ class EiuMask  {
 	}
 	
 	/**
-	 * @return \rocket\ei\EiType
+	 * @return \rocket\ei\util\spec\EiuType
 	 */
-	public function getEiType() {
-		return $this->eiMask->getEiType();
+	function type() {
+		if ($this->eiuType === null) {
+			$this->eiuType = new EiuType($this->eiMask->getEiType(), $this->eiuAnalyst);
+		}
+		
+		return $this->eiuType;
 	}
 	
 	/**

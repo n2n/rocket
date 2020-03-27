@@ -32,6 +32,16 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 	ngOnDestroy() {
 	}
 
+	maxReached(): boolean {
+		const max = this.model.getMax();
+
+		return max && max >= this.embeCol.embes.length;
+	}
+
+	toOne(): boolean {
+		return this.model.getMax() === 1;
+	}
+
 	drop(event: CdkDragDrop<string[]>) {
 		this.embeCol.changeEmbePosition(event.previousIndex, event.currentIndex);
 		this.embeCol.writeEmbes();

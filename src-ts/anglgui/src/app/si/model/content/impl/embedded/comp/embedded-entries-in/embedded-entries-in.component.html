@@ -7,15 +7,13 @@
 		</ng-container>
 
 		<ng-container *ngIf="!embe.isPlaceholder()">
-			<rocket-si-add-past *ngIf="!toOne" [disabled]="maxReached" [obtainer]="obtainer" 
-					[allowedSiTypeQualifiers]="model.getAllowedSiTypeQualifiers()"
+			<rocket-si-add-past *ngIf="!toOne" [disabled]="maxReached" [obtainer]="obtainer"
 					(newEntry)="addBefore(embe, $event)"></rocket-si-add-past>	
 		
 			<div rocketUiStructure [uiStructure]="embe.uiStructure"></div>
 		</ng-container>
 	</div>
 	
-	<rocket-si-add-past *ngIf="!toOne || !maxReached" [disabled]="maxReached" [obtainer]="obtainer" 
-			[allowedSiTypeQualifiers]="model.getAllowedSiTypeQualifiers()" 
+	<rocket-si-add-past *ngIf="!toOne || !maxReached" [disabled]="maxReached" [obtainer]="obtainer"
 			(newEntry)="add($event)"></rocket-si-add-past>
 </div>

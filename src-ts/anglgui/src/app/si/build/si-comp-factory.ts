@@ -235,9 +235,9 @@ export class SiCompFactory {
 
 		const allowedSiTypeQualifiersData = extr.nullaArray('allowedTypeQualifiers');
 		if (allowedSiTypeQualifiersData) {
-			panel.allowedSiTypeQualifiers = SiMetaFactory.createTypeQualifiers(allowedSiTypeQualifiersData);
+			panel.allowedSiTypeIdentifiers = SiMetaFactory.createTypeQualifiers(allowedSiTypeQualifiersData);
 		} else {
-			panel.allowedSiTypeQualifiers = null;
+			panel.allowedSiTypeIdentifiers = null;
 		}
 
 		return panel;

@@ -215,7 +215,7 @@ class EiuEntryGuiPool {
 			
 			$siPanels[] = $siPanel = new SiPanel($panelName, $panelDeclaration->getLabel());
 			$siPanel->setEmbeddedEntries($collection->createSiEmbeddedEntries())
-					->setAllowedTypeQualifiers($collection->buildAllowedSiTypeQualifiers())
+					->setAllowedSiTypeIds($collection->buildAllowedSiTypeIds())
 					->setGridPos($this->panelLayout->getSiGridPos($panelName))
 					->setMin($panelDeclaration->getMin())
 					->setMax($panelDeclaration->getMax())

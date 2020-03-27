@@ -5,7 +5,7 @@ import { EmbeInSource } from './embe-collection';
 
 export class SiPanel implements EmbeddedEntriesConfig, EmbeInSource {
 	values: SiEmbeddedEntry[] = [];
-	allowedSiTypeQualifiers: SiTypeQualifier[]|null = null;
+	allowedSiTypeIdentifiers: SiTypeQualifier[]|null = null;
 	min = 0;
 	max: number|null = null;
 	gridPos: SiGridPos|null = null;

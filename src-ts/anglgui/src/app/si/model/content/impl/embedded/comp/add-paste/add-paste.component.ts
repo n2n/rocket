@@ -1,9 +1,10 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, HostListener } from '@angular/core';
 import { SiEntryQualifier } from 'src/app/si/model/content/si-qualifier';
 import { SiEmbeddedEntry } from '../../model/si-embedded-entry';
-import { ClipboardService } from '../../../clipboard.service';
 import { SiTypeQualifier } from 'src/app/si/model/meta/si-type-qualifier';
 import { AddPasteObtainer } from '../add-paste-obtainer';
+import { ClipboardService } from 'src/app/si/model/generic/clipboard.service';
+import { SiGenericEmbeddedEntry } from '../../model/generic-embedded';
 
 
 export enum AddPasteType {
@@ -21,24 +22,22 @@ export class AddPasteComponent implements OnInit {
 
 	@Input()
 	obtainer: AddPasteObtainer;
-	@Input()
-	pasteCategory: string|null = null;
-	@Input()
-	allowedSiTypeQualifiers: SiTypeQualifier[]|null = null;
-	@Input()
-	type = AddPasteType.BLOCK;
-	@Input()
-	disabled = false;
+	
+	private _disabled = false;
 
 	@Output()
 	newEntry = new EventEmitter<SiEmbeddedEntry>();
 
-	pastablesVisible = false;
-	addLoading = false;
-	addLoadingSiTypeQualifier: SiTypeQualifier|null = null;
-	pasteLoadingSiEntryQualifier: SiEntryQualifier|null = null;
-	addableSiEmbeddedEntry: SiEmbeddedEntry|null = null;
-	addables: SiEntryQualifier[]|null = null;
+	loading = false;
+
+	popupOpen = false;
+	siEmbeddedEntry: SiEmbeddedEntry|null = null;
+
+	addables: SiTypeQualifier[] = [];
+	pastables: SiEntryQualifier[] = [];
+	illegalPastables: SiEntryQualifier[] = [];
+
+	private siGenericEmbeddedEntries: SiGenericEmbeddedEntry[]|null = null;
 
 	constructor(private clipboardService: ClipboardService) {
 	}
@@ -46,113 +45,123 @@ export class AddPasteComponent implements OnInit {
 	ngOnInit() {
 	}
 
-	get loading(): boolean {
-		return this.addLoading || !!this.addLoadingSiTypeQualifier ||	!!this.pasteLoadingSiEntryQualifier;
+	@Input()
+	set disabled(disabled: boolean) {
+		this._disabled = disabled;
+
+		if (!this.disabled) {
+			this.closePopup();
+		}
 	}
 
-	add() {
-		if (this.loading) {
+	get disabled(): boolean {
+		return this._disabled;
+	}
+
+	@HostListener('mouseenter')
+	prepareObtainer() {
+		this.obtainer.preloadNew();
+	}
+
+	closePopup() {
+		this.popupOpen = false;
+	}
+
+	togglePopup() {
+		this.popupOpen = !this.popupOpen;
+
+		if (!this.popupOpen || this.loading) {
 			return;
 		}
 
-		this.addLoading = true;
-		this.obtainer.obtain(null).subscribe((siEmbeddedEntry) => {
-			this.addLoading = false;
-			this.handleAddResponse(siEmbeddedEntry);
-		});
-	}
-
-	addBySiType(siTypeQualifier: SiTypeQualifier) {
-		if (this.addLoadingSiTypeQualifier) {
+		if (this.siEmbeddedEntry) {
+			this.update();
 			return;
 		}
 
-		this.addLoadingSiTypeQualifier = siTypeQualifier;
-		this.obtainer.obtain(null).subscribe((siEmbeddedEntry) => {
-			this.addLoadingSiTypeQualifier = null;
+		this.loading = true;
+		this.obtainer.obtainNew().then((siEmbeddedEntry) => {
+			this.loading = false;
 			this.handleAddResponse(siEmbeddedEntry);
-			this.choose(siTypeQualifier);
 		});
 	}
 
 	private handleAddResponse(siEmbeddedEntry: SiEmbeddedEntry) {
-		this.addableSiEmbeddedEntry = siEmbeddedEntry;
-		this.addables = [];
+		this.siEmbeddedEntry = siEmbeddedEntry;
+		this.update();
 
-		for (const siEntryQualifier of siEmbeddedEntry.entry.entryQualifiers) {
-			if (!this.isTypeAllowed(siEntryQualifier.typeQualifier)) {
+		if (this.addables.length === 1 && this.pastables.length === 0 && this.illegalPastables.length === 0) {
+			this.chooseAddable(this.addables[0]);
+		}
+	}
+
+	private update() {
+		this.addables = this.siEmbeddedEntry.typeQualifiers;
+
+		this.pastables = [];
+		this.illegalPastables = [];
+
+		this.siGenericEmbeddedEntries = this.clipboardService.filter(SiGenericEmbeddedEntry);
+		for (const siGenericEmbeddedEntry of this.siGenericEmbeddedEntries) {
+			if (!siGenericEmbeddedEntry.selectedTypeId) {
 				continue;
 			}
 
-			this.addables.push(siEntryQualifier);
+			if (this.siEmbeddedEntry.containsTypeId(siGenericEmbeddedEntry.selectedTypeId)) {
+				this.pastables.push(siGenericEmbeddedEntry.entryQualifier);
+			} else {
+				this.illegalPastables.push(siGenericEmbeddedEntry.entryQualifier);
+			}
 		}
+	}
 
-		if (this.addables.length === 0) {
-			throw new Error('No allowed buildup types.');
-		}
+	get searchable(): boolean {
+		return (this.addables.length + this.pastables.length + this.illegalPastables.length) > 10;
+	}
 
-		if (this.addables.length === 1) {
-			this.choose(this.addables[0].typeQualifier);
+	chooseAddable(siTypeQualifier: SiTypeQualifier) {
+		this.popupOpen = false;
+		this.siEmbeddedEntry.selectedTypeId = siTypeQualifier.id;
+		this.newEntry.emit(this.siEmbeddedEntry);
+		this.reset();
+	}
+
+	choosePastable(siEntryQualifier: SiEntryQualifier) {
+		const siGenericEmbeddedEntry = this.clipboardService.filter(SiGenericEmbeddedEntry)
+				.find((gene) => {
+					return gene.entryQualifier.equals(siEntryQualifier);
+				});
+
+		if (!siGenericEmbeddedEntry) {
 			return;
 		}
+
+		this.siEmbeddedEntry.paste(siGenericEmbeddedEntry);
+		this.newEntry.emit(this.siEmbeddedEntry);
+		this.reset();
 	}
 
-	choose(siTypeQualifier: SiTypeQualifier) {
-		this.reset();
-		this.addableSiEmbeddedEntry.comp.entry.selectedTypeId = siTypeQualifier.id;
-		if (this.addableSiEmbeddedEntry.summaryComp) {
-			this.addableSiEmbeddedEntry.summaryComp.entry.selectedTypeId = siTypeQualifier.id;
-		}
-		this.newEntry.emit(this.addableSiEmbeddedEntry);
-		this.addableSiEmbeddedEntry = null;
-	}
+
+	// addBySiType(siTypeQualifier: SiTypeQualifier) {
+	// 	if (this.addLoadingSiTypeQualifier) {
+	// 		return;
+	// 	}
+
+	// 	this.addLoadingSiTypeQualifier = siTypeQualifier;
+	// 	this.obtainer.obtain(null).subscribe((siEmbeddedEntry) => {
+	// 		this.addLoadingSiTypeQualifier = null;
+	// 		this.handleAddResponse(siEmbeddedEntry);
+	// 		this.choose(siTypeQualifier);
+	// 	});
+	// }
 
 	reset() {
-		this.addables = null;
-		this.pastablesVisible = false;
-	}
-
-	paste(siQualifier: SiEntryQualifier) {
-		if (this.loading) {
-			return false;
-		}
-
-		this.pasteLoadingSiEntryQualifier = siQualifier;
-		this.obtainer.obtain(siQualifier).subscribe((siEmbeddedEntry) => {
-			this.pasteLoadingSiEntryQualifier = null;
-			this.handlePasteResponse(siEmbeddedEntry);
-		});
-	}
-
-	private handlePasteResponse(siEmbeddedEntry: SiEmbeddedEntry) {
-		this.reset();
-		this.newEntry.emit(siEmbeddedEntry);
-	}
-
-	get addablesVisible(): boolean {
-		return !!this.addables;
-	}
-
-	get pastablesAvailable(): boolean {
-		return this.pasteCategory && this.clipboardService.containsCategory(this.pasteCategory);
-	}
-
-	get pastables(): SiEntryQualifier[] {
-		return this.clipboardService.getByCategory(this.pasteCategory);
-	}
-
-	isTypeAllowed(siTypeQualifier: SiTypeQualifier) {
-		return !this.allowedSiTypeQualifiers || !!this.allowedSiTypeQualifiers
-				.find(allowedSiTypeQualifier => allowedSiTypeQualifier.id === siTypeQualifier.id);
-	}
-
-	isAddLoading(siTypeQualifier: SiTypeQualifier = null): boolean {
-		return this.addLoading || (siTypeQualifier && this.addLoadingSiTypeQualifier
-				&& this.addLoadingSiTypeQualifier.equals(siTypeQualifier));
-	}
-
-	isPasteLoading(siQualifier: SiEntryQualifier): boolean {
-		return !!this.pasteLoadingSiEntryQualifier && this.pasteLoadingSiEntryQualifier.equals(siQualifier);
+		this.popupOpen = false;
+		this.siEmbeddedEntry = null;
+		this.addables = [];
+		this.pastables = [];
+		this.illegalPastables = [];
+		this.siGenericEmbeddedEntries = [];
 	}
 }
 

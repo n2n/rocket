@@ -55,6 +55,10 @@ export class SiEntry {
 		return this.selectedTypeIdSubject;
 	}
 
+	containsTypeId(typeId: string): boolean {
+		return this._entryBuildupsMap.has(typeId);
+	}
+
 	isMultiType(): boolean {
 		return this._entryBuildupsMap.size > 1;
 	}

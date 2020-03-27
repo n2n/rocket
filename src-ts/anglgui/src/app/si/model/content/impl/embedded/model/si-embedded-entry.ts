@@ -3,8 +3,10 @@ import { SiEntry } from 'src/app/si/model/content/si-entry';
 import { BulkyEntrySiComp } from 'src/app/si/model/comp/impl/model/bulky-entry-si-comp';
 import { CompactEntrySiComp } from 'src/app/si/model/comp/impl/model/compact-entry-si-comp';
 import { SiGenericEmbeddedEntry, SiEmbeddedEntryResetPoint } from './generic-embedded';
+import { SiTypeQualifier } from 'src/app/si/model/meta/si-type-qualifier';
 
 export class SiEmbeddedEntry {
+	
 
 	constructor(public comp: BulkyEntrySiComp, public summaryComp: CompactEntrySiComp|null) {
 	}
@@ -41,6 +43,25 @@ export class SiEmbeddedEntry {
 			origSiEmbeddedEntry: this,
 			genericEmbeddedEntry
 		};
+	}
+
+	get typeQualifiers(): SiTypeQualifier[] {
+		return this.typeQualifiers;
+	}
+
+	get selectedTypeId(): string|null {
+		return this.entry.selectedTypeId;
+	}
+
+	set selectedTypeId(typeId: string|null) {
+		this.comp.entry.selectedTypeId = typeId;
+		if (this.summaryComp.entry) {
+			this.summaryComp.entry.selectedTypeId = typeId;
+		}
+	}
+
+	containsTypeId(typeId: string): boolean {
+		return this.entry.containsTypeId(typeId);
 	}
 
 	resetToPoint(genericEmbeddedEntry: SiGenericEmbeddedEntry): void {

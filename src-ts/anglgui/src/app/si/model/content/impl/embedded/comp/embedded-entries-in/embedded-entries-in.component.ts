@@ -1,10 +1,8 @@
-import { Component, OnInit, Injector } from '@angular/core';
-import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
+import { Component, OnInit } from '@angular/core';
 import { EmbeddedEntriesInModel } from '../embedded-entry-in-model';
 import { SiEmbeddedEntry } from '../../model/si-embedded-entry';
 import { AddPasteObtainer } from '../add-paste-obtainer';
 import { Embe } from '../../model/embe';
-import { SiEmbeddedEntryResetPointCollection } from '../../model/generic-embedded';
 import { EmbeInCollection } from '../../model/embe-collection';
 
 @Component({

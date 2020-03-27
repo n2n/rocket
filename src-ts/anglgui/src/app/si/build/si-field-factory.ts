@@ -135,7 +135,7 @@ export class SiFieldFactory {
 
 		case SiFieldType.EMBEDDED_ENTRY_IN:
 			const embeddedEntryInSiField = new EmbeddedEntriesInSiField(prop.label, this.injector.get(SiService),
-					dataExtr.reqString('typeCategory'), dataExtr.reqString('apiUrl'), 
+					dataExtr.reqString('typeCategory'), dataExtr.reqString('apiUrl'),
 					this.injector.get(TranslationService),
 					new SiCompFactory(this.injector).createEmbeddedEntries(dataExtr.reqArray('values')));
 			embeddedEntryInSiField.config.reduced = dataExtr.reqBoolean('reduced');
@@ -144,12 +144,8 @@ export class SiFieldFactory {
 			embeddedEntryInSiField.config.nonNewRemovable = dataExtr.reqBoolean('nonNewRemovable');
 			embeddedEntryInSiField.config.sortable = dataExtr.reqBoolean('sortable');
 
-			const allowedSiTypeQualifiersData = dataExtr.nullaArray('allowedSiTypeQualifiers');
-			if (allowedSiTypeQualifiersData) {
-				embeddedEntryInSiField.config.allowedSiTypeQualifiers = SiMetaFactory.createTypeQualifiers(allowedSiTypeQualifiersData);
-			} else {
-				embeddedEntryInSiField.config.allowedSiTypeQualifiers = null;
-			}
+			const allowedSiTypeIdentifiersData = dataExtr.nullaStringArray('allowedSiTypeIdentifiers');
+			embeddedEntryInSiField.config.allowedSiTypeIdentifiers = SiMetaFactory.buildTypeIdentifiers(allowedSiTypeIdentifiersData);
 
 			return embeddedEntryInSiField;
 

@@ -1,6 +1,3 @@
-import { SiEntryIdentifier } from 'src/app/si/model/content/si-qualifier';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { SiEmbeddedEntry } from '../model/si-embedded-entry';
 import { AddPasteObtainer } from '../comp/add-paste-obtainer';
 import { EmbeddedEntryObtainer } from './embedded-entry-obtainer';
@@ -9,8 +6,16 @@ export class EmbeddedAddPasteObtainer implements AddPasteObtainer {
 	constructor(private obtainer: EmbeddedEntryObtainer) {
 	}
 
-	obtain(siEntryIdentifier: SiEntryIdentifier|null): Observable<SiEmbeddedEntry> {
-		return this.obtainer.obtain([siEntryIdentifier]).pipe(map(siEmbeddedEntries => siEmbeddedEntries[0]));
+	// obtain(siEntryIdentifier: SiEntryIdentifier|null): Observable<SiEmbeddedEntry> {
+	// 	return this.obtainer.obtain([siEntryIdentifier]).pipe(map(siEmbeddedEntries => siEmbeddedEntries[0]));
+	// }
+
+	preloadNew(): void {
+		this.obtainer.preloadNew();
+	}
+
+	obtainNew(): Promise<SiEmbeddedEntry> {
+		return this.obtainer.obtainNew().toPromise();
 	}
 
 

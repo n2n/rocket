@@ -1,0 +1,12 @@
+
+<div *ngFor="let siTypeQualifier of siTypeQualifiers">
+	<button type="button" (click)="chooseSiType(siTypeQualifier)" [disabled]="disabled">
+		<rocket-si-qualifier [siTypeQualifier]="siTypeQualifier"></rocket-si-qualifier>
+	</button>
+</div>
+
+<div *ngFor="let siEntryQualifier of siEntryQualifiers">
+	<button type="button" (click)="chooseSiEntry(siEntryQualifier)" [disabled]="disabled">
+		<rocket-si-qualifier [siEntryQualifier]="siEntryQualifier"></rocket-si-qualifier>
+	</button>
+</div>

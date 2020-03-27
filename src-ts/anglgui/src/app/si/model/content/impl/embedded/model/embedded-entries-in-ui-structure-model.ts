@@ -1,5 +1,5 @@
 import { EmbeddedEntriesInModel } from '../comp/embedded-entry-in-model';
-import { SiTypeQualifier } from 'src/app/si/model/meta/si-type-qualifier';
+import { SiTypeQualifier, SiTypeIdentifier } from 'src/app/si/model/meta/si-type-qualifier';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { EmbeddedEntriesSummaryInComponent } from '../comp/embedded-entries-summary-in/embedded-entries-summary-in.component';
 import { EmbeddedEntriesInComponent } from '../comp/embedded-entries-in/embedded-entries-in.component';
@@ -78,8 +78,8 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 		return this.typeCategory;
 	}
 
-	getAllowedSiTypeQualifiers(): SiTypeQualifier[]|null {
-		return this.config.allowedSiTypeQualifiers;
+	getAllowedSiTypeIdentifier(): SiTypeIdentifier[]|null {
+		return this.config.allowedSiTypeIdentifiers;
 	}
 
 	getAddPasteObtainer(): AddPasteObtainer {
@@ -103,7 +103,7 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 		super.bind(uiStructure);
 
 		if (this.config.reduced) {
-			this.embeInUiStructureManager = new EmbeInUiStructureManager(uiStructure, this.embeInCol, this, this.obtainer, 
+			this.embeInUiStructureManager = new EmbeInUiStructureManager(uiStructure, this.embeInCol, this, this.obtainer,
 					this.translationService);
 			this.uiContent = new TypeUiContent(EmbeddedEntriesSummaryInComponent, (ref) => {
 				ref.instance.model = this;
