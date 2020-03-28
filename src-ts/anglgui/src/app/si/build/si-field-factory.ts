@@ -143,7 +143,7 @@ export class SiFieldFactory {
 			embeddedEntryInSiField.config.max = dataExtr.nullaNumber('max');
 			embeddedEntryInSiField.config.nonNewRemovable = dataExtr.reqBoolean('nonNewRemovable');
 			embeddedEntryInSiField.config.sortable = dataExtr.reqBoolean('sortable');
-			embeddedEntryInSiField.config.allowedSiTypeIds = dataExtr.nullaArray('allowedSiTypeIds');
+			embeddedEntryInSiField.config.allowedTypeIds = dataExtr.nullaArray('allowedSiTypeIds');
 
 			return embeddedEntryInSiField;
 

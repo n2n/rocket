@@ -172,9 +172,9 @@ class EiuType  {
 			$eiuTypes[] = $this; 
 		}
 		
-		foreach ($this->allSubTypes() as $subEiuType) {
+		foreach ($this->eiType->getAllSubEiTypes() as $subEiType) {
 			if ($this->eiTypeMatches($subEiType, $allowedSubEiTypeIds, $includeAbstracts)) {
-				$eiuTypes[] = $subEiuType;
+				$eiuTypes[] = new EiuType($subEiType, $this->eiuAnalyst);
 			}
 		}
 		

@@ -119,20 +119,20 @@ class EmbeddedGuiCollection {
 		return count($this->eiuEntryGuis);
 	}
 	
-	/**
-	 * @return NULL|string[]
-	 */      
-	function buildAllowedSiTypeIds() {
-		if ($this->allowedEiuMasks === null) {
-			return null;
-		}
+// 	/**
+// 	 * @return NULL|string[]
+// 	 */      
+// 	function buildAllowedSiTypeIds() {
+// 		if ($this->allowedEiuMasks === null) {
+// 			return null;
+// 		}
 		
-		$allowedSiTypeIds = [];
-		foreach ($this->allowedEiuMasks as $eiuMask) {
-			$allowedSiTypeIds[] = $eiuMask->type()->getSiTypeId();
-		}
-		return $allowedSiTypeIds;
-	}
+// 		$allowedSiTypeIds = [];
+// 		foreach ($this->allowedEiuMasks as $eiuMask) {
+// 			$allowedSiTypeIds[] = $eiuMask->type()->getSiTypeId();
+// 		}
+// 		return $allowedSiTypeIds;
+// 	}
 	
 	function createSiEmbeddedEntries() {
 		return array_values(array_map(

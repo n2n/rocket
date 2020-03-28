@@ -79,7 +79,7 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 	// }
 
 	getAllowedSiTypeIds(): string[]|null {
-		return this.config.allowedSiTypeIds;
+		return this.config.allowedTypeIds;
 	}
 
 	getAddPasteObtainer(): AddPasteObtainer {

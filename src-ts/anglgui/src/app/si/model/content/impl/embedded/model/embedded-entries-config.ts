@@ -5,5 +5,5 @@ export interface EmbeddedEntriesConfig {
 	reduced: boolean;
 	nonNewRemovable: boolean;
 	sortable: boolean;
-	allowedSiTypeIds: string[]|null;
+	allowedTypeIds: string[]|null;
 }

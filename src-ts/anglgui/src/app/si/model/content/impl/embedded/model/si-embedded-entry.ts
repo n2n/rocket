@@ -46,7 +46,7 @@ export class SiEmbeddedEntry {
 	}
 
 	get maskQualifiers(): SiMaskQualifier[] {
-		return this.maskQualifiers;
+		return this.entry.maskQualifiers;
 	}
 
 	get selectedTypeId(): string|null {

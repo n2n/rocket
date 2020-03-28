@@ -30,7 +30,7 @@ class SiTypeContext implements \JsonSerializable {
 	function __construct(string $contextTypeId, array $subTypeIds) {
 		$this->contextTypeId = $contextTypeId;
 		ArgUtils::valArray($subTypeIds, 'string');
-		$this->subTypeIds = $subTypeIds;
+		$this->subTypeIds = array_values($subTypeIds);
 	}
 	
 	function containsTypeId(string $typeId) {

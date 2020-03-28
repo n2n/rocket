@@ -182,13 +182,6 @@ class EiuFrame {
 	}
 	
 	/**
-	 * @return string
-	 */
-	function getSiTypeCategory() {
-		return $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()->getSupremeEiType()->getId();
-	}
-	
-	/**
 	 * @return \rocket\spec\TypePath
 	 */
 	public function getContextEiTypePath() {

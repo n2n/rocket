@@ -232,7 +232,7 @@ export class SiCompFactory {
 		panel.nonNewRemovable = extr.reqBoolean('nonNewRemovable');
 		panel.sortable = extr.reqBoolean('sortable');
 		panel.gridPos = SiCompFactory.buildGridPos(extr.nullaObject('gridPos'));
-		panel.allowedSiTypeIds = extr.nullaArray('allowedTypeIds');
+		panel.allowedTypeIds = extr.nullaStringArray('allowedTypeIds');
 
 		return panel;
 	}

@@ -6,6 +6,7 @@ use rocket\ei\EiType;
 use rocket\ei\mask\EiMask;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\ManageState;
+use n2n\util\type\ArgUtils;
 
 class EiGuiModelCache {
 	/**
@@ -27,12 +28,12 @@ class EiGuiModelCache {
 	private function createCacheKey($contextEiMask, $viewMode, $allowedEiTypes, $guiPropPaths) {
 		$allowedEiTypesHashPart = '';
 		if ($allowedEiTypes !== null) {
-			$allowedEiTypesHashPart = json_encode(array_map(function($eiType) { return $eiType->getId(); } , $allowedEiTypes));
+			$allowedEiTypesHashPart = json_encode(array_map(function($eiType) { return $eiType->getId(); }, $allowedEiTypes));
 		}
 		
 		$guiPropPathsHashPart = '';
-		if ($allowedEiTypes !== null) {
-			$guiPropPathsHashPart = json_encode(array_map(function($guiPropPath) { return (string) $guiPropPath; } , $guiPropPaths));
+		if ($guiPropPaths !== null) {
+			$guiPropPathsHashPart = json_encode(array_map(function($guiPropPath) { return (string) $guiPropPath; }, $guiPropPaths));
 		}
 		
 		return (string) $contextEiMask->getEiTypePath() . ' ' . $viewMode . ' ' . $allowedEiTypesHashPart . ' ' 
@@ -94,7 +95,8 @@ class EiGuiModelCache {
 	 */
 	function obtainMultiEiGuiModel(EiMask $contextEiMask, int $viewMode, ?array $allowedEiTypes, 
 			?array $guiPropPaths, bool $guiStructureDeclarationsRequired) {
-		$key = $this->createCacheKey($contextEiMask, $viewMode, null, $guiPropPaths);
+		ArgUtils::valArray($allowedEiTypes, EiType::class, true);
+		$key = $this->createCacheKey($contextEiMask, $viewMode, $allowedEiTypes, $guiPropPaths);
 		
 		if (isset($this->multiEiGuiModels[$key])) {
 			return $this->multiEiGuiModels[$key];
@@ -117,6 +119,7 @@ class EiGuiModelCache {
 	 */
 	function obtainForgeMultiEiGuiModel(EiMask $contextEiMask, int $viewMode, ?array $allowedEiTypes,
 			?array $guiPropPaths) {
+		ArgUtils::valArray($allowedEiTypes, EiType::class, true);
 		$key = $this->createCacheKey($contextEiMask, $viewMode, $allowedEiTypes, $guiPropPaths);
 		
 		if (isset($this->forgeMultiEiGuiModels[$key])) {

@@ -198,7 +198,7 @@ class SiPanel implements \JsonSerializable {
 	 * @return SiPanel
 	 */
 	function setAllowedTypeIds(?array $allowedTypeIds) {
-		ArgUtils::valArray($allowedTypeIds, string::class, true);
+		ArgUtils::valArray($allowedTypeIds, 'string', true);
 		$this->allowedTypeIds = $allowedTypeIds;
 		return $this;
 	}
@@ -258,7 +258,7 @@ class SiPanel implements \JsonSerializable {
 			'reduced' => $this->reduced,
 			'nonNewRemovable' => $this->nonNewRemovable,
 			'sortable' => $this->sortable,
-			'allowedSiTypeIds ' => $this->allowedTypeIds,
+			'allowedTypeIds' => $this->allowedTypeIds,
 			'gridPos' => $this->gridPos,
 			'values' => $this->values
 		];

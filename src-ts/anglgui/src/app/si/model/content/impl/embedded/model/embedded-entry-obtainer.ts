@@ -21,7 +21,7 @@ export class EmbeddedEntryObtainer  {
 			public typeIds: Array<string>|null) {
 	}
 
-	private preloadedNew$: Observable<SiEmbeddedEntry>|null = null;
+	private preloadedNew$: Promise<SiEmbeddedEntry>|null = null;
 
 	private createBulkyInstruction(siEntryIdentifier: SiEntryIdentifier|null): SiGetInstruction {
 		if (siEntryIdentifier) {
@@ -44,10 +44,10 @@ export class EmbeddedEntryObtainer  {
 			return;
 		}
 
-		this.preloadedNew$ = this.obtain([null]).pipe(map(siEmbeddedEntries => siEmbeddedEntries[0]));
+		this.preloadedNew$ = this.obtain([null]).pipe(map(siEmbeddedEntries => siEmbeddedEntries[0])).toPromise();
 	}
 
-	obtainNew(): Observable<SiEmbeddedEntry> {
+	obtainNew(): Promise<SiEmbeddedEntry> {
 		this.preloadNew();
 		const siEmbeddedEntry$ = this.preloadedNew$;
 		this.preloadedNew$ = null;

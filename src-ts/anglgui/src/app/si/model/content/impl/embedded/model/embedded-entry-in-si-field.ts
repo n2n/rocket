@@ -25,7 +25,7 @@ export class EmbeddedEntriesInSiField extends SiFieldAdapter implements EmbeInSo
 		reduced: false,
 		nonNewRemovable: true,
 		sortable: false,
-		allowedSiTypeIds: null
+		allowedTypeIds: null
 	};
 
 	constructor(private label: string, private siService: SiService, private frame: SiFrame,
@@ -66,7 +66,7 @@ export class EmbeddedEntriesInSiField extends SiFieldAdapter implements EmbeInSo
 
 	createUiStructureModel(): UiStructureModel {
 		return new EmbeddedEntriesInUiStructureModel(
-				new EmbeddedEntryObtainer(this.siService, this.frame.apiUrl, this.config.reduced, this.config.allowedSiTypeIds),
+				new EmbeddedEntryObtainer(this.siService, this.frame.apiUrl, this.config.reduced, this.config.allowedTypeIds),
 				this.frame, this, this.config, this.translationService,
 				this.disabledSubject);
 	}
@@ -103,7 +103,7 @@ export class EmbeddedEntriesInSiField extends SiFieldAdapter implements EmbeInSo
 			return this.handlePaste(newEmbeInds, []);
 		}
 
-		const obtainer = new EmbeddedEntryObtainer(this.siService, this.frame.apiUrl, this.config.reduced, this.config.allowedSiTypeIds);
+		const obtainer = new EmbeddedEntryObtainer(this.siService, this.frame.apiUrl, this.config.reduced, this.config.allowedTypeIds);
 		return obtainer.obtain(newEntryIdentifiers).toPromise()
 				.then((embeddedEntries) => {
 					return this.handlePaste(newEmbeInds, embeddedEntries);

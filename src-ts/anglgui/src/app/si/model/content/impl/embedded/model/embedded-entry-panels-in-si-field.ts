@@ -40,7 +40,7 @@ export class EmbeddedEntryPanelsInSiField extends SiFieldAdapter  {
 
 	createUiStructureModel(): UiStructureModel {
 		const panelAssemblies = this.panels.map((panel) => {
-			const obtainer = new EmbeddedEntryObtainer(this.siService, this.frame.apiUrl, panel.reduced, panel.allowedSiTypeIds);
+			const obtainer = new EmbeddedEntryObtainer(this.siService, this.frame.apiUrl, panel.reduced, panel.allowedTypeIds);
 
 			return {
 				panel,

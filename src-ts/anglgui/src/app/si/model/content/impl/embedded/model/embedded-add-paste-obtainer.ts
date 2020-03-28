@@ -15,7 +15,7 @@ export class EmbeddedAddPasteObtainer implements AddPasteObtainer {
 	}
 
 	obtainNew(): Promise<SiEmbeddedEntry> {
-		return this.obtainer.obtainNew().toPromise();
+		return this.obtainer.obtainNew();
 	}
 
 

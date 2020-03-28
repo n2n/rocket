@@ -76,8 +76,7 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler {
 		
 		$this->currentPool = new EiuEntryGuiPool($panelDeclarations, false, $relationModel->isReduced(), $targetEiuFrame);
 		
-		$this->siField = SiFields::embeddedEntryPanelsIn($this->targetEiuFrame->getSiTypeCategory(),
-				$this->targetEiuFrame->getApiUrl($relationModel->getTargetEditEiCommandPath()),
+		$this->siField = SiFields::embeddedEntryPanelsIn($this->targetEiuFrame->createSiFrame(),
 				$this, $this->readValues());
 	}
 	
@@ -212,10 +211,11 @@ class EiuEntryGuiPool {
 		
 		foreach ($this->embeddedGuiCollections as $panelName => $collection) {
 			$panelDeclaration = $this->panelDeclarations[$panelName];
+			$allowedSiTypeIds = $panelDeclaration->isRestricted() ? $panelDeclaration->getAllowedContentItemIds() : null;
 			
 			$siPanels[] = $siPanel = new SiPanel($panelName, $panelDeclaration->getLabel());
 			$siPanel->setEmbeddedEntries($collection->createSiEmbeddedEntries())
-					->setAllowedSiTypeIds($collection->buildAllowedSiTypeIds())
+					->setAllowedTypeIds($allowedSiTypeIds)
 					->setGridPos($this->panelLayout->getSiGridPos($panelName))
 					->setMin($panelDeclaration->getMin())
 					->setMax($panelDeclaration->getMax())

@@ -163,7 +163,7 @@ class EiFrameUtil {
 			return null;
 		}
 		
-		$eiTypes[] = [];
+		$eiTypes = [];
 		foreach ($eiTypeIds as $eiTypeId) {
 			ArgUtils::valType($eiTypeId, 'string');
 			$eiTypes[] = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()->determineEiTypeById($eiTypeId);

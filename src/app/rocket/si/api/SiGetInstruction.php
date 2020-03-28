@@ -182,7 +182,7 @@ class SiGetInstruction {
 			$instruction = new SiGetInstruction($ds->reqBool('bulky'), $ds->reqBool('readOnly'));
 			$instruction->setDeclarationRequested($ds->reqBool('declarationRequested'));
 			$instruction->setEntryId($ds->optInt('entryId'));
-			$instruction->setTypeIds($ds->optArray('typeIds', 'string', null));
+			$instruction->setTypeIds($ds->optArray('typeIds', 'string', null, true));
 			
 			$pcData = $ds->optArray('partialContentInstruction', null, null, true);
 			if ($pcData == null) {
