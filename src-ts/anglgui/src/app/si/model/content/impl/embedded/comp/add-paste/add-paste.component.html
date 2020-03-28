@@ -11,7 +11,7 @@
 		<input *ngIf="searchable" type="search" />
 
 		<rocket-qualifier-tiling [siMaskQualifiers]="addables" [siEntryQualifiers]="pastables"
-				(sTypeSelected)="chooseAddable($event)" (sEntrySelected)="choosePastable($event)">
+				(siTypeSelected)="chooseAddable($event)" (siEntrySelected)="choosePastable($event)">
 		</rocket-qualifier-tiling>
 	</div>
 

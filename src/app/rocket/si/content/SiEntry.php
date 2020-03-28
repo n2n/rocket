@@ -103,10 +103,6 @@ class SiEntry implements \JsonSerializable {
 	function putBuildup(string $id, SiEntryBuildup $buildup) {
 		$this->buildups[$id] = $buildup;
 		
-		if ($this->selectedTypeId === null) {
-			$this->selectedTypeId = $id;
-		}
-		
 		return $this;
 	}
 	

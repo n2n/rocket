@@ -6,6 +6,8 @@ import { AddPasteObtainer } from '../add-paste-obtainer';
 import { Embe } from '../../model/embe';
 import { EmbeInCollection } from '../../model/embe-collection';
 import { EmbeddedEntriesInModel } from '../embedded-entry-in-model';
+import { ClipboardService } from 'src/app/si/model/generic/clipboard.service';
+import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
 
 
 @Component({
@@ -21,7 +23,7 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 
 	embeUiStructures = new Array<{embe: Embe, uiStructure: UiStructure}>();
 
-	constructor() {
+	constructor(private clipboard: ClipboardService) {
 	}
 
 	ngOnInit() {
@@ -67,8 +69,11 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 		return this.embeCol.embes;
 	}
 
-	copy() {
-
+	copy(embe: Embe) {
+		if (!embe.siEmbeddedEntry) {
+			return;
+		}
+		this.clipboard.add(new SiGenericValue(embe.siEmbeddedEntry.copy()));
 	}
 
 	open(embe: Embe) {

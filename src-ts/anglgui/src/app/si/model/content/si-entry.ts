@@ -203,7 +203,7 @@ export class SiEntry {
 	}
 
 	private valGenericEntry(genericEntry: SiGenericEntry) {
-		if (!genericEntry.identifier.equals(this.identifier)) {
+		if (genericEntry.identifier.typeId !== this.identifier.typeId) {
 			throw new GenericMissmatchError('SiEntry missmatch: '
 					+ genericEntry.identifier.toString() + ' != ' + this.identifier.toString());
 		}

@@ -20,7 +20,7 @@ export class Embe {
 		}
 	}
 
-	get siEmbeddedEntry(): SiEmbeddedEntry {
+	get siEmbeddedEntry(): SiEmbeddedEntry|null {
 		return this._siEmbeddedEntry;
 	}
 

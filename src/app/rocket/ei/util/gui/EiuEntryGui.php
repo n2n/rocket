@@ -35,9 +35,6 @@ use rocket\ei\util\EiuPerimeterException;
 use rocket\ei\util\EiuAnalyst;
 use n2n\l10n\N2nLocale;
 use rocket\si\input\SiEntryInput;
-use rocket\ei\manage\gui\EiGuiUtil;
-use rocket\ei\manage\gui\EiGuiFrame;
-use rocket\ei\manage\frame\EiEntryGuiMultiResult;
 use rocket\ei\util\entry\EiuEntry;
 use rocket\si\input\CorruptedSiInputDataException;
 

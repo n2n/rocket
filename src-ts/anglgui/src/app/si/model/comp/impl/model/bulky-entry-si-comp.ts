@@ -85,6 +85,11 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 	getZoneErrors(): UiZoneError[] {
 		const zoneErrors = new Array<UiZoneError>();
 		const typeId = this.siEntry.selectedTypeId;
+
+		if (!typeId) {
+			return zoneErrors;
+		}
+
 		for (const [fieldId, field] of this.siEntry.selectedEntryBuildup.getFieldMap()) {
 			this.uiStructureModelCache.obtain(typeId, fieldId, field).getZoneErrors();
 		}

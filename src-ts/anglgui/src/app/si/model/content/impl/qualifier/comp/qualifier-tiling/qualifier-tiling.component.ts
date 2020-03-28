@@ -16,9 +16,9 @@ export class QualifierTilingComponent implements OnInit {
 	@Input()
 	disabled = false;
 	@Output()
-	sTypeSelected = new EventEmitter<SiMaskQualifier>();
+	siTypeSelected = new EventEmitter<SiMaskQualifier>();
 	@Output()
-	sEntrySelected = new EventEmitter<SiEntryQualifier>();
+	siEntrySelected = new EventEmitter<SiEntryQualifier>();
 
 	constructor() { }
 
@@ -26,10 +26,10 @@ export class QualifierTilingComponent implements OnInit {
 	}
 
 	chooseSiType(siMaskQualifier: SiMaskQualifier) {
-		this.sTypeSelected.emit(siMaskQualifier);
+		this.siTypeSelected.emit(siMaskQualifier);
 	}
 
 	chooseSiEntry(siEntryQualifier: SiEntryQualifier) {
-		this.sEntrySelected.emit(siEntryQualifier);
+		this.siEntrySelected.emit(siEntryQualifier);
 	}
 }

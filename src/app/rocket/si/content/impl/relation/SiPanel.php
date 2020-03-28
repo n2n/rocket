@@ -147,7 +147,7 @@ class SiPanel implements \JsonSerializable {
 	
 	/**
 	 * @param boolean $reduced
-	 * @return EmbeddedEntryPanelsInSiField
+	 * @return SiPanel
 	 */
 	function setReduced(bool $reduced) {
 		$this->reduced = $reduced;
@@ -163,7 +163,7 @@ class SiPanel implements \JsonSerializable {
 	
 	/**
 	 * @param bool $nonNewRemovable
-	 * @return EmbeddedEntryInSiField
+	 * @return SiPanel
 	 */
 	function setNonNewRemovable(bool $nonNewRemovable) {
 		$this->nonNewRemovable = $nonNewRemovable;

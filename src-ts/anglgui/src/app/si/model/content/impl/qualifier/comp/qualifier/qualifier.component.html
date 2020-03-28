@@ -1,7 +1,7 @@
-<ng-container *ngIf="siMaskQualifier">
-	<i *ngIf="showIcon" [class]="siMaskQualifier.iconClass"></i>&nbsp;<span *ngIf="showName">{{ siMaskQualifier.name }}</span>
+<ng-container *ngIf="iconClass">
+	<i [class]="iconClass"></i>
 </ng-container>
 
-<ng-container *ngIf="siEntryQualifier">
-	<span *ngIf="showIdName && siQualifier.idName !== null">{{ siQualifier.idName }}</span>
+<ng-container *ngIf="name">
+	<span>{{ name }}</span>
 </ng-container>

@@ -17,12 +17,42 @@ export class QualifierComponent implements OnInit {
 	showIcon = true;
 	@Input()
 	showName = true;
-	@Input()
-	showIdName = true;
 
 	constructor() { }
 
 	ngOnInit() {
+	}
+
+	get iconClass(): string|null {
+		if (!this.showIcon) {
+			return null;
+		}
+
+		const siMaskQualifier = this.siMaskQualifier || this.siEntryQualifier.maskQualifier;
+
+		if (siMaskQualifier) {
+			return siMaskQualifier.iconClass;
+		}
+
+		return null;
+	}
+
+	get name(): string|null {
+		if (!this.showName) {
+			return null;
+		}
+
+		if (this.siEntryQualifier && this.siEntryQualifier.idName) {
+			return this.siEntryQualifier.idName;
+		}
+
+		const siMaskQualifier = this.siMaskQualifier || this.siEntryQualifier.maskQualifier;
+
+		if (siMaskQualifier) {
+			return siMaskQualifier.name;
+		}
+
+		return null;
 	}
 
 }

@@ -219,7 +219,8 @@ class EiuEntryGuiPool {
 					->setGridPos($this->panelLayout->getSiGridPos($panelName))
 					->setMin($panelDeclaration->getMin())
 					->setMax($panelDeclaration->getMax())
-					->setReduced($this->reduced);
+					->setReduced($this->reduced)
+					->setSortable(true);
 		}
 		
 		return $siPanels;
