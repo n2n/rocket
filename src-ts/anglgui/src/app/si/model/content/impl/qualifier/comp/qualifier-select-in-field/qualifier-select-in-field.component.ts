@@ -23,7 +23,7 @@ export class QualifierSelectInFieldComponent implements OnInit, DoCheck {
 	private optionsUiLayer: PopupUiLayer|null = null;
 
 	constructor(private elemRef: ElementRef, private translationService: TranslationService) { }
-	
+
 	ngOnInit() {
 		if (1 === this.model.getMax()) {
 			this.elemRef.nativeElement.classList.add('rocket-to-one');

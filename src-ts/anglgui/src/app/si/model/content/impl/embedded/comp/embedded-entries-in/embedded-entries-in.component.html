@@ -1,19 +1,9 @@
 <div>
 	<div *ngFor="let embe of embes">
-		<ng-container *ngIf="embe.isPlaceholder()">
-			<div class="rocket-loading"></div>
-		</ng-container>
-		
-		<ng-container *ngIf="!embe.isPlaceholder() && !embe.isTypeSelected()">
-			<rocket-choose-paste [siEmbeddedEntry]="embe.siEmbeddedEntry"></rocket-choose-paste>
-		</ng-container>
+		<rocket-si-add-past *ngIf="!toOne" [disabled]="maxReached" [obtainer]="obtainer"
+				(newEntry)="addBefore(embe, $event)"></rocket-si-add-past>	
 
-		<ng-container *ngIf="!embe.isPlaceholder() && embe.isTypeSelected()">
-			<rocket-si-add-past *ngIf="!toOne" [disabled]="maxReached" [obtainer]="obtainer"
-					(newEntry)="addBefore(embe, $event)"></rocket-si-add-past>	
-		
-			<div rocketUiStructure [uiStructure]="embe.uiStructure"></div>
-		</ng-container>
+		<rocket-embedded-entry [embe]="embe"></rocket-embedded-entry>
 	</div>
 	
 	<rocket-si-add-past *ngIf="!toOne || !maxReached" [disabled]="maxReached" [obtainer]="obtainer"

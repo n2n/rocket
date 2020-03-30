@@ -42,6 +42,7 @@ import { SplitManagerComponent } from './model/content/impl/split/comp/split-man
 import { EnumInComponent } from './model/content/impl/enum/comp/enum-in/enum-in.component';
 import { QualifierTilingComponent } from './model/content/impl/qualifier/comp/qualifier-tiling/qualifier-tiling.component';
 import { ChoosePasteComponent } from './model/content/impl/embedded/comp/choose-paste/choose-paste.component';
+import { EmbeddedEntryComponent } from './model/content/impl/embedded/comp/embedded-entry/embedded-entry.component';
 
 @NgModule({
 	declarations: [
@@ -51,7 +52,7 @@ import { ChoosePasteComponent } from './model/content/impl/embedded/comp/choose-
 		EmbeddedEntriesSummaryInComponent, EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent,
 		ImageResizeComponent, EmbeddedEntryPanelsInComponent, EntryDirective, PaginationComponent, CrumbGroupComponent,
 		AddPasteComponent, QualifierComponent, TogglerInFieldComponent, SplitComponent, SplitViewMenuComponent,
-		SplitManagerComponent, EnumInComponent, QualifierTilingComponent, ChoosePasteComponent
+		SplitManagerComponent, EnumInComponent, QualifierTilingComponent, ChoosePasteComponent, EmbeddedEntryComponent
 	],
 	imports: [
 		CommonModule,
@@ -74,7 +75,7 @@ import { ChoosePasteComponent } from './model/content/impl/embedded/comp/choose-
 		LinkOutFieldComponent, CompactEntryComponent, EmbeddedEntriesInComponent, EmbeddedEntriesSummaryInComponent,
 		EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent,
 		EmbeddedEntryPanelsInComponent, ButtonControlComponent, PaginationComponent, TogglerInFieldComponent, SplitComponent,
-		SplitViewMenuComponent, CrumbGroupComponent, SplitManagerComponent, EnumInComponent
+		SplitViewMenuComponent, CrumbGroupComponent, SplitManagerComponent, EnumInComponent, EmbeddedEntryComponent
 	]
 })
 export class SiModule { }

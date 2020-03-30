@@ -3,7 +3,7 @@ import { SiMaskQualifier } from 'src/app/si/model/meta/si-mask-qualifier';
 import { SiEntryQualifier } from '../../../../si-qualifier';
 import { SiGenericEmbeddedEntry } from '../../model/generic-embedded';
 import { SiEmbeddedEntry } from '../../model/si-embedded-entry';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 
 export class ChoosePasteModel {
 	addables: SiMaskQualifier[] = [];
@@ -13,9 +13,21 @@ export class ChoosePasteModel {
 	readonly done$ = new Subject<SiEmbeddedEntry>();
 
 	private siGenericEmbeddedEntries: SiGenericEmbeddedEntry[]|null = null;
+	private sub: Subscription;
 
 	constructor(public siEmbeddedEntry: SiEmbeddedEntry, private clipboardService: ClipboardService) {
 		this.update();
+
+		this.sub = this.clipboardService.changed$.subscribe(() => {
+			this.update();
+		});
+	}
+
+	destroy() {
+		if (this.sub) {
+			this.sub.unsubscribe();
+			this.sub = null;
+		}
 	}
 
 	update() {
@@ -24,7 +36,7 @@ export class ChoosePasteModel {
 		this.pastables = [];
 		this.illegalPastables = [];
 
-		this.siGenericEmbeddedEntries = this.clipboardService.filter(SiGenericEmbeddedEntry);
+		this.siGenericEmbeddedEntries = this.clipboardService.filterValue(SiGenericEmbeddedEntry);
 		for (const siGenericEmbeddedEntry of this.siGenericEmbeddedEntries) {
 			if (!siGenericEmbeddedEntry.selectedTypeId) {
 				continue;
@@ -45,7 +57,7 @@ export class ChoosePasteModel {
 	}
 
 	choosePastable(siEntryQualifier: SiEntryQualifier) {
-		const siGenericEmbeddedEntry = this.clipboardService.filter(SiGenericEmbeddedEntry)
+		const siGenericEmbeddedEntry = this.clipboardService.filterValue(SiGenericEmbeddedEntry)
 				.find((gene) => {
 					return gene.entryQualifier.equals(siEntryQualifier);
 				});

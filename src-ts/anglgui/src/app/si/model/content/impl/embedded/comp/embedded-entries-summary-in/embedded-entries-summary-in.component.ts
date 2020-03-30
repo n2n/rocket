@@ -7,7 +7,7 @@ import { Embe } from '../../model/embe';
 import { EmbeInCollection } from '../../model/embe-collection';
 import { EmbeddedEntriesInModel } from '../embedded-entry-in-model';
 import { ClipboardService } from 'src/app/si/model/generic/clipboard.service';
-import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
+import { CopyPool } from '../../model/embe-copy-pool';
 
 
 @Component({
@@ -18,12 +18,14 @@ import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
 export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 	model: EmbeddedEntriesInModel;
 
+	copyPool: CopyPool;
 	private embeCol: EmbeInCollection;
 	obtainer: AddPasteObtainer;
 
 	embeUiStructures = new Array<{embe: Embe, uiStructure: UiStructure}>();
 
-	constructor(private clipboard: ClipboardService) {
+	constructor(clipboard: ClipboardService) {
+		this.copyPool = new CopyPool(clipboard);
 	}
 
 	ngOnInit() {
@@ -60,20 +62,25 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 		this.embeCol.writeEmbes();
 	}
 
-	place(siEmbeddedEntry: SiEmbeddedEntry, embe: Embe) {
-		embe.siEmbeddedEntry = siEmbeddedEntry;
-		this.embeCol.writeEmbes();
+	// place(siEmbeddedEntry: SiEmbeddedEntry, embe: Embe) {
+	// 	embe.siEmbeddedEntry = siEmbeddedEntry;
+	// 	this.embeCol.writeEmbes();
+	// }
+
+	remove(embe: Embe) {
+		if (this.embeCol.embes.length > this.model.getMin()) {
+			this.embeCol.removeEmbe(embe);
+			return;
+		}
+
+		embe.siEmbeddedEntry = null;
+		this.obtainer.obtainNew().then(siEmbeddedEntry => {
+			embe.siEmbeddedEntry = siEmbeddedEntry;
+		});
 	}
 
 	get embes(): Embe[] {
 		return this.embeCol.embes;
-	}
-
-	copy(embe: Embe) {
-		if (!embe.siEmbeddedEntry) {
-			return;
-		}
-		this.clipboard.add(new SiGenericValue(embe.siEmbeddedEntry.copy()));
 	}
 
 	open(embe: Embe) {

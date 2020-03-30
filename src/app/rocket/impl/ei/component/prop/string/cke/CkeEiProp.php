@@ -79,7 +79,7 @@ class CkeEiProp extends AlphanumericEiProp {
 	
 	function saveSiField(SiField $siField, Eiu $eiu) {
 		CastUtils::assertTrue($siField instanceof StringInSiField);
-		$eiu->field()->save($siField->getValue());
+		$eiu->field()->setValue($siField->getValue());
 	}
 	
 // 	/**

@@ -23,6 +23,8 @@ import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-s
 import { Observable } from 'rxjs';
 import { UiStructureModelAdapter } from 'src/app/ui/structure/model/impl/ui-structure-model-adapter';
 import { SiFrame } from 'src/app/si/model/meta/si-frame';
+import { EmbeddedEntryComponent } from '../comp/embedded-entry/embedded-entry.component';
+import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
 
 export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter implements EmbeddedEntriesInModel {
 	private embeInCol: EmbeInCollection;
@@ -165,6 +167,12 @@ class EmbeInUiStructureManager {
 
 	}
 
+	private createEmbeUsm(embe: Embe): UiStructureModel {
+		return new SimpleUiStructureModel(new TypeUiContent(EmbeddedEntryComponent, (ref) => {
+			ref.instance.embe = embe;
+		}));
+	}
+
 	open(embe: Embe) {
 		if (this.popupUiLayer) {
 			return;
@@ -179,7 +187,7 @@ class EmbeInUiStructureManager {
 		zone.model = {
 			title: 'Some Title',
 			breadcrumbs: [],
-			structureModel: embe.siEmbeddedEntry.comp.createUiStructureModel(),
+			structureModel: this.createEmbeUsm(embe),
 			mainCommandContents: this.createPopupControls(() => { bakEntry = null; })
 					.map(siControl => siControl.createUiContent(zone))
 		};

@@ -1,0 +1,15 @@
+<ng-container *ngIf="embe.isPlaceholder()">
+	<div class="rocket-loading"></div>
+</ng-container>
+
+<ng-container *ngIf="!embe.isPlaceholder() && !embe.isTypeSelected()">
+	<rocket-choose-paste [siEmbeddedEntry]="embe.siEmbeddedEntry"></rocket-choose-paste>
+</ng-container>
+
+<ng-container *ngIf="!embe.isPlaceholder() && embe.isTypeSelected()">
+	<div rocketUiStructure [uiStructure]="embe.uiStructure">
+		<ng-container post-content>
+			
+		</ng-container>
+	</div>
+</ng-container>

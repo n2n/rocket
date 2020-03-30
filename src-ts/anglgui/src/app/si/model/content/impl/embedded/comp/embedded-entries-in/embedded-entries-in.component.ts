@@ -22,13 +22,13 @@ export class EmbeddedEntriesInComponent implements OnInit {
 		this.embeCol = this.model.getEmbeInCollection();
 	}
 
-	maxReached(): boolean {
+	get maxReached(): boolean {
 		const max = this.model.getMax();
 
 		return max && max >= this.embeCol.embes.length;
 	}
 
-	toOne(): boolean {
+	get toOne(): boolean {
 		return this.model.getMax() === 1;
 	}
 
