@@ -664,12 +664,7 @@ class GuiDefinition {
 		$eiGuiFrame = new EiGuiFrame($eiGuiModel, $this, null);
 		
 		$eiGuiModel->putEiGuiFrame($eiGuiFrame);
-		
-		if ($guiPropPaths !== null && $guiStructureDeclarationsRequired) {
-			$this->semiAutoInitEiGuiFrame($n2nContext, $eiGuiFrame, $guiPropPaths);
-			return $eiGuiFrame;
-		} 
-		
+				
 		$guiStructureDeclarations = null;
 		
 		if ($guiPropPaths === null) {

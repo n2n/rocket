@@ -242,7 +242,7 @@ class EiuGuiFrame {
 	 * @return \rocket\si\meta\SiDeclaration
 	 */
 	function createSiDeclaration() {
-		return new SiDeclaration([new SiMaskDeclaration(
+		return new SiDeclaration(ViewMode::createSiViewMode($this->getViewMode()), [new SiMaskDeclaration(
 				$this->eiGuiFrame->createSiMask($this->eiuAnalyst->getN2nContext(true)->getN2nLocale()),
 				null)]);
 	}

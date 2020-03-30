@@ -5,6 +5,7 @@ import { SiMaskQualifier } from 'src/app/si/model/meta/si-mask-qualifier';
 import { AddPasteObtainer } from '../add-paste-obtainer';
 import { ClipboardService } from 'src/app/si/model/generic/clipboard.service';
 import { SiGenericEmbeddedEntry } from '../../model/generic-embedded';
+import { ChoosePasteModel } from '../choose-paste/choose-paste-model';
 
 
 export enum AddPasteType {
@@ -22,7 +23,7 @@ export class AddPasteComponent implements OnInit {
 
 	@Input()
 	obtainer: AddPasteObtainer;
-	
+
 	private _disabled = false;
 
 	@Output()
@@ -31,13 +32,8 @@ export class AddPasteComponent implements OnInit {
 	loading = false;
 
 	popupOpen = false;
-	siEmbeddedEntry: SiEmbeddedEntry|null = null;
+	choosePasteModel: ChoosePasteModel;
 
-	addables: SiMaskQualifier[] = [];
-	pastables: SiEntryQualifier[] = [];
-	illegalPastables: SiEntryQualifier[] = [];
-
-	private siGenericEmbeddedEntries: SiGenericEmbeddedEntry[]|null = null;
 
 	constructor(private clipboardService: ClipboardService) {
 	}
@@ -74,8 +70,8 @@ export class AddPasteComponent implements OnInit {
 			return;
 		}
 
-		if (this.siEmbeddedEntry) {
-			this.update();
+		if (this.choosePasteModel) {
+			this.choosePasteModel.update();
 			return;
 		}
 
@@ -87,81 +83,29 @@ export class AddPasteComponent implements OnInit {
 	}
 
 	private handleAddResponse(siEmbeddedEntry: SiEmbeddedEntry) {
-		this.siEmbeddedEntry = siEmbeddedEntry;
-		this.update();
+		this.choosePasteModel = new ChoosePasteModel(siEmbeddedEntry, this.clipboardService);
 
-		if (this.addables.length === 1 && this.pastables.length === 0 && this.illegalPastables.length === 0) {
-			this.chooseAddable(this.addables[0]);
-		}
-	}
-
-	private update() {
-		this.addables = this.siEmbeddedEntry.maskQualifiers;
-
-		this.pastables = [];
-		this.illegalPastables = [];
-
-		this.siGenericEmbeddedEntries = this.clipboardService.filter(SiGenericEmbeddedEntry);
-		for (const siGenericEmbeddedEntry of this.siGenericEmbeddedEntries) {
-			if (!siGenericEmbeddedEntry.selectedTypeId) {
-				continue;
-			}
-
-			if (this.siEmbeddedEntry.containsTypeId(siGenericEmbeddedEntry.selectedTypeId)) {
-				this.pastables.push(siGenericEmbeddedEntry.entryQualifier);
-			} else {
-				this.illegalPastables.push(siGenericEmbeddedEntry.entryQualifier);
-			}
-		}
-	}
-
-	get searchable(): boolean {
-		return (this.addables.length + this.pastables.length + this.illegalPastables.length) > 10;
-	}
-
-	chooseAddable(siMaskQualifier: SiMaskQualifier) {
-		this.popupOpen = false;
-		this.siEmbeddedEntry.selectedTypeId = siMaskQualifier.identifier.typeId;
-		this.newEntry.emit(this.siEmbeddedEntry);
-		this.reset();
-	}
-
-	choosePastable(siEntryQualifier: SiEntryQualifier) {
-		const siGenericEmbeddedEntry = this.clipboardService.filter(SiGenericEmbeddedEntry)
-				.find((gene) => {
-					return gene.entryQualifier.equals(siEntryQualifier);
-				});
-
-		if (!siGenericEmbeddedEntry) {
+		if (siEmbeddedEntry.selectedTypeId && this.choosePasteModel.pastables.length === 0 
+				&& this.choosePasteModel.illegalPastables.length === 0) {
+			// this.siEmbeddedEntry.selectedTypeId = siMaskQualifier.identifier.typeId;
+			this.choose(siEmbeddedEntry);
 			return;
 		}
 
-		this.siEmbeddedEntry.paste(siGenericEmbeddedEntry);
-		this.newEntry.emit(this.siEmbeddedEntry);
+		this.choosePasteModel.done$.subscribe(() => {
+			this.choose(siEmbeddedEntry);
+		});
+	}
+
+	private choose(siEmbeddedEntry: SiEmbeddedEntry) {
+		this.popupOpen = false;
+		this.newEntry.emit(siEmbeddedEntry);
 		this.reset();
 	}
 
-
-	// addBySiType(siMaskQualifier: SiMaskQualifier) {
-	// 	if (this.addLoadingSiMaskQualifier) {
-	// 		return;
-	// 	}
-
-	// 	this.addLoadingSiMaskQualifier = siMaskQualifier;
-	// 	this.obtainer.obtain(null).subscribe((siEmbeddedEntry) => {
-	// 		this.addLoadingSiMaskQualifier = null;
-	// 		this.handleAddResponse(siEmbeddedEntry);
-	// 		this.choose(siMaskQualifier);
-	// 	});
-	// }
-
 	reset() {
 		this.popupOpen = false;
-		this.siEmbeddedEntry = null;
-		this.addables = [];
-		this.pastables = [];
-		this.illegalPastables = [];
-		this.siGenericEmbeddedEntries = [];
+		this.choosePasteModel = null;
 	}
 }
 

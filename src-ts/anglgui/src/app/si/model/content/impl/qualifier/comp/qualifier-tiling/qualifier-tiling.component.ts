@@ -12,7 +12,11 @@ export class QualifierTilingComponent implements OnInit {
 	@Input()
 	siMaskQualifiers: Array<SiMaskQualifier> = [];
 	@Input()
+	illegalSiMaskQualifiers: Array<SiMaskQualifier> = [];
+	@Input()
 	siEntryQualifiers: Array<SiEntryQualifier> = [];
+	@Input()
+	illegalSiEntryQualifiers: Array<SiEntryQualifier> = [];
 	@Input()
 	disabled = false;
 	@Output()
@@ -23,6 +27,10 @@ export class QualifierTilingComponent implements OnInit {
 	constructor() { }
 
 	ngOnInit() {
+	}
+
+	get searchable() {
+		return this.siMaskQualifiers.length + this.siEntryQualifiers.length > 10;
 	}
 
 	chooseSiType(siMaskQualifier: SiMaskQualifier) {

@@ -1,6 +1,8 @@
 <?php
 namespace rocket\ei\manage\gui;
 
+use rocket\si\meta\SiViewMode;
+
 class ViewMode {
 	const COMPACT_READ = 1;
 	const COMPACT_EDIT = 2;
@@ -102,5 +104,13 @@ class ViewMode {
 	 */
 	static function isAdd(int $viewMode) {
 		return $viewMode & self::add();
+	}
+	
+	/**
+	 * @param int $viewMode
+	 * @return SiViewMode
+	 */
+	static function createSiViewMode(int $viewMode) {
+		return new SiViewMode(ViewMode::isBulky($viewMode), ViewMode::isReadOnly($viewMode), ViewMode::isAdd($viewMode));
 	}
 }

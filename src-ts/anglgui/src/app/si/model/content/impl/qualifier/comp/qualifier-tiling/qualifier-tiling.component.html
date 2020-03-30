@@ -1,12 +1,26 @@
 
+<input *ngIf="searchable" type="search" />
+
 <div *ngFor="let siMaskQualifier of siMaskQualifiers">
 	<button type="button" (click)="chooseSiType(siMaskQualifier)" [disabled]="disabled">
 		<rocket-si-qualifier [siMaskQualifier]="siMaskQualifier"></rocket-si-qualifier>
 	</button>
 </div>
 
+<div *ngFor="let siMaskQualifier of illegalSiMaskQualifiers">
+	<button type="button" (click)="chooseSiType(siMaskQualifier)" [disabled]="true" class="rocket-illegal">
+		<rocket-si-qualifier [siMaskQualifier]="siMaskQualifier"></rocket-si-qualifier>
+	</button>
+</div>
+
 <div *ngFor="let siEntryQualifier of siEntryQualifiers">
 	<button type="button" (click)="chooseSiEntry(siEntryQualifier)" [disabled]="disabled">
+		<rocket-si-qualifier [siEntryQualifier]="siEntryQualifier"></rocket-si-qualifier>
+	</button>
+</div>
+
+<div *ngFor="let siEntryQualifier of illegalSiEntryQualifiers">
+	<button type="button" (click)="chooseSiEntry(siEntryQualifier)" [disabled]="true" class="rocket-illegal">
 		<rocket-si-qualifier [siEntryQualifier]="siEntryQualifier"></rocket-si-qualifier>
 	</button>
 </div>
