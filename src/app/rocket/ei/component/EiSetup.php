@@ -22,18 +22,15 @@
 namespace rocket\ei\component;
 
 use n2n\core\container\N2nContext;
-use rocket\spec\Spec;
 use rocket\ei\util\Eiu;
 
 class EiSetup {
 	private $n2nContext;
-	private $spec;
 	private $eiComponent;
 	private $eiu;
 	
-	public function __construct(Spec $spec, N2nContext $n2nContext, EiComponent $eiComponent) {
+	public function __construct(N2nContext $n2nContext, EiComponent $eiComponent) {
 		$this->n2nContext = $n2nContext;
-		$this->spec = $spec;
 		$this->eiComponent = $eiComponent;
 	}
 	
@@ -42,7 +39,7 @@ class EiSetup {
 	 */
 	public function eiu() {
 		if ($this->eiu === null) {
-			$this->eiu = new Eiu($this->n2nContext, $this->spec, $this->eiComponent);
+			$this->eiu = new Eiu($this->n2nContext, $this->eiComponent);
 		}
 		return $this->eiu;
 	}

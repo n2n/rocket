@@ -242,7 +242,7 @@ class EiuMask  {
 	
 	public function onEngineReady(\Closure $readyCallback) {
 		if ($this->eiMask->hasEiEngine()) {
-			$readyCallback(new Eiu($this->n2nContext, $this));
+			$readyCallback($this->engine());
 		}
 		
 		$that = $this;

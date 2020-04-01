@@ -384,7 +384,7 @@ class SpecExtractionManager {
 	}
 	
 	function getCascadedEiTypeExtraction(string $srcClassName, string $type) {
-		
+		return [];
 	}
 	
 	/**
