@@ -77,19 +77,22 @@ class RocketController extends ControllerAdapter {
 	}
 	
 	private function verifyUser() {
-		if ($this->loginContext->hasCurrentUser()) return true;
+		if ($this->loginContext->hasCurrentUser()) {
+			return true;
+		}
 		
 		$this->beginTransaction();
 		
 		if ($this->dispatch($this->loginContext, 'login')) {
 			$this->commit();
 			$this->refresh();
-			return;
+			return false;
 		}
 		
 		$this->commit();
 		
 		$this->forward('~\user\view\login.html', array('loginContext' => $this->loginContext));
+		return false;
 	}
 	
 	public function doLogout() {

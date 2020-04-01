@@ -383,6 +383,10 @@ class SpecExtractionManager {
 				. $this->buildConfigSourceString());
 	}
 	
+	function getCascadedEiTypeExtraction(string $srcClassName, string $type) {
+		
+	}
+	
 	/**
 	 * @return EiTypeExtraction[]
 	 */
@@ -401,6 +405,8 @@ class SpecExtractionManager {
 		
 		$this->eiTypeExtractions[$id] = $eiTypeExtraction;
 		$this->eiTypeExtractionCis[$entityClassName] = $eiTypeExtraction;
+		
+		
 	}
 	
 	/**

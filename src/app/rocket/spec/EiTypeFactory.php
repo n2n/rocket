@@ -61,7 +61,7 @@ class EiTypeFactory {
 	private $setupQueue;
 	private $eiErrorResult;
 	
-	public function __construct(EntityModelManager $entityModelManager, EiSetupQueue $setupQueue, 
+	public function __construct(EntityModelManager $entityModelManager, ?EiSetupQueue $setupQueue, 
 			?EiErrorResult $eiErrorResult) {
 		$this->entityModelManager = $entityModelManager;
 		$this->setupQueue = $setupQueue;
@@ -71,6 +71,7 @@ class EiTypeFactory {
 	 * @param EiTypeExtraction $eiTypeExtraction
 	 * @param EiModificatorExtraction[] $eiModificatorExtractions
 	 * @param EiTypeExtensionExtraction[] $eiTypeExtensionExtractions
+	 * @throws InvalidConfigurationException
 	 * @return \rocket\ei\EiType
 	 */
 	public function create(EiTypeExtraction $eiTypeExtraction, array $eiModificatorExtractions) {
@@ -84,6 +85,7 @@ class EiTypeFactory {
 		
 		$eiType->setDataSourceName($eiTypeExtraction->getDataSourceName());
 		$eiType->setNestedSetStrategy($eiTypeExtraction->getNestedSetStrategy());
+		$eiType->setEntityModel($this->getEntityModel($eiTypeExtraction->getEntityClassName()));
 		
 // 		$eiTypeExtensionCollection = $eiType->getEiTypeExtensionCollection();
 // 		foreach ($eiTypeExtraction->getEiTypeExtensionExtractions() as $eiTypeExtensionExtraction) {
@@ -94,8 +96,6 @@ class EiTypeFactory {
 // 						$this->createEiMaskException($eiTypeExtensionExtraction->getId(), $e));
 // 			}
 // 		}
-		
-		
 		
 		return $eiType;
 	}
@@ -277,37 +277,12 @@ class EiTypeFactory {
 		$entityPropertyName = $eiPropExtraction->getEntityPropertyName();
 		
 		
+		if ($this->setupQueue === null) {
+			return $eiProp;
+		}
+		
 		$this->setupQueue->addPropIn(new PropIn($eiMask->getEiType(), $eiPropConfigurator, $objectPropertyName, 
 				$entityPropertyName, $contextEntityPropertyNames));
-		
-		
-		// 		$this->setupQueue->addClosure(function () use ($eiType, $eiPropConfigurator, $objectPropertyName, $entityPropertyName) {
-		// 			$accessProxy = null;
-		// 			if (null !== $objectPropertyName) {
-		// 				try{
-		// 					$propertiesAnalyzer = new PropertiesAnalyzer($eiType->getEntityModel()->getClass(), false);
-		// 					$accessProxy = $propertiesAnalyzer->analyzeProperty($objectPropertyName, false, true);
-		// 					$accessProxy->setNullReturnAllowed(true);
-		// 				} catch (ReflectionException $e) {
-		// 					throw new InvalidEiComponentConfigurationException('EiProp is assigned to unknown property: '
-		// 							. $objectPropertyName, 0, $e);
-		// 				}
-		// 			}
-		
-		// 			$entityProperty = null;
-		// 			if (null !== $entityPropertyName) {
-		// 				try {
-		// 					$entityProperty = $eiType->getEntityModel()->getLevelEntityPropertyByName($entityPropertyName, true);
-		// 				} catch (UnknownEntityPropertyException $e) {
-		// 					throw new InvalidEiComponentConfigurationException('EiProp is assigned to unknown EntityProperty: '
-		// 							. $entityPropertyName, 0, $e);
-		// 				}
-		// 			}
-		
-		// 			if ($entityProperty !== null || $accessProxy !== null) {
-		// 				$eiPropConfigurator->assignProperty(new PropertyAssignation($entityProperty, $accessProxy));
-		// 			}
-		// 		});
 		
 		$this->setupQueue->addEiPropConfigurator($eiProp, $eiPropConfigurator);
 		
@@ -337,7 +312,10 @@ class EiTypeFactory {
 				$eiCommand, 'creatEiConfigurator');
 		IllegalStateException::assertTrue($eiConfigurator instanceof EiConfigurator);
 		$eiConfigurator->setDataSet(new DataSet($configurableExtraction->getProps()));
-		$this->setupQueue->addEiCommandConfigurator($eiCommand, $eiConfigurator);
+		
+		if ($this->setupQueue !== null) {
+			$this->setupQueue->addEiCommandConfigurator($eiCommand, $eiConfigurator);
+		}
 		
 		return $eiCommand;
 	}
@@ -364,7 +342,10 @@ class EiTypeFactory {
 		ArgUtils::valTypeReturn($eiConfigurator, EiConfigurator::class, $eiModificator, 'creatEiConfigurator');
 		IllegalStateException::assertTrue($eiConfigurator instanceof EiConfigurator);
 		$eiConfigurator->setDataSet(new DataSet($eiModificatorExtraction->getProps()));
-		$this->setupQueue->addEiModificatorConfigurator($eiModificator, $eiConfigurator);
+		
+		if ($this->setupQueue !== null) {
+			$this->setupQueue->addEiModificatorConfigurator($eiModificator, $eiConfigurator);
+		}
 		
 		return $eiModificator;
 	}
