@@ -1,5 +1,6 @@
-
-<input *ngIf="searchable" type="search" />
+<div *ngIf="searchable" class="qualifier-search d-flex">
+	<i class="fa fa-search align-self-baseline"></i><input type="search" class="form-control" placeholder="{{ 'search_placeholder_txt' | translate }}"/>
+</div>
 
 <div *ngFor="let siMaskQualifier of siMaskQualifiers">
 	<button type="button" (click)="chooseSiType(siMaskQualifier)" [disabled]="disabled" class="btn">
