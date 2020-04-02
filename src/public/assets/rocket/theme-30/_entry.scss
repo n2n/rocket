@@ -229,7 +229,6 @@
     }
 
     .rocket-summary-ghost {
-        // opacity: 0.4;
         background: $gray-200;
     }
     .rocket-summary-ghost {
@@ -321,15 +320,26 @@
     opacity: 0.3;
     > .rocket-summary {
         border-style: dashed;
+        .rocket-handle > i {
+            animation: bounce-right 0.9s ease-in-out infinite;
+            position: relative;
+        }
         .rocket-handle > i:before {
             content: "\f061";
         }
     }
-    // &:hover > rocket-si-add-past > .rocket-add-paste,
-    // > rocket-si-add-past > .rocket-add-paste {
-    //     opacity: 0;
-    // }
 }
+
+@keyframes bounce-right {
+    0%, 100% {
+        transform: translate(0, 0) scale(1);
+    }
+    50% {
+        transform: translate(10px, 0) scale(0.7);
+    }
+}
+
+
 
 .cdk-drop-list-dragging .rocket-draggable:hover rocket-si-add-past > .rocket-add-paste,
 .cdk-drag-placeholder:hover > rocket-si-add-past > .rocket-add-paste {

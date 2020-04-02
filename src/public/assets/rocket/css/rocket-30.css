@@ -4981,6 +4981,7 @@ body {
 #rocket-global-nav {
   background: url(../img/nav-body-bg.png) repeat #66615C 4px 11px;
   color: white;
+  scrollbar-width: thin;
 }
 
 @media (min-width: 992px) {
@@ -6314,8 +6315,36 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   border-style: dashed;
 }
 
+.cdk-drag-placeholder > .rocket-summary .rocket-handle > i {
+  -webkit-animation: bounce-right 0.9s ease-in-out infinite;
+          animation: bounce-right 0.9s ease-in-out infinite;
+  position: relative;
+}
+
 .cdk-drag-placeholder > .rocket-summary .rocket-handle > i:before {
   content: "\f061";
+}
+
+@-webkit-keyframes bounce-right {
+  0%, 100% {
+    -webkit-transform: translate(0, 0) scale(1);
+            transform: translate(0, 0) scale(1);
+  }
+  50% {
+    -webkit-transform: translate(10px, 0) scale(0.7);
+            transform: translate(10px, 0) scale(0.7);
+  }
+}
+
+@keyframes bounce-right {
+  0%, 100% {
+    -webkit-transform: translate(0, 0) scale(1);
+            transform: translate(0, 0) scale(1);
+  }
+  50% {
+    -webkit-transform: translate(10px, 0) scale(0.7);
+            transform: translate(10px, 0) scale(0.7);
+  }
 }
 
 .cdk-drop-list-dragging .rocket-draggable:hover rocket-si-add-past > .rocket-add-paste,
@@ -6705,6 +6734,7 @@ rocket-add-past > button::after {
  */
 .rocket-toolbar {
   text-align: right;
+  margin-bottom: 0.5rem;
 }
 
 .rocket-toolbar > .rocket-group-controls,

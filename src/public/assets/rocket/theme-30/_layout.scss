@@ -85,6 +85,7 @@ body {
 #rocket-global-nav {
     background: url(../img/nav-body-bg.png) repeat $gray-700 4px 11px;
     color: white;
+    scrollbar-width: thin;
 }
 
 @include media-breakpoint-up(lg) {
