@@ -201,6 +201,20 @@ body {
     border-width: 3px;
 }
 
+.btn {
+    position: relative;
+    z-index: 0;
+    .rocket-loader {
+        z-index: 1;
+        position: absolute;
+        width: 14px;
+        height: 14px;
+        top: -7px;
+        left: calc(50% - 7px);
+    }
+
+}
+
 .rocket-zone.rocket-loader {
     margin-top: 10rem;
 }
