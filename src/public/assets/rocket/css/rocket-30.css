@@ -6369,8 +6369,24 @@ rocket-qualifier-tiling > div > .btn:hover, rocket-qualifier-tiling > div > .btn
   background: #F7F5F5;
 }
 
-rocket-qualifier-tiling > div > .btn > rocket-si-qualifier {
-  padding: 10px 5px;
+.qualifier-search {
+  background: #fff;
+  padding: 10px 0.625rem;
+  position: relative;
+}
+
+.qualifier-search > i {
+  padding: 0.6rem;
+  position: absolute;
+  left: 0px;
+}
+
+.qualifier-search > input {
+  border: none;
+  border-bottom: 1px solid #DAD7D3;
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  padding-left: 2em;
 }
 
 rocket-choose-paste.rocket-multi-type-menu-simple {
@@ -6425,6 +6441,7 @@ rocket-choose-paste.rocket-multi-type-menu > rocket-qualifier-tiling > div > .bt
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
+  padding: 10px 5px;
 }
 
 rocket-choose-paste.rocket-multi-type-menu > rocket-qualifier-tiling > div > .btn > rocket-si-qualifier > .fa {

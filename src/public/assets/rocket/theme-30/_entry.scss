@@ -359,9 +359,23 @@ rocket-qualifier-tiling {
             background: $gray-200;
         }
     }
-    
-    > div > .btn > rocket-si-qualifier {
-        padding: 10px 5px;
+}
+
+.qualifier-search {
+    background: $white;
+    padding: 10px $input-btn-padding-x;
+    position: relative;
+    > i {
+        padding: 0.6rem;
+        position: absolute;
+        left: 0px;
+    }
+
+    > input {
+        border: none;
+        border-bottom: 1px solid $input-border-color;
+        box-shadow: none;
+        padding-left: 2em;
     }
 }
 
@@ -405,6 +419,7 @@ rocket-choose-paste.rocket-multi-type-menu > rocket-qualifier-tiling {
         text-align: center;
         display: flex;
         flex-direction: column;
+        padding: 10px 5px;
 
         > .fa {
             margin-bottom: 0.5rem;
