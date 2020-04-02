@@ -25,17 +25,29 @@ use n2n\context\Lookupable;
 use n2n\core\container\N2nContext;
 use n2n\validation\impl\ValidationMessages;
 use n2n\l10n\DynamicTextCollection;
+use rocket\si\meta\SiMenuGroup;
+use rocket\si\meta\SiMenuItem;
+use n2n\web\http\nav\Murl;
+use rocket\user\model\LoginContext;
+use n2n\web\http\controller\ControllerContext;
+use rocket\si\NavPoint;
+use n2n\util\uri\Path;
 
 class AnglTemplateModel implements Lookupable {
 	private $n2nContext;
+	private $rocket;
+	private $loginContext;
 	
-	private function _init(N2nContext $n2nContext) {
+	private function _init(N2nContext $n2nContext, Rocket $rocket, LoginContext $loginContext) {
 		$this->n2nContext = $n2nContext;
+		$this->rocket = $rocket;
+		$this->loginContext = $loginContext;
 	}
 	
-	function getData() {
+	function createData(ControllerContext $controllerContext) {
 		return [
-			'translationMap' => $this->createTranslationMap()	
+			'translationMap' => $this->createTranslationMap(),	
+			'menuGroups' => $this->createSiMenuGroup($controllerContext)
 		];
 	}
 	
@@ -66,5 +78,58 @@ class AnglTemplateModel implements Lookupable {
 			'min_elements_err' => str_replace($nr, '{min}', ValidationMessages::minElements($nr, '{field}')->t($n2nLocale)),
 			'max_elements_err' => str_replace($nr, '{max}', ValidationMessages::maxElements($nr, '{field}')->t($n2nLocale))
 		];
+	}
+	
+	private function createSiMenuGroup($controllerContext) {
+		$accessibleLaunchPadIds = $this->getAccesableLaunchPadIds();
+		$contextUrl = Murl::controller('rocket')->toUrl($this->n2nContext, $controllerContext);
+		
+		$siMenuGroups = [];
+		
+		foreach ($this->rocket->getLayout()->getMenuGroups() as $menuGroup) {
+			$siMenuItems = [];
+			
+			foreach ($menuGroup->getLaunchPads() as $launchPad) {
+				if (($accessibleLaunchPadIds !== null && !in_array($launchPad->getId(), $accessibleLaunchPadIds))
+						|| !$launchPad->isAccessible($this->n2nContext)) {
+					continue;
+				}
+				
+				$navPoint = NavPoint::siref((new Path(['manage', $launchPad->getId(), $launchPad->determinePathExt($this->n2nContext)]))->toUrl());
+				
+				$navPoint->complete($contextUrl);
+				
+				$siMenuItems[] = new SiMenuItem($launchPad->getId(), $menuGroup->determineLabel($launchPad), $navPoint);
+			}
+			
+			if (empty($siMenuItems)) continue;
+			
+// 			$open = (null !== $this->activeLaunchPadId) ? $menuGroup->containsLaunchPadId($this->activeLaunchPadId) : false;
+			
+			$siMenuGroups[] = new SiMenuGroup($menuGroup->getLabel(), $siMenuItems/*, $open*/);
+		}
+		
+		return $siMenuGroups;
+	}
+	
+	
+	private function getAccesableLaunchPadIds() {
+		$currentUser = $this->loginContext->getCurrentUser();
+		
+		if ($currentUser->isAdmin()) {
+			return null;
+		}
+		
+		$accessibleLaunchPadIds = array();
+		
+		foreach ($currentUser->getRocketUserGroups() as $userGroup) {
+			if (!$userGroup->isLaunchPadAccessRestricted()) {
+				return null;
+			}
+			
+			$accessibleLaunchPadIds = array_merge($accessibleLaunchPadIds, $userGroup->getaccessibleLaunchPadIds());
+		}
+		
+		return $accessibleLaunchPadIds;
 	}
 }

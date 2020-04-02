@@ -45,6 +45,7 @@ class EiLaunchPad implements LaunchPad {
 		$this->eiMask = $eiMask;
 		$this->label = $label;
 	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\core\model\launch\LaunchPad::getId()

@@ -125,11 +125,11 @@ use n2n\web\http\nav\Murl;
 					<li class="nav-item">
 						<?php $html->link(
 								$view->buildUrl(Murl::controller('rocket')->pathExt('manage', $launchPad->getId()))
-									->ext($launchPad->determinePathExt($view->getN2nContext())),
-							new Raw($html->getEsc($navArray['menuGroup']->determineLabel($launchPad))
-								. '<span></span>'),
-							array('data-jhtml' => 'true', 'class' => 'nav-link'
-								. ($templateModel->isLaunchPadActive($launchPad) ? ' active' : null))) ?></li>
+										->ext($launchPad->determinePathExt($view->getN2nContext())),
+								new Raw($html->getEsc($navArray['menuGroup']->determineLabel($launchPad))
+									. '<span></span>'),
+								array('data-jhtml' => 'true', 'class' => 'nav-link'
+									. ($templateModel->isLaunchPadActive($launchPad) ? ' active' : null))) ?></li>
 				<?php endforeach ?>
 			</ul>
 		</div>

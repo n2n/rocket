@@ -33,9 +33,6 @@
 	$html = HtmlView::html($view);
 	$httpContext = HtmlView::httpContext($view);
 	
-	$templateModel = $view->lookup(TemplateModel::class);
-	$view->assert($templateModel instanceof TemplateModel);
-	
 	/**
 	 * @var LoginContext $loginContext
 	 */

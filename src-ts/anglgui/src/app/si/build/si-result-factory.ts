@@ -4,7 +4,7 @@ import { SiEntryError } from 'src/app/si/model/input/si-entry-error';
 import { SiFieldError } from 'src/app/si/model/input/si-field-error';
 import { Message } from 'src/app/util/i18n/message';
 import { SiResult } from '../manage/si-result';
-import { UiFactory } from "src/app/si/build/ui-factory";
+import { UiFactory } from "src/app/ui/build/ui-factory";
 
 export class SiResultFactory {
 
