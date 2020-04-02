@@ -1,6 +1,10 @@
-<button class="btn btn-warning rocket-important rocket-label-important" (click)="openAll()">
-	{{ 'common_open_all_label' | translate }}
-</button>
+<div class="rocket-toolbar">
+	<div class="rocket-simple-commands">
+		<button class="btn btn-warning rocket-important rocket-label-important" (click)="openAll()">
+			{{ 'common_edit_all_label' | translate }} <i class="fa fa-pencil"></i>
+		</button>
+	</div>
+</div>
 
 <div cdkDropList (cdkDropListDropped)="drop($event)" class="rocket-draggable-list">
 	<div *ngFor="let embe of embes" cdkDrag class="rocket-draggable">
@@ -23,23 +27,19 @@
 		</div>
 		
 		<ng-container *ngIf="!embe.isPlaceholder() && !embe.isTypeSelected()">
-			<div class="rocket-simple-commands">
+			<div class="rocket-summary rocket-summary-ghost">
 				<div [class.d-none]="!model.isSortable()" cdkDragHandle class="rocket-handle">
 					<i class="fa fa-bars"></i>
 				</div>
 
-				<div>
-					<i class="fa fa-question-circle"></i>
+				<div class="rocket-si-qualifier">
 				</div>
-
-				<button class="btn btn-warning" (click)="open(embe)">
-					<span>{{ 'common_edit_label' | translate }}</span>&nbsp;
-					<i class="fa fa-pencil"></i>
-				</button>
-				<button class="btn btn-danger">
-					<span>{{ 'common_delete_label' | translate }}</span>&nbsp;
-					<i class="fa fa-trash-o"></i>
-				</button>
+				<div class="rocket-simple-commands">
+					<button class="btn btn-warning" (click)="open(embe)">
+						<span>{{ 'common_edit_label' | translate }}</span>&nbsp;
+						<i class="fa fa-plus"></i>
+					</button>
+				</div>
 			</div>
 		</ng-container>
 

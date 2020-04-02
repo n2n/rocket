@@ -71,6 +71,7 @@ $rocket-tree-level-line-string:         '';
     display: inline-block;
     // add padding-left back in, if needed, but then overwrite in _entry.scss
     // padding-left: 1rem;
+    cursor: move;
 }
 
 /*
