@@ -24,7 +24,6 @@
     right: 0;
 	width: 300px;
     background: white;
-    
     padding: 1rem;
     box-shadow: $box-box-shadow;
 	> ul {
@@ -68,7 +67,7 @@
 
 
 .rocket-impl-translation-manager {
-	text-align: right;
+	text-align: right; // is it still needed? Tomekk means no, in his opinion there is no effect...
 	position: relative;
 }
 
@@ -77,7 +76,7 @@
 	> ul > li {
 		text-align: left;
 		> label {
-			display:block;
+			display: block;
 			position: relative;
 			margin: 0.75rem 0;
 			padding-right: 2rem;
@@ -85,8 +84,7 @@
 				position: absolute;
 				top: 0;
 				right: 0;
-				font-family: fontawesome;
-				padding-left: 5rem;
+				font-family: $font-name-icons;
 				font-weight: normal;
 				content: "\f068";
 			}
@@ -137,6 +135,7 @@
 
 // general translation label style, as used in groups...
 .rocket-impl-locale-label  {
+	// @ deprecated ?
 	width: 100%;
 	padding: 0.5rem 0;
 	color: $primary;
@@ -152,6 +151,7 @@
 	display: grid;
 	grid-template-columns:  1fr auto;
 	.rocket-impl-locale-label {
+		// @ deprecated ?
 		position: absolute;
 		top: 0.625rem;
 		left: -6rem;
@@ -202,7 +202,7 @@
 	vertical-align: top;
 	background-color: $gray-200;
 	min-height: $input-height;
-	align-self: start,
+	align-self: start;
 }
 
 
@@ -278,3 +278,38 @@ td {
 
 }
 
+
+
+.rocket-switch {
+	width: $rocket-toggler-width;
+	height: $rocket-toggler-bullet-size;
+	border-radius: $rocket-toggler-bullet-size;
+	background: $white;
+	border: $rocket-toggler-border-width solid $rocket-toggler-active-color;
+	transition: .2s ease-in-out;
+	transition-property: border, background;
+	position: relative;
+	&:before {
+		position: absolute;
+		content: "";
+		height: $rocket-toggler-bullet-size;
+		width: $rocket-toggler-bullet-size;
+		left: -$rocket-toggler-border-width;
+		top: -$rocket-toggler-border-width;
+		border: $rocket-toggler-border-width solid $rocket-toggler-active-color;
+		border-radius: $rocket-toggler-bullet-size;
+		background-color: white;
+		transition: .2s ease-in-out;
+		transition-property: left, border;
+		transform: translateX(0);
+	}
+	
+	&.rocket-switch-on {
+		border-color: $rocket-toggler-active-color;
+		background: $rocket-toggler-active-color;
+		&:before {
+			left: calc(100% - #{$rocket-toggler-bullet-size - $rocket-toggler-border-width});
+			border-color: $rocket-toggler-active-color;
+		}
+	}
+}

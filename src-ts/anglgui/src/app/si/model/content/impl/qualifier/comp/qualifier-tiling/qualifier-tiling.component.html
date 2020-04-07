@@ -3,25 +3,25 @@
 </div>
 
 <div *ngFor="let siMaskQualifier of siMaskQualifiers">
-	<button type="button" (click)="chooseSiType(siMaskQualifier)" [disabled]="disabled" class="btn">
-		<rocket-si-qualifier [siMaskQualifier]="siMaskQualifier"></rocket-si-qualifier>
+	<button type="button" (click)="chooseSiType(siMaskQualifier)" [disabled]="disabled" class="btn rocket-qualifier-btn">
+		<rocket-si-qualifier [siMaskQualifier]="siMaskQualifier" class="rocket-si-qualifier-item"></rocket-si-qualifier>
 	</button>
 </div>
 
 <div *ngFor="let siMaskQualifier of illegalSiMaskQualifiers">
-	<button type="button" (click)="chooseSiType(siMaskQualifier)" [disabled]="true" class="rocket-illegal" class="btn">
-		<rocket-si-qualifier [siMaskQualifier]="siMaskQualifier"></rocket-si-qualifier>
+	<button type="button" (click)="chooseSiType(siMaskQualifier)" [disabled]="true" class="rocket-illegal" class="btn rocket-qualifier-btn">
+		<rocket-si-qualifier [siMaskQualifier]="siMaskQualifier" class="rocket-si-qualifier-item"></rocket-si-qualifier>
 	</button>
 </div>
 
 <div *ngFor="let siEntryQualifier of siEntryQualifiers">
-	<button type="button" (click)="chooseSiEntry(siEntryQualifier)" [disabled]="disabled" class="btn">
-		<rocket-si-qualifier [siEntryQualifier]="siEntryQualifier"></rocket-si-qualifier>
+	<button type="button" (click)="chooseSiEntry(siEntryQualifier)" [disabled]="disabled" class="btn rocket-qualifier-item">
+		<rocket-si-qualifier [siEntryQualifier]="siEntryQualifier" class="rocket-si-qualifier-item"></rocket-si-qualifier>
 	</button>
 </div>
 
 <div *ngFor="let siEntryQualifier of illegalSiEntryQualifiers">
-	<button type="button" (click)="chooseSiEntry(siEntryQualifier)" [disabled]="true" class="rocket-illegal" class="btn">
-		<rocket-si-qualifier [siEntryQualifier]="siEntryQualifier"></rocket-si-qualifier>
+	<button type="button" (click)="chooseSiEntry(siEntryQualifier)" [disabled]="true" class="rocket-illegal" class="btn rocket-qualifier-btn">
+		<rocket-si-qualifier [siEntryQualifier]="siEntryQualifier" class="rocket-si-qualifier-item"></rocket-si-qualifier>
 	</button>
 </div>

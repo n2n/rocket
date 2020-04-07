@@ -29,7 +29,7 @@
 		right: 1rem;
 		color: $danger;
 		content: '\f0e7';
-		font-family: fontawesome;
+		font-family: $font-name-icons;
 		font-size: $font-size-lg;
 	}
 	&:hover {

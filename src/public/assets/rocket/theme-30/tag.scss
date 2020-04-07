@@ -141,7 +141,7 @@ $tag-editor-tag-close-icon:				'\f014';
 .tag-editor .tag-editor-delete i {
     display: inline-flex;
     align-items: center;
-    font: normal normal normal 14px/1 FontAwesome;
+    font: normal normal normal 14px/1 $font-name-icons;
 }
 
 .tag-editor .tag-editor-delete i:before {
