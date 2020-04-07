@@ -408,21 +408,21 @@ rocket-choose-paste.rocket-multi-type-menu-simple {
     position: absolute;
     left: 50%;
     top: 100%;
-    margin-top: 10px;
+    margin: $context-menu-offset;
     width: 100%;
     max-width: 400px;
     min-width: 240px;
     transform: translate(-50%);
     border-bottom: 4px solid $primary;
     background: #DAD7D3;
-    filter: drop-shadow(0px 4px 12px rgba($black, .3));
+    filter: $context-menu-drop-shadow;
     &:after {
         content: "";
         position: absolute;
-        top: -5px;
+        top: -$context-menu-arrow-size;
         left: 50%;
         transform: translateX(-50%);
-        border-width: 0 5px 5px;
+        border-width: 0 $context-menu-arrow-size $context-menu-arrow-size;
         border-style: solid;
         border-color: $white transparent;
     }

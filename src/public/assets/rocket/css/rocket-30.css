@@ -5340,8 +5340,25 @@ rocket-ui-layer > .rocket-loader {
   width: 300px;
   background: white;
   padding: 1rem;
-  -webkit-box-shadow: 2px 1px 4px 0 rgba(0, 0, 0, 0.2);
-          box-shadow: 2px 1px 4px 0 rgba(0, 0, 0, 0.2);
+  margin: 12px;
+  -webkit-transform: translateX(12px);
+          transform: translateX(12px);
+  -webkit-filter: drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.3));
+          filter: drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.3));
+}
+
+.rocket-split-view-status-menu:after,
+.rocket-impl-translation-status-menu:after,
+.rocket-impl-translation-menu:after {
+  content: "";
+  position: absolute;
+  top: -6px;
+  right: 6px;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+  border-width: 0 6px 6px;
+  border-style: solid;
+  border-color: #fff transparent;
 }
 
 .rocket-split-view-status-menu > ul,
@@ -6453,7 +6470,7 @@ rocket-choose-paste.rocket-multi-type-menu-simple {
   position: absolute;
   left: 50%;
   top: 100%;
-  margin-top: 10px;
+  margin: 16px;
   width: 100%;
   max-width: 400px;
   min-width: 240px;
@@ -6461,18 +6478,18 @@ rocket-choose-paste.rocket-multi-type-menu-simple {
           transform: translate(-50%);
   border-bottom: 4px solid #ed8207;
   background: #DAD7D3;
-  -webkit-filter: drop-shadow(0px 4px 12px rgba(0, 0, 0, 0.3));
-          filter: drop-shadow(0px 4px 12px rgba(0, 0, 0, 0.3));
+  -webkit-filter: drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.3));
+          filter: drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.3));
 }
 
 rocket-choose-paste.rocket-multi-type-menu-simple:after {
   content: "";
   position: absolute;
-  top: -5px;
+  top: -8px;
   left: 50%;
   -webkit-transform: translateX(-50%);
           transform: translateX(-50%);
-  border-width: 0 5px 5px;
+  border-width: 0 8px 8px;
   border-style: solid;
   border-color: #fff transparent;
 }
@@ -6711,7 +6728,7 @@ rocket-add-past > button::after {
 }
 
 .rocket-group > .rocket-structure-content {
-  padding: 0.5rem 1rem;
+  padding: 1rem;
 }
 
 .rocket-group .rocket-group {
@@ -7009,12 +7026,27 @@ rocket-add-past > button::after {
 rocket-button-control .dropdown > div {
   position: absolute;
   right: 0;
+  margin: 12px;
+  -webkit-transform: translateX(12px);
+          transform: translateX(12px);
   width: 300px;
   background: #fff;
   padding: 1rem;
-  -webkit-box-shadow: 2px 1px 4px 0 rgba(0, 0, 0, 0.2);
-  box-shadow: 2px 1px 4px 0 rgba(0, 0, 0, 0.2);
+  -webkit-filter: drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.3));
+          filter: drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.3));
   z-index: 5;
+}
+
+rocket-button-control .dropdown > div:after {
+  content: "";
+  position: absolute;
+  top: -6px;
+  right: 6px;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+  border-width: 0 6px 6px;
+  border-style: solid;
+  border-color: #fff transparent;
 }
 
 rocket-button-control .dropdown > div div:not(:last-child) {
@@ -7585,7 +7617,7 @@ rocket-button-control .dropdown > div div > .btn:hover, rocket-button-control .d
 }
 
 .breadcrumb-item > a {
-  color: #373431;
+  color: #837E78;
 }
 
 .breadcrumb-item > a:hover {
@@ -7594,6 +7626,10 @@ rocket-button-control .dropdown > div div > .btn:hover, rocket-button-control .d
 
 .breadcrumb-item:before {
   font-family: "FontAwesome";
+}
+
+.breadcrumb-item.active > a {
+  color: #373431;
 }
 
 .table {

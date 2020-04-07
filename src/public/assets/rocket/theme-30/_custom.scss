@@ -87,6 +87,15 @@ $custom-datepicker-bg:			$custom-datepicker-indicator no-repeat right $custom-da
 
 $rocket-item-double-item-width:         5rem;
 
+$context-menu-arrow-size:               8px;
+$context-menu-arrow-size-sm:            6px;
+
+$context-menu-drop-shadow:              drop-shadow(0px 0px 10px rgba($black, .3));
+$context-menu-drop-shadow-sm:           drop-shadow(0px 0px 10px rgba($black, .3));
+
+$context-menu-offset:                   $context-menu-arrow-size + $context-menu-arrow-size;
+$context-menu-offset-sm:                $context-menu-arrow-size-sm + $context-menu-arrow-size-sm;
+
 $rocket-btn-group-spacing:              0.5rem;
 
 $rocket-toggler-bullet-size:            14px;
