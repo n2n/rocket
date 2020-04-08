@@ -40,6 +40,7 @@ body > div {
     position: absolute;
     top: 0.5rem;
     left: 1rem;
+    z-index: 1;
 }
 
 #rocket-customer-name {
@@ -267,7 +268,7 @@ body > div {
 
 #rocket-header {
     z-index: 1;
-    padding: 0 $content-padding;
+    padding: 0 0 0 $content-padding;
 }
 
 body {

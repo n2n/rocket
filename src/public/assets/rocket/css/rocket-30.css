@@ -4930,6 +4930,7 @@ body > div {
   position: absolute;
   top: 0.5rem;
   left: 1rem;
+  z-index: 1;
 }
 
 #rocket-customer-name {
@@ -5160,7 +5161,7 @@ body > div {
 
 #rocket-header {
   z-index: 1;
-  padding: 0 3rem;
+  padding: 0 0 0 3rem;
 }
 
 body {
@@ -5300,8 +5301,9 @@ body {
   position: relative;
   -ms-grid-columns: 1fr auto;
       grid-template-columns: 1fr auto;
-  -ms-grid-rows: 2rem 3rem;
-      grid-template-rows: 2rem 3rem;
+  -ms-grid-rows: minmax(2rem, min-content) minmax(3rem, min-content);
+      grid-template-rows: minmax(2rem, -webkit-min-content) minmax(3rem, -webkit-min-content);
+      grid-template-rows: minmax(2rem, min-content) minmax(3rem, min-content);
   background: white;
 }
 
@@ -5322,6 +5324,10 @@ body {
       grid-row-start: 2;
   grid-row-end: 3;
   margin-top: 0.5rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .rocket-layer {
@@ -5355,9 +5361,18 @@ body {
   top: 0;
 }
 
-.rocket-layer > .rocket-layer-toolbar .layer-close-bar:focus, .rocket-layer > .rocket-layer-toolbar .layer-close-bar.active {
+.rocket-layer > .rocket-layer-toolbar .layer-close-bar:hover, .rocket-layer > .rocket-layer-toolbar .layer-close-bar:focus, .rocket-layer > .rocket-layer-toolbar .layer-close-bar.active {
   -webkit-box-shadow: none;
           box-shadow: none;
+}
+
+.rocket-layer > .rocket-layer-toolbar .layer-close-bar:hover .layer-close-btn, .rocket-layer > .rocket-layer-toolbar .layer-close-bar:focus .layer-close-btn, .rocket-layer > .rocket-layer-toolbar .layer-close-bar.active .layer-close-btn {
+  background: #bb6706;
+  border-color: #bb6706;
+}
+
+.rocket-layer > .rocket-layer-toolbar .layer-close-bar:hover .rocket-layer-toolbar-description, .rocket-layer > .rocket-layer-toolbar .layer-close-bar:focus .rocket-layer-toolbar-description, .rocket-layer > .rocket-layer-toolbar .layer-close-bar.active .rocket-layer-toolbar-description {
+  color: #bb6706;
 }
 
 .rocket-layer > .rocket-layer-toolbar .layer-close-btn {
@@ -5378,18 +5393,16 @@ body {
 }
 
 .rocket-layer > .rocket-layer-toolbar .rocket-layer-toolbar-description {
-  -webkit-writing-mode: tb;
-      -ms-writing-mode: tb;
-          writing-mode: tb;
+  -webkit-writing-mode: vertical-rl;
+      -ms-writing-mode: tb-rl;
+          writing-mode: vertical-rl;
   white-space: nowrap;
   -webkit-transform: scale(-1);
           transform: scale(-1);
   text-transform: uppercase;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-line-pack: center;
-      align-content: center;
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
@@ -5397,6 +5410,10 @@ body {
   color: #ed8207;
   font-weight: bold;
   padding: 15px 0;
+  -webkit-transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
 }
 
 .rocket-layer > .rocket-layer-toolbar .rocket-layer-toolbar-description > span {

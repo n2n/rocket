@@ -86,6 +86,10 @@ $custom-datepicker-bg:			$custom-datepicker-indicator no-repeat right $custom-da
 
 
 
+$zone-header-breadcrumb-min-height:     2rem;
+$zone-header-title-min-height:          3rem;
+$zone-close-btn-height:                 $zone-header-breadcrumb-min-height + $zone-header-title-min-height;
+
 $left-content-width:        14rem;
 $content-padding:           3rem;
 $content-gap-x:             1rem;
