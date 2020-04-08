@@ -12,7 +12,6 @@ html {
 }
 
 body {
-    overflow: hidden;
     background: $gray-200; /* Old browsers */
 }
 
@@ -68,6 +67,7 @@ body > div {
     background: url(../img/nav-body-bg.png) repeat $gray-700 4px 11px;
     color: white;
     scrollbar-width: thin;
+    grid-area: main;
 }
 
 @include media-breakpoint-up(lg) {
@@ -275,97 +275,162 @@ body {
     background: $body-color;
 }
 
+
+// new
+
+body > div {
+    display: grid;
+    height: 100vh;
+}
+
+#rocket-content-container {
+    grid-area: main;
+    background: #F7F5F5;
+}
+
+
+#rocket-content-container {
+    &,
+    rocket-root,
+    rocket-ei {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 100%;
+    }
+
+    rocket-ui-container {
+        flex: 1 1 100%;
+        display: grid;
+    }
+
+    rocket-ui-layer {
+        grid-row: 1;
+        grid-column: span 1 / 1;
+        display: grid;
+        grid-template-areas: 
+        "aside main";
+        grid-template-columns: min-content 1fr;
+    }
+
+    .rocket-zone {
+        flex-direction: column;
+        grid-area: main;
+        display: grid;
+        padding: 0 $content-padding;
+        grid-template-areas: 
+        "header header"
+        "main aside"
+        "bottom bottom";
+        grid-template-rows: min-content 1fr min-content;
+        //minmax(0,#) to prevent blowout -> x-scrollbar
+        grid-template-columns: minmax(0, 1fr) minmax(0, min-content);
+
+
+        > header {
+            padding: 0 $content-padding;
+            grid-area: header;
+            margin: 0 -#{$content-padding};
+        }
+
+        > .rocket-content {
+            flex: 1 1 100%;
+            grid-area: main;
+        }
+        
+        > .rocket-zone-commands {
+            padding: 10px $content-padding;
+            margin: 0 -#{$content-padding};
+            position: sticky;
+            bottom: 0;
+            grid-area: bottom;
+            align-self: flex-end;
+        }
+    }
+
+    .rocket-layer-toolbar + .rocket-zone {
+        padding: 0 $content-padding/2;
+
+        > header {
+            padding: 0 $content-padding/2;
+            margin: 0 -#{$content-padding/2};
+        }
+
+        > .rocket-zone-commands {
+            padding: 10px $content-padding/2;
+            margin: 0 -#{$content-padding/2};
+        }
+    }
+}
+
+
+
+
+@include media-breakpoint-down(md) {
+    body > div {
+        grid-template-areas: "header header"
+            "main main";
+    }
+
+    #rocket-global-nav {
+        position: relative;
+        z-index: 2;
+        overflow-y: scroll;
+        left: 0;
+        width: calc(100% - 60px);
+        grid-area: main;
+        transform: translateX(-100%);
+        transition: $transition-base;
+        transition-property: width, transform;
+    }
+
+    #rocket-global-nav.not-collapsed {
+        transform: translateX(0%);
+    }
+}
+
+
 @include media-breakpoint-up(lg) {
+
+    body {
+        overflow: hidden;
+    }
+
+    body > div {
+        grid-template-areas: ". header"
+        "nav main";
+        grid-template-rows: min-content 1fr;
+        //minmax(0,#) to prevent blowout -> x-scrollbar
+        grid-template-columns: minmax(0, $left-content-width) minmax(0, 1fr);
+    }
+
     #rocket-global-nav {
         padding-top: 5rem;
     }
 
-    body > div {
-        display: grid;
-        height: 100vh;
-        grid-template-areas: ". header"
-                              "nav main";
-        grid-template-rows: min-content 1fr;
-        grid-template-columns: $left-content-width 1fr;
-    }
 
-    #rocket-content-container {
-        grid-area: main;
-        background: #F7F5F5;
+    // #rocket-content-container {
+    //     grid-area: main;
+    //     background: #F7F5F5;
+    // }
+
+    #rocket-content-container rocket-ui-layer {
+        overflow-y: scroll;
     }
 
     #rocket-content-container {
         &,
         rocket-root,
-		rocket-ei {
-            display: flex;
-            flex-direction: column;
-            flex: 1 1 100%;
+        rocket-ei {
             overflow-y: hidden;
         }
 
         rocket-ui-container {
             overflow: hidden;
-            flex: 1 1 100%;
-            display: grid;
         }
 
         rocket-ui-layer {
             overflow-y: scroll;
-            grid-row: 1;
-            grid-column: span 1 / 1;
-            display: grid;
-            grid-template-areas: 
-            "aside main";
-            grid-template-columns: min-content 1fr;
-        }
-
-        .rocket-zone {
-            flex-direction: column;
-            grid-area: main;
-            display: grid;
-            padding: 0 $content-padding;
-            grid-template-areas: 
-            "header header"
-            "main aside"
-            "bottom bottom";
-            grid-template-rows: min-content 1fr min-content;
-            grid-template-columns: 1fr min-content;
-
-
-            > header {
-                padding: 0 $content-padding;
-                grid-area: header;
-                margin: 0 -#{$content-padding};
-            }
-
-            > .rocket-content {
-                flex: 1 1 100%;
-                grid-area: main;
-            }
-            
-            > .rocket-zone-commands {
-                padding: 10px $content-padding;
-                margin: 0 -#{$content-padding};
-                position: sticky;
-                bottom: 0;
-                grid-area: bottom;
-                align-self: flex-end;
-            }
-        }
-
-        .rocket-layer-toolbar + .rocket-zone {
-            padding: 0 $content-padding/2;
-
-            > header {
-                padding: 0 $content-padding/2;
-                margin: 0 -#{$content-padding/2};
-            }
-
-            > .rocket-zone-commands {
-                padding: 10px $content-padding/2;
-                margin: 0 -#{$content-padding/2};
-            }
         }
     }
+
 }
