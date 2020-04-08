@@ -28,6 +28,7 @@
 	margin: $context-menu-offset-sm;
 	transform: translateX($context-menu-offset-sm);
 	filter: $context-menu-drop-shadow-sm;
+	z-index: $context-menu-z-index;
     &:after {
         content: "";
         position: absolute;

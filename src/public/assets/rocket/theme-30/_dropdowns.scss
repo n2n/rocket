@@ -10,7 +10,7 @@ rocket-button-control {
 		background:	$white;
 		padding: 1rem;
 		filter: $context-menu-drop-shadow-sm;
-		z-index: 5;
+		z-index: $context-menu-z-index;
 
 		&:after {
 			content: "";
