@@ -12,14 +12,8 @@ html {
 }
 
 body {
-    // overflow-y: scroll;
-    overflow-y: hidden;
+    overflow: hidden;
     background: $gray-200; /* Old browsers */
-    background: $gray-200 linear-gradient(to bottom, #ffffff 0%,#ffffff 124px,$gray-200 124px,$gray-200 100%) repeat-x;
-    min-height: calc(100% - #{$rocket-header-height});
-
-    // new
-    overflow-x: hidden;
 }
 
 body > div {
@@ -32,28 +26,9 @@ body > div {
 #rocket-header {
     background-color: $gray-900;
     color: white;
-    
-    // new
     grid-area: header;
     display: flex;
 }
-
-
-@include media-breakpoint-up(md) {
-    // #rocket-header {
-    //     position: fixed;
-    //     top: 0;
-    //     left: 0;
-    //     right: 0;
-    //     height: $rocket-header-height;
-    //     display: flex;
-    //     z-index: 1000;
-    // }
-}
-
-// #rocket-logo {
-//     flex: 0 0 $rocket-content-margin-left;
-// }
 
 @include media-breakpoint-down(md) {
     #rocket-logo {
@@ -81,13 +56,6 @@ body > div {
     }
 }
 
-@include media-breakpoint-only(sm) {
-    #rocket-customer-name {
-        // position: absolute;
-        // left: 3rem;
-    }
-}
-
 #rocket-conf-nav {
     flex: 1 0 auto;
 }
@@ -103,18 +71,8 @@ body > div {
 
 @include media-breakpoint-up(lg) {
     #rocket-global-nav {
-        // position: fixed;
-        // top: $rocket-header-height;
-        // left: 0;
-        // bottom: 0;
-        // width: $rocket-global-nav-width;
-        // padding-top: 5rem;
-        // z-index: 100;
         overflow-y: auto;
-
-        // new
         position: relative;
-        
         grid-area: nav;
     }
 }
@@ -141,21 +99,8 @@ body > div {
 }
 
  #rocket-content-container {
-     padding: 1rem;
-
-     //new
      padding: 0;
  }
-
-@include media-breakpoint-up(lg) {
-    // #rocket-content-container {
-    //     margin-left: $rocket-content-margin-left;
-    //     margin-right: $rocket-content-margin-right;
-    //     margin-top: $rocket-header-height;
-    //     padding: 0 0 5rem 0;
-    //     position: relative;
-    // }
-}
 
 /**
  * Context Control
@@ -175,17 +120,6 @@ body > div {
         > div:nth-child(2) {
             text-align: right;
         }
-    }
-    
-}
-
-@include media-breakpoint-up(lg) {
-    .rocket-zone-commands {
-        // position: fixed;
-        // bottom: 0;
-        // right: 0;
-        // left: $rocket-global-nav-width;
-        // padding: 1rem 3rem 1rem 4rem;
     }
     
 }
@@ -275,26 +209,24 @@ body > div {
     } 
 }
 
+
 /**
  * rocket addtional
  */
 
  @include media-breakpoint-up(lg) {
 	.rocket-zone.rocket-contains-additional {
-        // width: calc(100% - 20rem);
         display: block;
 		> .rocket-additional {
-			// position: fixed;
-			// top: 8.725rem;
-			// bottom: 4.5rem;
-            // right: 1rem;
-            
-            position: sticky;
-            top: 0;
-            margin-top: 1rem;
-			width: 19rem;
-            // overflow-y: auto;
-            grid-area: aside;
+            > div {
+                position: sticky;
+                top: 0;
+                margin-top: 1rem;
+                margin-left: $content-gap-x;
+                width: 19rem;
+                // overflow-y: auto;
+                grid-area: aside;
+            }
 		}
 	}
 }
@@ -331,8 +263,7 @@ body > div {
 }
 
 
-
-// new
+// all new added Styles
 
 #rocket-header {
     z-index: 1;
@@ -369,8 +300,7 @@ body {
         }
 
         rocket-ui-container {
-            overflow-y: hidden;
-            overflow-x: hidden;
+            overflow: hidden;
             flex: 1 1 100%;
             display: grid;
         }
@@ -379,15 +309,20 @@ body {
             overflow-y: scroll;
             grid-row: 1;
             grid-column: span 1 / 1;
+            display: grid;
+            grid-template-areas: 
+            "aside main";
+            grid-template-columns: min-content 1fr;
         }
 
         .rocket-zone {
-            display: flex;
             flex-direction: column;
-            min-height: 100%;
-            padding: 0 $content-padding;
+            grid-area: main;
             display: grid;
-            grid-gap: 0 $content-gap-x;
+            // display: flex;
+            // causing to have height calculatet wrong for scrollbar
+            // min-height: 100%;
+            padding: 0 $content-padding;
             grid-template-areas: 
             "header header"
             "main aside"
@@ -406,6 +341,10 @@ body {
                 flex: 1 1 100%;
                 grid-area: main;
             }
+
+            .rocket-zone-commands-ghost {
+                visibility: hidden;
+            }
             
             > .rocket-zone-commands {
                 padding: 10px $content-padding;
@@ -413,7 +352,7 @@ body {
                 position: sticky;
                 bottom: 0;
                 grid-area: bottom;
-                align-self: end;
+                align-self: flex-end;
             }
         }
     }

@@ -51,6 +51,7 @@ class AnglTemplateModel implements Lookupable {
 			'visible_label' => $dtc->t('visible_label'),
 			'errors_txt' => $dtc->t('errors_txt'),
 			'activate_txt' => $dtc->t('activate_txt'),
+			'close_layer_text' => $dtc->t('close_layer_text'),
 			'search_placeholder_txt' => $dtc->t('search_placeholder_txt'),
 			'common_select_label' => $dtc->t('common_select_label'),
 			'common_apply_label' => $dtc->t('common_apply_label'),

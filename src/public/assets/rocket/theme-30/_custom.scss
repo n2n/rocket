@@ -87,12 +87,14 @@ $custom-datepicker-bg:			$custom-datepicker-indicator no-repeat right $custom-da
 
 
 $left-content-width:        14rem;
-$content-padding:           2rem;
+$content-padding:           3rem;
 $content-gap-x:             1rem;
 $header-padding:            10px 20px 14px $content-padding;
 
 
 $rocket-item-double-item-width:         5rem;
+
+$context-menu-z-index:                  60;
 
 $context-menu-arrow-size:               8px;
 $context-menu-arrow-size-sm:            6px;

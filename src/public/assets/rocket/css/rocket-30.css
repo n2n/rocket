@@ -4899,12 +4899,9 @@ html {
 }
 
 body {
-  overflow-y: hidden;
+  overflow: hidden;
   background: #F7F5F5;
   /* Old browsers */
-  background: #F7F5F5 linear-gradient(to bottom, #ffffff 0%, #ffffff 124px, #F7F5F5 124px, #F7F5F5 100%) repeat-x;
-  min-height: calc(100% - 2.75rem);
-  overflow-x: hidden;
 }
 
 body > div {
@@ -4995,7 +4992,6 @@ body > div {
 }
 
 #rocket-content-container {
-  padding: 1rem;
   padding: 0;
 }
 
@@ -5120,11 +5116,12 @@ body > div {
   .rocket-zone.rocket-contains-additional {
     display: block;
   }
-  .rocket-zone.rocket-contains-additional > .rocket-additional {
+  .rocket-zone.rocket-contains-additional > .rocket-additional > div {
     position: -webkit-sticky;
     position: sticky;
     top: 0;
     margin-top: 1rem;
+    margin-left: 1rem;
     width: 19rem;
     grid-area: aside;
   }
@@ -5163,7 +5160,7 @@ body > div {
 
 #rocket-header {
   z-index: 1;
-  padding: 0 2rem;
+  padding: 0 3rem;
 }
 
 body {
@@ -5204,8 +5201,7 @@ body {
     overflow-y: hidden;
   }
   #rocket-content-container rocket-ui-container {
-    overflow-y: hidden;
-    overflow-x: hidden;
+    overflow: hidden;
     -webkit-box-flex: 1;
         -ms-flex: 1 1 100%;
             flex: 1 1 100%;
@@ -5218,20 +5214,24 @@ body {
     grid-row: 1;
     -ms-grid-column-span: 1;
     grid-column: span 1 / 1;
+    display: -ms-grid;
+    display: grid;
+        grid-template-areas: "aside main";
+    -ms-grid-columns: min-content 1fr;
+        grid-template-columns: -webkit-min-content 1fr;
+        grid-template-columns: min-content 1fr;
   }
   #rocket-content-container .rocket-zone {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
     -webkit-box-orient: vertical;
     -webkit-box-direction: normal;
         -ms-flex-direction: column;
             flex-direction: column;
-    min-height: 100%;
-    padding: 0 2rem;
+    -ms-grid-row: 2;
+    -ms-grid-column: 1;
+    grid-area: main;
     display: -ms-grid;
     display: grid;
-    grid-gap: 0 1rem;
+    padding: 0 3rem;
         grid-template-areas: "header header" "main aside" "bottom bottom";
     -ms-grid-rows: min-content 1fr min-content;
         grid-template-rows: -webkit-min-content 1fr -webkit-min-content;
@@ -5241,12 +5241,12 @@ body {
         grid-template-columns: 1fr min-content;
   }
   #rocket-content-container .rocket-zone > header {
-    padding: 0 2rem;
+    padding: 0 3rem;
     -ms-grid-row: 1;
     -ms-grid-column: 1;
     -ms-grid-column-span: 2;
     grid-area: header;
-    margin: 0 -2rem;
+    margin: 0 -3rem;
   }
   #rocket-content-container .rocket-zone > .rocket-content {
     -webkit-box-flex: 1;
@@ -5256,9 +5256,12 @@ body {
     -ms-grid-column: 1;
     grid-area: main;
   }
+  #rocket-content-container .rocket-zone .rocket-zone-commands-ghost {
+    visibility: hidden;
+  }
   #rocket-content-container .rocket-zone > .rocket-zone-commands {
-    padding: 10px 2rem;
-    margin: 0 -2rem;
+    padding: 10px 3rem;
+    margin: 0 -3rem;
     position: -webkit-sticky;
     position: sticky;
     bottom: 0;
@@ -5267,8 +5270,7 @@ body {
     -ms-grid-column-span: 2;
     grid-area: bottom;
     -ms-flex-item-align: end;
-        -ms-grid-row-align: end;
-        align-self: end;
+        align-self: flex-end;
   }
 }
 
@@ -5314,9 +5316,7 @@ body {
 .rocket-layer {
   z-index: 50;
   top: 0;
-  background-color: #ECEBE9;
-  background: -webkit-gradient(linear, left top, right top, color-stop(0, #C2BDB6), color-stop(3rem, #C2BDB6), color-stop(3rem, #ECEBE9), to(#ECEBE9));
-  background: linear-gradient(to right, #C2BDB6 0, #C2BDB6 3rem, #ECEBE9 3rem, #ECEBE9 100%);
+  background-color: #F7F5F5;
 }
 
 .rocket-layer > .rocket-layer-toolbar {
@@ -5324,15 +5324,82 @@ body {
   position: sticky;
   top: 0;
   left: 0;
-  width: 2rem;
-  height: 0;
+  width: 3rem;
+  background: #ECEBE9;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
   z-index: 10;
 }
 
-.rocket-layer > .rocket-layer-toolbar > button {
-  width: 3rem;
+.rocket-layer > .rocket-layer-toolbar .layer-close-bar {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+}
+
+.rocket-layer > .rocket-layer-toolbar .layer-close-bar:focus, .rocket-layer > .rocket-layer-toolbar .layer-close-bar.active {
+  -webkit-box-shadow: none;
+          box-shadow: none;
+}
+
+.rocket-layer > .rocket-layer-toolbar .layer-close-btn {
+  width: 100%;
   height: 5rem;
+  background: #ed8207;
   color: white;
+  text-align: center;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.rocket-layer > .rocket-layer-toolbar .rocket-layer-toolbar-description {
+  -webkit-writing-mode: tb;
+      -ms-writing-mode: tb;
+          writing-mode: tb;
+  white-space: nowrap;
+  -webkit-transform: scale(-1);
+          transform: scale(-1);
+  text-transform: uppercase;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-line-pack: center;
+      align-content: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  width: 100%;
+  color: #ed8207;
+  font-weight: bold;
+  padding: 15px 0;
+}
+
+.rocket-layer > .rocket-layer-toolbar .rocket-layer-toolbar-description > span {
+  margin: 0 auto;
 }
 
 .rocket-layer .rocket-impl-overview-tools {
@@ -5354,7 +5421,7 @@ rocket-ui-layer > .rocket-loader {
 
 .rocket-zone > .rocket-content > .rocket-toolbar {
   position: absolute;
-  right: 0rem;
+  right: 3rem;
   top: 1.5rem;
   z-index: 60;
 }
@@ -5394,6 +5461,7 @@ rocket-ui-layer > .rocket-loader {
           transform: translateX(12px);
   -webkit-filter: drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.3));
           filter: drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.3));
+  z-index: 60;
 }
 
 .rocket-split-view-status-menu:after,
@@ -6529,6 +6597,7 @@ rocket-choose-paste.rocket-multi-type-menu-simple {
   background: #DAD7D3;
   -webkit-filter: drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.3));
           filter: drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.3));
+  z-index: 60;
 }
 
 rocket-choose-paste.rocket-multi-type-menu-simple:after {
@@ -6672,6 +6741,10 @@ rocket-add-past > button::after {
   border: 1px solid #DAD7D3;
 }
 
+.rocket-to-many > div.rocket-message-error {
+  border: none;
+}
+
 .rocket-to-many .rocket-selector {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -6709,6 +6782,8 @@ rocket-add-past > button::after {
   -webkit-box-align: baseline;
       -ms-flex-align: baseline;
           align-items: baseline;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
 }
 
 .rocket-to-one .rocket-selector {
@@ -7083,7 +7158,7 @@ rocket-button-control .dropdown > div {
   padding: 1rem;
   -webkit-filter: drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.3));
           filter: drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.3));
-  z-index: 5;
+  z-index: 60;
 }
 
 rocket-button-control .dropdown > div:after {

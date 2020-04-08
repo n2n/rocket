@@ -6,18 +6,20 @@
 		
 		<h1>{{ uiZone.model.title }}</h1>
 	</header>
-
+	
 	<div rocketUiStructure [uiStructure]="uiZone.uiStructure" [asideVisible]="false" class="rocket-content"></div>
 
 	<div *ngIf="hasUiZoneErrors()" class="rocket-additional">
-		<ul class="rocket-additional-nav">
-			<li class="rocket-severity-danger rocket-active">{{ 'errors_txt' | translate }}</li>
-		</ul>
-		<div class="rocket-additional-container">
-			<div class="rocket-additional-content">
-				<div *ngFor="let uiZoneError of uiZoneErrors" class="rocket-error-index-entry">
-					<rocket-ui-message [message]="uiZoneError.message" class="rocket-error-index-message"></rocket-ui-message>
-					<a href="#">Fehler anzeigen</a>
+		<div>
+			<ul class="rocket-additional-nav">
+				<li class="rocket-severity-danger rocket-active">{{ 'errors_txt' | translate }}</li>
+			</ul>
+			<div class="rocket-additional-container">
+				<div class="rocket-additional-content">
+					<div *ngFor="let uiZoneError of uiZoneErrors" class="rocket-error-index-entry">
+						<rocket-ui-message [message]="uiZoneError.message" class="rocket-error-index-message"></rocket-ui-message>
+						<a href="#">Fehler anzeigen</a>
+					</div>
 				</div>
 			</div>
 		</div>

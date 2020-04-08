@@ -416,6 +416,7 @@ rocket-choose-paste.rocket-multi-type-menu-simple {
     border-bottom: 4px solid $primary;
     background: #DAD7D3;
     filter: $context-menu-drop-shadow;
+    z-index: $context-menu-z-index;
     &:after {
         content: "";
         position: absolute;
@@ -588,6 +589,10 @@ rocket-add-past {
             margin-bottom: 0.5rem;
             border: 1px solid $input-border-color;
         }
+
+        &.rocket-message-error {
+            border: none;
+        }
     }
     .rocket-selector {
         display: flex;
@@ -616,6 +621,7 @@ rocket-add-past {
 .rocket-to-one {
     display: inline-flex;
     align-items: baseline;
+    flex-wrap: wrap;
 
     .rocket-selector {
         display: inline-flex;
