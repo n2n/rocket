@@ -412,7 +412,7 @@ rocket-choose-paste.rocket-multi-type-menu-simple {
     width: 100%;
     max-width: 400px;
     min-width: 240px;
-    transform: translate(-50%);
+    transform: translateX(-50%) translateX(-#{$context-menu-offset});
     border-bottom: 4px solid $primary;
     background: #DAD7D3;
     filter: $context-menu-drop-shadow;

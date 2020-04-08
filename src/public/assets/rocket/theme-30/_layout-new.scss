@@ -275,6 +275,10 @@ body {
 }
 
 @include media-breakpoint-up(lg) {
+    #rocket-global-nav {
+        padding-top: 5rem;
+    }
+
     body > div {
         display: grid;
         height: 100vh;
@@ -319,9 +323,6 @@ body {
             flex-direction: column;
             grid-area: main;
             display: grid;
-            // display: flex;
-            // causing to have height calculatet wrong for scrollbar
-            // min-height: 100%;
             padding: 0 $content-padding;
             grid-template-areas: 
             "header header"
@@ -341,10 +342,6 @@ body {
                 flex: 1 1 100%;
                 grid-area: main;
             }
-
-            .rocket-zone-commands-ghost {
-                visibility: hidden;
-            }
             
             > .rocket-zone-commands {
                 padding: 10px $content-padding;
@@ -353,6 +350,20 @@ body {
                 bottom: 0;
                 grid-area: bottom;
                 align-self: flex-end;
+            }
+        }
+
+        .rocket-layer-toolbar + .rocket-zone {
+            padding: 0 $content-padding/2;
+
+            > header {
+                padding: 0 $content-padding/2;
+                margin: 0 -#{$content-padding/2};
+            }
+
+            > .rocket-zone-commands {
+                padding: 10px $content-padding/2;
+                margin: 0 -#{$content-padding/2};
             }
         }
     }
