@@ -85,14 +85,19 @@ $custom-datepicker-bg:			$custom-datepicker-indicator no-repeat right $custom-da
 
 
 
+$rocket-header-bg:              $gray-900;
 
 $zone-header-breadcrumb-min-height:     2rem;
 $zone-header-title-min-height:          3rem;
 $zone-close-btn-height:                 $zone-header-breadcrumb-min-height + $zone-header-title-min-height;
 
-$left-content-width:        14rem;
-$content-padding:           3rem;
+$left-content-width:                    14rem;
+$content-padding-xs:                    1rem;
+$content-padding:                       3rem;
+$content-padding-with-toolbar:          $content-padding/2;
+
 $content-gap-x:             1rem;
+
 $header-padding:            10px 20px 14px $content-padding;
 
 

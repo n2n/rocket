@@ -11,6 +11,7 @@ $rocket-tree-level-line-string:         '';
     @include media-breakpoint-up(md) {
         position: -webkit-sticky;
         position: sticky;
+		position: -webkit-sticky;
         top: 44px;    
     }
     background-color: $gray-200;

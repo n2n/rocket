@@ -529,6 +529,15 @@ rocket-add-past {
     }
 }
 
+.rocket-structure-content {
+    position: relative;
+    > .rocket-loader {
+        &:after {
+            border-width: 3px;
+        }
+    }
+}
+
 .rocket-structure-content > iframe {
     width: 100%;
     border: 1px solid $input-border-color;

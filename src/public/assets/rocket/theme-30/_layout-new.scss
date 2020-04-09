@@ -12,22 +12,30 @@ html {
 }
 
 body {
-    background: $gray-200; /* Old browsers */
+    background: $gray-200;
+    // background: $body-color;
 }
 
 body > div {
-    min-height: 100vh;
+    overflow: hidden;
+    display: grid;
+    height: 100vh;
+    grid-template-areas:    "header header"
+                            "main main";
 }
 
 /**
  * Header
  */
 #rocket-header {
-    background-color: $gray-900;
+    background-color: $rocket-header-bg;
     color: white;
     grid-area: header;
     display: flex;
+    z-index: 1;
+    padding: 0 0 0 $content-padding;
 }
+
 
 @include media-breakpoint-down(md) {
     #rocket-logo {
@@ -48,13 +56,12 @@ body > div {
     font-size: 1rem;
     font-weight: bold;
     line-height: $rocket-header-height;
-}
 
-@include media-breakpoint-only(xs) {
-    #rocket-customer-name {
+    @include media-breakpoint-only(xs) {
         display: none;
     }
 }
+
 
 #rocket-conf-nav {
     flex: 1 0 auto;
@@ -68,15 +75,14 @@ body > div {
     color: white;
     scrollbar-width: thin;
     grid-area: main;
-}
 
-@include media-breakpoint-up(lg) {
-    #rocket-global-nav {
+    @include media-breakpoint-up(lg) {
         overflow-y: auto;
         position: relative;
         grid-area: nav;
     }
 }
+
 
 @include media-breakpoint-down(md) {
     .navbar-toggler {
@@ -110,10 +116,7 @@ body > div {
 .rocket-zone-commands {
     background-color: $gray-200;
     display: grid;
-}
-
-@include media-breakpoint-up(sm) {
-    .rocket-zone-commands {
+    @include media-breakpoint-up(sm) {
         padding: 1rem 0;
         display: grid;
         grid-template-columns: auto auto;
@@ -122,7 +125,6 @@ body > div {
             text-align: right;
         }
     }
-    
 }
 
 .rocket-partial-commands {
@@ -139,23 +141,36 @@ body > div {
  */
 
 
-.rocket-loader,
-.rocket-impl-overview-loading {
-    margin: 40px auto 0;
+.rocket-loader {
+    margin: 0 auto;
     width: 50px;
     height: 50px;
-    border-radius: 50%;
-    border: solid 6px rgba(0, 0, 0, 0.1);
-    border-top-color: $primary;
-    animation: spin 1s infinite linear;  
-    cursor: wait;
+    left: 50%;
+    top: 50%;
+    transform: translate3d(-50%, -50%, 0);
+    display: grid;
+    grid-template-areas: "spinner";
+    position: absolute;
+    &:after {
+        content: "";
+        grid-area: spinner;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        border: solid 6px rgba(0, 0, 0, 0.1);
+        border-top-color: $primary;
+        animation: spin 1s infinite linear;  
+        cursor: wait;
+    }
 }
 
 .rocket-item .rocket-loader {
     margin: 0 auto 0;
     width: 18px;
     height: 18px;
-    border-width: 3px;
+    &:after {
+        border-width: 3px;
+    }
 }
 
 .btn {
@@ -163,46 +178,43 @@ body > div {
     z-index: 0;
     .rocket-loader {
         z-index: 1;
-        position: absolute;
         width: 14px;
         height: 14px;
-        top: -7px;
-        left: calc(50% - 7px);
     }
 
 }
 
-.rocket-zone.rocket-loader {
-    margin-top: 10rem;
-}
+// .rocket-zone.rocket-loader {
+//     margin-top: 10rem;
+// }
 
-.rocket-load-blocker {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    right: 0px;
-    bottom: 0px;
-    background: $gray-200;
-}
+// .rocket-load-blocker {
+//     position: absolute;
+//     top: 0px;
+//     left: 0px;
+//     right: 0px;
+//     bottom: 0px;
+//     background: $gray-200;
+// }
 
-.rocket-load-blocker > .rocket-loader {
-    width: 25px;
-    height: 25px;
-    margin: 8px auto auto;
-    border: solid 5px $gray-400;
-    border-top-color: $primary;
-}
+// .rocket-load-blocker > .rocket-loader {
+//     width: 25px;
+//     height: 25px;
+//     margin: 8px auto auto;
+//     border: solid 5px $gray-400;
+//     border-top-color: $primary;
+// }
 
-.rocket-zone-block {
-    position: fixed;
-    cursor: wait;
-    top: 0px;
-    left: 0px;
-    right: 0px;
-    bottom: 0px;
-    background-color: rgba(0, 0, 0, 0.2);
-    padding-top: calc(50vh - 1rem);
-}
+// .rocket-zone-block {
+//     position: fixed;
+//     cursor: wait;
+//     top: 0px;
+//     left: 0px;
+//     right: 0px;
+//     bottom: 0px;
+//     background-color: rgba(0, 0, 0, 0.2);
+//     padding-top: calc(50vh - 1rem);
+// }
 
 @keyframes spin { 
     100% { 
@@ -215,24 +227,7 @@ body > div {
  * rocket addtional
  */
 
- @include media-breakpoint-up(lg) {
-	.rocket-zone.rocket-contains-additional {
-        display: block;
-		> .rocket-additional {
-            > div {
-                position: sticky;
-                top: 0;
-                margin-top: 1rem;
-                margin-left: $content-gap-x;
-                width: 19rem;
-                // overflow-y: auto;
-                grid-area: aside;
-            }
-		}
-	}
-}
-
-.rocket-additional-nav {
+ .rocket-additional-nav {
     margin: 0;
     padding: 0;
     list-style: none;
@@ -243,6 +238,23 @@ body > div {
         padding: .5rem 1rem;
         cursor: pointer;
     }
+}
+
+ @include media-breakpoint-up(lg) {
+	.rocket-zone.rocket-contains-additional {
+		> .rocket-additional {
+            > div {
+                position: sticky;
+                position: -webkit-sticky;
+                top: 0;
+                margin-top: 1rem;
+                margin-left: $content-gap-x;
+                width: 19rem;
+                // overflow-y: auto;
+                grid-area: aside;
+            }
+		}
+	}
 }
 
 /**
@@ -264,32 +276,19 @@ body > div {
 }
 
 
-// all new added Styles
-
-#rocket-header {
-    z-index: 1;
-    padding: 0 0 0 $content-padding;
-}
-
-body {
-    background: $body-color;
-}
-
 
 // new
-
-body > div {
-    display: grid;
-    height: 100vh;
-}
 
 #rocket-content-container {
     grid-area: main;
     background: #F7F5F5;
-}
+    &,
+    rocket-root,
+    rocket-ei,
+    rocket-ui-container {
+        overflow: hidden;
+    }
 
-
-#rocket-content-container {
     &,
     rocket-root,
     rocket-ei {
@@ -297,140 +296,63 @@ body > div {
         flex-direction: column;
         flex: 1 1 100%;
     }
-
-    rocket-ui-container {
-        flex: 1 1 100%;
-        display: grid;
-    }
-
-    rocket-ui-layer {
-        grid-row: 1;
-        grid-column: span 1 / 1;
-        display: grid;
-        grid-template-areas: 
-        "aside main";
-        grid-template-columns: min-content 1fr;
-    }
-
-    .rocket-zone {
-        flex-direction: column;
-        grid-area: main;
-        display: grid;
-        padding: 0 $content-padding;
-        grid-template-areas: 
-        "header header"
-        "main aside"
-        "bottom bottom";
-        grid-template-rows: min-content 1fr min-content;
-        //minmax(0,#) to prevent blowout -> x-scrollbar
-        grid-template-columns: minmax(0, 1fr) minmax(0, min-content);
-
-
-        > header {
-            padding: 0 $content-padding;
-            grid-area: header;
-            margin: 0 -#{$content-padding};
-        }
-
-        > .rocket-content {
-            flex: 1 1 100%;
-            grid-area: main;
-        }
-        
-        > .rocket-zone-commands {
-            padding: 10px $content-padding;
-            margin: 0 -#{$content-padding};
-            position: sticky;
-            bottom: 0;
-            grid-area: bottom;
-            align-self: flex-end;
-        }
-    }
-
-    .rocket-layer-toolbar + .rocket-zone {
-        padding: 0 $content-padding/2;
-
-        > header {
-            padding: 0 $content-padding/2;
-            margin: 0 -#{$content-padding/2};
-        }
-
-        > .rocket-zone-commands {
-            padding: 10px $content-padding/2;
-            margin: 0 -#{$content-padding/2};
-        }
-    }
 }
 
+rocket-ui-container {
+    flex: 1 1 100%;
+    display: grid;
+}
 
+rocket-ui-layer {
+    overflow-y: scroll;
+    grid-row: 1;
+    grid-column: span 1 / 1;
+    display: grid;
+    grid-template-areas: 
+    "aside main";
+    grid-template-columns: min-content 1fr;
+}
 
 
 @include media-breakpoint-down(md) {
-    body > div {
-        grid-template-areas: "header header"
-            "main main";
-    }
-
     #rocket-global-nav {
+        grid-area: main;
         position: relative;
+        // main-sibling musst have a higher z-index
         z-index: 2;
         overflow-y: scroll;
         left: 0;
-        width: calc(100% - 60px);
-        grid-area: main;
-        transform: translateX(-100%);
         transition: $transition-base;
         transition-property: width, transform;
+        transform: translateX(-100%);
+        &.not-collapsed {
+            transform: translateX(0%);
+        }
     }
-
-    #rocket-global-nav.not-collapsed {
-        transform: translateX(0%);
+    
+     #rocket-content-container {
+        // nav-elment-sibling musst have a higher z-index
+        z-index: 1;
     }
 }
 
-
 @include media-breakpoint-up(lg) {
-
-    body {
-        overflow: hidden;
-    }
-
     body > div {
-        grid-template-areas: ". header"
-        "nav main";
+        grid-template-areas:    "header-placeholder header"
+                                "nav main";
         grid-template-rows: min-content 1fr;
+
         //minmax(0,#) to prevent blowout -> x-scrollbar
         grid-template-columns: minmax(0, $left-content-width) minmax(0, 1fr);
+
+        &:before {
+            content: "";
+            grid-area: header-placeholder;
+            background: $rocket-header-bg;
+        }
     }
 
     #rocket-global-nav {
         padding-top: 5rem;
     }
-
-
-    // #rocket-content-container {
-    //     grid-area: main;
-    //     background: #F7F5F5;
-    // }
-
-    #rocket-content-container rocket-ui-layer {
-        overflow-y: scroll;
-    }
-
-    #rocket-content-container {
-        &,
-        rocket-root,
-        rocket-ei {
-            overflow-y: hidden;
-        }
-
-        rocket-ui-container {
-            overflow: hidden;
-        }
-
-        rocket-ui-layer {
-            overflow-y: scroll;
-        }
-    }
-
 }
