@@ -18,7 +18,7 @@
 				<div class="rocket-additional-content">
 					<div *ngFor="let uiZoneError of uiZoneErrors" class="rocket-error-index-entry">
 						<rocket-ui-message [message]="uiZoneError.message" class="rocket-error-index-message"></rocket-ui-message>
-						<a href="#">Fehler anzeigen</a>
+						<a href="#">{{ 'show_errors_txt' | translate }} [@Andi Link machen]</a>
 					</div>
 				</div>
 			</div>
