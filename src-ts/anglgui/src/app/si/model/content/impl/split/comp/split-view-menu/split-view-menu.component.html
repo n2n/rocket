@@ -18,8 +18,7 @@
 						[class.disabled]="isKeyMandatory(splitOption.key)" 
 						(click)="toggleKeyVisibility(splitOption.key)">
 					{{ splitOption.label }} 
-					<i class="fa" [class.fa-toggle-on]="isKeyVisible(splitOption.key)" 
-							[class.fa-toggle-off]="!isKeyVisible(splitOption.key)"></i>
+					<div class="rocket-switch" [class.rocket-switch-on]="isKeyVisible(splitOption.key)" [class.rocket-switch-off]="!isKeyVisible(splitOption.key)"></div>
 				</a>
 			</li>
 		</ul>

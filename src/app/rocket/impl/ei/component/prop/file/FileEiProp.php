@@ -35,7 +35,7 @@ use n2n\util\type\ArgUtils;
 use n2n\util\type\CastUtils;
 use n2n\util\type\TypeConstraint;
 use n2n\util\type\TypeConstraints;
-use n2n\validation\impl\ValidationMessages;
+use n2n\validation\lang\ValidationMessages;
 use n2n\web\http\Session;
 use n2n\web\http\UploadDefinition;
 use rocket\ei\EiPropPath;

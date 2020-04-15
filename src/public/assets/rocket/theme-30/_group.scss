@@ -34,7 +34,8 @@
         font-weight: bold;
     }
     > .rocket-structure-content {
-        padding: 0.5rem 1rem;       
+        // padding: 0.5rem 1rem;       
+        padding: 1rem;       
     }
     .rocket-group {
         // second and more group are transparent
@@ -84,6 +85,7 @@
  */
  .rocket-toolbar {
     text-align: right;
+    margin-bottom: 0.5rem;
 
     > .rocket-group-controls,
     > .rocket-simple-commands {

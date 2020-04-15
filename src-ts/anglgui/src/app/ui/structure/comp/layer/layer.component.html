@@ -1,7 +1,12 @@
 
 <div *ngIf="!uiLayer.main" class="rocket-layer-toolbar">
-	<button class="btn btn-warning" (click)="uiLayer.dispose()">
-		<i class="fa fa-times"></i>
+	<button class="btn layer-close-bar"  (click)="uiLayer.dispose()">
+		<div class="btn btn-warning layer-close-btn">
+			<i class="fa fa-times"></i>
+		</div>
+		<div class="rocket-layer-toolbar-description">
+			<span>{{ 'close_layer_text' | translate }}</span>
+		</div>
 	</button>
 </div>
 
