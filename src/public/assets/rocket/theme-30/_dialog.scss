@@ -7,7 +7,7 @@
 	padding: 2rem 2rem 2rem 8rem;
 	&::after {
 		content: "\f059";
-		font-family: fontawesome;
+		font-family: $font-name-icons;
 		position: absolute;
 		top: 1rem;
 		left: 2rem;

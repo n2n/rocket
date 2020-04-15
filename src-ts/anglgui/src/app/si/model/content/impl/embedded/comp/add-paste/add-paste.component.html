@@ -1,14 +1,14 @@
-<div class="rocket-add-paste">
+<div class="rocket-add-paste" [class.popup-open]="popupOpen">
 	<div>
 		<button type="button" class="btn btn-block btn-secondary" [disabled]="disabled" (click)="togglePopup()">
-			{{ 'common_add_label' | translate }}
-
+			<span class="btn-label">{{ 'common_add_label' | translate }}</span>
+			<i class="fa fa-plus btn-icon"></i>
 			<div *ngIf="loading" class="rocket-loader"></div>
 		</button>
 	</div>
 
-	<div *ngIf="popupOpen && !loading" class="rocket-multi-type-menu">
-		<rocket-choose-paste [model]="choosePasteModel"></rocket-choose-paste>
-	</div>
+	<ng-container *ngIf="popupOpen && !loading">
+		<rocket-choose-paste class="rocket-multi-type-menu-simple" [model]="choosePasteModel"></rocket-choose-paste>
+	</ng-container>
 
 </div>

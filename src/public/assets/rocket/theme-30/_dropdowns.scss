@@ -4,12 +4,24 @@ rocket-button-control {
 	.dropdown > div {
 		position: absolute;
 		right: 0;
+		margin: $context-menu-offset-sm;
+		transform: translateX($context-menu-offset-sm);
 		width: 300px;
 		background:	$white;
 		padding: 1rem;
-		-webkit-box-shadow: 2px 1px 4px 0 rgba(0, 0, 0, 0.2);
-		box-shadow: 2px 1px 4px 0 rgba(0, 0, 0, 0.2);
-		z-index: 5;
+		filter: $context-menu-drop-shadow-sm;
+		z-index: $context-menu-z-index;
+
+		&:after {
+			content: "";
+			position: absolute;
+			top: -$context-menu-arrow-size-sm;
+			right: $context-menu-arrow-size-sm;
+			transform: translateX(-50%);
+			border-width: 0 $context-menu-arrow-size-sm $context-menu-arrow-size-sm;
+			border-style: solid;
+			border-color: $white transparent;
+		}
 
 		div {
 			&:not(:last-child) {

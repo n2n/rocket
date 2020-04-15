@@ -9,13 +9,18 @@
 
 .breadcrumb-item {
     > a {
-        color: $body-color;
+        color: $gray-600;
         &:hover {
             color: $primary;
         }
     }
     &:before {
-        font-family: fontawesome;
+        font-family: $font-name-icons;
+    }
+}
+.breadcrumb-item.active {
+    > a {
+        color: $body-color;
     }
 }
 

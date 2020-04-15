@@ -72,6 +72,8 @@ $dropdown-item-padding-x: 		1rem;
 $dropdown-item-padding-y: 		0.375rem;
 $dropdown-box-shadow: 			$box-box-shadow;
 
+$font-name-icons:               "FontAwesome";
+
 @import "bootstrap/variables";
 
 $custom-datepicker-padding-y:           $input-padding-y !default;
@@ -81,4 +83,40 @@ $custom-datepicker-bg-size:				18px auto;
 $custom-datepicker-indicator: 	str-replace(url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 20'%3E%3Cpath id='datepicker' d='M16,20H2a2,2,0,0,1-2-2L.01,4A2,2,0,0,1,2,2H3V0H5V2h8V0h2V2h1a2,2,0,0,1,2,2V18A2,2,0,0,1,16,20ZM2,7V18H16V7Zm7,7H4V9H9v5Z' transform='translate(0 0)' fill='#{$custom-select-indicator-color}'/%3E%3C/svg%3E%0A"), "#", "%23");
 $custom-datepicker-bg:			$custom-datepicker-indicator no-repeat right $custom-datepicker-padding-x center / $custom-datepicker-bg-size !default; // Used so we can have multiple background elements (e.g., arrow and feedback icon)
 
+
+
+$rocket-header-bg:              $gray-900;
+
+$zone-header-breadcrumb-min-height:     2rem;
+$zone-header-title-min-height:          3rem;
+$zone-close-btn-height:                 $zone-header-breadcrumb-min-height + $zone-header-title-min-height;
+
+$left-content-width:                    14rem;
+$content-padding-xs:                    1rem;
+$content-padding:                       3rem;
+$content-padding-with-toolbar:          $content-padding/2;
+
+$content-gap-x:             1rem;
+
+$header-padding:            10px 20px 14px $content-padding;
+
+
+$rocket-item-double-item-width:         5rem;
+
+$context-menu-z-index:                  60;
+
+$context-menu-arrow-size:               8px;
+$context-menu-arrow-size-sm:            6px;
+
+$context-menu-drop-shadow:              drop-shadow(0px 0px 10px rgba($black, .3));
+$context-menu-drop-shadow-sm:           drop-shadow(0px 0px 10px rgba($black, .3));
+
+$context-menu-offset:                   $context-menu-arrow-size + $context-menu-arrow-size;
+$context-menu-offset-sm:                $context-menu-arrow-size-sm + $context-menu-arrow-size-sm;
+
 $rocket-btn-group-spacing:              0.5rem;
+
+$rocket-toggler-bullet-size:            14px;
+$rocket-toggler-active-color:           $gray-700;
+$rocket-toggler-border-width:           2px;
+$rocket-toggler-width:                  22px;

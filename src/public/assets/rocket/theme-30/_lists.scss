@@ -11,6 +11,7 @@ $rocket-tree-level-line-string:         '';
     @include media-breakpoint-up(md) {
         position: -webkit-sticky;
         position: sticky;
+		position: -webkit-sticky;
         top: 44px;    
     }
     background-color: $gray-200;
@@ -71,6 +72,7 @@ $rocket-tree-level-line-string:         '';
     display: inline-block;
     // add padding-left back in, if needed, but then overwrite in _entry.scss
     // padding-left: 1rem;
+    cursor: move;
 }
 
 /*
@@ -112,6 +114,19 @@ $rocket-tree-level-line-string:         '';
             white-space: nowrap;
             width: 5%;
             padding: 0.4rem 0.75rem;
+            // position: sticky;
+            // right: 0;
+            // &:after {
+            //     content: "";
+            //     border-left: 1.5px solid $table-border-color;
+            //     position: absolute;
+            //     top: 0;
+            //     left: 0;
+            //     width: 100%;
+            //     height: 100%;
+            //     background-color: $white;
+            //     z-index: -1;
+            // }
         }
 
         .rocket-entry-selector {

@@ -2,7 +2,7 @@
 	<div class="dropdown">
 		<ng-template [ngTemplateOutlet]="simpleButton"></ng-template>
 	
-		<div *ngIf="subVisible" class="">
+		<div *ngIf="subVisible" class="dropdown-subs">
 			<div *ngFor="let item of subSiButtonMap | keyvalue">
 				<button [class]="item.value.btnClass" [class.rocket-important]="siButton.important" 
 						(click)="subExec(item.key)" [disabled]="loading">

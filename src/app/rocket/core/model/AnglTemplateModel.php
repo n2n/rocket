@@ -50,7 +50,10 @@ class AnglTemplateModel implements Lookupable {
 			'languages_txt' => $dtc->t('languages_txt'),
 			'visible_label' => $dtc->t('visible_label'),
 			'errors_txt' => $dtc->t('errors_txt'),
+			'show_errors_txt' => $dtc->t('show_errors_txt'),
 			'activate_txt' => $dtc->t('activate_txt'),
+			'close_layer_text' => $dtc->t('close_layer_text'),
+			'search_placeholder_txt' => $dtc->t('search_placeholder_txt'),
 			'common_select_label' => $dtc->t('common_select_label'),
 			'common_apply_label' => $dtc->t('common_apply_label'),
 			'common_cancel_label' => $dtc->t('common_cancel_label'),
@@ -59,12 +62,13 @@ class AnglTemplateModel implements Lookupable {
 			'common_delete_label' => $dtc->t('common_delete_label'),
 			'common_copy_label' => $dtc->t('common_copy_label'),
 			'common_add_label' => $dtc->t('common_add_label'),
+			'common_edit_all_label' => $dtc->t('common_edit_all_label'),
 			'common_open_all_label' => $dtc->t('common_open_all_label'),
 			'mandatory_err' => ValidationMessages::mandatory('{field}')->t($n2nLocale),
 			'minlength_err' => ValidationMessages::minlength('{minlength}', '{field}')->t($n2nLocale),
 			'maxlength_err' => ValidationMessages::maxlength('{maxlength}', '{field}')->t($n2nLocale),
 			'min_elements_err' => str_replace($nr, '{min}', ValidationMessages::minElements($nr, '{field}')->t($n2nLocale)),
-			'max_elements_err' => str_replace($nr, '{max}', ValidationMessages::maxElements($nr, '{field}')->t($n2nLocale))
+			'max_elements_err' => str_replace($nr, '{max}', ValidationMessages::maxElements($nr, '{field}')->t($n2nLocale)),
 		];
 	}
 }
