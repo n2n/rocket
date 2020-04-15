@@ -56,7 +56,7 @@ use rocket\ei\manage\gui\ViewMode;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
 use rocket\ei\manage\entry\EiFieldValidationResult;
-use n2n\validation\impl\ValidationMessages;
+use n2n\validation\lang\ValidationMessages;
 
 class TranslationEiProp extends RelationEiPropAdapter implements FieldEiProp, QuickSearchableEiProp {
 	/**

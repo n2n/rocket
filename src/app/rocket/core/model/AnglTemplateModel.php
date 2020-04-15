@@ -23,7 +23,7 @@ namespace rocket\core\model;
 
 use n2n\context\Lookupable;
 use n2n\core\container\N2nContext;
-use n2n\validation\impl\ValidationMessages;
+use n2n\validation\lang\ValidationMessages;
 use n2n\l10n\DynamicTextCollection;
 
 class AnglTemplateModel implements Lookupable {

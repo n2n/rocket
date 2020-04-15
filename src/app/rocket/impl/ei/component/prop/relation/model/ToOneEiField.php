@@ -27,7 +27,7 @@ use rocket\impl\ei\component\prop\adapter\entry\EiFieldAdapter;
 use rocket\impl\ei\component\prop\relation\RelationEiProp;
 use n2n\util\type\TypeConstraints;
 use rocket\ei\util\entry\EiuEntry;
-use n2n\validation\impl\ValidationMessages;
+use n2n\validation\lang\ValidationMessages;
 use n2n\util\type\CastUtils;
 use n2n\util\type\ArgUtils;
 use n2n\util\ex\IllegalStateException;

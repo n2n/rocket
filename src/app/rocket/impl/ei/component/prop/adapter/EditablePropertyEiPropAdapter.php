@@ -31,7 +31,7 @@ use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldEditable;
 use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\impl\ei\component\prop\adapter\gui\GuiFields;
-use n2n\validation\impl\ValidationMessages;
+use n2n\validation\lang\ValidationMessages;
 use rocket\impl\ei\component\prop\adapter\entry\EiFields;
 use rocket\ei\component\prop\FieldEiProp;
 use rocket\impl\ei\component\prop\adapter\entry\StatelessEiFieldCopier;
