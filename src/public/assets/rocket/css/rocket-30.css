@@ -4902,7 +4902,6 @@ body {
   background: #F7F5F5;
 }
 
-body > div,
 body > rocket-root {
   overflow: hidden;
   display: -ms-grid;
@@ -5232,7 +5231,7 @@ rocket-ui-layer {
 }
 
 @media (min-width: 992px) {
-  body > div {
+  body > rocket-root {
         grid-template-areas: "header-placeholder header" "nav main";
     -ms-grid-rows: min-content 1fr;
         grid-template-rows: -webkit-min-content 1fr;
@@ -5240,7 +5239,7 @@ rocket-ui-layer {
     -ms-grid-columns: minmax(0, 14rem) minmax(0, 1fr);
         grid-template-columns: minmax(0, 14rem) minmax(0, 1fr);
   }
-  body > div:before {
+  body > rocket-root:before {
     content: "";
     -ms-grid-row: 1;
     -ms-grid-column: 1;

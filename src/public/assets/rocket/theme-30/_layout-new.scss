@@ -16,7 +16,6 @@ body {
     // background: $body-color;
 }
 
-body > div,
 body > rocket-root {
     overflow: hidden;
     display: grid;
@@ -338,7 +337,7 @@ rocket-ui-layer {
 }
 
 @include media-breakpoint-up(lg) {
-    body > div {
+    body > rocket-root {
         grid-template-areas:    "header-placeholder header"
                                 "nav main";
         grid-template-rows: min-content 1fr;
