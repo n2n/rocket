@@ -272,6 +272,11 @@ class EiuAnalyst {
 				continue;
 			}
 			
+			if ($eiArg instanceof EiuMask) {
+				$this->assignEiMask($eiArg->getEiMask());
+				continue;
+			}
+			
 			if ($eiArg instanceof EiuEntryGui) {
 				$this->assignEiEntryGui($eiArg->getEiEntryGui());
 				continue;

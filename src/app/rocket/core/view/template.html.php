@@ -24,6 +24,10 @@
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use rocket\core\model\TemplateModel;
 	use n2nutil\jquery\JQueryUiLibrary;
+use n2n\web\http\nav\Murl;
+use n2n\core\N2N;
+use n2n\web\ui\Raw;
+use rocket\user\model\LoginContext;
 	
 	$view = HtmlView::view($this);
 	$request = HtmlView::request($view);
@@ -36,6 +40,9 @@
 	
 	$templateModel = $view->lookup(TemplateModel::class);
 	$view->assert($templateModel instanceof TemplateModel);
+	
+	$loginContext = $view->lookup(LoginContext::class);
+	$view->assert($loginContext instanceof LoginContext);
 	
 	$html->meta()->addCssCode('
 			body {
@@ -61,7 +68,79 @@
 			    to { transform: translateX(0); }
 			}');
 ?>
-
+<header id="rocket-header">
+	<div id="rocket-logo">
+		<?php $html->link(Murl::controller('rocket'), $html->getImageAsset('img/rocket-logo.svg', 'logo'),
+				array('id' => 'rocket-branding')) ?>
+	</div>
+	<h2 id="rocket-customer-name"><?php $html->out(N2N::getAppConfig()->general()->getPageName()) ?></h2>
+	<nav id="rocket-conf-nav" class="navbar-expand-lg" data-jhtml-comp="rocket-conf-nav">
+		<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+				data-target="#rocket-conf-nav" aria-controls="navbarText" aria-expanded="false"
+				aria-label="Toggle navigation">
+			<i class="fa fa-navicon"></i>
+		</button>
+		<h2 class="sr-only"><?php $html->l10nText('conf_nav_title') ?></h2>
+		<ul class="nav rocket-meta-nav justify-content-end">
+			<?php if ($templateModel->getCurrentUser()->isAdmin()): ?>
+				<li class="nav-item">
+					<?php $html->linkStart(Murl::controller('rocket')->pathExt('tools'), array('class' => 'nav-link')) ?>
+					<i class="fa fa-wrench mr-2"></i><span><?php $html->text('tool_title') ?></span>
+					<?php $html->linkEnd() ?>
+				</li>
+				<li class="nav-item">
+					<?php $html->linkStart(Murl::controller('rocket')->pathExt('users'), array('class' => 'nav-link')) ?>
+					<i class="fa fa-user mr-2"></i><span><?php $html->text('user_title') ?></span>
+					<?php $html->linkEnd() ?>
+				</li>
+				<li class="nav-item">
+					<?php $html->linkStart(Murl::controller('rocket')->pathExt('usergroups'), array('class' => 'nav-link')) ?>
+					<i class="fa fa-group mr-2"></i><span><?php $html->text('user_groups_title') ?></span>
+					<?php $html->linkEnd() ?>
+				</li>
+			<?php endif ?>
+			<li class="nav-item">
+				<?php $html->linkStart(Murl::controller('rocket')->pathExt('users', 'profile'), array('class' => 'nav-link rocket-conf-user')) ?>
+				<i class="fa fa-user mr-2"></i><span><?php $html->out((string) $templateModel->getCurrentUser()) ?></span>
+				<?php $html->linkEnd() ?>
+			</li>
+			<li class="nav-item">
+				<?php $html->linkStart(Murl::controller('rocket')->pathExt('logout'), array('class' => 'nav-link rocket-conf-logout')) ?>
+				<i class="fa fa-sign-out"></i>
+				<?php $html->linkEnd() ?>
+			</li>
+			<li class="nav-item">
+				<?php $html->linkStart(Murl::controller('rocket')->pathExt('about'), array('class' => 'nav-link')) ?>
+				<i class="fa fa-info"></i>
+				<?php $html->linkEnd() ?>
+			</li>
+		</ul>
+	</nav>
+</header>
+<nav id="rocket-global-nav" data-jhtml-comp="rocket-global-nav">
+	<h2 class="sr-only" data-rocket-user-id="<?php $html->out($loginContext->getCurrentUser()->getId()) ?>"><?php $html->l10nText('manage_nav_title') ?></h2>
+	<?php foreach ($templateModel->getNavArray() as $navArray): ?>
+		<div class="rocket-nav-group<?php $html->esc($navArray['open'] ? ' rocket-nav-group-open': '') ?>"
+				data-nav-group-id="<?php $html->out(str_replace(' ', '-', strtolower($navArray['menuGroup']->getLabel()))) ?>">
+			<h3 class="rocket-global-nav-group-title">
+				<a><?php $html->esc($navArray['menuGroup']->getLabel()) ?></a>
+				<i class="fa <?php $html->esc($navArray['open'] ? 'fa-minus': 'fa-plus') ?>"></i>
+			</h3>
+			<ul class="nav flex-column">
+				<?php foreach ($navArray['launchPads'] as $launchPad): ?>
+					<li class="nav-item">
+						<?php $html->link(
+								$view->buildUrl(Murl::controller('rocket')->pathExt('manage', $launchPad->getId()))
+										->ext($launchPad->determinePathExt($view->getN2nContext())),
+								new Raw($html->getEsc($navArray['menuGroup']->determineLabel($launchPad))
+									. '<span></span>'),
+								array('data-jhtml' => 'true', 'class' => 'nav-link'
+									. ($templateModel->isLaunchPadActive($launchPad) ? ' active' : null))) ?></li>
+				<?php endforeach ?>
+			</ul>
+		</div>
+	<?php endforeach ?>
+</nav>
 
 <div id="rocket-content-container" data-error-tab-title="<?php $html->text('ei_error_list_title') ?>"
 		data-display-error-label="<?php $html->text('core_display_error_label') ?>">

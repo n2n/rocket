@@ -106,8 +106,6 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	 * @param EiComponent $eiComponent
 	 */
 	protected function addElement(IdPath $idPath, EiComponent $element, bool $prepend = false) {
-		$this->ensureNoEiEngine();
-		
 		$idPathStr = (string) $idPath;
 		
 		$this->idPaths[$idPathStr] = $idPath; 
@@ -130,6 +128,8 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 		}
 		
 		$this->forkedElements[$forkIdPathStr][$lastId] = $element;
+		
+		$this->triggerChanged();
 	}
 	
 	protected function addIndependentElement(IdPath $idPath, EiComponent $independentElement) {
@@ -249,10 +249,7 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 		return $elements;
 	}
 	
-	/* (non-PHPdoc)
-	 * @see Countable::count()
-	 */
-	public function count() {
+	function count() {
 		$num = count($this->elements);
 		if ($this->inheritedCollection !== null) {
 			$num += $this->inheritedCollection->count();
@@ -260,175 +257,23 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 		return $num;
 	}
 	
-/**
- * Remove comments step by step
- */
+	/**
+	 * @var EiComponentCollectionListener[]
+	 */
+	private $listeners = [];
 	
+	function registerListener(EiComponentCollectionListener $listener) {
+		$this->listeners[spl_object_hash($listener)] = $listener;
+	}
 	
-// 	/**
-// 	 * @param string $levelOnly
-// 	 * @param string $independentOnly
-// 	 * @return \rocket\ei\component\IndependentEiComponent[] 
-// 	 */
-// 	public function filter($levelOnly = false, $independentOnly = false) {
-// 		if ($levelOnly) {
-// 			return $this->filterLevel($independentOnly);
-// 		}
-		
-// 		return $this->toArray($independentOnly);
-// 	}
+	function unregisterListener(EiComponentCollectionListener $listener) {
+		unset($this->listeners[spl_object_hash($listener)]);
+	}
 	
-// 	/**
-// 	 * @param string $independentOnly
-// 	 * @return \rocket\ei\component\IndependentEiComponent[]  
-// 	 */
-// 	private function filterInherited($independentOnly = false) {
-// 		if ($this->inheritedCollection === null) return array();
-		
-// 		return $this->inheritedCollection->toArray($independentOnly);
-// 	}
-// 	/**
-// 	 * @param bool $independentOnly
-// 	 * @return \rocket\ei\component\EiComponent[] 
-// 	 */
-// 	public function filterLevel($independentOnly = false, $includeMasked = true, $includeDisabledInherits = false) {
-// 		$elements = null;
-// 		if (!$independentOnly) {
-// 			$elements = $this->elements;
-// 		} else {
-// 			$elements = $this->independentElements;
-// 			if (!$includeDisabledInherits) {
-// 				$elements = $this->filterEnableds($elements);
-// 			}
-// 		}
-		
-// 		if ($this->inheritedCollection !== null && $this->eiMask !== null && $includeMasked) {
-// 			$elements = $this->inheritedCollection->filterLevel($independentOnly, $includeMasked, $includeDisabledInherits) + $elements;
-// 		}
-		
-// 		return $elements;
-// 	}
+	private function triggerChanged() {
+		foreach ($this->listeners as $listener) {
+			$listener->eiComponenetCollectionChanged($this);
+		}
+	}
 	
-// 	/**
-// 	 * @param array $elements
-// 	 * @return \rocket\ei\component\IndependentEiComponent[]
-// 	 */
-// 	private function filterEnableds(array $elements) {
-// 		foreach ($elements as $id => $element) {
-// 			if ($this->containsDisabledInheritId($id)) {
-// 				unset($elements[$id]);
-// 			}
-// 		}
-		
-// 		return $elements;
-// 	}
-	
-// 	/**
-// 	 * @param array $elements
-// 	 * @return \rocket\ei\component\IndependentEiComponent[] 
-// 	 */
-// 	private function filterIndependents(array $elements) {
-// 		$independentElements = array();
-// 		foreach ($elements as $key => $element) {
-// 			if ($element instanceof IndependentEiComponent) {
-// 				$independentElements[$key] = $element;
-// 			}
-// 		}
-		
-// 		return $independentElements;
-// 	}
-	
-
-	
-// 	/**
-// 	 * @return number
-// 	 */
-// 	public function countLevel(): int {
-// 		$num = count($this->elements);
-// 		if ($this->hasMasked()) {
-// 			$num += $this->inheritedCollection->countLevel();
-// 		}
-// 		return $num;
-// 	}
-	
-// 	/**
-// 	 * @param bool $independentOnly
-// 	 */
-// 	public function clear($independentOnly) {
-// 		$this->clearLevel($independentOnly);
-		
-// 		if ($this->inheritedCollection !== null) {
-// 			$this->inheritedCollection->clear($independentOnly);
-// 		}
-// 	}
-	
-// 	/**
-// 	 * @param bool $independentOnly
-// 	 */
-// 	public function clearLevel($independentOnly = false) {
-// 		if (!$independentOnly) {
-// 			$this->elements = array();
-// 			return;
-// 		}
-		
-// 		foreach ($this->filterIndependents($this->elements) as $id => $element) {
-// 			unset($this->elements[$id]);
-// 		}
-// 	}
-	
-// 	/**
-// 	 * @param string $id
-// 	 */
-// 	public function removeById($id) {
-// 		if (isset($this->elements[$id])) {
-// 			unset($this->elements[$id]);
-// 		}
-		
-// 		if ($this->inheritedCollection !== null) {
-// 			$this->inheritedCollection->removeById($id);
-// 		}
-// 	}
-	
-// 	/**
-// 	 * @param EiComponent $eiComponent
-// 	 */
-// 	public function remove(EiComponent $eiComponent) {
-// 		$this->removeById($eiComponent->getId());
-// 	}
-	
-// 	/**
-// 	 * @param string $independentOnly
-// 	 * @return number
-// 	 */
-// 	public function combineAll($independentOnly = false) {
-// 		return $this->filterInherited($independentOnly) 
-// 				+ $this->combineLevelAndSub($independentOnly);
-// 	}
-	
-// 	/**
-// 	 * @param string $independentOnly
-// 	 * @return \rocket\ei\component\EiComponent[] 
-// 	 */
-// 	protected function combineLevelAndSub($independentOnly = false) {
-// 		$elements = $this->filterLevel($independentOnly);
-// 		foreach ($this->subCollections as $subCollection) {
-// 			$elements += $subCollection->combineLevelAndSub($independentOnly);
-// 		}
-// 		return $elements;
-// 	}
-	
-// 	/**
-// 	 * @param string $id
-// 	 */
-// 	public function disableInheritById(string $id) {
-// 		$this->disabledInheritIds[$id] = $id;
-// 	}
-	
-// 	/**
-// 	 * @param string $id
-// 	 * @return boolean
-// 	 */
-// 	public function containsDisabledInheritId($id) {
-// 		return isset($this->disabledInheritIds[$id]);
-// 	}
 }
