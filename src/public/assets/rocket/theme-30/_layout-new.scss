@@ -16,7 +16,8 @@ body {
     // background: $body-color;
 }
 
-body > div {
+body > div,
+body > rocket-root {
     overflow: hidden;
     display: grid;
     height: 100vh;

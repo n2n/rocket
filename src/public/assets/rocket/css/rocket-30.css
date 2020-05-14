@@ -4902,13 +4902,13 @@ body {
   background: #F7F5F5;
 }
 
-body > div {
+body > div,
+body > rocket-root {
   overflow: hidden;
   display: -ms-grid;
   display: grid;
   height: 100vh;
-      grid-template-areas: "header header"
- "main main";
+      grid-template-areas: "header header" "main main";
 }
 
 /**
@@ -5233,8 +5233,7 @@ rocket-ui-layer {
 
 @media (min-width: 992px) {
   body > div {
-        grid-template-areas: "header-placeholder header"
- "nav main";
+        grid-template-areas: "header-placeholder header" "nav main";
     -ms-grid-rows: min-content 1fr;
         grid-template-rows: -webkit-min-content 1fr;
         grid-template-rows: min-content 1fr;
@@ -5272,9 +5271,7 @@ rocket-ui-layer {
   display: -ms-grid;
   display: grid;
   padding: 0 3rem;
-      grid-template-areas: "header header"
- "main aside"
- "bottom bottom";
+      grid-template-areas: "header header" "main aside" "bottom bottom";
   -ms-grid-rows: min-content 1fr min-content;
       grid-template-rows: -webkit-min-content 1fr -webkit-min-content;
       grid-template-rows: min-content 1fr min-content;
