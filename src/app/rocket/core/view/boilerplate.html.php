@@ -80,7 +80,6 @@
 	<?php $html->bodyStart(array('data-refresh-path' => $view->buildUrl(Murl::controller('rocket')),
 			'class' => (isset($view->params['tmplMode']) ? $view->params['tmplMode'] : null))) ?>
 		
-		
 		<?php $view->importContentView() ?>
 		
 	<?php $html->bodyEnd() ?>

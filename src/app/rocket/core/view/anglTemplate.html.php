@@ -32,6 +32,4 @@ use rocket\core\model\AnglTemplateModel;
 	$view->assert($anglTemplateModel instanceof AnglTemplateModel);
 ?>
 
-<div id="rocket-content-container">
-	<rocket-root data-rocket-angl-data="<?php $html->out(json_encode($anglTemplateModel->createData($view->getControllerContext()))) ?>"></rocket-root>
-</div>
+<rocket-root data-rocket-angl-data="<?php $html->out(json_encode($anglTemplateModel->createData($view->getControllerContext()))) ?>"></rocket-root>
