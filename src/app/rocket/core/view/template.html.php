@@ -25,6 +25,9 @@
 	use rocket\core\model\TemplateModel;
 	use n2nutil\jquery\JQueryUiLibrary;
 use n2n\web\http\nav\Murl;
+use n2n\core\N2N;
+use n2n\web\ui\Raw;
+use rocket\user\model\LoginContext;
 	
 	$view = HtmlView::view($this);
 	$request = HtmlView::request($view);
@@ -37,6 +40,9 @@ use n2n\web\http\nav\Murl;
 	
 	$templateModel = $view->lookup(TemplateModel::class);
 	$view->assert($templateModel instanceof TemplateModel);
+	
+	$loginContext = $view->lookup(LoginContext::class);
+	$view->assert($loginContext instanceof LoginContext);
 	
 	$html->meta()->addCssCode('
 			body {
@@ -65,7 +71,7 @@ use n2n\web\http\nav\Murl;
 <header id="rocket-header">
 	<div id="rocket-logo">
 		<?php $html->link(Murl::controller('rocket'), $html->getImageAsset('img/rocket-logo.svg', 'logo'),
-			array('id' => 'rocket-branding')) ?>
+				array('id' => 'rocket-branding')) ?>
 	</div>
 	<h2 id="rocket-customer-name"><?php $html->out(N2N::getAppConfig()->general()->getPageName()) ?></h2>
 	<nav id="rocket-conf-nav" class="navbar-expand-lg" data-jhtml-comp="rocket-conf-nav">
