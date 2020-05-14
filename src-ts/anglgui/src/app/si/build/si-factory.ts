@@ -3,7 +3,7 @@ import { Extractor } from 'src/app/util/mapping/extractor';
 import { SiControlFactory } from './si-control-factory';
 import { Injector } from '@angular/core';
 import { SiCompFactory } from './si-comp-factory';
-import { UiFactory } from './ui-factory';
+import { UiFactory } from 'src/app/ui/build/ui-factory';
 
 export class UiZoneModelFactory {
 	constructor(private injector: Injector) {

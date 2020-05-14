@@ -47,7 +47,6 @@ export class EmbeddedEntryComponent /*implements OnInit */{
 
 	// private createSiControls(comp: Embe) {
 	// 	return [
-			
 	// 	];
 	// }
 

@@ -1,1 +1,74 @@
-<router-outlet></router-outlet>
+<header id="rocket-header">
+	<div id="rocket-logo">
+		<a routerLink="/">
+			<img src="img/rocket-logo.svg" class="rocket-branding" />
+		</a>
+	</div>
+	<h2 id="rocket-customer-name">[Page Name]</h2>
+	<nav id="rocket-conf-nav" class="navbar-expand-lg" data-jhtml-comp="rocket-conf-nav">
+		<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+				data-target="#rocket-conf-nav" aria-controls="navbarText" aria-expanded="false"
+				aria-label="Toggle navigation">
+			<i class="fa fa-navicon"></i>
+		</button>
+		<h2 class="sr-only">{{ 'conf_nav_title' }}</h2>
+		<ul class="nav rocket-meta-nav justify-content-end">
+			[admin]
+				<li class="nav-item">
+					<a routerLink="/tools" class="nav-link">
+						<i class="fa fa-wrench mr-2"></i><span>{{ 'tool_title' }}</span>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a routerLink="/users" class="nav-link">
+						<i class="fa fa-user mr-2"></i><span>{{ 'user_title' }}</span>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a routerLink="/usergroups" class="nav-link">
+						<i class="fa fa-group mr-2"></i><span>{{ 'user_groups_title' }}</span>
+					</a>
+				</li>
+			[/admin]
+			<li class="nav-item">
+				<a routerLink="/users/profile" class="nav-link rocket-conf-user">
+					<i class="fa fa-user mr-2"></i><span>[User Name]</span>
+				</a>
+			</li>
+			<li class="nav-item">
+				<button class="nav-link rocket-conf-logout">
+					<i class="fa fa-sign-out"></i>
+				</button>
+			</li>
+			<li class="nav-item">
+				<a routerLink="/about" class="nav-link">
+					<i class="fa fa-info"></i>
+				</a>
+			</li>
+		</ul>
+	</nav>
+</header>
+
+<nav id="rocket-global-nav">
+	<h2 class="sr-only">manage_nav_title</h2>
+	<ng-container *ngFor="let menuGroup of menuGroups">
+		<div class="rocket-nav-group">
+			<h3 class="rocket-global-nav-group-title">
+				<a>{{ menuGroup.label }}</a>
+				<i class="fa fa-minus"><!-- fa-plus --></i>
+			</h3>
+			<ul class="nav flex-column">
+				<li *ngFor="let menuItem of menuGroup.menuItems" class="nav-item">
+					<a [routerLink]="menuItem.navPoint.url" class="nav-link">{{ menuItem.label }}</a>
+					<!-- <a rocketUiNavPoint [uiNavPoint]="menuItem.navPoint">
+						{{ menuItem.label }}
+					</a> -->
+				</li>
+			</ul>
+		</div>
+	</ng-container>
+</nav>
+
+<div id="rocket-content-container">
+	<router-outlet></router-outlet>
+</div>

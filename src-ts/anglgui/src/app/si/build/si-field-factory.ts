@@ -24,9 +24,9 @@ import { SiCompFactory } from './si-comp-factory';
 import { SiEntryFactory } from './si-entry-factory';
 import { SiDeclaration } from '../model/meta/si-declaration';
 import { SiService } from '../manage/si.service';
-import { UiFactory } from './ui-factory';
 import { SiControlBoundry } from '../model/control/si-control-bountry';
 import { TranslationService } from 'src/app/util/i18n/translation.service';
+import { UiFactory } from 'src/app/ui/build/ui-factory';
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',

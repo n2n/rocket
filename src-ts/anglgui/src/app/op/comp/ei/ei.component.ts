@@ -13,7 +13,7 @@ import { MainUiLayer } from 'src/app/ui/structure/model/ui-layer';
 })
 export class EiComponent implements OnInit, OnDestroy {
 
-	private uiContainer: UiContainer;
+	uiContainer: UiContainer;
 	private subscription: Subscription;
 
 	constructor(private route: ActivatedRoute, private siUiService: SiUiService,
