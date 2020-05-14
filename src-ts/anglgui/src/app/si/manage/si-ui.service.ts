@@ -45,6 +45,16 @@ export class SiUiService {
 
 	}
 
+	navRouterUrl(url: string): string {
+		const baseHref = this.platformLocation.getBaseHrefFromDOM();
+
+		if (!url.startsWith(baseHref)) {
+			throw new IllegalSiStateError('Ref url must start with base href: ' + url);
+		}
+
+		return url.substring(baseHref.length);
+	}
+
 	navigate(url: string, layer: UiLayer) {
 		if (!layer.main) {
 			throw new Error('not yet implemented');

@@ -99,7 +99,7 @@ class AnglTemplateModel implements Lookupable {
 					continue;
 				}
 				
-				$navPoint = NavPoint::siref((new Path(['manage', $launchPad->getId(), $launchPad->determinePathExt($this->n2nContext)]))->toUrl());
+				$navPoint = NavPoint::siref((new Path(['manage', $launchPad->getId()]))->toUrl()->ext($launchPad->determinePathExt($this->n2nContext)));
 				
 				$navPoint->complete($contextUrl);
 				

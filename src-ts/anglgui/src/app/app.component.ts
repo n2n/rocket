@@ -3,6 +3,7 @@ import { TranslationService } from './util/i18n/translation.service';
 import { Extractor } from './util/mapping/extractor';
 import { UiFactory } from './ui/build/ui-factory';
 import { UiMenuGroup } from './ui/structure/model/ui-menu';
+import { SiUiService } from './si/manage/si-ui.service';
 
 @Component({
 	selector: 'rocket-root',
@@ -14,7 +15,7 @@ export class AppComponent implements OnInit {
 
 	menuGroups: UiMenuGroup[];
 
-	constructor(private elemRef: ElementRef, private translationService: TranslationService) {
+	constructor(private elemRef: ElementRef, private translationService: TranslationService, private uiSiService: SiUiService) {
 	}
 
 	ngOnInit() {
@@ -22,6 +23,10 @@ export class AppComponent implements OnInit {
 		this.translationService.map = extr.reqStringMap('translationMap');
 
 		this.menuGroups = UiFactory.createMenuGroups(UiFactory.createMenuGroups(extr.reqArray('menuGroups')));
+	}
+
+	navRouterLink(url: string): string {
+		return this.uiSiService.navRouterUrl(url);
 	}
 
 }

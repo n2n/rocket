@@ -59,7 +59,7 @@
 			</h3>
 			<ul class="nav flex-column">
 				<li *ngFor="let menuItem of menuGroup.menuItems" class="nav-item">
-					<a [routerLink]="menuItem.navPoint.url" class="nav-link">{{ menuItem.label }}</a>
+					<a [routerLink]="navRouterLink(menuItem.navPoint.url)" class="nav-link">{{ menuItem.label }}</a>
 					<!-- <a rocketUiNavPoint [uiNavPoint]="menuItem.navPoint">
 						{{ menuItem.label }}
 					</a> -->
