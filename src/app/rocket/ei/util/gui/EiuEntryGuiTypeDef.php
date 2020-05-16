@@ -28,6 +28,7 @@ use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\util\EiuPerimeterException;
 use rocket\si\content\impl\basic\CompactEntrySiComp;
 use rocket\ei\manage\gui\EiEntryGuiTypeDef;
+use rocket\ei\manage\gui\field\GuiPropPath;
 
 class EiuEntryGuiTypeDef {
 	/**
@@ -55,10 +56,10 @@ class EiuEntryGuiTypeDef {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\gui\EiEntryGuiMulti
+	 * @return \rocket\ei\manage\gui\EiEntryGuiTypeDef
 	 */
-	function getEiEntryGuiMulti() {
-		return $this->eiEntryGuiMultiResult->getEiEntryGuiMulti();
+	function getEiEntryGuiTypeDef() {
+		return $this->eiEntryGuiTypeDef;
 	}
 	
 	/**
@@ -114,5 +115,13 @@ class EiuEntryGuiTypeDef {
 		
 		return new CompactEntrySiComp($this->eiEntryGuiMultiResult->createSiDeclaration(),
 				$this->eiEntryGuiMultiResult->createSiEntry($siControlsIncluded));
+	}
+	
+	/**
+	 * @param GuiPropPath|string $guiPropPath
+	 * @return EiuGuiField
+	 */
+	function field($guiPropPath) {
+		return new EiuGuiField(GuiPropPath::create($guiPropPath), $this, $this->eiuAnalyst);
 	}
 }

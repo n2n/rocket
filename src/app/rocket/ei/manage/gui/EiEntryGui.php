@@ -36,11 +36,14 @@ class EiEntryGui {
 	 */
 	private $contextEiType;
 	/**
+	 * @var EiGui
+	 */
+	private $eiGui;
+	/**
 	 * @var string|null
 	 */
 	private $selectedEiTypeId = null;
-	/**
-	 * @var EiEntryGuiTypeDef[]
+	/**	 * @var EiEntryGuiTypeDef[]
 	 */
 	private $typeDefs = [];
 	/**
@@ -51,9 +54,14 @@ class EiEntryGui {
 	/**
 	 * @param int|null $treeLevel
 	 */
-	public function __construct(EiType $contextEiType, int $treeLevel = null) {
+	public function __construct(EiType $contextEiType, EiGui $eiGui, int $treeLevel = null) {
 		$this->contextEiType = $contextEiType;
+		$this->eiGui = $eiGui;
 		$this->treeLevel = $treeLevel;
+	}
+	
+	function getEiGui() {
+		return $this->eiGui;
 	}
 	
 	/**

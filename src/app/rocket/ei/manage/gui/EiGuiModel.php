@@ -241,10 +241,11 @@ class EiGuiModel {
 	 * @throws \InvalidArgumentException
 	 * @return \rocket\ei\manage\gui\EiEntryGui
 	 */
-	function createEiEntryGui(EiFrame $eiFrame, array $eiEntries, int $treeLevel = null) {
+	function createEiEntryGui(EiFrame $eiFrame, array $eiEntries, EiGui $eiGui, int $treeLevel = null) {
+		ArgUtils::assertTrue($eiGui->getEiGuiModel() === $this);
 		ArgUtils::valArray($eiEntries, EiEntry::class);
 		
-		$eiEntryGui = new EiEntryGui($this->contextEiMask->getEiType(), $treeLevel);
+		$eiEntryGui = new EiEntryGui($this->contextEiMask->getEiType(), $eiGui, $treeLevel);
 		
 		$eiEntries = $this->catEiEntries($eiEntries);
 		

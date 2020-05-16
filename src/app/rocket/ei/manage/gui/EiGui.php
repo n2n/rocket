@@ -1,13 +1,11 @@
 <?php
 namespace rocket\ei\manage\gui;
 
-use n2n\util\type\ArgUtils;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\mask\EiMask;
 use rocket\ei\manage\security\InaccessibleEiEntryException;
 use rocket\ei\manage\entry\EiEntry;
 use n2n\util\ex\IllegalStateException;
-use rocket\si\content\SiEntry;
 
 class EiGui {
 	/**
@@ -79,7 +77,7 @@ class EiGui {
 	 * @return \rocket\ei\manage\gui\EiEntryGui
 	 */
 	function appendEiEntryGui(EiFrame $eiFrame, array $eiEntries, int $treeLevel = null) {
-		return $this->eiEntryGuis[] = $this->eiGuiModel->createEiEntryGui($eiFrame, $eiEntries, $treeLevel);
+		return $this->eiEntryGuis[] = $this->eiGuiModel->createEiEntryGui($eiFrame, $eiEntries, $this, $treeLevel);
 	}
 	
 	/**

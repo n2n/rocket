@@ -115,7 +115,7 @@ class EiuAnalyst {
 	protected $eiuEntryGui;
 	protected $eiuEntryGuiTypeDef;
 	protected $eiuEntryGuiAssembler;
-	protected $eiuGuiFrameField;
+	protected $eiuGuiField;
 	protected $eiuField;
 	protected $eiuMask;
 	protected $eiuType;
@@ -258,12 +258,12 @@ class EiuAnalyst {
 			}
 			
 			if ($eiArg instanceof EiEntityObj) {
-				$this->assignEiObject(new LiveEiObject($eiObjectArg));
+				$this->assignEiObject(new LiveEiObject($eiArg));
 				continue;
 			}
 			
 			if ($eiArg instanceof Draft) {
-				$this->assignEiObject(new DraftEiObject($eiObjectArg));
+				$this->assignEiObject(new DraftEiObject($eiArg));
 				continue;
 			}
 			
@@ -579,6 +579,8 @@ class EiuAnalyst {
 		$this->assignEiGuiModel($eiGui->getEiGuiModel());
 		
 		$this->eiuGui = null;
+		$this->eiGui = $eiGui;
+		
 		$eiEntryGuis = $eiGui->getEiEntryGuis();
 		if (count($eiEntryGuis) == 1) {
 			$this->assignEiEntryGui(current($eiEntryGuis));
@@ -676,6 +678,8 @@ class EiuAnalyst {
 		if ($eiEntryGui->isTypeDefSelected()) {
 			$this->assignEiEntryGuiTypeDef($eiEntryGui->getSelectedTypeDef());
 		}
+		
+		$this->assignEiGui($eiEntryGui->getEiGui());
 	}
 	
 // 	/**
@@ -1177,8 +1181,7 @@ class EiuAnalyst {
 		}
 		
 		if ($this->eiEntryGui !== null) {
-			return $this->eiuEntryGui = new EiuEntryGui($this->eiEntryGui, $this->getEiuGui(false),
-					$this->getEiuGuiFrame(false), $this);
+			return $this->eiuEntryGui = new EiuEntryGui($this->eiEntryGui, $this->getEiuGui(true), $this);
 		}
 		
 		if (!$required) return null;
@@ -1186,6 +1189,27 @@ class EiuAnalyst {
 		throw new EiuPerimeterException(
 				'Can not create EiuEntryGui because non of the following types were provided as eiArgs: '
 						. implode(', ', self::EI_ENTRY_GUI_TYPES));
+	}
+	
+	/**
+	 * @param bool $required
+	 * @throws EiuPerimeterException
+	 * @return \rocket\ei\util\gui\EiuEntryGuiTypeDef
+	 */
+	public function getEiuEntryGuiTypeDef(bool $required) {
+		if ($this->eiuEntryGuiTypeDef !== null) {
+			return $this->eiuEntryGuiTypeDef;
+		}
+		
+		if ($this->eiEntryGuiTypeDef !== null) {
+			return $this->eiuEntryGuiTypeDef = new EiuEntryGuiTypeDef($this->eiEntryGuiTypeDef, $this->getEiuEntryGui(false), $this);
+		}
+		
+		if (!$required) return null;
+		
+		throw new EiuPerimeterException(
+				'Can not create EiuEntryGui because non of the following types were provided as eiArgs: '
+				. implode(', ', self::EI_ENTRY_GUI_TYPES));
 	}
 	
 	/**
@@ -1199,13 +1223,12 @@ class EiuAnalyst {
 		}
 		
 		if ($this->eiGui !== null) {
-			return $this->eiuGui = new EiuGui($this->eiGui, $this->eiuGuiFrame, $this);
+			return $this->eiuGui = new EiuGui($this->eiGui, $this->eiuGuiModel, $this);
 		}
 		
 		if (!$required) return null;
 		
-		throw new EiuPerimeterException(
-				'Can not create EiuGui because non of the following types were provided as eiArgs: '
+		throw new EiuPerimeterException('Can not create EiuGui because non of the following types were provided as eiArgs: '
 				. implode(', ', self::EI_GUI_TYPES));
 	}
 	
@@ -1275,14 +1298,14 @@ class EiuAnalyst {
 	}
 	
 	public function getEiuGuiField(bool $required) {
-		if ($this->eiuGuiFrameField !== null) {
-			return $this->eiuGuiFrameField;
+		if ($this->eiuGuiField !== null) {
+			return $this->eiuGuiField;
 		}
 		
-		$eiuEntryGui = $this->getEiuEntryGui(false);
-		if ($eiuEntryGui !== null) {
+		$eiuEntryGuiTypeDef = $this->getEiuEntryGuiTypeDef(false);
+		if ($eiuEntryGuiTypeDef !== null) {
 			if ($this->guiPropPath !== null) {
-				return $this->eiuGuiFrameField = $eiuEntryGui->field($this->guiPropPath);
+				return $this->eiuGuiField = $eiuEntryGuiTypeDef->field($this->guiPropPath);
 			}
 		}
 		

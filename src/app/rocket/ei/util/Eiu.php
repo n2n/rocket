@@ -22,7 +22,7 @@ class Eiu implements Lookupable {
 	private $eiuGuiModel;
 	private $eiuGuiFrame;
 	private $eiuEntryGui;
-	private $eiuGuiFrameField;
+	private $eiuGuiField;
 	private $eiuFactory;
 	
 	public function __construct(...$eiArgs) {
@@ -205,11 +205,11 @@ class Eiu implements Lookupable {
 	 * @return \rocket\ei\util\gui\EiuGuiField|null
 	 */
 	public function guiField(bool $required = true) {
-		if ($this->eiuGuiFrameField !== null) {
-			return $this->eiuGuiFrameField;
+		if ($this->eiuGuiField !== null) {
+			return $this->eiuGuiField;
 		}
 		
-		return $this->eiuGuiFrameField = $this->eiuAnalyst->getEiuGuiField($required);
+		return $this->eiuGuiField = $this->eiuAnalyst->getEiuGuiField($required);
 	}
 	
 	/**

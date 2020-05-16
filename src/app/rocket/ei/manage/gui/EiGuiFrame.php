@@ -33,7 +33,7 @@ class EiGuiFrame {
 	 */
 	private $guiDefinition;
 	/**
-	 * @var GuiDefinition
+	 * @var GuiStructureDeclaration[]
 	 */
 	private $guiStructureDeclarations;
 	/**
