@@ -23,9 +23,9 @@ namespace rocket\impl\ei\component\prop\file\conf;
 
 use n2n\l10n\Message;
 use n2n\validation\lang\ValidationMessages;
-use n2n\validation\impl\ValidationUtils;
 use n2n\io\managed\File;
 use n2n\io\managed\img\ImageFile;
+use n2n\validation\plan\impl\ValidationUtils;
 
 class FileVerificator {
 	

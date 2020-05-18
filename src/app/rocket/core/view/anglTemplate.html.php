@@ -1,6 +1,6 @@
 <?php
 	use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\core\model\AnglTemplateModel;
+	use rocket\core\model\AnglTemplateModel;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($view);

@@ -8,6 +8,11 @@ import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-s
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { ImageResizeComponent } from '../image-resize/image-resize.component';
 import { SiCompFactory } from 'src/app/si/build/si-comp-factory';
+import {
+	Uppload, Local, xhrUploader, en, Camera, URL, Screenshot, Crop, Rotate,
+	Blur, Brightness, Flip, Contrast, Grayscale, HueRotate, Invert, Saturate, Sepia
+} from 'uppload';
+import { SiFieldFactory } from 'src/app/si/build/si-field-factory';
 
 
 @Component({
@@ -66,6 +71,19 @@ export class FileInFieldComponent implements OnInit {
 	private popupUiLayer: PopupUiLayer|null = null;
 
 	ngOnInit() {
+		const customUploader = (file: Blob): Promise<string> => {
+			return this.upload(file).then(siFile => siFile.url);
+		};
+
+		const uploader = new Uppload({
+  			lang: en,
+  			uploader: customUploader
+		});
+		uploader.use([new Local(), new Camera(), new URL(), new Screenshot(), new Crop(), new Rotate(), new Blur(),
+				new Brightness(), new Flip(), new Contrast(), new Grayscale(), new HueRotate(), new Invert(),
+				new Saturate(), new Sepia() /*new Unsplash(), new Pixabay(), new Pexels()*/] as any[]);
+
+		uploader.open();
 	}
 
 	getPrettySize(): string {
@@ -83,29 +101,26 @@ export class FileInFieldComponent implements OnInit {
 		}
 
 		const file = fileList[0];
+	}
 
+	private upload(file: Blob): Promise<SiFile> {
 		if (file.size > this.model.getMaxSize()) {
 			this.uploadTooLarge = true;
-			return;
+			return Promise.reject('too large');
 		}
 
-		this.uploadingFile = file;
-		this.uploadInitiated = true;
-
-		this.siService.fieldCall(this.model.getApiUrl(), this.model.getApiCallId(),	{}, new Map().set('upload', file))
-				.subscribe((data) => {
-					if (file !== this.uploadingFile) {
-						return;
-					}
-
+		return this.siService.fieldCall(this.model.getApiUrl(), this.model.getApiCallId(), {}, new Map().set('upload', file))
+				.toPromise().then((data) => {
 					this.imgLoaded = false;
 					this.uploadingFile = null;
-
 					if (data.error) {
-						this.uploadErrorMessage = data.error;
-					} else {
-						this.model.setSiFile(SiCompFactory.buildSiFile(data.file));
+						throw new Error(data.error);
 					}
+
+					const siFile = SiCompFactory.buildSiFile(data.file);
+					this.model.setSiFile(siFile);
+
+					return siFile;
 				});
 	}
 
