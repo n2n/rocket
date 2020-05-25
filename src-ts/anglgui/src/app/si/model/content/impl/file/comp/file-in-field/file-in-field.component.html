@@ -1,13 +1,15 @@
 <ng-container *ngIf="inputAvailable">
-	<img alt="Profile picture" class="profile-pic">
-  	<button class="pic-btn">Change picture</button>
+	<input #fileInput type="file" (change)="change($event)" [accept]="getAcceptStr()" [disabled]="loading" />
 
-	<input #fileInput type="file" (change)="change($event)" [accept]="getAcceptStr()" />
+	<button class="pic-btn" [disabled]="loading" (click)="uploader.open()">{{ 'editor_txt' | translate }}</button>
 
 	<span>({{ 'max_label'| translate }} {{ getPrettySize() }})</span>
 </ng-container>
 
 <ng-container *ngIf="currentSiFile">
+	
+	<button class="pic-btn" [disabled]="loading" (click)="uploader.open()">{{ 'editor_txt' | translate }}</button>
+
 	<a *ngIf="currentSiFile.url" [href]="currentSiFile.url">
 		<ng-container *ngIf="currentSiFile.thumbUrl; else nothumb">
 			<img [class.sr-only]="!imgLoaded" [src]="currentSiFile.thumbUrl"
@@ -28,7 +30,6 @@
 	{{ 'common_remove_txt' | translate }}
 </button>
 
-
 <div *ngIf="loading" class="rocket-loader"></div>
 
 <div *ngIf="uploadTooLarge" class="rocket-message-error">
@@ -39,6 +40,7 @@
 	{{ uploadErrorMessage }}
 </div>
 
-<div *ngIf="!uploadTooLarge && !uploadErrorMessage && model.getMessages().length > 0" class="rocket-message-error">
+<div *ngIf="!uploadTooLarge && !uploadErrorMessage && model.getMessages().length > 0" 
+		class="rocket-message-error">
 	<div *ngFor="let message of model.getMessages()">{{ message }}</div>
 </div>

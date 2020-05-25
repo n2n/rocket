@@ -26,7 +26,6 @@ use n2n\io\UploadedFileExceedsMaxSizeException;
 use n2n\io\managed\File;
 use n2n\io\managed\impl\FileFactory;
 use n2n\io\managed\impl\TmpFileManager;
-use n2n\io\orm\FileEntityProperty;
 use n2n\io\orm\ManagedFileEntityProperty;
 use n2n\l10n\N2nLocale;
 use n2n\persistence\orm\property\EntityProperty;
@@ -124,8 +123,7 @@ class FileEiProp extends DraftablePropertyEiPropAdapter {
 // 	}
 	
 	public function setEntityProperty(EntityProperty $entityProperty = null) {
-		ArgUtils::assertTrue($entityProperty instanceof FileEntityProperty 
-				|| $entityProperty instanceof ManagedFileEntityProperty);
+		ArgUtils::assertTrue($entityProperty instanceof ManagedFileEntityProperty);
 		$this->entityProperty = $entityProperty;
 	}
 	
@@ -229,8 +227,6 @@ class FileEiProp extends DraftablePropertyEiPropAdapter {
 		
 // 		return $uiComponent;
 // 	}
-	
-	
 	
 	public function createInSiField(Eiu $eiu): SiField {
 		$siFile = $this->buildSiFileFromEiu($eiu);

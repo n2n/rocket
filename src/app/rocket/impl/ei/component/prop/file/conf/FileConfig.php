@@ -42,12 +42,17 @@ use rocket\ei\util\Eiu;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\util\type\attrs\DataSet;
 use n2n\config\InvalidConfigurationException;
+use n2n\io\IoUtils;
+use n2n\util\type\CastUtils;
+use n2n\io\orm\ManagedFileEntityProperty;
 
 class FileConfig extends ConfigAdaption {
 	const ATTR_IMAGE_RECOGNIZED_KEY = 'imageRecognized';
 	
 	const ATTR_ALLOWED_EXTENSIONS_KEY = 'allowedExtensions';
 	const ATTR_ALLOWED_MIME_TYPES_KEY = 'allowedMimeTypes';
+	
+	const ATTR_MAX_SIZE_KEY = 'maxSize';
 	
 	const ATTR_DIMENSION_IMPORT_MODE_KEY = 'dimensionImportMode';
 	
@@ -82,6 +87,11 @@ class FileConfig extends ConfigAdaption {
 		$this->fileVerificator->setAllowedMimeTypes(
 				$dataSet->optScalarArray(self::ATTR_ALLOWED_MIME_TYPES_KEY));
 		
+		$maxSizeStr = $dataSet->optString(self::ATTR_MAX_SIZE_KEY);
+		if ($maxSizeStr !== null) {
+			$this->fileVerificator->setMaxSize(IoUtils::parsePhpIniSize($maxSizeStr));
+		}
+		
 		$this->fileVerificator->setImageRecognized(
 				$dataSet->optBool(self::ATTR_IMAGE_RECOGNIZED_KEY, true));
 		
@@ -100,6 +110,11 @@ class FileConfig extends ConfigAdaption {
 		if ($dataSet->optBool(self::ATTR_MULTI_UPLOAD_AVAILABLE_KEY, false)) {
 			$this->setupMulti($eiu, $dataSet);
 		}
+		
+		$entityProperty = $this->getPropertyAssignation()->getEntityProperty(true);
+		CastUtils::assertTrue($entityProperty instanceof ManagedFileEntityProperty);
+		$this->thumbResolver->setTargetFileManager($eiu->lookup($entityProperty->getFileManagerClassName()));
+		$this->thumbResolver->setTargetFileLocator($entityProperty->getFileLocator());
 	}
 	
 	private function setupExtraImageDimensions(DataSet $dataSet) {

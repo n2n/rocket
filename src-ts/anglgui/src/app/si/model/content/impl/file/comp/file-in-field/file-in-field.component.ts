@@ -61,9 +61,11 @@ export class FileInFieldComponent implements OnInit {
 	imgLoaded = false;
 
 	uploadInitiated = false;
-	uploadingFile: File|null = null;
+	uploadingFile: Blob|null = null;
 	uploadTooLarge = false;
 	uploadErrorMessage: string|null = null;
+
+	uploader: Uppload;
 
 	@ViewChild('fileInput', { static: false })
 	fileInputRef: ElementRef;
@@ -72,22 +74,37 @@ export class FileInFieldComponent implements OnInit {
 
 	ngOnInit() {
 		const customUploader = (file: Blob): Promise<string> => {
-			return this.upload(file).then(siFile => siFile.url);
+			this.reset();
+			this.fileInputRef.nativeElement.value = null;
+			return this.upload(file).then(siFile => siFile.url)
+				.catch((e) => { this.uploader.close(); throw e;  });
 		};
 
-		const uploader = new Uppload({
+		this.uploader = new Uppload({
   			lang: en,
   			uploader: customUploader
 		});
-		uploader.use([new Local(), new Camera(), new URL(), new Screenshot(), new Crop(), new Rotate(), new Blur(),
+		this.uploader.use([new Local(), new Camera(), new URL(), new Screenshot(), new Crop(), new Rotate(), new Blur(),
 				new Brightness(), new Flip(), new Contrast(), new Grayscale(), new HueRotate(), new Invert(),
 				new Saturate(), new Sepia() /*new Unsplash(), new Pixabay(), new Pexels()*/] as any[]);
-
-		uploader.open();
 	}
 
 	getPrettySize(): string {
-		return (this.model.getMaxSize() / 1024 / 1024).toLocaleString() + 'MB';
+		let maxSize = this.model.getMaxSize();
+
+		if (maxSize < 1024) {
+			return maxSize.toLocaleString() + ' Bytes';
+		}
+
+		maxSize /= 1024;
+
+		if (maxSize < 1024) {
+			return maxSize.toLocaleString() + ' KB';
+		}
+
+		maxSize /= 1024;
+
+		return maxSize.toLocaleString() + ' MB';
 	}
 
 	change(event: any) {
@@ -96,24 +113,28 @@ export class FileInFieldComponent implements OnInit {
 		const fileList: FileList = event.target.files;
 
 		if (fileList.length === 0) {
-			this.uploadingFile = null;
 			return;
 		}
 
-		const file = fileList[0];
+		this.upload(fileList[0]).catch(() => {});
 	}
 
 	private upload(file: Blob): Promise<SiFile> {
+
 		if (file.size > this.model.getMaxSize()) {
 			this.uploadTooLarge = true;
 			return Promise.reject('too large');
 		}
+
+		this.uploadingFile = file;
+		this.uploadInitiated = true;
 
 		return this.siService.fieldCall(this.model.getApiUrl(), this.model.getApiCallId(), {}, new Map().set('upload', file))
 				.toPromise().then((data) => {
 					this.imgLoaded = false;
 					this.uploadingFile = null;
 					if (data.error) {
+						this.uploadErrorMessage = data.error;
 						throw new Error(data.error);
 					}
 
@@ -152,6 +173,7 @@ export class FileInFieldComponent implements OnInit {
 	}
 
 	private reset() {
+		this.uploadingFile = null;
 		this.model.setSiFile(null);
 		this.uploadInitiated = false;
 		this.uploadTooLarge = false;

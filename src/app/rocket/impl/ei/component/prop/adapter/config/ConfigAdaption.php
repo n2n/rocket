@@ -28,6 +28,7 @@ use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\component\InvalidEiComponentConfigurationException;
 use n2n\reflection\property\AccessProxy;
 use n2n\util\ex\IllegalStateException;
+use n2n\persistence\orm\property\EntityProperty;
 
 abstract class ConfigAdaption implements EiPropConfiguratorAdaption {
 	
@@ -74,39 +75,6 @@ abstract class ConfigAdaption implements EiPropConfiguratorAdaption {
 		if (null === $accessProxy) return false;
 		return !$accessProxy->getConstraint()->allowsNull() && !$accessProxy->getConstraint()->isArrayLike();
 	}
-	
-	protected function getAssignedEntityProperty() {
-		if ($this->entityPropertyConfigurable === null) return null;
-		
-		return $this->entityPropertyConfigurable->getEntityProperty();
-	}
-	
-	// 	protected function getAssignedObjectPropertyAccessProxy() {
-	// 		if ($this->objectPropertyConfigurable === null) return null;
-	
-	// 		return $this->objectPropertyConfigurable->getObjectPropertyAccessProxy();
-	// 	}
-	
-	// 	protected function requireEntityProperty(): EntityProperty {
-	// 		if (null !== ($entityProperty = $this->getAssignedEntityProperty())) {
-	// 			return $entityProperty;
-	// 		}
-	
-	// 		throw new InvalidEiComponentConfigurationException('No EntityProperty assigned to EiProp: ' . $this->eiComponent);
-	// 	}
-	
-	/**
-	 * @throws InvalidEiComponentConfigurationException
-	 * @return AccessProxy
-	 */
-	protected function requireObjectPropertyAccessProxy()  {
-		if (null !== ($accessProxy = $this->getAssignedObjectPropertyAccessProxy())) {
-			return $accessProxy;
-		}
-		
-		throw new InvalidEiComponentConfigurationException('No ObjectProperty assigned to EiProp: ' . $this->eiComponent);
-	}
-	
 	/**
 	 * @throws InvalidEiComponentConfigurationException
 	 * @return string

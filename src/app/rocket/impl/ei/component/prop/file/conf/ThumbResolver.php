@@ -33,6 +33,8 @@ use n2n\io\managed\impl\TmpFileManager;
 use n2n\util\type\CastUtils;
 use rocket\si\content\impl\SiImageDimension;
 use n2n\util\StringUtils;
+use n2n\io\managed\FileManager;
+use n2n\io\managed\FileLocator;
 
 class ThumbResolver {
 	
@@ -42,12 +44,30 @@ class ThumbResolver {
 	private $thumbEiCommand;
 	private $imageDimensionsImportMode = null;
 	private $extraImageDimensions = array();
+	private $targetFileManager;
+	private $targetFileLocator = null;
 	
 	public function setThumbEiCommand(ThumbEiCommand $thumbEiCommand) {
 // 		$thumbEiCommand->setFileEiProp($this);
 		$this->thumbEiCommand = $thumbEiCommand;
 	}
 	
+	function setTargetFileManager(?FileManager $fileManager) {
+		$this->targetFileManager = $fileManager;
+	}
+	
+	function getTargetFileManager() {
+		return $this->targetFileManager;
+	}
+	
+	function setTargetFileLocator(?FileLocator $fileLocator) {
+		$this->targetFileLocator = $fileLocator;
+	}
+	
+	function getTargetFileLocator() {
+		return $this->targetFileLocator;
+	}
+
 	public function getThumbEiCommand() {
 		return $this->thumbEiCommand;
 	}
@@ -240,14 +260,16 @@ class ThumbResolver {
 			$imageDimensions[(string) $imageDimension] = $imageDimension;
 		}
 		
-		$thumbEngine = $file->getFileSource()->getVariationEngine()->getThumbManager();
-		
 		$autoImageDimensions = array();
 		switch ($this->imageDimensionsImportMode) {
 			case self::DIM_IMPORT_MODE_ALL:
-				$autoImageDimensions = $thumbEngine->getPossibleImageDimensions();
+				if ($this->targetFileManager !== null) {
+					$autoImageDimensions = $this->targetFileManager->getPossibleImageDimensions($file, $this->targetFileLocator);
+				}
+				
 				break;
 			case self::DIM_IMPORT_MODE_USED_ONLY:
+				$thumbEngine = $file->getFileSource()->getVariationEngine()->getThumbManager();
 				$autoImageDimensions = $thumbEngine->getUsedImageDimensions();
 				break;
 		}
