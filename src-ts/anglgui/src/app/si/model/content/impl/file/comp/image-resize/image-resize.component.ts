@@ -15,4 +15,10 @@ export class ImageResizeComponent implements OnInit {
 	ngOnInit() {
 	}
 
+
 }
+
+
+// $(elements).find(".rocket-image-resizer-container").each(function () {
+// 					new Rocket.Impl.File.RocketResizer($(this));
+// 				});
