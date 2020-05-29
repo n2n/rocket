@@ -86,7 +86,8 @@ class ThumbModel implements Dispatchable{
 			}
 			
 			$idExt = $imageDimension->getIdExt();
-			$this->groupedImageDimensionOptions[$ratioStr][$imageDimensionString] = $imageDimension->getWidth() . ' x ' . $imageDimension->getHeight()
+			$this->groupedImageDimensionOptions[$ratioStr][$imageDimensionString] = $imageDimension->getWidth() 
+					. ' x ' . $imageDimension->getHeight() 
 					. ($idExt !== null ? ' (' . StringUtils::pretty($idExt) . ')' : '');
 		}
 	}

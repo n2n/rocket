@@ -35,6 +35,9 @@ use rocket\si\content\impl\SiImageDimension;
 use n2n\util\StringUtils;
 use n2n\io\managed\FileManager;
 use n2n\io\managed\FileLocator;
+use n2n\io\managed\img\ThumbCut;
+use n2n\io\img\ImageSource;
+use n2n\io\managed\FileSource;
 
 class ThumbResolver {
 	
@@ -141,7 +144,7 @@ class ThumbResolver {
 					SiFile::getThumbStrategy()->getImageDimension()));
 		}
 		
-		$siFile->setImageDimensions($this->createSiImageDimensions($this->determineImageDimensions($file)));
+		$siFile->setImageDimensions($this->createSiImageDimensions($file, $this->determineImageDimensions($file)));
 		
 		return $siFile;
 	}
@@ -166,15 +169,15 @@ class ThumbResolver {
 		
 	/**
 	 * @param File $file
-	 * @return \n2n\io\managed\File|null
+	 * @return ImageFile|null
 	 */
-	private function buildThumbFile(File $file) {
+	private function buildThumb(File $file) {
 		if (!$file->getFileSource()->getVariationEngine()->hasThumbSupport()) {
 			return null;
 		}
 		
 		$thumbStartegy = SiFile::getThumbStrategy();
-		return (new ImageFile($file))->getOrCreateThumb($thumbStartegy)->getFile();
+		return (new ImageFile($file))->getOrCreateThumb($thumbStartegy);
 	}
 	
 	function createFileUrl(Eiu $eiu, string $pid) {
@@ -203,12 +206,17 @@ class ThumbResolver {
 	/**
 	 * @param Eiu $eiu
 	 * @param string $qualifiedName
-	 * @param ImageDimension $imageDimension
+	 * @param ImageDimension $thumbImgDim
 	 * @return \n2n\util\uri\Url
 	 */
-	function createTmpThumbUrl(Eiu $eiu, string $qualifiedName, ImageDimension $imageDimension) {
-		return $eiu->frame()->getCmdUrl($this->thumbEiCommand)->extR(['tmpthumb'], 
-				['qn' => $qualifiedName, 'imgDim' => $imageDimension->__toString()]);
+	function createTmpThumbUrl(Eiu $eiu, string $qualifiedName, ImageDimension $thumbImgDim, ImageDimension $variationImgDim = null) {
+		$query = ['qn' => $qualifiedName, 'thumbImgDim' => $thumbImgDim->__toString()];
+		
+		if ($variationImgDim !== null) {
+			$query['variationImgDim'] = (string) $variationImgDim;
+		}
+		
+		return $eiu->frame()->getCmdUrl($this->thumbEiCommand)->extR(['tmpthumb'], $query);
 	}
 	
 	/**
@@ -233,14 +241,18 @@ class ThumbResolver {
 	}
 	
 	/**
+	 * @param ImageFile $imageFile
 	 * @param ImageDimension[] $imageDimensions
 	 * @return \rocket\si\content\impl\SiImageDimension[]
 	 */
-	private function createSiImageDimensions($imageDimensions) {
+	private function createSiImageDimensions(ImageFile $imageFile, $imageDimensions) {
+		$thumbCut = $imageFile->getThumbCut($imageDimension)
+		
 		$siImageDimensions = []; 
 		foreach ($imageDimensions as $id => $imageDimension) {
 			$siImageDimensions[] = new SiImageDimension($id, StringUtils::pretty($id), 
-					$imageDimension->getWidth(), $imageDimension->getHeight());
+					$imageDimension->getWidth(), $imageDimension->getHeight(),
+					ThumbCut::auto($imageSource, $imageDimension));
 		}
 		return $siImageDimensions;
 	}

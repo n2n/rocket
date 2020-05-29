@@ -24,6 +24,7 @@ namespace rocket\si\content\impl;
 use n2n\io\managed\img\impl\ThSt;
 use n2n\util\uri\Url;
 use n2n\util\type\ArgUtils;
+use n2n\io\managed\img\ThumbCut;
 
 class SiFile implements \JsonSerializable {
 	private $id;
@@ -127,12 +128,14 @@ class SiImageDimension implements \JsonSerializable {
 	private $name;
 	private $width;
 	private $height;
+	private $thumbCut;
 	
-	function __construct(string $id, string $name, int $width, int $height) {
+	function __construct(string $id, string $name, int $width, int $height, ThumbCut $thumbCut) {
 		$this->id = $id;
 		$this->name = $name;
 		$this->width = $width;
 		$this->height = $height;
+		$this->thumbCut = $thumbCut;
 	}
 	
 	function jsonSerialize() {
@@ -140,7 +143,8 @@ class SiImageDimension implements \JsonSerializable {
 			'id' => $this->id,
 			'name' => $this->name,
 			'width' => $this->width,
-			'height' => $this->height
+			'height' => $this->height,
+			'thumbCut' => $this->thumbCut
 		];
 	}
 }

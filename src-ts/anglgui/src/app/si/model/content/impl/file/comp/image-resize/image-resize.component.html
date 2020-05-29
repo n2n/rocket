@@ -1,1 +1,38 @@
 <p>Thomas muss das was machen!</p>
+
+<div class="rocket-image-resizer-container">
+
+	<div id="rocket-image-resizer">
+
+	</div>
+
+	<div>
+		<h3>Bild-Versionen</h3>
+		<ul class="rocket-image-dimensions list-unstyled">
+			<li *ngFor="let thumbRatio of thumbRatios">
+				<ng-container *ngIf="thumbRatio.imageDimensions.length > 1">
+					<li class="rocket-image-version rocket-image-ratio" data-ratio-str="<?php $html->out($ratioStr) ?>">
+						<button>{{ thumbRatio.width }} / {{ thumbRatio.height }}</button>
+						
+						<span class="rocket-image-low-res">low res</span>
+					</li>
+				</ng-container>
+				
+				<ng-container *ngFor="let imageDimension of thumbRatio.imageDimensions">
+					<li class="rocket-image-version">
+						<?php if (null !== ($thumbFile = $imageFile->getThumbFile($thumbModel->getImageDimension($imageDimensionStr)))): ?>
+							<?php $label = new Raw($html->getLink($thumbFile->getFileSource()->getUrl(), 
+									$html->getImage($thumbFile, null, array('class' => '', 'style' => 'max-width: 30px;max-height:30px'), false, false),
+									array('class' => 'rocket-image-previewable')) . $label) ?>
+							<?php  ?>
+						<?php endif ?>
+						<?php $formHtml->inputRadio('selectedStr', $imageDimensionStr, 
+								array('class' => 'rocket-thumb-dimension-radio',
+										'data-dimension-str' => $imageDimensionStr), $label) ?>
+						<span class="rocket-image-low-res">low res</span>
+					</li>
+				</ng-container>
+			<?php endforeach ?>
+		</ul>
+	</div>
+</div>
