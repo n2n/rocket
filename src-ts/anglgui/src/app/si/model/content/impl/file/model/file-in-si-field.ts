@@ -26,8 +26,18 @@ export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel 
 	}
 
 	readInput(): object {
+		let imageCuts: { [id: string]: SiImageCut };
+
+		if (this.value && this.value.imageDimensions.length > 0) {
+			imageCuts = {};
+			for (const imgDim of this.value.imageDimensions) {
+				imageCuts[imgDim.id] = imgDim.imageCut;
+			}
+		}
+
 		return {
-			valueId: (this.value ? this.value.id : null)
+			valueId: (this.value ? this.value.id : null),
+			imageCuts
 		};
 	}
 
@@ -96,4 +106,14 @@ export interface SiImageDimension {
 	name: string;
 	width: number;
 	height: number;
+	imageCut: SiImageCut;
+	ratioFixed: boolean;
+}
+
+export interface SiImageCut {
+	x: number;
+	y: number;
+	width: number;
+	height: number;
+	exits: boolean;
 }

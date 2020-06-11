@@ -26,10 +26,11 @@ use n2n\util\uri\Url;
 use n2n\util\type\attrs\DataSet;
 use n2n\io\IoUtils;
 use n2n\util\type\ArgUtils;
+use n2n\io\managed\img\ThumbCut;
 
 class FileInSiField extends InSiFieldAdapter {
 	/**
-	 * @var File|null
+	 * @var SiFile|null
 	 */
 	private $value;
 	/**
@@ -193,6 +194,20 @@ class FileInSiField extends InSiFieldAdapter {
 		}
 		
 		$this->value = $this->fileHandler->getSiFileByRawId($valueId);
+		
+		if (!isset($data['imageCuts'])) {
+			return;
+		}
+		
+		foreach ($this->value->getImageDimensions() as $imgDim) { 
+			$id = $imgDim->getId();
+			
+			if (!isset($data['imageCuts'][$id])) {
+				return;
+			}
+			
+			$imgDim->setThumbCut(ThumbCut::fromArray($data['imageCuts'][$id]));
+		}
 	}
 	
 	function isCallable(): bool {

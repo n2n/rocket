@@ -8,11 +8,9 @@ import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-s
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { ImageResizeComponent } from '../image-resize/image-resize.component';
 import { SiCompFactory } from 'src/app/si/build/si-comp-factory';
-import {
-	Uppload, Local, xhrUploader, en, Camera, URL, Screenshot, Crop, Rotate,
-	Blur, Brightness, Flip, Contrast, Grayscale, HueRotate, Invert, Saturate, Sepia
-} from 'uppload';
-import { SiFieldFactory } from 'src/app/si/build/si-field-factory';
+import { ImageEditorComponent } from '../image-editor/image-editor.component';
+import { TranslationService } from 'src/app/util/i18n/translation.service';
+import { UploadResult, ImageEditorModel } from '../image-editor-model';
 
 
 @Component({
@@ -22,7 +20,7 @@ import { SiFieldFactory } from 'src/app/si/build/si-field-factory';
 })
 export class FileInFieldComponent implements OnInit {
 
-	constructor(private siService: SiService) { }
+	constructor(private siService: SiService, private translationService: TranslationService) { }
 
 	get loading() {
 		return !!this.uploadingFile || (this.currentSiFile && this.currentSiFile.thumbUrl && !this.imgLoaded);
@@ -62,10 +60,8 @@ export class FileInFieldComponent implements OnInit {
 
 	uploadInitiated = false;
 	uploadingFile: Blob|null = null;
-	uploadTooLarge = false;
-	uploadErrorMessage: string|null = null;
 
-	uploader: Uppload;
+	uploadResult: UploadResult|null = null;
 
 	@ViewChild('fileInput', { static: false })
 	fileInputRef: ElementRef;
@@ -73,20 +69,20 @@ export class FileInFieldComponent implements OnInit {
 	private popupUiLayer: PopupUiLayer|null = null;
 
 	ngOnInit() {
-		const customUploader = (file: Blob): Promise<string> => {
-			this.reset();
-			this.fileInputRef.nativeElement.value = null;
-			return this.upload(file).then(siFile => siFile.url)
-				.catch((e) => { this.uploader.close(); throw e;  });
-		};
+		// const customUploader = (file: Blob): Promise<string> => {
+		// 	this.reset();
+		// 	this.fileInputRef.nativeElement.value = null;
+		// 	return this.upload(file).then(siFile => siFile.url)
+		// 		.catch((e) => { this.uploader.close(); throw e;  });
+		// };
 
-		this.uploader = new Uppload({
-  			lang: en,
-  			uploader: customUploader
-		});
-		this.uploader.use([new Local(), new Camera(), new URL(), new Screenshot(), new Crop(), new Rotate(), new Blur(),
-				new Brightness(), new Flip(), new Contrast(), new Grayscale(), new HueRotate(), new Invert(),
-				new Saturate(), new Sepia() /*new Unsplash(), new Pixabay(), new Pexels()*/] as any[]);
+		// this.uploader = new Uppload({
+  		// 	lang: en,
+  		// 	uploader: customUploader
+		// });
+		// this.uploader.use([new Local(), new Camera(), new URL(), new Screenshot(), new Crop(), new Rotate(), new Blur(),
+		// 		new Brightness(), new Flip(), new Contrast(), new Grayscale(), new HueRotate(), new Invert(),
+		// 		new Saturate(), new Sepia() /*new Unsplash(), new Pixabay(), new Pexels()*/] as any[]);
 	}
 
 	getPrettySize(): string {
@@ -116,33 +112,54 @@ export class FileInFieldComponent implements OnInit {
 			return;
 		}
 
-		this.upload(fileList[0]).catch(() => {});
+		this.upload(fileList[0]).then((uploadErrorResult) => {
+			this.uploadResult = uploadErrorResult;
+		});
 	}
 
-	private upload(file: Blob): Promise<SiFile> {
-
+	private upload(file: Blob): Promise<UploadResult> {
 		if (file.size > this.model.getMaxSize()) {
-			this.uploadTooLarge = true;
-			return Promise.reject('too large');
+			return Promise.resolve({ uploadTooLarge: true });
 		}
 
 		this.uploadingFile = file;
 		this.uploadInitiated = true;
 
-		return this.siService.fieldCall(this.model.getApiUrl(), this.model.getApiCallId(), {}, new Map().set('upload', file))
-				.toPromise().then((data) => {
+		return this.siService.fieldCall(this.model.getApiUrl(), this.model.getApiCallId(), {},
+				new Map().set('upload', file)).toPromise().then((data) => {
 					this.imgLoaded = false;
 					this.uploadingFile = null;
 					if (data.error) {
-						this.uploadErrorMessage = data.error;
-						throw new Error(data.error);
+						return { uploadErrorMessage: data.error };
 					}
 
 					const siFile = SiCompFactory.buildSiFile(data.file);
 					this.model.setSiFile(siFile);
 
-					return siFile;
+					return { siFile };
 				});
+	}
+
+	editImage() {
+		if (this.popupUiLayer) {
+			return;
+		}
+
+		const uiZone = this.uiStructure.getZone();
+
+		this.popupUiLayer = uiZone.layer.container.createLayer();
+		this.popupUiLayer.onDispose(() => {
+			this.popupUiLayer = null;
+		});
+
+		this.popupUiLayer.pushZone(null).model = {
+			title: 'Some Title',
+			breadcrumbs: [],
+			structureModel: new SimpleUiStructureModel(
+					new TypeUiContent(ImageEditorComponent, (cr) => {
+						cr.instance.model = new CommonImageEditorModel(this.model.getSiFile());
+					}))
+		};
 	}
 
 	resize() {
@@ -176,8 +193,7 @@ export class FileInFieldComponent implements OnInit {
 		this.uploadingFile = null;
 		this.model.setSiFile(null);
 		this.uploadInitiated = false;
-		this.uploadTooLarge = false;
-		this.uploadErrorMessage = null;
+		this.uploadResult = null;
 		this.uploadingFile = null;
 	}
 
@@ -187,4 +203,20 @@ export class FileInFieldComponent implements OnInit {
 			(this.fileInputRef.nativeElement as HTMLInputElement).value = '';
 		}
 	}
+}
+
+class CommonImageEditorModel implements ImageEditorModel {
+	constructor(private origSiFile: SiFile) {
+
+	}
+
+	getSiFile(): SiFile {
+		return this.origSiFile;
+	}
+
+	upload(blob: Blob): UploadResult {
+		throw new Error('Method not implemented.');
+	}
+
+
 }

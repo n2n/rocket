@@ -135,8 +135,7 @@ export class SiFieldFactory {
 
 		case SiFieldType.EMBEDDED_ENTRY_IN:
 			const embeddedEntryInSiField = new EmbeddedEntriesInSiField(prop.label, this.injector.get(SiService),
-					SiMetaFactory.createFrame(dataExtr.reqObject('frame')), 
-					this.injector.get(TranslationService),
+					SiMetaFactory.createFrame(dataExtr.reqObject('frame')), this.injector.get(TranslationService),
 					new SiCompFactory(this.injector).createEmbeddedEntries(dataExtr.reqArray('values')));
 			embeddedEntryInSiField.config.reduced = dataExtr.reqBoolean('reduced');
 			embeddedEntryInSiField.config.min = dataExtr.reqNumber('min');

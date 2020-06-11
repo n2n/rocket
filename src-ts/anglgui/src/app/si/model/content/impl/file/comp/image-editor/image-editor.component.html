@@ -1,0 +1,53 @@
+<!--
+<div *ngIf="loading" class="rocket-loader"></div>
+
+<rocket-upload-result-message [uploadResult]="uploadResult" [messageFieldModel]="model"></rocket-upload-result-message>
+-->
+
+<div class="d-flex">
+
+	<div class="">
+		<div style="height: 400px">
+			<img #img [src]="model.getSiFile().url" style="display: block; max-width: 100%;" />
+		</div>
+
+		<button (click)="toggleCropping()" class="btn btn-secondary" [class.active]="cropping"><i class="fa fa-crop"></i></button>
+		<button (click)="rotateCcw()" class="btn btn-secondary"><i class="fa fa-rotate-left"></i></button>
+		<button (click)="rotateCw()" class="btn btn-secondary"><i class="fa fa-rotate-right"></i></button>
+	</div>
+	<div class="">
+		<div>
+			<button class="btn btn-secondary" [class.active]="!currentThumbRatio" (click)="currentThumbRatio = null">
+				{{ 'original_image_txt' | translate }}
+			</button>
+		</div>
+		<div>
+			<h3>Bild-Versionen</h3>
+			<ul class="rocket-image-dimensions list-unstyled">
+				<li *ngFor="let thumbRatio of thumbRatios">
+					<ng-container *ngIf="thumbRatio.imageDimensions.length > 1">
+						<li class="rocket-image-version rocket-image-ratio">
+							<button (click)="switchToOriginal()">
+								{{ thumbRatio.width }} / {{ thumbRatio.height }}
+							</button>
+							
+							<span class="rocket-image-low-res">low res</span>
+						</li>
+					</ng-container>
+					
+					<ng-container *ngFor="let imageDimension of thumbRatio.imageDimensions">
+						<li class="rocket-image-version">
+							<button (click)="switchToThumbRatio(thumbRatio)">
+								[preview]
+								{{ imageDimension.name }}
+							</button>
+
+							<span class="rocket-image-low-res">low res</span>
+						</li>
+					</ng-container>
+				</li>
+			</ul>
+		</div>
+		
+	</div>
+</div>

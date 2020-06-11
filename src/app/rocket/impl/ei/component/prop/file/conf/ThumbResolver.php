@@ -38,6 +38,7 @@ use n2n\io\managed\FileLocator;
 use n2n\io\managed\img\ThumbCut;
 use n2n\io\img\ImageSource;
 use n2n\io\managed\FileSource;
+use n2n\io\managed\img\impl\ProportionalThumbStrategy;
 
 class ThumbResolver {
 	
@@ -128,11 +129,13 @@ class ThumbResolver {
 			return $siFile;
 		}
 		
-		$thumbFile = $this->buildThumbFile($file);
+		$thumbImageFile = $this->buildThumb($file);
 		
-		if ($thumbFile === null) {
+		if ($thumbImageFile === null) {
 			return $siFile;
 		}
+		
+		$thumbFile = $thumbImageFile->getFile();
 		
 		if ($thumbFile->getFileSource()->isHttpAccessible()) {
 			$siFile->setThumbUrl($thumbFile->getFileSource()->getUrl());
@@ -144,7 +147,7 @@ class ThumbResolver {
 					SiFile::getThumbStrategy()->getImageDimension()));
 		}
 		
-		$siFile->setImageDimensions($this->createSiImageDimensions($file, $this->determineImageDimensions($file)));
+		$siFile->setImageDimensions($this->createSiImageDimensions($thumbImageFile, $this->determineImageDimensions($file)));
 		
 		return $siFile;
 	}
@@ -246,13 +249,20 @@ class ThumbResolver {
 	 * @return \rocket\si\content\impl\SiImageDimension[]
 	 */
 	private function createSiImageDimensions(ImageFile $imageFile, $imageDimensions) {
-		$thumbCut = $imageFile->getThumbCut($imageDimension)
-		
 		$siImageDimensions = []; 
 		foreach ($imageDimensions as $id => $imageDimension) {
+			$thumbCut = $imageFile->getThumbCut($imageDimension);
+			$imageDimension = ImageDimension::createFromString($imageDimension);
+			$exits = true;
+			if ($thumbCut === null) {
+				$thumbCut = ThumbCut::auto($imageFile->getImageSource(), $imageDimension);
+				$exits = false;
+			}
+			$ratioFixed = $imageDimension->isCropped();
+			
 			$siImageDimensions[] = new SiImageDimension($id, StringUtils::pretty($id), 
-					$imageDimension->getWidth(), $imageDimension->getHeight(),
-					ThumbCut::auto($imageSource, $imageDimension));
+					$imageDimension->getWidth(), $imageDimension->getHeight(), $ratioFixed,
+					$thumbCut, $exits);
 		}
 		return $siImageDimensions;
 	}

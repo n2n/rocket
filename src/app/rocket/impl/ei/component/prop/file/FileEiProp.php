@@ -52,6 +52,8 @@ use rocket\si\content\impl\SiFile;
 use rocket\si\content\impl\SiFileHandler;
 use rocket\si\content\impl\SiUploadResult;
 use rocket\impl\ei\component\prop\file\conf\FileModel;
+use n2n\io\managed\img\ImageFile;
+use n2n\io\managed\img\ImageDimension;
 
 class FileEiProp extends DraftablePropertyEiPropAdapter {
 	
@@ -256,7 +258,19 @@ class FileEiProp extends DraftablePropertyEiPropAdapter {
 		$fileId = $siFile->getId();
 		CastUtils::assertTrue($fileId instanceof FileId);
 		
-		$eiu->field()->setValue($this->thumbResolver->determineFile($fileId, $eiu));
+		$eiu->field()->setValue($file = $this->thumbResolver->determineFile($fileId, $eiu));
+		
+		$siImageDimensions = $siFile->getImageDimensions();
+		if (empty($siImageDimensions) || !$file->getFileSource()->isImage()) {
+			return;
+		}
+		
+		$imageFile = new ImageFile($file);
+		
+		foreach ($siImageDimensions as $siImageDimension) {
+			$imageFile->setThumbCut(ImageDimension::createFromString($siImageDimension->getId()), 
+					$siImageDimension->getThumbCut());
+		}
 	}
 	
 	/**

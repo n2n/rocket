@@ -128,23 +128,45 @@ class SiImageDimension implements \JsonSerializable {
 	private $name;
 	private $width;
 	private $height;
+	private $ratioFixed;
 	private $thumbCut;
+	private $exists;
 	
-	function __construct(string $id, string $name, int $width, int $height, ThumbCut $thumbCut) {
+	function __construct(string $id, string $name, int $width, int $height, bool $ratioFixed, ThumbCut $thumbCut, bool $exists) {
 		$this->id = $id;
 		$this->name = $name;
 		$this->width = $width;
 		$this->height = $height;
+		$this->ratioFixed = $ratioFixed;
+		$this->thumbCut = $thumbCut;
+		$this->exists = $exists;
+	}
+	
+	/**
+	 * @param ThumbCut $thumbCut
+	 */
+	function setThumbCut(ThumbCut $thumbCut) {
 		$this->thumbCut = $thumbCut;
 	}
 	
+	/**
+	 * @return \n2n\io\managed\img\ThumbCut
+	 */
+	function getThumbCut() {
+		return $this->thumbCut;
+	}
+	
 	function jsonSerialize() {
+		$imageCutData = $this->thumbCut->jsonSerialize();
+		$imageCutData['exists'] = $this->exists; 
+		
 		return [
 			'id' => $this->id,
 			'name' => $this->name,
 			'width' => $this->width,
 			'height' => $this->height,
-			'thumbCut' => $this->thumbCut
+			'ratioFixed' => $this->ratioFixed,
+			'imageCut' => $imageCutData
 		];
 	}
 }

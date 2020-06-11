@@ -11,7 +11,7 @@ import { SiEntryIdentifier, SiEntryQualifier } from '../model/content/si-qualifi
 import { SiEntryFactory } from './si-entry-factory';
 import { SiEmbeddedEntry } from '../model/content/impl/embedded/model/si-embedded-entry';
 import { SiPanel, SiGridPos } from '../model/content/impl/embedded/model/si-panel';
-import { SiFile, SiImageDimension } from '../model/content/impl/file/model/file-in-si-field';
+import { SiFile, SiImageDimension, SiImageCut } from '../model/content/impl/file/model/file-in-si-field';
 import { SiCrumbGroup, SiCrumb } from '../model/content/impl/meta/model/si-crumb';
 import { Injector } from '@angular/core';
 
@@ -137,7 +137,21 @@ export class SiCompFactory {
 			id: extr.reqString('id'),
 			name: extr.reqString('name'),
 			width: extr.reqNumber('width'),
-			height: extr.reqNumber('height')
+			height: extr.reqNumber('height'),
+			imageCut: this.createSiImageCut(extr.reqObject('imageCut')),
+			ratioFixed: extr.reqBoolean('ratioFixed')
+		};
+	}
+
+	static createSiImageCut(data: any): SiImageCut {
+		const extr = new Extractor(data);
+
+		return {
+			x: extr.reqNumber('x'),
+			y: extr.reqNumber('y'),
+			width: extr.reqNumber('width'),
+			height: extr.reqNumber('height'),
+			exits: extr.reqBoolean('exists')
 		};
 	}
 

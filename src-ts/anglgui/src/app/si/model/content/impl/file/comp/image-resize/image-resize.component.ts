@@ -51,7 +51,7 @@ class ThumbRatio {
 	public imageDimensions = new Array<SiImageDimension>();
 	private largestImageDimension: SiImageDimension;
 
-	constructor(readonly width: number, readonly height: number/*, private crop = false*/) {
+	constructor(readonly width: number, readonly height: number, readonly ratioFixed = false) {
 	}
 
 	static create(imageDimension: SiImageDimension): ThumbRatio {
@@ -59,7 +59,7 @@ class ThumbRatio {
 		const height = imageDimension.height;
 		const ggt = ThumbRatio.gcd(width, height);
 
-		const thumbRatio = new ThumbRatio(width / ggt, height / ggt/*, imageDimension.null !== $imageDimension->getIdExt()*/);
+		const thumbRatio = new ThumbRatio(width / ggt, height / ggt, imageDimension.ratioFixed);
 		thumbRatio.addImageDimension(imageDimension);
 		return thumbRatio;
 	}

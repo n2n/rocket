@@ -43,6 +43,8 @@ import { EnumInComponent } from './model/content/impl/enum/comp/enum-in/enum-in.
 import { QualifierTilingComponent } from './model/content/impl/qualifier/comp/qualifier-tiling/qualifier-tiling.component';
 import { ChoosePasteComponent } from './model/content/impl/embedded/comp/choose-paste/choose-paste.component';
 import { EmbeddedEntryComponent } from './model/content/impl/embedded/comp/embedded-entry/embedded-entry.component';
+import { ImageEditorComponent } from './model/content/impl/file/comp/image-editor/image-editor.component';
+import { UploadResultMessageComponent } from './model/content/impl/file/comp/inc/upload-result-message/upload-result-message.component';
 
 @NgModule({
 	declarations: [
@@ -52,7 +54,7 @@ import { EmbeddedEntryComponent } from './model/content/impl/embedded/comp/embed
 		EmbeddedEntriesSummaryInComponent, EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent,
 		ImageResizeComponent, EmbeddedEntryPanelsInComponent, EntryDirective, PaginationComponent, CrumbGroupComponent,
 		AddPasteComponent, QualifierComponent, TogglerInFieldComponent, SplitComponent, SplitViewMenuComponent,
-		SplitManagerComponent, EnumInComponent, QualifierTilingComponent, ChoosePasteComponent, EmbeddedEntryComponent
+		SplitManagerComponent, EnumInComponent, QualifierTilingComponent, ChoosePasteComponent, EmbeddedEntryComponent, ImageEditorComponent, UploadResultMessageComponent
 	],
 	imports: [
 		CommonModule,
@@ -75,7 +77,8 @@ import { EmbeddedEntryComponent } from './model/content/impl/embedded/comp/embed
 		LinkOutFieldComponent, CompactEntryComponent, EmbeddedEntriesInComponent, EmbeddedEntriesSummaryInComponent,
 		EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent,
 		EmbeddedEntryPanelsInComponent, ButtonControlComponent, PaginationComponent, TogglerInFieldComponent, SplitComponent,
-		SplitViewMenuComponent, CrumbGroupComponent, SplitManagerComponent, EnumInComponent, EmbeddedEntryComponent
+		SplitViewMenuComponent, CrumbGroupComponent, SplitManagerComponent, EnumInComponent, EmbeddedEntryComponent,
+		ImageEditorComponent
 	]
 })
 export class SiModule { }

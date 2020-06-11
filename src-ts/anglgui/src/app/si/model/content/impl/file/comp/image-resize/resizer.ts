@@ -1,4 +1,4 @@
-
+/*
 class SelectableDimension implements SizeSelectorListener {
 	private elemLowRes: JQuery<Element>;
 	private elemRadio: JQuery<Element>;
@@ -16,18 +16,18 @@ class SelectableDimension implements SizeSelectorListener {
 		this.dimensionStr = this.elemRadio.data('dimension-str').toString();
 		this.ratioStr = elemLi.data('ratio-str').toString();
 		this.ratio = this.ratioStr === this.elemRadio.val();
-		
+
 		(function(that: SelectableDimension) {
 			if (that.elemRadio.is(':checked')) {
 				that.resizer.setSelectedDimension(that, false);
 			}
-			
+
 			that.elemRadio.change(function() {
 				if (that.elemRadio.is(':checked')) {
 					that.resizer.setSelectedDimension(that, true);
 				}
 			});
-			
+
 			if (!this.ratio) {
 				if (that.elemThumb.length > 0) {
 					this.elemLi.append($('<a />', {
@@ -70,7 +70,7 @@ class SelectableDimension implements SizeSelectorListener {
 					}).append(elemToggleOpen).append(elemToggleClose).appendTo($('<div />', {
 						'class': 'rocket-simple-commands'
 					}).appendTo(<JQuery<HTMLElement>> this.elemLi));
-		
+
 				if (!that.checkOpen() && elemsToToggle.find('input[type=radio]:checked').length === 0) {
 					elemA.click();
 				} else {
@@ -79,85 +79,85 @@ class SelectableDimension implements SizeSelectorListener {
 			}
 		}).call(this, this);
 	}
-	
+
 	private checkOpen(): boolean {
 		if (typeof (Storage) === 'undefined') { return false; }
-		
+
 		let item: string;
 		if (null !== (item = sessionStorage.getItem(this.buildStorageKey() + '-open'))) {
 			return JSON.parse(item);
 		}
-		
+
 		return false;
 	}
 	private setOpen(open: boolean): void {
 		if (typeof (Storage) === 'undefined') { return; }
-		
+
 		sessionStorage.setItem(this.buildStorageKey() + '-open', JSON.stringify(open));
 	}
-	
+
 	public getDimensionStr() {
 		return this.dimensionStr;
 	}
-	
+
 	public getRatioStr() {
 		return this.ratioStr;
 	}
-	
+
 	public isRatio() {
 		return this.ratio;
 	}
-	
+
 	public select() {
 		this.elemRadio.prop('checked', true);
 	}
-	
+
 	public buildStorageKey() {
 		return location.href + '/' + this.ratioStr;
 	}
-	
+
 	public hasSameRatio(selectableDimension: SelectableDimension) {
 		return selectableDimension.getRatioStr() === this.ratioStr;
 	}
-	
+
 	public equals(selectableDimension: SelectableDimension) {
-		return this.hasSameRatio(selectableDimension) && selectableDimension.getDimensionStr() === this.dimensionStr 
+		return this.hasSameRatio(selectableDimension) && selectableDimension.getDimensionStr() === this.dimensionStr
 				&& this.isRatio() === selectableDimension.isRatio();
 	}
-	
+
 	public onDimensionChange(sizeSelector: SizeSelector) {
 		this.checkLowRes(sizeSelector);
 	}
-	
+
 	public onDimensionChanged(sizeSelector: SizeSelector) {
 		this.checkLowRes(sizeSelector);
 	}
-		
+
 	private checkLowRes(sizeSelector: SizeSelector) {
 		let currentResizingDimension = sizeSelector.getCurrentResizingDimension();
 		if (null === currentResizingDimension) { return; }
-		
+
 		let	currentSelectableDimension = currentResizingDimension.getSelectableDimension();
 		if (null === currentSelectableDimension) { return; }
-	
-		if (((currentSelectableDimension.isRatio() && currentSelectableDimension.hasSameRatio(this)) 
+
+		if (((currentSelectableDimension.isRatio() && currentSelectableDimension.hasSameRatio(this))
 				|| currentSelectableDimension.equals(this)) && sizeSelector.isLowRes(this.createResizingDimension())) {
 			this.elemLowRes.show();
 		} else {
 			this.elemLowRes.hide();
 		}
 	}
-	
+
 	public createResizingDimension() {
 		return new ResizingDimension(this, this.resizer.getZoomFactor());
 	}
 }
 
 class ResizingDimension {
-	static dimensionMatchPattern = new RegExp('\\d+x\\d+[xcrop]?'); 
-	private width: number; 
-	private height: number; 
-	private crop: boolean; 
+	static dimensionMatchPattern = new RegExp('\\d+x\\d+[xcrop]?');
+	private width: number;
+	private height: number;
+	private crop: boolean;
 	private ratio: number = 1;
 
 	public constructor(private selectableDimension: SelectableDimension, private zoomFactor: number) {
@@ -167,7 +167,7 @@ class ResizingDimension {
 	public initialize() {
 		var dimensionStr = this.selectableDimension.getDimensionStr();
 		if (dimensionStr.match(ResizingDimension.dimensionMatchPattern) === null) { return; }
-		
+
 		let dimension: Array<string> = dimensionStr.split('x');
 		this.width = parseInt(dimension[0]) * this.zoomFactor;
 		this.height = parseInt(dimension[1]) * this.zoomFactor;
@@ -178,7 +178,7 @@ class ResizingDimension {
 		}
 		this.ratio = this.width / this.height;
 	}
-	
+
 	public getSelectableDimension() {
 		return this.selectableDimension;
 	}
@@ -198,7 +198,7 @@ class ResizingDimension {
 	public getHeight(): number {
 		return this.height;
 	}
-	
+
 	public buildStorageKey() {
 		return this.getSelectableDimension().buildStorageKey();
 	}
@@ -249,7 +249,7 @@ class SizeSelector {
 	public constructor(private imageResizer: Resizer, private elemImg: JQuery<Element>) {
 		this.initialize();
 	}
-	
+
 	public getCurrentResizingDimension() {
 		return this.currentResizingDimension;
 	}
@@ -274,7 +274,7 @@ class SizeSelector {
 		this.fixedRatio = fixedRatio;
 		this.checkRatio();
 	}
-	
+
 	private initialize() {
 		this.initializeResizeStart();
 		this.initializeDragStart();
@@ -364,14 +364,14 @@ class SizeSelector {
 		return this.checkPositionTop(newTop) && this.checkPositionRight(newRight)
 			&& this.checkPositionBottom(newBottom) && this.checkPositionLeft(newLeft);
 	}
-	
+
 	public isLowRes(resizingDimension: ResizingDimension = null) {
 		if (!resizingDimension) {
 			resizingDimension = this.currentResizingDimension;
 		}
-		
+
 		if (!resizingDimension) { return false; }
-		
+
 		return resizingDimension.getWidth() > (this.getWidth() + 1)
 				|| resizingDimension.getHeight() > (this.getHeight() + 1);
 	}
@@ -391,7 +391,7 @@ class SizeSelector {
 			this.elemImg.on('load', () => {
 				this.imageLoaded = true;
 				this.initializeUI();
-				
+
 				window.scroll(0, Jhtml.Monitor.of(this.elemImg.get(0)).history.currentPage.config.scrollPos);
 			}).attr('src', this.imageResizer.getElemImg().attr('src'));
 
@@ -559,19 +559,19 @@ class SizeSelector {
 	public registerChangeListener(changeListener: SizeSelectorListener) {
 		this.changeListeners.push(changeListener);
 	}
-	
+
 	private triggerDimensionChange() {
 		this.changeListeners.forEach(function(chnageListener: SizeSelectorListener) {
 			chnageListener.onDimensionChange(this);
 		}, this);
 	}
-	
+
 	private triggerDimensionChanged() {
 		this.changeListeners.forEach(function(chnageListener: SizeSelectorListener) {
 			chnageListener.onDimensionChanged(this);
 		}, this);
 	}
-	
+
 	public redraw(resizingDimension: ResizingDimension) {
 		var dimensions = this.imageResizer.determineCurrentDimensions(resizingDimension);
 		this.elemDiv.css({
@@ -585,11 +585,11 @@ class SizeSelector {
 		this.initializeMin();
 		this.initializeMax();
 	}
-	
+
 	private showWarning() {
 		this.imageResizer.showLowResolutionWarning();
 	}
-	
+
 	private hideWarning() {
 		this.imageResizer.hideResolutionWarning();
 	}
@@ -612,16 +612,16 @@ class Resizer implements SizeSelectorListener {
 	private originalImageHeight: number = null;
 	private selectedDimension: SelectableDimension;
 
-	public constructor(private elem: JQuery<Element>, private elemDimensionContainer: JQuery<Element>, 
+	public constructor(private elem: JQuery<Element>, private elemDimensionContainer: JQuery<Element>,
 			private elemImg: JQuery<Element> = null, private maxHeightCheckClosure: () => number = null) {
 		if (null === this.elemImg) {
 			this.elemImg = $('<img/>').attr('src', elem.attr('data-img-src'));
 		}
-		
+
 		this.textFixedRatio = elem.data('text-fixed-ratio') || 'Fixed Ratio';
 		this.textLowResolution = elem.data('text-low-resolution') || 'Low Resolution';
 		this.textZoom = elem.data('text-zoom') || 'Zoom';
-		
+
 		this.sizeSelector = new SizeSelector(this, this.elemImg);
 		let firstSelectableDimension: SelectableDimension = null, _obj = this;
 		this.elemDimensionContainer.find('.rocket-image-version').each(function() {
@@ -630,21 +630,21 @@ class Resizer implements SizeSelectorListener {
 				firstSelectableDimension = selectableDimension;
 			}
 		});
-		
+
 		if (!this.selectedDimension && firstSelectableDimension) {
 			firstSelectableDimension.select();
 			this.setSelectedDimension(firstSelectableDimension, false);
 		}
-		
+
 		this.sizeSelector.registerChangeListener(this);
-	
+
 		this.initializeUi();
 	}
-	
+
 	public getSelectedDimension() {
 		return this.selectedDimension;
 	}
-	
+
 	public setSelectedDimension(selectedDimension: SelectableDimension, redraw: boolean) {
 		this.selectedDimension = selectedDimension;
 		if (redraw) {
@@ -653,23 +653,23 @@ class Resizer implements SizeSelectorListener {
 			this.sizeSelector.redraw(resizingDimension);
 		}
 	}
-	
+
 	public getElemContent() {
 		return this.elemContent;
 	}
-	
+
 	public getElemImg() {
 		return this.elemImg;
 	}
-	
+
 	public getSizeSelector() {
 		return this.sizeSelector;
 	}
-	
+
 	public getZoomFactor() {
 		return this.zoomFactor;
 	}
-	
+
 	private initializeUi() {
 		this.initLowResolutionContainer();
 
@@ -686,9 +686,9 @@ class Resizer implements SizeSelectorListener {
 			_obj.originalImageWidth = $(this).width();
 			_obj.originalImageHeight = $(this).height();
 
-			//          if(_obj.elemImg.width() > _obj.elem.width() 
+			//          if(_obj.elemImg.width() > _obj.elem.width()
 			//                  || _obj.elemImg.height() > _obj.elem.height()) {
-			//              
+			//
 			_obj.applyZoomFactor();
 
 			_obj.elemImg.width(_obj.originalImageWidth * _obj.zoomFactor);
@@ -709,13 +709,13 @@ class Resizer implements SizeSelectorListener {
 			});
 		});
 	}
-	
+
 	private applyZoomFactor() {
 		let _obj = this,
 			accuracy: number = 100000,
 			zoomFactorHeight: number = 1,
 			zoomFactorWidth: number;
-		
+
 		// Don't Look for the Height
 		if (this.maxHeightCheckClosure !== null) {
 			zoomFactorHeight = (Math.ceil(this.maxHeightCheckClosure() / this.originalImageHeight * accuracy) - 1) / accuracy;
@@ -735,7 +735,7 @@ class Resizer implements SizeSelectorListener {
 			this.elemSpanZoom.hide();
 		}
 	}
-	
+
 	private initializeUIChildContainers() {
 		let _obj = this;
 		this.sizeSelector.initializeUI();
@@ -752,9 +752,9 @@ class Resizer implements SizeSelectorListener {
 			}
 		});
 	}
-	
+
 	public onDimensionChange(sizeSelector: SizeSelector) {}
-	
+
 	public onDimensionChanged(sizeSelector: SizeSelector) {
 		var _obj = this;
 
@@ -777,7 +777,7 @@ class Resizer implements SizeSelectorListener {
 
 		SizeSelectorPositions.addPositions(sizeSelector, _obj.zoomFactor);
 	}
-	
+
 	private initFixedRatioContainer() {
 		this.elemFixedRatioContainer = $('<div/>').addClass('rocket-fixed-ratio-container').appendTo(this.elem as JQuery<HTMLElement>);
 		var randomId = 'rocket-image-resizer-fixed-ratio-' + Math.floor((Math.random() * 10000)),
@@ -787,7 +787,7 @@ class Resizer implements SizeSelectorListener {
 			'for': randomId,
 			'text': this.textFixedRatio
 		}).css('display', 'inline-block'));
-		
+
 		this.elemCbxFixedRatio = $('<input type=\'checkbox\'/>').addClass('rocket-image-resizer-fixed-ratio').attr('id', randomId)
 			.change(function() {
 				that.sizeSelector.setFixedRatio($(this).prop('checked'));
@@ -795,7 +795,7 @@ class Resizer implements SizeSelectorListener {
 				that.sizeSelector.initializeMax();
 			}).appendTo(this.elemFixedRatioContainer as JQuery<HTMLElement>);
 	}
-	
+
 	private checkFixedRatio(resizingDimension: ResizingDimension) {
 		this.elemCbxFixedRatio.prop('checked', true);
 		if (resizingDimension.isCrop()) {
@@ -805,25 +805,25 @@ class Resizer implements SizeSelectorListener {
 		}
 		this.elemCbxFixedRatio.trigger('change');
 	}
-	
+
 	private initLowResolutionContainer() {
 		this.elemLowResolutionContainer = $('<div/>')
 			.addClass('rocket-low-resolution-container').appendTo(this.elem as JQuery<HTMLElement>).hide();
-		
+
 		$('<span />', {
 			'class': 'rocket-image-resizer-warning',
 			'text': this.textLowResolution
 		}).appendTo(this.elemLowResolutionContainer as JQuery<HTMLElement>);
 	}
-	
+
 	public showLowResolutionWarning() {
 		this.elemLowResolutionContainer.show();
 	}
-	
+
 	public hideResolutionWarning() {
 		this.elemLowResolutionContainer.hide();
 	}
-	
+
 	public determineCurrentDimensions(resizingDimension: ResizingDimension): SizeSelectorPosition {
 		var sizeSelectorPosition = SizeSelectorPositions.getPositions(resizingDimension, this.zoomFactor);
 		if (null !== sizeSelectorPosition) { return sizeSelectorPosition; }
@@ -870,36 +870,36 @@ class Resizer implements SizeSelectorListener {
 }
 
 class SizeSelectorPositions {
-	
+
 	public static addPositions(sizeSelector: SizeSelector, zoomFactor: number): void {
 		var currentResizingDimension: ResizingDimension = sizeSelector.getCurrentResizingDimension();
 		if (typeof (Storage) === 'undefined' || currentResizingDimension === null) { return; }
-		
+
 		let imageResizerPositions: any;
 		if (null == localStorage.imageResizer) {
 			imageResizerPositions = new Object();
 		} else {
 			imageResizerPositions = JSON.parse(localStorage.imageResizer);
 		}
-		
+
 		imageResizerPositions[currentResizingDimension.buildStorageKey()] = {
 			left: sizeSelector.getPositionLeft() / zoomFactor,
 			top: sizeSelector.getPositionTop() / zoomFactor,
 			width: sizeSelector.getWidth() / zoomFactor,
 			height: sizeSelector.getHeight() / zoomFactor
 		}
-		
+
 		localStorage.imageResizer = JSON.stringify(imageResizerPositions);
-		
+
 	}
-	
+
 	public static getPositions(resizingDimension: ResizingDimension, zoomFactor: number): SizeSelectorPosition {
 		if (typeof (Storage) === 'undefined' || null == localStorage.imageResizer) { return null; }
 		let imageResizerPositions: any = JSON.parse(localStorage.imageResizer);
 		if (!imageResizerPositions[resizingDimension.buildStorageKey()]) { return null; }
 		let jsonObj: any = imageResizerPositions[resizingDimension.buildStorageKey()];
-		
-		return new SizeSelectorPosition(jsonObj.left * zoomFactor, jsonObj.top * zoomFactor, 
+
+		return new SizeSelectorPosition(jsonObj.left * zoomFactor, jsonObj.top * zoomFactor,
 				jsonObj.width * zoomFactor, jsonObj.height * zoomFactor);
 	}
 }
@@ -950,3 +950,4 @@ export class RocketResizer {
 		});
 	}
 }
+*/
