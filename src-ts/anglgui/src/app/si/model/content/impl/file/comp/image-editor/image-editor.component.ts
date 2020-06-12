@@ -18,7 +18,7 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 	private cropper: Cropper;
 	cropping = false;
 
-	private ratioMap = new Map<number, ThumbRatio>();
+	private ratioMap = new Map<string, ThumbRatio>();
 
 	private currentThumbRatio: ThumbRatio|null = null;
 	private originalChanged = false;
@@ -105,7 +105,7 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 
 		for (const imageDimension of siFile.imageDimensions) {
 			const thumbRatio = ThumbRatio.create(imageDimension);
-			const ratio = thumbRatio.width / thumbRatio.height;
+			const ratio = (thumbRatio.width / thumbRatio.height) + (thumbRatio.ratioFixed ? 'f' : '');
 
 			if (!this.ratioMap.has(ratio)) {
 				this.ratioMap.set(ratio, thumbRatio);
@@ -160,6 +160,10 @@ class ThumbRatio {
 
 	get largestImageDimension(): SiImageDimension {
 		return this._largestImageDimension;
+	}
+
+	get customRatio(): number {
+		return this.width / this.height;
 	}
 
 	addImageDimension(imageDimension: SiImageDimension) {
