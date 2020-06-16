@@ -146,13 +146,8 @@ export class SiCompFactory {
 	static createSiImageCut(data: any): SiImageCut {
 		const extr = new Extractor(data);
 
-		return {
-			x: extr.reqNumber('x'),
-			y: extr.reqNumber('y'),
-			width: extr.reqNumber('width'),
-			height: extr.reqNumber('height'),
-			exits: extr.reqBoolean('exists')
-		};
+		return new SiImageCut(extr.reqNumber('x'), extr.reqNumber('y'), extr.reqNumber('width'),
+				extr.reqNumber('height'), extr.reqBoolean('exists'));
 	}
 
 	buildComp(data: any, requiredType: SiCompType|null = null): SiComp|null {

@@ -110,10 +110,12 @@ export interface SiImageDimension {
 	ratioFixed: boolean;
 }
 
-export interface SiImageCut {
-	x: number;
-	y: number;
-	width: number;
-	height: number;
-	exits: boolean;
+export class SiImageCut {
+	constructor(public x: number, public y: number, public width: number, public height: number, public exists: boolean) {
+	}
+
+	equals(obj: any): boolean {
+		return obj instanceof SiImageCut && obj.x === this.x && obj.y === this.y && obj.height === this.height
+				&& obj.exists === this.exists;
+	}
 }
