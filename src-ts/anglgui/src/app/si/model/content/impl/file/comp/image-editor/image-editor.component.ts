@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import Cropper from 'cropperjs';
-import { SiFile, SiImageDimension } from '../../model/file-in-si-field';
+import { SiFile, SiImageDimension, SiImageCut } from '../../model/file-in-si-field';
 import { ImageEditorModel } from '../image-editor-model';
 
 @Component({
@@ -172,5 +172,21 @@ class ThumbRatio {
 		if (!this._largestImageDimension || this._largestImageDimension.height < imageDimension.height) {
 			this._largestImageDimension = imageDimension;
 		}
+	}
+
+	private calcBaseImageCut() {
+		const map = new Map<string, SiImageDimension[]>();
+
+		for (let imageDimension of this.imageDimensions) {
+			const key = this.imgCutKey(imageDimension.imageCut);
+			if (map.has()) {
+				map.set();
+			}
+		}
+		
+	}
+
+	private imgCutKey(imgCut: SiImageCut): string {
+		return imgCut.width + ',' + imgCut.height + ',' + imgCut.x + ',' + imgCut.y;
 	}
 }
