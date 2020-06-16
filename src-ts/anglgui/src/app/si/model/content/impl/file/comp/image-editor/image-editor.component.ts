@@ -173,4 +173,5 @@ class ThumbRatio {
 			this._largestImageDimension = imageDimension;
 		}
 	}
+
 }
