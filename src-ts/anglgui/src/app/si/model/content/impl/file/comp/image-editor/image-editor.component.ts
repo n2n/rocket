@@ -23,17 +23,18 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 	imagePreviewQueryList: QueryList<ImagePreviewDirective>;
 
 	private imageSrc: ImageSrc;
-	cropping = false;
 
 	private ratioMap = new Map<string, ThumbRatio>();
 
-	private currentThumbRatio: ThumbRatio|null = null;
+	currentThumbRatio: ThumbRatio|null = null;
 	private originalChanged = false;
 
 	constructor() { }
 
 	ngOnInit() {
 		this.imageSrc = new ImageSrc(this.canvasRef);
+
+		this.initSiFile(this.model.getSiFile());
 	}
 
 	ngAfterViewInit() {
@@ -61,7 +62,6 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 
 		this.imageSrc.init(null, this.originalPreviewRef.nativeElement);
 
-		this.initSiFile(this.model.getSiFile());
 	}
 
 	get thumbRatio() {
@@ -81,27 +81,18 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 	}
 
 	switchToThumbRatio(thumbRatio: ThumbRatio) {
-		this.cropper.crop();
-
 		this.currentThumbRatio = thumbRatio;
 
-		const imageCut = thumbRatio.baseImageCut;
-		this.cropper.setCropBoxData({ left: imageCut.x, top: imageCut.y, width: imageCut.width,
-				height: imageCut.height });
+		// const imageCut = thumbRatio.getBaseImageCut();
+		// this.cropper.setCropBoxData({ left: imageCut.x, top: imageCut.y, width: imageCut.width,
+		// 		height: imageCut.height });
+
+		this.imageSrc.init(thumbRatio.getGroupedImageCut(),
+				thumbRatio.getGroupedPreviewElementRef().nativeElement);
 	}
 
 	switchToImageDimension(thumbRatio: ThumbRatio, imageDimension: SiImageDimension) {
 
-	}
-
-	toggleCropping() {
-		this.cropping = !this.cropping;
-
-		if (this.cropping) {
-			this.cropper.crop();
-		} else {
-			this.cropper.clear();
-		}
 	}
 
 	private initSiFile(siFile: SiFile) {
@@ -125,7 +116,7 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 	}
 
 	dingsel() {
-		this.cropper.getCroppedCanvas().toDataURL('image/jpeg');
+		// this.cropper.getCroppedCanvas().toDataURL('image/jpeg');
 	}
 
 	save() {
@@ -136,16 +127,19 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 export class ImageSrc {
 	private cropper: Cropper|null = null;
 
+	cropping = false;
+
 	constructor(private elemRef: ElementRef) {
 	}
 
 	init(imageCut: SiImageCut|null, previewElem: Element) {
+		console.log(imageCut);
 		this.reset();
-
 		this.cropper = new Cropper(this.elemRef.nativeElement, {
 			viewMode: 1,
 			preview: previewElem,
 			crop(event) {
+
 				// console.log(event.type);
 				// console.log(event.detail.x);
 				// console.log(event.detail.y);
@@ -156,16 +150,17 @@ export class ImageSrc {
 				// console.log(event.detail.scaleY);
 			},
 			ready() {
-				console.log(this.cropper.getCanvasData());
-				console.log(this.cropper.getContainerData());
+				// console.log(this.cropper.getCanvasData());
+				// console.log(this.cropper.getContainerData());
 
 				if (imageCut) {
-					this.cropper.setCropBoxData({ left: imageCut.x, top: imageCut.y, width: imageCut.width, 
+					this.cropper.setCropBoxData({ left: imageCut.x, top: imageCut.y, width: imageCut.width,
 						height: imageCut.height });
 				// 		rotate: 0, scaleX: 1, scaleY: 1 });
+				} else {
+					// this.cropper.setCropBoxData(this.cropper.getCanvasData());
+					this.cropper.clear();
 				}
-				// this.cropper.setCropBoxData(this.cropper.getCanvasData());
-				this.cropper.clear();
 			}
 		});
 	}
@@ -187,15 +182,27 @@ export class ImageSrc {
 		this.cropper.rotate(-90);
 	}
 
+	toggleCropping() {
+		this.cropping = !this.cropping;
+
+		if (this.cropping) {
+			this.cropper.crop();
+		} else {
+			this.cropper.clear();
+		}
+	}
+
 }
 
 export class ThumbRatio {
 	public imageDimensions = new Array<SiImageDimension>();
 	// private _largestImageDimension: SiImageDimension;
 
-	private imgMap = new Map<string, SiImageDimension[]>();
+	private groupedImageCut: SiImageCut;
+	private imgCutDimMap = new Map<string, SiImageDimension[]>();
 
-	public baseImageCut: SiImageCut;
+	private groupedPreviewElementRef: ElementRef|null = null;
+	private imgDimPreviewElements = new Map<string, ElementRef>();
 
 	constructor(readonly width: number, readonly height: number, readonly ratioFixed = false) {
 	}
@@ -218,10 +225,28 @@ export class ThumbRatio {
 		return ThumbRatio.gcd(num2, num1 % num2);
 	}
 
-	registerPreviewImg(htmlElement: HTMLElement, imageDimension: SiImageDimension|null) {
+	registerPreviewImg(elementRef: ElementRef, imageDimension: SiImageDimension|null) {
+		if (!imageDimension) {
+			this.groupedPreviewElementRef = elementRef;
+		} else {
+			this.imgDimPreviewElements.set(imageDimension.id, elementRef);
+		}
 	}
 
-	unregisterPreviewImg(htmlElement: HTMLElement) {
+	unregisterPreviewImg(elementRef: ElementRef) {
+		if (this.groupedPreviewElementRef === elementRef) {
+			this.groupedPreviewElementRef = null;
+			return;
+		}
+
+		for (const [key, elemRef] of this.imgDimPreviewElements) {
+			if (elemRef === elementRef) {
+				this.imgDimPreviewElements.delete(key);
+				return;
+			}
+		}
+
+		throw new Error('Unkown preview ' + elementRef);
 	}
 
 	get label(): string {
@@ -244,10 +269,12 @@ export class ThumbRatio {
 		// }
 
 		this.classifyImageDimension(imageDimension);
+
+		this.determineGroupedImageCut();
 	}
 
 	private recalcImgMap() {
-		this.imgMap.clear();
+		this.imgCutDimMap.clear();
 
 		for (const imageDimension of this.imageDimensions) {
 			this.classifyImageDimension(imageDimension);
@@ -258,23 +285,23 @@ export class ThumbRatio {
 
 	private classifyImageDimension(imageDimension: SiImageDimension) {
 		const key = this.imgCutKey(imageDimension.imageCut);
-		if (!this.imgMap.has(key)) {
-			this.imgMap.set(key, []);
+		if (!this.imgCutDimMap.has(key)) {
+			this.imgCutDimMap.set(key, []);
 		}
 
-		this.imgMap.get(key).push(imageDimension);
+		this.imgCutDimMap.get(key).push(imageDimension);
 	}
 
 	private determineGroupedImageCut() {
-		this.baseImageCut = null;
+		this.groupedImageCut = null;
 
 		let lastSize = 0;
-		for (const [key, imgDims] of this.imgMap) {
-			if (lastSize >= imgDims.length || imgDims.length > 1) {
+		for (const [key, imgDims] of this.imgCutDimMap) {
+			if (lastSize >= imgDims.length || imgDims.length <= 1) {
 				continue;
 			}
 
-			this.baseImageCut = imgDims[0].imageCut;
+			this.groupedImageCut = imgDims[0].imageCut;
 			lastSize = imgDims.length;
 		}
 	}
@@ -284,10 +311,26 @@ export class ThumbRatio {
 	}
 
 	hasBaseImageCut(): boolean {
-		return !!this.baseImageCut;
+		return !!this.groupedImageCut;
 	}
 
 	hasIndividualImageCut(imageDimension: SiImageDimension): boolean {
-		return !this.baseImageCut || !this.baseImageCut.equals(imageDimension.imageCut);
+		return !this.groupedImageCut || !this.groupedImageCut.equals(imageDimension.imageCut);
+	}
+
+	getGroupedImageCut(): SiImageCut {
+		if (this.groupedImageCut) {
+			return this.groupedImageCut;
+		}
+
+		throw new Error('No base image cut available.');
+	}
+
+	getGroupedPreviewElementRef(): ElementRef {
+		if (this.groupedPreviewElementRef) {
+			return this.groupedPreviewElementRef;
+		}
+
+		throw new Error('No base image cut available.');
 	}
 }

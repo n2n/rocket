@@ -147,7 +147,7 @@ class ThumbResolver {
 					SiFile::getThumbStrategy()->getImageDimension()));
 		}
 		
-		$siFile->setImageDimensions($this->createSiImageDimensions($thumbImageFile, $this->determineImageDimensions($file)));
+		$siFile->setImageDimensions($this->createSiImageDimensions(new ImageFile($file), $this->determineImageDimensions($file)));
 		
 		return $siFile;
 	}

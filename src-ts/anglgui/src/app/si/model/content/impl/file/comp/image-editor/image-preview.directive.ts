@@ -15,11 +15,11 @@ export class ImagePreviewDirective implements OnInit, OnDestroy {
 	constructor(private elemRef: ElementRef) { }
 
 	ngOnInit() {
-		this.thumbRatio.registerPreviewImg(this.elemRef.nativeElement, this.imageDimension);
+		this.thumbRatio.registerPreviewImg(this.elemRef, this.imageDimension);
 	}
 
 	ngOnDestroy() {
-		this.thumbRatio.unregisterPreviewImg(this.elemRef.nativeElement);
+		this.thumbRatio.unregisterPreviewImg(this.elemRef);
 	}
 
 }
