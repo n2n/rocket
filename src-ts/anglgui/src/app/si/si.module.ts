@@ -46,6 +46,7 @@ import { EmbeddedEntryComponent } from './model/content/impl/embedded/comp/embed
 import { ImageEditorComponent } from './model/content/impl/file/comp/image-editor/image-editor.component';
 import { UploadResultMessageComponent } from './model/content/impl/file/comp/inc/upload-result-message/upload-result-message.component';
 import { ImagePreviewDirective } from './model/content/impl/file/comp/image-editor/image-preview.directive';
+import { ImagePreviewComponent } from './model/content/impl/file/comp/image-preview/image-preview.component';
 
 @NgModule({
 	declarations: [
@@ -55,7 +56,7 @@ import { ImagePreviewDirective } from './model/content/impl/file/comp/image-edit
 		EmbeddedEntriesSummaryInComponent, EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent,
 		ImageResizeComponent, EmbeddedEntryPanelsInComponent, EntryDirective, PaginationComponent, CrumbGroupComponent,
 		AddPasteComponent, QualifierComponent, TogglerInFieldComponent, SplitComponent, SplitViewMenuComponent,
-		SplitManagerComponent, EnumInComponent, QualifierTilingComponent, ChoosePasteComponent, EmbeddedEntryComponent, ImageEditorComponent, UploadResultMessageComponent, ImagePreviewDirective
+		SplitManagerComponent, EnumInComponent, QualifierTilingComponent, ChoosePasteComponent, EmbeddedEntryComponent, ImageEditorComponent, UploadResultMessageComponent, ImagePreviewDirective, ImagePreviewComponent
 	],
 	imports: [
 		CommonModule,

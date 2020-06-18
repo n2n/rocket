@@ -3,6 +3,7 @@ import Cropper from 'cropperjs';
 import { SiFile, SiImageDimension, SiImageCut } from '../../model/file-in-si-field';
 import { ImageEditorModel } from '../image-editor-model';
 import { ImagePreviewDirective } from './image-preview.directive';
+import { Observable, Subject } from 'rxjs';
 
 @Component({
 	selector: 'rocket-image-editor',
@@ -22,7 +23,7 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 	@ViewChildren(ImagePreviewDirective)
 	imagePreviewQueryList: QueryList<ImagePreviewDirective>;
 
-	private imageSrc: ImageSrc;
+	imageSrc: ImageSrc;
 
 	private ratioMap = new Map<string, ThumbRatio>();
 
@@ -60,7 +61,7 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 	// 		}
 	// 	});
 
-		this.imageSrc.init(null, this.originalPreviewRef.nativeElement);
+		this.imageSrc.init();
 
 	}
 
@@ -87,8 +88,7 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 		// this.cropper.setCropBoxData({ left: imageCut.x, top: imageCut.y, width: imageCut.width,
 		// 		height: imageCut.height });
 
-		this.imageSrc.init(thumbRatio.getGroupedImageCut(),
-				thumbRatio.getGroupedPreviewElementRef().nativeElement);
+		this.imageSrc.cut(thumbRatio.getGroupedImageCut());
 	}
 
 	switchToImageDimension(thumbRatio: ThumbRatio, imageDimension: SiImageDimension) {
@@ -128,18 +128,22 @@ export class ImageSrc {
 	private cropper: Cropper|null = null;
 
 	cropping = false;
+	private cropBoxData: any;
+
+	private readySubject: Subject<void>|null = new Subject<void>();
 
 	constructor(private elemRef: ElementRef) {
 	}
 
-	init(imageCut: SiImageCut|null, previewElem: Element) {
-		console.log(imageCut);
-		this.reset();
+	init() {
+		this.destroy();
+
+		const readySubject = this.readySubject;
+
 		this.cropper = new Cropper(this.elemRef.nativeElement, {
 			viewMode: 1,
-			preview: previewElem,
+			preview: '.rocket-image-preview',
 			crop(event) {
-
 				// console.log(event.type);
 				// console.log(event.detail.x);
 				// console.log(event.detail.y);
@@ -149,29 +153,52 @@ export class ImageSrc {
 				// console.log(event.detail.scaleX);
 				// console.log(event.detail.scaleY);
 			},
-			ready() {
+			ready: () => {
+				if (readySubject === this.readySubject) {
+					this.readySubject = null;
+					readySubject.next();
+					readySubject.complete();
+				}
 				// console.log(this.cropper.getCanvasData());
 				// console.log(this.cropper.getContainerData());
 
-				if (imageCut) {
-					this.cropper.setCropBoxData({ left: imageCut.x, top: imageCut.y, width: imageCut.width,
-						height: imageCut.height });
-				// 		rotate: 0, scaleX: 1, scaleY: 1 });
-				} else {
-					// this.cropper.setCropBoxData(this.cropper.getCanvasData());
-					this.cropper.clear();
-				}
+				// if (imageCut) {
+				// 	this.cropper.setCropBoxData({ left: imageCut.x, top: imageCut.y, width: imageCut.width,
+				// 			height: imageCut.height });
+				// // 		rotate: 0, scaleX: 1, scaleY: 1 });
+				// } else {
+				// 	// this.cropper.setCropBoxData(this.cropper.getCanvasData());
+				// 	this.cropper.clear();
+				// }
 			}
 		});
 	}
 
-	reset() {
+	cut(imageCut: SiImageCut|null) {
+		if (imageCut) {
+			this.cropper.setCropBoxData({
+				left: imageCut.x, top: imageCut.y, width: imageCut.width, height: imageCut.height
+			});
+		// 		rotate: 0, scaleX: 1, scaleY: 1 });
+		} else {
+			// this.cropper.setCropBoxData(this.cropper.getCanvasData());
+			this.cropper.clear();
+		}
+	}
+
+	destroy() {
 		if (!this.cropper) {
 			return;
 		}
 
 		this.cropper.destroy();
 		this.cropper = null;
+
+		if (this.readySubject) {
+			this.readySubject.complete();
+		}
+
+		this.readySubject = new Subject<void>();
 	}
 
 	rotateCw() {
@@ -191,6 +218,43 @@ export class ImageSrc {
 			this.cropper.clear();
 		}
 	}
+
+	get ready(): boolean {
+		return !this.readySubject;
+	}
+
+	get ready$(): Observable<void> {
+		if (this.readySubject) {
+			return this.readySubject;
+		}
+
+		return new Observable<void>(subscriber => {
+			subscriber.next();
+			subscriber.complete();
+		});
+	}
+
+	// createPreviewDataUrl(imageCut: SiImageCut): string {
+	// 	if (!this.ready) {
+	// 		throw new Error('Cropper not yet ready.');
+	// 	}
+
+	// 	if (this.cropping) {
+	// 		this.cropBoxData = this.cropper.getCropBoxData();
+	// 	}
+
+	// 	this.cut(new SiImageCut(100, 100, 50, 50, false));
+	// 	const dataUrl = this.cropper.getCroppedCanvas().toDataURL();
+
+	// 	if (this.cropBoxData) {
+	// 		this.cropper.setCropBoxData(this.cropBoxData);
+	// 		this.cropBoxData = null;
+	// 	} else {
+	// 		this.cropper.clear();
+	// 	}
+
+	// 	return dataUrl;
+	// }
 
 }
 

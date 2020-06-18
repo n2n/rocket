@@ -1,12 +1,14 @@
 import { Directive, Input, ElementRef, OnInit, OnDestroy } from '@angular/core';
 import { SiImageDimension } from '../../model/file-in-si-field';
-import { ThumbRatio } from './image-editor.component';
+import { ThumbRatio, ImageSrc } from './image-editor.component';
 
 @Directive({
 	selector: '[rocketImagePreview]'
 })
 export class ImagePreviewDirective implements OnInit, OnDestroy {
 
+	@Input()
+	imageSrc: ImageSrc;
 	@Input()
 	thumbRatio: ThumbRatio;
 	@Input()
@@ -15,11 +17,17 @@ export class ImagePreviewDirective implements OnInit, OnDestroy {
 	constructor(private elemRef: ElementRef) { }
 
 	ngOnInit() {
-		this.thumbRatio.registerPreviewImg(this.elemRef, this.imageDimension);
+		// this.imageSrc.ready$.subscribe(() => {
+		// 	this.elemRef.nativeElement.setAttribute('src', this.imageSrc.createPreviewDataUrl(this.thumbRatio.getGroupedImageCut()));
+		// });
+
+		// this.thumbRatio.registerPreviewImg(this.elemRef, this.imageDimension);
 	}
 
 	ngOnDestroy() {
-		this.thumbRatio.unregisterPreviewImg(this.elemRef);
+		// this.thumbRatio.unregisterPreviewImg(this.elemRef);
 	}
+
+
 
 }

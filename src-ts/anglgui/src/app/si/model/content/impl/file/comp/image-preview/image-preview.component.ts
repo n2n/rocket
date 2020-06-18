@@ -1,0 +1,51 @@
+import { Component, OnInit, ElementRef, DoCheck, Input, ViewChild } from '@angular/core';
+import { SiImageCut } from '../../model/file-in-si-field';
+
+@Component({
+	selector: 'rocket-image-preview',
+	templateUrl: './image-preview.component.html',
+	styleUrls: ['./image-preview.component.css']
+})
+export class ImagePreviewComponent implements OnInit, DoCheck {
+
+	@Input()
+	imageCut: SiImageCut;
+
+	@Input()
+	src: string;
+
+	@Input()
+	size = 50;
+
+	@ViewChild('img', { static: true } )
+	imgElemRef: ElementRef;
+
+	private style: CSSStyleDeclaration;
+
+	constructor(private elemRef: ElementRef) {
+		this.style = elemRef.nativeElement.style;
+		this.style.overflow = 'hidden';
+		this.style.display = 'block';
+
+	}
+
+	ngOnInit() {
+	}
+
+	ngDoCheck() {
+		const widthRatio = this.size / this.imageCut.width;
+		const heightRatio = this.size / this.imageCut.height;
+		const ratio = Math.min(widthRatio, heightRatio);
+
+		this.style.width = (this.imageCut.width * ratio) + 'px';
+		this.style.height = (this.imageCut.height * ratio) + 'px';
+		this.style.paddingLeft = (this.imageCut.x * -ratio) + 'px';
+		this.style.paddingTop = (this.imageCut.y * -ratio) + 'px';
+
+		const imgElement = this.imgElemRef.nativeElement;
+		this.imgElemRef.nativeElement.display = 'block';
+		this.imgElemRef.nativeElement.style.width = (imgElement.naturalWidth * ratio) + 'px';
+		this.imgElemRef.nativeElement.style.height = (imgElement.naturalHeight * ratio) + 'px';
+	}
+
+}
