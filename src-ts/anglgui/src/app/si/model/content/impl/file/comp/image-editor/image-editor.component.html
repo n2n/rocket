@@ -27,7 +27,7 @@
 				<div style="height: 50px">
 					<div>{{ 'original_image_txt' | translate }}</div>
 					
-					<div>with / height</div>
+					<div>width / height</div>
 				</div>
 			</button>
 		</div>
@@ -36,14 +36,14 @@
 			<ul class="rocket-image-dimensions list-unstyled">
 				<li *ngFor="let thumbRatio of thumbRatios" class="rocket-image-version rocket-image-ratio">
 					<button class="btn btn-secondary d-flex" (click)="switchToThumbRatio(thumbRatio)" 
-							[class.active]="currentThumbRatio === thumbRatio" [disabled]="!thumbRatio.hasBaseImageCut()">
-						<div class="d-flex justify-content-center align-items-center">
-							<div class="rocket-image-preview" [class.sr-only]="this.currentThumbRatio !== thumbRatio"></div>
-
-							<img rocketImagePreview [imageSrc]="imageSrc" [thumbRatio]="thumbRatio" />
+							[class.active]="currentThumbRatio === thumbRatio" [disabled]="!thumbRatio.hasGroupedImageCuts()">
+						<div *ngIf="thumbRatio.hasGroupedImageCuts()" class="d-flex justify-content-center align-items-center">
+							<rocket-image-preview [src]="model.getSiFile().url" 
+									[imageCut]="thumbRatio.getGroupedPreviewImageCut(currentImageDimension)"></rocket-image-preview>
 						</div>
 						<div>
-							{{ thumbRatio.width }} / {{ thumbRatio.height }}
+							<div>{{ thumbRatio.width }} / {{ thumbRatio.height }}</div>
+							<div>[irgendwelchi info]</div>
 						</div>
 					</button>
 					
@@ -52,7 +52,8 @@
 					<ul>
 						<ng-container *ngFor="let imageDimension of thumbRatio.imageDimensions">
 							<li class="rocket-image-version">
-								<button (click)="switchToImageDimension(thumbRatio, imageDimension)" class="btn btn-secondary d-flex">
+								<button (click)="switchToImageDimension(thumbRatio, imageDimension)" 
+										class="btn btn-secondary d-flex w-100" [class.active]="currentImageDimension === imageDimension">
 									<div class="d-flex justify-content-center align-items-center">
 										<rocket-image-preview [src]="model.getSiFile().url" [imageCut]="imageDimension.imageCut">
 										</rocket-image-preview>

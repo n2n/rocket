@@ -39,13 +39,13 @@ export class ImagePreviewComponent implements OnInit, DoCheck {
 
 		this.style.width = (this.imageCut.width * ratio) + 'px';
 		this.style.height = (this.imageCut.height * ratio) + 'px';
-		this.style.paddingLeft = (this.imageCut.x * -ratio) + 'px';
-		this.style.paddingTop = (this.imageCut.y * -ratio) + 'px';
 
 		const imgElement = this.imgElemRef.nativeElement;
-		this.imgElemRef.nativeElement.display = 'block';
-		this.imgElemRef.nativeElement.style.width = (imgElement.naturalWidth * ratio) + 'px';
-		this.imgElemRef.nativeElement.style.height = (imgElement.naturalHeight * ratio) + 'px';
+		imgElement.style.display = 'block';
+		imgElement.style.width = (imgElement.naturalWidth * ratio) + 'px';
+		imgElement.style.height = (imgElement.naturalHeight * ratio) + 'px';
+		imgElement.style.marginLeft = (this.imageCut.x * -ratio) + 'px';
+		imgElement.style.marginTop = (this.imageCut.y * -ratio) + 'px';
 	}
 
 }

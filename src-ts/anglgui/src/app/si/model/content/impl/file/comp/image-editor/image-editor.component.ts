@@ -28,6 +28,8 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 	private ratioMap = new Map<string, ThumbRatio>();
 
 	currentThumbRatio: ThumbRatio|null = null;
+	currentImageDimension: SiImageDimension|null = null;
+
 	private originalChanged = false;
 
 	constructor() { }
@@ -73,26 +75,35 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 		return !this.currentThumbRatio;
 	}
 
-	switchToOriginal() {
+	private resetSelection() {
 		this.currentThumbRatio = null;
+		this.currentImageDimension = null;
+
+		for (const [key, thumbRatio] of this.ratioMap) {
+			thumbRatio.updateGroups();
+		}
 	}
 
 	ensureOriginalUnchanged() {
 		return this.originalChanged;
 	}
 
+	switchToOriginal() {
+		this.resetSelection();
+	}
+
 	switchToThumbRatio(thumbRatio: ThumbRatio) {
+		this.resetSelection();
+
 		this.currentThumbRatio = thumbRatio;
-
-		// const imageCut = thumbRatio.getBaseImageCut();
-		// this.cropper.setCropBoxData({ left: imageCut.x, top: imageCut.y, width: imageCut.width,
-		// 		height: imageCut.height });
-
-		this.imageSrc.cut(thumbRatio.getGroupedImageCut());
+		this.imageSrc.cut(thumbRatio.getGroupedImageCuts());
 	}
 
 	switchToImageDimension(thumbRatio: ThumbRatio, imageDimension: SiImageDimension) {
+		this.resetSelection();
 
+		this.currentImageDimension = imageDimension;
+		this.imageSrc.cut([imageDimension.imageCut]);
 	}
 
 	private initSiFile(siFile: SiFile) {
@@ -127,8 +138,10 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 export class ImageSrc {
 	private cropper: Cropper|null = null;
 
+	changed = false;
 	cropping = false;
 	private cropBoxData: any;
+	private imageCuts: SiImageCut[]|null = null;
 
 	private readySubject: Subject<void>|null = new Subject<void>();
 
@@ -143,7 +156,20 @@ export class ImageSrc {
 		this.cropper = new Cropper(this.elemRef.nativeElement, {
 			viewMode: 1,
 			preview: '.rocket-image-preview',
-			crop(event) {
+			zoomable: false,
+			crop: (event) => {
+				if (!this.imageCuts) {
+					return;
+				}
+
+				const data = this.cropper.getData();
+				for (const imageCut of this.imageCuts) {
+					imageCut.x = data.x;
+					imageCut.y = data.y;
+					imageCut.width = data.width;
+					imageCut.height = data.height;
+				}
+
 				// console.log(event.type);
 				// console.log(event.detail.x);
 				// console.log(event.detail.y);
@@ -174,15 +200,25 @@ export class ImageSrc {
 		});
 	}
 
-	cut(imageCut: SiImageCut|null) {
-		if (imageCut) {
-			this.cropper.setCropBoxData({
-				left: imageCut.x, top: imageCut.y, width: imageCut.width, height: imageCut.height
-			});
-		// 		rotate: 0, scaleX: 1, scaleY: 1 });
-		} else {
-			// this.cropper.setCropBoxData(this.cropper.getCanvasData());
+	private calcRatio(): number {
+		const imageData = this.cropper.getImageData();
+
+		return imageData.width / imageData.naturalWidth;
+	}
+
+	cut(imageCuts: SiImageCut[]|null) {
+		this.changed = false;
+		this.imageCuts = imageCuts;
+
+		if (!imageCuts) {
 			this.cropper.clear();
+			return;
+		}
+
+		for (const imageCut of imageCuts) {
+			this.cropper.setData({
+				x: imageCut.x, y: imageCut.y, width: imageCut.width, height: imageCut.height
+			});
 		}
 	}
 
@@ -190,6 +226,8 @@ export class ImageSrc {
 		if (!this.cropper) {
 			return;
 		}
+
+		this.changed = false;
 
 		this.cropper.destroy();
 		this.cropper = null;
@@ -202,10 +240,12 @@ export class ImageSrc {
 	}
 
 	rotateCw() {
+		this.changed = true;
 		this.cropper.rotate(90);
 	}
 
 	rotateCcw() {
+		this.changed = true;
 		this.cropper.rotate(-90);
 	}
 
@@ -213,6 +253,7 @@ export class ImageSrc {
 		this.cropping = !this.cropping;
 
 		if (this.cropping) {
+			this.changed = true;
 			this.cropper.crop();
 		} else {
 			this.cropper.clear();
@@ -262,7 +303,7 @@ export class ThumbRatio {
 	public imageDimensions = new Array<SiImageDimension>();
 	// private _largestImageDimension: SiImageDimension;
 
-	private groupedImageCut: SiImageCut;
+	private groupedImageCuts: SiImageCut[];
 	private imgCutDimMap = new Map<string, SiImageDimension[]>();
 
 	private groupedPreviewElementRef: ElementRef|null = null;
@@ -337,7 +378,7 @@ export class ThumbRatio {
 		this.determineGroupedImageCut();
 	}
 
-	private recalcImgMap() {
+	updateGroups() {
 		this.imgCutDimMap.clear();
 
 		for (const imageDimension of this.imageDimensions) {
@@ -357,7 +398,7 @@ export class ThumbRatio {
 	}
 
 	private determineGroupedImageCut() {
-		this.groupedImageCut = null;
+		this.groupedImageCuts = null;
 
 		let lastSize = 0;
 		for (const [key, imgDims] of this.imgCutDimMap) {
@@ -365,7 +406,7 @@ export class ThumbRatio {
 				continue;
 			}
 
-			this.groupedImageCut = imgDims[0].imageCut;
+			this.groupedImageCuts = imgDims.map(imgDim => imgDim.imageCut);
 			lastSize = imgDims.length;
 		}
 	}
@@ -374,27 +415,29 @@ export class ThumbRatio {
 		return imgCut.width + ',' + imgCut.height + ',' + imgCut.x + ',' + imgCut.y;
 	}
 
-	hasBaseImageCut(): boolean {
-		return !!this.groupedImageCut;
+	hasGroupedImageCuts(): boolean {
+		return !!this.groupedImageCuts;
 	}
 
 	hasIndividualImageCut(imageDimension: SiImageDimension): boolean {
-		return !this.groupedImageCut || !this.groupedImageCut.equals(imageDimension.imageCut);
+		return !this.groupedImageCuts || !this.groupedImageCuts[0].equals(imageDimension.imageCut);
 	}
 
-	getGroupedImageCut(): SiImageCut {
-		if (this.groupedImageCut) {
-			return this.groupedImageCut;
+	getGroupedImageCuts(): SiImageCut[] {
+		if (this.groupedImageCuts) {
+			return this.groupedImageCuts;
 		}
 
 		throw new Error('No base image cut available.');
 	}
 
-	getGroupedPreviewElementRef(): ElementRef {
-		if (this.groupedPreviewElementRef) {
-			return this.groupedPreviewElementRef;
+	getGroupedPreviewImageCut(currentImageDimension: SiImageDimension|null): SiImageCut {
+		for (const imgDim of this.getGroupedImageCuts()) {
+			if (!currentImageDimension || imgDim !== currentImageDimension.imageCut) {
+				return imgDim;
+			}
 		}
 
-		throw new Error('No base image cut available.');
+		throw new Error();
 	}
 }
