@@ -132,7 +132,7 @@ class SiImageDimension implements \JsonSerializable {
 	private $thumbCut;
 	private $exists;
 	
-	function __construct(string $id, string $name, int $width, int $height, bool $ratioFixed, ThumbCut $thumbCut, bool $exists) {
+	function __construct(string $id, ?string $name, int $width, int $height, bool $ratioFixed, ThumbCut $thumbCut, bool $exists) {
 		$this->id = $id;
 		$this->name = $name;
 		$this->width = $width;

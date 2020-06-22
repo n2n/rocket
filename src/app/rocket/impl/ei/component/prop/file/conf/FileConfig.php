@@ -45,6 +45,9 @@ use n2n\config\InvalidConfigurationException;
 use n2n\io\IoUtils;
 use n2n\util\type\CastUtils;
 use n2n\io\orm\ManagedFileEntityProperty;
+use n2n\impl\web\dispatch\mag\model\MagCollectionArrayMag;
+use n2n\impl\web\dispatch\mag\model\StringMag;
+use n2n\impl\web\dispatch\mag\model\MagForm;
 
 class FileConfig extends ConfigAdaption {
 	const ATTR_IMAGE_RECOGNIZED_KEY = 'imageRecognized';
@@ -63,6 +66,8 @@ class FileConfig extends ConfigAdaption {
 	const ATTR_MULTI_UPLOAD_NAMING_EI_PROP_PATH_KEY = 'multiUploadNamingProp';
 	
 	const ATTR_MULTI_UPLOAD_ORDER_KEY = 'multiUploadOrder'; 
+	
+	const ATTR_ID_EXT_NAMES_KEY = 'idExtNames';
 	
 	private $fileModel;
 	/**
@@ -173,8 +178,8 @@ class FileConfig extends ConfigAdaption {
 				false));
 		
 		$magCollection->addMag(self::ATTR_DIMENSION_IMPORT_MODE_KEY, new EnumMag('Dimensions import mode', 
-				array(FileEiProp::DIM_IMPORT_MODE_ALL => 'All possible dimensions',
-						FileEiProp::DIM_IMPORT_MODE_USED_ONLY => 'Only for current image used dimensions'),
+				array(ThumbResolver::DIM_IMPORT_MODE_ALL => 'All possible dimensions',
+						ThumbResolver::DIM_IMPORT_MODE_USED_ONLY => 'Only for current image used dimensions'),
 				$lar->getString(self::ATTR_DIMENSION_IMPORT_MODE_KEY, 
 						$this->thumbResolver->getImageDimensionImportMode())));
 		
@@ -182,7 +187,7 @@ class FileConfig extends ConfigAdaption {
 		if ($lar->contains(self::ATTR_EXTRA_THUMB_DIMENSIONS_KEY)) {
 			$extraImageDimensionStrs = $lar->getScalarArray(self::ATTR_EXTRA_THUMB_DIMENSIONS_KEY);
 		} else {
-			foreach ((array) $this->fileEiProp->getExtraImageDimensions() as $extraImageDimension) {
+			foreach ((array) $this->thumbResolver->getExtraImageDimensions() as $extraImageDimension) {
 				$extraImageDimensionStrs[] = (string) $extraImageDimension;
 			}
 		}
@@ -202,13 +207,30 @@ class FileConfig extends ConfigAdaption {
 			$sortMag = new EnumMag('Upload Order', $this->getMultiUploadSortOptions(),
 					$lar->getString(self::ATTR_MULTI_UPLOAD_ORDER_KEY));
 			
-			
-			$enablerMag->setOnAssociatedMagWrappers(array(
-					$magCollection->addMag(self::ATTR_MULTI_UPLOAD_NAMING_EI_PROP_PATH_KEY, $namingMag),
-					$magCollection->addMag(self::ATTR_MULTI_UPLOAD_ORDER_KEY, $sortMag)
-			));
+			$enablerMag->setOnAssociatedMagWrappers([
+				$magCollection->addMag(self::ATTR_MULTI_UPLOAD_NAMING_EI_PROP_PATH_KEY, $namingMag),
+				$magCollection->addMag(self::ATTR_MULTI_UPLOAD_ORDER_KEY, $sortMag)
+			]);
 		}
+		
+		$idExtNamesMag = new MagCollectionArrayMag('Id Ext Names', function () {
+			$magCollection = new MagCollection();
+			$magCollection->addMag('idExt', new StringMag('Id Ext'));
+			$magCollection->addMag('name', new StringMag('Title'));
+			return new MagForm($magCollection);
+		});
+		$idExtNamesMag->setValue($lar->getArray(self::ATTR_ID_EXT_NAMES_KEY));
+		$magCollection->addMag(self::ATTR_ID_EXT_NAMES_KEY, $idExtNamesMag);
 	}
+	
+	private function readIdExtNames($key, LenientAttributeReader $lar): array {
+		$idExtNames = [];
+		foreach ($lar->getArray(self::ATTR_ID_EXT_NAMES_KEY) as $huii) {
+			
+		}
+		return $idExtNames;
+	}
+	
 	
 	private function getMultiUploadSortOptions() {
 		return array(MultiUploadEiController::ORDER_NONE => 'None',
@@ -239,7 +261,8 @@ class FileConfig extends ConfigAdaption {
 		$dataSet->appendAll($magCollection->readValues(array(
 				self::ATTR_ALLOWED_EXTENSIONS_KEY, self::ATTR_ALLOWED_MIME_TYPES_KEY, 
 				self::ATTR_DIMENSION_IMPORT_MODE_KEY, self::ATTR_EXTRA_THUMB_DIMENSIONS_KEY, 
-				self::ATTR_IMAGE_RECOGNIZED_KEY, self::ATTR_MULTI_UPLOAD_AVAILABLE_KEY), true), true);
+				self::ATTR_IMAGE_RECOGNIZED_KEY, self::ATTR_MULTI_UPLOAD_AVAILABLE_KEY,
+				self::ATTR_ID_EXT_NAMES_KEY), true), true);
 		
 		if ($magCollection->containsPropertyName(self::ATTR_MULTI_UPLOAD_NAMING_EI_PROP_PATH_KEY)) {
 			$dataSet->appendAll($magCollection

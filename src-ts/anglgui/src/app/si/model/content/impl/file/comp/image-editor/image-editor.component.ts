@@ -20,17 +20,12 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 	@ViewChild('originalPreview', { static: true })
 	originalPreviewRef: ElementRef;
 
-	@ViewChildren(ImagePreviewDirective)
-	imagePreviewQueryList: QueryList<ImagePreviewDirective>;
-
 	imageSrc: ImageSrc;
 
 	private ratioMap = new Map<string, ThumbRatio>();
 
 	currentThumbRatio: ThumbRatio|null = null;
 	currentImageDimension: SiImageDimension|null = null;
-
-	private originalChanged = false;
 
 	constructor() { }
 
@@ -73,6 +68,10 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 
 	get originalActive(): boolean {
 		return !this.currentThumbRatio;
+	}
+
+	get originalChanged(): boolean {
+		return this.originalActive && this.imageSrc.changed;
 	}
 
 	private resetSelection() {
@@ -158,6 +157,8 @@ export class ImageSrc {
 			preview: '.rocket-image-preview',
 			zoomable: false,
 			crop: (event) => {
+				this.changed = true;
+
 				if (!this.imageCuts) {
 					return;
 				}
@@ -220,6 +221,7 @@ export class ImageSrc {
 				x: imageCut.x, y: imageCut.y, width: imageCut.width, height: imageCut.height
 			});
 		}
+		this.changed = false;
 	}
 
 	destroy() {

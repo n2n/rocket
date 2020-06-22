@@ -259,8 +259,9 @@ class ThumbResolver {
 				$exits = false;
 			}
 			$ratioFixed = $imageDimension->isCropped();
+			$idExt = $imageDimension->getIdExt();
 			
-			$siImageDimensions[] = new SiImageDimension($id, StringUtils::pretty($id), 
+			$siImageDimensions[] = new SiImageDimension($id, ($idExt !== null ? StringUtils::pretty($idExt) : null), 
 					$imageDimension->getWidth(), $imageDimension->getHeight(), $ratioFixed,
 					$thumbCut, $exits);
 		}

@@ -135,7 +135,7 @@ export class SiCompFactory {
 
 		return {
 			id: extr.reqString('id'),
-			name: extr.reqString('name'),
+			name: extr.nullaString('name'),
 			width: extr.reqNumber('width'),
 			height: extr.reqNumber('height'),
 			imageCut: this.createSiImageCut(extr.reqObject('imageCut')),
