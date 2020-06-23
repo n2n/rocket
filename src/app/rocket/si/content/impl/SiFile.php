@@ -31,6 +31,7 @@ class SiFile implements \JsonSerializable {
 	private $name;
 	private $url;
 	private $thumbUrl;
+	private $mimeType;
 	private $imageDimensions = [];
 	
 	/**
@@ -88,6 +89,14 @@ class SiFile implements \JsonSerializable {
 		return $this;
 	}
 	
+	function getMimeType() {
+		return $this->mimeType;
+	}
+	
+	function setMimeType(?string $mimeType) {
+		$this->mimeType = $mimeType;
+	}
+	
 	/**
 	 * @return SiImageDimension[]
 	 */
@@ -111,6 +120,7 @@ class SiFile implements \JsonSerializable {
 			'name' => $this->name,
 			'url' => ($this->url !== null ? (string) $this->url : null),
 			'thumbUrl' => ($this->thumbUrl !== null ? (string) $this->thumbUrl : null),
+			'mimeType' => $this->mimeType,
 			'imageDimensions' => $this->imageDimensions
 		];
 	}
