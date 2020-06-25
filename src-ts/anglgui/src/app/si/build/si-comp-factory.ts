@@ -126,6 +126,7 @@ export class SiCompFactory {
 			name: extr.reqString('name'),
 			url: extr.nullaString('url'),
 			thumbUrl: extr.nullaString('thumbUrl'),
+			mimeType: extr.nullaString('mimeType'),
 			imageDimensions
 		};
 	}

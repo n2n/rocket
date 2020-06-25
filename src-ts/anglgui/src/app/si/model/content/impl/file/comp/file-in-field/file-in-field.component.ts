@@ -19,15 +19,18 @@ import { UploadResult, ImageEditorModel } from '../image-editor-model';
 	styleUrls: ['./file-in-field.component.css']
 })
 export class FileInFieldComponent implements OnInit {
+	private uploader: CommonImageEditorModel;
 
-	constructor(private siService: SiService, private translationService: TranslationService) { }
+	constructor(private siService: SiService, private translationService: TranslationService) { 
+		this.uploader = new CommonImageEditorModel(this.siService, this.model.getSiFile())
+	}
 
 	get loading() {
-		return !!this.uploadingFile || (this.currentSiFile && this.currentSiFile.thumbUrl && !this.imgLoaded);
+		return !!this.uploader.uploadingFile || (this.currentSiFile && this.currentSiFile.thumbUrl && !this.imgLoaded);
 	}
 
 	get inputAvailable(): boolean {
-		return !this.currentSiFile || (this.uploadInitiated && this.loading);
+		return !this.currentSiFile || (this.uploader.uploadInitiated && this.loading);
 	}
 
 	get currentSiFile(): SiFile|null {
@@ -51,15 +54,13 @@ export class FileInFieldComponent implements OnInit {
 	}
 
 	get resizable(): boolean {
-		return !this.loading && this.currentSiFile && this.currentSiFile.imageDimensions.length > 0;
+		return !this.loading && this.currentSiFile && this.currentSiFile.mimeType
+				&& this.currentSiFile.imageDimensions.length > 0;
 	}
 
 	model: FileInFieldModel;
 	uiStructure: UiStructure;
 	imgLoaded = false;
-
-	uploadInitiated = false;
-	uploadingFile: Blob|null = null;
 
 	uploadResult: UploadResult|null = null;
 
@@ -112,32 +113,9 @@ export class FileInFieldComponent implements OnInit {
 			return;
 		}
 
-		this.upload(fileList[0]).then((uploadErrorResult) => {
+		this.uploader.upload(fileList[0]).then((uploadErrorResult) => {
 			this.uploadResult = uploadErrorResult;
 		});
-	}
-
-	private upload(file: Blob): Promise<UploadResult> {
-		if (file.size > this.model.getMaxSize()) {
-			return Promise.resolve({ uploadTooLarge: true });
-		}
-
-		this.uploadingFile = file;
-		this.uploadInitiated = true;
-
-		return this.siService.fieldCall(this.model.getApiUrl(), this.model.getApiCallId(), {},
-				new Map().set('upload', file)).toPromise().then((data) => {
-					this.imgLoaded = false;
-					this.uploadingFile = null;
-					if (data.error) {
-						return { uploadErrorMessage: data.error };
-					}
-
-					const siFile = SiCompFactory.buildSiFile(data.file);
-					this.model.setSiFile(siFile);
-
-					return { siFile };
-				});
 	}
 
 	editImage() {
@@ -157,7 +135,7 @@ export class FileInFieldComponent implements OnInit {
 			breadcrumbs: [],
 			structureModel: new SimpleUiStructureModel(
 					new TypeUiContent(ImageEditorComponent, (cr) => {
-						cr.instance.model = new CommonImageEditorModel(this.model.getSiFile());
+						cr.instance.model = this.uploader;
 					}))
 		};
 	}
@@ -190,11 +168,8 @@ export class FileInFieldComponent implements OnInit {
 	}
 
 	private reset() {
-		this.uploadingFile = null;
 		this.model.setSiFile(null);
-		this.uploadInitiated = false;
 		this.uploadResult = null;
-		this.uploadingFile = null;
 	}
 
 	removeCurrent() {
@@ -206,16 +181,44 @@ export class FileInFieldComponent implements OnInit {
 }
 
 class CommonImageEditorModel implements ImageEditorModel {
-	constructor(private origSiFile: SiFile) {
 
+	uploadInitiated = false;
+	uploadingFile: Blob|null = null;
+
+	constructor(private siService: SiService, private model: FileInFieldModel) {
 	}
 
 	getSiFile(): SiFile {
-		return this.origSiFile;
+		return this.model.getSiFile();
 	}
 
-	upload(blob: Blob): UploadResult {
-		throw new Error('Method not implemented.');
+	upload(file: Blob): Promise<UploadResult> {
+		if (file.size > this.model.getMaxSize()) {
+			return Promise.resolve({ uploadTooLarge: true });
+		}
+
+		this.uploadingFile = file;
+		this.uploadInitiated = true;
+
+		return this.siService.fieldCall(this.model.getApiUrl(), this.model.getApiCallId(), {},
+				new Map().set('upload', file)).toPromise().then((data) => {
+					this.imgLoaded = false;
+					this.uploadingFile = null;
+					if (data.error) {
+						return { uploadErrorMessage: data.error };
+					}
+
+					const siFile = SiCompFactory.buildSiFile(data.file);
+					this.model.setSiFile(siFile);
+
+					return { siFile };
+				});
+	}
+
+	reset() {
+		this.uploadingFile = null;
+		this.uploadInitiated = false;
+		this.uploadingFile = null;
 	}
 
 

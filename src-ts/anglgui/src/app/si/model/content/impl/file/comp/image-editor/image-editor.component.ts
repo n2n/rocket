@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { SiFile, SiImageDimension } from '../../model/file-in-si-field';
-import { ImageEditorModel } from '../image-editor-model';
+import { ImageEditorModel, UploadResult } from '../image-editor-model';
 import { ImageSrc } from './image-src';
 import { ThumbRatio } from './thumb-ratio';
 
@@ -26,10 +26,12 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 	currentThumbRatio: ThumbRatio|null = null;
 	currentImageDimension: SiImageDimension|null = null;
 
+	private saving = false;
+
 	constructor() { }
 
 	ngOnInit() {
-		this.imageSrc = new ImageSrc(this.canvasRef);
+		this.imageSrc = new ImageSrc(this.canvasRef, this.model.getSiFile().mimeType);
 
 		this.imageSrc.ready$.subscribe(() => {
 			this.imageSrc.cut(null);
@@ -78,7 +80,22 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 	}
 
 	saveOriginal() {
-		console.log(this.imageSrc.createBlob());
+		if (this.loading) {
+			return;
+		}
+
+		this.saving = true;
+		this.imageSrc.createBlob().then((blob) => {
+			this.saving = false;
+			this.handleUploadResult(this.model.upload(blob));
+		});
+	}
+
+	private handleUploadResult(uploadResult: UploadResult) {
+		if (uploadResult.siFile) {
+			this.initSiFile(uploadResult.siFile);
+			return;
+		}
 	}
 
 	private resetSelection() {
@@ -88,6 +105,10 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 		for (const [, thumbRatio] of this.ratioMap) {
 			thumbRatio.updateGroups();
 		}
+	}
+
+	get loading(): boolean {
+		return !this.imageSrc.ready || this.saving;
 	}
 
 	ensureOriginalUnchanged() {

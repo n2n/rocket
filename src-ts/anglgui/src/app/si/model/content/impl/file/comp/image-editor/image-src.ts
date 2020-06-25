@@ -14,7 +14,7 @@ export class ImageSrc {
 
 	private readySubject: Subject<void>|null = new Subject<void>();
 
-	constructor(private elemRef: ElementRef, private mimeType) {
+	constructor(private elemRef: ElementRef, private mimeType: string) {
 	}
 
 	init() {
@@ -30,12 +30,12 @@ export class ImageSrc {
 				this.changed = true;
 				this.cropping = true;
 
-				            if (!this.imageCuts) {
+				if (!this.imageCuts) {
 					return;
 				}
 
-				            const data = this.cropper.getData();
-				            for (const imageCut of this.imageCuts) {
+				const data = this.cropper.getData();
+				for (const imageCut of this.imageCuts) {
 					imageCut.x = data.x;
 					imageCut.y = data.y;
 					imageCut.width = data.width;
@@ -52,6 +52,7 @@ export class ImageSrc {
 				// console.log(event.detail.scaleY);
 			},
 			ready: () => {
+				console.log('ready');
 				if (readySubject === this.readySubject) {
 					this.readySubject = null;
 					readySubject.next();
@@ -70,6 +71,10 @@ export class ImageSrc {
 				// }
 			}
 		});
+	}
+
+	replace(url: string) {
+		this.cropper.replace(url);
 	}
 
 	private calcRatio(): number {
@@ -138,8 +143,12 @@ export class ImageSrc {
 		}
 	}
 
-	createBlob(): any {
-		return this.cropper.getCroppedCanvas().toBlob(this.mimeType);
+	createBlob(): Promise<Blob> {
+		return new Promise((resolve) => {
+			this.cropper.getCroppedCanvas().toBlob((blob) => {
+				resolve(blob);
+			}, this.mimeType);
+		});
 	}
 
 	get ready(): boolean {
