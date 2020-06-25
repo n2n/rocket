@@ -90,7 +90,7 @@ export class SiService {
 		formData.append('data', JSON.stringify(data));
 
 		for (const [name, param] of uploadMap) {
-			if (formData.has('name')) {
+			if (formData.has(name)) {
 				throw new IllegalSiStateError('Error illegal paramName ' + name);
 			}
 

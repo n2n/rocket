@@ -234,7 +234,7 @@ class FileEiProp extends DraftablePropertyEiPropAdapter {
 		$siFile = $this->buildSiFileFromEiu($eiu);
 		
 		return SiFields::fileIn($siFile, $eiu->frame()->getApiUrl(), $eiu->guiField()->createCallId(), 
-						new SiFileHanlderImpl($eiu, $this->thumbResolver, $this->fileVerificator))
+						new SiFileHanlderImpl($eiu, $this->thumbResolver, $this->fileVerificator, $siFile))
 				->setMandatory($this->getEditConfig()->isMandatory())
 				->setMaxSize($this->fileVerificator->getMaxSize())
 				->setAcceptedExtensions($this->fileVerificator->getAllowedExtensions())
@@ -323,7 +323,8 @@ class SiFileHanlderImpl implements SiFileHandler {
 	private $thumbResolver;
 	private $fileVerificator;
 	
-	function __construct(Eiu $eiu, ThumbResolver $thumbResolver, FileVerificator $fileVerificator) {
+	function __construct(Eiu $eiu, ThumbResolver $thumbResolver, FileVerificator $fileVerificator,
+			?SiFile $currentSiFile) {
 		$this->eiu = $eiu;
 		$this->thumbResolver = $thumbResolver;
 		$this->fileVerificator = $fileVerificator;
@@ -347,7 +348,7 @@ class SiFileHanlderImpl implements SiFileHandler {
 					::uploadIncomplete($uploadDefinition->getName())
 					->t($this->eiu->getN2nLocale()));
 		}
-		
+
 		if (null !== ($message = $this->fileVerificator->validate($file))){
 			return SiUploadResult::createError($message->t($this->eiu->getN2nLocale()));
 		}

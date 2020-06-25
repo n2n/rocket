@@ -26,6 +26,7 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 	currentThumbRatio: ThumbRatio|null = null;
 	currentImageDimension: SiImageDimension|null = null;
 
+	uploadResult: UploadResult;
 	private saving = false;
 
 	constructor() { }
@@ -84,18 +85,31 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 			return;
 		}
 
+		this.uploadResult = null;
 		this.saving = true;
 		this.imageSrc.createBlob().then((blob) => {
-			this.saving = false;
-			this.handleUploadResult(this.model.upload(blob));
+			this.model.upload(blob, this.model.getSiFile().name).then((uploadResult) => {
+				this.saving = false;
+				this.handleUploadResult(uploadResult);
+			});
 		});
 	}
 
 	private handleUploadResult(uploadResult: UploadResult) {
-		if (uploadResult.siFile) {
-			this.initSiFile(uploadResult.siFile);
+		this.uploadResult = uploadResult;
+
+		if (!uploadResult.siFile) {
 			return;
 		}
+
+		const siFile = uploadResult.siFile;
+		this.model.setSiFile(siFile);
+		this.imageSrc.replace(siFile.url);
+		this.initSiFile(siFile);
+
+		this.imageSrc.ready$.subscribe(() => {
+			this.imageSrc.cut(null);
+		});
 	}
 
 	private resetSelection() {
@@ -117,6 +131,8 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 
 	switchToOriginal() {
 		this.resetSelection();
+
+		this.imageSrc.cut(null);
 	}
 
 	switchToThumbRatio(thumbRatio: ThumbRatio) {

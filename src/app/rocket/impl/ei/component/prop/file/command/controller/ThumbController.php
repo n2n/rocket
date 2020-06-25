@@ -21,7 +21,6 @@
  */
 namespace rocket\impl\ei\component\prop\file\command\controller;
 
-use Doctrine\Instantiator\Exception\InvalidArgumentException;
 use n2n\io\managed\img\ImageDimension;
 use n2n\io\managed\img\ImageFile;
 use n2n\io\managed\impl\TmpFileManager;
@@ -31,12 +30,12 @@ use n2n\web\http\BadRequestException;
 use n2n\web\http\PageNotFoundException;
 use n2n\web\http\controller\ControllerAdapter;
 use n2n\web\http\controller\ParamQuery;
-use rocket\core\model\Breadcrumb;
 use rocket\ei\manage\EiObject;
 use rocket\ei\util\EiuCtrl;
 use rocket\impl\ei\component\command\common\controller\PathUtils;
 use rocket\impl\ei\component\prop\file\conf\ThumbResolver;
 use n2n\io\managed\File;
+use gallery\core\model\Breadcrumb;
 
 class ThumbController extends ControllerAdapter {	
 	/**
@@ -181,7 +180,7 @@ class ThumbController extends ControllerAdapter {
 		$imageDimension = null;
 		try {
 			$imageDimension = ImageDimension::createFromString($imgDim->__toString());
-		} catch (InvalidArgumentException $e) {
+		} catch (\InvalidArgumentException $e) {
 			throw new BadRequestException(null, 0, $e);
 		}
 		
@@ -232,7 +231,7 @@ class ThumbController extends ControllerAdapter {
 		
 		try {
 			$imageDimension = ImageDimension::createFromString((string) $imgDim);
-		} catch (InvalidArgumentException $e) {
+		} catch (\InvalidArgumentException $e) {
 			throw new BadRequestException(null, 0, $e);
 		}
 		

@@ -20,8 +20,6 @@ export class ImageSrc {
 	init() {
 		this.destroy();
 
-		const readySubject = this.readySubject;
-
 		this.cropper = new Cropper(this.elemRef.nativeElement, {
 			viewMode: 1,
 			preview: '.rocket-image-preview',
@@ -52,12 +50,14 @@ export class ImageSrc {
 				// console.log(event.detail.scaleY);
 			},
 			ready: () => {
-				console.log('ready');
-				if (readySubject === this.readySubject) {
-					this.readySubject = null;
-					readySubject.next();
-					readySubject.complete();
+				if (!this.readySubject) {
+					throw new Error('No ready subject.');
 				}
+
+				const readySubject = this.readySubject;
+				this.readySubject = null;
+				readySubject.next();
+				readySubject.complete();
 				// console.log(this.cropper.getCanvasData());
 				// console.log(this.cropper.getContainerData());
 
@@ -74,6 +74,7 @@ export class ImageSrc {
 	}
 
 	replace(url: string) {
+		this.readySubject = new Subject<void>();
 		this.cropper.replace(url);
 	}
 
@@ -84,12 +85,12 @@ export class ImageSrc {
 	}
 
 	cut(imageCuts: SiImageCut[]|null) {
-		this.changed = false;
 		this.imageCuts = imageCuts;
 
 		if (!imageCuts) {
 			this.cropper.clear();
 			this.cropping = false;
+			this.changed = false;
 			return;
 		}
 
@@ -99,11 +100,18 @@ export class ImageSrc {
 			throw new Error('Empty ImageCut Array.');
 		}
 
-		this.cropper.crop();
-		this.cropper.setData({
+		const cropData = {
 			x: imageCut.x, y: imageCut.y, width: imageCut.width, height: imageCut.height
-		});
+		};
+
+		this.cropper.crop();
+		this.cropper.setData(cropData);
+		this.changed = false;
 	}
+
+	// get freeRatioAllowed(): boolean {
+	// 	return this.imageCuts || this.imageCuts[0].
+	// }
 
 	destroy() {
 		if (!this.cropper) {
