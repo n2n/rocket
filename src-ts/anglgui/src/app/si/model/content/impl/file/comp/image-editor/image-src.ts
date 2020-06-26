@@ -32,7 +32,6 @@ export class ImageSrc {
 			preview: '.rocket-image-preview',
 			zoomable: false,
 			crop: (event) => {
-				console.log(event);
 				this.changed = true;
 				this.cropping = true;
 
@@ -118,9 +117,6 @@ export class ImageSrc {
 		this.cropping = true;
 		this.updateRatioOpt(ratioOpt, imageCut);
 		this.cropper.setData(cropData);
-		console.log(cropData)
-		console.log(this.ratioOpt.ratio);
-		console.log(this.cropper.getData());
 		this.imageCuts = imageCuts;
 		this.changed = false;
 	}
