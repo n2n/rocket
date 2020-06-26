@@ -3,6 +3,11 @@ import { SiImageCut } from '../../model/file-in-si-field';
 import { ElementRef } from '@angular/core';
 import Cropper from 'cropperjs';
 
+export interface RatioOpt {
+	ratio: number;
+	freeRatioAllowed: boolean;
+}
+
 export class ImageSrc {
 
 	private cropper: Cropper|null = null;
@@ -13,6 +18,8 @@ export class ImageSrc {
 	private imageCuts: SiImageCut[]|null = null;
 
 	private readySubject: Subject<void>|null = new Subject<void>();
+	private ratioOpt: RatioOpt|null;
+	private _fixedRatio = false;
 
 	constructor(private elemRef: ElementRef, private mimeType: string) {
 	}
@@ -25,6 +32,7 @@ export class ImageSrc {
 			preview: '.rocket-image-preview',
 			zoomable: false,
 			crop: (event) => {
+				console.log(event);
 				this.changed = true;
 				this.cropping = true;
 
@@ -84,12 +92,14 @@ export class ImageSrc {
 		return imageData.width / imageData.naturalWidth;
 	}
 
-	cut(imageCuts: SiImageCut[]|null) {
-		this.imageCuts = imageCuts;
+	cut(imageCuts: SiImageCut[]|null, ratioOpt: RatioOpt|null) {
+		this.imageCuts = null;
 
 		if (!imageCuts) {
 			this.cropper.clear();
 			this.cropping = false;
+			this.updateRatioOpt(ratioOpt, null);
+			this.imageCuts = imageCuts;
 			this.changed = false;
 			return;
 		}
@@ -105,13 +115,54 @@ export class ImageSrc {
 		};
 
 		this.cropper.crop();
+		this.cropping = true;
+		this.updateRatioOpt(ratioOpt, imageCut);
 		this.cropper.setData(cropData);
+		console.log(cropData)
+		console.log(this.ratioOpt.ratio);
+		console.log(this.cropper.getData());
+		this.imageCuts = imageCuts;
 		this.changed = false;
 	}
 
-	// get freeRatioAllowed(): boolean {
-	// 	return this.imageCuts || this.imageCuts[0].
-	// }
+	private updateRatioOpt(ratioOpt: RatioOpt|null, imageCut: SiImageCut|null) {
+		this.ratioOpt = ratioOpt;
+
+		if (!this.ratioOpt) {
+			this.fixedRatio = false;
+			return;
+		}
+
+		if (!this.ratioOpt.freeRatioAllowed
+				|| imageCut.width / imageCut.height === this.ratioOpt.ratio) {
+			this.fixedRatio = true;
+			return;
+		}
+
+		this.fixedRatio = false;
+	}
+
+
+	get freeRatioAllowed(): boolean {
+		return !this.ratioOpt || this.ratioOpt.freeRatioAllowed;
+	}
+
+	get fixedRatio(): boolean {
+		return this._fixedRatio;
+	}
+
+	set fixedRatio(fixedRatio: boolean) {
+		if (!this.freeRatioAllowed) {
+			fixedRatio = true;
+		}
+
+		this._fixedRatio = fixedRatio;
+		if (fixedRatio) {
+			this.cropper.setAspectRatio(this.ratioOpt.ratio);
+		} else {
+			this.cropper.setAspectRatio(null);
+		}
+	}
 
 	destroy() {
 		if (!this.cropper) {

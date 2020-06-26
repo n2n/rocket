@@ -35,7 +35,7 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 		this.imageSrc = new ImageSrc(this.canvasRef, this.model.getSiFile().mimeType);
 
 		this.imageSrc.ready$.subscribe(() => {
-			this.imageSrc.cut(null);
+			this.imageSrc.cut(null, null);
 		});
 
 		this.initSiFile(this.model.getSiFile());
@@ -80,6 +80,10 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 		return this.originalActive && this.imageSrc.changed;
 	}
 
+	get freeRatioOption(): boolean {
+		return !this.originalActive && this.imageSrc.freeRatioAllowed;
+	}
+
 	saveOriginal() {
 		if (this.loading) {
 			return;
@@ -108,7 +112,7 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 		this.initSiFile(siFile);
 
 		this.imageSrc.ready$.subscribe(() => {
-			this.imageSrc.cut(null);
+			this.imageSrc.cut(null, null);
 		});
 	}
 
@@ -132,21 +136,27 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 	switchToOriginal() {
 		this.resetSelection();
 
-		this.imageSrc.cut(null);
+		this.imageSrc.cut(null, null);
 	}
 
 	switchToThumbRatio(thumbRatio: ThumbRatio) {
 		this.resetSelection();
 
 		this.currentThumbRatio = thumbRatio;
-		this.imageSrc.cut(thumbRatio.getGroupedImageCuts());
+		this.imageSrc.cut(thumbRatio.getGroupedImageCuts(), {
+			ratio: thumbRatio.imageDimensions[0].width / thumbRatio.imageDimensions[0].height, 
+			freeRatioAllowed: !thumbRatio.ratioFixed
+		});
 	}
 
 	switchToImageDimension(imageDimension: SiImageDimension) {
 		this.resetSelection();
 
 		this.currentImageDimension = imageDimension;
-		this.imageSrc.cut([imageDimension.imageCut]);
+		this.imageSrc.cut([imageDimension.imageCut], {
+			ratio: imageDimension.width / imageDimension.height, 
+			freeRatioAllowed: !imageDimension.ratioFixed
+		});
 	}
 
 	private initSiFile(siFile: SiFile) {
@@ -175,5 +185,10 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 
 	save() {
 		// this.cropper.getCroppedCanvas().toBlob();
+	}
+
+	isLowRes(imageDimension: SiImageDimension): boolean {
+		return imageDimension.width > imageDimension.imageCut.width
+				|| imageDimension.height > imageDimension.imageCut.height;
 	}
 }

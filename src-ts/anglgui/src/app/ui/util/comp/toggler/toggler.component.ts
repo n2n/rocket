@@ -12,8 +12,8 @@ export class TogglerComponent implements OnInit {
 	@Input() labeled = true;
 	@Output() enabledChange = new EventEmitter<boolean>();
 
-	@Input() enabledIconClass = 'fas fa-toggle-on';
-	@Input() disabledIconClass = 'fas fa-toggle-off';
+	@Input() enabledIconClass = 'fa fa-toggle-on';
+	@Input() disabledIconClass = 'fa fa-toggle-off';
 
 	@Input() enabledTextCode: string|null = 'enabled_txt';
 	@Input() disabledTextCode: string|null = 'disabled_txt';
