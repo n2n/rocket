@@ -9,7 +9,7 @@ import { SiImageCut } from '../../model/file-in-si-field';
 export class ImagePreviewComponent implements OnInit, DoCheck {
 
 	@Input()
-	imageCut: SiImageCut;
+	imageCut: SiImageCut|null = null;
 
 	@Input()
 	src: string;
@@ -26,13 +26,18 @@ export class ImagePreviewComponent implements OnInit, DoCheck {
 		this.style = elemRef.nativeElement.style;
 		this.style.overflow = 'hidden';
 		this.style.display = 'block';
-
 	}
 
 	ngOnInit() {
+		this.imgElemRef.nativeElement.style.maxWidth = '100%';
+		this.imgElemRef.nativeElement.style.maxHeight = '100%';
 	}
 
 	ngDoCheck() {
+		if (!this.imageCut) {
+			return;
+		}
+
 		const widthRatio = this.size / this.imageCut.width;
 		const heightRatio = this.size / this.imageCut.height;
 		const ratio = Math.min(widthRatio, heightRatio);

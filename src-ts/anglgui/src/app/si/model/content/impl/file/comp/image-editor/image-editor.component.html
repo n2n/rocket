@@ -25,12 +25,13 @@
 			<button class="btn btn-secondary d-flex justify-content-start align-items-center w-100" 
 					[class.active]="originalActive" (click)="switchToOriginal()">
 				<div class="d-flex justify-content-center align-items-center" style="width: 50px">
-					<div #originalPreview class="rocket-image-preview"></div>
+					<div [class.sr-only]="!originalActive || !imageSrc.changed" #originalPreview class="rocket-image-preview"></div>
+			
+					<rocket-image-preview *ngIf="!originalActive || !imageSrc.changed" [src]="model.getSiFile().url"></rocket-image-preview>
 				</div>
 				<div style="height: 50px">
 					<div>{{ 'original_image_txt' | translate }} <span *ngIf="originalChanged">*</span></div>
-					
-					<div>width / height</div>
+					<div>width / height</div> {{!originalActive || !imageSrc.changed}}
 				</div>
 			</button>
 		</div>
