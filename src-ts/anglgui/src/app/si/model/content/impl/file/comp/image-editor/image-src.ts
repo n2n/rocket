@@ -152,11 +152,19 @@ export class ImageSrc {
 			fixedRatio = true;
 		}
 
+		const cropData = this.imageCuts ? {
+			x: this.imageCuts[0].x, y: this.imageCuts[0].y, width: this.imageCuts[0].width, height: this.imageCuts[0].height
+		} : null;
+
 		this._fixedRatio = fixedRatio;
 		if (fixedRatio) {
 			this.cropper.setAspectRatio(this.ratioOpt.ratio);
 		} else {
 			this.cropper.setAspectRatio(null);
+		}
+
+		if (cropData) {
+			this.cropper.setData(cropData);
 		}
 	}
 
