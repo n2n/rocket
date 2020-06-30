@@ -29,12 +29,14 @@ export class ImagePreviewComponent implements OnInit, DoCheck {
 	}
 
 	ngOnInit() {
-		this.imgElemRef.nativeElement.style.maxWidth = '100%';
-		this.imgElemRef.nativeElement.style.maxHeight = '100%';
 	}
 
 	ngDoCheck() {
 		if (!this.imageCut) {
+			this.style.width = this.size + 'px';
+			this.style.height = this.size + 'px';
+			this.imgElemRef.nativeElement.style.maxWidth = '100%';
+			this.imgElemRef.nativeElement.style.maxHeight = '100%';
 			return;
 		}
 
@@ -46,6 +48,7 @@ export class ImagePreviewComponent implements OnInit, DoCheck {
 		this.style.height = (this.imageCut.height * ratio) + 'px';
 
 		const imgElement = this.imgElemRef.nativeElement;
+
 		imgElement.style.display = 'block';
 		imgElement.style.width = (imgElement.naturalWidth * ratio) + 'px';
 		imgElement.style.height = (imgElement.naturalHeight * ratio) + 'px';

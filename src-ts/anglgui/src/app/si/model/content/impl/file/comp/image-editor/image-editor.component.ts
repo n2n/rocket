@@ -144,7 +144,7 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 
 		this.currentThumbRatio = thumbRatio;
 		this.imageSrc.cut(thumbRatio.getGroupedImageCuts(), {
-			ratio: thumbRatio.imageDimensions[0].width / thumbRatio.imageDimensions[0].height, 
+			ratio: thumbRatio.imageDimensions[0].width / thumbRatio.imageDimensions[0].height,
 			freeRatioAllowed: !thumbRatio.ratioFixed
 		});
 	}
@@ -154,7 +154,7 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 
 		this.currentImageDimension = imageDimension;
 		this.imageSrc.cut([imageDimension.imageCut], {
-			ratio: imageDimension.width / imageDimension.height, 
+			ratio: imageDimension.width / imageDimension.height,
 			freeRatioAllowed: !imageDimension.ratioFixed
 		});
 	}

@@ -12,6 +12,9 @@ import { ImageEditorComponent } from '../image-editor/image-editor.component';
 import { TranslationService } from 'src/app/util/i18n/translation.service';
 import { UploadResult, ImageEditorModel } from '../image-editor-model';
 import { Message } from 'src/app/util/i18n/message';
+import { SiControl } from 'src/app/si/model/control/si-control';
+import { SimpleSiControl } from 'src/app/si/model/control/impl/model/simple-si-control';
+import { SiButton } from 'src/app/si/model/control/impl/model/si-button';
 
 
 @Component({
@@ -114,6 +117,7 @@ export class FileInFieldComponent implements OnInit {
 			return;
 		}
 
+		let bakSiFile = this.model.getSiFile().copy();
 		const uiZone = this.uiStructure.getZone();
 
 		this.popupUiLayer = uiZone.layer.container.createLayer();
@@ -121,35 +125,62 @@ export class FileInFieldComponent implements OnInit {
 			this.popupUiLayer = null;
 		});
 
-		this.popupUiLayer.pushZone(null).model = {
+		const zone = this.popupUiLayer.pushZone(null);
+		zone.model = {
 			title: 'Some Title',
 			breadcrumbs: [],
 			structureModel: new SimpleUiStructureModel(
 					new TypeUiContent(ImageEditorComponent, (cr) => {
 						cr.instance.model = this.uploader;
-					}))
+					})),
+			mainCommandContents: this.createPopupControls(() => { bakSiFile = null; })
+					.map(siControl => siControl.createUiContent(zone))
 		};
-	}
 
-	resize() {
-		if (this.popupUiLayer) {
-			return;
-		}
-
-		const uiZone = this.uiStructure.getZone();
-
-		this.popupUiLayer = uiZone.layer.container.createLayer();
 		this.popupUiLayer.onDispose(() => {
 			this.popupUiLayer = null;
+			if (bakSiFile) {
+				this.model.setSiFile(bakSiFile);
+			}
 		});
-
-		this.popupUiLayer.pushZone(null).model = {
-			title: 'Some Title',
-			breadcrumbs: [],
-			structureModel: new SimpleUiStructureModel(
-					new TypeUiContent(ImageResizeComponent, (cr) => cr.instance.model = this.model))
-		};
 	}
+
+	private createPopupControls(applyCallback: () => any): SiControl[] {
+		return [
+			new SimpleSiControl(
+					new SiButton(this.translationService.translate('common_apply_label'), 'btn btn-success', 'fas fa-save'),
+					() => {
+						applyCallback();
+						this.popupUiLayer.dispose();
+					}),
+			new SimpleSiControl(
+					new SiButton(this.translationService.translate('common_discard_label'), 'btn btn-secondary', 'fas fa-trash'),
+					() => {
+						this.popupUiLayer.dispose();
+					})
+		];
+	}
+
+
+	// resize() {
+	// 	if (this.popupUiLayer) {
+	// 		return;
+	// 	}
+
+	// 	const uiZone = this.uiStructure.getZone();
+
+	// 	this.popupUiLayer = uiZone.layer.container.createLayer();
+	// 	this.popupUiLayer.onDispose(() => {
+	// 		this.popupUiLayer = null;
+	// 	});
+
+	// 	this.popupUiLayer.pushZone(null).model = {
+	// 		title: 'Some Title',
+	// 		breadcrumbs: [],
+	// 		structureModel: new SimpleUiStructureModel(
+	// 				new TypeUiContent(ImageResizeComponent, (cr) => cr.instance.model = this.model))
+	// 	};
+	// }
 
 	getAcceptStr(): string {
 		const acceptParts = this.model.getAcceptedExtensions().map(ext => '.' + ext.split(',').join(''));

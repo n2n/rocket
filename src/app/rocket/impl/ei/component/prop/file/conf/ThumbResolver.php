@@ -213,12 +213,12 @@ class ThumbResolver {
 	 * @param ImageDimension $thumbImgDim
 	 * @return \n2n\util\uri\Url
 	 */
-	function createTmpThumbUrl(Eiu $eiu, string $qualifiedName, ImageDimension $thumbImgDim, ImageDimension $variationImgDim = null) {
-		$query = ['qn' => $qualifiedName, 'thumbImgDim' => $thumbImgDim->__toString()];
+	function createTmpThumbUrl(Eiu $eiu, string $qualifiedName, ImageDimension $thumbImgDim/*, ImageDimension $variationImgDim = null*/) {
+		$query = ['qn' => $qualifiedName, 'imgDim' => $thumbImgDim->__toString()];
 		
-		if ($variationImgDim !== null) {
-			$query['variationImgDim'] = (string) $variationImgDim;
-		}
+// 		if ($variationImgDim !== null) {
+// 			$query['variationImgDim'] = (string) $variationImgDim;
+// 		}
 		
 		return $eiu->frame()->getCmdUrl($this->thumbEiCommand)->extR(['tmpthumb'], $query);
 	}

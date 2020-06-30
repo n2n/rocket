@@ -10,6 +10,8 @@ use rocket\ei\manage\security\InaccessibleEiEntryException;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\si\content\SiEntry;
 use rocket\ei\EiType;
+use rocket\ei\manage\gui\control\GuiControlPath;
+use rocket\ei\manage\gui\control\UnknownGuiControlException;
 
 class EiGuiModel {
 	/**
@@ -316,5 +318,20 @@ class EiGuiModel {
 		}
 		
 		return [];
+	}
+	
+	/**
+	 * @param EiFrame $eiFrame
+	 * @param GuiControlPath $guiControlPath
+	 * @throws UnknownGuiControlException
+	 */
+	function createGeneralGuiControl(EiFrame $eiFrame, GuiControlPath $guiControlPath) {
+		$contextEiTypeId = $this->contextEiMask->getEiType()->getId();
+		
+		if (isset($this->eiGuiFrames[$contextEiTypeId])) {
+			return $this->eiGuiFrames[$contextEiTypeId]->createGeneralGuiControl($eiFrame, $guiControlPath);
+		}
+		
+		throw new UnknownGuiControlException('Unknown GuiControlPath: ' . $guiControlPath);
 	}
 }

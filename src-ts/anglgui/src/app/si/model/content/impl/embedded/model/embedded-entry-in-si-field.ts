@@ -103,7 +103,8 @@ export class EmbeddedEntriesInSiField extends SiFieldAdapter implements EmbeInSo
 			return this.handlePaste(newEmbeInds, []);
 		}
 
-		const obtainer = new EmbeddedEntryObtainer(this.siService, this.frame.apiUrl, this.config.reduced, this.config.allowedTypeIds);
+		const obtainer = new EmbeddedEntryObtainer(this.siService, this.frame.apiUrl, this.config.reduced,
+				this.config.allowedTypeIds);
 		return obtainer.obtain(newEntryIdentifiers).toPromise()
 				.then((embeddedEntries) => {
 					return this.handlePaste(newEmbeInds, embeddedEntries);

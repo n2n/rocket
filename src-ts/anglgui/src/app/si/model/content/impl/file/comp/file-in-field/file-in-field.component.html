@@ -1,15 +1,10 @@
 <ng-container *ngIf="inputAvailable">
 	<input #fileInput type="file" (change)="change($event)" [accept]="getAcceptStr()" [disabled]="loading" />
 
-	<button class="pic-btn" [disabled]="loading" (click)="editImage()">{{ 'editor_txt' | translate }}</button>
-
 	<span>({{ 'max_label'| translate }} {{ getPrettySize() }})</span>
 </ng-container>
 
 <ng-container *ngIf="currentSiFile">
-	
-	<button class="pic-btn" [disabled]="loading" (click)="editImage()">{{ 'editor_txt' | translate }}</button>
-
 	<a *ngIf="currentSiFile.url" [href]="currentSiFile.url">
 		<ng-container *ngIf="currentSiFile.thumbUrl; else nothumb">
 			<img [class.sr-only]="!imgLoaded" [src]="currentSiFile.thumbUrl"
@@ -22,7 +17,7 @@
 	<span *ngIf="!currentSiFile.url">{{ currentSiFile.name }}</span>
 </ng-container>
 
-<button *ngIf="resizable" (click)="resize()">
+<button *ngIf="resizable" (click)="editImage()">
 	<i class="fa fa-crop"></i>
 </button>
 

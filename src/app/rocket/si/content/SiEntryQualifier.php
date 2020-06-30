@@ -31,13 +31,14 @@ class SiEntryQualifier extends SiEntryIdentifier implements \JsonSerializable {
 	function __construct(SiMaskQualifier $maskQualifier, ?string $id, string $idName = null) {
 		parent::__construct($maskQualifier->getId(), $id);
 		$this->maskQualifier = $maskQualifier;
+		$this->identifier = new SiEntryIdentifier($maskQualifier->getId(), $id);
 		$this->idName = $idName;
 	}
 
 	function jsonSerialize() {
 		return [
 			'maskQualifier' => $this->maskQualifier,
-			'id' => $this->getId(),
+			'identifier' => $identifier,
 			'idName' => $this->idName
 		];
 	}
@@ -46,8 +47,8 @@ class SiEntryQualifier extends SiEntryIdentifier implements \JsonSerializable {
 		$ds = new DataSet($data);
 		
 		try {
-			return new SiEntryQualifier(SiMaskQualifier::parse($ds->reqArray('maskQualifier')), $ds->optString('id'), 
-					$ds->optString('idName'));
+			return new SiEntryQualifier(SiMaskQualifier::parse($ds->reqArray('maskQualifier')), 
+					SiEntryIdentifier::parse($ds->reqArray('identifier')));
 		} catch (\n2n\util\type\attrs\AttributesException $e) {
 			throw new \InvalidArgumentException(null, null, $e);
 		}

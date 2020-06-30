@@ -65,7 +65,7 @@ class ApiControlProcess {
 	 */
 	private $eiGui;
 	/**
-	 * @var EiGuiFrame
+	 * @var EiGuiModel
 	 */
 	private $eiGuiModel;
 	private $eiEntry;
@@ -151,9 +151,11 @@ class ApiControlProcess {
 		
 		try {
 			if ($this->eiEntry !== null) {
-				$this->entryGuiControl = $this->guiControl = $this->eiGuiModel->createEntryGuiControl($this->eiFrame, $guiControlPath);
+				$this->entryGuiControl = $this->guiControl = $this->eiGuiModel
+						->createEntryGuiControl($this->eiFrame, $guiControlPath);
 			} else {
-				$this->generalGuiControl = $this->guiControl = $this->eiGuiModel->createGeneralGuiControl($this->eiFrame, $guiControlPath);
+				$this->generalGuiControl = $this->guiControl = $this->eiGuiModel
+						->createGeneralGuiControl($this->eiFrame, $guiControlPath);
 			}
 		} catch (UnknownGuiControlException $e) {
 			throw new BadRequestException($e->getMessage(), null, $e);
@@ -225,7 +227,7 @@ class ApiControlProcess {
 				$this->inputEiEntries[] = $eiEntry = $this->eiFrame->createEiEntry($eiObject);
 				$eiGuiModel = $this->createEiGuiModel($eiEntry->getEiMask(), $this->eiGuiModel->getViewMode());
 				
-				$eiEntryGui = $eiGuiModel->getEiGuiFrame()->createEiEntryGui($this->eiFrame, $eiEntry);
+				$eiEntryGui = $eiGuiModel->createEiEntryGui($this->eiFrame, [$eiEntry], $this->eiGui);
 			}
 			
 			$this->applyEntryInput($entryInput, $eiEntryGui);

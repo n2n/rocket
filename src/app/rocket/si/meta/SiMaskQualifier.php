@@ -65,7 +65,7 @@ class SiMaskQualifier extends SiMaskIdentifier {
 	 */
 	static function parse(array $data) {
 		$ds = new DataSet($data);
-		
+	
 		try {
 			return new SiMaskQualifier($ds->reqString('id'), $ds->reqString('typeId'),
 					$ds->reqString('name'), $ds->reqString('iconClass'));

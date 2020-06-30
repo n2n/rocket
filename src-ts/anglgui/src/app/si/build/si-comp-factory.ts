@@ -57,7 +57,7 @@ export class SiCompFactory {
 		const extr = new Extractor(data);
 
 		return new SiEntryQualifier(SiMetaFactory.createTypeQualifier(extr.reqObject('maskQualifier')),
-				extr.nullaString('id'), extr.nullaString('idName'));
+				SiCompFactory.createEntryIdentifier(extr.reqObject('identifier')), extr.nullaString('idName'));
 	}
 
 	static createCrumbGroups(dataArr: Array<any>): SiCrumbGroup[] {
@@ -121,14 +121,11 @@ export class SiCompFactory {
 			imageDimensions.push(SiCompFactory.createSiImageDimension(idData));
 		}
 
-		return {
-			id: extr.reqObject('id'),
-			name: extr.reqString('name'),
-			url: extr.nullaString('url'),
-			thumbUrl: extr.nullaString('thumbUrl'),
-			mimeType: extr.nullaString('mimeType'),
-			imageDimensions
-		};
+		const siFile = new SiFile(extr.reqObject('id'), extr.reqString('name'), extr.nullaString('url'));
+		siFile.thumbUrl = extr.nullaString('thumbUrl');
+		siFile.mimeType = extr.nullaString('mimeType');
+		siFile.imageDimensions = imageDimensions;
+		return siFile;
 	}
 
 	static createSiImageDimension(data: any): SiImageDimension {

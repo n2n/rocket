@@ -28,7 +28,6 @@ use n2n\io\IoUtils;
 use n2n\util\type\ArgUtils;
 use n2n\io\managed\img\ThumbCut;
 use n2n\util\type\attrs\DataMap;
-use n2n\web\http\UploadDefinition;
 
 class FileInSiField extends InSiFieldAdapter {
 	/**
@@ -116,7 +115,7 @@ class FileInSiField extends InSiFieldAdapter {
 	}
 	
 	/**
-	 * @param int $maxSize
+	 * @param int|null $maxSize
 	 * @return FileInSiField
 	 */
 	public function setMaxSize(?int $maxSize) {
@@ -197,7 +196,7 @@ class FileInSiField extends InSiFieldAdapter {
 		
 		$this->value = $this->fileHandler->getSiFileByRawId($valueId);
 		
-		if (!isset($data['imageCuts'])) {
+		if ($this->value === null || !isset($data['imageCuts'])) {
 			return;
 		}
 		

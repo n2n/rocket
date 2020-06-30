@@ -152,6 +152,14 @@ class SiImageDimension implements \JsonSerializable {
 		$this->exists = $exists;
 	}
 	
+	function getId() {
+		return $this->id;
+	}
+	
+	function setId(string $id) {
+		$this->id = $id;
+	}
+	
 	/**
 	 * @param ThumbCut $thumbCut
 	 */

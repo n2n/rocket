@@ -16,10 +16,9 @@ export class SiEntryIdentifier {
 }
 
 export class SiEntryQualifier {
-	readonly identifier: SiEntryIdentifier;
 
-	constructor(readonly maskQualifier: SiMaskQualifier, id: string|null, public idName: string|null) {
-		this.identifier = new SiEntryIdentifier(maskQualifier.identifier.typeId, id);
+	constructor(readonly maskQualifier: SiMaskQualifier, readonly identifier: SiEntryIdentifier,
+			public idName: string|null) {
 	}
 
 	getBestName(): string {
