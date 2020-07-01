@@ -8,8 +8,9 @@ export class SiMaskIdentifier {
 	}
 }
 
-export class SiMaskQualifier {
-	constructor(readonly identifier: SiMaskIdentifier, public name: string, public iconClass: string) {
+export class SiMaskQualifier extends SiMaskIdentifier {
+	constructor(readonly id: string, readonly typeId: string, public name: string, public iconClass: string) {
+		super(id, typeId);
 	}
 
 }

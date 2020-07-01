@@ -27,6 +27,7 @@ use rocket\ei\EiType;
 use rocket\si\input\SiEntryInput;
 use n2n\util\ex\IllegalStateException;
 use n2n\util\type\attrs\AttributesException;
+use rocket\ei\mask\EiMask;
 
 class EiEntryGuiTypeDef {
 	/**
@@ -34,9 +35,9 @@ class EiEntryGuiTypeDef {
 	 */
 	private $eiEntryGui;
 	/**
-	 * @var EiType
+	 * @var EiMask
 	 */
-	private $eiType;
+	private $eiMask;
 	/**
 	 * @var EiEntry
 	 */
@@ -54,17 +55,17 @@ class EiEntryGuiTypeDef {
 	 * @param int $viewMode
 	 * @param int|null $treeLevel
 	 */
-	public function __construct(EiEntryGui $eiEntryGui, EiType $eiType, EiEntry $eiEntry) {
+	public function __construct(EiEntryGui $eiEntryGui, EiMask $eiMask, EiEntry $eiEntry) {
 		$this->eiEntryGui = $eiEntryGui;
-		$this->eiType = $eiType;
+		$this->eiMask = $eiMask;
 		$this->eiEntry = $eiEntry;
 	}
 	
 	/**
-	 * @return \rocket\ei\EiType
+	 * @return \rocket\ei\mask\EiMask
 	 */
-	function getEiType() {
-		return $this->eiType;
+	function getEiMask() {
+		return $this->eiMask;
 	}
 	
 	/**
