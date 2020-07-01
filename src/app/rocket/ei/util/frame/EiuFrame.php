@@ -772,7 +772,7 @@ class EiuFrame {
 	 * @return mixed|null
 	 */
 	public function siQualifierToId(SiEntryQualifier $siQualifier) {
-		if (null !== ($pid = $siQualifier->getId())) {
+		if (null !== ($pid = $siQualifier->getIdentifier()->getId())) {
 			return $this->pidToId($pid);
 		}
 		

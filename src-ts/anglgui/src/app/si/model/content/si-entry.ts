@@ -3,7 +3,7 @@ import { SiEntryInput } from 'src/app/si/model/input/si-entry-input';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { SiEntryError } from 'src/app/si/model/input/si-entry-error';
 import { Message } from 'src/app/util/i18n/message';
-import { SiEntryIdentifier, SiEntryQualifier } from './si-qualifier';
+import { SiEntryIdentifier, SiEntryQualifier } from './si-entry-qualifier';
 import { SiEntryBuildup } from './si-entry-buildup';
 import { SiMaskQualifier } from '../meta/si-mask-qualifier';
 import { BehaviorSubject, Observable } from 'rxjs';

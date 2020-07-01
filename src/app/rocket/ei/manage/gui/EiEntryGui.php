@@ -97,9 +97,9 @@ class EiEntryGui {
 	 * @param EiEntryGuiTypeDef $eiEntryGuiTypeDef
 	 */
 	function putTypeDef(EiEntryGuiTypeDef $eiEntryGuiTypeDef) {
-		$eiType = $eiEntryGuiTypeDef->getEiType();
+		$eiType = $eiEntryGuiTypeDef->getEiMask()->getEiType();
 		
-		ArgUtils::assertTrue($eiType->isA($this->contextEiMask));
+		ArgUtils::assertTrue($eiType->isA($this->contextEiMask->getEiType()));
 		
 		$this->typeDefs[$eiType->getId()] = $eiEntryGuiTypeDef;
 	}
@@ -177,7 +177,7 @@ class EiEntryGui {
 	 * @return \rocket\si\content\SiEntryIdentifier
 	 */
 	function createSiEntryIdentifier() {
-		$typeId = $this->contextEiMask->getId();
+		$typeId = $this->contextEiMask->getEiType()->getId();
 		$id = null;
 		if ($this->isTypeDefSelected()) {
 			$eiEntry = $this->getSelectedTypeDef()->getEiEntry();

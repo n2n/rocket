@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, EventEmitter, Output, HostListener } from '@angular/core';
-import { SiEntryQualifier } from 'src/app/si/model/content/si-qualifier';
+import { SiEntryQualifier } from 'src/app/si/model/content/si-entry-qualifier';
 import { SiEmbeddedEntry } from '../../model/si-embedded-entry';
 import { SiMaskQualifier } from 'src/app/si/model/meta/si-mask-qualifier';
 import { AddPasteObtainer } from '../add-paste-obtainer';

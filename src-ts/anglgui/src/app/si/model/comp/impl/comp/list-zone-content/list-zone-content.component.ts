@@ -4,7 +4,7 @@ import { SiGetInstruction } from 'src/app/si/model/api/si-get-instruction';
 import { SiGetResponse } from 'src/app/si/model/api/si-get-response';
 import { SiGetResult } from 'src/app/si/model/api/si-get-result';
 import { fromEvent, Subscription } from 'rxjs';
-import { SiEntryQualifier } from 'src/app/si/model/content/si-qualifier';
+import { SiEntryQualifier } from 'src/app/si/model/content/si-entry-qualifier';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiPage } from '../../model/si-page';
 import { SiProp } from 'src/app/si/model/meta/si-prop';

@@ -1,7 +1,7 @@
 import { SiGenericEntry } from 'src/app/si/model/generic/si-generic-entry';
 import { SiEmbeddedEntry } from './si-embedded-entry';
 import { SiField } from '../../../si-field';
-import { SiEntryQualifier } from '../../../si-qualifier';
+import { SiEntryQualifier } from '../../../si-entry-qualifier';
 
 export class SiGenericEmbeddedEntryCollection {
 	constructor(public siGenericEmbeddedEntries: Array<SiGenericEmbeddedEntry>) {

@@ -68,7 +68,7 @@ class QualifierSelectInSiField extends InSiFieldAdapter {
 	function setValues(array $values) {
 		$typeContext = $this->frame->getTypeContext();
 		foreach ($values as $value) {
-			ArgUtils::assertTrue($typeContext->containsTypeId($value->getTypeId()));
+			ArgUtils::assertTrue($typeContext->containsTypeId($value->getIdentifier()->getTypeId()));
 		}
 		$this->values = $values;
 		return $this;

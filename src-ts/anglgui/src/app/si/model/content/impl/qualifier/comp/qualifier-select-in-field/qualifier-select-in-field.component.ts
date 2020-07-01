@@ -1,5 +1,5 @@
 import { Component, OnInit, ElementRef, DoCheck } from '@angular/core';
-import { SiEntryQualifier } from 'src/app/si/model/content/si-qualifier';
+import { SiEntryQualifier } from 'src/app/si/model/content/si-entry-qualifier';
 import { QualifierSelectInModel } from '../qualifier-select-in-model';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { PopupUiLayer } from 'src/app/ui/structure/model/ui-layer';

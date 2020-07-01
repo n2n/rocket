@@ -150,7 +150,7 @@ class EiEntryGuiTypeDef {
 	 * @throws \InvalidArgumentException
 	 */
 	function handleSiEntryInput(SiEntryInput $siEntryInput) {
-		if ($this->getEiType()->getId() != $siEntryInput->getTypeId()) {
+		if ($this->eiMask->getEiType()->getId() != $siEntryInput->getTypeId()) {
 			throw new IllegalStateException('EiType missmatch.');
 		}
 		

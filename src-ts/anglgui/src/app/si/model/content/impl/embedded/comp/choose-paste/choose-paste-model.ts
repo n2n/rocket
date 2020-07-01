@@ -1,6 +1,6 @@
 import { ClipboardService } from 'src/app/si/model/generic/clipboard.service';
 import { SiMaskQualifier } from 'src/app/si/model/meta/si-mask-qualifier';
-import { SiEntryQualifier } from '../../../../si-qualifier';
+import { SiEntryQualifier } from '../../../../si-entry-qualifier';
 import { SiGenericEmbeddedEntry } from '../../model/generic-embedded';
 import { SiEmbeddedEntry } from '../../model/si-embedded-entry';
 import { Subject, Subscription } from 'rxjs';

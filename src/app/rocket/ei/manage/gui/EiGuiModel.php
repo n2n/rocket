@@ -145,12 +145,12 @@ class EiGuiModel {
 			ArgUtils::assertTrue(isset($typeDefs[$key]));
 			$eiEntryGuiTypeDef = $typeDefs[$key];
 			
-			$siEntry->putBuildup($eiEntryGuiTypeDef->getEiType()->getId(),
+			$siEntry->putBuildup($eiEntryGuiTypeDef->getEiMask()->getEiType()->getId(),
 					$eiGuiFrame->createSiEntryBuildup($eiFrame, $eiEntryGuiTypeDef, $siControlsIncluded));
 		}
 		
 		if ($eiEntryGui->isTypeDefSelected()) {
-			$siEntry->setSelectedTypeId($eiEntryGui->getSelectedTypeDef()->getEiType()->getId());
+			$siEntry->setSelectedTypeId($eiEntryGui->getSelectedTypeDef()->getEiMask()->getEiType()->getId());
 		}
 		
 		return $siEntry;
@@ -247,7 +247,7 @@ class EiGuiModel {
 		ArgUtils::assertTrue($eiGui->getEiGuiModel() === $this);
 		ArgUtils::valArray($eiEntries, EiEntry::class);
 		
-		$eiEntryGui = new EiEntryGui($this->contextEiMask->getEiType(), $eiGui, $treeLevel);
+		$eiEntryGui = new EiEntryGui($this->contextEiMask, $eiGui, $treeLevel);
 		
 		$eiEntries = $this->catEiEntries($eiEntries);
 		

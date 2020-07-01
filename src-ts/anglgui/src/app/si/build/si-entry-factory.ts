@@ -1,7 +1,7 @@
 import { SiDeclaration } from '../model/meta/si-declaration';
 import { SiPartialContent } from '../model/content/si-partial-content';
 import { SiEntry } from '../model/content/si-entry';
-import { SiEntryIdentifier, SiEntryQualifier } from '../model/content/si-qualifier';
+import { SiEntryIdentifier, SiEntryQualifier } from '../model/content/si-entry-qualifier';
 import { SiEntryBuildup } from '../model/content/si-entry-buildup';
 import { Extractor } from 'src/app/util/mapping/extractor';
 import { SiControlFactory } from './si-control-factory';
@@ -55,7 +55,7 @@ export class SiEntryFactory {
 		const extr = new Extractor(data);
 
 		const maskDeclaration = this.declaration.getTypeDeclarationByTypeId(extr.reqString('typeId'));
-		const entryQualifier = new SiEntryQualifier(maskDeclaration.type.qualifier, identifier.id, extr.nullaString('idName'));
+		const entryQualifier = new SiEntryQualifier(maskDeclaration.type.qualifier, identifier, extr.nullaString('idName'));
 
 		const entryBuildup = new SiEntryBuildup(entryQualifier);
 		entryBuildup.fieldMap = new SiFieldFactory(controlBoundry, this.declaration, maskDeclaration.type, this.injector)

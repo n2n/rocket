@@ -1,6 +1,6 @@
 
 import { Message } from 'src/app/util/i18n/message';
-import { SiEntryQualifier } from '../../../si-qualifier';
+import { SiEntryQualifier } from '../../../si-entry-qualifier';
 import { QualifierSelectInModel } from '../comp/qualifier-select-in-model';
 import { InSiFieldAdapter } from '../../common/model/in-si-field-adapter';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';

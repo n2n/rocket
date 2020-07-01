@@ -7,7 +7,7 @@ import { SiPage } from '../model/comp/impl/model/si-page';
 import { BulkyEntrySiComp } from '../model/comp/impl/model/bulky-entry-si-comp';
 import { CompactEntrySiComp } from '../model/comp/impl/model/compact-entry-si-comp';
 import { SiComp } from '../model/comp/si-comp';
-import { SiEntryIdentifier, SiEntryQualifier } from '../model/content/si-qualifier';
+import { SiEntryIdentifier, SiEntryQualifier } from '../model/content/si-entry-qualifier';
 import { SiEntryFactory } from './si-entry-factory';
 import { SiEmbeddedEntry } from '../model/content/impl/embedded/model/si-embedded-entry';
 import { SiPanel, SiGridPos } from '../model/content/impl/embedded/model/si-panel';
