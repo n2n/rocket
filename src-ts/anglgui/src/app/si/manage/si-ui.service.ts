@@ -12,8 +12,7 @@ import { SiService } from './si.service';
 import { UiZone } from 'src/app/ui/structure/model/ui-zone';
 import { SiCommandError } from '../util/si-command-error';
 import { UiLayer } from 'src/app/ui/structure/model/ui-layer';
-import { SiComp } from '../model/comp/si-comp';
-import { SiResult } from './si-result';
+import { SiResult, SiDirective } from './si-result';
 import { SiControlBoundry } from '../model/control/si-control-bountry';
 
 @Injectable({
@@ -38,7 +37,7 @@ export class SiUiService {
 	}
 
 	navigateBack(layer: UiLayer, fallbackUrl: string|null = null) {
-
+		
 	}
 
 	navigateForward(layer: UiLayer, fallbackUrl: string|null = null) {
@@ -57,6 +56,7 @@ export class SiUiService {
 
 	navigate(url: string, layer: UiLayer) {
 		if (!layer.main) {
+			
 			throw new Error('not yet implemented');
 		}
 
@@ -149,6 +149,15 @@ export class SiUiService {
 	private handleResult(result: SiResult, inputEntries: SiEntry[]) {
 		if (inputEntries.length > 0) {
 			this.handleEntryErrors(result.entryErrors, inputEntries);
+		}
+
+		switch (result.directive) {
+			case SiDirective.REDIRECT:
+
+				break;
+			case SiDirective.REDIRECT_BACK:
+				this.navigateBack();
+				break;
 		}
 	}
 

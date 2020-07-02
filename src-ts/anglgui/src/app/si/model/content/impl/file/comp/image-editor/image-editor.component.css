@@ -10,3 +10,7 @@ button {
 	max-width: 50px; 
 	overflow: hidden;
 }
+
+.rocket-img-loading {
+	visibility: hidden;
+}
