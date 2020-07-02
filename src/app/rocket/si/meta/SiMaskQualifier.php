@@ -23,7 +23,7 @@ namespace rocket\si\meta;
 
 use n2n\util\type\attrs\DataSet;
 
-class SiMaskQualifier  {
+class SiMaskQualifier implements \JsonSerializable {
 	private $identifier;
 	private $name;
 	private $iconClass;
@@ -59,8 +59,7 @@ class SiMaskQualifier  {
 	
 	function jsonSerialize() {
 		return [
-		    'id' => $this->id,
-			'typeId' => $this->typeId,
+			'identifier' => $this->identifier,
 			'name' => $this->name,
 			'iconClass' => $this->iconClass
 		];

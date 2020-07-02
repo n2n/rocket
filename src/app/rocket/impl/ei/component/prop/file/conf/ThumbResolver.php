@@ -36,9 +36,6 @@ use n2n\util\StringUtils;
 use n2n\io\managed\FileManager;
 use n2n\io\managed\FileLocator;
 use n2n\io\managed\img\ThumbCut;
-use n2n\io\img\ImageSource;
-use n2n\io\managed\FileSource;
-use n2n\io\managed\img\impl\ProportionalThumbStrategy;
 
 class ThumbResolver {
 	
@@ -253,6 +250,7 @@ class ThumbResolver {
 		$siImageDimensions = []; 
 		foreach ($imageDimensions as $id => $imageDimension) {
 			$thumbCut = $imageFile->getThumbCut($imageDimension);
+			
 			$imageDimension = ImageDimension::createFromString($imageDimension);
 			$exits = true;
 			if ($thumbCut === null) {

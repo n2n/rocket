@@ -195,12 +195,11 @@ class FileInSiField extends InSiFieldAdapter {
 		}
 		
 		$this->value = $this->fileHandler->getSiFileByRawId($valueId);
-		
 		if ($this->value === null || !isset($data['imageCuts'])) {
 			return;
 		}
 		
-		foreach ($this->value->getImageDimensions() as $imgDim) { 
+		foreach ($this->value->getImageDimensions() as $imgDim) {
 			$id = $imgDim->getId();
 			
 			if (!isset($data['imageCuts'][$id])) {

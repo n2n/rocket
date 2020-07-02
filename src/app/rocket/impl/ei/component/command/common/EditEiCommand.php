@@ -33,6 +33,7 @@ use rocket\core\model\Rocket;
 use n2n\util\uri\Path;
 use rocket\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
+use n2n\util\ex\IllegalStateException;
 
 class EditEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiCommand {
 	const ID_BASE = 'edit';
@@ -76,12 +77,17 @@ class EditEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiC
 		$dtc = $eiu->dtc(Rocket::NS);
 		
 		$siButton = SiButton::primary($dtc->t('common_save_label'), SiIconType::ICON_SAVE);
-		$callback = function (Eiu $eiu) {
-			$eiu->entry()->save();
+		$callback = function (Eiu $eiu, array $inputEius) {
+			$inputEiuEntries = [];
+			foreach ($inputEius as $inputEiu) {
+				$inputEiuEntry = $inputEiu->entry();
+				IllegalStateException::assertTrue($inputEiuEntry->save());
+				$inputEiuEntries[] = $inputEiuEntry;
+			}
 			
 			return $eiu->factory()->newControlResponse()
 					->redirectBack()
-					->highlight($eiu->entry());
+					->highlight(...$inputEiuEntries);
 		};
 		
 		return [$eiuControlFactory->createCallback(self::CONTROL_SAVE_KEY, $siButton, $callback)->setInputHandled(true)];

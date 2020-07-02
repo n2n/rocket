@@ -229,6 +229,7 @@ class ThumbController extends ControllerAdapter {
 			throw new PageNotFoundException();
 		}
 		
+		$imageDimension = null;
 		try {
 			$imageDimension = ImageDimension::createFromString((string) $imgDim);
 		} catch (\InvalidArgumentException $e) {
