@@ -56,7 +56,7 @@ export class SiUiService {
 
 	navigate(url: string, layer: UiLayer) {
 		if (!layer.main) {
-			
+			layer.currentZone
 			throw new Error('not yet implemented');
 		}
 
