@@ -68,6 +68,5 @@ export class EiComponent implements OnInit, OnDestroy {
 			break;
 		}
 
-
 	}
 }

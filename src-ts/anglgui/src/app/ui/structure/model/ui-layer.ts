@@ -2,13 +2,18 @@ import { Subject, Subscription } from 'rxjs';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { UiContainer } from './ui-container';
 import { UiZone } from './ui-zone';
+import { UnsupportedMethodError } from 'src/app/si/util/unsupported-method-error';
+import { IllegalArgumentError } from 'src/app/si/util/illegal-argument-error';
 
 export interface UiLayer {
 	readonly container: UiContainer;
 	readonly main: boolean;
 	readonly currentZone: UiZone|null;
+	readonly previousZone: UiZone|null;
 
 	pushZone(url: string|null): UiZone;
+
+	switchZoneById(id: string): void;
 }
 
 abstract class UiLayerAdapter implements UiLayer {
@@ -30,6 +35,18 @@ abstract class UiLayerAdapter implements UiLayer {
 		}
 
 		throw new IllegalSiStateError('Layer contains invalid current zone');
+	}
+
+	get previousZone(): UiZone|null {
+		if (this.currentZoneIndex === null || this.currentZoneIndex < 1) {
+			return null;
+		}
+
+		if (this.zones[this.currentZoneIndex - 1]) {
+			return this.zones[this.currentZoneIndex -1];
+		}
+
+		throw new IllegalSiStateError('Layer contains invalid previous zone');
 	}
 
 	protected getZoneById(id: number): UiZone|null {
@@ -100,7 +117,7 @@ export class MainUiLayer extends UiLayerAdapter {
 	}
 
 	pushZone(url: string|null): UiZone {
-		throw new UnsupportedMethodError();
+		throw new UnsupportedMethodError('Main layer does not support such action.');
 	}
 }
 
@@ -114,6 +131,15 @@ export class PopupUiLayer extends UiLayerAdapter {
 
 	pushZone(url: string|null): UiZone {
 		return this.createZone(this.zones.length, url);
+	}
+
+	switchZoneById(id: number) {
+		const zoneIndex = this.getZoneIndexById(id);
+		if (zoneIndex === null) {
+			throw new IllegalArgumentError('Unknown id: ' + id);
+		}
+
+		this.currentZoneIndex = zoneIndex
 	}
 
 	dispose() {

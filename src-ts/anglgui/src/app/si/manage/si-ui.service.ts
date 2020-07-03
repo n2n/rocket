@@ -56,8 +56,9 @@ export class SiUiService {
 
 	navigate(url: string, layer: UiLayer) {
 		if (!layer.main) {
-			layer.currentZone
-			throw new Error('not yet implemented');
+			const zone = layer.pushZone(url);
+			this.loadZone(zone);
+			return;
 		}
 
 		const baseHref = this.platformLocation.getBaseHrefFromDOM();
