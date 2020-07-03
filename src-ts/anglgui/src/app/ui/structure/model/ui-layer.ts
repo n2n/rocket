@@ -7,6 +7,8 @@ export interface UiLayer {
 	readonly container: UiContainer;
 	readonly main: boolean;
 	readonly currentZone: UiZone|null;
+
+	pushZone(url: string|null): UiZone;
 }
 
 abstract class UiLayerAdapter implements UiLayer {
@@ -80,11 +82,11 @@ export class MainUiLayer extends UiLayerAdapter {
 		super(container);
 	}
 
-	pushZone(id: number, url: string): UiZone {
+	pushRouteZone(id: number, url: string): UiZone {
 		return this.createZone(id, url);
 	}
 
-	popZone(id: number, verifyUrl: string): boolean {
+	popRouteZone(id: number, verifyUrl: string): boolean {
 		const index = this.getZoneIndexById(id);
 		if (!index || this.zones[index].url !== verifyUrl) {
 			// @todo temporary test to monitor angular routing behaviour
@@ -95,6 +97,10 @@ export class MainUiLayer extends UiLayerAdapter {
 
 		this.currentZoneIndex = index;
 		return true;
+	}
+
+	pushZone(url: string|null): UiZone {
+		throw new UnsupportedMethodError();
 	}
 }
 
