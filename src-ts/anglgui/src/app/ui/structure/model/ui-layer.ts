@@ -13,7 +13,9 @@ export interface UiLayer {
 
 	pushZone(url: string|null): UiZone;
 
-	switchZoneById(id: string): void;
+	switchZoneById(id: number): void;
+
+	dispose(): void;
 }
 
 abstract class UiLayerAdapter implements UiLayer {
@@ -24,6 +26,10 @@ abstract class UiLayerAdapter implements UiLayer {
 	}
 
 	readonly abstract main: boolean;
+
+	abstract pushZone(url: string|null): UiZone;
+	abstract switchZoneById(id: number): void;
+	abstract dispose(): void;
 
 	get currentZone(): UiZone|null {
 		if (this.currentZoneIndex === null) {
@@ -43,7 +49,7 @@ abstract class UiLayerAdapter implements UiLayer {
 		}
 
 		if (this.zones[this.currentZoneIndex - 1]) {
-			return this.zones[this.currentZoneIndex -1];
+			return this.zones[this.currentZoneIndex - 1];
 		}
 
 		throw new IllegalSiStateError('Layer contains invalid previous zone');
@@ -54,7 +60,12 @@ abstract class UiLayerAdapter implements UiLayer {
 	}
 
 	protected getZoneIndexById(id: number): number|null {
-		return this.zones.findIndex(zone => zone.id === id) || null;
+		const index = this.zones.findIndex(zone => zone.id === id);
+		if (index === -1) {
+			return null;
+		}
+
+		return index;
 	}
 
 	protected createZone(id: number, url: string|null): UiZone {
@@ -105,7 +116,12 @@ export class MainUiLayer extends UiLayerAdapter {
 
 	popRouteZone(id: number, verifyUrl: string): boolean {
 		const index = this.getZoneIndexById(id);
-		if (!index || this.zones[index].url !== verifyUrl) {
+
+		if (!this.zones[index]) {
+			throw new IllegalSiStateError('Zone with id ' + id + ' does not exists. Verify url: ' + verifyUrl);
+		}
+
+		if (this.zones[index].url !== verifyUrl) {
 			// @todo temporary test to monitor angular routing behaviour
 			throw new IllegalSiStateError('Zone pop url verify missmatch for id ' + id + ': '
 					+ this.zones[index as number].url + ' != ' + verifyUrl);
@@ -117,6 +133,14 @@ export class MainUiLayer extends UiLayerAdapter {
 	}
 
 	pushZone(url: string|null): UiZone {
+		throw new UnsupportedMethodError('Main layer does not support such action.');
+	}
+
+	switchZoneById(id: number): void {
+		throw new UnsupportedMethodError('Main layer does not support such action.');
+	}
+
+	dispose(): void {
 		throw new UnsupportedMethodError('Main layer does not support such action.');
 	}
 }
@@ -133,13 +157,13 @@ export class PopupUiLayer extends UiLayerAdapter {
 		return this.createZone(this.zones.length, url);
 	}
 
-	switchZoneById(id: number) {
+	switchZoneById(id: number): void {
 		const zoneIndex = this.getZoneIndexById(id);
 		if (zoneIndex === null) {
 			throw new IllegalArgumentError('Unknown id: ' + id);
 		}
 
-		this.currentZoneIndex = zoneIndex
+		this.currentZoneIndex = zoneIndex;
 	}
 
 	dispose() {

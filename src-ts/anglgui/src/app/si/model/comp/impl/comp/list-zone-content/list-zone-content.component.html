@@ -22,7 +22,7 @@
 							<input type="checkbox" 
 									[ngModel]="isSelected(siEntry.qualifier)"
 									[disabled]="!areMoreSelectable() && !isSelected(siEntry.qualifier)" />
-						</ng-container> 
+						</ng-container>
 					</td>
 					<td *ngFor="let fieldUiStructure of structurePage.fieldUiStructuresOf(siEntry.identifier.id)"
 							rocketUiStructure [uiStructure]="fieldUiStructure" 

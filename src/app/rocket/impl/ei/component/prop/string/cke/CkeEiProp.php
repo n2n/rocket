@@ -22,10 +22,8 @@
 namespace rocket\impl\ei\component\prop\string\cke;
 
 use rocket\impl\ei\component\prop\string\AlphanumericEiProp;
-use n2n\util\type\ArgUtils;
 use rocket\ei\EiPropPath;
 use rocket\ei\util\Eiu;
-use rocket\impl\ei\component\prop\string\cke\model\CkeCssConfig;
 use rocket\ei\manage\gui\ViewMode;
 use n2n\util\StringUtils;
 use n2n\core\N2N;
@@ -41,15 +39,12 @@ class CkeEiProp extends AlphanumericEiProp {
 	public function __construct() {
 		$this->getDisplayConfig()->setDefaultDisplayedViewModes(ViewMode::bulky());
 		$this->getEditConfig()->setMandatory(false);
-		
 	}
 	
 	public function prepare() {
 		$this->getConfigurator()->addAdaption(new CkeConfig());
 	}
 	
-
-
 	public function createOutSiField(Eiu $eiu): SiField {
 	    $value = $eiu->field()->getValue(EiPropPath::from($this));
 	    if ($value === null) {
@@ -68,7 +63,7 @@ class CkeEiProp extends AlphanumericEiProp {
 	}
 	
 	public function createInSiField(Eiu $eiu): SiField {
-		return SiFields::stringIn($eiu->field()->getValue());
+		return SiFields::ckeIn($eiu->field()->getValue());
 		
 // 		$eiu->entry()->getEiEntry();
 		
