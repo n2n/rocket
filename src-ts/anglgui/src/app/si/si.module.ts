@@ -46,6 +46,8 @@ import { EmbeddedEntryComponent } from './model/content/impl/embedded/comp/embed
 import { ImageEditorComponent } from './model/content/impl/file/comp/image-editor/image-editor.component';
 import { UploadResultMessageComponent } from './model/content/impl/file/comp/inc/upload-result-message/upload-result-message.component';
 import { ImagePreviewComponent } from './model/content/impl/file/comp/image-preview/image-preview.component';
+import { CkeInFieldComponent } from './model/content/impl/alphanum/comp/cke-in-field/cke-in-field.component';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 
 @NgModule({
 	declarations: [
@@ -56,7 +58,7 @@ import { ImagePreviewComponent } from './model/content/impl/file/comp/image-prev
 		ImageResizeComponent, EmbeddedEntryPanelsInComponent, EntryDirective, PaginationComponent, CrumbGroupComponent,
 		AddPasteComponent, QualifierComponent, TogglerInFieldComponent, SplitComponent, SplitViewMenuComponent,
 		SplitManagerComponent, EnumInComponent, QualifierTilingComponent, ChoosePasteComponent, EmbeddedEntryComponent,
-		ImageEditorComponent, UploadResultMessageComponent, ImagePreviewComponent
+		ImageEditorComponent, UploadResultMessageComponent, ImagePreviewComponent, CkeInFieldComponent
 	],
 	imports: [
 		CommonModule,
@@ -64,7 +66,8 @@ import { ImagePreviewComponent } from './model/content/impl/file/comp/image-prev
 		DragDropModule,
 		UiModule,
 		UtilModule,
-		RouterModule
+		RouterModule,
+		CKEditorModule
 	],
 	exports: [
 		ListZoneContentComponent, BulkyEntryComponent, StringOutFieldComponent, InputInFieldComponent,

@@ -27,12 +27,14 @@ import { SiService } from '../manage/si.service';
 import { SiControlBoundry } from '../model/control/si-control-bountry';
 import { TranslationService } from 'src/app/util/i18n/translation.service';
 import { UiFactory } from 'src/app/ui/build/ui-factory';
+import { CkeInSiField } from '../model/content/impl/alphanum/model/cke-in-si-field';
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',
 	STRING_IN = 'string-in',
 	NUMBER_IN = 'number-in',
 	BOOLEAN_IN = 'boolean-in',
+	CKE_IN = 'cke-in',
 	FILE_OUT = 'file-out',
 	FILE_IN = 'file-in',
 	LINK_OUT = 'link-out',
@@ -102,6 +104,13 @@ export class SiFieldFactory {
 						dataExtr.reqStringArray('offAssociatedPropIds'), fieldMap);
 			});
 			return booleanInSiField;
+
+		case SiFieldType.CKE_IN:
+			const ckeInSiField = new CkeInSiField(prop.label, dataExtr.nullaString('value'));
+			stringInSiField.minlength = dataExtr.nullaNumber('minlength');
+			stringInSiField.maxlength = dataExtr.nullaNumber('maxlength');
+			stringInSiField.mandatory = dataExtr.reqBoolean('mandatory');
+			return ckeInSiField;
 
 		case SiFieldType.FILE_OUT:
 			return new FileOutSiField(SiCompFactory.buildSiFile(dataExtr.nullaObject('value')));

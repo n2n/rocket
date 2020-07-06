@@ -69,6 +69,13 @@ class SiFields {
 	}
 	
 	/**
+	 * @return \rocket\si\content\impl\StringInSiField
+	 */
+	static function ckeIn(?string $value) {
+		return new CkeInSiField($value);
+	}
+	
+	/**
 	 * @param string[] $options
 	 * @param string $value
 	 * @return \rocket\si\content\impl\EnumInSiField
