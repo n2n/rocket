@@ -107,9 +107,9 @@ export class SiFieldFactory {
 
 		case SiFieldType.CKE_IN:
 			const ckeInSiField = new CkeInSiField(prop.label, dataExtr.nullaString('value'));
-			stringInSiField.minlength = dataExtr.nullaNumber('minlength');
-			stringInSiField.maxlength = dataExtr.nullaNumber('maxlength');
-			stringInSiField.mandatory = dataExtr.reqBoolean('mandatory');
+			ckeInSiField.minlength = dataExtr.nullaNumber('minlength');
+			ckeInSiField.maxlength = dataExtr.nullaNumber('maxlength');
+			ckeInSiField.mandatory = dataExtr.reqBoolean('mandatory');
 			return ckeInSiField;
 
 		case SiFieldType.FILE_OUT:

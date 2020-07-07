@@ -48,6 +48,7 @@ import { UploadResultMessageComponent } from './model/content/impl/file/comp/inc
 import { ImagePreviewComponent } from './model/content/impl/file/comp/image-preview/image-preview.component';
 import { CkeInFieldComponent } from './model/content/impl/alphanum/comp/cke-in-field/cke-in-field.component';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { FieldMessagesComponent } from './model/content/impl/common/comp/field-messages/field-messages.component';
 
 @NgModule({
 	declarations: [
@@ -58,7 +59,7 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 		ImageResizeComponent, EmbeddedEntryPanelsInComponent, EntryDirective, PaginationComponent, CrumbGroupComponent,
 		AddPasteComponent, QualifierComponent, TogglerInFieldComponent, SplitComponent, SplitViewMenuComponent,
 		SplitManagerComponent, EnumInComponent, QualifierTilingComponent, ChoosePasteComponent, EmbeddedEntryComponent,
-		ImageEditorComponent, UploadResultMessageComponent, ImagePreviewComponent, CkeInFieldComponent
+		ImageEditorComponent, UploadResultMessageComponent, ImagePreviewComponent, CkeInFieldComponent, FieldMessagesComponent
 	],
 	imports: [
 		CommonModule,
@@ -83,7 +84,7 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 		EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent,
 		EmbeddedEntryPanelsInComponent, ButtonControlComponent, PaginationComponent, TogglerInFieldComponent, SplitComponent,
 		SplitViewMenuComponent, CrumbGroupComponent, SplitManagerComponent, EnumInComponent, EmbeddedEntryComponent,
-		ImageEditorComponent
+		ImageEditorComponent, CkeInFieldComponent
 	]
 })
 export class SiModule { }

@@ -32,17 +32,26 @@ use rocket\si\content\impl\SiFields;
 use n2n\util\type\CastUtils;
 use rocket\si\content\impl\StringInSiField;
 use rocket\impl\ei\component\prop\string\cke\conf\CkeConfig;
+use n2n\util\type\ArgUtils;
+use n2n\util\uri\Url;
 
 class CkeEiProp extends AlphanumericEiProp {
-	
+	/**
+	 * @var CkeConfig
+	 */
+	private $ckeConfig;
 	
 	public function __construct() {
+		parent::__construct();
+		
 		$this->getDisplayConfig()->setDefaultDisplayedViewModes(ViewMode::bulky());
 		$this->getEditConfig()->setMandatory(false);
+		
+		$this->ckeConfig = new CkeConfig();
 	}
 	
 	public function prepare() {
-		$this->getConfigurator()->addAdaption(new CkeConfig());
+		$this->getConfigurator()->addAdaption($this->ckeConfig);
 	}
 	
 	public function createOutSiField(Eiu $eiu): SiField {
@@ -63,7 +72,23 @@ class CkeEiProp extends AlphanumericEiProp {
 	}
 	
 	public function createInSiField(Eiu $eiu): SiField {
-		return SiFields::ckeIn($eiu->field()->getValue());
+		$ckeInField = SiFields::ckeIn($eiu->field()->getValue())
+				->setMinlength($this->getAlphanumericConfig()->getMinlength())
+				->setMaxlength($this->getAlphanumericConfig()->getMaxlength())
+				->setMandatory($this->getEditConfig()->isMandatory())
+				->setMode($this->ckeConfig->getMode());
+		
+		if (null !== ($ckeCssConfig = $this->ckeConfig->getCkeCssConfig())) {
+			$contentCssUrls = $ckeCssConfig->getContentCssUrls($eiu);
+			ArgUtils::valArrayReturn($contentCssUrls, $ckeCssConfig, 'getContentCssUrls', Url::class);
+			
+			$ckeInField->setContentCssUrls($contentCssUrls)
+					->setBodyId($ckeCssConfig->getBodyId())
+					->setBodyClass($ckeCssConfig->getBodyClass())
+					->setBodyClass($ckeCssConfig->getAdditionalStyles());
+		}
+		
+		return $ckeInField;
 		
 // 		$eiu->entry()->getEiEntry();
 		

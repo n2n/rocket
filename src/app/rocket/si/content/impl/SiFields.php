@@ -69,7 +69,7 @@ class SiFields {
 	}
 	
 	/**
-	 * @return \rocket\si\content\impl\StringInSiField
+	 * @return \rocket\si\content\impl\CkeInSiField
 	 */
 	static function ckeIn(?string $value) {
 		return new CkeInSiField($value);

@@ -1,8 +1,6 @@
 import { InSiFieldAdapter } from '../../common/model/in-si-field-adapter';
-import { SiCrumbGroup } from '../../meta/model/si-crumb';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
-import { InputInFieldComponent } from '../comp/input-in-field/input-in-field.component';
 import { Message } from 'src/app/util/i18n/message';
 import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
@@ -11,6 +9,7 @@ import { CkeInModel } from '../comp/cke-in-model';
 
 
 export class CkeInSiField extends InSiFieldAdapter implements CkeInModel {
+
 	public mandatory = false;
 	public minlength: number|null = null;
 	public maxlength: number|null = null;
@@ -88,6 +87,8 @@ export class CkeInSiField extends InSiFieldAdapter implements CkeInModel {
 			ref.instance.model = this;
 		});
 	}
+
+
 
 // 	initComponent(viewContainerRef: ViewContainerRef,
 // 			componentFactoryResolver: ComponentFactoryResolver,

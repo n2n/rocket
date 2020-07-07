@@ -22,8 +22,13 @@
 namespace rocket\si\content\impl;
 
 use n2n\util\type\attrs\DataSet;
+use n2n\util\type\ArgUtils;
 
 class CkeInSiField extends InSiFieldAdapter {
+	const MODE_SIMPLE = 'simple';
+	const MODE_NORMAL = 'normal';
+	const MODE_ADVANCED = 'advanced';
+	
 	/**
 	 * @var string|null
 	 */
@@ -40,6 +45,10 @@ class CkeInSiField extends InSiFieldAdapter {
 	 * @var bool
 	 */
 	private $mandatory = false;
+	/**
+	 * @var string
+	 */
+	private $mode = self::MODE_NORMAL;
 	
 	function __construct(?string $value) {
 		$this->value = $value;	
@@ -47,7 +56,7 @@ class CkeInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param string|null $value
-	 * @return \rocket\si\content\impl\StringInSiField
+	 * @return \rocket\si\content\impl\CkeInSiField
 	 */
 	function setValue(?string $value) {
 		$this->value = $value;
@@ -63,7 +72,7 @@ class CkeInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param int|null $minlength
-	 * @return \rocket\si\content\impl\StringInSiField
+	 * @return \rocket\si\content\impl\CkeInSiField
 	 */
 	function setMinlength(?int $minlength) {
 		$this->minlength = $minlength;
@@ -79,7 +88,7 @@ class CkeInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param int|null $maxlength
-	 * @return \rocket\si\content\impl\StringInSiField
+	 * @return \rocket\si\content\impl\CkeInSiField
 	 */
 	function setMaxlength(?int $maxlength) {
 		$this->maxlength = $maxlength;
@@ -95,7 +104,7 @@ class CkeInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param bool $multiline
-	 * @return \rocket\si\content\impl\StringInSiField
+	 * @return \rocket\si\content\impl\CkeInSiField
 	 */
 	function setMultiline(bool $multiline) {
 		$this->multiline = $multiline;
@@ -111,7 +120,7 @@ class CkeInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param bool $mandatory
-	 * @return \rocket\si\content\impl\StringInSiField
+	 * @return \rocket\si\content\impl\CkeInSiField
 	 */
 	function setMandatory(bool $mandatory) {
 		$this->mandatory = $mandatory;
@@ -123,6 +132,27 @@ class CkeInSiField extends InSiFieldAdapter {
 	 */
 	function isMandatory() {
 		return $this->mandatory;
+	}
+	
+	/**
+	 * @return string
+	 */
+	function getMode() {
+		return $this->mode;
+	}
+	
+	/**
+	 * @param string $mode
+	 * @return CkeInSiField
+	 */
+	function setMode(string $mode) {
+		ArgUtils::valEnum($mode, self::getModes());
+		$this->mode = $mode;
+		return $this;
+	}
+	
+	static function getModes() {
+		return [self::MODE_SIMPLE, self::MODE_NORMAL, self::MODE_ADVANCED];
 	}
 	
 	/**
@@ -143,6 +173,7 @@ class CkeInSiField extends InSiFieldAdapter {
 			'minlength' => $this->minlength,
 			'maxlength' => $this->maxlength,
 			'mandatory' => $this->mandatory,
+			'mode' => $this->mode
 		];
 	}
 	 

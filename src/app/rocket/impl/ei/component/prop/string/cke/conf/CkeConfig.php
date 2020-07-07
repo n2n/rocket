@@ -44,6 +44,7 @@ use rocket\ei\util\Eiu;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\util\col\GenericArrayObject;
 use n2n\util\type\ArgUtils;
+use rocket\si\content\impl\CkeInSiField;
 
 class CkeConfig extends ConfigAdaption {
 	const ATTR_MODE_KEY = 'mode';
@@ -52,11 +53,7 @@ class CkeConfig extends ConfigAdaption {
 	const ATTR_TABLES_SUPPORTED_KEY = 'tablesSupported';
 	const ATTR_BBCODE_KEY = 'bbcode';
 	
-	const MODE_SIMPLE = 'simple';
-	const MODE_NORMAL = 'normal';
-	const MODE_ADVANCED = 'advanced';
-	
-	private $mode = self::MODE_SIMPLE;
+	private $mode = CkeInSiField::MODE_SIMPLE;
 	private $ckeLinkProviders;
 	private $ckeCssConfig = null;
 	private $tableSupported = false;
@@ -71,13 +68,11 @@ class CkeConfig extends ConfigAdaption {
 	}
 	
 	function setMode($mode) {
-		ArgUtils::valEnum($mode, self::getModes());
+		ArgUtils::valEnum($mode, CkeInSiField::getModes());
 		$this->mode = $mode;
 	}
 	
-	public static function getModes() {
-		return array(self::MODE_SIMPLE, self::MODE_NORMAL, self::MODE_ADVANCED);
-	}
+	
 	
 	/**
 	 * @return \ArrayObject
@@ -91,7 +86,7 @@ class CkeConfig extends ConfigAdaption {
 	}
 	
 	/**
-	 * @return CkeCssConfig
+	 * @return CkeCssConfig|null
 	 */
 	function getCkeCssConfig() {
 		return $this->ckeCssConfig;
@@ -168,7 +163,7 @@ class CkeConfig extends ConfigAdaption {
 	}
 	
 	function setup(Eiu $eiu, DataSet $dataSet) {
-		$this->setMode($dataSet->optEnum(self::ATTR_MODE_KEY, self::getModes(), $this->getMode(), false));
+		$this->setMode($dataSet->optEnum(self::ATTR_MODE_KEY, CkeInSiField::getModes(), $this->getMode(), false));
 		
 		$ckeState = $eiu->lookup(CkeState::class);
 		CastUtils::assertTrue($ckeState instanceof CkeState);
