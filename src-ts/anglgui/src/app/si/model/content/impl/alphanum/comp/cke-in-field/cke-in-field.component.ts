@@ -1,14 +1,9 @@
+
 import { Component, OnInit } from '@angular/core';
-import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+// import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import * as Editor from '../../../../../../../../../../ckeditor5/build/ckeditor';
 import { CkeInModel } from '../cke-in-model';
-import { ChangeEvent, CKEditor5 } from '@ckeditor/ckeditor5-angular';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
-import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
-import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
-import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript';
-import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
+import { CKEditor5, ChangeEvent } from '@ckeditor/ckeditor5-angular';
 
 @Component({
 	selector: 'rocket-cke-in-field',
@@ -16,7 +11,7 @@ import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
 	styleUrls: ['./cke-in-field.component.css']
 })
 export class CkeInFieldComponent implements OnInit {
-	public Editor = ClassicEditor;
+	public Editor = Editor;
 
 	model: CkeInModel;
 
@@ -30,12 +25,50 @@ export class CkeInFieldComponent implements OnInit {
 
 	get config(): CKEditor5.Config {
 		return {
-			toolbar: [
-				'heading', '|', 'undo', 'redo' , '|',
-				'bold', 'italic', 'underline', 'strikethrough', 'code', 'subscript', 'superscript', '|',
-				'outdent', 'indent', 'bulletedList', 'numberedList', '|',
-				'link', 'blockQuote'
-			],
+			toolbar: {
+				items: [
+					'heading',
+					'|',
+					'undo',
+					'redo',
+					'|',
+					'removeFormat',
+					'|',
+					'bold',
+					'italic',
+					'underline',
+					'strikethrough',
+					'subscript',
+					'superscript',
+					'|',
+					'bulletedList',
+					'numberedList',
+					'indent',
+					'outdent',
+					'|',
+					'alignment',
+					'|',
+					'link',
+					'blockQuote',
+					'insertTable',
+					'horizontalLine',
+					'mediaEmbed',
+					'codeBlock',
+					'code',
+					'|',
+					'specialCharacters'
+				]
+			},
+			language: 'en',
+			table: {
+				contentToolbar: [
+					'tableColumn',
+					'tableRow',
+					'mergeTableCells',
+					'tableCellProperties',
+					'tableProperties'
+				]
+			},
 			heading: {
 				options: [
 					{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
