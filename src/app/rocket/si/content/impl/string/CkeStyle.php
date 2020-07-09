@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\prop\string\cke\model;
+namespace rocket\si\content\impl\string;
 
 class CkeStyle implements \JsonSerializable {
 	private $name;

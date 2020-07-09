@@ -44,7 +44,7 @@ use rocket\ei\util\Eiu;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\util\col\GenericArrayObject;
 use n2n\util\type\ArgUtils;
-use rocket\si\content\impl\CkeInSiField;
+use rocket\si\content\impl\string\CkeInSiField;
 
 class CkeConfig extends ConfigAdaption {
 	const ATTR_MODE_KEY = 'mode';

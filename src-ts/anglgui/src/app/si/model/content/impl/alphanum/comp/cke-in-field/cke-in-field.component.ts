@@ -1,19 +1,65 @@
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterContentInit } from '@angular/core';
 // import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import * as Editor from '../../../../../../../../../../ckeditor5/build/ckeditor';
 import { CkeInModel } from '../cke-in-model';
 import { CKEditor5, ChangeEvent } from '@ckeditor/ckeditor5-angular';
+import { CkeMode } from '../../model/cke-in-si-field';
 
 @Component({
 	selector: 'rocket-cke-in-field',
 	templateUrl: './cke-in-field.component.html',
 	styleUrls: ['./cke-in-field.component.css']
 })
-export class CkeInFieldComponent implements OnInit {
+export class CkeInFieldComponent implements OnInit, AfterContentInit {
 	public Editor = Editor;
 
 	model: CkeInModel;
+
+	private simpleItems: string[] = [
+		'undo',
+		'redo',
+		'|',
+		'bold',
+		'italic',
+		'underline',
+		'strikethrough',
+		'subscript',
+		'superscript',
+		'removeFormat'
+	];
+
+	private normalItems: string[] = [
+		'heading',
+		'|',
+		'undo',
+		'redo',
+		'|',
+		'bold',
+		'italic',
+		'underline',
+		'strikethrough',
+		'subscript',
+		'superscript',
+		'removeFormat',
+		'|',
+		'bulletedList',
+		'numberedList',
+		'indent',
+		'outdent',
+		'|',
+		'alignment',
+		'|',
+		'link',
+		'blockQuote',
+		'insertTable',
+		'horizontalLine',
+		'mediaEmbed',
+		'codeBlock',
+		'code',
+		'|',
+		'specialCharacters'
+	];
 
 	constructor() {
 
@@ -24,45 +70,11 @@ export class CkeInFieldComponent implements OnInit {
 	}
 
 	get config(): CKEditor5.Config {
-
-		const items: string[] = [];
-
-		if (this.model.getMode()) {
-		}
+		const items = (CkeMode.SIMPLE !== this.model.getCkeMode() ? this.simpleItems : this.normalItems);
 
 		return {
 			toolbar: {
-				items: [
-					'heading',
-					'|',
-					'undo',
-					'redo',
-					'|',
-					'bold',
-					'italic',
-					'underline',
-					'strikethrough',
-					'subscript',
-					'superscript',
-					'removeFormat',
-					'|',
-					'bulletedList',
-					'numberedList',
-					'indent',
-					'outdent',
-					'|',
-					'alignment',
-					'|',
-					'link',
-					'blockQuote',
-					'insertTable',
-					'horizontalLine',
-					'mediaEmbed',
-					'codeBlock',
-					'code',
-					'|',
-					'specialCharacters'
-				]
+				items
 			},
 			language: 'en',
 			table: {

@@ -10,5 +10,9 @@ export interface CkeInModel extends MessageFieldModel {
 
 	getMaxlength(): number|null;
 
-	getMode(): CkeMode;
+	getCkeMode(): CkeMode;
+
+	getBodyId(): string|null;
+
+	getBodyClass(): string|null;
 }

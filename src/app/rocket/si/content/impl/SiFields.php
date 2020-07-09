@@ -35,6 +35,7 @@ use rocket\si\meta\SiDeclaration;
 use rocket\si\NavPoint;
 use rocket\si\content\SiEntryQualifier;
 use rocket\si\meta\SiFrame;
+use rocket\si\content\impl\string\CkeInSiField;
 
 class SiFields {
 	
@@ -69,7 +70,7 @@ class SiFields {
 	}
 	
 	/**
-	 * @return \rocket\si\content\impl\CkeInSiField
+	 * @return \rocket\si\content\impl\string\CkeInSiField
 	 */
 	static function ckeIn(?string $value) {
 		return new CkeInSiField($value);

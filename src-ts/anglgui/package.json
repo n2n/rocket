@@ -25,8 +25,10 @@
     "@ckeditor/ckeditor5-basic-styles": "^20.0.0",
     "@ckeditor/ckeditor5-build-classic": "^20.0.0",
     "@ckeditor/ckeditor5-core": "^20.0.0",
+    "@tinymce/tinymce-angular": "^4.0.0",
     "cropperjs": "^1.5.7",
     "rxjs": "~6.4.0",
+    "tinymce": "^5.4.1",
     "tslib": "^1.13.0",
     "zone.js": "~0.9.1"
   },

@@ -19,11 +19,11 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\si\content\impl;
+namespace rocket\si\content\impl\string;
 
 use n2n\util\type\attrs\DataSet;
 use n2n\util\type\ArgUtils;
-use rocket\impl\ei\component\prop\string\cke\model\CkeStyle;
+use rocket\si\content\impl\InSiFieldAdapter;
 
 class CkeInSiField extends InSiFieldAdapter {
 	const MODE_SIMPLE = 'simple';
@@ -61,7 +61,7 @@ class CkeInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param string|null $value
-	 * @return \rocket\si\content\impl\CkeInSiField
+	 * @return \rocket\si\content\impl\string\CkeInSiField
 	 */
 	function setValue(?string $value) {
 		$this->value = $value;
@@ -77,7 +77,7 @@ class CkeInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param int|null $minlength
-	 * @return \rocket\si\content\impl\CkeInSiField
+	 * @return \rocket\si\content\impl\string\CkeInSiField
 	 */
 	function setMinlength(?int $minlength) {
 		$this->minlength = $minlength;
@@ -93,7 +93,7 @@ class CkeInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param int|null $maxlength
-	 * @return \rocket\si\content\impl\CkeInSiField
+	 * @return \rocket\si\content\impl\string\CkeInSiField
 	 */
 	function setMaxlength(?int $maxlength) {
 		$this->maxlength = $maxlength;
@@ -109,7 +109,7 @@ class CkeInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param bool $multiline
-	 * @return \rocket\si\content\impl\CkeInSiField
+	 * @return \rocket\si\content\impl\string\CkeInSiField
 	 */
 	function setMultiline(bool $multiline) {
 		$this->multiline = $multiline;
@@ -125,7 +125,7 @@ class CkeInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param bool $mandatory
-	 * @return \rocket\si\content\impl\CkeInSiField
+	 * @return \rocket\si\content\impl\string\CkeInSiField
 	 */
 	function setMandatory(bool $mandatory) {
 		$this->mandatory = $mandatory;
@@ -157,7 +157,7 @@ class CkeInSiField extends InSiFieldAdapter {
 	}
 	
 	/**
-	 * @return \rocket\impl\ei\component\prop\string\cke\model\CkeStyle[]
+	 * @return CkeStyle[]
 	 */
 	function getStyles() {
 		return $this->styles;
@@ -165,7 +165,7 @@ class CkeInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param CkeStyle[] $styles
-	 * @return \rocket\si\content\impl\CkeInSiField
+	 * @return \rocket\si\content\impl\string\CkeInSiField
 	 */
 	function setCkeStyles(array $styles) {
 		ArgUtils::valArray($styles, CkeStyle::class);
