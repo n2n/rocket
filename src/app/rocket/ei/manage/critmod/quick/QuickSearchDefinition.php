@@ -88,7 +88,7 @@ class QuickSearchDefinition {
 			
 			foreach ($quickSearchFields as $quickSearchField) {
 				$queryComparatorConstraintGroup->addComparatorConstraint(
-						$quickSearchField->createComparatorConstraint($queryStr));
+						$quickSearchField->createComparatorConstraint($searchStrPart));
 			}
 			
 			$comparatorConstraintGroup->addComparatorConstraint($queryComparatorConstraintGroup);
