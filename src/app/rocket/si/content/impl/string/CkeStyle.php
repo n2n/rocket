@@ -21,64 +21,46 @@
  */
 namespace rocket\impl\ei\component\prop\string\cke\model;
 
-use n2n\util\type\ArgUtils;
-
-class CkeStyle {
+class CkeStyle implements \JsonSerializable {
 	private $name;
-	private $element;
-	private $attrs;
-	private $styles;
+	private $tag;
+	private $class;
 	
-	public function __construct($name, $element, array $attrs = null, array $styles = null) {
+	public function __construct(string $name, string $tag, string $class = null) {
 		$this->name = $name;
-		$this->element = strval($element);
-		$this->attrs = ArgUtils::toArray($attrs);
-		$this->styles = ArgUtils::toArray($styles);
+		$this->tag = $tag;
+		$this->class = $class;
 	}
 	
 	public function getName() {
 		return $this->name;
 	}
 
-	public function setName($name) {
+	public function setName(string $name) {
 		$this->name = $name;
 	}
 
-	public function getElement() {
-		return $this->element;
+	public function getTag() {
+		return $this->tag;
 	}
 
-	public function setElement($element) {
-		$this->element = $element;
+	public function setTag(string $element) {
+		$this->tag = $element;
 	}
 
-	public function getAttrs() {
-		return $this->attrs;
+	public function getClass() {
+		return $this->class;
 	}
 
-	public function setAttrs(array $attrs) {
-		$this->attrs = $attrs;
-	}
-
-	public function getStyles() {
-		return $this->styles;
-	}
-
-	public function setStyles(array $styles) {
-		$this->styles = $styles;
+	public function setClass(string $class) {
+		$this->class = $class;
 	}
 	
-	public function getValueForJsonEncode() {
-		$ret = array('name' => $this->name, 'element' => $this->element);
-		
-		if (!empty($this->attrs)) {
-			$ret['dataSet'] = $this->attrs;
-		}
-		
-		if (!empty($this->styles)) {
-			$ret['styles'] = $this->styles;
-		}
-		
-		return $ret;
+	function jsonSerialize() {
+		return [
+			'name' => $this->name,
+			'tag' => $this->tag,
+			'class' => $this->class
+		];
 	}
 }

@@ -7,12 +7,18 @@ import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
 import { CkeInFieldComponent } from '../comp/cke-in-field/cke-in-field.component';
 import { CkeInModel } from '../comp/cke-in-model';
 
+export enum CkeMode {
+	SIMPLE = 'simple',
+	NORMAL = 'normal',
+	ADVANCED = 'advanced'
+}
 
 export class CkeInSiField extends InSiFieldAdapter implements CkeInModel {
 
 	public mandatory = false;
 	public minlength: number|null = null;
 	public maxlength: number|null = null;
+	public mode = CkeMode.SIMPLE;
 
 	constructor(public label: string, public value: string|null) {
 		super();
@@ -34,6 +40,10 @@ export class CkeInSiField extends InSiFieldAdapter implements CkeInModel {
 	setValue(value: string|null) {
 		this.value = value;
 		this.validate();
+	}
+
+	getMode(): CkeMode {
+		return this.mode;
 	}
 
 	private validate() {

@@ -23,6 +23,7 @@ namespace rocket\si\content\impl;
 
 use n2n\util\type\attrs\DataSet;
 use n2n\util\type\ArgUtils;
+use rocket\impl\ei\component\prop\string\cke\model\CkeStyle;
 
 class CkeInSiField extends InSiFieldAdapter {
 	const MODE_SIMPLE = 'simple';
@@ -49,6 +50,10 @@ class CkeInSiField extends InSiFieldAdapter {
 	 * @var string
 	 */
 	private $mode = self::MODE_NORMAL;
+	/**
+	 * @var CkeStyle[]
+	 */
+	private $styles = [];
 	
 	function __construct(?string $value) {
 		$this->value = $value;	
@@ -151,6 +156,23 @@ class CkeInSiField extends InSiFieldAdapter {
 		return $this;
 	}
 	
+	/**
+	 * @return \rocket\impl\ei\component\prop\string\cke\model\CkeStyle[]
+	 */
+	function getStyles() {
+		return $this->styles;
+	}
+	
+	/**
+	 * @param CkeStyle[] $styles
+	 * @return \rocket\si\content\impl\CkeInSiField
+	 */
+	function setCkeStyles(array $styles) {
+		ArgUtils::valArray($styles, CkeStyle::class);
+		$this->styles = $styles;
+		return $this;
+	}
+	
 	static function getModes() {
 		return [self::MODE_SIMPLE, self::MODE_NORMAL, self::MODE_ADVANCED];
 	}
@@ -173,7 +195,8 @@ class CkeInSiField extends InSiFieldAdapter {
 			'minlength' => $this->minlength,
 			'maxlength' => $this->maxlength,
 			'mandatory' => $this->mandatory,
-			'mode' => $this->mode
+			'mode' => $this->mode,
+			'styles' => $this->styles
 		];
 	}
 	 

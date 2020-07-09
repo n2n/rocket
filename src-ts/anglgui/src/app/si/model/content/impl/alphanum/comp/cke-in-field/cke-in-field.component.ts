@@ -24,6 +24,12 @@ export class CkeInFieldComponent implements OnInit {
 	}
 
 	get config(): CKEditor5.Config {
+
+		const items: string[] = [];
+
+		if (this.model.getMode()) {
+		}
+
 		return {
 			toolbar: {
 				items: [
@@ -32,14 +38,13 @@ export class CkeInFieldComponent implements OnInit {
 					'undo',
 					'redo',
 					'|',
-					'removeFormat',
-					'|',
 					'bold',
 					'italic',
 					'underline',
 					'strikethrough',
 					'subscript',
 					'superscript',
+					'removeFormat',
 					'|',
 					'bulletedList',
 					'numberedList',
@@ -73,7 +78,8 @@ export class CkeInFieldComponent implements OnInit {
 				options: [
 					{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
 					{ model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
-					{ model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' }
+					{ model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+					{ model: 'wut', view: { name: 'span', classes: [ 'huii',  'holeradio2' ] }, title: 'Tit', class: 'huii' }
 				]
 			}
 		};
