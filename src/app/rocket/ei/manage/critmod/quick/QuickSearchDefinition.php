@@ -26,21 +26,21 @@ use rocket\ei\EiPropPath;
 use rocket\ei\manage\critmod\filter\ComparatorConstraintGroup;
 
 class QuickSearchDefinition {
-	private $quickSearchFields = array();
+	private $quickSearchProps = array();
 	
 	/**
 	 * @param EiPropPath $eiPropPath
 	 * @param QuickSearchProp $quickSearchField
 	 */
 	public function putQuickSearchProp(EiPropPath $eiPropPath, QuickSearchProp $quickSearchField) {
-		$this->quickSearchFields[(string) $eiPropPath] = $quickSearchField;	
+		$this->quickSearchProps[(string) $eiPropPath] = $quickSearchField;	
 	}
 	
 	/**
 	 * @return QuickSearchProp[]
 	 */
 	public function getQuickSearchProps(): array {
-		return $this->quickSearchFields;
+		return $this->quickSearchProps;
 	}
 	
 	/**
@@ -51,12 +51,14 @@ class QuickSearchDefinition {
 		$quickSearchFields = array();
 		foreach ($eiPropPaths as $eiPropPath) {
 			$eiPropPathStr = (string) $eiPropPath;
-			if (isset($this->quickSearchFields[$eiPropPathStr])) {
-				$quickSearchFields[] = $this->quickSearchFields[$eiPropPathStr];
+			if (isset($this->quickSearchProps[$eiPropPathStr])) {
+				$quickSearchFields[] = $this->quickSearchProps[$eiPropPathStr];
 			}
 		}
 		return $quickSearchFields;
 	}
+	
+	const SEARCH_STR_WHITESPACS_SPLIT_LIMIT = 9;
 	
 	/**
 	 * 
@@ -67,7 +69,7 @@ class QuickSearchDefinition {
 	public function buildCriteriaConstraint(string $searchStr, array $eiPropPaths = null) {
 		$quickSearchFields = null;
 		if ($eiPropPaths === null) {
-			$quickSearchFields = $this->quickSearchFields;
+			$quickSearchFields = $this->quickSearchProps;
 		} else {
 			ArgUtils::valArray($eiPropPaths, EiPropPath::class);
 			$quickSearchFields = $this->filterProps($eiPropPaths);
@@ -77,13 +79,16 @@ class QuickSearchDefinition {
 		
 		$comparatorConstraintGroup = new ComparatorConstraintGroup(true);
 		
-		foreach (preg_split('/\s+/', $searchStr) as $searchStrPart) {
-			$queryStr = trim($searchStrPart);
+		foreach (preg_split('/\s+/', $searchStr, self::SEARCH_STR_WHITESPACS_SPLIT_LIMIT) as $searchStrPart) {
+			if ($searchStrPart === '') {
+				continue;
+			}
+			
 			$queryComparatorConstraintGroup = new ComparatorConstraintGroup(false);
 			
 			foreach ($quickSearchFields as $quickSearchField) {
 				$queryComparatorConstraintGroup->addComparatorConstraint(
-						$quickSearchField->createComparatorConstraint($searchStrPart));
+						$quickSearchField->createComparatorConstraint($queryStr));
 			}
 			
 			$comparatorConstraintGroup->addComparatorConstraint($queryComparatorConstraintGroup);

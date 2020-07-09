@@ -1,5 +1,5 @@
 
-import { Component, OnInit, AfterContentInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 // import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import * as Editor from '../../../../../../../../../../ckeditor5/build/ckeditor';
 import { CkeInModel } from '../cke-in-model';
@@ -11,7 +11,7 @@ import { CkeMode } from '../../model/cke-in-si-field';
 	templateUrl: './cke-in-field.component.html',
 	styleUrls: ['./cke-in-field.component.css']
 })
-export class CkeInFieldComponent implements OnInit, AfterContentInit {
+export class CkeInFieldComponent implements OnInit {
 	public Editor = Editor;
 
 	model: CkeInModel;

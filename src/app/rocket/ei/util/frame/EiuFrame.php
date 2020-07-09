@@ -1010,90 +1010,90 @@ class EiuFrame {
 		}
 	}
 	
-	/**
-	 * @var \rocket\ei\manage\critmod\filter\FilterDefinition
-	 */
-	private $filterDefinition;
-	/**
-	 * @var \rocket\ei\manage\critmod\sort\SortDefinition
-	 */
-	private $sortDefinition;
-	/**
-	 * @var \rocket\ei\manage\critmod\quick\QuickSearchDefinition
-	 */
-	private $quickSearchDefinition;
+// 	/**
+// 	 * @var \rocket\ei\manage\critmod\filter\FilterDefinition
+// 	 */
+// 	private $filterDefinition;
+// 	/**
+// 	 * @var \rocket\ei\manage\critmod\sort\SortDefinition
+// 	 */
+// 	private $sortDefinition;
+// 	/**
+// 	 * @var \rocket\ei\manage\critmod\quick\QuickSearchDefinition
+// 	 */
+// 	private $quickSearchDefinition;
 	
-	/**
-	 * @return \rocket\ei\manage\critmod\filter\FilterDefinition
-	 */
-	public function getFilterDefinition() {
-		if ($this->filterDefinition !== null) {
-			return $this->filterDefinition;
-		}
+// 	/**
+// 	 * @return \rocket\ei\manage\critmod\filter\FilterDefinition
+// 	 */
+// 	public function getFilterDefinition() {
+// 		if ($this->filterDefinition !== null) {
+// 			return $this->filterDefinition;
+// 		}
 		
-		return $this->filterDefinition = $this->eiFrame->getContextEiEngine()->createFramedFilterDefinition($this->eiFrame);
-	}
+// 		return $this->filterDefinition = $this->eiFrame->getContextEiEngine()->createFramedFilterDefinition($this->eiFrame);
+// 	}
 	
-	/**
-	 * @return boolean
-	 */
-	public function hasFilterProps() {
-		return !$this->getFilterDefinition()->isEmpty();
-	}
+// 	/**
+// 	 * @return boolean
+// 	 */
+// 	public function hasFilterProps() {
+// 		return !$this->getFilterDefinition()->isEmpty();
+// 	}
 	
-	/**
-	 * @return \rocket\ei\manage\critmod\sort\SortDefinition
-	 */
-	public function getSortDefinition() {
-		if ($this->sortDefinition !== null) {
-			return $this->sortDefinition;
-		}
+// 	/**
+// 	 * @return \rocket\ei\manage\critmod\sort\SortDefinition
+// 	 */
+// 	public function getSortDefinition() {
+// 		if ($this->sortDefinition !== null) {
+// 			return $this->sortDefinition;
+// 		}
 		
-		return $this->sortDefinition = $this->eiFrame->getContextEiEngine()->createFramedSortDefinition($this->eiFrame);
-	}
+// 		return $this->sortDefinition = $this->eiFrame->getContextEiEngine()->createFramedSortDefinition($this->eiFrame);
+// 	}
 	
-	/**
-	 * @return boolean
-	 */
-	public function hasSortProps() {
-		return !$this->getSortDefinition()->isEmpty();
-	}
+// 	/**
+// 	 * @return boolean
+// 	 */
+// 	public function hasSortProps() {
+// 		return !$this->getSortDefinition()->isEmpty();
+// 	}
 	
 	
-	/**
-	 * @return \rocket\ei\manage\critmod\quick\QuickSearchDefinition
-	 */
-	public function getQuickSearchDefinition() {
-		if ($this->quickSearchDefinition !== null) {
-			return $this->quickSearchDefinition;
-		}
+// 	/**
+// 	 * @return \rocket\ei\manage\critmod\quick\QuickSearchDefinition
+// 	 */
+// 	public function getQuickSearchDefinition() {
+// 		if ($this->quickSearchDefinition !== null) {
+// 			return $this->quickSearchDefinition;
+// 		}
 		
-		return $this->quickSearchDefinition = $this->eiFrame->getContextEiEngine()->createFramedQuickSearchDefinition($this->eiFrame);
-	}
+// 		return $this->quickSearchDefinition = $this->eiFrame->getContextEiEngine()->createFramedQuickSearchDefinition($this->eiFrame);
+// 	}
 	
-	/**
-	 * @return boolean
-	 */
-	public function hasQuickSearchProps() {
-		return !$this->getQuickSearchDefinition()->isEmpty();
-	}
+// 	/**
+// 	 * @return boolean
+// 	 */
+// 	public function hasQuickSearchProps() {
+// 		return !$this->getQuickSearchDefinition()->isEmpty();
+// 	}
 	
-	/**
-	 * @param FilterJhtmlHook $filterJhtmlHook
-	 * @param FilterSettingGroup|null $rootGroup
-	 * @return \rocket\ei\util\filter\EiuFilterForm
-	 */
-	public function newFilterForm(FilterJhtmlHook $filterJhtmlHook, FilterSettingGroup $rootGroup = null) {
-		return new EiuFilterForm($this->getFilterDefinition(), $filterJhtmlHook, $rootGroup, $this->eiuAnalyst);
-	}
+// 	/**
+// 	 * @param FilterJhtmlHook $filterJhtmlHook
+// 	 * @param FilterSettingGroup|null $rootGroup
+// 	 * @return \rocket\ei\util\filter\EiuFilterForm
+// 	 */
+// 	public function newFilterForm(FilterJhtmlHook $filterJhtmlHook, FilterSettingGroup $rootGroup = null) {
+// 		return new EiuFilterForm($this->getFilterDefinition(), $filterJhtmlHook, $rootGroup, $this->eiuAnalyst);
+// 	}
 	
-	/**
-	 * @param SortSettingGroup|null $sortSetting
-	 * @return \rocket\ei\util\sort\EiuSortForm
-	 */
-	public function newSortForm(SortSettingGroup $sortSetting = null) {
-		return new EiuSortForm($this->getSortDefinition(), $sortSetting, $this->eiuAnalyst);
-	}
+// 	/**
+// 	 * @param SortSettingGroup|null $sortSetting
+// 	 * @return \rocket\ei\util\sort\EiuSortForm
+// 	 */
+// 	public function newSortForm(SortSettingGroup $sortSetting = null) {
+// 		return new EiuSortForm($this->getSortDefinition(), $sortSetting, $this->eiuAnalyst);
+// 	}
 	
 	/**
 	 * @param EiPropPath|EiProp|string $eiPropPath

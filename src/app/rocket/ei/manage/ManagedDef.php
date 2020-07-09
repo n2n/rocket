@@ -29,6 +29,7 @@ use rocket\ei\manage\draft\DraftDefinition;
 use rocket\ei\manage\idname\IdNameDefinition;
 use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\component\EiComponentCollection;
+use rocket\ei\manage\critmod\quick\QuickSearchDefinition;
 
 class ManagedDef {
 	
@@ -39,9 +40,15 @@ class ManagedDef {
 	}
 	
 	/**
+	 * @var QuickSearchDefinition[]
+	 */
+	private $quickSearchDefinitions = array();
+	
+	/**
 	 * @var FilterDefinition[]
 	 */
 	private $filterDefinitions = array();
+	
 	/**
 	 * @var SortDefinition[]
 	 */
@@ -91,6 +98,21 @@ class ManagedDef {
 		unset($this->guiDefinitions[$eiTypePathStr]);
 		unset($this->idNameDefinitions[$eiTypePathStr]);
 	}
+		
+	/**
+	 * @param EiMask $eiMask
+	 * @return QuickSearchDefinition
+	 */
+	public function getQuickSearchDefinition(EiMask $eiMask) {
+		$eiTypePathStr = (string) $eiMask->getEiTypePath();
+		
+		if (!isset($this->quickSearchDefinitions[$eiTypePathStr])) {
+			$this->quickSearchDefinitions[$eiTypePathStr] = $eiMask->getEiEngine()
+					->createQuickSearchDefinition($this->manageState->getN2nContext());
+		}
+		
+		return $this->quickSearchDefinitions[$eiTypePathStr];
+	}
 	
 	/**
 	 * @param EiMask $eiMask
@@ -105,8 +127,6 @@ class ManagedDef {
 			
 			$this->registerListeners($this);
 		}
-		
-		
 		
 		return $this->filterDefinitions[$eiTypePathStr];
 	}
