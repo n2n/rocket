@@ -1,4 +1,4 @@
-import { SiEntryIdentifier } from 'src/app/si/model/content/si-qualifier';
+import { SiEntryIdentifier } from 'src/app/si/model/content/si-entry-qualifier';
 import { SiGetInstruction } from 'src/app/si/model/api/si-get-instruction';
 import { Observable } from 'rxjs';
 import { SiGetRequest } from 'src/app/si/model/api/si-get-request';

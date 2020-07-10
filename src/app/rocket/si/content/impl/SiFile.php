@@ -24,12 +24,14 @@ namespace rocket\si\content\impl;
 use n2n\io\managed\img\impl\ThSt;
 use n2n\util\uri\Url;
 use n2n\util\type\ArgUtils;
+use n2n\io\managed\img\ThumbCut;
 
 class SiFile implements \JsonSerializable {
 	private $id;
 	private $name;
 	private $url;
 	private $thumbUrl;
+	private $mimeType;
 	private $imageDimensions = [];
 	
 	/**
@@ -87,6 +89,14 @@ class SiFile implements \JsonSerializable {
 		return $this;
 	}
 	
+	function getMimeType() {
+		return $this->mimeType;
+	}
+	
+	function setMimeType(?string $mimeType) {
+		$this->mimeType = $mimeType;
+	}
+	
 	/**
 	 * @return SiImageDimension[]
 	 */
@@ -110,6 +120,7 @@ class SiFile implements \JsonSerializable {
 			'name' => $this->name,
 			'url' => ($this->url !== null ? (string) $this->url : null),
 			'thumbUrl' => ($this->thumbUrl !== null ? (string) $this->thumbUrl : null),
+			'mimeType' => $this->mimeType,
 			'imageDimensions' => $this->imageDimensions
 		];
 	}
@@ -127,20 +138,53 @@ class SiImageDimension implements \JsonSerializable {
 	private $name;
 	private $width;
 	private $height;
+	private $ratioFixed;
+	private $thumbCut;
+	private $exists;
 	
-	function __construct(string $id, string $name, int $width, int $height) {
+	function __construct(string $id, ?string $name, int $width, int $height, bool $ratioFixed, ThumbCut $thumbCut, bool $exists) {
 		$this->id = $id;
 		$this->name = $name;
 		$this->width = $width;
 		$this->height = $height;
+		$this->ratioFixed = $ratioFixed;
+		$this->thumbCut = $thumbCut;
+		$this->exists = $exists;
+	}
+	
+	function getId() {
+		return $this->id;
+	}
+	
+	function setId(string $id) {
+		$this->id = $id;
+	}
+	
+	/**
+	 * @param ThumbCut $thumbCut
+	 */
+	function setThumbCut(ThumbCut $thumbCut) {
+		$this->thumbCut = $thumbCut;
+	}
+	
+	/**
+	 * @return \n2n\io\managed\img\ThumbCut
+	 */
+	function getThumbCut() {
+		return $this->thumbCut;
 	}
 	
 	function jsonSerialize() {
+		$imageCutData = $this->thumbCut->jsonSerialize();
+		$imageCutData['exists'] = $this->exists; 
+		
 		return [
 			'id' => $this->id,
 			'name' => $this->name,
 			'width' => $this->width,
-			'height' => $this->height
+			'height' => $this->height,
+			'ratioFixed' => $this->ratioFixed,
+			'imageCut' => $imageCutData
 		];
 	}
 }

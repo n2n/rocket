@@ -24,20 +24,27 @@ namespace rocket\si\content;
 use n2n\util\type\attrs\DataSet;
 use rocket\si\meta\SiMaskQualifier;
 
-class SiEntryQualifier extends SiEntryIdentifier implements \JsonSerializable {
+class SiEntryQualifier implements \JsonSerializable {
 	private $maskQualifier;
 	private $idName;
 	
 	function __construct(SiMaskQualifier $maskQualifier, ?string $id, string $idName = null) {
-		parent::__construct($maskQualifier->getId(), $id);
 		$this->maskQualifier = $maskQualifier;
+		$this->identifier = new SiEntryIdentifier($maskQualifier->getIdentifier()->getTypeId(), $id);
 		$this->idName = $idName;
+	}
+	
+	/**
+	 * @return \rocket\si\content\SiEntryIdentifier
+	 */
+	function getIdentifier() {
+		return $this->identifier;
 	}
 
 	function jsonSerialize() {
 		return [
 			'maskQualifier' => $this->maskQualifier,
-			'id' => $this->getId(),
+			'identifier' => $this->identifier,
 			'idName' => $this->idName
 		];
 	}
@@ -46,8 +53,9 @@ class SiEntryQualifier extends SiEntryIdentifier implements \JsonSerializable {
 		$ds = new DataSet($data);
 		
 		try {
-			return new SiEntryQualifier(SiMaskQualifier::parse($ds->reqArray('maskQualifier')), $ds->optString('id'), 
-					$ds->optString('idName'));
+			$identifier = SiEntryIdentifier::parse($ds->reqArray('identifier'));
+			return new SiEntryQualifier(SiMaskQualifier::parse($ds->reqArray('maskQualifier')), 
+					$identifier->getId(), $ds->optString('idName'));
 		} catch (\n2n\util\type\attrs\AttributesException $e) {
 			throw new \InvalidArgumentException(null, null, $e);
 		}

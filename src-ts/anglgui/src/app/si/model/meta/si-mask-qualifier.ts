@@ -11,5 +11,4 @@ export class SiMaskIdentifier {
 export class SiMaskQualifier {
 	constructor(readonly identifier: SiMaskIdentifier, public name: string, public iconClass: string) {
 	}
-
 }

@@ -26,7 +26,6 @@ use n2n\io\UploadedFileExceedsMaxSizeException;
 use n2n\io\managed\File;
 use n2n\io\managed\impl\FileFactory;
 use n2n\io\managed\impl\TmpFileManager;
-use n2n\io\orm\FileEntityProperty;
 use n2n\io\orm\ManagedFileEntityProperty;
 use n2n\l10n\N2nLocale;
 use n2n\persistence\orm\property\EntityProperty;
@@ -53,6 +52,8 @@ use rocket\si\content\impl\SiFile;
 use rocket\si\content\impl\SiFileHandler;
 use rocket\si\content\impl\SiUploadResult;
 use rocket\impl\ei\component\prop\file\conf\FileModel;
+use n2n\io\managed\img\ImageFile;
+use n2n\io\managed\img\ImageDimension;
 
 class FileEiProp extends DraftablePropertyEiPropAdapter {
 	
@@ -124,8 +125,7 @@ class FileEiProp extends DraftablePropertyEiPropAdapter {
 // 	}
 	
 	public function setEntityProperty(EntityProperty $entityProperty = null) {
-		ArgUtils::assertTrue($entityProperty instanceof FileEntityProperty 
-				|| $entityProperty instanceof ManagedFileEntityProperty);
+		ArgUtils::assertTrue($entityProperty instanceof ManagedFileEntityProperty);
 		$this->entityProperty = $entityProperty;
 	}
 	
@@ -230,13 +230,11 @@ class FileEiProp extends DraftablePropertyEiPropAdapter {
 // 		return $uiComponent;
 // 	}
 	
-	
-	
 	public function createInSiField(Eiu $eiu): SiField {
 		$siFile = $this->buildSiFileFromEiu($eiu);
 		
 		return SiFields::fileIn($siFile, $eiu->frame()->getApiUrl(), $eiu->guiField()->createCallId(), 
-						new SiFileHanlderImpl($eiu, $this->thumbResolver, $this->fileVerificator))
+						new SiFileHanlderImpl($eiu, $this->thumbResolver, $this->fileVerificator, $siFile))
 				->setMandatory($this->getEditConfig()->isMandatory())
 				->setMaxSize($this->fileVerificator->getMaxSize())
 				->setAcceptedExtensions($this->fileVerificator->getAllowedExtensions())
@@ -260,7 +258,19 @@ class FileEiProp extends DraftablePropertyEiPropAdapter {
 		$fileId = $siFile->getId();
 		CastUtils::assertTrue($fileId instanceof FileId);
 		
-		$eiu->field()->setValue($this->thumbResolver->determineFile($fileId, $eiu));
+		$eiu->field()->setValue($file = $this->thumbResolver->determineFile($fileId, $eiu));
+		
+		$siImageDimensions = $siFile->getImageDimensions();
+		if (empty($siImageDimensions) || !$file->getFileSource()->isImage()) {
+			return;
+		}
+		
+		$imageFile = new ImageFile($file);
+		
+		foreach ($siImageDimensions as $siImageDimension) {
+			$imageFile->setThumbCut(ImageDimension::createFromString($siImageDimension->getId()), 
+					$siImageDimension->getThumbCut());
+		}
 	}
 	
 	/**
@@ -313,7 +323,8 @@ class SiFileHanlderImpl implements SiFileHandler {
 	private $thumbResolver;
 	private $fileVerificator;
 	
-	function __construct(Eiu $eiu, ThumbResolver $thumbResolver, FileVerificator $fileVerificator) {
+	function __construct(Eiu $eiu, ThumbResolver $thumbResolver, FileVerificator $fileVerificator,
+			?SiFile $currentSiFile) {
 		$this->eiu = $eiu;
 		$this->thumbResolver = $thumbResolver;
 		$this->fileVerificator = $fileVerificator;
@@ -337,7 +348,7 @@ class SiFileHanlderImpl implements SiFileHandler {
 					::uploadIncomplete($uploadDefinition->getName())
 					->t($this->eiu->getN2nLocale()));
 		}
-		
+
 		if (null !== ($message = $this->fileVerificator->validate($file))){
 			return SiUploadResult::createError($message->t($this->eiu->getN2nLocale()));
 		}

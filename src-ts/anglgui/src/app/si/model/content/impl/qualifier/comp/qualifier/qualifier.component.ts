@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { SiMaskQualifier } from 'src/app/si/model/meta/si-mask-qualifier';
-import { SiEntryQualifier } from '../../../../si-qualifier';
+import { SiEntryQualifier } from '../../../../si-entry-qualifier';
 
 @Component({
 	selector: 'rocket-si-qualifier',

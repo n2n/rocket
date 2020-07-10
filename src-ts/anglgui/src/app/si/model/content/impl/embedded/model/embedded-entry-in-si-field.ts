@@ -4,7 +4,7 @@ import { EmbeddedEntriesConfig } from './embedded-entries-config';
 import { SiService } from 'src/app/si/manage/si.service';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
 import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
-import { SiEntryIdentifier } from '../../../si-qualifier';
+import { SiEntryIdentifier } from '../../../si-entry-qualifier';
 import { EmbeddedEntryObtainer } from './embedded-entry-obtainer';
 import {
 	SiGenericEmbeddedEntryCollection, SiGenericEmbeddedEntry, SiEmbeddedEntryResetPointCollection
@@ -103,7 +103,8 @@ export class EmbeddedEntriesInSiField extends SiFieldAdapter implements EmbeInSo
 			return this.handlePaste(newEmbeInds, []);
 		}
 
-		const obtainer = new EmbeddedEntryObtainer(this.siService, this.frame.apiUrl, this.config.reduced, this.config.allowedTypeIds);
+		const obtainer = new EmbeddedEntryObtainer(this.siService, this.frame.apiUrl, this.config.reduced,
+				this.config.allowedTypeIds);
 		return obtainer.obtain(newEntryIdentifiers).toPromise()
 				.then((embeddedEntries) => {
 					return this.handlePaste(newEmbeInds, embeddedEntries);

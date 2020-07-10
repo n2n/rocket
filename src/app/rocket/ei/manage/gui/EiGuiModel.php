@@ -10,6 +10,8 @@ use rocket\ei\manage\security\InaccessibleEiEntryException;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\si\content\SiEntry;
 use rocket\ei\EiType;
+use rocket\ei\manage\gui\control\GuiControlPath;
+use rocket\ei\manage\gui\control\UnknownGuiControlException;
 
 class EiGuiModel {
 	/**
@@ -143,12 +145,12 @@ class EiGuiModel {
 			ArgUtils::assertTrue(isset($typeDefs[$key]));
 			$eiEntryGuiTypeDef = $typeDefs[$key];
 			
-			$siEntry->putBuildup($eiEntryGuiTypeDef->getEiType()->getId(),
+			$siEntry->putBuildup($eiEntryGuiTypeDef->getEiMask()->getEiType()->getId(),
 					$eiGuiFrame->createSiEntryBuildup($eiFrame, $eiEntryGuiTypeDef, $siControlsIncluded));
 		}
 		
 		if ($eiEntryGui->isTypeDefSelected()) {
-			$siEntry->setSelectedTypeId($eiEntryGui->getSelectedTypeDef()->getEiType()->getId());
+			$siEntry->setSelectedTypeId($eiEntryGui->getSelectedTypeDef()->getEiMask()->getEiType()->getId());
 		}
 		
 		return $siEntry;
@@ -245,7 +247,7 @@ class EiGuiModel {
 		ArgUtils::assertTrue($eiGui->getEiGuiModel() === $this);
 		ArgUtils::valArray($eiEntries, EiEntry::class);
 		
-		$eiEntryGui = new EiEntryGui($this->contextEiMask->getEiType(), $eiGui, $treeLevel);
+		$eiEntryGui = new EiEntryGui($this->contextEiMask, $eiGui, $treeLevel);
 		
 		$eiEntries = $this->catEiEntries($eiEntries);
 		
@@ -316,5 +318,20 @@ class EiGuiModel {
 		}
 		
 		return [];
+	}
+	
+	/**
+	 * @param EiFrame $eiFrame
+	 * @param GuiControlPath $guiControlPath
+	 * @throws UnknownGuiControlException
+	 */
+	function createGeneralGuiControl(EiFrame $eiFrame, GuiControlPath $guiControlPath) {
+		$contextEiTypeId = $this->contextEiMask->getEiType()->getId();
+		
+		if (isset($this->eiGuiFrames[$contextEiTypeId])) {
+			return $this->eiGuiFrames[$contextEiTypeId]->createGeneralGuiControl($eiFrame, $guiControlPath);
+		}
+		
+		throw new UnknownGuiControlException('Unknown GuiControlPath: ' . $guiControlPath);
 	}
 }

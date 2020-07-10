@@ -7,11 +7,11 @@ import { SiPage } from '../model/comp/impl/model/si-page';
 import { BulkyEntrySiComp } from '../model/comp/impl/model/bulky-entry-si-comp';
 import { CompactEntrySiComp } from '../model/comp/impl/model/compact-entry-si-comp';
 import { SiComp } from '../model/comp/si-comp';
-import { SiEntryIdentifier, SiEntryQualifier } from '../model/content/si-qualifier';
+import { SiEntryIdentifier, SiEntryQualifier } from '../model/content/si-entry-qualifier';
 import { SiEntryFactory } from './si-entry-factory';
 import { SiEmbeddedEntry } from '../model/content/impl/embedded/model/si-embedded-entry';
 import { SiPanel, SiGridPos } from '../model/content/impl/embedded/model/si-panel';
-import { SiFile, SiImageDimension } from '../model/content/impl/file/model/file-in-si-field';
+import { SiFile, SiImageDimension, SiImageCut } from '../model/content/impl/file/model/file-in-si-field';
 import { SiCrumbGroup, SiCrumb } from '../model/content/impl/meta/model/si-crumb';
 import { Injector } from '@angular/core';
 
@@ -57,7 +57,7 @@ export class SiCompFactory {
 		const extr = new Extractor(data);
 
 		return new SiEntryQualifier(SiMetaFactory.createTypeQualifier(extr.reqObject('maskQualifier')),
-				extr.nullaString('id'), extr.nullaString('idName'));
+				SiCompFactory.createEntryIdentifier(extr.reqObject('identifier')), extr.nullaString('idName'));
 	}
 
 	static createCrumbGroups(dataArr: Array<any>): SiCrumbGroup[] {
@@ -121,13 +121,11 @@ export class SiCompFactory {
 			imageDimensions.push(SiCompFactory.createSiImageDimension(idData));
 		}
 
-		return {
-			id: extr.reqObject('id'),
-			name: extr.reqString('name'),
-			url: extr.nullaString('url'),
-			thumbUrl: extr.nullaString('thumbUrl'),
-			imageDimensions
-		};
+		const siFile = new SiFile(extr.reqObject('id'), extr.reqString('name'), extr.nullaString('url'));
+		siFile.thumbUrl = extr.nullaString('thumbUrl');
+		siFile.mimeType = extr.nullaString('mimeType');
+		siFile.imageDimensions = imageDimensions;
+		return siFile;
 	}
 
 	static createSiImageDimension(data: any): SiImageDimension {
@@ -135,10 +133,19 @@ export class SiCompFactory {
 
 		return {
 			id: extr.reqString('id'),
-			name: extr.reqString('name'),
+			name: extr.nullaString('name'),
 			width: extr.reqNumber('width'),
-			height: extr.reqNumber('height')
+			height: extr.reqNumber('height'),
+			imageCut: this.createSiImageCut(extr.reqObject('imageCut')),
+			ratioFixed: extr.reqBoolean('ratioFixed')
 		};
+	}
+
+	static createSiImageCut(data: any): SiImageCut {
+		const extr = new Extractor(data);
+
+		return new SiImageCut(extr.reqNumber('x'), extr.reqNumber('y'), extr.reqNumber('width'),
+				extr.reqNumber('height'), extr.reqBoolean('exists'));
 	}
 
 	buildComp(data: any, requiredType: SiCompType|null = null): SiComp|null {

@@ -34,6 +34,7 @@ interface SiFileHandler {
 	/**
 	 * @param array $idData
 	 * @throws \InvalidArgumentException
+	 * @return SiFile|null
 	 */
 	function getSiFileByRawId(array $rawId): ?SiFile;
 }

@@ -1,0 +1,78 @@
+<div *ngIf="loading" class="rocket-loader"></div>
+
+<rocket-upload-result-message [uploadResult]="uploadResult" [messageFieldModel]="model"></rocket-upload-result-message>
+
+<div class="d-flex" [class.rocket-img-loading]="loading">
+
+	<div class="">
+		<div style="height: 400px">
+			<img #img [src]="model.getSiFile().url" style="display: block; max-width: 100%;" />
+		</div>
+
+		<div *ngIf="originalActive">
+			<button (click)="imageSrc.toggleCropping()" class="btn btn-secondary" [class.active]="imageSrc.cropping"><i class="fa fa-crop"></i></button>
+			<button (click)="imageSrc.rotateCcw()" class="btn btn-secondary"><i class="fa fa-rotate-left"></i></button>
+			<button (click)="imageSrc.rotateCw()" class="btn btn-secondary"><i class="fa fa-rotate-right"></i></button>
+
+			<button *ngIf="imageSrc.changed" (click)="saveOriginal()"><i class="fa fa-check"></i> {{ 'save_original_txt' | translate }}</button>
+		</div>
+
+		<rocket-ui-toggler *ngIf="freeRatioOption" [(enabled)]="imageSrc.fixedRatio" enabledTextCode="fixed_ratio_enabled_txt"
+				disabledTextCode="fixed_ratio_disabled_txt"></rocket-ui-toggler>
+	</div>
+	<div>
+		<div>
+			<button class="btn btn-secondary d-flex justify-content-start align-items-center w-100" 
+					[class.active]="originalActive" (click)="switchToOriginal()">
+				<div class="d-flex justify-content-center align-items-center" style="width: 50px">
+					<div [class.sr-only]="!originalActive || !imageSrc.changed" #originalPreview class="rocket-image-preview"></div>
+			
+					<rocket-image-preview *ngIf="!originalActive || !imageSrc.changed" [src]="model.getSiFile().url"></rocket-image-preview>
+				</div>
+				<div style="height: 50px">
+					<div>{{ 'original_image_txt' | translate }} <span *ngIf="originalChanged">*</span></div>
+					<div>width / height</div>
+				</div>
+			</button>
+		</div>
+		<div>
+			<h3>Bild-Versionen</h3>
+			<ul class="rocket-image-dimensions list-unstyled">
+				<li *ngFor="let thumbRatio of thumbRatios" class="rocket-image-version rocket-image-ratio">
+					<button class="btn btn-secondary d-flex" (click)="switchToThumbRatio(thumbRatio)" 
+							[class.active]="currentThumbRatio === thumbRatio" [disabled]="!thumbRatio.hasGroupedImageCuts()">
+						<div *ngIf="thumbRatio.hasGroupedImageCuts()" class="d-flex justify-content-center align-items-center">
+							<rocket-image-preview [src]="model.getSiFile().url" 
+									[imageCut]="thumbRatio.getGroupedPreviewImageCut(currentImageDimension)"></rocket-image-preview>
+						</div>
+						<div>
+							<div>{{ thumbRatio.width }} / {{ thumbRatio.height }}</div>
+							<div>[infos]</div>
+						</div>
+					</button>
+					
+					<ul>
+						<ng-container *ngFor="let imageDimension of thumbRatio.imageDimensions">
+							<li class="rocket-image-version">
+								<button (click)="switchToImageDimension(imageDimension)" 
+										class="btn btn-secondary d-flex w-100" [class.active]="currentImageDimension === imageDimension">
+									<div class="d-flex justify-content-center align-items-center">
+										<rocket-image-preview [src]="model.getSiFile().url" [imageCut]="imageDimension.imageCut">
+										</rocket-image-preview>
+									</div>
+									<div>
+										<div>{{ imageDimension.width }} x {{ imageDimension.height }}</div>
+										<div>{{ imageDimension.name || 'N/A' }}</div>
+									</div>
+									
+									<div *ngIf="isLowRes(imageDimension)" class="rocket-image-low-res">low res</div>
+								</button>
+							</li>
+						</ng-container>
+					</ul>
+				</li>
+			</ul>
+		</div>
+		
+	</div>
+</div>

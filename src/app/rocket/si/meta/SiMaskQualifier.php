@@ -23,12 +23,13 @@ namespace rocket\si\meta;
 
 use n2n\util\type\attrs\DataSet;
 
-class SiMaskQualifier extends SiMaskIdentifier {
+class SiMaskQualifier implements \JsonSerializable {
+	private $identifier;
 	private $name;
 	private $iconClass;
 	
-	function __construct(string $id, string $typeId, string $name, string $iconClass) {
-		parent::__construct($id, $typeId);
+	function __construct(SiMaskIdentifier $identifier, string $name, string $iconClass) {
+		$this->identifier = $identifier;
 		$this->name = $name;
 		$this->iconClass = $iconClass;
 	}
@@ -49,10 +50,16 @@ class SiMaskQualifier extends SiMaskIdentifier {
 		return $this;
 	}
 	
+	/**
+	 * @return \rocket\si\meta\SiMaskIdentifier
+	 */
+	function getIdentifier() {
+		return $this->identifier;
+	}
+	
 	function jsonSerialize() {
 		return [
-		    'id' => $this->id,
-			'typeId' => $this->typeId,
+			'identifier' => $this->identifier,
 			'name' => $this->name,
 			'iconClass' => $this->iconClass
 		];
@@ -65,9 +72,9 @@ class SiMaskQualifier extends SiMaskIdentifier {
 	 */
 	static function parse(array $data) {
 		$ds = new DataSet($data);
-		
+	
 		try {
-			return new SiMaskQualifier($ds->reqString('id'), $ds->reqString('typeId'),
+			return new SiMaskQualifier(SiMaskIdentifier::parse($ds->reqArray('identifier')),
 					$ds->reqString('name'), $ds->reqString('iconClass'));
 		} catch (\n2n\util\type\attrs\AttributesException $e) {
 			throw new \InvalidArgumentException(null, null, $e);

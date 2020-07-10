@@ -1,4 +1,4 @@
-import { SiEntryQualifier } from '../content/si-qualifier';
+import { SiEntryQualifier } from '../content/si-entry-qualifier';
 import { SiGenericValue } from './si-generic-value';
 import { IllegalSiStateError } from '../../util/illegal-si-state-error';
 

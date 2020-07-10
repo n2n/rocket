@@ -7,8 +7,6 @@ import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
-import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
-import { Fresult } from 'src/app/util/err/fresult';
 
 export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel {
 
@@ -26,8 +24,18 @@ export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel 
 	}
 
 	readInput(): object {
+		let imageCuts: { [id: string]: SiImageCut };
+
+		if (this.value && this.value.imageDimensions.length > 0) {
+			imageCuts = {};
+			for (const imgDim of this.value.imageDimensions) {
+				imageCuts[imgDim.id] = imgDim.imageCut;
+			}
+		}
+
 		return {
-			valueId: (this.value ? this.value.id : null)
+			valueId: (this.value ? this.value.id : null),
+			imageCuts
 		};
 	}
 
@@ -59,9 +67,9 @@ export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel 
 		throw new Error('Method not implemented.');
 	}
 
-	copy(): SiField {
-		throw new Error('Method not implemented.');
-	}
+	// copy(): SiField {
+	// 	throw new Error('Method not implemented.');
+	// }
 
 	createUiContent(uiStructure: UiStructure): UiContent {
 		return new TypeUiContent(FileInFieldComponent, (ref) => {
@@ -75,20 +83,34 @@ export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel 
 	}
 
 	copyValue(): SiGenericValue {
-		throw new Error('Not yet implemented');
+		return new SiGenericValue(this.value ? this.value.copy() : null);
 	}
 
 	pasteValue(genericValue: SiGenericValue): Promise<void> {
-		throw new Error('Not yet implemented');
+		if (genericValue.isNull()) {
+			this.value = null;
+			return;
+		}
+
+		this.value = genericValue.readInstance(SiFile).copy();
 	}
 }
 
-export interface SiFile {
-	id: object;
-	name: string;
-	url: string|null;
+export class SiFile {
 	thumbUrl: string|null;
-	imageDimensions: SiImageDimension[];
+	mimeType: string|null;
+	imageDimensions: SiImageDimension[] = [];
+
+	constructor(public id: object, public name: string, public url: string|null) {
+	}
+
+	copy(): SiFile {
+		const siFile = new SiFile(this.id, this.name, this.url);
+		siFile.thumbUrl = this.thumbUrl;
+		siFile.mimeType = this.mimeType;
+		siFile.imageDimensions = JSON.parse(JSON.stringify(this.imageDimensions));
+		return siFile;
+	}
 }
 
 export interface SiImageDimension {
@@ -96,4 +118,16 @@ export interface SiImageDimension {
 	name: string;
 	width: number;
 	height: number;
+	imageCut: SiImageCut;
+	ratioFixed: boolean;
+}
+
+export class SiImageCut {
+	constructor(public x: number, public y: number, public width: number, public height: number, public exists: boolean) {
+	}
+
+	equals(obj: any): boolean {
+		return obj instanceof SiImageCut && obj.x === this.x && obj.y === this.y && obj.height === this.height
+				&& obj.exists === this.exists;
+	}
 }

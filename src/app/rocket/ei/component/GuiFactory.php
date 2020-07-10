@@ -173,7 +173,7 @@ class GuiFactory {
 	 * @return EiEntryGui
 	 */
 	public static function createEiEntryGuiTypeDef(EiFrame $eiFrame, EiGuiFrame $eiGuiFrame, EiEntryGui $eiEntryGui, EiEntry $eiEntry) {
-		$eiEntryGuiTypeDef = new EiEntryGuiTypeDef($eiEntryGui, $eiGuiFrame->getGuiDefinition()->getEiMask()->getEiType(), 
+		$eiEntryGuiTypeDef = new EiEntryGuiTypeDef($eiEntryGui, $eiGuiFrame->getGuiDefinition()->getEiMask(), 
 				$eiEntry);
 		$eiEntryGui->putTypeDef($eiEntryGuiTypeDef);
 		

@@ -1,4 +1,4 @@
-import { SiEntryQualifier } from '../../../content/si-qualifier';
+import { SiEntryQualifier } from '../../../content/si-entry-qualifier';
 
 export interface SiEntryQualifierSelection {
 	min: number;

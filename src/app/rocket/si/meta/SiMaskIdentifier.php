@@ -49,6 +49,13 @@ class SiMaskIdentifier implements \JsonSerializable {
 		return $this;
 	}
 	
+	function getTypeId(): string {
+		return $this->typeId;
+	}
+	
+	function setTypeId(string $typeId) {
+		$this->typeId = $typeId;
+	}
 	
 	function jsonSerialize() {
 		return [
@@ -61,7 +68,7 @@ class SiMaskIdentifier implements \JsonSerializable {
 		$ds = new DataSet($data);
 		
 		try {
-			return new SiMaskQualifier($ds->reqString('id'), $ds->reqString('typeId'));
+			return new SiMaskIdentifier($ds->reqString('id'), $ds->reqString('typeId'));
 		} catch (\n2n\util\type\attrs\AttributesException $e) {
 			throw new \InvalidArgumentException(null, null, $e);
 		}

@@ -327,6 +327,8 @@ class EiFrameUtil {
 		$criteria->select(NestedSetUtils::NODE_ALIAS);
 		$criteria->limit($offset, $num);
 		
+		
+		
 		$eiType = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType();
 		if (null !== ($nestedSetStrategy = $eiType->getNestedSetStrategy())) {
 			$this->treeLookup($eiGui, $criteria, $eiType->getEntityModel()->getClass(), $nestedSetStrategy);

@@ -33,6 +33,9 @@ use n2n\io\managed\impl\TmpFileManager;
 use n2n\util\type\CastUtils;
 use rocket\si\content\impl\SiImageDimension;
 use n2n\util\StringUtils;
+use n2n\io\managed\FileManager;
+use n2n\io\managed\FileLocator;
+use n2n\io\managed\img\ThumbCut;
 
 class ThumbResolver {
 	
@@ -42,12 +45,30 @@ class ThumbResolver {
 	private $thumbEiCommand;
 	private $imageDimensionsImportMode = null;
 	private $extraImageDimensions = array();
+	private $targetFileManager;
+	private $targetFileLocator = null;
 	
 	public function setThumbEiCommand(ThumbEiCommand $thumbEiCommand) {
 // 		$thumbEiCommand->setFileEiProp($this);
 		$this->thumbEiCommand = $thumbEiCommand;
 	}
 	
+	function setTargetFileManager(?FileManager $fileManager) {
+		$this->targetFileManager = $fileManager;
+	}
+	
+	function getTargetFileManager() {
+		return $this->targetFileManager;
+	}
+	
+	function setTargetFileLocator(?FileLocator $fileLocator) {
+		$this->targetFileLocator = $fileLocator;
+	}
+	
+	function getTargetFileLocator() {
+		return $this->targetFileLocator;
+	}
+
 	public function getThumbEiCommand() {
 		return $this->thumbEiCommand;
 	}
@@ -105,11 +126,13 @@ class ThumbResolver {
 			return $siFile;
 		}
 		
-		$thumbFile = $this->buildThumbFile($file);
+		$thumbImageFile = $this->buildThumb($file);
 		
-		if ($thumbFile === null) {
+		if ($thumbImageFile === null) {
 			return $siFile;
 		}
+		
+		$thumbFile = $thumbImageFile->getFile();
 		
 		if ($thumbFile->getFileSource()->isHttpAccessible()) {
 			$siFile->setThumbUrl($thumbFile->getFileSource()->getUrl());
@@ -121,7 +144,8 @@ class ThumbResolver {
 					SiFile::getThumbStrategy()->getImageDimension()));
 		}
 		
-		$siFile->setImageDimensions($this->createSiImageDimensions($this->determineImageDimensions($file)));
+		$siFile->setMimeType($thumbImageFile->getImageSource()->getMimeType());
+		$siFile->setImageDimensions($this->createSiImageDimensions(new ImageFile($file), $this->determineImageDimensions($file)));
 		
 		return $siFile;
 	}
@@ -146,15 +170,15 @@ class ThumbResolver {
 		
 	/**
 	 * @param File $file
-	 * @return \n2n\io\managed\File|null
+	 * @return ImageFile|null
 	 */
-	private function buildThumbFile(File $file) {
+	private function buildThumb(File $file) {
 		if (!$file->getFileSource()->getVariationEngine()->hasThumbSupport()) {
 			return null;
 		}
 		
 		$thumbStartegy = SiFile::getThumbStrategy();
-		return (new ImageFile($file))->getOrCreateThumb($thumbStartegy)->getFile();
+		return (new ImageFile($file))->getOrCreateThumb($thumbStartegy);
 	}
 	
 	function createFileUrl(Eiu $eiu, string $pid) {
@@ -183,12 +207,17 @@ class ThumbResolver {
 	/**
 	 * @param Eiu $eiu
 	 * @param string $qualifiedName
-	 * @param ImageDimension $imageDimension
+	 * @param ImageDimension $thumbImgDim
 	 * @return \n2n\util\uri\Url
 	 */
-	function createTmpThumbUrl(Eiu $eiu, string $qualifiedName, ImageDimension $imageDimension) {
-		return $eiu->frame()->getCmdUrl($this->thumbEiCommand)->extR(['tmpthumb'], 
-				['qn' => $qualifiedName, 'imgDim' => $imageDimension->__toString()]);
+	function createTmpThumbUrl(Eiu $eiu, string $qualifiedName, ImageDimension $thumbImgDim/*, ImageDimension $variationImgDim = null*/) {
+		$query = ['qn' => $qualifiedName, 'imgDim' => $thumbImgDim->__toString()];
+		
+// 		if ($variationImgDim !== null) {
+// 			$query['variationImgDim'] = (string) $variationImgDim;
+// 		}
+		
+		return $eiu->frame()->getCmdUrl($this->thumbEiCommand)->extR(['tmpthumb'], $query);
 	}
 	
 	/**
@@ -213,14 +242,27 @@ class ThumbResolver {
 	}
 	
 	/**
+	 * @param ImageFile $imageFile
 	 * @param ImageDimension[] $imageDimensions
 	 * @return \rocket\si\content\impl\SiImageDimension[]
 	 */
-	private function createSiImageDimensions($imageDimensions) {
+	private function createSiImageDimensions(ImageFile $imageFile, $imageDimensions) {
 		$siImageDimensions = []; 
 		foreach ($imageDimensions as $id => $imageDimension) {
-			$siImageDimensions[] = new SiImageDimension($id, StringUtils::pretty($id), 
-					$imageDimension->getWidth(), $imageDimension->getHeight());
+			$thumbCut = $imageFile->getThumbCut($imageDimension);
+			
+			$imageDimension = ImageDimension::createFromString($imageDimension);
+			$exits = true;
+			if ($thumbCut === null) {
+				$thumbCut = ThumbCut::auto($imageFile->getImageSource(), $imageDimension);
+				$exits = false;
+			}
+			$ratioFixed = $imageDimension->isCropped();
+			$idExt = $imageDimension->getIdExt();
+			
+			$siImageDimensions[] = new SiImageDimension($id, ($idExt !== null ? StringUtils::pretty($idExt) : null), 
+					$imageDimension->getWidth(), $imageDimension->getHeight(), $ratioFixed,
+					$thumbCut, $exits);
 		}
 		return $siImageDimensions;
 	}
@@ -240,14 +282,16 @@ class ThumbResolver {
 			$imageDimensions[(string) $imageDimension] = $imageDimension;
 		}
 		
-		$thumbEngine = $file->getFileSource()->getVariationEngine()->getThumbManager();
-		
 		$autoImageDimensions = array();
 		switch ($this->imageDimensionsImportMode) {
 			case self::DIM_IMPORT_MODE_ALL:
-				$autoImageDimensions = $thumbEngine->getPossibleImageDimensions();
+				if ($this->targetFileManager !== null) {
+					$autoImageDimensions = $this->targetFileManager->getPossibleImageDimensions($file, $this->targetFileLocator);
+				}
+				
 				break;
 			case self::DIM_IMPORT_MODE_USED_ONLY:
+				$thumbEngine = $file->getFileSource()->getVariationEngine()->getThumbManager();
 				$autoImageDimensions = $thumbEngine->getUsedImageDimensions();
 				break;
 		}

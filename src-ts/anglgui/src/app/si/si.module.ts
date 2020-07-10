@@ -43,6 +43,13 @@ import { EnumInComponent } from './model/content/impl/enum/comp/enum-in/enum-in.
 import { QualifierTilingComponent } from './model/content/impl/qualifier/comp/qualifier-tiling/qualifier-tiling.component';
 import { ChoosePasteComponent } from './model/content/impl/embedded/comp/choose-paste/choose-paste.component';
 import { EmbeddedEntryComponent } from './model/content/impl/embedded/comp/embedded-entry/embedded-entry.component';
+import { ImageEditorComponent } from './model/content/impl/file/comp/image-editor/image-editor.component';
+import { UploadResultMessageComponent } from './model/content/impl/file/comp/inc/upload-result-message/upload-result-message.component';
+import { ImagePreviewComponent } from './model/content/impl/file/comp/image-preview/image-preview.component';
+import { CkeInFieldComponent } from './model/content/impl/alphanum/comp/cke-in-field/cke-in-field.component';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { FieldMessagesComponent } from './model/content/impl/common/comp/field-messages/field-messages.component';
+import { EditorModule } from '@tinymce/tinymce-angular';
 
 @NgModule({
 	declarations: [
@@ -52,7 +59,8 @@ import { EmbeddedEntryComponent } from './model/content/impl/embedded/comp/embed
 		EmbeddedEntriesSummaryInComponent, EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent,
 		ImageResizeComponent, EmbeddedEntryPanelsInComponent, EntryDirective, PaginationComponent, CrumbGroupComponent,
 		AddPasteComponent, QualifierComponent, TogglerInFieldComponent, SplitComponent, SplitViewMenuComponent,
-		SplitManagerComponent, EnumInComponent, QualifierTilingComponent, ChoosePasteComponent, EmbeddedEntryComponent
+		SplitManagerComponent, EnumInComponent, QualifierTilingComponent, ChoosePasteComponent, EmbeddedEntryComponent,
+		ImageEditorComponent, UploadResultMessageComponent, ImagePreviewComponent, CkeInFieldComponent, FieldMessagesComponent
 	],
 	imports: [
 		CommonModule,
@@ -60,7 +68,9 @@ import { EmbeddedEntryComponent } from './model/content/impl/embedded/comp/embed
 		DragDropModule,
 		UiModule,
 		UtilModule,
-		RouterModule
+		RouterModule,
+		CKEditorModule,
+		EditorModule
 	],
 	exports: [
 		ListZoneContentComponent, BulkyEntryComponent, StringOutFieldComponent, InputInFieldComponent,
@@ -75,7 +85,8 @@ import { EmbeddedEntryComponent } from './model/content/impl/embedded/comp/embed
 		LinkOutFieldComponent, CompactEntryComponent, EmbeddedEntriesInComponent, EmbeddedEntriesSummaryInComponent,
 		EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent,
 		EmbeddedEntryPanelsInComponent, ButtonControlComponent, PaginationComponent, TogglerInFieldComponent, SplitComponent,
-		SplitViewMenuComponent, CrumbGroupComponent, SplitManagerComponent, EnumInComponent, EmbeddedEntryComponent
+		SplitViewMenuComponent, CrumbGroupComponent, SplitManagerComponent, EnumInComponent, EmbeddedEntryComponent,
+		ImageEditorComponent, CkeInFieldComponent
 	]
 })
 export class SiModule { }

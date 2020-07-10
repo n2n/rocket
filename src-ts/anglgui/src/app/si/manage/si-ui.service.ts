@@ -12,8 +12,7 @@ import { SiService } from './si.service';
 import { UiZone } from 'src/app/ui/structure/model/ui-zone';
 import { SiCommandError } from '../util/si-command-error';
 import { UiLayer } from 'src/app/ui/structure/model/ui-layer';
-import { SiComp } from '../model/comp/si-comp';
-import { SiResult } from './si-result';
+import { SiResult, SiDirective } from './si-result';
 import { SiControlBoundry } from '../model/control/si-control-bountry';
 
 @Injectable({
@@ -37,14 +36,6 @@ export class SiUiService {
 				});
 	}
 
-	navigateBack(layer: UiLayer, fallbackUrl: string|null = null) {
-
-	}
-
-	navigateForward(layer: UiLayer, fallbackUrl: string|null = null) {
-
-	}
-
 	navRouterUrl(url: string): string {
 		const baseHref = this.platformLocation.getBaseHrefFromDOM();
 
@@ -57,7 +48,9 @@ export class SiUiService {
 
 	navigate(url: string, layer: UiLayer) {
 		if (!layer.main) {
-			throw new Error('not yet implemented');
+			const zone = layer.pushZone(url);
+			this.loadZone(zone);
+			return;
 		}
 
 		const baseHref = this.platformLocation.getBaseHrefFromDOM();
@@ -67,6 +60,22 @@ export class SiUiService {
 		}
 
 		this.router.navigateByUrl(url.substring(baseHref.length));
+	}
+
+	navigateBack(layer: UiLayer, fallbackUrl: string|null = null) {
+		let url = fallbackUrl;
+		if (layer.previousZone && layer.previousZone.url) {
+			url = layer.previousZone.url;
+		}
+
+		if (url) {
+			this.navigate(url, layer);
+			return;
+		}
+
+		if (!layer.main) {
+			layer.dispose();
+		}
 	}
 
 	execEntryControl(apiUrl: string, callId: object, entry: SiEntry, includeInput: boolean): Observable<void> {
@@ -118,7 +127,8 @@ export class SiUiService {
 	// 	}));
 	}
 
-	execControl(apiUrl: string, callId: object, controlBoundry: SiControlBoundry, includeInput: boolean): Observable<void> {
+	execControl(apiUrl: string, callId: object, controlBoundry: SiControlBoundry, includeInput: boolean,
+			uiLayer: UiLayer): Observable<void> {
 		const input = new SiInput();
 
 		if (!includeInput) {
@@ -139,16 +149,25 @@ export class SiUiService {
 
 		return new Observable<void>((observer) => {
 			obs.subscribe((result) => {
-				this.handleResult(result, entries);
+				this.handleResult(result, entries, uiLayer);
 				observer.next();
 				observer.complete();
 			});
 		});
 	}
 
-	private handleResult(result: SiResult, inputEntries: SiEntry[]) {
+	private handleResult(result: SiResult, inputEntries: SiEntry[], uiLayer: UiLayer) {
 		if (inputEntries.length > 0) {
 			this.handleEntryErrors(result.entryErrors, inputEntries);
+		}
+
+		switch (result.directive) {
+			case SiDirective.REDIRECT:
+				this.navigate(result.navPoint.url, uiLayer);
+				break;
+			case SiDirective.REDIRECT_BACK:
+				this.navigateBack(uiLayer, result.navPoint.url);
+				break;
 		}
 	}
 

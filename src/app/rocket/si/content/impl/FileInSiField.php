@@ -26,10 +26,12 @@ use n2n\util\uri\Url;
 use n2n\util\type\attrs\DataSet;
 use n2n\io\IoUtils;
 use n2n\util\type\ArgUtils;
+use n2n\io\managed\img\ThumbCut;
+use n2n\util\type\attrs\DataMap;
 
 class FileInSiField extends InSiFieldAdapter {
 	/**
-	 * @var File|null
+	 * @var SiFile|null
 	 */
 	private $value;
 	/**
@@ -113,7 +115,7 @@ class FileInSiField extends InSiFieldAdapter {
 	}
 	
 	/**
-	 * @param int $maxSize
+	 * @param int|null $maxSize
 	 * @return FileInSiField
 	 */
 	public function setMaxSize(?int $maxSize) {
@@ -193,6 +195,19 @@ class FileInSiField extends InSiFieldAdapter {
 		}
 		
 		$this->value = $this->fileHandler->getSiFileByRawId($valueId);
+		if ($this->value === null || !isset($data['imageCuts'])) {
+			return;
+		}
+		
+		foreach ($this->value->getImageDimensions() as $imgDim) {
+			$id = $imgDim->getId();
+			
+			if (!isset($data['imageCuts'][$id])) {
+				return;
+			}
+			
+			$imgDim->setThumbCut(ThumbCut::fromArray($data['imageCuts'][$id]));
+		}
 	}
 	
 	function isCallable(): bool {
@@ -209,6 +224,12 @@ class FileInSiField extends InSiFieldAdapter {
 		 * @var UploadDefinition $uploadDefinition
 		 */
 		$uploadDefinition = current($uploadDefinitions);
+		
+		$dm = new DataMap($data);
+		if (null !== ($fileName = $dm->optString('fileName'))) {
+			$uploadDefinition->setName($fileName);
+		}
+		
 		$uploadResult = $this->fileHandler->upload($uploadDefinition);
 		
 		if (!$uploadResult->isSuccess()) {

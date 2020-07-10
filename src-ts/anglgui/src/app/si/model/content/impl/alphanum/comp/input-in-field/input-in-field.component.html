@@ -15,7 +15,6 @@
 		</rocket-crumb-group>
 	</div>
 </div>
+
+<rocket-field-messages *ngIf="model.getMessages().length > 0" [model]="model"></rocket-field-messages>
 		
-<div *ngIf="model.getMessages().length > 0" class="rocket-message-error">
-	<rocket-ui-message *ngFor="let message of model.getMessages()" [message]="message"></rocket-ui-message>
-</div>

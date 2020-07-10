@@ -28,13 +28,14 @@ use n2n\util\type\ArgUtils;
 use rocket\si\input\CorruptedSiInputDataException;
 use rocket\si\content\SiEntryIdentifier;
 use rocket\ei\manage\entry\EiEntry;
+use rocket\ei\mask\EiMask;
 
 class EiEntryGui {
 	
 	/**
-	 * @var EiType
+	 * @var EiMask
 	 */
-	private $contextEiType;
+	private $contextEiMask;
 	/**
 	 * @var EiGui
 	 */
@@ -43,7 +44,8 @@ class EiEntryGui {
 	 * @var string|null
 	 */
 	private $selectedEiTypeId = null;
-	/**	 * @var EiEntryGuiTypeDef[]
+	/**	 
+	 * @var EiEntryGuiTypeDef[]
 	 */
 	private $typeDefs = [];
 	/**
@@ -54,12 +56,15 @@ class EiEntryGui {
 	/**
 	 * @param int|null $treeLevel
 	 */
-	public function __construct(EiType $contextEiType, EiGui $eiGui, int $treeLevel = null) {
-		$this->contextEiType = $contextEiType;
+	function __construct(EiMask $contextEiMask, EiGui $eiGui, int $treeLevel = null) {
+		$this->contextEiMask = $contextEiMask;
 		$this->eiGui = $eiGui;
 		$this->treeLevel = $treeLevel;
 	}
 	
+	/**
+	 * @return \rocket\ei\manage\gui\EiGui
+	 */
 	function getEiGui() {
 		return $this->eiGui;
 	}
@@ -67,7 +72,7 @@ class EiEntryGui {
 	/**
 	 * @return int|null
 	 */
-	public function getTreeLevel() {
+	function getTreeLevel() {
 		return $this->treeLevel;
 	}
 	
@@ -92,9 +97,9 @@ class EiEntryGui {
 	 * @param EiEntryGuiTypeDef $eiEntryGuiTypeDef
 	 */
 	function putTypeDef(EiEntryGuiTypeDef $eiEntryGuiTypeDef) {
-		$eiType = $eiEntryGuiTypeDef->getEiType();
+		$eiType = $eiEntryGuiTypeDef->getEiMask()->getEiType();
 		
-		ArgUtils::assertTrue($eiType->isA($this->contextEiType));
+		ArgUtils::assertTrue($eiType->isA($this->contextEiMask->getEiType()));
 		
 		$this->typeDefs[$eiType->getId()] = $eiEntryGuiTypeDef;
 	}
@@ -172,7 +177,7 @@ class EiEntryGui {
 	 * @return \rocket\si\content\SiEntryIdentifier
 	 */
 	function createSiEntryIdentifier() {
-		$typeId = $this->contextEiType->getId();
+		$typeId = $this->contextEiMask->getEiType()->getId();
 		$id = null;
 		if ($this->isTypeDefSelected()) {
 			$eiEntry = $this->getSelectedTypeDef()->getEiEntry();
@@ -194,7 +199,7 @@ class EiEntryGui {
 		$this->getSelectedTypeDef()->save();
 	}
 
-	public function __toString() {
+	function __toString() {
 		return 'EiEntryGui of ' . $this->eiEntry;
 	}
 }

@@ -2,12 +2,11 @@ import { SiMaskQualifier } from '../meta/si-mask-qualifier';
 
 export class SiEntryIdentifier {
 	constructor(readonly typeId: string, readonly id: string|null) {
-
 	}
 
 	equals(obj: any): boolean {
-		return obj instanceof SiEntryIdentifier && this.typeId === ( obj as SiEntryIdentifier).typeId
-				&& this.id === ( obj as SiEntryIdentifier).id;
+		return obj instanceof SiEntryIdentifier && this.typeId === (obj as SiEntryIdentifier).typeId
+				&& this.id === (obj as SiEntryIdentifier).id;
 	}
 
 	toString(): string {
@@ -16,10 +15,13 @@ export class SiEntryIdentifier {
 }
 
 export class SiEntryQualifier {
-	readonly identifier: SiEntryIdentifier;
 
-	constructor(readonly maskQualifier: SiMaskQualifier, id: string|null, public idName: string|null) {
-		this.identifier = new SiEntryIdentifier(maskQualifier.identifier.typeId, id);
+	constructor(readonly maskQualifier: SiMaskQualifier, readonly identifier: SiEntryIdentifier,
+			public idName: string|null) {
+
+		if (this.maskQualifier.identifier.typeId !== identifier.typeId) {
+			throw new Error('Identifiers do not match: ' + maskQualifier.identifier.typeId + ' != ' + identifier.typeId);
+		}
 	}
 
 	getBestName(): string {

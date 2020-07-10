@@ -3,7 +3,7 @@ import { SiControl } from 'src/app/si/model/control/si-control';
 import { Message } from 'src/app/util/i18n/message';
 import { SiField } from './si-field';
 import { BehaviorSubject } from 'rxjs';
-import { SiEntryQualifier } from './si-qualifier';
+import { SiEntryQualifier } from './si-entry-qualifier';
 import { IllegalSiStateError } from '../../util/illegal-si-state-error';
 import { SiGenericEntry } from '../generic/si-generic-entry';
 import { SiGenericEntryBuildup } from '../generic/si-generic-entry-buildup';

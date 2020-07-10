@@ -1,5 +1,5 @@
 
-import { SiEntryIdentifier } from 'src/app/si/model/content/si-qualifier';
+import { SiEntryIdentifier } from 'src/app/si/model/content/si-entry-qualifier';
 
 export class SiEntryInput {
 
