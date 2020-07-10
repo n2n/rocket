@@ -11,7 +11,7 @@ export class SiValInstruction {
 	}
 }
 
-export interface SiPartialContentInstruction {
-	offset: number;
-	num: number;
-}
+// export interface SiPartialContentInstruction {
+// 	offset: number;
+// 	num: number;
+// }

@@ -285,11 +285,29 @@ class EiFrameUtil {
 	
 	/**
 	 * @param int $ignoreConstraintTypes
+	 * @param string $quickSearchStr
 	 * @return int
 	 */
-	function count(int $ignoreConstraintTypes = 0) {
-		return $this->eiFrame->createCriteria('e', $ignoreConstraintTypes)
+	function count(int $ignoreConstraintTypes = 0, string $quickSearchStr = null) {
+		return $this->createCriteria('e', $ignoreConstraintTypes, $quickSearchStr)
 				->select('COUNT(1)')->toQuery()->fetchSingle();
+	}
+	
+	/**
+	 * @param string $entityAlias
+	 * @param int $ignoreConstraintTypes
+	 * @param string $quickSearchStr
+	 * @return \n2n\persistence\orm\criteria\Criteria
+	 */
+	private function createCriteria(string $entityAlias, int $ignoreConstraintTypes = 0, string $quickSearchStr = null) {
+		$criteria = $this->eiFrame->createCriteria($entityAlias, $ignoreConstraintTypes);
+		
+		if ($quickSearchStr !== null && null !== ($criteriaContraint = $this->eiFrame->getQuickSearchDefinition()
+				->buildCriteriaConstraint($quickSearchStr))) {
+			$criteriaContraint->applyToCriteria($criteria, $entityAlias);
+		}
+		
+		return $criteria;
 	}
 	
 	/**
@@ -299,13 +317,13 @@ class EiFrameUtil {
 	 * @param bool $readOnly
 	 * @return \rocket\ei\manage\gui\EiGui
 	 */
-	function lookupEiGuiFromRange(int $offset, int $num, bool $bulky, bool $readOnly, array $guiPropPaths = null) {
+	function lookupEiGuiFromRange(int $offset, int $num, bool $bulky, bool $readOnly, array $guiPropPaths = null, string $quickSearchStr = null) {
 		$eiGuiModelCache = $this->eiFrame->getManageState()->getEiGuiModelCache();
 		$eiGuiModel = $eiGuiModelCache->obtainEiGuiModel($this->eiFrame->getContextEiEngine()->getEiMask(), 
 				ViewMode::determine($bulky, $readOnly, false), $guiPropPaths, true);
 		$eiGui = new EiGui($eiGuiModel);
 			
-		$criteria = $this->eiFrame->createCriteria(NestedSetUtils::NODE_ALIAS, false);
+		$criteria = $this->createCriteria(NestedSetUtils::NODE_ALIAS, false, $quickSearchStr);
 		$criteria->select(NestedSetUtils::NODE_ALIAS);
 		$criteria->limit($offset, $num);
 		

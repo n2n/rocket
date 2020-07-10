@@ -35,9 +35,6 @@ use rocket\ei\EiException;
 use rocket\ei\EiPropPath;
 use n2n\util\type\TypeUtils;
 use rocket\ei\manage\frame\EiForkLink;
-use rocket\ei\manage\frame\EiFrameListener;
-use rocket\ei\manage\entry\EiEntry;
-use rocket\ei\manage\security\EiExecution;
 
 class EiFrameFactory {
 	private $eiEngine;
@@ -61,7 +58,7 @@ class EiFrameFactory {
 		$eiMask = $this->eiEngine->getEiMask();
 		
 		if (null !== ($filterSettingGroup = $eiMask->getFilterSettingGroup())) {
-			$filterDefinition = $this->eiEngine->createFramedFilterDefinition($eiFrame);
+			$filterDefinition = $eiFrame->getFilterDefinition(); // $this->eiEngine->createFramedFilterDefinition($eiFrame);
 			if ($filterDefinition !== null) {
 				$eiFrame->getBoundry()->addCriteriaConstraint(Boundry::TYPE_HARD_FILTER,
 						new FilterCriteriaConstraint($filterDefinition->createComparatorConstraint($filterSettingGroup)));
@@ -69,7 +66,7 @@ class EiFrameFactory {
 		}
 		
 		if (null !== ($sortSettingGroup = $eiMask->getSortSettingGroup())) {
-			$sortDefinition = $this->eiEngine->createFramedSortDefinition($eiFrame);
+			$sortDefinition = $eiFrame->getSortDefinition(); //$this->eiEngine->createFramedSortDefinition($eiFrame);
 			if ($sortDefinition !== null) {
 				$eiFrame->getBoundry()->addCriteriaConstraint(Boundry::TYPE_HARD_SORT, 
 						$sortDefinition->createCriteriaConstraint($sortSettingGroup));

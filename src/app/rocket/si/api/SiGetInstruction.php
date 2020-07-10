@@ -204,6 +204,7 @@ class SiGetInstruction {
 class SiPartialContentInstruction {
 	private $from = 0;
 	private $num = 0;
+	private $quickSearchStr = null;
 	
 	/**
 	 * @return int
@@ -232,6 +233,14 @@ class SiPartialContentInstruction {
 	function setNum(int $num) {
 		$this->num = $num;
 	}
+	
+	function getQuickSearchStr() {
+		return $this->quickSearchStr;	
+	}
+	
+	function setQuickSearchStr(?string $quickSearchStr) {
+		$this->quickSearchStr = $quickSearchStr;
+	}
 
 	static function createFromData(array $data) {
 		$ds = new DataSet($data);
@@ -240,6 +249,7 @@ class SiPartialContentInstruction {
 			$instruction = new SiPartialContentInstruction();
 			$instruction->setFrom($ds->reqInt('offset'));
 			$instruction->setNum($ds->reqInt('num'));
+			$instruction->setQuickSearchStr($ds->optString('quickSearchStr'));
 			return $instruction;
 		} catch (AttributesException $e) {
 			throw new \InvalidArgumentException(null, 0, $e);

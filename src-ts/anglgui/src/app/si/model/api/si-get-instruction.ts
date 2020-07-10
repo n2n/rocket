@@ -14,11 +14,12 @@ export class SiGetInstruction {
 	protected propIds: string[]|null = null;
 	protected typeIds: string[]|null = null;
 
-	static partialContent(bulky: boolean, readOnly: boolean, offset: number, num: number): SiGetInstruction {
+	static partialContent(bulky: boolean, readOnly: boolean, offset: number, num: number, quickSearchStr: string|null): SiGetInstruction {
 		const instruction = new SiGetInstruction(bulky, readOnly);
 		instruction.partialContentInstruction = {
 			offset,
-			num
+			num,
+			quickSearchStr
 		};
 		return instruction;
 	}
@@ -89,4 +90,5 @@ export class SiGetInstruction {
 export interface SiPartialContentInstruction {
 	offset: number;
 	num: number;
+	quickSearchStr: string|null;
 }
