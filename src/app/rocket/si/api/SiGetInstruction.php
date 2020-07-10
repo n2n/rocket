@@ -234,10 +234,16 @@ class SiPartialContentInstruction {
 		$this->num = $num;
 	}
 	
+	/**
+	 * @return string|null
+	 */
 	function getQuickSearchStr() {
 		return $this->quickSearchStr;	
 	}
 	
+	/**
+	 * @param string|null $quickSearchStr
+	 */
 	function setQuickSearchStr(?string $quickSearchStr) {
 		$this->quickSearchStr = $quickSearchStr;
 	}

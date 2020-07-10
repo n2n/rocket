@@ -3,7 +3,7 @@ import { SiGetRequest } from 'src/app/si/model/api/si-get-request';
 import { SiGetInstruction } from 'src/app/si/model/api/si-get-instruction';
 import { SiGetResponse } from 'src/app/si/model/api/si-get-response';
 import { SiGetResult } from 'src/app/si/model/api/si-get-result';
-import { fromEvent, Subscription } from 'rxjs';
+import { fromEvent, Subscription, Subject } from 'rxjs';
 import { SiEntryQualifier } from 'src/app/si/model/content/si-entry-qualifier';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiPage } from '../../model/si-page';
@@ -12,7 +12,7 @@ import { EntriesListModel } from '../entries-list-model';
 import { SiPageCollection } from '../../model/si-page-collection';
 import { StructurePage, StructurePageManager } from './structure-page-manager';
 import { SiService } from 'src/app/si/manage/si.service';
-import { skip } from 'rxjs/operators';
+import { skip, debounceTime, tap } from 'rxjs/operators';
 
 @Component({
 	selector: 'rocket-ui-list-zone-content',
@@ -27,6 +27,8 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 	public spm: StructurePageManager;
 	private subscription = new Subscription();
 	siPageCollection: SiPageCollection;
+	private quickSearchSubject = new Subject<string>();
+	private quickSearching = false;
 
 	constructor(private siService: SiService) {
 	}
@@ -36,19 +38,36 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 		this.spm = new StructurePageManager(this);
 
 		this.subscription.add(fromEvent<MouseEvent>(window, 'scroll').subscribe(() => {
+			if (this.quickSearching) {
+				return;
+			}
+
 			this.updateVisiblePages();
 		}));
 
-		const pc = this.model.getSiPageCollection();
+		this.subscription.add(this.siPageCollection.currentPageNo$.pipe(skip(1)).subscribe(() => {
+			if (this.quickSearching) {
+				return;
+			}
 
-		this.subscription.add(this.siPageCollection.currentPageNo$.pipe(skip(1)).subscribe((currentPageNo) => {
-			this.valCurrentPageNo(currentPageNo);
+			this.valCurrentPageNo();
 		}));
 
-		if (!pc.setup) {
-			const loadedPage = this.loadPage(1);
-			loadedPage.offsetHeight = 0;
-			this.siPageCollection.currentPageNo = 1;
+		this.quickSearchSubject
+				.pipe(tap(() => {
+					this.quickSearching = true;
+					this.siPageCollection.clear();
+				}))
+				.pipe(debounceTime(300))
+				.subscribe((str: string) => {
+					this.quickSearching = false;
+					if (this.siPageCollection.quickSearchStr === str) {
+						this.visibileLoadCurrentPage();
+					}
+				});
+
+		if (!this.siPageCollection.currentPageExists) {
+			this.visibileLoadCurrentPage();
 			return;
 		}
 
@@ -56,6 +75,11 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 		if (!page.visible) {
 			page.offsetHeight = 0;
 		}
+	}
+
+	private visibileLoadCurrentPage() {
+		const loadedPage = this.loadPage(this.siPageCollection.currentPageNo);
+		loadedPage.offsetHeight = 0;
 	}
 
 	ngOnDestroy() {
@@ -68,24 +92,52 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 	}
 
 	get loading(): boolean {
-		return !this.siPageCollection.getLastVisiblePage().loaded;
+		if (this.quickSearching) {
+			return true;
+		}
+
+		const lastVisiblePage = this.siPageCollection.getLastVisiblePage();
+		if (lastVisiblePage && !lastVisiblePage.loaded) {
+			return true;
+		}
+
+		return false;
 	}
 
 	getVisibleStructurePages(): StructurePage[] {
 		return this.spm.map(this.siPageCollection.getVisiblePages());
 	}
 
+	get quickSearchStr(): string {
+		return this.siPageCollection.quickSearchStr;
+	}
+
+	set quickSearchStr(quickSearchStr: string) {
+		if (quickSearchStr === '') {
+			quickSearchStr = null;
+		}
+
+		if (this.quickSearchStr === quickSearchStr) {
+			return;
+		}
+
+		this.siPageCollection.quickSearchStr = quickSearchStr;
+		this.quickSearchSubject.next(quickSearchStr);
+	}
+
 	private loadPage(pageNo: number): SiPage {
 		let siPage: SiPage;
 		if (this.siPageCollection.containsPageNo(pageNo)) {
 			siPage = this.siPageCollection.getPageByNo(pageNo);
+			siPage.entries = null;
 		} else {
 			siPage = new SiPage(pageNo, null, null);
 			this.siPageCollection.putPage(siPage);
 		}
 
 		const instruction = SiGetInstruction.partialContent(false, true,
-						(pageNo - 1) * this.siPageCollection.pageSize, this.siPageCollection.pageSize)
+						(pageNo - 1) * this.siPageCollection.pageSize, this.siPageCollection.pageSize,
+						this.quickSearchStr)
 				.setDeclaration(this.siPageCollection.declaration)
 				.setControlsIncluded(true);
 		const getRequest = new SiGetRequest(instruction);
@@ -159,15 +211,14 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 		return this.siPageCollection.declaration.getBasicTypeDeclaration().getSiProps();
 	}
 
-	private valCurrentPageNo(currentPageNo: number) {
+	private valCurrentPageNo() {
 		if (!this.siPageCollection.currentPageExists) {
 			this.siPageCollection.hideAllPages();
-			this.loadPage(currentPageNo).offsetHeight = 0;
-			this.siPageCollection.currentPageNo = currentPageNo;
+			this.loadPage(this.siPageCollection.currentPageNo).offsetHeight = 0;
 			return;
 		}
 
-		const page = this.siPageCollection.getPageByNo(currentPageNo);
+		const page = this.siPageCollection.getPageByNo(this.siPageCollection.currentPageNo);
 		if (page.visible) {
 			window.scrollTo(window.scrollX, page.offsetHeight);
 	// 			this.model.currentPageNo = currentPageNo
@@ -176,7 +227,6 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 
 		this.siPageCollection.hideAllPages();
 		page.offsetHeight = 0;
-		this.siPageCollection.currentPageNo = currentPageNo;
 	}
 
 	get selectable(): boolean {

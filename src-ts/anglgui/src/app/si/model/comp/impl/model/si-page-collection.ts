@@ -9,20 +9,21 @@ export class SiPageCollection {
 	private pagesMap = new Map<number, SiPage>();
 	private _size = 0;
 	private _currentPageNo$ = new BehaviorSubject<number>(1);
+	public quickSearchStr: string|null = null;
 
 	constructor(readonly pageSize: number) {
-	}
-
-	get setup(): boolean {
-		return !!(this.declaration && this.pagesMap.size > 0);
 	}
 
 	get pages(): SiPage[] {
 		return Array.from(this.pagesMap.values());
 	}
 
+	clear() {
+		this.pagesMap.clear();
+		this.size = 0;
+	}
+
 	get currentPageExists(): boolean {
-		throw new Error('exi');
 		return this.containsPageNo(this.currentPageNo);
 	}
 
@@ -43,8 +44,8 @@ export class SiPageCollection {
 			return;
 		}
 
-		if (currentPageNo > this.pagesNum) {
-			throw new IllegalSiStateError('CurrentPageNo too large: ' + currentPageNo);
+		if (currentPageNo > this.pagesNum || currentPageNo < 1) {
+			throw new IllegalSiStateError('CurrentPageNo too large or too small: ' + currentPageNo);
 		}
 
 		// if (!this.getPageByNo(currentPageNo).visible) {
@@ -55,15 +56,11 @@ export class SiPageCollection {
 	}
 
 	get size(): number {
-		return this._size as number;
+		return this._size;
 	}
 
 	set size(size: number) {
 		this._size = size;
-
-		if (!this.setup) {
-			return;
-		}
 
 		const pagesNum = this.pagesNum;
 
@@ -76,12 +73,6 @@ export class SiPageCollection {
 				this.pagesMap.delete(pageNo);
 			}
 		}
-	}
-
-	private ensureSetup() {
-		if (this.setup) { return; }
-
-		throw new IllegalSiStateError('ListUiZone not set up.');
 	}
 
 	putPage(page: SiPage) {
