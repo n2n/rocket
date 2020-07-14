@@ -16,6 +16,10 @@ export class StructurePage {
 	}
 
 	clear() {
+		if (!this.fieldUiStructuresMap) {
+			return;
+		}
+
 		for (const [, uiStructures] of this.fieldUiStructuresMap) {
 			for (const uiStructure of uiStructures) {
 				uiStructure.dispose();
@@ -44,10 +48,8 @@ export class StructurePageManager {
 		const structurePages = new Array<StructurePage>();
 
 		for (const siPage of siPages) {
-			let structurePage: StructurePage;
-			if (this.pagesMap.has(siPage.num)) {
-				structurePage = this.pagesMap.get(siPage.num);
-			} else {
+			let structurePage = this.getPage(siPage);
+			if (!structurePage) {
 				structurePage = this.createPage(siPage);
 			}
 
@@ -63,6 +65,17 @@ export class StructurePageManager {
 			structurePage.clear();
 		}
 		this.pagesMap.clear();
+	}
+
+	private getPage(siPage: SiPage): StructurePage|null {
+		const structurePage = this.pagesMap.get(siPage.num);
+		if (!structurePage || structurePage.siPage === siPage) {
+			return structurePage;
+		}
+
+		this.pagesMap.delete(siPage.num);
+		structurePage.clear();
+		return null;
 	}
 
 	private createPage(siPage: SiPage): StructurePage {

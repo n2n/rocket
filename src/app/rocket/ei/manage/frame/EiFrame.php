@@ -233,7 +233,8 @@ class EiFrame {
 			return $this->filterDefinition;
 		}
 		
-		return $this->filterDefinition = $this->eiFrame->getContextEiEngine()->createFramedFilterDefinition($this->eiFrame);
+		return $this->filterDefinition = $this->contextEiEngine
+				->createFramedFilterDefinition($this);
 	}
 	
 	/**
@@ -251,7 +252,8 @@ class EiFrame {
 			return $this->sortDefinition;
 		}
 		
-		return $this->sortDefinition = $this->eiFrame->getContextEiEngine()->createFramedSortDefinition($this->eiFrame);
+		return $this->sortDefinition = $this->contextEiEngine
+				->createFramedSortDefinition($this);
 	}
 	
 	/**
@@ -270,7 +272,8 @@ class EiFrame {
 			return $this->quickSearchDefinition;
 		}
 		
-		return $this->quickSearchDefinition = $this->eiFrame->getContextEiEngine()->createFramedQuickSearchDefinition($this->eiFrame);
+		return $this->quickSearchDefinition = $this->contextEiEngine
+				->createFramedQuickSearchDefinition($this);
 	}
 	
 	/**

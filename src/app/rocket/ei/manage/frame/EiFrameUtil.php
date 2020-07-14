@@ -47,6 +47,7 @@ use rocket\si\meta\SiDeclaration;
 use n2n\util\ex\IllegalStateException;
 use n2n\util\type\ArgUtils;
 use rocket\ei\manage\gui\EiGui;
+use n2n\core\N2N;
 
 class EiFrameUtil {
 	private $eiFrame;
@@ -288,8 +289,8 @@ class EiFrameUtil {
 	 * @param string $quickSearchStr
 	 * @return int
 	 */
-	function count(int $ignoreConstraintTypes = 0, string $quickSearchStr = null) {
-		return $this->createCriteria('e', $ignoreConstraintTypes, $quickSearchStr)
+	function count(string $quickSearchStr = null) {
+		return $this->createCriteria('e', 0, $quickSearchStr)
 				->select('COUNT(1)')->toQuery()->fetchSingle();
 	}
 	
@@ -304,7 +305,7 @@ class EiFrameUtil {
 		
 		if ($quickSearchStr !== null && null !== ($criteriaContraint = $this->eiFrame->getQuickSearchDefinition()
 				->buildCriteriaConstraint($quickSearchStr))) {
-			$criteriaContraint->applyToCriteria($criteria, $entityAlias);
+			$criteriaContraint->applyToCriteria($criteria, CrIt::p($entityAlias));
 		}
 		
 		return $criteria;
@@ -327,15 +328,12 @@ class EiFrameUtil {
 		$criteria->select(NestedSetUtils::NODE_ALIAS);
 		$criteria->limit($offset, $num);
 		
-		
-		
 		$eiType = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType();
 		if (null !== ($nestedSetStrategy = $eiType->getNestedSetStrategy())) {
 			$this->treeLookup($eiGui, $criteria, $eiType->getEntityModel()->getClass(), $nestedSetStrategy);
 		} else {
 			$this->simpleLookup($eiGui, $criteria);
 		}
-			
 		return $eiGui;		
 	}
 		

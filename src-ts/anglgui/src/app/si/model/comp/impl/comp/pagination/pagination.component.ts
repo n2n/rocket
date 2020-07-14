@@ -30,11 +30,11 @@ export class PaginationComponent implements OnInit {
 		this.subscription.unsubscribe();
 	}
 
-	get visible() {
-		return this.siPageCollection.setup && this.lastPageNo > 1;
+	get visible(): boolean {
+		return this.lastPageNo > 1;
 	}
 
-	get internalValue() {
+	get internalValue(): number {
 		return this._internalValue;
 	}
 
