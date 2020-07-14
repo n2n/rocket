@@ -41,8 +41,8 @@ class CommonEiGuiSiFactory implements EiGuiSiFactory {
 			$label = null;
 			$children = [];
 			if (!$displayItem->hasDisplayStructure()) {
-				$guiPropAssembly = $this->eiGuiFrame->getGuiPropAssemblyByGuiPropPath($displayItem->getGuiPropPath());
-				$propId = (string) $guiPropAssembly->getGuiPropPath();
+				$guiPropAssembly = $this->eiGuiFrame->getGuiPropAssemblyByDefPropPath($displayItem->getDefPropPath());
+				$propId = (string) $guiPropAssembly->getDefPropPath();
 			} else {
 				if (null !== ($labelLstr = $displayItem->getLabelLstr())) {
 					$label = $labelLstr->t($this->eiGuiFrame->getEiFrame()->getN2nContext()->getN2nLocale());
@@ -109,8 +109,8 @@ class CommonEiGuiSiFactory implements EiGuiSiFactory {
 	
 // 	private function createDefaultDisplayStructure($viewMode) {
 // 		$displayStructure = new DisplayStructure();
-// 		foreach ($this->eiGuiFrame->getGuiDefinition()->filterGuiPropPaths($viewMode) as $eiPropPath) {
-// 			$displayStructure->addGuiPropPath($eiPropPath);
+// 		foreach ($this->eiGuiFrame->getGuiDefinition()->filterDefPropPaths($viewMode) as $eiPropPath) {
+// 			$displayStructure->addDefPropPath($eiPropPath);
 // 		}
 // 		return $displayStructure;
 // 	}

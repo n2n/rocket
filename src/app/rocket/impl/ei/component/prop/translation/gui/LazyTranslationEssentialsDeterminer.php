@@ -53,7 +53,7 @@ class LazyTranslationEssentialsDeterminer {
 		$this->translationConfig = $translationConfig;
 	}
 	
-	function getGuiPropPath() {
+	function getDefPropPath() {
 		return $this->eiu->guiField()->getPath();
 	}
 	

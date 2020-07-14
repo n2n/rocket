@@ -24,7 +24,7 @@ namespace rocket\ei\util\gui;
 use rocket\ei\manage\gui\EiEntryGui;
 use n2n\reflection\magic\MagicMethodInvoker;
 use rocket\ei\manage\gui\EiEntryGuiListener;
-use rocket\ei\manage\gui\field\GuiPropPath;
+use rocket\ei\manage\DefPropPath;
 use rocket\ei\manage\gui\GuiException;
 use n2n\web\dispatch\mag\MagWrapper;
 use rocket\ei\manage\gui\EiFieldAbstraction;
@@ -72,22 +72,22 @@ class EiuEntryGui {
 	
 	/**
 	 * @see EiEntryGui::getGuiIdsPaths()
-	 * @return \rocket\ei\manage\gui\field\GuiPropPath[]
+	 * @return \rocket\ei\manage\DefPropPath[]
 	 */
-	function getGuiPropPaths() {
-		return $this->eiEntryGui->getGuiFieldGuiPropPaths();	
+	function getDefPropPaths() {
+		return $this->eiEntryGui->getGuiFieldDefPropPaths();	
 	}
 	
 	/**
-	 * @param GuiPropPath $guiPropPath
+	 * @param DefPropPath $defPropPath
 	 * @return bool
 	 */
-	function containsGuiPropPath(GuiPropPath $guiPropPath) {
-		return $this->eiEntryGui->containsDisplayable($guiPropPath);
+	function containsDefPropPath(DefPropPath $defPropPath) {
+		return $this->eiEntryGui->containsDisplayable($defPropPath);
 	}
 	
 	/**
-	 * @param GuiPropPath|string $eiPropPath
+	 * @param DefPropPath|string $eiPropPath
 	 * @param bool $required
 	 * @throws GuiException
 	 * @return string|null
@@ -126,21 +126,21 @@ class EiuEntryGui {
 	}
 	
 // 	/**
-// 	 * @param GuiPropPath|string $guiPropPath
+// 	 * @param DefPropPath|string $defPropPath
 // 	 * @return SiField[]
 // 	 */
-// 	function getSiField($guiPropPath) {
-// 		$guiPropPath = GuiPropPath::create($guiPropPath);
-// 		return $this->eiEntryGui->getGuiFieldByGuiPropPath($guiPropPath)->getSiField();
+// 	function getSiField($defPropPath) {
+// 		$defPropPath = DefPropPath::create($defPropPath);
+// 		return $this->eiEntryGui->getGuiFieldByDefPropPath($defPropPath)->getSiField();
 // 	}
 	
 // 	/**
-// 	 * @param GuiPropPath|string $guiPropPath
+// 	 * @param DefPropPath|string $defPropPath
 // 	 * @return SiField[]
 // 	 */
-// 	function getContextSiFields($guiPropPath) {
-// 		$guiPropPath = GuiPropPath::create($guiPropPath);
-// 		return $this->eiEntryGui->getGuiFieldByGuiPropPath($guiPropPath)->getContextSiFields();
+// 	function getContextSiFields($defPropPath) {
+// 		$defPropPath = DefPropPath::create($defPropPath);
+// 		return $this->eiEntryGui->getGuiFieldByDefPropPath($defPropPath)->getContextSiFields();
 // 	}
 	
 	/**
@@ -190,32 +190,32 @@ class EiuEntryGui {
 	}
 	
 	/**
-	 * @param GuiPropPath|string $eiPropPath
+	 * @param DefPropPath|string $eiPropPath
 	 * @param bool $required
 	 * @throws GuiException
 	 * @return MagWrapper
 	 */
-	function getMagWrapper($guiPropPath, bool $required = false) {
+	function getMagWrapper($defPropPath, bool $required = false) {
 		$magWrapper = null;
 		
 		try {
-			$magAssembly = $this->eiEntryGui->getGuiFieldAssembly(GuiPropPath::create($guiPropPath))->getMagAssembly();
+			$magAssembly = $this->eiEntryGui->getGuiFieldAssembly(DefPropPath::create($defPropPath))->getMagAssembly();
 			if ($magAssembly !== null) {
 				return $magAssembly->getMagWrapper();
 			}
 			
-			throw new GuiException('No GuiField with GuiPropPath \'' . $guiPropPath . '\' is not editable.');
+			throw new GuiException('No GuiField with DefPropPath \'' . $defPropPath . '\' is not editable.');
 		} catch (GuiException $e) {
 			if ($required) throw $e;
 			return null;
 		}
 	}
 	
-	function getSubMagWrappers($prefixGuiPropPath, bool $checkOnEiPropPathLevel = true) {
-		$prefixGuiPropPath = GuiPropPath::create($prefixGuiPropPath);
+	function getSubMagWrappers($prefixDefPropPath, bool $checkOnEiPropPathLevel = true) {
+		$prefixDefPropPath = DefPropPath::create($prefixDefPropPath);
 		
 		$magWrappers = [];
-		foreach ($this->eiEntryGui->filterGuiFieldAssemblies($prefixGuiPropPath, $checkOnEiPropPathLevel)
+		foreach ($this->eiEntryGui->filterGuiFieldAssemblies($prefixDefPropPath, $checkOnEiPropPathLevel)
 				as $key => $guiFieldAssembly) {
 			if (null !== ($magAssembly = $guiFieldAssembly->getMagAssembly())) {
 				$magWrappers[$key] = $magAssembly->getMagWrapper();	
@@ -226,13 +226,13 @@ class EiuEntryGui {
 	}
 	
 	/**
-	 * @param GuiPropPath|string $eiPropPath
+	 * @param DefPropPath|string $eiPropPath
 	 * @param bool $required
 	 * @throws GuiException
 	 * @return EiFieldAbstraction
 	 */
-	function getEiFieldAbstraction($guiPropPath, bool $required = false) {
-		return $this->eiuEntry->getEiFieldAbstraction($guiPropPath, $required);
+	function getEiFieldAbstraction($defPropPath, bool $required = false) {
+		return $this->eiuEntry->getEiFieldAbstraction($defPropPath, $required);
 	}
 	
 // 	/**
@@ -281,11 +281,11 @@ class EiuEntryGui {
 	}
 	
 	/**
-	 * @param GuiPropPath|string $guiPropPath
+	 * @param DefPropPath|string $defPropPath
 	 * @return \rocket\ei\util\entry\EiuField
 	 */
-	function field($guiPropPath) {
-		return new EiuGuiField(GuiPropPath::create($guiPropPath), $this, $this->eiuAnalyst);
+	function field($defPropPath) {
+		return new EiuGuiField(DefPropPath::create($defPropPath), $this, $this->eiuAnalyst);
 	}
 	
 	/**

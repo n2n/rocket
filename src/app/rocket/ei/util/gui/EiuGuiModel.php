@@ -10,7 +10,7 @@ use rocket\ei\util\entry\EiuEntry;
 use rocket\ei\util\EiuPerimeterException;
 use rocket\ei\manage\gui\EiGuiUtil;
 use rocket\ei\manage\gui\ViewMode;
-use rocket\ei\manage\gui\field\GuiPropPath;
+use rocket\ei\manage\DefPropPath;
 use rocket\ei\manage\gui\EiGui;
 
 class EiuGuiModel {
@@ -84,13 +84,13 @@ class EiuGuiModel {
 	/**
 	 * @return \rocket\ei\util\gui\EiuGui
 	 */
-	function copy(bool $bulky, bool $readOnly, array $guiPropPathsArg = null, bool $guiStructureDeclarationsRequired = true) {
+	function copy(bool $bulky, bool $readOnly, array $defPropPathsArg = null, bool $guiStructureDeclarationsRequired = true) {
 		$viewMode = ViewMode::determine($bulky, $readOnly, ViewMode::isAdd($this->eiGuiModel->getViewMode()));
 		$cache = $this->eiuAnalyst->getManageState()->getEiGuiModelCache();
-		$guiPropPaths = GuiPropPath::buildArray($guiPropPathsArg);
+		$defPropPaths = DefPropPath::buildArray($defPropPathsArg);
 		
 		$newEiGuiModel = $cache->createMultiEiGuiModel($this->eiGuiModel->getContextEiMask(), $viewMode, 
-				$this->eiGuiModel->getEiTypes(), $guiPropPaths);
+				$this->eiGuiModel->getEiTypes(), $defPropPaths);
 		
 		$eiFrame = $this->eiuAnalyst->getEiFrame(true);
 		foreach ($this->eiGuiModel->getEiEntryGuis() as $eiEntryGui) {

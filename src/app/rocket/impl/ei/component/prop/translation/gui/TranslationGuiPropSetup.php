@@ -28,7 +28,7 @@ use rocket\impl\ei\component\prop\translation\conf\TranslationConfig;
 use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\gui\field\GuiField;
-use rocket\ei\manage\gui\field\GuiPropPath;
+use rocket\ei\manage\DefPropPath;
 use rocket\ei\EiCommandPath;
 
 class TranslationGuiPropSetup implements GuiPropSetup, GuiFieldAssembler {
@@ -55,8 +55,8 @@ class TranslationGuiPropSetup implements GuiPropSetup, GuiFieldAssembler {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiPropSetup::getForkedDisplayDefinition()
 	 */
-	function getForkedDisplayDefinition(GuiPropPath $guiPropPath): ?DisplayDefinition {
-		return $this->targetEiuGuiFrame->getDisplayDefinition($guiPropPath);
+	function getForkedDisplayDefinition(DefPropPath $defPropPath): ?DisplayDefinition {
+		return $this->targetEiuGuiFrame->getDisplayDefinition($defPropPath);
 	}
 	
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {

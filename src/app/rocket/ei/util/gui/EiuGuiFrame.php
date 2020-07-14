@@ -2,7 +2,7 @@
 namespace rocket\ei\util\gui;
 
 use rocket\ei\manage\gui\ViewMode;
-use rocket\ei\manage\gui\field\GuiPropPath;
+use rocket\ei\manage\DefPropPath;
 use rocket\ei\manage\gui\EiGuiSiFactory;
 use rocket\ei\manage\gui\GuiException;
 use rocket\ei\manage\gui\EiGuiFrame;
@@ -77,21 +77,21 @@ class EiuGuiFrame {
 	}
 	
 	/**
-	 * @param GuiPropPath|string $eiPropPath
+	 * @param DefPropPath|string $eiPropPath
 	 * @param bool $required
 	 * @return string|null
 	 */
-	public function getPropLabel($guiPropPath, N2nLocale $n2nLocale = null, bool $required = false) {
-		$guiPropPath = GuiPropPath::create($guiPropPath);
+	public function getPropLabel($defPropPath, N2nLocale $n2nLocale = null, bool $required = false) {
+		$defPropPath = DefPropPath::create($defPropPath);
 		if ($n2nLocale === null) {
 			$n2nLocale = $this->eiuAnalyst->getN2nContext()->getN2nLocale();
 		}
 		
-// 		if (null !== ($displayItem = $this->getDisplayItemByGuiPropPath($eiPropPath))) {
+// 		if (null !== ($displayItem = $this->getDisplayItemByDefPropPath($eiPropPath))) {
 // 			return $displayItem->translateLabel($n2nLocale);
 // 		}
 		
-		if (null !== ($guiProp = $this->getGuiPropWrapperByGuiPropPath($guiPropPath, $required))) {
+		if (null !== ($guiProp = $this->getGuiPropWrapperByDefPropPath($defPropPath, $required))) {
 			return $guiProp->getDisplayLabel();
 		}
 		
@@ -99,12 +99,12 @@ class EiuGuiFrame {
 	}
 	
 	/**
-	 * @param GuiPropPath|string $guiPropPath
+	 * @param DefPropPath|string $defPropPath
 	 * @param bool $required
 	 * @return \rocket\ei\util\spec\EiuProp
 	 */
-	function getProp($guiPropPath, bool $required = true) {
-		return new EiuProp($this->getGuiPropWrapperByGuiPropPath($guiPropPath, $required), null, $this->eiuAnalyst);
+	function getProp($defPropPath, bool $required = true) {
+		return new EiuProp($this->getGuiPropWrapperByDefPropPath($defPropPath, $required), null, $this->eiuAnalyst);
 	}
 	
 	/**
@@ -114,8 +114,8 @@ class EiuGuiFrame {
 		return $this->eiGuiFrame->getEiPropPaths();
 	}
 	
-	function getGuiPropPaths() {
-		return $this->eiGuiFrame->getGuiPropPaths();
+	function getDefPropPaths() {
+		return $this->eiGuiFrame->getDefPropPaths();
 	}
 	
 // 	function newEntryGui($eiEntryArg) {
@@ -127,46 +127,46 @@ class EiuGuiFrame {
 // 	}
 	
 	/**
-	 * @param GuiPropPath|string $prefixGuiPropPath
-	 * @return GuiPropPath[]
+	 * @param DefPropPath|string $prefixDefPropPath
+	 * @return DefPropPath[]
 	 */
-	function getForkedGuiPropPaths($prefixGuiPropPath) {
-		$prefixGuiPropPath = GuiPropPath::create($prefixGuiPropPath);
-		$size = $prefixGuiPropPath->size();
+	function getForkedDefPropPaths($prefixDefPropPath) {
+		$prefixDefPropPath = DefPropPath::create($prefixDefPropPath);
+		$size = $prefixDefPropPath->size();
 		
-		$forkedGuiPropPaths = [];
-		foreach ($this->eiGuiFrame->filterGuiPropPaths($prefixGuiPropPath) as $guiPropPath) {
-			$forkedGuiPropPaths[] = $guiPropPath->subGuiPropPath($size);
+		$forkedDefPropPaths = [];
+		foreach ($this->eiGuiFrame->filterDefPropPaths($prefixDefPropPath) as $defPropPath) {
+			$forkedDefPropPaths[] = $defPropPath->subDefPropPath($size);
 		}
-		return $forkedGuiPropPaths;
+		return $forkedDefPropPaths;
 	}
 	
 	/**
-	 * @param GuiPropPath|string $prefixGuiPropPath
+	 * @param DefPropPath|string $prefixDefPropPath
 	 * @return \rocket\ei\EiPropPath[]
 	 */
-	function getForkedEiPropPaths($prefixGuiPropPath) {
-		$prefixGuiPropPath = GuiPropPath::create($prefixGuiPropPath);
+	function getForkedEiPropPaths($prefixDefPropPath) {
+		$prefixDefPropPath = DefPropPath::create($prefixDefPropPath);
 		
 		$forkedEiPropPaths = [];
-		foreach ($this->getForkedGuiPropPaths($prefixGuiPropPath) as $guiPropPath) {
-			$forkedEiPropPaths[] = $guiPropPath->getFirstEiPropPath();
+		foreach ($this->getForkedDefPropPaths($prefixDefPropPath) as $defPropPath) {
+			$forkedEiPropPaths[] = $defPropPath->getFirstEiPropPath();
 		}
 		return $forkedEiPropPaths;
 	}
 	
 	/**
-	 * @param GuiPropPath|string $eiPropPath
+	 * @param DefPropPath|string $eiPropPath
 	 * @param bool $required
 	 * @throws \InvalidArgumentException
 	 * @throws GuiException
 	 * @return \rocket\ei\manage\gui\GuiProp|null
 	 */
-	private function getGuiPropWrapperByGuiPropPath($guiPropPath, bool $required = false) {
-		$guiPropPath = GuiPropPath::create($guiPropPath);
+	private function getGuiPropWrapperByDefPropPath($defPropPath, bool $required = false) {
+		$defPropPath = DefPropPath::create($defPropPath);
 		
 		try {
-			return $this->eiGuiFrame->getGuiDefinition()->getGuiPropWrapperByGuiPropPath($guiPropPath);
+			return $this->eiGuiFrame->getGuiDefinition()->getGuiPropWrapperByDefPropPath($defPropPath);
 		} catch (GuiException $e) {
 			if (!$required) return null;
 			throw $e;
@@ -174,31 +174,31 @@ class EiuGuiFrame {
 	}
 	
 	/**
-	 * @param GuiPropPath|string $guiPropPath
+	 * @param DefPropPath|string $defPropPath
 	 * @return \rocket\ei\manage\gui\DisplayDefinition|null
 	 */
-	function getDisplayDefinition($guiPropPath, bool $required = false) {
-		$guiPropPath = GuiPropPath::create($guiPropPath);
+	function getDisplayDefinition($defPropPath, bool $required = false) {
+		$defPropPath = DefPropPath::create($defPropPath);
 		
-		if (!$required && !$this->eiGuiFrame->containsDisplayDefintion($guiPropPath)) {
+		if (!$required && !$this->eiGuiFrame->containsDisplayDefintion($defPropPath)) {
 			return null;
 		}
 		
-		return $this->eiGuiFrame->getDisplayDefintion($guiPropPath);
+		return $this->eiGuiFrame->getDisplayDefintion($defPropPath);
 	}
 		
 // 	/**
-// 	 * @param GuiPropPath|string $eiPropPath
+// 	 * @param DefPropPath|string $eiPropPath
 // 	 * @param bool $required
 // 	 * @throws \InvalidArgumentException
 // 	 * @return \rocket\ei\mask\model\DisplayItem
 // 	 */
-// 	public function getDisplayItemByGuiPropPath($eiPropPath) {
-// 		$eiPropPath = GuiPropPath::create($eiPropPath);
+// 	public function getDisplayItemByDefPropPath($eiPropPath) {
+// 		$eiPropPath = DefPropPath::create($eiPropPath);
 		
 // 		$displayStructure = $this->eiGuiFrame->getEiGuiSiFactory()->getDisplayStructure();
 // 		if ($displayStructure !== null) {
-// 			return $displayStructure->getDisplayItemByGuiPropPath($eiPropPath);
+// 			return $displayStructure->getDisplayItemByDefPropPath($eiPropPath);
 // 		}
 // 		return null;
 // 	}
@@ -232,10 +232,10 @@ class EiuGuiFrame {
 		return new EiuControlFactory($this, $eiCommand, $this->eiuAnalyst);
 	}
 	
-// 	public function initWithUiCallback(\Closure $viewFactory, array $guiPropPaths) {
-// 		$guiPropPaths = GuiPropPath::createArray($guiPropPaths);
+// 	public function initWithUiCallback(\Closure $viewFactory, array $defPropPaths) {
+// 		$defPropPaths = DefPropPath::createArray($defPropPaths);
 		
-// 		$this->eiGuiFrame->init(new CustomGuiViewFactory($viewFactory), $guiPropPaths);
+// 		$this->eiGuiFrame->init(new CustomGuiViewFactory($viewFactory), $defPropPaths);
 // 	}
 
 	/**

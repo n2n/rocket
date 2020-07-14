@@ -23,7 +23,7 @@ namespace rocket\impl\ei\component\prop\relation;
 
 use rocket\ei\manage\gui\GuiPropFork;
 use rocket\ei\manage\gui\field\GuiFieldFork;
-use rocket\ei\manage\gui\field\GuiPropPath;
+use rocket\ei\manage\DefPropPath;
 use rocket\ei\manage\gui\EiEntryGuiAssembler;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\EiObject;
@@ -135,7 +135,7 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropF
 		return LiveEiObject::create($this->eiPropRelation->getTargetEiType(), $targetObject);
 	}
 	
-	public function determineEiFieldAbstraction(Eiu $eiu, GuiPropPath $guiPropPath): EiFieldAbstraction {
+	public function determineEiFieldAbstraction(Eiu $eiu, DefPropPath $defPropPath): EiFieldAbstraction {
 		$eiEntry = $eiu->entry()->getEiEntry();
 		
 		$targetRelationEntry = $eiEntry->getValue(EiPropPath::from($this->eiPropRelation->getRelationEiProp()));
@@ -144,7 +144,7 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropF
 		}
 	
 		return $this->getForkedGuiDefinition()->determineEiFieldAbstraction($eiu->getN2nContext(), 
-				$targetRelationEntry->getEiEntry(), $guiPropPath);
+				$targetRelationEntry->getEiEntry(), $defPropPath);
 	}
 	
 	/**
@@ -179,8 +179,8 @@ class OneToOneGuiFieldFork implements GuiFieldFork {
 		$this->targetEiuEntryGuiAssembler = $targetEiuEntryGuiAssembler;
 	}
 	
-	public function assembleGuiField(GuiPropPath $guiPropPath): GuiField {
-		return $this->targetEiuEntryGuiAssembler->assembleGuiField($guiPropPath);
+	public function assembleGuiField(DefPropPath $defPropPath): GuiField {
+		return $this->targetEiuEntryGuiAssembler->assembleGuiField($defPropPath);
 	}
 	
 	public function isReadOnly(): bool {

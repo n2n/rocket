@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\translation\model;
 
-use rocket\ei\manage\gui\field\GuiPropPath;
+use rocket\ei\manage\DefPropPath;
 use rocket\ei\manage\gui\GuiDefinition;
 use n2n\l10n\N2nLocale;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
@@ -83,12 +83,12 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 		}
 	}
 	
-	private function buildSrcLoadConfig(GuiPropPath $guiPropPath) {
+	private function buildSrcLoadConfig(DefPropPath $defPropPath) {
 		$loadUrls = array();
 		$copyUrls = array();
 		
 		if ($this->srcUrl === null) {
-			return new SrcLoadConfig($guiPropPath, $loadUrls, $copyUrls);
+			return new SrcLoadConfig($defPropPath, $loadUrls, $copyUrls);
 		}
 		
 		foreach ($this->targetRelationEntries as $n2nLocaleId => $targetRelationEntry) {
@@ -102,7 +102,7 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 					array('fromPid' => ($targetRelationEntry->getPid())));
 		}
 		
-		return new SrcLoadConfig($guiPropPath, $loadUrls, $copyUrls);
+		return new SrcLoadConfig($defPropPath, $loadUrls, $copyUrls);
 	}
 	
 	private function setupTranslationForm() {
@@ -131,9 +131,9 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 		return $this->markClassKey = HtmlUtils::buildUniqueId();
 	}
 	
-	public function assembleGuiField(GuiPropPath $guiPropPath): ?GuiField {
+	public function assembleGuiField(DefPropPath $defPropPath): ?GuiField {
 		
-		$guiProp = $this->guiDefinition->getGuiPropByGuiPropPath($guiPropPath);
+		$guiProp = $this->guiDefinition->getGuiPropByDefPropPath($defPropPath);
 
 // 		$validationResult = new EiFieldValidationResult();
 		
@@ -144,16 +144,16 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 		
 		$mandatory = false;
 		foreach ($this->eiuEntryGuiAssemblers as $n2nLocaleId => $guiFieldAssembler) {
-			$result = $guiFieldAssembler->assembleGuiField($guiPropPath);
+			$result = $guiFieldAssembler->assembleGuiField($defPropPath);
 			if ($result === null) continue;
 			
 			$eiuEntry = $guiFieldAssembler->getEiuEntryGui()->entry();
 			$validationResult = null;
 			if ($eiuEntry->getEiEntry()->hasValidationResult()) {
 				$validationResult = $eiuEntry->getEiEntry()->getValidationResult()
-						->getEiFieldValidationResult($guiPropPath);
+						->getEiFieldValidationResult($defPropPath);
 			} else {
-				$validationResult = new EiFieldValidationResult($guiPropPath->getFirstEiPropPath());
+				$validationResult = new EiFieldValidationResult($defPropPath->getFirstEiPropPath());
 			}
 
 			
@@ -166,7 +166,7 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 			if ($guiFieldAssembler->getEiuEntryGui()->isReadOnly()) continue;
 			
 			if ($translationMag === null) {
-				$translationMag = new TranslationMag($this->guiDefinition->getGuiPropByGuiPropPath($guiPropPath)->getDisplayLabelLstr(), $this->getMarkClassKey());
+				$translationMag = new TranslationMag($this->guiDefinition->getGuiPropByDefPropPath($defPropPath)->getDisplayLabelLstr(), $this->getMarkClassKey());
 			}
 			
 			if (null !== ($magAssembly = $result->getMagAssembly())) {
@@ -192,11 +192,11 @@ class TranslationGuiFieldFork implements GuiFieldFork, GuiFieldForkEditable {
 			return new GuiFieldAssembly(/*$guiProp, */$translationDisplayable);
 		}
 		
-		$translationMag->setSrcLoadConfig($this->buildSrcLoadConfig($guiPropPath));
+		$translationMag->setSrcLoadConfig($this->buildSrcLoadConfig($defPropPath));
 		
 		$this->setupTranslationForm();
 				
-		$magInfo = $this->translationForm->registerMag($guiPropPath->__toString(), $translationMag);
+		$magInfo = $this->translationForm->registerMag($defPropPath->__toString(), $translationMag);
 		return new GuiFieldAssembly(/*$guiProp, */$translationDisplayable,  
 				new MagAssembly($mandatory, $magInfo['propertyPath'], $magInfo['magWrapper']),
 						new TranslationEditable($translationMag, $guiFieldEditables));
@@ -281,16 +281,16 @@ class EmptyDisplayable implements GuiFieldDisplayable {
 } 
 
 class SrcLoadConfig {
-	private $guiPropPath;
+	private $defPropPath;
 	private $loadUrls;
 	private $copyUrls;
 	
 	/**
-	 * @param GuiPropPath $guiPropPath
+	 * @param DefPropPath $defPropPath
 	 * @param Url[] $url
 	 */
-	public function __construct(GuiPropPath $guiPropPath, array $loadUrls, array $copyUrls) {
-		$this->guiPropPath = $guiPropPath;
+	public function __construct(DefPropPath $defPropPath, array $loadUrls, array $copyUrls) {
+		$this->defPropPath = $defPropPath;
 		$this->loadUrls = $loadUrls;
 		$this->copyUrls = $copyUrls;
 	}
@@ -313,6 +313,6 @@ class SrcLoadConfig {
 					'url' => (string) $url,
 					'n2nLocaleId' => $n2nLocaleId);
 		}
-		return array('loadUrlDefs' => $loadUrlDefs, 'copyUrlDefs' => $copyUrlDefs, 'guiPropPath' => (string) $this->guiPropPath);
+		return array('loadUrlDefs' => $loadUrlDefs, 'copyUrlDefs' => $copyUrlDefs, 'defPropPath' => (string) $this->defPropPath);
 	}
 }

@@ -21,23 +21,23 @@
  */
 namespace rocket\ei\mask\model;
 
-use rocket\ei\manage\gui\field\GuiPropPath;
+use rocket\ei\manage\DefPropPath;
 use n2n\util\type\ArgUtils;
 use rocket\ei\manage\gui\EiGuiFrame;
 use rocket\si\meta\SiStructureType;
-use rocket\ei\manage\gui\UnresolvableGuiPropPathException;
+use rocket\ei\manage\gui\UnresolvableDefPropPathException;
 
 class DisplayStructure {
 	private $displayItems = array();
 	
 	/**
-	 * @param GuiPropPath $guiPropPath
+	 * @param DefPropPath $defPropPath
 	 * @param string $type
 	 * @param string $label
 	 * @param string $moduleNamespace
 	 */
-	public function addGuiPropPath(GuiPropPath $guiPropPath, string $type = null) {
-		$this->displayItems[] = DisplayItem::create($guiPropPath, $type);
+	public function addDefPropPath(DefPropPath $defPropPath, string $type = null) {
+		$this->displayItems[] = DisplayItem::create($defPropPath, $type);
 	}
 	
 	/**
@@ -90,16 +90,16 @@ class DisplayStructure {
 // 		return false;
 // 	}
 	
-	public function getAllGuiPropPaths() {
-		$guiPropPaths = array();
+	public function getAllDefPropPaths() {
+		$defPropPaths = array();
 		foreach ($this->displayItems as $displayItem) {
 			if ($displayItem->hasDisplayStructure()) {
-				$guiPropPaths = array_merge($guiPropPaths, $displayItem->getDisplayStructure()->getAllGuiPropPaths());
+				$defPropPaths = array_merge($defPropPaths, $displayItem->getDisplayStructure()->getAllDefPropPaths());
 			} else{
-				$guiPropPaths[] = $displayItem->getGuiPropPath();
+				$defPropPaths[] = $displayItem->getDefPropPath();
 			}
 		}
-		return $guiPropPaths;
+		return $defPropPaths;
 	}
 		
 	/**
@@ -169,12 +169,12 @@ class DisplayStructure {
 			
 			if (!$displayItem->hasDisplayStructure()) {
 				if ($groupType == SiStructureType::AUTONOMIC_GROUP) {
-					$autonomicDs->addGuiPropPath($displayItem->getGuiPropPath(), SiStructureType::SIMPLE_GROUP, $displayItem->getLabel(), 
+					$autonomicDs->addDefPropPath($displayItem->getDefPropPath(), SiStructureType::SIMPLE_GROUP, $displayItem->getLabel(), 
 							$displayItem->getModuleNamespace());
 				} else if ($displayItem->getSiStructureType() == $groupType) {
 					$ds->displayItems[] = $displayItem;
 				} else {
-					$ds->addGuiPropPath($displayItem->getGuiPropPath(), $groupType, $displayItem->getLabel(), $displayItem->getModuleNamespace());	
+					$ds->addDefPropPath($displayItem->getDefPropPath(), $groupType, $displayItem->getLabel(), $displayItem->getModuleNamespace());	
 				}
 				continue;
 			}
@@ -236,23 +236,23 @@ class DisplayStructure {
 	}
 	
 	/**
-	 * @param GuiPropPath $guiPropPath
+	 * @param DefPropPath $defPropPath
 	 * @return boolean
 	 */
-	public function containsGuiPropPathPrefix(GuiPropPath $guiPropPath) {
-		return $this->containsLevelGuiPropPathPrefix($guiPropPath) 
-				|| $this->containsSubGuiPropPathPrefix($guiPropPath);
+	public function containsDefPropPathPrefix(DefPropPath $defPropPath) {
+		return $this->containsLevelDefPropPathPrefix($defPropPath) 
+				|| $this->containsSubDefPropPathPrefix($defPropPath);
 	}
 	
 	/**
-	 * @param GuiPropPath $guiPropPath
+	 * @param DefPropPath $defPropPath
 	 * @return boolean
 	 */
-	public function containsLevelGuiPropPathPrefix(GuiPropPath $guiPropPath) {
+	public function containsLevelDefPropPathPrefix(DefPropPath $defPropPath) {
 		foreach ($this->displayItems as $displayItem) {
 			if ($displayItem->hasDisplayStructure()) continue;
 			
-			if ($displayItem->getGuiPropPath()->startsWith($guiPropPath, false)) {
+			if ($displayItem->getDefPropPath()->startsWith($defPropPath, false)) {
 				return true;
 			}
 		}
@@ -261,14 +261,14 @@ class DisplayStructure {
 	}
 	
 	/**
-	 * @param GuiPropPath $guiPropPath
+	 * @param DefPropPath $defPropPath
 	 * @return boolean
 	 */
-	public function containsSubGuiPropPathPrefix(GuiPropPath $guiPropPath) {
+	public function containsSubDefPropPathPrefix(DefPropPath $defPropPath) {
 		foreach ($this->displayItems as $displayItem) {
 			if (!$displayItem->hasDisplayStructure()) continue;
 			
-			if ($displayItem->getDisplayStructure()->containsGuiPropPathPrefix($guiPropPath)) {
+			if ($displayItem->getDisplayStructure()->containsDefPropPathPrefix($defPropPath)) {
 				return true;
 			}
 		}
@@ -299,12 +299,12 @@ class DisplayStructure {
 			
 			$guiPropAssembly = null;
 			try {
-				$guiPropAssembly = $eiGuiFrame->getDisplayDefintion($displayItem->getGuiPropPath());
-			} catch (UnresolvableGuiPropPathException $e) {
+				$guiPropAssembly = $eiGuiFrame->getDisplayDefintion($displayItem->getDefPropPath());
+			} catch (UnresolvableDefPropPathException $e) {
 				continue;
 			}
 			
-			$purifiedDisplayStructure->addGuiPropPath($displayItem->getGuiPropPath(),
+			$purifiedDisplayStructure->addDefPropPath($displayItem->getDefPropPath(),
 					$displayItem->getSiStructureType() ?? $guiPropAssembly->getDisplayDefinition()->getSiStructureType());
 		}
 		
@@ -319,7 +319,7 @@ class DisplayStructure {
 		$displayStructure = new DisplayStructure();
 		
 		foreach ($eiGuiFrame->getGuiPropAssemblies() as $guiPropAssembly) {
-			$displayStructure->addGuiPropPath($guiPropAssembly->getGuiPropPath(), 
+			$displayStructure->addDefPropPath($guiPropAssembly->getDefPropPath(), 
 					$guiPropAssembly->getDisplayDefinition()->getSiStructureType());
 		}
 		

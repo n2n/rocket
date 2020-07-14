@@ -28,15 +28,15 @@ class EiGuiModelFactory {
 	/**
 	 * @param EiMask $contextEiMask
 	 * @param int $viewMode
-	 * @param array $guiPropPaths
+	 * @param array $defPropPaths
 	 * @param bool $guiStructureDeclarationsRequired
 	 * @return \rocket\ei\manage\gui\EiGuiModel
 	 */
-	function createEiGuiModel(EiMask $contextEiMask, int $viewMode, ?array $guiPropPaths, 
+	function createEiGuiModel(EiMask $contextEiMask, int $viewMode, ?array $defPropPaths, 
 			bool $guiStructureDeclarationsRequired) {
 		$eiGuiModel = new EiGuiModel($contextEiMask, $viewMode);
 		
-		$this->applyEiGuiFrame($eiGuiModel, false, $guiPropPaths, $guiStructureDeclarationsRequired);
+		$this->applyEiGuiFrame($eiGuiModel, false, $defPropPaths, $guiStructureDeclarationsRequired);
 		
 		return $eiGuiModel;
 	}
@@ -44,16 +44,16 @@ class EiGuiModelFactory {
 	/**
 	 * @param EiMask $contextEiMask
 	 * @param int $viewMode
-	 * @param array $guiPropPaths
+	 * @param array $defPropPaths
 	 * @param bool $guiStructureDeclarationsRequired
 	 * @throws GuiBuildFailedException
 	 * @return \rocket\ei\manage\gui\EiGuiModel
 	 */
-	function createForgeEiGuiModel(EiMask $contextEiMask, int $viewMode, ?array $guiPropPaths, 
+	function createForgeEiGuiModel(EiMask $contextEiMask, int $viewMode, ?array $defPropPaths, 
 			bool $guiStructureDeclarationsRequired) {
 		$eiGuiModel = new EiGuiModel($contextEiMask, $viewMode);
 		
-		$this->applyEiGuiFrame($eiGuiModel, true, $guiPropPaths, $guiStructureDeclarationsRequired);
+		$this->applyEiGuiFrame($eiGuiModel, true, $defPropPaths, $guiStructureDeclarationsRequired);
 		
 		if (!$eiGuiModel->hasEiGuiFrames()) {
 			throw new GuiBuildFailedException('Can not build forge EiGuiModel based on ' . $eiGuiModel->getContextEiMask() 
@@ -67,16 +67,16 @@ class EiGuiModelFactory {
 	 * @param EiMask $contextEiMask
 	 * @param int $viewMode
 	 * @param array $allowedEiTypeIds
-	 * @param array $guiPropPaths
+	 * @param array $defPropPaths
 	 * @param bool $guiStructureDeclarationsRequired
 	 * @throws GuiBuildFailedException
 	 * @return \rocket\ei\manage\gui\EiGuiModel
 	 */
 	function createMultiEiGuiModel(EiMask $contextEiMask, int $viewMode, ?array $allowedEiTypes, 
-			?array $guiPropPaths, bool $guiStructureDeclarationsRequired) {
+			?array $defPropPaths, bool $guiStructureDeclarationsRequired) {
 		$eiGuiModel = new EiGuiModel($contextEiMask, $viewMode);
 	
-		$this->applyPossibleEiGuiFrames($eiGuiModel, false, $allowedEiTypes, $guiPropPaths, $guiStructureDeclarationsRequired);
+		$this->applyPossibleEiGuiFrames($eiGuiModel, false, $allowedEiTypes, $defPropPaths, $guiStructureDeclarationsRequired);
 		
 		if (!$eiGuiModel->hasEiGuiFrames()) {
 			throw new GuiBuildFailedException('Can not build forge EiGuiModel based on ' . $eiGuiModel->getContextEiMask()
@@ -91,16 +91,16 @@ class EiGuiModelFactory {
 	 * @param EiMask $contextEiMask
 	 * @param int $viewMode
 	 * @param array $allowedEiTypeIds
-	 * @param array $guiPropPaths
+	 * @param array $defPropPaths
 	 * @param bool $guiStructureDeclarationsRequired
 	 * @throws GuiBuildFailedException
 	 * @return \rocket\ei\manage\gui\EiGuiModel
 	 */
 	function createForgeMultiEiGuiModel(EiMask $contextEiMask, int $viewMode, ?array $allowedEiTypes,
-			?array $guiPropPaths, bool $guiStructureDeclarationsRequired) {
+			?array $defPropPaths, bool $guiStructureDeclarationsRequired) {
 		$eiGuiModel = new EiGuiModel($contextEiMask, $viewMode);
 		
-		$this->applyPossibleEiGuiFrames($eiGuiModel, true, $allowedEiTypes, $guiPropPaths, $guiStructureDeclarationsRequired);
+		$this->applyPossibleEiGuiFrames($eiGuiModel, true, $allowedEiTypes, $defPropPaths, $guiStructureDeclarationsRequired);
 		
 		if (!$eiGuiModel->hasEiGuiFrames()) {
 			throw new GuiBuildFailedException('Can not build forge EiGuiModel based on ' . $eiGuiModel->getContextEiMask()
@@ -114,11 +114,11 @@ class EiGuiModelFactory {
 	/**
 	 * @param N2nContext $n2nContext
 	 * @param EiGuiModel $eiGuiModel
-	 * @param array $guiPropPaths
+	 * @param array $defPropPaths
 	 * @param bool $guiStructureDeclarationsRequired
 	 * @return \rocket\ei\manage\gui\EiGuiFrame
 	 */
-	private function applyEiGuiFrame(EiGuiModel $eiGuiModel, bool $nonAbstractOnly, array $guiPropPaths = null,
+	private function applyEiGuiFrame(EiGuiModel $eiGuiModel, bool $nonAbstractOnly, array $defPropPaths = null,
 			bool $guiStructureDeclarationsRequired = true) {
 		$contextEiMask = $eiGuiModel->getContextEiMask();
 				
@@ -127,7 +127,7 @@ class EiGuiModelFactory {
 		}
 		
 		$guiDefinition = $this->def->getGuiDefinition($contextEiMask);
-		$guiDefinition->createEiGuiFrame($this->n2nContext, $eiGuiModel, $guiPropPaths,
+		$guiDefinition->createEiGuiFrame($this->n2nContext, $eiGuiModel, $defPropPaths,
 				$guiStructureDeclarationsRequired);
 	}
 	
@@ -135,18 +135,18 @@ class EiGuiModelFactory {
 	 * @param N2nContext $n2nContext
 	 * @param EiGuiModel $eiGuiModel
 	 * @param array $allowedTypeIds
-	 * @param array $guiPropPaths
+	 * @param array $defPropPaths
 	 * @param bool $guiStructureDeclarationsRequired
 	 * @return \rocket\ei\manage\gui\EiGuiFrame[]
 	 */
 	private function applyPossibleEiGuiFrames(EiGuiModel $eiGuiModel, bool $creatablesOnly, array $allowedEiTypes = null,
-			array $guiPropPaths = null, bool $guiStructureDeclarationsRequired = true) {
+			array $defPropPaths = null, bool $guiStructureDeclarationsRequired = true) {
 		$contextEiMask = $eiGuiModel->getContextEiMask();
 		$contextEiType = $contextEiMask->getEiType();
 		
 		if ($this->testIfAllowed($contextEiType, $creatablesOnly, $allowedEiTypes)) {
 			$guiDefinition = $this->def->getGuiDefinition($contextEiMask->determineEiMask($contextEiType));
-			$eiGuiFrame = $guiDefinition->createEiGuiFrame($this->n2nContext, $eiGuiModel, $guiPropPaths,
+			$eiGuiFrame = $guiDefinition->createEiGuiFrame($this->n2nContext, $eiGuiModel, $defPropPaths,
 					$guiStructureDeclarationsRequired);
 			$eiGuiModel->putEiGuiFrame($eiGuiFrame);
 		}
@@ -157,7 +157,7 @@ class EiGuiModelFactory {
 			}
 			
 			$guiDefinition = $this->def->getGuiDefinition($contextEiMask->determineEiMask($eiType));
-			$eiGuiFrame = $guiDefinition->createEiGuiFrame($this->n2nContext, $eiGuiModel, $guiPropPaths,
+			$eiGuiFrame = $guiDefinition->createEiGuiFrame($this->n2nContext, $eiGuiModel, $defPropPaths,
 					$guiStructureDeclarationsRequired);
 			$eiGuiModel->putEiGuiFrame($eiGuiFrame);
 		}

@@ -184,7 +184,7 @@ class DisplayScheme {
 			$displayStructure = DisplayStructure::fromEiGuiFrame($eiGuiFrame);
 		} else {
 			$eiGuiFrame->init($commonEiGuiSiFactory, 
-					$guiDefinition->filterGuiPropPaths($displayStructure->getAllGuiPropPaths()));
+					$guiDefinition->filterDefPropPaths($displayStructure->getAllDefPropPaths()));
 			$displayStructure = $displayStructure->purified($eiGuiFrame);
 		}
 		

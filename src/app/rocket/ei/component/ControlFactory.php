@@ -31,7 +31,7 @@
 // use rocket\ei\manage\gui\GuiProp;
 // use rocket\ei\util\entry\EiuEntry;
 // use rocket\ei\mask\EiMask;
-// use rocket\ei\manage\gui\field\GuiPropPath;
+// use rocket\ei\manage\DefPropPath;
 // use rocket\ei\manage\gui\EiGuiFrame;
 // use n2n\impl\web\ui\view\html\HtmlView;
 // use rocket\ei\manage\entry\EiEntry;
@@ -190,15 +190,15 @@
 // 	 * @param array $eiPropPaths
 // 	 * @return EiEntryGui
 // 	 */
-// 	public static function createEiEntryGui(EiGuiFrame $eiGuiFrame, EiEntry $eiEntry, array $guiPropPaths, int $treeLevel = null) {
-// 		ArgUtils::valArrayLike($guiPropPaths, GuiPropPath::class);
+// 	public static function createEiEntryGui(EiGuiFrame $eiGuiFrame, EiEntry $eiEntry, array $defPropPaths, int $treeLevel = null) {
+// 		ArgUtils::valArrayLike($defPropPaths, DefPropPath::class);
 		
 // 		$eiEntryGui = new EiEntryGui($eiGuiFrame, $eiEntry, $treeLevel);
 		
 // 		$guiFieldAssembler = new EiEntryGuiAssembler($eiEntryGui);
 		
-// 		foreach ($guiPropPaths as $guiPropPath) {
-// 			$guiFieldAssembler->assembleGuiField($guiPropPath);
+// 		foreach ($defPropPaths as $defPropPath) {
+// 			$guiFieldAssembler->assembleGuiField($defPropPath);
 // 		}
 		
 // 		$guiFieldAssembler->finalize();

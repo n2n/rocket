@@ -2,7 +2,7 @@
 namespace rocket\ei\manage\gui;
 
 use n2n\util\type\ArgUtils;
-use rocket\ei\manage\gui\field\GuiPropPath;
+use rocket\ei\manage\DefPropPath;
 use rocket\si\meta\SiDeclaration;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\mask\EiMask;
@@ -103,16 +103,16 @@ class EiGuiModel {
 	
 	
 	/**
-	 * @return GuiPropPath[]
+	 * @return DefPropPath[]
 	 */
-	function getGuiPropPaths() {
+	function getDefPropPaths() {
 		$this->ensureInit();
 		
-		$guiPropPaths = [];
+		$defPropPaths = [];
 		foreach ($this->guiStructureDeclarations as $guiStructureDeclaration) {
-			$guiPropPaths = array_merge($guiPropPaths, $guiStructureDeclaration->getAllGuiPropPaths());
+			$defPropPaths = array_merge($defPropPaths, $guiStructureDeclaration->getAllDefPropPaths());
 		}
-		return $guiPropPaths;
+		return $defPropPaths;
 	}
 	
 	/**
@@ -169,11 +169,11 @@ class EiGuiModel {
 // 		$siProps = [];
 // 		foreach ($this->filterFieldGuiStructureDeclarations($this->guiStructureDeclarations) 
 // 				as $guiStructureDeclaration) {
-// 			$guiPropPath = $guiStructureDeclaration->getGuiPropPath();
+// 			$defPropPath = $guiStructureDeclaration->getDefPropPath();
 			
 // 			$siProps[] = $this->createSiProp($guiStructureDeclaration);
 			
-// 			$deter->reportGuiPropPath($guiPropPath);
+// 			$deter->reportDefPropPath($defPropPath);
 // 		}
 		
 // 		return array_merge($deter->createContextSiProps($this->eiGuiFrame), $siProps);
@@ -188,7 +188,7 @@ class EiGuiModel {
 // 	 * @return SiProp
 // 	 */
 // 	private function createSiProp(GuiStructureDeclaration $guiStructureDeclaration) {
-// 		return new SiProp($guiStructureDeclaration->getGuiPropPath(),
+// 		return new SiProp($guiStructureDeclaration->getDefPropPath(),
 // 				$guiStructureDeclaration->getLabel(), $guiStructureDeclaration->getHelpText());
 // 	}
 	
@@ -201,7 +201,7 @@ class EiGuiModel {
 	private function filterFieldGuiStructureDeclarations($guiStructureDeclarations) {
 		$filtereds = [];
 		foreach ($guiStructureDeclarations as $guiStructureDeclaration) {
-			if ($guiStructureDeclaration->hasGuiPropPath()) {
+			if ($guiStructureDeclaration->hasDefPropPath()) {
 				$filtereds[] = $guiStructureDeclaration;
 				continue;
 			}

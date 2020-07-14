@@ -99,22 +99,22 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 		$eiu->entry()->onValidate(function () use ($eiu, $that) {
 			$type = $eiu->field()->getValue();
 				
-			$activeGuiPropPaths = array();
-			foreach ($that->getAssociatedGuiPropPathMap() as $value => $guiPropPaths) {
+			$activeDefPropPaths = array();
+			foreach ($that->getAssociatedDefPropPathMap() as $value => $defPropPaths) {
 				if ($value == $type) {
-					$activeGuiPropPaths = $guiPropPaths;
+					$activeDefPropPaths = $defPropPaths;
 					continue;
 				}
 				
-				foreach ($guiPropPaths as $guiPropPath) {
-					if (null !== ($eiFieldWrapper = $eiu->entry()->getEiFieldAbstraction($guiPropPath))) {
+				foreach ($defPropPaths as $defPropPath) {
+					if (null !== ($eiFieldWrapper = $eiu->entry()->getEiFieldAbstraction($defPropPath))) {
 						$eiFieldWrapper->setIgnored(true);
 					}
 				}
 			}
 			
-			foreach ($activeGuiPropPaths as $guiPropPath) {
-				if (null !== ($eiFieldWrapper = $eiu->entry()->getEiFieldAbstraction($guiPropPath))) {
+			foreach ($activeDefPropPaths as $defPropPath) {
+				if (null !== ($eiFieldWrapper = $eiu->entry()->getEiFieldAbstraction($defPropPath))) {
 					$eiFieldWrapper->setIgnored(false);
 				}
 			}
@@ -131,7 +131,7 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 			}
 		}
 		
-		if (empty($this->associatedGuiPropPathMap)) {
+		if (empty($this->associatedDefPropPathMap)) {
 			return SiFields::enumIn($choicesMap, $eiu->field()->getValue())
 					->setMandatory($this->getEditConfig()->isMandatory());
 		}
@@ -142,7 +142,7 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 		$that = $this;
 		$eiu->entryGui()->whenReady(function () use ($eiu, $enablerMag, $that) {
 			$associatedMagWrapperMap = array();
-			foreach ($that->getAssociatedGuiPropPathMap() as $value => $eiPropPaths) {
+			foreach ($that->getAssociatedDefPropPathMap() as $value => $eiPropPaths) {
 				$magWrappers = array();
 				foreach ($eiPropPaths as $eiPropPath) {
 					$magWrapper = $eiu->entryGui()->getMagWrapper($eiPropPath, false);

@@ -32,7 +32,7 @@ interface GuiProp {
 	 * 
 	 * @return DisplayDefinition|null return null if this GuiProp is not compatible with passed EiGuiFrame.
 	 */
-	function buildGuiPropSetup(Eiu $eiu, ?array $guiPropPaths): ?GuiPropSetup;
+	function buildGuiPropSetup(Eiu $eiu, ?array $defPropPaths): ?GuiPropSetup;
 		
 	
 	

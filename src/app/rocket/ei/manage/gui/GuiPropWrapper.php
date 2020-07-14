@@ -24,7 +24,7 @@ namespace rocket\ei\manage\gui;
 use rocket\ei\EiPropPath;
 use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\EiProp;
-use rocket\ei\manage\gui\field\GuiPropPath;
+use rocket\ei\manage\DefPropPath;
 use n2n\core\container\N2nContext;
 
 class GuiPropWrapper {
@@ -80,44 +80,44 @@ class GuiPropWrapper {
 		return $displayDefinition;
 	}
 	
-	function buildForkDisplayDefinition(GuiPropPath $forkedGuiPropPath, EiGuiFrame $eiGuiFrame, bool $defaultDisplayedRequired) {
-		return $this->guiProp->getForkGuiDefinition()->getGuiPropWrapperByGuiPropPath($forkedGuiPropPath)
+	function buildForkDisplayDefinition(DefPropPath $forkedDefPropPath, EiGuiFrame $eiGuiFrame, bool $defaultDisplayedRequired) {
+		return $this->guiProp->getForkGuiDefinition()->getGuiPropWrapperByDefPropPath($forkedDefPropPath)
 				->buildDisplayDefinition($eiGuiFrame, $defaultDisplayedRequired);
 	}
 	
 	/**
-	 * @return GuiPropPath[]
+	 * @return DefPropPath[]
 	 */
-	function getForkedGuiPropPaths() {
+	function getForkedDefPropPaths() {
 		$forkGuiDefinition = $this->guiProp->getForkGuiDefinition();
 		
 		if ($forkGuiDefinition === null) {
 			return [];
 		}
 		
-		return $forkGuiDefinition->getGuiPropPaths();
+		return $forkGuiDefinition->getDefPropPaths();
 	}
 	
 	/**
-	 * @param GuiPropPath $guiPropPath
-	 * @throws UnresolvableGuiPropPathException
+	 * @param DefPropPath $defPropPath
+	 * @throws UnresolvableDefPropPathException
 	 * @return \rocket\ei\manage\gui\GuiPropWrapper
 	 */
-	function getForkedGuiPropWrapper(GuiPropPath $guiPropPath) {
+	function getForkedGuiPropWrapper(DefPropPath $defPropPath) {
 		if (null !== ($forkGuiDefinition = $this->guiProp->getForkGuiDefinition())) {
-			return $forkGuiDefinition->getGuiPropWrapperByGuiPropPath($guiPropPath);
+			return $forkGuiDefinition->getGuiPropWrapperByDefPropPath($defPropPath);
 		}
 		
-		throw new UnresolvableGuiPropPathException('GuiProp ' . $guiPropPath . ' not found.');
+		throw new UnresolvableDefPropPathException('GuiProp ' . $defPropPath . ' not found.');
 	}
 	
 	/**
 	 * @param EiGuiFrame $eiGuiFrame
-	 * @param array $fokredGuiPropPaths
+	 * @param array $fokredDefPropPaths
 	 * @return \rocket\ei\manage\gui\GuiPropSetup
 	 */
-	function buildGuiPropSetup(N2nContext $n2nContext, EiGuiFrame $eiGuiFrame, ?array $forkedGuiPropPaths) {
-		return $this->guiProp->buildGuiPropSetup(new Eiu($n2nContext, $eiGuiFrame, $this->eiPropPath), $forkedGuiPropPaths);
+	function buildGuiPropSetup(N2nContext $n2nContext, EiGuiFrame $eiGuiFrame, ?array $forkedDefPropPaths) {
+		return $this->guiProp->buildGuiPropSetup(new Eiu($n2nContext, $eiGuiFrame, $this->eiPropPath), $forkedDefPropPaths);
 	}
 	
 	/**

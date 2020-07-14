@@ -61,7 +61,7 @@ use rocket\ei\util\entry\EiuFieldMap;
 use rocket\ei\util\entry\EiuObject;
 use rocket\ei\component\modificator\EiModificator;
 use n2n\util\type\TypeUtils;
-use rocket\ei\manage\gui\field\GuiPropPath;
+use rocket\ei\manage\DefPropPath;
 use rocket\spec\UnknownTypeException;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\util\gui\EiuGuiField;
@@ -96,7 +96,7 @@ class EiuAnalyst {
 	protected $eiEntryGui;
 	protected $eiEntryGuiAssembler;
 	protected $eiPropPath;
-	protected $guiPropPath;
+	protected $defPropPath;
 	protected $eiCommandPath;
 	protected $eiEngine;
 	protected $spec;
@@ -156,8 +156,8 @@ class EiuAnalyst {
 				continue;
 			}
 			
-			if ($eiArg instanceof GuiPropPath) {
-				$this->guiPropPath = $eiArg;
+			if ($eiArg instanceof DefPropPath) {
+				$this->defPropPath = $eiArg;
 				continue;
 			}
 			
@@ -377,8 +377,8 @@ class EiuAnalyst {
 				if ($eiuAnalyst->eiPropPath !== null) {
 					$this->eiPropPath = $eiuAnalyst->eiPropPath;
 				}
-				if ($eiuAnalyst->guiPropPath !== null) {
-					$this->guiPropPath = $eiuAnalyst->guiPropPath;
+				if ($eiuAnalyst->defPropPath !== null) {
+					$this->defPropPath = $eiuAnalyst->defPropPath;
 				}
 				if ($eiuAnalyst->eiCommandPath !== null) {
 					$this->eiCommandPath = $eiuAnalyst->eiCommandPath;
@@ -936,15 +936,15 @@ class EiuAnalyst {
 	/**
 	 * @param bool $required
 	 * @throws EiuPerimeterException
-	 * @return \rocket\ei\manage\gui\field\GuiPropPath
+	 * @return \rocket\ei\manage\DefPropPath
 	 */
-	public function getGuiPropPath(bool $required) {
-		if (!$required || $this->guiPropPath !== null) {
-			return $this->guiPropPath;
+	public function getDefPropPath(bool $required) {
+		if (!$required || $this->defPropPath !== null) {
+			return $this->defPropPath;
 		}
 		
 		throw new EiuPerimeterException(
-				'Could not determine GuiPropPath because non of the following types were provided as eiArgs: '
+				'Could not determine DefPropPath because non of the following types were provided as eiArgs: '
 				. implode(', ', self::EI_FIELD_TYPES));
 	}
 	
@@ -1304,8 +1304,8 @@ class EiuAnalyst {
 		
 		$eiuEntryGuiTypeDef = $this->getEiuEntryGuiTypeDef(false);
 		if ($eiuEntryGuiTypeDef !== null) {
-			if ($this->guiPropPath !== null) {
-				return $this->eiuGuiField = $eiuEntryGuiTypeDef->field($this->guiPropPath);
+			if ($this->defPropPath !== null) {
+				return $this->eiuGuiField = $eiuEntryGuiTypeDef->field($this->defPropPath);
 			}
 		}
 		

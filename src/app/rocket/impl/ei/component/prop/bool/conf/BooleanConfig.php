@@ -5,7 +5,7 @@ use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
 use n2n\impl\web\dispatch\mag\model\MultiSelectMag;
 use n2n\util\type\TypeConstraint;
-use rocket\ei\manage\gui\field\GuiPropPath;
+use rocket\ei\manage\DefPropPath;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use n2n\util\StringUtils;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
@@ -22,37 +22,37 @@ class BooleanConfig extends ConfigAdaption {
 	
 	private static $booleanNeedles = ['Available', 'Enabled'];
 	
-	private $onAssociatedGuiPropPaths = array();
-	private $offAssociatedGuiPropPaths = array();
+	private $onAssociatedDefPropPaths = array();
+	private $offAssociatedDefPropPaths = array();
 	
 	/**
-	 * @param GuiPropPath[] $onAssociatedGuiPropPaths
+	 * @param DefPropPath[] $onAssociatedDefPropPaths
 	 */
-	public function setOnAssociatedGuiPropPaths(array $onAssociatedGuiPropPaths) {
-		ArgUtils::valArray($onAssociatedGuiPropPaths, GuiPropPath::class);
-		$this->onAssociatedGuiPropPaths = $onAssociatedGuiPropPaths;
+	public function setOnAssociatedDefPropPaths(array $onAssociatedDefPropPaths) {
+		ArgUtils::valArray($onAssociatedDefPropPaths, DefPropPath::class);
+		$this->onAssociatedDefPropPaths = $onAssociatedDefPropPaths;
 	}
 	
 	/**
-	 * @return GuiPropPath[]
+	 * @return DefPropPath[]
 	 */
-	public function getOnAssociatedGuiPropPaths() {
-		return $this->onAssociatedGuiPropPaths;
+	public function getOnAssociatedDefPropPaths() {
+		return $this->onAssociatedDefPropPaths;
 	}
 	
 	/**
-	 * @param GuiPropPath[] $offAssociatedGuiPropPaths
+	 * @param DefPropPath[] $offAssociatedDefPropPaths
 	 */
-	public function setOffAssociatedGuiPropPaths(array $offAssociatedGuiPropPaths) {
-		ArgUtils::valArray($offAssociatedGuiPropPaths, GuiPropPath::class);
-		$this->offAssociatedGuiPropPaths = $offAssociatedGuiPropPaths;
+	public function setOffAssociatedDefPropPaths(array $offAssociatedDefPropPaths) {
+		ArgUtils::valArray($offAssociatedDefPropPaths, DefPropPath::class);
+		$this->offAssociatedDefPropPaths = $offAssociatedDefPropPaths;
 	}
 	
 	/**
-	 * @return GuiPropPath[]
+	 * @return DefPropPath[]
 	 */
-	public function getOffAssociatedGuiPropPaths() {
-		return $this->offAssociatedGuiPropPaths;
+	public function getOffAssociatedDefPropPaths() {
+		return $this->offAssociatedDefPropPaths;
 	}
 	
 	
@@ -73,17 +73,17 @@ class BooleanConfig extends ConfigAdaption {
 		
 		$assoicatedGuiPropOptions = $eiu->mask()->engine()->getGuiPropOptions();
 		
-		$onGuiPropPathStrs = $lar->getScalarArray(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY);
-		$offGuiPropPathStrs = $lar->getScalarArray(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY);
+		$onDefPropPathStrs = $lar->getScalarArray(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY);
+		$offDefPropPathStrs = $lar->getScalarArray(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY);
 		
-		$eMag = new TogglerMag('Bind GuiProps to value', !empty($onGuiPropPathStrs) || !empty($offGuiPropPathStrs));
+		$eMag = new TogglerMag('Bind GuiProps to value', !empty($onDefPropPathStrs) || !empty($offDefPropPathStrs));
 		
 		$magCollection->addMag(self::ATTR_BIND_GUI_PROPS_KEY, $eMag);
 		$eMag->setOnAssociatedMagWrappers(array(
 				$magCollection->addMag(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY, 
-						new MultiSelectMag('Associated Gui Fields when on', $assoicatedGuiPropOptions, $onGuiPropPathStrs)),
+						new MultiSelectMag('Associated Gui Fields when on', $assoicatedGuiPropOptions, $onDefPropPathStrs)),
 				$magCollection->addMag(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY, 
-						new MultiSelectMag('Associated Gui Fields when off', $assoicatedGuiPropOptions, $offGuiPropPathStrs))));
+						new MultiSelectMag('Associated Gui Fields when off', $assoicatedGuiPropOptions, $offDefPropPathStrs))));
 	}
 	
 	function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {
@@ -91,34 +91,34 @@ class BooleanConfig extends ConfigAdaption {
 			return;
 		}
 		
-		$onGuiPropPathStrs = $magCollection->readValue(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY);
-		$offGuiPropPathsStrs = $magCollection->readValue(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY);
+		$onDefPropPathStrs = $magCollection->readValue(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY);
+		$offDefPropPathsStrs = $magCollection->readValue(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY);
 		
-		$dataSet->set(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY, $onGuiPropPathStrs);
-		$dataSet->set(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY, $offGuiPropPathsStrs);
+		$dataSet->set(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY, $onDefPropPathStrs);
+		$dataSet->set(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY, $offDefPropPathsStrs);
 	}
 	
 	function setup(Eiu $eiu, DataSet $dataSet) {
 		if ($dataSet->contains(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY)) {
-			$onGuiPropPathStrs = $dataSet->getArray(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY, false, array(), 
+			$onDefPropPathStrs = $dataSet->getArray(self::ATTR_ON_ASSOCIATED_GUI_PROP_KEY, false, array(), 
 					TypeConstraint::createSimple('scalar'));
-			$onGuiPropPaths = array();
-			foreach ($onGuiPropPathStrs as $eiPropPathStr) {
-				$onGuiPropPaths[] = GuiPropPath::create($eiPropPathStr);
+			$onDefPropPaths = array();
+			foreach ($onDefPropPathStrs as $eiPropPathStr) {
+				$onDefPropPaths[] = DefPropPath::create($eiPropPathStr);
 			}
 			
-			$this->setOnAssociatedGuiPropPaths($onGuiPropPaths);
+			$this->setOnAssociatedDefPropPaths($onDefPropPaths);
 		}
 		
 		if ($dataSet->contains(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY)) {
-			$offGuiPropPathStrs = $dataSet->getArray(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY, false, array(),
+			$offDefPropPathStrs = $dataSet->getArray(self::ATTR_OFF_ASSOCIATED_GUI_PROP_KEY, false, array(),
 					TypeConstraint::createSimple('scalar'));
-			$offGuiPropPaths = array();
-			foreach ($offGuiPropPathStrs as $eiPropPathStr) {
-				$offGuiPropPaths[] = GuiPropPath::create($eiPropPathStr);
+			$offDefPropPaths = array();
+			foreach ($offDefPropPathStrs as $eiPropPathStr) {
+				$offDefPropPaths[] = DefPropPath::create($eiPropPathStr);
 			}
 			
-			$this->setOffAssociatedGuiPropPaths($offGuiPropPaths);
+			$this->setOffAssociatedDefPropPaths($offDefPropPaths);
 		}
 	}
 }

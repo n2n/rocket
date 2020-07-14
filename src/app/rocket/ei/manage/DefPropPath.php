@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\gui\field;
+namespace rocket\ei\manage;
 
 use n2n\util\ex\IllegalStateException;
 use n2n\util\type\ArgUtils;
@@ -28,7 +28,7 @@ use rocket\ei\component\prop\EiProp;
 use n2n\util\col\Hashable;
 use n2n\util\type\TypeUtils;
 
-class GuiPropPath implements Hashable {
+class DefPropPath implements Hashable {
 	const EI_PROP_PATH_SEPARATOR = '.';
 	
 	/**
@@ -54,10 +54,10 @@ class GuiPropPath implements Hashable {
 	/**
 	 * @param int $offset
 	 * @param int|null $length
-	 * @return \rocket\ei\manage\gui\field\GuiPropPath
+	 * @return \rocket\ei\manage\DefPropPath
 	 */
-	public function subGuiPropPath(int $offset, int $length = null) {
-		return new GuiPropPath(array_slice($this->eiPropPaths, $offset, $length));
+	public function subDefPropPath(int $offset, int $length = null) {
+		return new DefPropPath(array_slice($this->eiPropPaths, $offset, $length));
 	}
 	
 	public function isEmpty() {
@@ -67,7 +67,7 @@ class GuiPropPath implements Hashable {
 	protected function ensureNotEmpty() {
 		if (!$this->isEmpty()) return;
 		
-		throw new IllegalStateException('GuiPropPath is empty.');
+		throw new IllegalStateException('DefPropPath is empty.');
 	}
 	
 	/**
@@ -87,7 +87,7 @@ class GuiPropPath implements Hashable {
 	
 	/**
 	 * @throws IllegalStateException
-	 * @return \rocket\ei\manage\gui\field\GuiPropPath
+	 * @return \rocket\ei\manage\DefPropPath
 	 */
 	public function getShifted() {
 		$eiPropPaths = $this->eiPropPaths;
@@ -95,12 +95,12 @@ class GuiPropPath implements Hashable {
 		if (empty($eiPropPaths)) {
 			throw new IllegalStateException();
 		}
-		return new GuiPropPath($eiPropPaths);
+		return new DefPropPath($eiPropPaths);
 	}
 	
 	/**
 	 * @throws IllegalStateException
-	 * @return \rocket\ei\manage\gui\field\GuiPropPath
+	 * @return \rocket\ei\manage\DefPropPath
 	 */
 	public function getPoped() {
 		$eiPropPaths = $this->eiPropPaths;
@@ -108,17 +108,17 @@ class GuiPropPath implements Hashable {
 			throw new IllegalStateException();
 		}
 		array_pop($eiPropPaths);
-		return new GuiPropPath($eiPropPaths);
+		return new DefPropPath($eiPropPaths);
 	}
 	
-	public function startsWith(GuiPropPath $guiPropPath, bool $checkOnEiPropPathLevel) {
+	public function startsWith(DefPropPath $defPropPath, bool $checkOnEiPropPathLevel) {
 		$size = $this->size();
 		
-		if ($guiPropPath->size() > $size) {
+		if ($defPropPath->size() > $size) {
 			return false;
 		}
 		
-		foreach ($guiPropPath->eiPropPaths as $key => $eiPropPath) {
+		foreach ($defPropPath->eiPropPaths as $key => $eiPropPath) {
 			if (!isset($this->eiPropPaths[$key])) return false;
 			
 			if ($this->eiPropPaths[$key]->equals($eiPropPath)) {
@@ -131,12 +131,12 @@ class GuiPropPath implements Hashable {
 		return true;
 	}
 	
-	public function equals($guiPropPath) {
-		if (!($guiPropPath instanceof GuiPropPath) || $guiPropPath->size() != $this->size()) {
+	public function equals($defPropPath) {
+		if (!($defPropPath instanceof DefPropPath) || $defPropPath->size() != $this->size()) {
 			return false;
 		}
 		
-		foreach ($guiPropPath->eiPropPaths as $key => $eiPropPath) {
+		foreach ($defPropPath->eiPropPaths as $key => $eiPropPath) {
 			if (!$eiPropPath->equals($this->eiPropPaths[$key])) {
 				return false;
 			}
@@ -161,28 +161,28 @@ class GuiPropPath implements Hashable {
 	}
 	
 	/**
-	 * @param EiPropPath|GuiPropPath|string $ext
-	 * @return GuiPropPath
+	 * @param EiPropPath|DefPropPath|string $ext
+	 * @return DefPropPath
 	 */
 	function ext($ext) {
-		$guiPropPath = new GuiPropPath($this->eiPropPaths);
+		$defPropPath = new DefPropPath($this->eiPropPaths);
 		
-		if ($ext instanceof GuiPropPath) {
-			array_push($guiPropPath->eiPropPaths, ...$ext->eiPropPaths);
-			return $guiPropPath;
+		if ($ext instanceof DefPropPath) {
+			array_push($defPropPath->eiPropPaths, ...$ext->eiPropPaths);
+			return $defPropPath;
 		}
 		
-		$guiPropPath->eiPropPaths[] = EiPropPath::create($ext);
-		return $guiPropPath;
+		$defPropPath->eiPropPaths[] = EiPropPath::create($ext);
+		return $defPropPath;
 	}
 	
 	/**
 	 * @param mixed $expression
-	 * @return \rocket\ei\manage\gui\field\GuiPropPath
+	 * @return \rocket\ei\manage\DefPropPath
 	 * @throws \InvalidArgumentException
 	 */
 	public static function create($expression) {
-		if ($expression instanceof GuiPropPath) {
+		if ($expression instanceof DefPropPath) {
 			return $expression;
 		}
 	
@@ -190,29 +190,29 @@ class GuiPropPath implements Hashable {
 		if (is_array($expression)) {
 			$parts = $expression;
 		} else if ($expression instanceof EiProp) {
-			return new GuiPropPath([EiPropPath::from($expression)]);
+			return new DefPropPath([EiPropPath::from($expression)]);
 		} else if ($expression instanceof EiPropPath) {
-			return new GuiPropPath([$expression]);
+			return new DefPropPath([$expression]);
 		} else if (is_scalar($expression)) {
 			$parts = explode(self::EI_PROP_PATH_SEPARATOR, (string) $expression);
 		} else if ($expression === null) {
 			$parts = [];
 		} else {
-			throw new \InvalidArgumentException('Passed value type can not be converted to a GuiPropPath: ' 
+			throw new \InvalidArgumentException('Passed value type can not be converted to a DefPropPath: ' 
 					. TypeUtils::getTypeInfo($expression));
 		}
 		
-		$guiPropPath = new GuiPropPath([]);
-		$guiPropPath->eiPropPaths = [];
+		$defPropPath = new DefPropPath([]);
+		$defPropPath->eiPropPaths = [];
 		foreach ($parts as $part) {
-			$guiPropPath->eiPropPaths[] = EiPropPath::create($part);
+			$defPropPath->eiPropPaths[] = EiPropPath::create($part);
 		}
-		return $guiPropPath;
+		return $defPropPath;
 	}
 	
 	/**
 	 * @param array $expressions
-	 * @return \rocket\ei\manage\gui\field\GuiPropPath[]
+	 * @return \rocket\ei\manage\DefPropPath[]
 	 * @throws \InvalidArgumentException
 	 */
 	public static function createArray(array $expressions) {
@@ -225,7 +225,7 @@ class GuiPropPath implements Hashable {
 	
 	/**
 	 * @param array $expressions
-	 * @return \rocket\ei\manage\gui\field\GuiPropPath[]|null
+	 * @return \rocket\ei\manage\DefPropPath[]|null
 	 * @throws \InvalidArgumentException
 	 */
 	public static function buildArray(?array $expressions) {

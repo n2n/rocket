@@ -33,7 +33,7 @@ use rocket\ei\manage\gui\EiEntryGui;
 use rocket\si\input\SiEntryInput;
 use rocket\ei\manage\security\SecurityException;
 use rocket\ei\manage\gui\EiGui;
-use rocket\ei\manage\gui\field\GuiPropPath;
+use rocket\ei\manage\DefPropPath;
 use rocket\ei\EiException;
 use rocket\ei\manage\entry\EiEntry;
 
@@ -111,9 +111,9 @@ class ProcessUtil {
 			
 		try {
 			$efu = new EiFrameUtil($this->eiFrame);
-			$guiPropPaths = GuiPropPath::createArray($siEntryInput->getFieldIds());
+			$defPropPaths = DefPropPath::createArray($siEntryInput->getFieldIds());
 			
-			return $efu->createEiGuiFromEiObject($eiObject, $siEntryInput->isBulky(), false, $siEntryInput->getTypeId(), $guiPropPaths, true);
+			return $efu->createEiGuiFromEiObject($eiObject, $siEntryInput->isBulky(), false, $siEntryInput->getTypeId(), $defPropPaths, true);
 		} catch (SecurityException $e) {
 			throw new BadRequestException(null, 0, $e);
 		} catch (EiException $e) {

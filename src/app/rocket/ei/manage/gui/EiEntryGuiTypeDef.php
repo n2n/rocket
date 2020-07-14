@@ -22,7 +22,7 @@
 namespace rocket\ei\manage\gui;
 
 use rocket\ei\manage\entry\EiEntry;
-use rocket\ei\manage\gui\field\GuiPropPath;
+use rocket\ei\manage\DefPropPath;
 use rocket\ei\EiType;
 use rocket\si\input\SiEntryInput;
 use n2n\util\ex\IllegalStateException;
@@ -91,10 +91,10 @@ class EiEntryGuiTypeDef {
 		return $this->guiFieldMap;
 	}
 	
-	function getGuiFieldByGuiPropPath(GuiPropPath $guiPropPath) {
+	function getGuiFieldByDefPropPath(DefPropPath $defPropPath) {
 		$guiFieldMap = $this->guiFieldMap;
 		
-		$eiPropPaths = $guiPropPath->toArray();
+		$eiPropPaths = $defPropPath->toArray();
 		
 		while (null !== ($eiPropPath = array_shift($eiPropPaths))) {
 			try {
@@ -111,7 +111,7 @@ class EiEntryGuiTypeDef {
 			}
 		}
 		
-		throw new GuiException('No GuiField with EiPropPath \'' . $guiPropPath . '\' for \'' . $this . '\' registered');
+		throw new GuiException('No GuiField with EiPropPath \'' . $defPropPath . '\' for \'' . $this . '\' registered');
 	}
 	
 	function init(GuiFieldMap $guiFieldMap) {
@@ -154,16 +154,16 @@ class EiEntryGuiTypeDef {
 			throw new IllegalStateException('EiType missmatch.');
 		}
 		
-		foreach ($this->guiFieldMap->getAllGuiFields() as $guiPropPathStr => $guiField) {
+		foreach ($this->guiFieldMap->getAllGuiFields() as $defPropPathStr => $guiField) {
 			$siField = $guiField->getSiField();
 			
 			if ($siField == null || $siField->isReadOnly()
-					|| !$siEntryInput->containsFieldName($guiPropPathStr)) {
+					|| !$siEntryInput->containsFieldName($defPropPathStr)) {
 				continue;
 			}
 			
 			try {
-				$siField->handleInput($siEntryInput->getFieldInput($guiPropPathStr)->getData());
+				$siField->handleInput($siEntryInput->getFieldInput($defPropPathStr)->getData());
 			} catch (AttributesException $e) {
 				throw new \InvalidArgumentException(null, 0, $e);
 			}

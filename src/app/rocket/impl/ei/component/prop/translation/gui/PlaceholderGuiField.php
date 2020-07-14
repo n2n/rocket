@@ -29,14 +29,14 @@ use rocket\si\content\impl\split\SplitPlaceholderSiField;
 
 class PlaceholderGuiField implements GuiField {
 // 	private $lted;
-// 	private $guiPropPath;
+// 	private $defPropPath;
 	private $siField;
 	private $forkGuiFieldMap;
 	
-	function __construct(/*LazyTranslationEssentialsDeterminer $lted, GuiPropPath $guiPropPath, */ 
+	function __construct(/*LazyTranslationEssentialsDeterminer $lted, DefPropPath $defPropPath, */ 
 			SplitPlaceholderSiField $siField, GuiFieldMap $forkGuiFieldMap = null) {
 // 		$this->lted = $lted;
-// 		$this->guiPropPath = $guiPropPath;
+// 		$this->defPropPath = $defPropPath;
 		$this->siField =  $siField;
 		$this->forkGuiFieldMap = $forkGuiFieldMap;
 	}

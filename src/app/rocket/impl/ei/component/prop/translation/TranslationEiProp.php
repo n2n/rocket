@@ -45,7 +45,7 @@ use rocket\impl\ei\component\prop\translation\model\TranslationQuickSearchProp;
 use rocket\impl\ei\component\prop\adapter\entry\EiFieldWrapperCollection;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\ei\manage\gui\GuiProp;
-use rocket\ei\manage\gui\field\GuiPropPath;
+use rocket\ei\manage\DefPropPath;
 use rocket\ei\manage\gui\EiFieldAbstraction;
 use rocket\ei\manage\LiveEiObject;
 use rocket\impl\ei\component\prop\translation\conf\TranslationConfig;
@@ -55,8 +55,6 @@ use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
-use rocket\ei\manage\entry\EiFieldValidationResult;
-use n2n\validation\lang\ValidationMessages;
 
 class TranslationEiProp extends RelationEiPropAdapter implements FieldEiProp, QuickSearchableEiProp {
 	/**
@@ -118,7 +116,7 @@ class TranslationEiProp extends RelationEiPropAdapter implements FieldEiProp, Qu
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiPropFork::determineEiFieldWrapper()
 	 */
-	public function determineEiFieldAbstraction(Eiu $eiu, GuiPropPath $guiPropPath): EiFieldAbstraction {
+	public function determineEiFieldAbstraction(Eiu $eiu, DefPropPath $defPropPath): EiFieldAbstraction {
 		$eiEntry = $eiu->entry()->getEiEntry();
 		
 		$eiFieldWrappers = array();
@@ -126,7 +124,7 @@ class TranslationEiProp extends RelationEiPropAdapter implements FieldEiProp, Qu
 			if (!$targetRelationEntry->hasEiEntry()) continue;
 				
 			if (null !== ($eiFieldWrapper = $eiu->engine()->getGuiDefinition()
-					->determineEiFieldAbstraction($eiu->getN2nContext(), $targetRelationEntry->getEiEntry(), $guiPropPath))) {
+					->determineEiFieldAbstraction($eiu->getN2nContext(), $targetRelationEntry->getEiEntry(), $defPropPath))) {
 				$eiFieldWrappers[] = $eiFieldWrapper;
 			}
 		}

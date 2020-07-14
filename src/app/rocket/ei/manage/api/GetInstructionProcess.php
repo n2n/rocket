@@ -29,7 +29,7 @@ use rocket\ei\manage\frame\EiFrameUtil;
 use rocket\ei\manage\gui\EiEntryGui;
 use rocket\si\api\SiPartialContentInstruction;
 use rocket\si\content\SiEntry;
-use rocket\ei\manage\gui\field\GuiPropPath;
+use rocket\ei\manage\DefPropPath;
 use n2n\util\ex\IllegalStateException;
 
 class GetInstructionProcess {
@@ -65,9 +65,9 @@ class GetInstructionProcess {
 	}
 	
 	/**
-	 * @return NULL|GuiPropPath[]
+	 * @return NULL|DefPropPath[]
 	 */
-	private function parseGuiPropPaths() {
+	private function parseDefPropPaths() {
 		$propIds = $this->instruction->getPropIds();
 		
 		if ($propIds === null) {
@@ -75,7 +75,7 @@ class GetInstructionProcess {
 		}
 		
 		return array_map(function ($propId) {
-			return GuiPropPath::create($propId);
+			return DefPropPath::create($propId);
 		}, $propIds);
 	}
 	
@@ -85,10 +85,10 @@ class GetInstructionProcess {
 	 */
 	private function handleEntryId(string $entryId) {
 		$eiObject = $this->util->lookupEiObject($entryId);
-		$guiPropPaths = $this->parseGuiPropPaths();
+		$defPropPaths = $this->parseDefPropPaths();
 		
 		$eiGui = $this->eiFrameUtil->createEiGuiFromEiObject($eiObject, 
-				$this->instruction->isBulky(), $this->instruction->isReadOnly(), null, $guiPropPaths,
+				$this->instruction->isBulky(), $this->instruction->isReadOnly(), null, $defPropPaths,
 				$this->instruction->isDeclarationRequested());
 		$eiFrame = $this->eiFrameUtil->getEiFrame();
 		
@@ -106,10 +106,10 @@ class GetInstructionProcess {
 	 * @return \rocket\si\api\SiGetResult
 	 */
 	private function handleNewEntry() {
-		$guiPropPaths = $this->parseGuiPropPaths();
+		$defPropPaths = $this->parseDefPropPaths();
 		
 		$eiGui = $this->eiFrameUtil->createNewEiGui(
-				$this->instruction->isBulky(), $this->instruction->isReadOnly(), $guiPropPaths,
+				$this->instruction->isBulky(), $this->instruction->isReadOnly(), $defPropPaths,
 				$this->instruction->getTypeIds(), $this->instruction->isDeclarationRequested());
 		$eiFrame = $this->eiFrameUtil->getEiFrame();
 		
@@ -148,7 +148,7 @@ class GetInstructionProcess {
 	private function handlePartialContent(SiPartialContentInstruction $spci) {
 		$num = $this->eiFrameUtil->count($spci->getQuickSearchStr());
 		$eiGui = $this->eiFrameUtil->lookupEiGuiFromRange($spci->getFrom(), $spci->getNum(),
-				$this->instruction->isBulky(), $this->instruction->isReadOnly(), $this->parseGuiPropPaths(),
+				$this->instruction->isBulky(), $this->instruction->isReadOnly(), $this->parseDefPropPaths(),
 				$spci->getQuickSearchStr());
 		
 		$result = new SiGetResult();

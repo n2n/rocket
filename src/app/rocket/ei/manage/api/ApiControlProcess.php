@@ -26,7 +26,7 @@ use rocket\ei\manage\gui\control\EntryGuiControl;
 use rocket\ei\manage\gui\control\GeneralGuiControl;
 use rocket\ei\manage\frame\EiFrame;
 use n2n\web\http\BadRequestException;
-use rocket\ei\manage\gui\field\GuiPropPath;
+use rocket\ei\manage\DefPropPath;
 use rocket\ei\manage\gui\GuiException;
 use rocket\ei\manage\gui\control\GuiControlPath;
 use rocket\ei\manage\gui\control\UnknownGuiControlException;
@@ -131,11 +131,11 @@ class ApiControlProcess {
 		$this->eiEntry = $this->eiFrame->createEiEntry($eiObject);
 	}
 	
-	function determineGuiField(GuiPropPath $guiPropPath) {
+	function determineGuiField(DefPropPath $defPropPath) {
 		
 		try {
 			$eiEntryGui = $this->eiGui->appendEiEntryGui($this->eiFrame, [$this->eiEntry]);
-			$this->guiField = $eiEntryGui->getSelectedTypeDef()->getGuiFieldByGuiPropPath($guiPropPath);
+			$this->guiField = $eiEntryGui->getSelectedTypeDef()->getGuiFieldByDefPropPath($defPropPath);
 		} catch (GuiException $e) {
 			throw new BadRequestException($e->getMessage(), null, $e);
 		} catch (\InvalidArgumentException $e) {
@@ -254,7 +254,7 @@ class ApiControlProcess {
 	private function applyEntryInput($entryInput, $eiEntryGui) {
 		$eiEntryGui->handleSiEntryInput($entryInput);
 		
-		// 			foreach ($eiEntryGui->getGuiFieldForks() as $guiPropPathStr => $guiFieldFork) {
+		// 			foreach ($eiEntryGui->getGuiFieldForks() as $defPropPathStr => $guiFieldFork) {
 		// 				$guiFieldFork->
 		// 			}
 		

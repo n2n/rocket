@@ -21,7 +21,7 @@ use rocket\ei\manage\critmod\sort\SortSettingGroup;
 use rocket\ei\manage\ManageState;
 use rocket\ei\manage\gui\EiEntryGui;
 use rocket\ei\manage\gui\EiGuiFrame;
-use rocket\ei\manage\gui\field\GuiPropPath;
+use rocket\ei\manage\DefPropPath;
 use rocket\ei\manage\gui\GuiException;
 use rocket\ei\util\EiuAnalyst;
 use rocket\ei\manage\gui\GuiDefinitionListener;
@@ -93,8 +93,8 @@ class EiuEngine {
 		return new EiuEngine($this->eiEngine->getSupremeEiEngine(), null, $this->eiuAnalyst);
 	}
 	
-	public function removeGuiProp($guiPropPath) {
-		$this->getGuiDefinition()->removeGuiPropByPath(GuiPropPath::create($guiPropPath));
+	public function removeGuiProp($defPropPath) {
+		$this->getGuiDefinition()->removeGuiPropByPath(DefPropPath::create($defPropPath));
 	}
 	
 	/**
@@ -303,7 +303,7 @@ class EiuEngine {
 	 * @return boolean
 	 */
 	public function containsGuiProp($eiPropPath) {
-		return $this->getGuiDefinition()->containsGuiProp(GuiPropPath::create($eiPropPath));
+		return $this->getGuiDefinition()->containsGuiProp(DefPropPath::create($eiPropPath));
 	}
 
 	/**
@@ -313,7 +313,7 @@ class EiuEngine {
 	 * @return EiPropPath
 	 */
 	public function eiPropPathToEiPropPath($eiPropPath) {
-		return $this->getGuiDefinition()->eiPropPathToEiPropPath(GuiPropPath::create($eiPropPath));
+		return $this->getGuiDefinition()->eiPropPathToEiPropPath(DefPropPath::create($eiPropPath));
 	}
 	
 	
@@ -410,27 +410,27 @@ class EiuEngine {
 	
 	/**
 	 * @param int $viewMode
-	 * @param array $guiPropPaths
+	 * @param array $defPropPaths
 	 * @param bool $guiStructureDeclarationsRequired
 	 * @return \rocket\ei\util\gui\EiuGuiModel
 	 */
-	function newGuiModel(int $viewMode, array $guiPropPathsArg = null) {
-		$guiPropPaths = GuiPropPath::buildArray($guiPropPathsArg);
+	function newGuiModel(int $viewMode, array $defPropPathsArg = null) {
+		$defPropPaths = DefPropPath::buildArray($defPropPathsArg);
 		
 		$cache = $this->eiuAnalyst->getManageState()->getEiGuiModelCache();
-		$eiGuiModel =  $cache->obtainEiGuiModel($this->eiEngine->getEiMask(), $viewMode, $guiPropPaths);
+		$eiGuiModel =  $cache->obtainEiGuiModel($this->eiEngine->getEiMask(), $viewMode, $defPropPaths);
 		
 		return new EiuGuiModel($eiGuiModel, $this->eiuAnalyst);
 	}
 	
 	/**
 	 * @param int $viewMode
-	 * @param array $guiPropPaths
+	 * @param array $defPropPaths
 	 * @param bool $guiStructureDeclarationsRequired
 	 * @return EiuGuiFrame
 	 */
-	function newGuiFrame(int $viewMode, array $guiPropPaths = null, bool $guiStructureDeclarationsRequired = true) {
-		$eiuGui = $this->newGuiModel($viewMode, $guiPropPaths, $guiStructureDeclarationsRequired);
+	function newGuiFrame(int $viewMode, array $defPropPaths = null, bool $guiStructureDeclarationsRequired = true) {
+		$eiuGui = $this->newGuiModel($viewMode, $defPropPaths, $guiStructureDeclarationsRequired);
 		
 		return current($eiuGui->guiFrames());
 	}
@@ -439,12 +439,12 @@ class EiuEngine {
 	 * @return EiuGuiModel 
 	 */
 	function newForgeMultiGuiModel(bool $bulky = true, bool $readOnly = false, array $allowedEiTypesArg = null, 
-			array $guiPropPathsArg = null) {
+			array $defPropPathsArg = null) {
 		$viewMode = ViewMode::determine($bulky, $readOnly, true);
 		$cache = $this->eiuAnalyst->getManageState()->getEiGuiModelCache();
 		$allowedEiTypes = EiuAnalyst::buildEiTypesFromEiArg($allowedEiTypesArg);
-		$guiPropPaths = GuiPropPath::buildArray($guiPropPathsArg);
-		$eiGuiModel =  $cache->obtainForgeMultiEiGuiModel($this->eiEngine->getEiMask(), $viewMode, $allowedEiTypes, $guiPropPaths);
+		$defPropPaths = DefPropPath::buildArray($defPropPathsArg);
+		$eiGuiModel =  $cache->obtainForgeMultiEiGuiModel($this->eiEngine->getEiMask(), $viewMode, $allowedEiTypes, $defPropPaths);
 		return new EiuGuiModel($eiGuiModel, $this->eiuAnalyst);
 	}
 }

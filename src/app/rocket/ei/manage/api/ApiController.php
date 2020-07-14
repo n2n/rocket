@@ -138,7 +138,7 @@ class ApiController extends ControllerAdapter {
 		$callProcess = new ApiControlProcess($this->eiFrame);
 		$callProcess->determineEiEntry($siApiCallId->getPid());
 		$callProcess->setupEiGuiFrame($siApiCallId->getViewMode(), $siApiCallId->getEiTypePath());
-		$callProcess->determineGuiField($siApiCallId->getGuiPropPath());
+		$callProcess->determineGuiField($siApiCallId->getDefPropPath());
 		
 		$this->sendJson(['data' => $callProcess->callSiField($data->parseJson(), $this->getRequest()->getUploadDefinitions()) ]);
 	}

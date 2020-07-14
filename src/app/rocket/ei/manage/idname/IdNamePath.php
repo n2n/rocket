@@ -58,7 +58,7 @@ class IdNamePath implements Hashable {
 	protected function ensureNotEmpty() {
 		if (!$this->isEmpty()) return;
 		
-		throw new IllegalStateException('GuiPropPath is empty.');
+		throw new IllegalStateException('DefPropPath is empty.');
 	}
 	
 	/**
@@ -78,7 +78,7 @@ class IdNamePath implements Hashable {
 	
 	/**
 	 * @throws IllegalStateException
-	 * @return \rocket\ei\manage\gui\field\GuiPropPath
+	 * @return \rocket\ei\manage\DefPropPath
 	 */
 	public function getShifted() {
 		$eiPropPaths = $this->eiPropPaths;
@@ -91,7 +91,7 @@ class IdNamePath implements Hashable {
 	
 	/**
 	 * @throws IllegalStateException
-	 * @return \rocket\ei\manage\gui\field\GuiPropPath
+	 * @return \rocket\ei\manage\DefPropPath
 	 */
 	public function getPoped() {
 		$eiPropPaths = $this->eiPropPaths;
@@ -153,7 +153,7 @@ class IdNamePath implements Hashable {
 	
 	/**
 	 * @param mixed $expression
-	 * @return \rocket\ei\manage\gui\field\GuiPropPath
+	 * @return \rocket\ei\manage\DefPropPath
 	 */
 	public static function create($expression) {
 		if ($expression instanceof IdNamePath) {
@@ -172,7 +172,7 @@ class IdNamePath implements Hashable {
 		} else if ($expression === null) {
 			$parts = [];
 		} else {
-			throw new \InvalidArgumentException('Passed value type can not be converted to a GuiPropPath: ' 
+			throw new \InvalidArgumentException('Passed value type can not be converted to a DefPropPath: ' 
 					. TypeUtils::getTypeInfo($expression));
 		}
 		

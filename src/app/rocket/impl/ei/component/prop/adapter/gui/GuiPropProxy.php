@@ -80,7 +80,7 @@ class GuiPropProxy implements GuiProp {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiProp::buildGuiPropSetup()
 	 */
-	function buildGuiPropSetup(Eiu $eiu, ?array $guiPropPaths): ?GuiPropSetup {
+	function buildGuiPropSetup(Eiu $eiu, ?array $defPropPaths): ?GuiPropSetup {
 		$displayDefinition = $this->displayConfig->buildDisplayDefinitionFromEiu($eiu);
 		
 		return GuiPropSetups::simple($this->guiFieldAssembler, $displayDefinition);

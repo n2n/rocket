@@ -21,7 +21,7 @@
  */
 namespace rocket\ei\manage\gui;
 
-use rocket\ei\manage\gui\field\GuiPropPath;
+use rocket\ei\manage\DefPropPath;
 use n2n\util\type\ArgUtils;
 
 class GuiPropSetups {
@@ -53,8 +53,8 @@ class SimpleGuiPropSetup implements GuiPropSetup {
 		return $this->displayDefinition;
 	}
 	
-	public function getForkedDisplayDefinition(GuiPropPath $guiPropPath): ?DisplayDefinition {
-		return $this->forkedDisplayDefinitions[(string) $guiPropPath] ?? null;
+	public function getForkedDisplayDefinition(DefPropPath $defPropPath): ?DisplayDefinition {
+		return $this->forkedDisplayDefinitions[(string) $defPropPath] ?? null;
 	}
 
 	

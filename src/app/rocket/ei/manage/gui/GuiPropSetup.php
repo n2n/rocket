@@ -21,7 +21,7 @@
  */
 namespace rocket\ei\manage\gui;
 
-use rocket\ei\manage\gui\field\GuiPropPath;
+use rocket\ei\manage\DefPropPath;
 
 interface GuiPropSetup {
 	
@@ -36,8 +36,8 @@ interface GuiPropSetup {
 	function getDisplayDefinition(): ?DisplayDefinition;
 	
 	/**
-	 * @param GuiPropPath $guiPropPath
+	 * @param DefPropPath $defPropPath
 	 * @return DisplayDefinition|NULL
 	 */
-	function getForkedDisplayDefinition(GuiPropPath $guiPropPath): ?DisplayDefinition; 
+	function getForkedDisplayDefinition(DefPropPath $defPropPath): ?DisplayDefinition; 
 }

@@ -6,7 +6,7 @@ use rocket\ei\manage\EiObject;
 use n2n\core\container\N2nContext;
 use rocket\ei\util\Eiu;
 use rocket\ei\EiPropPath;
-use rocket\ei\manage\gui\field\GuiPropPath;
+use rocket\ei\manage\DefPropPath;
 
 class SummarizedStringBuilder {
 	const KNOWN_STRING_FIELD_OPEN_DELIMITER = '{';
@@ -34,7 +34,7 @@ class SummarizedStringBuilder {
 		foreach ($idNameDefinition->getIdNameProps() as $id => $idNameProp) {
 			if (!$idNameProp->isStringRepresentable()) continue;
 
-			$placeholder = self::createPlaceholder($this->createGuiPropPath($baseIds, EiPropPath::create($id)));
+			$placeholder = self::createPlaceholder($this->createDefPropPath($baseIds, EiPropPath::create($id)));
 			if (false === strpos($this->identityStringPattern, $placeholder)) continue;
 			
 			$this->placeholders[] = $placeholder;
@@ -61,14 +61,14 @@ class SummarizedStringBuilder {
 		}
 	}
 	
-	private function createGuiPropPath(array $baseIds, $id) {
+	private function createDefPropPath(array $baseIds, $id) {
 		$ids = $baseIds;
 		$ids[] = $id;
-		return new GuiPropPath($ids);
+		return new DefPropPath($ids);
 	}
 	
 	public static function createPlaceholder($eiPropPath) {
-		return self::KNOWN_STRING_FIELD_OPEN_DELIMITER . GuiPropPath::create($eiPropPath)
+		return self::KNOWN_STRING_FIELD_OPEN_DELIMITER . DefPropPath::create($eiPropPath)
 				. self::KNOWN_STRING_FIELD_CLOSE_DELIMITER;
 	}
 	

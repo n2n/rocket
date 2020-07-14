@@ -1,7 +1,7 @@
 <?php
 namespace rocket\ei\mask\model;
 
-use rocket\ei\manage\gui\field\GuiPropPath;
+use rocket\ei\manage\DefPropPath;
 use n2n\util\ex\IllegalStateException;
 use n2n\util\type\ArgUtils;
 use n2n\l10n\Lstr;
@@ -15,7 +15,7 @@ class DisplayItem {
 	protected $helpText;
 	protected $moduleNamespace;
 	protected $siStructureType;
-	protected $guiPropPath;
+	protected $defPropPath;
 	protected $attrs;
 	protected $displayStructure;
 
@@ -23,27 +23,27 @@ class DisplayItem {
 	}
 
 	/**
-	 * @param GuiPropPath $guiPropPath
+	 * @param DefPropPath $defPropPath
 	 * @return DisplayItem
 	 */
-	public static function create(GuiPropPath $guiPropPath, string $siStructureType = null) {
+	public static function create(DefPropPath $defPropPath, string $siStructureType = null) {
 		$orderItem = new DisplayItem();
 		ArgUtils::valEnum($siStructureType, SiStructureType::all(), null, true);
 		$orderItem->siStructureType = $siStructureType;
-		$orderItem->guiPropPath = $guiPropPath;
+		$orderItem->defPropPath = $defPropPath;
 		return $orderItem;
 	}
 	
 	/**
-	 * @param GuiPropPath $guiPropPath
+	 * @param DefPropPath $defPropPath
 	 * @return DisplayItem
 	 * @deprecated
 	 */
-	public static function createFromGuiPropPath(GuiPropPath $guiPropPath, string $siStructureType = null) {
+	public static function createFromDefPropPath(DefPropPath $defPropPath, string $siStructureType = null) {
 		$orderItem = new DisplayItem();
 		ArgUtils::valEnum($siStructureType, SiStructureType::all(), null, true);
 		$orderItem->siStructureType = $siStructureType;
-		$orderItem->guiPropPath = $guiPropPath;
+		$orderItem->defPropPath = $defPropPath;
 		return $orderItem;
 	}
 
@@ -71,7 +71,7 @@ class DisplayItem {
 	public function copy(string $siStructureType = null, array $attrs = null/*, Lstr $labelLstr = null*/) {
 		$displayItem = new DisplayItem();
 		$displayItem->displayStructure = $this->displayStructure;
-		$displayItem->guiPropPath = $this->guiPropPath;
+		$displayItem->defPropPath = $this->defPropPath;
 		ArgUtils::valEnum($siStructureType, SiStructureType::all(), null, true);
 		$displayItem->siStructureType = $siStructureType ?? $this->siStructureType;
 // 		$displayItem->labelLstr = $labelLstr ?? $this->labelLstr;
@@ -84,7 +84,7 @@ class DisplayItem {
 	 */
 	public function getLabelLstr() {
 		if (!$this->hasDisplayStructure()) {
-			throw new IllegalStateException('No labels for GuiPropPath DisplayItem.');
+			throw new IllegalStateException('No labels for DefPropPath DisplayItem.');
 		}
 		
 		if ($this->label === null) return null;
@@ -108,7 +108,7 @@ class DisplayItem {
 	 */
 	public function getHelpTextLstr() {
 		if (!$this->hasDisplayStructure()) {
-			throw new IllegalStateException('No helpTexts for GuiPropPath DisplayItem.');
+			throw new IllegalStateException('No helpTexts for DefPropPath DisplayItem.');
 		}
 		
 		if ($this->helpText === null) return null;
@@ -199,11 +199,11 @@ class DisplayItem {
 
 	/**
 	 * @throws IllegalStateException
-	 * @return GuiPropPath
+	 * @return DefPropPath
 	 */
-	public function getGuiPropPath() {
-		if ($this->guiPropPath !== null) {
-			return $this->guiPropPath;
+	public function getDefPropPath() {
+		if ($this->defPropPath !== null) {
+			return $this->defPropPath;
 		}
 
 		throw new IllegalStateException();

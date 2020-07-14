@@ -57,8 +57,8 @@ class TranslationGuiProp implements GuiProp {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiProp::buildGuiPropSetup()
 	 */
-	function buildGuiPropSetup(Eiu $eiu, ?array $forkedGuiPropPaths): ?GuiPropSetup {
-		$targetEiuGuiFrame = $this->relationModel->getTargetEiuEngine()->newGuiFrame($eiu->guiFrame()->getViewMode(), $forkedGuiPropPaths);
+	function buildGuiPropSetup(Eiu $eiu, ?array $forkedDefPropPaths): ?GuiPropSetup {
+		$targetEiuGuiFrame = $this->relationModel->getTargetEiuEngine()->newGuiFrame($eiu->guiFrame()->getViewMode(), $forkedDefPropPaths);
 		$eiCommandPath = null;
 		if ($eiu->guiFrame()->isReadOnly()) {
 			$eiCommandPath = $this->relationModel->getTargetReadEiCommandPath();

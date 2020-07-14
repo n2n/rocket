@@ -171,7 +171,7 @@ class EmbeddedGuiProp implements GuiProp {
 	public function getForkGuiDefinition(): ?GuiDefinition {
 		return null;
 	}
-	public function buildGuiPropSetup(Eiu $eiu, ?array $guiPropPaths): ?GuiPropSetup {
+	public function buildGuiPropSetup(Eiu $eiu, ?array $defPropPaths): ?GuiPropSetup {
 		return null;
 	}
 }

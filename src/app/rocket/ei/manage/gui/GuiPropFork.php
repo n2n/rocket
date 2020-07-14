@@ -25,7 +25,7 @@ use rocket\ei\manage\EiObject;
 use rocket\ei\util\Eiu;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\manage\entry\UnknownEiFieldExcpetion;
-use rocket\ei\manage\gui\field\GuiPropPath;
+use rocket\ei\manage\DefPropPath;
 use rocket\ei\manage\gui\field\GuiFieldFork;
 
 interface GuiPropFork {
@@ -50,10 +50,10 @@ interface GuiPropFork {
 	
 	/**
 	 * @param Eiu $eiu
-	 * @param GuiPropPath $guiPropPath
+	 * @param DefPropPath $defPropPath
 	 * @return EiFieldAbstraction
 	 * @throws IllegalStateException if {@see self::getForkedGuiDefinition()}
 	 * @throws UnknownEiFieldExcpetion if EiFieldAbstraction is not resovable.
 	 */
-	public function determineEiFieldAbstraction(Eiu $eiu, GuiPropPath $guiPropPath): EiFieldAbstraction;
+	public function determineEiFieldAbstraction(Eiu $eiu, DefPropPath $defPropPath): EiFieldAbstraction;
 }

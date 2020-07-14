@@ -24,11 +24,11 @@ namespace rocket\ei\manage\gui\field;
 interface GuiFieldFork {
 	
 	/**
-	 * @param GuiPropPath $guiPropPath
+	 * @param DefPropPath $defPropPath
 	 * @param bool $makeEditable
 	 * @return GuiField
 	 */
-	public function assembleGuiField(GuiPropPath $guiPropPath): ?GuiField; 
+	public function assembleGuiField(DefPropPath $defPropPath): ?GuiField; 
 	
 	/**
 	 * Gets called to finalize this GuiFieldFork. Which means that there will be no future calls of 
