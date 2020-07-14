@@ -58,12 +58,12 @@ class IdNameFactory {
 			$eiPropPath = $eiProp->getWrapper()->getEiPropPath();
 			
 			if (($eiProp instanceof IdNameEiProp)
-					&& null !== ($guiProp = $eiProp->buildGuiProp(new Eiu($n2nContext, $eiPropPath)))) {
+					&& null !== ($guiProp = $eiProp->buildGuiProp(new Eiu($n2nContext, $this->eiMask, $eiPropPath)))) {
 				$idNameDefinition->putGuiProp($eiPropPath, $guiProp, EiPropPath::from($eiProp));
 			}
 			
 			if (($eiProp instanceof IdNameEiPropFork)
-					&& null !== ($guiPropFork = $eiProp->buildGuiPropFork(new Eiu($n2nContext, $eiPropPath)))){
+					&& null !== ($guiPropFork = $eiProp->buildGuiPropFork(new Eiu($n2nContext, $this->eiMask, $eiPropPath)))){
 				$idNameDefinition->putGuiPropFork($eiPropPath, $guiPropFork);
 			}
 		}
