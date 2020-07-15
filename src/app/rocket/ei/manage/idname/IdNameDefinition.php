@@ -26,6 +26,7 @@ use rocket\ei\EiPropPath;
 use rocket\ei\manage\EiObject;
 use n2n\l10n\Lstr;
 use n2n\core\container\N2nContext;
+use rocket\ei\manage\DefPropPath;
 
 class IdNameDefinition {
 	private $identityStringPattern;
@@ -66,6 +67,15 @@ class IdNameDefinition {
 		return $this->idNamePropForks;
 	}
 	
+	function putIdNameProp(EiPropPath $eiPropPath, IdNameProp $idNameProp) {
+		$this->idNameProps[(string) $eiPropPath] = $idNameProp;
+	}
+	
+	function putIdNamePropFork(EiPropPath $eiPropPath, IdNamePropFork $idNamePropFork) {
+		$this->idNamePropForks[(string) $eiPropPath] = $idNamePropFork;
+	}
+	
+	
 	/**
 	 * @param EiObject $eiObject
 	 * @param N2nLocale $n2nLocale
@@ -77,7 +87,7 @@ class IdNameDefinition {
 		$idPatternPart = null;
 		$namePatternPart = null;
 		
-		foreach ($this->getStringRepresentableIdNameProps() as $eiPropPathStr => $idNameProp) {
+		foreach ($this->getAllIdNameProps() as $eiPropPathStr => $idNameProp) {
 			if ($eiPropPathStr == $eiType->getEntityModel()->getIdDef()->getPropertyName()) {
 				$idPatternPart = SummarizedStringBuilder::createPlaceholder($eiPropPathStr);
 			} else {
@@ -125,22 +135,24 @@ class IdNameDefinition {
 		return $builder->__toString();
 	}
 	
+	public function detectUsedDefPropPaths(string $identityStringPattern) {
+		
+	}
+	
 	/**
 	 * @return \rocket\ei\manage\idname\IdNameProp[]
 	 */
-	public function getStringRepresentableIdNameProps() {
-		return $this->filterStringRepresentableIdNameProps($this, array());
+	public function getAllIdNameProps() {
+		return $this->combineIdNameProps($this, array());
 	}
 	
-	private function filterStringRepresentableIdNameProps(IdNameDefinition $idNameDefinition, array $baseIds) {
+	private function combineIdNameProps(IdNameDefinition $idNameDefinition, array $baseIds) {
 		$idNameProps = array();
 		
 		foreach ($idNameDefinition->getIdNameProps() as $id => $idNameProp) {
-			if (!$idNameProp->isStringRepresentable()) continue;
-			
 			$ids = $baseIds;
 			$ids[] = EiPropPath::create($id);
-			$idNameProps[(string) new IdNamePath($ids)] = $idNameProp;
+			$idNameProps[(string) new DefPropPath($ids)] = $idNameProp;
 		}
 		
 		foreach ($idNameDefinition->getIdNamePropForks() as $id => $idNamePropFork) {
@@ -151,7 +163,7 @@ class IdNameDefinition {
 			$ids = $baseIds;
 			$ids[] = EiPropPath::create($id);
 			$idNameProps = array_merge($idNameProps, 
-					$this->filterStringRepresentableIdNameProps($forkedIdNameDefinition, $ids));
+					$this->combineIdNameProps($forkedIdNameDefinition, $ids));
 		}
 		
 		return $idNameProps;
