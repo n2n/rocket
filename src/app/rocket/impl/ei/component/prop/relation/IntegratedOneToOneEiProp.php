@@ -26,8 +26,6 @@ use rocket\ei\manage\gui\field\GuiFieldFork;
 use rocket\ei\manage\DefPropPath;
 use rocket\ei\manage\gui\EiEntryGuiAssembler;
 use rocket\ei\EiPropPath;
-use rocket\ei\manage\EiObject;
-use n2n\util\ex\NotYetImplementedException;
 use rocket\impl\ei\component\prop\relation\model\ToOneEiField;
 use rocket\ei\manage\LiveEiObject;
 use n2n\util\type\CastUtils;
@@ -35,7 +33,6 @@ use n2n\impl\web\dispatch\mag\model\ObjectMagAdapter;
 use n2n\web\dispatch\Dispatchable;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\impl\ei\component\prop\relation\model\RelationEntry;
 use n2n\web\ui\Raw;
 use n2n\web\ui\UiComponent;
 use n2n\persistence\orm\property\EntityProperty;
@@ -54,6 +51,7 @@ use rocket\ei\manage\gui\EiFieldAbstraction;
 use rocket\impl\ei\component\prop\adapter\entry\EiFieldWrapperCollection;
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
+use rocket\ei\manage\EiObject;
 
 class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropFork {
 	
@@ -154,8 +152,6 @@ class IntegratedOneToOneEiProp extends RelationEiPropAdapter implements GuiPropF
 	public function buildGuiProp(Eiu $eiu): ?GuiProp {
 		return null;	
 	}
-	
-	
 
 	/**
 	 * {@inheritDoc}

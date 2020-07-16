@@ -27,7 +27,6 @@ use rocket\ei\component\prop\QuickSearchableEiProp;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use rocket\ei\manage\frame\EiFrame;
-use n2n\l10n\N2nLocale;
 use n2n\core\container\N2nContext;
 use rocket\ei\util\filter\prop\EnumFilterProp;
 use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
@@ -49,9 +48,11 @@ use n2n\impl\persistence\orm\property\IntEntityProperty;
 use rocket\si\content\SiField;
 use rocket\si\content\impl\SiFields;
 use rocket\impl\ei\component\prop\enum\conf\EnumConfig;
+use rocket\ei\manage\idname\IdNameProp;
+use rocket\ei\component\prop\IdNameEiProp;
 
 class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiProp, SortableEiProp, 
-		QuickSearchableEiProp {
+		QuickSearchableEiProp, IdNameEiProp {
 	
 	private $enumConfig;
 	
@@ -206,12 +207,9 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 		return null;
 	}
 
-	public function isStringRepresentable(): bool {
-		return true;
+	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {
+		return $eiu->factory()->newIdNameProp(function (Eiu $eiu) {
+			return StringUtils::strOf($eiu->object()->readNativValue($this));
+		});
 	}
-	
-	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
-		return StringUtils::strOf($eiu->object()->readNativValue($this));
-	}
-
 }

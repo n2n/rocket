@@ -34,6 +34,7 @@ use rocket\si\content\impl\StringInSiField;
 use rocket\impl\ei\component\prop\string\cke\conf\CkeConfig;
 use n2n\util\type\ArgUtils;
 use n2n\util\uri\Url;
+use rocket\ei\manage\idname\IdNameProp;
 
 class CkeEiProp extends AlphanumericEiProp {
 	/**
@@ -100,6 +101,12 @@ class CkeEiProp extends AlphanumericEiProp {
 	function saveSiField(SiField $siField, Eiu $eiu) {
 		CastUtils::assertTrue($siField instanceof StringInSiField);
 		$eiu->field()->setValue($siField->getValue());
+	}
+	
+	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {
+		return $eiu->factory()->newIdNameProp(function (Eiu $eiu) {
+			return $eiu->object()->readNativValue($this);
+		});
 	}
 	
 // 	/**

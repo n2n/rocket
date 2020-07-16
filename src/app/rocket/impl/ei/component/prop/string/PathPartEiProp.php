@@ -21,7 +21,6 @@
  */
 namespace rocket\impl\ei\component\prop\string;
 
-use n2n\l10n\N2nLocale;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
@@ -31,8 +30,10 @@ use rocket\ei\util\Eiu;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\si\content\SiField;
 use rocket\impl\ei\component\prop\string\conf\PathPartConfig;
+use rocket\ei\manage\idname\IdNameProp;
+use rocket\ei\component\prop\IdNameEiProp;
 
-class PathPartEiProp extends AlphanumericEiProp  {
+class PathPartEiProp extends AlphanumericEiProp implements IdNameEiProp {
 	function __construct() {
 		parent::__construct();
 	}
@@ -96,7 +97,9 @@ class PathPartEiProp extends AlphanumericEiProp  {
 		$eiu->field()->setValue($siField->getValue());
 	}
 	
-	function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): string {
-		return $eiu->object()->readNativValue($this);
+	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {
+		return $eiu->factory()->newIdNameProp(function (Eiu $eiu) {
+			return $eiu->object()->readNativValue($this);
+		});
 	}
 }

@@ -24,23 +24,36 @@ namespace rocket\ei\manage\critmod\quick;
 use n2n\util\type\ArgUtils;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\critmod\filter\ComparatorConstraintGroup;
+use rocket\ei\manage\DefPropPath;
 
 class QuickSearchDefinition {
-	private $quickSearchProps = array();
+	private $quickSearchProps = [];
+	private $quickSearchPropForks = [];
 	
 	/**
 	 * @param EiPropPath $eiPropPath
 	 * @param QuickSearchProp $quickSearchField
 	 */
-	public function putQuickSearchProp(EiPropPath $eiPropPath, QuickSearchProp $quickSearchField) {
+	function putQuickSearchProp(EiPropPath $eiPropPath, QuickSearchProp $quickSearchField) {
 		$this->quickSearchProps[(string) $eiPropPath] = $quickSearchField;	
+	}
+	
+	function putQuickSearchPropFork(EiPropPath $eiPropPath, QuickSearchPropFork $quickSearchPropFork) {
+		$this->quickSearchPropForks[(string) $eiPropPath] = $quickSearchPropFork;
 	}
 	
 	/**
 	 * @return QuickSearchProp[]
 	 */
-	public function getQuickSearchProps(): array {
+	function getQuickSearchProps() {
 		return $this->quickSearchProps;
+	}
+	
+	/**
+	 * @return QuickSearchPropFork[]
+	 */
+	function getQuickSearchPropForks() {
+		return $this->quickSearchPropForks;
 	}
 	
 	/**
@@ -63,19 +76,21 @@ class QuickSearchDefinition {
 	/**
 	 * 
 	 * @param string $searchStr
-	 * @param EiPropPath[] $eiPropPaths
+	 * @param DefPropPath[] $eiPropPaths
 	 * @return null|\rocket\ei\manage\critmod\filter\ComparatorConstraintGroup
 	 */
-	public function buildCriteriaConstraint(string $searchStr, array $eiPropPaths = null) {
-		$quickSearchFields = null;
-		if ($eiPropPaths === null) {
-			$quickSearchFields = $this->quickSearchProps;
+	public function buildCriteriaConstraint(string $searchStr, array $defPropPaths = null) {
+		$quickSearchProps = null;
+		if ($defPropPaths === null) {
+			$quickSearchProps = $this->quickSearchProps;
 		} else {
-			ArgUtils::valArray($eiPropPaths, EiPropPath::class);
-			$quickSearchFields = $this->filterProps($eiPropPaths);
+			ArgUtils::valArray($defPropPaths, DefPropPath::class);
+			$quickSearchProps = $this->filterProps(array_map(function ($dpp) { return $dpp->getFirst(); }, $defPropPaths));
 		} 
 		
-		if (empty($quickSearchFields)) return null;
+		if (empty($quickSearchProps)) {
+			return null;
+		}
 		
 		$comparatorConstraintGroup = new ComparatorConstraintGroup(true);
 		
@@ -86,12 +101,15 @@ class QuickSearchDefinition {
 			
 			$queryComparatorConstraintGroup = new ComparatorConstraintGroup(false);
 			
-			foreach ($quickSearchFields as $quickSearchField) {
-				$queryComparatorConstraintGroup->addComparatorConstraint(
-						$quickSearchField->createComparatorConstraint($searchStrPart));
+			foreach ($quickSearchProps as $quickSearchProp) {
+				if (null !== ($comparatorConstraint = $quickSearchProp->buildComparatorConstraint($searchStrPart))) {
+					$queryComparatorConstraintGroup->addComparatorConstraint($comparatorConstraint);
+				}
 			}
 			
-			$comparatorConstraintGroup->addComparatorConstraint($queryComparatorConstraintGroup);
+			if (!$queryComparatorConstraintGroup->isEmpty()) {
+				$comparatorConstraintGroup->addComparatorConstraint($queryComparatorConstraintGroup);
+			}
 		}
 		
 		if ($comparatorConstraintGroup->isEmpty()) {

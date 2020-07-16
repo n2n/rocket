@@ -34,6 +34,7 @@ use rocket\ei\manage\security\filter\SecurityFilterProp;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
+use rocket\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\ei\manage\entry\EiField;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\component\prop\FieldEiProp;
@@ -41,8 +42,10 @@ use rocket\impl\ei\component\prop\relation\model\ToOneEiField;
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\impl\ei\component\prop\relation\model\gui\RelationLinkGuiField;
 use rocket\impl\ei\component\prop\relation\model\gui\ToOneGuiField;
+use rocket\ei\component\prop\QuickSearchableEiProp;
+use rocket\impl\ei\component\prop\translation\model\ToOneQuickSearchProp;
 
-class ManyToOneSelectEiProp extends RelationEiPropAdapter implements FieldEiProp {
+class ManyToOneSelectEiProp extends RelationEiPropAdapter implements FieldEiProp, QuickSearchableEiProp {
 	
 	function __construct() {
 		parent::__construct();
@@ -245,6 +248,19 @@ class ManyToOneSelectEiProp extends RelationEiPropAdapter implements FieldEiProp
 				
 		return $eiEntryFilterProp;
 	}
+	
+	public function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp {
+		$targetEiuEngine = $this->getRelationModel()->getTargetEiuEngine();
+		$targetDefPropPaths = $targetEiuEngine->idNameDefinition()->getUsedDefProps();
+		
+		if (empty($targetDefPropPaths)) {
+			return null;
+		}
+		
+		return new ToOneQuickSearchProp($this->getRelationModel(), $targetDefPropPaths, 
+				$eiu->frame()->forkDiscover($this, $eiu->object()));
+	}
+
 	
 
 }

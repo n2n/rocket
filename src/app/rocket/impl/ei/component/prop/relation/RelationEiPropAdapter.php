@@ -38,8 +38,10 @@ use rocket\impl\ei\component\prop\relation\conf\RelationConfig;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\impl\ei\component\prop\relation\model\Relation;
 use rocket\ei\manage\gui\GuiFieldAssembler;
+use rocket\ei\manage\idname\IdNameProp;
+use rocket\ei\component\prop\IdNameEiProp;
 
-abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements RelationEiProp, GuiEiProp, GuiFieldAssembler, ForkEiProp {
+abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements RelationEiProp, GuiEiProp, GuiFieldAssembler, ForkEiProp, IdNameEiProp {
 			
 	/**
 	 * @var DisplayConfig
@@ -127,19 +129,21 @@ abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements Re
 		return GuiProps::configAndAssembler($this->displayConfig, $this);
 	}
 	
-	function isStringRepresentable(): bool {
-		return $this->getRelation()->isTargetOne();
-	}
-	
-	function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
-		$targetEntityObj = $eiu->object()->readNativValue($this->eiu->prop()->getEiProp());
-		
-		if ($targetEntityObj === null) {
+	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {
+		if ($this->getRelationModel()->isTargetMany()) {
 			return null;
 		}
 		
-		$targetEiuEngine = $this->getRelation()->getTargetEiuEngine();
-		return $targetEiuEngine->createIdentityString($targetEntityObj);
+		return $eiu->factory()->newIdNameProp(function (Eiu $eiu) {
+			$targetEntityObj = $eiu->object()->readNativValue($eiu->prop()->getEiProp());
+			
+			if ($targetEntityObj === null) {
+				return null;
+			}
+			
+			$targetEiuEngine = $this->getRelation()->getTargetEiuEngine();
+			return $targetEiuEngine->createIdentityString($targetEntityObj);
+		});
 	}
 	
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {

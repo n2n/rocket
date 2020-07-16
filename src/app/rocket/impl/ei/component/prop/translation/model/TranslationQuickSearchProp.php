@@ -28,7 +28,7 @@ class TranslationQuickSearchProp implements QuickSearchProp {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\critmod\quick\QuickSearchProp::createComparatorConstraint()
 	 */
-	public function createComparatorConstraint(string $queryStr): ComparatorConstraint {
+	public function buildComparatorConstraint(string $queryStr): ComparatorConstraint {
 		return new TranslationComparatorConstraint($this->entityProperty, $this->targetEntityClass, 
 				$this->targetQuickSearchDefinition->buildCriteriaConstraint($queryStr));
 	}

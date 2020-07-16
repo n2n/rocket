@@ -21,6 +21,8 @@
  */
 namespace rocket\ei\manage\gui\field;
 
+use rocket\ei\manage\DefPropPath;
+
 interface GuiFieldFork {
 	
 	/**

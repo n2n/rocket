@@ -160,10 +160,6 @@ class EmbeddedGuiProp implements GuiProp {
 		return new DisplayDefinition(SiStructureType::ITEM, true);
 	}
 
-// 	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
-// 		return null;
-// 	}
-
 	public function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
 		return new EmbeddedGuiField($eiu, $this->eiProp);
 	}

@@ -44,6 +44,7 @@ class IdNameDefinition {
 	 */
 	public function setIdentityStringPattern(?string $identityStringPattern) {
 		$this->identityStringPattern = $identityStringPattern;
+		$this->usedDefPropPaths = null;
 	}
 	
 	/**
@@ -69,12 +70,18 @@ class IdNameDefinition {
 	
 	function putIdNameProp(EiPropPath $eiPropPath, IdNameProp $idNameProp) {
 		$this->idNameProps[(string) $eiPropPath] = $idNameProp;
+		$this->usedDefPropPaths = null;
 	}
 	
 	function putIdNamePropFork(EiPropPath $eiPropPath, IdNamePropFork $idNamePropFork) {
 		$this->idNamePropForks[(string) $eiPropPath] = $idNamePropFork;
+		$this->usedDefPropPaths = null;
 	}
 	
+	
+	private function createDefaultIdentityStringPattern() {
+		
+	}
 	
 	/**
 	 * @param EiObject $eiObject
@@ -98,8 +105,8 @@ class IdNameDefinition {
 		}
 		
 		if ($idPatternPart === null) {
-			$idPatternPart = $eiObject->getEiEntityObj()->hasId() ?
-			$eiType->idToPid($eiObject->getEiEntityObj()->getId()) : 'new';
+			$idPatternPart = $eiObject->getEiEntityObj()->hasId() 
+					? $eiType->idToPid($eiObject->getEiEntityObj()->getId()) : 'new';
 		}
 		
 		if ($namePatternPart === null) {
@@ -135,8 +142,23 @@ class IdNameDefinition {
 		return $builder->__toString();
 	}
 	
-	public function detectUsedDefPropPaths(string $identityStringPattern) {
+	private $usedDefPropPaths = null;
+	
+	public function getUsedDefPropPaths() {
+		if ($this->usedDefPropPaths !== null) {
+			return $this->usedDefPropPaths;
+		}
 		
+		if ($this->identityStringPattern !== null) {
+			return $this->usedDefPropPaths = SummarizedStringBuilder::detectUsedDefPropPaths($this->identityStringPattern, $this);
+		}
+			
+		foreach ($this->getAllIdNameProps() as $eiPropPathStr => $idNameProp)  {
+			$this->usedDefPropPaths = [$eiPropPathStr => DefPropPath::create($eiPropPathStr)];
+			break;
+		}
+		
+		$this->usedDefPropPaths = [];
 	}
 	
 	/**

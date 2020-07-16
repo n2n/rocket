@@ -102,12 +102,4 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 // 	public function getUiOutputLabel(Eiu $eiu) {
 // 		return $this->getLabelLstr()->t($eiu->getN2nLocale());
 // 	}
-	
-	public function isStringRepresentable(): bool {
-		return false;
-	}
-	
-	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
-		throw new UnsupportedOperationException('EiProp ' . $this . ' not string representable.');
-	}
 }

@@ -48,9 +48,11 @@ use rocket\ei\manage\critmod\sort\SortProp;
 use rocket\ei\manage\generic\GenericEiProperty;
 use rocket\ei\manage\generic\ScalarEiProperty;
 use rocket\si\content\SiField;
+use rocket\ei\manage\idname\IdNameProp;
+use rocket\ei\component\prop\IdNameEiProp;
 
 class N2nLocaleEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiProp, SortableEiProp, GenericEiProp,
-		ScalarEiProp {
+		ScalarEiProp, IdNameEiProp {
 	private $definedN2nLocales;
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {
@@ -111,6 +113,13 @@ class N2nLocaleEiProp extends DraftablePropertyEiPropAdapter implements Filterab
 // 		$dataSet->set($this->id, $attributeValue);
 // 	}
 
+	
+	function buildIdNameProp(Eiu $eiu): ?IdNameProp {
+		return $eiu->factory()->newIdNameProp(function (Eiu $eiu) {
+			return $this->buildIdentityString($eiu);
+		});
+	}
+	
 	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
 		$value = $eiu->object()->readNativValue($this);
 		
@@ -120,6 +129,7 @@ class N2nLocaleEiProp extends DraftablePropertyEiPropAdapter implements Filterab
 		
 		return $this->generateDisplayNameForN2nLocale(N2nLocale::create($value), $n2nLocale);
 	}
+	
 
 	public function isCompatibleWith(EntityProperty $entityProperty) {
 		return $entityProperty instanceof N2nLocaleEntityProperty;

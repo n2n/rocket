@@ -49,7 +49,6 @@ import { ImagePreviewComponent } from './model/content/impl/file/comp/image-prev
 import { CkeInFieldComponent } from './model/content/impl/alphanum/comp/cke-in-field/cke-in-field.component';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { FieldMessagesComponent } from './model/content/impl/common/comp/field-messages/field-messages.component';
-import { EditorModule } from '@tinymce/tinymce-angular';
 
 @NgModule({
 	declarations: [
@@ -69,8 +68,7 @@ import { EditorModule } from '@tinymce/tinymce-angular';
 		UiModule,
 		UtilModule,
 		RouterModule,
-		CKEditorModule,
-		EditorModule
+		CKEditorModule
 	],
 	exports: [
 		ListZoneContentComponent, BulkyEntryComponent, StringOutFieldComponent, InputInFieldComponent,

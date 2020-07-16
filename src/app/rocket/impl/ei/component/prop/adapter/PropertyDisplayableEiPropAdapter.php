@@ -21,8 +21,6 @@
  */
 namespace rocket\impl\ei\component\prop\adapter;
 
-use n2n\l10n\N2nLocale;
-use n2n\util\ex\UnsupportedOperationException;
 use rocket\ei\component\prop\FieldEiProp;
 use rocket\ei\component\prop\GuiEiProp;
 use rocket\ei\manage\entry\EiField;
@@ -32,7 +30,6 @@ use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
-use rocket\impl\ei\component\prop\adapter\gui\GuiFieldFactory;
 use rocket\impl\ei\component\prop\adapter\gui\GuiFieldProxy;
 use rocket\impl\ei\component\prop\adapter\gui\GuiProps;
 use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable;
@@ -86,13 +83,5 @@ abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter
 	
 	public function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
 		return new GuiFieldProxy($eiu, $this);
-	}
-	
-	public function isStringRepresentable(): bool {
-		return false;
-	}
-	
-	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
-		throw new UnsupportedOperationException('EiProp ' . $this->id . ' not summarizable.');
 	}
 }

@@ -25,38 +25,57 @@ class SummarizedStringBuilder {
 		$this->n2nLocale = $n2nLocale;
 	}
 	
-	public function replaceFields(array $baseIds, IdNameDefinition $idNameDefinition, EiObject $eiObject = null) {
+	/**
+	 * @param string $identityStringPattern
+	 * @param IdNameDefinition $idNameDefinition
+	 * @return \rocket\ei\manage\DefPropPath[]
+	 */
+	static function detectUsedDefPropPaths(string $identityStringPattern, IdNameDefinition $idNameDefinition) {
+		$usedDefPropPaths = [];
+		foreach (array_keys($idNameDefinition->getAllIdNameProps()) as $defGuiPropPathStr) {
+			if (false === strpos($identityStringPattern, self::createPlaceholerFromStr($defGuiPropPathStr))) {
+				continue;
+			}
+			
+			$usedDefPropPaths[$defGuiPropPathStr] = DefPropPath::create($defGuiPropPathStr);
+		}
+		return $usedDefPropPaths;
+	}
+	
+	public function replaceFields(array $baseEiPropPaths, IdNameDefinition $idNameDefinition, EiObject $eiObject = null) {
 		$eiu = null;
 		if ($eiObject !== null) {
 			$eiu = new Eiu($this->n2nContext, $eiObject);
 		}
 		
-		foreach ($idNameDefinition->getIdNameProps() as $id => $idNameProp) {
-			if (!$idNameProp->isStringRepresentable()) continue;
-
-			$placeholder = self::createPlaceholder($this->createDefPropPath($baseIds, EiPropPath::create($id)));
+		foreach ($idNameDefinition->getIdNameProps() as $eiPropPathStr => $idNameProp) {
+			$eiPropPath = EiPropPath::create($eiPropPathStr);
+			$placeholder = self::createPlaceholder($this->createDefPropPath($baseEiPropPaths, $eiPropPath));
 			if (false === strpos($this->identityStringPattern, $placeholder)) continue;
 			
 			$this->placeholders[] = $placeholder;
 			if ($eiObject === null) {
 				$this->replacements[] = '';
 			} else {
+				$eiu = new Eiu($this->n2nContext, $eiObject, $eiPropPath);
 				$this->replacements[] = $idNameProp->buildIdentityString($eiu, $this->n2nLocale);
 			}
 		}
 		
-		foreach ($idNameDefinition->getIdNamePropForks() as $id => $idNamePropFork) {
+		foreach ($idNameDefinition->getIdNamePropForks() as $eiPropPathStr => $idNamePropFork) {
 			$forkedIdNameDefinition = $idNamePropFork->getForkedIdNameDefinition();
+			$eiPropPath = EiPropPath::create($eiPropPathStr);
 			
 			if ($forkedIdNameDefinition === null) continue;
 			
 			$forkedEiFieldSource = null;
 			if ($eiObject !== null) {
+				$eiu = new Eiu($this->n2nContext, $eiObject, $eiPropPath);
 				$forkedEiFieldSource = $idNamePropFork->determineForkedEiObject($eiu);
 			}
 			
-			$ids = $baseIds;
-			$ids[] = EiPropPath::create($id);
+			$ids = $baseEiPropPaths;
+			$ids[] = $eiPropPath;
 			$this->replaceFields($ids, $forkedIdNameDefinition, $forkedEiFieldSource);
 		}
 	}
@@ -69,6 +88,15 @@ class SummarizedStringBuilder {
 	
 	public static function createPlaceholder($eiPropPath) {
 		return self::KNOWN_STRING_FIELD_OPEN_DELIMITER . DefPropPath::create($eiPropPath)
+				. self::KNOWN_STRING_FIELD_CLOSE_DELIMITER;
+	}
+	
+	/**
+	 * @param string $defPropPathStr
+	 * @return string
+	 */
+	private static function createPlaceholerFromStr($defPropPathStr) {
+		return self::KNOWN_STRING_FIELD_OPEN_DELIMITER . $defPropPathStr
 				. self::KNOWN_STRING_FIELD_CLOSE_DELIMITER;
 	}
 	

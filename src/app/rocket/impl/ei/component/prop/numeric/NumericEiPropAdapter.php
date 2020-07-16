@@ -43,9 +43,11 @@ use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\impl\ei\component\prop\numeric\conf\NumericConfig;
 use rocket\si\content\SiField;
+use rocket\ei\component\prop\IdNameEiProp;
+use rocket\ei\manage\idname\IdNameProp;
 
 abstract class NumericEiPropAdapter extends DraftablePropertyEiPropAdapter 
-		implements FilterableEiProp, SortableEiProp, QuickSearchableEiProp {
+		implements FilterableEiProp, SortableEiProp, QuickSearchableEiProp, IdNameEiProp {
     
 	private $numericConfig;
 		    
@@ -117,12 +119,10 @@ abstract class NumericEiPropAdapter extends DraftablePropertyEiPropAdapter
 // 		return $view->getFormHtmlBuilder()->getInputField($propertyPath, 
 // 				array('class' => 'rocket-preview-inpage-component'));
 // 	}
-
-	function isStringRepresentable(): bool {
-		return true;
-	}
 	
-	function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
-		return $eiu->object()->readNativValue($this);
+	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {
+		return $eiu->factory()->newIdNameProp(function (Eiu $eiu) {
+			return $eiu->object()->readNativValue($this);
+		});
 	}
 }

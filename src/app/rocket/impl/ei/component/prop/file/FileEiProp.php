@@ -27,7 +27,6 @@ use n2n\io\managed\File;
 use n2n\io\managed\impl\FileFactory;
 use n2n\io\managed\impl\TmpFileManager;
 use n2n\io\orm\ManagedFileEntityProperty;
-use n2n\l10n\N2nLocale;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\property\AccessProxy;
 use n2n\util\type\ArgUtils;
@@ -54,8 +53,10 @@ use rocket\si\content\impl\SiUploadResult;
 use rocket\impl\ei\component\prop\file\conf\FileModel;
 use n2n\io\managed\img\ImageFile;
 use n2n\io\managed\img\ImageDimension;
+use rocket\ei\manage\idname\IdNameProp;
+use rocket\ei\component\prop\IdNameEiProp;
 
-class FileEiProp extends DraftablePropertyEiPropAdapter {
+class FileEiProp extends DraftablePropertyEiPropAdapter implements IdNameEiProp {
 	
 	/**
 	 * @var EiPropPath|null
@@ -288,11 +289,13 @@ class FileEiProp extends DraftablePropertyEiPropAdapter {
 				$this->fileVerificator->isImageRecognized());
 	}
 	
-	public function isStringRepresentable(): bool {
-		return true;
+	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {
+		return $eiu->factory()->newIdNameProp(function (Eiu $eiu) {
+			return $this->buildIdentityString($eiu);
+		});
 	}
 	
-	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
+	private function buildIdentityString(Eiu $eiu) {
 		$file = $eiu->object()->readNativValue($this);
 		if ($file === null) return null;
 		

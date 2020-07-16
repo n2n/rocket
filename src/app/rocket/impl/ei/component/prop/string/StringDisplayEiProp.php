@@ -41,9 +41,11 @@ use rocket\si\content\SiField;
 use rocket\impl\ei\component\prop\adapter\PropertyDisplayableEiPropAdapter;
 use rocket\impl\ei\component\prop\adapter\gui\GuiProps;
 use rocket\impl\ei\component\prop\adapter\gui\GuiFieldFactory;
+use rocket\ei\manage\idname\IdNameProp;
+use rocket\ei\component\prop\IdNameEiProp;
 
 class StringDisplayEiProp extends PropertyDisplayableEiPropAdapter implements ObjectPropertyConfigurable, 
-		FieldEiProp, GuiFieldFactory, StatelessGuiFieldDisplayable {
+		FieldEiProp, GuiFieldFactory, StatelessGuiFieldDisplayable, IdNameEiProp {
 	
 	function prepare() {
 		$this->getDisplayConfig()->setCompatibleViewModes(ViewMode::read());
@@ -154,20 +156,10 @@ class StringDisplayEiProp extends PropertyDisplayableEiPropAdapter implements Ob
 		return new GuiFieldProxy($this, $eiu);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiProp::isStringRepresentable()
-	 */
-	function isStringRepresentable(): bool {
-		return true;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiProp::buildIdentityString($eiObject, $n2nLocale)
-	 */
-	function buildIdentityString(Eiu $eiu, \n2n\l10n\N2nLocale $n2nLocale): ?string {
-		return StringUtils::strOf($eiu->object()->readNativValue($this), true);
+	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {
+		return $eiu->factory()->newIdNameProp(function (Eiu $eiu) {
+			return StringUtils::strOf($eiu->object()->readNativValue($this), true);
+		});
 	}
 
 	/**

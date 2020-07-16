@@ -49,6 +49,7 @@ use n2n\impl\web\ui\view\html\HtmlElement;
 use rocket\ei\manage\critmod\sort\SortProp;
 use rocket\si\content\SiField;
 use rocket\impl\ei\component\prop\date\conf\DateTimeConfig;
+use rocket\ei\manage\idname\IdNameProp;
 
 class DateTimeEiProp extends DraftablePropertyEiPropAdapter implements SortableEiProp {
 
@@ -88,19 +89,16 @@ class DateTimeEiProp extends DraftablePropertyEiPropAdapter implements SortableE
 				$this->isMandatory($eiu), array('placeholder' => $this->getLabelLstr(),
 						'class' => 'form-control rocket-date-picker'));
 	}
-
-
-	public function isStringRepresentable(): bool {
-		return true;
-	}
 	
-    public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
-    	if (null !== ($dateTime = $eiu->object()->readNativValue($this))) {
-            return L10nUtils::formatDateTime($dateTime, $n2nLocale, $this->getDateStyle(), $this->getTimeStyle());
-        }
-
-        return null;
-    } 
+	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {
+		return $eiu->factory()->newIdNameProp(function (Eiu $eiu) {
+			if (null !== ($dateTime = $eiu->object()->readNativValue($this))) {
+				return L10nUtils::formatDateTime($dateTime, $n2nLocale, $this->getDateStyle(), $this->getTimeStyle());
+			}
+			
+			return null;
+		});
+	}
 	
 	public function createDraftValueSelection(FetchDraftStmtBuilder $selectDraftStmtBuilder, DraftManager $dm, 
 			N2nContext $n2nContext): DraftValueSelection {

@@ -32,8 +32,10 @@ use n2n\impl\web\ui\view\html\HtmlSnippet;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use rocket\si\content\SiField;
 use rocket\si\content\impl\SiFields;
+use rocket\ei\manage\idname\IdNameProp;
+use rocket\ei\component\prop\IdNameEiProp;
 
-class TypeEiProp extends DisplayableEiPropAdapter implements StatelessGuiFieldDisplayable {
+class TypeEiProp extends DisplayableEiPropAdapter implements StatelessGuiFieldDisplayable, IdNameEiProp {
 	
 	protected function prepare() {
 	}
@@ -60,24 +62,16 @@ class TypeEiProp extends DisplayableEiPropAdapter implements StatelessGuiFieldDi
 				new HtmlElement('span', null, $label)));
 	}
 	
-	/* (non-PHPdoc)
-	 * @see \rocket\ei\manage\gui\GuiProp::isStringRepresentable()
-	 */
-	public function isStringRepresentable(): bool {
-		return true;
-	}
-
-	/* (non-PHPdoc)
-	 * @see \rocket\ei\manage\gui\GuiProp::buildIdentityString()
-	 */
-	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
-		$eiMask = $this->getEiMask();
-		if (!$eiMask->getEiType()->equals($eiObject->getEiEntityObj()->getEiType())) {
-			$eiMask = $eiObject->getEiEntityObj()->getEiType()->getEiMask();
-		}
-		
-		return $eiMask;
-		
+	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {
+		return $eiu->factory()->newIdNameProp(function (Eiu $eiu) {
+			$eiMask = $this->getEiMask();
+			$eiObject = $eiu->object()->getEiObject();
+			if (!$eiMask->getEiType()->equals($eiObject->getEiEntityObj()->getEiType())) {
+				$eiMask = $eiObject->getEiEntityObj()->getEiType()->getEiMask();
+			}
+			
+			return $eiMask;
+		});
 	}
 
 }

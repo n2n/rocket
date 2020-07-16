@@ -268,6 +268,7 @@ class EiuEngine {
 		return $this->getManageState()->getDef()->getIdNameDefinition($this->eiEngine->getEiMask());
 	}
 	
+	
 	/**
 	 * @param mixed $eiObjectArg
 	 * @param bool $determineEiMask
