@@ -119,7 +119,7 @@ export class SiPageCollection {
 		let prevPage: SiPage|null = null;
 
 		for (const page of this.getVisiblePages()) {
-			if (prevPage === null || (prevPage.offsetHeight < offsetHeight
+			if (prevPage === null || (page.offsetHeight < offsetHeight
 					&& prevPage.offsetHeight <= page.offsetHeight)) {
 				prevPage = page;
 				continue;

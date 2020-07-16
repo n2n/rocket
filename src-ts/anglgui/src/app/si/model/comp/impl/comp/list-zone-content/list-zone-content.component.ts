@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Host } from '@angular/core';
 import { SiGetRequest } from 'src/app/si/model/api/si-get-request';
 import { SiGetInstruction } from 'src/app/si/model/api/si-get-instruction';
 import { SiGetResponse } from 'src/app/si/model/api/si-get-response';
@@ -13,6 +13,7 @@ import { SiPageCollection } from '../../model/si-page-collection';
 import { StructurePage, StructurePageManager } from './structure-page-manager';
 import { SiService } from 'src/app/si/manage/si.service';
 import { skip, debounceTime, tap } from 'rxjs/operators';
+import { LayerComponent } from 'src/app/ui/structure/comp/layer/layer.component';
 
 @Component({
 	selector: 'rocket-ui-list-zone-content',
@@ -30,14 +31,14 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 	private quickSearchSubject = new Subject<string>();
 	private quickSearching = false;
 
-	constructor(private siService: SiService) {
+	constructor(private siService: SiService, @Host() private parent: LayerComponent) {
 	}
 
 	ngOnInit() {
 		this.siPageCollection = this.model.getSiPageCollection();
 		this.spm = new StructurePageManager(this);
 
-		this.subscription.add(fromEvent<MouseEvent>(window, 'scroll').subscribe(() => {
+		this.subscription.add(fromEvent<MouseEvent>(this.parent.nativeElement, 'scroll').subscribe(() => {
 			if (this.quickSearching) {
 				return;
 			}
@@ -78,6 +79,10 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 	}
 
 	private visibileLoadCurrentPage() {
+		if (this.siPageCollection.size !== 0) {
+			throw new Error('SiPageCollection filled.');
+		}
+
 		const loadedPage = this.loadPage(this.siPageCollection.currentPageNo);
 		loadedPage.offsetHeight = 0;
 	}
@@ -162,7 +167,7 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 	}
 
 	private updateCurrentPage() {
-		let page = this.siPageCollection.getBestPageByOffsetHeight(window.scrollY);
+		let page = this.siPageCollection.getBestPageByOffsetHeight(this.parent.nativeElement.scrollTop);
 		if (page) {
 			this.siPageCollection.currentPageNo = page.num;
 			return;
@@ -179,7 +184,8 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 	private updateVisiblePages() {
 		this.updateCurrentPage();
 
-		if ((window.scrollY + window.innerHeight) < document.body.offsetHeight) {
+		if ((this.parent.nativeElement.scrollTop + this.parent.nativeElement.offsetHeight)
+				< this.parent.nativeElement.scrollHeight) {
 			return;
 		}
 
@@ -203,7 +209,8 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 	}
 
 	private updateOffsetHeight(siPage: SiPage) {
-		siPage.offsetHeight = window.scrollY + window.innerHeight; /* document.body.offsetHeight - window.innerHeight;*/
+		siPage.offsetHeight = this.parent.nativeElement.scrollTop
+				+ this.parent.nativeElement.offsetHeight; /* document.body.offsetHeight - window.innerHeight;*/
 	// 		console.log(siPage.number + ' ' + document.body.offsetHeight + ' ' + (window.scrollY + window.innerHeight));
 	}
 
@@ -220,7 +227,7 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 
 		const page = this.siPageCollection.getPageByNo(this.siPageCollection.currentPageNo);
 		if (page.visible) {
-			window.scrollTo(window.scrollX, page.offsetHeight);
+			this.parent.nativeElement.scrollTo(this.parent.nativeElement.scrollLeft, page.offsetHeight);
 	// 			this.model.currentPageNo = currentPageNo
 			return;
 		}

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ElementRef } from '@angular/core';
 import { UiLayer } from '../../model/ui-layer';
 
 @Component({
@@ -10,8 +10,12 @@ export class LayerComponent implements OnInit {
 	@Input()
 	uiLayer: UiLayer;
 
-	constructor() { }
+	constructor(private elemRef: ElementRef) { }
 
 	ngOnInit() {
+	}
+
+	get nativeElement(): HTMLElement {
+		return this.elemRef.nativeElement;
 	}
 }

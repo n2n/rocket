@@ -14,7 +14,7 @@
 	$view->useTemplate('boilerplate.html', $view->getParams());
 	
 	$html->meta()->addCssCode('
-			body {
+			rocket-ui-layer {
 				scroll-behavior: smooth;
 			}
 			

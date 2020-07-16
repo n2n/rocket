@@ -4,6 +4,7 @@ import { UiStructureModel, UiStructureModelMode } from './ui-structure-model';
 import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { UiZoneError } from './ui-zone-error';
+import { ElementRef } from '@angular/core';
 
 export class UiStructure {
 	private _model: UiStructureModel|null;
