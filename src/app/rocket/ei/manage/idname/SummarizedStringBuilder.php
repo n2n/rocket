@@ -43,11 +43,6 @@ class SummarizedStringBuilder {
 	}
 	
 	public function replaceFields(array $baseEiPropPaths, IdNameDefinition $idNameDefinition, EiObject $eiObject = null) {
-		$eiu = null;
-		if ($eiObject !== null) {
-			$eiu = new Eiu($this->n2nContext, $eiObject);
-		}
-		
 		foreach ($idNameDefinition->getIdNameProps() as $eiPropPathStr => $idNameProp) {
 			$eiPropPath = EiPropPath::create($eiPropPathStr);
 			$placeholder = self::createPlaceholder($this->createDefPropPath($baseEiPropPaths, $eiPropPath));
@@ -57,7 +52,7 @@ class SummarizedStringBuilder {
 			if ($eiObject === null) {
 				$this->replacements[] = '';
 			} else {
-				$eiu = new Eiu($this->n2nContext, $eiObject, $eiPropPath);
+				$eiu = new Eiu($this->n2nContext, $eiObject, $idNameDefinition->getEiMask(), $eiPropPath);
 				$this->replacements[] = $idNameProp->buildIdentityString($eiu, $this->n2nLocale);
 			}
 		}
@@ -70,7 +65,7 @@ class SummarizedStringBuilder {
 			
 			$forkedEiFieldSource = null;
 			if ($eiObject !== null) {
-				$eiu = new Eiu($this->n2nContext, $eiObject, $eiPropPath);
+				$eiu = new Eiu($this->n2nContext, $eiObject, $idNameDefinition->getEiMask(), $eiPropPath);
 				$forkedEiFieldSource = $idNamePropFork->determineForkedEiObject($eiu);
 			}
 			

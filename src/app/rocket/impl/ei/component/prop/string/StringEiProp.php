@@ -30,8 +30,9 @@ use n2n\util\type\ArgUtils;
 use rocket\si\content\impl\StringInSiField;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use rocket\ei\manage\idname\IdNameProp;
+use rocket\ei\component\prop\IdNameEiProp;
 
-class StringEiProp extends AlphanumericEiProp {
+class StringEiProp extends AlphanumericEiProp implements IdNameEiProp {
 	
 	private $stringConfig;
 	

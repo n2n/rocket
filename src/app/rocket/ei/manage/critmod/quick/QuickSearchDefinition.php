@@ -85,7 +85,9 @@ class QuickSearchDefinition {
 			$quickSearchProps = $this->quickSearchProps;
 		} else {
 			ArgUtils::valArray($defPropPaths, DefPropPath::class);
-			$quickSearchProps = $this->filterProps(array_map(function ($dpp) { return $dpp->getFirst(); }, $defPropPaths));
+			$quickSearchProps = $this->filterProps(array_map(function ($dpp) { 
+				return $dpp->getFirstEiPropPath(); 
+			}, $defPropPaths));
 		} 
 		
 		if (empty($quickSearchProps)) {

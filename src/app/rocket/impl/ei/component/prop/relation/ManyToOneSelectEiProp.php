@@ -43,7 +43,7 @@ use rocket\ei\manage\gui\field\GuiField;
 use rocket\impl\ei\component\prop\relation\model\gui\RelationLinkGuiField;
 use rocket\impl\ei\component\prop\relation\model\gui\ToOneGuiField;
 use rocket\ei\component\prop\QuickSearchableEiProp;
-use rocket\impl\ei\component\prop\translation\model\ToOneQuickSearchProp;
+use rocket\impl\ei\component\prop\relation\model\filter\ToOneQuickSearchProp;
 
 class ManyToOneSelectEiProp extends RelationEiPropAdapter implements FieldEiProp, QuickSearchableEiProp {
 	
@@ -251,14 +251,14 @@ class ManyToOneSelectEiProp extends RelationEiPropAdapter implements FieldEiProp
 	
 	public function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp {
 		$targetEiuEngine = $this->getRelationModel()->getTargetEiuEngine();
-		$targetDefPropPaths = $targetEiuEngine->idNameDefinition()->getUsedDefProps();
+		$targetDefPropPaths = $targetEiuEngine->getIdNameDefinition()->getUsedDefPropPaths();
 		
 		if (empty($targetDefPropPaths)) {
 			return null;
 		}
 		
 		return new ToOneQuickSearchProp($this->getRelationModel(), $targetDefPropPaths, 
-				$eiu->frame()->forkDiscover($this, $eiu->object()));
+				$eiu->frame()->forkDiscover($this));
 	}
 
 	

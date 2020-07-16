@@ -27,16 +27,33 @@ use rocket\ei\manage\EiObject;
 use n2n\l10n\Lstr;
 use n2n\core\container\N2nContext;
 use rocket\ei\manage\DefPropPath;
+use rocket\ei\mask\EiMask;
 
 class IdNameDefinition {
 	private $identityStringPattern;
+	private $eiMask;
 	private $labelLstr;
 	private $idNameProps = array();
 	private $idNamePropForks = array();
 	private $eiPropPaths = array();
 	
-	function __construct(Lstr $labelLstr) {
+	function __construct(EiMask $eiMask, Lstr $labelLstr) {
+		$this->eiMask = $eiMask;
 		$this->labelLstr = $labelLstr;
+	}
+	
+	/**
+	 * @return \rocket\ei\mask\EiMask
+	 */
+	function getEiMask() {
+		return $this->eiMask;
+	}
+	
+	/**
+	 * @return \n2n\l10n\Lstr
+	 */
+	function getLabelLstr() {
+		return $this->labelLstr;
 	}
 	
 	/**

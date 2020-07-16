@@ -141,7 +141,7 @@ abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements Re
 				return null;
 			}
 			
-			$targetEiuEngine = $this->getRelation()->getTargetEiuEngine();
+			$targetEiuEngine = $this->getRelationModel()->getTargetEiuEngine();
 			return $targetEiuEngine->createIdentityString($targetEntityObj);
 		});
 	}

@@ -581,10 +581,10 @@ class EiuAnalyst {
 		$this->eiuGui = null;
 		$this->eiGui = $eiGui;
 		
-		$eiEntryGuis = $eiGui->getEiEntryGuis();
-		if (count($eiEntryGuis) == 1) {
-			$this->assignEiEntryGui(current($eiEntryGuis));
-		}
+// 		$eiEntryGuis = $eiGui->getEiEntryGuis();
+// 		if (count($eiEntryGuis) == 1) {
+// 			$this->assignEiEntryGui(current($eiEntryGuis));
+// 		}
 	}
 	
 // 	/**
@@ -656,6 +656,8 @@ class EiuAnalyst {
 		if ($this->eiEntryGuiTypeDef === $eiEntryGuiTypeDef) {
 			return;
 		}
+		
+		IllegalStateException::assertTrue($this->eiEntryGuiTypeDef === null);
 		
 		$this->eiuEntryGuiTypeDef = null;
 		$this->eiEntryGuiTypeDef = $eiEntryGuiTypeDef;

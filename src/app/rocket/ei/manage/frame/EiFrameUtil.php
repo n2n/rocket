@@ -353,7 +353,8 @@ class EiFrameUtil {
 	 */
 	private function simpleLookup(EiGui $eiGui, Criteria $criteria) {
 		foreach ($criteria->toQuery()->fetchArray() as $entityObj) {
-			$eiGui->appendEiEntryGui($this->eiFrame, [$this->eiFrame->createEiEntry($this->createEiObject($entityObj))]);
+			$eiGui->appendEiEntryGui($this->eiFrame, 
+					[$this->eiFrame->createEiEntry($this->createEiObject($entityObj))]);
 		}
 	}
 		

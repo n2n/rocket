@@ -5,6 +5,7 @@ use n2n\l10n\N2nLocale;
 use rocket\ei\util\privilege\EiuCommandPrivilege;
 use rocket\ei\util\control\EiuControlResponse;
 use rocket\ei\manage\idname\IdNameProp;
+use n2n\util\type\ArgUtils;
 
 class EiuFactory {
 	private $eiuAnalyst;
@@ -49,6 +50,8 @@ class ClosureIdNameProp implements IdNameProp {
 	
 	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
 		$callback = $this->callback;
-		$callback($eiu, $n2nLocale);
+		$idName = $callback($eiu, $n2nLocale);
+		ArgUtils::valTypeReturn($idName, ['string', 'null'], null, $callback);
+		return $idName;
 	}	
 }

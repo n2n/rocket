@@ -12,6 +12,7 @@ use rocket\si\content\SiEntry;
 use rocket\ei\EiType;
 use rocket\ei\manage\gui\control\GuiControlPath;
 use rocket\ei\manage\gui\control\UnknownGuiControlException;
+use rocket\ei\EiPropPath;
 
 class EiGuiModel {
 	/**

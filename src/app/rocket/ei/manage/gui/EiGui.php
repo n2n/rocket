@@ -108,7 +108,7 @@ class EiGui {
 	function createSiEntries(EiFrame $eiFrame, bool $siControlsIncluded = true) {
 		$siEntries = [];
 		foreach ($this->eiEntryGuis as $eiEntryGui) {
-			$siEntries[] = $this->eiGuiModel->createSiEntry($eiFrame, $eiEntryGui, $siControlsIncluded);
+			$siEntry = $siEntries[] = $this->eiGuiModel->createSiEntry($eiFrame, $eiEntryGui, $siControlsIncluded);
 		}
 		return $siEntries;
 	}

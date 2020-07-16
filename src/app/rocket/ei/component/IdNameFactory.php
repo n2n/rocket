@@ -52,7 +52,7 @@ class IdNameFactory {
 	 * @return IdNameDefinition
 	 */
 	public function createIdNameDefinition(N2nContext $n2nContext) {
-		$idNameDefinition = new IdNameDefinition($this->eiMask->getLabelLstr());
+		$idNameDefinition = new IdNameDefinition($this->eiMask, $this->eiMask->getLabelLstr());
 		$idNameDefinition->setIdentityStringPattern($this->eiMask->getIdentityStringPattern());
 		
 		foreach ($this->eiMask->getEiPropCollection() as $eiProp) {

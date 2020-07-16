@@ -37,7 +37,7 @@ use rocket\impl\ei\component\prop\relation\model\gui\RelationLinkGuiField;
 use rocket\impl\ei\component\prop\relation\model\gui\ToOneGuiField;
 use rocket\ei\component\prop\FieldEiProp;
 use rocket\ei\component\prop\QuickSearchableEiProp;
-use rocket\impl\ei\component\prop\translation\model\ToOneQuickSearchProp;
+use rocket\impl\ei\component\prop\relation\model\filter\ToOneQuickSearchProp;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
 
 class OneToOneSelectEiProp extends RelationEiPropAdapter implements FieldEiProp, QuickSearchableEiProp {

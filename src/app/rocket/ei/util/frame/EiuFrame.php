@@ -53,7 +53,6 @@ use rocket\ei\util\spec\EiuMask;
 use rocket\ei\util\EiuPerimeterException;
 use rocket\ei\util\entry\EiuEntry;
 use rocket\ei\manage\entry\UnknownEiObjectException;
-use rocket\ei\util\gui\EiuGuiFrame;
 use rocket\ei\manage\frame\CriteriaConstraint;
 use rocket\ei\manage\frame\Boundry;
 use rocket\ei\manage\entry\EiEntryConstraint;
@@ -72,7 +71,6 @@ use rocket\ei\util\gui\EiuEntryGui;
 use rocket\ei\manage\DefPropPath;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\EiGui;
-use rocket\si\meta\SiFrame;
 
 class EiuFrame {
 	private $eiFrame;
@@ -772,7 +770,7 @@ class EiuFrame {
 	 * @return mixed|null
 	 */
 	public function siQualifierToId(SiEntryQualifier $siQualifier) {
-		if (null !== ($pid = $siQualifier->getId())) {
+		if (null !== ($pid = $siQualifier->getIdentifier()->getId())) {
 			return $this->pidToId($pid);
 		}
 		
