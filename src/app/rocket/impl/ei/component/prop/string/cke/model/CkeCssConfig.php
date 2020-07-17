@@ -47,7 +47,7 @@ interface CkeCssConfig extends Lookupable {
 	 */
 	public function getBodyClass(): ?string;
 	
-	function getStyles(): array;
+// 	function getStyles(): array;
 	
 	/**
 	 * @return \rocket\impl\ei\component\prop\string\cke\model\CkeStyle[]

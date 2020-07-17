@@ -45,16 +45,19 @@ use rocket\impl\ei\component\prop\numeric\conf\NumericConfig;
 use rocket\si\content\SiField;
 use rocket\ei\component\prop\IdNameEiProp;
 use rocket\ei\manage\idname\IdNameProp;
+use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfig;
 
 abstract class NumericEiPropAdapter extends DraftablePropertyEiPropAdapter 
 		implements FilterableEiProp, SortableEiProp, QuickSearchableEiProp, IdNameEiProp {
-    
+			
 	private $numericConfig;
+	private $quickSearchConfig;
 		    
     function __construct() {
         parent::__construct();
         
         $this->numericConfig = new NumericConfig();
+        $this->quickSearchConfig = new QuickSearchConfig();
     }
 
     /**
@@ -77,7 +80,8 @@ abstract class NumericEiPropAdapter extends DraftablePropertyEiPropAdapter
 	}
 
 	function prepare() {
-		$this->getConfigurator()->addAdaption($this->numericConfig);
+		$this->getConfigurator()->addAdaption($this->numericConfig)
+				->addAdaption($this->quickSearchConfig);
 	}
 	
 	function createOutSiField(Eiu $eiu): SiField  {
@@ -111,7 +115,11 @@ abstract class NumericEiPropAdapter extends DraftablePropertyEiPropAdapter
 	 * @see \rocket\ei\component\prop\QuickSearchableEiProp::buildQuickSearchProp()
 	 */
 	function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp {
-		return new LikeQuickSearchProp(CrIt::p($this->getEntityProperty()));
+		if ($this->quickSearchConfig->isQuickSerachable()) {
+			return new LikeQuickSearchProp(CrIt::p($this->getEntityProperty()));
+		}
+		
+		return null;
 	}
 
 // 	function createEditablePreviewUiComponent(PreviewModel $previewModel, PropertyPath $propertyPath,

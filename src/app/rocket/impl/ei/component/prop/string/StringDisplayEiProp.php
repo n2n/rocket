@@ -134,10 +134,6 @@ class StringDisplayEiProp extends PropertyDisplayableEiPropAdapter implements Ob
 		return null;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\entry\Readable::read()
-	 */
 	function read(Eiu $eiu) {
 		return $eiu->entry()->readNativValue($this);
 		
@@ -158,7 +154,7 @@ class StringDisplayEiProp extends PropertyDisplayableEiPropAdapter implements Ob
 
 	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {
 		return $eiu->factory()->newIdNameProp(function (Eiu $eiu) {
-			return StringUtils::strOf($eiu->object()->readNativValue($this), true);
+			return StringUtils::reduce($eiu->object()->readNativValue($this), 30, '..');
 		});
 	}
 

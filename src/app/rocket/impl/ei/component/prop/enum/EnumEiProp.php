@@ -50,11 +50,13 @@ use rocket\si\content\impl\SiFields;
 use rocket\impl\ei\component\prop\enum\conf\EnumConfig;
 use rocket\ei\manage\idname\IdNameProp;
 use rocket\ei\component\prop\IdNameEiProp;
+use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfig;
 
 class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiProp, SortableEiProp, 
 		QuickSearchableEiProp, IdNameEiProp {
-	
+			
 	private $enumConfig;
+	private $quickSearchConfig;
 	
 	function isEntityPropertyRequired(): bool {
 		return false;
@@ -91,8 +93,18 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 		return $this->enumConfig;
 	}
 	
+	function getQuickSearchConfig() {
+		if ($this->quickSearchConfig === null) {
+			$this->quickSearchConfig = new QuickSearchConfig();
+		}
+		
+		return $this->quickSearchConfig;
+	}
+	
 	public function prepare() {
-		$this->getConfigurator()->addAdaption($this->getEditConfig());
+		$this->getConfigurator()
+				->addAdaption($this->getEditConfig())
+				->addAdaption($this->getQuickSearchConfig());
 	}
 	
 	public function buildEiField(Eiu $eiu): ?EiField {
@@ -200,8 +212,9 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 	}
 	
 	public function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp {
-		if (null !== ($entityProperty = $this->getEntityProperty())) {
-			return new LikeQuickSearchProp(CrIt::p($this->getEntityProperty()));
+		if ($this->getQuickSearchConfig()->isQuickSerachable() 
+				&& null !== ($entityProperty = $this->getEntityProperty())) {
+			return new LikeQuickSearchProp(CrIt::p($entityProperty));
 		}
 		
 		return null;

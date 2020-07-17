@@ -665,15 +665,15 @@ class EiMaskCallbackProcess {
 				}
 				
 				if (null !== $callbackConfiguration['eiProp']) {
-					$eiErrorResult->putEiPropError(EiPropError::fromEiProp($callbackConfiguration['eiProp'], $e));
+					$eiErrorResult->putEiPropError(EiPropError::fromEiProp($callbackConfiguration['eiProp'], $t));
 				}
 				
 				if (null !== $callbackConfiguration['eiModificator']) {
-					$eiErrorResult->putEiModificatorError(EiModificatorError::fromEiModificator($callbackConfiguration['eiModificator'], $e));
+					$eiErrorResult->putEiModificatorError(EiModificatorError::fromEiModificator($callbackConfiguration['eiModificator'], $t));
 				}
 				
 				if (null !== $callbackConfiguration['eiCommand']) {
-					$eiErrorResult->putEiCommandError(EiCommandError::fromEiCommand($callbackConfiguration['eiCommand'], $e));
+					$eiErrorResult->putEiCommandError(EiCommandError::fromEiCommand($callbackConfiguration['eiCommand'], $t));
 				}
 			}
 		}

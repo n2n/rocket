@@ -33,6 +33,11 @@ class ToOneQuickSearchProp implements QuickSearchProp {
 		$targetComparatorContraint = $this->targetEiu->frame()->getEiFrame()->getQuickSearchDefinition()
 				->buildCriteriaConstraint($queryStr, $this->targetDefPropPaths);
 		
+		if ($targetComparatorContraint === null) {
+			test($this->targetDefPropPaths);
+			return null;
+		}
+		
 		return new ToOneComparatorConstraint($entityProperty, $targetComparatorContraint);
 	}
 }

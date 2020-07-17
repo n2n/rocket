@@ -71,7 +71,7 @@ abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements Re
 		$this->relationModel = $relationModel;
 	}
 	
-	function prepare() {
+	protected function prepare() {
 		$relationModel = $this->getRelationModel();
 		$configurator = $this->getConfigurator();
 		

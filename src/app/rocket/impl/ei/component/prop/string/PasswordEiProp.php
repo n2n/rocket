@@ -30,8 +30,9 @@ use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\util\Eiu;
 use rocket\si\content\SiField;
 use rocket\impl\ei\component\prop\string\conf\PasswordConfig;
+use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
 
-class PasswordEiProp extends AlphanumericEiProp {
+class PasswordEiProp extends DraftablePropertyEiPropAdapter {
 	private $passwordConfig;
 
 	function __construct() {

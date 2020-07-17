@@ -21,7 +21,6 @@
  */
 namespace rocket\impl\ei\component\prop\string;
 
-use rocket\ei\component\prop\QuickSearchableEiProp;
 use rocket\ei\util\filter\prop\StringFilterProp;
 use rocket\ei\component\prop\SortableEiProp;
 use rocket\ei\component\prop\FilterableEiProp;
@@ -48,9 +47,14 @@ use n2n\impl\persistence\orm\property\StringEntityProperty;
 use rocket\si\content\SiField;
 use rocket\impl\ei\component\prop\meta\config\AddonConfig;
 use rocket\impl\ei\component\prop\string\conf\AlphanumericConfig;
+use rocket\ei\component\prop\IdNameEiProp;
+use rocket\ei\manage\idname\IdNameProp;
+use n2n\util\StringUtils;
+use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfig;
+use rocket\ei\component\prop\QuickSearchableEiProp;
 
 abstract class AlphanumericEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiProp, 
-		SortableEiProp, QuickSearchableEiProp, ScalarEiProp, GenericEiProp {
+		SortableEiProp, QuickSearchableEiProp, ScalarEiProp, GenericEiProp, IdNameEiProp {
 // 	/**
 // 	 * @var int|null
 // 	 */
@@ -67,12 +71,17 @@ abstract class AlphanumericEiProp extends DraftablePropertyEiPropAdapter impleme
 	 * @var AddonConfig
 	 */
 	private $addonConfig;
+	/**
+	 * @var QuickSearchConfig
+	 */
+	private $quickSearchConfig;
 
 	function __construct() {
 		parent::__construct();
 
 		$this->alphanumericConfig = new AlphanumericConfig();
 		$this->addonConfig = new AddonConfig();
+		$this->quickSearchConfig = new QuickSearchConfig();
 	}
 	
 	/**
@@ -105,6 +114,7 @@ abstract class AlphanumericEiProp extends DraftablePropertyEiPropAdapter impleme
 	protected function prepare() {
 		$this->getConfigurator()
 				->addAdaption($this->alphanumericConfig)
+				->addAdaption($this->quickSearchConfig)
 				->addAdaption($this->addonConfig);
 	}
 	
@@ -146,7 +156,8 @@ abstract class AlphanumericEiProp extends DraftablePropertyEiPropAdapter impleme
 	}
 	
 	public function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp {
-		if (null !== ($entityProperty = $this->getEntityProperty(false))) {
+		if ($this->quickSearchConfig->isQuickSerachable()
+				&& null !== ($entityProperty = $this->getEntityProperty(false))) {
 			return new LikeQuickSearchProp(CrIt::p($entityProperty));
 		}
 		
@@ -164,5 +175,11 @@ abstract class AlphanumericEiProp extends DraftablePropertyEiPropAdapter impleme
 	 */
 	public function getScalarEiProperty(): ?ScalarEiProperty {
 		return new CommonScalarEiProperty($this);
+	}
+	
+	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {
+		return $eiu->factory()->newIdNameProp(function (Eiu $eiu) {
+			return StringUtils::reduce((string) $eiu->object()->readNativValue($this), 30, '...');
+		});
 	}
 }

@@ -30,10 +30,8 @@ use rocket\ei\util\Eiu;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\si\content\SiField;
 use rocket\impl\ei\component\prop\string\conf\PathPartConfig;
-use rocket\ei\manage\idname\IdNameProp;
-use rocket\ei\component\prop\IdNameEiProp;
 
-class PathPartEiProp extends AlphanumericEiProp implements IdNameEiProp {
+class PathPartEiProp extends AlphanumericEiProp {
 	function __construct() {
 		parent::__construct();
 	}
@@ -95,11 +93,5 @@ class PathPartEiProp extends AlphanumericEiProp implements IdNameEiProp {
 	
 	function saveSiField(SiField $siField, Eiu $eiu) {
 		$eiu->field()->setValue($siField->getValue());
-	}
-	
-	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {
-		return $eiu->factory()->newIdNameProp(function (Eiu $eiu) {
-			return $eiu->object()->readNativValue($this);
-		});
 	}
 }

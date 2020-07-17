@@ -26,9 +26,7 @@ use n2n\util\type\attrs\DataSet;
 use n2n\persistence\meta\structure\Column;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\component\InvalidEiComponentConfigurationException;
-use n2n\reflection\property\AccessProxy;
 use n2n\util\ex\IllegalStateException;
-use n2n\persistence\orm\property\EntityProperty;
 
 abstract class ConfigAdaption implements EiPropConfiguratorAdaption {
 	
