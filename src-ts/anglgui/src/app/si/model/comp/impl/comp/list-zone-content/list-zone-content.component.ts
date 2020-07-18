@@ -30,6 +30,7 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 	siPageCollection: SiPageCollection;
 	private quickSearchSubject = new Subject<string>();
 	private quickSearching = false;
+	private weakPageNoChange = false;
 
 	constructor(private siService: SiService, @Host() private parent: LayerComponent) {
 	}
@@ -47,6 +48,11 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 		}));
 
 		this.subscription.add(this.siPageCollection.currentPageNo$.pipe(skip(1)).subscribe(() => {
+			if (this.weakPageNoChange) {
+				this.weakPageNoChange = false;
+				return;
+			}
+
 			if (this.quickSearching) {
 				return;
 			}
@@ -166,10 +172,19 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 		this.updateCurrentPage();
 	}
 
+	private changePageNoWeakly(pageNo: number) {
+		if (this.siPageCollection.currentPageNo === pageNo) {
+			return;
+		}
+
+		this.weakPageNoChange = true;
+		this.siPageCollection.currentPageNo = pageNo;
+	}
+
 	private updateCurrentPage() {
 		let page = this.siPageCollection.getBestPageByOffsetHeight(this.parent.nativeElement.scrollTop);
 		if (page) {
-			this.siPageCollection.currentPageNo = page.num;
+			this.changePageNoWeakly(page.num);
 			return;
 		}
 
@@ -227,7 +242,8 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 
 		const page = this.siPageCollection.getPageByNo(this.siPageCollection.currentPageNo);
 		if (page.visible) {
-			this.parent.nativeElement.scrollTo(this.parent.nativeElement.scrollLeft, page.offsetHeight);
+			this.parent.nativeElement.scrollTo({ top: page.offsetHeight, behavior: 'smooth' });
+				// this.parent.nativeElement.scrollLeft, page.offsetHeight);
 	// 			this.model.currentPageNo = currentPageNo
 			return;
 		}

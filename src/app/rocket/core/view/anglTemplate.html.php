@@ -14,9 +14,7 @@
 	$view->useTemplate('boilerplate.html', $view->getParams());
 	
 	$html->meta()->addCssCode('
-			rocket-ui-layer {
-				scroll-behavior: smooth;
-			}
+			
 			
 			.rocket-layer {
 				animation: layertransform 0.2s;
