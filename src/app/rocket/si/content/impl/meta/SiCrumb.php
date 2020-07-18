@@ -21,13 +21,19 @@
  */
 namespace rocket\si\content\impl\meta;
 
+use n2n\util\type\ArgUtils;
+
 class SiCrumb implements \JsonSerializable {
 	const TYPE_ICON = 'icon';
 	const TYPE_LABEL = 'label';
 	
+	const SEVERITY_INACTIVE = 'inactive';
+	
 	protected $type;
 	protected $label;
 	protected $iconClass;
+	protected $title;
+	protected $severity;
 	
 	/**
 	 * @return string
@@ -48,6 +54,37 @@ class SiCrumb implements \JsonSerializable {
 	 */
 	function getIconClass() {
 		return $this->iconClass;
+	}
+	
+	/**
+	 * @param string $title
+	 * @return \rocket\si\content\impl\meta\SiCrumb
+	 */
+	function setTitle(?string $title) {
+		$this->title = $title;
+		return $this;
+	}
+	
+	function getTitle() {
+		return $this->title;
+	}
+	
+	/**
+	 * @param string $severity
+	 * @return \rocket\si\content\impl\meta\SiCrumb
+	 */
+	function setSeverity(?string $severity) {
+		ArgUtils::valEnum($severity, self::getSeverities());
+		$this->severity = $severity;
+		return $this;
+	}
+	
+	function getSeverity() {
+		return $this->severity;
+	}
+	
+	static function getSeverities() {
+		return [self::SEVERITY_INACTIVE];
 	}
 	
 	/**

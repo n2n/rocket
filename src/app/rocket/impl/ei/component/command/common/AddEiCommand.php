@@ -190,7 +190,7 @@ class AddEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiCo
 		}
 
 
-		$groupControl = $eiuControlFactory->createGroup(new SiButton($dtc->t('ei_impl_insert_branch_label'),
+		$groupControl = $eiuControlFactory->createCGroup(new SiButton($dtc->t('ei_impl_insert_branch_label'),
 						$dtc->t('ei_impl_add_branch_tooltip'), false, SiButton::TYPE_SECONDARY, 
 						SiIconType::ICON_PLUS));
 		
