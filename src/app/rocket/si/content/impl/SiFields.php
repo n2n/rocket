@@ -36,6 +36,8 @@ use rocket\si\NavPoint;
 use rocket\si\content\SiEntryQualifier;
 use rocket\si\meta\SiFrame;
 use rocket\si\content\impl\string\CkeInSiField;
+use rocket\si\content\impl\meta\SiCrumb;
+use rocket\si\content\impl\meta\CrumbOutSiField;
 
 class SiFields {
 	
@@ -167,5 +169,17 @@ class SiFields {
 	 */
 	static function splitPlaceholder(string $refPropId) {
 		return new SplitPlaceholderSiField($refPropId);
+	}
+	
+	/**
+	 * @return CrumbOutSiField
+	 */
+	static function crumbOut(SiCrumb ...$crumbs) {
+		$siField = new CrumbOutSiField();
+		if (!empty($crumbs)) {
+			$siField->addNewGroup($crumbs);
+		}
+		return $siField;
+		
 	}
 }

@@ -6,6 +6,8 @@ use rocket\ei\util\privilege\EiuCommandPrivilege;
 use rocket\ei\util\control\EiuControlResponse;
 use rocket\ei\manage\idname\IdNameProp;
 use n2n\util\type\ArgUtils;
+use n2n\reflection\magic\MagicMethodInvoker;
+use n2n\util\type\TypeConstraints;
 
 class EiuFactory {
 	private $eiuAnalyst;
@@ -45,13 +47,15 @@ class ClosureIdNameProp implements IdNameProp {
 	private $callback;
 	
 	function __construct(\Closure $callback) {
-		$this->callback = $callback;
+		$this->callback = new \ReflectionFunction($callback);
 	}
 	
 	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
-		$callback = $this->callback;
-		$idName = $callback($eiu, $n2nLocale);
-		ArgUtils::valTypeReturn($idName, ['string', 'null'], null, $callback);
-		return $idName;
+		$mmi = new MagicMethodInvoker($eiu->getN2nContext());
+		$mmi->setClassParamObject(Eiu::class, $eiu);
+		$mmi->setClassParamObject(N2nLocale::class, $n2nLocale);
+		$mmi->setReturnTypeConstraint(TypeConstraints::scalar(true));
+		
+		return $mmi->invoke(null, $this->callback);
 	}	
 }
