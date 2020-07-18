@@ -50,8 +50,7 @@ class ClosureIdNameProp implements IdNameProp {
 		$this->function = new \ReflectionFunction($callback);
 	}
 	
-	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
-		$mmi = new MagicMethodInvoker($eiu->getN2nContext());
+	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {		$mmi = new MagicMethodInvoker($eiu->getN2nContext());
 		$mmi->setClassParamObject(Eiu::class, $eiu);
 		$mmi->setClassParamObject(N2nLocale::class, $n2nLocale);
 		$mmi->setReturnTypeConstraint(TypeConstraints::scalar(true));
