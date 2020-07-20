@@ -79,15 +79,15 @@ class CkeEiProp extends AlphanumericEiProp {
 				->setMandatory($this->getEditConfig()->isMandatory())
 				->setMode($this->ckeConfig->getMode());
 		
-		if (null !== ($ckeCssConfig = $this->ckeConfig->getCkeCssConfig())) {
-			$contentCssUrls = $ckeCssConfig->getContentCssUrls($eiu);
-			ArgUtils::valArrayReturn($contentCssUrls, $ckeCssConfig, 'getContentCssUrls', Url::class);
+// 		if (null !== ($ckeCssConfig = $this->ckeConfig->getCkeCssConfig())) {
+// 			$contentCssUrls = $ckeCssConfig->getContentCssUrls($eiu);
+// 			ArgUtils::valArrayReturn($contentCssUrls, $ckeCssConfig, 'getContentCssUrls', Url::class);
 			
-			$ckeInField->setContentCssUrls($contentCssUrls)
-					->setBodyId($ckeCssConfig->getBodyId())
-					->setBodyClass($ckeCssConfig->getBodyClass())
-					->setBodyClass($ckeCssConfig->getAdditionalStyles());
-		}
+// 			$ckeInField->setContentCssUrls($contentCssUrls)
+// 					->setBodyId($ckeCssConfig->getBodyId())
+// 					->setBodyClass($ckeCssConfig->getBodyClass())
+// 					->setBodyClass($ckeCssConfig->getAdditionalStyles());
+// 		}
 		
 		return $ckeInField;
 		

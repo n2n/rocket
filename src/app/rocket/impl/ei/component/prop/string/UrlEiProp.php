@@ -41,9 +41,9 @@ class UrlEiProp extends AlphanumericEiProp {
 		$this->urlConfig = new UrlConfig();
 	}
 	
-	public function getTypeName(): string {
-		return "Link";
-	}
+// 	public function getTypeName(): string {
+// 		return "Link";
+// 	}
 	
 	public function setObjectPropertyAccessProxy(?AccessProxy $objectPropertyAccessProxy) {
 		parent::setObjectPropertyAccessProxy($objectPropertyAccessProxy);
@@ -82,16 +82,21 @@ class UrlEiProp extends AlphanumericEiProp {
 // 	}
 	
 	public function createInSiField(Eiu $eiu): SiField {
-		$mag = new UrlMag($this->getLabelLstr(), null, $this->isMandatory($eiu), 
-				$this->getMaxlength());
-		if (!empty($this->allowedSchemes)) {
-			$mag->setAllowedSchemes($this->allowedSchemes);
+		$mag = new UrlMag($this->getLabelLstr(), null, $this->getEditConfig()->isMandatory(), 
+				$this->getAlphanumericConfig()->getMaxlength());
+		
+		$allowedSchemes = $this->urlConfig->getAllowedSchemes();
+		if (!empty($allowedSchemes)) {
+			$mag->setAllowedSchemes($allowedSchemes);
 		}
-		$mag->setRelativeAllowed($this->relativeAllowed);
-		$mag->setAutoScheme($this->autoScheme);
+		
+		$mag->setRelativeAllowed($this->urlConfig->isRelativeAllowed());
+		$mag->setAutoScheme($this->urlConfig->getAutoScheme());
 		$mag->setInputAttrs(array('placeholder' => $this->getLabelLstr(), 'class' => 'form-control'));
 // 		$mag->setAttrs(array('class' => 'rocket-block'));
 		return $mag;
+		
+		return SiFields::class;
 	}
 	
 	public function loadMagValue(Eiu $eiu, Mag $mag) {

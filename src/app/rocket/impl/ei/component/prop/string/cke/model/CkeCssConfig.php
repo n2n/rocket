@@ -28,12 +28,12 @@ use rocket\ei\util\Eiu;
 
 interface CkeCssConfig extends Lookupable {
 	
-	/**
-	 * Urls to css files which get added in the head section of the wysiwyg iframe
-	 * @param HtmlView $view
-	 * @return Url[]
-	 */
-	public function getContentCssUrls(Eiu $eiu): ?array;
+// 	/**
+// 	 * Urls to css files which get added in the head section of the wysiwyg iframe
+// 	 * @param HtmlView $view
+// 	 * @return Url[]
+// 	 */
+// 	public function getContentCssUrls(Eiu $eiu): ?array;
 	
 	/**
 	 * Id for the wysiwig iframe body

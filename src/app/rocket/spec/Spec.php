@@ -245,6 +245,14 @@ class Spec {
 		$this->eiSetupQueue->addEiMask($eiType->getEiMask());
 		$this->assembleEiTypeExtensions($eiType->getEiMask(), $typePath);
 		
+		foreach ($eiType->getEntityModel()->getSubEntityModels() as $subEntityModel) {
+			$className = $subEntityModel->getClass()->getName();
+			
+			if ($this->containsEiTypeClassName($className)) {
+				$this->initEiTypeFromClassName($className);
+			}
+		}
+		
 		foreach ($this->specExtractionManager->getCascadedEiTypeExtraction($eiTypeExtraction->getEntityClassName(), 
 				InitCascade::TYPE_ALWAYS) as $eiTypeExtraction) {
 			$this->initEiTypeFromExtr($eiTypeExtraction);	

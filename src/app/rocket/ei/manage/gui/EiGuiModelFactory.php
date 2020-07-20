@@ -150,7 +150,7 @@ class EiGuiModelFactory {
 					$guiStructureDeclarationsRequired);
 			$eiGuiModel->putEiGuiFrame($eiGuiFrame);
 		}
-		
+
 		foreach ($contextEiType->getAllSubEiTypes() as $eiType) {
 			if (!$this->testIfAllowed($eiType, $creatablesOnly, $allowedEiTypes)) {
 				continue;

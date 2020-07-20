@@ -1495,7 +1495,7 @@ class EiuAnalyst {
 			return $spec->getEiTypeByClassName($eiTypeArg);
 		} catch (UnknownTypeException $e) {
 			throw new EiuPerimeterException('Can not determine EiType of passed argument ' . $argName . ': '
-					. \n2n\util\StringUtils::strOf($eiTypeArg, true));
+					. \n2n\util\StringUtils::strOf($eiTypeArg, true), 0, $e);
 		}
 	}
 	
