@@ -86,7 +86,7 @@ class EiGui {
 	 * @throws InaccessibleEiEntryException
 	 */
 	function appendNewEiEntryGui(EiFrame $eiFrame, int $treeLevel = null) {
-		return $this->eiEntryGuis[] = $this->eiGuiModel->createNewEiEntryGui($eiFrame, $treeLevel);
+		return $this->eiEntryGuis[] = $this->eiGuiModel->createNewEiEntryGui($eiFrame, $this, $treeLevel);
 	}
 	
 	/**

@@ -285,8 +285,8 @@ class EiGuiModel {
 	 * @param int $treeLevel
 	 * @throws InaccessibleEiEntryException
 	 */
-	function createNewEiEntryGui(EiFrame $eiFrame, int $treeLevel = null) {
-		$eiEntryGui = new EiEntryGui($this->contextEiMask->getEiType(), $treeLevel);
+	function createNewEiEntryGui(EiFrame $eiFrame, EiGui $eiGui, int $treeLevel = null) {
+		$eiEntryGui = new EiEntryGui($this->contextEiMask, $eiGui, $treeLevel);
 		
 		foreach ($this->eiGuiFrames as $eiGuiFrame) {
 			$eiGuiFrame->applyNewEiEntryGuiTypeDef($eiFrame, $eiEntryGui);

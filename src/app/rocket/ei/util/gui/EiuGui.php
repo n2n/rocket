@@ -144,7 +144,7 @@ class EiuGui {
 		foreach ($this->eiGui->getEiEntryGuis() as $eiEntryGui) {
 			$newEiEntryGui = $newEiGui->appendEiEntryGui($eiFrame, $eiEntryGui->getEiEntries(), $eiEntryGui->getTreeLevel());
 			if ($eiEntryGui->isTypeDefSelected()) {
-				$newEiEntryGui->selectTypeDefByEiTypeId($eiEntryGui->getSelectedTypeDef()->getEiType()->getId());
+				$newEiEntryGui->selectTypeDefByEiTypeId($eiEntryGui->getSelectedTypeDef()->getEiMask()->getEiType()->getId());
 			}
 		}
 		
