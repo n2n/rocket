@@ -71,6 +71,6 @@ class QuickSearchConfig extends ConfigAdaption {
 	 * @return \rocket\impl\ei\component\prop\meta\config\AddonConfig
 	 */
 	function setup(Eiu $eiu, DataSet $ds) {
-		$this->quickSearchable = $ds->optBool(self::ATTR_QUICK_SEARCHABLE_KEY);
+		$this->quickSearchable = $ds->optBool(self::ATTR_QUICK_SEARCHABLE_KEY, $this->quickSearchable);
 	}		
 }
