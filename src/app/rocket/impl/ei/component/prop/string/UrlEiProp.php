@@ -31,6 +31,7 @@ use n2n\impl\persistence\orm\property\UrlEntityProperty;
 use rocket\si\content\SiField;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\impl\ei\component\prop\string\conf\UrlConfig;
+use rocket\ei\manage\entry\EiFieldValidationResult;
 
 class UrlEiProp extends AlphanumericEiProp {
 	
@@ -99,13 +100,15 @@ class UrlEiProp extends AlphanumericEiProp {
 		return SiFields::class;
 	}
 	
-	public function loadMagValue(Eiu $eiu, Mag $mag) {
-		$value = $eiu->field()->getValue();
-		if ($value !== null) {
-			$value = Url::create($value, true);
-		}
-		$mag->setValue($value);
-	}
+	
+	
+// 	public function loadMagValue(Eiu $eiu, Mag $mag) {
+// 		$value = $eiu->field()->getValue();
+// 		if ($value !== null) {
+// 			$value = Url::create($value, true);
+// 		}
+// 		$mag->setValue($value);
+// 	}
 	
 	public function saveSiField(SiField $mag, Eiu $eiu) {
 		$value = $mag->getValue();
@@ -113,6 +116,13 @@ class UrlEiProp extends AlphanumericEiProp {
 			$value = /*(string)*/ $value;
 		}
 		$eiu->field()->setValue($value);
+	}
+	
+	public function acceptsEiFieldValue(Eiu $eiu, $eiFieldValue): bool {
+		return parent::acceptsEiFieldValue($eiu, $eiFieldValue);
+	}
+	
+	public function validateEiFieldValue(Eiu $eiu, $eiFieldValue, EiFieldValidationResult $validationResult) {	
 	}
 
 	public function createOutSiField(Eiu $eiu): SiField  {
