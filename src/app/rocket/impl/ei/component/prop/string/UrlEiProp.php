@@ -31,6 +31,7 @@ use rocket\si\content\SiField;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\impl\ei\component\prop\string\conf\UrlConfig;
 use rocket\ei\manage\entry\EiFieldValidationResult;
+use n2n\validation\plan\impl\ValidationUtils;
 
 class UrlEiProp extends AlphanumericEiProp {
 	
@@ -95,8 +96,6 @@ class UrlEiProp extends AlphanumericEiProp {
 		$mag->setInputAttrs(array('placeholder' => $this->getLabelLstr(), 'class' => 'form-control'));
 // 		$mag->setAttrs(array('class' => 'rocket-block'));
 		return $mag;
-		
-		return SiFields::class;
 	}
 	
 	
@@ -118,11 +117,32 @@ class UrlEiProp extends AlphanumericEiProp {
 	}
 	
 	public function acceptsEiFieldValue(Eiu $eiu, $eiFieldValue): bool {
-		return parent::acceptsEiFieldValue($eiu, $eiFieldValue);
+		if (!parent::acceptsEiFieldValue($eiu, $eiFieldValue)) {
+			return false;
+		}
+		
+		if ($eiFieldValue === null) {
+			return true;
+		}
+		
+		return ValidationUtils::isUrl($eiFieldValue, !$this->urlConfig->isRelativeAllowed()) 
+				&& $this->urlConfig->getAllowedSchemes();
 	}
 	
-	public function validateEiFieldValue(Eiu $eiu, $eiFieldValue, EiFieldValidationResult $validationResult) {	
+	public function validateEiFieldValue(Eiu $eiu, $eiFieldValue, EiFieldValidationResult $validationResult) {
+		parent::validateEiFieldValue($eiu, $eiFieldValue, $validationResult);
+		
+		if ($eiFieldValue === null) {
+			return;
+		}
+		
+		if (ValidationUtils::isUrl($eiFieldValue)) {
+			
+		}
+		
 	}
+		
+	
 
 	public function createOutSiField(Eiu $eiu): SiField  {
 		$value = $eiu->field()->getValue();
