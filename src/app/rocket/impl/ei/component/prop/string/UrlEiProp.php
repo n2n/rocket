@@ -21,7 +21,6 @@
  */
 namespace rocket\impl\ei\component\prop\string;
 
-use n2n\web\dispatch\mag\Mag;
 use rocket\ei\util\Eiu;
 use n2n\impl\web\dispatch\mag\model\UrlMag;
 use n2n\util\uri\Url;

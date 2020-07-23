@@ -1,13 +1,15 @@
 <?php
-namespace rocket\ei\util;
+namespace rocket\ei\util\factory;
 
 use n2n\l10n\N2nLocale;
 use rocket\ei\util\privilege\EiuCommandPrivilege;
 use rocket\ei\util\control\EiuControlResponse;
+use rocket\ei\manage\entry\EiFieldValidationResult;
 use rocket\ei\manage\idname\IdNameProp;
 use n2n\util\type\ArgUtils;
 use n2n\reflection\magic\MagicMethodInvoker;
 use n2n\util\type\TypeConstraints;
+use rocket\impl\ei\component\prop\adapter\entry\EiFieldAdapter;
 
 class EiuFactory {
 	private $eiuAnalyst;
@@ -41,6 +43,10 @@ class EiuFactory {
 	function newIdNameProp(\Closure $callback) {
 		return new ClosureIdNameProp($callback);	
 	}
+	
+	function newEiField() {
+		return new EiuEiField();
+	}
 }
 
 class ClosureIdNameProp implements IdNameProp {
@@ -57,4 +63,34 @@ class ClosureIdNameProp implements IdNameProp {
 		
 		return $mmi->invoke(null, $this->function);
 	}	
+}
+
+class EiuEiField extends EiFieldAdapter {
+	
+	
+	protected function readValue() {
+	}
+
+	protected function validateValue($value, EiFieldValidationResult $validationResult) {
+	}
+
+	public function copyValue(Eiu $copyEiu) {
+	}
+
+	public function isWritable(): bool {
+	}
+
+	public function isCopyable(): bool {
+	}
+
+	protected function checkValue($value) {
+	}
+
+	protected function isValueValid($value) {
+	}
+
+	protected function writeValue($value) {
+	}
+
+	
 }

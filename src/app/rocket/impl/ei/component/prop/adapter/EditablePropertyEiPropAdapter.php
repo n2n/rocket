@@ -64,6 +64,7 @@ abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAd
 	}
 	
 	public function buildEiField(Eiu $eiu): ?EiField {
+		$eiu->factory()->newEiField();
 		return EiFields::statless($eiu, $this->getEiFieldTypeConstraint(), $this, $this, $this, $this);
 	}
 	
