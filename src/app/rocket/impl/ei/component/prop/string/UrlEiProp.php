@@ -32,6 +32,8 @@ use rocket\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\impl\ei\component\prop\string\conf\UrlConfig;
 use rocket\ei\manage\entry\EiFieldValidationResult;
 use n2n\validation\plan\impl\ValidationUtils;
+use rocket\ei\util\factory\EifField;
+use n2n\validation\plan\impl\Validators;
 
 class UrlEiProp extends AlphanumericEiProp {
 	
@@ -74,6 +76,11 @@ class UrlEiProp extends AlphanumericEiProp {
 	public function prepare() {
 		parent::prepare();
 		$this->getConfigurator()->addAdaption($this->urlConfig);
+	}
+
+	function createEifField(Eiu $eiu): EifField {
+		return parent::createEifField($eiu)
+				->val(Validators::url(!$this->urlConfig->isRelativeAllowed(), $this->urlConfig->getAllowedSchemes()));
 	}
 
 	
