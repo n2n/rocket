@@ -6,6 +6,7 @@ use n2n\l10n\DynamicTextCollection;
 use rocket\core\model\Rocket;
 use n2n\core\container\N2nContext;
 use rocket\ei\util\spec\EiuContext;
+use rocket\ei\util\factory\EiuFactory;
 
 class Eiu implements Lookupable {
 	private $eiuAnalyst;
@@ -213,11 +214,11 @@ class Eiu implements Lookupable {
 	}
 	
 	/**
-	 * @return \rocket\ei\util\EiuFactory
+	 * @return \rocket\ei\util\factory\EiuFactory
 	 */
 	public function factory() {
 		if ($this->eiuFactory === null) {
-			$this->eiuFactory = new EiuFactory($this->eiuAnalyst);
+			$this->eiuFactory = new EiuFactory($this, $this->eiuAnalyst);
 		}
 		
 		return $this->eiuFactory;

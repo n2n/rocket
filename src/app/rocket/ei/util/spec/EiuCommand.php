@@ -6,7 +6,7 @@ use rocket\ei\EiCommandPath;
 use rocket\ei\component\command\IndependentEiCommand;
 use rocket\impl\ei\component\EiConfiguratorAdapter;
 use rocket\ei\util\privilege\EiuCommandPrivilege;
-use rocket\ei\util\EiuFactory;
+use rocket\ei\util\factory\EiuFactory;
 
 class EiuCommand {
 	private $eiCommandPath;

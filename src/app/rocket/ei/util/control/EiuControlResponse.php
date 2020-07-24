@@ -9,7 +9,7 @@ use n2n\util\uri\Url;
 use rocket\ei\manage\veto\EiLifecycleMonitor;
 use rocket\ei\manage\EiObject;
 
-class EiuControlResponse {
+class SifControlResponse {
 	private $eiuAnalyst;
 	/**
 	 * @var SiResult
@@ -130,7 +130,7 @@ class EiuControlResponse {
 	
 	/**
 	 * @param bool $noAutoEvents
-	 * @return EiuControlResponse
+	 * @return SifControlResponse
 	 */
 	function noAutoEvents(bool $noAutoEvents = true) {
 		$this->noAutoEvents = true;
@@ -139,7 +139,7 @@ class EiuControlResponse {
 	
 	/**
 	 * @param mixed ...$eiObjectArgs
-	 * @return EiuControlResponse
+	 * @return SifControlResponse
 	 */
 	function entryAdded(...$eiObjectArgs) {
 		foreach ($eiObjectArgs as $eiObjectArg) {
@@ -150,7 +150,7 @@ class EiuControlResponse {
 	
 	/**
 	 * @param mixed ...$eiObjectArgs
-	 * @return EiuControlResponse
+	 * @return SifControlResponse
 	 */
 	function entryChanged(...$eiObjectArgs) {
 		foreach ($eiObjectArgs as $eiObjectArg) {
@@ -161,7 +161,7 @@ class EiuControlResponse {
 	
 	/**
 	 * @param mixed ...$eiObjectArgs
-	 * @return EiuControlResponse
+	 * @return SifControlResponse
 	 */
 	function entryRemoved(...$eiObjectArgs) {
 		foreach ($eiObjectArgs as $eiObjectArg) {
@@ -195,7 +195,7 @@ class EiuControlResponse {
 	 * @param EiLifecycleMonitor $elm
 	 * @return \rocket\si\control\SiResult
 	 */
-	function finalize(EiLifecycleMonitor $elm) {
+	function toSiResult(EiLifecycleMonitor $elm) {
 		if ($this->noAutoEvents) {
 			return $this->siResult;
 		}
