@@ -21,27 +21,20 @@
  */
 namespace rocket\impl\ei\component\prop\adapter;
 
-use rocket\ei\manage\entry\EiField;
 use rocket\ei\component\prop\PrivilegedEiProp;
 use rocket\core\model\Rocket;
 use rocket\ei\util\Eiu;
-use rocket\ei\manage\entry\EiFieldValidationResult;
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldEditable;
 use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\impl\ei\component\prop\adapter\gui\GuiFields;
-use n2n\validation\lang\ValidationMessages;
-use rocket\impl\ei\component\prop\adapter\entry\EiFields;
 use rocket\ei\component\prop\FieldEiProp;
-use rocket\impl\ei\component\prop\adapter\entry\StatelessEiFieldCopier;
-use rocket\impl\ei\component\prop\adapter\entry\StatelessEiFieldValidator;
-use rocket\impl\ei\component\prop\adapter\entry\StatelessEiFieldWriter;
+use rocket\ei\util\factory\EifField;
+use n2n\validation\plan\impl\Validators;
 
 abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAdapter 
-		implements PrivilegedEiProp, 
-				FieldEiProp, StatelessEiFieldWriter, StatelessEiFieldValidator, StatelessEiFieldCopier,
-				StatelessGuiFieldEditable {
+		implements PrivilegedEiProp, FieldEiProp, StatelessGuiFieldEditable {
 	private $editConfig;
 
 	function isPrivileged(): bool {
@@ -63,39 +56,24 @@ abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAd
 		return parent::createConfigurator()->addAdaption($this->getEditConfig());
 	}
 	
-	public function buildEiField(Eiu $eiu): ?EiField {
-		$eiu->factory()->newEiField();
-		return EiFields::statless($eiu, $this->getEiFieldTypeConstraint(), $this, $this, $this, $this);
-	}
-	
-	public function writeEiFieldValue(Eiu $eiu, $value) {
-		$eiu->entry()->writeNativeValue($this, $value);
-	}
-	
-	public function copyEiFieldValue(Eiu $eiu, $value, Eiu $copyEiu) {
-		return $value;
-	}
-	
-	private function checkMandatory($eiFieldValue) {
-		if (!$this->getEditConfig()->isMandatory() /*|| $eiObject->isDraft()*/) {
-			return true;
+	protected function createEifField(Eiu $eiu): EifField {
+		$eifField = parent::createEifField($eiu);
+		
+		if (!$this->getEditConfig()->isReadOnly()) {
+			$eifField->setWriter(function ($value) use ($eiu) {
+						return $eiu->entry()->writeNativeValue($this, $value);
+					});
 		}
 		
-		if (is_array($eiFieldValue)) {
-			return !empty($eiFieldValue);
+		$eifField->setCopier(function ($value) {
+			return $value;
+		});
+				
+		if ($this->getEditConfig()->isMandatory()) {
+			$eifField->val(Validators::mandatory());
+// 			ValidationMessages::mandatory($eiu->prop()->getLabel())
 		}
-		
-		return $eiFieldValue !== null; 
-	}
-	
-	public function acceptsEiFieldValue(Eiu $eiu, $eiFieldValue): bool {
-		return $this->checkMandatory($eiFieldValue);
-	}
-	
-	public function validateEiFieldValue(Eiu $eiu, $eiFieldValue, EiFieldValidationResult $validationResult) {
-		if (!$this->checkMandatory($eiFieldValue)) {
-			$validationResult->addError(ValidationMessages::mandatory($eiu->prop()->getLabel()));
-		}
+		return $eifField;
 	}
 	
 	/**

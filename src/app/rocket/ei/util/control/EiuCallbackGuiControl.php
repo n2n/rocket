@@ -98,14 +98,14 @@ class EiuCallbackGuiControl implements GeneralGuiControl, EntryGuiControl, Selec
 	 * @return SiResult
 	 */
 	private function execCall(Eiu $eiu, ?array $inputEius) {
-		$eiuControlResponse = null;
+		$sifControlResponse = null;
 		$callback = $this->callback;
 		if ($inputEius === null) {
-			$eiuControlResponse = $callback($eiu);
+			$sifControlResponse = $callback($eiu);
 		} else {
-			$eiuControlResponse = $callback($eiu, $inputEius);
+			$sifControlResponse = $callback($eiu, $inputEius);
 		}
-		ArgUtils::valTypeReturn($eiuControlResponse, EiuControlResponse::class, null, $eiuControlResponse);
+		ArgUtils::valTypeReturn($sifControlResponse, EiuControlResponse::class, null, $sifControlResponse);
 		
 // 		$mmi = new MagicMethodInvoker($eiu->getN2nContext());
 // 		$mmi->setMethod(new \ReflectionFunction($this->callback));
@@ -114,11 +114,11 @@ class EiuCallbackGuiControl implements GeneralGuiControl, EntryGuiControl, Selec
 // 		$mmi->setReturnTypeConstraint(TypeConstraints::type(EiuControlResponse::class, true));
 		
 // 		$eiuControlResponse = $mmi->invoke();
-		if ($eiuControlResponse === null) {
-			$eiuControlResponse = $eiu->factory()->newControlResponse();
+		if ($sifControlResponse === null) {
+			$sifControlResponse = $eiu->factory()->newControlResponse();
 		}
 		
-		return $eiuControlResponse->finalize($eiu->lookup(ManageState::class)->getEiLifecycleMonitor());
+		return $sifControlResponse->finalize($eiu->lookup(ManageState::class)->getEiLifecycleMonitor());
 	}
 	
 	/**

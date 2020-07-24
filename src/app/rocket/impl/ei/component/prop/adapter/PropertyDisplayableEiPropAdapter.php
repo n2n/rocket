@@ -33,13 +33,12 @@ use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\impl\ei\component\prop\adapter\gui\GuiFieldProxy;
 use rocket\impl\ei\component\prop\adapter\gui\GuiProps;
 use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable;
-use rocket\impl\ei\component\prop\adapter\entry\EiFields;
-use rocket\impl\ei\component\prop\adapter\entry\StatelessEiFieldReader;
 use n2n\util\type\TypeConstraint;
 use rocket\ei\manage\gui\GuiFieldAssembler;
+use rocket\ei\util\factory\EifField;
 
 abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter 
-		implements FieldEiProp, StatelessEiFieldReader, StatelessGuiFieldDisplayable, GuiEiProp, GuiFieldAssembler {
+		implements FieldEiProp, StatelessGuiFieldDisplayable, GuiEiProp, GuiFieldAssembler {
 	private $displayConfig;
 
 	/**
@@ -59,11 +58,18 @@ abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter
 	
 	// EiField
 	
-	public function buildEiField(Eiu $eiu): ?EiField {
-		return EiFields::statless($eiu, $this->getEiFieldTypeConstraint(), $this);
+	function buildEiField(Eiu $eiu): ?EiField {
+		return $this->createEifField($eiu)->toEiField();
 	}
+	
+	protected function createEifField(Eiu $eiu): EifField {
+		return $eiu->factory()
+				->newField($this->getEiFieldTypeConstraint(), function () use ($eiu) {
+					return $eiu->object()->readNativValue($this);
+				});
+	}	
 
-	public function getEiFieldTypeConstraint(): ?TypeConstraint {
+	private function getEiFieldTypeConstraint(): ?TypeConstraint {
 		if (null !== ($accessProxy = $this->getObjectPropertyAccessProxy())) {
 			return $accessProxy->getConstraint()->getLenientCopy();
 		}

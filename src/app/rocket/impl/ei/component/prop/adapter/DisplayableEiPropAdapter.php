@@ -22,8 +22,6 @@
 namespace rocket\impl\ei\component\prop\adapter;
 
 use rocket\ei\manage\gui\GuiProp;
-use n2n\l10n\N2nLocale;
-use n2n\util\ex\UnsupportedOperationException;
 use rocket\ei\component\prop\GuiEiProp;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\gui\ViewMode;
