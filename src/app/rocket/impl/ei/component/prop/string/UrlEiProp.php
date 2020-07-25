@@ -30,8 +30,6 @@ use n2n\impl\persistence\orm\property\UrlEntityProperty;
 use rocket\si\content\SiField;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\impl\ei\component\prop\string\conf\UrlConfig;
-use rocket\ei\manage\entry\EiFieldValidationResult;
-use n2n\validation\plan\impl\ValidationUtils;
 use rocket\ei\util\factory\EifField;
 use n2n\validation\plan\impl\Validators;
 
@@ -80,9 +78,36 @@ class UrlEiProp extends AlphanumericEiProp {
 
 	function createEifField(Eiu $eiu): EifField {
 		return parent::createEifField($eiu)
+				->setReadMapper(function ($value) { return $this->readMap($value); })
+				->setWriterMapper(function ($value) use ($eiu) { return $this->writeMap($eiu, $value); })
 				->val(Validators::url(!$this->urlConfig->isRelativeAllowed(), $this->urlConfig->getAllowedSchemes()));
 	}
-
+	
+	/**
+	 * @param string|Url|null $value
+	 * @return string|Url|null
+	 */
+	private function readMap($value) {
+		try {
+			return Url::build($value, true);
+		} catch (\InvalidArgumentException $e) {
+			return null;
+		}
+	}
+	
+	/**
+	 * @param Eiu $eiu
+	 * @param string|Url|null $value
+	 * @return string|\n2n\util\uri\Url
+	 */
+	private function writeMap(Eiu $eiu, $value) {
+		if ($value instanceof Url
+				&& $this->getObjectPropertyAccessProxy()->getConstraint()->getTypeName() != Url::class) {
+			return (string) $value;
+		}
+		
+		return $value;
+	}
 	
 // 	public function createEditablePreviewUiComponent(PreviewModel $previewModel, PropertyPath $propertyPath,
 // 			HtmlView $view, \Closure $createCustomUiElementCallback = null) {
@@ -123,32 +148,6 @@ class UrlEiProp extends AlphanumericEiProp {
 		$eiu->field()->setValue($value);
 	}
 	
-	public function acceptsEiFieldValue(Eiu $eiu, $eiFieldValue): bool {
-		if (!parent::acceptsEiFieldValue($eiu, $eiFieldValue)) {
-			return false;
-		}
-		
-		if ($eiFieldValue === null) {
-			return true;
-		}
-		
-		return ValidationUtils::isUrl($eiFieldValue, !$this->urlConfig->isRelativeAllowed()) 
-				&& $this->urlConfig->getAllowedSchemes();
-	}
-	
-	public function validateEiFieldValue(Eiu $eiu, $eiFieldValue, EiFieldValidationResult $validationResult) {
-		parent::validateEiFieldValue($eiu, $eiFieldValue, $validationResult);
-		
-		if ($eiFieldValue === null) {
-			return;
-		}
-		
-		if (ValidationUtils::isUrl($eiFieldValue)) {
-			
-		}
-		
-	}
-		
 	
 
 	public function createOutSiField(Eiu $eiu): SiField  {
@@ -158,24 +157,7 @@ class UrlEiProp extends AlphanumericEiProp {
 				array('target' => '_blank'));
 	}
 
-	public function read(Eiu $eiu) {
-		$urlStr = parent::read($eiu);
-		if ($urlStr === null) return null;
-
-		try {
-			return Url::create($urlStr, true);
-		} catch (\InvalidArgumentException $e) {
-			return null;
-		}
-	}
-
-	public function write(Eiu $eiu, $value) {
-		if ($value instanceof Url 
-				&& $this->getObjectPropertyAccessProxy()->getConstraint()->getTypeName() != Url::class) {
-			$value = (string) $value;
-		}
-		return parent::write($eiu, $value);
-	}
+	
 
 	private function buildLabel(Url $url, bool $isBulkyMode) {
 		if ($isBulkyMode) return (string) $url;

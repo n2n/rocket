@@ -51,4 +51,8 @@ class EiuFactory {
 	function newField(?TypeConstraint $typeConstraint, \Closure $reader) {
 		return new EifField($this->eiu, $typeConstraint, $reader);
 	}
+	
+	function newGuiField() {
+		
+	}
 }
