@@ -30,6 +30,7 @@ use n2n\util\type\TypeConstraint;
 use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\numeric\conf\FloatConfig;
 use rocket\si\content\SiField;
+use rocket\ei\util\factory\EifGuiField;
 
 class FloatEiProp extends NumericEiPropAdapter {
     private $floatConfig;
@@ -97,12 +98,8 @@ class FloatEiProp extends NumericEiPropAdapter {
 	public function setPrefix(string $prefix = null) {
 		$this->prefix = $prefix;
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldEditable::createMag($eiu)
-	 */
-	public function createInSiField(Eiu $eiu): SiField {
+
+	public function createInEifGuiField(Eiu $eiu): EifGuiField {
 		$numericMag = new EiDecimalMag($this->getLabelLstr(), null,
 				$this->isMandatory($eiu), $this->getMinValue(), $this->getMaxValue(), 
 				$this->getDecimalPlaces(), array('placeholder' => $this->getLabelLstr()));

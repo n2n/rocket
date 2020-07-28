@@ -30,6 +30,7 @@ use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
 use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\numeric\conf\OrderConfig;
 use rocket\si\content\SiField;
+use rocket\ei\util\factory\EifGuiField;
 
 class OrderEiProp extends IntegerEiProp {
     const ORDER_INCREMENT = 10;
@@ -52,7 +53,7 @@ class OrderEiProp extends IntegerEiProp {
 				|| $entityProperty instanceof IntEntityProperty;
 	}
 	
-	public function createOutSiField(Eiu $eiu): SiField {
+	function createOutEifGuiField(Eiu $eiu): EifGuiField {
 		return $view->getHtmlBuilder()->getEsc($eiu->field()->getValue(EiPropPath::from($this)));
 	}
 
@@ -60,7 +61,7 @@ class OrderEiProp extends IntegerEiProp {
 		return new SimpleSortProp($this->getEntityProperty()->getName(), $this->getLabelLstr());
 	}
 
-	public function createInSiField(Eiu $eiu): SiField {
+	public function createInEifGuiField(Eiu $eiu): EifGuiField {
 		return new NumericMag($this->getLabelLstr(), null, $this->isMandatory($eiu), 
 				null, null, 0, null, array('placeholder' => $this->getLabelLstr()));
 	}

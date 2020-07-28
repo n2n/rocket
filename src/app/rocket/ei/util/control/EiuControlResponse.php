@@ -9,7 +9,7 @@ use n2n\util\uri\Url;
 use rocket\ei\manage\veto\EiLifecycleMonitor;
 use rocket\ei\manage\EiObject;
 
-class SifControlResponse {
+class EiuControlResponse {
 	private $eiuAnalyst;
 	/**
 	 * @var SiResult
@@ -130,7 +130,7 @@ class SifControlResponse {
 	
 	/**
 	 * @param bool $noAutoEvents
-	 * @return SifControlResponse
+	 * @return EiuControlResponse
 	 */
 	function noAutoEvents(bool $noAutoEvents = true) {
 		$this->noAutoEvents = true;
@@ -139,7 +139,7 @@ class SifControlResponse {
 	
 	/**
 	 * @param mixed ...$eiObjectArgs
-	 * @return SifControlResponse
+	 * @return EiuControlResponse
 	 */
 	function entryAdded(...$eiObjectArgs) {
 		foreach ($eiObjectArgs as $eiObjectArg) {
@@ -150,7 +150,7 @@ class SifControlResponse {
 	
 	/**
 	 * @param mixed ...$eiObjectArgs
-	 * @return SifControlResponse
+	 * @return EiuControlResponse
 	 */
 	function entryChanged(...$eiObjectArgs) {
 		foreach ($eiObjectArgs as $eiObjectArg) {
@@ -161,7 +161,7 @@ class SifControlResponse {
 	
 	/**
 	 * @param mixed ...$eiObjectArgs
-	 * @return SifControlResponse
+	 * @return EiuControlResponse
 	 */
 	function entryRemoved(...$eiObjectArgs) {
 		foreach ($eiObjectArgs as $eiObjectArg) {

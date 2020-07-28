@@ -50,11 +50,7 @@ class EmbeddedOneToOneEiProp extends RelationEiPropAdapter implements FieldEiPro
 				(new DisplayConfig(ViewMode::bulky()))->setSiStructureType(SiStructureType::SIMPLE_GROUP),
 				new RelationModel($this, false, false, RelationModel::MODE_EMBEDDED, new EditConfig()));
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\relation\ToOneEiPropAdapter::setEntityProperty()
-	 */
+
 	public function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty instanceof ToOneEntityProperty
 				&& $entityProperty->getType() === RelationEntityProperty::TYPE_ONE_TO_ONE);

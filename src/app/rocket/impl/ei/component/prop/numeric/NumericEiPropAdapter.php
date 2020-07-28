@@ -25,7 +25,6 @@ use rocket\ei\component\prop\QuickSearchableEiProp;
 use rocket\ei\util\filter\prop\StringFilterProp;
 use rocket\ei\component\prop\SortableEiProp;
 use rocket\ei\component\prop\FilterableEiProp;
-use n2n\l10n\N2nLocale;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
@@ -33,7 +32,6 @@ use n2n\util\type\ArgUtils;
 use n2n\reflection\property\AccessProxy;
 use n2n\util\type\TypeConstraint;
 use n2n\core\container\N2nContext;
-use rocket\ei\EiPropPath;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\ei\manage\critmod\sort\SortProp;
 use rocket\ei\util\Eiu;
@@ -42,10 +40,12 @@ use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\impl\ei\component\prop\numeric\conf\NumericConfig;
-use rocket\si\content\SiField;
 use rocket\ei\component\prop\IdNameEiProp;
 use rocket\ei\manage\idname\IdNameProp;
 use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfig;
+use rocket\ei\util\factory\EifGuiField;
+use n2n\l10n\L10nUtils;
+use rocket\si\content\impl\SiFields;
 
 abstract class NumericEiPropAdapter extends DraftablePropertyEiPropAdapter 
 		implements FilterableEiProp, SortableEiProp, QuickSearchableEiProp, IdNameEiProp {
@@ -84,9 +84,13 @@ abstract class NumericEiPropAdapter extends DraftablePropertyEiPropAdapter
 				->addAdaption($this->quickSearchConfig);
 	}
 	
-	function createOutSiField(Eiu $eiu): SiField  {
-		$html = $view->getHtmlBuilder();
-		return $html->getEsc($eiu->field()->getValue(EiPropPath::from($this)));
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\numeric\NumericEiPropAdapter::createOutSiField()
+	 */
+	function createOutEifGuiField(Eiu $eiu): EifGuiField {
+		return $eiu->factory()->newGuiField(SiFields::stringOut(
+				L10nUtils::formatNumber($eiu->field()->getValue(), $eiu->getN2nLocale())));
 	}
 	
 // 	function createPreviewUiComponent(EiFrame $eiFrame = null, HtmlView $view, $value) {
@@ -131,6 +135,6 @@ abstract class NumericEiPropAdapter extends DraftablePropertyEiPropAdapter
 	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {
 		return $eiu->factory()->newIdNameProp(function (Eiu $eiu) {
 			return $eiu->object()->readNativValue($this);
-		});
+		})->toIdNameProp();
 	}
 }

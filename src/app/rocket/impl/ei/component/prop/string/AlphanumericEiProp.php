@@ -28,7 +28,6 @@ use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
 use rocket\ei\manage\frame\EiFrame;
 use n2n\core\container\N2nContext;
-use rocket\ei\EiPropPath;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
@@ -44,7 +43,6 @@ use rocket\ei\manage\generic\GenericEiProperty;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\ei\manage\generic\ScalarEiProperty;
 use n2n\impl\persistence\orm\property\StringEntityProperty;
-use rocket\si\content\SiField;
 use rocket\impl\ei\component\prop\meta\config\AddonConfig;
 use rocket\impl\ei\component\prop\string\conf\AlphanumericConfig;
 use rocket\ei\component\prop\IdNameEiProp;
@@ -52,6 +50,8 @@ use rocket\ei\manage\idname\IdNameProp;
 use n2n\util\StringUtils;
 use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfig;
 use rocket\ei\component\prop\QuickSearchableEiProp;
+use rocket\ei\util\factory\EifGuiField;
+use rocket\si\content\impl\SiFields;
 
 abstract class AlphanumericEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiProp, 
 		SortableEiProp, QuickSearchableEiProp, ScalarEiProp, GenericEiProp, IdNameEiProp {
@@ -118,15 +118,26 @@ abstract class AlphanumericEiProp extends DraftablePropertyEiPropAdapter impleme
 				->addAdaption($this->addonConfig);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable::createUiComponent()
-	 */
-	public function createOutSiField(Eiu $eiu): SiField  {
-		return $view->getHtmlBuilder()->getEsc($eiu->entry()->getEiEntry()->getValue(
-				EiPropPath::from($this)));
+	public function createOutEifGuiField(Eiu $eiu): EifGuiField  {
+		return $eiu->factory()->newGuiField(SiFields::stringOut(StringUtils::strOf($eiu->field()->getValue(), true)));
 	}
-
+	
+	function createInEifGuiField(Eiu $eiu): EifGuiField {
+		$addonConfig = $this->getAddonConfig();
+		
+		$siField = SiFields::stringIn($eiu->field()->getValue())
+				->setMandatory($this->getEditConfig()->isMandatory())
+				->setMinlength($this->getAlphanumericConfig()->getMinlength())
+				->setMaxlength($this->getAlphanumericConfig()->getMaxlength())
+				->setPrefixAddons($addonConfig->getPrefixSiCrumbGroups())
+				->setSuffixAddons($addonConfig->getSuffixSiCrumbGroups());
+		
+		return $eiu->factory()->newGuiField($siField)
+				->setSaver(function () use ($siField, $eiu) {
+					$eiu->field()->setValue($siField->getValue());
+				});
+	}
+	
 	public function buildManagedFilterProp(EiFrame $eiFrame): ?FilterProp  {
 		return $this->buildFilterProp($eiFrame->getN2nContext());
 	}
@@ -180,6 +191,6 @@ abstract class AlphanumericEiProp extends DraftablePropertyEiPropAdapter impleme
 	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {
 		return $eiu->factory()->newIdNameProp(function (Eiu $eiu) {
 			return StringUtils::reduce((string) $eiu->object()->readNativValue($this), 30, '...');
-		});
+		})->toIdNameProp();
 	}
 }

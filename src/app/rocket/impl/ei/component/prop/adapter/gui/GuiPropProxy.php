@@ -24,56 +24,22 @@ namespace rocket\impl\ei\component\prop\adapter\gui;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\manage\gui\field\GuiField;
-use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
+use rocket\ei\manage\gui\GuiDefinition;
+use rocket\ei\manage\gui\GuiPropSetup;
 use n2n\reflection\magic\MagicMethodInvoker;
 use n2n\util\type\TypeConstraints;
-use rocket\ei\manage\gui\GuiDefinition;
-use rocket\ei\manage\gui\GuiFieldAssembler;
-use rocket\ei\manage\gui\GuiPropSetups;
-use rocket\ei\manage\gui\GuiPropSetup;
 
 /**
  * Don't use this class directly. Use factory methods of {@see GuiFields}.  
  */
 class GuiPropProxy implements GuiProp {
-	private $displayConfig;
-	private $guiFieldAssembler;
-	private $guiFieldClosure;
+	private $guiPropSetupCallback;
 	
 	/**
-	 * @param Eiu $eiu
-	 * @param DisplayConfig $displayConfig
-	 * @param GuiFieldFactory $guiFieldFactory
+	 * @param \Closure $closure
 	 */
-	function __construct(DisplayConfig $displayConfig, ?GuiFieldAssembler $guiFieldAssembler, ?\Closure $guiFieldClosure) {
-		$this->displayConfig = $displayConfig;
-		$this->guiFieldAssembler = $guiFieldAssembler;
-		
-		if ($guiFieldClosure !== null) {
-			$this->guiFieldAssembler = $this->createAssemblerFromClosure($guiFieldClosure);
-		}
-	}
-	
-	/**
-	 * @param \Closure $guiFieldClosure
-	 * @return GuiFieldAssembler
-	 */
-	private function createAssemblerFromClosure($guiFieldClosure) {
-		return new class($guiFieldClosure) implements GuiFieldAssembler {
-			private $guiFieldClosure;
-			
-			function __construct($guiFieldClosure) {
-				$this->guiFieldClosure = $guiFieldClosure;
-			}
-			
-			function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-				$mmi = new MagicMethodInvoker($eiu->getN2nContext());
-				$mmi->setClassParamObject(Eiu::class, $eiu);
-				$mmi->setParamValue('readOnly', $readOnly);
-				$mmi->setReturnTypeConstraint(TypeConstraints::type(GuiField::class, true));
-				return $mmi->invoke(null, $this->guiFieldClosure);
-			}
-		};
+	function __construct(\Closure $guiPropSetupCallback) {
+		$this->guiPropSetupCallback = new \ReflectionFunction($guiPropSetupCallback);
 	}
 
 	/**
@@ -81,9 +47,12 @@ class GuiPropProxy implements GuiProp {
 	 * @see \rocket\ei\manage\gui\GuiProp::buildGuiPropSetup()
 	 */
 	function buildGuiPropSetup(Eiu $eiu, ?array $defPropPaths): ?GuiPropSetup {
-		$displayDefinition = $this->displayConfig->buildDisplayDefinitionFromEiu($eiu);
+		$mmi = new MagicMethodInvoker($eiu->getN2nContext());
+		$mmi->setClassParamObject(Eiu::class, $eiu);
+		$mmi->setParamValue('defPropPaths', $defPropPaths);
+		$mmi->setReturnTypeConstraint(TypeConstraints::type(GuiPropSetup::class, true));
 		
-		return GuiPropSetups::simple($this->guiFieldAssembler, $displayDefinition);
+		return $mmi->invoke(null, $this->guiPropSetupCallback);
 	}
 	
 	/**

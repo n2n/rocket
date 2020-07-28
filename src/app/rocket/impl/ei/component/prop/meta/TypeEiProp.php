@@ -21,21 +21,17 @@
  */
 namespace rocket\impl\ei\component\prop\meta;
 
-use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
-use n2n\l10n\N2nLocale;
-use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable;
 use rocket\ei\util\Eiu;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\impl\ei\component\prop\adapter\DisplayableEiPropAdapter;
 use n2n\impl\web\ui\view\html\HtmlSnippet;
 use n2n\impl\web\ui\view\html\HtmlElement;
-use rocket\si\content\SiField;
 use rocket\si\content\impl\SiFields;
 use rocket\ei\manage\idname\IdNameProp;
 use rocket\ei\component\prop\IdNameEiProp;
+use rocket\ei\util\factory\EifGuiField;
 
-class TypeEiProp extends DisplayableEiPropAdapter implements StatelessGuiFieldDisplayable, IdNameEiProp {
+class TypeEiProp extends DisplayableEiPropAdapter implements IdNameEiProp {
 	
 	protected function prepare() {
 	}
@@ -47,7 +43,7 @@ class TypeEiProp extends DisplayableEiPropAdapter implements StatelessGuiFieldDi
 				$eiu->prop()->getLabel());
 	}
 
-	public function createOutSiField(Eiu $eiu): SiField {
+	public function createOutEifGuiField(Eiu $eiu): EifGuiField {
 		$eiuMask = $eiu->context()->mask($eiu->entry()->getEiEntry()->getEiType());
 		$iconType = $eiuMask->getIconType();
 		$label = $eiuMask->getLabel();
@@ -56,10 +52,10 @@ class TypeEiProp extends DisplayableEiPropAdapter implements StatelessGuiFieldDi
 			return SiFields::stringOut($label);
 		}
 		
-		return SiFields::stringOut((string) new HtmlSnippet(
+		return $eiu->factory()->newGuiField(SiFields::stringOut((string) new HtmlSnippet(
 				new HtmlElement('i', array('class' => $iconType), ''),
 				' ',
-				new HtmlElement('span', null, $label)));
+				new HtmlElement('span', null, $label))));
 	}
 	
 	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {
@@ -71,7 +67,7 @@ class TypeEiProp extends DisplayableEiPropAdapter implements StatelessGuiFieldDi
 			}
 			
 			return $eiMask;
-		});
+		})->toIdNameProp();
 	}
 
 }

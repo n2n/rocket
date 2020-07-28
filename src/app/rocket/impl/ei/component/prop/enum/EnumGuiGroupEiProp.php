@@ -22,16 +22,13 @@
 
 namespace rocket\impl\ei\component\prop\enum;
 
-use rocket\impl\ei\component\prop\adapter\PropertyDisplayableEiPropAdapter;
+use rocket\impl\ei\component\prop\adapter\DisplayablePropertyEiPropAdapter;
 use rocket\ei\util\Eiu;
 use rocket\si\content\SiField;
 
-class EnumGuiGroupEiProp extends PropertyDisplayableEiPropAdapter {
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable::createUiComponent()
-	 */
-	public function createOutSiField(Eiu $eiu): SiField {
+class EnumGuiGroupEiProp extends DisplayablePropertyEiPropAdapter {
+
+	function createOutEifGuiField(Eiu $eiu): EifGuiField {
 		
 	}
 	protected function prepare() {

@@ -23,8 +23,6 @@ namespace rocket\impl\ei\component\prop\date;
 
 use n2n\impl\persistence\orm\property\DateTimeEntityProperty;
 use n2n\l10n\L10nUtils;
-use n2n\l10n\DateTimeFormat;
-use n2n\l10n\N2nLocale;
 use n2n\persistence\orm\property\EntityProperty;
 use rocket\ei\component\prop\SortableEiProp;
 use n2n\core\container\N2nContext;
@@ -50,6 +48,7 @@ use rocket\ei\manage\critmod\sort\SortProp;
 use rocket\si\content\SiField;
 use rocket\impl\ei\component\prop\date\conf\DateTimeConfig;
 use rocket\ei\manage\idname\IdNameProp;
+use rocket\ei\util\factory\EifGuiField;
 
 class DateTimeEiProp extends DraftablePropertyEiPropAdapter implements SortableEiProp {
 
@@ -77,12 +76,12 @@ class DateTimeEiProp extends DraftablePropertyEiPropAdapter implements SortableE
 		$this->objectPropertyAccessProxy = $propertyAccessProxy;
 	}
 	
-	public function createOutSiField(Eiu $eiu): SiField  {
+	public function createOutEifGuiField(Eiu $eiu): EifGuiField  {
 		return $view->getHtmlBuilder()->getL10nDateTime($eiu->field()->getValue(EiPropPath::from($this)), 
 				$this->getDateStyle(), $this->getTimeStyle());
 	}
 	
-	public function createInSiField(Eiu $eiu): SiField {
+	public function createInEifGuiField(Eiu $eiu): EifGuiField {
 		$iconElem = new HtmlElement('i', array('class' => SiIconType::ICON_CALENDAR), '');
 		
 		return new DateTimePickerMag($this->getLabelLstr(), $iconElem, $this->getDateStyle(), $this->getTimeStyle(), null, null, 

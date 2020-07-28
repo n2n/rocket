@@ -25,16 +25,14 @@ use rocket\ei\component\prop\PrivilegedEiProp;
 use rocket\core\model\Rocket;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\gui\field\GuiField;
-use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldEditable;
 use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
-use rocket\impl\ei\component\prop\adapter\gui\GuiFields;
-use rocket\ei\component\prop\FieldEiProp;
 use rocket\ei\util\factory\EifField;
 use n2n\validation\plan\impl\Validators;
+use rocket\ei\util\factory\EifGuiField;
+use n2n\util\ex\UnsupportedOperationException;
 
-abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAdapter 
-		implements PrivilegedEiProp, FieldEiProp, StatelessGuiFieldEditable {
+abstract class EditablePropertyEiPropAdapter extends DisplayablePropertyEiPropAdapter implements PrivilegedEiProp {
 	private $editConfig;
 
 	function isPrivileged(): bool {
@@ -56,13 +54,17 @@ abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAd
 		return parent::createConfigurator()->addAdaption($this->getEditConfig());
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\adapter\DisplayablePropertyEiPropAdapter::createEifField()
+	 */
 	protected function createEifField(Eiu $eiu): EifField {
 		$eifField = parent::createEifField($eiu);
 		
 		if (!$this->getEditConfig()->isReadOnly()) {
 			$eifField->setWriter(function ($value) use ($eiu) {
-						return $eiu->entry()->writeNativeValue($this, $value);
-					});
+				return $eiu->entry()->writeNativeValue($this, $value);
+			});
 		}
 		
 		$eifField->setCopier(function ($value) {
@@ -78,17 +80,36 @@ abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAd
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\PropertyDisplayableEiPropAdapter::buildGuiField()
+	 * @see \rocket\impl\ei\component\prop\adapter\DisplayablePropertyEiPropAdapter::buildGuiField()
 	 */
-	public function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		return GuiFields::stateless($eiu, $this, ($readOnly ? null : $this));
+	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
+		if ($readOnly || $eiu->guiFrame()->isReadOnly()
+				|| ($eiu->entry()->isNew() && $this->getEditConfig()->isConstant())) {
+			return $this->createOutEifGuiField($eiu)->toGuiField();
+		}
+		
+		return $this->createInEifGuiField($eiu)->toGuiField();
 	}
-
-// 	public function loadSiField(Eiu $eiu, SiField $siField) {
-// 		$siField->setValue($eiu->field()->getValue());
-// 	}
 	
-// 	public function saveSiField(SiField $siField, Eiu $eiu) {
-// 		$eiu->field()->setValue($siField->getValue());
-// 	}
+	/**
+	 * @param Eiu $eiu
+	 * @return EifGuiField
+	 */
+	protected function createOutEifGuiField(Eiu $eiu): EifGuiField {
+		throw new UnsupportedOperationException(get_class($this)
+				. ' must implement either'
+				. ' createOutEifGuiField(Eiu $eiu): EifGuiField  (recommended) or'
+				. ' buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField.');
+	}
+	
+	/**
+	 * @param Eiu $eiu
+	 * @return EifGuiField
+	 */
+	protected function createInEifGuiField(Eiu $eiu): EifGuiField {
+		throw new UnsupportedOperationException(get_class($this)
+				. ' must implement either'
+				. ' createInEifGuiField(Eiu $eiu): EifGuiField  (recommended) or'
+				. ' buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField.');
+	}
 }

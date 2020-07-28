@@ -24,10 +24,8 @@ namespace rocket\impl\ei\component\prop\string;
 use rocket\ei\util\Eiu;
 use rocket\si\content\impl\SiFields;
 use rocket\impl\ei\component\prop\string\conf\StringConfig;
-use rocket\si\content\SiField;
-use n2n\util\type\ArgUtils;
-use rocket\si\content\impl\StringInSiField;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
+use rocket\ei\util\factory\EifGuiField;
 
 class StringEiProp extends AlphanumericEiProp {
 	
@@ -46,25 +44,26 @@ class StringEiProp extends AlphanumericEiProp {
 				->addAdaption($this->stringConfig);
 	}
 	
-	function createOutSiField(Eiu $eiu): SiField  {
-		return SiFields::stringOut($eiu->field()->getValue())
-				->setMultiline($this->stringConfig->isMultiline());
+	function createOutEifGuiField(Eiu $eiu): EifGuiField  {
+		return $eiu->factory()->newGuiField(
+				SiFields::stringOut($eiu->field()->getValue())
+						->setMultiline($this->stringConfig->isMultiline()));
 	}
 
-	function createInSiField(Eiu $eiu): SiField {
+	function createInEifGuiField(Eiu $eiu): EifGuiField {
 		$addonConfig = $this->getAddonConfig();
 		
-		return SiFields::stringIn($eiu->field()->getValue())
+		$siField = SiFields::stringIn($eiu->field()->getValue())
 				->setMandatory($this->getEditConfig()->isMandatory())
 				->setMinlength($this->getAlphanumericConfig()->getMinlength())
 				->setMaxlength($this->getAlphanumericConfig()->getMaxlength())
 				->setMultiline($this->stringConfig->isMultiline())
 				->setPrefixAddons($addonConfig->getPrefixSiCrumbGroups())
 				->setSuffixAddons($addonConfig->getSuffixSiCrumbGroups());
-	}
-	
-	function saveSiField(SiField $siField, Eiu $eiu) {
-		ArgUtils::assertTrue($siField instanceof StringInSiField);
-		$eiu->field()->setValue($siField->getValue());
+		
+		return $eiu->factory()->newGuiField($siField)
+				->setSaver(function () use ($siField, $eiu) { 
+					$eiu->field()->setValue($siField->getValue()); 
+				});
 	}
 }

@@ -36,6 +36,7 @@ use n2n\web\dispatch\mag\UiOutfitter;
 use n2n\impl\persistence\orm\property\FloatEntityProperty;
 use rocket\impl\ei\component\prop\numeric\conf\DecimalConfig;
 use rocket\si\content\SiField;
+use rocket\ei\util\factory\EifGuiField;
 
 class DecimalEiProp extends NumericEiPropAdapter {
     private $decimalConfig;
@@ -71,11 +72,8 @@ class DecimalEiProp extends NumericEiPropAdapter {
 				$propertyAccessProxy->getBaseConstraint()->allowsNull(), true));
 		$this->objectPropertyAccessProxy = $propertyAccessProxy;
 	}
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldEditable::createMag($eiu)
-	 */
-	public function createInSiField(Eiu $eiu): SiField {
+
+	public function createInEifGuiField(Eiu $eiu): EifGuiField {
 		$numericMag = new EiDecimalMag($this->getLabelLstr(), null,
 				$this->isMandatory($eiu), $this->getMinValue(), $this->getMaxValue(), 
 				$this->getDecimalPlaces(), array('placeholder' => $this->getLabelLstr()));

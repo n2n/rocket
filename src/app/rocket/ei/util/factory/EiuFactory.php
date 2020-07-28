@@ -2,11 +2,13 @@
 namespace rocket\ei\util\factory;
 
 use rocket\ei\util\privilege\EiuCommandPrivilege;
-use rocket\ei\util\control\SifControlResponse;
+use rocket\ei\util\control\EiuControlResponse;
 use rocket\ei\manage\idname\IdNameProp;
 use rocket\ei\util\EiuAnalyst;
 use n2n\util\type\TypeConstraint;
 use rocket\ei\util\Eiu;
+use rocket\si\content\SiField;
+use rocket\ei\manage\gui\GuiFieldAssembler;
 
 class EiuFactory {
 	private $eiu;
@@ -29,10 +31,10 @@ class EiuFactory {
 	}
 	
 	/**
-	 * @return \rocket\ei\util\control\SifControlResponse
+	 * @return \rocket\ei\util\control\EiuControlResponse
 	 */
 	function newControlResponse() {
-		return new SifControlResponse($this->eiuAnalyst);
+		return new EiuControlResponse($this->eiuAnalyst);
 	}
 	
 	/**
@@ -52,7 +54,26 @@ class EiuFactory {
 		return new EifField($this->eiu, $typeConstraint, $reader);
 	}
 	
-	function newGuiField() {
-		
+	/**
+	 * @param \Closure $closure
+	 * @return \rocket\ei\util\factory\EifGuiProp
+	 */
+	function newGuiProp(\Closure $closure) {
+		return new EifGuiProp($closure);
+	}
+	
+	/**
+	 * @param \Closure|GuiFieldAssembler $eiGuiCallbackOrAssembler
+	 * @return \rocket\ei\util\factory\EifGuiPropSetup
+	 */
+	function newGuiPropSetup($eiGuiCallbackOrAssembler) {
+		return new EifGuiPropSetup($eiGuiCallbackOrAssembler);
+	}
+	
+	/**
+	 * 
+	 */
+	function newGuiField(SiField $siField) {
+		return new EifGuiField($this->eiu, $siField);
 	}
 }

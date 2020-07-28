@@ -45,11 +45,11 @@ class PasswordEiProp extends DraftablePropertyEiPropAdapter {
 		$this->getConfigurator()->addAdaption($this->passwordConfig);
 	}
 	
-	public function createOutSiField(Eiu $eiu): SiField  {
+	public function createOutEifGuiField(Eiu $eiu): EifGuiField  {
 		return null;
 	}
 	
-	public function createInSiField(Eiu $eiu): SiField {
+	public function createInEifGuiField(Eiu $eiu): EifGuiField {
 		return new SecretStringMag($this->getLabelLstr(), null,
 				$this->isMandatory($eiu), $this->getMaxlength(), 
 				array('placeholder' => $this->getLabelLstr()));

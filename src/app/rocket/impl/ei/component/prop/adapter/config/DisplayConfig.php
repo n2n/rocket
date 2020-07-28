@@ -25,7 +25,6 @@ use n2n\persistence\meta\structure\Column;
 use n2n\util\type\ArgUtils;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\manage\gui\ViewMode;
-use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\si\meta\SiStructureType;
 use rocket\ei\util\Eiu;
 use n2n\util\type\attrs\DataSet;
@@ -33,6 +32,8 @@ use n2n\web\dispatch\mag\MagCollection;
 use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
+use rocket\ei\manage\gui\GuiPropSetup;
+use rocket\ei\manage\gui\GuiFieldAssembler;
 
 class DisplayConfig extends ConfigAdaption {
 	private $compatibleViewModes;
@@ -308,26 +309,30 @@ class DisplayConfig extends ConfigAdaption {
 		}
 	}
 
-	/**
-	 * @param int $viewMode
-	 * @return DisplayDefinition|null
-	 */
-	function toDisplayDefinition(int $viewMode, string $label, string $helpText = null) {
-		if (!$this->isViewModeCompatible($viewMode)) return null;
+// 	/**
+// 	 * @param int $viewMode
+// 	 * @return DisplayDefinition|null
+// 	 */
+// 	function toDisplayDefinition(int $viewMode, string $label, string $helpText = null) {
+// 		if (!$this->isViewModeCompatible($viewMode)) return null;
 		
-		return new DisplayDefinition($this->siStructureType,
-				$this->isViewModeDefaultDisplayed($viewMode), $label, $helpText);
-	}
+// 		return new DisplayDefinition($this->siStructureType,
+// 				$this->isViewModeDefaultDisplayed($viewMode), $label, $helpText);
+// 	}
 	
 	/**
 	 * @param Eiu $eiu
-	 * @return \rocket\ei\manage\gui\DisplayDefinition|NULL
+	 * @return GuiPropSetup|null
 	 */
-	function buildDisplayDefinitionFromEiu(Eiu $eiu) {
-		return $this->toDisplayDefinition($eiu->guiFrame()->getViewMode(), $eiu->prop()->getLabel(), 
-				$eiu->prop()->getHelpText());
+	function buildGuiPropSetup(Eiu $eiu, GuiFieldAssembler $guiFieldAssembler) {
+		$viewMode = $eiu->guiFrame()->getViewMode();
+		
+		if (!$this->isViewModeCompatible($viewMode)) {
+			return null;
+		}
+		
+		return $eiu->factory()->newGuiPropSetup($guiFieldAssembler)
+				->setDefaultDisplayed($this->isViewModeDefaultDisplayed($viewMode))
+				->toGuiPropSetup();
 	}
-
-
-
 }

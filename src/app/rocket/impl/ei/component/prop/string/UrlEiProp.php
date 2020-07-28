@@ -22,7 +22,6 @@
 namespace rocket\impl\ei\component\prop\string;
 
 use rocket\ei\util\Eiu;
-use n2n\impl\web\dispatch\mag\model\UrlMag;
 use n2n\util\uri\Url;
 use n2n\reflection\property\AccessProxy;
 use n2n\persistence\orm\property\EntityProperty;
@@ -32,6 +31,10 @@ use rocket\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\impl\ei\component\prop\string\conf\UrlConfig;
 use rocket\ei\util\factory\EifField;
 use n2n\validation\plan\impl\Validators;
+use rocket\si\content\impl\SiFields;
+use rocket\si\NavPoint;
+use rocket\ei\util\factory\EifGuiField;
+use rocket\si\content\impl\meta\SiCrumb;
 
 class UrlEiProp extends AlphanumericEiProp {
 	
@@ -79,7 +82,7 @@ class UrlEiProp extends AlphanumericEiProp {
 	function createEifField(Eiu $eiu): EifField {
 		return parent::createEifField($eiu)
 				->setReadMapper(function ($value) { return $this->readMap($value); })
-				->setWriterMapper(function ($value) use ($eiu) { return $this->writeMap($eiu, $value); })
+				->setWriteMapper(function ($value) use ($eiu) { return $this->writeMap($eiu, $value); })
 				->val(Validators::url(!$this->urlConfig->isRelativeAllowed(), $this->urlConfig->getAllowedSchemes()));
 	}
 	
@@ -109,52 +112,56 @@ class UrlEiProp extends AlphanumericEiProp {
 		return $value;
 	}
 	
-// 	public function createEditablePreviewUiComponent(PreviewModel $previewModel, PropertyPath $propertyPath,
-// 			HtmlView $view, \Closure $createCustomUiElementCallback = null) {
-// 		return $view->getFormHtmlBuilder()->getInput($propertyPath, array('class' => 'rocket-preview-inpage-component'));
-// 	}
 	
-	public function createInSiField(Eiu $eiu): SiField {
-		$mag = new UrlMag($this->getLabelLstr(), null, $this->getEditConfig()->isMandatory(), 
-				$this->getAlphanumericConfig()->getMaxlength());
+	function createInEifGuiField(Eiu $eiu): EifGuiField {
+		$siField = SiFields::stringIn($eiu->field()->getValue())
+				->setMandatory($this->getEditConfig()->isMandatory())
+				->setMinlength($this->getAlphanumericConfig()->getMinlength())
+				->setMaxlength($this->getAlphanumericConfig()->getMaxlength())
+				->setPrefixAddons($this->getAddonConfig()->getPrefixSiCrumbGroups())
+				->setSuffixAddons($this->getAddonConfig()->getSuffixSiCrumbGroups());
 		
-		$allowedSchemes = $this->urlConfig->getAllowedSchemes();
-		if (!empty($allowedSchemes)) {
-			$mag->setAllowedSchemes($allowedSchemes);
-		}
-		
-		$mag->setRelativeAllowed($this->urlConfig->isRelativeAllowed());
-		$mag->setAutoScheme($this->urlConfig->getAutoScheme());
-		$mag->setInputAttrs(array('placeholder' => $this->getLabelLstr(), 'class' => 'form-control'));
-// 		$mag->setAttrs(array('class' => 'rocket-block'));
-		return $mag;
-	}
-	
-	
-	
-// 	public function loadMagValue(Eiu $eiu, Mag $mag) {
-// 		$value = $eiu->field()->getValue();
-// 		if ($value !== null) {
-// 			$value = Url::create($value, true);
+		return $eiu->factory()->newGuiField($siField)
+				->setSaver(function () use ($eiu, $siField) {
+					$this->save($siField, $eiu);
+				});
+				
+// 		$allowedSchemes = $this->urlConfig->getAllowedSchemes();
+// 		if (!empty($allowedSchemes)) {
+// 			$mag->setAllowedSchemes($allowedSchemes);
 // 		}
-// 		$mag->setValue($value);
-// 	}
-	
-	public function saveSiField(SiField $mag, Eiu $eiu) {
-		$value = $mag->getValue();
-		if ($value !== null) {
-			$value = /*(string)*/ $value;
-		}
-		$eiu->field()->setValue($value);
+		
+// 		$mag->setRelativeAllowed($this->urlConfig->isRelativeAllowed());
+// 		$mag->setAutoScheme($this->urlConfig->getAutoScheme());
+// 		$mag->setInputAttrs(array('placeholder' => $this->getLabelLstr(), 'class' => 'form-control'));
+// 		$mag->setAttrs(array('class' => 'rocket-block'));
+
+		
 	}
 	
+	private function mapSiValue($value) {
+		if ($value === null) {
+			return null;
+		}
+		
+		$url = Url::create($value, true);
+		
+		$autoScheme = $this->urlConfig->getAutoScheme();
+		if ($autoScheme !== null && !$url->hasScheme()) {
+			$url = $url->chScheme($autoScheme);
+		}
+		
+		return $url;
+	}
 	
-
-	public function createOutSiField(Eiu $eiu): SiField  {
+	public function createOutEifGuiField(Eiu $eiu): EifGuiField  {
 		$value = $eiu->field()->getValue();
-		if ($value === null) return null;
-		return $view->getHtmlBuilder()->getLink($value, $this->buildLabel($value, $eiu->entryGui()->isBulky()),
-				array('target' => '_blank'));
+		if ($value === null) {
+			return $eiu->factory()->newGuiField(SiFields::stringOut(null));
+		}
+		
+		return $eiu->factory()->newGuiField(
+				SiFields::linkOut(NavPoint::href($value), $this->buildLabel($value, $eiu->entryGui()->isBulky())));
 	}
 
 	

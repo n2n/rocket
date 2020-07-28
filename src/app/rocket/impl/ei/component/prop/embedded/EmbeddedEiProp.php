@@ -212,7 +212,7 @@ class EmbeddedGuiField implements GuiField {
 		return $this->mag;
 	}
 
-	public function createOutSiField(Eiu $eiu): SiField {
+	function createOutEifGuiField(Eiu $eiu): EifGuiField {
 		return null;
 	}
 

@@ -118,7 +118,7 @@ class MultiSelectEiProp extends DraftablePropertyEiPropAdapter {
 		return $this->getMin() > 0;
 	}
 	
-	public function createInSiField(Eiu $eiu): SiField {
+	public function createInEifGuiField(Eiu $eiu): EifGuiField {
 		return new MultiSelectMag($this->getLabelCode(), $this->getOptions(), array(), 
 				$this->getMin(), $this->getMax());
 	}
@@ -141,7 +141,7 @@ class MultiSelectEiProp extends DraftablePropertyEiPropAdapter {
 	public function saveSiField(SiField $siField, Eiu $eiu) {
 	}
 
-	public function createOutSiField(Eiu $eiu): SiField {
+	function createOutEifGuiField(Eiu $eiu): EifGuiField {
 	}
 
 	

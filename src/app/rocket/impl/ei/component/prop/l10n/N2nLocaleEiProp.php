@@ -50,6 +50,7 @@ use rocket\ei\manage\generic\ScalarEiProperty;
 use rocket\si\content\SiField;
 use rocket\ei\manage\idname\IdNameProp;
 use rocket\ei\component\prop\IdNameEiProp;
+use rocket\ei\util\factory\EifGuiField;
 
 class N2nLocaleEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiProp, SortableEiProp, GenericEiProp,
 		ScalarEiProp, IdNameEiProp {
@@ -74,7 +75,7 @@ class N2nLocaleEiProp extends DraftablePropertyEiPropAdapter implements Filterab
 		$this->definedN2nLocales = $definedN2nLocales;
 	}
 
-	public function createOutSiField(Eiu $eiu): SiField  {
+	public function createOutEifGuiField(Eiu $eiu): EifGuiField  {
 		$value = $eiu->entry()->getValue($this);
 		if ($value === null) return null;
 		
@@ -82,7 +83,7 @@ class N2nLocaleEiProp extends DraftablePropertyEiPropAdapter implements Filterab
 		return $this->generateDisplayNameForN2nLocale($n2nLocale, $view->getN2nContext()->getN2nLocale());
 	}
 
-	public function createInSiField(Eiu $eiu): SiField {
+	public function createInEifGuiField(Eiu $eiu): EifGuiField {
 		return new EnumMag($this->getLabelLstr(), 
 				$this->buildN2nLocaleOptions($eiu->lookup(WebConfig::class), $eiu->frame()->getN2nLocale()), 
 				null, $this->isMandatory($eiu));

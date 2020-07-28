@@ -55,6 +55,7 @@ use n2n\io\managed\img\ImageFile;
 use n2n\io\managed\img\ImageDimension;
 use rocket\ei\manage\idname\IdNameProp;
 use rocket\ei\component\prop\IdNameEiProp;
+use rocket\ei\util\factory\EifGuiField;
 
 class FileEiProp extends DraftablePropertyEiPropAdapter implements IdNameEiProp {
 	
@@ -176,10 +177,10 @@ class FileEiProp extends DraftablePropertyEiPropAdapter implements IdNameEiProp 
 		}
 	}
 	
-	public function createOutSiField(Eiu $eiu): SiField {
+	function createOutEifGuiField(Eiu $eiu): EifGuiField {
 		$siFile = $this->buildSiFileFromEiu($eiu);
 		
-		return SiFields::fileOut($siFile);
+		return $eiu->factory()->newGuiField(SiFields::fileOut($siFile));
 		
 // 		if (!$file->isValid()) {
 // 			return $html->getEsc('[missing file]');
@@ -231,15 +232,19 @@ class FileEiProp extends DraftablePropertyEiPropAdapter implements IdNameEiProp 
 // 		return $uiComponent;
 // 	}
 	
-	public function createInSiField(Eiu $eiu): SiField {
+	public function createInEifGuiField(Eiu $eiu): EifGuiField {
 		$siFile = $this->buildSiFileFromEiu($eiu);
 		
-		return SiFields::fileIn($siFile, $eiu->frame()->getApiUrl(), $eiu->guiField()->createCallId(), 
+		$siField = SiFields::fileIn($siFile, $eiu->frame()->getApiUrl(), $eiu->guiField()->createCallId(), 
 						new SiFileHanlderImpl($eiu, $this->thumbResolver, $this->fileVerificator, $siFile))
 				->setMandatory($this->getEditConfig()->isMandatory())
 				->setMaxSize($this->fileVerificator->getMaxSize())
 				->setAcceptedExtensions($this->fileVerificator->getAllowedExtensions())
 				->setAcceptedMimeTypes($this->fileVerificator->getAllowedMimeTypes());
+		
+		return $eiu->factory()->newGuiField($siField)->setSaver(function () use ($siField, $eiu) {
+			$this->saveSiField($siField, $eiu);
+		});
 		
 // 		$allowedExtensions = $this->getAllowedExtensions();
 // 		return new FileMag($this->getLabelLstr(), (sizeof($allowedExtensions) ? $allowedExtensions : null), 
@@ -247,8 +252,7 @@ class FileEiProp extends DraftablePropertyEiPropAdapter implements IdNameEiProp 
 // 				$this->isMandatory($eiu));
 	}
 
-	function saveSiField(SiField $siField, Eiu $eiu) {
-		CastUtils::assertTrue($siField instanceof FileInSiField);
+	function saveSiField(FileInSiField $siField, Eiu $eiu) {
 		
 		$siFile = $siField->getValue();
 		if ($siFile === null) {
@@ -292,7 +296,7 @@ class FileEiProp extends DraftablePropertyEiPropAdapter implements IdNameEiProp 
 	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {
 		return $eiu->factory()->newIdNameProp(function (Eiu $eiu) {
 			return $this->buildIdentityString($eiu);
-		});
+		})->toIdNameProp();
 	}
 	
 	private function buildIdentityString(Eiu $eiu) {

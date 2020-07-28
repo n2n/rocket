@@ -24,13 +24,6 @@ namespace rocket\ei\manage\gui;
 use rocket\ei\manage\DefPropPath;
 use n2n\util\type\ArgUtils;
 
-class GuiPropSetups {
-	
-	static function simple(GuiFieldAssembler $guiFieldAssembler, ?DisplayDefinition $displayDefinition,
-			array $forkedDisplayDefinitions = []) {
-		return new SimpleGuiPropSetup($guiFieldAssembler, $displayDefinition, $forkedDisplayDefinitions);
-	}
-}
 
 class SimpleGuiPropSetup implements GuiPropSetup {
 	private $guiFieldAssembler;

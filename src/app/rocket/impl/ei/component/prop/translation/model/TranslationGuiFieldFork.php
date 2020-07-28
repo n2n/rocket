@@ -274,7 +274,7 @@ class EmptyDisplayable implements GuiFieldDisplayable {
 		return array('class' => 'rocket-empty-translation');
 	}
 	
-	public function createOutSiField(Eiu $eiu): SiField {
+	function createOutEifGuiField(Eiu $eiu): EifGuiField {
 		return new HtmlElement('span', ['class' => 'rocket-inactive'], 
 				$view->getHtmlBuilder()->getText('ei_impl_locale_not_active_label'));
 	}

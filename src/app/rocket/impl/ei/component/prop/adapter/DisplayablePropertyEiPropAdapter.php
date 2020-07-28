@@ -30,15 +30,14 @@ use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
-use rocket\impl\ei\component\prop\adapter\gui\GuiFieldProxy;
-use rocket\impl\ei\component\prop\adapter\gui\GuiProps;
-use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable;
 use n2n\util\type\TypeConstraint;
 use rocket\ei\manage\gui\GuiFieldAssembler;
 use rocket\ei\util\factory\EifField;
+use rocket\ei\util\factory\EifGuiField;
+use n2n\util\ex\UnsupportedOperationException;
 
-abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter 
-		implements FieldEiProp, StatelessGuiFieldDisplayable, GuiEiProp, GuiFieldAssembler {
+abstract class DisplayablePropertyEiPropAdapter extends PropertyEiPropAdapter 
+		implements FieldEiProp, GuiEiProp, GuiFieldAssembler {
 	private $displayConfig;
 
 	/**
@@ -79,11 +78,20 @@ abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter
 	
 	// GuiProp
 	
-	public function buildGuiProp(Eiu $eiu): ?GuiProp {
-		return GuiProps::configAndAssembler($this->getDisplayConfig(), $this);
+	function buildGuiProp(Eiu $eiu): ?GuiProp {
+		return $eiu->factory()->newGuiProp(function (Eiu $eiu) {
+			return $this->getDisplayConfig()->buildGuiPropSetup($eiu, $this);
+		})->toGuiProp();
 	}
 	
-	public function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		return new GuiFieldProxy($eiu, $this);
+	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
+		return $this->createOutEifGuiField($eiu);
+	}
+	
+	protected function createOutEifGuiField(Eiu $eiu): EifGuiField {
+		throw new UnsupportedOperationException(get_class($this)
+				. ' must implement  either'
+				. ' createEifGuiField(Eiu $eiu, bool $readOnly): EifGuiField or'
+				. ' buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField.');
 	}
 }

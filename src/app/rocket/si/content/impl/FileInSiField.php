@@ -28,6 +28,7 @@ use n2n\io\IoUtils;
 use n2n\util\type\ArgUtils;
 use n2n\io\managed\img\ThumbCut;
 use n2n\util\type\attrs\DataMap;
+use n2n\web\http\UploadDefinition;
 
 class FileInSiField extends InSiFieldAdapter {
 	/**

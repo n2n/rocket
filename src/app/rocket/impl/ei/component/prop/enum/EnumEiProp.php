@@ -51,6 +51,7 @@ use rocket\impl\ei\component\prop\enum\conf\EnumConfig;
 use rocket\ei\manage\idname\IdNameProp;
 use rocket\ei\component\prop\IdNameEiProp;
 use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfig;
+use rocket\ei\util\factory\EifGuiField;
 
 class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiProp, SortableEiProp, 
 		QuickSearchableEiProp, IdNameEiProp {
@@ -136,7 +137,7 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 		return parent::buildEiField($eiu);
 	}
 	
-	public function createInSiField(Eiu $eiu): SiField {
+	public function createInEifGuiField(Eiu $eiu): EifGuiField {
 		$choicesMap = $this->getEnumConfig()->getOptions();
 		foreach (array_values($choicesMap) as $value) {
 			if (!$eiu->entry()->acceptsValue($this, $value)) {
@@ -144,34 +145,39 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 			}
 		}
 		
-		if (empty($this->associatedDefPropPathMap)) {
-			return SiFields::enumIn($choicesMap, $eiu->field()->getValue())
+		$siField = SiFields::enumIn($choicesMap, $eiu->field()->getValue())
 					->setMandatory($this->getEditConfig()->isMandatory());
-		}
 		
-		$enablerMag = new EnumTogglerMag($this->getLabelLstr(), $choicesMap, null, 
-					$this->isMandatory($eiu));
-		
-		$that = $this;
-		$eiu->entryGui()->whenReady(function () use ($eiu, $enablerMag, $that) {
-			$associatedMagWrapperMap = array();
-			foreach ($that->getAssociatedDefPropPathMap() as $value => $eiPropPaths) {
-				$magWrappers = array();
-				foreach ($eiPropPaths as $eiPropPath) {
-					$magWrapper = $eiu->entryGui()->getMagWrapper($eiPropPath, false);
-					if ($magWrapper === null) continue;
-					
-					$magWrappers[] = $magWrapper;
-				}
-				
-				$associatedMagWrapperMap[$value] = $magWrappers; 
-			}
-			
-			$enablerMag->setAssociatedMagWrapperMap($associatedMagWrapperMap);
+// 		$defPropPathMap = $this->getEnumConfig()->getAssociatedDefPropPathMap();
+// 		if (empty($defPropPathMap)) {
+		return $eiu->factory()->newGuiField($siField)->setSaver(function () use ($eiu, $siField)  {
+			$this->saveSiField($siField, $eiu);
 		});
+// 		}
+		
+// 		$enablerMag = new EnumTogglerMag($this->getLabelLstr(), $choicesMap, null, 
+// 					$this->isMandatory($eiu));
+		
+// 		$that = $this;
+// 		$eiu->entryGui()->whenReady(function () use ($eiu, $enablerMag, $that) {
+// 			$associatedMagWrapperMap = array();
+// 			foreach ($that->getAssociatedDefPropPathMap() as $value => $eiPropPaths) {
+// 				$magWrappers = array();
+// 				foreach ($eiPropPaths as $eiPropPath) {
+// 					$magWrapper = $eiu->entryGui()->getMagWrapper($eiPropPath, false);
+// 					if ($magWrapper === null) continue;
+					
+// 					$magWrappers[] = $magWrapper;
+// 				}
+				
+// 				$associatedMagWrapperMap[$value] = $magWrappers; 
+// 			}
+			
+// 			$enablerMag->setAssociatedMagWrapperMap($associatedMagWrapperMap);
+// 		});
 		
 		
-		return $enablerMag;
+// 		return $enablerMag;
 	}
 	
 	function saveSiField(SiField $siField, Eiu $eiu) {
@@ -179,8 +185,8 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 		$eiu->field()->setValue($siField->getValue());
 	}
 	
-	public function createOutSiField(Eiu $eiu): SiField  {
-		return SiFields::stringOut($eiu->field()->getValue());
+	public function createOutEifGuiField(Eiu $eiu): EifGuiField  {
+		return $eiu->factory()->newGuiField(SiFields::stringOut($eiu->field()->getValue()));
 	}
 	
 	public function buildManagedFilterProp(EiFrame $eiFrame): ?FilterProp  {
@@ -223,6 +229,6 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {
 		return $eiu->factory()->newIdNameProp(function (Eiu $eiu) {
 			return StringUtils::strOf($eiu->object()->readNativValue($this));
-		});
+		})->toIdNameProp();
 	}
 }

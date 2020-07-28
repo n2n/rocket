@@ -35,6 +35,7 @@ use rocket\impl\ei\component\prop\string\cke\conf\CkeConfig;
 use n2n\util\type\ArgUtils;
 use n2n\util\uri\Url;
 use rocket\ei\manage\idname\IdNameProp;
+use rocket\ei\util\factory\EifGuiField;
 
 class CkeEiProp extends AlphanumericEiProp {
 	/**
@@ -55,24 +56,25 @@ class CkeEiProp extends AlphanumericEiProp {
 		$this->getConfigurator()->addAdaption($this->ckeConfig);
 	}
 	
-	public function createOutSiField(Eiu $eiu): SiField {
+	function createOutEifGuiField(Eiu $eiu): EifGuiField {
 	    $value = $eiu->field()->getValue(EiPropPath::from($this));
 	    if ($value === null) {
-	    	return SiFields::stringOut('');
+	    	return $eiu->factory()->newGuiField(SiFields::stringOut(''));
 	    }
 	    
 		if ($eiu->guiFrame()->isCompact()) {
-			return SiFields::stringOut(StringUtils::reduce(html_entity_decode(strip_tags($value), null, N2N::CHARSET), 50, '...'));
+			return $eiu->factory()->newGuiField(
+					SiFields::stringOut(StringUtils::reduce(html_entity_decode(strip_tags($value), null, N2N::CHARSET), 50, '...')));
 		}
 
 // 		$ckeHtmlBuidler = new CkeHtmlBuilder($view);
 
 // 		return $ckeHtmlBuidler->getIframe((string) $value, $this->ckeCssConfig, (array) $this->ckeLinkProviders);
 
-		return SiFields::stringOut((string) $value);
+		return $eiu->factory()->newGuiField(SiFields::stringOut((string) $value));
 	}
 	
-	public function createInSiField(Eiu $eiu): SiField {
+	public function createInEifGuiField(Eiu $eiu): EifGuiField {
 		$ckeInField = SiFields::ckeIn($eiu->field()->getValue())
 				->setMinlength($this->getAlphanumericConfig()->getMinlength())
 				->setMaxlength($this->getAlphanumericConfig()->getMaxlength())
@@ -88,8 +90,10 @@ class CkeEiProp extends AlphanumericEiProp {
 // 					->setBodyClass($ckeCssConfig->getBodyClass())
 // 					->setBodyClass($ckeCssConfig->getAdditionalStyles());
 // 		}
+
+		return $eiu->factory()->newGuiField($ckeInField);
 		
-		return $ckeInField;
+		
 		
 // 		$eiu->entry()->getEiEntry();
 		
@@ -102,12 +106,7 @@ class CkeEiProp extends AlphanumericEiProp {
 		CastUtils::assertTrue($siField instanceof StringInSiField);
 		$eiu->field()->setValue($siField->getValue());
 	}
-	
-	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {
-		return $eiu->factory()->newIdNameProp(function (Eiu $eiu) {
-			return $eiu->object()->readNativValue($this);
-		});
-	}
+
 	
 // 	/**
 // 	 * @return \rocket\ei\component\prop\WysiwygLinkConfig

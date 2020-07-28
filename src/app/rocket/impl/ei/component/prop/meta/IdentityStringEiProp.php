@@ -23,8 +23,8 @@ namespace rocket\impl\ei\component\prop\meta;
 
 use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\adapter\DisplayableEiPropAdapter;
-use rocket\si\content\SiField;
 use rocket\si\content\impl\SiFields;
+use rocket\ei\util\factory\EifGuiField;
 
 class IdentityStringEiProp extends DisplayableEiPropAdapter {
 	
@@ -33,12 +33,8 @@ class IdentityStringEiProp extends DisplayableEiPropAdapter {
 				->setAddModeDefaultDisplayed(false)
 				->setEditModeDefaultDisplayed(false);
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable::createUiComponent()
-	 */
-	public function createOutSiField(Eiu $eiu): SiField {
+
+	public function createOutEifGuiField(Eiu $eiu): EifGuiField{
 		return SiFields::stringOut($eiu->entry()->createIdentityString());
 	}
 

@@ -42,6 +42,9 @@ use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
 use rocket\si\content\impl\SiFields;
 use rocket\si\content\SiField;
 use rocket\impl\ei\component\prop\bool\conf\BooleanConfig;
+use rocket\ei\util\factory\EifGuiField;
+use rocket\si\content\impl\meta\SiCrumb;
+use rocket\si\control\SiIconType;
 
 class BooleanEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiProp, SortableEiProp, SecurityFilterEiProp {
 	private $booleanConfig;
@@ -96,31 +99,27 @@ class BooleanEiProp extends DraftablePropertyEiPropAdapter implements Filterable
 		return (bool) parent::readEiFieldValue($eiu);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable::createUiComponent()
-	 */
-	function createOutSiField(Eiu $eiu): SiField  {
-		return SiFields::stringOut($eiu->field()->getValue());
-// 		$value = $this->getObjectPropertyAccessProxy()->getValue(
-// 				$eiu->entry()->getEiEntry()->getEiObject()->getLiveObject());
-// 		if ($value) {
-// 			return new HtmlElement('i', array('class' => 'fa fa-check'), '');
-// 		}
-// 		return new HtmlElement('i', array('class' => 'fa fa-check-empty'), '');
+
+	function createOutEifGuiField(Eiu $eiu): EifGuiField  {
+		$value = $eiu->field()->getValue();
+		$siField = null;
+		if ($value) {
+			$siField = SiFields::crumbOut(SiCrumb::createIcon(SiIconType::ICON_CHECK));
+		} else {
+			$siField = SiFields::crumbOut(SiCrumb::createIcon('fa fa-check-empty'));
+		}
+		return $eiu->factory()->newGuiField($siField);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldEditable::createMag()
-	 */
-	function createInSiField(Eiu $eiu): SiField {
+	function createInEifGuiField(Eiu $eiu): EifGuiField {
 		$mapCb = function ($defPropPath) { return (string) $defPropPath; };
 		
-		return SiFields::boolIn($eiu->field()->getValue())
+		$siField = SiFields::boolIn($eiu->field()->getValue())
 				->setMandatory($this->getEditConfig()->isMandatory())
 				->setOnAssociatedPropIds(array_map($mapCb, $this->booleanConfig->getOnAssociatedDefPropPaths()))
 				->setOffAssociatedPropIds(array_map($mapCb, $this->booleanConfig->getOffAssociatedDefPropPaths()));
+		
+		return $eiu->factory()->newGuiField($siField);
 	}
 	
 	

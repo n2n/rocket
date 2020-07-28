@@ -30,6 +30,8 @@ use rocket\ei\util\Eiu;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\si\content\SiField;
 use rocket\impl\ei\component\prop\string\conf\PathPartConfig;
+use rocket\si\content\impl\SiFields;
+use rocket\ei\util\factory\EifGuiField;
 
 class PathPartEiProp extends AlphanumericEiProp {
 	function __construct() {
@@ -60,11 +62,6 @@ class PathPartEiProp extends AlphanumericEiProp {
 		parent::setEntityProperty($entityProperty);
 	}
 	
-	function createOutSiField(Eiu $eiu): SiField  {
-		return $view->getHtmlBuilder()->getEsc($eiu->field()->getValue());
-	}
-
-	
 	private function buildMagInputAttrs(Eiu $eiu): array {
 		$attrs = array('placeholder' => $this->getLabelLstr(), 'class' => 'form-control');
 		
@@ -84,11 +81,18 @@ class PathPartEiProp extends AlphanumericEiProp {
 		return $attrs;
 	}
 	
-	function createInSiField(Eiu $eiu): SiField {
-		$attrs = $this->buildMagInputAttrs($eiu);
+	function createInEifGuiField(Eiu $eiu): EifGuiField {
+		$siField = SiFields::stringIn($eiu->field()->getValue())
+				->setMandatory($this->getEditConfig()->isMandatory())
+				->setMinlength($this->getAlphanumericConfig()->getMinlength())
+				->setMaxlength($this->getAlphanumericConfig()->getMaxlength())
+				->setPrefixAddons($this->getAddonConfig()->getPrefixSiCrumbGroups())
+				->setSuffixAddons($this->getAddonConfig()->getSuffixSiCrumbGroups());
 		
-		return new StringMag($this->getLabelLstr(), null,
-				$this->isMandatory($eiu), $this->getMaxlength(), false, null, $attrs);
+		return $eiu->factory()->newGuiField($siField)
+				->setSaver(function () use ($eiu, $siField) {
+					$this->save($siField, $eiu);
+				});
 	}
 	
 	function saveSiField(SiField $siField, Eiu $eiu) {

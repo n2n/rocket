@@ -22,7 +22,6 @@
 namespace rocket\impl\ei\component\prop\relation;
 
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
-use n2n\l10n\N2nLocale;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\component\prop\ForkEiProp;
 use rocket\ei\component\prop\GuiEiProp;
@@ -33,7 +32,6 @@ use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\adapter\PropertyEiPropAdapter;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
-use rocket\impl\ei\component\prop\adapter\gui\GuiProps;
 use rocket\impl\ei\component\prop\relation\conf\RelationConfig;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\impl\ei\component\prop\relation\model\Relation;
@@ -126,7 +124,13 @@ abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements Re
 	 * @see \rocket\ei\component\prop\GuiEiProp::buildGuiProp()
 	 */
 	function buildGuiProp(Eiu $eiu): ?GuiProp {
-		return GuiProps::configAndAssembler($this->displayConfig, $this);
+		return $eiu->factory()->newGuiProp(function (Eiu $eiu) {
+			return $this->displayConfig->buildGuiPropSetup($eiu, $this);
+		})->toGuiProp();
+	}
+	
+	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
+		return null;
 	}
 	
 	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {
@@ -143,25 +147,8 @@ abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements Re
 			
 			$targetEiuEngine = $this->getRelationModel()->getTargetEiuEngine();
 			return $targetEiuEngine->createIdentityString($targetEntityObj);
-		});
+		})->toIdNameProp();
 	}
-	
-	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		return null;
-	}
-	
-// 	function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
-// 		return $this->displayConfig->toDisplayDefinition($eiu->guiFrame()->getViewMode(), $eiu->prop()->getLabel(),
-// 				$eiu->prop()->getHelpText());
-// 	}
-	
-// 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-// 		if (!$this->getRelationModel()->isTargetMany()) {
-// 			return new ToOneGuiField($eiu, $this->getRelationModel());
-// 		}
-		
-// 		return new ToManyGuiField($eiu, $this->getRelationModel());
-// 	}
 	
 	function createForkedEiFrame(Eiu $eiu, EiForkLink $eiForkLink): EiFrame {
 		return $this->getRelation()->createForkEiFrame($eiu, $eiForkLink);

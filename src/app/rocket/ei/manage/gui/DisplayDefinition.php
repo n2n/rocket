@@ -47,4 +47,3 @@ class DisplayDefinition {
 		return $this->overwriteHelpText;
 	}
 }
-

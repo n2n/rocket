@@ -63,7 +63,6 @@ class EmbeddedToOneGuiField implements GuiField, EmbeddedEntryInputHandler {
 				$this->relationModel->getMin(), $targetEiuFrame, null);
 		
 		$this->siField = SiFields::embeddedEntryIn($this->targetEiuFrame->createSiFrame(),
-						$this->targetEiuFrame->getApiUrl($relationModel->getTargetEditEiCommandPath()),
 						$this, $this->readValues(), (int) $relationModel->getMin(), $relationModel->getMax())
 				->setReduced($this->relationModel->isReduced())
 				->setNonNewRemovable($this->relationModel->isRemovable());

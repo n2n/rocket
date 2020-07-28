@@ -118,7 +118,7 @@ class EiuCallbackGuiControl implements GeneralGuiControl, EntryGuiControl, Selec
 			$sifControlResponse = $eiu->factory()->newControlResponse();
 		}
 		
-		return $sifControlResponse->finalize($eiu->lookup(ManageState::class)->getEiLifecycleMonitor());
+		return $sifControlResponse->toSiResult($eiu->lookup(ManageState::class)->getEiLifecycleMonitor());
 	}
 	
 	/**
