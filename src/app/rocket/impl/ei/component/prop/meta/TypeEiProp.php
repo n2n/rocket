@@ -30,6 +30,7 @@ use rocket\si\content\impl\SiFields;
 use rocket\ei\manage\idname\IdNameProp;
 use rocket\ei\component\prop\IdNameEiProp;
 use rocket\ei\util\factory\EifGuiField;
+use rocket\si\content\impl\meta\SiCrumb;
 
 class TypeEiProp extends DisplayableEiPropAdapter implements IdNameEiProp {
 	
@@ -52,10 +53,8 @@ class TypeEiProp extends DisplayableEiPropAdapter implements IdNameEiProp {
 			return SiFields::stringOut($label);
 		}
 		
-		return $eiu->factory()->newGuiField(SiFields::stringOut((string) new HtmlSnippet(
-				new HtmlElement('i', array('class' => $iconType), ''),
-				' ',
-				new HtmlElement('span', null, $label))));
+		return $eiu->factory()->newGuiField(SiFields::crumbOut(SiCrumb::createIcon($iconType), 
+				SiCrumb::createLabel($label)));
 	}
 	
 	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {

@@ -174,8 +174,6 @@ class FileInSiField extends InSiFieldAdapter {
 		return [
 			'value' => $this->value,
 			'mandatory' => $this->mandatory,
-			'mimeTypes' => $this->mimeTypes,
-			'extensions' => $this->extensions,
 			'apiUrl' => (string) $this->apiUrl,
 			'apiCallId' => $this->apiCallId,
 			'maxSize' => $this->maxSize ?? IoUtils::determineFileUploadMaxSize(),

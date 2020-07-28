@@ -22,6 +22,7 @@
 namespace rocket\si\content\impl;
 
 use n2n\util\type\attrs\DataSet;
+use n2n\util\type\ArgUtils;
 
 class EnumInSiField extends InSiFieldAdapter {
 	/**
@@ -50,6 +51,7 @@ class EnumInSiField extends InSiFieldAdapter {
 	 * @return \rocket\si\content\impl\EnumInSiField
 	 */
 	function setOptions(array $options) {
+		ArgUtils::valArray($options, 'string');
 		$this->options = $options;
 		return $this;
 	}
