@@ -6,7 +6,6 @@ import { SiGenericEmbeddedEntry, SiEmbeddedEntryResetPoint } from './generic-emb
 import { SiMaskQualifier } from 'src/app/si/model/meta/si-mask-qualifier';
 
 export class SiEmbeddedEntry {
-	
 
 	constructor(public comp: BulkyEntrySiComp, public summaryComp: CompactEntrySiComp|null) {
 	}

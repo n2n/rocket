@@ -56,7 +56,7 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 		this.embeCol.writeEmbes();
 	}
 
-	addBefore(embe: Embe, siEmbeddedEntry: SiEmbeddedEntry) {
+	addBefore(siEmbeddedEntry: SiEmbeddedEntry, embe: Embe) {
 		this.embeCol.createEmbe(siEmbeddedEntry);
 		this.embeCol.changeEmbePosition(this.embeCol.embes.length - 1, this.embeCol.embes.indexOf(embe));
 		this.embeCol.writeEmbes();
