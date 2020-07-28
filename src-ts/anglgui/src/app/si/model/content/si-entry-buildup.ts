@@ -5,10 +5,8 @@ import { SiField } from './si-field';
 import { BehaviorSubject } from 'rxjs';
 import { SiEntryQualifier } from './si-entry-qualifier';
 import { IllegalSiStateError } from '../../util/illegal-si-state-error';
-import { SiGenericEntry } from '../generic/si-generic-entry';
 import { SiGenericEntryBuildup } from '../generic/si-generic-entry-buildup';
 import { GenericMissmatchError } from '../generic/generic-missmatch-error';
-import { Fresult } from 'src/app/util/err/fresult';
 import { SiGenericValue } from '../generic/si-generic-value';
 
 export class SiEntryBuildup {

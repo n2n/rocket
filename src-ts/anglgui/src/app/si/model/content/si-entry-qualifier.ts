@@ -19,9 +19,9 @@ export class SiEntryQualifier {
 	constructor(readonly maskQualifier: SiMaskQualifier, readonly identifier: SiEntryIdentifier,
 			public idName: string|null) {
 
-		if (this.maskQualifier.identifier.typeId !== identifier.typeId) {
-			throw new Error('Identifiers do not match: ' + maskQualifier.identifier.typeId + ' != ' + identifier.typeId);
-		}
+		// if (this.maskQualifier.identifier.typeId !== identifier.typeId) {
+		// 	throw new Error('Identifiers do not match: ' + maskQualifier.identifier.typeId + ' != ' + identifier.typeId);
+		// }
 	}
 
 	getBestName(): string {

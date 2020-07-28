@@ -199,7 +199,7 @@ class SiPanel implements \JsonSerializable {
 	 */
 	function setAllowedTypeIds(?array $allowedTypeIds) {
 		ArgUtils::valArray($allowedTypeIds, 'string', true);
-		$this->allowedTypeIds = $allowedTypeIds;
+		$this->allowedTypeIds = $allowedTypeIds === null ? null : array_values($allowedTypeIds);
 		return $this;
 	}
 	

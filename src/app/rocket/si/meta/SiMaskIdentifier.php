@@ -32,7 +32,6 @@ class SiMaskIdentifier implements \JsonSerializable {
 		$this->typeId = $typeId;
 	}
 	
-	
 	/**
 	 * @return string
 	 */

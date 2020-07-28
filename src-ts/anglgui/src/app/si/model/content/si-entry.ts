@@ -45,6 +45,7 @@ export class SiEntry {
 
 	set selectedTypeId(id: string|null) {
 		if (id !== null && !this._entryBuildupsMap.has(id)) {
+			console.log(Array.from(this._entryBuildupsMap.keys()));
 			throw new IllegalSiStateError('Buildup id does not exist on entry: ' + id);
 		}
 

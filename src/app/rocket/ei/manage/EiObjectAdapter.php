@@ -53,6 +53,6 @@ abstract class EiObjectAdapter implements EiObject {
 			$pid = $eiEntityObj->getPid();
 		}
 		
-		return new SiEntryIdentifier($eiEntityObj->getEiType()->getSupremeEiType()->getId(), $pid);
+		return new SiEntryIdentifier($eiEntityObj->getEiType()->getId(), $pid);
 	}
 }

@@ -28,6 +28,7 @@ import { SiControlBoundry } from '../model/control/si-control-bountry';
 import { TranslationService } from 'src/app/util/i18n/translation.service';
 import { UiFactory } from 'src/app/ui/build/ui-factory';
 import { CkeInSiField } from '../model/content/impl/alphanum/model/cke-in-si-field';
+import { CrumbOutSiField } from '../model/content/impl/meta/model/crumb-out-si-field';
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',
@@ -44,7 +45,8 @@ enum SiFieldType {
 	EMBEDDED_ENTRY_PANELS_IN = 'embedded-entry-panels-in',
 	SPLIT_CONTEXT_IN = 'split-context-in',
 	SPLIT_CONTEXT_OUT = 'split-context-out',
-	SPLIT_PLACEHOLDER = 'split-placeholder'
+	SPLIT_PLACEHOLDER = 'split-placeholder',
+	CRUMB_OUT = 'crumb-out'
 }
 
 export class SiFieldFactory {
@@ -186,6 +188,8 @@ export class SiFieldFactory {
 			const splitSiField = new SplitSiField(dataExtr.reqString('refPropId'));
 			splitSiField.copyStyle = this.createSplitStyle(dataExtr.reqObject('copyStyle'));
 			return splitSiField;
+		case SiFieldType.CRUMB_OUT:
+			return new CrumbOutSiField(SiCompFactory.createCrumbGroups(dataExtr.reqArray('crumbGroups')));
 		default:
 			throw new ObjectMissmatchError('Invalid si field type: ' + data.type);
 		}
