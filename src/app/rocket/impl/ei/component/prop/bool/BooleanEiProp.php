@@ -104,9 +104,9 @@ class BooleanEiProp extends DraftablePropertyEiPropAdapter implements Filterable
 		$value = $eiu->field()->getValue();
 		$siField = null;
 		if ($value) {
-			$siField = SiFields::crumbOut(SiCrumb::createIcon(SiIconType::ICON_CHECK));
+			$siField = SiFields::crumbOut(SiCrumb::createIcon(SiIconType::CHECK));
 		} else {
-			$siField = SiFields::crumbOut(SiCrumb::createIcon('fa fa-check-empty'));
+			$siField = SiFields::crumbOut(SiCrumb::createIcon(SiIconType::TIMES));
 		}
 		return $eiu->factory()->newGuiField($siField);
 	}

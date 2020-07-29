@@ -76,10 +76,10 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 		$iconType = null;
 		if (!$eiuEntry->isDraft()) {
 			$pathExt = new Path(array('live', $eiuEntry->getPid()));
-			$iconType = SiIconType::ICON_FILE_O;
+			$iconType = SiIconType::FILE_O;
 		} else if (!$eiuEntry->isDraftNew()) {
 			$pathExt = new Path(array('draft', $eiuEntry->getDraftId()));
-			$iconType = SiIconType::ICON_FILE_O;
+			$iconType = SiIconType::FILE_O;
 		} else {
 			return array();
 		}
@@ -101,7 +101,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 		$siButton = new SiButton(
 				$dtc->t('ei_impl_detail_preview_label'),
 				$dtc->t('ei_impl_detail_preview_tooltip', array('entry' => $eiuFrame->getGenericLabel())),
-				false, null, SiIconType::ICON_EYE);
+				false, null, SiIconType::EYE);
 		
 		$previewType = $eiuEntry->getDefaultPreviewType();
 		if ($previewType === null) {

@@ -133,8 +133,7 @@ class SiValGetResult implements \JsonSerializable {
 	public function jsonSerialize() {
 		return [
 			'declaration' => $this->declaration,
-			'entry' => $this->entry,
-			'entryError' => $this->entryError
+			'entry' => $this->entry
 		];
 	}	
 }

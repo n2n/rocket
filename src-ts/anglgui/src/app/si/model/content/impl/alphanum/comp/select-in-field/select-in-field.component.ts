@@ -14,5 +14,4 @@ export class SelectInFieldComponent implements OnInit {
 
 	ngOnInit() {
 	}
-
 }

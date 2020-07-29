@@ -31,7 +31,7 @@ class SiButton implements \JsonSerializable {
 	
 	private $name;
 	private $tooltip;
-	private $iconType = SiIconType::ICON_ROCKET;
+	private $iconType = SiIconType::ROCKET;
 	private $important;
 	private $type;
 	private $attrs = array();
@@ -47,7 +47,7 @@ class SiButton implements \JsonSerializable {
 		$this->tooltip = $tooltip;
 		$this->important = $important;
 		$this->type = $type ?? self::TYPE_SECONDARY;
-		$this->iconType = $iconType ?? SiIconType::ICON_ROCKET;
+		$this->iconType = $iconType ?? SiIconType::ROCKET;
 		$this->iconImportant = $iconImportant;
 // 		$this->static = $static;
 	}

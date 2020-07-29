@@ -80,14 +80,14 @@ class OrderEiCommand extends EiCommandAdapter {
 								->toUrl(array('refPath' => (string) $eiFrame->getCurrentUrl($httpContext))), 
 						new SiButton($dtc->translate('ei_impl_order_insert_before_label'), 
 								$dtc->translate('ei_impl_order_insert_before_tooltip'),
-								true, SiButton::TYPE_INFO, SiIconType::ICON_CARET_UP, array('class' => 'rocket-impl-insert-before'), false, false)),
+								true, SiButton::TYPE_INFO, SiIconType::CARET_UP, array('class' => 'rocket-impl-insert-before'), false, false)),
 				self::CONTROL_INSERT_AFTER_KEY => new HrefControl(
 						$httpContext->getControllerContextPath($eiFrame->getControllerContext())
 								->ext($this->getWrapper()->getEiCommandPath(), 'after', $eiEntry->getPid())
 								->toUrl(array('refPath' => (string) $eiFrame->getCurrentUrl($httpContext))),
 						new SiButton($dtc->translate('ei_impl_order_insert_after_label'), 
 								$dtc->translate('ei_impl_order_insert_after_tooltip'),
-								true, SiButton::TYPE_INFO, SiIconType::ICON_CARET_DOWN, array('class' => 'rocket-impl-insert-after'), false, false)));
+								true, SiButton::TYPE_INFO, SiIconType::CARET_DOWN, array('class' => 'rocket-impl-insert-after'), false, false)));
 	}
 
 	/**

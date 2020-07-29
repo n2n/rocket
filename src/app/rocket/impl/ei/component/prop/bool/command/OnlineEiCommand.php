@@ -71,11 +71,11 @@ class OnlineEiCommand extends EiCommandAdapter {
 		$urlExt = null;
 		if ($eiuEntry->getValue($this->onlineEiProp)) {
 			$siButton->setType(SiButton::TYPE_SUCCESS);
-			$siButton->setIconType(SiIconType::ICON_CHECK_CIRCLE);
+			$siButton->setIconType(SiIconType::CHECK_CIRCLE);
 			$urlExt = (new Path(array('offline', $eiuEntry->getPid())))->toUrl();
 		} else {
 			$siButton->setType(SiButton::TYPE_DANGER);
-			$siButton->setIconType(SiIconType::ICON_MINUS_CIRCLE);
+			$siButton->setIconType(SiIconType::MINUS_CIRCLE);
 			$urlExt = (new Path(array('online', $eiuEntry->getPid())))->toUrl();
 		}
 		
