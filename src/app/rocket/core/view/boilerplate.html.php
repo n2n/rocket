@@ -58,7 +58,7 @@
 	$htmlMeta->addCss('css/rocket-30.css');
 	// old design:
 	//	$htmlMeta->addCss('css/rocket.css');
-	$htmlMeta->addCss('css/font-awesome.css');
+	$htmlMeta->addCss('css/icomoon.css');
 	// 	$htmlMeta->addJs('js/respond.src.js', null);
 	// 	$htmlMeta->addJs('js/jquery-responsive-table.js', null, true);
 	
