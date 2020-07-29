@@ -46,11 +46,12 @@ enum SiFieldType {
 	SPLIT_CONTEXT_IN = 'split-context-in',
 	SPLIT_CONTEXT_OUT = 'split-context-out',
 	SPLIT_PLACEHOLDER = 'split-placeholder',
+	IFRAME = 'iframe',
 	CRUMB_OUT = 'crumb-out'
 }
 
 export class SiFieldFactory {
-	constructor(private controlBoundry: SiControlBoundry, private declaration: SiDeclaration, private type: SiMask,
+	constructor(private controlBoundry: SiControlBoundry, private declaration: SiDeclaration, private mask: SiMask,
 			private injector: Injector) {
 	}
 
@@ -59,7 +60,7 @@ export class SiFieldFactory {
 
 		const fieldMap = new Map<string, SiField>();
 		for (const [propId, fieldData] of data) {
-			fieldMap.set(propId, this.createField(this.type.getPropById(propId), fieldData, fieldMap$));
+			fieldMap.set(propId, this.createField(this.mask.getPropById(propId), fieldData, fieldMap$));
 		}
 
 		fieldMap$.next(fieldMap);
