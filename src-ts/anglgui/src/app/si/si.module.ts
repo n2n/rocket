@@ -50,6 +50,7 @@ import { CkeInFieldComponent } from './model/content/impl/alphanum/comp/cke-in-f
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { FieldMessagesComponent } from './model/content/impl/common/comp/field-messages/field-messages.component';
 import { CrumbOutFieldComponent } from './model/content/impl/meta/comp/crumb-out-field/crumb-out-field.component';
+import { SelectInFieldComponent } from './model/content/impl/alphanum/comp/select-in-field/select-in-field.component';
 
 @NgModule({
 	declarations: [
@@ -61,7 +62,7 @@ import { CrumbOutFieldComponent } from './model/content/impl/meta/comp/crumb-out
 		AddPasteComponent, QualifierComponent, TogglerInFieldComponent, SplitComponent, SplitViewMenuComponent,
 		SplitManagerComponent, EnumInComponent, QualifierTilingComponent, ChoosePasteComponent, EmbeddedEntryComponent,
 		ImageEditorComponent, UploadResultMessageComponent, ImagePreviewComponent, CkeInFieldComponent, FieldMessagesComponent,
-		CrumbOutFieldComponent
+		CrumbOutFieldComponent, SelectInFieldComponent
 	],
 	imports: [
 		CommonModule,
@@ -77,7 +78,7 @@ import { CrumbOutFieldComponent } from './model/content/impl/meta/comp/crumb-out
 		TextareaInFieldComponent, FileInFieldComponent, FileOutFieldComponent, QualifierSelectInFieldComponent,
 		LinkOutFieldComponent, CompactEntryComponent, EmbeddedEntriesInComponent, EmbeddedEntriesSummaryInComponent,
 		EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent,
-		EmbeddedEntryPanelsInComponent, ButtonControlComponent, PaginationComponent
+		EmbeddedEntryPanelsInComponent, ButtonControlComponent, PaginationComponent, SelectInFieldComponent
 	],
 	entryComponents: [
 		ListZoneContentComponent, BulkyEntryComponent, StringOutFieldComponent,
@@ -86,7 +87,7 @@ import { CrumbOutFieldComponent } from './model/content/impl/meta/comp/crumb-out
 		EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent,
 		EmbeddedEntryPanelsInComponent, ButtonControlComponent, PaginationComponent, TogglerInFieldComponent, SplitComponent,
 		SplitViewMenuComponent, CrumbGroupComponent, SplitManagerComponent, EnumInComponent, EmbeddedEntryComponent,
-		ImageEditorComponent, CkeInFieldComponent, CrumbOutFieldComponent
+		ImageEditorComponent, CkeInFieldComponent, CrumbOutFieldComponent, SelectInFieldComponent
 	]
 })
 export class SiModule { }
