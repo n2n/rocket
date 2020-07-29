@@ -14,6 +14,13 @@ import { TranslationService } from 'src/app/util/i18n/translation.service';
 import { UiZoneError } from 'src/app/ui/structure/model/ui-zone-error';
 import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
 import { SiFrame } from 'src/app/si/model/meta/si-frame';
+import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
+import { GenericEmbeddedEntryManager } from './generic-embedded-entry-manager';
+import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
+
+class GenericSiPanelValueCollection {
+	public map = new Map<string, SiGenericValue>();
+}
 
 export class EmbeddedEntryPanelsInSiField extends SiFieldAdapter  {
 
@@ -35,7 +42,7 @@ export class EmbeddedEntryPanelsInSiField extends SiFieldAdapter  {
 	}
 
 	readInput(): object {
-		throw new Error('Not yet implemented.');
+		throw new Error('not yet implemented');
 	}
 
 	createUiStructureModel(): UiStructureModel {
@@ -59,12 +66,59 @@ export class EmbeddedEntryPanelsInSiField extends SiFieldAdapter  {
 	// 	});
 	// }
 
+
+	private createGenericManager(panel: SiPanel): GenericEmbeddedEntryManager {
+		return new GenericEmbeddedEntryManager(panel.values, this.siService, this.frame, this, panel.reduced,
+				panel.allowedTypeIds);
+	}
+
 	copyValue(): SiGenericValue {
-		throw new Error('Not yet implemented.');
+		const col = new GenericSiPanelValueCollection();
+
+		for (const panel of this.panels) {
+			col.map.set(panel.name, this.createGenericManager(panel).copyValue());
+		}
+
+		return new SiGenericValue(col);
 	}
 
 	pasteValue(genericValue: SiGenericValue): Promise<void> {
-		throw new Error('Not yet implemented.');
+		const col = genericValue.readInstance(GenericSiPanelValueCollection)
+		const promises = new Array<Promise<void>>();
+
+		for (const panel of this.panels) {
+			if (!col.map.has(panel.name)) {
+				continue;
+			}
+
+			promises.push(this.createGenericManager(panel).pasteValue(col.map.get(panel.name)));
+		}
+
+		return Promise.all(promises).then(() => { return; });
+
+	}
+
+	createResetPoint(): SiGenericValue {
+		const col = new GenericSiPanelValueCollection();
+
+		for (const panel of this.panels) {
+			col.map.set(panel.name, this.createGenericManager(panel).createResetPoint());
+		}
+
+		return new SiGenericValue(col);
+	}
+
+	resetToPoint(genericValue: SiGenericValue): void {
+		const col = genericValue.readInstance(GenericSiPanelValueCollection)
+		const promises = new Array<Promise<void>>();
+
+		for (const panel of this.panels) {
+			if (!col.map.has(panel.name)) {
+				throw new GenericMissmatchError('ResetPoint contains no data for panel: ' + panel.name);
+			}
+
+			this.createGenericManager(panel).resetToPoint(col.map.get(panel.name));
+		}
 	}
 }
 

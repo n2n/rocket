@@ -161,8 +161,8 @@ class EmbeInUiStructureManager {
 
 	private popupUiLayer: PopupUiLayer|null = null;
 
-	constructor(private uiStructure: UiStructure, private embeCol: EmbeInCollection, 
-			private model: EmbeddedEntriesInModel, private obtainer: EmbeddedEntryObtainer, 
+	constructor(private uiStructure: UiStructure, private embeCol: EmbeInCollection,
+			private model: EmbeddedEntriesInModel, private obtainer: EmbeddedEntryObtainer,
 			private translationService: TranslationService) {
 
 	}

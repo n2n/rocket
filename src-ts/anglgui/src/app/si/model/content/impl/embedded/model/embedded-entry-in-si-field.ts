@@ -16,6 +16,7 @@ import { SiFieldAdapter } from '../../common/model/si-field-adapter';
 import { Message } from 'src/app/util/i18n/message';
 import { EmbeInSource } from './embe-collection';
 import { SiFrame } from 'src/app/si/model/meta/si-frame';
+import { GenericEmbeddedEntryManager } from './generic-embedded-entry-manager';
 
 export class EmbeddedEntriesInSiField extends SiFieldAdapter implements EmbeInSource {
 
@@ -75,106 +76,26 @@ export class EmbeddedEntriesInSiField extends SiFieldAdapter implements EmbeInSo
 	// 	throw new Error('not yet implemented');
 	// }
 
-	private findCurrentValue(entryIdentifier: SiEntryIdentifier): SiEmbeddedEntry|null {
-		return this.values.find(embeddedEntry => embeddedEntry.entry.identifier.equals(entryIdentifier)) || null;
+	private createGenericManager(): GenericEmbeddedEntryManager {
+		return new GenericEmbeddedEntryManager(this.values, this.siService, this.frame, this, this.config.reduced,
+				this.config.allowedTypeIds);
 	}
 
 	copyValue(): SiGenericValue {
-		return new SiGenericValue(new SiGenericEmbeddedEntryCollection(
-				this.values.map(embeddedEntry => embeddedEntry.copy())));
+		return this.createGenericManager().copyValue();
 	}
 
 	pasteValue(genericValue: SiGenericValue): Promise<void> {
-		const newEmbeInds = new Array<EmbeInd>();
-
-		const collection = genericValue.readInstance(SiGenericEmbeddedEntryCollection);
-		for (const genericEmbedddedEntry of collection.siGenericEmbeddedEntries) {
-			const entryIdentifier = genericEmbedddedEntry.genericEntry.identifier;
-			this.valEntryIdentifier(entryIdentifier);
-
-			newEmbeInds.push({
-				embeddedEntry: this.findCurrentValue(entryIdentifier),
-				genericEmbeddedEntry: genericEmbedddedEntry
-			});
-		}
-
-		const newEntryIdentifiers = newEmbeInds.filter(embeInd => embeInd.embeddedEntry === null).map(() => null);
-		if (newEntryIdentifiers.length === 0) {
-			return this.handlePaste(newEmbeInds, []);
-		}
-
-		const obtainer = new EmbeddedEntryObtainer(this.siService, this.frame.apiUrl, this.config.reduced,
-				this.config.allowedTypeIds);
-		return obtainer.obtain(newEntryIdentifiers).toPromise()
-				.then((embeddedEntries) => {
-					return this.handlePaste(newEmbeInds, embeddedEntries);
-				});
-	}
-
-	private handlePaste(embeInds: Array<EmbeInd>, newEmbeddedEntries: SiEmbeddedEntry[]): Promise<void> {
-		const pastePromises: Array<Promise<void>> = [];
-
-		const values = new Array<SiEmbeddedEntry>();
-		for (const inf of embeInds) {
-			let embeddedEntry = inf.embeddedEntry;
-			if (!embeddedEntry) {
-				embeddedEntry = newEmbeddedEntries.shift();
-			}
-
-			pastePromises.push(embeddedEntry.paste(inf.genericEmbeddedEntry));
-			values.push(embeddedEntry);
-		}
-		this.values = values;
-
-		return Promise.all(pastePromises).then(() => { return; });
+		return this.createGenericManager().pasteValue(genericValue);
 	}
 
 	createResetPoint(): SiGenericValue {
-		return new SiGenericValue(new SiEmbeddedEntryResetPointCollection(this,
-				this.values.map(embeddedEntry => embeddedEntry.createResetPoint())));
+		return this.createGenericManager().createResetPoint();
 	}
 
 	resetToPoint(genericValue: SiGenericValue): void {
-		const collection = genericValue.readInstance(SiEmbeddedEntryResetPointCollection);
-		if (collection.origSiField !== this) {
-			throw new GenericMissmatchError('Reset point belongs to diffrent field.');
-		}
-
-		const values = new Array<SiEmbeddedEntry>();
-		for (const resetPoint of collection.genercEntryResetPoints) {
-			this.valEntryIdentifier(resetPoint.origSiEmbeddedEntry.entry.identifier);
-
-			resetPoint.origSiEmbeddedEntry.resetToPoint(resetPoint.genericEmbeddedEntry);
-			values.push(resetPoint.origSiEmbeddedEntry);
-		}
-		this.values = values;
+		return this.createGenericManager().resetToPoint(genericValue);
 	}
-
-	private valEntryIdentifier(entryIdentifier: SiEntryIdentifier) {
-		if (!this.frame.typeContext.containsTypeId(entryIdentifier.typeId)) {
-			throw new GenericMissmatchError('Types dont match: '
-					+ entryIdentifier.typeId + ' != ' + this.frame);
-		}
-	}
-
-	// asfd(siEntryIdentifiers: SiEntryIdentifier[]) {
-	// 	const getInstructions = new Array<SiGetInstruction>();
-
-	// 	const obtainer = new EmbeddedAddPasteObtainer(this.siService, this.apiUrl, this.config.reduced);
-
-	// 	for (const siEntryIdentifier of siEntryIdentifiers) {
-	// 		if (siEntryIdentifier.id === null) {
-	// 			getInstructions.push(SiGetInstruction.newEntry(siEntryIdentifier.id))
-	// 		} else {
-	// 			obtainer.
-	// 		}
-	// 	}
-
-	// 	this.siService.apiGet(this.apiUrl, new SiGetRequest(SiGetInstruction.))
-	// }
 }
 
-interface EmbeInd {
-	embeddedEntry: SiEmbeddedEntry|null;
-	genericEmbeddedEntry: SiGenericEmbeddedEntry;
-}
+

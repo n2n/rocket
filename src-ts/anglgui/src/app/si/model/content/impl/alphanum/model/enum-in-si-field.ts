@@ -49,11 +49,25 @@ export class EnumInSiField extends InSiFieldAdapter implements SelectInFieldMode
 		});
 	}
 
+	isGeneric() {
+		return true;
+	}
+
 	copyValue(): SiGenericValue {
-		throw new Error('Not yet implemented');
+		return new SiGenericValue(this.value === null ? null : new String(this.value));
 	}
 
 	pasteValue(genericValue: SiGenericValue): Promise<void> {
-		throw new Error('Not yet implemented');
+		if (genericValue.isNull()) {
+			this.value = null;
+			return Promise.resolve();
+		}
+
+		if (genericValue.isInstanceOf(String)) {
+			this.value = genericValue.readInstance(String).valueOf();
+			return Promise.resolve();
+		}
+
+		throw new GenericMissmatchError('String expected.');
 	}
 }

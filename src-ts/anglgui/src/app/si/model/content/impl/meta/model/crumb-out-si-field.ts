@@ -6,6 +6,11 @@ import { SiCrumbGroup } from './si-crumb';
 import { CrumbFieldModel } from './crumb-field-model';
 import { CrumbOutFieldComponent } from '../comp/crumb-out-field/crumb-out-field.component';
 
+class SiCrumbGroupCollection  {
+	constructor(public crumbGroups: SiCrumbGroup[]) {
+	}
+}
+
 export class CrumbOutSiField extends OutSiFieldAdapter implements CrumbFieldModel {
 
 	constructor(public crumbGroups: SiCrumbGroup[]) {
@@ -22,12 +27,17 @@ export class CrumbOutSiField extends OutSiFieldAdapter implements CrumbFieldMode
 	// 	throw new Error('Method not implemented.');
 	// }
 
+	isGeneric() {
+		return true;
+	}
+
 	copyValue(): SiGenericValue {
-		throw new Error('Not yet implemented');
+		return new SiGenericValue(new SiCrumbGroupCollection(this.crumbGroups));
 	}
 
 	pasteValue(genericValue: SiGenericValue): Promise<void> {
-		throw new Error('Not yet implemented');
+		this.crumbGroups = genericValue.readInstance(SiCrumbGroupCollection).crumbGroups;
+		return Promise.resolve();
 	}
 
 	getSiCrumbGroups(): SiCrumbGroup[] {

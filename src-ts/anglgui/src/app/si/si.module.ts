@@ -60,7 +60,8 @@ import { CrumbOutFieldComponent } from './model/content/impl/meta/comp/crumb-out
 		ImageResizeComponent, EmbeddedEntryPanelsInComponent, EntryDirective, PaginationComponent, CrumbGroupComponent,
 		AddPasteComponent, QualifierComponent, TogglerInFieldComponent, SplitComponent, SplitViewMenuComponent,
 		SplitManagerComponent, EnumInComponent, QualifierTilingComponent, ChoosePasteComponent, EmbeddedEntryComponent,
-		ImageEditorComponent, UploadResultMessageComponent, ImagePreviewComponent, CkeInFieldComponent, FieldMessagesComponent, CrumbOutFieldComponent
+		ImageEditorComponent, UploadResultMessageComponent, ImagePreviewComponent, CkeInFieldComponent, FieldMessagesComponent,
+		CrumbOutFieldComponent
 	],
 	imports: [
 		CommonModule,
@@ -85,7 +86,7 @@ import { CrumbOutFieldComponent } from './model/content/impl/meta/comp/crumb-out
 		EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent,
 		EmbeddedEntryPanelsInComponent, ButtonControlComponent, PaginationComponent, TogglerInFieldComponent, SplitComponent,
 		SplitViewMenuComponent, CrumbGroupComponent, SplitManagerComponent, EnumInComponent, EmbeddedEntryComponent,
-		ImageEditorComponent, CkeInFieldComponent
+		ImageEditorComponent, CkeInFieldComponent, CrumbOutFieldComponent
 	]
 })
 export class SiModule { }
