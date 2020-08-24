@@ -8,6 +8,7 @@ use n2n\l10n\Message;
 use n2n\util\uri\Url;
 use rocket\ei\manage\veto\EiLifecycleMonitor;
 use rocket\ei\manage\EiObject;
+use rocket\si\content\SiEntryIdentifier;
 
 class EiuControlResponse {
 	private $eiuAnalyst;
@@ -180,7 +181,7 @@ class EiuControlResponse {
 			$pid = $eiObject->getEiEntityObj()->getPid();
 		}
 		
-		$this->siResult->addEvent($category, $pid, $modType);
+		$this->siResult->addEvent($eiObject->createSiEntryIdentifier(), $modType);
 	}
 	
 	/**

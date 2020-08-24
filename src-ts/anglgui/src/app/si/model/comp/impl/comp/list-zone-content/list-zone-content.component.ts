@@ -184,7 +184,7 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 	private updateCurrentPage() {
 		let page = this.siPageCollection.getBestPageByOffsetHeight(this.parent.nativeElement.scrollTop);
 		if (page) {
-			this.changePageNoWeakly(page.num);
+			this.changePageNoWeakly(page.no);
 			return;
 		}
 
@@ -209,7 +209,7 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 			return;
 		}
 
-		const newPageNo = lastVisiblePage.num + 1;
+		const newPageNo = lastVisiblePage.no + 1;
 		if (newPageNo > this.siPageCollection.pagesNum) {
 			return;
 		}

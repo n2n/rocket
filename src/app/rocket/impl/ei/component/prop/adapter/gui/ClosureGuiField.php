@@ -84,7 +84,6 @@ class ClosureGuiField implements GuiField {
 		if ($this->writeMmi !== null) {
 			return $this->writeMmi->invoke();
 		}
-		$this->statelessGuiFieldEditable->saveSiField($this->siField, $this->eiu);
 	}
 	
 // 	function getContextSiFields(): array {

@@ -76,11 +76,11 @@ export class SiPageCollection {
 	}
 
 	putPage(page: SiPage) {
-		if (page.num > this.pagesNum) {
+		if (page.no > this.pagesNum) {
 			throw new IllegalSiStateError('Page num to high.');
 		}
 
-		this.pagesMap.set(page.num, page);
+		this.pagesMap.set(page.no, page);
 	}
 
 	containsPageNo(number: number): boolean {
@@ -108,7 +108,7 @@ export class SiPageCollection {
 	getLastVisiblePage(): SiPage|null {
 		let lastPage: SiPage|null = null;
 		for (const page of this.pagesMap.values()) {
-			if (page.offsetHeight !== null && (lastPage === null || page.num > lastPage.num)) {
+			if (page.offsetHeight !== null && (lastPage === null || page.no > lastPage.no)) {
 				lastPage = page;
 			}
 		}

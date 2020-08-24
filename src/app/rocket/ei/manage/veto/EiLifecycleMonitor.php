@@ -33,6 +33,9 @@ use rocket\ei\manage\draft\DraftManager;
 use n2n\core\container\N2nContext;
 use rocket\ei\EiType;
 use n2n\util\ex\IllegalStateException;
+use n2n\persistence\orm\property\EntityProperty;
+use n2n\persistence\orm\model\EntityPropertyCollection;
+use n2n\persistence\orm\model\EntityModel;
 
 class EiLifecycleMonitor implements LifecycleListener {
 	private $spec;
@@ -209,6 +212,25 @@ class EiLifecycleMonitor implements LifecycleListener {
 		
 		unset($this->persistActions[$objHash]);
 		unset($this->updateActions[$objHash]);
+		
+		$entityModel = $eiObject->getEiEntityObj()->getEiType()->getEntityModel();
+		foreach ($this->em->getEntityModelManager()->getRegisteredClassNames() as $className) {
+			if (!$this->spec->containsEiTypeClass($className) || $this->spec->isEiTypeLoaded($className)) {
+				continue;
+			}
+			
+			$this->recCheck($this->em->getEntityModelManager()->getEntityModelByClass($class), $entityModel);
+		}
+	}
+	
+	private function recCheck(EntityPropertyCollection $entityPropertyCollection, EntityModel $targetEntityModel) {
+		foreach ($entityPropertyCollection->getEntityProperties() as $entityProperty) {
+			
+			if ($entityProperty->hasTargetEntityModel()) {
+				$entityProperty->getTargetEntityModel()->equals($entityModel);
+				
+			}
+		}
 	}
 	
 	private function remove(EiType $eiType, $entityObj) {
