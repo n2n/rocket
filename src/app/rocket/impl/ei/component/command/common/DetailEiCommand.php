@@ -76,10 +76,10 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 		$iconType = null;
 		if (!$eiuEntry->isDraft()) {
 			$pathExt = new Path(array('live', $eiuEntry->getPid()));
-			$iconType = SiIconType::FILE_O;
+			$iconType = SiIconType::FILE;
 		} else if (!$eiuEntry->isDraftNew()) {
 			$pathExt = new Path(array('draft', $eiuEntry->getDraftId()));
-			$iconType = SiIconType::FILE_O;
+			$iconType = SiIconType::FILE;
 		} else {
 			return array();
 		}

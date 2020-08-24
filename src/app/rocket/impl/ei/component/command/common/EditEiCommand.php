@@ -109,7 +109,7 @@ class EditEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiC
 			
 		$siButton = new SiButton($dtc->t('common_edit_label'), 
 				$dtc->t('ei_impl_edit_entry_tooltip', array('entry' => $eiuEntry->getGenericLabel())), 
-				true, SiButton::TYPE_WARNING, SiIconType::PENCIL);
+				true, SiButton::TYPE_WARNING, SiIconType::PENCIL_ALT);
 			
 		return [$eiuControlFactory->createCmdRef(self::CONTROL_EDIT_KEY, $siButton, 
 				new Path([$eiuEntry->getPid()]))];
