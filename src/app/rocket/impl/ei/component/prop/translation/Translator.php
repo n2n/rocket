@@ -54,11 +54,7 @@ class Translator {
 			return $translatable;
 		}
 
-		if (0 < count($translatables)) {
-			return current($translatables);
-		}
-		
-		return null;
+		return ArrayUtils::first($translatables);
 	}
 	
 	public static function requireAny($translatables, N2nLocale ...$n2nLocales) {
