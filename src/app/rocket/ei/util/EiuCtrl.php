@@ -408,15 +408,15 @@ class EiuCtrl {
 		$eiFrame = $this->eiuFrame->getEiFrame();
 		$eiFrameUtil = new EiFrameUtil($eiFrame);
 		
-		$eiEntryGuiMultiResult = $eiFrameUtil->createNewEiEntryGuiMulti(true, !$editable, null, true);
+		$eiGui = $eiFrameUtil->createNewEiGui(true, !$editable, null, null, true);
+		$eiGuiUtil = new EiGuiUtil($eiGui, $eiFrame);
 		
-		$siComp = new BulkyEntrySiComp($eiEntryGuiMultiResult->createSiDeclaration(), 
-				$eiEntryGuiMultiResult->createSiEntry($siControlsIncluded));
-		
-		$generalSiControls = current($eiEntryGuiMultiResult->getEiGuiFrames())->createGeneralSiControls($eiFrame);
+		$siComp = $eiGuiUtil->createBulkyEntrySiComp($siControlsIncluded);
+		$generalSiControls = $eiGui->getEiGuiModel()->createGeneralSiControls($eiFrame);
 		
 		$this->httpContext->getResponse()->send(
-				SiPayloadFactory::create($siComp, $generalSiControls, $this->rocketState->getBreadcrumbs(),
+				SiPayloadFactory::create($siComp, $generalSiControls, 
+						$this->rocketState->getBreadcrumbs(),
 						$this->eiu->dtc('rocket')->t('common_new_entry_label')));
 	}
 	

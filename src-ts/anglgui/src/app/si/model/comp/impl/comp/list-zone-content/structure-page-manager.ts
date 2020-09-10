@@ -68,19 +68,19 @@ export class StructurePageManager {
 	}
 
 	private getPage(siPage: SiPage): StructurePage|null {
-		const structurePage = this.pagesMap.get(siPage.num);
+		const structurePage = this.pagesMap.get(siPage.no);
 		if (!structurePage || structurePage.siPage === siPage) {
 			return structurePage;
 		}
 
-		this.pagesMap.delete(siPage.num);
+		this.pagesMap.delete(siPage.no);
 		structurePage.clear();
 		return null;
 	}
 
 	private createPage(siPage: SiPage): StructurePage {
 		const sp = new StructurePage(siPage);
-		this.pagesMap.set(siPage.num, sp);
+		this.pagesMap.set(siPage.no, sp);
 		return sp;
 	}
 
