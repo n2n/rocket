@@ -7,9 +7,10 @@ import { FallbackComponent } from 'src/app/op/comp/common/fallback/fallback.comp
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { SiModule } from '../si/si.module';
+import { UsersComponentComponent } from './user/comp/users-component/users-component.component';
 
 @NgModule({
-	declarations: [EiComponent, FallbackComponent],
+	declarations: [EiComponent, FallbackComponent, UsersComponentComponent ],
 	imports: [
 	CommonModule,
 	OpRoutingModule,

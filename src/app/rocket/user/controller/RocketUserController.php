@@ -56,11 +56,15 @@ class RocketUserController extends ControllerAdapter {
 	public function index() {
 		$this->verifyAdmin();
 		
-		$this->applyBreadcrumbs();
+		if ('text/html' == $this->getRequest()->getAcceptRange()
+				->bestMatch(['text/html', 'application/json'])) {
+			$this->forward('\rocket\core\view\anglTemplate.html');
+			return;
+		}
 		
-		$this->forward('..\view\userList.html', array(
-				'users' => $this->rocketUserDao->getUsers(), 
-				'loggedInUser' => $this->loginContext->getCurrentUser()));
+		$this->sendJson([
+			'users' => $this->rocketUserDao->getUsers()
+		]);
 	}
 	
 	public function doAdd(MessageContainer $messageContainer) {

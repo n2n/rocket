@@ -47,7 +47,8 @@ class AnglTemplateModel implements Lookupable {
 	function createData(ControllerContext $controllerContext) {
 		return [
 			'translationMap' => $this->createTranslationMap(),	
-			'menuGroups' => $this->createSiMenuGroup($controllerContext)
+			'menuGroups' => $this->createSiMenuGroup($controllerContext),
+			'user' => $this->loginContext->getCurrentUser()
 		];
 	}
 	
