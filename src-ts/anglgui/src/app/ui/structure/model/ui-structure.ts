@@ -307,7 +307,7 @@ export class UiStructure {
 				focus: zoneError.focus || (() => {
 					this.visible = true;
 				})
-			}
+			};
 		});
 	}
 }

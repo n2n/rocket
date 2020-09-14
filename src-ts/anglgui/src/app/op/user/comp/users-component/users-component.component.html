@@ -16,7 +16,9 @@
 			<td>{{ user.fullname }}</td>
 			<td>{{ user.email }}</td>
 			<td>{{ user.power }}</td>
-			<td></td>
+			<td>
+				<a routerLink="/users/detail/{{ user.id }}"></a>
+			</td>
 		</tr>
 	</table>
 </div>

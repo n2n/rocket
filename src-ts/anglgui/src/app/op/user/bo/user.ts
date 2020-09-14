@@ -15,6 +15,10 @@ export class User {
 
 		return this.firstname + ' ' + this.lastname;
 	}
+
+	isAdmin(): boolean {
+		return this.power === UserPower.SUPER_ADMIN || this.power === UserPower.ADMIN;
+	}
 }
 
 export enum UserPower {

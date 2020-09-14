@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { User } from './op/user/bo/user';
 
 @Injectable({
 	providedIn: 'root'
@@ -6,6 +7,7 @@ import { Injectable } from '@angular/core';
 export class AppStateService {
 
 	localeId = 'de_CH';
+	user: User;
 
 	constructor() { }
 }

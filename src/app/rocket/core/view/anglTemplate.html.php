@@ -14,14 +14,12 @@
 	$view->useTemplate('boilerplate.html', $view->getParams());
 	
 	$html->meta()->addCssCode('
-			
-			
 			.rocket-layer {
 				animation: layertransform 0.2s;
 			}
 			
 			@keyframes layertransform {
-			    0% { transform: translateX(100vw);}
+			    0% { transform: translateX(100vw); }
 				100% { transform: translateX(0); }
 			}
 	');

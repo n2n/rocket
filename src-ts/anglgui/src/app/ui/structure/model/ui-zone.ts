@@ -37,7 +37,6 @@ export class UiZone {
 		this.uiStructure.model = null;
 	}
 
-
 	dispose() {
 		this.resetModel();
 

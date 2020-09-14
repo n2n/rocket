@@ -13,7 +13,7 @@
 		</button>
 		<h2 class="sr-only">{{ 'conf_nav_title' }}</h2>
 		<ul class="nav rocket-meta-nav justify-content-end">
-			[admin]
+			<ng-container *ngIf="user.isAdmin()">
 				<li class="nav-item">
 					<a routerLink="/tools" class="nav-link">
 						<i class="fa fa-wrench mr-2"></i><span>{{ 'tool_title' }}</span>
@@ -29,7 +29,7 @@
 						<i class="fa fa-group mr-2"></i><span>{{ 'user_groups_title' }}</span>
 					</a>
 				</li>
-			[/admin]
+			</ng-container>
 			<li class="nav-item">
 				<a routerLink="/users/profile" class="nav-link rocket-conf-user">
 					<i class="fa fa-user mr-2"></i><span>[User Name]</span>
