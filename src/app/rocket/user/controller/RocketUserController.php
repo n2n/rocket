@@ -23,7 +23,6 @@ namespace rocket\user\controller;
 
 use rocket\core\model\RocketState;
 use n2n\l10n\DynamicTextCollection;
-use rocket\core\model\Breadcrumb;
 use n2n\l10n\MessageContainer;
 use rocket\user\model\RocketUserForm;
 use n2n\web\http\ForbiddenException;
@@ -32,6 +31,9 @@ use rocket\user\model\LoginContext;
 use rocket\user\model\RocketUserDao;
 use n2n\web\http\controller\ControllerAdapter;
 use rocket\user\bo\RocketUser;
+use n2n\web\http\controller\ParamBody;
+use n2n\validation\build\impl\Validate;
+use n2n\bind\Bind;
 
 class RocketUserController extends ControllerAdapter {
 	private $rocketUserDao;
@@ -88,6 +90,21 @@ class RocketUserController extends ControllerAdapter {
 		$this->forward('..\view\userEdit.html', array('userForm' => $rocketUserForm));
 	}
 	
+	/**
+	 * @param int $userId
+	 * @throws PageNotFoundException
+	 * @return \rocket\user\bo\RocketUser
+	 */
+	private function lookupUser($userId) {
+		$user = $this->rocketUserDao->getUserById($userId);
+		
+		if (null === $user) {
+			throw new PageNotFoundException();
+		}
+		
+		return $user;
+	}
+	
 	public function doEdit($userId, MessageContainer $messageContainer) {
 		$this->verifyAdmin();
 		
@@ -120,6 +137,34 @@ class RocketUserController extends ControllerAdapter {
 		$this->forward('..\view\userEdit.html', array('userForm' => $userForm));
 	}
 	
+	function getDoUser($userId) {
+		$this->verifyAdmin();
+		
+		$this->beginTransaction();
+		
+		$user = $this->lookupUser($userId);
+		
+		$this->commit();
+		
+		$this->sendJson([
+			'user' => $user	
+		]);
+	}
+	
+	function putDoUser($userId, ParamBody $body) {
+		$this->verifyAdmin();
+		
+		$this->beginTransaction();
+		
+		$user = $this->lookupUser($userId);
+		
+		
+		$this->val(Validate::attrs($body->parseJson()));
+		
+		$this->commit();
+		
+		
+	}
 
 
 	public function doProfile(MessageContainer $mc) {

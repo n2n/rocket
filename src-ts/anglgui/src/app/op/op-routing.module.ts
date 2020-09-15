@@ -2,11 +2,15 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes, UrlSegment, UrlMatchResult, UrlSegmentGroup, Route } from '@angular/router';
 import { EiComponent } from 'src/app/op/comp/ei/ei.component';
 import { FallbackComponent } from 'src/app/op/comp/common/fallback/fallback.component';
-import { UsersComponentComponent } from './user/comp/users-component/users-component.component';
+import { UsersComponent } from './user/comp/users/users.component';
+import { UserComponent } from './user/comp/user/user.component';
 
 const routes: Routes = [
 	{
-		path: 'users', component: UsersComponentComponent
+		path: 'users', component: UsersComponent
+	},
+	{
+		path: 'users/detail/:userId', component: UserComponent
 	},
 	{
 		/*path: 'manage', */component: EiComponent, matcher: matchesManageUrl
