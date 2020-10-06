@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UserDaoService } from '../../model/user-dao.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { User } from '../../bo/user';
 import { TranslationService } from 'src/app/util/i18n/translation.service';
 
@@ -11,8 +11,10 @@ import { TranslationService } from 'src/app/util/i18n/translation.service';
 })
 export class UserComponent implements OnInit {
 	user: User|null = null;
+	saving = false;
 
-	constructor(private userDao: UserDaoService, private route: ActivatedRoute, private translationService: TranslationService) {
+	constructor(private userDao: UserDaoService, private route: ActivatedRoute, private translationService: TranslationService,
+			private router: Router) {
 	}
 
 	ngOnInit() {
@@ -28,11 +30,22 @@ export class UserComponent implements OnInit {
 	}
 
 	save() {
+		if (this.saving) {
+			return;
+		}
 
+		this.saving = true;
+		this.userDao.saveUser(this.user).subscribe(() => {
+            
+		});
 	}
 
 	cancel() {
+		if (!this.saving) {
+			return;
+		}
 
+		this.router.navigate(['users']);
 	}
 
 }

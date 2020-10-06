@@ -33,7 +33,7 @@
 		</div>
 	</div>
 
-	<ng-container main-zone-commands>
+	<ng-container main-zone-commands *ngIf="user">
 		<button class="btn btn-success rocket-important" (click)="save()">
 			{{ 'save_txt' | translate }}
 		</button>

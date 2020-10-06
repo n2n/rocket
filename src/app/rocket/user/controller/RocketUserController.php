@@ -185,7 +185,7 @@ class RocketUserController extends ControllerAdapter {
 		$httpData = $body->parseJsonToHttpData();
 		
 		$valResult = $this->val(Validate::attrs($httpData)
-				->props(['nick'], Validators::mandatory(), Validators::minlength(3), 
+				->props(['username'], Validators::mandatory(), Validators::minlength(3), 
 						Validators::closure(function($nick, RocketUserDao $userDao) use ($user) {
 							if ($user->getNick() === $nick || !$userDao->containsNick($nick)) {
 								return;
@@ -193,15 +193,15 @@ class RocketUserController extends ControllerAdapter {
 							
 							return Message::createCode('user_nick_already_taken_err', null, 'rocket');
 						}))
-				->props(['email'], Validators::mandatory(), Validators::email())
-				->props(['nick', 'firstname', 'lastname', 'email'], Validators::maxlength(255))
+				->props(['email'], Validators::email())
+				->props(['username', 'firstname', 'lastname', 'email'], Validators::maxlength(255))
 				->prop('power', Validators::enum($this->getPowerOptions())));
 			
 		if ($valResult->sendErrJson()) {
 			return;
 		}
 				
-		$user->setNick($httpData->reqString('nick'));
+		$user->setNick($httpData->reqString('username'));
 		$user->setFirstname($httpData->optString('firstname'));
 		$user->setLastname($httpData->optString('lastname'));
 		$user->setEmail($httpData->reqString('email'));

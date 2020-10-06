@@ -36,8 +36,8 @@ export class UserDaoService {
 				}));
 	}
 
-	saveUser(userSaveRequest: UserSaveRequest): Observable<User|null> {
-		return this.httpClient.put<any>('users/user/' + userSaveRequest.user.id, userSaveRequest)
+	saveUser(user: User): Observable<User|null> {
+		return this.httpClient.put<any>('users/user/' + user.id, user)
 				.pipe(map((data) => {
 					if (data.status === 'ERR') {
 						return null;
