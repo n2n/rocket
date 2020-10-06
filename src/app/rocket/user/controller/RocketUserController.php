@@ -34,6 +34,9 @@ use rocket\user\bo\RocketUser;
 use n2n\web\http\controller\ParamBody;
 use n2n\validation\build\impl\Validate;
 use n2n\bind\Bind;
+use n2n\validation\plan\impl\Validators;
+use n2n\validation\build\ErrorMap;
+use n2n\l10n\Message;
 
 class RocketUserController extends ControllerAdapter {
 	private $rocketUserDao;
@@ -105,40 +108,46 @@ class RocketUserController extends ControllerAdapter {
 		return $user;
 	}
 	
-	public function doEdit($userId, MessageContainer $messageContainer) {
-		$this->verifyAdmin();
+// 	public function doEdit($userId, MessageContainer $messageContainer) {
+// 		$this->verifyAdmin();
 		
-		$this->beginTransaction();
+// 		$this->beginTransaction();
 		
-		$user = $this->rocketUserDao->getUserById($userId);
-		if (null === $user) {
-			throw new PageNotFoundException();
-		}
+// 		$user = $this->rocketUserDao->getUserById($userId);
+// 		if (null === $user) {
+// 			throw new PageNotFoundException();
+// 		}
 
-		$currentUser = $this->loginContext->getCurrentUser();
+// 		$currentUser = $this->loginContext->getCurrentUser();
 		
-		$userForm = new RocketUserForm($user, $this->rocketUserDao->getRocketUserGroups());
-		if (!$user->equals($currentUser) && $currentUser->isAdmin()) {
-			$userForm->setMaxPower($currentUser->getPower());
-		}
+// 		$userForm = new RocketUserForm($user, $this->rocketUserDao->getRocketUserGroups());
+// 		if (!$user->equals($currentUser) && $currentUser->isAdmin()) {
+// 			$userForm->setMaxPower($currentUser->getPower());
+// 		}
 		
-		$this->applyBreadcrumbs($userForm);
+// 		$this->applyBreadcrumbs($userForm);
 		
-		if ($this->dispatch($userForm, 'save')) {
-			$messageContainer->addInfoCode('user_edited_info', 
-					array('user' => $userForm->getRocketUser()->getNick()));
-			$this->commit();
+// 		if ($this->dispatch($userForm, 'save')) {
+// 			$messageContainer->addInfoCode('user_edited_info', 
+// 					array('user' => $userForm->getRocketUser()->getNick()));
+// 			$this->commit();
 			
-			$this->redirectToController();
-			return;
-		}
+// 			$this->redirectToController();
+// 			return;
+// 		}
 		
-		$this->commit();
-		$this->forward('..\view\userEdit.html', array('userForm' => $userForm));
-	}
+// 		$this->commit();
+// 		$this->forward('..\view\userEdit.html', array('userForm' => $userForm));
+// 	}
 	
 	function getDoUser($userId) {
 		$this->verifyAdmin();
+		
+		if ('text/html' == $this->getRequest()->getAcceptRange()
+				->bestMatch(['text/html', 'application/json'])) {
+			$this->forward('\rocket\core\view\anglTemplate.html');
+			return;
+		}
 		
 		$this->beginTransaction();
 		
@@ -146,9 +155,24 @@ class RocketUserController extends ControllerAdapter {
 		
 		$this->commit();
 		
-		$this->sendJson([
-			'user' => $user	
-		]);
+		$this->sendJson($user);
+	}
+	
+	private function getPowerOptions() {
+		$currentUser = $this->loginContext->getCurrentUser();
+		
+		$powerOptions = array();
+		
+		switch ($currentUser->getPower()) {
+			case RocketUser::POWER_SUPER_ADMIN:
+				$powerOptions[RocketUser::POWER_SUPER_ADMIN] = RocketUser::POWER_SUPER_ADMIN;
+			case RocketUser::POWER_ADMIN:
+				$powerOptions[RocketUser::POWER_ADMIN] = RocketUser::POWER_ADMIN;
+			case RocketUser::POWER_NONE:
+				$powerOptions[RocketUser::POWER_NONE] = RocketUser::POWER_NONE;
+		}
+		
+		return $powerOptions;
 	}
 	
 	function putDoUser($userId, ParamBody $body) {
@@ -158,12 +182,34 @@ class RocketUserController extends ControllerAdapter {
 		
 		$user = $this->lookupUser($userId);
 		
+		$httpData = $body->parseJsonToHttpData();
 		
-		$this->val(Validate::attrs($body->parseJson()));
+		$valResult = $this->val(Validate::attrs($httpData)
+				->props(['nick'], Validators::mandatory(), Validators::minlength(3), 
+						Validators::closure(function($nick, RocketUserDao $userDao) use ($user) {
+							if ($user->getNick() === $nick || !$userDao->containsNick($nick)) {
+								return;
+							}
+							
+							return Message::createCode('user_nick_already_taken_err', null, 'rocket');
+						}))
+				->props(['email'], Validators::mandatory(), Validators::email())
+				->props(['nick', 'firstname', 'lastname', 'email'], Validators::maxlength(255))
+				->prop('power', Validators::enum($this->getPowerOptions())));
+			
+		if ($valResult->sendErrJson()) {
+			return;
+		}
+				
+		$user->setNick($httpData->reqString('nick'));
+		$user->setFirstname($httpData->optString('firstname'));
+		$user->setLastname($httpData->optString('lastname'));
+		$user->setEmail($httpData->reqString('email'));
+		$user->setPower($httpData->reqString('power'));
 		
-		$this->commit();
-		
-		
+		$this->sendJson([
+			'user' => $user	
+		]);
 	}
 
 
@@ -186,48 +232,25 @@ class RocketUserController extends ControllerAdapter {
 		$this->forward('..\view\userEdit.html', array('userForm' => $userForm));
 	}
 	
-	public function doDelete($userId, MessageContainer $messageContainer) {
+	public function deleteDoUser($userId) {
 		$this->verifyAdmin();
 		
 		$this->beginTransaction();
 		
 		$user = $this->rocketUserDao->getUserById($userId);
 		if ($user === null) {
-			throw new PageNotFoundException();
+			$this->sendJson(['status' => 'OK']);
+			return;
 		}
 		
 		$currentUser = $this->loginContext->getCurrentUser();
 		if ((!$currentUser->isSuperAdmin()) || $user->equals($currentUser)) {
-			throw new ForbiddenException();
+			$this->sendJson(['status' => 'ERR']);
 		}
 		
 		$this->rocketUserDao->deleteUser($user);
 		$this->commit();
 		
-		$messageContainer->addInfoCode('user_deleted_info', array('user' => $user->getNick()));
-		
-		$this->redirectToController();
-	}
-	
-	private function applyBreadcrumbs(RocketUserForm $userForm = null) {
-		$httpContext = $this->getHttpContext();
-	
-		$this->rocketState->addBreadcrumb(new Breadcrumb(
-				$httpContext->getControllerContextPath($this->getControllerContext()), 
-				$this->dtc->translate('user_title')));
-		
-		if ($userForm === null) return;
-		
-		if ($userForm->isNew()) {
-			$this->rocketState->addBreadcrumb(new Breadcrumb(
-					$httpContext->getControllerContextPath($this->getControllerContext())->ext('add'),
-					$this->dtc->translate('user_add_title')));
-		} else {
-			$user = $userForm->getRocketUser();
-			$this->rocketState->addBreadcrumb(new Breadcrumb(
-					$httpContext->getControllerContextPath($this->getControllerContext())
-							->ext('edit', $user->getId()),
-					$this->dtc->translate('user_edit_title', array('user' => $user->__toString()))));
-		}
+		$this->sendJson(['status' => 'ERR']);
 	}
 }

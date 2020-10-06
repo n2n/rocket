@@ -1,5 +1,7 @@
 
-<div class="table-responsive">
+<div *ngIf="!users" class="rocket-loader"></div>
+
+<div *ngIf="users" class="table-responsive">
 	<table class="table table-hover rocket-table">
 		<thead>
 			<th>Id</th>
@@ -18,11 +20,23 @@
 			<td>{{ user.power }}</td>
 			<td>
 				<div class="rocket-simple-commands">
-					<a *ngIf="isEditable(user)" routerLink="/users/detail/{{ user.id }}" 
+					<a *ngIf="isEditable(user)" routerLink="/users/user/{{ user.id }}" 
 							class="btn btn-warning rocket-important">
 						<i class="fa fa-pencil-alt"></i>
 						<span>{{ 'edit_txt' | translate }}</span>
 					</a>
+
+					<a *ngIf="isEditable(user)" routerLink="/users/chpw/{{ user.id }}" 
+							class="btn btn-warning rocket-important">
+						<i class="fas fa-key"></i>
+						<span>{{ 'change_password_txt' | translate }}</span>
+					</a>
+
+					<button *ngIf="isDeletable(user)" (click)="delete(user)" 
+							class="btn btn-danger rocket-important">
+						<i class="fas fa-times"></i>
+						<span>{{ 'delete_txt' | translate }}</span>
+					</button>
 				</div>
 			</td>
 		</tr>

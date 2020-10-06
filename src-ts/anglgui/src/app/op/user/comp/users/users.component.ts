@@ -27,4 +27,12 @@ export class UsersComponent implements OnInit {
 	isEditable(user: User) {
 		return user.isEditableBy(this.currentUser);
 	}
+
+	isDeletable(user: User) {
+		return user.isDeletableBy(this.currentUser);
+	}
+
+	delete(user: User) {
+		this.userDao.deleteUser(user);
+	}
 }

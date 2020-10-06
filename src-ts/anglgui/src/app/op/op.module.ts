@@ -9,6 +9,7 @@ import { SiModule } from '../si/si.module';
 import { UsersComponent } from './user/comp/users/users.component';
 import { UtilModule } from '../util/util.module';
 import { UserComponent } from './user/comp/user/user.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
 	declarations: [EiComponent, FallbackComponent, UsersComponent, UserComponent ],
@@ -18,7 +19,8 @@ import { UserComponent } from './user/comp/user/user.component';
 		UiModule,
 		HttpClientModule,
 		SiModule,
-		UtilModule
+		UtilModule,
+		FormsModule
 	]
 })
 export class OpModule { }

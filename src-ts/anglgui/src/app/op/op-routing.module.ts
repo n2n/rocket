@@ -10,7 +10,7 @@ const routes: Routes = [
 		path: 'users', component: UsersComponent
 	},
 	{
-		path: 'users/detail/:userId', component: UserComponent
+		path: 'users/user/:userId', component: UserComponent
 	},
 	{
 		/*path: 'manage', */component: EiComponent, matcher: matchesManageUrl

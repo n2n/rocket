@@ -1,9 +1,46 @@
-<div class="rocket-group rocket-simple-group">
+<rocket-ui-simple-zone-container [loading]="!user" [title]="title">
+	<div *ngIf="user" class="rocket-group rocket-simple-group">
+		<div class="rocket-structure-content">
+			
+			<div class="rocket-item">
+				<label for="frm-username">{{ 'username_txt' | translate }}</label>
+				<div class="rocket-structure-content">
+					<input id="frm-username" class="form-control" type="text" [(ngModel)]="user.username" />
+				</div>
+			</div>
 
-	<div class="rocket-structure-content">
+			<div class="rocket-item">
+				<label for="frm-firstname">{{ 'firstname_txt' | translate }}</label>
+				<div class="rocket-structure-content">
+					<input id="frm-firstname" class="form-control" type="text" [(ngModel)]="user.firstname" />
+				</div>
+			</div>
+			
+			<div class="rocket-item">
+				<label for="frm-lastname">{{ 'lastname_txt' | translate }}</label>
+				<div class="rocket-structure-content">
+					<input id="frm-lastname" class="form-control" type="text" [(ngModel)]="user.lastname" />
+				</div>
+			</div>
+			
+			<div class="rocket-item">
+				<label for="frm-email">{{ 'email_txt' | translate }}</label>
+				<div class="rocket-structure-content">
+					<input id="frm-email" class="form-control" type="text" [(ngModel)]="user.email" />
+				</div>
+			</div>
 
-		
-
+		</div>
 	</div>
 
-</div>
+	<ng-container main-zone-commands>
+		<button class="btn btn-success rocket-important" (click)="save()">
+			{{ 'save_txt' | translate }}
+		</button>
+
+		<button class="btn btn-secondary" (click)="cancel()">
+			{{ 'cancel_txt' | translate }}
+		</button>
+	</ng-container>
+
+</rocket-ui-simple-zone-container>

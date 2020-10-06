@@ -1,0 +1,22 @@
+
+
+<div class="rocket-main-layer">
+
+	<div *ngIf="loading" class="rocket-loader"></div>
+
+	<div *ngIf="!loading" class="rocket-zone">
+		<header>
+			<h1>{{ title }}</h1>
+        </header>
+        
+		<div class="rocket-content rocket-level-0">
+            <ng-content></ng-content>
+        </div>
+
+        <div class="rocket-zone-commands">
+            <div class="rocket-main-commands">
+                <ng-content select="[main-zone-commands]"></ng-content>
+            </div>
+        </div>
+    </div>
+</div>

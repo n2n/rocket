@@ -15,12 +15,13 @@ import { NavPointDirective } from './util/directive/nav-point.directive';
 import { TogglerComponent } from './util/comp/toggler/toggler.component';
 import { SearchInputGroupComponent } from './util/comp/search-input-group/search-input-group.component';
 import { FormsModule } from '@angular/forms';
+import { SimpleZoneContainerComponent } from './structure/comp/simple-zone-container/simple-zone-container.component';
 
 @NgModule({
 	declarations: [
 		LayerComponent, ContainerComponent, ZoneComponent, StructureComponent, StructureContentDirective,
 		StructureBranchComponent, PlainContentComponent, MessageComponent, BreadcrumbsComponent, NavPointDirective,
-		TogglerComponent, SearchInputGroupComponent
+		TogglerComponent, SearchInputGroupComponent, SimpleZoneContainerComponent
 	],
 	imports: [
 		CommonModule,
@@ -37,7 +38,8 @@ import { FormsModule } from '@angular/forms';
 		MessageComponent,
 		NavPointDirective,
 		TogglerComponent,
-		SearchInputGroupComponent
+		SearchInputGroupComponent,
+		SimpleZoneContainerComponent
 	],
 	entryComponents: [ PlainContentComponent ]
 })

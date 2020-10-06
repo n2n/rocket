@@ -29,6 +29,10 @@ export class User {
 				|| (user.isAdmin() && !this.isSuperAdmin());
 	}
 
+	isDeletableBy(user: User): boolean {
+		return !this.equals(user) && user.isSuperAdmin();
+	}
+
 	equals(o: object): boolean {
 		return o instanceof User && (o as User).id === this.id;
 	}

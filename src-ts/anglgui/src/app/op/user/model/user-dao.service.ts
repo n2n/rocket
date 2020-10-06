@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { User } from '../bo/user';
+import { User, UserPower } from '../bo/user';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { Extractor } from 'src/app/util/mapping/extractor';
@@ -21,4 +21,38 @@ export class UserDaoService {
 					return UserFactory.createUsers(extr.reqArray('users'));
 				}));
 	}
+
+	getUserById(userId: number): Observable<User>  {
+		return this.httpClient.get<any>('users/user/' + userId)
+				.pipe(map((data) => {
+					return UserFactory.createUser(data);
+				}));
+	}
+
+	deleteUser(user: User): Observable<boolean> {
+		return this.httpClient.delete<any>('users/user/' + user.id)
+				.pipe(map((data) => {
+					return data.status === 'OK';
+				}));
+	}
+
+	saveUser(userSaveRequest: UserSaveRequest): Observable<User|null> {
+		return this.httpClient.put<any>('users/user/' + userSaveRequest.user.id, userSaveRequest)
+				.pipe(map((data) => {
+					if (data.status === 'ERR') {
+						return null;
+					}
+
+					return data.user;
+				}));
+	}
+}
+
+interface UserSaveRequest {
+	user: User;
+	username: string;
+	power: UserPower;
+	firstname: string;
+	lastname: string;
+	email: string;
 }
