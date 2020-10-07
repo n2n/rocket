@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { Extractor } from 'src/app/util/mapping/extractor';
 import { UserFactory } from './user-fatory';
 import { Observable } from 'rxjs';
+import { ErrorMapFactory } from 'src/app/util/err/error-map';
 
 @Injectable({
 	providedIn: 'root'
@@ -36,23 +37,25 @@ export class UserDaoService {
 				}));
 	}
 
-	saveUser(user: User): Observable<User|null> {
-		return this.httpClient.put<any>('users/user/' + user.id, user)
+	saveUser(user: User): Observable<User> {
+		if (user.id) {
+			return this.httpClient.put<any>('users/user/' + user.id, user)
+					.pipe(map((data) => {
+						if (data.status === 'ERR') {
+							throw ErrorMapFactory.createErrorMap(data.errorMap);
+						}
+
+						return data.user;
+					}));
+		}
+
+		return this.httpClient.post<any>('users/add', user)
 				.pipe(map((data) => {
 					if (data.status === 'ERR') {
-						return null;
+						throw ErrorMapFactory.createErrorMap(data.errorMap);
 					}
 
 					return data.user;
 				}));
 	}
-}
-
-interface UserSaveRequest {
-	user: User;
-	username: string;
-	power: UserPower;
-	firstname: string;
-	lastname: string;
-	email: string;
 }

@@ -33,10 +33,9 @@ use n2n\web\http\controller\ControllerAdapter;
 use rocket\user\bo\RocketUser;
 use n2n\web\http\controller\ParamBody;
 use n2n\validation\build\impl\Validate;
-use n2n\bind\Bind;
 use n2n\validation\plan\impl\Validators;
-use n2n\validation\build\ErrorMap;
 use n2n\l10n\Message;
+use n2n\web\http\controller\impl\HttpData;
 
 class RocketUserController extends ControllerAdapter {
 	private $rocketUserDao;
@@ -58,12 +57,20 @@ class RocketUserController extends ControllerAdapter {
 		throw new ForbiddenException();
 	}
 	
-	public function index() {
-		$this->verifyAdmin();
-		
+	private function verifyHtml() {
 		if ('text/html' == $this->getRequest()->getAcceptRange()
 				->bestMatch(['text/html', 'application/json'])) {
 			$this->forward('\rocket\core\view\anglTemplate.html');
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public function index() {
+		$this->verifyAdmin();
+		
+		if ($this->verifyHtml()) {
 			return;
 		}
 		
@@ -72,25 +79,22 @@ class RocketUserController extends ControllerAdapter {
 		]);
 	}
 	
-	public function doAdd(MessageContainer $messageContainer) {
+	function doAdd(MessageContainer $messageContainer) {
+		$this->verifyAdmin();
+		
+		if ($this->verifyHtml()) {
+			return;
+		}
+		
+		throw new PageNotFoundException();
+	}
+	
+	function postDoAdd(ParamBody $body, RocketUserDao $userDao) {
 		$this->verifyAdmin();
 		
 		$this->beginTransaction();
 		
-		$rocketUserForm = new RocketUserForm(new RocketUser(), $this->rocketUserDao->getRocketUserGroups());
-		$rocketUserForm->setMaxPower($this->loginContext->getCurrentUser()->getPower());
-		
-		if ($this->dispatch($rocketUserForm, 'save')) {
-			$this->rocketUserDao->saveUser($rocketUserForm->getRocketUser());
-			$messageContainer->addInfoCode('user_added_info', array('user' => $rocketUserForm->getRocketUser()->getNick()));
-			$this->commit();
-			
-			$this->redirectToController();
-			return;
-		}
-		
-		$this->commit();
-		$this->forward('..\view\userEdit.html', array('userForm' => $rocketUserForm));
+		$this->handleUser(new RocketUser(), $body->parseJsonToHttpData());
 	}
 	
 	/**
@@ -182,10 +186,12 @@ class RocketUserController extends ControllerAdapter {
 		
 		$user = $this->lookupUser($userId);
 		
-		$httpData = $body->parseJsonToHttpData();
-		
+		$this->handleUser($user, $body->parseJsonToHttpData());
+	}
+	
+	private function handleUser(RocketUser $user, HttpData $httpData) {
 		$valResult = $this->val(Validate::attrs($httpData)
-				->props(['username'], Validators::mandatory(), Validators::minlength(3), 
+				->props(['username'], Validators::mandatory(), Validators::minlength(3),
 						Validators::closure(function($nick, RocketUserDao $userDao) use ($user) {
 							if ($user->getNick() === $nick || !$userDao->containsNick($nick)) {
 								return;
@@ -196,19 +202,21 @@ class RocketUserController extends ControllerAdapter {
 				->props(['email'], Validators::email())
 				->props(['username', 'firstname', 'lastname', 'email'], Validators::maxlength(255))
 				->prop('power', Validators::enum($this->getPowerOptions())));
-			
+		
 		if ($valResult->sendErrJson()) {
 			return;
 		}
-				
+		
 		$user->setNick($httpData->reqString('username'));
 		$user->setFirstname($httpData->optString('firstname'));
 		$user->setLastname($httpData->optString('lastname'));
-		$user->setEmail($httpData->reqString('email'));
+		$user->setEmail($httpData->optString('email'));
 		$user->setPower($httpData->reqString('power'));
 		
+		$this->rocketUserDao->saveUser($user);
+		
 		$this->sendJson([
-			'user' => $user	
+			'user' => $user
 		]);
 	}
 

@@ -13,6 +13,9 @@ const routes: Routes = [
 		path: 'users/user/:userId', component: UserComponent
 	},
 	{
+		path: 'users/add', component: UserComponent
+	},
+	{
 		/*path: 'manage', */component: EiComponent, matcher: matchesManageUrl
 	},
 	{

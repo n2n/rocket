@@ -1,11 +1,15 @@
 
 export class User {
-	firstname: string;
-	lastname: string;
-	email: string;
+	firstname: string = null;
+	lastname: string = null;
+	email: string = null;
 
-	constructor(public id: number, public username: string, public power: UserPower) {
+	constructor(public id: number|null, public username: string, public power: UserPower) {
 
+	}
+
+	isNew(): boolean {
+		return !this.id;
 	}
 
 	get fullname(): string|null {
@@ -13,7 +17,7 @@ export class User {
 			return null;
 		}
 
-		return this.firstname + ' ' + this.lastname;
+		return (this.firstname || '') + ' ' + (this.lastname || '');
 	}
 
 	isAdmin(): boolean {

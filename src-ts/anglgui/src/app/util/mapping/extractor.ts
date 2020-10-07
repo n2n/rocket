@@ -19,6 +19,10 @@ export class Extractor {
 		throw new ObjectMissmatchError('Object required. Given: ' + typeof obj);
 	}
 
+	contains(propName: string): boolean {
+		return this.obj[propName] !== undefined;
+	}
+
 	nullaString(propName: string): string|null {
 		if (this.obj[propName] === null) {
 			return null;
