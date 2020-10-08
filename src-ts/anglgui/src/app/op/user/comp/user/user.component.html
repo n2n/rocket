@@ -28,7 +28,7 @@
 				<div class="rocket-item">
 					<label for="frm-password">{{ 'password_txt' | translate }}</label>
 					<div class="rocket-structure-content">
-						<input id="frm-username" class="form-control" type="text" [(ngModel)]="password" minlength="3" maxlength="255" />
+						<input id="frm-username" class="form-control" type="password" [(ngModel)]="password" minlength="3" maxlength="255" />
 
 						<rocket-ui-message *ngFor="let message of getErrorMessages('password')"
 								[message]="message"></rocket-ui-message>
@@ -38,7 +38,7 @@
 				<div class="rocket-item">
 					<label for="frm-password">{{ 'password_confirmation_txt' | translate }}</label>
 					<div class="rocket-structure-content">
-						<input id="frm-username" class="form-control" type="text" [(ngModel)]="passwordConfirmation" minlength="3" maxlength="255" />
+						<input id="frm-username" class="form-control" type="password" [(ngModel)]="passwordConfirmation" minlength="3" maxlength="255" />
 
 						<rocket-ui-message *ngFor="let message of getErrorMessages('passwordConfirmation')"
 								[message]="message"></rocket-ui-message>

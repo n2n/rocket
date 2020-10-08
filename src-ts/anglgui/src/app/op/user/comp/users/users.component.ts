@@ -15,6 +15,7 @@ export class UsersComponent implements OnInit {
 	constructor(private userDao: UserDaoService, private appState: AppStateService) { }
 
 	ngOnInit() {
+		this.users = null;
 		this.userDao.getUsers().subscribe(users => {
 			this.users = users;
 		});
@@ -33,6 +34,6 @@ export class UsersComponent implements OnInit {
 	}
 
 	delete(user: User) {
-		this.userDao.deleteUser(user);
+		this.userDao.deleteUser(user).subscribe();
 	}
 }

@@ -10,9 +10,10 @@ import { UsersComponent } from './user/comp/users/users.component';
 import { UtilModule } from '../util/util.module';
 import { UserComponent } from './user/comp/user/user.component';
 import { FormsModule } from '@angular/forms';
+import { ChPwComponent } from './user/comp/ch-pw/ch-pw.component';
 
 @NgModule({
-	declarations: [EiComponent, FallbackComponent, UsersComponent, UserComponent ],
+	declarations: [EiComponent, FallbackComponent, UsersComponent, UserComponent, ChPwComponent ],
 	imports: [
 		CommonModule,
 		OpRoutingModule,

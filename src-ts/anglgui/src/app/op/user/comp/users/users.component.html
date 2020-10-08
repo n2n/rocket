@@ -27,13 +27,13 @@
 
 						<a *ngIf="isEditable(user)" routerLink="/users/chpw/{{ user.id }}" 
 								class="btn btn-warning rocket-important">
-							<i class="fas fa-key"></i>
+							<i class="fa fa-key"></i>
 							<span>{{ 'change_password_txt' | translate }}</span>
 						</a>
 
 						<button *ngIf="isDeletable(user)" (click)="delete(user)" 
 								class="btn btn-danger rocket-important">
-							<i class="fas fa-times"></i>
+							<i class="fa fa-times"></i>
 							<span>{{ 'delete_txt' | translate }}</span>
 						</button>
 					</div>

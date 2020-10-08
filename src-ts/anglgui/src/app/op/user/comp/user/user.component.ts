@@ -31,9 +31,12 @@ export class UserComponent implements OnInit {
 				return;
 			}
 
-			this.userDao.getUserById(params.userId).subscribe((user: User) => {
-				this.user = user;
-			});
+			this.userDao.getUserById(params.userId)
+					.subscribe((user: User) => {
+						this.user = user;
+					}, () => {
+						this.cancel();
+					});
 		});
 	}
 
@@ -49,6 +52,23 @@ export class UserComponent implements OnInit {
 
 		this.saving = true;
 		this.errorMap = null;
+
+		if (this.user.isNew()) {
+			this.userDao
+					.createUser({
+						password: this.password,
+						passwordConfirmation: this.passwordConfirmation,
+						user: this.user
+					})
+					.subscribe(() => {
+						this.router.navigate(['users']);
+					}, (errorMap: ErrorMap) => {
+						this.saving = false;
+						this.errorMap = errorMap;
+					});
+			return;
+		}
+
 		this.userDao.saveUser(this.user)
 				.subscribe(() => {
 					this.router.navigate(['users']);
@@ -76,7 +96,7 @@ export class UserComponent implements OnInit {
 
 	get availablePowers(): UserPower[] {
 		const userPowers: UserPower[] = [];
-		switch(this.appState.user.power) {
+		switch (this.appState.user.power) {
 			case UserPower.SUPER_ADMIN:
 				userPowers.push(UserPower.SUPER_ADMIN);
 			case UserPower.ADMIN:

@@ -35,6 +35,7 @@ use n2n\web\http\controller\ParamBody;
 use n2n\validation\build\impl\Validate;
 use n2n\validation\plan\impl\Validators;
 use n2n\l10n\Message;
+use n2n\util\crypt\hash\HashUtils;
 use n2n\web\http\controller\impl\HttpData;
 
 class RocketUserController extends ControllerAdapter {
@@ -94,7 +95,38 @@ class RocketUserController extends ControllerAdapter {
 		
 		$this->beginTransaction();
 		
-		$this->handleUser(new RocketUser(), $body->parseJsonToHttpData());
+		$httpData = $body->parseJsonToHttpData();
+		
+		
+		$user = new RocketUser();
+		
+		if (!$this->handlePw($user, $httpData)) {
+			return;
+		}
+		
+		$this->handleUser($user, $httpData->reqHttpData('user'));
+	}
+	
+	private function handlePw(RocketUser $user, HttpData $httpData) {
+		$valResult = $this->val(Validate::attrs($httpData->toDataMap())
+				->props(['password', 'passwordConfirmation'], Validators::mandatory(),
+						Validators::closure(function ($password, $passwordConfirmation) {
+							if ($password === $passwordConfirmation) {
+								return;
+							}
+							
+							return [
+								'passwordConfirmation' => Message::createCode('password_confirmation_does_not_match_err', 
+										null, 'rocket')
+							];
+						})));
+		
+		if ($valResult->sendErrJson()) {
+			return false;
+		}
+		
+		$user->setPassword(HashUtils::buildHash($httpData->reqString('password')));
+		return true;
 	}
 	
 	/**
@@ -102,11 +134,15 @@ class RocketUserController extends ControllerAdapter {
 	 * @throws PageNotFoundException
 	 * @return \rocket\user\bo\RocketUser
 	 */
-	private function lookupUser($userId) {
+	private function lookupUser($userId, bool $editable) {
 		$user = $this->rocketUserDao->getUserById($userId);
 		
 		if (null === $user) {
 			throw new PageNotFoundException();
+		}
+		
+		if (!$this->loginContext->getCurrentUser()->isSuperAdmin() && $user->isSuperAdmin()) {
+			throw new ForbiddenException();
 		}
 		
 		return $user;
@@ -155,7 +191,7 @@ class RocketUserController extends ControllerAdapter {
 		
 		$this->beginTransaction();
 		
-		$user = $this->lookupUser($userId);
+		$user = $this->lookupUser($userId, true);
 		
 		$this->commit();
 		
@@ -179,18 +215,43 @@ class RocketUserController extends ControllerAdapter {
 		return $powerOptions;
 	}
 	
+	function getDoChPw(array $params = null) {
+		$this->verifyAdmin();
+		if ($this->verifyHtml()) {
+			return;
+		}
+		
+		throw new PageNotFoundException();
+	}
+	
+	function postDoChPw(ParamBody $body) {
+		$this->verifyAdmin();
+		
+		$this->beginTransaction();
+		
+		$httpData = $body->parseJsonToHttpData();
+		
+		$user = $this->lookupUser($httpData->reqInt('userId'), true);
+		
+		if (!$this->handlePw($user, $httpData)) {
+			return;
+		}
+		
+		$this->sendJson(['status' => 'OK', 'user' => $user]);
+	}
+	
 	function putDoUser($userId, ParamBody $body) {
 		$this->verifyAdmin();
 		
 		$this->beginTransaction();
 		
-		$user = $this->lookupUser($userId);
+		$user = $this->lookupUser($userId, true);
 		
 		$this->handleUser($user, $body->parseJsonToHttpData());
 	}
 	
 	private function handleUser(RocketUser $user, HttpData $httpData) {
-		$valResult = $this->val(Validate::attrs($httpData)
+		$valResult = $this->val(Validate::attrs($httpData->toDataMap())
 				->props(['username'], Validators::mandatory(), Validators::minlength(3),
 						Validators::closure(function($nick, RocketUserDao $userDao) use ($user) {
 							if ($user->getNick() === $nick || !$userDao->containsNick($nick)) {

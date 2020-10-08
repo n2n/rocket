@@ -37,19 +37,8 @@ export class UserDaoService {
 				}));
 	}
 
-	saveUser(user: User): Observable<User> {
-		if (user.id) {
-			return this.httpClient.put<any>('users/user/' + user.id, user)
-					.pipe(map((data) => {
-						if (data.status === 'ERR') {
-							throw ErrorMapFactory.createErrorMap(data.errorMap);
-						}
-
-						return data.user;
-					}));
-		}
-
-		return this.httpClient.post<any>('users/add', user)
+	createUser(userAddRequest: UserAddRequest) {
+		return this.httpClient.post<any>('users/add', userAddRequest)
 				.pipe(map((data) => {
 					if (data.status === 'ERR') {
 						throw ErrorMapFactory.createErrorMap(data.errorMap);
@@ -58,4 +47,38 @@ export class UserDaoService {
 					return data.user;
 				}));
 	}
+
+	changePassword(changePasswordRequest: ChangePasswordRequest): Observable<User> {
+		return this.httpClient.post<any>('users/chpw', changePasswordRequest)
+				.pipe(map((data) => {
+					if (data.status === 'ERR') {
+						throw ErrorMapFactory.createErrorMap(data.errorMap);
+					}
+
+					return data.user;
+				}));
+	}
+
+	saveUser(user: User): Observable<User> {
+		return this.httpClient.put<any>('users/user/' + user.id, user)
+				.pipe(map((data) => {
+					if (data.status === 'ERR') {
+						throw ErrorMapFactory.createErrorMap(data.errorMap);
+					}
+
+					return data.user;
+				}));
+	}
+}
+
+export interface ChangePasswordRequest {
+	password: string;
+	passwordConfirmation: string;
+	userId: number;
+}
+
+export interface UserAddRequest {
+	password: string;
+	passwordConfirmation: string;
+	user: User;
 }
