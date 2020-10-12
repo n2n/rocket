@@ -25,17 +25,37 @@ use n2n\util\uri\Url;
 use rocket\si\meta\SiDeclaration;
 use rocket\si\content\SiPartialContent;
 use rocket\si\content\SiComp;
+use rocket\si\control\SiControl;
+use n2n\util\type\ArgUtils;
+use rocket\si\SiPayloadFactory;
 
 class CompactExplorerSiComp implements SiComp {
+	/**
+	 * @var string
+	 */
 	private $apiUrl;
+	/**
+	 * @var int|null
+	 */
 	private $pageSize;
+	/**
+	 * @var SiDeclaration
+	 */
 	private $declaration;
+	/**
+	 * @var SiPartialContent
+	 */
 	private $partialContent;
+	/**
+	 * @var SiControl[]
+	 */
+	private $controls = [];
 	
 	/**
 	 * @param Url $apiUrl
 	 * @param int $pageSize
-	 * @param SiDeclaration $siCompactContent
+	 * @param SiDeclaration|null $declaration
+	 * @param SiPartialContent|null $partialContent
 	 */
 	public function __construct(Url $apiUrl, int $pageSize, SiDeclaration $declaration = null,
 			SiPartialContent $partialContent = null) {
@@ -78,9 +98,11 @@ class CompactExplorerSiComp implements SiComp {
 	
 	/**
 	 * @param SiPartialContent|null $partialContent
+	 * @return \rocket\si\content\impl\basic\CompactExplorerSiComp
 	 */
 	public function setPartialContent(?SiPartialContent $partialContent) {
 		$this->partialContent = $partialContent;
+		return $this;
 	}
 	
 	/**
@@ -88,6 +110,21 @@ class CompactExplorerSiComp implements SiComp {
 	 */
 	public function getPartialContent() {
 		return $this->partialContent;
+	}
+	
+	/**
+	 * @param SiControl[] $controls
+	 */
+	function setControls(array $controls) {
+		ArgUtils::valArray($controls, SiControl::class);
+		$this->controls = $controls;
+	}
+	
+	/**
+	 * @return SiControl[]
+	 */
+	function getControls() {
+		return $this->controls;
 	}
 	
 	/**
@@ -99,7 +136,8 @@ class CompactExplorerSiComp implements SiComp {
 			'apiUrl' => (string) $this->apiUrl,
 			'pageSize' => $this->pageSize,
 			'declaration' => $this->declaration,
-			'partialContent' => $this->partialContent
+			'partialContent' => $this->partialContent,
+			'controls' => SiPayloadFactory::createDataFromControls($this->controls)
 		];
 	}
 

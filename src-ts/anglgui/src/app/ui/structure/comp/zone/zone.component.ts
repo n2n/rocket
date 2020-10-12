@@ -55,7 +55,7 @@ export class ZoneComponent implements OnInit, DoCheck, OnDestroy {
 	}
 
 	get mainCommandUiContents(): UiContent[] {
-		return this.uiZone.model.mainCommandContents || [];
+		return [...this.uiZone.model.mainCommandContents, ...this.uiZone.uiStructure.model.getMainControlContents()];
 	}
 
 

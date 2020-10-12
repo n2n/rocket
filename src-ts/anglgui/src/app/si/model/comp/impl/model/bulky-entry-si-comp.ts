@@ -151,7 +151,8 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 		const siMaskDeclaration = this.siDeclaration.getTypeDeclarationByTypeId(this.siEntry.selectedTypeId);
 		const toolbarResolver = new ToolbarResolver();
 
-		this.contentUiStructures = this.createStructures(uiStructure, siMaskDeclaration.structureDeclarations, toolbarResolver);
+		this.contentUiStructures = this.createStructures(uiStructure, siMaskDeclaration.structureDeclarations,
+				toolbarResolver);
 
 		for (const prop of siMaskDeclaration.type.getProps()) {
 			if (prop.dependantPropIds.length > 0 && this.siEntry.selectedEntryBuildup.containsPropId(prop.id)) {
@@ -192,7 +193,7 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 	}
 
 	private createUiStructureModel(siProp: SiProp): UiStructureModel {
-		if (this.siEntry.selectedEntryBuildup.containsPropId(siProp.id)) { 
+		if (this.siEntry.selectedEntryBuildup.containsPropId(siProp.id)) {
 			const siField = this.siEntry.selectedEntryBuildup.getFieldById(siProp.id);
 			return this.uiStructureModelCache.obtain(this.siEntry.selectedTypeId, siProp.id, siField);
 		}

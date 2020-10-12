@@ -68,13 +68,17 @@ class EiGuiUtil {
 		return $siComp;
 	}
 	
-	function createCompactExplorerSiComp(int $pageSize, bool $entrySiControlsIncluded) {
+	function createCompactExplorerSiComp(int $pageSize, bool $entrySiControlsIncluded, bool $generalSiControlsIncluded) {
 		$eiFrameUtil = new EiFrameUtil($this->eiFrame);
 				
 		$siDeclaration = $this->eiGui->getEiGuiModel()->createSiDeclaration($this->eiFrame);
 		$siPartialContent = new SiPartialContent($eiFrameUtil->count(), 
 				$this->eiGui->createSiEntries($this->eiFrame, $entrySiControlsIncluded));
 		$siComp = new CompactExplorerSiComp($this->eiFrame->getApiUrl(), $pageSize, $siDeclaration, $siPartialContent);
+		
+		if ($generalSiControlsIncluded) {
+			$siComp->setControls($this->eiGui->getEiGuiModel()->createGeneralSiControls($this->eiFrame));
+		}
 		
 		return $siComp;
 	}

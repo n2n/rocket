@@ -307,11 +307,10 @@ class EiuCtrl {
 		
 		$this->composeEiuGuiForList($eiGui, $pageSize);
 		
-		$siComp = (new EiGuiUtil($eiGui, $eiFrame))->createCompactExplorerSiComp($pageSize, true);
+		$siComp = (new EiGuiUtil($eiGui, $eiFrame))->createCompactExplorerSiComp($pageSize, true, true);
 		
 		$this->httpContext->getResponse()->send(
-				SiPayloadFactory::create($siComp, 
-						$eiGuiModel->createGeneralSiControls($eiFrame),
+				SiPayloadFactory::create($siComp,
 						$this->rocketState->getBreadcrumbs(),
 						$title ?? $this->eiuFrame->contextEngine()->mask()->getPluralLabel()));
 	}
@@ -361,7 +360,7 @@ class EiuCtrl {
 		$siComp = $eiuGui->createBulkyEntrySiComp($siControlsIncluded);
 		
 		$this->httpContext->getResponse()->send(
-				SiPayloadFactory::create($siComp, $eiuGui->guiModel()->createGeneralSiControls(),
+				SiPayloadFactory::create($siComp,
 						$this->rocketState->getBreadcrumbs(),
 						$eiuEntry->createIdentityString()));
 	}
@@ -412,10 +411,9 @@ class EiuCtrl {
 		$eiGuiUtil = new EiGuiUtil($eiGui, $eiFrame);
 		
 		$siComp = $eiGuiUtil->createBulkyEntrySiComp($siControlsIncluded);
-		$generalSiControls = $eiGui->getEiGuiModel()->createGeneralSiControls($eiFrame);
 		
 		$this->httpContext->getResponse()->send(
-				SiPayloadFactory::create($siComp, $generalSiControls, 
+				SiPayloadFactory::create($siComp, 
 						$this->rocketState->getBreadcrumbs(),
 						$this->eiu->dtc('rocket')->t('common_new_entry_label')));
 	}

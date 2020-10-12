@@ -168,6 +168,8 @@ export class SiCompFactory {
 			case SiCompType.ENTRIES_LIST:
 				const listSiComp = new EntriesListSiComp(dataExtr.reqString('apiUrl'), dataExtr.reqNumber('pageSize'));
 
+				compEssentialsFactory = new SiControlFactory(listSiComp, this.injector);
+				listSiComp.controls = compEssentialsFactory.createControls(dataExtr.reqArray('controls'));
 				declaration = listSiComp.pageCollection.declaration = SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'));
 
 				const partialContentData = dataExtr.nullaObject('partialContent');

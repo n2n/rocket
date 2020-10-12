@@ -34,6 +34,8 @@ export class UsersComponent implements OnInit {
 	}
 
 	delete(user: User) {
-		this.userDao.deleteUser(user).subscribe();
+		this.userDao.deleteUser(user).subscribe(() => {
+
+		});
 	}
 }

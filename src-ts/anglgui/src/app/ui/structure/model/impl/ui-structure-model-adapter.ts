@@ -8,6 +8,7 @@ import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 export abstract class UiStructureModelAdapter implements UiStructureModel {
 	protected boundUiStructure: UiStructure|null = null;
 	protected uiContent: UiContent|null = null;
+	protected mainControlUiContents: UiContent[] = [];
 	protected asideUiContents: UiContent[] = [];
 	protected disabled$: Observable<boolean>;
 
@@ -28,6 +29,10 @@ export abstract class UiStructureModelAdapter implements UiStructureModel {
 
 	getContent(): UiContent|null {
 		return this.uiContent;
+	}
+
+	getMainControlContents(): UiContent[] {
+		return this.mainControlUiContents;
 	}
 
 	getAsideContents(): UiContent[] {

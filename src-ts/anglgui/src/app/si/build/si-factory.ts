@@ -18,8 +18,8 @@ export class UiZoneModelFactory {
 			title: extr.reqString('title'),
 			breadcrumbs: UiFactory.createBreadcrumbs(extr.reqArray('breadcrumbs')),
 			structureModel: comp.createUiStructureModel(),
-			mainCommandContents: new SiControlFactory(comp, this.injector).createControls(extr.reqArray('controls'))
-					.map(siControl => siControl.createUiContent(zone))
+			mainCommandContents: [] /*new SiControlFactory(comp, this.injector).createControls(extr.reqArray('controls'))
+					.map(siControl => siControl.createUiContent(zone))*/
 		};
 	}
 

@@ -35,7 +35,7 @@ class SiPayloadFactory extends JsonPayload {
 	 * @param SiControl[] $controls
 	 * @return \n2n\web\http\payload\impl\JsonPayload
 	 */
-	static function create(SiComp $comp, array $controls, array $breadcrumbs, string $title) {
+	static function create(SiComp $comp, array $breadcrumbs, string $title, array $controls = []) {
 		ArgUtils::valArray($breadcrumbs, SiBreadcrumb::class);
 		
 		return new JsonPayload([

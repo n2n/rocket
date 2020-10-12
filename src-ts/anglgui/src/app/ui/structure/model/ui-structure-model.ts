@@ -12,6 +12,8 @@ export interface UiStructureModel {
 
 	getContent(): UiContent|null;
 
+	getMainControlContents(): UiContent[];
+
 	getAsideContents(): UiContent[];
 
 	getZoneErrors(): UiZoneError[];

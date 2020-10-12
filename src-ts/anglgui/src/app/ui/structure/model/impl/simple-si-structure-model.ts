@@ -13,7 +13,7 @@ export class SimpleUiStructureModel extends UiStructureModelAdapter {
 	public destroyCallback: () => void = () => {};
 	public messagesCallback: () => Message[] = () => [];
 
-	constructor(public content: UiContent|null = null, public asideContents: UiContent[] = []) {
+	constructor(public content: UiContent|null = null) {
 		super();
 	}
 
@@ -35,8 +35,20 @@ export class SimpleUiStructureModel extends UiStructureModelAdapter {
 		return this.content;
 	}
 
-	getAsideContents(): UiContent[] {
-		return this.asideContents;
+	get mainControlContents(): UiContent[] {
+		return this.mainControlUiContents;
+	}
+
+	set mainControlContents(uiContents: UiContent[]) {
+		this.mainControlUiContents = uiContents;
+	}
+
+	set asideContents(uiContents: UiContent[]) {
+		this.asideUiContents = uiContents;
+	}
+
+	get asideContents(): UiContent[] {
+		return this.asideUiContents;
 	}
 
 	getZoneErrors(): UiZoneError[] {

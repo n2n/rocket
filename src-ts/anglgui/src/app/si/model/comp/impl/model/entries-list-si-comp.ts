@@ -10,11 +10,13 @@ import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-s
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { SiEntryQualifierSelection } from './si-entry-qualifier-selection';
 import { PaginationComponent } from '../comp/pagination/pagination.component';
+import { SiControl } from '../../../control/si-control';
 
 export class EntriesListSiComp implements SiComp, EntriesListModel {
 
 	public qualifierSelection: SiEntryQualifierSelection|null = null;
 	readonly pageCollection: SiPageCollection;
+	controls: SiControl[] = [];
 
 	constructor(public apiUrl: string, pageSize: number) {
 		this.pageCollection = new SiPageCollection(pageSize);
@@ -66,6 +68,10 @@ export class EntriesListSiComp implements SiComp, EntriesListModel {
 			uiStrucuterModel.content = new TypeUiContent(ListZoneContentComponent, (ref) => {
 				ref.instance.model = this;
 				ref.instance.uiStructure = uiStructure;
+			});
+
+			uiStrucuterModel.mainControlContents = this.controls.map((control) => {
+				return control.createUiContent(uiStructure.getZone());
 			});
 		};
 
