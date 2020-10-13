@@ -350,14 +350,14 @@ class EiuCtrl {
 		}
 	}
 	
-	function forwardDlZone($eiEntryArg, bool $readOnly, bool $siControlsIncluded = true) {
+	function forwardDlZone($eiEntryArg, bool $readOnly, bool $generalSiControlsIncluded, bool $entrySiControlsIncluded = true) {
 		if ($this->forwardHtml()) {
 			return;
 		}
 
 		$eiuEntry = EiuAnalyst::buildEiuEntryFromEiArg($eiEntryArg, $this->eiuFrame, 'eiEntryArg', true);
 		$eiuGui = $eiuEntry->newGui(true, $readOnly);
-		$siComp = $eiuGui->createBulkyEntrySiComp($siControlsIncluded);
+		$siComp = $eiuGui->createBulkyEntrySiComp($generalSiControlsIncluded, $entrySiControlsIncluded);
 		
 		$this->httpContext->getResponse()->send(
 				SiPayloadFactory::create($siComp,

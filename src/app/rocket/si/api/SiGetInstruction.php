@@ -30,7 +30,8 @@ class SiGetInstruction {
 	private $bulky;
 	private $readOnly;
 	private $declarationRequested = false;
-	private $controlsIncluded = false;
+	private $generalControlsIncluded = false;
+	private $entryControlsIncluded = false;
 	private $entryId = null;
 	private $partialContentInstruction = null;
 	private $newEntryRequested = false;
@@ -99,15 +100,29 @@ class SiGetInstruction {
 	/**
 	 * @return boolean
 	 */
-	function areControlsIncluded() {
-		return $this->controlsIncluded;
+	function areGeneralControlsIncluded() {
+		return $this->generalControlsIncluded;
 	}
 	
 	/**
 	 * @param boolean $controlsIncluded
 	 */
-	function setControlsIncluded(bool $controlsIncluded) {
-		$this->controlsIncluded = $controlsIncluded;
+	function setGeneralControlsIncluded(bool $controlsIncluded) {
+		$this->generalControlsIncluded = $controlsIncluded;
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	function areEntryControlsIncluded() {
+		return $this->entryControlsIncluded;
+	}
+	
+	/**
+	 * @param boolean $controlsIncluded
+	 */
+	function setEntryControlsIncluded(bool $controlsIncluded) {
+		$this->entryControlsIncluded = $controlsIncluded;
 	}
 
 	/**

@@ -26,6 +26,7 @@ use n2n\util\type\ArgUtils;
 use n2n\l10n\N2nLocale;
 use rocket\si\input\SiError;
 use rocket\si\NavPoint;
+use rocket\si\content\SiEntryIdentifier;
 
 class SiResult implements \JsonSerializable {
 	const DIRECTIVE_REDIRECT_BACK = 'redirectBack';
@@ -98,8 +99,12 @@ class SiResult implements \JsonSerializable {
 	 * @param string $modType
 	 * @return \rocket\si\control\SiResult
 	 */
-	function addEvent(string $category, string $id, string $modType) {
+	function addEvent(SiEntryIdentifier $identifier, string $modType) {
 		ArgUtils::valEnum($modType, [self::EVENT_TYPE_ADDED, self::EVENT_TYPE_CHANGED, self::EVENT_TYPE_REMOVED]);
+		
+		$category = $identifier->getTypeId();
+		$id = $identifier->getId();
+		ArgUtils::assertTrue($id !== null);
 		
 		if (!isset($this->eventMap[$category])) {
 			$this->eventMap[$category] = array('ids' => []);

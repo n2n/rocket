@@ -119,13 +119,13 @@ class EiuGui {
 	 * @param bool $entrySiControlsIncluded
 	 * @return \rocket\si\content\impl\basic\BulkyEntrySiComp
 	 */
-	function createBulkyEntrySiComp(/*bool $generalSiControlsIncluded = true,*/ bool $entrySiControlsIncluded = true) {
+	function createBulkyEntrySiComp(bool $generalSiControlsIncluded = true, bool $entrySiControlsIncluded = true) {
 		if (!ViewMode::isBulky($this->eiGui->getEiGuiModel()->getViewMode())) {
 			throw new EiuPerimeterException('EiEntryGuiMulti is not bulky.');
 		}
 		
 		return (new EiGuiUtil($this->eiGui, $this->eiuAnalyst->getEiFrame(true)))
-				->createBulkyEntrySiComp(/*$generalSiControlsIncluded,*/ $entrySiControlsIncluded);
+				->createBulkyEntrySiComp($generalSiControlsIncluded, $entrySiControlsIncluded);
 	}
 	
 	/**

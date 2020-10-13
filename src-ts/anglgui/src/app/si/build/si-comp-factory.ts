@@ -185,11 +185,15 @@ export class SiCompFactory {
 
 			case SiCompType.BULKY_ENTRY:
 				declaration = SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'));
-				const bulkyEntryUiContent = new BulkyEntrySiComp(declaration);
+				const bulkyEntrySiComp = new BulkyEntrySiComp(declaration);
 
-				bulkyEntryUiContent.entry = new SiEntryFactory(declaration, this.injector)
+				bulkyEntrySiComp.entry = new SiEntryFactory(declaration, this.injector)
 						.createEntry(dataExtr.reqObject('entry'));
-				return bulkyEntryUiContent;
+
+				compEssentialsFactory = new SiControlFactory(bulkyEntrySiComp, this.injector);
+				bulkyEntrySiComp.controls = compEssentialsFactory.createControls(dataExtr.reqArray('controls'));
+
+				return bulkyEntrySiComp;
 
 			case SiCompType.COMPACT_ENTRY:
 				declaration = SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'));
