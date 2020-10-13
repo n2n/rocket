@@ -196,6 +196,8 @@ class SiGetInstruction {
 		try {
 			$instruction = new SiGetInstruction($ds->reqBool('bulky'), $ds->reqBool('readOnly'));
 			$instruction->setDeclarationRequested($ds->reqBool('declarationRequested'));
+			$instruction->setGeneralControlsIncluded($ds->reqBool('generalControlsIncluded'));
+			$instruction->setEntryControlsIncluded($ds->reqBool('entryControlsIncluded'));
 			$instruction->setEntryId($ds->optInt('entryId'));
 			$instruction->setTypeIds($ds->optArray('typeIds', 'string', null, true));
 			

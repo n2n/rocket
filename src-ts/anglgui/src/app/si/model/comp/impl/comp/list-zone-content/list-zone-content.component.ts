@@ -150,10 +150,11 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 						(pageNo - 1) * this.siPageCollection.pageSize, this.siPageCollection.pageSize,
 						this.quickSearchStr)
 				.setDeclaration(this.siPageCollection.declaration)
-				.setControlsIncluded(true);
+				.setGeneralControlsIncluded(!this.model.areGeneralControlsInitialized())
+				.setEntryControlsIncluded(true);
 		const getRequest = new SiGetRequest(instruction);
 
-		this.siService.apiGet(this.model.getApiUrl(), getRequest)
+		this.siService.apiGet(this.model.getApiUrl(), getRequest, this.model.getSiControlBoundry())
 				.subscribe((getResponse: SiGetResponse) => {
 					this.applyResult(getResponse.results[0], siPage);
 				});
@@ -164,6 +165,10 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 	private applyResult(result: SiGetResult, siPage: SiPage) {
 		if (result.declaration) {
 			this.siPageCollection.declaration = result.declaration;
+		}
+
+		if (result.generalControls) {
+			this.model.applyGeneralControls(result.generalControls);
 		}
 
 		this.siPageCollection.size = result.partialContent.count;

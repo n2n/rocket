@@ -15,6 +15,7 @@ import { SiApiFactory } from '../build/si-api-factory';
 import { SiValRequest } from '../model/api/si-val-request';
 import { SiValResponse } from '../model/api/si-val-response';
 import { Extractor } from 'src/app/util/mapping/extractor';
+import { SiControlBoundry } from '../model/control/si-control-bountry';
 
 @Injectable({
 	providedIn: 'root'
@@ -110,11 +111,11 @@ export class SiService {
 				}));
 	}
 
-	apiGet(apiUrl: string, getRequest: SiGetRequest): Observable<SiGetResponse> {
+	apiGet(apiUrl: string, getRequest: SiGetRequest, controlBoundry: SiControlBoundry|null = null): Observable<SiGetResponse> {
 		return this.httpClient
 				.post<any>(apiUrl + '/get', getRequest)
 				.pipe(map(data => {
-					return new SiApiFactory(this.injector).createGetResponse(data, getRequest);
+					return new SiApiFactory(this.injector).createGetResponse(data, getRequest, controlBoundry);
 				}));
 	}
 

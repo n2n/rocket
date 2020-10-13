@@ -47,7 +47,6 @@ use rocket\ei\manage\security\InaccessibleEiEntryException;
 use n2n\web\http\ForbiddenException;
 use rocket\ei\mask\EiMask;
 use rocket\ei\manage\gui\EiGuiModel;
-use rocket\ei\manage\gui\EiGuiFrame;
 use rocket\ei\manage\gui\EiGui;
 
 class ApiControlProcess {

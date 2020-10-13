@@ -10,7 +10,8 @@ export class SiGetInstruction {
 	protected entryId: string|null = null;
 	protected partialContentInstruction: SiPartialContentInstruction|null = null;
 	protected newEntryRequested = false;
-	protected controlsIncluded = false;
+	protected generalControlsIncluded = false;
+	protected entryControlsIncluded = false;
 	protected propIds: string[]|null = null;
 	protected typeIds: string[]|null = null;
 
@@ -45,12 +46,21 @@ export class SiGetInstruction {
 		return this;
 	}
 
-	getControlsIncludes(): SiGetInstruction {
+	getGeneralControlsIncludes(): boolean {
+		return this.generalControlsIncluded;
+	}
+
+	setGeneralControlsIncluded(controlsIncluded: boolean): SiGetInstruction {
+		this.generalControlsIncluded = controlsIncluded;
 		return this;
 	}
 
-	setControlsIncluded(controlsIncluded: boolean): SiGetInstruction {
-		this.controlsIncluded = controlsIncluded;
+	getEntryControlsIncludes(): boolean {
+		return this.entryControlsIncluded;
+	}
+
+	setEntryControlsIncluded(controlsIncluded: boolean): SiGetInstruction {
+		this.entryControlsIncluded = controlsIncluded;
 		return this;
 	}
 
@@ -77,7 +87,8 @@ export class SiGetInstruction {
 			bulky: this.bulky,
 			readOnly: this.readOnly,
 			declarationRequested: !this.declaration,
-			controlsIncluded: this.controlsIncluded,
+			generalControlsIncluded: this.generalControlsIncluded,
+			entryControlsIncluded: this.entryControlsIncluded,
 			entryId: this.entryId,
 			propIds: this.propIds,
 			typeIds: this.typeIds,

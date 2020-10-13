@@ -24,12 +24,19 @@ namespace rocket\si\api;
 use rocket\si\content\SiEntry;
 use rocket\si\content\SiPartialContent;
 use rocket\si\meta\SiDeclaration;
+use rocket\si\control\SiControl;
+use n2n\util\type\ArgUtils;
+use rocket\si\SiPayloadFactory;
 
 class SiGetResult implements \JsonSerializable {
 	/**
 	 * @var SiDeclaration|null
 	 */
 	private $declaration = null;
+	/**
+	 * @var SiControl[]|null
+	 */
+	private $generalControls = null;
 	/**
 	 * @var SiEntry|null
 	 */
@@ -57,6 +64,21 @@ class SiGetResult implements \JsonSerializable {
 	 */
 	public function setDeclaration(?SiDeclaration $declaration) {
 		$this->declaration = $declaration;
+	}
+	
+	/**
+	 * @return SiControl[]|null
+	 */
+	public function getGeneralControls() {
+		return $this->generalControls;
+	}
+	
+	/**
+	 * @param SiControl[]|null $controls
+	 */
+	public function setGeneralControls(?array $controls) {
+		ArgUtils::valArray($controls, SiControl::class);
+		$this->generalControls = $controls;
 	}
 
 	/**
@@ -94,6 +116,7 @@ class SiGetResult implements \JsonSerializable {
 	public function jsonSerialize() {
 		return [
 			'declaration' => $this->declaration,
+			'generalControls' => SiPayloadFactory::createDataFromControls($this->generalControls),
 			'entry' => $this->entry,
 			'partialContent' => $this->partialContent
 		];

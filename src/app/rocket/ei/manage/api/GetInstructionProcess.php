@@ -93,7 +93,11 @@ class GetInstructionProcess {
 		$eiFrame = $this->eiFrameUtil->getEiFrame();
 		
 		$getResult = new SiGetResult();
-		$getResult->setEntry($eiGui->createSiEntry($eiFrame, $this->instruction->areControlsIncluded()));
+		$getResult->setEntry($eiGui->createSiEntry($eiFrame, $this->instruction->areEntryControlsIncluded()));
+		
+		if ($this->instruction->areGeneralControlsIncluded()) {
+			$getResult->setGeneralControls($eiGui->getEiGuiModel()->createGeneralSiControls($eiFrame));
+		}
 		
 		if ($this->instruction->isDeclarationRequested()) {
 			$getResult->setDeclaration($eiGui->getEiGuiModel()->createSiDeclaration($eiFrame));
@@ -114,7 +118,11 @@ class GetInstructionProcess {
 		$eiFrame = $this->eiFrameUtil->getEiFrame();
 		
 		$getResult = new SiGetResult();
-		$getResult->setEntry($eiGui->createSiEntry($eiFrame, $this->instruction->areControlsIncluded()));
+		$getResult->setEntry($eiGui->createSiEntry($eiFrame, $this->instruction->areEntryControlsIncluded()));
+		
+		if ($this->instruction->areGeneralControlsIncluded()) {
+			$getResult->setGeneralControls($eiGui->getEiGuiModel()->createGeneralSiControls($eiFrame));
+		}
 		
 		if ($this->instruction->isDeclarationRequested()) {
 			$getResult->setDeclaration($eiGui->getEiGuiModel()->createSiDeclaration($eiFrame));
@@ -153,6 +161,10 @@ class GetInstructionProcess {
 		
 		$result = new SiGetResult();
 		$result->setPartialContent($this->apiUtil->createSiPartialContent($spci->getFrom(), $num, $eiGui));
+		
+		if ($this->instruction->areGeneralControlsIncluded()) {
+			$result->setGeneralControls($eiGui->getEiGuiModel()->createGeneralSiControls($this->eiFrameUtil->getEiFrame()));
+		}
 		
 		if (!$this->instruction->isDeclarationRequested()) {
 			return $result;

@@ -13,13 +13,16 @@ import { SiEntryFactory } from './si-entry-factory';
 import { SiDeclaration } from '../model/meta/si-declaration';
 import { Extractor } from 'src/app/util/mapping/extractor';
 import { Injector } from '@angular/core';
+import { SiControlFactory } from './si-control-factory';
+import { SiControlBoundry } from '../model/control/si-control-bountry';
+import { SimpleSiControlBoundry } from '../model//control/impl/model/simple-si-control-boundry';
 
 export class SiApiFactory {
 
 	constructor(private injector: Injector) {
 	}
 
-	createGetResponse(data: any, request: SiGetRequest): SiGetResponse {
+	createGetResponse(data: any, request: SiGetRequest, controlBoundry: SiControlBoundry|null = null): SiGetResponse {
 		const extr = new Extractor(data);
 
 		const response = new SiGetResponse();
@@ -30,27 +33,34 @@ export class SiApiFactory {
 				throw new Error('No result for key: ' + key);
 			}
 
-			response.results[key] = this.createGetResult(resultsData[key], request.instructions[key].getDeclaration());
+			response.results[key] = this.createGetResult(resultsData[key], request.instructions[key].getDeclaration(), 
+					controlBoundry);
 		}
 
 		return response;
 	}
 
-	private createGetResult(data: any, declaration: SiDeclaration|null): SiGetResult {
+	private createGetResult(data: any, declaration: SiDeclaration|null, controlBoundry: SiControlBoundry|null): SiGetResult {
 		const extr = new Extractor(data);
 
 		const result: SiGetResult = {
 			declaration: null,
+			generalControls: null,
 			entry: null,
 			partialContent: null
 		};
-
-		let propData: any = null;
 
 		if (!declaration) {
 			declaration = result.declaration = SiMetaFactory.createDeclaration(extr.reqObject('declaration'));
 		}
 
+		let controlsData: any = null;
+		if (null !== (controlsData = extr.nullaArray('generalControls'))) {
+			const compEssentialsFactory = new SiControlFactory(controlBoundry || new SimpleSiControlBoundry([]), this.injector);
+			result.generalControls = compEssentialsFactory.createControls(controlsData);
+		}
+		
+		let propData: any = null;
 		if (null !== (propData = extr.nullaObject('entry'))) {
 			result.entry = new SiEntryFactory(declaration, this.injector).createEntry(propData);
 		}

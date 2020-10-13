@@ -1,6 +1,7 @@
 import { SiPageCollection } from '../model/si-page-collection';
-import { SiComp } from '../../si-comp';
 import { SiEntryQualifierSelection } from '../model/si-entry-qualifier-selection';
+import { SiControl } from '../../../control/si-control';
+import { SiControlBoundry } from '../../../control/si-control-bountry';
 
 export interface EntriesListModel {
 
@@ -8,7 +9,11 @@ export interface EntriesListModel {
 
 	getSiPageCollection(): SiPageCollection;
 
-	getSiComp(): SiComp;
+	getSiControlBoundry(): SiControlBoundry;
 
 	getSiEntryQualifierSelection(): SiEntryQualifierSelection;
+
+	areGeneralControlsInitialized(): boolean;
+
+	applyGeneralControls(controls: SiControl[]): void;
 }

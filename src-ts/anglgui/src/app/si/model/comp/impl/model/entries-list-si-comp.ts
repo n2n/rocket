@@ -11,12 +11,14 @@ import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { SiEntryQualifierSelection } from './si-entry-qualifier-selection';
 import { PaginationComponent } from '../comp/pagination/pagination.component';
 import { SiControl } from '../../../control/si-control';
+import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
+import { SiControlBoundry } from '../../../control/si-control-bountry';
 
-export class EntriesListSiComp implements SiComp, EntriesListModel {
+export class EntriesListSiComp implements SiComp {
 
 	public qualifierSelection: SiEntryQualifierSelection|null = null;
 	readonly pageCollection: SiPageCollection;
-	controls: SiControl[] = [];
+	controls: SiControl[]|null = null;
 
 	constructor(public apiUrl: string, pageSize: number) {
 		this.pageCollection = new SiPageCollection(pageSize);
@@ -66,13 +68,13 @@ export class EntriesListSiComp implements SiComp, EntriesListModel {
 
 		uiStrucuterModel.initCallback = (uiStructure) => {
 			uiStrucuterModel.content = new TypeUiContent(ListZoneContentComponent, (ref) => {
-				ref.instance.model = this;
+				ref.instance.model = new EntriesListModelImpl(this, uiStrucuterModel, uiStructure);
 				ref.instance.uiStructure = uiStructure;
 			});
 
-			uiStrucuterModel.mainControlContents = this.controls.map((control) => {
-				return control.createUiContent(uiStructure.getZone());
-			});
+			if (this.controls) {
+				this.applyGeneralControls(uiStrucuterModel, uiStructure, this.controls);
+			}
 		};
 
 		uiStrucuterModel.asideContents = [new TypeUiContent(PaginationComponent, (ref) => {
@@ -93,7 +95,44 @@ export class EntriesListSiComp implements SiComp, EntriesListModel {
 
 		return messages;
 	}
+
+	public applyGeneralControls(uiStructureModel: SimpleUiStructureModel, uiStructure: UiStructure, controls: SiControl[]): void {
+		uiStructureModel.mainControlContents = controls.map((control) => {
+			return control.createUiContent(uiStructure.getZone());
+		});
+	}
 }
 
+class EntriesListModelImpl implements EntriesListModel {
 
+	constructor(private comp: EntriesListSiComp, private uiStrucuterModel: SimpleUiStructureModel, private uiStructure: UiStructure) {
+	}
+
+	getSiControlBoundry(): SiControlBoundry {
+		return this.comp;
+	}
+
+	getApiUrl(): string {
+		return this.comp.apiUrl;
+	}
+
+	getSiPageCollection(): SiPageCollection {
+		return this.comp.pageCollection;
+	}
+
+	getSiEntryQualifierSelection(): SiEntryQualifierSelection {
+		return this.comp.qualifierSelection;
+	}
+
+	areGeneralControlsInitialized(): boolean {
+		return !!this.comp.controls;
+	}
+
+	applyGeneralControls(controls: SiControl[]): void {
+		this.comp.controls = controls;
+
+		this.comp.applyGeneralControls(this.uiStrucuterModel, this.uiStructure, controls);
+	}
+
+}
 
