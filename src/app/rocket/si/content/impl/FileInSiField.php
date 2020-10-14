@@ -187,7 +187,7 @@ class FileInSiField extends InSiFieldAdapter {
 	 * @see \rocket\si\content\SiField::handleInput()
 	 */
 	function handleInput(array $data) {
-		$valueId = (new DataSet($data))->optArray('valueId');
+		$valueId = (new DataSet($data))->optArray('valueId', null, [], true);
 		if ($valueId === null) {
 			$this->value = null;
 			return;
