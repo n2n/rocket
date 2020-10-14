@@ -365,7 +365,7 @@ class EiuCtrl {
 						$eiuEntry->createIdentityString()));
 	}
 	
-	function forwardNewEntryDlZone(bool $editable = true, bool $siControlsIncluded = true) {
+	function forwardNewEntryDlZone(bool $editable = true, bool $generalSiControlsIncluded = true, bool $entrySiControlsIncluded = true) {
 		if ($this->forwardHtml()) {
 			return;
 		}
@@ -410,7 +410,7 @@ class EiuCtrl {
 		$eiGui = $eiFrameUtil->createNewEiGui(true, !$editable, null, null, true);
 		$eiGuiUtil = new EiGuiUtil($eiGui, $eiFrame);
 		
-		$siComp = $eiGuiUtil->createBulkyEntrySiComp($siControlsIncluded);
+		$siComp = $eiGuiUtil->createBulkyEntrySiComp($generalSiControlsIncluded, $entrySiControlsIncluded);
 		
 		$this->httpContext->getResponse()->send(
 				SiPayloadFactory::create($siComp, 

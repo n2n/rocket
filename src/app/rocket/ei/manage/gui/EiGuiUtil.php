@@ -61,7 +61,7 @@ class EiGuiUtil {
 				$this->eiGui->createSiEntry($this->eiFrame, $entrySiControlsIncluded));
 		
 		if ($generalSiControlsIncluded) {
-			$siComp->setControls($this->eiGui->getEiGuiFrame()->createGeneralSiControls($this->eiFrame));
+			$siComp->setControls($this->eiGui->getEiGuiModel()->createGeneralSiControls($this->eiFrame));
 		}
 		
 		return $siComp;

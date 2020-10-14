@@ -53,13 +53,15 @@ export class BulkyEntrySiComp implements SiComp {
 	}
 
 	createUiStructureModel(): UiStructureModel {
-		return new BulkyUiStructureModel(this.entry, this.declaration);
+		return new BulkyUiStructureModel(this.entry, this.declaration, this.getControls());
 	}
 
-	getControls(): SiControl[] {
+	private getControls(): SiControl[] {
 		const controls: SiControl[] = [];
 		controls.push(...this.controls);
-		controls.push(...this.entry.selectedEntryBuildup.controls);
+		if (this.entry.entryQualifiers.length === 1) {
+			controls.push(...this.entry.selectedEntryBuildup.controls);
+		}
 		return controls;
 	}
 }
@@ -70,7 +72,7 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 	private subscription: Subscription|null = null;
 	private uiStructureModelCache = new UiStructureModelCache();
 
-	constructor(private siEntry: SiEntry, private siDeclaration: SiDeclaration) {
+	constructor(private siEntry: SiEntry, private siDeclaration: SiDeclaration, private controls: SiControl[]) {
 		super();
 	}
 
@@ -113,10 +115,9 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 			uiStructure.createToolbarChild(this.createTypeSwitchUiStructureModel());
 		}
 
-		// this.content = new TypeUiContent(BulkyEntryComponent, (ref) => {
-		// 	ref.instance.model = this;
-		// 	ref.instance.uiStructure = uiStructure;
-		// });
+		this.mainControlUiContents = this.controls.map((control) => {
+			return control.createUiContent(uiStructure.getZone());
+		});
 	}
 
 	private createTypeSwitchUiStructureModel() {
