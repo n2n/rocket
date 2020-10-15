@@ -124,7 +124,7 @@ export class FileInFieldComponent implements OnInit {
 			this.popupUiLayer = null;
 		});
 
-		const zone = this.popupUiLayer.pushZone(null);
+		const zone = this.popupUiLayer.pushRoute(null, null).zone;
 		zone.model = {
 			title: 'Some Title',
 			breadcrumbs: [],

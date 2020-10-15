@@ -40,7 +40,7 @@ export class EiComponent implements OnInit, OnDestroy {
 			id = curNav.id;
 		}
 
-		const zone = this.mainUiLayer.pushRouteZone(1, this.route.snapshot.url.join('/'));
+		const zone = this.mainUiLayer.pushRoute(1, this.route.snapshot.url.join('/')).zone;
 		this.siUiService.loadZone(zone);
 
 	}
@@ -59,12 +59,12 @@ export class EiComponent implements OnInit, OnDestroy {
 		switch (event.navigationTrigger) {
 		case 'popstate':
 			if (event.restoredState &&
-					this.mainUiLayer.popRouteZone(event.restoredState.navigationId, url)) {
+					this.mainUiLayer.switchRouteById(event.restoredState.navigationId, url)) {
 				break;
 			}
 		case 'imperative':
-			const zone = this.mainUiLayer.pushRouteZone(event.id, url);
-			this.siUiService.loadZone(zone);
+			this.mainUiLayer.switchRouteById(event.id, url);
+			this.siUiService.loadZone(this.mainUiLayer.currentZone);
 			break;
 		}
 

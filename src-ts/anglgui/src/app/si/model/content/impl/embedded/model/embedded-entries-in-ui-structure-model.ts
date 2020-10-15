@@ -182,7 +182,7 @@ class EmbeInUiStructureManager {
 		let bakEntry = embe.siEmbeddedEntry.entry.createResetPoint();
 
 		this.popupUiLayer = uiZone.layer.container.createLayer();
-		const zone = this.popupUiLayer.pushZone(null);
+		const zone = this.popupUiLayer.pushRoute(null, null).zone;
 
 		zone.model = {
 			title: 'Some Title',
@@ -225,7 +225,7 @@ class EmbeInUiStructureManager {
 			this.embeCol.writeEmbes();
 		});
 
-		const zone = this.popupUiLayer.pushZone(null);
+		const zone = this.popupUiLayer.pushRoute(null, null).zone;
 
 		const popupUiStructureModel = new SimpleUiStructureModel();
 

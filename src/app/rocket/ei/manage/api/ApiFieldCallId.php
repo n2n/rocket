@@ -27,13 +27,13 @@ use rocket\spec\TypePath;
 
 class ApiFieldCallId implements \JsonSerializable {
 	private $defPropPath;
-	private $eiTypePath;
+	private $eiTypeId;
 	private $viewMode;
 	private $pid;
 	
 	public function __construct(DefPropPath $defPropPath, TypePath $eiTypePath, int $viewMode, ?string $pid) {
 		$this->defPropPath = $defPropPath;
-		$this->eiTypePath = $eiTypePath;
+		$this->eiTypeId = $eiTypePath->getTypeId();
 		$this->viewMode = $viewMode;
 		$this->pid = $pid;
 	}
@@ -53,10 +53,10 @@ class ApiFieldCallId implements \JsonSerializable {
 	}
 	
 	/**
-	 * @return \rocket\spec\TypePath
+	 * @return string
 	 */
-	function getEiTypePath() {
-		return $this->eiTypePath;
+	function getEiTypeId() {
+		return $this->eiTypeId;
 	}
 	
 	/**
@@ -73,7 +73,7 @@ class ApiFieldCallId implements \JsonSerializable {
 	function jsonSerialize() {
 		return [
 			'defPropPath' => (string) $this->defPropPath,
-			'eiTypePath' => (string) $this->eiTypePath,
+			'eiTypeId' => (string) $this->eiTypeId,
 			'viewMode' => $this->viewMode,
 			'pid' => $this->pid
 		];
@@ -90,7 +90,7 @@ class ApiFieldCallId implements \JsonSerializable {
 		try {
 			return new ApiFieldCallId(
 					DefPropPath::create($ds->reqString('defPropPath')),
-					TypePath::create($ds->reqString('eiTypePath')),
+					new TypePath($ds->reqString('eiTypeId')),
 					$ds->reqInt('viewMode'),
 					$ds->optString('pid'));
 		} catch (\n2n\util\type\attrs\AttributesException $e) {

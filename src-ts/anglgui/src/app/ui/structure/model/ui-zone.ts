@@ -11,7 +11,7 @@ export class UiZone {
 	private _model: UiZoneModel|null = null;
 	readonly uiStructure: UiStructure;
 
-	constructor(readonly id: number, readonly url: string|null, readonly layer: UiLayer) {
+	constructor(readonly url: string|null, readonly layer: UiLayer) {
 		this.uiStructure = new UiStructure(null, this, null, null);
 	}
 

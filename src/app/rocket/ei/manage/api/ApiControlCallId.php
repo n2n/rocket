@@ -29,7 +29,7 @@ use rocket\spec\TypePath;
 
 class ApiControlCallId implements \JsonSerializable {
 	private $guiControlPath;
-	private $eiTypePath;
+	private $eiTypeId;
 	private $viewMode;
 	private $pid;
 	private $newEiTypeId;
@@ -38,7 +38,7 @@ class ApiControlCallId implements \JsonSerializable {
 			?string $newEiTypeId) {
 		$this->guiControlPath = $guiControlPath;
 		ArgUtils::valEnum($viewMode, ViewMode::getAll());
-		$this->eiTypePath = $eiTypePath;
+		$this->eiTypeId = $eiTypePath->getTypeId();
 		$this->viewMode = $viewMode;
 		$this->pid = $pid;
 		$this->newEiTypeId = $newEiTypeId;
@@ -56,10 +56,10 @@ class ApiControlCallId implements \JsonSerializable {
 	}
 	
 	/**
-	 * @return \rocket\spec\TypePath
+	 * @return string
 	 */
-	function getEiTypePath() {
-		return $this->eiTypePath;
+	function getEiTypeId() {
+		return $this->eiTypeId;
 	}
 	
 	/**
@@ -87,7 +87,7 @@ class ApiControlCallId implements \JsonSerializable {
 	function jsonSerialize() {
 		return [
 			'guiControlPath' => (string) $this->guiControlPath,
-			'eiTypePath' => (string) $this->eiTypePath,
+			'eiTypeId' => $this->eiTypeId,
 			'viewMode' => $this->viewMode,
 			'pid' => $this->pid
 		];
@@ -104,7 +104,7 @@ class ApiControlCallId implements \JsonSerializable {
 		try {
 			return new ApiControlCallId(
 					GuiControlPath::create($ds->reqString('guiControlPath')),
-					TypePath::create($ds->reqString('eiTypePath')),
+					new TypePath($ds->reqString('eiTypeId')),
 					$ds->reqInt('viewMode'), $ds->optString('pid'),
 					$ds->optString('newEiTypeId'));
 		} catch (\n2n\util\type\attrs\AttributesException $e) {

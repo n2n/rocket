@@ -90,13 +90,14 @@ export class QualifierSelectInFieldComponent implements OnInit, DoCheck {
 
 		const comp = new EntriesListSiComp(this.model.getApiUrl(), 30);
 
-		const popupUiZone = this.optionsUiLayer.pushZone(null);
+		const popupUiZone = this.optionsUiLayer.pushRoute(null, null).zone;
 
 		popupUiZone.model = {
 			title: 'Some Title',
 			breadcrumbs: [],
 			structureModel: comp.createUiStructureModel(),
-			mainCommandContents: this.createSiControls(comp).map(control => control.createUiContent(popupUiZone))
+			mainCommandContents: this.createSiControls(comp)
+					.map(control => control.createUiContent(popupUiZone))
 		};
 
 		comp.qualifierSelection = {

@@ -2,8 +2,10 @@ import { Subject, Subscription } from 'rxjs';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { UiContainer } from './ui-container';
 import { UiZone } from './ui-zone';
+import { UiRoute } from './ui-route';
 import { UnsupportedMethodError } from 'src/app/si/util/unsupported-method-error';
 import { IllegalArgumentError } from 'src/app/si/util/illegal-argument-error';
+import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 
 export interface UiLayer {
 	readonly container: UiContainer;
@@ -11,56 +13,74 @@ export interface UiLayer {
 	readonly currentZone: UiZone|null;
 	readonly previousZone: UiZone|null;
 
-	pushZone(url: string|null): UiZone;
+	pushRoute(id: number|null, zoneUrl: string|null): UiRoute;
 
-	switchZoneById(id: number): void;
+	switchRouteById(id: number): void;
 
 	dispose(): void;
 }
 
 abstract class UiLayerAdapter implements UiLayer {
-	protected zones: Array<UiZone> = [];
-	protected currentZoneIndex: number|null = null;
+	private routes: Array<UiRoute> = [];
+	private currentRouteIndex: number|null = null;
+	private disposeSubject = new Subject<void>();
 
 	constructor(readonly container: UiContainer) {
 	}
 
 	readonly abstract main: boolean;
 
-	abstract pushZone(url: string|null): UiZone;
-	abstract switchZoneById(id: number): void;
-	abstract dispose(): void;
+	abstract pushRoute(id: number|null, zoneUrl: string|null): UiRoute;
+
+	switchRouteById(id: number, verifyUrl: string = null): boolean {
+		const index = this.getRouteIndexById(id);
+
+		if (!this.routes[index]) {
+			throw new IllegalSiStateError('Zone with id ' + id + ' does not exists. Verify url: ' + verifyUrl);
+		}
+
+		if (this.routes[index].zone.url !== verifyUrl) {
+			// @todo temporary test to monitor angular routing behaviour
+			throw new IllegalSiStateError('Zone pop url verify missmatch for id ' + id + ': '
+					+ this.routes[index].zone.url + ' != ' + verifyUrl);
+// 			return false;
+		}
+
+		this.currentRouteIndex = index;
+		return true;
+	}
+
 
 	get currentZone(): UiZone|null {
-		if (this.currentZoneIndex === null) {
+		if (this.currentRouteIndex === null) {
 			return null;
 		}
 
-		if (this.zones[this.currentZoneIndex]) {
-			return this.zones[this.currentZoneIndex];
+		if (this.routes[this.currentRouteIndex]) {
+			return this.routes[this.currentRouteIndex].zone;
 		}
 
 		throw new IllegalSiStateError('Layer contains invalid current zone');
 	}
 
 	get previousZone(): UiZone|null {
-		if (this.currentZoneIndex === null || this.currentZoneIndex < 1) {
+		if (this.currentRouteIndex === null || this.currentRouteIndex < 1) {
 			return null;
 		}
 
-		if (this.zones[this.currentZoneIndex - 1]) {
-			return this.zones[this.currentZoneIndex - 1];
+		if (this.routes[this.currentRouteIndex - 1]) {
+			return this.routes[this.currentRouteIndex - 1].zone;
 		}
 
 		throw new IllegalSiStateError('Layer contains invalid previous zone');
 	}
 
-	protected getZoneById(id: number): UiZone|null {
-		return this.zones.find(zone => zone.id === id) || null;
+	protected getRouteById(id: number): UiRoute|null {
+		return this.routes.find(route => route.id === id) || null;
 	}
 
-	protected getZoneIndexById(id: number): number|null {
-		const index = this.zones.findIndex(zone => zone.id === id);
+	protected getRouteIndexById(id: number): number|null {
+		const index = this.routes.findIndex(zone => zone.id === id);
 		if (index === -1) {
 			return null;
 		}
@@ -68,37 +88,87 @@ abstract class UiLayerAdapter implements UiLayer {
 		return index;
 	}
 
-	protected createZone(id: number, url: string|null): UiZone {
-		if (!!this.getZoneById(id)) {
-			throw new IllegalSiStateError('Zone with id ' + id + ' already exists. Url: ' + url);
-		}
-
-		if (this.currentZoneIndex !== null) {
-			this.clearZoneAfterIndex(this.currentZoneIndex);
-		}
-
-		const zone = new UiZone(id, url, this as any);
-		this.currentZoneIndex = this.zones.push(zone) - 1;
-		zone.onDispose(() => {
-			this.removeZone(zone);
+	protected getRoutesByZone(zone: UiZone): UiRoute[] {
+		return this.routes.filter((route: UiRoute) => {
+			return route.zone === zone;
 		});
-		return zone;
 	}
 
-	private clearZoneAfterIndex(currentZoneIndex: number) {
-		for (const zone of this.zones.slice(currentZoneIndex + 1)) {
+	protected createRoute(id: number, zoneUrl: string|null): UiRoute {
+		if (!!this.getRouteById(id)) {
+			throw new IllegalSiStateError('Zone with id ' + id + ' already exists. Zone url: ' + zoneUrl);
+		}
+
+		if (this.currentRouteIndex !== null) {
+			this.clearRoutesAfterIndex(this.currentRouteIndex);
+		}
+
+		const route = new UiRoute(id, this.getOrCreateZone(zoneUrl));
+
+		this.currentRouteIndex = this.routes.push(route) - 1;
+		route.onDispose(() => {
+			this.removeRoute(route);
+		});
+		return route;
+	}
+
+	private findZoneByUrl(zoneUrl: string): UiZone|null {
+		for (const route of this.routes.reverse()) {
+			if (route.zone.url === zoneUrl) {
+				return route.zone;
+			}
+		}
+
+		return null;
+	}
+
+	private getOrCreateZone(zoneUrl: string|null) {
+		const zone = this.findZoneByUrl(zoneUrl);
+		if (zoneUrl && zone) {
+			return zone;
+		}
+
+		return new UiZone(zoneUrl, this as any);
+	}
+
+	private clearRoutesAfterIndex(routeIndex: number) {
+		for (const route of this.routes.slice(routeIndex + 1)) {
+			route.dispose();
+		}
+	}
+
+	private removeRoute(route: UiRoute) {
+		const i = this.routes.indexOf(route);
+		if (i === -1) {
+			throw new IllegalStateError('Zone to remove doesn\'t exist on layer.');
+		}
+
+		this.routes.splice(i, 1);
+
+		if (this.getRoutesByZone(route.zone).length === 0) {
+			route.zone.dispose();
+		}
+	}
+
+	dispose() {
+		for (const zone of this.routes) {
 			zone.dispose();
 		}
+
+		this.disposeSubject.next();
+		this.disposeSubject.complete();
 	}
 
-	private removeZone(zone: UiZone) {
-		const i = this.zones.indexOf(zone);
-		if (i > -1) {
-			this.zones.splice(i, 1);
-			return;
-		}
+	get routesNum(): number {
+		return this.routes.length;
+	}
 
-		throw new IllegalSiStateError('Zone to remove doesn\'t exist on layer.');
+	get disposed(): boolean {
+		return this.disposeSubject.closed;
+	}
+
+	onDispose(callback: () => any): Subscription {
+		return this.disposeSubject.subscribe(callback);
 	}
 }
 
@@ -110,76 +180,31 @@ export class MainUiLayer extends UiLayerAdapter {
 		super(container);
 	}
 
-	pushRouteZone(id: number, url: string): UiZone {
-		return this.createZone(id, url);
-	}
-
-	popRouteZone(id: number, verifyUrl: string): boolean {
-		const index = this.getZoneIndexById(id);
-
-		if (!this.zones[index]) {
-			throw new IllegalSiStateError('Zone with id ' + id + ' does not exists. Verify url: ' + verifyUrl);
+	pushRoute(id: number|null, url: string|null): UiRoute {
+		if (id === null || id === undefined || url === null || url === undefined) {
+			throw new IllegalArgumentError('Id and url required for main layer routes.');
 		}
 
-		if (this.zones[index].url !== verifyUrl) {
-			// @todo temporary test to monitor angular routing behaviour
-			throw new IllegalSiStateError('Zone pop url verify missmatch for id ' + id + ': '
-					+ this.zones[index as number].url + ' != ' + verifyUrl);
-// 			return false;
-		}
-
-		this.currentZoneIndex = index;
-		return true;
-	}
-
-	pushZone(url: string|null): UiZone {
-		throw new UnsupportedMethodError('Main layer does not support such action.');
-	}
-
-	switchZoneById(id: number): void {
-		throw new UnsupportedMethodError('Main layer does not support such action.');
+		return this.createRoute(id, url);
 	}
 
 	dispose(): void {
 		throw new UnsupportedMethodError('Main layer does not support such action.');
 	}
+
+	onDispose(callback: () => any): Subscription {
+		throw new UnsupportedMethodError('Main layer does not support such action.');
+	}
 }
 
 export class PopupUiLayer extends UiLayerAdapter {
-	private disposeSubject = new Subject<void>();
 	readonly main = false;
 
 	constructor(container: UiContainer) {
 		super(container);
 	}
 
-	pushZone(url: string|null): UiZone {
-		return this.createZone(this.zones.length, url);
-	}
-
-	switchZoneById(id: number): void {
-		const zoneIndex = this.getZoneIndexById(id);
-		if (zoneIndex === null) {
-			throw new IllegalArgumentError('Unknown id: ' + id);
-		}
-
-		this.currentZoneIndex = zoneIndex;
-	}
-
-	dispose() {
-		for (const zone of this.zones) {
-			zone.dispose();
-		}
-
-		this.disposeSubject.next();
-		this.disposeSubject.complete();
-	}
-
-	get disposed() {
-		return this.disposeSubject.closed;
-	}
-
-	onDispose(callback: () => any): Subscription {
-		return this.disposeSubject.subscribe(callback);
+	pushRoute(id: number|null, url: string|null): UiRoute {
+		return this.createRoute(this.routesNum, url);
 	}
 }
