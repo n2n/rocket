@@ -63,7 +63,7 @@ export class EiComponent implements OnInit, OnDestroy {
 				break;
 			}
 		case 'imperative':
-			this.mainUiLayer.switchRouteById(event.id, url);
+			this.mainUiLayer.pushRoute(event.id, url);
 			this.siUiService.loadZone(this.mainUiLayer.currentZone);
 			break;
 		}

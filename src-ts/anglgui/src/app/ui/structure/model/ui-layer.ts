@@ -80,7 +80,7 @@ abstract class UiLayerAdapter implements UiLayer {
 	}
 
 	protected getRouteIndexById(id: number): number|null {
-		const index = this.routes.findIndex(zone => zone.id === id);
+		const index = this.routes.findIndex(route => route.id === id);
 		if (index === -1) {
 			return null;
 		}
