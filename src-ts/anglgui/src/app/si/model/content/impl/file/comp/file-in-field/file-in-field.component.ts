@@ -66,7 +66,7 @@ export class FileInFieldComponent implements OnInit {
 
 	uploadResult: UploadResult|null = null;
 
-	@ViewChild('fileInput', { static: false })
+	@ViewChild('fileInput')
 	fileInputRef: ElementRef;
 
 	private popupUiLayer: PopupUiLayer|null = null;
