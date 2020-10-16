@@ -11,7 +11,7 @@
 				</button>
 			</div>
 			
-			<div *ngIf="model.getSubTooltip()" class="rocket-tooltip">
+			<div *ngIf="model.getSubTooltip && model.getSubTooltip()" class="rocket-tooltip">
 					{{ model.getSubTooltip() }}
 			</div>
 		</div>

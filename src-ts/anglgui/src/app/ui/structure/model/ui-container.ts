@@ -16,6 +16,10 @@ export class UiContainer {
 		return this.layers.slice(1) as PopupUiLayer[];
 	}
 
+	getLayers(): UiLayer[] {
+		return [...this.layers];
+	}
+
 	createLayer(): PopupUiLayer {
 		const layer = new PopupUiLayer(this);
 

@@ -64,8 +64,8 @@ export class SiUiService {
 
 	navigateBack(layer: UiLayer, fallbackUrl: string|null = null) {
 		let url = fallbackUrl;
-		if (layer.previousZone && layer.previousZone.url) {
-			url = layer.previousZone.url;
+		if (layer.previousRoute && layer.previousRoute.zone.url) {
+			url = layer.previousRoute.zone.url;
 		}
 
 		if (url) {

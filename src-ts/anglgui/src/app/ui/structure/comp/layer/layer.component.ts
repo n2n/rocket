@@ -17,7 +17,7 @@ export class LayerComponent implements OnInit {
 
 	ngOnInit() {
 		this.subscription.add(fromEvent<MouseEvent>(this.nativeElement, 'scroll').subscribe(() => {
-			
+
 		}));
 	}
 

@@ -4,7 +4,7 @@ import { Subject, Subscription } from 'rxjs';
 export class UiRoute {
 	private disposeSubject = new Subject<void>();
 
-	constructor(readonly id: number, readonly zone: UiZone) {
+	constructor(public id: number, readonly zone: UiZone) {
 	}
 
 	dispose() {

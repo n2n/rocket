@@ -5,6 +5,8 @@ export interface ButtonControlModel {
 
 	getSubSiButtonMap?: () => Map<string, SiButton>;
 
+	getSubTooltip?: () => string|null;
+
 	getSiButton(): SiButton;
 
 	isLoading(): boolean;

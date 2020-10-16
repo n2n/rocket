@@ -26,6 +26,7 @@ export class EiComponent implements OnInit, OnDestroy {
 	ngOnInit() {
 		this.subscription = this.router.events
 				.pipe(filter((event) => {
+					console.log(event);
 					return (event instanceof NavigationStart);
 				}))
 				.subscribe((event: NavigationStart) => {
@@ -60,12 +61,15 @@ export class EiComponent implements OnInit, OnDestroy {
 		case 'popstate':
 			if (event.restoredState &&
 					this.mainUiLayer.switchRouteById(event.restoredState.navigationId, url)) {
+				this.mainUiLayer.changeCurrentRouteId(event.id);
 				break;
 			}
 		case 'imperative':
 			this.mainUiLayer.pushRoute(event.id, url);
-			this.siUiService.loadZone(this.mainUiLayer.currentZone);
+			this.siUiService.loadZone(this.mainUiLayer.currentRoute.zone);
 			break;
+		default: 
+			console.log('state ' + event.navigationTrigger)
 		}
 
 	}

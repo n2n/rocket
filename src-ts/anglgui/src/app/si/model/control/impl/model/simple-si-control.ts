@@ -26,4 +26,8 @@ export class SimpleSiControl implements SiControl, ButtonControlModel {
 	createUiContent(uiZone: UiZone): UiContent {
 		return new ButtonControlUiContent(this, uiZone);
 	}
+
+	getSubTooltip(): string|null {
+		return null;
+	}
 }

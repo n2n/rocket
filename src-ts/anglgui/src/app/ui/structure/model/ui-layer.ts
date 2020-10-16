@@ -10,8 +10,8 @@ import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 export interface UiLayer {
 	readonly container: UiContainer;
 	readonly main: boolean;
-	readonly currentZone: UiZone|null;
-	readonly previousZone: UiZone|null;
+	readonly currentRoute: UiRoute|null;
+	readonly previousRoute: UiRoute|null;
 
 	pushRoute(id: number|null, zoneUrl: string|null): UiRoute;
 
@@ -51,25 +51,25 @@ abstract class UiLayerAdapter implements UiLayer {
 	}
 
 
-	get currentZone(): UiZone|null {
+	get currentRoute(): UiRoute|null {
 		if (this.currentRouteIndex === null) {
 			return null;
 		}
 
 		if (this.routes[this.currentRouteIndex]) {
-			return this.routes[this.currentRouteIndex].zone;
+			return this.routes[this.currentRouteIndex];
 		}
 
-		throw new IllegalSiStateError('Layer contains invalid current zone');
+		throw new IllegalSiStateError('Layer contains invalid current route');
 	}
 
-	get previousZone(): UiZone|null {
+	get previousRoute(): UiRoute|null {
 		if (this.currentRouteIndex === null || this.currentRouteIndex < 1) {
 			return null;
 		}
 
 		if (this.routes[this.currentRouteIndex - 1]) {
-			return this.routes[this.currentRouteIndex - 1].zone;
+			return this.routes[this.currentRouteIndex - 1];
 		}
 
 		throw new IllegalSiStateError('Layer contains invalid previous zone');
@@ -96,7 +96,7 @@ abstract class UiLayerAdapter implements UiLayer {
 
 	protected createRoute(id: number, zoneUrl: string|null): UiRoute {
 		if (!!this.getRouteById(id)) {
-			throw new IllegalSiStateError('Zone with id ' + id + ' already exists. Zone url: ' + zoneUrl);
+			throw new IllegalSiStateError('Route with id ' + id + ' already exists. Zone url: ' + zoneUrl);
 		}
 
 		if (this.currentRouteIndex !== null) {
@@ -169,6 +169,14 @@ abstract class UiLayerAdapter implements UiLayer {
 
 	onDispose(callback: () => any): Subscription {
 		return this.disposeSubject.subscribe(callback);
+	}
+
+	changeCurrentRouteId(newId: number) {
+		if (this.getRouteById(newId)) {
+			throw new IllegalSiStateError('Route with id ' + newId + ' already exists.');
+		}
+
+		this.currentRoute.id = newId;
 	}
 }
 

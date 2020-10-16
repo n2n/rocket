@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Host } from '@angular/core';
+import { Component, OnInit, OnDestroy, Host, Inject } from '@angular/core';
 import { SiGetRequest } from 'src/app/si/model/api/si-get-request';
 import { SiGetInstruction } from 'src/app/si/model/api/si-get-instruction';
 import { SiGetResponse } from 'src/app/si/model/api/si-get-response';
@@ -32,7 +32,7 @@ export class ListZoneContentComponent implements OnInit, OnDestroy {
 	private quickSearching = false;
 	private weakPageNoChange = false;
 
-	constructor(private siService: SiService, @Host() private parent: LayerComponent) {
+	constructor(private siService: SiService, @Inject(LayerComponent)  private parent: LayerComponent) {
 	}
 
 	ngOnInit() {
