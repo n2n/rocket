@@ -6,7 +6,7 @@ import { SiInput } from 'src/app/si/model/input/si-input';
 import { SiEntryInput } from 'src/app/si/model/input/si-entry-input';
 import { SiEntry } from 'src/app/si/model/content/si-entry';
 import { SiEntryError } from 'src/app/si/model/input/si-entry-error';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { SiService } from './si.service';
 import { UiZone } from 'src/app/ui/structure/model/ui-zone';
@@ -23,9 +23,13 @@ export class SiUiService {
 	constructor(readonly service: SiService, private router: Router, private platformLocation: PlatformLocation) {
 	}
 
-	loadZone(zone: UiZone) {
+	loadZone(zone: UiZone, force: boolean) {
 		if (!zone.url) {
 			throw new SiCommandError('Zone contains no url.');
+		}
+
+		if (!force && zone.model) {
+			return;
 		}
 
 		zone.model = null;
@@ -49,7 +53,7 @@ export class SiUiService {
 	navigate(url: string, layer: UiLayer) {
 		if (!layer.main) {
 			const zone = layer.pushRoute(null, url).zone;
-			this.loadZone(zone);
+			this.loadZone(zone, false);
 			return;
 		}
 
@@ -78,28 +82,32 @@ export class SiUiService {
 		}
 	}
 
-	execEntryControl(apiUrl: string, callId: object, entry: SiEntry, includeInput: boolean): Observable<void> {
+	execEntryControl(apiUrl: string, callId: object, entry: SiEntry, includeInput: boolean, uiLayer: UiLayer): Observable<void> {
 		if (!entry.qualifier.identifier.id) {
 			throw new IllegalSiStateError('Entry control cannnot be executed on new entry.');
 		}
 
 		const entryInputs: SiEntryInput[] = [];
+		const entries: SiEntry[] = [];
 		if (includeInput) {
 			entryInputs.push(entry.readInput());
+			entries.push(entry);
 		}
 
 		const obs = this.service.entryControlCall(apiUrl, callId, entry.qualifier.identifier.id, entryInputs);
 
+		const subject =  new Subject<void>();
 		obs.subscribe((result) => {
-// 			this.handleResult(result);
+			this.handleResult(result, entries, uiLayer);
+			subject.next()
+			subject.complete();
 		});
 
-		return obs.pipe(map((result) => {
-			return;
-		}));
+		return obs;
 	}
 
-	execSelectionControl(apiUrl: string, callId: object, controlBoundry: SiControlBoundry, entries: SiEntry[], includeInput: boolean): Observable<void> {
+	execSelectionControl(apiUrl: string, callId: object, controlBoundry: SiControlBoundry, entries: SiEntry[], 
+			includeInput: boolean, uiLayer: UiLayer): Observable<void> {
 		throw new Error('not yet implemented');
 	// 	const entryIds: string[] = [];
 	// 	const entryInputs: SiEntryInput[] = [];
@@ -147,13 +155,14 @@ export class SiUiService {
 
 		const obs = this.service.controlCall(apiUrl, callId, input);
 
-		return new Observable<void>((observer) => {
-			obs.subscribe((result) => {
-				this.handleResult(result, entries, uiLayer);
-				observer.next();
-				observer.complete();
-			});
+		const subject =  new Subject<void>();
+		obs.subscribe((result) => {
+			this.handleResult(result, entries, uiLayer);
+			subject.next()
+			subject.complete();
 		});
+
+		return subject;
 	}
 
 	private handleResult(result: SiResult, inputEntries: SiEntry[], uiLayer: UiLayer) {

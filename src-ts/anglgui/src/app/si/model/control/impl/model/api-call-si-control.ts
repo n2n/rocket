@@ -45,10 +45,10 @@ export class ApiCallSiControl implements SiControl, ButtonControlModel {
 		let obs: Observable<void>;
 
 		if (this.entry) {
-			obs = this.siUiService.execEntryControl(this.apiUrl, this.apiCallId, this.entry, this.inputSent);
+			obs = this.siUiService.execEntryControl(this.apiUrl, this.apiCallId, this.entry, this.inputSent, uiZone.layer);
 		} else if (this.entryBound) {
 			obs = this.siUiService.execSelectionControl(this.apiUrl, this.apiCallId, this.controlBoundry, this.controlBoundry.getSelectedEntries(),
-					this.inputSent);
+					this.inputSent, uiZone.layer);
 		} else {
 			obs = this.siUiService.execControl(this.apiUrl, this.apiCallId, this.controlBoundry, this.inputSent, uiZone.layer);
 		}
