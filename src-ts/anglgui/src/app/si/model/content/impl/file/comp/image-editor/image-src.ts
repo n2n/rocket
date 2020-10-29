@@ -30,7 +30,9 @@ export class ImageSrc {
 		this.cropper = new Cropper(this.elemRef.nativeElement, {
 			viewMode: 1,
 			preview: '.rocket-image-preview',
-			zoomable: false,
+			zoomable: true,
+			zoomOnTouch: false,
+			zoomOnWheel: false,
 			crop: (event) => {
 				this.changed = true;
 				this.cropping = true;
@@ -76,6 +78,8 @@ export class ImageSrc {
 				// 	// this.cropper.setCropBoxData(this.cropper.getCanvasData());
 				// 	this.cropper.clear();
 				// }
+
+				this.updateBoundries();
 			}
 		});
 	}
@@ -188,11 +192,25 @@ export class ImageSrc {
 	rotateCw() {
 		this.changed = true;
 		this.cropper.rotate(90);
+		this.updateBoundries();
 	}
 
 	rotateCcw() {
 		this.changed = true;
 		this.cropper.rotate(-90);
+		this.updateBoundries();
+	}
+
+	private updateBoundries(){
+		const containerData = this.cropper.getContainerData();
+		const canvasData = this.cropper.getCanvasData();
+
+		const widthZoomFactor = Math.min(containerData.width / canvasData.width, 1);
+		const heightZoomFactor = Math.min(containerData.height / canvasData.height, 1);
+		const zoomFactor = Math.min(widthZoomFactor, heightZoomFactor);
+
+		this.cropper.zoomTo(zoomFactor);
+
 	}
 
 	toggleCropping() {

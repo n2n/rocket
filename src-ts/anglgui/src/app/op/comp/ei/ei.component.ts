@@ -42,7 +42,7 @@ export class EiComponent implements OnInit, OnDestroy {
 		}
 
 		const zone = this.mainUiLayer.pushRoute(1, this.route.snapshot.url.join('/')).zone;
-		this.siUiService.loadZone(zone);
+		this.siUiService.loadZone(zone, false);
 
 	}
 
@@ -66,10 +66,10 @@ export class EiComponent implements OnInit, OnDestroy {
 			}
 		case 'imperative':
 			this.mainUiLayer.pushRoute(event.id, url);
-			this.siUiService.loadZone(this.mainUiLayer.currentRoute.zone);
+			this.siUiService.loadZone(this.mainUiLayer.currentRoute.zone, false);
 			break;
-		default: 
-			console.log('state ' + event.navigationTrigger)
+		default:
+			console.log('state ' + event.navigationTrigger);
 		}
 
 	}

@@ -58,7 +58,8 @@
 			<div id="rocket-image-resizer"
 					data-img-src="<?php $html->esc(UiComponentFactory::createImgSrc($imageFile)) ?>"
 					data-text-fixed-ratio="<?php $html->l10nText('ei_impl_thumb_keep_aspect_ratio_label') ?>"
-					data-text-low-resolution="<?php $html->l10nText('ei_impl_thumb_low_resolution_label') ?>" data-text-zoom="Zoom"></div>
+					data-text-low-resolution="<?php $html->l10nText('ei_impl_thumb_low_resolution_label') ?>" 
+					data-text-zoom="Zoom"></div>
 			
 			<div>
 				<h3>Bild-Versionen</h3>
