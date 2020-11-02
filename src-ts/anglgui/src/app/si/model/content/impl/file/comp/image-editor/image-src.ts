@@ -12,6 +12,9 @@ export class ImageSrc {
 
 	private cropper: Cropper|null = null;
 
+	origWidth: number;
+	origHeight: number;
+
 	changed = false;
 	cropping = false;
 	private cropBoxData: any;
@@ -33,15 +36,24 @@ export class ImageSrc {
 			zoomable: true,
 			zoomOnTouch: false,
 			zoomOnWheel: false,
+			movable: false,
+			center: true,
 			crop: (event) => {
-				this.changed = true;
-				this.cropping = true;
-
-				if (!this.imageCuts) {
+				if (!this.cropper.getCropBoxData().left) {
 					return;
 				}
 
+				this.changed = true;
+				this.cropping = true;
+
 				const data = this.cropper.getData();
+
+				if (!this.imageCuts) {
+					this.origWidth = data.width
+					this.origHeight = data.height;
+					return;
+				}
+
 				for (const imageCut of this.imageCuts) {
 					imageCut.x = data.x;
 					imageCut.y = data.y;
@@ -87,6 +99,12 @@ export class ImageSrc {
 	replace(url: string) {
 		this.readySubject = new Subject<void>();
 		this.cropper.replace(url);
+	}
+
+	reset() {
+		this.cropper.reset();
+		this.changed = false;
+		this.updateBoundries();
 	}
 
 	private calcRatio(): number {
@@ -189,13 +207,21 @@ export class ImageSrc {
 		this.readySubject = new Subject<void>();
 	}
 
+	private cancelCropping() {
+		if (this.cropping) {
+			this.toggleCropping();
+		}
+	}
+
 	rotateCw() {
+		this.cancelCropping();
 		this.changed = true;
 		this.cropper.rotate(90);
 		this.updateBoundries();
 	}
 
 	rotateCcw() {
+		this.cancelCropping();
 		this.changed = true;
 		this.cropper.rotate(-90);
 		this.updateBoundries();
@@ -211,6 +237,11 @@ export class ImageSrc {
 
 		this.cropper.zoomTo(zoomFactor);
 
+		if (!this.imageCuts) {
+			this.origWidth = this.cropper.getCanvasData().naturalWidth;
+			this.origHeight = this.cropper.getCanvasData().naturalHeight;
+		}
+
 	}
 
 	toggleCropping() {
@@ -221,6 +252,7 @@ export class ImageSrc {
 			this.cropper.crop();
 		} else {
 			this.cropper.clear();
+			this.updateBoundries();
 		}
 	}
 

@@ -99,6 +99,14 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 		});
 	}
 
+	resetOriginal() {
+		if (this.loading) {
+			return;
+		}
+
+		this.imageSrc.reset();
+	}
+
 	private handleUploadResult(uploadResult: UploadResult) {
 		this.uploadResult = uploadResult;
 

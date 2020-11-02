@@ -15,6 +15,7 @@
 			<button (click)="imageSrc.rotateCw()" class="btn btn-secondary"><i class="fa fa-redo"></i></button>
 
 			<button *ngIf="imageSrc.changed" (click)="saveOriginal()"><i class="fa fa-check"></i> {{ 'save_original_txt' | translate }}</button>
+			<button *ngIf="imageSrc.changed" (click)="resetOriginal()"><i class="fa fa-trash"></i> {{ 'reset_original_txt' | translate }}</button>
 		</div>
 
 		<rocket-ui-toggler *ngIf="freeRatioOption" [(enabled)]="imageSrc.fixedRatio" enabledTextCode="fixed_ratio_enabled_txt"
@@ -31,7 +32,7 @@
 				</div>
 				<div style="height: 50px">
 					<div>{{ 'original_image_txt' | translate }} <span *ngIf="originalChanged">*</span></div>
-					<div>width / height</div>
+					<div>{{ imageSrc.origWidth }} / {{ imageSrc.origHeight }}</div>
 				</div>
 			</button>
 		</div>
@@ -40,7 +41,7 @@
 			<ul class="rocket-image-dimensions list-unstyled">
 				<li *ngFor="let thumbRatio of thumbRatios" class="rocket-image-version rocket-image-ratio">
 					<button class="btn btn-secondary d-flex" (click)="switchToThumbRatio(thumbRatio)" 
-							[class.active]="currentThumbRatio === thumbRatio" [disabled]="!thumbRatio.hasGroupedImageCuts()">
+							[class.active]="currentThumbRatio === thumbRatio" [disabled]="!thumbRatio.hasGroupedImageCuts() || originalChanged">
 						<div *ngIf="thumbRatio.hasGroupedImageCuts()" class="d-flex justify-content-center align-items-center">
 							<rocket-image-preview [src]="model.getSiFile().url" 
 									[imageCut]="thumbRatio.getGroupedPreviewImageCut(currentImageDimension)"></rocket-image-preview>
@@ -55,7 +56,8 @@
 						<ng-container *ngFor="let imageDimension of thumbRatio.imageDimensions">
 							<li class="rocket-image-version">
 								<button (click)="switchToImageDimension(imageDimension)" 
-										class="btn btn-secondary d-flex w-100" [class.active]="currentImageDimension === imageDimension">
+										class="btn btn-secondary d-flex w-100" [class.active]="currentImageDimension === imageDimension"
+										[disabled]="originalChanged">
 									<div class="d-flex justify-content-center align-items-center">
 										<rocket-image-preview [src]="model.getSiFile().url" [imageCut]="imageDimension.imageCut">
 										</rocket-image-preview>
