@@ -26,7 +26,7 @@ export class EiComponent implements OnInit, OnDestroy {
 	ngOnInit() {
 		this.subscription = this.router.events
 				.pipe(filter((event) => {
-					console.log(event);
+					// console.log(event);
 					return (event instanceof NavigationStart);
 				}))
 				.subscribe((event: NavigationStart) => {
@@ -69,7 +69,7 @@ export class EiComponent implements OnInit, OnDestroy {
 			this.siUiService.loadZone(this.mainUiLayer.currentRoute.zone, false);
 			break;
 		default:
-			console.log('state ' + event.navigationTrigger);
+			// console.log('state ' + event.navigationTrigger);
 		}
 
 	}

@@ -107,7 +107,7 @@ class ThumbResolver {
 		$fileSource = $file->getFileSource();
 		
 		$siFile = new SiFile(FileId::create($file), $file->getOriginalName());
-		
+
 		$tmpQualifiedName = null;
 		if ($eiu->lookup(TmpFileManager::class)
 				->containsSessionFile($file, $eiu->getN2nContext()->getHttpContext()->getSession())) {

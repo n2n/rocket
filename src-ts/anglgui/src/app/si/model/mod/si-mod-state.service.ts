@@ -46,9 +46,9 @@ export class SiModStateService {
 	}
 
 	containsEntryIdentifier(ei: SiEntryIdentifier): boolean {
-		return this.addedEventMap.has(ei.typeId) && this.addedEventMap.get(ei.typeId).has(ei.id)
-				&& this.updatedEventMap.has(ei.typeId) && this.updatedEventMap.get(ei.typeId).has(ei.id)
-				&& this.removedEventMap.has(ei.typeId) && this.removedEventMap.get(ei.typeId).has(ei.id);
+		return (this.addedEventMap.has(ei.typeId) && this.addedEventMap.get(ei.typeId).has(ei.id))
+				|| (this.updatedEventMap.has(ei.typeId) && this.updatedEventMap.get(ei.typeId).has(ei.id))
+				|| (this.removedEventMap.has(ei.typeId) && this.removedEventMap.get(ei.typeId).has(ei.id));
 	}
 }
 

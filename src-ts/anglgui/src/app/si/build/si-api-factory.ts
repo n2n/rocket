@@ -33,7 +33,7 @@ export class SiApiFactory {
 				throw new Error('No result for key: ' + key);
 			}
 
-			response.results[key] = this.createGetResult(resultsData[key], request.instructions[key].getDeclaration(), 
+			response.results[key] = this.createGetResult(resultsData[key], request.instructions[key].getDeclaration(),
 					controlBoundry);
 		}
 
@@ -59,7 +59,7 @@ export class SiApiFactory {
 			const compEssentialsFactory = new SiControlFactory(controlBoundry || new SimpleSiControlBoundry([]), this.injector);
 			result.generalControls = compEssentialsFactory.createControls(controlsData);
 		}
-		
+
 		let propData: any = null;
 		if (null !== (propData = extr.nullaObject('entry'))) {
 			result.entry = new SiEntryFactory(declaration, this.injector).createEntry(propData);

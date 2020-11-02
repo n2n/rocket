@@ -14,13 +14,15 @@ import { SiCommandError } from '../util/si-command-error';
 import { UiLayer } from 'src/app/ui/structure/model/ui-layer';
 import { SiResult, SiDirective } from './si-result';
 import { SiControlBoundry } from '../model/control/si-control-bountry';
+import { SiModStateService } from '../model/mod/si-mod-state.service';
 
 @Injectable({
 	providedIn: 'root'
 })
 export class SiUiService {
 
-	constructor(readonly service: SiService, private router: Router, private platformLocation: PlatformLocation) {
+	constructor(readonly service: SiService, private modState: SiModStateService, private router: Router,
+			private platformLocation: PlatformLocation) {
 	}
 
 	loadZone(zone: UiZone, force: boolean) {
@@ -51,29 +53,32 @@ export class SiUiService {
 	}
 
 	navigate(url: string, layer: UiLayer) {
-		if (!layer.main) {
-			const zone = layer.pushRoute(null, url).zone;
-			this.loadZone(zone, false);
-			return;
-		}
-
 		const baseHref = this.platformLocation.getBaseHrefFromDOM();
 
 		if (!url.startsWith(baseHref)) {
 			throw new IllegalSiStateError('Ref url must start with base href: ' + url);
 		}
 
-		this.router.navigateByUrl(url.substring(baseHref.length));
+		this.rlNav(url.substring(baseHref.length), layer);
+	}
+
+	private rlNav(url: string, layer: UiLayer) {
+		if (!layer.main) {
+			const zone = layer.pushRoute(null, url).zone;
+			this.loadZone(zone, false);
+			return;
+		}
+
+		this.router.navigateByUrl(url);
 	}
 
 	navigateBack(layer: UiLayer, fallbackUrl: string|null = null) {
-		let url = fallbackUrl;
 		if (layer.previousRoute && layer.previousRoute.zone.url) {
-			url = layer.previousRoute.zone.url;
+			this.rlNav(layer.previousRoute.zone.url, layer);
 		}
 
-		if (url) {
-			this.navigate(url, layer);
+		if (fallbackUrl) {
+			this.navigate(fallbackUrl, layer);
 			return;
 		}
 
@@ -98,7 +103,7 @@ export class SiUiService {
 
 		const subject =  new Subject<void>();
 		obs.subscribe((result) => {
-			this.handleResult(result, entries, uiLayer);
+			this.handleControlResult(result, entries, uiLayer);
 			subject.next()
 			subject.complete();
 		});
@@ -106,7 +111,7 @@ export class SiUiService {
 		return obs;
 	}
 
-	execSelectionControl(apiUrl: string, callId: object, controlBoundry: SiControlBoundry, entries: SiEntry[], 
+	execSelectionControl(apiUrl: string, callId: object, controlBoundry: SiControlBoundry, entries: SiEntry[],
 			includeInput: boolean, uiLayer: UiLayer): Observable<void> {
 		throw new Error('not yet implemented');
 	// 	const entryIds: string[] = [];
@@ -157,7 +162,7 @@ export class SiUiService {
 
 		const subject =  new Subject<void>();
 		obs.subscribe((result) => {
-			this.handleResult(result, entries, uiLayer);
+			this.handleControlResult(result, entries, uiLayer);
 			subject.next()
 			subject.complete();
 		});
@@ -165,7 +170,7 @@ export class SiUiService {
 		return subject;
 	}
 
-	private handleResult(result: SiResult, inputEntries: SiEntry[], uiLayer: UiLayer) {
+	private handleControlResult(result: SiResult, inputEntries: SiEntry[], uiLayer: UiLayer) {
 		if (inputEntries.length > 0) {
 			this.handleEntryErrors(result.entryErrors, inputEntries);
 		}
@@ -178,6 +183,8 @@ export class SiUiService {
 				this.navigateBack(uiLayer, result.navPoint.url);
 				break;
 		}
+
+		this.modState.pushModEvent(result.modEvent);
 	}
 
 	private handleEntryErrors(entryErrors: Map<string, SiEntryError>, entries: SiEntry[]) {

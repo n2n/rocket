@@ -192,7 +192,7 @@ class FileInSiField extends InSiFieldAdapter {
 			$this->value = null;
 			return;
 		}
-		
+
 		$this->value = $this->fileHandler->getSiFileByRawId($valueId);
 		if ($this->value === null || !isset($data['imageCuts'])) {
 			return;

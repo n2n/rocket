@@ -1,11 +1,11 @@
 
-import { Extractor } from 'src/app/util/mapping/extractor';
+import { Extractor, ObjectMissmatchError } from 'src/app/util/mapping/extractor';
 import { SiEntryError } from 'src/app/si/model/input/si-entry-error';
 import { SiFieldError } from 'src/app/si/model/input/si-field-error';
 import { Message } from 'src/app/util/i18n/message';
 import { SiResult, SiDirective } from '../manage/si-result';
 import { UiFactory } from 'src/app/ui/build/ui-factory';
-import { Directive } from '@angular/core';
+import { SiEntryIdentifier } from '../model/content/si-entry-qualifier';
 
 export class SiResultFactory {
 
@@ -25,6 +25,26 @@ export class SiResultFactory {
 		if (inputErrorData) {
 			for (const [ieKey, ieData] of new Extractor(inputErrorData).reqMap('entryErrors')) {
 				result.entryErrors.set(ieKey, SiResultFactory.createEntryError(ieData));
+			}
+		}
+
+		const eventMap = extr.reqMap('eventMap');
+		for (const [typeId, idsEvMapData] of eventMap) {
+			const idEvMapExtr = new Extractor(idsEvMapData);
+			for (const [id, eventType] of idEvMapExtr.reqStringMap('ids')) {
+				switch (eventType) {
+					case 'added':
+						result.modEvent.added.push(new SiEntryIdentifier(typeId, id));
+						break;
+					case 'changed':
+						result.modEvent.updated.push(new SiEntryIdentifier(typeId, id));
+						break;
+					case 'removed':
+						result.modEvent.removed.push(new SiEntryIdentifier(typeId, id));
+						break;
+					default:
+						throw new ObjectMissmatchError('Unknown event type: ' + eventType);
+				}
 			}
 		}
 
