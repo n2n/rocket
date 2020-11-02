@@ -14,7 +14,6 @@ export class EntryDirective implements DoCheck {
 	constructor(private elementRef: ElementRef, private modState: SiModStateService) { }
 
 	ngDoCheck() {
-		console.log(this.modState.containsEntryIdentifier(this.siEntry.identifier));
 		this.chClass(this.modState.containsEntryIdentifier(this.siEntry.identifier));
 	}
 
