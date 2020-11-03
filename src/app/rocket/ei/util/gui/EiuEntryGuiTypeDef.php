@@ -23,10 +23,10 @@ namespace rocket\ei\util\gui;
 
 use rocket\ei\util\EiuAnalyst;
 use rocket\si\input\SiEntryInput;
-use rocket\si\content\impl\basic\BulkyEntrySiComp;
+use rocket\si\content\impl\basic\BulkyEntrySiGui;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\util\EiuPerimeterException;
-use rocket\si\content\impl\basic\CompactEntrySiComp;
+use rocket\si\content\impl\basic\CompactEntrySiGui;
 use rocket\ei\manage\gui\EiEntryGuiTypeDef;
 use rocket\ei\manage\DefPropPath;
 
@@ -92,28 +92,28 @@ class EiuEntryGuiTypeDef {
 	/**
 	 * @param bool $siControlsIncluded
 	 * @throws EiuPerimeterException
-	 * @return \rocket\si\content\impl\basic\BulkyEntrySiComp
+	 * @return \rocket\si\content\impl\basic\BulkyEntrySiGui
 	 */
-	function createBulkyEntrySiComp(bool $siControlsIncluded) {
+	function createBulkyEntrySiGui(bool $siControlsIncluded) {
 		if (!ViewMode::isBulky($this->getEiEntryGuiMulti()->getViewMode())) {
 			throw new EiuPerimeterException('EiEntryGuiMulti is not bulky.');
 		}
 		
-		return new BulkyEntrySiComp($this->eiEntryGuiMultiResult->createSiDeclaration(),
+		return new BulkyEntrySiGui($this->eiEntryGuiMultiResult->createSiDeclaration(),
 				$this->eiEntryGuiMultiResult->createSiEntry($siControlsIncluded));
 	}
 	
 	/**
 	 * @param bool $siControlsIncluded
 	 * @throws EiuPerimeterException
-	 * @return \rocket\si\content\impl\basic\CompactEntrySiComp
+	 * @return \rocket\si\content\impl\basic\CompactEntrySiGui
 	 */
-	function createCompactEntrySiComp(bool $siControlsIncluded) {
+	function createCompactEntrySiGui(bool $siControlsIncluded) {
 		if (!ViewMode::isCompact($this->getEiEntryGuiMulti()->getViewMode())) {
 			throw new EiuPerimeterException('EiEntryGuiMulti is not compact.');
 		}
 		
-		return new CompactEntrySiComp($this->eiEntryGuiMultiResult->createSiDeclaration(),
+		return new CompactEntrySiGui($this->eiEntryGuiMultiResult->createSiDeclaration(),
 				$this->eiEntryGuiMultiResult->createSiEntry($siControlsIncluded));
 	}
 	

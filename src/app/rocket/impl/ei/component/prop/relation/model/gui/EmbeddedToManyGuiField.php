@@ -103,9 +103,9 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandler {
 	 */
 	private function createSiEmbeddeEntryFromMulti($eiuEntryGuiMulti) {
 		return new SiEmbeddedEntry(
-				$eiuEntryGuiMulti->createBulkyEntrySiComp(false, false),
+				$eiuEntryGuiMulti->createBulkyEntrySiGui(false, false),
 				($this->relationModel->isReduced() ?
-						$eiuEntryGuiMulti->entry()->newGui(false, false)->createCompactEntrySiComp(false, false):
+						$eiuEntryGuiMulti->entry()->newGui(false, false)->createCompactEntrySiGui(false, false):
 						null));
 	}
 	

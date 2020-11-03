@@ -468,6 +468,17 @@ class EiGuiFrame {
 		return $this->guiDefinition->createGeneralGuiControl($eiFrame, $this, $guiControlPath);
 	}
 	
+	/**
+	 * @param EiFrame $eiFrame
+	 * @param EiEntry $eiEntry
+	 * @param GuiControlPath $guiControlPath
+	 * @return \rocket\ei\manage\gui\control\EntryGuiControl
+	 * @throws UnknownGuiControlException
+	 */
+	function createEntryGuiControl(EiFrame $eiFrame, EiEntry $eiEntry, GuiControlPath $guiControlPath) {
+		return $this->guiDefinition->createEntryGuiControl($eiFrame, $this, $eiEntry, $guiControlPath);
+	}
+	
 // 	/**
 // 	 * @return \rocket\si\content\SiEntry
 // 	 */

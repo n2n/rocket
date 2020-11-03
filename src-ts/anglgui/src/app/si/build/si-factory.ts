@@ -2,7 +2,7 @@ import { UiZoneModel, UiZone } from 'src/app/ui/structure/model/ui-zone';
 import { Extractor } from 'src/app/util/mapping/extractor';
 import { SiControlFactory } from './si-control-factory';
 import { Injector } from '@angular/core';
-import { SiCompFactory } from './si-comp-factory';
+import { SiGuiFactory } from './si-gui-factory';
 import { UiFactory } from 'src/app/ui/build/ui-factory';
 
 export class UiZoneModelFactory {
@@ -12,7 +12,7 @@ export class UiZoneModelFactory {
 	createZoneModel(data: any, zone: UiZone): UiZoneModel {
 		const extr = new Extractor(data);
 
-		const comp = new SiCompFactory(this.injector).buildComp(extr.reqObject('comp'));
+		const comp = new SiGuiFactory(this.injector).buildComp(extr.reqObject('comp'));
 
 		return {
 			title: extr.reqString('title'),

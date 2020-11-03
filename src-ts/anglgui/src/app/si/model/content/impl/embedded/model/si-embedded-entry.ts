@@ -1,13 +1,13 @@
 
 import { SiEntry } from 'src/app/si/model/content/si-entry';
-import { BulkyEntrySiComp } from 'src/app/si/model/comp/impl/model/bulky-entry-si-comp';
-import { CompactEntrySiComp } from 'src/app/si/model/comp/impl/model/compact-entry-si-comp';
+import { BulkyEntrySiGui } from 'src/app/si/model/gui/impl/model/bulky-entry-si-gui';
+import { CompactEntrySiGui } from 'src/app/si/model/gui/impl/model/compact-entry-si-gui';
 import { SiGenericEmbeddedEntry, SiEmbeddedEntryResetPoint } from './generic-embedded';
 import { SiMaskQualifier } from 'src/app/si/model/meta/si-mask-qualifier';
 
 export class SiEmbeddedEntry {
 
-	constructor(public comp: BulkyEntrySiComp, public summaryComp: CompactEntrySiComp|null) {
+	constructor(public comp: BulkyEntrySiGui, public summaryComp: CompactEntrySiGui|null) {
 	}
 
 	get entry(): SiEntry {

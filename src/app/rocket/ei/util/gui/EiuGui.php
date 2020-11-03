@@ -103,29 +103,29 @@ class EiuGui {
 	/**
 	 * @param bool $generalSiControlsIncluded
 	 * @param bool $entrySiControlsIncluded
-	 * @return \rocket\si\content\impl\basic\CompactEntrySiComp
+	 * @return \rocket\si\content\impl\basic\CompactEntrySiGui
 	 */
-	function createCompactEntrySiComp(/*bool $generalSiControlsIncluded = true,*/ bool $entrySiControlsIncluded = true) {
+	function createCompactEntrySiGui(/*bool $generalSiControlsIncluded = true,*/ bool $entrySiControlsIncluded = true) {
 		if (!ViewMode::isCompact($this->eiGui->getEiGuiModel()->getViewMode())) {
 			throw new EiuPerimeterException('EiEntryGuiMulti is not compact.');
 		}
 		
 		return (new EiGuiUtil($this->eiGui, $this->eiuAnalyst->getEiFrame(true)))
-				->createCompactEntrySiComp(/*$generalSiControlsIncluded, */$entrySiControlsIncluded);
+				->createCompactEntrySiGui(/*$generalSiControlsIncluded, */$entrySiControlsIncluded);
 	}
 	
 	/**
 	 * @param bool $generalSiControlsIncluded
 	 * @param bool $entrySiControlsIncluded
-	 * @return \rocket\si\content\impl\basic\BulkyEntrySiComp
+	 * @return \rocket\si\content\impl\basic\BulkyEntrySiGui
 	 */
-	function createBulkyEntrySiComp(bool $generalSiControlsIncluded = true, bool $entrySiControlsIncluded = true) {
+	function createBulkyEntrySiGui(bool $generalSiControlsIncluded = true, bool $entrySiControlsIncluded = true) {
 		if (!ViewMode::isBulky($this->eiGui->getEiGuiModel()->getViewMode())) {
 			throw new EiuPerimeterException('EiEntryGuiMulti is not bulky.');
 		}
 		
 		return (new EiGuiUtil($this->eiGui, $this->eiuAnalyst->getEiFrame(true)))
-				->createBulkyEntrySiComp($generalSiControlsIncluded, $entrySiControlsIncluded);
+				->createBulkyEntrySiGui($generalSiControlsIncluded, $entrySiControlsIncluded);
 	}
 	
 	/**

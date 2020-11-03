@@ -4,7 +4,7 @@ import { QualifierSelectInModel } from '../qualifier-select-in-model';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { PopupUiLayer } from 'src/app/ui/structure/model/ui-layer';
 import { TranslationService } from 'src/app/util/i18n/translation.service';
-import { EntriesListSiComp } from 'src/app/si/model/comp/impl/model/entries-list-si-comp';
+import { EntriesListSiGui } from 'src/app/si/model/gui/impl/model/compact-explorer-si-gui';
 import { SimpleSiControl } from 'src/app/si/model/control/impl/model/simple-si-control';
 import { SiButton } from 'src/app/si/model/control/impl/model/si-button';
 
@@ -88,7 +88,7 @@ export class QualifierSelectInFieldComponent implements OnInit, DoCheck {
 			this.optionsUiLayer = null;
 		});
 
-		const comp = new EntriesListSiComp(this.model.getApiUrl(), 30);
+		const comp = new EntriesListSiGui(this.model.getApiUrl(), 30);
 
 		const popupUiZone = this.optionsUiLayer.pushRoute(null, null).zone;
 
@@ -107,7 +107,7 @@ export class QualifierSelectInFieldComponent implements OnInit, DoCheck {
 		};
 	}
 
-	private createSiControls(comp: EntriesListSiComp) {
+	private createSiControls(comp: EntriesListSiGui) {
 		return [
 			new SimpleSiControl(
 					new SiButton(this.translationService.translate('common_select_label'), 'btn btn-primary rocket-important', 'fa fa-circle-o'),

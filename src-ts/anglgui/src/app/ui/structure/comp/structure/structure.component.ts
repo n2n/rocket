@@ -33,7 +33,7 @@ export class StructureComponent implements OnInit, OnDestroy, DoCheck {
 	}
 
 	ngOnInit() {
-// 		const componentFactory = this.componentFactoryResolver.resolveComponentFactory(ListZoneContentComponent);
+// 		const componentFactory = this.componentFactoryResolver.resolveComponentFactory(CompactExplorerComponent);
 
 // 		const componentRef = this.zoneContentDirective.viewContainerRef.createComponent(componentFactory);
 

@@ -21,54 +21,54 @@
  */
 namespace rocket\si\content\impl\relation;
 
-use rocket\si\content\impl\basic\BulkyEntrySiComp;
-use rocket\si\content\impl\basic\CompactEntrySiComp;
+use rocket\si\content\impl\basic\BulkyEntrySiGui;
+use rocket\si\content\impl\basic\CompactEntrySiGui;
 use rocket\si\SiPayloadFactory;
 
 class SiEmbeddedEntry implements \JsonSerializable {
 	/**
-	 * @var BulkyEntrySiComp
+	 * @var BulkyEntrySiGui
 	 */
 	private $content;
 	/**
-	 * @var CompactEntrySiComp|null
+	 * @var CompactEntrySiGui|null
 	 */
 	private $summaryContent;
 	
 	/**
-	 * @param BulkyEntrySiComp $content
-	 * @param CompactEntrySiComp|null $summaryContent
+	 * @param BulkyEntrySiGui $content
+	 * @param CompactEntrySiGui|null $summaryContent
 	 */
-	function __construct(BulkyEntrySiComp $content, CompactEntrySiComp $summaryContent = null) {
+	function __construct(BulkyEntrySiGui $content, CompactEntrySiGui $summaryContent = null) {
 		$this->content = $content;
 		$this->summaryContent = $summaryContent;
 	}
 	
 	/**
-	 * @return \rocket\si\content\impl\basic\BulkyEntrySiComp
+	 * @return \rocket\si\content\impl\basic\BulkyEntrySiGui
 	 */
 	function getContent() {
 		return $this->content;
 	}
 	
 	/**
-	 * @param \rocket\si\content\impl\basic\BulkyEntrySiComp $content
+	 * @param \rocket\si\content\impl\basic\BulkyEntrySiGui $content
 	 */
-	function setContent(BulkyEntrySiComp $content) {
+	function setContent(BulkyEntrySiGui $content) {
 		$this->content = $content;
 	}
 	
 	/**
-	 * @return \rocket\si\content\impl\basic\CompactEntrySiComp|null
+	 * @return \rocket\si\content\impl\basic\CompactEntrySiGui|null
 	 */
 	function getSummaryContent() {
 		return $this->summaryContent;
 	}
 	
 	/**
-	 * @param \rocket\si\content\impl\basic\CompactEntrySiComp|null $summaryContent
+	 * @param \rocket\si\content\impl\basic\CompactEntrySiGui|null $summaryContent
 	 */
-	function setSummaryContent(CompactEntrySiComp $summaryContent) {
+	function setSummaryContent(CompactEntrySiGui $summaryContent) {
 		$this->summaryContent = $summaryContent;
 	}
 

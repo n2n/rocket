@@ -133,11 +133,11 @@ class BooleanEiProp extends DraftablePropertyEiPropAdapter implements Filterable
 			$notactiveDefPropPaths = array();
 			
 			if ($eiu->field()->getValue()) {
-				$activeDefPropPaths = $this->getOnAssociatedDefPropPaths();
-				$notactiveDefPropPaths = $this->getOffAssociatedDefPropPaths();
+				$activeDefPropPaths = $this->booleanConfig->getOnAssociatedDefPropPaths();
+				$notactiveDefPropPaths = $this->booleanConfig->getOffAssociatedDefPropPaths();
 			} else {
-				$activeDefPropPaths = $this->getOffAssociatedDefPropPaths();
-				$notactiveDefPropPaths = $this->getOnAssociatedDefPropPaths();
+				$activeDefPropPaths = $this->booleanConfig->getOffAssociatedDefPropPaths();
+				$notactiveDefPropPaths = $this->booleanConfig->getOnAssociatedDefPropPaths();
 			}
 			
 			foreach ($notactiveDefPropPaths as $eiPropPath) {

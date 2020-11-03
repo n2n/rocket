@@ -6,7 +6,7 @@ import { UiNavPoint } from '../../util/model/ui-nav-point';
 import { UiStructure } from './ui-structure';
 
 export class UiZone {
-	// public content: SiComp|null;
+	// public content: SiGui|null;
 	private disposeSubject = new Subject<void>();
 	private _model: UiZoneModel|null = null;
 	readonly uiStructure: UiStructure;

@@ -105,7 +105,7 @@ class EiuCallbackGuiControl implements GeneralGuiControl, EntryGuiControl, Selec
 		} else {
 			$sifControlResponse = $callback($eiu, $inputEius);
 		}
-		ArgUtils::valTypeReturn($sifControlResponse, EiuControlResponse::class, null, $sifControlResponse);
+		ArgUtils::valTypeReturn($sifControlResponse, EiuControlResponse::class, null, $callback, true);
 		
 // 		$mmi = new MagicMethodInvoker($eiu->getN2nContext());
 // 		$mmi->setMethod(new \ReflectionFunction($this->callback));
@@ -140,7 +140,7 @@ class EiuCallbackGuiControl implements GeneralGuiControl, EntryGuiControl, Selec
 	 * @see \rocket\ei\manage\gui\control\EntryGuiControl::handleEntry()
 	 */
 	function handleEntry(EiFrame $eiFrame, EiGuiModel $eiGuiModel, EiEntry $eiEntry): SiResult {
-		return $this->execCall(new Eiu($eiFrame, $eiGuiModel, $eiEntry));
+		return $this->execCall(new Eiu($eiFrame, $eiGuiModel, $eiEntry), null);
 	}
 	
 	/**

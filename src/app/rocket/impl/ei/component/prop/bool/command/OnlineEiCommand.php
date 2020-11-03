@@ -33,7 +33,7 @@ use n2n\util\uri\Path;
 use n2n\core\container\N2nContext;
 
 class OnlineEiCommand extends EiCommandAdapter {
-	const CONTROL_EDIT_KEY = 'online_status';
+	const CONTROL_KEY = 'online';
 	const ID_BASE = 'online-status';
 	
 	private $onlineEiProp;
@@ -57,10 +57,15 @@ class OnlineEiCommand extends EiCommandAdapter {
 		return $controller;
 	}
 	
-	public function createEntryGuiControl(Eiu $eiu): array {
+	public function createEntryGuiControls(Eiu $eiu): array {
+		$eiuEntry = $eiu->entry();
+
+		if ($eiuEntry->isNew()) {
+			return [];
+		}
+		
 		$eiuControlFactory = $eiu->guiFrame()->controlFactory($this);
 		
-		$eiuEntry = $eiu->entry();
 		$eiuFrame = $eiu->frame();
 		$dtc = new DynamicTextCollection('rocket', $eiuFrame->getN2nLocale());
 		
@@ -68,23 +73,25 @@ class OnlineEiCommand extends EiCommandAdapter {
 				$dtc->t('ei_impl_online_offline_tooltip', array('entry' => $eiuFrame->getGenericLabel())));
 		$siButton->setIconImportant(true);
 		
-		$urlExt = null;
-		if ($eiuEntry->getValue($this->onlineEiProp)) {
+		$status = $eiuEntry->getValue($this->onlineEiProp);
+		if ($status) {
 			$siButton->setType(SiButton::TYPE_SUCCESS);
 			$siButton->setIconType(SiIconType::CHECK_CIRCLE);
-			$urlExt = (new Path(array('offline', $eiuEntry->getPid())))->toUrl();
 		} else {
 			$siButton->setType(SiButton::TYPE_DANGER);
 			$siButton->setIconType(SiIconType::MINUS_CIRCLE);
-			$urlExt = (new Path(array('online', $eiuEntry->getPid())))->toUrl();
 		}
 		
-		return $eiuControlFactory->createJhtml($siButton, $urlExt)
-				->setForceReload(true)->setPushToHistory(false);
+		$guiControl = $eiuControlFactory->createCallback(self::CONTROL_KEY, $siButton, function () use ($eiuEntry, $status) {
+			$eiuEntry->setValue($this->onlineEiProp, !$status);
+			$eiuEntry->save();
+		});
+		
+		return [self::CONTROL_KEY => $guiControl];
 	}
 	
-	public function createEntryGuiControls(Eiu $eiu): array {
-		return array(self::CONTROL_KEY => $this->createEntryGuiControl($eiu));
+	private function handle() {
+		
 	}
 
 	public function getEntryGuiControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {

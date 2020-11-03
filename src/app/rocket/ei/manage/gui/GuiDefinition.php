@@ -399,12 +399,12 @@ class GuiDefinition {
 	 * @return EntryGuiControl
 	 * @throws UnknownGuiControlException
 	 */
-	function createEntryGuiControl(EiFrame $eiFrame, EiEntry $eiEntry, GuiControlPath $guiControlPath): EntryGuiControl {
+	function createEntryGuiControl(EiFrame $eiFrame, EiGuiFrame $eiGuiFrame, EiEntry $eiEntry, GuiControlPath $guiControlPath): EntryGuiControl {
 		if ($guiControlPath->size() != 2) {
 			throw new UnknownGuiControlException('Unknown GuiControlPath ' . $guiControlPath);
 		}
 		
-		$eiu = new Eiu($eiFrame, $eiEntry);
+		$eiu = new Eiu($eiFrame, $eiGuiFrame, $eiEntry);
 		$cmdId = $guiControlPath->getFirstId();
 		$controlId = $guiControlPath->getLastId();
 		

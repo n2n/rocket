@@ -87,75 +87,73 @@ export class SiUiService {
 		}
 	}
 
-	execEntryControl(apiUrl: string, callId: object, entry: SiEntry, includeInput: boolean, uiLayer: UiLayer): Observable<void> {
-		if (!entry.qualifier.identifier.id) {
-			throw new IllegalSiStateError('Entry control cannnot be executed on new entry.');
-		}
-
-		const entryInputs: SiEntryInput[] = [];
-		const entries: SiEntry[] = [];
-		if (includeInput) {
-			entryInputs.push(entry.readInput());
-			entries.push(entry);
-		}
-
-		const obs = this.service.entryControlCall(apiUrl, callId, entry.qualifier.identifier.id, entryInputs);
-
-		const subject =  new Subject<void>();
-		obs.subscribe((result) => {
-			this.handleControlResult(result, entries, uiLayer);
-			subject.next()
-			subject.complete();
-		});
-
-		return obs;
-	}
-
-	execSelectionControl(apiUrl: string, callId: object, controlBoundry: SiControlBoundry, entries: SiEntry[],
-			includeInput: boolean, uiLayer: UiLayer): Observable<void> {
-		throw new Error('not yet implemented');
-	// 	const entryIds: string[] = [];
-	// 	const entryInputs: SiEntryInput[] = [];
-
-	// 	for (const entry of entries) {
-	// 		if (!entry.qualifier.id) {
-	// 			throw new IllegalSiStateError('Selection control cannnot be executed on new entry.');
-	// 		}
-
-	// 		entryIds.push(entry.qualifier.id);
-
-	// 		if (includeInput) {
-	// 			entryInputs.push(entry.readInput());
-	// 		}
+	// execEntryControl(apiUrl: string, callId: object, entry: SiEntry, includeInput: boolean, uiLayer: UiLayer): Observable<void> {
+	// 	if (!entry.qualifier.identifier.id) {
+	// 		throw new IllegalSiStateError('Entry control cannnot be executed on new entry.');
 	// 	}
 
-	// 	const obs = this.service.selectionControlCall(apiUrl, callId, entryIds, entryInputs);
+	// 	const entryInputs: SiEntryInput[] = [];
+	// 	const entries: SiEntry[] = [];
+	// 	if (includeInput) {
+	// 		entryInputs.push(entry.readInput());
+	// 		entries.push(entry);
+	// 	}
 
+	// 	const obs = this.service.entryControlCall(apiUrl, callId, entry.qualifier.identifier.id, entryInputs);
+
+	// 	const subject =  new Subject<void>();
 	// 	obs.subscribe((result) => {
-	// 		this.handleResult(result, entries);
+	// 		this.handleControlResult(result, entries, uiLayer);
+	// 		subject.next()
+	// 		subject.complete();
 	// 	});
 
-	// 	return obs.pipe(map((result) => {
-	// 		return;
-	// 	}));
-	}
+	// 	return obs;
+	// }
+
+	// execSelectionControl(apiUrl: string, callId: object, controlBoundry: SiControlBoundry, entries: SiEntry[],
+	// 		includeInput: boolean, uiLayer: UiLayer): Observable<void> {
+	// 	throw new Error('not yet implemented');
+	// // 	const entryIds: string[] = [];
+	// // 	const entryInputs: SiEntryInput[] = [];
+
+	// // 	for (const entry of entries) {
+	// // 		if (!entry.qualifier.id) {
+	// // 			throw new IllegalSiStateError('Selection control cannnot be executed on new entry.');
+	// // 		}
+
+	// // 		entryIds.push(entry.qualifier.id);
+
+	// // 		if (includeInput) {
+	// // 			entryInputs.push(entry.readInput());
+	// // 		}
+	// // 	}
+
+	// // 	const obs = this.service.selectionControlCall(apiUrl, callId, entryIds, entryInputs);
+
+	// // 	obs.subscribe((result) => {
+	// // 		this.handleResult(result, entries);
+	// // 	});
+
+	// // 	return obs.pipe(map((result) => {
+	// // 		return;
+	// // 	}));
+	// }
 
 	execControl(apiUrl: string, callId: object, controlBoundry: SiControlBoundry, includeInput: boolean,
 			uiLayer: UiLayer): Observable<void> {
 		const input = new SiInput();
 
-		if (!includeInput) {
-			throw new Error('not yet implemented');
-		}
-
 		const entries: SiEntry[] = [];
-		for (const entry of controlBoundry.getEntries()) {
-			if (entry.readOnly) {
-				continue;
-			}
+		if (includeInput) {
+			for (const entry of controlBoundry.getEntries()) {
+				if (entry.readOnly) {
+					continue;
+				}
 
-			entries.push(entry);
-			input.entryInputs.push(entry.readInput());
+				entries.push(entry);
+				input.entryInputs.push(entry.readInput());
+			}
 		}
 
 		const obs = this.service.controlCall(apiUrl, callId, input);

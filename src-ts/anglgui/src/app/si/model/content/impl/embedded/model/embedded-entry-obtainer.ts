@@ -10,8 +10,8 @@ import { SiValGetInstruction } from 'src/app/si/model/api/si-val-get-instruction
 import { SiValResponse } from 'src/app/si/model/api/si-val-response';
 import { SiValResult } from 'src/app/si/model/api/si-val-result';
 import { SiService } from 'src/app/si/manage/si.service';
-import { BulkyEntrySiComp } from 'src/app/si/model/comp/impl/model/bulky-entry-si-comp';
-import { CompactEntrySiComp } from 'src/app/si/model/comp/impl/model/compact-entry-si-comp';
+import { BulkyEntrySiGui } from 'src/app/si/model/gui/impl/model/bulky-entry-si-gui';
+import { CompactEntrySiGui } from 'src/app/si/model/gui/impl/model/compact-entry-si-gui';
 import { SiEmbeddedEntry } from '../model/si-embedded-entry';
 import { SiGetResult } from 'src/app/si/model/api/si-get-result';
 
@@ -76,17 +76,17 @@ export class EmbeddedEntryObtainer  {
 
 		let result: SiGetResult;
 		while (result = response.results.shift()) {
-			const siComp = new BulkyEntrySiComp(result.declaration);
+			const siComp = new BulkyEntrySiGui(result.declaration);
 			siComp.entry = result.entry;
 
-			let summarySiComp: CompactEntrySiComp|null = null;
+			let summarySiGui: CompactEntrySiGui|null = null;
 			if (this.obtainSummary) {
 				result = response.results.shift();
-				summarySiComp = new CompactEntrySiComp(result.declaration);
-				summarySiComp.entry = result.entry;
+				summarySiGui = new CompactEntrySiGui(result.declaration);
+				summarySiGui.entry = result.entry;
 			}
 
-			siEmbeddedEntries.push(new SiEmbeddedEntry(siComp, summarySiComp));
+			siEmbeddedEntries.push(new SiEmbeddedEntry(siComp, summarySiGui));
 		}
 
 		return siEmbeddedEntries;

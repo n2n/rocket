@@ -152,7 +152,7 @@ class ApiControlProcess {
 		try {
 			if ($this->eiEntry !== null) {
 				$this->entryGuiControl = $this->guiControl = $this->eiGuiModel
-						->createEntryGuiControl($this->eiFrame, $guiControlPath);
+						->createEntryGuiControl($this->eiFrame, $this->eiEntry, $guiControlPath);
 			} else {
 				$this->generalGuiControl = $this->guiControl = $this->eiGuiModel
 						->createGeneralGuiControl($this->eiFrame, $guiControlPath);

@@ -26,7 +26,7 @@ use rocket\si\input\SiEntryInput;
 use rocket\si\input\CorruptedSiInputDataException;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\EiType;
-use rocket\si\content\impl\basic\BulkyEntrySiComp;
+use rocket\si\content\impl\basic\BulkyEntrySiGui;
 
 class EiEntryGuiMulti {
 	

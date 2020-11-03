@@ -335,4 +335,19 @@ class EiGuiModel {
 		
 		throw new UnknownGuiControlException('Unknown GuiControlPath: ' . $guiControlPath);
 	}
+	
+	/**
+	 * @param EiFrame $eiFrame
+	 * @param GuiControlPath $guiControlPath
+	 * @throws UnknownGuiControlException
+	 */
+	function createEntryGuiControl(EiFrame $eiFrame, EiEntry $eiEntry, GuiControlPath $guiControlPath) {
+		$eiTypeId = $eiEntry->getEiType()->getId();
+		
+		if (isset($this->eiGuiFrames[$eiTypeId])) {
+			return $this->eiGuiFrames[$eiTypeId]->createEntryGuiControl($eiFrame, $eiEntry, $guiControlPath);
+		}
+		
+		throw new UnknownGuiControlException('Unknown GuiControlPath: ' . $guiControlPath);
+	}
 }

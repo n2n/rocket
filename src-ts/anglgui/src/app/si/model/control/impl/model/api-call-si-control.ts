@@ -15,10 +15,10 @@ export class ApiCallSiControl implements SiControl, ButtonControlModel {
 
 	inputSent = false;
 	private loading = false;
-	private entryBoundFlag: boolean;
+	// private entryBoundFlag: boolean;
 
 	constructor(public siUiService: SiUiService, public apiUrl: string, public apiCallId: object,
-			public button: SiButton, public controlBoundry: SiControlBoundry, public entry: SiEntry|null = null) {
+			public button: SiButton, public controlBoundry: SiControlBoundry/*, public entry: SiEntry|null = null*/) {
 	}
 
 	getSiButton(): SiButton {
@@ -29,29 +29,29 @@ export class ApiCallSiControl implements SiControl, ButtonControlModel {
 		return this.loading;
 	}
 
-	set entryBound(entryBound: boolean) {
-		if (this.entry && !entryBound) {
-			throw new IllegalSiStateError('Control must be bound to entry.');
-		}
+	// set entryBound(entryBound: boolean) {
+	// 	if (this.entry && !entryBound) {
+	// 		throw new IllegalSiStateError('Control must be bound to entry.');
+	// 	}
 
-		this.entryBoundFlag = entryBound;
-	}
+	// 	this.entryBoundFlag = entryBound;
+	// }
 
-	get entryBound(): boolean {
-		return !!this.entry || this.entryBoundFlag;
-	}
+	// get entryBound(): boolean {
+	// 	return !!this.entry || this.entryBoundFlag;
+	// }
 
 	exec(uiZone: UiZone) {
 		let obs: Observable<void>;
 
-		if (this.entry) {
-			obs = this.siUiService.execEntryControl(this.apiUrl, this.apiCallId, this.entry, this.inputSent, uiZone.layer);
-		} else if (this.entryBound) {
-			obs = this.siUiService.execSelectionControl(this.apiUrl, this.apiCallId, this.controlBoundry, this.controlBoundry.getSelectedEntries(),
-					this.inputSent, uiZone.layer);
-		} else {
+		// if (this.entry) {
+		// 	obs = this.siUiService.execEntryControl(this.apiUrl, this.apiCallId, this.entry, this.inputSent, uiZone.layer);
+		// } else if (this.entryBound) {
+		// 	obs = this.siUiService.execSelectionControl(this.apiUrl, this.apiCallId, this.controlBoundry, this.controlBoundry.getSelectedEntries(),
+		// 			this.inputSent, uiZone.layer);
+		// } else {
 			obs = this.siUiService.execControl(this.apiUrl, this.apiCallId, this.controlBoundry, this.inputSent, uiZone.layer);
-		}
+		// }
 
 		this.loading = true;
 		obs.subscribe(() => {

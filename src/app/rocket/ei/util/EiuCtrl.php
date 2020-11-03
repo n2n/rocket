@@ -30,13 +30,13 @@ use rocket\ei\manage\entry\UnknownEiObjectException;
 use rocket\ei\util\entry\EiuEntry;
 use rocket\ei\manage\gui\ViewMode;
 use n2n\web\http\controller\impl\ControllingUtils;
-use rocket\si\content\impl\basic\CompactExplorerSiComp;
+use rocket\si\content\impl\basic\CompactExplorerSiGui;
 use rocket\si\SiPayloadFactory;
 use n2n\persistence\orm\criteria\Criteria;
 use n2n\persistence\orm\util\NestedSetUtils;
 use n2n\persistence\orm\util\NestedSetStrategy;
 use rocket\si\content\SiPartialContent;
-use rocket\si\content\impl\basic\BulkyEntrySiComp;
+use rocket\si\content\impl\basic\BulkyEntrySiGui;
 use rocket\ei\manage\security\InaccessibleEiEntryException;
 use rocket\ei\manage\frame\EiFrameUtil;
 use rocket\ei\manage\LiveEiObject;
@@ -307,7 +307,7 @@ class EiuCtrl {
 		
 		$this->composeEiuGuiForList($eiGui, $pageSize);
 		
-		$siComp = (new EiGuiUtil($eiGui, $eiFrame))->createCompactExplorerSiComp($pageSize, true, true);
+		$siComp = (new EiGuiUtil($eiGui, $eiFrame))->createCompactExplorerSiGui($pageSize, true, true);
 		
 		$this->httpContext->getResponse()->send(
 				SiPayloadFactory::create($siComp,
@@ -357,7 +357,7 @@ class EiuCtrl {
 
 		$eiuEntry = EiuAnalyst::buildEiuEntryFromEiArg($eiEntryArg, $this->eiuFrame, 'eiEntryArg', true);
 		$eiuGui = $eiuEntry->newGui(true, $readOnly);
-		$siComp = $eiuGui->createBulkyEntrySiComp($generalSiControlsIncluded, $entrySiControlsIncluded);
+		$siComp = $eiuGui->createBulkyEntrySiGui($generalSiControlsIncluded, $entrySiControlsIncluded);
 		
 		$this->httpContext->getResponse()->send(
 				SiPayloadFactory::create($siComp,
@@ -410,7 +410,7 @@ class EiuCtrl {
 		$eiGui = $eiFrameUtil->createNewEiGui(true, !$editable, null, null, true);
 		$eiGuiUtil = new EiGuiUtil($eiGui, $eiFrame);
 		
-		$siComp = $eiGuiUtil->createBulkyEntrySiComp($generalSiControlsIncluded, $entrySiControlsIncluded);
+		$siComp = $eiGuiUtil->createBulkyEntrySiGui($generalSiControlsIncluded, $entrySiControlsIncluded);
 		
 		$this->httpContext->getResponse()->send(
 				SiPayloadFactory::create($siComp, 

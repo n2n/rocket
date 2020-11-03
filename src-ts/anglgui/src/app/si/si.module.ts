@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonControlComponent } from './model/control/impl/comp/button-control/button-control.component';
-import { ListZoneContentComponent } from './model/comp/impl/comp/list-zone-content/list-zone-content.component';
-import { BulkyEntryComponent } from './model/comp/impl/comp/bulky-entry/bulky-entry.component';
+import { CompactExplorerComponent } from './model/gui/impl/comp/compact-explorer/compact-explorer.component';
+import { BulkyEntryComponent } from './model/gui/impl/comp/bulky-entry/bulky-entry.component';
 import { InputInFieldComponent } from './model/content/impl/alphanum/comp/input-in-field/input-in-field.component';
 import { TextareaInFieldComponent } from './model/content/impl/alphanum/comp/textarea-in-field/textarea-in-field.component';
 import { FileInFieldComponent } from './model/content/impl/file/comp/file-in-field/file-in-field.component';
@@ -13,7 +13,7 @@ import {
 import { LinkOutFieldComponent } from './model/content/impl/alphanum/comp/link-out-field/link-out-field.component';
 import { StringOutFieldComponent } from './model/content/impl/alphanum/comp/string-out-field/string-out-field.component';
 import { EmbeddedEntriesInComponent } from './model/content/impl/embedded/comp/embedded-entries-in/embedded-entries-in.component';
-import { CompactEntryComponent } from './model/comp/impl/comp/compact-entry/compact-entry.component';
+import { CompactEntryComponent } from './model/gui/impl/comp/compact-entry/compact-entry.component';
 import {
 	EmbeddedEntriesSummaryInComponent
 } from './model/content/impl/embedded/comp/embedded-entries-summary-in/embedded-entries-summary-in.component';
@@ -30,7 +30,7 @@ import { FormsModule } from '@angular/forms';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { UiModule } from '../ui/ui.module';
 import { UtilModule } from '../util/util.module';
-import { PaginationComponent } from './model/comp/impl/comp/pagination/pagination.component';
+import { PaginationComponent } from './model/gui/impl/comp/pagination/pagination.component';
 import { CrumbGroupComponent } from './model/content/impl/meta/comp/crumb-group/crumb-group.component';
 import { RouterModule } from '@angular/router';
 import { AddPasteComponent } from './model/content/impl/embedded/comp/add-paste/add-paste.component';
@@ -54,7 +54,7 @@ import { SelectInFieldComponent } from './model/content/impl/alphanum/comp/selec
 
 @NgModule({
 	declarations: [
-		ButtonControlComponent, ListZoneContentComponent, BulkyEntryComponent, StringOutFieldComponent,
+		ButtonControlComponent, CompactExplorerComponent, BulkyEntryComponent, StringOutFieldComponent,
 		InputInFieldComponent, TextareaInFieldComponent, FileInFieldComponent, FileOutFieldComponent,
 		QualifierSelectInFieldComponent, LinkOutFieldComponent, CompactEntryComponent, EmbeddedEntriesInComponent,
 		EmbeddedEntriesSummaryInComponent, EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent,
@@ -74,14 +74,14 @@ import { SelectInFieldComponent } from './model/content/impl/alphanum/comp/selec
 		CKEditorModule
 	],
 	exports: [
-		ListZoneContentComponent, BulkyEntryComponent, StringOutFieldComponent, InputInFieldComponent,
+		CompactExplorerComponent, BulkyEntryComponent, StringOutFieldComponent, InputInFieldComponent,
 		TextareaInFieldComponent, FileInFieldComponent, FileOutFieldComponent, QualifierSelectInFieldComponent,
 		LinkOutFieldComponent, CompactEntryComponent, EmbeddedEntriesInComponent, EmbeddedEntriesSummaryInComponent,
 		EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent,
 		EmbeddedEntryPanelsInComponent, ButtonControlComponent, PaginationComponent, SelectInFieldComponent
 	],
 	entryComponents: [
-		ListZoneContentComponent, BulkyEntryComponent, StringOutFieldComponent,
+		CompactExplorerComponent, BulkyEntryComponent, StringOutFieldComponent,
 		InputInFieldComponent, TextareaInFieldComponent, FileInFieldComponent, FileOutFieldComponent, QualifierSelectInFieldComponent,
 		LinkOutFieldComponent, CompactEntryComponent, EmbeddedEntriesInComponent, EmbeddedEntriesSummaryInComponent,
 		EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent,

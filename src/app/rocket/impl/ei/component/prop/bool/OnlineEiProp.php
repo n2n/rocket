@@ -26,6 +26,8 @@ use rocket\impl\ei\component\prop\bool\conf\OnlineConfig;
 class OnlineEiProp extends BooleanEiProp {
 	
 	function __construct() {
+		parent::__construct();
+		
 		$this->getDisplayConfig()
 				->setListReadModeDefaultDisplayed(false);
 		$this->getEditConfig()

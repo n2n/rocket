@@ -32,28 +32,28 @@ export class SiService {
 				}));
 	}
 
-	entryControlCall(apiUrl: string, callId: object, entryId: string, entryInputs: SiEntryInput[]): Observable<any> {
-		const formData = new FormData();
-		formData.append('callId', JSON.stringify(callId));
-		formData.append('siEntryId', entryId);
-// 		formData.append('inputMap', JSON.stringify(entryInput));
+// 	entryControlCall(apiUrl: string, callId: object, entryId: string, entryInputs: SiEntryInput[]): Observable<any> {
+// 		const formData = new FormData();
+// 		formData.append('callId', JSON.stringify(callId));
+// 		formData.append('siEntryId', entryId);
+// // 		formData.append('inputMap', JSON.stringify(entryInput));
 
-		const params = new HttpParams();
+// 		const params = new HttpParams();
 
-		const options = {
-			params,
-			reportProgress: true
-		};
+// 		const options = {
+// 			params,
+// 			reportProgress: true
+// 		};
 
-		return this.httpClient.post<any>(apiUrl + '/execEntryControl', formData, options)
-				.pipe(map(data => {
-					if (data.errors) {
-						throw data.errors;
-					}
+// 		return this.httpClient.post<any>(apiUrl + '/execEntryControl', formData, options)
+// 				.pipe(map(data => {
+// 					if (data.errors) {
+// 						throw data.errors;
+// 					}
 
-					return data.expert;
-				}));
-	}
+// 					return data.expert;
+// 				}));
+// 	}
 
 	selectionControlCall(): Observable<any> {
 		throw new Error('not yet implemented');
