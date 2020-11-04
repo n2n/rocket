@@ -62,13 +62,13 @@ export interface SiModEvent {
 	removed?: SiEntryIdentifier[];
 }
 
-export interface SiModListener {
+export interface SiModEventListener {
 
-	onSiEntryAdded?: (siEntry: SiEntry) => any;
+	onSiEntryAdded?: (siEntry: SiEntryIdentifier) => any;
 
-	onSiEntryUpdated?: (siEntry: SiEntry) => any;
+	onSiEntryUpdated?: (siEntry: SiEntryIdentifier) => any;
 
-	onSiEntryRemoved?: (siEntry: SiEntry) => any;
+	onSiEntryRemoved?: (siEntry: SiEntryIdentifier) => any;
 
 }
 
