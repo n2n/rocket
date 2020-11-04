@@ -12,7 +12,7 @@ export class UiZoneModelFactory {
 	createZoneModel(data: any, zone: UiZone): UiZoneModel {
 		const extr = new Extractor(data);
 
-		const comp = new SiGuiFactory(this.injector).buildComp(extr.reqObject('comp'));
+		const comp = new SiGuiFactory(this.injector).buildGui(extr.reqObject('comp'));
 
 		return {
 			title: extr.reqString('title'),

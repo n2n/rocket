@@ -1,0 +1,8 @@
+
+<div *ngIf="loading" class="rocket-loader"></div>
+
+<ng-container *ngIf="!loading">
+	<ng-container *ngFor="let fieldUiStructure of fieldUiStructures">
+		<div rocketUiStructure [uiStructure]="fieldUiStructure"></div>
+	</ng-container>
+</ng-container>
