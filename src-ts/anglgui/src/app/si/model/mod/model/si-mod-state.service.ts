@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { SiEntryQualifier, SiEntryIdentifier } from '../content/si-entry-qualifier';
+import { SiEntryQualifier, SiEntryIdentifier } from '../../content/si-entry-qualifier';
+import { SiEntry } from '../../content/si-entry';
 
 @Injectable({
 	providedIn: 'root'
@@ -9,6 +10,9 @@ export class SiModStateService {
 	private addedEventMap = new Map<string, Map<string, SiEntryIdentifier>>();
 	private updatedEventMap = new Map<string, Map<string, SiEntryIdentifier>>();
 	private removedEventMap = new Map<string, Map<string, SiEntryIdentifier>>();
+
+	private shownEntriesMap = new Map<SiEntry, SiEntry>();
+
 
 	constructor() {
 
@@ -45,7 +49,7 @@ export class SiModStateService {
 		return map.get(typeId);
 	}
 
-	containsEntryIdentifier(ei: SiEntryIdentifier): boolean {
+	containsModEntryIdentifier(ei: SiEntryIdentifier): boolean {
 		return (this.addedEventMap.has(ei.typeId) && this.addedEventMap.get(ei.typeId).has(ei.id))
 				|| (this.updatedEventMap.has(ei.typeId) && this.updatedEventMap.get(ei.typeId).has(ei.id))
 				|| (this.removedEventMap.has(ei.typeId) && this.removedEventMap.get(ei.typeId).has(ei.id));
@@ -56,4 +60,20 @@ export interface SiModEvent {
 	added?: SiEntryIdentifier[];
 	updated?: SiEntryIdentifier[];
 	removed?: SiEntryIdentifier[];
+}
+
+export interface SiModListener {
+
+	onSiEntryAdded?: (siEntry: SiEntry) => any;
+
+	onSiEntryUpdated?: (siEntry: SiEntry) => any;
+
+	onSiEntryRemoved?: (siEntry: SiEntry) => any;
+
+}
+
+export interface DisplayListener {
+	onSiEntryShow?: (siEntry: SiEntry) => any;
+
+	onSiEntryHide?: (siEntry: SiEntry) => any;
 }

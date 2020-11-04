@@ -6,10 +6,11 @@ import { Message } from 'src/app/util/i18n/message';
 import { SiEntryIdentifier, SiEntryQualifier } from './si-entry-qualifier';
 import { SiEntryBuildup } from './si-entry-buildup';
 import { SiMaskQualifier } from '../meta/si-mask-qualifier';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { SiGenericEntry } from '../generic/si-generic-entry';
 import { SiGenericEntryBuildup } from '../generic/si-generic-entry-buildup';
 import { GenericMissmatchError } from '../generic/generic-missmatch-error';
+import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 
 export class SiEntry {
 	public treeLevel: number|null = null;
@@ -17,6 +18,8 @@ export class SiEntry {
 	public bulky = false;
 	public readOnly = true;
 	private _entryBuildupsMap = new Map<string, SiEntryBuildup>();
+
+	public state = SiEntryState.CLEAN;
 
 	constructor(readonly identifier: SiEntryIdentifier) {
 	}
@@ -213,4 +216,45 @@ export class SiEntry {
 			throw new GenericMissmatchError('SiEntry missmatch.');
 		}
 	}
+
+	private uiClaimedSubject = new BehaviorSubject<boolean>(false);
+	private uiClaims = 0;
+
+	uiClaim() {
+		this.uiClaims++;
+	}
+
+	uiUnclaim() {
+		if (this.uiClaims <= 0) {
+			throw new IllegalStateError();
+		}
+
+		this.uiClaims--;
+		this.updateClaimedSubject();
+	}
+
+	private updateClaimedSubject() {
+		var uiClaimed = this.uiClaims > 0;
+
+		if (this.uiClaimed !== claimed) {
+			this.uiClaimedSubject.next(claimed);
+		}
+	}
+
+	get uiClaimed$(): Observable<boolean> {
+		return this.uiClaimedSubject.asObservable();
+	}
+
+	get uiClaimed(): boolean {
+		return this.uiClaimedSubject.getValue();
+	}
+}
+
+
+export enum SiEntryState {
+	CLEAN,
+	OUTDATED,
+	MODIFYING,
+	RELOADING,
+	REMOVED
 }

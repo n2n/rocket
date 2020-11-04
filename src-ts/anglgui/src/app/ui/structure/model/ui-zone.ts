@@ -15,6 +15,10 @@ export class UiZone {
 		this.uiStructure = new UiStructure(null, this, null, null);
 	}
 
+	get active(): boolean {
+		return this.layer.currentRoute.zone === this;
+	}
+
 	set model(model: UiZoneModel|null) {
 		if (this._model === model) {
 			return;
