@@ -1,6 +1,5 @@
 import { UiZoneModel, UiZone } from 'src/app/ui/structure/model/ui-zone';
 import { Extractor } from 'src/app/util/mapping/extractor';
-import { SiControlFactory } from './si-control-factory';
 import { Injector } from '@angular/core';
 import { SiGuiFactory } from './si-gui-factory';
 import { UiFactory } from 'src/app/ui/build/ui-factory';
