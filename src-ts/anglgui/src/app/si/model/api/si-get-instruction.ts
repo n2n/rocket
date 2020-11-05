@@ -1,5 +1,6 @@
 
 import { SiDeclaration } from '../meta/si-declaration';
+import { SiControlBoundry } from '../control/si-control-bountry';
 
 export class SiGetInstruction {
 
@@ -11,6 +12,7 @@ export class SiGetInstruction {
 	protected partialContentInstruction: SiPartialContentInstruction|null = null;
 	protected newEntryRequested = false;
 	protected generalControlsIncluded = false;
+	protected generalControlsBoundry: SiControlBoundry|null = null;
 	protected entryControlsIncluded = false;
 	protected propIds: string[]|null = null;
 	protected typeIds: string[]|null = null;
@@ -53,6 +55,14 @@ export class SiGetInstruction {
 	setGeneralControlsIncluded(controlsIncluded: boolean): SiGetInstruction {
 		this.generalControlsIncluded = controlsIncluded;
 		return this;
+	}
+
+	setGeneralControlsBoundry(generalControlsBoundry: SiControlBoundry|null) {
+		this.generalControlsBoundry = generalControlsBoundry;
+	}
+
+	getGeneralControlsBoundry(): SiControlBoundry|null {
+		return this.generalControlsBoundry;
 	}
 
 	getEntryControlsIncludes(): boolean {

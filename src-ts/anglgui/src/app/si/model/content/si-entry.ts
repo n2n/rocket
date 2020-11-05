@@ -11,6 +11,8 @@ import { SiGenericEntry } from '../generic/si-generic-entry';
 import { SiGenericEntryBuildup } from '../generic/si-generic-entry-buildup';
 import { GenericMissmatchError } from '../generic/generic-missmatch-error';
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
+import { UnknownSiElementError } from '../../util/unknown-si-element-error';
+import { IllegalArgumentError } from '../../util/illegal-argument-error';
 
 export class SiEntry {
 	public treeLevel: number|null = null;
@@ -19,7 +21,7 @@ export class SiEntry {
 	public readOnly = true;
 	private _entryBuildupsMap = new Map<string, SiEntryBuildup>();
 
-	public state = SiEntryState.CLEAN;
+	private _state = SiEntryState.CLEAN;
 
 	constructor(readonly identifier: SiEntryIdentifier) {
 	}
@@ -81,6 +83,18 @@ export class SiEntry {
 
 	addEntryBuildup(buildup: SiEntryBuildup) {
 		this._entryBuildupsMap.set(buildup.entryQualifier.maskQualifier.identifier.typeId, buildup);
+	}
+
+	containsEntryBuildupId(id: string): boolean {
+		return this._entryBuildupsMap.has(id);
+	}
+
+	getEntryBuildupById(id: string): SiEntryBuildup {
+		if (this.containsEntryBuildupId(id)) {
+			return this._entryBuildupsMap.get(id);
+		}
+
+		throw new UnknownSiElementError('Unkown SiEntryBuildup id ' + id);
 	}
 
 // 	getFieldById(id: string): SiField|null {
@@ -217,37 +231,74 @@ export class SiEntry {
 		}
 	}
 
-	private uiClaimedSubject = new BehaviorSubject<boolean>(false);
-	private uiClaims = 0;
-
-	uiClaim() {
-		this.uiClaims++;
+	isAvlive(): boolean {
+		return this.state !== SiEntryState.CONSUMED && this.state !== SiEntryState.REMOVED;
 	}
 
-	uiUnclaim() {
-		if (this.uiClaims <= 0) {
-			throw new IllegalStateError();
+	consume(entry: SiEntry) {
+		IllegalArgumentError.assertTrue(entry.state === SiEntryState.CLEAN);
+		IllegalSiStateError.assertTrue(this.isAvlive());
+
+		for (const [entryBuildupId, entryBuildup] of this._entryBuildupsMap) {
+			entryBuildup.consume(entry.getEntryBuildupById(entryBuildupId));
 		}
 
-		this.uiClaims--;
-		this.updateClaimedSubject();
+		entry.markAsConsumed();
 	}
 
-	private updateClaimedSubject() {
-		var uiClaimed = this.uiClaims > 0;
-
-		if (this.uiClaimed !== claimed) {
-			this.uiClaimedSubject.next(claimed);
-		}
+	markAsOutdated() {
+		IllegalSiStateError.assertTrue(this.state === SiEntryState.CLEAN);
 	}
 
-	get uiClaimed$(): Observable<boolean> {
-		return this.uiClaimedSubject.asObservable();
+	markAsReloading() {
+		IllegalSiStateError.assertTrue(this.isAvlive());
 	}
 
-	get uiClaimed(): boolean {
-		return this.uiClaimedSubject.getValue();
+	markAsClean() {
+		IllegalSiStateError.assertTrue(this.isAvlive());
+		this._state = SiEntryState.CLEAN;
 	}
+
+	protected markAsConsumed() {
+		this._entryBuildupsMap.clear();
+		this._state = SiEntryState.CONSUMED;
+	}
+
+	get state(): SiEntryState {
+		return this._state;
+	}
+
+	// private uiClaimedSubject = new BehaviorSubject<boolean>(false);
+	// private uiClaims = 0;
+
+	// uiClaim() {
+	// 	this.uiClaims++;
+	// }
+
+	// uiUnclaim() {
+	// 	if (this.uiClaims <= 0) {
+	// 		throw new IllegalStateError();
+	// 	}
+
+	// 	this.uiClaims--;
+	// 	this.updateClaimedSubject();
+	// }
+
+	// private updateClaimedSubject() {
+	// 	var uiClaimed = this.uiClaims > 0;
+
+	// 	if (this.uiClaimed !== claimed) {
+	// 		this.uiClaimedSubject.next(claimed);
+	// 	}
+	// }
+
+	// get uiClaimed$(): Observable<boolean> {
+	// 	return this.uiClaimedSubject.asObservable();
+	// }
+
+	// get uiClaimed(): boolean {
+	// 	return this.uiClaimedSubject.getValue();
+	// }
 }
 
 
@@ -256,5 +307,6 @@ export enum SiEntryState {
 	OUTDATED,
 	MODIFYING,
 	RELOADING,
-	REMOVED
+	REMOVED,
+	CONSUMED
 }

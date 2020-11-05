@@ -22,7 +22,7 @@ export class SiApiFactory {
 	constructor(private injector: Injector) {
 	}
 
-	createGetResponse(data: any, request: SiGetRequest, controlBoundry: SiControlBoundry|null = null): SiGetResponse {
+	createGetResponse(data: any, request: SiGetRequest): SiGetResponse {
 		const extr = new Extractor(data);
 
 		const response = new SiGetResponse();
@@ -34,7 +34,7 @@ export class SiApiFactory {
 			}
 
 			response.results[key] = this.createGetResult(resultsData[key], request.instructions[key].getDeclaration(),
-					controlBoundry);
+					request.instructions[key].getGeneralControlsBoundry());
 		}
 
 		return response;

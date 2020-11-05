@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { SiEntryQualifier, SiEntryIdentifier } from '../../content/si-entry-qualifier';
 import { SiEntry } from '../../content/si-entry';
+import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
+import { Subject, Observable } from 'rxjs';
 
 @Injectable({
 	providedIn: 'root'
@@ -11,11 +13,10 @@ export class SiModStateService {
 	private updatedEventMap = new Map<string, Map<string, SiEntryIdentifier>>();
 	private removedEventMap = new Map<string, Map<string, SiEntryIdentifier>>();
 
-	private shownEntriesMap = new Map<SiEntry, SiEntry>();
-
+	private shownEntriesMap = new Map<SiEntry, object[]>();
+	private shownEntrySubject = new Subject<SiEntry>();
 
 	constructor() {
-
 	}
 
 	pushModEvent(event: SiModEvent): void {
@@ -54,26 +55,46 @@ export class SiModStateService {
 				|| (this.updatedEventMap.has(ei.typeId) && this.updatedEventMap.get(ei.typeId).has(ei.id))
 				|| (this.removedEventMap.has(ei.typeId) && this.removedEventMap.get(ei.typeId).has(ei.id));
 	}
+
+	isEntryShown(entry: SiEntry): boolean {
+		return this.shownEntriesMap.has(entry);
+	}
+
+	get shownEntry$(): Observable<SiEntry> {
+		return this.shownEntrySubject.asObservable();
+	}
+
+	registerShownEntry(entry: SiEntry, refObj: object) {
+		if (!this.shownEntriesMap.has(entry)) {
+			this.shownEntriesMap.set(entry, []);
+		}
+
+		const objects = this.shownEntriesMap.get(entry);
+		if (-1 === objects.indexOf(refObj)) {
+			throw new IllegalSiStateError('Entry already shown.');
+		}
+
+		objects.push(refObj);
+		this.shownEntrySubject.next(entry);
+	}
+
+	unregisterShownEntry(entry: SiEntry, refObj: object) {
+		if (!this.shownEntriesMap.has(entry)) {
+			throw new IllegalSiStateError('Entry not shown.');
+		}
+
+		const objects = this.shownEntriesMap.get(entry);
+		const i = objects.indexOf(refObj);
+		if (-1 === i) {
+			throw new IllegalSiStateError('Entry not shown.');
+		}
+
+		objects.splice(i, 1);
+	}
 }
 
 export interface SiModEvent {
 	added?: SiEntryIdentifier[];
 	updated?: SiEntryIdentifier[];
 	removed?: SiEntryIdentifier[];
-}
-
-export interface SiModEventListener {
-
-	onSiEntryAdded?: (siEntry: SiEntryIdentifier) => any;
-
-	onSiEntryUpdated?: (siEntry: SiEntryIdentifier) => any;
-
-	onSiEntryRemoved?: (siEntry: SiEntryIdentifier) => any;
-
-}
-
-export interface DisplayListener {
-	onSiEntryShow?: (siEntry: SiEntry) => any;
-
-	onSiEntryHide?: (siEntry: SiEntry) => any;
 }

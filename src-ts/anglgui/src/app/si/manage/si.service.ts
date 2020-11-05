@@ -111,11 +111,11 @@ export class SiService {
 				}));
 	}
 
-	apiGet(apiUrl: string, getRequest: SiGetRequest, controlBoundry: SiControlBoundry|null = null): Observable<SiGetResponse> {
+	apiGet(apiUrl: string, getRequest: SiGetRequest): Observable<SiGetResponse> {
 		return this.httpClient
 				.post<any>(apiUrl + '/get', getRequest)
 				.pipe(map(data => {
-					return new SiApiFactory(this.injector).createGetResponse(data, getRequest, controlBoundry);
+					return new SiApiFactory(this.injector).createGetResponse(data, getRequest);
 				}));
 	}
 

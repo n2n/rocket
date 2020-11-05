@@ -1,11 +1,11 @@
-import { Directive, Input, ElementRef, DoCheck } from '@angular/core';
+import { Directive, Input, ElementRef, DoCheck, OnInit, OnDestroy } from '@angular/core';
 import { SiEntry } from '../../content/si-entry';
-import { SiModStateService } from '../si-mod-state.service';
+import { SiModStateService } from '../model/si-mod-state.service';
 
 @Directive({
   selector: '[rocketUiEntry]'
 })
-export class EntryDirective implements DoCheck {
+export class EntryDirective implements DoCheck, OnInit, OnDestroy {
 
 	@Input() siEntry: SiEntry;
 
@@ -13,8 +13,16 @@ export class EntryDirective implements DoCheck {
 
 	constructor(private elementRef: ElementRef, private modState: SiModStateService) { }
 
+	ngOnInit() {
+		this.modState.registerShownEntry(this.siEntry, this);
+	}
+
+	ngOnDestroy() {
+		this.modState.unregisterShownEntry(this.siEntry, this);
+	}
+
 	ngDoCheck() {
-		this.chClass(this.modState.containsEntryIdentifier(this.siEntry.identifier));
+		this.chClass(this.modState.containsModEntryIdentifier(this.siEntry.identifier));
 	}
 
 	private chClass(mod: boolean) {

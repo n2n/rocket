@@ -8,6 +8,7 @@ import { IllegalSiStateError } from '../../util/illegal-si-state-error';
 import { SiGenericEntryBuildup } from '../generic/si-generic-entry-buildup';
 import { GenericMissmatchError } from '../generic/generic-missmatch-error';
 import { SiGenericValue } from '../generic/si-generic-value';
+import { UnknownSiElementError } from '../../util/unknown-si-element-error';
 
 export class SiEntryBuildup {
 	public messages: Message[] = [];
@@ -35,7 +36,7 @@ export class SiEntryBuildup {
 			return this.fieldMap$.getValue().get(id);
 		}
 
-		throw new IllegalSiStateError('Unkown SiField id ' + id);
+		throw new UnknownSiElementError('Unkown SiField id ' + id);
 	}
 
 	getFields() {
@@ -117,5 +118,13 @@ export class SiEntryBuildup {
 			throw new GenericMissmatchError('SiEntryBuildup missmatch: '
 					+ genericEntryBuildup.entryQualifier.toString() + ' != ' + this.entryQualifier.toString());
 		}
+	}
+
+	consume(entryBuildup: SiEntryBuildup) {
+		for (const [key, field] of this.fieldMap) {
+			this.fieldMap.set(key, field.consume(entryBuildup.getFieldById(key)));
+		}
+
+		this.controls = entryBuildup.controls;
 	}
 }

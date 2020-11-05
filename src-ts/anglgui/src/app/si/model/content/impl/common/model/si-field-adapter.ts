@@ -56,4 +56,8 @@ export abstract class SiFieldAdapter implements SiField/*, MessageFieldModel*/ {
 	resetToPoint(genericValue: SiGenericValue): void {
 		this.pasteValue(genericValue);
 	}
+
+	consume(consumeableSiField): SiField {
+		return consumeableSiField;
+	}
 }
