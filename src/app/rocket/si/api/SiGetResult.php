@@ -116,7 +116,7 @@ class SiGetResult implements \JsonSerializable {
 	public function jsonSerialize() {
 		return [
 			'declaration' => $this->declaration,
-			'generalControls' => SiPayloadFactory::createDataFromControls($this->generalControls),
+			'generalControls' => ($this->generalControls !== null ? SiPayloadFactory::createDataFromControls($this->generalControls) : null),
 			'entry' => $this->entry,
 			'partialContent' => $this->partialContent
 		];

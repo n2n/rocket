@@ -1,12 +1,10 @@
 import { SiModStateService, SiModEvent } from './si-mod-state.service';
-import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiEntry, SiEntryState } from '../../content/si-entry';
 import { SiService } from 'src/app/si/manage/si.service';
 import { SiGetRequest } from '../../api/si-get-request';
 import { SiGetInstruction } from '../../api/si-get-instruction';
 import { IllegalArgumentError } from 'src/app/si/util/illegal-argument-error';
 import { SiGetResponse } from '../../api/si-get-response';
-import { SiResult } from 'src/app/si/manage/si-result';
 import { SiGetResult } from '../../api/si-get-result';
 import { Subscription } from 'rxjs';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
@@ -16,7 +14,7 @@ export class SiEntryMonitor {
 	private entriesMap = new Map<string, SiEntry[]>();
 	private nextReloadJob: ReloadJob;
 
-	constructor(private apiUrl: string, private siService, private modStateService: SiModStateService) {
+	constructor(private apiUrl: string, private siService: SiService, private modStateService: SiModStateService) {
 		this.nextReloadJob = new ReloadJob(apiUrl, siService);
 	}
 
@@ -74,7 +72,7 @@ export class SiEntryMonitor {
 			if (this.nextReloadJob.containsSiEntry(siEntry)) {
 				this.executeNextReloadJob();
 			}
-		}))
+		}));
 	}
 
 	stop() {

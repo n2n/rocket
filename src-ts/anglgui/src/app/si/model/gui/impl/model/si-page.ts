@@ -78,21 +78,27 @@ export class SiPage {
 		this._entries = [];
 		this.entriesSubscription = new Subscription();
 		for (const newEntry of newEntries) {
-			const i = this._entries.length;
-			this._entries.push(newEntry);
-			this.entriesSubscription.add(newEntry.state$.subscribe((state) => {
-				if (state === SiEntryState.REPLACED) {
-					this._entries[i] = newEntry.replacementEntry;
-				}
-			}));
-			this.entryMonitor.registerEntry(newEntry);
+			this.insertEntry(this._entries.length, newEntry);
 		}
 
 		this.entryMonitor.start();
 
-		this.loadSubject.next(this.entries);
-		this.loadSubject.complete();
-		this.loadSubject = null;
+		if (this.loadSubject) {
+			this.loadSubject.next(this.entries);
+			this.loadSubject.complete();
+			this.loadSubject = null;
+		}
+	}
+
+	private insertEntry(i: number, newEntry: SiEntry) {
+		this._entries.push(newEntry);
+		this.entriesSubscription.add(newEntry.state$.subscribe((state) => {
+			console.log('WOW!!');
+			if (state === SiEntryState.REPLACED) {
+				this.insertEntry(i, newEntry.replacementEntry);
+			}
+		}));
+		this.entryMonitor.registerEntry(newEntry);
 	}
 
 	dipose() {

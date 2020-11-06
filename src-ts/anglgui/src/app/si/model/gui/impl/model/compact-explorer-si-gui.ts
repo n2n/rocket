@@ -40,7 +40,7 @@ export class CompactExplorerSiGui implements SiGui {
 	}
 
 	createUiStructureModel(): UiStructureModel {
-		if (this.pageCollection.pagesNum > 0) {
+		if (this.pageCollection.size > 0) {
 			throw new IllegalSiStateError('SiPageCollection already in use.');
 		}
 

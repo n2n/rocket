@@ -13,6 +13,7 @@ import { GenericMissmatchError } from '../generic/generic-missmatch-error';
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 import { UnknownSiElementError } from '../../util/unknown-si-element-error';
 import { IllegalArgumentError } from '../../util/illegal-argument-error';
+import { skip } from 'rxjs/operators';
 
 export class SiEntry {
 
@@ -77,8 +78,9 @@ export class SiEntry {
 	}
 
 	get state$(): Observable<SiEntryState> {
-		return this.stateSubject.asObservable();
+		return this.stateSubject.pipe(skip(1));
 	}
+
 	public treeLevel: number|null = null;
 	private selectedTypeIdSubject = new BehaviorSubject<string|null>(null);
 	public bulky = false;
@@ -87,7 +89,7 @@ export class SiEntry {
 
 	private stateSubject = new BehaviorSubject<SiEntryState>(SiEntryState.CLEAN);
 
-	private _replacementEntry: SiEntry|null = null; 
+	private _replacementEntry: SiEntry|null = null;
 
 	private ensureBuildupSelected() {
 		if (this.selectedTypeId !== null) {
@@ -272,7 +274,7 @@ export class SiEntry {
 
 	markAsOutdated() {
 		IllegalSiStateError.assertTrue(this.state === SiEntryState.CLEAN);
-		this.stateSubject.next(SiEntryState.CLEAN);
+		this.stateSubject.next(SiEntryState.OUTDATED);
 	}
 
 	markAsReloading() {

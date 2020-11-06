@@ -174,7 +174,7 @@ export class SiGuiFactory {
 
 				compEssentialsFactory = new SiControlFactory(compactExplorerSiGui, this.injector);
 				compactExplorerSiGui.pageCollection.controls = compEssentialsFactory.createControls(dataExtr.reqArray('controls'));
-				compactExplorerSiGui.pageCollection.declaration = SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'));
+				declaration = compactExplorerSiGui.pageCollection.declaration = SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'));
 
 				const partialContentData = dataExtr.nullaObject('partialContent');
 				if (partialContentData) {

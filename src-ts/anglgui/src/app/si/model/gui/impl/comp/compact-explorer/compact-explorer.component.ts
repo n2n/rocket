@@ -92,7 +92,7 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 			throw new Error('SiPageCollection filled.');
 		}
 
-		const loadedPage = this.loadPage(this.siPageCollection.currentPageNo);
+		const loadedPage = this.siPageCollection.loadPage(this.siPageCollection.currentPageNo);
 		loadedPage.offsetHeight = 0;
 	}
 
@@ -227,7 +227,7 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 		if (this.siPageCollection.containsPageNo(newPageNo)) {
 			newSiPage = this.siPageCollection.getPageByNo(newPageNo);
 		} else {
-			newSiPage = this.loadPage(newPageNo);
+			newSiPage = this.siPageCollection.loadPage(newPageNo);
 		}
 		this.updateOffsetHeight(newSiPage);
 	}

@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { SiEntryQualifier, SiEntryIdentifier } from '../../content/si-entry-qualifier';
 import { SiEntry } from '../../content/si-entry';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
-import { Subject, Observable } from 'rxjs';
+import { Subject, Observable, BehaviorSubject } from 'rxjs';
+import { skip, skipWhile, filter } from 'rxjs/operators';
 
 @Injectable({
 	providedIn: 'root'
@@ -12,6 +13,8 @@ export class SiModStateService {
 	private addedEventMap = new Map<string, Map<string, SiEntryIdentifier>>();
 	private updatedEventMap = new Map<string, Map<string, SiEntryIdentifier>>();
 	private removedEventMap = new Map<string, Map<string, SiEntryIdentifier>>();
+
+	private lastModEventSubject = new BehaviorSubject<SiModEvent>(null);
 
 	private shownEntriesMap = new Map<SiEntry, object[]>();
 	private shownEntrySubject = new Subject<SiEntry>();
@@ -40,6 +43,14 @@ export class SiModStateService {
 				this.reqEiMap(this.removedEventMap, ei.typeId).set(ei.id, ei);
 			}
 		}
+
+		this.lastModEventSubject.next(event);
+	}
+
+	get modEvent$(): Observable<SiModEvent> {
+		return this.lastModEventSubject.pipe(filter((modEvent: SiModEvent) => {
+			return modEvent !== null;
+		}));
 	}
 
 	private reqEiMap(map: Map<string, Map<string, SiEntryIdentifier>>, typeId: string): Map<string, SiEntryIdentifier> {
@@ -70,7 +81,7 @@ export class SiModStateService {
 		}
 
 		const objects = this.shownEntriesMap.get(entry);
-		if (-1 === objects.indexOf(refObj)) {
+		if (-1 < objects.indexOf(refObj)) {
 			throw new IllegalSiStateError('Entry already shown.');
 		}
 
