@@ -57,8 +57,9 @@ export class SiGetInstruction {
 		return this;
 	}
 
-	setGeneralControlsBoundry(generalControlsBoundry: SiControlBoundry|null) {
+	setGeneralControlsBoundry(generalControlsBoundry: SiControlBoundry|null): SiGetInstruction {
 		this.generalControlsBoundry = generalControlsBoundry;
+		return this;
 	}
 
 	getGeneralControlsBoundry(): SiControlBoundry|null {

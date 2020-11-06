@@ -119,11 +119,11 @@ export class SiEntryBuildup {
 		}
 	}
 
-	consume(entryBuildup: SiEntryBuildup) {
-		for (const [key, field] of this.fieldMap) {
-			this.fieldMap.set(key, field.consume(entryBuildup.getFieldById(key)));
-		}
+	// consume(entryBuildup: SiEntryBuildup) {
+	// 	for (const [key, field] of this.fieldMap) {
+	// 		this.fieldMap.set(key, field.consume(entryBuildup.getFieldById(key)));
+	// 	}
 
-		this.controls = entryBuildup.controls;
-	}
+	// 	this.controls = entryBuildup.controls;
+	// }
 }

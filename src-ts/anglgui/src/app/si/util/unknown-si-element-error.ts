@@ -3,7 +3,7 @@ export class UnknownSiElementError extends Error {
 		super(m);
 
 		// Set the prototype explicitly.
-		Object.setPrototypeOf(this, IllegalSiStateError.prototype);
+		Object.setPrototypeOf(this, UnknownSiElementError.prototype);
 	}
 
 	static assertTrue(cond: boolean, msg: string|null = null) {
@@ -11,6 +11,6 @@ export class UnknownSiElementError extends Error {
 			return;
 		}
 
-		throw new IllegalSiStateError(msg);
+		throw new UnknownSiElementError(msg);
 	}
 }

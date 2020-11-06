@@ -3,18 +3,16 @@ import { PlatformLocation } from '@angular/common';
 import { Router } from '@angular/router';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { SiInput } from 'src/app/si/model/input/si-input';
-import { SiEntryInput } from 'src/app/si/model/input/si-entry-input';
 import { SiEntry } from 'src/app/si/model/content/si-entry';
 import { SiEntryError } from 'src/app/si/model/input/si-entry-error';
 import { Observable, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { SiService } from './si.service';
 import { UiZone } from 'src/app/ui/structure/model/ui-zone';
 import { SiCommandError } from '../util/si-command-error';
 import { UiLayer } from 'src/app/ui/structure/model/ui-layer';
 import { SiResult, SiDirective } from './si-result';
 import { SiControlBoundry } from '../model/control/si-control-bountry';
-import { SiModStateService } from '../model/mod/si-mod-state.service';
+import { SiModStateService } from '../model/mod/model/si-mod-state.service';
 
 @Injectable({
 	providedIn: 'root'

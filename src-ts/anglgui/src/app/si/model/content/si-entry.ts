@@ -15,23 +15,8 @@ import { UnknownSiElementError } from '../../util/unknown-si-element-error';
 import { IllegalArgumentError } from '../../util/illegal-argument-error';
 
 export class SiEntry {
-	public treeLevel: number|null = null;
-	private selectedTypeIdSubject = new BehaviorSubject<string|null>(null);
-	public bulky = false;
-	public readOnly = true;
-	private _entryBuildupsMap = new Map<string, SiEntryBuildup>();
-
-	private _state = SiEntryState.CLEAN;
 
 	constructor(readonly identifier: SiEntryIdentifier) {
-	}
-
-	private ensureBuildupSelected() {
-		if (this.selectedTypeId !== null) {
-			return;
-		}
-
-		throw new IllegalSiStateError('No buildup selected for entry: ' + this.toString());
 	}
 
 	get qualifier(): SiEntryQualifier {
@@ -61,14 +46,6 @@ export class SiEntry {
 		return this.selectedTypeIdSubject;
 	}
 
-	containsTypeId(typeId: string): boolean {
-		return this._entryBuildupsMap.has(typeId);
-	}
-
-	isMultiType(): boolean {
-		return this._entryBuildupsMap.size > 1;
-	}
-
 	get maskQualifiers(): SiMaskQualifier[] {
 		return Array.from(this._entryBuildupsMap.values()).map(buildup => buildup.entryQualifier.maskQualifier);
 	}
@@ -79,6 +56,53 @@ export class SiEntry {
 			qualifiers.push(buildup.entryQualifier);
 		}
 		return qualifiers;
+	}
+
+	get replacementEntry(): SiEntry|null {
+		return this._replacementEntry;
+	}
+
+	// markAsClean() {
+	// 	IllegalSiStateError.assertTrue(this.isAvlive());
+	// 	this._state = SiEntryState.CLEAN;
+	// }
+
+	// protected markAsConsumed() {
+	// 	this._entryBuildupsMap.clear();
+	// 	this._state = SiEntryState.CONSUMED;
+	// }
+
+	get state(): SiEntryState {
+		return this.stateSubject.getValue();
+	}
+
+	get state$(): Observable<SiEntryState> {
+		return this.stateSubject.asObservable();
+	}
+	public treeLevel: number|null = null;
+	private selectedTypeIdSubject = new BehaviorSubject<string|null>(null);
+	public bulky = false;
+	public readOnly = true;
+	private _entryBuildupsMap = new Map<string, SiEntryBuildup>();
+
+	private stateSubject = new BehaviorSubject<SiEntryState>(SiEntryState.CLEAN);
+
+	private _replacementEntry: SiEntry|null = null; 
+
+	private ensureBuildupSelected() {
+		if (this.selectedTypeId !== null) {
+			return;
+		}
+
+		throw new IllegalSiStateError('No buildup selected for entry: ' + this.toString());
+	}
+
+	containsTypeId(typeId: string): boolean {
+		return this._entryBuildupsMap.has(typeId);
+	}
+
+	isMultiType(): boolean {
+		return this._entryBuildupsMap.size > 1;
 	}
 
 	addEntryBuildup(buildup: SiEntryBuildup) {
@@ -231,41 +255,43 @@ export class SiEntry {
 		}
 	}
 
-	isAvlive(): boolean {
-		return this.state !== SiEntryState.CONSUMED && this.state !== SiEntryState.REMOVED;
+	isAlive(): boolean {
+		return this.state !== SiEntryState.REPLACED && this.state !== SiEntryState.REMOVED;
 	}
 
-	consume(entry: SiEntry) {
-		IllegalArgumentError.assertTrue(entry.state === SiEntryState.CLEAN);
-		IllegalSiStateError.assertTrue(this.isAvlive());
+	// consume(entry: SiEntry) {
+	// 	IllegalArgumentError.assertTrue(entry.state === SiEntryState.CLEAN);
+	// 	IllegalSiStateError.assertTrue(this.isAvlive());
 
-		for (const [entryBuildupId, entryBuildup] of this._entryBuildupsMap) {
-			entryBuildup.consume(entry.getEntryBuildupById(entryBuildupId));
-		}
+	// 	for (const [entryBuildupId, entryBuildup] of this._entryBuildupsMap) {
+	// 		entryBuildup.consume(entry.getEntryBuildupById(entryBuildupId));
+	// 	}
 
-		entry.markAsConsumed();
-	}
+	// 	entry.markAsConsumed();
+	// }
 
 	markAsOutdated() {
 		IllegalSiStateError.assertTrue(this.state === SiEntryState.CLEAN);
+		this.stateSubject.next(SiEntryState.CLEAN);
 	}
 
 	markAsReloading() {
-		IllegalSiStateError.assertTrue(this.isAvlive());
+		IllegalSiStateError.assertTrue(this.isAlive());
+		this.stateSubject.next(SiEntryState.RELOADING);
 	}
 
-	markAsClean() {
-		IllegalSiStateError.assertTrue(this.isAvlive());
-		this._state = SiEntryState.CLEAN;
+	markAsRemoved() {
+		IllegalSiStateError.assertTrue(this.isAlive());
+		this.stateSubject.next(SiEntryState.REMOVED);
+		this.stateSubject.complete();
 	}
 
-	protected markAsConsumed() {
-		this._entryBuildupsMap.clear();
-		this._state = SiEntryState.CONSUMED;
-	}
+	replace(replacementEntry: SiEntry) {
+		IllegalSiStateError.assertTrue(this.isAlive());
 
-	get state(): SiEntryState {
-		return this._state;
+		this._replacementEntry = replacementEntry;
+		this.stateSubject.next(SiEntryState.REPLACED);
+		this.stateSubject.complete();
 	}
 
 	// private uiClaimedSubject = new BehaviorSubject<boolean>(false);
@@ -308,5 +334,5 @@ export enum SiEntryState {
 	MODIFYING,
 	RELOADING,
 	REMOVED,
-	CONSUMED
+	REPLACED
 }

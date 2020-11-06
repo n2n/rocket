@@ -178,7 +178,7 @@ export class SiGuiFactory {
 							.createPartialContent(partialContentData);
 
 					listSiGui.pageCollection.size = partialContent.count;
-					listSiGui.pageCollection.putPage(new SiPage(1, partialContent.entries, null));
+					listSiGui.pageCollection.createPage(1, partialContent.entries);
 				}
 
 				return listSiGui;

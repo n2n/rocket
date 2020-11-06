@@ -15,7 +15,7 @@ import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 export class SiEntryMonitor {
 
 	private entriesMap = new Map<string, SiEntry[]>();
-	private nextReloadJob: ReloadJob|null = null;
+	private nextReloadJob = new ReloadJob();
 
 	constructor(private apiUrl: string, private siService, private modStateService: SiModStateService) {
 	}
@@ -52,24 +52,50 @@ export class SiEntryMonitor {
 
 	private subscription: Subscription|null = null;
 
-	start() {
+	start(loadCallback: (siEntryLoads: SiEntryLoad[]) => any) {
 		if (this.subscription) {
 			throw new IllegalSiStateError('Monitor already started.');
 		}
 
 		this.subscription = this.modStateService.modEvent$.subscribe((modEvent) => {
-			this.handleEvent(modEvent);
+			this.handleEvent(modEvent, loadCallback);
 		});
+
+		this.subscription.add(this.modStateService.shownEntry$.subscribe((siEntry) => {
+			if (this.nextReloadJob.containsSiEntry(siEntry)) {
+				this.executeNextReloadJob(loadCallback);
+			}
+		}))
 	}
 
 	private handleEvent(modEvent: SiModEvent) {
-		for (const siEntryIdentifier of modEvent.updated || []) {
-			if (!this.entriesMap.has(siEntryIdentifier.toString())) {
+		for (const siEntryIdentifier of modEvent.removed || []) {
+			const id = siEntryIdentifier.id;
+			if (!this.entriesMap.has(id)) {
 				continue;
 			}
 
-			this.nextReloadJob.execute();
+			for (const siEntry of this.entriesMap.get(id)) {
+				siEntry.markAsRemoved();
+			}
 		}
+
+		for (const siEntryIdentifier of modEvent.updated || []) {
+			const id = siEntryIdentifier.id;
+			if (!this.entriesMap.has(id)) {
+				continue;
+			}
+
+			for (const siEntry of this.entriesMap.get(id)) {
+				siEntry.markAsOutdated();
+				this.nextReloadJob.addSiEntry(siEntry);
+			}
+		}
+	}
+
+	private executeNextReloadJob() {
+		
+
 	}
 
 	stop() {
@@ -79,22 +105,26 @@ export class SiEntryMonitor {
 
 		this.subscription = null;
 	}
-
-	get display(): boolean {
-		return this.modStateService.containsModEntryIdentifier(entry);
-	}
 }
 
 class ReloadJob {
-	siEntries: Map<SiEntry, SiEntry> = [];
+	private siEntriesMap = new Map<SiEntry, SiEntry>();
 
 	constructor(private apiUrl: string, private siService: SiService) {
+	}
+
+	containsSiEntry(entry: SiEntry) {
+		return this.siEntriesMap.has(entry);
+	}
+
+	addSiEntry(siEntry: SiEntry) {
+		this.siEntriesMap.set(siEntry, siEntry);
 	}
 
 	execute() {
 		const getInstructions: SiGetInstruction[] = [];
 		const entries: SiEntry[] = [];
-		for (const entry of this.siEntries) {
+		for (const [, entry] of this.siEntriesMap) {
 			if (entry.state !== SiEntryState.OUTDATED) {
 				continue;
 			}
@@ -111,9 +141,13 @@ class ReloadJob {
 	}
 
 	private handleResults(results: SiGetResult[], entries: SiEntry[]) {
+		const entryLoads: SiEntryLoad[] = [];
+
 		for (const i of results.keys()) {
-			entries[i].consume(results[i].entry);
-			entries[i].markAsClean();
+			entryLoads.push({
+				outdated: entries[i],
+				loaded: results[i].entry
+			});
 		}
 	}
 }

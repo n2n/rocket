@@ -14,6 +14,8 @@ import { StructurePage, StructurePageManager } from './structure-page-manager';
 import { SiService } from 'src/app/si/manage/si.service';
 import { skip, debounceTime, tap } from 'rxjs/operators';
 import { LayerComponent } from 'src/app/ui/structure/comp/layer/layer.component';
+import { SiEntryMonitor } from 'src/app/si/model/mod/model/si-entry-monitor';
+import { SiModStateService } from 'src/app/si/model/mod/model/si-mod-state.service';
 
 @Component({
 	selector: 'rocket-ui-compact-explorer',
@@ -32,7 +34,8 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 	private quickSearching = false;
 	private weakPageNoChange = false;
 
-	constructor(private siService: SiService, @Inject(LayerComponent)  private parent: LayerComponent) {
+	constructor(private siService: SiService, private siModStateService: SiModStateService, 
+			@Inject(LayerComponent) private parent: LayerComponent) {
 	}
 
 	ngOnInit() {
@@ -142,8 +145,7 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 			siPage = this.siPageCollection.getPageByNo(pageNo);
 			siPage.entries = null;
 		} else {
-			siPage = new SiPage(pageNo, null, null);
-			this.siPageCollection.putPage(siPage);
+			siPage = this.siPageCollection.createPage(pageNo, null);
 		}
 
 		const instruction = SiGetInstruction.partialContent(false, true,
@@ -151,10 +153,11 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 						this.quickSearchStr)
 				.setDeclaration(this.siPageCollection.declaration)
 				.setGeneralControlsIncluded(!this.model.areGeneralControlsInitialized())
+				.setGeneralControlsBoundry(this.model.getSiControlBoundry())
 				.setEntryControlsIncluded(true);
 		const getRequest = new SiGetRequest(instruction);
 
-		this.siService.apiGet(this.model.getApiUrl(), getRequest, this.model.getSiControlBoundry())
+		this.siService.apiGet(this.model.getApiUrl(), getRequest)
 				.subscribe((getResponse: SiGetResponse) => {
 					this.applyResult(getResponse.results[0], siPage);
 				});

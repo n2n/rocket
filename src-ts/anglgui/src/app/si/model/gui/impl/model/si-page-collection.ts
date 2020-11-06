@@ -2,6 +2,8 @@ import { SiPage } from './si-page';
 import { SiDeclaration } from '../../../meta/si-declaration';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { SiEntry } from '../../../content/si-entry';
+import { SiEntryMonitor } from '../../../mod/model/si-entry-monitor';
 
 export class SiPageCollection {
 	public declaration: SiDeclaration|null = null;
@@ -75,16 +77,18 @@ export class SiPageCollection {
 		}
 	}
 
-	putPage(page: SiPage) {
-		if (page.no > this.pagesNum) {
+	createPage(no: number, entries: SiEntry[]|null, entryMonitor: SiEntryMonitor): SiPage {
+		if (no > this.pagesNum) {
 			throw new IllegalSiStateError('Page num to high.');
 		}
 
-		this.pagesMap.set(page.no, page);
+		const page = new SiPage(no, entries, null);
+		this.pagesMap.set(no, page);
+		return page;
 	}
 
-	containsPageNo(number: number): boolean {
-		return this.pagesMap.has(number);
+	containsPageNo(no: number): boolean {
+		return this.pagesMap.has(no);
 	}
 
 	getPageByNo(no: number): SiPage {

@@ -36,5 +36,5 @@ export interface SiField {
 
 	resetToPoint(genericValue: SiGenericValue): void;
 
-	consume(consumableSiField: SiField): SiField;
+	// consume(consumableSiField: SiField): SiField;
 }
