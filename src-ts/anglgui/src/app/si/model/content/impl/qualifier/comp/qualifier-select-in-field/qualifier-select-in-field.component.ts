@@ -7,6 +7,8 @@ import { TranslationService } from 'src/app/util/i18n/translation.service';
 import { CompactExplorerSiGui } from 'src/app/si/model/gui/impl/model/compact-explorer-si-gui';
 import { SimpleSiControl } from 'src/app/si/model/control/impl/model/simple-si-control';
 import { SiButton } from 'src/app/si/model/control/impl/model/si-button';
+import { SiService } from 'src/app/si/manage/si.service';
+import { SiModStateService } from 'src/app/si/model/mod/model/si-mod-state.service';
 
 
 @Component({
@@ -22,7 +24,8 @@ export class QualifierSelectInFieldComponent implements OnInit, DoCheck {
 
 	private optionsUiLayer: PopupUiLayer|null = null;
 
-	constructor(private elemRef: ElementRef, private translationService: TranslationService) { }
+	constructor(private elemRef: ElementRef, private translationService: TranslationService,
+			private siService: SiService, private siModState: SiModStateService) { }
 
 	ngOnInit() {
 		if (1 === this.model.getMax()) {
@@ -88,7 +91,7 @@ export class QualifierSelectInFieldComponent implements OnInit, DoCheck {
 			this.optionsUiLayer = null;
 		});
 
-		const comp = new CompactExplorerSiGui(this.model.getApiUrl(), 30);
+		const comp = new CompactExplorerSiGui(30, this.model.getApiUrl(), this.siService, this.siModState);
 
 		const popupUiZone = this.optionsUiLayer.pushRoute(null, null).zone;
 

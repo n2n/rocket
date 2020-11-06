@@ -14,6 +14,8 @@ import { SiPanel, SiGridPos } from '../model/content/impl/embedded/model/si-pane
 import { SiFile, SiImageDimension, SiImageCut } from '../model/content/impl/file/model/file-in-si-field';
 import { SiCrumbGroup, SiCrumb } from '../model/content/impl/meta/model/si-crumb';
 import { Injector } from '@angular/core';
+import { SiService } from '../manage/si.service';
+import { SiModStateService } from '../model/mod/model/si-mod-state.service';
 
 
 enum SiGuiType {
@@ -166,22 +168,21 @@ export class SiGuiFactory {
 
 		switch (type) {
 			case SiGuiType.COMPACT_EXPLORER:
-				const listSiGui = new CompactExplorerSiGui(dataExtr.reqString('apiUrl'), dataExtr.reqNumber('pageSize'));
+				const compactExplorerSiGui = new CompactExplorerSiGui(dataExtr.reqNumber('pageSize'),
+						dataExtr.reqString('apiUrl'), this.injector.get(SiService),
+						this.injector.get(SiModStateService));
 
-				compEssentialsFactory = new SiControlFactory(listSiGui, this.injector);
-				listSiGui.controls = compEssentialsFactory.createControls(dataExtr.reqArray('controls'));
-				declaration = listSiGui.pageCollection.declaration = SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'));
+				compEssentialsFactory = new SiControlFactory(compactExplorerSiGui, this.injector);
+				compactExplorerSiGui.pageCollection.controls = compEssentialsFactory.createControls(dataExtr.reqArray('controls'));
+				compactExplorerSiGui.pageCollection.declaration = SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'));
 
 				const partialContentData = dataExtr.nullaObject('partialContent');
 				if (partialContentData) {
-					const partialContent = new SiEntryFactory(declaration, this.injector)
+					compactExplorerSiGui.partialContent = new SiEntryFactory(declaration, this.injector)
 							.createPartialContent(partialContentData);
-
-					listSiGui.pageCollection.size = partialContent.count;
-					listSiGui.pageCollection.createPage(1, partialContent.entries);
 				}
 
-				return listSiGui;
+				return compactExplorerSiGui;
 
 			case SiGuiType.BULKY_ENTRY:
 				declaration = SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'));

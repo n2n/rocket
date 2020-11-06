@@ -5,15 +5,15 @@ import { SiControlBoundry } from '../../../control/si-control-bountry';
 
 export interface CompactExplorerModel {
 
-	getApiUrl(): string;
+	// getApiUrl(): string;
 
 	getSiPageCollection(): SiPageCollection;
 
-	getSiControlBoundry(): SiControlBoundry;
+	// getSiControlBoundry(): SiControlBoundry;
 
 	getSiEntryQualifierSelection(): SiEntryQualifierSelection;
 
-	areGeneralControlsInitialized(): boolean;
+	// areGeneralControlsInitialized(): boolean;
 
-	applyGeneralControls(controls: SiControl[]): void;
+	// applyGeneralControls(controls: SiControl[]): void;
 }

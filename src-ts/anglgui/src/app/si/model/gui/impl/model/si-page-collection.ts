@@ -4,16 +4,40 @@ import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { SiEntry } from '../../../content/si-entry';
 import { SiEntryMonitor } from '../../../mod/model/si-entry-monitor';
+import { SiModStateService } from '../../../mod/model/si-mod-state.service';
+import { SiService } from 'src/app/si/manage/si.service';
+import { SiControl } from '../../../control/si-control';
+import { SiGetInstruction } from '../../../api/si-get-instruction';
+import { SiGetRequest } from '../../../api/si-get-request';
+import { SiGetResponse } from '../../../api/si-get-response';
+import { SiGetResult } from '../../../api/si-get-result';
+import { SiControlBoundry } from '../../../control/si-control-bountry';
 
-export class SiPageCollection {
+export class SiPageCollection implements SiControlBoundry {
 	public declaration: SiDeclaration|null = null;
+	public controls: SiControl[]|null = null;
 
 	private pagesMap = new Map<number, SiPage>();
 	private _size = 0;
 	private _currentPageNo$ = new BehaviorSubject<number>(1);
 	public quickSearchStr: string|null = null;
 
-	constructor(readonly pageSize: number) {
+	constructor(readonly pageSize: number, private apiUrl: string, private siService: SiService,
+			private siModState: SiModStateService) {
+	}
+
+	getEntries(): SiEntry[] {
+		const entries = [];
+		for (const page of this.pages) {
+			if (page.entries) {
+				entries.push(...page.entries);
+			}
+		}
+		return entries;
+	}
+
+	getSelectedEntries(): SiEntry[] {
+		throw new Error('Method not implemented.');
 	}
 
 	get pages(): SiPage[] {
@@ -21,7 +45,6 @@ export class SiPageCollection {
 	}
 
 	clear() {
-		this.pagesMap.clear();
 		this.size = 0;
 	}
 
@@ -72,17 +95,19 @@ export class SiPageCollection {
 
 		for (const pageNo of this.pagesMap.keys()) {
 			if (pageNo > pagesNum) {
+				this.pagesMap.get(pageNo).dipose();
 				this.pagesMap.delete(pageNo);
 			}
 		}
 	}
 
-	createPage(no: number, entries: SiEntry[]|null, entryMonitor: SiEntryMonitor): SiPage {
+	createPage(no: number, entries: SiEntry[]|null): SiPage {
 		if (no > this.pagesNum) {
 			throw new IllegalSiStateError('Page num to high.');
 		}
 
-		const page = new SiPage(no, entries, null);
+		const entryMonitory = new SiEntryMonitor(this.apiUrl, this.siService, this.siModState);
+		const page = new SiPage(entryMonitory, no, entries, null);
 		this.pagesMap.set(no, page);
 		return page;
 	}
@@ -146,5 +171,44 @@ export class SiPageCollection {
 		for (const page of this.pagesMap.values()) {
 			page.offsetHeight = null;
 		}
+	}
+
+	loadPage(pageNo: number): SiPage {
+		let siPage: SiPage;
+		if (this.containsPageNo(pageNo)) {
+			siPage = this.getPageByNo(pageNo);
+			siPage.entries = null;
+		} else {
+			siPage = this.createPage(pageNo, null);
+		}
+
+		const instruction = SiGetInstruction.partialContent(false, true,
+						(pageNo - 1) * this.pageSize, this.pageSize,
+						this.quickSearchStr)
+				.setDeclaration(this.declaration)
+				.setGeneralControlsIncluded(!this.controls)
+				.setGeneralControlsBoundry(this)
+				.setEntryControlsIncluded(true);
+		const getRequest = new SiGetRequest(instruction);
+
+		this.siService.apiGet(this.apiUrl, getRequest)
+				.subscribe((getResponse: SiGetResponse) => {
+					this.applyResult(getResponse.results[0], siPage);
+				});
+
+		return siPage;
+	}
+
+	private applyResult(result: SiGetResult, siPage: SiPage) {
+		if (result.declaration) {
+			this.declaration = result.declaration;
+		}
+
+		if (result.generalControls) {
+			this.controls = result.generalControls;
+		}
+
+		this.size = result.partialContent.count;
+		siPage.entries = result.partialContent.entries;
 	}
 }

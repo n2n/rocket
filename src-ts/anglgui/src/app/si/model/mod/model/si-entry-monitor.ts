@@ -13,12 +13,14 @@ import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 
 export class SiEntryMonitor {
-
 	private entriesMap = new Map<string, SiEntry[]>();
-	private nextReloadJob = new ReloadJob();
+	private nextReloadJob: ReloadJob;
 
 	constructor(private apiUrl: string, private siService, private modStateService: SiModStateService) {
+		this.nextReloadJob = new ReloadJob(apiUrl, siService);
 	}
+
+	private subscription: Subscription|null = null;
 
 	registerEntry(entry: SiEntry) {
 		const id = entry.identifier.id;
@@ -30,7 +32,7 @@ export class SiEntryMonitor {
 			this.entriesMap.set(id, []);
 		}
 
-		const entries = this.entriesMap.get(id)
+		const entries = this.entriesMap.get(id);
 
 		if (-1 < entries.indexOf(entry)) {
 			throw new IllegalArgumentError('Entry already registered.');
@@ -48,27 +50,42 @@ export class SiEntryMonitor {
 		const entries = this.entriesMap.get(id);
 		const i = entries.indexOf(entry);
 		entries.splice(i, 1);
+
+		this.nextReloadJob.removeSiEntry(entry);
 	}
 
-	private subscription: Subscription|null = null;
+	unregisterAllEntries() {
+		this.entriesMap.clear();
+		this.nextReloadJob.clear();
+	}
 
-	start(loadCallback: (siEntryLoads: SiEntryLoad[]) => any) {
+	start() {
 		if (this.subscription) {
 			throw new IllegalSiStateError('Monitor already started.');
 		}
 
 		this.subscription = this.modStateService.modEvent$.subscribe((modEvent) => {
-			this.handleEvent(modEvent, loadCallback);
+			if (this.handleEvent(modEvent).shownEntryUpdated) {
+				this.executeNextReloadJob();
+			}
 		});
 
 		this.subscription.add(this.modStateService.shownEntry$.subscribe((siEntry) => {
 			if (this.nextReloadJob.containsSiEntry(siEntry)) {
-				this.executeNextReloadJob(loadCallback);
+				this.executeNextReloadJob();
 			}
 		}))
 	}
 
-	private handleEvent(modEvent: SiModEvent) {
+	stop() {
+		if (this.subscription) {
+			this.subscription.unsubscribe();
+		}
+
+		this.subscription = null;
+	}
+
+	private handleEvent(modEvent: SiModEvent): { shownEntryUpdated: boolean } {
 		for (const siEntryIdentifier of modEvent.removed || []) {
 			const id = siEntryIdentifier.id;
 			if (!this.entriesMap.has(id)) {
@@ -80,6 +97,8 @@ export class SiEntryMonitor {
 			}
 		}
 
+		let shownEntryUpdated = false;
+
 		for (const siEntryIdentifier of modEvent.updated || []) {
 			const id = siEntryIdentifier.id;
 			if (!this.entriesMap.has(id)) {
@@ -89,21 +108,22 @@ export class SiEntryMonitor {
 			for (const siEntry of this.entriesMap.get(id)) {
 				siEntry.markAsOutdated();
 				this.nextReloadJob.addSiEntry(siEntry);
+
+				if (!shownEntryUpdated && this.modStateService.isEntryShown(siEntry)) {
+					shownEntryUpdated = true;
+				}
 			}
 		}
+
+		return { shownEntryUpdated };
 	}
 
 	private executeNextReloadJob() {
-		
+		const rj = this.nextReloadJob;
 
-	}
+		this.nextReloadJob = new ReloadJob(this.apiUrl, this.siService);
 
-	stop() {
-		if (this.subscription) {
-			this.subscription.unsubscribe();
-		}
-
-		this.subscription = null;
+		rj.execute();
 	}
 }
 
@@ -119,6 +139,14 @@ class ReloadJob {
 
 	addSiEntry(siEntry: SiEntry) {
 		this.siEntriesMap.set(siEntry, siEntry);
+	}
+
+	removeSiEntry(siEntry: SiEntry) {
+		this.siEntriesMap.delete(siEntry);
+	}
+
+	clear() {
+		this.siEntriesMap.clear();
 	}
 
 	execute() {

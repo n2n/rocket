@@ -34,7 +34,7 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 	private quickSearching = false;
 	private weakPageNoChange = false;
 
-	constructor(private siService: SiService, private siModStateService: SiModStateService, 
+	constructor(private siService: SiService, private siModStateService: SiModStateService,
 			@Inject(LayerComponent) private parent: LayerComponent) {
 	}
 
@@ -139,46 +139,46 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 		this.quickSearchSubject.next(quickSearchStr);
 	}
 
-	private loadPage(pageNo: number): SiPage {
-		let siPage: SiPage;
-		if (this.siPageCollection.containsPageNo(pageNo)) {
-			siPage = this.siPageCollection.getPageByNo(pageNo);
-			siPage.entries = null;
-		} else {
-			siPage = this.siPageCollection.createPage(pageNo, null);
-		}
+	// private loadPage(pageNo: number): SiPage {
+	// 	let siPage: SiPage;
+	// 	if (this.siPageCollection.containsPageNo(pageNo)) {
+	// 		siPage = this.siPageCollection.getPageByNo(pageNo);
+	// 		siPage.entries = null;
+	// 	} else {
+	// 		siPage = this.siPageCollection.createPage(pageNo, null);
+	// 	}
 
-		const instruction = SiGetInstruction.partialContent(false, true,
-						(pageNo - 1) * this.siPageCollection.pageSize, this.siPageCollection.pageSize,
-						this.quickSearchStr)
-				.setDeclaration(this.siPageCollection.declaration)
-				.setGeneralControlsIncluded(!this.model.areGeneralControlsInitialized())
-				.setGeneralControlsBoundry(this.model.getSiControlBoundry())
-				.setEntryControlsIncluded(true);
-		const getRequest = new SiGetRequest(instruction);
+	// 	const instruction = SiGetInstruction.partialContent(false, true,
+	// 					(pageNo - 1) * this.siPageCollection.pageSize, this.siPageCollection.pageSize,
+	// 					this.quickSearchStr)
+	// 			.setDeclaration(this.siPageCollection.declaration)
+	// 			.setGeneralControlsIncluded(!this.model.areGeneralControlsInitialized())
+	// 			.setGeneralControlsBoundry(this.model.getSiControlBoundry())
+	// 			.setEntryControlsIncluded(true);
+	// 	const getRequest = new SiGetRequest(instruction);
 
-		this.siService.apiGet(this.model.getApiUrl(), getRequest)
-				.subscribe((getResponse: SiGetResponse) => {
-					this.applyResult(getResponse.results[0], siPage);
-				});
+	// 	this.siService.apiGet(this.model.getApiUrl(), getRequest)
+	// 			.subscribe((getResponse: SiGetResponse) => {
+	// 				this.applyResult(getResponse.results[0], siPage);
+	// 			});
 
-		return siPage;
-	}
+	// 	return siPage;
+	// }
 
-	private applyResult(result: SiGetResult, siPage: SiPage) {
-		if (result.declaration) {
-			this.siPageCollection.declaration = result.declaration;
-		}
+	// private applyResult(result: SiGetResult, siPage: SiPage) {
+	// 	if (result.declaration) {
+	// 		this.siPageCollection.declaration = result.declaration;
+	// 	}
 
-		if (result.generalControls) {
-			this.model.applyGeneralControls(result.generalControls);
-		}
+	// 	if (result.generalControls) {
+	// 		this.model.applyGeneralControls(result.generalControls);
+	// 	}
 
-		this.siPageCollection.size = result.partialContent.count;
-		siPage.entries = result.partialContent.entries;
+	// 	this.siPageCollection.size = result.partialContent.count;
+	// 	siPage.entries = result.partialContent.entries;
 
-		this.updateCurrentPage();
-	}
+	// 	this.updateCurrentPage();
+	// }
 
 	private changePageNoWeakly(pageNo: number) {
 		if (this.siPageCollection.currentPageNo === pageNo) {
@@ -199,7 +199,8 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 		if (this.siPageCollection.containsPageNo(this.siPageCollection.currentPageNo)) {
 			page = this.siPageCollection.getPageByNo(this.siPageCollection.currentPageNo);
 		} else {
-			page = this.loadPage(this.siPageCollection.currentPageNo);
+			page = this.siPageCollection.loadPage(this.siPageCollection.currentPageNo);
+			page.onLoad(() => { this.updateCurrentPage(); });
 		}
 		page.offsetHeight = 0;
 	}
@@ -244,7 +245,7 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 	private valCurrentPageNo() {
 		if (!this.siPageCollection.currentPageExists) {
 			this.siPageCollection.hideAllPages();
-			this.loadPage(this.siPageCollection.currentPageNo).offsetHeight = 0;
+			this.siPageCollection.loadPage(this.siPageCollection.currentPageNo).offsetHeight = 0;
 			return;
 		}
 

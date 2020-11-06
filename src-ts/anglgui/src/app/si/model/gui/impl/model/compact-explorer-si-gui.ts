@@ -1,62 +1,38 @@
 
-import { Message } from 'src/app/util/i18n/message';
 import { SiGui } from '../../si-gui';
 import { SiEntry } from '../../../content/si-entry';
 import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
 import { CompactExplorerComponent } from '../comp/compact-explorer/compact-explorer.component';
 import { SiPageCollection } from './si-page-collection';
 import { CompactExplorerModel } from '../comp/compact-explorer-model';
-import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { SiEntryQualifierSelection } from './si-entry-qualifier-selection';
 import { PaginationComponent } from '../comp/pagination/pagination.component';
-import { SiControl } from '../../../control/si-control';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiControlBoundry } from '../../../control/si-control-bountry';
+import { SiService } from 'src/app/si/manage/si.service';
+import { SiModStateService } from '../../../mod/model/si-mod-state.service';
+import { UiContent } from 'src/app/ui/structure/model/ui-content';
+import { UiStructureModelAdapter } from 'src/app/ui/structure/model/impl/ui-structure-model-adapter';
+import { StructureUiZoneError } from 'src/app/ui/structure/model/impl/structure-ui-zone-error';
+import { UiZoneError } from 'src/app/ui/structure/model/ui-zone-error';
+import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
+import { SiPartialContent } from '../../../content/si-partial-content';
 
 export class CompactExplorerSiGui implements SiGui {
 
-	public qualifierSelection: SiEntryQualifierSelection|null = null;
-	readonly pageCollection: SiPageCollection;
-	controls: SiControl[]|null = null;
+	qualifierSelection: SiEntryQualifierSelection|null = null;
+	pageCollection: SiPageCollection;
+	partialContent: SiPartialContent|null = null;
 
-	constructor(public apiUrl: string, pageSize: number) {
-		this.pageCollection = new SiPageCollection(pageSize);
-// 		this.qualifierSelection = {
-// 			min: 0,
-// 			max: 1,
-// 			selectedQualfiers: [],
-//
-// 			done: () => { },
-//
-// 			cancel: () => { }
-// 		}
-	}
+	constructor(pageSize: number, apiUrl: string, siService: SiService,
+			siModState: SiModStateService) {
 
-	getApiUrl(): string {
-		return this.apiUrl;
-	}
-
-	getSiEntryQualifierSelection(): SiEntryQualifierSelection|null {
-		return this.qualifierSelection;
-	}
-
-	getSiPageCollection(): SiPageCollection {
-		return this.pageCollection;
-	}
-
-	getSiGui(): SiGui {
-		return this;
+		this.pageCollection = new SiPageCollection(pageSize, apiUrl, siService, siModState);
 	}
 
 	getEntries(): SiEntry[] {
-		const entries = [];
-		for (const page of this.pageCollection.pages) {
-			if (page.entries) {
-				entries.push(...page.entries);
-			}
-		}
-		return entries;
+		return this.pageCollection.getEntries();
 	}
 
 	getSelectedEntries(): SiEntry[] {
@@ -64,56 +40,23 @@ export class CompactExplorerSiGui implements SiGui {
 	}
 
 	createUiStructureModel(): UiStructureModel {
-		const uiStrucuterModel = new SimpleUiStructureModel();
-
-		uiStrucuterModel.initCallback = (uiStructure) => {
-			uiStrucuterModel.content = new TypeUiContent(CompactExplorerComponent, (ref) => {
-				ref.instance.model = new EntriesListModelImpl(this, uiStrucuterModel, uiStructure);
-				ref.instance.uiStructure = uiStructure;
-			});
-
-			if (this.controls) {
-				this.applyGeneralControls(uiStrucuterModel, uiStructure, this.controls);
-			}
-		};
-
-		uiStrucuterModel.asideContents = [new TypeUiContent(PaginationComponent, (ref) => {
-			ref.instance.siPageCollection = this.pageCollection;
-		})];
-
-		uiStrucuterModel.messagesCallback = () => this.getMessages();
-
-		return uiStrucuterModel;
-	}
-
-	private getMessages(): Message[] {
-		const messages: Message[] = [];
-
-		for (const entry of this.getEntries()) {
-			messages.push(...entry.getMessages());
+		if (this.pageCollection.pagesNum > 0) {
+			throw new IllegalSiStateError('SiPageCollection already in use.');
 		}
 
-		return messages;
-	}
-
-	public applyGeneralControls(uiStructureModel: SimpleUiStructureModel, uiStructure: UiStructure, controls: SiControl[]): void {
-		uiStructureModel.mainControlContents = controls.map((control) => {
-			return control.createUiContent(uiStructure.getZone());
-		});
+		return new CompactExplorerListModelImpl(this, this.partialContent);
 	}
 }
 
-class EntriesListModelImpl implements CompactExplorerModel {
+class CompactExplorerListModelImpl extends UiStructureModelAdapter implements CompactExplorerModel {
 
-	constructor(private comp: CompactExplorerSiGui, private uiStrucuterModel: SimpleUiStructureModel, private uiStructure: UiStructure) {
-	}
+	constructor(private comp: CompactExplorerSiGui, partialContent: SiPartialContent|null) {
+		super();
 
-	getSiControlBoundry(): SiControlBoundry {
-		return this.comp;
-	}
-
-	getApiUrl(): string {
-		return this.comp.apiUrl;
+		if (partialContent) {
+			this.comp.pageCollection.size = partialContent.count;
+			this.comp.pageCollection.createPage(1, partialContent.entries);
+		}
 	}
 
 	getSiPageCollection(): SiPageCollection {
@@ -124,15 +67,42 @@ class EntriesListModelImpl implements CompactExplorerModel {
 		return this.comp.qualifierSelection;
 	}
 
-	areGeneralControlsInitialized(): boolean {
-		return !!this.comp.controls;
+	bind(uiStructure: UiStructure): void {
+		super.bind(uiStructure);
+
+		this.uiContent = new TypeUiContent(CompactExplorerComponent, (ref) => {
+			ref.instance.model = this;
+			ref.instance.uiStructure = uiStructure;
+		});
+
+		this.asideUiContents = [new TypeUiContent(PaginationComponent, (ref) => {
+			ref.instance.siPageCollection = this.getSiPageCollection();
+		})];
 	}
 
-	applyGeneralControls(controls: SiControl[]): void {
-		this.comp.controls = controls;
-
-		this.comp.applyGeneralControls(this.uiStrucuterModel, this.uiStructure, controls);
+	unbind() {
+		super.unbind();
+		this.comp.pageCollection.clear();
 	}
 
+	getMainControlContents(): UiContent[] {
+		if (!this.comp.pageCollection.controls ||
+				this.comp.pageCollection.controls.length === this.mainControlUiContents.length ) {
+			return this.mainControlUiContents;
+		}
+
+		return this.mainControlUiContents = this.comp.pageCollection.controls.map((control) => {
+			return control.createUiContent(this.boundUiStructure.getZone());
+		});
+	}
+
+	getZoneErrors(): UiZoneError[] {
+		const uiZoneErrors: UiZoneError[] = [];
+		for (const entry of this.comp.getEntries()) {
+			uiZoneErrors.push(...entry.getMessages()
+					.map((message) => new StructureUiZoneError(message, this.reqBoundUiStructure())));
+		}
+		return uiZoneErrors;
+	}
 }
 
