@@ -15,24 +15,24 @@
 		</thead>
 		<tbody>
 			<ng-container *ngFor="let structurePage of getVisibleStructurePages()">
-				<tr *ngFor="let siEntry of structurePage.siPage.entries" rocketUiEntry [siEntry]="siEntry">
-					<td *ngIf="selectable" class="rocket-entry-selector" (click)="toggleSelection(siEntry.qualifier)">
+				<tr *ngFor="let structureEntry of structurePage.structureEntries" rocketUiEntry [siEntry]="structureEntry.siEntry">
+					<td *ngIf="selectable" class="rocket-entry-selector" (click)="toggleSelection(structureEntry.siEntry.qualifier)">
 						<ng-container *ngIf="singleSelect">
-							<input type="radio" [value]="true" [ngModel]="isSelected(siEntry.qualifier)" />
+							<input type="radio" [value]="true" [ngModel]="isSelected(structureEntry.siEntry.qualifier)" />
 						</ng-container>
 						<ng-container *ngIf="!singleSelect">
 							<input type="checkbox" 
-									[ngModel]="isSelected(siEntry.qualifier)"
-									[disabled]="!areMoreSelectable() && !isSelected(siEntry.qualifier)" />
+									[ngModel]="isSelected(structureEntry.siEntry.qualifier)"
+									[disabled]="!areMoreSelectable() && !isSelected(structureEntry.siEntry.qualifier)" />
 						</ng-container>
 					</td>
-					<td *ngFor="let fieldUiStructure of structurePage.fieldUiStructuresOf(siEntry.identifier.id)"
+					<td *ngFor="let fieldUiStructure of structureEntry.fieldUiStructures"
 							rocketUiStructure [uiStructure]="fieldUiStructure" 
-							(click)="toggleSelection(siEntry.qualifier)">
+							(click)="toggleSelection(structureEntry.siEntry.qualifier)">
 					</td>
 					<td class="rocket-table-commands">
 						<div class="rocket-simple-commands">
-							<ng-container *ngFor="let controlUiContent of structurePage.controlUiContentsOf(siEntry.identifier.id)">
+							<ng-container *ngFor="let controlUiContent of structureEntry.controlUiContents">
 								<ng-template rocketUiContent [uiContent]="controlUiContent"></ng-template>
 							</ng-container>
 						</div>

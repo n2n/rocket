@@ -1,12 +1,13 @@
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiPage } from '../../model/si-page';
 import { CompactExplorerComponent } from './compact-explorer.component';
-import { SiEntry } from 'src/app/si/model/content/si-entry';
+import { SiEntry, SiEntryState } from 'src/app/si/model/content/si-entry';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
+import { Subscription } from 'rxjs';
+import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 
 export class StructurePage {
-	public fieldUiStructuresMap: Map<string, Array<UiStructure>>|null = null;
-	public controlUiStructuresMap: Map<string, Array<UiContent>>|null = null;
+	private structureEntriesMap = new Map<SiEntry, StructureEntry>();
 
 	constructor(readonly siPage: SiPage) {
 	}
@@ -15,25 +16,77 @@ export class StructurePage {
 		return !!this.siPage.entries;
 	}
 
+	isEmpty(): boolean {
+		return this.structureEntriesMap.size === 0;
+	}
+
 	clear() {
-		if (!this.fieldUiStructuresMap) {
+		for (const [, structureEntry] of this.structureEntriesMap) {
+			structureEntry.clear();
+		}
+		this.structureEntriesMap = new Map();
+	}
+
+	get structureEntries(): Array<StructureEntry> {
+		return this.siPage.entries.map(siEntry => this.getStructureEntryOf(siEntry));
+	}
+
+	putStructureEntry(siEntry: SiEntry, structureEntry: StructureEntry) {
+		this.structureEntriesMap.set(siEntry, structureEntry);
+	}
+
+	getStructureEntryOf(siEntry: SiEntry) {
+		if (this.structureEntriesMap.has(siEntry)) {
+			return this.structureEntriesMap.get(siEntry);
+		}
+
+		throw new IllegalStateError('No StructureEntry available for ' + siEntry.identifier.toString());
+	}
+}
+
+export class StructureEntry {
+	private subscription: Subscription;
+
+	constructor(readonly siEntry: SiEntry, public fieldUiStructures: Array<UiStructure>, public controlUiContents: Array<UiContent>,
+			private replacementCallback: (replacementEntry: SiEntry) => any) {
+
+		this.subscription = siEntry.state$.subscribe((state) => {
+			switch (state) {
+				case SiEntryState.REPLACED:
+					this.replacementCallback(siEntry.replacementEntry);
+					this.clear();
+					break;
+				case SiEntryState.REMOVED:
+					this.clearControls();
+					this.clearSubscription();
+			}
+		});
+	}
+
+	clear() {
+		this.clearFields();
+		this.clearControls();
+		this.clearSubscription();
+	}
+
+	private clearFields() {
+		for (const uiStructure of this.fieldUiStructures) {
+			uiStructure.dispose();
+		}
+		this.fieldUiStructures = [];
+	}
+
+	private clearControls() {
+		this.controlUiContents = [];
+	}
+
+	private clearSubscription() {
+		if (!this.subscription) {
 			return;
 		}
 
-		for (const [, uiStructures] of this.fieldUiStructuresMap) {
-			for (const uiStructure of uiStructures) {
-				uiStructure.dispose();
-			}
-		}
-		this.fieldUiStructuresMap = null;
-	}
-
-	fieldUiStructuresOf(id: string): UiStructure[] {
-		return this.fieldUiStructuresMap.get(id);
-	}
-
-	controlUiContentsOf(id: string): UiContent[] {
-		return this.controlUiStructuresMap.get(id);
+		this.subscription.unsubscribe();
+		this.subscription = null;
 	}
 }
 
@@ -85,20 +138,27 @@ export class StructurePageManager {
 	}
 
 	private val(structurePage: StructurePage) {
-		if (structurePage.fieldUiStructuresMap || !this.comp.siPageCollection.declaration
+		if (!structurePage.isEmpty() || !this.comp.siPageCollection.declaration
 				|| !structurePage.siPage.entries) {
 			return;
 		}
 
-		const fieldUiStructures = new Map<string, Array<UiStructure>>();
-		const controlUiContentMap = new Map<string, Array<UiContent>>();
 		for (const siEntry of structurePage.siPage.entries) {
-			fieldUiStructures.set(siEntry.identifier.id, this.createFieldUiStructures(siEntry));
-			controlUiContentMap.set(siEntry.identifier.id,
-					siEntry.selectedEntryBuildup.controls.map(siControl => siControl.createUiContent(this.comp.uiStructure.getZone())));
+			this.applyNewStructureEntry(structurePage, siEntry);
 		}
-		structurePage.fieldUiStructuresMap = fieldUiStructures;
-		structurePage.controlUiStructuresMap  = controlUiContentMap;
+	}
+
+	private applyNewStructureEntry(structurePage: StructurePage, siEntry: SiEntry) {
+		const fieldUiStructures = this.createFieldUiStructures(siEntry);
+		const controlUiContents = siEntry.selectedEntryBuildup.controls
+				.map(siControl => siControl.createUiContent(this.comp.uiStructure.getZone()));
+
+		const structureEntry = new StructureEntry(siEntry, fieldUiStructures, controlUiContents, (replacementEntry) => {
+			console.log('replacement');
+			this.applyNewStructureEntry(structurePage, replacementEntry);
+		});
+
+		structurePage.putStructureEntry(siEntry, structureEntry);
 	}
 
 	private createFieldUiStructures(siEntry: SiEntry): UiStructure[] {
