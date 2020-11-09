@@ -106,7 +106,7 @@ export class SiPageCollection implements SiControlBoundry {
 			throw new IllegalSiStateError('Page num to high.');
 		}
 
-		const entryMonitory = new SiEntryMonitor(this.apiUrl, this.siService, this.siModState);
+		const entryMonitory = new SiEntryMonitor(this.apiUrl, this.siService, this.siModState, true);
 		const page = new SiPage(entryMonitory, no, entries, null);
 		this.pagesMap.set(no, page);
 		return page;

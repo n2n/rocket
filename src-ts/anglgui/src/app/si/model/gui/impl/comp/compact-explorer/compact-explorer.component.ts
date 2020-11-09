@@ -1,8 +1,4 @@
-import { Component, OnInit, OnDestroy, Host, Inject } from '@angular/core';
-import { SiGetRequest } from 'src/app/si/model/api/si-get-request';
-import { SiGetInstruction } from 'src/app/si/model/api/si-get-instruction';
-import { SiGetResponse } from 'src/app/si/model/api/si-get-response';
-import { SiGetResult } from 'src/app/si/model/api/si-get-result';
+import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
 import { fromEvent, Subscription, Subject } from 'rxjs';
 import { SiEntryQualifier } from 'src/app/si/model/content/si-entry-qualifier';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
@@ -11,11 +7,8 @@ import { SiProp } from 'src/app/si/model/meta/si-prop';
 import { CompactExplorerModel } from '../compact-explorer-model';
 import { SiPageCollection } from '../../model/si-page-collection';
 import { StructurePage, StructurePageManager } from './structure-page-manager';
-import { SiService } from 'src/app/si/manage/si.service';
 import { skip, debounceTime, tap } from 'rxjs/operators';
 import { LayerComponent } from 'src/app/ui/structure/comp/layer/layer.component';
-import { SiEntryMonitor } from 'src/app/si/model/mod/model/si-entry-monitor';
-import { SiModStateService } from 'src/app/si/model/mod/model/si-mod-state.service';
 
 @Component({
 	selector: 'rocket-ui-compact-explorer',
@@ -34,8 +27,7 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 	private quickSearching = false;
 	private weakPageNoChange = false;
 
-	constructor(private siService: SiService, private siModStateService: SiModStateService,
-			@Inject(LayerComponent) private parent: LayerComponent) {
+	constructor(@Inject(LayerComponent) private parent: LayerComponent) {
 	}
 
 	ngOnInit() {

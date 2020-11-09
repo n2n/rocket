@@ -33,7 +33,6 @@ export class SiPage {
 	}
 
 	set entries(entries: SiEntry[]|null) {
-		IllegalArgumentError.assertTrue(entries !== null);
 		this.applyEntries(entries);
 	}
 
@@ -93,7 +92,6 @@ export class SiPage {
 	private insertEntry(i: number, newEntry: SiEntry) {
 		this._entries.push(newEntry);
 		this.entriesSubscription.add(newEntry.state$.subscribe((state) => {
-			console.log('WOW!!');
 			if (state === SiEntryState.REPLACED) {
 				this.insertEntry(i, newEntry.replacementEntry);
 			}

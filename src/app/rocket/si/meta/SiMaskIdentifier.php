@@ -25,11 +25,11 @@ use n2n\util\type\attrs\DataSet;
 
 class SiMaskIdentifier implements \JsonSerializable {
     protected $id;
-    protected $typeId;
+    protected $entryBuildupId;
 	
-	function __construct(string $id, string $typeId) {
+	function __construct(string $id, string $entryBuildupId) {
 		$this->id = $id;
-		$this->typeId = $typeId;
+		$this->entryBuildupId = $entryBuildupId;
 	}
 	
 	/**
@@ -48,18 +48,18 @@ class SiMaskIdentifier implements \JsonSerializable {
 		return $this;
 	}
 	
-	function getTypeId(): string {
-		return $this->typeId;
+	function getEntryBuildupId(): string {
+		return $this->entryBuildupId;
 	}
 	
 	function setTypeId(string $typeId) {
-		$this->typeId = $typeId;
+		$this->entryBuildupId = $typeId;
 	}
 	
 	function jsonSerialize() {
 		return [
 		    'id' => $this->id,
-			'typeId' => $this->typeId
+			'entryBuildupId' => $this->entryBuildupId
 		];
 	}
 

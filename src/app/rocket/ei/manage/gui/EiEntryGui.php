@@ -177,11 +177,10 @@ class EiEntryGui {
 	 * @return \rocket\si\content\SiEntryIdentifier
 	 */
 	function createSiEntryIdentifier() {
-		$typeId = $this->contextEiMask->getEiType()->getId();
+		$typeId = $this->contextEiMask->getEiType()->getSupremeEiType()->getId();
 		$id = null;
 		if ($this->isTypeDefSelected()) {
 			$eiEntry = $this->getSelectedTypeDef()->getEiEntry();
-			$typeId = $eiEntry->getEiType()->getId();
 			$id = $eiEntry->getPid();
 		}
 		

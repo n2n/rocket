@@ -4,10 +4,10 @@ import { CompactExplorerComponent } from './compact-explorer.component';
 import { SiEntry, SiEntryState } from 'src/app/si/model/content/si-entry';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { Subscription } from 'rxjs';
-import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
+import { IllegalArgumentError } from 'src/app/si/util/illegal-argument-error';
 
 export class StructurePage {
-	private structureEntriesMap = new Map<SiEntry, StructureEntry>();
+	private _structureEntries = new Array<StructureEntry>();
 
 	constructor(readonly siPage: SiPage) {
 	}
@@ -17,31 +17,57 @@ export class StructurePage {
 	}
 
 	isEmpty(): boolean {
-		return this.structureEntriesMap.size === 0;
+		return this._structureEntries.length === 0;
 	}
 
 	clear() {
-		for (const [, structureEntry] of this.structureEntriesMap) {
+		let structureEntry: StructureEntry;
+		while (structureEntry = this._structureEntries.pop()) {
 			structureEntry.clear();
 		}
-		this.structureEntriesMap = new Map();
 	}
 
 	get structureEntries(): Array<StructureEntry> {
-		return this.siPage.entries.map(siEntry => this.getStructureEntryOf(siEntry));
+		return this._structureEntries;
 	}
 
-	putStructureEntry(siEntry: SiEntry, structureEntry: StructureEntry) {
-		this.structureEntriesMap.set(siEntry, structureEntry);
+	appendStructureEntry(structureEntry: StructureEntry) {
+		this._structureEntries.push(structureEntry);
 	}
 
-	getStructureEntryOf(siEntry: SiEntry) {
-		if (this.structureEntriesMap.has(siEntry)) {
-			return this.structureEntriesMap.get(siEntry);
+	insertStructureEntryAt(index: number, structureEntry: StructureEntry) {
+		if (this._structureEntries.length < index) {
+			throw new IllegalArgumentError('Index out of bounds: ' + index + '; current page size: ' + this._structureEntries.length);
 		}
 
-		throw new IllegalStateError('No StructureEntry available for ' + siEntry.identifier.toString());
+		if (this._structureEntries[index]) {
+			this._structureEntries[index].clear();
+		}
+
+		this._structureEntries[index] = structureEntry;
 	}
+
+	replaceStructureEntry(structureEntry: StructureEntry, replacementStructureEntry: StructureEntry): boolean {
+		const i = this._structureEntries.indexOf(structureEntry);
+		if (i > -1) {
+			this.insertStructureEntryAt(i, replacementStructureEntry);
+			return true;
+		}
+
+		return false;
+	}
+
+	// putStructureEntry(siEntry: SiEntry, structureEntry: StructureEntry) {
+	// 	this.structureEntriesMap.set(siEntry, structureEntry);
+	// }
+
+	// getStructureEntryOf(siEntry: SiEntry) {
+	// 	if (this.structureEntriesMap.has(siEntry)) {
+	// 		return this.structureEntriesMap.get(siEntry);
+	// 	}
+
+	// 	throw new IllegalStateError('No StructureEntry available for ' + siEntry.identifier.toString());
+	// }
 }
 
 export class StructureEntry {
@@ -144,21 +170,34 @@ export class StructurePageManager {
 		}
 
 		for (const siEntry of structurePage.siPage.entries) {
-			this.applyNewStructureEntry(structurePage, siEntry);
+			this.applyNewStructureEntry(structurePage, siEntry, null, null);
 		}
 	}
 
-	private applyNewStructureEntry(structurePage: StructurePage, siEntry: SiEntry) {
+	private applyNewStructureEntry(structurePage: StructurePage, siEntry: SiEntry, oldStructureEntry: StructureEntry|null,
+			insertIndex: number|null) {
 		const fieldUiStructures = this.createFieldUiStructures(siEntry);
 		const controlUiContents = siEntry.selectedEntryBuildup.controls
 				.map(siControl => siControl.createUiContent(this.comp.uiStructure.getZone()));
 
 		const structureEntry = new StructureEntry(siEntry, fieldUiStructures, controlUiContents, (replacementEntry) => {
-			console.log('replacement');
-			this.applyNewStructureEntry(structurePage, replacementEntry);
+			this.applyNewStructureEntry(structurePage, replacementEntry, structureEntry, null);
 		});
 
-		structurePage.putStructureEntry(siEntry, structureEntry);
+		if (oldStructureEntry) {
+			if (!structurePage.replaceStructureEntry(oldStructureEntry, structureEntry)) {
+				structureEntry.clear();
+			}
+
+			return;
+		}
+
+		if (insertIndex !== null && insertIndex !== undefined) {
+			structurePage.insertStructureEntryAt(insertIndex, structureEntry);
+			return;
+		}
+
+		structurePage.appendStructureEntry(structureEntry);
 	}
 
 	private createFieldUiStructures(siEntry: SiEntry): UiStructure[] {
