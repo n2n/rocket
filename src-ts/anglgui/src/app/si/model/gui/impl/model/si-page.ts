@@ -1,8 +1,7 @@
 import { SiEntry, SiEntryState } from 'src/app/si/model/content/si-entry';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
-import { IllegalArgumentError } from 'src/app/si/util/illegal-argument-error';
 import { SiEntryMonitor } from '../../../mod/model/si-entry-monitor';
-import { Observable, Subscription, Subject } from 'rxjs';
+import { Subscription, Subject } from 'rxjs';
 
 export class SiPage {
 	private _entries: Array<SiEntry>|null = null;
