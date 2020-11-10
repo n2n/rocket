@@ -28,12 +28,13 @@ use rocket\si\content\SiGui;
 use rocket\si\control\SiControl;
 use n2n\util\type\ArgUtils;
 use rocket\si\SiPayloadFactory;
+use rocket\si\meta\SiFrame;
 
 class CompactExplorerSiGui implements SiGui {
 	/**
 	 * @var string
 	 */
-	private $apiUrl;
+	private $frame;
 	/**
 	 * @var int|null
 	 */
@@ -57,9 +58,9 @@ class CompactExplorerSiGui implements SiGui {
 	 * @param SiDeclaration|null $declaration
 	 * @param SiPartialContent|null $partialContent
 	 */
-	public function __construct(Url $apiUrl, int $pageSize, SiDeclaration $declaration = null,
+	public function __construct(SiFrame $frame, int $pageSize, SiDeclaration $declaration = null,
 			SiPartialContent $partialContent = null) {
-		$this->apiUrl = $apiUrl;
+		$this->frame = $frame;
 		$this->pageSize = $pageSize;
 		$this->declaration = $declaration;
 		$this->partialContent = $partialContent;
@@ -77,7 +78,7 @@ class CompactExplorerSiGui implements SiGui {
 	 * @return Url
 	 */
 	public function getApiUrl(): Url {
-		return $this->apiUrl;
+		return $this->frame;
 	}
 	
 	/**
@@ -133,7 +134,7 @@ class CompactExplorerSiGui implements SiGui {
 	 */
 	public function getData(): array {
 		return [
-			'apiUrl' => (string) $this->apiUrl,
+			'apiUrl' => (string) $this->frame,
 			'pageSize' => $this->pageSize,
 			'declaration' => $this->declaration,
 			'partialContent' => $this->partialContent,

@@ -31,8 +31,8 @@ export class QualifierSelectInSiField extends InSiFieldAdapter implements Qualif
 		return { values: this.values };
 	}
 
-	getApiUrl(): string {
-		return this.frame.apiUrl;
+	getSiFrame(): SiFrame {
+		return this.frame;
 	}
 
 	getValues(): SiEntryQualifier[] {

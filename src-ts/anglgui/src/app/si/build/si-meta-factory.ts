@@ -108,7 +108,7 @@ export class SiMetaFactory {
 	static createTypeContext(data: any): SiTypeContext {
 		const extr = new Extractor(data);
 
-		return new SiTypeContext(extr.reqString('contextTypeId'), extr.reqStringArray('subTypeIds'));
+		return new SiTypeContext(extr.reqString('typeId'), extr.reqStringArray('entryBuildupIds'));
 	}
 
 

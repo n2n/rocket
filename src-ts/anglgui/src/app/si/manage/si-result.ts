@@ -10,7 +10,7 @@ export class SiResult {
 	public messages: SiMessage[] = [];
 	public entryErrors = new Map<string, SiEntryError>();
 	public newButton: SiButton|null = null;
-	public modEvent: SiModEvent = { added: [], updated: [], removed: [] };
+	public modEvent: SiModEvent|null = null;
 }
 
 export enum SiDirective {

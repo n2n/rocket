@@ -73,7 +73,7 @@ class EiGuiUtil {
 		$siDeclaration = $this->eiGui->getEiGuiModel()->createSiDeclaration($this->eiFrame);
 		$siPartialContent = new SiPartialContent($eiFrameUtil->count(), 
 				$this->eiGui->createSiEntries($this->eiFrame, $entrySiControlsIncluded));
-		$siComp = new CompactExplorerSiGui($this->eiFrame->getApiUrl(), $pageSize, $siDeclaration, $siPartialContent);
+		$siComp = new CompactExplorerSiGui($this->eiFrame->createSiFrame(), $pageSize, $siDeclaration, $siPartialContent);
 		
 		if ($generalSiControlsIncluded) {
 			$siComp->setControls($this->eiGui->getEiGuiModel()->createGeneralSiControls($this->eiFrame));

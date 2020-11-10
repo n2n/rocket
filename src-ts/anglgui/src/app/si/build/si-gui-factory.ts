@@ -3,7 +3,6 @@ import { SiDeclaration } from '../model/meta/si-declaration';
 import { ObjectMissmatchError, Extractor } from 'src/app/util/mapping/extractor';
 import { CompactExplorerSiGui } from '../model/gui/impl/model/compact-explorer-si-gui';
 import { SiMetaFactory } from './si-meta-factory';
-import { SiPage } from '../model/gui/impl/model/si-page';
 import { BulkyEntrySiGui } from '../model/gui/impl/model/bulky-entry-si-gui';
 import { CompactEntrySiGui } from '../model/gui/impl/model/compact-entry-si-gui';
 import { SiGui } from '../model/gui/si-gui';
@@ -169,7 +168,7 @@ export class SiGuiFactory {
 		switch (type) {
 			case SiGuiType.COMPACT_EXPLORER:
 				const compactExplorerSiGui = new CompactExplorerSiGui(dataExtr.reqNumber('pageSize'),
-						dataExtr.reqString('apiUrl'), this.injector.get(SiService),
+						SiMetaFactory.createFrame(dataExtr.reqObject('frame')), this.injector.get(SiService),
 						this.injector.get(SiModStateService));
 
 				compEssentialsFactory = new SiControlFactory(compactExplorerSiGui, this.injector);

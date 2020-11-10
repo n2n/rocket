@@ -23,7 +23,8 @@ export class EntryDirective implements DoCheck, OnInit, OnDestroy {
 	}
 
 	ngDoCheck() {
-		this.chHighlightedClass(this.modState.containsModEntryIdentifier(this.siEntry.identifier));
+		this.chHighlightedClass(this.modState.lastModEvent
+				&& this.modState.lastModEvent.containsModEntryIdentifier(this.siEntry.identifier));
 		this.chStateClass(this.siEntry.state);
 	}
 

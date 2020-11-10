@@ -24,23 +24,23 @@ namespace rocket\si\meta;
 use n2n\util\type\ArgUtils;
 
 class SiTypeContext implements \JsonSerializable {
-	private $contextTypeId = null;
-	private $subTypeIds = [];
+	private $typeId = null;
+	private $entryBuildupIds = [];
 	
-	function __construct(string $contextTypeId, array $subTypeIds) {
-		$this->contextTypeId = $contextTypeId;
-		ArgUtils::valArray($subTypeIds, 'string');
-		$this->subTypeIds = array_values($subTypeIds);
+	function __construct(string $typeId, array $entryBuildupIds) {
+		$this->typeId = $typeId;
+		ArgUtils::valArray($entryBuildupIds, 'string');
+		$this->entryBuildupIds = array_values($entryBuildupIds);
 	}
 	
-	function containsTypeId(string $typeId) {
-		return $this->contextTypeId == $typeId || in_array($typeId, $this->subTypeIds);
-	}
+// 	function containsTypeId(string $typeId) {
+// 		return $this->typeId == $typeId || in_array($typeId, $this->entryBuildupIds);
+// 	}
 	
 	function jsonSerialize() {
 		return [
-			'contextTypeId' => $this->contextTypeId,
-			'subTypeIds' => $this->subTypeIds
+			'typeId' => $this->typeId,
+			'entryBuildupIds' => $this->entryBuildupIds
 		];
 	}
 }

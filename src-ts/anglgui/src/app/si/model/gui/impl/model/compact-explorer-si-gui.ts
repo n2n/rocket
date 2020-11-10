@@ -9,7 +9,6 @@ import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { SiEntryQualifierSelection } from './si-entry-qualifier-selection';
 import { PaginationComponent } from '../comp/pagination/pagination.component';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
-import { SiControlBoundry } from '../../../control/si-control-bountry';
 import { SiService } from 'src/app/si/manage/si.service';
 import { SiModStateService } from '../../../mod/model/si-mod-state.service';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
@@ -18,6 +17,7 @@ import { StructureUiZoneError } from 'src/app/ui/structure/model/impl/structure-
 import { UiZoneError } from 'src/app/ui/structure/model/ui-zone-error';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { SiPartialContent } from '../../../content/si-partial-content';
+import { SiFrame } from '../../../meta/si-frame';
 
 export class CompactExplorerSiGui implements SiGui {
 
@@ -25,10 +25,10 @@ export class CompactExplorerSiGui implements SiGui {
 	pageCollection: SiPageCollection;
 	partialContent: SiPartialContent|null = null;
 
-	constructor(pageSize: number, apiUrl: string, siService: SiService,
+	constructor(pageSize: number, frame: SiFrame, siService: SiService,
 			siModState: SiModStateService) {
 
-		this.pageCollection = new SiPageCollection(pageSize, apiUrl, siService, siModState);
+		this.pageCollection = new SiPageCollection(pageSize, frame, siService, siModState);
 	}
 
 	getEntries(): SiEntry[] {

@@ -6,6 +6,7 @@ import { Message } from 'src/app/util/i18n/message';
 import { SiResult, SiDirective } from '../manage/si-result';
 import { UiFactory } from 'src/app/ui/build/ui-factory';
 import { SiEntryIdentifier } from '../model/content/si-entry-qualifier';
+import { SiModEvent } from '../model/mod/model/si-mod-state.service';
 
 export class SiResultFactory {
 
@@ -29,24 +30,31 @@ export class SiResultFactory {
 		}
 
 		const eventMap = extr.reqMap('eventMap');
+		const addedSeis: SiEntryIdentifier[] = [];
+		const updatedSeis: SiEntryIdentifier[] = [];
+		const removedSeis: SiEntryIdentifier[] = [];
+
 		for (const [typeId, idsEvMapData] of eventMap) {
 			const idEvMapExtr = new Extractor(idsEvMapData);
+
 			for (const [id, eventType] of idEvMapExtr.reqStringMap('ids')) {
 				switch (eventType) {
 					case 'added':
-						result.modEvent.added.push(new SiEntryIdentifier(typeId, id));
+						addedSeis.push(new SiEntryIdentifier(typeId, id));
 						break;
 					case 'changed':
-						result.modEvent.updated.push(new SiEntryIdentifier(typeId, id));
+						updatedSeis.push(new SiEntryIdentifier(typeId, id));
 						break;
 					case 'removed':
-						result.modEvent.removed.push(new SiEntryIdentifier(typeId, id));
+						removedSeis.push(new SiEntryIdentifier(typeId, id));
 						break;
 					default:
 						throw new ObjectMissmatchError('Unknown event type: ' + eventType);
 				}
 			}
 		}
+
+		result.modEvent = new SiModEvent(addedSeis, updatedSeis, removedSeis);
 
 		return result;
 	}

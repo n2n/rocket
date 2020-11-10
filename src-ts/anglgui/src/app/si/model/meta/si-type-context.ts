@@ -1,9 +1,9 @@
 
 export class SiTypeContext {
-	constructor(public contextTypeId: string, public subTypeIds: string[]) {
+	constructor(public typeId: string, public entryBuildupIds: string[]) {
 	}
 
 	containsTypeId(typeId: string): boolean {
-		return this.contextTypeId === typeId || -1 !== this.subTypeIds.indexOf(typeId);
+		return this.typeId === typeId || -1 !== this.entryBuildupIds.indexOf(typeId);
 	}
 }

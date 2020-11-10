@@ -1,10 +1,10 @@
 import { SiPage } from './si-page';
 import { SiDeclaration } from '../../../meta/si-declaration';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { SiEntry } from '../../../content/si-entry';
 import { SiEntryMonitor } from '../../../mod/model/si-entry-monitor';
-import { SiModStateService } from '../../../mod/model/si-mod-state.service';
+import { SiModStateService, SiModEvent } from '../../../mod/model/si-mod-state.service';
 import { SiService } from 'src/app/si/manage/si.service';
 import { SiControl } from '../../../control/si-control';
 import { SiGetInstruction } from '../../../api/si-get-instruction';
@@ -12,6 +12,7 @@ import { SiGetRequest } from '../../../api/si-get-request';
 import { SiGetResponse } from '../../../api/si-get-response';
 import { SiGetResult } from '../../../api/si-get-result';
 import { SiControlBoundry } from '../../../control/si-control-bountry';
+import { SiFrame } from '../../../meta/si-frame';
 
 export class SiPageCollection implements SiControlBoundry {
 	public declaration: SiDeclaration|null = null;
@@ -22,7 +23,9 @@ export class SiPageCollection implements SiControlBoundry {
 	private _currentPageNo$ = new BehaviorSubject<number>(1);
 	public quickSearchStr: string|null = null;
 
-	constructor(readonly pageSize: number, private apiUrl: string, private siService: SiService,
+	private modSubscription: Subscription|null = null;
+
+	constructor(readonly pageSize: number, private siFrame: SiFrame, private siService: SiService,
 			private siModState: SiModStateService) {
 	}
 
@@ -46,6 +49,25 @@ export class SiPageCollection implements SiControlBoundry {
 
 	clear() {
 		this.size = 0;
+		this.validateSubscription();
+	}
+
+	private validateSubscription() {
+		if (this.size > 0) {
+			if (!this.modSubscription) {
+				return;
+			}
+
+			this.modSubscription.unsubscribe();
+			this.modSubscription = null;
+			return;
+		}
+
+		this.siModState.modEvent$.subscribe((modEvent: SiModEvent) => {
+			if (modEvent.containsAddedTypeId(this.siFrame.typeContext.typeId)) {
+				this.clear();
+			}
+		});
 	}
 
 	get currentPageExists(): boolean {
@@ -106,7 +128,7 @@ export class SiPageCollection implements SiControlBoundry {
 			throw new IllegalSiStateError('Page num to high.');
 		}
 
-		const entryMonitory = new SiEntryMonitor(this.apiUrl, this.siService, this.siModState, true);
+		const entryMonitory = new SiEntryMonitor(this.siFrame.apiUrl, this.siService, this.siModState, true);
 		const page = new SiPage(entryMonitory, no, entries, null);
 		this.pagesMap.set(no, page);
 		return page;
@@ -191,7 +213,7 @@ export class SiPageCollection implements SiControlBoundry {
 				.setEntryControlsIncluded(true);
 		const getRequest = new SiGetRequest(instruction);
 
-		this.siService.apiGet(this.apiUrl, getRequest)
+		this.siService.apiGet(this.siFrame.apiUrl, getRequest)
 				.subscribe((getResponse: SiGetResponse) => {
 					this.applyResult(getResponse.results[0], siPage);
 				});
