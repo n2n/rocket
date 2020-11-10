@@ -173,7 +173,7 @@ class ThumbResolver {
 	 * @return ImageFile|null
 	 */
 	private function buildThumb(File $file) {
-		if (!$file->getFileSource()->getVariationEngine()->hasThumbSupport()) {
+		if (!$file->getFileSource()->getAffiliationEngine()->hasThumbSupport()) {
 			return null;
 		}
 		
@@ -226,7 +226,7 @@ class ThumbResolver {
 	 */
 	function isThumbCreationEnabled(File $file) {
 		if ($this->thumbEiCommand === null
-				|| !$file->getFileSource()->getVariationEngine()->hasThumbSupport()) return false;
+				|| !$file->getFileSource()->getAffiliationEngine()->hasThumbSupport()) return false;
 				
 		if (!empty($this->extraImageDimensions)) return true;
 		
@@ -274,7 +274,7 @@ class ThumbResolver {
 	function determineImageDimensions(File $file) {
 		$imageDimensions = array();
 		
-		if (!$file->getFileSource()->getVariationEngine()->hasThumbSupport()) {
+		if (!$file->getFileSource()->getAffiliationEngine()->hasThumbSupport()) {
 			return $imageDimensions;
 		}
 		
@@ -291,7 +291,7 @@ class ThumbResolver {
 				
 				break;
 			case self::DIM_IMPORT_MODE_USED_ONLY:
-				$thumbEngine = $file->getFileSource()->getVariationEngine()->getThumbManager();
+				$thumbEngine = $file->getFileSource()->getAffiliationEngine()->getThumbManager();
 				$autoImageDimensions = $thumbEngine->getUsedImageDimensions();
 				break;
 		}

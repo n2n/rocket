@@ -73,7 +73,7 @@ class ThumbController extends ControllerAdapter {
 		
 // 		$imageDimensions = null;
 // 		if ($file === null || !$file->isValid() || !$file->getFileSource()->isImage()
-// 				|| !$file->getFileSource()->getVariationEngine()->hasThumbSupport()
+// 				|| !$file->getFileSource()->getAffiliationEngine()->hasThumbSupport()
 // 				|| empty($imageDimensions = $this->buildImageDimensions($file))) {
 			
 // 			$this->redirect($redirectUrl);
@@ -225,7 +225,7 @@ class ThumbController extends ControllerAdapter {
 	
 	function doTmpThumb(ParamQuery $qn, ParamQuery $imgDim) {
 		$file = $this->lookupTmpFile((string) $qn);
-		if ($file === null || !$file->getFileSource()->getVariationEngine()->hasThumbSupport()) {
+		if ($file === null || !$file->getFileSource()->getAffiliationEngine()->hasThumbSupport()) {
 			throw new PageNotFoundException();
 		}
 		
