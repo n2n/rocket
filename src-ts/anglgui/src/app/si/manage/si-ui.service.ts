@@ -181,6 +181,7 @@ export class SiUiService {
 		}
 
 		this.modState.pushModEvent(result.modEvent);
+		this.modState.pushMessages(result.messages);
 	}
 
 	private handleEntryErrors(entryErrors: Map<string, SiEntryError>, entries: SiEntry[]) {

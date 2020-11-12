@@ -5,6 +5,8 @@ import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { UiContainer } from 'src/app/ui/structure/model/ui-container';
 import { MainUiLayer } from 'src/app/ui/structure/model/ui-layer';
+import { SiModStateService } from 'src/app/si/model/mod/model/si-mod-state.service';
+import { Message } from 'src/app/util/i18n/message';
 
 @Component({
 	selector: 'rocket-ei',
@@ -18,7 +20,8 @@ export class EiComponent implements OnInit, OnDestroy {
 
 	constructor(private route: ActivatedRoute, private siUiService: SiUiService,
 			private router: Router/*, platformLocation: PlatformLocation*/,
-			componentFactoryResolver: ComponentFactoryResolver) {
+			componentFactoryResolver: ComponentFactoryResolver,
+			private siModState: SiModStateService) {
 		this.uiContainer = new UiContainer(componentFactoryResolver);
 // 		alert(platformLocation.getBaseHrefFromDOM() + ' ' + route.snapshot.url.join('/'));
 	}
@@ -72,5 +75,9 @@ export class EiComponent implements OnInit, OnDestroy {
 			// console.log('state ' + event.navigationTrigger);
 		}
 
+	}
+
+	get messages(): Message[] {
+		return this.siModState.lastMessages;
 	}
 }

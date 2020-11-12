@@ -4,14 +4,15 @@ import { SiEntry } from '../../content/si-entry';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { Subject, Observable, BehaviorSubject } from 'rxjs';
 import { skip, skipWhile, filter } from 'rxjs/operators';
+import { Message } from 'src/app/util/i18n/message';
 
 @Injectable({
 	providedIn: 'root'
 })
 export class SiModStateService {
 
-
 	private lastModEventSubject = new BehaviorSubject<SiModEvent>(null);
+	private lastMessagesSubject = new BehaviorSubject<Message[]>([]);
 
 	private shownEntriesMap = new Map<SiEntry, object[]>();
 	private shownEntrySubject = new Subject<SiEntry>();
@@ -21,6 +22,10 @@ export class SiModStateService {
 
 	pushModEvent(event: SiModEvent): void {
 		this.lastModEventSubject.next(event);
+	}
+
+	pushMessages(messages: Message[]) {
+		this.lastMessagesSubject.next(messages);
 	}
 
 	get modEvent$(): Observable<SiModEvent> {
@@ -43,6 +48,14 @@ export class SiModStateService {
 
 	get shownEntry$(): Observable<SiEntry> {
 		return this.shownEntrySubject.asObservable();
+	}
+
+	get lastMessages(): Message[] {
+		return this.lastMessagesSubject.getValue();
+	}
+
+	get messages$(): Observable<Message[]> {
+		return this.lastMessagesSubject.asObservable();
 	}
 
 	registerShownEntry(entry: SiEntry, refObj: object) {

@@ -22,20 +22,14 @@
 namespace rocket\impl\ei\component\command\common;
 
 use n2n\core\N2N;
-use n2n\l10n\DynamicTextCollection;
-use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\ei\manage\frame\EiFrame;
-use n2n\l10n\N2nLocale;
-use rocket\impl\ei\component\command\common\controller\DeleteController;
-use rocket\si\control\SiButton;
-use rocket\si\control\SiIconType;
-use rocket\impl\ei\component\command\IndependentEiCommandAdapter;
-use rocket\ei\component\command\PrivilegedEiCommand;
-use n2n\core\container\N2nContext;
 use rocket\core\model\Rocket;
+use rocket\ei\component\command\PrivilegedEiCommand;
+use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\util\Eiu;
-use n2n\web\http\controller\Controller;
+use rocket\impl\ei\component\command\IndependentEiCommandAdapter;
+use rocket\si\control\SiButton;
 use rocket\si\control\SiConfirm;
+use rocket\si\control\SiIconType;
 
 class DeleteEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiCommand {
 	const ID_BASE = 'delete';
@@ -49,10 +43,6 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 	
 	public function getTypeName(): string {
 		return 'Delete';
-	}
-	
-	public function lookupController(Eiu $eiu): Controller {
-		return $eiu->lookup(DeleteController::class);
 	}
 	
 	public function createEntryGuiControls(Eiu $eiu): array {

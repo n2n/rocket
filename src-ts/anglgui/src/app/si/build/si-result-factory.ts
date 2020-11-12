@@ -2,7 +2,7 @@
 import { Extractor, ObjectMissmatchError } from 'src/app/util/mapping/extractor';
 import { SiEntryError } from 'src/app/si/model/input/si-entry-error';
 import { SiFieldError } from 'src/app/si/model/input/si-field-error';
-import { Message } from 'src/app/util/i18n/message';
+import { Message, MessageSeverity } from 'src/app/util/i18n/message';
 import { SiResult, SiDirective } from '../manage/si-result';
 import { UiFactory } from 'src/app/ui/build/ui-factory';
 import { SiEntryIdentifier } from '../model/content/si-entry-qualifier';
@@ -55,6 +55,11 @@ export class SiResultFactory {
 		}
 
 		result.modEvent = new SiModEvent(addedSeis, updatedSeis, removedSeis);
+
+		result.messages = extr.reqArray('messages').map((msgData) => {
+			const msgExtr = new Extractor(msgData);
+			return Message.createText(msgExtr.reqString('text'), msgExtr.reqString('severity') as MessageSeverity);
+		});
 
 		return result;
 	}

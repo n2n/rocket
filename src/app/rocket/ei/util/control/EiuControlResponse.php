@@ -91,10 +91,12 @@ class EiuControlResponse {
 	
 	/**
 	 * @param Message|string $message
+	 * @return \rocket\ei\util\control\EiuControlResponse
 	 */
 	function message($message) {
 		$this->siResult->addMessage(Message::create($message), 
 				$this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
+		return $this;
 	}
 	
 // 	/**

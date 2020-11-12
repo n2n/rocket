@@ -221,25 +221,25 @@ class EiLifecycleMonitor implements LifecycleListener {
 		unset($this->persistActions[$objHash]);
 		unset($this->updateActions[$objHash]);
 		
-		$entityModel = $eiObject->getEiEntityObj()->getEiType()->getEntityModel();
-		foreach ($this->em->getEntityModelManager()->getRegisteredClassNames() as $className) {
-			if (!$this->spec->containsEiTypeClass($className) || $this->spec->isEiTypeLoaded($className)) {
-				continue;
-			}
+// 		$entityModel = $eiObject->getEiEntityObj()->getEiType()->getEntityModel();
+// 		foreach ($this->em->getEntityModelManager()->getRegisteredClassNames() as $className) {
+// 			if (!$this->spec->containsEiTypeClassName($className)) {
+// 				continue;
+// 			}
 			
-			$this->recCheck($this->em->getEntityModelManager()->getEntityModelByClass($class), $entityModel);
-		}
+// 			$this->recCheck($this->em->getEntityModelManager()->getEntityModelByClass($class), $entityModel);
+// 		}
 	}
 	
-	private function recCheck(EntityPropertyCollection $entityPropertyCollection, EntityModel $targetEntityModel) {
-		foreach ($entityPropertyCollection->getEntityProperties() as $entityProperty) {
+// 	private function recCheck(EntityPropertyCollection $entityPropertyCollection, EntityModel $targetEntityModel) {
+// 		foreach ($entityPropertyCollection->getEntityProperties() as $entityProperty) {
 			
-			if ($entityProperty->hasTargetEntityModel()) {
-				$entityProperty->getTargetEntityModel()->equals($entityModel);
+// 			if ($entityProperty->hasTargetEntityModel()) {
+// 				$entityProperty->getTargetEntityModel()->equals($entityModel);
 				
-			}
-		}
-	}
+// 			}
+// 		}
+// 	}
 	
 	private function remove(EiType $eiType, $entityObj) {
 		$this->removeEiObject(LiveEiObject::create($eiType, $entityObj));

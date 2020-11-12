@@ -246,6 +246,6 @@ class ManageState implements RequestScoped {
 	 */
 	function flush() {
 		return $this->getEiLifecycleMonitor()
-				->approve($this->eiFrame->getN2nContext());
+				->approve($this->getN2nContext());
 	}
 }

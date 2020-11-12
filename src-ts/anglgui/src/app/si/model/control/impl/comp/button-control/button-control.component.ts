@@ -1,8 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ButtonControlModel } from '../button-control-model';
-import { SiUiService } from 'src/app/si/manage/si-ui.service';
 import { SiButton } from '../../model/si-button';
-import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { UiZone } from 'src/app/ui/structure/model/ui-zone';
 
 @Component({
@@ -58,5 +56,9 @@ export class ButtonControlComponent implements OnInit {
 		console.log('subex');
 		this._subVisible = false;
 		this.model.exec(this.uiZone, key);
+	}
+
+	createConfirmation() {
+
 	}
 }
