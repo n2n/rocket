@@ -9,7 +9,7 @@ export class SiGenericEntryBuildup {
 	}
 
 	get typeId(): string {
-		return this.entryQualifier.maskQualifier.identifier.typeId;
+		return this.entryQualifier.maskQualifier.identifier.entryBuildupId;
 	}
 
 	containsPropId(id: string) {

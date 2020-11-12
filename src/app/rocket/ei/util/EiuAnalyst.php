@@ -71,7 +71,6 @@ use rocket\ei\manage\gui\EiEntryGuiTypeDef;
 use rocket\ei\util\gui\EiuEntryGuiTypeDef;
 use rocket\ei\manage\gui\EiGuiModel;
 use rocket\ei\util\gui\EiuGuiModel;
-use rocket\ei\manage\gui\EiGuiModelCache;
 
 class EiuAnalyst {
 	const EI_FRAME_TYPES = array(EiFrame::class, EiuFrame::class, N2nContext::class);
@@ -1171,7 +1170,6 @@ class EiuAnalyst {
 		return $this->eiuProp = new EiuProp($this->getEiPropPath(true), $this->getEiuMask(true), $this);
 	}
 	
-
 	/**
 	 * @param bool $required
 	 * @throws EiuPerimeterException

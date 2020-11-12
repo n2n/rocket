@@ -557,28 +557,7 @@ class EiuFrame {
 // 		return new EiuEntryTypeForm(new EiuEntryGui($eiEntryGui, null, $this->eiuAnalyst));
 // 	}
 	
-	public function remove(EiObject $eiObject) {
-		if ($eiObject->isDraft()) {
-			throw new NotYetImplementedException();
-		}
-			
-		$eiType = $eiObject->getEiEntityObj()->getEiType();
-		$nss = $eiType->getNestedSetStrategy();
-		if (null === $nss) {
-			$this->em()->remove($eiObject->getEiEntityObj()->getEntityObj());
-		} else {
-			$nsu = new NestedSetUtils($this->em(), $eiType->getEntityModel()->getClass(), $nss);
-			$nsu->remove($eiObject->getLiveObject());
-		}
-	}
-	
-	/**
-	 * @return \rocket\core\model\launch\TransactionApproveAttempt
-	 */
-	public function flush() {
-		return $this->eiFrame->getManageState()->getEiLifecycleMonitor()
-				->approve($this->eiFrame->getN2nContext());
-	}
+
 
 	/**
 	 * @param string $previewType

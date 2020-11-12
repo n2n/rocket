@@ -31,6 +31,7 @@ use rocket\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
 use n2n\util\uri\Path;
 use n2n\core\container\N2nContext;
+use n2n\l10n\Message;
 
 class OnlineEiCommand extends EiCommandAdapter {
 	const CONTROL_KEY = 'online';
@@ -82,10 +83,14 @@ class OnlineEiCommand extends EiCommandAdapter {
 			$siButton->setIconType(SiIconType::MINUS_CIRCLE);
 		}
 		
-		$guiControl = $eiuControlFactory->createCallback(self::CONTROL_KEY, $siButton, function () use ($eiuEntry, $status) {
-			$eiuEntry->setValue($this->onlineEiProp, !$status);
-			$eiuEntry->save();
-		});
+		$guiControl = $eiuControlFactory->createCallback(self::CONTROL_KEY, $siButton, 
+				function () use ($eiu, $eiuEntry, $status, $dtc) {
+					$eiuEntry->setValue($this->onlineEiProp, !$status);
+					if (!$eiuEntry->save()) {
+						return $eiu->factory()->newControlResponse()
+								->message($dtc->t('ei_entry_errors_must_first_be_handled_err'));
+					}
+				});
 		
 		return [self::CONTROL_KEY => $guiControl];
 	}

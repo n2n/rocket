@@ -134,7 +134,7 @@ class CompactExplorerSiGui implements SiGui {
 	 */
 	public function getData(): array {
 		return [
-			'apiUrl' => (string) $this->frame,
+			'frame' => $this->frame,
 			'pageSize' => $this->pageSize,
 			'declaration' => $this->declaration,
 			'partialContent' => $this->partialContent,

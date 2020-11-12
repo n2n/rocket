@@ -34,6 +34,8 @@ use rocket\ei\manage\security\EiPermissionManager;
 use rocket\ei\manage\veto\EiLifecycleMonitor;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\gui\EiGuiModelCache;
+use n2n\persistence\orm\util\NestedSetUtils;
+use n2n\util\ex\NotYetImplementedException;
 
 class ManageState implements RequestScoped {
 	private $n2nContext;
@@ -222,5 +224,28 @@ class ManageState implements RequestScoped {
 		
 		reset($this->eiFrames);
 		return current($this->eiFrames)->getId();
+	}
+	
+	function remove(EiObject $eiObject) {
+		if ($eiObject->isDraft()) {
+			throw new NotYetImplementedException();
+		}
+		
+		$eiType = $eiObject->getEiEntityObj()->getEiType();
+		$nss = $eiType->getNestedSetStrategy();
+		if (null === $nss) {
+			$this->getEntityManager()->remove($eiObject->getEiEntityObj()->getEntityObj());
+		} else {
+			$nsu = new NestedSetUtils($this->getEntityManager(), $eiType->getEntityModel()->getClass(), $nss);
+			$nsu->remove($eiObject->getLiveObject());
+		}
+	}
+	
+	/**
+	 * @return \rocket\core\model\launch\TransactionApproveAttempt
+	 */
+	function flush() {
+		return $this->getEiLifecycleMonitor()
+				->approve($this->eiFrame->getN2nContext());
 	}
 }

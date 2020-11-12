@@ -24,8 +24,6 @@ namespace rocket\impl\ei\component\prop\meta;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\impl\ei\component\prop\adapter\DisplayableEiPropAdapter;
-use n2n\impl\web\ui\view\html\HtmlSnippet;
-use n2n\impl\web\ui\view\html\HtmlElement;
 use rocket\si\content\impl\SiFields;
 use rocket\ei\manage\idname\IdNameProp;
 use rocket\ei\component\prop\IdNameEiProp;

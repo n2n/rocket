@@ -33,9 +33,9 @@ use rocket\impl\ei\component\command\IndependentEiCommandAdapter;
 use rocket\ei\component\command\PrivilegedEiCommand;
 use n2n\core\container\N2nContext;
 use rocket\core\model\Rocket;
-use rocket\ei\manage\security\privilege\EiCommandPrivilege;
 use rocket\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
+use rocket\si\control\SiConfirm;
 
 class DeleteEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiCommand {
 	const ID_BASE = 'delete';
@@ -53,6 +53,32 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 	
 	public function lookupController(Eiu $eiu): Controller {
 		return $eiu->lookup(DeleteController::class);
+	}
+	
+	public function createEntryGuiControls(Eiu $eiu): array {
+		$eiuEntry = $eiu->entry();
+		
+		if ($eiuEntry->isDraft()) {
+			return [];
+		}
+		
+		$eiuFrame = $eiu->frame();
+		$dtc = $eiu->dtc('rocket');
+		
+		$identityString = $eiuEntry->createIdentityString();
+		$name = $dtc->t('common_delete_label');
+		$tooltip = $dtc->t('ei_impl_delete_entry_tooltip', ['entry' => $eiuFrame->getGenericLabel()]);
+		$confirmMessage = $dtc->t('ei_impl_delete_entry_confirm', array('entry' => $identityString));
+		
+		$siButton = SiButton::danger($name, SiIconType::TIMES_CIRCLE)->setTooltip($tooltip)
+				->setConfirm(new SiConfirm($confirmMessage, $dtc->t('common_yes_label'), $dtc->t('common_no_label')));
+		
+		$eiuControlFactory = $eiu->guiFrame()->controlFactory($this);
+		$control = $eiuControlFactory->createCallback(self::CONTROL_BUTTON_KEY, $siButton, function (Eiu $eiu) {
+			$eiu->entry()->remove();
+		});
+		
+		return [self::CONTROL_BUTTON_KEY => $control];
 	}
 	
 // 	public function createEntryGuiControls(Eiu $eiu): array {
@@ -100,29 +126,29 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 // 		return array(self::CONTROL_BUTTON_KEY => $hrefControl);
 // 	}
 	
-	public function getEntryGuiControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {
-		$dtc = new DynamicTextCollection('rocket');
+// 	public function getEntryGuiControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {
+// 		$dtc = new DynamicTextCollection('rocket');
 		
-		return array(self::CONTROL_BUTTON_KEY => $dtc->translate('ei_impl_delete_draft_label'));
-	}
+// 		return array(self::CONTROL_BUTTON_KEY => $dtc->translate('ei_impl_delete_draft_label'));
+// 	}
 	
-	public function createPartialControlButtons(EiFrame $eiFrame, HtmlView $htmlView) {
-		$dtc = new DynamicTextCollection('rocket', $htmlView->getN2nContext()->getN2nLocale());
-		$eiCommandButton = new SiButton(null, $dtc->translate('ei_impl_partial_delete_label'), 
-				$dtc->translate('ei_impl_partial_delete_tooltip'), false, SiButton::TYPE_SECONDARY,
-				SiIconType::TIMES_SIGN);
-		$eiCommandButton->setConfirmMessage($dtc->translate('ei_impl_partial_delete_confirm_message'));
-		$eiCommandButton->setConfirmOkButtonLabel($dtc->translate('common_yes_label'));
-		$eiCommandButton->setConfirmCancelButtonLabel($dtc->translate('common_no_label'));
+// 	public function createPartialControlButtons(EiFrame $eiFrame, HtmlView $htmlView) {
+// 		$dtc = new DynamicTextCollection('rocket', $htmlView->getN2nContext()->getN2nLocale());
+// 		$eiCommandButton = new SiButton(null, $dtc->translate('ei_impl_partial_delete_label'), 
+// 				$dtc->translate('ei_impl_partial_delete_tooltip'), false, SiButton::TYPE_SECONDARY,
+// 				SiIconType::TIMES_SIGN);
+// 		$eiCommandButton->setConfirmMessage($dtc->translate('ei_impl_partial_delete_confirm_message'));
+// 		$eiCommandButton->setConfirmOkButtonLabel($dtc->translate('common_yes_label'));
+// 		$eiCommandButton->setConfirmCancelButtonLabel($dtc->translate('common_no_label'));
 		
-		return array(self::CONTROL_BUTTON_KEY => $eiCommandButton);
-	}
+// 		return array(self::CONTROL_BUTTON_KEY => $eiCommandButton);
+// 	}
 	
-	public function getPartialControlOptions(N2nLocale $n2nLocale) {
-		$dtc = new DynamicTextCollection('rocket');
+// 	public function getPartialControlOptions(N2nLocale $n2nLocale) {
+// 		$dtc = new DynamicTextCollection('rocket');
 		
-		return array(self::CONTROL_BUTTON_KEY => $dtc->translate('ei_impl_partial_delete_label'));
-	}
+// 		return array(self::CONTROL_BUTTON_KEY => $dtc->translate('ei_impl_partial_delete_label'));
+// 	}
 	
 	public function processEntries(EiFrame $eiFrame, array $entries) {
 		$spec = N2N::getModelContext()->lookup('rocket\spec\Spec');

@@ -43,6 +43,7 @@ use n2n\util\ex\NotYetImplementedException;
 use rocket\ei\component\prop\EiPropWrapper;
 use rocket\ei\util\gui\EiuGui;
 use rocket\ei\manage\gui\EiGui;
+use rocket\core\model\launch\TransactionApproveAttempt;
 
 class EiuEntry {
 	private $eiEntry;
@@ -105,6 +106,9 @@ class EiuEntry {
 		return $this->eiuObject = new EiuObject($this->eiEntry->getEiObject(), $this->eiuAnalyst);
 	}
 	
+	/**
+	 * @return \rocket\ei\manage\EiObject
+	 */
 	private function getEiObject() {
 		if ($this->eiuObject !== null) {
 			return $this->eiuObject->getEiObject();
@@ -737,6 +741,12 @@ class EiuEntry {
 // 		}
 		
 		return true;
+	}
+	
+	function remove(): TransactionApproveAttempt {
+		$ms = $this->eiuAnalyst->getManageState();
+		$ms->remove($this->getEiObject());
+		return $ms->flush();
 	}
 	
 	/**

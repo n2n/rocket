@@ -33,7 +33,6 @@ use rocket\ei\manage\draft\DraftManager;
 use n2n\core\container\N2nContext;
 use rocket\ei\EiType;
 use n2n\util\ex\IllegalStateException;
-use n2n\persistence\orm\property\EntityProperty;
 use n2n\persistence\orm\model\EntityPropertyCollection;
 use n2n\persistence\orm\model\EntityModel;
 
@@ -41,8 +40,17 @@ class EiLifecycleMonitor implements LifecycleListener {
 	private $spec;
 	private $em;
 	private $n2nContext;
+	/**
+	 * @var VetoableLifecycleAction[]
+	 */
 	private $persistActions = array();
+	/**
+	 * @var VetoableLifecycleAction[]
+	 */
 	private $updateActions = array();
+	/**
+	 * @var VetoableLifecycleAction[]
+	 */
 	private $removeActions = array();
 	
 // 	private $unmangedRemovedEntityObjs = array();

@@ -225,7 +225,7 @@ class TypeSelectInModel implements EnumInModel {
 
 	constructor(private siEntry: SiEntry) {
 		for (const mq of siEntry.maskQualifiers) {
-			this.options.set(mq.identifier.typeId, mq.name);
+			this.options.set(mq.identifier.entryBuildupId, mq.name);
 		}
 	}
 

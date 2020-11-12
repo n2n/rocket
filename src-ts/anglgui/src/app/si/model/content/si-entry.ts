@@ -108,7 +108,7 @@ export class SiEntry {
 	}
 
 	addEntryBuildup(buildup: SiEntryBuildup) {
-		this._entryBuildupsMap.set(buildup.entryQualifier.maskQualifier.identifier.typeId, buildup);
+		this._entryBuildupsMap.set(buildup.entryQualifier.maskQualifier.identifier.entryBuildupId, buildup);
 	}
 
 	containsEntryBuildupId(id: string): boolean {
