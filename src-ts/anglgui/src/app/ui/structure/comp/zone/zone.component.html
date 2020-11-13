@@ -40,3 +40,23 @@
 		</div>
 	</div>
 </ng-container>
+
+
+<div *ngIf="uiZone.confirmDialog" class="rocket-dialog-bg">
+	<div class="rocket-dialog">
+		<p>
+			<ng-container *ngIf="uiZone.confirmDialog.message">{{ uiZone.confirmDialog.message}}</ng-container>
+			<ng-container *ngIf="!uiZone.confirmDialog.message">{{ 'common_confirm' | translate }}</ng-container>
+		</p>
+		
+		<button (click)="uiZone.confirmDialog.ok()">
+			<ng-container *ngIf="uiZone.confirmDialog.okLabel">{{ uiZone.confirmDialog.okLabel}}</ng-container>
+			<ng-container *ngIf="!uiZone.confirmDialog.okLabel">{{ 'common_ok_label' | translate }}</ng-container>
+		</button>
+
+		<button (click)="uiZone.confirmDialog.cancel()">
+			<ng-container *ngIf="uiZone.confirmDialog.cancelLabel">{{ uiZone.confirmDialog.cancelLabel}}</ng-container>
+			<ng-container *ngIf="!uiZone.confirmDialog.cancelLabel">{{ 'common_cancel_label' | translate }}</ng-container>
+		</button>
+	</div>
+</div>

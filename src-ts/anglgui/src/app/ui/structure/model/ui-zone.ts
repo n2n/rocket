@@ -4,12 +4,10 @@ import { UiLayer } from './ui-layer';
 import { UiContent } from './ui-content';
 import { UiNavPoint } from '../../util/model/ui-nav-point';
 import { UiStructure } from './ui-structure';
+import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
+import { UiConfirmDialog } from './ui-confirm-dialog';
 
 export class UiZone {
-	// public content: SiGui|null;
-	private disposeSubject = new Subject<void>();
-	private _model: UiZoneModel|null = null;
-	readonly uiStructure: UiStructure;
 
 	constructor(readonly url: string|null, readonly layer: UiLayer) {
 		this.uiStructure = new UiStructure(null, this, null, null);
@@ -35,6 +33,12 @@ export class UiZone {
 	get model(): UiZoneModel|null {
 		return this._model;
 	}
+	// public content: SiGui|null;
+	private disposeSubject = new Subject<void>();
+	private _model: UiZoneModel|null = null;
+	readonly uiStructure: UiStructure;
+
+	confirmDialog: UiConfirmDialog|null = null;
 
 	private resetModel() {
 		this._model = null;
@@ -51,7 +55,20 @@ export class UiZone {
 	onDispose(callback: () => any): Subscription {
 		return this.disposeSubject.subscribe(callback);
 	}
+
+	createConfirmDialog(message: string|null, okLabel: string|null, cancelLabel: string|null): UiConfirmDialog {
+		if (this.confirmDialog) {
+			throw new IllegalStateError('Zone already blocked by dialog.');
+		}
+
+		this.confirmDialog = new UiConfirmDialog(message, okLabel, cancelLabel);
+		this.confirmDialog.confirmed$.subscribe(() => {
+			this.confirmDialog = null;
+		});
+		return this.confirmDialog;
+	}
 }
+
 
 export interface UiZoneModel {
 	title: string;

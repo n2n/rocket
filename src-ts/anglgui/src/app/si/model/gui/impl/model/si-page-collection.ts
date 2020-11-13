@@ -128,8 +128,14 @@ export class SiPageCollection implements SiControlBoundry {
 			throw new IllegalSiStateError('Page num to high.');
 		}
 
+		let offset = no * this.pageSize;
+		if (this.pagesMap.has(no - 1)) {
+			const prevPage = this.pagesMap.get(no - 1);
+			offset = prevPage.offset + prevPage.size;
+		}
+
 		const entryMonitory = new SiEntryMonitor(this.siFrame.apiUrl, this.siService, this.siModState, true);
-		const page = new SiPage(entryMonitory, no, entries, null);
+		const page = new SiPage(entryMonitory, no, offset, this.pageSize, entries, null);
 		this.pagesMap.set(no, page);
 		return page;
 	}
@@ -205,7 +211,7 @@ export class SiPageCollection implements SiControlBoundry {
 		}
 
 		const instruction = SiGetInstruction.partialContent(false, true,
-						(pageNo - 1) * this.pageSize, this.pageSize,
+						siPage.offset, siPage.size,
 						this.quickSearchStr)
 				.setDeclaration(this.declaration)
 				.setGeneralControlsIncluded(!this.controls)

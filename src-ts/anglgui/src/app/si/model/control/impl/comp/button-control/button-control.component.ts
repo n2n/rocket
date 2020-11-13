@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ButtonControlModel } from '../button-control-model';
 import { SiButton } from '../../model/si-button';
 import { UiZone } from 'src/app/ui/structure/model/ui-zone';
+import { filter } from 'rxjs/operators';
 
 @Component({
 	selector: 'rocket-button-control',
@@ -49,16 +50,32 @@ export class ButtonControlComponent implements OnInit {
 			return;
 		}
 
-		this.model.exec(this.uiZone, null);
+		const siConfirm = this.model.getSiButton().confirm;
+
+		if (!siConfirm) {
+			this.model.exec(this.uiZone, null);
+		}
+
+		this.uiZone.createConfirmDialog(siConfirm.message, siConfirm.okLabel, siConfirm.cancelLabel)
+				.confirmed$.pipe(filter(confirmed => confirmed)).subscribe(() => {
+					this.model.exec(this.uiZone, null);
+				});
 	}
 
 	subExec(key: string) {
-		console.log('subex');
 		this._subVisible = false;
-		this.model.exec(this.uiZone, key);
+
+		const siConfirm = this.model.getSubSiButtonMap().get(key).confirm;
+
+		if (!siConfirm) {
+			this.model.exec(this.uiZone, key);
+		}
+
+		this.uiZone.createConfirmDialog(siConfirm.message, siConfirm.okLabel, siConfirm.cancelLabel)
+				.confirmed$.pipe(filter(confirmed => confirmed)).subscribe((confirmed) => {
+					this.model.exec(this.uiZone, key);
+				});
 	}
 
-	createConfirmation() {
 
-	}
 }

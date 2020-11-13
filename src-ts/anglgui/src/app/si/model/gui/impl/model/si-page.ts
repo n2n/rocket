@@ -9,6 +9,7 @@ export class SiPage {
 	private loadSubject: Subject<SiEntry[]>|null = null;
 
 	constructor(private entryMonitor: SiEntryMonitor, readonly no: number,
+			public offset: number, public size: number,
 			entries: SiEntry[]|null, public offsetHeight: number|null) {
 		if (no < 1) {
 			throw new IllegalSiStateError('Illegal page no: ' + no);
