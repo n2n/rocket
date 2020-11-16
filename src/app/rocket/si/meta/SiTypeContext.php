@@ -33,8 +33,8 @@ class SiTypeContext implements \JsonSerializable {
 		$this->entryBuildupIds = array_values($entryBuildupIds);
 	}
 	
-	function containsEntryBuildupId(string $typeId) {
-		return $this->typeId == $typeId || in_array($typeId, $this->entryBuildupIds);
+	function containsEntryBuildupId(string $entryBuildupId) {
+		return in_array($entryBuildupId, $this->entryBuildupIds);
 	}
 	
 	function jsonSerialize() {

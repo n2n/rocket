@@ -5,6 +5,8 @@ import { FallbackComponent } from 'src/app/op/comp/common/fallback/fallback.comp
 import { UsersComponent } from './user/comp/users/users.component';
 import { UserComponent } from './user/comp/user/user.component';
 import { ChPwComponent } from './user/comp/ch-pw/ch-pw.component';
+import { ToolsComponent } from './tool/comp/tools/tools.component';
+import { MailCenterComponent } from './tool/comp/mail-center/mail-center.component';
 
 const routes: Routes = [
 	{
@@ -18,6 +20,12 @@ const routes: Routes = [
 	},
 	{
 		path: 'users/add', component: UserComponent
+	},
+	{
+		path: 'tools', component: ToolsComponent
+	},
+	{
+		path: 'tools/mail-center', component: MailCenterComponent
 	},
 	{
 		/*path: 'manage', */component: EiComponent, matcher: matchesManageUrl
