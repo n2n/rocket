@@ -32,9 +32,6 @@ use rocket\si\content\impl\SiFields;
 use n2n\util\type\CastUtils;
 use rocket\si\content\impl\StringInSiField;
 use rocket\impl\ei\component\prop\string\cke\conf\CkeConfig;
-use n2n\util\type\ArgUtils;
-use n2n\util\uri\Url;
-use rocket\ei\manage\idname\IdNameProp;
 use rocket\ei\util\factory\EifGuiField;
 
 class CkeEiProp extends AlphanumericEiProp {

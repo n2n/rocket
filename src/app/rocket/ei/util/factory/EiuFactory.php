@@ -71,7 +71,7 @@ class EiuFactory {
 	}
 	
 	/**
-	 * 
+	 * @return EifGuiField
 	 */
 	function newGuiField(SiField $siField) {
 		return new EifGuiField($this->eiu, $siField);

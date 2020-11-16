@@ -54,6 +54,7 @@ use rocket\ei\manage\gui\EiGuiListener;
 use rocket\si\meta\SiMaskQualifier;
 use n2n\l10n\N2nLocale;
 use rocket\si\meta\SiMaskIdentifier;
+use rocket\ei\util\Eiu;
 
 /**
  * @author andreas
