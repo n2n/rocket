@@ -26,10 +26,12 @@ use rocket\si\meta\SiMaskQualifier;
 
 class SiEntryIdentifier implements \JsonSerializable {
 	private $typeId;
+	private $entryBuildupId;
 	private $id;
 	
-	function __construct(string $typeId, ?string $id) {
+	function __construct(string $typeId, ?string $entryBuildupId, ?string $id) {
 		$this->typeId = $typeId;
+		$this->entryBuildupId = $entryBuildupId;
 		$this->id = $id;
 	}
 	
@@ -46,6 +48,22 @@ class SiEntryIdentifier implements \JsonSerializable {
 	 */
 	function setTypeId(string $typeId) {
 		$this->typeId = $typeId;
+		return $this;
+	}
+	
+	/**
+	 * @return string|null
+	 */
+	function getEntryBuildupId() {
+		return $this->entryBuildupId;
+	}
+	
+	/**
+	 * @param string|null $entryBuildupId
+	 * @return SiEntryQualifier
+	 */
+	function setEntryBuildupId(?string $entryBuildupId) {
+		$this->entryBuildupId = $entryBuildupId;
 		return $this;
 	}
 	
@@ -76,6 +94,7 @@ class SiEntryIdentifier implements \JsonSerializable {
 	function jsonSerialize() {
 		return [
 			'typeId' => $this->typeId,
+			'entryBuildup' => $this->entryBuildupId,
 			'id' => $this->id,
 		];
 	}
@@ -89,7 +108,7 @@ class SiEntryIdentifier implements \JsonSerializable {
 		$ds = new DataSet($data);
 		
 		try {
-			return new SiEntryIdentifier($ds->reqString('typeId'), $ds->optString('id'));
+			return new SiEntryIdentifier($ds->reqString('typeId'), $ds->optString('entryBuildupId'), $ds->optString('id'));
 		} catch (\n2n\util\type\attrs\AttributesException $e) {
 			throw new \InvalidArgumentException(null, null, $e);
 		}

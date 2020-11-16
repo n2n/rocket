@@ -26,10 +26,12 @@ use n2n\util\type\attrs\DataSet;
 class SiMaskIdentifier implements \JsonSerializable {
     protected $id;
     protected $entryBuildupId;
+    protected $typeId;
 	
-	function __construct(string $id, string $entryBuildupId) {
+	function __construct(string $id, string $entryBuildupId, string $typeId) {
 		$this->id = $id;
 		$this->entryBuildupId = $entryBuildupId;
+		$this->typeId = $typeId;
 	}
 	
 	/**
@@ -48,12 +50,36 @@ class SiMaskIdentifier implements \JsonSerializable {
 		return $this;
 	}
 	
+	/**
+	 * @return string
+	 */
 	function getEntryBuildupId(): string {
 		return $this->entryBuildupId;
 	}
 	
-	function setTypeId(string $typeId) {
+	/**
+	 * @param string $typeId
+	 * @return \rocket\si\meta\SiMaskIdentifier
+	 */
+	function setEntryBuildupId(string $typeId) {
 		$this->entryBuildupId = $typeId;
+		return $this;
+	}
+	
+	/**
+	 * @return string
+	 */
+	function getTypeId() {
+		return $this->typeId;
+	}
+	
+	/**
+	 * @param string $typeId
+	 * @return \rocket\si\meta\SiMaskIdentifier
+	 */
+	function setTypeId(string $typeId) {
+		$this->typeId = $typeId;
+		return $this;
 	}
 	
 	function jsonSerialize() {
@@ -67,7 +93,7 @@ class SiMaskIdentifier implements \JsonSerializable {
 		$ds = new DataSet($data);
 		
 		try {
-			return new SiMaskIdentifier($ds->reqString('id'), $ds->reqString('typeId'));
+			return new SiMaskIdentifier($ds->reqString('id'), $ds->reqString('entryBuildupId'), $ds->reqString('typeId'));
 		} catch (\n2n\util\type\attrs\AttributesException $e) {
 			throw new \InvalidArgumentException(null, null, $e);
 		}

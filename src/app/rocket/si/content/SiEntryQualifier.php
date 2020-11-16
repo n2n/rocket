@@ -30,7 +30,8 @@ class SiEntryQualifier implements \JsonSerializable {
 	
 	function __construct(SiMaskQualifier $maskQualifier, ?string $id, string $idName = null) {
 		$this->maskQualifier = $maskQualifier;
-		$this->identifier = new SiEntryIdentifier($maskQualifier->getIdentifier()->getTypeId(), $id);
+		$this->identifier = new SiEntryIdentifier($maskQualifier->getIdentifier()->getTypeId(), 
+				$maskQualifier->getIdentifier()->getEntryBuildupId(), $id);
 		$this->idName = $idName;
 	}
 	

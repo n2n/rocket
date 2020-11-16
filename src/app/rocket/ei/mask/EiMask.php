@@ -30,7 +30,6 @@ use rocket\ei\manage\preview\controller\PreviewController;
 use n2n\config\InvalidConfigurationException;
 use rocket\ei\manage\preview\model\UnavailablePreviewException;
 use rocket\ei\manage\gui\control\UnknownGuiControlException;
-use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\EiPropCollection;
 use rocket\ei\component\command\EiCommandCollection;
 use rocket\ei\component\modificator\EiModificatorCollection;
@@ -651,7 +650,8 @@ class EiMask {
 	 * @return \rocket\si\meta\SiMaskQualifier
 	 */
 	public function createSiMaskQualifier(N2nLocale $n2nLocale) {
-		return new SiMaskQualifier(new SiMaskIdentifier((string) $this->getEiTypePath(), $this->getEiType()->getId()), 
+		return new SiMaskQualifier(new SiMaskIdentifier((string) $this->getEiTypePath(), $this->getEiType()->getId(), 
+						$this->getEiType()->getSupremeEiType()->getId()), 
 				$this->getLabelLstr()->t($n2nLocale), $this->getIconType());
 	}
 	

@@ -178,13 +178,15 @@ class EiEntryGui {
 	 */
 	function createSiEntryIdentifier() {
 		$typeId = $this->contextEiMask->getEiType()->getSupremeEiType()->getId();
+		$entryBuildupId = null;
 		$id = null;
 		if ($this->isTypeDefSelected()) {
 			$eiEntry = $this->getSelectedTypeDef()->getEiEntry();
+			$entryBuildupId = $this->getSelectedTypeDef()->getEiMask()->getEiType()->getId();
 			$id = $eiEntry->getPid();
 		}
 		
-		return new SiEntryIdentifier($typeId, $id);
+		return new SiEntryIdentifier($typeId, $entryBuildupId, $id);
 	}
 	
 	/**

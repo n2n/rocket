@@ -68,7 +68,7 @@ class QualifierSelectInSiField extends InSiFieldAdapter {
 	function setValues(array $values) {
 		$typeContext = $this->frame->getTypeContext();
 		foreach ($values as $value) {
-			ArgUtils::assertTrue($typeContext->containsTypeId($value->getIdentifier()->getTypeId()));
+			ArgUtils::assertTrue($typeContext->containsEntryBuildupId($value->getIdentifier()->getEntryBuildupId()));
 		}
 		$this->values = $values;
 		return $this;
@@ -121,7 +121,7 @@ class QualifierSelectInSiField extends InSiFieldAdapter {
 		$typeContext = $this->frame->getTypeContext();
 		foreach ((array) $pickables as $pickable) {
 			ArgUtils::assertTrue($pickable instanceof SiEntryQualifier 
-					&& $typeContext->containsTypeId($pickable->getIdentifier()->getTypeId()));
+					&& $typeContext->containsEntryBuildupId($pickable->getIdentifier()->getTypeId()));
 		}
 		$this->pickables = $pickables;
 		return $this;
