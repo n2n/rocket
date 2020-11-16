@@ -210,8 +210,14 @@ class EiType extends Type {
 	/**
 	 * @return \rocket\ei\EiType[]
 	 */
-	public function getAllSubEiTypes() {
-		return $this->lookupAllSubEiTypes($this); 
+	public function getAllSubEiTypes(bool $includeSelf = false) {
+		$subEiTypes = [];
+		
+		if ($includeSelf) {
+			$subEiTypes[] = $this;
+		}
+		
+		return array_merge($subEiTypes, $this->lookupAllSubEiTypes($this)); 
 	}
 	
 	/**
@@ -465,8 +471,8 @@ class EiType extends Type {
 	 * @return \rocket\si\meta\SiTypeContext
 	 */
 	function createSiTypeContext() {
-		return new SiTypeContext($this->getId(), array_map(
+		return new SiTypeContext($this->getSupremeEiType()->getId(), array_map(
 				function ($subEiType) { return $subEiType->getId(); },
-				$this->getAllSubEiTypes()));
+				$this->getAllSubEiTypes(true)));
 	}
 }

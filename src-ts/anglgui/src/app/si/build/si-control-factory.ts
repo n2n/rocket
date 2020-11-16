@@ -6,6 +6,7 @@ import { SiButton, SiConfirm } from '../model/control/impl/model/si-button';
 import { Injector } from '@angular/core';
 import { SiUiService } from '../manage/si-ui.service';
 import { SiControlBoundry } from '../model/control/si-control-bountry';
+import { UiFactory } from 'src/app/ui/build/ui-factory';
 
 enum SiControlType {
 	REF = 'ref',

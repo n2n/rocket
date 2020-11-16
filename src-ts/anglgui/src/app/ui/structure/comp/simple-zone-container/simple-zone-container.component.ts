@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { UiBreadcrumb } from '../../model/ui-zone';
 
 @Component({
 	selector: 'rocket-ui-simple-zone-container',
@@ -11,6 +12,8 @@ export class SimpleZoneContainerComponent implements OnInit {
 	title: string;
 	@Input()
 	loading = false;
+	@Input()
+	breadcrumbs: UiBreadcrumb[];
 
 	constructor() { }
 

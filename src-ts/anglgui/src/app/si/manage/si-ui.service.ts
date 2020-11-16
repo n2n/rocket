@@ -13,6 +13,7 @@ import { UiLayer } from 'src/app/ui/structure/model/ui-layer';
 import { SiResult, SiDirective } from './si-result';
 import { SiControlBoundry } from '../model/control/si-control-bountry';
 import { SiModStateService } from '../model/mod/model/si-mod-state.service';
+import { UiNavPoint } from 'src/app/ui/util/model/ui-nav-point';
 
 @Injectable({
 	providedIn: 'root'
@@ -50,18 +51,18 @@ export class SiUiService {
 		return url.substring(baseHref.length);
 	}
 
-	navigate(url: string, layer: UiLayer) {
+	navigateByUrl(url: string, layer: UiLayer|null) {
 		const baseHref = this.platformLocation.getBaseHrefFromDOM();
 
 		if (!url.startsWith(baseHref)) {
 			throw new IllegalSiStateError('Ref url must start with base href: ' + url);
 		}
 
-		this.rlNav(url.substring(baseHref.length), layer);
+		this.naviationByRouterUrl(url.substring(baseHref.length), layer);
 	}
 
-	private rlNav(url: string, layer: UiLayer) {
-		if (!layer.main) {
+	private naviationByRouterUrl(url: string, layer: UiLayer|null) {
+		if (layer && !layer.main) {
 			const zone = layer.pushRoute(null, url).zone;
 			this.loadZone(zone, false);
 			return;
@@ -72,11 +73,11 @@ export class SiUiService {
 
 	navigateBack(layer: UiLayer, fallbackUrl: string|null = null) {
 		if (layer.previousRoute && layer.previousRoute.zone.url) {
-			this.rlNav(layer.previousRoute.zone.url, layer);
+			this.naviationByRouterUrl(layer.previousRoute.zone.url, layer);
 		}
 
 		if (fallbackUrl) {
-			this.navigate(fallbackUrl, layer);
+			this.navigateByUrl(fallbackUrl, layer);
 			return;
 		}
 
@@ -173,7 +174,7 @@ export class SiUiService {
 
 		switch (result.directive) {
 			case SiDirective.REDIRECT:
-				this.navigate(result.navPoint.url, uiLayer);
+				this.navigateByUrl(result.navPoint.url, uiLayer);
 				break;
 			case SiDirective.REDIRECT_BACK:
 				this.navigateBack(uiLayer, result.navPoint.url);

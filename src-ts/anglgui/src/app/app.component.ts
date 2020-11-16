@@ -7,6 +7,7 @@ import { SiUiService } from './si/manage/si-ui.service';
 import { AppStateService } from './app-state.service';
 import { UserFactory } from './op/user/model/user-fatory';
 import { User } from './op/user/bo/user';
+import { UiNavPoint } from './ui/util/model/ui-nav-point';
 
 @Component({
 	selector: 'rocket-root',
@@ -30,8 +31,12 @@ export class AppComponent implements OnInit {
 		this.appState.user = UserFactory.createUser(extr.reqObject('user'));
 	}
 
-	navRouterLink(url: string): string {
-		return this.uiSiService.navRouterUrl(url);
+	navRouterLink(navPoint: UiNavPoint): string {
+		if (navPoint.siref) {
+			return navPoint.url;
+		} 
+
+		return this.uiSiService.navRouterUrl(navPoint.url);
 	}
 
 	get user(): User {

@@ -42,17 +42,10 @@ class DetailController extends ControllerAdapter {
 	public function doLive($pid) {
 		$eiuEntry = $this->eiuCtrl->lookupEntry($pid);
 		
-		$eiuEntryGui = $eiuEntry->newEntryGui();
+		$this->eiuCtrl->pushOverviewBreadcrumb()
+				->pushCurrentAsSirefBreadcrumb($this->dtc->t('common_detail_label'));
 		
-		$viewModel = new EntryCommandViewModel($this->eiuCtrl->frame(), null, $eiuEntry);
-		$viewModel->initializeDrafts();
-		
-		$this->applyBreadcrumbs($eiuEntryGui->entry()->object()->getEiObject());
-			
-		$view = $this->createView('..\view\detail.html', array('entryCommandViewModel' => $viewModel,
-				'eiuEntryGui' => $eiuEntryGui));
-		
-		$this->eiuCtrl->forwardView($view);
+		$this->eiuCtrl->forwardDlZone($eiuEntry, true, true, true);
 	}
 	
 	public function doDraft($draftId) { 

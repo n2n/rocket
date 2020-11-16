@@ -6,7 +6,9 @@
 
 	<div *ngIf="!loading" class="rocket-zone">
 		<header>
-			<h1>{{ title }}</h1>
+            <h1>{{ title }}</h1>
+            
+            <rocket-ui-breadcrumbs [uiBreadcrumbs]="breadcrumbs"></rocket-ui-breadcrumbs>
         </header>
         
 		<div class="rocket-content rocket-level-0">

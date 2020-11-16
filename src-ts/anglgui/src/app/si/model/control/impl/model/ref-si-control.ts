@@ -21,7 +21,7 @@ export class RefSiControl implements SiControl, ButtonControlModel {
 	}
 
 	exec(uiZone: UiZone, _subKey: string|null) {
-		this.siUiService.navigate(this.url, uiZone.layer);
+		this.siUiService.navigateByUrl(this.url, uiZone.layer);
 	}
 
 	createUiContent(uiZone: UiZone): UiContent {

@@ -1,6 +1,6 @@
 <ol *ngIf="uiBreadcrumbs.length > 0" class="breadcrumb">
 	<li *ngFor="let uiBreadcrumb of uiBreadcrumbs" class="breadcrumb-item" [class.active]="isLast(uiBreadcrumb)">
-		<a rocketUiNavPoint [uiNavPoint]="uiBreadcrumb.navPoint" [uiZone]="uiZone">
+		<a rocketUiNavPoint [uiNavPoint]="uiBreadcrumb.navPoint" [callback]="uiBreadcrumb.callback">
 			{{ uiBreadcrumb.name }}
 		</a>
 	</li>

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { UiBreadcrumb, UiZone } from '../../../model/ui-zone';
+import { UiBreadcrumb } from '../../../model/ui-zone';
 
 @Component({
 	selector: 'rocket-ui-breadcrumbs',
@@ -8,8 +8,6 @@ import { UiBreadcrumb, UiZone } from '../../../model/ui-zone';
 })
 export class BreadcrumbsComponent implements OnInit {
 
-	@Input()
-	uiZone: UiZone;
 	@Input()
 	uiBreadcrumbs: UiBreadcrumb[];
 

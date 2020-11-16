@@ -2,7 +2,7 @@ import { UiZoneModel, UiZone } from 'src/app/ui/structure/model/ui-zone';
 import { Extractor } from 'src/app/util/mapping/extractor';
 import { Injector } from '@angular/core';
 import { SiGuiFactory } from './si-gui-factory';
-import { UiFactory } from 'src/app/ui/build/ui-factory';
+import { SiUiBreadcrumbFactory } from './si-ui-breadcrumb-factory';
 
 export class UiZoneModelFactory {
 	constructor(private injector: Injector) {
@@ -15,7 +15,7 @@ export class UiZoneModelFactory {
 
 		return {
 			title: extr.reqString('title'),
-			breadcrumbs: UiFactory.createBreadcrumbs(extr.reqArray('breadcrumbs')),
+			breadcrumbs: new SiUiBreadcrumbFactory(zone.layer, this.injector).createBreadcrumbs(extr.reqArray('breadcrumbs')),
 			structureModel: comp.createUiStructureModel(),
 			mainCommandContents: [] /*new SiControlFactory(comp, this.injector).createControls(extr.reqArray('controls'))
 					.map(siControl => siControl.createUiContent(zone))*/
