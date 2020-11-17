@@ -279,31 +279,33 @@ body > rocket-root {
 
 // new
 
+#rocket-content-container,
+router-outlet + *,
+.rocket-ghost,
+.rocket-container {
+    overflow: hidden;
+}
+
+#rocket-content-container,
+router-outlet + *,
+.rocket-ghost {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 100%;
+}
+
 #rocket-content-container {
     grid-area: main;
     background: #F7F5F5;
-    &,
-    rocket-root,
-    rocket-ei,
-    rocket-ui-container {
-        overflow: hidden;
-    }
-
-    &,
-    rocket-root,
-    rocket-ei {
-        display: flex;
-        flex-direction: column;
-        flex: 1 1 100%;
-    }
 }
 
-rocket-ui-container {
+.rocket-container {
     flex: 1 1 100%;
     display: grid;
 }
 
-rocket-ui-layer {
+.rocket-main-layer,
+.rocket-layer {
     overflow-y: scroll;
     grid-row: 1;
     grid-column: span 1 / 1;

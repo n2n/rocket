@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ElementRef } from '@angular/core';
 import { UiBreadcrumb } from '../../model/ui-zone';
 
 @Component({
@@ -15,7 +15,9 @@ export class SimpleZoneContainerComponent implements OnInit {
 	@Input()
 	breadcrumbs: UiBreadcrumb[];
 
-	constructor() { }
+	constructor(elemRef: ElementRef) {
+		elemRef.nativeElement.classList.add('rocket-container');
+	}
 
 	ngOnInit() {
 	}
