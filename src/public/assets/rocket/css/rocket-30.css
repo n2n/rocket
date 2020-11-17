@@ -5152,23 +5152,16 @@ body > rocket-root {
   background-color: #b90f00;
 }
 
-#rocket-content-container {
-  -ms-grid-row: 2;
-  -ms-grid-column: 1;
-  grid-area: main;
-  background: #F7F5F5;
-}
-
 #rocket-content-container,
-#rocket-content-container rocket-root,
-#rocket-content-container rocket-ei,
-#rocket-content-container rocket-ui-container {
+router-outlet + *,
+.rocket-ghost,
+.rocket-container {
   overflow: hidden;
 }
 
 #rocket-content-container,
-#rocket-content-container rocket-root,
-#rocket-content-container rocket-ei {
+router-outlet + *,
+.rocket-ghost {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -5181,7 +5174,14 @@ body > rocket-root {
           flex: 1 1 100%;
 }
 
-rocket-ui-container {
+#rocket-content-container {
+  -ms-grid-row: 2;
+  -ms-grid-column: 1;
+  grid-area: main;
+  background: #F7F5F5;
+}
+
+.rocket-container {
   -webkit-box-flex: 1;
       -ms-flex: 1 1 100%;
           flex: 1 1 100%;
@@ -5189,7 +5189,8 @@ rocket-ui-container {
   display: grid;
 }
 
-rocket-ui-layer {
+.rocket-main-layer,
+.rocket-layer {
   overflow-y: scroll;
   -ms-grid-row: 1;
   grid-row: 1;
@@ -5461,7 +5462,7 @@ rocket-ui-layer {
   background-color: #ECEBE9;
 }
 
-rocket-ui-list-zone-content {
+rocket-ui-compact-explorer {
   display: block;
   min-height: 100%;
 }
