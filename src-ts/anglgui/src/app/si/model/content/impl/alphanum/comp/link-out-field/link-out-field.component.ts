@@ -16,15 +16,6 @@ export class LinkOutFieldComponent implements OnInit {
 	constructor(private siUiService: SiUiService) {
 	}
 
-	callback: () => boolean = () => {
-		const navPoint = this.model.getUiNavPoint();
-		if (this.uiZone.layer.main || !navPoint.siref) {
-			return true;
-		}
-
-		this.siUiService.navigateByUrl(navPoint.url, this.uiZone.layer);
-	}
-
 	ngOnInit() {
 	}
 }

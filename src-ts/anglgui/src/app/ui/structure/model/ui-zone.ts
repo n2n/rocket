@@ -81,6 +81,5 @@ export interface UiZoneModel {
 export interface UiBreadcrumb {
 	navPoint: UiNavPoint;
 	name: string;
-	callback?: () => boolean;
 }
 

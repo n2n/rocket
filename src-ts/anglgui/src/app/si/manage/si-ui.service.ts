@@ -14,6 +14,7 @@ import { SiResult, SiDirective } from './si-result';
 import { SiControlBoundry } from '../model/control/si-control-bountry';
 import { SiModStateService } from '../model/mod/model/si-mod-state.service';
 import { UiNavPoint } from 'src/app/ui/util/model/ui-nav-point';
+import { PlatformService } from 'src/app/util/nav/platform.service';
 
 @Injectable({
 	providedIn: 'root'
@@ -21,7 +22,7 @@ import { UiNavPoint } from 'src/app/ui/util/model/ui-nav-point';
 export class SiUiService {
 
 	constructor(readonly service: SiService, private modState: SiModStateService, private router: Router,
-			private platformLocation: PlatformLocation) {
+			private platformService: PlatformService) {
 	}
 
 	loadZone(zone: UiZone, force: boolean) {
@@ -41,24 +42,8 @@ export class SiUiService {
 				});
 	}
 
-	navRouterUrl(url: string): string {
-		const baseHref = this.platformLocation.getBaseHrefFromDOM();
-
-		if (!url.startsWith(baseHref)) {
-			throw new IllegalSiStateError('Ref url must start with base href: ' + url);
-		}
-
-		return url.substring(baseHref.length);
-	}
-
 	navigateByUrl(url: string, layer: UiLayer|null) {
-		const baseHref = this.platformLocation.getBaseHrefFromDOM();
-
-		if (!url.startsWith(baseHref)) {
-			throw new IllegalSiStateError('Ref url must start with base href: ' + url);
-		}
-
-		this.naviationByRouterUrl(url.substring(baseHref.length), layer);
+		this.naviationByRouterUrl(this.platformService.routerUrl(url), layer);
 	}
 
 	private naviationByRouterUrl(url: string, layer: UiLayer|null) {

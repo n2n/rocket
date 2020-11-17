@@ -8,6 +8,7 @@ import { AppStateService } from './app-state.service';
 import { UserFactory } from './op/user/model/user-fatory';
 import { User } from './op/user/bo/user';
 import { UiNavPoint } from './ui/util/model/ui-nav-point';
+import { PlatformService } from './util/nav/platform.service';
 
 @Component({
 	selector: 'rocket-root',
@@ -20,7 +21,7 @@ export class AppComponent implements OnInit {
 	menuGroups: UiMenuGroup[];
 
 	constructor(private elemRef: ElementRef, private translationService: TranslationService, private uiSiService: SiUiService,
-			private appState: AppStateService) {
+			private appState: AppStateService, private platformService: PlatformService) {
 	}
 
 	ngOnInit() {
@@ -32,11 +33,7 @@ export class AppComponent implements OnInit {
 	}
 
 	navRouterLink(navPoint: UiNavPoint): string {
-		if (navPoint.siref) {
-			return navPoint.url;
-		} 
-
-		return this.uiSiService.navRouterUrl(navPoint.url);
+		return this.platformService.routerUrl(navPoint.url);
 	}
 
 	get user(): User {

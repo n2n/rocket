@@ -1,6 +1,5 @@
 import { UiBreadcrumb } from 'src/app/ui/structure/model/ui-zone';
 import { UiFactory } from 'src/app/ui/build/ui-factory';
-import { SiService } from '../manage/si.service';
 import { UiLayer } from 'src/app/ui/structure/model/ui-layer';
 import { Injector } from '@angular/core';
 import { SiUiService } from '../manage/si-ui.service';
@@ -24,17 +23,18 @@ export class SiUiBreadcrumbFactory {
 		const extr = new Extractor(data);
 
 		const navPoint = UiFactory.createNavPoint(extr.reqObject('navPoint'));
+		navPoint.callback = () => {
+			if (!navPoint.siref || this.uiLayer.main) {
+				return true;
+			}
+
+			this.injector.get(SiUiService).navigateByUrl(navPoint.url, this.uiLayer);
+			return false;
+		};
+
 		return {
 			navPoint,
-			name: extr.reqString('name'),
-			callback: () => {
-				if (!navPoint.siref || this.uiLayer.main) {
-					return true;
-				}
-
-				this.injector.get(SiUiService).navigateByUrl(navPoint.url, this.uiLayer);
-				return false;
-			}
+			name: extr.reqString('name')
 		};
 	}
 }

@@ -6,23 +6,48 @@ import { LinkOutFieldComponent } from '../comp/link-out-field/link-out-field.com
 import { SiField } from '../../../si-field';
 import { UiNavPoint } from 'src/app/ui/util/model/ui-nav-point';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
-import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
-import { Fresult } from 'src/app/util/err/fresult';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
+import { SiUiService } from 'src/app/si/manage/si-ui.service';
+import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
+import { UiZone } from 'src/app/ui/structure/model/ui-zone';
 
 export class LinkOutSiField extends OutSiFieldAdapter implements LinkOutModel {
 
-
-	constructor(private navPoint: UiNavPoint, private label: string) {
+	constructor(private navPoint: UiNavPoint, private label: string, private siUiService: SiUiService) {
 		super();
 	}
 
 	createUiContent(uiStructure: UiStructure): UiContent {
+		if (this.navPoint.callback) {
+			throw new IllegalSiStateError('UiContent forLinkOutSiField already defined.');
+		}
+
 		return new TypeUiContent(LinkOutFieldComponent, (ref) => {
-			ref.instance.model = this;
-			ref.instance.uiZone = uiStructure.getZone();
+			ref.instance.model = this.createLinkOutModel(uiStructure.getZone());
 		});
 	}
+
+	private createLinkOutModel(uiZone: UiZone): LinkOutModel {
+		return {
+			getLabel: () => this.label,
+			getMessages: () => this.getMessages(),
+			getUiNavPoint: () => {
+				return {
+					url: this.navPoint.url,
+					siref: this.navPoint.siref,
+					callback: () => {
+						if (uiZone.layer.main || !this.navPoint.siref) {
+							return true;
+						}
+
+						this.siUiService.navigateByUrl(this.navPoint.url, uiZone.layer);
+						return false;
+					}
+				};
+			}
+		};
+	}
+
 
 // 	initComponent(viewContainerRef: ViewContainerRef,
 // 			componentFactoryResolver: ComponentFactoryResolver,
@@ -45,7 +70,7 @@ export class LinkOutSiField extends OutSiFieldAdapter implements LinkOutModel {
 	}
 
 	copy(): SiField {
-		return new LinkOutSiField(this.navPoint, this.label);
+		return new LinkOutSiField(this.navPoint, this.label, this.siUiService);
 	}
 
 	copyValue(): SiGenericValue {

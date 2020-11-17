@@ -2,6 +2,7 @@ import { Directive, HostListener, Input, ElementRef } from '@angular/core';
 import { UiNavPoint } from '../model/ui-nav-point';
 import { SiUiService } from 'src/app/si/manage/si-ui.service';
 import { Router } from '@angular/router';
+import { PlatformService } from 'src/app/util/nav/platform.service';
 
 @Directive({
 	selector: 'a[rocketUiNavPoint]'
@@ -9,10 +10,8 @@ import { Router } from '@angular/router';
 export class NavPointDirective {
 
 	private _uiNavPoint: UiNavPoint;
-	@Input()
-	callback: () => boolean;
-
-	constructor(private router: Router, private elemRef: ElementRef) {
+	constructor(private router: Router, private elemRef: ElementRef,
+			private platformService: PlatformService) {
 	}
 
 	@Input()
@@ -28,7 +27,7 @@ export class NavPointDirective {
 
 	@HostListener('click', ['$event'])
 	onClick($event: Event) {
-		if (this.callback && !this.callback()) {
+		if (this.uiNavPoint.callback && !this.uiNavPoint.callback()) {
 			$event.preventDefault();
 			return;
 		}
@@ -38,7 +37,7 @@ export class NavPointDirective {
 		}
 
 		$event.preventDefault();
-		this.router.navigateByUrl(this.uiNavPoint.url);
+		this.router.navigateByUrl(this.platformService.routerUrl(this.uiNavPoint.url));
 	}
 
 }

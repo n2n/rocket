@@ -29,6 +29,8 @@ import { TranslationService } from 'src/app/util/i18n/translation.service';
 import { UiFactory } from 'src/app/ui/build/ui-factory';
 import { CkeInSiField } from '../model/content/impl/alphanum/model/cke-in-si-field';
 import { CrumbOutSiField } from '../model/content/impl/meta/model/crumb-out-si-field';
+import { SiUiBreadcrumbFactory } from './si-ui-breadcrumb-factory';
+import { SiUiService } from '../manage/si-ui.service';
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',
@@ -129,7 +131,7 @@ export class SiFieldFactory {
 
 		case SiFieldType.LINK_OUT:
 			return new LinkOutSiField(UiFactory.createNavPoint(dataExtr.reqObject('navPoint')),
-					dataExtr.reqString('label'));
+					dataExtr.reqString('label'), this.injector.get(SiUiService));
 
 		case SiFieldType.ENUM_IN:
 			const enumInSiField = new EnumInSiField(dataExtr.nullaString('value'), dataExtr.reqStringMap('options'));
