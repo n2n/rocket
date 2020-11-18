@@ -21,7 +21,7 @@
  */
 namespace rocket\tool\xml;
 
-class MailAttachmentItem {
+class MailAttachmentItem implements \JsonSerializable {
 	private $path = '';
 	private $name = '';
 	
@@ -30,7 +30,7 @@ class MailAttachmentItem {
 	}
 
 	public function setPath($path) {
-		$this->path .= $path;
+		$this->path = $path;
 	}
 
 	public function getName() {
@@ -39,5 +39,12 @@ class MailAttachmentItem {
 
 	public function setName($name) {
 		$this->name .= $name;
+	}
+
+	public function jsonSerialize() {
+		return [
+			'name' => $this->name,
+			'path' => $this->path
+		];
 	}
 }
