@@ -3,33 +3,51 @@ import {SiPageCollection} from "../../../../si/model/gui/impl/model/si-page-coll
 import {Subscription} from "rxjs";
 
 @Component({
-  selector: 'rocket-ui-pagination',
-  templateUrl: './pagination.component.html',
-  styleUrls: ['./pagination.component.css']
+	selector: 'rocket-ui-pagination',
+	templateUrl: './pagination.component.html',
+	styleUrls: ['./pagination.component.css']
 })
 export class PaginationComponent implements OnInit {
 
-  @Input() totalPagesNum: number;
-  @Input() currentPageNum = 1;
-  @Output() currentPageNumChange = new EventEmitter<number>();
+	@Input() totalPagesNo: number;
+	@Input() currentPageNo = 1;
+	@Output() currentPageNoChange = new EventEmitter<number>();
 
-  set internalPageNum(pageNum) {
-    if (this.currentPageNum === pageNum) {
-      return;
-    }
+	set internalPageNo(pageNo) {
+		if (!this.validatePageNo(pageNo)) {
+			return;
+		}
 
-    this.currentPageNum = pageNum;
-    this.currentPageNumChange.emit(pageNum);
-  }
+		this.currentPageNo = pageNo;
+		this.currentPageNoChange.emit(pageNo);
+	}
 
-  get internalPageNum(): number {
-    return this.currentPageNum;
-  }
+	get internalPageNo(): number {
+		return this.currentPageNo;
+	}
 
-  get lastPageNum(): number {
-    return this.totalPagesNum;
-  }
+	get lastPageNo(): number {
+		return this.totalPagesNo;
+	}
 
-  ngOnInit(): void {
-  }
+	private validatePageNo(pageNo: number) {
+		if (pageNo > this.totalPagesNo) {
+			this.currentPageNo = this.totalPagesNo;
+			return false;
+		}
+
+		if (pageNo < 1) {
+			this.currentPageNo = 1;
+			return false;
+		}
+
+		if (isNaN(pageNo)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	ngOnInit(): void {
+	}
 }

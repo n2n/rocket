@@ -1,29 +1,25 @@
 <style>
-  .mail-item {
-    margin: 20px;
-    background: #fcfcfc;
-  }
+	.mail-item {
+		margin: 20px;
+		background: #fcfcfc;
+	}
 
-  .mail-item-attachments {
-    display: inline-block;
-  }
+	.mail-item-attachments {
+		display: inline-block;
+	}
 </style>
 
 <rocket-ui-simple-zone-container [loading]="!mailItems" [title]="'mail_center_title' | translate">
-  <div class="mail-item" *ngFor="let mailItem of mailItems">
-    <h4>{{mailItem.subject}}</h4>
-    <div>{{mailItem.message}}</div>
-    <ul class="attachments">
-      <li *ngFor="let attachment of mailItem.attachments">
-        <a href="{{attachment.path}}" download="{{attachment.name}}">{{attachment.name}}</a>
-      </li>
-    </ul>
-  </div>
-
-    <ng-container aside-commands>
-      <rocket-ui-pagination [(currentPageNum)]="currentPageNo" [totalPagesNum]="totalPagesNum"></rocket-ui-pagination>
-      <!--
-      <rocket-ui-pagination [(pageNo)]="currentPageNo" [pagesNum]="totalPagesNum"></rocket-ui-pagination>
-      -->
-    </ng-container>
+	<div class="mail-item" *ngFor="let mailItem of mailItems">
+		<h4>{{mailItem.subject}}</h4>
+		<div>{{mailItem.message}}</div>
+		<ul class="attachments">
+			<li *ngFor="let attachment of mailItem.attachments">
+				<a href="{{attachment.path}}" download="{{attachment.name}}">{{attachment.name}}</a>
+			</li>
+		</ul>
+	</div>
+		<ng-container aside-commands>
+			<rocket-ui-pagination [(currentPageNo)]="currentPageNo" [totalPagesNo]="totalPagesNo"></rocket-ui-pagination>
+		</ng-container>
 </rocket-ui-simple-zone-container>

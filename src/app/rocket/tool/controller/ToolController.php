@@ -27,8 +27,6 @@ use n2n\web\http\controller\ControllerAdapter;
 use n2n\l10n\MessageContainer;
 use rocket\tool\mail\controller\MailCenterController;
 use n2n\reflection\annotation\AnnoInit;
-use rocket\core\model\RocketState;
-use n2n\l10n\DynamicTextCollection;
 use n2n\web\http\annotation\AnnoPath;
 use n2n\web\http\ResponseCacheStore;
 use n2n\web\ui\view\ViewCacheStore;
@@ -93,7 +91,7 @@ class ToolController extends ControllerAdapter {
 	public function mailCenter(MailCenterController $mailCenterController, array $params = null) {
 		$this->verifyAdmin();
 		
-		if ($this->verifyHtml()) {
+		if (empty($params) && $this->verifyHtml()) {
 			return;
 		}
 		

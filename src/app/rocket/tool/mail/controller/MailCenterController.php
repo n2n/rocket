@@ -21,9 +21,9 @@
  */
 namespace rocket\tool\mail\controller;
 
-use n2n\mail\Mail;
-use n2n\mail\Transport;
+use n2n\core\container\N2nContext;
 use n2n\web\http\controller\ControllerAdapter;
+use n2n\web\http\nav\Murl;
 use rocket\tool\mail\model\MailCenter;
 use n2n\log4php\appender\nn6\AdminMailCenter;
 use n2n\web\http\PageNotFoundException;
@@ -56,13 +56,14 @@ class MailCenterController extends ControllerAdapter {
 		
 		$this->forward('tool\mail\view\mailCenter.html', array('mailCenter' => $mailCenter, 'currentFileName' => $fileName));
 	}
-	
+
 	public function doAttachment($fileName, $mailIndex, $attachmentIndex) {
 		try {
-			$mailXmlFilePath = MailCenter::requestMailLogFile($fileName);
+			$mailXmlFilePath = MailCenter::requestMailLogFile(AdminMailCenter::DEFAULT_MAIL_FILE_NAME);
 		} catch (InvalidPathException $e) {
 			throw new PageNotFoundException();
 		}
+
 		if ($mailXmlFilePath->getExtension() !== 'xml') {
 			throw new PageNotFoundException();
 		}
@@ -73,20 +74,14 @@ class MailCenterController extends ControllerAdapter {
 		if (!$attachment->getFileSource()->getFsPath()->isFile()) {
 			throw new PageNotFoundException();
 		}
-		
+
 		$this->sendFile($attachment);
 	}
 
-	public function doMails(int $currentPageNum = null) {
-
-		$mail = new Mail('attachmenttest@asdf.ch', 'attachment test', 'attachment test', 'asdf@asdf.asdf');
-		$mail->addFile('C:\Users\nikol\Desktop\test.jpg', 'test.jpg');
-		$mail->addFile('C:\Users\nikol\Desktop\test2.jpg', 'test2.jpg');
-		Transport::send($mail);
-
+	public function doMails(int $currentPageNum = null, N2nContext $n2nContext) {
 		$mailCenter = $this->createMailCenter($currentPageNum);
-		$mailItems = $this->createMailsJsonArray($mailCenter->getCurrentItems());
-		$mailItems = array_values($mailItems);
+		$mailItems = $this->createMailsJsonArray($mailCenter->getCurrentItems(), $n2nContext);
+		$mailItems = array_values($mailItems); //because json_encode doesn't send array when keys don't start at 0
 		$this->sendJson($mailItems);
 	}
 
@@ -109,15 +104,14 @@ class MailCenterController extends ControllerAdapter {
 		return $mailCenter;
 	}
 
-	private function createMailsJsonArray(array $mailItems) {
+	private function createMailsJsonArray(array $mailItems, N2nContext $n2nContext) {
 		foreach ($mailItems as $i => $mailItem) {
 			if (empty($mailItem->getAttachments())) continue;
 			foreach ($mailItem->getAttachments() as $attachmentI => $attachment) {
-				$url = $this->getControllerPath()->chPathParts(array('attachment', $attachment->getName(), $i, $attachmentI))->toUrl();
+				$url = $this->buildUrl(Murl::controller())->pathExt('attachment', $attachment->getName(), $i, $attachmentI);
 				$attachment->setPath((string) $url);
 			}
 		}
 		return $mailItems;
 	}
-
 }

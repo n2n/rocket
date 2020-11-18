@@ -33,12 +33,20 @@ class MailAttachmentItem implements \JsonSerializable {
 		$this->path = $path;
 	}
 
+	public function appendPath($path) {
+		$this->path .= $path;
+	}
+
 	public function getName() {
 		return $this->name;
 	}
 
-	public function setName($name) {
+	public function appendName($name) {
 		$this->name .= $name;
+	}
+
+	public function setName($name) {
+		$this->name = $name;
 	}
 
 	public function jsonSerialize() {
