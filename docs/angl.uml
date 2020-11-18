@@ -14143,8 +14143,8 @@
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="Left" type="integer">228</XPD:ATTR>
-<XPD:ATTR name="Top" type="integer">264</XPD:ATTR>
-<XPD:ATTR name="Width" type="integer">190</XPD:ATTR>
+<XPD:ATTR name="Top" type="integer">260</XPD:ATTR>
+<XPD:ATTR name="Width" type="integer">225</XPD:ATTR>
 <XPD:ATTR name="Height" type="integer">82</XPD:ATTR>
 <XPD:REF name="Model">7QJ4rqLZF0aWNtxgQcZSqAAA</XPD:REF>
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="PmzdSN71AU2Df5+hIOfaJwAA">
@@ -14188,13 +14188,13 @@
 <XPD:REF name="Views[3]">5sdZnrg7HkyzZ6fYD/3UkwAA</XPD:REF>
 <XPD:ATTR name="#Attributes" type="integer">2</XPD:ATTR>
 <XPD:OBJ name="Attributes[0]" type="UMLAttribute" guid="lZUq4+WOkEKp/cr9qKZi0AAA">
-<XPD:ATTR name="Name" type="string">pageNo</XPD:ATTR>
+<XPD:ATTR name="Name" type="string">currentPageNo</XPD:ATTR>
 <XPD:ATTR name="StereotypeName" type="string">Input/Ouput</XPD:ATTR>
 <XPD:ATTR name="TypeExpression" type="string">number</XPD:ATTR>
 <XPD:REF name="Owner">7QJ4rqLZF0aWNtxgQcZSqAAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="Attributes[1]" type="UMLAttribute" guid="rxlCqbdFtEGqt80U3fyVGgAA">
-<XPD:ATTR name="Name" type="string">pagesNum</XPD:ATTR>
+<XPD:ATTR name="Name" type="string">totalPagesNo</XPD:ATTR>
 <XPD:ATTR name="StereotypeName" type="string">Input</XPD:ATTR>
 <XPD:ATTR name="TypeExpression" type="string">number</XPD:ATTR>
 <XPD:REF name="Owner">7QJ4rqLZF0aWNtxgQcZSqAAA</XPD:REF>
