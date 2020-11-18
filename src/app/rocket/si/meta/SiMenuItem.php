@@ -21,14 +21,14 @@
  */
 namespace rocket\si\meta;
 
-use rocket\si\NavPoint;
+use rocket\si\control\SiNavPoint;
 
 class SiMenuItem implements \JsonSerializable {
 	private $id;
 	private $label;
 	private $navPoint;
 	
-	function __construct(string $id, string $label, NavPoint $navPoint) {
+	function __construct(string $id, string $label, SiNavPoint $navPoint) {
 		$this->id = $id;
 		$this->label = $label;
 		$this->navPoint = $navPoint;

@@ -39,7 +39,7 @@ use rocket\ei\EiPropPath;
 use rocket\ei\component\command\EiCommand;
 use rocket\ei\manage\security\InaccessibleEiEntryException;
 use rocket\ei\component\command\GenericResult;
-use rocket\si\NavPoint;
+use rocket\si\control\SiNavPoint;
 use rocket\si\meta\SiFrame;
 
 class EiFrame {
@@ -380,7 +380,7 @@ class EiFrame {
 	
 	/**
 	 * @param bool $required
-	 * @return NavPoint|null
+	 * @return SiNavPoint|null
 	 */
 	public function getOverviewNavPoint(bool $required = true) {
 		$result = $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()
@@ -400,7 +400,7 @@ class EiFrame {
 	/**
 	 * @param EiObject $eiObject
 	 * @param bool $required
-	 * @return NavPoint|null
+	 * @return SiNavPoint|null
 	 */
 	public function getDetailNavPoint(EiObject $eiObject, bool $required = true) {
 		$result = $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()
@@ -420,7 +420,7 @@ class EiFrame {
 	/**
 	 * @param EiObject $eiObject
 	 * @param bool $required
-	 * @return NavPoint|null
+	 * @return SiNavPoint|null
 	 */
 	public function getEditNavPoint(EiObject $eiObject, bool $required = true) {
 		$result = $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()
@@ -439,7 +439,7 @@ class EiFrame {
 	
 	/**
 	 * @param bool $required
-	 * @return NavPoint|null
+	 * @return SiNavPoint|null
 	 */
 	public function getAddNavPoint(bool $required = true) {
 		$result = $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()
@@ -450,7 +450,7 @@ class EiFrame {
 	
 	/**
 	 * @param GenericResult|null $result
-	 * @return NavPoint|null
+	 * @return SiNavPoint|null
 	 */
 	private function compleNavPoint($result) {
 		if ($result === null) {

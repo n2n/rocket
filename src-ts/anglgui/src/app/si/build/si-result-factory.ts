@@ -4,9 +4,9 @@ import { SiEntryError } from 'src/app/si/model/input/si-entry-error';
 import { SiFieldError } from 'src/app/si/model/input/si-field-error';
 import { Message, MessageSeverity } from 'src/app/util/i18n/message';
 import { SiResult, SiDirective } from '../manage/si-result';
-import { UiFactory } from 'src/app/ui/build/ui-factory';
 import { SiEntryIdentifier } from '../model/content/si-entry-qualifier';
 import { SiModEvent } from '../model/mod/model/si-mod-state.service';
+import { SiControlFactory } from './si-control-factory';
 
 export class SiResultFactory {
 
@@ -18,7 +18,7 @@ export class SiResultFactory {
 		result.directive = extr.nullaString('directive') as SiDirective;
 		let navPointData: object|null;
 		if (navPointData = extr.nullaObject('navPoint')) {
-			result.navPoint = UiFactory.createNavPoint(navPointData);
+			result.navPoint = SiControlFactory.createNavPoint(navPointData);
 		}
 
 		const inputErrorData = extr.nullaObject('inputError');

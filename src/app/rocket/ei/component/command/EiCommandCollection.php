@@ -28,7 +28,7 @@ use rocket\ei\mask\EiMask;
 use rocket\ei\EiCommandPath;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\EiObject;
-use rocket\si\NavPoint;
+use rocket\si\control\SiNavPoint;
 
 class EiCommandCollection extends EiComponentCollection {
 	
@@ -229,7 +229,7 @@ class GenericResult {
 	private $eiCommandPath;
 	private $navPoint;
 	
-	function __construct(EiCommand $eiCommand, NavPoint $navPoint) {
+	function __construct(EiCommand $eiCommand, SiNavPoint $navPoint) {
 		$this->eiCommand = $eiCommand;
 		$this->eiCommandPath = EiCommandPath::from($eiCommand);
 		$this->navPoint = $navPoint;
@@ -247,7 +247,7 @@ class GenericResult {
 	}
 	
 	/**
-	 * @return NavPoint
+	 * @return SiNavPoint
 	 */
 	function getNavPoint() {
 		return $this->navPoint;

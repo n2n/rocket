@@ -18,7 +18,9 @@ export class NavPointDirective {
 	set uiNavPoint(uiNavPoint: UiNavPoint) {
 		this._uiNavPoint = uiNavPoint;
 
-		this.elemRef.nativeElement.setAttribute('href', uiNavPoint.url);
+		const url = uiNavPoint.href || this.platformService.hrefUrl(uiNavPoint.routerLink);
+
+		this.elemRef.nativeElement.setAttribute('href', url);
 	}
 
 	get uiNavPoint(): UiNavPoint {
@@ -32,12 +34,12 @@ export class NavPointDirective {
 			return;
 		}
 
-		if (!this.uiNavPoint.siref) {
+		if (this.uiNavPoint.href) {
 			return;
 		}
 
 		$event.preventDefault();
-		this.router.navigateByUrl(this.platformService.routerUrl(this.uiNavPoint.url));
+		this.router.navigateByUrl(this.uiNavPoint.routerLink);
 	}
 
 }

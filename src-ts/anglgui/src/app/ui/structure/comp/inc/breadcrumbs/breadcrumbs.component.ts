@@ -9,7 +9,7 @@ import { UiBreadcrumb } from '../../../model/ui-zone';
 export class BreadcrumbsComponent implements OnInit {
 
 	@Input()
-	uiBreadcrumbs: UiBreadcrumb[];
+	uiBreadcrumbs: UiBreadcrumb[] = [];
 
 	constructor() { }
 

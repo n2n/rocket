@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, Injector } from '@angular/core';
 import { TranslationService } from './util/i18n/translation.service';
 import { Extractor } from './util/mapping/extractor';
 import { UiFactory } from './ui/build/ui-factory';
@@ -9,6 +9,7 @@ import { UserFactory } from './op/user/model/user-fatory';
 import { User } from './op/user/bo/user';
 import { UiNavPoint } from './ui/util/model/ui-nav-point';
 import { PlatformService } from './util/nav/platform.service';
+import { SiUiFactory } from './si/build/si-ui-factory';
 
 @Component({
 	selector: 'rocket-root',
@@ -20,20 +21,21 @@ export class AppComponent implements OnInit {
 
 	menuGroups: UiMenuGroup[];
 
-	constructor(private elemRef: ElementRef, private translationService: TranslationService, private uiSiService: SiUiService,
-			private appState: AppStateService, private platformService: PlatformService) {
+	constructor(private elemRef: ElementRef, private translationService: TranslationService,
+			private uiSiService: SiUiService, private appState: AppStateService,
+			private platformService: PlatformService, private injector: Injector) {
 	}
 
 	ngOnInit() {
 		const extr = new Extractor(JSON.parse(this.elemRef.nativeElement.getAttribute('data-rocket-angl-data')));
 
 		this.translationService.map = extr.reqStringMap('translationMap');
-		this.menuGroups = UiFactory.createMenuGroups(extr.reqArray('menuGroups'));
+		this.menuGroups = new SiUiFactory(this.injector).createMenuGroups(extr.reqArray('menuGroups'));
 		this.appState.user = UserFactory.createUser(extr.reqObject('user'));
 	}
 
 	navRouterLink(navPoint: UiNavPoint): string {
-		return this.platformService.routerUrl(navPoint.url);
+		return navPoint.routerLink || this.platformService.routerUrl(navPoint.href);
 	}
 
 	get user(): User {

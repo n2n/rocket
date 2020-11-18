@@ -32,7 +32,7 @@ use rocket\impl\ei\component\prop\string\conf\UrlConfig;
 use rocket\ei\util\factory\EifField;
 use n2n\validation\plan\impl\Validators;
 use rocket\si\content\impl\SiFields;
-use rocket\si\NavPoint;
+use rocket\si\control\SiNavPoint;
 use rocket\ei\util\factory\EifGuiField;
 use rocket\si\content\impl\meta\SiCrumb;
 

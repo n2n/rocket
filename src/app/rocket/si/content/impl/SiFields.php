@@ -32,7 +32,7 @@ use rocket\si\content\impl\split\SplitContextInSiField;
 use rocket\si\content\impl\split\SplitContextOutSiField;
 use rocket\si\content\impl\split\SplitPlaceholderSiField;
 use rocket\si\meta\SiDeclaration;
-use rocket\si\NavPoint;
+use rocket\si\control\SiNavPoint;
 use rocket\si\content\SiEntryQualifier;
 use rocket\si\meta\SiFrame;
 use rocket\si\content\impl\string\CkeInSiField;
@@ -109,7 +109,7 @@ class SiFields {
 	 * @param bool $href
 	 * @return \rocket\si\content\impl\LinkOutSiField
 	 */
-	static function linkOut(NavPoint $navPoint, string $label) {
+	static function linkOut(SiNavPoint $navPoint, string $label) {
 		return new LinkOutSiField($navPoint, $label);
 	}
 	

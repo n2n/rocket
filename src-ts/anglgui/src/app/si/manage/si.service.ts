@@ -2,7 +2,6 @@ import { Injectable, Injector } from '@angular/core';
 import { Observable } from 'rxjs';
 import { UiZoneModel, UiZone } from 'src/app/ui/structure/model/ui-zone';
 import { map } from 'rxjs/operators';
-import { UiZoneModelFactory } from '../build/si-factory';
 import { SiEntryInput } from '../model/input/si-entry-input';
 import { HttpParams, HttpClient } from '@angular/common/http';
 import { SiInput } from '../model/input/si-input';
@@ -16,6 +15,7 @@ import { SiValRequest } from '../model/api/si-val-request';
 import { SiValResponse } from '../model/api/si-val-response';
 import { Extractor } from 'src/app/util/mapping/extractor';
 import { SiControlBoundry } from '../model/control/si-control-bountry';
+import { SiUiFactory } from '../build/si-ui-factory';
 
 @Injectable({
 	providedIn: 'root'
@@ -28,7 +28,7 @@ export class SiService {
 	lookupZoneModel(url: string, uiZone: UiZone): Observable<UiZoneModel> {
 		return this.httpClient.get<any>(url)
 				.pipe(map((data: any) => {
-					return new UiZoneModelFactory(this.injector).createZoneModel(data, uiZone);
+					return new SiUiFactory(this.injector).createZoneModel(data, uiZone.layer);
 				}));
 	}
 

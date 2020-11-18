@@ -22,12 +22,12 @@
 namespace rocket\ei\component\command;
 
 use rocket\ei\util\Eiu;
-use rocket\si\NavPoint;
+use rocket\si\control\SiNavPoint;
 
 interface GenericDetailEiCommand {
 	/**
 	 * @param Eiu $eiu
 	 * @return \n2n\util\uri\Url
 	 */
-	public function buildDetailNavPoint(Eiu $eiu): ?NavPoint;
+	public function buildDetailNavPoint(Eiu $eiu): ?SiNavPoint;
 }

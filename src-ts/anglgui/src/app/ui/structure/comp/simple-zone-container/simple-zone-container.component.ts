@@ -13,7 +13,7 @@ export class SimpleZoneContainerComponent implements OnInit {
 	@Input()
 	loading = false;
 	@Input()
-	breadcrumbs: UiBreadcrumb[];
+	breadcrumbs: UiBreadcrumb[] = [];
 
 	constructor(elemRef: ElementRef) {
 		elemRef.nativeElement.classList.add('rocket-container');

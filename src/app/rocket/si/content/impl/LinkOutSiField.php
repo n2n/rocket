@@ -21,13 +21,13 @@
  */
 namespace rocket\si\content\impl;
 
-use rocket\si\NavPoint;
+use rocket\si\control\SiNavPoint;
 
 class LinkOutSiField extends OutSiFieldAdapter {
 	private $navPoint;
 	private $label;
 	
-	function __construct(NavPoint $navPoint, string $label) {
+	function __construct(SiNavPoint $navPoint, string $label) {
 		$this->navPoint = $navPoint;
 		$this->label = $label;
 	}

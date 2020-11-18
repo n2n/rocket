@@ -19,12 +19,12 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\si;
+namespace rocket\si\control;
 
 use n2n\util\uri\Url;
 use rocket\core\model\IncompleteNavPointException;
 
-class NavPoint implements \JsonSerializable {
+class SiNavPoint implements \JsonSerializable {
 	private $url;
 	private $siref;
 	
@@ -46,7 +46,7 @@ class NavPoint implements \JsonSerializable {
 	
 	/**
 	 * @param Url $contextUrl
-	 * @return NavPoint
+	 * @return SiNavPoint
 	 */
 	function complete(Url $contextUrl) {
 		$this->url = $contextUrl->ext($this->url);
@@ -73,17 +73,17 @@ class NavPoint implements \JsonSerializable {
 	
 	/**
 	 * @param Url $urlExt
-	 * @return \rocket\si\NavPoint
+	 * @return \rocket\si\control\SiNavPoint
 	 */
 	static function href(Url $url = null) {
-		return new NavPoint($url, false);
+		return new SiNavPoint($url, false);
 	}
 	
 	/**
 	 * @param Url $urlExt
-	 * @return \rocket\si\NavPoint
+	 * @return \rocket\si\control\SiNavPoint
 	 */
 	static function siref(Url $url = null) {
-		return new NavPoint($url, true);
+		return new SiNavPoint($url, true);
 	}
 }

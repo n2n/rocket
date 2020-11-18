@@ -6,7 +6,7 @@ import { SiButton, SiConfirm } from '../model/control/impl/model/si-button';
 import { Injector } from '@angular/core';
 import { SiUiService } from '../manage/si-ui.service';
 import { SiControlBoundry } from '../model/control/si-control-bountry';
-import { UiFactory } from 'src/app/ui/build/ui-factory';
+import { SiNavPoint } from '../model/control/si-nav-point';
 
 enum SiControlType {
 	REF = 'ref',
@@ -16,6 +16,12 @@ enum SiControlType {
 export class SiControlFactory {
 
 	constructor(private controlBoundry: SiControlBoundry, private injector: Injector) {
+	}
+
+	static createNavPoint(data: any): SiNavPoint {
+		const extr = new Extractor(data);
+
+		return new SiNavPoint(extr.reqString('url'), extr.reqBoolean('siref'));
 	}
 
 	createControls(dataArr: any[]): SiControl[] {

@@ -22,13 +22,13 @@
 namespace rocket\ei\component\command;
 
 use rocket\ei\util\Eiu;
-use rocket\si\NavPoint;
+use rocket\si\control\SiNavPoint;
 
 interface GenericEditEiCommand {
 		
 	/**
 	 * @param Eiu $eiu
-	 * @return NavPoint|null
+	 * @return SiNavPoint|null
 	 */
-	public function buildEditNavPoint(Eiu $eiu): ?NavPoint;
+	public function buildEditNavPoint(Eiu $eiu): ?SiNavPoint;
 }

@@ -25,7 +25,7 @@ use n2n\l10n\Message;
 use n2n\util\type\ArgUtils;
 use n2n\l10n\N2nLocale;
 use rocket\si\input\SiError;
-use rocket\si\NavPoint;
+use rocket\si\control\SiNavPoint;
 use rocket\si\content\SiEntryIdentifier;
 
 class SiResult implements \JsonSerializable {
@@ -71,10 +71,10 @@ class SiResult implements \JsonSerializable {
 	}
 	
 	/**
-	 * @param NavPoint|null $navPoint
+	 * @param SiNavPoint|null $navPoint
 	 * @return \rocket\si\control\SiResult
 	 */
-	function setNavPoint(?NavPoint $navPoint) {
+	function setNavPoint(?SiNavPoint $navPoint) {
 		$this->navPoint = $navPoint;
 		return $this;
 	}

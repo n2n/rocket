@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { PlatformLocation } from '@angular/common';
 import { Router } from '@angular/router';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { SiInput } from 'src/app/si/model/input/si-input';
@@ -13,7 +12,6 @@ import { UiLayer } from 'src/app/ui/structure/model/ui-layer';
 import { SiResult, SiDirective } from './si-result';
 import { SiControlBoundry } from '../model/control/si-control-bountry';
 import { SiModStateService } from '../model/mod/model/si-mod-state.service';
-import { UiNavPoint } from 'src/app/ui/util/model/ui-nav-point';
 import { PlatformService } from 'src/app/util/nav/platform.service';
 
 @Injectable({
@@ -43,10 +41,10 @@ export class SiUiService {
 	}
 
 	navigateByUrl(url: string, layer: UiLayer|null) {
-		this.naviationByRouterUrl(this.platformService.routerUrl(url), layer);
+		this.navigateByRouterUrl(this.platformService.routerUrl(url), layer);
 	}
 
-	private naviationByRouterUrl(url: string, layer: UiLayer|null) {
+	navigateByRouterUrl(url: string, layer: UiLayer|null) {
 		if (layer && !layer.main) {
 			const zone = layer.pushRoute(null, url).zone;
 			this.loadZone(zone, false);
@@ -58,7 +56,7 @@ export class SiUiService {
 
 	navigateBack(layer: UiLayer, fallbackUrl: string|null = null) {
 		if (layer.previousRoute && layer.previousRoute.zone.url) {
-			this.naviationByRouterUrl(layer.previousRoute.zone.url, layer);
+			this.navigateByRouterUrl(layer.previousRoute.zone.url, layer);
 		}
 
 		if (fallbackUrl) {
@@ -157,6 +155,9 @@ export class SiUiService {
 			this.handleEntryErrors(result.entryErrors, inputEntries);
 		}
 
+		this.modState.pushModEvent(result.modEvent);
+		this.modState.pushMessages(result.messages);
+
 		switch (result.directive) {
 			case SiDirective.REDIRECT:
 				this.navigateByUrl(result.navPoint.url, uiLayer);
@@ -166,8 +167,6 @@ export class SiUiService {
 				break;
 		}
 
-		this.modState.pushModEvent(result.modEvent);
-		this.modState.pushMessages(result.messages);
 	}
 
 	private handleEntryErrors(entryErrors: Map<string, SiEntryError>, entries: SiEntry[]) {

@@ -30,7 +30,7 @@ use rocket\si\meta\SiMenuItem;
 use n2n\web\http\nav\Murl;
 use rocket\user\model\LoginContext;
 use n2n\web\http\controller\ControllerContext;
-use rocket\si\NavPoint;
+use rocket\si\control\SiNavPoint;
 use n2n\util\uri\Path;
 
 class AnglTemplateModel implements Lookupable {
@@ -100,7 +100,7 @@ class AnglTemplateModel implements Lookupable {
 					continue;
 				}
 				
-				$navPoint = NavPoint::siref((new Path(['manage', $launchPad->getId()]))->toUrl()->ext($launchPad->determinePathExt($this->n2nContext)));
+				$navPoint = SiNavPoint::siref((new Path(['manage', $launchPad->getId()]))->toUrl()->ext($launchPad->determinePathExt($this->n2nContext)));
 				
 				$navPoint->complete($contextUrl);
 				

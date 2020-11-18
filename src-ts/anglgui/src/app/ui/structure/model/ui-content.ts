@@ -1,6 +1,5 @@
 
 import { ComponentFactoryResolver, ViewContainerRef, ComponentRef } from '@angular/core';
-import { UiStructure } from './ui-structure';
 
 export interface UiContent {
 
