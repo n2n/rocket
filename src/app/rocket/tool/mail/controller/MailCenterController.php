@@ -23,28 +23,19 @@ namespace rocket\tool\mail\controller;
 
 use n2n\core\container\N2nContext;
 use n2n\web\http\controller\ControllerAdapter;
+use n2n\web\http\nav\Murl;
 use rocket\tool\mail\model\MailCenter;
 use n2n\log4php\appender\nn6\AdminMailCenter;
 use n2n\web\http\PageNotFoundException;
 use n2n\io\InvalidPathException;
-use n2n\core\N2N;
-use n2n\l10n\DynamicTextCollection;
 
 class MailCenterController extends ControllerAdapter {
 	const ACTION_ARCHIVE = 'archive';
 	const ACTION_ATTACHMENT = 'attachment';
 	
 	public function index($currentPageNum = null) {
-		$mailXmlFilePath = null;
-		try {
-			$mailXmlFilePath = MailCenter::requestMailLogFile(AdminMailCenter::DEFAULT_MAIL_FILE_NAME);
-		} catch (InvalidPathException $e) { }
-		
-		$mailCenter = new MailCenter($mailXmlFilePath);
-		if (null !== $currentPageNum) {
-			$mailCenter->setCurrentPageNum($currentPageNum);
-		}
-		$this->forward('..\view\mailCenter.html', array('mailCenter' => $mailCenter, 
+		$mailCenter = $this->createMailCenter($currentPageNum);
+		$this->forward('..\view\mailCenter.html', array('mailCenter' => $mailCenter,
 				'currentFileName' => AdminMailCenter::DEFAULT_MAIL_FILE_NAME));
 	}
 	
@@ -65,13 +56,14 @@ class MailCenterController extends ControllerAdapter {
 		
 		$this->forward('tool\mail\view\mailCenter.html', array('mailCenter' => $mailCenter, 'currentFileName' => $fileName));
 	}
-	
-	public function doAttachment($fileName, $mailIndex, $attachmentIndex, $attachmentFileName, N2nContext $n2nContext) {
+
+	public function doAttachment($fileName, $mailIndex, $attachmentIndex) {
 		try {
-			$mailXmlFilePath = MailCenter::requestMailLogFile($fileName);
+			$mailXmlFilePath = MailCenter::requestMailLogFile(AdminMailCenter::DEFAULT_MAIL_FILE_NAME);
 		} catch (InvalidPathException $e) {
 			throw new PageNotFoundException();
 		}
+
 		if ($mailXmlFilePath->getExtension() !== 'xml') {
 			throw new PageNotFoundException();
 		}
@@ -80,13 +72,46 @@ class MailCenterController extends ControllerAdapter {
 			throw new PageNotFoundException();
 		}
 		if (!$attachment->getFileSource()->getFsPath()->isFile()) {
-			$dtc = new DynamicTextCollection('rocket', $n2nContext->getN2nLocale());
-			N2N::getMessageContainer()->addInfo($dtc->translate('tool_mail_center_notification_attachment_deleted'));
-			$this->redirectToReferer();
-			return;
-		} 
-		
+			throw new PageNotFoundException();
+		}
+
 		$this->sendFile($attachment);
 	}
-	
+
+	public function doMails(int $currentPageNum = null, N2nContext $n2nContext) {
+		$mailCenter = $this->createMailCenter($currentPageNum);
+		$mailItems = $this->createMailsJsonArray($mailCenter->getCurrentItems(), $n2nContext);
+		$mailItems = array_values($mailItems); //because json_encode doesn't send array when keys don't start at 0
+		$this->sendJson($mailItems);
+	}
+
+	public function doMailsPageCount() {
+		$this->sendJson($this->createMailCenter()->getNumPages());
+	}
+
+	private function createMailCenter(int $currentPageNum = null) {
+		$mailXmlFilePath = null;
+		try {
+			$mailXmlFilePath = MailCenter::requestMailLogFile(AdminMailCenter::DEFAULT_MAIL_FILE_NAME);
+		} catch (InvalidPathException $e) { }
+
+		$mailCenter = new MailCenter($mailXmlFilePath);
+
+		if (null !== $currentPageNum) {
+			$mailCenter->setCurrentPageNum($currentPageNum);
+		}
+
+		return $mailCenter;
+	}
+
+	private function createMailsJsonArray(array $mailItems, N2nContext $n2nContext) {
+		foreach ($mailItems as $i => $mailItem) {
+			if (empty($mailItem->getAttachments())) continue;
+			foreach ($mailItem->getAttachments() as $attachmentI => $attachment) {
+				$url = $this->buildUrl(Murl::controller())->pathExt('attachment', $attachment->getName(), $i, $attachmentI);
+				$attachment->setPath((string) $url);
+			}
+		}
+		return $mailItems;
+	}
 }

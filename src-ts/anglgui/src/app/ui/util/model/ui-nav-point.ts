@@ -1,6 +1,6 @@
 
 export interface UiNavPoint {
-	url: string;
-	siref: boolean;
+	href?: string;
+	routerLink?: string;
 	callback?: () => boolean;
 }

@@ -13,9 +13,10 @@ import { FormsModule } from '@angular/forms';
 import { ChPwComponent } from './user/comp/ch-pw/ch-pw.component';
 import { ToolsComponent } from './tool/comp/tools/tools.component';
 import { MailCenterComponent } from './tool/comp/mail-center/mail-center.component';
+import { PaginationComponent } from '../ui/util/comp/pagination/pagination.component';
 
 @NgModule({
-	declarations: [EiComponent, FallbackComponent, UsersComponent, UserComponent, ChPwComponent, ToolsComponent, MailCenterComponent ],
+	declarations: [EiComponent, FallbackComponent, UsersComponent, UserComponent, ChPwComponent, ToolsComponent, MailCenterComponent, PaginationComponent ],
 	imports: [
 		CommonModule,
 		OpRoutingModule,

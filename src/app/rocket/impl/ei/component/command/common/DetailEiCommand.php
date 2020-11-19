@@ -30,7 +30,7 @@ use rocket\impl\ei\component\command\IndependentEiCommandAdapter;
 use rocket\ei\component\command\PrivilegedEiCommand;
 use n2n\util\uri\Path;
 use n2n\core\container\N2nContext;
-use rocket\si\NavPoint;
+use rocket\si\control\SiNavPoint;
 use rocket\core\model\Rocket;
 use rocket\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
@@ -134,8 +134,8 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 		return $eiu->factory()->newCommandPrivilege($dtc->t('ei_impl_detail_label'));
 	}
 	
-	public function buildDetailNavPoint(Eiu $eiu): ?NavPoint {
-		return NavPoint::siref((new Path(['live', $eiu->object()->getPid()]))->toUrl());
+	public function buildDetailNavPoint(Eiu $eiu): ?SiNavPoint {
+		return SiNavPoint::siref((new Path(['live', $eiu->object()->getPid()]))->toUrl());
 	}
 
 	

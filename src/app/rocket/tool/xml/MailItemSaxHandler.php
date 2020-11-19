@@ -104,11 +104,11 @@ class MailItemSaxHandler implements SaxHandler {
 				break;
 			case AdminMailCenter::TAG_NAME_NAME:
 				$cdata = preg_replace('/\s/', '', $cdata);
-				$this->currentAttachmentItem->setName($cdata);
+				$this->currentAttachmentItem->appendName($cdata);
 				break;
 			case AdminMailCenter::TAG_NAME_PATH:
 				$cdata = preg_replace('/\s/', '', $cdata);
-				$this->currentAttachmentItem->setPath($cdata);
+				$this->currentAttachmentItem->appendPath($cdata);
 				break;
 		}
 	}

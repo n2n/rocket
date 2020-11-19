@@ -22,7 +22,7 @@
 namespace rocket\si\meta;
 
 use n2n\util\uri\Url;
-use rocket\si\NavPoint;
+use rocket\si\control\SiNavPoint;
 
 class SiBreadcrumb implements \JsonSerializable {
 	private $navPoint;
@@ -33,7 +33,7 @@ class SiBreadcrumb implements \JsonSerializable {
 	 * @param Url $url
 	 * @param string $label
 	 */
-	function __construct(NavPoint $navPoint, string $label) {
+	function __construct(SiNavPoint $navPoint, string $label) {
 		$this->navPoint = $navPoint;
 		$this->name = $label;
 	}

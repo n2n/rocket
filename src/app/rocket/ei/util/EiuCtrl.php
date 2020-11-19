@@ -41,7 +41,7 @@ use rocket\ei\manage\security\InaccessibleEiEntryException;
 use rocket\ei\manage\frame\EiFrameUtil;
 use rocket\ei\manage\LiveEiObject;
 use n2n\web\http\HttpContext;
-use rocket\si\NavPoint;
+use rocket\si\control\SiNavPoint;
 use n2n\l10n\DynamicTextCollection;
 use n2n\util\uri\Url;
 use rocket\core\model\RocketState;
@@ -419,11 +419,11 @@ class EiuCtrl {
 	}
 	
 	/**
-	 * @param NavPoint $navPoint
+	 * @param SiNavPoint $navPoint
 	 * @param string $label
 	 * @return \rocket\ei\util\EiuCtrl
 	 */
-	public function pushBreadcrumb(NavPoint $navPoint, string $label) {
+	public function pushBreadcrumb(SiNavPoint $navPoint, string $label) {
 		$this->rocketState->addBreadcrumb(new SiBreadcrumb($navPoint, $label));
 		return $this;
 	}
@@ -434,7 +434,7 @@ class EiuCtrl {
 	 * @return \rocket\ei\util\EiuCtrl
 	 */
 	public function pushSirefBreadcrumb(Url $url, string $label) {
-		$this->rocketState->addBreadcrumb(new SiBreadcrumb(NavPoint::siref($url), $label));
+		$this->rocketState->addBreadcrumb(new SiBreadcrumb(SiNavPoint::siref($url), $label));
 		return $this;
 	}
 	

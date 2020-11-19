@@ -1039,7 +1039,7 @@
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="zi0W2tQ3oUOvcZuHamZIgQAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="ncZBbqNaQkeaIHM7/nR/KgAA">
 <XPD:ATTR name="FontStyle" type="integer">1</XPD:ATTR>
-<XPD:ATTR name="Text" type="string">SiComp</XPD:ATTR>
+<XPD:ATTR name="Text" type="string">SiGui</XPD:ATTR>
 </XPD:OBJ>
 <XPD:OBJ name="StereotypeLabel" type="LabelView" guid="kXzEb1hF4E+aiXxzl800/wAA">
 <XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
@@ -12165,7 +12165,7 @@
 <XPD:OBJ name="OwnedElements[6]" type="UMLPackage" guid="QMSSqHsMw02AgRCCxC06EwAA">
 <XPD:ATTR name="Name" type="string">ui</XPD:ATTR>
 <XPD:REF name="Namespace">k3HVhZ8jLEOplGYQJNCYAAAA</XPD:REF>
-<XPD:ATTR name="#OwnedElements" type="integer">10</XPD:ATTR>
+<XPD:ATTR name="#OwnedElements" type="integer">11</XPD:ATTR>
 <XPD:OBJ name="OwnedElements[0]" type="UMLGeneralization" guid="BTdjdgWrAk2d4y/POuL0yQAA">
 <XPD:REF name="Namespace">QMSSqHsMw02AgRCCxC06EwAA</XPD:REF>
 <XPD:REF name="Child">+MWB4Eiwxk6sBPmI+o7pGAAA</XPD:REF>
@@ -14123,6 +14123,84 @@
 <XPD:OBJ name="OwnedElements[2]" type="UMLPackage" guid="UVa7vgUF7UG6xu1lmwI2LwAA">
 <XPD:ATTR name="Name" type="string">manage</XPD:ATTR>
 <XPD:REF name="Namespace">0N2QulClbUuMytfIeziHbQAA</XPD:REF>
+</XPD:OBJ>
+</XPD:OBJ>
+<XPD:OBJ name="OwnedElements[10]" type="UMLPackage" guid="v+3T8IVQJUahNN3ASEiCBwAA">
+<XPD:ATTR name="Name" type="string">util</XPD:ATTR>
+<XPD:REF name="Namespace">QMSSqHsMw02AgRCCxC06EwAA</XPD:REF>
+<XPD:ATTR name="#OwnedElements" type="integer">1</XPD:ATTR>
+<XPD:OBJ name="OwnedElements[0]" type="UMLPackage" guid="ia+CjJSu50SNzTVlIA0WiAAA">
+<XPD:ATTR name="Name" type="string">comp</XPD:ATTR>
+<XPD:REF name="Namespace">v+3T8IVQJUahNN3ASEiCBwAA</XPD:REF>
+<XPD:ATTR name="#OwnedDiagrams" type="integer">1</XPD:ATTR>
+<XPD:OBJ name="OwnedDiagrams[0]" type="UMLClassDiagram" guid="ytqv2FRQcEydFmFcueztIQAA">
+<XPD:ATTR name="Name" type="string">util</XPD:ATTR>
+<XPD:REF name="DiagramOwner">ia+CjJSu50SNzTVlIA0WiAAA</XPD:REF>
+<XPD:OBJ name="DiagramView" type="UMLClassDiagramView" guid="PQCm0gmqxUucMGg+Dtk58AAA">
+<XPD:REF name="Diagram">ytqv2FRQcEydFmFcueztIQAA</XPD:REF>
+<XPD:ATTR name="#OwnedViews" type="integer">1</XPD:ATTR>
+<XPD:OBJ name="OwnedViews[0]" type="UMLClassView" guid="HtAiCE2DVU+4U88fbBtnrwAA">
+<XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
+<XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
+<XPD:ATTR name="Left" type="integer">228</XPD:ATTR>
+<XPD:ATTR name="Top" type="integer">264</XPD:ATTR>
+<XPD:ATTR name="Width" type="integer">190</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">82</XPD:ATTR>
+<XPD:REF name="Model">7QJ4rqLZF0aWNtxgQcZSqAAA</XPD:REF>
+<XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="PmzdSN71AU2Df5+hIOfaJwAA">
+<XPD:OBJ name="NameLabel" type="LabelView" guid="Xg2TwFC/e0i7uH/xasDFKAAA">
+<XPD:ATTR name="FontStyle" type="integer">1</XPD:ATTR>
+<XPD:ATTR name="Text" type="string">PaginationComponent</XPD:ATTR>
+</XPD:OBJ>
+<XPD:OBJ name="StereotypeLabel" type="LabelView" guid="U+XFoqGP7EmZr7Y8kBEDPAAA">
+<XPD:ATTR name="Text" type="string">&lt;&lt;Component&gt;&gt;</XPD:ATTR>
+</XPD:OBJ>
+<XPD:OBJ name="PropertyLabel" type="LabelView" guid="sPQ0kwGaYEio14OeNdIJ8AAA">
+<XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
+</XPD:OBJ>
+</XPD:OBJ>
+<XPD:OBJ name="AttributeCompartment" type="UMLAttributeCompartmentView" guid="+kMxUmEyA0qsVXjv56bOGQAA">
+<XPD:REF name="Model">7QJ4rqLZF0aWNtxgQcZSqAAA</XPD:REF>
+</XPD:OBJ>
+<XPD:OBJ name="OperationCompartment" type="UMLOperationCompartmentView" guid="aulSYv8JAkyulhCTpf9dkAAA">
+<XPD:REF name="Model">7QJ4rqLZF0aWNtxgQcZSqAAA</XPD:REF>
+</XPD:OBJ>
+<XPD:OBJ name="TemplateParameterCompartment" type="UMLTemplateParameterCompartmentView" guid="5sdZnrg7HkyzZ6fYD/3UkwAA">
+<XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
+<XPD:REF name="Model">7QJ4rqLZF0aWNtxgQcZSqAAA</XPD:REF>
+</XPD:OBJ>
+</XPD:OBJ>
+</XPD:OBJ>
+</XPD:OBJ>
+<XPD:ATTR name="#OwnedElements" type="integer">1</XPD:ATTR>
+<XPD:OBJ name="OwnedElements[0]" type="UMLPackage" guid="W7TkHzPkjUe7+32dZUSMJAAA">
+<XPD:ATTR name="Name" type="string">pagination</XPD:ATTR>
+<XPD:REF name="Namespace">ia+CjJSu50SNzTVlIA0WiAAA</XPD:REF>
+<XPD:ATTR name="#OwnedElements" type="integer">1</XPD:ATTR>
+<XPD:OBJ name="OwnedElements[0]" type="UMLClass" guid="7QJ4rqLZF0aWNtxgQcZSqAAA">
+<XPD:ATTR name="Name" type="string">PaginationComponent</XPD:ATTR>
+<XPD:ATTR name="StereotypeName" type="string">Component</XPD:ATTR>
+<XPD:REF name="Namespace">W7TkHzPkjUe7+32dZUSMJAAA</XPD:REF>
+<XPD:ATTR name="#Views" type="integer">4</XPD:ATTR>
+<XPD:REF name="Views[0]">HtAiCE2DVU+4U88fbBtnrwAA</XPD:REF>
+<XPD:REF name="Views[1]">+kMxUmEyA0qsVXjv56bOGQAA</XPD:REF>
+<XPD:REF name="Views[2]">aulSYv8JAkyulhCTpf9dkAAA</XPD:REF>
+<XPD:REF name="Views[3]">5sdZnrg7HkyzZ6fYD/3UkwAA</XPD:REF>
+<XPD:ATTR name="#Attributes" type="integer">2</XPD:ATTR>
+<XPD:OBJ name="Attributes[0]" type="UMLAttribute" guid="lZUq4+WOkEKp/cr9qKZi0AAA">
+<XPD:ATTR name="Name" type="string">pageNo</XPD:ATTR>
+<XPD:ATTR name="StereotypeName" type="string">Input/Ouput</XPD:ATTR>
+<XPD:ATTR name="TypeExpression" type="string">number</XPD:ATTR>
+<XPD:REF name="Owner">7QJ4rqLZF0aWNtxgQcZSqAAA</XPD:REF>
+</XPD:OBJ>
+<XPD:OBJ name="Attributes[1]" type="UMLAttribute" guid="rxlCqbdFtEGqt80U3fyVGgAA">
+<XPD:ATTR name="Name" type="string">pagesNum</XPD:ATTR>
+<XPD:ATTR name="StereotypeName" type="string">Input</XPD:ATTR>
+<XPD:ATTR name="TypeExpression" type="string">number</XPD:ATTR>
+<XPD:REF name="Owner">7QJ4rqLZF0aWNtxgQcZSqAAA</XPD:REF>
+</XPD:OBJ>
+</XPD:OBJ>
+</XPD:OBJ>
 </XPD:OBJ>
 </XPD:OBJ>
 </XPD:OBJ>
