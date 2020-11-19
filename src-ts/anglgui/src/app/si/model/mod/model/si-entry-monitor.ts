@@ -6,7 +6,7 @@ import { SiGetInstruction } from '../../api/si-get-instruction';
 import { IllegalArgumentError } from 'src/app/si/util/illegal-argument-error';
 import { SiGetResponse } from '../../api/si-get-response';
 import { SiGetResult } from '../../api/si-get-result';
-import { Subscription } from 'rxjs';
+import { Subscription, Subject, Observable } from 'rxjs';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 
@@ -74,6 +74,7 @@ export class SiEntryMonitor {
 				this.executeNextReloadJob();
 			}
 		}));
+
 	}
 
 	stop() {

@@ -1,15 +1,18 @@
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiPage } from '../../model/si-page';
-import { CompactExplorerComponent } from './compact-explorer.component';
 import { SiEntry, SiEntryState } from 'src/app/si/model/content/si-entry';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
-import { Subscription } from 'rxjs';
+import { Subscription, BehaviorSubject, Observable } from 'rxjs';
 import { IllegalArgumentError } from 'src/app/si/util/illegal-argument-error';
+import { SiPageCollection } from '../../model/si-page-collection';
+import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
+import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
+import { SiProp } from 'src/app/si/model/meta/si-prop';
 
 export class StructurePage {
 	private _structureEntries = new Array<StructureEntry>();
 
-	constructor(readonly siPage: SiPage) {
+	constructor(readonly siPage: SiPage, public offsetHeight: number|null) {
 	}
 
 	get loaded(): boolean {
@@ -117,27 +120,144 @@ export class StructureEntry {
 }
 
 export class StructurePageManager {
+
 	private pagesMap = new Map<number, StructurePage>();
 
-	constructor(private comp: CompactExplorerComponent) {
-
+	constructor(private uiStructure: UiStructure, private siPageCollection: SiPageCollection) {
 	}
 
-	map(siPages: SiPage[]) {
-		const structurePages = new Array<StructurePage>();
+	get quickSearchStr(): string|null {
+		return this.siPageCollection.quickSearchStr;
+	}
 
-		for (const siPage of siPages) {
-			let structurePage = this.getPage(siPage);
-			if (!structurePage) {
-				structurePage = this.createPage(siPage);
-			}
+	private ensureDeclared() {
+		if (this.declarationRequired) {
+			throw new IllegalStateError('Declaration required.');
+		}
+	}
 
-			this.val(structurePage);
-			structurePages.push(structurePage);
+	getSiProps(): SiProp[] {
+		this.ensureDeclared();
+
+		return this.siPageCollection.declaration.getBasicTypeDeclaration().getSiProps();
+	}
+
+	get declarationRequired(): boolean {
+		return !this.siPageCollection.declared || (this.pagesMap.size === 0 && this.siPageCollection.size > 0);
+	}
+
+	get pages(): StructurePage[] {
+		return Array.from(this.pagesMap.values()).sort((aPage, bPage) => {
+			return aPage.siPage.no - bPage.siPage.no;
+		});
+	}
+
+	get lastPageNo(): number|null {
+		if (this.pagesMap.size === 0) {
+			return null;
+		}
+		return Math.max(...Array.from(this.pagesMap.keys()));
+	}
+
+	get lastPage(): StructurePage|null {
+		const pageNo = this.lastPageNo;
+		if (pageNo === null) {
+			return null;
 		}
 
-		return structurePages;
+		return this.pagesMap.get(pageNo);
 	}
+
+	private obtainSiPage(pageNo: number): SiPage {
+		if (this.siPageCollection.containsPageNo(pageNo)) {
+			return this.siPageCollection.getPageByNo(pageNo);
+		} else {
+			return this.siPageCollection.loadPage(pageNo);
+		}
+	}
+
+	containsPageNo(pageNo: number): boolean {
+		return this.pagesMap.has(pageNo);
+	}
+
+	getPageByNo(pageNo: number): StructurePage {
+		if (this.pagesMap.has(pageNo)) {
+			return this.pagesMap.get(pageNo);
+		}
+
+		throw new IllegalStateError('Unknown page no: ' + pageNo);
+	}
+
+	loadSingle(pageNo: number, offsetHeight: number): StructurePage {
+		this.clear();
+
+		return this.createPage(this.obtainSiPage(pageNo), offsetHeight);
+	}
+
+	loadNext(offsetHeight: number): StructurePage {
+		const pageNo = (this.lastPageNo || 0) + 1;
+
+		return this.createPage(this.obtainSiPage(pageNo), offsetHeight);
+	}
+
+	get possiablePagesNum(): number {
+		return this.siPageCollection.pagesNum;
+	}
+
+	updateFilter(quickSearchStr: string|null) {
+		this.siPageCollection.updateFilter(quickSearchStr);
+	}
+
+	// getLastVisiblePage(): StructurePage|null {
+		
+		
+	// 	let lastPage: SiPage|null = null;
+	// 	for (const page of this.pagesMap.values()) {
+	// 		if (page.offsetHeight !== null && (lastPage === null || page.no > lastPage.no)) {
+	// 			lastPage = page;
+	// 		}
+	// 	}
+	// 	return lastPage;
+	// }
+
+	getBestPageByOffsetHeight(offsetHeight: number): StructurePage|null {
+		let prevPage: StructurePage|null = null;
+
+		for (const page of this.pages) {
+			if (prevPage === null || (page.offsetHeight < offsetHeight
+					&& prevPage.offsetHeight <= page.offsetHeight)) {
+				prevPage = page;
+				continue;
+			}
+
+			const bestPageDelta = offsetHeight - prevPage.offsetHeight;
+			const pageDelta = page.offsetHeight - offsetHeight;
+
+			if (bestPageDelta < pageDelta) {
+				return prevPage;
+			} else {
+				return page;
+			}
+		}
+
+		return prevPage;
+	}
+
+	// map(siPages: SiPage[]) {
+	// 	const structurePages = new Array<StructurePage>();
+
+	// 	for (const siPage of siPages) {
+	// 		let structurePage = this.getPage(siPage);
+	// 		if (!structurePage) {
+	// 			structurePage = this.createPage(siPage);
+	// 		}
+
+	// 		this.val(structurePage);
+	// 		structurePages.push(structurePage);
+	// 	}
+
+	// 	return structurePages;
+	// }
 
 	clear() {
 		for (const [, structurePage] of this.pagesMap) {
@@ -146,39 +266,37 @@ export class StructurePageManager {
 		this.pagesMap.clear();
 	}
 
-	private getPage(siPage: SiPage): StructurePage|null {
-		const structurePage = this.pagesMap.get(siPage.no);
-		if (!structurePage || structurePage.siPage === siPage) {
-			return structurePage;
+	// private getPage(siPage: SiPage): StructurePage|null {
+	// 	const structurePage = this.pagesMap.get(siPage.no);
+	// 	if (!structurePage || structurePage.siPage === siPage) {
+	// 		return structurePage;
+	// 	}
+
+	// 	this.pagesMap.delete(siPage.no);
+	// 	structurePage.clear();
+	// 	return null;
+	// }
+
+	private createPage(siPage: SiPage, offsetHeight: number): StructurePage {
+		if (this.pagesMap.has(siPage.no)) {
+			throw new IllegalStateError('StructurePage for page no ' + siPage.no + ' already exists.');
 		}
 
-		this.pagesMap.delete(siPage.no);
-		structurePage.clear();
-		return null;
-	}
-
-	private createPage(siPage: SiPage): StructurePage {
-		const sp = new StructurePage(siPage);
+		const sp = new StructurePage(siPage, offsetHeight);
 		this.pagesMap.set(siPage.no, sp);
+
+		siPage.disposed$.subscribe(() => {
+			this.clear();
+		});
+
 		return sp;
-	}
-
-	private val(structurePage: StructurePage) {
-		if (!structurePage.isEmpty() || !this.comp.siPageCollection.declaration
-				|| !structurePage.siPage.entries) {
-			return;
-		}
-
-		for (const siEntry of structurePage.siPage.entries) {
-			this.applyNewStructureEntry(structurePage, siEntry, null, null);
-		}
 	}
 
 	private applyNewStructureEntry(structurePage: StructurePage, siEntry: SiEntry, oldStructureEntry: StructureEntry|null,
 			insertIndex: number|null) {
 		const fieldUiStructures = this.createFieldUiStructures(siEntry);
 		const controlUiContents = siEntry.selectedEntryBuildup.controls
-				.map(siControl => siControl.createUiContent(this.comp.uiStructure.getZone()));
+				.map(siControl => siControl.createUiContent(this.uiStructure.getZone()));
 
 		const structureEntry = new StructureEntry(siEntry, fieldUiStructures, controlUiContents, (replacementEntry) => {
 			this.applyNewStructureEntry(structurePage, replacementEntry, structureEntry, null);
@@ -186,7 +304,7 @@ export class StructurePageManager {
 
 		if (oldStructureEntry) {
 			if (!structurePage.replaceStructureEntry(oldStructureEntry, structureEntry)) {
-				structureEntry.clear();
+				oldStructureEntry.clear();
 			}
 
 			return;
@@ -203,8 +321,8 @@ export class StructurePageManager {
 	private createFieldUiStructures(siEntry: SiEntry): UiStructure[] {
 		const uiStructures = new Array<UiStructure>();
 
-		for (const siProp of this.comp.getSiProps()) {
-			const uiStructure = this.comp.uiStructure.createChild();
+		for (const siProp of this.getSiProps()) {
+			const uiStructure = this.uiStructure.createChild();
 			uiStructure.model = siEntry.selectedEntryBuildup.getFieldById(siProp.id).createUiStructureModel();
 			uiStructures.push(uiStructure);
 		}

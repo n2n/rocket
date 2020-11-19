@@ -2,13 +2,12 @@ import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
 import { fromEvent, Subscription, Subject } from 'rxjs';
 import { SiEntryQualifier } from 'src/app/si/model/content/si-entry-qualifier';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
-import { SiPage } from '../../model/si-page';
 import { SiProp } from 'src/app/si/model/meta/si-prop';
 import { CompactExplorerModel } from '../compact-explorer-model';
-import { SiPageCollection } from '../../model/si-page-collection';
 import { StructurePage, StructurePageManager } from './structure-page-manager';
-import { skip, debounceTime, tap } from 'rxjs/operators';
+import { debounceTime, tap } from 'rxjs/operators';
 import { LayerComponent } from 'src/app/ui/structure/comp/layer/layer.component';
+import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 
 @Component({
 	selector: 'rocket-ui-compact-explorer',
@@ -22,17 +21,18 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 
 	public spm: StructurePageManager;
 	private subscription = new Subscription();
-	siPageCollection: SiPageCollection;
+
 	private quickSearchSubject = new Subject<string>();
 	private quickSearching = false;
-	private weakPageNoChange = false;
+
+	private _currentPageNo = 1;
+
 
 	constructor(@Inject(LayerComponent) private parent: LayerComponent) {
 	}
 
 	ngOnInit() {
-		this.siPageCollection = this.model.getSiPageCollection();
-		this.spm = new StructurePageManager(this);
+		this.spm = new StructurePageManager(this.uiStructure, this.model.getSiPageCollection());
 
 		this.subscription.add(fromEvent<MouseEvent>(this.parent.nativeElement, 'scroll').subscribe(() => {
 			if (this.quickSearching) {
@@ -42,50 +42,19 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 			this.updateVisiblePages();
 		}));
 
-		this.subscription.add(this.siPageCollection.currentPageNo$.pipe(skip(1)).subscribe(() => {
-			if (this.weakPageNoChange) {
-				this.weakPageNoChange = false;
-				return;
-			}
-
-			if (this.quickSearching) {
-				return;
-			}
-
-			this.valCurrentPageNo();
-		}));
-
 		this.quickSearchSubject
 				.pipe(tap(() => {
 					this.quickSearching = true;
-					this.siPageCollection.clear();
 				}))
 				.pipe(debounceTime(300))
 				.subscribe((str: string) => {
-					this.quickSearching = false;
-					if (this.siPageCollection.quickSearchStr === str) {
-						this.visibileLoadCurrentPage();
+					if (this.spm.quickSearchStr === str) {
+						this.quickSearching = false;
+						this.ensureLoaded();
 					}
 				});
 
-		if (!this.siPageCollection.currentPageExists) {
-			this.visibileLoadCurrentPage();
-			return;
-		}
-
-		const page = this.siPageCollection.currentPage;
-		if (!page.visible) {
-			page.offsetHeight = 0;
-		}
-	}
-
-	private visibileLoadCurrentPage() {
-		if (this.siPageCollection.size !== 0) {
-			throw new Error('SiPageCollection filled.');
-		}
-
-		const loadedPage = this.siPageCollection.loadPage(this.siPageCollection.currentPageNo);
-		loadedPage.offsetHeight = 0;
+		this.ensureLoaded();
 	}
 
 	ngOnDestroy() {
@@ -93,8 +62,10 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 		this.spm.clear();
 	}
 
-	get declared(): boolean {
-		return !!this.siPageCollection.declaration;
+	private ensureLoaded() {
+		if (this.spm.declarationRequired) {
+			this.spm.loadSingle(this.currentPageNo, 0);
+		}
 	}
 
 	get loading(): boolean {
@@ -102,20 +73,15 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 			return true;
 		}
 
-		const lastVisiblePage = this.siPageCollection.getLastVisiblePage();
-		if (lastVisiblePage && !lastVisiblePage.loaded) {
-			return true;
-		}
-
-		return false;
+		return this.spm.lastPage && !this.spm.lastPage.loaded;
 	}
 
 	getVisibleStructurePages(): StructurePage[] {
-		return this.spm.map(this.siPageCollection.getVisiblePages());
+		return this.spm.pages;
 	}
 
 	get quickSearchStr(): string {
-		return this.siPageCollection.quickSearchStr;
+		return this.spm.quickSearchStr;
 	}
 
 	set quickSearchStr(quickSearchStr: string) {
@@ -127,8 +93,35 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 			return;
 		}
 
-		this.siPageCollection.quickSearchStr = quickSearchStr;
+		this.spm.updateFilter(quickSearchStr);
 		this.quickSearchSubject.next(quickSearchStr);
+	}
+
+	get currentPageNo(): number {
+		return this._currentPageNo;
+	}
+
+	set currentPageNo(currentPageNo: number) {
+		if (currentPageNo === this._currentPageNo) {
+			return;
+		}
+
+		if (currentPageNo > this.pagesNum || currentPageNo < 1) {
+			throw new IllegalStateError('CurrentPageNo too large or too small: ' + currentPageNo);
+		}
+
+		this._currentPageNo = currentPageNo;
+
+		if (this.spm.containsPageNo(currentPageNo)) {
+			this.parent.nativeElement.scrollTo({ top: this.spm.getPageByNo(currentPageNo).offsetHeight, behavior: 'smooth' });
+			return;
+		}
+
+		this.spm.loadSingle(currentPageNo, 0);
+	}
+
+	get pagesNum(): number {
+		return this.spm.possiablePagesNum;
 	}
 
 	// private loadPage(pageNo: number): SiPage {
@@ -172,29 +165,13 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 	// 	this.updateCurrentPage();
 	// }
 
-	private changePageNoWeakly(pageNo: number) {
-		if (this.siPageCollection.currentPageNo === pageNo) {
-			return;
-		}
-
-		this.weakPageNoChange = true;
-		this.siPageCollection.currentPageNo = pageNo;
-	}
 
 	private updateCurrentPage() {
-		let page = this.siPageCollection.getBestPageByOffsetHeight(this.parent.nativeElement.scrollTop);
-		if (page) {
-			this.changePageNoWeakly(page.no);
+		const structurePage = this.spm.getBestPageByOffsetHeight(this.parent.nativeElement.scrollTop);
+		if (structurePage) {
+			this._currentPageNo = structurePage.siPage.no;
 			return;
 		}
-
-		if (this.siPageCollection.containsPageNo(this.siPageCollection.currentPageNo)) {
-			page = this.siPageCollection.getPageByNo(this.siPageCollection.currentPageNo);
-		} else {
-			page = this.siPageCollection.loadPage(this.siPageCollection.currentPageNo);
-			page.onLoad(() => { this.updateCurrentPage(); });
-		}
-		page.offsetHeight = 0;
 	}
 
 	private updateVisiblePages() {
@@ -202,56 +179,45 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 
 		if ((this.parent.nativeElement.scrollTop + this.parent.nativeElement.offsetHeight)
 				< this.parent.nativeElement.scrollHeight) {
+			this.updateCurrentPage();
 			return;
 		}
 
-		const lastVisiblePage = this.siPageCollection.getLastVisiblePage();
-		if (!lastVisiblePage.loaded) {
+		const lastPage = this.spm.lastPage;
+		if (lastPage && !lastPage.loaded) {
 			return;
 		}
 
-		const newPageNo = lastVisiblePage.no + 1;
-		if (newPageNo > this.siPageCollection.pagesNum) {
-			return;
-		}
-
-		let newSiPage: SiPage;
-		if (this.siPageCollection.containsPageNo(newPageNo)) {
-			newSiPage = this.siPageCollection.getPageByNo(newPageNo);
-		} else {
-			newSiPage = this.siPageCollection.loadPage(newPageNo);
-		}
-		this.updateOffsetHeight(newSiPage);
+		this._currentPageNo = this.spm.loadNext(this.parent.nativeElement.scrollTop
+				+ this.parent.nativeElement.offsetHeight).siPage.no;
 	}
 
-	private updateOffsetHeight(siPage: SiPage) {
-		siPage.offsetHeight = this.parent.nativeElement.scrollTop
-				+ this.parent.nativeElement.offsetHeight; /* document.body.offsetHeight - window.innerHeight;*/
-	// 		console.log(siPage.number + ' ' + document.body.offsetHeight + ' ' + (window.scrollY + window.innerHeight));
+	get declared() {
+		return !this.spm.declarationRequired;
 	}
 
-	getSiProps(): Array<SiProp>|null {
-		return this.siPageCollection.declaration.getBasicTypeDeclaration().getSiProps();
+	getSiProps(): Array<SiProp> {
+		return this.spm.getSiProps();
 	}
 
-	private valCurrentPageNo() {
-		if (!this.siPageCollection.currentPageExists) {
-			this.siPageCollection.hideAllPages();
-			this.siPageCollection.loadPage(this.siPageCollection.currentPageNo).offsetHeight = 0;
-			return;
-		}
+	// private valCurrentPageNo() {
+	// 	if (!this.siPageCollection.currentPageExists) {
+	// 		this.siPageCollection.hideAllPages();
+	// 		this.siPageCollection.loadPage(this.siPageCollection.currentPageNo).offsetHeight = 0;
+	// 		return;
+	// 	}
 
-		const page = this.siPageCollection.getPageByNo(this.siPageCollection.currentPageNo);
-		if (page.visible) {
-			this.parent.nativeElement.scrollTo({ top: page.offsetHeight, behavior: 'smooth' });
-				// this.parent.nativeElement.scrollLeft, page.offsetHeight);
-	// 			this.model.currentPageNo = currentPageNo
-			return;
-		}
+	// 	const page = this.siPageCollection.getPageByNo(this.siPageCollection.currentPageNo);
+	// 	if (page.visible) {
+	// 		this.parent.nativeElement.scrollTo({ top: page.offsetHeight, behavior: 'smooth' });
+	// 			// this.parent.nativeElement.scrollLeft, page.offsetHeight);
+	// // 			this.model.currentPageNo = currentPageNo
+	// 		return;
+	// 	}
 
-		this.siPageCollection.hideAllPages();
-		page.offsetHeight = 0;
-	}
+	// 	this.siPageCollection.hideAllPages();
+	// 	page.offsetHeight = 0;
+	// }
 
 	get selectable(): boolean {
 		return !!this.model.getSiEntryQualifierSelection();

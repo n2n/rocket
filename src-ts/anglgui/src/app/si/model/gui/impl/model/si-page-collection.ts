@@ -1,10 +1,9 @@
 import { SiPage } from './si-page';
 import { SiDeclaration } from '../../../meta/si-declaration';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { SiEntry } from '../../../content/si-entry';
 import { SiEntryMonitor } from '../../../mod/model/si-entry-monitor';
-import { SiModStateService, SiModEvent } from '../../../mod/model/si-mod-state.service';
+import { SiModStateService } from '../../../mod/model/si-mod-state.service';
 import { SiService } from 'src/app/si/manage/si.service';
 import { SiControl } from '../../../control/si-control';
 import { SiGetInstruction } from '../../../api/si-get-instruction';
@@ -19,14 +18,14 @@ export class SiPageCollection implements SiControlBoundry {
 	public controls: SiControl[]|null = null;
 
 	private pagesMap = new Map<number, SiPage>();
-	private _size = 0;
-	private _currentPageNo$ = new BehaviorSubject<number>(1);
-	public quickSearchStr: string|null = null;
+	private _size: number|null = null;
+	private _quickSearchStr: string|null = null;
 
-	private modSubscription: Subscription|null = null;
+	// private modSubscription: Subscription|null = null;
 
 	constructor(readonly pageSize: number, private siFrame: SiFrame, private siService: SiService,
-			private siModState: SiModStateService) {
+			private siModState: SiModStateService, quickSearchstr: string|null = null) {
+		this._quickSearchStr = quickSearchstr;
 	}
 
 	getEntries(): SiEntry[] {
@@ -44,99 +43,144 @@ export class SiPageCollection implements SiControlBoundry {
 	}
 
 	get pages(): SiPage[] {
-		return Array.from(this.pagesMap.values());
-	}
-
-	clear() {
-		this.size = 0;
-		this.validateSubscription();
-	}
-
-	private validateSubscription() {
-		if (this.size > 0) {
-			if (!this.modSubscription) {
-				return;
-			}
-
-			this.modSubscription.unsubscribe();
-			this.modSubscription = null;
-			return;
-		}
-
-		this.siModState.modEvent$.subscribe((modEvent: SiModEvent) => {
-			if (modEvent.containsAddedTypeId(this.siFrame.typeContext.typeId)) {
-				this.clear();
-			}
+		return Array.from(this.pagesMap.values()).sort((aPage, bPage) => {
+			return aPage.no - bPage.no;
 		});
 	}
 
-	get currentPageExists(): boolean {
-		return this.containsPageNo(this.currentPageNo);
+	get quickSearchStr(): string|null {
+		return this._quickSearchStr;
 	}
 
-	get currentPage(): SiPage {
-		return this.getPageByNo(this.currentPageNo);
-	}
-
-	get currentPageNo$(): Observable<number> {
-		return this._currentPageNo$;
-	}
-
-	get currentPageNo(): number {
-		return this._currentPageNo$.getValue();
-	}
-
-	set currentPageNo(currentPageNo: number) {
-		if (currentPageNo === this.currentPageNo) {
+	updateFilter(quickSearchStr: string|null) {
+		if (this.quickSearchStr === quickSearchStr) {
 			return;
 		}
 
-		if (currentPageNo > this.pagesNum || currentPageNo < 1) {
-			throw new IllegalSiStateError('CurrentPageNo too large or too small: ' + currentPageNo);
+		this._quickSearchStr = quickSearchStr;
+		this.clear();
+	}
+
+	clear() {
+		for (const page of this.pages) {
+			page.dipose();
 		}
 
-		// if (!this.getPageByNo(currentPageNo).visible) {
-		// 	throw new IllegalSiStateError('Page not visible: ' + currentPageNo);
-		// }
+		IllegalSiStateError.assertTrue(this.pagesMap.size === 0);
+	}
 
-		this._currentPageNo$.next(currentPageNo);
+	// private validateSubscription() {
+	// 	if (this.size > 0) {
+	// 		if (!this.modSubscription) {
+	// 			return;
+	// 		}
+
+	// 		this.modSubscription.unsubscribe();
+	// 		this.modSubscription = null;
+	// 		return;
+	// 	}
+
+	// 	this.siModState.modEvent$.subscribe((modEvent: SiModEvent) => {
+	// 		if (modEvent.containsAddedTypeId(this.siFrame.typeContext.typeId)) {
+	// 			this.clear();
+	// 		}
+	// 	});
+	// }
+
+	get declared(): boolean {
+		return this._size !== null && !!this.declaration && !!this.controls;
+	}
+
+	private ensureDeclared() {
+		if (this.declared) {
+			return;
+		}
+
+		throw new IllegalSiStateError('SiPageCollection net yet declared.');
 	}
 
 	get size(): number {
+		this.ensureDeclared();
 		return this._size;
 	}
 
-	set size(size: number) {
-		this._size = size;
-
-		const pagesNum = this.pagesNum;
-
-		if (this.currentPageNo > pagesNum) {
-			this.currentPageNo = pagesNum;
+	get ghostSize(): number {
+		let ghostSize = 0;
+		for (const page of this.pages) {
+			ghostSize += page.ghostSize;
 		}
+		return ghostSize;
+	}
 
-		for (const pageNo of this.pagesMap.keys()) {
-			if (pageNo > pagesNum) {
-				this.pagesMap.get(pageNo).dipose();
-				this.pagesMap.delete(pageNo);
+	get pagesNum(): number {
+		return Math.ceil((this._size + this.ghostSize) / this.pageSize);
+	}
+
+	get loadedPagesNum(): number {
+		return this.pagesMap.size;
+	}
+
+	private recalcPagesOffset() {
+		let lastPage: SiPage = null;
+		for (const page of this.pages) {
+			if (lastPage) {
+				page.offset = lastPage.offset + lastPage.size;
 			}
+
+			lastPage = page;
 		}
 	}
 
+	// set size(size: number) {
+	// 	this._size = size;
+
+	// 	const pagesNum = this.pagesNum;
+
+	// 	if (this.currentPageNo > pagesNum) {
+	// 		this.currentPageNo = pagesNum;
+	// 	}
+
+	// 	for (const pageNo of this.pagesMap.keys()) {
+	// 		if (pageNo > pagesNum) {
+	// 			this.pagesMap.get(pageNo).dipose();
+	// 			this.pagesMap.delete(pageNo);
+	// 		}
+	// 	}
+	// }
+
 	createPage(no: number, entries: SiEntry[]|null): SiPage {
-		if (no > this.pagesNum) {
+		if (no < 1 || no > this.pagesNum) {
 			throw new IllegalSiStateError('Page num to high.');
 		}
 
 		let offset = no * this.pageSize;
-		if (this.pagesMap.has(no - 1)) {
+		if (!this.pagesMap.has(no - 1) || !this.pagesMap.get(no - 1).loaded) {
+			this.clear();
+		} else {
 			const prevPage = this.pagesMap.get(no - 1);
 			offset = prevPage.offset + prevPage.size;
 		}
 
+		let num = this.pageSize;
+		if (this.pagesMap.has(no + 1)) {
+			num = this.pagesMap.get(no + 1).offset - offset;
+		}
+
 		const entryMonitory = new SiEntryMonitor(this.siFrame.apiUrl, this.siService, this.siModState, true);
-		const page = new SiPage(entryMonitory, no, offset, this.pageSize, entries, null);
+		const page = new SiPage(entryMonitory, no, offset, entries);
 		this.pagesMap.set(no, page);
+
+		page.disposed$.subscribe(() => {
+			IllegalSiStateError.assertTrue(this.pagesMap.get(page.no) === page,
+					'SiPage no already retaken: ' + page.no);
+			this.pagesMap.delete(no);
+		});
+
+		page.entryRemoved$.subscribe(() => {
+			this._size--;
+			this.recalcPagesOffset();
+		});
+
 		return page;
 	}
 
@@ -150,55 +194,6 @@ export class SiPageCollection implements SiControlBoundry {
 		}
 
 		throw new IllegalSiStateError('Unknown page with no: ' + no);
-	}
-
-	get pagesNum(): number {
-		return Math.ceil(this.size as number / this.pageSize) || 1;
-	}
-
-	getVisiblePages(): SiPage[] {
-		return Array.from(this.pagesMap.values()).filter((page: SiPage) => {
-			return page.offsetHeight !== null;
-		});
-	}
-
-	getLastVisiblePage(): SiPage|null {
-		let lastPage: SiPage|null = null;
-		for (const page of this.pagesMap.values()) {
-			if (page.offsetHeight !== null && (lastPage === null || page.no > lastPage.no)) {
-				lastPage = page;
-			}
-		}
-		return lastPage;
-	}
-
-	getBestPageByOffsetHeight(offsetHeight: number): SiPage|null {
-		let prevPage: SiPage|null = null;
-
-		for (const page of this.getVisiblePages()) {
-			if (prevPage === null || (page.offsetHeight < offsetHeight
-					&& prevPage.offsetHeight <= page.offsetHeight)) {
-				prevPage = page;
-				continue;
-			}
-
-			const bestPageDelta = offsetHeight - prevPage.offsetHeight;
-			const pageDelta = page.offsetHeight - offsetHeight;
-
-			if (bestPageDelta < pageDelta) {
-				return prevPage;
-			} else {
-				return page;
-			}
-		}
-
-		return prevPage;
-	}
-
-	hideAllPages() {
-		for (const page of this.pagesMap.values()) {
-			page.offsetHeight = null;
-		}
 	}
 
 	loadPage(pageNo: number): SiPage {
@@ -236,7 +231,11 @@ export class SiPageCollection implements SiControlBoundry {
 			this.controls = result.generalControls;
 		}
 
-		this.size = result.partialContent.count;
+		this._size = result.partialContent.count;
 		siPage.entries = result.partialContent.entries;
+
+		if (result.partialContent.entries.length === 0) {
+			siPage.dipose();
+		}
 	}
 }
