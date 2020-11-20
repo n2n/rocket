@@ -133,6 +133,10 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 	}
 
 	get pagesNum(): number {
+		if (this.spm.declarationRequired) {
+			return 1;
+		}
+
 		return this.spm.possiablePagesNum;
 	}
 

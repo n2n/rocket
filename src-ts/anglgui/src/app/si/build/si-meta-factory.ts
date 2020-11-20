@@ -80,7 +80,8 @@ export class SiMetaFactory {
 
 		const identifierExtr = extr.reqExtractor('identifier');
 		return new SiMaskQualifier(
-				new SiMaskIdentifier(identifierExtr.reqString('id'), identifierExtr.reqString('entryBuildupId')),
+				new SiMaskIdentifier(identifierExtr.reqString('id'), identifierExtr.reqString('entryBuildupId'),
+						identifierExtr.reqString('typeId')),
 				extr.reqString('name'), extr.reqString('iconClass'));
 	}
 

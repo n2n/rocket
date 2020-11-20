@@ -85,7 +85,8 @@ class SiMaskIdentifier implements \JsonSerializable {
 	function jsonSerialize() {
 		return [
 		    'id' => $this->id,
-			'entryBuildupId' => $this->entryBuildupId
+			'entryBuildupId' => $this->entryBuildupId,
+			'typeId' => $this->typeId
 		];
 	}
 

@@ -29,7 +29,9 @@ export class SiEntryQualifier {
 	}
 
 	equals(obj: any): boolean {
-		return obj instanceof SiEntryQualifier && this.maskQualifier.identifier.matches(obj.maskQualifier.identifier);
+		return obj instanceof SiEntryQualifier
+				&& this.identifier.equals(obj.identifier)
+				&& this.maskQualifier.identifier.matches(obj.maskQualifier.identifier);
 	}
 
 	toString(): string {

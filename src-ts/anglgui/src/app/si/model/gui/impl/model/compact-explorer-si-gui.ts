@@ -15,7 +15,6 @@ import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { UiStructureModelAdapter } from 'src/app/ui/structure/model/impl/ui-structure-model-adapter';
 import { StructureUiZoneError } from 'src/app/ui/structure/model/impl/structure-ui-zone-error';
 import { UiZoneError } from 'src/app/ui/structure/model/ui-zone-error';
-import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { SiPartialContent } from '../../../content/si-partial-content';
 import { SiFrame } from '../../../meta/si-frame';
 
@@ -49,7 +48,7 @@ class CompactExplorerListModelImpl extends UiStructureModelAdapter implements Co
 	constructor(private comp: CompactExplorerSiGui, partialContent: SiPartialContent|null) {
 		super();
 
-		if (!this.comp.pageCollection.declared) {
+		if (partialContent && !this.comp.pageCollection.declared) {
 			this.comp.pageCollection.size = partialContent.count;
 			this.comp.pageCollection.createPage(1, partialContent.entries);
 		}

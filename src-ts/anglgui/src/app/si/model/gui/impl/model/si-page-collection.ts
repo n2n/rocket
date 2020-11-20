@@ -156,11 +156,11 @@ export class SiPageCollection implements SiControlBoundry {
 	// }
 
 	createPage(no: number, entries: SiEntry[]|null): SiPage {
-		if (no < 1 || no > this.pagesNum) {
+		if (no < 1 || (this.declared && no > this.pagesNum)) {
 			throw new IllegalSiStateError('Page num to high.');
 		}
 
-		let offset = no * this.pageSize;
+		let offset = (no - 1) * this.pageSize;
 		if (!this.pagesMap.has(no - 1) || !this.pagesMap.get(no - 1).loaded) {
 			this.clear();
 		} else {
