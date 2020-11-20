@@ -1,6 +1,5 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { SiPageCollection } from '../../model/si-page-collection';
-import { Subscription } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { CompactExplorerComponent } from '../compact-explorer/compact-explorer.component';
 
 @Component({
 	selector: 'rocket-si-pagination.rocket-pagination',
@@ -9,47 +8,26 @@ import { Subscription } from 'rxjs';
 })
 export class PaginationComponent implements OnInit {
 
-	private _internalValue = 1;
-
-	@Input()
-	siPageCollection: SiPageCollection;
-
-	private subscription: Subscription;
+	public cec: CompactExplorerComponent;
 
 	constructor() { }
 
-	ngOnInit() {
-		this._internalValue = this.siPageCollection.currentPageNo;
-		this.subscription = this.siPageCollection.currentPageNo$
-				.subscribe((currentPageNo) => {
-					this._internalValue = currentPageNo;
-				});
-	}
-
-	ngOnDestory() {
-		this.subscription.unsubscribe();
+	ngOnInit(): void {
 	}
 
 	get visible(): boolean {
-		return this.lastPageNo > 1;
+		return this.cec && this.pagesNum > 1;
 	}
 
-	get internalValue(): number {
-		return this._internalValue;
+	get pagesNum(): number {
+		return this.cec.pagesNum;
 	}
 
-	set internalValue(currentPageNo: number) {
-		if (this._internalValue === currentPageNo || 1 > currentPageNo || this.lastPageNo < currentPageNo) {
-			return;
-		}
-
-		this._internalValue = currentPageNo;
-		this.siPageCollection.currentPageNo = currentPageNo;
+	get currentPageNo(): number {
+		return this.cec.currentPageNo;
 	}
 
-	get lastPageNo(): number {
-		return this.siPageCollection.pagesNum;
+	set currentPageNo(pageNo: number) {
+		this.cec.currentPageNo = pageNo;
 	}
-
-
 }

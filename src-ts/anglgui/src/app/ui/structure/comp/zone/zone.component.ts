@@ -1,6 +1,5 @@
-import { Component, OnInit, DoCheck, Input, ComponentFactoryResolver, ElementRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, DoCheck, Input, ElementRef, OnDestroy } from '@angular/core';
 import { UiZone, UiZoneModel } from '../../model/ui-zone';
-import { UiStructure } from '../../model/ui-structure';
 import { UiZoneError } from '../../model/ui-zone-error';
 import { UiContent } from '../../model/ui-content';
 

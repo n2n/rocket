@@ -99,15 +99,22 @@ export class SiPageCollection implements SiControlBoundry {
 		throw new IllegalSiStateError('SiPageCollection net yet declared.');
 	}
 
+	set size(size: number) {
+		this._size = size;
+	}
+
 	get size(): number {
 		this.ensureDeclared();
 		return this._size;
 	}
 
 	get ghostSize(): number {
+		this.ensureDeclared();
 		let ghostSize = 0;
 		for (const page of this.pages) {
-			ghostSize += page.ghostSize;
+			if (page.loaded) {
+				ghostSize += page.ghostSize;
+			}
 		}
 		return ghostSize;
 	}
@@ -206,7 +213,7 @@ export class SiPageCollection implements SiControlBoundry {
 		}
 
 		const instruction = SiGetInstruction.partialContent(false, true,
-						siPage.offset, siPage.size,
+						siPage.offset, this.pageSize,
 						this.quickSearchStr)
 				.setDeclaration(this.declaration)
 				.setGeneralControlsIncluded(!this.controls)

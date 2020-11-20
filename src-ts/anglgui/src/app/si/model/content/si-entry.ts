@@ -273,7 +273,7 @@ export class SiEntry {
 	// }
 
 	markAsOutdated() {
-		IllegalSiStateError.assertTrue(this.state === SiEntryState.CLEAN);
+		IllegalSiStateError.assertTrue(this.state === SiEntryState.CLEAN, 'SiEntry not clean: ' + this.state);
 		this.stateSubject.next(SiEntryState.OUTDATED);
 	}
 

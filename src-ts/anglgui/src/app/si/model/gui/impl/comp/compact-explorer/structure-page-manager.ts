@@ -2,10 +2,9 @@ import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiPage } from '../../model/si-page';
 import { SiEntry, SiEntryState } from 'src/app/si/model/content/si-entry';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
-import { Subscription, BehaviorSubject, Observable } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { IllegalArgumentError } from 'src/app/si/util/illegal-argument-error';
 import { SiPageCollection } from '../../model/si-page-collection';
-import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 import { SiProp } from 'src/app/si/model/meta/si-prop';
 
@@ -143,7 +142,11 @@ export class StructurePageManager {
 	}
 
 	get declarationRequired(): boolean {
-		return !this.siPageCollection.declared || (this.pagesMap.size === 0 && this.siPageCollection.size > 0);
+		return !this.siPageCollection.declared;
+	}
+
+	get loadingRequired(): boolean {
+		return this.declarationRequired || (this.pagesMap.size === 0 && this.siPageCollection.size > 0);
 	}
 
 	get pages(): StructurePage[] {
@@ -209,8 +212,6 @@ export class StructurePageManager {
 	}
 
 	// getLastVisiblePage(): StructurePage|null {
-		
-		
 	// 	let lastPage: SiPage|null = null;
 	// 	for (const page of this.pagesMap.values()) {
 	// 		if (page.offsetHeight !== null && (lastPage === null || page.no > lastPage.no)) {
@@ -287,6 +288,12 @@ export class StructurePageManager {
 
 		siPage.disposed$.subscribe(() => {
 			this.clear();
+		});
+
+		siPage.onLoad(() => {
+			for (const siEntry of siPage.entries) {
+				this.applyNewStructureEntry(sp, siEntry, null, null);
+			}
 		});
 
 		return sp;

@@ -54,7 +54,7 @@ export class SiPage {
 	get size(): number {
 		this.ensureLoaded();
 
-		if (!this._size) {
+		if (this._size === null) {
 			throw new IllegalSiStateError('Size not set.');
 		}
 
@@ -64,7 +64,7 @@ export class SiPage {
 	get ghostSize(): number {
 		this.ensureLoaded();
 
-		if (!this._ghostSize) {
+		if (this._ghostSize === null) {
 			throw new IllegalSiStateError('Ghost size not set.');
 		}
 
@@ -72,7 +72,7 @@ export class SiPage {
 	}
 
 	private recalcSize(): number {
-		if (this._entries) {
+		if (!this._entries) {
 			this._size = null;
 			this._ghostSize = null;
 			return;

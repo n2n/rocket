@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
-import { fromEvent, Subscription, Subject } from 'rxjs';
+import { Component, OnInit, OnDestroy, Inject, NgZone } from '@angular/core';
+import { Subscription, Subject } from 'rxjs';
 import { SiEntryQualifier } from 'src/app/si/model/content/si-entry-qualifier';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiProp } from 'src/app/si/model/meta/si-prop';
@@ -8,6 +8,7 @@ import { StructurePage, StructurePageManager } from './structure-page-manager';
 import { debounceTime, tap } from 'rxjs/operators';
 import { LayerComponent } from 'src/app/ui/structure/comp/layer/layer.component';
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
+import { NgSafeScrollListener } from 'src/app/util/zone/ng-safe-scroll-listener';
 
 @Component({
 	selector: 'rocket-ui-compact-explorer',
@@ -28,19 +29,27 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 	private _currentPageNo = 1;
 
 
-	constructor(@Inject(LayerComponent) private parent: LayerComponent) {
+	constructor(@Inject(LayerComponent) private parent: LayerComponent, private ngZone: NgZone) {
 	}
 
 	ngOnInit() {
 		this.spm = new StructurePageManager(this.uiStructure, this.model.getSiPageCollection());
 
-		this.subscription.add(fromEvent<MouseEvent>(this.parent.nativeElement, 'scroll').subscribe(() => {
+		new NgSafeScrollListener(this.parent.nativeElement, this.ngZone).trottled$(100).subscribe(() => {
 			if (this.quickSearching) {
 				return;
 			}
 
 			this.updateVisiblePages();
-		}));
+		});
+
+		// this.subscription.add(fromEvent<MouseEvent>(this.parent.nativeElement, 'scroll').subscribe(() => {
+		// 	if (this.quickSearching) {
+		// 		return;
+		// 	}
+
+		// 	this.updateVisiblePages();
+		// }));
 
 		this.quickSearchSubject
 				.pipe(tap(() => {
@@ -63,7 +72,7 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 	}
 
 	private ensureLoaded() {
-		if (this.spm.declarationRequired) {
+		if (this.spm.loadingRequired) {
 			this.spm.loadSingle(this.currentPageNo, 0);
 		}
 	}
@@ -113,7 +122,10 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 		this._currentPageNo = currentPageNo;
 
 		if (this.spm.containsPageNo(currentPageNo)) {
-			this.parent.nativeElement.scrollTo({ top: this.spm.getPageByNo(currentPageNo).offsetHeight, behavior: 'smooth' });
+			this.parent.nativeElement.scrollTo({
+				top: this.spm.getPageByNo(currentPageNo).offsetHeight,
+				behavior: 'smooth'
+			});
 			return;
 		}
 
@@ -124,48 +136,6 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 		return this.spm.possiablePagesNum;
 	}
 
-	// private loadPage(pageNo: number): SiPage {
-	// 	let siPage: SiPage;
-	// 	if (this.siPageCollection.containsPageNo(pageNo)) {
-	// 		siPage = this.siPageCollection.getPageByNo(pageNo);
-	// 		siPage.entries = null;
-	// 	} else {
-	// 		siPage = this.siPageCollection.createPage(pageNo, null);
-	// 	}
-
-	// 	const instruction = SiGetInstruction.partialContent(false, true,
-	// 					(pageNo - 1) * this.siPageCollection.pageSize, this.siPageCollection.pageSize,
-	// 					this.quickSearchStr)
-	// 			.setDeclaration(this.siPageCollection.declaration)
-	// 			.setGeneralControlsIncluded(!this.model.areGeneralControlsInitialized())
-	// 			.setGeneralControlsBoundry(this.model.getSiControlBoundry())
-	// 			.setEntryControlsIncluded(true);
-	// 	const getRequest = new SiGetRequest(instruction);
-
-	// 	this.siService.apiGet(this.model.getApiUrl(), getRequest)
-	// 			.subscribe((getResponse: SiGetResponse) => {
-	// 				this.applyResult(getResponse.results[0], siPage);
-	// 			});
-
-	// 	return siPage;
-	// }
-
-	// private applyResult(result: SiGetResult, siPage: SiPage) {
-	// 	if (result.declaration) {
-	// 		this.siPageCollection.declaration = result.declaration;
-	// 	}
-
-	// 	if (result.generalControls) {
-	// 		this.model.applyGeneralControls(result.generalControls);
-	// 	}
-
-	// 	this.siPageCollection.size = result.partialContent.count;
-	// 	siPage.entries = result.partialContent.entries;
-
-	// 	this.updateCurrentPage();
-	// }
-
-
 	private updateCurrentPage() {
 		const structurePage = this.spm.getBestPageByOffsetHeight(this.parent.nativeElement.scrollTop);
 		if (structurePage) {
@@ -175,8 +145,6 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 	}
 
 	private updateVisiblePages() {
-		this.updateCurrentPage();
-
 		if ((this.parent.nativeElement.scrollTop + this.parent.nativeElement.offsetHeight)
 				< this.parent.nativeElement.scrollHeight) {
 			this.updateCurrentPage();
@@ -189,10 +157,10 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 		}
 
 		this._currentPageNo = this.spm.loadNext(this.parent.nativeElement.scrollTop
-				+ this.parent.nativeElement.offsetHeight).siPage.no;
+				+ this.parent.nativeElement.offsetHeight).siPage.no - 1;
 	}
 
-	get declared() {
+	get declared(): boolean {
 		return !this.spm.declarationRequired;
 	}
 

@@ -1,6 +1,4 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {SiPageCollection} from "../../../../si/model/gui/impl/model/si-page-collection";
-import {Subscription} from "rxjs";
 
 @Component({
 	selector: 'rocket-ui-pagination',

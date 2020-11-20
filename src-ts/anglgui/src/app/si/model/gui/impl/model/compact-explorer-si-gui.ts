@@ -40,10 +40,6 @@ export class CompactExplorerSiGui implements SiGui {
 	}
 
 	createUiStructureModel(): UiStructureModel {
-		if (this.pageCollection.size > 0) {
-			throw new IllegalSiStateError('SiPageCollection already in use.');
-		}
-
 		return new CompactExplorerListModelImpl(this, this.partialContent);
 	}
 }
@@ -53,7 +49,7 @@ class CompactExplorerListModelImpl extends UiStructureModelAdapter implements Co
 	constructor(private comp: CompactExplorerSiGui, partialContent: SiPartialContent|null) {
 		super();
 
-		if (partialContent) {
+		if (!this.comp.pageCollection.declared) {
 			this.comp.pageCollection.size = partialContent.count;
 			this.comp.pageCollection.createPage(1, partialContent.entries);
 		}
@@ -73,11 +69,11 @@ class CompactExplorerListModelImpl extends UiStructureModelAdapter implements Co
 		this.uiContent = new TypeUiContent(CompactExplorerComponent, (ref) => {
 			ref.instance.model = this;
 			ref.instance.uiStructure = uiStructure;
-		});
 
-		this.asideUiContents = [new TypeUiContent(PaginationComponent, (ref) => {
-			ref.instance.siPageCollection = this.getSiPageCollection();
-		})];
+			this.asideUiContents = [new TypeUiContent(PaginationComponent, (aisdeRef) => {
+				aisdeRef.instance.cec = ref.instance;
+			})];
+		});
 	}
 
 	unbind() {

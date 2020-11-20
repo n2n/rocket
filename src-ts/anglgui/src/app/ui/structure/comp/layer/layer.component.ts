@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, ElementRef } from '@angular/core';
 import { UiLayer } from '../../model/ui-layer';
-import { Subscription, fromEvent } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 @Component({
 	selector: 'rocket-ui-layer',
@@ -10,15 +10,14 @@ import { Subscription, fromEvent } from 'rxjs';
 export class LayerComponent implements OnInit {
 	@Input()
 	uiLayer: UiLayer;
-	private subscription = new Subscription();
 
 	constructor(private elemRef: ElementRef) {
 	}
 
 	ngOnInit() {
-		this.subscription.add(fromEvent<MouseEvent>(this.nativeElement, 'scroll').subscribe(() => {
+		// this.subscription.add(fromEvent<MouseEvent>(this.nativeElement, 'scroll').subscribe(() => {
 
-		}));
+		// }));
 	}
 
 	get nativeElement(): HTMLElement {
