@@ -37,9 +37,10 @@ export class StructurePage {
 		this._structureEntries.push(structureEntry);
 	}
 
-	insertStructureEntryAt(index: number, structureEntry: StructureEntry) {
+	placeStructureEntryAt(index: number, structureEntry: StructureEntry) {
 		if (this._structureEntries.length < index) {
-			throw new IllegalArgumentError('Index out of bounds: ' + index + '; current page size: ' + this._structureEntries.length);
+			throw new IllegalArgumentError('Index out of bounds: ' + index + '; current page size: '
+					+ this._structureEntries.length);
 		}
 
 		if (this._structureEntries[index]) {
@@ -52,7 +53,7 @@ export class StructurePage {
 	replaceStructureEntry(structureEntry: StructureEntry, replacementStructureEntry: StructureEntry): boolean {
 		const i = this._structureEntries.indexOf(structureEntry);
 		if (i > -1) {
-			this.insertStructureEntryAt(i, replacementStructureEntry);
+			this.placeStructureEntryAt(i, replacementStructureEntry);
 			return true;
 		}
 
@@ -75,7 +76,8 @@ export class StructurePage {
 export class StructureEntry {
 	private subscription: Subscription;
 
-	constructor(readonly siEntry: SiEntry, public fieldUiStructures: Array<UiStructure>, public controlUiContents: Array<UiContent>,
+	constructor(readonly siEntry: SiEntry, public fieldUiStructures: Array<UiStructure>,
+			public controlUiContents: Array<UiContent>,
 			private replacementCallback: (replacementEntry: SiEntry) => any) {
 
 		this.subscription = siEntry.state$.subscribe((state) => {
@@ -305,9 +307,10 @@ export class StructurePageManager {
 		const controlUiContents = siEntry.selectedEntryBuildup.controls
 				.map(siControl => siControl.createUiContent(this.uiStructure.getZone()));
 
-		const structureEntry = new StructureEntry(siEntry, fieldUiStructures, controlUiContents, (replacementEntry) => {
-			this.applyNewStructureEntry(structurePage, replacementEntry, structureEntry, null);
-		});
+		const structureEntry = new StructureEntry(siEntry, fieldUiStructures, controlUiContents,
+				(replacementEntry) => {
+					this.applyNewStructureEntry(structurePage, replacementEntry, structureEntry, null);
+				});
 
 		if (oldStructureEntry) {
 			if (!structurePage.replaceStructureEntry(oldStructureEntry, structureEntry)) {
@@ -318,7 +321,7 @@ export class StructurePageManager {
 		}
 
 		if (insertIndex !== null && insertIndex !== undefined) {
-			structurePage.insertStructureEntryAt(insertIndex, structureEntry);
+			structurePage.placeStructureEntryAt(insertIndex, structureEntry);
 			return;
 		}
 

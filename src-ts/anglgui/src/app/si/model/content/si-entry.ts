@@ -6,13 +6,11 @@ import { Message } from 'src/app/util/i18n/message';
 import { SiEntryIdentifier, SiEntryQualifier } from './si-entry-qualifier';
 import { SiEntryBuildup } from './si-entry-buildup';
 import { SiMaskQualifier } from '../meta/si-mask-qualifier';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { SiGenericEntry } from '../generic/si-generic-entry';
 import { SiGenericEntryBuildup } from '../generic/si-generic-entry-buildup';
 import { GenericMissmatchError } from '../generic/generic-missmatch-error';
-import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 import { UnknownSiElementError } from '../../util/unknown-si-element-error';
-import { IllegalArgumentError } from '../../util/illegal-argument-error';
 import { skip } from 'rxjs/operators';
 
 export class SiEntry {
@@ -36,7 +34,6 @@ export class SiEntry {
 
 	set selectedTypeId(id: string|null) {
 		if (id !== null && !this._entryBuildupsMap.has(id)) {
-			console.log(Array.from(this._entryBuildupsMap.keys()));
 			throw new IllegalSiStateError('Buildup id does not exist on entry: ' + id);
 		}
 
@@ -48,7 +45,8 @@ export class SiEntry {
 	}
 
 	get maskQualifiers(): SiMaskQualifier[] {
-		return Array.from(this._entryBuildupsMap.values()).map(buildup => buildup.entryQualifier.maskQualifier);
+		return Array.from(this._entryBuildupsMap.values())
+				.map(buildup => buildup.entryQualifier.maskQualifier);
 	}
 
 	get entryQualifiers(): SiEntryQualifier[] {

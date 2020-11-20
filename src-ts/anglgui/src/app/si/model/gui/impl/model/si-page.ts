@@ -134,7 +134,7 @@ export class SiPage {
 		this._entries = [];
 		this.entriesSubscription = new Subscription();
 		for (const newEntry of newEntries) {
-			this.insertEntry(this._entries.length, newEntry);
+			this.placeEntry(this._entries.length, newEntry);
 		}
 
 		this.entryMonitor.start();
@@ -148,12 +148,17 @@ export class SiPage {
 		this.recalcSize();
 	}
 
-	private insertEntry(i: number, newEntry: SiEntry) {
-		this._entries.push(newEntry);
+	private placeEntry(i: number, newEntry: SiEntry) {
+		if (this._entries[i]) {
+			this.entryMonitor.unregisterEntry(this._entries[i]);
+		}
+
+		this._entries[i] = newEntry;
+
 		this.entriesSubscription.add(newEntry.state$.subscribe((state) => {
 			switch (state) {
 				case SiEntryState.REPLACED:
-					this.insertEntry(i, newEntry.replacementEntry);
+					this.placeEntry(i, newEntry.replacementEntry);
 					break;
 				case SiEntryState.REMOVED:
 					this.recalcSize();
