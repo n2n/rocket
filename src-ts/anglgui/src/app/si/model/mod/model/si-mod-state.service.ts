@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { SiEntryQualifier, SiEntryIdentifier } from '../../content/si-entry-qualifier';
+import { SiEntryIdentifier } from '../../content/si-entry-qualifier';
 import { SiEntry } from '../../content/si-entry';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { Subject, Observable, BehaviorSubject } from 'rxjs';
-import { skip, skipWhile, filter } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 import { Message } from 'src/app/util/i18n/message';
 
 @Injectable({

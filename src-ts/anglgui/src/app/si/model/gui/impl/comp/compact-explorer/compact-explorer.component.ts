@@ -35,7 +35,7 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 	ngOnInit() {
 		this.spm = new StructurePageManager(this.uiStructure, this.model.getSiPageCollection());
 
-		new NgSafeScrollListener(this.parent.nativeElement, this.ngZone).trottled$(100).subscribe(() => {
+		new NgSafeScrollListener(this.parent.nativeElement, this.ngZone).trottled$(500).subscribe(() => {
 			if (this.quickSearching) {
 				return;
 			}
@@ -102,6 +102,7 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 			return;
 		}
 
+		this._currentPageNo = 1;
 		this.spm.updateFilter(quickSearchStr);
 		this.quickSearchSubject.next(quickSearchStr);
 	}
@@ -157,6 +158,10 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 
 		const lastPage = this.spm.lastPage;
 		if (lastPage && !lastPage.loaded) {
+			return;
+		}
+
+		if (lastPage && lastPage.siPage.no === this.pagesNum) {
 			return;
 		}
 
