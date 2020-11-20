@@ -6,11 +6,7 @@ export class SimpleSiControlBoundry implements SiControlBoundry {
 	constructor(public entries: SiEntry[]) {
 	}
 
-	getEntries(): SiEntry[] {
-		return this.entries;
-	}
-
-	getSelectedEntries(): SiEntry[] {
+	getControlledEntries(): SiEntry[] {
 		return this.entries;
 	}
 }

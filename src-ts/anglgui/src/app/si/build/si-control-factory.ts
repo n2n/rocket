@@ -42,7 +42,8 @@ export class SiControlFactory {
 				return new RefSiControl(
 						this.injector.get(SiUiService),
 						dataExtr.reqString('url'),
-						this.createButton(dataExtr.reqObject('button')));
+						this.createButton(dataExtr.reqObject('button')),
+						this.controlBoundry);
 			case SiControlType.API_CALL:
 				const apiControl = new ApiCallSiControl(
 						this.injector.get(SiUiService),

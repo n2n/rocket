@@ -6,14 +6,21 @@ import { ButtonControlModel } from '../comp/button-control-model';
 import { ButtonControlUiContent } from '../comp/button-control-ui-content';
 import { UiZone } from 'src/app/ui/structure/model/ui-zone';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
+import { SiControlBoundry } from '../../si-control-bountry';
 
 export class RefSiControl implements SiControl, ButtonControlModel {
+	private loading = false;
 
-	constructor(public siUiService: SiUiService, public url: string, public siButton: SiButton) {
+	constructor(public siUiService: SiUiService, public url: string, public siButton: SiButton,
+			public controlBoundry: SiControlBoundry) {
 	}
 
 	isLoading(): boolean {
-		return false;
+		return this.loading;
+	}
+
+	isDisabled(): boolean {
+		return !!this.controlBoundry.getControlledEntries().find(siEntry => siEntry.isClaimed());
 	}
 
 	getSiButton(): SiButton {
@@ -21,6 +28,7 @@ export class RefSiControl implements SiControl, ButtonControlModel {
 	}
 
 	exec(uiZone: UiZone, _subKey: string|null) {
+		this.loading = true;
 		this.siUiService.navigateByUrl(this.url, uiZone.layer);
 	}
 

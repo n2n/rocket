@@ -19,6 +19,10 @@ export class SimpleSiControl implements SiControl, ButtonControlModel {
 		return false;
 	}
 
+	isDisabled(): boolean {
+		return false;
+	}
+
 	exec(): void {
 		this.callback();
 	}

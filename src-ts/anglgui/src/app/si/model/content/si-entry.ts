@@ -14,6 +14,7 @@ import { UnknownSiElementError } from '../../util/unknown-si-element-error';
 import { skip } from 'rxjs/operators';
 
 export class SiEntry {
+	
 
 	constructor(readonly identifier: SiEntryIdentifier) {
 	}
@@ -87,6 +88,7 @@ export class SiEntry {
 
 	private stateSubject = new BehaviorSubject<SiEntryState>(SiEntryState.CLEAN);
 
+	private lock: SiEntryLock|null = null;
 	private _replacementEntry: SiEntry|null = null;
 
 	private ensureBuildupSelected() {
@@ -259,6 +261,11 @@ export class SiEntry {
 		return this.state !== SiEntryState.REPLACED && this.state !== SiEntryState.REMOVED;
 	}
 
+	isClaimed(): boolean {
+		return this.state === SiEntryState.LOCKED || this.state === SiEntryState.RELOADING
+				|| this.state === SiEntryState.OUTDATED;
+	}
+
 	// consume(entry: SiEntry) {
 	// 	IllegalArgumentError.assertTrue(entry.state === SiEntryState.CLEAN);
 	// 	IllegalSiStateError.assertTrue(this.isAvlive());
@@ -270,8 +277,10 @@ export class SiEntry {
 	// 	entry.markAsConsumed();
 	// }
 
+
 	markAsOutdated() {
-		IllegalSiStateError.assertTrue(this.state === SiEntryState.CLEAN, 'SiEntry not clean: ' + this.state);
+		IllegalSiStateError.assertTrue(this.state === SiEntryState.CLEAN || this.state === SiEntryState.LOCKED,
+				'SiEntry not clean or locked: ' + this.state);
 		this.stateSubject.next(SiEntryState.OUTDATED);
 	}
 
@@ -284,6 +293,32 @@ export class SiEntry {
 		IllegalSiStateError.assertTrue(this.isAlive());
 		this.stateSubject.next(SiEntryState.REMOVED);
 		this.stateSubject.complete();
+	}
+
+	createLock(): SiEntryLock {
+		IllegalSiStateError.assertTrue(this.state === SiEntryState.CLEAN,
+				'SiEntry not clean: ' + this.state);
+
+		this.stateSubject.next(SiEntryState.LOCKED);
+		const lock = this.lock = {
+			release: () => {
+				if (this.lock !== lock) {
+					throw new IllegalSiStateError('Lock already released.');
+				}
+
+				this.lock = null;
+
+				if (!this.isAlive() || this.state === SiEntryState.RELOADING) {
+					return;
+				}
+
+				IllegalSiStateError.assertTrue(this.state === SiEntryState.LOCKED,
+						'SiEntry not locked, loading nor dead: ' + this.state);
+				this.stateSubject.next(SiEntryState.CLEAN);
+			}
+		};
+
+		return this.lock;
 	}
 
 	replace(replacementEntry: SiEntry) {
@@ -327,11 +362,16 @@ export class SiEntry {
 	// }
 }
 
+export interface SiEntryLock {
+	release(): void;
+}
+
+
 
 export enum SiEntryState {
 	CLEAN = 'CLEAN',
 	OUTDATED = 'OUTDATED',
-	MODIFYING = 'MODIFYING',
+	LOCKED = 'LOCKED',
 	RELOADING = 'RELOADING',
 	REMOVED = 'REMOVED',
 	REPLACED = 'REPLACED'

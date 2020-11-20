@@ -67,7 +67,7 @@ export class SplitComponent implements OnInit, OnDestroy, DoCheck {
 
 				if (siField.hasInput() && siField.isGeneric()) {
 					childUiStructure.createToolbarChild(new SimpleUiStructureModel(new ButtonControlUiContent(
-							new SplitButtonControlModel(key, siField, this.model), childUiStructure.getZone())))
+							new SplitButtonControlModel(key, siField, this.model), childUiStructure.getZone())));
 				}
 			}).catch(() => {
 				childUiStructure.model = this.createNotActiveUism();
@@ -146,6 +146,10 @@ class SplitButtonControlModel implements ButtonControlModel {
 		return this.loading;
 	}
 
+	isDisabled(): boolean {
+		return this.loading;
+	}
+
 	exec(uiZone: UiZone, subKey: string|null): void {
 		if (this.loading || !subKey) {
 			return;
@@ -159,7 +163,7 @@ class SplitButtonControlModel implements ButtonControlModel {
 						this.siField.pasteValue(subSiField.copyValue());
 					}
 				})
-				.finally(() => { this.loading = false});
+				.finally(() => { this.loading = false; });
 	}
 
 	getSubTooltip(): string|null {

@@ -1,15 +1,13 @@
 
 import { SiControl } from 'src/app/si/model/control/si-control';
 import { SiButton } from 'src/app/si/model/control/impl/model/si-button';
-import { SiEntry } from 'src/app/si/model/content/si-entry';
-import { Observable } from 'rxjs';
-import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { SiUiService as SiUiService } from 'src/app/si/manage/si-ui.service';
 import { ButtonControlModel } from '../comp/button-control-model';
 import { ButtonControlUiContent } from '../comp/button-control-ui-content';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { UiZone } from 'src/app/ui/structure/model/ui-zone';
 import { SiControlBoundry } from '../../si-control-bountry';
+import { SiEntryLock } from '../../../content/si-entry';
 
 export class ApiCallSiControl implements SiControl, ButtonControlModel {
 
@@ -18,7 +16,7 @@ export class ApiCallSiControl implements SiControl, ButtonControlModel {
 	// private entryBoundFlag: boolean;
 
 	constructor(public siUiService: SiUiService, public apiUrl: string, public apiCallId: object,
-			public button: SiButton, public controlBoundry: SiControlBoundry/*, public entry: SiEntry|null = null*/) {
+			public button: SiButton, public controlBoundry: SiControlBoundry) {
 	}
 
 	getSiButton(): SiButton {
@@ -27,6 +25,10 @@ export class ApiCallSiControl implements SiControl, ButtonControlModel {
 
 	isLoading(): boolean {
 		return this.loading;
+	}
+
+	isDisabled(): boolean {
+		return !!this.controlBoundry.getControlledEntries().find(siEntry => siEntry.isClaimed());
 	}
 
 	// set entryBound(entryBound: boolean) {
@@ -42,19 +44,15 @@ export class ApiCallSiControl implements SiControl, ButtonControlModel {
 	// }
 
 	exec(uiZone: UiZone) {
-		let obs: Observable<void>;
+		const locks = this.controlBoundry.getControlledEntries().map(entry => entry.createLock());
 
-		// if (this.entry) {
-		// 	obs = this.siUiService.execEntryControl(this.apiUrl, this.apiCallId, this.entry, this.inputSent, uiZone.layer);
-		// } else if (this.entryBound) {
-		// 	obs = this.siUiService.execSelectionControl(this.apiUrl, this.apiCallId, this.controlBoundry, this.controlBoundry.getSelectedEntries(),
-		// 			this.inputSent, uiZone.layer);
-		// } else {
-			obs = this.siUiService.execControl(this.apiUrl, this.apiCallId, this.controlBoundry, this.inputSent, uiZone.layer);
-		// }
+		const obs = this.siUiService.execControl(this.apiUrl, this.apiCallId, this.controlBoundry, this.inputSent,
+				uiZone.layer);
 
 		this.loading = true;
 		obs.subscribe(() => {
+			locks.forEach((lock) => { lock.release(); });
+
 			this.loading = false;
 		});
 	}

@@ -30,13 +30,13 @@ export class CompactExplorerSiGui implements SiGui {
 		this.pageCollection = new SiPageCollection(pageSize, frame, siService, siModState);
 	}
 
-	getEntries(): SiEntry[] {
-		return this.pageCollection.getEntries();
-	}
+	// getEntries(): SiEntry[] {
+	// 	return [];// this.pageCollection.getEntries();
+	// }
 
-	getSelectedEntries(): SiEntry[] {
-		throw new Error('Method not implemented.');
-	}
+	// getSelectedEntries(): SiEntry[] {
+	// 	throw new Error('Method not implemented.');
+	// }
 
 	createUiStructureModel(): UiStructureModel {
 		return new CompactExplorerListModelImpl(this, this.partialContent);
@@ -93,7 +93,7 @@ class CompactExplorerListModelImpl extends UiStructureModelAdapter implements Co
 
 	getZoneErrors(): UiZoneError[] {
 		const uiZoneErrors: UiZoneError[] = [];
-		for (const entry of this.comp.getEntries()) {
+		for (const entry of this.getSiPageCollection().getEntries()) {
 			uiZoneErrors.push(...entry.getMessages()
 					.map((message) => new StructureUiZoneError(message, this.reqBoundUiStructure())));
 		}

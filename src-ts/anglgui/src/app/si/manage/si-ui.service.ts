@@ -128,7 +128,7 @@ export class SiUiService {
 
 		const entries: SiEntry[] = [];
 		if (includeInput) {
-			for (const entry of controlBoundry.getEntries()) {
+			for (const entry of controlBoundry.getControlledEntries()) {
 				if (entry.readOnly) {
 					continue;
 				}
@@ -143,7 +143,7 @@ export class SiUiService {
 		const subject =  new Subject<void>();
 		obs.subscribe((result) => {
 			this.handleControlResult(result, entries, uiLayer);
-			subject.next()
+			subject.next();
 			subject.complete();
 		});
 

@@ -38,9 +38,14 @@ export class SiPageCollection implements SiControlBoundry {
 		return entries;
 	}
 
-	getSelectedEntries(): SiEntry[] {
-		throw new Error('Method not implemented.');
+
+	getControlledEntries(): SiEntry[] {
+		return [];
 	}
+
+	// getSelectedEntries(): SiEntry[] {
+	// 	throw new Error('Method not implemented.');
+	// }
 
 	get pages(): SiPage[] {
 		return Array.from(this.pagesMap.values()).sort((aPage, bPage) => {
@@ -239,6 +244,11 @@ export class SiPageCollection implements SiControlBoundry {
 		}
 
 		this._size = result.partialContent.count;
+
+		if (siPage.disposed) {
+			return;
+		}
+
 		siPage.entries = result.partialContent.entries;
 
 		if (result.partialContent.entries.length === 0) {

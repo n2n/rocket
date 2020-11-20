@@ -48,12 +48,27 @@ export class EntryDirective implements DoCheck, OnInit, OnDestroy {
 			return;
 		}
 
+		this.currentState = state;
+
 		const classList = this.elementRef.nativeElement.classList;
 		classList.remove('rocket-reloading');
+		classList.remove('rocket-locked');
+		classList.remove('rocket-outdated');
+		classList.remove('rocket-removed');
 
 		switch (state) {
 			case SiEntryState.RELOADING:
 				classList.add('rocket-reloading');
+				break;
+			case SiEntryState.LOCKED:
+				classList.add('rocket-locked');
+				break;
+			case SiEntryState.OUTDATED:
+			case SiEntryState.REPLACED:
+				classList.add('rocket-outdated');
+				break;
+			case SiEntryState.REMOVED:
+				classList.add('rocket-removed');
 				break;
 		}
 	}

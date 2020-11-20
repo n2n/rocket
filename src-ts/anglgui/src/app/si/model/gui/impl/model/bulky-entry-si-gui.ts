@@ -17,23 +17,20 @@ import { EnumInComponent } from '../../../content/impl/enum/comp/enum-in/enum-in
 import { EnumInModel } from '../../../content/impl/enum/comp/enum-in-model';
 import { UiZoneError } from 'src/app/ui/structure/model/ui-zone-error';
 import { PlainContentComponent } from 'src/app/ui/structure/comp/plain-content/plain-content.component';
+import { SiControlBoundry } from '../../../control/si-control-bountry';
 
-export class BulkyEntrySiGui implements SiGui {
+export class BulkyEntrySiGui implements SiGui, SiControlBoundry {
 	private _entry: SiEntry|null = null;
 	public controls: Array<SiControl> = [];
 
 	constructor(public declaration: SiDeclaration) {
 	}
 
-	getEntries(): SiEntry[] {
+	getControlledEntries(): SiEntry[] {
 		return [this.entry];
 	}
 
 	getMessages(): Message[] {
-		return [];
-	}
-
-	getSelectedEntries(): SiEntry[] {
 		return [];
 	}
 

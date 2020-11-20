@@ -171,7 +171,7 @@ export class SiGuiFactory {
 						SiMetaFactory.createFrame(dataExtr.reqObject('frame')), this.injector.get(SiService),
 						this.injector.get(SiModStateService));
 
-				compEssentialsFactory = new SiControlFactory(compactExplorerSiGui, this.injector);
+				compEssentialsFactory = new SiControlFactory(compactExplorerSiGui.pageCollection, this.injector);
 				compactExplorerSiGui.pageCollection.controls = compEssentialsFactory.createControls(dataExtr.reqArray('controls'));
 				declaration = compactExplorerSiGui.pageCollection.declaration = SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'));
 

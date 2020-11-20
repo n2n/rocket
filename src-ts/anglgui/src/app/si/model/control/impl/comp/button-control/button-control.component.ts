@@ -28,8 +28,12 @@ export class ButtonControlComponent implements OnInit {
 		return this.model.getSiButton();
 	}
 
-	get loading() {
+	get loading(): boolean {
 		return this.model.isLoading();
+	}
+
+	get disabled() {
+		return this.model.isDisabled() || this.loading;
 	}
 
 	hasSubSiButtons() {
@@ -41,7 +45,7 @@ export class ButtonControlComponent implements OnInit {
 	}
 
 	get subVisible(): boolean {
-		return this._subVisible && !this.loading && this.hasSubSiButtons();
+		return this._subVisible && !this.disabled && this.hasSubSiButtons();
 	}
 
 	exec() {

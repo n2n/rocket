@@ -8,15 +8,16 @@ import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model'
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
 import { CompactEntryModel } from '../comp/compact-entry-model';
+import { SiControlBoundry } from '../../../control/si-control-bountry';
 
-export class CompactEntrySiGui implements SiGui, CompactEntryModel {
+export class CompactEntrySiGui implements SiGui, CompactEntryModel, SiControlBoundry {
 	public entry: SiEntry|null = null;
 	public controls: SiControl[] = [];
 
 	constructor(public declaration: SiDeclaration) {
 	}
 
-	getEntries(): SiEntry[] {
+	getControlledEntries(): SiEntry[] {
 		return [this.entry];
 	}
 

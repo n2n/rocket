@@ -5,7 +5,7 @@
 		<div *ngIf="subVisible" class="dropdown-subs">
 			<div *ngFor="let item of subSiButtonMap | keyvalue">
 				<button [class]="item.value.btnClass" [class.rocket-important]="siButton.important" 
-						(click)="subExec(item.key)" [disabled]="loading">
+						(click)="subExec(item.key)" [disabled]="disabled">
 					<span>{{ item.value.name }}</span>
 					<i [class]="item.value.iconClass"></i>
 				</button>
@@ -20,7 +20,7 @@
 
 <ng-template #simpleButton>
 	<button [class]="siButton.btnClass" [class.rocket-important]="siButton.important" (click)="exec()" 
-			[disabled]="loading">
+			[disabled]="disabled">
 		<span *ngIf="loading" class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>	
 		<i [class]="siButton.iconClass"></i>
 		<span>{{ siButton.name }}</span>
