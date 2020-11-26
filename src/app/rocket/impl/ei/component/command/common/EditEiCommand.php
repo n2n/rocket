@@ -39,6 +39,7 @@ class EditEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiC
 	const ID_BASE = 'edit';
 	const CONTROL_EDIT_KEY = 'edit';
 	const CONTROL_SAVE_KEY = 'save';
+	const CONTROL_SAVE_AND_BACK_KEY = 'saveAndBack';
 	
 	
 	public function getIdBase(): ?string {
@@ -76,21 +77,38 @@ class EditEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiC
 		$eiuControlFactory = $eiu->guiFrame()->controlFactory($this);
 		$dtc = $eiu->dtc(Rocket::NS);
 		
-		$siButton = SiButton::primary($dtc->t('common_save_label'), SiIconType::SAVE);
-		$callback = function (Eiu $eiu, array $inputEius) {
-			$inputEiuEntries = [];
-			foreach ($inputEius as $inputEiu) {
-				$inputEiuEntry = $inputEiu->entry();
-				IllegalStateException::assertTrue($inputEiuEntry->save());
-				$inputEiuEntries[] = $inputEiuEntry;
-			}
-			
-			return $eiu->factory()->newControlResponse()
-					->redirectBack()
-					->highlight(...$inputEiuEntries);
-		};
+		return [
+			$eiuControlFactory->createCallback(self::CONTROL_SAVE_KEY, 
+							SiButton::primary($dtc->t('common_save_label'), SiIconType::SAVE), 
+							function (Eiu $eiu, array $inputEius) {
+								return $this->handleInput($eiu, $inputEius);
+							})
+					->setInputHandled(true),
+			$eiuControlFactory->createCallback(self::CONTROL_SAVE_AND_BACK_KEY, 
+							SiButton::primary($dtc->t('common_save_and_back_label'), SiIconType::SAVE),
+							function (Eiu $eiu, array $inputEius) {
+								$this->handleInput($eiu, $inputEius)->redirectBack();
+							})
+					->setInputHandled(true)
+		];
+	}
+	
+	/**
+	 * @param Eiu $eiu
+	 * @param Eiu[] $inputEius
+	 */
+	private function handleInput($eiu, $inputEius) { 
+// 		$inputEiuEntries = [];
+		foreach ($inputEius as $inputEiu) {
+			$inputEiuEntry = $inputEiu->entry();
+			// input eius are already validated.
+			IllegalStateException::assertTrue($inputEiuEntry->save());
+// 			$inputEiuEntries[] = $inputEiuEntry;
+		}
 		
-		return [$eiuControlFactory->createCallback(self::CONTROL_SAVE_KEY, $siButton, $callback)->setInputHandled(true)];
+		return $eiu->factory()->newControlResponse()
+// 				->highlight(...$inputEiuEntries)
+				;
 	}
 	
 	public function createEntryGuiControls(Eiu $eiu): array {

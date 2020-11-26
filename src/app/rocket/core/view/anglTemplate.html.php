@@ -34,7 +34,7 @@
 		
 			.rocket-removed,
 			.rocket-outdated {
-				filter: blur(10px);
+				filter: blur(2px);
 			}
 
 			.rocket-locked {

@@ -27,6 +27,7 @@ import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 
 export class BulkyEntrySiGui implements SiGui, SiControlBoundry {
 	private _entry: SiEntry|null = null;
+	public entryControlsIncluded = true;
 	public controls: Array<SiControl> = [];
 
 	constructor(public siFrame: SiFrame, public declaration: SiDeclaration, public siService: SiService,
@@ -61,7 +62,7 @@ export class BulkyEntrySiGui implements SiGui, SiControlBoundry {
 
 	createUiStructureModel(): UiStructureModel {
 		return new BulkyUiStructureModel(this.entry, this.declaration, this.getControls(),
-				new SiEntryMonitor(this.siFrame.apiUrl, this.siService, this.siModStateService, true));
+				new SiEntryMonitor(this.siFrame.apiUrl, this.siService, this.siModStateService, this.entryControlsIncluded));
 	}
 
 	private getControls(): SiControl[] {

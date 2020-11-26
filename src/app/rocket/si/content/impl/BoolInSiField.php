@@ -138,6 +138,6 @@ class BoolInSiField extends InSiFieldAdapter {
 	 * @see \rocket\si\content\SiField::handleInput()
 	 */
 	function handleInput(array $data) {
-		$this->value = (new DataSet($data))->reqInt('value', true);
+		$this->value = (new DataSet($data))->reqBool('value', true);
 	}
 }

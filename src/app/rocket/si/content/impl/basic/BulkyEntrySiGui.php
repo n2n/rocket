@@ -34,6 +34,7 @@ class BulkyEntrySiGui implements SiGui {
 	private $declaration;
 	private $entry;
 	private $controls = [];
+	private $entryControlsIncluded = true;
 	
 	function __construct(SiFrame $frame, SiDeclaration $declaration, SiEntry $entry = null) {
 		$this->frame = $frame;
@@ -83,6 +84,24 @@ class BulkyEntrySiGui implements SiGui {
 	}
 	
 	/**
+	 * @param bool $entryControlsIncluded
+	 * @return \rocket\si\content\impl\basic\BulkyEntrySiGui
+	 */
+	function setEntryControlsIncluded(bool $entryControlsIncluded) {
+		$this->entryControlsIncluded = $entryControlsIncluded;
+		return $this;
+	}
+	
+	/**
+	 * Whether this SiGui will request the entry controls of the entry when it has to be reloaded.
+	 * @param bool $entryControlsIncluded
+	 * @return bool
+	 */
+	function getEntryControlsIncluded(bool $entryControlsIncluded) {
+		return $this->entryControlsIncluded;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @see \rocket\si\content\SiGui::getData()
 	 */
@@ -91,7 +110,8 @@ class BulkyEntrySiGui implements SiGui {
 			'frame' => $this->frame,
 			'declaration' => $this->declaration,
 			'entry' => $this->entry,
-			'controls' => SiPayloadFactory::createDataFromControls($this->controls)
+			'controls' => SiPayloadFactory::createDataFromControls($this->controls),
+			'entryControlsIncluded' => $this->entryControlsIncluded
 		];
 	}
 }

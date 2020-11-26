@@ -60,6 +60,8 @@ class EiGuiUtil {
 		$siComp = new BulkyEntrySiGui($this->eiFrame->createSiFrame(), $this->eiGui->getEiGuiModel()->createSiDeclaration($this->eiFrame),
 				$this->eiGui->createSiEntry($this->eiFrame, $entrySiControlsIncluded));
 		
+		$siComp->setEntryControlsIncluded($entrySiControlsIncluded);
+		
 		if ($generalSiControlsIncluded) {
 			$siComp->setControls($this->eiGui->getEiGuiModel()->createGeneralSiControls($this->eiFrame));
 		}
