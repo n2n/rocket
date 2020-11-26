@@ -50,9 +50,9 @@ export class EntryDirective implements DoCheck, OnInit, OnDestroy {
 
 		const classList = this.elementRef.nativeElement.classList;
 		if (highlighted) {
-			classList.add('rocket-highlighted');
+			classList.add('rocket-highlighed');
 		} else {
-			classList.remove('rocket-highlighted');
+			classList.remove('rocket-highlighed');
 		}
 	}
 
