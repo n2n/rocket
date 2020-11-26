@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, ElementRef } from '@angular/core';
 import { UiBreadcrumb } from '../../model/ui-zone';
+import { Message } from 'src/app/util/i18n/message';
 
 @Component({
 	selector: 'rocket-ui-simple-zone-container',
@@ -8,6 +9,8 @@ import { UiBreadcrumb } from '../../model/ui-zone';
 })
 export class SimpleZoneContainerComponent implements OnInit {
 
+	@Input()
+	messages: Message[] = [];
 	@Input()
 	title: string;
 	@Input()
