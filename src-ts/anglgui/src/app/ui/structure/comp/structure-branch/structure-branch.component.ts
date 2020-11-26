@@ -9,8 +9,7 @@ import { Subscription } from 'rxjs';
 	styleUrls: ['./structure-branch.component.css']
 })
 export class StructureBranchComponent implements OnInit, OnDestroy {
-	@Input()
-	uiStructure: UiStructure;
+	private _uiStructure: UiStructure;
 	// @Input()
 	// uiContent: UiContent|null = null;
 	// @Input()
@@ -22,12 +21,34 @@ export class StructureBranchComponent implements OnInit, OnDestroy {
 	constructor() { }
 
 	ngOnInit() {
-		this.subscription = this.uiStructure.getContentChildren$().subscribe((contentUiStructures) => {
+	}
+
+	@Input()
+	set uiStructure(uiStructure: UiStructure) {
+		if (this._uiStructure === uiStructure) {
+			throw new Error('Wow this really happens?');
+		}
+
+		this.clear();
+		this._uiStructure = uiStructure;
+		this.subscription = uiStructure.getContentChildren$().subscribe((contentUiStructures) => {
 			this.buildChildNodes(contentUiStructures);
 		});
 	}
 
+	get uiStructure(): UiStructure {
+		return this.uiStructure;
+	}
+
 	ngOnDestroy() {
+		this.clear();
+	}
+
+	private clear() {
+		if (!this.subscription) {
+			return;
+		}
+
 		this.subscription.unsubscribe();
 		this.subscription = null;
 	}

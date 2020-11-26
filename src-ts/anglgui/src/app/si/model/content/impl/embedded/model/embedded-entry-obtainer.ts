@@ -14,11 +14,13 @@ import { BulkyEntrySiGui } from 'src/app/si/model/gui/impl/model/bulky-entry-si-
 import { CompactEntrySiGui } from 'src/app/si/model/gui/impl/model/compact-entry-si-gui';
 import { SiEmbeddedEntry } from '../model/si-embedded-entry';
 import { SiGetResult } from 'src/app/si/model/api/si-get-result';
+import { SiFrame } from 'src/app/si/model/meta/si-frame';
+import { SiModStateService } from 'src/app/si/model/mod/model/si-mod-state.service';
 
 export class EmbeddedEntryObtainer  {
 
-	constructor(public siService: SiService, public apiUrl: string, public obtainSummary: boolean,
-			public typeIds: Array<string>|null) {
+	constructor(public siService: SiService, public siModStateService: SiModStateService, public siFrame: SiFrame,
+			public obtainSummary: boolean, public typeIds: Array<string>|null) {
 	}
 
 	private preloadedNew$: Promise<SiEmbeddedEntry>|null = null;
@@ -66,7 +68,7 @@ export class EmbeddedEntryObtainer  {
 			}
 		}
 
-		return this.siService.apiGet(this.apiUrl, request).pipe(map((siGetResponse) => {
+		return this.siService.apiGet(this.siFrame.apiUrl, request).pipe(map((siGetResponse) => {
 			return this.handleResponse(siGetResponse);
 		}));
 	}
@@ -76,7 +78,7 @@ export class EmbeddedEntryObtainer  {
 
 		let result: SiGetResult;
 		while (result = response.results.shift()) {
-			const siComp = new BulkyEntrySiGui(result.declaration);
+			const siComp = new BulkyEntrySiGui(this.siFrame, result.declaration, this.siService, this.siModStateService);
 			siComp.entry = result.entry;
 
 			let summarySiGui: CompactEntrySiGui|null = null;
@@ -101,7 +103,7 @@ export class EmbeddedEntryObtainer  {
 			siEmbeddedEntry.entry.resetError();
 		});
 
-		this.siService.apiVal(this.apiUrl, request).subscribe((response: SiValResponse) => {
+		this.siService.apiVal(this.siFrame.apiUrl, request).subscribe((response: SiValResponse) => {
 			siEmbeddedEntries.forEach((siEmbeddedEntry, i) => {
 				this.handleValResult(siEmbeddedEntry, response.results[i]);
 			});

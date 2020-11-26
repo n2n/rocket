@@ -108,7 +108,6 @@ export class SiEntryMonitor {
 			for (const siEntry of this.entriesMap.get(id)) {
 				siEntry.markAsOutdated();
 				this.nextReloadJob.addSiEntry(siEntry);
-
 				if (!shownEntryUpdated && this.modStateService.isEntryShown(siEntry)) {
 					shownEntryUpdated = true;
 				}

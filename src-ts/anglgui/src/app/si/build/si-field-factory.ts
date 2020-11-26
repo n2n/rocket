@@ -31,6 +31,7 @@ import { CkeInSiField } from '../model/content/impl/alphanum/model/cke-in-si-fie
 import { CrumbOutSiField } from '../model/content/impl/meta/model/crumb-out-si-field';
 import { SiUiService } from '../manage/si-ui.service';
 import { SiControlFactory } from './si-control-factory';
+import { SiModStateService } from '../model/mod/model/si-mod-state.service';
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',
@@ -149,7 +150,8 @@ export class SiFieldFactory {
 
 		case SiFieldType.EMBEDDED_ENTRY_IN:
 			const embeddedEntryInSiField = new EmbeddedEntriesInSiField(prop.label, this.injector.get(SiService),
-					SiMetaFactory.createFrame(dataExtr.reqObject('frame')), this.injector.get(TranslationService),
+					this.injector.get(SiModStateService), SiMetaFactory.createFrame(dataExtr.reqObject('frame')),
+					this.injector.get(TranslationService),
 					new SiGuiFactory(this.injector).createEmbeddedEntries(dataExtr.reqArray('values')));
 			embeddedEntryInSiField.config.reduced = dataExtr.reqBoolean('reduced');
 			embeddedEntryInSiField.config.min = dataExtr.reqNumber('min');
@@ -161,7 +163,7 @@ export class SiFieldFactory {
 			return embeddedEntryInSiField;
 
 		case SiFieldType.EMBEDDED_ENTRY_PANELS_IN:
-			return new EmbeddedEntryPanelsInSiField(this.injector.get(SiService),
+			return new EmbeddedEntryPanelsInSiField(this.injector.get(SiService), this.injector.get(SiModStateService),
 					SiMetaFactory.createFrame(dataExtr.reqObject('frame')), this.injector.get(TranslationService),
 					new SiGuiFactory(this.injector).createPanels(dataExtr.reqArray('panels')));
 

@@ -15,7 +15,7 @@
 		</thead>
 		<tbody>
 			<ng-container *ngFor="let structurePage of getVisibleStructurePages()">
-				<tr *ngFor="let structureEntry of structurePage.structureEntries" rocketUiEntry [siEntry]="structureEntry.siEntry">
+				<tr *ngFor="let structureEntry of structurePage.structureEntries" rocketSiEntry [siEntry]="structureEntry.siEntry">
 					<td *ngIf="selectable" class="rocket-entry-selector" (click)="toggleSelection(structureEntry.siEntry.qualifier)">
 						<ng-container *ngIf="singleSelect">
 							<input type="radio" [value]="true" [ngModel]="isSelected(structureEntry.siEntry.qualifier)" />

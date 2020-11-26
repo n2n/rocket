@@ -27,13 +27,16 @@ use rocket\si\content\SiEntry;
 use rocket\si\control\SiControl;
 use n2n\util\type\ArgUtils;
 use rocket\si\SiPayloadFactory;
+use rocket\si\meta\SiFrame;
 
 class BulkyEntrySiGui implements SiGui {
+	private $frame;
 	private $declaration;
 	private $entry;
 	private $controls = [];
 	
-	function __construct(SiDeclaration $declaration, SiEntry $entry = null) {
+	function __construct(SiFrame $frame, SiDeclaration $declaration, SiEntry $entry = null) {
+		$this->frame = $frame;
 		$this->declaration = $declaration;
 		$this->setEntry($entry);
 	}
@@ -85,6 +88,7 @@ class BulkyEntrySiGui implements SiGui {
 	 */
 	function getData(): array {
 		return [ 
+			'frame' => $this->frame,
 			'declaration' => $this->declaration,
 			'entry' => $this->entry,
 			'controls' => SiPayloadFactory::createDataFromControls($this->controls)

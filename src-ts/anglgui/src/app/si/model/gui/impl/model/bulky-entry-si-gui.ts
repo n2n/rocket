@@ -1,6 +1,6 @@
 import { SiGui } from '../../si-gui';
 import { SiDeclaration } from '../../../meta/si-declaration';
-import { SiEntry } from '../../../content/si-entry';
+import { SiEntry, SiEntryState } from '../../../content/si-entry';
 import { SiControl } from '../../../control/si-control';
 import { Message } from 'src/app/util/i18n/message';
 import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
@@ -18,12 +18,19 @@ import { EnumInModel } from '../../../content/impl/enum/comp/enum-in-model';
 import { UiZoneError } from 'src/app/ui/structure/model/ui-zone-error';
 import { PlainContentComponent } from 'src/app/ui/structure/comp/plain-content/plain-content.component';
 import { SiControlBoundry } from '../../../control/si-control-bountry';
+import { SiFrame } from '../../../meta/si-frame';
+import { SiEntryMonitor } from '../../../mod/model/si-entry-monitor';
+import { SiService } from 'src/app/si/manage/si.service';
+import { SiModStateService } from '../../../mod/model/si-mod-state.service';
+import { BulkyEntryComponent } from '../comp/bulky-entry/bulky-entry.component';
+import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 
 export class BulkyEntrySiGui implements SiGui, SiControlBoundry {
 	private _entry: SiEntry|null = null;
 	public controls: Array<SiControl> = [];
 
-	constructor(public declaration: SiDeclaration) {
+	constructor(public siFrame: SiFrame, public declaration: SiDeclaration, public siService: SiService,
+			public siModStateService: SiModStateService) {
 	}
 
 	getControlledEntries(): SiEntry[] {
@@ -42,6 +49,9 @@ export class BulkyEntrySiGui implements SiGui, SiControlBoundry {
 	// }
 
 	get entry(): SiEntry|null {
+		while (this._entry.replacementEntry) {
+			this._entry = this._entry.replacementEntry;
+		}
 		return this._entry;
 	}
 
@@ -50,26 +60,25 @@ export class BulkyEntrySiGui implements SiGui, SiControlBoundry {
 	}
 
 	createUiStructureModel(): UiStructureModel {
-		return new BulkyUiStructureModel(this.entry, this.declaration, this.getControls());
+		return new BulkyUiStructureModel(this.entry, this.declaration, this.getControls(),
+				new SiEntryMonitor(this.siFrame.apiUrl, this.siService, this.siModStateService, true));
 	}
 
 	private getControls(): SiControl[] {
 		const controls: SiControl[] = [];
 		controls.push(...this.controls);
-		if (this.entry.entryQualifiers.length === 1) {
-			controls.push(...this.entry.selectedEntryBuildup.controls);
-		}
 		return controls;
 	}
 }
 
 class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntryModel {
 
-	private contentUiStructures: UiStructure[] = [];
+	private contentUiStructure: UiStructure|null = null;
 	private subscription: Subscription|null = null;
 	private uiStructureModelCache = new UiStructureModelCache();
 
-	constructor(private siEntry: SiEntry, private siDeclaration: SiDeclaration, private controls: SiControl[]) {
+	constructor(private siEntry: SiEntry, private siDeclaration: SiDeclaration, private controls: SiControl[],
+			private siEntryMonitor: SiEntryMonitor) {
 		super();
 	}
 
@@ -79,6 +88,11 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 
 	getSiDeclaration(): SiDeclaration {
 		return this.siDeclaration;
+	}
+
+	getContentUiStructure(): UiStructure {
+		IllegalSiStateError.assertTrue(!!this.contentUiStructure);
+		return this.contentUiStructure;
 	}
 
 	getZoneErrors(): UiZoneError[] {
@@ -102,19 +116,50 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 	bind(uiStructure: UiStructure): void {
 		super.bind(uiStructure);
 
+		while (this.siEntry.replacementEntry) {
+			this.siEntry = this.siEntry.replacementEntry;
+		}
+
+		this.subscription = new Subscription();
+
 		if (!this.siEntry.isMultiType()) {
-			this.rebuildStructures(uiStructure);
+			this.rebuildStructures();
 		} else {
-			this.subscription = this.siEntry.selectedTypeId$.subscribe(() => {
-				this.rebuildStructures(uiStructure);
-			});
+			this.subscription.add(this.siEntry.selectedTypeId$.subscribe(() => {
+				this.rebuildStructures();
+			}));
 
 			uiStructure.createToolbarChild(this.createTypeSwitchUiStructureModel());
 		}
 
+		this.siEntryMonitor.start();
+		this.monitorEntry();
+
+		this.uiContent = new TypeUiContent(BulkyEntryComponent, (ref) => {
+			ref.instance.model = this;
+		});
+
 		this.mainControlUiContents = this.controls.map((control) => {
 			return control.createUiContent(uiStructure.getZone());
 		});
+	}
+
+	private monitorEntry() {
+		this.siEntryMonitor.registerEntry(this.siEntry);
+
+		const sub = this.siEntry.state$.subscribe((state) => {
+			switch (state) {
+				case SiEntryState.REPLACED:
+					this.siEntryMonitor.unregisterEntry(this.siEntry);
+					this.siEntry = this.siEntry.replacementEntry;
+					this.subscription.remove(sub);
+					this.monitorEntry();
+					this.rebuildStructures();
+					break;
+			}
+		});
+
+		this.subscription.add(sub);
 	}
 
 	private createTypeSwitchUiStructureModel() {
@@ -126,31 +171,39 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 	unbind(): void {
 		super.unbind();
 
+		this.siEntryMonitor.stop();
+		this.uiContent = null;
+
 		this.clear();
 
 		if (this.subscription) {
 			this.subscription.unsubscribe();
+			this.subscription = null;
 		}
 	}
 
 	private clear() {
-		let contentUiStructure: UiStructure;
-		while (contentUiStructure = this.contentUiStructures.pop()) {
-			contentUiStructure.dispose();
+		if (this.contentUiStructure) {
+			this.contentUiStructure.dispose();
 		}
+		this.contentUiStructure = null;
+
+		this.asideUiContents = [];
+
+		this.uiStructureModelCache.clear();
 	}
 
-	private rebuildStructures(uiStructure: UiStructure) {
+	private rebuildStructures() {
 		this.clear();
 
 		this.asideUiContents = this.siEntry.selectedEntryBuildup.controls
-					.map(control => control.createUiContent(uiStructure.getZone()));
+					.map(control => control.createUiContent(this.boundUiStructure.getZone()));
 
 		const siMaskDeclaration = this.siDeclaration.getTypeDeclarationByTypeId(this.siEntry.selectedTypeId);
 		const toolbarResolver = new ToolbarResolver();
 
-		this.contentUiStructures = this.createStructures(uiStructure, siMaskDeclaration.structureDeclarations,
-				toolbarResolver);
+		this.contentUiStructure = this.boundUiStructure.createChild();
+		this.createStructures(this.contentUiStructure, siMaskDeclaration.structureDeclarations, toolbarResolver);
 
 		for (const prop of siMaskDeclaration.type.getProps()) {
 			if (prop.dependantPropIds.length > 0 && this.siEntry.selectedEntryBuildup.containsPropId(prop.id)) {
@@ -214,6 +267,10 @@ class UiStructureModelCache {
 		}
 
 		return map.get(siFieldId);
+	}
+
+	clear(): void {
+		this.map.clear();
 	}
 }
 

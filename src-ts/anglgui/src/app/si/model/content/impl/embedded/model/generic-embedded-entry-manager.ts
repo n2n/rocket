@@ -7,11 +7,12 @@ import { SiFrame } from 'src/app/si/model/meta/si-frame';
 import { SiService } from 'src/app/si/manage/si.service';
 import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
 import { SiField } from '../../../si-field';
+import { SiModStateService } from 'src/app/si/model/mod/model/si-mod-state.service';
 
 export class GenericEmbeddedEntryManager {
 
-	constructor(private values: SiEmbeddedEntry[], private siService: SiService, private siFrame: SiFrame,
-			private origSiField: SiField, private reduced: boolean, private allowedTypeIds: string[]|null) {
+	constructor(private values: SiEmbeddedEntry[], private siService: SiService, private siModState: SiModStateService,
+			private siFrame: SiFrame, private origSiField: SiField, private reduced: boolean, private allowedTypeIds: string[]|null) {
 	}
 
 	private findCurrentValue(entryIdentifier: SiEntryIdentifier): SiEmbeddedEntry|null {
@@ -42,7 +43,7 @@ export class GenericEmbeddedEntryManager {
 			return this.handlePaste(newEmbeInds, []);
 		}
 
-		const obtainer = new EmbeddedEntryObtainer(this.siService, this.siFrame.apiUrl, this.reduced,
+		const obtainer = new EmbeddedEntryObtainer(this.siService, this.siModState, this.siFrame, this.reduced,
 				this.allowedTypeIds);
 		return obtainer.obtain(newEntryIdentifiers).toPromise()
 				.then((embeddedEntries) => {

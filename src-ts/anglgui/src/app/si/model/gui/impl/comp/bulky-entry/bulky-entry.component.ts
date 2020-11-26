@@ -1,7 +1,5 @@
 import { Component, OnInit, OnDestroy, DoCheck } from '@angular/core';
 import { BulkyEntryModel } from '../bulky-entry-model';
-import { SiEntry } from 'src/app/si/model/content/si-entry';
-import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 
 @Component({
 	selector: 'rocket-bulky-entry',
@@ -9,9 +7,6 @@ import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 })
 export class BulkyEntryComponent implements OnInit, OnDestroy, DoCheck {
 	public model: BulkyEntryModel;
-	public uiStructure: UiStructure;
-
-	public siEntry: SiEntry|null = null;
 
 	constructor() { }
 

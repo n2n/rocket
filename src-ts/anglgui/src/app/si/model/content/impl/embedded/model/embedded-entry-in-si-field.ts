@@ -17,6 +17,7 @@ import { Message } from 'src/app/util/i18n/message';
 import { EmbeInSource } from './embe-collection';
 import { SiFrame } from 'src/app/si/model/meta/si-frame';
 import { GenericEmbeddedEntryManager } from './generic-embedded-entry-manager';
+import { SiModStateService } from 'src/app/si/model/mod/model/si-mod-state.service';
 
 export class EmbeddedEntriesInSiField extends SiFieldAdapter implements EmbeInSource {
 
@@ -29,8 +30,8 @@ export class EmbeddedEntriesInSiField extends SiFieldAdapter implements EmbeInSo
 		allowedTypeIds: null
 	};
 
-	constructor(private label: string, private siService: SiService, private frame: SiFrame,
-			private translationService: TranslationService, private values: SiEmbeddedEntry[] = []) {
+	constructor(private label: string, private siService: SiService, private siModState: SiModStateService, 
+			private frame: SiFrame, private translationService: TranslationService, private values: SiEmbeddedEntry[] = []) {
 		super();
 	}
 
@@ -67,7 +68,7 @@ export class EmbeddedEntriesInSiField extends SiFieldAdapter implements EmbeInSo
 
 	createUiStructureModel(): UiStructureModel {
 		return new EmbeddedEntriesInUiStructureModel(
-				new EmbeddedEntryObtainer(this.siService, this.frame.apiUrl, this.config.reduced, this.config.allowedTypeIds),
+				new EmbeddedEntryObtainer(this.siService, this.siModState, this.frame, this.config.reduced, this.config.allowedTypeIds),
 				this.frame, this, this.config, this.translationService,
 				this.disabledSubject);
 	}
@@ -77,8 +78,8 @@ export class EmbeddedEntriesInSiField extends SiFieldAdapter implements EmbeInSo
 	// }
 
 	private createGenericManager(): GenericEmbeddedEntryManager {
-		return new GenericEmbeddedEntryManager(this.values, this.siService, this.frame, this, this.config.reduced,
-				this.config.allowedTypeIds);
+		return new GenericEmbeddedEntryManager(this.values, this.siService, this.siModState, this.frame, this,
+				this.config.reduced, this.config.allowedTypeIds);
 	}
 
 	copyValue(): SiGenericValue {

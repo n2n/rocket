@@ -14,9 +14,9 @@ import { TranslationService } from 'src/app/util/i18n/translation.service';
 import { UiZoneError } from 'src/app/ui/structure/model/ui-zone-error';
 import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
 import { SiFrame } from 'src/app/si/model/meta/si-frame';
-import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { GenericEmbeddedEntryManager } from './generic-embedded-entry-manager';
 import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
+import { SiModStateService } from 'src/app/si/model/mod/model/si-mod-state.service';
 
 class GenericSiPanelValueCollection {
 	public map = new Map<string, SiGenericValue>();
@@ -24,7 +24,7 @@ class GenericSiPanelValueCollection {
 
 export class EmbeddedEntryPanelsInSiField extends SiFieldAdapter  {
 
-	constructor(public siService: SiService, public frame: SiFrame,
+	constructor(public siService: SiService, public siModState: SiModStateService, public frame: SiFrame,
 			public translationService: TranslationService, public panels: SiPanel[]) {
 		super();
 	}
@@ -47,7 +47,8 @@ export class EmbeddedEntryPanelsInSiField extends SiFieldAdapter  {
 
 	createUiStructureModel(): UiStructureModel {
 		const panelAssemblies = this.panels.map((panel) => {
-			const obtainer = new EmbeddedEntryObtainer(this.siService, this.frame.apiUrl, panel.reduced, panel.allowedTypeIds);
+			const obtainer = new EmbeddedEntryObtainer(this.siService, this.siModState,
+					this.frame, panel.reduced, panel.allowedTypeIds);
 
 			return {
 				panel,
@@ -68,7 +69,7 @@ export class EmbeddedEntryPanelsInSiField extends SiFieldAdapter  {
 
 
 	private createGenericManager(panel: SiPanel): GenericEmbeddedEntryManager {
-		return new GenericEmbeddedEntryManager(panel.values, this.siService, this.frame, this, panel.reduced,
+		return new GenericEmbeddedEntryManager(panel.values, this.siService, this.siModState, this.frame, this, panel.reduced,
 				panel.allowedTypeIds);
 	}
 
@@ -110,7 +111,6 @@ export class EmbeddedEntryPanelsInSiField extends SiFieldAdapter  {
 
 	resetToPoint(genericValue: SiGenericValue): void {
 		const col = genericValue.readInstance(GenericSiPanelValueCollection)
-		const promises = new Array<Promise<void>>();
 
 		for (const panel of this.panels) {
 			if (!col.map.has(panel.name)) {

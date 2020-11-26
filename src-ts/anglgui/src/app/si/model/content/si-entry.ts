@@ -308,12 +308,12 @@ export class SiEntry {
 
 				this.lock = null;
 
-				if (!this.isAlive() || this.state === SiEntryState.RELOADING) {
+				if (!this.isAlive() || this.state === SiEntryState.RELOADING || this.state === SiEntryState.OUTDATED) {
 					return;
 				}
 
 				IllegalSiStateError.assertTrue(this.state === SiEntryState.LOCKED,
-						'SiEntry not locked, loading nor dead: ' + this.state);
+						'SiEntry not locked, loading, outdated nor dead: ' + this.state);
 				this.stateSubject.next(SiEntryState.CLEAN);
 			}
 		};

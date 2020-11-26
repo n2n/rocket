@@ -30,7 +30,7 @@ export class SiModStateService {
 
 	get modEvent$(): Observable<SiModEvent> {
 		return this.lastModEventSubject.pipe(filter((modEvent: SiModEvent) => {
-			return modEvent !== null;
+			return !!modEvent;
 		}));
 	}
 

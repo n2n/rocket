@@ -185,7 +185,8 @@ export class SiGuiFactory {
 
 			case SiGuiType.BULKY_ENTRY:
 				declaration = SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'));
-				const bulkyEntrySiGui = new BulkyEntrySiGui(declaration);
+				const bulkyEntrySiGui = new BulkyEntrySiGui(SiMetaFactory.createFrame(dataExtr.reqObject('frame')), declaration,
+						this.injector.get(SiService), this.injector.get(SiModStateService));
 
 				bulkyEntrySiGui.entry = new SiEntryFactory(declaration, this.injector)
 						.createEntry(dataExtr.reqObject('entry'));

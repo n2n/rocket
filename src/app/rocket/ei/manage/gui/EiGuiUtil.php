@@ -57,7 +57,7 @@ class EiGuiUtil {
 	 * @return \rocket\si\content\impl\basic\BulkyEntrySiGui
 	 */
 	function createBulkyEntrySiGui(bool $generalSiControlsIncluded, bool $entrySiControlsIncluded) {
-		$siComp = new BulkyEntrySiGui($this->eiGui->getEiGuiModel()->createSiDeclaration($this->eiFrame),
+		$siComp = new BulkyEntrySiGui($this->eiFrame->createSiFrame(), $this->eiGui->getEiGuiModel()->createSiDeclaration($this->eiFrame),
 				$this->eiGui->createSiEntry($this->eiFrame, $entrySiControlsIncluded));
 		
 		if ($generalSiControlsIncluded) {

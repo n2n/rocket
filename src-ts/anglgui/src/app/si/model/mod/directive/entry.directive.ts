@@ -3,11 +3,11 @@ import { SiEntry, SiEntryState } from '../../content/si-entry';
 import { SiModStateService } from '../model/si-mod-state.service';
 
 @Directive({
-  selector: '[rocketUiEntry]'
+  selector: '[rocketSiEntry]'
 })
 export class EntryDirective implements DoCheck, OnInit, OnDestroy {
 
-	@Input() siEntry: SiEntry;
+	private _siEntry: SiEntry;
 
 	private currentlyHighlighted = false;
 	private currentState: SiEntryState;
@@ -15,11 +15,24 @@ export class EntryDirective implements DoCheck, OnInit, OnDestroy {
 	constructor(private elementRef: ElementRef, private modState: SiModStateService) { }
 
 	ngOnInit() {
-		this.modState.registerShownEntry(this.siEntry, this);
 	}
 
 	ngOnDestroy() {
 		this.modState.unregisterShownEntry(this.siEntry, this);
+	}
+
+	@Input()
+	set siEntry(siEntry: SiEntry) {
+		if (this._siEntry) {
+			this.modState.unregisterShownEntry(this._siEntry, this);
+		}
+
+		this._siEntry = siEntry;
+		this.modState.registerShownEntry(siEntry, this);
+	}
+
+	get siEntry(): SiEntry {
+		return this._siEntry;
 	}
 
 	ngDoCheck() {
