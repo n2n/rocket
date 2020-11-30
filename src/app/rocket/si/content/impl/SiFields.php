@@ -39,6 +39,7 @@ use rocket\si\content\impl\string\CkeInSiField;
 use rocket\si\content\impl\meta\SiCrumb;
 use rocket\si\content\impl\meta\CrumbOutSiField;
 use rocket\si\content\impl\relation\EmbeddedEntriesOutSiField;
+use rocket\si\content\impl\relation\EmbeddedEntryPanelsOutSiField;
 
 class SiFields {
 	
@@ -146,6 +147,15 @@ class SiFields {
 	static function embeddedEntriesIn(SiFrame $frame, EmbeddedEntryInputHandler $inputHandler, array $values = [], 
 			int $min = 0, int $max = null) {
 		return (new EmbeddedEntriesInSiField($frame, $inputHandler, $values))->setMin($min)->setMax($max);
+	}
+	
+	/**
+	 * @param SiFrame $frame
+	 * @param array $panels
+	 * @return \rocket\si\content\impl\relation\EmbeddedEntryPanelsInSiField
+	 */
+	static function embeddedEntryPanelsOut(SiFrame $frame, array $panels = []) {
+		return (new EmbeddedEntryPanelsOutSiField($frame, $panels));
 	}
 	
 	/**

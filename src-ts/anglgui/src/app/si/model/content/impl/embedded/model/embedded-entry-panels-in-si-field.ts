@@ -1,9 +1,7 @@
 import { SiPanel } from './si-panel';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
-import { EmbeddedEntryPanelsInComponent } from '../comp/embedded-entry-panels-in/embedded-entry-panels-in.component';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiService } from 'src/app/si/manage/si.service';
-import { PanelDef } from '../comp/embedded-entry-panels-in-model';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
 import { EmbeddedEntryObtainer } from './embedded-entry-obtainer';
 import { SiFieldAdapter } from '../../common/model/si-field-adapter';
@@ -17,6 +15,8 @@ import { SiFrame } from 'src/app/si/model/meta/si-frame';
 import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
 import { SiModStateService } from 'src/app/si/model/mod/model/si-mod-state.service';
 import { GenericEmbeddedEntryManager } from './generic/generic-embedded-entry-manager';
+import { EmbeddedEntryPanelsComponent } from '../comp/embedded-entry-panels-in/embedded-entry-panels.component';
+import { PanelDef } from '../comp/embedded-entry-panels-model';
 
 class GenericSiPanelValueCollection {
 	public map = new Map<string, SiGenericValue>();
@@ -61,7 +61,7 @@ export class EmbeddedEntryPanelsInSiField extends SiFieldAdapter  {
 	}
 
 	// createUiContent(uiStructure: UiStructure): UiContent {
-	// 	return new TypeUiContent(EmbeddedEntryPanelsInComponent, (ref) => {
+	// 	return new TypeUiContent(EmbeddedEntryPanelsComponent, (ref) => {
 	// 		ref.instance.model = this;
 	// 		ref.instance.uiStructure = uiStructure;
 	// 	});
@@ -84,7 +84,7 @@ export class EmbeddedEntryPanelsInSiField extends SiFieldAdapter  {
 	}
 
 	pasteValue(genericValue: SiGenericValue): Promise<void> {
-		const col = genericValue.readInstance(GenericSiPanelValueCollection)
+		const col = genericValue.readInstance(GenericSiPanelValueCollection);
 		const promises = new Array<Promise<void>>();
 
 		for (const panel of this.panels) {
@@ -138,7 +138,7 @@ class EmbeddedEntryPanelsInUiStructureModel extends UiStructureModelAdapter {
 			});
 		}
 
-		this.uiContent = new TypeUiContent(EmbeddedEntryPanelsInComponent, (ref) => {
+		this.uiContent = new TypeUiContent(EmbeddedEntryPanelsComponent, (ref) => {
 			ref.instance.model = {
 				getPanelDefs: () => panelDefs
 			};

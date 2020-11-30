@@ -32,6 +32,7 @@ use rocket\si\input\SiEntryInput;
 use rocket\si\input\CorruptedSiInputDataException;
 use rocket\si\content\impl\relation\EmbeddedEntryInputHandler;
 use rocket\ei\manage\gui\GuiFieldMap;
+use n2n\util\ex\IllegalStateException;
 
 class EmbeddedToOneGuiField implements GuiField, EmbeddedEntryInputHandler {
 	/**
@@ -54,13 +55,24 @@ class EmbeddedToOneGuiField implements GuiField, EmbeddedEntryInputHandler {
 	 * @var EmbeddedGuiCollection
 	 */
 	private $emebeddedGuiCollection;
+	/**
+	 * @var bool
+	 */
+	private $readOnly;
 	
-	function __construct(Eiu $eiu, EiuFrame $targetEiuFrame, RelationModel $relationModel) {
+	function __construct(Eiu $eiu, EiuFrame $targetEiuFrame, RelationModel $relationModel, bool $readOnly) {
 		$this->eiu = $eiu;
 		$this->targetEiuFrame = $targetEiuFrame;
 		$this->relationModel = $relationModel;
-		$this->emebeddedGuiCollection = new EmbeddedGuiCollection(false, $relationModel->isReduced(), 
+		$this->emebeddedGuiCollection = new EmbeddedGuiCollection($readOnly, $relationModel->isReduced(), 
 				$this->relationModel->getMin(), $targetEiuFrame, null);
+		$this->readOnly = $readOnly;
+		
+		if ($readOnly) {
+			$this->siField = SiFields::embeddedEntriesOut($this->targetEiuFrame->createSiFrame(), $this->readValues())
+					->setReduced($this->relationModel->isReduced());
+			return;
+		}
 		
 		$this->siField = SiFields::embeddedEntriesIn($this->targetEiuFrame->createSiFrame(),
 						$this, $this->readValues(), (int) $relationModel->getMin(), $relationModel->getMax())
@@ -78,7 +90,10 @@ class EmbeddedToOneGuiField implements GuiField, EmbeddedEntryInputHandler {
 			$this->emebeddedGuiCollection->add($eiuEntry);
 		}
 		
-		$this->emebeddedGuiCollection->fillUp();
+		if (!$this->readOnly) {
+			$this->emebeddedGuiCollection->fillUp();
+		}
+		
 		return $this->emebeddedGuiCollection->createSiEmbeddedEntries();
 	}
 	
@@ -87,6 +102,8 @@ class EmbeddedToOneGuiField implements GuiField, EmbeddedEntryInputHandler {
 	 * @throws CorruptedSiInputDataException
 	 */
 	function handleInput(array $siEntryInputs): array {
+		IllegalStateException::assertTrue(!$this->readOnly);
+		
 		if (count($siEntryInputs) > 1) {
 			throw new CorruptedSiInputDataException('Too many SiEntryInputs for EmbeddedToOneGuiField.');
 		}
@@ -97,6 +114,8 @@ class EmbeddedToOneGuiField implements GuiField, EmbeddedEntryInputHandler {
 	}
 	
 	function save() {
+		IllegalStateException::assertTrue(!$this->readOnly);
+		
 		$value = $this->emebeddedGuiCollection->save();
 		
 		$this->eiu->field()->setValue($value);

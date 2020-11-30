@@ -21,9 +21,6 @@ import { EmbeddedEntriesOutComponent } from './model/content/impl/embedded/comp/
 import {
 	EmbeddedEntriesSummaryOutComponent
 } from './model/content/impl/embedded/comp/embedded-entries-summary-out/embedded-entries-summary-out.component';
-import {
-	EmbeddedEntryPanelsInComponent
-} from './model/content/impl/embedded/comp/embedded-entry-panels-in/embedded-entry-panels-in.component';
 import { ImageResizeComponent } from './model/content/impl/file/comp/image-resize/image-resize.component';
 import { EntryDirective } from './model/mod/directive/entry.directive';
 import { FormsModule } from '@angular/forms';
@@ -51,6 +48,7 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { FieldMessagesComponent } from './model/content/impl/common/comp/field-messages/field-messages.component';
 import { CrumbOutFieldComponent } from './model/content/impl/meta/comp/crumb-out-field/crumb-out-field.component';
 import { SelectInFieldComponent } from './model/content/impl/alphanum/comp/select-in-field/select-in-field.component';
+import { EmbeddedEntryPanelsComponent } from './model/content/impl/embedded/comp/embedded-entry-panels-in/embedded-entry-panels.component';
 
 @NgModule({
 	declarations: [
@@ -58,7 +56,7 @@ import { SelectInFieldComponent } from './model/content/impl/alphanum/comp/selec
 		InputInFieldComponent, TextareaInFieldComponent, FileInFieldComponent, FileOutFieldComponent,
 		QualifierSelectInFieldComponent, LinkOutFieldComponent, CompactEntryComponent, EmbeddedEntriesInComponent,
 		EmbeddedEntriesSummaryInComponent, EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent,
-		ImageResizeComponent, EmbeddedEntryPanelsInComponent, EntryDirective, PaginationComponent, CrumbGroupComponent,
+		ImageResizeComponent, EmbeddedEntryPanelsComponent, EntryDirective, PaginationComponent, CrumbGroupComponent,
 		AddPasteComponent, QualifierComponent, TogglerInFieldComponent, SplitComponent, SplitViewMenuComponent,
 		SplitManagerComponent, EnumInComponent, QualifierTilingComponent, ChoosePasteComponent, EmbeddedEntryComponent,
 		ImageEditorComponent, UploadResultMessageComponent, ImagePreviewComponent, CkeInFieldComponent, FieldMessagesComponent,
@@ -78,14 +76,14 @@ import { SelectInFieldComponent } from './model/content/impl/alphanum/comp/selec
 		TextareaInFieldComponent, FileInFieldComponent, FileOutFieldComponent, QualifierSelectInFieldComponent,
 		LinkOutFieldComponent, CompactEntryComponent, EmbeddedEntriesInComponent, EmbeddedEntriesSummaryInComponent,
 		EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent,
-		EmbeddedEntryPanelsInComponent, ButtonControlComponent, PaginationComponent, SelectInFieldComponent
+		EmbeddedEntryPanelsComponent, ButtonControlComponent, PaginationComponent, SelectInFieldComponent
 	],
 	entryComponents: [
 		CompactExplorerComponent, BulkyEntryComponent, StringOutFieldComponent,
 		InputInFieldComponent, TextareaInFieldComponent, FileInFieldComponent, FileOutFieldComponent, QualifierSelectInFieldComponent,
 		LinkOutFieldComponent, CompactEntryComponent, EmbeddedEntriesInComponent, EmbeddedEntriesSummaryInComponent,
 		EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent,
-		EmbeddedEntryPanelsInComponent, ButtonControlComponent, PaginationComponent, TogglerInFieldComponent, SplitComponent,
+		EmbeddedEntryPanelsComponent, ButtonControlComponent, PaginationComponent, TogglerInFieldComponent, SplitComponent,
 		SplitViewMenuComponent, CrumbGroupComponent, SplitManagerComponent, EnumInComponent, EmbeddedEntryComponent,
 		ImageEditorComponent, CkeInFieldComponent, CrumbOutFieldComponent, SelectInFieldComponent
 	]

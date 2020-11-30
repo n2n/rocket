@@ -39,6 +39,7 @@ use rocket\ei\manage\gui\GuiFieldMap;
 use rocket\impl\ei\component\prop\relation\model\gui\EmbeddedGuiCollection;
 use rocket\ei\EiPropPath;
 use n2n\util\type\ArgUtils;
+use n2n\util\ex\IllegalStateException;
 
 class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler {
 	/**
@@ -61,6 +62,10 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler {
 	 * @var EmbeddedEntryPanelsInSiField
 	 */
 	private $siField;
+	/**
+	 * @var bool
+	 */
+	private $readOnly;
 	
 	/**
 	 * @param Eiu $eiu
@@ -69,12 +74,19 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler {
 	 * @param PanelDeclaration[] $panelDeclarations
 	 */
 	public function __construct(Eiu $eiu, EiuFrame $targetEiuFrame, RelationModel $relationModel,
-			array $panelDeclarations) {
+			array $panelDeclarations, bool $readOnly) {
 		$this->eiu = $eiu;
 		$this->targetEiuFrame = $targetEiuFrame;
 		$this->relationModel = $relationModel;
 		
-		$this->currentPool = new EiuEntryGuiPool($panelDeclarations, false, $relationModel->isReduced(), $targetEiuFrame);
+		$this->currentPool = new EiuEntryGuiPool($panelDeclarations, $readOnly, $relationModel->isReduced(), $targetEiuFrame);
+		
+		$this->readOnly = $readOnly;
+		
+		if ($readOnly) {
+			$this->siField = SiFields::embeddedEntryPanelsOut($this->targetEiuFrame->createSiFrame(), $this->readValues());
+			return;
+		}
 		
 		$this->siField = SiFields::embeddedEntryPanelsIn($this->targetEiuFrame->createSiFrame(),
 				$this, $this->readValues());
@@ -94,7 +106,9 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler {
 		
 		$this->currentPool->sort();
 		
-		$this->currentPool->fillUp();
+		if (!$this->readOnly) {
+			$this->currentPool->fillUp();
+		}
 		
 		return $this->currentPool->createSiPanels();
 	}
@@ -105,12 +119,16 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler {
 	 * @throws CorruptedSiInputDataException
 	 */
 	function handleInput(array $siPanelInputs): array {
+		IllegalStateException::assertTrue(!$this->readOnly);
+		
 		$this->currentPool->handleInput($siPanelInputs);
 		$this->currentPool->fillUp();
 		return $this->currentPool->createSiPanels();
 	}
 	
 	function save() {
+		IllegalStateException::assertTrue(!$this->readOnly);
+		
 		$values = $this->currentPool->save();
 		
 		$this->eiu->field()->setValue($values);
@@ -123,7 +141,6 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler {
 	function getForkGuiFieldMap(): ?GuiFieldMap {
 		return null;
 	}
-
 }
 
 

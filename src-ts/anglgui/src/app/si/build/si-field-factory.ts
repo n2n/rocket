@@ -5,7 +5,6 @@ import { FileOutSiField } from '../model/content/impl/file/model/file-out-si-fie
 import { FileInSiField } from '../model/content/impl/file/model/file-in-si-field';
 import { QualifierSelectInSiField } from '../model/content/impl/qualifier/model/qualifier-select-in-si-field';
 import { EmbeddedEntriesInSiField } from '../model/content/impl/embedded/model/embedded-entries-in-si-field';
-import { EmbeddedEntryPanelsInSiField } from '../model/content/impl/embedded/model/embedded-entry-panels-in-si-field';
 import { SiMetaFactory } from './si-meta-factory';
 import { BooleanInSiField } from '../model/content/impl/boolean/boolean-in-si-field';
 import { StringInSiField } from '../model/content/impl/alphanum/model/string-in-si-field';
@@ -31,6 +30,8 @@ import { CrumbOutSiField } from '../model/content/impl/meta/model/crumb-out-si-f
 import { SiControlFactory } from './si-control-factory';
 import { SiModStateService } from '../model/mod/model/si-mod-state.service';
 import { EmbeddedEntriesOutSiField } from '../model/content/impl/embedded/model/embedded-entries-out-si-field';
+import { EmbeddedEntryPanelsOutSiField } from '../model/content/impl/embedded/model/embedded-entry-panels-out-si-field';
+import { EmbeddedEntryPanelsInSiField } from '../model/content/impl/embedded/model/embedded-entry-panels-in-si-field';
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',
@@ -45,7 +46,8 @@ enum SiFieldType {
 	QUALIFIER_SELECT_IN = 'qualifier-select-in',
 	EMBEDDED_ENTRIES_OUT = 'embedded-entries-out',
 	EMBEDDED_ENTRIES_IN = 'embedded-entries-in',
-	EMBEDDED_ENTRY_PANELS_IN = 'embedded-entry-panels-in',
+	EMBEDDED_ENTRY_PANELS_OUT = 'embedded-entries-panels-out',
+	EMBEDDED_ENTRY_PANELS_IN = 'embedded-entries-panels-in',
 	SPLIT_CONTEXT_IN = 'split-context-in',
 	SPLIT_CONTEXT_OUT = 'split-context-out',
 	SPLIT_PLACEHOLDER = 'split-placeholder',
@@ -170,6 +172,11 @@ export class SiFieldFactory {
 			embeddedEntryInSiField.config.allowedTypeIds = dataExtr.nullaArray('allowedSiTypeIds');
 
 			return embeddedEntryInSiField;
+
+		case SiFieldType.EMBEDDED_ENTRY_PANELS_OUT:
+			return new EmbeddedEntryPanelsOutSiField(this.injector.get(SiService), this.injector.get(SiModStateService),
+					SiMetaFactory.createFrame(dataExtr.reqObject('frame')), this.injector.get(TranslationService),
+					new SiGuiFactory(this.injector).createPanels(dataExtr.reqArray('panels')));
 
 		case SiFieldType.EMBEDDED_ENTRY_PANELS_IN:
 			return new EmbeddedEntryPanelsInSiField(this.injector.get(SiService), this.injector.get(SiModStateService),

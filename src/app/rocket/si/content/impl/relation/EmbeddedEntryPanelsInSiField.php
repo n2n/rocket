@@ -78,7 +78,7 @@ class EmbeddedEntryPanelsInSiField extends InSiFieldAdapter {
 	 * @see \rocket\si\content\SiField::getType()
 	 */
 	function getType(): string {
-		return 'embedded-entry-panels-in';
+		return 'embedded-entries-panels-in';
 	}
 	
 	/**

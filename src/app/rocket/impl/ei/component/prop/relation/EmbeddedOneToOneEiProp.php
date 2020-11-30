@@ -69,13 +69,24 @@ class EmbeddedOneToOneEiProp extends RelationEiPropAdapter implements FieldEiPro
 	
 	
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		if ($readOnly || $this->getEditConfig()->isReadOnly()) {
-			return new RelationLinkGuiField($eiu, $this->getRelationModel());
+// 		if ($readOnly || $this->getEditConfig()->isReadOnly()) {
+// 			return new RelationLinkGuiField($eiu, $this->getRelationModel());
+// 		}
+		
+// 		$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())->frame()
+// 				->exec($this->getRelationModel()->getTargetEditEiCommandPath());
+		
+		$readOnly = $readOnly || $this->getEditConfig()->isReadOnly();
+		
+		$targetEiuFrame = null;
+		if ($readOnly){
+			$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())->frame()
+					->exec($this->getRelationModel()->getTargetReadEiCommandPath());
+		} else {
+			$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())->frame()
+					->exec($this->getRelationModel()->getTargetReadEiCommandPath());
 		}
-		
-		$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())->frame()
-				->exec($this->getRelationModel()->getTargetEditEiCommandPath());
-		
-		return new EmbeddedToOneGuiField($eiu, $targetEiuFrame, $this->getRelationModel());
+
+		return new EmbeddedToOneGuiField($eiu, $targetEiuFrame, $this->getRelationModel(), $readOnly);
 	}
 }

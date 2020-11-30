@@ -122,15 +122,19 @@ class ContentItemsEiProp extends RelationEiPropAdapter implements FieldEiProp {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiProp::buildGuiField()
 	 */
-	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		if ($readOnly || $this->getEditConfig()->isReadOnly()) {
-			return new RelationLinkGuiField($eiu, $this->getRelationModel());
-		}
+	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {			
+		$readOnly = $readOnly || $this->getEditConfig()->isReadOnly();
 		
-		$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())->frame()
-				->exec($this->getRelationModel()->getTargetEditEiCommandPath());
+		$targetEiuFrame = null;
+		if ($readOnly){
+			$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())->frame()
+					->exec($this->getRelationModel()->getTargetReadEiCommandPath());
+		} else {
+			$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())->frame()
+					->exec($this->getRelationModel()->getTargetReadEiCommandPath());
+		}
 			
 		return new ContentItemGuiField($eiu, $targetEiuFrame, $this->getRelationModel(), 
-				$this->determinePanelDeclarations($eiu));
+				$this->determinePanelDeclarations($eiu), $readOnly);
 	}
 }
