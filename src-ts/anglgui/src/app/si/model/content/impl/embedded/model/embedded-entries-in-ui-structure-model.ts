@@ -1,14 +1,12 @@
-import { EmbeddedEntriesInModel } from '../comp/embedded-entry-in-model';
+import { EmbeddedEntriesInModel } from '../comp/embedded-entries-in-model';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { EmbeddedEntriesSummaryInComponent } from '../comp/embedded-entries-summary-in/embedded-entries-summary-in.component';
 import { EmbeddedEntriesInComponent } from '../comp/embedded-entries-in/embedded-entries-in.component';
-import { EmbeddedEntriesConfig } from './embedded-entries-config';
 import { EmbeddedAddPasteObtainer } from './embedded-add-paste-obtainer';
 import { AddPasteObtainer } from '../comp/add-paste-obtainer';
 import { EmbeddedEntryObtainer } from './embedded-entry-obtainer';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
-import { EmbeInCollection, EmbeInSource } from './embe-collection';
 import { UiZoneError } from 'src/app/ui/structure/model/ui-zone-error';
 import { SiControl } from 'src/app/si/model/control/si-control';
 import { SimpleSiControl } from 'src/app/si/model/control/impl/model/simple-si-control';
@@ -16,7 +14,6 @@ import { TranslationService } from 'src/app/util/i18n/translation.service';
 
 import { PopupUiLayer } from 'src/app/ui/structure/model/ui-layer';
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
-import { Embe } from './embe';
 import { SiGenericEntry } from 'src/app/si/model/generic/si-generic-entry';
 import { SiButton } from 'src/app/si/model/control/impl/model/si-button';
 import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
@@ -25,13 +22,16 @@ import { UiStructureModelAdapter } from 'src/app/ui/structure/model/impl/ui-stru
 import { SiFrame } from 'src/app/si/model/meta/si-frame';
 import { EmbeddedEntryComponent } from '../comp/embedded-entry/embedded-entry.component';
 import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
+import { EmbeInCollection, EmbeInSource } from './embe/embe-collection';
+import { Embe } from './embe/embe';
+import { EmbeddedEntriesInConfig } from './embe/embedded-entries-config';
 
 export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter implements EmbeddedEntriesInModel {
 	private embeInCol: EmbeInCollection;
 	private embeInUiStructureManager: EmbeInUiStructureManager|null = null;
 
 	constructor(private obtainer: EmbeddedEntryObtainer, public frame: SiFrame,
-			embeInSource: EmbeInSource, private config: EmbeddedEntriesConfig,
+			embeInSource: EmbeInSource, private config: EmbeddedEntriesInConfig,
 			private translationService: TranslationService, disabledSubject: Observable<boolean>|null = null) {
 		super();
 		this.disabled$ = disabledSubject;

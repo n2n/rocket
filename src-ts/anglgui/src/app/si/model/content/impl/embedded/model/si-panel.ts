@@ -1,8 +1,8 @@
 import { SiEmbeddedEntry } from './si-embedded-entry';
-import { EmbeddedEntriesConfig } from './embedded-entries-config';
-import { EmbeInSource } from './embe-collection';
+import { EmbeddedEntriesInConfig } from './embe/embedded-entries-config';
+import { EmbeInSource } from './embe/embe-collection';
 
-export class SiPanel implements EmbeddedEntriesConfig, EmbeInSource {
+export class SiPanel implements EmbeddedEntriesInConfig, EmbeInSource {
 	values: SiEmbeddedEntry[] = [];
 	allowedTypeIds: string[]|null = null;
 	min = 0;

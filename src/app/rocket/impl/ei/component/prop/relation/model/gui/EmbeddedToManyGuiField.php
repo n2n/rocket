@@ -26,16 +26,15 @@ use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\util\Eiu;
 use rocket\ei\util\frame\EiuFrame;
 use rocket\si\content\SiField;
-use rocket\si\content\impl\relation\EmbeddedEntryInSiField;
+use rocket\si\content\impl\relation\EmbeddedEntriesInSiField;
 use rocket\si\content\impl\SiFields;
 use n2n\util\type\CastUtils;
 use rocket\ei\util\entry\EiuEntry;
 use rocket\si\input\SiEntryInput;
 use rocket\si\input\CorruptedSiInputDataException;
 use rocket\si\content\impl\relation\EmbeddedEntryInputHandler;
-use rocket\si\content\impl\relation\SiEmbeddedEntry;
 use rocket\ei\manage\gui\GuiFieldMap;
-use rocket\ei\util\gui\EiuEntryGuiTypeDef;
+use n2n\util\ex\IllegalStateException;
 
 class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandler {
 	/**
@@ -51,22 +50,33 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandler {
 	 */
 	private $targetEiuFrame;
 	/**
-	 * @var EmbeddedEntryInSiField
+	 * @var EmbeddedEntriesInSiField
 	 */
 	private $siField;
 	/**
 	 * @var EmbeddedGuiCollection
 	 */
 	private $embeddedGuiCollection;
+	/**
+	 * @var bool
+	 */
+	private $readOnly;
 	
-	function __construct(Eiu $eiu, EiuFrame $targetEiuFrame, RelationModel $relationModel) {
+	function __construct(Eiu $eiu, EiuFrame $targetEiuFrame, RelationModel $relationModel, bool $readOnly) {
 		$this->eiu = $eiu;
 		$this->targetEiuFrame = $targetEiuFrame;
 		$this->relationModel = $relationModel;
-		$this->embeddedGuiCollection = new EmbeddedGuiCollection(false, $relationModel->isReduced(), 
+		$this->embeddedGuiCollection = new EmbeddedGuiCollection($readOnly, $relationModel->isReduced(), 
 				$relationModel->getMin(), $targetEiuFrame, null);
+		$this->readOnly = $readOnly;
 		
-		$this->siField = SiFields::embeddedEntryIn($this->targetEiuFrame->createSiFrame(),
+		if ($readOnly) {
+			$this->siField = SiFields::embeddedEntriesOut($this->targetEiuFrame->createSiFrame(), $this->readValues())
+					->setReduced($this->relationModel->isReduced());
+			return;
+		}
+		
+		$this->siField = SiFields::embeddedEntriesIn($this->targetEiuFrame->createSiFrame(),
 						$this, $this->readValues(), (int) $relationModel->getMin(), $relationModel->getMax())
 				->setReduced($this->relationModel->isReduced())
 				->setNonNewRemovable($this->relationModel->isRemovable())
@@ -90,24 +100,26 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandler {
 			$this->embeddedGuiCollection->sort($targetOrderEiPropPath);
 		}
 		
-		$this->embeddedGuiCollection->fillUp();
+		if (!$this->readOnly) {
+			$this->embeddedGuiCollection->fillUp();
+		}
 		
 		return $this->embeddedGuiCollection->createSiEmbeddedEntries(); 
 	}
 	
 	
 	
-	/**
-	 * @param EiuEntryGuiTypeDef $eiuEntryGuiMulti
-	 * @return \rocket\si\content\impl\relation\SiEmbeddedEntry
-	 */
-	private function createSiEmbeddeEntryFromMulti($eiuEntryGuiMulti) {
-		return new SiEmbeddedEntry(
-				$eiuEntryGuiMulti->createBulkyEntrySiGui(false, false),
-				($this->relationModel->isReduced() ?
-						$eiuEntryGuiMulti->entry()->newGui(false, false)->createCompactEntrySiGui(false, false):
-						null));
-	}
+// 	/**
+// 	 * @param EiuEntryGuiTypeDef $eiuEntryGuiMulti
+// 	 * @return \rocket\si\content\impl\relation\SiEmbeddedEntry
+// 	 */
+// 	private function createSiEmbeddeEntryFromMulti($eiuEntryGuiMulti) {
+// 		return new SiEmbeddedEntry(
+// 				$eiuEntryGuiMulti->createBulkyEntrySiGui(false, false),
+// 				($this->relationModel->isReduced() ?
+// 						$eiuEntryGuiMulti->entry()->newGui(false, false)->createCompactEntrySiGui(false, false):
+// 						null));
+// 	}
 	
 	
 	
@@ -116,12 +128,16 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandler {
 	 * @throws CorruptedSiInputDataException
 	 */
 	function handleInput(array $siEntryInputs): array {
+		IllegalStateException::assertTrue(!$this->readOnly);
+		
 		$this->embeddedGuiCollection->handleSiEntryInputs($siEntryInputs);
 		$this->embeddedGuiCollection->fillUp();
 		return $this->embeddedGuiCollection->createSiEmbeddedEntries();
 	}
 	
 	function save() {
+		IllegalStateException::assertTrue(!$this->readOnly);
+		
 		$targetOrderEiPropPath = $this->relationModel->getTargetOrderEiPropPath();
 		
 		$eiuEntries = $this->embeddedGuiCollection->save($targetOrderEiPropPath);

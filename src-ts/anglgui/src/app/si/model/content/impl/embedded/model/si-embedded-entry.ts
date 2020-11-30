@@ -2,8 +2,8 @@
 import { SiEntry } from 'src/app/si/model/content/si-entry';
 import { BulkyEntrySiGui } from 'src/app/si/model/gui/impl/model/bulky-entry-si-gui';
 import { CompactEntrySiGui } from 'src/app/si/model/gui/impl/model/compact-entry-si-gui';
-import { SiGenericEmbeddedEntry, SiEmbeddedEntryResetPoint } from './generic-embedded';
 import { SiMaskQualifier } from 'src/app/si/model/meta/si-mask-qualifier';
+import { SiGenericEmbeddedEntry, SiEmbeddedEntryResetPoint } from './generic/generic-embedded';
 
 export class SiEmbeddedEntry {
 

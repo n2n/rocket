@@ -3,11 +3,11 @@ import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { SiEmbeddedEntry } from '../../model/si-embedded-entry';
 import { AddPasteObtainer } from '../add-paste-obtainer';
-import { Embe } from '../../model/embe';
-import { EmbeInCollection } from '../../model/embe-collection';
-import { EmbeddedEntriesInModel } from '../embedded-entry-in-model';
 import { ClipboardService } from 'src/app/si/model/generic/clipboard.service';
-import { CopyPool } from '../../model/embe-copy-pool';
+import { EmbeddedEntriesInModel } from '../embedded-entries-in-model';
+import { EmbeInCollection } from '../../model/embe/embe-collection';
+import { Embe } from '../../model/embe/embe';
+import { CopyPool } from '../../model/embe/embe-copy-pool';
 
 
 @Component({

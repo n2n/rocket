@@ -1,13 +1,13 @@
-import { SiEmbeddedEntry } from './si-embedded-entry';
-import { SiEntryIdentifier } from '../../../si-entry-qualifier';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
 import { SiGenericEmbeddedEntryCollection, SiGenericEmbeddedEntry, SiEmbeddedEntryResetPointCollection } from './generic-embedded';
-import { EmbeddedEntryObtainer } from './embedded-entry-obtainer';
 import { SiFrame } from 'src/app/si/model/meta/si-frame';
 import { SiService } from 'src/app/si/manage/si.service';
 import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
-import { SiField } from '../../../si-field';
 import { SiModStateService } from 'src/app/si/model/mod/model/si-mod-state.service';
+import { SiEmbeddedEntry } from '../si-embedded-entry';
+import { SiEntryIdentifier } from '../../../../si-entry-qualifier';
+import { SiField } from '../../../../si-field';
+import { EmbeddedEntryObtainer } from '../embedded-entry-obtainer';
 
 export class GenericEmbeddedEntryManager {
 

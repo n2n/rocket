@@ -24,7 +24,7 @@ namespace rocket\si\content\impl;
 use n2n\io\managed\File;
 use n2n\util\uri\Url;
 use rocket\si\content\impl\relation\QualifierSelectInSiField;
-use rocket\si\content\impl\relation\EmbeddedEntryInSiField;
+use rocket\si\content\impl\relation\EmbeddedEntriesInSiField;
 use rocket\si\content\impl\relation\EmbeddedEntryPanelsInSiField;
 use rocket\si\content\impl\relation\EmbeddedEntryPanelInputHandler;
 use rocket\si\content\impl\relation\EmbeddedEntryInputHandler;
@@ -38,6 +38,7 @@ use rocket\si\meta\SiFrame;
 use rocket\si\content\impl\string\CkeInSiField;
 use rocket\si\content\impl\meta\SiCrumb;
 use rocket\si\content\impl\meta\CrumbOutSiField;
+use rocket\si\content\impl\relation\EmbeddedEntriesOutSiField;
 
 class SiFields {
 	
@@ -124,18 +125,27 @@ class SiFields {
 	static function qualifierSelectIn(SiFrame $frame, array $values = [], int $min = 0, int $max = null, array $pickables = null) {
 		return (new QualifierSelectInSiField($frame, $values))->setMin($min)->setMax($max)->setPickables($pickables);
 	}
-	
+
 	/**
-	 * @param Url $apiUrl
+	 * @param SiFrame $frame
 	 * @param array $values
-	 * @param array $summarySiContents
+	 * @return \rocket\si\content\impl\relation\EmbeddedEntriesOutSiField
+	 */
+	static function embeddedEntriesOut(SiFrame $frame, array $values = []) {
+		return new EmbeddedEntriesOutSiField($frame, $values);
+	}
+
+	/**
+	 * @param SiFrame $frame
+	 * @param EmbeddedEntryInputHandler $inputHandler
+	 * @param array $values
 	 * @param int $min
 	 * @param int $max
-	 * @return EmbeddedEntryInSiField
+	 * @return \rocket\si\content\impl\relation\EmbeddedEntriesInSiField
 	 */
-	static function embeddedEntryIn(SiFrame $frame, EmbeddedEntryInputHandler $inputHandler, array $values = [], 
+	static function embeddedEntriesIn(SiFrame $frame, EmbeddedEntryInputHandler $inputHandler, array $values = [], 
 			int $min = 0, int $max = null) {
-		return (new EmbeddedEntryInSiField($frame, $inputHandler, $values))->setMin($min)->setMax($max);
+		return (new EmbeddedEntriesInSiField($frame, $inputHandler, $values))->setMin($min)->setMax($max);
 	}
 	
 	/**

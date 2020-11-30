@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Embe } from '../../model/embe';
+import { Embe } from '../../model/embe/embe';
 
 @Component({
 	selector: 'rocket-embedded-entry',

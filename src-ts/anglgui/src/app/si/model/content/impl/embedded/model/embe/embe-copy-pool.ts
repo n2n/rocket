@@ -1,8 +1,7 @@
-import { SiEmbeddedEntry } from './si-embedded-entry';
-import { SiGenericEmbeddedEntry } from './generic-embedded';
 import { ClipboardService } from 'src/app/si/model/generic/clipboard.service';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
 import { Embe } from './embe';
+import { SiEmbeddedEntry } from '../si-embedded-entry';
 
 export class CopyPool {
 	private copyEvents = new Array<CopyEvent>();
@@ -64,12 +63,11 @@ export class CopyPool {
 	isCopied(embe: Embe) {
 		const i = this.copyEvents.findIndex(copyEvent => copyEvent.siEmbeddedEntry === embe.siEmbeddedEntry);
 
-		return i !== -1 && this.clipboard.has(this.copyEvents[i].genericValue); 
+		return i !== -1 && this.clipboard.has(this.copyEvents[i].genericValue);
 	}
-	
 }
 
 interface CopyEvent {
-	siEmbeddedEntry: SiEmbeddedEntry
+	siEmbeddedEntry: SiEmbeddedEntry;
 	genericValue: SiGenericValue;
 }

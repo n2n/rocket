@@ -1,10 +1,7 @@
 import { Component, OnInit, Input, EventEmitter, Output, HostListener } from '@angular/core';
-import { SiEntryQualifier } from 'src/app/si/model/content/si-entry-qualifier';
 import { SiEmbeddedEntry } from '../../model/si-embedded-entry';
-import { SiMaskQualifier } from 'src/app/si/model/meta/si-mask-qualifier';
 import { AddPasteObtainer } from '../add-paste-obtainer';
 import { ClipboardService } from 'src/app/si/model/generic/clipboard.service';
-import { SiGenericEmbeddedEntry } from '../../model/generic-embedded';
 import { ChoosePasteModel } from '../choose-paste/choose-paste-model';
 
 
@@ -85,7 +82,7 @@ export class AddPasteComponent implements OnInit {
 	private handleAddResponse(siEmbeddedEntry: SiEmbeddedEntry) {
 		this.choosePasteModel = new ChoosePasteModel(siEmbeddedEntry, this.clipboardService);
 
-		if (siEmbeddedEntry.selectedTypeId && this.choosePasteModel.pastables.length === 0 
+		if (siEmbeddedEntry.selectedTypeId && this.choosePasteModel.pastables.length === 0
 				&& this.choosePasteModel.illegalPastables.length === 0) {
 			// this.siEmbeddedEntry.selectedTypeId = siMaskQualifier.identifier.typeId;
 			this.choose(siEmbeddedEntry);

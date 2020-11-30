@@ -4,7 +4,7 @@ import { NumberInSiField } from '../model/content/impl/alphanum/model/number-in-
 import { FileOutSiField } from '../model/content/impl/file/model/file-out-si-field';
 import { FileInSiField } from '../model/content/impl/file/model/file-in-si-field';
 import { QualifierSelectInSiField } from '../model/content/impl/qualifier/model/qualifier-select-in-si-field';
-import { EmbeddedEntriesInSiField } from '../model/content/impl/embedded/model/embedded-entry-in-si-field';
+import { EmbeddedEntriesInSiField } from '../model/content/impl/embedded/model/embedded-entries-in-si-field';
 import { EmbeddedEntryPanelsInSiField } from '../model/content/impl/embedded/model/embedded-entry-panels-in-si-field';
 import { SiMetaFactory } from './si-meta-factory';
 import { BooleanInSiField } from '../model/content/impl/boolean/boolean-in-si-field';
@@ -26,12 +26,11 @@ import { SiDeclaration } from '../model/meta/si-declaration';
 import { SiService } from '../manage/si.service';
 import { SiControlBoundry } from '../model/control/si-control-bountry';
 import { TranslationService } from 'src/app/util/i18n/translation.service';
-import { UiFactory } from 'src/app/ui/build/ui-factory';
 import { CkeInSiField } from '../model/content/impl/alphanum/model/cke-in-si-field';
 import { CrumbOutSiField } from '../model/content/impl/meta/model/crumb-out-si-field';
-import { SiUiService } from '../manage/si-ui.service';
 import { SiControlFactory } from './si-control-factory';
 import { SiModStateService } from '../model/mod/model/si-mod-state.service';
+import { EmbeddedEntriesOutSiField } from '../model/content/impl/embedded/model/embedded-entries-out-si-field';
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',
@@ -44,7 +43,8 @@ enum SiFieldType {
 	LINK_OUT = 'link-out',
 	ENUM_IN = 'enum-in',
 	QUALIFIER_SELECT_IN = 'qualifier-select-in',
-	EMBEDDED_ENTRY_IN = 'embedded-entry-in',
+	EMBEDDED_ENTRIES_OUT = 'embedded-entries-out',
+	EMBEDDED_ENTRIES_IN = 'embedded-entries-in',
 	EMBEDDED_ENTRY_PANELS_IN = 'embedded-entry-panels-in',
 	SPLIT_CONTEXT_IN = 'split-context-in',
 	SPLIT_CONTEXT_OUT = 'split-context-out',
@@ -148,7 +148,16 @@ export class SiFieldFactory {
 			qualifierSelectInSiField.pickables = SiGuiFactory.buildEntryQualifiers(dataExtr.nullaArray('pickables'));
 			return qualifierSelectInSiField;
 
-		case SiFieldType.EMBEDDED_ENTRY_IN:
+		case SiFieldType.EMBEDDED_ENTRIES_OUT:
+			const embeddedEntryOutSiField = new EmbeddedEntriesOutSiField(this.injector.get(SiService),
+					this.injector.get(SiModStateService), SiMetaFactory.createFrame(dataExtr.reqObject('frame')),
+					this.injector.get(TranslationService),
+					new SiGuiFactory(this.injector).createEmbeddedEntries(dataExtr.reqArray('values')));
+			embeddedEntryOutSiField.config.reduced = dataExtr.reqBoolean('reduced');
+
+			return embeddedEntryOutSiField;
+
+		case SiFieldType.EMBEDDED_ENTRIES_IN:
 			const embeddedEntryInSiField = new EmbeddedEntriesInSiField(prop.label, this.injector.get(SiService),
 					this.injector.get(SiModStateService), SiMetaFactory.createFrame(dataExtr.reqObject('frame')),
 					this.injector.get(TranslationService),

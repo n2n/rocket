@@ -14,9 +14,9 @@ import { TranslationService } from 'src/app/util/i18n/translation.service';
 import { UiZoneError } from 'src/app/ui/structure/model/ui-zone-error';
 import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
 import { SiFrame } from 'src/app/si/model/meta/si-frame';
-import { GenericEmbeddedEntryManager } from './generic-embedded-entry-manager';
 import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
 import { SiModStateService } from 'src/app/si/model/mod/model/si-mod-state.service';
+import { GenericEmbeddedEntryManager } from './generic/generic-embedded-entry-manager';
 
 class GenericSiPanelValueCollection {
 	public map = new Map<string, SiGenericValue>();
@@ -110,7 +110,7 @@ export class EmbeddedEntryPanelsInSiField extends SiFieldAdapter  {
 	}
 
 	resetToPoint(genericValue: SiGenericValue): void {
-		const col = genericValue.readInstance(GenericSiPanelValueCollection)
+		const col = genericValue.readInstance(GenericSiPanelValueCollection);
 
 		for (const panel of this.panels) {
 			if (!col.map.has(panel.name)) {

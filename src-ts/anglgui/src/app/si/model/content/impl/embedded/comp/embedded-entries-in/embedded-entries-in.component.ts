@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { EmbeddedEntriesInModel } from '../embedded-entry-in-model';
+import { EmbeddedEntriesInModel } from '../embedded-entries-in-model';
 import { SiEmbeddedEntry } from '../../model/si-embedded-entry';
 import { AddPasteObtainer } from '../add-paste-obtainer';
-import { Embe } from '../../model/embe';
-import { EmbeInCollection } from '../../model/embe-collection';
+import { EmbeInCollection } from '../../model/embe/embe-collection';
+import { Embe } from '../../model/embe/embe';
 
 @Component({
 	selector: 'rocket-embedded-entries-in',

@@ -26,7 +26,7 @@ use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\util\Eiu;
 use rocket\ei\util\frame\EiuFrame;
 use rocket\si\content\SiField;
-use rocket\si\content\impl\relation\EmbeddedEntryInSiField;
+use rocket\si\content\impl\relation\EmbeddedEntriesInSiField;
 use rocket\si\content\impl\SiFields;
 use rocket\si\input\SiEntryInput;
 use rocket\si\input\CorruptedSiInputDataException;
@@ -47,7 +47,7 @@ class EmbeddedToOneGuiField implements GuiField, EmbeddedEntryInputHandler {
 	 */
 	private $targetEiuFrame;
 	/**
-	 * @var EmbeddedEntryInSiField
+	 * @var EmbeddedEntriesInSiField
 	 */
 	private $siField;
 	/**
@@ -62,7 +62,7 @@ class EmbeddedToOneGuiField implements GuiField, EmbeddedEntryInputHandler {
 		$this->emebeddedGuiCollection = new EmbeddedGuiCollection(false, $relationModel->isReduced(), 
 				$this->relationModel->getMin(), $targetEiuFrame, null);
 		
-		$this->siField = SiFields::embeddedEntryIn($this->targetEiuFrame->createSiFrame(),
+		$this->siField = SiFields::embeddedEntriesIn($this->targetEiuFrame->createSiFrame(),
 						$this, $this->readValues(), (int) $relationModel->getMin(), $relationModel->getMax())
 				->setReduced($this->relationModel->isReduced())
 				->setNonNewRemovable($this->relationModel->isRemovable());
