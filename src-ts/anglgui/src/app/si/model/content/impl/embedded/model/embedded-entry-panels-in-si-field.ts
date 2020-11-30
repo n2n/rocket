@@ -15,7 +15,7 @@ import { SiFrame } from 'src/app/si/model/meta/si-frame';
 import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
 import { SiModStateService } from 'src/app/si/model/mod/model/si-mod-state.service';
 import { GenericEmbeddedEntryManager } from './generic/generic-embedded-entry-manager';
-import { EmbeddedEntryPanelsComponent } from '../comp/embedded-entry-panels-in/embedded-entry-panels.component';
+import { EmbeddedEntryPanelsComponent } from '../comp/embedded-entry-panels/embedded-entry-panels.component';
 import { PanelDef } from '../comp/embedded-entry-panels-model';
 
 class GenericSiPanelValueCollection {
