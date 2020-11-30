@@ -74,6 +74,7 @@ export class ButtonControlComponent implements OnInit {
 
 		if (!siConfirm) {
 			this.model.exec(this.uiZone, key);
+			return;
 		}
 
 		this.uiZone.createConfirmDialog(siConfirm.message, siConfirm.okLabel, siConfirm.cancelLabel)
