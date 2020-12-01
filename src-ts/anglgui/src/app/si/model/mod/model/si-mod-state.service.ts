@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { SiEntryIdentifier } from '../../content/si-entry-qualifier';
 import { SiEntry } from '../../content/si-entry';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
-import { Subject, Observable, BehaviorSubject } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { Subject, Observable, BehaviorSubject, ReplaySubject } from 'rxjs';
+import { filter, skip } from 'rxjs/operators';
 import { Message } from 'src/app/util/i18n/message';
 
 @Injectable({
@@ -29,9 +29,7 @@ export class SiModStateService {
 	}
 
 	get modEvent$(): Observable<SiModEvent> {
-		return this.lastModEventSubject.pipe(filter((modEvent: SiModEvent) => {
-			return !!modEvent;
-		}));
+		return this.lastModEventSubject.pipe(skip(1));
 	}
 
 	get lastModEvent(): SiModEvent|null {

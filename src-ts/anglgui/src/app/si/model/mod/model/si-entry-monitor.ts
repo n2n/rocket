@@ -92,7 +92,7 @@ export class SiEntryMonitor {
 				continue;
 			}
 
-			for (const siEntry of this.entriesMap.get(id)) {
+			for (const siEntry of this.entriesMap.get(id).filter(e => e.identifier.equals(siEntryIdentifier))) {
 				siEntry.markAsRemoved();
 			}
 		}
@@ -105,7 +105,7 @@ export class SiEntryMonitor {
 				continue;
 			}
 
-			for (const siEntry of this.entriesMap.get(id)) {
+			for (const siEntry of this.entriesMap.get(id).filter(e => e.identifier.equals(siEntryIdentifier))) {
 				siEntry.markAsOutdated();
 				this.nextReloadJob.addSiEntry(siEntry);
 				if (!shownEntryUpdated && this.modStateService.isEntryShown(siEntry)) {
