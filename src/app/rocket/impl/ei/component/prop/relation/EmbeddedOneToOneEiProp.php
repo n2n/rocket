@@ -34,7 +34,6 @@ use rocket\ei\component\prop\FieldEiProp;
 use rocket\impl\ei\component\prop\relation\model\ToOneEiField;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\entry\EiField;
-use rocket\impl\ei\component\prop\relation\model\gui\RelationLinkGuiField;
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\impl\ei\component\prop\relation\model\gui\EmbeddedToOneGuiField;
 

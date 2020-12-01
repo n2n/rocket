@@ -88,7 +88,7 @@ class EmbeddedGuiCollection {
 		}
 		
 		IllegalStateException::assertTrue($this->eiuFrame !== null);
-		$eiuGuiModel = $this->eiuFrame->contextEngine()->newForgeMultiGuiModel(true, false, $this->allowedEiuTypes);
+		$eiuGuiModel = $this->eiuFrame->contextEngine()->newForgeMultiGuiModel(true, $this->readOnly, $this->allowedEiuTypes);
 		for ($i = 0; $i < $num; $i++) {
 			$this->eiuEntryGuis[] = $eiuGuiModel->newEntryGui();
 		}
@@ -148,7 +148,7 @@ class EmbeddedGuiCollection {
 		return new SiEmbeddedEntry(
 				$eiuEntryGui->gui()->createBulkyEntrySiGui(false, false),
 				($this->summaryRequired ?
-						$eiuEntryGui->gui()->copy(false, true)->createCompactEntrySiGui(false, false):
+						$eiuEntryGui->gui()->copy(false, true)->createCompactEntrySiGui($this->readOnly, false):
 						null));
 	}
 	

@@ -6,3 +6,9 @@
 		<div rocketUiStructure [uiStructure]="fieldUiStructure"></div>
 	</ng-container>
 </ng-container>
+
+<div class="rocket-simple-commands">
+	<ng-container *ngFor="let controlUiContent of controlUiContents">
+		<ng-template rocketUiContent [uiContent]="controlUiContent"></ng-template>
+	</ng-container>
+</div>

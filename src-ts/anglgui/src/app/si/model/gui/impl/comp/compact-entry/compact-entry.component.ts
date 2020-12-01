@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, DoCheck } from '@angular/core';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiEntry } from 'src/app/si/model/content/si-entry';
 import { CompactEntryModel } from '../compact-entry-model';
+import { UiContent } from 'src/app/ui/structure/model/ui-content';
 
 @Component({
 	selector: 'rocket-compact-entry',
@@ -14,6 +15,7 @@ export class CompactEntryComponent implements OnInit, OnDestroy, DoCheck {
 
 	siEntry: SiEntry|null = null;
 	fieldUiStructures: UiStructure[] = [];
+	controlUiContents: UiContent[] = [];
 
 	constructor() { }
 
@@ -54,6 +56,10 @@ export class CompactEntryComponent implements OnInit, OnDestroy, DoCheck {
 			structure.model = siEntryBuildup.getFieldById(siProp.id).createUiStructureModel();
 			this.fieldUiStructures.push(structure);
 		}
+
+		for (const siControl of siEntryBuildup.controls) {
+			this.controlUiContents.push(siControl.createUiContent(this.uiStructure.getZone()));
+		}
 	}
 
 	private clear() {
@@ -65,5 +71,7 @@ export class CompactEntryComponent implements OnInit, OnDestroy, DoCheck {
 		while (uiStructure = this.fieldUiStructures.pop()) {
 			uiStructure.dispose();
 		}
+
+		this.controlUiContents = [];
 	}
 }
