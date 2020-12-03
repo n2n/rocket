@@ -120,9 +120,9 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 		});
 	}
 
-	private rebuildStructures(siEntry: SiEntry) {}
+	private rebuildStructures(siEntry: SiEntry) {
 
-		while (this.siEntry.replacementEntry) {
+		while (siEntry.replacementEntry) {
 			this.siEntry = this.siEntry.replacementEntry;
 		}
 
