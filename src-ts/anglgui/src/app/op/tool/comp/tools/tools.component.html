@@ -1,5 +1,10 @@
+<!--[messages]="messagesArray"-->
 <rocket-ui-simple-zone-container [title]="'tools_title' | translate" [breadcrumbs]="uiBreadcrumbs">
-    <ul>
-        <li><a routerLink="/tools/mail-center">{{ 'mail_center_txt' | translate }}</a></li>
-    </ul>
+	<ul>
+		<li><a routerLink="/tools/mail-center">{{ 'mail_center_txt' | translate }}</a></li>
+		<li>
+			<button (click)="clearCache()">{{ 'tools_cache_cleared_title' | translate }}</button>
+			<span *ngIf="cacheRecentlyCleared">{{'tools_cache_cleared_info' | translate}}</span>
+		</li>
+	</ul>
 </rocket-ui-simple-zone-container>

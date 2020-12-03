@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnInit, Output} from '@angular/core';
 
 @Component({
 	selector: 'rocket-ui-pagination',
@@ -11,7 +11,12 @@ export class PaginationComponent implements OnInit {
 	@Input() currentPageNo = 1;
 	@Output() currentPageNoChange = new EventEmitter<number>();
 
-	set internalPageNo(pageNo) {
+  constructor(elemRef: ElementRef) {
+    elemRef.nativeElement.classList.add('rocket-pagination');
+  }
+
+
+  set internalPageNo(pageNo) {
 		if (!this.validatePageNo(pageNo)) {
 			return;
 		}
@@ -39,11 +44,7 @@ export class PaginationComponent implements OnInit {
 			return false;
 		}
 
-		if (isNaN(pageNo)) {
-			return false;
-		}
-
-		return true;
+		return !isNaN(pageNo);
 	}
 
 	ngOnInit(): void {
