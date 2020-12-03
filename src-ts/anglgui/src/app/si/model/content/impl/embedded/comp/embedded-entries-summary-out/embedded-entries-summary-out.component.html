@@ -21,13 +21,20 @@
 
 		<ng-container *ngIf="!embe.isPlaceholder() && embe.isTypeSelected()">
 			<div rocketUiStructure class="rocket-summary" 
-						[uiStructure]="embe.summaryUiStructure" [toolbarVisible]="false">
+						[uiStructure]="embe.summaryUiStructure" [toolbarVisible]="false"
+						rocketSiEntry [siEntry]="embe.siEmbeddedEntry.summaryEntry">
 				<ng-container pre-content>
 					<rocket-si-qualifier [siMaskQualifier]="embe.siEntry.qualifier.maskQualifier"></rocket-si-qualifier>
 				</ng-container>
 
 				<ng-container post-content>
 					<div class="rocket-simple-commands">
+						<ng-template *ngFor="let uiContent of embe.summaryUiStructure.model.getMainControlContents()" 
+								rocketUiContent [uiContent]="uiContent"></ng-template>
+								
+						<ng-template *ngFor="let uiContent of embe.summaryUiStructure.model.getAsideContents()" 
+								rocketUiContent [uiContent]="uiContent"></ng-template>
+					
 						<button class="btn btn-warning" (click)="open(embe)">
 							<span>{{ 'common_detail_label' | translate }}</span>
 							<i class="fa fa-file"></i>

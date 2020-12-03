@@ -10,6 +10,14 @@ export class SiEmbeddedEntry {
 	constructor(public comp: BulkyEntrySiGui, public summaryComp: CompactEntrySiGui|null) {
 	}
 
+	get summaryEntry(): SiEntry|null {
+		if (this.summaryComp) {
+			return this.summaryComp.entry;
+		}
+		
+		return null;
+	}
+	
 	get entry(): SiEntry {
 		return this.comp.entry;
 	}

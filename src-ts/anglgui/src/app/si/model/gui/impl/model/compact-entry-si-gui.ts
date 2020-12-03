@@ -29,10 +29,6 @@ export class CompactEntrySiGui implements SiGui, CompactEntryModel, SiControlBou
 		return this.entry.getMessages();
 	}
 
-	getSelectedEntries(): SiEntry[] {
-		return [];
-	}
-
 	getSiEntry(): SiEntry|null {
 		return this.entry;
 	}
