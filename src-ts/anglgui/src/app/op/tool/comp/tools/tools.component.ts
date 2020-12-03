@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import {TranslationService} from '../../../../util/i18n/translation.service';
 import {UiBreadcrumb} from '../../../../ui/structure/model/ui-zone';
 import {ToolsService} from "../../model/tools.service";
+import {UiToast} from "../../../../ui/structure/model/ui-toast";
+import {Message, MessageSeverity} from "../../../../util/i18n/message";
 
 @Component({
 	selector: 'rocket-tools',
@@ -12,6 +14,7 @@ export class ToolsComponent implements OnInit {
 	uiBreadcrumbs: UiBreadcrumb[];
 
 	cacheRecentlyCleared: boolean;
+  toasts: UiToast[] = [];
 
 	constructor(translationService: TranslationService, private toolsService: ToolsService) {
 		this.uiBreadcrumbs = [
@@ -26,12 +29,11 @@ export class ToolsComponent implements OnInit {
 
 	public clearCache(): void {
     this.toolsService.clearCache().toPromise().then(() => {
-      this.cacheRecentlyCleared = true;
-      setTimeout(() => { this.cacheRecentlyCleared = false }, 2000);
+      this.toasts.push(new UiToast(new Message("tools_cache_cleared_info", false,
+          MessageSeverity.SUCCESS), 2000));
     });
   }
 
 	ngOnInit(): void {
 	}
-
 }

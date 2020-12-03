@@ -16,12 +16,13 @@ import { TogglerComponent } from './util/comp/toggler/toggler.component';
 import { SearchInputGroupComponent } from './util/comp/search-input-group/search-input-group.component';
 import { FormsModule } from '@angular/forms';
 import { SimpleZoneContainerComponent } from './structure/comp/simple-zone-container/simple-zone-container.component';
+import { ToastsComponent } from './util/comp/toasts/toasts.component';
 
 @NgModule({
 	declarations: [
 		LayerComponent, ContainerComponent, ZoneComponent, StructureComponent, StructureContentDirective,
 		StructureBranchComponent, PlainContentComponent, MessageComponent, BreadcrumbsComponent, NavPointDirective,
-		TogglerComponent, SearchInputGroupComponent, SimpleZoneContainerComponent
+		TogglerComponent, SearchInputGroupComponent, SimpleZoneContainerComponent, ToastsComponent
 	],
 	imports: [
 		CommonModule,

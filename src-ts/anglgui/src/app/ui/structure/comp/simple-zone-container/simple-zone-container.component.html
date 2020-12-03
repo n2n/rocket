@@ -1,16 +1,10 @@
-<!--<rocket-ui-toasts *ngIf="messages.length > 0 || toasts.length > 0" [messages]="" [toasts]=""></rocket-ui-toasts>-->
-<!--&lt;!&ndash; into toast comp &ndash;&gt;-->
-<!--@Timo: Design das!-->
-<!--@tomekk: Style das!-->
-<!--<rocket-ui-message *ngFor="let message of messages" [message]="message"></rocket-ui-message>-->
-<!--&lt;!&ndash; /// into toast comp &ndash;&gt;-->
-
 <div class="rocket-main-layer">
-
 	<div *ngIf="loading" class="rocket-loader"></div>
 
 	<div *ngIf="!loading" class="rocket-zone">
-		<header>
+    <rocket-ui-toasts *ngIf="messages.length > 0 || toasts.length > 0" [messages]="messages" [toasts]="toasts"></rocket-ui-toasts>
+
+    <header>
             <h1>{{ title }}</h1>
 
             <rocket-ui-breadcrumbs [uiBreadcrumbs]="breadcrumbs"></rocket-ui-breadcrumbs>

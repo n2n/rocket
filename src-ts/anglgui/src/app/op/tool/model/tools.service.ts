@@ -40,7 +40,7 @@ export class ToolsService {
 	}
 
   clearCache() {
-    return this.httpClient.get<any>('tools/clear-cache')
+	  return this.httpClient.get<any>('tools/clear-cache')
       .pipe(map((data) => {return data}));
   }
 }
