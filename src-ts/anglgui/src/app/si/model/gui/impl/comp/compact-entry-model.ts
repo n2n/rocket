@@ -1,9 +1,8 @@
-import { SiDeclaration } from '../../../meta/si-declaration';
-import { SiEntry } from '../../../content/si-entry';
+import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 
 export interface CompactEntryModel {
 
-	getSiDeclaration(): SiDeclaration;
+	isLoading(): boolean;
 
-	getSiEntry(): SiEntry|null;
+	getFieldUiStructures(): UiStructure[];
 }

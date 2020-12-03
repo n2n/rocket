@@ -1,17 +1,10 @@
 
-<div *ngIf="loading" class="rocket-loader"></div>
+<div *ngIf="model.isLoading()" class="rocket-loader"></div>
 
-<ng-container *ngIf="!loading">
+<ng-container *ngIf="!model.isLoading()">
 
-	<ng-container *ngFor="let fieldUiStructure of fieldUiStructures">
+	<ng-container *ngFor="let fieldUiStructure of model.getFieldUiStructures()">
 		<div rocketUiStructure [uiStructure]="fieldUiStructure"></div>
 	</ng-container>
 	
-	<div class="rocket-simple-commands">
-		<ng-container *ngFor="let controlUiContent of controlUiContents">
-			<ng-template rocketUiContent [uiContent]="controlUiContent"></ng-template>
-		</ng-container>
-	</div>
 </ng-container>
-
-

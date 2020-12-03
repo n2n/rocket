@@ -37,7 +37,7 @@ abstract class ContentItem extends ObjectAdapter {
 	private $id;
 	private $panel;
 	private $orderIndex;
-	private $online;
+// 	private $online;
 	
 	public function getId() {
 		return $this->id;
@@ -60,11 +60,7 @@ abstract class ContentItem extends ObjectAdapter {
 	}
 
 	public function isOnline() {
-		return $this->online;
-	}
-
-	public function setOnline(bool $online) {
-		$this->online = $online;
+		return true;
 	}
 	
 	public abstract function createUiComponent(HtmlView $view);	

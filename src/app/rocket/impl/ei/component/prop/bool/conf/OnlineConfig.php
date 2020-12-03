@@ -53,9 +53,9 @@ class OnlineConfig extends ConfigAdaption {
 	}
 	
 	function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
-		$this->dataSet->set(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY, false);
-		$this->dataSet->set(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, false);
-		$this->dataSet->set(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, false);
+		$dataSet->set(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY, false);
+		$dataSet->set(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, false);
+		$dataSet->set(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, false);
 	}
 	
 	function setup(Eiu $eiu, DataSet $dataSet) {
