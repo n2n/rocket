@@ -84,7 +84,7 @@ export class EmbeddedEntryObtainer  {
 			let summarySiGui: CompactEntrySiGui|null = null;
 			if (this.obtainSummary) {
 				result = response.results.shift();
-				summarySiGui = new CompactEntrySiGui(result.declaration);
+				summarySiGui = new CompactEntrySiGui(this.siFrame, result.declaration, this.siService, this.siModStateService);
 				summarySiGui.entry = result.entry;
 			}
 

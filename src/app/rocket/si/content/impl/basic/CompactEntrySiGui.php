@@ -27,13 +27,16 @@ use n2n\util\type\ArgUtils;
 use rocket\si\control\SiControl;
 use rocket\si\content\SiGui;
 use rocket\si\SiPayloadFactory;
+use rocket\si\meta\SiFrame;
 
 class CompactEntrySiGui implements SiGui {
+	private $frame;
 	private $declaration;
 	private $entry;
 	private $controls;
 	
-	function __construct(SiDeclaration $declaration, SiEntry $entry = null, array $controls = []) {
+	function __construct(SiFrame $frame, SiDeclaration $declaration, SiEntry $entry = null, array $controls = []) {
+		$this->frame = $frame;
 		$this->declaration = $declaration;
 		$this->setEntry($entry);
 		$this->setControls($controls);
@@ -82,6 +85,7 @@ class CompactEntrySiGui implements SiGui {
 	
 	public function getData(): array {
 		return [ 
+			'frame' => $this->frame,
 			'declaration' => $this->declaration,
 			'entry' => $this->entry,
 			'controls' => SiPayloadFactory::createDataFromControls($this->controls)

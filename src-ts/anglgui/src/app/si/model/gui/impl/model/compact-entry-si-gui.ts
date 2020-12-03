@@ -17,7 +17,7 @@ import { SiFrame } from '../../../meta/si-frame';
 import { SiModStateService } from '../../../mod/model/si-mod-state.service';
 import { SiService } from 'src/app/si/manage/si.service';
 
-export class CompactEntrySiGui implements SiGui, CompactEntryModel, SiControlBoundry {
+export class CompactEntrySiGui implements SiGui, SiControlBoundry {
 	private entrySubject = new BehaviorSubject<SiEntry|null>(null);
 	public entryControlsIncluded = true;
 	public controls: SiControl[] = [];
@@ -78,9 +78,9 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 			private siEntryMonitor: SiEntryMonitor) {
 		super();
 	}
-
-	getSiEntry(): SiEntry {
-		return this.siEntry;
+	
+	isLoading() {
+		return !this.currentSiEntry;
 	}
 
 	getSiDeclaration(): SiDeclaration {
@@ -92,8 +92,12 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 	}
 
 	getZoneErrors(): UiZoneError[] {
+		if (!this.currentSiEntry) {
+			return [];
+		}
+			
 		const zoneErrors = new Array<UiZoneError>();
-		const typeId = this.siEntry.selectedTypeId;
+		const typeId = this.currentSiEntry.selectedTypeId;
 
 		if (!typeId) {
 			return zoneErrors;
@@ -109,56 +113,73 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 	// 	return this.contentUiStructures;
 	// }
 
+	private currentSiEntry: SiEntry|null;
+	
 	bind(uiStructure: UiStructure): void {
 		super.bind(uiStructure);
 
-		this.subscription = this.siEntry$.subscribe((siEntry) => {
-			this.clear();
-			if (siEntry) {
-				this.rebuildStructures(siEntry);
-			}
-		});
-	}
-
-	private rebuildStructures(siEntry: SiEntry) {
-
-		while (siEntry.replacementEntry) {
-			this.siEntry = this.siEntry.replacementEntry;
-		}
-
-		this.subscription = new Subscription();
-
-		if (!this.siEntry.isMultiType()) {
-			this.rebuildStructures();
-		} else {
-			this.subscription.add(this.siEntry.selectedTypeId$.subscribe(() => {
-				this.rebuildStructures();
-			}));
-		}
-
 		this.siEntryMonitor.start();
-		this.monitorEntry();
-
+		
+		this.subscription = new Subscription();
+		
+		this.subscription.add(this.siEntry$.subscribe((siEntry) => {
+			this.rebuild(siEntry.getFinalReplacementEntry());
+		}));
+		
 		this.uiContent = new TypeUiContent(CompactEntryComponent, (ref) => {
 			ref.instance.model = this;
 		});
-
+		
 		this.mainControlUiContents = this.controls.map((control) => {
 			return control.createUiContent(uiStructure.getZone());
 		});
 	}
+	
+	private rebuild(siEntry: SiEntry|null) {
+		this.clear();
+		
+		if (!siEntry) {
+			return;
+		}
+		
+		this.currentSiEntry = siEntry;
 
-	private monitorEntry() {
-		this.siEntryMonitor.registerEntry(this.siEntry);
+		this.buildStructures(siEntry);
+		
+//		if (!siEntry.isMultiType()) {
+//			this.rebuild(siEntry);
+//		} else {
+//			this.subscription.add(siEntry.selectedTypeId$.subscribe(() => {
+//				this.rebuild(siEntry);
+//			}));
+//		}
 
-		const sub = this.siEntry.state$.subscribe((state) => {
+		this.monitorEntry(siEntry);
+		
+	}
+	
+	private buildStructures(siEntry: SiEntry) {
+		const siEntryBuildup = siEntry.selectedEntryBuildup;
+		const siMaskDeclaration = this.siDeclaration.getTypeDeclarationByTypeId(siEntry.selectedTypeId);
+
+		this.asideUiContents = siEntryBuildup.controls
+					.map(control => control.createUiContent(this.boundUiStructure.getZone()));
+
+		for (const siProp of siMaskDeclaration.getSiProps()) {
+			const structure = this.boundUiStructure.createChild();
+			structure.model = siEntryBuildup.getFieldById(siProp.id).createUiStructureModel();
+			this.fieldUiStructures.push(structure);
+		}
+	}
+
+	private monitorEntry(siEntry: SiEntry) {
+		this.siEntryMonitor.registerEntry(siEntry);
+
+		const sub = siEntry.state$.subscribe((state) => {
 			switch (state) {
 				case SiEntryState.REPLACED:
-					this.siEntryMonitor.unregisterEntry(this.siEntry);
-					this.siEntry = this.siEntry.replacementEntry;
 					this.subscription.remove(sub);
-					this.monitorEntry();
-					this.rebuildStructures();
+					this.rebuild(siEntry.replacementEntry);
 					break;
 			}
 		});
@@ -174,6 +195,8 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 
 		this.clear();
 
+		this.mainControlUiContents = [];
+		
 		if (this.subscription) {
 			this.subscription.unsubscribe();
 			this.subscription = null;
@@ -181,6 +204,11 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 	}
 
 	private clear() {
+		if (this.currentSiEntry) {
+			this.siEntryMonitor.unregisterEntry(this.currentSiEntry);
+			this.currentSiEntry = null;
+		}
+		
 		let fieldUiStructure: UiStructure;
 		while (fieldUiStructure = this.fieldUiStructures.pop()) {
 			fieldUiStructure.dispose();
@@ -189,20 +217,6 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 		this.asideUiContents = [];
 	}
 
-	private rebuildStructures() {
-		this.clear();
-
-		const siEntryBuildup = this.siEntry.selectedEntryBuildup;
-		const siMaskDeclaration = this.siDeclaration.getTypeDeclarationByTypeId(this.siEntry.selectedTypeId);
-
-		this.asideUiContents = siEntryBuildup.controls
-					.map(control => control.createUiContent(this.boundUiStructure.getZone()));
-
-		for (const siProp of siMaskDeclaration.getSiProps()) {
-			const structure = this.boundUiStructure.createChild();
-			structure.model = siEntryBuildup.getFieldById(siProp.id).createUiStructureModel();
-			this.fieldUiStructures.push(structure);
-		}
-	}
+	
 
 }
