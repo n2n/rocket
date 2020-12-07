@@ -13,7 +13,7 @@ import {Message, MessageSeverity} from "../../../../util/i18n/message";
 export class ToolsComponent implements OnInit {
 	uiBreadcrumbs: UiBreadcrumb[];
 
-	cacheRecentlyCleared: boolean;
+	clearCacheInProgress: boolean = false;
   toasts: UiToast[] = [];
 
 	constructor(translationService: TranslationService, private toolsService: ToolsService) {
@@ -28,9 +28,11 @@ export class ToolsComponent implements OnInit {
 	}
 
 	public clearCache(): void {
+    this.clearCacheInProgress = true;
     this.toolsService.clearCache().toPromise().then(() => {
       this.toasts.push(new UiToast(new Message("tools_cache_cleared_info", false,
           MessageSeverity.SUCCESS), 2000));
+      this.clearCacheInProgress = false;
     });
   }
 

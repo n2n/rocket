@@ -64,9 +64,15 @@ export class MailCenterComponent implements OnInit {
 	get currentPageNo(): number {
 		return this._currentPageNo;
 	}
+
+  prettifyFilename(filename: string): string {
+    let prettyName = filename.split("-").join(" ");
+    prettyName = prettyName.replace(".xml", "");
+    return prettyName;
+  }
 }
 
 export class LogFileData {
-	constructor(public filename: number, public numPages: number) {
+	constructor(public filename: string, public numPages: number) {
 	}
 }

@@ -29,7 +29,7 @@
 	<select class="rocket-mail-paging" #mailLogFileSelect
 					(change)="mailLogFileChanged(mailLogFileDatas[mailLogFileSelect.value])">
 		<option value="{{mailLogFileDatas.indexOf(mailLogFileData)}}" *ngFor="let mailLogFileData of mailLogFileDatas">
-				{{mailLogFileData.filename}}
+				{{prettifyFilename(mailLogFileData.filename)}}
 		</option>
 	</select>
 

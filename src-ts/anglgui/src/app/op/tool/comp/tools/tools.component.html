@@ -2,7 +2,15 @@
 	<ul>
 		<li><a routerLink="/tools/mail-center">{{ 'mail_center_txt' | translate }}</a></li>
 		<li>
-			<button (click)="clearCache()">{{ 'tools_cache_cleared_title' | translate }}</button>
+			<button rocketUiButton
+					class="btn btn-secondary"
+					(click)="clearCache()"
+					[loading]="clearCacheInProgress"
+					[iconClass]="'fa fa-snowplow'">
+
+				{{'tools_cache_cleared_title' | translate}}
+			</button>
 		</li>
 	</ul>
 </rocket-ui-simple-zone-container>
+

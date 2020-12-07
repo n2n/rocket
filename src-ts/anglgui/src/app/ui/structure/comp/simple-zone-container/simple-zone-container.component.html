@@ -2,26 +2,27 @@
 	<div *ngIf="loading" class="rocket-loader"></div>
 
 	<div *ngIf="!loading" class="rocket-zone">
-    <rocket-ui-toasts *ngIf="messages.length > 0 || toasts.length > 0" [messages]="messages" [toasts]="toasts"></rocket-ui-toasts>
+		<rocket-ui-toasts *ngIf="messages.length > 0 || toasts.length > 0" [messages]="messages" [toasts]="toasts">
+		</rocket-ui-toasts>
 
-    <header>
-            <h1>{{ title }}</h1>
+		<header>
+						<h1>{{ title }}</h1>
 
-            <rocket-ui-breadcrumbs [uiBreadcrumbs]="breadcrumbs"></rocket-ui-breadcrumbs>
-        </header>
+						<rocket-ui-breadcrumbs [uiBreadcrumbs]="breadcrumbs"></rocket-ui-breadcrumbs>
+				</header>
 
 		<div class="rocket-content rocket-level-0">
-            <ng-content></ng-content>
-        </div>
+						<ng-content></ng-content>
+				</div>
 
-        <div class="rocket-zone-commands">
-            <div class="rocket-main-commands">
-                <ng-content select="[main-zone-commands]"></ng-content>
-            </div>
+				<div class="rocket-zone-commands">
+						<div class="rocket-main-commands">
+								<ng-content select="[main-zone-commands]"></ng-content>
+						</div>
 
-            <div class="rocket-aside-commands">
-                <ng-content select="[aside-commands]"></ng-content>
-            </div>
-        </div>
-    </div>
+						<div class="rocket-aside-commands">
+								<ng-content select="[aside-commands]"></ng-content>
+						</div>
+				</div>
+		</div>
 </div>

@@ -6,9 +6,3 @@
     <rocket-ui-message [message]="message"></rocket-ui-message>
   </div>
 </ng-container>
-
-<ng-container *ngFor="let toast of toasts">
-  <div class="alert alert-{{toast.message.severity}}">
-    <rocket-ui-message [message]="toast.message"></rocket-ui-message>
-  </div>
-</ng-container>
