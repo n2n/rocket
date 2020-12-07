@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {TranslationService} from '../../../../util/i18n/translation.service';
 import {UiBreadcrumb} from '../../../../ui/structure/model/ui-zone';
 import {ToolsService} from "../../model/tools.service";
-import {UiToast} from "../../../../ui/structure/model/ui-toast";
 import {Message, MessageSeverity} from "../../../../util/i18n/message";
 
 @Component({
@@ -14,7 +13,7 @@ export class ToolsComponent implements OnInit {
 	uiBreadcrumbs: UiBreadcrumb[];
 
 	clearCacheInProgress: boolean = false;
-  toasts: UiToast[] = [];
+  messages: Message[] = [];
 
 	constructor(translationService: TranslationService, private toolsService: ToolsService) {
 		this.uiBreadcrumbs = [
@@ -30,8 +29,9 @@ export class ToolsComponent implements OnInit {
 	public clearCache(): void {
     this.clearCacheInProgress = true;
     this.toolsService.clearCache().toPromise().then(() => {
-      this.toasts.push(new UiToast(new Message("tools_cache_cleared_info", false,
-          MessageSeverity.SUCCESS), 2000));
+      let clearCacheMessage = new Message("tools_cache_cleared_info", false, MessageSeverity.SUCCESS);
+      clearCacheMessage.durationMs = 2000;
+      this.messages.push(clearCacheMessage);
       this.clearCacheInProgress = false;
     });
   }

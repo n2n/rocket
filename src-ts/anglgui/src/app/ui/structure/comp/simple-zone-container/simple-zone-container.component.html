@@ -2,8 +2,8 @@
 	<div *ngIf="loading" class="rocket-loader"></div>
 
 	<div *ngIf="!loading" class="rocket-zone">
-		<rocket-ui-toasts *ngIf="messages.length > 0 || toasts.length > 0" [messages]="messages" [toasts]="toasts">
-		</rocket-ui-toasts>
+		<rocket-ui-messages *ngIf="messages.length > 0" [messages]="messages">
+		</rocket-ui-messages>
 
 		<header>
 						<h1>{{ title }}</h1>

@@ -1,5 +1,5 @@
 import {Component, Input, IterableDiffer, IterableDiffers, OnInit} from '@angular/core';
-import {Message, MessageSeverity} from "../../../../util/i18n/message";
+import {Message} from "../../../../util/i18n/message";
 
 @Component({
   selector: 'rocket-ui-messages',
