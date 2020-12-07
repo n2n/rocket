@@ -199,7 +199,8 @@ export class SiGuiFactory {
 
 			case SiGuiType.COMPACT_ENTRY:
 				declaration = SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'));
-				const compactEntrySiGui = new CompactEntrySiGui(declaration);
+				const compactEntrySiGui = new CompactEntrySiGui(SiMetaFactory.createFrame(dataExtr.reqObject('frame')), 
+						declaration, this.injector.get(SiService), this.injector.get(SiModStateService));
 
 				compEssentialsFactory = new SiControlFactory(compactEntrySiGui, this.injector);
 				compactEntrySiGui.controls = compEssentialsFactory.createControls(dataExtr.reqArray('controls'));

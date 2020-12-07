@@ -42,7 +42,8 @@ class EiGuiUtil {
 	 * @return \rocket\si\content\impl\basic\BulkyEntrySiGui
 	 */
 	function createCompactEntrySiGui(bool $entrySiControlsIncluded = true) {
-		$siComp = new CompactEntrySiGui($this->eiGui->getEiGuiModel()->createSiDeclaration($this->eiFrame),
+		$siComp = new CompactEntrySiGui($this->eiFrame->createSiFrame(), 
+				$this->eiGui->getEiGuiModel()->createSiDeclaration($this->eiFrame),
 				$this->eiGui->createSiEntry($this->eiFrame, $entrySiControlsIncluded));
 		
 // 		if ($generalSiControlsIncluded) {

@@ -1,77 +1,19 @@
-import { Component, OnInit, OnDestroy, DoCheck } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
-import { SiEntry } from 'src/app/si/model/content/si-entry';
 import { CompactEntryModel } from '../compact-entry-model';
-import { UiContent } from 'src/app/ui/structure/model/ui-content';
 
 @Component({
 	selector: 'rocket-compact-entry',
 	templateUrl: './compact-entry.component.html',
 	styleUrls: ['./compact-entry.component.css']
 })
-export class CompactEntryComponent implements OnInit, OnDestroy, DoCheck {
+export class CompactEntryComponent implements OnInit {
 	uiStructure: UiStructure;
 	model: CompactEntryModel;
-
-	siEntry: SiEntry|null = null;
-	fieldUiStructures: UiStructure[] = [];
-	controlUiContents: UiContent[] = [];
 
 	constructor() { }
 
 	ngOnInit() {
-		this.sync();
 	}
 
-	ngDoCheck() {
-		this.sync();
-	}
-
-	ngOnDestroy() {
-		this.clear();
-	}
-
-	get loading(): boolean {
-		return !this.siEntry;
-	}
-
-	private sync() {
-		const siEntry = this.model.getSiEntry();
-		if (this.siEntry === siEntry) {
-			return;
-		}
-
-		this.clear();
-		this.siEntry = siEntry;
-
-		if (siEntry === null) {
-			return;
-		}
-
-		const siEntryBuildup = siEntry.selectedEntryBuildup;
-		const siMaskDeclaration = this.model.getSiDeclaration().getTypeDeclarationByTypeId(siEntry.selectedTypeId);
-
-		for (const siProp of siMaskDeclaration.getSiProps()) {
-			const structure = this.uiStructure.createChild();
-			structure.model = siEntryBuildup.getFieldById(siProp.id).createUiStructureModel();
-			this.fieldUiStructures.push(structure);
-		}
-
-		for (const siControl of siEntryBuildup.controls) {
-			this.controlUiContents.push(siControl.createUiContent(this.uiStructure.getZone()));
-		}
-	}
-
-	private clear() {
-		if (!this.fieldUiStructures) {
-			return;
-		}
-
-		let uiStructure: UiStructure|null = null;
-		while (uiStructure = this.fieldUiStructures.pop()) {
-			uiStructure.dispose();
-		}
-
-		this.controlUiContents = [];
-	}
 }

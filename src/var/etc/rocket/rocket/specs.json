@@ -60,6 +60,39 @@
             "partialControlOrder": [],
             "overallControlOrder": [],
             "entryControlOrder": []
+        },
+        "rocket-disablable-content-item": {
+            "nature": "entity",
+            "entity": "rocket\\impl\\ei\\component\\prop\\ci\\model\\DisablableContentItem",
+            "dataSourceName": null,
+            "label": "Disablable Content Item",
+            "pluralLabel": "Disablable Content Items",
+            "iconType": null,
+            "defaultSort": {
+                "panel": "ASC"
+            },
+            "props": {
+                "online": {
+                    "class": "rocket\\impl\\ei\\component\\prop\\bool\\OnlineEiProp",
+                    "props": {
+                        "displayInOverview": true,
+                        "displayInDetailView": true,
+                        "displayInEditView": true,
+                        "displayInAddView": true,
+                        "containerType": "item",
+                        "constant": false,
+                        "readOnly": false,
+                        "mandatory": false
+                    },
+                    "label": "Online",
+                    "objectProperty": "online",
+                    "entityProperty": "online"
+                }
+            },
+            "commands": [],
+            "partialControlOrder": [],
+            "overallControlOrder": [],
+            "entryControlOrder": []
         }
     },
     "eiTypeExtensions": [],
