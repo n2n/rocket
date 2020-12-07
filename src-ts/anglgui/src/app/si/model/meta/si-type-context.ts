@@ -1,6 +1,6 @@
 
 export class SiTypeContext {
-	constructor(public typeId: string, public entryBuildupIds: string[]) {
+	constructor(public typeId: string, public entryBuildupIds: string[], public treeMode = false) {
 	}
 
 	containsTypeId(typeId: string): boolean {

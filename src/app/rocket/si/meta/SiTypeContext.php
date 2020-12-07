@@ -26,21 +26,51 @@ use n2n\util\type\ArgUtils;
 class SiTypeContext implements \JsonSerializable {
 	private $typeId = null;
 	private $entryBuildupIds = [];
+	private $treeMode = false;
 	
+	/**
+	 * @param string $typeId
+	 * @param array $entryBuildupIds
+	 */
 	function __construct(string $typeId, array $entryBuildupIds) {
 		$this->typeId = $typeId;
 		ArgUtils::valArray($entryBuildupIds, 'string');
 		$this->entryBuildupIds = array_values($entryBuildupIds);
 	}
 	
+	/**
+	 * @param string $entryBuildupId
+	 * @return bool
+	 */
 	function containsEntryBuildupId(string $entryBuildupId) {
 		return in_array($entryBuildupId, $this->entryBuildupIds);
 	}
 	
+	/**
+	 * @param bool $treeMode
+	 * @return SiTypeContext
+	 */
+	function setTreeMode(bool $treeMode) {
+		$this->treeMode = $treeMode;
+		return $this;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	function isTreeMode() {
+		return $this->treeMode;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \JsonSerializable::jsonSerialize()
+	 */
 	function jsonSerialize() {
 		return [
 			'typeId' => $this->typeId,
-			'entryBuildupIds' => $this->entryBuildupIds
+			'entryBuildupIds' => $this->entryBuildupIds,
+			'treeMode' => $this->treeMode
 		];
 	}
 }

@@ -50,6 +50,10 @@ class EiFrame {
 	 * @var Boundry
 	 */
 	private $boundry;
+	/**
+	 * @var Ability
+	 */
+	private $ability;
 	private $eiForkLink;
 	private $baseUrl;
 	
@@ -58,12 +62,12 @@ class EiFrame {
 // 	private $previewType;
 	private $eiRelations = array();
 
-	private $filterModel;
-	private $sortModel;
+// 	private $filterModel;
+// 	private $sortModel;
 	
 // 	private $eiTypeConstraint;
 	
-	private $breadcrumbs = [];
+// 	private $breadcrumbs = [];
 	
 	private $listeners = array();
 
@@ -75,6 +79,7 @@ class EiFrame {
 		$this->contextEiEngine = $contextEiEngine;
 		$this->manageState = $manageState;
 		$this->boundry = new Boundry();
+		$this->ability = new Ability();
 
 // 		$this->eiTypeConstraint = $manageState->getSecurityManager()->getConstraintBy($contextEiMask);
 	}
@@ -262,7 +267,6 @@ class EiFrame {
 	public function hasSortProps() {
 		return !$this->getSortDefinition()->isEmpty();
 	}
-	
 	
 	/**
 	 * @return \rocket\ei\manage\critmod\quick\QuickSearchDefinition
@@ -536,7 +540,8 @@ class EiFrame {
 	 * @return \rocket\si\meta\SiFrame
 	 */
 	function createSiFrame() {
-		return new SiFrame($this->getApiUrl(), $this->contextEiEngine->getEiMask()->getEiType()->createSiTypeContext());
+		return (new SiFrame($this->getApiUrl(), $this->contextEiEngine->getEiMask()->getEiType()->createSiTypeContext()))
+				->setSortable($this->ability->getSortAbility() !== null);
 	}
 }
 

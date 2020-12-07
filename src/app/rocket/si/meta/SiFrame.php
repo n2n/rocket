@@ -26,7 +26,15 @@ use n2n\util\uri\Url;
 class SiFrame implements \JsonSerializable {
 	private $apiUrl;
 	private $typeContext;
+	/**
+	 * @var bool
+	 */
+	private $sortable = false;
 	
+	/**
+	 * @param Url $apiUrl
+	 * @param SiTypeContext $typeContext
+	 */
 	function __construct(Url $apiUrl, SiTypeContext $typeContext) {
 		$this->apiUrl = $apiUrl;
 		$this->typeContext = $typeContext;
@@ -39,10 +47,31 @@ class SiFrame implements \JsonSerializable {
 		return $this->typeContext;
 	}
 	
+	/**
+	 * @param bool $sortable
+	 * @return \rocket\si\meta\SiFrame
+	 */
+	function setSortable(bool $sortable) {
+		$this->sortable = $sortable;
+		return $this;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	function isSortable() {
+		return $this->sortable;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \JsonSerializable::jsonSerialize()
+	 */
 	function jsonSerialize() {
 		return [
 			'apiUrl' => (string) $this->apiUrl,
-			'typeContext' => $this->typeContext
+			'typeContext' => $this->typeContext,
+			'sortable' => $this->sortable
 		];
 	}
 }
