@@ -95,63 +95,63 @@ class OverviewController extends ControllerAdapter {
 // // 						'filterJhtmlHook' => $filterJhtmlHook, 'listView' => $listView));
 	}
 	
-	public function doAjah(array $delegateCmds = array(), OverviewJhtmlController $ajahOverviewController, 
-			ParamQuery $pageNo = null) {
-		if ($pageNo !== null) {
-			$pageNo = $pageNo->toNumericOrReject();
-			$this->eiuCtrl->frame()->getEiFrame()->setCurrentUrlExt(
-					$this->getControllerContext()->getCmdContextPath()->ext($pageNo > 1 ? $pageNo : null)->toUrl());
-		}
+// 	public function doAjah(array $delegateCmds = array(), OverviewJhtmlController $ajahOverviewController, 
+// 			ParamQuery $pageNo = null) {
+// 		if ($pageNo !== null) {
+// 			$pageNo = $pageNo->toNumericOrReject();
+// 			$this->eiuCtrl->frame()->getEiFrame()->setCurrentUrlExt(
+// 					$this->getControllerContext()->getCmdContextPath()->ext($pageNo > 1 ? $pageNo : null)->toUrl());
+// 		}
 				
-		$ajahOverviewController->setListSize($this->listSize);
-		$this->delegate($ajahOverviewController);
-	}
+// 		$ajahOverviewController->setListSize($this->listSize);
+// 		$this->delegate($ajahOverviewController);
+// 	}
 	
-	public function doFilter(array $delegateCmds = array(), FramedFilterPropController $filterPropController) {
-		$this->delegate($filterPropController);
-	}
+// 	public function doFilter(array $delegateCmds = array(), FramedFilterPropController $filterPropController) {
+// 		$this->delegate($filterPropController);
+// 	}
 	
-	public function doDrafts($pageNo = null, DynamicTextCollection $dtc) {
-		$eiFrame = $this->eiuCtrl->frame()->getEiFrame();
-		$draftListModel = new DraftListModel($eiFrame, $this->listSize);
+// 	public function doDrafts($pageNo = null, DynamicTextCollection $dtc) {
+// 		$eiFrame = $this->eiuCtrl->frame()->getEiFrame();
+// 		$draftListModel = new DraftListModel($eiFrame, $this->listSize);
 		
-		if ($pageNo === null) {
-			$pageNo = 1;
-		} else if ($pageNo == 1) {
-			throw new PageNotFoundException();
-		}
+// 		if ($pageNo === null) {
+// 			$pageNo = 1;
+// 		} else if ($pageNo == 1) {
+// 			throw new PageNotFoundException();
+// 		}
 		
-		if (!$draftListModel->initialize($pageNo)) {
-			throw new PageNotFoundException();
-		}
+// 		if (!$draftListModel->initialize($pageNo)) {
+// 			throw new PageNotFoundException();
+// 		}
 		
-		$listView = $eiFrame->getContextEiEngine()->getEiMask()->createListView($eiFrame, $draftListModel->getEntryGuis());
+// 		$listView = $eiFrame->getContextEiEngine()->getEiMask()->createListView($eiFrame, $draftListModel->getEntryGuis());
 		
-		$this->eiuCtrl->applyCommonBreadcrumbs(null, $dtc->translate('ei_impl_drafts_title'));
+// 		$this->eiuCtrl->applyCommonBreadcrumbs(null, $dtc->translate('ei_impl_drafts_title'));
 		
-		$stateKey = OverviewDraftJhtmlController::genStateKey();
-		$overviewDraftAjahHook = OverviewDraftJhtmlController::buildAjahHook($this->getHttpContext()->getControllerContextPath(
-				$this->getControllerContext())->ext('draftAjah')->toUrl(), $stateKey);
+// 		$stateKey = OverviewDraftJhtmlController::genStateKey();
+// 		$overviewDraftAjahHook = OverviewDraftJhtmlController::buildAjahHook($this->getHttpContext()->getControllerContextPath(
+// 				$this->getControllerContext())->ext('draftAjah')->toUrl(), $stateKey);
 
-		$this->forward('..\view\overviewDrafts.html', array('draftListModel' => $draftListModel, 
-				'overviewDraftAjahHook' => $overviewDraftAjahHook, 'listView' => $listView));
-	}
+// 		$this->forward('..\view\overviewDrafts.html', array('draftListModel' => $draftListModel, 
+// 				'overviewDraftAjahHook' => $overviewDraftAjahHook, 'listView' => $listView));
+// 	}
 
-	public function doDraftAjah(array $delegateCmds = array(), OverviewDraftJhtmlController $overviewDraftJhtmlController,
-			ParamQuery $pageNo = null) {
-		if ($pageNo !== null) {
-			$this->eiuCtrl->frame()->getEiFrame()->setCurrentUrlExt(
-					$this->getControllerContext()->getCmdContextPath()->ext('drafts', $pageNo->toNumericOrReject())->toUrl());
-		}
+// 	public function doDraftAjah(array $delegateCmds = array(), OverviewDraftJhtmlController $overviewDraftJhtmlController,
+// 			ParamQuery $pageNo = null) {
+// 		if ($pageNo !== null) {
+// 			$this->eiuCtrl->frame()->getEiFrame()->setCurrentUrlExt(
+// 					$this->getControllerContext()->getCmdContextPath()->ext('drafts', $pageNo->toNumericOrReject())->toUrl());
+// 		}
 
-		$this->delegate($overviewDraftJhtmlController);
-	}
+// 		$this->delegate($overviewDraftJhtmlController);
+// 	}
 	
-	public function doDelete($pageNo = null) {
-		$eiFrame = $this->manageState->peakEiFrame();
+// 	public function doDelete($pageNo = null) {
+// 		$eiFrame = $this->manageState->peakEiFrame();
 		
-// 		$this->manageState->getDraftManager()->findRemoved();
-	}
+// // 		$this->manageState->getDraftManager()->findRemoved();
+// 	}
 	
 	
 // 	private function createNavPoints(ListModel $listModel) {
