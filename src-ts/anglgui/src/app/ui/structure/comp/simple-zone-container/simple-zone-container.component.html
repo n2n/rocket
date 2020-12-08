@@ -1,33 +1,28 @@
-<div *ngIf="messages.length > 0">
-	@Timo: Design das!
-	@tomekk: Style das!
-
-	<rocket-ui-message *ngFor="let message of messages" [message]="message"></rocket-ui-message>
-</div>
-
 <div class="rocket-main-layer">
-
 	<div *ngIf="loading" class="rocket-loader"></div>
 
 	<div *ngIf="!loading" class="rocket-zone">
+		<rocket-ui-messages *ngIf="messages.length > 0" [messages]="messages">
+		</rocket-ui-messages>
+
 		<header>
-            <h1>{{ title }}</h1>
-            
-            <rocket-ui-breadcrumbs [uiBreadcrumbs]="breadcrumbs"></rocket-ui-breadcrumbs>
-        </header>
-        
+						<h1>{{ title }}</h1>
+
+						<rocket-ui-breadcrumbs [uiBreadcrumbs]="breadcrumbs"></rocket-ui-breadcrumbs>
+				</header>
+
 		<div class="rocket-content rocket-level-0">
-            <ng-content></ng-content>
-        </div>
+						<ng-content></ng-content>
+				</div>
 
-        <div class="rocket-zone-commands">
-            <div class="rocket-main-commands">
-                <ng-content select="[main-zone-commands]"></ng-content>
-            </div>
+				<div class="rocket-zone-commands">
+						<div class="rocket-main-commands">
+								<ng-content select="[main-zone-commands]"></ng-content>
+						</div>
 
-            <div class="rocket-aside-commands">
-                <ng-content select="[aside-commands]"></ng-content>
-            </div>
-        </div>
-    </div>
+						<div class="rocket-aside-commands">
+								<ng-content select="[aside-commands]"></ng-content>
+						</div>
+				</div>
+		</div>
 </div>

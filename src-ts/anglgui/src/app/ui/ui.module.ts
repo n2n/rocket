@@ -16,12 +16,14 @@ import { TogglerComponent } from './util/comp/toggler/toggler.component';
 import { SearchInputGroupComponent } from './util/comp/search-input-group/search-input-group.component';
 import { FormsModule } from '@angular/forms';
 import { SimpleZoneContainerComponent } from './structure/comp/simple-zone-container/simple-zone-container.component';
+import {ButtonComponent} from "./util/comp/button/button.component";
+import {MessagesComponent} from "./util/comp/message/messages.component";
 
 @NgModule({
 	declarations: [
 		LayerComponent, ContainerComponent, ZoneComponent, StructureComponent, StructureContentDirective,
 		StructureBranchComponent, PlainContentComponent, MessageComponent, BreadcrumbsComponent, NavPointDirective,
-		TogglerComponent, SearchInputGroupComponent, SimpleZoneContainerComponent
+		TogglerComponent, SearchInputGroupComponent, SimpleZoneContainerComponent, ButtonComponent, MessagesComponent
 	],
 	imports: [
 		CommonModule,
@@ -29,18 +31,20 @@ import { SimpleZoneContainerComponent } from './structure/comp/simple-zone-conta
 		RouterModule,
 		FormsModule
 	],
-	exports: [
-		ContainerComponent,
-		StructureComponent,
-		StructureContentDirective,
-		StructureBranchComponent,
-		PlainContentComponent,
-		MessageComponent,
-		NavPointDirective,
-		TogglerComponent,
-		SearchInputGroupComponent,
-		SimpleZoneContainerComponent
-	],
+  exports: [
+    ContainerComponent,
+    StructureComponent,
+    StructureContentDirective,
+    StructureBranchComponent,
+    PlainContentComponent,
+    MessageComponent,
+    NavPointDirective,
+    TogglerComponent,
+    SearchInputGroupComponent,
+    SimpleZoneContainerComponent,
+    ButtonComponent,
+    MessagesComponent
+  ],
 	entryComponents: [ PlainContentComponent ]
 })
 export class UiModule { }

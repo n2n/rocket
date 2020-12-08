@@ -82,6 +82,14 @@ class AnglTemplateModel implements Lookupable {
 			'maxlength_err' => ValidationMessages::maxlength('{maxlength}', '{field}')->t($n2nLocale),
 			'min_elements_err' => str_replace($nr, '{min}', ValidationMessages::minElements($nr, '{field}')->t($n2nLocale)),
 			'max_elements_err' => str_replace($nr, '{max}', ValidationMessages::maxElements($nr, '{field}')->t($n2nLocale)),
+			'tool_mail_center_title' => $dtc->t('tool_mail_center_title'),
+			'mail_center_mail_message_label' => $dtc->t('tool_mail_center_mail_message_label'),
+			'mail_center_mail_from_label' => $dtc->t('tool_mail_center_mail_from_label'),
+			'mail_center_mail_to_label' => $dtc->t('tool_mail_center_mail_to_label'),
+			'mail_center_mail_reply_to_label' => $dtc->t('tool_mail_center_mail_replyto_label'),
+			'mail_center_mail_attachments_label' => $dtc->t('tool_mail_center_attatchments_label'),
+			'tools_cache_cleared_title' => $dtc->t('tool_clear_cache_title'),
+			'tools_cache_cleared_info' => $dtc->t('tool_cache_cleared_info')
 		];
 	}
 	

@@ -24,12 +24,9 @@ namespace rocket\tool\controller;
 use rocket\tool\backup\controller\BackupController;
 
 use n2n\web\http\controller\ControllerAdapter;
-use n2n\l10n\MessageContainer;
 use rocket\tool\mail\controller\MailCenterController;
 use n2n\reflection\annotation\AnnoInit;
 use n2n\web\http\annotation\AnnoPath;
-use n2n\web\http\ResponseCacheStore;
-use n2n\web\ui\view\ViewCacheStore;
 use n2n\web\http\ForbiddenException;
 use rocket\user\model\LoginContext;
 use n2n\web\http\StatusException;
@@ -98,13 +95,13 @@ class ToolController extends ControllerAdapter {
 		$this->delegate($mailCenterController);
 	}
 	
-	public function clearCache(MessageContainer $mc, ResponseCacheStore $responseCacheStore = null, ViewCacheStore $viewCacheStore = null) {
+	public function clearCache() {
 		$this->verifyAdmin();
 		
 		if ($this->verifyHtml()) {
 			return;
 		}
 
-		// ...
+		$this->getN2nContext()->getAppCache()->clear();
 	}
 }

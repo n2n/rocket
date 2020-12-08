@@ -1,6 +1,7 @@
 
 export class Message {
 	public args: Map<string, string>|null = null;
+  public durationMs: number|null = null;
 
 	constructor(readonly content: string, readonly translated: boolean, readonly severity: MessageSeverity) {
 	}

@@ -21,13 +21,11 @@
  */
 namespace rocket\tool\mail\controller;
 
-use n2n\core\container\N2nContext;
 use n2n\web\http\controller\ControllerAdapter;
 use n2n\web\http\nav\Murl;
 use rocket\tool\mail\model\MailCenter;
 use n2n\log4php\appender\nn6\AdminMailCenter;
 use n2n\web\http\PageNotFoundException;
-use n2n\io\InvalidPathException;
 
 class MailCenterController extends ControllerAdapter {
 	const ACTION_ARCHIVE = 'archive';
@@ -40,13 +38,10 @@ class MailCenterController extends ControllerAdapter {
 	}
 	
 	public function doArchive($fileName, $currentPageNum = null) {
-		try {
-			$mailXmlFilePath = MailCenter::requestMailLogFile($fileName);
-		} catch (InvalidPathException $e) {
-			throw new PageNotFoundException();
-		}
+		$mailXmlFilePath = MailCenter::requestMailLogFile($fileName);
+
 		if ($mailXmlFilePath->getExtension() !== 'xml') {
-			throw new PageNotFoundException();			
+			throw new PageNotFoundException();
 		}
 		
 		$mailCenter = new MailCenter($mailXmlFilePath);
@@ -54,20 +49,26 @@ class MailCenterController extends ControllerAdapter {
 			$mailCenter->setCurrentPageNum($currentPageNum);
 		}
 		
-		$this->forward('tool\mail\view\mailCenter.html', array('mailCenter' => $mailCenter, 'currentFileName' => $fileName));
+		$this->forward('tool\mail\view\mailCenter.html', array('mailCenter' => $mailCenter,
+			'currentFileName' => $fileName));
 	}
 
-	public function doAttachment($fileName, $mailIndex, $attachmentIndex) {
-		try {
-			$mailXmlFilePath = MailCenter::requestMailLogFile(AdminMailCenter::DEFAULT_MAIL_FILE_NAME);
-		} catch (InvalidPathException $e) {
-			throw new PageNotFoundException();
-		}
-
+	/**
+	 * Sends back the attachment as File
+	 *
+	 * @param $xmlFilename
+	 * @param $mailIndex
+	 * @param $attachmentIndex
+	 * @param $filename string for correct name during download
+	 * @throws \n2n\io\managed\InaccessibleFileSourceException
+	 */
+	public function doAttachment($xmlFilename, $mailIndex, $attachmentIndex, $filename) {
+		$mailXmlFilePath = MailCenter::requestMailLogFile($xmlFilename);
 		if ($mailXmlFilePath->getExtension() !== 'xml') {
 			throw new PageNotFoundException();
 		}
 		$mailCenter = new MailCenter($mailXmlFilePath);
+
 		if (null === ($attachment = $mailCenter->getAttachment($mailIndex, $attachmentIndex))) {
 			throw new PageNotFoundException();
 		}
@@ -78,10 +79,9 @@ class MailCenterController extends ControllerAdapter {
 		$this->sendFile($attachment);
 	}
 
-	public function doMails(int $currentPageNum = null, N2nContext $n2nContext) {
-		$mailCenter = $this->createMailCenter($currentPageNum);
-		$mailItems = $this->createMailsJsonArray($mailCenter->getCurrentItems(), $n2nContext);
-		$mailItems = array_values($mailItems); //because json_encode doesn't send array when keys don't start at 0
+	public function doMails($filename, int $currentPageNum = null) {
+		$mailCenter = $this->createMailCenter($currentPageNum, $filename);
+		$mailItems = $this->createMailsJsonArray($mailCenter->getCurrentItems(), $filename);
 		$this->sendJson($mailItems);
 	}
 
@@ -89,12 +89,29 @@ class MailCenterController extends ControllerAdapter {
 		$this->sendJson($this->createMailCenter()->getNumPages());
 	}
 
-	private function createMailCenter(int $currentPageNum = null) {
-		$mailXmlFilePath = null;
-		try {
-			$mailXmlFilePath = MailCenter::requestMailLogFile(AdminMailCenter::DEFAULT_MAIL_FILE_NAME);
-		} catch (InvalidPathException $e) { }
+	public function doMailsLogFileDatas() {
+		$mailLogFileData = array();
 
+		$fileFsPaths = AdminMailCenter::scanMailLogFiles();
+		foreach ($fileFsPaths as $fileFsPath) {
+			$filename = $fileFsPath->getName();
+			$mailCenter = $this->createMailCenter(null, $filename);
+			$mailLogFileData[] = array('filename' => $filename, 'numPages' => $mailCenter->getNumPages());
+		}
+
+		$this->sendJson($mailLogFileData);
+	}
+
+	private function createMailCenter(int $currentPageNum = null, string $filename = null) {
+		if (!AdminMailCenter::logFileExists($filename)) {
+			throw new PageNotFoundException();
+		}
+
+		if ($filename == null) {
+			$filename = AdminMailCenter::DEFAULT_MAIL_FILE_NAME;
+		}
+
+		$mailXmlFilePath = MailCenter::requestMailLogFile($filename);
 		$mailCenter = new MailCenter($mailXmlFilePath);
 
 		if (null !== $currentPageNum) {
@@ -104,14 +121,17 @@ class MailCenterController extends ControllerAdapter {
 		return $mailCenter;
 	}
 
-	private function createMailsJsonArray(array $mailItems, N2nContext $n2nContext) {
+	private function createMailsJsonArray(array $mailItems, string $filename) {
 		foreach ($mailItems as $i => $mailItem) {
 			if (empty($mailItem->getAttachments())) continue;
 			foreach ($mailItem->getAttachments() as $attachmentI => $attachment) {
-				$url = $this->buildUrl(Murl::controller())->pathExt('attachment', $attachment->getName(), $i, $attachmentI);
+				$url = $this->buildUrl(Murl::controller())->pathExt('attachment', $filename, $i, $attachmentI,
+						$attachment->getName());
 				$attachment->setPath((string) $url);
 			}
 		}
+
+		$mailItems = array_values($mailItems); // so json_encode doesn't send an object
 		return $mailItems;
 	}
 }

@@ -4,6 +4,7 @@ import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {MailItem} from '../bo/mail-item';
 import {MailItemFactory} from '../build/mail-item-factory';
+import {LogFileData} from "../comp/mail-center/mail-center.component";
 
 @Injectable({
 	providedIn: 'root'
@@ -12,17 +13,35 @@ export class ToolsService {
 	constructor(private httpClient: HttpClient) {
 	}
 
-	getPagesCount(): Observable<number> {
-		return this.httpClient.get<any>('tools/mail-center/mailspagecount')
+	getMailLogFileDatas(): Observable<LogFileData[]> {
+		return this.httpClient.get<any>('tools/mail-center/mailslogfiledatas')
 			.pipe(map((data) => {
-				return data;
+				let logFileDatas= []
+				data.forEach((mailLogItemData) => {
+					logFileDatas.push(new LogFileData(mailLogItemData.filename, mailLogItemData.numPages));
+				});
+				return logFileDatas;
 			}));
 	}
 
-	getMails(pageNum: number): Observable<MailItem[]> {
-		return this.httpClient.get<any>('tools/mail-center/mails/' + pageNum)
+	getMails(logFileData: LogFileData, pageNum: number): Observable<MailItem[]> {
+
+		let url = 'tools/mail-center/mails/';
+		if (!!logFileData) {
+			url = url + logFileData.filename + '/' + pageNum
+		} else {
+			url = url + '/' + pageNum;
+		}
+
+		return this.httpClient.get<any>(url)
 			.pipe(map((data) => {
 				return MailItemFactory.createMailItems(data);
 			}));
 	}
+
+  clearCache() {
+	  return this.httpClient.get<any>('tools/clear-cache')
+      .pipe(map((data) => {return data}));
+  }
 }
+

@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {TranslationService} from '../../../../util/i18n/translation.service';
 import {UiBreadcrumb} from '../../../../ui/structure/model/ui-zone';
+import {ToolsService} from "../../model/tools.service";
+import {Message, MessageSeverity} from "../../../../util/i18n/message";
 
 @Component({
 	selector: 'rocket-tools',
@@ -10,7 +12,10 @@ import {UiBreadcrumb} from '../../../../ui/structure/model/ui-zone';
 export class ToolsComponent implements OnInit {
 	uiBreadcrumbs: UiBreadcrumb[];
 
-	constructor(translationService: TranslationService) {
+	clearCacheInProgress: boolean = false;
+  messages: Message[] = [];
+
+	constructor(translationService: TranslationService, private toolsService: ToolsService) {
 		this.uiBreadcrumbs = [
 			{
 				name: translationService.translate('tool_title'),
@@ -21,7 +26,16 @@ export class ToolsComponent implements OnInit {
 		];
 	}
 
+	public clearCache(): void {
+    this.clearCacheInProgress = true;
+    this.toolsService.clearCache().toPromise().then(() => {
+      let clearCacheMessage = new Message("tools_cache_cleared_info", false, MessageSeverity.SUCCESS);
+      clearCacheMessage.durationMs = 2000;
+      this.messages.push(clearCacheMessage);
+      this.clearCacheInProgress = false;
+    });
+  }
+
 	ngOnInit(): void {
 	}
-
 }

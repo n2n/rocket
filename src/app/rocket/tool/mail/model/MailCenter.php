@@ -35,8 +35,7 @@ use n2n\io\managed\impl\FsFileSource;
 
 class MailCenter {
 	const NUM_MAILS_PER_PAGE = 15;
-	const ATTACHMENT_INDEX_DEFAULT = 'default';
-	
+
 	private $mailXmlFilePath;
 	
 	private $currentPageNum = 1;
@@ -47,7 +46,7 @@ class MailCenter {
 	public function __construct(FsPath $mailXmlFilePath = null) {
 		$this->mailXmlFilePath = $mailXmlFilePath;
 	}
-	
+
 	public function getCurrentPageNum() {
 		return $this->currentPageNum;
 	}
@@ -110,6 +109,7 @@ class MailCenter {
 		return N2N::getVarStore()->requestFileFsPath(VarStore::CATEGORY_LOG, N2N::NS,
 				AdminMailCenter::LOG_FOLDER, $fileName, true, false);
 	}
+
 	/**
 	 * @return \n2n\io\fs\FsPath
 	 */
@@ -117,14 +117,14 @@ class MailCenter {
 		return N2N::getVarStore()->requestDirFsPath(VarStore::CATEGORY_LOG, N2N::NS,
 				AdminMailCenter::LOG_FOLDER, true);
 	}
-	
+
 	private function getAllItems() {
 		$parser = new SaxParser();
 		$mailItemSaxHandler = new MailItemSaxHandler();
 		$parser->parse($this->mailXmlFilePath, $mailItemSaxHandler);
 		return array_reverse($mailItemSaxHandler->getItems());
 	}
-	
+
 	private function isFilePathAvailable() {
 		return (null !== $this->mailXmlFilePath && $this->mailXmlFilePath->isFile());
 	}
