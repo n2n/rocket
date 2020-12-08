@@ -18,12 +18,15 @@ import { FormsModule } from '@angular/forms';
 import { SimpleZoneContainerComponent } from './structure/comp/simple-zone-container/simple-zone-container.component';
 import {ButtonComponent} from "./util/comp/button/button.component";
 import {MessagesComponent} from "./util/comp/message/messages.component";
+import { IframeComponent } from './util/comp/i-frame/iframe.component';
+import { IFrameResizerDirective } from './util/directive/iframe-resizer-directive.directive';
 
 @NgModule({
 	declarations: [
 		LayerComponent, ContainerComponent, ZoneComponent, StructureComponent, StructureContentDirective,
 		StructureBranchComponent, PlainContentComponent, MessageComponent, BreadcrumbsComponent, NavPointDirective,
-		TogglerComponent, SearchInputGroupComponent, SimpleZoneContainerComponent, ButtonComponent, MessagesComponent
+		TogglerComponent, SearchInputGroupComponent, SimpleZoneContainerComponent, ButtonComponent, MessagesComponent, IframeComponent, IFrameResizerDirective,
+    IFrameResizerDirective
 	],
 	imports: [
 		CommonModule,
@@ -43,7 +46,9 @@ import {MessagesComponent} from "./util/comp/message/messages.component";
     SearchInputGroupComponent,
     SimpleZoneContainerComponent,
     ButtonComponent,
-    MessagesComponent
+    MessagesComponent,
+    IframeComponent,
+    IFrameResizerDirective
   ],
 	entryComponents: [ PlainContentComponent ]
 })
