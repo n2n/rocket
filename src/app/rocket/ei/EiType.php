@@ -471,8 +471,9 @@ class EiType extends Type {
 	 * @return \rocket\si\meta\SiTypeContext
 	 */
 	function createSiTypeContext() {
-		return new SiTypeContext($this->getSupremeEiType()->getId(), array_map(
-				function ($subEiType) { return $subEiType->getId(); },
-				$this->getAllSubEiTypes(true)));
+		return (new SiTypeContext($this->getSupremeEiType()->getId(), array_map(
+						function ($subEiType) { return $subEiType->getId(); },
+						$this->getAllSubEiTypes(true))))
+				->setTreeMode(null !== $this->nestedSetStrategy);
 	}
 }

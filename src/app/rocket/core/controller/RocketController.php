@@ -108,13 +108,13 @@ class RocketController extends ControllerAdapter {
 		    	array('deleteLoginModel' => $deleteLoginModel))));
 	}
 	
-	public function doUsers(array $delegateParams = array(), RocketUserController $delegateController) {
+	public function doUsers(RocketUserController $delegateController, array $delegateParams = array()) {
 		if (!$this->verifyUser()) return;
 		
 		$this->delegate($delegateController);
 	}
 	
-	public function doUserGroups(array $delegateParams = array(), RocketUserGroupController $delegateController) {
+	public function doUserGroups(RocketUserGroupController $delegateController, array $delegateParams = array()) {
 		if (!$this->verifyUser()) return;
 		
 		if (!$this->loginContext->getCurrentUser()->isAdmin()) {
@@ -124,8 +124,8 @@ class RocketController extends ControllerAdapter {
 		$this->delegate($delegateController);
 	}
 	
-	public function doManage($navItemId, array $delegateParams = array(), Rocket $rocket, RocketState $rocketState, 
-			N2nLocale $n2nLocale, PdoPool $dbhPool, MessageContainer $mc) {
+	public function doManage(Rocket $rocket, RocketState $rocketState, N2nLocale $n2nLocale, PdoPool $dbhPool, 
+			MessageContainer $mc, $navItemId, array $delegateParams = array()) {
 		if (!$this->verifyUser()) return;
 		
 		$launchPad = null;
@@ -169,7 +169,7 @@ class RocketController extends ControllerAdapter {
 		$this->rollBack();
 	}
 	
-	public function doTools(array $delegateParams = array(), ToolController $toolController) {
+	public function doTools(ToolController $toolController, array $delegateParams = array()) {
 		if (!$this->verifyUser()) return;
 
 		if (!$this->loginContext->getCurrentUser()->isAdmin()) {
