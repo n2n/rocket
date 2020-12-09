@@ -14497,12 +14497,12 @@
 <XPD:REF name="DiagramOwner">ia+CjJSu50SNzTVlIA0WiAAA</XPD:REF>
 <XPD:OBJ name="DiagramView" type="UMLClassDiagramView" guid="PQCm0gmqxUucMGg+Dtk58AAA">
 <XPD:REF name="Diagram">ytqv2FRQcEydFmFcueztIQAA</XPD:REF>
-<XPD:ATTR name="#OwnedViews" type="integer">3</XPD:ATTR>
+<XPD:ATTR name="#OwnedViews" type="integer">4</XPD:ATTR>
 <XPD:OBJ name="OwnedViews[0]" type="UMLClassView" guid="ReM0VE3LrUO8kd81oqJcVgAA">
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
-<XPD:ATTR name="Left" type="integer">198</XPD:ATTR>
-<XPD:ATTR name="Top" type="integer">286</XPD:ATTR>
+<XPD:ATTR name="Left" type="integer">204</XPD:ATTR>
+<XPD:ATTR name="Top" type="integer">192</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">225</XPD:ATTR>
 <XPD:ATTR name="Height" type="integer">82</XPD:ATTR>
 <XPD:REF name="Model">7QJ4rqLZF0aWNtxgQcZSqAAA</XPD:REF>
@@ -14563,15 +14563,15 @@
 <XPD:OBJ name="OwnedViews[2]" type="UMLClassView" guid="YBqWhKbnE0eD32WrrH7mGgAA">
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
-<XPD:ATTR name="Left" type="integer">500</XPD:ATTR>
-<XPD:ATTR name="Top" type="integer">276</XPD:ATTR>
+<XPD:ATTR name="Left" type="integer">608</XPD:ATTR>
+<XPD:ATTR name="Top" type="integer">272</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">218</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">82</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">69</XPD:ATTR>
 <XPD:REF name="Model">UiDTvaqVG0msxEboE3TdGwAA</XPD:REF>
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="Qg6GFly0WEyF53BDAwR4FgAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="pL/I4t0cdkWl6BfjknAOGwAA">
 <XPD:ATTR name="FontStyle" type="integer">1</XPD:ATTR>
-<XPD:ATTR name="Text" type="string">ToastComponent</XPD:ATTR>
+<XPD:ATTR name="Text" type="string">MessagesComponent</XPD:ATTR>
 </XPD:OBJ>
 <XPD:OBJ name="StereotypeLabel" type="LabelView" guid="ETk9Y78ynUiy8dCUkYqklAAA">
 <XPD:ATTR name="Text" type="string">&lt;&lt;Component&gt;&gt;</XPD:ATTR>
@@ -14591,9 +14591,40 @@
 <XPD:REF name="Model">UiDTvaqVG0msxEboE3TdGwAA</XPD:REF>
 </XPD:OBJ>
 </XPD:OBJ>
+<XPD:OBJ name="OwnedViews[3]" type="UMLClassView" guid="DDgxExmBIUuNSS584JtFyQAA">
+<XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
+<XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
+<XPD:ATTR name="Left" type="integer">728</XPD:ATTR>
+<XPD:ATTR name="Top" type="integer">476</XPD:ATTR>
+<XPD:ATTR name="Width" type="integer">348</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">95</XPD:ATTR>
+<XPD:REF name="Model">LxFYJLVTiUqUjHuK8hsZVQAA</XPD:REF>
+<XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="mBjaVk9h8EKBf3yVvHkyZQAA">
+<XPD:OBJ name="NameLabel" type="LabelView" guid="N7Xh+ufifUeeDLJzoIIYtgAA">
+<XPD:ATTR name="FontStyle" type="integer">1</XPD:ATTR>
+<XPD:ATTR name="Text" type="string">IframeComponent</XPD:ATTR>
+</XPD:OBJ>
+<XPD:OBJ name="StereotypeLabel" type="LabelView" guid="XUvSzXo/xEe6dZknCQqAYAAA">
+<XPD:ATTR name="Text" type="string">&lt;&lt;Componet, selector: iframe[rocketUiIframe]&gt;&gt;</XPD:ATTR>
+</XPD:OBJ>
+<XPD:OBJ name="PropertyLabel" type="LabelView" guid="f9ymIV2uB0WgREpgm8RGOQAA">
+<XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
 </XPD:OBJ>
 </XPD:OBJ>
-<XPD:ATTR name="#OwnedElements" type="integer">3</XPD:ATTR>
+<XPD:OBJ name="AttributeCompartment" type="UMLAttributeCompartmentView" guid="o8Jue0J1rkiqH04jZYnTEAAA">
+<XPD:REF name="Model">LxFYJLVTiUqUjHuK8hsZVQAA</XPD:REF>
+</XPD:OBJ>
+<XPD:OBJ name="OperationCompartment" type="UMLOperationCompartmentView" guid="DtJDyQNo3kSw6XckFpAvDgAA">
+<XPD:REF name="Model">LxFYJLVTiUqUjHuK8hsZVQAA</XPD:REF>
+</XPD:OBJ>
+<XPD:OBJ name="TemplateParameterCompartment" type="UMLTemplateParameterCompartmentView" guid="P+2WkG9WTUulm8L72qeGiQAA">
+<XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
+<XPD:REF name="Model">LxFYJLVTiUqUjHuK8hsZVQAA</XPD:REF>
+</XPD:OBJ>
+</XPD:OBJ>
+</XPD:OBJ>
+</XPD:OBJ>
+<XPD:ATTR name="#OwnedElements" type="integer">4</XPD:ATTR>
 <XPD:OBJ name="OwnedElements[0]" type="UMLPackage" guid="W7TkHzPkjUe7+32dZUSMJAAA">
 <XPD:ATTR name="Name" type="string">pagination</XPD:ATTR>
 <XPD:REF name="Namespace">ia+CjJSu50SNzTVlIA0WiAAA</XPD:REF>
@@ -14667,7 +14698,7 @@
 <XPD:REF name="Namespace">ia+CjJSu50SNzTVlIA0WiAAA</XPD:REF>
 <XPD:ATTR name="#OwnedElements" type="integer">1</XPD:ATTR>
 <XPD:OBJ name="OwnedElements[0]" type="UMLClass" guid="UiDTvaqVG0msxEboE3TdGwAA">
-<XPD:ATTR name="Name" type="string">ToastComponent</XPD:ATTR>
+<XPD:ATTR name="Name" type="string">MessagesComponent</XPD:ATTR>
 <XPD:ATTR name="StereotypeName" type="string">Component</XPD:ATTR>
 <XPD:REF name="Namespace">zh3Hl0XMZkihNQHeXTx8gAAA</XPD:REF>
 <XPD:ATTR name="#Views" type="integer">4</XPD:ATTR>
@@ -14675,18 +14706,46 @@
 <XPD:REF name="Views[1]">R3fQZi6pxEC9FUi8iBt/xwAA</XPD:REF>
 <XPD:REF name="Views[2]">xr3Ycrcln0GUgNgus7ydcAAA</XPD:REF>
 <XPD:REF name="Views[3]">GqHOROwg5EyUrR4MN2FQgwAA</XPD:REF>
-<XPD:ATTR name="#Attributes" type="integer">2</XPD:ATTR>
+<XPD:ATTR name="#Attributes" type="integer">1</XPD:ATTR>
 <XPD:OBJ name="Attributes[0]" type="UMLAttribute" guid="XokDs1Wc20OJFtHyKkHFWgAA">
 <XPD:ATTR name="Name" type="string">messages</XPD:ATTR>
 <XPD:ATTR name="StereotypeName" type="string">Input</XPD:ATTR>
 <XPD:ATTR name="TypeExpression" type="string">Array&lt; Message&gt;</XPD:ATTR>
 <XPD:REF name="Owner">UiDTvaqVG0msxEboE3TdGwAA</XPD:REF>
 </XPD:OBJ>
-<XPD:OBJ name="Attributes[1]" type="UMLAttribute" guid="qszyhw9f+UOBRPna7wtqmwAA">
-<XPD:ATTR name="Name" type="string">iterableDiffer</XPD:ATTR>
-<XPD:ATTR name="Visibility" type="UMLVisibilityKind">vkPrivate</XPD:ATTR>
-<XPD:ATTR name="TypeExpression" type="string">IterableDiffer&lt;Message&gt;</XPD:ATTR>
-<XPD:REF name="Owner">UiDTvaqVG0msxEboE3TdGwAA</XPD:REF>
+</XPD:OBJ>
+</XPD:OBJ>
+<XPD:OBJ name="OwnedElements[3]" type="UMLPackage" guid="gk7mEEA4qkmz5grpCJgD+AAA">
+<XPD:ATTR name="Name" type="string">iframe</XPD:ATTR>
+<XPD:REF name="Namespace">ia+CjJSu50SNzTVlIA0WiAAA</XPD:REF>
+<XPD:ATTR name="#OwnedElements" type="integer">1</XPD:ATTR>
+<XPD:OBJ name="OwnedElements[0]" type="UMLClass" guid="LxFYJLVTiUqUjHuK8hsZVQAA">
+<XPD:ATTR name="Name" type="string">IframeComponent</XPD:ATTR>
+<XPD:ATTR name="StereotypeName" type="string">Componet, selector: iframe[rocketUiIframe]</XPD:ATTR>
+<XPD:REF name="Namespace">gk7mEEA4qkmz5grpCJgD+AAA</XPD:REF>
+<XPD:ATTR name="#Views" type="integer">4</XPD:ATTR>
+<XPD:REF name="Views[0]">DDgxExmBIUuNSS584JtFyQAA</XPD:REF>
+<XPD:REF name="Views[1]">o8Jue0J1rkiqH04jZYnTEAAA</XPD:REF>
+<XPD:REF name="Views[2]">DtJDyQNo3kSw6XckFpAvDgAA</XPD:REF>
+<XPD:REF name="Views[3]">P+2WkG9WTUulm8L72qeGiQAA</XPD:REF>
+<XPD:ATTR name="#Attributes" type="integer">3</XPD:ATTR>
+<XPD:OBJ name="Attributes[0]" type="UMLAttribute" guid="FcK1wn46yUOnCslfXpq7UwAA">
+<XPD:ATTR name="Name" type="string">srcDoc</XPD:ATTR>
+<XPD:ATTR name="StereotypeName" type="string">Input</XPD:ATTR>
+<XPD:ATTR name="TypeExpression" type="string">string</XPD:ATTR>
+<XPD:REF name="Owner">LxFYJLVTiUqUjHuK8hsZVQAA</XPD:REF>
+</XPD:OBJ>
+<XPD:OBJ name="Attributes[1]" type="UMLAttribute" guid="4Rf8bSCS+0msionN1gF1JgAA">
+<XPD:ATTR name="Name" type="string">formData</XPD:ATTR>
+<XPD:ATTR name="StereotypeName" type="string">Input</XPD:ATTR>
+<XPD:ATTR name="TypeExpression" type="string">Map&lt;string, string&gt;</XPD:ATTR>
+<XPD:REF name="Owner">LxFYJLVTiUqUjHuK8hsZVQAA</XPD:REF>
+</XPD:OBJ>
+<XPD:OBJ name="Attributes[2]" type="UMLAttribute" guid="L5kxkWzQmEinA6vF8Wl1sgAA">
+<XPD:ATTR name="Name" type="string">formDataChange</XPD:ATTR>
+<XPD:ATTR name="StereotypeName" type="string">Output</XPD:ATTR>
+<XPD:ATTR name="TypeExpression" type="string">EventEmitter&lt;Map&lt;string, string&gt;&gt;</XPD:ATTR>
+<XPD:REF name="Owner">LxFYJLVTiUqUjHuK8hsZVQAA</XPD:REF>
 </XPD:OBJ>
 </XPD:OBJ>
 </XPD:OBJ>
