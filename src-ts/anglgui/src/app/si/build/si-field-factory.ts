@@ -209,8 +209,10 @@ export class SiFieldFactory {
 			const splitSiField = new SplitSiField(dataExtr.reqString('refPropId'));
 			splitSiField.copyStyle = this.createSplitStyle(dataExtr.reqObject('copyStyle'));
 			return splitSiField;
+
 		case SiFieldType.CRUMB_OUT:
 			return new CrumbOutSiField(SiGuiFactory.createCrumbGroups(dataExtr.reqArray('crumbGroups')));
+
 		default:
 			throw new ObjectMissmatchError('Invalid si field type: ' + data.type);
 		}

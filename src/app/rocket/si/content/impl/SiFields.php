@@ -206,10 +206,8 @@ class SiFields {
 	
 	
 	static function iframeOut() {
-		ViewFactory::
 	}
 	
 	static function iframeIn() {
-		
 	}
 }
