@@ -40,6 +40,7 @@ use rocket\si\content\impl\meta\SiCrumb;
 use rocket\si\content\impl\meta\CrumbOutSiField;
 use rocket\si\content\impl\relation\EmbeddedEntriesOutSiField;
 use rocket\si\content\impl\relation\EmbeddedEntryPanelsOutSiField;
+use n2n\web\ui\ViewFactory;
 
 class SiFields {
 	
@@ -200,6 +201,15 @@ class SiFields {
 			$siField->addNewGroup($crumbs);
 		}
 		return $siField;
+		
+	}
+	
+	
+	static function iframeOut() {
+		ViewFactory::
+	}
+	
+	static function iframeIn() {
 		
 	}
 }
