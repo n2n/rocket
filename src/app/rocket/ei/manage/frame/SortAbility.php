@@ -23,24 +23,25 @@ namespace rocket\ei\manage\frame;
 
 use rocket\ei\manage\EiObject;
 use n2n\util\ex\IllegalStateException;
+use rocket\si\control\SiResult;
 
 interface SortAbility {
 	/**
 	 * @param EiObject[] $eiObjects
 	 * @param EiObject $afterEiObject
 	 */
-	function insertAfter(array $eiObjects, EiObject $afterEiObject): void;
+	function insertAfter(array $eiObjects, EiObject $afterEiObject): SiResult;
 	
 	/**
 	 * @param EiObject[] $eiObjects
 	 * @param EiObject $afterEiObject
 	 */
-	function insertBefore(array $eiObjects, EiObject $afterEiObject): void;
+	function insertBefore(array $eiObjects, EiObject $afterEiObject): SiResult;
 	
 	/**
 	 * @param EiObject[] $eiObjects
 	 * @param EiObject $asChildOfEiObject
 	 * @throws IllegalStateException if context EiType of EiFrame contains no NestedSetStrategy
 	 */
-	function insertAsChild(array $eiObjects, EiObject $asChildOfEiObject): void;
+	function insertAsChild(array $eiObjects, EiObject $asChildOfEiObject): SiResult;
 }
