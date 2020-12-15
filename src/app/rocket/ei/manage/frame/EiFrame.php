@@ -79,7 +79,7 @@ class EiFrame {
 		$this->contextEiEngine = $contextEiEngine;
 		$this->manageState = $manageState;
 		$this->boundry = new Boundry();
-// 		$this->ability = new Ability();
+		$this->ability = new Ability();
 
 // 		$this->eiTypeConstraint = $manageState->getSecurityManager()->getConstraintBy($contextEiMask);
 	}
@@ -541,7 +541,7 @@ class EiFrame {
 	 */
 	function createSiFrame() {
 		return (new SiFrame($this->getApiUrl(), $this->contextEiEngine->getEiMask()->getEiType()->createSiTypeContext()))
-				/*->setSortable($this->ability->getSortAbility() !== null)*/;
+				->setSortable($this->ability->getSortAbility() !== null);
 	}
 }
 
