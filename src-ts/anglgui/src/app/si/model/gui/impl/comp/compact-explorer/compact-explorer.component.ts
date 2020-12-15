@@ -9,6 +9,7 @@ import { debounceTime, tap } from 'rxjs/operators';
 import { LayerComponent } from 'src/app/ui/structure/comp/layer/layer.component';
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 import { NgSafeScrollListener } from 'src/app/util/zone/ng-safe-scroll-listener';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 @Component({
 	selector: 'rocket-ui-compact-explorer',
@@ -83,6 +84,10 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 		}
 
 		return this.spm.lastPage && !this.spm.lastPage.loaded;
+	}
+
+	get sortable(): boolean {
+		return true;
 	}
 
 	getVisibleStructurePages(): StructurePage[] {
@@ -237,6 +242,11 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 	areMoreSelectable(): boolean {
 		return this.model.getSiEntryQualifierSelection().max === null
 				|| this.model.getSiEntryQualifierSelection().selectedQualfiers.length < this.model.getSiEntryQualifierSelection().max;
+	}
+
+	drop(event: CdkDragDrop<string[]>) {
+		// this.embeCol.changeEmbePosition(event.previousIndex, event.currentIndex);
+		// this.embeCol.writeEmbes();
 	}
 
 // 	static radioNameIndex = 0;

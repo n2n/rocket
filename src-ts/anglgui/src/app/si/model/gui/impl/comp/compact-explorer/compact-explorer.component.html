@@ -4,8 +4,8 @@
 	<table class="table table-hover rocket-table">
 		<thead>
 			<tr>
-				<th *ngIf="selectable" class="rocket-entry-selector">
-				</th>
+				<th *ngIf="selectable" class="rocket-entry-selector"></th>
+				<th [class.d-none]="!sortable"></th>
 				<th *ngFor="let siProp of getSiProps()">
 					{{ siProp.label }}
 				</th>
@@ -13,9 +13,10 @@
 				</th>
 			</tr>
 		</thead>
-		<tbody>
+		<tbody cdkDropList (cdkDropListDropped)="drop($event)">
 			<ng-container *ngFor="let structurePage of getVisibleStructurePages()">
-				<tr *ngFor="let structureEntry of structurePage.structureEntries" rocketSiEntry [siEntry]="structureEntry.siEntry">
+				<tr *ngFor="let structureEntry of structurePage.structureEntries" 
+						cdkDrag rocketSiEntry [siEntry]="structureEntry.siEntry">
 					<td *ngIf="selectable" class="rocket-entry-selector" (click)="toggleSelection(structureEntry.siEntry.qualifier)">
 						<ng-container *ngIf="singleSelect">
 							<input type="radio" [value]="true" [ngModel]="isSelected(structureEntry.siEntry.qualifier)" />
@@ -25,6 +26,9 @@
 									[ngModel]="isSelected(structureEntry.siEntry.qualifier)"
 									[disabled]="!areMoreSelectable() && !isSelected(structureEntry.siEntry.qualifier)" />
 						</ng-container>
+					</td>
+					<td [class.d-none]="!sortable" cdkDragHandle class="rocket-handle">
+						<i class="fa fa-bars"></i>
 					</td>
 					<td *ngFor="let fieldUiStructure of structureEntry.fieldUiStructures"
 							rocketUiStructure [uiStructure]="fieldUiStructure" 

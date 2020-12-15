@@ -34,9 +34,9 @@ interface SortAbility {
 	
 	/**
 	 * @param EiObject[] $eiObjects
-	 * @param EiObject $afterEiObject
+	 * @param EiObject $beforeEiObject
 	 */
-	function insertBefore(array $eiObjects, EiObject $afterEiObject): SiResult;
+	function insertBefore(array $eiObjects, EiObject $beforeEiObject): SiResult;
 	
 	/**
 	 * @param EiObject[] $eiObjects

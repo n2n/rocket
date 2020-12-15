@@ -14,7 +14,6 @@ import { UnknownSiElementError } from '../../util/unknown-si-element-error';
 import { skip } from 'rxjs/operators';
 
 export class SiEntry {
-	
 
 	constructor(readonly identifier: SiEntryIdentifier) {
 	}
