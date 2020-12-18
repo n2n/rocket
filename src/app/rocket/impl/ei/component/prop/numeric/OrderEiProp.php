@@ -25,12 +25,11 @@ use n2n\impl\persistence\orm\property\IntEntityProperty;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\impl\web\dispatch\mag\model\NumericMag;
 use n2n\persistence\orm\property\EntityProperty;
-use rocket\ei\EiPropPath;
 use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
 use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\numeric\conf\OrderConfig;
-use rocket\si\content\SiField;
 use rocket\ei\util\factory\EifGuiField;
+use rocket\si\content\impl\SiFields;
 
 class OrderEiProp extends IntegerEiProp {
     const ORDER_INCREMENT = 10;
@@ -54,7 +53,7 @@ class OrderEiProp extends IntegerEiProp {
 	}
 	
 	function createOutEifGuiField(Eiu $eiu): EifGuiField {
-		return $view->getHtmlBuilder()->getEsc($eiu->field()->getValue(EiPropPath::from($this)));
+		return $eiu->factory()->newGuiField(SiFields::stringOut($eiu->field()->getValue()));
 	}
 
 	public function getSortItem() {

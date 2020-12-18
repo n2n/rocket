@@ -49,6 +49,8 @@ class OrderEiModificator extends EiModificatorAdapter {
 		$eiu->frame()->getEiFrame()->getBoundry()->addCriteriaConstraint(Boundry::TYPE_HARD_SORT,
 				new SortCriteriaConstraintGroup(array(
 						new SimpleSortConstraint(CrIt::p($this->eiProp->getEntityProperty()), 'ASC'))));
+		
+		
 	}
 	
 	/**

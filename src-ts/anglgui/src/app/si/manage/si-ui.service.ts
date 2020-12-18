@@ -13,13 +13,15 @@ import { SiResult, SiDirective } from './si-result';
 import { SiControlBoundry } from '../model/control/si-control-bountry';
 import { SiModStateService } from '../model/mod/model/si-mod-state.service';
 import { PlatformService } from 'src/app/util/nav/platform.service';
+import { SiSortRequest } from '../model/api/si-sort-request';
+import { map } from 'rxjs/operators';
 
 @Injectable({
 	providedIn: 'root'
 })
 export class SiUiService {
 
-	constructor(readonly service: SiService, private modState: SiModStateService, private router: Router,
+	constructor(readonly service: SiService, private router: Router,
 			private platformService: PlatformService) {
 	}
 
@@ -154,9 +156,6 @@ export class SiUiService {
 		if (inputEntries.length > 0) {
 			this.handleEntryErrors(result.entryErrors, inputEntries);
 		}
-
-		this.modState.pushModEvent(result.modEvent);
-		this.modState.pushMessages(result.messages);
 
 		switch (result.directive) {
 			case SiDirective.REDIRECT:

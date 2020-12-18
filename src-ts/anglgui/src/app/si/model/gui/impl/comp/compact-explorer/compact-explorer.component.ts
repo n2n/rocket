@@ -87,7 +87,7 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 	}
 
 	get sortable(): boolean {
-		return true;
+		return this.spm.sortable;
 	}
 
 	getVisibleStructurePages(): StructurePage[] {
@@ -247,6 +247,8 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 	drop(event: CdkDragDrop<string[]>) {
 		// this.embeCol.changeEmbePosition(event.previousIndex, event.currentIndex);
 		// this.embeCol.writeEmbes();
+
+		this.spm.moveByIndex(event.previousIndex, event.currentIndex);
 	}
 
 // 	static radioNameIndex = 0;

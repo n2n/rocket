@@ -256,6 +256,10 @@ export class SiEntry {
 		}
 	}
 
+	isClean(): boolean {
+		return this.state === SiEntryState.CLEAN;
+	}
+
 	isAlive(): boolean {
 		return this.state !== SiEntryState.REPLACED && this.state !== SiEntryState.REMOVED;
 	}

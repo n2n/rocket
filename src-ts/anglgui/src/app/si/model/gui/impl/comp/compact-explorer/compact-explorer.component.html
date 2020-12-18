@@ -16,7 +16,7 @@
 		<tbody cdkDropList (cdkDropListDropped)="drop($event)">
 			<ng-container *ngFor="let structurePage of getVisibleStructurePages()">
 				<tr *ngFor="let structureEntry of structurePage.structureEntries" 
-						cdkDrag rocketSiEntry [siEntry]="structureEntry.siEntry">
+						cdkDrag [cdkDragDisabled]="!structureEntry.siEntry.isClean()" rocketSiEntry [siEntry]="structureEntry.siEntry">
 					<td *ngIf="selectable" class="rocket-entry-selector" (click)="toggleSelection(structureEntry.siEntry.qualifier)">
 						<ng-container *ngIf="singleSelect">
 							<input type="radio" [value]="true" [ngModel]="isSelected(structureEntry.siEntry.qualifier)" />

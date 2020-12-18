@@ -14,15 +14,16 @@ import { SiApiFactory } from '../build/si-api-factory';
 import { SiValRequest } from '../model/api/si-val-request';
 import { SiValResponse } from '../model/api/si-val-response';
 import { Extractor } from 'src/app/util/mapping/extractor';
-import { SiControlBoundry } from '../model/control/si-control-bountry';
 import { SiUiFactory } from '../build/si-ui-factory';
+import { SiSortRequest } from '../model/api/si-sort-request';
+import { SiModStateService } from '../model/mod/model/si-mod-state.service';
 
 @Injectable({
 	providedIn: 'root'
 })
 export class SiService {
 
-	constructor(private httpClient: HttpClient, private injector: Injector) {
+	constructor(private httpClient: HttpClient, private modState: SiModStateService, private injector: Injector) {
 	}
 
 	lookupZoneModel(url: string, uiZone: UiZone): Observable<UiZoneModel> {
@@ -76,12 +77,9 @@ export class SiService {
 
 		return this.httpClient.post<any>(apiUrl + '/execcontrol', formData, options)
 				.pipe(map(data => {
-// 								if (data.errors) {
-// 										throw data.errors;
-// 								}
-//
-// 								return data.expe(data => {
-					return SiResultFactory.createResult(data);
+					const result = SiResultFactory.createResult(data);
+					this.handleResult(result);
+					return result;
 				}));
 	}
 
@@ -125,5 +123,20 @@ export class SiService {
 				.pipe(map(data => {
 					return new SiApiFactory(this.injector).createValResponse(data, valRequest);
 				}));
+	}
+
+	apiSort(apiUrl: string, sortRequest: SiSortRequest): Observable<SiResult> {
+		return this.httpClient
+				.post(apiUrl + '/sort', sortRequest)
+				.pipe(map(data => {
+					const result = SiResultFactory.createResult(data);
+					this.handleResult(result);
+					return result;
+				}));
+	}
+
+	private handleResult(result: SiResult) {
+		this.modState.pushModEvent(result.modEvent);
+		this.modState.pushMessages(result.messages);
 	}
 }

@@ -255,4 +255,275 @@ export class SiPageCollection implements SiControlBoundry {
 			siPage.dipose();
 		}
 	}
+
+	private findEntryPositionByIndex(index: number): SiEntryPosition {
+		const globalIndex = index;
+		for (const page of this.pages) {
+			if (!page.loaded) {
+				continue;
+			}
+
+			const realSize = page.size + page.ghostSize;
+			if (realSize <= index) {
+				index -= realSize;
+				continue;
+			}
+
+			const entry = page.entries[index];
+
+			return {
+				entry, page,
+				pageRelativIndex: index,
+				childEntryPositions: this.findChildEntryPositions(globalIndex, entry.treeLevel)
+			};
+		}
+
+		return null;
+	}
+
+	moveByIndex(previousIndex: number, nextIndex: number): boolean {
+		this.ensureSortable();
+
+		const previousResult = this.findEntryPositionByIndex(previousIndex);
+
+		if (!previousResult || !previousResult.entry.isClean()) {
+			return false;
+		}
+
+		const nextResult = this.findEntryPositionByIndex(nextIndex);
+		if (!nextResult) {
+			return false;
+		}
+
+		if (!this.apiSortByIndex([previousResult.entry], nextIndex, nextResult)) {
+			return false;
+		}
+
+		this.moveByPositions([previousResult], nextResult, false, nextResult.entry.treeLevel);
+
+		this.recalcPagesOffset();
+		this.updateOrder();
+	}
+
+	moveAfter(entries: SiEntry[], afterEntry: SiEntry) {
+		this.ensureSortable();
+
+		this.apiSortAfter(entries, afterEntry);
+
+		this.moveByEntries(entries, afterEntry, true, afterEntry.treeLevel);
+
+		this.recalcPagesOffset();
+		this.updateOrder();
+	}
+
+	moveBefore(entries: SiEntry[], beforeEntry: SiEntry) {
+		this.ensureSortable();
+
+		this.apiSortBefore(entries, beforeEntry);
+
+		this.moveByEntries(entries, beforeEntry, false, beforeEntry.treeLevel);
+
+		this.recalcPagesOffset();
+		this.updateOrder();
+	}
+
+	moveToParent(entries: SiEntry[], parentEntry: SiEntry) {
+		this.ensureSortable();
+
+		this.apiSortParent(entries, parentEntry);
+
+		this.moveByEntries(entries, parentEntry, true, parentEntry.treeLevel + 1);
+
+		this.recalcPagesOffset();
+		this.updateOrder();
+	}
+
+	private apiSortByIndex(entries: SiEntry[], nextIndex: number, nextResult: SiEntryPosition): boolean {
+		if (nextResult.entry.isAlive()) {
+			if (!nextResult.entry.isClean()) {
+				return false;
+			}
+
+			this.apiSortBefore(entries, nextResult.entry);
+			return true;
+		}
+
+		for (let i = nextIndex + 1; true; i++) {
+			nextResult = this.findEntryPositionByIndex(i);
+
+			if (!nextResult) {
+				break;
+			}
+
+			if (!nextResult.entry.isAlive()) {
+				continue;
+			}
+
+			if (!nextResult.entry.isClean()) {
+				return false;
+			}
+
+			this.apiSortBefore(entries, nextResult.entry);
+			return true;
+		}
+
+		for (let i = nextIndex - 1; true; i--) {
+			nextResult = this.findEntryPositionByIndex(i);
+
+			if (!nextResult) {
+				break;
+			}
+
+			if (!nextResult.entry.isAlive()) {
+				continue;
+			}
+
+			if (!nextResult.entry.isClean()) {
+				return false;
+			}
+
+			this.apiSortAfter(entries, nextResult.entry);
+			return false;
+		}
+
+		return null;
+	}
+
+	private apiSortAfter(entries: SiEntry[], afterEntry: SiEntry) {
+		const locks = entries.map(entry => entry.createLock());
+		locks.push(afterEntry.createLock());
+
+		this.siService.apiSort(this.siFrame.apiUrl,
+				{
+					ids: entries.map(entry => entry.identifier.id),
+					afterId: afterEntry.identifier.id
+				}).subscribe(() => {
+					locks.forEach((lock) => { lock.release(); });
+				});
+	}
+
+	private apiSortBefore(entries: SiEntry[], beforeEntry: SiEntry) {
+		const locks = entries.map(entry => entry.createLock());
+		locks.push(beforeEntry.createLock());
+
+		this.siService.apiSort(this.siFrame.apiUrl,
+				{
+					ids: entries.map(entry => entry.identifier.id),
+					beforeId: beforeEntry.identifier.id
+				}).subscribe(() => {
+					locks.forEach((lock) => { lock.release(); });
+				});
+	}
+
+	private apiSortParent(entries: SiEntry[], parentEntry: SiEntry) {
+		const locks = entries.map(entry => entry.createLock());
+		locks.push(parentEntry.createLock());
+
+		this.siService.apiSort(this.siFrame.apiUrl,
+				{
+					ids: entries.map(entry => entry.identifier.id),
+					parentId: parentEntry.identifier.id
+				}).subscribe(() => {
+					locks.forEach((lock) => { lock.release(); });
+				});
+	}
+
+	private findEntryPositionByEntry(entry: SiEntry): SiEntryPosition {
+		let globalIndex = 0;
+		for (const page of this.pages) {
+			if (!page.loaded) {
+				continue;
+			}
+
+			const i = page.entries.indexOf(entry);
+			if (0 > i) {
+				globalIndex += page.size + page.ghostSize;
+				continue;
+			}
+
+			return {
+				entry, page,
+				pageRelativIndex: i,
+				childEntryPositions: this.findChildEntryPositions(globalIndex, entry.treeLevel)
+			};
+		}
+
+		return null;
+	}
+
+	private findChildEntryPositions(parentIndex: number, parentTreeLevel: number): SiEntryPosition[] {
+		const childEntryPositions = new Array<SiEntryPosition>();
+		for (let i = parentIndex + 1; ; i++) {
+			const childEntryPosition = this.findEntryPositionByIndex(i);
+			if (!childEntryPosition || childEntryPosition.entry.treeLevel <= parentTreeLevel) {
+				break;
+			}
+
+			if (childEntryPosition.entry.treeLevel === parentTreeLevel + 1) {
+				childEntryPositions.push(childEntryPosition);
+			}
+		}
+		return childEntryPositions;
+	}
+
+
+	private moveByEntries(entries: SiEntry[], targetEntry: SiEntry, after: boolean, treeLevel: number) {
+		const afterPosition = this.findEntryPositionByEntry(targetEntry);
+
+		if (!afterPosition) {
+			return;
+		}
+
+		const positions = entries.map((entry) => this.findEntryPositionByEntry(entry))
+				.filter((position) => {
+					return !!position && position.entry.isClean();
+				});
+
+		this.moveByPositions(positions, afterPosition, after, treeLevel);
+	}
+
+	private moveByPositions(positions: SiEntryPosition[], targetPosition: SiEntryPosition, after: boolean, treeLevel: number) {
+		for (const position of positions) {
+			position.page.removeEntry(position.entry);
+
+			const targetIndex = targetPosition.page.entries.indexOf(targetPosition.entry) + (after ? 1 : 0);
+			targetPosition.page.insertEntry(targetIndex, position.entry);
+
+			position.entry.treeLevel = treeLevel;
+
+			this.moveByPositions(position.childEntryPositions, {
+				entry: position.entry,
+				page: targetPosition.page,
+				pageRelativIndex: targetIndex,
+				childEntryPositions: position.childEntryPositions
+			}, true, treeLevel + 1);
+		}
+	}
+
+	private ensureSortable() {
+		if (this.sortable) {
+			return;
+		}
+
+		throw new IllegalSiStateError('SiPageCollection is not sortable.');
+	}
+
+	get sortable(): boolean {
+		return this.siFrame.sortable;
+	}
+
+	private updateOrder() {
+
+	}
+}
+
+class MovingProcess {
+
+}
+
+interface SiEntryPosition {
+	 entry: SiEntry;
+	 page: SiPage;
+	 pageRelativIndex: number;
+	 childEntryPositions: SiEntryPosition[];
 }

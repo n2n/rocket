@@ -53,6 +53,7 @@ use n2n\web\http\StatusException;
 use n2n\web\http\Response;
 use rocket\ei\manage\EiObject;
 use n2n\persistence\orm\criteria\item\CrIt;
+use rocket\ei\manage\frame\SortAbility;
 
 class ApiSortProcess {
 	private $eiFrame;
