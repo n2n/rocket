@@ -218,6 +218,13 @@ class EiFrame {
 	}
 	
 	/**
+	 * @return Ability
+	 */
+	public function getAbility() {
+		return $this->ability;
+	}
+	
+	/**
 	 * @var \rocket\ei\manage\critmod\filter\FilterDefinition
 	 */
 	private $filterDefinition;

@@ -24,7 +24,6 @@ namespace rocket\impl\ei\component\prop\numeric\conf;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
-use rocket\impl\ei\component\prop\numeric\component\OrderEiCommand;
 use rocket\impl\ei\component\prop\numeric\component\OrderEiModificator;
 use rocket\impl\ei\component\prop\adapter\config\EntityPropertyConfigurable;
 use n2n\persistence\meta\structure\Column;
@@ -59,11 +58,7 @@ class OrderConfig extends ConfigAdaption {
 		return $level;
 	}
 	
-	
 	public function setup(Eiu $eiu, DataSet $dataSet) {
-		$orderEiCommand = new OrderEiCommand();
-		$orderEiCommand->setOrderEiProp($this->orderEiProp);
-		
 		$eiuMask = $eiu->mask();
 		$eiuMask->addEiModificator(new OrderEiModificator($this->orderEiProp));
 	}

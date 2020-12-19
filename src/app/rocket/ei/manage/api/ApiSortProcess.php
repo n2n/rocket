@@ -96,7 +96,7 @@ class ApiSortProcess {
 	 */
 	private function lookupEiObject($pid) {
 		try {
-			return $this->eiFrameUtil->lookupEiObject($pids);
+			return $this->eiFrameUtil->lookupEiObject($pid);
 		} catch (UnknownEntryException $e) {
 			throw new BadRequestException(null, null, $e);
 		}

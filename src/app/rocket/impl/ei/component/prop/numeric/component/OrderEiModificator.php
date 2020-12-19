@@ -30,6 +30,7 @@ use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\frame\Boundry;
 use rocket\ei\EiPropPath;
+use rocket\ei\util\entry\EiuObject;
 
 class OrderEiModificator extends EiModificatorAdapter {
 	private $eiProp;
@@ -50,7 +51,51 @@ class OrderEiModificator extends EiModificatorAdapter {
 				new SortCriteriaConstraintGroup(array(
 						new SimpleSortConstraint(CrIt::p($this->eiProp->getEntityProperty()), 'ASC'))));
 		
+		$eiu->frame()->setSortAbility(
+				function (array $eiuObjects, EiuObject $afterEiuObject) use ($eiu) {
+					foreach ($eiuObjects as $eiuObject) {
+						$this->move($eiu, $eiuObject->getPid(), $afterEiuObject->getPid(), false);
+					}
+				},
+				function (array $eiuObjects, EiuObject $beforeEiuObject) use ($eiu) {
+					foreach ($eiuObjects as $eiuObject) {
+						$this->move($eiu, $eiuObject->getPid(), $beforeEiuObject->getPid(), true);
+					}
+				});
+	}
+				
+	
+	private function move(Eiu $eiu, string $pid, string $targetPid, bool $before) {
+		if ($pid === $targetPid) return;
 		
+		$eiuEntry = $eiu->frame()->lookupEntry($pid);
+		$targetEiuEntity = $eiu->frame()->lookupEntry($targetPid);
+		
+		if ($eiuEntry === null || $targetEiuEntity === null) {
+			return;
+		}
+		
+		$entityProperty = $this->eiProp->getEntityProperty();
+		$targetOrderIndex = $entityProperty->readValue($targetEiuEntity->getEntityObj());
+		if (!$before) {
+			$targetOrderIndex++;
+		}
+		
+		$em = $this->eiuCtrl->frame()->em();
+		$criteria = $em->createCriteria();
+		$criteria->select('eo')
+				->from($entityProperty->getEntityModel()->getClass(), 'eo')
+				->where()->match(CrIt::p('eo', $entityProperty), '>=', $targetOrderIndex)->endClause()
+				->order(CrIt::p('eo', $entityProperty), 'ASC');
+		
+		$newOrderIndex = $targetOrderIndex + OrderEiProp::ORDER_INCREMENT;
+		foreach ($criteria->toQuery()->fetchArray() as $entityObj) {
+			$newOrderIndex += OrderEiProp::ORDER_INCREMENT;
+			$entityProperty->writeValue($entityObj, $newOrderIndex);
+		}
+		
+		$entityProperty->writeValue($eiuEntry->getEntityObj(), $targetOrderIndex);
+		$em->flush();
 	}
 	
 	/**

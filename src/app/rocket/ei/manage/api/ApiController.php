@@ -161,7 +161,7 @@ class ApiController extends ControllerAdapter {
 		}
 		
 		if (null !== ($beforeId = $httpData->optString('beforeId'))) {
-			$this->sendJson($this->sendJson($sortProcess->insterBefore($beforeId)));
+			$this->sendJson($sortProcess->insertBefore($beforeId));
 			return;
 		}
 		
