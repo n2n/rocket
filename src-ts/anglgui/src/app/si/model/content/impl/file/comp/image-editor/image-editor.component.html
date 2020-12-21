@@ -69,7 +69,8 @@
 									
 									<div *ngIf="isLowRes(imageDimension)" class="rocket-image-low-res">low res</div>
 								</button>
-								<button *ngIf="thumbRatio.hasIndividualImageCut(imageDimension)" (click)="resetIndividualImageCut(thumbRatio, imageDimension)">
+								<button *ngIf="thumbRatio.hasIndividualImageCut(imageDimension)" (click)="resetIndividualImageCut(thumbRatio, imageDimension)"
+										[disabled]="originalChanged">
 									<i class="fa fa-beer"></i>
 								</button>
 							</li>
