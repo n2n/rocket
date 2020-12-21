@@ -295,11 +295,13 @@ export class SiPageCollection implements SiControlBoundry {
 			return false;
 		}
 
-		if (!this.apiSortByIndex([previousResult.entry], nextIndex, nextResult)) {
+		const after = nextIndex > previousIndex;
+
+		if (!this.apiSortByIndex([previousResult.entry], nextIndex, nextResult, after)) {
 			return false;
 		}
 
-		this.moveByPositions([previousResult], nextResult, false, nextResult.entry.treeLevel);
+		this.moveByPositions([previousResult], nextResult, after, nextResult.entry.treeLevel);
 
 		this.recalcPagesOffset();
 		this.updateOrder();
@@ -338,13 +340,17 @@ export class SiPageCollection implements SiControlBoundry {
 		this.updateOrder();
 	}
 
-	private apiSortByIndex(entries: SiEntry[], nextIndex: number, nextResult: SiEntryPosition): boolean {
+	private apiSortByIndex(entries: SiEntry[], nextIndex: number, nextResult: SiEntryPosition, after: boolean): boolean {
 		if (nextResult.entry.isAlive()) {
 			if (!nextResult.entry.isClean()) {
 				return false;
 			}
 
-			this.apiSortBefore(entries, nextResult.entry);
+			if (after) {
+				this.apiSortAfter(entries, nextResult.entry);
+			} else {
+				this.apiSortBefore(entries, nextResult.entry);
+			}
 			return true;
 		}
 
@@ -487,6 +493,7 @@ export class SiPageCollection implements SiControlBoundry {
 			position.page.removeEntry(position.entry);
 
 			const targetIndex = targetPosition.page.entries.indexOf(targetPosition.entry) + (after ? 1 : 0);
+			console.log(targetPosition.page.entries.indexOf(targetPosition.entry));
 			targetPosition.page.insertEntry(targetIndex, position.entry);
 
 			position.entry.treeLevel = treeLevel;

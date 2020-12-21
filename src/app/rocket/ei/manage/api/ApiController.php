@@ -156,7 +156,7 @@ class ApiController extends ControllerAdapter {
 		$sortProcess->determineEiObjects($httpData->reqArray('ids', 'string'));
 		
 		if (null !== ($afterId = $httpData->optString('afterId'))) {
-			$this->sendJson($this->sendJson($sortProcess->insterAfter($afterId)));
+			$this->sendJson($sortProcess->insertAfter($afterId));
 			return;
 		}
 		

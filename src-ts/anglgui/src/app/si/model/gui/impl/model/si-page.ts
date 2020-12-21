@@ -138,8 +138,8 @@ export class SiPage {
 
 		const i = this.entries.indexOf(siEntry);
 
-		if (i < -1) {
-			throw new IllegalSiStateError('SiEntry does not exist: ' + i);
+		if (i < 0) {
+			throw new IllegalSiStateError('SiEntry does not exist: ' + siEntry.identifier.toString());
 		}
 
 		this.removeEntryByIndex(i);
@@ -148,7 +148,7 @@ export class SiPage {
 	removeEntryByIndex(i: number) {
 		this.ensureLoaded();
 
-		if (this.entries[i]) {
+		if (!this.entries[i]) {
 			throw new IllegalSiStateError('SiEntry index does not exist: ' + i);
 		}
 

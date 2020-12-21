@@ -45,7 +45,7 @@ export class OpRoutingModule {}
 
 export function matchesManageUrl(url: UrlSegment[], group: UrlSegmentGroup, route: Route): UrlMatchResult {
 	if (url.length < 1 || url[0].path !== 'manage') {
-		alert('not found');
+		// alert('not found');
 		return null as any;
 	}
 

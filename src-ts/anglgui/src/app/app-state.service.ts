@@ -8,6 +8,7 @@ export class AppStateService {
 
 	localeId = 'de_CH';
 	user: User;
+	assetsUrl: string;
 
 	constructor() { }
 }

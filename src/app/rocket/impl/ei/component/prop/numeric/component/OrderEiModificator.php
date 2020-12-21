@@ -81,7 +81,7 @@ class OrderEiModificator extends EiModificatorAdapter {
 			$targetOrderIndex++;
 		}
 		
-		$em = $this->eiuCtrl->frame()->em();
+		$em = $eiu->frame()->em();
 		$criteria = $em->createCriteria();
 		$criteria->select('eo')
 				->from($entityProperty->getEntityModel()->getClass(), 'eo')

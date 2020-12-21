@@ -61,8 +61,12 @@ class OrderEiProp extends IntegerEiProp {
 	}
 
 	public function createInEifGuiField(Eiu $eiu): EifGuiField {
-		return new NumericMag($this->getLabelLstr(), null, $this->isMandatory($eiu), 
-				null, null, 0, null, array('placeholder' => $this->getLabelLstr()));
+		$siField = SiFields::numberIn($eiu->field()->getValue())
+				->setMandatory($this->getEditConfig()->isMandatory());
+		
+		return $eiu->factory()->newGuiField($siField)->setSaver(function () use ($siField, $eiu) {
+			$eiu->field()->setValue($siField->getValue());
+		});
 	}
 
 	public function getFilterProp() {

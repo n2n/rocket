@@ -77,4 +77,5 @@
 	$view->assert($anglTemplateModel instanceof AnglTemplateModel);
 ?>
 
-<rocket-root data-rocket-angl-data="<?php $html->out(json_encode($anglTemplateModel->createData($view->getControllerContext()))) ?>"></rocket-root>
+<rocket-root data-rocket-angl-data="<?php $html->out(json_encode($anglTemplateModel->createData($view->getControllerContext()))) ?>"
+		data-rocket-assets-url="<?php $html->out($html->meta()->getAssetUrl(null, 'rocket')) ?>"></rocket-root>

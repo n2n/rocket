@@ -21,39 +21,12 @@
  */
 namespace rocket\ei\manage\api;
 
-use rocket\ei\manage\gui\control\GuiControl;
-use rocket\ei\manage\gui\control\EntryGuiControl;
-use rocket\ei\manage\gui\control\GeneralGuiControl;
-use rocket\ei\manage\frame\EiFrame;
-use n2n\web\http\BadRequestException;
-use rocket\ei\manage\DefPropPath;
-use rocket\ei\manage\gui\GuiException;
-use rocket\ei\manage\gui\control\GuiControlPath;
-use rocket\ei\manage\gui\control\UnknownGuiControlException;
-use rocket\si\control\SiResult;
-use n2n\util\type\attrs\AttributesException;
-use rocket\si\input\SiInput;
-use rocket\si\input\SiError;
-use rocket\si\input\SiEntryInput;
-use rocket\ei\manage\gui\EiEntryGui;
-use n2n\util\ex\IllegalStateException;
-use rocket\spec\TypePath;
-use rocket\ei\manage\frame\EiFrameUtil;
-use rocket\si\input\SiInputFactory;
-use rocket\ei\EiCommandPath;
-use rocket\ei\manage\entry\UnknownEiObjectException;
-use rocket\ei\UnknownEiTypeException;
-use rocket\ei\manage\security\InaccessibleEiEntryException;
-use n2n\web\http\ForbiddenException;
-use rocket\ei\mask\EiMask;
-use rocket\ei\manage\gui\EiGuiModel;
-use rocket\ei\manage\gui\EiGui;
 use n2n\persistence\orm\util\UnknownEntryException;
-use n2n\web\http\StatusException;
-use n2n\web\http\Response;
-use rocket\ei\manage\EiObject;
-use n2n\persistence\orm\criteria\item\CrIt;
+use n2n\web\http\BadRequestException;
+use rocket\ei\manage\frame\EiFrame;
+use rocket\ei\manage\frame\EiFrameUtil;
 use rocket\ei\manage\frame\SortAbility;
+use rocket\ei\manage\EiObject;
 
 class ApiSortProcess {
 	private $eiFrame;
@@ -109,7 +82,7 @@ class ApiSortProcess {
 	function determineEiObjects(array $pids) {
 		$this->eiObjects = [];
 		foreach ($pids as $pid) {
-			$this->eiObject[] = $this->lookupEiObject($pid);
+			$this->eiObjects[] = $this->lookupEiObject($pid);
 		}
 	}
 	
