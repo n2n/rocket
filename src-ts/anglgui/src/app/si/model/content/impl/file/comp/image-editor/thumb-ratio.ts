@@ -125,6 +125,23 @@ export class ThumbRatio {
 		return !this.groupedImageCuts || !this.groupedImageCuts[0].equals(imageDimension.imageCut);
 	}
 
+	resetIndividutalImageCut(imageDimension: SiImageDimension) {
+		let baseImageCut: SiImageCut;
+		if (this.groupedImageCuts) {
+			baseImageCut = this.groupedImageCuts[0];
+		}
+		if (!baseImageCut) {
+			baseImageCut = this.imageDimensions[0] !== imageDimension ? this.imageDimensions[0].imageCut : this.imageDimensions[1].imageCut;
+		}
+
+		imageDimension.imageCut.x = baseImageCut.x;
+		imageDimension.imageCut.y = baseImageCut.y;
+		imageDimension.imageCut.width = baseImageCut.width;
+		imageDimension.imageCut.height = baseImageCut.height;
+
+		this.updateGroups();
+	}
+
 	getGroupedImageCuts(): SiImageCut[] {
 		if (this.groupedImageCuts) {
 			return this.groupedImageCuts;

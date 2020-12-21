@@ -151,20 +151,36 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 		this.resetSelection();
 
 		this.currentThumbRatio = thumbRatio;
-		this.imageSrc.cut(thumbRatio.getGroupedImageCuts(), {
-			ratio: thumbRatio.imageDimensions[0].width / thumbRatio.imageDimensions[0].height,
-			freeRatioAllowed: !thumbRatio.ratioFixed
-		});
+		this.updateCut();
 	}
 
 	switchToImageDimension(imageDimension: SiImageDimension) {
 		this.resetSelection();
 
 		this.currentImageDimension = imageDimension;
-		this.imageSrc.cut([imageDimension.imageCut], {
-			ratio: imageDimension.width / imageDimension.height,
-			freeRatioAllowed: !imageDimension.ratioFixed
-		});
+		this.updateCut();
+	}
+
+	resetIndividualImageCut(thumbRatio: ThumbRatio, imageDimension: SiImageDimension) {
+		thumbRatio.resetIndividutalImageCut(imageDimension);
+		this.updateCut();
+	}
+
+	private updateCut() {
+
+		if (this.currentThumbRatio) {
+			this.imageSrc.cut(this.currentThumbRatio.getGroupedImageCuts(), {
+				ratio: this.currentThumbRatio.imageDimensions[0].width / this.currentThumbRatio.imageDimensions[0].height,
+				freeRatioAllowed: !this.currentThumbRatio.ratioFixed
+			});
+		}
+
+		if (this.currentImageDimension) {
+			this.imageSrc.cut([this.currentImageDimension.imageCut], {
+				ratio: this.currentImageDimension.width / this.currentImageDimension.height,
+				freeRatioAllowed: !this.currentImageDimension.ratioFixed
+			});
+		}
 	}
 
 	private initSiFile(siFile: SiFile) {

@@ -69,6 +69,9 @@
 									
 									<div *ngIf="isLowRes(imageDimension)" class="rocket-image-low-res">low res</div>
 								</button>
+								<button *ngIf="thumbRatio.hasIndividualImageCut(imageDimension)" (click)="resetIndividualImageCut(thumbRatio, imageDimension)">
+									<i class="fa fa-beer"></i>
+								</button>
 							</li>
 						</ng-container>
 					</ul>
