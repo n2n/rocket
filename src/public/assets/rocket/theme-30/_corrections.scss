@@ -18,6 +18,11 @@
         font-family: $font-name-icons;
     }
 }
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: $breadcrumb-divider;
+}
+
 .breadcrumb-item.active {
     > a {
         color: $body-color;

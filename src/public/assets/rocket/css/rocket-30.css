@@ -4470,7 +4470,7 @@ input[type="button"].btn-block {
   display: inline-block;
   padding-right: 1rem;
   color: #837E78;
-  content: "";
+  content: "";
 }
 
 .breadcrumb-item + .breadcrumb-item:hover::before {
@@ -5607,7 +5607,7 @@ rocket-ui-compact-explorer {
   position: absolute;
   top: 0;
   right: 0;
-  font-family: "FontAwesome";
+  font-family: "Font-Awesome-5";
   font-weight: normal;
   content: "\f068";
 }
@@ -6763,7 +6763,7 @@ rocket-add-past > button {
 }
 
 rocket-add-past > button::after {
-  font-family: "FontAwesome";
+  font-family: "Font-Awesome-5";
   content: '\f067';
   position: absolute;
   top: 0.375rem;
@@ -7266,7 +7266,7 @@ rocket-button-control .dropdown > div div > .btn:hover, rocket-button-control .d
   margin: 1rem 0;
 }
 
-.rocket-highlighted {
+.rocket-error {
   outline: 3px solid #dc3545;
   position: relative;
   background: rgba(220, 53, 69, 0.1);
@@ -7292,7 +7292,7 @@ rocket-button-control .dropdown > div div > .btn:hover, rocket-button-control .d
   right: 1rem;
   color: #b90f00;
   content: '\f0e7';
-  font-family: "FontAwesome";
+  font-family: "Font-Awesome-5";
   font-size: 1.25rem;
 }
 
@@ -7678,7 +7678,7 @@ rocket-button-control .dropdown > div div > .btn:hover, rocket-button-control .d
 
 .rocket-dialog::after {
   content: "\f059";
-  font-family: "FontAwesome";
+  font-family: "Font-Awesome-5";
   position: absolute;
   top: 1rem;
   left: 2rem;
@@ -7805,7 +7805,11 @@ rocket-button-control .dropdown > div div > .btn:hover, rocket-button-control .d
 }
 
 .breadcrumb-item:before {
-  font-family: "FontAwesome";
+  font-family: "Font-Awesome-5";
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+  content: "";
 }
 
 .breadcrumb-item.active > a {
