@@ -232,9 +232,9 @@ export class ImageSrc {
 	private updateBoundries(){
 		const containerData = this.cropper.getContainerData();
 		const canvasData = this.cropper.getCanvasData();
-		console.log(containerData.width);
-		const widthZoomFactor = Math.min(containerData.width / canvasData.width, 1);
-		const heightZoomFactor = Math.min(containerData.height / canvasData.height, 1);
+
+		const widthZoomFactor = Math.min(containerData.width / canvasData.naturalHeight, 1);
+		const heightZoomFactor = Math.min(containerData.height / canvasData.naturalHeight, 1);
 		const zoomFactor = Math.min(widthZoomFactor, heightZoomFactor);
 
 		this.cropper.zoomTo(zoomFactor);
