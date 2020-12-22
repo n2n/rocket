@@ -10,6 +10,11 @@
 					{{ siProp.label }}
 				</th>
 				<th>
+					<ng-container *ngIf="sortable">
+						<button (click)="switchToEntryControlMode()" [class.active]="isEntryControModeEnabled()"><i class="fa fa-wrench"></i></button>
+
+						<button (click)="switchToSortMode()" [class.active]="isSortModeEnabled()"><i class="fa fa-arrows-alt-v"></i></button>
+					</ng-container>
 				</th>
 			</tr>
 		</thead>
@@ -35,9 +40,31 @@
 							(click)="toggleSelection(structureEntry.siEntry.qualifier)">
 					</td>
 					<td class="rocket-table-commands">
-						<div class="rocket-simple-commands">
-							<ng-container *ngFor="let controlUiContent of structureEntry.controlUiContents">
-								<ng-template rocketUiContent [uiContent]="controlUiContent"></ng-template>
+						<div *ngIf="structureEntry.siEntry.isAlive()" class="rocket-simple-commands">
+							<ng-container *ngIf="isEntryControModeEnabled()">
+								<ng-container *ngFor="let controlUiContent of structureEntry.controlUiContents">
+									<ng-template rocketUiContent [uiContent]="controlUiContent"></ng-template>
+								</ng-container>
+							</ng-container>
+
+							<ng-container *ngIf="isSortModeEnabled()">
+								<rocket-ui-toggler [enabled]="isSiEntrySortSelected(structureEntry.siEntry)" 
+										(enabledChange)="setSiEntrySortSelected(structureEntry.siEntry, $event)"
+										[labeled]="false"></rocket-ui-toggler>
+										
+								<ng-container *ngIf="!isSiEntrySortSelected(structureEntry.siEntry)">
+									<button (click)="moveBefore(structureEntry.siEntry)" [disabled]="!hasSiEntrySortSelections()">
+										<i class="fa fa-arrow-up"></i>
+									</button>
+
+									<button (click)="moveAfter(structureEntry.siEntry)" [disabled]="!hasSiEntrySortSelections()">
+										<i class="fa fa-arrow-down"></i>
+									</button>
+
+									<button *ngIf="isTree()" (click)="moveToParent(structureEntry.siEntry)" [disabled]="!hasSiEntrySortSelections()">
+										<i class="fa fa-arrow-right"></i>
+									</button>
+								</ng-container>
 							</ng-container>
 						</div>
 					</td>

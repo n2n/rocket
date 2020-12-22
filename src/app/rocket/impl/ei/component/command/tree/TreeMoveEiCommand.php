@@ -52,6 +52,8 @@ class TreeMoveEiCommand extends IndependentEiCommandAdapter {
 		return $eiu->lookup(TreeMoveController::class);
 	}
 	
+	
+	
 	public function createEntryGuiControls(Eiu $eiu): array {
 		$httpContext = $view->getHttpContext();
 		$dtc = new DynamicTextCollection('rocket', $view->getRequest()->getN2nLocale());

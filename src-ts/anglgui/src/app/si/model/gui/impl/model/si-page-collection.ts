@@ -12,6 +12,8 @@ import { SiGetResponse } from '../../../api/si-get-response';
 import { SiGetResult } from '../../../api/si-get-result';
 import { SiControlBoundry } from '../../../control/si-control-bountry';
 import { SiFrame } from '../../../meta/si-frame';
+import { SiEntryIdentifier } from '../../../content/si-entry-qualifier';
+import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 
 export class SiPageCollection implements SiControlBoundry {
 	public declaration: SiDeclaration|null = null;
@@ -281,6 +283,17 @@ export class SiPageCollection implements SiControlBoundry {
 		return null;
 	}
 
+	getEntryByIdentifier(identifier: SiEntryIdentifier): SiEntry|null {
+		for (const page of this.pages) {
+			const entry = page.entries.find(e => e.identifier.equals(identifier));
+			if (entry) {
+				return entry;
+			}
+		}
+
+		return null;
+	}
+
 	moveByIndex(previousIndex: number, nextIndex: number): boolean {
 		this.ensureSortable();
 
@@ -304,7 +317,6 @@ export class SiPageCollection implements SiControlBoundry {
 		this.moveByPositions([previousResult], nextResult, after, nextResult.entry.treeLevel);
 
 		this.recalcPagesOffset();
-		this.updateOrder();
 	}
 
 	moveAfter(entries: SiEntry[], afterEntry: SiEntry) {
@@ -315,7 +327,6 @@ export class SiPageCollection implements SiControlBoundry {
 		this.moveByEntries(entries, afterEntry, true, afterEntry.treeLevel);
 
 		this.recalcPagesOffset();
-		this.updateOrder();
 	}
 
 	moveBefore(entries: SiEntry[], beforeEntry: SiEntry) {
@@ -326,7 +337,6 @@ export class SiPageCollection implements SiControlBoundry {
 		this.moveByEntries(entries, beforeEntry, false, beforeEntry.treeLevel);
 
 		this.recalcPagesOffset();
-		this.updateOrder();
 	}
 
 	moveToParent(entries: SiEntry[], parentEntry: SiEntry) {
@@ -337,7 +347,6 @@ export class SiPageCollection implements SiControlBoundry {
 		this.moveByEntries(entries, parentEntry, true, parentEntry.treeLevel + 1);
 
 		this.recalcPagesOffset();
-		this.updateOrder();
 	}
 
 	private apiSortByIndex(entries: SiEntry[], nextIndex: number, nextResult: SiEntryPosition, after: boolean): boolean {
@@ -405,6 +414,7 @@ export class SiPageCollection implements SiControlBoundry {
 					afterId: afterEntry.identifier.id
 				}).subscribe(() => {
 					locks.forEach((lock) => { lock.release(); });
+					this.updateOrder();
 				});
 	}
 
@@ -418,6 +428,7 @@ export class SiPageCollection implements SiControlBoundry {
 					beforeId: beforeEntry.identifier.id
 				}).subscribe(() => {
 					locks.forEach((lock) => { lock.release(); });
+					this.updateOrder();
 				});
 	}
 
@@ -431,10 +442,11 @@ export class SiPageCollection implements SiControlBoundry {
 					parentId: parentEntry.identifier.id
 				}).subscribe(() => {
 					locks.forEach((lock) => { lock.release(); });
+					this.updateOrder();
 				});
 	}
 
-	private findEntryPositionByEntry(entry: SiEntry): SiEntryPosition {
+	private deterPositionOfEntry(entry: SiEntry): SiEntryPosition {
 		let globalIndex = 0;
 		for (const page of this.pages) {
 			if (!page.loaded) {
@@ -454,7 +466,7 @@ export class SiPageCollection implements SiControlBoundry {
 			};
 		}
 
-		return null;
+		throw new IllegalStateError('Entry not found: ' + entry.identifier.toString());
 	}
 
 	private findChildEntryPositions(parentIndex: number, parentTreeLevel: number): SiEntryPosition[] {
@@ -474,18 +486,11 @@ export class SiPageCollection implements SiControlBoundry {
 
 
 	private moveByEntries(entries: SiEntry[], targetEntry: SiEntry, after: boolean, treeLevel: number) {
-		const afterPosition = this.findEntryPositionByEntry(targetEntry);
+		const targetPosition = this.deterPositionOfEntry(targetEntry);
 
-		if (!afterPosition) {
-			return;
-		}
+		const positions = entries.map((entry) => this.deterPositionOfEntry(entry));
 
-		const positions = entries.map((entry) => this.findEntryPositionByEntry(entry))
-				.filter((position) => {
-					return !!position && position.entry.isClean();
-				});
-
-		this.moveByPositions(positions, afterPosition, after, treeLevel);
+		this.moveByPositions(positions, targetPosition, after, treeLevel);
 	}
 
 	private moveByPositions(positions: SiEntryPosition[], targetPosition: SiEntryPosition, after: boolean, treeLevel: number) {
@@ -493,7 +498,7 @@ export class SiPageCollection implements SiControlBoundry {
 			position.page.removeEntry(position.entry);
 
 			const targetIndex = targetPosition.page.entries.indexOf(targetPosition.entry) + (after ? 1 : 0);
-			console.log(targetPosition.page.entries.indexOf(targetPosition.entry));
+
 			targetPosition.page.insertEntry(targetIndex, position.entry);
 
 			position.entry.treeLevel = treeLevel;
@@ -521,6 +526,10 @@ export class SiPageCollection implements SiControlBoundry {
 
 	private updateOrder() {
 
+	}
+
+	isTree(): boolean {
+		return this.siFrame.typeContext.treeMode;
 	}
 }
 

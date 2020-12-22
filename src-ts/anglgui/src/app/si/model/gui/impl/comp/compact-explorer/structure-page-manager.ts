@@ -7,6 +7,7 @@ import { IllegalArgumentError } from 'src/app/si/util/illegal-argument-error';
 import { SiPageCollection } from '../../model/si-page-collection';
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 import { SiProp } from 'src/app/si/model/meta/si-prop';
+import { SiEntryIdentifier } from 'src/app/si/model/content/si-entry-qualifier';
 
 export class StructurePage {
 	private _structureEntries = new Array<StructureEntry>();
@@ -367,6 +368,34 @@ export class StructurePageManager {
 
 	moveByIndex(previousIndex: number, nextIndex: number) {
 		this.siPageCollection.moveByIndex(previousIndex, nextIndex);
+	}
+
+	moveAfter(identifiers: SiEntryIdentifier[], afterEntryIdentifier: SiEntryIdentifier) {
+		const siEntries = identifiers.map(i => this.siPageCollection.getEntryByIdentifier(i));
+		const targetSiEntry = this.siPageCollection.getEntryByIdentifier(afterEntryIdentifier)
+		if (siEntries.length > 0 && targetSiEntry) {
+			this.siPageCollection.moveAfter(siEntries, targetSiEntry);
+		}
+	}
+
+	moveBefore(identifiers: SiEntryIdentifier[], beforeEntryIdentifier: SiEntryIdentifier) {
+		const siEntries = identifiers.map(i => this.siPageCollection.getEntryByIdentifier(i));
+		const targetSiEntry = this.siPageCollection.getEntryByIdentifier(beforeEntryIdentifier)
+		if (siEntries.length > 0 && targetSiEntry) {
+			this.siPageCollection.moveBefore(siEntries, targetSiEntry);
+		}
+	}
+
+	moveToParent(identifiers: SiEntryIdentifier[], parentEntryIdentifier: SiEntryIdentifier) {
+		const siEntries = identifiers.map(i => this.siPageCollection.getEntryByIdentifier(i));
+		const targetSiEntry = this.siPageCollection.getEntryByIdentifier(parentEntryIdentifier)
+		if (siEntries.length > 0 && targetSiEntry) {
+			this.siPageCollection.moveToParent(siEntries, targetSiEntry);
+		}
+	}
+
+	isTree(): boolean {
+		return this.siPageCollection.isTree();
 	}
 }
 

@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Inject, NgZone } from '@angular/core';
 import { Subscription, Subject } from 'rxjs';
-import { SiEntryQualifier } from 'src/app/si/model/content/si-entry-qualifier';
+import { SiEntryQualifier, SiEntryIdentifier } from 'src/app/si/model/content/si-entry-qualifier';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiProp } from 'src/app/si/model/meta/si-prop';
 import { CompactExplorerModel } from '../compact-explorer-model';
@@ -10,6 +10,7 @@ import { LayerComponent } from 'src/app/ui/structure/comp/layer/layer.component'
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 import { NgSafeScrollListener } from 'src/app/util/zone/ng-safe-scroll-listener';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { SiEntry } from 'src/app/si/model/content/si-entry';
 
 @Component({
 	selector: 'rocket-ui-compact-explorer',
@@ -262,4 +263,59 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 //
 // 		return this._radioName;
 // 	}
+
+	isTree(): boolean {
+		return this.spm.isTree();
+	}
+
+	private sortModeEnabled = false;
+
+	switchToSortMode() {
+		this.sortModeEnabled = true;
+	}
+
+	switchToEntryControlMode() {
+		this.sortModeEnabled = false;
+	}
+
+	isSortModeEnabled(): boolean {
+		return this.sortModeEnabled;
+	}
+
+	isEntryControModeEnabled(): boolean {
+		return !this.sortModeEnabled;
+	}
+
+	private sortSelectedMap = new Map<string, SiEntryIdentifier>();
+
+	isSiEntrySortSelected(siEntry: SiEntry): boolean {
+		return this.sortSelectedMap.has(siEntry.identifier.toString());
+	}
+
+	setSiEntrySortSelected(siEntry: SiEntry, value: boolean) {
+		if (value) {
+			this.sortSelectedMap.set(siEntry.identifier.toString(), siEntry.identifier);
+		} else {
+			this.sortSelectedMap.delete(siEntry.identifier.toString());
+		}
+	}
+
+	hasSiEntrySortSelections(): boolean {
+		return this.sortSelectedMap.size > 0;
+	}
+
+	moveBefore(siEntry: SiEntry) {
+		this.spm.moveBefore(Array.from(this.sortSelectedMap.values()), siEntry.identifier);
+		this.sortSelectedMap.clear();
+	}
+
+	moveAfter(siEntry: SiEntry) {
+		this.spm.moveAfter(Array.from(this.sortSelectedMap.values()), siEntry.identifier);
+		this.sortSelectedMap.clear();
+	}
+
+	moveToParent(siEntry: SiEntry) {
+		this.spm.moveToParent(Array.from(this.sortSelectedMap.values()), siEntry.identifier);
+		this.sortSelectedMap.clear();
+	}
 }
