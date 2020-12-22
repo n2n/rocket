@@ -42,7 +42,9 @@
 </ng-container>
 
 
-<div *ngIf="uiZone.confirmDialog" class="rocket-dialog-bg">
+<ng-container *ngIf="uiZone.confirmDialog">
+	<div class="rocket-dialog-background">
+	</div>
 	<div class="rocket-dialog">
 		<p>
 			<ng-container *ngIf="uiZone.confirmDialog.message">{{ uiZone.confirmDialog.message}}</ng-container>
@@ -59,4 +61,4 @@
 			<ng-container *ngIf="!uiZone.confirmDialog.cancelLabel">{{ 'common_cancel_label' | translate }}</ng-container>
 		</button>
 	</div>
-</div>
+</ng-container>
