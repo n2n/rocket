@@ -4470,7 +4470,7 @@ input[type="button"].btn-block {
   display: inline-block;
   padding-right: 1rem;
   color: #837E78;
-  content: "";
+  content: "";
 }
 
 .breadcrumb-item + .breadcrumb-item:hover::before {
@@ -4907,7 +4907,8 @@ body > rocket-root {
   display: -ms-grid;
   display: grid;
   height: 100vh;
-      grid-template-areas: "header header" "main main";
+      grid-template-areas: "header header"
+ "main main";
 }
 
 /**
@@ -5152,23 +5153,16 @@ body > rocket-root {
   background-color: #b90f00;
 }
 
-#rocket-content-container {
-  -ms-grid-row: 2;
-  -ms-grid-column: 1;
-  grid-area: main;
-  background: #F7F5F5;
-}
-
 #rocket-content-container,
-#rocket-content-container rocket-root,
-#rocket-content-container rocket-ei,
-#rocket-content-container rocket-ui-container {
+router-outlet + *,
+.rocket-ghost,
+.rocket-container {
   overflow: hidden;
 }
 
 #rocket-content-container,
-#rocket-content-container rocket-root,
-#rocket-content-container rocket-ei {
+router-outlet + *,
+.rocket-ghost {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -5181,7 +5175,14 @@ body > rocket-root {
           flex: 1 1 100%;
 }
 
-rocket-ui-container {
+#rocket-content-container {
+  -ms-grid-row: 2;
+  -ms-grid-column: 1;
+  grid-area: main;
+  background: #F7F5F5;
+}
+
+.rocket-container {
   -webkit-box-flex: 1;
       -ms-flex: 1 1 100%;
           flex: 1 1 100%;
@@ -5189,7 +5190,8 @@ rocket-ui-container {
   display: grid;
 }
 
-rocket-ui-layer {
+.rocket-main-layer,
+.rocket-layer {
   overflow-y: scroll;
   -ms-grid-row: 1;
   grid-row: 1;
@@ -5232,7 +5234,8 @@ rocket-ui-layer {
 
 @media (min-width: 992px) {
   body > rocket-root {
-        grid-template-areas: "header-placeholder header" "nav main";
+        grid-template-areas: "header-placeholder header"
+ "nav main";
     -ms-grid-rows: min-content 1fr;
         grid-template-rows: -webkit-min-content 1fr;
         grid-template-rows: min-content 1fr;
@@ -5270,7 +5273,9 @@ rocket-ui-layer {
   display: -ms-grid;
   display: grid;
   padding: 0 3rem;
-      grid-template-areas: "header header" "main aside" "bottom bottom";
+      grid-template-areas: "header header"
+ "main aside"
+ "bottom bottom";
   -ms-grid-rows: min-content 1fr min-content;
       grid-template-rows: -webkit-min-content 1fr -webkit-min-content;
       grid-template-rows: min-content 1fr min-content;
@@ -5461,7 +5466,7 @@ rocket-ui-layer {
   background-color: #ECEBE9;
 }
 
-rocket-ui-list-zone-content {
+rocket-ui-compact-explorer {
   display: block;
   min-height: 100%;
 }
@@ -7265,7 +7270,7 @@ rocket-button-control .dropdown > div div > .btn:hover, rocket-button-control .d
   margin: 1rem 0;
 }
 
-.rocket-highlighted {
+.rocket-error {
   outline: 3px solid #dc3545;
   position: relative;
   background: rgba(220, 53, 69, 0.1);
@@ -7676,7 +7681,7 @@ rocket-button-control .dropdown > div div > .btn:hover, rocket-button-control .d
 }
 
 .rocket-dialog::after {
-  content: "\f059";
+  content: "\ebae";
   font-family: "FontAwesome";
   position: absolute;
   top: 1rem;
@@ -7804,7 +7809,7 @@ rocket-button-control .dropdown > div div > .btn:hover, rocket-button-control .d
 }
 
 .breadcrumb-item:before {
-  font-family: "FontAwesome";
+  content: "";
 }
 
 .breadcrumb-item.active > a {

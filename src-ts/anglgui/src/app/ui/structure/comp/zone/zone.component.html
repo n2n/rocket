@@ -51,12 +51,12 @@
 			<ng-container *ngIf="!uiZone.confirmDialog.message">{{ 'common_confirm' | translate }}</ng-container>
 		</p>
 		
-		<button (click)="uiZone.confirmDialog.ok()">
+		<button (click)="uiZone.confirmDialog.ok()" class="btn btn-primary">
 			<ng-container *ngIf="uiZone.confirmDialog.okLabel">{{ uiZone.confirmDialog.okLabel}}</ng-container>
 			<ng-container *ngIf="!uiZone.confirmDialog.okLabel">{{ 'common_ok_label' | translate }}</ng-container>
 		</button>
-
-		<button (click)="uiZone.confirmDialog.cancel()">
+		&ngsp;
+		<button (click)="uiZone.confirmDialog.cancel()" class="btn btn-secondary">
 			<ng-container *ngIf="uiZone.confirmDialog.cancelLabel">{{ uiZone.confirmDialog.cancelLabel}}</ng-container>
 			<ng-container *ngIf="!uiZone.confirmDialog.cancelLabel">{{ 'common_cancel_label' | translate }}</ng-container>
 		</button>

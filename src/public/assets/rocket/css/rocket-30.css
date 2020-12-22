@@ -5260,7 +5260,6 @@ router-outlet + *,
  */
 .rocket-zone {
   position: relative;
-  z-index: 0;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
@@ -5607,7 +5606,7 @@ rocket-ui-compact-explorer {
   position: absolute;
   top: 0;
   right: 0;
-  font-family: "Font-Awesome-5";
+  font-family: "FontAwesome5";
   font-weight: normal;
   content: "\f068";
 }
@@ -5990,13 +5989,13 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
     background: transparent;
   }
   1% {
-    background: #ead0b2;
+    background: #eefefa;
   }
   6% {
-    background: #eadfd3;
+    background: #eefefa;
   }
   99% {
-    background: #eadfd3;
+    background: #EEFEFA;
   }
   100% {
     background: inherit;
@@ -6008,13 +6007,13 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
     background: transparent;
   }
   1% {
-    background: #ead0b2;
+    background: #eefefa;
   }
   6% {
-    background: #eadfd3;
+    background: #eefefa;
   }
   99% {
-    background: #eadfd3;
+    background: #EEFEFA;
   }
   100% {
     background: inherit;
@@ -6042,10 +6041,12 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   padding: 0;
 }
 
+.rocket-table > tbody tr:hover > td:first-child.d-none + td,
 .rocket-table > tbody tr:hover > td:first-child {
   position: relative;
 }
 
+.rocket-table > tbody tr:hover > td:first-child.d-none + td:before,
 .rocket-table > tbody tr:hover > td:first-child:before {
   content: "";
   position: absolute;
@@ -6054,6 +6055,39 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   width: 3px;
   bottom: 0;
   background: #ed8207;
+}
+
+.rocket-table > tbody .rocket-locked {
+  background: #EAF6FF;
+}
+
+.rocket-table > tbody .rocket-removed,
+.rocket-table > tbody .rocket-outdated {
+  background: #F7F5F5;
+}
+
+.rocket-table > tbody .rocket-removed *,
+.rocket-table > tbody .rocket-outdated * {
+  opacity: 0.4;
+}
+
+.rocket-table > tbody .rocket-reloading {
+  background: repeating-linear-gradient(75deg, #DEEDF9, #DEEDF9 20px, #EAF6FF 20px, #EAF6FF 35px);
+  background-size: 200% 200%;
+  -webkit-animation: reload 40s linear infinite;
+          animation: reload 40s linear infinite;
+}
+
+@-webkit-keyframes reload {
+  100% {
+    background-position: 100% 100%;
+  }
+}
+
+@keyframes reload {
+  100% {
+    background-position: 100% 100%;
+  }
 }
 
 .rocket-table > tbody .rocket-table-commands {
@@ -6763,7 +6797,7 @@ rocket-add-past > button {
 }
 
 rocket-add-past > button::after {
-  font-family: "Font-Awesome-5";
+  font-family: "FontAwesome5";
   content: '\f067';
   position: absolute;
   top: 0.375rem;
@@ -7292,7 +7326,7 @@ rocket-button-control .dropdown > div div > .btn:hover, rocket-button-control .d
   right: 1rem;
   color: #b90f00;
   content: '\f0e7';
-  font-family: "Font-Awesome-5";
+  font-family: "FontAwesome5";
   font-size: 1.25rem;
 }
 
@@ -7484,6 +7518,10 @@ rocket-button-control .dropdown > div div > .btn:hover, rocket-button-control .d
   margin-right: 0.5rem;
 }
 
+.cropper-canvas {
+  background: rgba(0, 0, 0, 0.1);
+}
+
 .rocket-impl-critmod-select-container {
   position: relative;
   z-index: 1;
@@ -7668,39 +7706,53 @@ rocket-button-control .dropdown > div div > .btn:hover, rocket-button-control .d
 }
 
 .rocket-dialog-background {
-  background: rgba(0, 0, 0, 0.8);
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.56);
+  z-index: 10000;
 }
 
 .rocket-dialog {
   background: white;
+  position: fixed;
+  top: clamp(150px, 30vh, 30vh);
+  left: 50%;
+  -webkit-transform: translate3d(-50%, -50%, 0);
+          transform: translate3d(-50%, -50%, 0);
+  z-index: 10000;
   padding: 2rem 2rem 2rem 8rem;
+  max-height: calc(100vh - 150px);
+  overflow-y: auto;
 }
 
-.rocket-dialog::after {
-  content: "\f059";
-  font-family: "Font-Awesome-5";
+.rocket-dialog:after {
+  content: "\ebae";
+  font-family: "FontAwesome5";
   position: absolute;
   top: 1rem;
   left: 2rem;
   font-size: 5rem;
 }
 
-.rocket-dialog-warning::after {
+.rocket-dialog-warning:after {
   color: #F6A723;
   content: "\f06a";
 }
 
-.rocket-dialog-danger::after {
+.rocket-dialog-danger:after {
   color: #b90f00;
   content: "\f071";
 }
 
-.rocket-dialog-info::after {
+.rocket-dialog-info:after {
   color: #4c97cb;
   content: "\f05a";
 }
 
-.rocket-dialog-success::after {
+.rocket-dialog-success:after {
   color: #2D7F00;
   content: "\f058";
 }
@@ -7805,7 +7857,7 @@ rocket-button-control .dropdown > div div > .btn:hover, rocket-button-control .d
 }
 
 .breadcrumb-item:before {
-  font-family: "Font-Awesome-5";
+  font-family: "FontAwesome5";
 }
 
 .breadcrumb-item + .breadcrumb-item::before {

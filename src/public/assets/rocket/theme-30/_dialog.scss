@@ -1,12 +1,27 @@
+
+
 .rocket-dialog-background {
-	background: rgba(0,0,0,0.8);
+	position: fixed;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	background: rgba(0,0,0,0.56);
+	z-index: 10000;
 }
 
 .rocket-dialog {
 	background: white;
+	position: fixed;
+	top: clamp(150px, 30vh, 30vh);
+	left: 50%;
+	transform: translate3d(-50%, -50%, 0);
+	z-index: 10000;
 	padding: 2rem 2rem 2rem 8rem;
-	&::after {
-		content: "\f059";
+	max-height: calc(100vh - 150px);
+	overflow-y: auto;
+	&:after {
+		content: "\ebae";
 		font-family: $font-name-icons;
 		position: absolute;
 		top: 1rem;
@@ -15,22 +30,22 @@
 	}
 }
 
-.rocket-dialog-warning::after {
+.rocket-dialog-warning:after {
 	color: $warning;
 	content: "\f06a";
 }
 
-.rocket-dialog-danger::after {
+.rocket-dialog-danger:after {
 	color: $danger;
 	content: "\f071";
 }
 
-.rocket-dialog-info::after {
+.rocket-dialog-info:after {
 	color: $info;
 	content: "\f05a";
 }
 
-.rocket-dialog-success::after {
+.rocket-dialog-success:after {
 	color: $success;
 	content: "\f058";
 }

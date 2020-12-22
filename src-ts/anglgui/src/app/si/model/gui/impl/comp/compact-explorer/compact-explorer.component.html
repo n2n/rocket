@@ -32,8 +32,10 @@
 									[disabled]="!areMoreSelectable() && !isSelected(structureEntry.siEntry.qualifier)" />
 						</ng-container>
 					</td>
-					<td [class.d-none]="!sortable" cdkDragHandle class="rocket-handle">
-						<i class="fa fa-bars"></i>
+					<td *ngIf="sortable">
+						<div cdkDragHandle class="rocket-handle">
+							<i class="fa fa-bars"></i>
+						</div>
 					</td>
 					<td *ngFor="let fieldUiStructure of structureEntry.fieldUiStructures"
 							rocketUiStructure [uiStructure]="fieldUiStructure" 

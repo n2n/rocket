@@ -95,7 +95,7 @@ use rocket\user\model\LoginContext;
 				</li>
 				<li class="nav-item">
 					<?php $html->linkStart(Murl::controller('rocket')->pathExt('usergroups'), array('class' => 'nav-link')) ?>
-					<i class="fa fa-group mr-2"></i><span><?php $html->text('user_groups_title') ?></span>
+					<i class="fa fa-users mr-2"></i><span><?php $html->text('user_groups_title') ?></span>
 					<?php $html->linkEnd() ?>
 				</li>
 			<?php endif ?>

@@ -14,14 +14,14 @@
 	$view->useTemplate('boilerplate.html', $view->getParams());
 	
 	$html->meta()->addCssCode('
-			.rocket-layer {
-				animation: layertransform 0.2s;
-			}
+// 			.rocket-layer {
+// 				animation: layertransform 0.2s;
+// 			}
 			
-			@keyframes layertransform {
-			    0% { transform: translateX(100vw); }
-				100% { transform: translateX(0); }
-			}
+// 			@keyframes layertransform {
+// 			    0% { transform: translateX(100vw); }
+// 				100% { transform: translateX(0); }
+// 			}
 
 			rocket-ui-structure-branch {
 				display: block;
@@ -32,10 +32,10 @@
 			    background: inherit;
 			}
 		
-			.rocket-removed,
-			.rocket-outdated {
-				filter: blur(2px);
-			}
+// 			.rocket-removed,
+// 			.rocket-outdated {
+// 				filter: blur(2px);
+// 			}
 
 			.rocket-locked {
 				background-color:#d50000;
@@ -61,16 +61,16 @@
  				background: transparent !important;
 			}
 
-			.rocket-reloading {
-				animation: reloadspin 0.4s ease-in-out infinite;
-			}
+// 			.rocket-reloading {
+// 				animation: reloadspin 0.4s ease-in-out infinite;
+// 			}
 
-			@keyframes reloadspin {
-				0% { transform:rotate(0deg) }
-				25% { transform:rotate(-3deg) }
-				75% { transform:rotate(3deg) }
-				100% { transform:rotate(0deg) }
-			}
+// 			@keyframes reloadspin {
+// 				0% { transform:rotate(0deg) }
+// 				25% { transform:rotate(-3deg) }
+// 				75% { transform:rotate(3deg) }
+// 				100% { transform:rotate(0deg) }
+// 			}
 	');
 	
 	$anglTemplateModel = $view->lookup(AnglTemplateModel::class);
