@@ -61,7 +61,7 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 		$confirmMessage = $dtc->t('ei_impl_delete_entry_confirm', array('entry' => $identityString));
 		
 		$siButton = SiButton::danger($name, SiIconType::TIMES_CIRCLE)->setTooltip($tooltip)
-				->setConfirm(new SiConfirm($confirmMessage, $dtc->t('common_yes_label'), $dtc->t('common_no_label')));
+				->setConfirm(new SiConfirm($confirmMessage, $dtc->t('common_yes_label'), $dtc->t('common_no_label'), true));
 		
 		$eiuControlFactory = $eiu->guiFrame()->controlFactory($this);
 		$control = $eiuControlFactory->createCallback(self::CONTROL_BUTTON_KEY, $siButton, function (Eiu $eiu) {

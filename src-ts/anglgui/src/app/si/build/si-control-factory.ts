@@ -80,7 +80,8 @@ export class SiControlFactory {
 		return {
 			message: extr.nullaString('message'),
 			okLabel: extr.nullaString('okLabel'),
-			cancelLabel: extr.nullaString('cancelLabel')
+			cancelLabel: extr.nullaString('cancelLabel'),
+			danger: extr.reqBoolean('danger')
 		};
 	}
 }
