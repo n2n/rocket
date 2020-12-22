@@ -3,7 +3,8 @@ import { Observable, Subject } from 'rxjs';
 export class UiConfirmDialog {
 	private subject = new Subject<boolean>();
 
-	constructor(public message: string|null, public okLabel: string|null, public cancelLabel: string|null) {
+	constructor(public message: string|null, public okLabel: string|null, public cancelLabel: string|null,
+			public danger: boolean = false) {
 	}
 
 	get confirmed$(): Observable<boolean> {
@@ -19,4 +20,9 @@ export class UiConfirmDialog {
 		this.subject.next(false);
 		this.subject.complete();
 	}
+}
+
+
+export enum UiConfirmSeverity {
+
 }

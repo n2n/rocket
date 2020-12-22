@@ -45,7 +45,7 @@
 <ng-container *ngIf="uiZone.confirmDialog">
 	<div class="rocket-dialog-background">
 	</div>
-	<div class="rocket-dialog">
+	<div class="rocket-dialog" [class.rocket-dialog-danger]="uiZone.confirmDialog.danger">
 		<p>
 			<ng-container *ngIf="uiZone.confirmDialog.message">{{ uiZone.confirmDialog.message}}</ng-container>
 			<ng-container *ngIf="!uiZone.confirmDialog.message">{{ 'common_confirm' | translate }}</ng-container>
