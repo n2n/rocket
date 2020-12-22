@@ -19,8 +19,9 @@
 </ng-container>
 
 <ng-template #simpleButton>
-	<button [class]="siButton.btnClass" [class.rocket-important]="siButton.important" (click)="exec()" 
-			[disabled]="disabled">
+	<button [class]="siButton.btnClass" [class.rocket-important]="siButton.important"  
+			[class.rocket-icon-important]="siButton.iconImportant" [class.rocket-label-important]="siButton.labelImportant"
+			[disabled]="disabled" (click)="exec()">
 		<span *ngIf="loading" class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>	
 		<i [class]="siButton.iconClass"></i>
 		<span>{{ siButton.name }}</span>
