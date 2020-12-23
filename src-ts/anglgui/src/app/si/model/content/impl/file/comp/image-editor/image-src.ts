@@ -49,8 +49,8 @@ export class ImageSrc {
 				const data = this.cropper.getData();
 
 				if (!this.imageCuts) {
-					this.origWidth = data.width
-					this.origHeight = data.height;
+					this.origWidth = Math.round(data.width)
+					this.origHeight = Math.round(data.height);
 					return;
 				}
 
