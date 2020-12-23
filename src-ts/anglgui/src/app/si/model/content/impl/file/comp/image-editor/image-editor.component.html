@@ -10,8 +10,7 @@
 		</div>
 
 		<div *ngIf="originalActive">
-			<button (click)="imageSrc.toggleCropping()" class="btn btn-secondary" [class.active]="imageSrc.cropping"><i class="fa fa-crop"></i></button>
-			<button (click)="imageSrc.rotateCcw()" class="btn btn-secondary"><i class="fa fa-undo"></i></button>
+			<button (click)="imageSrc.toggleCropping()" class="btn btn-secondary" [class.active]="imageSrc.cropping"><i class="fa fa-crop"></i></button> <button (click)="imageSrc.rotateCcw()" class="btn btn-secondary"><i class="fa fa-undo"></i></button>
 			<button (click)="imageSrc.rotateCw()" class="btn btn-secondary"><i class="fa fa-redo"></i></button>
 
 			<button *ngIf="imageSrc.changed" (click)="saveOriginal()"><i class="fa fa-check"></i> {{ 'save_original_txt' | translate }}</button>
@@ -21,8 +20,8 @@
 		<rocket-ui-toggler *ngIf="freeRatioOption" [(enabled)]="imageSrc.fixedRatio" enabledTextCode="fixed_ratio_enabled_txt"
 				disabledTextCode="fixed_ratio_disabled_txt"></rocket-ui-toggler>
 	</div>
-	<div>
-		<div>
+	<div class="rocket-image-resizer-images-panel">
+		<div class="rocket-image-resizer-images-original">
 			<button class="btn btn-secondary d-flex justify-content-start align-items-center w-100" 
 					[class.active]="originalActive" (click)="switchToOriginal()">
 				<div class="d-flex justify-content-center align-items-center" style="width: 50px">
@@ -36,8 +35,8 @@
 				</div>
 			</button>
 		</div>
-		<div>
-			<h3>Bild-Versionen</h3>
+		<div class="rocket-image-resizer-images-generated">
+			<h3>generierte Bilder</h3>
 			<ul class="rocket-image-dimensions list-unstyled">
 				<li *ngFor="let thumbRatio of thumbRatios" class="rocket-image-version rocket-image-ratio">
 					<button class="btn btn-secondary d-flex" (click)="switchToThumbRatio(thumbRatio)" 

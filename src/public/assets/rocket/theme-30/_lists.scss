@@ -75,6 +75,30 @@ $rocket-tree-level-line-string:         '';
     cursor: move;
 }
 
+.rocket-locked {
+    background: $aczent-2;
+}
+
+.rocket-removed,
+.rocket-outdated {
+    background: $gray-200;
+    & > * {
+        opacity: 0.4;
+    }
+}
+
+.rocket-reloading {
+    background: repeating-linear-gradient( 75deg, #{$aczent-2-d-100}, #{$aczent-2-d-100} 20px, #{$aczent-2} 20px, #{$aczent-2} 35px);
+    background-size: 200% 200%;
+        animation: reload 40s linear infinite;
+}
+
+@keyframes reload {
+    100% {
+    background-position: 100% 100%;
+  }
+}
+
 /*
  * Table
  */
@@ -110,30 +134,6 @@ $rocket-tree-level-line-string:         '';
                     background: $primary;
                 }
             }
-        }
-
-        .rocket-locked {
-            background: $aczent-2;
-        }
-
-        .rocket-removed,
-        .rocket-outdated {
-            background: $gray-200;
-            & * {
-                opacity: 0.4;
-            }
-        }
-
-        .rocket-reloading {
-            background: repeating-linear-gradient( 75deg, #{$aczent-2-d-100}, #{$aczent-2-d-100} 20px, #{$aczent-2} 20px, #{$aczent-2} 35px);
-            background-size: 200% 200%;
-                animation: reload 40s linear infinite;
-        }
-
-        @keyframes reload {
-            100% {
-            background-position: 100% 100%;
-          }
         }
 
         .rocket-table-commands {
