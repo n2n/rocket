@@ -21,7 +21,7 @@
 			<div>
 				<button class="btn btn-danger">
 					<span>{{ 'common_delete_label' | translate }}</span>&nbsp;
-					<i class="fa fa-trash-o"></i>
+					<i class="fa fa-trash-alt"></i>
 				</button>
 			</div>
 		</div>
@@ -64,7 +64,7 @@
 						</button>
 						<button class="btn btn-danger" (click)="remove(embe)">
 							<span>{{ 'common_delete_label' | translate }}</span>
-							<i class="fa fa-trash-o"></i>
+							<i class="fa fa-trash-alt"></i>
 						</button>
 						<button class="btn btn-success" [class.active]="copyPool.isCopied(embe)" (click)="copyPool.toggle(embe)">	
 							<span>{{ 'common_copy_label' | translate }}</span>

@@ -29,7 +29,9 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 	uploadResult: UploadResult;
 	private saving = false;
 
-	constructor() { }
+	constructor(elemRef: ElementRef) {
+		elemRef.nativeElement.classList.add('rocket-image-resizer-container');
+	}
 
 	ngOnInit() {
 		this.imageSrc = new ImageSrc(this.canvasRef, this.model.getSiFile().mimeType);
