@@ -34,7 +34,11 @@ export class SiPage {
 	get entries(): SiEntry[]|null {
 		this.ensureNotDisposed();
 
-		return this._entrySubPairs.map(v => v.entry);
+		if (this._entrySubPairs) {
+			return this._entrySubPairs.map(v => v.entry);
+		}
+
+		return null;
 	}
 
 	set entries(entries: SiEntry[]|null) {
