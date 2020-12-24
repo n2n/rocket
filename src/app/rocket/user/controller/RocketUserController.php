@@ -121,8 +121,7 @@ class RocketUserController extends ControllerAdapter {
 	public function doProfile(MessageContainer $mc) {
 		$this->beginTransaction();
 			
-		$userForm = new RocketUserForm($this->loginContext->getCurrentUser(), 
-				$this->rocketUserDao->getRocketUserGroups());
+		$userForm = new RocketUserForm($this->loginContext->getCurrentUser());
 		
 		if ($this->dispatch($userForm, 'save')) {
 // 			$this->userDao->saveUser($userForm->getUser());
