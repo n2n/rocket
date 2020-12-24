@@ -45,7 +45,7 @@ class RocketUserForm implements Dispatchable {
 	public function __construct(RocketUser $user, array $availableRocketUserGroups = null) {
 		$this->rocketUser = $user;
 		$this->power = $user->getPower();
-		$this->availableRocketUserGroups = $availableRocketUserGroups;
+		$this->setAvailableRocketUserGroups($availableRocketUserGroups);
 		
 		foreach ($this->rocketUser->getRocketUserGroups() as $userGroup) {
 			$this->rocketUserGroupIds[$userGroup->getId()] = $userGroup->getId();
