@@ -38,9 +38,12 @@
 		<div class="rocket-image-resizer-images-generated">
 			<h3>generierte Bilder</h3>
 			<ul class="rocket-image-dimensions list-unstyled">
-				<li *ngFor="let thumbRatio of thumbRatios" class="rocket-image-version rocket-image-ratio">
+				<li *ngFor="let thumbRatio of thumbRatios" class="rocket-image-version rocket-image-ratio" 
+						[class.open]="thumbRatio.open">
+
 					<button class="btn btn-secondary d-flex" (click)="switchToThumbRatio(thumbRatio)" 
-							[class.active]="currentThumbRatio === thumbRatio" [disabled]="!thumbRatio.hasGroupedImageCuts() || originalChanged">
+							[class.active]="currentThumbRatio === thumbRatio" 
+							[disabled]="!thumbRatio.hasGroupedImageCuts() || originalChanged">
 						<div *ngIf="thumbRatio.hasGroupedImageCuts()" class="d-flex justify-content-center align-items-center">
 							<rocket-image-preview [src]="model.getSiFile().url" 
 									[imageCut]="thumbRatio.getGroupedPreviewImageCut(currentImageDimension)"></rocket-image-preview>
@@ -49,6 +52,11 @@
 							<div>{{ thumbRatio.width }} / {{ thumbRatio.height }}</div>
 							<div>[infos]</div>
 						</div>
+					</button>
+
+					<button (click)="thumbRatio.open = !thumbRatio.open">
+						<i *ngIf="thumbRatio.open" class="fa fa-arrow-up"></i>
+						<i *ngIf="!thumbRatio.open" class="fa fa-arrow-down"></i>
 					</button>
 					
 					<ul>

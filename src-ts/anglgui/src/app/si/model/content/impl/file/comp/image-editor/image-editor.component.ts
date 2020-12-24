@@ -185,12 +185,16 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 		}
 	}
 
+	private createRatioId(thumbRatio: ThumbRatio): string {
+		return (thumbRatio.width / thumbRatio.height) + (thumbRatio.ratioFixed ? 'f' : '');
+	}
+
 	private initSiFile(siFile: SiFile) {
 		this.ratioMap.clear();
 
 		for (const imageDimension of siFile.imageDimensions) {
 			const thumbRatio = ThumbRatio.create(imageDimension);
-			const ratio = (thumbRatio.width / thumbRatio.height) + (thumbRatio.ratioFixed ? 'f' : '');
+			const ratio = this.createRatioId(thumbRatio);
 
 			if (!this.ratioMap.has(ratio)) {
 				this.ratioMap.set(ratio, thumbRatio);

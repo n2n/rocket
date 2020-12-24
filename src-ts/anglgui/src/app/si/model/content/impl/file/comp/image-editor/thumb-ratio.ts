@@ -2,6 +2,7 @@ import { SiImageCut, SiImageDimension } from '../../model/file-in-si-field';
 import { ElementRef } from '@angular/core';
 
 export class ThumbRatio {
+	public open = false;
 	public imageDimensions = new Array<SiImageDimension>();
 	// private _largestImageDimension: SiImageDimension;
 
@@ -104,7 +105,7 @@ export class ThumbRatio {
 
 		let lastSize = 0;
 		for (const [key, imgDims] of this.imgCutDimMap) {
-			if (lastSize >= imgDims.length || imgDims.length <= 1) {
+			if (lastSize >= imgDims.length/* || imgDims.length <= 1*/) {
 				continue;
 			}
 
