@@ -113,13 +113,13 @@ export class QualifierSelectInFieldComponent implements OnInit, DoCheck {
 	private createSiControls(comp: CompactExplorerSiGui) {
 		return [
 			new SimpleSiControl(
-					new SiButton(this.translationService.translate('common_select_label'), 'btn btn-primary rocket-important', 'fa fa-circle-o'),
+					new SiButton(this.translationService.translate('common_select_label'), 'btn btn-primary rocket-important', 'far fa-circle'),
 					() => {
 						this.model.setValues(comp.qualifierSelection.selectedQualfiers);
 						this.optionsUiLayer.dispose();
 					}),
 			new SimpleSiControl(
-					new SiButton(this.translationService.translate('common_cancel_label'), 'btn btn-secondary', 'fa fa-circle-o'),
+					new SiButton(this.translationService.translate('common_cancel_label'), 'btn btn-secondary', 'far fa-circle'),
 					() => {
 						this.optionsUiLayer.dispose();
 					})

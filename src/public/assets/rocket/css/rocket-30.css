@@ -5486,10 +5486,9 @@ rocket-ui-compact-explorer {
   font-weight: bold;
 }
 
-.rocket-split-view-status > label > i,
-.rocket-impl-translation-status > label > i {
+.rocket-split-view-status > label > i[class*="fa-"],
+.rocket-impl-translation-status > label > i[class*="fa-"] {
   padding-right: 0.5rem;
-  font-weight: normal;
 }
 
 /**
@@ -5571,8 +5570,8 @@ rocket-ui-compact-explorer {
   font-weight: bold;
 }
 
-.rocket-split-view-status-menu > ul > li > a.btn i,
-.rocket-impl-translation-status-menu > ul > li > a.btn i {
+.rocket-split-view-status-menu > ul > li > a.btn i[class*="fa-"],
+.rocket-impl-translation-status-menu > ul > li > a.btn i[class*="fa-"] {
   margin-left: .5rem;
   font-size: 1.25rem;
 }
@@ -5606,8 +5605,8 @@ rocket-ui-compact-explorer {
   position: absolute;
   top: 0;
   right: 0;
-  font-family: "FontAwesome5";
-  font-weight: normal;
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
   content: "\f068";
 }
 
@@ -5750,7 +5749,7 @@ rocket-ui-compact-explorer {
   background-color: #F7F5F5;
 }
 
-.rocket-impl-translation-copy-control > .rocket-impl-translation-copy-menu > ul > li > a > i {
+.rocket-impl-translation-copy-control > .rocket-impl-translation-copy-menu > ul > li > a > i[class*="fa-"] {
   position: absolute;
   top: 1rem;
   right: 0;
@@ -5886,7 +5885,7 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   color: inherit;
 }
 
-.rocket-global-nav-group-title > i.fa {
+.rocket-global-nav-group-title > i[class*="fa-"] {
   position: absolute;
   top: 0.875rem;
   right: 1rem;
@@ -5899,7 +5898,7 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   cursor: pointer;
 }
 
-.rocket-global-nav-group-title:hover > i.fa {
+.rocket-global-nav-group-title:hover > i[class*="fa-"] {
   color: #fff;
 }
 
@@ -5915,7 +5914,7 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   color: #F7F5F5;
 }
 
-#rocket-conf-nav .nav-link .fa {
+#rocket-conf-nav .nav-link i[class*="fa-"] {
   font-size: 1.25rem;
 }
 
@@ -6365,7 +6364,7 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   padding-bottom: calc(100% + 1px);
 }
 
-.rocket-summary > .rocket-handle > .fa {
+.rocket-summary > .rocket-handle > i[class*="fa-"] {
   padding-top: 1.2rem;
   padding-bottom: 1.2rem;
 }
@@ -6641,7 +6640,7 @@ rocket-choose-paste.rocket-multi-type-menu > rocket-qualifier-tiling .rocket-si-
   padding: 10px 5px;
 }
 
-rocket-choose-paste.rocket-multi-type-menu > rocket-qualifier-tiling .rocket-si-qualifier-item > .fa {
+rocket-choose-paste.rocket-multi-type-menu > rocket-qualifier-tiling .rocket-si-qualifier-item > i[class*="fa-"] {
   margin-bottom: 0.5rem;
 }
 
@@ -6735,17 +6734,17 @@ rocket-choose-paste.rocket-multi-type-menu-simple:after {
   margin-right: .15rem;
 }
 
-rocket-si-qualifier > .fa,
-.rocket-si-qualifier > .fa,
-.rocket-impl-content-type > .fa {
+rocket-si-qualifier > i[class*="fa-"],
+.rocket-si-qualifier > i[class*="fa-"],
+.rocket-impl-content-type > i[class*="fa-"] {
   position: relative;
   padding: 0 .75rem;
   z-index: 0;
 }
 
-rocket-si-qualifier > .fa::before,
-.rocket-si-qualifier > .fa::before,
-.rocket-impl-content-type > .fa::before {
+rocket-si-qualifier > i[class*="fa-"]::before,
+.rocket-si-qualifier > i[class*="fa-"]::before,
+.rocket-impl-content-type > i[class*="fa-"]::before {
   position: relative;
 }
 
@@ -6754,7 +6753,7 @@ rocket-si-qualifier > .fa::before,
   cursor: default;
 }
 
-.rocket-impl-content-type-empty > .fa.fa-rocket-empty:before {
+.rocket-impl-content-type-empty > .fa-rocket-empty:before {
   content: "0";
   display: block;
   color: #DAD7D3;
@@ -6762,7 +6761,7 @@ rocket-si-qualifier > .fa::before,
   text-align: center;
 }
 
-.rocket-impl-content-type-empty > .fa.fa-rocket-empty:after {
+.rocket-impl-content-type-empty > .fa-rocket-empty:after {
   background: none;
   border: 1px solid #DAD7D3;
 }
@@ -6797,7 +6796,7 @@ rocket-add-past > button {
 }
 
 rocket-add-past > button::after {
-  font-family: "FontAwesome5";
+  font-family: "Font Awesome 5 Free";
   content: '\f067';
   position: absolute;
   top: 0.375rem;
@@ -7134,28 +7133,27 @@ rocket-add-past > button::after {
   margin-right: 0.5rem;
 }
 
-.rocket-zone-commands .btn:not(.rocket-icon-important) > i.fas,
-.rocket-zone-commands .btn:not(.rocket-icon-important) > i.fa {
+.rocket-zone-commands .btn:not(.rocket-icon-important) > i[class*="fa-"] {
   display: none;
 }
 
-.rocket-zone-commands .rocket-pagination i.fa {
+.rocket-zone-commands .rocket-pagination i[class*="fa-"] {
   display: inline-block !important;
 }
 
-.rocket-zone-commands .btn.rocket-icon-important .fa {
+.rocket-zone-commands .btn.rocket-icon-important i[class*="fa-"] {
   width: 1.25rem;
 }
 
-.rocket-zone-commands .btn.rocket-icon-important .fa + span {
+.rocket-zone-commands .btn.rocket-icon-important i[class*="fa-"] + span {
   margin-left: 0.375rem;
 }
 
-.rocket-zone-commands .btn.rocket-icon-important.btn-success .fa {
+.rocket-zone-commands .btn.rocket-icon-important.btn-success i[class*="fa-"] {
   color: #2D7F00;
 }
 
-.rocket-zone-commands .btn.rocket-icon-important.btn-danger .fa {
+.rocket-zone-commands .btn.rocket-icon-important.btn-danger i[class*="fa-"] {
   color: #b90f00;
 }
 
@@ -7208,7 +7206,7 @@ rocket-add-past > button::after {
   position: relative;
 }
 
-.rocket-toolbar > .rocket-simple-commands > .rocket-important > i {
+.rocket-toolbar > .rocket-simple-commands > .rocket-important > i[class*="fa-"] {
   color: white;
   position: relative;
   font-size: 1rem;
@@ -7216,11 +7214,11 @@ rocket-add-past > button::after {
   margin-left: 1.625em;
 }
 
-.rocket-toolbar > .rocket-simple-commands > .rocket-important > i::before {
+.rocket-toolbar > .rocket-simple-commands > .rocket-important > i[class*="fa-"]::before {
   z-index: 1;
 }
 
-.rocket-toolbar > .rocket-simple-commands > .rocket-important > i::after {
+.rocket-toolbar > .rocket-simple-commands > .rocket-important > i[class*="fa-"]::after {
   position: absolute;
   content: " ";
   background: #837E78;
@@ -7234,7 +7232,7 @@ rocket-add-past > button::after {
   z-index: -1;
 }
 
-.rocket-toolbar > .rocket-simple-commands > .rocket-important.btn-warning > i::after {
+.rocket-toolbar > .rocket-simple-commands > .rocket-important.btn-warning > i[class*="fa-"]::after {
   background: #F6A723;
 }
 
@@ -7326,7 +7324,7 @@ rocket-button-control .dropdown > div div > .btn:hover, rocket-button-control .d
   right: 1rem;
   color: #b90f00;
   content: '\f0e7';
-  font-family: "FontAwesome5";
+  font-family: "Font Awesome 5 Free";
   font-size: 1.25rem;
 }
 
@@ -7739,11 +7737,19 @@ rocket-button-control .dropdown > div div > .btn:hover, rocket-button-control .d
 
 .rocket-dialog:after {
   content: "\ebae";
-  font-family: "FontAwesome5";
+  font-weight: 900;
+  font-family: "Font Awesome 5 Free";
   position: absolute;
   top: 1rem;
   left: 2rem;
   font-size: 5rem;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
 }
 
 .rocket-dialog-warning:after {
@@ -7805,7 +7811,7 @@ rocket-button-control .dropdown > div div > .btn:hover, rocket-button-control .d
   margin-bottom: 0;
 }
 
-.rocket-login-form label > .fa {
+.rocket-login-form label > i[class*="fa-"] {
   min-width: 3.125rem;
 }
 
@@ -7866,7 +7872,7 @@ rocket-button-control .dropdown > div div > .btn:hover, rocket-button-control .d
 }
 
 .breadcrumb-item:before {
-  font-family: "FontAwesome5";
+  font-family: "Font Awesome 5 Free";
   font-size: .75em;
   -moz-osx-font-smoothing: grayscale;
 }

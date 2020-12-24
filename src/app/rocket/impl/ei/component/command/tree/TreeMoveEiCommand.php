@@ -72,21 +72,21 @@ class TreeMoveEiCommand extends IndependentEiCommandAdapter {
 								->toUrl(array('refPath' => (string) $eiFrame->getCurrentUrl($httpContext))),
 						new SiButton($dtc->translate('ei_impl_tree_insert_before_label'),
 								$dtc->translate('ei_impl_tree_insert_after_tooltip'),
-								true, SiButton::TYPE_INFO, SiIconType::CARET_UP, array('class' => 'rocket-impl-insert-before'), false, false)),
+								true, SiButton::TYPE_INFO, SiIconType::ICON_CARET_UP, array('class' => 'rocket-impl-insert-before'), false, false)),
 				self::CONTROL_INSERT_AFTER_KEY => new HrefControl(
 						$httpContext->getControllerContextPath($eiFrame->getControllerContext())
 								->ext($this->getId(), 'after', $eiEntry->getPid())
 								->toUrl(array('refPath' => (string) $eiFrame->getCurrentUrl($httpContext))),
 						new SiButton($dtc->translate('ei_impl_tree_insert_after_label'),
 								$dtc->translate('ei_impl_tree_insert_after_tooltip'),
-								true, SiButton::TYPE_INFO, SiIconType::CARET_DOWN, array('class' => 'rocket-impl-insert-after'), false, false)),
+								true, SiButton::TYPE_INFO, SiIconType::ICON_CARET_DOWN, array('class' => 'rocket-impl-insert-after'), false, false)),
 				self::CONTROL_INSERT_CHILD_KEY => new HrefControl(
 						$httpContext->getControllerContextPath($eiFrame->getControllerContext())
 								->ext($this->getId(), 'child', $eiEntry->getPid())
 								->toUrl(array('refPath' => (string) $eiFrame->getCurrentUrl($httpContext))),
 						new SiButton($dtc->translate('ei_impl_tree_insert_child_label'),
 								$dtc->translate('ei_impl_tree_insert_child_tooltip'),
-								true, SiButton::TYPE_INFO, SiIconType::CARET_RIGHT, array('class' => 'rocket-impl-insert-as-child'), false, false)));
+								true, SiButton::TYPE_INFO, SiIconType::ICON_CARET_RIGHT, array('class' => 'rocket-impl-insert-as-child'), false, false)));
 	}
 	/* (non-PHPdoc)
 	 * @see \rocket\ei\component\command\control\EntryGuiControlComponent::getEntryGuiControlOptions()

@@ -6,9 +6,8 @@
 	> label {
 		padding-right: 0.5rem;
 		font-weight: bold;
-		> i {
+		> i[class*="fa-"] {
 			padding-right: 0.5rem;
-			font-weight: normal;
 		}
 	}
 }
@@ -67,7 +66,7 @@
             padding-left: 0;
             padding-right: 0;
             font-weight: bold;
-            i {
+            i[class*="fa-"] {
 				margin-left: .5rem;
                 font-size: $font-size-lg;
             }
@@ -98,7 +97,7 @@
 				top: 0;
 				right: 0;
 				font-family: $font-name-icons;
-				font-weight: normal;
+				font-weight: 900;
 				content: "\f068";
 			}
 			input {
@@ -241,7 +240,7 @@
 			&:hover {
 				background-color: $gray-200;
 			}
-			> i {
+			> i[class*="fa-"] {
 				position: absolute;
 				top: 1rem;
 				right: 0;

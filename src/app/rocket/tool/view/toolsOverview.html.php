@@ -59,7 +59,7 @@
 				<td>
 					<div class="rocket-simple-commands">
 						<?php $html->linkToController(ToolController::ACTION_MAIL_CENTER, 
-								new Raw('<i class="' . SiIconType::ENVELOPE . '"></i><span>' . $html->getL10nText('tool_mail_center_tooltip') . '</span>'), 
+								new Raw('<i class="' . SiIconType::ICON_ENVELOPE . '"></i><span>' . $html->getL10nText('tool_mail_center_tooltip') . '</span>'), 
 								array('class' => 'btn btn-secondary')) ?>
 					</div>
 				</td>
@@ -71,7 +71,7 @@
 				<td>
 					<div class="rocket-simple-commands">
 						<?php $html->linkToController(ToolController::ACTION_CLEAR_CACHE, 
-								new Raw('<i class="' . SiIconType::ERASER . '"></i><span>' 
+								new Raw('<i class="' . SiIconType::ICON_ERASER . '"></i><span>' 
 												. $html->getL10nText('tool_clear_cache_title') . '</span>'), 
 										array('class' => 'btn btn-secondary', 
 												'title' => $html->getL10nText('tool_clear_cache_title'))) ?>

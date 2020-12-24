@@ -39,7 +39,7 @@
 .rocket-login-form {
     label {
         margin-bottom: 0;
-        > .fa {
+        > i[class*="fa-"]{
             min-width: 3.125rem;
         }
     }

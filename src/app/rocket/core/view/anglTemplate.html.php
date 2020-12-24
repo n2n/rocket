@@ -37,24 +37,24 @@
 // 				filter: blur(2px);
 // 			}
 
-			.rocket-locked {
-				background-color:#d50000;
-				background-image: 
-				    repeating-linear-gradient(
-				      45deg,
-				      rgba(100,100,100,0.8),
-				      rgba(100,100,100,0.8) 100px,
-				      transparent 0px,
-				      transparent 200px
-				    ),
-				    repeating-linear-gradient(
-				      -45deg,
-				      rgba(100,100,100,0.5),
-				      rgba(100,100,100,0.5) 100px,
-				      transparent 0px,
-				      transparent 200px
-				    );
-			}
+// 			.rocket-locked {
+// 				background-color:#d50000;
+// 				background-image: 
+// 				    repeating-linear-gradient(
+// 				      45deg,
+// 				      rgba(100,100,100,0.8),
+// 				      rgba(100,100,100,0.8) 100px,
+// 				      transparent 0px,
+// 				      transparent 200px
+// 				    ),
+// 				    repeating-linear-gradient(
+// 				      -45deg,
+// 				      rgba(100,100,100,0.5),
+// 				      rgba(100,100,100,0.5) 100px,
+// 				      transparent 0px,
+// 				      transparent 200px
+// 				    );
+// 			}
 
 			.rocket-locked .rocket-group,
 			.rocket-highlighed .rocket-group {

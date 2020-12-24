@@ -118,7 +118,7 @@ class SplitButtonControlModel implements ButtonControlModel {
 	private subSiButtons = new Map<string, SiButton>();
 
 	constructor(private key: string, private siField: SiField, private model: SplitModel) {
-		this.siButton = new SiButton(null, 'btn btn-secondary', 'fa fa-reply-all');
+		this.siButton = new SiButton(null, 'btn btn-secondary', 'fas fa-reply-all');
 		this.siButton.tooltip = this.model.getCopyTooltip();
 
 		this.update();
@@ -130,7 +130,7 @@ class SplitButtonControlModel implements ButtonControlModel {
 				continue;
 			}
 
-			this.subSiButtons.set(splitOption.key, new SiButton(splitOption.shortLabel, 'btn btn-secondary', 'fa fa-mail-forward'));
+			this.subSiButtons.set(splitOption.key, new SiButton(splitOption.shortLabel, 'btn btn-secondary', 'fas fa-mail-forward'));
 		}
 	}
 

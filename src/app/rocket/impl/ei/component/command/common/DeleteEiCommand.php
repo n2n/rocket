@@ -60,7 +60,7 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 		$tooltip = $dtc->t('ei_impl_delete_entry_tooltip', ['entry' => $eiuFrame->getGenericLabel()]);
 		$confirmMessage = $dtc->t('ei_impl_delete_entry_confirm', array('entry' => $identityString));
 		
-		$siButton = SiButton::danger($name, SiIconType::TIMES_CIRCLE)->setTooltip($tooltip)
+		$siButton = SiButton::danger($name, SiIconType::ICON_TIMES_CIRCLE)->setTooltip($tooltip)
 				->setConfirm(new SiConfirm($confirmMessage, $dtc->t('common_yes_label'), $dtc->t('common_no_label'), true));
 		
 		$eiuControlFactory = $eiu->guiFrame()->controlFactory($this);
@@ -88,7 +88,7 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 // 					array('last_mod' => $view->getL10nDateTime($draft->getLastMod())));
 // 			$confirmMessage = $view->getL10nText('ei_impl_delete_draft_confirm_message', 
 // 					array('last_mod' => $view->getL10nDateTime($draft->getLastMod())));
-// 			$iconType = SiIconType::TIMES_CIRCLE;
+// 			$iconType = SiIconType::ICON_TIMES_CIRCLE;
 // 		} else {
 // 			$pathExt = new Path(array('live', $eiuEntry->getPid()));
 // 			$identityString = $eiuEntry->createIdentityString();
@@ -96,7 +96,7 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 // 			$tooltip = $view->getL10nText('ei_impl_delete_entry_tooltip', 
 // 					array('entry' => $eiuFrame->getGenericLabel()));
 // 			$confirmMessage = $view->getL10nText('ei_impl_delete_entry_confirm', array('entry' => $identityString));
-// 			$iconType = SiIconType::TRASH_O;
+// 			$iconType = SiIconType::ICON_TRASH_O;
 // 		}
 		
 // 		$siButton = new SiButton($name, $tooltip, false, SiButton::TYPE_DANGER, $iconType);
@@ -126,7 +126,7 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 // 		$dtc = new DynamicTextCollection('rocket', $htmlView->getN2nContext()->getN2nLocale());
 // 		$eiCommandButton = new SiButton(null, $dtc->translate('ei_impl_partial_delete_label'), 
 // 				$dtc->translate('ei_impl_partial_delete_tooltip'), false, SiButton::TYPE_SECONDARY,
-// 				SiIconType::TIMES_SIGN);
+// 				SiIconType::ICON_TIMES_SIGN);
 // 		$eiCommandButton->setConfirmMessage($dtc->translate('ei_impl_partial_delete_confirm_message'));
 // 		$eiCommandButton->setConfirmOkButtonLabel($dtc->translate('common_yes_label'));
 // 		$eiCommandButton->setConfirmCancelButtonLabel($dtc->translate('common_no_label'));

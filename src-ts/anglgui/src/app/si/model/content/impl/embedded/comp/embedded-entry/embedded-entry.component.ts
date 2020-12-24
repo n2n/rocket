@@ -24,12 +24,12 @@ export class EmbeddedEntryComponent /*implements OnInit */{
 
 	// ngOnInit() {
 	// 	this.copyControl = new SimpleSiControl(
-	// 				new SiButton(this.translationService.translate('common_copy_label'), 'btn btn-success rocket-important', 'fa fa-copy'),
+	// 				new SiButton(this.translationService.translate('common_copy_label'), 'btn btn-success rocket-important', 'fas fa-copy'),
 	// 				() => {
 	// 					this.copy.emit();
 	// 				});
 	// 	this.delteControl = new SimpleSiControl(
-	// 			new SiButton(this.translationService.translate('common_delete_label'), 'btn btn-danger', 'fa fa-trash'),
+	// 			new SiButton(this.translationService.translate('common_delete_label'), 'btn btn-danger', 'fas fa-trash'),
 	// 			() => {
 	// 				this.delete.emit();
 	// 			})

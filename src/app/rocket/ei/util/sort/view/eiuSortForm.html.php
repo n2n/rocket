@@ -49,9 +49,9 @@ use n2n\web\dispatch\map\PropertyPath;
 ?>
 <div class="rocket-sort" 
 		data-text-add-sort="<?php $html->l10nText('ei_impl_add_sort_label') ?>" 
-		data-icon-class-name-add="<?php $html->out(SiIconType::PLUS_CIRCLE) ?>"
+		data-icon-class-name-add="<?php $html->out(SiIconType::ICON_PLUS_CIRCLE) ?>"
 		data-text-remove-sort="<?php $html->l10nText('ei_impl_remove_sort_label') ?>" 
-		data-icon-class-name-remove="<?php $html->out(SiIconType::TIMES) ?>">
+		data-icon-class-name-remove="<?php $html->out(SiIconType::ICON_TIMES) ?>">
 	<div class="rocket-sort-contraints">
 		<?php foreach ($formHtml->meta()->getMapValue($propertyPath->ext('directions')) as $key => $direction): ?>
 			<div class="nav-item rocket-sort-constraint">
