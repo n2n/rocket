@@ -42,6 +42,9 @@ class OverviewEiCommand extends IndependentEiCommandAdapter implements GenericOv
 	const ID_BASE = 'overview';
 	
 	private $pageSize = 30;
+
+	protected function prepare() {
+	}
 	
 	public function getIdBase(): ?string {
 		return self::ID_BASE;

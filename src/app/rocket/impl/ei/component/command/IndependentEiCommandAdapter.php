@@ -23,22 +23,44 @@ namespace rocket\impl\ei\component\command;
 
 use rocket\ei\component\command\IndependentEiCommand;
 use rocket\ei\component\EiConfigurator;
-use rocket\impl\ei\component\DefaultEiPropConfigurator;
-use n2n\l10n\Lstr;
-use n2n\util\StringUtils;
+use rocket\impl\ei\component\prop\adapter\config\AdaptableEiConfigurator;
 
 abstract class IndependentEiCommandAdapter extends EiCommandAdapter implements IndependentEiCommand {
 	
-	public function __construct() {
+	/**
+	 * @var AdaptableEiConfigurator
+	 */
+	private $configurator;
+	
+	function __construct() {
 	}
 	
+	/**
+	 * @return AdaptableEiConfigurator
+	 */
+	protected function getConfigurator() {
+		if ($this->configurator !== null) {
+			return $this->configurator;
+		}
+		
+		$this->configurator = $this->createConfigurator();
+		$this->prepare();
+		return $this->configurator;
+	}
 	
+	protected function createConfigurator(): EiConfigurator {
+		return new AdaptableEiConfigurator($this);
+	}
 	
-	
-	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\prop\indepenent\IndependentEiProp::createEiPropConfigurator()
+	 */
 	public function createEiConfigurator(): EiConfigurator {
-		return new DefaultEiPropConfigurator($this);
+		return $this->getConfigurator();
 	}
+	
+	protected abstract function prepare();
 	
 	public function equals($obj) {
 		return $obj instanceof IndependentEiCommand && parent::equals($obj);

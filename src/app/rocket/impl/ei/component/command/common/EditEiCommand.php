@@ -41,6 +41,8 @@ class EditEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiC
 	const CONTROL_SAVE_KEY = 'save';
 	const CONTROL_SAVE_AND_BACK_KEY = 'saveAndBack';
 	
+	protected function prepare() {
+	}
 	
 	public function getIdBase(): ?string {
 		return self::ID_BASE;

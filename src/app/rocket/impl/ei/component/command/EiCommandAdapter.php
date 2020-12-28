@@ -27,7 +27,6 @@ use rocket\ei\component\command\EiCommandWrapper;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
-use n2n\util\ex\UnsupportedOperationException;
 use rocket\ei\component\command\GuiEiCommand;
 use rocket\ei\manage\gui\GuiCommand;
 use n2n\l10n\Lstr;

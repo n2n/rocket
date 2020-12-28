@@ -40,6 +40,9 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 	const ID_BASE = 'detail';
 	const CONTROL_DETAIL_KEY = 'detail'; 
 	const CONTROL_PREVIEW_KEY = 'preview';
+	
+	protected function prepare() {
+	}
 		
 	public function getIdBase(): ?string {
 		return self::ID_BASE;

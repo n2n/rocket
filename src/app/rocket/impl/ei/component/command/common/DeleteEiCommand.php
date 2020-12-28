@@ -37,6 +37,9 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 	const PRIVILEGE_LIVE_ENTRY_KEY = 'eiEntityObj';
 	const PRIVILEGE_DRAFT_KEY = 'draft';
 	
+	protected function prepare() {
+	}
+	
 	public function getIdBase(): ?string {
 		return self::ID_BASE;
 	}

@@ -56,6 +56,9 @@ class AddEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiCo
 	const PRIVILEGE_DRAFT_KEY = 'draft';
 
 	private $dublicatingAllowed = true;
+	
+	protected function prepare() {
+	}
 
 	public function getIdBase(): ?string {
 		return self::ID_BASE;

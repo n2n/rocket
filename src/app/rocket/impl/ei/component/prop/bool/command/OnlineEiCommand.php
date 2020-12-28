@@ -29,9 +29,7 @@ use rocket\si\control\SiButton;
 use rocket\impl\ei\component\command\EiCommandAdapter;
 use rocket\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
-use n2n\util\uri\Path;
 use n2n\core\container\N2nContext;
-use n2n\l10n\Message;
 
 class OnlineEiCommand extends EiCommandAdapter {
 	const CONTROL_KEY = 'online';

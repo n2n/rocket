@@ -21,14 +21,10 @@
  */
 namespace rocket\impl\ei\component\prop\adapter\config;
 
-use rocket\ei\util\Eiu;
-use n2n\util\type\attrs\DataSet;
-use n2n\web\dispatch\mag\MagCollection;
-use n2n\persistence\meta\structure\Column;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\component\prop\indepenent\IncompatiblePropertyException;
 
-interface EiPropConfiguratorAdaption {
+interface EiPropConfiguratorAssigner {
 	
 	/**
 	 * @param PropertyAssignation $propertyAssignation
@@ -41,31 +37,4 @@ interface EiPropConfiguratorAdaption {
 	 * @throws IncompatiblePropertyException
 	 */
 	function assignProperty(PropertyAssignation $propertyAssignation);
-	
-	/**
-	 * @param Eiu $eiu
-	 * @param DataSet $dataSet
-	 * @param Column $column
-	 */
-	function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null);
-	
-	/**
-	 * @param Eiu $eiu
-	 * @param DataSet $dataSet
-	 * @param MagCollection $magCollection
-	 */
-	function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection);
-
-	/**
-	 * @param Eiu $eiu
-	 * @param MagCollection $magCollection
-	 * @param DataSet $dataSet
-	 */
-	function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet);
-	
-	/**
-	 * @param Eiu $eiu
-	 * @param DataSet $dataSet
-	 */
-	function setup(Eiu $eiu, DataSet $dataSet);
 }

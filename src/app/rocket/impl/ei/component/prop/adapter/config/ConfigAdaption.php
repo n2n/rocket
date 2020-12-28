@@ -28,7 +28,7 @@ use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\component\InvalidEiComponentConfigurationException;
 use n2n\util\ex\IllegalStateException;
 
-abstract class ConfigAdaption implements EiPropConfiguratorAdaption {
+abstract class ConfigAdaption implements EiConfiguratorAdaption {
 	
 	/**
 	 * @var PropertyAssignation
@@ -37,7 +37,7 @@ abstract class ConfigAdaption implements EiPropConfiguratorAdaption {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\config\EiPropConfiguratorAdaption::testCompatibility()
+	 * @see \rocket\impl\ei\component\prop\adapter\config\EiConfiguratorAdaption::testCompatibility()
 	 */
 	function testCompatibility(PropertyAssignation $propertyAssignation): ?int {
 		return null;
@@ -46,7 +46,7 @@ abstract class ConfigAdaption implements EiPropConfiguratorAdaption {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\config\EiPropConfiguratorAdaption::assignProperty()
+	 * @see \rocket\impl\ei\component\prop\adapter\config\EiConfiguratorAdaption::assignProperty()
 	 */
 	function assignProperty(PropertyAssignation $propertyAssignation) {
 		$this->propertyAssignation = $propertyAssignation;
@@ -63,7 +63,7 @@ abstract class ConfigAdaption implements EiPropConfiguratorAdaption {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\config\EiPropConfiguratorAdaption::autoAttributes()
+	 * @see \rocket\impl\ei\component\prop\adapter\config\EiConfiguratorAdaption::autoAttributes()
 	 */
 	function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
 	}
