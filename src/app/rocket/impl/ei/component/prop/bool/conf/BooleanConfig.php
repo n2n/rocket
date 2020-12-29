@@ -12,10 +12,10 @@ use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\util\type\attrs\DataSet;
 use rocket\ei\util\Eiu;
-use rocket\impl\ei\component\prop\adapter\config\ConfigAdaption;
+use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
 use n2n\util\type\ArgUtils;
 
-class BooleanConfig extends ConfigAdaption {
+class BooleanConfig extends PropConfigAdaption {
 	const ATTR_BIND_GUI_PROPS_KEY = 'associatedGuiProps';
 	const ATTR_ON_ASSOCIATED_GUI_PROP_KEY = 'onAssociatedGuiProps';
 	const ATTR_OFF_ASSOCIATED_GUI_PROP_KEY = 'offAssociatedGuiProps';

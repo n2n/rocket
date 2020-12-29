@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\relation\command;
 
-use rocket\impl\ei\component\command\EiCommandAdapter;
+use rocket\impl\ei\component\command\adapter\EiCommandAdapter;
 use rocket\ei\component\command\PrivilegedEiCommand;
 use n2n\l10n\Lstr;
 

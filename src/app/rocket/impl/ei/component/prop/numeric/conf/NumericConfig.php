@@ -25,12 +25,12 @@ use n2n\impl\web\dispatch\mag\model\NumericMag;
 use n2n\persistence\meta\structure\Column;
 use n2n\persistence\meta\structure\IntegerColumn;
 use n2n\util\type\attrs\LenientAttributeReader;
-use rocket\impl\ei\component\prop\adapter\config\ConfigAdaption;
+use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
 use n2n\util\type\attrs\DataSet;
 use rocket\ei\util\Eiu;
 use n2n\web\dispatch\mag\MagCollection;
 
-class NumericConfig extends ConfigAdaption {
+class NumericConfig extends PropConfigAdaption {
 	const ATTR_MIN_VALUE_KEY = 'minValue';
 	const ATTR_MAX_VALUE_KEY = 'maxValue';
 	

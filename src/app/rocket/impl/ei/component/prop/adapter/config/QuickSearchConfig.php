@@ -27,7 +27,7 @@ use n2n\util\type\attrs\LenientAttributeReader;
 use rocket\ei\util\Eiu;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
 
-class QuickSearchConfig extends ConfigAdaption {
+class QuickSearchConfig extends PropConfigAdaption {
 	const ATTR_QUICK_SEARCHABLE_KEY = 'quickSearchable';
 	
 	private $quickSearchable = true;

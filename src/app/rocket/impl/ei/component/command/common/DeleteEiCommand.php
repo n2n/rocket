@@ -26,7 +26,7 @@ use rocket\core\model\Rocket;
 use rocket\ei\component\command\PrivilegedEiCommand;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\util\Eiu;
-use rocket\impl\ei\component\command\IndependentEiCommandAdapter;
+use rocket\impl\ei\component\command\adapter\IndependentEiCommandAdapter;
 use rocket\si\control\SiButton;
 use rocket\si\control\SiConfirm;
 use rocket\si\control\SiIconType;

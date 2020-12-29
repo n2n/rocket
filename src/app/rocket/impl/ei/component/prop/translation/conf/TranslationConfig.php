@@ -34,12 +34,12 @@ use n2n\l10n\IllegalN2nLocaleFormatException;
 use n2n\util\type\TypeConstraint;
 use n2n\core\config\WebConfig;
 use n2n\impl\web\dispatch\mag\model\NumericMag;
-use rocket\impl\ei\component\prop\adapter\config\ConfigAdaption;
+use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
 use rocket\ei\util\Eiu;
 use n2n\util\type\attrs\DataSet;
 use n2n\util\type\ArgUtils;
 
-class TranslationConfig extends ConfigAdaption {
+class TranslationConfig extends PropConfigAdaption {
 	const ATTR_USE_SYSTEM_LOCALES_KEY = 'useSystemN2nLocales';
 	const ATTR_SYSTEM_LOCALE_DEFS_KEY = 'systenN2nLocaleDefs';
 	const ATTR_CUSTOM_LOCALE_DEFS_KEY = 'customN2nLocaleDefs';

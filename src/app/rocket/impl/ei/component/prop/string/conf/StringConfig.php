@@ -24,13 +24,13 @@ namespace rocket\impl\ei\component\prop\string\conf;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
 use n2n\util\StringUtils;
 use n2n\persistence\meta\structure\Column;
-use rocket\impl\ei\component\prop\adapter\config\ConfigAdaption;
+use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
 use rocket\ei\util\Eiu;
 use n2n\util\type\attrs\DataSet;
 use n2n\web\dispatch\mag\MagCollection;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 
-class StringConfig extends ConfigAdaption {
+class StringConfig extends PropConfigAdaption {
 	const ATTR_MULTILINE_KEY = 'multiline';
 	
 	private $multiline = false;

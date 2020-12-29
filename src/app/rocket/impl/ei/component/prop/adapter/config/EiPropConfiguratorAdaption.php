@@ -23,8 +23,9 @@ namespace rocket\impl\ei\component\prop\adapter\config;
 
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\component\prop\indepenent\IncompatiblePropertyException;
+use rocket\impl\ei\component\config\EiConfiguratorAdaption;
 
-interface EiPropConfiguratorAssigner {
+interface EiPropConfiguratorAdaption extends EiConfiguratorAdaption {
 	
 	/**
 	 * @param PropertyAssignation $propertyAssignation

@@ -26,9 +26,9 @@ use n2n\web\dispatch\mag\MagCollection;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use rocket\ei\util\Eiu;
-use rocket\impl\ei\component\prop\adapter\config\ConfigAdaption;
+use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
 
-class IntegerConfig extends ConfigAdaption {
+class IntegerConfig extends PropConfigAdaption {
 	
 	function testCompatibility(PropertyAssignation $propertyAssignation): int {
 		$entityProperty = $propertyAssignation->getEntityProperty(false);

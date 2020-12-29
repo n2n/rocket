@@ -24,7 +24,7 @@ namespace rocket\impl\ei\component\command\tree;
 use n2n\l10n\DynamicTextCollection;
 use rocket\impl\ei\component\command\tree\controller\TreeMoveController;
 use rocket\si\control\SiIconType;
-use rocket\impl\ei\component\command\IndependentEiCommandAdapter;
+use rocket\impl\ei\component\command\adapter\IndependentEiCommandAdapter;
 use rocket\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
 use n2n\core\container\N2nContext;
@@ -38,6 +38,9 @@ class TreeMoveEiCommand extends IndependentEiCommandAdapter {
 	
 	public function getIdBase(): ?string {
 		return self::ID_BASE;
+	}
+	
+	protected function prepare() {
 	}
 	
 	public function getOverviewPathExt() {

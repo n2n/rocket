@@ -31,9 +31,9 @@ use n2n\util\type\attrs\DataSet;
 use rocket\ei\util\Eiu;
 use n2n\web\dispatch\mag\MagCollection;
 use rocket\impl\ei\component\prop\numeric\OrderEiProp;
-use rocket\impl\ei\component\prop\adapter\config\ConfigAdaption;
+use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
 
-class OrderConfig extends ConfigAdaption {
+class OrderConfig extends PropConfigAdaption {
 
 	const COMMON_ORDER_INDEX_PROP_NAME = 'orderIndex';
 	const OPTION_REFERENCE_FIELD_KEY = 'referenceField';

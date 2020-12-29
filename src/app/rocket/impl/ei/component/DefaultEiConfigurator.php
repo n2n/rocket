@@ -26,6 +26,7 @@ use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use rocket\ei\component\prop\indepenent\IncompatiblePropertyException;
 use n2n\core\container\N2nContext;
+use rocket\impl\ei\component\config\EiConfiguratorAdapter;
 
 class DefaultEiConfigurator extends EiConfiguratorAdapter {
 	/**

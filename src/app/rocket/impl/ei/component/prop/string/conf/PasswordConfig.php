@@ -30,9 +30,9 @@ use rocket\ei\util\Eiu;
 use n2n\util\type\attrs\DataSet;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\config\InvalidConfigurationException;
-use rocket\impl\ei\component\prop\adapter\config\ConfigAdaption;
+use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
 
-class PasswordConfig extends ConfigAdaption {
+class PasswordConfig extends PropConfigAdaption {
 	const ATTR_ALGORITHM_KEY = 'algorithm';
 	
 	const ALGORITHM_SHA1 = 'sha1';

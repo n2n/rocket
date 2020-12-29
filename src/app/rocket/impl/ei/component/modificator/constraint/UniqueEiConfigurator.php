@@ -1,7 +1,7 @@
 <?php
 namespace rocket\impl\ei\component\modificator\constraint;
 
-use rocket\impl\ei\component\EiConfiguratorAdapter;
+use rocket\impl\ei\component\config\EiConfiguratorAdapter;
 use n2n\core\container\N2nContext;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\util\type\attrs\LenientAttributeReader;

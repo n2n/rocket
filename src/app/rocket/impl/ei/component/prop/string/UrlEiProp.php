@@ -26,15 +26,12 @@ use n2n\util\uri\Url;
 use n2n\reflection\property\AccessProxy;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\UrlEntityProperty;
-use rocket\si\content\SiField;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\impl\ei\component\prop\string\conf\UrlConfig;
 use rocket\ei\util\factory\EifField;
 use n2n\validation\plan\impl\Validators;
 use rocket\si\content\impl\SiFields;
-use rocket\si\control\SiNavPoint;
 use rocket\ei\util\factory\EifGuiField;
-use rocket\si\content\impl\meta\SiCrumb;
 
 class UrlEiProp extends AlphanumericEiProp {
 	
