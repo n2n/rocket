@@ -75,10 +75,10 @@ class OnlineEiCommand extends EiCommandAdapter {
 		$status = $eiuEntry->getValue($this->onlineEiProp);
 		if ($status) {
 			$siButton->setType(SiButton::TYPE_SUCCESS);
-			$siButton->setIconType(SiIconType::CHECK_CIRCLE);
+			$siButton->setIconType(SiIconType::ICON_CHECK_CIRCLE);
 		} else {
 			$siButton->setType(SiButton::TYPE_DANGER);
-			$siButton->setIconType(SiIconType::MINUS_CIRCLE);
+			$siButton->setIconType(SiIconType::ICON_MINUS_CIRCLE);
 		}
 		
 		$guiControl = $eiuControlFactory->createCallback(self::CONTROL_KEY, $siButton, 

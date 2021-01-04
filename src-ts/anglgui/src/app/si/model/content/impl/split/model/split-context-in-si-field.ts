@@ -80,7 +80,7 @@ export class SplitContextInSiField extends SplitContextSiField implements SplitM
 	}
 
 	getIconClass(): string {
-		return this.managerStyle.iconClass || 'fa fa-columns';
+		return this.managerStyle.iconClass || 'fas fa-columns';
 	}
 
 	getTooltip(): string|null {

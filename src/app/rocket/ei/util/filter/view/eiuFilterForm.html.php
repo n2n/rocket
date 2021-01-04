@@ -44,8 +44,8 @@
 	}
 ?>
 <div class="rocket-filter" 
-		data-icon-class-name-add="<?php $html->out(SiIconType::PLUS_CIRCLE) ?>"
-		data-remove-icon-class-name="<?php $html->out(SiIconType::TIMES)?>"
+		data-icon-class-name-add="<?php $html->out(SiIconType::ICON_PLUS_CIRCLE) ?>"
+		data-remove-icon-class-name="<?php $html->out(SiIconType::ICON_TIMES)?>"
 		data-and-icon-class-name="fa fa-toggle-on" 
 		data-or-icon-class-name="fa fa-toggle-off" 
 		data-text-add-group="<?php $html->text('ei_filter_add_group_label') ?>" 

@@ -81,13 +81,13 @@ class EditEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiC
 		
 		return [
 			$eiuControlFactory->createCallback(self::CONTROL_SAVE_KEY, 
-							SiButton::primary($dtc->t('common_save_label'), SiIconType::SAVE), 
+							SiButton::primary($dtc->t('common_save_label'), SiIconType::ICON_SAVE), 
 							function (Eiu $eiu, array $inputEius) {
 								return $this->handleInput($eiu, $inputEius);
 							})
 					->setInputHandled(true),
 			$eiuControlFactory->createCallback(self::CONTROL_SAVE_AND_BACK_KEY, 
-							SiButton::primary($dtc->t('common_save_and_back_label'), SiIconType::SAVE),
+							SiButton::primary($dtc->t('common_save_and_back_label'), SiIconType::ICON_SAVE),
 							function (Eiu $eiu, array $inputEius) {
 								$this->handleInput($eiu, $inputEius)->redirectBack();
 							})
@@ -129,7 +129,7 @@ class EditEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiC
 			
 		$siButton = new SiButton($dtc->t('common_edit_label'), 
 				$dtc->t('ei_impl_edit_entry_tooltip', array('entry' => $eiuEntry->getGenericLabel())), 
-				true, SiButton::TYPE_WARNING, SiIconType::PENCIL_ALT);
+				true, SiButton::TYPE_WARNING, SiIconType::ICON_PENCIL_ALT);
 			
 		return [$eiuControlFactory->createCmdRef(self::CONTROL_EDIT_KEY, $siButton, 
 				new Path([$eiuEntry->getPid()]))];

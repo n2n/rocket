@@ -5494,7 +5494,6 @@ rocket-ui-compact-explorer {
 .rocket-split-view-status > label > i,
 .rocket-impl-translation-status > label > i {
   padding-right: 0.5rem;
-  font-weight: normal;
 }
 
 /**
@@ -5891,7 +5890,7 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   color: inherit;
 }
 
-.rocket-global-nav-group-title > i.fa {
+.rocket-global-nav-group-title > i[class*="fa-"] {
   position: absolute;
   top: 0.875rem;
   right: 1rem;
@@ -5904,7 +5903,7 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   cursor: pointer;
 }
 
-.rocket-global-nav-group-title:hover > i.fa {
+.rocket-global-nav-group-title:hover > i[class*="fa-"] {
   color: #fff;
 }
 
@@ -5920,7 +5919,7 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   color: #F7F5F5;
 }
 
-#rocket-conf-nav .nav-link .fa {
+#rocket-conf-nav .nav-link i[class*="fa-"] {
   font-size: 1.25rem;
 }
 
