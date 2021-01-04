@@ -192,8 +192,8 @@ class AddEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiCo
 					->createCmdRef(self::CONTROL_DUPLICATE_KEY , $siButton, [$eiuEntry->getPid()]));
 		}
 
-
-		$groupControl = $eiuControlFactory->createGroup(new SiButton($dtc->t('ei_impl_insert_branch_label'),
+return [];
+		$groupControl = $eiuControlFactory->createCGroup(new SiButton($dtc->t('ei_impl_insert_branch_label'),
 				$dtc->t('ei_impl_add_branch_tooltip'), false, SiButton::TYPE_SECONDARY, SiIconType::PLUS));
 		
 		$groupControl->add(
