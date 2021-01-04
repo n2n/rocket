@@ -29,14 +29,14 @@ use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\util\type\attrs\LenientAttributeReader;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
-use rocket\impl\ei\component\prop\adapter\config\ConfigAdaption;
+use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
 use rocket\impl\ei\component\prop\ci\model\PanelDeclaration;
 use n2n\util\type\attrs\DataSet;
 use rocket\ei\util\Eiu;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\util\type\ArgUtils;
 
-class ContentItemsConfig extends ConfigAdaption {
+class ContentItemsConfig extends PropConfigAdaption {
 	const ATTR_PANELS_KEY = 'panels';
 	
 	/**

@@ -31,12 +31,12 @@ use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\persistence\meta\structure\Column;
 use n2n\impl\web\dispatch\mag\model\StringMag;
-use rocket\impl\ei\component\prop\adapter\config\ConfigAdaption;
+use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
 use rocket\ei\util\Eiu;
 use n2n\util\type\attrs\DataSet;
 use n2n\web\dispatch\mag\MagCollection;
 
-class UrlConfig extends ConfigAdaption {
+class UrlConfig extends PropConfigAdaption {
 	const ATTR_ALLOWED_PROTOCOLS_KEY = 'allowedProtocols';
 	const ATTR_RELATIVE_ALLOWED_KEY = 'relativeAllowed'; 
 	const ATTR_AUTO_SCHEME_KEY = 'autoScheme';

@@ -28,10 +28,10 @@ use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\util\StringUtils;
 use rocket\si\content\impl\meta\SiCrumbGroup;
 use rocket\si\content\impl\meta\SiCrumb;
-use rocket\impl\ei\component\prop\adapter\config\ConfigAdaption;
+use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
 use rocket\ei\util\Eiu;
 
-class AddonConfig extends ConfigAdaption {
+class AddonConfig extends PropConfigAdaption {
 	
 	const ATTR_PREFIX_ADDONS_KEY = 'prefixAddons';
 	const ATTR_SUFFIX_ADDONS_KEY = 'suffixAddons';

@@ -26,7 +26,7 @@ use n2n\l10n\N2nLocale;
 use rocket\impl\ei\component\command\common\controller\DetailController;
 use rocket\si\control\SiButton;
 use rocket\si\control\SiIconType;
-use rocket\impl\ei\component\command\IndependentEiCommandAdapter;
+use rocket\impl\ei\component\command\adapter\IndependentEiCommandAdapter;
 use rocket\ei\component\command\PrivilegedEiCommand;
 use n2n\util\uri\Path;
 use n2n\core\container\N2nContext;
@@ -40,6 +40,9 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 	const ID_BASE = 'detail';
 	const CONTROL_DETAIL_KEY = 'detail'; 
 	const CONTROL_PREVIEW_KEY = 'preview';
+	
+	protected function prepare() {
+	}
 		
 	public function getIdBase(): ?string {
 		return self::ID_BASE;

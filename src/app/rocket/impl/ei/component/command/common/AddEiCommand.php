@@ -25,7 +25,7 @@ use n2n\l10n\DynamicTextCollection;
 use n2n\l10n\N2nLocale;
 use rocket\si\control\SiButton;
 use rocket\si\control\SiIconType;
-use rocket\impl\ei\component\command\IndependentEiCommandAdapter;
+use rocket\impl\ei\component\command\adapter\IndependentEiCommandAdapter;
 use rocket\ei\component\command\PrivilegedEiCommand;
 use n2n\core\container\N2nContext;
 use rocket\core\model\Rocket;
@@ -39,7 +39,7 @@ use n2n\util\ex\IllegalStateException;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use rocket\ei\component\EiSetup;
 use n2n\util\type\CastUtils;
-use rocket\impl\ei\component\EiConfiguratorAdapter;
+use rocket\impl\ei\component\config\EiConfiguratorAdapter;
 use rocket\ei\component\EiConfigurator;
 
 class AddEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiCommand {
@@ -56,6 +56,9 @@ class AddEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiCo
 	const PRIVILEGE_DRAFT_KEY = 'draft';
 
 	private $dublicatingAllowed = true;
+	
+	protected function prepare() {
+	}
 
 	public function getIdBase(): ?string {
 		return self::ID_BASE;
@@ -189,7 +192,7 @@ class AddEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiCo
 					->createCmdRef(self::CONTROL_DUPLICATE_KEY , $siButton, [$eiuEntry->getPid()]));
 		}
 
-
+return [];
 		$groupControl = $eiuControlFactory->createCGroup(new SiButton($dtc->t('ei_impl_insert_branch_label'),
 				$dtc->t('ei_impl_add_branch_tooltip'), false, SiButton::TYPE_SECONDARY, SiIconType::ICON_PLUS));
 		

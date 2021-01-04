@@ -21,43 +21,27 @@
  */
 namespace rocket\impl\ei\component\prop\adapter\config;
 
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
-use rocket\ei\component\prop\indepenent\PropertyAssignation;
-use rocket\impl\ei\component\EiConfiguratorAdapter;
 use n2n\core\container\N2nContext;
-use n2n\web\dispatch\mag\MagCollection;
-use rocket\ei\component\EiSetup;
-use n2n\reflection\property\ConstraintsConflictException;
-use rocket\ei\component\prop\indepenent\CompatibilityLevel;
-use rocket\ei\component\prop\indepenent\IncompatiblePropertyException;
-use n2n\impl\web\dispatch\mag\model\MagForm;
-use n2n\web\dispatch\mag\MagDispatchable;
-use n2n\util\ex\IllegalStateException;
-use rocket\ei\util\Eiu;
 use n2n\persistence\meta\structure\Column;
+use n2n\reflection\property\ConstraintsConflictException;
+use n2n\util\ex\IllegalStateException;
+use rocket\ei\component\prop\indepenent\CompatibilityLevel;
+use rocket\ei\component\prop\indepenent\EiPropConfigurator;
+use rocket\ei\component\prop\indepenent\IncompatiblePropertyException;
+use rocket\ei\component\prop\indepenent\PropertyAssignation;
+use rocket\ei\util\Eiu;
+use n2n\util\type\CastUtils;
+use rocket\impl\ei\component\config\AdaptableEiConfigurator;
 
-class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPropConfigurator {
-
+class AdaptableEiPropConfigurator extends AdaptableEiConfigurator implements EiPropConfigurator {
 	/**
 	 * @var PropertyAssignation
 	 */
 	private $propertyAssignation;
-	
-	/**
-	 * @var EiPropConfiguratorAdaption[]
-	 */
-	private $adapations = [];
-	
-	/**
-	 * @var \Closure[]
-	 */
-	private $setupCallbacks = [];
-	
 	/**
 	 * @var int
 	 */
 	private $defaultCompatibilityLevel = CompatibilityLevel::COMPATIBLE;
-	
 	
 // 	public function getPropertyAssignation(): PropertyAssignation {
 // 		return new PropertyAssignation($this->getAssignedEntityProperty(), 
@@ -88,7 +72,7 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 		}
 		
 		$curLevel = null;
-		foreach ($this->adapations as $adaption) {
+		foreach ($this->adaptions as $adaption) {
 			$resultLevel = $adaption->testCompatibility($propertyAssignation);
 			if ($resultLevel === null) {
 				continue;
@@ -111,15 +95,35 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 	 */
 	function initAutoEiPropAttributes(N2nContext $n2nContext, Column $column = null) {
 		$eiu = new Eiu($n2nContext);
-		foreach ($this->adapations as $adaption) {
+		foreach ($this->getAdaptions() as $adaption) {
+			CastUtils::assertTrue($adaption instanceof EiPropConfiguratorAdaption);
 			$adaption->autoAttributes($eiu, $this->dataSet, $column);
 		}
 	}
 	
-	/* (non-PHPdoc)
+	/**
+	 * @param EiPropConfiguratorAdaption $adaption
+	 * @return \rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator
+	 */
+	function addAdaption(EiPropConfiguratorAdaption $adaption) {
+		$this->registerAdaption($adaption);
+		return $this;
+	}
+	
+	/**
+	 * @param EiPropConfiguratorAdaption $adaption
+	 * @return \rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator
+	 */
+	function removeAdaption(EiPropConfiguratorAdaption $adaption) {
+		$this->unregisterAdaption($adaption);
+		return $this;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @see \rocket\ei\component\prop\indepenent\EiPropConfigurator::assignProperty()
 	 */
-	public function assignProperty(PropertyAssignation $propertyAssignation) {
+	function assignProperty(PropertyAssignation $propertyAssignation) {
 // 		if (!$this->isPropertyAssignable()) {
 // 			throw new IncompatiblePropertyException('EiProp can not be assigned to a property.');
 // 		}
@@ -146,7 +150,8 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 			}
 		}
 		
-		foreach ($this->adapations as $adaption) {
+		foreach ($this->getAdaptions() as $adaption) {
+			CastUtils::assertTrue($adaption instanceof EiPropConfiguratorAdaption);
 			$adaption->assignProperty($propertyAssignation);
 		}
 		
@@ -235,67 +240,12 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 		return $this->objectPropertyConfigurable->getObjectPropertyAccessProxy()->getPropertyName();
 	}
 	
-	public function setup(EiSetup $eiSetupProcess) {
-		$eiu = $eiSetupProcess->eiu();
-		
-		foreach ($this->adapations as $adaption) {
-			$adaption->setup($eiu, $this->dataSet);
-		}
-		
-		foreach ($this->setupCallbacks as $setupCallback) {
-			$setupCallback($eiu, $this->dataSet);
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\EiConfiguratorAdapter::createMagDispatchable()
-	 */
-	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
-		$magCollection = new MagCollection();
-		
-		$eiu = new Eiu($n2nContext, $this->eiComponent);
-		foreach ($this->adapations as $adaption) {
-			$adaption->mag($eiu, $this->dataSet, $magCollection);
-		}
-		
-		return new MagForm($magCollection);
-	}
-	
-	function saveMagDispatchable(MagDispatchable $magDispatchable, N2nContext $n2nContext) {
-		parent::saveMagDispatchable($magDispatchable, $n2nContext);
-		
-		$eiu = new Eiu($n2nContext, $this->eiComponent);
-		$magCollection = $magDispatchable->getMagCollection();
-		foreach ($this->adapations as $adaption) {
-			$adaption->save($eiu, $magCollection, $this->dataSet);
-		}
-	}
-	
-	/**
-	 * @param EiPropConfiguratorAdaption $adaption
-	 * @return \rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator
-	 */
-	function addAdaption(EiPropConfiguratorAdaption $adaption) {
-		$this->adapations[spl_object_hash($adaption)] = $adaption;
-		return $this;
-	}
-	
-	/**
-	 * @param EiPropConfiguratorAdaption $adaption
-	 * @return \rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator
-	 */
-	function removeAdaption(EiPropConfiguratorAdaption $adaption) {
-		unset($this->adapations[spl_object_hash($adaption)]);
-		return $this;
-	}
-	
 	/**
 	 * @param \Closure $setupCallback
 	 * @return \rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator
 	 */
 	function addSetupCallback(\Closure $setupCallback) {
-		$this->setupCallbacks[spl_object_hash($setupCallback)] = $setupCallback;
+		$this->registerSetupCallback($setupCallback);
 		return $this;
 	}
 	
@@ -304,7 +254,7 @@ class AdaptableEiPropConfigurator extends EiConfiguratorAdapter implements EiPro
 	 * @return \rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator
 	 */
 	function removeSetupCallback(\Closure $setupCallback) {
-		unset($this->setupCallbacks[spl_object_hash($setupCallback)]);
+		$this->unregisterSetupCallback($setupCallback);
 		return $this;
 	}
 }

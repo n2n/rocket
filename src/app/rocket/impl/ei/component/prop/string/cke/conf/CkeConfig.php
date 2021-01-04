@@ -38,7 +38,7 @@ use rocket\impl\ei\component\prop\string\cke\model\CkeUtils;
 use n2n\persistence\meta\structure\Column;
 use rocket\impl\ei\component\prop\string\cke\model\CkeState;
 use n2n\util\type\CastUtils;
-use rocket\impl\ei\component\prop\adapter\config\ConfigAdaption;
+use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
 use n2n\util\type\attrs\DataSet;
 use rocket\ei\util\Eiu;
 use n2n\web\dispatch\mag\MagCollection;
@@ -46,7 +46,7 @@ use n2n\util\col\GenericArrayObject;
 use n2n\util\type\ArgUtils;
 use rocket\si\content\impl\string\CkeInSiField;
 
-class CkeConfig extends ConfigAdaption {
+class CkeConfig extends PropConfigAdaption {
 	const ATTR_MODE_KEY = 'mode';
 	const ATTR_LINK_PROVIDER_LOOKUP_IDS_KEY = 'linkProviders';
 	const ATTR_CSS_CONFIG_LOOKUP_ID_KEY = 'cssConfig';

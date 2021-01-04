@@ -22,8 +22,8 @@
 namespace rocket\impl\ei\component\command\common;
 
 use rocket\ei\component\command\GenericOverviewEiCommand;
-use rocket\impl\ei\component\command\IndependentEiCommandAdapter;
-use rocket\impl\ei\component\EiConfiguratorAdapter;
+use rocket\impl\ei\component\command\adapter\IndependentEiCommandAdapter;
+use rocket\impl\ei\component\config\EiConfiguratorAdapter;
 use n2n\core\container\N2nContext;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\impl\web\dispatch\mag\model\NumericMag;
@@ -42,6 +42,9 @@ class OverviewEiCommand extends IndependentEiCommandAdapter implements GenericOv
 	const ID_BASE = 'overview';
 	
 	private $pageSize = 30;
+
+	protected function prepare() {
+	}
 	
 	public function getIdBase(): ?string {
 		return self::ID_BASE;
