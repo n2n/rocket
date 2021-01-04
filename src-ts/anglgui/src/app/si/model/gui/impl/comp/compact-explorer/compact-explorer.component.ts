@@ -312,7 +312,7 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 			this.sortSelectedMap.delete(siEntry.identifier.toString());
 			return;
 		}
-		
+
 		this.sortSelectedMap.set(siEntry.identifier.toString(), {
 			identifier: siEntry.identifier,
 			decendantIdStrs: this.spm.determineDecendantSiEntries(siEntry).map(e => e.identifier.toString())

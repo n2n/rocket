@@ -463,6 +463,8 @@ export class SiPageCollection implements SiControlBoundry {
 				continue;
 			}
 
+			globalIndex += i;
+
 			return {
 				entry, page,
 				pageRelativIndex: i,
