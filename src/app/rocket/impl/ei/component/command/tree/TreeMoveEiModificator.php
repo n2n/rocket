@@ -21,15 +21,11 @@
  */
 namespace rocket\impl\ei\component\command\tree;
 
-use rocket\ei\manage\ManageState;
-use n2n\web\http\controller\ParamGet;
 use n2n\persistence\orm\util\NestedSetUtils;
-use rocket\ei\util\EiuCtrl;
-use rocket\ajah\JhtmlEvent;
 use rocket\ei\manage\entry\UnknownEiObjectException;
 use rocket\ei\util\Eiu;
-use rocket\ei\util\frame\EiuFrame;
 use rocket\ei\util\entry\EiuObject;
+use rocket\ei\util\frame\EiuFrame;
 use rocket\impl\ei\component\modificator\adapter\EiModificatorAdapter;
 
 class TreeMoveEiModificator extends EiModificatorAdapter {
@@ -54,41 +50,41 @@ class TreeMoveEiModificator extends EiModificatorAdapter {
 				});
 		}
 	
-	private $eiCtrl;
+// 	private $eiCtrl;
 
-	public function prepare(ManageState $manageState) {
-		$this->eiCtrl = EiuCtrl::from($this->cu());
-	}
+// 	public function prepare(ManageState $manageState) {
+// 		$this->eiCtrl = EiuCtrl::from($this->cu());
+// 	}
 
-	public function doChild($targetPid, ParamGet $pids, ParamGet $refPath) {
-		$refUrl = $this->eiCtrl->parseRefUrl($refPath);
+// 	public function doChild($targetPid, ParamGet $pids, ParamGet $refPath) {
+// 		$refUrl = $this->eiCtrl->parseRefUrl($refPath);
 		
-		foreach ($pids->toStringArrayOrReject() as $pid) {
-			$this->move($pid, $targetPid);
-		}
+// 		foreach ($pids->toStringArrayOrReject() as $pid) {
+// 			$this->move($pid, $targetPid);
+// 		}
 		
-		$this->eiCtrl->redirectToReferer($refUrl, JhtmlEvent::ei()->noAutoEvents());
-	}
+// 		$this->eiCtrl->redirectToReferer($refUrl, JhtmlEvent::ei()->noAutoEvents());
+// 	}
 	
-	public function doBefore($targetPid, ParamGet $pids, ParamGet $refPath) {
-		$refUrl = $this->eiCtrl->parseRefUrl($refPath);
+// 	public function doBefore($targetPid, ParamGet $pids, ParamGet $refPath) {
+// 		$refUrl = $this->eiCtrl->parseRefUrl($refPath);
 
-		foreach ($pids->toStringArrayOrReject() as $pid) {
-			$this->move($pid, $targetPid, true);
-		}
+// 		foreach ($pids->toStringArrayOrReject() as $pid) {
+// 			$this->move($pid, $targetPid, true);
+// 		}
 		
-		$this->eiCtrl->redirectToReferer($refUrl, JhtmlEvent::ei()->noAutoEvents());
-	}
+// 		$this->eiCtrl->redirectToReferer($refUrl, JhtmlEvent::ei()->noAutoEvents());
+// 	}
 
-	public function doAfter($targetPid, ParamGet $pids, ParamGet $refPath) {
-		$refUrl = $this->eiCtrl->parseRefUrl($refPath);
+// 	public function doAfter($targetPid, ParamGet $pids, ParamGet $refPath) {
+// 		$refUrl = $this->eiCtrl->parseRefUrl($refPath);
 
-		foreach (array_reverse($pids->toStringArrayOrReject()) as $pid) {
+// 		foreach (array_reverse($pids->toStringArrayOrReject()) as $pid) {
 			
-		}
+// 		}
 
-		$this->eiCtrl->redirectToReferer($refUrl, JhtmlEvent::ei()->noAutoEvents());
-	}
+// 		$this->eiCtrl->redirectToReferer($refUrl, JhtmlEvent::ei()->noAutoEvents());
+// 	}
 
 	private function move(EiuFrame $eiuFrame, string $pid, string $targetPid, bool $before = null) {
 		if ($pid === $targetPid) return;

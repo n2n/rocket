@@ -4,7 +4,7 @@ import { SiEntry, SiEntryState } from 'src/app/si/model/content/si-entry';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { Subscription } from 'rxjs';
 import { IllegalArgumentError } from 'src/app/si/util/illegal-argument-error';
-import { SiPageCollection } from '../../model/si-page-collection';
+import { SiPageCollection, SiEntryPosition } from '../../model/si-page-collection';
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 import { SiProp } from 'src/app/si/model/meta/si-prop';
 import { SiEntryIdentifier } from 'src/app/si/model/content/si-entry-qualifier';
@@ -60,6 +60,7 @@ export class StructurePage {
 
 		return false;
 	}
+
 
 	// putStructureEntry(siEntry: SiEntry, structureEntry: StructureEntry) {
 	// 	this.structureEntriesMap.set(siEntry, structureEntry);
@@ -360,6 +361,20 @@ export class StructurePageManager {
 		}
 
 		return uiStructures;
+	}
+
+	determineDecendantSiEntries(entry: SiEntry): SiEntry[] {
+		const entryPosition = this.siPageCollection.getSiEntryPosition(entry);
+
+		const entries: SiEntry[] = [];
+		this.fillDecendantEntries(entryPosition, entries);
+		return entries;
+	}
+
+	private fillDecendantEntries(position: SiEntryPosition, entries: SiEntry[]): void {
+		entries.push(...position.childEntryPositions.map(p => p.entry));
+
+		position.childEntryPositions.forEach(p => this.fillDecendantEntries(p, entries));
 	}
 
 	get sortable(): boolean {

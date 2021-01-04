@@ -21,7 +21,8 @@
 		<tbody cdkDropList (cdkDropListDropped)="drop($event)">
 			<ng-container *ngFor="let structurePage of getVisibleStructurePages()">
 				<tr *ngFor="let structureEntry of structurePage.structureEntries" 
-						cdkDrag [cdkDragDisabled]="!structureEntry.siEntry.isClean()" rocketSiEntry [siEntry]="structureEntry.siEntry">
+						cdkDrag [cdkDragDisabled]="!structureEntry.siEntry.isClean()" rocketSiEntry [siEntry]="structureEntry.siEntry"
+						class="rocket-tree-level-{{ structureEntry.siEntry.treeLevel }}">
 					<td *ngIf="selectable" class="rocket-entry-selector" (click)="toggleSelection(structureEntry.siEntry.qualifier)">
 						<ng-container *ngIf="singleSelect">
 							<input type="radio" [value]="true" [ngModel]="isSelected(structureEntry.siEntry.qualifier)" />
@@ -54,7 +55,7 @@
 										(enabledChange)="setSiEntrySortSelected(structureEntry.siEntry, $event)"
 										[labeled]="false"></rocket-ui-toggler>
 										
-								<ng-container *ngIf="!isSiEntrySortSelected(structureEntry.siEntry)">
+								<ng-container *ngIf="!isSiEntrySortSelected(structureEntry.siEntry) && !isSiEntrySortDecendant(structureEntry.siEntry)">
 									<button (click)="moveBefore(structureEntry.siEntry)" [disabled]="!hasSiEntrySortSelections()">
 										<i class="fa fa-arrow-up"></i>
 									</button>

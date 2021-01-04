@@ -446,6 +446,10 @@ export class SiPageCollection implements SiControlBoundry {
 				});
 	}
 
+	getSiEntryPosition(entry: SiEntry): SiEntryPosition {
+		return this.deterPositionOfEntry(entry);
+	}
+
 	private deterPositionOfEntry(entry: SiEntry): SiEntryPosition {
 		let globalIndex = 0;
 		for (const page of this.pages) {
@@ -537,7 +541,7 @@ class MovingProcess {
 
 }
 
-interface SiEntryPosition {
+export interface SiEntryPosition {
 	 entry: SiEntry;
 	 page: SiPage;
 	 pageRelativIndex: number;

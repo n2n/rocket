@@ -19,64 +19,8 @@ import { SiEntry } from 'src/app/si/model/content/si-entry';
 })
 export class CompactExplorerComponent implements OnInit, OnDestroy {
 
-	uiStructure: UiStructure;
-	model: CompactExplorerModel;
-
-	public spm: StructurePageManager;
-	private subscription = new Subscription();
-
-	private quickSearchSubject = new Subject<string>();
-	private quickSearching = false;
-
-	private _currentPageNo = 1;
-
 
 	constructor(@Inject(LayerComponent) private parent: LayerComponent, private ngZone: NgZone) {
-	}
-
-	ngOnInit() {
-		this.spm = new StructurePageManager(this.uiStructure, this.model.getSiPageCollection());
-
-		new NgSafeScrollListener(this.parent.nativeElement, this.ngZone).trottled$(500).subscribe(() => {
-			if (this.quickSearching) {
-				return;
-			}
-
-			this.updateVisiblePages();
-		});
-
-		// this.subscription.add(fromEvent<MouseEvent>(this.parent.nativeElement, 'scroll').subscribe(() => {
-		// 	if (this.quickSearching) {
-		// 		return;
-		// 	}
-
-		// 	this.updateVisiblePages();
-		// }));
-
-		this.quickSearchSubject
-				.pipe(tap(() => {
-					this.quickSearching = true;
-				}))
-				.pipe(debounceTime(300))
-				.subscribe((str: string) => {
-					if (this.spm.quickSearchStr === str) {
-						this.quickSearching = false;
-						this.ensureLoaded();
-					}
-				});
-
-		this.ensureLoaded();
-	}
-
-	ngOnDestroy() {
-		this.subscription.unsubscribe();
-		this.spm.clear();
-	}
-
-	private ensureLoaded() {
-		if (this.spm.loadingRequired) {
-			this.spm.loadSingle(this.currentPageNo, 0);
-		}
 	}
 
 	get loading(): boolean {
@@ -89,10 +33,6 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 
 	get sortable(): boolean {
 		return this.spm.sortable;
-	}
-
-	getVisibleStructurePages(): StructurePage[] {
-		return this.spm.pages;
 	}
 
 	get quickSearchStr(): string {
@@ -147,6 +87,101 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 		return this.spm.possiablePagesNum;
 	}
 
+	get declared(): boolean {
+		return !this.spm.declarationRequired;
+	}
+
+	// private valCurrentPageNo() {
+	// 	if (!this.siPageCollection.currentPageExists) {
+	// 		this.siPageCollection.hideAllPages();
+	// 		this.siPageCollection.loadPage(this.siPageCollection.currentPageNo).offsetHeight = 0;
+	// 		return;
+	// 	}
+
+	// 	const page = this.siPageCollection.getPageByNo(this.siPageCollection.currentPageNo);
+	// 	if (page.visible) {
+	// 		this.parent.nativeElement.scrollTo({ top: page.offsetHeight, behavior: 'smooth' });
+	// 			// this.parent.nativeElement.scrollLeft, page.offsetHeight);
+	// // 			this.model.currentPageNo = currentPageNo
+	// 		return;
+	// 	}
+
+	// 	this.siPageCollection.hideAllPages();
+	// 	page.offsetHeight = 0;
+	// }
+
+	get selectable(): boolean {
+		return !!this.model.getSiEntryQualifierSelection();
+	}
+
+	get singleSelect(): boolean {
+		return this.model.getSiEntryQualifierSelection().max === 1;
+	}
+
+	uiStructure: UiStructure;
+	model: CompactExplorerModel;
+
+	public spm: StructurePageManager;
+	private subscription = new Subscription();
+
+	private quickSearchSubject = new Subject<string>();
+	private quickSearching = false;
+
+	private _currentPageNo = 1;
+
+	private sortModeEnabled = false;
+
+	private sortSelectedMap = new Map<string, { identifier: SiEntryIdentifier, decendantIdStrs: string[] }>();
+
+	ngOnInit() {
+		this.spm = new StructurePageManager(this.uiStructure, this.model.getSiPageCollection());
+
+		new NgSafeScrollListener(this.parent.nativeElement, this.ngZone).trottled$(500).subscribe(() => {
+			if (this.quickSearching) {
+				return;
+			}
+
+			this.updateVisiblePages();
+		});
+
+		// this.subscription.add(fromEvent<MouseEvent>(this.parent.nativeElement, 'scroll').subscribe(() => {
+		// 	if (this.quickSearching) {
+		// 		return;
+		// 	}
+
+		// 	this.updateVisiblePages();
+		// }));
+
+		this.quickSearchSubject
+				.pipe(tap(() => {
+					this.quickSearching = true;
+				}))
+				.pipe(debounceTime(300))
+				.subscribe((str: string) => {
+					if (this.spm.quickSearchStr === str) {
+						this.quickSearching = false;
+						this.ensureLoaded();
+					}
+				});
+
+		this.ensureLoaded();
+	}
+
+	ngOnDestroy() {
+		this.subscription.unsubscribe();
+		this.spm.clear();
+	}
+
+	private ensureLoaded() {
+		if (this.spm.loadingRequired) {
+			this.spm.loadSingle(this.currentPageNo, 0);
+		}
+	}
+
+	getVisibleStructurePages(): StructurePage[] {
+		return this.spm.pages;
+	}
+
 	private updateCurrentPage() {
 		const structurePage = this.spm.getBestPageByOffsetHeight(this.parent.nativeElement.scrollTop);
 		if (structurePage) {
@@ -175,39 +210,8 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 				+ this.parent.nativeElement.offsetHeight).siPage.no - 1;
 	}
 
-	get declared(): boolean {
-		return !this.spm.declarationRequired;
-	}
-
 	getSiProps(): Array<SiProp> {
 		return this.spm.getSiProps();
-	}
-
-	// private valCurrentPageNo() {
-	// 	if (!this.siPageCollection.currentPageExists) {
-	// 		this.siPageCollection.hideAllPages();
-	// 		this.siPageCollection.loadPage(this.siPageCollection.currentPageNo).offsetHeight = 0;
-	// 		return;
-	// 	}
-
-	// 	const page = this.siPageCollection.getPageByNo(this.siPageCollection.currentPageNo);
-	// 	if (page.visible) {
-	// 		this.parent.nativeElement.scrollTo({ top: page.offsetHeight, behavior: 'smooth' });
-	// 			// this.parent.nativeElement.scrollLeft, page.offsetHeight);
-	// // 			this.model.currentPageNo = currentPageNo
-	// 		return;
-	// 	}
-
-	// 	this.siPageCollection.hideAllPages();
-	// 	page.offsetHeight = 0;
-	// }
-
-	get selectable(): boolean {
-		return !!this.model.getSiEntryQualifierSelection();
-	}
-
-	get singleSelect(): boolean {
-		return this.model.getSiEntryQualifierSelection().max === 1;
 	}
 
 	toggleSelection(qualifier: SiEntryQualifier) {
@@ -268,8 +272,6 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 		return this.spm.isTree();
 	}
 
-	private sortModeEnabled = false;
-
 	switchToSortMode() {
 		this.sortModeEnabled = true;
 	}
@@ -286,18 +288,35 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 		return !this.sortModeEnabled;
 	}
 
-	private sortSelectedMap = new Map<string, SiEntryIdentifier>();
-
 	isSiEntrySortSelected(siEntry: SiEntry): boolean {
 		return this.sortSelectedMap.has(siEntry.identifier.toString());
 	}
 
-	setSiEntrySortSelected(siEntry: SiEntry, value: boolean) {
-		if (value) {
-			this.sortSelectedMap.set(siEntry.identifier.toString(), siEntry.identifier);
-		} else {
-			this.sortSelectedMap.delete(siEntry.identifier.toString());
+	isSiEntrySortDecendant(siEntry: SiEntry): boolean {
+		if (this.isSiEntrySortSelected(siEntry)) {
+			return false;
 		}
+
+		const idStr = siEntry.identifier.toString();
+		for (const [, v] of this.sortSelectedMap) {
+			if (-1 < v.decendantIdStrs.indexOf(idStr)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	setSiEntrySortSelected(siEntry: SiEntry, value: boolean) {
+		if (!value) {
+			this.sortSelectedMap.delete(siEntry.identifier.toString());
+			return;
+		}
+		
+		this.sortSelectedMap.set(siEntry.identifier.toString(), {
+			identifier: siEntry.identifier,
+			decendantIdStrs: this.spm.determineDecendantSiEntries(siEntry).map(e => e.identifier.toString())
+		});
 	}
 
 	hasSiEntrySortSelections(): boolean {
@@ -305,17 +324,17 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 	}
 
 	moveBefore(siEntry: SiEntry) {
-		this.spm.moveBefore(Array.from(this.sortSelectedMap.values()), siEntry.identifier);
+		this.spm.moveBefore(Array.from(this.sortSelectedMap.values()).map(v => v.identifier), siEntry.identifier);
 		this.sortSelectedMap.clear();
 	}
 
 	moveAfter(siEntry: SiEntry) {
-		this.spm.moveAfter(Array.from(this.sortSelectedMap.values()), siEntry.identifier);
+		this.spm.moveAfter(Array.from(this.sortSelectedMap.values()).map(v => v.identifier), siEntry.identifier);
 		this.sortSelectedMap.clear();
 	}
 
 	moveToParent(siEntry: SiEntry) {
-		this.spm.moveToParent(Array.from(this.sortSelectedMap.values()), siEntry.identifier);
+		this.spm.moveToParent(Array.from(this.sortSelectedMap.values()).map(v => v.identifier), siEntry.identifier);
 		this.sortSelectedMap.clear();
 	}
 }
