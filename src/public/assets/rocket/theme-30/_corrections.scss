@@ -16,8 +16,15 @@
     }
     &:before {
         font-family: $font-name-icons;
+        font-size: .75em;
+        -moz-osx-font-smoothing: grayscale;
     }
 }
+
+// .breadcrumb-item + .breadcrumb-item::before {
+//     content: $breadcrumb-divider;
+// }
+
 .breadcrumb-item.active {
     > a {
         color: $body-color;

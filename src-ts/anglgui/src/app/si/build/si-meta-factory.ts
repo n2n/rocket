@@ -103,7 +103,9 @@ export class SiMetaFactory {
 	static createFrame(data: any): SiFrame {
 		const extr = new Extractor(data);
 
-		return new SiFrame(extr.reqString('apiUrl'), this.createTypeContext(extr.reqObject('typeContext')));
+		const siFrame = new SiFrame(extr.reqString('apiUrl'), this.createTypeContext(extr.reqObject('typeContext')));
+		siFrame.sortable = extr.reqBoolean('sortable');
+		return siFrame;
 	}
 
 	static createTypeContext(data: any): SiTypeContext {

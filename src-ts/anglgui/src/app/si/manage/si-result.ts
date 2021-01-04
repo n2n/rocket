@@ -18,3 +18,7 @@ export enum SiDirective {
 	REDIRECT_BACK = 'redirectBack',
 	REDIRECT = 'redirect'
 }
+
+export class SiControlResult {
+	
+}

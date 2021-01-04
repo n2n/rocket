@@ -34,7 +34,7 @@
     > a {
         color: inherit;
     }
-    > i.fa {
+    > i[class*="fa-"] {
         position: absolute;
         top: 0.875rem;
         right: 1rem;
@@ -46,7 +46,7 @@
         color: $white;
         cursor: pointer;
 
-        > i.fa {
+        > i[class*="fa-"] {
             color: $white;
         }
     }
@@ -62,7 +62,7 @@
         &:hover {
             color: $gray-200;
         }
-        .fa {
+        i[class*="fa-"] {
             font-size: $font-size-lg;
         }
     }

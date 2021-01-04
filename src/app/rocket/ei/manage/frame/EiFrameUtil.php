@@ -114,7 +114,7 @@ class EiFrameUtil {
 		}
 		
 		throw new UnknownEiObjectException('Entity not found: ' . EntityInfo::buildEntityString(
-				$this->getContextEiType()->getEntityModel(), $id));
+				$this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()->getEntityModel(), $id));
 	}
 	
 	/**

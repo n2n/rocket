@@ -51,7 +51,7 @@ class SplitGuiFieldFactory {
 	
 	private function createReadOnlyGuiField() {
 		$siField = SiFields::splitOutContext($this->lted->getTargetSiDeclaration())
-				->setStyle(new SplitStyle(SiIconType::LANGUAGE, $this->lted->getViewMenuTooltip()));
+				->setStyle(new SplitStyle(SiIconType::ICON_LANGUAGE, $this->lted->getViewMenuTooltip()));
 		
 		foreach ($this->lted->getN2nLocales() as $n2nLocale) {
 			$n2nLocaleId = $n2nLocale->getId();
@@ -70,8 +70,8 @@ class SplitGuiFieldFactory {
 	
 	private function createEditableGuiField() {
 		$siField = SiFields::splitInContext($this->lted->getTargetSiDeclaration())
-				->setStyle(new SplitStyle(SiIconType::LANGUAGE, $this->lted->getViewMenuTooltip()))
-				->setManagerStyle(new SplitStyle(SiIconType::LANGUAGE, $this->lted->getManagerTooltip()))
+				->setStyle(new SplitStyle(SiIconType::ICON_LANGUAGE, $this->lted->getViewMenuTooltip()))
+				->setManagerStyle(new SplitStyle(SiIconType::ICON_LANGUAGE, $this->lted->getManagerTooltip()))
 				->setMin($this->lted->getMinNum())
 				->setActiveKeys($this->lted->getActiveN2nLocaleIds())
 				->setMandatoryKeys($this->lted->getMandatoryN2nLocaleIds());

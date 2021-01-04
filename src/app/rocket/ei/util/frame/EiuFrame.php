@@ -31,7 +31,6 @@ use n2n\persistence\orm\EntityManager;
 use n2n\l10n\N2nLocale;
 use n2n\util\type\ArgUtils;
 use rocket\ei\manage\preview\model\PreviewModel;
-use n2n\util\ex\NotYetImplementedException;
 use n2n\core\container\N2nContext;
 use rocket\ei\EiCommandPath;
 use rocket\ei\component\command\EiCommand;
@@ -65,12 +64,17 @@ use rocket\ei\component\prop\EiProp;
 use rocket\ei\manage\frame\EiForkLink;
 use rocket\ei\manage\frame\CriteriaFactory;
 use rocket\si\content\SiEntryQualifier;
+use rocket\si\control\SiResult;
 use rocket\ei\util\gui\EiuGui;
 use rocket\ei\util\Eiu;
 use rocket\ei\util\gui\EiuEntryGui;
 use rocket\ei\manage\DefPropPath;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\EiGui;
+use n2n\reflection\magic\MagicMethodInvoker;
+use rocket\ei\manage\frame\SortAbility;
+use rocket\ei\util\control\EiuControlResponse;
+use n2n\util\type\TypeConstraints;
 
 class EiuFrame {
 	private $eiFrame;
@@ -1087,34 +1091,73 @@ class EiuFrame {
 	function createSiFrame() {
 		return $this->eiFrame->createSiFrame();
 	}
+	
+	/**
+	 * @param \Closure $insertAfterCallback
+	 * @param \Closure $insertBeforeCallback
+	 * @param \Closure $insertAsChildCallback
+	 * @throws EiuPerimeterException
+	 * @return \rocket\ei\util\frame\EiuFrame
+	 */
+	function setSortAbility(\Closure $insertAfterCallback, \Closure $insertBeforeCallback, \Closure $insertAsChildCallback = null) {
+		if ($insertAsChildCallback === null && null !== $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()->getNestedSetStrategy()) {
+			throw new EiuPerimeterException('No insertAsChild callback provided in a tree context.');
+		}
+		
+		$this->eiFrame->getAbility()->setSortAbility(
+				new EiuCallbackSortAbility($this->eiuAnalyst, $insertAfterCallback, $insertBeforeCallback, $insertAsChildCallback));
+		
+		return $this;
+	}
 }
 
-// class EiCascadeOperation implements CascadeOperation {
-// 	private $cascader;
-// 	private $entityModelManager;
-// 	private $spec;
-// 	private $entityObjs = array();
-// 	private $eiTypes = array();
-// 	private $liveEntries = array();
-
-// 	public function __construct(EntityModelManager $entityModelManager, Spec $spec, int $cascadeType) { 
-// 		$this->entityModelManager = $entityModelManager;
-// 		$this->spec = $spec;
-// 		$this->cascader = new OperationCascader($cascadeType, $this);
-// 	}
-
-// 	public function cascade($entityObj) {
-// 		if (!$this->cascader->markAsCascaded($entityObj)) return;
-
-// 		$entityModel = $this->entityModelManager->getEntityModelByEntityObj($entityObj);
-		
-// 		$this->liveEntries[] = EiEntityObj::createFrom($this->spec
-// 				->getEiTypeByClass($entityModel->getClass()), $entityObj);
-		
-// 		$this->cascader->cascadeProperties($entityModel, $entityObj);
-// 	}
+class EiuCallbackSortAbility implements SortAbility {
+	/**
+	 * @var EiuAnalyst
+	 */
+	private $eiuAnalyst;
+	private $insertAfterCallback;
+	private $insertBeforeCallback;
+	private $insertAsChildCallback;
 	
-// 	public function getLiveEntries(): array {
-// 		return $this->liveEntries;
-// 	}
-// }
+	function __construct(EiuAnalyst $eiuAnalyst, \Closure $insertAfterCallback, \Closure $insertBeforeCallback, \Closure $insertAsChildCallback = null) {
+		$this->eiuAnalyst = $eiuAnalyst;
+		
+		$this->insertAfterCallback = $insertAfterCallback;
+		$this->insertBeforeCallback = $insertBeforeCallback;
+		$this->insertAsChildCallback = $insertAsChildCallback;
+	}
+	
+	function insertAfter(array $eiObjects, EiObject $afterEiObject): SiResult {
+		return $this->callClosure($this->insertAfterCallback, $eiObjects, $afterEiObject);
+	}
+
+	function insertBefore(array $eiObjects, EiObject $beforeEiObject): SiResult {
+		return $this->callClosure($this->insertBeforeCallback, $eiObjects, $beforeEiObject);
+	}
+	
+	function insertAsChild(array $eiObjects, EiObject $parentEiObject): SiResult {
+		if ($this->insertAsChildCallback === null) {
+			throw new IllegalStateException('Tree sort ability not available.');
+		}
+		
+		return $this->callClosure($this->insertAsChildCallback, $eiObjects, $parentEiObject);
+	}
+	
+	private function callClosure(\Closure $closure, array $eiObjects, EiObject $targetEiObject) {
+		$mmi = new MagicMethodInvoker($this->eiuAnalyst->getN2nContext(true));
+		$mmi->setMethod(new \ReflectionFunction($closure));
+		$mmi->setReturnTypeConstraint(TypeConstraints::type(EiuControlResponse::class, true));
+		
+		$eiuObjects = array_map(function ($eiObject) { return new EiuObject($eiObject, $this->eiuAnalyst); }, $eiObjects);
+		$targetEiuObject = new EiuObject($targetEiObject, $this->eiuAnalyst);
+		
+		$eiuControlResponse = $mmi->invoke(null, null, [$eiuObjects, $targetEiuObject]);
+		
+		if ($eiuControlResponse === null) {
+			$eiuControlResponse = new EiuControlResponse($this->eiuAnalyst);
+		}
+		
+		return $eiuControlResponse->toSiResult($this->eiuAnalyst->getManageState()->getEiLifecycleMonitor());
+	}
+}

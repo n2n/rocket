@@ -2,6 +2,7 @@ import { SiImageCut, SiImageDimension } from '../../model/file-in-si-field';
 import { ElementRef } from '@angular/core';
 
 export class ThumbRatio {
+	public open = false;
 	public imageDimensions = new Array<SiImageDimension>();
 	// private _largestImageDimension: SiImageDimension;
 
@@ -104,7 +105,7 @@ export class ThumbRatio {
 
 		let lastSize = 0;
 		for (const [key, imgDims] of this.imgCutDimMap) {
-			if (lastSize >= imgDims.length || imgDims.length <= 1) {
+			if (lastSize >= imgDims.length/* || imgDims.length <= 1*/) {
 				continue;
 			}
 
@@ -123,6 +124,23 @@ export class ThumbRatio {
 
 	hasIndividualImageCut(imageDimension: SiImageDimension): boolean {
 		return !this.groupedImageCuts || !this.groupedImageCuts[0].equals(imageDimension.imageCut);
+	}
+
+	resetIndividutalImageCut(imageDimension: SiImageDimension) {
+		let baseImageCut: SiImageCut;
+		if (this.groupedImageCuts) {
+			baseImageCut = this.groupedImageCuts[0];
+		}
+		if (!baseImageCut) {
+			baseImageCut = this.imageDimensions[0] !== imageDimension ? this.imageDimensions[0].imageCut : this.imageDimensions[1].imageCut;
+		}
+
+		imageDimension.imageCut.x = baseImageCut.x;
+		imageDimension.imageCut.y = baseImageCut.y;
+		imageDimension.imageCut.width = baseImageCut.width;
+		imageDimension.imageCut.height = baseImageCut.height;
+
+		this.updateGroups();
 	}
 
 	getGroupedImageCuts(): SiImageCut[] {

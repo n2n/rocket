@@ -148,11 +148,28 @@ class ApiController extends ControllerAdapter {
 		$this->sendJson(['data' => $callProcess->callSiField($data->parseJson(), $this->getRequest()->getUploadDefinitions()) ]);
 	}
 	
-	function doExecSelectionControl(ParamPost $siEntryIds, ParamPost $apiCallId, ParamPost $bulky) {
+	function postDoSort(ParamBody $paramBody) {
+		$httpData = $paramBody->parseJsonToHttpData();
 		
-	}
-	
-	function doLoadSiEntries(ParamPost $pids) {
+		$sortProcess = new ApiSortProcess($this->eiFrame);
 		
+		$sortProcess->determineEiObjects($httpData->reqArray('ids', 'string'));
+		
+		if (null !== ($afterId = $httpData->optString('afterId'))) {
+			$this->sendJson($sortProcess->insertAfter($afterId));
+			return;
+		}
+		
+		if (null !== ($beforeId = $httpData->optString('beforeId'))) {
+			$this->sendJson($sortProcess->insertBefore($beforeId));
+			return;
+		}
+		
+		if (null !== ($parentId = $httpData->optString('parentId'))) {
+			$this->sendJson($sortProcess->insertAsChildOf($parentId));
+			return;
+		}
+		
+		throw new BadRequestException();
 	}
 }

@@ -102,10 +102,14 @@ class RocketController extends ControllerAdapter {
 	
 	public function index() {
 		if (!$this->verifyUser()) return;
-		$deleteLoginModel = new DeleteLoginModel(); 
-		$this->dispatch($deleteLoginModel, 'delete');
-		$this->send(JhtmlResponse::view($this->createView('..\view\start.html', 
-		    	array('deleteLoginModel' => $deleteLoginModel))));
+		
+// 		if ('text/html' == $this->getRequest()->getAcceptRange()
+// 				->bestMatch(['text/html', 'application/json'])) {
+			$this->forward('\rocket\core\view\anglTemplate.html');
+			return;
+// 		}
+		
+		
 	}
 	
 	public function doUsers(RocketUserController $delegateController, array $delegateParams = array()) {

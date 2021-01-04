@@ -83,12 +83,16 @@ class EiFrameFactory {
 	public function createRoot(ManageState $manageState) {
 		$eiFrame = $this->create($manageState);
 		
-		$eiu = new Eiu($eiFrame);
-		foreach ($this->eiEngine->getEiMask()->getEiModificatorCollection()->toArray() as $eiModificator) {
-			$eiModificator->setupEiFrame($eiu);
-		}
+		$this->setupEiFrame($eiFrame);
 		
 		return $eiFrame;
+	}
+	
+	private function setupEiFrame($eiFrame) {
+		$eiu = new Eiu($eiFrame);
+		foreach ($eiFrame->getContextEiEngine()->getEiMask()->getEiModificatorCollection()->toArray() as $eiModificator) {
+			$eiModificator->setupEiFrame($eiu);
+		}
 	}
 	
 	/**
@@ -117,8 +121,12 @@ class EiFrameFactory {
 		$forkedEiFrame->setBaseUrl($parentEiFrame->getForkUrl(null, $eiPropPath,
 				$eiForkLink->getMode(), $eiForkLink->getParentEiObject()));
 		
+		$this->setupEiFrame($forkedEiFrame);
+		
 		return $forkedEiFrame;
 	}
+	
+	
 }
 
 // class ForkBaseLinkProvider implements EiFrameListener {

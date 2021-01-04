@@ -32,7 +32,6 @@ use rocket\ei\manage\generic\CommonScalarEiProperty;
 use rocket\ei\manage\generic\ScalarEiProperty;
 use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\numeric\conf\IntegerConfig;
-use rocket\si\content\SiField;
 use rocket\si\content\impl\SiFields;
 use rocket\ei\util\factory\EifGuiField;
 

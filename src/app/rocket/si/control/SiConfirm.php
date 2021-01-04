@@ -25,11 +25,13 @@ class SiConfirm implements \JsonSerializable {
 	private $message;
 	private $okLabel;
 	private $cancelLabel;
+	private $danger = false;
 	
-	public function __construct(?string $message, ?string $okLabel, ?string $cancelLabel) {
+	public function __construct(?string $message, ?string $okLabel, ?string $cancelLabel, bool $danger = false) {
 		$this->message = $message;
 		$this->okLabel = $okLabel;
 		$this->cancelLabel = $cancelLabel;
+		$this->danger = $danger;
 	}
 	
 	public function setMessage(?string $message) {
@@ -59,11 +61,21 @@ class SiConfirm implements \JsonSerializable {
 		return $this->cancelLabel;
 	}
 	
+	function setDanger(bool $danger) {
+		$this->danger = $danger;
+		return $this;
+	}
+	
+	function isDanger() {
+		return $this->danger;
+	}
+	
 	public function jsonSerialize() {
 		return [
 			'message' => $this->message,
 			'okLabel' => $this->okLabel,
-			'cancelLabel' => $this->cancelLabel
+			'cancelLabel' => $this->cancelLabel,
+			'danger' => $this->danger
 		];
 	}
 	

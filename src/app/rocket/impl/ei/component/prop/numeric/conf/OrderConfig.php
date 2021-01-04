@@ -24,7 +24,6 @@ namespace rocket\impl\ei\component\prop\numeric\conf;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
-use rocket\impl\ei\component\prop\numeric\component\OrderEiCommand;
 use rocket\impl\ei\component\prop\numeric\component\OrderEiModificator;
 use rocket\impl\ei\component\prop\adapter\config\EntityPropertyConfigurable;
 use n2n\persistence\meta\structure\Column;
@@ -59,25 +58,9 @@ class OrderConfig extends ConfigAdaption {
 		return $level;
 	}
 	
-	
 	public function setup(Eiu $eiu, DataSet $dataSet) {
-// 		$eiDef = $setupProcess->getEiDef();
-		
-// 		if ($this->dataSet->contains(self::OPTION_REFERENCE_FIELD_KEY)) {
-// 			$this->eiComponent->setReferenceField($eiDef->getEiPropCollection()->getById(
-// 					$this->dataSet->get(self::OPTION_REFERENCE_FIELD_KEY)));
-// 		}
-		
-		$orderEiCommand = new OrderEiCommand();
-		$orderEiCommand->setOrderEiProp($this->orderEiProp);
-		
 		$eiuMask = $eiu->mask();
-		$eiuMask->addEiCommand($orderEiCommand);
 		$eiuMask->addEiModificator(new OrderEiModificator($this->orderEiProp));
-		
-// 		if (count($eiDef->getDefaultSortSettingGroup()) === 0) {
-// 		    $eiDef->setDefaultSortSettingGroup(array($this->eiComponent->getEntityProperty()->getName() => Criteria::ORDER_DIRECTION_ASC));
-// 		}
 	}
 	
 	public function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {

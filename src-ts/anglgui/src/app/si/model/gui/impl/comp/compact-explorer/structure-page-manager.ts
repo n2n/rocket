@@ -7,6 +7,7 @@ import { IllegalArgumentError } from 'src/app/si/util/illegal-argument-error';
 import { SiPageCollection } from '../../model/si-page-collection';
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 import { SiProp } from 'src/app/si/model/meta/si-prop';
+import { SiEntryIdentifier } from 'src/app/si/model/content/si-entry-qualifier';
 
 export class StructurePage {
 	private _structureEntries = new Array<StructureEntry>();
@@ -122,7 +123,7 @@ export class StructureEntry {
 
 export class StructurePageManager {
 
-	private pagesMap = new Map<number, StructurePage>();
+	private pagesMap = new Map<number, { structurePage: StructurePage, subscription: Subscription }>();
 
 	constructor(private uiStructure: UiStructure, private siPageCollection: SiPageCollection) {
 	}
@@ -152,7 +153,7 @@ export class StructurePageManager {
 	}
 
 	get pages(): StructurePage[] {
-		return Array.from(this.pagesMap.values()).sort((aPage, bPage) => {
+		return Array.from(this.pagesMap.values()).map(v => v.structurePage).sort((aPage, bPage) => {
 			return aPage.siPage.no - bPage.siPage.no;
 		});
 	}
@@ -170,7 +171,7 @@ export class StructurePageManager {
 			return null;
 		}
 
-		return this.pagesMap.get(pageNo);
+		return this.pagesMap.get(pageNo).structurePage;
 	}
 
 	private obtainSiPage(pageNo: number): SiPage {
@@ -187,7 +188,7 @@ export class StructurePageManager {
 
 	getPageByNo(pageNo: number): StructurePage {
 		if (this.pagesMap.has(pageNo)) {
-			return this.pagesMap.get(pageNo);
+			return this.pagesMap.get(pageNo).structurePage;
 		}
 
 		throw new IllegalStateError('Unknown page no: ' + pageNo);
@@ -262,11 +263,26 @@ export class StructurePageManager {
 	// 	return structurePages;
 	// }
 
-	clear() {
-		for (const [, structurePage] of this.pagesMap) {
-			structurePage.clear();
+	clear(): void {
+		for (const [key, ] of this.pagesMap) {
+			this.removePageByNo(key);
 		}
-		this.pagesMap.clear();
+	}
+
+	private removePageByNo(no: number, verifyStructurePage?: StructurePage): void {
+		const v = this.pagesMap.get(no);
+
+		if (!v) {
+			throw new IllegalStateError('Page no ' + no + ' does not exist.');
+		}
+
+		if (verifyStructurePage && v.structurePage !== verifyStructurePage) {
+			throw new IllegalStateError('StructurePage missmatch.');
+		}
+
+		v.structurePage.clear();
+		v.subscription.unsubscribe();
+		this.pagesMap.delete(no);
 	}
 
 	// private getPage(siPage: SiPage): StructurePage|null {
@@ -286,16 +302,22 @@ export class StructurePageManager {
 		}
 
 		const sp = new StructurePage(siPage, offsetHeight);
-		this.pagesMap.set(siPage.no, sp);
+		const sub = siPage.entries$.subscribe((entries) => {
+			sp.clear();
 
-		siPage.disposed$.subscribe(() => {
-			this.clear();
-		});
+			if (!entries) {
+				return;
+			}
 
-		siPage.onLoad(() => {
-			for (const siEntry of siPage.entries) {
+			for (const siEntry of entries) {
 				this.applyNewStructureEntry(sp, siEntry, null, null);
 			}
+		});
+
+		this.pagesMap.set(siPage.no, { structurePage: sp, subscription: sub });
+
+		siPage.disposed$.subscribe(() => {
+			this.removePageByNo(siPage.no);
 		});
 
 		return sp;
@@ -338,6 +360,42 @@ export class StructurePageManager {
 		}
 
 		return uiStructures;
+	}
+
+	get sortable(): boolean {
+		return this.siPageCollection.sortable;
+	}
+
+	moveByIndex(previousIndex: number, nextIndex: number) {
+		this.siPageCollection.moveByIndex(previousIndex, nextIndex);
+	}
+
+	moveAfter(identifiers: SiEntryIdentifier[], afterEntryIdentifier: SiEntryIdentifier) {
+		const siEntries = identifiers.map(i => this.siPageCollection.getEntryByIdentifier(i));
+		const targetSiEntry = this.siPageCollection.getEntryByIdentifier(afterEntryIdentifier)
+		if (siEntries.length > 0 && targetSiEntry) {
+			this.siPageCollection.moveAfter(siEntries, targetSiEntry);
+		}
+	}
+
+	moveBefore(identifiers: SiEntryIdentifier[], beforeEntryIdentifier: SiEntryIdentifier) {
+		const siEntries = identifiers.map(i => this.siPageCollection.getEntryByIdentifier(i));
+		const targetSiEntry = this.siPageCollection.getEntryByIdentifier(beforeEntryIdentifier)
+		if (siEntries.length > 0 && targetSiEntry) {
+			this.siPageCollection.moveBefore(siEntries, targetSiEntry);
+		}
+	}
+
+	moveToParent(identifiers: SiEntryIdentifier[], parentEntryIdentifier: SiEntryIdentifier) {
+		const siEntries = identifiers.map(i => this.siPageCollection.getEntryByIdentifier(i));
+		const targetSiEntry = this.siPageCollection.getEntryByIdentifier(parentEntryIdentifier)
+		if (siEntries.length > 0 && targetSiEntry) {
+			this.siPageCollection.moveToParent(siEntries, targetSiEntry);
+		}
+	}
+
+	isTree(): boolean {
+		return this.siPageCollection.isTree();
 	}
 }
 

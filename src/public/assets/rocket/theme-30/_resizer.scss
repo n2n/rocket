@@ -1,6 +1,7 @@
 .rocket-image-resizer-container {
+	display: block;
 	background-color: $white;
-	padding: 1rem !important;
+	padding: 1rem;
 	> form {
 		display: grid;
 		grid-template-columns: calc(100vw - 43rem) 16rem;
@@ -10,6 +11,18 @@
 
 #rocket-image-resizer {
 	position: relative;
+}
+
+.rocket-image-resizer-images-panel {
+	padding: 0 1rem;
+}
+
+.rocket-image-resizer-images-original {
+	margin-bottom: 2rem;
+}
+
+.rocket-image-resizer-images-generated {
+	
 }
 
 .rocket-image-resizer-size-selector {
@@ -138,3 +151,6 @@
 }
 
 
+.cropper-canvas {
+	background: rgba(0,0,0,0.1);
+}

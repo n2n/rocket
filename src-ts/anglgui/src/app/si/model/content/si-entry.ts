@@ -14,7 +14,6 @@ import { UnknownSiElementError } from '../../util/unknown-si-element-error';
 import { skip } from 'rxjs/operators';
 
 export class SiEntry {
-	
 
 	constructor(readonly identifier: SiEntryIdentifier) {
 	}
@@ -255,6 +254,10 @@ export class SiEntry {
 		if (genericEntry.bulky !== this.bulky || genericEntry.readOnly !== this.readOnly) {
 			throw new GenericMissmatchError('SiEntry missmatch.');
 		}
+	}
+
+	isClean(): boolean {
+		return this.state === SiEntryState.CLEAN;
 	}
 
 	isAlive(): boolean {

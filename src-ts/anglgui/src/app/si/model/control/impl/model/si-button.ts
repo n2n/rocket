@@ -15,4 +15,5 @@ export interface SiConfirm {
 	message: string|null;
 	okLabel: string|null;
 	cancelLabel: string|null;
+	danger: boolean;
 }

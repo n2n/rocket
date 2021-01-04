@@ -21,8 +21,6 @@
  */
 namespace rocket\si\content\impl;
 
-use n2n\util\ex\IllegalStateException;
-
 class StringOutSiField extends OutSiFieldAdapter {
 	private $value;
 	private $multiline = false;
@@ -81,21 +79,5 @@ class StringOutSiField extends OutSiFieldAdapter {
 			'value' => $this->value,
 			'multiline' => $this->multiline
 		];
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\si\content\impl\OutSiFieldAdapter::isReadOnly()
-	 */
-	function isReadOnly(): bool {
-		return true;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\si\content\impl\OutSiFieldAdapter::handleInput()
-	 */
-	function handleInput(array $data): array {
-		throw new IllegalStateException();
 	}
 }

@@ -1,6 +1,5 @@
 
 import { SiGui } from '../../si-gui';
-import { SiEntry } from '../../../content/si-entry';
 import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
 import { CompactExplorerComponent } from '../comp/compact-explorer/compact-explorer.component';
 import { SiPageCollection } from './si-page-collection';

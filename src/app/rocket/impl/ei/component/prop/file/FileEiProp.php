@@ -224,7 +224,7 @@ class FileEiProp extends DraftablePropertyEiPropAdapter implements IdNameEiProp 
 // 			$httpContext = $view->getHttpContext();
 // 			$uiComponent->appendContent($html->getLink($eiu->frame()->getUrlToCommand($this->thumbEiCommand)
 // 					->extR($eiu->entry()->getPid(), array('refPath' => (string) $eiu->frame()->getEiFrame()->getCurrentUrl($httpContext))),
-// 					new HtmlElement('i', array('class' => SiIconType::CROP), ''),
+// 					new HtmlElement('i', array('class' => SiIconType::ICON_CROP), ''),
 // 					array('title' => $view->getL10nText('ei_impl_resize_image'),
 // 							'class' => 'btn btn-secondary', 'data-jhtml' => 'true')));
 // 		}

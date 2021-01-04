@@ -78,40 +78,40 @@ use rocket\user\model\LoginContext;
 		<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
 				data-target="#rocket-conf-nav" aria-controls="navbarText" aria-expanded="false"
 				aria-label="Toggle navigation">
-			<i class="fa fa-navicon"></i>
+			<i class="fas fa-bars"></i>
 		</button>
 		<h2 class="sr-only"><?php $html->l10nText('conf_nav_title') ?></h2>
 		<ul class="nav rocket-meta-nav justify-content-end">
 			<?php if ($templateModel->getCurrentUser()->isAdmin()): ?>
 				<li class="nav-item">
 					<?php $html->linkStart(Murl::controller('rocket')->pathExt('tools'), array('class' => 'nav-link')) ?>
-					<i class="fa fa-wrench mr-2"></i><span><?php $html->text('tool_title') ?></span>
+					<i class="fas fa-wrench mr-2"></i><span><?php $html->text('tool_title') ?></span>
 					<?php $html->linkEnd() ?>
 				</li>
 				<li class="nav-item">
 					<?php $html->linkStart(Murl::controller('rocket')->pathExt('users'), array('class' => 'nav-link')) ?>
-					<i class="fa fa-user mr-2"></i><span><?php $html->text('user_title') ?></span>
+					<i class="fas fa-user mr-2"></i><span><?php $html->text('user_title') ?></span>
 					<?php $html->linkEnd() ?>
 				</li>
 				<li class="nav-item">
 					<?php $html->linkStart(Murl::controller('rocket')->pathExt('usergroups'), array('class' => 'nav-link')) ?>
-					<i class="fa fa-group mr-2"></i><span><?php $html->text('user_groups_title') ?></span>
+					<i class="fas fa-users mr-2"></i><span><?php $html->text('user_groups_title') ?></span>
 					<?php $html->linkEnd() ?>
 				</li>
 			<?php endif ?>
 			<li class="nav-item">
 				<?php $html->linkStart(Murl::controller('rocket')->pathExt('users', 'profile'), array('class' => 'nav-link rocket-conf-user')) ?>
-				<i class="fa fa-user mr-2"></i><span><?php $html->out((string) $templateModel->getCurrentUser()) ?></span>
+				<i class="fas fa-user mr-2"></i><span><?php $html->out((string) $templateModel->getCurrentUser()) ?></span>
 				<?php $html->linkEnd() ?>
 			</li>
 			<li class="nav-item">
 				<?php $html->linkStart(Murl::controller('rocket')->pathExt('logout'), array('class' => 'nav-link rocket-conf-logout')) ?>
-				<i class="fa fa-sign-out"></i>
+				<i class="fas fa-sign-out"></i>
 				<?php $html->linkEnd() ?>
 			</li>
 			<li class="nav-item">
 				<?php $html->linkStart(Murl::controller('rocket')->pathExt('about'), array('class' => 'nav-link')) ?>
-				<i class="fa fa-info"></i>
+				<i class="fas fa-info"></i>
 				<?php $html->linkEnd() ?>
 			</li>
 		</ul>

@@ -55,13 +55,13 @@ $rocket-tree-level-line-string:         '';
         background: transparent;
     }
     1% {
-        background: #ead0b2;
+        background: lighten($aczent-2-l-300, 0.02);
     }
     6% {
-        background: #eadfd3;
+        background: lighten($aczent-2-l-300, 0.01);
     }
     99% {
-        background: #eadfd3;
+        background: $aczent-2-l-300;
     }
     100% {
         background: inherit;
@@ -75,12 +75,38 @@ $rocket-tree-level-line-string:         '';
     cursor: move;
 }
 
+.rocket-locked {
+    background: $aczent-2;
+}
+
+.rocket-removed,
+.rocket-outdated {
+    background: $gray-200;
+    & > * {
+        opacity: 0.4;
+    }
+}
+
+.rocket-reloading {
+    background: repeating-linear-gradient( 75deg, #{$aczent-2-d-100}, #{$aczent-2-d-100} 20px, #{$aczent-2} 20px, #{$aczent-2} 35px);
+    background-size: 200% 200%;
+        animation: reload 40s linear infinite;
+}
+
+@keyframes reload {
+    100% {
+    background-position: 100% 100%;
+  }
+}
+
 /*
  * Table
  */
 
 .rocket-table {
     > thead {
+        // position: sticky;
+        // top: 80px;
         th {
             color: $white;
             background-color: $gray-800;
@@ -95,6 +121,7 @@ $rocket-tree-level-line-string:         '';
 
     > tbody {
         tr:hover {
+            > td:first-child.d-none + td,
             > td:first-child {
                 position: relative;
                 &:before {
@@ -114,6 +141,7 @@ $rocket-tree-level-line-string:         '';
             white-space: nowrap;
             width: 5%;
             padding: 0.4rem 0.75rem;
+            // sticky commands in table
             // position: sticky;
             // right: 0;
             // &:after {

@@ -1,14 +1,13 @@
 import { SiEntry, SiEntryState } from 'src/app/si/model/content/si-entry';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { SiEntryMonitor } from '../../../mod/model/si-entry-monitor';
-import { Subscription, Subject, Observable } from 'rxjs';
+import { Subscription, Subject, Observable, BehaviorSubject } from 'rxjs';
 
 export class SiPage {
-	private _entries: Array<SiEntry>|null = null;
+	private _entrySubPairs: Array<{entry: SiEntry, subscription: Subscription}>|null = null;
 	private _size: number|null = null;
 	private _ghostSize: number|null = null;
-	private entriesSubscription: Subscription|null = null;
-	private loadSubject: Subject<SiEntry[]>|null = null;
+	private entriesSubject = new BehaviorSubject<SiEntry[]|null>(null);
 	private disposedSubject = new Subject<void>();
 	private entryRemovedSubject = new Subject<SiEntry>();
 
@@ -23,24 +22,30 @@ export class SiPage {
 		}
 
 		this.recalcSize();
+		this.triggerEntriesSubject();
 	}
 
 	get loaded(): boolean {
 		this.ensureNotDisposed();
 
-		return !!this._entries;
+		return !!this._entrySubPairs;
 	}
 
 	get entries(): SiEntry[]|null {
 		this.ensureNotDisposed();
 
-		return this._entries;
+		if (this._entrySubPairs) {
+			return this._entrySubPairs.map(v => v.entry);
+		}
+
+		return null;
 	}
 
 	set entries(entries: SiEntry[]|null) {
 		this.ensureNotDisposed();
 
 		this.applyEntries(entries);
+		this.triggerEntriesSubject();
 	}
 
 	private ensureLoaded() {
@@ -72,7 +77,7 @@ export class SiPage {
 	}
 
 	private recalcSize(): number {
-		if (!this._entries) {
+		if (!this._entrySubPairs) {
 			this._size = null;
 			this._ghostSize = null;
 			return;
@@ -80,8 +85,8 @@ export class SiPage {
 
 		this._size = 0;
 		this._ghostSize = 0;
-		for (const entry of this._entries) {
-			if (entry.isAlive()) {
+		for (const v of this._entrySubPairs) {
+			if (v.entry.isAlive()) {
 				this._size++;
 			} else {
 				this._ghostSize++;
@@ -89,34 +94,22 @@ export class SiPage {
 		}
 	}
 
-	onLoad(callback: (entries: SiEntry[]) => any) {
+	get entries$(): Observable<SiEntry[]> {
 		this.ensureNotDisposed();
 
-		if (this.entries) {
-			callback(this.entries);
-			return;
-		}
-
-		if (!this.loadSubject) {
-			this.loadSubject = new Subject();
-		}
-
-		this.loadSubject.subscribe((entries) => {
-			callback(entries);
-		});
+		return this.entriesSubject.asObservable();
 	}
 
 	private removeEntries() {
-		if (!this._entries) {
+		if (!this._entrySubPairs) {
 			return;
 		}
 
-		for (const entry of this._entries) {
-			this.entryMonitor.unregisterEntry(entry);
+		for (const i of Array.from(this._entrySubPairs.keys()).reverse()) {
+			this.removeEntryByIndex(i);
 		}
 
-		this.entriesSubscription.unsubscribe();
-		this._entries = null;
+		this._entrySubPairs = null;
 
 		this.entryMonitor.unregisterAllEntries();
 		this.entryMonitor.stop();
@@ -131,31 +124,59 @@ export class SiPage {
 			return;
 		}
 
-		this._entries = [];
-		this.entriesSubscription = new Subscription();
+		this._entrySubPairs = [];
 		for (const newEntry of newEntries) {
-			this.placeEntry(this._entries.length, newEntry);
+			this.placeEntry(this._entrySubPairs.length, newEntry);
 		}
 
 		this.entryMonitor.start();
 
-		if (this.loadSubject) {
-			this.loadSubject.next(this.entries);
-			this.loadSubject.complete();
-			this.loadSubject = null;
-		}
-
 		this.recalcSize();
 	}
 
-	private placeEntry(i: number, newEntry: SiEntry) {
-		if (this._entries[i]) {
-			this.entryMonitor.unregisterEntry(this._entries[i]);
+	removeEntry(siEntry: SiEntry) {
+		this.ensureLoaded();
+
+		const i = this.entries.indexOf(siEntry);
+
+		if (i < 0) {
+			throw new IllegalSiStateError('SiEntry does not exist: ' + siEntry.identifier.toString());
 		}
 
-		this._entries[i] = newEntry;
+		this.removeEntryByIndex(i);
+	}
 
-		this.entriesSubscription.add(newEntry.state$.subscribe((state) => {
+	removeEntryByIndex(i: number) {
+		this.ensureLoaded();
+
+		if (!this._entrySubPairs[i]) {
+			throw new IllegalSiStateError('SiEntry index does not exist: ' + i);
+		}
+
+		this.releaseEntrySubPair(this._entrySubPairs[i]);
+
+		this._entrySubPairs.splice(i, 1);
+		this.triggerEntriesSubject();
+	}
+
+	private releaseEntrySubPair(v: { entry: SiEntry, subscription: Subscription }) {
+		this.entryMonitor.unregisterEntry(v.entry);
+		v.subscription.unsubscribe();
+	}
+
+	insertEntry(i: number, newEntry: SiEntry) {
+		this._entrySubPairs.splice(i, 0, null);
+
+		this.placeEntry(i, newEntry);
+		this.triggerEntriesSubject();
+	}
+
+	private placeEntry(i: number, newEntry: SiEntry) {
+		if (this._entrySubPairs[i]) {
+			this.releaseEntrySubPair(this._entrySubPairs[i]);
+		}
+
+		const subscription = newEntry.state$.subscribe((state) => {
 			switch (state) {
 				case SiEntryState.REPLACED:
 					this.placeEntry(i, newEntry.replacementEntry);
@@ -165,7 +186,13 @@ export class SiPage {
 					this.entryRemovedSubject.next(newEntry);
 					break;
 			}
-		}));
+		});
+
+		this._entrySubPairs[i] = {
+			entry: newEntry,
+			subscription
+		};
+
 		this.entryMonitor.registerEntry(newEntry);
 	}
 
@@ -193,9 +220,15 @@ export class SiPage {
 		}
 
 		this.removeEntries();
+		this.triggerEntriesSubject();
 
 		this.entryRemovedSubject.complete();
 		this.disposedSubject.next();
 		this.disposedSubject.complete();
+		this.entriesSubject.complete();
+	}
+
+	private triggerEntriesSubject() {
+		this.entriesSubject.next(this.entries);
 	}
 }

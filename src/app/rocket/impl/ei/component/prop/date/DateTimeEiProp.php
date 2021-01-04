@@ -82,7 +82,7 @@ class DateTimeEiProp extends DraftablePropertyEiPropAdapter implements SortableE
 	}
 	
 	public function createInEifGuiField(Eiu $eiu): EifGuiField {
-		$iconElem = new HtmlElement('i', array('class' => SiIconType::CALENDAR), '');
+		$iconElem = new HtmlElement('i', array('class' => SiIconType::ICON_CALENDAR), '');
 		
 		return new DateTimePickerMag($this->getLabelLstr(), $iconElem, $this->getDateStyle(), $this->getTimeStyle(), null, null, 
 				$this->isMandatory($eiu), array('placeholder' => $this->getLabelLstr(),

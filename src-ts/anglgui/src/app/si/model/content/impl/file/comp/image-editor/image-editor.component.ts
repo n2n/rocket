@@ -29,7 +29,9 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 	uploadResult: UploadResult;
 	private saving = false;
 
-	constructor() { }
+	constructor(elemRef: ElementRef) {
+		elemRef.nativeElement.classList.add('rocket-image-resizer-container');
+	}
 
 	ngOnInit() {
 		this.imageSrc = new ImageSrc(this.canvasRef, this.model.getSiFile().mimeType);
@@ -151,20 +153,40 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 		this.resetSelection();
 
 		this.currentThumbRatio = thumbRatio;
-		this.imageSrc.cut(thumbRatio.getGroupedImageCuts(), {
-			ratio: thumbRatio.imageDimensions[0].width / thumbRatio.imageDimensions[0].height,
-			freeRatioAllowed: !thumbRatio.ratioFixed
-		});
+		this.updateCut();
 	}
 
 	switchToImageDimension(imageDimension: SiImageDimension) {
 		this.resetSelection();
 
 		this.currentImageDimension = imageDimension;
-		this.imageSrc.cut([imageDimension.imageCut], {
-			ratio: imageDimension.width / imageDimension.height,
-			freeRatioAllowed: !imageDimension.ratioFixed
-		});
+		this.updateCut();
+	}
+
+	resetIndividualImageCut(thumbRatio: ThumbRatio, imageDimension: SiImageDimension) {
+		thumbRatio.resetIndividutalImageCut(imageDimension);
+		this.updateCut();
+	}
+
+	private updateCut() {
+
+		if (this.currentThumbRatio) {
+			this.imageSrc.cut(this.currentThumbRatio.getGroupedImageCuts(), {
+				ratio: this.currentThumbRatio.imageDimensions[0].width / this.currentThumbRatio.imageDimensions[0].height,
+				freeRatioAllowed: !this.currentThumbRatio.ratioFixed
+			});
+		}
+
+		if (this.currentImageDimension) {
+			this.imageSrc.cut([this.currentImageDimension.imageCut], {
+				ratio: this.currentImageDimension.width / this.currentImageDimension.height,
+				freeRatioAllowed: !this.currentImageDimension.ratioFixed
+			});
+		}
+	}
+
+	private createRatioId(thumbRatio: ThumbRatio): string {
+		return (thumbRatio.width / thumbRatio.height) + (thumbRatio.ratioFixed ? 'f' : '');
 	}
 
 	private initSiFile(siFile: SiFile) {
@@ -172,7 +194,7 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 
 		for (const imageDimension of siFile.imageDimensions) {
 			const thumbRatio = ThumbRatio.create(imageDimension);
-			const ratio = (thumbRatio.width / thumbRatio.height) + (thumbRatio.ratioFixed ? 'f' : '');
+			const ratio = this.createRatioId(thumbRatio);
 
 			if (!this.ratioMap.has(ratio)) {
 				this.ratioMap.set(ratio, thumbRatio);

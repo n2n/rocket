@@ -74,7 +74,6 @@ export class SiEntryMonitor {
 				this.executeNextReloadJob();
 			}
 		}));
-
 	}
 
 	stop() {

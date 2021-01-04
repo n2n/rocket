@@ -260,7 +260,7 @@ class EiMask {
 			return $iconType;
 		}
 		
-		return SiIconType::FILE_REGULAR;
+		return SiIconType::ICON_FILE;
 	}
 	
 	/**

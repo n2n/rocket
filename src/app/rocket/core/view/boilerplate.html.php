@@ -58,7 +58,9 @@
 	$htmlMeta->addCss('css/rocket-30.css');
 	// old design:
 	//	$htmlMeta->addCss('css/rocket.css');
-	$htmlMeta->addCss('css/icomoon.css');
+	$htmlMeta->addCss('css/icons/font-awesome/icons/all.min.css');
+// 	use this to insert custom icons
+// 	$htmlMeta->addCss('css/icons/icomoon/icomoon.css');
 	// 	$htmlMeta->addJs('js/respond.src.js', null);
 	// 	$htmlMeta->addJs('js/jquery-responsive-table.js', null, true);
 	

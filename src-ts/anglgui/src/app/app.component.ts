@@ -32,6 +32,8 @@ export class AppComponent implements OnInit {
 		this.translationService.map = extr.reqStringMap('translationMap');
 		this.menuGroups = new SiUiFactory(this.injector).createMenuGroups(extr.reqArray('menuGroups'));
 		this.appState.user = UserFactory.createUser(extr.reqObject('user'));
+
+		this.appState.assetsUrl = this.elemRef.nativeElement.getAttribute('data-rocket-assets-url');
 	}
 
 	navRouterLink(navPoint: UiNavPoint): string {
@@ -42,4 +44,7 @@ export class AppComponent implements OnInit {
 		return this.appState.user;
 	}
 
+	get logoSrc(): string {
+		return this.appState.assetsUrl + '/img/rocket-logo.svg';
+	}
 }

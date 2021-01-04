@@ -61,8 +61,9 @@ export class ButtonControlComponent implements OnInit {
 			return;
 		}
 
-		this.uiZone.createConfirmDialog(siConfirm.message, siConfirm.okLabel, siConfirm.cancelLabel)
-				.confirmed$.pipe(filter(confirmed => confirmed)).subscribe(() => {
+		const cd = this.uiZone.createConfirmDialog(siConfirm.message, siConfirm.okLabel, siConfirm.cancelLabel);
+		cd.danger = siConfirm.danger;
+		cd.confirmed$.pipe(filter(confirmed => confirmed)).subscribe(() => {
 					this.model.exec(this.uiZone, null);
 				});
 	}
@@ -77,8 +78,9 @@ export class ButtonControlComponent implements OnInit {
 			return;
 		}
 
-		this.uiZone.createConfirmDialog(siConfirm.message, siConfirm.okLabel, siConfirm.cancelLabel)
-				.confirmed$.pipe(filter(confirmed => confirmed)).subscribe((confirmed) => {
+		const cd = this.uiZone.createConfirmDialog(siConfirm.message, siConfirm.okLabel, siConfirm.cancelLabel);
+		cd.danger = siConfirm.danger;
+		cd.confirmed$.pipe(filter(confirmed => confirmed)).subscribe(() => {
 					this.model.exec(this.uiZone, key);
 				});
 	}

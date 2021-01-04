@@ -38,8 +38,8 @@ use rocket\user\model\RocketUserDao;
 	
 	$html->meta()->addMeta(array('name' => 'viewport', 'content' => 'width=device-width, initial-scale=1.0'));
 	$html->meta()->addMeta(array('name' => 'robots', 'content' => 'noindex'));
-	$html->meta()->addCss('css/rocket-20.css');
-	$html->meta()->addCss('css/font-awesome.css');
+	$html->meta()->addCss('css/rocket-30.css');
+	$html->meta()->addCss('css/icomoon.css');
 ?>
 <!DOCTYPE html>
 <html> 
@@ -50,7 +50,7 @@ use rocket\user\model\RocketUserDao;
 		<div id="rocket-login-container">
 			<div id="rocket-login-form-container">
 				<div id="rocket-logo-container">
-					<?php $html->imageAsset('img/login-logo-06.png', '', array('id' => 'rocket-login-logo')) ?>
+					<?php $html->imageAsset('img/rocket-logo.svg', '', array('id' => 'rocket-login-logo')) ?>
 					<?php $html->linkToContext('', new Raw('<i class="fa fa-home"></i> ' . $html->getL10nText('user_back_to_website_label')), array('class' => 'rocket-user-back-link' , 'target' => '_blank'))?>
 				</div>
 				<?php $html->messageList(null, null, array('class' => 'alert alert-danger list-unstyled')) ?>
