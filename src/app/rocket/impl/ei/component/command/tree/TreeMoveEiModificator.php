@@ -32,20 +32,20 @@ class TreeMoveEiModificator extends EiModificatorAdapter {
 	
 	function setupEiFrame(Eiu $eiu) {
 		$eiu->frame()->setSortAbility(
-				function (array $eiuObjects, EiuObject $afterEiuObject) {
+				function (array $eiuObjects, EiuObject $afterEiuObject) use ($eiu) {
 					foreach ($eiuObjects as $eiuObject) {
-						$this->move($eiuObject->getPid(), $afterEiuObject->getPid(), false);
+						$this->move($eiu, $eiuObject->getPid(), $afterEiuObject->getPid(), false);
 					}
 				},
-				function (array $eiuObjects, EiuObject $beforeEiuObject) {
+				function (array $eiuObjects, EiuObject $beforeEiuObject) use ($eiu) {
 					foreach ($eiuObjects as $eiuObject) {
-						$this->move($eiuObject->getPid(), $beforeEiuObject->getPid(), true);
+						$this->move($eiu, $eiuObject->getPid(), $beforeEiuObject->getPid(), true);
 					}
 					
 				},
-				function (array $eiuObjects, EiuObject $parentEiuObject) {
+				function (array $eiuObjects, EiuObject $parentEiuObject) use ($eiu) {
 					foreach ($eiuObjects as $eiuObject) {
-						$this->move($eiuObject->getPid(), $parentEiuObject->getPid(), null);
+						$this->move($eiu, $eiuObject->getPid(), $parentEiuObject->getPid(), null);
 					}
 				});
 		}
@@ -86,8 +86,10 @@ class TreeMoveEiModificator extends EiModificatorAdapter {
 // 		$this->eiCtrl->redirectToReferer($refUrl, JhtmlEvent::ei()->noAutoEvents());
 // 	}
 
-	private function move(EiuFrame $eiuFrame, string $pid, string $targetPid, bool $before = null) {
+	private function move(Eiu $eiu, string $pid, string $targetPid, bool $before = null) {
 		if ($pid === $targetPid) return;
+		
+		$eiuFrame = $eiu->frame();
 		
 		$nestedSetStrategy = $eiuFrame->getNestedSetStrategy();
 		if ($nestedSetStrategy === null) return;
