@@ -84,12 +84,13 @@ class GetInstructionProcess {
 	 * @return \rocket\si\api\SiGetResult
 	 */
 	private function handleEntryId(string $entryId) {
-		$eiObject = $this->util->lookupEiObject($entryId);
 		$defPropPaths = $this->parseDefPropPaths();
 		
-		$eiGui = $this->eiFrameUtil->createEiGuiFromEiObject($eiObject, 
-				$this->instruction->isBulky(), $this->instruction->isReadOnly(), null, $defPropPaths,
-				$this->instruction->isDeclarationRequested());
+		$eiGui = $this->util->lookupEiGuiByPid($entryId, $this->instruction->isBulky(), 
+				$this->instruction->isReadOnly(), $defPropPaths);
+// 		$eiGui = $this->eiFrameUtil->createEiGuiFromEiObject($eiObject, 
+// 				, null, $defPropPaths,
+// 				$this->instruction->isDeclarationRequested());
 		$eiFrame = $this->eiFrameUtil->getEiFrame();
 		
 		$getResult = new SiGetResult();

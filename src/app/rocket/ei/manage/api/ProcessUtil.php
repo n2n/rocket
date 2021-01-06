@@ -36,6 +36,7 @@ use rocket\ei\manage\gui\EiGui;
 use rocket\ei\manage\DefPropPath;
 use rocket\ei\EiException;
 use rocket\ei\manage\entry\EiEntry;
+use n2n\persistence\orm\util\NestedSetUtils;
 
 class ProcessUtil {
 	private $eiFrame;
@@ -72,6 +73,23 @@ class ProcessUtil {
 		try {
 			$efu = new EiFrameUtil($this->eiFrame);
 			return new LiveEiObject($efu->lookupEiEntityObj($efu->pidToId($pid)));
+		} catch (UnknownEiObjectException $e) {
+			throw new BadRequestException(null, 0, $e);
+		}
+	}
+	
+	/**
+	 * @param string $pid
+	 * @param bool $bulky
+	 * @param bool $readOnly
+	 * @param array $defPropPaths
+	 * @throws BadRequestException
+	 * @return \rocket\ei\manage\gui\EiGui
+	 */
+	function lookupEiGuiByPid(string $pid, bool $bulky, bool $readOnly, ?array $defPropPaths) {
+		try {
+			$efu = new EiFrameUtil($this->eiFrame);
+			return $efu->lookupEiGuiFromId($efu->pidToId($pid), $bulky, $readOnly, $defPropPaths);
 		} catch (UnknownEiObjectException $e) {
 			throw new BadRequestException(null, 0, $e);
 		}
