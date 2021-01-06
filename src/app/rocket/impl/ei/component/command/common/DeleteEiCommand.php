@@ -26,7 +26,7 @@ use rocket\core\model\Rocket;
 use rocket\ei\component\command\PrivilegedEiCommand;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\util\Eiu;
-use rocket\impl\ei\component\command\IndependentEiCommandAdapter;
+use rocket\impl\ei\component\command\adapter\IndependentEiCommandAdapter;
 use rocket\si\control\SiButton;
 use rocket\si\control\SiConfirm;
 use rocket\si\control\SiIconType;
@@ -36,6 +36,9 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 	const CONTROL_BUTTON_KEY = 'delete'; 
 	const PRIVILEGE_LIVE_ENTRY_KEY = 'eiEntityObj';
 	const PRIVILEGE_DRAFT_KEY = 'draft';
+	
+	protected function prepare() {
+	}
 	
 	public function getIdBase(): ?string {
 		return self::ID_BASE;

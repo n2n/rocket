@@ -26,7 +26,7 @@ use n2n\l10n\N2nLocale;
 use rocket\si\control\SiButton;
 use rocket\si\control\SiIconType;
 use rocket\impl\ei\component\command\common\controller\EditController;
-use rocket\impl\ei\component\command\IndependentEiCommandAdapter;
+use rocket\impl\ei\component\command\adapter\IndependentEiCommandAdapter;
 use rocket\ei\component\command\PrivilegedEiCommand;
 use n2n\core\container\N2nContext;
 use rocket\core\model\Rocket;
@@ -41,6 +41,8 @@ class EditEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiC
 	const CONTROL_SAVE_KEY = 'save';
 	const CONTROL_SAVE_AND_BACK_KEY = 'saveAndBack';
 	
+	protected function prepare() {
+	}
 	
 	public function getIdBase(): ?string {
 		return self::ID_BASE;

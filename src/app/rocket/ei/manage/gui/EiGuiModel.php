@@ -12,7 +12,6 @@ use rocket\si\content\SiEntry;
 use rocket\ei\EiType;
 use rocket\ei\manage\gui\control\GuiControlPath;
 use rocket\ei\manage\gui\control\UnknownGuiControlException;
-use rocket\ei\EiPropPath;
 
 class EiGuiModel {
 	/**
@@ -139,6 +138,7 @@ class EiGuiModel {
 	function createSiEntry(EiFrame $eiFrame, EiEntryGui $eiEntryGui, bool $siControlsIncluded) {
 		$siEntry = new SiEntry($eiEntryGui->createSiEntryIdentifier(), 
 				ViewMode::isReadOnly($this->viewMode), ViewMode::isBulky($this->viewMode));
+		$siEntry->setTreeLevel($eiEntryGui->getTreeLevel());
 		
 		$typeDefs = $eiEntryGui->getTypeDefs();
 		

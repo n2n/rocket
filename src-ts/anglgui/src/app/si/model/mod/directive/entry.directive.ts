@@ -1,4 +1,4 @@
-import { Directive, Input, ElementRef, DoCheck, OnInit, OnDestroy } from '@angular/core';
+import { Directive, Input, ElementRef, DoCheck, OnInit, OnDestroy, HostBinding } from '@angular/core';
 import { SiEntry, SiEntryState } from '../../content/si-entry';
 import { SiModStateService } from '../model/si-mod-state.service';
 
@@ -40,6 +40,8 @@ export class EntryDirective implements DoCheck, OnInit, OnDestroy {
 				&& this.modState.lastModEvent.containsModEntryIdentifier(this.siEntry.identifier));
 		this.chStateClass(this.siEntry.state);
 	}
+
+
 
 	private chHighlightedClass(highlighted: boolean) {
 		if (highlighted === this.currentlyHighlighted) {

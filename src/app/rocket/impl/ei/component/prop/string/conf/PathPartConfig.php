@@ -38,12 +38,12 @@ use n2n\util\type\CastUtils;
 use rocket\ei\manage\generic\ScalarEiProperty;
 use rocket\ei\manage\generic\GenericEiProperty;
 use rocket\ei\util\spec\EiuEngine;
-use rocket\impl\ei\component\prop\adapter\config\ConfigAdaption;
+use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
 use rocket\ei\util\Eiu;
 use n2n\util\type\attrs\DataSet;
 use n2n\web\dispatch\mag\MagCollection;
 
-class PathPartConfig extends ConfigAdaption {
+class PathPartConfig extends PropConfigAdaption {
 	const ATTR_BASE_PROPERTY_FIELD_ID_KEY = 'basePropertyFieldId';
 	const ATTR_NULL_ALLOWED_KEY = 'allowEmpty';
 	const ATTR_UNIQUE_PER_FIELD_ID_KEY = 'uniquePerFieldId';

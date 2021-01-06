@@ -31,7 +31,7 @@ use n2n\util\type\TypeConstraint;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
 use n2n\impl\web\dispatch\mag\model\MultiSelectMag;
 use rocket\ei\manage\DefPropPath;
-use rocket\impl\ei\component\prop\adapter\config\ConfigAdaption;
+use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
 use rocket\ei\util\Eiu;
 use n2n\util\type\attrs\DataSet;
 use n2n\util\type\ArgUtils;
@@ -39,7 +39,7 @@ use n2n\util\type\TypeConstraints;
 
 // @todo validate if dataSet are arrays
 
-class EnumConfig extends ConfigAdaption {
+class EnumConfig extends PropConfigAdaption {
 	const ATTR_OPTIONS_KEY = 'options';
 	const ASSOCIATED_GUI_FIELD_KEY = 'associatedGuiProps';
 	

@@ -4,7 +4,7 @@ namespace rocket\ei\util\spec;
 use rocket\ei\EiPropPath;
 use rocket\ei\EiCommandPath;
 use rocket\ei\component\command\IndependentEiCommand;
-use rocket\impl\ei\component\EiConfiguratorAdapter;
+use rocket\impl\ei\component\config\EiConfiguratorAdapter;
 use rocket\ei\util\privilege\EiuCommandPrivilege;
 use rocket\ei\util\factory\EiuFactory;
 

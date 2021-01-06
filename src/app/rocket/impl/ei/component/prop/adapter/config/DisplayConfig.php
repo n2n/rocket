@@ -35,7 +35,7 @@ use n2n\impl\web\dispatch\mag\model\EnumMag;
 use rocket\ei\manage\gui\GuiPropSetup;
 use rocket\ei\manage\gui\GuiFieldAssembler;
 
-class DisplayConfig extends ConfigAdaption {
+class DisplayConfig extends PropConfigAdaption {
 	private $compatibleViewModes;
 	
 	private $defaultDisplayedViewModes;
