@@ -3,7 +3,7 @@ import {
   ComponentFactoryResolver,
   ElementRef,
   EventEmitter, HostListener,
-  Input,
+  Input, OnChanges,
   OnInit,
   Output,
   ViewChild,
@@ -16,7 +16,7 @@ import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
   templateUrl: './iframe.component.html',
   styleUrls: ['./iframe.component.css']
 })
-export class IframeComponent implements OnInit {
+export class IframeComponent implements OnInit, OnChanges {
   @Input()
   public srcDoc;
 
@@ -43,11 +43,10 @@ export class IframeComponent implements OnInit {
   }
 
   /**
-   * JS that takes the json formData and fills the corresponding inputs with it.
+   * Update and insert formData to iframe
    */
   private createFormDataJs() {
-    let formDataStr = JSON.stringify(this.formData, (key, value) => (value instanceof Map ? [...value] : value));
-    return 'var createFormDataMap=function(e){for(var a=new Map,t=0;t<e.length;t++)a.set(e[t].attributes.name.value,e[t].value);return a},sendFormDataToParent=function(e){window.parent.window.postMessage(e,window.parent.location)},formData=new Map(' + formDataStr + '),formElements=[];formData.forEach((e,a)=>{var t=document.getElementsByName(a)[0];formElements.push(t),t.value=e,t.onkeyup=function(){sendFormDataToParent(createFormDataMap(formElements))}});for(var forms=document.getElementsByTagName("form"),i=0;i<forms.length;i++)forms[i].onsubmit=function(){return sendFormDataToParent(createFormDataMap(formElements)),!1};';
+    return 'for(var createFormDataMap=function(e){var t=new Map;console.log(e);for(var n=0;n<e.length;n++){var o=e[n];if("radio"==o.type){if(!o.checked)continue;t.set(o.attributes.name.value,o.value)}if("checkbox"==o.type){if(!o.checked){t.set(o.attributes.name.value,"");continue}t.set(o.attributes.name.value,o.value)}t.set(o.attributes.name.value,e[n].value)}return t},sendFormDataToParent=function(e){window.parent.window.postMessage(createFormDataMap(e),window.parent.location)},formElementsHtmlCollection=document.getElementsByTagName("input"),formElements=[],i=0;i<formElementsHtmlCollection.length;i++)null!=formElementsHtmlCollection[i].attributes.name&&(formElements.push(formElementsHtmlCollection[i]),formElementsHtmlCollection[i].onkeyup=function(){sendFormDataToParent(formElements)},formElementsHtmlCollection[i].onchange=function(){sendFormDataToParent(formElements)});var forms=document.getElementsByTagName("form");for(i=0;i<forms.length;i++)forms[i].onsubmit=function(){return sendFormDataToParent(formElements),!1};window.addEventListener("message",function(e){e.data instanceof Map&&e.data.forEach((e,t)=>{document.getElementsByName(t)[0].value=e})});';
   }
 
   /**
@@ -64,42 +63,80 @@ export class IframeComponent implements OnInit {
 
   @HostListener('window:message', ['$event'])
   onMessage(event) {
-    this.formData = event.data;
-    this.formDataChange.emit(event.data);
+    if (event.data instanceof Map) {
+      this.formData = event.data;
+      this.formDataChange.emit(event.data);
+    }
+  }
+
+  ngOnChanges(changes) {
+    if (this.iframe == undefined || changes.formData.previousValue == changes.formData.currentValue) return;
+    console.log(changes);
+    this.iframe.nativeElement.contentWindow.postMessage(this.formData);
+  }
+
+  onIframeLoad() {
+    this.iframe.nativeElement.contentWindow.postMessage(this.formData);
   }
 }
-
-
+//
 // var createFormDataMap = function(formElements) {
 //   var formData = new Map();
-//
 //   for (var i = 0; i < formElements.length; i++) {
-//     formData.set(formElements[i].attributes["name"].value, formElements[i].value);
+//     var currentElem = formElements[i];
+//     if (currentElem.type == "radio") {
+//       if (!currentElem.checked) {
+//         continue;
+//       }
+//       formData.set(currentElem.attributes["name"].value, currentElem.value);
+//     }
+//
+//     if (currentElem.type == "checkbox") {
+//       if (!currentElem.checked) {
+//         formData.set(currentElem.attributes["name"].value, "");
+//         continue;
+//       }
+//       formData.set(currentElem.attributes["name"].value, currentElem.value);
+//     }
+//
+//     formData.set(currentElem.attributes["name"].value, formElements[i].value);
 //   }
 //
 //   return formData;
 // }
 //
-// var sendFormDataToParent = function(formData) {
-//   window.parent.window.postMessage(formData, window.parent.location)
+// var sendFormDataToParent = function(formElements) {
+//   window.parent.window.postMessage(createFormDataMap(formElements), window.parent.location)
 // }
 //
-// var formData = new Map([["fname", "yxcvsfd"],["fmail", "nikolai@schmid.guru"]]);
-// var formElements = [];
-// formData.forEach((value, key) => {
-//   var newFormElement = document.getElementsByName(key)[0];
-//   formElements.push(newFormElement);
-//   newFormElement.value = value;
-//
-//   newFormElement.onkeyup = function() {
-//     sendFormDataToParent(createFormDataMap(formElements));
+// var formElementsHtmlCollection = document.getElementsByTagName("input");
+// var formElements = []
+// for (var i = 0; i < formElementsHtmlCollection.length; i++) {
+//   if (formElementsHtmlCollection[i].attributes["name"] == undefined) continue;
+//   formElements.push(formElementsHtmlCollection[i]);
+//   formElementsHtmlCollection[i].onkeyup = function () {
+//     sendFormDataToParent(formElements);
 //   }
-// });
+//   formElementsHtmlCollection[i].onchange = function () {
+//     sendFormDataToParent(formElements);
+//   }
+// }
+//
 //
 // var forms = document.getElementsByTagName("form");
 // for (var i = 0; i < forms.length; i++) {
 //   forms[i].onsubmit = function(){
-//     sendFormDataToParent(createFormDataMap(formElements));
+//     sendFormDataToParent(formElements);
 //     return false;
 //   }
 // }
+//
+// window.addEventListener("message", function(e) {
+//   if (e.data instanceof Map) {
+//     var formData = e.data;
+//     formData.forEach((value, key) => {
+//       var formElem = document.getElementsByName(key)[0]; // change to for and check with checkbox and radio values
+//       formElem.value = value;
+//     });
+//   }
+// });

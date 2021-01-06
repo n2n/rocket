@@ -1,5 +1,6 @@
 <iframe #iframe
         resizableIframe
         style="width: 100%; border: 0px;overflow: hidden;"
-        [srcdoc]="srcDoc">
+        [srcdoc]="srcDoc"
+        (load)="onIframeLoad()">
 </iframe>

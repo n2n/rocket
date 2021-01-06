@@ -15,20 +15,26 @@
   </ul>
 
   <rocket-iframe
-    [formData]="formData"
+    [(formData)]="formData"
     srcDoc='<html>
             <body>
             <h1>form here: </h1>
       <form>
-  <label for="fname">First name:</label><br>
+  <label for="fname">Name:</label><br>
   <input type="text" id="fname" name="fname"><br><br>
   <label for="fmail">Email:</label><br>
   <input type="text" id="fmail" name="fmail"><br><br>
+  <label for="fmail">Accept:</label><br>
+  <input type="checkbox" name="faccept"><br><br>
+  <input type="radio" id="male" name="gender" value="male">
+  <label for="male">Male</label><br>
+  <input type="radio" id="female" name="gender" value="female">
+  <label for="female">Female</label><br>
   <input type="submit" value="Submit">
+  <textarea></textarea>
   </form>
   </body>
-  </html>'
-  (formDataChange)="formDataChanged($event)"></rocket-iframe>
+  </html>'></rocket-iframe>
 
 </rocket-ui-simple-zone-container>
 
