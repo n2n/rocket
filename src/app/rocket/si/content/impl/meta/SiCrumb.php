@@ -27,13 +27,14 @@ class SiCrumb implements \JsonSerializable {
 	const TYPE_ICON = 'icon';
 	const TYPE_LABEL = 'label';
 	
+	const SEVERITY_NORMAL = 'normal';
 	const SEVERITY_INACTIVE = 'inactive';
 	
 	protected $type;
 	protected $label;
 	protected $iconClass;
 	protected $title;
-	protected $severity;
+	protected $severity = self::SEVERITY_NORMAL;
 	
 	/**
 	 * @return string
@@ -94,7 +95,9 @@ class SiCrumb implements \JsonSerializable {
 		return [
 			'type' => $this->type,
 			'label' => $this->label,
-			'iconClass' => $this->iconClass
+			'iconClass' => $this->iconClass,
+			'severity' => $this->severity,
+			'title' => $this->title
 		];
 	}
 	

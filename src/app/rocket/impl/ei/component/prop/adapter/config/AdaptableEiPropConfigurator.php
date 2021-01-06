@@ -72,7 +72,8 @@ class AdaptableEiPropConfigurator extends AdaptableEiConfigurator implements EiP
 		}
 		
 		$curLevel = null;
-		foreach ($this->adaptions as $adaption) {
+		foreach ($this->getAdaptions() as $adaption) {
+			CastUtils::assertTrue($adaption instanceof EiPropConfiguratorAdaption);
 			$resultLevel = $adaption->testCompatibility($propertyAssignation);
 			if ($resultLevel === null) {
 				continue;

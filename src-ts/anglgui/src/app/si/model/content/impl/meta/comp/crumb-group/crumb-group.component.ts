@@ -23,4 +23,8 @@ export class CrumbGroupComponent implements OnInit {
 	isLabel(siCrumb: SiCrumb) {
 		return siCrumb.type === SiCrumb.Type.LABEL;
 	}
+
+	isInactive(siCrumb: SiCrumb) {
+		return siCrumb.severity === SiCrumb.Severity.INACTIVE;
+	}
 }

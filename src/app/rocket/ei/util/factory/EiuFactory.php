@@ -39,7 +39,7 @@ class EiuFactory {
 	
 	/**
 	 * @param \Closure $callback
-	 * @return IdNameProp
+	 * @return EifIdNameProp
 	 */
 	function newIdNameProp(\Closure $callback) {
 		return new EifIdNameProp($callback);	

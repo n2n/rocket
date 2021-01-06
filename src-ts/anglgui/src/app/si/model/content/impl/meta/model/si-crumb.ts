@@ -3,6 +3,8 @@ export interface SiCrumbGroup {
 }
 
 export class SiCrumb {
+	public severity = SiCrumb.Severity.NORMAL;
+	public title: string|null = null;
 
 	constructor(readonly type: SiCrumb.Type, readonly label: string|null, readonly iconClass: string|null) {
 	}
@@ -20,5 +22,10 @@ export namespace SiCrumb {
 	export enum Type {
 		LABEL = 'label',
 		ICON = 'icon'
+	}
+
+	export enum Severity {
+		NORMAL = 'normal',
+		INACTIVE = 'inactive'
 	}
 }
