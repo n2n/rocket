@@ -177,9 +177,11 @@ export class SiPage {
 		}
 
 		const subscription = newEntry.state$.subscribe((state) => {
+			const curI = this.entries.indexOf(newEntry);
+
 			switch (state) {
 				case SiEntryState.REPLACED:
-					this.placeEntry(i, newEntry.replacementEntry);
+					this.placeEntry(curI, newEntry.replacementEntry);
 					break;
 				case SiEntryState.REMOVED:
 					this.recalcSize();

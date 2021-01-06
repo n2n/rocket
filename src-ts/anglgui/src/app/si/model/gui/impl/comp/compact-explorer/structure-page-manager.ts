@@ -403,7 +403,7 @@ export class StructurePageManager {
 
 	moveToParent(identifiers: SiEntryIdentifier[], parentEntryIdentifier: SiEntryIdentifier) {
 		const siEntries = identifiers.map(i => this.siPageCollection.getEntryByIdentifier(i));
-		const targetSiEntry = this.siPageCollection.getEntryByIdentifier(parentEntryIdentifier)
+		const targetSiEntry = this.siPageCollection.getEntryByIdentifier(parentEntryIdentifier);
 		if (siEntries.length > 0 && targetSiEntry) {
 			this.siPageCollection.moveToParent(siEntries, targetSiEntry);
 		}
