@@ -14,6 +14,7 @@ export class ToolsComponent implements OnInit {
 
 	clearCacheInProgress: boolean = false;
   messages: Message[] = [];
+  formData: Map<string, string> = new Map([["fname", "yxcvsfd"],["fmail", "nikolai@schmid.guru"]]);
 
 	constructor(translationService: TranslationService, private toolsService: ToolsService) {
 		this.uiBreadcrumbs = [
@@ -38,4 +39,8 @@ export class ToolsComponent implements OnInit {
 
 	ngOnInit(): void {
 	}
+
+  formDataChanged(value) {
+    this.formData = value;
+  }
 }

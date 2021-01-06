@@ -18,7 +18,7 @@ import { FormsModule } from '@angular/forms';
 import { SimpleZoneContainerComponent } from './structure/comp/simple-zone-container/simple-zone-container.component';
 import {ButtonComponent} from "./util/comp/button/button.component";
 import {MessagesComponent} from "./util/comp/message/messages.component";
-import { IframeComponent } from './util/comp/i-frame/iframe.component';
+import { IframeComponent } from './util/comp/iframe/iframe.component';
 import { IFrameResizerDirective } from './util/directive/iframe-resizer-directive.directive';
 
 @NgModule({
