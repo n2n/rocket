@@ -1,17 +1,17 @@
 
 
-<ng-container *ngFor="let item of childUiStructureMap | keyvalue">
+<ng-container *ngFor="let item of model.getChildUiStructureMap() | keyvalue">
 
 	<ng-container *ngIf="item.value.visible">
 		
-		<div *ngIf="isKeyActive(item.key); else activateButton" rocketUiStructure [uiStructure]="item.value"></div>
+		<div *ngIf="model.isKeyActive(item.key); else activateButton" rocketUiStructure [uiStructure]="item.value"></div>
 		
 		<ng-template #activateButton>
 			<div rocketUiStructure [uiStructure]="item.value" [contentVisible]="false" [toolbarVisible]="false">
 				<ng-container pre-content>	
-					<button class="rocket-enabler" type="button" (click)="activateKey(item.key)">
+					<button class="rocket-enabler" type="button" (click)="model.activateKey(item.key)">
 						<i class="fa fa-language"></i>&nbsp;
-						<span>{{ getLabelByKey(item.key) }}</span> 
+						<span>{{ model.getLabelByKey(item.key) }}</span> 
 						{{ 'activate_txt' | translate }}.
 					</button>
 				</ng-container>

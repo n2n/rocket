@@ -77,6 +77,10 @@ class EmbeddedOneToOneEiProp extends RelationEiPropAdapter implements FieldEiPro
 		
 		$readOnly = $readOnly || $this->getEditConfig()->isReadOnly();
 		
+		if ($readOnly && $eiu->gui()->isCompact()) {
+			return $this->createCompactGuiField($eiu);
+		}
+		
 		$targetEiuFrame = null;
 		if ($readOnly){
 			$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())->frame()
@@ -87,5 +91,20 @@ class EmbeddedOneToOneEiProp extends RelationEiPropAdapter implements FieldEiPro
 		}
 
 		return new EmbeddedToOneGuiField($eiu, $targetEiuFrame, $this->getRelationModel(), $readOnly);
+	}
+	
+	
+	
+	/**
+	 * @param Eiu $eiu
+	 * @return \rocket\si\content\SiField
+	 */
+	private function createCompactGuiField(Eiu $eiu) {
+		$eiuEntry = $eiu->field()->getValue();
+		CastUtils::assertTrue($eiuEntry instanceof EiuEntry);
+		
+		return $eiu->factory()->newGuiField(SiFields::crumbOut(
+				SiCrumb::createIcon($eiuEntry->mask()->getIconType()),
+				SiCrumb::createLabel($eiuEntry->object()->createIdentityString())))->toGuiField();
 	}
 }

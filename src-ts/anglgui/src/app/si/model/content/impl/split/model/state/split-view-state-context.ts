@@ -6,12 +6,14 @@ import { SplitViewMenuModel } from '../../comp/split-view-menu-model';
 import { SplitOption } from '../split-option';
 import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
 import { SplitStyle } from '../split-context-si-field';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 export class SplitViewStateContext implements SplitViewMenuModel {
 	private toolbarUiStructure: UiStructure|null = null;
 	private subscriptions: Array<SplitViewStateSubscription> = [];
 	private optionMap = new Map<string, SplitOption>();
 	private visibleKeys: string[] = [];
+	private visibleKeysSubject = new BehaviorSubject<string[]>([]);
 
 	constructor(readonly uiStructure: UiStructure, public splitStyle: SplitStyle) {
 	}
@@ -49,6 +51,10 @@ export class SplitViewStateContext implements SplitViewMenuModel {
 	// 	return this.visibleKeys;
 	// }
 
+	getVisibleKeys$(): Observable<string[]> {
+		return this.visibleKeysSubject.asObservable();
+	}
+
 	getVisibleKeysNum(): number {
 		return this.visibleKeys.length;
 	}
@@ -64,7 +70,7 @@ export class SplitViewStateContext implements SplitViewMenuModel {
 		}
 
 		this.visibleKeys.push(key);
-		this.validateVisibleKeys();
+		this.validateVisibleKeys(true);
 	}
 
 	removeVisibleKey(key: string): void {
@@ -74,13 +80,21 @@ export class SplitViewStateContext implements SplitViewMenuModel {
 		}
 
 		this.visibleKeys.splice(i, 1);
-		this.validateVisibleKeys();
+		this.validateVisibleKeys(true);
 	}
 
-	private validateVisibleKeys() {
+	private validateVisibleKeys(triggerObsAnyway: boolean) {
 		if (this.visibleKeys.length === 0 && this.optionMap.size > 0) {
 			this.visibleKeys.push(this.optionMap.keys().next().value);
+		} else if (!triggerObsAnyway) {
+			return;
 		}
+
+		this.triggerVisibleKeysObs();
+	}
+
+	private triggerVisibleKeysObs() {
+		this.visibleKeysSubject.next([...this.visibleKeys])
 	}
 
 	private updateStructure() {
@@ -93,7 +107,7 @@ export class SplitViewStateContext implements SplitViewMenuModel {
 			}
 		}
 
-		this.validateVisibleKeys();
+		this.validateVisibleKeys(false);
 
 		if (this.optionMap.size > 0) {
 			if (!assigned) {

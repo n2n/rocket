@@ -32,6 +32,8 @@ import { SiModStateService } from '../model/mod/model/si-mod-state.service';
 import { EmbeddedEntriesOutSiField } from '../model/content/impl/embedded/model/embedded-entries-out-si-field';
 import { EmbeddedEntryPanelsOutSiField } from '../model/content/impl/embedded/model/embedded-entry-panels-out-si-field';
 import { EmbeddedEntryPanelsInSiField } from '../model/content/impl/embedded/model/embedded-entry-panels-in-si-field';
+import { SplitViewStateContext } from '../model/content/impl/split/model/state/split-view-state-context';
+import { SplitViewStateService } from '../model/content/impl/split/model/state/split-view-state.service';
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',
@@ -206,7 +208,7 @@ export class SiFieldFactory {
 			return splitContextOutSiField;
 
 		case SiFieldType.SPLIT_PLACEHOLDER:
-			const splitSiField = new SplitSiField(dataExtr.reqString('refPropId'));
+			const splitSiField = new SplitSiField(dataExtr.reqString('refPropId'), this.injector.get(SplitViewStateService));
 			splitSiField.copyStyle = this.createSplitStyle(dataExtr.reqObject('copyStyle'));
 			return splitSiField;
 

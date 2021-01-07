@@ -1,18 +1,20 @@
-import { SplitOption } from '../model/split-option';
-import { SiField } from '../../../si-field';
-import { SplitStyle } from '../model/split-context-si-field';
+import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 
 export interface SplitModel {
 
-	getSplitOptions(): SplitOption[];
+	// getSplitOptions(): SplitOption[];
 
-	getSplitStyle(): SplitStyle;
+	// getSplitStyle(): SplitStyle;
 
 	isKeyActive(key: string): boolean;
 
 	activateKey(key: string): void;
 
-	getSiField$(key: string): Promise<SiField>;
+	getChildUiStructureMap(): Map<string, UiStructure>;
 
-	getCopyTooltip(): string|null;
+	getLabelByKey(key: string): string;
+
+	// getSiField$(key: string): Promise<SiField>;
+
+	// getCopyTooltip(): string|null;
 }
