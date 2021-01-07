@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SelectInFieldModel } from '../select-in-field-model';
+import { Option } from 'src/app/ui/util/comp/select-input/select.component';
 
 @Component({
 	selector: 'rocket-select-in-field',
@@ -13,5 +14,23 @@ export class SelectInFieldComponent implements OnInit {
 	constructor() { }
 
 	ngOnInit() {
+	}
+
+	get optional() {
+		return true;
+	}
+
+	get value(): string|null {
+		return this.model.getValue();
+	}
+
+	get options(): Option[] {
+		const options: Option[] = [];
+
+		for (const [value, label] of this.model.getOptions()) {
+			options.push({ value, label });
+		}
+
+		return options;
 	}
 }

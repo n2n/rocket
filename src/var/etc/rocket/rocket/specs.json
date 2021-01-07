@@ -63,7 +63,7 @@
         },
         "rocket-disablable-content-item": {
             "nature": "entity",
-            "entity": "rocket\\impl\\ei\\component\\prop\\ci\\model\\DisablableContentItem",
+            "entity": "rocket\\impl\\ei\\component\\prop\\ci\\model\\StashableContentItem",
             "dataSourceName": null,
             "label": "Disablable Content Item",
             "pluralLabel": "Disablable Content Items",
