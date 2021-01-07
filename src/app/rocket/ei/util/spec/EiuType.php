@@ -28,6 +28,7 @@ use rocket\user\model\LoginContext;
 use n2n\util\type\CastUtils;
 use rocket\spec\UnknownTypeException;
 use rocket\si\meta\SiMaskQualifier;
+use rocket\ei\manage\LiveEiObject;
 
 class EiuType  {
 	private $eiType;
@@ -128,18 +129,24 @@ class EiuType  {
 	}
 	
 	/**
-	 * @param bool $draft
+	 * @param object $entityObj
 	 * @return \rocket\ei\util\entry\EiuObject
 	 */
-	function newObject(bool $draft = false) {
-		$eiObject = $this->eiType->createNewEiObject($draft);
-		
-		if ($draft) {
-			$loginContext = $this->eiuAnalyst->getN2nContext(true)->lookup(LoginContext::class);
-			CastUtils::assertTrue($loginContext instanceof LoginContext);
-			
-			$eiObject->getDraft()->setUserId($loginContext->getCurrentUser()->getId());
+	function newObject(object $entityObj = null/*, bool $draft = false*/) {
+		$eiObject = null;
+		if ($entityObj === null) {
+			$eiObject = $this->eiType->createNewEiObject(false /*$draft*/);
+		} else {
+			$eiObject = LiveEiObject::create($this->eiType, $entityObj);
 		}
+		
+		
+// 		if ($draft) {
+// 			$loginContext = $this->eiuAnalyst->getN2nContext(true)->lookup(LoginContext::class);
+// 			CastUtils::assertTrue($loginContext instanceof LoginContext);
+			
+// 			$eiObject->getDraft()->setUserId($loginContext->getCurrentUser()->getId());
+// 		}
 		
 		return new EiuObject($eiObject, $this->eiuAnalyst);
 	}

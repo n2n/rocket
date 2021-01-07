@@ -21,42 +21,40 @@
  */
 namespace rocket\impl\ei\component\prop\translation;
 
-use n2n\persistence\orm\property\EntityProperty;
-use n2n\util\type\ArgUtils;
-use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
-use rocket\ei\component\prop\FieldEiProp;
-use rocket\ei\manage\entry\EiField;
-use rocket\ei\manage\EiObject;
-use rocket\ei\EiPropPath;
+use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use n2n\l10n\N2nLocale;
-use n2n\util\col\ArrayUtils;
-use rocket\ei\manage\critmod\sort\SortPropFork;
-use n2n\persistence\orm\criteria\item\CriteriaProperty;
 use n2n\persistence\orm\criteria\Criteria;
-use n2n\persistence\orm\criteria\item\CrIt;
-use rocket\ei\manage\critmod\sort\SortDefinition;
 use n2n\persistence\orm\criteria\JoinType;
-use rocket\ei\manage\critmod\sort\SortConstraint;
-use rocket\ei\manage\critmod\sort\CriteriaAssemblyState;
-use rocket\ei\util\Eiu;
+use n2n\persistence\orm\criteria\item\CrIt;
+use n2n\persistence\orm\criteria\item\CriteriaProperty;
+use n2n\persistence\orm\property\EntityProperty;
+use n2n\util\col\ArrayUtils;
+use n2n\util\type\ArgUtils;
+use rocket\ei\EiPropPath;
+use rocket\ei\component\prop\FieldEiProp;
 use rocket\ei\component\prop\QuickSearchableEiProp;
-use rocket\impl\ei\component\prop\translation\model\TranslationQuickSearchProp;
-use rocket\impl\ei\component\prop\adapter\entry\EiFieldWrapperCollection;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
+use rocket\ei\manage\critmod\sort\CriteriaAssemblyState;
+use rocket\ei\manage\critmod\sort\SortConstraint;
+use rocket\ei\manage\critmod\sort\SortDefinition;
+use rocket\ei\manage\critmod\sort\SortPropFork;
+use rocket\ei\manage\entry\EiField;
 use rocket\ei\manage\gui\GuiProp;
-use rocket\ei\manage\DefPropPath;
-use rocket\ei\manage\gui\EiFieldAbstraction;
-use rocket\ei\manage\LiveEiObject;
-use rocket\impl\ei\component\prop\translation\conf\TranslationConfig;
-use rocket\impl\ei\component\prop\translation\gui\TranslationGuiProp;
+use rocket\ei\manage\gui\ViewMode;
+use rocket\ei\util\Eiu;
+use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\impl\ei\component\prop\relation\RelationEiPropAdapter;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
-use rocket\ei\manage\gui\ViewMode;
-use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
+use rocket\impl\ei\component\prop\translation\conf\TranslationConfig;
+use rocket\impl\ei\component\prop\translation\gui\TranslationGuiProp;
+use rocket\impl\ei\component\prop\translation\model\TranslationQuickSearchProp;
+use rocket\ei\component\prop\IdNameEiPropFork;
+use rocket\ei\manage\idname\IdNamePropFork;
+use rocket\impl\ei\component\prop\translation\model\TranslationIdNamePropFork;
 
-class TranslationEiProp extends RelationEiPropAdapter implements FieldEiProp, QuickSearchableEiProp {
+class TranslationEiProp extends RelationEiPropAdapter implements FieldEiProp, QuickSearchableEiProp, IdNameEiPropFork {
 	/**
 	 * @var TranslationConfig
 	 */
@@ -95,42 +93,45 @@ class TranslationEiProp extends RelationEiPropAdapter implements FieldEiProp, Qu
 		return new TranslationGuiProp($this->getRelationModel(), $this->translationConfig);
 	}
 
-	
-	public function determineForkedEiObject(Eiu $eiu): ?EiObject {
-		// @todo access locale and use EiObject with admin locale.
+	public function buildIdNamePropFork(Eiu $eiu): ?IdNamePropFork {
+		return new TranslationIdNamePropFork($this->getRelationModel(), $this);
 		
-		$targetObjects = $eiu->object()->readNativValue($this);
-		
-		if (empty($targetObjects)) {
-			return null;
-		}
-		
-		if ($targetObjects instanceof \ArrayObject) {
-			$targetObjects = $targetObjects->getArrayCopy();
-		}
-		
-		return LiveEiObject::create($this->eiPropRelation->getTargetEiType(), ArrayUtils::first($targetObjects));
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiPropFork::determineEiFieldWrapper()
-	 */
-	public function determineEiFieldAbstraction(Eiu $eiu, DefPropPath $defPropPath): EiFieldAbstraction {
-		$eiEntry = $eiu->entry()->getEiEntry();
+// 	public function determineForkedEiObject(Eiu $eiu): ?EiObject {
+// 		// @todo access locale and use EiObject with admin locale.
 		
-		$eiFieldWrappers = array();
-		foreach ($eiEntry->getValue(EiPropPath::from($this->eiPropRelation->getRelationEiProp())) as $targetRelationEntry) {
-			if (!$targetRelationEntry->hasEiEntry()) continue;
+// 		$targetObjects = $eiu->object()->readNativValue($this);
+		
+// 		if (empty($targetObjects)) {
+// 			return null;
+// 		}
+		
+// 		if ($targetObjects instanceof \ArrayObject) {
+// 			$targetObjects = $targetObjects->getArrayCopy();
+// 		}
+		
+// 		return LiveEiObject::create($this->eiPropRelation->getTargetEiType(), ArrayUtils::first($targetObjects));
+// 	}
+	
+// 	/**
+// 	 * {@inheritDoc}
+// 	 * @see \rocket\ei\manage\gui\GuiPropFork::determineEiFieldWrapper()
+// 	 */
+// 	public function determineEiFieldAbstraction(Eiu $eiu, DefPropPath $defPropPath): EiFieldAbstraction {
+// 		$eiEntry = $eiu->entry()->getEiEntry();
+		
+// 		$eiFieldWrappers = array();
+// 		foreach ($eiEntry->getValue(EiPropPath::from($this->eiPropRelation->getRelationEiProp())) as $targetRelationEntry) {
+// 			if (!$targetRelationEntry->hasEiEntry()) continue;
 				
-			if (null !== ($eiFieldWrapper = $eiu->engine()->getGuiDefinition()
-					->determineEiFieldAbstraction($eiu->getN2nContext(), $targetRelationEntry->getEiEntry(), $defPropPath))) {
-				$eiFieldWrappers[] = $eiFieldWrapper;
-			}
-		}
+// 			if (null !== ($eiFieldWrapper = $eiu->engine()->getGuiDefinition()
+// 					->determineEiFieldAbstraction($eiu->getN2nContext(), $targetRelationEntry->getEiEntry(), $defPropPath))) {
+// 				$eiFieldWrappers[] = $eiFieldWrapper;
+// 			}
+// 		}
 	
-		return new EiFieldWrapperCollection($eiFieldWrappers);
-	}
+// 		return new EiFieldWrapperCollection($eiFieldWrappers);
+// 	}
 	
 	public function buildSortPropFork(Eiu $eiu): ?SortPropFork {
 		$targetSortDefinition = null;

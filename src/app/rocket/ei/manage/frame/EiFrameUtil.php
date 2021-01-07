@@ -33,7 +33,6 @@ use n2n\persistence\orm\criteria\Criteria;
 use rocket\ei\manage\gui\EiGuiFrame;
 use n2n\persistence\orm\util\NestedSetStrategy;
 use rocket\ei\manage\LiveEiObject;
-use rocket\ei\manage\gui\EiEntryGuiMulti;
 use rocket\ei\EiException;
 use rocket\ei\UnknownEiTypeException;
 use rocket\ei\manage\entry\EiEntry;

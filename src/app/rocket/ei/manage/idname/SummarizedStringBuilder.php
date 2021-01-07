@@ -7,6 +7,7 @@ use n2n\core\container\N2nContext;
 use rocket\ei\util\Eiu;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\DefPropPath;
+use n2n\util\thread\RecursionAsserters;
 
 class SummarizedStringBuilder {
 	const KNOWN_STRING_FIELD_OPEN_DELIMITER = '{';
@@ -43,10 +44,17 @@ class SummarizedStringBuilder {
 	}
 	
 	public function replaceFields(array $baseEiPropPaths, IdNameDefinition $idNameDefinition, EiObject $eiObject = null) {
+		if (!RecursionAsserters::unique(self::class)->tryPush((string) $idNameDefinition->getEiMask()->getEiTypePath())) {
+			return;
+		}
+		
 		foreach ($idNameDefinition->getIdNameProps() as $eiPropPathStr => $idNameProp) {
 			$eiPropPath = EiPropPath::create($eiPropPathStr);
 			$placeholder = self::createPlaceholder($this->createDefPropPath($baseEiPropPaths, $eiPropPath));
-			if (false === strpos($this->identityStringPattern, $placeholder)) continue;
+			
+			if (false === strpos($this->identityStringPattern, $placeholder)) {
+				continue;
+			}
 			
 			$this->placeholders[] = $placeholder;
 			if ($eiObject === null) {
@@ -73,6 +81,8 @@ class SummarizedStringBuilder {
 			$ids[] = $eiPropPath;
 			$this->replaceFields($ids, $forkedIdNameDefinition, $forkedEiFieldSource);
 		}
+		
+		RecursionAsserters::unique(self::class)->pop((string) $idNameDefinition->getEiMask()->getEiTypePath());
 	}
 	
 	private function createDefPropPath(array $baseIds, $id) {
