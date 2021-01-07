@@ -34,11 +34,14 @@ use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 use rocket\impl\ei\component\prop\relation\RelationEiPropAdapter;
-use rocket\impl\ei\component\prop\relation\model\gui\RelationLinkGuiField;
 use rocket\ei\component\prop\FieldEiProp;
 use rocket\ei\manage\entry\EiField;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
 use rocket\impl\ei\component\prop\ci\conf\ContentItemsConfig;
+use rocket\si\content\impl\SiFields;
+use rocket\ei\util\entry\EiuEntry;
+use n2n\util\type\CastUtils;
+use rocket\si\content\impl\meta\SiCrumb;
 
 class ContentItemsEiProp extends RelationEiPropAdapter implements FieldEiProp {
 	
@@ -122,8 +125,12 @@ class ContentItemsEiProp extends RelationEiPropAdapter implements FieldEiProp {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiProp::buildGuiField()
 	 */
-	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {			
+	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {	
 		$readOnly = $readOnly || $this->getEditConfig()->isReadOnly();
+		
+		if ($readOnly && $eiu->gui()->isCompact()) {
+			return $this->createCompactGuiField($eiu);
+		}
 		
 		$targetEiuFrame = null;
 		if ($readOnly){
@@ -136,5 +143,20 @@ class ContentItemsEiProp extends RelationEiPropAdapter implements FieldEiProp {
 			
 		return new ContentItemGuiField($eiu, $targetEiuFrame, $this->getRelationModel(), 
 				$this->determinePanelDeclarations($eiu), $readOnly);
+	}
+	
+	/**
+	 * @param Eiu $eiu
+	 * @return \rocket\si\content\SiField
+	 */
+	private function createCompactGuiField(Eiu $eiu) {
+		$siCrumbs = [];
+		foreach ($eiu->field()->getValue() as $eiuEntry) {
+			CastUtils::assertTrue($eiuEntry instanceof EiuEntry);
+			$siCrumbs[] = SiCrumb::createIcon($eiuEntry->mask()->getIconType())
+					->setTitle($eiuEntry->createIdentityString());
+		}
+		
+		return $eiu->factory()->newGuiField(SiFields::crumbOut(...$siCrumbs))->toGuiField();
 	}
 }

@@ -87,12 +87,20 @@ export class SiGuiFactory {
 	static createCrumb(data: any): SiCrumb {
 		const extr = new Extractor(data);
 
+		let crumb: SiCrumb;
 		switch (extr.reqString('type')) {
 			case SiCrumb.Type.LABEL:
-				return SiCrumb.createLabel(extr.reqString('label'));
+				crumb = SiCrumb.createLabel(extr.reqString('label'));
+				break;
 			case SiCrumb.Type.ICON:
-				return SiCrumb.createIcon(extr.reqString('iconClass'));
+				crumb = SiCrumb.createIcon(extr.reqString('iconClass'));
+				break;
 		}
+
+		crumb.severity = extr.reqString('severity') as SiCrumb.Severity;
+		crumb.title = extr.nullaString('title');
+
+		return crumb;
 	}
 
 	static buildGridPos(data: any): SiGridPos|null {

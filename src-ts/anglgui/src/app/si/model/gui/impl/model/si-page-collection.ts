@@ -492,11 +492,23 @@ export class SiPageCollection implements SiControlBoundry {
 
 
 	private moveByEntries(entries: SiEntry[], targetEntry: SiEntry, after: boolean, treeLevel: number) {
-		const targetPosition = this.deterPositionOfEntry(targetEntry);
+		let targetPosition = this.deterPositionOfEntry(targetEntry);
+
+		if (after) {
+			targetPosition = this.lastDecendantPosition(targetPosition);
+		}
 
 		const positions = entries.map((entry) => this.deterPositionOfEntry(entry));
 
 		this.moveByPositions(positions, targetPosition, after, treeLevel);
+	}
+
+	private lastDecendantPosition(position: SiEntryPosition): SiEntryPosition {
+		if (position.childEntryPositions.length === 0) {
+			return position;
+		}
+
+		return this.lastDecendantPosition(position.childEntryPositions[position.childEntryPositions.length - 1]);
 	}
 
 	private moveByPositions(positions: SiEntryPosition[], targetPosition: SiEntryPosition, after: boolean, treeLevel: number) {

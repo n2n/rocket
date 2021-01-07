@@ -6,8 +6,6 @@ import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { SplitManagerComponent } from '../comp/split-manager/split-manager.component';
 import { SplitManagerModel } from '../comp/split-manager-model';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
-import { Fresult } from 'src/app/util/err/fresult';
-import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
 
 export class SplitContextInSiField extends SplitContextSiField implements SplitManagerModel {
 

@@ -148,7 +148,8 @@ class IdNameDefinition {
 	}
 	
 	/**
-	 * @param $entity
+	 * @param string $identityStringPattern
+	 * @param N2nContext $n2nContext
 	 * @param N2nLocale $n2nLocale
 	 * @return string
 	 */

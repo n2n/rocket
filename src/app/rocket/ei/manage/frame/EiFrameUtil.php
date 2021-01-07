@@ -33,7 +33,6 @@ use n2n\persistence\orm\criteria\Criteria;
 use rocket\ei\manage\gui\EiGuiFrame;
 use n2n\persistence\orm\util\NestedSetStrategy;
 use rocket\ei\manage\LiveEiObject;
-use rocket\ei\manage\gui\EiEntryGuiMulti;
 use rocket\ei\EiException;
 use rocket\ei\UnknownEiTypeException;
 use rocket\ei\manage\entry\EiEntry;
@@ -115,6 +114,14 @@ class EiFrameUtil {
 		
 		throw new UnknownEiObjectException('Entity not found: ' . EntityInfo::buildEntityString(
 				$this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()->getEntityModel(), $id));
+	}
+	
+	function lookupTreeLevel($id) {
+		
+		
+		$criteria = $this->eiFrame->createCriteria('e', );
+		$criteria->select('1');
+		$this->applyIdComparison($criteria->where(), $id);
 	}
 	
 	/**
@@ -232,8 +239,8 @@ class EiFrameUtil {
 	 * @throws EiException
 	 * @return EiGui
 	 */
-	function createEiGuiFromEiObject(EiObject $eiObject, bool $bulky, bool $readOnly, ?string $eiTypeId, ?array $defPropPaths) {
-		return $this->createEiGuiFromEiEntry($this->eiFrame->createEiEntry($eiObject), $bulky, $readOnly, $eiTypeId, $defPropPaths);
+	function createEiGuiFromEiObject(EiObject $eiObject, bool $bulky, bool $readOnly, ?string $eiTypeId, ?array $defPropPaths, ?int $treeLevel) {
+		return $this->createEiGuiFromEiEntry($this->eiFrame->createEiEntry($eiObject), $bulky, $readOnly, $eiTypeId, $defPropPaths, $treeLevel);
 	}
 	
 	/**
@@ -244,7 +251,7 @@ class EiFrameUtil {
 	 * @throws EiException
 	 * @return EiGui
 	 */
-	function createEiGuiFromEiEntry(EiEntry $eiEntry, bool $bulky, bool $readOnly, ?string $eiTypeId, ?array $defPropPaths) {
+	function createEiGuiFromEiEntry(EiEntry $eiEntry, bool $bulky, bool $readOnly, ?string $eiTypeId, ?array $defPropPaths, ?int $treeLevel) {
 		$viewMode = ViewMode::determine($bulky, $readOnly, $eiEntry->isNew());
 		
 		$eiMask = null;
@@ -258,7 +265,7 @@ class EiFrameUtil {
 		$eiGui = new EiGui($this->eiFrame->getManageState()->getEiGuiModelCache()
 				->obtainEiGuiModel($eiMask, $viewMode, $defPropPaths));
 		
-		$eiGui->appendEiEntryGui($this->eiFrame, [$eiEntry]);
+		$eiGui->appendEiEntryGui($this->eiFrame, [$eiEntry], $treeLevel);
 		
 		return $eiGui;
 	}
@@ -309,6 +316,30 @@ class EiFrameUtil {
 		}
 		
 		return $criteria;
+	}
+	
+	/**
+	 * @param mixed $id
+	 * @param bool $bulky
+	 * @param bool $readOnly
+	 * @param array $defPropPaths
+	 * @throws UnknownEiObjectException
+	 * @return \rocket\ei\manage\gui\EiGui
+	 */
+	function lookupEiGuiFromId($id, bool $bulky, bool $readOnly, ?array $defPropPaths) {
+		$eiObject = $this->lookupEiObject($id);
+		
+		$eiType = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType();
+		$nestedSetStrategy = $eiType->getNestedSetStrategy();
+		
+		$treeLevel = null;
+		if ($nestedSetStrategy !== null) {
+			$nestedSetUtils = new NestedSetUtils($this->eiFrame->getManageState()->getEntityManager(), 
+					$eiType->getEntityModel()->getClass(), $nestedSetStrategy);
+			$treeLevel = $nestedSetUtils->fetchLevel($eiObject->getEiEntityObj()->getEntityObj());
+		}
+		
+		return $this->createEiGuiFromEiObject($eiObject, $bulky, $readOnly, null, $defPropPaths, $treeLevel);
 	}
 	
 	/**

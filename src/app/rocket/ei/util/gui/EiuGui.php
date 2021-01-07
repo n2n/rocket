@@ -34,6 +34,20 @@ class EiuGui {
 	}
 	
 	/**
+	 * @return boolean
+	 */
+	function isCompact() {
+		return ViewMode::isCompact($this->eiGui->getEiGuiModel()->getViewMode());
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	function isBulky() {
+		return ViewMode::isBulky($this->eiGui->getEiGuiModel()->getViewMode());
+	}
+	
+	/**
 	 * @return \rocket\ei\util\gui\EiuGuiModel
 	 */
 	function guiModel() {
