@@ -144,14 +144,20 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 			}
 		}
 		
+		$mapCb = function ($defPropPaths) {
+			return array_map(function ($defPropPath) { return (string) $defPropPath; }, $defPropPaths);
+		};
+		
 		$siField = SiFields::enumIn($choicesMap, $eiu->field()->getValue())
-				->setMandatory($this->getEditConfig()->isMandatory());
+				->setMandatory($this->getEditConfig()->isMandatory())
+				->setAssociatedPropIdsMap(array_map($mapCb, $this->enumConfig->getAssociatedDefPropPathMap()));
 		
 // 		$defPropPathMap = $this->getEnumConfig()->getAssociatedDefPropPathMap();
 // 		if (empty($defPropPathMap)) {
-		return $eiu->factory()->newGuiField($siField)->setSaver(function () use ($eiu, $siField)  {
-			$this->saveSiField($siField, $eiu);
-		});
+		return $eiu->factory()->newGuiField($siField)
+				->setSaver(function () use ($eiu, $siField)  {
+					$this->saveSiField($siField, $eiu);
+				});
 // 		}
 		
 // 		$enablerMag = new EnumTogglerMag($this->getLabelLstr(), $choicesMap, null, 

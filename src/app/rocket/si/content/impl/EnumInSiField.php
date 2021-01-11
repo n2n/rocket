@@ -122,7 +122,7 @@ class EnumInSiField extends InSiFieldAdapter {
 	 * @return string[][]
 	 */
 	function getAssociatedPropIdsMap() {
-		return $this->c;
+		return $this->associatedPropIdsMap;
 	}
 	
 	/**
@@ -133,7 +133,8 @@ class EnumInSiField extends InSiFieldAdapter {
 		return [
 			'value' => $this->value,
 			'options' => $this->options,
-			'mandatory' => $this->mandatory
+			'mandatory' => $this->mandatory,
+			'associatedPropIdsMap' => $this->associatedPropIdsMap
 		];
 	}
 	

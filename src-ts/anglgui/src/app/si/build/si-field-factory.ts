@@ -141,6 +141,11 @@ export class SiFieldFactory {
 		case SiFieldType.ENUM_IN:
 			const enumInSiField = new EnumInSiField(dataExtr.nullaString('value'), dataExtr.reqStringMap('options'));
 			enumInSiField.mandatory = dataExtr.reqBoolean('mandatory');
+
+			fieldMap$.subscribe((fieldMap) => {
+				this.finalizeEnum(enumInSiField, dataExtr.reqMap('associatedPropIdsMap'), fieldMap);
+			});
+
 			return enumInSiField;
 
 		case SiFieldType.QUALIFIER_SELECT_IN:
@@ -289,6 +294,15 @@ export class SiFieldFactory {
 			if (field = fieldMap.get(propId)) {
 				booleanInSiField.addOffAssociatedField(field);
 			}
+		}
+	}
+
+	private finalizeEnum(enumInSiField: EnumInSiField, associatedPropIdsMap: Map<string, string[]>,
+			fieldMap: Map<string, SiField>) {
+		for (const [value, propIds] of associatedPropIdsMap) {
+			enumInSiField.setAssociatedFields(value, propIds
+					.map(propId => fieldMap.get(propId))
+					.filter(field => !!field));
 		}
 	}
 }

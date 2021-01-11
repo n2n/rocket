@@ -10,6 +10,7 @@ import { EnumInModel } from '../comp/enum-in-model';
 
 export class EnumInSiField extends InSiFieldAdapter implements SelectInFieldModel, EnumInModel {
 	public mandatory = false;
+	private asscoiatedFieldsMap = new Map<string, SiField[]>();
 
 	constructor(public value: string|null, public options: Map<string, string>) {
 		super();
@@ -21,6 +22,7 @@ export class EnumInSiField extends InSiFieldAdapter implements SelectInFieldMode
 
 	setValue(value: string): void {
 		this.value = value;
+		this.updateAssociates();
 	}
 
 	getOptions(): Map<string, string> {
@@ -69,5 +71,17 @@ export class EnumInSiField extends InSiFieldAdapter implements SelectInFieldMode
 		}
 
 		throw new GenericMissmatchError('String expected.');
+	}
+
+	setAssociatedFields(value: string, fields: SiField[]) {
+		this.asscoiatedFieldsMap.set(value, fields);
+		fields.forEach(field => field.setDisabled(this.value !== value));
+	}
+
+	private updateAssociates() {
+		for (const [aKey, aFields] of this.asscoiatedFieldsMap) {
+			const disabled = aKey !== this.value;
+			aFields.forEach(field => field.setDisabled(disabled));
+		}
 	}
 }

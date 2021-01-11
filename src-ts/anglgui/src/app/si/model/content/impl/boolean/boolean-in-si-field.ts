@@ -30,7 +30,6 @@ export class BooleanInSiField extends InSiFieldAdapter implements TogglerInModel
 	}
 
 	addOffAssociatedField(field: SiField) {
-		console.log(field);
 		this.offAsscoiatedFields.push(field);
 		field.setDisabled(this.value);
 	}

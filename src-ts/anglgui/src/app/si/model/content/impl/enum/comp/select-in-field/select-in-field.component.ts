@@ -24,6 +24,10 @@ export class SelectInFieldComponent implements OnInit {
 		return this.model.getValue();
 	}
 
+	set value(value: string|null) {
+		this.model.setValue(value);
+	}
+
 	get options(): Option[] {
 		const options: Option[] = [];
 
