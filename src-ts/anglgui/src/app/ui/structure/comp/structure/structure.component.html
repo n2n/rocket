@@ -30,9 +30,11 @@
 	</ng-container>
 	
 	<ng-template #structureContent>
-		<div *ngIf="!loaded" class="rocket-loader"></div>
+		<div *ngIf="uiStructure.disabled" class="rocket-inactive">{{ 'disabled_txt' | translate }}</div>
+
+		<div *ngIf="!loaded && !uiStructure.disabled" class="rocket-loader"></div>
 		
-		<ng-container *ngIf="loaded">
+		<ng-container *ngIf="loaded && !uiStructure.disabled">
 			
 			<ng-template *ngIf="uiContent" rocketUiContent [uiContent]="uiContent"></ng-template>
 			
@@ -42,5 +44,7 @@
 		</ng-container>
 	</ng-template>
 </ng-container>
+
+
 
 <ng-content select="[post-content]"></ng-content>

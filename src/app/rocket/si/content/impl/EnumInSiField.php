@@ -23,6 +23,7 @@ namespace rocket\si\content\impl;
 
 use n2n\util\type\attrs\DataSet;
 use n2n\util\type\ArgUtils;
+use n2n\util\type\TypeConstraints;
 
 class EnumInSiField extends InSiFieldAdapter {
 	/**
@@ -37,6 +38,10 @@ class EnumInSiField extends InSiFieldAdapter {
 	 * @var bool
 	 */
 	private $mandatory = false;
+	/**
+	 * @var string[][]
+	 */
+	private $associatedPropIdsMap = [];
 	
 	/**
 	 * @param int $value
@@ -101,6 +106,23 @@ class EnumInSiField extends InSiFieldAdapter {
 	 */
 	function getType(): string {
 		return 'enum-in';
+	}
+	
+	/**
+	 * @param string[][] $associatedPropIdsMap
+	 * @return \rocket\si\content\impl\EnumInSiField
+	 */
+	function setAssociatedPropIdsMap(array $associatedPropIdsMap) {
+		ArgUtils::valArray($associatedPropIdsMap, TypeConstraints::array(false, 'string'));
+		$this->associatedPropIdsMap = $associatedPropIdsMap;
+		return $this;
+	}
+	
+	/**
+	 * @return string[][]
+	 */
+	function getAssociatedPropIdsMap() {
+		return $this->c;
 	}
 	
 	/**

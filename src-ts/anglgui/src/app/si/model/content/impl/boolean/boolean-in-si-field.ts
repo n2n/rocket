@@ -5,7 +5,6 @@ import { TogglerInFieldComponent } from './comp/toggler-in-field/toggler-in-fiel
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { TogglerInModel } from './comp/toggler-in-model';
 import { SiGenericValue } from '../../../generic/si-generic-value';
-import { Fresult } from 'src/app/util/err/fresult';
 import { GenericMissmatchError } from '../../../generic/generic-missmatch-error';
 
 export class BooleanInSiField extends InSiFieldAdapter implements TogglerInModel {
@@ -31,6 +30,7 @@ export class BooleanInSiField extends InSiFieldAdapter implements TogglerInModel
 	}
 
 	addOffAssociatedField(field: SiField) {
+		console.log(field);
 		this.offAsscoiatedFields.push(field);
 		field.setDisabled(this.value);
 	}
