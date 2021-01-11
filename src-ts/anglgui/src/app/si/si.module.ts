@@ -47,8 +47,8 @@ import { CkeInFieldComponent } from './model/content/impl/alphanum/comp/cke-in-f
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { FieldMessagesComponent } from './model/content/impl/common/comp/field-messages/field-messages.component';
 import { CrumbOutFieldComponent } from './model/content/impl/meta/comp/crumb-out-field/crumb-out-field.component';
-import { SelectInFieldComponent } from './model/content/impl/alphanum/comp/select-in-field/select-in-field.component';
 import { EmbeddedEntryPanelsComponent } from './model/content/impl/embedded/comp/embedded-entry-panels/embedded-entry-panels.component';
+import { SelectInFieldComponent } from './model/content/impl/enum/comp/select-in-field/select-in-field.component';
 
 @NgModule({
 	declarations: [

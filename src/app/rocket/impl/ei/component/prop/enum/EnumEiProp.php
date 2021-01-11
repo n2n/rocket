@@ -37,7 +37,6 @@ use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\critmod\quick\impl\LikeQuickSearchProp;
-use n2n\impl\web\dispatch\mag\model\group\EnumTogglerMag;
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\sort\SortProp;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
@@ -104,7 +103,7 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 	
 	public function prepare() {
 		$this->getConfigurator()
-				->addAdaption($this->getEditConfig())
+				->addAdaption($this->getEnumConfig())
 				->addAdaption($this->getQuickSearchConfig());
 	}
 	
@@ -146,7 +145,7 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 		}
 		
 		$siField = SiFields::enumIn($choicesMap, $eiu->field()->getValue())
-					->setMandatory($this->getEditConfig()->isMandatory());
+				->setMandatory($this->getEditConfig()->isMandatory());
 		
 // 		$defPropPathMap = $this->getEnumConfig()->getAssociatedDefPropPathMap();
 // 		if (empty($defPropPathMap)) {

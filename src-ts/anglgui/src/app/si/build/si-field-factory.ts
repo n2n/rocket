@@ -10,7 +10,6 @@ import { BooleanInSiField } from '../model/content/impl/boolean/boolean-in-si-fi
 import { StringInSiField } from '../model/content/impl/alphanum/model/string-in-si-field';
 import { StringOutSiField } from '../model/content/impl/alphanum/model/string-out-si-field';
 import { LinkOutSiField } from '../model/content/impl/alphanum/model/link-out-si-field';
-import { EnumInSiField } from '../model/content/impl/alphanum/model/enum-in-si-field';
 import { SiMask } from '../model/meta/si-type';
 import { SiProp } from '../model/meta/si-prop';
 import { Subject, Observable } from 'rxjs';
@@ -34,6 +33,7 @@ import { EmbeddedEntryPanelsOutSiField } from '../model/content/impl/embedded/mo
 import { EmbeddedEntryPanelsInSiField } from '../model/content/impl/embedded/model/embedded-entry-panels-in-si-field';
 import { SplitViewStateContext } from '../model/content/impl/split/model/state/split-view-state-context';
 import { SplitViewStateService } from '../model/content/impl/split/model/state/split-view-state.service';
+import { EnumInSiField } from '../model/content/impl/enum/model/enum-in-si-field';
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',

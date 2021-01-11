@@ -46,6 +46,7 @@ class BooleanConfig extends PropConfigAdaption {
 	public function setOffAssociatedDefPropPaths(array $offAssociatedDefPropPaths) {
 		ArgUtils::valArray($offAssociatedDefPropPaths, DefPropPath::class);
 		$this->offAssociatedDefPropPaths = $offAssociatedDefPropPaths;
+		
 	}
 	
 	/**
