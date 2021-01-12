@@ -129,7 +129,7 @@ class EnumConfig extends PropConfigAdaption {
 	
 	public function setup(Eiu $eiu, DataSet $dataSet) {
 		if ($dataSet->contains(self::ATTR_OPTIONS_KEY)) {
-			$options = $dataSet->optArray(self::ATTR_OPTIONS_KEY, TypeConstraints::scalar());
+			$options = $dataSet->optArray(self::ATTR_OPTIONS_KEY, TypeConstraints::scalar(true));
 			
 			$this->options = array_filter($options);
 		}
