@@ -72,7 +72,10 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 		ArgUtils::assertTrue($propertyAccessProxy !== null);
 		
 		if (null !== ($typeConstraint = $propertyAccessProxy->getConstraint())) {
-			$typeConstraint->isPassableTo(TypeConstraints::scalar(true), true);
+			if ($typeConstraint->isArrayLike()) {
+				throw new \InvalidArgumentException($typeConstraint->__toString() . ' not compatible with ' . TypeConstraints::scalar(true));
+			}
+			
 			if (!$typeConstraint->isEmpty()) {
 				$typeConstraint->setConvertable(true);
 			}
@@ -200,7 +203,7 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 	
 	public function buildFilterProp(Eiu $eiu): ?FilterProp {
 		if (null !== ($entityProperty = $this->getEntityProperty())) {
-			return new EnumFilterProp(CrIt::p($entityProperty), $this->getLabelLstr(), $this->getOptions());
+			return new EnumFilterProp(CrIt::p($entityProperty), $this->getLabelLstr(), $this->enumConfig->getOptions());
 		}
 		
 		return null;

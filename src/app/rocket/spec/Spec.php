@@ -168,7 +168,7 @@ class Spec {
 		if (isset($this->launchPads[$id])) {
 			return $this->launchPads[$id];
 		}
-		
+
 		return $this->initLaunchPadFromTypePath(TypePath::create($id));
 	}
 	

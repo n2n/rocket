@@ -108,6 +108,8 @@ class EnumConfig extends PropConfigAdaption {
 		$optionsMag->setValue($valueLabelMap);
 		
 		$magCollection->addMag(self::ATTR_OPTIONS_KEY, $optionsMag);
+		
+		return new MagForm($magCollection);
 	}
 	
 	public function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {

@@ -49,7 +49,9 @@ class CompactExplorerListModelImpl extends UiStructureModelAdapter implements Co
 
 		if (partialContent && !this.comp.pageCollection.declared) {
 			this.comp.pageCollection.size = partialContent.count;
-			this.comp.pageCollection.createPage(1, partialContent.entries);
+			if (partialContent.count > 0) {
+				this.comp.pageCollection.createPage(1, partialContent.entries);
+			}
 		}
 	}
 

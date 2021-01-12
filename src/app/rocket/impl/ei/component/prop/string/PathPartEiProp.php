@@ -21,7 +21,6 @@
  */
 namespace rocket\impl\ei\component\prop\string;
 
-use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\l10n\DynamicTextCollection;
