@@ -70,7 +70,6 @@ export class StructureBranchComponent implements OnInit, OnDestroy {
 			}
 
 			tabContainer.registerTab(childUiStructure);
-			console.log(tabContainer.availableTabs.length);
 		}
 	}
 }
