@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2012-2016, Hofmänner New Media.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -15,118 +16,67 @@
  *
  * The following people participated in this project:
  *
- * Andreas von Burg...........:	Architect, Lead Developer, Concept
+ * Andreas von Burg...........: Architect, Lead Developer, Concept
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
 namespace rocket\impl\ei\component\prop\adapter;
 
-use n2n\util\ex\IllegalStateException;
 use rocket\ei\manage\gui\GuiProp;
-use n2n\l10n\N2nLocale;
-use n2n\util\ex\UnsupportedOperationException;
 use rocket\ei\component\prop\GuiEiProp;
 use rocket\ei\util\Eiu;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
-use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\ei\manage\gui\ViewMode;
-use rocket\ei\manage\gui\GuiField;
+use rocket\ei\manage\gui\field\GuiField;
 use rocket\core\model\Rocket;
-use n2n\l10n\Lstr;
-use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
-use rocket\impl\ei\component\prop\adapter\gui\GuiFieldProxy;
+use rocket\ei\util\factory\EifGuiField;
+use n2n\util\ex\UnsupportedOperationException;
+use rocket\ei\manage\gui\GuiFieldAssembler;
 
-abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter implements StatelessGuiFieldDisplayable, GuiEiProp, GuiProp {
-	protected $displayConfig;
+abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter implements GuiEiProp, GuiFieldAssembler {
+	private $displayConfig;
 
 	/**
+	 *
 	 * @return DisplayConfig
 	 */
-	public function getDisplayConfig(): DisplayConfig {
+	protected function getDisplayConfig() {
 		if ($this->displayConfig === null) {
-			$this->displayConfig = new DisplayConfig(ViewMode::all());
+			$this->displayConfig = new DisplayConfig ( ViewMode::all () );
 		}
 
 		return $this->displayConfig;
 	}
 
 	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\IndependentEiPropAdapter::createEiPropConfigurator()
+	 *
+	 * {@inheritdoc}
+	 * @see \rocket\ei\component\prop\EiProp::isPrivileged()
 	 */
-	public function createEiPropConfigurator(): EiPropConfigurator {
-		$eiPropConfigurator = parent::createEiPropConfigurator();
-		IllegalStateException::assertTrue($eiPropConfigurator instanceof AdaptableEiPropConfigurator);
-		$eiPropConfigurator->registerDisplayConfig($this->getDisplayConfig());
-		return $eiPropConfigurator;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\GuiEiProp::buildGuiProp()
-	 */
-	public function buildGuiProp(Eiu $eiu): ?GuiProp {
-		return $this;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayLabelLstr()
-	 */
-	public function getDisplayLabelLstr(): Lstr {
-		return $this->getLabelLstr();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiProp::getDisplayHelpTextLstr()
-	 */
-	public function getDisplayHelpTextLstr(): ?Lstr {
-		$helpText = $this->displayConfig->getHelpText();
-		if ($helpText === null) {
-			return null;
-		}
-		
-		return Rocket::createLstr($helpText, $this->getEiMask()->getModuleNamespace())->t($n2nLocale);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiProp::buildDisplayDefinition()
-	 */
-	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
-		$viewMode = $eiu->gui()->getViewMode();
-		if (!$this->getDisplayConfig()->isViewModeCompatible($viewMode)) {
-			return null;
-		}
-		
-		return new DisplayDefinition($this->getDisplayItemType($eiu),
-				$this->getDisplayConfig()->isViewModeDefaultDisplayed($viewMode));
-	}
-	
-	protected function getDisplayItemType(Eiu $eiu): string {
-		return $this->displayConfig->getDisplayItemType();
-	}
-	
-	public function buildGuiField(Eiu $eiu): ?GuiField {
-		return new GuiFieldProxy($eiu, $this);
-	}
-	
-// 	public function getUiOutputLabel(Eiu $eiu) {
-// 		return $this->getLabelLstr()->t($eiu->getN2nLocale());
-// 	}
-	
-	public function getHtmlContainerAttrs(Eiu $eiu) {
-		return array('title' => $this->getDisplayConfig()->getHelpText());
-	}
-	
-	public function isStringRepresentable(): bool {
+	public function isPrivileged(): bool {
 		return false;
 	}
+
+	/**
+	 *
+	 * {@inheritdoc}
+	 * @see \rocket\impl\ei\component\prop\adapter\IndependentEiPropAdapter::createEiPropConfigurator()
+	 */
+	protected function createConfigurator(): AdaptableEiPropConfigurator {
+		return parent::createConfigurator ()->addAdaption ( $this->getDisplayConfig () );
+	}
 	
-	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
-		throw new UnsupportedOperationException('EiProp ' . $this . ' not string representable.');
+	function buildGuiProp(Eiu $eiu): ?GuiProp {
+		return $eiu->factory ()->newGuiProp (function (Eiu $eiu) {
+			return $this->getDisplayConfig()->buildGuiPropSetup($eiu, $this);
+		})->toGuiProp();
+	}
+	
+	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
+		return $this->createOutEifGuiField ( $eiu, $readOnly )->toGuiField ();
+	}
+	protected function createOutEifGuiField(Eiu $eiu): EifGuiField {
+		throw new UnsupportedOperationException ( get_class ( $this ) . ' must implement  either' . ' createOutEifGuiField(Eiu $eiu): EifGuiField or' . ' buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField.' );
 	}
 }

@@ -21,7 +21,7 @@
  */
 namespace rocket\user\bo;
 
-use n2n\util\type\attrs\Attributes;
+use n2n\util\type\attrs\DataSet;
 use n2n\reflection\ObjectAdapter;
 use n2n\reflection\annotation\AnnoInit;
 use n2n\util\StringUtils;
@@ -76,15 +76,15 @@ class CustomGrant extends ObjectAdapter implements Grant {
 		$this->full = $full;
 	}
 	
-	public function readAccessAttributes() {
-		return new Attributes(StringUtils::jsonDecode($this->accessJson, true));
+	public function readAccessDataSet() {
+		return new DataSet(StringUtils::jsonDecode($this->accessJson, true));
 	}
 	
-	public function writeAccessAttributes(Attributes $accessAttributes) {
-		$this->accessJson = StringUtils::jsonEncode($accessAttributes->toArray());
+	public function writeAccessDataSet(DataSet $accessDataSet) {
+		$this->accessJson = StringUtils::jsonEncode($accessDataSet->toArray());
 	}
 	
-	public function getAccessAttributes() {
-		return $this->readAccessAttributes();
+	public function getAccessDataSet() {
+		return $this->readAccessDataSet();
 	}
 }

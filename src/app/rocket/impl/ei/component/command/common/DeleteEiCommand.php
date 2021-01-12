@@ -22,30 +22,23 @@
 namespace rocket\impl\ei\component\command\common;
 
 use n2n\core\N2N;
-use n2n\l10n\DynamicTextCollection;
-use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\ei\manage\frame\EiFrame;
-use n2n\l10n\N2nLocale;
-use rocket\ei\component\command\control\PartialControlComponent;
-use rocket\ei\component\command\control\EntryControlComponent;
-use rocket\impl\ei\component\command\common\controller\DeleteController;
-use rocket\ei\manage\control\ControlButton;
-use rocket\ei\manage\control\IconType;
-use rocket\impl\ei\component\command\IndependentEiCommandAdapter;
-use rocket\ei\component\command\PrivilegedEiCommand;
-use n2n\core\container\N2nContext;
 use rocket\core\model\Rocket;
-use rocket\ei\manage\security\privilege\EiCommandPrivilege;
-use n2n\util\uri\Path;
+use rocket\ei\component\command\PrivilegedEiCommand;
+use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\util\Eiu;
-use n2n\web\http\controller\Controller;
+use rocket\impl\ei\component\command\adapter\IndependentEiCommandAdapter;
+use rocket\si\control\SiButton;
+use rocket\si\control\SiConfirm;
+use rocket\si\control\SiIconType;
 
-class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialControlComponent, 
-		EntryControlComponent, PrivilegedEiCommand {
+class DeleteEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiCommand {
 	const ID_BASE = 'delete';
 	const CONTROL_BUTTON_KEY = 'delete'; 
 	const PRIVILEGE_LIVE_ENTRY_KEY = 'eiEntityObj';
 	const PRIVILEGE_DRAFT_KEY = 'draft';
+	
+	protected function prepare() {
+	}
 	
 	public function getIdBase(): ?string {
 		return self::ID_BASE;
@@ -55,78 +48,100 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PartialCont
 		return 'Delete';
 	}
 	
-	public function lookupController(Eiu $eiu): Controller {
-		return $eiu->lookup(DeleteController::class);
-	}
-	
-	public function createEntryControls(Eiu $eiu, HtmlView $view): array {
+	public function createEntryGuiControls(Eiu $eiu): array {
 		$eiuEntry = $eiu->entry();
-		$eiuFrame = $eiu->frame();
 		
-		$pathExt = null;
-		$name = null;
-		$tooltip = null;
-		$confirmMessage = null;
-		$iconType = null;
 		if ($eiuEntry->isDraft()) {
-			$draft = $eiuEntry->getDraft();
-			$pathExt = new Path(array('draft', $draft->getId()));
-			$name = $view->getL10nText('ei_impl_delete_draft_label');
-			$tooltip = $view->getL10nText('ei_impl_delete_draft_tooltip', 
-					array('last_mod' => $view->getL10nDateTime($draft->getLastMod())));
-			$confirmMessage = $view->getL10nText('ei_impl_delete_draft_confirm_message', 
-					array('last_mod' => $view->getL10nDateTime($draft->getLastMod())));
-			$iconType = IconType::ICON_TIMES_CIRCLE;
-		} else {
-			$pathExt = new Path(array('live', $eiuEntry->getPid()));
-			$identityString = $eiuEntry->createIdentityString();
-			$name = $view->getL10nText('common_delete_label');
-			$tooltip = $view->getL10nText('ei_impl_delete_entry_tooltip', 
-					array('entry' => $eiuFrame->getGenericLabel()));
-			$confirmMessage = $view->getL10nText('ei_impl_delete_entry_confirm', array('entry' => $identityString));
-			$iconType = IconType::ICON_TRASH_O;
+			return [];
 		}
 		
-		$controlButton = new ControlButton($name, $tooltip, false, ControlButton::TYPE_DANGER, $iconType);
-		$controlButton->setConfirmMessage($confirmMessage);
-		$controlButton->setConfirmOkButtonLabel($view->getL10nText('common_yes_label'));
-		$controlButton->setConfirmCancelButtonLabel($view->getL10nText('common_no_label'));
-		$controlButton->setAttrs(array('class' => 'rocket-impl-remove'));
+		$eiuFrame = $eiu->frame();
+		$dtc = $eiu->dtc('rocket');
 		
-		$query = array();
-		if ($eiu->gui()->isCompact()) {
-			$query['refPath'] = (string) $eiuFrame->getEiFrame()->getCurrentUrl($view->getHttpContext());
-		}
+		$identityString = $eiuEntry->createIdentityString();
+		$name = $dtc->t('common_delete_label');
+		$tooltip = $dtc->t('ei_impl_delete_entry_tooltip', ['entry' => $eiuFrame->getGenericLabel()]);
+		$confirmMessage = $dtc->t('ei_impl_delete_entry_confirm', array('entry' => $identityString));
 		
-		$hrefControl = $eiu->frame()->controlFactory($this)->createJhtml($controlButton, $pathExt->toUrl($query))
-		      ->setPushToHistory(false)->setForceReload(true);
+		$siButton = SiButton::danger($name, SiIconType::ICON_TIMES_CIRCLE)->setTooltip($tooltip)
+				->setConfirm(new SiConfirm($confirmMessage, $dtc->t('common_yes_label'), $dtc->t('common_no_label'), true));
 		
-		return array(self::CONTROL_BUTTON_KEY => $hrefControl);
+		$eiuControlFactory = $eiu->guiFrame()->controlFactory($this);
+		$control = $eiuControlFactory->createCallback(self::CONTROL_BUTTON_KEY, $siButton, function (Eiu $eiu) {
+			$eiu->entry()->remove();
+		});
+		
+		return [self::CONTROL_BUTTON_KEY => $control];
 	}
 	
-	public function getEntryControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {
-		$dtc = new DynamicTextCollection('rocket');
+// 	public function createEntryGuiControls(Eiu $eiu): array {
+// 		$eiuEntry = $eiu->entry();
+// 		$eiuFrame = $eiu->frame();
 		
-		return array(self::CONTROL_BUTTON_KEY => $dtc->translate('ei_impl_delete_draft_label'));
-	}
+// 		$pathExt = null;
+// 		$name = null;
+// 		$tooltip = null;
+// 		$confirmMessage = null;
+// 		$iconType = null;
+// 		if ($eiuEntry->isDraft()) {
+// 			$draft = $eiuEntry->getDraft();
+// 			$pathExt = new Path(array('draft', $draft->getId()));
+// 			$name = $view->getL10nText('ei_impl_delete_draft_label');
+// 			$tooltip = $view->getL10nText('ei_impl_delete_draft_tooltip', 
+// 					array('last_mod' => $view->getL10nDateTime($draft->getLastMod())));
+// 			$confirmMessage = $view->getL10nText('ei_impl_delete_draft_confirm_message', 
+// 					array('last_mod' => $view->getL10nDateTime($draft->getLastMod())));
+// 			$iconType = SiIconType::ICON_TIMES_CIRCLE;
+// 		} else {
+// 			$pathExt = new Path(array('live', $eiuEntry->getPid()));
+// 			$identityString = $eiuEntry->createIdentityString();
+// 			$name = $view->getL10nText('common_delete_label');
+// 			$tooltip = $view->getL10nText('ei_impl_delete_entry_tooltip', 
+// 					array('entry' => $eiuFrame->getGenericLabel()));
+// 			$confirmMessage = $view->getL10nText('ei_impl_delete_entry_confirm', array('entry' => $identityString));
+// 			$iconType = SiIconType::ICON_TRASH_O;
+// 		}
+		
+// 		$siButton = new SiButton($name, $tooltip, false, SiButton::TYPE_DANGER, $iconType);
+// 		$siButton->setConfirmMessage($confirmMessage);
+// 		$siButton->setConfirmOkButtonLabel($view->getL10nText('common_yes_label'));
+// 		$siButton->setConfirmCancelButtonLabel($view->getL10nText('common_no_label'));
+// 		$siButton->setAttrs(array('class' => 'rocket-impl-remove'));
+		
+// 		$query = array();
+// 		if ($eiu->guiFrame()->isCompact()) {
+// 			$query['refPath'] = (string) $eiuFrame->getEiFrame()->getCurrentUrl($view->getHttpContext());
+// 		}
+		
+// 		$hrefControl = $eiu->guiFrame()->controlFactory($this)->createJhtml($siButton, $pathExt->toUrl($query))
+// 		      ->setPushToHistory(false)->setForceReload(true);
+		
+// 		return array(self::CONTROL_BUTTON_KEY => $hrefControl);
+// 	}
 	
-	public function createPartialControlButtons(EiFrame $eiFrame, HtmlView $htmlView) {
-		$dtc = new DynamicTextCollection('rocket', $htmlView->getN2nContext()->getN2nLocale());
-		$eiCommandButton = new ControlButton(null, $dtc->translate('ei_impl_partial_delete_label'), 
-				$dtc->translate('ei_impl_partial_delete_tooltip'), false, ControlButton::TYPE_SECONDARY,
-				IconType::ICON_TIMES_SIGN);
-		$eiCommandButton->setConfirmMessage($dtc->translate('ei_impl_partial_delete_confirm_message'));
-		$eiCommandButton->setConfirmOkButtonLabel($dtc->translate('common_yes_label'));
-		$eiCommandButton->setConfirmCancelButtonLabel($dtc->translate('common_no_label'));
+// 	public function getEntryGuiControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {
+// 		$dtc = new DynamicTextCollection('rocket');
 		
-		return array(self::CONTROL_BUTTON_KEY => $eiCommandButton);
-	}
+// 		return array(self::CONTROL_BUTTON_KEY => $dtc->translate('ei_impl_delete_draft_label'));
+// 	}
 	
-	public function getPartialControlOptions(N2nLocale $n2nLocale) {
-		$dtc = new DynamicTextCollection('rocket');
+// 	public function createPartialControlButtons(EiFrame $eiFrame, HtmlView $htmlView) {
+// 		$dtc = new DynamicTextCollection('rocket', $htmlView->getN2nContext()->getN2nLocale());
+// 		$eiCommandButton = new SiButton(null, $dtc->translate('ei_impl_partial_delete_label'), 
+// 				$dtc->translate('ei_impl_partial_delete_tooltip'), false, SiButton::TYPE_SECONDARY,
+// 				SiIconType::ICON_TIMES_SIGN);
+// 		$eiCommandButton->setConfirmMessage($dtc->translate('ei_impl_partial_delete_confirm_message'));
+// 		$eiCommandButton->setConfirmOkButtonLabel($dtc->translate('common_yes_label'));
+// 		$eiCommandButton->setConfirmCancelButtonLabel($dtc->translate('common_no_label'));
 		
-		return array(self::CONTROL_BUTTON_KEY => $dtc->translate('ei_impl_partial_delete_label'));
-	}
+// 		return array(self::CONTROL_BUTTON_KEY => $eiCommandButton);
+// 	}
+	
+// 	public function getPartialControlOptions(N2nLocale $n2nLocale) {
+// 		$dtc = new DynamicTextCollection('rocket');
+		
+// 		return array(self::CONTROL_BUTTON_KEY => $dtc->translate('ei_impl_partial_delete_label'));
+// 	}
 	
 	public function processEntries(EiFrame $eiFrame, array $entries) {
 		$spec = N2N::getModelContext()->lookup('rocket\spec\Spec');

@@ -30,11 +30,28 @@ use n2n\reflection\magic\MagicMethodInvoker;
 use rocket\ei\util\Eiu;
 use n2n\core\container\N2nContext;
 use n2n\util\ex\IllegalStateException;
+use rocket\ei\manage\security\EiEntryAccess;
 
 class EiEntry {
+	/**
+	 * @var EiObject
+	 */
 	private $eiObject;
-	private $eiFieldMap;
+	/**
+	 * @var EiMask
+	 */
 	private $eiMask;
+	/**
+	 * @var EiFieldMap
+	 */
+	private $eiFieldMap;
+	/**
+	 * @var EiEntryAccess
+	 */
+	private $eiEntryAccess;
+	/**
+	 * @var EiEntryValidationResult
+	 */
 	private $validationResult;
 // 	private $accessible = true;
 	private $listeners = array();
@@ -42,8 +59,8 @@ class EiEntry {
 	
 	public function __construct(EiObject $eiObject, EiMask $eiMask) {
 		$this->eiObject = $eiObject;
-		$this->eiFieldMap = new EiFieldMap($this, new EiPropPath([]), $eiObject->getEiEntityObj()->getEntityObj());;
 		$this->eiMask = $eiMask;
+		$this->eiFieldMap = new EiFieldMap($this, new EiPropPath([]), $eiObject->getEiEntityObj()->getEntityObj());;
 		$this->constraintSet = new HashSet(EiEntryConstraint::class);
 	}
 	
@@ -77,22 +94,40 @@ class EiEntry {
 	/**
 	 * @return EiMask
 	 */
-	public function getEiMask() {
+	function getEiMask() {
 		return $this->eiMask;
 	}
 	
 	/**
 	 * @return \rocket\ei\EiType
 	 */
-	public function getEiType() {
+	function getEiType() {
 		return $this->eiMask->getEiType();
 	}
 	
 	/**
 	 * @return \rocket\ei\manage\entry\EiFieldMap
 	 */
-	public function getEiFieldMap() {
+	function getEiFieldMap() {
 		return $this->eiFieldMap;
+	}
+	
+	/**
+	 * @return \rocket\ei\manage\security\EiEntryAccess
+	 */
+	function getEiEntryAccess() {
+		if ($this->eiEntryAccess !== null) {
+			return $this->eiEntryAccess;
+		}
+		
+		throw new IllegalStateException($this . ' has no EiEntryAccess assigned.');
+	}
+	
+	/**
+	 * @param EiEntryAccess $eiEntryAccess
+	 */
+	function setEiEntryAccess(EiEntryAccess $eiEntryAccess) {
+		$this->eiEntryAccess = $eiEntryAccess;
 	}
 	
 // 	/**
@@ -214,13 +249,13 @@ class EiEntry {
 		}
 	}
 	
-	public function getFieldRelatedListeners($fieldId) {
-		if (isset($this->listenerBindings[$fieldId])) {
-			return $this->listenerBindings[$fieldId];
-		}
+// 	public function getFieldRelatedListeners($fieldId) {
+// 		if (isset($this->listenerBindings[$fieldId])) {
+// 			return $this->listenerBindings[$fieldId];
+// 		}
 	
-		return array();
-	}
+// 		return array();
+// 	}
 	
 	public function unregisterListener(EiEntryListener $listener) {
 		$objectHash = spl_object_hash($listener);
@@ -230,9 +265,9 @@ class EiEntry {
 		}
 	}
 	
-	public function unregisterFieldRelatedListeners($fieldId) {
-		unset($this->listenerBindings[$fieldId]);
-	}
+// 	public function unregisterFieldRelatedListeners($fieldId) {
+// 		unset($this->listenerBindings[$fieldId]);
+// 	}
 		
 	public function write() {
 		foreach ($this->listeners as $listener) {
@@ -272,16 +307,15 @@ class EiEntry {
 	}
 	
 	public function getValue(EiPropPath $eiPropPath) {
-		return $this->getEiField($eiPropPath)->getValue();
+		return $this->getEiFieldWrapper($eiPropPath)->getValue();
 	}
 	
-	public function setValue(EiPropPath $eiPropPath, $value) {
-		$this->getEiField($eiPropPath)->setValue($value);
+	public function setValue(EiPropPath $eiPropPath, $value, bool $regardSecurity = true) {
+		$this->getEiFieldWrapper($eiPropPath)->setValue($value, $regardSecurity);
 	}
 
 	public function getOrgValue(EiPropPath $eiPropPath) {
-		return $this->getMappingProfile($ignoreAccessRestriction)->getEiField($eiPropPath)
-				->getOrgValue();
+		return $this->getMappingProfile()->getEiField($eiPropPath)->getOrgValue();
 	}
 	
 	public function save(): bool {
@@ -293,6 +327,10 @@ class EiEntry {
 	
 	public function isValid() {
 		if (!$this->eiFieldMap->isValid()) return false;
+		
+		if (null !== ($eiEntryConstraint = $this->getEiEntryAccess()->getEiEntryConstraint())) {
+			if (!$eiEntryConstraint->check($this)) return false;
+		}
 		
 		foreach ($this->constraintSet as $constraint) {
 			if (!$constraint->check($this)) return false;
@@ -312,6 +350,10 @@ class EiEntry {
 		
 		$this->eiFieldMap->validate($validationResult);
 				
+		if (null !== ($eiEntryConstraint = $this->getEiEntryAccess()->getEiEntryConstraint())) {
+			$eiEntryConstraint->validate($this, $validationResult);
+		}
+		
 		foreach ($this->constraintSet as $constraint) {
 			$constraint->validate($this, $validationResult);
 		}
@@ -370,7 +412,7 @@ class EiEntry {
 		
 		$eiEntityObj = $this->eiObject->getEiEntityObj();
 		
-		return  'EiEntry (' . $this->eiObject->getEiEntityObj()->getEiType()->getEntityModel()->getClass()->getShortName()
+		return 'EiEntry (' . $this->eiObject->getEiEntityObj()->getEiType()->getEntityModel()->getClass()->getShortName()
 				. '#' . ($eiEntityObj->hasId() ? $eiEntityObj->getPid() : 'new') . ')';
 	}
 }

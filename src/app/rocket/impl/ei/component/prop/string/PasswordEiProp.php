@@ -21,55 +21,44 @@
  */
 namespace rocket\impl\ei\component\prop\string;
 
-use n2n\impl\web\ui\view\html\HtmlView;
-use n2n\util\crypt\hash\algorithm\BlowfishAlgorithm;
-
 use n2n\impl\web\dispatch\mag\model\SecretStringMag;
-use n2n\util\crypt\hash\algorithm\Sha256Algorithm;
 use n2n\util\crypt\hash\HashUtils;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
-use rocket\impl\ei\component\prop\string\conf\PasswordEiPropConfigurator;
-use rocket\ei\util\Eiu;
-use n2n\web\dispatch\mag\Mag;
+use n2n\util\crypt\hash\algorithm\BlowfishAlgorithm;
+use n2n\util\crypt\hash\algorithm\Sha256Algorithm;
 use n2n\util\ex\IllegalStateException;
+use rocket\ei\util\Eiu;
+use rocket\si\content\SiField;
+use rocket\impl\ei\component\prop\string\conf\PasswordConfig;
+use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
+use rocket\ei\util\factory\EifGuiField;
 
-class PasswordEiProp extends AlphanumericEiProp {
-	const ALGORITHM_SHA1 = 'sha1';
-	const ALGORITHM_MD5 = 'md5';
-	const ALGORITHM_BLOWFISH = 'blowfish';
-	const ALGORITHM_SHA_256 = 'sha-256';
-	
-	private $algorithm = self::ALGORITHM_BLOWFISH;
-	
-	public function isMandatory(Eiu $eiu): bool {
-		return $eiu->entry()->isNew() && parent::isMandatory($eiu);
+class PasswordEiProp extends DraftablePropertyEiPropAdapter {
+	private $passwordConfig;
+
+	function __construct() {
+		parent::__construct();
+		
+		$this->passwordConfig = new PasswordConfig();
 	}
 	
-	public function createEiPropConfigurator(): EiPropConfigurator {
-		return new PasswordEiPropConfigurator($this);
+	public function prepare() {
+		$this->getConfigurator()->addAdaption($this->passwordConfig);
 	}
 	
-	public function createUiComponent(HtmlView $view, Eiu $eiu)  {
+	public function createOutEifGuiField(Eiu $eiu): EifGuiField  {
 		return null;
 	}
 	
-	public function createMag(Eiu $eiu): Mag {
+	public function createInEifGuiField(Eiu $eiu): EifGuiField {
 		return new SecretStringMag($this->getLabelLstr(), null,
 				$this->isMandatory($eiu), $this->getMaxlength(), 
 				array('placeholder' => $this->getLabelLstr()));
 	}
 	
-	public function getAlgorithm() {
-		return $this->algorithm;
-	}
-
-	public function setAlgorithm($algorithm) {
-		$this->algorithm = $algorithm;
-	}
 	
-	public function loadMagValue(Eiu $eiu, Mag $option) { }
+	public function loadSiField(Eiu $eiu, SiField $siField) { }
 	
-	public function saveMagValue(Mag $option, Eiu $eiu) {
+	public function saveSiField(SiField $siField, Eiu $eiu) {
 		$value = $option->getValue();
 		if (mb_strlen($value) === 0 && !$eiu->entry()->isNew()) {
 			return;
@@ -94,9 +83,5 @@ class PasswordEiProp extends AlphanumericEiProp {
 		}
 		
 		$eiu->field()->setValue($fieldValue);
-	}
-	
-	public static function getAlgorithms() {
-		return array(self::ALGORITHM_BLOWFISH, self::ALGORITHM_SHA1, self::ALGORITHM_MD5, self::ALGORITHM_SHA_256);
 	}
 }

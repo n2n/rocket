@@ -33,13 +33,24 @@ use rocket\ei\manage\draft\DraftManager;
 use n2n\core\container\N2nContext;
 use rocket\ei\EiType;
 use n2n\util\ex\IllegalStateException;
+use n2n\persistence\orm\model\EntityPropertyCollection;
+use n2n\persistence\orm\model\EntityModel;
 
 class EiLifecycleMonitor implements LifecycleListener {
 	private $spec;
 	private $em;
 	private $n2nContext;
+	/**
+	 * @var VetoableLifecycleAction[]
+	 */
 	private $persistActions = array();
+	/**
+	 * @var VetoableLifecycleAction[]
+	 */
 	private $updateActions = array();
+	/**
+	 * @var VetoableLifecycleAction[]
+	 */
 	private $removeActions = array();
 	
 // 	private $unmangedRemovedEntityObjs = array();
@@ -129,12 +140,12 @@ class EiLifecycleMonitor implements LifecycleListener {
 		$action = null;
 		while (null !== ($action = array_pop($this->uninitializedActions))) {
 			$eiEntityObj = $action->getEiObject()->getEiEntityObj();
-			if (!$eiEntityObj->hasId()) {
-				$eiEntityObj->refreshId();
-				if ($eiEntityObj->hasId()) {
-					$eiEntityObj->setPersistent(true);
-				}
-			}
+// 			if (!$eiEntityObj->hasId()) {
+// 				$eiEntityObj->refreshId();
+// 				if ($eiEntityObj->hasId()) {
+// 					$eiEntityObj->setPersistent(true);
+// 				}
+// 			}
 			$eiEntityObj->getEiType()->validateLifecycleAction($action, $this->n2nContext);
 			
 			if (!$action->hasVeto()) {
@@ -189,6 +200,9 @@ class EiLifecycleMonitor implements LifecycleListener {
 			case LifecycleEvent::PRE_UPDATE:
 				$this->update($eiType, $e->getEntityObj());
 				break;
+			case LifecycleEvent::POST_PERSIST:
+				$this->postPersist($eiType, $e->getEntityObj());
+				break;
 		}
 	}
 	
@@ -200,14 +214,32 @@ class EiLifecycleMonitor implements LifecycleListener {
 		$objHash = spl_object_hash($eiObject->getEiEntityObj()->getEntityObj());
 		if (isset($this->removeActions[$objHash])) return;
 		
-		$vla = new VetoableLifecycleAction($eiObject, $this,
-				VetoableLifecycleAction::TYPE_REMOVE);
+		$vla = new VetoableLifecycleAction($eiObject, $this, VetoableLifecycleAction::TYPE_REMOVE);
 		$this->removeActions[$objHash] = $vla;
 		$this->uninitializedActions[$objHash] = $vla;
 		
 		unset($this->persistActions[$objHash]);
 		unset($this->updateActions[$objHash]);
+		
+// 		$entityModel = $eiObject->getEiEntityObj()->getEiType()->getEntityModel();
+// 		foreach ($this->em->getEntityModelManager()->getRegisteredClassNames() as $className) {
+// 			if (!$this->spec->containsEiTypeClassName($className)) {
+// 				continue;
+// 			}
+			
+// 			$this->recCheck($this->em->getEntityModelManager()->getEntityModelByClass($class), $entityModel);
+// 		}
 	}
+	
+// 	private function recCheck(EntityPropertyCollection $entityPropertyCollection, EntityModel $targetEntityModel) {
+// 		foreach ($entityPropertyCollection->getEntityProperties() as $entityProperty) {
+			
+// 			if ($entityProperty->hasTargetEntityModel()) {
+// 				$entityProperty->getTargetEntityModel()->equals($entityModel);
+				
+// 			}
+// 		}
+// 	}
 	
 	private function remove(EiType $eiType, $entityObj) {
 		$this->removeEiObject(LiveEiObject::create($eiType, $entityObj));
@@ -227,10 +259,28 @@ class EiLifecycleMonitor implements LifecycleListener {
 		IllegalStateException::assertTrue(!isset($this->updateActions[$objHash]));
 	}
 	
+	private function postPersist(EiType $eiType, $entityObj) {
+		$objHash = spl_object_hash($entityObj);
+		
+		if (!isset($this->persistActions[$objHash])) {
+			return;
+		}
+		
+		$eiEntityObj = $this->persistActions[$objHash]->getEiObject()->getEiEntityObj();
+		if (!$eiEntityObj->hasId()) {
+			$eiEntityObj->refreshId();
+			if ($eiEntityObj->hasId()) {
+				$eiEntityObj->setPersistent(true);
+			}
+		}
+	}
+	
 	private function update(EiType $eiType, $entityObj) {
 		$objHash = spl_object_hash($entityObj);
 		
-		if (isset($this->updateActions[$objHash]) || isset($this->persistActions[$objHash])) return;
+		if (isset($this->updateActions[$objHash]) || isset($this->persistActions[$objHash])) {
+			return;
+		}
 		
 		$vla = new VetoableLifecycleAction(LiveEiObject::create($eiType, $entityObj), $this,
 				VetoableLifecycleAction::TYPE_UPDATE);

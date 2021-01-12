@@ -23,9 +23,14 @@ namespace rocket\ei;
 
 use rocket\ei\component\command\EiCommand;
 use rocket\ei\component\modificator\EiModificator;
+use n2n\util\type\ArgUtils;
 
 class EiModificatorPath extends IdPath {
 
+	public function __construct(string $id) {
+		parent::__construct([$id]);
+	}
+	
 	/**
 	 * @param EiCommand $eiCommand
 	 * @return EiModificatorPath
@@ -34,14 +39,6 @@ class EiModificatorPath extends IdPath {
 		return $eiModificator->getWrapper()->getEiModificatorPath();
 	}
 	
-	/**
-	 * @param mixed ...$args
-	 * @return EiModificatorPath
-	 */
-	public function ext(...$args) {
-		return new EiModificatorPath(array_merge($this->ids, $this->argsToIds($args)));
-	}
-
 	/**
 	 * @param mixed $expression
 	 * @return \rocket\ei\EiModificatorPath
@@ -55,10 +52,11 @@ class EiModificatorPath extends IdPath {
 			return self::from($expression);
 		}
 	
-		if (is_array($expression)) {
+		if (is_string($expression)) {
 			return new EiModificatorPath($expression);
 		}
-	
-		return new EiModificatorPath(explode(self::ID_SEPARATOR, $expression));
+		
+		ArgUtils::valType($expression, ['string', EiModificator::class, EiModificatorPath::class], false, 
+				'expression');
 	}
 }

@@ -21,7 +21,12 @@
  */
 namespace rocket\tool\xml;
 
-class MailItem {
+use DateTime;
+use JsonSerializable;
+use n2n\l10n\L10nUtils;
+use n2n\l10n\N2nLocale;
+
+class MailItem implements JsonSerializable {
 	
 	private $dateTime;
 	private $to = '';
@@ -32,16 +37,16 @@ class MailItem {
 	private $attachments = array();
 	private $message = '';
 	private $subject = '';
-	
+
 	/**
-	 * @param \DateTime $dateTime
+	 * @param DateTime $dateTime
 	 */
-	public function __construct(\DateTime $dateTime) {
+	public function __construct(DateTime $dateTime) {
 		$this->dateTime = $dateTime;
 	}
 	
 	/**
-	 * @return \\DateTime
+	 * @return DateTime
 	 */
 	public function getDateTime() {
 		return $this->dateTime;
@@ -124,5 +129,19 @@ class MailItem {
 	
 	public function hasAttachments() {
 		return (count($this->attachments) > 0);
+	}
+
+	public function jsonSerialize() {
+		return [
+			'dateTime' => trim(L10nUtils::formatDateTime($this->dateTime, N2nLocale::getAdmin())),
+			'to' => trim($this->to),
+			'from' => trim($this->from),
+			'cc' => trim($this->cc),
+			'bcc' => trim($this->bcc),
+			'replyTo' => trim($this->replyTo),
+			'attachments' => $this->attachments,
+			'message' => trim($this->message),
+			'subject' => trim($this->subject)
+		];
 	}
 }

@@ -22,12 +22,12 @@
 namespace rocket\ei\manage\gui;
 
 use n2n\util\type\ArgUtils;
-use n2n\web\dispatch\map\PropertyPath;
 use n2n\web\dispatch\mag\MagCollection;
-use n2n\web\dispatch\map\PropertyPathPart;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use rocket\ei\util\Eiu;
 use rocket\ei\EiPropPath;
+use rocket\ei\manage\DefPropPath;
+use rocket\ei\manage\gui\field\GuiField;
 
 class EiEntryGuiAssembler {
 	private $guiDefinition;
@@ -42,7 +42,7 @@ class EiEntryGuiAssembler {
 	private $forkedPropertyPaths = array();
 	
 	public function __construct(EiEntryGui $eiEntryGui) {
-		$this->guiDefinition = $eiEntryGui->getEiGui()->getGuiDefinition();
+		$this->guiDefinition = $eiEntryGui->getEiGuiFrame()->getGuiDefinition();
 		$this->eiEntryGui = $eiEntryGui;
 		$this->eiu = new Eiu($eiEntryGui);
 	}
@@ -81,43 +81,25 @@ class EiEntryGuiAssembler {
 	/**
 	 * @param string $propertyName
 	 * @param GuiProp $guiProp
-	 * @return NULL|\rocket\ei\manage\gui\GuiFieldAssembly
+	 * @return NULL|\rocket\ei\manage\gui\field\GuiField
 	 */
-	private function assembleExlGuiField(EiPropPath $eiPropPath, GuiProp $guiProp, GuiFieldPath $guiFieldPath) {
-		$guiField = $guiProp->buildGuiField(new Eiu($this->eiu, $eiPropPath, $guiFieldPath));
-		ArgUtils::valTypeReturn($guiField, GuiField::class, $guiProp, 'buildGuiField', true);
+	private function assembleExlGuiField(EiPropPath $eiPropPath, GuiPropWrapper $guiPropWrapper, DefPropPath $defPropPath) {
+		$guiField = $guiPropWrapper->buildGuiField($this->eiEntryGui);
 		
-		if ($guiField === null) return null;
-	
-		$eiFieldWrapper = $this->eiu->entry()->getEiFieldWrapper($eiPropPath);
-		
-		if ($this->eiu->gui()->isReadOnly() || $guiField->isReadOnly()) {
-			return new GuiFieldAssembly(/*$guiProp,*/ $guiField->getDisplayable());
-		}
-		
-		$propertyName = (string) $eiPropPath;
-		
-		$editable = $guiField->getEditable();
-		ArgUtils::valTypeReturn($editable, GuiFieldEditable::class, $guiField, 'getEditable');
-		$magWrapper = $this->getOrCreateDispatchable()->getMagCollection()
-				->addMag($propertyName, $editable->getMag($propertyName));
-		
-		$magPropertyPath = new PropertyPath(array(new PropertyPathPart($propertyName)));
-		return new GuiFieldAssembly(/*$guiProp,*/ $guiField->getDisplayable(),  
-				new MagAssembly($editable->isMandatory(), $magPropertyPath, $magWrapper), $editable);
+		return $guiField;
 	}
 	
 	/**
-	 * @param GuiFieldPath $guiFieldPath
+	 * @param DefPropPath $defPropPath
 	 * @param GuiPropFork $guiPropFork
-	 * @param EiPropPath $guiFieldPath
-	 * @return NULL|\rocket\ei\manage\gui\GuiFieldAssembly
+	 * @param EiPropPath $defPropPath
+	 * @return NULL|\rocket\ei\manage\gui\field\GuiField
 	 */
-	private function assembleGuiPropFork(GuiFieldPath $guiFieldPath, GuiPropFork $guiPropFork) {
-		$eiPropPath = $guiFieldPath->getFirstEiPropPath();
+	private function assembleGuiPropFork(DefPropPath $defPropPath, GuiPropFork $guiPropFork) {
+		$eiPropPath = $defPropPath->getFirstEiPropPath();
 		$eiPropPathStr = (string) $eiPropPath;
 		
-		$relativeGuiFieldPath = $guiFieldPath->getShifted();
+		$relativeDefPropPath = $defPropPath->getShifted();
 		$guiFieldFork = null;
 		if (isset($this->guiFieldForks[$eiPropPathStr])) {
 			$guiFieldFork = $this->guiFieldForks[$eiPropPathStr];
@@ -126,56 +108,33 @@ class EiEntryGuiAssembler {
 					new Eiu($this->eiu, $eiPropPath));
 		} 
 		
-		$result = $guiFieldFork->assembleGuiField($relativeGuiFieldPath);
-		if ($result === null) {
-			return null;
-		}
-		
-// 		$guiProp = $result->getGuiProp();
-		$displayable = $result->getDisplayable();
-		$magAssembly = $result->getMagAssembly();
-		
-		if ($this->eiu->gui()->isReadOnly() || $magAssembly === null) {
-			return new GuiFieldAssembly(/*$guiProp,*/ $displayable);
-		}
-		
-		$magWrapper = null;
-		if (!isset($this->forkedPropertyPaths[$eiPropPathStr])) {
-			$this->forkedPropertyPaths[$eiPropPathStr] = new PropertyPath(array(new PropertyPathPart($eiPropPath)));
-		}
-		
-		/* $this->forkMagWrappers[$id] */
-		return new GuiFieldAssembly(/*$guiProp,*/ $displayable, 
-				new MagAssembly($magAssembly->isMandatory(), 
-						$this->forkedPropertyPaths[$eiPropPathStr]->ext($magAssembly->getMagPropertyPath()), 
-						$magAssembly->getMagWrapper()), 
-				$result->getEditable());
+		return $guiFieldFork->assembleGuiField($relativeDefPropPath);
 	}
 	
 	/**
-	 * @param GuiFieldPath $guiFieldPath
-	 * @return \rocket\ei\manage\gui\GuiFieldAssembly
+	 * @param DefPropPath $defPropPath
+	 * @return \rocket\ei\manage\gui\field\GuiField
 	 */
-	public function assembleGuiField(GuiFieldPath $guiFieldPath) {
-		if ($this->eiEntryGui->containsGuiFieldGuiFieldPath($guiFieldPath)) {
-			return $this->eiEntryGui->getGuiFieldAssembly($guiFieldPath);
+	public function assembleGuiField(DefPropPath $defPropPath) {
+		if ($this->eiEntryGui->containsGuiFieldDefPropPath($defPropPath)) {
+			return $this->eiEntryGui->getGuiFieldAssembly($defPropPath);
 		}
 		
-		$guiFieldAssembly = null;
-		if ($guiFieldPath->hasMultipleEiPropPaths()) {
-			$guiFieldAssembly = $this->assembleGuiPropFork($guiFieldPath,
-					$this->guiDefinition->getGuiPropFork($guiFieldPath->getFirstEiPropPath()));
+		$guiField = null;
+		if ($defPropPath->hasMultipleEiPropPaths()) {
+			$guiField = $this->assembleGuiPropFork($defPropPath,
+					$this->guiDefinition->getGuiPropFork($defPropPath->getFirstEiPropPath()));
 		} else {
-			$eiPropPath = $guiFieldPath->getFirstEiPropPath();
-			$guiFieldAssembly = $this->assembleExlGuiField($eiPropPath, $this->guiDefinition->getGuiProp($eiPropPath), 
-					$guiFieldPath);
+			$eiPropPath = $defPropPath->getFirstEiPropPath();
+			$guiField = $this->assembleExlGuiField($eiPropPath, $this->guiDefinition->getGuiPropWrapper($eiPropPath), 
+					$defPropPath);
 		}
 		
-		if ($guiFieldAssembly !== null) {
-			$this->eiEntryGui->putGuiFieldAssembly($guiFieldPath, $guiFieldAssembly);
+		if ($guiField !== null) {
+			$this->eiEntryGui->putGuiField($defPropPath, $guiField);
 		}
 		
-		return $guiFieldAssembly;
+		return $guiField;
 	}
 	
 // 	public function getDispatchable() {
@@ -183,29 +142,8 @@ class EiEntryGuiAssembler {
 // 	}
 	
 	public function finalize() {
-		foreach ($this->guiFieldForks as $id => $forkedGuiField) {
-			$guiFieldForkEditable = $forkedGuiField->getEditable();
-			
-			if ($guiFieldForkEditable === null) {
-				$this->eiEntryGui->putGuiFieldForkAssembly(new GuiFieldPath([EiPropPath::create($id)]), new GuiFieldForkAssembly(array()));
-				continue;
-			}
-			
-			$forkMagWrapper = $this->getOrCreateDispatchable()->getMagCollection()
-					->addMag($id, $guiFieldForkEditable->getForkMag());
-			
-			$forkMagAssemblies = array(new MagAssembly($guiFieldForkEditable->isForkMandatory(), 
-					$this->forkedPropertyPaths[$id], $forkMagWrapper));
-			
-			$inheritForkMagAssemblies = $guiFieldForkEditable->getInheritForkMagAssemblies();
-			ArgUtils::valArrayReturn($inheritForkMagAssemblies, $guiFieldForkEditable, 'getInheritForkMagAssemblies', MagAssembly::class);
-			foreach ($inheritForkMagAssemblies as $forkMagAssembly) {
-				$forkMagAssemblies[] = new MagAssembly($forkMagAssembly->isMandatory(),
-						$this->forkedPropertyPaths[$id]->ext($propertyPath), $forkMagAssembly->getMagWrapper());
-			}
-			
-			$this->eiEntryGui->putGuiFieldForkAssembly(new GuiFieldPath([EiPropPath::create($id)]), 
-					new GuiFieldForkAssembly($forkMagAssemblies, $guiFieldForkEditable));
+		foreach ($this->guiFieldForks as $id => $guiFieldFork) {
+			$this->eiEntryGui->putGuiFieldFork(new DefPropPath([EiPropPath::create($id)]), $guiFieldFork);
 		}
 		
 		$this->eiEntryGui->markInitialized();

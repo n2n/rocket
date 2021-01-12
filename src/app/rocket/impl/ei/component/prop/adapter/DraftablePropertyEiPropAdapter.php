@@ -33,13 +33,8 @@ use rocket\ei\manage\draft\DraftValueSelection;
 use rocket\ei\manage\draft\PersistDraftAction;
 use rocket\ei\manage\draft\RemoveDraftAction;
 use rocket\ei\EiPropPath;
-use rocket\ei\util\Eiu;
-use rocket\impl\ei\component\prop\adapter\entry\SimpleEiField;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
-use rocket\ei\manage\entry\EiField;
 use rocket\impl\ei\component\prop\adapter\config\DraftConfigurable;
-use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 
 abstract class DraftablePropertyEiPropAdapter extends EditablePropertyEiPropAdapter implements DraftConfigurable, DraftProperty {
 	protected $draftable = false;
@@ -55,39 +50,23 @@ abstract class DraftablePropertyEiPropAdapter extends EditablePropertyEiPropAdap
 		$this->draftable = $draftable;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\EditablePropertyEiPropAdapter::buildEiField()
-	 */
-	public function buildEiField(Eiu $eiu): ?EiField {
-		if (!$eiu->entry()->isDraft()) {
-			return parent::buildEiField($eiu);
-		}
 	
-		return new SimpleEiField($eiu, 
-				$this->getObjectPropertyAccessProxy(true)->getConstraint()->getLenientCopy(), 
-				$this, $this, ($this->isReadOnly($eiu) ? null : $this));
-	}
-	
-	public function isReadOnly(Eiu $eiu): bool {
-		if (!$eiu->entry()->isDraft() || !$this->isDraftable()) {
-			return parent::isReadOnly($eiu);
-		}
+// 	protected function createEifField(Eiu $eiu): EifField {
+// 		$eifField = parent::createEifField($eiu);
 		
-// 		if (!$this->checkForWriteAccess($eiu->entry()->getEiEntry())) return true;
-			
-		return $this->editConfig->isReadOnly() || !$this->isDraftable();
-	}
+// 		// @todo implement
+		
+// 		return $eiField;
+// 	}
 	
-	/* (non-PHPdoc)
-	 * @see \rocket\impl\ei\component\prop\EditablePropertyEiPropAdapter::createEiConfigurator()
-	 */
-	public function createEiPropConfigurator(): EiPropConfigurator {
-		$eiPropConfigurator = parent::createEiPropConfigurator();
-		IllegalStateException::assertTrue($eiPropConfigurator instanceof AdaptableEiPropConfigurator);
-		$eiPropConfigurator->registerDraftConfigurable($this);
-		return $eiPropConfigurator;
-	}
+	
+	
+// 	/* (non-PHPdoc)
+// 	 * @see \rocket\impl\ei\component\prop\EditablePropertyEiPropAdapter::createEiConfigurator()
+// 	 */
+// 	public function createConfigurator(): AdaptableEiPropConfigurator {
+// 		return parent::createConfigurator();
+// 	}
 	
 		
 	public function getDraftProperty() {

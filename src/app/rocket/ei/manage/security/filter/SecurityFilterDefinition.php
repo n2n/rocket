@@ -115,7 +115,7 @@ class SecurityFilterDefinition {
 			
 			try {
 				$group->addEiFieldConstraint(EiPropPath::create($id), 
-						$this->props[$id]->createEiFieldConstraint($subFilterSetting->getAttributes()));
+						$this->props[$id]->createEiFieldConstraint($subFilterSetting->getDataSet()));
 			} catch (AttributesException $e) {}
 		}
 		
@@ -137,7 +137,7 @@ class SecurityFilterDefinition {
 			
 // 			try {
 // 				$criteriaComparators[] = $this->props[$id]->createComparatorConstraint(
-// 						$subFilterSetting->getAttributes());
+// 						$subFilterSetting->getDataSet());
 // 			} catch (AttributesException $e) {}
 // 		}
 		
@@ -152,7 +152,7 @@ class SecurityFilterDefinition {
 	// 		if ($element instanceof FilterDataUsage) {
 	// 			$itemId = $element->getItemId();
 	// 			if (isset($this->filterProps[$itemId])) {
-	// 				$comparatorConstraint = $this->filterProps[$itemId]->createComparatorConstraint($element->getAttributes());
+	// 				$comparatorConstraint = $this->filterProps[$itemId]->createComparatorConstraint($element->getDataSet());
 	// 				ArgUtils::valTypeReturn($comparatorConstraint,
 	// 						'rocket\ei\manage\critmod\ComparatorConstraint',
 	// 						$this->filterProps[$itemId], 'createComparatorConstraint');

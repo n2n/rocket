@@ -26,8 +26,13 @@ use n2n\persistence\orm\property\EntityProperty;
 interface EntityPropertyConfigurable {
 	
 	/**
-	 * @param EntityProperty $entityProperty
+	 * @param EntityProperty|null $entityProperty
 	 * @throws \InvalidArgumentException
 	 */
 	public function setEntityProperty(?EntityProperty $entityProperty);
+	
+	/**
+	 * @return bool
+	 */
+	public function isEntityPropertyRequired(): bool;
 }

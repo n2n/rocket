@@ -21,32 +21,22 @@
  */
 namespace rocket\impl\ei\component\prop\enum;
 
-use n2n\impl\web\dispatch\mag\model\EnumMag;
-use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\component\prop\FilterableEiProp;
 use rocket\ei\component\prop\SortableEiProp;
 use rocket\ei\component\prop\QuickSearchableEiProp;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use rocket\ei\manage\frame\EiFrame;
-use n2n\l10n\N2nLocale;
 use n2n\core\container\N2nContext;
 use rocket\ei\util\filter\prop\EnumFilterProp;
 use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
-
 use n2n\util\type\ArgUtils;
 use n2n\util\type\TypeConstraint;
 use n2n\reflection\property\AccessProxy;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
 use n2n\persistence\orm\criteria\item\CrIt;
-use n2n\web\dispatch\mag\Mag;
 use rocket\ei\util\Eiu;
-use rocket\ei\EiPropPath;
-use rocket\impl\ei\component\prop\enum\conf\EnumEiPropConfigurator;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\critmod\quick\impl\LikeQuickSearchProp;
-use rocket\ei\manage\gui\GuiFieldPath;
-use n2n\impl\web\dispatch\mag\model\group\EnumTogglerMag;
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\sort\SortProp;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
@@ -54,12 +44,23 @@ use rocket\ei\manage\entry\EiField;
 use n2n\util\StringUtils;
 use n2n\util\type\TypeConstraints;
 use n2n\impl\persistence\orm\property\IntEntityProperty;
+use rocket\si\content\SiField;
+use rocket\si\content\impl\SiFields;
+use rocket\impl\ei\component\prop\enum\conf\EnumConfig;
+use rocket\ei\manage\idname\IdNameProp;
+use rocket\ei\component\prop\IdNameEiProp;
+use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfig;
+use rocket\ei\util\factory\EifGuiField;
 
 class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiProp, SortableEiProp, 
-		QuickSearchableEiProp {
+		QuickSearchableEiProp, IdNameEiProp {
+			
+	private $enumConfig;
+	private $quickSearchConfig;
 	
-	private $options = array();
-	private $associatedGuiFieldPathMap = array();
+	function isEntityPropertyRequired(): bool {
+		return false;
+	}
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty === null || $entityProperty instanceof ScalarEntityProperty
@@ -71,7 +72,10 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 		ArgUtils::assertTrue($propertyAccessProxy !== null);
 		
 		if (null !== ($typeConstraint = $propertyAccessProxy->getConstraint())) {
-			$typeConstraint->isPassableTo(TypeConstraints::scalar(true), true);
+			if ($typeConstraint->isArrayLike()) {
+				throw new \InvalidArgumentException($typeConstraint->__toString() . ' not compatible with ' . TypeConstraints::scalar(true));
+			}
+			
 			if (!$typeConstraint->isEmpty()) {
 				$typeConstraint->setConvertable(true);
 			}
@@ -84,17 +88,26 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 		$this->objectPropertyAccessProxy = $propertyAccessProxy;
 	}
 	
-	public function setOptions(array $options) {
-		ArgUtils::valArray($options, 'scalar');
-		$this->options = $options;
+	function getEnumConfig() {
+		if ($this->enumConfig === null) {
+			$this->enumConfig = new EnumConfig();
+		}
+		
+		return $this->enumConfig;
 	}
 	
-	public function getOptions() {
-		return $this->options;
+	function getQuickSearchConfig() {
+		if ($this->quickSearchConfig === null) {
+			$this->quickSearchConfig = new QuickSearchConfig();
+		}
+		
+		return $this->quickSearchConfig;
 	}
 	
-	public function createEiPropConfigurator() : EiPropConfigurator {
-		return new EnumEiPropConfigurator($this);
+	public function prepare() {
+		$this->getConfigurator()
+				->addAdaption($this->getEnumConfig())
+				->addAdaption($this->getQuickSearchConfig());
 	}
 	
 	public function buildEiField(Eiu $eiu): ?EiField {
@@ -102,22 +115,22 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 		$eiu->entry()->onValidate(function () use ($eiu, $that) {
 			$type = $eiu->field()->getValue();
 				
-			$activeGuiFieldPaths = array();
-			foreach ($that->getAssociatedGuiFieldPathMap() as $value => $guiFieldPaths) {
+			$activeDefPropPaths = array();
+			foreach ($that->getAssociatedDefPropPathMap() as $value => $defPropPaths) {
 				if ($value == $type) {
-					$activeGuiFieldPaths = $guiFieldPaths;
+					$activeDefPropPaths = $defPropPaths;
 					continue;
 				}
 				
-				foreach ($guiFieldPaths as $guiFieldPath) {
-					if (null !== ($eiFieldWrapper = $eiu->entry()->getEiFieldAbstraction($guiFieldPath))) {
+				foreach ($defPropPaths as $defPropPath) {
+					if (null !== ($eiFieldWrapper = $eiu->entry()->getEiFieldAbstraction($defPropPath))) {
 						$eiFieldWrapper->setIgnored(true);
 					}
 				}
 			}
 			
-			foreach ($activeGuiFieldPaths as $guiFieldPath) {
-				if (null !== ($eiFieldWrapper = $eiu->entry()->getEiFieldAbstraction($guiFieldPath))) {
+			foreach ($activeDefPropPaths as $defPropPath) {
+				if (null !== ($eiFieldWrapper = $eiu->entry()->getEiFieldAbstraction($defPropPath))) {
 					$eiFieldWrapper->setIgnored(false);
 				}
 			}
@@ -126,52 +139,62 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 		return parent::buildEiField($eiu);
 	}
 	
-	public function createMag(Eiu $eiu): Mag {
-		$choicesMap = $this->getOptions();
+	public function createInEifGuiField(Eiu $eiu): EifGuiField {
+		$choicesMap = $this->getEnumConfig()->getOptions();
 		foreach (array_values($choicesMap) as $value) {
 			if (!$eiu->entry()->acceptsValue($this, $value)) {
 				unset($choicesMap[$value]);
 			}
 		}
 		
-		if (empty($this->associatedGuiFieldPathMap)) {
-			return new EnumMag($this->getLabelLstr(), $choicesMap, null, 
-					$this->isMandatory($eiu));
-		}
+		$mapCb = function ($defPropPaths) {
+			return array_map(function ($defPropPath) { return (string) $defPropPath; }, $defPropPaths);
+		};
 		
-		$enablerMag = new EnumTogglerMag($this->getLabelLstr(), $choicesMap, null, 
-					$this->isMandatory($eiu));
+		$siField = SiFields::enumIn($choicesMap, $eiu->field()->getValue())
+				->setMandatory($this->getEditConfig()->isMandatory())
+				->setAssociatedPropIdsMap(array_map($mapCb, $this->enumConfig->getAssociatedDefPropPathMap()));
 		
-		$that = $this;
-		$eiu->entryGui()->whenReady(function () use ($eiu, $enablerMag, $that) {
-			$associatedMagWrapperMap = array();
-			foreach ($that->getAssociatedGuiFieldPathMap() as $value => $eiPropPaths) {
-				$magWrappers = array();
-				foreach ($eiPropPaths as $eiPropPath) {
-					$magWrapper = $eiu->entryGui()->getMagWrapper($eiPropPath, false);
-					if ($magWrapper === null) continue;
+// 		$defPropPathMap = $this->getEnumConfig()->getAssociatedDefPropPathMap();
+// 		if (empty($defPropPathMap)) {
+		return $eiu->factory()->newGuiField($siField)
+				->setSaver(function () use ($eiu, $siField)  {
+					$this->saveSiField($siField, $eiu);
+				});
+// 		}
+		
+// 		$enablerMag = new EnumTogglerMag($this->getLabelLstr(), $choicesMap, null, 
+// 					$this->isMandatory($eiu));
+		
+// 		$that = $this;
+// 		$eiu->entryGui()->whenReady(function () use ($eiu, $enablerMag, $that) {
+// 			$associatedMagWrapperMap = array();
+// 			foreach ($that->getAssociatedDefPropPathMap() as $value => $eiPropPaths) {
+// 				$magWrappers = array();
+// 				foreach ($eiPropPaths as $eiPropPath) {
+// 					$magWrapper = $eiu->entryGui()->getMagWrapper($eiPropPath, false);
+// 					if ($magWrapper === null) continue;
 					
-					$magWrappers[] = $magWrapper;
-				}
+// 					$magWrappers[] = $magWrapper;
+// 				}
 				
-				$associatedMagWrapperMap[$value] = $magWrappers; 
-			}
+// 				$associatedMagWrapperMap[$value] = $magWrappers; 
+// 			}
 			
-			$enablerMag->setAssociatedMagWrapperMap($associatedMagWrapperMap);
-		});
+// 			$enablerMag->setAssociatedMagWrapperMap($associatedMagWrapperMap);
+// 		});
 		
 		
-		return $enablerMag;
+// 		return $enablerMag;
 	}
 	
-	public function createUiComponent(HtmlView $view, Eiu $eiu)  {
-		$html = $view->getHtmlBuilder();
-		$options = $this->getOptions();
-		$value = $eiu->field()->getValue(EiPropPath::from($this));
-		if (isset($options[$value])) {
-			return $html->getEsc($options[$value]);
-		}
-		return $html->getEsc($value);
+	function saveSiField(SiField $siField, Eiu $eiu) {
+		ArgUtils::assertTrue($siField instanceof EnumEiProp);
+		$eiu->field()->setValue($siField->getValue());
+	}
+	
+	public function createOutEifGuiField(Eiu $eiu): EifGuiField  {
+		return $eiu->factory()->newGuiField(SiFields::stringOut($eiu->field()->getValue()));
 	}
 	
 	public function buildManagedFilterProp(EiFrame $eiFrame): ?FilterProp  {
@@ -180,7 +203,7 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 	
 	public function buildFilterProp(Eiu $eiu): ?FilterProp {
 		if (null !== ($entityProperty = $this->getEntityProperty())) {
-			return new EnumFilterProp(CrIt::p($entityProperty), $this->getLabelLstr(), $this->getOptions());
+			return new EnumFilterProp(CrIt::p($entityProperty), $this->getLabelLstr(), $this->enumConfig->getOptions());
 		}
 		
 		return null;
@@ -203,31 +226,17 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 	}
 	
 	public function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp {
-		if (null !== ($entityProperty = $this->getEntityProperty())) {
-			return new LikeQuickSearchProp(CrIt::p($this->getEntityProperty()));
+		if ($this->getQuickSearchConfig()->isQuickSerachable() 
+				&& null !== ($entityProperty = $this->getEntityProperty())) {
+			return new LikeQuickSearchProp(CrIt::p($entityProperty));
 		}
 		
 		return null;
 	}
 
-	public function isStringRepresentable(): bool {
-		return true;
-	}
-	
-	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
-		return StringUtils::strOf($eiu->object()->readNativValue($this));
-	}
-	
-	public function setAssociatedGuiFieldPathMap(array $associatedGuiFieldPathMap) {
-		ArgUtils::valArray($associatedGuiFieldPathMap, 
-				TypeConstraint::createArrayLike('array', false, TypeConstraint::createSimple(GuiFieldPath::class)));
-		$this->associatedGuiFieldPathMap = $associatedGuiFieldPathMap;
-	}
-	
-	/**
-	 * @return array
-	 */
-	public function getAssociatedGuiFieldPathMap() {
-		return $this->associatedGuiFieldPathMap;
+	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {
+		return $eiu->factory()->newIdNameProp(function (Eiu $eiu) {
+			return StringUtils::strOf($eiu->object()->readNativValue($this));
+		})->toIdNameProp();
 	}
 }

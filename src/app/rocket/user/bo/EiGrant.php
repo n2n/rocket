@@ -81,8 +81,8 @@ class EiGrant extends ObjectAdapter implements Grant {
 		$this->full = $full;
 	}
 	
-	public function getAccessAttributes() {
-		return $this->readAccessAttributes();
+	public function getAccessDataSet() {
+		return $this->readAccessDataSet();
 	}
 	
 	/**

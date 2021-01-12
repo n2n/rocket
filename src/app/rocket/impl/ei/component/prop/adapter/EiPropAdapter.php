@@ -14,6 +14,14 @@ abstract class EiPropAdapter extends EiComponentAdapter implements EiProp {
 	
 	/**
 	 * {@inheritDoc}
+	 * @see \rocket\ei\component\prop\EiProp::isPrivileged()
+	 */
+	public function isPrivileged(): bool {
+		return true;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @see \rocket\ei\component\prop\EiProp::setWrapper()
 	 */
 	public function setWrapper(EiPropWrapper $wrapper) {
@@ -30,6 +38,13 @@ abstract class EiPropAdapter extends EiComponentAdapter implements EiProp {
 		}
 		
 		throw new IllegalStateException(get_class($this) . ' is not assigned to a Wrapper.');
+	}
+	
+	/**
+	 * @return \rocket\ei\mask\EiMask
+	 */
+	function getEiMask() {
+		return $this->getWrapper()->getEiPropCollection()->getEiMask();
 	}
 	
 	/**
@@ -64,6 +79,14 @@ abstract class EiPropAdapter extends EiComponentAdapter implements EiProp {
 	 */
 	public function getLabelLstr(): Lstr {
 		return Lstr::create(StringUtils::pretty($this->getWrapper()->getEiPropPath()->getLastId()));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\prop\EiProp::getHelpTextLstr()
+	 */
+	public function getHelpTextLstr(): ?Lstr {
+		return null;
 	}
 	
 	/**

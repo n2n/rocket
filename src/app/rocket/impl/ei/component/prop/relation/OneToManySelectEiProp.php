@@ -21,20 +21,31 @@
  */
 namespace rocket\impl\ei\component\prop\relation;
 
-use rocket\impl\ei\component\prop\relation\model\relation\SelectEiPropRelation;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\util\type\ArgUtils;
 use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
+use rocket\impl\ei\component\prop\relation\conf\RelationModel;
+use rocket\impl\ei\component\prop\adapter\config\EditConfig;
+use rocket\ei\manage\gui\ViewMode;
+use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\ei\util\Eiu;
+use rocket\ei\manage\entry\EiField;
+use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
+use rocket\impl\ei\component\prop\relation\model\gui\RelationLinkGuiField;
+use rocket\impl\ei\component\prop\relation\model\gui\ToManyGuiField;
+use rocket\ei\manage\gui\field\GuiField;
+use rocket\ei\component\prop\FieldEiProp;
 
-class OneToManySelectEiProp extends ToManySelectEiPropAdapter {
+class OneToManySelectEiProp extends RelationEiPropAdapter implements FieldEiProp {
 	
 	public function __construct() {
 		parent::__construct();
 		
-		$this->initialize(new SelectEiPropRelation($this, false, true));
-		$this->getEditConfig()->setReadOnly(true);
+		$this->setup(
+				new DisplayConfig(ViewMode::all()),
+				new RelationModel($this, false, true, RelationModel::MODE_SELECT, 
+						(new EditConfig())->setReadOnly(true)));
 	}
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {
@@ -44,7 +55,18 @@ class OneToManySelectEiProp extends ToManySelectEiPropAdapter {
 		parent::setEntityProperty($entityProperty);
 	}
 	
-	public function copy(Eiu $eiu, $value, Eiu $copyEiu) {
-		return [];
+	function buildEiField(Eiu $eiu): ?EiField {
+		$targetEiuFrame = $eiu->frame()->forkSelect($this, $eiu->object())->frame()
+				->exec($this->getRelationModel()->getTargetReadEiCommandPath());
+		
+		return new ToManyEiField($eiu, $targetEiuFrame, $this, $this->getRelationModel());
+	}
+	
+	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
+		if ($readOnly || $this->getEditConfig()->isReadOnly()) {
+			return new RelationLinkGuiField($eiu, $this->getRelationModel());
+		}
+		
+		return new ToManyGuiField($eiu, $this->getRelationModel(), $this->getEditConfig());
 	}
 }

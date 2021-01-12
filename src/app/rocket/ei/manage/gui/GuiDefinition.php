@@ -21,76 +21,92 @@
  */
 namespace rocket\ei\manage\gui;
 
-use n2n\l10n\N2nLocale;
 use rocket\ei\EiPropPath;
-use rocket\ei\manage\EiObject;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\util\Eiu;
-use n2n\util\ex\NotYetImplementedException;
-use n2n\l10n\Lstr;
 use rocket\core\model\Rocket;
 use n2n\core\container\N2nContext;
 use rocket\ei\manage\entry\UnknownEiFieldExcpetion;
 use n2n\util\type\ArgUtils;
+use rocket\ei\manage\gui\control\GuiControlPath;
+use rocket\ei\manage\gui\control\UnknownGuiControlException;
+use rocket\ei\manage\gui\control\EntryGuiControl;
+use rocket\ei\manage\gui\control\SelectionGuiControl;
+use rocket\ei\manage\frame\EiFrame;
+use rocket\ei\manage\gui\control\GuiControl;
+use rocket\ei\manage\gui\control\GeneralGuiControl;
+use rocket\ei\manage\DefPropPath;
+use rocket\ei\IdPath;
+use n2n\util\StringUtils;
+use rocket\ei\EiCommandPath;
+use n2n\l10n\Lstr;
+use rocket\ei\mask\model\DisplayStructure;
+use rocket\si\meta\SiStructureType;
+use rocket\ei\mask\EiMask;
+use rocket\ei\mask\model\DisplayItem;
 
-class GuiDefinition {	
-	private $identityStringPattern;
-	private $labelLstr;
-	private $guiProps = array();
-	private $guiPropForks = array();
+class GuiDefinition {
+	/**
+	 * @var EiMask
+	 */
+	private $eiMask;
+	/**
+	 * @var GuiPropWrapper[]
+	 */
+	private $guiPropWrappers = array();
+	/**
+	 * @var EiPropPath[]
+	 */
 	private $eiPropPaths = array();
+	/**
+	 * @var GuiCommand[]
+	 */
+	private $guiCommands;
 	
-	function __construct(Lstr $labelLstr) {
-		$this->labelLstr = $labelLstr;
+	function __construct(EiMask $eiMask) {
+		$this->eiMask = $eiMask;
 	}
 	
 	/**
-	 * @param string|null $identityStringPattern
+	 * @return \rocket\ei\mask\EiMask
 	 */
-	public function setIdentityStringPattern(?string $identityStringPattern) {
-		$this->identityStringPattern = $identityStringPattern;
-	}
-	
-	/**
-	 * @return string|null
-	 */
-	public function getIdentityStringPattern() {
-		return $this->identityStringPattern;
+	function getEiMask() {
+		return $this->eiMask;
 	}
 	
 	/**
 	 * @param string $id
 	 * @param GuiProp $guiProp
-	 * @param EiPropPath $guiFieldPath
+	 * @param EiPropPath $defPropPath
 	 * @throws GuiException
 	 */
-	public function putGuiProp(EiPropPath $eiPropPath, GuiProp $guiProp) {
+	function putGuiProp(EiPropPath $eiPropPath, GuiProp $guiProp) {
 		$eiPropPathStr = (string) $eiPropPath;
 		
-		if (isset($this->guiProps[$eiPropPathStr])) {
+		if (isset($this->guiPropWrappers[$eiPropPathStr])) {
 			throw new GuiException('GuiProp for EiPropPath \'' . $eiPropPathStr . '\' is already registered');
 		}
 		
-		$this->guiProps[$eiPropPathStr] = $guiProp;
+		$this->guiPropWrappers[$eiPropPathStr] = new GuiPropWrapper($this, $eiPropPath, $guiProp);
 		$this->eiPropPaths[$eiPropPathStr] = $eiPropPath;
 	}
 	
 	/**
 	 * @param EiPropPath $eiPropPath
 	 */
-	public function removeGuiProp(EiPropPath $eiPropPath) {
+	function removeGuiProp(EiPropPath $eiPropPath) {
 		$eiPropPathStr = (string) $eiPropPath;
 		
-		unset($this->guiProps[$eiPropPathStr]);
+		unset($this->guiPropWrappers[$eiPropPathStr]);
 		unset($this->eiPropPaths[$eiPropPathStr]);
 	}
 		
 	/**
-	 * @param GuiFieldPath $guiFieldPath
+	 * @param DefPropPath $defPropPath
 	 */
-	public function removeGuiPropByPath(GuiFieldPath $guiFieldPath) {
+	function removeGuiPropByPath(DefPropPath $defPropPath) {
 		$guiDefinition = $this;
-		$eiPropPaths = $guiFieldPath->toArray();
+		$eiPropPaths = $defPropPath->toArray();
 		while (null !== ($eiPropPath = array_shift($eiPropPaths))) {
 			if (empty($eiPropPaths)) {
 				$guiDefinition->removeGuiProp($eiPropPath);
@@ -105,237 +121,35 @@ class GuiDefinition {
 		}
 	}
 	
-	/**
-	 * @param string $id
-	 * @return bool
-	 */
-	public function containsEiPropPath(EiPropPath $eiPropPath) {
-		return isset($this->eiPropPaths[(string) $eiPropPath]);
-	}
+	
 	
 	/**
-	 * @param string $id
+	 * @param EiPropPath $eiPropPath
 	 * @throws GuiException
-	 * @return GuiProp
+	 * @return GuiPropWrapper
 	 */
-	public function getGuiProp(EiPropPath $eiPropPath) {
+	function getGuiPropWrapper(EiPropPath $eiPropPath) {
 		$eiPropPathStr = (string) $eiPropPath;
-		if (!isset($this->guiProps[$eiPropPathStr])) {
+		if (!isset($this->guiPropWrappers[$eiPropPathStr])) {
 			throw new GuiException('No GuiProp with id \'' . $eiPropPathStr . '\' registered');
 		}
 		
-		return $this->guiProps[$eiPropPathStr];
+		return $this->guiPropWrappers[$eiPropPathStr];
 	}
 
 	/**
-	 * @return GuiProp[]
+	 * @return GuiPropWrapper[]
 	 */
-	public function getGuiProps() {
-		return $this->guiProps;
+	function getGuiPropWrappers() {
+		return $this->guiPropWrappers;
 	}
 	
 	/**
-	 * @param string $eiPropPath
-	 * @param GuiPropFork $guiPropFork
-	 */
-	public function putGuiPropFork(EiPropPath $eiPropPath, GuiPropFork $guiPropFork) {
-		$eiPropPathStr = (string) $eiPropPath;
-		
-		$this->guiPropForks[$eiPropPathStr] = $guiPropFork;
-		$this->eiPropPaths[$eiPropPathStr] = $eiPropPath;
-	}
-	
-	/**
-	 * @param string $id
+	 * @param DefPropPath $defPropPath
 	 * @return boolean
 	 */
-	public function containsLevelGuiPropForkId(string $id) {
-		return isset($this->guiPropForks[$id]);
-	}
-	
-	/**
-	 * @param string $id
-	 * @throws GuiException
-	 * @return GuiPropFork
-	 */
-	public function getGuiPropFork(EiPropPath $eiPropPath) {
-		$eiPropPathStr = (string) $eiPropPath;
-		if (!isset($this->guiPropForks[$eiPropPathStr])) {
-			throw new GuiException('No GuiPropFork with id \'' . $eiPropPathStr . '\' registered.');
-		}
-		
-		return $this->guiPropForks[$eiPropPathStr];
-	}
-	
-	public function getAllGuiProps() {
-		return $this->buildGuiProps(array());
-	}
-	
-	protected function buildGuiProps(array $baseEiPropPaths) {
-		$guiProps = array();
-		
-		foreach ($this->eiPropPaths as $eiPropPath) {
-			$eiPropPathStr = (string) $eiPropPath;
-			if (isset($this->guiProps[$eiPropPathStr])) {
-				$currentEiPropPaths = $baseEiPropPaths;
-				$currentEiPropPaths[] = $eiPropPath;
-				$guiProps[(string) new GuiFieldPath($currentEiPropPaths)] = $this->guiProps[$eiPropPathStr];
-			}
-				
-			if (isset($this->guiPropForks[$eiPropPath])) {
-				$currentEiPropPaths = $baseEiPropPaths;
-				$currentEiPropPaths[] = $eiPropPath;
-					
-				$guiProps = array_merge($guiProps, $this->guiPropForks[$eiPropPathStr]->getForkedGuiDefinition()
-						->buildGuiProps($currentEiPropPaths));
-			}
-		}
-		
-		return $guiProps;
-	}
-	
-	/**
-	 * @deprecated use {@see GuiDefinition::getGuiFieldPaths()}
-	 * @return \rocket\ei\manage\gui\GuiFieldPath[]
-	 */
-	public function getAllGuiFieldPaths() {
-		return $this->getGuiFieldPaths();
-	}
-	
-	/**
-	 * @param GuiFieldPath[] $guiFieldPaths
-	 * @return GuiFieldPath[]
-	 */
-	public function filterGuiFieldPaths(array $guiFieldPaths) {
-		return array_filter($guiFieldPaths, function (GuiFieldPath $guiFieldPath) {
-			return $this->containsGuiProp($guiFieldPath);
-		});
-	}
-	
-	/**
-	 * @return \rocket\ei\manage\gui\GuiFieldPath[]
-	 */
-	public function getGuiFieldPaths() {
-		return $this->buildGuiFieldPaths(array());
-	}
-	
-	protected function buildGuiFieldPaths(array $baseEiPropPaths) {
-		$guiFieldPaths = array();
-		
-		foreach ($this->eiPropPaths as $eiPropPath) {
-			$eiPropPathStr = (string) $eiPropPath;
-			
-			if (isset($this->guiProps[$eiPropPathStr])) {
-				$currentEiPropPaths = $baseEiPropPaths;
-				$currentEiPropPaths[] = $eiPropPath;
-				$guiFieldPaths[] = new GuiFieldPath($currentEiPropPaths);
-			}
-			
-			if (isset($this->guiPropForks[$eiPropPathStr])) {
-				$currentEiPropPaths = $baseEiPropPaths;
-				$currentEiPropPaths[] = $eiPropPath;
-				
-				$guiFieldPaths = array_merge($guiFieldPaths, $this->guiPropForks[$eiPropPathStr]->getForkedGuiDefinition()
-						->buildGuiFieldPaths($currentEiPropPaths));
-			}
-		}
-		
-		return $guiFieldPaths;
-	}
-	
-	public function assembleDefaultGuiProps(EiGui $eiGui) {
-		$guiPropAssemblies = [];
-		$this->composeGuiPropAssemblies($guiPropAssemblies, [], new Eiu($eiGui));
-		return $guiPropAssemblies;
-	}
-	
-	public function assembleGuiProps(EiGui $eiGui, array $guiFieldPaths) {
-		ArgUtils::valArray($guiFieldPaths, GuiFieldPath::class);
-		
-		$eiu = new Eiu($eiGui);
-		
-		$guiPropAssemblies = [];
-		
-		foreach ($guiFieldPaths as $guiFieldPath) {
-			$guiProp = $this->getGuiPropByGuiFieldPath($guiFieldPath);
-			
-			$displayDefinition = $guiProp->buildDisplayDefinition($eiu);
-			if ($displayDefinition === null) {
-				continue;
-			} 
-			
-			$guiPropAssemblies[(string) $guiFieldPath] = new GuiPropAssembly($guiProp, $guiFieldPath, 
-					$displayDefinition);
-		}
-		
-		return $guiPropAssemblies;
-	}
-	
-	
-	/**
-	 * @param array $baseEiPropPaths
-	 * @param Eiu $eiu
-	 * @param int $minTestLevel
-	 */
-	protected function composeGuiPropAssemblies(array &$guiPropAssemblies, array $baseEiPropPaths, Eiu $eiu) {
-		foreach ($this->eiPropPaths as $eiPropPath) {
-			$eiPropPathStr = (string) $eiPropPath;
-			
-			$displayDefinition = null;
-			if (isset($this->guiProps[$eiPropPathStr])
-					&& null !== ($displayDefinition = $this->guiProps[$eiPropPathStr]->buildDisplayDefinition($eiu))
-					&& $displayDefinition->isDefaultDisplayed()) {
-						
-				$currentEiPropPaths = $baseEiPropPaths;
-				$currentEiPropPaths[] = $eiPropPath;
-				
-				$guiFieldPath = new GuiFieldPath($currentEiPropPaths);
-				$guiPropAssemblies[(string) $guiFieldPath] = new GuiPropAssembly($this->guiProps[$eiPropPathStr], 
-						$guiFieldPath, $displayDefinition);
-			}
-			
-			if (isset($this->guiPropForks[$eiPropPathStr])
-					&& null !== ($forkedGuiDefinition = $this->guiPropForks[$eiPropPathStr]->getForkedGuiDefinition())) {
-				$currentEiPropPaths = $baseEiPropPaths;
-				$currentEiPropPaths[] = $eiPropPath;
-				$forkedGuiDefinition->composeGuiPropAssemblies($guiPropAssemblies, $currentEiPropPaths, $eiu);
-			}
-		}
-	}
-	
-// 	public function createDefaultDisplayStructure(EiGui $eiGui) {
-// 		$displayStructure = new DisplayStructure();
-// 		$this->composeDisplayStructure($displayStructure, array(), new Eiu($eiGui));
-// 		return $displayStructure;
-// 	}
-	
-
-	
-	
-	/**
-	 * @param GuiFieldPath $guiFieldPath
-	 * @return \rocket\ei\manage\gui\GuiProp
-	 * @throws GuiException
-	 */
-	public function getGuiPropByGuiFieldPath(GuiFieldPath $guiFieldPath) {
-		$ids = $guiFieldPath->toArray();
-		$guiDefinition = $this;
-		while (null !== ($id = array_shift($ids))) {
-			if (empty($ids)) {
-				return $guiDefinition->getGuiProp($id);
-			}
-			
-			$guiDefinition = $guiDefinition->getGuiPropFork($id)->getForkedGuiDefinition();
-			if ($guiDefinition === null) {
-				break;
-			}
-		}	
-		
-		throw new GuiException('GuiFieldPath could not be resolved: ' . $guiFieldPath);
-	}
-	
-	public function containsGuiProp(GuiFieldPath $guiFieldPath) {
-		$eiPropPaths = $guiFieldPath->toArray();
+	function containsGuiProp(DefPropPath $defPropPath) {
+		$eiPropPaths = $defPropPath->toArray();
 		$guiDefinition = $this;
 		while (null !== ($eiPropPath = array_shift($eiPropPaths))) {
 			if (empty($eiPropPaths)) {
@@ -348,145 +162,908 @@ class GuiDefinition {
 		return true;
 	}
 	
+// 	/**
+// 	 * @param string $eiPropPath
+// 	 * @param GuiPropFork $guiPropFork
+// 	 */
+// 	function putGuiPropFork(EiPropPath $eiPropPath, GuiPropFork $guiPropFork) {
+// 		$eiPropPathStr = (string) $eiPropPath;
+		
+// 		$this->guiPropForkWrappers[$eiPropPathStr] = new GuiPropForkWrapper($this, $eiPropPath, $guiPropFork);
+// 		$this->eiPropPaths[$eiPropPathStr] = $eiPropPath;
+// 	}
+	
+// 	/**
+// 	 * @param string $id
+// 	 * @return boolean
+// 	 */
+// 	function containsLevelGuiPropForkId(string $id) {
+// 		return isset($this->guiPropForkWrappers[$id]);
+// 	}
+	
+// 	/**
+// 	 * @param string $id
+// 	 * @throws GuiException
+// 	 * @return GuiPropFork
+// 	 */
+// 	function getGuiPropFork(EiPropPath $eiPropPath) {
+// 		$eiPropPathStr = (string) $eiPropPath;
+// 		if (!isset($this->guiPropForkWrappers[$eiPropPathStr])) {
+// 			throw new GuiException('No GuiPropFork with id \'' . $eiPropPathStr . '\' registered.');
+// 		}
+		
+// 		return $this->guiPropForkWrappers[$eiPropPathStr];
+// 	}
+	
+// 	function getAllGuiProps() {
+// 		return $this->buildGuiProps(array());
+// 	}
+	
+// 	protected function buildGuiProps(array $baseEiPropPaths) {
+// 		$guiProps = array();
+		
+// 		foreach ($this->eiPropPaths as $eiPropPath) {
+// 			$eiPropPathStr = (string) $eiPropPath;
+			
+// 			if (isset($this->guiPropWrappers[$eiPropPathStr])) {
+// 				$currentEiPropPaths = $baseEiPropPaths;
+// 				$currentEiPropPaths[] = $eiPropPath;
+// 				$guiProps[(string) new DefPropPath($currentEiPropPaths)] = $this->guiPropWrappers[$eiPropPathStr];
+// 			}
+				
+// 			if (isset($this->guiPropForkWrappers[$eiPropPathStr])) {
+// 				$currentEiPropPaths = $baseEiPropPaths;
+// 				$currentEiPropPaths[] = $eiPropPath;
+					
+// 				$guiProps = array_merge($guiProps, $this->guiPropForkWrappers[$eiPropPathStr]->getForkedGuiDefinition()
+// 						->buildGuiProps($currentEiPropPaths));
+// 			}
+// 		}
+		
+// 		return $guiProps;
+// 	}
+	
+// 	/**
+// 	 * @param DefPropPath[] $defPropPaths
+// 	 * @return DefPropPath[]
+// 	 */
+// 	function filterDefPropPaths(array $defPropPaths) {
+// 		return array_filter($defPropPaths, function (DefPropPath $defPropPath) {
+// 			return $this->containsGuiProp($defPropPath);
+// 		});
+// 	}
+
 	/**
-	 * @deprecated
 	 * @param EiPropPath $eiPropPath
-	 * @throws NotYetImplementedException
-	 * @return \rocket\ei\manage\gui\GuiFieldPath|NULL
+	 * @return bool
 	 */
-	public function eiPropPathToGuiFieldPath(EiPropPath $eiPropPath) {
-		if ($eiPropPath->hasMultipleIds()) {
-			throw new NotYetImplementedException();
-		}
-		
-		$id = $eiPropPath->getFirstId();
-		if (isset($this->guiProps[$id])) {
-			return new GuiFieldPath([EiPropPath::create($id)]);
-		}
-		
-		return null;
+	function containsEiPropPath(EiPropPath $eiPropPath) {
+		return isset($this->eiPropPaths[(string) $eiPropPath]);
 	}
 	
 	/**
+	 * @return \rocket\ei\manage\DefPropPath[]
+	 */
+	function getDefPropPaths() {
+		$defPropPaths = array();
+		
+		foreach ($this->eiPropPaths as $eiPropPath) {
+			$eiPropPathStr = (string) $eiPropPath;
+			$defPropPath = new DefPropPath([$eiPropPath]);
+
+			$defPropPaths[] = $defPropPath;
+			
+			foreach ($this->guiPropWrappers[$eiPropPathStr]->getForkedDefPropPaths() 
+					as $forkedDefPropPath) {
+				$defPropPaths[] = $defPropPath->ext($forkedDefPropPath);			
+			}
+		}
+		
+		return $defPropPaths;
+	}
+	
+// 	function assembleDefaultGuiProps() {
+// 		$guiPropAssemblies = [];
+// 		$this->composeGuiPropAssemblies($guiPropAssemblies, []);
+// 		return $guiPropAssemblies;
+// 	}
+	
+// 	function assembleGuiProps(EiGuiFrame $eiGuiFrame, array $defPropPaths) {
+// 		ArgUtils::valArray($defPropPaths, DefPropPath::class);
+		
+// // 		$eiu = new Eiu($eiGuiFrame);
+		
+// 		$guiPropAssemblies = [];
+		
+// 		foreach ($defPropPaths as $defPropPath) {
+// 			$guiProp = $this->getGuiPropByDefPropPath($defPropPath);
+			
+// 			$displayDefinition = $guiProp->getDisplayDefinition();
+// 			if ($displayDefinition === null) {
+// 				continue;
+// 			}
+			
+// 			$guiPropAssemblies[(string) $defPropPath] = new GuiPropAssembly($defPropPath, $displayDefinition);
+// 		}
+		
+// 		return $guiPropAssemblies;
+// 	}
+	
+	
+// 	/**
+// 	 * @param array $baseEiPropPaths
+// 	 * @param Eiu $eiu
+// 	 * @param int $minTestLevel
+// 	 */
+// 	protected function composeGuiPropAssemblies(array &$guiPropAssemblies, array $baseEiPropPaths) {
+// 		foreach ($this->eiPropPaths as $eiPropPath) {
+// 			$eiPropPathStr = (string) $eiPropPath;
+			
+// 			$displayDefinition = null;
+// 			if (isset($this->guiPropWrappers[$eiPropPathStr])
+// 					&& null !== ($displayDefinition = $this->guiPropWrappers[$eiPropPathStr]->getDisplayDefinition())
+// 					&& $displayDefinition->isDefaultDisplayed()) {
+						
+// 				$currentEiPropPaths = $baseEiPropPaths;
+// 				$currentEiPropPaths[] = $eiPropPath;
+				
+// 				$defPropPath = new DefPropPath($currentEiPropPaths);
+// 				$guiPropAssemblies[(string) $defPropPath] = new GuiPropAssembly($defPropPath, $displayDefinition);
+// 			}
+			
+// 			if (isset($this->guiPropForkWrappers[$eiPropPathStr])
+// 					&& null !== ($forkedGuiDefinition = $this->guiPropForkWrappers[$eiPropPathStr]->getForkedGuiDefinition())) {
+// 				$currentEiPropPaths = $baseEiPropPaths;
+// 				$currentEiPropPaths[] = $eiPropPath;
+// 				$forkedGuiDefinition->composeGuiPropAssemblies($guiPropAssemblies, $currentEiPropPaths);
+// 			}
+// 		}
+// 	}
+	
+// 	function createDefaultDisplayStructure(EiGuiFrame $eiGuiFrame) {
+// 		$displayStructure = new DisplayStructure();
+// 		$this->composeDisplayStructure($displayStructure, array(), new Eiu($eiGuiFrame));
+// 		return $displayStructure;
+// 	}
+	
+
+	
+	
+	/**
+	 * @param DefPropPath $defPropPath
+	 * @return \rocket\ei\manage\gui\GuiPropWrapper
+	 * @throws GuiException
+	 */
+	function getGuiPropWrapperByDefPropPath(DefPropPath $defPropPath) {
+		$guiPropWrapper = $this->getGuiPropWrapper($defPropPath->getFirstEiPropPath());
+		
+		if (!$defPropPath->hasMultipleEiPropPaths()) {
+			return $guiPropWrapper;
+		}
+		
+		try {
+			return $guiPropWrapper->getForkedGuiPropWrapper($defPropPath->getShifted());
+		} catch (UnresolvableDefPropPathException $e) {
+			throw new UnresolvableDefPropPathException('DefPropPath could not be resolved: ' . $defPropPath);
+		}
+
+	}
+	
+	
+
+	
+	/**
 	 * @param EiEntry $eiEntry
-	 * @param GuiFieldPath $guiFieldPath
+	 * @param DefPropPath $defPropPath
 	 * @throws UnknownEiFieldExcpetion
 	 * @return \rocket\ei\manage\gui\EiFieldAbstraction|null
 	 */
-	public function determineEiFieldAbstraction(N2nContext $n2nContext, EiEntry $eiEntry, GuiFieldPath $guiFieldPath) {
-		$eiFieldPaths = $guiFieldPath->toArray();
-		$id = array_shift($eiFieldPaths);
-		if (empty($eiFieldPaths)) {
+	function determineEiFieldAbstraction(N2nContext $n2nContext, EiEntry $eiEntry, DefPropPath $defPropPath) {
+		$eiPropPaths = $defPropPath->toArray();
+		$id = array_shift($eiPropPaths);
+		if (empty($eiPropPaths)) {
 			return $eiEntry->getEiFieldWrapper($id);
 		}
 		
 		$guiPropFork = $this->getGuiPropFork($id);
-		return $guiPropFork->determineEiFieldAbstraction(new Eiu($n2nContext, $eiEntry), new GuiFieldPath($eiFieldPaths));
-	}
-	
-	public function getGuiPropForks() {
-		return $this->guiPropForks;
+		return $guiPropFork->determineEiFieldAbstraction(new Eiu($n2nContext, $eiEntry), new DefPropPath($eiPropPaths));
 	}
 	
 	/**
-	 * @param EiObject $eiObject
-	 * @param N2nLocale $n2nLocale
-	 * @return string
+	 * @return GuiPropFork[]
 	 */
-	private function createDefaultIdentityString(EiObject $eiObject, N2nContext $n2nContext, N2nLocale $n2nLocale) {
-		$eiType = $eiObject->getEiEntityObj()->getEiType();
+	function getGuiPropForkWrappers() {
+		return $this->guiPropForkWrappers;
+	}
 		
-		$idPatternPart = null;
-		$namePatternPart = null;
+	/**
+	 * @param string $id
+	 * @param GuiProp $guiProp
+	 * @param EiPropPath $defPropPath
+	 * @throws GuiException
+	 */
+	function putGuiCommand(EiCommandPath $eiCommandPath, GuiCommand $guiCommand) {
+		$eiCommandPathStr = (string) $eiCommandPath;
 		
-		foreach ($this->getStringRepresentableGuiProps() as $eiPropPathStr => $guiProp) {
-			if ($eiPropPathStr == $eiType->getEntityModel()->getIdDef()->getPropertyName()) {
-				$idPatternPart = SummarizedStringBuilder::createPlaceholder($eiPropPathStr);
-			} else {
-				$namePatternPart = SummarizedStringBuilder::createPlaceholder($eiPropPathStr);
+		if (isset($this->guiCommand[$eiCommandPathStr])) {
+			throw new GuiException('GuiCommand for EiCommandPath \'' . $eiCommandPathStr . '\' is already registered');
+		}
+		
+		$this->guiCommands[$eiCommandPathStr] = $guiCommand;
+	}
+	
+	/**
+	 * @param EiFrame $eiFrame
+	 * @param EiEntry $eiEntry
+	 * @param GuiControlPath $guiControlPath
+	 * @return EntryGuiControl
+	 * @throws UnknownGuiControlException
+	 */
+	function createEntryGuiControl(EiFrame $eiFrame, EiGuiFrame $eiGuiFrame, EiEntry $eiEntry, GuiControlPath $guiControlPath): EntryGuiControl {
+		if ($guiControlPath->size() != 2) {
+			throw new UnknownGuiControlException('Unknown GuiControlPath ' . $guiControlPath);
+		}
+		
+		$eiu = new Eiu($eiFrame, $eiGuiFrame, $eiEntry);
+		$cmdId = $guiControlPath->getFirstId();
+		$controlId = $guiControlPath->getLastId();
+		
+		foreach ($this->guiCommands as $id => $guiCommand) {
+			if ($cmdId != $id) {
+				continue;
 			}
 			
-			if ($namePatternPart !== null) break;
+			$guiControls = $this->extractEntryGuiControls($guiCommand, $id, $eiu);
+			if ($guiControls[$controlId]) {
+				return $guiControls[$controlId];
+			}
 		}
 		
-		if ($idPatternPart === null) {
-			$idPatternPart = $eiObject->getEiEntityObj()->hasId() ?
-			$eiType->idToPid($eiObject->getEiEntityObj()->getId()) : 'new';
-		}
-		
-		if ($namePatternPart === null) {
-			$namePatternPart = $this->labelLstr->t($n2nLocale);
-		}
-		
-		return $this->createIdentityStringFromPattern($namePatternPart . ' #' . $idPatternPart, $n2nContext, $eiObject, $n2nLocale);
+		throw new UnknownGuiControlException('Unknown GuiControlPath ' . $guiControlPath);
 	}
 	
 	/**
-	 * @param EiObject $eiObject
-	 * @param N2nLocale $n2nLocale
-	 * @return string
+	 * @param EiFrame $eiFrame
+	 * @param EiEntry $eiEntry
+	 * @return GuiControl[]
 	 */
-	public function createIdentityString(EiObject $eiObject, N2nContext $n2nContext, N2nLocale $n2nLocale) {
-		if ($this->identityStringPattern === null) {
-			return $this->createDefaultIdentityString($eiObject, $n2nContext, $n2nLocale);
-		}
+	function createEntryGuiControls(EiFrame $eiFrame, EiGuiFrame $eiGuiFrame, EiEntry $eiEntry): array {
+		$eiu = new Eiu($eiFrame, $eiGuiFrame, $eiEntry);
 		
-		return $this->createIdentityStringFromPattern($this->identityStringPattern, $n2nContext, $eiObject, $n2nLocale);
+		$guiControls = [];
+		foreach ($this->guiCommands as $id => $guiCommand) {
+			foreach ($this->extractEntryGuiControls($guiCommand, $id, $eiu) as $entryGuiControl) {
+				$guiControlPath = new GuiControlPath([$id, $entryGuiControl->getId()]);
+				
+				$guiControls[(string) $guiControlPath] = $entryGuiControl;
+			}
+		}
+		return $guiControls;
 	}
 	
 	/**
-	 * @param $entity
-	 * @param N2nLocale $n2nLocale
-	 * @return string
+	 * @param GuiCommand $guiCommand
+	 * @param string $guiCommandId
+	 * @param Eiu $eiu
+	 * @return \rocket\ei\manage\gui\control\GuiControl[]
 	 */
-	public function createIdentityStringFromPattern(string $identityStringPattern, N2nContext $n2nContext, EiObject $eiObject, N2nLocale $n2nLocale): string {
-		$builder = new SummarizedStringBuilder($identityStringPattern, $n2nContext, $n2nLocale);
-		$builder->replaceFields(array(), $this, $eiObject);
-		return $builder->__toString();
-	}
-	
-	public function getStringRepresentableGuiProps() {
-		return $this->filterStringRepresentableGuiProps($this, array());
-	}
-	
-	private function filterStringRepresentableGuiProps(GuiDefinition $guiDefinition, array $baseIds) {
-		$guiProps = array();
+	private function extractEntryGuiControls(GuiCommand $guiCommand, string $guiCommandId, Eiu $eiu) {
+		$entryGuiControls = $guiCommand->createEntryGuiControls($eiu);
+		ArgUtils::valArrayReturn($entryGuiControls, $guiCommand, 'createEntryGuiControls', EntryGuiControl::class);
 		
-		foreach ($guiDefinition->getGuiProps() as $id => $guiProp) {
-			if (!$guiProp->isStringRepresentable()) continue;
-			
-			$ids = $baseIds;
-			$ids[] = EiPropPath::create($id);
-			$guiProps[(string) new GuiFieldPath($ids)] = $guiProp;
-		}
-		
-		foreach ($guiDefinition->getGuiPropForks() as $id => $guiPropFork) {
-			$forkedGuiDefinition = $guiPropFork->getForkedGuiDefinition();
-			
-			if ($forkedGuiDefinition === null) continue;
-			
-			$ids = $baseIds;
-			$ids[] = EiPropPath::create($id);
-			$guiProps = array_merge($guiProps, $this->filterStringRepresentableGuiProps($forkedGuiDefinition, $ids));
-		}
-		
-		return $guiProps;
-	}
-	
-	private $guiDefinitionListeners = array();
-	
-	public function registerGuiDefinitionListener(GuiDefinitionListener $guiDefinitionListener) {
-		$this->guiDefinitionListeners[spl_object_hash($guiDefinitionListener)] = $guiDefinitionListener;
-	}
-	
-	public function unregisterGuiDefinitionListener(GuiDefinitionListener $guiDefinitionListener) {
-		unset($this->guiDefinitionListeners[spl_object_hash($guiDefinitionListener)]);
+		return $this->mapGuiControls($entryGuiControls, $guiCommand, EntryGuiControl::class);
 	}
 	
 	/**
-	 * @return GuiDefinitionListener[]
+	 * @param EiFrame $eiFrame
+	 * @param EiEntry $eiEntry
+	 * @param GuiControlPath $guiControlPath
+	 * @return GeneralGuiControl
+	 * @throws UnknownGuiControlException
 	 */
-	public function getGuiDefinitionListeners() {
-		return $this->guiDefinitionListeners;
+	function createGeneralGuiControl(EiFrame $eiFrame, EiGuiFrame $eiGuiFrame, GuiControlPath $guiControlPath) {
+		if ($guiControlPath->size() != 2) {
+			throw new UnknownGuiControlException('Unknown GuiControlPath ' . $guiControlPath);
+		}
+		
+		$eiu = new Eiu($eiFrame, $eiGuiFrame);
+		$cmdId = $guiControlPath->getFirstId();
+		$controlId = $guiControlPath->getLastId();
+		
+		foreach ($this->guiCommands as $id => $guiCommand) {
+			if ($cmdId != $id) {
+				continue;
+			}
+			
+			$guiControls = $this->extractGeneralGuiControls($guiCommand, $id, $eiu);
+			if ($guiControls[$controlId]) {
+				return $guiControls[$controlId];
+			}
+		}
+		
+		throw new UnknownGuiControlException('Unknown GuiControlPath ' . $guiControlPath);
+	}
+	
+	
+	/**
+	 * @param EiFrame $eiFrame
+	 * @return EntryGuiControl[]
+	 */
+	function createGeneralGuiControls(EiFrame $eiFrame, EiGuiFrame $eiGuiFrame): array {
+		$eiu = new Eiu($eiFrame, $eiGuiFrame);
+		
+		$siControls = [];
+		foreach ($this->guiCommands as $id => $guiCommand) {
+			foreach ($this->extractGeneralGuiControls($guiCommand, $id, $eiu) as $generalGuiControl) {
+				$guiControlPath = new GuiControlPath([$id, $generalGuiControl->getId()]);
+				$siControls[(string) $guiControlPath] = $generalGuiControl;
+			}
+		}
+		return $siControls;
+	}
+	
+	/**
+	 * @param GuiCommand $guiCommand
+	 * @param string $guiCommandId
+	 * @param Eiu $eiu
+	 * @return \rocket\ei\manage\gui\control\GeneralGuiControl[]
+	 */
+	private function extractGeneralGuiControls(GuiCommand $guiCommand, string $guiCommandId, Eiu $eiu) {
+		$generalGuiControls = $guiCommand->createGeneralGuiControls($eiu);
+		ArgUtils::valArrayReturn($generalGuiControls, $guiCommand, 'extractGeneralGuiControls', GeneralGuiControl::class);
+		
+		return $this->mapGuiControls($generalGuiControls, $guiCommand, GeneralGuiControl::class);
+	}
+	
+	/**
+	 * @param EiFrame $eiFrame
+	 * @param GuiControlPath $guiControlPath
+	 * @return SelectionGuiControl
+	 * @throw UnknownGuiControlException
+	 */
+	function createSelectionGuiControl(EiFrame $eiFrame, GuiControlPath $guiControlPath) {
+		if ($guiControlPath->size() != 2) {
+			throw new UnknownGuiControlException('Unknown GuiControlPath ' . $guiControlPath);
+		}
+		
+		$eiu = new Eiu($eiFrame);
+		$cmdId = $guiControlPath->getFirstId();
+		$controlId = $guiControlPath->getLastId();
+		
+		foreach ($this->guiCommands as $id => $guiCommand) {
+			if ($cmdId != $id) {
+				continue;
+			}
+			
+			$guiControls = $this->extractSelectionGuiControls($guiCommand, $id, $eiu);
+			if ($guiControls[$controlId]) {
+				return $guiControls[$controlId];
+			}
+		}
+		
+		throw new UnknownGuiControlException('Unknown GuiControlPath ' . $guiControlPath);
+	}
+	
+	/**
+	 * @param EiFrame $eiFrame
+	 * @return SelectionGuiControl[]
+	 */
+	function createSelectionGuiControls(EiFrame $eiFrame): array {
+		$eiu = new Eiu($eiFrame);
+		
+		$guiControls = [];
+		foreach ($this->guiCommands as $id => $guiCommand) {
+			foreach ($this->extractSelectionGuiControls($guiCommand, $id, $eiu) as $selectionGuiControl) {
+				$guiControlPath = new GuiControlPath([$id, $selectionGuiControl->getId()]);
+				
+				$guiControls[(string) $guiControlPath] = $selectionGuiControl;
+			}
+		}
+		return $guiControls;
+	}
+	
+	/**
+	 * @param GuiCommand $guiCommand
+	 * @param string $guiCommandId
+	 * @param Eiu $eiu
+	 * @return \rocket\ei\manage\gui\control\GeneralGuiControl[]
+	 */
+	private function extractSelectionGuiControls(GuiCommand $guiCommand, string $guiCommandId, Eiu $eiu) {
+		$selectionGuiControls = $guiCommand->createSelectionGuiControls($eiu);
+		ArgUtils::valArrayReturn($selectionGuiControls, $guiCommand, 'createSelectionGuiControls', SelectionGuiControl::class);
+		
+		return $this->mapGuiControls($selectionGuiControls, $guiCommand, SelectionGuiControl::class);
+	}
+	
+	/**
+	 * @param GuiControl[] $guiControls
+	 * @return GuiControl[]
+	 */
+	private function mapGuiControls($guiControls, $guiCommand, $guiControlClassName) {
+		$mappedGuiControls = [];
+		
+		foreach ($guiControls as $guiControl) {
+			$id = $guiControl->getId();
+			
+			if (!IdPath::isIdValid($id)) {
+				throw new \InvalidArgumentException(StringUtils::strOf($guiCommand) . ' returns '
+						. $guiControlClassName . ' with illegal id: ' . $id);
+			}
+			
+			if (isset($mappedGuiControls[$id])) {
+				throw new \InvalidArgumentException(StringUtils::strOf($guiCommand) . ' returns multiple '
+						. $guiControlClassName . ' objects with id: ' . $id);
+			}
+			
+			$mappedGuiControls[$id] = $guiControl;
+		}
+		
+		return $mappedGuiControls;
+	}
+	
+	/**
+	 * @return Lstr[] 
+	 */
+	function getLabelLstrs() {
+		return $this->buildLabelLstrs([]);
+	}
+	
+	/**
+	 * @param EiPropPath[] $contextEiPropPaths
+	 * @return Lstr[]
+	 */
+	private function buildLabelLstrs(array $contextEiPropPaths) {
+		$labelLstrs = array();
+		
+		foreach ($this->eiPropPaths as $eiPropPath) {
+			$eiPropPathStr = (string) $eiPropPath;
+			
+			if (isset($this->guiPropWrappers[$eiPropPathStr])) {
+				$currentEiPropPaths = $contextEiPropPaths;
+				$currentEiPropPaths[] = $eiPropPath;
+				$labelLstrs[(string) new DefPropPath($currentEiPropPaths)] = $this->guiPropWrappers[$eiPropPathStr]->getEiProp()->getLabelLstr();
+			}
+			
+			if (isset($this->guiPropForkWrappers[$eiPropPathStr])) {
+				$currentEiPropPaths = $contextEiPropPaths;
+				$currentEiPropPaths[] = $eiPropPath;
+				
+				$labelLstrs = array_merge($labelLstrs, $this->guiPropForkWrappers[$eiPropPathStr]
+						->getForkedGuiDefinition()->buildLabelLstrs($currentEiPropPaths));
+			}
+		}
+		
+		return $labelLstrs;
+	}
+	
+// 	/**
+// 	 * @param EiFrame $eiFrame
+// 	 * @param int $viewMode
+// 	 * @param DefPropPath[]|null $defPropPaths
+// 	 * @return \rocket\ei\manage\gui\EiGuiModel
+// 	 */
+// 	function createEiGuiModel(N2nContext $n2nContext, int $viewMode, array $defPropPaths = null) {
+// 		$eiGuiFrame = new EiGuiFrame($this, $viewMode);
+		
+		
+		
+		
+// 		return new EiGuiModel($guiStructureDeclarations, $eiGuiFrame);
+// 	}
+	
+	/**
+	 * @param EiFrame $eiFrame
+	 * @param int $viewMode
+	 * @param array $defPropPaths
+	 * @return \rocket\ei\manage\gui\EiGuiFrame
+	 */
+	function createEiGuiFrame(N2nContext $n2nContext, EiGuiModel $eiGuiModel, ?array $defPropPaths, 
+			bool $guiStructureDeclarationsRequired) {
+		ArgUtils::assertTrue($this->eiMask->isA($eiGuiModel->getContextEiMask()));
+		
+		$eiGuiFrame = new EiGuiFrame($eiGuiModel, $this, null);
+		
+		$eiGuiModel->putEiGuiFrame($eiGuiFrame);
+				
+		$guiStructureDeclarations = null;
+		
+		if ($defPropPaths === null) {
+			$guiStructureDeclarations = $this->initEiGuiFrameFromDisplayScheme($n2nContext, $eiGuiFrame);
+		} else {
+			$guiStructureDeclarations = $this->semiAutoInitEiGuiFrame($n2nContext, $eiGuiFrame, $defPropPaths);
+		}
+		
+		if (!$guiStructureDeclarationsRequired) {
+			return $eiGuiFrame;
+		}
+		
+		if (ViewMode::isBulky($eiGuiModel->getViewMode())) {
+			$guiStructureDeclarations = $this->groupGsds($guiStructureDeclarations);
+		}
+		
+		$eiGuiFrame->setGuiStructureDeclarations($guiStructureDeclarations);
+		return $eiGuiFrame;
+	}
+	
+	/**
+	 * @param EiGuiFrame $eiGuiFrame
+	 * @param DefPropPath[] $defPropPaths
+	 * @return DefPropPath[]
+	 */
+	private function filterDefPropPaths($eiGuiFrame, $defPropPaths) {
+		$filteredDefPropPaths = [];
+		foreach ($defPropPaths as $key => $defPropPath) {
+			if ($this->containsGuiProp($defPropPath)) {
+				$filteredDefPropPaths[$key] = $defPropPath;
+			}
+		}
+		return $filteredDefPropPaths;
+	}
+	
+	/**
+	 * @param EiGuiFrame $eiGuiFrame
+	 */
+	private function initEiGuiFrame($eiGuiFrame) {
+		$this->eiMask->getEiModificatorCollection()->setupEiGuiFrame($eiGuiFrame);
+		
+		$eiGuiFrame->markInitialized();
+	}
+	
+	/**
+	 * @param EiGuiFrame $eiGuiFrame
+	 * @return GuiStructureDeclaration[]
+	 */
+	private function initEiGuiFrameFromDisplayScheme(N2nContext $n2nContext, EiGuiFrame $eiGuiFrame) {
+		$displayScheme = $this->eiMask->getDisplayScheme();
+		
+		$displayStructure = null;
+		switch ($eiGuiFrame->getEiGuiModel()->getViewMode()) {
+			case ViewMode::BULKY_READ:
+				$displayStructure = $displayScheme->getDetailDisplayStructure() ?? $displayScheme->getBulkyDisplayStructure();
+				break;
+			case ViewMode::BULKY_EDIT:
+				$displayStructure = $displayScheme->getEditDisplayStructure() ?? $displayScheme->getBulkyDisplayStructure();
+				break;
+			case ViewMode::BULKY_ADD:
+				$displayStructure = $displayScheme->getAddDisplayStructure() ?? $displayScheme->getBulkyDisplayStructure();
+				break;
+			case ViewMode::COMPACT_READ:
+			case ViewMode::COMPACT_EDIT:
+			case ViewMode::COMPACT_ADD:
+				$displayStructure = $displayScheme->getOverviewDisplayStructure();
+				break;
+		}
+		
+		if ($displayStructure === null) {
+			return $this->autoInitEiGuiFrame($n2nContext, $eiGuiFrame);
+		} 
+		
+		return $this->nonAutoInitEiGuiFrame($n2nContext, $eiGuiFrame, $displayStructure);
+	}
+	
+	/**
+	 * @param N2nContext $n2nContext;
+	 * @param EiGuiFrame $eiGuiFrame
+	 * @param DisplayStructure $displayStructure
+	 * @return GuiStructureDeclaration[]
+	 */
+	private function nonAutoInitEiGuiFrame($n2nContext, $eiGuiFrame, $displayStructure) {
+		$assemblerCache = new EiFieldAssemblerCache($n2nContext, $eiGuiFrame, $displayStructure->getAllDefPropPaths());
+		$guiStructureDeclarations = $this->assembleDisplayStructure($assemblerCache, $eiGuiFrame, $displayStructure);
+		$this->initEiGuiFrame($eiGuiFrame);
+		return $guiStructureDeclarations;
+	}
+	
+	/**
+	 * @param GuiStructureDeclaration[] $guiStructureDeclarations
+	 */
+	private function groupGsds(array $guiStructureDeclarations) {
+		$groupedGsds = [];
+		
+		$curUngroupedGsds = [];
+		
+		foreach ($guiStructureDeclarations as $guiStructureDeclaration) {
+			if (SiStructureType::isGroup($guiStructureDeclaration->getSiStructureType())) {
+				$this->appendToGoupedGsds($curUngroupedGsds, $groupedGsds);
+				$curUngroupedGsds = [];
+				
+				$groupedGsds[] = $guiStructureDeclaration;
+				continue;
+			}
+			
+			$curUngroupedGsds[] = $guiStructureDeclaration;
+		}
+		
+		$this->appendToGoupedGsds($curUngroupedGsds, $groupedGsds);
+		
+		return $groupedGsds;
+	}
+	
+	/**
+	 * @param GuiStructureDeclaration[] $curNonGroups
+	 * @param GuiStructureDeclaration[] $groupedGsds
+	 */
+	function appendToGoupedGsds($curUngroupedGsds, &$groupedGsds) {
+		if (empty($curUngroupedGsds)) {
+			return;
+		}
+		
+		$groupedGsds[] = GuiStructureDeclaration::createGroup($curUngroupedGsds, SiStructureType::SIMPLE_GROUP, null);
+	}
+	
+	/**
+	 * @param EiGuiFrame $eiGuiFrame
+	 * @param DefPropPath[] $possibleDefPropPaths
+	 * @return GuiStructureDeclaration[]
+	 */
+	private function semiAutoInitEiGuiFrame($n2nContext, $eiGuiFrame, $possibleDefPropPaths) {
+		$assemblerCache = new EiFieldAssemblerCache($n2nContext, $eiGuiFrame, $possibleDefPropPaths);
+		$guiStructureDeclarations = $this->assembleSemiAutoGuiStructureDeclarations($assemblerCache, $eiGuiFrame, $possibleDefPropPaths, true);
+		$this->initEiGuiFrame($eiGuiFrame);
+		return $guiStructureDeclarations;
+	}
+	
+	/**
+	 * @param EiFieldAssemblerCache $assemblerCache
+	 * @param EiGuiFrame $eiGuiFrame
+	 * @param DefPropPath[]
+	 * @param string $siStructureType
+	 * @return GuiStructureDeclaration[]
+	 */
+	private function assembleSemiAutoGuiStructureDeclarations($assemblerCache, $eiGuiFrame, $defPropPaths, $siStructureTypeRequired) {
+		$guiStructureDeclarations = [];
+		
+		foreach ($defPropPaths as $defPropPath) {
+			$displayDefinition = $assemblerCache->assignDefPropPath($defPropPath);
+			
+			if ($displayDefinition === null) {
+				continue;
+			}
+			
+			$siStructureType = !$siStructureTypeRequired ? null : ($displayDefinition->getSiStructureType() ?? SiStructureType::ITEM);
+			
+			$guiStructureDeclarations[] = GuiStructureDeclaration::createField($defPropPath, $siStructureType, 
+					$displayDefinition->getOverwriteLabel(), $displayDefinition->getOverwriteHelpText());
+		}
+			
+		return $guiStructureDeclarations;
+	}
+	
+	
+	
+// 	/**
+// 	 * @param DefPropPath $defPropPath
+// 	 * @param EiGuiFrame $eiGuiFrame
+// 	 * @param bool $defaultDisplayedRequired
+// 	 * @return DisplayDefinition|null
+// 	 */
+// 	private function buildDisplayDefinition($defPropPath, $eiGuiFrame, $defaultDisplayedRequired) {
+// 		$eiPropPathStr = (string) $defPropPath->getFirstEiPropPath();
+		
+// 		if (!$defPropPath->hasMultipleEiPropPaths()) {
+// 			if (!isset($this->guiPropWrappers[$eiPropPathStr])) {
+// 				return null;
+// 			}
+			
+// 			return $this->guiPropWrappers[$eiPropPathStr]->buildDisplayDefinition($eiGuiFrame, $defaultDisplayedRequired);
+// 		}
+		
+// 		if (!isset($this->guiPropWrappers[$eiPropPathStr])) {
+// 			return null;
+// 		}
+		
+// 		return $this->guiPropWrappers[$eiPropPathStr]
+// 				->buildForkDisplayDefinition($defPropPath->getShifted(), $eiGuiFrame, $defaultDisplayedRequired);
+// 	}
+	
+	/**
+	 * @param EiFieldAssemblerCache $assemblerCache
+	 * @param EiGuiFrame $eiGuiFrame
+	 * @param DisplayStructure $displayStructure
+	 */
+	private function assembleDisplayStructure($assemblerCache, $eiGuiFrame, $displayStructure) {
+		$guiStructureDeclarations = [];
+		
+		foreach ($displayStructure->getDisplayItems() as $displayItem) {
+			if ($displayItem->hasDisplayStructure()) {
+				$guiStructureDeclarations[] = GuiStructureDeclaration::createGroup(
+						$this->assembleDisplayStructure($assemblerCache, $eiGuiFrame, $displayItem->getDisplayStructure()),
+						$displayItem->getSiStructureType(), $displayItem->getLabel(), $displayItem->getHelpText());
+				continue;
+			}
+			
+			$defPropPath = $displayItem->getDefPropPath();
+			$displayDefinition = $assemblerCache->assignDefPropPath($defPropPath);
+			if (null === $displayDefinition) {
+				continue;
+			}
+			
+			$guiStructureDeclarations[] = GuiStructureDeclaration::createField($defPropPath,
+					$displayItem->getSiStructureType() ?? $displayDefinition->getSiStructureType() ?? SiStructureType::ITEM);
+		}
+		
+		return $guiStructureDeclarations;
+	}
+	
+	/**
+	 * @param N2nContext $n2nContext
+	 * @param EiGuiFrame $eiGuiFrame
+	 */
+	private function autoInitEiGuiFrame($n2nContext, $eiGuiFrame) {
+// 		$n2nLocale = $eiGuiFrame->getEiFrame()->getN2nContext()->getN2nLocale();
+		
+		$guiStructureDeclarations = [];
+		foreach ($this->guiPropWrappers as $guiPropWrapper) {
+			$eiPropPath = $guiPropWrapper->getEiPropPath();
+			$guiPropSetup = $guiPropWrapper->buildGuiPropSetup($n2nContext, $eiGuiFrame, null);
+			
+			if ($guiPropSetup === null) {
+				continue;
+			}
+			
+			$eiGuiFrame->putGuiFieldAssembler($eiPropPath, $guiPropSetup->getGuiFieldAssembler());
+			
+			$defPropPath = new DefPropPath([$eiPropPath]);
+			
+			$displayDefinition = $guiPropSetup->getDisplayDefinition();
+			if (null !== $displayDefinition && $displayDefinition->isDefaultDisplayed()) {
+				$eiGuiFrame->putDisplayDefintion($defPropPath, $displayDefinition);
+				$guiStructureDeclarations[(string) $defPropPath] = GuiStructureDeclaration
+						::createField($defPropPath, $displayDefinition->getSiStructureType() ?? SiStructureType::ITEM);
+			}
+			
+			foreach ($guiPropWrapper->getForkedDefPropPaths() as $forkedDefPropPath) {
+				$absDefPropPath = $defPropPath->ext($forkedDefPropPath);
+				$displayDefinition = $guiPropSetup->getForkedDisplayDefinition($forkedDefPropPath);
+				
+				if ($displayDefinition === null/* || !$displayDefinition->isDefaultDisplayed()*/) {
+					continue;
+				}
+				$eiGuiFrame->putDisplayDefintion($absDefPropPath, $displayDefinition);
+				
+				$guiStructureDeclarations[(string) $absDefPropPath] = GuiStructureDeclaration
+						::createField($absDefPropPath, $displayDefinition->getSiStructureType() ?? SiStructureType::ITEM);
+			}
+		}
+		
+		$this->initEiGuiFrame($eiGuiFrame);
+		
+		return $guiStructureDeclarations;
+	}
+	
+	/**
+	 * @param DefPropPath $defPropPath
+	 * @param DisplayDefinition $displayDefinition
+	 * @param DisplayItem $displayItem
+	 */
+	private function createGuiStructureDeclaration($defPropPath, $displayDefinition, $displayItem) {
+		if ($displayItem === null) {
+			
+		}
+		
+		return GuiStructureDeclaration::createField($defPropPath,
+				$displayDefinition->getSiStructureType() ?? SiStructureType::ITEM);
+	}
+	
+	
+	
+	
+// 	/**
+// 	 * @param DefPropPath $defPropPath
+// 	 * @param DisplayItem|null $displayItem
+// 	 * @return GuiStructureDeclaration
+// 	 */
+// 	private function createFieldDeclaration($defPropPath, $eiProp, $displayItem) {
+// 		$guiProp = $this->getGuiPropWrapper($eiPropPath);
+// 	}
+	
+// 	private $guiDefinitionListeners = array();
+	
+// 	function registerGuiDefinitionListener(GuiDefinitionListener $guiDefinitionListener) {
+// 		$this->guiDefinitionListeners[spl_object_hash($guiDefinitionListener)] = $guiDefinitionListener;
+// 	}
+	
+// 	function unregisterGuiDefinitionListener(GuiDefinitionListener $guiDefinitionListener) {
+// 		unset($this->guiDefinitionListeners[spl_object_hash($guiDefinitionListener)]);
+// 	}
+	
+// 	/**
+// 	 * @return GuiDefinitionListener[]
+// 	 */
+// 	function getGuiDefinitionListeners() {
+// 		return $this->guiDefinitionListeners;
+// 	}
+}
+
+
+class EiFieldAssemblerCache {
+	private $n2nContext;
+	private $eiGuiFrame;
+	private $displayStructure;
+	/**
+	 * @var DefPropPath[]
+	 */
+	private $possibleDefPropPaths = [];
+	/**
+	 * @var DefPropPath[]
+	 */
+	private $defPropPaths = [];
+	/**
+	 * @var GuiPropSetup[]
+	 */
+	private $guiPropSetups = [];
+	
+	/**
+	 * @param N2nContext $n2nContext
+	 * @param EiGuiFrame $eiGuiFrame
+	 * @param array $possibleDefPropPaths
+	 */
+	function __construct(N2nContext $n2nContext, EiGuiFrame $eiGuiFrame, array $possibleDefPropPaths) {
+		$this->n2nContext = $n2nContext;
+		$this->eiGuiFrame = $eiGuiFrame;
+		$this->possibleDefPropPaths = $possibleDefPropPaths;
+	}
+	
+	/**
+	 * @param EiPropPath $eiPropPath
+	 * @return GuiPropSetup
+	 */
+	private function assemble(EiPropPath $eiPropPath) {
+		$eiPropPathStr = (string) $eiPropPath;
+		
+		if (isset($this->guiPropSetups[$eiPropPathStr])) {
+			return $this->guiPropSetups[$eiPropPathStr];
+		}
+		
+		$guiPropWrapper = $this->eiGuiFrame->getGuiDefinition()->getGuiPropWrapper($eiPropPath);
+		$guiPropSetup = $guiPropWrapper->buildGuiPropSetup($this->n2nContext, $this->eiGuiFrame, 
+				$this->filterForkedDefPropPaths($eiPropPath));
+		$this->eiGuiFrame->putGuiFieldAssembler($eiPropPath, $guiPropSetup->getGuiFieldAssembler());
+		$this->guiPropSetups[$eiPropPathStr] = $guiPropSetup;
+		
+		return $guiPropSetup;
+	}
+	
+	/**
+	 * @param DefPropPath $defPropPath
+	 * @return DisplayDefinition|null
+	 */
+	function assignDefPropPath(DefPropPath $defPropPath) {
+		$guiPropSetup = $this->assemble($defPropPath->getFirstEiPropPath());
+		
+		$displayDefinition = null;
+		if (!$defPropPath->hasMultipleEiPropPaths()) {
+			$displayDefinition = $guiPropSetup->getDisplayDefinition();
+		} else {
+			$displayDefinition = $guiPropSetup->getForkedDisplayDefinition($defPropPath->getShifted());
+		}
+		
+		if ($displayDefinition !== null) {
+			$this->eiGuiFrame->putDisplayDefintion($defPropPath, $displayDefinition);
+		}
+		
+		return $displayDefinition;
+	}
+	
+	/**
+	 * @param EiPropPath $eiPropPath
+	 * @return DefPropPath[]
+	 */
+	private function filterForkedDefPropPaths($eiPropPath) {
+		$forkedDefPropPaths = [];
+		foreach ($this->possibleDefPropPaths as $possibleDefPropPath) {
+			if ($possibleDefPropPath->hasMultipleEiPropPaths() 
+					&& $possibleDefPropPath->getFirstEiPropPath()->equals($eiPropPath)) {
+				$forkedDefPropPaths[] = $possibleDefPropPath->getShifted();
+			}
+		}
+		return $forkedDefPropPaths;
+	}
+	
+	/**
+	 * @return \rocket\ei\manage\DefPropPath[]
+	 */
+	function getDefPropPaths() {
+		return $this->defPropPaths;
 	}
 }

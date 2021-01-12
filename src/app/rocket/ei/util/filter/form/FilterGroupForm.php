@@ -27,14 +27,14 @@ use rocket\ei\manage\critmod\filter\FilterDefinition;
 use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
 use n2n\reflection\annotation\AnnoInit;
 use n2n\web\dispatch\annotation\AnnoDispObjectArray;
-use n2n\util\type\attrs\Attributes;
+use n2n\util\type\attrs\DataSet;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use rocket\ei\manage\critmod\filter\UnknownFilterPropException;
 
 class FilterGroupForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {
 		$ai->p('filterPropItemForms', new AnnoDispObjectArray(function (FilterGroupForm $filterGroupForm) {
-			return new FilterPropItemForm(new FilterSetting(null, new Attributes()), $filterGroupForm->filterDefinition);
+			return new FilterPropItemForm(new FilterSetting(null, new DataSet()), $filterGroupForm->filterDefinition);
 		}));
 		$ai->p('filterGroupForms', new AnnoDispObjectArray(function (FilterGroupForm $filterGroupForm) {
 			return new FilterGroupForm(new FilterSettingGroup(), $filterGroupForm->filterDefinition);
@@ -121,7 +121,7 @@ class FilterGroupForm implements Dispatchable {
 // 			return;
 // 		}
 		
-// 		$magForm = new MagDispatchable($filterItem->createMagCollection($this->filterSettingGroup->getAttributes()));
+// 		$magForm = new MagDispatchable($filterItem->createMagCollection($this->filterSettingGroup->getDataSet()));
 // 		$mr->magForm = new MappingResult($magForm, $dc->getDispatchModelManager()->getDispatchModel($magForm));
 // 	}
 	

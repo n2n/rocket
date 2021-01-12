@@ -21,119 +21,89 @@
  */
 namespace rocket\impl\ei\component\prop\string\cke;
 
-use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\impl\ei\component\prop\string\AlphanumericEiProp;
-use n2n\util\type\ArgUtils;
 use rocket\ei\EiPropPath;
-use n2n\web\dispatch\mag\Mag;
 use rocket\ei\util\Eiu;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
-use n2n\util\col\GenericArrayObject;
-use rocket\impl\ei\component\prop\string\cke\model\CkeCssConfig;
-use rocket\impl\ei\component\prop\string\cke\conf\CkeEiPropConfigurator;
-use rocket\impl\ei\component\prop\string\cke\model\CkeMag;
-use rocket\impl\ei\component\prop\string\cke\model\CkeLinkProvider;
-use rocket\impl\ei\component\prop\string\cke\ui\CkeHtmlBuilder;
 use rocket\ei\manage\gui\ViewMode;
 use n2n\util\StringUtils;
 use n2n\core\N2N;
+use rocket\si\content\SiField;
+use rocket\si\content\impl\SiFields;
+use n2n\util\type\CastUtils;
+use rocket\si\content\impl\StringInSiField;
+use rocket\impl\ei\component\prop\string\cke\conf\CkeConfig;
+use rocket\ei\util\factory\EifGuiField;
 
 class CkeEiProp extends AlphanumericEiProp {
-	const MODE_SIMPLE = 'simple';
-	const MODE_NORMAL = 'normal';
-	const MODE_ADVANCED = 'advanced';
-	
-	private $mode = self::MODE_SIMPLE;
-	private $ckeLinkProviders;
-	private $ckeCssConfig = null;
-	private $tableSupported = false;
-	private $bbcode = false;
+	/**
+	 * @var CkeConfig
+	 */
+	private $ckeConfig;
 	
 	public function __construct() {
+		parent::__construct();
+		
 		$this->getDisplayConfig()->setDefaultDisplayedViewModes(ViewMode::bulky());
 		$this->getEditConfig()->setMandatory(false);
 		
-		$this->ckeLinkProviders = new GenericArrayObject(null, CkeLinkProvider::class);
+		$this->ckeConfig = new CkeConfig();
 	}
 	
-	public function createEiPropConfigurator(): EiPropConfigurator {
-	    return new CkeEiPropConfigurator($this);
+	public function prepare() {
+		$this->getConfigurator()->addAdaption($this->ckeConfig);
 	}
 	
-	public function getMode() {
-		return $this->mode;
-	}
-	
-	public function setMode($mode) {
-		ArgUtils::valEnum($mode, self::getModes());
-		$this->mode = $mode;
-	}
-	
-	public static function getModes() {
-		return array(self::MODE_SIMPLE, self::MODE_NORMAL, self::MODE_ADVANCED);
-	}
-		
-	/**
-	 * @return \ArrayObject 
-	 */
-	public function getCkeLinkProviders() {
-		return $this->ckeLinkProviders;
-	}
-	
-	public function setCkeLinkProviders(array $ckeLinkProviders) {
-		$this->ckeLinkProviders->exchangeArray($ckeLinkProviders);
-	}
-		
-	/**
-	 * @return CkeCssConfig
-	 */
-	public function getCkeCssConfig() {
-		return $this->ckeCssConfig;
-	}
-	
-	public function setCkeCssConfig(CkeCssConfig $ckeCssConfig = null) {
-		$this->ckeCssConfig = $ckeCssConfig;
-	}
-	
-	/**
-	 * @return bool
-	 */
-	public function isTableSupported() {
-		return $this->tableSupported;
-	}
-	
-	public function setTableSupported(bool $tableSupported) {
-		$this->tableSupported = $tableSupported;
-	}
-	
-	public function isBbcode() {
-		return $this->bbcode;
-	}
-	
-	public function setBbcode(bool $bbcode) {
-		$this->bbcode = $bbcode;
-	}
-
-	public function createUiComponent(HtmlView $view, Eiu $eiu) {
+	function createOutEifGuiField(Eiu $eiu): EifGuiField {
 	    $value = $eiu->field()->getValue(EiPropPath::from($this));
-	    if ($value === null) return null;
+	    if ($value === null) {
+	    	return $eiu->factory()->newGuiField(SiFields::stringOut(''));
+	    }
 	    
-		if ($eiu->gui()->isCompact()) {
-			return StringUtils::reduce(html_entity_decode(strip_tags($value), null, N2N::CHARSET), 50, '...');
+		if ($eiu->guiFrame()->isCompact()) {
+			return $eiu->factory()->newGuiField(
+					SiFields::stringOut(StringUtils::reduce(html_entity_decode(strip_tags($value), null, N2N::CHARSET), 50, '...')));
 		}
 
-		$ckeHtmlBuidler = new CkeHtmlBuilder($view);
+// 		$ckeHtmlBuidler = new CkeHtmlBuilder($view);
 
-		return $ckeHtmlBuidler->getIframe((string) $value, $this->ckeCssConfig, (array) $this->ckeLinkProviders);
+// 		return $ckeHtmlBuidler->getIframe((string) $value, $this->ckeCssConfig, (array) $this->ckeLinkProviders);
+
+		return $eiu->factory()->newGuiField(SiFields::stringOut((string) $value));
 	}
 	
-	public function createMag(Eiu $eiu): Mag {
-		$eiEntry = $eiu->entry()->getEiEntry();
+	public function createInEifGuiField(Eiu $eiu): EifGuiField {
+		$ckeInField = SiFields::ckeIn($eiu->field()->getValue())
+				->setMinlength($this->getAlphanumericConfig()->getMinlength())
+				->setMaxlength($this->getAlphanumericConfig()->getMaxlength())
+				->setMandatory($this->getEditConfig()->isMandatory())
+				->setMode($this->ckeConfig->getMode());
 		
-		return new CkeMag($this->getLabelLstr(), null, $this->isMandatory($eiu),
-				null, $this->getMaxlength(), $this->getMode(), $this->bbcode,
-				$this->isTableSupported(), (array) $this->getCkeLinkProviders(), $this->getCkeCssConfig());
+// 		if (null !== ($ckeCssConfig = $this->ckeConfig->getCkeCssConfig())) {
+// 			$contentCssUrls = $ckeCssConfig->getContentCssUrls($eiu);
+// 			ArgUtils::valArrayReturn($contentCssUrls, $ckeCssConfig, 'getContentCssUrls', Url::class);
+			
+// 			$ckeInField->setContentCssUrls($contentCssUrls)
+// 					->setBodyId($ckeCssConfig->getBodyId())
+// 					->setBodyClass($ckeCssConfig->getBodyClass())
+// 					->setBodyClass($ckeCssConfig->getAdditionalStyles());
+// 		}
+
+		return $eiu->factory()->newGuiField($ckeInField);
+		
+		
+		
+// 		$eiu->entry()->getEiEntry();
+		
+// 		return new CkeMag($this->getLabelLstr(), null, $this->isMandatory($eiu),
+// 				null, $this->getMaxlength(), $this->getMode(), $this->bbcode,
+// 				$this->isTableSupported(), (array) $this->getCkeLinkProviders(), $this->getCkeCssConfig());
 	}
+	
+	function saveSiField(SiField $siField, Eiu $eiu) {
+		CastUtils::assertTrue($siField instanceof StringInSiField);
+		$eiu->field()->setValue($siField->getValue());
+	}
+
 	
 // 	/**
 // 	 * @return \rocket\ei\component\prop\WysiwygLinkConfig

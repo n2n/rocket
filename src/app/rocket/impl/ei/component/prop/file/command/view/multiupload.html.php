@@ -20,7 +20,7 @@
 	 * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
 	 */
 
-	use rocket\ei\manage\control\IconType;
+	use rocket\si\control\SiIconType;
 	use rocket\ei\util\frame\EiuFrame;
 	use n2n\impl\web\ui\view\html\HtmlView;
 	
@@ -63,7 +63,7 @@
 <div class="rocket-zone-commands">
 	<div>
 		<a id="rocket-multi-upload-submit" href="#" class="btn btn-primary">
-			<i class="<?php $view->out(IconType::ICON_UPLOAD)?>"></i>
+			<i class="<?php $view->out(SiIconType::ICON_UPLOAD)?>"></i>
 			<span><?php $html->text('ei_impl_multi_upload_start_label')?></span>
 		</a>
 		<?php $html->link($eiuFrame->getEiFrame()->getOverviewUrl($httpContext),

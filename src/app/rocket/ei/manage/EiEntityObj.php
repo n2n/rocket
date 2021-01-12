@@ -31,7 +31,13 @@ class EiEntityObj {
 	private $entityObj;
 	private $eiType;
 	
-	private function __construct(bool $persistent, $id, $entityObj, EiType $eiType) {
+	/**
+	 * @param bool $persistent
+	 * @param mixed|null $id
+	 * @param object $entityObj
+	 * @param EiType $eiType
+	 */
+	private function __construct(bool $persistent, $id, object $entityObj, EiType $eiType) {
 		$this->id = $id;
 		$this->entityObj = $entityObj;
 		$this->eiType = $eiType;
@@ -39,10 +45,17 @@ class EiEntityObj {
 		$this->setPersistent($persistent);
 	}
 	
+	/**
+	 * @return bool
+	 */
 	public function isPersistent(): bool {
 		return $this->persistent;
 	}
 	
+	/**
+	 * @param bool $persistent
+	 * @throws IllegalStateException
+	 */
 	public function setPersistent(bool $persistent) {
 		if (!$persistent || $this->id !== null) {
 			$this->persistent = $persistent;
@@ -52,10 +65,17 @@ class EiEntityObj {
 		throw new IllegalStateException('No id defined.');
 	}
 	
+	/**
+	 * @return boolean
+	 */
 	public function hasId() {
 		return $this->id !== null;
 	}
 	
+	/**
+	 * @throws IllegalStateException
+	 * @return mixed
+	 */
 	public function getId() {
 		if ($this->id !== null) {
 			return $this->id;
@@ -64,6 +84,9 @@ class EiEntityObj {
 		throw new IllegalStateException('Id not yet defined.');
 	}
 	
+	/**
+	 * @return string
+	 */
 	public function getPid() {
 		return $this->eiType->idToPid($this->getId());
 	}

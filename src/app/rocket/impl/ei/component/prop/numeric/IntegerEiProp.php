@@ -21,36 +21,47 @@
  */
 namespace rocket\impl\ei\component\prop\numeric;
 
-
-use n2n\impl\web\dispatch\mag\model\NumericMag;
-use n2n\persistence\orm\property\EntityProperty;
-use n2n\util\type\ArgUtils;
+use n2n\impl\persistence\orm\property\IntEntityProperty;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
+use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\property\AccessProxy;
+use n2n\util\type\ArgUtils;
 use n2n\util\type\TypeConstraint;
-use n2n\web\dispatch\mag\Mag;
-use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\ScalarEiProp;
 use rocket\ei\manage\generic\CommonScalarEiProperty;
 use rocket\ei\manage\generic\ScalarEiProperty;
-use n2n\impl\persistence\orm\property\IntEntityProperty;
+use rocket\ei\util\Eiu;
+use rocket\impl\ei\component\prop\numeric\conf\IntegerConfig;
+use rocket\si\content\impl\SiFields;
+use rocket\ei\util\factory\EifGuiField;
 
 class IntegerEiProp extends NumericEiPropAdapter implements ScalarEiProp {
 	const INT_SIGNED_MIN = -2147483648;
 	const INT_SIGNED_MAX = 2147483647;
 	
-	public function __construct() {
+	function __construct() {
 		parent::__construct();
 		
-		$this->minValue = self::INT_SIGNED_MIN;
-		$this->maxValue = self::INT_SIGNED_MAX;
+		$this->getNumericConfig()
+				->setMinValue(self::INT_SIGNED_MIN)
+				->setMaxValue(self::INT_SIGNED_MAX);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\numeric\NumericEiPropAdapter::adaptConfigurator()
+	 */
+	function prepare() {
+		parent::prepare();
+		
+		$this->getConfigurator()->addAdaption(new IntegerConfig());
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\component\prop\ScalarEiProp::buildScalarValue()
 	 */
-	public function getScalarEiProperty(): ?ScalarEiProperty {
+	function getScalarEiProperty(): ?ScalarEiProperty {
 		return new CommonScalarEiProperty($this, null, function ($value) {
 			ArgUtils::valScalar($value, true);
 			if ($value === null) return null;
@@ -58,22 +69,30 @@ class IntegerEiProp extends NumericEiPropAdapter implements ScalarEiProp {
 		});
 	}
 	
-	public function setEntityProperty(?EntityProperty $entityProperty) {
+	function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty instanceof IntEntityProperty 
 				|| $entityProperty instanceof ScalarEntityProperty);
 		$this->entityProperty = $entityProperty;
 	}
 	
-	public function setObjectPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
+	function setObjectPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
 		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('int',
 				$propertyAccessProxy->getBaseConstraint()->allowsNull(), true));
 		
 		$this->objectPropertyAccessProxy = $propertyAccessProxy;
 	}
 	
-	public function createMag(Eiu $eiu): Mag {
-		return new NumericMag($this->getLabelLstr(), null,
-				$this->isMandatory($eiu), $this->getMinValue(), $this->getMaxValue(), 
-				0, array('placeholder' => $this->getLabelLstr()));
+
+	
+
+	function createInEifGuiField(Eiu $eiu): EifGuiField {
+		$siField = SiFields::numberIn($eiu->field()->getValue())
+				->setMandatory($this->getEditConfig()->isMandatory())
+				->setMin($this->getNumericConfig()->getMinValue())
+				->setMax($this->getNumericConfig()->getMaxValue());
+		
+		return $eiu->factory()->newGuiField($siField)->setSaver(function () use ($siField, $eiu) {
+			$eiu->field()->setValue($siField->getValue());
+		});
 	}
 }

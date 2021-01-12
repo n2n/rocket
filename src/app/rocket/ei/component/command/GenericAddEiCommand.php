@@ -21,19 +21,14 @@
  */
 namespace rocket\ei\component\command;
 
-
-use rocket\ei\manage\control\EntryNavPoint;
-use n2n\util\uri\Url;
-use n2n\util\ex\UnsupportedOperationException;
+use rocket\ei\util\Eiu;
+use rocket\si\control\SiNavPoint;
 
 interface GenericAddEiCommand {
 	
-	public function isAddAvailable(EntryNavPoint $entryNavPoint): bool;
-	
 	/**
-	 * @param EntryNavPoint
-	 * @return Url
-	 * @throws UnsupportedOperationException if EiCommand can not be used as ..
+	 * @param Eiu $eiu
+	 * @return SiNavPoint|null
 	 */
-	public function getAddUrlExt(EntryNavPoint $entryNavPoint): Url;
+	public function buildAddNavPoint(Eiu $eiu): ?SiNavPoint;
 }

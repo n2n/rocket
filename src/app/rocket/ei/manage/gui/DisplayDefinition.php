@@ -3,29 +3,33 @@ namespace rocket\ei\manage\gui;
 
 use n2n\l10n\Lstr;
 use n2n\util\type\ArgUtils;
-use rocket\ei\manage\gui\ui\DisplayItem;
+use rocket\si\meta\SiStructureType;
 
 class DisplayDefinition {
-	private $displayItemType;
+	private $siStructureType;
 	private $defaultDisplayed;
+	private $overwriteLabel;
+	private $overwriteHelpText;
 	
 	/**
 	 * @param Lstr $labelLstr
-	 * @param string $displayItemType
+	 * @param string $siStructureType
 	 * @param bool $defaultDisplayed
 	 */
-	public function __construct(string $displayItemType, bool $defaultDisplayed) {
-		ArgUtils::valEnum($displayItemType, DisplayItem::getTypes());
+	public function __construct(string $siStructureType, bool $defaultDisplayed, string $overwriteLabel = null, string $overwriteHelpText = null) {
+		ArgUtils::valEnum($siStructureType, SiStructureType::all());
 		
-		$this->displayItemType = $displayItemType;
+		$this->siStructureType = $siStructureType;
 		$this->defaultDisplayed = $defaultDisplayed;
+		$this->overwriteLabel = $overwriteLabel;
+		$this->overwriteHelpText = $overwriteHelpText;
 	}
 	
 	/**
 	 * @return string
 	 */
-	public function getDisplayItemType(): string {
-		return $this->displayItemType;
+	public function getSiStructureType(): string {
+		return $this->siStructureType;
 	}
 	
 	/**
@@ -34,5 +38,12 @@ class DisplayDefinition {
 	public function isDefaultDisplayed() {
 		return $this->defaultDisplayed;
 	}
+	
+	public function getOverwriteLabel() {
+		return $this->overwriteLabel;
+	}
+	
+	public function getOverwriteHelpText() {
+		return $this->overwriteHelpText;
+	}
 }
-

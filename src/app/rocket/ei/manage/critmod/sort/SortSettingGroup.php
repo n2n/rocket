@@ -21,7 +21,7 @@
  */
 namespace rocket\ei\manage\critmod\sort;
 
-use n2n\util\type\attrs\Attributes;
+use n2n\util\type\attrs\DataSet;
 use n2n\util\type\ArgUtils;
 use n2n\persistence\orm\criteria\Criteria;
 use n2n\util\col\GenericArrayObject;
@@ -55,10 +55,10 @@ class SortSettingGroup {
 		return $attrs;
 	}
 
-	public static function create(Attributes $attributes): SortSettingGroup {
+	public static function create(DataSet $dataSet): SortSettingGroup {
 		$sortData = new SortSettingGroup();
 		$sortItemDatas = $sortData->getSortSettings();
-		foreach ($attributes->toArray() as $sortPropId => $direction) {
+		foreach ($dataSet->toArray() as $sortPropId => $direction) {
 			if (!is_string($direction)) continue;
 			try {
 				$sortItemDatas[] = new SortSetting($sortPropId, $direction);

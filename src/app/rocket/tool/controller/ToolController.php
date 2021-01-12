@@ -24,19 +24,17 @@ namespace rocket\tool\controller;
 use rocket\tool\backup\controller\BackupController;
 
 use n2n\web\http\controller\ControllerAdapter;
-use n2n\l10n\MessageContainer;
 use rocket\tool\mail\controller\MailCenterController;
 use n2n\reflection\annotation\AnnoInit;
-use rocket\core\model\RocketState;
-use rocket\core\model\Breadcrumb;
-use n2n\l10n\DynamicTextCollection;
 use n2n\web\http\annotation\AnnoPath;
-use n2n\web\http\ResponseCacheStore;
-use n2n\web\ui\view\ViewCacheStore;
+use n2n\web\http\ForbiddenException;
+use rocket\user\model\LoginContext;
+use n2n\web\http\StatusException;
+use n2n\web\http\Response;
 
 class ToolController extends ControllerAdapter {
 	private static function _annos(AnnoInit $ai) {
-		$ai->m('backupOverview',new AnnoPath(self::ACTION_BACKUP_OVERVIEW . '/params*:*'));
+		$ai->m('backupOverview', new AnnoPath(self::ACTION_BACKUP_OVERVIEW . '/params*:*'));
 		$ai->m('mailCenter', new AnnoPath(self::ACTION_MAIL_CENTER . '/params*:*'));
 		$ai->m('clearCache', new AnnoPath(self::ACTION_CLEAR_CACHE));
 	}
@@ -45,62 +43,65 @@ class ToolController extends ControllerAdapter {
 	const ACTION_MAIL_CENTER = 'mail-center';
 	const ACTION_CLEAR_CACHE = 'clear-cache';
 	
-	private $rocketState;
-	private $dtc;
-	private $request;
+	private $loginContext;
 	
-	private function _init(RocketState $rocketState, DynamicTextCollection $dtc) {
-		$this->rocketState = $rocketState;
-		$this->dtc = $dtc;
+	private function _init(LoginContext $loginContext) {
+		$this->loginContext = $loginContext;
+	}
+	
+	private function verifyAdmin() {
+		if ($this->loginContext->getCurrentUser()->isAdmin()) return;
+		
+		throw new ForbiddenException();
+	}
+	
+	private function verifyHtml() {
+		if ('text/html' == $this->getRequest()->getAcceptRange()
+				->bestMatch(['text/html', 'application/json'])) {
+			$this->forward('\rocket\core\view\anglTemplate.html');
+			return true;
+		}
+		
+		return false;
 	}
 	
 	public function index() {
-		$this->applyBreadCrumbs();
-		$this->forward('..\view\toolsOverview.html');
+		$this->verifyAdmin();
+		
+		if ($this->verifyHtml()) {
+			return;
+		}
+		
+		throw new StatusException(Response::STATUS_406_NOT_ACCEPTABLE);
 	}
 	
 	public function backupOverview(array $params = null) {
-		$this->applyBreadCrumbs(self::ACTION_BACKUP_OVERVIEW);
+		$this->verifyAdmin();
+		
+		if ($this->verifyHtml()) {
+			return;
+		}
+		
 		$this->delegate(new BackupController());
 	}
 	
 	public function mailCenter(MailCenterController $mailCenterController, array $params = null) {
-		$this->applyBreadCrumbs(self::ACTION_MAIL_CENTER);
+		$this->verifyAdmin();
+		
+		if (empty($params) && $this->verifyHtml()) {
+			return;
+		}
 		
 		$this->delegate($mailCenterController);
 	}
 	
-	public function clearCache(MessageContainer $mc, ResponseCacheStore $responseCacheStore = null, ViewCacheStore $viewCacheStore = null) {
-		if ($responseCacheStore !== null) {
-			$responseCacheStore->clear();
-		}
+	public function clearCache() {
+		$this->verifyAdmin();
 		
-		if ($viewCacheStore !== null) {
-			$viewCacheStore->clear();
+		if ($this->verifyHtml()) {
+			return;
 		}
-				
-		$mc->addInfoCode('tool_cache_cleared_info');
-		$this->redirectToController();
+
+		$this->getN2nContext()->getAppCache()->clear();
 	}
-	
-	private function applyBreadCrumbs($action = null) {
-		$this->rocketState->addBreadcrumb(
-				new Breadcrumb($this->getHttpContext()->getControllerContextPath($this->getControllerContext()),
-						$this->dtc->translate('tool_title')));
-		switch ($action) {
-			case self::ACTION_MAIL_CENTER:
-				$this->rocketState->addBreadcrumb(
-						new Breadcrumb($this->getHttpContext()->getControllerContextPath(
-								$this->getControllerContext())->ext($action),
-								$this->dtc->translate('tool_mail_center_title')));
-				break;
-			case self::ACTION_BACKUP_OVERVIEW:
-				$this->rocketState->addBreadcrumb(
-						new Breadcrumb($this->getHttpContext()->getControllerContextPath(
-								$this->getControllerContext())->ext($action),
-								$this->dtc->translate('tool_backup_title')));
-				break;
-		}
-	}
-	
 }

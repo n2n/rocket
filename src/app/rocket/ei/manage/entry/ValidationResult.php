@@ -26,10 +26,10 @@ use n2n\l10n\Message;
 interface ValidationResult {
 	
 	/**
-	 * @param bool $checkRecurisve
+	 * @param bool $checkRecursive
 	 * @return bool
 	 */
-	public function isValid(bool $checkRecurisve = true): bool;
+	public function isValid(bool $checkRecursive = true): bool;
 	
 	/**
 	 * @return Message[]

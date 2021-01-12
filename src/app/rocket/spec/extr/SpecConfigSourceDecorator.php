@@ -22,7 +22,7 @@
 namespace rocket\spec\extr;
 
 use n2n\config\source\WritableConfigSource;
-use n2n\util\type\attrs\Attributes;
+use n2n\util\type\attrs\DataSet;
 use n2n\config\InvalidConfigurationException;
 use n2n\util\type\attrs\AttributesException;
 use rocket\spec\InvalidSpecConfigurationException;
@@ -37,7 +37,7 @@ class SpecConfigSourceDecorator {
 	private $configSource;
 	private $moduleNamespace;
 	
-	private $attributes;
+	private $dataSet;
 	private $customTypeExtractions = array();
 	private $eiTypeExtractions = array();
 	private $eiTypeExtensionExtractionGroups = array();
@@ -49,7 +49,7 @@ class SpecConfigSourceDecorator {
 	 * @param string $moduleNamespace
 	 */
 	public function __construct(WritableConfigSource $configSource, string $moduleNamespace) {
-		$this->attributes = new Attributes();
+		$this->dataSet = new DataSet();
 		$this->configSource = $configSource;
 		$this->moduleNamespace = $moduleNamespace;
 	} 
@@ -76,9 +76,9 @@ class SpecConfigSourceDecorator {
 	 * @throws InvalidConfigurationException
 	 */
 	public function extract() {
-		$this->attributes = new Attributes($this->configSource->readArray());
+		$this->dataSet = new DataSet($this->configSource->readArray());
 		
-		$specExtractor = new SpecExtractor($this->attributes, $this->moduleNamespace);
+		$specExtractor = new SpecExtractor($this->dataSet, $this->moduleNamespace);
 		
 		try {
 			$result = $specExtractor->extractTypes();
@@ -100,20 +100,20 @@ class SpecConfigSourceDecorator {
 	 * Uses {@see SpecRawer} to do the opposite of {@see self::extract()}.
 	 */
 	public function flush() {
-		$specRawer = new SpecRawer($this->attributes);
+		$specRawer = new SpecRawer($this->dataSet);
 		$specRawer->rawTypes($this->eiTypeExtractions, $this->customTypeExtractions);
 		$specRawer->rawEiMasks($this->eiTypeExtensionExtractionGroups);
 		$specRawer->rawEiModificatorExtractionGroups($this->eiModificatorExtractionGroups);
 		$specRawer->rawLaunchPads($this->launchPadExtractions);
 		
-		$this->configSource->writeArray($this->attributes->toArray());
+		$this->configSource->writeArray($this->dataSet->toArray());
 	}
 	
 	/**
 	 * 
 	 */
 	public function clear() {
-		$this->attributes = new Attributes();
+		$this->dataSet = new DataSet();
 		
 		$this->customTypeExtractions = array();
 		$this->eiTypeExtractions = array();

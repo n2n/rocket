@@ -22,7 +22,6 @@
 
 namespace rocket\ei\util\entry;
 
-use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\N2nLocale;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\entry\OnWriteMappingListener;
@@ -30,23 +29,21 @@ use rocket\ei\manage\entry\WrittenMappingListener;
 use rocket\ei\manage\entry\OnValidateMappingListener;
 use rocket\ei\manage\entry\ValidatedMappingListener;
 use rocket\ei\manage\entry\EiFieldOperationFailedException;
-use rocket\ei\manage\gui\EiGuiViewFactory;
-use rocket\ei\manage\gui\GuiFieldPath;
+use rocket\ei\manage\gui\EiGuiSiFactory;
+use rocket\ei\manage\DefPropPath;
 use rocket\ei\manage\gui\GuiException;
 use rocket\ei\manage\gui\ViewMode;
-use rocket\ei\manage\gui\EiEntryGui;
-use rocket\ei\manage\gui\EiEntryGuiAssembler;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\util\EiuAnalyst;
-use rocket\ei\util\EiuPerimeterException;
 use rocket\ei\util\spec\EiuMask;
-use rocket\ei\util\gui\EiuEntryGui;
-use rocket\ei\util\gui\EiuEntryGuiAssembler;
 use n2n\util\type\ArgUtils;
-use n2n\web\ui\UiComponent;
 use rocket\ei\manage\entry\UnknownEiFieldExcpetion;
 use rocket\ei\component\prop\EiProp;
-use n2n\util\ex\UnsupportedOperationException;
+use n2n\util\ex\NotYetImplementedException;
+use rocket\ei\component\prop\EiPropWrapper;
+use rocket\ei\util\gui\EiuGui;
+use rocket\ei\manage\gui\EiGui;
+use rocket\core\model\launch\TransactionApproveAttempt;
 
 class EiuEntry {
 	private $eiEntry;
@@ -72,7 +69,7 @@ class EiuEntry {
 	 * @param bool $required
 	 * @return \rocket\ei\util\frame\EiuFrame
 	 */
-	public function getEiuFrame(bool $required = true) {
+	private function getEiuFrame(bool $required = true) {
 		return $this->eiuAnalyst->getEiuFrame($required);
 	}
 	
@@ -88,29 +85,15 @@ class EiuEntry {
 			return $this->eiuMask = new EiuMask($this->eiEntry->getEiMask(), null, $this->eiuAnalyst);
 		}
 		
-		if (null !== ($eiuFrame = $this->getEiuFrame(false))) {
+		
+		if (null !== ($eiFrame = $this->eiuAnalyst->getEiFrame(false))) {
 			return $this->eiuMask = new EiuMask(
-					$eiuFrame->getEiFrame()->determineEiMask($this->eiuObject->getEiType()), 
+					$eiFrame->getContextEiEngine()->getEiMask()->determineEiMask($this->eiuObject->getEiType()), 
 					null, $this->eiuAnalyst);
 		}
 		
 		return $this->eiuMask = new EiuMask($this->eiuObject->getEiType()->getEiMask(), null, $this->eiuAnalyst);
 	}
-	
-	private $eiuEntryAccess;
-	
-	/**
-	 * @return \rocket\ei\util\entry\EiuEntryAccess
-	 */
-	public function access() {
-		if ($this->eiuEntryAccess === null) {
-			$this->eiuEntryAccess = new EiuEntryAccess($this->getEiuFrame()->getEiFrame()
-					->createEiEntryAccess($this->getEiEntry()), $this);
-		}
-		
-		return $this->eiuEntryAccess;
-	}
-	
 	
 	/**
 	 * @return \rocket\ei\util\entry\EiuObject
@@ -123,6 +106,9 @@ class EiuEntry {
 		return $this->eiuObject = new EiuObject($this->eiEntry->getEiObject(), $this->eiuAnalyst);
 	}
 	
+	/**
+	 * @return \rocket\ei\manage\EiObject
+	 */
 	private function getEiObject() {
 		if ($this->eiuObject !== null) {
 			return $this->eiuObject->getEiObject();
@@ -150,7 +136,7 @@ class EiuEntry {
 			return null;
 		}
 				
-		return $this->eiEntry = $this->eiuAnalyst->getEiuFrame(true)->getEiFrame()
+		return $this->eiEntry = $this->eiuAnalyst->getEiFrame(false)
 				->createEiEntry($this->getEiObject());
 	}
 	
@@ -305,35 +291,60 @@ class EiuEntry {
 		$this->accessible = true;
 	}
 	
-	public function newEntryForm() {
-		return $this->getEiuFrame()->entryForm($this);
-	}
 	
 	/**
-	 * @param bool $eiObjectObj
-	 * @param bool $editable
-	 * @throws EiuPerimeterException
-	 * @return \rocket\ei\util\gui\EiuEntryGui
+	 * @param int $viewMode
+	 * @param array $defPropPaths
+	 * @param bool $guiStructureDeclarationsRequired
+	 * @return \rocket\ei\util\gui\EiuGui
 	 */
-	public function newEntryGui(bool $bulky = true, bool $editable = false, int $treeLevel = null, 
-			bool $determineEiMask = true) {
-		$eiEntry = $eiMask = $this->getEiEntry(true);
+	function newGui(bool $bulky = true, bool $readOnly = true, array $defPropPathsArg = null, 
+			bool $guiStructureDeclarationsRequired = true, bool $determineEiMask = true) {
+		$viewMode = ViewMode::determine($bulky, $readOnly, $this->isNew());
+		$defPropPaths = DefPropPath::buildArray($defPropPathsArg);
+		
+		$eiEntry = $this->getEiEntry(true);
 		$eiMask = null;
 		if ($determineEiMask) {
 			$eiMask = $eiEntry->getEiMask();
 		} else {
-			$eiMask = $this->getEiFrame()->getContextEiEngine()->getEiMask();
+			$eiMask = $this->eiuAnalyst->getEiFrame(true)->getContextEiEngine()->getEiMask();
 		}
 		
-		$viewMode = $this->deterViewMode($bulky, $editable);
-		$eiFrame = $this->getEiuFrame()->getEiFrame();
+		$obtainer = $this->eiuAnalyst->getManageState()->getEiGuiModelCache();
+		$eiGui = new EiGui($obtainer->obtainEiGuiModel($eiMask, $viewMode, $defPropPaths, 
+				$guiStructureDeclarationsRequired));
+		$eiGui->appendEiEntryGui($this->eiuAnalyst->getEiFrame(true), [$eiEntry]);
 		
-		$eiGui = $eiMask->createEiGui($eiFrame, $viewMode, true);
-		
-		return new EiuEntryGui($eiGui->createEiEntryGui($eiEntry, $treeLevel), null, $this->eiuAnalyst);
+		return new EiuGui($eiGui, null, $this->eiuAnalyst);
 	}
 	
-	public function newCustomEntryGui(\Closure $uiFactory, array $guiFieldPaths, bool $bulky = true, 
+// 	/**
+// 	 * @param bool $eiObjectObj
+// 	 * @param bool $editable
+// 	 * @throws EiuPerimeterException
+// 	 * @return \rocket\ei\util\gui\EiuEntryGui
+// 	 */
+// 	public function newEntryGui(bool $bulky = true, bool $editable = false, int $treeLevel = null, 
+// 			bool $determineEiMask = true) {
+// 		$eiEntry = $this->getEiEntry(true);
+// 		$eiEngine = null;
+// 		if ($determineEiMask) {
+// 			$eiEngine = $eiEntry->getEiMask()->getEiEngine();
+// 		} else {
+// 			$eiEngine = $this->getEiFrame()->getContextEiEngine();
+// 		}
+		
+// 		$viewMode = $this->deterViewMode($bulky, $editable);
+// 		$eiFrame = $this->getEiuFrame()->getEiFrame();
+		
+// 		$eiGuiFrame = $eiFrame->getManageState()->getDef()->getGuiDefinition($eiEngine->getEiMask())
+// 				->createEiGuiFrame($eiFrame, $viewMode);
+		
+// 		return new EiuEntryGui($eiGuiFrame->createEiEntryGui($eiEntry, $treeLevel), null, $this->eiuAnalyst);
+// 	}
+	
+	public function newCustomEntryGui(\Closure $uiFactory, array $defPropPaths, bool $bulky = true, 
 			bool $editable = false, int $treeLevel = null, bool $determineEiMask = true) {
 // 		$eiMask = null;
 // 		if ($determineEiMask) {
@@ -343,37 +354,37 @@ class EiuEntry {
 // 		}
 		
 		$viewMode = $this->deterViewMode($bulky, $editable);
-		$eiuGui = $this->getEiuFrame()->newCustomGui($viewMode, $uiFactory, $guiFieldPaths);
-		return $eiuGui->appendNewEntryGui($this, $treeLevel);
+		$eiuGuiFrame = $this->getEiuFrame()->newCustomGui($viewMode, $uiFactory, $defPropPaths);
+		return $eiuGuiFrame->appendNewEntryGui($this, $treeLevel);
 	}
 	
-	/**
-	 * @param int $viewMode
-	 * @param bool $determineEiMask
-	 * @return \rocket\ei\util\gui\EiuEntryGuiAssembler
-	 */
-	public function newEntryGuiAssembler(int $viewMode, bool $determineEiMask = true) {
-		$eiFrame = $this->getEiuFrame()->getEiFrame();
-		$eiMask = null;
-		if ($determineEiMask) {
-			$eiMask = $eiFrame->determineEiMask($this->eiEntry->getEiObject()->getEiEntityObj()->getEiType());
-		} else {
-			$eiMask = $eiFrame->getContextEiEngine()->getEiMask();
-		}
-		
-		$eiGui = $eiMask->createEiGui($eiFrame, $viewMode, false);
-		$eiGui->init(new DummyEiGuiViewFactory(), $eiGui->getGuiDefinition()->getGuiFieldPaths());
-		
-		$eiEntryGuiAssembler = new EiEntryGuiAssembler(new EiEntryGui($eiGui, $this->eiEntry));
-		
-// 		if ($parentEiEntryGui->isInitialized()) {
-// 			throw new \InvalidArgumentException('Parent EiEntryGui already initialized.');
+// 	/**
+// 	 * @param int $viewMode
+// 	 * @param bool $determineEiMask
+// 	 * @return \rocket\ei\util\gui\EiuEntryGuiAssembler
+// 	 */
+// 	public function newEntryGuiAssembler(int $viewMode, bool $determineEiMask = true) {
+// 		$eiFrame = $this->getEiuFrame()->getEiFrame();
+// 		$eiMask = null;
+// 		if ($determineEiMask) {
+// 			$eiMask = $eiFrame->determineEiMask($this->eiEntry->getEiObject()->getEiEntityObj()->getEiType());
+// 		} else {
+// 			$eiMask = $eiFrame->getContextEiEngine()->getEiMask();
 // 		}
 		
-// 		$parentEiEntryGui->registerEiEntryGuiListener(new InitListener($eiEntryGuiAssembler));
+// 		$eiGuiFrame = $eiMask->createEiGuiFrame($eiFrame, $viewMode, false);
+// 		$eiGuiFrame->init(new DummyEiGuiSiFactory(), $eiGuiFrame->getGuiDefinition()->getDefPropPaths());
 		
-		return new EiuEntryGuiAssembler($eiEntryGuiAssembler, null, $this->eiuAnalyst);
-	}
+// 		$eiEntryGuiAssembler = new EiEntryGuiAssembler(new EiEntryGui($eiGuiFrame, $this->eiEntry));
+		
+// // 		if ($parentEiEntryGui->isInitialized()) {
+// // 			throw new \InvalidArgumentException('Parent EiEntryGui already initialized.');
+// // 		}
+		
+// // 		$parentEiEntryGui->registerEiEntryGuiListener(new InitListener($eiEntryGuiAssembler));
+		
+// 		return new EiuEntryGuiAssembler($eiEntryGuiAssembler, null, $this->eiuAnalyst);
+// 	}
 	
 // 	/**
 // 	 * @return \rocket\ei\mask\EiMask
@@ -398,13 +409,20 @@ class EiuEntry {
 	}
 	
 	
+	/**
+	 * @param string|EiPropPath|EiPropWrapper|EiProp $eiPropArg
+	 * @return boolean
+	 */
+	public function isFieldWritable($eiPropArg) {
+		return $this->eiEntry->getEiEntryAccess()->isEiPropWritable(EiPropPath::create($eiPropArg));
+	}
 	
 	/**
 	 * @param mixed $eiPropArg
 	 * @return \rocket\ei\util\entry\EiuField
 	 */
 	public function field($eiPropArg) {
-		return new EiuField($eiPropArg, $this);
+		return new EiuField(EiPropPath::create($eiPropArg), $this, $this->eiuAnalyst);
 	}
 	
 	public function getValue($eiPropPath) {
@@ -431,13 +449,13 @@ class EiuEntry {
 	 */
 	public function setScalarValue($eiPropPath, $scalarValue) {
 		$eiPropPath = EiPropPath::create($eiPropPath);
-		$scalarEiProperty = $this->getEiuFrame()->getContextEiuEngine()->getScalarEiProperty($eiPropPath);
+		$scalarEiProperty = $this->getEiuFrame()->contextEngine()->getScalarEiProperty($eiPropPath);
 		$this->setValue($eiPropPath, $scalarEiProperty->scalarValueToEiFieldValue($scalarValue));
 	}
 	
 	public function getScalarValue($eiPropPath) {
 		$eiPropPath = EiPropPath::create($eiPropPath);
-		$scalarEiProperty = $this->getEiuFrame()->getContextEiuEngine()->getScalarEiProperty($eiPropPath);
+		$scalarEiProperty = $this->getEiuFrame()->contextEngine()->getScalarEiProperty($eiPropPath);
 		return $scalarEiProperty->eiFieldValueToScalarValue($this->getValue($eiPropPath));
 	}
 	
@@ -497,7 +515,7 @@ class EiuEntry {
 // 	}
 	
 // 	/**
-// 	 * @param GuiFieldPath|string $eiPropPath
+// 	 * @param DefPropPath|string $eiPropPath
 // 	 * @return \rocket\ei\EiPropPath|null
 // 	 */
 // 	public function eiPropPathToEiPropPath($eiPropPath) {
@@ -509,15 +527,8 @@ class EiuEntry {
 	 * @param N2nLocale $n2nLocale
 	 * @return string
 	 */
-	public function createIdentityString(bool $useEntryEiMask = true, N2nLocale $n2nLocale = null) {
-		if ($useEntryEiMask) {
-			return $this->mask()->engine()->createIdentityString($this, $n2nLocale);
-		}
-		
-		$n2nContext = $this->eiuAnalyst->getN2nContext(true);
-		return $this->getEiuFrame(true)->createIdentityString($this->eiuObject->getEiObject(),
-				false, $n2nContext->getN2nLocale());
-		
+	public function createIdentityString(N2nLocale $n2nLocale = null) {
+		return $this->mask()->engine()->createIdentityString($this, true, $n2nLocale);
 	}
 	
 	/**
@@ -551,17 +562,17 @@ class EiuEntry {
 	}
 	
 	/**
-	 * @param GuiFieldPath $guiFieldPath
+	 * @param DefPropPath $defPropPath
 	 * @param bool $required
 	 * @throws EiFieldOperationFailedException
 	 * @throws GuiException
 	 * @return \rocket\ei\manage\entry\EiFieldWrapper|null
 	 */
-	public function getEiFieldAbstraction($guiFieldPath, bool $required = false) {
+	public function getEiFieldAbstraction($defPropPath, bool $required = false) {
 		$guiDefinition = $this->getEiuFrame()->getContextEiuEngine()->getGuiDefinition();
 		try {
 			return $guiDefinition->determineEiFieldAbstraction($this->eiuAnalyst->getN2nContext(true),
-					$this->getEiEntry(), GuiFieldPath::create($guiFieldPath));
+					$this->getEiEntry(), DefPropPath::create($defPropPath));
 		} catch (UnknownEiFieldExcpetion $e) {
 			if ($required) throw $e;
 		}
@@ -600,13 +611,7 @@ class EiuEntry {
 		$this->getEiEntry()->registerListener(new WrittenMappingListener($closure));
 	}
 	
-	/**
-	 * @return NULL|string
-	 */
-	public function getGeneralId() {
-		return GeneralIdUtils::generalIdOf($this->getEiObject());
-	}
-
+	
 	public function fieldMap($forkEiPropPath = null) {
 		$forkEiPropPath = EiPropPath::create($forkEiPropPath);
 		$eiFieldMap = $this->eiEntry->getEiFieldMap();
@@ -695,6 +700,68 @@ class EiuEntry {
 		
 		throw new EiFieldOperationFailedException('There is no ObjectPropertyAccessProxy configured for ' . $eiProp);
 	}
+	
+	/**
+	 * @return boolean
+	 */
+	function isValid() {
+		return $this->getEiEntry()->isValid();
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	function save() {
+		if (!$this->eiEntry->save()) {
+			return false;
+		}
+		
+		if (!$this->eiEntry->isNew()) {
+			return true;
+		}
+		
+		$nestedSetStrategy = $this->eiEntry->getEiType()->getNestedSetStrategy();
+		$em = $this->eiuAnalyst->getEiFrame(true)->getManageState()->getEntityManager();
+		if ($nestedSetStrategy === null) {
+			$em->persist($this->eiEntry->getEiObject()->getEiEntityObj()->getEntityObj());
+			$em->flush();
+			return true;
+		}
+		
+		throw new NotYetImplementedException();
+// 		$nsu = new NestedSetUtils($em, $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()->getEntityModel()->getClass(),
+// 				$this->nestedSetStrategy);
+		
+// 		if ($this->beforeEntityObj !== null) {
+// 			$nsu->insertBefore($entityObj, $this->beforeEntityObj);
+// 		} else if ($this->afterEntityObj !== null) {
+// 			$nsu->insertAfter($entityObj, $this->afterEntityObj);
+// 		} else {
+// 			$nsu->insert($entityObj, $this->parentEntityObj);
+// 		}
+		
+		return true;
+	}
+	
+	function remove(): TransactionApproveAttempt {
+		$ms = $this->eiuAnalyst->getManageState();
+		$ms->remove($this->getEiObject());
+		return $ms->flush();
+	}
+	
+	/**
+	 * @return \rocket\si\content\SiEntryQualifier
+	 */
+	function createSiEntryQualifier() {
+		$siMaskQualifier = $this->mask()->createSiMaskQualifier();
+		$idName = $this->createIdentityString();
+		
+		if ($this->eiuObject !== null) {
+			return $this->eiuObject->getEiObject()->createSiEntryIdentifier()->toQualifier($siMaskQualifier, $idName);
+		}
+		
+		return $this->eiEntry->getEiObject()->createSiEntryIdentifier()->toQualifier($siMaskQualifier, $idName);
+	}
 }  
 
 // class InitListener implements EiEntryGuiListener {
@@ -717,11 +784,13 @@ class EiuEntry {
 // 	}
 // }
 
-class DummyEiGuiViewFactory implements EiGuiViewFactory  {
+class DummyEiGuiSiFactory implements EiGuiSiFactory {
 	
-	public function createUiComponent(array $eiEntryGuis, ?HtmlView $contextView): UiComponent {
-		throw new UnsupportedOperationException();
+	public function getSiStructureDeclarations(): array {
+		throw new NotYetImplementedException();
 	}
 
-	
+	public function getSiProps(): array {
+		throw new NotYetImplementedException();
+	}
 }

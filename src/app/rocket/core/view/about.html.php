@@ -30,7 +30,7 @@
 <div class="rocket-group rocket-simple-group">
 
 	<label><?php $html->l10nText('about_credits') ?></label>
-	<div class="rocket-control">
+	<div class="rocket-structure-content">
 		<p>Rocket basiert auf dem PHP Framework n2n. n2n ist ein Produkt von Hofmänner New Media, Winterthur.</p>
 		<h3><?php $html->l10nText('about_credits_title')?></h3>
 		<dl class="rocket-about-creators">
@@ -47,7 +47,7 @@
 </div>
 <div class="rocket-group rocket-simple-group">
 	<label><?php $html->l10nText('about_license') ?></label>
-	<div class="rocket-control">
+	<div class="rocket-structure-content">
 		<h3><?php $html->l10nText('about_license_title')?></h3>
 	</div>
 </div>

@@ -1,0 +1,80 @@
+<rocket-search-input-group [(value)]="quickSearchStr" [placeholder]="'quick_search_placeholder' | translate"></rocket-search-input-group>
+
+<div *ngIf="declared" class="table-responsive">
+	<table class="table table-hover rocket-table">
+		<thead>
+			<tr>
+				<th *ngIf="selectable" class="rocket-entry-selector"></th>
+				<th [class.d-none]="!sortable"></th>
+				<th *ngFor="let siProp of getSiProps()">
+					{{ siProp.label }}
+				</th>
+				<th>
+					<ng-container *ngIf="sortable">
+						<button (click)="switchToEntryControlMode()" [class.active]="isEntryControModeEnabled()"><i class="fa fa-wrench"></i></button>
+
+						<button (click)="switchToSortMode()" [class.active]="isSortModeEnabled()"><i class="fa fa-arrows-alt-v"></i></button>
+					</ng-container>
+				</th>
+			</tr>
+		</thead>
+		<tbody cdkDropList (cdkDropListDropped)="drop($event)">
+			<ng-container *ngFor="let structurePage of getVisibleStructurePages()">
+				<tr *ngFor="let structureEntry of structurePage.structureEntries" 
+						cdkDrag [cdkDragDisabled]="!structureEntry.siEntry.isClean()" rocketSiEntry [siEntry]="structureEntry.siEntry"
+						class="rocket-tree-level-{{ structureEntry.siEntry.treeLevel }}">
+					<td *ngIf="selectable" class="rocket-entry-selector" (click)="toggleSelection(structureEntry.siEntry.qualifier)">
+						<ng-container *ngIf="singleSelect">
+							<input type="radio" [value]="true" [ngModel]="isSelected(structureEntry.siEntry.qualifier)" />
+						</ng-container>
+						<ng-container *ngIf="!singleSelect">
+							<input type="checkbox" 
+									[ngModel]="isSelected(structureEntry.siEntry.qualifier)"
+									[disabled]="!areMoreSelectable() && !isSelected(structureEntry.siEntry.qualifier)" />
+						</ng-container>
+					</td>
+					<td *ngIf="sortable">
+						<div cdkDragHandle class="rocket-handle">
+							<i class="fa fa-bars"></i>
+						</div>
+					</td>
+					<td *ngFor="let fieldUiStructure of structureEntry.fieldUiStructures"
+							rocketUiStructure [uiStructure]="fieldUiStructure" 
+							(click)="toggleSelection(structureEntry.siEntry.qualifier)">
+					</td>
+					<td class="rocket-table-commands">
+						<div *ngIf="structureEntry.siEntry.isAlive()" class="rocket-simple-commands">
+							<ng-container *ngIf="isEntryControModeEnabled()">
+								<ng-container *ngFor="let controlUiContent of structureEntry.controlUiContents">
+									<ng-template rocketUiContent [uiContent]="controlUiContent"></ng-template>
+								</ng-container>
+							</ng-container>
+
+							<ng-container *ngIf="isSortModeEnabled()">
+								<rocket-ui-toggler [enabled]="isSiEntrySortSelected(structureEntry.siEntry)" 
+										(enabledChange)="setSiEntrySortSelected(structureEntry.siEntry, $event)"
+										[labeled]="false"></rocket-ui-toggler>
+										
+								<ng-container *ngIf="!isSiEntrySortSelected(structureEntry.siEntry) && !isSiEntrySortDecendant(structureEntry.siEntry)">
+									<button (click)="moveBefore(structureEntry.siEntry)" [disabled]="!hasSiEntrySortSelections()">
+										<i class="fa fa-arrow-up"></i>
+									</button>
+
+									<button (click)="moveAfter(structureEntry.siEntry)" [disabled]="!hasSiEntrySortSelections()">
+										<i class="fa fa-arrow-down"></i>
+									</button>
+
+									<button *ngIf="isTree()" (click)="moveToParent(structureEntry.siEntry)" [disabled]="!hasSiEntrySortSelections()">
+										<i class="fa fa-arrow-right"></i>
+									</button>
+								</ng-container>
+							</ng-container>
+						</div>
+					</td>
+				</tr>
+			</ng-container>
+		</tbody>
+	</table>
+</div>
+
+<div *ngIf="loading" class="rocket-loader"></div>

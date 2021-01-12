@@ -129,6 +129,10 @@ abstract class IdPath implements Hashable {
 		return $ids;
 	}
 	
+	public static function isIdValid(string $str) {
+		return mb_strlen($str) >= 1 && !self::constainsSpecialIdChars($str);
+	}
+	
 	/**
 	 * @param string $str
 	 * @return boolean

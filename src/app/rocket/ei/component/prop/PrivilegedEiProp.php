@@ -26,9 +26,4 @@ use rocket\ei\util\Eiu;
 
 interface PrivilegedEiProp extends EiProp {
 	
-	/**
-	 * @param Eiu $eiu
-	 * @return EiPropPrivilege
-	 */
-	public function createEiPropPrivilege(Eiu $eiu): EiPropPrivilege;
 }

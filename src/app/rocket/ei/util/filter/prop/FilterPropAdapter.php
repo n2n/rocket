@@ -22,7 +22,7 @@
 namespace rocket\ei\util\filter\prop;
 
 use n2n\web\dispatch\mag\MagCollection;
-use n2n\util\type\attrs\Attributes;
+use n2n\util\type\attrs\DataSet;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use rocket\ei\manage\critmod\filter\FilterProp;
@@ -51,19 +51,19 @@ abstract class FilterPropAdapter implements FilterProp {
 		return (string) $this->labelLstr;
 	}
 	
-	public function createMagDispatchable(Attributes $attributes): MagDispatchable {
+	public function createMagDispatchable(DataSet $dataSet): MagDispatchable {
 		$magCollection = new MagCollection();
 		$magCollection->addMag(self::ATTR_OPERATOR_KEY, new EnumMag('Operator', 
 				$this->buildOperatorOptions($this->getOperators()), null, true));
-		$magCollection->addMag(self::ATTR_VALUE_KEY, $this->createValueMag($attributes->get(self::ATTR_VALUE_KEY, false)));
+		$magCollection->addMag(self::ATTR_VALUE_KEY, $this->createValueMag($dataSet->get(self::ATTR_VALUE_KEY, false)));
 		return new MagForm($magCollection);
 	}
 	
-	public function buildAttributes(MagDispatchable $magDispatchable): Attributes {
+	public function buildDataSet(MagDispatchable $magDispatchable): DataSet {
 		$magCollection = $magDispatchable->getMagCollection();
 		$operator = $magCollection->getMagByPropertyName(self::ATTR_OPERATOR_KEY)->getValue();
 
-		return new Attributes(array(
+		return new DataSet(array(
 				self::ATTR_OPERATOR_KEY => $operator,
 				self::ATTR_VALUE_KEY => $this->buildValue($operator, 
 						$magCollection->getMagByPropertyName(self::ATTR_VALUE_KEY))));
@@ -72,10 +72,10 @@ abstract class FilterPropAdapter implements FilterProp {
 	/* (non-PHPdoc)
 	 * @see \rocket\ei\util\filter\prop\FilterProp::createComparatorConstraint()
 	 */
-	public function createComparatorConstraint(Attributes $attributes): ComparatorConstraint {
+	public function createComparatorConstraint(DataSet $dataSet): ComparatorConstraint {
 		return new PropertyValueComparatorConstraint($this->criteriaProperty,
-				$attributes->reqEnum(self::ATTR_OPERATOR_KEY, $this->getOperators()),
-				CrIt::c($attributes->get(self::ATTR_VALUE_KEY)));
+				$dataSet->reqEnum(self::ATTR_OPERATOR_KEY, $this->getOperators()),
+				CrIt::c($dataSet->get(self::ATTR_VALUE_KEY)));
 	}
 	
 	protected function getOperators(): array {

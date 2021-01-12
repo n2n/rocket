@@ -57,10 +57,8 @@ class EiGrantPrivilegeForm implements Dispatchable {
 //		$this->privilegeDefinition = $privilegeDefinition;
 		
 		if ($eiuEngine->hasPrivileges()) {
-			$this->eiuPrivilegeForm = $eiuEngine->newPrivilegeForm(
-					$eiGrantPrivilege->getPrivilegeSetting());
+			$this->eiuPrivilegeForm = $eiuEngine->newPrivilegeForm($eiGrantPrivilege->getPrivilegeSetting());
 		}
-		
 		
 		if ($eiGrantPrivilege->isRestricted()) {
 			$this->restrictionEiuFilterForm = $eiuEngine->newSecurityFilterForm(
@@ -84,7 +82,7 @@ class EiGrantPrivilegeForm implements Dispatchable {
 		$this->eiuPrivilegeForm = $eiuPrivilegeForm;
 	
 		if ($eiuPrivilegeForm === null) {
-			$this->eiPrivilegesGrant->writeEiPrivilegeAttributes(new PrivilegeSetting());
+			$this->eiPrivilegesGrant->writeEiPrivilegeDataSet(new PrivilegeSetting());
 			return;
 		}
 		

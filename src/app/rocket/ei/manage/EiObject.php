@@ -22,7 +22,8 @@
 namespace rocket\ei\manage;
 
 use rocket\ei\manage\draft\Draft;
-use rocket\ei\manage\control\EntryNavPoint;
+use rocket\si\content\SiEntryQualifier;
+use rocket\si\content\SiEntryIdentifier;
 
 interface EiObject {
     
@@ -47,7 +48,12 @@ interface EiObject {
 	public function getDraft(): Draft;
 
 	/**
-	 * @return EntryNavPoint
+	 * @return SiEntryQualifier
 	 */
-	public function toEntryNavPoint(): EntryNavPoint;
+	public function createSiEntryIdentifier(): SiEntryIdentifier;
+	
+// 	/**
+// 	 * @return EntryNavPoint
+// 	 */
+// 	public function toEntryNavPoint(): EntryNavPoint;
 }

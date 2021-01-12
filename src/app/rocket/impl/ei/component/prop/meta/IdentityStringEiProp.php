@@ -21,28 +21,21 @@
  */
 namespace rocket\impl\ei\component\prop\meta;
 
-use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\adapter\DisplayableEiPropAdapter;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
+use rocket\si\content\impl\SiFields;
+use rocket\ei\util\factory\EifGuiField;
 
 class IdentityStringEiProp extends DisplayableEiPropAdapter {
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\DisplayableEiPropAdapter::createEiPropConfigurator()
-	 */
-	public function createEiPropConfigurator(): EiPropConfigurator {
-		$this->getDisplayConfig()->setAddModeDefaultDisplayed(false);
-		$this->getDisplayConfig()->setEditModeDefaultDisplayed(false);
-		return parent::createEiPropConfigurator();
+	protected function prepare() {
+		$this->getDisplayConfig()
+				->setAddModeDefaultDisplayed(false)
+				->setEditModeDefaultDisplayed(false);
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable::createUiComponent()
-	 */
-	public function createUiComponent(HtmlView $view, Eiu $eiu) {
-		return $eiu->entry()->createIdentityString();
+
+	public function createOutEifGuiField(Eiu $eiu): EifGuiField{
+		return SiFields::stringOut($eiu->entry()->createIdentityString());
 	}
+
 }

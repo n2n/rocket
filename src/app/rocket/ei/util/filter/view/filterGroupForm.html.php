@@ -46,7 +46,7 @@
 				<?php $formHtml->meta()->objectProps('magForm', function () use ($formHtml, $view) { ?>
 					<?php $formHtml->magOpen('div')?>
 						<?php $formHtml->magLabel() ?>
-						<div class="rocket-control">
+						<div class="rocket-structure-content">
 							<?php $formHtml->magField() ?>
 							<?php $formHtml->message() ?>
 						</div>

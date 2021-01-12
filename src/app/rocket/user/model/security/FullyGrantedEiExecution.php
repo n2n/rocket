@@ -21,61 +21,60 @@
  */
 namespace rocket\user\model\security;
 
+use rocket\ei\manage\entry\EiEntry;
+use rocket\ei\manage\entry\EiEntryConstraint;
+use rocket\ei\manage\frame\CriteriaConstraint;
+use rocket\ei\manage\security\EiEntryAccess;
 use rocket\ei\manage\security\EiExecution;
 use rocket\ei\EiCommandPath;
+use rocket\ei\EiPropPath;
 use rocket\ei\component\command\EiCommand;
-use n2n\util\ex\IllegalStateException;
 
 class FullyGrantedEiExecution implements EiExecution {
-	private $commandPath;
+// 	private $commandPath;
 	private $eiCommand;
-
-	public function __construct(EiCommandPath $commandPath, ?EiCommand $eiCommand) {
-		$this->commandPath = $commandPath;
+	private $eiEntryAccessFactory;
+	
+	public function __construct(EiCommand $eiCommand) {
+// 		$this->commandPath = $commandPath;
 		$this->eiCommand = $eiCommand;
 	}
-
-	public function isGranted(): bool {
-		return true;
-	}
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\security\EiExecution::getEiCommandPath()
-	 */
-	public function getEiCommandPath(): EiCommandPath {
-		return $this->commandPath;
-	}
-
-
-	public function hasEiCommand(): bool {
-		return $this->eiCommand !== null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\security\EiExecution::getEiCommand()
-	 */
+	
 	public function getEiCommand(): EiCommand {
-		if ($this->eiCommand !== null) {
-			return $this->eiCommand;
-		}
+		return $this->eiCommand;
+	}
+	
+	public function getCriteriaConstraint(): ?CriteriaConstraint {
+		return null;
+	}
 
-		throw new IllegalStateException();
+	public function getEiEntryConstraint(): ?EiEntryConstraint {
+		return null;
+	}
+
+	public function createEiEntryAccess(EiEntry $eiEntry): EiEntryAccess {
+		return new StaticEiEntryAccess(true);
+	}
+}
+
+
+class StaticEiEntryAccess implements EiEntryAccess {
+	private $granted;
+	
+	public function __construct(bool $granted) {
+		$this->granted = $granted;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\security\EiExecution::extEiCommandPath($ext)
-	 */
-	public function extEiCommandPath(string $ext) {
-		$this->commandPath = $this->commandPath->ext($ext);
+	public function isEiPropWritable(EiPropPath $eiPropPath): bool {
+		return $this->granted;
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\security\EiExecution::isExecutableBy()
-	 */
-	public function isExecutableBy(EiCommandPath $eiCommandPath): bool {
-		return true;
+
+	public function isEiCommandExecutable(EiCommandPath $eiCommandPath): bool {
+		return $this->granted;
 	}
+	public function getEiEntryConstraint(): ?EiEntryConstraint {
+		return null;
+	}
+
+
 }

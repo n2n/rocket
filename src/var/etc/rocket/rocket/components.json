@@ -8,6 +8,7 @@
         "rocket\\impl\\ei\\component\\prop\\l10n\\N2nLocaleEiProp",
         "rocket\\impl\\ei\\component\\prop\\bool\\BooleanEiProp",
         "rocket\\impl\\ei\\component\\prop\\numeric\\IntegerEiProp",
+        "rocket\\impl\\ei\\component\\prop\\numeric\\FloatEiProp",
         "rocket\\impl\\ei\\component\\prop\\numeric\\DecimalEiProp",
         "rocket\\impl\\ei\\component\\prop\\numeric\\OrderEiProp",
         "rocket\\impl\\ei\\component\\prop\\relation\\OneToManySelectEiProp",

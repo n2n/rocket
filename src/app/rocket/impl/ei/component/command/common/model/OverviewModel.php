@@ -22,14 +22,11 @@
 namespace rocket\impl\ei\component\command\common\model;
 
 use n2n\web\dispatch\Dispatchable;
-use n2n\persistence\orm\criteria\Criteria;
 use n2n\persistence\orm\util\NestedSetUtils;
 use rocket\ei\util\frame\EiuFrame;
 use rocket\impl\ei\component\command\common\model\critmod\CritmodForm;
 use rocket\impl\ei\component\command\common\model\critmod\QuickSearchForm;
 use n2n\persistence\orm\criteria\item\CrIt;
-use n2n\persistence\orm\util\NestedSetStrategy;
-use rocket\ei\manage\gui\ViewMode;
 
 class OverviewModel implements Dispatchable {	
 	private $eiuFrame;
@@ -39,7 +36,7 @@ class OverviewModel implements Dispatchable {
 	private $numPages;
 	private $numEntries;
 	
-	private $eiuGui;
+	private $eiuGuiFrame;
 		
 	private $critmodForm;
 	private $quickSearchForm;
@@ -135,24 +132,6 @@ class OverviewModel implements Dispatchable {
 		return true;
 	}
 	
-	private function simpleLookup(Criteria $criteria) {
-		$this->eiuGui = $this->eiuFrame->newGui(ViewMode::COMPACT_READ)->renderEntryControls();
-		
-		foreach ($criteria->toQuery()->fetchArray() as $entityObj) {
-			$this->eiuGui->appendNewEntryGui($entityObj);
-		}
-	}
-	
-	private function treeLookup(Criteria $criteria, NestedSetStrategy $nestedSetStrategy) {
-		$nestedSetUtils = new NestedSetUtils($this->eiuFrame->em(), $this->eiuFrame->getContextEiType()->getEntityModel()->getClass(), $nestedSetStrategy);
-		
-		$this->eiuGui = $this->eiuFrame->newGui(ViewMode::COMPACT_READ)->renderEntryControls();
-		
-		foreach ($nestedSetUtils->fetch(null, false, $criteria) as $nestedSetItem) {
-			$this->eiuGui->appendNewEntryGui($nestedSetItem->getEntityObj(), $nestedSetItem->getLevel());
-		}
-	}
-	
 	public function getNumPages() {
 		return $this->numPages;
 	}
@@ -171,10 +150,10 @@ class OverviewModel implements Dispatchable {
 		
 	/**
 	 * 
-	 * @return \rocket\ei\util\gui\EiuGui
+	 * @return \rocket\ei\util\gui\EiuGuiFrame
 	 */
-	public function getEiuGui() {
-		return $this->eiuGui;
+	public function getEiuGuiFrame() {
+		return $this->eiuGuiFrame;
 	}
 	
 	protected $selectedObjectIds = array();

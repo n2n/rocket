@@ -24,7 +24,7 @@ namespace rocket\spec;
 use n2n\core\TypeNotFoundException;
 use n2n\reflection\ReflectionUtils;
 use rocket\ei\EiType;
-use n2n\util\type\attrs\Attributes;
+use n2n\util\type\attrs\DataSet;
 use n2n\persistence\orm\model\EntityModelManager;
 use n2n\util\type\ArgUtils;
 use n2n\util\ex\IllegalStateException;
@@ -61,7 +61,7 @@ class EiTypeFactory {
 	private $setupQueue;
 	private $eiErrorResult;
 	
-	public function __construct(EntityModelManager $entityModelManager, EiSetupQueue $setupQueue, 
+	public function __construct(EntityModelManager $entityModelManager, ?EiSetupQueue $setupQueue, 
 			?EiErrorResult $eiErrorResult) {
 		$this->entityModelManager = $entityModelManager;
 		$this->setupQueue = $setupQueue;
@@ -71,6 +71,7 @@ class EiTypeFactory {
 	 * @param EiTypeExtraction $eiTypeExtraction
 	 * @param EiModificatorExtraction[] $eiModificatorExtractions
 	 * @param EiTypeExtensionExtraction[] $eiTypeExtensionExtractions
+	 * @throws InvalidConfigurationException
 	 * @return \rocket\ei\EiType
 	 */
 	public function create(EiTypeExtraction $eiTypeExtraction, array $eiModificatorExtractions) {
@@ -84,6 +85,7 @@ class EiTypeFactory {
 		
 		$eiType->setDataSourceName($eiTypeExtraction->getDataSourceName());
 		$eiType->setNestedSetStrategy($eiTypeExtraction->getNestedSetStrategy());
+		$eiType->setEntityModel($this->getEntityModel($eiTypeExtraction->getEntityClassName()));
 		
 // 		$eiTypeExtensionCollection = $eiType->getEiTypeExtensionCollection();
 // 		foreach ($eiTypeExtraction->getEiTypeExtensionExtractions() as $eiTypeExtensionExtraction) {
@@ -94,8 +96,6 @@ class EiTypeFactory {
 // 						$this->createEiMaskException($eiTypeExtensionExtraction->getId(), $e));
 // 			}
 // 		}
-		
-		
 		
 		return $eiType;
 	}
@@ -271,43 +271,18 @@ class EiTypeFactory {
 		ArgUtils::valTypeReturn($eiPropConfigurator, EiPropConfigurator::class, $eiProp,
 				'createEiPropConfigurator');
 		IllegalStateException::assertTrue($eiPropConfigurator instanceof EiPropConfigurator);
-		$eiPropConfigurator->setAttributes(new Attributes($eiPropExtraction->getProps()));
+		$eiPropConfigurator->setDataSet(new DataSet($eiPropExtraction->getProps()));
 		
 		$objectPropertyName = $eiPropExtraction->getObjectPropertyName();
 		$entityPropertyName = $eiPropExtraction->getEntityPropertyName();
 		
 		
+		if ($this->setupQueue === null) {
+			return $eiProp;
+		}
+		
 		$this->setupQueue->addPropIn(new PropIn($eiMask->getEiType(), $eiPropConfigurator, $objectPropertyName, 
 				$entityPropertyName, $contextEntityPropertyNames));
-		
-		
-		// 		$this->setupQueue->addClosure(function () use ($eiType, $eiPropConfigurator, $objectPropertyName, $entityPropertyName) {
-		// 			$accessProxy = null;
-		// 			if (null !== $objectPropertyName) {
-		// 				try{
-		// 					$propertiesAnalyzer = new PropertiesAnalyzer($eiType->getEntityModel()->getClass(), false);
-		// 					$accessProxy = $propertiesAnalyzer->analyzeProperty($objectPropertyName, false, true);
-		// 					$accessProxy->setNullReturnAllowed(true);
-		// 				} catch (ReflectionException $e) {
-		// 					throw new InvalidEiComponentConfigurationException('EiProp is assigned to unknown property: '
-		// 							. $objectPropertyName, 0, $e);
-		// 				}
-		// 			}
-		
-		// 			$entityProperty = null;
-		// 			if (null !== $entityPropertyName) {
-		// 				try {
-		// 					$entityProperty = $eiType->getEntityModel()->getLevelEntityPropertyByName($entityPropertyName, true);
-		// 				} catch (UnknownEntityPropertyException $e) {
-		// 					throw new InvalidEiComponentConfigurationException('EiProp is assigned to unknown EntityProperty: '
-		// 							. $entityPropertyName, 0, $e);
-		// 				}
-		// 			}
-		
-		// 			if ($entityProperty !== null || $accessProxy !== null) {
-		// 				$eiPropConfigurator->assignProperty(new PropertyAssignation($entityProperty, $accessProxy));
-		// 			}
-		// 		});
 		
 		$this->setupQueue->addEiPropConfigurator($eiProp, $eiPropConfigurator);
 		
@@ -336,8 +311,11 @@ class EiTypeFactory {
 		ArgUtils::valTypeReturn($eiConfigurator, 'rocket\ei\component\EiConfigurator',
 				$eiCommand, 'creatEiConfigurator');
 		IllegalStateException::assertTrue($eiConfigurator instanceof EiConfigurator);
-		$eiConfigurator->setAttributes(new Attributes($configurableExtraction->getProps()));
-		$this->setupQueue->addEiCommandConfigurator($eiCommand, $eiConfigurator);
+		$eiConfigurator->setDataSet(new DataSet($configurableExtraction->getProps()));
+		
+		if ($this->setupQueue !== null) {
+			$this->setupQueue->addEiCommandConfigurator($eiCommand, $eiConfigurator);
+		}
 		
 		return $eiCommand;
 	}
@@ -363,8 +341,11 @@ class EiTypeFactory {
 		$eiConfigurator = $eiModificator->createEiConfigurator();
 		ArgUtils::valTypeReturn($eiConfigurator, EiConfigurator::class, $eiModificator, 'creatEiConfigurator');
 		IllegalStateException::assertTrue($eiConfigurator instanceof EiConfigurator);
-		$eiConfigurator->setAttributes(new Attributes($eiModificatorExtraction->getProps()));
-		$this->setupQueue->addEiModificatorConfigurator($eiModificator, $eiConfigurator);
+		$eiConfigurator->setDataSet(new DataSet($eiModificatorExtraction->getProps()));
+		
+		if ($this->setupQueue !== null) {
+			$this->setupQueue->addEiModificatorConfigurator($eiModificator, $eiConfigurator);
+		}
 		
 		return $eiModificator;
 	}

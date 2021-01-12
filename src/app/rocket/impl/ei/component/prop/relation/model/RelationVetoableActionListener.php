@@ -34,20 +34,18 @@ use rocket\ei\manage\veto\VetoableLifecycleAction;
 use n2n\core\container\N2nContext;
 use rocket\ei\EiLifecycleListener;
 use n2n\l10n\Message;
-use n2n\l10n\DynamicTextCollection;
-use n2n\core\N2N;
-use n2n\l10n\N2nLocale;
+use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 
 class RelationVetoableActionListener implements EiLifecycleListener {
 	const STRATEGY_PREVENT = 'prevent';
 	const STRATEGY_UNSET = 'unset';
 	const STRATEGY_SELF_REMOVE = 'selfRemove';
 	
-	private $relationEiProp;
+	private $relationModel;
 	private $strategy = true;
 	
-	public function __construct(RelationEiProp $relationEiProp, string $strategy) {
-		$this->relationEiProp = $relationEiProp;
+	public function __construct(RelationModel $relationModel, string $strategy) {
+		$this->relationModel = $relationModel;
 		$this->strategy = $strategy;
 	}
 	
@@ -55,7 +53,7 @@ class RelationVetoableActionListener implements EiLifecycleListener {
 		$eiObject = $vetoableRemoveAction->getEiObject();
 		if ($eiObject->isDraft()) return;
 				
-		$vetoCheck = new VetoCheck($this->relationEiProp, $eiObject->getEiEntityObj(), $vetoableRemoveAction, 
+		$vetoCheck = new VetoCheck($this->relationModel, $eiObject->getEiEntityObj(), $vetoableRemoveAction, 
 				$n2nContext);
 		
 		switch ($this->strategy) {
@@ -112,14 +110,13 @@ class VetoCheck {
 				'field' => $this->relationEiProp->getLabelLstr()->t($this->n2nContext->getN2nLocale()),
 				'target_entry' => $this->createTargetIdentityString(),
 				'target_generic_label' => $this->getTargetGenericLabel());
- 		$dtc = new DynamicTextCollection('rocket', N2nLocale::getAdmin());
+// 		$dtc = new DynamicTextCollection('rocket', N2nLocale::getAdmin());
 		if ($num === 1) {
-			$this->vetoableRemoveAction->prevent(Message::create($dtc->t('ei_impl_relation_remove_veto_err', $attrs)));
+			$this->vetoableRemoveAction->prevent(Message::createCodeArg('ei_impl_relation_remove_veto_err', $attrs, null, 'rocket'));
 		} else {
 			$attrs['num_more'] = ($num - 1);
-			
-			$this->vetoableRemoveAction->prevent(
-					Message::create($dtc->t('ei_impl_relation_remove_veto_one_and_more_err', $attrs)));
+			$this->vetoableRemoveAction->prevent(Message::createCodeArg('ei_impl_relation_remove_veto_one_and_more_err', 
+					$attrs, null, 'rocket'));
 		}
 	}
 	
@@ -139,9 +136,7 @@ class VetoCheck {
 		foreach ($this->findAll() as $entityObj) {
 			if ($queue->isEntityObjRemoved($entityObj)) continue;
 				
-			
-			$that = $this;
-			$this->vetoableRemoveAction->executeWhenApproved(function () use ($that, $queue, $entityObj) {
+			$this->vetoableRemoveAction->executeWhenApproved(function () use ($queue, $entityObj) {
 				
 				$queue->getEntityManager()->remove($entityObj);
 // 				$queue->getEntityManager()->getActionQueue()->getOrCreateRemoveAction($entityObj);
@@ -199,7 +194,7 @@ class VetoCheck {
 		
 		IllegalStateException::assertTrue($currentTargetEntityObjs instanceof \ArrayObject);
 		
-		$targetEntityObj = $this->targetEiEntityObj->getEntityObj();
+		$targetEntityObj = $this->targetEiEntityObj->getLiveObject();
 		foreach ($currentTargetEntityObjs as $key => $currentTargetEntityObj) {
 			if ($currentTargetEntityObj === $targetEntityObj) {
 				$currentTargetEntityObjs->offsetUnset($key);

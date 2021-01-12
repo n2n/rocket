@@ -21,63 +21,58 @@
  */
 namespace rocket\impl\ei\component\prop\translation;
 
-use n2n\persistence\orm\property\EntityProperty;
-use n2n\util\type\ArgUtils;
-use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
-use rocket\impl\ei\component\prop\relation\RelationEiProp;
-use rocket\impl\ei\component\prop\translation\model\TranslationGuiFieldFork;
-use rocket\ei\manage\gui\GuiPropFork;
-use rocket\impl\ei\component\prop\translation\conf\TranslationEiConfigurator;
-use rocket\impl\ei\component\prop\adapter\entry\Readable;
-use rocket\impl\ei\component\prop\adapter\entry\Writable;
-use rocket\ei\manage\entry\EiField;
-use rocket\ei\component\prop\FieldEiProp;
-use rocket\ei\manage\gui\GuiFieldFork;
-use rocket\ei\manage\EiObject;
-use rocket\impl\ei\component\prop\relation\model\relation\EiPropRelation;
-use n2n\core\container\N2nContext;
-use n2n\util\ex\IllegalStateException;
-use rocket\ei\manage\security\filter\SecurityFilterProp;
-use rocket\ei\EiPropPath;
+use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use n2n\l10n\N2nLocale;
-use rocket\impl\ei\component\prop\relation\model\RelationEntry;
-use rocket\impl\ei\component\prop\relation\EmbeddedOneToManyEiProp;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
-use n2n\util\col\ArrayUtils;
-use rocket\ei\component\prop\SortableEiPropFork;
-use rocket\ei\manage\critmod\sort\SortPropFork;
-use n2n\persistence\orm\criteria\item\CriteriaProperty;
 use n2n\persistence\orm\criteria\Criteria;
-use n2n\persistence\orm\criteria\item\CrIt;
-use rocket\ei\manage\critmod\sort\SortDefinition;
 use n2n\persistence\orm\criteria\JoinType;
-use rocket\ei\manage\critmod\sort\SortConstraint;
-use rocket\ei\manage\critmod\sort\CriteriaAssemblyState;
-use rocket\impl\ei\component\prop\translation\conf\N2nLocaleDef;
-use rocket\ei\util\Eiu;
-use rocket\impl\ei\component\prop\translation\model\TranslationEiField;
+use n2n\persistence\orm\criteria\item\CrIt;
+use n2n\persistence\orm\criteria\item\CriteriaProperty;
+use n2n\persistence\orm\property\EntityProperty;
+use n2n\util\col\ArrayUtils;
+use n2n\util\type\ArgUtils;
+use rocket\ei\EiPropPath;
+use rocket\ei\component\prop\FieldEiProp;
 use rocket\ei\component\prop\QuickSearchableEiProp;
-use rocket\impl\ei\component\prop\translation\model\TranslationQuickSearchProp;
-use rocket\impl\ei\component\prop\adapter\entry\EiFieldWrapperCollection;
-use rocket\ei\manage\gui\ViewMode;
-use rocket\impl\ei\component\prop\translation\command\TranslationCopyCommand;
-use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
-use rocket\ei\component\prop\GuiEiPropFork;
+use rocket\ei\manage\critmod\sort\CriteriaAssemblyState;
+use rocket\ei\manage\critmod\sort\SortConstraint;
+use rocket\ei\manage\critmod\sort\SortDefinition;
+use rocket\ei\manage\critmod\sort\SortPropFork;
+use rocket\ei\manage\entry\EiField;
 use rocket\ei\manage\gui\GuiProp;
-use rocket\ei\manage\gui\GuiFieldPath;
-use rocket\ei\manage\gui\EiFieldAbstraction;
-use rocket\ei\manage\LiveEiObject;
+use rocket\ei\manage\gui\ViewMode;
+use rocket\ei\util\Eiu;
+use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
+use rocket\impl\ei\component\prop\relation\RelationEiPropAdapter;
+use rocket\impl\ei\component\prop\relation\conf\RelationModel;
+use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
+use rocket\impl\ei\component\prop\translation\conf\TranslationConfig;
+use rocket\impl\ei\component\prop\translation\gui\TranslationGuiProp;
+use rocket\impl\ei\component\prop\translation\model\TranslationQuickSearchProp;
+use rocket\ei\component\prop\IdNameEiPropFork;
+use rocket\ei\manage\idname\IdNamePropFork;
+use rocket\impl\ei\component\prop\translation\model\TranslationIdNamePropFork;
 
-class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiPropFork, FieldEiProp, RelationEiProp, 
-		Readable, Writable, GuiPropFork, SortableEiPropFork, QuickSearchableEiProp {
-	private $n2nLocaleDefs = array();
-	private $minNumTranslations = 0;
-	private $copyCommand;
+class TranslationEiProp extends RelationEiPropAdapter implements FieldEiProp, QuickSearchableEiProp, IdNameEiPropFork {
+	/**
+	 * @var TranslationConfig
+	 */
+	private $translationConfig;
 	
-	public function createEiPropConfigurator(): EiPropConfigurator {
-		return new TranslationEiConfigurator($this);
+	public function __construct() {
+		parent::__construct();
+		
+		$this->setup(
+				new DisplayConfig(ViewMode::all()),
+				new RelationModel($this, false, true, RelationModel::MODE_INTEGRATED, null));
+		
+		$this->translationConfig = new TranslationConfig();
+	}
+	
+	public function prepare() {
+		parent::prepare();
+		$this->getConfigurator()->addAdaption($this->translationConfig);
 	}
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {
@@ -87,182 +82,56 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiPropFork
 		if (!$entityProperty->getRelation()->getTargetEntityModel()->getClass()
 				->implementsInterface(Translatable::class)) {
 			throw new \InvalidArgumentException('Target entity ('
-					. $entityProperty->getTargetEntityModel()->getClass()->getName() . ') must implement '
-					. Translatable::class);
+					. $entityProperty->getTargetEntityModel()->getClass()->getName() 
+					. ') must implement ' . Translatable::class);
 		}
 
 		$this->entityProperty = $entityProperty;
 	}
 	
-	public function setN2nLocaleDefs(array $n2nLocaleDefs) {
-		ArgUtils::valArray($n2nLocaleDefs, N2nLocaleDef::class);
-		$this->n2nLocaleDefs = $n2nLocaleDefs;
-	}
-	
-	public function getN2nLocaleDefs() {
-		return $this->n2nLocaleDefs;
-	}
-	
-	public function setCopyCommand(TranslationCopyCommand $translationCopyCommand = null) {
-		$this->copyCommand = $translationCopyCommand;
-	}
-	
-	/**
-	 * @param int $minNumTranslations
-	 */
-	public function setMinNumTranslations(int $minNumTranslations) {
-		$this->minNumTranslations = $minNumTranslations;
-	}
-	
-	/**
-	 * @return int
-	 */
-	public function getMinNumTranslations() {
-		return $this->minNumTranslations;
-	}
-	
-	public function getEiPropRelation(): EiPropRelation {
-		return $this->eiPropRelation;
-	}
-	
-	public function isEiField(): bool {
-		return true;
-	}
-	
-	/* (non-PHPdoc)
-	 * @see \rocket\ei\component\prop\EiProp::getEiField()
-	 */
-	public function buildEiField(Eiu $eiu): ?EiField {
-		$readOnly = $this->eiPropRelation->isReadOnly($eiu->entry()->getEiEntry(), $eiu->frame()->getEiFrame());
-		
-		return new TranslationEiField($eiu, $this,
-				($readOnly ? null : $this), $this);
-	}
-	
-	public function buildEiFieldFork(EiObject $eiObject, EiField $eiField = null) {
-		return null;
-	}
-	
-	public function isEiEntryFilterable(): bool {
-		return false;
-	}
-	
-	public function createSecurityFilterProp(N2nContext $n2nContext): SecurityFilterProp {
-		throw new IllegalStateException();
-	}
-
 	public function buildGuiProp(Eiu $eiu): ?GuiProp {
-		return null;
-	}
-	
-	private $forkedGuiDefinition;
-	
-	/* (non-PHPdoc)
-	 * @see \rocket\ei\component\prop\EiProp::getGuiPropFork()
-	 */
-	public function buildGuiPropFork(Eiu $eiu): ?GuiPropFork {
-		$this->forkedGuiDefinition = $eiu->context()->engine($this->eiPropRelation->getTargetEiMask())->getGuiDefinition();
-		return $this;
+		return new TranslationGuiProp($this->getRelationModel(), $this->translationConfig);
 	}
 
-	public function getForkedGuiDefinition(): GuiDefinition {
-		return $this->forkedGuiDefinition;
+	public function buildIdNamePropFork(Eiu $eiu): ?IdNamePropFork {
+		return new TranslationIdNamePropFork($this->getRelationModel(), $this);
+		
 	}
+// 	public function determineForkedEiObject(Eiu $eiu): ?EiObject {
+// 		// @todo access locale and use EiObject with admin locale.
+		
+// 		$targetObjects = $eiu->object()->readNativValue($this);
+		
+// 		if (empty($targetObjects)) {
+// 			return null;
+// 		}
+		
+// 		if ($targetObjects instanceof \ArrayObject) {
+// 			$targetObjects = $targetObjects->getArrayCopy();
+// 		}
+		
+// 		return LiveEiObject::create($this->eiPropRelation->getTargetEiType(), ArrayUtils::first($targetObjects));
+// 	}
 	
-	public function createGuiFieldFork(Eiu $eiu): GuiFieldFork {
-		$eiFrame = $eiu->frame()->getEiFrame();
-		$eiEntry = $eiu->entry()->getEiEntry();
-		$eiObject = $eiEntry->getEiObject();
-		$targetEiFrame = null;
-		if ($eiu->entryGui()->isReadOnly()) {
-			$targetEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame);
-		} else {
-			$targetEiFrame = $this->eiPropRelation->createTargetEditPseudoEiFrame($eiFrame, $eiEntry);
-		}
-		$targetEiuFrame = (new Eiu($targetEiFrame))->frame();
-		$toManyEiField = $eiEntry->getEiField(EiPropPath::from($this));
+// 	/**
+// 	 * {@inheritDoc}
+// 	 * @see \rocket\ei\manage\gui\GuiPropFork::determineEiFieldWrapper()
+// 	 */
+// 	public function determineEiFieldAbstraction(Eiu $eiu, DefPropPath $defPropPath): EiFieldAbstraction {
+// 		$eiEntry = $eiu->entry()->getEiEntry();
 		
-		$targetRelationEntries = array();
-		foreach ($toManyEiField->getValue() as $targetRelationEntry) {
-			$targetEntityObj = $targetRelationEntry->getEiObject()->getLiveObject();
-			$n2nLocale = $targetEntityObj->getN2nLocale();
-			ArgUtils::valTypeReturn($n2nLocale, N2nLocale::class, $targetEntityObj, 'getN2nLocale');
-			if (!$targetRelationEntry->hasEiEntry()) {
-				$targetRelationEntry = RelationEntry::fromM(
-						$targetEiuFrame->entry($targetRelationEntry->getEiObject())->getEiEntry());
-			}
-			$targetRelationEntries[(string) $n2nLocale] = $targetRelationEntry;
-		}
-		
-		$targetGuiDefinition = $targetEiuFrame->getContextEiuEngine()->getGuiDefinition();
-		$translationGuiField = new TranslationGuiFieldFork($toManyEiField, $targetGuiDefinition, 
-				$this->labelLstr->t($eiFrame->getN2nContext()->getN2nLocale()), $this->minNumTranslations);
-		if ($this->copyCommand !== null) {
-			$translationGuiField->setCopyUrl($targetEiuFrame->getUrlToCommand($this->copyCommand)
-					->extR(null, array('bulky' => $eiu->gui()->isBulky())));
-		}
-
-		foreach ($this->n2nLocaleDefs as $n2nLocaleDef) {
-			$n2nLocaleId = $n2nLocaleDef->getN2nLocaleId();
-			
-			$viewMode = null;
-			$targetRelationEntry = null;
-			if (isset($targetRelationEntries[$n2nLocaleId])) {
-				$targetRelationEntry = $targetRelationEntries[$n2nLocaleId];
-			} else {
-				$eiObject = $targetEiuFrame->createNewEiObject();
-				$eiObject->getLiveObject()->setN2nLocale($n2nLocaleDef->getN2nLocale());
-				$targetRelationEntry = RelationEntry::fromM($targetEiuFrame->entry($eiObject)->getEiEntry());
-			}
-			
-			$viewMode = ViewMode::determine($eiu->gui()->isBulky(), $eiu->gui()->isReadOnly(), 
-					$targetRelationEntry->getEiEntry()->isNew());
-			$targetEiuEntryGuiAssembler = $targetEiuFrame->entry($targetRelationEntry->getEiEntry())
-					->newEntryGuiAssembler($eiu->gui()->getViewMode());
-			
-			$translationGuiField->registerN2nLocale($n2nLocaleDef, $targetRelationEntry, 
-					$targetEiuEntryGuiAssembler, $n2nLocaleDef->isMandatory(), 
-					isset($targetRelationEntries[$n2nLocaleId]));
-		}
-		
-		return $translationGuiField;
-	}
-	
-	public function determineForkedEiObject(Eiu $eiu): ?EiObject {
-		// @todo access locale and use EiObject with admin locale.
-		
-		$targetObjects = $eiu->object()->readNativValue($this);
-		
-		if (empty($targetObjects)) {
-			return null;
-		}
-		
-		if ($targetObjects instanceof \ArrayObject) {
-			$targetObjects = $targetObjects->getArrayCopy();
-		}
-		
-		return LiveEiObject::create($this->eiPropRelation->getTargetEiType(), ArrayUtils::first($targetObjects));
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiPropFork::determineEiFieldWrapper()
-	 */
-	public function determineEiFieldAbstraction(Eiu $eiu, GuiFieldPath $guiFieldPath): EiFieldAbstraction {
-		$eiEntry = $eiu->entry()->getEiEntry();
-		
-		$eiFieldWrappers = array();
-		foreach ($eiEntry->getValue(EiPropPath::from($this->eiPropRelation->getRelationEiProp())) as $targetRelationEntry) {
-			if (!$targetRelationEntry->hasEiEntry()) continue;
+// 		$eiFieldWrappers = array();
+// 		foreach ($eiEntry->getValue(EiPropPath::from($this->eiPropRelation->getRelationEiProp())) as $targetRelationEntry) {
+// 			if (!$targetRelationEntry->hasEiEntry()) continue;
 				
-			if (null !== ($eiFieldWrapper = $eiu->engine()->getGuiDefinition()
-					->determineEiFieldAbstraction($eiu->getN2nContext(), $targetRelationEntry->getEiEntry(), $guiFieldPath))) {
-				$eiFieldWrappers[] = $eiFieldWrapper;
-			}
-		}
+// 			if (null !== ($eiFieldWrapper = $eiu->engine()->getGuiDefinition()
+// 					->determineEiFieldAbstraction($eiu->getN2nContext(), $targetRelationEntry->getEiEntry(), $defPropPath))) {
+// 				$eiFieldWrappers[] = $eiFieldWrapper;
+// 			}
+// 		}
 	
-		return new EiFieldWrapperCollection($eiFieldWrappers);
-	}
+// 		return new EiFieldWrapperCollection($eiFieldWrappers);
+// 	}
 	
 	public function buildSortPropFork(Eiu $eiu): ?SortPropFork {
 		$targetSortDefinition = null;
@@ -296,6 +165,13 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiPropFork
 				$this->eiPropRelation->getRelationEntityProperty(),
 				$this->eiPropRelation->getTargetEiType()->getEntityModel()->getClass(), 
 				$targetEiFrame->getContextEiEngine()->createFramedQuickSearchDefinition($targetEiFrame));
+	}
+	
+	public function buildEiField(Eiu $eiu): ?EiField {
+		$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())
+				->frame()->exec($this->getRelationModel()->getTargetReadEiCommandPath());
+		
+		return new ToManyEiField($eiu, $targetEiuFrame, $this, $this->getRelationModel());
 	}
 }
 

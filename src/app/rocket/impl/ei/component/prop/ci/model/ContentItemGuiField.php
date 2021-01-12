@@ -21,172 +21,250 @@
  */
 namespace rocket\impl\ei\component\prop\ci\model;
 
-use rocket\ei\manage\gui\GuiField;
-use rocket\ei\manage\gui\GuiFieldDisplayable;
-use rocket\ei\manage\gui\GuiFieldEditable;
-use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
-use rocket\ei\manage\frame\EiFrame;
-use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\impl\ei\component\prop\ci\ContentItemsEiProp;
-use rocket\ei\manage\gui\ui\DisplayItem;
-use n2n\util\ex\IllegalStateException;
+use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\util\Eiu;
-use n2n\l10n\Lstr;
-use n2n\l10n\N2nLocale;
-use n2n\impl\web\ui\view\html\HtmlElement;
+use rocket\ei\util\frame\EiuFrame;
+use rocket\impl\ei\component\prop\relation\conf\RelationModel;
+use rocket\si\content\impl\SiFields;
+use n2n\util\type\CastUtils;
+use rocket\ei\util\entry\EiuEntry;
+use rocket\ei\util\gui\EiuEntryGui;
+use rocket\si\content\SiField;
+use rocket\si\content\impl\relation\SiPanelInput;
+use rocket\si\input\CorruptedSiInputDataException;
+use rocket\si\content\impl\relation\SiPanel;
+use rocket\si\content\impl\relation\EmbeddedEntryPanelInputHandler;
+use rocket\si\content\impl\relation\EmbeddedEntryPanelsInSiField;
+use rocket\ei\manage\gui\GuiFieldMap;
+use rocket\impl\ei\component\prop\relation\model\gui\EmbeddedGuiCollection;
+use rocket\ei\EiPropPath;
+use n2n\util\type\ArgUtils;
+use n2n\util\ex\IllegalStateException;
 
-class ContentItemGuiField implements GuiField, GuiFieldDisplayable {
-	private $labelLstr;
-	private $panelConfigs;
-	private $mandatory;
-	private $toManyEiField;
-	private $targetEiFrame;
-	private $compact;
-	private $editable;
-
-	private $selectPathExt;
-	private $newMappingFormPathExt;
-
+class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler {
 	/**
-	 * @param string $labelLstr
-	 * @param array $panelConfigs
-	 * @param ToManyEiField $toManyEiField
-	 * @param EiFrame $targetEiFrame
-	 * @param GuiFieldEditable $editable
+	 * @var RelationModel
 	 */
-	public function __construct(Lstr $labelLstr, array $panelConfigs, ToManyEiField $toManyEiField, EiFrame $targetEiFrame,
-			bool $compact, GuiFieldEditable $editable = null) {
-		$this->labelLstr = $labelLstr;
-		$this->panelConfigs = $panelConfigs;
-		$this->toManyEiField = $toManyEiField;
-		$this->targetEiFrame = $targetEiFrame;
-		$this->compact = $compact;
-		$this->editable = $editable;
-	}
-
+	private $relationModel;
 	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiField::isReadOnly()
+	 * @var Eiu
 	 */
-	public function isReadOnly(): bool {
-		return $this->editable === null;
-	}
-
+	private $eiu;
 	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiField::getDisplayItemType()
+	 * @var EiuFrame
 	 */
-	public function getDisplayItemType(): string {
-		return DisplayItem::TYPE_SIMPLE_GROUP;
-	}
+	private $targetEiuFrame;
+	/**
+	 * @var EiuEntryGuiPool
+	 */
+	private $currentPool;
+	/**
+	 * @var EmbeddedEntryPanelsInSiField
+	 */
+	private $siField;
+	/**
+	 * @var bool
+	 */
+	private $readOnly;
 	
 	/**
-	 * @return PanelConfig[] 
+	 * @param Eiu $eiu
+	 * @param EiuFrame $targetEiuFrame
+	 * @param RelationModel $relationModel
+	 * @param PanelDeclaration[] $panelDeclarations
 	 */
-	public function getPanelConfigs() {
-		return $this->panelConfigs;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiField::getUiOutputLabel()
-	 */
-	public function getUiOutputLabel(N2nLocale $n2nLocale): string {
-		return $this->labelLstr->t($n2nLocale);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiField::getHtmlContainerAttrs()
-	 */
-	public function getHtmlContainerAttrs(): array {
-		return array();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiField::createUiComponent()
-	 */
-	public function createUiComponent(HtmlView $view) {
-		if ($this->compact) {
-			return $this->createCompactOutputUiComponent($view);
+	public function __construct(Eiu $eiu, EiuFrame $targetEiuFrame, RelationModel $relationModel,
+			array $panelDeclarations, bool $readOnly) {
+		$this->eiu = $eiu;
+		$this->targetEiuFrame = $targetEiuFrame;
+		$this->relationModel = $relationModel;
+		
+		$this->currentPool = new EiuEntryGuiPool($panelDeclarations, $readOnly, $relationModel->isReduced(), $targetEiuFrame);
+		
+		$this->readOnly = $readOnly;
+		
+		if ($readOnly) {
+			$this->siField = SiFields::embeddedEntryPanelsOut($this->targetEiuFrame->createSiFrame(), $this->readValues());
+			return;
 		}
 		
-		$targetUtils = (new Eiu($this->targetEiFrame))->frame();
-		$panelEiPropPath = ContentItemsEiProp::getPanelEiPropPath();
-		
-		$groupedEiuEntries = array();
-		foreach ($this->toManyEiField->getValue() as $targetRelationEntry) {
-			$targetEiuEntry = null;
-			if ($targetRelationEntry->hasEiEntry()) {
-				$targetEiuEntry = $targetUtils->entry($targetRelationEntry->getEiEntry());
-			} else {
-				$targetEiuEntry = $targetUtils->entry($targetRelationEntry->getEiObject());
-			}
-			
-			$panelName = (string) $targetEiuEntry->getValue($panelEiPropPath, true);
-			if (!isset($groupedEiuEntries[$panelName])) {
-				$groupedEiuEntries[$panelName] = array();
-			}
-			
-			$groupedEiuEntries[$panelName][] = $targetEiuEntry;
-		}
-		
-		return $view->getImport('\rocket\impl\ei\component\prop\ci\view\contentItems.html',
-				array('panelLayout' => new PanelLayout($this->panelConfigs), 'groupedEiuEntries' => $groupedEiuEntries));
-	}
-	
-	public function createCompactOutputUiComponent(HtmlView $view) {
-	
-		
-		$targetUtils = (new Eiu($this->targetEiFrame))->frame();
-		$panelEiPropPath = ContentItemsEiProp::getPanelEiPropPath();
-		
-		$groupedUiComponents = array();
-		foreach ($this->toManyEiField->getValue() as $targetRelationEntry) {
-			$targetEiEntry = null;
-			if ($targetRelationEntry->hasEiEntry()) {
-				$targetEiEntry = $targetRelationEntry->getEiEntry();
-			} else {
-				$targetEiEntry = $targetUtils->entry($targetRelationEntry->getEiObject())->getEiEntry(true);
-			}
-			
-			$panelName = (string) $targetEiEntry->getValue($panelEiPropPath);
-			if (!isset($groupedUiComponents[$panelName])) {
-				$groupedUiComponents[$panelName] = array();
-			}
-			
-// 			if ($targetEiEntry->isAccessible()) {
-				$iconType = $targetUtils->getGenericIconType($targetEiEntry);
-				// $label = $targetUtils->getGenericLabel($targetEiEntry);
-				$label = $targetUtils->createIdentityString($targetEiEntry->getEiObject());
-				$groupedUiComponents[$panelName][] = new HtmlElement('li', array('title' => $label,
-						'class' => 'list-inline-item rocket-impl-content-type'), 
-						array(new HtmlElement('i', array('class' => $iconType), '')));
-// 			} else {
-// 				$groupedUiComponents[$panelName][] = new HtmlElement('li', array('rocket-inaccessible'),
-// 						$targetUtils->createIdentityString($targetEiEntry->getEiObject()));
-// 			}
-		}
-		
-		return $view->getImport('\rocket\impl\ei\component\prop\ci\view\compactContentItems.html',
-				array('panelConfigs' => $this->panelConfigs, 'groupedUiComponents' => $groupedUiComponents));
-	}
-	
-	public function getDisplayable(): GuiFieldDisplayable {
-		return $this;
+		$this->siField = SiFields::embeddedEntryPanelsIn($this->targetEiuFrame->createSiFrame(),
+				$this, $this->readValues());
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiField::createEditable()
+	 * @param Eiu $eiu
+	 * @return \rocket\si\content\impl\relation\SiEmbeddedEntry[]
 	 */
-	public function getEditable(): GuiFieldEditable {
-		if ($this->editable !== null) {
-			return $this->editable;
+	private function readValues() {
+		$this->currentPool->clear();
+				
+		foreach ($this->eiu->field()->getValue() as $eiuEntry) {
+			CastUtils::assertTrue($eiuEntry instanceof EiuEntry);
+			$this->currentPool->add($eiuEntry);
 		}
 		
-		throw new IllegalStateException('GuiField read only.');
+		$this->currentPool->sort();
+		
+		if (!$this->readOnly) {
+			$this->currentPool->fillUp();
+		}
+		
+		return $this->currentPool->createSiPanels();
 	}
 
+	/**
+	 * @param SiPanelInput[] $siPanelInputs
+	 * @return SiPanel[]
+	 * @throws CorruptedSiInputDataException
+	 */
+	function handleInput(array $siPanelInputs): array {
+		IllegalStateException::assertTrue(!$this->readOnly);
+		
+		$this->currentPool->handleInput($siPanelInputs);
+		$this->currentPool->fillUp();
+		return $this->currentPool->createSiPanels();
+	}
+	
+	function save() {
+		IllegalStateException::assertTrue(!$this->readOnly);
+		
+		$values = $this->currentPool->save();
+		
+		$this->eiu->field()->setValue($values);
+	}
+	
+	function getSiField(): SiField {
+		return $this->siField;
+	}
+	
+	function getForkGuiFieldMap(): ?GuiFieldMap {
+		return null;
+	}
+}
+
+
+class EiuEntryGuiPool {
+	/**
+	 * @var PanelDeclaration[]
+	 */
+	private $panelDeclarations;
+	private $reduced;
+	/**
+	 * @var EmbeddedGuiCollection[]
+	 */
+	private $embeddedGuiCollections = [];
+	private $orderEiPropPath;
+	private $panelLayout;
+	/**
+	 * @param PanelDeclaration[] $panelDeclarations
+	 */
+	function __construct(array $panelDeclarations, bool $readOnly, bool $reduced, EiuFrame $eiuFrame) {
+		$this->orderEiPropPath = new EiPropPath(['orderIndex']);
+		$this->reduced = $reduced;
+		
+		$this->panelLayout = new PanelLayout();
+		$this->panelLayout->assignConfigs($panelDeclarations);
+		
+		foreach ($panelDeclarations as $panelDeclaration) {
+			$panelName = $panelDeclaration->getName();
+			$this->panelDeclarations[$panelName] = $panelDeclaration;
+			
+			$allowedEiuTypes = null;
+			if ($panelDeclaration->isRestricted()) {
+				$allowedEiuTypes = $eiuFrame->contextEngine()->mask()->type()
+						->possibleTypes($panelDeclaration->getAllowedContentItemIds());
+			}
+			$this->embeddedGuiCollections[$panelName] = new EmbeddedGuiCollection($readOnly, $reduced, 
+					$panelDeclaration->getMin(), $eiuFrame, $allowedEiuTypes);
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	function clear() {
+		foreach ($this->embeddedGuiCollections as $collection) {
+			$collection->clear();
+		}
+	}
+	
+	/**
+	 * @param string $panelName
+	 * @param EiuEntryGui $eiuEntryGui
+	 */
+	function add(EiuEntry $eiuEntry) {
+		$panelName = $eiuEntry->getScalarValue('panel');
+		
+		if (isset($this->embeddedGuiCollections[$panelName])) {
+			$this->embeddedGuiCollections[$panelName]->add($eiuEntry);
+		}
+		
+	}
+	
+	/**
+	 * 
+	 */
+	function sort() {
+		foreach ($this->embeddedGuiCollections as $collection) {
+			$collection->sort($this->orderEiPropPath);
+		}	
+	}
+	
+	/**
+	 * 
+	 */
+	function fillUp() {
+		foreach ($this->embeddedGuiCollections as $collection) {
+			$collection->fillUp();
+		}
+	}
+	
+	/**
+	 * @return SiPanel[] 
+	 */
+	function createSiPanels() {
+		$siPanels = [];
+		
+		foreach ($this->embeddedGuiCollections as $panelName => $collection) {
+			$panelDeclaration = $this->panelDeclarations[$panelName];
+			$allowedSiTypeIds = $panelDeclaration->isRestricted() ? $panelDeclaration->getAllowedContentItemIds() : null;
+			
+			$siPanels[] = $siPanel = new SiPanel($panelName, $panelDeclaration->getLabel());
+			$siPanel->setEmbeddedEntries($collection->createSiEmbeddedEntries())
+					->setAllowedTypeIds($allowedSiTypeIds)
+					->setGridPos($this->panelLayout->getSiGridPos($panelName))
+					->setMin($panelDeclaration->getMin())
+					->setMax($panelDeclaration->getMax())
+					->setReduced($this->reduced)
+					->setSortable(true);
+		}
+		
+		return $siPanels;
+	}
+	
+	/**
+	 * @param array $siPanelInputs
+	 * @return array
+	 */
+	function handleInput(array $siPanelInputs) {
+		foreach ($siPanelInputs as $siPanelInput) {
+			ArgUtils::assertTrue($siPanelInput instanceof SiPanelInput);
+			
+			$panelName = $siPanelInput->getName();
+			if (isset($this->embeddedGuiCollections[$panelName])) {
+				$this->embeddedGuiCollections[$panelName]->handleSiEntryInputs($siPanelInput->getEntryInputs());
+			}
+		}
+	}
+	
+	function save() {
+		$eiuEntries = [];
+		
+		foreach ($this->embeddedGuiCollections as $collection) {
+			array_push($eiuEntries, ...$collection->save($this->orderEiPropPath));
+		}
+		
+		return $eiuEntries;
+	}
 }

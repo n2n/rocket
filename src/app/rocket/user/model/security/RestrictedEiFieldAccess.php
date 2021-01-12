@@ -22,15 +22,15 @@
 namespace rocket\user\model\security;
 
 use rocket\ei\manage\security\EiFieldAccess;
-use n2n\util\type\attrs\Attributes;
+use n2n\util\type\attrs\DataSet;
 use n2n\util\type\ArgUtils;
 
 class RestrictedEiFieldAccess implements EiFieldAccess {
-	private $attributes;
+	private $dataSet;
 	
-	public function __construct(array $attributes) {
-		ArgUtils::valArray($attributes, Attributes::class);
-		$this->attributes = $attributes;
+	public function __construct(array $dataSet) {
+		ArgUtils::valArray($dataSet, DataSet::class);
+		$this->dataSet = $dataSet;
 	}
 	/**
 	 * {@inheritDoc}
@@ -42,9 +42,9 @@ class RestrictedEiFieldAccess implements EiFieldAccess {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\security\EiFieldAccess::getAttributes()
+	 * @see \rocket\ei\manage\security\EiFieldAccess::getDataSet()
 	 */
-	public function getAttributes(): array {
-		return $this->attributes;
+	public function getDataSet(): array {
+		return $this->dataSet;
 	}
 }

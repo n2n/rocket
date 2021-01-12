@@ -34,7 +34,7 @@ use n2n\web\dispatch\map\PropertyPath;
 use rocket\ei\component\CritmodFactory;
 use rocket\ei\util\filter\form\FilterPropItemForm;
 use rocket\ei\manage\critmod\filter\data\FilterSetting;
-use n2n\util\type\attrs\Attributes;
+use n2n\util\type\attrs\DataSet;
 use rocket\ei\util\filter\form\FilterGroupForm;
 use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
 use n2n\web\http\controller\impl\ScrRegistry;
@@ -95,7 +95,7 @@ class ScrFilterPropController extends ControllerAdapter implements ScrController
 	
 		$filterPropItemForm = null;
 		try {
-			$filterPropItemForm = new FilterPropItemForm(new FilterSetting($filterPropId, new Attributes()),
+			$filterPropItemForm = new FilterPropItemForm(new FilterSetting($filterPropId, new DataSet()),
 					$filterDefinition);
 		} catch (UnknownFilterPropException $e) {
 			throw new PageNotFoundException(null, 0, $e);
@@ -119,7 +119,7 @@ class ScrFilterPropController extends ControllerAdapter implements ScrController
 		$securityFilterDefinition = $eiuEngine->getSecurityFilterDefinition();
 		$filterPropItemForm = null;
 		try {
-			$filterPropItemForm = new FilterPropItemForm(new FilterSetting($filterPropId, new Attributes()), 
+			$filterPropItemForm = new FilterPropItemForm(new FilterSetting($filterPropId, new DataSet()), 
 					$securityFilterDefinition->toFilterDefinition());
 		} catch (UnknownFilterPropException $e) {
 			throw new PageNotFoundException(null, 0, $e);

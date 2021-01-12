@@ -83,6 +83,12 @@ abstract class EiModificatorAdapter extends EiComponentAdapter implements EiModi
 	
 	/**
 	 * {@inheritDoc}
+	 * @see \rocket\ei\component\modificator\EiModificator::setupEiGuiFrame()
+	 */
+	public function setupEiGuiFrame(Eiu $eiu) { }
+	
+	/**
+	 * {@inheritDoc}
 	 * @see \rocket\ei\component\modificator\EiModificator::setupEiEntryGui()
 	 */
 	public function setupEiEntryGui(EiEntryGui $eiEntryGui) {}

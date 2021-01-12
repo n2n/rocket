@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\command\common\controller;
 
-use rocket\ei\manage\control\EntryNavPoint;
+use rocket\ei\manage\gui\control\EntryNavPoint;
 use n2n\l10n\N2nLocale;
 use n2n\util\uri\Path;
 use rocket\ei\component\command\EiCommand;

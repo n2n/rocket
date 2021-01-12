@@ -4546,6 +4546,7 @@ body {
  */
 .rocket-content {
   margin-top: 1rem;
+  display: block;
 }
 
 #rocket-content-container {
@@ -4599,14 +4600,14 @@ body {
   display: inline-block;
 }
 
-.rocket-impl-overview-pagination {
+.rocket-pagination {
   text-align: right;
 }
 
 /**
  * loader
  */
-.rocket-loading,
+.rocket-loader,
 .rocket-impl-overview-loading {
   margin: 40px auto 0;
   width: 50px;
@@ -4619,7 +4620,7 @@ body {
   cursor: wait;
 }
 
-.rocket-zone.rocket-loading {
+.rocket-zone.rocket-loader {
   margin-top: 10rem;
 }
 
@@ -4632,7 +4633,7 @@ body {
   background: #F7F5F5;
 }
 
-.rocket-load-blocker > .rocket-loading {
+.rocket-load-blocker > .rocket-loader {
   width: 25px;
   height: 25px;
   margin: 8px auto auto;
@@ -4671,6 +4672,7 @@ body {
 @media (min-width: 992px) {
   .rocket-zone.rocket-contains-additional {
     width: calc(100% - 20rem);
+    display: block;
   }
   .rocket-zone.rocket-contains-additional > .rocket-additional {
     position: fixed;
@@ -4971,7 +4973,7 @@ body {
   font-weight: bold;
 }
 
-.rocket-item > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation {
+.rocket-item > .rocket-structure-content > .rocket-impl-translatable > .rocket-impl-translation {
   position: relative;
   display: -ms-grid;
   display: grid;
@@ -4979,7 +4981,7 @@ body {
       grid-template-columns: 1fr auto;
 }
 
-.rocket-item > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation .rocket-impl-locale-label {
+.rocket-item > .rocket-structure-content > .rocket-impl-translatable > .rocket-impl-translation .rocket-impl-locale-label {
   position: absolute;
   top: 0.625rem;
   left: -6rem;
@@ -4993,22 +4995,22 @@ body {
   color: #C2BDB6;
 }
 
-.rocket-item > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-impl-translation-copy-control {
+.rocket-item > .rocket-structure-content > .rocket-impl-translatable > .rocket-impl-translation > .rocket-impl-translation-copy-control {
   -ms-grid-column: 2;
       grid-column-start: 2;
   grid-column-end: 3;
 }
 
-.rocket-item > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-field {
+.rocket-item > .rocket-structure-content > .rocket-impl-translatable > .rocket-impl-translation > .rocket-field {
   padding: 0;
 }
 
-.rocket-item > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-field > .rocket-control {
+.rocket-item > .rocket-structure-content > .rocket-impl-translatable > .rocket-impl-translation > .rocket-field > .rocket-structure-content {
   margin: 0;
 }
 
-.rocket-group > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-impl-translation-copy-control,
-.rocket-panel > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation > .rocket-impl-translation-copy-control {
+.rocket-group > .rocket-structure-content > .rocket-impl-translatable > .rocket-impl-translation > .rocket-impl-translation-copy-control,
+.rocket-panel > .rocket-structure-content > .rocket-impl-translatable > .rocket-impl-translation > .rocket-impl-translation-copy-control {
   position: absolute;
   top: 2.5rem;
   right: 0;
@@ -5093,7 +5095,7 @@ td .rocket-impl-translation > .rocket-impl-locale-label {
   margin: 0;
 }
 
-td .rocket-impl-translation > .rocket-control {
+td .rocket-impl-translation > .rocket-structure-content {
   -ms-grid-row: 1;
       grid-row-start: 1;
   -ms-grid-column: 1;
@@ -5102,7 +5104,7 @@ td .rocket-impl-translation > .rocket-control {
   padding: 0;
 }
 
-td .rocket-impl-translation > .rocket-control:not(:empty) {
+td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   padding: 0 0.5rem 0 0;
 }
 
@@ -5403,19 +5405,19 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
 /*
  * Footer
  */
-.rocket-impl-overview-pagination .rocket-impl-pagination-no {
+.rocket-pagination .rocket-pagination-no {
   width: 5rem;
   text-align: center;
   display: inline-block;
   margin-right: 0.5rem;
 }
 
-.rocket-impl-overview-pagination > a,
-.rocket-impl-overview-pagination > .btn:not(:last-child) {
+.rocket-pagination > a,
+.rocket-pagination > .btn:not(:last-child) {
   margin: 0 0.5rem 0 0;
 }
 
-.rocket-impl-overview-pagination > .btn {
+.rocket-pagination > .btn {
   min-width: 2.375rem;
 }
 
@@ -5456,7 +5458,7 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
     grid-column-end: 2;
     padding: calc(0.375rem + 1px) 0;
   }
-  .rocket-item > .rocket-control {
+  .rocket-item > .rocket-structure-content {
     -ms-grid-row: 1;
         grid-row-start: 1;
     -ms-grid-column: 2;
@@ -5469,11 +5471,11 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
     grid-column-end: 4;
     padding: 0;
   }
-  .rocket-group:not(.rocket-light-group) .rocket-group:not(.rocket-light-group) .rocket-control > .rocket-item {
+  .rocket-group:not(.rocket-light-group) .rocket-group:not(.rocket-light-group) .rocket-structure-content > .rocket-item {
     -ms-grid-columns: 14rem 1fr auto;
         grid-template-columns: 14rem 1fr auto;
   }
-  .rocket-group:not(.rocket-light-group) .rocket-group:not(.rocket-light-group) .rocket-group:not(.rocket-light-group) .rocket-control > .rocket-item {
+  .rocket-group:not(.rocket-light-group) .rocket-group:not(.rocket-light-group) .rocket-group:not(.rocket-light-group) .rocket-structure-content > .rocket-item {
     -ms-grid-columns: 13rem 1fr auto;
         grid-template-columns: 13rem 1fr auto;
   }
@@ -5492,11 +5494,6 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
   font-weight: bold;
 }
 
-.rocket-read-only > .rocket-control {
-  padding: calc(0.375rem + 1px) 0;
-  min-height: 1.375rem;
-}
-
 .form-check-label {
   padding-top: calc(0.375rem + 1px);
   padding-bottom: calc(0.375rem + 1px);
@@ -5510,7 +5507,7 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
   display: grid;
 }
 
-.rocket-impl-entry > .rocket-impl-summary {
+.rocket-impl-entry > .rocket-summary {
   display: -ms-grid;
   display: grid;
   -ms-grid-columns: minmax(min-content, max-content) 10rem 1fr auto;
@@ -5521,7 +5518,7 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
   background: #fff;
 }
 
-.rocket-impl-entry > .rocket-impl-summary > .rocket-impl-handle {
+.rocket-impl-entry > .rocket-summary > .rocket-handle {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -5533,7 +5530,7 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
   width: 3.5rem;
 }
 
-.rocket-impl-entry > .rocket-impl-summary > .rocket-impl-handle.rocket-not-sortable {
+.rocket-impl-entry > .rocket-summary > .rocket-handle.rocket-not-sortable {
   width: 0;
   border: 0;
   padding: 0;
@@ -5541,19 +5538,19 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
   visibility: hidden;
 }
 
-.rocket-impl-entry > .rocket-impl-summary > .rocket-impl-handle:after {
+.rocket-impl-entry > .rocket-summary > .rocket-handle:after {
   content: "";
   display: table;
   padding-bottom: 100%;
   padding-bottom: calc(100% + 1px);
 }
 
-.rocket-impl-entry > .rocket-impl-summary > .rocket-impl-handle > .fa {
+.rocket-impl-entry > .rocket-summary > .rocket-handle > .fa {
   padding-top: 1.2rem;
   padding-bottom: 1.2rem;
 }
 
-.rocket-impl-entry > .rocket-impl-summary .rocket-impl-content-type {
+.rocket-impl-entry > .rocket-summary .rocket-impl-content-type {
   min-width: 10rem;
   padding: 1rem 0 1rem 0.5rem;
   border-right: 1px solid #C2BDB6;
@@ -5562,14 +5559,14 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
   overflow: hidden;
 }
 
-.rocket-impl-entry > .rocket-impl-summary .rocket-content-nested .rocket-impl-content-type {
+.rocket-impl-entry > .rocket-summary .rocket-content-nested .rocket-impl-content-type {
   padding: 1rem 0 1rem 0;
   min-width: 0;
   margin: -1rem 0;
   border-right: none;
 }
 
-.rocket-impl-entry > .rocket-impl-summary .rocket-impl-content {
+.rocket-impl-entry > .rocket-summary .rocket-impl-content {
   position: relative;
   z-index: 0;
   padding: 1rem 1rem 1rem 0.5rem;
@@ -5582,7 +5579,7 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
   overflow: hidden;
 }
 
-.rocket-impl-entry > .rocket-impl-summary .rocket-impl-content:before {
+.rocket-impl-entry > .rocket-summary .rocket-impl-content:before {
   content: "";
   z-index: 1;
   width: 1rem;
@@ -5594,27 +5591,27 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
   background-image: linear-gradient(to right, rgba(255, 255, 255, 0), white 50%);
 }
 
-.rocket-impl-entry > .rocket-impl-summary .rocket-impl-content > div {
+.rocket-impl-entry > .rocket-summary .rocket-impl-content > div {
   white-space: nowrap;
   -ms-flex-negative: 0;
       flex-shrink: 0;
 }
 
-.rocket-impl-entry > .rocket-impl-summary .rocket-impl-content > div:not(:last-child):not(:empty) {
+.rocket-impl-entry > .rocket-summary .rocket-impl-content > div:not(:last-child):not(:empty) {
   margin-right: 1.5rem;
 }
 
-.rocket-impl-entry > .rocket-impl-summary .rocket-impl-content > div.rocket-gui-field-fileImage {
+.rocket-impl-entry > .rocket-summary .rocket-impl-content > div.rocket-gui-field-fileImage {
   margin-top: -0.35rem;
   margin-bottom: -0.41rem;
 }
 
-.rocket-impl-entry > .rocket-impl-summary > .rocket-simple-commands {
+.rocket-impl-entry > .rocket-summary > .rocket-simple-commands {
   padding: 0.62rem 0.75rem 0.62rem 0;
   text-align: right;
 }
 
-.rocket-impl-entry > .rocket-impl-summary .rocket-impl-status {
+.rocket-impl-entry > .rocket-summary .rocket-impl-status {
   color: #b90f00;
 }
 
@@ -5701,7 +5698,7 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
   border: 1px solid #DAD7D3;
 }
 
-.rocket-impl-add-entry {
+.rocket-add-paste {
   margin: 0.5rem 0;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -5711,16 +5708,16 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
           justify-content: space-between;
 }
 
-.rocket-impl-add-entry > div {
+.rocket-add-paste > div {
   width: 100%;
   margin: 0;
 }
 
-.rocket-impl-add-entry > .rocket-impl-paste {
+.rocket-add-paste > .rocket-impl-paste {
   margin-left: 1rem;
 }
 
-.rocket-impl-add-entry > button {
+.rocket-add-paste > button {
   text-align: left;
   font-weight: bold;
   font-size: 1rem;
@@ -5730,7 +5727,7 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
   position: relative;
 }
 
-.rocket-impl-add-entry > button::after {
+.rocket-add-paste > button::after {
   font-family: fontawesome;
   content: '\f067';
   position: absolute;
@@ -5739,7 +5736,7 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
   font-weight: normal;
 }
 
-.rocket-control > iframe {
+.rocket-structure-content > iframe {
   width: 100%;
   border: 1px solid #DAD7D3;
 }
@@ -5827,8 +5824,8 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
   margin-bottom: 0;
 }
 
-.rocket-panel > .rocket-control,
-.rocket-group > .rocket-control {
+.rocket-panel > .rocket-structure-content,
+.rocket-group > .rocket-structure-content {
   -ms-grid-column: 1;
       grid-column-start: 1;
   grid-column-end: 3;
@@ -5854,7 +5851,7 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
   font-weight: bold;
 }
 
-.rocket-group > .rocket-control {
+.rocket-group > .rocket-structure-content {
   padding: 0.5rem 1rem;
 }
 
@@ -5896,8 +5893,8 @@ td .rocket-impl-translation > .rocket-control:not(:empty) {
   padding: 0.5rem 0;
 }
 
-.rocket-group .rocket-simple-group > .rocket-control,
-.rocket-group .rocket-main-group > .rocket-control {
+.rocket-group .rocket-simple-group > .rocket-structure-content,
+.rocket-group .rocket-main-group > .rocket-structure-content {
   background: rgba(194, 189, 182, 0.08);
   border: 1px solid #C2BDB6;
 }
@@ -6025,7 +6022,7 @@ td .rocket-simple-commands > .btn > i {
   display: none;
 }
 
-.rocket-zone-commands .rocket-impl-overview-pagination i.fa {
+.rocket-zone-commands .rocket-pagination i.fa {
   display: inline-block !important;
 }
 
@@ -6491,18 +6488,18 @@ td .rocket-simple-commands > .btn > i {
   }
 }
 
-.rocket-impl-multi-type-menu {
+.rocket-multi-type-menu {
   padding: 0;
   margin: 0;
   list-style: none;
   border: 1px solid #DAD7D3;
 }
 
-.rocket-impl-multi-type-menu > li {
+.rocket-multi-type-menu > li {
   border-bottom: 1px solid #DAD7D3;
 }
 
-.rocket-impl-multi-type-menu > li > button {
+.rocket-multi-type-menu > li > button {
   display: block;
   width: 100%;
   text-align: left;
@@ -6511,11 +6508,11 @@ td .rocket-simple-commands > .btn > i {
   padding: 0.375rem 0.625rem;
 }
 
-.rocket-impl-multi-type-menu > li > button:hover {
+.rocket-multi-type-menu > li > button:hover {
   background-color: #F7F5F5;
 }
 
-.rocket-impl-multi-type-menu > li:last-child {
+.rocket-multi-type-menu > li:last-child {
   border-bottom: none;
 }
 

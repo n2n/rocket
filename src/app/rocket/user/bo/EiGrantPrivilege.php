@@ -27,7 +27,7 @@ use n2n\util\StringUtils;
 use n2n\persistence\orm\annotation\AnnoTable;
 use n2n\persistence\orm\annotation\AnnoManyToOne;
 use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
-use n2n\util\type\attrs\Attributes;
+use n2n\util\type\attrs\DataSet;
 use n2n\util\type\attrs\AttributesException;
 use rocket\ei\manage\security\privilege\data\PrivilegeSetting;
 use n2n\persistence\orm\annotation\AnnoTransient;
@@ -63,7 +63,7 @@ class EiGrantPrivilege extends ObjectAdapter {
 	 */
 	public function getPrivilegeSetting() {
 		if ($this->privilegeSetting === null) {
-			$this->privilegeSetting = PrivilegeSetting::create(new Attributes(
+			$this->privilegeSetting = PrivilegeSetting::createFromDs(new DataSet(
 					StringUtils::jsonDecode($this->eiPrivilegeJson, true)));
 		}
 		
@@ -94,7 +94,7 @@ class EiGrantPrivilege extends ObjectAdapter {
 	
 	public function readRestrictionFilterSettingGroup(): FilterSettingGroup {
 		try {
-			return FilterSettingGroup::create(new Attributes(StringUtils::jsonDecode($this->restrictionGroupJson, true)));
+			return FilterSettingGroup::create(new DataSet(StringUtils::jsonDecode($this->restrictionGroupJson, true)));
 		} catch (AttributesException $e) {
 			return new FilterSettingGroup();
 		}

@@ -1,0 +1,23 @@
+<div>
+	<div *ngFor="let siQualifier of model.getValues()" class="rocket-selector">
+		{{ siQualifier.idName }}
+		
+		<button class="btn btn-link" (click)="remove(siQualifier)">
+			<i class="fa fa-trash-alt"></i>
+		</button>
+	</div>
+</div>
+
+<button class="btn btn-secondary" (click)="openOptions()"><i class="fa fa-circle-o"></i> {{ 'common_select_label' | translate }}</button>
+
+<div *ngIf="pickables" class="rocket-pickables">
+	<button *ngFor="let pickable of pickables" [disabled]="!pickingAllowed" (click)="pick(pickable)" class="btn btn-secondary btn-sm">
+		{{ pickable.idName }}
+	</button>
+</div>
+
+<div *ngIf="model.getMessages().length > 0" class="rocket-message-error">
+	<div *ngFor="let message of model.getMessages()">
+		<rocket-ui-message *ngFor="let message of model.getMessages()" [message]="message"></rocket-ui-message>
+	</div>
+</div>

@@ -21,7 +21,7 @@
  */
 namespace rocket\ei\component;
 
-use n2n\util\type\attrs\Attributes;
+use n2n\util\type\attrs\DataSet;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\core\container\N2nContext;
 use n2n\web\dispatch\mag\MagDispatchable;
@@ -29,14 +29,14 @@ use n2n\web\dispatch\mag\MagDispatchable;
 interface EiConfigurator {
 
 	/**
-	 * @return Attributes 
+	 * @return DataSet 
 	 */
-	public function getAttributes(): Attributes;
+	public function getDataSet(): DataSet;
 	
 	/**
-	 * @param Attributes $attributes
+	 * @param DataSet $dataSet
 	 */
-	public function setAttributes(Attributes $attributes);
+	public function setDataSet(DataSet $dataSet);
 	
 	/**
 	 * @return string 
@@ -49,7 +49,7 @@ interface EiConfigurator {
 	public function getEiComponent(): EiComponent;
 	
 	/**
-	 * No Exception should be thrown if Attributes are invalid. Use of {@link \n2n\util\type\attrs\LenientAttributeReader}
+	 * No Exception should be thrown if DataSet are invalid. Use of {@link \n2n\util\type\attrs\LenientAttributeReader}
 	 * recommended. {@link EiConfigurator::setup()} has already been called when invoked. It will be called whether 
 	 * {@link EiConfigurator::setup()} threw an exception or not.
 	 * @return MagDispatchable 

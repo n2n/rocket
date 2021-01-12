@@ -47,7 +47,7 @@
 
 <div class="rocket-group rocket-simple-group">
 	<label><?php $html->out($imageFile->getFile()->getOriginalName()) ?></label>
-	<div class="rocket-image-resizer-container rocket-control">
+	<div class="rocket-image-resizer-container rocket-structure-content">
 		<?php $formHtml->open($thumbModel, null, null, array('class' => 'rocket-form')) ?>
 			
 			<?php $formHtml->input('x', array('id' => 'rocket-thumb-pos-x')) ?>
@@ -58,7 +58,8 @@
 			<div id="rocket-image-resizer"
 					data-img-src="<?php $html->esc(UiComponentFactory::createImgSrc($imageFile)) ?>"
 					data-text-fixed-ratio="<?php $html->l10nText('ei_impl_thumb_keep_aspect_ratio_label') ?>"
-					data-text-low-resolution="<?php $html->l10nText('ei_impl_thumb_low_resolution_label') ?>" data-text-zoom="Zoom"></div>
+					data-text-low-resolution="<?php $html->l10nText('ei_impl_thumb_low_resolution_label') ?>" 
+					data-text-zoom="Zoom"></div>
 			
 			<div>
 				<h3>Bild-Versionen</h3>

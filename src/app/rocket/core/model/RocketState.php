@@ -22,28 +22,17 @@
 namespace rocket\core\model;
 
 use n2n\context\RequestScoped;
-use n2n\util\col\GenericArrayObject;
 use rocket\core\model\launch\LaunchPad;
+use n2n\util\type\ArgUtils;
+use rocket\si\meta\SiBreadcrumb;
 
 class RocketState implements RequestScoped {
 	private $breadcrumbs = array();
 	private $activeLaunchPad;
 	
 	public function __construct() {
-		$this->breadcrumbs = new GenericArrayObject(null, 'rocket\core\model\Breadcrumb');
 	}
 
-	/**
-	 * @return \rocket\core\model\Breadcrumb
-	 */
-	public function getBreadcrumbs() {
-		return $this->breadcrumbs;
-	}
-	
-	public function addBreadcrumb(Breadcrumb $breadcrumb) {
-		$this->breadcrumbs[] = $breadcrumb;
-	}
-	
 	/**
 	 * @param LaunchPad $activeLaunchPad
 	 */
@@ -56,5 +45,28 @@ class RocketState implements RequestScoped {
 	 */
 	public function getActiveLaunchPad() {
 		return $this->activeLaunchPad;
+	}
+	
+	/**
+	 * @param SiBreadcrumb[] $breadcrumbs
+	 */
+	public function setBreadcrumbs(array $breadcrumbs) {
+		ArgUtils::valArray($breadcrumbs, SiBreadcrumb::class);
+		
+		$this->breadcrumbs = $breadcrumbs;
+	}
+	
+	/**
+	 * @return SiBreadcrumb[]
+	 */
+	public function getBreadcrumbs() {
+		return $this->breadcrumbs;
+	}
+	
+	/**
+	 * @param SiBreadcrumb $breadcrumb
+	 */
+	public function addBreadcrumb(SiBreadcrumb $breadcrumb) {
+		$this->breadcrumbs[] = $breadcrumb;
 	}
 }

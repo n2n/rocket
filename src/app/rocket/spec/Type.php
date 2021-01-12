@@ -25,7 +25,7 @@ abstract class Type {
 	protected $id;
 	protected $moduleNamespace;
 	
-	public function __construct($id, string $moduleNamespace) {
+	public function __construct(string $id, string $moduleNamespace) {
 		$this->setId($id);
 		$this->setModuleNamespace($moduleNamespace);
 	}
@@ -34,8 +34,11 @@ abstract class Type {
 		return $this->id;
 	}	
 	
-	public function setId($id) {
-		$this->id = (string) $id;
+	/**
+	 * @param string $id
+	 */
+	public function setId(string $id) {
+		$this->id = $id;
 	}
 		
 	public function getModuleNamespace(): string {

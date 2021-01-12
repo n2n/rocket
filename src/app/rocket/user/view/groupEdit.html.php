@@ -39,17 +39,17 @@
 	<?php $formHtml->messageList() ?>
 	
 	<div class="rocket-group rocket-simple-group">
-		<div class="rocket-control">
+		<div class="rocket-structure-content">
 			<div class="rocket-item">
 				<?php $formHtml->label('name', $html->getL10nText('common_name_label')) ?>
-				<div class="rocket-control">
+				<div class="rocket-structure-content">
 					<?php $formHtml->input('name', array('maxlength' => 64)) ?>
 					<?php $formHtml->message('name', 'div', array('class' => 'rocket-message-error')) ?>
 				</div>
 			</div>
 			<div class="rocket-item">
 				<label><?php $html->text('user_accessible_menu_items_label') ?></label>
-				<div class="rocket-control rocket-user-group-menu-items"
+				<div class="rocket-structure-content rocket-user-group-menu-items"
 						data-accessible-items-title="<?php $html->text('user_accessible_menu_items_label') ?>"
 						data-unaccessible-items-title="<?php $html->text('user_unaccessible_menu_items_title') ?>"
 						data-assign-title="<?php $html->text('common_assign_label') ?>"

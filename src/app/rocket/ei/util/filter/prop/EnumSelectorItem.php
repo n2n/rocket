@@ -24,14 +24,14 @@ namespace rocket\ei\util\filter\prop;
 // use n2n\util\ex\IllegalStateException;
 // use n2n\l10n\Message;
 // use rocket\ei\manage\critmod\SelectorConstraint;
-// use n2n\util\type\attrs\Attributes;
+// use n2n\util\type\attrs\DataSet;
 // use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 
 // class EnumSelectorItem extends EnumFilterProp implements SelectorItem {
 	
-// 	public function createSelectorConstraint(Attributes $attributes) {
-// 		return new StringSelectorConstraint($attributes->get(self::OPERATOR_OPTION), 
-// 				$attributes->get(self::ATTR_VALUE_KEY));
+// 	public function createSelectorConstraint(DataSet $dataSet) {
+// 		return new StringSelectorConstraint($dataSet->get(self::OPERATOR_OPTION), 
+// 				$dataSet->get(self::ATTR_VALUE_KEY));
 // 	}
 // }
 

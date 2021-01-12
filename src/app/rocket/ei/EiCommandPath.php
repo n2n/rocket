@@ -22,17 +22,18 @@
 namespace rocket\ei;
 
 use rocket\ei\component\command\EiCommand;
+use n2n\util\type\ArgUtils;
 
 class EiCommandPath extends IdPath {
+	
+	public function __construct(string $id) {
+		parent::__construct([$id]);
+	}
 
 	public static function from(EiCommand $eiCommand): EiCommandPath {
 		return $eiCommand->getWrapper()->getEiCommandPath();
 	}
 	
-	public function ext(...$args): EiCommandPath {
-		return new EiCommandPath(array_merge($this->ids, $this->argsToIds($args)));
-	}
-
 	public static function create($expression): EiCommandPath {
 		if ($expression instanceof EiCommandPath) {
 			return $expression;
@@ -42,10 +43,10 @@ class EiCommandPath extends IdPath {
 			return self::from($expression);
 		}
 	
-		if (is_array($expression)) {
+		if (is_string($expression)) {
 			return new EiCommandPath($expression);
 		}
 	
-		return new EiCommandPath(explode(self::ID_SEPARATOR, $expression));
+		ArgUtils::valType($expression, ['string', EiCommand::class, EiCommandPath::class], false, 'expression');
 	}
 }

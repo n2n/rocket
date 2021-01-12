@@ -23,19 +23,20 @@ namespace rocket\impl\ei\component\prop\relation\model\relation;
 
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\EiPropPath;
-use rocket\impl\ei\component\prop\relation\model\RelationEntry;
 use rocket\ei\manage\frame\EiFrameListener;
+use rocket\ei\manage\security\EiExecution;
 use rocket\ei\manage\entry\EiEntry;
+use rocket\ei\util\entry\EiuEntry;
 
 class MappedRelationEiModificator implements EiFrameListener {
 	private $targetEiFrame;
-	private $relationEntry;
+	private $relationEiuObj;
 	private $targetEiPropPath;
 	private $sourceMany;
 
-	public function __construct(EiFrame $targetEiFrame, RelationEntry $relationEntry, EiPropPath $targetEiPropPath, bool $sourceMany) {
+	public function __construct(EiFrame $targetEiFrame, EiuEntry $relationEiuObj, EiPropPath $targetEiPropPath, bool $sourceMany) {
 		$this->targetEiFrame = $targetEiFrame;
-		$this->relationEntry = $relationEntry;
+		$this->relationEiuObj = $relationEiuObj;
 		$this->targetEiPropPath = $targetEiPropPath;
 		$this->sourceMany = (boolean) $sourceMany;
 	}
@@ -48,7 +49,7 @@ class MappedRelationEiModificator implements EiFrameListener {
 				||*/ !$eiEntry->getEiObject()->isNew()) return;
 
 		if (!$this->sourceMany) {
-			$eiEntry->setValue($this->targetEiPropPath, $this->relationEntry);
+			$eiEntry->setValue($this->targetEiPropPath, $this->relationEiuObj);
 			return;
 		}
 		
@@ -56,7 +57,10 @@ class MappedRelationEiModificator implements EiFrameListener {
 		if ($value === null) {
 			$value = new \ArrayObject();
 		}
-		$value[] = $this->relationEntry;
+		$value[] = $this->relationEiuObj;
 		$eiEntry->setValue($this->targetEiPropPath, $value);
+	}
+	
+	public function whenExecuted(EiExecution $eiExecution) {
 	}
 }

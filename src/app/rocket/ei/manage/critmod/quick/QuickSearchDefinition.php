@@ -24,23 +24,36 @@ namespace rocket\ei\manage\critmod\quick;
 use n2n\util\type\ArgUtils;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\critmod\filter\ComparatorConstraintGroup;
+use rocket\ei\manage\DefPropPath;
 
 class QuickSearchDefinition {
-	private $quickSearchFields = array();
+	private $quickSearchProps = [];
+	private $quickSearchPropForks = [];
 	
 	/**
 	 * @param EiPropPath $eiPropPath
 	 * @param QuickSearchProp $quickSearchField
 	 */
-	public function putQuickSearchProp(EiPropPath $eiPropPath, QuickSearchProp $quickSearchField) {
-		$this->quickSearchFields[(string) $eiPropPath] = $quickSearchField;	
+	function putQuickSearchProp(EiPropPath $eiPropPath, QuickSearchProp $quickSearchField) {
+		$this->quickSearchProps[(string) $eiPropPath] = $quickSearchField;	
+	}
+	
+	function putQuickSearchPropFork(EiPropPath $eiPropPath, QuickSearchPropFork $quickSearchPropFork) {
+		$this->quickSearchPropForks[(string) $eiPropPath] = $quickSearchPropFork;
 	}
 	
 	/**
 	 * @return QuickSearchProp[]
 	 */
-	public function getQuickSearchProps(): array {
-		return $this->quickSearchFields;
+	function getQuickSearchProps() {
+		return $this->quickSearchProps;
+	}
+	
+	/**
+	 * @return QuickSearchPropFork[]
+	 */
+	function getQuickSearchPropForks() {
+		return $this->quickSearchPropForks;
 	}
 	
 	/**
@@ -51,42 +64,54 @@ class QuickSearchDefinition {
 		$quickSearchFields = array();
 		foreach ($eiPropPaths as $eiPropPath) {
 			$eiPropPathStr = (string) $eiPropPath;
-			if (isset($this->quickSearchFields[$eiPropPathStr])) {
-				$quickSearchFields[] = $this->quickSearchFields[$eiPropPathStr];
+			if (isset($this->quickSearchProps[$eiPropPathStr])) {
+				$quickSearchFields[] = $this->quickSearchProps[$eiPropPathStr];
 			}
 		}
 		return $quickSearchFields;
 	}
 	
+	const SEARCH_STR_WHITESPACS_SPLIT_LIMIT = 9;
+	
 	/**
 	 * 
 	 * @param string $searchStr
-	 * @param EiPropPath[] $eiPropPaths
+	 * @param DefPropPath[] $eiPropPaths
 	 * @return null|\rocket\ei\manage\critmod\filter\ComparatorConstraintGroup
 	 */
-	public function buildCriteriaConstraint(string $searchStr, array $eiPropPaths = null) {
-		$quickSearchFields = null;
-		if ($eiPropPaths === null) {
-			$quickSearchFields = $this->quickSearchFields;
+	public function buildCriteriaConstraint(string $searchStr, array $defPropPaths = null) {
+		$quickSearchProps = null;
+		if ($defPropPaths === null) {
+			$quickSearchProps = $this->quickSearchProps;
 		} else {
-			ArgUtils::valArray($eiPropPaths, EiPropPath::class);
-			$quickSearchFields = $this->filterProps($eiPropPaths);
+			ArgUtils::valArray($defPropPaths, DefPropPath::class);
+			$quickSearchProps = $this->filterProps(array_map(function ($dpp) { 
+				return $dpp->getFirstEiPropPath(); 
+			}, $defPropPaths));
 		} 
 		
-		if (empty($quickSearchFields)) return null;
+		if (empty($quickSearchProps)) {
+			return null;
+		}
 		
 		$comparatorConstraintGroup = new ComparatorConstraintGroup(true);
 		
-		foreach (preg_split('/\s+/', $searchStr) as $searchStrPart) {
-			$queryStr = trim($searchStrPart);
-			$queryComparatorConstraintGroup = new ComparatorConstraintGroup(false);
-			
-			foreach ($quickSearchFields as $quickSearchField) {
-				$queryComparatorConstraintGroup->addComparatorConstraint(
-						$quickSearchField->createComparatorConstraint($searchStrPart));
+		foreach (preg_split('/\s+/', $searchStr, self::SEARCH_STR_WHITESPACS_SPLIT_LIMIT) as $searchStrPart) {
+			if ($searchStrPart === '') {
+				continue;
 			}
 			
-			$comparatorConstraintGroup->addComparatorConstraint($queryComparatorConstraintGroup);
+			$queryComparatorConstraintGroup = new ComparatorConstraintGroup(false);
+			
+			foreach ($quickSearchProps as $quickSearchProp) {
+				if (null !== ($comparatorConstraint = $quickSearchProp->buildComparatorConstraint($searchStrPart))) {
+					$queryComparatorConstraintGroup->addComparatorConstraint($comparatorConstraint);
+				}
+			}
+			
+			if (!$queryComparatorConstraintGroup->isEmpty()) {
+				$comparatorConstraintGroup->addComparatorConstraint($queryComparatorConstraintGroup);
+			}
 		}
 		
 		if ($comparatorConstraintGroup->isEmpty()) {

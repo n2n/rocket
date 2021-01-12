@@ -21,25 +21,30 @@
  */
 namespace rocket\impl\ei\component\prop\numeric;
 
-use n2n\impl\web\ui\view\html\HtmlView;
+use n2n\impl\persistence\orm\property\IntEntityProperty;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
+use n2n\impl\web\dispatch\mag\model\NumericMag;
 use n2n\persistence\orm\property\EntityProperty;
 use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
-use n2n\impl\web\dispatch\mag\model\NumericMag;
-use rocket\impl\ei\component\prop\numeric\conf\OrderEiPropConfigurator;
-use n2n\web\dispatch\mag\Mag;
 use rocket\ei\util\Eiu;
-use rocket\ei\EiPropPath;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
-use n2n\impl\persistence\orm\property\IntEntityProperty;
+use rocket\impl\ei\component\prop\numeric\conf\OrderConfig;
+use rocket\ei\util\factory\EifGuiField;
+use rocket\si\content\impl\SiFields;
 
 class OrderEiProp extends IntegerEiProp {
-	const ORDER_INCREMENT = 10;
+    const ORDER_INCREMENT = 10;
 	
-	public function createEiPropConfigurator(): EiPropConfigurator {
-		$this->getDisplayConfig()->setListReadModeDefaultDisplayed(false);
-		
-		return new OrderEiPropConfigurator($this);
+	private $orderConfig;
+	
+	function __construct() {
+	    parent::__construct();
+	    
+	    $this->orderConfig = new OrderConfig($this);
+	}
+	
+	function prepare() {
+	    parent::prepare();
+	    $this->getConfigurator()->addAdaption($this->orderConfig);
 	}
 
 	public function isCompatibleWith(EntityProperty $entityProperty) {
@@ -47,17 +52,21 @@ class OrderEiProp extends IntegerEiProp {
 				|| $entityProperty instanceof IntEntityProperty;
 	}
 	
-	public function createUiComponent(HtmlView $view, Eiu $eiu) {
-		return $view->getHtmlBuilder()->getEsc($eiu->field()->getValue(EiPropPath::from($this)));
+	function createOutEifGuiField(Eiu $eiu): EifGuiField {
+		return $eiu->factory()->newGuiField(SiFields::stringOut($eiu->field()->getValue()));
 	}
 
 	public function getSortItem() {
 		return new SimpleSortProp($this->getEntityProperty()->getName(), $this->getLabelLstr());
 	}
 
-	public function createMag(Eiu $eiu): Mag {
-		return new NumericMag($this->getLabelLstr(), null, $this->isMandatory($eiu), 
-				null, null, 0, null, array('placeholder' => $this->getLabelLstr()));
+	public function createInEifGuiField(Eiu $eiu): EifGuiField {
+		$siField = SiFields::numberIn($eiu->field()->getValue())
+				->setMandatory($this->getEditConfig()->isMandatory());
+		
+		return $eiu->factory()->newGuiField($siField)->setSaver(function () use ($siField, $eiu) {
+			$eiu->field()->setValue($siField->getValue());
+		});
 	}
 
 	public function getFilterProp() {

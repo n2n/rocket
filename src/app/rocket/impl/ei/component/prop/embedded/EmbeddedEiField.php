@@ -150,4 +150,10 @@ class EmbeddedEiField extends EiFieldAdapter {
 		
 		return $this->forkedEiuFieldMap->getEiFieldMap();
 	}
+	public function copyValue(Eiu $copyEiu) {
+	}
+
+	public function isCopyable(): bool {
+	}
+
 }

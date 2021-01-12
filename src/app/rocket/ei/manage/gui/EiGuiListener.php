@@ -1,16 +1,20 @@
 <?php
 namespace rocket\ei\manage\gui;
 
-use n2n\impl\web\ui\view\html\HtmlView;
-
 interface EiGuiListener {
 	
 	/**
-	 * @param EiGui $eiGui
+	 * @param EiGuiFrame $eiGuiFrame
 	 */
-	public function onInitialized(EiGui $eiGui);
+	public function onInitialized(EiGuiFrame $eiGuiFrame);
 
+	/**
+	 * @param EiEntryGui $eiEntryGui
+	 */
 	public function onNewEiEntryGui(EiEntryGui $eiEntryGui);
 
-	public function onNewView(HtmlView $view);
+	/**
+	 * 
+	 */
+	public function onGiBuild(EiGuiFrame $eiGuiFrame);
 }

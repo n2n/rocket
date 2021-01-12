@@ -22,28 +22,24 @@
 namespace rocket\ei\manage\security;
 
 use rocket\ei\component\command\EiCommand;
-use rocket\ei\EiCommandPath;
+use rocket\ei\manage\entry\EiEntry;
+use rocket\ei\manage\frame\CriteriaConstraint;
 
 interface EiExecution {
 	
 	/**
-	 * @return \rocket\ei\EiCommandPath
-	 */
-	public function getEiCommandPath(): EiCommandPath;
-	
-	/**
-	 * @return bool 
-	 */
-	public function hasEiCommand(): bool;
-	
-	/**
 	 * @return \rocket\ei\component\command\EiCommand
 	 */
-	public function getEiCommand(): EiCommand;
+	function getEiCommand(): EiCommand;
 	
 	/**
-	 * @param string $ext
-	 * @throws InaccessibleEiCommandPathException
+	 * @return CriteriaConstraint|NULL
 	 */
-	public function extEiCommandPath(string $ext);
+	function getCriteriaConstraint(): ?CriteriaConstraint;
+	
+	/**
+	 * @param EiEntry $eiEntry
+	 * @return EiEntryAccess
+	 */
+	function createEiEntryAccess(EiEntry $eiEntry): EiEntryAccess;
 }

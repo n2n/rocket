@@ -1,47 +1,50 @@
 <?php
 namespace rocket\impl\ei\component\prop\ci\model;
 
+use rocket\si\content\impl\relation\SiPanel;
+use rocket\si\content\impl\relation\SiGridPos;
+
 class PanelLayout {
-	private $numGridCols = 0;
-	private $numGridRows = 0;
 	/**
-	 * @var PanelConfig[]
+	 * @var SiPanel[]
 	 */
-	private $panelConfigs;
+	private $siGridPoses = [];
 	
-	/**
-	 * @param PanelConfig[] $panelConfigs
-	 */
-	public function __construct(array $panelConfigs) {
-		$this->panelConfigs = $panelConfigs;
-		
-		$this->dingselGrid();
+	public function __construct() {	
 	}
 	
-	private function dingselGrid() {
-		foreach ($this->panelConfigs as $panelConfig) {
-			$gridPos = $panelConfig->getGridPos();
+	/**
+	 * @param PanelDeclaration[] $panelDeclarations
+	 */
+	function assignConfigs(array $panelDeclarations) {
+		$numGridCols = 0;
+		$numGridRows = 0;
+		
+		foreach ($panelDeclarations as $panelDeclaration) {
+			$gridPos = $panelDeclaration->getGridPos();
 			
 			if ($gridPos === null) continue;
 			
 			$colEnd = $gridPos->getColEnd();
-			if ($this->numGridCols < $colEnd) {
-				$this->numGridCols = $colEnd;
+			if ($numGridCols < $colEnd) {
+				$numGridCols = $colEnd;
 			}
 			
 			$rowEnd = $gridPos->getRowEnd();
-			if ($this->numGridRows < $rowEnd) {
-				$this->numGridRows = $rowEnd;
+			if ($numGridRows < $rowEnd) {
+				$numGridRows = $rowEnd;
 			}
 		}
 		
-		if (!$this->hasGrid()) return;
-		
-		foreach ($this->panelConfigs as $panelConfig) {
-			if ($panelConfig->getGridPos() !== null) continue;
+		$this->siGridPoses = [];
+		foreach ($panelDeclarations as $panelDeclaration) {
+			if (($gridPos = $panelDeclaration->getGridPos()) !== null) {
+				$this->siGridPoses[$panelDeclaration->getName()] = $gridPos->toSiGridPos();
+				continue;
+			}
 			
-			$panelConfig->setGridPos(new GridPos(1, $this->numGridCols, 
-					++$this->numGridRows, $this->numGridRows));
+			$this->siGridPoses[$panelDeclaration->getName()] = new SiGridPos(1, $numGridCols,
+					++$numGridRows, $numGridRows);
 		}
 	}
 	
@@ -61,10 +64,11 @@ class PanelLayout {
 	}
 	
 	/**
-	 * @return PanelConfig[]
+	 * @param string $panelName
+	 * @return SiGridPos|null
 	 */
-	public function getPanelConfigs() {
-		return $this->panelConfigs;
+	function getSiGridPos(string $panelName) {
+		return $this->siGridPoses[$panelName] ?? null;
 	}
 }
 

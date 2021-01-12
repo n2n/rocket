@@ -322,7 +322,7 @@ namespace Rocket.Impl.Translation {
 			
 			this.loaderJq = $("<div />", {
 				class: "rocket-load-blocker"
-			}).append($("<div></div>", { class: "rocket-loading" })).appendTo(<JQuery<HTMLElement>> this.elemJq);
+			}).append($("<div></div>", { class: "rocket-loader" })).appendTo(<JQuery<HTMLElement>> this.elemJq);
 		}
 
 		private triggerChanged() {

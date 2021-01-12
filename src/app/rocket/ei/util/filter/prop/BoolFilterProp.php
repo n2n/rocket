@@ -25,7 +25,7 @@ use rocket\core\model\Rocket;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
 use n2n\l10n\Lstr;
 use n2n\persistence\orm\criteria\item\CriteriaProperty;
-use n2n\util\type\attrs\Attributes;
+use n2n\util\type\attrs\DataSet;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\impl\web\dispatch\mag\model\MagForm;
@@ -56,30 +56,30 @@ class BoolFilterProp implements SecurityFilterProp {
 		return (string) $this->labelLstr;
 	}
 	
-	private function readValue(Attributes $attributes): bool {
-		return (new LenientAttributeReader($attributes))->getBool(self::ATTR_VALUE_KEY, self::ATTR_VALUE_DEFAULT);
+	private function readValue(DataSet $dataSet): bool {
+		return (new LenientAttributeReader($dataSet))->getBool(self::ATTR_VALUE_KEY, self::ATTR_VALUE_DEFAULT);
 	}
 	
-	public function createMagDispatchable(Attributes $attributes): MagDispatchable {
+	public function createMagDispatchable(DataSet $dataSet): MagDispatchable {
 		$magCollection = new MagCollection();
-		$magCollection->addMag(self::ATTR_VALUE_KEY, new BoolMag($this->labelLstr, $this->readValue($attributes)));
+		$magCollection->addMag(self::ATTR_VALUE_KEY, new BoolMag($this->labelLstr, $this->readValue($dataSet)));
 		return new MagForm($magCollection);
 	}
 	
-	public function buildAttributes(MagDispatchable $magDispatchable): Attributes {
-		return new Attributes($magDispatchable->getMagCollection()->readValues());
+	public function buildDataSet(MagDispatchable $magDispatchable): DataSet {
+		return new DataSet($magDispatchable->getMagCollection()->readValues());
 	}
 	
 	/* (non-PHPdoc)
 	 * @see \rocket\ei\util\filter\prop\FilterProp::createComparatorConstraint()
 	 */
-	public function createComparatorConstraint(Attributes $attributes): ComparatorConstraint {
+	public function createComparatorConstraint(DataSet $dataSet): ComparatorConstraint {
 		return new PropertyValueComparatorConstraint($this->criteriaProperty, CriteriaComparator::OPERATOR_EQUAL,
-				CrIt::c($this->readValue($attributes)));
+				CrIt::c($this->readValue($dataSet)));
 	}
 	
-	public function createEiFieldConstraint(Attributes $attributes): EiFieldConstraint {
-		return new BoolEiFieldConstraint($this->labelLstr, $this->readValue($attributes)); 
+	public function createEiFieldConstraint(DataSet $dataSet): EiFieldConstraint {
+		return new BoolEiFieldConstraint($this->labelLstr, $this->readValue($dataSet)); 
 	}
 }
 

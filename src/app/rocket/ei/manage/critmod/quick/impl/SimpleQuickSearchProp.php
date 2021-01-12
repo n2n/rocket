@@ -39,7 +39,7 @@ class SimpleQuickSearchProp implements QuickSearchProp {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\critmod\quick\QuickSearchProp::createComparatorConstraint($queryStr)
 	 */
-	public function createComparatorConstraint(string $queryStr) {
+	public function buildComparatorConstraint(string $queryStr) {
 		return new SimpleComparatorConstraint($this->criteriaItem, $this->operator, CrIt::c($queryStr));
 	}
 }

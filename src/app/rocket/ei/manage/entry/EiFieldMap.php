@@ -14,7 +14,7 @@ class EiFieldMap {
 	 * @param EiPropPath $forkEiPropPath
 	 * @param object $object
 	 */
-	public function __construct(EiEntry $eiEntry, EiPropPath $forkEiPropPath, object $object) {
+	function __construct(EiEntry $eiEntry, EiPropPath $forkEiPropPath, object $object) {
 		$this->eiEntry = $eiEntry;
 		$this->forkEiPropPath = $forkEiPropPath;
 		$this->object = $object;
@@ -23,21 +23,21 @@ class EiFieldMap {
 	/**
 	 * @return \rocket\ei\manage\entry\EiEntry
 	 */
-	public function getEiEntry() {
+	function getEiEntry() {
 		return $this->eiEntry;
 	}
 	
 	/**
 	 * @return \rocket\ei\EiPropPath
 	 */
-	public function getForkEiPropPath() {
+	function getForkEiPropPath() {
 		return $this->forkEiPropPath;
 	}
 	
 	/**
 	 * @return object
 	 */
-	public function getObject() {
+	function getObject() {
 		return $this->object;
 	}
 	
@@ -45,14 +45,14 @@ class EiFieldMap {
 	 * @param EiPropPath $eiPropPath
 	 * @return bool
 	 */
-	public function containsId(string $id): bool {
+	function containsId(string $id): bool {
 		return isset($this->eiFieldWrappers[$id]);
 	}
 	
 	/**
 	 * @param EiPropPath $eiPropPath
 	 */
-	public function removeById(string $id) {
+	function removeById(string $id) {
 		unset($this->eiFieldWrappers[$id]);
 	}
 	
@@ -61,7 +61,7 @@ class EiFieldMap {
 	 * @param EiField $eiField
 	 * @return \rocket\ei\manage\entry\EiFieldWrapper
 	 */
-	public function put(string $id, EiField $eiField) {
+	function put(string $id, EiField $eiField) {
 		return $this->eiFieldWrappers[$id] = new EiFieldWrapper($this, $this->forkEiPropPath->ext($id), $eiField);
 	}
 	
@@ -70,7 +70,7 @@ class EiFieldMap {
 	 * @throws EiFieldOperationFailedException
 	 * @return EiField
 	 */
-	public function get(string $id) {
+	function get(string $id) {
 		return $this->getWrapper($id)->getEiField();
 	}
 	
@@ -79,7 +79,7 @@ class EiFieldMap {
 	 * @throws UnknownEiFieldExcpetion
 	 * @return EiFieldWrapper
 	 */
-	public function getWrapper(string $id) {
+	function getWrapper(string $id) {
 		if (isset($this->eiFieldWrappers[$id])) {
 			return $this->eiFieldWrappers[$id];
 		}
@@ -87,14 +87,14 @@ class EiFieldMap {
 		throw new UnknownEiFieldExcpetion('No EiField defined for id \'' . $id . '\'.');
 	}
 	
-	public function getWrappers() {
+	function getWrappers() {
 		return $this->eiFieldWrappers;
 	}
 	
 	/**
 	 * @return boolean
 	 */
-	public function isValid() {
+	function isValid() {
 		foreach ($this->eiFieldWrappers as $eiPropPathStr => $eiFieldWrapper) {
 			if ($eiFieldWrapper->isIgnored()) continue;
 			
@@ -109,20 +109,20 @@ class EiFieldMap {
 	/**
 	 * @param EiEntryValidationResult $eiEntryValidationResult
 	 */
-	public function validate(EiEntryValidationResult $eiEntryValidationResult) {
+	function validate(EiEntryValidationResult $eiEntryValidationResult) {
 		foreach ($this->eiFieldWrappers as $eiPropPathStr => $eiFieldWrapper) {
 			if ($eiFieldWrapper->isIgnored()) continue;
 			
-			$eiFieldWrapper->getEiField()->validate($eiEntryValidationResult->getEiFieldValidationResult(
+			$eiFieldWrapper->validate($eiEntryValidationResult->getEiFieldValidationResult(
 					EiPropPath::create($eiPropPathStr)));
 		}
 	}
 	
-	public function write() {
+	function write() {
 		foreach ($this->eiFieldWrappers as $eiPropPathStr => $eiFieldWrapper) {
 			if ($eiFieldWrapper->isIgnored()) continue;
 			
-			$eiFieldWrapper->getEiField()->write();
+			$eiFieldWrapper->write();
 		}
 	}
 	

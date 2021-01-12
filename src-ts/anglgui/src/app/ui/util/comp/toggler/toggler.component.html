@@ -1,0 +1,13 @@
+
+
+<div (click)="toggle()" class="d-flex align-items-center no-select">
+	<ng-container *ngIf="enabled">
+		<i class="{{ enabledIconClass }}"></i> 
+		<span *ngIf="labeled && enabledTextCode" class="ml-1">{{ enabledTextCode | translate }}</span>
+	</ng-container> 
+	
+	<ng-container *ngIf="!enabled">
+		<i class="{{ disabledIconClass }}"></i>
+		<span *ngIf="labeled && disabledTextCode" class="ml-1">{{ disabledTextCode | translate }}</span>
+	</ng-container> 
+</div>

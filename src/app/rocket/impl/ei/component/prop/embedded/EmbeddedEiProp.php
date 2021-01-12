@@ -21,30 +21,29 @@
  */
 namespace rocket\impl\ei\component\prop\embedded;
 
+use rocket\si\content\SiField;
 use rocket\impl\ei\component\prop\adapter\PropertyEiPropAdapter;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\EmbeddedEntityProperty;
 use n2n\util\type\ArgUtils;
 use rocket\ei\manage\entry\EiField;
 use rocket\ei\manage\gui\DisplayDefinition;
+use rocket\ei\manage\gui\GuiDefinition;
+use rocket\ei\manage\gui\GuiFieldMap;
+use rocket\ei\manage\gui\GuiPropSetup;
 use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\FieldEiProp;
 use n2n\reflection\ReflectionUtils;
 use n2n\web\dispatch\mag\Mag;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
-use n2n\impl\web\ui\view\html\HtmlView;
-use n2n\l10n\Lstr;
-use n2n\l10n\N2nLocale;
 use n2n\reflection\property\AccessProxy;
 use n2n\util\type\TypeConstraint;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\impl\ei\component\prop\adapter\config\EditConfig;
-use rocket\ei\manage\gui\GuiField;
+use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\component\prop\GuiEiProp;
-use rocket\ei\manage\gui\GuiFieldEditable;
-use rocket\ei\manage\gui\ui\DisplayItem;
 use rocket\ei\manage\gui\GuiProp;
-use rocket\ei\manage\gui\GuiFieldDisplayable;
+use n2n\util\ex\NotYetImplementedException;
+use rocket\si\meta\SiStructureType;
 
 class EmbeddedEiProp extends PropertyEiPropAdapter implements GuiEiProp, FieldEiProp {
 	private $sed;
@@ -54,6 +53,10 @@ class EmbeddedEiProp extends PropertyEiPropAdapter implements GuiEiProp, FieldEi
 	 */
 	private function getEditConfig() {
 		return $this->sed ?? $this->sed = new EditConfig();
+	}
+	
+	function prepare() {
+		$this->getConfigurator()->addAdaption($this->getEditConfig());
 	}
 	
 	/**
@@ -80,16 +83,7 @@ class EmbeddedEiProp extends PropertyEiPropAdapter implements GuiEiProp, FieldEi
 		parent::setObjectPropertyAccessProxy($accessProxy);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\PropertyEiPropAdapter::createEiPropConfigurator()
-	 */
-	public function createEiPropConfigurator(): EiPropConfigurator {
-		$eepc = new EmbeddedEiPropConfigurator($this);
-		$eepc->registerEditConfig($this->getEditConfig());
-		return $eepc;
-	}
-	
+
 	/**
 	 * @return boolean
 	 */
@@ -115,10 +109,6 @@ class EmbeddedEiProp extends PropertyEiPropAdapter implements GuiEiProp, FieldEi
 						->getEmbeddedEntityPropertyCollection()->getClass());
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\GuiEiPropFork::buildGuiPropFork()
-	 */
 	public function buildGuiProp(Eiu $eiu): ?GuiProp {
 		if (!$this->isMandatory()) {
 			return new EmbeddedGuiProp($this);
@@ -144,6 +134,7 @@ class EmbeddedEiProp extends PropertyEiPropAdapter implements GuiEiProp, FieldEi
 	public function buildEiField(Eiu $eiu): ?EiField {
 		return new EmbeddedEiField($eiu, $this);
 	}
+
 }
 
 class EmbeddedGuiProp implements GuiProp {
@@ -153,33 +144,36 @@ class EmbeddedGuiProp implements GuiProp {
 		$this->eiProp = $eiProp;
 	}
 	
-	public function isStringRepresentable(): bool {
-		return false;
+// 	public function isStringRepresentable(): bool {
+// 		return false;
+// 	}
+
+// 	public function getDisplayHelpTextLstr(): ?Lstr {
+// 		return null;
+// 	}
+
+// 	public function getDisplayLabelLstr(): Lstr {
+// 		return $this->eiProp->getLabelLstr();
+// 	}
+
+	public function buildDisplayDefinition($eiu): ?DisplayDefinition {
+		return new DisplayDefinition(SiStructureType::ITEM, true);
 	}
 
-	public function getDisplayHelpTextLstr(): ?Lstr {
-		return null;
-	}
-
-	public function getDisplayLabelLstr(): Lstr {
-		return $this->eiProp->getLabelLstr();
-	}
-
-	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
-		return new DisplayDefinition(DisplayItem::TYPE_ITEM, true);
-	}
-
-	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
-		return null;
-	}
-
-	public function buildGuiField(Eiu $eiu): ?GuiField {
+	public function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
 		return new EmbeddedGuiField($eiu, $this->eiProp);
+	}
+	
+	public function getForkGuiDefinition(): ?GuiDefinition {
+		return null;
+	}
+	public function buildGuiPropSetup(Eiu $eiu, ?array $defPropPaths): ?GuiPropSetup {
+		return null;
 	}
 }
 
 
-class EmbeddedGuiField implements GuiField, GuiFieldDisplayable, GuiFieldEditable {
+class EmbeddedGuiField implements GuiField {
 	private $eiu;
 	private $embeddedEiProp;
 	private $mag;
@@ -189,14 +183,6 @@ class EmbeddedGuiField implements GuiField, GuiFieldDisplayable, GuiFieldEditabl
 		$this->embeddedEiProp = $embeddedEiProp;
 	}
 	
-	public function getDisplayable(): GuiFieldDisplayable {
-		return $this;
-	}
-	
-	public function getEditable(): GuiFieldEditable {
-		return $this;
-	}
-
 	public function save() {
 		if (!$this->mag->getValue()) {
 			$this->eiu->field()->setValue(null);
@@ -204,10 +190,6 @@ class EmbeddedGuiField implements GuiField, GuiFieldDisplayable, GuiFieldEditabl
 		}
 		
 		$this->eiu->field()->setValue($this->eiu->entry()->fieldMap($this->embeddedEiProp));
-	}
-
-	public function getHtmlContainerAttrs(): array {
-		return [];
 	}
 
 	public function isReadOnly(): bool {
@@ -230,13 +212,27 @@ class EmbeddedGuiField implements GuiField, GuiFieldDisplayable, GuiFieldEditabl
 		return $this->mag;
 	}
 
-	public function createUiComponent(HtmlView $view) {
+	function createOutEifGuiField(Eiu $eiu): EifGuiField {
 		return null;
 	}
 
 	public function isMandatory(): bool {
 		return false;
 	}
+	
+	public function getSiField(): SiField {
+		throw new NotYetImplementedException();
+	}
+	
+	public function getContextSiFields(): array {
+		return [];
+	}
+
+	public function getForkGuiFieldMap(): ?GuiFieldMap {
+		return null;
+	}
+
+
 
 
 

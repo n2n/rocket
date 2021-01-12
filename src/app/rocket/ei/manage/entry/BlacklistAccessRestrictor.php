@@ -22,7 +22,7 @@
 // namespace rocket\ei\manage\entry;
 
 // use rocket\ei\component\command\EiCommand;
-// use rocket\ei\security\EiCommandAccessRestrictor;
+// use rocket\ei\manage\security\EiCommandAccessRestrictor;
 
 // class BlacklistEiCommandAccessRestrictor implements EiCommandAccessRestrictor {
 // 	private $blacklist = array();

@@ -31,9 +31,14 @@ interface ObjectPropertyConfigurable {
 // 	public function getPropertyName(): string;
 	
 	/**
-	 * @param AccessProxy $objectPropertyAccessProxy
+	 * @param AccessProxy|null $objectPropertyAccessProxy
 	 * @throws \InvalidArgumentException
 	 * @throws \n2n\reflection\property\ConstraintsConflictException
 	 */
 	public function setObjectPropertyAccessProxy(?AccessProxy $objectPropertyAccessProxy);
+	
+	/**
+	 * @return bool
+	 */
+	public function isObjectPropertyRequired(): bool;
 }

@@ -21,37 +21,35 @@
  */
 namespace rocket\impl\ei\component\prop\file\command;
 
-use rocket\impl\ei\component\command\EiCommandAdapter;
+use rocket\impl\ei\component\command\adapter\EiCommandAdapter;
 use n2n\l10n\N2nLocale;
 use n2n\l10n\DynamicTextCollection;
 use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\ei\manage\control\ControlButton;
-use rocket\ei\manage\control\IconType;
+use rocket\si\control\SiButton;
+use rocket\si\control\SiIconType;
 use rocket\impl\ei\component\prop\file\command\controller\MultiUploadEiController;
-use rocket\ei\component\command\control\OverallControlComponent;
 use rocket\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
-use rocket\ei\manage\control\HrefControl;
-use rocket\impl\ei\component\prop\file\FileEiProp;
 use rocket\ei\EiPropPath;
+use rocket\impl\ei\component\prop\file\conf\FileModel;
 
-class MultiUploadEiCommand extends EiCommandAdapter implements OverallControlComponent {
+class MultiUploadEiCommand extends EiCommandAdapter {
 	const MULTI_UPLOAD_KEY = 'multi-upload';
 	/**
 	 * @var \rocket\impl\ei\component\prop\file\FileEiProp
 	 */
-	private $fileEiProp;
+	private $fileModel;
 	private $namingEiPropPath;
 	
-	public function __construct(FileEiProp $fileEiProp, EiPropPath $namingEiPropPath = null, string $order = null) {
-		$this->fileEiProp = $fileEiProp;
+	public function __construct(FileModel $fileModel, EiPropPath $namingEiPropPath = null, string $order = null) {
+		$this->fileModel = $fileModel;
 		$this->namingEiPropPath = $namingEiPropPath;
 		$this->order = $order;
 	}
 
 	public function lookupController(Eiu $eiu): Controller {
 		$controller = new MultiUploadEiController();
-		$controller->setFileEiProp($this->fileEiProp);
+		$controller->setFileModel($this->fileModel);
 		$controller->setOrder($this->order);
 		return $controller;
 	}
@@ -69,6 +67,6 @@ class MultiUploadEiCommand extends EiCommandAdapter implements OverallControlCom
 		$tooltip = $dtc->translate('ei_impl_multi_upload_tooltip');
 		
 		return array(self::MULTI_UPLOAD_KEY => HrefControl::create($eiu->frame()->getEiFrame(), $this, null,
-				new ControlButton($name, $tooltip, true, ControlButton::TYPE_SECONDARY, IconType::ICON_UPLOAD)));
+				new SiButton($name, $tooltip, true, SiButton::TYPE_SECONDARY, SiIconType::ICON_UPLOAD)));
 	}
 }

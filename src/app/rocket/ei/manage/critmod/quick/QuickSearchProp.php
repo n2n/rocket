@@ -28,5 +28,5 @@ interface QuickSearchProp {
 	 * @param string $queryStr
 	 * @return ComparatorConstraint
 	 */
-	public function createComparatorConstraint(string $queryStr): ComparatorConstraint;
+	public function buildComparatorConstraint(string $queryStr): ?ComparatorConstraint;
 }

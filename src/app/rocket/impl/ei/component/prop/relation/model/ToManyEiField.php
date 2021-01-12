@@ -21,79 +21,188 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model;
 
-use rocket\impl\ei\component\prop\adapter\entry\CrwvEiField;
-use n2n\util\type\ArgUtils;
 use rocket\ei\manage\entry\EiFieldValidationResult;
-use n2n\util\ex\IllegalStateException;
-use rocket\impl\ei\component\prop\adapter\entry\Readable;
-use rocket\impl\ei\component\prop\adapter\entry\Writable;
 use rocket\ei\util\Eiu;
-use rocket\impl\ei\component\prop\adapter\entry\Copyable;
+use rocket\impl\ei\component\prop\adapter\entry\EiFieldAdapter;
+use rocket\impl\ei\component\prop\relation\conf\RelationModel;
+use rocket\impl\ei\component\prop\relation\RelationEiProp;
+use n2n\util\type\TypeConstraints;
+use rocket\ei\util\entry\EiuEntry;
+use n2n\validation\lang\ValidationMessages;
+use n2n\util\type\ArgUtils;
+use rocket\ei\util\frame\EiuFrame;
 
-class ToManyEiField extends CrwvEiField {
-	private $copyable = null;
+class ToManyEiField extends EiFieldAdapter {
+	/**
+	 * @var RelationModel
+	 */
+	private $relationModel;
+	/**
+	 * @var RelationEiProp
+	 */
+	private $eiProp;
+	/**
+	 * @var Eiu
+	 */
+	private $eiu;
+	/**
+	 * @var EiuFrame
+	 */
+	private $targetEiuFrame;
 	
-	public function __construct(Eiu $eiu, Readable $readable = null, Writable $writable = null, 
-			Copyable $copyable = null) {
-		parent::__construct(null, $eiu, $readable, $writable);
+	/**
+	 * @param Eiu $eiu
+	 * @param RelationEiProp $eiProp
+	 * @param RelationModel $relationModel
+	 */
+	function __construct(Eiu $eiu, EiuFrame $targetEiuFrame, RelationEiProp $eiProp, RelationModel $relationModel) {
+		parent::__construct(TypeConstraints::array(false, EiuEntry::class));
 		
-		$this->copyable = $copyable;
-	}	
-	
-	protected function checkValue($value) {
-		ArgUtils::valArray($value, RelationEntry::class);
-	}
-	
-	protected function readValue() {
-		$targetRelationEntries = array();
-		foreach (parent::readValue() as $targetEiObject) {
-			$targetRelationEntries[] = RelationEntry::from($targetEiObject);
-		}
-		return $targetRelationEntries;	
-	}
-	
-	protected function writeValue($value) {
-		$targetEiObjects = array();
-		foreach ($value as $targetRelationEntry) {
-			if ($targetRelationEntry->hasEiEntry()) {
-				$targetRelationEntry->getEiEntry()->write();
-			}
-			
-			$targetEiObjects[] = $targetRelationEntry->getEiObject();
-		}
-		
-		parent::writeValue($targetEiObjects);
-	}
-	
-
-	public function validateValue($value, EiFieldValidationResult $validationResult) {
-		if ($value === null) return;
-		
-		foreach ($value as $targetRelationEntry) {
-			IllegalStateException::assertTrue($targetRelationEntry instanceof RelationEntry);
-			if ($targetRelationEntry->hasEiEntry()) {
-				$targetRelationEntry->getEiEntry()->validate();
-				$validationResult->addSubEiEntryValidationResult($targetRelationEntry->getEiEntry()->getValidationResult());
-			}
-		}
+		$this->eiu = $eiu;
+		$this->targetEiuFrame = $targetEiuFrame;
+		$this->eiProp = $eiProp;
+		$this->relationModel = $relationModel;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\entry\EiField::copyEiField($eiObject)
+	 * @see \rocket\impl\ei\component\prop\adapter\entry\EiFieldAdapter::checkValue()
 	 */
-	public function copyEiField(Eiu $copyEiu) {
-		if ($this->copyable === null) return null;
+	protected function checkValue($value) {
+		ArgUtils::assertTrue(is_array($value));
+		foreach ($value as $eiuEntry) {
+			ArgUtils::assertTrue($eiuEntry instanceof EiuEntry);
+			if (!$this->relationModel->getTargetEiuEngine()->type()->matches($eiuEntry)) {
+				return false;
+			}
+		}
 		
-		$copy = new ToManyEiField($copyEiu, $this->readable, $this->writable, 
-				$this->copyable);
-		$copy->setValue($this->copyable->copy($this->eiu, $this->getValue(), $copyEiu));
-		return $copy;
+		return true; 
 	}
 	
-	public function copyValue(Eiu $copyEiu) {
-		if ($this->copyable === null) return null;
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\adapter\entry\EiFieldAdapter::readValue()
+	 */
+	protected function readValue() {
+		$targetEntityObjs = $this->eiu->object()->readNativValue($this->eiProp);
 		
-		return $this->copyable->copy($this->eiFieldMap, $this->getValue(), $copyEiu);
+		if ($targetEntityObjs === null) {
+			return [];
+		}
+		
+		$value = [];
+		foreach ($targetEntityObjs as $key => $targetEntityObj) {
+			$value[$key] = $this->targetEiuFrame->entry($targetEntityObj);
+		}
+		return $value;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\adapter\entry\EiFieldAdapter::isValueValid()
+	 */
+	protected function isValueValid($value) {
+		ArgUtils::assertTrue(is_array($value));
+		
+		$min = $this->relationModel->getMin();
+		$max = $this->relationModel->getMax();
+		
+		if (!(null === $max || count($value) <= $max) && (null === $min || count($value) >= $min)) {
+			return false;
+		}
+		
+		if (!$this->relationModel->isEmbedded() && !$this->relationModel->isIntegrated()) {
+			return true;
+		}
+		
+		foreach ($value as $targetEiuEntry) {
+			ArgUtils::assertTrue($targetEiuEntry instanceof EiuEntry);
+			
+			if (!$targetEiuEntry->isValid()) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\adapter\entry\EiFieldAdapter::validateValue()
+	 */
+	protected function validateValue($value, EiFieldValidationResult $validationResult) {
+		$min = $this->relationModel->getMin();
+		if ($min !== null && $min > count($value)) {
+			$validationResult->addError(ValidationMessages::minElements($min, $this->eiu->prop()->getLabel()));
+		}
+		
+		$max = $this->relationModel->getMax();
+		if ($max !== null && $max < count($value)) {
+			$validationResult->addError(ValidationMessages::maxElements($max, $this->eiu->prop()->getLabel()));
+		}
+		
+		foreach ($value as $targetEiuEntry) {
+			ArgUtils::assertTrue($targetEiuEntry instanceof EiuEntry);
+			$targetEiuEntry->getEiEntry()->validate();
+			$validationResult->addSubEiEntryValidationResult($targetEiuEntry->getEiEntry()->getValidationResult());
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\entry\EiField::isWritable()
+	 */
+	public function isWritable(): bool {
+		return $this->eiu->object()->isNativeWritable($this->eiProp);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\adapter\entry\EiFieldAdapter::writeValue()
+	 */
+	protected function writeValue($values) {
+		ArgUtils::assertTrue(is_array($values));
+		
+		$nativeValues = new \ArrayObject();
+		foreach ($values as $value) {
+			ArgUtils::assertTrue($value instanceof EiuEntry);
+			$nativeValues->append($value->getEntityObj());
+			
+			if ($this->relationModel->isEmbedded() || $this->relationModel->isIntegrated()) {
+				$value->getEiEntry()->write();
+			}
+		}
+		
+		$this->eiu->object()->writeNativeValue($this->eiProp, $nativeValues);		
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\entry\EiField::isCopyable()
+	 */
+	public function isCopyable(): bool {
+		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\entry\EiField::copyValue()
+	 */
+	public function copyValue(Eiu $copyEiu) {
+		$targetEiuEntries = $this->getValue();
+		
+		if (empty($targetEiuEntries)) return [];
+		
+		if ($this->relationModel->isSourceMany() && !$this->relationModel->isEmbedded() 
+				&& !$this->relationModel->isIntegrated()) {
+			return $targetEiuEntries;
+		}
+		
+		$copiedValues = [];
+		foreach ($targetEiuEntries as $key => $targetEiuEntry) {
+			$copiedValues[$key] = $targetEiuEntry->copy();	
+		}
+		return $copiedValues;
 	}
 }

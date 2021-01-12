@@ -26,6 +26,7 @@ class EiPropExtraction extends EiComponentExtraction {
 	private $objectPropertyName;
 	private $entityPropertyName;
 	private $forkedEiPropExtractions = array();
+	private $initCascades = [];
 
 	/**
 	 * @return string|null

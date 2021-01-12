@@ -145,7 +145,7 @@
 }
 
 // translation in entry
-.rocket-item > .rocket-control > .rocket-impl-translatable > .rocket-impl-translation {
+.rocket-item > .rocket-structure-content > .rocket-impl-translatable > .rocket-impl-translation {
 	position: relative;
 	display: grid;
 	grid-template-columns:  1fr auto;
@@ -169,7 +169,7 @@
 	> .rocket-field {
 		padding: 0;
 		
-		> .rocket-control {
+		> .rocket-structure-content {
 			margin: 0;
 		}
 	}
@@ -180,7 +180,7 @@
 
 .rocket-group,
 .rocket-panel {
-	> .rocket-control > .rocket-impl-translatable > .rocket-impl-translation   {
+	> .rocket-structure-content > .rocket-impl-translatable > .rocket-impl-translation   {
 		> .rocket-impl-translation-copy-control {
 			position: absolute;
 			top: 2.5rem;
@@ -261,13 +261,13 @@ td {
 			border: none;
 			margin: 0;
 		}
-		> .rocket-control {
+		> .rocket-structure-content {
 			grid-row-start: 1;
 			grid-column-start: 1;
 			grid-column-end: 2;
 			padding: 0;
 		}
-		> .rocket-control:not(:empty) {
+		> .rocket-structure-content:not(:empty) {
 			padding: 0 0.5rem 0 0;			
 		}
 

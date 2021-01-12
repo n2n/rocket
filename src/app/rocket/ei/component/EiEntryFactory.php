@@ -26,7 +26,6 @@ use n2n\util\type\ArgUtils;
 use rocket\ei\manage\EiObject;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\component\modificator\EiModificatorCollection;
-use rocket\ei\security\InaccessibleEntryException;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\EiPropPath;
 use rocket\ei\component\prop\FieldEiProp;
@@ -34,6 +33,7 @@ use rocket\ei\manage\entry\EiField;
 use rocket\ei\util\Eiu;
 use rocket\ei\mask\EiMask;
 use rocket\ei\manage\entry\EiFieldMap;
+use rocket\ei\manage\security\InaccessibleEiEntryException;
 
 class EiEntryFactory {
 	private $eiMask;
@@ -72,7 +72,7 @@ class EiEntryFactory {
 	/**
 	 * @param EiFrame $eiFrame
 	 * @param EiObject $eiObject
-	 * @throws InaccessibleEntryException
+	 * @throws InaccessibleEiEntryException
 	 * @return \rocket\ei\manage\entry\EiEntry
 	 */
 	public function createEiEntry(EiFrame $eiFrame, EiObject $eiObject, ?EiEntry $copyFrom, array $eiEntryConstraints) {
@@ -175,7 +175,7 @@ class EiEntryFactory {
 	private function copyAllValues(EiFrame $eiFrame, EiEntry $fromEiEntry, EiEntry $toEiEntry) {
 		$eiu = new Eiu($eiFrame, $toEiEntry);
 		
-		foreach ($this->eiPropCollection as $id => $eiProp) {
+		foreach ($this->eiPropCollection as $eiProp) {
 			$eiPropPath = EiPropPath::from($eiProp);
 			
 			if (!$fromEiEntry->containsEiField($eiPropPath)|| !$toEiEntry->containsEiField($eiPropPath)) {
@@ -204,7 +204,7 @@ class EiEntryFactory {
 	private function copySpecificValues(EiFrame $eiFrame, EiEntry $fromEiEntry, EiEntry $toEiEntry, array $eiPropPaths) {
 		$eiu = new Eiu($eiFrame, $toEiEntry);
 		
-		foreach ($eiPropPaths as $id => $eiPropPath) {
+		foreach ($eiPropPaths as $eiPropPath) {
 			if (!$this->eiPropCollection->containsId($eiPropPath->getFirstId())
 					|| !$fromEiEntry->containsEiField($eiPropPath)
 					|| !$toEiEntry->containsEiField($eiPropPath)) {
@@ -212,7 +212,9 @@ class EiEntryFactory {
 			}
 			
 			$eiProp = $this->eiPropCollection->getByPath($eiPropPath);
-			if (!($eiProp instanceof FieldEiProp)) continue;
+			if (!($eiProp instanceof FieldEiProp)) {
+				continue;
+			}
 			
 			$fromEiField = $fromEiEntry->getEiField($eiPropPath);
 			$copy = $fromEiField->copyEiField(new Eiu($eiu, $eiProp));

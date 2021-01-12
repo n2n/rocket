@@ -24,15 +24,16 @@ namespace rocket\impl\ei\component\prop\string\cke\model;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\context\Lookupable;
 use n2n\util\uri\Url;
+use rocket\ei\util\Eiu;
 
 interface CkeCssConfig extends Lookupable {
 	
-	/**
-	 * Urls to css files which get added in the head section of the wysiwyg iframe
-	 * @param HtmlView $view
-	 * @return Url []
-	 */
-	public function getContentCssUrls(HtmlView $view): ?array;
+// 	/**
+// 	 * Urls to css files which get added in the head section of the wysiwyg iframe
+// 	 * @param HtmlView $view
+// 	 * @return Url[]
+// 	 */
+// 	public function getContentCssUrls(Eiu $eiu): ?array;
 	
 	/**
 	 * Id for the wysiwig iframe body
@@ -45,6 +46,8 @@ interface CkeCssConfig extends Lookupable {
 	 * @return string|NULL
 	 */
 	public function getBodyClass(): ?string;
+	
+// 	function getStyles(): array;
 	
 	/**
 	 * @return \rocket\impl\ei\component\prop\string\cke\model\CkeStyle[]

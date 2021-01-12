@@ -28,7 +28,7 @@ use n2n\core\container\N2nContext;
 interface EiPropConfigurator extends EiConfigurator {
 	
 	/**
-	 * This method assigns proper default attributes to the EiPropConfigurator. It gets called when the developer adds 
+	 * This method assigns proper default dataSet to the EiPropConfigurator. It gets called when the developer adds 
 	 * new EiProp of the particular type.
 	 * 
 	 * EiThing is already assigned when this method gets called.

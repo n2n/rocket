@@ -25,9 +25,11 @@ use rocket\ei\manage\critmod\filter\FilterDefinition;
 use rocket\ei\mask\EiMask;
 use rocket\ei\manage\critmod\sort\SortDefinition;
 use rocket\ei\manage\security\filter\SecurityFilterDefinition;
-use rocket\ei\manage\security\privilege\PrivilegeDefinition;
 use rocket\ei\manage\draft\DraftDefinition;
+use rocket\ei\manage\idname\IdNameDefinition;
 use rocket\ei\manage\gui\GuiDefinition;
+use rocket\ei\component\EiComponentCollection;
+use rocket\ei\manage\critmod\quick\QuickSearchDefinition;
 
 class ManagedDef {
 	
@@ -38,9 +40,79 @@ class ManagedDef {
 	}
 	
 	/**
+	 * @var QuickSearchDefinition[]
+	 */
+	private $quickSearchDefinitions = array();
+	
+	/**
 	 * @var FilterDefinition[]
 	 */
 	private $filterDefinitions = array();
+	
+	/**
+	 * @var SortDefinition[]
+	 */
+	private $sortDefinitions = array();
+	
+	/**
+	 * @var SecurityFilterDefinition[]
+	 */
+	private $securityFilterDefinitions = array();
+	
+	/**
+	 * @var GuiDefinition[]
+	 */
+	private $guiDefinitions = array();
+	
+	/**
+	 * @var IdNameDefinition[]
+	 */
+	private $idNameDefinitions = array();
+	
+	/**
+	 * @param EiMask $eiMask
+	 */
+	private function registerListeners($eiMask) {
+		$eiMask->getEiPropCollection()->registerListener($this);
+		$eiMask->getEiCommandCollection()->registerListener($this);
+		$eiMask->getEiModificatorCollection()->registerListener($this);
+	}
+	
+	/**
+	 * @param EiMask $eiMask
+	 */
+	private function unregisterListeners($eiMask) {
+		$eiMask->getEiPropCollection()->unregisterListener($this);
+		$eiMask->getEiCommandCollection()->unregisterListener($this);
+		$eiMask->getEiModificatorCollection()->unregisterListener($this);
+	}
+	
+	function eiComponentCollectionChanged(EiComponentCollection $collection) {
+		$eiMask = $collection->getEiMask();
+		$this->unregisterListeners($eiMask);
+		
+		$eiTypePathStr = $eiMask->getEiTypePath();
+		unset($this->filterDefinitions[$eiTypePathStr]);
+		unset($this->sortDefinitions[$eiTypePathStr]);
+		unset($this->securityFilterDefinitions[$eiTypePathStr]);
+		unset($this->guiDefinitions[$eiTypePathStr]);
+		unset($this->idNameDefinitions[$eiTypePathStr]);
+	}
+		
+	/**
+	 * @param EiMask $eiMask
+	 * @return QuickSearchDefinition
+	 */
+	public function getQuickSearchDefinition(EiMask $eiMask) {
+		$eiTypePathStr = (string) $eiMask->getEiTypePath();
+		
+		if (!isset($this->quickSearchDefinitions[$eiTypePathStr])) {
+			$this->quickSearchDefinitions[$eiTypePathStr] = $eiMask->getEiEngine()
+					->createQuickSearchDefinition($this->manageState->getN2nContext());
+		}
+		
+		return $this->quickSearchDefinitions[$eiTypePathStr];
+	}
 	
 	/**
 	 * @param EiMask $eiMask
@@ -52,16 +124,14 @@ class ManagedDef {
 		if (!isset($this->filterDefinitions[$eiTypePathStr])) {
 			$this->filterDefinitions[$eiTypePathStr] = $eiMask->getEiEngine()
 					->createFilterDefinition($this->manageState->getN2nContext());
+			
+			$this->registerListeners($this);
 		}
 		
 		return $this->filterDefinitions[$eiTypePathStr];
 	}
 	
 	
-	/**
-	 * @var SortDefinition[]
-	 */
-	private $sortDefinitions = array();
 	
 	/**
 	 * @param EiMask $eiMask
@@ -79,11 +149,6 @@ class ManagedDef {
 	}
 	
 	/**
-	 * @var SecurityFilterDefinition[]
-	 */
-	private $securityFilterDefinitions = array();
-	
-	/**
 	 * @param EiMask $eiMask
 	 * @return SecurityFilterDefinition
 	 */
@@ -99,30 +164,26 @@ class ManagedDef {
 	}
 	
 	
-	/**
-	 * @var PrivilegeDefinition[]
-	 */
-	private $privilegeDefinitions = array();
+// 	/**
+// 	 * @var PrivilegeDefinition[]
+// 	 */
+// 	private $privilegeDefinitions = array();
 	
-	/**
-	 * @param EiMask $eiMask
-	 * @return PrivilegeDefinition
-	 */
-	public function getPrivilegeDefinition(EiMask $eiMask) {
-		$eiTypePathStr = (string) $eiMask->getEiTypePath();
+// 	/**
+// 	 * @param EiMask $eiMask
+// 	 * @return PrivilegeDefinition
+// 	 */
+// 	public function getPrivilegeDefinition(EiMask $eiMask) {
+// 		$eiTypePathStr = (string) $eiMask->getEiTypePath();
 		
-		if (!isset($this->privilegeDefinitions[$eiTypePathStr])) {
-			$this->privilegeDefinitions[$eiTypePathStr] = $eiMask->getEiEngine()
-					->createPrivilegeDefinition($this->manageState->getN2nContext());
-		}
+// 		if (!isset($this->privilegeDefinitions[$eiTypePathStr])) {
+// 			$this->privilegeDefinitions[$eiTypePathStr] = $eiMask->getEiEngine()
+// 					->createPrivilegeDefinition($this->manageState->getN2nContext());
+// 		}
 		
-		return $this->privilegeDefinitions[$eiTypePathStr];
-	}
+// 		return $this->privilegeDefinitions[$eiTypePathStr];
+// 	}
 	
-	/**
-	 * @var GuiDefinition[]
-	 */
-	private $guiDefinitions = array();
 	
 	/**
 	 * @param EiMask $eiMask
@@ -132,11 +193,27 @@ class ManagedDef {
 		$eiTypePathStr = (string) $eiMask->getEiTypePath();
 		
 		if (!isset($this->guiDefinitions[$eiTypePathStr])) {
-			$eiMask->getEiEngine()
-					->createGuiDefinition($this->manageState->getN2nContext(), $this->guiDefinitions[$eiTypePathStr]);
+			$this->guiDefinitions[$eiTypePathStr] = $eiMask->getEiEngine()
+					->createGuiDefinition($this->manageState->getN2nContext());
 		}
 		
 		return $this->guiDefinitions[$eiTypePathStr];
+	}
+	
+	
+	/**
+	 * @param EiMask $eiMask
+	 * @return IdNameDefinition
+	 */
+	public function getIdNameDefinition(EiMask $eiMask) {
+		$eiTypePathStr = (string) $eiMask->getEiTypePath();
+		
+		if (!isset($this->idNameDefinitions[$eiTypePathStr])) {
+			$this->idNameDefinitions[$eiTypePathStr] = $eiMask->getEiEngine()
+					->createIdNameDefinition($this->manageState->getN2nContext());
+		}
+		
+		return $this->idNameDefinitions[$eiTypePathStr];
 	}
 	
 	/**

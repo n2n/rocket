@@ -78,7 +78,7 @@ class EiuPrivilegeForm implements Dispatchable, UiComponent {
 	function setSetting(PrivilegeSetting $privilegeSetting) {
 		$this->privilegeSetting = $privilegeSetting;
 		$this->eiPropMagForm = new MagForm($this->privilegeDefinition->createEiPropPrivilegeMagCollection(
-				$privilegeSetting->getEiPropAttributes()));
+				$privilegeSetting->getEiPropDataSet()));
 	}
 	
 	/**
@@ -117,8 +117,8 @@ class EiuPrivilegeForm implements Dispatchable, UiComponent {
 	function setEiPropMagForm(MagForm $magForm) {
 		$this->eiPropMagForm = $magForm;
 		
-		$this->privilegeSetting->setEiPropAttributes(
-				$this->privilegeDefinition->buildEiPropPrivilegeAttributes(
+		$this->privilegeSetting->setEiPropDataSet(
+				$this->privilegeDefinition->buildEiPropPrivilegeDataSet(
 						$magForm->getMagCollection()));
 	}
 	

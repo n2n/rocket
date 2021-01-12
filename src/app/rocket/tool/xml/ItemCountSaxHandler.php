@@ -25,7 +25,7 @@ class ItemCountSaxHandler implements SaxHandler {
 	private $level = 0;
 	private $number = 0;
 
-	public function startElement($tagName, array $attributes) {
+	public function startElement($tagName, array $dataSet) {
 		$this->level++;
 		if ($this->level == 2 && $tagName == 'item') {
 			$this->number++;

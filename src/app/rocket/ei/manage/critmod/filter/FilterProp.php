@@ -21,7 +21,7 @@
  */
 namespace rocket\ei\manage\critmod\filter;
 
-use n2n\util\type\attrs\Attributes;
+use n2n\util\type\attrs\DataSet;
 use n2n\web\dispatch\mag\MagDispatchable;
 
 interface FilterProp {
@@ -32,20 +32,20 @@ interface FilterProp {
 	function getLabel(): string;
 	
 	/**
-	 * @param Attributes $attributes
+	 * @param DataSet $dataSet
 	 * @return ComparatorConstraint
 	 */
-	function createComparatorConstraint(Attributes $attributes): ComparatorConstraint;
+	function createComparatorConstraint(DataSet $dataSet): ComparatorConstraint;
 	
 	/**
-	 * @param Attributes $attributes
+	 * @param DataSet $dataSet
 	 * @return MagDispatchable
 	 */
-	function createMagDispatchable(Attributes $attributes): MagDispatchable;
+	function createMagDispatchable(DataSet $dataSet): MagDispatchable;
 	
 	/**
 	 * @param MagDispatchable $magDispatchable
-	 * @return Attributes
+	 * @return DataSet
 	 */
-	function buildAttributes(MagDispatchable $magDispatchable): Attributes;
+	function buildDataSet(MagDispatchable $magDispatchable): DataSet;
 }

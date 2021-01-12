@@ -11,7 +11,10 @@
         ".vscode/**",
         "**/font-awesome/**",
          "**/n2nutil-bootstrap/**",
-         "**/hangar/**"
+         "**/hangar/**",
+         "**/bootstrap/**",
+         "**/theme-20/**",
+         "**/theme-30/tag.scss"
     ],
     "liveSassCompile.settings.autoprefix": [
         "> 1%",

@@ -23,7 +23,6 @@ namespace rocket\impl\ei\component\prop\l10n;
 
 use n2n\l10n\IllegalN2nLocaleFormatException;
 use n2n\l10n\N2nLocale;
-use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\util\type\ValueIncompatibleWithConstraintsException;
 use rocket\ei\component\prop\FilterableEiProp;
@@ -48,9 +47,13 @@ use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\sort\SortProp;
 use rocket\ei\manage\generic\GenericEiProperty;
 use rocket\ei\manage\generic\ScalarEiProperty;
+use rocket\si\content\SiField;
+use rocket\ei\manage\idname\IdNameProp;
+use rocket\ei\component\prop\IdNameEiProp;
+use rocket\ei\util\factory\EifGuiField;
 
 class N2nLocaleEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiProp, SortableEiProp, GenericEiProp,
-		ScalarEiProp {
+		ScalarEiProp, IdNameEiProp {
 	private $definedN2nLocales;
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {
@@ -72,7 +75,7 @@ class N2nLocaleEiProp extends DraftablePropertyEiPropAdapter implements Filterab
 		$this->definedN2nLocales = $definedN2nLocales;
 	}
 
-	public function createUiComponent(HtmlView $view, Eiu $eiu)  {
+	public function createOutEifGuiField(Eiu $eiu): EifGuiField  {
 		$value = $eiu->entry()->getValue($this);
 		if ($value === null) return null;
 		
@@ -80,7 +83,7 @@ class N2nLocaleEiProp extends DraftablePropertyEiPropAdapter implements Filterab
 		return $this->generateDisplayNameForN2nLocale($n2nLocale, $view->getN2nContext()->getN2nLocale());
 	}
 
-	public function createMag(Eiu $eiu): Mag {
+	public function createInEifGuiField(Eiu $eiu): EifGuiField {
 		return new EnumMag($this->getLabelLstr(), 
 				$this->buildN2nLocaleOptions($eiu->lookup(WebConfig::class), $eiu->frame()->getN2nLocale()), 
 				null, $this->isMandatory($eiu));
@@ -96,21 +99,28 @@ class N2nLocaleEiProp extends DraftablePropertyEiPropAdapter implements Filterab
 		}
 	}
 	
-// 	public function optionAttributeValueToPropertyValue(Attributes $attributes, 
+// 	public function optionAttributeValueToPropertyValue(DataSet $dataSet, 
 // 			EiEntry $eiEntry, Eiu $eiu) {
-// 		$eiEntry->setValue($this->id, N2nLocale::create($attributes->get($this->id)));
+// 		$eiEntry->setValue($this->id, N2nLocale::create($dataSet->get($this->id)));
 // 	}
 	
 // 	public function propertyValueToOptionAttributeValue(EiEntry $eiEntry, 
-// 			Attributes $attributes, Eiu $eiu) {
+// 			DataSet $dataSet, Eiu $eiu) {
 // 		$propertyValue = $eiEntry->getValue(EiPropPath::from($this));
 // 		$attributeValue = null;
 // 		if ($propertyValue instanceof N2nLocale) {
 // 			$attributeValue = $propertyValue->getId(); 
 // 		}
-// 		$attributes->set($this->id, $attributeValue);
+// 		$dataSet->set($this->id, $attributeValue);
 // 	}
 
+	
+	function buildIdNameProp(Eiu $eiu): ?IdNameProp {
+		return $eiu->factory()->newIdNameProp(function (Eiu $eiu) {
+			return $this->buildIdentityString($eiu);
+		})->toIdNameProp();
+	}
+	
 	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
 		$value = $eiu->object()->readNativValue($this);
 		
@@ -120,6 +130,7 @@ class N2nLocaleEiProp extends DraftablePropertyEiPropAdapter implements Filterab
 		
 		return $this->generateDisplayNameForN2nLocale(N2nLocale::create($value), $n2nLocale);
 	}
+	
 
 	public function isCompatibleWith(EntityProperty $entityProperty) {
 		return $entityProperty instanceof N2nLocaleEntityProperty;
@@ -189,4 +200,10 @@ class N2nLocaleEiProp extends DraftablePropertyEiPropAdapter implements Filterab
 					}
 				});
 	}
+	protected function prepare() {
+	}
+
+	public function saveSiField(SiField $siField, Eiu $eiu) {
+	}
+
 }

@@ -32,13 +32,16 @@ use rocket\ei\util\Eiu;
 use rocket\ei\EiPropPath;
 use n2n\l10n\N2nLocale;
 use rocket\ei\component\UnknownEiComponentException;
+use rocket\si\meta\SiMaskQualifier;
+use rocket\ei\EiType;
 
 class EiuMask  {
 	private $eiMask;
+	private $eiuType;
 	private $eiuEngine;
 	private $eiuAnalyst;
 	
-	public function __construct(EiMask $eiMask, EiuEngine $eiuEngine = null, EiuAnalyst $eiuAnalyst = null) {
+	public function __construct(EiMask $eiMask, ?EiuEngine $eiuEngine, EiuAnalyst $eiuAnalyst) {
 		$this->eiMask = $eiMask;
 		$this->eiuEngine = $eiuEngine;
 		$this->eiuAnalyst = $eiuAnalyst;
@@ -52,10 +55,21 @@ class EiuMask  {
 	}
 	
 	/**
-	 * @return \rocket\ei\EiType
+	 * @return \rocket\spec\TypePath
 	 */
-	public function getEiType() {
-		return $this->eiMask->getEiType();
+	function getEiTypePath() {
+		return $this->eiMask->getEiTypePath();
+	}
+	
+	/**
+	 * @return \rocket\ei\util\spec\EiuType
+	 */
+	function type() {
+		if ($this->eiuType === null) {
+			$this->eiuType = new EiuType($this->eiMask->getEiType(), $this->eiuAnalyst);
+		}
+		
+		return $this->eiuType;
 	}
 	
 	/**
@@ -68,8 +82,13 @@ class EiuMask  {
 	/**
 	 * @return string
 	 */
-	public function getLabel() {
-		return (string) $this->eiMask->getLabelLstr();
+	public function getLabel(N2nLocale $n2nLocale = null) {
+		return $this->eiMask->getLabelLstr()->t($n2nLocale ?? $this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
+	}
+	
+	public function getPluralLabel(N2nLocale $n2nLocale = null) {
+		return $this->eiMask->getPluralLabelLstr()
+				->t($n2nLocale ?? $this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
 	}
 	
 	/**
@@ -80,8 +99,40 @@ class EiuMask  {
 			return $this;
 		}
 		
-		return new EiuMask($this->eiMask->getEiType()->getSupremeEiType()->getEiMask(),
+		return new EiuMask($this->eiMask->determineEiMask($this->eiMask->getEiType()->getSupremeEiType(), true),
 				null, $this->eiuAnalyst);
+	}
+	
+	/**
+	 * @param string[]|null $allowedSubEiTypeIds
+	 * @param bool $includeAbstractTypes
+	 * @return \rocket\ei\util\spec\EiuMask[]
+	 */
+	public function possibleMasks(array $allowedSubEiTypeIds = null, bool $includeAbstractTypes = false) {
+		$eiuMasks = [];
+		
+		if ($this->eiTypeMatches($this->eiMask->getEiType(), $allowedSubEiTypeIds, $includeAbstractTypes)) {
+			$eiuMasks[] = $this;
+		}
+		
+		foreach ($this->eiMask->getEiType()->getAllSubEiTypes() as $subEiType) {
+			if ($this->eiTypeMatches($subEiType, $allowedSubEiTypeIds, $includeAbstractTypes)) {
+				$eiuMasks[] = new EiuMask($this->eiMask->determineEiMask($subEiType), null, $this->eiuAnalyst);
+			}
+		}
+		
+		return $eiuMasks;
+	}
+	
+	/**
+	 * @param EiType $eiType
+	 * @param string[]|null $allowedSubEiTypeIds
+	 * @param bool $includeAbstractTypes
+	 * @return boolean
+	 */
+	private function eiTypeMatches($eiType, $allowedSubEiTypeIds, $includeAbstractTypes) {
+		return ($includeAbstractTypes || !$eiType->isAbstract())
+				&& ($allowedSubEiTypeIds === null || in_array($eiType->getId(), $allowedSubEiTypeIds));
 	}
 	
 // 	public function extensionMasks() {
@@ -148,6 +199,17 @@ class EiuMask  {
 				->t($n2nLocale ?? $this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
 	}
 	
+	public function getPropHelpText($eiPropPath, N2nLocale $n2nLocale = null) {
+		$helpTextLstr = $this->eiMask->getEiPropCollection()->getByPath(EiPropPath::create($eiPropPath))
+				->getHelpTextLstr();
+		
+		if ($helpTextLstr === null) {
+			return null;
+		}
+				
+		return $helpTextLstr->t($n2nLocale ?? $this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
+	}
+	
 	public function containsEiProp($eiPropPath) {
 		return $this->eiEngine->getEiMask()->getEiPropCollection()->containsId(EiPropPath::create($eiPropPath));
 	}
@@ -180,12 +242,19 @@ class EiuMask  {
 	
 	public function onEngineReady(\Closure $readyCallback) {
 		if ($this->eiMask->hasEiEngine()) {
-			$readyCallback(new Eiu($this->n2nContext, $this));
+			$readyCallback($this->engine());
 		}
 		
 		$that = $this;
 		$this->eiMask->onEiEngineSetup(function () use ($readyCallback, $that) {
 			$readyCallback($that->engine());
 		});
+	}
+	
+	/**
+	 * @return SiMaskQualifier
+	 */
+	public function createSiMaskQualifier(N2nLocale $n2nLocale = null) {
+		return $this->eiMask->createSiMaskQualifier($n2nLocale ?? $this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
 	}
 }

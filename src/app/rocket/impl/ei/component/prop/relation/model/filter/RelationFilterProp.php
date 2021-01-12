@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model\filter;
 
-use n2n\util\type\attrs\Attributes;
+use n2n\util\type\attrs\DataSet;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use rocket\ei\util\frame\EiuFrame;
@@ -37,7 +37,6 @@ use n2n\util\type\attrs\AttributesException;
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\filter\FilterDefinition;
 use rocket\ei\util\filter\controller\FilterJhtmlHook;
-use rocket\impl\ei\component\prop\relation\TargetFilterDef;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\ei\manage\critmod\filter\ComparatorConstraintGroup;
@@ -70,8 +69,8 @@ class RelationFilterProp implements FilterProp {
 		return (string) $this->labelLstr;
 	}
 	
-	public function createComparatorConstraint(Attributes $attributes): ComparatorConstraint {
-		$relationFilterConf = new RelationFilterConf($attributes);
+	public function createComparatorConstraint(DataSet $dataSet): ComparatorConstraint {
+		$relationFilterConf = new RelationFilterConf($dataSet);
 		
 		$operator = $relationFilterConf->getOperator();
 		switch ($operator) {
@@ -111,11 +110,11 @@ class RelationFilterProp implements FilterProp {
 		return $targetEntityObjs;
 	}
 
-	public function createMagDispatchable(Attributes $attributes): MagDispatchable {
+	public function createMagDispatchable(DataSet $dataSet): MagDispatchable {
 		$form = new RelationFilterMagForm($this->entityProperty->isToMany(), $this->targetEiuFrame, 
 				$this->targetFilterDef->getFilterDefinition(), $this->targetFilterDef->getFilterJhtmlHook(), 
 				$this->targetSelectUrlCallback);
-		$relationFilterConf = new RelationFilterConf($attributes);
+		$relationFilterConf = new RelationFilterConf($dataSet);
 		
 		$form->getOperatorMag()->setValue($relationFilterConf->getOperator());
 		
@@ -136,10 +135,10 @@ class RelationFilterProp implements FilterProp {
 		return $form;
 	}
 	
-	public function buildAttributes(MagDispatchable $form): Attributes {
+	public function buildDataSet(MagDispatchable $form): DataSet {
 		ArgUtils::assertTrue($form instanceof RelationFilterMagForm);
 		
-		$relationFilterConf = new RelationFilterConf(new Attributes());
+		$relationFilterConf = new RelationFilterConf(new DataSet());
 		
 		$relationFilterConf->setOperator($form->getOperatorMag()->getValue());
 		
@@ -149,16 +148,16 @@ class RelationFilterProp implements FilterProp {
 		}
 		$relationFilterConf->setTargetPids($targetPids);	
 		
-		return $relationFilterConf->getAttributes();
+		return $relationFilterConf->getDataSet();
 	}
 	
 	/**
 	 * 
-	 * @param Attributes $attributes
+	 * @param DataSet $dataSet
 	 * @return EiFieldConstraint
 	 */
-	public function createEiFieldConstraint(Attributes $attributes) {
-		$relationFilterConf = new RelationFilterConf(new Attributes());
+	public function createEiFieldConstraint(DataSet $dataSet) {
+		$relationFilterConf = new RelationFilterConf(new DataSet());
 		
 		$operator = $relationFilterConf->getOperator();
 		switch ($operator) {
@@ -193,31 +192,31 @@ class RelationFilterConf {
 	const TARGET_ID_REPS = 'targetPids';
 	const TARGET_FILTER_GROUP_ATTRS = 'targetFilterGroupAttrs';
 	
-	private $attributes;
+	private $dataSet;
 	
-	public function __construct(Attributes $attributes) {
-		$this->attributes = $attributes;
+	public function __construct(DataSet $dataSet) {
+		$this->dataSet = $dataSet;
 	}
 	
 	public function getOperator() {
-		return $this->attributes->getString(self::OPERATOR_KEY, false);
+		return $this->dataSet->getString(self::OPERATOR_KEY, false);
 	}
 	
 	public function setOperator(string $operator) {
-		$this->attributes->set(self::OPERATOR_KEY, $operator);
+		$this->dataSet->set(self::OPERATOR_KEY, $operator);
 	}
 	
 	public function getTargetPids(): array {
-		return $this->attributes->getArray(self::TARGET_ID_REPS, false, array(), TypeConstraint::createSimple('string'));
+		return $this->dataSet->getArray(self::TARGET_ID_REPS, false, array(), TypeConstraint::createSimple('string'));
 	}
 	
-	public function setTragetPids(array $targetPids) {
-		$this->attributes->set(self::TARGET_ID_REPS, $targetPids);
+	public function setTargetPids(array $targetPids) {
+		$this->dataSet->set(self::TARGET_ID_REPS, $targetPids);
 	}
 	
 	public function getTargetFilterSettingGroup(): FilterSettingGroup {
 		try {
-			return FilterSettingGroup::create(new Attributes($this->attributes
+			return FilterSettingGroup::create(new DataSet($this->dataSet
 					->getArray(self::TARGET_FILTER_GROUP_ATTRS, false)));
 		} catch (AttributesException $e) {
 			return new FilterSettingGroup();
@@ -225,7 +224,7 @@ class RelationFilterConf {
 	}
 	
 	public function setTargetFilterSettingGroup(FilterSettingGroup $targetFilterSettingGroup) {
-		$this->attributes->set(self::TARGET_FILTER_GROUP_ATTRS, $targetFilterSettingGroup->toAttrs());
+		$this->dataSet->set(self::TARGET_FILTER_GROUP_ATTRS, $targetFilterSettingGroup->toAttrs());
 	}
 }
 

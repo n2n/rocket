@@ -24,6 +24,7 @@ namespace rocket\user\model\security;
 use rocket\user\bo\RocketUser;
 use rocket\core\model\launch\LaunchPad;
 use rocket\ei\manage\security\EiPermissionManager;
+use rocket\ei\manage\ManageState;
 
 class RocketUserSecurityManager implements SecurityManager {
 	private $rocketUser;
@@ -31,7 +32,6 @@ class RocketUserSecurityManager implements SecurityManager {
 	
 	public function __construct(RocketUser $rocketUser) {
 		$this->rocketUser = $rocketUser;
-		$this->eiPermissionManager = new RocketUserEiPermissionManager($rocketUser);
 	}
 	
 	public function isLaunchPadAccessible(LaunchPad $launchPad): bool {
@@ -47,7 +47,7 @@ class RocketUserSecurityManager implements SecurityManager {
 		return false;
 	}
 	
-	public function getEiPermissionManager(): EiPermissionManager {
-		return $this->eiPermissionManager;
+	public function createEiPermissionManager(ManageState $manageState): EiPermissionManager {
+		return new RocketUserEiPermissionManager($this->rocketUser, $manageState);
 	}
 }

@@ -34,7 +34,7 @@ use n2n\l10n\DynamicTextCollection;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\impl\web\dispatch\map\val\ValNotEmpty;
 
-class RocketUser extends ObjectAdapter implements Dispatchable {
+class RocketUser extends ObjectAdapter implements Dispatchable, \JsonSerializable {
 	private static function _annos(AnnoInit $ai) {
 		$ai->c(new AnnoTable('rocket_user'));
 		$ai->c(new AnnoDispProperties('nick', 'firstname', 'lastname', 'email'));
@@ -62,7 +62,7 @@ class RocketUser extends ObjectAdapter implements Dispatchable {
 		return $this->id;
 	}
 	
-	public function setId($id) {
+	public function setId(int $id) {
 		$this->id = $id;
 	}
 	
@@ -189,5 +189,16 @@ class RocketUser extends ObjectAdapter implements Dispatchable {
 	private function _validation(BindingDefinition $bc) { 
 		$bc->val('nick', new ValNotEmpty());
 		$bc->val('email', new ValEmail());
+	}
+	
+	function jsonSerialize() {
+		return [
+			'id' => $this->id,
+			'username' => $this->nick,
+			'email' => $this->email,
+			'firstname' => $this->firstname,
+			'lastname' => $this->lastname,
+			'power' => $this->power
+		];
 	}
 }

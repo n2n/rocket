@@ -21,84 +21,136 @@
  */
 namespace rocket\impl\ei\component\prop\relation;
 
-use rocket\impl\ei\component\prop\relation\model\relation\EiPropRelation;
+use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\util\ex\IllegalStateException;
+use rocket\ei\component\prop\ForkEiProp;
 use rocket\ei\component\prop\GuiEiProp;
-use rocket\ei\component\prop\FieldEiProp;
-use rocket\ei\manage\entry\EiField;
-use rocket\impl\ei\component\prop\adapter\entry\Readable;
-use rocket\impl\ei\component\prop\adapter\entry\Writable;
-use rocket\ei\manage\EiObject;
-use rocket\impl\ei\component\prop\relation\conf\RelationEiPropConfigurator;
-use n2n\core\container\N2nContext;
-use rocket\ei\manage\security\filter\SecurityFilterProp;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
+use rocket\ei\manage\frame\EiForkLink;
+use rocket\ei\manage\frame\EiFrame;
+use rocket\ei\manage\gui\GuiProp;
+use rocket\ei\manage\gui\field\GuiField;
+use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\adapter\PropertyEiPropAdapter;
-use rocket\impl\ei\component\prop\adapter\entry\Copyable;
-use rocket\impl\ei\component\prop\adapter\config\EditConfig;
+use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
+use rocket\impl\ei\component\prop\relation\conf\RelationConfig;
+use rocket\impl\ei\component\prop\relation\conf\RelationModel;
+use rocket\impl\ei\component\prop\relation\model\Relation;
+use rocket\ei\manage\gui\GuiFieldAssembler;
+use rocket\ei\manage\idname\IdNameProp;
+use rocket\ei\component\prop\IdNameEiProp;
 
-abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements RelationEiProp, GuiEiProp, 
-		FieldEiProp, Readable, Writable, Copyable {
+abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements RelationEiProp, GuiEiProp, GuiFieldAssembler, ForkEiProp, IdNameEiProp {
+			
 	/**
-	 * @var EiPropRelation
+	 * @var DisplayConfig
 	 */
-	protected $eiPropRelation;
-	protected $draftable = false;
-	protected $editConfig;
+	private $displayConfig;
 	
-	protected function initialize(EiPropRelation $eiPropRelation, EditConfig $editConfig = null) {
-		$this->eiPropRelation = $eiPropRelation;
+	/**
+	 * @var RelationModel
+	 */
+	private $relationModel;
+	
+	/**
+	 * @var Relation
+	 */
+	private $relation;
+			
 		
-		if ($editConfig !== null) {
-			$this->editConfig = $editConfig;
-		} else {
-			$this->editConfig = new EditConfig();
-		}
-	}
-	
-	public function getEiPropRelation(): EiPropRelation {
-		if ($this->eiPropRelation !== null) {
-			return $this->eiPropRelation;
-		}
-		
-		throw new IllegalStateException();
-	}
-
-	public function createEiPropConfigurator(): EiPropConfigurator {
-		return new RelationEiPropConfigurator($this);
-	}
-	
-	public function getEditConfig(): EditConfig {
-		return $this->editConfig;
-	}
-	
-	public function isEiField(): bool {
+	function isPrivileged(): bool {
 		return true;
 	}
 	
-	public function buildEiFieldFork(EiObject $eiObject, EiField $eiField = null) {
-		return null;
+	/**
+	 * @param RelationModel $relationModel
+	 */
+	protected function setup(?DisplayConfig $displayConfig, RelationModel $relationModel) {
+		$this->displayConfig = $displayConfig;
+		$this->relationModel = $relationModel;
 	}
 	
-	public function isEiEntryFilterable(): bool {
-		return false;
-	}
-	
-	public function createSecurityFilterProp(N2nContext $n2nContext): SecurityFilterProp {
-		throw new IllegalStateException();	
-	}
-	
-	public function setDraftable(bool $draftable) {
-		$this->draftable = $draftable;
-	}
-	
-	public function isDraftable(): bool {
-		return $this->draftable;
-	}
-
-	public function getDraftProperty() {
-		if ($this->isDraftable()) return $this;
+	protected function prepare() {
+		$relationModel = $this->getRelationModel();
+		$configurator = $this->getConfigurator();
 		
+		if (null !== $this->displayConfig) {
+			$configurator->addAdaption($this->displayConfig);
+		}
+		
+		if (null !== ($editConfig = $relationModel->getEditConfig())) {
+			$configurator->addAdaption($editConfig);
+		}
+		
+		$configurator->addAdaption(new RelationConfig($relationModel));
+	}
+	
+	/**
+	 * @return \rocket\impl\ei\component\prop\adapter\config\EditConfig|NULL
+	 */
+	protected function getEditConfig() {
+		return $this->getRelationModel()->getEditConfig();
+	}
+	
+	/**
+	 * @return \rocket\impl\ei\component\prop\relation\conf\RelationModel
+	 */
+	protected function getRelationModel() {
+		IllegalStateException::assertTrue($this->relationModel !== null, get_class($this));
+		return $this->relationModel;
+	}
+	
+	/**
+	 * @return \rocket\impl\ei\component\prop\relation\model\Relation
+	 */
+	protected function getRelation() {
+		if ($this->relation !== null) {
+			return $this->relation;
+		}
+		
+// 		IllegalStateException::assertTrue($this->displayConfig !== null && $this->editConfig !== null);
+		return $this->relation = new Relation($this, $this->getRelationModel()); 
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\relation\RelationEiProp::getRelationEntityProperty()
+	 */
+	function getRelationEntityProperty(): RelationEntityProperty {
+		return $this->requireEntityProperty();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\prop\GuiEiProp::buildGuiProp()
+	 */
+	function buildGuiProp(Eiu $eiu): ?GuiProp {
+		return $eiu->factory()->newGuiProp(function (Eiu $eiu) {
+			return $this->displayConfig->buildGuiPropSetup($eiu, $this);
+		})->toGuiProp();
+	}
+	
+	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
 		return null;
+	}
+	
+	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {
+		if ($this->getRelationModel()->isTargetMany()) {
+			return null;
+		}
+		
+		return $eiu->factory()->newIdNameProp(function (Eiu $eiu) {
+			$targetEntityObj = $eiu->object()->readNativValue($eiu->prop()->getEiProp());
+			
+			if ($targetEntityObj === null) {
+				return null;
+			}
+			
+			$targetEiuEngine = $this->getRelationModel()->getTargetEiuEngine();
+			return $targetEiuEngine->createIdentityString($targetEntityObj);
+		})->toIdNameProp();
+	}
+	
+	function createForkedEiFrame(Eiu $eiu, EiForkLink $eiForkLink): EiFrame {
+		return $this->getRelation()->createForkEiFrame($eiu, $eiForkLink);
 	}
 }

@@ -23,37 +23,50 @@ namespace rocket\impl\ei\component\prop\ci;
 
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\util\type\ArgUtils;
-use rocket\impl\ei\component\prop\relation\EmbeddedOneToManyEiProp;
-use rocket\impl\ei\component\prop\ci\conf\ContentItemsEiPropConfigurator;
 use rocket\impl\ei\component\prop\ci\model\ContentItem;
-use rocket\impl\ei\component\prop\ci\model\PanelConfig;
 use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use rocket\impl\ei\component\prop\ci\model\ContentItemGuiField;
-use rocket\impl\ei\component\prop\ci\model\ContentItemEditable;
 use rocket\ei\EiPropPath;
 use rocket\ei\util\Eiu;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
-use rocket\ei\manage\gui\GuiField;
-use rocket\ei\manage\gui\ui\DisplayItem;
-use rocket\ei\manage\security\InaccessibleEiCommandPathException;
+use rocket\ei\manage\gui\field\GuiField;
+use rocket\impl\ei\component\prop\relation\conf\RelationModel;
+use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
+use rocket\ei\manage\gui\ViewMode;
+use rocket\impl\ei\component\prop\adapter\config\EditConfig;
+use rocket\impl\ei\component\prop\relation\RelationEiPropAdapter;
+use rocket\ei\component\prop\FieldEiProp;
+use rocket\ei\manage\entry\EiField;
+use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
+use rocket\impl\ei\component\prop\ci\conf\ContentItemsConfig;
+use rocket\si\content\impl\SiFields;
+use rocket\ei\util\entry\EiuEntry;
+use n2n\util\type\CastUtils;
+use rocket\si\content\impl\meta\SiCrumb;
 
-class ContentItemsEiProp extends EmbeddedOneToManyEiProp {
-	private $panelConfigs = array();
-// 	private $contentItemEiType;
+class ContentItemsEiProp extends RelationEiPropAdapter implements FieldEiProp {
+	
+	private $contentItemsConfig;
 	
 	public function __construct() {
 		parent::__construct();
-		$this->displayConfig->setListReadModeDefaultDisplayed(false);
-		$this->editConfig->setMandatory(false);
-		$this->panelConfigs = array(new PanelConfig('main', 'Main', null, 0)); 
+		
+		$this->setup(
+				(new DisplayConfig(ViewMode::all()))->setListReadModeDefaultDisplayed(false),
+				new RelationModel($this, false, true, RelationModel::MODE_EMBEDDED, 
+						(new EditConfig())->setMandatory(false)));
+		
+		$this->contentItemsConfig = new ContentItemsConfig();
+		
+		
+// 		$this->configurator = new ContentItemsEiPropConfigurator($this/*, $this->eiPropRelation*/);
+// 		$this->configurator->registerDisplayConfig($this->displayConfig);
+// 		$this->configurator->registerEditConfig($this->editConfig);
+// 		$this->configurator->setRelationModel($this->getRelationModel());
 	}
 	
-	public function createEiPropConfigurator(): EiPropConfigurator {
-		return new ContentItemsEiPropConfigurator($this/*, $this->eiPropRelation*/);
-	}
-	
-	protected function getDisplayItemType(): string {
-		return DisplayItem::TYPE_LIGHT_GROUP;
+	function prepare() {
+		parent::prepare();
+		$this->getConfigurator()->addAdaption($this->contentItemsConfig);
 	}
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {
@@ -92,61 +105,58 @@ class ContentItemsEiProp extends EmbeddedOneToManyEiProp {
 // 		throw new IllegalStateException('Undefined ContentItem EiType.');
 // 	}
 	
-	public function hasPanelConfigs() {
-		return !empty($this->getPanelConfigs());
-	}
-	
-	public function getPanelConfigs(): array {
-		return $this->panelConfigs;
-	}
 	
 	/**
-	 * @param PanelConfig[] $panelConfigs
+	 * @param Eiu $eiu
+	 * @return \rocket\impl\ei\component\prop\ci\model\PanelDeclaration[]
 	 */
-	public function setPanelConfigs(array $panelConfigs) {
-		ArgUtils::valArray($panelConfigs, PanelConfig::class);
-		$this->panelConfigs = $panelConfigs;
+	public function determinePanelDeclarations(Eiu $eiu) {
+		return $this->contentItemsConfig->getPanelDeclarations();
 	}
 	
-	public function determinePanelConfigs(Eiu $eiu) {
-		return $this->panelConfigs;
+	function buildEiField(Eiu $eiu): ?EiField {
+		$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())
+				->frame()->exec($this->getRelationModel()->getTargetReadEiCommandPath());
+		
+		return new ToManyEiField($eiu, $targetEiuFrame, $this, $this->getRelationModel());
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\GuiProp::buildGuiField()
 	 */
-	public function buildGuiField(Eiu $eiu): ?GuiField {
-		$mapping = $eiu->entry()->getEiEntry();
-	
-		$eiFrame = $eiu->frame()->getEiFrame();
-		$relationEiField = $mapping->getEiField(EiPropPath::from($this));
-		try {
-			$targetReadEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame, $mapping);
-		} catch (InaccessibleEiCommandPathException $e) {
-			return null;
+	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {	
+		$readOnly = $readOnly || $this->getEditConfig()->isReadOnly();
+		
+		if ($readOnly && $eiu->gui()->isCompact()) {
+			return $this->createCompactGuiField($eiu);
 		}
 		
-		$panelConfigs = $this->determinePanelConfigs($eiu);
-	
-		$contentItemEditable = null;
-		if (!$this->eiPropRelation->isReadOnly($mapping, $eiFrame)) {
-			$targetEditEiFrame = $this->eiPropRelation->createTargetEditPseudoEiFrame($eiFrame, $mapping);
-				
-			$contentItemEditable = new ContentItemEditable($this->getLabelLstr(), $relationEiField, $targetReadEiFrame,
-					$targetEditEiFrame, $panelConfigs);
+		$targetEiuFrame = null;
+		if ($readOnly){
+			$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())->frame()
+					->exec($this->getRelationModel()->getTargetReadEiCommandPath());
+		} else {
+			$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())->frame()
+					->exec($this->getRelationModel()->getTargetReadEiCommandPath());
+		}
 			
-			$draftMode = $mapping->getEiObject()->isDraft();
-			$contentItemEditable->setDraftMode($draftMode);
-			$contentItemEditable->setReduced($this->isReduced());
-				
-			if ($targetEditEiFrame->getEiExecution()->isGranted()) {
-				$contentItemEditable->setNewMappingFormUrl($this->eiPropRelation->buildTargetNewEiuEntryFormUrl($mapping,
-						$draftMode, $eiFrame, $eiu->frame()->getHttpContext()));
-			}
+		return new ContentItemGuiField($eiu, $targetEiuFrame, $this->getRelationModel(), 
+				$this->determinePanelDeclarations($eiu), $readOnly);
+	}
+	
+	/**
+	 * @param Eiu $eiu
+	 * @return \rocket\si\content\SiField
+	 */
+	private function createCompactGuiField(Eiu $eiu) {
+		$siCrumbs = [];
+		foreach ($eiu->field()->getValue() as $eiuEntry) {
+			CastUtils::assertTrue($eiuEntry instanceof EiuEntry);
+			$siCrumbs[] = SiCrumb::createIcon($eiuEntry->mask()->getIconType())
+					->setTitle($eiuEntry->createIdentityString());
 		}
 		
-		return new ContentItemGuiField($this->getLabelLstr(), $this->determinePanelConfigs($eiu), 
-				$relationEiField, $targetReadEiFrame, $eiu->gui()->isCompact(), $contentItemEditable);
+		return $eiu->factory()->newGuiField(SiFields::crumbOut(...$siCrumbs))->toGuiField();
 	}
 }

@@ -40,7 +40,6 @@ use rocket\impl\ei\component\prop\relation\command\RelationAjahEiCommand;
 use rocket\impl\ei\component\prop\relation\command\RelationJhtmlController;
 use rocket\ei\EiCommandPath;
 use rocket\ei\manage\security\InaccessibleEiCommandPathException;
-use rocket\impl\ei\component\prop\relation\command\EmbeddedEditPseudoCommand;
 use n2n\util\uri\Url;
 use rocket\ei\EiPropPath;
 use n2n\util\type\CastUtils;
@@ -62,7 +61,7 @@ abstract class EiPropRelation {
 	
 	protected $relationEiProp;
 	protected $sourceMany;
-	protected $targetMany;	
+	protected $targetMany;
 	
 	protected $filtered = true;
 	
@@ -131,26 +130,26 @@ abstract class EiPropRelation {
 		CastUtils::assertTrue($mappedRelation instanceof MappedRelation);
 		
 		$targetEntityProperty = $mappedRelation->getTargetEntityProperty();
-
+		
 		foreach ($this->getTargetEiMask()->getEiPropCollection() as $targetEiProp) {
-			if ($targetEiProp instanceof RelationEiProp 
+			if ($targetEiProp instanceof RelationEiProp
 					&& $targetEntityProperty->equals($targetEiProp->getEntityProperty())) {
-				$this->targetMasterEiProp = $targetEiProp;
-				$this->targetMasterAccessProxy = $targetEiProp->getObjectPropertyAccessProxy();
-				return;
-			}
+						$this->targetMasterEiProp = $targetEiProp;
+						$this->targetMasterAccessProxy = $targetEiProp->getObjectPropertyAccessProxy();
+						return;
+					}
 		}
 		
-// 		if (!$this->getTargetEiMask()->getEiEngine()->getEiCommandCollection()->hasGenericOverview()) {
-// 			return;
-// 		}
+		// 		if (!$this->getTargetEiMask()->getEiEngine()->getEiCommandCollection()->hasGenericOverview()) {
+		// 			return;
+		// 		}
 		
 		$targetClass = $targetEntityProperty->getEntityModel()->getClass();
 		$propertiesAnalyzer = new PropertiesAnalyzer($targetClass);
 		try {
 			$this->targetMasterAccessProxy = $propertiesAnalyzer->analyzeProperty($targetEntityProperty->getName());
 		} catch (ReflectionException $e) {
-			throw new InvalidEiComponentConfigurationException('No Target master property not accessible: ' 
+			throw new InvalidEiComponentConfigurationException('No Target master property accessible: '
 					. $targetEntityProperty, 0, $e);
 		}
 	}
@@ -164,7 +163,7 @@ abstract class EiPropRelation {
 		$this->targetEiMask = $targetEiMask;
 		$this->targetSubEiTypeExtensions = $targetEiTypeExtensions;
 		
-		$this->initTargetMasterEiProp();		
+		$this->initTargetMasterEiProp();
 		
 		// supreme EiEngine to make command available in EiFrames with super context EiTypes.
 		$superemeEiuMask = $eiu->mask()->supremeMask();
@@ -176,7 +175,7 @@ abstract class EiPropRelation {
 		
 		if (!$this->getRelationEntityProperty()->isMaster()) {
 			$entityProperty = $this->getRelationEntityProperty();
-						
+			
 			$eiu->mask()->addEiModificator(new TargetMasterRelationEiModificator($this));
 		}
 	}
@@ -196,29 +195,29 @@ abstract class EiPropRelation {
 	}
 	
 	protected function setupEmbeddedEditEiCommand() {
-		$this->embeddedEditEiCommand = new EmbeddedEditPseudoCommand(Lstr::create('Edit embedded in ' 
-						. $this->getRelationEiProp()->getWrapper()->getEiPropCollection()->getEiMask()->getLabelLstr() 
-						. ' - ' . $this->getTargetEiMask()->getLabelLstr()), 
+		$this->embeddedEditEiCommand = new EmbeddedEditPseudoCommand(Lstr::create('Edit embedded in '
+				. $this->getRelationEiProp()->getWrapper()->getEiPropCollection()->getEiMask()->getLabelLstr()
+				. ' - ' . $this->getTargetEiMask()->getLabelLstr()),
 				$this->getRelationEiProp()->getWrapper()->getEiPropPath(), $this->getTargetEiType()->getId());
 		
 		$this->targetEiMask->getEiCommandCollection()->add($this->embeddedEditEiCommand);
 	}
 	
-// 	public function hasRecursiveConflict(EiFrame $eiFrame) {
-// 		$target = $this->getTarget();
-// 		while (null !== ($eiFrame = $eiFrame->getParent())) {
-// 			if ($eiFrame->getContextEiEngine()->getEiMask()->getEiType()->equals($target)) {
-// 				return true;
-// 			}
-// 		}
-// 		return false;
-// 	}
+	// 	public function hasRecursiveConflict(EiFrame $eiFrame) {
+	// 		$target = $this->getTarget();
+	// 		while (null !== ($eiFrame = $eiFrame->getParent())) {
+	// 			if ($eiFrame->getContextEiEngine()->getEiMask()->getEiType()->equals($target)) {
+	// 				return true;
+	// 			}
+	// 		}
+	// 		return false;
+	// 	}
 	
 	public function isReadOnly(EiEntry $mapping, EiFrame $eiFrame) {
 		return $this->relationEiProp->getEditConfig()->isReadOnly()
-				|| (!$mapping->isNew() && $this->relationEiProp->getEditConfig()->isConstant())
-				|| (!$this->relationEiProp->isDraftable() && $mapping->getEiObject()->isDraft())
-				|| ($this->isFiltered() && $eiFrame->getEiRelation(EiPropPath::from($this->relationEiProp)));
+		|| (!$mapping->isNew() && $this->relationEiProp->getEditConfig()->isConstant())
+		|| (!$this->relationEiProp->isDraftable() && $mapping->getEiObject()->isDraft())
+		|| ($this->isFiltered() && $eiFrame->getEiRelation(EiPropPath::from($this->relationEiProp)));
 	}
 	
 	/**
@@ -237,7 +236,7 @@ abstract class EiPropRelation {
 			return $this->targetMasterAccessProxy;
 		}
 		
-		throw new IllegalStateException('No target master AccessProxy initialized. ' 
+		throw new IllegalStateException('No target master AccessProxy initialized. '
 				. get_class($this->relationEiProp) . ' is probably not set up.');
 	}
 	
@@ -262,21 +261,21 @@ abstract class EiPropRelation {
 				return $targetEiProp;
 			}
 		}
-	
+		
 		return null;
 	}
 	
-// 	public function isMaster() {
-// 		return $this->getRelationEntityProperty()->isMaster();
-// 	}
-		
-	public function createTargetEiFrame(ManageState $manageState, EiFrame $eiFrame, EiObject $eiObject = null, 
+	// 	public function isMaster() {
+	// 		return $this->getRelationEntityProperty()->isMaster();
+	// 	}
+	
+	public function createTargetEiFrame(ManageState $manageState, EiFrame $eiFrame, EiObject $eiObject = null,
 			ControllerContext $targetControllerContext): EiFrame {
-		$targetEiFrame = $manageState->createEiFrame($this->getTargetEiMask()->getEiEngine(), $targetControllerContext, new EiCommandPath([]));
-		$targetEiFrame->setSubEiTypeExtensions($this->targetSubEiTypeExtensions);
-		$this->configureTargetEiFrame($targetEiFrame, $eiFrame, $eiObject);
-		
-		return $targetEiFrame;
+				$targetEiFrame = $manageState->createEiFrame($this->getTargetEiMask()->getEiEngine(), $targetControllerContext, new EiCommandPath([]));
+				$targetEiFrame->setSubEiTypeExtensions($this->targetSubEiTypeExtensions);
+				$this->configureTargetEiFrame($targetEiFrame, $eiFrame, $eiObject);
+				
+				return $targetEiFrame;
 	}
 	
 	public function createTargetReadPseudoEiFrame(EiFrame $eiFrame, EiEntry $eiEntry = null): EiFrame {
@@ -292,20 +291,20 @@ abstract class EiPropRelation {
 	}
 	
 	private function createTargetPseudoEiFrame(EiFrame $eiFrame, EiEntry $eiEntry = null, ?EiCommandPath $eiCommandPath): EiFrame {
-	    $eiObject = null;
-	    if ($eiEntry !== null) {
-	        $eiObject = $eiEntry->getEiObject();
-	    }
-	    
-	    $targetCmdContextPath = $eiFrame->getControllerContext()->getCmdContextPath();
-	    $eiCommandPathStr = $this->relationEiCommand->getWrapper()->getEiCommandPath();
+		$eiObject = null;
+		if ($eiEntry !== null) {
+			$eiObject = $eiEntry->getEiObject();
+		}
+		
+		$targetCmdContextPath = $eiFrame->getControllerContext()->getCmdContextPath();
+		$eiCommandPathStr = $this->relationEiCommand->getWrapper()->getEiCommandPath();
 		if ($eiObject === null) {
 			$targetCmdContextPath = $targetCmdContextPath->ext($eiCommandPathStr, 'rel');
 		} else if ($eiObject->isNew()) {
-			$targetCmdContextPath = $targetCmdContextPath->ext($eiCommandPathStr, 'relnewentry', 
+			$targetCmdContextPath = $targetCmdContextPath->ext($eiCommandPathStr, 'relnewentry',
 					$eiObject->getEiEntityObj()->getEiType()->getId());
 		} else {
-			$targetCmdContextPath = $targetCmdContextPath->ext($eiCommandPathStr, 'relentry', 
+			$targetCmdContextPath = $targetCmdContextPath->ext($eiCommandPathStr, 'relentry',
 					$eiEntry->getPid());
 		}
 		
@@ -334,47 +333,47 @@ abstract class EiPropRelation {
 		}
 	}
 	
-	protected function configureTargetEiFrame(EiFrame $targetEiFrame, EiFrame $eiFrame, 
+	protected function configureTargetEiFrame(EiFrame $targetEiFrame, EiFrame $eiFrame,
 			EiObject $eiObject = null/*, $editCommandRequired = null*/) {
-		if ($eiObject === null) return $targetEiFrame;
+				if ($eiObject === null) return $targetEiFrame;
 				
-		if (null !== ($targetCriteriaFactory = $this->createTargetCriteriaFactory($eiObject))) {
-			$targetEiFrame->getBoundry()->setCriteriaFactory($targetCriteriaFactory);
-		}
-		
-		$this->applyTargetModificators($targetEiFrame, $eiFrame, $eiObject);
-		
-		return $targetEiFrame;
+				if (null !== ($targetCriteriaFactory = $this->createTargetCriteriaFactory($eiObject))) {
+					$targetEiFrame->getBoundry()->setCriteriaFactory($targetCriteriaFactory);
+				}
+				
+				$this->applyTargetModificators($targetEiFrame, $eiFrame, $eiObject);
+				
+				return $targetEiFrame;
 	}
-
+	
 	protected function createTargetCriteriaFactory(EiObject $eiObject) {
 		if ($eiObject->isNew()) return null;
-
+		
 		if (!$this->getRelationEntityProperty()->isMaster() && !$this->isSourceMany()) {
-			return new MappedOneToCriteriaFactory($this->getRelationEntityProperty()->getRelation(), 
+			return new MappedOneToCriteriaFactory($this->getRelationEntityProperty()->getRelation(),
 					$eiObject->getLiveObject());
 		}
-
+		
 		return new RelationCriteriaFactory($this->getRelationEntityProperty(), $eiObject->getLiveObject());
 	}
 	
-	protected function applyTargetModificators(EiFrame $targetEiFrame, EiFrame $eiFrame, 
+	protected function applyTargetModificators(EiFrame $targetEiFrame, EiFrame $eiFrame,
 			EiObject $eiObject) {
 		$targetEiProp = $this->findTargetEiProp();
 		
 		if (null !== $targetEiProp) {
 			$targetEiModificatorCollection = $targetEiProp->getWrapper()->getEiPropCollection()->getEiMask()->getEiModificatorCollection();
 			
-			$targetEiFrame->setEiRelation($targetEiProp->getWrapper()->getEiPropPath(), new EiRelation($eiFrame, $eiObject, 
+			$targetEiFrame->setEiRelation($targetEiProp->getWrapper()->getEiPropPath(), new EiRelation($eiFrame, $eiObject,
 					$this->relationEiProp));
 			
 			if (!$eiObject->isDraft()) {
-				$targetEiFrame->registerListener(new MappedRelationEiModificator($targetEiFrame, 
+				$targetEiFrame->registerListener(new MappedRelationEiModificator($targetEiFrame,
 						RelationEntry::from($eiObject), EiPropPath::from($targetEiProp), $this->isSourceMany()));
 			}
 		} else if ($this->targetMasterAccessProxy !== null) {
 			$targetEiFrame->registerListener(
-					new PlainMappedRelationEiModificator($targetEiFrame, $eiObject->getLiveObject(), 
+					new PlainMappedRelationEiModificator($targetEiFrame, $eiObject->getLiveObject(),
 							$this->targetMasterAccessProxy, $this->isSourceMany()));
 		}
 		
@@ -388,14 +387,14 @@ abstract class EiPropRelation {
 		return $this->getRelationEntityProperty()->getRelation()->getCascadeType() & CascadeType::PERSIST;
 	}
 	
-// 	public function isRemoveCascaded() {
-// 		return $this->getRelationEntityProperty()->getRelation()->getCascadeType() & CascadeType::REMOVE;
-// 	}
+	// 	public function isRemoveCascaded() {
+	// 		return $this->getRelationEntityProperty()->getRelation()->getCascadeType() & CascadeType::REMOVE;
+	// 	}
 	
-// 	public function isJoinTableRelation() {
-// 		return $this->getRelationEntityProperty()->getRelation() instanceof JoinTableRelation;
-// 	}
-
+	// 	public function isJoinTableRelation() {
+	// 		return $this->getRelationEntityProperty()->getRelation() instanceof JoinTableRelation;
+	// 	}
+	
 	public function buildTargetNewEiuEntryFormUrl(EiEntry $eiEntry, bool $draft, EiFrame $eiFrame, HttpContext $httpContext): Url {
 		$pathParts = array($this->relationEiCommand->getWrapper()->getEiCommandPath());
 		if ($eiEntry->isNew()) {
@@ -407,7 +406,7 @@ abstract class EiPropRelation {
 		}
 		$pathParts[] = $this->relationAjahEiCommand->getWrapper()->getEiCommandPath();
 		$contextUrl = $httpContext->getControllerContextPath($eiFrame->getControllerContext())->ext(...$pathParts)
-				->toUrl();
+		->toUrl();
 		return RelationJhtmlController::buildNewFormUrl($contextUrl, $draft);
 	}
 }

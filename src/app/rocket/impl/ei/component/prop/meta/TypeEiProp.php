@@ -21,62 +21,50 @@
  */
 namespace rocket\impl\ei\component\prop\meta;
 
-use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
-use rocket\ei\component\prop\GuiEiProp;
-use rocket\ei\manage\gui\GuiProp;
-use n2n\l10n\N2nLocale;
-use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable;
 use rocket\ei\util\Eiu;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\impl\ei\component\prop\adapter\DisplayableEiPropAdapter;
-use n2n\impl\web\ui\view\html\HtmlSnippet;
-use n2n\impl\web\ui\view\html\HtmlElement;
+use rocket\si\content\impl\SiFields;
+use rocket\ei\manage\idname\IdNameProp;
+use rocket\ei\component\prop\IdNameEiProp;
+use rocket\ei\util\factory\EifGuiField;
+use rocket\si\content\impl\meta\SiCrumb;
 
-class TypeEiProp extends DisplayableEiPropAdapter implements StatelessGuiFieldDisplayable, GuiEiProp, GuiProp {
+class TypeEiProp extends DisplayableEiPropAdapter implements IdNameEiProp {
+	
+	protected function prepare() {
+	}
 	
 	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
-		return $this->getDisplayConfig()->toDisplayDefinition($this, $eiu->gui()->getViewMode());
+// 		$eiu->prop()->getLabel();
+// 		$eiu->prop()->getHelpText();
+		return $this->getDisplayConfig()->toDisplayDefinition($eiu->guiFrame()->getViewMode(),
+				$eiu->prop()->getLabel());
 	}
 
-	public function createUiComponent(HtmlView $view, Eiu $eiu) {
+	public function createOutEifGuiField(Eiu $eiu): EifGuiField {
 		$eiuMask = $eiu->context()->mask($eiu->entry()->getEiEntry()->getEiType());
 		$iconType = $eiuMask->getIconType();
 		$label = $eiuMask->getLabel();
 		
-		if (null === $iconType) return $label;
-		
-		return new HtmlSnippet(
-				new HtmlElement('i', array('class' => $iconType), ''),
-				' ',
-				new HtmlElement('span', null, $label));
-	}
-	
-	public function createEiPropConfigurator(): EiPropConfigurator {
-		$configurator = new AdaptableEiPropConfigurator($this);
-		$configurator->registerDisplayConfig($this->getDisplayConfig());
-		return $configurator;
-	}
-	
-	/* (non-PHPdoc)
-	 * @see \rocket\ei\manage\gui\GuiProp::isStringRepresentable()
-	 */
-	public function isStringRepresentable(): bool {
-		return true;
-	}
-
-	/* (non-PHPdoc)
-	 * @see \rocket\ei\manage\gui\GuiProp::buildIdentityString()
-	 */
-	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
-		$eiMask = $this->getEiMask();
-		$eiObject = $eiu->object()->getEiObject();
-		if (!$eiMask->getEiType()->equals($eiObject->getEiEntityObj()->getEiType())) {
-			$eiMask = $eiObject->getEiEntityObj()->getEiType()->getEiMask();
+		if (null === $iconType) {
+			return SiFields::stringOut($label);
 		}
 		
-		return $eiMask;
-		
+		return $eiu->factory()->newGuiField(SiFields::crumbOut(SiCrumb::createIcon($iconType), 
+				SiCrumb::createLabel($label)));
 	}
+	
+	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {
+		return $eiu->factory()->newIdNameProp(function (Eiu $eiu) {
+			$eiMask = $this->getEiMask();
+			$eiObject = $eiu->object()->getEiObject();
+			if (!$eiMask->getEiType()->equals($eiObject->getEiEntityObj()->getEiType())) {
+				$eiMask = $eiObject->getEiEntityObj()->getEiType()->getEiMask();
+			}
+			
+			return $eiMask;
+		})->toIdNameProp();
+	}
+
 }

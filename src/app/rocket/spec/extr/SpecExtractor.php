@@ -21,14 +21,14 @@
  */
 namespace rocket\spec\extr;
 
-use n2n\util\type\attrs\Attributes;
+use n2n\util\type\attrs\DataSet;
 use rocket\ei\component\InvalidEiComponentConfigurationException;
 use n2n\util\type\attrs\AttributesException;
 use n2n\config\InvalidConfigurationException;
 use rocket\spec\InvalidSpecConfigurationException;
 use rocket\ei\mask\model\DisplayScheme;
-use rocket\ei\manage\gui\ui\DisplayStructure;
-use rocket\ei\manage\gui\GuiFieldPath;
+use rocket\ei\mask\model\DisplayStructure;
+use rocket\ei\manage\DefPropPath;
 use rocket\spec\InvalidEiMaskConfigurationException;
 use rocket\ei\mask\model\ControlOrder;
 use n2n\util\type\TypeConstraint;
@@ -38,17 +38,17 @@ use n2n\persistence\orm\util\NestedSetStrategy;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\util\type\attrs\InvalidAttributeException;
 use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
-use rocket\ei\manage\gui\ui\DisplayItem;
 use n2n\util\StringUtils;
 use rocket\spec\TypePath;
 use rocket\core\model\Rocket;
+use rocket\si\meta\SiStructureType;
 
 class SpecExtractor {
-	private $attributes;
+	private $dataSet;
 	private $moduleNamespace;
 	
-	public function __construct(Attributes $attributes, string $moduleNamespace) {
-		$this->attributes = $attributes;
+	public function __construct(DataSet $dataSet, string $moduleNamespace) {
+		$this->dataSet = $dataSet;
 		$this->moduleNamespace = $moduleNamespace;
 	}
 
@@ -70,26 +70,26 @@ class SpecExtractor {
 		$customTypeExtractions = array();
 		
 		$typesKey = RawDef::TYPES_KEY;
-		if (!$this->attributes->contains(RawDef::TYPES_KEY) && $this->attributes->contains('specs')) {
+		if (!$this->dataSet->contains(RawDef::TYPES_KEY) && $this->dataSet->contains('specs')) {
 			$typesKey = 'specs';
 		}
 		
-		foreach ($this->attributes->optArray($typesKey, 
+		foreach ($this->dataSet->optArray($typesKey, 
 				TypeConstraint::createArrayLike('array', true), array()) as $typeId => $typeRawData) {
 // 			$eiTypeExtractions[$specId] = $this->createTypeExtraction($specId, );
-			$typeAttributes = new Attributes($typeRawData);
+			$typeDataSet = new DataSet($typeRawData);
 			
 			try {
 				$natureKey = RawDef::TYPE_NATURE_KEY;
-				if (!$typeAttributes->contains(RawDef::TYPE_NATURE_KEY) && $typeAttributes->contains('type')) {
+				if (!$typeDataSet->contains(RawDef::TYPE_NATURE_KEY) && $typeDataSet->contains('type')) {
 					$natureKey = 'type';
 				}
-				$nature = $typeAttributes->reqEnum($natureKey, RawDef::getTypeNatures());
+				$nature = $typeDataSet->reqEnum($natureKey, RawDef::getTypeNatures());
 				
 				if ($nature == RawDef::NATURE_ENTITY) {
-					$eiTypeExtractions[$typeId] = $this->createEiTypeExtraction($typeId, $typeAttributes);
+					$eiTypeExtractions[$typeId] = $this->createEiTypeExtraction($typeId, $typeDataSet);
 				} else {
-					$customTypeExtractions[$typeId] = $this->createCustomTypeExtraction($typeId, $typeAttributes);
+					$customTypeExtractions[$typeId] = $this->createCustomTypeExtraction($typeId, $typeDataSet);
 				}
 			} catch (AttributesException $e) {
 				throw $this->createSpecException($typeId, $e);
@@ -102,100 +102,100 @@ class SpecExtractor {
 	}
 	
 	
-	private function createCustomTypeExtraction($id, Attributes $customSpecAttributes) {
+	private function createCustomTypeExtraction($id, DataSet $customSpecDataSet) {
 		$extraction = new CustomTypeExtraction($id, $this->moduleNamespace);
-		$extraction->setControllerLookupId($customSpecAttributes->getScalar(RawDef::CUSTOM_CONTROLLER_LOOKUP_ID_KEY));
+		$extraction->setControllerLookupId($customSpecDataSet->getScalar(RawDef::CUSTOM_CONTROLLER_LOOKUP_ID_KEY));
 		return $extraction;
 	}
 	
-	private function createEiTypeExtraction($id, Attributes $eiTypeAttributes) {
+	private function createEiTypeExtraction($id, DataSet $eiTypeDataSet) {
 		$extraction = new EiTypeExtraction($id, $this->moduleNamespace);
-		$extraction->setEntityClassName($this->upgradeTypeName($eiTypeAttributes->getString(RawDef::EI_CLASS_KEY)));
-		$extraction->setEiMaskExtraction($this->createEiMaskExtraction($eiTypeAttributes));
-		$extraction->setDataSourceName($eiTypeAttributes->getString(RawDef::EI_DATA_SOURCE_NAME_KEY, false, null, true));
+		$extraction->setEntityClassName($this->upgradeTypeName($eiTypeDataSet->getString(RawDef::EI_CLASS_KEY)));
+		$extraction->setEiMaskExtraction($this->createEiMaskExtraction($eiTypeDataSet));
+		$extraction->setDataSourceName($eiTypeDataSet->getString(RawDef::EI_DATA_SOURCE_NAME_KEY, false, null, true));
 		
-		if (null !== ($nssAttrs = $eiTypeAttributes->getArray(RawDef::EI_NESTED_SET_STRATEGY_KEY, false, null))) {
-			$nssAttributes = new Attributes($nssAttrs);
+		if (null !== ($nssAttrs = $eiTypeDataSet->getArray(RawDef::EI_NESTED_SET_STRATEGY_KEY, false, null))) {
+			$nssDataSet = new DataSet($nssAttrs);
 			try {
 				$extraction->setNestedSetStrategy(new NestedSetStrategy(
-						CrIt::p($nssAttributes->getString(RawDef::EI_NESTED_SET_STRATEGY_LEFT_KEY)),
-						CrIt::p($nssAttributes->getString(RawDef::EI_NESTED_SET_STRATEGY_RIGHT_KEY))));
+						CrIt::p($nssDataSet->getString(RawDef::EI_NESTED_SET_STRATEGY_LEFT_KEY)),
+						CrIt::p($nssDataSet->getString(RawDef::EI_NESTED_SET_STRATEGY_RIGHT_KEY))));
 			} catch (\InvalidArgumentException $e) {
 				throw new InvalidAttributeException(
 						'NestedSetStrategy attribute could not be converted to CriteriaProperty', 0, $e);
 			}
 		}
 		
-// 		$extraction->setDefaultEiMaskId($eiTypeAttributes->getString(RawDef::EI_DEFAULT_MASK_ID, false, null, true));
+// 		$extraction->setDefaultEiMaskId($eiTypeDataSet->getString(RawDef::EI_DEFAULT_MASK_ID, false, null, true));
 	
 		return $extraction;
 	}
 	
-	public function createEiMaskExtraction(Attributes $eiMaskAttributes) {
+	public function createEiMaskExtraction(DataSet $eiMaskDataSet) {
 		$eiMaskExtraction = new EiMaskExtraction();
 	
-		$label = $eiMaskAttributes->getScalar(RawDef::EI_DEF_LABEL_KEY, false, null, true);
+		$label = $eiMaskDataSet->getScalar(RawDef::EI_DEF_LABEL_KEY, false, null, true);
 		$eiMaskExtraction->setLabel($label);
 	
-		$pluralLabel = $eiMaskAttributes->getScalar(RawDef::EI_DEF_PLURAL_LABEL_KEY, false, null, true);
+		$pluralLabel = $eiMaskDataSet->getScalar(RawDef::EI_DEF_PLURAL_LABEL_KEY, false, null, true);
 		if ($pluralLabel === null) $pluralLabel = $label;
 		$eiMaskExtraction->setPluralLabel($pluralLabel);
 		
-		$eiMaskExtraction->setIconType($eiMaskAttributes->getScalar(RawDef::EI_DEF_ICON_TYPE_KEY, false, null, true));
+		$eiMaskExtraction->setIconType($eiMaskDataSet->getScalar(RawDef::EI_DEF_ICON_TYPE_KEY, false, null, true));
 	
 		$eiMaskExtraction->setIdentityStringPattern(
-				$eiMaskAttributes->getString(RawDef::EI_DEF_REPRESENTATION_STRING_PATTERN_KEY, false, null, true));
+				$eiMaskDataSet->getString(RawDef::EI_DEF_REPRESENTATION_STRING_PATTERN_KEY, false, null, true));
 	
-		$eiMaskExtraction->setDraftingAllowed($eiMaskAttributes->optBool(RawDef::EI_DEF_DRAFTING_ALLOWED_KEY, 
+		$eiMaskExtraction->setDraftingAllowed($eiMaskDataSet->optBool(RawDef::EI_DEF_DRAFTING_ALLOWED_KEY, 
 				$eiMaskExtraction->isDraftingAllowed()));
 	
 		$eiMaskExtraction->setPreviewControllerLookupId(
-				$eiMaskAttributes->getString(RawDef::EI_DEF_PREVIEW_CONTROLLER_LOOKUP_ID_KEY, false, null, true));
+				$eiMaskDataSet->getString(RawDef::EI_DEF_PREVIEW_CONTROLLER_LOOKUP_ID_KEY, false, null, true));
 	
 	
-		$eiPropRawDatas = $eiMaskAttributes->getArray(RawDef::EI_DEF_PROPS_KEY, false, array(),
+		$eiPropRawDatas = $eiMaskDataSet->getArray(RawDef::EI_DEF_PROPS_KEY, false, array(),
 				TypeConstraint::createSimple('array'));
 		if (empty($eiPropRawDatas)) {
-			$eiPropRawDatas = $eiMaskAttributes->getArray('fields', false, array(), 
+			$eiPropRawDatas = $eiMaskDataSet->getArray('fields', false, array(), 
 					TypeConstraint::createSimple('array'));
 		}
 		
 		foreach ($eiPropRawDatas as $eiPropId => $fieldRawData) {
 			try {
-				$eiMaskExtraction->addEiPropExtraction($this->createEiPropExtraction($eiPropId, new Attributes($fieldRawData)));
+				$eiMaskExtraction->addEiPropExtraction($this->createEiPropExtraction($eiPropId, new DataSet($fieldRawData)));
 			} catch (AttributesException $e) {
 				throw $this->createEiComponentException('EiProp ' . $eiPropId, $e);
 			}
 		}
 	
-		foreach ($eiMaskAttributes->getArray(RawDef::EI_DEF_COMMANDS_KEY, false, array(), 
+		foreach ($eiMaskDataSet->getArray(RawDef::EI_DEF_COMMANDS_KEY, false, array(), 
 				TypeConstraint::createSimple('array')) as $eiCommandId => $eiCommandRawData) {
 			try {
 				$eiMaskExtraction->addEiCommandExtraction($this->createEiComponentExtraction($eiCommandId, 
-						new Attributes($eiCommandRawData)));
+						new DataSet($eiCommandRawData)));
 			} catch (AttributesException $e) {
 				throw $this->createEiComponentException('EiCommand ' . $eiCommandId, $e);
 			}
 		}
 
-		$eiMaskExtraction->setOverviewEiCommandId($eiMaskAttributes->getString(
+		$eiMaskExtraction->setOverviewEiCommandId($eiMaskDataSet->getString(
 				RawDef::EI_DEF_OVERVIEW_COMMAND_ID_KEY, false));	
-		$eiMaskExtraction->setGenericDetailEiCommandId($eiMaskAttributes->getString(
+		$eiMaskExtraction->setGenericDetailEiCommandId($eiMaskDataSet->getString(
 				RawDef::EI_DEF_ENTRY_DETAIL_COMMAND_ID_KEY, false));	
-		$eiMaskExtraction->setGenericEditEiCommandId($eiMaskAttributes->getString(
+		$eiMaskExtraction->setGenericEditEiCommandId($eiMaskDataSet->getString(
 				RawDef::EI_DEF_ENTRY_EDIT_COMMAND_ID_KEY, false));	
-		$eiMaskExtraction->setGenericEditEiCommandId($eiMaskAttributes->getString(
+		$eiMaskExtraction->setGenericEditEiCommandId($eiMaskDataSet->getString(
 				RawDef::EI_DEF_ENTRY_ADD_COMMAND_ID_KEY, false));	
 		
-		if (null !== ($filterData = $eiMaskAttributes->getArray(RawDef::EI_DEF_FILTER_DATA_KEY, false, null))) {
-			$eiMaskExtraction->setFilterSettingGroup(FilterSettingGroup::create(new Attributes($filterData)));
+		if (null !== ($filterData = $eiMaskDataSet->getArray(RawDef::EI_DEF_FILTER_DATA_KEY, false, null))) {
+			$eiMaskExtraction->setFilterSettingGroup(FilterSettingGroup::create(new DataSet($filterData)));
 		}
 		
-		if (null !== ($defaultSortSettingGroup = $eiMaskAttributes->getScalarArray(RawDef::EI_DEF_DEFAULT_SORT_KEY, false, null))) {
-			$eiMaskExtraction->setDefaultSortSettingGroup(SortSettingGroup::create(new Attributes($defaultSortSettingGroup)));
+		if (null !== ($defaultSortSettingGroup = $eiMaskDataSet->getScalarArray(RawDef::EI_DEF_DEFAULT_SORT_KEY, false, null))) {
+			$eiMaskExtraction->setDefaultSortSettingGroup(SortSettingGroup::create(new DataSet($defaultSortSettingGroup)));
 		}
 		
-		$eiMaskExtraction->setDisplayScheme($this->createDisplayScheme($eiMaskAttributes));	
+		$eiMaskExtraction->setDisplayScheme($this->createDisplayScheme($eiMaskDataSet));	
 
 		return $eiMaskExtraction;
 	}
@@ -213,22 +213,22 @@ class SpecExtractor {
 	    		$typeName);
 	}
 	
-	private function createEiPropExtraction($id, Attributes $attributes, array $parentIds = array())  {
+	private function createEiPropExtraction($id, DataSet $dataSet, array $parentIds = array())  {
 		$extraction = new EiPropExtraction();
 		$extraction->setId($id);
-		$extraction->setLabel($attributes->getScalar(RawDef::EI_FIELD_LABEL_KEY, false, null, true));
-		$extraction->setClassName($this->upgradeTypeName($attributes->getScalar(RawDef::EI_COMPONENT_CLASS_KEY)));
-		$extraction->setProps($attributes->getArray(RawDef::EI_COMPONENT_PROPS_KEY, false));
-		$extraction->setEntityPropertyName($attributes->getString(RawDef::EI_FIELD_ENTITY_PROPERTY_KEY, false, null, true));
-		$extraction->setObjectPropertyName($attributes->getString(RawDef::EI_FIELD_OBJECT_PROPERTY_KEY, false, null, true));
+		$extraction->setLabel($dataSet->getScalar(RawDef::EI_FIELD_LABEL_KEY, false, null, true));
+		$extraction->setClassName($this->upgradeTypeName($dataSet->getScalar(RawDef::EI_COMPONENT_CLASS_KEY)));
+		$extraction->setProps($dataSet->getArray(RawDef::EI_COMPONENT_PROPS_KEY, false));
+		$extraction->setEntityPropertyName($dataSet->getString(RawDef::EI_FIELD_ENTITY_PROPERTY_KEY, false, null, true));
+		$extraction->setObjectPropertyName($dataSet->getString(RawDef::EI_FIELD_OBJECT_PROPERTY_KEY, false, null, true));
 		
 		$forkedExtractions = array();
-		$eiPropRawDatas = $attributes->getArray(RawDef::EI_DEF_FORKED_PROPS_KEY, false, array(),
+		$eiPropRawDatas = $dataSet->getArray(RawDef::EI_DEF_FORKED_PROPS_KEY, false, array(),
 				TypeConstraint::createSimple('array'));
 		$parentIds[] = $id;
 		foreach ($eiPropRawDatas as $forkedId => $forkedEiPropRawData) {
 			try {
-				$forkedExtractions[] = $this->createEiPropExtraction($forkedId, new Attributes($forkedEiPropRawData), $parentIds);
+				$forkedExtractions[] = $this->createEiPropExtraction($forkedId, new DataSet($forkedEiPropRawData), $parentIds);
 			} catch (AttributesException $e) {
 				throw $this->createEiComponentException('EiProp ' . implode('.' , array_merge($parentIds, [$id])), $e);
 			}
@@ -238,19 +238,19 @@ class SpecExtractor {
 		return $extraction;
 	}
 	
-	private function createEiComponentExtraction($eiCommandId, Attributes $attributes) {
+	private function createEiComponentExtraction($eiCommandId, DataSet $dataSet) {
 		$extraction = new EiComponentExtraction();
 		$extraction->setId($eiCommandId);
-		$extraction->setClassName($this->upgradeTypeName($attributes->getScalar(RawDef::EI_COMPONENT_CLASS_KEY)));
-		$extraction->setProps($attributes->getArray(RawDef::EI_COMPONENT_PROPS_KEY, false));
+		$extraction->setClassName($this->upgradeTypeName($dataSet->getScalar(RawDef::EI_COMPONENT_CLASS_KEY)));
+		$extraction->setProps($dataSet->getArray(RawDef::EI_COMPONENT_PROPS_KEY, false));
 		return $extraction;
-	}	
+	}
 	
-	private function createEiModficatorExtraction(string $eiModificatorId, Attributes $attributes, 
+	private function createEiModficatorExtraction(string $eiModificatorId, DataSet $dataSet, 
 			TypePath $eiTypePath) {
 		$extraction = new EiModificatorExtraction($eiModificatorId, $this->moduleNamespace, $eiTypePath);
-		$extraction->setClassName($this->upgradeTypeName($attributes->getScalar(RawDef::EI_COMPONENT_CLASS_KEY)));
-		$extraction->setProps($attributes->getArray(RawDef::EI_COMPONENT_PROPS_KEY, false));
+		$extraction->setClassName($this->upgradeTypeName($dataSet->getScalar(RawDef::EI_COMPONENT_CLASS_KEY)));
+		$extraction->setProps($dataSet->getArray(RawDef::EI_COMPONENT_PROPS_KEY, false));
 		return $extraction;
 	}	
 	
@@ -279,19 +279,19 @@ class SpecExtractor {
 	 */
 	public function extractEiTypeExtensionGroups() {
 		$eiTypeExtensionsKey = RawDef::EI_TYPE_EXTENSIONS_KEY;
-		if (!$this->attributes->contains(RawDef::EI_TYPE_EXTENSIONS_KEY) 
-				&& $this->attributes->contains('eiMasks')) {
+		if (!$this->dataSet->contains(RawDef::EI_TYPE_EXTENSIONS_KEY) 
+				&& $this->dataSet->contains('eiMasks')) {
 			$eiTypeExtensionsKey = 'eiMasks';			
 		}
-		$attributes = new Attributes($this->attributes->getArray($eiTypeExtensionsKey, false));
+		$dataSet = new DataSet($this->dataSet->getArray($eiTypeExtensionsKey, false));
 		
 		$eiTypeExtensionExtractionGroups = array();
-		foreach ($attributes->getNames() as $extendedTypePathStr) {
+		foreach ($dataSet->getNames() as $extendedTypePathStr) {
 			try {
 				$extendedTypePath = TypePath::create($extendedTypePathStr);
-				$eiTypeExtensionAttributes = new Attributes($attributes->getArray($extendedTypePathStr, false));
+				$eiTypeExtensionDataSet = new DataSet($dataSet->getArray($extendedTypePathStr, false));
 				$eiTypeExtensionExtractionGroups[$extendedTypePathStr] 
-						= $this->createEiTypeExtensionExtractions($extendedTypePath, $eiTypeExtensionAttributes);
+						= $this->createEiTypeExtensionExtractions($extendedTypePath, $eiTypeExtensionDataSet);
 			} catch (\InvalidArgumentException $e) {
 				throw $this->createSpecEiMaskException($extendedTypePathStr, $e);
 			} catch (AttributesException $e) {
@@ -304,14 +304,14 @@ class SpecExtractor {
 		return $eiTypeExtensionExtractionGroups;
 	}
 	
-	private function createEiTypeExtensionExtractions(TypePath $extendedTypePath, Attributes $eiMasksAttributes): array {
+	private function createEiTypeExtensionExtractions(TypePath $extendedTypePath, DataSet $eiMasksDataSet): array {
 		$eiTypeExtensionExtraction = array();
 		
-		foreach ($eiMasksAttributes->getNames() as $eiTypeExtensionId) {
+		foreach ($eiMasksDataSet->getNames() as $eiTypeExtensionId) {
 			try {
 				$eiTypeExtensionExtraction[$eiTypeExtensionId] = $this->createEiTypeExtensionExtraction(
 						$extendedTypePath, $eiTypeExtensionId,
-						new Attributes($eiMasksAttributes->getArray($eiTypeExtensionId)));
+						new DataSet($eiMasksDataSet->getArray($eiTypeExtensionId)));
 			} catch (InvalidConfigurationException $e) {
 				throw $this->createEiTypeExtensionException($eiTypeExtensionId, $e);
 			} catch (AttributesException $e) {
@@ -322,24 +322,24 @@ class SpecExtractor {
 		return $eiTypeExtensionExtraction;
 	}
 	
-	private function createEiTypeExtensionExtraction(TypePath $extendedTypePath, $id, Attributes $attributes): EiTypeExtensionExtraction {
+	private function createEiTypeExtensionExtraction(TypePath $extendedTypePath, $id, DataSet $dataSet): EiTypeExtensionExtraction {
 		$eiTypeExtensionExtraction = new EiTypeExtensionExtraction($id, $this->moduleNamespace, $extendedTypePath);
 		
-		$eiTypeExtensionExtraction->setEiMaskExtraction($this->createEiMaskExtraction($attributes));
+		$eiTypeExtensionExtraction->setEiMaskExtraction($this->createEiMaskExtraction($dataSet));
 		
 		return $eiTypeExtensionExtraction;
 	}
 	
 	public function extractEiModificatorGroups() {
-		$attributes = new Attributes($this->attributes->getArray(RawDef::EI_MODIFICATORS_KEY, false));
+		$dataSet = new DataSet($this->dataSet->getArray(RawDef::EI_MODIFICATORS_KEY, false));
 		
 		$eiModificatorGroups = array();
-		foreach ($attributes->getNames() as $typePathStr) {
+		foreach ($dataSet->getNames() as $typePathStr) {
 			try {
 				$typePath = TypePath::create($typePathStr);
 				
-				$eiModificatorsAttributes = new Attributes($attributes->getArray($typePathStr, false));
-				$eiModificatorGroups[$typePathStr] = $this->createEiModificatorExtractions($eiModificatorsAttributes, $typePath);
+				$eiModificatorsDataSet = new DataSet($dataSet->getArray($typePathStr, false));
+				$eiModificatorGroups[$typePathStr] = $this->createEiModificatorExtractions($eiModificatorsDataSet, $typePath);
 			} catch (AttributesException $e) {
 				throw $this->createSpecEiMaskException($typePath, $e);
 			} catch (InvalidConfigurationException $e) {
@@ -350,13 +350,13 @@ class SpecExtractor {
 		return $eiModificatorGroups;
 	}
 	
-	public function createEiModificatorExtractions(Attributes $eiModificatorsAttributes, TypePath $eiTypePath): array {
+	public function createEiModificatorExtractions(DataSet $eiModificatorsDataSet, TypePath $eiTypePath): array {
 		$commonEiModificators = array();
 		
-		foreach ($eiModificatorsAttributes->getNames() as $modificatorId) {
+		foreach ($eiModificatorsDataSet->getNames() as $modificatorId) {
 			try {
 				$commonEiModificators[$modificatorId] = $this->createEiModficatorExtraction($modificatorId,
-						new Attributes($eiModificatorsAttributes->getArray($modificatorId)), $eiTypePath);
+						new DataSet($eiModificatorsDataSet->getArray($modificatorId)), $eiTypePath);
 			} catch (InvalidConfigurationException $e) {
 				throw $this->createEiModificatorException($modificatorId, $eiTypePath, $e);
 			} catch (AttributesException $e) {
@@ -367,32 +367,32 @@ class SpecExtractor {
 		return $commonEiModificators;
 	}
 	
-	private function createDisplayScheme(Attributes $attributes): DisplayScheme {
+	private function createDisplayScheme(DataSet $dataSet): DisplayScheme {
 		$guiOrder = new DisplayScheme();
 		
-		$guiOrder->setOverviewDisplayStructure($this->extractDisplayStructure(RawDef::OVERVIEW_GUI_FIELD_ORDER_KEY, $attributes));
-		$guiOrder->setBulkyDisplayStructure($this->extractDisplayStructure(RawDef::BULKY_GUI_FIELD_ORDER_KEY, $attributes));
-		$guiOrder->setDetailDisplayStructure($this->extractDisplayStructure(RawDef::DETAIL_GUI_FIELD_ORDER_KEY, $attributes));
-		$guiOrder->setEditDisplayStructure($this->extractDisplayStructure(RawDef::EDIT_GUI_FIELD_ORDER_KEY, $attributes));
-		$guiOrder->setAddDisplayStructure($this->extractDisplayStructure(RawDef::ADD_GUI_FIELD_ORDER_KEY, $attributes));
+		$guiOrder->setOverviewDisplayStructure($this->extractDisplayStructure(RawDef::OVERVIEW_GUI_FIELD_ORDER_KEY, $dataSet));
+		$guiOrder->setBulkyDisplayStructure($this->extractDisplayStructure(RawDef::BULKY_GUI_FIELD_ORDER_KEY, $dataSet));
+		$guiOrder->setDetailDisplayStructure($this->extractDisplayStructure(RawDef::DETAIL_GUI_FIELD_ORDER_KEY, $dataSet));
+		$guiOrder->setEditDisplayStructure($this->extractDisplayStructure(RawDef::EDIT_GUI_FIELD_ORDER_KEY, $dataSet));
+		$guiOrder->setAddDisplayStructure($this->extractDisplayStructure(RawDef::ADD_GUI_FIELD_ORDER_KEY, $dataSet));
 		
-		if (null !== ($controlIds = $attributes->getScalarArray(RawDef::EI_DEF_PARTIAL_CONTROL_ORDER_KEY, false))) {
+		if (null !== ($controlIds = $dataSet->getScalarArray(RawDef::EI_DEF_PARTIAL_CONTROL_ORDER_KEY, false))) {
 			$guiOrder->setPartialControlOrder(new ControlOrder($controlIds));
 		}
 		
-		if (null !== ($controlIds = $attributes->getScalarArray(RawDef::EI_DEF_OVERALL_CONTROL_ORDER_KEY, false))) {
+		if (null !== ($controlIds = $dataSet->getScalarArray(RawDef::EI_DEF_OVERALL_CONTROL_ORDER_KEY, false))) {
 			$guiOrder->setOverallControlOrder(new ControlOrder($controlIds));
 		}
 		
-		if (null !== ($controlIds = $attributes->getScalarArray(RawDef::EI_DEF_ENTRY_CONTROL_ORDER_KEY, false))) {
-			$guiOrder->setEntryControlOrder(new ControlOrder($controlIds));
+		if (null !== ($controlIds = $dataSet->getScalarArray(RawDef::EI_DEF_ENTRY_CONTROL_ORDER_KEY, false))) {
+			$guiOrder->setEntryGuiControlOrder(new ControlOrder($controlIds));
 		}
 		
 		return $guiOrder;
 	}
 	
-	private function extractDisplayStructure($key, Attributes $attributes) {
-		$data = $attributes->getArray($key, false, null);
+	private function extractDisplayStructure($key, DataSet $dataSet) {
+		$data = $dataSet->getArray($key, false, null);
 		if ($data === null) return null;
 		
 		try {
@@ -409,43 +409,43 @@ class SpecExtractor {
 		foreach ($data as $key => $fieldId) {
 			//Old specs (guiId)
 			if (!is_array($fieldId)) {
-				$displayStructure->addGuiFieldPath(GuiFieldPath::create($fieldId));
+				$displayStructure->addDefPropPath(DefPropPath::create($fieldId));
 				continue;
 			}
 	
-			$displayStructureAttributes = new Attributes($fieldId);
+			$displayStructureDataSet = new DataSet($fieldId);
 			
 			//Old specs (fieldOrder)
-			$title = $displayStructureAttributes->getScalar(RawDef::GUI_FIELD_ORDER_GROUP_TITLE_KEY, false);
+			$title = $displayStructureDataSet->getScalar(RawDef::GUI_FIELD_ORDER_GROUP_TITLE_KEY, false);
 			if (null !== $title) {
-			    $dsa = $displayStructureAttributes->getArray('guiFieldOrder', false, null);
+			    $dsa = $displayStructureDataSet->getArray('guiFieldOrder', false, null);
 			    if ($dsa === null) {
-			        $dsa = $displayStructureAttributes->getArray(RawDef::GUI_FIELD_ORDER_KEY);
+			        $dsa = $displayStructureDataSet->getArray(RawDef::GUI_FIELD_ORDER_KEY);
 			    }
 			    $childDisplayStructure = $this->createDisplayStructure($dsa);
-				$groupType = $displayStructureAttributes->optEnum(RawDef::GUI_FIELD_ORDER_GROUP_TYPE_KEY, DisplayItem::getGroupTypes(),
-						DisplayItem::TYPE_SIMPLE_GROUP);
+			    $groupType = $displayStructureDataSet->optEnum(RawDef::GUI_FIELD_ORDER_GROUP_TYPE_KEY, SiStructureType::groups(),
+						SiStructureType::SIMPLE_GROUP);
 				if ($groupType === null) {
-					$groupType = DisplayItem::TYPE_SIMPLE_GROUP;
+					$groupType = SiStructureType::SIMPLE_GROUP;
 				}
 				
 				$displayStructure->addDisplayStructure($childDisplayStructure, $groupType, $title);
 				continue;
 			}
-			
-			$label = $displayStructureAttributes->getScalar(RawDef::DISPLAY_ITEM_LABEL_KEY, false, null, true);
-			$guiFieldPathStr = $displayStructureAttributes->getScalar(RawDef::DISPLAY_ITEM_GUI_ID_PATH_KEY, false, null, true);
-			if (null !== $guiFieldPathStr) {
-				$displayStructure->addGuiFieldPath(GuiFieldPath::create($guiFieldPathStr), 
-						$displayStructureAttributes->optEnum(RawDef::DISPLAY_ITEM_GROUP_TYPE_KEY, DisplayItem::getTypes()), 
+						
+			$label = $displayStructureDataSet->getScalar(RawDef::DISPLAY_ITEM_LABEL_KEY, false, null, true);
+			$defPropPathStr = $displayStructureDataSet->getScalar(RawDef::DISPLAY_ITEM_GUI_ID_PATH_KEY, false, null, true);
+			if (null !== $defPropPathStr) {
+				$displayStructure->addDefPropPath(DefPropPath::create($defPropPathStr), 
+						$displayStructureDataSet->optEnum(RawDef::DISPLAY_ITEM_GROUP_TYPE_KEY, SiStructureType::all()), 
 						Rocket::buildLstr($label, $this->moduleNamespace));
 				continue;
 			}
 			
 			$childDisplayStructure = $this->createDisplayStructure(
-					$displayStructureAttributes->getArray(RawDef::DISPLAY_ITEM_DISPLAY_STRUCTURE_KEY));
+					$displayStructureDataSet->getArray(RawDef::DISPLAY_ITEM_DISPLAY_STRUCTURE_KEY));
 			$displayStructure->addDisplayStructure($childDisplayStructure, 
-					$displayStructureAttributes->reqEnum(RawDef::DISPLAY_ITEM_GROUP_TYPE_KEY, DisplayItem::getTypes()), 
+					$displayStructureDataSet->reqEnum(RawDef::DISPLAY_ITEM_GROUP_TYPE_KEY, SiStructureType::all()), 
 					Rocket::buildLstr($label, $this->moduleNamespace));
 		}
 	
@@ -457,34 +457,34 @@ class SpecExtractor {
 	 */
 	public function extractLaunchPads() {
 		$launchPadsKey = RawDef::LAUNCH_PADS_KEY;
-		if (!$this->attributes->contains(RawDef::LAUNCH_PADS_KEY)
-				&& $this->attributes->contains('menuItems')) {
+		if (!$this->dataSet->contains(RawDef::LAUNCH_PADS_KEY)
+				&& $this->dataSet->contains('menuItems')) {
 			$launchPadsKey = 'menuItems';
 		}
 		
 		$launchPadExtractions = array();
-		foreach ($this->attributes->getArray($launchPadsKey, false, array(), 
+		foreach ($this->dataSet->getArray($launchPadsKey, false, array(), 
 				TypeConstraint::createArrayLike('array', true)) as $typePathStr => $launchPadRawData) {
 					
-			$launchPadAttributes = null;
+			$launchPadDataSet = null;
 			if ($launchPadRawData !== null) {
-				$launchPadAttributes = new Attributes($launchPadRawData);
+				$launchPadDataSet = new DataSet($launchPadRawData);
 			}
 			
-			$launchPadExtractions[$typePathStr] = $this->createLaunchPadExtraction($typePathStr, new Attributes($launchPadRawData));
+			$launchPadExtractions[$typePathStr] = $this->createLaunchPadExtraction($typePathStr, new DataSet($launchPadRawData));
 		}
 		return $launchPadExtractions;
 	}
 
 	/**
 	 * @param string $launchPadId
-	 * @param Attributes $specAttributes
+	 * @param DataSet $specDataSet
 	 * @return LaunchPadExtraction
 	 */
-	private function createLaunchPadExtraction($launchPadId, Attributes $specAttributes) {
+	private function createLaunchPadExtraction($launchPadId, DataSet $specDataSet) {
 		try {
 			$launchPadExtraction = new LaunchPadExtraction(TypePath::create($launchPadId), $this->moduleNamespace);
-			$launchPadExtraction->setLabel($specAttributes->getString(RawDef::LAUNCH_PAD_LABEL_KEY, false));
+			$launchPadExtraction->setLabel($specDataSet->getString(RawDef::LAUNCH_PAD_LABEL_KEY, false));
 			return $launchPadExtraction;
 		} catch (\InvalidArgumentException $e) {
 			throw $this->createLaunchPadException($launchPadId, $e);

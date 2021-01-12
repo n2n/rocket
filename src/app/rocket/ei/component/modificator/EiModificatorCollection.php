@@ -25,6 +25,8 @@ use rocket\ei\component\EiComponentCollection;
 use rocket\ei\EiType;
 use rocket\ei\mask\EiMask;
 use rocket\ei\EiModificatorPath;
+use rocket\ei\manage\gui\EiGuiFrame;
+use rocket\ei\util\Eiu;
 
 class EiModificatorCollection extends EiComponentCollection {
 	/**
@@ -45,7 +47,7 @@ class EiModificatorCollection extends EiComponentCollection {
 	 * @return EiModificatorWrapper
 	 */
 	public function add(EiModificator $eiModificator, string $id = null, bool $prepend = false) {
-		$eiModificatorPath = new EiModificatorPath([$this->makeId($id, $eiModificator)]);
+		$eiModificatorPath = new EiModificatorPath($this->makeId($id, $eiModificator));
 		$eiModificatorWrapper = new EiModificatorWrapper($eiModificatorPath, $eiModificator, $this);
 		
 		$this->addElement($eiModificatorPath, $eiModificator);
@@ -63,4 +65,16 @@ class EiModificatorCollection extends EiComponentCollection {
 		$this->addIndependentElement($eiModificatorWrapper->getEiModificatorPath(), $independentEiModificator);
 		return $eiModificatorWrapper;
 	}
+	
+	function setupEiGuiFrame(EiGuiFrame $eiGuiFrame) {
+		if ($this->isEmpty()) {
+			return;
+		}
+		
+		$eiu = new Eiu($eiGuiFrame);
+		foreach ($this as $eiModificator) {
+			$eiModificator->setupEiGuiFrame($eiu);
+		}
+	}
+	
 }

@@ -23,31 +23,43 @@ namespace rocket\ei\component\command;
 
 use rocket\ei\component\EiComponent;
 use rocket\ei\util\Eiu;
-use n2n\web\http\controller\Controller;
 use n2n\util\ex\IllegalStateException;
+use n2n\web\http\controller\Controller;
+use n2n\l10n\Lstr;
 
 interface EiCommand extends EiComponent {
+	
+	/**
+	 * @return Lstr
+	 */
+	function getLabelLstr(): Lstr;
+	
+	/**
+	 * @return bool
+	 */
+	function isPrivileged(): bool;
 	
 	/**
 	 * Will be the first called method by rocket
 	 * @param EiCommandWrapper $wrapper
 	 */
-	public function setWrapper(EiCommandWrapper $wrapper);
+	function setWrapper(EiCommandWrapper $wrapper);
 	
 	/**
 	 * @return EiCommandWrapper
 	 * @throws IllegalStateException if {@self::setWrapper()} hasn't been called yet.
 	 */
-	public function getWrapper(): EiCommandWrapper;
+	function getWrapper(): EiCommandWrapper;
 	
 	/**
 	 * @param Eiu $eiu
-	 * @return Controller
+	 * @return Controller|null
 	 */
-	public function lookupController(Eiu $eiu): Controller;
+	function lookupController(Eiu $eiu): ?Controller;
+	
 	/**
 	 * @param mixed $obj
 	 * @return boolean
 	 */
-	public function equals($obj);
+	function equals($obj);
 }

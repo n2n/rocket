@@ -21,26 +21,30 @@
  */
 namespace rocket\impl\ei\component\prop\string;
 
-use n2n\impl\web\ui\view\html\HtmlView;
-use n2n\web\dispatch\mag\Mag;
-use rocket\impl\ei\component\prop\string\conf\UrlEiPropConfigurator;
 use rocket\ei\util\Eiu;
-use n2n\impl\web\dispatch\mag\model\UrlMag;
 use n2n\util\uri\Url;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\reflection\property\AccessProxy;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\UrlEntityProperty;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
+use rocket\impl\ei\component\prop\string\conf\UrlConfig;
+use rocket\ei\util\factory\EifField;
+use n2n\validation\plan\impl\Validators;
+use rocket\si\content\impl\SiFields;
+use rocket\ei\util\factory\EifGuiField;
 
 class UrlEiProp extends AlphanumericEiProp {
-	private $autoScheme;
-	private $allowedSchemes = array();
-	private $relativeAllowed = false;
 	
-	public function getTypeName(): string {
-		return "Link";
+	private $urlConfig;
+	
+	function __construct() {
+		parent::__construct();
+		$this->urlConfig = new UrlConfig();
 	}
+	
+// 	public function getTypeName(): string {
+// 		return "Link";
+// 	}
 	
 	public function setObjectPropertyAccessProxy(?AccessProxy $objectPropertyAccessProxy) {
 		parent::setObjectPropertyAccessProxy($objectPropertyAccessProxy);
@@ -67,93 +71,97 @@ class UrlEiProp extends AlphanumericEiProp {
 		return parent::buildQuickSearchProp($eiu);
 	}
 
-	public function createEiPropConfigurator(): EiPropConfigurator {
-		return new UrlEiPropConfigurator($this);
-	}
-	
-	public function setAllowedSchemes(array $allowedSchemes) {
-		$this->allowedSchemes = $allowedSchemes;
-	}
-	
-	public function getAllowedSchemes(): array {
-		return $this->allowedSchemes;
-	}
-	
-	public function isRelativeAllowed(): bool {
-		return $this->relativeAllowed;
-	}
-	
-	public function setRelativeAllowed(bool $relativeAllowed) {
-		$this->relativeAllowed = $relativeAllowed;
-	}
-	
-	public function setAutoScheme(string $autoScheme = null) {
-		$this->autoScheme = $autoScheme;
-	}
-	
-	public function getAutoScheme() {
-		return $this->autoScheme;
-	}
-	
-// 	public function createEditablePreviewUiComponent(PreviewModel $previewModel, PropertyPath $propertyPath,
-// 			HtmlView $view, \Closure $createCustomUiElementCallback = null) {
-// 		return $view->getFormHtmlBuilder()->getInput($propertyPath, array('class' => 'rocket-preview-inpage-component'));
-// 	}
-	
-	public function createMag(Eiu $eiu): Mag {
-		$mag = new UrlMag($this->getLabelLstr(), null, $this->isMandatory($eiu), 
-				$this->getMaxlength());
-		if (!empty($this->allowedSchemes)) {
-			$mag->setAllowedSchemes($this->allowedSchemes);
-		}
-		$mag->setRelativeAllowed($this->relativeAllowed);
-		$mag->setAutoScheme($this->autoScheme);
-		$mag->setInputAttrs(array('placeholder' => $this->getLabelLstr(), 'class' => 'form-control'));
-// 		$mag->setAttrs(array('class' => 'rocket-block'));
-		return $mag;
-	}
-	
-	public function loadMagValue(Eiu $eiu, Mag $mag) {
-		$value = $eiu->field()->getValue();
-		if ($value !== null) {
-			$value = Url::create($value, true);
-		}
-		$mag->setValue($value);
-	}
-	
-	public function saveMagValue(Mag $mag, Eiu $eiu) {
-		$value = $mag->getValue();
-		if ($value !== null) {
-			$value = /*(string)*/ $value;
-		}
-		$eiu->field()->setValue($value);
+	public function prepare() {
+		parent::prepare();
+		$this->getConfigurator()->addAdaption($this->urlConfig);
 	}
 
-	public function createUiComponent(HtmlView $view, Eiu $eiu)  {
-		$value = $eiu->field()->getValue();
-		if ($value === null) return null;
-		return $view->getHtmlBuilder()->getLink($value, $this->buildLabel($value, $eiu->entryGui()->isBulky()),
-				array('target' => '_blank'));
+	function createEifField(Eiu $eiu): EifField {
+		return parent::createEifField($eiu)
+				->setReadMapper(function ($value) { return $this->readMap($value); })
+				->setWriteMapper(function ($value) use ($eiu) { return $this->writeMap($eiu, $value); })
+				->val(Validators::url(!$this->urlConfig->isRelativeAllowed(), $this->urlConfig->getAllowedSchemes()));
 	}
-
-	public function read(Eiu $eiu) {
-		$urlStr = parent::read($eiu);
-		if ($urlStr === null) return null;
-
+	
+	/**
+	 * @param string|Url|null $value
+	 * @return string|Url|null
+	 */
+	private function readMap($value) {
 		try {
-			return Url::create($urlStr, true);
+			return Url::build($value, true);
 		} catch (\InvalidArgumentException $e) {
 			return null;
 		}
 	}
-
-	public function write(Eiu $eiu, $value) {
-		if ($value instanceof Url 
+	
+	/**
+	 * @param Eiu $eiu
+	 * @param string|Url|null $value
+	 * @return string|\n2n\util\uri\Url
+	 */
+	private function writeMap(Eiu $eiu, $value) {
+		if ($value instanceof Url
 				&& $this->getObjectPropertyAccessProxy()->getConstraint()->getTypeName() != Url::class) {
-			$value = (string) $value;
+			return (string) $value;
 		}
-		return parent::write($eiu, $value);
+		
+		return $value;
 	}
+	
+	
+	function createInEifGuiField(Eiu $eiu): EifGuiField {
+		$siField = SiFields::stringIn($eiu->field()->getValue())
+				->setMandatory($this->getEditConfig()->isMandatory())
+				->setMinlength($this->getAlphanumericConfig()->getMinlength())
+				->setMaxlength($this->getAlphanumericConfig()->getMaxlength())
+				->setPrefixAddons($this->getAddonConfig()->getPrefixSiCrumbGroups())
+				->setSuffixAddons($this->getAddonConfig()->getSuffixSiCrumbGroups());
+		
+		return $eiu->factory()->newGuiField($siField)
+				->setSaver(function () use ($eiu, $siField) {
+					$this->save($siField, $eiu);
+				});
+				
+// 		$allowedSchemes = $this->urlConfig->getAllowedSchemes();
+// 		if (!empty($allowedSchemes)) {
+// 			$mag->setAllowedSchemes($allowedSchemes);
+// 		}
+		
+// 		$mag->setRelativeAllowed($this->urlConfig->isRelativeAllowed());
+// 		$mag->setAutoScheme($this->urlConfig->getAutoScheme());
+// 		$mag->setInputAttrs(array('placeholder' => $this->getLabelLstr(), 'class' => 'form-control'));
+// 		$mag->setAttrs(array('class' => 'rocket-block'));
+
+		
+	}
+	
+	private function mapSiValue($value) {
+		if ($value === null) {
+			return null;
+		}
+		
+		$url = Url::create($value, true);
+		
+		$autoScheme = $this->urlConfig->getAutoScheme();
+		if ($autoScheme !== null && !$url->hasScheme()) {
+			$url = $url->chScheme($autoScheme);
+		}
+		
+		return $url;
+	}
+	
+	public function createOutEifGuiField(Eiu $eiu): EifGuiField  {
+		$value = $eiu->field()->getValue();
+		if ($value === null) {
+			return $eiu->factory()->newGuiField(SiFields::stringOut(null));
+		}
+		
+		return $eiu->factory()->newGuiField(
+				SiFields::linkOut(NavPoint::href($value), $this->buildLabel($value, $eiu->entryGui()->isBulky())));
+	}
+
+	
 
 	private function buildLabel(Url $url, bool $isBulkyMode) {
 		if ($isBulkyMode) return (string) $url;

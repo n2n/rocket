@@ -38,13 +38,13 @@ class Draft {
 	private $userId;
 	private $draftValueMap = array();
 	
-	public function __construct(int $id = null, EiEntityObj $eiEntityObj, \DateTime $lastMod, 
-			int $userId = null, DraftValueMap $draftValueMap) {
+	public function __construct(?int $id, EiEntityObj $eiEntityObj, \DateTime $lastMod, 
+			int $userId = null, DraftValueMap $draftValueMap = null) {
 		$this->id = $id;
 		$this->eiEntityObj = $eiEntityObj;
 		$this->lastMod = $lastMod;
 		$this->userId = $userId;
-		$this->draftValueMap = $draftValueMap;
+		$this->draftValueMap = $draftValueMap ?? new DraftValueMap();
 	}
 	
 	public function isNew() {

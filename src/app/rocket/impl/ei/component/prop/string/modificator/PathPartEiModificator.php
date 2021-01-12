@@ -24,24 +24,24 @@ namespace rocket\impl\ei\component\prop\string\modificator;
 use rocket\impl\ei\component\modificator\adapter\EiModificatorAdapter;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\entry\EiEntry;
-use rocket\impl\ei\component\prop\string\PathPartEiProp;
 use n2n\util\col\ArrayUtils;
 use n2n\io\IoUtils;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\persistence\orm\property\BasicEntityProperty;
 use rocket\ei\util\Eiu;
 use rocket\ei\EiPropPath;
+use rocket\impl\ei\component\prop\string\conf\PathPartConfig;
 
 class PathPartEiModificator extends EiModificatorAdapter {
-	private $pathPartEiProp;
+	private $pathPartConfig;
 	
-	public function __construct(PathPartEiProp $pathPartEiProp) {
-		$this->pathPartEiProp = $pathPartEiProp;
+	public function __construct(PathPartConfig $pathPartConfig) {
+		$this->pathPartConfig = $pathPartConfig;
 	}
 	
 	public function setupEiEntry(Eiu $eiu) {
 		$pathPartPurify = new PathPartPurifier($eiu->frame()->getEiFrame(), $eiu->entry()->getEiEntry(), 
-				$this->pathPartEiProp);
+				$this->pathPartConfig);
 		$eiu->entry()->onWrite(function () use ($pathPartPurify) {
 			$pathPartPurify->purify();
 		});
@@ -51,37 +51,37 @@ class PathPartEiModificator extends EiModificatorAdapter {
 class PathPartPurifier {
 	private $eiFrame;
 	private $eiEntry;
-	private $pathPartEiProp;
+	private $pathPartConfig;
 	
-	public function __construct(EiFrame $eiFrame, EiEntry $eiEntry, PathPartEiProp $pathPartEiProp) {
+	public function __construct(EiFrame $eiFrame, EiEntry $eiEntry, PathPartConfig $pathPartConfig) {
 		$this->eiFrame = $eiFrame;
 		$this->eiEntry = $eiEntry;
-		$this->pathPartEiProp = $pathPartEiProp;
+		$this->pathPartConfig = $pathPartConfig;
 	}
 	
 	private function getIdEntityProperty(): BasicEntityProperty {
-		return $this->pathPartEiProp->getEiMask()->getEiType()->getEntityModel()->getIdDef()->getEntityProperty();
+		return $this->pathPartConfig->getEiMask()->getEiType()->getEntityModel()->getIdDef()->getEntityProperty();
 	}
 	
 	public function purify() {
-		$value = $this->eiEntry->getValue(EiPropPath::create($this->pathPartEiProp));
+		$value = $this->eiEntry->getValue(EiPropPath::create($this->pathPartConfig));
 	
 		if ($value !== null) {
-			$this->eiEntry->setValue(EiPropPath::create($this->pathPartEiProp), $this->uniquePathPart(IoUtils::stripSpecialChars($value)));
+			$this->eiEntry->setValue(EiPropPath::create($this->pathPartConfig), $this->uniquePathPart(IoUtils::stripSpecialChars($value)));
 			return;
 		}
 	
-		if ($this->eiEntry->isNew() || !$this->pathPartEiProp->isNullAllowed()) {
-			$this->eiEntry->setValue(EiPropPath::create($this->pathPartEiProp), $this->uniquePathPart($this->generatePathPart()));
+		if ($this->eiEntry->isNew() || !$this->pathPartConfig->isNullAllowed()) {
+			$this->eiEntry->setValue(EiPropPath::create($this->pathPartConfig), $this->uniquePathPart($this->generatePathPart()));
 		} else {
-			$this->eiEntry->setValue(EiPropPath::create($this->pathPartEiProp), null);
+			$this->eiEntry->setValue(EiPropPath::create($this->pathPartConfig), null);
 		}
 	}
 	
 	private function generatePathPart(): string {
-		$baseScalarEiProperty = $this->pathPartEiProp->getBaseScalarEiProperty();
+		$baseScalarEiProperty = $this->pathPartConfig->getBaseScalarEiProperty();
 		if ($baseScalarEiProperty === null) {
-			$baseScalarEiProperty = ArrayUtils::first($this->pathPartEiProp
+			$baseScalarEiProperty = ArrayUtils::first($this->pathPartConfig
 					->getEiMask()->getEiEngine()->getScalarEiDefinition()->getMap()->getValues());
 		}
 	
@@ -106,14 +106,14 @@ class PathPartPurifier {
 	}
 	
 	private function containsPathPart(string $pathPart): bool {
-		$entityClass = $this->pathPartEiProp->getEiMask()->getEiType()->getEntityModel()->getClass();
+		$entityClass = $this->pathPartConfig->getEiMask()->getEiType()->getEntityModel()->getClass();
 		$criteria = $this->eiFrame->getManageState()->getEntityManager()->createCriteria();
 		$criteria->select('COUNT(1)')
 				->from($entityClass, 'e')
-				->where()->match(CrIt::p('e', $this->pathPartEiProp->getEntityProperty(true)), '=', $pathPart)
+				->where()->match(CrIt::p('e', $this->pathPartConfig->getEntityProperty(true)), '=', $pathPart)
 				->andMatch(CrIt::p('e', $this->getIdEntityProperty()), '!=', $this->eiEntry->getId());
 		
-		if (null !== ($uniquePerGenericEiProperty = $this->pathPartEiProp->getUniquePerGenericEiProperty())) {
+		if (null !== ($uniquePerGenericEiProperty = $this->pathPartConfig->getUniquePerGenericEiProperty())) {
 			$criteria->where()->match($uniquePerGenericEiProperty->createCriteriaItem(CrIt::p('e')),
 					'=', $uniquePerGenericEiProperty->buildEntityValue($this->eiEntry));
 		}

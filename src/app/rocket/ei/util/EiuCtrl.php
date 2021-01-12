@@ -22,282 +22,256 @@
 namespace rocket\ei\util;
 
 use n2n\web\http\PageNotFoundException;
-use rocket\ei\security\InaccessibleEntryException;
 use n2n\web\http\ForbiddenException;
-use n2n\web\http\BadRequestException;
-use n2n\util\uri\Url;
-use n2n\web\http\controller\ParamQuery;
-use rocket\ei\manage\EiObject;
-use n2n\web\http\HttpContext;
-use rocket\core\model\RocketState;
-use n2n\util\type\CastUtils;
 use rocket\ei\manage\ManageState;
-use rocket\core\model\Breadcrumb;
-use n2n\context\Lookupable;
 use rocket\ei\manage\preview\model\UnavailablePreviewException;
 use n2n\web\http\payload\impl\Redirect;
-use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\ajah\RocketJhtmlResponse;
-use rocket\ei\manage\frame\EiFrame;
-use n2n\impl\web\ui\view\jhtml\JhtmlExec;
-use n2n\l10n\MessageContainer;
 use rocket\ei\manage\entry\UnknownEiObjectException;
 use rocket\ei\util\entry\EiuEntry;
+use rocket\ei\manage\gui\ViewMode;
+use n2n\web\http\controller\impl\ControllingUtils;
+use rocket\si\content\impl\basic\CompactExplorerSiGui;
+use rocket\si\SiPayloadFactory;
+use n2n\persistence\orm\criteria\Criteria;
+use n2n\persistence\orm\util\NestedSetUtils;
+use n2n\persistence\orm\util\NestedSetStrategy;
+use rocket\si\content\SiPartialContent;
+use rocket\si\content\impl\basic\BulkyEntrySiGui;
+use rocket\ei\manage\security\InaccessibleEiEntryException;
+use rocket\ei\manage\frame\EiFrameUtil;
+use rocket\ei\manage\LiveEiObject;
+use n2n\web\http\HttpContext;
+use rocket\si\control\SiNavPoint;
+use n2n\l10n\DynamicTextCollection;
+use n2n\util\uri\Url;
+use rocket\core\model\RocketState;
+use rocket\si\meta\SiBreadcrumb;
+use rocket\ei\manage\gui\EiGui;
+use rocket\ei\manage\gui\EiGuiUtil;
+use rocket\ei\manage\frame\EiFrame;
 
-class EiuCtrl implements Lookupable {
+class EiuCtrl {
 	private $eiu;
 	private $eiuFrame;	
+	/**
+	 * @var EiFrame
+	 */
+	private $eiFrame;
+	/**
+	 * @var HttpContext
+	 */
 	private $httpContext;
+	/**
+	 * @var RocketState
+	 */
+	private $rocketState;
+	private $cu;
 	
-	private function _init(ManageState $manageState, HttpContext $httpContext) {
-		$this->init($manageState, $httpContext);
-	}
-	
-	protected function init(ManageState $manageState, HttpContext $httpContext, EiFrame $eiFrame = null) {
-		if ($eiFrame === null) {
-			$eiFrame = $manageState->peakEiFrame();
-		}
-		$this->eiu = new Eiu($eiFrame);
+	/**
+	 * Private so future backwards compatible changes can be made.
+	 * @param ControllingUtils $cu
+	 */
+	private function __construct(ControllingUtils $cu) {
+		$this->cu = $cu;
+		$manageState = $cu->getN2nContext()->lookup(ManageState::class);
+		$this->eiFrame = $manageState->peakEiFrame();
+		$this->eiu = new Eiu($manageState->peakEiFrame());
 		$this->eiuFrame = $this->eiu->frame();
-		$this->httpContext = $httpContext;
+		$this->httpContext = $manageState->getN2nContext()->getHttpContext();
+		$this->rocketState = $cu->getN2nContext()->lookup(RocketState::class);
 	}
 	
 	/**
 	 * @return Eiu
 	 */
-	public function eiu() {
+	function eiu() {
 		return $this->eiu;
 	}
 	
 	/**
-	 * 
 	 * @return \rocket\ei\util\frame\EiuFrame
 	 */
-	public function frame() {
+	function frame() {
 		return $this->eiuFrame;
 	}
 	
 	/**
 	 * @param string $livePid
 	 * @return \rocket\ei\util\entry\EiuEntry
+	 * @throws PageNotFoundException
+	 * @throws ForbiddenException
 	 */
-	public function lookupEntry(string $livePid, int $ignoreConstraintTypes = 0) {
-		return $this->eiuFrame->entry($this->lookupEiObject($livePid, $ignoreConstraintTypes));
+	function lookupEntry(string $pid, int $ignoreConstraintTypes = 0) {
+		return $this->eiuFrame->entry($this->lookupEiObject($pid, $ignoreConstraintTypes));
 	}
+	
+	/**
+	 * @param string $livePid
+	 * @throws PageNotFoundException
+	 * @throws ForbiddenException
+	 * @return \rocket\ei\manage\EiObject
+	 */
+	private function lookupEiObject(string $pid, int $ignoreConstraintTypes = 0) {
+		$eiObject = null;
+		try {
+			$eiObject = $this->eiuFrame->lookupEiObjectById($this->eiuFrame->pidToId($pid), $ignoreConstraintTypes);
+		} catch (UnknownEiObjectException $e) {
+			throw new PageNotFoundException(null, 0, $e);
+		} catch (\InvalidArgumentException $e) {
+			throw new PageNotFoundException(null, 0, $e);
+		} catch (InaccessibleEiEntryException $e) {
+			throw new ForbiddenException(null, 0, $e);
+		}
+		
+		return $eiObject;
+	}
+	
 	
 // 	/**
-// 	 * @param string $livePid
-// 	 * @return \rocket\ei\manage\entry\EiEntry
-// 	 * @deprecated use {@see self::lookupEntry()}
+// 	 * @param EiJhtmlEventInfo $ajahEventInfo
+// 	 * @return \rocket\ei\util\EiJhtmlEventInfo|\rocket\ajah\JhtmlEventInfo
 // 	 */
-// 	public function lookupEiEntry(string $livePid) {
-// 		return $this->eiuFrame->createEiEntry($this->lookupEiObject($livePid));
+// 	private function completeEventInfo(EiJhtmlEventInfo $ajahEventInfo = null) {
+// 		if ($ajahEventInfo === null) {
+// 			$ajahEventInfo = new EiJhtmlEventInfo();
+// 		}
+		
+// 		$n2nContext = $this->httpContext->getN2nContext();
+		
+// 		$ajahEventInfo->introduceMessageContainer($n2nContext->lookup(MessageContainer::class));
+		
+// 		$manageState = $n2nContext->lookup(ManageState::class);
+// 		CastUtils::assertTrue($manageState instanceof ManageState);
+		
+// 		$ajahEventInfo->introduceEiLifecycleMonitor($manageState->getEiLifecycleMonitor());
+		
+// 		return $ajahEventInfo;
 // 	}
 	
-	/**
-	 * @param string $livePid
-	 * @throws PageNotFoundException
-	 * @throws ForbiddenException
-	 * @return \rocket\ei\manage\EiObject
-	 * @deprecated use {@see self::lookupEntry()}
-	 */
-	public function lookupEiObject(string $livePid, int $ignoreConstraintTypes = 0) {
-		$eiObject = null;
-		try {
-			$eiObject = $this->eiuFrame->lookupEiObjectById($this->eiuFrame->pidToId($livePid), $ignoreConstraintTypes);
-		} catch (UnknownEiObjectException $e) {
-			throw new PageNotFoundException(null, 0, $e);
-		} catch (\InvalidArgumentException $e) {
-			throw new PageNotFoundException(null, 0, $e);
-		} catch (InaccessibleEntryException $e) {
-			throw new ForbiddenException(null, 0, $e);
-		}
-		
-		return $eiObject;
-	}
-	
-	/**
-	 * @param string $livePid
-	 * @return \rocket\ei\util\entry\EiuEntry
-	 */
-	public function lookupEntryByDraftId(int $draftId) {
-		return $this->eiuFrame->entry($this->lookupEiObjectByDraftId($draftId));
-	}
-	
-	/**
-	 * @param int $draftId
-	 * @return \rocket\ei\manage\entry\EiEntry
-	 * @deprecated
-	 */
-	private function lookupEiEntryByDraftId(int $draftId) {
-		return $this->eiuFrame->createEiEntry($this->lookupEiObjectByDraftId($draftId));
-	}
-	
-	/**
-	 * @param int $draftId
-	 * @throws PageNotFoundException
-	 * @throws ForbiddenException
-	 * @return \rocket\ei\manage\EiObject
-	 * @deprecated
-	 */
-	public function lookupEiObjectByDraftId(int $draftId) {
-		$eiObject = null;
-		try {
-			$eiObject = $this->eiuFrame->lookupEiObjectByDraftId((int) $draftId);
-		} catch (UnknownEiObjectException $e) {
-			throw new PageNotFoundException(null, 0, $e);
-		} catch (InaccessibleEntryException $e) {
-			throw new ForbiddenException(null, 0, $e);
-		}
-		
-		return $eiObject;
-	}
-	
-	/**
-	 * @param EiJhtmlEventInfo $ajahEventInfo
-	 * @return \rocket\ei\util\EiJhtmlEventInfo|\rocket\ajah\JhtmlEventInfo
-	 */
-	private function completeEventInfo(EiJhtmlEventInfo $ajahEventInfo = null) {
-		if ($ajahEventInfo === null) {
-			$ajahEventInfo = new EiJhtmlEventInfo();
-		}
-		
-		$n2nContext = $this->httpContext->getN2nContext();
-		
-		$ajahEventInfo->introduceMessageContainer($n2nContext->lookup(MessageContainer::class));
-		
-		$manageState = $n2nContext->lookup(ManageState::class);
-		CastUtils::assertTrue($manageState instanceof ManageState);
-		
-		$ajahEventInfo->introduceEiLifecycleMonitor($manageState->getEiLifecycleMonitor());
-		
-		return $ajahEventInfo;
-	}
-	
-	public function redirectToReferer(string $fallbackUrl, EiJhtmlEventInfo $ajahEventInfo = null, JhtmlExec $ajahExec = null) {
-	    $refererUrl = $this->httpContext->getRequest()->getHeader('Referer');
-	    if ($refererUrl === null) {
-	        $refererUrl = $fallbackUrl;
-	    }
+// 	function redirectToReferer(string $fallbackUrl, EiJhtmlEventInfo $ajahEventInfo = null, JhtmlExec $ajahExec = null) {
+// 	    $refererUrl = $this->httpContext->getRequest()->getHeader('Referer');
+// 	    if ($refererUrl === null) {
+// 	        $refererUrl = $fallbackUrl;
+// 	    }
 	    
-	    $response = $this->httpContext->getResponse();
-	    $acceptRange = $this->httpContext->getRequest()->getAcceptRange();
-	    if ('application/json' != $acceptRange->bestMatch(['text/html', 'application/json'])) {
-	        $response->send(new Redirect($refererUrl));
-	        return;
-	    }
+// 	    $response = $this->httpContext->getResponse();
+// 	    $acceptRange = $this->httpContext->getRequest()->getAcceptRange();
+// 	    if ('application/json' != $acceptRange->bestMatch(['text/html', 'application/json'])) {
+// 	        $response->send(new Redirect($refererUrl));
+// 	        return;
+// 	    }
 	    	    
-	    $response->send(RocketJhtmlResponse::redirectToReferer($refererUrl, 
-	    		$this->completeEventInfo($ajahEventInfo), $ajahExec));
-	}
+// 	    $response->send(RocketJhtmlResponse::redirectToReferer($refererUrl, 
+// 	    		$this->completeEventInfo($ajahEventInfo), $ajahExec));
+// 	}
 	
-	public function redirectBack(string $fallbackUrl, EiJhtmlEventInfo $ajahEventInfo = null, JhtmlExec $ajahExec = null) {
-	    $response = $this->httpContext->getResponse();
-	    $acceptRange = $this->httpContext->getRequest()->getAcceptRange();
-	    if ('application/json' != $acceptRange->bestMatch(['text/html', 'application/json'])) {
-	    	$response->send(new Redirect($fallbackUrl));
-	        return;
-	    }
+// 	function redirectBack(string $fallbackUrl, EiJhtmlEventInfo $ajahEventInfo = null, JhtmlExec $ajahExec = null) {
+// 	    $response = $this->httpContext->getResponse();
+// 	    $acceptRange = $this->httpContext->getRequest()->getAcceptRange();
+// 	    if ('application/json' != $acceptRange->bestMatch(['text/html', 'application/json'])) {
+// 	    	$response->send(new Redirect($fallbackUrl));
+// 	        return;
+// 	    }
 	    
-	    $response->send(RocketJhtmlResponse::redirectBack($fallbackUrl, 
-	    		$this->completeEventInfo($ajahEventInfo), $ajahExec));
-	}
+// 	    $response->send(RocketJhtmlResponse::redirectBack($fallbackUrl, 
+// 	    		$this->completeEventInfo($ajahEventInfo), $ajahExec));
+// 	}
 	
-	public function redirect(string $url, EiJhtmlEventInfo $ajahEventInfo = null, JhtmlExec $ajahExec = null) {
-		$response = $this->httpContext->getResponse();
-		$acceptRange = $this->httpContext->getRequest()->getAcceptRange();
-		if ('application/json' != $acceptRange->bestMatch(['text/html', 'application/json'])) {
-			$response->send(new Redirect($url));
-			return;
-		}
-		
-		$response->send(RocketJhtmlResponse::redirect($url, 
-				$this->completeEventInfo($ajahEventInfo), $ajahExec));
-	}
-	
-	public function forwardView(HtmlView $view, EiJhtmlEventInfo $ajahEventInfo = null) {
-		$response = $this->httpContext->getResponse();
-		$acceptRange = $this->httpContext->getRequest()->getAcceptRange();
-		
-		if ($ajahEventInfo === null || 'application/json' != $acceptRange->bestMatch(['text/html', 'application/json'])) {
-			$response->send($view);
-			return;
-		}
-		
-// 		if ('application/json' == $acceptRange->bestMatch(['text/html', 'application/json'])) {
-// 			$response->send(new AjahResponse($view));
+// 	function redirect(string $url, EiJhtmlEventInfo $ajahEventInfo = null, JhtmlExec $ajahExec = null) {
+// 		$response = $this->httpContext->getResponse();
+// 		$acceptRange = $this->httpContext->getRequest()->getAcceptRange();
+// 		if ('application/json' != $acceptRange->bestMatch(['text/html', 'application/json'])) {
+// 			$response->send(new Redirect($url));
 // 			return;
 // 		}
+		
+// 		$response->send(RocketJhtmlResponse::redirect($url, 
+// 				$this->completeEventInfo($ajahEventInfo), $ajahExec));
+// 	}
+	
+// 	function forwardView(HtmlView $view, EiJhtmlEventInfo $ajahEventInfo = null) {
+// 		$response = $this->httpContext->getResponse();
+// 		$acceptRange = $this->httpContext->getRequest()->getAcceptRange();
+		
+// 		if ($ajahEventInfo === null || 'application/json' != $acceptRange->bestMatch(['text/html', 'application/json'])) {
+// 			$response->send($view);
+// 			return;
+// 		}
+		
+// // 		if ('application/json' == $acceptRange->bestMatch(['text/html', 'application/json'])) {
+// // 			$response->send(new AjahResponse($view));
+// // 			return;
+// // 		}
 
-		$response->send(RocketJhtmlResponse::view($view, $this->completeEventInfo($ajahEventInfo)));
-	}
+// 		$response->send(RocketJhtmlResponse::view($view, $this->completeEventInfo($ajahEventInfo)));
+// 	}
 
-	public function buildRedirectUrl($eiEntryArg = null) { 
-		$eiObject = $eiEntryArg === null ? null : EiuAnalyst::buildEiObjectFromEiArg($eiEntryArg);
-		$eiFrame = $this->eiuFrame->getEiFrame(); 
+// 	function buildRedirectUrl($eiEntryArg = null) { 
+// 		$eiObject = $eiEntryArg === null ? null : EiuAnalyst::buildEiObjectFromEiArg($eiEntryArg);
+// 		$eiFrame = $this->eiuFrame->getEiFrame(); 
 		
-		if ($eiObject !== null && !$eiObject->isNew()) {
-			$entryNavPoint = $eiObject->toEntryNavPoint();
-			if ($eiFrame->isDetailUrlAvailable($entryNavPoint)) {
-				return $eiFrame->getDetailUrl($this->httpContext, $entryNavPoint);
-			}
-		}
+// 		if ($eiObject !== null && !$eiObject->isNew()) {
+// 			$entryNavPoint = $eiObject->toEntryNavPoint();
+// 			if ($eiFrame->isDetailUrlAvailable($entryNavPoint)) {
+// 				return $eiFrame->getDetailUrl($this->httpContext, $entryNavPoint);
+// 			}
+// 		}
 		
-		return $eiFrame->getOverviewUrl($this->httpContext);
-	}
+// 		return $eiFrame->getOverviewUrl($this->httpContext);
+// 	}
 	
-	public function parseRefUrl(ParamQuery $refPath = null) {
-		if ($refPath === null) return null;
+// 	function parseRefUrl(ParamQuery $refPath = null) {
+// 		if ($refPath === null) return null;
 		
-		try {
-			$url = Url::create($refPath);
-			if ($url->isRelative()) return $url;
+// 		try {
+// 			$url = Url::create($refPath);
+// 			if ($url->isRelative()) return $url;
 		
-			throw new BadRequestException('refPath not relative: ' . $refPath);
-		} catch (\InvalidArgumentException $e) {
-			throw new BadRequestException('Invalid refPath: ' . $refPath, null, $e);
-		}
-	}
+// 			throw new BadRequestException('refPath not relative: ' . $refPath);
+// 		} catch (\InvalidArgumentException $e) {
+// 			throw new BadRequestException('Invalid refPath: ' . $refPath, null, $e);
+// 		}
+// 	}
 	
-	public function buildRefRedirectUrl(Url $redirectUrl = null, EiObject $eiObject = null) {
-		if ($redirectUrl !== null) {
-			return $redirectUrl;	
-		}
+// 	function buildRefRedirectUrl(Url $redirectUrl = null, EiObject $eiObject = null) {
+// 		if ($redirectUrl !== null) {
+// 			return $redirectUrl;	
+// 		}
 		
-		return $this->buildRedirectUrl($eiObject);
-	}
+// 		return $this->buildRedirectUrl($eiObject);
+// 	}
 	
-	public function applyCommonBreadcrumbs($eiObjectObj = null, string $currentBreadcrumbLabel = null) {
-		$eiFrame = $this->eiuFrame->getEiFrame();
-		$rocketState = $eiFrame->getN2nContext()->lookup(RocketState::class);
-		CastUtils::assertTrue($rocketState instanceof RocketState);
+// 	function applyCommonBreadcrumbs($eiObjectObj = null, string $currentBreadcrumbLabel = null) {
+// 		$eiFrame = $this->eiuFrame->getEiFrame();
+// 		$rocketState = $eiFrame->getN2nContext()->lookup(RocketState::class);
+// 		CastUtils::assertTrue($rocketState instanceof RocketState);
 		
-		if (!$eiFrame->isOverviewDisabled()) {
-			$rocketState->addBreadcrumb($eiFrame->createOverviewBreadcrumb($this->httpContext));
-		}
+// 		if (!$eiFrame->isOverviewDisabled()) {
+// 			$rocketState->addBreadcrumb($eiFrame->createOverviewBreadcrumb($this->httpContext));
+// 		}
 			
-		if ($eiObjectObj !== null && !$eiFrame->isDetailDisabled()) {
-			$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectObj, 'eiObjectObj', $this->eiuFrame->getContextEiType());
-			$rocketState->addBreadcrumb($eiFrame->createDetailBreadcrumb($this->httpContext, $eiObject));
-		}
+// 		if ($eiObjectObj !== null && !$eiFrame->isDetailDisabled()) {
+// 			$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectObj, 'eiObjectObj', $this->eiuFrame->getContextEiType());
+// 			$rocketState->addBreadcrumb($eiFrame->createDetailBreadcrumb($this->httpContext, $eiObject));
+// 		}
 		
-		if ($currentBreadcrumbLabel !== null) {
-			$rocketState->addBreadcrumb(new Breadcrumb($eiFrame->getCurrentUrl($this->httpContext), 
-					$currentBreadcrumbLabel));
-		}
-	}
+// 		if ($currentBreadcrumbLabel !== null) {
+// 			$rocketState->addBreadcrumb(new Breadcrumb($eiFrame->getCurrentUrl($this->httpContext), 
+// 					$currentBreadcrumbLabel));
+// 		}
+// 	}
 	
-	public function applyBreadcrumbs(Breadcrumb ...$additionalBreadcrumbs) {
-		$eiFrame = $this->eiuFrame->getEiFrame();
-		$rocketState = $eiFrame->getN2nContext()->lookup(RocketState::class);
-		CastUtils::assertTrue($rocketState instanceof RocketState);
+// 	function applyBreadcrumbs(Breadcrumb ...$additionalBreadcrumbs) {
+// 		$eiFrame = $this->eiuFrame->getEiFrame();
+// 		$rocketState = $eiFrame->getN2nContext()->lookup(RocketState::class);
+// 		CastUtils::assertTrue($rocketState instanceof RocketState);
 		
-		foreach ($additionalBreadcrumbs as $additionalBreadcrumb) {
-			$rocketState->addBreadcrumb($additionalBreadcrumb);
-		}
-	}
+// 		foreach ($additionalBreadcrumbs as $additionalBreadcrumb) {
+// 			$rocketState->addBreadcrumb($additionalBreadcrumb);
+// 		}
+// 	}
 	
-	public function lookupPreviewController(string $previewType, $eiObjectArg) {
+	function lookupPreviewController(string $previewType, $eiObjectArg) {
 		try {
 			return $this->eiuFrame->lookupPreviewController($previewType, $eiObjectArg);
 		} catch (UnavailablePreviewException $e) {
@@ -305,26 +279,289 @@ class EiuCtrl implements Lookupable {
 		}
 	}
 	
-	public function redirectToOverview(int $status = null) {
+	function redirectToOverview(int $status = null) {
 		$this->httpContext->getResponse()->send(
 				new Redirect($this->eiuFrame->getEiFrame()->getOverviewUrl($this->httpContext), $status));
 	}
 	
-	public static function from(HttpContext $httpContext, EiFrame $eiFrame = null) {
-		$manageState = $httpContext->getN2nContext()->lookup(ManageState::class);
-		CastUtils::assertTrue($manageState instanceof ManageState);
+	
+	private function forwardHtml() {
+		if ('text/html' == $this->httpContext->getRequest()->getAcceptRange()
+				->bestMatch(['text/html', 'application/json'])) {
+			$this->cu->forward('\rocket\core\view\anglTemplate.html');
+			return true;
+		}
 		
+		return false;
+	}
+	
+	function forwardListZone(int $pageSize = 30, string $title = null) {
+		if ($this->forwardHtml()) {
+			return;
+		}
 		
-		$eiCtrlUtils = new EiuCtrl();
-		$eiCtrlUtils->init($manageState, $httpContext, $eiFrame);
-		return $eiCtrlUtils;
+		$eiFrame = $this->eiuFrame->getEiFrame();
+		$obtainer = $eiFrame->getManageState()->getEiGuiModelCache();
+		$eiGuiModel =  $obtainer->obtainEiGuiModel($eiFrame->getContextEiEngine()->getEiMask(), ViewMode::COMPACT_READ, null, true);
+		$eiGui = new EiGui($eiGuiModel);
+		
+		$this->composeEiuGuiForList($eiGui, $pageSize);
+		
+		$siComp = (new EiGuiUtil($eiGui, $eiFrame))->createCompactExplorerSiGui($pageSize, true, true);
+		
+		$this->httpContext->getResponse()->send(
+				SiPayloadFactory::create($siComp,
+						$this->rocketState->getBreadcrumbs(),
+						$title ?? $this->eiuFrame->contextEngine()->mask()->getPluralLabel()));
+	}
+	
+	
+	private function composeEiuGuiForList($eiGui, $limit) {
+		
+		$eiType = $this->eiuFrame->getEiFrame()->getContextEiEngine()->getEiMask()->getEiType();
+		
+		$criteria = $this->eiuFrame->getEiFrame()->createCriteria(NestedSetUtils::NODE_ALIAS, false);
+		$criteria->select(NestedSetUtils::NODE_ALIAS)->limit($limit);
+		
+		if (null !== ($nestedSetStrategy = $eiType->getNestedSetStrategy())) {
+			$this->treeLookup($eiGui, $criteria, $nestedSetStrategy);
+		} else {
+			$this->simpleLookup($eiGui, $criteria);
+		}
+	}
+	
+	private function simpleLookup(EiGui $eiGui, Criteria $criteria) {
+		$eiFrame = $this->eiuFrame->getEiFrame();
+		$eiFrameUtil = new EiFrameUtil($eiFrame);
+		foreach ($criteria->toQuery()->fetchArray() as $entityObj) {
+			$eiObject = new LiveEiObject($eiFrameUtil->createEiEntityObj($entityObj));
+			$eiGui->appendEiEntryGui($eiFrame, [$eiFrame->createEiEntry($eiObject)]);
+		}
+	}
+	
+	private function treeLookup(EiGui $eiGui, Criteria $criteria, NestedSetStrategy $nestedSetStrategy) {
+		$nestedSetUtils = new NestedSetUtils($this->eiuFrame->em(), $this->eiuFrame->getContextEiType()->getEntityModel()->getClass(), $nestedSetStrategy);
+		
+		$eiFrame = $this->eiuFrame->getEiFrame();
+		$eiFrameUtil = new EiFrameUtil($eiFrame);
+		foreach ($nestedSetUtils->fetch(null, false, $criteria) as $nestedSetItem) {
+			$eiObject = new LiveEiObject($eiFrameUtil->createEiEntityObj($nestedSetItem->getEntityObj()));
+			$eiGui->appendEiEntryGui($eiFrame, [$eiFrame->createEiEntry($eiObject)], $nestedSetItem->getLevel());
+		}
+	}
+	
+	function forwardDlZone($eiEntryArg, bool $readOnly, bool $generalSiControlsIncluded, bool $entrySiControlsIncluded = true) {
+		if ($this->forwardHtml()) {
+			return;
+		}
+
+		$eiuEntry = EiuAnalyst::buildEiuEntryFromEiArg($eiEntryArg, $this->eiuFrame, 'eiEntryArg', true);
+		$eiuGui = $eiuEntry->newGui(true, $readOnly);
+		$siComp = $eiuGui->createBulkyEntrySiGui($generalSiControlsIncluded, $entrySiControlsIncluded);
+		
+		$this->httpContext->getResponse()->send(
+				SiPayloadFactory::create($siComp,
+						$this->rocketState->getBreadcrumbs(),
+						$eiuEntry->createIdentityString()));
+	}
+	
+	function forwardNewEntryDlZone(bool $editable = true, bool $generalSiControlsIncluded = true, bool $entrySiControlsIncluded = true) {
+		if ($this->forwardHtml()) {
+			return;
+		}
+		
+// 		$contextEiuType = $this->eiuFrame->engine()->type();
+		
+// 		$siEntry = new SiEntry($contextEiuType->supremeType()->getId(), !$editable, true);
+		
+// 		$siDeclaration = new SiDeclaration();
+		
+// 		if (!$contextEiuType->isAbstract()) {
+// 			$typeId = $contextEiuType->getId();
+// 			$eiEntryGui = $this->eiuFrame->newEntry()->newEntryGui()->getEiEntryGui();
+			
+// 			$siEntry->putBuildup($typeId, $eiEntryGui->createSiEntryBuildup());
+// 			$siDeclaration->putFieldStructureDeclarations(
+// 					$eiEntryGui->getEiEntry()->getEiGuiSiFactory()->getSiStructureDeclaration());
+// 		}
+		
+// 		foreach ($contextEiuType->allSubTypes() as $eiuType) {
+// 			if ($eiuType->isAbstract()) {
+// 				continue;
+// 			}
+			
+// 			$typeId = $eiuType->getId();
+// 			$eiuEntryGui = $this->eiuFrame->entry($eiuType->newObject())->newEntryGui(true, $editable);
+// 			$eiEntryGui = $eiuEntryGui->getEiEntryGui();
+			
+// 			$siEntry->putBuildup($typeId, $eiEntryGui->createSiBuildup());
+// 			$siDeclaration->putFieldStructureDeclarations($typeId, 
+// 					$eiEntryGui->getEiGuiFrame()->getEiGuiSiFactory()->getSiStructureDeclaration());
+// 		}
+		
+// 		if (!empty($siEntry->getBuildups())) {
+// 			throw new EiuPerimeterException('Can not create a new EiEntryGui of ' . $contextEiuType->getEiType()
+// 					. ' because this type is abstract and doesn\'t have any sub EiTypes.');
+// 		}
+
+		$eiFrame = $this->eiuFrame->getEiFrame();
+		$eiFrameUtil = new EiFrameUtil($eiFrame);
+		
+		$eiGui = $eiFrameUtil->createNewEiGui(true, !$editable, null, null, true);
+		$eiGuiUtil = new EiGuiUtil($eiGui, $eiFrame);
+		
+		$siComp = $eiGuiUtil->createBulkyEntrySiGui($generalSiControlsIncluded, $entrySiControlsIncluded);
+		
+		$this->httpContext->getResponse()->send(
+				SiPayloadFactory::create($siComp, 
+						$this->rocketState->getBreadcrumbs(),
+						$this->eiu->dtc('rocket')->t('common_new_entry_label')));
+	}
+	
+	/**
+	 * @param SiNavPoint $navPoint
+	 * @param string $label
+	 * @return \rocket\ei\util\EiuCtrl
+	 */
+	public function pushBreadcrumb(SiNavPoint $navPoint, string $label) {
+		$this->rocketState->addBreadcrumb(new SiBreadcrumb($navPoint, $label));
+		return $this;
+	}
+	
+	/**
+	 * @param Url $url
+	 * @param string $label
+	 * @return \rocket\ei\util\EiuCtrl
+	 */
+	public function pushSirefBreadcrumb(Url $url, string $label) {
+		$this->rocketState->addBreadcrumb(new SiBreadcrumb(SiNavPoint::siref($url), $label));
+		return $this;
+	}
+	
+	/**
+	 * @param string $label
+	 * @param bool $required
+	 * @return \rocket\ei\util\EiuCtrl
+	 */
+	public function pushOverviewBreadcrumb(string $label = null, bool $required = false) {
+		$navPoint = $this->eiuFrame->getOverviewNavPoint($required);
+		
+		if ($navPoint === null) {
+			return $this;
+		}
+		
+		if ($label === null) {
+			$label = $this->eiuFrame->getEiFrame()->getContextEiEngine()->getEiMask()->getPluralLabelLstr()
+					->t($this->eiu->getN2nLocale());
+		}
+		
+		$this->rocketState->addBreadcrumb(new SiBreadcrumb($navPoint, $label));
+		
+		return $this;
+	}
+	
+	/**
+	 * @param string $label
+	 * @param bool $required
+	 * @return \rocket\ei\util\EiuCtrl
+	 */
+	public function pushDetailBreadcrumb($eiObjectArg, string $label = null, bool $required = false) {
+		$eiFrame = $this->eiuFrame->getEiFrame();
+		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectArg, '$eiObjectArg',
+				$eiFrame->getContextEiEngine()->getEiMask()->getEiType());
+		
+		$navPoint = $eiFrame->getDetailNavPoint($eiObject, $required);
+		
+		if ($navPoint === null) {
+			return $this;
+		}
+		
+		if ($label === null) {
+			$label = (new EiFrameUtil($eiFrame))->createIdentityString($eiObject);
+		}
+		
+		$this->rocketState->addBreadcrumb(new SiBreadcrumb($navPoint, $label));
+		
+		return $this;
+	}
+	
+	
+	/**
+	 * @param string $label
+	 * @param bool $required
+	 * @return \rocket\ei\util\EiuCtrl
+	 */
+	public function pushEditBreadcrumb($eiObjectArg, string $label = null, bool $required = false) {
+		$eiFrame = $this->eiuFrame->getEiFrame();
+		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectArg, '$eiObjectArg',
+				$eiFrame->getContextEiEngine()->getEiMask()->getEiType());
+		
+		$navPoint = $eiFrame->getEditNavPoint($eiObject, $required);
+		
+		if ($navPoint === null) {
+			return $this;
+		}
+		
+		if ($label === null) {
+			$label = (new DynamicTextCollection('rocket', $this->getN2nContext()->getN2nLocale()))
+					->t('common_edit_label');
+		}
+		
+		$this->rocketState->addBreadcrumb(new SiBreadcrumb($navPoint, $label));
+		
+		return $this;
+	}
+	/**
+	 * @param string $label
+	 * @param bool $required
+	 * @return \rocket\ei\util\EiuCtrl
+	 */
+	public function pushAddBreadcrumb(string $label = null, bool $required = false) {
+		$navPoint = $this->eiuFrame->getAddNavPoint($required);
+		
+		if ($navPoint === null) {
+			return $this;
+		}
+		
+		if ($label === null) {
+			$label = (new DynamicTextCollection('rocket', $this->getN2nContext()->getN2nLocale()))
+					->t('common_add_label');
+		}
+		
+		$this->rocketState->addBreadcrumb(new SiBreadcrumb($navPoint, $label));
+		
+		return $this;
+	}
+	
+	/**
+	 * @param string $label
+	 * @param bool $includeOverview
+	 * @param mixed $detailEiEntryArg
+	 * @return EiuCtrl
+	 */
+	function pushCurrentAsSirefBreadcrumb(string $label, bool $includeOverview = false, $detailEiEntryArg = null) {
+		if ($includeOverview) {
+			$this->pushOverviewBreadcrumb();
+		}
+		
+		if ($detailEiEntryArg !== null) {
+			$this->pushDetailBreadcrumb($detailEiEntryArg);
+		}
+		
+		$this->pushSirefBreadcrumb($this->httpContext->getRequest()->getUrl(), $label);
+		
+		return $this;
+	}
+	
+	public static function from(ControllingUtils $cu) {
+		return new EiuCtrl($cu);
 	}
 	
 	/**
 	 * @param object $eiObjectObj
 	 * @return \rocket\ei\util\entry\EiuEntry
 	 */
-	public function toEiuEntry($eiObjectObj) {
+	function toEiuEntry($eiObjectObj) {
 		return new EiuEntry($eiObjectObj, $this);
 	}
 }

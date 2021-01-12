@@ -21,73 +21,49 @@
  */
 namespace rocket\impl\ei\component\prop\string;
 
-use n2n\l10n\N2nLocale;
-use n2n\impl\web\dispatch\mag\model\StringMag;
-use n2n\impl\web\ui\view\html\HtmlView;
-
-use rocket\impl\ei\component\prop\string\conf\StringEiPropConfigurator;
-use rocket\ei\EiPropPath;
-use n2n\web\dispatch\mag\Mag;
 use rocket\ei\util\Eiu;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
-use n2n\util\StringUtils;
-use n2n\impl\web\ui\view\html\HtmlElement;
+use rocket\si\content\impl\SiFields;
+use rocket\impl\ei\component\prop\string\conf\StringConfig;
+use rocket\ei\component\prop\indepenent\CompatibilityLevel;
+use rocket\ei\util\factory\EifGuiField;
 
 class StringEiProp extends AlphanumericEiProp {
-	private $multiline = false;
 	
-	public function isMultiline() {
-		return $this->multiline;
-	}
+	private $stringConfig;
 	
-	public function setMultiline($multiline) {
-		$this->multiline = (boolean) $multiline;
-	}
-	
-	public function createEiPropConfigurator(): EiPropConfigurator {
-		return new StringEiPropConfigurator($this);
-	}
-	
-	public function createUiComponent(HtmlView $view, Eiu $eiu)  {
-		$html = $view->getHtmlBuilder();
+	function __construct() {
+		parent::__construct();
 		
-		$value = $eiu->field()->getValue(EiPropPath::from($this));
-		
-// 		if ($eiu->gui()->isCompact()) {
-// 			return new HtmlElement('div', ['class' => 'text-truncate'], $value);
-// 		}
-		
-		if ($this->isMultiline()) {
-			return $html->getEscBr($value);
-		}
-		
-		return $html->getEsc($value);
+		$this->stringConfig = new StringConfig();
 	}
 	
-// 	public function createEditablePreviewUiComponent(PreviewModel $previewModel, PropertyPath $propertyPath,
-// 			HtmlView $view, \Closure $createCustomUiElementCallback = null) {
-// 		if ($this->isMultiline()) {
-// 			return $view->getFormHtmlBuilder()->getTextarea($propertyPath, array('class' => 'rocket-preview-inpage-component'));
-// 		}
-// 		return $view->getFormHtmlBuilder()->getInputField($propertyPath, array('class' => 'rocket-preview-inpage-component'));
-// 	}
-
-	public function createMag(Eiu $eiu): Mag {
-		$mag = new StringMag($this->getLabelLstr(), null, $this->isMandatory($eiu), 
-				$this->getMaxlength(), $this->isMultiline(),
-				array('placeholder' => $this->getLabelLstr()->t($eiu->frame()->getN2nLocale())));
-// 		$mag->setAttrs(array('class' => 'rocket-block'));
-		$mag->setInputAttrs(array('placeholder' => $this->getLabelLstr()));
-// 		$mag->setHelpTextLstr($this->getHelpTextLstr());
-		return $mag;
+	function prepare() {
+		parent::prepare();
+		$this->getConfigurator()
+				->setDefaultCompatibilityLevel(CompatibilityLevel::SUITABLE)
+				->addAdaption($this->stringConfig);
 	}
 	
-	public function isStringRepresentable(): bool {
-		return true;
+	function createOutEifGuiField(Eiu $eiu): EifGuiField  {
+		return $eiu->factory()->newGuiField(
+				SiFields::stringOut($eiu->field()->getValue())
+						->setMultiline($this->stringConfig->isMultiline()));
 	}
 
-	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
-		return StringUtils::strOf($eiu->object()->readNativValue($this), true);
+	function createInEifGuiField(Eiu $eiu): EifGuiField {
+		$addonConfig = $this->getAddonConfig();
+		
+		$siField = SiFields::stringIn($eiu->field()->getValue())
+				->setMandatory($this->getEditConfig()->isMandatory())
+				->setMinlength($this->getAlphanumericConfig()->getMinlength())
+				->setMaxlength($this->getAlphanumericConfig()->getMaxlength())
+				->setMultiline($this->stringConfig->isMultiline())
+				->setPrefixAddons($addonConfig->getPrefixSiCrumbGroups())
+				->setSuffixAddons($addonConfig->getSuffixSiCrumbGroups());
+		
+		return $eiu->factory()->newGuiField($siField)
+				->setSaver(function () use ($siField, $eiu) { 
+					$eiu->field()->setValue($siField->getValue()); 
+				});
 	}
-
 }

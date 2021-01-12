@@ -1,0 +1,16 @@
+<rocket-ui-simple-zone-container [title]="'tools_title' | translate" [messages]="messages" [breadcrumbs]="uiBreadcrumbs">
+	<ul>
+		<li><a routerLink="/tools/mail-center">{{ 'mail_center_txt' | translate }}</a></li>
+		<li>
+			<button rocketUiButton
+					class="btn btn-secondary"
+					(click)="clearCache()"
+					[loading]="clearCacheInProgress"
+					[iconClass]="'fas fa-eraser'">
+
+				{{'tools_cache_cleared_title' | translate}}
+			</button>
+		</li>
+	</ul>
+</rocket-ui-simple-zone-container>
+

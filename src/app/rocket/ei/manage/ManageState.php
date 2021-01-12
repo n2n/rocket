@@ -21,7 +21,6 @@
  */
 namespace rocket\ei\manage;
 
-use n2n\web\http\controller\ControllerContext;
 use n2n\context\RequestScoped;
 use rocket\ei\EiType;
 use rocket\user\model\LoginContext;
@@ -34,8 +33,9 @@ use rocket\ei\manage\draft\DraftManager;
 use rocket\ei\manage\security\EiPermissionManager;
 use rocket\ei\manage\veto\EiLifecycleMonitor;
 use rocket\ei\manage\frame\EiFrame;
-use rocket\ei\EiEngine;
-use rocket\ei\EiCommandPath;
+use rocket\ei\manage\gui\EiGuiModelCache;
+use n2n\persistence\orm\util\NestedSetUtils;
+use n2n\util\ex\NotYetImplementedException;
 
 class ManageState implements RequestScoped {
 	private $n2nContext;
@@ -46,6 +46,10 @@ class ManageState implements RequestScoped {
 	private $eiFrames = array();
 	private $entityManager;
 	private $draftManager;
+	/**
+	 * @var EiGuiModelCache
+	 */
+	private $eiGuiModelCache;
 	private $eiLifecycleMonitor;
 	
 	function __construct() {
@@ -58,6 +62,8 @@ class ManageState implements RequestScoped {
 		if (null !== ($user = $loginContext->getCurrentUser())) {
 			$this->setUser($user);
 		}
+		
+		$this->eiGuiModelCache = new EiGuiModelCache($this);
 	}
 		
 	/**
@@ -97,9 +103,13 @@ class ManageState implements RequestScoped {
 		return $this->eiPermissionManager;
 	}
 	
+	/**
+	 * @param EiPermissionManager $eiPermissionManager
+	 */
 	public function setEiPermissionManager(EiPermissionManager $eiPermissionManager) {
 		$this->eiPermissionManager = $eiPermissionManager;
 	}
+	
 	/**
 	 * @throws IllegalStateException
 	 * @return EntityManager
@@ -152,13 +162,25 @@ class ManageState implements RequestScoped {
 		$this->eiLifecycleMonitor = $eiLifecycleMonitor;
 	}
 	
-	public function createEiFrame(EiEngine $contextEiEngine, ControllerContext $controllerContext, EiCommandPath $eiCommandPath) {
-		$eiFrame = $contextEiEngine->createEiFrame($controllerContext, $this, $this->peakEiFrame(false), $eiCommandPath);
+	/**
+	 * @throws IllegalStateException
+	 * @return \rocket\ei\manage\gui\EiGuiModelCache
+	 */
+	function getEiGuiModelCache() {
+		if ($this->eiGuiModelCache === null) {
+			throw new IllegalStateException('No EiGuiModelCache available.');
+		}
 		
-		$this->pushEiFrame($eiFrame);
-		
-		return $eiFrame;
+		return $this->eiGuiModelCache;
 	}
+	
+// 	public function createEiFrame(EiEngine $contextEiEngine, ControllerContext $controllerContext, EiCommandPath $eiCommandPath) {
+// 		$eiFrame = $contextEiEngine->createEiFrame($controllerContext, $this, $this->peakEiFrame(false), $eiCommandPath);
+		
+// 		$this->pushEiFrame($eiFrame);
+		
+// 		return $eiFrame;
+// 	}
 	
 	public function pushEiFrame(EiFrame $eiFrame) {
 		$this->eiFrames[] = $eiFrame;
@@ -190,10 +212,10 @@ class ManageState implements RequestScoped {
 		return $eiFrame;
 	}
 	
-	public function popEiFrameBy(EiType $eiType) {
-		$this->peakEiFrame($eiType);
-		return array_pop($this->eiFrames);
-	}
+// 	public function popEiFrameBy(EiType $eiType) {
+// 		$this->peakEiFrame($eiType);
+// 		return array_pop($this->eiFrames);
+// 	}
 	
 	public function getMainId() {
 		if (!sizeof($this->eiFrames)) {
@@ -202,5 +224,28 @@ class ManageState implements RequestScoped {
 		
 		reset($this->eiFrames);
 		return current($this->eiFrames)->getId();
+	}
+	
+	function remove(EiObject $eiObject) {
+		if ($eiObject->isDraft()) {
+			throw new NotYetImplementedException();
+		}
+		
+		$eiType = $eiObject->getEiEntityObj()->getEiType();
+		$nss = $eiType->getNestedSetStrategy();
+		if (null === $nss) {
+			$this->getEntityManager()->remove($eiObject->getEiEntityObj()->getEntityObj());
+		} else {
+			$nsu = new NestedSetUtils($this->getEntityManager(), $eiType->getEntityModel()->getClass(), $nss);
+			$nsu->remove($eiObject->getLiveObject());
+		}
+	}
+	
+	/**
+	 * @return \rocket\core\model\launch\TransactionApproveAttempt
+	 */
+	function flush() {
+		return $this->getEiLifecycleMonitor()
+				->approve($this->getN2nContext());
 	}
 }

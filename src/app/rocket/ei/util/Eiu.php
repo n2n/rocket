@@ -6,6 +6,7 @@ use n2n\l10n\DynamicTextCollection;
 use rocket\core\model\Rocket;
 use n2n\core\container\N2nContext;
 use rocket\ei\util\spec\EiuContext;
+use rocket\ei\util\factory\EiuFactory;
 
 class Eiu implements Lookupable {
 	private $eiuAnalyst;
@@ -16,16 +17,23 @@ class Eiu implements Lookupable {
 	private $eiuFrame;
 	private $eiuObject;
 	private $eiuEntry;
+	private $eiuField;
 	private $eiuFieldMap;
 	private $eiuGui;
+	private $eiuGuiModel;
+	private $eiuGuiFrame;
 	private $eiuEntryGui;
-	private $eiuField;
+	private $eiuGuiField;
 	private $eiuFactory;
 	
 	public function __construct(...$eiArgs) {
 		$this->eiuAnalyst = new EiuAnalyst();
 		$this->eiuAnalyst->applyEiArgs(...$eiArgs);
 	}
+	
+// 	static function fromAnalyst(EiuAnalyst $eiuAnalyst) {
+		
+// 	}
 	
 	private function _init(N2nContext $n2nContext) {
 		$this->eiuAnalyst->applyEiArgs($n2nContext);
@@ -125,7 +133,7 @@ class Eiu implements Lookupable {
 	}
 	
 	/**
-	 * 
+	 *
 	 * @param bool $required
 	 * @throws EiuPerimeterException
 	 * @return \rocket\ei\util\gui\EiuGui
@@ -136,6 +144,34 @@ class Eiu implements Lookupable {
 		}
 		
 		return $this->eiuGui = $this->eiuAnalyst->getEiuGui($required);
+	}
+
+	/**
+	 *
+	 * @param bool $required
+	 * @throws EiuPerimeterException
+	 * @return \rocket\ei\util\gui\EiuGui
+	 */
+	public function guiModel(bool $required = true) {
+		if ($this->eiuGuiModel !== null) {
+			return $this->eiuGuiModel;
+		}
+		
+		return $this->eiuGuiModel = $this->eiuAnalyst->getEiuGuiModel($required);
+	}
+	
+	/**
+	 * 
+	 * @param bool $required
+	 * @throws EiuPerimeterException
+	 * @return \rocket\ei\util\gui\EiuGuiFrame
+	 */
+	public function guiFrame(bool $required = true) {
+		if ($this->eiuGuiFrame !== null) {
+			return $this->eiuGuiFrame;
+		}
+		
+		return $this->eiuGuiFrame = $this->eiuAnalyst->getEiuGuiFrame($required);
 	}
 	
 	
@@ -166,11 +202,23 @@ class Eiu implements Lookupable {
 	}
 	
 	/**
-	 * @return \rocket\ei\util\EiuFactory
+	 * @param bool $required
+	 * @return \rocket\ei\util\gui\EiuGuiField|null
+	 */
+	public function guiField(bool $required = true) {
+		if ($this->eiuGuiField !== null) {
+			return $this->eiuGuiField;
+		}
+		
+		return $this->eiuGuiField = $this->eiuAnalyst->getEiuGuiField($required);
+	}
+	
+	/**
+	 * @return \rocket\ei\util\factory\EiuFactory
 	 */
 	public function factory() {
 		if ($this->eiuFactory === null) {
-			$this->eiuFactory = new EiuFactory();
+			$this->eiuFactory = new EiuFactory($this, $this->eiuAnalyst);
 		}
 		
 		return $this->eiuFactory;

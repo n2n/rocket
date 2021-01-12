@@ -21,12 +21,7 @@
  */
 namespace rocket\ei\mask\model;
 
-use rocket\ei\component\command\control\PartialControlComponent;
-use n2n\l10n\N2nLocale;
-use rocket\ei\component\command\control\OverallControlComponent;
-use rocket\ei\manage\gui\ui\DisplayStructure;
-use rocket\ei\mask\EiMask;
-use rocket\ei\manage\gui\EiGui;
+use rocket\ei\manage\gui\EiGuiFrame;
 use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\manage\gui\ViewMode;
 
@@ -42,7 +37,7 @@ class DisplayScheme {
 	private $entryControlOrder;
 
 	/**
-	 * @return \rocket\ei\manage\gui\ui\DisplayStructure|null
+	 * @return \rocket\ei\mask\model\DisplayStructure|null
 	 */
 	public function getOverviewDisplayStructure() {
 		return $this->overviewDisplayStructure;
@@ -56,7 +51,7 @@ class DisplayScheme {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\gui\ui\DisplayStructure|null
+	 * @return \rocket\ei\mask\model\DisplayStructure|null
 	 */
 	public function getBulkyDisplayStructure() {
 		return $this->bulkyDisplayStructure;
@@ -70,7 +65,7 @@ class DisplayScheme {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\gui\ui\DisplayStructure|null
+	 * @return \rocket\ei\mask\model\DisplayStructure|null
 	 */
 	public function getDetailDisplayStructure() {
 		return $this->detailDisplayStructure;
@@ -84,7 +79,7 @@ class DisplayScheme {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\gui\ui\DisplayStructure|null
+	 * @return \rocket\ei\mask\model\DisplayStructure|null
 	 */
 	public function getEditDisplayStructure() {
 		return $this->editDisplayStructure;
@@ -98,7 +93,7 @@ class DisplayScheme {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\gui\ui\DisplayStructure|null
+	 * @return \rocket\ei\mask\model\DisplayStructure|null
 	 */
 	public function getAddDisplayStructure() {
 		return $this->addDisplayStructure;
@@ -147,24 +142,24 @@ class DisplayScheme {
 	/**
 	 * @return \rocket\ei\mask\model\ControlOrder|null
 	 */
-	public function getEntryControlOrder() {
+	public function getEntryGuiControlOrder() {
 		return $this->entryControlOrder;
 	}
 	
 	/**
 	 * @param ControlOrder|null $entryControlOrder
 	 */
-	public function setEntryControlOrder(ControlOrder $entryControlOrder = null) {
+	public function setEntryGuiControlOrder(ControlOrder $entryControlOrder = null) {
 		$this->entryControlOrder = $entryControlOrder;
 	}
 	
 	/**
-	 * @param EiGui $eiGui
+	 * @param EiGuiFrame $eiGuiFrame
 	 * @return GuiDefinition $guiDefinition
 	 */
-	public function initEiGui(EiGui $eiGui, GuiDefinition $guiDefinition) {
+	public function initEiGuiFrame(EiGuiFrame $eiGuiFrame, GuiDefinition $guiDefinition) {
 		$displayStructure = null;
-		switch ($eiGui->getViewMode()) {
+		switch ($eiGuiFrame->getViewMode()) {
 			case ViewMode::BULKY_READ:
 				$displayStructure = $this->getDetailDisplayStructure() ?? $this->getBulkyDisplayStructure();
 				break;
@@ -181,70 +176,70 @@ class DisplayScheme {
 				break;
 		}
 		
-		$commonEiGuiViewFactory = new CommonEiGuiViewFactory($eiGui, $guiDefinition);
+		$commonEiGuiSiFactory = new CommonEiGuiSiFactory($eiGuiFrame);
 		
 		if ($displayStructure === null) {
-			$eiGui->init($commonEiGuiViewFactory);
+			$eiGuiFrame->init($commonEiGuiSiFactory);
 			
-			$displayStructure = DisplayStructure::fromEiGui($eiGui);
+			$displayStructure = DisplayStructure::fromEiGuiFrame($eiGuiFrame);
 		} else {
-			$eiGui->init($commonEiGuiViewFactory, 
-					$guiDefinition->filterGuiFieldPaths($displayStructure->getAllGuiFieldPaths()));
-			$displayStructure = $displayStructure->purified($eiGui);
+			$eiGuiFrame->init($commonEiGuiSiFactory, 
+					$guiDefinition->filterDefPropPaths($displayStructure->getAllDefPropPaths()));
+			$displayStructure = $displayStructure->purified($eiGuiFrame);
 		}
 		
-		$commonEiGuiViewFactory->setDisplayStructure($displayStructure);
+		$commonEiGuiSiFactory->setDisplayStructure($displayStructure->groupedItems());
 	}
 	
-	/**
-	 * @param N2nLocale $n2nLocale
-	 * @return array
-	 */
-	public static function buildPartialControlMap(EiMask $eiDef, N2nLocale $n2nLocale) {
-		$labels = array();
-	
-		foreach ($eiDef->getEiCommandCollection() as $eiCommandId => $eiCommand) {
-			if (!($eiCommand instanceof PartialControlComponent)) continue;
-				
-			foreach ($eiCommand->getPartialControlOptions($n2nLocale) as $controlId => $label) {
-				$labels[ControlOrder::buildControlId($eiCommandId, $controlId)] = $label;
-			}
-		}
-	
-		if ($this->partialControlOrder === null) return $labels;
-		
-		return $this->partialControlOrder->sort($labels);
-	}
-	/**
-	 * @param N2nLocale $n2nLocale
-	 * @return array
-	 */
-	public static function buildOverallControlMap(EiMask $eiDef, N2nLocale $n2nLocale) {
-		$labels = array();
-	
-		foreach ($this->eiType->getEiCommandCollection() as $eiCommandId => $eiCommand) {
-			if (!($eiCommand instanceof OverallControlComponent)) continue;
-				
-			foreach ($eiCommand->getOverallControlOptions($n2nLocale) as $controlId => $label) {
-				$labels[ControlOrder::buildControlId($eiCommandId, $controlId)] = $label;
-			}
-		}
-	
-		if ($this->overallControlOrder === null) return $labels;
-		
-		return $this->overallControlOrder->sort($labels);
-	}
 // 	/**
 // 	 * @param N2nLocale $n2nLocale
 // 	 * @return array
 // 	 */
-// 	public static function buildEntryControlMap(EiMask $eiDef, N2nLocale $n2nLocale) {
+// 	public static function buildPartialControlMap(EiMask $eiDef, N2nLocale $n2nLocale) {
+// 		$labels = array();
+	
+// 		foreach ($eiDef->getEiCommandCollection() as $eiCommandId => $eiCommand) {
+// 			if (!($eiCommand instanceof PartialControlComponent)) continue;
+				
+// 			foreach ($eiCommand->getPartialControlOptions($n2nLocale) as $controlId => $label) {
+// 				$labels[ControlOrder::buildControlId($eiCommandId, $controlId)] = $label;
+// 			}
+// 		}
+	
+// 		if ($this->partialControlOrder === null) return $labels;
+		
+// 		return $this->partialControlOrder->sort($labels);
+// 	}
+// 	/**
+// 	 * @param N2nLocale $n2nLocale
+// 	 * @return array
+// 	 */
+// 	public static function buildOverallControlMap(EiMask $eiDef, N2nLocale $n2nLocale) {
 // 		$labels = array();
 	
 // 		foreach ($this->eiType->getEiCommandCollection() as $eiCommandId => $eiCommand) {
-// 			if (!($eiCommand instanceof EntryControlComponent)) continue;
+// 			if (!($eiCommand instanceof OverallControlComponent)) continue;
 				
-// 			foreach ($eiCommand->getEntryControlOptions($n2nLocale) as $controlId => $label) {
+// 			foreach ($eiCommand->getOverallControlOptions($n2nLocale) as $controlId => $label) {
+// 				$labels[ControlOrder::buildControlId($eiCommandId, $controlId)] = $label;
+// 			}
+// 		}
+	
+// 		if ($this->overallControlOrder === null) return $labels;
+		
+// 		return $this->overallControlOrder->sort($labels);
+// 	}
+// 	/**
+// 	 * @param N2nLocale $n2nLocale
+// 	 * @return array
+// 	 */
+// 	public static function buildEntryGuiControlMap(EiMask $eiDef, N2nLocale $n2nLocale) {
+// 		$labels = array();
+	
+// 		foreach ($this->eiType->getEiCommandCollection() as $eiCommandId => $eiCommand) {
+// 			if (!($eiCommand instanceof EntryGuiControlComponent)) continue;
+				
+// 			foreach ($eiCommand->getEntryGuiControlOptions($n2nLocale) as $controlId => $label) {
 // 				$labels[ControlOrder::buildControlId($eiCommandId, $controlId)] = $label;
 // 			}
 // 		}

@@ -21,14 +21,14 @@
  */
 namespace rocket\impl\ei\component;
 
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\persistence\meta\structure\Column;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use rocket\ei\component\prop\indepenent\IncompatiblePropertyException;
 use n2n\core\container\N2nContext;
+use rocket\impl\ei\component\config\EiConfiguratorAdapter;
 
-class DefaultEiConfigurator extends EiConfiguratorAdapter implements EiPropConfigurator {
+class DefaultEiConfigurator extends EiConfiguratorAdapter {
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\component\prop\indepenent\EiPropConfigurator::initAutoEiPropAttributes($column)

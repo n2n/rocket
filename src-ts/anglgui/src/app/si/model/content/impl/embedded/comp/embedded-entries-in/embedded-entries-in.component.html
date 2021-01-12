@@ -1,0 +1,11 @@
+<div>
+	<div *ngFor="let embe of embes">
+		<rocket-si-add-past *ngIf="!toOne" [disabled]="maxReached" [obtainer]="obtainer"
+				(newEntry)="addBefore(embe, $event)"></rocket-si-add-past>	
+
+		<rocket-embedded-entry [embe]="embe"></rocket-embedded-entry>
+	</div>
+	
+	<rocket-si-add-past *ngIf="!toOne || !maxReached" [disabled]="maxReached" [obtainer]="obtainer"
+			(newEntry)="add($event)"></rocket-si-add-past>
+</div>

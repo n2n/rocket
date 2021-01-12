@@ -24,14 +24,19 @@ namespace rocket\ei\manage\entry;
 use n2n\l10n\Message;
 use rocket\ei\EiPropPath;
 use n2n\util\ex\IllegalStateException;
+use rocket\si\input\SiFieldError;
+use n2n\l10n\N2nLocale;
 
 class EiFieldValidationResult implements ValidationResult {
 	private $eiPropPath;
-	private $errorMessages = array();
 	/**
-	 * @var EiFieldValidationResult[]
+	 * @var Message
 	 */
-	private $subEiFieldValidationResults = array();
+	private $errorMessages = array();
+// 	/**
+// 	 * @var EiFieldValidationResult[]
+// 	 */
+// 	private $subEiFieldValidationResults = array();
 	/**
 	 * @var EiEntryValidationResult[]
 	 */
@@ -62,7 +67,7 @@ class EiFieldValidationResult implements ValidationResult {
 	
 	public function clearSubOnly() {
 		$this->subEiEntryValidationResults = array();
-		$this->subEiFieldValidationResults = array();
+// 		$this->subEiFieldValidationResults = array();
 	}
 
 	/**
@@ -74,9 +79,9 @@ class EiFieldValidationResult implements ValidationResult {
 
 		if (!$checkRecursive) return true;
 
-		foreach ($this->subEiFieldValidationResults as $subEiFieldValidationResult) {
-			if (!$subEiFieldValidationResult->isValid(true)) return false;
-		}
+// 		foreach ($this->subEiFieldValidationResults as $subEiFieldValidationResult) {
+// 			if (!$subEiFieldValidationResult->isValid(true)) return false;
+// 		}
 		
 		foreach ($this->subEiEntryValidationResults as $subEiEntryValidationResult) {
 			if (!$subEiEntryValidationResult->isValid(true)) return false;
@@ -118,9 +123,9 @@ class EiFieldValidationResult implements ValidationResult {
 // 		return null;
 // 	}
 	
-	public function addSubEiFieldValidationResult(EiFieldValidationResult $subValidationResult) {
-		$this->subEiFieldValidationResults[] = $subValidationResult;
-	}
+// 	public function addSubEiFieldValidationResult(EiFieldValidationResult $subValidationResult) {
+// 		$this->subEiFieldValidationResults[] = $subValidationResult;
+// 	}
 
 	public function addSubEiEntryValidationResult(EiEntryValidationResult $subValidationResult) {
 		$this->subEiEntryValidationResults[] = $subValidationResult;
@@ -134,11 +139,36 @@ class EiFieldValidationResult implements ValidationResult {
 				$messages = array_merge($messages, $subValidationResult->getMessages());
 			}
 			
-			foreach ($this->subEiFieldValidationResults as $subValidationResult) {
-				$messages = array_merge($messages, $subValidationResult->getMessages());
-			}
+// 			foreach ($this->subEiFieldValidationResults as $subValidationResult) {
+// 				$messages = array_merge($messages, $subValidationResult->getMessages());
+// 			}
 		}
 
 		return $messages;
+	}
+	
+	/**
+	 * @return \rocket\si\input\SiFieldError
+	 */
+	public function toSiFieldError(N2nLocale $n2nLocale) {
+		$err = new SiFieldError();
+		
+		foreach ($this->errorMessages as $message) {
+			$err->addMessage($message->t($n2nLocale));
+		}
+		
+// 		foreach ($this->subEiFieldValidationResults as $key => $valResult) {
+// 			if ($valResult->isValid()) continue;
+			
+// 			$err->putSubEiFieldError($key, $valResult);
+// 		}
+		
+		foreach ($this->subEiEntryValidationResults as $key => $valResult) {
+			if ($valResult->isValid()) continue;
+				
+			$err->putSubEntryError($key, $valResult->toSiEntryError($n2nLocale));
+		}
+		
+		return $err;
 	}
 }

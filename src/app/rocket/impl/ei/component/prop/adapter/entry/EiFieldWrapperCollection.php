@@ -69,11 +69,11 @@ class ValidationResultCollection implements ValidationResult {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\entry\ValidationResult::isValid()
 	 */
-	public function isValid(bool $checkRecurisve = true): bool {
-		if (!$checkRecurisve) return true;
+	public function isValid(bool $checkRecursive = true): bool {
+		if (!$checkRecursive) return true;
 		
 		foreach ($this->validationResults as $validationResult) {
-			if (!$validationResult->isValid($checkRecurisve)) {
+			if (!$validationResult->isValid($checkRecursive)) {
 				return false;
 			}
 		}

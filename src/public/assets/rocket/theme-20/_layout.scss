@@ -116,6 +116,7 @@ body {
 
 .rocket-content {
     margin-top: 1rem;
+    display: block;
 }
 
  #rocket-content-container {
@@ -169,7 +170,7 @@ body {
     display: inline-block;
 }
 
-.rocket-impl-overview-pagination {
+.rocket-pagination {
     text-align: right;
 }
 
@@ -179,7 +180,7 @@ body {
  */
 
 
-.rocket-loading,
+.rocket-loader,
 .rocket-impl-overview-loading {
     margin: 40px auto 0;
     width: 50px;
@@ -195,7 +196,7 @@ body {
 
 }
 
-.rocket-zone.rocket-loading {
+.rocket-zone.rocket-loader {
     margin-top: 10rem;
 }
 
@@ -208,7 +209,7 @@ body {
     background: $gray-200;
 }
 
-.rocket-load-blocker > .rocket-loading {
+.rocket-load-blocker > .rocket-loader {
     width: 25px;
     height: 25px;
     margin: 8px auto auto;
@@ -239,7 +240,8 @@ body {
 
  @include media-breakpoint-up(lg) {
 	.rocket-zone.rocket-contains-additional {
-		width: calc(100% - 20rem);
+        width: calc(100% - 20rem);
+        display: block;
 		> .rocket-additional {
 			position: fixed;
 			top: 7.825rem;

@@ -1,6 +1,8 @@
 <?php
 namespace rocket\ei\manage\gui;
 
+use rocket\si\meta\SiViewMode;
+
 class ViewMode {
 	const COMPACT_READ = 1;
 	const COMPACT_EDIT = 2;
@@ -24,8 +26,25 @@ class ViewMode {
 		return self::BULKY_READ | self::BULKY_EDIT | self::BULKY_ADD;
 	}
 	
+	/**
+	 * @return int
+	 */
 	public static function read() {
 		return self::COMPACT_READ | self::BULKY_READ;
+	}
+	
+	/**
+	 * @return int
+	 */
+	public static function edit() {
+		return self::COMPACT_EDIT | self::BULKY_EDIT;
+	}
+	
+	/**
+	 * @return int
+	 */
+	public static function add() {
+		return self::COMPACT_ADD | self::BULKY_ADD;
 	}
 	
 	public static function all() {
@@ -53,5 +72,45 @@ class ViewMode {
 	public static function getAll() {
 		return array(self::COMPACT_READ, self::COMPACT_EDIT, self::COMPACT_ADD,
 				self::BULKY_READ, self::BULKY_EDIT, self::BULKY_ADD);
+	}
+	
+	/**
+	 * @param int $viewMode
+	 * @return boolean
+	 */
+	static function isReadOnly(int $viewMode) {
+		return (bool) ($viewMode & self::read());
+	}
+	
+	/**
+	 * @param int $viewMode
+	 * @return boolean
+	 */
+	static function isBulky(int $viewMode) {
+		return $viewMode & self::bulky();
+	}
+	
+	/**
+	 * @param int $viewMode
+	 * @return boolean
+	 */
+	static function isCompact(int $viewMode) {
+		return $viewMode & self::compact();
+	}
+		
+	/**
+	 * @param int $viewMode
+	 * @return boolean
+	 */
+	static function isAdd(int $viewMode) {
+		return $viewMode & self::add();
+	}
+	
+	/**
+	 * @param int $viewMode
+	 * @return SiViewMode
+	 */
+	static function createSiViewMode(int $viewMode) {
+		return new SiViewMode(ViewMode::isBulky($viewMode), ViewMode::isReadOnly($viewMode), ViewMode::isAdd($viewMode));
 	}
 }

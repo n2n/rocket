@@ -1,0 +1,47 @@
+<div class="rocket-toolbar">
+	<div class="rocket-simple-commands">
+		<button class="btn btn-warning rocket-important rocket-label-important" (click)="openAll()">
+			{{ 'common_show_all_label' | translate }} <i class="fa fa-file"></i>
+		</button>
+	</div>
+</div>
+
+<div>
+	<div *ngFor="let embe of embes">
+				
+		<ng-container *ngIf="!embe.isPlaceholder() && !embe.isTypeSelected()">
+			<div class="rocket-summary rocket-summary-ghost">
+				<div class="rocket-si-qualifier">
+				</div>
+				<div class="rocket-simple-commands">
+			
+				</div>
+			</div>
+		</ng-container>
+
+		<ng-container *ngIf="!embe.isPlaceholder() && embe.isTypeSelected()">
+			<div rocketUiStructure class="rocket-summary" 
+						[uiStructure]="embe.summaryUiStructure" [toolbarVisible]="false"
+						rocketSiEntry [siEntry]="embe.siEmbeddedEntry.summaryEntry">
+				<ng-container pre-content>
+					<rocket-si-qualifier [siMaskQualifier]="embe.siEntry.qualifier.maskQualifier"></rocket-si-qualifier>
+				</ng-container>
+
+				<ng-container post-content>
+					<div class="rocket-simple-commands">
+						<ng-template *ngFor="let uiContent of embe.summaryUiStructure.model.getMainControlContents()" 
+								rocketUiContent [uiContent]="uiContent"></ng-template>
+								
+						<ng-template *ngFor="let uiContent of embe.summaryUiStructure.model.getAsideContents()" 
+								rocketUiContent [uiContent]="uiContent"></ng-template>
+					
+						<button class="btn btn-warning" (click)="open(embe)">
+							<span>{{ 'common_detail_label' | translate }}</span>
+							<i class="fa fa-file"></i>
+						</button>
+					</div>
+				</ng-container>
+			</div>
+		</ng-container>
+	</div>
+</div>

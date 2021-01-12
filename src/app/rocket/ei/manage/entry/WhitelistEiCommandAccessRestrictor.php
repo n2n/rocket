@@ -23,7 +23,7 @@
 
 // use rocket\ei\EiCommandPath;
 // use n2n\util\col\HashSet;
-// use rocket\ei\security\EiCommandAccessRestrictor;
+// use rocket\ei\manage\security\EiCommandAccessRestrictor;
 
 // class WhitelistEiCommandAccessRestrictor implements EiCommandAccessRestrictor {
 // 	private $eiCommandPaths;

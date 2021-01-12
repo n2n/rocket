@@ -186,7 +186,7 @@ namespace Rocket.Display {
 		private highlightedParent: StructureElement = null;
 		
 		public highlight(findVisibleParent: boolean = false) {
-			this.jqElem.addClass("rocket-highlighted");
+			this.jqElem.addClass("rocket-error");
 			this.jqElem.removeClass("rocket-highlight-remember");
 			
 			if (!findVisibleParent || this.isVisible()) return;
@@ -201,7 +201,7 @@ namespace Rocket.Display {
 		}
 		
 		public unhighlight(slow: boolean = false) {
-			this.jqElem.removeClass("rocket-highlighted");
+			this.jqElem.removeClass("rocket-error");
 			
 			if (slow) {
 				this.jqElem.addClass("rocket-highlight-remember");	

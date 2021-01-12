@@ -21,44 +21,23 @@
  */
 namespace rocket\ei\manage\gui;
 
-use n2n\l10n\N2nLocale;
 use rocket\ei\util\Eiu;
-use n2n\l10n\Lstr;
 
 interface GuiProp {
-	/**
-	 * @return Lstr 
-	 */
-	public function getDisplayLabelLstr(): Lstr;
 	
 	/**
-	 * @return Lstr|NULL
-	 */
-	public function getDisplayHelpTextLstr(): ?Lstr;
-	
-	/**
-	 * <p>Tests if this GuiProp is compatible with the passed EiGui and returns an {@see DisplayDefinition}
-	 * if it does. Use <code>$eiu->gui()</code> to access the {@see \rocket\ei\util\gui\EiuGui} 
+	 * <p>Tests if this GuiProp is compatible with the passed EiGuiFrame and returns an {@see DisplayDefinition}
+	 * if it does. Use <code>$eiu->guiFrame()</code> to access the {@see \rocket\ei\util\gui\EiuGuiFrame} 
 	 * object.<p>
 	 * 
-	 * @return DisplayDefinition|null return null if this GuiProp is not compatible with passed EiGui.
+	 * @return DisplayDefinition|null return null if this GuiProp is not compatible with passed EiGuiFrame.
 	 */
-	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition;
+	function buildGuiPropSetup(Eiu $eiu, ?array $defPropPaths): ?GuiPropSetup;
 		
-	/**
-	 * @param Eiu $eiu
-	 * @return \rocket\ei\manage\gui\GuiField|null
-	 */
-	public function buildGuiField(Eiu $eiu): ?GuiField;
-		
-	/**
-	 * @return boolean
-	 */
-	public function isStringRepresentable(): bool;
+	
 	
 	/**
-	 * @param object $entity
-	 * @return string|null
+	 * @return GuiDefinition|NULL
 	 */
-	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string;
+	function getForkGuiDefinition(): ?GuiDefinition;
 }

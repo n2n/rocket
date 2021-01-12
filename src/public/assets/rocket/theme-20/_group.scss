@@ -12,7 +12,7 @@
         grid-row-start: 1;
         margin-bottom: 0;    
     }
-    > .rocket-control {
+    > .rocket-structure-content {
         grid-column-start: 1;
         grid-column-end: 3;
     }
@@ -33,7 +33,7 @@
         font-size: $h2-font-size;
         font-weight: bold;
     }
-    > .rocket-control {
+    > .rocket-structure-content {
         padding: 0.5rem 1rem;       
     }
     .rocket-group {
@@ -72,7 +72,7 @@
             margin: 0;
             padding: 0.5rem 0;
         }
-        > .rocket-control {
+        > .rocket-structure-content {
             background: rgba($gray-500, 0.08);
             border: 1px solid $gray-500;
         }

@@ -22,63 +22,64 @@
 namespace rocket\ei\manage\frame;
 
 use n2n\util\ex\IllegalStateException;
-use rocket\core\model\Breadcrumb;
-use n2n\web\http\controller\ControllerContext;
 use rocket\ei\mask\EiMask;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\core\container\N2nContext;
 use rocket\ei\manage\entry\EiEntry;
-use rocket\ei\manage\control\EntryNavPoint;
 use rocket\ei\manage\security\EiExecution;
 use n2n\web\http\HttpContext;
 use n2n\util\uri\Url;
 use n2n\util\type\ArgUtils;
 use rocket\ei\EiCommandPath;
 use rocket\ei\EiEngine;
-use rocket\ei\EiTypeExtension;
-use rocket\ei\EiType;
 use rocket\ei\manage\ManageState;
 use rocket\ei\manage\EiObject;
-use rocket\ei\manage\security\EiEntryAccessFactory;
 use rocket\ei\manage\security\EiEntryAccess;
 use rocket\ei\EiPropPath;
+use rocket\ei\component\command\EiCommand;
+use rocket\ei\manage\security\InaccessibleEiEntryException;
+use rocket\ei\component\command\GenericResult;
+use rocket\si\control\SiNavPoint;
+use rocket\si\meta\SiFrame;
 
 class EiFrame {
+	
 	private $contextEiEngine;
 	private $manageState;
+	/**
+	 * @var Boundry
+	 */
 	private $boundry;
-	private $parent;
-	private $controllerContext;
-	private $subEiTypeExtensions = array();
+	/**
+	 * @var Ability
+	 */
+	private $ability;
+	private $eiForkLink;
+	private $baseUrl;
 	
 	private $eiExecution;
-	private $eiEntryAccessFactory;
 // 	private $eiObject;
 // 	private $previewType;
 	private $eiRelations = array();
 
-	private $filterModel;
-	private $sortModel;
+// 	private $filterModel;
+// 	private $sortModel;
 	
-	private $eiTypeConstraint;
+// 	private $eiTypeConstraint;
 	
-	private $overviewDisabled = false;
-	private $overviewBreadcrumbLabelOverride;
-	private $overviewUrlExt;
-	private $detailDisabled = false;
-	private $detailBreadcrumbLabelOverride;
-	private $detailUrlExt;
+// 	private $breadcrumbs = [];
 	
 	private $listeners = array();
 
 	/**
 	 * @param EiMask $contextEiEngine
-	 * @param ManageState $controllerContext
+	 * @param ManageState $manageState
 	 */
 	public function __construct(EiEngine $contextEiEngine, ManageState $manageState) {
 		$this->contextEiEngine = $contextEiEngine;
 		$this->manageState = $manageState;
 		$this->boundry = new Boundry();
+		$this->ability = new Ability();
 
 // 		$this->eiTypeConstraint = $manageState->getSecurityManager()->getConstraintBy($contextEiMask);
 	}
@@ -100,7 +101,7 @@ class EiFrame {
 	/**
 	 * @return ManageState
 	 */
-	public function getManageState(): ManageState {
+	public function getManageState() {
 		return $this->manageState;
 	}
 	
@@ -120,67 +121,77 @@ class EiFrame {
 	}
 	
 	/**
-	 * @param EiFrame $parent
+	 * @param EiForkLink|null $forkLink
 	 */
-	public function setParent(EiFrame $parent = null) {
-		$this->parent = $parent;
+	public function setEiForkLink(?EiForkLink $forkLink) {
+		$this->forkLink = $forkLink;
 	}
 	
 	/**
-	 * @return EiFrame
+	 * @return EiForkLink|null
 	 */
-	public function getParent() {
-		return $this->parent;
+	public function getEiForkLink() {
+		return $this->forkLink;
 	}
 	
 	/**
-	 * @param ControllerContext $controllerContext
+	 * @return boolean
 	 */
-	public function setControllerContext(ControllerContext $controllerContext) {
-		$this->controllerContext = $controllerContext;
+	public function hasBaseUrl() {
+		return $this->baseUrl !== null;
 	}
 	
 	/**
-	 * @return ControllerContext
+	 * @param Url $url
 	 */
-	public function getControllerContext(): ControllerContext {
-		if (null === $this->controllerContext) {
-			throw new IllegalStateException('EiFrame has no ControllerContext available');
+	public function setBaseUrl(?Url $baseUrl) {
+		$this->baseUrl = $baseUrl;
+	}
+	
+	/**
+	 * @return Url
+	 */
+	public function getBaseUrl() {
+		if (null === $this->baseUrl) {
+			throw new IllegalStateException('BaseUrl of EiFrame is unknown.');
 		}
 		
-		return $this->controllerContext;
+		return $this->baseUrl;
 	}
 	
 	/**
-	 * @param EiTypeExtension[] $subEiTypeExtensions
+	 * @param EiExecution $eiExecution
 	 */
-	public function setSubEiTypeExtensions(array $subEiTypeExtensions) {
-		ArgUtils::valArray($subEiTypeExtensions, EiTypeExtension::class);
-		$this->subEiTypeExtensions = $subEiTypeExtensions;
+	public function exec(EiCommand $eiCommand) {
+		if ($this->eiExecution !== null) {
+			throw new IllegalStateException('EiFrame already executed.');
+		}
+		
+		$this->eiExecution = $this->manageState->getEiPermissionManager()
+				->createEiExecution($this->contextEiEngine->getEiMask(), $eiCommand);
+		
+		foreach ($this->listeners as $listener) {
+			$listener->whenExecuted($this->eiExecution);
+		}
 	}
 	
 	/**
-	 * @param EiType $eiType
-	 * @throws \InvalidArgumentException
-	 * @return \rocket\ei\mask\EiMask
+	 * @throws IllegalStateException
+	 * @return EiExecution
 	 */
-	public function determineEiMask(EiType $eiType) {
-		$contextEiMask = $this->contextEiEngine->getEiMask();
-		$contextEiType = $contextEiMask->getEiType();
-		if ($eiType->equals($contextEiType)) {
-			return $contextEiMask;
+	public function getEiExecution() {
+		if (null === $this->eiExecution) {
+			throw new IllegalStateException('EiFrame contains no EiExecution.');
 		}
 		
-		if (!$contextEiType->containsSubEiTypeId($eiType->getId(), true)) {
-			throw new \InvalidArgumentException('Passed EiType ' . $eiType->getId() 
-					. ' is not compatible with EiFrame with context EiType ' . $contextEiType->getId() . '.');
-		}
-		
-		if (isset($this->subEiTypeExtensions[$eiType->getId()])) {
-			return $this->subEiTypeExtensions[$eiType->getId()]->getEiMask();
-		}
-		
-		return $eiType->getEiMask();
+		return $this->eiExecution;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	public function hasEiExecution() {
+		return $this->eiExecution !== null;
 	}
 	
 	public function setEiRelation(EiPropPath $eiPropPath, EiRelation $scriptRelation) {
@@ -206,21 +217,84 @@ class EiFrame {
 		return $this->boundry;
 	}
 	
-// 	public function getOrCreateFilterModel() {
-// 		if ($this->filterModel !== null) {
-// 			return $this->filterModel;
-// 		}
+	/**
+	 * @return Ability
+	 */
+	public function getAbility() {
+		return $this->ability;
+	}
+	
+	/**
+	 * @var \rocket\ei\manage\critmod\filter\FilterDefinition
+	 */
+	private $filterDefinition;
+	/**
+	 * @var \rocket\ei\manage\critmod\sort\SortDefinition
+	 */
+	private $sortDefinition;
+	/**
+	 * @var \rocket\ei\manage\critmod\quick\QuickSearchDefinition
+	 */
+	private $quickSearchDefinition;
+	
+	/**
+	 * @return \rocket\ei\manage\critmod\filter\FilterDefinition
+	 */
+	public function getFilterDefinition() {
+		if ($this->filterDefinition !== null) {
+			return $this->filterDefinition;
+		}
+		
+		return $this->filterDefinition = $this->contextEiEngine
+				->createFramedFilterDefinition($this);
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function hasFilterProps() {
+		return !$this->getFilterDefinition()->isEmpty();
+	}
+	
+	/**
+	 * @return \rocket\ei\manage\critmod\sort\SortDefinition
+	 */
+	public function getSortDefinition() {
+		if ($this->sortDefinition !== null) {
+			return $this->sortDefinition;
+		}
+		
+		return $this->sortDefinition = $this->contextEiEngine
+				->createFramedSortDefinition($this);
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function hasSortProps() {
+		return !$this->getSortDefinition()->isEmpty();
+	}
+	
+	/**
+	 * @return \rocket\ei\manage\critmod\quick\QuickSearchDefinition
+	 */
+	public function getQuickSearchDefinition() {
+		if ($this->quickSearchDefinition !== null) {
+			return $this->quickSearchDefinition;
+		}
+		
+		return $this->quickSearchDefinition = $this->contextEiEngine
+				->createFramedQuickSearchDefinition($this);
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function hasQuickSearchProps() {
+		return !$this->getQuickSearchDefinition()->isEmpty();
+	}
+	
 
-// 		return $this->filterModel = CritmodFactory::createFilterModelFromEiFrame($this);
-// 	}
-	
-// 	public function getOrCreateSortModel() {
-// 		if ($this->sortModel !== null) {
-// 			return $this->sortModel;
-// 		}
-	
-// 		return $this->sortModel = CritmodFactory::createSortModelFromEiFrame($this);
-// 	}
 	/**
 	 * @param \n2n\persistence\orm\EntityManager $em
 	 * @param string $entityAlias
@@ -240,6 +314,11 @@ class EiFrame {
 
 		$entityAliasCriteriaProperty = CrIt::p(array($entityAlias));
 		
+		if (!($ignoreConstraintTypes & Boundry::TYPE_SECURITY) 
+				&& null !== ($criteriaConstraint = $this->getEiExecution()->getCriteriaConstraint())) {
+			$criteriaConstraint->applyToCriteria($criteria, $entityAliasCriteriaProperty);
+		}
+		
 		foreach ($this->boundry->filterCriteriaConstraints($ignoreConstraintTypes) as $criteriaConstraint) {
 			$criteriaConstraint->applyToCriteria($criteria, $entityAliasCriteriaProperty);
 		}
@@ -256,10 +335,12 @@ class EiFrame {
 	 * @param EiObject $eiObject
 	 * @param int $ignoreConstraintTypes
 	 * @return EiEntry
+	 * @throws InaccessibleEiEntryException
 	 */
 	public function createEiEntry(EiObject $eiObject, EiEntry $copyFrom = null, int $ignoreConstraintTypes = 0) {
-		$eiEntry = $this->determineEiMask($eiObject->getEiEntityObj()->getEiType())->getEiEngine()
+		$eiEntry = $this->contextEiEngine->getEiMask()->determineEiMask($eiObject->getEiEntityObj()->getEiType())->getEiEngine()
 				->createFramedEiEntry($this, $eiObject, $copyFrom, $this->boundry->filterEiEntryConstraints($ignoreConstraintTypes));
+		$eiEntry->setEiEntryAccess($this->getEiExecution()->createEiEntryAccess($eiEntry));
 		
 		foreach ($this->listeners as $listener) {
 			$listener->onNewEiEntry($eiEntry);
@@ -268,50 +349,15 @@ class EiFrame {
 		return $eiEntry;
 	}
 	
-	/**
-	 * @param EiExecution $eiExecution
-	 */
-	public function setEiExecution(EiExecution $eiExecution) {
-		$this->eiExecution = $eiExecution;
-	}
 	
-	/**
-	 * @throws IllegalStateException
-	 * @return EiExecution
-	 */
-	public function getEiExecution() {
-		if (null === $this->eiExecution) {
-			throw new IllegalStateException('EiFrame contains no EiExecution.');
-		}
-		
-		return $this->eiExecution;
-	}
 	
-	/**
-	 * @return bool
-	 */
-	public function hasEiExecution() {
-		return $this->eiExecution !== null;
-	}
-	
-	/**
-	 * @param EiEntryAccessFactory $eiEntryAccessFactory
-	 */
-	public function setEiEntryAccessFactory(EiEntryAccessFactory $eiEntryAccessFactory) {
-		$this->eiEntryAccessFactory = $eiEntryAccessFactory;
-	}
-	
-	/**
-	 * @throws IllegalStateException
-	 * @return EiEntryAccessFactory
-	 */
-	public function getEiEntryAccessFactory() {
-		if (null === $this->eiEntryAccessFactory) {
-			throw new IllegalStateException('EiFrame contains no EiEntryAccessFactory.');
-		}
-		
-		return $this->eiEntryAccessFactory;
-	}
+// 	/**
+// 	 * @throws IllegalStateException
+// 	 * @return EiEntryAccessFactory
+// 	 */
+// 	public function getEiEntryAccessFactory() {
+// 		return $this->getEiExecution()->getEiEntryAccessFactory()->createEiEntryAccess($eiEntry);
+// 	}
 	
 	/**
 	 * @return bool
@@ -336,147 +382,139 @@ class EiFrame {
 		return $this->getEiEntryAccessFactory()->createEiEntryAccess($eiEntry);
 	}
 	
-	public function setOverviewDisabled(bool $overviewDisabled) {
-		$this->overviewDisabled = $overviewDisabled;
-	}
-	
-	public function isOverviewDisabled() {
-		return $this->overviewDisabled;
-	}
-	
-	private function ensureOverviewEnabled() {
-		if ($this->overviewDisabled) {
-			throw new IllegalStateException('Overview is disabled');
-		}
-	}
-	
-	public function setOverviewBreadcrumbLabelOverride(string $overviewBreadcrumbLabel = null) {
-		$this->overviewBreadcrumbLabelOverride = $overviewBreadcrumbLabel;
-	}
-	
-	public function getOverviewBreadcrumbLabelOverride() {
-		return $this->overviewBreadcrumbLabelOverride;
-	}
-	
-	public function getOverviewBreadcrumbLabel() {
-		if (null !== $this->overviewBreadcrumbLabelOverride) {
-			return $this->overviewBreadcrumbLabelOverride; 
-		}
-		
-		$this->ensureOverviewEnabled();
-		
-		return $this->getContextEiEngine()->getEiMask()->getPluralLabelLstr();
-	}
-	
-	public function setOverviewUrlExt(Url $overviewUrlExt = null) {
-		ArgUtils::assertTrue($overviewUrlExt->isRelative(), 'Url must be relative.');
-		$this->overviewUrlExt = $overviewUrlExt;
-	}
-	
-	public function getOverviewUrlExt() {
-		return $this->overviewUrlExt;
-	}
-
-	public function isOverviewUrlAvailable() {
-		return $this->overviewUrlExt !== null || (!$this->overviewDisabled
-				&& $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()->hasGenericOverview());
-	}
-	
-	public function getOverviewUrl(HttpContext $httpContext, bool $required = true) {
-		if ($this->overviewUrlExt !== null) {
-			return $httpContext->getRequest()->getContextPath()->toUrl()->ext($this->overviewUrlExt);
-		} 
-		
-		$overviewUrlExt = $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()
-				->getGenericOverviewUrlExt($required);
-		
-		if ($overviewUrlExt === null) return null;
-		
-		$this->ensureOverviewEnabled();
-		
-		return $httpContext->getControllerContextPath($this->getControllerContext())->toUrl()->ext($overviewUrlExt);
-	}
-
-	public function createOverviewBreadcrumb(HttpContext $httpContext) {
-		return new Breadcrumb($this->getOverviewUrl($httpContext), $this->getOverviewBreadcrumbLabel());
-	}
-	
-	private function ensureDetailEnabled() {
-		if ($this->detailDisabled) {
-			throw new IllegalStateException('Detail is disabled');
-		}
-	}
-	
-	public function createDetailBreadcrumb(HttpContext $httpContext, EiObject $eiObject) {
-		return new Breadcrumb(
-				$this->getDetailUrl($httpContext, $eiObject->toEntryNavPoint($this->getContextEiEngine()->getEiMask()->getEiType())),
-				$this->getDetailBreadcrumbLabel($eiObject));
-	}
-	
-	public function setDetailDisabled($detailDisabled) {
-		$this->detailDisabled = (boolean) $detailDisabled;
-	}
-	
-	public function isDetailDisabled() {
-		return $this->detailDisabled;
-	}
-	
-	public function setDetailBreadcrumbLabelOverride(string $detailBreadcrumbLabelOverride = null) {
-		$this->detailBreadcrumbLabelOverride = $detailBreadcrumbLabelOverride;
+	/**
+	 * @return boolean
+	 */
+	public function isOverviewAvailable() {
+		return $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()->hasGenericOverview();
 	}
 	
 	/**
-	 * @return string
+	 * @param bool $required
+	 * @return SiNavPoint|null
 	 */
-	public function getDetailBreadcrumbLabelOverride() {
-		return $this->detailBreadcrumbLabelOverride;
+	public function getOverviewNavPoint(bool $required = true) {
+		$result = $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()
+				->determineGenericOverview($required);
+				
+		return $this->compleNavPoint($result);
 	}
-		
+	
 	/**
 	 * @param EiObject $eiObject
-	 * @return string
+	 * @return boolean
 	 */
-	public function getDetailBreadcrumbLabel(EiObject $eiObject): string {		
-		if ($this->detailBreadcrumbLabelOverride !== null) {
-			return $this->detailBreadcrumbLabelOverride;
-		}
+	public function isDetailAvailable(EiObject $eiObject) {
+		return $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()->hasGenericDetail($eiObject);
+	}
 	
-		$this->ensureDetailEnabled();
+	/**
+	 * @param EiObject $eiObject
+	 * @param bool $required
+	 * @return SiNavPoint|null
+	 */
+	public function getDetailNavPoint(EiObject $eiObject, bool $required = true) {
+		$result = $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()
+				->determineGenericDetail($eiObject, $required);
 		
-		return $this->manageState->getDef()->getGuiDefinition($this->contextEiEngine->getEiMask())
-				->createIdentityString($eiObject, $this->getN2nContext(), $this->getN2nContext()->getN2nLocale());
+		return $this->compleNavPoint($result);
 	}
 	
-	public function setDetailUrlExt(Url $detailUrlExt) {
-		ArgUtils::assertTrue($detailUrlExt->isRelative(), 'Url must be relative.');
-		$this->detailUrlExt = $detailUrlExt;
+	/**
+	 * @param EiObject $eiObject
+	 * @return boolean
+	 */
+	public function isEditAvailable(EiObject $eiObject) {
+		return $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()->hasGenericEdit($eiObject);
 	}
 	
-	public function getDetailUrlExt() {
-		return $this->detailUrlExt;
+	/**
+	 * @param EiObject $eiObject
+	 * @param bool $required
+	 * @return SiNavPoint|null
+	 */
+	public function getEditNavPoint(EiObject $eiObject, bool $required = true) {
+		$result = $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()
+				->determineGenericEdit($eiObject, $required);
+		
+		return $this->compleNavPoint($result);
+	}
+	
+	/**
+	 * @param EiObject $eiObject
+	 * @return boolean
+	 */
+	public function isAddAvailable(EiObject $eiObject) {
+		return $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()->hasGenericAdd();
+	}
+	
+	/**
+	 * @param bool $required
+	 * @return SiNavPoint|null
+	 */
+	public function getAddNavPoint(bool $required = true) {
+		$result = $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()
+				->determineGenericAdd($required);
+				
+		return $this->compleNavPoint($result);
+	}
+	
+	/**
+	 * @param GenericResult|null $result
+	 * @return SiNavPoint|null
+	 */
+	private function compleNavPoint($result) {
+		if ($result === null) {
+			return null;
+		}
+		
+		$navPoint = $result->getNavPoint();
+		if ($navPoint->isUrlComplete()) {
+			return $navPoint;
+		}
+		
+		return $navPoint->complete($this->getBaseUrl()
+				->ext(EiFrameController::createCmdUrlExt($result->getEiCommandPath())));
 	}
 
-	public function isDetailUrlAvailable(EntryNavPoint $entryNavPoint) {
-		return $this->detailUrlExt !== null || 
-				(!$this->detailDisabled && $this->getContextEiEngine()->getEiMask()
-						->getEiCommandCollection()->hasGenericDetail($entryNavPoint));
-	}
-	
-	public function getDetailUrl(HttpContext $httpContext, EntryNavPoint $entryNavPoint, bool $required = true) {
-		if ($this->detailUrlExt !== null) {
-			return $httpContext->getRequest()->getContextPath()->ext($this->detailUrlExt);
+	public function getApiUrl(EiCommandPath $eiCommandPath = null) {
+		if ($eiCommandPath === null) {
+			$eiCommandPath = EiCommandPath::from($this->getEiExecution()->getEiCommand());
 		}
 		
-		$detailUrlExt = $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()
-				->getGenericDetailUrlExt($entryNavPoint, $required);
-		
-		if ($detailUrlExt === null) return null;
-		
-		$this->ensureDetailEnabled();
-		
-		return $httpContext->getControllerContextPath($this->getControllerContext())->toUrl()
-				->ext($detailUrlExt);
+		return $this->getBaseUrl()->ext([EiFrameController::API_PATH_PART, (string) $eiCommandPath]);
 	}
+	
+	public function getCmdUrl(EiCommandPath $eiCommandPath) {
+		return $this->getBaseUrl()->ext([EiFrameController::CMD_PATH_PART, (string) $eiCommandPath]);
+	}
+	
+	/**
+	 * @param EiPropPath $eiPropPath
+	 * @param string $mode
+	 * @param EiEntry|null $eiEntry
+	 * @return \n2n\util\uri\Url
+	 */
+	public function getForkUrl(?EiCommandPath $eiCommandPath, EiPropPath $eiPropPath, string $mode, EiObject $eiObject = null) {
+		if ($eiCommandPath === null) {
+			$eiCommandPath = EiCommandPath::from($this->getEiExecution()->getEiCommand());
+		}
+		
+		if ($eiObject === null) {
+			return $this->getBaseUrl()->ext([EiFrameController::FORK_PATH, (string) $eiCommandPath, (string) $eiPropPath, $mode]);
+		}
+		
+		if ($eiObject->isNew()) {
+			return $this->getBaseUrl()->ext([EiFrameController::FORK_NEW_ENTRY_PATH, (string) $eiCommandPath, 
+					$eiObject->getEiEntityObj()->getEiType()->getId(), (string) $eiPropPath, $mode]);
+		}
+		
+		return $this->getBaseUrl()->ext([EiFrameController::FORK_ENTRY_PATH, (string) $eiCommandPath, 
+				$eiObject->getEiEntityObj()->getPid(), (string) $eiPropPath, $mode]);
+	}
+	
+	
+	
 	
 	private $currentUrlExt;
 	
@@ -504,9 +542,70 @@ class EiFrame {
 	public function unregisterListener(EiFrameListener $listener) {
 		unset($this->listeners[spl_object_hash($listener)]);		
 	}
+	
+	/**
+	 * @return \rocket\si\meta\SiFrame
+	 */
+	function createSiFrame() {
+		return (new SiFrame($this->getApiUrl(), $this->contextEiEngine->getEiMask()->getEiType()->createSiTypeContext()))
+				->setSortable($this->ability->getSortAbility() !== null);
+	}
 }
 
-interface EiFrameListener {
+class EiForkLink {
+	/**
+	 * View only
+	 * @var string
+	 */
+	const MODE_DISCOVER = 'discover';
+	/**
+	 * E. g. OneToMany-, OneToOne- or ManyToManySelection
+	 * @var string
+	 */
+	const MODE_SELECT = 'select';
 	
-	public function onNewEiEntry(EiEntry $eiEntry);
+	private $parent;
+	private $mode;
+	private $parentEiObject;
+	
+	function __construct(EiFrame $parent, string $mode, EiObject $parentEiObject = null) {
+		$this->parent = $parent;
+		ArgUtils::valEnum($mode, self::getModes());
+		$this->mode = $mode;
+		$this->parentEiObject = $parentEiObject;
+		
+		if ($parentEiObject !== null) {
+			ArgUtils::assertTrue($parentEiObject->getEiEntityObj()->getEiType()
+							->isA($parent->getContextEiEngine()->getEiMask()->getEiType()), 
+					'EiForkLink EiObject is not compatible with EiFrame');	
+		}
+	}
+	
+	/**
+	 * @return \rocket\ei\manage\frame\EiFrame
+	 */
+	function getParent() {
+		return $this->parent;
+	}
+	
+	/**
+	 * @return string
+	 */
+	function getMode() {
+		return $this->mode;
+	}
+	
+	/**
+	 * @return \rocket\ei\manage\EiObject|null
+	 */
+	function getParentEiObject() {
+		return $this->parentEiObject;
+	}
+	
+	/**
+	 * @return string[]
+	 */
+	static function getModes() {
+		return [self::MODE_DISCOVER, self::MODE_SELECT];
+	}
 }

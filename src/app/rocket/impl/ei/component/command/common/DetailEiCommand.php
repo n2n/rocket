@@ -21,30 +21,28 @@
  */
 namespace rocket\impl\ei\component\command\common;
 
-use rocket\ei\manage\control\EntryNavPoint;
 use n2n\l10n\DynamicTextCollection;
-use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\N2nLocale;
-use rocket\ei\component\command\control\EntryControlComponent;
 use rocket\impl\ei\component\command\common\controller\DetailController;
-use rocket\ei\manage\control\ControlButton;
-use rocket\impl\ei\component\command\common\controller\PathUtils;
-use rocket\ei\manage\control\IconType;
-use rocket\impl\ei\component\command\IndependentEiCommandAdapter;
+use rocket\si\control\SiButton;
+use rocket\si\control\SiIconType;
+use rocket\impl\ei\component\command\adapter\IndependentEiCommandAdapter;
 use rocket\ei\component\command\PrivilegedEiCommand;
 use n2n\util\uri\Path;
 use n2n\core\container\N2nContext;
+use rocket\si\control\SiNavPoint;
 use rocket\core\model\Rocket;
-use rocket\ei\manage\security\privilege\EiCommandPrivilege;
-use rocket\ei\component\command\GenericDetailEiCommand;
 use rocket\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
+use rocket\ei\component\command\GenericDetailEiCommand;
 
-class DetailEiCommand extends IndependentEiCommandAdapter implements EntryControlComponent, GenericDetailEiCommand, 
-		PrivilegedEiCommand {
+class DetailEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiCommand, GenericDetailEiCommand {
 	const ID_BASE = 'detail';
 	const CONTROL_DETAIL_KEY = 'detail'; 
 	const CONTROL_PREVIEW_KEY = 'preview';
+	
+	protected function prepare() {
+	}
 		
 	public function getIdBase(): ?string {
 		return self::ID_BASE;
@@ -59,59 +57,58 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 	}
 	
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\component\command\control\EntryControlComponent::getEntryControlOptions()
+	 * @see \rocket\ei\component\command\control\EntryGuiControlComponent::getEntryGuiControlOptions()
 	 */
-	public function getEntryControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {
+	public function getEntryGuiControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {
 		$dtc = new DynamicTextCollection('rocket', $n2nLocale);
 		return array(self::CONTROL_DETAIL_KEY => $dtc->translate('ei_impl_detail_label'), 
 				self::CONTROL_PREVIEW_KEY => $dtc->translate('ei_impl_preview_label'));
 	}
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\component\command\control\EntryControlComponent::createEntryControls()
+	 * @see \rocket\ei\component\command\control\EntryGuiControlComponent::createEntryGuiControls()
 	 */
-	public function createEntryControls(Eiu $eiu, HtmlView $view): array {
+	public function createEntryGuiControls(Eiu $eiu): array {
 		$eiuFrame = $eiu->frame();
-		if ($eiuFrame->isExecutedBy($this)) {
+		$eiuEntry = $eiu->entry();
+		
+		if ($eiuEntry->isNew() || $eiuFrame->isExecutedBy($this)) {
 			return array();
 		}
-		
-		$eiuEntry = $eiu->entry();
 		
 		$pathExt = null;
 		$iconType = null;
 		if (!$eiuEntry->isDraft()) {
 			$pathExt = new Path(array('live', $eiuEntry->getPid()));
-			$iconType = IconType::ICON_FILE_O;
+			$iconType = SiIconType::ICON_FILE;
 		} else if (!$eiuEntry->isDraftNew()) {
 			$pathExt = new Path(array('draft', $eiuEntry->getDraftId()));
-			$iconType = IconType::ICON_FILE_O;
+			$iconType = SiIconType::ICON_FILE_ALT;
 		} else {
 			return array();
 		}
 		
 		$dtc = $eiu->dtc(Rocket::NS);
-		$eiuControlFactory = $eiu->frame()->controlFactory($this);
+		$eiuControlFactory = $eiu->guiFrame()->controlFactory($this);
 		
-		$controlButton = new ControlButton(
+		$siButton = new SiButton(
 				$dtc->t('ei_impl_detail_label'),
 				$dtc->t('ei_impl_detail_tooltip', array('entry' => $eiuFrame->getGenericLabel())),
 				false, null, $iconType);
 		
-		$controls = array(
-				self::CONTROL_DETAIL_KEY => $eiuControlFactory->createJhtml($controlButton, $pathExt->toUrl()));
+		$controls = array($eiuControlFactory->createCmdRef(self::CONTROL_DETAIL_KEY, $siButton, $pathExt->toUrl()));
 		
 		if (!$eiuEntry->isPreviewSupported()) {
 			return $controls;
 		}
 		
-		$controlButton = new ControlButton(
+		$siButton = new SiButton(
 				$dtc->t('ei_impl_detail_preview_label'),
 				$dtc->t('ei_impl_detail_preview_tooltip', array('entry' => $eiuFrame->getGenericLabel())),
-				false, null, IconType::ICON_EYE);
+				false, null, SiIconType::ICON_EYE);
 		
 		$previewType = $eiuEntry->getDefaultPreviewType();
 		if ($previewType === null) {
-			$controls[self::CONTROL_PREVIEW_KEY] = $eiuControlFactory->createDeactivated($controlButton);
+			$controls[] = $eiuControlFactory->createDeactivated(self::CONTROL_PREVIEW_KEY, $siButton);
 			return $controls;
 		}
 		
@@ -122,37 +119,42 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements EntryContro
 		}
 		
 		
-		$controls[self::CONTROL_PREVIEW_KEY] = $eiuControlFactory->createJhtml($controlButton, $pathExt->toUrl());
+		$controls[] = $eiuControlFactory->createCmdRef(self::CONTROL_PREVIEW_KEY, $siButton, $pathExt->toUrl());
 		
 		return $controls;
 	}
 	
-	public function getDetailUrlExt(EntryNavPoint $entryNavPoint) {
-// 		if (!$this->getEiType()->getEiMask()->getisPreviewAvailable()) {
-// 			$entryNavPoint = $entryNavPoint->copy(false, false, true);
-// 		}
+// 	public function getDetailUrlExt(EntryNavPoint $entryNavPoint) {
+// // 		if (!$this->getEiType()->getEiMask()->getisPreviewAvailable()) {
+// // 			$entryNavPoint = $entryNavPoint->copy(false, false, true);
+// // 		}
 		
-		return PathUtils::createPathExtFromEntryNavPoint($this, $entryNavPoint)->toUrl();
-	}
+// 		return PathUtils::createPathExtFromEntryNavPoint($this, $entryNavPoint)->toUrl();
+// 	}
 	
 	public function createEiCommandPrivilege(Eiu $eiu): EiCommandPrivilege {
 		$dtc = $eiu->dtc(Rocket::NS);
 		return $eiu->factory()->newCommandPrivilege($dtc->t('ei_impl_detail_label'));
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\component\command\GenericDetailEiCommand::isDetailAvailable($entryNavPoint)
-	 */
-	public function isDetailAvailable(EntryNavPoint $entryNavPoint): bool {
-		return true;
+	public function buildDetailNavPoint(Eiu $eiu): ?SiNavPoint {
+		return SiNavPoint::siref((new Path(['live', $eiu->object()->getPid()]))->toUrl());
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\component\command\GenericDetailEiCommand::buildDetailPathExt($entryNavPoint)
-	 */
-	public function getDetailPathExt(EntryNavPoint $entryNavPoint): Path {
-		return PathUtils::createPathExtFromEntryNavPoint($this, $entryNavPoint);
-	}
+	
+// 	/**
+// 	 * {@inheritDoc}
+// 	 * @see \rocket\ei\component\command\GenericDetailEiCommand::isDetailAvailable($entryNavPoint)
+// 	 */
+// 	public function isDetailAvailable(EntryNavPoint $entryNavPoint): bool {
+// 		return true;
+// 	}
+
+// 	/**
+// 	 * {@inheritDoc}
+// 	 * @see \rocket\ei\component\command\GenericDetailEiCommand::buildDetailPathExt($entryNavPoint)
+// 	 */
+// 	public function getDetailPathExt(EntryNavPoint $entryNavPoint): Path {
+// 		return PathUtils::createPathExtFromEntryNavPoint($this, $entryNavPoint);
+// 	}
 }

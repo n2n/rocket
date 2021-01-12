@@ -45,7 +45,7 @@
 <?php if ($loginContext->getCurrentUser()->isAdmin()): ?>
 	<div id="rocket-core-latest-logins" class="rocket-main-group">
 		<label><?php $html->l10nText('core_latest_logins_title') ?></label>
-		<div class="rocket-control row">
+		<div class="rocket-structure-content row">
 			<div class="col-sm-6 mt-3">
 				<h3><?php $html->l10nText('core_latest_logins_title') ?></h3>
 				<?php $view->import('inc\loginTable.html', array('useSuccessfull' => true)) ?>
@@ -58,7 +58,7 @@
 	</div>
 	<div id="rocket-core-server-info" class="rocket-main-group">
 		<label><?php $html->l10nText('core_server_info_title') ?></label>
-		<div class="rocket-control">
+		<div class="rocket-structure-content">
     		<table class="table table-hover rocket-table mt-3">
     			<thead>
     				<tr>

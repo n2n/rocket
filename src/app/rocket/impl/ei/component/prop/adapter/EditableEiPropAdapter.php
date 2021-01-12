@@ -21,27 +21,21 @@
  */
 namespace rocket\impl\ei\component\prop\adapter;
 
-use n2n\util\ex\IllegalStateException;
 use rocket\ei\component\prop\PrivilegedEiProp;
-use rocket\ei\manage\gui\GuiProp;
+use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\util\Eiu;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
-use rocket\ei\manage\security\privilege\EiPropPrivilege;
-use rocket\ei\manage\gui\GuiField;
-use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldEditable;
-use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
-use rocket\impl\ei\component\prop\adapter\gui\StatelessGuiFieldDisplayable;
-use rocket\impl\ei\component\prop\adapter\gui\GuiFieldProxy;
+use rocket\impl\ei\component\prop\adapter\config\EditConfig;
+use rocket\ei\util\factory\EifGuiField;
+use n2n\util\ex\UnsupportedOperationException;
 
-abstract class EditableEiPropAdapter extends DisplayableEiPropAdapter implements StatelessGuiFieldDisplayable, 
-		StatelessGuiFieldEditable, PrivilegedEiProp {
+abstract class EditableEiPropAdapter extends DisplayableEiPropAdapter implements PrivilegedEiProp {
 	protected $editConfig;
 
 	/**
 	 * @return \rocket\impl\ei\component\prop\adapter\config\EditConfig
 	 */
-	public function getEditConfig() {
+	protected function getEditConfig() {
 		if ($this->editConfig === null) {
 			$this->editConfig = new EditConfig();
 		}
@@ -49,42 +43,42 @@ abstract class EditableEiPropAdapter extends DisplayableEiPropAdapter implements
 		return $this->editConfig;
 	}
 
-	public function createEiPropConfigurator(): EiPropConfigurator {
-		$eiPropConfigurator = parent::createEiPropConfigurator();
-		IllegalStateException::assertTrue($eiPropConfigurator instanceof AdaptableEiPropConfigurator);
-		$eiPropConfigurator->registerEditConfig($this->getEditConfig());
-		return $eiPropConfigurator;
-	}
-
-	public function buildGuiProp(Eiu $eiu): ?GuiProp {
-		return $this;
-	}
-
-	public function buildGuiField(Eiu $eiu): ?GuiField {
-		return new GuiFieldProxy($eiu, $this, $this);
+	protected function createConfigurator(): AdaptableEiPropConfigurator {
+		return parent::createConfigurator()->addAdaption($this->getEditConfig());
 	}
 
 	/**
-	 * @return bool
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\adapter\DisplayablePropertyEiPropAdapter::buildGuiField()
 	 */
-	public function isReadOnly(Eiu $eiu): bool {
-		if (!WritableEiPropPrivilege::checkForWriteAccess($eiu->entry()->access()->getEiFieldAccess($this))) {
-			return true;
+	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
+		if ($readOnly || $eiu->guiFrame()->isReadOnly()
+				|| ($eiu->entry()->isNew() && $this->getEditConfig()->isConstant())) {
+			return $this->createOutEifGuiField($eiu)->toGuiField();
 		}
-
-		if ($eiu->entry()->isDraft() || (!$eiu->entry()->isNew()
-				&& $this->editConfig->isConstant())) {
-			return true;
-		}
-
-		return $this->editConfig->isReadOnly();
+		
+		return $this->createInEifGuiField($eiu)->toGuiField();
 	}
-
-	public function isMandatory(Eiu $eiu): bool {
-		return $this->editConfig->isMandatory();
+	
+	/**
+	 * @param Eiu $eiu
+	 * @return EifGuiField
+	 */
+	protected function createOutEifGuiField(Eiu $eiu): EifGuiField {
+		throw new UnsupportedOperationException(get_class($this)
+				. ' must implement either'
+				. ' createOutEifGuiField(Eiu $eiu): EifGuiField (recommended) or'
+				. ' buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField.');
 	}
-
-	public function createEiPropPrivilege(Eiu $eiu): EiPropPrivilege {
-		return new WritableEiPropPrivilege();
+	
+	/**
+	 * @param Eiu $eiu
+	 * @return EifGuiField
+	 */
+	protected function createInEifGuiField(Eiu $eiu): EifGuiField {
+		throw new UnsupportedOperationException(get_class($this)
+				. ' must implement either'
+				. ' createInEifGuiField(Eiu $eiu): EifGuiField (recommended) or'
+				. ' buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField.');
 	}
 }

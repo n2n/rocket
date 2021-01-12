@@ -25,77 +25,83 @@ use rocket\ei\component\prop\QuickSearchableEiProp;
 use rocket\ei\util\filter\prop\StringFilterProp;
 use rocket\ei\component\prop\SortableEiProp;
 use rocket\ei\component\prop\FilterableEiProp;
-use n2n\l10n\N2nLocale;
-use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
-use rocket\impl\ei\component\prop\numeric\conf\NumericEiPropConfigurator;
 use n2n\util\type\ArgUtils;
 use n2n\reflection\property\AccessProxy;
 use n2n\util\type\TypeConstraint;
 use n2n\core\container\N2nContext;
-use rocket\ei\EiPropPath;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\ei\manage\critmod\sort\SortProp;
 use rocket\ei\util\Eiu;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\critmod\quick\impl\LikeQuickSearchProp;
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
+use rocket\impl\ei\component\prop\numeric\conf\NumericConfig;
+use rocket\ei\component\prop\IdNameEiProp;
+use rocket\ei\manage\idname\IdNameProp;
+use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfig;
+use rocket\ei\util\factory\EifGuiField;
+use n2n\l10n\L10nUtils;
+use rocket\si\content\impl\SiFields;
 
 abstract class NumericEiPropAdapter extends DraftablePropertyEiPropAdapter 
-		implements FilterableEiProp, SortableEiProp, QuickSearchableEiProp {
-	protected $minValue = null;
-	protected $maxValue = null;
-	
-	public function getMinValue() {
-		return $this->minValue;
-	}
-	
-	public function setMinValue($minValue) {
-		$this->minValue = $minValue;
-	}
-	
-	public function getMaxValue() {
-		return $this->maxValue;
-	}
-	
-	public function setMaxValue($maxValue) {
-		$this->maxValue = $maxValue;
-	}
+		implements FilterableEiProp, SortableEiProp, QuickSearchableEiProp, IdNameEiProp {
+			
+	private $numericConfig;
+	private $quickSearchConfig;
+		    
+    function __construct() {
+        parent::__construct();
+        
+        $this->numericConfig = new NumericConfig();
+        $this->quickSearchConfig = new QuickSearchConfig();
+    }
 
-	public function setEntityProperty(?EntityProperty $entityProperty) {
+    /**
+     * @return \rocket\impl\ei\component\prop\numeric\conf\NumericConfig
+     */
+    function getNumericConfig() {
+        return $this->numericConfig;
+    }
+    
+	function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty instanceof ScalarEntityProperty);
 		$this->entityProperty = $entityProperty;
 	}
 	
-	public function setObjectPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
+	function setObjectPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
 		ArgUtils::assertTrue($propertyAccessProxy !== null);
 		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('scalar',
 				$propertyAccessProxy->getBaseConstraint()->allowsNull()));
 		$this->objectPropertyAccessProxy = $propertyAccessProxy;
 	}
 
-	public function createEiPropConfigurator(): EiPropConfigurator {
-		return new NumericEiPropConfigurator($this);
+	function prepare() {
+		$this->getConfigurator()->addAdaption($this->numericConfig)
+				->addAdaption($this->quickSearchConfig);
 	}
 	
-	public function createUiComponent(HtmlView $view, Eiu $eiu)  {
-		$html = $view->getHtmlBuilder();
-		return $html->getEsc($eiu->field()->getValue(EiPropPath::from($this)));
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\impl\ei\component\prop\numeric\NumericEiPropAdapter::createOutSiField()
+	 */
+	function createOutEifGuiField(Eiu $eiu): EifGuiField {
+		return $eiu->factory()->newGuiField(SiFields::stringOut(
+				L10nUtils::formatNumber($eiu->field()->getValue(), $eiu->getN2nLocale())));
 	}
 	
-// 	public function createPreviewUiComponent(EiFrame $eiFrame = null, HtmlView $view, $value) {
+// 	function createPreviewUiComponent(EiFrame $eiFrame = null, HtmlView $view, $value) {
 // 		return $view->getHtmlBuilder()->getEsc($value);
 // 	}
 	
-	public function buildFilterProp(Eiu $eiu): ?FilterProp {
+	function buildFilterProp(Eiu $eiu): ?FilterProp {
 		return new StringFilterProp(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
 	}
 	
-	public function buildSecurityFilterProp(N2nContext $n2nContext) {
+	function buildSecurityFilterProp(N2nContext $n2nContext) {
 		return null;
 	}
 	
@@ -104,7 +110,7 @@ abstract class NumericEiPropAdapter extends DraftablePropertyEiPropAdapter
 	 * @see \rocket\ei\component\prop\SortableEiProp::createGlobalSortProp()
 	 * @return SortProp
 	 */
-	public function buildSortProp(Eiu $eiu): ?SortProp {
+	function buildSortProp(Eiu $eiu): ?SortProp {
 		return new SimpleSortProp(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
 	}
 	
@@ -112,21 +118,23 @@ abstract class NumericEiPropAdapter extends DraftablePropertyEiPropAdapter
 	 * {@inheritDoc}
 	 * @see \rocket\ei\component\prop\QuickSearchableEiProp::buildQuickSearchProp()
 	 */
-	public function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp {
-		return new LikeQuickSearchProp(CrIt::p($this->getEntityProperty()));
+	function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp {
+		if ($this->quickSearchConfig->isQuickSerachable()) {
+			return new LikeQuickSearchProp(CrIt::p($this->getEntityProperty()));
+		}
+		
+		return null;
 	}
 
-// 	public function createEditablePreviewUiComponent(PreviewModel $previewModel, PropertyPath $propertyPath,
+// 	function createEditablePreviewUiComponent(PreviewModel $previewModel, PropertyPath $propertyPath,
 // 			HtmlView $view, \Closure $createCustomUiElementCallback = null) {
 // 		return $view->getFormHtmlBuilder()->getInputField($propertyPath, 
 // 				array('class' => 'rocket-preview-inpage-component'));
 // 	}
-
-	public function isStringRepresentable(): bool {
-		return true;
-	}
 	
-	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
-		return $eiu->object()->readNativValue($this);
+	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {
+		return $eiu->factory()->newIdNameProp(function (Eiu $eiu) {
+			return $eiu->object()->readNativValue($this);
+		})->toIdNameProp();
 	}
 }

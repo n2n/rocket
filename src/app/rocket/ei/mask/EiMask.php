@@ -29,13 +29,12 @@ use rocket\ei\EiEngine;
 use rocket\ei\manage\preview\controller\PreviewController;
 use n2n\config\InvalidConfigurationException;
 use rocket\ei\manage\preview\model\UnavailablePreviewException;
-use rocket\ei\manage\control\UnavailableControlException;
-use rocket\ei\util\Eiu;
+use rocket\ei\manage\gui\control\UnknownGuiControlException;
 use rocket\ei\component\prop\EiPropCollection;
 use rocket\ei\component\command\EiCommandCollection;
 use rocket\ei\component\modificator\EiModificatorCollection;
 use n2n\util\ex\IllegalStateException;
-use rocket\ei\manage\control\IconType;
+use rocket\si\control\SiIconType;
 use rocket\ei\EiTypeExtension;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\spec\TypePath;
@@ -50,8 +49,12 @@ use n2n\util\type\ArgUtils;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\Lstr;
 use rocket\ei\manage\gui\EiEntryGui;
-use rocket\ei\manage\gui\EiGui;
+use rocket\ei\manage\gui\EiGuiFrame;
 use rocket\ei\manage\gui\EiGuiListener;
+use rocket\si\meta\SiMaskQualifier;
+use n2n\l10n\N2nLocale;
+use rocket\si\meta\SiMaskIdentifier;
+use rocket\ei\util\Eiu;
 
 /**
  * @author andreas
@@ -172,6 +175,14 @@ class EiMask {
 	}
 	
 	/**
+	 * @param EiMask $eiMask
+	 * @return boolean
+	 */
+	function isA(EiMask $eiMask) {
+		return $this->eiType->isA($eiMask->getEiType());
+	}
+	
+	/**
 	 * @return \rocket\ei\mask\EiMaskDef
 	 */
 	public function getDef() {
@@ -249,7 +260,7 @@ class EiMask {
 			return $iconType;
 		}
 		
-		return IconType::ICON_FILE_TEXT;
+		return SiIconType::ICON_FILE;
 	}
 	
 	/**
@@ -347,51 +358,51 @@ class EiMask {
 		return $this->displayScheme ?? $this->displayScheme = new DisplayScheme();
 	}
 	
-	public function createEiGui(EiFrame $eiFrame, int $viewMode, bool $init) {
-		if (!$this->getEiType()->isA($eiFrame->getContextEiEngine()->getEiMask()->getEiType())) {
-			throw new \InvalidArgumentException('Incompatible EiGui');
-		}
+// 	public function createEiGuiFrame(EiFrame $eiFrame, int $viewMode, bool $init) {
+// 		if (!$this->getEiType()->isA($eiFrame->getContextEiEngine()->getEiMask()->getEiType())) {
+// 			throw new \InvalidArgumentException('Incompatible EiGuiFrame');
+// 		}
 		
-		$guiDefinition = $eiFrame->getManageState()->getDef()->getGuiDefinition($this);
-		$eiGui = new EiGui($eiFrame, $guiDefinition, $viewMode);
+// 		$guiDefinition = $eiFrame->getManageState()->getDef()->getGuiDefinition($this);
+// 		$eiGuiFrame = new EiGuiFrame($eiFrame, $guiDefinition, $viewMode);
 		
-		if (!$init) {
-			$this->noInitCb($eiGui);
-			return $eiGui;
-		}
+// 		if (!$init) {
+// 			$this->noInitCb($eiGuiFrame);
+// 			return $eiGuiFrame;
+// 		}
 		
-		foreach ($guiDefinition->getGuiDefinitionListeners() as $listener) {
-			$listener->onNewEiGui($eiGui);
-		}
+// 		foreach ($guiDefinition->getGuiDefinitionListeners() as $listener) {
+// 			$listener->onNewEiGuiFrame($eiGuiFrame);
+// 		}
 		
-		if (!$eiGui->isInit()) {
-			$this->getDisplayScheme()->initEiGui($eiGui, $guiDefinition);
-		}
+// 		if (!$eiGuiFrame->isInit()) {
+// 			$this->getDisplayScheme()->initEiGuiFrame($eiGuiFrame, $guiDefinition);
+// 		}
 		
-		return $eiGui;
-	}
+// 		return $eiGuiFrame;
+// 	}
 	
 	
-	/**
-	 * @param EiGui $eiGui
-	 */
-	private function noInitCb($eiGui) {
+// 	/**
+// 	 * @param EiGuiFrame $eiGuiFrame
+// 	 */
+// 	private function noInitCb($eiGuiFrame) {
 		
-		$eiGui->registerEiGuiListener(new class() implements EiGuiListener {
-			public function onInitialized(EiGui $eiGui) {
-				foreach ($eiGui->getGuiDefinition()->getGuiDefinitionListeners() as $listener) {
-					$listener->onNewEiGui($eiGui);
-				}
-				$eiGui->unregisterEiGuiListener($this);
-			}
+// 		$eiGuiFrame->registerEiGuiListener(new class() implements EiGuiListener {
+// 			public function onInitialized(EiGuiFrame $eiGuiFrame) {
+// 				foreach ($eiGuiFrame->getGuiDefinition()->getGuiDefinitionListeners() as $listener) {
+// 					$listener->onNewEiGuiFrame($eiGuiFrame);
+// 				}
+// 				$eiGuiFrame->unregisterEiGuiListener($this);
+// 			}
 			
-			public function onNewEiEntryGui(EiEntryGui $eiEntryGui) {
-			}
+// 			public function onNewEiEntryGui(EiEntryGui $eiEntryGui) {
+// 			}
 			
-			public function onNewView(HtmlView $view) {
-			}
-		});
-	}
+// 			public function onNewView(HtmlView $view) {
+// 			}
+// 		});
+// 	}
 
 	
 	/**
@@ -412,12 +423,12 @@ class EiMask {
 	
 // 	/**
 // 	 * @param array $controls
-// 	 * @param EiGui $eiGui
+// 	 * @param EiGuiFrame $eiGuiFrame
 // 	 * @param HtmlView $view
 // 	 * @return array
 // 	 */
-// 	public function sortOverallControls(array $controls, EiGui $eiGui, HtmlView $view): array {
-// // 		$eiu = new Eiu($eiGui);
+// 	public function sortOverallControls(array $controls, EiGuiFrame $eiGuiFrame, HtmlView $view): array {
+// // 		$eiu = new Eiu($eiGuiFrame);
 // // 		$eiPermissionManager = $eiu->frame()->getEiFrame()->getManageState()->getEiPermissionManager();
 		
 // // 		$controls = array();
@@ -529,16 +540,20 @@ class EiMask {
 	 * @throws \InvalidArgumentException
 	 * @return \rocket\ei\mask\EiMask
 	 */
-	public function determineEiMask(EiType $eiType) {
+	public function determineEiMask(EiType $eiType, bool $superIncluded = false) {
 		$contextEiMask = $this;
 		$contextEiType = $contextEiMask->getEiType();
 		if ($eiType->equals($contextEiType)) {
 			return $contextEiMask;
 		}
 		
-		if (!$contextEiType->containsSubEiTypeId($eiType->getId(), true)) {
+		if ($superIncluded) {
+			$contextEiType = $contextEiType->getSupremeEiType();
+		}
+		
+		if (!$eiType->isA($contextEiType)) {
 			throw new \InvalidArgumentException('EiType ' . $eiType->getId() . ' is no SubEiType of '
-					. $this->getEiType()->getId());
+					. $contextEiType->getId());
 		}
 		
 		if (isset($this->subEiTypeExtensions[$eiType->getId()])) {
@@ -598,7 +613,7 @@ class EiMask {
 	 * @param PreviewModel $previewModel
 	 * @throws UnavailablePreviewException
 	 * @throws InvalidConfigurationException
-	 * @throws UnavailableControlException
+	 * @throws UnknownGuiControlException
 	 * @return PreviewController
 	 */
 	public function lookupPreviewController(N2nContext $n2nContext, PreviewModel $previewModel = null): PreviewController {
@@ -623,12 +638,26 @@ class EiMask {
 		
 		if (!array_key_exists($previewModel->getPreviewType(), 
 				$previewController->getPreviewTypeOptions($previewModel->getEiu()))) {
-			throw new UnavailableControlException('Unknown preview type \'' . $previewModel->getPreviewType() 
+			throw new UnknownGuiControlException('Unknown preview type \'' . $previewModel->getPreviewType() 
 					. '\' for PreviewController: ' . get_class($previewController));
 		}
 		
 		$previewController->setPreviewModel($previewModel);
 		return $previewController;
+	}
+	
+	/**
+	 * @param N2nLocale $n2nLocale
+	 * @return \rocket\si\meta\SiMaskQualifier
+	 */
+	public function createSiMaskQualifier(N2nLocale $n2nLocale) {
+		return new SiMaskQualifier(new SiMaskIdentifier((string) $this->getEiTypePath(), $this->getEiType()->getId(), 
+						$this->getEiType()->getSupremeEiType()->getId()), 
+				$this->getLabelLstr()->t($n2nLocale), $this->getIconType());
+	}
+	
+	function equals($obj) {
+		return $obj instanceof EiMask && $obj->getEiTypePath()->equals($this->getEiTypePath());
 	}
 	
 	public function __toString(): string {

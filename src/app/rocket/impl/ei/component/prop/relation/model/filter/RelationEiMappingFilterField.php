@@ -25,7 +25,7 @@ use rocket\ei\manage\security\filter\SecurityFilterProp;
 use rocket\ei\manage\security\filter\SecurityFilterDefinition;
 use rocket\ei\manage\entry\EiFieldConstraint;
 use n2n\util\ex\IllegalStateException;
-use n2n\util\type\attrs\Attributes;
+use n2n\util\type\attrs\DataSet;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use n2n\util\type\ArgUtils;
 use rocket\impl\ei\component\prop\relation\model\RelationEntry;
@@ -44,8 +44,8 @@ class RelationSecurityFilterProp extends RelationFilterProp implements SecurityF
 		return $securityFilterDefinition;
 	}
 	
-	public function createEiFieldConstraint(Attributes $attributes): EiFieldConstraint {
-		$relationFilterConf = new RelationFilterConf($attributes);
+	public function createEiFieldConstraint(DataSet $dataSet): EiFieldConstraint {
+		$relationFilterConf = new RelationFilterConf($dataSet);
 		
 		$operator = $relationFilterConf->getOperator();
 		switch ($operator) {
@@ -150,7 +150,7 @@ class RelationEiFieldConstraint implements EiFieldConstraint {
 		}
 		
 		$validationResult->addError(Message::createCodeArg($messageKey, array('field' => $this->label,
-				'target_entries' => implode(', ', $this->createTragetIdentityStrings()))));
+				'target_entries' => implode(', ', $this->createTargetIdentityStrings()))));
 	}
 }
 
