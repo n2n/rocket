@@ -100,7 +100,7 @@ class AddController extends ControllerAdapter {
 		$this->eiuCtrl->pushOverviewBreadcrumb()
 				->pushCurrentAsSirefBreadcrumb($this->dtc->t('common_add_label'));
 		
-		$this->eiuCtrl->forwardNewEntryDlZone(true);
+		$this->eiuCtrl->forwardNewBulkyEntryZone(true);
 	}
 	
 	public function doDraft(ParamGet $refPath = null) {
