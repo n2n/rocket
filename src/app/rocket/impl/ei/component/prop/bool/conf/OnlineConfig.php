@@ -40,7 +40,7 @@ class OnlineConfig extends PropConfigAdaption {
 		$this->onlineEiProp = $onlineEiProp;
 	}
 	
-	function testCompatibility(PropertyAssignation $propertyAssignation): int {
+	function testCompatibility(PropertyAssignation $propertyAssignation): ?int {
 		$level = parent::testCompatibility($propertyAssignation);
 		
 		if (!$level) return $level;

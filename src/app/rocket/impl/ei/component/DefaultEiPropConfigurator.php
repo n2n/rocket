@@ -44,7 +44,7 @@ class DefaultEiPropConfigurator extends EiConfiguratorAdapter implements EiPropC
 	 * {@inheritDoc}
 	 * @see \rocket\ei\component\prop\indepenent\EiPropConfigurator::testCompatibility($propertyAssignation)
 	 */
-	public function testCompatibility(PropertyAssignation $propertyAssignation): int {
+	public function testCompatibility(PropertyAssignation $propertyAssignation): ?int {
 		return CompatibilityLevel::NOT_COMPATIBLE;
 	}
 

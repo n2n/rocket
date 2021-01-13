@@ -64,7 +64,7 @@ class AdaptableEiPropConfigurator extends AdaptableEiConfigurator implements EiP
 		return $this->defaultCompatibilityLevel;
 	}
 	
-	function testCompatibility(PropertyAssignation $propertyAssignation): int {
+	function testCompatibility(PropertyAssignation $propertyAssignation): ?int {
 		try {
 			$this->assignProperty($propertyAssignation);
 		} catch (IncompatiblePropertyException $e) {

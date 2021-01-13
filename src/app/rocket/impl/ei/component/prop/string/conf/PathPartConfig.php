@@ -106,7 +106,7 @@ class PathPartConfig extends PropConfigAdaption {
 		$this->criticalMessage = $criticalMessage;
 	}
 	
-	public function testCompatibility(PropertyAssignation $propertyAssignation): int {
+	public function testCompatibility(PropertyAssignation $propertyAssignation): ?int {
 		if (StringUtils::contains(self::$commonNeedles, $propertyAssignation->getObjectPropertyAccessProxy()
 				->getPropertyName())) {
 			return CompatibilityLevel::COMMON;

@@ -60,7 +60,7 @@ class DateTimeConfig extends PropConfigAdaption {
 		$this->timeStyle = $timeStyle;
 	}
 	
-	function testCompatibility(PropertyAssignation $propertyAssignation): int {
+	function testCompatibility(PropertyAssignation $propertyAssignation): ?int {
 		return CompatibilityLevel::SUITABLE;
 	}
 	

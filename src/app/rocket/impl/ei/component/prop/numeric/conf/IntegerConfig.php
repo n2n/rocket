@@ -30,7 +30,7 @@ use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
 
 class IntegerConfig extends PropConfigAdaption {
 	
-	function testCompatibility(PropertyAssignation $propertyAssignation): int {
+	function testCompatibility(PropertyAssignation $propertyAssignation): ?int {
 		$entityProperty = $propertyAssignation->getEntityProperty(false);
 		if ($entityProperty !== null && $entityProperty->getName() === 'id') {
 			return CompatibilityLevel::COMMON;

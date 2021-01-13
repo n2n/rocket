@@ -216,8 +216,8 @@ class DisplayConfig extends PropConfigAdaption {
 	const ATTR_HELPTEXT_KEY = 'helpText';
 	const ATTR_SI_STRUCTURE_TYPE_KEY = 'containerType';
 	
-	function testCompatibility(PropertyAssignation $propertyAssignation): int {
-		return 0;
+	function testCompatibility(PropertyAssignation $propertyAssignation): ?int {
+		return null;
 	}
 	
 	function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
