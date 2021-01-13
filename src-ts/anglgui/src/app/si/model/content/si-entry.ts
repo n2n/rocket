@@ -18,6 +18,10 @@ export class SiEntry {
 	constructor(readonly identifier: SiEntryIdentifier) {
 	}
 
+	isNew(): boolean {
+		return this.identifier.id === null || this.identifier.id === undefined;
+	}
+
 	get qualifier(): SiEntryQualifier {
 		return this.selectedEntryBuildup.entryQualifier;
 	}

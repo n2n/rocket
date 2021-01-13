@@ -146,12 +146,16 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 	}
 
 	private monitorEntry() {
-		this.siEntryMonitor.registerEntry(this.siEntry);
+		if (!this.siEntry.isNew()) {
+			this.siEntryMonitor.registerEntry(this.siEntry);
+		}
 
 		const sub = this.siEntry.state$.subscribe((state) => {
 			switch (state) {
 				case SiEntryState.REPLACED:
-					this.siEntryMonitor.unregisterEntry(this.siEntry);
+					if (!this.siEntry.isNew()) {
+						this.siEntryMonitor.unregisterEntry(this.siEntry);
+					}
 					this.siEntry = this.siEntry.replacementEntry;
 					this.subscription.remove(sub);
 					this.monitorEntry();
