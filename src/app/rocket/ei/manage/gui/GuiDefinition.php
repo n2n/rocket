@@ -370,7 +370,7 @@ class GuiDefinition {
 	}
 	
 	/**
-	 * @return GuiPropFork[]
+	 * @return GuiPropForkWrapper[]
 	 */
 	function getGuiPropForkWrappers() {
 		return $this->guiPropForkWrappers;
@@ -763,21 +763,43 @@ class GuiDefinition {
 		$curUngroupedGsds = [];
 		
 		foreach ($guiStructureDeclarations as $guiStructureDeclaration) {
-			if (SiStructureType::isGroup($guiStructureDeclaration->getSiStructureType())) {
-				$this->appendToGoupedGsds($curUngroupedGsds, $groupedGsds);
-				$curUngroupedGsds = [];
-				
-				$groupedGsds[] = $guiStructureDeclaration;
+			if ($guiStructureDeclaration->getSiStructureType() === SiStructureType::ITEM
+					|| ($guiStructureDeclaration->getSiStructureType() === SiStructureType::PANEL
+							&& $this->containsNonGrouped($guiStructureDeclaration))) {
+				$curUngroupedGsds[] = $guiStructureDeclaration;
 				continue;
 			}
+					
+			$this->appendToGoupedGsds($curUngroupedGsds, $groupedGsds);
+			$curUngroupedGsds = [];
 			
-			$curUngroupedGsds[] = $guiStructureDeclaration;
+			$groupedGsds[] = $guiStructureDeclaration;
 		}
 		
 		$this->appendToGoupedGsds($curUngroupedGsds, $groupedGsds);
 		
 		return $groupedGsds;
 	}
+	
+		/**
+		 * @param GuiStructureDeclaration $guiStructureDeclaration
+		 * @return boolean
+		 */
+		private function containsNonGrouped(GuiStructureDeclaration $guiStructureDeclaration) {
+			if (!$guiStructureDeclaration->hasChildrean()) return false;
+	
+			foreach ($guiStructureDeclaration->getChildren() as $guiStructureDeclaration) {
+				if (SiStructureType::isGroup($guiStructureDeclaration->getSiStructureType())
+						|| ($guiStructureDeclaration->getSiStructureType() === SiStructureType::PANEL
+								&& !$this->containsNonGrouped($guiStructureDeclaration))) {
+					continue;
+				}
+	
+				return true;
+			}
+	
+			return false;
+		}
 	
 	/**
 	 * @param GuiStructureDeclaration[] $curNonGroups

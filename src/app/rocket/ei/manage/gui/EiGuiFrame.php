@@ -202,7 +202,7 @@ class EiGuiFrame {
 	function createSiMaskDeclaration(N2nLocale $n2nLocale) {
 		IllegalStateException::assertTrue($this->guiStructureDeclarations !== null, 
 				'EiGuiFrame has no GuiStructureDeclarations.');
-		
+
 		return new SiMaskDeclaration(
 				$this->createSiMask($n2nLocale),
 				$this->createSiStructureDeclarations($this->guiStructureDeclarations));
@@ -226,7 +226,7 @@ class EiGuiFrame {
 			$siStructureDeclarations[] = SiStructureDeclaration
 					::createGroup($guiStructureDeclaration->getSiStructureType(), $guiStructureDeclaration->getLabel(),
 							$guiStructureDeclaration->getHelpText())
-							->setChildren($this->createSiStructureDeclarations($guiStructureDeclaration->getChildren()));
+					->setChildren($this->createSiStructureDeclarations($guiStructureDeclaration->getChildren()));
 		}
 		
 		return $siStructureDeclarations;

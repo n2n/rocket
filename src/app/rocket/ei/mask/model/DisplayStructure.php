@@ -28,6 +28,9 @@ use rocket\si\meta\SiStructureType;
 use rocket\ei\manage\gui\UnresolvableDefPropPathException;
 
 class DisplayStructure {
+	/**
+	 * @var DisplayItem[]
+	 */
 	private $displayItems = array();
 	
 	/**
@@ -102,138 +105,138 @@ class DisplayStructure {
 		return $defPropPaths;
 	}
 		
-	/**
-	 * @return \rocket\ei\mask\model\DisplayStructure
-	 */
-	public function groupedItems() {
-		$displayStructure = new DisplayStructure();
+// 	/**
+// 	 * @return \rocket\ei\mask\model\DisplayStructure
+// 	 */
+// 	public function groupedItems() {
+// 		$displayStructure = new DisplayStructure();
 		
-		$curDisplayStructure = null;
-		foreach ($this->displayItems as $displayItem) {
-			if ($displayItem->getSiStructureType() == SiStructureType::PANEL 
-					&& $this->containsNonGrouped($displayItem)) {
-				$displayStructure->addDisplayItem($displayItem->copy(SiStructureType::SIMPLE_GROUP));
-				$curDisplayStructure = null;
-				continue;
-			}
+// 		$curDisplayStructure = null;
+// 		foreach ($this->displayItems as $displayItem) {
+// 			if ($displayItem->getSiStructureType() === SiStructureType::PANEL 
+// 					&& $this->containsNonGrouped($displayItem)) {
+// 				$displayStructure->addDisplayItem($displayItem->copy(SiStructureType::SIMPLE_GROUP));
+// 				$curDisplayStructure = null;
+// 				continue;
+// 			}
 			
-			if ($displayItem->getSiStructureType() != SiStructureType::ITEM) {
-				$displayStructure->addDisplayItem($displayItem);
-				$curDisplayStructure = null;
-				continue;
-			}
+// 			if ($displayItem->getSiStructureType() !== SiStructureType::ITEM) {
+// 				$displayStructure->addDisplayItem($displayItem);
+// 				$curDisplayStructure = null;
+// 				continue;
+// 			}
 			
-			if ($curDisplayStructure === null) {
-				$curDisplayStructure = new DisplayStructure();
-				$displayStructure->addDisplayStructure($curDisplayStructure, SiStructureType::SIMPLE_GROUP);
-			}
+// 			if ($curDisplayStructure === null) {
+// 				$curDisplayStructure = new DisplayStructure();
+// 				$displayStructure->addDisplayStructure($curDisplayStructure, SiStructureType::SIMPLE_GROUP);
+// 			}
 			
-			$curDisplayStructure->addDisplayItem($displayItem);
-		}
+// 			$curDisplayStructure->addDisplayItem($displayItem);
+// 		}
 			
-		return $displayStructure;
-	}
+// 		return $displayStructure;
+// 	}
 	
-	/**
-	 * @param DisplayItem $displayItem
-	 * @return boolean
-	 */
-	private function containsNonGrouped(DisplayItem $displayItem) {
-		if (!$displayItem->hasDisplayStructure()) return false;
+// 	/**
+// 	 * @param DisplayItem $displayItem
+// 	 * @return boolean
+// 	 */
+// 	private function containsNonGrouped(DisplayItem $displayItem) {
+// 		if (!$displayItem->hasDisplayStructure()) return false;
 		
-		foreach ($displayItem->getDisplayStructure()->getDisplayItems() as $displayItem) {
-			if ($displayItem->isGroup()) continue;
+// 		foreach ($displayItem->getDisplayStructure()->getDisplayItems() as $displayItem) {
+// 			if ($displayItem->isGroup()) continue;
 			
-			if ($displayItem->getSiStructureType() == SiStructureType::PANEL
-					&& !$this->containsNonGrouped($displayItem)) {
-				continue;
-			}
+// 			if ($displayItem->getSiStructureType() === SiStructureType::PANEL
+// 					&& !$this->containsNonGrouped($displayItem)) {
+// 				continue;
+// 			}
 			
-			return true;
-		}
+// 			return true;
+// 		}
 		
-		return false;
-	}
+// 		return false;
+// 	}
 	
-	public function whitoutAutonomics() {
-		$displayStructure = new DisplayStructure();
+// 	public function whitoutAutonomics() {
+// 		$displayStructure = new DisplayStructure();
 		
-		$this->roAutonomics($this->displayItems, $displayStructure, $displayStructure);
+// 		$this->roAutonomics($this->displayItems, $displayStructure, $displayStructure);
 				
-		return $displayStructure;
-	}
+// 		return $displayStructure;
+// 	}
 	
-	private function roAutonomics(array $displayItems, DisplayStructure $ds, DisplayStructure $autonomicDs) {
-		foreach ($displayItems as $displayItem) {
-			$groupType = $displayItem->getSiStructureType();
+// 	private function roAutonomics(array $displayItems, DisplayStructure $ds, DisplayStructure $autonomicDs) {
+// 		foreach ($displayItems as $displayItem) {
+// 			$groupType = $displayItem->getSiStructureType();
 			
-			if (!$displayItem->hasDisplayStructure()) {
-				if ($groupType == SiStructureType::AUTONOMIC_GROUP) {
-					$autonomicDs->addDefPropPath($displayItem->getDefPropPath(), SiStructureType::SIMPLE_GROUP, $displayItem->getLabel(), 
-							$displayItem->getModuleNamespace());
-				} else if ($displayItem->getSiStructureType() == $groupType) {
-					$ds->displayItems[] = $displayItem;
-				} else {
-					$ds->addDefPropPath($displayItem->getDefPropPath(), $groupType, $displayItem->getLabel(), $displayItem->getModuleNamespace());	
-				}
-				continue;
-			}
+// 			if (!$displayItem->hasDisplayStructure()) {
+// 				if ($groupType == SiStructureType::AUTONOMIC_GROUP) {
+// 					$autonomicDs->addDefPropPath($displayItem->getDefPropPath(), SiStructureType::SIMPLE_GROUP, $displayItem->getLabel(), 
+// 							$displayItem->getModuleNamespace());
+// 				} else if ($displayItem->getSiStructureType() == $groupType) {
+// 					$ds->displayItems[] = $displayItem;
+// 				} else {
+// 					$ds->addDefPropPath($displayItem->getDefPropPath(), $groupType, $displayItem->getLabel(), $displayItem->getModuleNamespace());	
+// 				}
+// 				continue;
+// 			}
 			
-			$newDisplayStructure = new DisplayStructure();
-			$this->roAutonomics($displayItem->getDisplayStructure()->getDisplayItems(), $newDisplayStructure, 
-					($displayItem->getSiStructureType() == SiStructureType::MAIN_GROUP ? $newDisplayStructure : $autonomicDs));
+// 			$newDisplayStructure = new DisplayStructure();
+// 			$this->roAutonomics($displayItem->getDisplayStructure()->getDisplayItems(), $newDisplayStructure, 
+// 					($displayItem->getSiStructureType() == SiStructureType::MAIN_GROUP ? $newDisplayStructure : $autonomicDs));
 			
-			if ($displayItem->getSiStructureType() == SiStructureType::AUTONOMIC_GROUP) {
-				$autonomicDs->addDisplayStructure($newDisplayStructure, SiStructureType::SIMPLE_GROUP, 
-						$displayItem->getLabel(), $displayItem->getHelpText(), $displayItem->getModuleNamespace());	
-			} else {
-				$ds->addDisplayStructure($newDisplayStructure, $displayItem->getSiStructureType(), $displayItem->getLabel(), 
-						$displayItem->getHelpText(), $displayItem->getModuleNamespace());
-			}
-		}
-	}
+// 			if ($displayItem->getSiStructureType() == SiStructureType::AUTONOMIC_GROUP) {
+// 				$autonomicDs->addDisplayStructure($newDisplayStructure, SiStructureType::SIMPLE_GROUP, 
+// 						$displayItem->getLabel(), $displayItem->getHelpText(), $displayItem->getModuleNamespace());	
+// 			} else {
+// 				$ds->addDisplayStructure($newDisplayStructure, $displayItem->getSiStructureType(), $displayItem->getLabel(), 
+// 						$displayItem->getHelpText(), $displayItem->getModuleNamespace());
+// 			}
+// 		}
+// 	}
 	
-	public function withContainer(string $type, string $label, string $helpText = null,  array $attrs = null) {
-		if (count($this->displayItems) != 1 
-				|| $this->displayItems[0]->getType() != $type) {
-			$ds = new DisplayStructure();
-			$ds->addDisplayStructure($this, $type, $label, $helpText, $attrs);
-			return $ds;
-		}
+// 	public function withContainer(string $type, string $label, string $helpText = null,  array $attrs = null) {
+// 		if (count($this->displayItems) != 1 
+// 				|| $this->displayItems[0]->getType() != $type) {
+// 			$ds = new DisplayStructure();
+// 			$ds->addDisplayStructure($this, $type, $label, $helpText, $attrs);
+// 			return $ds;
+// 		}
 		
-		if ($this->displayItems[0]->getLabel() == $label 
-				&& $this->displayItems[0]->getHelpText() == $helpText 
-				&& $this->displayItems[0]->getAttrs() === $attrs) {
-			return $this;
-		}
+// 		if ($this->displayItems[0]->getLabel() == $label 
+// 				&& $this->displayItems[0]->getHelpText() == $helpText 
+// 				&& $this->displayItems[0]->getAttrs() === $attrs) {
+// 			return $this;
+// 		}
 		
-		$ds = new DisplayStructure();
-		$ds->addDisplayItem($this->displayItems[0]->copy($type, $label, $helpText, $attrs));
-		return $ds;
-	}
+// 		$ds = new DisplayStructure();
+// 		$ds->addDisplayItem($this->displayItems[0]->copy($type, $label, $helpText, $attrs));
+// 		return $ds;
+// 	}
 
-	public function withoutSubStructures() {
-		$displayStructure = new DisplayStructure();
+// 	public function withoutSubStructures() {
+// 		$displayStructure = new DisplayStructure();
 	
-		$this->stripSubStructures($displayStructure, $this->displayItems);
+// 		$this->stripSubStructures($displayStructure, $this->displayItems);
 	
-		return $displayStructure;
-	}
+// 		return $displayStructure;
+// 	}
 	
-	/**
-	 * @param DisplayStructure $displayStructure
-	 * @param DisplayItem[] $displayItems
-	 */
-	private function stripSubStructures(DisplayStructure $displayStructure, array $displayItems) {
-		foreach ($displayItems as $displayItem) {
-			if (!$displayItem->hasDisplayStructure()) {
-				$displayStructure->displayItems[] = $displayItem;
-				continue;
-			}
+// 	/**
+// 	 * @param DisplayStructure $displayStructure
+// 	 * @param DisplayItem[] $displayItems
+// 	 */
+// 	private function stripSubStructures(DisplayStructure $displayStructure, array $displayItems) {
+// 		foreach ($displayItems as $displayItem) {
+// 			if (!$displayItem->hasDisplayStructure()) {
+// 				$displayStructure->displayItems[] = $displayItem;
+// 				continue;
+// 			}
 				
-			$this->stripSubStructures($displayStructure, $displayItem->getDisplayStructure()->getDisplayItems());			
-		}
-	}
+// 			$this->stripSubStructures($displayStructure, $displayItem->getDisplayStructure()->getDisplayItems());			
+// 		}
+// 	}
 	
 	/**
 	 * @param DefPropPath $defPropPath
@@ -276,40 +279,40 @@ class DisplayStructure {
 		return false;
 	}
 	
-	public function purified(EiGuiFrame $eiGuiFrame) {
-		return $this->rPurifyDisplayStructure($this, $eiGuiFrame);
-	}
+// 	public function purified(EiGuiFrame $eiGuiFrame) {
+// 		return $this->rPurifyDisplayStructure($this, $eiGuiFrame);
+// 	}
 	
-	/**
-	 * @param DisplayStructure $displayStructure
-	 * @param EiGuiFrame $eiGuiFrame
-	 * @return \rocket\ei\mask\model\DisplayStructure
-	 */
-	private function rPurifyDisplayStructure($displayStructure, $eiGuiFrame) {
-		$purifiedDisplayStructure = new DisplayStructure();
+// 	/**
+// 	 * @param DisplayStructure $displayStructure
+// 	 * @param EiGuiFrame $eiGuiFrame
+// 	 * @return \rocket\ei\mask\model\DisplayStructure
+// 	 */
+// 	private function rPurifyDisplayStructure($displayStructure, $eiGuiFrame) {
+// 		$purifiedDisplayStructure = new DisplayStructure();
 		
-		foreach ($displayStructure->getDisplayItems() as $displayItem) {
-			if ($displayItem->hasDisplayStructure()) {
-				$purifiedDisplayStructure->addDisplayStructure(
-						$this->rPurifyDisplayStructure($displayItem->getDisplayStructure(), $eiGuiFrame),
-						$displayItem->getSiStructureType(), $displayItem->getLabel(), $displayItem->getHelpText(), 
-						$displayItem->getModuleNamespace());
-				continue;
-			}
+// 		foreach ($displayStructure->getDisplayItems() as $displayItem) {
+// 			if ($displayItem->hasDisplayStructure()) {
+// 				$purifiedDisplayStructure->addDisplayStructure(
+// 						$this->rPurifyDisplayStructure($displayItem->getDisplayStructure(), $eiGuiFrame),
+// 						$displayItem->getSiStructureType(), $displayItem->getLabel(), $displayItem->getHelpText(), 
+// 						$displayItem->getModuleNamespace());
+// 				continue;
+// 			}
 			
-			$guiPropAssembly = null;
-			try {
-				$guiPropAssembly = $eiGuiFrame->getDisplayDefintion($displayItem->getDefPropPath());
-			} catch (UnresolvableDefPropPathException $e) {
-				continue;
-			}
+// 			$guiPropAssembly = null;
+// 			try {
+// 				$guiPropAssembly = $eiGuiFrame->getDisplayDefintion($displayItem->getDefPropPath());
+// 			} catch (UnresolvableDefPropPathException $e) {
+// 				continue;
+// 			}
 			
-			$purifiedDisplayStructure->addDefPropPath($displayItem->getDefPropPath(),
-					$displayItem->getSiStructureType() ?? $guiPropAssembly->getDisplayDefinition()->getSiStructureType());
-		}
+// 			$purifiedDisplayStructure->addDefPropPath($displayItem->getDefPropPath(),
+// 					$displayItem->getSiStructureType() ?? $guiPropAssembly->getDisplayDefinition()->getSiStructureType());
+// 		}
 		
-		return $purifiedDisplayStructure;
-	}
+// 		return $purifiedDisplayStructure;
+// 	}
 	
 	/**
 	 * @param EiGuiFrame $eiGuiFrame

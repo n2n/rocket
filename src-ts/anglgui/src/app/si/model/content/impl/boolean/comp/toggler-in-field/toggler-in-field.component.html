@@ -1,3 +1,1 @@
-<button class="btn px-0 py-0 my-2" (click)="model.setValue(!model.getValue())">
-	<div class="rocket-switch" [ngClass]="{'rocket-switch-off': !model.getValue(), 'rocket-switch-on': model.getValue()}"></div>
-</button>
+<rocket-ui-toggler [enabled]="model.getValue()" (enabledChange)="model.setValue($event)"></rocket-ui-toggler>
