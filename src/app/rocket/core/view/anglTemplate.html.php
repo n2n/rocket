@@ -1,15 +1,25 @@
 <?php
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use rocket\core\model\AnglTemplateModel;
+use n2n\core\N2N;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($view);
 	
-	$html->meta()->bodyEnd()->addJs('angl-dev/runtime.js');
-	$html->meta()->bodyEnd()->addJs('angl-dev/polyfills.js');
-	$html->meta()->bodyEnd()->addJs('angl-dev/styles.js');
-	$html->meta()->bodyEnd()->addJs('angl-dev/vendor.js');
-	$html->meta()->bodyEnd()->addJs('angl-dev/main.js');
+	if (N2N::isDevelopmentModeOn()) {
+		$html->meta()->bodyEnd()->addJs('angl-dev/runtime.js');
+		$html->meta()->bodyEnd()->addJs('angl-dev/polyfills.js');
+		$html->meta()->bodyEnd()->addJs('angl-dev/styles.js');
+		$html->meta()->bodyEnd()->addJs('angl-dev/vendor.js');
+		$html->meta()->bodyEnd()->addJs('angl-dev/main.js');
+	} else {
+		$html->meta()->bodyEnd()->addJs('angl/runtime-es2015.js', null, false, false, ['type' => 'module']);
+		$html->meta()->bodyEnd()->addJs('angl/runtime-es5.js', null, false, false, ['nomodule', 'defer']);
+		$html->meta()->bodyEnd()->addJs('angl/polyfills-es5.js', null, false, false, ['nomodule', 'defer']);
+		$html->meta()->bodyEnd()->addJs('angl/polyfills-es2015.js', null, false, false, ['type' => 'module']);
+		$html->meta()->bodyEnd()->addJs('angl/main-es2015.js', null, false, false, ['type' => 'module']);
+		$html->meta()->bodyEnd()->addJs('angl/main-es5.js', null, false, false, ['nomodule', 'defer']);
+	}
 	
 	$view->useTemplate('boilerplate.html', $view->getParams());
 	
