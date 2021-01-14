@@ -1,9 +1,3 @@
-<ng-container *ngIf="model.getValue()">
-	<i class="fa fa-toggle-on" (click)="model.setValue(false)"></i>
-</ng-container>
-
-<ng-container *ngIf="!model.getValue()">
-	<i class="fa fa-toggle-off" (click)="model.setValue(true)"></i>
-</ng-container>
-
-(Tomekk, mach das schöner.)
+<button class="btn px-0 py-0 my-2" (click)="model.setValue(!model.getValue())">
+	<div class="rocket-switch" [ngClass]="{'rocket-switch-off': !model.getValue(), 'rocket-switch-on': model.getValue()}"></div>
+</button>

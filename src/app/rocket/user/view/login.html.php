@@ -35,11 +35,14 @@ use rocket\user\model\RocketUserDao;
 	
 	$userDao = $view->lookup(RocketUserDao::class);
 	$view->assert($userDao instanceof RocketUserDao);
+	$htmlMeta = $html->meta();
 	
-	$html->meta()->addMeta(array('name' => 'viewport', 'content' => 'width=device-width, initial-scale=1.0'));
-	$html->meta()->addMeta(array('name' => 'robots', 'content' => 'noindex'));
-	$html->meta()->addCss('css/rocket-30.css');
-	$html->meta()->addCss('css/icomoon.css');
+	$htmlMeta->addMeta(array('name' => 'viewport', 'content' => 'width=device-width, initial-scale=1.0'));
+	$htmlMeta->addMeta(array('name' => 'robots', 'content' => 'noindex'));
+	$htmlMeta->addCss('css/rocket-30.css');
+	$htmlMeta->addCss('css/icons/font-awesome/icons/all.min.css');
+	// 	use this to insert custom icons
+	// 	$htmlMeta->addCss('css/icons/icomoon/icomoon.css');
 ?>
 <!DOCTYPE html>
 <html> 
