@@ -11,9 +11,9 @@
 				</th>
 				<th>
 					<ng-container *ngIf="sortable">
-						<button (click)="switchToEntryControlMode()" [class.active]="isEntryControModeEnabled()"><i class="fa fa-wrench"></i></button>
+						<button class="btn btn-link btn-sm" (click)="switchToEntryControlMode()" [class.active]="isEntryControModeEnabled()"><i class="fa fa-wrench"></i></button>
 
-						<button (click)="switchToSortMode()" [class.active]="isSortModeEnabled()"><i class="fa fa-arrows-alt-v"></i></button>
+						<button class="btn btn-link btn-sm" (click)="switchToSortMode()" [class.active]="isSortModeEnabled()"><i class="fa fa-arrows-alt-v"></i></button>
 					</ng-container>
 				</th>
 			</tr>
@@ -56,15 +56,15 @@
 										[labeled]="false"></rocket-ui-toggler>
 										
 								<ng-container *ngIf="!isSiEntrySortSelected(structureEntry.siEntry) && !isSiEntrySortDecendant(structureEntry.siEntry)">
-									<button (click)="moveBefore(structureEntry.siEntry)" [disabled]="!hasSiEntrySortSelections()">
+									<button class="btn btn-link" (click)="moveBefore(structureEntry.siEntry)" [disabled]="!hasSiEntrySortSelections()">
 										<i class="fa fa-arrow-up"></i>
 									</button>
 
-									<button (click)="moveAfter(structureEntry.siEntry)" [disabled]="!hasSiEntrySortSelections()">
+									<button class="btn btn-link" (click)="moveAfter(structureEntry.siEntry)" [disabled]="!hasSiEntrySortSelections()">
 										<i class="fa fa-arrow-down"></i>
 									</button>
 
-									<button *ngIf="isTree()" (click)="moveToParent(structureEntry.siEntry)" [disabled]="!hasSiEntrySortSelections()">
+									<button class="btn btn-link" *ngIf="isTree()" (click)="moveToParent(structureEntry.siEntry)" [disabled]="!hasSiEntrySortSelections()">
 										<i class="fa fa-arrow-right"></i>
 									</button>
 								</ng-container>
