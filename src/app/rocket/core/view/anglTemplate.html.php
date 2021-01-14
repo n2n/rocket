@@ -6,7 +6,7 @@ use n2n\core\N2N;
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($view);
 	
-	if (N2N::isDevelopmentModeOn()) {
+	if (defined('ROCKET_DEV')) {
 		$html->meta()->bodyEnd()->addJs('angl-dev/runtime.js');
 		$html->meta()->bodyEnd()->addJs('angl-dev/polyfills.js');
 		$html->meta()->bodyEnd()->addJs('angl-dev/styles.js');
