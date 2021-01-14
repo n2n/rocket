@@ -7873,6 +7873,7 @@ rocket-button-control .dropdown > div div > .btn:hover, rocket-button-control .d
 
 .breadcrumb-item:before {
   font-family: "Font Awesome 5 Free";
+  font-weight: bold;
   font-size: .75em;
   -moz-osx-font-smoothing: grayscale;
 }
