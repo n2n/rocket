@@ -677,9 +677,9 @@ class GuiDefinition {
 			return $eiGuiFrame;
 		}
 		
-		if (ViewMode::isBulky($eiGuiModel->getViewMode())) {
-			$guiStructureDeclarations = $this->groupGsds($guiStructureDeclarations);
-		}
+// 		if (ViewMode::isBulky($eiGuiModel->getViewMode())) {
+// 			$guiStructureDeclarations = $this->groupGsds($guiStructureDeclarations);
+// 		}
 		
 		$eiGuiFrame->setGuiStructureDeclarations($guiStructureDeclarations);
 		return $eiGuiFrame;
@@ -754,32 +754,32 @@ class GuiDefinition {
 		return $guiStructureDeclarations;
 	}
 	
-	/**
-	 * @param GuiStructureDeclaration[] $guiStructureDeclarations
-	 */
-	private function groupGsds(array $guiStructureDeclarations) {
-		$groupedGsds = [];
+// 	/**
+// 	 * @param GuiStructureDeclaration[] $guiStructureDeclarations
+// 	 */
+// 	private function groupGsds(array $guiStructureDeclarations) {
+// 		$groupedGsds = [];
 		
-		$curUngroupedGsds = [];
+// 		$curUngroupedGsds = [];
 		
-		foreach ($guiStructureDeclarations as $guiStructureDeclaration) {
-			if ($guiStructureDeclaration->getSiStructureType() === SiStructureType::ITEM
-					|| ($guiStructureDeclaration->getSiStructureType() === SiStructureType::PANEL
-							&& $this->containsNonGrouped($guiStructureDeclaration))) {
-				$curUngroupedGsds[] = $guiStructureDeclaration;
-				continue;
-			}
+// 		foreach ($guiStructureDeclarations as $guiStructureDeclaration) {
+// 			if ($guiStructureDeclaration->getSiStructureType() === SiStructureType::ITEM
+// 					|| ($guiStructureDeclaration->getSiStructureType() === SiStructureType::PANEL
+// 							&& $this->containsNonGrouped($guiStructureDeclaration))) {
+// 				$curUngroupedGsds[] = $guiStructureDeclaration;
+// 				continue;
+// 			}
 					
-			$this->appendToGoupedGsds($curUngroupedGsds, $groupedGsds);
-			$curUngroupedGsds = [];
+// 			$this->appendToGoupedGsds($curUngroupedGsds, $groupedGsds);
+// 			$curUngroupedGsds = [];
 			
-			$groupedGsds[] = $guiStructureDeclaration;
-		}
+// 			$groupedGsds[] = $guiStructureDeclaration;
+// 		}
 		
-		$this->appendToGoupedGsds($curUngroupedGsds, $groupedGsds);
+// 		$this->appendToGoupedGsds($curUngroupedGsds, $groupedGsds);
 		
-		return $groupedGsds;
-	}
+// 		return $groupedGsds;
+// 	}
 	
 		/**
 		 * @param GuiStructureDeclaration $guiStructureDeclaration

@@ -24,8 +24,6 @@ namespace rocket\ei\mask\model;
 use rocket\ei\manage\DefPropPath;
 use n2n\util\type\ArgUtils;
 use rocket\ei\manage\gui\EiGuiFrame;
-use rocket\si\meta\SiStructureType;
-use rocket\ei\manage\gui\UnresolvableDefPropPathException;
 
 class DisplayStructure {
 	/**
@@ -39,7 +37,7 @@ class DisplayStructure {
 	 * @param string $label
 	 * @param string $moduleNamespace
 	 */
-	public function addDefPropPath(DefPropPath $defPropPath, string $type = null) {
+	public function addDefPropPath(DefPropPath $defPropPath, string $type) {
 		$this->displayItems[] = DisplayItem::create($defPropPath, $type);
 	}
 	
@@ -49,9 +47,9 @@ class DisplayStructure {
 	 * @param string $label
 	 * @param string $moduleNamespace
 	 */
-	public function addDisplayStructure(DisplayStructure $displayStructure, string $type, string $label = null, 
+	public function addDisplayStructure(DisplayStructure $displayStructure, string $type/*, bool $autonomic = false*/, string $label = null, 
 			string $helpText = null, string $moduleNamespace = null) {
-		$this->displayItems[] = DisplayItem::createFromDisplayStructure($displayStructure, $type, $label, $helpText, $moduleNamespace);
+		$this->displayItems[] = DisplayItem::createFromDisplayStructure($displayStructure, $type/*, $autonomic*/, $label, $helpText, $moduleNamespace);
 	}
 	
 	/**

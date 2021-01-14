@@ -47,10 +47,12 @@ class RawDef {
 	
 	const GUI_FIELD_ORDER_GROUP_TITLE_KEY = 'title';
 	const GUI_FIELD_ORDER_GROUP_TYPE_KEY = 'type';
+	const GUI_FIELD_ORDER_AUTONOMIC_KEY = 'autonomic';
 	const GUI_FIELD_ORDER_KEY = 'displayStructure';
 	
 	const DISPLAY_ITEM_GROUP_TYPE_KEY = 'type';
 	const DISPLAY_ITEM_LABEL_KEY = 'label';
+// 	const DISPLAY_ITEM_AUTONOMIC_KEY = 'autonomic';
 	const DISPLAY_ITEM_DISPLAY_STRUCTURE_KEY = 'displayStructure';
 	const DISPLAY_ITEM_GUI_ID_PATH_KEY = 'guiIdPath';
 

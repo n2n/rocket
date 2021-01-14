@@ -11,7 +11,7 @@ import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiProp } from '../../../meta/si-prop';
 import { SiField } from '../../../content/si-field';
 import { Subscription } from 'rxjs';
-import { SiStructureDeclaration } from '../../../meta/si-structure-declaration';
+import { SiStructureDeclaration, UiStructureType, UiStructureTypeUtils } from '../../../meta/si-structure-declaration';
 import { UiStructureModelAdapter } from 'src/app/ui/structure/model/impl/ui-structure-model-adapter';
 import { EnumInComponent } from '../../../content/impl/enum/comp/enum-in/enum-in.component';
 import { EnumInModel } from '../../../content/impl/enum/comp/enum-in-model';
@@ -208,7 +208,8 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 		const toolbarResolver = new ToolbarResolver();
 
 		this.contentUiStructure = this.boundUiStructure.createChild();
-		this.createStructures(this.contentUiStructure, siMaskDeclaration.structureDeclarations, toolbarResolver);
+		this.createStructures(this.contentUiStructure, siMaskDeclaration.structureDeclarations, toolbarResolver, 
+				this.isBoundStructureInsideGroup());
 
 		for (const prop of siMaskDeclaration.type.getProps()) {
 			if (prop.dependantPropIds.length > 0 && this.siEntry.selectedEntryBuildup.containsPropId(prop.id)) {
@@ -217,14 +218,64 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 		}
 	}
 
+	private isBoundStructureInsideGroup(): boolean {
+		let uiStructure = this.boundUiStructure;
+		do {
+			if (UiStructureTypeUtils.isGroup(uiStructure.type)) {
+				return true;
+			}
+		} while (uiStructure = uiStructure.parent);
+
+		return false;
+	}
+
+
 	private createStructures(parent: UiStructure, uiStructureDeclarations: SiStructureDeclaration[],
-			toolbarResolver: ToolbarResolver): UiStructure[] {
+			toolbarResolver: ToolbarResolver, groupsRequired: boolean): UiStructure[] {
+
+
 		const structures: UiStructure[] = [];
+		let curUnbUiStructure: UiStructure|null = null;
+
 		for (const usd of uiStructureDeclarations) {
-			structures.push(this.dingsel(parent, usd, toolbarResolver));
+			if (!groupsRequired || UiStructureTypeUtils.isGroup(usd.type)) {
+				structures.push(this.dingsel(parent, usd, toolbarResolver));
+				curUnbUiStructure = null;
+				continue;
+			}
+
+			if (!curUnbUiStructure) {
+				curUnbUiStructure = parent.createContentChild(UiStructureType.SIMPLE_GROUP);
+				structures.push(curUnbUiStructure);
+			}
+
+			this.dingsel(curUnbUiStructure, usd, toolbarResolver);
 		}
 		return structures;
 	}
+
+//	$curDisplayStructure = null;
+// 		foreach ($this->displayItems as $displayItem) {
+// 			if ($displayItem->getSiStructureType() === SiStructureType::PANEL 
+// 					&& $this->containsNonGrouped($displayItem)) {
+// 				$displayStructure->addDisplayItem($displayItem->copy(SiStructureType::SIMPLE_GROUP));
+// 				$curDisplayStructure = null;
+// 				continue;
+// 			}
+			
+// 			if ($displayItem->getSiStructureType() !== SiStructureType::ITEM) {
+// 				$displayStructure->addDisplayItem($displayItem);
+// 				$curDisplayStructure = null;
+// 				continue;
+// 			}
+			
+// 			if ($curDisplayStructure === null) {
+// 				$curDisplayStructure = new DisplayStructure();
+// 				$displayStructure->addDisplayStructure($curDisplayStructure, SiStructureType::SIMPLE_GROUP);
+// 			}
+			
+// 			$curDisplayStructure->addDisplayItem($displayItem);
+// 		}
 
 	private dingsel(parent: UiStructure, ssd: SiStructureDeclaration, toolbarResolver: ToolbarResolver): UiStructure {
 		const uiStructure = parent.createContentChild();
@@ -243,7 +294,7 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 		uiStructure.label = ssd.label;
 		uiStructure.model = new SimpleUiStructureModel();
 
-		this.createStructures(uiStructure, ssd.children, toolbarResolver);
+		this.createStructures(uiStructure, ssd.children, toolbarResolver, false);
 
 		return uiStructure;
 	}
