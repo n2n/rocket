@@ -4,7 +4,8 @@ import { SplitModel } from '../split-model';
 @Component({
 	selector: 'rocket-split',
 	templateUrl: './split.component.html',
-	styleUrls: ['./split.component.css']
+	styleUrls: ['./split.component.css'],
+	host: {'class': 'rocket-split'}
 })
 export class SplitComponent implements OnInit {
 

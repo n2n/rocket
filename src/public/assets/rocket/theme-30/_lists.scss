@@ -169,6 +169,9 @@ $rocket-tree-level-line-string:         '';
     .rocket-simple-commands > rocket-button-control > .btn > span {
         display: none;
     }
+
+
+
 }
 
 /*
@@ -181,6 +184,77 @@ $rocket-tree-level-line-string:         '';
         font-weight: bold;
     }
 }
+
+// new from tomekk
+
+td > .rocket-split {
+    width: auto;
+}
+
+td > .rocket-split > .rocket-item {
+    align-items: baseline;
+    min-height: unset;
+    padding: 0;
+    display: -ms-grid;
+    display: grid;
+    -ms-grid-columns: auto 1fr;
+    grid-template-columns: auto 1fr;
+    margin: 0;
+
+    > label {
+        position: static;
+        -ms-grid-column: 2;
+        grid-column-start: 2;
+        grid-column-end: 3;
+        font-size: 0.75rem;
+        color: #837E78;
+        width: auto;
+        white-space: nowrap;
+        padding: 0.325rem 0 0 0;
+        border: none;
+        margin: 0;
+    }
+
+    > .rocket-structure-content {
+        -ms-grid-row: 1;
+        grid-row-start: 1;
+        -ms-grid-column: 1;
+        grid-column-start: 1;
+        grid-column-end: 2;
+        padding: 0;
+    }
+
+    > .rocket-structure-content:not(:empty) {
+        padding: 0 .5em 0 0;
+    }
+}
+
+td > rocket-crumb-out-field > rocket-crumb-group > i:first-child:not(:only-child) {
+    margin-right: .5em;
+}
+
+td > rocket-crumb-out-field > rocket-crumb-group > i:last-child:not(:only-child) {
+    margin-left: .5em;
+}
+
+// [class*="rocket-tree-level-"] > td:first-child:not(.rocket-entry-selector), 
+// [class*="rocket-tree-level-"] > .rocket-entry-selector + td {
+//     white-space: nowrap;
+// }
+
+// [class*="rocket-tree-level-"] > td:first-child:not(.rocket-entry-selector):before, 
+// [class*="rocket-tree-level-"] > .rocket-entry-selector + td:before {
+//     margin-right: 1em;
+// }
+
+// [class*="rocket-tree-level-"] > td:first-child:not(.rocket-entry-selector), 
+// [class*="rocket-tree-level-"] > .rocket-entry-selector + td {
+//     > .rocket-split {
+//         white-space: normal;
+//     }
+// }
+
+// end new from tomekk
 
 %rocketTreeLevelBaseStyles {
     padding-right: 0.5rem;
@@ -202,6 +276,7 @@ $rocket-tree-level-line-string:         '';
         content: $rocket-tree-level-line-string;
     }
 }
+
 
 
 /*
