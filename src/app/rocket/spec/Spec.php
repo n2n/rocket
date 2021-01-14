@@ -782,7 +782,8 @@ class PropIn {
 	private function createException($e) {
 		$eiComponent = $this->eiPropConfigurator->getEiComponent();
 		
-		return new InvalidEiComponentConfigurationException('EiProp is invalid configured: ' . $eiComponent, 0, $e);
+		return new InvalidEiComponentConfigurationException('EiProp is invalid configured: ' . $eiComponent . ' in ' 
+				. $eiComponent->getWrapper()->getEiPropCollection()->getEiMask(), 0, $e);
 	}
 }
 
