@@ -181,7 +181,7 @@ class EmbeddedGuiCollection {
 				continue;
 			}
 			
-			$newEiuEntryGuis[] = $this->embeddedGuiCollection->addNew()->handleSiEntryInput($siEntryInput);
+			$newEiuEntryGuis[] = $this->addNew()->handleSiEntryInput($siEntryInput);
 		}
 		
 		$this->eiuEntryGuis = $newEiuEntryGuis;
@@ -194,7 +194,7 @@ class EmbeddedGuiCollection {
 	function save(?EiPropPath $orderEiPropPath) {
 		$values = [];
 		$i = 0;
-		foreach ($this->embeddedGuiCollection->getEiuEntryGuis() as $eiuEntryGui) {
+		foreach ($this->eiuEntryGuis as $eiuEntryGui) {
 			if (!$eiuEntryGui->isTypeSelected()) {
 				continue;
 			}

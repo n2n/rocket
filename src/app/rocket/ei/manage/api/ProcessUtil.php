@@ -152,7 +152,7 @@ class ProcessUtil {
 	function determineEiGuiOfEiEntry(EiEntry $eiEntry, string $eiTypeId, bool $bulky, bool $readOnly) {
 		try {
 			$efu = new EiFrameUtil($this->eiFrame);
-			return $efu->createEiGuiFromEiEntry($eiEntry, $bulky, $readOnly, $eiTypeId, null);
+			return $efu->createEiGuiFromEiEntry($eiEntry, $bulky, $readOnly, $eiTypeId, null, $efu->lookupTreeLevel($eiEntry->getEiObject()));
 		} catch (SecurityException $e) {
 			throw new BadRequestException(null, 0, $e);
 		} catch (EiException $e) {

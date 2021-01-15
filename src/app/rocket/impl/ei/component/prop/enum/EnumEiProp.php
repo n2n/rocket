@@ -51,6 +51,7 @@ use rocket\ei\manage\idname\IdNameProp;
 use rocket\ei\component\prop\IdNameEiProp;
 use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfig;
 use rocket\ei\util\factory\EifGuiField;
+use rocket\si\content\impl\EnumInSiField;
 
 class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiProp, SortableEiProp, 
 		QuickSearchableEiProp, IdNameEiProp {
@@ -111,12 +112,11 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 	}
 	
 	public function buildEiField(Eiu $eiu): ?EiField {
-		$that = $this;
-		$eiu->entry()->onValidate(function () use ($eiu, $that) {
+		$eiu->entry()->onValidate(function () use ($eiu) {
 			$type = $eiu->field()->getValue();
 				
 			$activeDefPropPaths = array();
-			foreach ($that->getAssociatedDefPropPathMap() as $value => $defPropPaths) {
+			foreach ($this->enumConfig->getAssociatedDefPropPathMap() as $value => $defPropPaths) {
 				if ($value == $type) {
 					$activeDefPropPaths = $defPropPaths;
 					continue;
@@ -189,7 +189,7 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 	}
 	
 	function saveSiField(SiField $siField, Eiu $eiu) {
-		ArgUtils::assertTrue($siField instanceof EnumEiProp);
+		ArgUtils::assertTrue($siField instanceof EnumInSiField);
 		$eiu->field()->setValue($siField->getValue());
 	}
 	

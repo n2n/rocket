@@ -42,7 +42,9 @@ export class EmbeddedEntryPanelsInSiField extends SiFieldAdapter  {
 	}
 
 	readInput(): object {
-		throw new Error('not yet implemented');
+		return {
+			'panelInputs': this.panels.map(p => p.readInput())
+		};
 	}
 
 	createUiStructureModel(): UiStructureModel {
@@ -129,6 +131,8 @@ class EmbeddedEntryPanelsInUiStructureModel extends UiStructureModelAdapter {
 	}
 
 	bind(uiStructure: UiStructure) {
+		super.bind(uiStructure);
+
 		const panelDefs = new Array<PanelDef>();
 		for (const panelAssembly of this.panelAssemblies) {
 			panelDefs.push({

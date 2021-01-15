@@ -99,6 +99,13 @@ class EiuEntryGui {
 	/**
 	 * @return boolean
 	 */
+	function isTypeSelected() {
+		return $this->eiEntryGui->isTypeDefSelected();
+	}
+	
+	/**
+	 * @return boolean
+	 */
 	function isCompact() {
 		$viewMode = $this->getViewMode();
 		return $viewMode & ViewMode::compact();

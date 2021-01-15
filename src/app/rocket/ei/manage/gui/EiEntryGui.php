@@ -139,7 +139,10 @@ class EiEntryGui {
 		$this->typeDefs[$eiTypeId]->handleSiEntryInput($siEntryInput);
 	}
 	
-	function isTypeDefSelected(): bool {
+	/**
+	 * @return boolean
+	 */
+	function isTypeDefSelected() {
 		return $this->selectedEiTypeId !== null;
 	}
 	

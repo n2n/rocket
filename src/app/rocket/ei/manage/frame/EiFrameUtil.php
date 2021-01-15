@@ -116,12 +116,21 @@ class EiFrameUtil {
 				$this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()->getEntityModel(), $id));
 	}
 	
-	function lookupTreeLevel($id) {
+	/**
+	 * @param EiObject $eiObject
+	 * @return int|null
+	 */
+	function lookupTreeLevel(EiObject $eiObject) {
+		$eiType = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType();
+		$nestedSetStrategy = $eiType->getNestedSetStrategy();
 		
+		if ($nestedSetStrategy === null) {
+			return null;
+		}
 		
-		$criteria = $this->eiFrame->createCriteria('e', );
-		$criteria->select('1');
-		$this->applyIdComparison($criteria->where(), $id);
+		$nestedSetUtils = new NestedSetUtils($this->eiFrame->getManageState()->getEntityManager(),
+				$eiType->getEntityModel()->getClass(), $nestedSetStrategy);
+		return $nestedSetUtils->fetchLevel($eiObject->getEiEntityObj()->getEntityObj());
 	}
 	
 	/**
@@ -330,14 +339,7 @@ class EiFrameUtil {
 		$eiObject = $this->lookupEiObject($id);
 		
 		$eiType = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType();
-		$nestedSetStrategy = $eiType->getNestedSetStrategy();
-		
-		$treeLevel = null;
-		if ($nestedSetStrategy !== null) {
-			$nestedSetUtils = new NestedSetUtils($this->eiFrame->getManageState()->getEntityManager(), 
-					$eiType->getEntityModel()->getClass(), $nestedSetStrategy);
-			$treeLevel = $nestedSetUtils->fetchLevel($eiObject->getEiEntityObj()->getEntityObj());
-		}
+		$treeLevel = $this->lookupTreeLevel($eiObject);
 		
 		return $this->createEiGuiFromEiObject($eiObject, $bulky, $readOnly, null, $defPropPaths, $treeLevel);
 	}

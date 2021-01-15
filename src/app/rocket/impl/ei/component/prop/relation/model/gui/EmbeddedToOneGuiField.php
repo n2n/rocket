@@ -33,6 +33,7 @@ use rocket\si\input\CorruptedSiInputDataException;
 use rocket\si\content\impl\relation\EmbeddedEntryInputHandler;
 use rocket\ei\manage\gui\GuiFieldMap;
 use n2n\util\ex\IllegalStateException;
+use n2n\util\col\ArrayUtils;
 
 class EmbeddedToOneGuiField implements GuiField, EmbeddedEntryInputHandler {
 	/**
@@ -116,7 +117,7 @@ class EmbeddedToOneGuiField implements GuiField, EmbeddedEntryInputHandler {
 	function save() {
 		IllegalStateException::assertTrue(!$this->readOnly);
 		
-		$value = $this->emebeddedGuiCollection->save();
+		$value = ArrayUtils::first($this->emebeddedGuiCollection->save($this->relationModel->getTargetOrderEiPropPath()));
 		
 		$this->eiu->field()->setValue($value);
 	}

@@ -189,12 +189,12 @@ class RocketController extends ControllerAdapter {
 		$this->delegate($scrBaseController);
 	}
 	
-// 	public function notFound() {
-// 		if (!$this->verifyUser()) return;
+	public function notFound() {
+		if (!$this->verifyUser()) return;
 		
-// 		$this->getResponse()->setStatus(Response::STATUS_404_NOT_FOUND);
-// 		$this->forward('..\view\notFound.html');
-// 	}
+		$this->getResponse()->setStatus(Response::STATUS_404_NOT_FOUND);
+		$this->forward('..\view\notFound.html');
+	}
 	
 	public function doAbout() {
 		if (!$this->verifyUser()) return;
