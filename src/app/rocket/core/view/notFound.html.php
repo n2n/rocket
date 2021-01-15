@@ -21,6 +21,7 @@
 	 */
 
 	use rocket\user\model\LoginContext;
+use n2n\core\N2N;
 
 	$loginContext = $view->lookup('rocket\user\model\LoginContext'); 
 	$view->assert($loginContext instanceof LoginContext);
@@ -32,3 +33,9 @@
 <p>
 	<?php $html->linkToController(null, 'Go to startpage', null, null, null, 'rocket\core\controller\RocketController') ?>
 </p>
+
+<?php if (N2N::isDevelopmentModeOn() && null !== ($e = $view->getParam('e', false))): ?>
+	<pre>
+		<?php $html->out($e->getStackTaceAsString()) ?>
+	</pre>
+<?php endif ?>

@@ -413,13 +413,22 @@ class EiFrameUtil {
 	 * @throws UnknownEiTypeException
 	 */
 	function createNewEiObject(string $eiTypeId) {
+		return $this->getEiTypeById($eiTypeId)->createNewEiObject(false);
+	}
+	
+	/**
+	 * @param string $eiTypeId
+	 * @return \rocket\ei\EiType
+	 * @throws UnknownEiTypeException
+	 */
+	function getEiTypeById(string $eiTypeId) {
 		$contextEiType = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType();
 		
 		if ($contextEiType->getId() == $eiTypeId) {
-			return $contextEiType->createNewEiObject(false);
+			return $contextEiType;
 		}
 		
-		return $contextEiType->getSubEiTypeById($eiTypeId, true)->createNewEiObject(false);
+		return $contextEiType->getSubEiTypeById($eiTypeId, true);
 	}
 	
 	/**

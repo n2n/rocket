@@ -159,11 +159,13 @@ class RelationConfig extends PropConfigAdaption {
 			$targetEiuMask = $targetEiuType->mask();
 		}
 			
-		$targetReadEiCommand = new TargetReadEiCommand(Lstr::create('Change this name'), 'change this', 'change this');
+		$targetReadEiCommand = new TargetReadEiCommand(Lstr::create('Embedded Read'), (string) $eiu->mask()->getEiTypePath(),
+				(string) $targetEiuMask->getEiTypePath());
 		$targetEiuMask->addEiCommand($targetReadEiCommand);
 		$this->relationModel->setTargetReadEiCommandPath(EiCommandPath::from($targetReadEiCommand));
 		
-		$targetEditEiCommand = new TargetEditEiCommand(Lstr::create('Change this name'), 'change this', 'change this');
+		$targetEditEiCommand = new TargetEditEiCommand(Lstr::create('Change this name'), (string) $eiu->mask()->getEiTypePath(), 
+				(string) $targetEiuMask->getEiTypePath());
 		$targetEiuMask->addEiCommand($targetEditEiCommand);
 		$this->relationModel->setTargetEditEiCommandPath(EiCommandPath::from($targetEditEiCommand));
 		
