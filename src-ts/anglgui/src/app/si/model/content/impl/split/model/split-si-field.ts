@@ -1,5 +1,4 @@
 import { SiField } from '../../../si-field';
-import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { SplitModel } from '../comp/split-model';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { SplitOption } from './split-option';
@@ -8,7 +7,6 @@ import { SiEntry } from '../../../si-entry';
 import { SplitComponent } from '../comp/split/split.component';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
-import { SimpleSiFieldAdapter } from '../../common/model/simple-si-field-adapter';
 import { UiStructureModelMode, UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
 import { SiFieldAdapter } from '../../common/model/si-field-adapter';
 import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
@@ -22,6 +20,7 @@ import { CrumbGroupComponent } from '../../meta/comp/crumb-group/crumb-group.com
 import { SiButton } from 'src/app/si/model/control/impl/model/si-button';
 import { UiZone } from 'src/app/ui/structure/model/ui-zone';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
+import { Subscription } from 'rxjs';
 
 export class SplitSiField extends SiFieldAdapter {
 
@@ -70,9 +69,10 @@ export class SplitSiField extends SiFieldAdapter {
 
 class SplitUiStructureModel extends SimpleUiStructureModel implements SplitModel {
 
-	private subscription: SplitViewStateSubscription;
+	private splitViewStateSubscription: SplitViewStateSubscription;
 	readonly childUiStructureMap = new Map<string, UiStructure>();
 	private loadedKeys = new Array<string>();
+	private subscription: Subscription;
 
 	constructor(private refPropId: string, private splitContext: SplitContextSiField|null,
 			private copyStyle: SplitStyle, private viewStateService: SplitViewStateService) {
@@ -137,26 +137,30 @@ class SplitUiStructureModel extends SimpleUiStructureModel implements SplitModel
 			// ref.instance.uiStructure = uiStructure;
 		});
 
-		this.subscription = this.viewStateService.subscribe(uiStructure, this.getSplitOptions(), this.getSplitStyle());
+		this.splitViewStateSubscription = this.viewStateService.subscribe(uiStructure, this.getSplitOptions(), this.getSplitStyle());
 
 		for (const splitOption of this.getSplitOptions()) {
 			const child = uiStructure.createChild(UiStructureType.ITEM, splitOption.shortLabel);
 			this.childUiStructureMap.set(splitOption.key, child);
 			child.visible = false;
 			child.visible$.subscribe(() => {
-				this.subscription.requestKeyVisibilityChange(splitOption.key, child.visible);
+				this.splitViewStateSubscription.requestKeyVisibilityChange(splitOption.key, child.visible);
 			});
 		}
 
 		this.checkChildUiStructureMap();
-		this.subscription.visibleKeysChanged$.subscribe(() => {
+		this.splitViewStateSubscription.visibleKeysChanged$.subscribe(() => {
 			this.checkChildUiStructureMap();
 		});
+
+		this.subscription = this.splitContext.activeKeys$.subscribe(() => {
+			this.checkChildUiStructureMap();
+		})
 	}
 
 	checkChildUiStructureMap() {
 		for (const [key, childUiStructure] of this.childUiStructureMap) {
-			childUiStructure.visible = this.subscription.isKeyVisible(key);
+			childUiStructure.visible = this.splitViewStateSubscription.isKeyVisible(key);
 
 			if (!childUiStructure.visible || -1 < this.loadedKeys.indexOf(key) || !this.isKeyActive(key)) {
 				continue;
@@ -194,12 +198,15 @@ class SplitUiStructureModel extends SimpleUiStructureModel implements SplitModel
 	unbind() {
 		super.unbind();
 
-		this.subscription.cancel();
+		this.splitViewStateSubscription.cancel();
 
 		for (const childUiStructure of this.childUiStructureMap.values()) {
 			childUiStructure.dispose();
 		}
 		this.childUiStructureMap.clear();
+
+		this.subscription.unsubscribe();
+		this.subscription = null;
 	}
 }
 

@@ -10,6 +10,7 @@ import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { SiEntryBuildup } from '../../../si-entry-buildup';
 import { SiControlBoundry } from 'src/app/si/model/control/si-control-bountry';
 import { SimpleSiFieldAdapter } from '../../common/model/simple-si-field-adapter';
+import { Observable } from 'rxjs';
 
 export abstract class SplitContextSiField extends SimpleSiFieldAdapter {
 	public style: SplitStyle = { iconClass: null, tooltip: null };
@@ -38,6 +39,8 @@ export abstract class SplitContextSiField extends SimpleSiFieldAdapter {
 	abstract isKeyActive(key: string): boolean;
 
 	abstract activateKey(key: string): void;
+
+	abstract get activeKeys$(): Observable<string[]>;
 
 	abstract hasInput(): boolean;
 

@@ -24,6 +24,7 @@ import { SiService } from 'src/app/si/manage/si.service';
 import { SiModStateService } from '../../../mod/model/si-mod-state.service';
 import { BulkyEntryComponent } from '../comp/bulky-entry/bulky-entry.component';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
+import { StructureBranchComponent } from 'src/app/ui/structure/comp/structure-branch/structure-branch.component';
 
 export class BulkyEntrySiGui implements SiGui, SiControlBoundry {
 	private _entry: SiEntry|null = null;
@@ -208,8 +209,8 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 		const toolbarResolver = new ToolbarResolver();
 
 		this.contentUiStructure = this.boundUiStructure.createChild();
-		this.createStructures(this.contentUiStructure, siMaskDeclaration.structureDeclarations, toolbarResolver, 
-				this.isBoundStructureInsideGroup());
+		this.createStructures(this.contentUiStructure, siMaskDeclaration.structureDeclarations, toolbarResolver,
+				!this.isBoundStructureInsideGroup());
 
 		for (const prop of siMaskDeclaration.type.getProps()) {
 			if (prop.dependantPropIds.length > 0 && this.siEntry.selectedEntryBuildup.containsPropId(prop.id)) {
@@ -232,50 +233,53 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 
 	private createStructures(parent: UiStructure, uiStructureDeclarations: SiStructureDeclaration[],
 			toolbarResolver: ToolbarResolver, groupsRequired: boolean): UiStructure[] {
-
-
 		const structures: UiStructure[] = [];
 		let curUnbUiStructure: UiStructure|null = null;
 
 		for (const usd of uiStructureDeclarations) {
-			if (!groupsRequired || UiStructureTypeUtils.isGroup(usd.type)) {
+			if (!groupsRequired || UiStructureTypeUtils.isGroup(usd.type)
+					|| (usd.type === UiStructureType.PANEL && !this.containsNonGrouped(usd))) {
 				structures.push(this.dingsel(parent, usd, toolbarResolver));
 				curUnbUiStructure = null;
 				continue;
 			}
 
 			if (!curUnbUiStructure) {
-				curUnbUiStructure = parent.createContentChild(UiStructureType.SIMPLE_GROUP);
+				curUnbUiStructure = this.createUnbUiStructure(parent);
 				structures.push(curUnbUiStructure);
 			}
 
 			this.dingsel(curUnbUiStructure, usd, toolbarResolver);
 		}
+
 		return structures;
 	}
 
-//	$curDisplayStructure = null;
-// 		foreach ($this->displayItems as $displayItem) {
-// 			if ($displayItem->getSiStructureType() === SiStructureType::PANEL 
-// 					&& $this->containsNonGrouped($displayItem)) {
-// 				$displayStructure->addDisplayItem($displayItem->copy(SiStructureType::SIMPLE_GROUP));
-// 				$curDisplayStructure = null;
-// 				continue;
-// 			}
-			
-// 			if ($displayItem->getSiStructureType() !== SiStructureType::ITEM) {
-// 				$displayStructure->addDisplayItem($displayItem);
-// 				$curDisplayStructure = null;
-// 				continue;
-// 			}
-			
-// 			if ($curDisplayStructure === null) {
-// 				$curDisplayStructure = new DisplayStructure();
-// 				$displayStructure->addDisplayStructure($curDisplayStructure, SiStructureType::SIMPLE_GROUP);
-// 			}
-			
-// 			$curDisplayStructure->addDisplayItem($displayItem);
-// 		}
+	private containsNonGrouped(siStructureDeclaration: SiStructureDeclaration): boolean {
+		if (siStructureDeclaration.children.length === 0) {
+			return false;
+		}
+
+		for (const child of siStructureDeclaration.children) {
+			if (UiStructureTypeUtils.isGroup(child.type)) {
+				continue;
+			}
+
+			if (child.type === UiStructureType.PANEL && !this.containsNonGrouped(child)) {
+				continue;
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
+	private createUnbUiStructure(parent: UiStructure): UiStructure {
+		const curUnbUiStructure = parent.createContentChild(UiStructureType.SIMPLE_GROUP);
+		curUnbUiStructure.model = new SimpleUiStructureModel();
+		return curUnbUiStructure;
+	}
 
 	private dingsel(parent: UiStructure, ssd: SiStructureDeclaration, toolbarResolver: ToolbarResolver): UiStructure {
 		const uiStructure = parent.createContentChild();

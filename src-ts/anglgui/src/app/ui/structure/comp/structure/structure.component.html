@@ -31,7 +31,7 @@
 	
 	<ng-template #structureContent>
 		<div *ngIf="uiStructure.disabled" class="rocket-inactive">{{ 'disabled_txt' | translate }}</div>
-
+		
 		<div *ngIf="!loaded && !uiStructure.disabled" class="rocket-loader"></div>
 		
 		<ng-container *ngIf="loaded && !uiStructure.disabled">
