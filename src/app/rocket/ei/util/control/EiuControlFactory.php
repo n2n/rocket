@@ -82,11 +82,11 @@ class EiuControlFactory {
 		return new EiuCallbackGuiControl($id, $this->getApiUrl(), $this->eiuGuiFrame->getViewMode(), $callback, $siButton);
 	}
 	
-// 	public function createGroup(ControlButton $siButton): GroupControl {
-// 		return new GroupControl($siButton);
-// 	}
+	public function createGroup(string $id, SiButton $siButton): EiuGroupGuiControl {
+		return new EiuGroupGuiControl($id, $siButton);
+	}
 	
-// 	public function createDeactivated(ControlButton $siButton) {
-// 		return new DeactivatedControl($siButton);
-// 	}
+	public function createDeactivated(string $id, SiButton $siButton): EiuGroupGuiControl {
+		return new EiuDeactivatedGuiControl($id, $siButton);
+	}
 }

@@ -9,7 +9,7 @@ use rocket\ei\component\GuiFactory;
 use rocket\ei\manage\DefPropPath;
 use rocket\ei\manage\gui\control\GuiControlPath;
 use rocket\ei\manage\gui\control\UnknownGuiControlException;
-use rocket\ei\manage\gui\control\GeneralGuiControl;
+use rocket\ei\manage\gui\control\GuiControl;
 use rocket\ei\manage\api\ApiControlCallId;
 use rocket\si\content\SiEntryBuildup;
 use rocket\ei\EiPropPath;
@@ -472,7 +472,7 @@ class EiGuiFrame {
 	 * @param EiFrame $eiFrame
 	 * @param EiEntry $eiEntry
 	 * @param GuiControlPath $guiControlPath
-	 * @return \rocket\ei\manage\gui\control\EntryGuiControl
+	 * @return \rocket\ei\manage\gui\control\GuiControl
 	 * @throws UnknownGuiControlException
 	 */
 	function createEntryGuiControl(EiFrame $eiFrame, EiEntry $eiEntry, GuiControlPath $guiControlPath) {

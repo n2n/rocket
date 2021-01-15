@@ -1,8 +1,13 @@
-<ng-container *ngIf="hasSubSiButtons(); else simpleButton">
+<ng-container *ngIf="hasSubUiContents() || hasSubSiButtons(); else simpleButton">
 	<div class="dropdown">
 		<ng-template [ngTemplateOutlet]="simpleButton"></ng-template>
 	
 		<div *ngIf="subVisible" class="dropdown-subs">
+			
+			<div *ngFor="let subUiContent of subUiContents">
+				<ng-template rocketUiContent [uiContent]="subUiContent"></ng-template>
+			</div>
+
 			<div *ngFor="let item of subSiButtonMap | keyvalue">
 				<button [class]="item.value.btnClass" [class.rocket-important]="siButton.important" 
 						(click)="subExec(item.key)" [disabled]="disabled">
@@ -12,7 +17,7 @@
 			</div>
 			
 			<div *ngIf="model.getSubTooltip && model.getSubTooltip()" class="rocket-tooltip">
-					{{ model.getSubTooltip() }}
+				{{ model.getSubTooltip() }}
 			</div>
 		</div>
 	</div>

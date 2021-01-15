@@ -24,15 +24,15 @@ namespace rocket\ei\util\control;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\si\control\SiControl;
 use rocket\si\control\SiResult;
+use n2n\util\ex\NotYetImplementedException;
 use rocket\si\control\SiButton;
 use rocket\ei\manage\api\ApiControlCallId;
 use rocket\ei\manage\gui\EiGuiModel;
 use rocket\ei\manage\frame\EiFrame;
+use rocket\si\control\impl\DeactivatedSiControl;
 use rocket\ei\manage\gui\control\GuiControl;
-use rocket\si\control\impl\GroupSiControl;
-use n2n\util\ex\UnsupportedOperationException;
 
-class EiuGroupGuiControl implements GuiControl {
+class EiuDeactivatedGuiControl implements GuiControl {
 	private $id;
 	private $siButton;
 	private $childrean = [];
@@ -54,37 +54,23 @@ class EiuGroupGuiControl implements GuiControl {
 		return false;
 	}
 	
-	/**
-	 * @param GuiControl $guiControl
-	 * @return \rocket\ei\util\control\EiuGroupGuiControl
-	 */
-	function add(GuiControl ...$guiControls) {
-		foreach ($guiControls as $guiControl) {
-			$this->childrean[$guiControl->getId()] = $guiControl;
-		}
-		return $this;
+	function getChilById(string $id): ?GuiControl {
+		return null;
 	}
 	
 	function toSiControl(ApiControlCallId $siApiCallId): SiControl {
-		return new GroupSiControl($this->siButton, 
-				array_map(function ($child) use ($siApiCallId) {
-					return $child->toSiControl($siApiCallId->guiControlPathExt($child->getId()));
-				}, $this->childrean));;
-	}
-	
-	function getChilById(string $id): ?GuiControl {
-		return $this->childrean[$id] ?? null;
+		return new DeactivatedSiControl($this->siButton);
 	}
 	
 	public function handleEntries(EiFrame $eiFrame, EiGuiModel $eiGuiModel, array $eiEntries): SiResult {
-		throw new UnsupportedOperationException('no input handled');
+		throw new NotYetImplementedException();
 	}
 
 	public function handle(EiFrame $eiFrame, EiGuiModel $eiGuiModel, array $inputEiEntries): SiResult {
-		throw new UnsupportedOperationException('no input handled');
+		throw new NotYetImplementedException();
 	}
 
 	public function handleEntry(EiFrame $eiFrame, EiGuiModel $eiGuiModel, EiEntry $eiEntry): SiResult {
-		throw new UnsupportedOperationException('no input handled');
+		throw new NotYetImplementedException();
 	}
 }

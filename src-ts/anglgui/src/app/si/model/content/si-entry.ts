@@ -134,7 +134,7 @@ export class SiEntry {
 		const fieldInputMap = new Map<string, object>();
 
 		for (const [id, field] of this.selectedEntryBuildup.getFieldMap()) {
-			if (!field.hasInput()) {
+			if (!field.hasInput() || field.isDisabled()) {
 				continue;
 			}
 

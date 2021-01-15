@@ -90,7 +90,7 @@ class PathPartEiProp extends AlphanumericEiProp {
 		
 		return $eiu->factory()->newGuiField($siField)
 				->setSaver(function () use ($eiu, $siField) {
-					$this->save($siField, $eiu);
+					$this->saveSiField($siField, $eiu);
 				});
 	}
 	

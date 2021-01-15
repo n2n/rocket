@@ -22,8 +22,8 @@
 namespace rocket\ei\manage\api;
 
 use rocket\ei\manage\gui\control\GuiControl;
-use rocket\ei\manage\gui\control\EntryGuiControl;
-use rocket\ei\manage\gui\control\GeneralGuiControl;
+use rocket\ei\manage\gui\control\GuiControl;
+use rocket\ei\manage\gui\control\GuiControl;
 use rocket\ei\manage\frame\EiFrame;
 use n2n\web\http\BadRequestException;
 use rocket\ei\manage\DefPropPath;

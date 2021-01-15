@@ -312,6 +312,14 @@ class EiuEntryGui {
 		$this->eiEntryGui->save();
 	}
 	
+	/**
+	 * @param bool $siControlsIncluded
+	 * @return \rocket\si\content\SiEntry
+	 */
+	function createSiEntry(bool $siControlsIncluded) {
+		return $this->eiEntryGui->getEiGui()->getEiGuiModel()->createSiEntry($this->eiuAnalyst->getEiFrame(true), 
+				$this->eiEntryGui, $siControlsIncluded);
+	}
 	
 	
 // 	/**

@@ -57,7 +57,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 	}
 	
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\component\command\control\EntryGuiControlComponent::getEntryGuiControlOptions()
+	 * @see \rocket\ei\component\command\control\\GuiControlComponent::getEntryGuiControlOptions()
 	 */
 	public function getEntryGuiControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {
 		$dtc = new DynamicTextCollection('rocket', $n2nLocale);
@@ -65,7 +65,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 				self::CONTROL_PREVIEW_KEY => $dtc->translate('ei_impl_preview_label'));
 	}
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\component\command\control\EntryGuiControlComponent::createEntryGuiControls()
+	 * @see \rocket\ei\component\command\control\\GuiControlComponent::createEntryGuiControls()
 	 */
 	public function createEntryGuiControls(Eiu $eiu): array {
 		$eiuFrame = $eiu->frame();

@@ -31,7 +31,7 @@ class GuiControlPath extends IdPath {
 	}
 	
 	public static function from(EiCommandPath $eiCommandPath, array $controlIds) {
-		return new GuiControlPath(array_merge($eiCommandPath->toArray(), $controlIds));
+		return new GuiControlPath([$eiCommandPath->__toString(), ...$controlIds]);
 	}
 	
 	public static function create($expression): GuiControlPath {

@@ -29,7 +29,7 @@ use rocket\spec\TypePath;
 
 class ApiControlCallId implements \JsonSerializable {
 	private $guiControlPath;
-	private $eiTypeId;
+	private $eiTypePath;
 	private $viewMode;
 	private $pid;
 	private $newEiTypeId;
@@ -38,7 +38,7 @@ class ApiControlCallId implements \JsonSerializable {
 			?string $newEiTypeId) {
 		$this->guiControlPath = $guiControlPath;
 		ArgUtils::valEnum($viewMode, ViewMode::getAll());
-		$this->eiTypeId = $eiTypePath->getTypeId();
+		$this->eiTypePath = $eiTypePath;
 		$this->viewMode = $viewMode;
 		$this->pid = $pid;
 		$this->newEiTypeId = $newEiTypeId;
@@ -59,7 +59,7 @@ class ApiControlCallId implements \JsonSerializable {
 	 * @return string
 	 */
 	function getEiTypeId() {
-		return $this->eiTypeId;
+		return $this->eiTypePath->getTypeId();
 	}
 	
 	/**
@@ -87,10 +87,19 @@ class ApiControlCallId implements \JsonSerializable {
 	function jsonSerialize() {
 		return [
 			'guiControlPath' => (string) $this->guiControlPath,
-			'eiTypeId' => $this->eiTypeId,
+			'eiTypeId' => $this->getEiTypeId(),
 			'viewMode' => $this->viewMode,
 			'pid' => $this->pid
 		];
+	}
+	
+	/**
+	 * @param string $id
+	 * @return \rocket\ei\manage\api\ApiControlCallId
+	 */
+	function guiControlPathExt(string $id) {
+		return new ApiControlCallId($this->guiControlPath->ext($id), $this->eiTypePath, $this->viewMode, $this->pid, 
+				$this->newEiTypeId);
 	}
 	
 	/**

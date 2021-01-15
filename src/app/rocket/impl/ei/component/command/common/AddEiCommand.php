@@ -46,10 +46,11 @@ class AddEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiCo
 	const ID_BASE = 'add';
 	const CONTROL_ADD_KEY = 'add';
 	const CONTROL_DUPLICATE_KEY = 'duplicate';
-	const CONTROL_ADD_DRAFT_KEY = 'addDraft';
-	const CONTROL_DUPLICATE_DRAFT_KEY = 'duplicateDraft';
 	const CONTROL_ADD_ROOT_BRANCH_KEY = 'addRootBranch';
 	const CONTROL_INSERT_BRANCH_KEY = 'insertBranch';
+	const CONTROL_INSERT_BEFORE_KEY = 'insertBefore';
+	const CONTROL_INSERT_AFTER_KEY = 'insertAfter';
+	const CONTROL_INSERT_CHILD_KEY = 'insertChild';
 	const CONTROL_SAVE_KEY = 'save';
 
 	const PRIVILEGE_LIVE_ENTRY_KEY = 'eiEntityObj';
@@ -192,28 +193,30 @@ class AddEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiCo
 					->createCmdRef(self::CONTROL_DUPLICATE_KEY , $siButton, [$eiuEntry->getPid()]));
 		}
 
-return [];
-		$groupControl = $eiuControlFactory->createCGroup(new SiButton($dtc->t('ei_impl_insert_branch_label'),
-				$dtc->t('ei_impl_add_branch_tooltip'), false, SiButton::TYPE_SECONDARY, SiIconType::ICON_PLUS));
+
+		$groupControl = $eiuControlFactory->createGroup(self::CONTROL_INSERT_BRANCH_KEY,
+				SiButton::success($dtc->t('ei_impl_insert_branch_label'), SiIconType::ICON_PLUS)
+						->setTooltip($dtc->t('ei_impl_add_branch_tooltip'))
+						->setImportant(false));
 		
 		$groupControl->add(
-				 $eiuControlFactory->createJhtml(
-						new SiButton($dtc->t('ei_impl_add_before_branch_label'),
-								$dtc->t('ei_impl_add_before_branch_tooltip'),
-								true, SiButton::TYPE_SUCCESS, SiIconType::ICON_ANGLE_UP),
+				$eiuControlFactory->createCmdRef(self::CONTROL_INSERT_BEFORE_KEY,
+						SiButton::success($dtc->t('ei_impl_add_before_branch_label'), SiIconType::ICON_ANGLE_UP)
+								->setTooltip($dtc->t('ei_impl_add_before_branch_tooltip'))
+								->setImportant(TRUE),
 						['before', $eiuEntry->getPid()]),
-				$eiuControlFactory->createJhtml(
-						new SiButton($dtc->t('ei_impl_add_after_branch_label'),
-								$dtc->t('ei_impl_add_after_branch_tooltip'),
-								true, SiButton::TYPE_SUCCESS, SiIconType::ICON_ANGLE_DOWN),
+				$eiuControlFactory->createCmdRef(self::CONTROL_INSERT_AFTER_KEY,
+						SiButton::success($dtc->t('ei_impl_add_after_branch_label'), SiIconType::ICON_ANGLE_DOWN)
+								->setTooltip($dtc->t('ei_impl_add_after_branch_tooltip'))
+								->setImportant(true),
 						['after', $eiuEntry->getPid()]),
-				$eiuControlFactory->createJhtml(
-						new SiButton($dtc->translate('ei_impl_add_child_branch_label'),
-								$dtc->translate('ei_impl_add_child_branch_tooltip'),
-								true, SiButton::TYPE_SUCCESS, SiIconType::ICON_ANGLE_RIGHT),
+				$eiuControlFactory->createCmdRef(self::CONTROL_INSERT_CHILD_KEY,
+						SiButton::success($dtc->translate('ei_impl_add_child_branch_label'), SiIconType::ICON_ANGLE_RIGHT)
+								->setTooltip($dtc->translate('ei_impl_add_child_branch_tooltip'))
+								->setImportant(true),
 						['child', $eiuEntry->getPid()]));
 		
-		return array(self::CONTROL_INSERT_BRANCH_KEY => $groupControl);
+		return [$groupControl];
 	}
 	
 	public function createEiConfigurator(): EiConfigurator {

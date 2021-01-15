@@ -7,10 +7,14 @@ import { Injector } from '@angular/core';
 import { SiUiService } from '../manage/si-ui.service';
 import { SiControlBoundry } from '../model/control/si-control-bountry';
 import { SiNavPoint } from '../model/control/si-nav-point';
+import { GroupSiControl } from '../model/control/impl/model/group-si-control';
+import { SimpleSiControl } from '../model/control/impl/model/simple-si-control';
 
 enum SiControlType {
 	REF = 'ref',
-	API_CALL = 'api-call'
+	API_CALL = 'api-call',
+	GROUP = 'group',
+	DEACTIVATED = 'deactivated'
 }
 
 export class SiControlFactory {
@@ -53,8 +57,17 @@ export class SiControlFactory {
 						this.controlBoundry);
 				apiControl.inputSent = dataExtr.reqBoolean('inputHandled');
 				return apiControl;
+			case SiControlType.GROUP:
+				const groupControl = new GroupSiControl(
+						this.createButton(dataExtr.reqObject('button')),
+						dataExtr.reqArray('controls').map(controlData => this.createControl(controlData)));
+				return groupControl;
+			case SiControlType.DEACTIVATED:
+				const deactivatedControl = new SimpleSiControl(this.createButton(dataExtr.reqObject('button')), () => {});
+				deactivatedControl.disabled = dataExtr.reqBoolean('disabled');
+				return deactivatedControl;
 			default:
-				throw new ObjectMissmatchError('Invalid si field type: ' + data.type);
+				throw new ObjectMissmatchError('Invalid si control type: ' + data.type);
 		}
 	}
 
