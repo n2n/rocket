@@ -7539,32 +7539,50 @@ rocket-button-control .dropdown > div div > .btn:hover, rocket-button-control .d
   left: 0px;
 }
 
-.rocket-image-dimensions > .rocket-image-version {
-  position: relative;
-  padding: 0.5rem 0;
-}
-
-.rocket-image-dimensions > .rocket-image-version .rocket-simple-commands {
-  position: absolute;
-  top: 0.25rem;
-  right: 0.5rem;
+ul.rocket-image-dimensions,
+ul.rocket-image-dimensions ul {
+  list-style: none;
   padding: 0;
 }
 
-.rocket-image-dimensions > .rocket-image-version.rocket-image-ratio:not(:first-child) {
-  border-top: 1px solid #DAD7D3;
+.rocket-image-dimensions > .rocket-image-version {
+  margin-bottom: 10px;
 }
 
-.rocket-image-dimensions > .rocket-image-version > label,
-.rocket-image-dimensions > .rocket-image-version > input {
-  margin-right: 0.75rem;
-  margin-bottom: 0;
+.rocket-image-version > ul {
+  display: none;
 }
 
-.rocket-image-dimensions > .rocket-image-version > a {
-  position: absolute;
-  top: 0.5rem;
-  right: 1rem;
+.rocket-image-version.open {
+  outline: 4px solid #ECEBE9;
+}
+
+.rocket-image-version.open > ul {
+  display: block;
+}
+
+.rocket-image-version-controls {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: nowrap;
+      flex-wrap: nowrap;
+  width: 100%;
+  -ms-flex-preferred-size: 100%;
+      flex-basis: 100%;
+}
+
+.rocket-image-version-controls > .btn + .btn {
+  margin-left: -1px;
+}
+
+.rocket-image-resizer-btn-label {
+  font-size: 0.875rem;
+}
+
+.rocket-image-resizer-btn-label-infos {
+  color: #C2BDB6;
+  font-size: 0.75rem;
 }
 
 .rocket-fixed-ration-container {

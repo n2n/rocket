@@ -115,31 +115,74 @@
 
 
 // image dimensions
-.rocket-image-dimensions {
-	> .rocket-image-version {
-		position: relative;
-		padding: 0.5rem 0;
-		.rocket-simple-commands {
-			position: absolute;
-			top: 0.25rem;
-			right: 0.5rem;
-			padding: 0;
-		}
-		&.rocket-image-ratio:not(:first-child) {
-			border-top: 1px solid $input-border-color;
-		}
-		> label,
-		> input {
-			margin-right: 0.75rem;
-			margin-bottom: 0;
-		}
-		> a {
-			position: absolute;
-			top: 0.5rem;
-			right: 1rem;
-		}
-	}
+
+ul.rocket-image-dimensions,
+ul.rocket-image-dimensions ul {
+	list-style: none;
+	padding: 0;
 }
+
+.rocket-image-dimensions > .rocket-image-version {
+	margin-bottom: 10px;
+}
+
+.rocket-image-version > ul {
+	display: none;
+}
+
+.rocket-image-version.open {
+	outline: 4px solid $gray-300;
+}
+
+.rocket-image-version.open > ul {
+	display: block;
+}
+
+.rocket-image-version-controls {
+	display: flex;
+	flex-wrap: nowrap;
+	width: 100%;
+	flex-basis: 100%;
+}
+
+.rocket-image-version-controls > .btn + .btn {
+	margin-left: -$input-btn-border-width;
+}
+
+.rocket-image-resizer-btn-label {
+	font-size: $font-size-sm;
+}
+
+.rocket-image-resizer-btn-label-infos {
+	color: $text-muted;
+	font-size: $font-size-xs;
+}
+
+// .rocket-image-dimensions {
+// 	> .rocket-image-version {
+// 		position: relative;
+// 		padding: 0.5rem 0;
+// 		.rocket-simple-commands {
+// 			position: absolute;
+// 			top: 0.25rem;
+// 			right: 0.5rem;
+// 			padding: 0;
+// 		}
+// 		&.rocket-image-ratio:not(:first-child) {
+// 			border-top: 1px solid $input-border-color;
+// 		}
+// 		> label,
+// 		> input {
+// 			margin-right: 0.75rem;
+// 			margin-bottom: 0;
+// 		}
+// 		> a {
+// 			position: absolute;
+// 			top: 0.5rem;
+// 			right: 1rem;
+// 		}
+// 	}
+// }
 
 .rocket-fixed-ration-container {
 	text-align: center;

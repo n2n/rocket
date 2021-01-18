@@ -7449,7 +7449,22 @@ rocket-button-control .dropdown > div div > .btn:hover, rocket-button-control .d
   left: 0px;
 }
 
-.rocket-image-dimensions > .rocket-image-version {
+.rocket-image-version {
+  height: 100vh;
+}
+
+.rocket-image-version > ul {
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+  height: auto;
+  max-height: 0;
+}
+
+.rocket-image-version.open > ul {
+  max-height: 20em;
+}
+
+/* .rocket-image-dimensions > .rocket-image-version {
   position: relative;
   padding: 0.5rem 0;
 }
@@ -7475,7 +7490,8 @@ rocket-button-control .dropdown > div div > .btn:hover, rocket-button-control .d
   position: absolute;
   top: 0.5rem;
   right: 1rem;
-}
+} */
+
 
 .rocket-fixed-ration-container {
   text-align: center;
