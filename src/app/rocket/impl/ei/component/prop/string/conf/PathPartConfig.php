@@ -42,6 +42,7 @@ use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
 use rocket\ei\util\Eiu;
 use n2n\util\type\attrs\DataSet;
 use n2n\web\dispatch\mag\MagCollection;
+use rocket\ei\EiPropPath;
 
 class PathPartConfig extends PropConfigAdaption {
 	const ATTR_BASE_PROPERTY_FIELD_ID_KEY = 'basePropertyFieldId';
@@ -54,13 +55,18 @@ class PathPartConfig extends PropConfigAdaption {
 
 	const URL_COUNT_SEPERATOR = '-';
 	
+	/**
+	 * @var PathPartEiProp
+	 */
+	private $eiProp;
 	private $nullAllowed = false;
 	private $baseScalarEiProperty;
 	private $uniquePerGenericEiProperty;
 	private $critical = false;
 	private $criticalMessage;
 	
-	public function __construct() {
+	public function __construct(PathPartEiProp $eiProp) {
+		$this->eiProp = $eiProp;
 	}
 	
 	public function isNullAllowed() {
@@ -123,7 +129,14 @@ class PathPartConfig extends PropConfigAdaption {
 		$dataSet->set(self::ATTR_BASE_PROPERTY_FIELD_ID_KEY, key($options));
 	}
 	
+	
+	function getEntityProperty() {
+		return $this->getPropertyAssignation()->getEntityProperty(true);
+	}
+	
 	public function setup(Eiu $eiu, DataSet $dataSet) {
+		$this->entityProperty = $this->getPropertyAssignation()->getEntityProperty(true);
+		
 		$eiu->mask()->onEngineReady(function (EiuEngine $eiuEngine) use ($eiu, $dataSet) {
 			$this->setupRef($eiu, $dataSet);
 		});
@@ -146,7 +159,7 @@ class PathPartConfig extends PropConfigAdaption {
 			$this->setCriticalMessage($dataSet->getString(self::ATTR_CRITICAL_MESSAGE_KEY));
 		}
 
-		$eiu->mask()->addEiModificator(new PathPartEiModificator($this));
+		$eiu->mask()->addEiModificator(new PathPartEiModificator($this, $eiu->prop()->getPath(), $eiu->mask()));
 	}
 	
 	private function setupRef(Eiu $eiu, DataSet $dataSet) {

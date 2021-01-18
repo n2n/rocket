@@ -40,7 +40,7 @@ class PathPartEiProp extends AlphanumericEiProp {
 	function prepare() {
 		$this->getDisplayConfig()->setDefaultDisplayedViewModes(ViewMode::BULKY_EDIT | ViewMode::COMPACT_READ);
 		$this->getEditConfig()->setMandatory(false)->setMandatoryChoosable(false);
-		$this->getConfigurator()->addAdaption(new PathPartConfig());
+		$this->getConfigurator()->addAdaption(new PathPartConfig($this));
 	}
 	
 	function getTypeName(): string {
