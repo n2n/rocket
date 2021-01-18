@@ -160,4 +160,8 @@ export class ThumbRatio {
 
 		throw new Error();
 	}
+
+	containImageDimension(imageDimension: SiImageDimension) {
+		return !!this.imageDimensions.find(id => id.id === imageDimension.id);
+	}
 }

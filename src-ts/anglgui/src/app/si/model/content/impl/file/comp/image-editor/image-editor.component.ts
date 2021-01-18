@@ -168,6 +168,11 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 		this.updateCut();
 	}
 
+	isThumbRatioActive(thumbRatio: ThumbRatio): boolean {
+		return this.currentThumbRatio === thumbRatio
+				|| (this.currentImageDimension && thumbRatio.containImageDimension(this.currentImageDimension))
+	}
+
 	private updateCut() {
 
 		if (this.currentThumbRatio) {

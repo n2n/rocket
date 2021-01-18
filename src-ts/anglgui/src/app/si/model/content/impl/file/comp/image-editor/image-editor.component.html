@@ -43,7 +43,7 @@
 			<h3>{{ 'generated_images_txt' | translate }}</h3>
 			<ul class="rocket-image-dimensions list-unstyled">
 				<li *ngFor="let thumbRatio of thumbRatios" class="rocket-image-version rocket-image-ratio" 
-						[class.open]="thumbRatio.open">
+						[class.open]="thumbRatio.open" [class.active]="isThumbRatioActive(thumbRatio)" >
 					<div class="rocket-image-version-controls">
 						<button class="btn btn-secondary flex-fill d-flex" (click)="switchToThumbRatio(thumbRatio)" 
 								[class.active]="currentThumbRatio === thumbRatio" 
