@@ -102,7 +102,7 @@ class EmbeddedEntryPanelsInSiField extends InSiFieldAdapter {
 			$siPanelInputs[] = SiPanelInput::parse($panelInputData);
 		}
 		$panels = $this->inputHandler->handleInput($siPanelInputs);
-		ArgUtils::valArrayReturn($panels, $this->inputHandler, 'handleInput', SiPanelInput::class);
+		ArgUtils::valArrayReturn($panels, $this->inputHandler, 'handleInput', SiPanel::class);
 		$this->panels = $panels;
 	}
 }

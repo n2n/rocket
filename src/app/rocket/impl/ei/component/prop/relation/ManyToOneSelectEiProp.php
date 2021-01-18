@@ -25,7 +25,6 @@ use n2n\util\type\ArgUtils;
 use n2n\util\type\CastUtils;
 use rocket\impl\ei\component\prop\relation\model\filter\ToOneSecurityFilterProp;
 use n2n\web\http\controller\impl\ScrRegistry;
-use rocket\impl\ei\component\command\common\controller\GlobalOverviewJhtmlController;
 use rocket\ei\util\Eiu;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
