@@ -64,7 +64,7 @@ export class SiControlFactory {
 				return groupControl;
 			case SiControlType.DEACTIVATED:
 				const deactivatedControl = new SimpleSiControl(this.createButton(dataExtr.reqObject('button')), () => {});
-				deactivatedControl.disabled = dataExtr.reqBoolean('disabled');
+				deactivatedControl.disabled = true;
 				return deactivatedControl;
 			default:
 				throw new ObjectMissmatchError('Invalid si control type: ' + data.type);
