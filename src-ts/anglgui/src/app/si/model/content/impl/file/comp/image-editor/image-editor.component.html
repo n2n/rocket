@@ -50,7 +50,7 @@
 								[disabled]="!thumbRatio.hasGroupedImageCuts() || originalChanged">
 							<div *ngIf="thumbRatio.hasGroupedImageCuts()" class="rocket-image-resizer-thumb-image mr-2">
 								<rocket-image-preview [src]="model.getSiFile().url" 
-										[imageCut]="thumbRatio.getGroupedPreviewImageCut(currentImageDimension)"></rocket-image-preview>
+										[imageCut]="thumbRatio.getGroupedPreviewImageCut(null)"></rocket-image-preview>
 							</div>
 							<div class="rocket-image-resizer-btn-label" >
 								<div class="rocket-image-resizer-btn-label-size">{{ thumbRatio.width }} / {{ thumbRatio.height }}</div>
