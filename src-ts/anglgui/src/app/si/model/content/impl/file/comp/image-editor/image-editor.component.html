@@ -76,7 +76,7 @@
 						<ng-container *ngFor="let imageDimension of thumbRatio.imageDimensions">
 							<li class="rocket-image-version">
 								<div class="rocket-image-version-controls">
-									<button (click)="switchToImageDimension(imageDimension)" 
+									<button (click)="switchToImageDimension(imageDimension, thumbRatio)" 
 											class="btn btn-secondary flex-fill d-flex" [class.active]="currentImageDimension === imageDimension"
 											[disabled]="originalChanged">
 										<div class="rocket-image-resizer-thumb-image mr-2">

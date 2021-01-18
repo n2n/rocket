@@ -82,11 +82,21 @@ class EiuControlFactory {
 		return new EiuCallbackGuiControl($id, $this->getApiUrl(), $this->eiuGuiFrame->getViewMode(), $callback, $siButton);
 	}
 	
-	public function createGroup(string $id, SiButton $siButton): EiuGroupGuiControl {
+	/**
+	 * @param string $id
+	 * @param SiButton $siButton
+	 * @return EiuGroupGuiControl
+	 */
+	public function createGroup(string $id, SiButton $siButton) {
 		return new EiuGroupGuiControl($id, $siButton);
 	}
 	
-	public function createDeactivated(string $id, SiButton $siButton): EiuGroupGuiControl {
+	/**
+	 * @param string $id
+	 * @param SiButton $siButton
+	 * @return \rocket\ei\util\control\EiuDeactivatedGuiControl
+	 */
+	public function createDeactivated(string $id, SiButton $siButton) {
 		return new EiuDeactivatedGuiControl($id, $siButton);
 	}
 }
