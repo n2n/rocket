@@ -6105,7 +6105,7 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   padding: 0;
 }
 
-.rocket-table .rocket-simple-commands .btn > span,
+.rocket-table .rocket-simple-commands > .btn > span,
 .rocket-table .rocket-simple-commands > rocket-button-control > .btn > span {
   display: none;
 }
@@ -7174,7 +7174,7 @@ rocket-add-past > button::after {
 }
 
 .rocket-simple-commands > .btn > i,
-.rocket-simple-commands > rocket-button-control .btn > i {
+.rocket-simple-commands > rocket-button-control > .btn > i {
   font-size: 1.25rem;
 }
 
