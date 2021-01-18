@@ -198,11 +198,12 @@ ul.rocket-image-dimensions ul {
 	background-image: linear-gradient(45deg, rgba($black, 0.2) $chess-opacity, transparent $chess-opacity), linear-gradient(-45deg, rgba($black, 0.2) $chess-opacity, transparent $chess-opacity), linear-gradient(45deg, transparent (100% - $chess-opacity), rgba($black, 0.2) (100% - $chess-opacity)), linear-gradient(-45deg, transparent (100% - $chess-opacity), rgba($black, 0.2) (100% - $chess-opacity));
 	background-size: $chess-size $chess-size;
 	background-position: 0 0, 0 $chess-size/2, $chess-size/2 -#{$chess-size/2}, -$chess-size/2 0px;
+	rocket-image-preview,
 	.rocket-image-preview {
 		position: relative;
-		img {
-			margin: 0 auto;
-		}
+		// img {
+		// 	margin: 0 auto;
+		// }
 		&:after {
 			content: "";
 			position: absolute;
@@ -216,31 +217,31 @@ ul.rocket-image-dimensions ul {
 	}
 }
 
-// .rocket-image-dimensions {
-// 	> .rocket-image-version {
-// 		position: relative;
-// 		padding: 0.5rem 0;
-// 		.rocket-simple-commands {
-// 			position: absolute;
-// 			top: 0.25rem;
-// 			right: 0.5rem;
-// 			padding: 0;
-// 		}
-// 		&.rocket-image-ratio:not(:first-child) {
-// 			border-top: 1px solid $input-border-color;
-// 		}
-// 		> label,
-// 		> input {
-// 			margin-right: 0.75rem;
-// 			margin-bottom: 0;
-// 		}
-// 		> a {
-// 			position: absolute;
-// 			top: 0.5rem;
-// 			right: 1rem;
-// 		}
-// 	}
-// }
+.rocket-image-dimensions {
+	> .rocket-image-version {
+		position: relative;
+		padding: 0.5rem 0;
+		.rocket-simple-commands {
+			position: absolute;
+			top: 0.25rem;
+			right: 0.5rem;
+			padding: 0;
+		}
+		&.rocket-image-ratio:not(:first-child) {
+			border-top: 1px solid $input-border-color;
+		}
+		> label,
+		> input {
+			margin-right: 0.75rem;
+			margin-bottom: 0;
+		}
+		> a {
+			position: absolute;
+			top: 0.5rem;
+			right: 1rem;
+		}
+	}
+}
 
 .rocket-fixed-ration-container {
 	text-align: center;

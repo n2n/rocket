@@ -7633,14 +7633,12 @@ ul.rocket-image-dimensions ul {
   background-position: 0 0, 0 5px, 5px -5px, -5px 0px;
 }
 
+.rocket-image-resizer-thumb-image rocket-image-preview,
 .rocket-image-resizer-thumb-image .rocket-image-preview {
   position: relative;
 }
 
-.rocket-image-resizer-thumb-image .rocket-image-preview img {
-  margin: 0 auto;
-}
-
+.rocket-image-resizer-thumb-image rocket-image-preview:after,
 .rocket-image-resizer-thumb-image .rocket-image-preview:after {
   content: "";
   position: absolute;
@@ -7650,6 +7648,34 @@ ul.rocket-image-dimensions ul {
   left: 0;
   bottom: 0;
   right: 0;
+}
+
+.rocket-image-dimensions > .rocket-image-version {
+  position: relative;
+  padding: 0.5rem 0;
+}
+
+.rocket-image-dimensions > .rocket-image-version .rocket-simple-commands {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.5rem;
+  padding: 0;
+}
+
+.rocket-image-dimensions > .rocket-image-version.rocket-image-ratio:not(:first-child) {
+  border-top: 1px solid #DAD7D3;
+}
+
+.rocket-image-dimensions > .rocket-image-version > label,
+.rocket-image-dimensions > .rocket-image-version > input {
+  margin-right: 0.75rem;
+  margin-bottom: 0;
+}
+
+.rocket-image-dimensions > .rocket-image-version > a {
+  position: absolute;
+  top: 0.5rem;
+  right: 1rem;
 }
 
 .rocket-fixed-ration-container {
