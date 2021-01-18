@@ -217,32 +217,6 @@ ul.rocket-image-dimensions ul {
 	}
 }
 
-.rocket-image-dimensions {
-	> .rocket-image-version {
-		position: relative;
-		padding: 0.5rem 0;
-		.rocket-simple-commands {
-			position: absolute;
-			top: 0.25rem;
-			right: 0.5rem;
-			padding: 0;
-		}
-		&.rocket-image-ratio:not(:first-child) {
-			border-top: 1px solid $input-border-color;
-		}
-		> label,
-		> input {
-			margin-right: 0.75rem;
-			margin-bottom: 0;
-		}
-		> a {
-			position: absolute;
-			top: 0.5rem;
-			right: 1rem;
-		}
-	}
-}
-
 .rocket-fixed-ration-container {
 	text-align: center;
 	padding: 0.5rem 0;
@@ -254,5 +228,5 @@ ul.rocket-image-dimensions ul {
 
 
 .cropper-canvas {
-	background: rgba(0,0,0,0.1);
+	background: rgba($black,0.1);
 }
