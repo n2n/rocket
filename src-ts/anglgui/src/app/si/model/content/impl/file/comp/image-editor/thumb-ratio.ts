@@ -76,6 +76,10 @@ export class ThumbRatio {
 		// 	this._largestImageDimension = imageDimension;
 		// }
 
+		if (!imageDimension.imageCut.equals) {
+			throw new Error();
+		}
+
 		this.classifyImageDimension(imageDimension);
 
 		this.determineGroupedImageCut();
