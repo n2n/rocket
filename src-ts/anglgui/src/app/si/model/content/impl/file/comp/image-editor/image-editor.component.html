@@ -11,8 +11,15 @@
 
 		<div *ngIf="originalActive" class="d-flex justify-content-between">
 			<div>
-				<button (click)="imageSrc.toggleCropping()" class="btn btn-secondary" [class.active]="imageSrc.cropping"><i class="fa fa-crop"></i></button> <button (click)="imageSrc.rotateCcw()" class="btn btn-secondary"><i class="fa fa-undo"></i></button>
-				<button (click)="imageSrc.rotateCw()" class="btn btn-secondary"><i class="fa fa-redo fa-fw"></i></button>
+				<button (click)="imageSrc.toggleCropping()" class="btn btn-secondary" [class.active]="imageSrc.cropping">
+					<i class="fa fa-crop"></i>
+				</button>
+				<button (click)="imageSrc.rotateCcw()" class="btn btn-secondary">
+					<i class="fa fa-undo"></i>
+				</button>
+				<button (click)="imageSrc.rotateCw()" class="btn btn-secondary">
+					<i class="fa fa-redo fa-fw"></i>
+				</button>
 			</div>
 
 			<div>
@@ -26,6 +33,7 @@
 	</div>
 	<div class="rocket-image-resizer-images-panel">
 		<div class="rocket-image-resizer-images-original">
+			<h3>{{ 'original_image_txt' | translate }}</h3>
 			<button class="btn btn-secondary d-flex justify-content-start align-items-center w-100" 
 					[class.active]="originalActive" (click)="switchToOriginal()">
 				<div class="rocket-image-resizer-thumb-image">
@@ -35,7 +43,7 @@
 				</div>
 				<div class="rocket-image-resizer-btn-label" style="height: 50px">
 					<div class="rocket-image-resizer-btn-label-size">{{ 'original_image_txt' | translate }} <span *ngIf="originalChanged">*</span></div>
-					<div class="rocket-image-resizer-btn-label-infos">{{ imageSrc.origWidth }} / {{ imageSrc.origHeight }}</div>
+					<div class="rocket-image-resizer-btn-label-infos">{{ imageSrc.origWidth }}:{{ imageSrc.origHeight }}</div>
 				</div>
 			</button>
 		</div>
@@ -53,7 +61,7 @@
 										[imageCut]="thumbRatio.getGroupedPreviewImageCut(null)"></rocket-image-preview>
 							</div>
 							<div class="rocket-image-resizer-btn-label" >
-								<div class="rocket-image-resizer-btn-label-size">{{ thumbRatio.width }} / {{ thumbRatio.height }}</div>
+								<div class="rocket-image-resizer-btn-label-size">{{ thumbRatio.width }}:{{ thumbRatio.height }}</div>
 								<div class="rocket-image-resizer-btn-label-infos">[infos]</div>
 							</div>
 						</button>
@@ -77,7 +85,7 @@
 										</div>
 										<div class="rocket-image-resizer-btn-label" >
 											<div class="rocket-image-resizer-btn-label-size">{{ imageDimension.width }} x {{ imageDimension.height }}</div>
-											<div class="rocket-image-resizer-btn-label-infos">{{ imageDimension.name || 'N/A' }}</div>
+											<div class="rocket-image-resizer-btn-label-infos">{{ imageDimension.name || 'image_dimensions_na_txt' | translate }}</div>
 										</div>
 										
 										<div *ngIf="isLowRes(imageDimension)" class="rocket-image-low-res">low res</div>
