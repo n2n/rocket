@@ -71,7 +71,7 @@ export class UiStructure {
 	}
 
 	isItemCollection(): boolean {
-		return this.type === UiStructureType.ITEM && this.model
+		return this.type === UiStructureType.ITEM && !!this.model
 				&& this.model.getMode() === UiStructureModelMode.ITEM_COLLECTION;
 
 	}
