@@ -160,8 +160,8 @@ ul.rocket-image-dimensions ul {
 	background: $gray-300;
 }
 
-.rocket-image-resizer-images-original .btn:not(:disabled):not(.disabled).active:before,
-.rocket-image-version .btn:not(:disabled):not(.disabled).active:before {
+.rocket-image-resizer-images-original .btn:not(:disabled):not(.disabled).active:first-child:before,
+.rocket-image-version .btn:not(:disabled):not(.disabled).active:first-child:before {
 	content: "";
 	position: absolute;
 	width: 4px;
@@ -198,12 +198,21 @@ ul.rocket-image-dimensions ul {
 	background-image: linear-gradient(45deg, rgba($black, 0.2) $chess-opacity, transparent $chess-opacity), linear-gradient(-45deg, rgba($black, 0.2) $chess-opacity, transparent $chess-opacity), linear-gradient(45deg, transparent (100% - $chess-opacity), rgba($black, 0.2) (100% - $chess-opacity)), linear-gradient(-45deg, transparent (100% - $chess-opacity), rgba($black, 0.2) (100% - $chess-opacity));
 	background-size: $chess-size $chess-size;
 	background-position: 0 0, 0 $chess-size/2, $chess-size/2 -#{$chess-size/2}, -$chess-size/2 0px;
+
+	.sr-only {
+		position: absolute !important;
+		padding: 0 !important;
+		margin: -1px !important; // Fix for https://github.com/twbs/bootstrap/issues/25686
+		overflow: hidden !important;
+		clip: rect(0, 0, 0, 0) !important;
+		white-space: nowrap !important;
+		border: 0 !important;
+	}
+
 	rocket-image-preview,
 	.rocket-image-preview {
 		position: relative;
-		// img {
-		// 	margin: 0 auto;
-		// }
+		z-index: 0;
 		&:after {
 			content: "";
 			position: absolute;
@@ -213,6 +222,7 @@ ul.rocket-image-dimensions ul {
 			left: 0;
 			bottom: 0;
 			right: 0;
+			z-index: -1;
 		}
 	}
 }
