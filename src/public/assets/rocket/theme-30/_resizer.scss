@@ -137,6 +137,11 @@ ul.rocket-image-dimensions ul {
 
 .rocket-image-version.open > ul {
 	display: block;
+	margin-top: -$input-btn-border-width;
+}
+
+.rocket-image-version > ul > li {
+	margin-bottom: -$input-btn-border-width;
 }
 
 .rocket-image-version-controls {
@@ -178,6 +183,37 @@ ul.rocket-image-dimensions ul {
 .rocket-image-resizer-btn-label-infos {
 	color: $text-muted;
 	font-size: $font-size-xs;
+}
+
+.rocket-image-resizer-thumb-image {
+	$chess-opacity: 25%;
+	$chess-size:	10px;
+	flex: 0 0 50px;
+	height: 50px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid $gray-300;
+	position: relative;
+	background-image: linear-gradient(45deg, rgba($black, 0.2) $chess-opacity, transparent $chess-opacity), linear-gradient(-45deg, rgba($black, 0.2) $chess-opacity, transparent $chess-opacity), linear-gradient(45deg, transparent (100% - $chess-opacity), rgba($black, 0.2) (100% - $chess-opacity)), linear-gradient(-45deg, transparent (100% - $chess-opacity), rgba($black, 0.2) (100% - $chess-opacity));
+	background-size: $chess-size $chess-size;
+	background-position: 0 0, 0 $chess-size/2, $chess-size/2 -#{$chess-size/2}, -$chess-size/2 0px;
+	.rocket-image-preview {
+		position: relative;
+		img {
+			margin: 0 auto;
+		}
+		&:after {
+			content: "";
+			position: absolute;
+			background: $black;
+			opacity: 0.2;
+			top: 0;
+			left: 0;
+			bottom: 0;
+			right: 0;
+		}
+	}
 }
 
 // .rocket-image-dimensions {
