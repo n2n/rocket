@@ -43,6 +43,7 @@ use rocket\ei\util\Eiu;
 use n2n\util\type\attrs\DataSet;
 use n2n\web\dispatch\mag\MagCollection;
 use rocket\ei\EiPropPath;
+use n2n\impl\web\dispatch\mag\model\MagForm;
 
 class PathPartConfig extends PropConfigAdaption {
 	const ATTR_BASE_PROPERTY_FIELD_ID_KEY = 'basePropertyFieldId';
@@ -190,7 +191,7 @@ class PathPartConfig extends PropConfigAdaption {
 
 	public function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
 		$baseScalarEiPropertyId = null;
-		if (null !== ($baseScalarEiProperty = $this->pathPartEiProp->getBaseScalarEiProperty())) {
+		if (null !== ($baseScalarEiProperty = $this->getBaseScalarEiProperty())) {
 			$baseScalarEiPropertyId = $baseScalarEiProperty->getId();
 		}
 		
@@ -199,7 +200,7 @@ class PathPartConfig extends PropConfigAdaption {
 						false, $baseScalarEiPropertyId), false));
 		
 		$genericEiPropertyId = null;
-		if (null !== ($genericEiProperty = $this->pathPartEiProp->getUniquePerGenericEiProperty())) {
+		if (null !== ($genericEiProperty = $this->getUniquePerGenericEiProperty())) {
 			$genericEiPropertyId = $genericEiProperty->getId();
 		}
 		$magCollection->addMag(self::ATTR_UNIQUE_PER_FIELD_ID_KEY, new EnumMag('Unique per', 
@@ -208,22 +209,22 @@ class PathPartConfig extends PropConfigAdaption {
 		
 		$magCollection->addMag(self::ATTR_NULL_ALLOWED_KEY, new BoolMag('Null value allowed.', 
 				$dataSet->getBool(self::ATTR_NULL_ALLOWED_KEY, false, 
-						$this->pathPartEiProp->isNullAllowed())));
+						$this->isNullAllowed())));
 		
 		$magCollection->addMag(self::ATTR_CRITICAL_KEY, new BoolMag('Is critical', 
-				$dataSet->getBool(self::ATTR_CRITICAL_KEY, false, $this->pathPartEiProp->isCritical())));
+				$dataSet->getBool(self::ATTR_CRITICAL_KEY, false, $this->isCritical())));
 		
 		$magCollection->addMag(self::ATTR_CRITICAL_MESSAGE_KEY, new StringMag('Critical message (no message if empty)', 
 				$dataSet->getString(self::ATTR_CRITICAL_MESSAGE_KEY, false, 
-						$this->pathPartEiProp->getCriticalMessage()), false));
-		return $magDispatchable;
+						$this->getCriticalMessage()), false));
+		return new MagForm($magCollection);
 	}
 	
 	private function getBaseEiPropIdOptions() {
 		$baseEiPropIdOptions = array();
-		foreach ($this->eiComponent->getEiMask()->getEiEngine()->getScalarEiDefinition()->getMap()
+		foreach ($this->eiProp->getEiMask()->getEiEngine()->getScalarEiDefinition()->getMap()
 				as $id => $genericScalarProperty) {
-			if ($id === (string) $this->pathPartEiProp->getWrapper()->getEiPropPath()) continue;
+			if ($id === (string) $this->eiProp->getWrapper()->getEiPropPath()) continue;
 			
 			CastUtils::assertTrue($genericScalarProperty instanceof ScalarEiProperty);
 			$baseEiPropIdOptions[$id] = (string) $genericScalarProperty->getLabelLstr();
@@ -233,8 +234,8 @@ class PathPartConfig extends PropConfigAdaption {
 	
 	private function getUniquePerOptions() {
 		$options = array();
-		foreach ($this->pathPartEiProp->getWrapper()->getEiPropCollection()->getEiMask()->getEiEngine()->getGenericEiDefinition()->getGenericEiProperties() as $id => $genericEiProperty) {
-			if ($id === (string) $this->pathPartEiProp->getWrapper()->getEiPropPath()) continue;
+		foreach ($this->eiProp->getWrapper()->getEiPropCollection()->getEiMask()->getEiEngine()->getGenericEiDefinition()->getGenericEiProperties() as $id => $genericEiProperty) {
+			if ($id === (string) $this->eiProp->getWrapper()->getEiPropPath()) continue;
 			CastUtils::assertTrue($genericEiProperty instanceof GenericEiProperty);
 			$options[$id] = (string) $genericEiProperty->getLabelLstr();
 		}
