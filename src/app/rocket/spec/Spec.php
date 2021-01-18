@@ -627,9 +627,9 @@ class EiSetupQueue {
 		}
 	}
 	
-	public function propIns(EiErrorResult $eiErrorResult = null) {
+	public function propIns() {
 		while (null !== ($propIns = array_shift($this->propIns))) {
-			$propIns->invoke($eiErrorResult);
+			$propIns->invoke($this->eiErrorResult);
 		}
 	}
 	
@@ -639,7 +639,7 @@ class EiSetupQueue {
 				continue;
 			}
 		
-			$propIn->invoke();
+			$propIn->invoke($this->eiErrorResult);
 			unset($this->propIns[$key]);
 		}
 	}
