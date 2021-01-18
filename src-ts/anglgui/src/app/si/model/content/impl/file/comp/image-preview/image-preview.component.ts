@@ -4,7 +4,8 @@ import { SiImageCut } from '../../model/file-in-si-field';
 @Component({
 	selector: 'rocket-image-preview',
 	templateUrl: './image-preview.component.html',
-	styleUrls: ['./image-preview.component.css']
+	styleUrls: ['./image-preview.component.css'],
+	host: { class: 'rocket-image-preview' }
 })
 export class ImagePreviewComponent implements OnInit, DoCheck {
 

@@ -88,7 +88,7 @@
 											<div class="rocket-image-resizer-btn-label-infos">{{ imageDimension.name || 'image_dimensions_na_txt' | translate }}</div>
 										</div>
 										
-										<div *ngIf="isLowRes(imageDimension)" class="rocket-image-low-res">low res</div>
+										<div *ngIf="isLowRes(imageDimension)" class="rocket-image-low-res" title="low res"><i class="fa fa-alert fa-fw"></i></div>
 									</button>
 									<button class="btn btn-secondary rocket-image-reset" *ngIf="thumbRatio.hasIndividualImageCut(imageDimension)" (click)="resetIndividualImageCut(thumbRatio, imageDimension)"
 											[disabled]="originalChanged">
