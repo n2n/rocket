@@ -77,19 +77,22 @@ class RocketController extends ControllerAdapter {
 	}
 	
 	private function verifyUser() {
-		if ($this->loginContext->hasCurrentUser()) return true;
+		if ($this->loginContext->hasCurrentUser()) {
+			return true;
+		}
 		
 		$this->beginTransaction();
 		
 		if ($this->dispatch($this->loginContext, 'login')) {
 			$this->commit();
 			$this->refresh();
-			return;
+			return false;
 		}
 		
 		$this->commit();
 		
 		$this->forward('~\user\view\login.html', array('loginContext' => $this->loginContext));
+		return false;
 	}
 	
 	public function doLogout() {
@@ -99,10 +102,14 @@ class RocketController extends ControllerAdapter {
 	
 	public function index() {
 		if (!$this->verifyUser()) return;
-		$deleteLoginModel = new DeleteLoginModel(); 
-		$this->dispatch($deleteLoginModel, 'delete');
-		$this->send(JhtmlResponse::view($this->createView('..\view\start.html', 
-		    	array('deleteLoginModel' => $deleteLoginModel))));
+		
+// 		if ('text/html' == $this->getRequest()->getAcceptRange()
+// 				->bestMatch(['text/html', 'application/json'])) {
+			$this->forward('\rocket\core\view\anglTemplate.html');
+			return;
+// 		}
+		
+		
 	}
 	
 	public function doUsers(RocketUserController $delegateController, array $delegateParams = array()) {
@@ -121,7 +128,7 @@ class RocketController extends ControllerAdapter {
 		$this->delegate($delegateController);
 	}
 	
-	public function doManage(Rocket $rocket, RocketState $rocketState, N2nLocale $n2nLocale, PdoPool $dbhPool,
+	public function doManage(Rocket $rocket, RocketState $rocketState, N2nLocale $n2nLocale, PdoPool $dbhPool, 
 			MessageContainer $mc, $navItemId, array $delegateParams = array()) {
 		if (!$this->verifyUser()) return;
 		
