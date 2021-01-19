@@ -1,0 +1,3 @@
+iframetemplate
+
+<?php $view->importContentView() ?>
