@@ -34,6 +34,7 @@ import { EmbeddedEntryPanelsInSiField } from '../model/content/impl/embedded/mod
 import { SplitViewStateContext } from '../model/content/impl/split/model/state/split-view-state-context';
 import { SplitViewStateService } from '../model/content/impl/split/model/state/split-view-state.service';
 import { EnumInSiField } from '../model/content/impl/enum/model/enum-in-si-field';
+import {SiFrame} from "../model/meta/si-frame";
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',
@@ -53,7 +54,7 @@ enum SiFieldType {
 	SPLIT_CONTEXT_IN = 'split-context-in',
 	SPLIT_CONTEXT_OUT = 'split-context-out',
 	SPLIT_PLACEHOLDER = 'split-placeholder',
-	IFRAME = 'iframe',
+	IFRAME_OUT = 'iframe-out',
 	CRUMB_OUT = 'crumb-out'
 }
 
@@ -219,6 +220,9 @@ export class SiFieldFactory {
 
 		case SiFieldType.CRUMB_OUT:
 			return new CrumbOutSiField(SiGuiFactory.createCrumbGroups(dataExtr.reqArray('crumbGroups')));
+
+    case SiFieldType.IFRAME_OUT:
+      console.log(dataExtr);
 
 		default:
 			throw new ObjectMissmatchError('Invalid si field type: ' + data.type);

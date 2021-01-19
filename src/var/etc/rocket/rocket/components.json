@@ -34,7 +34,8 @@
         "rocket\\impl\\ei\\component\\prop\\string\\StringDisplayEiProp",
         "rocket\\impl\\ei\\component\\prop\\string\\PasswordEiProp",
         "rocket\\impl\\ei\\component\\prop\\string\\StringArrayEiProp",
-        "rocket\\impl\\ei\\component\\prop\\meta\\IdentityStringEiProp"
+        "rocket\\impl\\ei\\component\\prop\\meta\\IdentityStringEiProp",
+        "rocket\\impl\\ei\\component\\prop\\iframe\\IframeEiProp"
     ],
     "eiCommandClasses": [
         "rocket\\impl\\ei\\component\\command\\common\\OverviewEiCommand",
