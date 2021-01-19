@@ -22,6 +22,13 @@ export class SiPanel implements EmbeddedEntriesInConfig, EmbeInSource {
 	getValues(): SiEmbeddedEntry[] {
 		return this.values;
 	}
+
+	readInput(): object {
+		return {
+			'name': this.name,
+			'entryInputs': this.values.map(embe => embe.entry.readInput())
+		};
+	}
 }
 
 export interface SiGridPos {

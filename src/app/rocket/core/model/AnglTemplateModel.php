@@ -89,7 +89,10 @@ class AnglTemplateModel implements Lookupable {
 			'mail_center_mail_reply_to_label' => $dtc->t('tool_mail_center_mail_replyto_label'),
 			'mail_center_mail_attachments_label' => $dtc->t('tool_mail_center_attatchments_label'),
 			'tools_cache_cleared_title' => $dtc->t('tool_clear_cache_title'),
-			'tools_cache_cleared_info' => $dtc->t('tool_cache_cleared_info')
+			'tools_cache_cleared_info' => $dtc->t('tool_cache_cleared_info'),
+			'original_image_txt' => $dtc->t('original_image_txt'),
+			'generated_images_txt' => $dtc->t('generated_images_txt'),
+			'image_dimensions_na_txt' => $dtc->t('image_dimensions_na_txt'),
 		];
 	}
 	

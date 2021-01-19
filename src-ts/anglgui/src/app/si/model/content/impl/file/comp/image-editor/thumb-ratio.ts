@@ -76,6 +76,10 @@ export class ThumbRatio {
 		// 	this._largestImageDimension = imageDimension;
 		// }
 
+		if (!imageDimension.imageCut.equals) {
+			throw new Error();
+		}
+
 		this.classifyImageDimension(imageDimension);
 
 		this.determineGroupedImageCut();
@@ -101,11 +105,17 @@ export class ThumbRatio {
 	}
 
 	private determineGroupedImageCut() {
+		let preferedImageCut: SiImageCut|null = null;
+		if (this.groupedImageCuts) {
+			preferedImageCut = this.groupedImageCuts[0];
+		}
+
 		this.groupedImageCuts = null;
 
 		let lastSize = 0;
 		for (const [key, imgDims] of this.imgCutDimMap) {
-			if (lastSize >= imgDims.length/* || imgDims.length <= 1*/) {
+			if (lastSize > imgDims.length
+					|| (lastSize === imgDims.length && (!preferedImageCut || key !== this.imgCutKey(preferedImageCut)))) {
 				continue;
 			}
 
@@ -152,12 +162,16 @@ export class ThumbRatio {
 	}
 
 	getGroupedPreviewImageCut(currentImageDimension: SiImageDimension|null): SiImageCut {
-		for (const imgDim of this.getGroupedImageCuts()) {
-			if (!currentImageDimension || imgDim !== currentImageDimension.imageCut) {
-				return imgDim;
+		for (const imgCut of this.getGroupedImageCuts()) {
+			if (!currentImageDimension || imgCut !== currentImageDimension.imageCut) {
+				return imgCut;
 			}
 		}
 
 		throw new Error();
+	}
+
+	containImageDimension(imageDimension: SiImageDimension) {
+		return !!this.imageDimensions.find(id => id.id === imageDimension.id);
 	}
 }

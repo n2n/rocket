@@ -128,9 +128,9 @@ class Relation {
 						$relationEiuEntry, $targetPropInfo->eiPropPath, $this->relationModel->isSourceMany()));
 			}
 		} else if ($targetPropInfo->masterAccessProxy !== null) {
-			$targetEiuFrame->registerListener(
+			$targetEiFrame->registerListener(
 					new PlainMappedRelationEiModificator($targetEiFrame, $eiuEntry->getEntityObj(),
-							$this->targetMasterAccessProxy, $this->relationModel->isSourceMany()));
+							$targetPropInfo->masterAccessProxy, $this->relationModel->isSourceMany()));
 		}
 		
 		if ($this->relationModel->getRelationEntityProperty()->isMaster() && !$eiuEntry->isDraft()) {

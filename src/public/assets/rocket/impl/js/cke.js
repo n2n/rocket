@@ -84,7 +84,7 @@
 	};
 	
 	Cke.prototype.getToolbar = function(mode, tableEditing, bbcode, 
-			hasAdditionalStyles) {
+			hasAdditionalStyles, hasFormatTags) {
 		//if (mode == null) return normalToolbar;
 		var modeNum = ["simple", "normal", "advanced"].indexOf(mode),
 			basicStyleItems = ["Bold", "Italic", "Underline", "Strike", "RemoveFormat"],
@@ -114,7 +114,11 @@
 			insertItems = insertItems.concat(["HorizontalRule", "Smiley", "SpecialChar", "InsertSmiley"]);
 
 			if (hasAdditionalStyles) {
-				styleItems = styleItems.concat([ "Styles", "Format"]);
+				styleItems = styleItems.concat([ "Styles"]);
+			}
+			
+			if (hasFormatTags) {
+				styleItems = styleItems.concat([ "Format"]);
 			}
 		}
 
@@ -167,11 +171,11 @@
 			additionalStyles = configOptions["additionalStyles"] || [],
 			bodyId = configOptions["bodyId"] || null,
 			bodyClass = configOptions["bodyClass"] || null,
-			formatTags = configOptions["formatTags"],
+			formatTags = configOptions["formatTags"] || [],
 			options = new Object();
 		
 		options.toolbar = this.getToolbar(configOptions['mode'], configOptions['tableEditing'] || false, bbcode, 
-				additionalStyles.length > 0);
+				additionalStyles.length > 0, formatTags.length > 0);
 		options.extraPlugins = '';
 		if (bbcode) {
 			options.extraPlugins = 'bbcode';
@@ -189,7 +193,7 @@
 			options.bodyId = bodyId;
 		}
 		
-		if (formatTags) {
+		if (formatTags.length > 0) {
 			options.format_tags = formatTags;
 		}
 		

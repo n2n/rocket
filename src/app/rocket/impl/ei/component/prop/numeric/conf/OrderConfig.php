@@ -44,7 +44,7 @@ class OrderConfig extends PropConfigAdaption {
 		$this->orderEiProp = $orderEiProp;
 	}
 	
-	public function testCompatibility(PropertyAssignation $propertyAssignation): int {
+	public function testCompatibility(PropertyAssignation $propertyAssignation): ?int {
 		$level = parent::testCompatibility($propertyAssignation);
 		if (CompatibilityLevel::NOT_COMPATIBLE == $level) {
 			return CompatibilityLevel::NOT_COMPATIBLE;

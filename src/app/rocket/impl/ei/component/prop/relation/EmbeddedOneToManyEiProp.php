@@ -36,6 +36,10 @@ use rocket\ei\manage\gui\field\GuiField;
 use rocket\impl\ei\component\prop\relation\model\gui\EmbeddedToManyGuiField;
 use rocket\impl\ei\component\prop\relation\model\gui\RelationLinkGuiField;
 use rocket\ei\component\prop\FieldEiProp;
+use n2n\util\type\CastUtils;
+use rocket\si\content\impl\meta\SiCrumb;
+use rocket\si\content\impl\SiFields;
+use rocket\ei\util\entry\EiuEntry;
 
 class EmbeddedOneToManyEiProp extends RelationEiPropAdapter implements FieldEiProp {
 
@@ -72,6 +76,10 @@ class EmbeddedOneToManyEiProp extends RelationEiPropAdapter implements FieldEiPr
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
 		$readOnly = $readOnly || $this->getEditConfig()->isReadOnly();
 		
+		if ($readOnly && $eiu->gui()->isCompact()) {
+			return $this->createCompactGuiField($eiu);
+		}
+		
 		$targetEiuFrame = null; 
 		if ($readOnly){
 			$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())->frame()
@@ -82,5 +90,20 @@ class EmbeddedOneToManyEiProp extends RelationEiPropAdapter implements FieldEiPr
 		}
 		
 		return new EmbeddedToManyGuiField($eiu, $targetEiuFrame, $this->getRelationModel(), $readOnly);
+	}
+	
+	/**
+	 * @param Eiu $eiu
+	 * @return \rocket\si\content\SiField
+	 */
+	private function createCompactGuiField(Eiu $eiu) {
+		$siCrumbs = [];
+		foreach ($eiu->field()->getValue() as $eiuEntry) {
+			CastUtils::assertTrue($eiuEntry instanceof EiuEntry);
+			$siCrumbs[] = SiCrumb::createIcon($eiuEntry->mask()->getIconType())
+					->setTitle($eiuEntry->createIdentityString());
+		}
+		
+		return $eiu->factory()->newGuiField(SiFields::crumbOut(...$siCrumbs))->toGuiField();
 	}
 }

@@ -69,10 +69,10 @@ class RelationConfig extends PropConfigAdaption {
 	}
 	
 	function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {
-		$dataSet->appendAll($magCollection->readValues(array(self::ATTR_TARGET_EXTENSIONS_KEY,
+		$dataSet->appendAll($magCollection->readValues(array(self::ATTR_TARGET_EXTENSION_ID_KEY,
 				self::ATTR_MIN_KEY, self::ATTR_MAX_KEY, self::ATTR_REMOVABLE_KEY, 
 				self::ATTR_TARGET_REMOVAL_STRATEGY_KEY, self::ATTR_TARGET_ORDER_EI_PROP_PATH_KEY,
-				self::ATTR_ORPHANS_ALLOWED_KEY, self::ATTR_EMBEDDED_ADD_KEY, self::ATTR_FILTERED_KEY, 
+				self::ATTR_ORPHANS_ALLOWED_KEY, self::ATTR_FILTERED_KEY, 
 				self::ATTR_HIDDEN_IF_TARGET_EMPTY_KEY, self::ATTR_MAX_PICKS_NUM_KEY, 
 				self::ATTR_REDUCED_KEY), true), true);
 	}
@@ -87,7 +87,7 @@ class RelationConfig extends PropConfigAdaption {
 		
 		$magCollection->addMag(self::ATTR_TARGET_EXTENSION_ID_KEY, 
 				new EnumMag('Target Extension', $targetEiuType->getExtensionMaskOptions(), 
-						$lar->getString(self::ATTR_TARGET_EXTENSION_ID_KEY), true));
+						$lar->getString(self::ATTR_TARGET_EXTENSION_ID_KEY), false));
 		
 		if ($this->relationModel->isTargetMany()) {
 			$magCollection->addMag(self::ATTR_MIN_KEY, new NumericMag('Min', $lar->getInt(self::ATTR_MIN_KEY, null)));
@@ -159,11 +159,13 @@ class RelationConfig extends PropConfigAdaption {
 			$targetEiuMask = $targetEiuType->mask();
 		}
 			
-		$targetReadEiCommand = new TargetReadEiCommand(Lstr::create('Change this name'), 'change this', 'change this');
+		$targetReadEiCommand = new TargetReadEiCommand(Lstr::create('Embedded Read'), (string) $eiu->mask()->getEiTypePath(),
+				(string) $targetEiuMask->getEiTypePath());
 		$targetEiuMask->addEiCommand($targetReadEiCommand);
 		$this->relationModel->setTargetReadEiCommandPath(EiCommandPath::from($targetReadEiCommand));
 		
-		$targetEditEiCommand = new TargetEditEiCommand(Lstr::create('Change this name'), 'change this', 'change this');
+		$targetEditEiCommand = new TargetEditEiCommand(Lstr::create('Change this name'), (string) $eiu->mask()->getEiTypePath(), 
+				(string) $targetEiuMask->getEiTypePath());
 		$targetEiuMask->addEiCommand($targetEditEiCommand);
 		$this->relationModel->setTargetEditEiCommandPath(EiCommandPath::from($targetEditEiCommand));
 		

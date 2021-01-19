@@ -49,7 +49,7 @@ class OverviewController extends ControllerAdapter {
 	public function index(CritmodSaveDao $critmodSaveDao, $pageNo = null, ParamQuery $numPages = null, ParamQuery $stateKey = null) {
 		$this->eiuCtrl->pushCurrentAsSirefBreadcrumb($this->eiuCtrl->eiu()->frame()->mask()->getPluralLabel());
 		
-		$this->eiuCtrl->forwardListZone($this->listSize);
+		$this->eiuCtrl->forwardCompactExplorerZone($this->listSize);
 		
 // 		$eiuFrame = $this->eiuCtrl->frame();
 // 		$eiFrame = $eiuFrame->getEiFrame();

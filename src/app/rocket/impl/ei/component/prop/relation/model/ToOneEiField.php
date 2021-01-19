@@ -123,6 +123,11 @@ class ToOneEiField extends EiFieldAdapter {
 		$nativeValue = null;
 		if ($value !== null) {
 			ArgUtils::assertTrue($value instanceof EiuEntry);
+			
+			if ($this->relationModel->isEmbedded() || $this->relationModel->isIntegrated()) {
+				$value->getEiEntry()->write();
+			}
+			
 			$nativeValue = $value->getEntityObj();
 		}
 		

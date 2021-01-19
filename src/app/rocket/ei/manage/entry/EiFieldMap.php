@@ -119,8 +119,10 @@ class EiFieldMap {
 	}
 	
 	function write() {
-		foreach ($this->eiFieldWrappers as $eiPropPathStr => $eiFieldWrapper) {
-			if ($eiFieldWrapper->isIgnored()) continue;
+		foreach ($this->eiFieldWrappers as $eiFieldWrapper) {
+			if ($eiFieldWrapper->isIgnored() || !$eiFieldWrapper->isWritable(true)) {
+				continue;
+			}
 			
 			$eiFieldWrapper->write();
 		}

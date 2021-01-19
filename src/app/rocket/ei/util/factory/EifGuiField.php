@@ -10,6 +10,7 @@ class EifGuiField {
 	private $siField;
 	private $saverClosure;
 	
+	
 	/**
 	 * @param Eiu $eiu
 	 * @param SiField $siField

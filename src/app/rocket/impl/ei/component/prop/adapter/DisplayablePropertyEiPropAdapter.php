@@ -90,7 +90,7 @@ abstract class DisplayablePropertyEiPropAdapter extends PropertyEiPropAdapter
 	
 	protected function createOutEifGuiField(Eiu $eiu): EifGuiField {
 		throw new UnsupportedOperationException(get_class($this)
-				. ' must implement  either'
+				. ' must implement either'
 				. ' createEifGuiField(Eiu $eiu, bool $readOnly): EifGuiField or'
 				. ' buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField.');
 	}

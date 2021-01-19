@@ -71,14 +71,20 @@ export class CompactEntrySiGui implements SiGui, SiControlBoundry {
 
 class CompactUiStructureModel extends UiStructureModelAdapter implements CompactEntryModel {
 
-	private fieldUiStructures: UiStructure[] = []
-	private subscription: Subscription|null = null;
-
 	constructor(private siEntry$: Observable<SiEntry>, private siDeclaration: SiDeclaration, private controls: SiControl[],
 			private siEntryMonitor: SiEntryMonitor) {
 		super();
 	}
-	
+
+	private fieldUiStructures: UiStructure[] = [];
+	private subscription: Subscription|null = null;
+
+	// getContentUiStructures(): UiStructure[] {
+	// 	return this.contentUiStructures;
+	// }
+
+	private currentSiEntry: SiEntry|null;
+
 	isLoading() {
 		return !this.currentSiEntry;
 	}
@@ -95,7 +101,7 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 		if (!this.currentSiEntry) {
 			return [];
 		}
-			
+
 		const zoneErrors = new Array<UiZoneError>();
 		const typeId = this.currentSiEntry.selectedTypeId;
 
@@ -109,55 +115,49 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 		return zoneErrors;
 	}
 
-	// getContentUiStructures(): UiStructure[] {
-	// 	return this.contentUiStructures;
-	// }
-
-	private currentSiEntry: SiEntry|null;
-	
 	bind(uiStructure: UiStructure): void {
 		super.bind(uiStructure);
 
 		this.siEntryMonitor.start();
-		
+
 		this.subscription = new Subscription();
-		
+
 		this.subscription.add(this.siEntry$.subscribe((siEntry) => {
 			this.rebuild(siEntry.getFinalReplacementEntry());
 		}));
-		
+
 		this.uiContent = new TypeUiContent(CompactEntryComponent, (ref) => {
 			ref.instance.model = this;
 		});
-		
+
 		this.mainControlUiContents = this.controls.map((control) => {
 			return control.createUiContent(uiStructure.getZone());
 		});
 	}
-	
+
 	private rebuild(siEntry: SiEntry|null) {
 		this.clear();
-		
+
 		if (!siEntry) {
 			return;
 		}
-		
+
 		this.currentSiEntry = siEntry;
 
 		this.buildStructures(siEntry);
-		
-//		if (!siEntry.isMultiType()) {
-//			this.rebuild(siEntry);
-//		} else {
-//			this.subscription.add(siEntry.selectedTypeId$.subscribe(() => {
-//				this.rebuild(siEntry);
-//			}));
-//		}
+
+// 		if (!siEntry.isMultiType()) {
+// 			this.rebuild(siEntry);
+// 		} else {
+// 			this.subscription.add(siEntry.selectedTypeId$.subscribe(() => {
+// 				this.rebuild(siEntry);
+// 			}));
+// 		}
 
 		this.monitorEntry(siEntry);
-		
+
 	}
-	
+
 	private buildStructures(siEntry: SiEntry) {
 		const siEntryBuildup = siEntry.selectedEntryBuildup;
 		const siMaskDeclaration = this.siDeclaration.getTypeDeclarationByTypeId(siEntry.selectedTypeId);
@@ -173,11 +173,16 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 	}
 
 	private monitorEntry(siEntry: SiEntry) {
-		this.siEntryMonitor.registerEntry(siEntry);
+		if (!siEntry.isNew()) {
+			this.siEntryMonitor.registerEntry(siEntry);
+		}
 
 		const sub = siEntry.state$.subscribe((state) => {
 			switch (state) {
 				case SiEntryState.REPLACED:
+					if (!siEntry.isNew()) {
+						this.siEntryMonitor.unregisterEntry(siEntry);
+					}
 					this.subscription.remove(sub);
 					this.rebuild(siEntry.replacementEntry);
 					break;
@@ -196,7 +201,7 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 		this.clear();
 
 		this.mainControlUiContents = [];
-		
+
 		if (this.subscription) {
 			this.subscription.unsubscribe();
 			this.subscription = null;
@@ -205,10 +210,12 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 
 	private clear() {
 		if (this.currentSiEntry) {
-			this.siEntryMonitor.unregisterEntry(this.currentSiEntry);
+			if (!this.currentSiEntry.isNew()) {
+				this.siEntryMonitor.unregisterEntry(this.currentSiEntry);
+			}
 			this.currentSiEntry = null;
 		}
-		
+
 		let fieldUiStructure: UiStructure;
 		while (fieldUiStructure = this.fieldUiStructures.pop()) {
 			fieldUiStructure.dispose();
@@ -217,6 +224,6 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 		this.asideUiContents = [];
 	}
 
-	
+
 
 }

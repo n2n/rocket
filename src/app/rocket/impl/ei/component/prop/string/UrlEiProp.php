@@ -32,6 +32,8 @@ use rocket\ei\util\factory\EifField;
 use n2n\validation\plan\impl\Validators;
 use rocket\si\content\impl\SiFields;
 use rocket\ei\util\factory\EifGuiField;
+use n2n\util\type\CastUtils;
+use rocket\si\content\impl\StringInSiField;
 
 class UrlEiProp extends AlphanumericEiProp {
 	
@@ -120,7 +122,8 @@ class UrlEiProp extends AlphanumericEiProp {
 		
 		return $eiu->factory()->newGuiField($siField)
 				->setSaver(function () use ($eiu, $siField) {
-					$this->save($siField, $eiu);
+					CastUtils::assertTrue($siField instanceof StringInSiField);
+					$eiu->field()->setValue($this->mapSiValue($siField->getValue()));
 				});
 				
 // 		$allowedSchemes = $this->urlConfig->getAllowedSchemes();

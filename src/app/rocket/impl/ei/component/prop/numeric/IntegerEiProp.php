@@ -53,7 +53,6 @@ class IntegerEiProp extends NumericEiPropAdapter implements ScalarEiProp {
 	 */
 	function prepare() {
 		parent::prepare();
-		
 		$this->getConfigurator()->addAdaption(new IntegerConfig());
 	}
 	

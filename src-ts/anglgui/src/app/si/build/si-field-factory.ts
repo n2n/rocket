@@ -10,7 +10,6 @@ import { BooleanInSiField } from '../model/content/impl/boolean/boolean-in-si-fi
 import { StringInSiField } from '../model/content/impl/alphanum/model/string-in-si-field';
 import { StringOutSiField } from '../model/content/impl/alphanum/model/string-out-si-field';
 import { LinkOutSiField } from '../model/content/impl/alphanum/model/link-out-si-field';
-import { EnumInSiField } from '../model/content/impl/alphanum/model/enum-in-si-field';
 import { SiMask } from '../model/meta/si-type';
 import { SiProp } from '../model/meta/si-prop';
 import { Subject, Observable } from 'rxjs';
@@ -32,6 +31,9 @@ import { SiModStateService } from '../model/mod/model/si-mod-state.service';
 import { EmbeddedEntriesOutSiField } from '../model/content/impl/embedded/model/embedded-entries-out-si-field';
 import { EmbeddedEntryPanelsOutSiField } from '../model/content/impl/embedded/model/embedded-entry-panels-out-si-field';
 import { EmbeddedEntryPanelsInSiField } from '../model/content/impl/embedded/model/embedded-entry-panels-in-si-field';
+import { SplitViewStateContext } from '../model/content/impl/split/model/state/split-view-state-context';
+import { SplitViewStateService } from '../model/content/impl/split/model/state/split-view-state.service';
+import { EnumInSiField } from '../model/content/impl/enum/model/enum-in-si-field';
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',
@@ -139,6 +141,11 @@ export class SiFieldFactory {
 		case SiFieldType.ENUM_IN:
 			const enumInSiField = new EnumInSiField(dataExtr.nullaString('value'), dataExtr.reqStringMap('options'));
 			enumInSiField.mandatory = dataExtr.reqBoolean('mandatory');
+
+			fieldMap$.subscribe((fieldMap) => {
+				this.finalizeEnum(enumInSiField, dataExtr.reqMap('associatedPropIdsMap'), fieldMap);
+			});
+
 			return enumInSiField;
 
 		case SiFieldType.QUALIFIER_SELECT_IN:
@@ -206,7 +213,7 @@ export class SiFieldFactory {
 			return splitContextOutSiField;
 
 		case SiFieldType.SPLIT_PLACEHOLDER:
-			const splitSiField = new SplitSiField(dataExtr.reqString('refPropId'));
+			const splitSiField = new SplitSiField(dataExtr.reqString('refPropId'), this.injector.get(SplitViewStateService));
 			splitSiField.copyStyle = this.createSplitStyle(dataExtr.reqObject('copyStyle'));
 			return splitSiField;
 
@@ -287,6 +294,15 @@ export class SiFieldFactory {
 			if (field = fieldMap.get(propId)) {
 				booleanInSiField.addOffAssociatedField(field);
 			}
+		}
+	}
+
+	private finalizeEnum(enumInSiField: EnumInSiField, associatedPropIdsMap: Map<string, string[]>,
+			fieldMap: Map<string, SiField>) {
+		for (const [value, propIds] of associatedPropIdsMap) {
+			enumInSiField.setAssociatedFields(value, propIds
+					.map(propId => fieldMap.get(propId))
+					.filter(field => !!field));
 		}
 	}
 }

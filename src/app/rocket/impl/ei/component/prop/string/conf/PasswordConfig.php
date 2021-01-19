@@ -79,7 +79,7 @@ class PasswordConfig extends PropConfigAdaption {
 	public function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {
 	}
 
-	public function testCompatibility(PropertyAssignation $propertyAssignation): int {
+	public function testCompatibility(PropertyAssignation $propertyAssignation): ?int {
 		return 0;
 	}
 

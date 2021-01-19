@@ -23,6 +23,10 @@ namespace rocket\ei\manage\gui\control;
 
 use rocket\si\control\SiControl;
 use rocket\ei\manage\api\ApiControlCallId;
+use rocket\ei\manage\frame\EiFrame;
+use rocket\ei\manage\gui\EiGuiModel;
+use rocket\ei\manage\entry\EiEntry;
+use rocket\si\control\SiResult;
 
 interface GuiControl {
 	
@@ -32,6 +36,29 @@ interface GuiControl {
 	function getId(): string;
 	
 	function isInputHandled(): bool;
+	
+	function getChilById(string $id): ?GuiControl;
+	
+	/**
+	 * @param EiGuiModel $eiGuiModel
+	 * @return SiResult
+	 */
+	function handle(EiFrame $eiFrame, EiGuiModel $eiGuiModel, array $inputEiEntries): SiResult;
+	
+	/**
+	 * @param EiGuiModel $eiGuiModel
+	 * @param EiEntry $eiEntry
+	 * @return SiResult
+	 */
+	function handleEntry(EiFrame $eiFrame, EiGuiModel $eiGuiModel, EiEntry $eiEntry): SiResult;
+	
+	
+// 	/**
+// 	 * @param EiGuiModel $eiGuiModel
+// 	 * @param EiEntry[] $eiEntries
+// 	 * @return SiResult
+// 	 */
+// 	function handleEntries(EiFrame $eiFrame, EiGuiModel $eiGuiModel, array $eiEntries): SiResult;
 	
 	/**
 	 * @return SiControl

@@ -108,7 +108,16 @@ export class SiFile {
 		const siFile = new SiFile(this.id, this.name, this.url);
 		siFile.thumbUrl = this.thumbUrl;
 		siFile.mimeType = this.mimeType;
-		siFile.imageDimensions = JSON.parse(JSON.stringify(this.imageDimensions));
+		siFile.imageDimensions = this.imageDimensions.map(id => {
+			return {
+				id: id.id,
+				name: id.name,
+				width: id.width,
+				height: id.height,
+				imageCut: id.imageCut.copy(),
+				ratioFixed: id.ratioFixed
+			}
+		});
 		return siFile;
 	}
 }
@@ -124,6 +133,10 @@ export interface SiImageDimension {
 
 export class SiImageCut {
 	constructor(public x: number, public y: number, public width: number, public height: number, public exists: boolean) {
+	}
+
+	copy(): SiImageCut {
+		return new SiImageCut(this.x, this.y, this.width, this.height, this.exists);
 	}
 
 	equals(obj: any): boolean {

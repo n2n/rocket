@@ -315,11 +315,11 @@ export class StructurePageManager {
 			}
 		});
 
-		this.pagesMap.set(siPage.no, { structurePage: sp, subscription: sub });
-
-		siPage.disposed$.subscribe(() => {
+		sub.add(siPage.disposed$.subscribe(() => {
 			this.removePageByNo(siPage.no);
-		});
+		}));
+
+		this.pagesMap.set(siPage.no, { structurePage: sp, subscription: sub });
 
 		return sp;
 	}

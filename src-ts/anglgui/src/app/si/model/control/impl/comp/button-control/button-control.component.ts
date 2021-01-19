@@ -3,6 +3,7 @@ import { ButtonControlModel } from '../button-control-model';
 import { SiButton } from '../../model/si-button';
 import { UiZone } from 'src/app/ui/structure/model/ui-zone';
 import { filter } from 'rxjs/operators';
+import { UiContent } from 'src/app/ui/structure/model/ui-content';
 
 @Component({
 	selector: 'rocket-button-control',
@@ -36,20 +37,28 @@ export class ButtonControlComponent implements OnInit {
 		return this.model.isDisabled() || this.loading;
 	}
 
+	hasSubUiContents(): boolean {
+		return !!this.model.getSubUiContents && this.model.getSubUiContents().length > 0;
+	}
+
 	hasSubSiButtons() {
 		return !!this.model.getSubSiButtonMap && this.model.getSubSiButtonMap().size > 0;
 	}
 
+	get subUiContents(): UiContent[] {
+		return this.model.getSubUiContents ? this.model.getSubUiContents() : [];
+	}
+
 	get subSiButtonMap() {
-		return this.model.getSubSiButtonMap();
+		return this.model.getSubSiButtonMap ? this.model.getSubSiButtonMap() : [];
 	}
 
 	get subVisible(): boolean {
-		return this._subVisible && !this.disabled && this.hasSubSiButtons();
+		return this._subVisible && !this.disabled && (this.hasSubSiButtons() || this.hasSubUiContents());
 	}
 
 	exec() {
-		if (this.hasSubSiButtons()) {
+		if (this.hasSubSiButtons() || this.hasSubUiContents()) {
 			this._subVisible = !this._subVisible;
 			return;
 		}

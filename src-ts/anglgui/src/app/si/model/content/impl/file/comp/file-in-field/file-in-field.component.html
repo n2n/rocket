@@ -18,10 +18,10 @@
 </ng-container>
 
 <button *ngIf="resizable" (click)="editImage()" class="btn btn-secondary">
-	<i class="fa fa-crop"></i>
+	<i class="fa fa-crop"></i> 
 </button>
-<button *ngIf="removable" (click)="removeCurrent()" class="btn btn-secondary">
-	{{ 'common_remove_txt' | translate }}
+<button *ngIf="removable" (click)="removeCurrent()" class="btn btn-secondary" title="{{ 'common_delete_label' | translate }}">
+	<i class="fa fa-trash-alt"></i>
 </button>
 
 <div *ngIf="loading" class="rocket-loader"></div>

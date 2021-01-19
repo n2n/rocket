@@ -57,7 +57,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 	}
 	
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\component\command\control\EntryGuiControlComponent::getEntryGuiControlOptions()
+	 * @see \rocket\ei\component\command\control\\GuiControlComponent::getEntryGuiControlOptions()
 	 */
 	public function getEntryGuiControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {
 		$dtc = new DynamicTextCollection('rocket', $n2nLocale);
@@ -65,7 +65,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 				self::CONTROL_PREVIEW_KEY => $dtc->translate('ei_impl_preview_label'));
 	}
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\component\command\control\EntryGuiControlComponent::createEntryGuiControls()
+	 * @see \rocket\ei\component\command\control\\GuiControlComponent::createEntryGuiControls()
 	 */
 	public function createEntryGuiControls(Eiu $eiu): array {
 		$eiuFrame = $eiu->frame();
@@ -79,10 +79,10 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 		$iconType = null;
 		if (!$eiuEntry->isDraft()) {
 			$pathExt = new Path(array('live', $eiuEntry->getPid()));
-			$iconType = SiIconType::ICON_FILE;
+			$iconType = SiIconType::ICON_R_FILE;
 		} else if (!$eiuEntry->isDraftNew()) {
 			$pathExt = new Path(array('draft', $eiuEntry->getDraftId()));
-			$iconType = SiIconType::ICON_FILE_ALT;
+			$iconType = SiIconType::ICON_R_FILE_ALT;
 		} else {
 			return array();
 		}
@@ -104,7 +104,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 		$siButton = new SiButton(
 				$dtc->t('ei_impl_detail_preview_label'),
 				$dtc->t('ei_impl_detail_preview_tooltip', array('entry' => $eiuFrame->getGenericLabel())),
-				false, null, SiIconType::ICON_EYE);
+				false, null, SiIconType::ICON_R_EYE);
 		
 		$previewType = $eiuEntry->getDefaultPreviewType();
 		if ($previewType === null) {

@@ -108,6 +108,8 @@ class EnumConfig extends PropConfigAdaption {
 		$optionsMag->setValue($valueLabelMap);
 		
 		$magCollection->addMag(self::ATTR_OPTIONS_KEY, $optionsMag);
+		
+		return new MagForm($magCollection);
 	}
 	
 	public function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {
@@ -127,9 +129,9 @@ class EnumConfig extends PropConfigAdaption {
 	
 	public function setup(Eiu $eiu, DataSet $dataSet) {
 		if ($dataSet->contains(self::ATTR_OPTIONS_KEY)) {
-			$options = $dataSet->optArray(self::ATTR_OPTIONS_KEY, TypeConstraints::scalar());
+			$options = $dataSet->optArray(self::ATTR_OPTIONS_KEY, TypeConstraints::scalar(true));
 			
-			$this->eiComponent->setOptions(array_filter($options));
+			$this->options = array_filter($options);
 		}
 		
 		if ($dataSet->contains(self::ASSOCIATED_GUI_FIELD_KEY)) {
@@ -143,7 +145,7 @@ class EnumConfig extends PropConfigAdaption {
 				$eiPropPathMap[$value] = $eiPropPaths;
 			}
 			
-			$this->enumEiProp->setAssociatedDefPropPathMap($eiPropPathMap);
+			$this->associatedDefPropPathMap = $eiPropPathMap;
 		}
 	}
 }

@@ -22,26 +22,24 @@
 namespace rocket\ei\manage\gui;
 
 use rocket\ei\util\Eiu;
-use rocket\ei\manage\gui\control\GeneralGuiControl;
-use rocket\ei\manage\gui\control\SelectionGuiControl;
-use rocket\ei\manage\gui\control\EntryGuiControl;
+use rocket\ei\manage\gui\control\GuiControl;
 
 interface GuiCommand {
 	/**
 	 * @param Eiu $eiu
-	 * @return GeneralGuiControl[]
+	 * @return GuiControl[]
 	 */
 	public function createGeneralGuiControls(Eiu $eiu): array;
 	
 	/**
 	 * @param Eiu $eiu
-	 * @return SelectionGuiControl[]
+	 * @return GuiControl[]
 	 */
 	public function createSelectionGuiControls(Eiu $eiu): array;
 	
 	/**
 	 * @param Eiu $eiu
-	 * @return EntryGuiControl[]
+	 * @return GuiControl[]
 	 */
 	public function createEntryGuiControls(Eiu $eiu): array;
 }

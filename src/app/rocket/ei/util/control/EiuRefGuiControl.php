@@ -28,15 +28,12 @@ use n2n\util\ex\NotYetImplementedException;
 use n2n\util\uri\Url;
 use rocket\si\control\SiButton;
 use rocket\si\control\impl\RefSiControl;
-use rocket\ei\manage\gui\control\EntryGuiControl;
-use rocket\ei\manage\gui\control\GeneralGuiControl;
-use rocket\ei\manage\gui\control\SelectionGuiControl;
-use rocket\ei\manage\gui\EiGuiFrame;
 use rocket\ei\manage\api\ApiControlCallId;
 use rocket\ei\manage\gui\EiGuiModel;
 use rocket\ei\manage\frame\EiFrame;
+use rocket\ei\manage\gui\control\GuiControl;
 
-class EiuRefGuiControl implements GeneralGuiControl, EntryGuiControl, SelectionGuiControl {
+class EiuRefGuiControl implements GuiControl {
 	private $id;
 	private $url;
 	private $siButton;
@@ -57,6 +54,10 @@ class EiuRefGuiControl implements GeneralGuiControl, EntryGuiControl, SelectionG
 	 */
 	public function isInputHandled(): bool {
 		return false;
+	}
+	
+	function getChilById(string $id): ?GuiControl {
+		return null;
 	}
 	
 	function toSiControl(ApiControlCallId $siApiCallId): SiControl {

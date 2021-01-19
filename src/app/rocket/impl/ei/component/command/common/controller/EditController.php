@@ -47,7 +47,7 @@ class EditController extends ControllerAdapter {
 		
 // 		$this->eiuCtrl->pushCurrentAsSirefBreadcrumb($this->dtc->t('common_add_label'), true, $eiuEntry);
 		
-		$this->eiuCtrl->forwardDlZone($eiuEntry, false, true, false);
+		$this->eiuCtrl->forwardBulkyEntryZone($eiuEntry, false, true, false);
 	}
 	
 	public function doPreview($pid, $previewType, ParamQuery $refPath) {

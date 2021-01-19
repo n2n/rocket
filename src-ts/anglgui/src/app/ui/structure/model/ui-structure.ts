@@ -4,7 +4,6 @@ import { UiStructureModel, UiStructureModelMode } from './ui-structure-model';
 import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { UiZoneError } from './ui-zone-error';
-import { ElementRef } from '@angular/core';
 
 export class UiStructure {
 	private _model: UiStructureModel|null;
@@ -72,7 +71,7 @@ export class UiStructure {
 	}
 
 	isItemCollection(): boolean {
-		return this.type === UiStructureType.ITEM && this.model
+		return this.type === UiStructureType.ITEM && !!this.model
 				&& this.model.getMode() === UiStructureModelMode.ITEM_COLLECTION;
 
 	}
@@ -169,8 +168,8 @@ export class UiStructure {
 		}
 
 		this._model = model;
-		this.disabledSubscription = model.getDisabled$().subscribe(this.disabledSubject);
 		model.bind(this);
+		this.disabledSubscription = model.getDisabled$().subscribe(d => this.disabledSubject.next(d));
 
 // 		if (this.disabledSubject.getValue()) {
 // 			this.disabledSubject.next(false);
@@ -270,7 +269,7 @@ export class UiStructure {
 	}
 
 	get visible$(): Observable<boolean> {
-		return this.visibleSubject;
+		return this.visibleSubject.asObservable();
 	}
 
 	get disabled(): boolean {
@@ -278,7 +277,7 @@ export class UiStructure {
 	}
 
 	get disabled$(): Observable<boolean> {
-		return this.disabledSubject;
+		return this.disabledSubject.asObservable();
 	}
 
 	getZoneErrors(): UiZoneError[] {

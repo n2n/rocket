@@ -21,9 +21,8 @@
  */
 namespace rocket\ei\manage\api;
 
+use rocket\ei\EiException;
 use rocket\ei\manage\gui\control\GuiControl;
-use rocket\ei\manage\gui\control\EntryGuiControl;
-use rocket\ei\manage\gui\control\GeneralGuiControl;
 use rocket\ei\manage\frame\EiFrame;
 use n2n\web\http\BadRequestException;
 use rocket\ei\manage\DefPropPath;
@@ -37,7 +36,6 @@ use rocket\si\input\SiError;
 use rocket\si\input\SiEntryInput;
 use rocket\ei\manage\gui\EiEntryGui;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\TypePath;
 use rocket\ei\manage\frame\EiFrameUtil;
 use rocket\si\input\SiInputFactory;
 use rocket\ei\EiCommandPath;
@@ -74,11 +72,11 @@ class ApiControlProcess {
 	 */
 	private $guiControl;
 	/**
-	 * @var EntryGuiControl
+	 * @var GuiControl
 	 */
 	private $entryGuiControl;
 	/**
-	 * @var GeneralGuiControl
+	 * @var GuiControl
 	 */
 	private $generalGuiControl;
 	
@@ -100,7 +98,7 @@ class ApiControlProcess {
 			$eiMask = $this->eiFrame->getContextEiEngine()->getEiMask()->determineEiMask($eiType);
 			$this->eiGuiModel = $this->createEiGuiModel($eiMask, $viewMode);
 			$this->eiGui = new EiGui($this->eiGuiModel);
-		} catch (\rocket\ei\EiException $e) {
+		} catch (EiException $e) {
 			throw new BadRequestException(null, 0, $e);
 		}
 	}
@@ -108,7 +106,7 @@ class ApiControlProcess {
 	private function createEiGuiModel(EiMask $eiMask, int $viewMode) {
 		try {
 			return $this->eiFrame->getManageState()->getEiGuiModelCache()->obtainEiGuiModel($eiMask, $viewMode, null);
-		} catch (\rocket\ei\EiException $e) {
+		} catch (EiException $e) {
 			throw new BadRequestException(null, 0, $e);
 		}
 	}

@@ -4,7 +4,7 @@ import { SiCrumbGroup, SiCrumb } from '../../model/si-crumb';
 @Component({
 	selector: 'rocket-crumb-group',
 	templateUrl: './crumb-group.component.html',
-	styleUrls: ['./crumb-group.component.css']
+	styleUrls: ['./crumb-group.component.css'],
 })
 export class CrumbGroupComponent implements OnInit {
 

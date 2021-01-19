@@ -177,7 +177,6 @@ export class StructureComponent implements OnInit, OnDestroy, DoCheck {
 				classList.add('rocket-item');
 				break;
 			case UiStructureType.SIMPLE_GROUP:
-			case UiStructureType.AUTONOMIC_GROUP:
 				classList.add('rocket-group');
 				classList.add('rocket-simple-group');
 				break;

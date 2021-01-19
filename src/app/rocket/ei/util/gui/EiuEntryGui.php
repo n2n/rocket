@@ -99,6 +99,13 @@ class EiuEntryGui {
 	/**
 	 * @return boolean
 	 */
+	function isTypeSelected() {
+		return $this->eiEntryGui->isTypeDefSelected();
+	}
+	
+	/**
+	 * @return boolean
+	 */
 	function isCompact() {
 		$viewMode = $this->getViewMode();
 		return $viewMode & ViewMode::compact();
@@ -305,6 +312,14 @@ class EiuEntryGui {
 		$this->eiEntryGui->save();
 	}
 	
+	/**
+	 * @param bool $siControlsIncluded
+	 * @return \rocket\si\content\SiEntry
+	 */
+	function createSiEntry(bool $siControlsIncluded) {
+		return $this->eiEntryGui->getEiGui()->getEiGuiModel()->createSiEntry($this->eiuAnalyst->getEiFrame(true), 
+				$this->eiEntryGui, $siControlsIncluded);
+	}
 	
 	
 // 	/**

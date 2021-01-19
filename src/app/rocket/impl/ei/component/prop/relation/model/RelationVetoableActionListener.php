@@ -87,7 +87,7 @@ class VetoCheck {
 	private $vetoableRemoveAction;
 	private $n2nContext;
 	
-	public function __construct(RelationEiProp $relationEiProp, EiEntityObj $targetEiEntityObj, 
+	public function __construct(RelationModel $relationEiProp, EiEntityObj $targetEiEntityObj, 
 			VetoableLifecycleAction $vetoableRemoveAction, N2nContext $n2nContext) {
 		$this->relationEiProp = $relationEiProp;
 		$this->targetEiEntityObj = $targetEiEntityObj;
@@ -152,7 +152,7 @@ class VetoCheck {
 	}
 	
 	private function getRelationEntityProperty(): RelationEntityProperty {
-		$entityProperty = $this->relationEiProp->getEntityProperty();
+		$entityProperty = $this->relationEiProp->getRelationEntityProperty();
 		CastUtils::assertTrue($entityProperty instanceof RelationEntityProperty);
 		return $entityProperty;
 	}

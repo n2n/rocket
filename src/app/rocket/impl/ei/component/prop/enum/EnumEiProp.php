@@ -37,7 +37,6 @@ use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\critmod\quick\impl\LikeQuickSearchProp;
-use n2n\impl\web\dispatch\mag\model\group\EnumTogglerMag;
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\sort\SortProp;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
@@ -52,6 +51,7 @@ use rocket\ei\manage\idname\IdNameProp;
 use rocket\ei\component\prop\IdNameEiProp;
 use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfig;
 use rocket\ei\util\factory\EifGuiField;
+use rocket\si\content\impl\EnumInSiField;
 
 class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiProp, SortableEiProp, 
 		QuickSearchableEiProp, IdNameEiProp {
@@ -73,7 +73,10 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 		ArgUtils::assertTrue($propertyAccessProxy !== null);
 		
 		if (null !== ($typeConstraint = $propertyAccessProxy->getConstraint())) {
-			$typeConstraint->isPassableTo(TypeConstraints::scalar(true), true);
+			if ($typeConstraint->isArrayLike()) {
+				throw new \InvalidArgumentException($typeConstraint->__toString() . ' not compatible with ' . TypeConstraints::scalar(true));
+			}
+			
 			if (!$typeConstraint->isEmpty()) {
 				$typeConstraint->setConvertable(true);
 			}
@@ -104,17 +107,16 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 	
 	public function prepare() {
 		$this->getConfigurator()
-				->addAdaption($this->getEditConfig())
+				->addAdaption($this->getEnumConfig())
 				->addAdaption($this->getQuickSearchConfig());
 	}
 	
 	public function buildEiField(Eiu $eiu): ?EiField {
-		$that = $this;
-		$eiu->entry()->onValidate(function () use ($eiu, $that) {
+		$eiu->entry()->onValidate(function () use ($eiu) {
 			$type = $eiu->field()->getValue();
 				
 			$activeDefPropPaths = array();
-			foreach ($that->getAssociatedDefPropPathMap() as $value => $defPropPaths) {
+			foreach ($this->enumConfig->getAssociatedDefPropPathMap() as $value => $defPropPaths) {
 				if ($value == $type) {
 					$activeDefPropPaths = $defPropPaths;
 					continue;
@@ -145,14 +147,20 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 			}
 		}
 		
+		$mapCb = function ($defPropPaths) {
+			return array_map(function ($defPropPath) { return (string) $defPropPath; }, $defPropPaths);
+		};
+		
 		$siField = SiFields::enumIn($choicesMap, $eiu->field()->getValue())
-					->setMandatory($this->getEditConfig()->isMandatory());
+				->setMandatory($this->getEditConfig()->isMandatory())
+				->setAssociatedPropIdsMap(array_map($mapCb, $this->enumConfig->getAssociatedDefPropPathMap()));
 		
 // 		$defPropPathMap = $this->getEnumConfig()->getAssociatedDefPropPathMap();
 // 		if (empty($defPropPathMap)) {
-		return $eiu->factory()->newGuiField($siField)->setSaver(function () use ($eiu, $siField)  {
-			$this->saveSiField($siField, $eiu);
-		});
+		return $eiu->factory()->newGuiField($siField)
+				->setSaver(function () use ($eiu, $siField)  {
+					$this->saveSiField($siField, $eiu);
+				});
 // 		}
 		
 // 		$enablerMag = new EnumTogglerMag($this->getLabelLstr(), $choicesMap, null, 
@@ -181,7 +189,7 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 	}
 	
 	function saveSiField(SiField $siField, Eiu $eiu) {
-		ArgUtils::assertTrue($siField instanceof EnumEiProp);
+		ArgUtils::assertTrue($siField instanceof EnumInSiField);
 		$eiu->field()->setValue($siField->getValue());
 	}
 	
@@ -195,7 +203,7 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 	
 	public function buildFilterProp(Eiu $eiu): ?FilterProp {
 		if (null !== ($entityProperty = $this->getEntityProperty())) {
-			return new EnumFilterProp(CrIt::p($entityProperty), $this->getLabelLstr(), $this->getOptions());
+			return new EnumFilterProp(CrIt::p($entityProperty), $this->getLabelLstr(), $this->enumConfig->getOptions());
 		}
 		
 		return null;

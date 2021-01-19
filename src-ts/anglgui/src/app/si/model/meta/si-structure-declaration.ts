@@ -16,8 +16,15 @@ export class SiStructureDeclaration {
 export enum UiStructureType {
 	SIMPLE_GROUP = 'simple-group',
 	MAIN_GROUP = 'main-group',
-	AUTONOMIC_GROUP = 'autonomic-group',
+	// AUTONOMIC_GROUP = 'autonomic-group',
 	LIGHT_GROUP = 'light-group',
 	PANEL = 'panel',
 	ITEM = 'item'
+}
+
+export class UiStructureTypeUtils {
+	static isGroup(uiStructureType: UiStructureType): boolean {
+		return uiStructureType === UiStructureType.LIGHT_GROUP || uiStructureType === UiStructureType.MAIN_GROUP
+				|| uiStructureType === UiStructureType.SIMPLE_GROUP;
+	}
 }

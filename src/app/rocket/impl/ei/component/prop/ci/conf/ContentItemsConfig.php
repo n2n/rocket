@@ -135,7 +135,7 @@ class ContentItemsConfig extends PropConfigAdaption {
 		}
 	}
 
-	public function testCompatibility(PropertyAssignation $propertyAssignation): int {
+	public function testCompatibility(PropertyAssignation $propertyAssignation): ?int {
 		$level = parent::testCompatibility($propertyAssignation);
 		if (CompatibilityLevel::NOT_COMPATIBLE === $level) {
 			return $level;

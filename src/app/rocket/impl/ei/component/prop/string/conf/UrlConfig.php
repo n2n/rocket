@@ -73,7 +73,7 @@ class UrlConfig extends PropConfigAdaption {
 		return $this->autoScheme;
 	}
 	
-	public function testCompatibility(PropertyAssignation $propertyAssignation): int {
+	public function testCompatibility(PropertyAssignation $propertyAssignation): ?int {
 		$level = parent::testCompatibility($propertyAssignation);
 		
 		if ($level <= CompatibilityLevel::NOT_COMPATIBLE) return $level;

@@ -16,8 +16,9 @@ import { TogglerComponent } from './util/comp/toggler/toggler.component';
 import { SearchInputGroupComponent } from './util/comp/search-input-group/search-input-group.component';
 import { FormsModule } from '@angular/forms';
 import { SimpleZoneContainerComponent } from './structure/comp/simple-zone-container/simple-zone-container.component';
-import {ButtonComponent} from "./util/comp/button/button.component";
-import {MessagesComponent} from "./util/comp/message/messages.component";
+import {ButtonComponent} from './util/comp/button/button.component';
+import {MessagesComponent} from './util/comp/message/messages.component';
+import { SelectComponent } from './util/comp/select-input/select.component';
 import { IframeComponent } from './util/comp/iframe/iframe.component';
 import { IFrameResizerDirective } from './util/directive/iframe-resizer-directive.directive';
 
@@ -26,7 +27,7 @@ import { IFrameResizerDirective } from './util/directive/iframe-resizer-directiv
 		LayerComponent, ContainerComponent, ZoneComponent, StructureComponent, StructureContentDirective,
 		StructureBranchComponent, PlainContentComponent, MessageComponent, BreadcrumbsComponent, NavPointDirective,
 		TogglerComponent, SearchInputGroupComponent, SimpleZoneContainerComponent, ButtonComponent, MessagesComponent, IframeComponent, IFrameResizerDirective,
-    IFrameResizerDirective
+    IFrameResizerDirective, SelectComponent
 	],
 	imports: [
 		CommonModule,
@@ -48,7 +49,8 @@ import { IFrameResizerDirective } from './util/directive/iframe-resizer-directiv
     ButtonComponent,
     MessagesComponent,
     IframeComponent,
-    IFrameResizerDirective
+    IFrameResizerDirective,
+    SelectComponent
   ],
 	entryComponents: [ PlainContentComponent ]
 })

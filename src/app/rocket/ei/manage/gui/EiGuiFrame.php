@@ -9,7 +9,7 @@ use rocket\ei\component\GuiFactory;
 use rocket\ei\manage\DefPropPath;
 use rocket\ei\manage\gui\control\GuiControlPath;
 use rocket\ei\manage\gui\control\UnknownGuiControlException;
-use rocket\ei\manage\gui\control\GeneralGuiControl;
+use rocket\ei\manage\gui\control\GuiControl;
 use rocket\ei\manage\api\ApiControlCallId;
 use rocket\si\content\SiEntryBuildup;
 use rocket\ei\EiPropPath;
@@ -202,7 +202,7 @@ class EiGuiFrame {
 	function createSiMaskDeclaration(N2nLocale $n2nLocale) {
 		IllegalStateException::assertTrue($this->guiStructureDeclarations !== null, 
 				'EiGuiFrame has no GuiStructureDeclarations.');
-		
+
 		return new SiMaskDeclaration(
 				$this->createSiMask($n2nLocale),
 				$this->createSiStructureDeclarations($this->guiStructureDeclarations));
@@ -226,7 +226,7 @@ class EiGuiFrame {
 			$siStructureDeclarations[] = SiStructureDeclaration
 					::createGroup($guiStructureDeclaration->getSiStructureType(), $guiStructureDeclaration->getLabel(),
 							$guiStructureDeclaration->getHelpText())
-							->setChildren($this->createSiStructureDeclarations($guiStructureDeclaration->getChildren()));
+					->setChildren($this->createSiStructureDeclarations($guiStructureDeclaration->getChildren()));
 		}
 		
 		return $siStructureDeclarations;
@@ -472,7 +472,7 @@ class EiGuiFrame {
 	 * @param EiFrame $eiFrame
 	 * @param EiEntry $eiEntry
 	 * @param GuiControlPath $guiControlPath
-	 * @return \rocket\ei\manage\gui\control\EntryGuiControl
+	 * @return \rocket\ei\manage\gui\control\GuiControl
 	 * @throws UnknownGuiControlException
 	 */
 	function createEntryGuiControl(EiFrame $eiFrame, EiEntry $eiEntry, GuiControlPath $guiControlPath) {

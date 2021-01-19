@@ -21,7 +21,6 @@
  */
 namespace rocket\impl\ei\component\prop\string;
 
-use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\l10n\DynamicTextCollection;
@@ -41,7 +40,7 @@ class PathPartEiProp extends AlphanumericEiProp {
 	function prepare() {
 		$this->getDisplayConfig()->setDefaultDisplayedViewModes(ViewMode::BULKY_EDIT | ViewMode::COMPACT_READ);
 		$this->getEditConfig()->setMandatory(false)->setMandatoryChoosable(false);
-		$this->getConfigurator()->addAdaption(new PathPartConfig());
+		$this->getConfigurator()->addAdaption(new PathPartConfig($this));
 	}
 	
 	function getTypeName(): string {
@@ -91,7 +90,7 @@ class PathPartEiProp extends AlphanumericEiProp {
 		
 		return $eiu->factory()->newGuiField($siField)
 				->setSaver(function () use ($eiu, $siField) {
-					$this->save($siField, $eiu);
+					$this->saveSiField($siField, $eiu);
 				});
 	}
 	

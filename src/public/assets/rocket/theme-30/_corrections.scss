@@ -16,6 +16,7 @@
     }
     &:before {
         font-family: $font-name-icons;
+        font-weight: bold;
         font-size: .75em;
         -moz-osx-font-smoothing: grayscale;
     }

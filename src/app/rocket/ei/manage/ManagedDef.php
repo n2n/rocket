@@ -30,8 +30,9 @@ use rocket\ei\manage\idname\IdNameDefinition;
 use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\component\EiComponentCollection;
 use rocket\ei\manage\critmod\quick\QuickSearchDefinition;
+use rocket\ei\component\EiComponentCollectionListener;
 
-class ManagedDef {
+class ManagedDef implements EiComponentCollectionListener{
 	
 	private $manageState;
 	
@@ -125,7 +126,7 @@ class ManagedDef {
 			$this->filterDefinitions[$eiTypePathStr] = $eiMask->getEiEngine()
 					->createFilterDefinition($this->manageState->getN2nContext());
 			
-			$this->registerListeners($this);
+			$this->registerListeners($eiMask);
 		}
 		
 		return $this->filterDefinitions[$eiTypePathStr];

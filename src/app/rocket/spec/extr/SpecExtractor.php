@@ -437,7 +437,8 @@ class SpecExtractor {
 			$defPropPathStr = $displayStructureDataSet->getScalar(RawDef::DISPLAY_ITEM_GUI_ID_PATH_KEY, false, null, true);
 			if (null !== $defPropPathStr) {
 				$displayStructure->addDefPropPath(DefPropPath::create($defPropPathStr), 
-						$displayStructureDataSet->optEnum(RawDef::DISPLAY_ITEM_GROUP_TYPE_KEY, SiStructureType::all()), 
+						$displayStructureDataSet->optEnum(RawDef::DISPLAY_ITEM_GROUP_TYPE_KEY, SiStructureType::all()) ?? SiStructureType::ITEM, 
+// 						$displayStructureDataSet->optBool(RawDef::DISPLAY_ITEM_AUTONOMIC_KEY, false),
 						Rocket::buildLstr($label, $this->moduleNamespace));
 				continue;
 			}
@@ -445,7 +446,8 @@ class SpecExtractor {
 			$childDisplayStructure = $this->createDisplayStructure(
 					$displayStructureDataSet->getArray(RawDef::DISPLAY_ITEM_DISPLAY_STRUCTURE_KEY));
 			$displayStructure->addDisplayStructure($childDisplayStructure, 
-					$displayStructureDataSet->reqEnum(RawDef::DISPLAY_ITEM_GROUP_TYPE_KEY, SiStructureType::all()), 
+					$displayStructureDataSet->reqEnum(RawDef::DISPLAY_ITEM_GROUP_TYPE_KEY, SiStructureType::all()),
+// 					$displayStructureDataSet->optBool(RawDef::DISPLAY_ITEM_AUTONOMIC_KEY, false),
 					Rocket::buildLstr($label, $this->moduleNamespace));
 		}
 	

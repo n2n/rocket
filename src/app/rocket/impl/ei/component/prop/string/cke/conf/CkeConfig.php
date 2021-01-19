@@ -149,7 +149,7 @@ class CkeConfig extends PropConfigAdaption {
 				self::ATTR_TABLES_SUPPORTED_KEY, self::ATTR_BBCODE_KEY), true), true);
 	}
 	
-	function testCompatibility(PropertyAssignation $propertyAssignation): int {
+	function testCompatibility(PropertyAssignation $propertyAssignation): ?int {
 		$level = parent::testCompatibility($propertyAssignation);
 		if (CompatibilityLevel::NOT_COMPATIBLE === $level) {
 			return $level;

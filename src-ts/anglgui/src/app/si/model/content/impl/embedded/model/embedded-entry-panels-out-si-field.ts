@@ -120,6 +120,8 @@ class EmbeddedEntryPanelsOutUiStructureModel extends UiStructureModelAdapter {
 	}
 
 	bind(uiStructure: UiStructure) {
+		super.bind(uiStructure);
+
 		const panelDefs = new Array<PanelDef>();
 		for (const panelAssembly of this.panelAssemblies) {
 			panelDefs.push({

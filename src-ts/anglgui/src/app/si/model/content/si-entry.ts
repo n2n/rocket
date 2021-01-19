@@ -18,6 +18,10 @@ export class SiEntry {
 	constructor(readonly identifier: SiEntryIdentifier) {
 	}
 
+	isNew(): boolean {
+		return this.identifier.id === null || this.identifier.id === undefined;
+	}
+
 	get qualifier(): SiEntryQualifier {
 		return this.selectedEntryBuildup.entryQualifier;
 	}
@@ -130,7 +134,7 @@ export class SiEntry {
 		const fieldInputMap = new Map<string, object>();
 
 		for (const [id, field] of this.selectedEntryBuildup.getFieldMap()) {
-			if (!field.hasInput()) {
+			if (!field.hasInput() || field.isDisabled()) {
 				continue;
 			}
 

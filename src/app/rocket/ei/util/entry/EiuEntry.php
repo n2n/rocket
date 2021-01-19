@@ -569,7 +569,7 @@ class EiuEntry {
 	 * @return \rocket\ei\manage\entry\EiFieldWrapper|null
 	 */
 	public function getEiFieldAbstraction($defPropPath, bool $required = false) {
-		$guiDefinition = $this->getEiuFrame()->getContextEiuEngine()->getGuiDefinition();
+		$guiDefinition = $this->mask()->engine()->getGuiDefinition();
 		try {
 			return $guiDefinition->determineEiFieldAbstraction($this->eiuAnalyst->getN2nContext(true),
 					$this->getEiEntry(), DefPropPath::create($defPropPath));
@@ -587,7 +587,7 @@ class EiuEntry {
 	public function isTypeOf($eiTypeArg) {
 		$eiType = EiuAnalyst::buildEiTypeFromEiArg($eiTypeArg, 'eiTypeArg');
 		
-		return $this->getEiType()->equals($eiType);
+		return $this->getEiType()->isA($eiType);
 	}
 	
 	

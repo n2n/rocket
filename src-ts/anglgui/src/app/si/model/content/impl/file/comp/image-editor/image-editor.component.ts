@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, DoCheck } from '@angular/core';
 import { SiFile, SiImageDimension } from '../../model/file-in-si-field';
 import { ImageEditorModel, UploadResult } from '../image-editor-model';
 import { ImageSrc } from './image-src';
@@ -9,7 +9,7 @@ import { ThumbRatio } from './thumb-ratio';
 	templateUrl: './image-editor.component.html',
 	styleUrls: ['./image-editor.component.css']
 })
-export class ImageEditorComponent implements OnInit, AfterViewInit {
+export class ImageEditorComponent implements OnInit, DoCheck, AfterViewInit {
 
 	model: ImageEditorModel;
 
@@ -25,6 +25,7 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 
 	currentThumbRatio: ThumbRatio|null = null;
 	currentImageDimension: SiImageDimension|null = null;
+	private currentImageDimensionThumbRatio: ThumbRatio|null = null;
 
 	uploadResult: UploadResult;
 	private saving = false;
@@ -41,6 +42,12 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 		});
 
 		this.initSiFile(this.model.getSiFile());
+	}
+
+	ngDoCheck() {
+		if (this.currentImageDimensionThumbRatio) {
+			this.currentImageDimensionThumbRatio.updateGroups();
+		}
 	}
 
 	ngAfterViewInit() {
@@ -129,6 +136,7 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 	private resetSelection() {
 		this.currentThumbRatio = null;
 		this.currentImageDimension = null;
+		this.currentImageDimensionThumbRatio = null;
 
 		for (const [, thumbRatio] of this.ratioMap) {
 			thumbRatio.updateGroups();
@@ -156,10 +164,11 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 		this.updateCut();
 	}
 
-	switchToImageDimension(imageDimension: SiImageDimension) {
+	switchToImageDimension(imageDimension: SiImageDimension, thumbRatio: ThumbRatio) {
 		this.resetSelection();
 
 		this.currentImageDimension = imageDimension;
+		this.currentImageDimensionThumbRatio = thumbRatio;
 		this.updateCut();
 	}
 
@@ -168,8 +177,12 @@ export class ImageEditorComponent implements OnInit, AfterViewInit {
 		this.updateCut();
 	}
 
-	private updateCut() {
+	isThumbRatioActive(thumbRatio: ThumbRatio): boolean {
+		return this.currentThumbRatio === thumbRatio
+				|| (this.currentImageDimension && thumbRatio.containImageDimension(this.currentImageDimension))
+	}
 
+	private updateCut() {
 		if (this.currentThumbRatio) {
 			this.imageSrc.cut(this.currentThumbRatio.getGroupedImageCuts(), {
 				ratio: this.currentThumbRatio.imageDimensions[0].width / this.currentThumbRatio.imageDimensions[0].height,

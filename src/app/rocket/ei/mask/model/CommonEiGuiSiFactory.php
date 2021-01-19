@@ -29,46 +29,46 @@ class CommonEiGuiSiFactory implements EiGuiSiFactory {
 	
 	
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\EiGuiSiFactory::getSiStructureDeclarations()
-	 */
-	private function createFieldStructureDeclarations(DisplayStructure $displayStructure) {
-		$fieldStructureDeclarations = [];
-		foreach ($displayStructure->getDisplayItems() as $displayItem) {
+// 	/**
+// 	 * {@inheritDoc}
+// 	 * @see \rocket\ei\manage\gui\EiGuiSiFactory::getSiStructureDeclarations()
+// 	 */
+// 	private function createFieldStructureDeclarations(DisplayStructure $displayStructure) {
+// 		$fieldStructureDeclarations = [];
+// 		foreach ($displayStructure->getDisplayItems() as $displayItem) {
 			
-			$propId = null;
-			$label = null;
-			$children = [];
-			if (!$displayItem->hasDisplayStructure()) {
-				$guiPropAssembly = $this->eiGuiFrame->getGuiPropAssemblyByDefPropPath($displayItem->getDefPropPath());
-				$propId = (string) $guiPropAssembly->getDefPropPath();
-			} else {
-				if (null !== ($labelLstr = $displayItem->getLabelLstr())) {
-					$label = $labelLstr->t($this->eiGuiFrame->getEiFrame()->getN2nContext()->getN2nLocale());
-				}
-				$children = $this->createFieldStructureDeclarations($displayItem->getDisplayStructure());
-			}
+// 			$propId = null;
+// 			$label = null;
+// 			$children = [];
+// 			if (!$displayItem->hasDisplayStructure()) {
+// 				$guiPropAssembly = $this->eiGuiFrame->getGuiPropAssemblyByDefPropPath($displayItem->getDefPropPath());
+// 				$propId = (string) $guiPropAssembly->getDefPropPath();
+// 			} else {
+// 				if (null !== ($labelLstr = $displayItem->getLabelLstr())) {
+// 					$label = $labelLstr->t($this->eiGuiFrame->getEiFrame()->getN2nContext()->getN2nLocale());
+// 				}
+// 				$children = $this->createFieldStructureDeclarations($displayItem->getDisplayStructure());
+// 			}
 			
-			$fieldStructureDeclarations[] = new SiStructureDeclaration(
-					$displayItem->getSiStructureType() ?? $guiPropAssembly->getDisplayDefinition()->getSiStructureType(),
-					$propId, $label, $children);
-		}
-		return $fieldStructureDeclarations;
-	}
+// 			$fieldStructureDeclarations[] = new SiStructureDeclaration(
+// 					$displayItem->getSiStructureType() ?? $guiPropAssembly->getDisplayDefinition()->getSiStructureType(),
+// 					$propId, $label, $children);
+// 		}
+// 		return $fieldStructureDeclarations;
+// 	}
 		
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\EiGuiSiFactory::getFieldDeclarationStrutures()
-	 */
-	function getSiStructureDeclarations(): array {
-		if (ViewMode::isCompact($this->eiGuiFrame->getViewMode())) {
-			return [];
-		}
+// 	/**
+// 	 * {@inheritDoc}
+// 	 * @see \rocket\ei\manage\gui\EiGuiSiFactory::getFieldDeclarationStrutures()
+// 	 */
+// 	function getSiStructureDeclarations(): array {
+// 		if (ViewMode::isCompact($this->eiGuiFrame->getViewMode())) {
+// 			return [];
+// 		}
 		
-		IllegalStateException::assertTrue($this->displayStructure !== null);
-		return $this->createFieldStructureDeclarations($this->displayStructure);
-	}
+// 		IllegalStateException::assertTrue($this->displayStructure !== null);
+// 		return $this->createFieldStructureDeclarations($this->displayStructure);
+// 	}
 
 	
 	

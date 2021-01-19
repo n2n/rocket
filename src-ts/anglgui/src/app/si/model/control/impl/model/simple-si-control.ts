@@ -1,12 +1,12 @@
 import { SiControl } from 'src/app/si/model/control/si-control';
 import { SiButton } from 'src/app/si/model/control/impl/model/si-button';
-import { SiUiService } from 'src/app/si/manage/si-ui.service';
 import { ButtonControlUiContent } from '../comp/button-control-ui-content';
 import { ButtonControlModel } from '../comp/button-control-model';
 import { UiZone } from 'src/app/ui/structure/model/ui-zone';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
 
 export class SimpleSiControl implements SiControl, ButtonControlModel {
+	public disabled = false;
 
 	constructor(public siButton: SiButton, public callback: () => any) {
 	}
@@ -20,7 +20,7 @@ export class SimpleSiControl implements SiControl, ButtonControlModel {
 	}
 
 	isDisabled(): boolean {
-		return false;
+		return this.disabled;
 	}
 
 	exec(): void {

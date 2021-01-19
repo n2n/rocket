@@ -27,7 +27,7 @@ use rocket\impl\ei\component\command\adapter\IndependentEiCommandAdapter;
 class TreeMoveEiCommand extends IndependentEiCommandAdapter {
 	const ID_BASE = 'tree-move';
 	const CONTROL_INSERT_BEFORE_KEY = 'insertBefore';
-	const CONTROL_INSERT_AFTER_KEY = 'insertAfter';
+	const CONTROL_INSERT_CHILD_ = 'insertAfter';
 	const CONTROL_INSERT_CHILD_KEY = 'insertChild';
 	
 	public function getIdBase(): ?string {
@@ -80,7 +80,7 @@ class TreeMoveEiCommand extends IndependentEiCommandAdapter {
 // 								true, SiButton::TYPE_INFO, SiIconType::CARET_RIGHT, array('class' => 'rocket-impl-insert-as-child'), false, false)));
 // 	}
 // 	/* (non-PHPdoc)
-// 	 * @see \rocket\ei\component\command\control\EntryGuiControlComponent::getEntryGuiControlOptions()
+// 	 * @see \rocket\ei\component\command\control\\GuiControlComponent::getEntryGuiControlOptions()
 // 	 */
 // 	public function getEntryGuiControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {
 // 		$dtc = new DynamicTextCollection('rocket', $n2nLocale);

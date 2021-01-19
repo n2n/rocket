@@ -91,7 +91,7 @@ class TranslationConfig extends PropConfigAdaption {
 		return $this->translationsMinNum;
 	}
 	
-	public function testCompatibility(PropertyAssignation $propertyAssignation): int {
+	public function testCompatibility(PropertyAssignation $propertyAssignation): ?int {
 		$level = parent::testCompatibility($propertyAssignation);
 		if (CompatibilityLevel::NOT_COMPATIBLE == $level) {
 			return CompatibilityLevel::NOT_COMPATIBLE;

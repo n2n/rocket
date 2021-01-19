@@ -6105,7 +6105,7 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   padding: 0;
 }
 
-.rocket-table .rocket-simple-commands .btn > span,
+.rocket-table .rocket-simple-commands > .btn > span,
 .rocket-table .rocket-simple-commands > rocket-button-control > .btn > span {
   display: none;
 }
@@ -6119,6 +6119,58 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
 
 .rocket-tree-level-0 > td {
   font-weight: bold;
+}
+
+td > .rocket-split {
+  width: auto;
+}
+
+td > .rocket-split > .rocket-item {
+  -webkit-box-align: baseline;
+      -ms-flex-align: baseline;
+          align-items: baseline;
+  min-height: unset;
+  padding: 0;
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: auto 1fr;
+  grid-template-columns: auto 1fr;
+  margin: 0;
+}
+
+td > .rocket-split > .rocket-item > label {
+  position: static;
+  -ms-grid-column: 2;
+  grid-column-start: 2;
+  grid-column-end: 3;
+  font-size: 0.75rem;
+  color: #837E78;
+  width: auto;
+  white-space: nowrap;
+  padding: 0.325rem 0 0 0;
+  border: none;
+  margin: 0;
+}
+
+td > .rocket-split > .rocket-item > .rocket-structure-content {
+  -ms-grid-row: 1;
+  grid-row-start: 1;
+  -ms-grid-column: 1;
+  grid-column-start: 1;
+  grid-column-end: 2;
+  padding: 0;
+}
+
+td > .rocket-split > .rocket-item > .rocket-structure-content:not(:empty) {
+  padding: 0 .5em 0 0;
+}
+
+td > rocket-crumb-out-field > rocket-crumb-group > i:first-child:not(:only-child) {
+  margin-right: .5em;
+}
+
+td > rocket-crumb-out-field > rocket-crumb-group > i:last-child:not(:only-child) {
+  margin-left: .5em;
 }
 
 .rocket-tree-level-1 > td:first-child:not(.rocket-entry-selector)::before,
@@ -7122,7 +7174,7 @@ rocket-add-past > button::after {
 }
 
 .rocket-simple-commands > .btn > i,
-.rocket-simple-commands > rocket-button-control .btn > i {
+.rocket-simple-commands > rocket-button-control > .btn > i {
   font-size: 1.25rem;
 }
 
@@ -7394,7 +7446,7 @@ rocket-button-control .dropdown > div div > .btn:hover, rocket-button-control .d
 }
 
 .rocket-image-resizer-images-panel {
-  padding: 0 1rem;
+  padding: 0 0 0 1rem;
 }
 
 .rocket-image-resizer-images-original {
@@ -7487,32 +7539,127 @@ rocket-button-control .dropdown > div div > .btn:hover, rocket-button-control .d
   left: 0px;
 }
 
-.rocket-image-dimensions > .rocket-image-version {
-  position: relative;
-  padding: 0.5rem 0;
-}
-
-.rocket-image-dimensions > .rocket-image-version .rocket-simple-commands {
-  position: absolute;
-  top: 0.25rem;
-  right: 0.5rem;
+ul.rocket-image-dimensions,
+ul.rocket-image-dimensions ul {
+  list-style: none;
   padding: 0;
 }
 
-.rocket-image-dimensions > .rocket-image-version.rocket-image-ratio:not(:first-child) {
-  border-top: 1px solid #DAD7D3;
+.rocket-image-dimensions > .rocket-image-version {
+  margin-bottom: 10px;
 }
 
-.rocket-image-dimensions > .rocket-image-version > label,
-.rocket-image-dimensions > .rocket-image-version > input {
-  margin-right: 0.75rem;
-  margin-bottom: 0;
+.rocket-image-resizer-images-original .btn.active,
+.rocket-image-version.active {
+  outline: 4px solid #ECEBE9;
 }
 
-.rocket-image-dimensions > .rocket-image-version > a {
+.rocket-image-version > ul {
+  display: none;
+}
+
+.rocket-image-version.open > ul {
+  display: block;
+  margin-top: -1px;
+}
+
+.rocket-image-version > ul > li {
+  margin-bottom: -1px;
+}
+
+.rocket-image-version-controls {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: nowrap;
+      flex-wrap: nowrap;
+  width: 100%;
+  -ms-flex-preferred-size: 100%;
+      flex-basis: 100%;
+}
+
+.rocket-image-resizer-images-original .btn:not(:disabled):not(.disabled).active,
+.rocket-image-version .btn:not(:disabled):not(.disabled).active {
+  position: relative;
+  z-index: 0;
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  background: #ECEBE9;
+}
+
+.rocket-image-resizer-images-original .btn:not(:disabled):not(.disabled).active:first-child:before,
+.rocket-image-version .btn:not(:disabled):not(.disabled).active:first-child:before {
+  content: "";
   position: absolute;
-  top: 0.5rem;
-  right: 1rem;
+  width: 4px;
+  background: #ed8207;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: -1;
+}
+
+.rocket-image-version-controls > .btn + .btn {
+  margin-left: -1px;
+}
+
+.rocket-image-resizer-btn-label {
+  font-size: 0.875rem;
+}
+
+.rocket-image-resizer-btn-label-infos {
+  color: #C2BDB6;
+  font-size: 0.75rem;
+}
+
+.rocket-image-resizer-thumb-image {
+  -webkit-box-flex: 0;
+      -ms-flex: 0 0 50px;
+          flex: 0 0 50px;
+  height: 50px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  border: 1px solid #ECEBE9;
+  position: relative;
+  background-image: linear-gradient(45deg, rgba(0, 0, 0, 0.2) 25%, transparent 25%), linear-gradient(-45deg, rgba(0, 0, 0, 0.2) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, rgba(0, 0, 0, 0.2) 75%), linear-gradient(-45deg, transparent 75%, rgba(0, 0, 0, 0.2) 75%);
+  background-size: 10px 10px;
+  background-position: 0 0, 0 5px, 5px -5px, -5px 0px;
+}
+
+.rocket-image-resizer-thumb-image .sr-only {
+  position: absolute !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.rocket-image-resizer-thumb-image rocket-image-preview,
+.rocket-image-resizer-thumb-image .rocket-image-preview {
+  position: relative;
+  z-index: 0;
+}
+
+.rocket-image-resizer-thumb-image rocket-image-preview:after,
+.rocket-image-resizer-thumb-image .rocket-image-preview:after {
+  content: "";
+  position: absolute;
+  background: #000;
+  opacity: 0.2;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: -1;
 }
 
 .rocket-fixed-ration-container {
@@ -7873,6 +8020,7 @@ rocket-button-control .dropdown > div div > .btn:hover, rocket-button-control .d
 
 .breadcrumb-item:before {
   font-family: "Font Awesome 5 Free";
+  font-weight: bold;
   font-size: .75em;
   -moz-osx-font-smoothing: grayscale;
 }

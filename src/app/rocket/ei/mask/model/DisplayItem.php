@@ -15,8 +15,8 @@ class DisplayItem {
 	protected $helpText;
 	protected $moduleNamespace;
 	protected $siStructureType;
+	protected $autonomic = false;
 	protected $defPropPath;
-	protected $attrs;
 	protected $displayStructure;
 
 	private function __construct() {
@@ -26,32 +26,33 @@ class DisplayItem {
 	 * @param DefPropPath $defPropPath
 	 * @return DisplayItem
 	 */
-	public static function create(DefPropPath $defPropPath, string $siStructureType = null) {
+	public static function create(DefPropPath $defPropPath, string $siStructureType/*, bool $autonomic = false*/) {
 		$orderItem = new DisplayItem();
-		ArgUtils::valEnum($siStructureType, SiStructureType::all(), null, true);
+		ArgUtils::valEnum($siStructureType, SiStructureType::all());
 		$orderItem->siStructureType = $siStructureType;
 		$orderItem->defPropPath = $defPropPath;
+// 		$orderItem->autonomic = $autonomic;
 		return $orderItem;
 	}
 	
-	/**
-	 * @param DefPropPath $defPropPath
-	 * @return DisplayItem
-	 * @deprecated
-	 */
-	public static function createFromDefPropPath(DefPropPath $defPropPath, string $siStructureType = null) {
-		$orderItem = new DisplayItem();
-		ArgUtils::valEnum($siStructureType, SiStructureType::all(), null, true);
-		$orderItem->siStructureType = $siStructureType;
-		$orderItem->defPropPath = $defPropPath;
-		return $orderItem;
-	}
+// 	/**
+// 	 * @param DefPropPath $defPropPath
+// 	 * @return DisplayItem
+// 	 * @deprecated
+// 	 */
+// 	public static function createFromDefPropPath(DefPropPath $defPropPath, string $siStructureType = null) {
+// 		$orderItem = new DisplayItem();
+// 		ArgUtils::valEnum($siStructureType, SiStructureType::all(), null, true);
+// 		$orderItem->siStructureType = $siStructureType;
+// 		$orderItem->defPropPath = $defPropPath;
+// 		return $orderItem;
+// 	}
 
 	/**
 	 * @param DisplayStructure $displayStructure
 	 * @return DisplayItem
 	 */
-	public static function createFromDisplayStructure(DisplayStructure $displayStructure, string $siStructureType, 
+	public static function createFromDisplayStructure(DisplayStructure $displayStructure, string $siStructureType/*, bool $autonomic = false*/,
 			string $label = null, string $helpText = null, string $moduleNamespace = null) {
 		$displayItem = new DisplayItem();
 		$displayItem->displayStructure = $displayStructure;
@@ -75,7 +76,6 @@ class DisplayItem {
 		ArgUtils::valEnum($siStructureType, SiStructureType::all(), null, true);
 		$displayItem->siStructureType = $siStructureType ?? $this->siStructureType;
 // 		$displayItem->labelLstr = $labelLstr ?? $this->labelLstr;
-		$displayItem->attrs = $attrs ?? $this->attrs;
 		return $displayItem;
 	}
 	

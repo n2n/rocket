@@ -1,9 +1,1 @@
-<ng-container *ngIf="model.getValue()">
-	<i class="fa fa-toggle-on" (click)="model.setValue(false)"></i>
-</ng-container>
-
-<ng-container *ngIf="!model.getValue()">
-	<i class="fa fa-toggle-off" (click)="model.setValue(true)"></i>
-</ng-container>
-
-(Tomekk, mach das schöner.)
+<rocket-ui-toggler [enabled]="model.getValue()" (enabledChange)="model.setValue($event)"></rocket-ui-toggler>

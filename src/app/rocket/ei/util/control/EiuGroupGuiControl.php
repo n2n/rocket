@@ -24,25 +24,21 @@ namespace rocket\ei\util\control;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\si\control\SiControl;
 use rocket\si\control\SiResult;
-use n2n\util\ex\NotYetImplementedException;
-use n2n\util\uri\Url;
 use rocket\si\control\SiButton;
-use rocket\si\control\impl\RefSiControl;
-use rocket\ei\manage\gui\control\EntryGuiControl;
-use rocket\ei\manage\gui\control\GeneralGuiControl;
-use rocket\ei\manage\gui\control\SelectionGuiControl;
 use rocket\ei\manage\api\ApiControlCallId;
 use rocket\ei\manage\gui\EiGuiModel;
 use rocket\ei\manage\frame\EiFrame;
+use rocket\ei\manage\gui\control\GuiControl;
+use rocket\si\control\impl\GroupSiControl;
+use n2n\util\ex\UnsupportedOperationException;
 
-class EiuGroupGuiControl implements GeneralGuiControl, EntryGuiControl, SelectionGuiControl {
+class EiuGroupGuiControl implements GuiControl {
 	private $id;
-	private $url;
 	private $siButton;
+	private $childrean = [];
 	
 	function __construct(string $id, SiButton $siButton) {
 		$this->id = $id;
-		$this->url = $url;
 		$this->siButton = $siButton;
 	}
 	
@@ -58,19 +54,37 @@ class EiuGroupGuiControl implements GeneralGuiControl, EntryGuiControl, Selectio
 		return false;
 	}
 	
+	/**
+	 * @param GuiControl $guiControl
+	 * @return \rocket\ei\util\control\EiuGroupGuiControl
+	 */
+	function add(GuiControl ...$guiControls) {
+		foreach ($guiControls as $guiControl) {
+			$this->childrean[$guiControl->getId()] = $guiControl;
+		}
+		return $this;
+	}
+	
 	function toSiControl(ApiControlCallId $siApiCallId): SiControl {
-		return new RefSiControl($this->url, $this->siButton);
+		return new GroupSiControl($this->siButton, 
+				array_map(function ($child) use ($siApiCallId) {
+					return $child->toSiControl($siApiCallId->guiControlPathExt($child->getId()));
+				}, $this->childrean));;
+	}
+	
+	function getChilById(string $id): ?GuiControl {
+		return $this->childrean[$id] ?? null;
 	}
 	
 	public function handleEntries(EiFrame $eiFrame, EiGuiModel $eiGuiModel, array $eiEntries): SiResult {
-		throw new NotYetImplementedException();
+		throw new UnsupportedOperationException('no input handled');
 	}
 
 	public function handle(EiFrame $eiFrame, EiGuiModel $eiGuiModel, array $inputEiEntries): SiResult {
-		throw new NotYetImplementedException();
+		throw new UnsupportedOperationException('no input handled');
 	}
 
 	public function handleEntry(EiFrame $eiFrame, EiGuiModel $eiGuiModel, EiEntry $eiEntry): SiResult {
-		throw new NotYetImplementedException();
+		throw new UnsupportedOperationException('no input handled');
 	}
 }

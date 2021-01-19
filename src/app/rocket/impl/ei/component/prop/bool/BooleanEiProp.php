@@ -57,7 +57,7 @@ class BooleanEiProp extends DraftablePropertyEiPropAdapter implements Filterable
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter::createEiPropConfigurator()
 	 */
-	function prepare() {
+	protected function prepare() {
 		$this->getConfigurator()->addAdaption($this->booleanConfig);
 	}
 	
@@ -113,19 +113,22 @@ class BooleanEiProp extends DraftablePropertyEiPropAdapter implements Filterable
 	
 	function createInEifGuiField(Eiu $eiu): EifGuiField {
 		$mapCb = function ($defPropPath) { return (string) $defPropPath; };
-		
+
 		$siField = SiFields::boolIn($eiu->field()->getValue())
 				->setMandatory($this->getEditConfig()->isMandatory())
 				->setOnAssociatedPropIds(array_map($mapCb, $this->booleanConfig->getOnAssociatedDefPropPaths()))
 				->setOffAssociatedPropIds(array_map($mapCb, $this->booleanConfig->getOffAssociatedDefPropPaths()));
 		
-		return $eiu->factory()->newGuiField($siField);
+		return $eiu->factory()->newGuiField($siField)
+				->setSaver(function () use ($siField, $eiu) {
+					$eiu->field()->setValue($siField->getValue());
+				});
 	}
 	
 	
-	function saveSiField(SiField $siField, Eiu $eiu) {
-		$eiu->field()->setValue($siField->getValue());
-	}
+// 	function saveSiField(SiField $siField, Eiu $eiu) {
+// 		$eiu->field()->setValue($siField->getValue());
+// 	}
 	
 	function buildEiField(Eiu $eiu): ?EiField {
 		$eiu->entry()->onValidate(function () use ($eiu) {

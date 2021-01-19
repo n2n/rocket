@@ -295,7 +295,7 @@ class EiuCtrl {
 		return false;
 	}
 	
-	function forwardListZone(int $pageSize = 30, string $title = null) {
+	function forwardCompactExplorerZone(int $pageSize = 30, string $title = null) {
 		if ($this->forwardHtml()) {
 			return;
 		}
@@ -350,7 +350,7 @@ class EiuCtrl {
 		}
 	}
 	
-	function forwardDlZone($eiEntryArg, bool $readOnly, bool $generalSiControlsIncluded, bool $entrySiControlsIncluded = true) {
+	function forwardBulkyEntryZone($eiEntryArg, bool $readOnly, bool $generalSiControlsIncluded, bool $entrySiControlsIncluded = true) {
 		if ($this->forwardHtml()) {
 			return;
 		}
@@ -365,7 +365,7 @@ class EiuCtrl {
 						$eiuEntry->createIdentityString()));
 	}
 	
-	function forwardNewEntryDlZone(bool $editable = true, bool $generalSiControlsIncluded = true, bool $entrySiControlsIncluded = true) {
+	function forwardNewBulkyEntryZone(bool $editable = true, bool $generalSiControlsIncluded = true, bool $entrySiControlsIncluded = true) {
 		if ($this->forwardHtml()) {
 			return;
 		}
@@ -416,6 +416,19 @@ class EiuCtrl {
 				SiPayloadFactory::create($siComp, 
 						$this->rocketState->getBreadcrumbs(),
 						$this->eiu->dtc('rocket')->t('common_new_entry_label')));
+	}
+	
+	function forwardIframeZone(Url $url, string $title = null) {
+		if ($this->forwardHtml()) {
+			return;
+		}
+		
+		$iframeSiGui = new IframeSiGui($url);
+		
+		$this->httpContext->getResponse()->send(
+				SiPayloadFactory::create($iframeSiGui,
+						$this->rocketState->getBreadcrumbs(),
+						$title ?? 'Iframe'));
 	}
 	
 	/**

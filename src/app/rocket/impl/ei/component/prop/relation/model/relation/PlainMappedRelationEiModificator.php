@@ -26,6 +26,7 @@ use n2n\reflection\property\AccessProxy;
 use rocket\ei\manage\entry\WrittenMappingListener;
 use rocket\ei\manage\frame\EiFrameListener;
 use rocket\ei\manage\entry\EiEntry;
+use rocket\ei\manage\security\EiExecution;
 
 class PlainMappedRelationEiModificator implements EiFrameListener {
 	private $targetEiFrame;
@@ -47,9 +48,8 @@ class PlainMappedRelationEiModificator implements EiFrameListener {
 		if (/*$this->targetEiFrame !== $eiFrame
 				||*/ !$eiEntry->getEiObject()->isNew()) return;
 
-		$that = $this;
 		$targetEntityObj = $eiEntry->getEiObject()->getLiveObject();
-		$eiEntry->registerListener(new WrittenMappingListener(function () use ($that, $targetEntityObj) {
+		$eiEntry->registerListener(new WrittenMappingListener(function () use ($targetEntityObj) {
 			$this->write($targetEntityObj);
 		}));
 	}
@@ -66,5 +66,8 @@ class PlainMappedRelationEiModificator implements EiFrameListener {
 		}
 		$value[] = $this->entityObj;
 		$this->targetAccessProxy->setValue($targetEntityObj, $value);
+	}
+	
+	public function whenExecuted(EiExecution $eiExecution) {
 	}
 }

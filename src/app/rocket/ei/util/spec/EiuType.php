@@ -21,14 +21,11 @@
  */
 namespace rocket\ei\util\spec;
 
-use rocket\ei\util\EiuAnalyst;
 use rocket\ei\EiType;
-use rocket\ei\util\entry\EiuObject;
-use rocket\user\model\LoginContext;
-use n2n\util\type\CastUtils;
-use rocket\spec\UnknownTypeException;
-use rocket\si\meta\SiMaskQualifier;
 use rocket\ei\manage\LiveEiObject;
+use rocket\ei\util\EiuAnalyst;
+use rocket\ei\util\entry\EiuObject;
+use rocket\spec\UnknownTypeException;
 
 class EiuType  {
 	private $eiType;
@@ -221,5 +218,12 @@ class EiuType  {
 	function matches($object) {
 		$eiType = EiuAnalyst::determineEiType($object, true);
 		return $this->eiType->isA($eiType);
+	}
+	
+	/**
+	 * @return \n2n\persistence\orm\model\EntityModel
+	 */
+	function getEntityModel() {
+		return $this->eiType->getEntityModel();
 	}
 }

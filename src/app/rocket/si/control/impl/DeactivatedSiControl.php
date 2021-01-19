@@ -19,20 +19,31 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\prop\ci\model;
+namespace rocket\si\control\impl;
 
-use n2n\impl\web\ui\view\html\HtmlView;
+use rocket\si\control\SiControl;
+use rocket\si\control\SiButton;
 
-abstract class DisablableContentItem extends ContentItem {
-	private $online;
+class DeactivatedSiControl implements SiControl {
+	/**
+	 * @var SiButton
+	 */
+	private $button;
 	
-	function isOnline() {
-		return $this->online;
+	/**
+	 * @param SiButton $button
+	 */
+	function __construct(SiButton $button) {
+		$this->button = $button;
 	}
 	
-	function setOnline(bool $online) {
-		$this->online = $online;
+	function getType(): string {
+		return 'deactivated';
 	}
 	
-	public abstract function createUiComponent(HtmlView $view);	
+	function getData(): array {
+		return [
+			'button' => $this->button
+		];
+	}
 }

@@ -23,6 +23,7 @@ namespace rocket\impl\ei\component\prop\translation;
 
 use n2n\l10n\N2nLocale;
 use n2n\util\type\ArgUtils;
+use n2n\util\col\ArrayUtils;
 
 class Translator {
 	
@@ -54,11 +55,7 @@ class Translator {
 			return $translatable;
 		}
 
-		if (0 < count($translatables)) {
-			return current($translatables);
-		}
-		
-		return null;
+		return ArrayUtils::first($translatables);
 	}
 	
 	public static function requireAny($translatables, N2nLocale ...$n2nLocales) {

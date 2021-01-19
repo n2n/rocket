@@ -168,7 +168,7 @@ class Spec {
 		if (isset($this->launchPads[$id])) {
 			return $this->launchPads[$id];
 		}
-		
+
 		return $this->initLaunchPadFromTypePath(TypePath::create($id));
 	}
 	
@@ -627,9 +627,9 @@ class EiSetupQueue {
 		}
 	}
 	
-	public function propIns(EiErrorResult $eiErrorResult = null) {
+	public function propIns() {
 		while (null !== ($propIns = array_shift($this->propIns))) {
-			$propIns->invoke($eiErrorResult);
+			$propIns->invoke($this->eiErrorResult);
 		}
 	}
 	
@@ -639,7 +639,7 @@ class EiSetupQueue {
 				continue;
 			}
 		
-			$propIn->invoke();
+			$propIn->invoke($this->eiErrorResult);
 			unset($this->propIns[$key]);
 		}
 	}
@@ -782,7 +782,8 @@ class PropIn {
 	private function createException($e) {
 		$eiComponent = $this->eiPropConfigurator->getEiComponent();
 		
-		return new InvalidEiComponentConfigurationException('EiProp is invalid configured: ' . $eiComponent, 0, $e);
+		return new InvalidEiComponentConfigurationException('EiProp is invalid configured: ' . $eiComponent . ' in ' 
+				. $eiComponent->getWrapper()->getEiPropCollection()->getEiMask(), 0, $e);
 	}
 }
 

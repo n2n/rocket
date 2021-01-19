@@ -1,13 +1,8 @@
 
-
-<div (click)="toggle()" class="d-flex align-items-center no-select">
-	<ng-container *ngIf="enabled">
-		<i class="{{ enabledIconClass }}"></i> 
-		<span *ngIf="labeled && enabledTextCode" class="ml-1">{{ enabledTextCode | translate }}</span>
-	</ng-container> 
-	
-	<ng-container *ngIf="!enabled">
-		<i class="{{ disabledIconClass }}"></i>
-		<span *ngIf="labeled && disabledTextCode" class="ml-1">{{ disabledTextCode | translate }}</span>
-	</ng-container> 
-</div>
+<button class="btn px-0 py-0 my-2" (click)="toggle()">
+	<div class="rocket-switch" [class.rocket-switch-off]="!enabled"  [class.rocket-switch-on]="enabled"></div>
+	<ng-container *ngIf="labeled">
+		<span *ngIf="enabled && enabledTextCode" class="ml-1">{{ enabledTextCode | translate }}</span>
+		<span *ngIf="!enabled && disabledTextCode" class="ml-1">{{ disabledTextCode | translate }}</span>
+	</ng-container>
+</button>

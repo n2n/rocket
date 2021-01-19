@@ -74,7 +74,7 @@ interface EiPropConfigurator extends EiConfigurator {
 	 * @param PropertyAssignation $propertyAssignation
 	 * @return int
 	 */
-	public function testCompatibility(PropertyAssignation $propertyAssignation): int;
+	public function testCompatibility(PropertyAssignation $propertyAssignation): ?int;
 	
 	/**
 	 * @param PropertyAssignation $propertyAssignation

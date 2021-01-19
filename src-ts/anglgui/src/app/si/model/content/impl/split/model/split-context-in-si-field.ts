@@ -6,11 +6,12 @@ import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { SplitManagerComponent } from '../comp/split-manager/split-manager.component';
 import { SplitManagerModel } from '../comp/split-manager-model';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 export class SplitContextInSiField extends SplitContextSiField implements SplitManagerModel {
 
 	managerStyle: SplitStyle = { iconClass: null, tooltip: null };
-	activeKeys = new Array<string>();
+	private activeKeysSubject = new BehaviorSubject<string[]>([]);
 	mandatoryKeys = new Array<string>();
 	min: number;
 
@@ -41,6 +42,18 @@ export class SplitContextInSiField extends SplitContextSiField implements SplitM
 		});
 	}
 
+	get activeKeys(): string[] {
+		return this.activeKeysSubject.getValue();
+	}
+
+	set activeKeys(activesKeys: string[]) {
+		this.activeKeysSubject.next(activesKeys);
+	}
+
+	get activeKeys$(): Observable<string[]> {
+		return this.activeKeysSubject.asObservable();
+	}
+
 	isKeyMandatory(key: string): boolean {
 		return -1 < this.mandatoryKeys.indexOf(key)
 				|| (this.activeKeys.length <= this.min && this.isKeyActive(key));
@@ -53,6 +66,7 @@ export class SplitContextInSiField extends SplitContextSiField implements SplitM
 
 		if (this.activeKeys.length < this.min && this.splitContentMap.has(key)) {
 			this.activeKeys.push(key);
+			this.triggetActiveKeysSubject();
 			return true;
 		}
 
@@ -66,6 +80,7 @@ export class SplitContextInSiField extends SplitContextSiField implements SplitM
 
 		if (!this.isKeyActive(key)) {
 			this.activeKeys.push(key);
+			this.triggetActiveKeysSubject();
 		}
 	}
 
@@ -74,7 +89,12 @@ export class SplitContextInSiField extends SplitContextSiField implements SplitM
 
 		if (i > -1) {
 			this.activeKeys.splice(i, 1);
+			this.triggetActiveKeysSubject();
 		}
+	}
+
+	private triggetActiveKeysSubject() {
+		this.activeKeysSubject.next([...this.activeKeys]);
 	}
 
 	getIconClass(): string {

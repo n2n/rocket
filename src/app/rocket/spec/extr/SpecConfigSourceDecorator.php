@@ -243,7 +243,19 @@ class SpecConfigSourceDecorator {
 		$this->eiModificatorExtractionGroups[$eiTypeId][] = $eiModificatorExtraction;
 	}
 	
-	
+	/**
+	 * @param string $entityClassName
+	 * @return boolean
+	 */
+	function containsEntityClassName(string $entityClassName) {
+		foreach ($this->eiTypeExtractions as $eiTypeExtraction) {
+			if ($eiTypeExtraction->getEntityClassName() === $entityClassName) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
 	
 // 	public function containsEiMaskId(string $eiTypeId, string $eiMaskId): bool {
 // 		return isset($this->eiTypeExtensionExtractionGroups[$eiTypeId][$eiMaskId]);
