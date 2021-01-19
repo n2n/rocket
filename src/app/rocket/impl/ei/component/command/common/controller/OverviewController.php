@@ -94,7 +94,7 @@ class OverviewController extends ControllerAdapter {
 // 						'filterJhtmlHook' => $filterJhtmlHook, 'listView' => $listView));
 	}
 	
-	public function doAjah(array $delegateCmds = array(), OverviewJhtmlController $ajahOverviewController, 
+	public function doAjah(OverviewJhtmlController $ajahOverviewController, array $delegateCmds = array(), 
 			ParamQuery $pageNo = null) {
 		if ($pageNo !== null) {
 			$pageNo = $pageNo->toNumericOrReject();
@@ -106,11 +106,11 @@ class OverviewController extends ControllerAdapter {
 		$this->delegate($ajahOverviewController);
 	}
 	
-	public function doFilter(array $delegateCmds = array(), FramedFilterPropController $filterPropController) {
+	public function doFilter(FramedFilterPropController $filterPropController, array $delegateCmds = array()) {
 		$this->delegate($filterPropController);
 	}
 	
-	public function doDrafts($pageNo = null, DynamicTextCollection $dtc) {
+	public function doDrafts(DynamicTextCollection $dtc, $pageNo = null) {
 		$eiFrame = $this->eiuCtrl->frame()->getEiFrame();
 		$draftListModel = new DraftListModel($eiFrame, $this->listSize);
 		
@@ -136,7 +136,7 @@ class OverviewController extends ControllerAdapter {
 				'overviewDraftAjahHook' => $overviewDraftAjahHook, 'listView' => $listView));
 	}
 
-	public function doDraftAjah(array $delegateCmds = array(), OverviewDraftJhtmlController $overviewDraftJhtmlController,
+	public function doDraftAjah(OverviewDraftJhtmlController $overviewDraftJhtmlController, array $delegateCmds = array(),
 			ParamQuery $pageNo = null) {
 		if ($pageNo !== null) {
 			$this->eiuCtrl->frame()->getEiFrame()->setCurrentUrlExt(

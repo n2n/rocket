@@ -330,7 +330,7 @@ class EiuHtmlBuilder {
 	}
 	
 	private function buildFieldAttrs(GuiFieldPath $guiFieldPath, bool $readOnly = true, bool $mandatory = false, 
-			array $attrs) {
+			array $attrs = []) {
 		$newAttrs = array('class' => 'rocket-field rocket-gui-field-' . implode('-', $guiFieldPath->toArray()));
 				
 		if ($mandatory) {

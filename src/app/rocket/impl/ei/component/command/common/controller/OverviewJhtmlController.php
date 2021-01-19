@@ -144,7 +144,7 @@ class OverviewJhtmlController extends ControllerAdapter {
 		$this->send(JhtmlResponse::view($listModel->getEiuGui()->createView(), $attrs));
 	}
 	
-	public function doFilter(array $delegateCmds = array(), FramedFilterPropController $filterPropController) {
+	public function doFilter(FramedFilterPropController $filterPropController, array $delegateCmds = array()) {
 		$this->delegate($filterPropController);
 	}
 	
