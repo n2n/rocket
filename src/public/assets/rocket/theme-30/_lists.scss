@@ -189,6 +189,7 @@ $rocket-tree-level-line-string:         '';
 
 td > .rocket-split {
     width: auto;
+    display: inline-block;
 }
 
 td > .rocket-split > .rocket-item {
@@ -272,8 +273,27 @@ td > rocket-crumb-out-field > rocket-crumb-group > i:last-child:not(:only-child)
 @for $i from 1 through $rocket-tree-level-num {
     .rocket-tree-level-#{$i} > td:first-child:not(.rocket-entry-selector)::before,
     .rocket-tree-level-#{$i} > .rocket-entry-selector + td::before {
-        $rocket-tree-level-line-string: $rocket-tree-level-line-string + $rocket-tree-level-indicator;
-        content: $rocket-tree-level-line-string;
+        content: "\00a0";
+        width: 1.5em;
+        background-image: $n2n-tree-indicator-icon;
+        background-repeat: no-repeat;
+        background-size: 10px 15px;
+        background-position: center left 0;
+        @if ($i > 1) {
+            margin-left: 0.3em;
+            border-left: 1px solid $gray-400;
+            width: 3em;
+            background-position: center right 50%;
+        }
+        @if ($i > 2) {
+            margin-left: ($i - 1) * 0.9em;
+            
+        }
+
+        @if ($i > 3) {
+            margin-left: ($i - 1) * 1.1em;
+            
+        }
     }
 }
 

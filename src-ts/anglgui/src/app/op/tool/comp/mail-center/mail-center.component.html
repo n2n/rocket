@@ -1,69 +1,54 @@
-<style>
-	.mail-item {
-		margin: 20px;
-		background: #fcfcfc;
-	}
-
-	.mail-item-headline {
-		height: 40px;
-		background: grey;
-	}
-
-  .mail-item-headline {
-    cursor: pointer;
-  }
-
-  .mail-item-headline h4 {
-    width: 90%;
-    display: inline-block;
-  }
-  .mail-item-headline .mail-item-visibility-toggler {
-    width: 10%;
-    background: lightgrey;
-    display: inline-block;
-    text-align: center;
-    height: 100%;
-  }
-</style>
-<rocket-ui-simple-zone-container [loading]="!mailItems" [title]="'tool_mail_center_title' | translate">
-	<select class="rocket-mail-paging" *ngIf="mailLogFileDatas.length > 0" #mailLogFileSelect
-					(change)="mailLogFileChanged(mailLogFileDatas[mailLogFileSelect.value])">
-		<option value="{{mailLogFileDatas.indexOf(mailLogFileData)}}" *ngFor="let mailLogFileData of mailLogFileDatas">
-				{{prettifyFilename(mailLogFileData.filename)}}
-		</option>
-	</select>
-
-  <div *ngIf="!mailItems || mailItems.length == 0">
-    {{'tool_mail_center_mails_empty_text' | translate}}
-  </div>
-
-	<div class="mail-item" *ngFor="let mailItem of mailItems">
-		<div class="mail-item-headline" (click)="mailItem.toggleVisibility()">
-			<h4>{{mailItem.subject}} {{mailItem.dateTime}}</h4>
-      <div class="mail-item-visibility-toggler">
-        <i class="fa {{mailItem.contentVisible ? 'fa-chevron-up':'fa-chevron-down'}}"></i>
-      </div>
-		</div>
-		<div class="mail-item-content" [@slide]="mailItem.contentVisible ? 'open':'closed'">
-			<div>{{'mail_center_mail_from_label' | translate}}: {{mailItem.from}}</div>
-			<div>{{'mail_center_mail_to_label' | translate}}: {{mailItem.to}}</div>
-			<div *ngIf="!!mailItem.cc">Cc: {{mailItem.cc}}</div>
-			<div *ngIf="!!mailItem.bcc">Bcc: {{mailItem.bcc}}</div>
-			<div *ngIf="!!mailItem.replyTo">{{'mail_center_mail_reply_to_label' | translate}}: {{mailItem.replyTo}}</div>
-			<div>
-        <h5>{{'mail_center_mail_message_label' | translate}}:</h5>
-        <p>{{mailItem.message}}</p>
-      </div>
-			<h5>{{'mail_center_mail_attachments_label' | translate }}</h5>
-      <ul>
-				<li *ngFor="let attachment of mailItem.attachments">
-					<a href="{{attachment.path}}" download="{{attachment.name}}">{{attachment.name}}</a>
-				</li>
-			</ul>
-		</div>
+<rocket-ui-simple-zone-container [loading]="!mailItems"
+	[title]="'tool_mail_center_title' | translate">
+<div class="row mb-3">
+	<div class="col-md-4 col-lg-3 col-xl-2">
+		<select class="rocket-mail-paging form-control" #mailLogFileSelect
+			(change)="mailLogFileChanged(mailLogFileDatas[mailLogFileSelect.value])">
+			<option value="{{mailLogFileDatas.indexOf(mailLogFileData)}}"
+				*ngFor="let mailLogFileData of mailLogFileDatas">
+				{{prettifyFilename(mailLogFileData.filename)}}</option>
+		</select>
 	</div>
-	<ng-container aside-commands>
-		<rocket-ui-pagination *ngIf="currentLogFileData!=null" [(currentPageNo)]="currentPageNo"
-													[totalPagesNo]="currentLogFileData.numPages"></rocket-ui-pagination>
-	</ng-container>
-</rocket-ui-simple-zone-container>
+</div>
+
+<div class="rocket-mail" *ngFor="let mailItem of mailItems">
+	<div class="rocket-mail-header"
+		(click)="mailItem.toggleVisibility()">
+		<h4 class="rocket-mail-subject">{{mailItem.subject}}</h4>
+		<span class="rocket-mail-senddate ml-auto">{{mailItem.dateTime}}</span>
+		<i class="rocket-mail-visibility-toggler fa {{mailItem.contentVisible ? 'fa-minus':'fa-plus'}}"></i>
+	</div>
+	<div class="rocket-mail-content" [@slide]="mailItem.contentVisible ? 'open':'closed'">
+		<dl class="rocket-mail-infos">
+			<dt>{{'mail_center_mail_from_label' | translate }}:</dt>
+			<dd>{{mailItem.from}}</dd>
+			<dt>{{'mail_center_mail_to_label' | translate }}:</dt>
+			<dd>{{mailItem.to}}</dd>
+			<dt *ngIf="!!mailItem.cc">Cc:</dt>
+			<dd *ngIf="!!mailItem.cc">{{mailItem.cc}}</dd>
+			<dt *ngIf="!!mailItem.bcc">Bcc:</dt>
+			<dd *ngIf="!!mailItem.bcc">{{mailItem.bcc}}</dd>
+			<dt *ngIf="!!mailItem.replyTo">{{'mail_center_mail_reply_to_label'
+			| translate}}:</dt>
+			<dd *ngIf="!!mailItem.replyTo">{{mailItem.replyTo}}</dd>
+			<dt *ngIf="mailItem.attachments.length > 0">{{'mail_center_mail_attachments_label' | translate }}:</dt>
+			<dd *ngIf="mailItem.attachments.length > 0">
+				<ul class="rocket-mail-attachments mb-0">
+					<li *ngFor="let attachment of mailItem.attachments">
+						<a href="{{attachment.path}}" download="{{attachment.name}}">
+							<i class="fa fa-file"></i> {{attachment.name}}
+						</a>
+					</li>
+				</ul>
+			</dd>
+		</dl>
+		<h5>{{'mail_center_mail_message_label' | translate }}:</h5>
+		<div class="rocket-mail-message">
+			<pre>{{mailItem.message}}</pre>
+		</div>
+		
+	</div>
+</div>
+<ng-container aside-commands> <rocket-ui-pagination
+	[(currentPageNo)]="currentPageNo"
+	[totalPagesNo]="currentLogFileData.numPages"></rocket-ui-pagination> </ng-container> </rocket-ui-simple-zone-container>
