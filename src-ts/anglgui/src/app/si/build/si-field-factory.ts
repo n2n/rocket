@@ -214,7 +214,8 @@ export class SiFieldFactory {
 			return splitContextOutSiField;
 
 		case SiFieldType.SPLIT_PLACEHOLDER:
-			const splitSiField = new SplitSiField(dataExtr.reqString('refPropId'), this.injector.get(SplitViewStateService));
+			const splitSiField = new SplitSiField(dataExtr.reqString('refPropId'), this.injector.get(SplitViewStateService),
+					this.injector.get(TranslationService));
 			splitSiField.copyStyle = this.createSplitStyle(dataExtr.reqObject('copyStyle'));
 			return splitSiField;
 

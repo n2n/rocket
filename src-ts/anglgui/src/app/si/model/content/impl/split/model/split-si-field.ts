@@ -21,16 +21,16 @@ import { SiButton } from 'src/app/si/model/control/impl/model/si-button';
 import { UiZone } from 'src/app/ui/structure/model/ui-zone';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { Subscription } from 'rxjs';
+import { TranslationService } from 'src/app/util/i18n/translation.service';
 
 export class SplitSiField extends SiFieldAdapter {
 
 	splitContext: SplitContextSiField|null;
 	copyStyle: SplitStyle = { iconClass: null, tooltip: null };
 
-	constructor(public refPropId: string, private viewStateService: SplitViewStateService) {
+	constructor(public refPropId: string, private viewStateService: SplitViewStateService, private translationService: TranslationService) {
 		super();
 	}
-
 
 // 	handleError(error: SiFieldError): void {
 // 		console.log(error);
@@ -51,7 +51,8 @@ export class SplitSiField extends SiFieldAdapter {
 	// abstract copy(entryBuildUp: SiEntryBuildup): SiField;
 
 	createUiStructureModel(): UiStructureModel {
-		const uism = new SplitUiStructureModel(this.refPropId, this.splitContext, this.copyStyle, this.viewStateService);
+		const uism = new SplitUiStructureModel(this.refPropId, this.splitContext, this.copyStyle, this.viewStateService,
+				this.translationService);
 		uism.messagesCallback = () => this.getMessages();
 		uism.setDisabled$(this.disabledSubject);
 		return uism;
@@ -75,7 +76,8 @@ class SplitUiStructureModel extends SimpleUiStructureModel implements SplitModel
 	private subscription: Subscription;
 
 	constructor(private refPropId: string, private splitContext: SplitContextSiField|null,
-			private copyStyle: SplitStyle, private viewStateService: SplitViewStateService) {
+			private copyStyle: SplitStyle, private viewStateService: SplitViewStateService,
+			private translationService: TranslationService) {
 		super();
 	}
 
@@ -189,7 +191,7 @@ class SplitUiStructureModel extends SimpleUiStructureModel implements SplitModel
 		return new SimpleUiStructureModel(new TypeUiContent(CrumbGroupComponent, (ref) => {
 			ref.instance.siCrumbGroup = {
 				crumbs: [
-					SiCrumb.createLabel('not active (todo: translate) ' /*this.translationService.translate('ei_impl_locale_not_active_label')*/)
+					SiCrumb.createLabel(this.translationService.translate('ei_impl_locale_not_active_label'))
 				]
 			};
 		}));
