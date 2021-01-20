@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, ElementRef, ChangeDetectorRef, OnDestroy, DoCheck } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef, ChangeDetectorRef, OnDestroy, DoCheck, HostBinding } from '@angular/core';
 import { StructureContentDirective } from 'src/app/ui/structure/comp/structure/structure-content.directive';
 import { UiStructure } from '../../model/ui-structure';
 import { UiContent } from '../../model/ui-content';
@@ -49,27 +49,27 @@ export class StructureComponent implements OnInit, OnDestroy, DoCheck {
 			return;
 		}
 
-		const classList = this.elRef.nativeElement.classList;
+		// const classList = this.elRef.nativeElement.classList;
 
-		if (this.uiStructure.isItemCollection()) {
-			if (!classList.contains('rocket-item-collection')) {
-				classList.add('rocket-item-collection');
-			}
-		} else {
-			if (classList.contains('rocket-item-collection')) {
-				classList.remove('rocket-item-collection');
-			}
-		}
+		// if (this.uiStructure.isItemCollection()) {
+		// 	if (!classList.contains('rocket-item-collection')) {
+		// 		classList.add('rocket-item-collection');
+		// 	}
+		// } else {
+		// 	if (classList.contains('rocket-item-collection')) {
+		// 		classList.remove('rocket-item-collection');
+		// 	}
+		// }
 
-		if (this.uiStructure.isDoubleItem()) {
-			if (!classList.contains('rocket-double-item')) {
-				classList.add('rocket-double-item');
-			}
-		} else {
-			if (classList.contains('rocket-double-item')) {
-				classList.remove('rocket-double-item');
-			}
-		}
+		// if (this.uiStructure.isDoubleItem()) {
+		// 	if (!classList.contains('rocket-double-item')) {
+		// 		classList.add('rocket-double-item');
+		// 	}
+		// } else {
+		// 	if (classList.contains('rocket-double-item')) {
+		// 		classList.remove('rocket-double-item');
+		// 	}
+		// }
 	}
 
 	private clear() {
@@ -79,6 +79,16 @@ export class StructureComponent implements OnInit, OnDestroy, DoCheck {
 			this.toolbarSubscription.unsubscribe();
 			this.toolbarSubscription = null;
 		}
+	}
+
+	@HostBinding('class.rocket-bulky')
+	get bulky(): boolean {
+		return !this.uiStructure.compact;
+	}
+
+	@HostBinding('class.rocket-compact')
+	get compact(): boolean {
+		return this.uiStructure.compact;
 	}
 
 	@Input()
