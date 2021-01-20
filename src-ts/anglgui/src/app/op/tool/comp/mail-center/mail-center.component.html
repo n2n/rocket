@@ -26,12 +26,16 @@
   }
 </style>
 <rocket-ui-simple-zone-container [loading]="!mailItems" [title]="'tool_mail_center_title' | translate">
-	<select class="rocket-mail-paging" #mailLogFileSelect
+	<select class="rocket-mail-paging" *ngIf="mailLogFileDatas.length > 0" #mailLogFileSelect
 					(change)="mailLogFileChanged(mailLogFileDatas[mailLogFileSelect.value])">
 		<option value="{{mailLogFileDatas.indexOf(mailLogFileData)}}" *ngFor="let mailLogFileData of mailLogFileDatas">
 				{{prettifyFilename(mailLogFileData.filename)}}
 		</option>
 	</select>
+
+  <div *ngIf="!mailItems || mailItems.length == 0">
+    {{'tool_mail_center_mails_empty_text' | translate}}
+  </div>
 
 	<div class="mail-item" *ngFor="let mailItem of mailItems">
 		<div class="mail-item-headline" (click)="mailItem.toggleVisibility()">
@@ -59,7 +63,7 @@
 		</div>
 	</div>
 	<ng-container aside-commands>
-		<rocket-ui-pagination [(currentPageNo)]="currentPageNo"
+		<rocket-ui-pagination *ngIf="currentLogFileData!=null" [(currentPageNo)]="currentPageNo"
 													[totalPagesNo]="currentLogFileData.numPages"></rocket-ui-pagination>
 	</ng-container>
 </rocket-ui-simple-zone-container>

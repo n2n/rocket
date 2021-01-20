@@ -1,27 +1,27 @@
 import { Component, OnInit } from '@angular/core';
 import { ToolsService } from '../../model/tools.service';
 import { MailItem } from '../../bo/mail-item';
-import {animate, state, style, transition, trigger} from "@angular/animations";
+import {animate, state, style, transition, trigger} from '@angular/animations';
 
 @Component({
 selector: 'rocket-mail-center',
 templateUrl: './mail-center.component.html',
 styleUrls: ['./mail-center.component.css'],
   animations: [
-    trigger('slide', [
-      state('open', style({
-        display: "block"
-      })),
-      state('closed', style({
-        display: "none"
-      })),
-      transition('open => closed', [
-        animate('2.35s')
-      ]),
-      transition('closed => open', [
-        animate('2.35s')
-      ]),
-    ]),
+	trigger('slide', [
+		state('open', style({
+		display: 'block'
+		})),
+		state('closed', style({
+		display: 'none'
+		})),
+		transition('open => closed', [
+		animate('2.35s')
+		]),
+		transition('closed => open', [
+		animate('2.35s')
+		]),
+	]),
   ]
 })
 export class MailCenterComponent implements OnInit {
@@ -36,8 +36,14 @@ export class MailCenterComponent implements OnInit {
 	ngOnInit(): void {
 		this._toolsService.getMailLogFileDatas().toPromise().then((logFileDatas) => {
 			this.mailLogFileDatas = logFileDatas;
-			this.currentLogFileData = this.mailLogFileDatas[0];
-			this.updateMailItems();
+
+      if (this.mailLogFileDatas[0]) {
+        this.currentLogFileData = this.mailLogFileDatas[0];
+        this.updateMailItems();
+      } else {
+        this.currentLogFileData = null;
+        this.mailItems = [];
+      }
 		});
 	}
 
@@ -66,9 +72,9 @@ export class MailCenterComponent implements OnInit {
 	}
 
   prettifyFilename(filename: string): string {
-    let prettyName = filename.split("-").join(" ");
-    prettyName = prettyName.replace(".xml", "");
-    return prettyName;
+	let prettyName = filename.split('-').join(' ');
+	prettyName = prettyName.replace('.xml', '');
+	return prettyName;
   }
 }
 
