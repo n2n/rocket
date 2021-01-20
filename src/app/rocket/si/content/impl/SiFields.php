@@ -21,8 +21,11 @@
  */
 namespace rocket\si\content\impl;
 
+use n2n\core\container\N2nContext;
 use n2n\io\managed\File;
 use n2n\util\uri\Url;
+use n2n\web\ui\UiComponent;
+use rocket\si\content\impl\iframe\IframeOutSiField;
 use rocket\si\content\impl\relation\QualifierSelectInSiField;
 use rocket\si\content\impl\relation\EmbeddedEntriesInSiField;
 use rocket\si\content\impl\relation\EmbeddedEntryPanelsInSiField;
@@ -200,13 +203,12 @@ class SiFields {
 			$siField->addNewGroup($crumbs);
 		}
 		return $siField;
-		
 	}
-	
-	
-	static function iframeOut() {
+
+	static function iframeOut(N2nContext $n2nContext, UiComponent $uiComponent, $useTemplate) {
+		return new IframeOutSiField($n2nContext, $uiComponent, $useTemplate);
 	}
-	
+
 	static function iframeIn() {
 	}
 }
