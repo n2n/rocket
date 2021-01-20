@@ -1,11 +1,15 @@
 <rocket-ui-simple-zone-container [loading]="!mailItems"
 	[title]="'tool_mail_center_title' | translate">
-<select class="rocket-mail-paging" #mailLogFileSelect
-	(change)="mailLogFileChanged(mailLogFileDatas[mailLogFileSelect.value])">
-	<option value="{{mailLogFileDatas.indexOf(mailLogFileData)}}"
-		*ngFor="let mailLogFileData of mailLogFileDatas">
-		{{prettifyFilename(mailLogFileData.filename)}}</option>
-</select>
+<div class="row mb-3">
+	<div class="col-md-4 col-lg-3 col-xl-2">
+		<select class="rocket-mail-paging form-control" #mailLogFileSelect
+			(change)="mailLogFileChanged(mailLogFileDatas[mailLogFileSelect.value])">
+			<option value="{{mailLogFileDatas.indexOf(mailLogFileData)}}"
+				*ngFor="let mailLogFileData of mailLogFileDatas">
+				{{prettifyFilename(mailLogFileData.filename)}}</option>
+		</select>
+	</div>
+</div>
 
 <div class="rocket-mail" *ngFor="let mailItem of mailItems">
 	<div class="rocket-mail-header"
