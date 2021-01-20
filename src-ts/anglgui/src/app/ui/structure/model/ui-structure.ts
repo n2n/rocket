@@ -18,10 +18,13 @@ export class UiStructure {
 	private disposedSubject = new BehaviorSubject<boolean>(false);
 	private _level: number|null = null;
 
+	compact = false;
+
 	constructor(readonly parent: UiStructure|null, private _zone: UiZone|null, public type: UiStructureType|null = null,
 			public label: string|null = null, model: UiStructureModel|null = null) {
 		if (parent) {
 			parent.registerChild(this);
+			this.compact = parent.compact;
 		}
 
 		if (!!this._zone === !!parent) {
