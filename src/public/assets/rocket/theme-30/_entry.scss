@@ -41,7 +41,8 @@
     }
 
     // new
-    .rocket-item.rocket-item-collection {
+
+    .rocket-item-bulky {
         > label {
             padding-right: $rocket-item-double-item-width * 1.1;
             overflow: hidden;
@@ -53,7 +54,7 @@
         }
     }
 
-    .rocket-item.rocket-double-item  {
+    .rocket-split-bulky > .rocket-item-bulky {
         grid-template-columns: $rocket-item-double-item-width 1fr auto;
 
         &:first-child {
@@ -80,7 +81,7 @@
         }
     }
 
-    rocket-split > .rocket-item:first-child {
+    .rocket-split > .rocket-item:first-child {
         padding-top: 0;
     }
 
