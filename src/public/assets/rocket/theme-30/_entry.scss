@@ -36,13 +36,13 @@
         > .rocket-toolbar {
             grid-column-start: 3;
             grid-column-end: 4;
-            padding: 0; 
+            padding: 0;
+            margin-bottom: 0;
         }
     }
 
     // new
-
-    .rocket-item-bulky {
+    .rocket-item.rocket-item-collection {
         > label {
             padding-right: $rocket-item-double-item-width * 1.1;
             overflow: hidden;
@@ -54,7 +54,7 @@
         }
     }
 
-    .rocket-split-bulky > .rocket-item-bulky {
+    .rocket-item.rocket-double-item  {
         grid-template-columns: $rocket-item-double-item-width 1fr auto;
 
         &:first-child {
@@ -81,7 +81,7 @@
         }
     }
 
-    .rocket-split > .rocket-item:first-child {
+    rocket-split > .rocket-item:first-child {
         padding-top: 0;
     }
 

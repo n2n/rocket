@@ -6123,6 +6123,7 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
 
 td > .rocket-split {
   width: auto;
+  display: inline-block;
 }
 
 td > .rocket-split > .rocket-item {
@@ -6190,47 +6191,137 @@ td > rocket-crumb-out-field > rocket-crumb-group > i:last-child:not(:only-child)
 
 .rocket-tree-level-1 > td:first-child:not(.rocket-entry-selector)::before,
 .rocket-tree-level-1 > .rocket-entry-selector + td::before {
-  content: "– ";
+  content: "\00a0";
+  width: 1.5em;
+  background-image: url("data:image/svg+xml,%3Csvg width='15' height='10' viewBox='0 0 15 10' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Cg stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cpath d='M11.5737216,1.27220186 L8.73089963,-1.79037942 C8.471544,-2.06966841 8.02882109,-2.07007857 7.76910999,-1.79037942 L4.92604191,1.27220186 C4.53759636,1.69056113 4.83372935,2.37500237 5.40693672,2.37500237 L7.15625416,2.37500237 L7.15625416,9.81250054 L4.86003405,9.81250054 C4.77300901,9.8124926 4.68954765,9.84706731 4.6280222,9.9086138 L3.09677129,11.4398634 C2.89005242,11.6465548 3.03645094,12 3.32878315,12 L8.68750507,12 C9.04994669,12 9.34375546,11.7061915 9.34375546,11.3437502 L9.34375546,2.37500237 L11.0928268,2.37500237 C11.66371,2.37500237 11.9637531,1.69225644 11.5737216,1.27220186 Z' id='Path' fill='%23837E78' fill-rule='nonzero' transform='translate(7.375000, 5.000000) rotate(90.000000) translate(-7.375000, -5.000000) '%3E%3C/path%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: 10px 15px;
+  background-position: center left 0;
 }
 
 .rocket-tree-level-2 > td:first-child:not(.rocket-entry-selector)::before,
 .rocket-tree-level-2 > .rocket-entry-selector + td::before {
-  content: "– – ";
+  content: "\00a0";
+  width: 1.5em;
+  background-image: url("data:image/svg+xml,%3Csvg width='15' height='10' viewBox='0 0 15 10' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Cg stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cpath d='M11.5737216,1.27220186 L8.73089963,-1.79037942 C8.471544,-2.06966841 8.02882109,-2.07007857 7.76910999,-1.79037942 L4.92604191,1.27220186 C4.53759636,1.69056113 4.83372935,2.37500237 5.40693672,2.37500237 L7.15625416,2.37500237 L7.15625416,9.81250054 L4.86003405,9.81250054 C4.77300901,9.8124926 4.68954765,9.84706731 4.6280222,9.9086138 L3.09677129,11.4398634 C2.89005242,11.6465548 3.03645094,12 3.32878315,12 L8.68750507,12 C9.04994669,12 9.34375546,11.7061915 9.34375546,11.3437502 L9.34375546,2.37500237 L11.0928268,2.37500237 C11.66371,2.37500237 11.9637531,1.69225644 11.5737216,1.27220186 Z' id='Path' fill='%23837E78' fill-rule='nonzero' transform='translate(7.375000, 5.000000) rotate(90.000000) translate(-7.375000, -5.000000) '%3E%3C/path%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: 10px 15px;
+  background-position: center left 0;
+  margin-left: 0.3em;
+  border-left: 1px solid #DAD7D3;
+  width: 3em;
+  background-position: center right 50%;
 }
 
 .rocket-tree-level-3 > td:first-child:not(.rocket-entry-selector)::before,
 .rocket-tree-level-3 > .rocket-entry-selector + td::before {
-  content: "– – – ";
+  content: "\00a0";
+  width: 1.5em;
+  background-image: url("data:image/svg+xml,%3Csvg width='15' height='10' viewBox='0 0 15 10' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Cg stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cpath d='M11.5737216,1.27220186 L8.73089963,-1.79037942 C8.471544,-2.06966841 8.02882109,-2.07007857 7.76910999,-1.79037942 L4.92604191,1.27220186 C4.53759636,1.69056113 4.83372935,2.37500237 5.40693672,2.37500237 L7.15625416,2.37500237 L7.15625416,9.81250054 L4.86003405,9.81250054 C4.77300901,9.8124926 4.68954765,9.84706731 4.6280222,9.9086138 L3.09677129,11.4398634 C2.89005242,11.6465548 3.03645094,12 3.32878315,12 L8.68750507,12 C9.04994669,12 9.34375546,11.7061915 9.34375546,11.3437502 L9.34375546,2.37500237 L11.0928268,2.37500237 C11.66371,2.37500237 11.9637531,1.69225644 11.5737216,1.27220186 Z' id='Path' fill='%23837E78' fill-rule='nonzero' transform='translate(7.375000, 5.000000) rotate(90.000000) translate(-7.375000, -5.000000) '%3E%3C/path%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: 10px 15px;
+  background-position: center left 0;
+  margin-left: 0.3em;
+  border-left: 1px solid #DAD7D3;
+  width: 3em;
+  background-position: center right 50%;
+  margin-left: 1.8em;
 }
 
 .rocket-tree-level-4 > td:first-child:not(.rocket-entry-selector)::before,
 .rocket-tree-level-4 > .rocket-entry-selector + td::before {
-  content: "– – – – ";
+  content: "\00a0";
+  width: 1.5em;
+  background-image: url("data:image/svg+xml,%3Csvg width='15' height='10' viewBox='0 0 15 10' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Cg stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cpath d='M11.5737216,1.27220186 L8.73089963,-1.79037942 C8.471544,-2.06966841 8.02882109,-2.07007857 7.76910999,-1.79037942 L4.92604191,1.27220186 C4.53759636,1.69056113 4.83372935,2.37500237 5.40693672,2.37500237 L7.15625416,2.37500237 L7.15625416,9.81250054 L4.86003405,9.81250054 C4.77300901,9.8124926 4.68954765,9.84706731 4.6280222,9.9086138 L3.09677129,11.4398634 C2.89005242,11.6465548 3.03645094,12 3.32878315,12 L8.68750507,12 C9.04994669,12 9.34375546,11.7061915 9.34375546,11.3437502 L9.34375546,2.37500237 L11.0928268,2.37500237 C11.66371,2.37500237 11.9637531,1.69225644 11.5737216,1.27220186 Z' id='Path' fill='%23837E78' fill-rule='nonzero' transform='translate(7.375000, 5.000000) rotate(90.000000) translate(-7.375000, -5.000000) '%3E%3C/path%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: 10px 15px;
+  background-position: center left 0;
+  margin-left: 0.3em;
+  border-left: 1px solid #DAD7D3;
+  width: 3em;
+  background-position: center right 50%;
+  margin-left: 2.7em;
+  margin-left: 3.3em;
 }
 
 .rocket-tree-level-5 > td:first-child:not(.rocket-entry-selector)::before,
 .rocket-tree-level-5 > .rocket-entry-selector + td::before {
-  content: "– – – – – ";
+  content: "\00a0";
+  width: 1.5em;
+  background-image: url("data:image/svg+xml,%3Csvg width='15' height='10' viewBox='0 0 15 10' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Cg stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cpath d='M11.5737216,1.27220186 L8.73089963,-1.79037942 C8.471544,-2.06966841 8.02882109,-2.07007857 7.76910999,-1.79037942 L4.92604191,1.27220186 C4.53759636,1.69056113 4.83372935,2.37500237 5.40693672,2.37500237 L7.15625416,2.37500237 L7.15625416,9.81250054 L4.86003405,9.81250054 C4.77300901,9.8124926 4.68954765,9.84706731 4.6280222,9.9086138 L3.09677129,11.4398634 C2.89005242,11.6465548 3.03645094,12 3.32878315,12 L8.68750507,12 C9.04994669,12 9.34375546,11.7061915 9.34375546,11.3437502 L9.34375546,2.37500237 L11.0928268,2.37500237 C11.66371,2.37500237 11.9637531,1.69225644 11.5737216,1.27220186 Z' id='Path' fill='%23837E78' fill-rule='nonzero' transform='translate(7.375000, 5.000000) rotate(90.000000) translate(-7.375000, -5.000000) '%3E%3C/path%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: 10px 15px;
+  background-position: center left 0;
+  margin-left: 0.3em;
+  border-left: 1px solid #DAD7D3;
+  width: 3em;
+  background-position: center right 50%;
+  margin-left: 3.6em;
+  margin-left: 4.4em;
 }
 
 .rocket-tree-level-6 > td:first-child:not(.rocket-entry-selector)::before,
 .rocket-tree-level-6 > .rocket-entry-selector + td::before {
-  content: "– – – – – – ";
+  content: "\00a0";
+  width: 1.5em;
+  background-image: url("data:image/svg+xml,%3Csvg width='15' height='10' viewBox='0 0 15 10' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Cg stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cpath d='M11.5737216,1.27220186 L8.73089963,-1.79037942 C8.471544,-2.06966841 8.02882109,-2.07007857 7.76910999,-1.79037942 L4.92604191,1.27220186 C4.53759636,1.69056113 4.83372935,2.37500237 5.40693672,2.37500237 L7.15625416,2.37500237 L7.15625416,9.81250054 L4.86003405,9.81250054 C4.77300901,9.8124926 4.68954765,9.84706731 4.6280222,9.9086138 L3.09677129,11.4398634 C2.89005242,11.6465548 3.03645094,12 3.32878315,12 L8.68750507,12 C9.04994669,12 9.34375546,11.7061915 9.34375546,11.3437502 L9.34375546,2.37500237 L11.0928268,2.37500237 C11.66371,2.37500237 11.9637531,1.69225644 11.5737216,1.27220186 Z' id='Path' fill='%23837E78' fill-rule='nonzero' transform='translate(7.375000, 5.000000) rotate(90.000000) translate(-7.375000, -5.000000) '%3E%3C/path%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: 10px 15px;
+  background-position: center left 0;
+  margin-left: 0.3em;
+  border-left: 1px solid #DAD7D3;
+  width: 3em;
+  background-position: center right 50%;
+  margin-left: 4.5em;
+  margin-left: 5.5em;
 }
 
 .rocket-tree-level-7 > td:first-child:not(.rocket-entry-selector)::before,
 .rocket-tree-level-7 > .rocket-entry-selector + td::before {
-  content: "– – – – – – – ";
+  content: "\00a0";
+  width: 1.5em;
+  background-image: url("data:image/svg+xml,%3Csvg width='15' height='10' viewBox='0 0 15 10' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Cg stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cpath d='M11.5737216,1.27220186 L8.73089963,-1.79037942 C8.471544,-2.06966841 8.02882109,-2.07007857 7.76910999,-1.79037942 L4.92604191,1.27220186 C4.53759636,1.69056113 4.83372935,2.37500237 5.40693672,2.37500237 L7.15625416,2.37500237 L7.15625416,9.81250054 L4.86003405,9.81250054 C4.77300901,9.8124926 4.68954765,9.84706731 4.6280222,9.9086138 L3.09677129,11.4398634 C2.89005242,11.6465548 3.03645094,12 3.32878315,12 L8.68750507,12 C9.04994669,12 9.34375546,11.7061915 9.34375546,11.3437502 L9.34375546,2.37500237 L11.0928268,2.37500237 C11.66371,2.37500237 11.9637531,1.69225644 11.5737216,1.27220186 Z' id='Path' fill='%23837E78' fill-rule='nonzero' transform='translate(7.375000, 5.000000) rotate(90.000000) translate(-7.375000, -5.000000) '%3E%3C/path%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: 10px 15px;
+  background-position: center left 0;
+  margin-left: 0.3em;
+  border-left: 1px solid #DAD7D3;
+  width: 3em;
+  background-position: center right 50%;
+  margin-left: 5.4em;
+  margin-left: 6.6em;
 }
 
 .rocket-tree-level-8 > td:first-child:not(.rocket-entry-selector)::before,
 .rocket-tree-level-8 > .rocket-entry-selector + td::before {
-  content: "– – – – – – – – ";
+  content: "\00a0";
+  width: 1.5em;
+  background-image: url("data:image/svg+xml,%3Csvg width='15' height='10' viewBox='0 0 15 10' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Cg stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cpath d='M11.5737216,1.27220186 L8.73089963,-1.79037942 C8.471544,-2.06966841 8.02882109,-2.07007857 7.76910999,-1.79037942 L4.92604191,1.27220186 C4.53759636,1.69056113 4.83372935,2.37500237 5.40693672,2.37500237 L7.15625416,2.37500237 L7.15625416,9.81250054 L4.86003405,9.81250054 C4.77300901,9.8124926 4.68954765,9.84706731 4.6280222,9.9086138 L3.09677129,11.4398634 C2.89005242,11.6465548 3.03645094,12 3.32878315,12 L8.68750507,12 C9.04994669,12 9.34375546,11.7061915 9.34375546,11.3437502 L9.34375546,2.37500237 L11.0928268,2.37500237 C11.66371,2.37500237 11.9637531,1.69225644 11.5737216,1.27220186 Z' id='Path' fill='%23837E78' fill-rule='nonzero' transform='translate(7.375000, 5.000000) rotate(90.000000) translate(-7.375000, -5.000000) '%3E%3C/path%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: 10px 15px;
+  background-position: center left 0;
+  margin-left: 0.3em;
+  border-left: 1px solid #DAD7D3;
+  width: 3em;
+  background-position: center right 50%;
+  margin-left: 6.3em;
+  margin-left: 7.7em;
 }
 
 .rocket-tree-level-9 > td:first-child:not(.rocket-entry-selector)::before,
 .rocket-tree-level-9 > .rocket-entry-selector + td::before {
-  content: "– – – – – – – – – ";
+  content: "\00a0";
+  width: 1.5em;
+  background-image: url("data:image/svg+xml,%3Csvg width='15' height='10' viewBox='0 0 15 10' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Cg stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cpath d='M11.5737216,1.27220186 L8.73089963,-1.79037942 C8.471544,-2.06966841 8.02882109,-2.07007857 7.76910999,-1.79037942 L4.92604191,1.27220186 C4.53759636,1.69056113 4.83372935,2.37500237 5.40693672,2.37500237 L7.15625416,2.37500237 L7.15625416,9.81250054 L4.86003405,9.81250054 C4.77300901,9.8124926 4.68954765,9.84706731 4.6280222,9.9086138 L3.09677129,11.4398634 C2.89005242,11.6465548 3.03645094,12 3.32878315,12 L8.68750507,12 C9.04994669,12 9.34375546,11.7061915 9.34375546,11.3437502 L9.34375546,2.37500237 L11.0928268,2.37500237 C11.66371,2.37500237 11.9637531,1.69225644 11.5737216,1.27220186 Z' id='Path' fill='%23837E78' fill-rule='nonzero' transform='translate(7.375000, 5.000000) rotate(90.000000) translate(-7.375000, -5.000000) '%3E%3C/path%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: 10px 15px;
+  background-position: center left 0;
+  margin-left: 0.3em;
+  border-left: 1px solid #DAD7D3;
+  width: 3em;
+  background-position: center right 50%;
+  margin-left: 7.2em;
+  margin-left: 8.8em;
 }
 
 /*
@@ -6307,29 +6398,30 @@ td > rocket-crumb-out-field > rocket-crumb-group > i:last-child:not(:only-child)
         grid-column-start: 3;
     grid-column-end: 4;
     padding: 0;
+    margin-bottom: 0;
   }
-  .rocket-item-bulky > label {
+  .rocket-item.rocket-item-collection > label {
     padding-right: 5.5rem;
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .rocket-item-bulky > .rocket-structure-content {
+  .rocket-item.rocket-item-collection > .rocket-structure-content {
     margin-left: -5rem;
   }
-  .rocket-split-bulky > .rocket-item-bulky {
+  .rocket-item.rocket-double-item {
     -ms-grid-columns: 5rem 1fr auto;
         grid-template-columns: 5rem 1fr auto;
   }
-  .rocket-split-bulky > .rocket-item-bulky:first-child {
+  .rocket-item.rocket-double-item:first-child {
     padding-top: 0;
   }
-  .rocket-split-bulky > .rocket-item-bulky > label,
-  .rocket-split-bulky > .rocket-item-bulky .rocket-item > label {
+  .rocket-item.rocket-double-item > label,
+  .rocket-item.rocket-double-item .rocket-item > label {
     color: #C2BDB6;
     font-size: 0.875rem;
     padding-right: 10px;
   }
-  .rocket-split-bulky > .rocket-item-bulky > label {
+  .rocket-item.rocket-double-item > label {
     width: 5rem;
   }
   .rocket-item.rocket-level-4 {
@@ -6339,7 +6431,7 @@ td > rocket-crumb-out-field > rocket-crumb-group > i:last-child:not(:only-child)
   .rocket-item.rocket-level-4:first-child {
     padding-top: 0;
   }
-  .rocket-split > .rocket-item:first-child {
+  rocket-split > .rocket-item:first-child {
     padding-top: 0;
   }
   .rocket-group:not(.rocket-light-group) .rocket-group:not(.rocket-light-group) .rocket-structure-content > .rocket-item {
