@@ -1,7 +1,6 @@
 <?php
 namespace rocket\impl\ei\component\prop\iframe;
 
-use n2n\core\container\N2nContext;
 use n2n\web\ui\Raw;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use rocket\ei\util\Eiu;
@@ -34,6 +33,6 @@ class IframeEiProp extends DisplayableEiPropAdapter {
 			$siField = SiFields::iframeOut(new Raw($this->iframeConfig->getSrcDoc()));
 		}
 		
-		return $eiu->factory()->newGuiField($siField);;
+		return $eiu->factory()->newGuiField($siField);
 	}
 }
