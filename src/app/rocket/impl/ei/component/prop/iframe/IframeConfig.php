@@ -18,13 +18,8 @@ class IframeConfig extends PropConfigAdaption {
 	private $useTemplate = true;
 
 	function setup(Eiu $eiu, DataSet $dataSet) {
-		if ($dataSet->contains(self::ATTR_SRC_DOC_KEY)) {
-			$this->setSrcDoc($dataSet->reqString(self::ATTR_SRC_DOC_KEY));
-		}
-
-		if ($dataSet->contains(self::ATTR_USE_TEMPLATE_KEY)) {
-			$this->setSrcDoc($dataSet->reqBool(self::ATTR_USE_TEMPLATE_KEY));
-		}
+		$this->setSrcDoc($dataSet->optString(self::ATTR_SRC_DOC_KEY));
+		$this->setUseTemplate($dataSet->optBool(self::ATTR_USE_TEMPLATE_KEY, true));
 	}
 
 	function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {

@@ -10,7 +10,7 @@ import {
 import {DomSanitizer} from "@angular/platform-browser";
 
 @Component({
-  selector: 'rocket-iframe',
+  selector: 'rocket-ui-iframe',
   templateUrl: './iframe.component.html',
   styleUrls: ['./iframe.component.css']
 })
