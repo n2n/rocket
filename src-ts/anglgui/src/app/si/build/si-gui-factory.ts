@@ -15,6 +15,7 @@ import { SiCrumbGroup, SiCrumb } from '../model/content/impl/meta/model/si-crumb
 import { Injector } from '@angular/core';
 import { SiService } from '../manage/si.service';
 import { SiModStateService } from '../model/mod/model/si-mod-state.service';
+import { IframeSiGui } from '../model/gui/impl/model/iframe-si-gui';
 
 
 enum SiGuiType {
