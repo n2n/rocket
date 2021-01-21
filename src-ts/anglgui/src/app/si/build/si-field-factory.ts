@@ -31,10 +31,9 @@ import { SiModStateService } from '../model/mod/model/si-mod-state.service';
 import { EmbeddedEntriesOutSiField } from '../model/content/impl/embedded/model/embedded-entries-out-si-field';
 import { EmbeddedEntryPanelsOutSiField } from '../model/content/impl/embedded/model/embedded-entry-panels-out-si-field';
 import { EmbeddedEntryPanelsInSiField } from '../model/content/impl/embedded/model/embedded-entry-panels-in-si-field';
-import { SplitViewStateContext } from '../model/content/impl/split/model/state/split-view-state-context';
 import { SplitViewStateService } from '../model/content/impl/split/model/state/split-view-state.service';
 import { EnumInSiField } from '../model/content/impl/enum/model/enum-in-si-field';
-import {SiFrame} from "../model/meta/si-frame";
+import {IframeOutSiField} from "../model/content/impl/iframe/iframe-out-si-field";
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',
@@ -223,7 +222,7 @@ export class SiFieldFactory {
 			return new CrumbOutSiField(SiGuiFactory.createCrumbGroups(dataExtr.reqArray('crumbGroups')));
 
     case SiFieldType.IFRAME_OUT:
-      console.log(dataExtr);
+      return new IframeOutSiField(dataExtr.reqString('value'));
 
 		default:
 			throw new ObjectMissmatchError('Invalid si field type: ' + data.type);
