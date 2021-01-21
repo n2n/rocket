@@ -6121,6 +6121,11 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   font-weight: bold;
 }
 
+td > rocket-file-out-field:last-child > *:last-child,
+td > *:last-child {
+  margin-bottom: 0;
+}
+
 td > .rocket-split {
   display: inline-block;
 }

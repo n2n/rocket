@@ -183,6 +183,11 @@
 
 // new from tomekk
 
+td > rocket-file-out-field:last-child > *:last-child,
+td > *:last-child {
+    margin-bottom: 0;
+}
+
 td > .rocket-split {
     display: inline-block;
 }
