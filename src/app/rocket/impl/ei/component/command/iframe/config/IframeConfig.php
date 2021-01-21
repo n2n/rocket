@@ -8,6 +8,7 @@ use n2n\util\type\attrs\DataSet;
 use n2n\web\dispatch\mag\MagCollection;
 use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\config\ConfigAdaption;
+use n2n\util\uri\Url;
 
 class IframeConfig extends ConfigAdaption {
 	const ATTR_URL_KEY = 'url';
@@ -43,44 +44,36 @@ class IframeConfig extends ConfigAdaption {
 	}
 
 	function setup(Eiu $eiu, DataSet $dataSet) {
-		if ($dataSet->contains(self::ATTR_URL_KEY)) {
-			$this->setSrcDoc($dataSet->reqString(self::ATTR_URL_KEY));
-		}
-
-		if ($dataSet->contains(self::ATTR_SRC_DOC_KEY)) {
-			$this->setSrcDoc($dataSet->reqString(self::ATTR_SRC_DOC_KEY));
-		}
-
-		if ($dataSet->contains(self::ATTR_USE_TEMPLATE_KEY)) {
-			$this->setSrcDoc($dataSet->reqBool(self::ATTR_USE_TEMPLATE_KEY));
-		}
+		$this->setUrl(Url::build($dataSet->optString(self::ATTR_URL_KEY)));
+		$this->setSrcDoc($dataSet->optString(self::ATTR_SRC_DOC_KEY));
+		$this->setUseTemplate($dataSet->optBool(self::ATTR_USE_TEMPLATE_KEY, true));
 	}
 
 	/**
-	 * @return string
+	 * @return Url|null
 	 */
 	public function getUrl() {
 		return $this->url;
 	}
 
 	/**
-	 * @param string $url
+	 * @param Url|null $url
 	 */
-	public function setUrl(string $url) {
+	public function setUrl(?Url $url) {
 		$this->url = $url;
 	}
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
 	public function getSrcDoc() {
 		return $this->srcDoc;
 	}
 
 	/**
-	 * @param string $srcDoc
+	 * @param string|null $srcDoc
 	 */
-	public function setSrcDoc($srcDoc) {
+	public function setSrcDoc(?string $srcDoc) {
 		$this->srcDoc = $srcDoc;
 	}
 
@@ -99,44 +92,44 @@ class IframeConfig extends ConfigAdaption {
 	}
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
 	public function getButtonIcon() {
 		return $this->buttonIcon;
 	}
 
 	/**
-	 * @param string $buttonIcon
+	 * @param string|null $buttonIcon
 	 */
-	public function setButtonIcon($buttonIcon) {
+	public function setButtonIcon(?string $buttonIcon) {
 		$this->buttonIcon = $buttonIcon;
 	}
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
 	public function getButtonLabel() {
 		return $this->buttonLabel;
 	}
 
 	/**
-	 * @param string $buttonLabel
+	 * @param string|null $buttonLabel
 	 */
-	public function setButtonLabel($buttonLabel) {
+	public function setButtonLabel(?string $buttonLabel) {
 		$this->buttonLabel = $buttonLabel;
 	}
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
 	public function getButtonTooltip() {
 		return $this->buttonTooltip;
 	}
 
 	/**
-	 * @param string $buttonTooltip
+	 * @param string|null $buttonTooltip
 	 */
-	public function setButtonTooltip(string $buttonTooltip) {
+	public function setButtonTooltip(?string $buttonTooltip) {
 		$this->buttonTooltip = $buttonTooltip;
 	}
 }

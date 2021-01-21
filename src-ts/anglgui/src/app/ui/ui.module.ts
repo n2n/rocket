@@ -21,37 +21,39 @@ import {MessagesComponent} from './util/comp/message/messages.component';
 import { SelectComponent } from './util/comp/select-input/select.component';
 import { IframeComponent } from './util/comp/iframe/iframe.component';
 import { IFrameResizerDirective } from './util/directive/iframe-resizer-directive.directive';
+import { UrlIframeComponent } from './util/comp/url-iframe/url-iframe.component';
 
 @NgModule({
 	declarations: [
 		LayerComponent, ContainerComponent, ZoneComponent, StructureComponent, StructureContentDirective,
 		StructureBranchComponent, PlainContentComponent, MessageComponent, BreadcrumbsComponent, NavPointDirective,
-		TogglerComponent, SearchInputGroupComponent, SimpleZoneContainerComponent, ButtonComponent, MessagesComponent, IframeComponent, IFrameResizerDirective,
-    IFrameResizerDirective, SelectComponent
+		TogglerComponent, SearchInputGroupComponent, SimpleZoneContainerComponent, ButtonComponent, MessagesComponent, IframeComponent,
+		IFrameResizerDirective, IFrameResizerDirective, SelectComponent, UrlIframeComponent
 	],
 	imports: [
-		CommonModule,
-		UtilModule,
-		RouterModule,
-		FormsModule
+	CommonModule,
+	UtilModule,
+	RouterModule,
+	FormsModule
 	],
-  exports: [
-    ContainerComponent,
-    StructureComponent,
-    StructureContentDirective,
-    StructureBranchComponent,
-    PlainContentComponent,
-    MessageComponent,
-    NavPointDirective,
-    TogglerComponent,
-    SearchInputGroupComponent,
-    SimpleZoneContainerComponent,
-    ButtonComponent,
-    MessagesComponent,
-    IframeComponent,
-    IFrameResizerDirective,
-    SelectComponent
-  ],
+	exports: [
+		ContainerComponent,
+		StructureComponent,
+		StructureContentDirective,
+		StructureBranchComponent,
+		PlainContentComponent,
+		MessageComponent,
+		NavPointDirective,
+		TogglerComponent,
+		SearchInputGroupComponent,
+		SimpleZoneContainerComponent,
+		ButtonComponent,
+		MessagesComponent,
+		IframeComponent,
+		IFrameResizerDirective,
+		SelectComponent,
+		UrlIframeComponent
+	],
 	entryComponents: [ PlainContentComponent ]
 })
 export class UiModule { }

@@ -26,6 +26,7 @@ use n2n\io\managed\File;
 use n2n\util\uri\Url;
 use n2n\web\ui\UiComponent;
 use rocket\si\content\impl\iframe\IframeOutSiField;
+use rocket\si\content\impl\iframe\IframeInSiField;
 use rocket\si\content\impl\relation\QualifierSelectInSiField;
 use rocket\si\content\impl\relation\EmbeddedEntriesInSiField;
 use rocket\si\content\impl\relation\EmbeddedEntryPanelsInSiField;
@@ -228,7 +229,7 @@ class SiFields {
 	/**
 	 * @param UiComponent $uiComponent
 	 * @param N2nContext $templateN2nContext
-	 * @return \rocket\si\content\impl\IframeInSiField
+	 * @return \rocket\si\content\impl\iframe\IframeInSiField
 	 */
 	static function iframeIn(UiComponent $uiComponent, N2nContext $templateN2nContext = null) {
 		return new IframeInSiField($templateN2nContext === null

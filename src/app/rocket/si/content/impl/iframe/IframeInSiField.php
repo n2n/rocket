@@ -1,9 +1,9 @@
 <?php
-namespace rocket\si\content\impl;
+namespace rocket\si\content\impl\iframe;
 
 use n2n\util\type\attrs\DataSet;
-use rocket\si\content\impl\iframe\IframeData;
 use n2n\util\type\ArgUtils;
+use rocket\si\content\impl\InSiFieldAdapter;
 
 class IframeInSiField extends InSiFieldAdapter {
 	private $iframeData;
@@ -29,10 +29,12 @@ class IframeInSiField extends InSiFieldAdapter {
 
 	/**
 	 * @param array $params
+	 * @return IframeInSiField
 	 */
-	function setParams(array $params): void {
+	function setParams(array $params) {
 		ArgUtils::valArray($params, ['scalar', null]);
 		$this->params = $params;
+		return $this;
 	}
 
 	/**

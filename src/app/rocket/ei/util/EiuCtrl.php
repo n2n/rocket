@@ -420,6 +420,10 @@ class EiuCtrl {
 	}
 	
 	function forwardIframeZone(UiComponent $uiComponent, bool $useTemplate = true, string $title = null) {
+		if ($this->forwardHtml()) {
+			return;
+		}
+		
 		$iframeSiGui = null;
 		if ($useTemplate) {
 			$iframeSiGui = new IframeSiGui(IframeData::createFromUiComponentWithTemplate($uiComponent, $this->eiu->getN2nContext()));
@@ -438,7 +442,7 @@ class EiuCtrl {
 			return;
 		}
 		
-		$iframeSiGui = new IframeSiGui($url);
+		$iframeSiGui = new IframeSiGui(IframeData::createFromUrl($url));
 		
 		$this->httpContext->getResponse()->send(
 				SiPayloadFactory::create($iframeSiGui,

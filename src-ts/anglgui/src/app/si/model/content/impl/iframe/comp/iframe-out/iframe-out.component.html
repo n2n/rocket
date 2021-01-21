@@ -1,5 +1,5 @@
 <ng-container *ngIf="model.getUrl()">
-    <rocket-ui-iframe [srcDoc]="model.getUrl()"></rocket-ui-iframe>
+    <rocket-ui-url-iframe [srcUrl]="model.getUrl()"></rocket-ui-url-iframe>
 </ng-container>
 
 <ng-container *ngIf="!model.getUrl()">

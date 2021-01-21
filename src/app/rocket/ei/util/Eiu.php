@@ -7,6 +7,8 @@ use rocket\core\model\Rocket;
 use n2n\core\container\N2nContext;
 use rocket\ei\util\spec\EiuContext;
 use rocket\ei\util\factory\EiuFactory;
+use n2n\web\ui\ViewFactory;
+use n2n\util\type\CastUtils;
 
 class Eiu implements Lookupable {
 	private $eiuAnalyst;
@@ -238,6 +240,18 @@ class Eiu implements Lookupable {
 	 */
 	public function dtc(string ...$moduleNamespaces) {
 		return new DynamicTextCollection($moduleNamespaces, $this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
+	}
+	
+	/**
+	 * @param string $viewName
+	 * @param array $args
+	 * @return \n2n\web\ui\view\View
+	 */
+	function createView(string $viewName, array $args = []) {
+		$viewFactory = $this->lookup(ViewFactory::class);
+		CastUtils::assertTrue($viewFactory instanceof ViewFactory);
+		
+		return $viewFactory->create($viewName, $args);
 	}
 	
 	/**

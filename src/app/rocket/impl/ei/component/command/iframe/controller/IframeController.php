@@ -22,7 +22,7 @@ class IframeController extends ControllerAdapter {
 
 	function index() {
 		$eiuCtrl = EiuCtrl::from($this->cu());
-
+		
 		if (null !== ($url = $this->iframeConfig->getUrl())) {
 			$eiuCtrl->forwardUrlIframeZone($url);
 		} else {
