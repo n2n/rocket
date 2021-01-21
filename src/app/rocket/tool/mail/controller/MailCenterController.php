@@ -81,7 +81,14 @@ class MailCenterController extends ControllerAdapter {
 
 	public function doMails($filename, int $currentPageNum = null) {
 		$mailCenter = $this->createMailCenter($currentPageNum, $filename);
-		$mailItems = $this->createMailsJsonArray($mailCenter->getCurrentItems(), $filename);
+
+		$currentItems = $mailCenter->getCurrentItems();
+		if ($currentItems == null) {
+			$this->sendJson([]);
+			return;
+		}
+
+		$mailItems = $this->createMailsJsonArray($currentItems, $filename);
 		$this->sendJson($mailItems);
 	}
 
@@ -115,7 +122,9 @@ class MailCenterController extends ControllerAdapter {
 		$mailCenter = new MailCenter($mailXmlFilePath);
 
 		if (null !== $currentPageNum) {
-			$mailCenter->setCurrentPageNum($currentPageNum);
+			if ($mailCenter->getNumPages() != 0) {
+				$mailCenter->setCurrentPageNum($currentPageNum);
+			}
 		}
 
 		return $mailCenter;
