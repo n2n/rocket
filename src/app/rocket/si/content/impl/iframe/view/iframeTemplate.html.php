@@ -4,7 +4,8 @@
 	use n2n\web\ui\UiComponent;
 
 	$view = HtmlView::view($this);
-	$html = htmlView::html($this);
+	$html = htmlView::html($view);
+	$request = HtmlView::request($view);
 	
 	$uiComponent = $view->getParam('uiComponent');
 	$view->assert($uiComponent instanceof UiComponent);
