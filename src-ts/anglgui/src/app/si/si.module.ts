@@ -49,7 +49,7 @@ import { FieldMessagesComponent } from './model/content/impl/common/comp/field-m
 import { CrumbOutFieldComponent } from './model/content/impl/meta/comp/crumb-out-field/crumb-out-field.component';
 import { EmbeddedEntryPanelsComponent } from './model/content/impl/embedded/comp/embedded-entry-panels/embedded-entry-panels.component';
 import { SelectInFieldComponent } from './model/content/impl/enum/comp/select-in-field/select-in-field.component';
-import { IframeOutComponent } from './model/content/impl/iframe/comp/iframe-out/iframe-out.component';
+// import { IframeOutComponent } from './model/content/impl/iframe/comp/iframe-out/iframe-out.component';
 
 @NgModule({
 	declarations: [
@@ -61,7 +61,7 @@ import { IframeOutComponent } from './model/content/impl/iframe/comp/iframe-out/
 		AddPasteComponent, QualifierComponent, TogglerInFieldComponent, SplitComponent, SplitViewMenuComponent,
 		SplitManagerComponent, EnumInComponent, QualifierTilingComponent, ChoosePasteComponent, EmbeddedEntryComponent,
 		ImageEditorComponent, UploadResultMessageComponent, ImagePreviewComponent, CkeInFieldComponent, FieldMessagesComponent,
-		CrumbOutFieldComponent, SelectInFieldComponent, IframeOutComponent
+		CrumbOutFieldComponent, SelectInFieldComponent, //IframeOutComponent
 	],
 	imports: [
 		CommonModule,
