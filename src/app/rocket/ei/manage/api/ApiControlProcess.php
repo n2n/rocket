@@ -91,6 +91,7 @@ class ApiControlProcess {
 	
 	/**
 	 * @param int $viewMode
+     * @param string $eiTypeId
 	 */
 	function setupEiGuiFrame(int $viewMode, string $eiTypeId) {
 		try {

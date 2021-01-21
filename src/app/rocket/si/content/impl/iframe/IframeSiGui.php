@@ -9,9 +9,9 @@ class IframeSiGui implements SiGui {
 	private $url;
 	private $srcDoc;
 	
-	function __construct(/* PHP 8 Url|UiComponent*/ $arg) {
+	function __construct(/*Url|UiComponent*/ $arg) {
 		if ($arg instanceof Url) {
-			$this->Url = $arg;
+			$this->url = $arg;
 		} else {
 			$this->srcDoc = $arg;
 		}
