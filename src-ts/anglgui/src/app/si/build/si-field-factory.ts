@@ -222,7 +222,7 @@ export class SiFieldFactory {
 			return new CrumbOutSiField(SiGuiFactory.createCrumbGroups(dataExtr.reqArray('crumbGroups')));
 
     case SiFieldType.IFRAME_OUT:
-      return new IframeOutSiField(dataExtr.reqString('value'));
+     	return new IframeOutSiField(dataExtr.nullaString('url'), dataExtr.nullaString('srcDoc'));
 
 		default:
 			throw new ObjectMissmatchError('Invalid si field type: ' + data.type);
