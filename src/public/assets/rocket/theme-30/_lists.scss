@@ -252,42 +252,45 @@ td > .rocket-split > .rocket-item {
 
 // end new from tomekk
 
-%rocketTreeLevelBaseStyles {
-    padding-right: 0.5rem;
-    display: inline-block;
-    vertical-align: top;
-}
-
 @for $i from 1 through $rocket-tree-level-num {
-    .rocket-tree-level-#{$i} > td:first-child:not(.rocket-entry-selector)::before,
-    .rocket-tree-level-#{$i} > .rocket-entry-selector + td::before {
-        @extend %rocketTreeLevelBaseStyles;
-    }
-}
-
-@for $i from 1 through $rocket-tree-level-num {
-    .rocket-tree-level-#{$i} > td:first-child:not(.rocket-entry-selector)::before,
-    .rocket-tree-level-#{$i} > .rocket-entry-selector + td::before {
-        content: "\00a0";
-        width: 1.5em;
-        background-image: $n2n-tree-indicator-icon;
-        background-repeat: no-repeat;
-        background-size: 10px 15px;
-        background-position: center left 0;
-        @if ($i > 1) {
-            margin-left: 0.3em;
-            border-left: 1px solid $gray-400;
-            width: 3em;
-            background-position: center right 50%;
+    .rocket-tree-level-#{$i} > td:first-child:not(.rocket-entry-selector),
+    .rocket-tree-level-#{$i} > .rocket-entry-selector + td:not(.rocket-entry-selector),
+    .rocket-tree-level-#{$i} > .rocket-entry-selector + .rocket-entry-selector + td {
+        position: relative;
+        padding-left: calc(#{$table-cell-padding} + 14px + 10px);
+        @if ($i == 2) {
+            padding-left: calc(#{$table-cell-padding} + 7px + 10px + 27px);
         }
         @if ($i > 2) {
-            margin-left: ($i - 1) * 0.9em;
-            
+            padding-left: calc(#{$table-cell-padding} + 7px + 10px + (#{$i} * 17px));
         }
 
-        @if ($i > 3) {
-            margin-left: ($i - 1) * 1.1em;
-            
+        &:before {
+            content: "\00a0";
+            width: 14px;
+            position: absolute;
+            top: $table-cell-padding;
+            left: calc(#{$table-cell-padding});
+            background-image: $n2n-tree-indicator-icon;
+            background-repeat: no-repeat;
+            background-size: 10px 14px;
+            background-position: center right 0;
+            @if ($i > 1) {
+                width: 27px;
+                border-left: 1px solid $gray-400;
+            }
+
+            @if ($i == 2) {
+                left: calc(#{$table-cell-padding} + 7px);
+            }
+
+            @if ($i > 2) {
+                left: calc(#{$table-cell-padding} - 14px + (#{$i} * 14px));
+            }
+
+            @if ($i > 3) {
+                left: calc(#{$table-cell-padding} - 7px + (#{$i} * 14px));
+            }
         }
     }
 }

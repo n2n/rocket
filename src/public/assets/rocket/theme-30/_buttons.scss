@@ -59,9 +59,12 @@
     }
 }
 
-.rocket-ui-toggler > .btn {
+.rocket-ui-toggler > .btn,
+.rocket-simple-commands .rocket-ui-toggler > .btn {
     display: inline-flex;
     align-items: center;
+    padding-left: 0.375rem;
+    padding-right: 0.375rem;
 }
 
 // simple commands in table are bigger
