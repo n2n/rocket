@@ -1,3 +1,23 @@
-iframetemplate
+<?php 
+	use n2n\impl\web\ui\view\html\HtmlView;
+	use n2n\core\N2N;
+	use n2n\web\ui\UiComponent;
 
+	$view = HtmlView::view($this);
+	$html = htmlView::html($this);
+	
+	$uiComponent = $view->getParam('uiComponent');
+	$view->assert($uiComponent instanceof UiComponent);
+?>
+<!DOCTYPE html>
+<html lang="<?php $html->out($request->getN2nLocale()->getLanguage()->getShort()) ?>">
+	<?php $html->headStart() ?>
+		<meta charset="<?php $html->out(N2N::CHARSET) ?>" />
+	<?php $html->headEnd() ?>
+	<?php $html->bodyStart() ?>
+	
+		<?php $view->out($uiComponent) ?>
+		
+	<?php $html->bodyEnd() ?>
+</html>
 <?php $view->importContentView() ?>

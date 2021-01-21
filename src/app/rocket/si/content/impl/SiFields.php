@@ -43,6 +43,7 @@ use rocket\si\content\impl\meta\SiCrumb;
 use rocket\si\content\impl\meta\CrumbOutSiField;
 use rocket\si\content\impl\relation\EmbeddedEntriesOutSiField;
 use rocket\si\content\impl\relation\EmbeddedEntryPanelsOutSiField;
+use rocket\si\content\impl\iframe\IframeData;
 
 class SiFields {
 	
@@ -205,10 +206,33 @@ class SiFields {
 		return $siField;
 	}
 
-	static function iframeOut(N2nContext $n2nContext, UiComponent $uiComponent, $useTemplate) {
-		return new IframeOutSiField($n2nContext, $uiComponent, $useTemplate);
+	/**
+	 * @param UiComponent $uiComponent
+	 * @param N2nContext $templateN2nContext
+	 * @return \rocket\si\content\impl\iframe\IframeOutSiField
+	 */
+	static function iframeOut(UiComponent $uiComponent, N2nContext $templateN2nContext = null) {
+		return new IframeOutSiField($templateN2nContext === null 
+				? IframeData::createFromUiComponent($uiComponent)
+				: IframeData::createFromUiComponentWithTemplate($uiComponent, $templateN2nContext));
+	}
+	
+	/**
+	 * @param Url $url
+	 * @return \rocket\si\content\impl\iframe\IframeOutSiField
+	 */
+	static function iframeUrlOut(Url $url) {
+		return new IframeOutSiField(IframeData::createFromUrl($url));
 	}
 
-	static function iframeIn() {
+	/**
+	 * @param UiComponent $uiComponent
+	 * @param N2nContext $templateN2nContext
+	 * @return \rocket\si\content\impl\IframeInSiField
+	 */
+	static function iframeIn(UiComponent $uiComponent, N2nContext $templateN2nContext = null) {
+		return new IframeInSiField($templateN2nContext === null
+				? IframeData::createFromUiComponent($uiComponent)
+				: IframeData::createFromUiComponentWithTemplate($uiComponent, $templateN2nContext));
 	}
 }

@@ -6,25 +6,25 @@ import {SiGenericValue} from "../../../generic/si-generic-value";
 
 export class IframeOutSiField extends OutSiFieldAdapter {
 
-  constructor(public srcDoc: String|null) {
-    super();
-  }
+constructor(public srcDoc: String|null) {
+super();
+}
 
-  getSrcDoc(): String | null {
-    return this.srcDoc;
-  }
+getSrcDoc(): String | null {
+return this.srcDoc;
+}
 
-  createUiContent(): UiContent|null {
-    return new TypeUiContent(IframeComponent, (ref) => {
-			ref.instance.srcDoc = this.srcDoc;
-    });
-  }
+createUiContent(): UiContent|null {
+return new TypeUiContent(IframeComponent, (ref) => {
+  ref.instance.srcDoc = this.srcDoc;
+});
+}
 
-  copyValue(): SiGenericValue {
-    throw new Error('Not yet implemented');
-  }
+copyValue(): SiGenericValue {
+throw new Error('Not yet implemented');
+}
 
-  pasteValue(genericValue: SiGenericValue): Promise<void> {
-    throw new Error('Not yet implemented');
-  }
+pasteValue(genericValue: SiGenericValue): Promise<void> {
+throw new Error('Not yet implemented');
+}
 }

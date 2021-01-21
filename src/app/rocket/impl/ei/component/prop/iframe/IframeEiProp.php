@@ -25,20 +25,15 @@ class IframeEiProp extends DisplayableEiPropAdapter {
 	}
 
 	function createOutEifGuiField(Eiu $eiu): EifGuiField  {
-		$n2nContext = $eiu->getN2nContext();
-
-		return $eiu->factory()->newGuiField(SiFields::iframeOut($n2nContext,
-				new Raw($this->iframeConfig->getSrcDoc()), $this->iframeConfig->isUseTemplate()));
-	}
-
-	function createInEifGuiField(Eiu $eiu): EifGuiField {
-		$addonConfig = $this->getAddonConfig();
-
-		$siField = SiFields::iframeIn($eiu->getN2nContext(), $this->iframeConfig->getSrcDoc(), $this->iframeConfig->isUseTemplate());
-
-		return $eiu->factory()->newGuiField($siField)
-			->setSaver(function () use ($siField, $eiu) {
-				$eiu->field()->setValue($siField->getValue());
-			});
+		$siField = null;
+		/*if (null !== ($url = $this->iframeConfig->getUrl())) {
+			$siField = SiFields::iframeUrlOut($url);
+		} else */if ($this->iframeConfig->isUseTemplate()){
+			$siField = SiFields::iframeOut(new Raw($this->iframeConfig->getSrcDoc()), $eiu->getN2nContext());
+		} else {
+			$siField = SiFields::iframeOut(new Raw($this->iframeConfig->getSrcDoc()));
+		}
+		
+		return $eiu->factory()->newGuiField($siField);;
 	}
 }
