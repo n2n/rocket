@@ -19,35 +19,39 @@ import { SimpleZoneContainerComponent } from './structure/comp/simple-zone-conta
 import {ButtonComponent} from './util/comp/button/button.component';
 import {MessagesComponent} from './util/comp/message/messages.component';
 import { SelectComponent } from './util/comp/select-input/select.component';
+import { IframeComponent } from './util/comp/iframe/iframe.component';
+import { IFrameResizerDirective } from './util/directive/iframe-resizer-directive.directive';
 
 @NgModule({
-declarations: [
-LayerComponent, ContainerComponent, ZoneComponent, StructureComponent, StructureContentDirective,
-StructureBranchComponent, PlainContentComponent, MessageComponent, BreadcrumbsComponent, NavPointDirective,
-TogglerComponent, SearchInputGroupComponent, SimpleZoneContainerComponent, ButtonComponent, MessagesComponent,
-SelectComponent
-],
-imports: [
-CommonModule,
-UtilModule,
-RouterModule,
-FormsModule
-],
-exports: [
-ContainerComponent,
-StructureComponent,
-StructureContentDirective,
-StructureBranchComponent,
-PlainContentComponent,
-MessageComponent,
-NavPointDirective,
-TogglerComponent,
-SearchInputGroupComponent,
-SimpleZoneContainerComponent,
-ButtonComponent,
-MessagesComponent,
-SelectComponent
-],
-entryComponents: [ PlainContentComponent ]
+	declarations: [
+		LayerComponent, ContainerComponent, ZoneComponent, StructureComponent, StructureContentDirective,
+		StructureBranchComponent, PlainContentComponent, MessageComponent, BreadcrumbsComponent, NavPointDirective,
+		TogglerComponent, SearchInputGroupComponent, SimpleZoneContainerComponent, ButtonComponent, MessagesComponent, IframeComponent, IFrameResizerDirective,
+    IFrameResizerDirective, SelectComponent
+	],
+	imports: [
+		CommonModule,
+		UtilModule,
+		RouterModule,
+		FormsModule
+	],
+  exports: [
+    ContainerComponent,
+    StructureComponent,
+    StructureContentDirective,
+    StructureBranchComponent,
+    PlainContentComponent,
+    MessageComponent,
+    NavPointDirective,
+    TogglerComponent,
+    SearchInputGroupComponent,
+    SimpleZoneContainerComponent,
+    ButtonComponent,
+    MessagesComponent,
+    IframeComponent,
+    IFrameResizerDirective,
+    SelectComponent
+  ],
+	entryComponents: [ PlainContentComponent ]
 })
 export class UiModule { }
