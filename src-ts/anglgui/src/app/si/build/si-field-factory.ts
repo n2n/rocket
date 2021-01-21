@@ -221,7 +221,7 @@ export class SiFieldFactory {
 		case SiFieldType.CRUMB_OUT:
 			return new CrumbOutSiField(SiGuiFactory.createCrumbGroups(dataExtr.reqArray('crumbGroups')));
 
-	case SiFieldType.IFRAME_OUT:
+		case SiFieldType.IFRAME_OUT:
 			return new IframeOutSiField(dataExtr.nullaString('url'), dataExtr.nullaString('srcDoc'));
 
 		default:

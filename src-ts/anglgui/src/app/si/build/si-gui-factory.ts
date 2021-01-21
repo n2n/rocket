@@ -20,7 +20,8 @@ import { SiModStateService } from '../model/mod/model/si-mod-state.service';
 enum SiGuiType {
 	COMPACT_EXPLORER = 'compact-explorer',
 	BULKY_ENTRY = 'bulky-entry',
-	COMPACT_ENTRY = 'compact-entry'
+	COMPACT_ENTRY = 'compact-entry',
+	IFRAME = 'iframe'
 }
 
 export class SiGuiFactory {
@@ -215,6 +216,9 @@ export class SiGuiFactory {
 				compactEntrySiGui.entry = new SiEntryFactory(declaration, this.injector)
 						.createEntry(dataExtr.reqObject('entry'));
 				return compactEntrySiGui;
+
+			case SiGuiType.IFRAME:
+				return new IframeSiGui(dataExtr.nullaString('url'), dataExtr.nullaString('srcDoc'));
 
 			default:
 				throw new ObjectMissmatchError('Invalid si zone type: ' + data.type);
