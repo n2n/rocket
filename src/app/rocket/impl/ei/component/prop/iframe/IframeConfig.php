@@ -60,7 +60,7 @@ class IframeConfig extends PropConfigAdaption {
 	/**
 	 * @param string $srcDoc
 	 */
-	public function setSrcDoc(string $srcDoc): void {
+	public function setSrcDoc($srcDoc) {
 		$this->srcDoc = $srcDoc;
 	}
 
@@ -74,7 +74,7 @@ class IframeConfig extends PropConfigAdaption {
 	/**
 	 * @param boolean $useTemplate
 	 */
-	public function setUseTemplate(bool $useTemplate): void {
+	public function setUseTemplate($useTemplate) {
 		$this->useTemplate = $useTemplate;
 	}
 }
