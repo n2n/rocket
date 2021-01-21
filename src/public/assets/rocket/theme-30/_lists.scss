@@ -103,6 +103,9 @@ $rocket-tree-level-line-string:         '';
  * Table
  */
 
+
+
+
 .rocket-table {
     > thead {
         // position: sticky;
@@ -166,13 +169,11 @@ $rocket-tree-level-line-string:         '';
         }
     }
     .rocket-simple-commands > .btn > span,
-    .rocket-simple-commands > rocket-button-control > .btn > span {
+    .rocket-simple-commands > .rocket-button-control > .btn > span {
         display: none;
     }
-
-
-
 }
+
 
 /*
  * tree
@@ -188,7 +189,6 @@ $rocket-tree-level-line-string:         '';
 // new from tomekk
 
 td > .rocket-split {
-    width: auto;
     display: inline-block;
 }
 
@@ -230,30 +230,25 @@ td > .rocket-split > .rocket-item {
     }
 }
 
-td > rocket-crumb-out-field > rocket-crumb-group > i:first-child:not(:only-child) {
-    margin-right: .5em;
+.rocket-crumb-group {
+    display: flex;
+    align-items: baseline;
+
+    > i:only-child {
+        line-height: 1.5;
+        &:after {
+            content: "\200b";
+        }
+    }
+
+    > i:first-child:not(:only-child) {
+        margin-right: .5em;
+    }
+
+    > i:last-child:not(:only-child) {
+        margin-left: .5em;
+    }
 }
-
-td > rocket-crumb-out-field > rocket-crumb-group > i:last-child:not(:only-child) {
-    margin-left: .5em;
-}
-
-// [class*="rocket-tree-level-"] > td:first-child:not(.rocket-entry-selector), 
-// [class*="rocket-tree-level-"] > .rocket-entry-selector + td {
-//     white-space: nowrap;
-// }
-
-// [class*="rocket-tree-level-"] > td:first-child:not(.rocket-entry-selector):before, 
-// [class*="rocket-tree-level-"] > .rocket-entry-selector + td:before {
-//     margin-right: 1em;
-// }
-
-// [class*="rocket-tree-level-"] > td:first-child:not(.rocket-entry-selector), 
-// [class*="rocket-tree-level-"] > .rocket-entry-selector + td {
-//     > .rocket-split {
-//         white-space: normal;
-//     }
-// }
 
 // end new from tomekk
 
@@ -261,7 +256,7 @@ td > rocket-crumb-out-field > rocket-crumb-group > i:last-child:not(:only-child)
     padding-right: 0.5rem;
     display: inline-block;
     vertical-align: top;
- }
+}
 
 @for $i from 1 through $rocket-tree-level-num {
     .rocket-tree-level-#{$i} > td:first-child:not(.rocket-entry-selector)::before,

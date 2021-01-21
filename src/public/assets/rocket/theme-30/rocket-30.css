@@ -7092,14 +7092,15 @@ rocket-add-past > button::after {
 }
 
 .rocket-simple-commands > .btn > i,
-.rocket-simple-commands > rocket-button-control .btn > i {
+.rocket-simple-commands > .rocket-button-control .btn > i,
+.rocket-simple-commands > .rocket-button-control > .dropdown > .btn > i {
   font-size: 1.25rem;
 }
 
 /*
  * Zone Commands (the ones on the bottom of the page)
  */
-.rocket-zone-commands rocket-button-control:not(:last-child) .btn {
+.rocket-zone-commands .rocket-button-control:not(:last-child) .btn {
   margin-right: 0.5rem;
 }
 

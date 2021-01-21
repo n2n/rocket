@@ -1,5 +1,6 @@
 
-<button class="btn px-0 py-0 my-2" (click)="toggle()">
+<button class="btn btn-link" (click)="toggle()">
+	&#8203;
 	<div class="rocket-switch" [class.rocket-switch-off]="!enabled"  [class.rocket-switch-on]="enabled"></div>
 	<ng-container *ngIf="labeled">
 		<span *ngIf="enabled && enabledTextCode" class="ml-1">{{ enabledTextCode | translate }}</span>

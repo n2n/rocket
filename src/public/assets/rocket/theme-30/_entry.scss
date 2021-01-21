@@ -629,7 +629,11 @@ rocket-add-past {
 .rocket-to-one {
     display: inline-flex;
     align-items: baseline;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+
+    > *:first-child:empty:before {
+        content: "\200b";
+    }
 
     .rocket-selector {
         display: inline-flex;
@@ -670,8 +674,12 @@ rocket-add-past {
 // =========================
 
 .rocket-pickables {
-    padding: 0.15rem $input-btn-padding-x;
-    > .btn:not(:last-child) {
-        margin-right: 0.25rem;
+    padding: 0.15em $input-btn-padding-x;
+    display: inline-flex;
+    align-items: start;
+    flex-wrap: wrap;
+    > .btn {
+        margin-right: 0.25em;
+        margin-bottom: 0.25em;
     }
 }

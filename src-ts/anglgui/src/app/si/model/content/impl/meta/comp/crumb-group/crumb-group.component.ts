@@ -5,6 +5,7 @@ import { SiCrumbGroup, SiCrumb } from '../../model/si-crumb';
 	selector: 'rocket-crumb-group',
 	templateUrl: './crumb-group.component.html',
 	styleUrls: ['./crumb-group.component.css'],
+	host: {class: 'rocket-crumb-group'}
 })
 export class CrumbGroupComponent implements OnInit {
 

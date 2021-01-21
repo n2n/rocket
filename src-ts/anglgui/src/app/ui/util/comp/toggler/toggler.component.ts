@@ -3,7 +3,8 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 @Component({
 	selector: 'rocket-ui-toggler',
 	templateUrl: './toggler.component.html',
-	styleUrls: ['./toggler.component.css']
+	styleUrls: ['./toggler.component.css'],
+	host: {class: 'rocket-ui-toggler'}
 })
 export class TogglerComponent implements OnInit {
 

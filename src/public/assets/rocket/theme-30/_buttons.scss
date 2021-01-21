@@ -10,8 +10,9 @@
     // drop down button in simple-commands
     > .dropdown > button,
     > .btn,
-    > rocket-button-control > .dropdown > button, 
-    > rocket-button-control > .btn { 
+    > .rocket-button-control > .dropdown > button, 
+    > .rocket-button-control > .btn,
+    > .rocket-ui-toggler > .btn { 
         min-width: 2.25rem;
         text-align: center;
         background: transparent;
@@ -58,10 +59,16 @@
     }
 }
 
+.rocket-ui-toggler > .btn {
+    display: inline-flex;
+    align-items: center;
+}
+
 // simple commands in table are bigger
 .rocket-simple-commands {
     > .btn,
-    > rocket-button-control > .btn {
+    > .rocket-button-control > .btn,
+    > .rocket-button-control > .dropdown > .btn {
         > i {
             font-size: $font-size-lg;
         }
@@ -75,7 +82,7 @@
 
 
 .rocket-zone-commands {
-    rocket-button-control:not(:last-child) .btn {
+    .rocket-button-control:not(:last-child) .btn {
         margin-right: $rocket-btn-group-spacing;
     }
 
