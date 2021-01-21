@@ -16,17 +16,17 @@
 			<ng-container *ngIf="user.isAdmin()">
 				<li class="nav-item">
 					<a routerLink="/tools" class="nav-link">
-						<i class="fas fa-wrench mr-2"></i><span>{{ 'tool_title' }}</span>
+						<i class="fas fa-wrench mr-2"></i><span>{{ 'tool_title' | translate }}</span>
 					</a>
 				</li>
 				<li class="nav-item">
 					<a routerLink="/users" class="nav-link">
-						<i class="fas fa-user mr-2"></i><span>{{ 'user_title' }}</span>
+						<i class="fas fa-user mr-2"></i><span>{{ 'user_title' | translate }}</span>
 					</a>
 				</li>
 				<li class="nav-item">
 					<a routerLink="/usergroups" class="nav-link">
-						<i class="fas fa-users mr-2"></i><span>{{ 'user_groups_title' }}</span>
+						<i class="fas fa-users mr-2"></i><span>{{ 'user_groups_title' | translate }}</span>
 					</a>
 				</li>
 			</ng-container>

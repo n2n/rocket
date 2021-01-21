@@ -33,7 +33,7 @@ import { EmbeddedEntryPanelsOutSiField } from '../model/content/impl/embedded/mo
 import { EmbeddedEntryPanelsInSiField } from '../model/content/impl/embedded/model/embedded-entry-panels-in-si-field';
 import { SplitViewStateService } from '../model/content/impl/split/model/state/split-view-state.service';
 import { EnumInSiField } from '../model/content/impl/enum/model/enum-in-si-field';
-import {IframeOutSiField} from "../model/content/impl/iframe/iframe-out-si-field";
+import { IframeOutSiField } from '../model/content/impl/iframe/model/iframe-out-si-field';
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',
@@ -221,8 +221,8 @@ export class SiFieldFactory {
 		case SiFieldType.CRUMB_OUT:
 			return new CrumbOutSiField(SiGuiFactory.createCrumbGroups(dataExtr.reqArray('crumbGroups')));
 
-    case SiFieldType.IFRAME_OUT:
-     	return new IframeOutSiField(dataExtr.nullaString('url'), dataExtr.nullaString('srcDoc'));
+	case SiFieldType.IFRAME_OUT:
+			return new IframeOutSiField(dataExtr.nullaString('url'), dataExtr.nullaString('srcDoc'));
 
 		default:
 			throw new ObjectMissmatchError('Invalid si field type: ' + data.type);
