@@ -33,10 +33,10 @@ class IframeConfig extends PropConfigAdaption {
 
 	function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
 		$magCollection->addMag(self::ATTR_SRC_DOC_KEY, new StringMag('Source Document',
-			$dataSet->optString(self::ATTR_SRC_DOC_KEY, $this->getSrcDoc())));
+				$dataSet->optString(self::ATTR_SRC_DOC_KEY, $this->getSrcDoc())));
 
 		$magCollection->addMag(self::ATTR_USE_TEMPLATE_KEY, new BoolMag('Use Template',
-			$dataSet->optBool(self::ATTR_USE_TEMPLATE_KEY, $this->isUseTemplate())));
+				$dataSet->optBool(self::ATTR_USE_TEMPLATE_KEY, $this->isUseTemplate())));
 	}
 
 	function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {

@@ -26,9 +26,9 @@ class IframeEiProp extends DisplayableEiPropAdapter {
 
 	function createOutEifGuiField(Eiu $eiu): EifGuiField  {
 		$siField = null;
-		/*if (null !== ($url = $this->iframeConfig->getUrl())) {
+		if (null !== ($url = $this->iframeConfig->getUrl())) {
 			$siField = SiFields::iframeUrlOut($url);
-		} else */if ($this->iframeConfig->isUseTemplate()){
+		} else if ($this->iframeConfig->isUseTemplate()){
 			$siField = SiFields::iframeOut(new Raw($this->iframeConfig->getSrcDoc()), $eiu->getN2nContext());
 		} else {
 			$siField = SiFields::iframeOut(new Raw($this->iframeConfig->getSrcDoc()));
