@@ -21,34 +21,35 @@
  */
 namespace rocket\ei\util;
 
-use n2n\web\http\PageNotFoundException;
-use n2n\web\http\ForbiddenException;
-use rocket\ei\manage\ManageState;
-use rocket\ei\manage\preview\model\UnavailablePreviewException;
-use n2n\web\http\payload\impl\Redirect;
-use rocket\ei\manage\entry\UnknownEiObjectException;
-use rocket\ei\util\entry\EiuEntry;
-use rocket\ei\manage\gui\ViewMode;
-use n2n\web\http\controller\impl\ControllingUtils;
-use rocket\si\content\impl\basic\CompactExplorerSiGui;
-use rocket\si\SiPayloadFactory;
-use n2n\persistence\orm\criteria\Criteria;
-use n2n\persistence\orm\util\NestedSetUtils;
-use n2n\persistence\orm\util\NestedSetStrategy;
-use rocket\si\content\SiPartialContent;
-use rocket\si\content\impl\basic\BulkyEntrySiGui;
-use rocket\ei\manage\security\InaccessibleEiEntryException;
-use rocket\ei\manage\frame\EiFrameUtil;
-use rocket\ei\manage\LiveEiObject;
-use n2n\web\http\HttpContext;
-use rocket\si\control\SiNavPoint;
 use n2n\l10n\DynamicTextCollection;
+use n2n\persistence\orm\criteria\Criteria;
+use n2n\persistence\orm\util\NestedSetStrategy;
+use n2n\persistence\orm\util\NestedSetUtils;
 use n2n\util\uri\Url;
+use n2n\web\http\ForbiddenException;
+use n2n\web\http\HttpContext;
+use n2n\web\http\PageNotFoundException;
+use n2n\web\http\controller\impl\ControllingUtils;
+use n2n\web\http\payload\impl\Redirect;
 use rocket\core\model\RocketState;
-use rocket\si\meta\SiBreadcrumb;
+use rocket\ei\manage\LiveEiObject;
+use rocket\ei\manage\ManageState;
+use rocket\ei\manage\entry\UnknownEiObjectException;
+use rocket\ei\manage\frame\EiFrame;
+use rocket\ei\manage\frame\EiFrameUtil;
 use rocket\ei\manage\gui\EiGui;
 use rocket\ei\manage\gui\EiGuiUtil;
-use rocket\ei\manage\frame\EiFrame;
+use rocket\ei\manage\gui\ViewMode;
+use rocket\ei\manage\preview\model\UnavailablePreviewException;
+use rocket\ei\manage\security\InaccessibleEiEntryException;
+use rocket\ei\util\entry\EiuEntry;
+use rocket\si\SiPayloadFactory;
+use rocket\si\content\impl\iframe\IframeSiGui;
+use rocket\si\control\SiNavPoint;
+use rocket\si\meta\SiBreadcrumb;
+use n2n\web\ui\UiComponent;
+use rocket\si\content\impl\SiFields;
+use rocket\si\content\impl\iframe\IframeData;
 
 class EiuCtrl {
 	private $eiu;
@@ -418,7 +419,21 @@ class EiuCtrl {
 						$this->eiu->dtc('rocket')->t('common_new_entry_label')));
 	}
 	
-	function forwardIframeZone(Url $url, string $title = null) {
+	function forwardIframeZone(UiComponent $uiComponent, bool $useTemplate = true, string $title = null) {
+		$iframeSiGui = null;
+		if ($useTemplate) {
+			$iframeSiGui = new IframeSiGui(IframeData::createFromUiComponentWithTemplate($uiComponent, $this->eiu->getN2nContext()));
+		} else {
+			$iframeSiGui = new IframeSiGui(IframeData::createFromUiComponent($uiComponent));
+		}
+		
+		$this->httpContext->getResponse()->send(
+				SiPayloadFactory::create($iframeSiGui,
+						$this->rocketState->getBreadcrumbs(),
+						$title ?? 'Iframe'));
+	}
+	
+	function forwardUrlIframeZone(Url $url, string $title = null) {
 		if ($this->forwardHtml()) {
 			return;
 		}
