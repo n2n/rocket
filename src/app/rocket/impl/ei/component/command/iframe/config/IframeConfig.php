@@ -1,15 +1,16 @@
 <?php
 namespace rocket\impl\ei\component\command\iframe\config;
 
+use n2n\context\Lookupable;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\util\type\attrs\DataSet;
 use n2n\web\dispatch\mag\MagCollection;
 use rocket\ei\util\Eiu;
-use rocket\impl\ei\component\config\EiConfiguratorAdaption;
+use rocket\impl\ei\component\config\ConfigAdaption;
 
-class IframeConfig implements EiConfiguratorAdaption {
-	const ATTR_URL = 'url';
+class IframeConfig extends ConfigAdaption {
+	const ATTR_URL_KEY = 'url';
 	const ATTR_SRC_DOC_KEY = 'srcDoc';
 	const ATTR_USE_TEMPLATE_KEY = 'useTemplate';
 
@@ -21,10 +22,8 @@ class IframeConfig implements EiConfiguratorAdaption {
 	private $buttonTooltip;
 
 	function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
-
-
-		$magCollection->addMag(self::ATTR_URL, new StringMag('Source URL',
-			$dataSet->optString(self::ATTR_URL, $this->getUrl())));
+		$magCollection->addMag(self::ATTR_URL_KEY, new StringMag('Source URL',
+			$dataSet->optString(self::ATTR_URL_KEY, $this->getUrl())));
 
 		$magCollection->addMag(self::ATTR_SRC_DOC_KEY, new StringMag('Source Document',
 				$dataSet->optString(self::ATTR_SRC_DOC_KEY, $this->getSrcDoc())));
@@ -34,18 +33,18 @@ class IframeConfig implements EiConfiguratorAdaption {
 	}
 
 	function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {
-		$urlMag = $magCollection->getMagByPropertyName(self::ATTR_URL);
+		$urlMag = $magCollection->getMagByPropertyName(self::ATTR_URL_KEY);
 		$srcDocMag = $magCollection->getMagByPropertyName(self::ATTR_SRC_DOC_KEY);
 		$useTemplateMag = $magCollection->getMagByPropertyName(self::ATTR_USE_TEMPLATE_KEY);
 
-		$dataSet->set(self::ATTR_URL, $urlMag);
+		$dataSet->set(self::ATTR_URL_KEY, $urlMag);
 		$dataSet->set(self::ATTR_SRC_DOC_KEY, $srcDocMag->getValue());
 		$dataSet->set(self::ATTR_USE_TEMPLATE_KEY, $useTemplateMag->getValue());
 	}
 
 	function setup(Eiu $eiu, DataSet $dataSet) {
-		if ($dataSet->contains(self::ATTR_URL)) {
-			$this->setSrcDoc($dataSet->reqString(self::ATTR_URL));
+		if ($dataSet->contains(self::ATTR_URL_KEY)) {
+			$this->setSrcDoc($dataSet->reqString(self::ATTR_URL_KEY));
 		}
 
 		if ($dataSet->contains(self::ATTR_SRC_DOC_KEY)) {
@@ -81,7 +80,7 @@ class IframeConfig implements EiConfiguratorAdaption {
 	/**
 	 * @param string $srcDoc
 	 */
-	public function setSrcDoc(string $srcDoc) {
+	public function setSrcDoc($srcDoc) {
 		$this->srcDoc = $srcDoc;
 	}
 
@@ -109,7 +108,7 @@ class IframeConfig implements EiConfiguratorAdaption {
 	/**
 	 * @param string $buttonIcon
 	 */
-	public function setButtonIcon(string $buttonIcon): void {
+	public function setButtonIcon($buttonIcon) {
 		$this->buttonIcon = $buttonIcon;
 	}
 
@@ -123,7 +122,7 @@ class IframeConfig implements EiConfiguratorAdaption {
 	/**
 	 * @param string $buttonLabel
 	 */
-	public function setButtonLabel(string $buttonLabel) {
+	public function setButtonLabel($buttonLabel) {
 		$this->buttonLabel = $buttonLabel;
 	}
 

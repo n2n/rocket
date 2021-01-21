@@ -10,7 +10,7 @@
 	$uiComponent = $view->getParam('uiComponent');
 	$view->assert($uiComponent instanceof UiComponent);
 	
-	$html->meta()->addCss('css/rocket-30.css');
+//	$html->meta()->addCss('css/rocket-30.css');
 ?>
 <!DOCTYPE html>
 <html lang="<?php $html->out($request->getN2nLocale()->getLanguage()->getShort()) ?>">
