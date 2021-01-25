@@ -235,7 +235,7 @@ class FileEiProp extends DraftablePropertyEiPropAdapter implements IdNameEiProp 
 	public function createInEifGuiField(Eiu $eiu): EifGuiField {
 		$siFile = $this->buildSiFileFromEiu($eiu);
 		
-		$siField = SiFields::fileIn($siFile, $eiu->frame()->getApiUrl(), $eiu->guiField()->createCallId(), 
+		$siField = SiFields::fileIn($siFile, $eiu->frame()->getApiFieldUrl(), $eiu->guiField()->createCallId(), 
 						new SiFileHanlderImpl($eiu, $this->thumbResolver, $this->fileVerificator, $siFile))
 				->setMandatory($this->getEditConfig()->isMandatory())
 				->setMaxSize($this->fileVerificator->getMaxSize())

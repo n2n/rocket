@@ -126,7 +126,7 @@ export class SiFieldFactory {
 			return new FileOutSiField(SiGuiFactory.buildSiFile(dataExtr.nullaObject('value')));
 
 		case SiFieldType.FILE_IN:
-			const fileInSiField = new FileInSiField(dataExtr.reqString('apiUrl'),
+			const fileInSiField = new FileInSiField(dataExtr.reqString('apiFieldUrl'),
 					dataExtr.reqObject('apiCallId'), SiGuiFactory.buildSiFile(dataExtr.nullaObject('value')));
 			fileInSiField.mandatory = dataExtr.reqBoolean('mandatory');
 			fileInSiField.maxSize = dataExtr.reqNumber('maxSize');

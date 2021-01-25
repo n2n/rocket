@@ -98,8 +98,8 @@ class SiFields {
 	 * @param SiFile|null $file
 	 * @return \rocket\si\content\impl\FileInSiField
 	 */
-	static function fileIn(?SiFile $file, Url $apiUrl, \JsonSerializable $apiCallId, SiFileHandler $fileHandle) {
-		return new FileInSiField($file, $apiUrl, $apiCallId, $fileHandle);
+	static function fileIn(?SiFile $file, Url $apiFieldUrl, \JsonSerializable $apiCallId, SiFileHandler $fileHandle) {
+		return new FileInSiField($file, $apiFieldUrl, $apiCallId, $fileHandle);
 	}
 	
 	/**

@@ -88,7 +88,11 @@ export class SiService {
 				}));
 	}
 
-	fieldCall(apiUrl: string, apiCallId: object, data: object, uploadMap: Map<string, Blob>): Observable<any> {
+	fieldCall(apiUrl: string|SiFrame, apiCallId: object, data: object, uploadMap: Map<string, Blob>): Observable<any> {
+		if (apiUrl instanceof SiFrame) {
+			apiUrl = apiUrl.getApiUrl(SiFrameApiSection.CONTROL);
+		}
+
 		const formData = new FormData();
 		formData.append('apiCallId', JSON.stringify(apiCallId));
 		formData.append('data', JSON.stringify(data));

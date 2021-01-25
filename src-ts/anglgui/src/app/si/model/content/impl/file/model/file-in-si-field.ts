@@ -15,7 +15,7 @@ export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel 
 	public acceptedMimeTypes: string[] = [];
 	public acceptedExtensions: string[] = [];
 
-	constructor(public apiUrl: string, public apiCallId: object, public value: SiFile|null) {
+	constructor(public apiFieldUrl: string, public apiCallId: object, public value: SiFile|null) {
 		super();
 	}
 
@@ -39,8 +39,8 @@ export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel 
 		};
 	}
 
-	getApiUrl(): string {
-		return this.apiUrl;
+	getApiFieldUrl(): string {
+		return this.apiFieldUrl;
 	}
 
 	getApiCallId(): object {
