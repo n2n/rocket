@@ -84,7 +84,7 @@ class RelationModel {
 	
 	// ToMany / ToOne
 	
-	private $min = 1;
+	private $min = 0;
 	private $max = null;
 	
 	// EmbeddedToMany
@@ -310,7 +310,7 @@ class RelationModel {
 	 * @return int
 	 */
 	function getMin() {
-		if ($this->min < 1 && $this->editConfig->isMandatory()) {
+		if ($this->min < 1 && $this->editConfig !== null && $this->editConfig->isMandatory()) {
 			return 1;
 		}
 		

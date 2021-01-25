@@ -90,8 +90,8 @@ class RelationConfig extends PropConfigAdaption {
 						$lar->getString(self::ATTR_TARGET_EXTENSION_ID_KEY), false));
 		
 		if ($this->relationModel->isTargetMany()) {
-			$magCollection->addMag(self::ATTR_MIN_KEY, new NumericMag('Min', $lar->getInt(self::ATTR_MIN_KEY, null)));
-			$magCollection->addMag(self::ATTR_MAX_KEY, new NumericMag('Max', $lar->getInt(self::ATTR_MAX_KEY, null)));
+			$magCollection->addMag(self::ATTR_MIN_KEY, new NumericMag('Min', $lar->getInt(self::ATTR_MIN_KEY, $this->relationModel->getMin())));
+			$magCollection->addMag(self::ATTR_MAX_KEY, new NumericMag('Max', $lar->getInt(self::ATTR_MAX_KEY, $this->relationModel->getMax())));
 		}
 
 		if ($this->relationModel->isEmbedded() && $this->relationModel->isTargetMany()

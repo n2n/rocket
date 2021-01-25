@@ -432,6 +432,19 @@ class EiuCtrl {
 						$title ?? 'Iframe'));
 	}
 	
+	function forwardIframeUrlZone(Url $url, string $title = null) {
+		if ($this->forwardHtml()) {
+			return;
+		}
+		
+		$iframeSiGui = new IframeSiGui(IframeData::createFromUrl($url));
+		
+		$this->httpContext->getResponse()->send(
+				SiPayloadFactory::create($iframeSiGui,
+						$this->rocketState->getBreadcrumbs(),
+						$title ?? 'Iframe'));
+	}
+	
 	/**
 	 * @param EiEntryGui $eiEntryGui
 	 * @param GuiControl[] $guiControls
@@ -446,8 +459,9 @@ class EiuCtrl {
 		$process->provideEiEntryGui($eiEntryGui);
 		$process->determineGuiControl(ZoneApiControlCallId::parse((new ParamPost($_POST['apiCallId']))->parseJson()), $generalGuiControls);
 		
-		if (isset($_POST['entryInputMaps'])) {
-			$process->handleInput((new ParamPost($_POST['entryInputMaps']))->parseJson());
+		if (isset($_POST['entryInputMaps']) 
+				&& null !== ($siResult = $process->handleInput((new ParamPost($_POST['entryInputMaps']))->parseJson()))) {
+			return $siResult;
 		}
 		
 		return $process->callGuiControl();

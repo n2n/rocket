@@ -78,3 +78,5 @@
 
 	<rocket-si-add-past [obtainer]="obtainer" (newEntry)="add($event)"></rocket-si-add-past>
 </div>
+
+<rocket-field-messages *ngIf="model.getMessages().length > 0" [model]="model"></rocket-field-messages>

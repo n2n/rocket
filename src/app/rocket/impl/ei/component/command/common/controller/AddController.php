@@ -87,6 +87,7 @@ class AddController extends ControllerAdapter {
 								function (Eiu $eiu, array $inputEius) {
 									$this->handleInput($eiu, $inputEius);
 									return $eiu->factory()->newControlResponse()
+											->redirectBack()
 											->highlight(...array_map(function ($eiu) { return $eiu->entry(); }, $inputEius));
 								})
 						->setInputHandled(true),

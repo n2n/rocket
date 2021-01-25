@@ -87,7 +87,7 @@ class ZoneApiControlProcess extends IdPath {
 	
 	private function createEiGuiModel(EiMask $eiMask, int $viewMode) {
 		try {
-			return $this->eiFrame->getManageState()->getEiGuiModelCache()->obtainEiGuiModel($eiMask, $viewMode, null);
+			return $this->eiFrameUtil->getEiFrame()->getManageState()->getEiGuiModelCache()->obtainEiGuiModel($eiMask, $viewMode, null);
 		} catch (EiException $e) {
 			throw new BadRequestException(null, 0, $e);
 		}
@@ -150,7 +150,7 @@ class ZoneApiControlProcess extends IdPath {
 					$eiObject = $this->eiFrameUtil->createNewEiObject($entryInput->getTypeId());
 				}
 				
-				$eiEntry = $this->eiFrame->createEiEntry($eiObject);
+				$eiEntry = $this->eiFrameUtil->getEiFrame()->createEiEntry($eiObject);
 				$eiGuiModel = $this->createEiGuiModel($eiEntry->getEiMask(), $this->eiGuiModel->getViewMode());
 				$eiEntryGui = $eiGuiModel->createEiEntryGui($this->eiFrame, [$eiEntry], $this->eiGui);
 			}
@@ -164,7 +164,7 @@ class ZoneApiControlProcess extends IdPath {
 				continue;
 			}
 			
-			$entryErrors[$key] = $eiEntry->getValidationResult()->toSiEntryError($this->eiFrame->getN2nContext()->getN2nLocale());
+			$entryErrors[$key] = $eiEntry->getValidationResult()->toSiEntryError($this->eiFrameUtil->getEiFrame()->getN2nContext()->getN2nLocale());
 		}
 		
 		if (empty($entryErrors)) {

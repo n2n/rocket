@@ -13,6 +13,7 @@ import { SiModStateService } from 'src/app/si/model/mod/model/si-mod-state.servi
 import { EmbeddedEntriesInConfig } from './embe/embedded-entries-config';
 import { EmbeInSource } from './embe/embe-collection';
 import { GenericEmbeddedEntryManager } from './generic/generic-embedded-entry-manager';
+import { SiEntry } from '../../../si-entry';
 
 export class EmbeddedEntriesInSiField extends SiFieldAdapter implements EmbeInSource {
 
@@ -42,12 +43,14 @@ export class EmbeddedEntriesInSiField extends SiFieldAdapter implements EmbeInSo
 	private validate() {
 		this.messages = [];
 
-		if (this.values.length < this.config.min) {
+		const values = this.getTypeSelectedValues();
+
+		if (values.length < this.config.min) {
 			this.messages.push(Message.createCode('min_elements_err',
 					new Map([['{field}', this.label], ['{min}', this.config.min.toString()]])));
 		}
 
-		if (this.config.max !== null && this.values.length > this.config.max) {
+		if (this.config.max !== null && values.length > this.config.max) {
 			this.messages.push(Message.createCode('max_elements_err',
 					new Map([['{field}', this.label], ['{max}', this.config.max.toString()]])));
 		}
@@ -57,8 +60,12 @@ export class EmbeddedEntriesInSiField extends SiFieldAdapter implements EmbeInSo
 		return true;
 	}
 
+	private getTypeSelectedValues(): SiEmbeddedEntry[] {
+		return this.values.filter(ee => ee.entry.selectedTypeId);
+	}
+
 	readInput(): object {
-		return { entryInputs: this.values.map(embeddedEntry => embeddedEntry.entry.readInput() ) };
+		return { entryInputs: this.getTypeSelectedValues().map(embeddedEntry => embeddedEntry.entry.readInput() ) };
 	}
 
 	createUiStructureModel(): UiStructureModel {

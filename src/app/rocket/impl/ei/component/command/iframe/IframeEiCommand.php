@@ -33,7 +33,7 @@ class IframeEiCommand extends IndependentEiCommandAdapter {
 		$siButton = SiButton::success($buttonLabel, $this->iframeConfig->getButtonIcon() ?? SiIconType::ICON_PLAY)
 				->setTooltip($this->iframeConfig->getButtonTooltip());
 
-		$siControl = $eiu->factory()->controls()->createCmdRef(self::CONTROL_RUN_KEY, $siButton);
+		$siControl = $eiu->factory()->controls()->newCmdRef(self::CONTROL_RUN_KEY, $siButton);
 
 		return [$siControl];
 	}

@@ -23,7 +23,6 @@ namespace rocket\impl\ei\component\command\common\controller;
 
 use n2n\l10n\DynamicTextCollection;
 use n2n\web\http\controller\ControllerAdapter;
-use rocket\impl\ei\component\command\common\model\EntryCommandViewModel;
 use rocket\ei\manage\EiObject;
 use n2n\web\http\controller\ParamQuery;
 use n2n\l10n\DateTimeFormat;
