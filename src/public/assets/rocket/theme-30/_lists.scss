@@ -183,7 +183,7 @@
 
 // new from tomekk
 
-td > rocket-file-out-field:last-child > *:last-child,
+td > .rocket-file-out-field:last-child > *:last-child,
 td > *:last-child {
     margin-bottom: 0;
 }
@@ -236,6 +236,7 @@ td > .rocket-split > .rocket-item {
 
     > i:only-child {
         line-height: 1.5;
+        //add zero-width-space, prevents jumping pixel
         &:after {
             content: "\200b";
         }

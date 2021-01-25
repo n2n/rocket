@@ -1,7 +1,7 @@
 /**
  *
  * Allowed classes to style:
- * - .rocket-item
+ * - .rocket-item, .rocket-item.rocket-bulky
  *
  * Forbidden classes to style:
  * - .rocket-entry
@@ -18,7 +18,7 @@
 
 @include media-breakpoint-up(md) {
     // .rocket-item is used on TD also
-    .rocket-item {
+    .rocket-item.rocket-bulky {
         display: grid;
         grid-template-columns: 15rem 1fr auto;
 
@@ -42,7 +42,7 @@
     }
 
     // new
-    .rocket-item.rocket-item-collection {
+    .rocket-item.rocket-bulky.rocket-item-collection {
         > label {
             padding-right: $rocket-item-double-item-width * 1.1;
             overflow: hidden;
@@ -54,7 +54,7 @@
         }
     }
 
-    .rocket-item.rocket-double-item  {
+    .rocket-item.rocket-bulky.rocket-double-item  {
         grid-template-columns: $rocket-item-double-item-width 1fr auto;
 
         &:first-child {
@@ -74,14 +74,14 @@
     }
 
     // tomekk überprüfe nochmal, ob das nötig ist
-    .rocket-item.rocket-level-4 {
+    .rocket-item.rocket-bulky.rocket-level-4 {
         grid-template-columns: 6rem 1fr auto;
         &:first-child {
             padding-top: 0;
         }
     }
 
-    rocket-split > .rocket-item:first-child {
+    .rocket-split > .rocket-item:first-child {
         padding-top: 0;
     }
 
@@ -631,6 +631,7 @@ rocket-add-past {
     align-items: baseline;
     flex-wrap: nowrap;
 
+    //add zero-width-space, prevents jumping of other content, if elem is empty
     > *:first-child:empty:before {
         content: "\200b";
     }

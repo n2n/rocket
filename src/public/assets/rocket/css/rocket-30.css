@@ -2733,8 +2733,8 @@ textarea.form-control {
           box-shadow: 0 0 0 0.2rem rgba(237, 130, 7, 0.25), inset 0 3px 5px rgba(0, 0, 0, 0.125);
 }
 
-a.btn.disabled,
-fieldset:disabled a.btn {
+.btn:disabled, .btn.disabled,
+fieldset:disabled .btn {
   pointer-events: none;
 }
 
@@ -6121,7 +6121,7 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   font-weight: bold;
 }
 
-td > rocket-file-out-field:last-child > *:last-child,
+td > .rocket-file-out-field:last-child > *:last-child,
 td > *:last-child {
   margin-bottom: 0;
 }
@@ -6464,7 +6464,7 @@ td > .rocket-split > .rocket-item > .rocket-structure-content:not(:empty) {
 /**
  *
  * Allowed classes to style:
- * - .rocket-item
+ * - .rocket-item, .rocket-item.rocket-bulky
  *
  * Forbidden classes to style:
  * - .rocket-entry
@@ -6480,13 +6480,13 @@ td > .rocket-split > .rocket-item > .rocket-structure-content:not(:empty) {
 }
 
 @media (min-width: 768px) {
-  .rocket-item {
+  .rocket-item.rocket-bulky {
     display: -ms-grid;
     display: grid;
     -ms-grid-columns: 15rem 1fr auto;
         grid-template-columns: 15rem 1fr auto;
   }
-  .rocket-item > label {
+  .rocket-item.rocket-bulky > label {
     -ms-grid-row: 1;
         grid-row-start: 1;
     -ms-grid-column: 1;
@@ -6494,52 +6494,52 @@ td > .rocket-split > .rocket-item > .rocket-structure-content:not(:empty) {
     grid-column-end: 2;
     padding: calc(0.375rem + 1px) 0;
   }
-  .rocket-item > .rocket-structure-content {
+  .rocket-item.rocket-bulky > .rocket-structure-content {
     -ms-grid-row: 1;
         grid-row-start: 1;
     -ms-grid-column: 2;
         grid-column-start: 2;
     grid-column-end: 3;
   }
-  .rocket-item > .rocket-toolbar {
+  .rocket-item.rocket-bulky > .rocket-toolbar {
     -ms-grid-column: 3;
         grid-column-start: 3;
     grid-column-end: 4;
     padding: 0;
     margin-bottom: 0;
   }
-  .rocket-item.rocket-item-collection > label {
+  .rocket-item.rocket-bulky.rocket-item-collection > label {
     padding-right: 5.5rem;
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .rocket-item.rocket-item-collection > .rocket-structure-content {
+  .rocket-item.rocket-bulky.rocket-item-collection > .rocket-structure-content {
     margin-left: -5rem;
   }
-  .rocket-item.rocket-double-item {
+  .rocket-item.rocket-bulky.rocket-double-item {
     -ms-grid-columns: 5rem 1fr auto;
         grid-template-columns: 5rem 1fr auto;
   }
-  .rocket-item.rocket-double-item:first-child {
+  .rocket-item.rocket-bulky.rocket-double-item:first-child {
     padding-top: 0;
   }
-  .rocket-item.rocket-double-item > label,
-  .rocket-item.rocket-double-item .rocket-item > label {
+  .rocket-item.rocket-bulky.rocket-double-item > label,
+  .rocket-item.rocket-bulky.rocket-double-item .rocket-item > label {
     color: #C2BDB6;
     font-size: 0.875rem;
     padding-right: 10px;
   }
-  .rocket-item.rocket-double-item > label {
+  .rocket-item.rocket-bulky.rocket-double-item > label {
     width: 5rem;
   }
-  .rocket-item.rocket-level-4 {
+  .rocket-item.rocket-bulky.rocket-level-4 {
     -ms-grid-columns: 6rem 1fr auto;
         grid-template-columns: 6rem 1fr auto;
   }
-  .rocket-item.rocket-level-4:first-child {
+  .rocket-item.rocket-bulky.rocket-level-4:first-child {
     padding-top: 0;
   }
-  rocket-split > .rocket-item:first-child {
+  .rocket-split > .rocket-item:first-child {
     padding-top: 0;
   }
   .rocket-group:not(.rocket-light-group) .rocket-group:not(.rocket-light-group) .rocket-structure-content > .rocket-item {
@@ -7321,11 +7321,11 @@ rocket-add-past > button::after {
   padding: 0.375rem 0.5rem;
 }
 
-.rocket-simple-commands > .dropdown > button:hover,
-.rocket-simple-commands > .btn:hover,
-.rocket-simple-commands > .rocket-button-control > .dropdown > button:hover,
-.rocket-simple-commands > .rocket-button-control > .btn:hover,
-.rocket-simple-commands > .rocket-ui-toggler > .btn:hover {
+.rocket-simple-commands > .dropdown > button:hover:not([disabled]),
+.rocket-simple-commands > .btn:hover:not([disabled]),
+.rocket-simple-commands > .rocket-button-control > .dropdown > button:hover:not([disabled]),
+.rocket-simple-commands > .rocket-button-control > .btn:hover:not([disabled]),
+.rocket-simple-commands > .rocket-ui-toggler > .btn:hover:not([disabled]) {
   background: transparent;
   color: #373431;
 }
@@ -7347,27 +7347,27 @@ rocket-add-past > button::after {
           box-shadow: none;
 }
 
-.rocket-simple-commands > .dropdown > button.btn-danger:hover,
-.rocket-simple-commands > .btn.btn-danger:hover,
-.rocket-simple-commands > .rocket-button-control > .dropdown > button.btn-danger:hover,
-.rocket-simple-commands > .rocket-button-control > .btn.btn-danger:hover,
-.rocket-simple-commands > .rocket-ui-toggler > .btn.btn-danger:hover {
+.rocket-simple-commands > .dropdown > button.btn-danger:hover:not([disabled]),
+.rocket-simple-commands > .btn.btn-danger:hover:not([disabled]),
+.rocket-simple-commands > .rocket-button-control > .dropdown > button.btn-danger:hover:not([disabled]),
+.rocket-simple-commands > .rocket-button-control > .btn.btn-danger:hover:not([disabled]),
+.rocket-simple-commands > .rocket-ui-toggler > .btn.btn-danger:hover:not([disabled]) {
   color: #b90f00;
 }
 
-.rocket-simple-commands > .dropdown > button.btn-warning:hover,
-.rocket-simple-commands > .btn.btn-warning:hover,
-.rocket-simple-commands > .rocket-button-control > .dropdown > button.btn-warning:hover,
-.rocket-simple-commands > .rocket-button-control > .btn.btn-warning:hover,
-.rocket-simple-commands > .rocket-ui-toggler > .btn.btn-warning:hover {
+.rocket-simple-commands > .dropdown > button.btn-warning:hover:not([disabled]),
+.rocket-simple-commands > .btn.btn-warning:hover:not([disabled]),
+.rocket-simple-commands > .rocket-button-control > .dropdown > button.btn-warning:hover:not([disabled]),
+.rocket-simple-commands > .rocket-button-control > .btn.btn-warning:hover:not([disabled]),
+.rocket-simple-commands > .rocket-ui-toggler > .btn.btn-warning:hover:not([disabled]) {
   color: #F6A723;
 }
 
-.rocket-simple-commands > .dropdown > button.btn-success:hover,
-.rocket-simple-commands > .btn.btn-success:hover,
-.rocket-simple-commands > .rocket-button-control > .dropdown > button.btn-success:hover,
-.rocket-simple-commands > .rocket-button-control > .btn.btn-success:hover,
-.rocket-simple-commands > .rocket-ui-toggler > .btn.btn-success:hover {
+.rocket-simple-commands > .dropdown > button.btn-success:hover:not([disabled]),
+.rocket-simple-commands > .btn.btn-success:hover:not([disabled]),
+.rocket-simple-commands > .rocket-button-control > .dropdown > button.btn-success:hover:not([disabled]),
+.rocket-simple-commands > .rocket-button-control > .btn.btn-success:hover:not([disabled]),
+.rocket-simple-commands > .rocket-ui-toggler > .btn.btn-success:hover:not([disabled]) {
   color: #2D7F00;
 }
 
@@ -7548,12 +7548,12 @@ rocket-add-past > button::after {
   border-color: #fff transparent;
 }
 
-.rocket-button-control .dropdown > div div:not(:last-child) > .rocket-button-control .btn,
+.rocket-button-control .dropdown > div div:not(:last-child) > .rocket-button-control > .btn,
 .rocket-button-control .dropdown > div div:not(:last-child) > .btn {
   border-bottom: 1px solid #DAD7D3;
 }
 
-.rocket-button-control .dropdown > div div > .rocket-button-control .btn,
+.rocket-button-control .dropdown > div div > .rocket-button-control > .btn,
 .rocket-button-control .dropdown > div div > .btn {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -7573,18 +7573,18 @@ rocket-add-past > button::after {
   font-weight: bold;
 }
 
-.rocket-button-control .dropdown > div div > .rocket-button-control .btn > i,
+.rocket-button-control .dropdown > div div > .rocket-button-control > .btn > i,
 .rocket-button-control .dropdown > div div > .btn > i {
   width: 1.2rem;
   text-align: left;
 }
 
-.rocket-button-control .dropdown > div div > .rocket-button-control .btn > i:not(:first-child),
+.rocket-button-control .dropdown > div div > .rocket-button-control > .btn > i:not(:first-child),
 .rocket-button-control .dropdown > div div > .btn > i:not(:first-child) {
   margin-left: .5rem;
 }
 
-.rocket-button-control .dropdown > div div > .rocket-button-control .btn:hover, .rocket-button-control .dropdown > div div > .rocket-button-control .btn:focus,
+.rocket-button-control .dropdown > div div > .rocket-button-control > .btn:hover, .rocket-button-control .dropdown > div div > .rocket-button-control > .btn:focus,
 .rocket-button-control .dropdown > div div > .btn:hover,
 .rocket-button-control .dropdown > div div > .btn:focus {
   background: #F7F5F5;

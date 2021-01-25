@@ -9,12 +9,12 @@
 				<th *ngFor="let siProp of getSiProps()">
 					{{ siProp.label }}
 				</th>
-				<th>
-					<ng-container *ngIf="sortable">
-						<button class="btn btn-link btn-sm" (click)="switchToEntryControlMode()" [class.active]="isEntryControModeEnabled()"><i class="fa fa-wrench"></i></button>
+				<th [class.text-right]="sortable" class="rocket-table-commands">
+					<div *ngIf="sortable" class="rocket-simple-commands">
+						<button class="btn btn-link" (click)="switchToEntryControlMode()" [class.active]="isEntryControModeEnabled()"><i class="fa fa-wrench"></i></button>
 
-						<button class="btn btn-link btn-sm" (click)="switchToSortMode()" [class.active]="isSortModeEnabled()"><i class="fa fa-arrows-alt-v"></i></button>
-					</ng-container>
+						<button class="btn btn-link" (click)="switchToSortMode()" [class.active]="isSortModeEnabled()"><i class="fa fa-exchange-alt fa-rotate-90"></i></button>
+					</div>
 				</th>
 			</tr>
 		</thead>

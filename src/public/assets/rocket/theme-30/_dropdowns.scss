@@ -23,12 +23,12 @@
 		}
 		div {
 			&:not(:last-child) {
-				> .rocket-button-control .btn,
+				> .rocket-button-control > .btn,
 				> .btn {
 					border-bottom: 1px solid $input-border-color;
 				}
 			}
-			> .rocket-button-control .btn,
+			> .rocket-button-control > .btn,
 			> .btn {
 				display: flex;
 				padding-left: 1rem;
