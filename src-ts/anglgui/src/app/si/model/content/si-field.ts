@@ -6,6 +6,8 @@ import { SiGenericValue } from '../generic/si-generic-value';
 
 export interface SiField {
 
+	isDisplayable(): boolean;
+
 	createUiStructureModel(): UiStructureModel;
 
 	hasInput(): boolean;

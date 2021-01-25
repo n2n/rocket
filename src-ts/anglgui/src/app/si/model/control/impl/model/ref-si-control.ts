@@ -9,14 +9,13 @@ import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { SiControlBoundry } from '../../si-control-bountry';
 
 export class RefSiControl implements SiControl, ButtonControlModel {
-	private loading = false;
 
 	constructor(public siUiService: SiUiService, public url: string, public siButton: SiButton,
 			public controlBoundry: SiControlBoundry) {
 	}
 
 	isLoading(): boolean {
-		return this.loading;
+		return false;
 	}
 
 	isDisabled(): boolean {
@@ -28,7 +27,6 @@ export class RefSiControl implements SiControl, ButtonControlModel {
 	}
 
 	exec(uiZone: UiZone, _subKey: string|null) {
-		this.loading = true;
 		this.siUiService.navigateByUrl(this.url, uiZone.layer);
 	}
 

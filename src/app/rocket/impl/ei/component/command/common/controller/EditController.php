@@ -23,9 +23,7 @@ namespace rocket\impl\ei\component\command\common\controller;
 
 use n2n\l10n\DynamicTextCollection;
 use n2n\web\http\controller\ControllerAdapter;
-use rocket\ei\manage\EiObject;
 use n2n\web\http\controller\ParamQuery;
-use n2n\l10n\DateTimeFormat;
 use rocket\ei\util\EiuCtrl;
 use rocket\core\model\Rocket;
 use rocket\si\control\SiButton;
@@ -78,7 +76,7 @@ class EditController extends ControllerAdapter {
 			$eiuControlFactory->newCallback(self::CONTROL_CANCEL_KEY,
 					SiButton::primary($dtc->t('common_cancel_label'), SiIconType::ICON_ARROW_LEFT),
 					function (Eiu $eiu) {
-						$eiu->factory()->newControlResponse()->redirectBack();
+						return $eiu->factory()->newControlResponse()->redirectBack();
 					})
 		];
 	}

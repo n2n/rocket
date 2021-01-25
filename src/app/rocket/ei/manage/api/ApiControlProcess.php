@@ -92,7 +92,7 @@ class ApiControlProcess {
 	/**
 	 * @param int $viewMode
 	 */
-	function setupEiGuiFrame(int $viewMode, string $eiTypeId) {
+	function determineEiGuiFrame(int $viewMode, string $eiTypeId) {
 		try {
 			$eiType = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()->determineEiTypeById($eiTypeId);
 			$eiMask = $this->eiFrame->getContextEiEngine()->getEiMask()->determineEiMask($eiType);

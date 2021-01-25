@@ -381,7 +381,7 @@ class ToolbarResolver {
 			contextUiStructure = this.deterOuter(contextUiStructure, uiStructure);
 		}
 
-		if (contextUiStructure) {
+		if (contextUiStructure && contextSiField.isDisplayable()) {
 			contextUiStructure.createToolbarChild(contextSiField.createUiStructureModel());
 		}
 	}

@@ -8,8 +8,12 @@ import { Observable, of } from 'rxjs';
 
 export class SplitContextOutSiField extends SplitContextSiField {
 
+	isDisplayable(): boolean {
+		return false;
+	}
+
 	protected createUiContent(): UiContent {
-		throw new Error('Method not implemented.');
+		throw new IllegalSiStateError('SiField not displayable');
 	}
 
 	get activeKeys$(): Observable<string[]> {

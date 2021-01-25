@@ -3,5 +3,7 @@ import { UiZone } from 'src/app/ui/structure/model/ui-zone';
 
 export interface SiControl {
 
+	isDisabled(): boolean;
+
 	createUiContent(zone: UiZone): UiContent;
 }
