@@ -2,6 +2,19 @@
  * The small Buttons (without text)
  */
 
+ .rocket-line-loader {
+     height: 3px;
+     background: rgba($black, 0.7);
+ }
+
+ .btn .rocket-line-loader {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    animation: linear-line 1s linear infinite;
+    animation-direction: alternate;
+ }
+
  .btn-warning {
      color: $white;
  }
@@ -173,3 +186,19 @@
     // }
 }
 
+@keyframes linear-line {
+    0%{
+        left: 0;
+        right: 95%;
+    }
+
+    50% {
+        left: 40%;
+        right: 30%;
+    }
+
+    100% {
+        left: 95%;
+        right: 0%;
+    }
+}

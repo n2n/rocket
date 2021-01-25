@@ -7302,6 +7302,21 @@ rocket-add-past > button::after {
 /*
  * The small Buttons (without text)
  */
+.rocket-line-loader {
+  height: 3px;
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.btn .rocket-line-loader {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  -webkit-animation: linear-line 1s linear infinite;
+          animation: linear-line 1s linear infinite;
+  -webkit-animation-direction: alternate;
+          animation-direction: alternate;
+}
+
 .btn-warning {
   color: #fff;
 }
@@ -7521,6 +7536,36 @@ rocket-add-past > button::after {
 
 .rocket-toolbar > .rocket-simple-commands > .rocket-important.btn-warning > i[class*="fa-"]::after {
   background: #F6A723;
+}
+
+@-webkit-keyframes linear-line {
+  0% {
+    left: 0;
+    right: 95%;
+  }
+  50% {
+    left: 40%;
+    right: 30%;
+  }
+  100% {
+    left: 95%;
+    right: 0%;
+  }
+}
+
+@keyframes linear-line {
+  0% {
+    left: 0;
+    right: 95%;
+  }
+  50% {
+    left: 40%;
+    right: 30%;
+  }
+  100% {
+    left: 95%;
+    right: 0%;
+  }
 }
 
 .rocket-button-control .dropdown > div {
