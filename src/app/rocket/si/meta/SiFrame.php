@@ -35,8 +35,8 @@ class SiFrame implements \JsonSerializable {
 	 * @param Url $apiUrl
 	 * @param SiTypeContext $typeContext
 	 */
-	function __construct(Url $apiUrl, SiTypeContext $typeContext) {
-		$this->apiUrl = $apiUrl;
+	function __construct(array $apiUrlMap, SiTypeContext $typeContext) {
+		$this->apiUrlMap = $apiUrlMap;
 		$this->typeContext = $typeContext;
 	}
 	
@@ -69,7 +69,7 @@ class SiFrame implements \JsonSerializable {
 	 */
 	function jsonSerialize() {
 		return [
-			'apiUrl' => (string) $this->apiUrl,
+			'apiUrlMap' => array_map(fn ($url) => (string) $url, $this->apiUrlMap),
 			'typeContext' => $this->typeContext,
 			'sortable' => $this->sortable
 		];

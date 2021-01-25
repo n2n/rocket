@@ -18,7 +18,7 @@ import { EnumInModel } from '../../../content/impl/enum/comp/enum-in-model';
 import { UiZoneError } from 'src/app/ui/structure/model/ui-zone-error';
 import { PlainContentComponent } from 'src/app/ui/structure/comp/plain-content/plain-content.component';
 import { SiControlBoundry } from '../../../control/si-control-bountry';
-import { SiFrame } from '../../../meta/si-frame';
+import { SiFrame, SiFrameApiSection } from '../../../meta/si-frame';
 import { SiEntryMonitor } from '../../../mod/model/si-entry-monitor';
 import { SiService } from 'src/app/si/manage/si.service';
 import { SiModStateService } from '../../../mod/model/si-mod-state.service';
@@ -63,7 +63,8 @@ export class BulkyEntrySiGui implements SiGui, SiControlBoundry {
 
 	createUiStructureModel(): UiStructureModel {
 		return new BulkyUiStructureModel(this.entry, this.declaration, this.getControls(),
-				new SiEntryMonitor(this.siFrame.apiUrl, this.siService, this.siModStateService, this.entryControlsIncluded));
+				new SiEntryMonitor(this.siFrame.getApiUrl(SiFrameApiSection.GET), this.siService, 
+						this.siModStateService, this.entryControlsIncluded));
 	}
 
 	private getControls(): SiControl[] {

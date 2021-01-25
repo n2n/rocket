@@ -71,7 +71,7 @@ class EiGuiUtil {
 			$siControls = $this->eiGui->getEiGuiModel()->createGeneralSiControls($this->eiFrame);
 		}
 		
-		$siComp->setControls(array_merge($siControls, $this->createZoneSiControls($zoneGuiControls)));
+		$siComp->setControls(array_merge($this->createZoneSiControls($zoneGuiControls), $siControls));
 		
 		return $siComp;
 	}
