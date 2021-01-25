@@ -55,25 +55,23 @@
 										(enabledChange)="setSiEntrySortSelected(structureEntry.siEntry, $event)"
 										[labeled]="false"></rocket-ui-toggler>
 										
-								<ng-container *ngIf="">
-									<button class="btn btn-link" (click)="moveBefore(structureEntry.siEntry)" 
-											[disabled]="!hasSiEntrySortSelections() && !isSiEntrySortSelected(structureEntry.siEntry) 
-													&& !isSiEntrySortDecendant(structureEntry.siEntry)">
-										<i class="fa fa-arrow-up"></i>
-									</button>
+								<button class="btn btn-link" (click)="moveBefore(structureEntry.siEntry)" 
+										[disabled]="!hasSiEntrySortSelections()"
+										[class.invisible]="isSiEntrySortSelected(structureEntry.siEntry) || isSiEntrySortDecendant(structureEntry.siEntry)">
+									<i class="fa fa-arrow-up"></i>
+								</button>
 
-									<button class="btn btn-link" (click)="moveAfter(structureEntry.siEntry)" 
-											[disabled]="!hasSiEntrySortSelections() && !isSiEntrySortSelected(structureEntry.siEntry) 
-													&& !isSiEntrySortDecendant(structureEntry.siEntry)">
-										<i class="fa fa-arrow-down"></i>
-									</button>
+								<button class="btn btn-link" (click)="moveAfter(structureEntry.siEntry)" 
+										[disabled]="!hasSiEntrySortSelections()"
+										[class.invisible]="isSiEntrySortSelected(structureEntry.siEntry) || isSiEntrySortDecendant(structureEntry.siEntry)">
+									<i class="fa fa-arrow-down"></i>
+								</button>
 
-									<button class="btn btn-link" *ngIf="isTree()" (click)="moveToParent(structureEntry.siEntry)" 
-											[disabled]="!hasSiEntrySortSelections() && !isSiEntrySortSelected(structureEntry.siEntry) 
-													&& !isSiEntrySortDecendant(structureEntry.siEntry)">
-										<i class="fa fa-arrow-right"></i>
-									</button>
-								</ng-container>
+								<button class="btn btn-link" *ngIf="isTree()" (click)="moveToParent(structureEntry.siEntry)" 
+										[disabled]="!hasSiEntrySortSelections()"
+										[class.invisible]="isSiEntrySortSelected(structureEntry.siEntry) || isSiEntrySortDecendant(structureEntry.siEntry)">
+									<i class="fa fa-arrow-right"></i>
+								</button>
 							</ng-container>
 						</div>
 					</td>
