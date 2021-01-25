@@ -28,8 +28,17 @@ use rocket\ei\manage\EiObject;
 use n2n\web\http\controller\ParamQuery;
 use n2n\l10n\DateTimeFormat;
 use rocket\ei\util\EiuCtrl;
+use rocket\core\model\Rocket;
+use rocket\si\control\SiButton;
+use rocket\ei\util\Eiu;
+use rocket\si\control\SiIconType;
+use n2n\util\ex\IllegalStateException;
 
 class EditController extends ControllerAdapter {
+	const CONTROL_SAVE_KEY = 'save';
+	const CONTROL_SAVE_AND_BACK_KEY = 'saveAndBack';
+	const CONTROL_CANCEL_KEY = 'canel';
+	
 	private $dtc;
 	private $eiuCtrl;
 	
@@ -48,6 +57,49 @@ class EditController extends ControllerAdapter {
 // 		$this->eiuCtrl->pushCurrentAsSirefBreadcrumb($this->dtc->t('common_add_label'), true, $eiuEntry);
 		
 		$this->eiuCtrl->forwardBulkyEntryZone($eiuEntry, false, true, false);
+	}
+	
+	private function createControls() {
+		$eiuControlFactory = $this->eiuCtrl->eiu()->factory()->controls();
+		$dtc = $this->eiuCtrl->eiu()->dtc(Rocket::NS);
+		
+		return [
+			$eiuControlFactory->newCallback(self::CONTROL_SAVE_KEY,
+					SiButton::primary($dtc->t('common_save_label'), SiIconType::ICON_SAVE),
+					function (Eiu $eiu, array $inputEius) {
+						return $this->handleInput($eiu, $inputEius);
+					})
+					->setInputHandled(true),
+			$eiuControlFactory->newCallback(self::CONTROL_SAVE_AND_BACK_KEY,
+					SiButton::primary($dtc->t('common_save_and_back_label'), SiIconType::ICON_SAVE),
+					function (Eiu $eiu, array $inputEius) {
+						$this->handleInput($eiu, $inputEius)->redirectBack();
+					})
+					->setInputHandled(true),
+			$eiuControlFactory->newCallback(self::CONTROL_CANCEL_KEY,
+					SiButton::primary($dtc->t('common_cancel_label'), SiIconType::ICON_ARROW_LEFT),
+					function (Eiu $eiu) {
+						$eiu->factory()->newControlResponse()->redirectBack();
+					})
+		];
+	}
+	
+	/**
+	 * @param Eiu $eiu
+	 * @param Eiu[] $inputEius
+	 */
+	private function handleInput($eiu, $inputEius) {
+		// 		$inputEiuEntries = [];
+		foreach ($inputEius as $inputEiu) {
+			$inputEiuEntry = $inputEiu->entry();
+			// input eius are already validated.
+			IllegalStateException::assertTrue($inputEiuEntry->save());
+			// 			$inputEiuEntries[] = $inputEiuEntry;
+		}
+		
+		return $eiu->factory()->newControlResponse()
+		// 				->highlight(...$inputEiuEntries)
+		;
 	}
 	
 	public function doPreview($pid, $previewType, ParamQuery $refPath) {
@@ -239,28 +291,28 @@ class EditController extends ControllerAdapter {
 // 		$previewController->execute(array(), array_merge($contextCmds, $cmds), $this->getN2nContext());
 // 	}
 	
-	private function applyBreadcrumbs(EiObject $eiObject) {
-		$eiFrame = $this->eiuCtrl->frame()->getEiFrame();
-		$httpContext = $this->getHttpContext();
+// 	private function applyBreadcrumbs(EiObject $eiObject) {
+// 		$eiFrame = $this->eiuCtrl->frame()->getEiFrame();
+// 		$httpContext = $this->getHttpContext();
 				
-		if (!$eiFrame->isOverviewDisabled()) {
-			$this->rocketState->addBreadcrumb(
-					$eiFrame->createOverviewBreadcrumb($this->getHttpContext()));
-		}
+// 		if (!$eiFrame->isOverviewDisabled()) {
+// 			$this->rocketState->addBreadcrumb(
+// 					$eiFrame->createOverviewBreadcrumb($this->getHttpContext()));
+// 		}
 		
-		$this->rocketState->addBreadcrumb($eiFrame->createDetailBreadcrumb($httpContext, $eiObject));
+// 		$this->rocketState->addBreadcrumb($eiFrame->createDetailBreadcrumb($httpContext, $eiObject));
 		
-		if ($eiObject->isDraft()) {	
-			$breadcrumbPath = $eiFrame->getDetailUrl($httpContext, $eiObject->toEntryNavPoint($eiFrame->getContextEiEngine()->getEiMask()->getEiType())
-							->copy(false, true));
-			$dtf = DateTimeFormat::createDateTimeInstance($this->getRequest()->getN2nLocale(),
-					DateTimeFormat::STYLE_MEDIUM, DateTimeFormat::STYLE_SHORT);
-			$breadcrumbLabel = $this->dtc->translate('ei_impl_detail_draft_breadcrumb', 
-					array('last_mod' => $dtf->format($eiObject->getDraft()->getLastMod())));
-			$this->rocketState->addBreadcrumb(new Breadcrumb($breadcrumbPath, $breadcrumbLabel));
-		}
+// 		if ($eiObject->isDraft()) {	
+// 			$breadcrumbPath = $eiFrame->getDetailUrl($httpContext, $eiObject->toEntryNavPoint($eiFrame->getContextEiEngine()->getEiMask()->getEiType())
+// 							->copy(false, true));
+// 			$dtf = DateTimeFormat::createDateTimeInstance($this->getRequest()->getN2nLocale(),
+// 					DateTimeFormat::STYLE_MEDIUM, DateTimeFormat::STYLE_SHORT);
+// 			$breadcrumbLabel = $this->dtc->translate('ei_impl_detail_draft_breadcrumb', 
+// 					array('last_mod' => $dtf->format($eiObject->getDraft()->getLastMod())));
+// 			$this->rocketState->addBreadcrumb(new Breadcrumb($breadcrumbPath, $breadcrumbLabel));
+// 		}
 		
-	}	
+// 	}	
 	
 // 	private function dispatchEditModel(EditModel $editModel) {
 // 		$eiFrame = $this->utils->getEiFrame();

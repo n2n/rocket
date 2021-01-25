@@ -63,7 +63,7 @@ class OnlineEiCommand extends EiCommandAdapter {
 			return [];
 		}
 		
-		$eiuControlFactory = $eiu->guiFrame()->controlFactory($this);
+		$eiuControlFactory = $eiu->factory()->controls();
 		
 		$eiuFrame = $eiu->frame();
 		$dtc = new DynamicTextCollection('rocket', $eiuFrame->getN2nLocale());
@@ -81,7 +81,7 @@ class OnlineEiCommand extends EiCommandAdapter {
 			$siButton->setIconType(SiIconType::ICON_MINUS_CIRCLE);
 		}
 		
-		$guiControl = $eiuControlFactory->createCallback(self::CONTROL_KEY, $siButton, 
+		$guiControl = $eiuControlFactory->newCallback(self::CONTROL_KEY, $siButton, 
 				function () use ($eiu, $eiuEntry, $status, $dtc) {
 					$eiuEntry->setValue($this->onlineEiProp, !$status);
 					if (!$eiuEntry->save()) {

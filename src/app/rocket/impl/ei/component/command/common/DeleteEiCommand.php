@@ -21,10 +21,7 @@
  */
 namespace rocket\impl\ei\component\command\common;
 
-use n2n\core\N2N;
-use rocket\core\model\Rocket;
 use rocket\ei\component\command\PrivilegedEiCommand;
-use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\command\adapter\IndependentEiCommandAdapter;
 use rocket\si\control\SiButton;
@@ -66,8 +63,8 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 		$siButton = SiButton::danger($name, SiIconType::ICON_TRASH_ALT)->setTooltip($tooltip)
 				->setConfirm(new SiConfirm($confirmMessage, $dtc->t('common_yes_label'), $dtc->t('common_no_label'), true));
 		
-		$eiuControlFactory = $eiu->guiFrame()->controlFactory($this);
-		$control = $eiuControlFactory->createCallback(self::CONTROL_BUTTON_KEY, $siButton, function (Eiu $eiu) {
+		$eiuControlFactory = $eiu->factory()->controls();
+		$control = $eiuControlFactory->newCallback(self::CONTROL_BUTTON_KEY, $siButton, function (Eiu $eiu) {
 			$eiu->entry()->remove();
 		});
 		
@@ -113,7 +110,7 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 // 			$query['refPath'] = (string) $eiuFrame->getEiFrame()->getCurrentUrl($view->getHttpContext());
 // 		}
 		
-// 		$hrefControl = $eiu->guiFrame()->controlFactory($this)->createJhtml($siButton, $pathExt->toUrl($query))
+// 		$hrefControl = $eiu->factory()->controls()->createJhtml($siButton, $pathExt->toUrl($query))
 // 		      ->setPushToHistory(false)->setForceReload(true);
 		
 // 		return array(self::CONTROL_BUTTON_KEY => $hrefControl);
@@ -143,31 +140,31 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 // 		return array(self::CONTROL_BUTTON_KEY => $dtc->translate('ei_impl_partial_delete_label'));
 // 	}
 	
-	public function processEntries(EiFrame $eiFrame, array $entries) {
-		$spec = N2N::getModelContext()->lookup('rocket\spec\Spec');
-		$eiType = $this->getEiType();
-		$em = $eiFrame->getEntityManager();
+// 	public function processEntries(EiFrame $eiFrame, array $entries) {
+// 		$spec = N2N::getModelContext()->lookup('rocket\spec\Spec');
+// 		$eiType = $this->getEiType();
+// 		$em = $eiFrame->getEntityManager();
 		
-		foreach ($entries as $entry) {
-// 			$spec->notifyOnDelete($entry);
-			$em->remove($entry);
-// 			$spec->notifyDelete($entry);
-		}
-	}
+// 		foreach ($entries as $entry) {
+// // 			$spec->notifyOnDelete($entry);
+// 			$em->remove($entry);
+// // 			$spec->notifyDelete($entry);
+// 		}
+// 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\component\command\PrivilegedEiCommand::createEiCommandPrivilege()
-	 */
-	public function createEiCommandPrivilege(Eiu $eiu): EiCommandPrivilege {
-		$dtc = $eiu->dtc(Rocket::NS);
+// 	/**
+// 	 * {@inheritDoc}
+// 	 * @see \rocket\ei\component\command\PrivilegedEiCommand::createEiCommandPrivilege()
+// 	 */
+// 	public function createEiCommandPrivilege(Eiu $eiu): EiCommandPrivilege {
+// 		$dtc = $eiu->dtc(Rocket::NS);
 		
-		$ecp = $eiu->factory()->newCommandPrivilege($dtc->t('common_delete_label'));
-		$ecp->newSub(self::PRIVILEGE_LIVE_ENTRY_KEY, $dtc->t('ei_impl_delete_live_entry_label'));
-		$ecp->newSub(self::PRIVILEGE_DRAFT_KEY, $dtc->t('ei_impl_delete_draft_label'));
+// 		$ecp = $eiu->factory()->newCommandPrivilege($dtc->t('common_delete_label'));
+// 		$ecp->newSub(self::PRIVILEGE_LIVE_ENTRY_KEY, $dtc->t('ei_impl_delete_live_entry_label'));
+// 		$ecp->newSub(self::PRIVILEGE_DRAFT_KEY, $dtc->t('ei_impl_delete_draft_label'));
 		
-		return $ecp;
-	}
+// 		return $ecp;
+// 	}
 	
 // 	public static function createPathExt($entityId, $draftId = null) {
 // 		if (isset($draftId)) {

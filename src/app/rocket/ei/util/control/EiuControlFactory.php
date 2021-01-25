@@ -21,35 +21,25 @@
  */
 namespace rocket\ei\util\control;
 
-use rocket\ei\component\command\EiCommand;
 use rocket\si\control\SiButton;
-use rocket\ei\util\gui\EiuGuiFrame;
 use rocket\ei\util\EiuAnalyst;
+use n2n\util\uri\Url;
 
 class EiuControlFactory {
-	private $eiuGuiFrame;
-	private $eiCommand;
 	private $eiuAnalyst;
 	
-	public function __construct(EiuGuiFrame $eiuGuiFrame, EiCommand $eiCommand, EiuAnalyst $eiuAnalyst) {
-		$this->eiuGuiFrame = $eiuGuiFrame;
-		$this->eiCommand = $eiCommand;
+	public function __construct(EiuAnalyst $eiuAnalyst) {
 		$this->eiuAnalyst = $eiuAnalyst;
 	}
 	
 	/**
-	 * @param mixed $urlExt
-	 * @return \n2n\util\uri\Url
+	 * @param string $id
+	 * @param SiButton $siButton
+	 * @param mixed|null $urlExt
+	 * @return \rocket\ei\util\control\EiuRefGuiControl
 	 */
-	private function createCmdUrl($urlExt) {
-		return $this->eiuAnalyst->getEiuFrame(true)->getCmdUrl($this->eiCommand)->ext($urlExt);
-	}
-	
-	/**
-	 * @return \n2n\util\uri\Url
-	 */
-	private function getApiUrl() {
-		return $this->eiuAnalyst->getEiuFrame(true)->getApiUrl($this->eiCommand);
+	public function newCmdRef(string $id, SiButton $siButton, $urlExt = null) {
+		return new EiuRefGuiControl($id, $this->eiuAnalyst->getEiuFrame(true), Url::create($urlExt), $siButton, false);
 	}
 	
 	/**
@@ -58,18 +48,8 @@ class EiuControlFactory {
 	 * @param mixed|null $urlExt
 	 * @return \rocket\ei\util\control\EiuRefGuiControl
 	 */
-	public function createCmdRef(string $id, SiButton $siButton, $urlExt = null) {
-		return new EiuRefGuiControl($id, $this->createCmdUrl($urlExt), $siButton, false);
-	}
-	
-	/**
-	 * @param string $id
-	 * @param SiButton $siButton
-	 * @param mixed|null $urlExt
-	 * @return \rocket\ei\util\control\EiuRefGuiControl
-	 */
-	public function createCmdHref(string $id, SiButton $siButton, $urlExt = null) {
-		return new EiuRefGuiControl($id, $this->createCmdUrl($urlExt), $siButton, true);
+	public function newCmdHref(string $id, SiButton $siButton, $urlExt = null) {
+		return new EiuRefGuiControl($id, $this->eiuAnalyst->getEiuFrame(true), Url::create($urlExt), $siButton, true);
 	}
 	
 	/**
@@ -78,8 +58,8 @@ class EiuControlFactory {
 	 * @param \Closure $callback
 	 * @return \rocket\ei\util\control\EiuCallbackGuiControl
 	 */
-	public function createCallback(string $id, SiButton $siButton, \Closure $callback) {
-		return new EiuCallbackGuiControl($id, $this->getApiUrl(), $this->eiuGuiFrame->getViewMode(), $callback, $siButton);
+	public function newCallback(string $id, SiButton $siButton, \Closure $callback) {
+		return new EiuCallbackGuiControl($id, $this->eiuAnalyst->getEiuFrame(true), $callback, $siButton);
 	}
 	
 	/**
@@ -87,7 +67,7 @@ class EiuControlFactory {
 	 * @param SiButton $siButton
 	 * @return EiuGroupGuiControl
 	 */
-	public function createGroup(string $id, SiButton $siButton) {
+	public function newGroup(string $id, SiButton $siButton) {
 		return new EiuGroupGuiControl($id, $siButton);
 	}
 	
@@ -96,7 +76,7 @@ class EiuControlFactory {
 	 * @param SiButton $siButton
 	 * @return \rocket\ei\util\control\EiuDeactivatedGuiControl
 	 */
-	public function createDeactivated(string $id, SiButton $siButton) {
+	public function newDeactivated(string $id, SiButton $siButton) {
 		return new EiuDeactivatedGuiControl($id, $siButton);
 	}
 }

@@ -103,25 +103,25 @@ class AddEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiCo
 		return $eiu->lookup(AddController::class);
 	}
 
-	public function getOverallControlOptions(N2nLocale $n2nLocale): array {
-		$dtc = new DynamicTextCollection('rocket', $n2nLocale);
+// 	public function getOverallControlOptions(N2nLocale $n2nLocale): array {
+// 		$dtc = new DynamicTextCollection('rocket', $n2nLocale);
 
-		$options = array();
+// 		$options = array();
 		
-		if (null === $this->eiMask->getEiType()->getNestedSetStrategy()) {
-			$options[self::CONTROL_ADD_KEY] = $dtc->t('common_new_entry_label');
-		} else {
-			$options[self::CONTROL_ADD_ROOT_BRANCH_KEY] = $dtc->t('ei_impl_add_root_branch_label');
-		}
+// 		if (null === $this->eiMask->getEiType()->getNestedSetStrategy()) {
+// 			$options[self::CONTROL_ADD_KEY] = $dtc->t('common_new_entry_label');
+// 		} else {
+// 			$options[self::CONTROL_ADD_ROOT_BRANCH_KEY] = $dtc->t('ei_impl_add_root_branch_label');
+// 		}
 
-		$options[self::CONTROL_ADD_DRAFT_KEY] = $dtc->translate('common_add_draft_label');
+// 		$options[self::CONTROL_ADD_DRAFT_KEY] = $dtc->translate('common_add_draft_label');
 		
-		return $options;
-	}
+// 		return $options;
+// 	}
 	
 	public function createGeneralGuiControls(Eiu $eiu): array {
 		if ($eiu->frame()->isExecutedBy($this)) {
-			return [$this->createSaveControl($eiu)];
+			return [];
 		}
 		
 		return  [$this->createAddControl($eiu)];
@@ -132,7 +132,7 @@ class AddEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiCo
 	 * @return \rocket\ei\util\control\EiuRefGuiControl
 	 */
 	private function createAddControl(Eiu $eiu) {
-		$eiuControlFactory = $eiu->guiFrame()->controlFactory($this);
+		$eiuControlFactory = $eiu->factory()->controls();
 		$dtc = $eiu->dtc(Rocket::NS);
 		
 		$nestedSet = null !== $this->getWrapper()->getEiCommandCollection()->getEiMask()->getEiType()->getNestedSetStrategy();
@@ -140,31 +140,31 @@ class AddEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiCo
 		$key = $nestedSet ? self::CONTROL_ADD_ROOT_BRANCH_KEY : self::CONTROL_ADD_KEY;
 		$siButton = new SiButton($dtc->t($nestedSet ? 'ei_impl_add_root_branch_label' : 'common_new_entry_label'),
 				null, true, SiButton::TYPE_SUCCESS, SiIconType::ICON_PLUS_CIRCLE);
-		return $eiuControlFactory->createCmdRef($key, $siButton);
+		return $eiuControlFactory->newCmdRef($key, $siButton);
 	}
 	
-	/**
-	 * @param Eiu $eiu
-	 * @return \rocket\ei\util\control\EiuCallbackGuiControl
-	 */
-	private function createSaveControl(Eiu $eiu) {
-		$eiuControlFactory = $eiu->guiFrame()->controlFactory($this);
-		$dtc = $eiu->dtc(Rocket::NS);
+// 	/**
+// 	 * @param Eiu $eiu
+// 	 * @return \rocket\ei\util\control\EiuCallbackGuiControl
+// 	 */
+// 	private function createSaveControl(Eiu $eiu) {
+// 		$eiuControlFactory = $eiu->factory()->controls();
+// 		$dtc = $eiu->dtc(Rocket::NS);
 		
-		$siButton = SiButton::primary($dtc->t('common_save_label'), SiIconType::ICON_SAVE);
-		$callback = function (Eiu $eiu, $inputEius) {
-			$eiuResponse = $eiu->factory()->newControlResponse()->redirectBack();
+// 		$siButton = SiButton::primary($dtc->t('common_save_label'), SiIconType::ICON_SAVE);
+// 		$callback = function (Eiu $eiu, $inputEius) {
+// 			$eiuResponse = $eiu->factory()->newControlResponse()->redirectBack();
 			
-			foreach ($inputEius as $inputEiu) {
-				$inputEiu->entry()->save();
-				$eiuResponse->highlight($inputEiu->entry());
-			}
+// 			foreach ($inputEius as $inputEiu) {
+// 				$inputEiu->entry()->save();
+// 				$eiuResponse->highlight($inputEiu->entry());
+// 			}
 			
-			return $eiuResponse; 
-		};
+// 			return $eiuResponse; 
+// 		};
 		
-		return $eiuControlFactory->createCallback(self::CONTROL_SAVE_KEY, $siButton, $callback)->setInputHandled(true);
-	}
+// 		return $eiuControlFactory->newCallback(self::CONTROL_SAVE_KEY, $siButton, $callback)->setInputHandled(true);
+// 	}
 
 	public function getEntryGuiControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {
 		$dtc = new DynamicTextCollection('rocket', $n2nLocale);
@@ -179,7 +179,7 @@ class AddEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiCo
 			return array();
 		}
 		
-		$eiuControlFactory = $eiu->guiFrame()->controlFactory($this);
+		$eiuControlFactory = $eiu->factory()->controls();
 		$dtc = $eiu->dtc(Rocket::NS);
 		
 		if ($eiu->frame()->getNestedSetStrategy() === null) {
@@ -194,23 +194,23 @@ class AddEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiCo
 		}
 
 
-		$groupControl = $eiuControlFactory->createGroup(self::CONTROL_INSERT_BRANCH_KEY,
+		$groupControl = $eiuControlFactory->newGroup(self::CONTROL_INSERT_BRANCH_KEY,
 				SiButton::success($dtc->t('ei_impl_insert_branch_label'), SiIconType::ICON_PLUS)
 						->setTooltip($dtc->t('ei_impl_add_branch_tooltip'))
 						->setImportant(false));
 		
 		$groupControl->add(
-				$eiuControlFactory->createCmdRef(self::CONTROL_INSERT_BEFORE_KEY,
+				$eiuControlFactory->newCmdRef(self::CONTROL_INSERT_BEFORE_KEY,
 						SiButton::success($dtc->t('ei_impl_add_before_branch_label'), SiIconType::ICON_ANGLE_UP)
 								->setTooltip($dtc->t('ei_impl_add_before_branch_tooltip'))
 								->setImportant(TRUE),
 						['before', $eiuEntry->getPid()]),
-				$eiuControlFactory->createCmdRef(self::CONTROL_INSERT_AFTER_KEY,
+				$eiuControlFactory->newCmdRef(self::CONTROL_INSERT_AFTER_KEY,
 						SiButton::success($dtc->t('ei_impl_add_after_branch_label'), SiIconType::ICON_ANGLE_DOWN)
 								->setTooltip($dtc->t('ei_impl_add_after_branch_tooltip'))
 								->setImportant(true),
 						['after', $eiuEntry->getPid()]),
-				$eiuControlFactory->createCmdRef(self::CONTROL_INSERT_CHILD_KEY,
+				$eiuControlFactory->newCmdRef(self::CONTROL_INSERT_CHILD_KEY,
 						SiButton::success($dtc->translate('ei_impl_add_child_branch_label'), SiIconType::ICON_ANGLE_RIGHT)
 								->setTooltip($dtc->translate('ei_impl_add_child_branch_tooltip'))
 								->setImportant(true),

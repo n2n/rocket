@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs';
 	templateUrl: './structure.component.html',
 	styleUrls: ['./structure.component.css']
 })
-export class StructureComponent implements OnInit, OnDestroy, DoCheck {
+export class StructureComponent implements OnInit, OnDestroy {
 	@Input()
 	labelVisible = true;
 	@Input()
@@ -44,33 +44,33 @@ export class StructureComponent implements OnInit, OnDestroy, DoCheck {
 		this.clear();
 	}
 
-	ngDoCheck() {
-		if (!this.uiStructure) {
-			return;
-		}
+	// ngDoCheck() {
+	// 	if (!this.uiStructure) {
+	// 		return;
+	// 	}
 
-		// const classList = this.elRef.nativeElement.classList;
+	// 	// const classList = this.elRef.nativeElement.classList;
 
-		// if (this.uiStructure.isItemCollection()) {
-		// 	if (!classList.contains('rocket-item-collection')) {
-		// 		classList.add('rocket-item-collection');
-		// 	}
-		// } else {
-		// 	if (classList.contains('rocket-item-collection')) {
-		// 		classList.remove('rocket-item-collection');
-		// 	}
-		// }
+	// 	// if (this.uiStructure.isItemCollection()) {
+	// 	// 	if (!classList.contains('rocket-item-collection')) {
+	// 	// 		classList.add('rocket-item-collection');
+	// 	// 	}
+	// 	// } else {
+	// 	// 	if (classList.contains('rocket-item-collection')) {
+	// 	// 		classList.remove('rocket-item-collection');
+	// 	// 	}
+	// 	// }
 
-		// if (this.uiStructure.isDoubleItem()) {
-		// 	if (!classList.contains('rocket-double-item')) {
-		// 		classList.add('rocket-double-item');
-		// 	}
-		// } else {
-		// 	if (classList.contains('rocket-double-item')) {
-		// 		classList.remove('rocket-double-item');
-		// 	}
-		// }
-	}
+	// 	// if (this.uiStructure.isDoubleItem()) {
+	// 	// 	if (!classList.contains('rocket-double-item')) {
+	// 	// 		classList.add('rocket-double-item');
+	// 	// 	}
+	// 	// } else {
+	// 	// 	if (classList.contains('rocket-double-item')) {
+	// 	// 		classList.remove('rocket-double-item');
+	// 	// 	}
+	// 	// }
+	// }
 
 	@HostBinding('class.rocket-item-collection')
 	get itemCollection(): boolean {

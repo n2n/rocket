@@ -259,6 +259,10 @@ class ApiControlProcess {
 		$eiEntryGui->save();
 	}
 	
+	/**
+	 * @throws IllegalStateException
+	 * @return \rocket\si\control\SiResult
+	 */
 	function callGuiControl() {
 		if ($this->generalGuiControl !== null) {
 			return $this->generalGuiControl->handle($this->eiFrame, $this->eiGuiModel, $this->inputEiEntries);

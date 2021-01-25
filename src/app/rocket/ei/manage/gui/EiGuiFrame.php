@@ -435,7 +435,7 @@ class EiGuiFrame {
 		$siControls = [];
 		foreach ($this->guiDefinition->createSelectionGuiControls($eiFrame, $this)
 				as $guiControlPathStr => $selectionGuiControl) {
-			$siControls[$guiControlPathStr] = $selectionGuiControl->toSiControl(
+			$siControls[$guiControlPathStr] = $selectionGuiControl->toCmdSiControl(
 					new ApiControlCallId(GuiControlPath::create($guiControlPathStr), 
 							$this->guiDefinition->getEiMask()->getEiTypePath(),
 							$this->eiGuiModel->getViewMode(), null));
@@ -450,7 +450,7 @@ class EiGuiFrame {
 		$siControls = [];
 		foreach ($this->guiDefinition->createGeneralGuiControls($eiFrame, $this)
 				as $guiControlPathStr => $generalGuiControl) {
-			$siControls[$guiControlPathStr] = $generalGuiControl->toSiControl(
+			$siControls[$guiControlPathStr] = $generalGuiControl->toCmdSiControl(
 					new ApiControlCallId(GuiControlPath::create($guiControlPathStr), 
 							$this->guiDefinition->getEiMask()->getEiTypePath(),
 							$this->eiGuiModel->getViewMode(), null, null));
@@ -461,7 +461,7 @@ class EiGuiFrame {
 	/**
 	 * @param EiFrame $eiFrame
 	 * @param GuiControlPath $guiControlPath
-	 * @return GeneralGuiControl
+	 * @return GuiControl
 	 * @throws UnknownGuiControlException
 	 */
 	function createGeneralGuiControl(EiFrame $eiFrame, GuiControlPath $guiControlPath) {
@@ -527,7 +527,7 @@ class EiGuiFrame {
 		
 		foreach ($this->guiDefinition->createEntryGuiControls($eiFrame, $this, $eiEntry)
 				as $guiControlPathStr => $entryGuiControl) {
-			$siEntryBuildup->putControl($guiControlPathStr, $entryGuiControl->toSiControl(
+			$siEntryBuildup->putControl($guiControlPathStr, $entryGuiControl->toCmdSiControl(
 					new ApiControlCallId(GuiControlPath::create($guiControlPathStr),
 							$this->guiDefinition->getEiMask()->getEiTypePath(),
 							$this->eiGuiModel->getViewMode(), $eiEntry->getPid(),

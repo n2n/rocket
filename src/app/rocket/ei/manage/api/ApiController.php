@@ -31,6 +31,7 @@ use rocket\si\api\SiGetRequest;
 use rocket\si\api\SiGetResponse;
 use rocket\si\api\SiValRequest;
 use rocket\si\api\SiValResponse;
+use rocket\ei\manage\api\ApiControlProcess;
 
 class ApiController extends ControllerAdapter {
 	private $eiFrame;
@@ -112,7 +113,8 @@ class ApiController extends ControllerAdapter {
 	function doExecControl(ParamPost $apiCallId, ParamPost $entryInputMaps = null) {
 		$siApiCallId = $this->parseApiControlCallId($apiCallId);
 		
-		$callProcess = new ApiControlProcess($this->eiFrame);
+		$callProcess = new GuiControlProcess($this->eiFrame);
+		
 		
 		if (null !== ($pid = $siApiCallId->getPid())) {
 			$callProcess->determineEiEntry($pid);
@@ -120,7 +122,7 @@ class ApiController extends ControllerAdapter {
 			$callProcess->determineNewEiEntry($newEiTypeType);
 		}
 			
-		$callProcess->setupEiGuiFrame($siApiCallId->getViewMode(), $siApiCallId->getEiTypeId());
+		$callProcess->determineEiGuiFrame($siApiCallId->getViewMode(), $siApiCallId->getEiTypeId());
 		$callProcess->determineGuiControl($siApiCallId->getGuiControlPath());
 		
 		if ($entryInputMaps !== null

@@ -308,11 +308,34 @@ class EiuFrame {
 	 * @param int $ignoreConstraintTypes
 	 * @return \rocket\ei\util\entry\EiuEntry|null
 	 */
-	public function lookupEntry($id, int $ignoreConstraintTypes = 0) {
+	public function lookupEntry($id, int $ignoreConstraintTypes = 0, bool $required = false) {
 		try {
 			return $this->entry($this->lookupEiEntityObj($id, $ignoreConstraintTypes));
 		} catch (UnknownEiObjectException $e) {
-			return null;
+			if (!$required) {
+				return null;
+			}
+			
+			throw $e;
+		}
+	}
+	
+	/**
+	 * @param mixed $id
+	 * @param int $ignoreConstraintTypes
+	 * @param bool $required
+	 * @throws UnknownEiObjectException
+	 * @return \rocket\ei\util\entry\EiuObject|NULL
+	 */
+	function lookupObject($id, int $ignoreConstraintTypes = 0, bool $required = false) {
+		try {
+			return new EiuObject($this->lookupEiObjectById($id, $ignoreConstraintTypes), $this->eiuAnalyst);
+		} catch (UnknownEiObjectException $e) {
+			if (!$required) {
+				return null;
+			}
+			
+			throw $e;
 		}
 	}
 	
@@ -842,12 +865,14 @@ class EiuFrame {
 		return $this->determineEiMask($eiObjectObj)->getEiEngine();
 	}
 
+	
+	
 	/**
 	 * @param mixed $id
 	 * @param int $ignoreConstraintTypes
 	 * @return EiObject
 	 */
-	public function lookupEiObjectById($id, int $ignoreConstraintTypes = 0): EiObject {
+	private function lookupEiObjectById($id, int $ignoreConstraintTypes = 0): EiObject {
 		return new LiveEiObject($this->lookupEiEntityObj($id, $ignoreConstraintTypes));
 	}
 

@@ -44,6 +44,9 @@ use rocket\ei\component\prop\EiPropWrapper;
 use rocket\ei\util\gui\EiuGui;
 use rocket\ei\manage\gui\EiGui;
 use rocket\core\model\launch\TransactionApproveAttempt;
+use n2n\persistence\orm\util\NestedSetUtils;
+use n2n\persistence\orm\util\NestedSetStrategy;
+use n2n\util\ex\IllegalStateException;
 
 class EiuEntry {
 	private $eiEntry;
@@ -711,7 +714,7 @@ class EiuEntry {
 	/**
 	 * @return boolean
 	 */
-	function save() {
+	function save(bool $insertIfNew = false) {
 		if (!$this->eiEntry->save()) {
 			return false;
 		}
@@ -720,26 +723,83 @@ class EiuEntry {
 			return true;
 		}
 		
+		$entityObj = $this->eiEntry->getEiObject()->getEiEntityObj()->getEntityObj();
 		$nestedSetStrategy = $this->eiEntry->getEiType()->getNestedSetStrategy();
 		$em = $this->eiuAnalyst->getEiFrame(true)->getManageState()->getEntityManager();
 		if ($nestedSetStrategy === null) {
-			$em->persist($this->eiEntry->getEiObject()->getEiEntityObj()->getEntityObj());
+			$em->persist($entityObj);
 			$em->flush();
 			return true;
 		}
 		
-		throw new NotYetImplementedException();
-// 		$nsu = new NestedSetUtils($em, $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()->getEntityModel()->getClass(),
-// 				$this->nestedSetStrategy);
+		$nsu = $this->createNestedSetUtils($nestedSetStrategy);
+		$nsu->insert($entityObj);
+		return true;
+	}
+	
+	/**
+	 * @param NestedSetStrategy $nestedSetUtils
+	 * @return \n2n\persistence\orm\util\NestedSetUtils
+	 */
+	private function createNestedSetUtils(NestedSetStrategy $nestedSetStrategy) {
+		return new NestedSetUtils($this->eiuAnalyst->getManageState()->getEntityManager(), 
+				$this->eiuAnalyst->getEiFrame(true)->getContextEiEngine()->getEiMask()->getEiType()->getEntityModel()->getClass(),
+				$nestedSetStrategy);
+	}
+	
+	/**
+	 * @throws IllegalStateException
+	 * @return \n2n\persistence\orm\util\NestedSetUtils
+	 */
+	private function valNestedInsertable() {
+		if (!$this->eiEntry->isNew()) {
+			throw new IllegalStateException('EiEntry is not new.');
+		}
 		
-// 		if ($this->beforeEntityObj !== null) {
-// 			$nsu->insertBefore($entityObj, $this->beforeEntityObj);
-// 		} else if ($this->afterEntityObj !== null) {
-// 			$nsu->insertAfter($entityObj, $this->afterEntityObj);
-// 		} else {
-// 			$nsu->insert($entityObj, $this->parentEntityObj);
-// 		}
+		$nestedSetStrategy = $this->eiEntry->getEiType()->getNestedSetStrategy();
+		if ($nestedSetStrategy === null) {
+			throw new IllegalStateException($this->eiEntry->getEiType()->__toString() . ' has no NestedSetStrategy.');
+		}
 		
+		return $this->createNestedSetUtils($nestedSetStrategy);
+	}
+	
+	function insertAfter($eiObjectArg) {
+		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectArg);
+		
+		if (!$this->eiEntry->save(false)) {
+			return false;
+		}
+		
+		$nsu = $this->valNestedInsertable();
+		$nsu->insertAfter($this->eiEntry->getEiObject()->getEiEntityObj()->getEntityObj(), $eiObject->getEiEntityObj()->getEntityObj());
+		$this->eiuAnalyst->getManageState()->getEntityManager()->flush();
+		return true;
+	}
+	
+	function insertBefore($eiObjectArg) {
+		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectArg);
+		
+		if (!$this->eiEntry->save(false)) {
+			return false;
+		}
+		
+		$nsu = $this->valNestedInsertable();
+		$nsu->insertBefore($this->eiEntry->getEiObject()->getEiEntityObj()->getEntityObj(), $eiObject->getEiEntityObj()->getEntityObj());
+		$this->eiuAnalyst->getManageState()->getEntityManager()->flush();
+		return true;
+	}
+	
+	function insertAsChild($parentEiObjectArg) {
+		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($parentEiObjectArg);
+		
+		if (!$this->eiEntry->save(false)) {
+			return false;
+		}
+		
+		$nsu = $this->valNestedInsertable();
+		$nsu->insert($this->eiEntry->getEiObject()->getEiEntityObj()->getEntityObj(), $eiObject->getEiEntityObj()->getEntityObj());
+		$this->eiuAnalyst->getManageState()->getEntityManager()->flush();
 		return true;
 	}
 	

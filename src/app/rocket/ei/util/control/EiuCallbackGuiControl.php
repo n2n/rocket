@@ -34,11 +34,14 @@ use rocket\ei\manage\gui\EiGuiModel;
 use rocket\ei\manage\frame\EiFrame;
 use n2n\util\type\ArgUtils;
 use rocket\ei\manage\gui\control\GuiControl;
+use rocket\ei\util\frame\EiuFrame;
+use rocket\ei\component\command\EiCommand;
+use rocket\ei\manage\gui\control\GuiControlPath;
+use rocket\ei\manage\api\ZoneApiControlCallId;
 
 class EiuCallbackGuiControl implements GuiControl {
 	private $id;
-	private $apiUrl;
-	private $viewMode;
+	private $eiuFrame;
 	private $callback;
 	private $siButton;
 	private $inputHandled = false;
@@ -48,10 +51,9 @@ class EiuCallbackGuiControl implements GuiControl {
 	 * @param \Closure $callback
 	 * @param SiButton $siButton
 	 */
-	function __construct(string $id, Url $apiUrl, int $viewMode, \Closure $callback, SiButton $siButton) {
+	function __construct(string $id, EiuFrame $eiuFrame, \Closure $callback, SiButton $siButton) {
 		$this->id = $id;
-		$this->apiUrl = $apiUrl;
-		$this->viewMode = $viewMode;
+		$this->eiuFrame = $eiuFrame;
 		$this->callback = $callback;
 		$this->siButton = $siButton;
 	}
@@ -87,10 +89,19 @@ class EiuCallbackGuiControl implements GuiControl {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\control\GuiControl::toSiControl()
+	 * @see \rocket\ei\manage\gui\control\GuiControl::toCmdSiControl()
 	 */
-	function toSiControl(ApiControlCallId $siApiCallId): SiControl {
-		return new ApiCallSiControl($this->apiUrl, $siApiCallId, $this->siButton, $this->inputHandled);
+	function toCmdSiControl(ApiControlCallId $siApiCallId): SiControl {
+		return new ApiCallSiControl($this->eiuFrame->getApiUrl($siApiCallId->getGuiControlPath()->getEiCommandPath()), 
+				$siApiCallId, $this->siButton, $this->inputHandled);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\gui\control\GuiControl::toZoneSiControl()
+	 */
+	function toZoneSiControl(Url $zoneUrl, ZoneApiControlCallId $zoneControlCallId): SiControl {
+		return new ApiCallSiControl($zoneUrl, $zoneControlCallId, $this->siButton, $this->inputHandled);
 	}
 	
 	/**

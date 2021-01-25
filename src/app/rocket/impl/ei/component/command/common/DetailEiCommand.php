@@ -88,14 +88,14 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 		}
 		
 		$dtc = $eiu->dtc(Rocket::NS);
-		$eiuControlFactory = $eiu->guiFrame()->controlFactory($this);
+		$eiuControlFactory = $eiu->factory()->controls();
 		
 		$siButton = new SiButton(
 				$dtc->t('ei_impl_detail_label'),
 				$dtc->t('ei_impl_detail_tooltip', array('entry' => $eiuFrame->getGenericLabel())),
 				false, null, $iconType);
 		
-		$controls = array($eiuControlFactory->createCmdRef(self::CONTROL_DETAIL_KEY, $siButton, $pathExt->toUrl()));
+		$controls = array($eiuControlFactory->newCmdRef(self::CONTROL_DETAIL_KEY, $siButton, $pathExt->toUrl()));
 		
 		if (!$eiuEntry->isPreviewSupported()) {
 			return $controls;
@@ -108,7 +108,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 		
 		$previewType = $eiuEntry->getDefaultPreviewType();
 		if ($previewType === null) {
-			$controls[] = $eiuControlFactory->createDeactivated(self::CONTROL_PREVIEW_KEY, $siButton);
+			$controls[] = $eiuControlFactory->newDeactivated(self::CONTROL_PREVIEW_KEY, $siButton);
 			return $controls;
 		}
 		
@@ -119,7 +119,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 		}
 		
 		
-		$controls[] = $eiuControlFactory->createCmdRef(self::CONTROL_PREVIEW_KEY, $siButton, $pathExt->toUrl());
+		$controls[] = $eiuControlFactory->newCmdRef(self::CONTROL_PREVIEW_KEY, $siButton, $pathExt->toUrl());
 		
 		return $controls;
 	}
@@ -132,10 +132,10 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 // 		return PathUtils::createPathExtFromEntryNavPoint($this, $entryNavPoint)->toUrl();
 // 	}
 	
-	public function createEiCommandPrivilege(Eiu $eiu): EiCommandPrivilege {
-		$dtc = $eiu->dtc(Rocket::NS);
-		return $eiu->factory()->newCommandPrivilege($dtc->t('ei_impl_detail_label'));
-	}
+// 	public function createEiCommandPrivilege(Eiu $eiu): EiCommandPrivilege {
+// 		$dtc = $eiu->dtc(Rocket::NS);
+// 		return $eiu->factory()->newCommandPrivilege($dtc->t('ei_impl_detail_label'));
+// 	}
 	
 	public function buildDetailNavPoint(Eiu $eiu): ?SiNavPoint {
 		return SiNavPoint::siref((new Path(['live', $eiu->object()->getPid()]))->toUrl());

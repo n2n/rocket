@@ -32,15 +32,21 @@ use rocket\ei\manage\api\ApiControlCallId;
 use rocket\ei\manage\gui\EiGuiModel;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\gui\control\GuiControl;
+use rocket\ei\component\command\EiCommand;
+use rocket\ei\util\frame\EiuFrame;
+use rocket\ei\manage\api\ZoneApiControlCallId;
+use rocket\ei\EiCommandPath;
 
 class EiuRefGuiControl implements GuiControl {
 	private $id;
-	private $url;
+	private $eiuFrame;
+	private $urlExt;
 	private $siButton;
 	
-	function __construct(string $id, Url $url, SiButton $siButton, bool $href) {
+	function __construct(string $id, EiuFrame $eiuFrame, ?Url $urlExt, SiButton $siButton, bool $href) {
 		$this->id = $id;
-		$this->url = $url;
+		$this->eiuFrame = $eiuFrame;
+		$this->urlExt = $urlExt;
 		$this->siButton = $siButton;
 	}
 	
@@ -60,8 +66,30 @@ class EiuRefGuiControl implements GuiControl {
 		return null;
 	}
 	
-	function toSiControl(ApiControlCallId $siApiCallId): SiControl {
-		return new RefSiControl($this->url, $this->siButton);
+	/**
+	 * @param EiCommand $eiCommandPath
+	 * @param mixed $urlExt
+	 * @return \n2n\util\uri\Url
+	 */
+	private function createCmdUrl(EiCommandPath $eiCommandPath) {
+		return $this->eiuFrame->getCmdUrl($eiCommandPath)->ext($this->urlExt);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\gui\control\GuiControl::toCmdSiControl()
+	 */
+	function toCmdSiControl(ApiControlCallId $siApiCallId): SiControl {
+		return new RefSiControl($this->createCmdUrl($siApiCallId->getGuiControlPath()->getEiCommandPath()), $this->siButton);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\gui\control\GuiControl::toZoneSiControl()
+	 */
+	function toZoneSiControl(Url $zoneUrl, ZoneApiControlCallId $zoneControlCallId): SiControl {
+		$eiCommandPath = $this->eiuFrame->getEiFrame()->getEiExecution()->getEiCommand()->getWrapper()->getEiCommandPath();
+		return new RefSiControl($this->createCmdUrl($eiCommandPath), $this->siButton);
 	}
 	
 	public function handleEntries(EiFrame $eiFrame, EiGuiModel $eiGuiModel, array $eiEntries): SiResult {

@@ -31,6 +31,9 @@ use rocket\ei\manage\gui\EiGuiModel;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\si\control\impl\DeactivatedSiControl;
 use rocket\ei\manage\gui\control\GuiControl;
+use n2n\util\uri\Url;
+use rocket\ei\manage\gui\control\GuiControlPath;
+use rocket\ei\manage\api\ZoneApiControlCallId;
 
 class EiuDeactivatedGuiControl implements GuiControl {
 	private $id;
@@ -58,7 +61,19 @@ class EiuDeactivatedGuiControl implements GuiControl {
 		return null;
 	}
 	
-	function toSiControl(ApiControlCallId $siApiCallId): SiControl {
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\gui\control\GuiControl::toCmdSiControl()
+	 */
+	function toCmdSiControl(ApiControlCallId $siApiCallId): SiControl {
+		return new DeactivatedSiControl($this->siButton);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\gui\control\GuiControl::toZoneSiControl()
+	 */
+	function toZoneSiControl(Url $zoneUrl, ZoneApiControlCallId $zoneControlCallId): SiControl {
 		return new DeactivatedSiControl($this->siButton);
 	}
 	

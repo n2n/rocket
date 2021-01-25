@@ -31,6 +31,10 @@ use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\gui\control\GuiControl;
 use rocket\si\control\impl\GroupSiControl;
 use n2n\util\ex\UnsupportedOperationException;
+use rocket\ei\manage\api\ZoneApiControlCallId;
+use n2n\util\uri\Url;
+use rocket\ei\component\command\EiCommand;
+use rocket\ei\manage\gui\control\GuiControlPath;
 
 class EiuGroupGuiControl implements GuiControl {
 	private $id;
@@ -65,11 +69,26 @@ class EiuGroupGuiControl implements GuiControl {
 		return $this;
 	}
 	
-	function toSiControl(ApiControlCallId $siApiCallId): SiControl {
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\gui\control\GuiControl::toCmdSiControl()
+	 */
+	function toCmdSiControl(ApiControlCallId $siApiCallId): SiControl {
 		return new GroupSiControl($this->siButton, 
 				array_map(function ($child) use ($siApiCallId) {
-					return $child->toSiControl($siApiCallId->guiControlPathExt($child->getId()));
+					return $child->toCmdSiControl($siApiCallId->guiControlPathExt($child->getId()));
 				}, $this->childrean));;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\manage\gui\control\GuiControl::toZoneSiControl()
+	 */
+	function toZoneSiControl(Url $zoneUrl, ZoneApiControlCallId $zoneControlCallId): SiControl {
+		return new GroupSiControl($this->siButton,
+				array_map(function ($child) use ($zoneUrl, $zoneControlCallId) {
+					return $child->toZoneSiControl($zoneUrl, $zoneControlCallId->guiControlPathExt($child->getId()));
+				}, $this->childrean));
 	}
 	
 	function getChilById(string $id): ?GuiControl {
