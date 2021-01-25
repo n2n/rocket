@@ -75,6 +75,8 @@ use n2n\reflection\magic\MagicMethodInvoker;
 use rocket\ei\manage\frame\SortAbility;
 use rocket\ei\util\control\EiuControlResponse;
 use n2n\util\type\TypeConstraints;
+use rocket\ei\manage\api\ApiController;
+use rocket\ei\manage\api\ApiControlCallId;
 
 class EiuFrame {
 	private $eiFrame;
@@ -117,15 +119,51 @@ class EiuFrame {
 	/**
 	 * @return \n2n\util\uri\Url
 	 */
-	public function getApiUrl($eiCommandPath = null) {
+	function getApiControlUrl($eiCommandPath = null) {
+		return $this->getApiUrl($eiCommandPath, ApiController::API_CONTROL_SECTION);
+	}
+	
+	/**
+	 * @return \n2n\util\uri\Url
+	 */
+	function getApiFieldUrl($eiCommandPath = null) {
+		return $this->getApiUrl($eiCommandPath, ApiController::API_FIELD_SECTION);
+	}
+	
+	/**
+	 * @return \n2n\util\uri\Url
+	 */
+	function getApiGetUrl($eiCommandPath = null) {
+		return $this->getApiUrl($eiCommandPath, ApiController::API_GET_SECTION);
+	}
+	
+	/**
+	 * @return \n2n\util\uri\Url
+	 */
+	function getApiValUrl($eiCommandPath = null) {
+		return $this->getApiUrl($eiCommandPath, ApiController::API_VAL_SECTION);
+	}
+	
+	/**
+	 * @return \n2n\util\uri\Url
+	 */
+	function getApiSortUrl($eiCommandPath = null) {
+		return $this->getApiUrl($eiCommandPath, ApiController::API_SORT_SECTION);
+	}
+	
+	/**
+	 * @return \n2n\util\uri\Url
+	 */
+	private function getApiUrl($eiCommandPath = null, string $apiSection = null) {
 		if ($eiCommandPath === null) {
 			$eiCommandPath = EiCommandPath::from($this->eiFrame->getEiExecution()->getEiCommand());
 		} else {
 			$eiCommandPath = EiCommandPath::create($eiCommandPath);
 		}
 		
-		return $this->eiFrame->getApiUrl($eiCommandPath);
+		return $this->eiFrame->getApiUrl($eiCommandPath, $apiSection);
 	}
+	
 	
 	/**
 	 * @return \n2n\util\uri\Url

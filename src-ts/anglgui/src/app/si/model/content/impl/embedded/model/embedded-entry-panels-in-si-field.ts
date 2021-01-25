@@ -33,9 +33,9 @@ export class EmbeddedEntryPanelsInSiField extends SiFieldAdapter  {
 		return this.panels;
 	}
 
-	getApiUrl(): string {
-		return this.frame.apiUrl;
-	}
+	// getApiUrl(): string {
+	// 	return this.frame.apiUrl;
+	// }
 
 	hasInput(): boolean {
 		return true;

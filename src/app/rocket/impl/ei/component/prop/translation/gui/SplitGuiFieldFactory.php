@@ -76,7 +76,7 @@ class SplitGuiFieldFactory {
 				->setActiveKeys($this->lted->getActiveN2nLocaleIds())
 				->setMandatoryKeys($this->lted->getMandatoryN2nLocaleIds());
 		$targetEiuGuiFrame = $this->lted->getTargetEiuGuiFrame();
-		$apiUrl = $this->lted->getTargetEiuFrame()->getApiUrl();
+		$apiUrl = $this->lted->getTargetEiuFrame()->getApiGetUrl();
 		
 		$propIds = array_map(
 				function ($defPropPath) { return (string) $defPropPath; }, 

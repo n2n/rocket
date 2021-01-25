@@ -31,9 +31,14 @@ use rocket\si\api\SiGetRequest;
 use rocket\si\api\SiGetResponse;
 use rocket\si\api\SiValRequest;
 use rocket\si\api\SiValResponse;
-use rocket\ei\manage\api\ApiControlProcess;
 
 class ApiController extends ControllerAdapter {
+	const API_CONTROL_SECTION = 'execcontrol';
+	const API_FIELD_SECTION = 'callfield';
+	const API_GET_SECTION = 'get';
+	const API_VAL_SECTION = 'val';
+	const API_SORT_SECTION = 'sort';
+	
 	private $eiFrame;
 	
 	function prepare(ManageState $manageState) {
@@ -42,6 +47,10 @@ class ApiController extends ControllerAdapter {
 	
 	function index() {
 		echo 'very apisch';
+	}
+	
+	static function getApiSections() {
+		return [self::API_CONTROL_SECTION, self::API_FIELD_SECTION, self::API_GET_SECTION, self::API_VAL_SECTION, self::API_SORT_SECTION];
 	}
 
 	private function parseApiControlCallId(Param $paramQuery) {
@@ -113,8 +122,7 @@ class ApiController extends ControllerAdapter {
 	function doExecControl(ParamPost $apiCallId, ParamPost $entryInputMaps = null) {
 		$siApiCallId = $this->parseApiControlCallId($apiCallId);
 		
-		$callProcess = new GuiControlProcess($this->eiFrame);
-		
+		$callProcess = new ApiControlProcess($this->eiFrame);
 		
 		if (null !== ($pid = $siApiCallId->getPid())) {
 			$callProcess->determineEiEntry($pid);

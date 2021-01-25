@@ -95,7 +95,7 @@ export class SplitContent implements SplitOption {
 		}
 		instruction.setPropIds(this.lazyDef.propIds);
 
-		return this.entry$ = this.lazyDef.siService.apiGet(this.lazyDef.apiUrl, new SiGetRequest(instruction))
+		return this.entry$ = this.lazyDef.siService.apiGet(this.lazyDef.apiGetUrl, new SiGetRequest(instruction))
 				.pipe(map((response: SiGetResponse) => {
 					return this.loadedEntry = response.results[0].entry;
 				}))
@@ -104,7 +104,7 @@ export class SplitContent implements SplitOption {
 }
 
 export interface LazyDef {
-	apiUrl: string;
+	apiGetUrl: string;
 	entryId: string|null;
 	propIds: string[]|null;
 	bulky: boolean;

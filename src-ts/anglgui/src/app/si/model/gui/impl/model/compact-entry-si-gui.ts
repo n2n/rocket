@@ -13,7 +13,7 @@ import { Subscription, BehaviorSubject, Observable } from 'rxjs';
 import { SiEntryMonitor } from '../../../mod/model/si-entry-monitor';
 import { UiStructureModelAdapter } from 'src/app/ui/structure/model/impl/ui-structure-model-adapter';
 import { UiZoneError } from 'src/app/ui/structure/model/ui-zone-error';
-import { SiFrame } from '../../../meta/si-frame';
+import { SiFrame, SiFrameApiSection } from '../../../meta/si-frame';
 import { SiModStateService } from '../../../mod/model/si-mod-state.service';
 import { SiService } from 'src/app/si/manage/si.service';
 
@@ -60,7 +60,8 @@ export class CompactEntrySiGui implements SiGui, SiControlBoundry {
 
 	createUiStructureModel(): UiStructureModel {
 		return new CompactUiStructureModel(this.entrySubject.asObservable(), this.declaration, this.controls,
-				new SiEntryMonitor(this.siFrame.apiUrl, this.siService, this.siModStateService, this.entryControlsIncluded));
+				new SiEntryMonitor(this.siFrame.getApiUrl(SiFrameApiSection.GET), this.siService, 
+						this.siModStateService, this.entryControlsIncluded));
 	}
 
 	// getFieldDeclarations(): SiFieldDeclaration[] {

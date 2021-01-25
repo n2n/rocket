@@ -253,10 +253,10 @@ export class SiFieldFactory {
 				continue;
 			}
 
-			const apiUrl = extr.nullaString('apiUrl');
-			if (apiUrl) {
+			const apiGetUrl = extr.nullaString('apiGetUrl');
+			if (apiGetUrl) {
 				splitContextSiField.putSplitContent(SplitContent.createLazy(key, label, shortLabel, {
-					apiUrl,
+					apiGetUrl,
 					entryId: extr.nullaString('entryId'),
 					propIds: extr.nullaStringArray('propIds'),
 					bulky: extr.reqBoolean('bulky'),

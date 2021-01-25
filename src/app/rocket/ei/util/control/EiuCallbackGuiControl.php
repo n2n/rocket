@@ -38,6 +38,7 @@ use rocket\ei\util\frame\EiuFrame;
 use rocket\ei\component\command\EiCommand;
 use rocket\ei\manage\gui\control\GuiControlPath;
 use rocket\ei\manage\api\ZoneApiControlCallId;
+use rocket\ei\manage\api\ApiController;
 
 class EiuCallbackGuiControl implements GuiControl {
 	private $id;
@@ -92,7 +93,8 @@ class EiuCallbackGuiControl implements GuiControl {
 	 * @see \rocket\ei\manage\gui\control\GuiControl::toCmdSiControl()
 	 */
 	function toCmdSiControl(ApiControlCallId $siApiCallId): SiControl {
-		return new ApiCallSiControl($this->eiuFrame->getApiUrl($siApiCallId->getGuiControlPath()->getEiCommandPath()), 
+		return new ApiCallSiControl(
+				$this->eiuFrame->getApiControlUrl($siApiCallId->getGuiControlPath()->getEiCommandPath()), 
 				$siApiCallId, $this->siButton, $this->inputHandled);
 	}
 	

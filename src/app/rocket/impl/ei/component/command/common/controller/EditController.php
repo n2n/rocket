@@ -56,7 +56,7 @@ class EditController extends ControllerAdapter {
 		
 // 		$this->eiuCtrl->pushCurrentAsSirefBreadcrumb($this->dtc->t('common_add_label'), true, $eiuEntry);
 		
-		$this->eiuCtrl->forwardBulkyEntryZone($eiuEntry, false, true, false);
+		$this->eiuCtrl->forwardBulkyEntryZone($eiuEntry, false, true, false, $this->createControls());
 	}
 	
 	private function createControls() {
@@ -73,7 +73,7 @@ class EditController extends ControllerAdapter {
 			$eiuControlFactory->newCallback(self::CONTROL_SAVE_AND_BACK_KEY,
 					SiButton::primary($dtc->t('common_save_and_back_label'), SiIconType::ICON_SAVE),
 					function (Eiu $eiu, array $inputEius) {
-						$this->handleInput($eiu, $inputEius)->redirectBack();
+						return $this->handleInput($eiu, $inputEius)->redirectBack();
 					})
 					->setInputHandled(true),
 			$eiuControlFactory->newCallback(self::CONTROL_CANCEL_KEY,
