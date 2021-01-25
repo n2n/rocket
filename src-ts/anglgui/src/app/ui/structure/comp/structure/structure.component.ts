@@ -72,6 +72,16 @@ export class StructureComponent implements OnInit, OnDestroy, DoCheck {
 		// }
 	}
 
+	@HostBinding('class.rocket-item-collection')
+	get itemCollection(): boolean {
+		return this.uiStructure.isItemCollection();
+	}
+
+	@HostBinding('class.rocket-double-item')
+	get doubleItem(): boolean {
+		return this.uiStructure.isDoubleItem();
+	}
+
 	private clear() {
 		this._uiStructure = null;
 
