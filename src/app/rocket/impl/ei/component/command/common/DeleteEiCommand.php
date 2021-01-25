@@ -48,7 +48,7 @@ class DeleteEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 	public function createEntryGuiControls(Eiu $eiu): array {
 		$eiuEntry = $eiu->entry();
 		
-		if ($eiuEntry->isDraft()) {
+		if ($eiuEntry->isNew() || $eiuEntry->isDraft()) {
 			return [];
 		}
 		
