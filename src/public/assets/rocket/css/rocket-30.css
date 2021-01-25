@@ -7529,7 +7529,6 @@ rocket-add-past > button::after {
   margin: 12px;
   -webkit-transform: translateX(12px);
           transform: translateX(12px);
-  width: 300px;
   background: #fff;
   padding: 1rem;
   -webkit-filter: drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.3));
@@ -7549,36 +7548,50 @@ rocket-add-past > button::after {
   border-color: #fff transparent;
 }
 
-.rocket-button-control .dropdown > div div:not(:last-child) {
+.rocket-button-control .dropdown > div div:not(:last-child) > .rocket-button-control .btn,
+.rocket-button-control .dropdown > div div:not(:last-child) > .btn {
   border-bottom: 1px solid #DAD7D3;
 }
 
+.rocket-button-control .dropdown > div div > .rocket-button-control .btn,
 .rocket-button-control .dropdown > div div > .btn {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  padding-left: 1rem;
+  padding-right: 1rem;
   width: 100%;
+  width: calc(100% + 2rem);
+  margin-left: -1rem;
   background: #fff;
   border: none;
-  -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
   -webkit-box-align: baseline;
       -ms-flex-align: baseline;
           align-items: baseline;
   color: #373431;
   text-align: left;
-  padding-left: 0;
-  padding-right: 0;
   font-weight: bold;
 }
 
+.rocket-button-control .dropdown > div div > .rocket-button-control .btn > i,
 .rocket-button-control .dropdown > div div > .btn > i {
+  width: 1.2rem;
+  text-align: left;
+}
+
+.rocket-button-control .dropdown > div div > .rocket-button-control .btn > i:not(:first-child),
+.rocket-button-control .dropdown > div div > .btn > i:not(:first-child) {
   margin-left: .5rem;
 }
 
-.rocket-button-control .dropdown > div div > .btn:hover, .rocket-button-control .dropdown > div div > .btn:focus {
+.rocket-button-control .dropdown > div div > .rocket-button-control .btn:hover, .rocket-button-control .dropdown > div div > .rocket-button-control .btn:focus,
+.rocket-button-control .dropdown > div div > .btn:hover,
+.rocket-button-control .dropdown > div div > .btn:focus {
   background: #F7F5F5;
+}
+
+.rocket-button-control.rocket-fixed-width .dropdown > div {
+  width: 300px;
 }
 
 .rocket-messages {
