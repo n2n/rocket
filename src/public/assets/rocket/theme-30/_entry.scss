@@ -16,6 +16,15 @@
     }
 }
 
+.rocket-split > .rocket-item > label {
+    color: $gray-500;
+    font-size: $font-size-sm;
+}
+
+.rocket-item.rocket-bulky > .rocket-structure-content > .rocket-inactive {
+    padding: $input-btn-padding-y $input-btn-padding-x;
+}
+
 @include media-breakpoint-up(md) {
     // .rocket-item is used on TD also
     .rocket-item.rocket-bulky {
@@ -38,6 +47,8 @@
             grid-column-end: 4;
             padding: 0;
             margin-bottom: 0;
+            //to prevent double-borders
+            margin-left: -1px;
         }
     }
 
@@ -60,7 +71,6 @@
 
     .rocket-item.rocket-bulky.rocket-double-item  {
         grid-template-columns: $rocket-item-double-item-width 1fr auto;
-        padding-left: 0;
 
         &:first-child {
             padding-top: 0;
@@ -68,10 +78,7 @@
         
         > label,
         .rocket-item > label {
-            color: $gray-500;
-            font-size: $font-size-sm;
-            padding-right: 10px;
-            padding-left: 0;
+            padding: calc(0.375rem + 0.125rem) 0.2rem calc(0.375rem + 1px) 0;
         }
 
         > label {
@@ -81,7 +88,7 @@
 
     // tomekk überprüfe nochmal, ob das nötig ist
     .rocket-item.rocket-bulky.rocket-level-4 {
-        grid-template-columns: $rocket-item-double-item-width+1rem 1fr auto;
+        grid-template-columns: $rocket-item-double-item-width 1fr auto;
         &:first-child {
             padding-top: 0;
         }
@@ -701,5 +708,27 @@ rocket-add-past {
     > .btn {
         margin-right: 0.25em;
         margin-bottom: 0.25em;
+    }
+}
+
+
+// "simple-outs-elements"
+// ==========================
+// .string-out-field, .rocket-crumb-out-field, etc.
+
+
+.rocket-bulky {
+    .rocket-ui-string-out-field,
+    .rocket-crumb-group {
+        padding: $input-btn-padding-y $input-btn-padding-x;
+        display: block;
+    }
+}
+
+// reset bulky, if nested content
+.rocket-compact {
+    .rocket-ui-string-out-field,
+    .rocket-crumb-group {
+        padding: 0;
     }
 }

@@ -193,33 +193,22 @@ td > .rocket-split {
 }
 
 td > .rocket-split > .rocket-item {
-    align-items: baseline;
-    min-height: unset;
     padding: 0;
-    display: -ms-grid;
     display: grid;
-    -ms-grid-columns: auto 1fr;
     grid-template-columns: auto 1fr;
     margin: 0;
 
     > label {
-        position: static;
-        -ms-grid-column: 2;
-        grid-column-start: 2;
-        grid-column-end: 3;
         font-size: 0.75rem;
-        color: #837E78;
-        width: auto;
         white-space: nowrap;
         padding: 0.325rem 0 0 0;
-        border: none;
-        margin: 0;
+        grid-row-start: 1;
+        grid-column-start: 2;
+        grid-column-end: 3;
     }
 
     > .rocket-structure-content {
-        -ms-grid-row: 1;
         grid-row-start: 1;
-        -ms-grid-column: 1;
         grid-column-start: 1;
         grid-column-end: 2;
         padding: 0;

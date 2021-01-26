@@ -4,7 +4,8 @@ import { StringFieldModel } from '../string-field-model';
 @Component({
 	selector: 'rocket-ui-string-out-field',
 	templateUrl: './string-out-field.component.html',
-	styleUrls: ['./string-out-field.component.css']
+	styleUrls: ['./string-out-field.component.css'],
+	host: {class: 'rocket-ui-string-out-field'}
 })
 export class StringOutFieldComponent implements OnInit {
 
