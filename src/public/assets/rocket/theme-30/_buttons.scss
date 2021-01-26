@@ -2,21 +2,23 @@
  * The small Buttons (without text)
  */
 
- .rocket-line-loader {
-     height: 3px;
-     background: rgba($black, 0.7);
+ .btn-loading {
+     .btn-name {
+         opacity: 0.25;
+     }
  }
-
- .btn .rocket-line-loader {
+ 
+ .btn .spinner-grow {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    animation: linear-line 1s linear infinite;
-    animation-direction: alternate;
+    top: 50%;
+    left: 50%;
+    margin-top: -$spinner-height/2;
+    margin-left: -$spinner-width/2;
  }
 
- .btn-warning {
-     color: $white;
+ .btn .spinner-grow-sm {
+    margin-top: -$spinner-height-sm/2;
+    margin-left: -$spinner-width-sm/2;
  }
 
 .rocket-simple-commands {
@@ -171,34 +173,5 @@
         > i[class*="fa-"]::after {
             background: $warning;
         }
-    }
-
-    // &:hover {
-    //     > i::after {
-    //         background: darken($gray-600, 7.5%);
-    //     }
-    // }
-
-    // &.btn-warning:hover {
-    //     > i::after {
-    //         background: darken($warning, 7.5%);
-    //     }
-    // }
-}
-
-@keyframes linear-line {
-    0%{
-        left: 0;
-        right: 95%;
-    }
-
-    50% {
-        left: 40%;
-        right: 30%;
-    }
-
-    100% {
-        left: 95%;
-        right: 0%;
     }
 }

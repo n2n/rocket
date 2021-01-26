@@ -3,7 +3,7 @@
         {
             "format": "expanded",
             "extensionName": ".css",
-            "savePath": "/public/assets/rocket/css"
+            "savePath": "/src/public/assets/rocket/css"
         }
     ],
     "liveSassCompile.settings.excludeList": [

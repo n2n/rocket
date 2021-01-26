@@ -85,7 +85,7 @@
 .rocket-reloading {
     background: repeating-linear-gradient( 75deg, #{$aczent-2-d-100}, #{$aczent-2-d-100} 20px, #{$aczent-2} 20px, #{$aczent-2} 35px);
     background-size: 200% 200%;
-        animation: reload 40s linear infinite;
+    animation: reload 40s linear infinite;
 }
 
 @keyframes reload {

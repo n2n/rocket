@@ -53,8 +53,8 @@
 							<ng-container *ngIf="isSortModeEnabled()">
 								<rocket-ui-toggler [enabled]="isSiEntrySortSelected(structureEntry.siEntry)" 
 										(enabledChange)="setSiEntrySortSelected(structureEntry.siEntry, $event)"
-										[labeled]="false"></rocket-ui-toggler>
-										
+										[labeled]="false" [togglerMode]="'checkbox'"></rocket-ui-toggler>
+									
 								<button class="btn btn-link" (click)="moveBefore(structureEntry.siEntry)" 
 										[disabled]="!hasSiEntrySortSelections()"
 										[class.invisible]="isSiEntrySortSelected(structureEntry.siEntry) || isSiEntrySortDecendant(structureEntry.siEntry)">

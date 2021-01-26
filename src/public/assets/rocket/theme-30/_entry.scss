@@ -368,13 +368,13 @@ rocket-qualifier-tiling {
         background: $gray-200;
     }
 
-    rocket-choose-paste.rocket-multi-type-menu > rocket-qualifier-tiling & {
+    rocket-choose-paste.rocket-multi-type-menu > .rocket-qualifier-tiling & {
         text-align: center;
     }
 }
 
 .rocket-si-qualifier-item {
-    rocket-choose-paste.rocket-multi-type-menu > rocket-qualifier-tiling & {
+    rocket-choose-paste.rocket-multi-type-menu > .rocket-qualifier-tiling & {
         text-align: center;
         display: flex;
         flex-direction: column;

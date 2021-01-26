@@ -11,10 +11,12 @@ export class TogglerComponent implements OnInit {
 	private _enabled = false;
 
 	@Input() labeled = false;
+	
 	@Output() enabledChange = new EventEmitter<boolean>();
 
 	@Input() enabledTextCode: string|null = 'enabled_txt';
 	@Input() disabledTextCode: string|null = 'disabled_txt';
+	@Input() togglerMode: string|null = 'toggler';
 
 	ngOnInit(): void {
 	}
