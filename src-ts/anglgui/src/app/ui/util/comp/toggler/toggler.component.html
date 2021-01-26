@@ -1,4 +1,4 @@
-<ng-container *ngIf="togglerMode == 'toggler'">
+<ng-container *ngIf="mode == 'toggler'">
 	<button class="btn btn-link" (click)="toggle()">
 		&#8203;
 		<div class="rocket-switch" [class.rocket-switch-off]="!enabled"  [class.rocket-switch-on]="enabled"></div>
@@ -9,7 +9,7 @@
 	</button>
 </ng-container>
 
-<ng-container *ngIf="togglerMode == 'checkbox'">
+<ng-container *ngIf="mode == 'checkbox'">
 	<button class="btn btn-link" (click)="toggle()">
 		<i class="far" [class.fa-square]="!enabled"  [class.fa-check-square]="enabled"></i>
 		<ng-container *ngIf="labeled">

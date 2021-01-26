@@ -44,7 +44,7 @@
     // new
     .rocket-item.rocket-bulky.rocket-item-collection {
         > label {
-            padding-right: $rocket-item-double-item-width * 1.1;
+            padding-right: $rocket-item-double-item-width * 1.2;
             overflow: hidden;
             text-overflow: ellipsis;
         }
@@ -52,10 +52,15 @@
         > .rocket-structure-content {
             margin-left: -$rocket-item-double-item-width;
         }
+
+        > .rocket-structure-content:last-child > .rocket-split > .rocket-item {
+            padding-bottom: 0;
+        }
     }
 
     .rocket-item.rocket-bulky.rocket-double-item  {
         grid-template-columns: $rocket-item-double-item-width 1fr auto;
+        padding-left: 0;
 
         &:first-child {
             padding-top: 0;
@@ -66,6 +71,7 @@
             color: $gray-500;
             font-size: $font-size-sm;
             padding-right: 10px;
+            padding-left: 0;
         }
 
         > label {
@@ -75,7 +81,7 @@
 
     // tomekk überprüfe nochmal, ob das nötig ist
     .rocket-item.rocket-bulky.rocket-level-4 {
-        grid-template-columns: 6rem 1fr auto;
+        grid-template-columns: $rocket-item-double-item-width+1rem 1fr auto;
         &:first-child {
             padding-top: 0;
         }
@@ -342,8 +348,6 @@
 
 
 
-
-
 rocket-qualifier-tiling {
     display: grid;
     grid-template-columns: 1fr;
@@ -382,6 +386,21 @@ rocket-qualifier-tiling {
 
         > i[class*="fa-"]{
             margin-bottom: 0.5rem;
+        }
+    }
+
+    rocket-choose-paste.rocket-multi-type-menu-simple > .rocket-qualifier-tiling & {
+        align-items: baseline;
+        display: grid;
+        grid-gap: 10px;
+        grid-template-columns: 1.2em 1fr;
+        > i {
+            grid-column: 1/1;
+            text-align: center;
+            padding: 0;
+        }
+        >span {
+            grid-column: 2/2;
         }
     }
 }
