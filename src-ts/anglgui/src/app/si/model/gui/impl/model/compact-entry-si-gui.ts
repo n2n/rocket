@@ -124,7 +124,7 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 		this.subscription = new Subscription();
 
 		this.subscription.add(this.siEntry$.subscribe((siEntry) => {
-			this.rebuild(siEntry.getFinalReplacementEntry());
+			this.rebuild(siEntry ? siEntry.getFinalReplacementEntry() : null);
 		}));
 
 		this.uiContent = new TypeUiContent(CompactEntryComponent, (ref) => {
