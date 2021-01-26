@@ -14,7 +14,8 @@ import { SiModStateService } from 'src/app/si/model/mod/model/si-mod-state.servi
 @Component({
 	selector: 'rocket-qualifier-select-in-field',
 	templateUrl: './qualifier-select-in-field.component.html',
-	styleUrls: ['./qualifier-select-in-field.component.css']
+	styleUrls: ['./qualifier-select-in-field.component.css'],
+	host: {class: 'rocket-qualifier-select-in-field'}
 })
 export class QualifierSelectInFieldComponent implements OnInit, DoCheck {
 

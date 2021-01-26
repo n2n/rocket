@@ -19,7 +19,8 @@ import { SiButton } from 'src/app/si/model/control/impl/model/si-button';
 @Component({
 	selector: 'rocket-file-in-field',
 	templateUrl: './file-in-field.component.html',
-	styleUrls: ['./file-in-field.component.css']
+	styleUrls: ['./file-in-field.component.css'],
+	host: {class: 'rocket-file-in-field'}
 })
 export class FileInFieldComponent implements OnInit {
 	private uploader: CommonImageEditorModel;
