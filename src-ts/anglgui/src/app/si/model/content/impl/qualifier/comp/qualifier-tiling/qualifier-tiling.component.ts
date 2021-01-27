@@ -24,6 +24,8 @@ export class QualifierTilingComponent implements OnInit {
 	siTypeSelected = new EventEmitter<SiMaskQualifier>();
 	@Output()
 	siEntrySelected = new EventEmitter<SiEntryQualifier>();
+	@Input()
+	simple = false;
 
 	constructor() { }
 
