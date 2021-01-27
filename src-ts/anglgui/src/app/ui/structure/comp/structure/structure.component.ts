@@ -20,6 +20,9 @@ export class StructureComponent implements OnInit, OnDestroy {
 	asideVisible = true;
 	@Input()
 	contentVisible = true;
+	@HostBinding('class.rocket-compact')
+	@Input()
+	compact = false;
 
 	private _uiStructure: UiStructure;
 
@@ -91,15 +94,10 @@ export class StructureComponent implements OnInit, OnDestroy {
 		}
 	}
 
-	@HostBinding('class.rocket-bulky')
-	get bulky(): boolean {
-		return !this.uiStructure.compact;
-	}
-
-	@HostBinding('class.rocket-compact')
-	get compact(): boolean {
-		return this.uiStructure.compact;
-	}
+	// @HostBinding('class.rocket-bulky')
+	// get bulky(): boolean {
+	// 	return !this.uiStructure.compact;
+	// }
 
 	@Input()
 	set uiStructure(uiStructure: UiStructure) {

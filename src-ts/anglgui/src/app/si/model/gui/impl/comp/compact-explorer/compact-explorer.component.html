@@ -39,7 +39,7 @@
 						</div>
 					</td>
 					<td *ngFor="let fieldUiStructure of structureEntry.fieldUiStructures"
-							rocketUiStructure [uiStructure]="fieldUiStructure" 
+							rocketUiStructure [uiStructure]="fieldUiStructure" [compact]="true"
 							(click)="toggleSelection(structureEntry.siEntry.qualifier)"
 							class="rocket-compact-content">
 					</td>
