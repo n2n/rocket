@@ -22,7 +22,7 @@
 			<ng-container *ngFor="let structurePage of getVisibleStructurePages()">
 				<tr *ngFor="let structureEntry of structurePage.structureEntries" 
 						cdkDrag [cdkDragDisabled]="!structureEntry.siEntry.isClean()" rocketSiEntry [siEntry]="structureEntry.siEntry"
-						class="rocket-tree-level-{{ structureEntry.siEntry.treeLevel }}">
+						class="rocket-tree-level-{{ structureEntry.siEntry.treeLevel }} rocket-draggable">
 					<td *ngIf="selectable" class="rocket-entry-selector" (click)="toggleSelection(structureEntry.siEntry.qualifier)">
 						<ng-container *ngIf="singleSelect">
 							<input type="radio" [value]="true" [ngModel]="isSelected(structureEntry.siEntry.qualifier)" />
@@ -74,6 +74,9 @@
 								</button>
 							</ng-container>
 						</div>
+					</td>
+					<td *cdkDragPreview [matchSize]="true">
+						{{structureEntry.siEntry.qualifier.getBestName()}}
 					</td>
 				</tr>
 			</ng-container>

@@ -108,7 +108,13 @@ th .rocket-simple-commands {
     align-items: center;
     padding-left: 0.375rem;
     padding-right: 0.375rem;
+    box-shadow: none;
+    .rocket-toggler-in-field & {
+        padding-left: 0rem;
+        padding-right: 0rem;
+    }
 }
+
 
 // simple commands in table are bigger
 .rocket-simple-commands {
