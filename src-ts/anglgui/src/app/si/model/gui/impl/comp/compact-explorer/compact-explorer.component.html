@@ -40,8 +40,7 @@
 					</td>
 					<td *ngFor="let fieldUiStructure of structureEntry.fieldUiStructures"
 							rocketUiStructure [uiStructure]="fieldUiStructure" [compact]="true"
-							(click)="toggleSelection(structureEntry.siEntry.qualifier)"
-							class="rocket-compact-content">
+							(click)="toggleSelection(structureEntry.siEntry.qualifier)">
 					</td>
 					<td class="rocket-table-commands">
 						<div *ngIf="structureEntry.siEntry.isAlive()" class="rocket-simple-commands">
