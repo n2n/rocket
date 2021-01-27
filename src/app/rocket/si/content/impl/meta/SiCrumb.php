@@ -30,7 +30,7 @@ class SiCrumb implements \JsonSerializable {
 	const SEVERITY_NORMAL = 'normal';
 	const SEVERITY_INACTIVE = 'inactive';
 	const SEVERITY_IMPORTANT = 'important';
-	const SEVERITY_UNIMPORTANT = 'uninactive';
+	const SEVERITY_UNIMPORTANT = 'unimportant';
 	
 	protected $type;
 	protected $label;
