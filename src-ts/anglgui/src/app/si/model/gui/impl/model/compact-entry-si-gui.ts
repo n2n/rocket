@@ -169,6 +169,7 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 		for (const siProp of siMaskDeclaration.getSiProps()) {
 			const structure = this.boundUiStructure.createChild();
 			structure.model = siEntryBuildup.getFieldById(siProp.id).createUiStructureModel();
+			structure.compact = true;
 			this.fieldUiStructures.push(structure);
 		}
 	}
