@@ -50,9 +50,9 @@ export class SplitSiField extends SiFieldAdapter {
 
 	// abstract copy(entryBuildUp: SiEntryBuildup): SiField;
 
-	createUiStructureModel(): UiStructureModel {
+	createUiStructureModel(compactMode: boolean): UiStructureModel {
 		const uism = new SplitUiStructureModel(this.refPropId, this.splitContext, this.copyStyle, this.viewStateService,
-				this.translationService);
+				this.translationService, compactMode);
 		uism.messagesCallback = () => this.getMessages();
 		uism.setDisabled$(this.disabledSubject);
 		return uism;
@@ -77,7 +77,7 @@ class SplitUiStructureModel extends SimpleUiStructureModel implements SplitModel
 
 	constructor(private refPropId: string, private splitContext: SplitContextSiField|null,
 			private copyStyle: SplitStyle, private viewStateService: SplitViewStateService,
-			private translationService: TranslationService) {
+			private translationService: TranslationService, private compactMode: boolean) {
 		super();
 	}
 
@@ -142,7 +142,8 @@ class SplitUiStructureModel extends SimpleUiStructureModel implements SplitModel
 		this.splitViewStateSubscription = this.viewStateService.subscribe(uiStructure, this.getSplitOptions(), this.getSplitStyle());
 
 		for (const splitOption of this.getSplitOptions()) {
-			const child = uiStructure.createChild(UiStructureType.ITEM, splitOption.shortLabel);
+			const child = uiStructure.createChild((this.compactMode ? UiStructureType.MINIMAL : UiStructureType.ITEM),
+					splitOption.shortLabel);
 			this.childUiStructureMap.set(splitOption.key, child);
 			child.visible = false;
 			child.visible$.subscribe(() => {
@@ -175,7 +176,7 @@ class SplitUiStructureModel extends SimpleUiStructureModel implements SplitModel
 					return;
 				}
 
-				childUiStructure.model = siField.createUiStructureModel();
+				childUiStructure.model = siField.createUiStructureModel(this.compactMode);
 
 				if (siField.hasInput() && siField.isGeneric()) {
 					childUiStructure.createToolbarChild(new SimpleUiStructureModel(new ButtonControlUiContent(

@@ -324,7 +324,7 @@ class UiStructureModelCache {
 
 		const map = this.map.get(siTypeId);
 		if (!map.has(siFieldId)) {
-			map.set(siFieldId, siField.createUiStructureModel());
+			map.set(siFieldId, siField.createUiStructureModel(false));
 		}
 
 		return map.get(siFieldId);
@@ -382,7 +382,7 @@ class ToolbarResolver {
 		}
 
 		if (contextUiStructure && contextSiField.isDisplayable()) {
-			contextUiStructure.createToolbarChild(contextSiField.createUiStructureModel());
+			contextUiStructure.createToolbarChild(contextSiField.createUiStructureModel(false));
 		}
 	}
 

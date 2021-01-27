@@ -104,7 +104,6 @@ export class StructureComponent implements OnInit, OnDestroy {
 		this.clear();
 
 		this._uiStructure = uiStructure;
-		this.applyCssClass();
 
 		this.toolbarSubscription = uiStructure.getToolbarChildren$().subscribe((toolbarUiStructures) => {
 			this.toolbarUiStructures = toolbarUiStructures;
@@ -180,35 +179,23 @@ export class StructureComponent implements OnInit, OnDestroy {
 // 		this.applyCssClass();
 // 	}
 
-	private applyCssClass() {
-		const classList = this.elRef.nativeElement.classList;
-
-		classList.remove('rocket-item');
-		classList.remove('rocket-group');
-		classList.remove('rocket-simple-group');
-		classList.remove('rocket-main-group');
-		classList.remove('rocket-light-group');
-		classList.remove('rocket-panel');
-
+	@HostBinding('class')
+	get typeCssClass(): string {
 		switch (this.getType()) {
 			case UiStructureType.ITEM:
-				classList.add('rocket-item');
-				break;
+				return 'rocket-item';
 			case UiStructureType.SIMPLE_GROUP:
-				classList.add('rocket-group');
-				classList.add('rocket-simple-group');
-				break;
+				return 'rocket-group rocket-simple-group';
 			case UiStructureType.MAIN_GROUP:
-				classList.add('rocket-group');
-				classList.add('rocket-main-group');
-				break;
+				return 'rocket-group rocket-main-group';
 			case UiStructureType.LIGHT_GROUP:
-				classList.add('rocket-group');
-				classList.add('rocket-light-group');
-				break;
+				return 'rocket-group rocket-light-group';
 			case UiStructureType.PANEL:
-				classList.add('rocket-panel');
-				break;
+				return 'rocket-panel';
+			case UiStructureType.MINIMAL:
+				return 'rocket-minimal';
+			default:
+				return '';
 		}
 	}
 

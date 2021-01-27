@@ -8,7 +8,7 @@ export interface SiField {
 
 	isDisplayable(): boolean;
 
-	createUiStructureModel(): UiStructureModel;
+	createUiStructureModel(compactMode: boolean): UiStructureModel;
 
 	hasInput(): boolean;
 

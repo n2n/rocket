@@ -35,7 +35,7 @@ export abstract class SiFieldAdapter implements SiField/*, MessageFieldModel*/ {
 		return false;
 	}
 
-	abstract createUiStructureModel(): UiStructureModel;
+	abstract createUiStructureModel(compactMode: boolean): UiStructureModel;
 
 	getMessages(): Message[] {
 		return this.messages;

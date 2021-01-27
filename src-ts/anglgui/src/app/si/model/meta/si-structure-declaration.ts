@@ -19,7 +19,8 @@ export enum UiStructureType {
 	// AUTONOMIC_GROUP = 'autonomic-group',
 	LIGHT_GROUP = 'light-group',
 	PANEL = 'panel',
-	ITEM = 'item'
+	ITEM = 'item',
+	MINIMAL = 'minimal'
 }
 
 export class UiStructureTypeUtils {
