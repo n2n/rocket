@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostBinding } from '@angular/core';
 import { CrumbFieldModel } from '../../model/crumb-field-model';
 
 @Component({
@@ -8,12 +8,16 @@ import { CrumbFieldModel } from '../../model/crumb-field-model';
 	host: {class: 'rocket-crumb-out-field'}
 })
 export class CrumbOutFieldComponent implements OnInit {
-
 	model: CrumbFieldModel;
+
+	// @HostBinding('class.rocket-content-compact')
+	// compact = false;
 
 	constructor() { }
 
 	ngOnInit() {
 	}
+
+
 
 }
