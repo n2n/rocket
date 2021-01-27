@@ -9,6 +9,7 @@ use rocket\ei\util\spec\EiuContext;
 use rocket\ei\util\factory\EiuFactory;
 use n2n\web\ui\ViewFactory;
 use n2n\util\type\CastUtils;
+use n2n\util\magic\MagicObjectUnavailableException;
 
 class Eiu implements Lookupable {
 	private $eiuAnalyst;
@@ -229,6 +230,7 @@ class Eiu implements Lookupable {
 	/**
 	 * @param string|\ReflectionClass $lookupId
 	 * @return mixed
+	 * @throws MagicObjectUnavailableException
 	 */
 	public function lookup($lookupId, bool $required = true) {
 		return $this->eiuAnalyst->getN2nContext(true)->lookup($lookupId, $required);

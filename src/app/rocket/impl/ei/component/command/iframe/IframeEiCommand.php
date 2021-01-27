@@ -37,6 +37,10 @@ class IframeEiCommand extends IndependentEiCommandAdapter {
 
 		return [$siControl];
 	}
+	
+	function createEntryGuiControls(Eiu $eiu): array {
+		return [];
+	}
 
 	function lookupController(Eiu $eiu): ?Controller {
 		return new IframeController($this->iframeConfig);
