@@ -22,13 +22,13 @@
     font-size: $font-size-sm;
 }
 
-.rocket-item.rocket-bulky > .rocket-structure-content > .rocket-inactive {
+.rocket-item > .rocket-structure-content > .rocket-inactive {
     padding: $input-btn-padding-y $input-btn-padding-x;
 }
 
 @include media-breakpoint-up(md) {
     // .rocket-item is used on TD also
-    .rocket-item.rocket-bulky {
+    .rocket-item {
         display: grid;
         grid-template-columns: 15rem 1fr auto;
 
@@ -54,7 +54,7 @@
     }
 
     // new
-    .rocket-item.rocket-bulky.rocket-item-collection {
+    .rocket-item.rocket-item-collection {
         > label {
             padding-right: $rocket-item-double-item-width * 1.2;
             overflow: hidden;
@@ -70,7 +70,7 @@
         }
     }
 
-    .rocket-item.rocket-bulky.rocket-double-item  {
+    .rocket-item.rocket-double-item  {
         grid-template-columns: $rocket-item-double-item-width 1fr auto;
 
         &:first-child {
@@ -88,7 +88,7 @@
     }
 
     // tomekk überprüfe nochmal, ob das nötig ist
-    .rocket-item.rocket-bulky.rocket-level-4 {
+    .rocket-item.rocket-level-4 {
         grid-template-columns: $rocket-item-double-item-width 1fr auto;
         &:first-child {
             padding-top: 0;
@@ -494,56 +494,61 @@ rocket-choose-paste.rocket-multi-type-menu-simple {
 }
 
 // round icon
-rocket-si-qualifier,
-.rocket-si-qualifier,
-.rocket-impl-content-type {
-    > i[class*="fa-"] {
-        position: relative;
-        padding: 0 .75rem;
-        z-index: 0;
-        &::before {
-            position: relative;
-        }
-    }
-}
-
-.rocket-summary > rocket-si-qualifier > i[class*="fa-"] {
+i.rocket-important,
+i.rocket-unimportant {
     position: relative;
     padding: 0 .75rem;
     z-index: 0;
-    margin-right: 0.5rem;
-    &::before {
+    &:before {
         position: relative;
         color: white;
     }
 
-    &::after {
-        content: " ";
+    &:after {
+        content: "";
         position: absolute;
         width: 2.3em;
         height: 2.3em;
         top: 50%;
         left: 50%;
         transform: translate3d(-50%, -50%, 0);
-        background: $gray-600;
         border-radius: 50%;
         z-index: -1;
     }
 }
 
-.rocket-impl-content-type-empty {
-    color: $gray-400;
-    cursor: default;
-    > .fa-rocket-empty:before {
-        content: "0";
-        display: block;
-        color: $gray-400;
-        width: 15px;
-        text-align: center;
+i.rocket-important {
+    &:not(:only-child) {
+        margin-right: 0.5em;
     }
-    > .fa-rocket-empty:after {
-        background: none;
+    &:after {
+        background: $gray-600;
+    }
+}
+
+i.rocket-unimportant {
+    &:after {
         border: 1px solid $gray-400;
+    }
+}
+
+span.rocket-unimportant {
+    position: relative;
+    padding: 0 .75rem;
+    z-index: 0;
+    color: $gray-500;
+    text-align: center;
+    &:after {
+        content: "";
+        position: absolute;
+        width: 2.3em;
+        height: 2.3em;
+        top: 50%;
+        left: 50%;
+        transform: translate3d(-50%, -50%, 0);
+        border: 1px solid $gray-400;
+        border-radius: 50%;
+        z-index: -1;
     }
 }
 
@@ -735,41 +740,5 @@ rocket-add-past {
     > .btn {
         margin-right: 0.25em;
         margin-bottom: 0.15em;
-    }
-}
-
-
-// "simple-outs-elements"
-// ==========================
-// .string-out-field, .rocket-crumb-out-field, etc.
-
-.rocket-bulky {
-    .rocket-link-out-field,
-    .rocket-ui-string-out-field,
-    .rocket-crumb-out-field > .rocket-crumb-group,
-    .rocket-file-out-field {
-        padding: calc(0.375rem + 1px) 0;
-        display: block;
-        > *:last-child {
-            margin-bottom: 0;
-        }
-    }
-
-    .rocket-file-in-field > span {
-        padding: calc(0.375rem + 1px) 0.5rem calc(0.375rem + 1px) 0;
-        display: inline-block;
-    }
-}
-
-
-// reset bulky, if nested content
-// rocket-compact-entry > .rocket-bulky,
-.rocket-compact > * >, 
-.rocket-compact > {
-    .rocket-link-out-field,
-    .rocket-ui-string-out-field,
-    .rocket-crumb-out-field > .rocket-crumb-group,
-    .rocket-file-out-field {
-        padding: 0;
     }
 }

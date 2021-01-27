@@ -31,7 +31,7 @@ export class QualifierComponent implements OnInit {
 		const siMaskQualifier = this.siMaskQualifier || this.siEntryQualifier.maskQualifier;
 
 		if (siMaskQualifier) {
-			return siMaskQualifier.iconClass;
+			return siMaskQualifier.iconClass + ' rocket-important';
 		}
 
 		return null;

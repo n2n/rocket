@@ -196,13 +196,14 @@ td > .rocket-split {
     display: inline-block;
 }
 
-td > .rocket-split > .rocket-item {
-    padding: 0;
+.rocket-minimal {
     display: grid;
     grid-template-columns: auto 1fr;
-    margin: 0;
+    gap: 5px;
+    align-items: baseline;
 
     > label {
+        color: $gray-500;
         font-size: 0.75rem;
         white-space: nowrap;
         padding: 0.325rem 0 0 0;
@@ -215,12 +216,11 @@ td > .rocket-split > .rocket-item {
         grid-row-start: 1;
         grid-column-start: 1;
         grid-column-end: 2;
-        padding: 0;
     }
 
-    > .rocket-structure-content:not(:empty) {
-        padding: 0 .5em 0 0;
-    }
+    // > .rocket-structure-content:not(:empty) {
+    //     padding: 0 .5em 0 0;
+    // }
 }
 
 .rocket-crumb-group {
@@ -242,6 +242,12 @@ td > .rocket-split > .rocket-item {
     > i:last-child:not(:only-child) {
         margin-left: .5em;
     }
+}
+
+.rocket-crumb-group:not(:last-child):not(:only-child) {
+    padding-right: 0.5em;
+    margin-right: 0.5em;
+    border-right: 1px solid $gray-400;
 }
 
 // end new from tomekk
