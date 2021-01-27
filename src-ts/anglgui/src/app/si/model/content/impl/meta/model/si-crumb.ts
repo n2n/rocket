@@ -21,11 +21,14 @@ export class SiCrumb {
 export namespace SiCrumb {
 	export enum Type {
 		LABEL = 'label',
-		ICON = 'icon'
+		ICON = 'icon',
+		NUMBER = 'number'
 	}
 
 	export enum Severity {
 		NORMAL = 'normal',
-		INACTIVE = 'inactive'
+		INACTIVE = 'inactive',
+		IMPORTANT = 'important',
+		UNIMPORTANT = 'unimportant'
 	}
 }

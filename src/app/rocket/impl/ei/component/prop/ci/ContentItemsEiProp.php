@@ -42,6 +42,7 @@ use rocket\si\content\impl\SiFields;
 use rocket\ei\util\entry\EiuEntry;
 use n2n\util\type\CastUtils;
 use rocket\si\content\impl\meta\SiCrumb;
+use rocket\si\content\impl\meta\SiCrumbGroup;
 
 class ContentItemsEiProp extends RelationEiPropAdapter implements FieldEiProp {
 	
@@ -150,13 +151,29 @@ class ContentItemsEiProp extends RelationEiPropAdapter implements FieldEiProp {
 	 * @return \rocket\si\content\SiField
 	 */
 	private function createCompactGuiField(Eiu $eiu) {
-		$siCrumbs = [];
-		foreach ($eiu->field()->getValue() as $eiuEntry) {
-			CastUtils::assertTrue($eiuEntry instanceof EiuEntry);
-			$siCrumbs[] = SiCrumb::createIcon($eiuEntry->mask()->getIconType())
-					->setTitle($eiuEntry->createIdentityString());
+		$siCrumbGroups = [];
+		
+		foreach ($this->determinePanelDeclarations($eiu) as $panelDeclaration) {
+			$siCrumbGroups[$panelDeclaration->getName()] = new SiCrumbGroup([]);
 		}
 		
-		return $eiu->factory()->newGuiField(SiFields::crumbOut(...$siCrumbs))->toGuiField();
+		foreach ($eiu->field()->getValue() as $eiuEntry) {
+			CastUtils::assertTrue($eiuEntry instanceof EiuEntry);
+			
+			$panelName = $eiuEntry->getScalarValue('panel');
+			if (isset($siCrumbGroups[$panelName])) {
+				$siCrumbGroups[$panelName]->add(SiCrumb::createIcon($eiuEntry->mask()->getIconType())
+						->setTitle($eiuEntry->createIdentityString())
+						->setSeverity(SiCrumb::SEVERITY_IMPORTANT));
+			}
+		}
+		
+		foreach ($siCrumbGroups as $siCrumbGroup) {
+			if ($siCrumbGroup->isEmpty()) {
+				$siCrumbGroup->add(SiCrumb::createLabel('0')->setSeverity(SiCrumb::SEVERITY_UNIMPORTANT));
+			}
+		}
+		
+		return $eiu->factory()->newGuiField(SiFields::crumbOut()->setGroups($siCrumbGroups))->toGuiField();
 	}
 }

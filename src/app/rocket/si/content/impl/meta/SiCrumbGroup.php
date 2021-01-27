@@ -41,11 +41,29 @@ class SiCrumbGroup implements \JsonSerializable {
 	}
 	
 	/**
+	 * @return boolean
+	 */
+	function isEmpty() {
+		return empty($this->crumbs);
+	}
+	
+	/**
 	 * @param SiCrumb[] $crumbs
+	 * @return \rocket\si\content\impl\meta\SiCrumbGroup
 	 */
 	function setCrumbs(array $crumbs) {
 		ArgUtils::valArray($crumbs, SiCrumb::class);
 		$this->crumbs = $crumbs;
+		return $this;
+	}
+	
+	/**
+	 * @param SiCrumb ...$siCrumbs
+	 * @return \rocket\si\content\impl\meta\SiCrumbGroup
+	 */
+	function add(SiCrumb ...$siCrumbs) {
+		array_push($this->crumbs, ...$siCrumbs);
+		return $this;
 	}
 	
 	/**

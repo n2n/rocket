@@ -25,7 +25,19 @@ export class CrumbGroupComponent implements OnInit {
 		return siCrumb.type === SiCrumb.Type.LABEL;
 	}
 
+	isNumber(siCrumb: SiCrumb) {
+		return siCrumb.type === SiCrumb.Type.NUMBER;
+	}
+
 	isInactive(siCrumb: SiCrumb) {
 		return siCrumb.severity === SiCrumb.Severity.INACTIVE;
+	}
+
+	isImportant(siCrumb: SiCrumb) {
+		return siCrumb.severity === SiCrumb.Severity.IMPORTANT;
+	}
+
+	isUnimportant(siCrumb: SiCrumb) {
+		return siCrumb.severity === SiCrumb.Severity.UNIMPORTANT;
 	}
 }

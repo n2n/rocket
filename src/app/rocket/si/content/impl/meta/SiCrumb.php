@@ -29,6 +29,8 @@ class SiCrumb implements \JsonSerializable {
 	
 	const SEVERITY_NORMAL = 'normal';
 	const SEVERITY_INACTIVE = 'inactive';
+	const SEVERITY_IMPORTANT = 'important';
+	const SEVERITY_UNIMPORTANT = 'uninactive';
 	
 	protected $type;
 	protected $label;
@@ -85,7 +87,7 @@ class SiCrumb implements \JsonSerializable {
 	}
 	
 	static function getSeverities() {
-		return [self::SEVERITY_INACTIVE];
+		return [self::SEVERITY_NORMAL, self::SEVERITY_INACTIVE, self::SEVERITY_IMPORTANT, self::SEVERITY_UNIMPORTANT];
 	}
 	
 	/**

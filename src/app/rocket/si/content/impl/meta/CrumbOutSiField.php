@@ -43,16 +43,26 @@ class CrumbOutSiField extends OutSiFieldAdapter {
 	 */
 	function setGroups($groups) {
 		ArgUtils::valArray($groups, SiCrumbGroup::class);
-		$this->groups = $groups;
+		$this->groups = array_values($groups);
 		return $this;
 	}
 	
 	/**
-	 * @param SiCrumbGroup $group
+	 * @param SiCrumbGroup ...$group
 	 * @return \rocket\si\content\impl\meta\CrumbOutSiField
 	 */
-	function addGroup(SiCrumbGroup $group) {
-		$this->groups[] = $group;
+	function addGroup(SiCrumbGroup ...$groups) {
+		array_push($this->groups, ...$groups);
+		return $this;
+	}
+	
+	/**
+	 * @param SiCrumbGroup[] $groups
+	 * @return \rocket\si\content\impl\meta\CrumbOutSiField
+	 */
+	function addGroups(array $groups) {
+		ArgUtils::valArray($groups, SiCrumbGroup::class);
+		array_push($this->groups, ...$groups);
 		return $this;
 	}
 	
