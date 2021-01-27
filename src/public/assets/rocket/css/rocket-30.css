@@ -6089,13 +6089,6 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   background: #ed8207;
 }
 
-.rocket-table > tbody .rocket-table-commands {
-  border-left: 1px solid #DAD7D3;
-  white-space: nowrap;
-  width: 5%;
-  padding: 0.4rem 0.75rem;
-}
-
 .rocket-table > tbody .rocket-entry-selector {
   width: 0rem;
   white-space: nowrap;
@@ -6103,6 +6096,16 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
 
 .rocket-table > tbody .rocket-entry-selector:empty {
   padding: 0;
+}
+
+.rocket-table .rocket-table-commands {
+  white-space: nowrap;
+  width: 5%;
+  padding: 0.4rem 0.75rem;
+}
+
+.rocket-table > tbody .rocket-table-commands {
+  border-left: 1px solid #DAD7D3;
 }
 
 .rocket-table .rocket-simple-commands > .btn > span,
@@ -7027,6 +7030,32 @@ rocket-si-qualifier > i[class*="fa-"]::before,
   position: relative;
 }
 
+.rocket-summary > rocket-si-qualifier > i[class*="fa-"] {
+  position: relative;
+  padding: 0 .75rem;
+  z-index: 0;
+  margin-right: 0.5rem;
+}
+
+.rocket-summary > rocket-si-qualifier > i[class*="fa-"]::before {
+  position: relative;
+  color: white;
+}
+
+.rocket-summary > rocket-si-qualifier > i[class*="fa-"]::after {
+  content: " ";
+  position: absolute;
+  width: 2.3em;
+  height: 2.3em;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate3d(-50%, -50%, 0);
+          transform: translate3d(-50%, -50%, 0);
+  background: #837E78;
+  border-radius: 50%;
+  z-index: -1;
+}
+
 .rocket-impl-content-type-empty {
   color: #DAD7D3;
   cursor: default;
@@ -7187,10 +7216,19 @@ rocket-add-past > button::after {
   margin-bottom: 0.15em;
 }
 
+.rocket-bulky .rocket-link-out-field,
 .rocket-bulky .rocket-ui-string-out-field,
-.rocket-bulky .rocket-crumb-group {
+.rocket-bulky .rocket-crumb-out-field > .rocket-crumb-group,
+.rocket-bulky .rocket-file-out-field {
   padding: calc(0.375rem + 1px) 0;
   display: block;
+}
+
+.rocket-bulky .rocket-link-out-field > *:last-child,
+.rocket-bulky .rocket-ui-string-out-field > *:last-child,
+.rocket-bulky .rocket-crumb-out-field > .rocket-crumb-group > *:last-child,
+.rocket-bulky .rocket-file-out-field > *:last-child {
+  margin-bottom: 0;
 }
 
 .rocket-bulky .rocket-file-in-field > span {
@@ -7198,8 +7236,18 @@ rocket-add-past > button::after {
   display: inline-block;
 }
 
-.rocket-compact .rocket-ui-string-out-field,
-.rocket-compact .rocket-crumb-group {
+rocket-compact-entry > .rocket-bulky .rocket-link-out-field,
+rocket-compact-entry > .rocket-bulky .rocket-ui-string-out-field,
+rocket-compact-entry > .rocket-bulky .rocket-crumb-out-field > .rocket-crumb-group,
+rocket-compact-entry > .rocket-bulky .rocket-file-out-field,
+.rocket-compact > * > .rocket-link-out-field,
+.rocket-compact > * > .rocket-ui-string-out-field,
+.rocket-compact > * > .rocket-crumb-out-field > .rocket-crumb-group,
+.rocket-compact > * > .rocket-file-out-field,
+.rocket-compact > .rocket-link-out-field,
+.rocket-compact > .rocket-ui-string-out-field,
+.rocket-compact > .rocket-crumb-out-field > .rocket-crumb-group,
+.rocket-compact > .rocket-file-out-field {
   padding: 0;
 }
 
@@ -7388,19 +7436,23 @@ rocket-add-past > button::after {
   color: #373431;
 }
 
-.rocket-simple-commands > .dropdown > button:focus, .rocket-simple-commands > .dropdown > button:visited, .rocket-simple-commands > .dropdown > button:active,
+.rocket-simple-commands > .dropdown > button:focus, .rocket-simple-commands > .dropdown > button:visited, .rocket-simple-commands > .dropdown > button:not([disabled]):active, .rocket-simple-commands > .dropdown > button:not([disabled]).active,
 .rocket-simple-commands > .btn:focus,
 .rocket-simple-commands > .btn:visited,
-.rocket-simple-commands > .btn:active,
+.rocket-simple-commands > .btn:not([disabled]):active,
+.rocket-simple-commands > .btn:not([disabled]).active,
 .rocket-simple-commands > .rocket-button-control > .dropdown > button:focus,
 .rocket-simple-commands > .rocket-button-control > .dropdown > button:visited,
-.rocket-simple-commands > .rocket-button-control > .dropdown > button:active,
+.rocket-simple-commands > .rocket-button-control > .dropdown > button:not([disabled]):active,
+.rocket-simple-commands > .rocket-button-control > .dropdown > button:not([disabled]).active,
 .rocket-simple-commands > .rocket-button-control > .btn:focus,
 .rocket-simple-commands > .rocket-button-control > .btn:visited,
-.rocket-simple-commands > .rocket-button-control > .btn:active,
+.rocket-simple-commands > .rocket-button-control > .btn:not([disabled]):active,
+.rocket-simple-commands > .rocket-button-control > .btn:not([disabled]).active,
 .rocket-simple-commands > .rocket-ui-toggler > .btn:focus,
 .rocket-simple-commands > .rocket-ui-toggler > .btn:visited,
-.rocket-simple-commands > .rocket-ui-toggler > .btn:active {
+.rocket-simple-commands > .rocket-ui-toggler > .btn:not([disabled]):active,
+.rocket-simple-commands > .rocket-ui-toggler > .btn:not([disabled]).active {
   -webkit-box-shadow: none;
           box-shadow: none;
 }
@@ -7434,6 +7486,58 @@ rocket-add-past > button::after {
 .rocket-simple-commands > .rocket-button-control > .dropdown > button:not(.rocket-important) > span,
 .rocket-simple-commands > .rocket-button-control > .btn:not(.rocket-important) > span,
 .rocket-simple-commands > .rocket-ui-toggler > .btn:not(.rocket-important) > span {
+  display: none;
+}
+
+th .rocket-simple-commands > .dropdown > button,
+th .rocket-simple-commands > .btn,
+th .rocket-simple-commands > .rocket-button-control > .dropdown > button,
+th .rocket-simple-commands > .rocket-button-control > .btn,
+th .rocket-simple-commands > .rocket-ui-toggler > .btn {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+th .rocket-simple-commands > .dropdown > button:hover:not([disabled]), th .rocket-simple-commands > .dropdown > button.active:not([disabled]),
+th .rocket-simple-commands > .btn:hover:not([disabled]),
+th .rocket-simple-commands > .btn.active:not([disabled]),
+th .rocket-simple-commands > .rocket-button-control > .dropdown > button:hover:not([disabled]),
+th .rocket-simple-commands > .rocket-button-control > .dropdown > button.active:not([disabled]),
+th .rocket-simple-commands > .rocket-button-control > .btn:hover:not([disabled]),
+th .rocket-simple-commands > .rocket-button-control > .btn.active:not([disabled]),
+th .rocket-simple-commands > .rocket-ui-toggler > .btn:hover:not([disabled]),
+th .rocket-simple-commands > .rocket-ui-toggler > .btn.active:not([disabled]) {
+  color: #fff;
+}
+
+th .rocket-simple-commands > .dropdown > button.btn-danger:hover:not([disabled]),
+th .rocket-simple-commands > .btn.btn-danger:hover:not([disabled]),
+th .rocket-simple-commands > .rocket-button-control > .dropdown > button.btn-danger:hover:not([disabled]),
+th .rocket-simple-commands > .rocket-button-control > .btn.btn-danger:hover:not([disabled]),
+th .rocket-simple-commands > .rocket-ui-toggler > .btn.btn-danger:hover:not([disabled]) {
+  color: #b90f00;
+}
+
+th .rocket-simple-commands > .dropdown > button.btn-warning:hover:not([disabled]),
+th .rocket-simple-commands > .btn.btn-warning:hover:not([disabled]),
+th .rocket-simple-commands > .rocket-button-control > .dropdown > button.btn-warning:hover:not([disabled]),
+th .rocket-simple-commands > .rocket-button-control > .btn.btn-warning:hover:not([disabled]),
+th .rocket-simple-commands > .rocket-ui-toggler > .btn.btn-warning:hover:not([disabled]) {
+  color: #F6A723;
+}
+
+th .rocket-simple-commands > .dropdown > button.btn-success:hover:not([disabled]),
+th .rocket-simple-commands > .btn.btn-success:hover:not([disabled]),
+th .rocket-simple-commands > .rocket-button-control > .dropdown > button.btn-success:hover:not([disabled]),
+th .rocket-simple-commands > .rocket-button-control > .btn.btn-success:hover:not([disabled]),
+th .rocket-simple-commands > .rocket-ui-toggler > .btn.btn-success:hover:not([disabled]) {
+  color: #2D7F00;
+}
+
+th .rocket-simple-commands > .dropdown > button:not(.rocket-important) > span,
+th .rocket-simple-commands > .btn:not(.rocket-important) > span,
+th .rocket-simple-commands > .rocket-button-control > .dropdown > button:not(.rocket-important) > span,
+th .rocket-simple-commands > .rocket-button-control > .btn:not(.rocket-important) > span,
+th .rocket-simple-commands > .rocket-ui-toggler > .btn:not(.rocket-important) > span {
   display: none;
 }
 

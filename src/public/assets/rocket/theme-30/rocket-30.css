@@ -6723,6 +6723,7 @@ rocket-si-qualifier > .fa::before,
   cursor: default;
 }
 
+rocket-summary > rocket-si-qualifier > .fa.fa-rocket-empty:before,
 .rocket-impl-content-type-empty > .fa.fa-rocket-empty:before {
   content: "0";
   display: block;
@@ -6730,7 +6731,7 @@ rocket-si-qualifier > .fa::before,
   width: 15px;
   text-align: center;
 }
-
+rocket-summary > rocket-si-qualifier > .fa.fa-rocket-empty:after,
 .rocket-impl-content-type-empty > .fa.fa-rocket-empty:after {
   background: none;
   border: 1px solid #DAD7D3;

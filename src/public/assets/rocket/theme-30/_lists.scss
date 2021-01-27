@@ -134,27 +134,6 @@
             }
         }
 
-        .rocket-table-commands {
-            border-left: 1px solid $table-border-color;
-            white-space: nowrap;
-            width: 5%;
-            padding: 0.4rem 0.75rem;
-            // sticky commands in table
-            // position: sticky;
-            // right: 0;
-            // &:after {
-            //     content: "";
-            //     border-left: 1.5px solid $table-border-color;
-            //     position: absolute;
-            //     top: 0;
-            //     left: 0;
-            //     width: 100%;
-            //     height: 100%;
-            //     background-color: $white;
-            //     z-index: -1;
-            // }
-        }
-
         .rocket-entry-selector {
             width: 0rem;
             white-space: nowrap;
@@ -163,6 +142,31 @@
             }
         }
     }
+
+    .rocket-table-commands {
+        white-space: nowrap;
+        width: 5%;
+        padding: 0.4rem 0.75rem;
+        // sticky commands in table
+        // position: sticky;
+        // right: 0;
+        // &:after {
+        //     content: "";
+        //     border-left: 1.5px solid $table-border-color;
+        //     position: absolute;
+        //     top: 0;
+        //     left: 0;
+        //     width: 100%;
+        //     height: 100%;
+        //     background-color: $white;
+        //     z-index: -1;
+        // }
+    }
+
+    > tbody .rocket-table-commands {
+        border-left: 1px solid $table-border-color;
+    }
+
     .rocket-simple-commands > .btn > span,
     .rocket-simple-commands > .rocket-button-control > .btn > span {
         display: none;

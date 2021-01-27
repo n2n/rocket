@@ -10,6 +10,7 @@
 
 .rocket-item {
     padding: 0.5rem 1rem;
+    // padding: 0 1rem;
     margin: 0 -1rem;
     > label {
         margin: 0;
@@ -506,6 +507,30 @@ rocket-si-qualifier,
     }
 }
 
+.rocket-summary > rocket-si-qualifier > i[class*="fa-"] {
+    position: relative;
+    padding: 0 .75rem;
+    z-index: 0;
+    margin-right: 0.5rem;
+    &::before {
+        position: relative;
+        color: white;
+    }
+
+    &::after {
+        content: " ";
+        position: absolute;
+        width: 2.3em;
+        height: 2.3em;
+        top: 50%;
+        left: 50%;
+        transform: translate3d(-50%, -50%, 0);
+        background: $gray-600;
+        border-radius: 50%;
+        z-index: -1;
+    }
+}
+
 .rocket-impl-content-type-empty {
     color: $gray-400;
     cursor: default;
@@ -718,12 +743,16 @@ rocket-add-past {
 // ==========================
 // .string-out-field, .rocket-crumb-out-field, etc.
 
-
 .rocket-bulky {
+    .rocket-link-out-field,
     .rocket-ui-string-out-field,
-    .rocket-crumb-group {
+    .rocket-crumb-out-field > .rocket-crumb-group,
+    .rocket-file-out-field {
         padding: calc(0.375rem + 1px) 0;
         display: block;
+        > *:last-child {
+            margin-bottom: 0;
+        }
     }
 
     .rocket-file-in-field > span {
@@ -732,10 +761,15 @@ rocket-add-past {
     }
 }
 
+
 // reset bulky, if nested content
-.rocket-compact {
+rocket-compact-entry > .rocket-bulky,
+.rocket-compact > * >, 
+.rocket-compact > {
+    .rocket-link-out-field,
     .rocket-ui-string-out-field,
-    .rocket-crumb-group {
+    .rocket-crumb-out-field > .rocket-crumb-group,
+    .rocket-file-out-field {
         padding: 0;
     }
 }

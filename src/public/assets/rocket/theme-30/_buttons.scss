@@ -41,8 +41,36 @@
         }
         &:focus,
         &:visited,
-        &:active {
+        &:not([disabled]):active,
+        &:not([disabled]).active {
             box-shadow: none;
+        }
+        &.btn-danger:hover:not([disabled]) {
+            color: $danger;
+        }
+        &.btn-warning:hover:not([disabled]) {
+            color: $warning;
+        }
+        &.btn-success:hover:not([disabled]) {
+            color: $success;
+        }
+        &:not(.rocket-important) > span {
+            display: none;
+        }
+    }
+}
+
+th .rocket-simple-commands {
+    // drop down button in simple-commands
+    > .dropdown > button,
+    > .btn,
+    > .rocket-button-control > .dropdown > button, 
+    > .rocket-button-control > .btn,
+    > .rocket-ui-toggler > .btn { 
+        color: rgba($white, 0.6);
+        &:hover:not([disabled]),
+        &.active:not([disabled]) {
+            color: $white;
         }
         &.btn-danger:hover:not([disabled]) {
             color: $danger;
