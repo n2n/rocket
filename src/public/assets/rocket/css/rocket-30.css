@@ -6669,20 +6669,26 @@ td > .rocket-split {
   background-image: linear-gradient(to right, rgba(255, 255, 255, 0), white 50%);
 }
 
-.rocket-summary rocket-compact-entry > div,
-.rocket-summary .rocket-impl-content > div {
+.rocket-summary rocket-compact-entry > * > *,
+.rocket-summary .rocket-impl-content > * > * {
   white-space: nowrap;
   -ms-flex-negative: 0;
       flex-shrink: 0;
+  margin-bottom: 0;
 }
 
-.rocket-summary rocket-compact-entry > div:not(:last-child):not(:empty),
-.rocket-summary .rocket-impl-content > div:not(:last-child):not(:empty) {
+.rocket-summary rocket-compact-entry > * > * > *:last-child,
+.rocket-summary .rocket-impl-content > * > * > *:last-child {
+  margin-bottom: 0;
+}
+
+.rocket-summary rocket-compact-entry > * > *:not(:last-child):not(:empty),
+.rocket-summary .rocket-impl-content > * > *:not(:last-child):not(:empty) {
   margin-right: 1.5rem;
 }
 
-.rocket-summary rocket-compact-entry > div.rocket-gui-field-fileImage,
-.rocket-summary .rocket-impl-content > div.rocket-gui-field-fileImage {
+.rocket-summary rocket-compact-entry > * > *.rocket-gui-field-fileImage,
+.rocket-summary .rocket-impl-content > * > *.rocket-gui-field-fileImage {
   margin-top: -0.35rem;
   margin-bottom: -0.41rem;
 }

@@ -215,15 +215,21 @@
                 background-image: linear-gradient(to right, rgba($white, 0), rgba($white, 1) 50%);
             }
 
-            > div {
+            > * > * {
                 white-space: nowrap;
                 flex-shrink: 0;
+                margin-bottom: 0;
             }
-            > div:not(:last-child):not(:empty) {
+
+            > * > * > *:last-child {
+                margin-bottom: 0;
+            }
+
+            > * > *:not(:last-child):not(:empty) {
                 margin-right: 1.5rem;
             }
 
-            > div.rocket-gui-field-fileImage {
+            > * > *.rocket-gui-field-fileImage {
                 margin-top: -0.35rem;
                 margin-bottom: -0.41rem;
             }
