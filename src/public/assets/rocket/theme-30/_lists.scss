@@ -118,7 +118,8 @@
     }
 
     > tbody {
-        tr:hover {
+        tr.cdk-drag-placeholder,
+        &:not(.cdk-drop-list-dragging) tr:hover {
             > td:first-child.d-none + td,
             > td:first-child {
                 position: relative;
@@ -224,7 +225,9 @@ td > .rocket-split {
 }
 
 .rocket-crumb-group {
-    display: flex;
+    display: grid;
+    grid-auto-flow: column;
+    grid-gap: .5em;
     align-items: baseline;
 
     > i:only-child {
@@ -233,14 +236,6 @@ td > .rocket-split {
         &:after {
             content: "\200b";
         }
-    }
-
-    > i:first-child:not(:only-child) {
-        margin-right: .5em;
-    }
-
-    > i:last-child:not(:only-child) {
-        margin-left: .5em;
     }
 }
 

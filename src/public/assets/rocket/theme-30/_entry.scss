@@ -79,7 +79,7 @@
         
         > label,
         .rocket-item > label {
-            padding: calc(0.375rem + 0.125rem) 0.2rem calc(0.375rem + 1px) 0;
+            padding: calc(0.375rem + 0.125rem + 1px) 0.2rem calc(0.375rem + 1px) 0;
         }
 
         > label {
@@ -133,9 +133,11 @@
 
 // embeded compact objects in edit view
 
-.rocket-impl-entry {
-    display: grid;
-}
+//@ deprecated?
+// .rocket-impl-entry {
+//     display: grid;
+// }
+
 
 // .rocket-impl-entry {
     // > .rocket-summary {
@@ -494,63 +496,64 @@ rocket-choose-paste.rocket-multi-type-menu-simple {
 }
 
 // round icon
-i.rocket-important,
-i.rocket-unimportant {
-    position: relative;
-    padding: 0 .75rem;
-    z-index: 0;
-    &:before {
+
+i,
+span {
+    &.rocket-important,
+    &.rocket-unimportant {
+        position: relative;
+        padding: 0 .75rem;
+        z-index: 0;
+        text-align: center;
+
+        &:after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 50%;
+            left: 50%;
+            width: 2.3em;
+            height: 2.3em;
+            transform: translateX(-50%) translateY(-50%);
+            z-index: -1;
+            border-radius: 50%;
+        }
+    }
+}
+
+i,
+span {
+   &.rocket-unimportant {
+        color: $gray-500;
+        cursor: default;
+        
+        &:after {
+            border: 1px solid $gray-400;
+        }
+    }
+}
+
+i,
+span {
+    &.rocket-important {
         position: relative;
         color: white;
-    }
-
-    &:after {
-        content: "";
-        position: absolute;
-        width: 2.3em;
-        height: 2.3em;
-        top: 50%;
-        left: 50%;
-        transform: translate3d(-50%, -50%, 0);
-        border-radius: 50%;
-        z-index: -1;
+        
+        &:after {
+            background: $gray-600;
+        }
     }
 }
 
-i.rocket-important {
-    &:not(:only-child) {
+i,
+span {
+    &.rocket-important:not(:only-child) {
         margin-right: 0.5em;
     }
-    &:after {
-        background: $gray-600;
-    }
 }
 
-i.rocket-unimportant {
-    &:after {
-        border: 1px solid $gray-400;
-    }
-}
 
-span.rocket-unimportant {
-    position: relative;
-    padding: 0 .75rem;
-    z-index: 0;
-    color: $gray-500;
-    text-align: center;
-    &:after {
-        content: "";
-        position: absolute;
-        width: 2.3em;
-        height: 2.3em;
-        top: 50%;
-        left: 50%;
-        transform: translate3d(-50%, -50%, 0);
-        border: 1px solid $gray-400;
-        border-radius: 50%;
-        z-index: -1;
-    }
-}
 
 rocket-add-past {
     // margin top must be 0.5rem in order to match mutli column grid patterns
@@ -601,48 +604,6 @@ rocket-add-past {
 /**
  * Relation Selectors
  */
-
-// .rocket-impl-selector {
-//     // to many
-//     > ul {
-//         margin: 0 0 0.5rem 0;
-//         padding: 0;
-//         list-style: none;
-//         border: 1px solid $input-border-color;
-//         max-height: 20rem;
-//         overflow-y: auto;
-//         overflow-x: hidden;
-//         > li {
-//             border-bottom: 1px solid $input-border-color;
-//             clear: both;
-//             > span {
-//                 padding: $input-btn-padding-y $input-btn-padding-x;
-//                 display: inline-block;
-//             }
-//             > div {
-//                 float: right;
-//             }
-//         }
-//     }
-//     // to one
-//     > div {
-        
-//         > span {
-//             display: inline-block;
-//             padding: calc(0.375rem + 1px) 0;
-//             padding-right: 0.5rem;
-//         }
-//         > .rocket-simple-commands {
-//             display: inline-block;
-//         }
-//     }
-//     .btn {
-//         margin-right: 0.5rem;
-//         i + span {
-//             margin-left: 0.375rem;
-//         }
-//     }
-// }
 
 .rocket-to-many {
     > div {
@@ -741,4 +702,10 @@ rocket-add-past {
         margin-right: 0.25em;
         margin-bottom: 0.15em;
     }
+}
+
+
+.rocket-crumb-out-field {
+    display: flex;
+    flex-wrap: wrap;
 }

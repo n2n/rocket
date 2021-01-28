@@ -77,6 +77,12 @@
             border: 1px solid $gray-500;
         }
     }
+
+    .rocket-simple-group {
+        > label {
+            padding: 0.2rem 0 0.5rem;
+        }
+    }
 }
 
 /*
