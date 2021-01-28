@@ -37,6 +37,7 @@ use n2n\impl\persistence\orm\property\FloatEntityProperty;
 use rocket\impl\ei\component\prop\numeric\conf\DecimalConfig;
 use rocket\si\content\SiField;
 use rocket\ei\util\factory\EifGuiField;
+use rocket\si\content\impl\SiFields;
 
 class DecimalEiProp extends NumericEiPropAdapter {
     private $decimalConfig;
@@ -74,11 +75,20 @@ class DecimalEiProp extends NumericEiPropAdapter {
 	}
 
 	public function createInEifGuiField(Eiu $eiu): EifGuiField {
-		$numericMag = new EiDecimalMag($this->getLabelLstr(), null,
-				$this->isMandatory($eiu), $this->getMinValue(), $this->getMaxValue(), 
-				$this->getDecimalPlaces(), array('placeholder' => $this->getLabelLstr()));
-		$numericMag->setInputPrefix($this->prefix);
-		return $numericMag;
+		$addonConfig = $this->getAddonConfig();
+		
+		$siField = SiFields::numberIn($eiu->field()->getValue())
+				->setMandatory($this->getEditConfig()->isMandatory())
+				->setMin($this->getNumericConfig()->getMinValue())
+				->setMax($this->getNumericConfig()->getMaxValue())
+				->setArrowStep(0 / pow(10, $this->decimalConfig->getDecimalPlaces()))
+				->setPrefixAddons($addonConfig->getPrefixSiCrumbGroups())
+				->setSuffixAddons($addonConfig->getSuffixSiCrumbGroups());
+		
+		return $eiu->factory()->newGuiField($siField)
+				->setSaver(function () use ($siField, $eiu) {
+					$eiu->field()->setValue($siField->getValue());
+				});
 	}
 	public function saveSiField(SiField $siField, Eiu $eiu) {
 	}
