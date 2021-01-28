@@ -138,8 +138,8 @@ class AddEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiCo
 		$nestedSet = null !== $this->getWrapper()->getEiCommandCollection()->getEiMask()->getEiType()->getNestedSetStrategy();
 		
 		$key = $nestedSet ? self::CONTROL_ADD_ROOT_BRANCH_KEY : self::CONTROL_ADD_KEY;
-		$siButton = new SiButton($dtc->t($nestedSet ? 'ei_impl_add_root_branch_label' : 'common_new_entry_label'),
-				null, true, SiButton::TYPE_SUCCESS, SiIconType::ICON_PLUS_CIRCLE);
+		$siButton = SiButton::success($dtc->t($nestedSet ? 'ei_impl_add_root_branch_label' : 'common_new_entry_label'), SiIconType::ICON_PLUS_CIRCLE)
+				->setImportant(true);
 		return $eiuControlFactory->newCmdRef($key, $siButton);
 	}
 	
@@ -187,7 +187,7 @@ class AddEiCommand extends IndependentEiCommandAdapter implements PrivilegedEiCo
 			
 			$name = $dtc->t('ei_impl_duplicate_label');
 			$tooltip = $dtc->t('ei_impl_duplicate_tooltip', array('entry' => $eiuEntry->createIdentityString()));
-			$siButton = new SiButton($name, $tooltip, false, SiButton::TYPE_SUCCESS, SiIconType::ICON_R_COPY);
+			$siButton = SiButton::success($name,SiIconType::ICON_R_COPY)->setTooltip($tooltip);
 			
 			return array($eiuControlFactory
 					->newCmdRef(self::CONTROL_DUPLICATE_KEY , $siButton, [$eiuEntry->getPid()]));

@@ -30,26 +30,20 @@ class SiButton implements \JsonSerializable {
 	const TYPE_WARNING = 'btn btn-warning';
 	
 	private $name;
-	private $tooltip;
+	private $type = self::TYPE_SECONDARY;
 	private $iconType = SiIconType::ICON_ROCKET;
-	private $important;
-	private $type;
-	private $attrs = array();
+	private $important = false;
 	private $iconImportant = false;
-	private $labelImportant = false;
-// 	private $static = true;
+	private $iconAlways = false;
+	private $labelAlways = false;
 	
+	private $tooltip;
 	private $confirm;
 	
-	public function __construct(string $name, string $tooltip = null, bool $important = false, string $type = null, 
-			string $iconType = null, array $attrs = null, bool $iconImportant = false/*, bool $static = true*/) {
+	private function __construct(string $name, string $iconType = null, string $type = self::TYPE_SECONDARY) {
 		$this->name = $name;
-		$this->tooltip = $tooltip;
-		$this->important = $important;
-		$this->type = $type ?? self::TYPE_SECONDARY;
 		$this->iconType = $iconType ?? SiIconType::ICON_ROCKET;
-		$this->iconImportant = $iconImportant;
-// 		$this->static = $static;
+		$this->type = $type;
 	}
 	
 	public function isImportant(): bool {
@@ -80,6 +74,9 @@ class SiButton implements \JsonSerializable {
 		return $this;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getType() {
 		return $this->type;
 	}
@@ -93,6 +90,9 @@ class SiButton implements \JsonSerializable {
 		return $this;
 	}
 	
+	/**
+	 * @return string
+	 */
 	public function getIconType() {
 		return $this->iconType;
 	}
@@ -106,6 +106,9 @@ class SiButton implements \JsonSerializable {
 		return $this;
 	}
 	
+	/**
+	 * @return string|null
+	 */
 	public function getTooltip() {
 		return $this->tooltip;
 	}
@@ -114,26 +117,10 @@ class SiButton implements \JsonSerializable {
 	 * @param string $tooltip
 	 * @return \rocket\si\control\SiButton
 	 */
-	public function setTooltip(string $tooltip = null) {
+	public function setTooltip(?string $tooltip) {
 		$this->tooltip = $tooltip;
 		return $this;
 	}
-	
-// 	/**
-// 	 * @return bool
-// 	 */
-// 	public function isStatic() {
-// 		return $this->static;
-// 	}
-	
-// 	/**
-// 	 * @param bool $static
-// 	 * @return \rocket\si\control\SiButton
-// 	 */
-// 	public function setStatic(bool $static) {
-// 		$this->static = $static;
-// 		return $this;
-// 	}
 	
 	/**
 	 * @return boolean
@@ -143,7 +130,7 @@ class SiButton implements \JsonSerializable {
 	}
 	
 	/**
-	 * Icon will always be displayed.
+	 * Icon will always be colored.
 	 * @param bool $iconImportant
 	 * @return \rocket\si\control\SiButton
 	 */
@@ -155,17 +142,34 @@ class SiButton implements \JsonSerializable {
 	/**
 	 * @return boolean
 	 */
-	public function isLabelImportant() {
-		return $this->labelImportant;
+	public function isIconAlways() {
+		return $this->iconAlways;
+	}
+	
+	/**
+	 * Icon will always be displayed.
+	 * @param bool $iconImportant
+	 * @return \rocket\si\control\SiButton
+	 */
+	public function setIconAlways(bool $iconAlways) {
+		$this->iconAlways = $iconAlways;
+		return $this;
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function isLabelAlways() {
+		return $this->labelAlawys;
 	}
 	
 	/**
 	 * Button text will always be displayed.
-	 * @param bool $labelImportant
+	 * @param bool $labelAlways
 	 * @return \rocket\si\control\SiButton
 	 */
-	public function setLabelImportant(bool $labelImportant) {
-		$this->labelImportant = $labelImportant;
+	public function setLabelAlways(bool $labelAlways) {
+		$this->labelAlawys = $labelAlways;
 		return $this;
 	}
 	
@@ -193,19 +197,19 @@ class SiButton implements \JsonSerializable {
 			'btnClass' => $this->type,
 			'important' => $this->important,
 			'iconImportant' => $this->iconImportant,
-			'labelImportant' => $this->labelImportant,
+			'iconAlways' => $this->iconAlways,
+			'labelAlways' => $this->labelAlways,
 			'confirm' => $this->confirm
 		];
 	}
 	
-	
 	/**
 	 * @param string $name
 	 * @param string $siIconType
 	 * @return \rocket\si\control\SiButton
 	 */
-	static function primary(string $name, string $siIconType) {
-		return new SiButton($name, null, false, self::TYPE_PRIMARY, $siIconType);
+	static function primary(string $name, string $siIconType = null) {
+		return new SiButton($name, $siIconType, self::TYPE_PRIMARY, );
 	}
 	
 	/**
@@ -213,8 +217,8 @@ class SiButton implements \JsonSerializable {
 	 * @param string $siIconType
 	 * @return \rocket\si\control\SiButton
 	 */
-	static function secondary(string $name, string $siIconType) {
-		return new SiButton($name, null, false, self::TYPE_SECONDARY, $siIconType);
+	static function secondary(string $name, string $siIconType = null) {
+		return new SiButton($name, $siIconType, self::TYPE_SECONDARY);
 	}
 	
 	/**
@@ -222,8 +226,8 @@ class SiButton implements \JsonSerializable {
 	 * @param string $siIconType
 	 * @return \rocket\si\control\SiButton
 	 */
-	static function success(string $name, string $siIconType) {
-		return new SiButton($name, null, false, self::TYPE_SUCCESS, $siIconType);
+	static function success(string $name, string $siIconType = null) {
+		return new SiButton($name, $siIconType, self::TYPE_SUCCESS);
 	}
 	
 	/**
@@ -231,8 +235,8 @@ class SiButton implements \JsonSerializable {
 	 * @param string $siIconType
 	 * @return \rocket\si\control\SiButton
 	 */
-	static function danger(string $name, string $siIconType) {
-		return new SiButton($name, null, false, self::TYPE_DANGER, $siIconType);
+	static function danger(string $name, string $siIconType = null) {
+		return new SiButton($name, $siIconType, self::TYPE_DANGER );
 	}
 	
 	/**
@@ -240,8 +244,8 @@ class SiButton implements \JsonSerializable {
 	 * @param string $siIconType
 	 * @return \rocket\si\control\SiButton
 	 */
-	static function info(string $name, string $siIconType) {
-		return new SiButton($name, null, false, self::TYPE_INFO, $siIconType);
+	static function info(string $name, string $siIconType = null) {
+		return new SiButton($name, $siIconType, self::TYPE_INFO);
 	}
 	
 	/**
@@ -249,8 +253,8 @@ class SiButton implements \JsonSerializable {
 	 * @param string $siIconType
 	 * @return \rocket\si\control\SiButton
 	 */
-	static function warning(string $name, string $siIconType) {
-		return new SiButton($name, null, false, self::TYPE_WARNING, $siIconType);
+	static function warning(string $name, string $siIconType = null) {
+		return new SiButton($name, $siIconType, self::TYPE_WARNING);
 	}
 	
 // 	public function toSubmitButton(PropertyPath $propertyPath): UiComponent {

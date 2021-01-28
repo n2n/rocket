@@ -24,8 +24,11 @@
 </ng-container>
 
 <ng-template #simpleButton>
-	<button [class]="siButton.btnClass" [class.rocket-important]="siButton.important"  
-			[class.rocket-icon-important]="siButton.iconImportant" [class.rocket-label-important]="siButton.labelImportant"
+	<button [class]="siButton.btnClass" 
+			[class.rocket-important]="siButton.important"  
+			[class.rocket-icon-important]="siButton.iconImportant" 
+			[class.rocket-icon-always]="siButton.iconAlways"
+			[class.rocket-label-always]="siButton.labelAlways"
 			[class.btn-loading]="loading" [disabled]="disabled" (click)="exec()">
 		<i [class]="siButton.iconClass" class="btn-icon"></i>
 		<span class="btn-name">{{ siButton.name }}</span>
