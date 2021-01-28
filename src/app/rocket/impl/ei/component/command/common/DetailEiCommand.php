@@ -90,7 +90,7 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 		$dtc = $eiu->dtc(Rocket::NS);
 		$eiuControlFactory = $eiu->factory()->controls();
 		
-		$siButton = new SiButton(
+		$siButton = SiButton(
 				$dtc->t('ei_impl_detail_label'),
 				$dtc->t('ei_impl_detail_tooltip', array('entry' => $eiuFrame->getGenericLabel())),
 				false, null, $iconType);

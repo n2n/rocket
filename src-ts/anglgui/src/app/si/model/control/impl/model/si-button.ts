@@ -1,10 +1,11 @@
 
 export class SiButton {
+	public inputAvailable = false;
 	public tooltip: string|null = null;
 	public important = false;
-	public inputAvailable = false;
 	public iconImportant = false;
-	public labelImportant = false;
+	public iconAlways = false;
+	public labelAlways = false;
 	public confirm: SiConfirm|null = null;
 
 	constructor(public name: string, public btnClass: string, public iconClass: string) {

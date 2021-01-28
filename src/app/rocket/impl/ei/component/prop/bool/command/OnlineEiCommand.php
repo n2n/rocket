@@ -68,9 +68,9 @@ class OnlineEiCommand extends EiCommandAdapter {
 		$eiuFrame = $eiu->frame();
 		$dtc = new DynamicTextCollection('rocket', $eiuFrame->getN2nLocale());
 		
-		$siButton = new SiButton($dtc->t('ei_impl_online_offline_label'),
-				$dtc->t('ei_impl_online_offline_tooltip', array('entry' => $eiuFrame->getGenericLabel())));
-		$siButton->setIconImportant(true);
+		$siButton = SiButton::success($dtc->t('ei_impl_online_offline_label'))
+				->setTooltip($dtc->t('ei_impl_online_offline_tooltip', array('entry' => $eiuFrame->getGenericLabel())))
+				->setIconImportant(true);
 		
 		$status = $eiuEntry->getValue($this->onlineEiProp);
 		if ($status) {
